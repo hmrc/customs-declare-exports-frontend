@@ -23,7 +23,7 @@
 @import services.view.HolderOfAuthorisationCodes
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.components.gds.Styles._
-@import views.helpers.DeclarationHolderHelper
+@import views.helpers.DeclarationHolderEditHelper
 @import views.html.components.fields.field_accessible_autocomplete
 @import views.html.components.gds._
 
@@ -35,7 +35,7 @@
     sectionHeader: sectionHeader,
     heading: heading,
     paragraphBody: paragraphBody,
-    declHolderHelper: DeclarationHolderHelper,
+    declarationHolderEditHelper: DeclarationHolderEditHelper,
     exportsInputText: exportsInputText,
     govukRadios: GovukRadios,
     tariffExpander: tariffExpander,
@@ -57,7 +57,7 @@
 }
 
 @formContent = {
-    @declHolderHelper.textForEoriRadiosWhenEXRR
+    @declarationHolderEditHelper.textForEoriRadiosWhenEXRR
 
     @govukRadios(Radios(
         name = EoriSourceId,
@@ -88,20 +88,19 @@
 
 @paragraphBody(messages("declaration.declarationHolder.paragraph"))
 
-@declHolderHelper.bodyForDeclarationHolderEditPage(appConfig)
-@declHolderHelper.componentsForArrived.map(_.warning)
-@declHolderHelper.componentsForArrived.map(_.paragraph)
+@declarationHolderEditHelper.body(appConfig)
+@declarationHolderEditHelper.additionalBodyForArrivedDeclarationsOnly
 
 @field_accessible_autocomplete(
     field = form("authorisationTypeCode"),
     label = messages("declaration.declarationHolder.authorisationCode"),
     labelClass = Some("govuk-label--m"),
-    hintParagraphs = declHolderHelper.hintForAuthorisationCode,
+    hintParagraphs = declarationHolderEditHelper.hintForAuthorisationCode,
     emptySelectValue = messages("declaration.declarationHolder.authorisationCode.empty"),
     items = holderOfAuthorisationCodes.asListOfAutoCompleteItems(messages.lang.toLocale)
 )
 
-@declHolderHelper.insetTextBelowAuthorisationCode(appConfig)
+@declarationHolderEditHelper.insetTextBelowAuthorisationCode(appConfig)
 
 @govukFieldset(Fieldset(
     legend = Some(Legend(

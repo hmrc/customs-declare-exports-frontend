@@ -104,15 +104,25 @@ class CarrierDetailsViewSpec extends AddressViewSpec with CommonMessages with St
         view.getElementsByTag("h1").text mustBe messages("declaration.carrierAddress.title")
       }
 
+      "display the expected notification banner" in {
+        val banner = view.getElementsByClass("govuk-notification-banner").get(0)
+
+        val title = banner.getElementsByClass("govuk-notification-banner__title").text
+        title mustBe messages("declaration.carrierAddress.notification.title")
+
+        val content = banner.getElementsByClass("govuk-notification-banner__content").get(0)
+        content.text mustBe messages("declaration.carrierAddress.notification.body")
+      }
+
       "display the expected body" in {
         val paragraphs = view.getElementsByClass("govuk-body")
 
-        paragraphs.get(0).text mustBe messages(s"declaration.carrierAddress.body.1")
+        paragraphs.get(1).text mustBe messages(s"declaration.carrierAddress.body.1")
 
         val placeholder = messages(s"declaration.carrierAddress.body.2.link")
-        paragraphs.get(1).text mustBe messages(s"declaration.carrierAddress.body.2", placeholder)
+        paragraphs.get(2).text mustBe messages(s"declaration.carrierAddress.body.2", placeholder)
 
-        val link = paragraphs.get(1).child(0)
+        val link = paragraphs.get(2).child(0)
         link.tagName mustBe "a"
         link.attr("target") mustBe "_blank"
         link must haveHref("https://find-and-update.company-information.service.gov.uk")

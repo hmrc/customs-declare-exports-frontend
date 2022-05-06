@@ -17,10 +17,9 @@
 package controllers
 
 import base.ControllerWithoutFormSpec
-import controllers.actions.AuthAction
 import models.SignOutReason
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, verify, verifyNoInteractions, when}
+import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.concurrent.ScalaFutures
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
@@ -28,12 +27,11 @@ import views.html.{session_timed_out, user_signed_out}
 
 class SignOutControllerSpec extends ControllerWithoutFormSpec with ScalaFutures {
 
-  private val authAction = mock[AuthAction]
   private val mcc = stubMessagesControllerComponents()
   private val sessionTimedOutPage = mock[session_timed_out]
   private val userSignedOutPage = mock[user_signed_out]
 
-  private val controller = new SignOutController(mockAuthAction, mcc, sessionTimedOutPage, userSignedOutPage)
+  private val controller = new SignOutController(mcc, sessionTimedOutPage, userSignedOutPage)
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -43,7 +41,6 @@ class SignOutControllerSpec extends ControllerWithoutFormSpec with ScalaFutures 
   }
 
   override def afterEach(): Unit = {
-    reset(authAction)
     reset(sessionTimedOutPage)
     reset(userSignedOutPage)
 
@@ -55,16 +52,12 @@ class SignOutControllerSpec extends ControllerWithoutFormSpec with ScalaFutures 
     "provided with SessionTimeout parameter" should {
 
       "return 303 (SEE_OTHER) status" in {
-
         val result = controller.signOut(SignOutReason.SessionTimeout)(getRequest())
-
         status(result) mustBe SEE_OTHER
       }
 
       "redirect to /we-signed-you-out" in {
-
         val result = controller.signOut(SignOutReason.SessionTimeout)(getRequest())
-
         redirectLocation(result) mustBe Some(controllers.routes.SignOutController.sessionTimeoutSignedOut().url)
       }
     }
@@ -72,16 +65,12 @@ class SignOutControllerSpec extends ControllerWithoutFormSpec with ScalaFutures 
     "provided with UserAction parameter" should {
 
       "return 303 (SEE_OTHER) status" in {
-
         val result = controller.signOut(SignOutReason.UserAction)(getRequest())
-
         status(result) mustBe SEE_OTHER
       }
 
       "redirect to /you-have-signed-out" in {
-
         val result = controller.signOut(SignOutReason.UserAction)(getRequest())
-
         redirectLocation(result) mustBe Some(controllers.routes.SignOutController.userSignedOut().url)
       }
     }
@@ -89,52 +78,30 @@ class SignOutControllerSpec extends ControllerWithoutFormSpec with ScalaFutures 
 
   "SignOutController on sessionTimeoutSignedOut" should {
 
-    val controller = new SignOutController(authAction, mcc, sessionTimedOutPage, userSignedOutPage)
-
-    "not authenticate request" in {
-
-      controller.sessionTimeoutSignedOut()(getRequest()).futureValue
-
-      verifyNoInteractions(authAction)
-    }
+    val controller = new SignOutController(mcc, sessionTimedOutPage, userSignedOutPage)
 
     "call sessionTimedOutPage" in {
-
       controller.sessionTimeoutSignedOut()(getRequest()).futureValue
-
       verify(sessionTimedOutPage).apply()(any(), any())
     }
 
     "return 200 status" in {
-
       val result = controller.sessionTimeoutSignedOut()(getRequest())
-
       status(result) mustBe OK
     }
   }
 
   "SignOutController on userSignedOut" should {
 
-    val controller = new SignOutController(authAction, mcc, sessionTimedOutPage, userSignedOutPage)
-
-    "not authenticate request" in {
-
-      controller.userSignedOut()(getRequest()).futureValue
-
-      verifyNoInteractions(authAction)
-    }
+    val controller = new SignOutController(mcc, sessionTimedOutPage, userSignedOutPage)
 
     "call userSignedOutPage" in {
-
       controller.userSignedOut()(getRequest()).futureValue
-
       verify(userSignedOutPage).apply()(any(), any())
     }
 
     "return 200 status" in {
-
       val result = controller.userSignedOut()(getRequest())
-
       status(result) mustBe OK
     }
   }

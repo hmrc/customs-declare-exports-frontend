@@ -20,9 +20,9 @@ import base.JourneyTypeTestRunner
 import forms.common.DeclarationPageBaseSpec
 import forms.declaration.countries.Countries._
 
-class FirstRoutingCountryPageSpec extends DeclarationPageBaseSpec with JourneyTypeTestRunner {
+class RoutingCountryPageSpec extends DeclarationPageBaseSpec with JourneyTypeTestRunner {
 
-  "FirstRoutingCountryPage" when {
-    testTariffContentKeysNoSpecialisation(FirstRoutingCountryPage, "tariff.declaration.countryOfRouting")
+  "RoutingCountryPage" when {
+    testTariffContentKeysNoSpecialisation(RoutingCountryPage, "tariff.declaration.countryOfRouting")
   }
 }

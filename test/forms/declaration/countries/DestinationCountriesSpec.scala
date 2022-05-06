@@ -54,8 +54,7 @@ class DestinationCountriesSpec extends DeclarationPageBaseSpec with JourneyTypeT
   "Destination Countries" should {
     "contains object to represent every page and contain correct Id" in {
       DestinationCountryPage.id mustBe "destinationCountry"
-      FirstRoutingCountryPage.id mustBe "firstRoutingCountry"
-      NextRoutingCountryPage.id mustBe "routingCountry"
+      RoutingCountryPage.id mustBe "routingCountry"
     }
   }
 
@@ -75,14 +74,14 @@ class DestinationCountriesSpec extends DeclarationPageBaseSpec with JourneyTypeT
 
       s"check if the country is duplicated for ${request.declarationType}" in {
         val cachedCountries = Seq(Country(Some("PL")))
-        val result = Countries.form(NextRoutingCountryPage, cachedCountries).fillAndValidate(Country(Some("PL")))
+        val result = Countries.form(RoutingCountryPage, cachedCountries).fillAndValidate(Country(Some("PL")))
 
         result.errors mustBe Seq(FormError("countryCode", "declaration.routingCountries.duplication"))
       }
 
       s"validate if country limit is reached for ${request.declarationType}" in {
         val cachedCountries = Seq.fill(99)(Country(Some("PL")))
-        val result = Countries.form(NextRoutingCountryPage, cachedCountries).fillAndValidate(Country(Some("GB")))
+        val result = Countries.form(RoutingCountryPage, cachedCountries).fillAndValidate(Country(Some("GB")))
 
         result.errors mustBe Seq(FormError("countryCode", "declaration.routingCountries.limit"))
       }

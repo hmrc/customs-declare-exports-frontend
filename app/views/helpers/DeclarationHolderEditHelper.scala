@@ -27,19 +27,20 @@ import models.requests.JourneyRequest
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import play.twirl.api.{Html, HtmlFormat}
-import uk.gov.hmrc.govukfrontend.views.Aliases.Text
-import uk.gov.hmrc.govukfrontend.views.html.components.{GovukInsetText, GovukWarningText}
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
+import uk.gov.hmrc.govukfrontend.views.html.components.{GovukDetails, GovukInsetText, GovukWarningText}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.details.Details
 import uk.gov.hmrc.govukfrontend.views.viewmodels.insettext.InsetText
 import uk.gov.hmrc.govukfrontend.views.viewmodels.warningtext.WarningText
-import views.helpers.DeclarationHolderHelper._
+import views.helpers.DeclarationHolderEditHelper._
 import views.html.components.gds.{bulletList, link, numberedList, paragraphBody}
 
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class DeclarationHolderHelper @Inject()(
+class DeclarationHolderEditHelper @Inject()(
   bulletList: bulletList,
+  govukDetails: GovukDetails,
   govukInsetText: GovukInsetText,
   govukWarningText: GovukWarningText,
   link: link,
@@ -47,7 +48,7 @@ class DeclarationHolderHelper @Inject()(
   paragraphBody: paragraphBody
 ) {
 
-  def bodyForDeclarationHolderEditPage(appConfig: AppConfig)(implicit messages: Messages, request: JourneyRequest[_]): Option[Html] = {
+  def body(appConfig: AppConfig)(implicit messages: Messages, request: JourneyRequest[_]): Option[Html] = {
     val messageList = valuesToMatch(request.cacheModel) match {
       case (SUPPLEMENTARY, _, _, _)                               => listOfMessages("body.supplementary")
       case (SIMPLIFIED, Some(SIMPLIFIED_FRONTIER), Choice1007, _) => messagesWithLinkFor1007(appConfig, "simplified.arrived")
@@ -62,63 +63,10 @@ class DeclarationHolderHelper @Inject()(
     else bodyText(messageList, bodyId)
   }
 
-  private val key = "declaration.declarationHolderRequired"
-  private val bodyKey = "declaration.declarationHolderRequired.body"
-
-  def bodyForDeclarationHolderRequiredPage(implicit messages: Messages, request: JourneyRequest[_]): Html = {
-    val model = request.cacheModel
-    val body = (model.`type`, model.additionalDeclarationType, model.parties.authorisationProcedureCodeChoice) match {
-      case (STANDARD, Some(STANDARD_PRE_LODGED), Choice1040)   => List(paragraph(s"$bodyKey.standard.prelodged.1040"))
-      case (STANDARD, Some(STANDARD_PRE_LODGED), ChoiceOthers) => List(paragraph(s"$bodyKey.standard.prelodged.others"))
-
-      case (OCCASIONAL, Some(OCCASIONAL_PRE_LODGED), _) =>
-        List(paragraph(s"$bodyKey.occasional.1"), paragraph(s"$bodyKey.occasional.2"))
-
-      case (OCCASIONAL, Some(OCCASIONAL_FRONTIER), _) =>
-        val bullets = bulletList(List(row(s"$bodyKey.occasional.bullet.1"), row(s"$bodyKey.occasional.bullet.2")))
-        List(paragraph(s"$bodyKey.occasional.1"), paragraph(s"$bodyKey.occasional.2"), bullets)
-
-      case _ => List(paragraph(s"$bodyKey.default"))
-    }
-
-    HtmlFormat.fill(body)
-  }
-
-  def insetTextForDeclarationHolderRequiredPage(implicit messages: Messages, request: JourneyRequest[_]): Html = {
-    val model = request.cacheModel
-    (model.`type`, model.additionalDeclarationType, model.parties.authorisationProcedureCodeChoice) match {
-      case (STANDARD, Some(STANDARD_PRE_LODGED), Choice1040) => HtmlFormat.empty
-      case (OCCASIONAL, _, _)                                => HtmlFormat.empty
-
-      case _ =>
-        val content = HtmlContent(
-          new Html(
-            List(
-              paragraphBody(messages(s"$key.inset.para1")),
-              bulletList(List(Html(messages(s"$key.inset.bullet1.text")), Html(messages(s"$key.inset.bullet2.text")))),
-              paragraphBody(messages(s"$key.inset.para2"))
-            )
-          )
-        )
-
-        govukInsetText(InsetText(content = content))
-    }
-  }
-
-  def titleForDeclarationHolderRequiredPage(implicit messages: Messages, request: JourneyRequest[_]): String = {
-    val model = request.cacheModel
-    (model.`type`, model.additionalDeclarationType, model.parties.authorisationProcedureCodeChoice) match {
-      case (STANDARD, Some(STANDARD_PRE_LODGED), Choice1040) => messages(s"$key.title.standard.prelodged.1040")
-      case _                                                 => messages(s"$key.title")
-    }
-  }
-
-  case class arrivedComponents(warning: Option[Html], paragraph: Option[Html])
-
-  def componentsForArrived(implicit messages: Messages, request: JourneyRequest[_]): Option[arrivedComponents] =
+  def additionalBodyForArrivedDeclarationsOnly(implicit messages: Messages, request: JourneyRequest[_]): Html =
     if (isArrived(request.cacheModel.additionalDeclarationType))
-      Some(arrivedComponents(warningTextForArrivedDeclarations, bodyText(listOfMessages("body.arrived.paragraph"), warningBodyId)))
-    else None
+      new Html(List(warningTextForArrivedDeclarations, expandersForArrivedDeclarations))
+    else HtmlFormat.empty
 
   def hintForAuthorisationCode(implicit messages: Messages, request: JourneyRequest[_]): List[String] =
     valuesToMatch(request.cacheModel) match {
@@ -148,32 +96,40 @@ class DeclarationHolderHelper @Inject()(
     }
   }
 
-  private val insetKey = "declaration.declarationHolder.authCode.inset"
-
-  private def insetText(appendable: Html, key: String)(implicit messages: Messages): Option[Html] = {
-    val html = new Html(List(paragraphBody(messages(s"$insetKey.$key.title"), "govuk-label--s"), appendable))
-    Some(govukInsetText(InsetText(id = Some(insetTextId), content = HtmlContent(html))))
-  }
+  private val prefix = "declaration.declarationHolder"
 
   private def bodyText(messageList: List[String], id: String): Option[Html] =
     Some(HtmlFormat.fill(messageList.map(message => paragraphBody(message, s"govuk-body", Some(id)))))
 
+  private def expander(summary: String, content: String)(implicit messages: Messages): Html =
+    govukDetails(Details(summary = Text(messages(summary)), content = HtmlContent(messages(content))))
+
+  private def expandersForArrivedDeclarations(implicit messages: Messages): Html = {
+    val key = "body.arrived.expander"
+    new Html(List(expander(s"$prefix.$key.cse.title", s"$prefix.$key.cse.text"), expander(s"$prefix.$key.mib.title", s"$prefix.$key.mib.text")))
+  }
+
+  private def insetText(appendable: Html, key: String)(implicit messages: Messages): Option[Html] = {
+    val html = new Html(List(paragraphBody(messages(s"$prefix.authCode.inset.$key.title"), "govuk-label--s"), appendable))
+    Some(govukInsetText(InsetText(id = Some(insetTextId), content = HtmlContent(html))))
+  }
+
   private def insetTextForExciseRemovals(appConfig: AppConfig)(implicit messages: Messages): Option[Html] = {
     val call1 = Call("GET", appConfig.permanentExportOrDispatch.authHolder)
-    val link1 = link(messages(s"$insetKey.excise.bullet1.link"), call1, "_blank")
+    val link1 = link(messages(s"$prefix.authCode.inset.excise.bullet1.link"), call1, "_blank")
 
     val call2 = Call("GET", appConfig.permanentExportOrDispatch.conditions)
-    val link2 = link(messages(s"$insetKey.excise.bullet2.link"), call2, "_blank")
+    val link2 = link(messages(s"$prefix.authCode.inset.excise.bullet2.link"), call2, "_blank")
 
     val call3 = Call("GET", appConfig.permanentExportOrDispatch.documents)
-    val link3 = link(messages(s"$insetKey.excise.bullet3.link"), call3, "_blank")
+    val link3 = link(messages(s"$prefix.authCode.inset.excise.bullet3.link"), call3, "_blank")
 
     insetText(
       bulletList(
         List(
-          Html(messages(s"$insetKey.excise.bullet1", link1)),
-          Html(messages(s"$insetKey.excise.bullet2", link2)),
-          Html(messages(s"$insetKey.excise.bullet3", link3))
+          Html(messages(s"$prefix.authCode.inset.excise.bullet1", link1)),
+          Html(messages(s"$prefix.authCode.inset.excise.bullet2", link2)),
+          Html(messages(s"$prefix.authCode.inset.excise.bullet3", link3))
         )
       ),
       "excise"
@@ -182,64 +138,58 @@ class DeclarationHolderHelper @Inject()(
 
   private def insetTextForNonStandardProcedures(appConfig: AppConfig)(implicit messages: Messages): Option[Html] = {
     val call1 = Call("GET", appConfig.previousProcedureCodes)
-    val link1 = link(messages(s"$insetKey.special.bullet1.link"), call1, "_blank")
+    val link1 = link(messages(s"$prefix.authCode.inset.special.bullet1.link"), call1, "_blank")
 
     insetText(
       numberedList(
         List(
-          Html(messages(s"$insetKey.special.bullet1", link1)),
-          Html(messages(s"$insetKey.special.bullet2")),
-          Html(messages(s"$insetKey.special.bullet3")),
-          Html(messages(s"$insetKey.special.bullet4"))
+          Html(messages(s"$prefix.authCode.inset.special.bullet1", link1)),
+          Html(messages(s"$prefix.authCode.inset.special.bullet2")),
+          Html(messages(s"$prefix.authCode.inset.special.bullet3")),
+          Html(messages(s"$prefix.authCode.inset.special.bullet4"))
         )
       ),
       "special"
     )
   }
 
-  private def warningTextForArrivedDeclarations()(implicit messages: Messages): Option[Html] =
-    Some(
-      govukWarningText(
-        WarningText(iconFallbackText = messages("site.warning"), content = Text(messages("declaration.declarationHolder.body.arrived.warning")))
-      )
-    )
-
   private def listOfMessages(key: String)(implicit messages: Messages): List[String] =
-    List(messages(s"declaration.declarationHolder.$key"))
+    List(messages(s"$prefix.$key"))
 
   private def messagesWithLinkFor1007(appConfig: AppConfig, key: String)(implicit messages: Messages): List[String] =
     List(
       messages(
-        s"declaration.declarationHolder.body.$key.1007",
-        link(messages("declaration.declarationHolder.body.1007.link"), Call("GET", appConfig.permanentExportOrDispatch.section), "_blank")
+        s"$prefix.body.$key.1007",
+        link(messages(s"$prefix.body.1007.link"), Call("GET", appConfig.permanentExportOrDispatch.section), "_blank")
       )
     )
 
+  private val eoriKey = s"$prefix.eori"
+
   private def paragraphForEoriRadiosWhenEXRR(parties: Parties)(implicit messages: Messages): Html =
     parties.declarantIsExporter.fold {
-      paragraph(s"$eoriKey.body.exrr.v2", Some(exrrHelpTextId))
+      paragraph(s"$eoriKey.body.exrr.v2", exrrHelpTextId)
     } { declarantIsExporter =>
-      if (declarantIsExporter.isExporter) paragraph(s"$eoriKey.body.exrr.v1", Some(exrrHelpTextId))
+      if (declarantIsExporter.isExporter) paragraph(s"$eoriKey.body.exrr.v1", exrrHelpTextId)
       else {
         val version = if (parties.exporterDetails.flatMap(_.details.eori).isDefined) "v2" else "v3"
-        paragraph(s"$eoriKey.body.exrr.$version", Some(exrrHelpTextId))
+        paragraph(s"$eoriKey.body.exrr.$version", exrrHelpTextId)
       }
     }
 
-  private def paragraph(key: String, id: Option[String] = None)(implicit messages: Messages): Html = paragraphBody(message = messages(key), id = id)
+  private def paragraph(key: String, id: String)(implicit messages: Messages): Html =
+    paragraphBody(message = messages(key), id = Some(id))
 
-  private def row(key: String)(implicit messages: Messages): Html = Html(messages(key))
-
-  private val eoriKey = "declaration.declarationHolder.eori"
+  private def warningTextForArrivedDeclarations(implicit messages: Messages): Html =
+    govukWarningText(WarningText(iconFallbackText = messages("site.warning"), content = Text(messages(s"$prefix.body.arrived.warning"))))
 }
 
-object DeclarationHolderHelper {
+object DeclarationHolderEditHelper {
 
   def valuesToMatch(model: ExportsDeclaration) =
     (model.`type`, model.additionalDeclarationType, model.parties.authorisationProcedureCodeChoice, model.parties.isEntryIntoDeclarantsRecords)
 
   val bodyId = "text-under-h1"
-  val warningBodyId = "text-for-frontier"
   val insetTextId = "inset-text"
   val exrrHelpTextId = "EXRR-help"
 }

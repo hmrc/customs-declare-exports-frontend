@@ -104,7 +104,7 @@ class AdditionalDeclarationTypeViewSpec extends UnitViewSpec with CommonMessages
           val additionalTypes = additionalTypesForType(declarationType)
 
           val radioItem1 = radioItems.first
-          radioItem1.children.size mustBe 3
+          radioItem1.children.size mustBe 2
 
           val radio1 = radioItem1.child(0)
           radio1.tagName mustBe "input"
@@ -117,12 +117,8 @@ class AdditionalDeclarationTypeViewSpec extends UnitViewSpec with CommonMessages
           labelForRadio1.attr("for") mustBe "arrived"
           labelForRadio1.text mustBe messages("declaration.declarationType.radio.arrived", additionalTypes.head.toString)
 
-          val hintForRadio1 = radioItem1.child(2)
-          assert(hintForRadio1.hasClass("govuk-radios__hint"))
-          hintForRadio1.text mustBe messages("declaration.declarationType.radio.arrived.hint")
-
           val radioItem2 = radioItems.last
-          radioItem2.children.size mustBe 3
+          radioItem2.children.size mustBe 2
 
           val radio2 = radioItem2.child(0)
           radio1.tagName mustBe "input"
@@ -135,9 +131,6 @@ class AdditionalDeclarationTypeViewSpec extends UnitViewSpec with CommonMessages
           labelForRadio2.attr("for") mustBe "prelodged"
           labelForRadio2.text mustBe messages("declaration.declarationType.radio.prelodged", additionalTypes.last.toString)
 
-          val hintForRadio2 = radioItem2.child(2)
-          assert(hintForRadio2.hasClass("govuk-radios__hint"))
-          hintForRadio2.text mustBe messages("declaration.declarationType.radio.prelodged.hint")
         }
 
         "display the expected notification banner" in {
@@ -163,17 +156,12 @@ class AdditionalDeclarationTypeViewSpec extends UnitViewSpec with CommonMessages
           title mustBe messages("declaration.declarationType.expander.title")
 
           val paragraphs = expander.child(1).getElementsByClass("govuk-body")
-          paragraphs.size mustBe 2
+          paragraphs.size mustBe 3
 
           val firstParagraph = paragraphs.get(0)
-          firstParagraph.text mustBe messages(
-            "declaration.declarationType.expander.paragraph.1",
-            messages("declaration.declarationType.expander.paragraph.1.link")
-          )
-          val link = firstParagraph.getElementsByClass("govuk-link").first
-          link must haveHref(appConfig.guidance.moveGoodsThroughPortsUsingGVMS)
-
+          firstParagraph.text mustBe messages("declaration.declarationType.expander.paragraph.1")
           paragraphs.get(1).text mustBe messages("declaration.declarationType.expander.paragraph.2")
+          paragraphs.get(2).text mustBe messages("declaration.declarationType.expander.paragraph.3")
         }
       }
     }

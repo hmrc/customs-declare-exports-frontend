@@ -43,7 +43,7 @@ class ErrorHandler @Inject()(override val messagesApi: MessagesApi, errorPage: e
 
   override def resolveError(rh: RequestHeader, ex: Throwable): Result = ex match {
     case _: NoActiveSession        => Results.Redirect(appConfig.loginUrl, Map("continue" -> Seq(appConfig.loginContinueUrl)))
-    case _: InsufficientEnrolments => Results.SeeOther(routes.UnauthorisedController.onPageLoad.url)
+    case _: InsufficientEnrolments => Results.SeeOther(routes.UnauthorisedController.onPageLoad().url)
     case _                         => super.resolveError(rh, ex)
   }
 

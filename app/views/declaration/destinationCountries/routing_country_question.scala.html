@@ -91,7 +91,7 @@
             errorMessage = form("answer").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
         ))
 
-        @tariffExpander(FirstRoutingCountryPage, request.declarationType)(messages, appConfig)
+        @tariffExpander(RoutingCountryPage, request.declarationType)(messages, appConfig)
 
         @saveButtons()
     }

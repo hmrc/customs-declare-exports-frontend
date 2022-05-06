@@ -17,14 +17,14 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
+import controllers.declaration.routes.NatureOfTransactionController
 import controllers.navigation.Navigator
 import forms.declaration.TotalPackageQuantity
-import models.DeclarationType.DeclarationType
 import models.declaration.InvoiceAndPackageTotals
 import models.requests.JourneyRequest
 import models.{DeclarationType, ExportsDeclaration, Mode}
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.total_package_quantity
@@ -56,15 +56,9 @@ class TotalPackageQuantityController @Inject()(
       .bindFromRequest
       .fold(
         formWithErrors => Future.successful(BadRequest(totalPackageQuantity(mode, formWithErrors))),
-        updateCache(_).map(_ => navigator.continueTo(mode, nextPage(request.declarationType)))
+        updateCache(_).map(_ => navigator.continueTo(mode, NatureOfTransactionController.displayPage))
       )
   }
-
-  private def nextPage(declarationType: DeclarationType): Mode => Call =
-    declarationType match {
-      case DeclarationType.SUPPLEMENTARY | DeclarationType.STANDARD | DeclarationType.CLEARANCE =>
-        controllers.declaration.routes.NatureOfTransactionController.displayPage
-    }
 
   private def updateCache(totalPackage: TotalPackageQuantity)(implicit request: JourneyRequest[_]): Future[ExportsDeclaration] =
     if (totalPackage.totalPackage.isEmpty && request.cacheModel.totalNumberOfItems.isEmpty) Future.successful(request.cacheModel)

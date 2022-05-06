@@ -59,7 +59,7 @@ class AdditionalProcedureCodesController @Inject()(
     val availableAdditionalProcedureCodes = getAvailableAdditionalProcedureCodes(maybeCachedProcedureCode)
 
     (maybeCachedProcedureCode, availableAdditionalProcedureCodes) match {
-      case (Some(procedureCode), Some(validAdditionalProcedureCodes)) if !validAdditionalProcedureCodes.isEmpty =>
+      case (Some(procedureCode), Some(validAdditionalProcedureCodes)) if validAdditionalProcedureCodes.nonEmpty =>
         val frm = form().withSubmissionErrors()
         Ok(additionalProcedureCodesPage(mode, itemId, frm, procedureCode, validAdditionalProcedureCodes, cachedData.additionalProcedureCodes))
       case _ =>
@@ -149,7 +149,7 @@ class AdditionalProcedureCodesController @Inject()(
         else
           errorHandler(Seq((additionalProcedureCodeKey, "declaration.additionalProcedureCodes.error.empty")))
 
-      case (Some(NO_APC_APPLIES_CODE), _) if cachedAdditionalProcedureCodes.length != 0 =>
+      case (Some(NO_APC_APPLIES_CODE), _) if cachedAdditionalProcedureCodes.nonEmpty =>
         errorHandler(Seq((additionalProcedureCodeKey, "declaration.additionalProcedureCodes.error.tripleZero.notFirstCode")))
 
       case (Some(_), _) if cachedAdditionalProcedureCodes.contains(NO_APC_APPLIES_CODE) =>

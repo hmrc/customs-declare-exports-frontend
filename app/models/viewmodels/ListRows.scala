@@ -14,15 +14,6 @@
  * limitations under the License.
  */
 
-package forms.declaration.countries
+package models.viewmodels
 
-import base.JourneyTypeTestRunner
-import forms.common.DeclarationPageBaseSpec
-import forms.declaration.countries.Countries._
-
-class NextRoutingCountryPageSpec extends DeclarationPageBaseSpec with JourneyTypeTestRunner {
-
-  "NextRoutingCountryPage" when {
-    testTariffContentKeysNoSpecialisation(NextRoutingCountryPage, "tariff.declaration.countryOfRouting")
-  }
-}
+case class ListRows(rowLabels: Seq[String], msgKey: String, removeKeys: Option[Seq[String]] = None)

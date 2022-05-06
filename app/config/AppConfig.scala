@@ -48,6 +48,8 @@ class AppConfig @Inject()(
   val loginUrl = loadConfig("urls.login")
   val loginContinueUrl = loadConfig("urls.loginContinue")
 
+  val cdsUploadDocs = loadConfig("urls.cdsUploadDocs")
+
   val commodityCodeTariffPageUrl = loadConfig("urls.commodityCodeTariffPage")
   val suppUnitsCommodityCodeTariffPageUrl = loadConfig("urls.suppUnitsCommodityCodeTariffPage")
   val commodityCodesUrl = loadConfig("urls.commodityCodes")

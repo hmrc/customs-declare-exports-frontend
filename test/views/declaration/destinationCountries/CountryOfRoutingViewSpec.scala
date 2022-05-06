@@ -19,7 +19,7 @@ package views.declaration.destinationCountries
 import base.Injector
 import connectors.CodeListConnector
 import controllers.declaration.routes
-import forms.declaration.countries.Countries.{FirstRoutingCountryPage, NextRoutingCountryPage}
+import forms.declaration.countries.Countries.RoutingCountryPage
 import forms.declaration.countries.{Countries, Country}
 import models.codes.{Country => ModelCountry}
 import models.DeclarationType.{OCCASIONAL, SIMPLIFIED, STANDARD}
@@ -54,28 +54,21 @@ class CountryOfRoutingViewSpec extends UnitViewSpec with Stubs with ExportsTestD
 
   private val countryOfRoutingPage = instanceOf[country_of_routing]
 
-  private def firstRoutingForm(request: JourneyRequest[_]): Form[Country] =
-    Countries.form(FirstRoutingCountryPage)(request, messages(request), mockCodeListConnector)
+  private def routingForm(request: JourneyRequest[_]): Form[Country] =
+    Countries.form(RoutingCountryPage)(request, messages(request), mockCodeListConnector)
 
-  private def nextRoutingForm(request: JourneyRequest[_]): Form[Country] =
-    Countries.form(NextRoutingCountryPage)(request, messages(request), mockCodeListConnector)
-
-  private def firstRoutingView(implicit request: JourneyRequest[_]): Html =
-    countryOfRoutingPage(Mode.Normal, firstRoutingForm(request), FirstRoutingCountryPage)(request, messages)
-
-  private def nextRoutingView(implicit request: JourneyRequest[_]): Html =
-    countryOfRoutingPage(Mode.Normal, nextRoutingForm(request), NextRoutingCountryPage)(request, messages)
+  private def routingView(implicit request: JourneyRequest[_]): Html =
+    countryOfRoutingPage(Mode.Normal, routingForm(request), "Somewhere", Seq.empty[ModelCountry])(request, messages)
 
   "Routing Country view" should {
 
     "have defined translation for used labels" in {
 
       val messages = realMessagesApi.preferred(request)
-      messages must haveTranslationFor("declaration.routingCountry.title")
-      messages must haveTranslationFor("declaration.routingCountry.question")
+      messages must haveTranslationFor("declaration.routingCountries.title")
       messages must haveTranslationFor("declaration.routingCountry.empty")
-      messages must haveTranslationFor("declaration.firstRoutingCountry.question")
-      messages must haveTranslationFor("declaration.firstRoutingCountry.empty")
+      messages must haveTranslationFor("declaration.routingCountries.body.p1")
+      messages must haveTranslationFor("declaration.routingCountries.body.p2")
       messages must haveTranslationFor("tariff.expander.title.clearance")
       messages must haveTranslationFor("tariff.declaration.countryOfRouting.common.text")
     }
@@ -86,12 +79,12 @@ class CountryOfRoutingViewSpec extends UnitViewSpec with Stubs with ExportsTestD
 
       s"have page heading for ${request.declarationType}" in {
 
-        firstRoutingView(request).getElementById("section-header").text() must include(messages("declaration.section.3"))
+        routingView(request).getElementById("section-header").text() must include(messages("declaration.section.3"))
       }
 
       s"display back button that links to 'Country of Routing question' page  for ${request.declarationType}" in {
 
-        val backButton = firstRoutingView(request).getElementById("back-link")
+        val backButton = routingView(request).getElementById("back-link")
 
         backButton.text() mustBe messages("site.back")
         backButton must haveHref(routes.RoutingCountriesController.displayRoutingQuestion())
@@ -99,27 +92,12 @@ class CountryOfRoutingViewSpec extends UnitViewSpec with Stubs with ExportsTestD
 
       s"display 'Save and continue' button for ${request.declarationType}" in {
 
-        firstRoutingView(request).getElementById("submit").text() mustBe messages("site.save_and_continue")
+        routingView(request).getElementById("submit").text() mustBe messages("site.save_and_continue")
       }
 
       s"display 'Save and return' button for ${request.declarationType}" in {
 
-        firstRoutingView(request).getElementById("submit_and_return").text() mustBe messages("site.save_and_come_back_later")
-      }
-    }
-
-    "First Routing Country view" should {
-      "have page question" in {
-
-        firstRoutingView(request).getElementsByTag("h1").text() mustBe messages("declaration.firstRoutingCountry.question")
-      }
-    }
-
-    "Next Routing Country view" should {
-
-      "have page question" in {
-
-        nextRoutingView(request).getElementsByTag("h1").text() mustBe messages("declaration.routingCountry.question")
+        routingView(request).getElementById("submit_and_return").text() mustBe messages("site.save_and_come_back_later")
       }
     }
   }

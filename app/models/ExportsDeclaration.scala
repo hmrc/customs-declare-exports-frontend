@@ -94,7 +94,7 @@ case class ExportsDeclaration(
 
   def containers: Seq[Container] = transport.containers.getOrElse(Seq.empty)
 
-  def containRoutingCountries(): Boolean = locations.routingCountries.nonEmpty
+  def containRoutingCountries: Boolean = locations.routingCountries.nonEmpty
 
   def declarationHolders: Seq[DeclarationHolder] = parties.declarationHoldersData.map(_.holders).getOrElse(Seq.empty)
 
@@ -161,8 +161,7 @@ case class ExportsDeclaration(
         meansOfTransportOnDepartureType = departure.meansOfTransportOnDepartureType,
         meansOfTransportOnDepartureIDNumber = departure.meansOfTransportOnDepartureIDNumber,
         meansOfTransportCrossingTheBorderType = None,
-        meansOfTransportCrossingTheBorderIDNumber = None,
-        transportCrossingTheBorderNationality = None
+        meansOfTransportCrossingTheBorderIDNumber = None
       )
     )
 

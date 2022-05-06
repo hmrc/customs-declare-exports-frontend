@@ -1,8 +1,8 @@
 [
   {
-    "code": "ACP",
-    "en": "Authorised issuer to establish the proof of the customs status of Union goods",
-    "cy": "Authorised issuer to establish the proof of the customs status of Union goods"
+    "code": "EXRR",
+    "en": "Submission of an arrived export declaration for RoRo movements (where CSE Authorisation is not used)",
+    "cy": "Submission of an arrived export declaration for RoRo movements (where CSE Authorisation is not used)"
   },
   {
     "code": "AEOC",
@@ -25,14 +25,9 @@
     "cy": "Approved Exporter"
   },
   {
-    "code": "AWB",
-    "en": "Authorised Weigher of Bananas",
-    "cy": "Authorised Weigher of Bananas"
-  },
-  {
-    "code": "CCL",
-    "en": "Authorisation for centralised clearance",
-    "cy": "Authorisation for centralised clearance"
+    "code": "CGU",
+    "en": "Customs comprehensive guarantee",
+    "cy": "Customs comprehensive guarantee"
   },
   {
     "code": "CSE",
@@ -40,99 +35,9 @@
     "cy": "Customs Supervised Exports"
   },
   {
-    "code": "CVA",
-    "en": "Simplification of the determination of amounts being part of the customs value of goods",
-    "cy": "Simplification of the determination of amounts being part of the customs value of goods"
-  },
-  {
-    "code": "DEP",
-    "en": "Designated Export Place",
-    "cy": "Designated Export Place"
-  },
-  {
-    "code": "DPO",
-    "en": "Deferment of payment authorisation",
-    "cy": "Deferment of payment authorisation"
-  },
-  {
-    "code": "EIR",
-    "en": "Authorisation for the use of customs declaration through an entry of data in the declarant’s records (EIDR)",
-    "cy": "Authorisation for the use of customs declaration through an entry of data in the declarant’s records (EIDR)"
-  },
-  {
-    "code": "EORI",
-    "en": "Economic Operator Registration and Identification",
-    "cy": "Economic Operator Registration and Identification"
-  },
-  {
-    "code": "ETD",
-    "en": "Electronic Transport Document (authorised for use as a customs declaration)",
-    "cy": "Electronic Transport Document (authorised for use as a customs declaration)"
-  },
-  {
-    "code": "EXRR",
-    "en": "Submission of an arrived export declaration for RoRo movements (where CSE Authorisation is not being used)",
-    "cy": "Submission of an arrived export declaration for RoRo movements (where CSE Authorisation is not being used)"
-  },
-  {
-    "code": "FZ",
-    "en": "Free Zone (only for the use of the Isle of Man)",
-    "cy": "Free Zone (only for the use of the Isle of Man)"
-  },
-  {
-    "code": "GGA",
-    "en": "General Guarantee Account",
-    "cy": "General Guarantee Account"
-  },
-  {
-    "code": "GVS",
-    "en": "General Valuation Statement",
-    "cy": "General Valuation Statement"
-  },
-  {
-    "code": "MOU",
-    "en": "Memorandum of Understanding (approved exporters only)",
-    "cy": "Memorandum of Understanding (approved exporters only)"
-  },
-  {
-    "code": "REX",
-    "en": "Registered Exporter",
-    "cy": "Registered Exporter"
-  },
-  {
-    "code": "RSS",
-    "en": "Regular Shipping Services authorisation",
-    "cy": "Regular Shipping Services authorisation"
-  },
-  {
-    "code": "SAS",
-    "en": "Authorisation for self-assessment",
-    "cy": "Authorisation for self-assessment"
-  },
-  {
-    "code": "SASP",
-    "en": "Single Authorisation for Simplified Procedures",
-    "cy": "Single Authorisation for Simplified Procedures"
-  },
-  {
-    "code": "SDE",
-    "en": "Simplified Declaration Procedure authorisation (SDP)",
-    "cy": "Simplified Declaration Procedure authorisation (SDP)"
-  },
-  {
-    "code": "SSE",
-    "en": "Authorisation for the use of seals of a special type",
-    "cy": "Authorisation for the use of seals of a special type"
-  },
-  {
-    "code": "UKCS",
-    "en": "UK Continental Shelf",
-    "cy": "UK Continental Shelf"
-  },
-  {
-    "code": "CGU",
-    "en": "Customs comprehensive guarantee",
-    "cy": "Customs comprehensive guarantee"
+    "code": "FP",
+    "en": "Freeports Special Procedure",
+    "cy": "Freeports Special Procedure"
   },
   {
     "code": "CW1",
@@ -141,8 +46,8 @@
   },
   {
     "code": "CW2",
-    "en": "Operation of storage facilities for the customs warehousing of goods in a public customs warehouse type II.",
-    "cy": "Operation of storage facilities for the customs warehousing of goods in a public customs warehouse type II."
+    "en": "Operation of storage facilities for the customs warehousing of goods in a public customs warehouse type II",
+    "cy": "Operation of storage facilities for the customs warehousing of goods in a public customs warehouse type II"
   },
   {
     "code": "CWP",
@@ -150,14 +55,14 @@
     "cy": "Operation of storage facilities for the customs warehousing of goods in a private customs warehouse"
   },
   {
-    "code": "EPSS",
-    "en": "Excise Payment Security System",
-    "cy": "Excise Payment Security System"
+    "code": "SDE",
+    "en": "Simplified Declaration Procedure authorisation (SDP)",
+    "cy": "Simplified Declaration Procedure authorisation (SDP)"
   },
   {
-    "code": "EUS",
-    "en": "End Use authorisation",
-    "cy": "End Use authorisation"
+    "code": "EIR",
+    "en": "Authorisation for the use of customs declaration through an entry of data in the declarant’s records (EIDR)",
+    "cy": "Authorisation for the use of customs declaration through an entry of data in the declarant’s records (EIDR)"
   },
   {
     "code": "EXEE",
@@ -176,8 +81,28 @@
   },
   {
     "code": "EXWH",
-    "en": "Excise Warehouse - Hydrocarbon Oils",
-    "cy": "Excise Warehouse - Hydrocarbon Oils"
+    "en": "Excise Warehouse – Hydrocarbon Oils",
+    "cy": "Excise Warehouse – Hydrocarbon Oils"
+  },
+  {
+    "code": "FZ",
+    "en": "Free Zone (only for the use of the Isle of Man)",
+    "cy": "Free Zone (only for the use of the Isle of Man)"
+  },
+  {
+    "code": "MOU",
+    "en": "Memorandum of Understanding (approved exporters only)",
+    "cy": "Memorandum of Understanding (approved exporters only)"
+  },
+  {
+    "code": "REX",
+    "en": "Registered Exporter",
+    "cy": "Registered Exporter"
+  },
+  {
+    "code": "EUS",
+    "en": "End Use authorisation",
+    "cy": "End Use authorisation"
   },
   {
     "code": "IPO",
@@ -196,8 +121,8 @@
   },
   {
     "code": "TEAH",
-    "en": "Temporary Admission authorisation - Auction Houses (no guarantee for VAT required)",
-    "cy": "Temporary Admission authorisation - Auction Houses (no guarantee for VAT required)"
+    "en": "Temporary Admission authorisation – Auction Houses (no guarantee for VAT required)",
+    "cy": "Temporary Admission authorisation – Auction Houses (no guarantee for VAT required)"
   },
   {
     "code": "TST",
@@ -206,27 +131,137 @@
   },
   {
     "code": "ACE",
-    "en": "Authorised consignee for Union transit",
-    "cy": "Authorised consignee for Union transit"
+    "en": "Transit authorisation: Authorised consignee for Union transit",
+    "cy": "Transit authorisation: Authorised consignee for Union transit"
   },
   {
     "code": "ACR",
-    "en": "Authorised consignor for Union transit",
-    "cy": "Authorised consignor for Union transit"
+    "en": "Transit authorisation: Authorised consignor for Union transit",
+    "cy": "Transit authorisation: Authorised consignor for Union transit"
   },
   {
     "code": "ACT",
-    "en": "Authorised consignee for TIR procedure",
-    "cy": "Authorised consignee for TIR procedure"
+    "en": "Transit authorisation: Authorised consignee for TIR procedure",
+    "cy": "Transit authorisation: Authorised consignee for TIR procedure"
   },
   {
     "code": "TRD",
-    "en": "Authorisation to use transit declaration with a reduced dataset",
-    "cy": "Authorisation to use transit declaration with a reduced dataset"
+    "en": "Transit authorisation: Authorisation to use transit declaration with a reduced dataset",
+    "cy": "Transit authorisation: Authorisation to use transit declaration with a reduced dataset"
   },
   {
-    "code": "FP",
-    "en": "Freeports Special Procedure",
-    "cy": "Freeports Special Procedure"
+    "code": "ACP",
+    "en": "Authorised issuer to establish the proof of the customs status of Union goods",
+    "cy": "Authorised issuer to establish the proof of the customs status of Union goods"
+  },
+  {
+    "code": "AWB",
+    "en": "Authorised Weigher of Bananas",
+    "cy": "Authorised Weigher of Bananas"
+  },
+  {
+    "code": "BOI",
+    "en": "Binding Origin Information",
+    "cy": "Binding Origin Information"
+  },
+  {
+    "code": "BTI",
+    "en": "Binding Tariff Information",
+    "cy": "Binding Tariff Information"
+  },
+  {
+    "code": "CCL",
+    "en": "Authorisation for centralised clearance",
+    "cy": "Authorisation for centralised clearance"
+  },
+  {
+    "code": "CSDR",
+    "en": "Community System of Duty Reliefs",
+    "cy": "Community System of Duty Reliefs"
+  },
+  {
+    "code": "CVA",
+    "en": "Simplification of the determination of amounts being part of the customs value of goods",
+    "cy": "Simplification of the determination of amounts being part of the customs value of goods"
+  },
+  {
+    "code": "DEP",
+    "en": "Designated Export Place",
+    "cy": "Designated Export Place"
+  },
+  {
+    "code": "DPO",
+    "en": "Deferment of payment authorisation",
+    "cy": "Deferment of payment authorisation"
+  },
+  {
+    "code": "EPSS",
+    "en": "Excise Payment Security System",
+    "cy": "Excise Payment Security System"
+  },
+  {
+    "code": "ETD",
+    "en": "Electronic Transport Document (authorised for use as a customs declaration)",
+    "cy": "Electronic Transport Document (authorised for use as a customs declaration)"
+  },
+  {
+    "code": "FAS",
+    "en": "Flexible Accounting System",
+    "cy": "Flexible Accounting System"
+  },
+  {
+    "code": "GGA",
+    "en": "General Guarantee Account",
+    "cy": "General Guarantee Account"
+  },
+  {
+    "code": "GVS",
+    "en": "General Valuation Statement",
+    "cy": "General Valuation Statement"
+  },
+  {
+    "code": "REM",
+    "en": "Remission of the amounts of import or export duty",
+    "cy": "Remission of the amounts of import or export duty"
+  },
+  {
+    "code": "REP",
+    "en": "Repayment of the amounts of import or export duty",
+    "cy": "Repayment of the amounts of import or export duty"
+  },
+  {
+    "code": "RSS",
+    "en": "Regular Shipping Services authorisation",
+    "cy": "Regular Shipping Services authorisation"
+  },
+  {
+    "code": "SAS",
+    "en": "Authorisation for self-assessment",
+    "cy": "Authorisation for self-assessment"
+  },
+  {
+    "code": "SASP",
+    "en": "Single Authorisation for Simplified Procedures",
+    "cy": "Single Authorisation for Simplified Procedures"
+  },
+  {
+    "code": "SIVA",
+    "en": "Simplified Import VAT Accounting",
+    "cy": "Simplified Import VAT Accounting"
+  },
+  {
+    "code": "SSE",
+    "en": "Authorisation for the use of seals of a special type",
+    "cy": "Authorisation for the use of seals of a special type"
+  },
+  {
+    "code": "UKCS",
+    "en": "UK Continental Shelf",
+    "cy": "UK Continental Shelf"
+  },
+  {
+    "code": "MIB",
+    "en": "Merchandise in Baggage",
+    "cy": "Merchandise in Baggage"
   }
 ]
