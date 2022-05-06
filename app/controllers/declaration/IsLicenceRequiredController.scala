@@ -79,7 +79,7 @@ class IsLicenceRequiredController @Inject()(
 
   private def nextPage(yesNoAnswer: YesNoAnswer, itemId: String)(implicit request: JourneyRequest[AnyContent]): Mode => Call =
     yesNoAnswer.answer match {
-      case _ if request.cacheModel.additionalDocumentsIfAny(itemId).nonEmpty =>
+      case _ if request.cacheModel.listOfAdditionalDocuments(itemId).nonEmpty =>
         AdditionalDocumentsController.displayPage(_, itemId)
 
       case YesNoAnswers.yes =>

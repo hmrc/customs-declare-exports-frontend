@@ -80,7 +80,7 @@ class AdditionalDocumentRemoveController @Inject()(
   private def removeAdditionalDocument(itemId: String, itemToRemove: AdditionalDocument)(
     implicit request: JourneyRequest[AnyContent]
   ): Future[ExportsDeclaration] = {
-    val additionalDocuments = request.cacheModel.additionalDocuments(itemId)
+    val additionalDocuments = request.cacheModel.additionalDocumentsInformation(itemId)
     val documents = remove(additionalDocuments.documents, itemToRemove.equals(_: AdditionalDocument))
     val updatedDocumentsData =
       additionalDocuments.copy(isRequired = if (documents.nonEmpty) additionalDocuments.isRequired else None, documents = documents)
