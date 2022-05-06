@@ -147,14 +147,31 @@ class IsLicenceRequiredControllerSpec extends ControllerSpec with OptionValues {
         }
 
         "documents have not been added" when {
-          "user submits valid Yes answer" in {
+          "user submits valid Yes answer" when {
+            "auth code requires docs" in {
 
-            withNewCaching(declaration)
+              val declarationWithAuthCode = aDeclaration(
+                withItem(anItem(withItemId(itemId), withCommodityDetails(commodityDetails))),
+                withDeclarationHolders(authorisationTypeCode = Some(AuthorizationTypeCodes.codesRequiringDocumentation.head))
+              )
 
-            val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(Seq("yesNo" -> "Yes"): _*))
-            await(result) mustBe aRedirectToTheNextPage
-            thePageNavigatedTo mustBe routes.AdditionalDocumentAddController.displayPage(Mode.Normal, itemId)
+              withNewCaching(declarationWithAuthCode)
 
+              val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(Seq("yesNo" -> "Yes"): _*))
+              await(result) mustBe aRedirectToTheNextPage
+              thePageNavigatedTo mustBe routes.AdditionalDocumentAddController.displayPage(Mode.Normal, itemId)
+
+            }
+
+            "auth code does not require docs" in {
+
+              withNewCaching(declaration)
+
+              val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(Seq("yesNo" -> "Yes"): _*))
+              await(result) mustBe aRedirectToTheNextPage
+              thePageNavigatedTo mustBe routes.AdditionalDocumentAddController.displayPage(Mode.Normal, itemId)
+
+            }
           }
 
           "user submits valid No answer" when {
