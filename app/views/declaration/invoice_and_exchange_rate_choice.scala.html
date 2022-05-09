@@ -32,7 +32,7 @@
     heading: heading,
     paragraphBody: paragraphBody,
     yesNoRadios: yesNoRadios,
-    saveAndContinue: saveAndContinue,
+    saveButtons: saveButtons,
     tariffExpander: tariffExpander,
     formHelper: FormWithCSRF,
     navigator: Navigator,
@@ -67,6 +67,6 @@
 
         @tariffExpander(InvoiceAndExchangeRateChoice, request.declarationType)(messages, appConfig)
 
-        @saveAndContinue()
+        @saveButtons()
     }
 }
