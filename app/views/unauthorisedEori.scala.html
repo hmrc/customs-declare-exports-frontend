@@ -27,9 +27,9 @@
     config: ExternalServicesConfig
 )
 
-@()(implicit request: Request[_], messages: Messages)
+@(displaySignOut: Boolean)(implicit request: Request[_], messages: Messages)
 
-@govukLayout(title = Title("unauthorised.tdr.heading")) {
+@govukLayout(title = Title("unauthorised.tdr.heading"), displaySignOut = displaySignOut) {
     @pageTitle(messages("unauthorised.tdr.heading"))
 
     @paragraphBody(messages("unauthorised.tdr.body",

@@ -17,9 +17,11 @@
 package views
 
 import base.Injector
-import org.scalatest.{Assertion, BeforeAndAfterEach}
-import play.twirl.api.{Html, HtmlFormat}
+import org.scalatest.BeforeAndAfterEach
+import play.twirl.api.Html
 import tools.Stubs
+import controllers.routes
+import models.SignOutReason.UserAction
 import views.declaration.spec.UnitViewSpec
 import views.html.unauthorised
 import views.tags.ViewTest
@@ -32,10 +34,11 @@ class UnauthorisedViewSpec extends UnitViewSpec with Stubs with Injector with Be
 
   val unauthorisedPage = instanceOf[unauthorised]
 
+  val view: Html = unauthorisedPage(true)(request, messages)
+
   "Unauthorised Page view" when {
 
     "the user has insufficient enrollments" should {
-      val view: Html = unauthorisedPage()(request, messages)
 
       "display the expected page header" in {
         view.getElementsByTag("h1").first must containMessage("unauthorised.heading")
@@ -63,6 +66,12 @@ class UnauthorisedViewSpec extends UnitViewSpec with Stubs with Injector with Be
         )
         link.get(2).attr("target") mustBe "_self"
 
+      }
+
+      "display the expected sign out link" in {
+        val link = view.getElementsByClass("hmrc-sign-out-nav__link").first()
+
+        link must haveHref(routes.SignOutController.signOut(UserAction))
       }
 
     }

@@ -30,13 +30,13 @@ class UnauthorisedController @Inject()(
   unauthorisedEoriPage: unauthorisedEori
 ) extends FrontendController(mcc) with I18nSupport {
 
-  def onPageLoad(unauthorizedDueToEoriNotAllowed: Boolean): Action[AnyContent] = Action { implicit request =>
+  def onPageLoad(unauthorizedDueToEoriNotAllowed: Boolean, displaySignOut: Boolean): Action[AnyContent] = Action { implicit request =>
     val tdrFlagEnabled = tdrUnauthorisedMsgConfig.isTdrUnauthorisedMessageEnabled
 
     if (tdrFlagEnabled || unauthorizedDueToEoriNotAllowed) {
-      Ok(unauthorisedEoriPage())
+      Ok(unauthorisedEoriPage(displaySignOut))
     } else {
-      Ok(unauthorisedPage())
+      Ok(unauthorisedPage(displaySignOut))
     }
 
   }

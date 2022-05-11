@@ -84,7 +84,7 @@ class AdditionalDocumentChangeController @Inject()(
     boundForm: Form[AdditionalDocument]
   )(implicit request: JourneyRequest[AnyContent]): Future[Result] = {
 
-    val additionalDocuments = request.cacheModel.additionalDocuments(itemId)
+    val additionalDocuments = request.cacheModel.additionalDocumentsInformation(itemId)
     val existingDocuments = additionalDocuments.documents
     val documentsWithoutExisting: Seq[AdditionalDocument] = existingDocuments.filterNot(_ == existingDocument)
 

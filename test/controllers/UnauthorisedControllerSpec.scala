@@ -38,21 +38,21 @@ class UnauthorisedControllerSpec extends ControllerWithoutFormSpec {
       "display page method is invoked and" when {
 
         "user has insufficient enrolments" in {
-          when(unauthorisedPage.apply()(any(), any())).thenReturn(HtmlFormat.empty)
-          val result = controller.onPageLoad(false)(getRequest())
+          when(unauthorisedPage(any())(any(), any())).thenReturn(HtmlFormat.empty)
+          val result = controller.onPageLoad(false, true)(getRequest())
           status(result) must be(OK)
         }
 
         "user has sufficient enrollments but the EORI is not in the allow list" in {
-          when(unauthorisedEoriPage.apply()(any(), any())).thenReturn(HtmlFormat.empty)
-          val result = controller.onPageLoad(true)(getRequest())
+          when(unauthorisedEoriPage(any())(any(), any())).thenReturn(HtmlFormat.empty)
+          val result = controller.onPageLoad(true, true)(getRequest())
           status(result) must be(OK)
         }
 
         "tdr is enabled" in {
           when(mockTdrUnauthorisedMsgConfig.isTdrUnauthorisedMessageEnabled).thenReturn(true)
-          when(unauthorisedEoriPage.apply()(any(), any())).thenReturn(HtmlFormat.empty)
-          val result = controller.onPageLoad(false)(getRequest())
+          when(unauthorisedEoriPage(any())(any(), any())).thenReturn(HtmlFormat.empty)
+          val result = controller.onPageLoad(false, true)(getRequest())
           status(result) must be(OK)
         }
       }

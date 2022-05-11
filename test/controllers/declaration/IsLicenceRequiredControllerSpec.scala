@@ -19,8 +19,11 @@ package controllers.declaration
 import base.ControllerSpec
 import features.Feature
 import forms.common.YesNoAnswer
+import forms.common.YesNoAnswer.Yes
 import forms.declaration.CommodityDetails
+import forms.declaration.additionaldocuments.AdditionalDocument
 import forms.declaration.declarationHolder.AuthorizationTypeCodes
+import models.declaration.AdditionalDocuments
 import models.{DeclarationType, Mode}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -111,43 +114,79 @@ class IsLicenceRequiredControllerSpec extends ControllerSpec with OptionValues {
 
       "return 303 (SEE_OTHER)" when {
 
-        "user submits valid Yes answer" in {
-          withNewCaching(declaration)
+        "documents have been added" when {
 
-          val requestBody = Seq("yesNo" -> "Yes")
-          val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(requestBody: _*))
+          val declaration = aDeclaration(
+            withItem(
+              anItem(
+                withItemId(itemId),
+                withAdditionalDocuments(AdditionalDocuments(Yes, Seq(AdditionalDocument(Some("1234"), None, None, None, None, None, None))))
+              )
+            )
+          )
 
-          await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe routes.AdditionalDocumentAddController.displayPage(Mode.Normal, itemId)
-        }
+          "user submits valid Yes answer" in {
 
-        "user submits valid No answer" when {
-          "NO authorisation from List" in {
             withNewCaching(declaration)
 
-            val requestBody = Seq("yesNo" -> "No")
-            val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(requestBody: _*))
-
+            val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(Seq("yesNo" -> "Yes"): _*))
             await(result) mustBe aRedirectToTheNextPage
-            thePageNavigatedTo mustBe routes.AdditionalDocumentsRequiredController.displayPage(Mode.Normal, itemId)
+            thePageNavigatedTo mustBe routes.AdditionalDocumentsController.displayPage(Mode.Normal, itemId)
+
           }
 
-          "authorisation from List" in {
-
-            val declaration = aDeclaration(
-              withItem(anItem(withItemId(itemId), withCommodityDetails(commodityDetails))),
-              withDeclarationHolders(authorisationTypeCode = Some(AuthorizationTypeCodes.codesRequiringDocumentation.head))
-            )
+          "user submits valid No answer" in {
 
             withNewCaching(declaration)
 
-            val requestBody = Seq("yesNo" -> "No")
-            val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(requestBody: _*))
+            val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(Seq("yesNo" -> "No"): _*))
+            await(result) mustBe aRedirectToTheNextPage
+            thePageNavigatedTo mustBe routes.AdditionalDocumentsController.displayPage(Mode.Normal, itemId)
 
+          }
+        }
+
+        "documents have not been added" when {
+          "user submits valid Yes answer" in {
+
+            withNewCaching(declaration)
+
+            val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(Seq("yesNo" -> "Yes"): _*))
             await(result) mustBe aRedirectToTheNextPage
             thePageNavigatedTo mustBe routes.AdditionalDocumentAddController.displayPage(Mode.Normal, itemId)
+
           }
+
+          "user submits valid No answer" when {
+            "authorisation from List" in {
+
+              val declaration = aDeclaration(
+                withItem(anItem(withItemId(itemId), withCommodityDetails(commodityDetails))),
+                withDeclarationHolders(authorisationTypeCode = Some(AuthorizationTypeCodes.codesRequiringDocumentation.head))
+              )
+
+              withNewCaching(declaration)
+
+              val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(Seq("yesNo" -> "No"): _*))
+
+              await(result) mustBe aRedirectToTheNextPage
+              thePageNavigatedTo mustBe routes.AdditionalDocumentAddController.displayPage(Mode.Normal, itemId)
+
+            }
+
+            "NO authorisation from List" in {
+
+              withNewCaching(declaration)
+
+              val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(Seq("yesNo" -> "No"): _*))
+              await(result) mustBe aRedirectToTheNextPage
+              thePageNavigatedTo mustBe routes.AdditionalDocumentsRequiredController.displayPage(Mode.Normal, itemId)
+
+            }
+          }
+
         }
+
       }
     }
   }

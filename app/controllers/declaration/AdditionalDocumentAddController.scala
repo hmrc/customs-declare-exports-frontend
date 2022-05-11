@@ -53,7 +53,7 @@ class AdditionalDocumentAddController @Inject()(
     val boundForm = globalErrors(form(request.cacheModel).bindFromRequest)
 
     boundForm.fold(formWithErrors => Future.successful(BadRequest(additionalDocumentAddPage(mode, itemId, formWithErrors))), document => {
-      val documents = request.cacheModel.additionalDocuments(itemId)
+      val documents = request.cacheModel.additionalDocumentsInformation(itemId)
       if (document.isDefined) saveDocuments(mode, itemId, boundForm, documents)
       else continue(mode, itemId, documents)
     })

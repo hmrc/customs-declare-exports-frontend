@@ -18,6 +18,8 @@ package views
 
 import base.{Injector, OverridableInjector}
 import config.featureFlags.TdrUnauthorisedMsgConfig
+import controllers.routes
+import models.SignOutReason.UserAction
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.{Assertion, BeforeAndAfterEach}
 import play.api.inject.bind
@@ -38,7 +40,7 @@ class UnauthorisedEoriViewSpec extends UnitViewSpec with Stubs with Injector wit
   val injector = new OverridableInjector(bind[TdrUnauthorisedMsgConfig].toInstance(mockTdrUnauthorisedMsgConfig))
   val unauthorisedEoriPage = injector.instanceOf[unauthorisedEori]
 
-  val view: Html = unauthorisedEoriPage()(request, messages)
+  val view: Html = unauthorisedEoriPage(true)(request, messages)
 
   "UnauthorisedEori Page view" when {
 
@@ -48,6 +50,12 @@ class UnauthorisedEoriViewSpec extends UnitViewSpec with Stubs with Injector wit
 
     "display the expected contact email address link" in {
       checkContactEmailAddress(view)
+    }
+
+    "display the expected sign out link" in {
+      val link = view.getElementsByClass("hmrc-sign-out-nav__link").first()
+
+      link must haveHref(routes.SignOutController.signOut(UserAction))
     }
 
   }
