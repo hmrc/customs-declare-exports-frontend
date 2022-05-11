@@ -69,7 +69,7 @@ class AuthActionSpec extends ControllerWithoutFormSpec with Injector {
       val result = controller.displayPage(None)(getRequest())
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(routes.UnauthorisedController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(routes.UnauthorisedController.onPageLoad(displaySignOut = true).url)
     }
 
     "redirect to login page for environment when External Id is missing" in {

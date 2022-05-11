@@ -29,14 +29,14 @@
     tdrUnauthorisedMsgConfig: TdrUnauthorisedMsgConfig
 )
 
-@(unauthorizedDueToEoriNotAllowed: Boolean)(implicit request: Request[_], messages: Messages)
+@(unauthorizedDueToEoriNotAllowed: Boolean, displaySignOut: Boolean = false)(implicit request: Request[_], messages: Messages)
 
 @tdrFlagEnabled = @{ tdrUnauthorisedMsgConfig.isTdrUnauthorisedMessageEnabled }
 
 @headingKey = @{ if (tdrFlagEnabled) "unauthorised.tdr.heading" else "unauthorised.heading.eori.not.allowed" }
 
 @if(tdrFlagEnabled || unauthorizedDueToEoriNotAllowed) {
-    @govukLayout(title = Title(headingKey)) {
+    @govukLayout(title = Title(headingKey), displaySignOut = displaySignOut) {
         @pageTitle(messages(headingKey))
 
         @paragraphBody(messages("unauthorised.tdr.body",
@@ -49,7 +49,7 @@
         )
     }
 } else {
-    @govukLayout(title = Title("unauthorised.heading")) {
+    @govukLayout(title = Title("unauthorised.heading"), displaySignOut = displaySignOut) {
         @pageTitle(messages("unauthorised.heading"))
 
         @paragraphBody(messages("unauthorised.paragraph.1"))
