@@ -34,7 +34,7 @@ class UnauthorisedController @Inject()(
     val tdrFlagEnabled = tdrUnauthorisedMsgConfig.isTdrUnauthorisedMessageEnabled
 
     if (tdrFlagEnabled || unauthorizedDueToEoriNotAllowed) {
-      Ok(unauthorisedEoriPage(displaySignOut))
+      Ok(unauthorisedEoriPage())
     } else {
       Ok(unauthorisedPage(displaySignOut))
     }
