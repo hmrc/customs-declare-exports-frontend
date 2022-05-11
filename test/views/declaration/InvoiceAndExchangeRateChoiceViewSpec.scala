@@ -90,6 +90,10 @@ class InvoiceAndExchangeRateChoiceViewSpec extends UnitViewSpec with CommonMessa
         saveButton must containMessage("site.save_and_continue")
       }
 
+      "display 'Save and return' button on page" in {
+        view.getElementById("submit_and_return") must containMessage(saveAndReturnCaption)
+      }
+
       "display the expected tariff details" in {
         val tariffTitle = view.getElementsByClass("govuk-details__summary-text")
         tariffTitle.text mustBe messages("tariff.expander.title.common")

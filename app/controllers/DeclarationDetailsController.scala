@@ -16,16 +16,16 @@
 
 package controllers
 
-import scala.concurrent.{ExecutionContext, Future}
-
 import config.featureFlags.QueryNotificationMessageConfig
 import connectors.CustomsDeclareExportsConnector
 import controllers.actions.{AuthAction, VerifiedEmailAction}
-import javax.inject.Inject
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.{declaration_details, declaration_information}
+
+import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
 class DeclarationDetailsController @Inject()(
   authenticate: AuthAction,
