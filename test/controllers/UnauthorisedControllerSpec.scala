@@ -36,14 +36,14 @@ class UnauthorisedControllerSpec extends ControllerWithoutFormSpec {
       "display page method is invoked and" when {
 
         "user has insufficient enrollments" in {
-          when(unauthorisedPage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
-          val result = controller.onPageLoad(false)(getRequest())
+          when(unauthorisedPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+          val result = controller.onPageLoad(false, true)(getRequest())
           status(result) must be(OK)
         }
 
         "user has sufficient enrollments but the EORI is not in the allow list" in {
-          when(unauthorisedPage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
-          val result = controller.onPageLoad(true)(getRequest())
+          when(unauthorisedPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+          val result = controller.onPageLoad(true, true)(getRequest())
           status(result) must be(OK)
         }
       }

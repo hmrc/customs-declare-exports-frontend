@@ -21,6 +21,8 @@ import config.featureFlags.TdrUnauthorisedMsgConfig
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.{Assertion, BeforeAndAfterEach}
 import play.api.inject.bind
+import controllers.routes
+import models.SignOutReason.UserAction
 import play.twirl.api.{Html, HtmlFormat}
 import tools.Stubs
 import views.declaration.spec.UnitViewSpec
@@ -70,6 +72,12 @@ class UnauthorisedViewSpec extends UnitViewSpec with Stubs with Injector with Be
         link must haveHref("https://www.tax.service.gov.uk/customs/register-for-cds/are-you-based-in-uk")
         link.attr("target") mustBe "_self"
       }
+
+      "display the expected sign out link" in {
+        val link = view.getElementsByClass("hmrc-sign-out-nav__link").first()
+
+        link must haveHref(routes.SignOutController.signOut(UserAction))
+      }
     }
 
     "TdrUnauthorisedMessage is Disabled and the user's EORI in not in the allow list" should {
@@ -82,6 +90,12 @@ class UnauthorisedViewSpec extends UnitViewSpec with Stubs with Injector with Be
       "display the expected contact email address link" in {
         checkContactEmailAddress(view)
       }
+
+      "display the expected sign out link" in {
+        val link = view.getElementsByClass("hmrc-sign-out-nav__link").first()
+
+        link must haveHref(routes.SignOutController.signOut(UserAction))
+      }
     }
 
     "TdrUnauthorisedMessage is Enabled" should {
@@ -93,6 +107,12 @@ class UnauthorisedViewSpec extends UnitViewSpec with Stubs with Injector with Be
 
       "display the expected contact email address link" in {
         checkContactEmailAddress(view)
+      }
+
+      "display the expected sign out link" in {
+        val link = view.getElementsByClass("hmrc-sign-out-nav__link").first()
+
+        link must haveHref(routes.SignOutController.signOut(UserAction))
       }
     }
   }
@@ -107,6 +127,6 @@ class UnauthorisedViewSpec extends UnitViewSpec with Stubs with Injector with Be
 
   private def getUnauthorisedPageView(tdrEnabled: Boolean, unauthorizedDueToEoriNotAllowed: Boolean = false): HtmlFormat.Appendable = {
     when(mockTdrUnauthorisedMsgConfig.isTdrUnauthorisedMessageEnabled).thenReturn(tdrEnabled)
-    unauthorisedPage(unauthorizedDueToEoriNotAllowed)(request, messages)
+    unauthorisedPage(unauthorizedDueToEoriNotAllowed, true)(request, messages)
   }
 }
