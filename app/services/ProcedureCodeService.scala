@@ -33,10 +33,10 @@ class ProcedureCodeService @Inject()(codeListConnector: CodeListConnector, codeL
     }
 
   def getProcedureCodeFor(procedureCode: String, journey: DeclarationType, isEidr: Boolean, locale: Locale): Option[ProcedureCode] =
-    (journey match {
+    journey match {
       case CLEARANCE if !isEidr => codeListConnector.getProcedureCodesForC21(locale).get(procedureCode)
       case _                    => codeListConnector.getProcedureCodes(locale).get(procedureCode)
-    }).headOption
+    }
 
   def getAdditionalProcedureCodesFor(procedureCode: String, locale: Locale): Seq[AdditionalProcedureCode] = {
 
