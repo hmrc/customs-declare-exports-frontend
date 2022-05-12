@@ -20,6 +20,11 @@
     "cy": "Authorised Economic Operator - Security and safety"
   },
   {
+    "code": "MIB",
+    "en": "Merchandise in Baggage",
+    "cy": "Merchandise in Baggage"
+  },
+  {
     "code": "APEX",
     "en": "Approved Exporter",
     "cy": "Approved Exporter"
@@ -258,10 +263,5 @@
     "code": "UKCS",
     "en": "UK Continental Shelf",
     "cy": "UK Continental Shelf"
-  },
-  {
-    "code": "MIB",
-    "en": "Merchandise in Baggage",
-    "cy": "Merchandise in Baggage"
   }
 ]

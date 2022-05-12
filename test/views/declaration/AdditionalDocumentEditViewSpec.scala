@@ -141,7 +141,7 @@ class AdditionalDocumentEditViewSpec extends UnitViewSpec with CommonMessages wi
     val clearanceJourneys = List(CLEARANCE_FRONTIER, CLEARANCE_PRE_LODGED)
     val holders = List(DeclarationHolder(Some("OPO"), None, None), DeclarationHolder(Some("FZ"), None, None))
 
-    val authCodeHelper = new HolderOfAuthorisationCodes(new FileBasedCodeListConnector(appConfig))
+    val authCodeHelper = new HolderOfAuthorisationCodes(new FileBasedCodeListConnector(appConfig), mockMerchandiseInBagConfig)
 
     allAdditionalDeclarationTypes.filterNot(clearanceJourneys.contains).foreach { declarationType =>
       s"the declaration is of type $declarationType and" when {

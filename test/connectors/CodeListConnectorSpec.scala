@@ -147,17 +147,19 @@ class CodeListConnectorSpec extends UnitWithMocksSpec with BeforeAndAfterEach {
           val codes = codeListConnector.getHolderOfAuthorisationCodes(locale).keys.toList
           codes.size mustBe 53
 
-          codes(0) mustBe "EXRR"
-          codes(25) mustBe "TST"
+          codes.head mustBe "EXRR"
 
-          codes(26) mustBe "ACE"
-          codes(40) mustBe "ETD"
+          codes(4) mustBe "MIB"
 
-          codes(41) mustBe "FAS"
-          codes(45) mustBe "REP"
+          codes(26) mustBe "TST"
 
-          codes(51) mustBe "UKCS"
-          codes(52) mustBe "MIB"
+          codes(27) mustBe "ACE"
+          codes(41) mustBe "ETD"
+
+          codes(42) mustBe "FAS"
+          codes(46) mustBe "REP"
+
+          codes(52) mustBe "UKCS"
         }
       }
     }

@@ -16,22 +16,25 @@
 
 package services.view
 
+import config.AppConfig
+import config.featureFlags.MerchandiseInBagConfig
+
 import java.util.Locale
 import connectors.CodeListConnector
-import forms.declaration.declarationHolder.AuthorizationTypeCodes.codeFilteredFromView
+import forms.declaration.declarationHolder.AuthorizationTypeCodes.codesFilteredFromView
 import forms.declaration.declarationHolder.DeclarationHolder
 
 import javax.inject.{Inject, Singleton}
 import models.codes.HolderOfAuthorisationCode
 
 @Singleton
-class HolderOfAuthorisationCodes @Inject()(codeListConnector: CodeListConnector) {
+class HolderOfAuthorisationCodes @Inject()(codeListConnector: CodeListConnector, merchandiseInBagConfig: MerchandiseInBagConfig) {
 
   def asListOfAutoCompleteItems(locale: Locale): List[AutoCompleteItem] =
     codeListConnector
       .getHolderOfAuthorisationCodes(locale)
       .values
-      .filter(_.code != codeFilteredFromView)
+      .filterNot(authCode => codesFilteredFromView(merchandiseInBagConfig).contains(authCode.code))
       .map(h => AutoCompleteItem(description(h), h.code))
       .toList
 
