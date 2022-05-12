@@ -190,6 +190,19 @@ class CommodityDetailsControllerSpec extends ControllerSpec with OptionValues {
       }
     }
 
+    "trim potential spaces entered by the user in the commodity code" in {
+      withNewCaching(aDeclaration(withItem(anItem(withItemId(itemId)))))
+
+      val commodityCode = "1234567809"
+      val correctForm = Json.toJson(CommodityDetails(Some(s"  ${commodityCode}  "), Some("Description")))
+      val result = controller.submitForm(Mode.Normal, itemId)(postRequest(correctForm))
+
+      await(result) mustBe aRedirectToTheNextPage
+
+      val declarations = theCacheModelUpdated()
+      declarations.head.commodityCodeOfItem(itemId).value mustBe commodityCode
+    }
+
     "clear the cus-code field when commodity code entered does not have a chemical code prefix" in {
       val cusCode = CusCode(Some("11111111"))
       withNewCaching(aDeclaration(withItem(anItem(withItemId(itemId), withCUSCode(cusCode)))))
