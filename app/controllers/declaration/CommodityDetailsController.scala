@@ -19,10 +19,8 @@ package controllers.declaration
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.declaration.CommodityDetails
-import forms.declaration.CommodityDetails.form
 import models.requests.JourneyRequest
 import models.{DeclarationType, ExportsDeclaration, Mode}
-import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.cache.ExportsCacheService
@@ -43,22 +41,24 @@ class CommodityDetailsController @Inject()(
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    val frm = form(request.declarationType).withSubmissionErrors
+    val form = CommodityDetails.form(request.declarationType).withSubmissionErrors
     request.cacheModel.itemBy(itemId).flatMap(_.commodityDetails) match {
-      case Some(commodityDetails) => Ok(commodityDetailsPage(mode, itemId, frm.fill(commodityDetails)))
-      case _                      => Ok(commodityDetailsPage(mode, itemId, frm))
+      case Some(commodityDetails) => Ok(commodityDetailsPage(mode, itemId, form.fill(commodityDetails)))
+      case _                      => Ok(commodityDetailsPage(mode, itemId, form))
     }
   }
 
   def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    form(request.declarationType).bindFromRequest
+    CommodityDetails
+      .form(request.declarationType)
+      .bindFromRequest
       .fold(
-        (formWithErrors: Form[CommodityDetails]) => Future.successful(BadRequest(commodityDetailsPage(mode, itemId, formWithErrors))),
-        validForm => updateExportsCache(itemId, validForm).map(_ => redirectToNextPage(mode, itemId))
+        formWithErrors => Future.successful(BadRequest(commodityDetailsPage(mode, itemId, formWithErrors))),
+        commodityDetails => updateExportsCache(itemId, trimCommodityCode(commodityDetails)).map(_ => nextPage(mode, itemId))
       )
   }
 
-  private def redirectToNextPage(mode: Mode, itemId: String)(implicit request: JourneyRequest[AnyContent]): Result =
+  private def nextPage(mode: Mode, itemId: String)(implicit request: JourneyRequest[AnyContent]): Result =
     if (request.isType(DeclarationType.CLEARANCE) && request.cacheModel.isNotExs) {
       if (request.cacheModel.itemBy(itemId).exists(_.isExportInventoryCleansingRecord))
         navigator.continueTo(mode, controllers.declaration.routes.CommodityMeasureController.displayPage(_, itemId))
@@ -68,15 +68,18 @@ class CommodityDetailsController @Inject()(
       navigator.continueTo(mode, routes.UNDangerousGoodsCodeController.displayPage(_, itemId))
     }
 
-  private def updateExportsCache(itemId: String, updatedItem: CommodityDetails)(
+  private def updateExportsCache(itemId: String, commodityDetails: CommodityDetails)(
     implicit request: JourneyRequest[AnyContent]
   ): Future[ExportsDeclaration] =
-    updateDeclarationFromRequest { model =>
-      val postFormAppliedModel = model.updatedItem(itemId, item => item.copy(commodityDetails = Some(updatedItem)))
+    updateDeclarationFromRequest { declaration =>
+      val postFormAppliedModel = declaration.updatedItem(itemId, item => item.copy(commodityDetails = Some(commodityDetails)))
 
       if (!postFormAppliedModel.isCommodityCodeOfItemPrefixedWith(itemId, CommodityDetails.commodityCodeChemicalPrefixes))
         postFormAppliedModel.updatedItem(itemId, item => item.copy(cusCode = None))
       else
         postFormAppliedModel
     }
+
+  private def trimCommodityCode(commodityDetails: CommodityDetails): CommodityDetails =
+    commodityDetails.copy(combinedNomenclatureCode = commodityDetails.combinedNomenclatureCode.map(_.trim))
 }

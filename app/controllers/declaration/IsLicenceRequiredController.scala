@@ -25,7 +25,6 @@ import forms.common.YesNoAnswer.YesNoAnswers
 import forms.common.YesNoAnswer.YesNoAnswers.{no, yes}
 import forms.declaration.IsLicenceRequired
 import models.DeclarationType._
-import models.Mode.Change
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
 import play.api.data.Form

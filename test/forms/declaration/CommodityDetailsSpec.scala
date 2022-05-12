@@ -37,8 +37,18 @@ class CommodityDetailsSpec extends DeclarationPageBaseSpec {
           form.errors mustBe empty
         }
 
+        "provided with a commodity code 8 digits long prefixed and suffixed with spaces" in {
+          val form = CommodityDetails.form(decType).bind(formData("  12345678  ", "description"), JsonBindMaxChars)
+          form.errors mustBe empty
+        }
+
         "provided with a commodity code 10 digits long" in {
           val form = CommodityDetails.form(decType).bind(formData("1234567890", "description"), JsonBindMaxChars)
+          form.errors mustBe empty
+        }
+
+        "provided with a commodity code 10 digits long prefixed and suffixed with spaces" in {
+          val form = CommodityDetails.form(decType).bind(formData("  1234567890  ", "description"), JsonBindMaxChars)
           form.errors mustBe empty
         }
       }
