@@ -52,7 +52,7 @@ class AppConfigSpec extends UnitWithMocksSpec {
         |microservice.services.customs-declare-exports-movements.host=localhost
         |microservice.services.customs-declare-exports-movements.port=9876
         |microservice.services.customs-declare-exports-movements.save-movement-uri=/save-movement-submission
-        |platform.frontend.host="self/base-url"
+        |play.frontend.host="self/base-url"
       """.stripMargin)
 
   private val validServicesConfiguration = Configuration(validConfig)
