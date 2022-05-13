@@ -86,19 +86,16 @@ class FileBasedCodeListConnector @Inject()(appConfig: AppConfig) extends CodeLis
   def getGoodsLocationCodes(locale: Locale): ListMap[String, GoodsLocationCode] =
     goodsLocationCodeByLang.getOrElse(locale.getLanguage, goodsLocationCodeByLang.value.head._2)
 
-  private lazy val additionalProcedureCodeMapsByLang = {
-    println("!!!!" + appConfig.additionalProcedureCodes)
+  private lazy val additionalProcedureCodeMapsByLang =
     loadCommonCodesAsOrderedMap(
       appConfig.additionalProcedureCodes,
       (codeItem: CodeItem, locale: Locale) => AdditionalProcedureCode(codeItem.code, codeItem.getDescriptionByLocale(locale))
     )
-  }
 
-  private lazy val additionalProcedureCodeForC21MapsByLang = loadCommonCodesAsOrderedMap({
-    println("***" + appConfig.additionalProcedureCodesForC21)
-
-    appConfig.additionalProcedureCodesForC21
-  }, (codeItem: CodeItem, locale: Locale) => AdditionalProcedureCode(codeItem.code, codeItem.getDescriptionByLocale(locale)))
+  private lazy val additionalProcedureCodeForC21MapsByLang = loadCommonCodesAsOrderedMap(
+    appConfig.additionalProcedureCodesForC21,
+    (codeItem: CodeItem, locale: Locale) => AdditionalProcedureCode(codeItem.code, codeItem.getDescriptionByLocale(locale))
+  )
 
   private lazy val countryListByLang = loadCommonCodesAsOrderedMap(
     appConfig.countryCodes,
