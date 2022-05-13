@@ -16,6 +16,7 @@
 
 package services
 
+import config.featureFlags.MerchandiseInBagConfig
 import connectors.{CodeLinkConnector, CodeListConnector}
 import models.codes.{AdditionalProcedureCode, ProcedureCode}
 import models.DeclarationType.{CLEARANCE, DeclarationType}
@@ -24,7 +25,11 @@ import play.api.Logging
 import java.util.Locale
 import javax.inject.Inject
 
-class ProcedureCodeService @Inject()(codeListConnector: CodeListConnector, codeLinkConnector: CodeLinkConnector) extends Logging {
+class ProcedureCodeService @Inject()(
+  codeListConnector: CodeListConnector,
+  codeLinkConnector: CodeLinkConnector,
+  merchandiseInBagConfig: MerchandiseInBagConfig
+) extends Logging {
 
   def getProcedureCodesFor(journey: DeclarationType, isEidr: Boolean, locale: Locale): Seq[ProcedureCode] =
     journey match {
@@ -42,7 +47,9 @@ class ProcedureCodeService @Inject()(codeListConnector: CodeListConnector, codeL
 
     val apcMapForLang = codeListConnector.getAdditionalProcedureCodesMap(locale)
     val standardAdditionalProcedureCodes = codeLinkConnector.getValidAdditionalProcedureCodesForProcedureCode(procedureCode).map { codes =>
-      codes.map(lookupAdditionalProcedureCode(_, apcMapForLang))
+      codes
+        .map(lookupAdditionalProcedureCode(_, apcMapForLang))
+        .filterNot(additionalProcedureCode => additionalProcedureCode.code == "1MB" && !merchandiseInBagConfig.isMerchandiseInBagEnabled)
     }
 
     lazy val apcC21MapForLang = codeListConnector.getAdditionalProcedureCodesMapForC21(locale)
