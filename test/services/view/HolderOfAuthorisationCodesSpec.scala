@@ -39,13 +39,6 @@ class HolderOfAuthorisationCodesSpec extends UnitWithMocksSpec with BeforeAndAft
 
     reset(appConfig)
     when(appConfig.holderOfAuthorisationCodes).thenReturn("/code-lists/holderOfAuthorisationCodes.json")
-    when(appConfig.procedureCodesListFile).thenReturn("/code-lists/manyCodes.json")
-    when(appConfig.procedureCodesForC21ListFile).thenReturn("/code-lists/manyCodes.json")
-    when(appConfig.additionalProcedureCodes).thenReturn("/code-lists/manyCodes.json")
-    when(appConfig.additionalProcedureCodesForC21).thenReturn("/code-lists/manyCodes.json")
-    when(appConfig.dmsErrorCodes).thenReturn("/code-lists/manyCodes.json")
-    when(appConfig.countryCodes).thenReturn("/code-lists/manyCodes.json")
-    when(appConfig.goodsLocationCodeFile).thenReturn("/code-lists/manyCodes.json")
   }
 
   "HolderOfAuthorisationCodes.asListOfAutoCompleteItems" should {

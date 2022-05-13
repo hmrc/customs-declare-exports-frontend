@@ -17,7 +17,7 @@
 package services
 
 import base.UnitWithMocksSpec
-import connectors.{CodeLinkConnector, CodeListConnector}
+import connectors.{CodeLinkConnector, CodeListConnector, FileBasedCodeListConnector}
 import models.codes.{AdditionalProcedureCode, ProcedureCode}
 import models.DeclarationType
 import org.mockito.ArgumentMatchers.any
@@ -25,9 +25,10 @@ import org.mockito.Mockito._
 import org.mockito.ArgumentMatchers.{eq => meq, _}
 import org.scalatest.BeforeAndAfterEach
 import ProcedureCodeServiceSpec._
+import config.AppConfig
+
 import java.util.Locale
 import java.util.Locale.ENGLISH
-
 import scala.collection.immutable.ListMap
 
 class ProcedureCodeServiceSpec extends UnitWithMocksSpec with BeforeAndAfterEach {
@@ -113,7 +114,18 @@ class ProcedureCodeServiceSpec extends UnitWithMocksSpec with BeforeAndAfterEach
   }
 
   "ProcedureCodeService getAdditionalProcedureCodesFor" should {
+
     "return list of all valid additional procedure codes for a given procedure code" in {
+
+      val appConfig = mock[AppConfig]
+
+      when(appConfig.additionalProcedureCodes).thenReturn("/code-lists/additionalProcedureCodes.json")
+      when(appConfig.additionalProcedureCodesForC21).thenReturn("/code-lists/additionalProcedureCodesC21.json")
+
+      lazy val codeListConnector = new FileBasedCodeListConnector(appConfig)
+
+      val service = new ProcedureCodeService(codeListConnector, codeLinkConnector)
+
       service.getAdditionalProcedureCodesFor(sampleProcedureCode1.code, ENGLISH) must equal(
         Seq(sampleAdditionalProcedureCode1, sampleAdditionalProcedureCode2)
       )
