@@ -23,7 +23,7 @@ import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.{formId, YesNoAnswers}
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.isArrived
-import forms.declaration.declarationHolder.AuthorizationTypeCodes.{isAuthCode, mutuallyExclusiveAuthCodes}
+import forms.declaration.declarationHolder.AuthorizationTypeCodes.{containAtLeastOneOfAuthCodes, isAuthCode, mutuallyExclusiveAuthCodes}
 import models.Mode
 import models.requests.JourneyRequest
 import play.api.data.{Form, FormError}
@@ -61,7 +61,7 @@ class DeclarationHolderSummaryController @Inject()(
     YesNoAnswer.form(errorKey = "declaration.declarationHolders.add.another.empty")
 
   private def validateNoAnswerAndGoNextPage(mode: Mode)(implicit request: JourneyRequest[AnyContent]): Result = {
-    val valid = !isArrived(request.cacheModel.additionalDeclarationType) || isAuthCode(request.cacheModel, mutuallyExclusiveAuthCodes)
+    val valid = !isArrived(request.cacheModel.additionalDeclarationType) || isAuthCode(request.cacheModel, containAtLeastOneOfAuthCodes)
     if (valid) navigator.continueTo(mode, DestinationCountryController.displayPage)
     else {
       val message = messagesApi.preferred(request).messages("declaration.declarationHolder.error.arrived")
