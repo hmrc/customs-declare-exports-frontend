@@ -49,19 +49,19 @@ class FileBasedCodeLinkConnector @Inject()(appConfig: AppConfig) extends CodeLin
     val codeLinks = JsonFile.getJsonArrayFromFile(srcFile, CodeLink.formats)
 
     codeLinks.map { codeLink =>
-      (codeLink.parentCode -> codeLink.childCodes)
+      codeLink.parentCode -> codeLink.childCodes
     }.toMap
   }
 
-  private lazy val procedureCodeToAdditionalProcedureCodes: Map[String, Seq[String]] =
+  private val procedureCodeToAdditionalProcedureCodes: Map[String, Seq[String]] =
     readCodeLinksFromFile(appConfig.procedureCodeToAdditionalProcedureCodesLinkFile)
-  private lazy val procedureCodeToAdditionalProcedureCodesC21: Map[String, Seq[String]] =
+  private val procedureCodeToAdditionalProcedureCodesC21: Map[String, Seq[String]] =
     readCodeLinksFromFile(appConfig.procedureCodeToAdditionalProcedureCodesC21LinkFile)
-  private lazy val countryCodeToCountryAliases: Map[String, Seq[String]] =
+  private val countryCodeToCountryAliases: Map[String, Seq[String]] =
     readCodeLinksFromFile(appConfig.countryCodeToAliasesLinkFile)
-  private lazy val countryCodeToShortName: Map[String, Seq[String]] =
+  private val countryCodeToShortName: Map[String, Seq[String]] =
     readCodeLinksFromFile(appConfig.countryCodeToShortNameLinkFile)
-  private lazy val goodsLocationCodeToLocationTypes: Map[String, Seq[String]] =
+  private val goodsLocationCodeToLocationTypes: Map[String, Seq[String]] =
     readCodeLinksFromFile(appConfig.goodsLocationCodeToLocationTypeFile)
 
   def getValidAdditionalProcedureCodesForProcedureCode(procedureCode: String): Option[Seq[String]] =
