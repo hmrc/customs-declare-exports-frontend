@@ -582,8 +582,9 @@ declaration.declarant.exporter.body = The exporter is the seller, or the person 
 declaration.declarant.exporter.answer.no = No, I’m representing the exporter
 declaration.declarant.exporter.error = Select yes if you are the exporter
 
-declaration.consignee.title = What address are the goods being sent to?
-declaration.consignee.paragraph = This is the address of the business or location where the goods will be delivered (consignee address).
+declaration.consignee.title = Where will the goods be delivered?
+declaration.consignee.paragraph1 = Enter the name of the business, organisation or individual taking delivery of the goods, and the address where the goods will be delivered.
+declaration.consignee.paragraph2 = It should be the name of the importer or a representative authorised to receive the goods.
 
 declaration.consignorEori.title = Does the consignor have an EORI number?
 declaration.consignorEori.eori.label = EORI number
@@ -1798,8 +1799,8 @@ declaration.summary.parties.exporter.address = Exporter’s address
 declaration.summary.parties.exporter.address.change = Change Exporter’s address
 declaration.summary.parties.consignee.eori = Consignee’s EORI number
 declaration.summary.parties.consignee.eori.change = Change Consignee’s EORI number
-declaration.summary.parties.consignee.address = Consignee’s address
-declaration.summary.parties.consignee.address.change = Change Consignee’s address
+declaration.summary.parties.consignee.address = Consignee details
+declaration.summary.parties.consignee.address.change = Change Consignee details
 declaration.summary.parties.consignor.eori = Consignor’s EORI number
 declaration.summary.parties.consignor.eori.change = Change Consignor’s EORI number
 declaration.summary.parties.consignor.address = Consignor’s address
