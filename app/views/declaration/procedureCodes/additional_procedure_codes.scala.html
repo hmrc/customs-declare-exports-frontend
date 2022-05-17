@@ -68,7 +68,9 @@
     @sectionHeader(messages("declaration.section.5"))
     @heading(messages("declaration.additionalProcedureCodes.title", procedureCode.code))
 
-    @paragraphBody(messages("declaration.additionalProcedureCodes.paragraph"))
+    @paragraphBody(messages("declaration.additionalProcedureCodes.paragraph1"))
+
+    @paragraphBody(messages("declaration.additionalProcedureCodes.paragraph2", procedureCode.code))
 
     @components.fields.field_accessible_autocomplete_with_header(
       field = form(additionalProcedureCodeKey),

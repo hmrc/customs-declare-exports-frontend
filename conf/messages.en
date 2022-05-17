@@ -1017,7 +1017,8 @@ declaration.procedureCodes.readMoreExpander.temporaryExport.link.text = Temporar
 declaration.procedureCodes.readMoreExpander.reExportFollowingSpecialProcedure.link.text = Re-export following a special procedure
 
 declaration.additionalProcedureCodes.title = Add any additional procedure codes to {0}
-declaration.additionalProcedureCodes.paragraph = Add each code that applies to this item, or select and add the code ‘000’ which means that no other additional procedure codes apply. List shows all the permitted additional procedure codes for your selected procedure.
+declaration.additionalProcedureCodes.paragraph1 = Add each 3-digit additional procedure code that applies to this item, or select and add the code ‘000’ if none apply.
+declaration.additionalProcedureCodes.paragraph2 = The list shows all the codes you can declare with {0}.
 declaration.additionalProcedureCodes.jersey.hint = You need to add additional procedure code F75, as this is a requirement when dispatching goods to a Special Fiscal Territory of the UK
 declaration.additionalProcedureCodes.jersey.clearanceNonEidr.hint = You need to add additional procedure code 15F, as this is a requirement when dispatching goods to a Special Fiscal Territory of the UK
 declaration.additionalProcedureCodes.inset = List shows all the permitted additional procedure codes for {0}. For descriptions and conditions of each code, go to {1}.
