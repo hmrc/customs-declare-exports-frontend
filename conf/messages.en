@@ -580,6 +580,7 @@ declaration.declarant.exporter.title = Are you the exporter?
 declaration.declarant.exporter.answer.yes = Yes
 declaration.declarant.exporter.body = The exporter is the seller, or the person deciding to export the goods.
 declaration.declarant.exporter.answer.no = No, I’m representing the exporter
+declaration.declarant.exporter.answer.no.hint = For example, a freight forwarder or customs broker.
 declaration.declarant.exporter.error = Select yes if you are the exporter
 
 declaration.consignee.title = Where will the goods be delivered?
