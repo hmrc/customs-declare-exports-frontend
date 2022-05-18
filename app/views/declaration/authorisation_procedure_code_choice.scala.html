@@ -106,7 +106,7 @@
     title = Title("declaration.authorisations.procedureCodeChoice.title", "declaration.section.2", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.back"), navigator.backLink(AuthorisationProcedureCodeChoice, mode)))) {
     @formHelper(action = AuthorisationProcedureCodeChoiceController.submitForm(mode), 'autoComplete -> "off") {
-        @errorSummary(radioGroupErrors(formFieldName, "Choice1040", form.errors))
+        @errorSummary(radioGroupErrors(formFieldName, Code1040.toString, form.errors))
 
         @sectionHeader(messages("declaration.section.2"))
 
@@ -138,7 +138,8 @@
                     content = Text(messages("declaration.authorisations.procedureCodeChoice.radio.other")),
                     checked = form(formFieldName).value.contains(CodeOther.toString)
                 )
-            )
+            ),
+            errorMessage = form(formFieldName).error.map(err => ErrorMessage(content = Text(messages(err.message, err.args: _*))))
         ))
 
         @insetText(

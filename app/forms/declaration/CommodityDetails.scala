@@ -46,6 +46,7 @@ object CommodityDetails extends DeclarationPage {
   private def mappingCombinedNomenclatureCodeOptional: Mapping[Option[String]] =
     optional(
       text()
+        .transform(_.trim, identity[String])
         .verifying("declaration.commodityDetails.combinedNomenclatureCode.error.empty", nonEmpty)
         .verifying("declaration.commodityDetails.combinedNomenclatureCode.error.invalid", isEmpty or isNumeric)
         .verifying(

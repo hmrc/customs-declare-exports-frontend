@@ -20,12 +20,24 @@ import javax.inject.Inject
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import views.html.unauthorised
+import views.html.{unauthorised, unauthorisedEori}
+import config.featureFlags.TdrUnauthorisedMsgConfig
 
-class UnauthorisedController @Inject()(mcc: MessagesControllerComponents, unauthorisedPage: unauthorised)
-    extends FrontendController(mcc) with I18nSupport {
+class UnauthorisedController @Inject()(
+  tdrUnauthorisedMsgConfig: TdrUnauthorisedMsgConfig,
+  mcc: MessagesControllerComponents,
+  unauthorisedPage: unauthorised,
+  unauthorisedEoriPage: unauthorisedEori
+) extends FrontendController(mcc) with I18nSupport {
 
-  def onPageLoad(unauthorizedDueToEoriNotAllowed: Boolean): Action[AnyContent] = Action { implicit request =>
-    Ok(unauthorisedPage(unauthorizedDueToEoriNotAllowed))
+  def onPageLoad(unauthorizedDueToEoriNotAllowed: Boolean, displaySignOut: Boolean): Action[AnyContent] = Action { implicit request =>
+    val tdrFlagEnabled = tdrUnauthorisedMsgConfig.isTdrUnauthorisedMessageEnabled
+
+    if (tdrFlagEnabled || unauthorizedDueToEoriNotAllowed) {
+      Ok(unauthorisedEoriPage())
+    } else {
+      Ok(unauthorisedPage(displaySignOut))
+    }
+
   }
 }

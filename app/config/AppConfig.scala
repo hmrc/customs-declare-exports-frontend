@@ -128,7 +128,7 @@ class AppConfig @Inject()(
 
   val combinedPackaging = loadConfig("urls.combinedPackaging")
 
-  lazy val selfBaseUrl: Option[String] = runModeConfiguration.getOptional[String]("platform.frontend.host")
+  lazy val selfBaseUrl: Option[String] = runModeConfiguration.getOptional[String]("play.frontend.host")
   val giveFeedbackLink = {
     val contactFrontendUrl = loadConfig("microservice.services.contact-frontend.url")
     val contactFrontendServiceId = loadConfig("microservice.services.contact-frontend.serviceId")

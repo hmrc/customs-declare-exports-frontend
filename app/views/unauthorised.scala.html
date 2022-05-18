@@ -17,63 +17,45 @@
 @import config.ExternalServicesConfig
 @import views.helpers.Title
 @import views.html.components.gds._
-@import config.featureFlags.TdrUnauthorisedMsgConfig
+@import uk.gov.hmrc.govukfrontend.views.html.components.HtmlContent
 
 @this(
     govukLayout: gdsMainTemplate,
     pageTitle: pageTitle,
     paragraphBody: paragraphBody,
+    insetText: exportsInsetText,
     link: link,
     bulletList: bulletList,
-    config: ExternalServicesConfig,
-    tdrUnauthorisedMsgConfig: TdrUnauthorisedMsgConfig
+    config: ExternalServicesConfig
 )
 
-@(unauthorizedDueToEoriNotAllowed: Boolean)(implicit request: Request[_], messages: Messages)
+@(displaySignOut: Boolean = false)(implicit request: Request[_], messages: Messages)
 
-@tdrFlagEnabled = @{ tdrUnauthorisedMsgConfig.isTdrUnauthorisedMessageEnabled }
+@govukLayout(title = Title("unauthorised.heading"), displaySignOut = displaySignOut) {
+    @pageTitle(messages("unauthorised.heading"))
 
-@headingKey = @{ if (tdrFlagEnabled) "unauthorised.tdr.heading" else "unauthorised.heading.eori.not.allowed" }
+    <h2 class="govuk-heading-s">@messages("unauthorised.heading.1")</h2>
 
-@if(tdrFlagEnabled || unauthorizedDueToEoriNotAllowed) {
-    @govukLayout(title = Title(headingKey)) {
-        @pageTitle(messages(headingKey))
+    @paragraphBody(messages("unauthorised.paragraph.1", link(
+        text = messages("unauthorised.paragraph.1.linkText"),
+        call = Call("GET", config.cdsRegister)
+    )))
 
-        @paragraphBody(messages("unauthorised.tdr.body",
-            link(
-                id = Some("contact_support_link"),
-                text = messages("unauthorised.tdr.body.link"),
-                call = Call("GET", s"mailto:${messages("unauthorised.tdr.body.link")}"),
-                target="_blank"
-            ))
-        )
-    }
-} else {
-    @govukLayout(title = Title("unauthorised.heading")) {
-        @pageTitle(messages("unauthorised.heading"))
+    <h2 class="govuk-heading-s">@messages("unauthorised.heading.2")</h2>
 
-        @paragraphBody(messages("unauthorised.paragraph.1"))
+    @paragraphBody(messages("unauthorised.paragraph.2", link(
+        text = messages("unauthorised.paragraph.2.linkText"),
+        call = Call("GET", config.cdsRegister)
+    )))
 
-        @bulletList(List(
-            Html(
-                messages("unauthorised.paragraph.1.bullet.1",
-                    link(
-                        id = Some("get_eori_link"),
-                        text = messages("unauthorised.paragraph.1.bullet.1.link"),
-                        call = Call("GET", config.eoriService)
-                ))
-            ),
-            link(
-                id = Some("access_cds_link"),
-                text = messages("unauthorised.paragraph.1.bullet.2.link"),
-                call = Call("GET", config.cdsRegister)
-            )
-        ))
+    <h2 class="govuk-heading-s">@messages("unauthorised.heading.3")</h2>
 
-        @paragraphBody(messages("unauthorised.paragraph.2", link(
-            id = Some("check_cds_application_status_link"),
-            text = messages("unauthorised.paragraph.2.link"),
-            call = Call("GET", config.cdsCheckStatus)
-        )))
-    }
+    @paragraphBody(messages("unauthorised.paragraph.3", link(
+        text = messages("unauthorised.paragraph.3.linkText"),
+        call = Call("GET", config.useYourBusinessAccount)
+    )))
+
+    @insetText(HtmlContent(paragraphBody(messages("unauthorised.insetText"))))
+
 }
+

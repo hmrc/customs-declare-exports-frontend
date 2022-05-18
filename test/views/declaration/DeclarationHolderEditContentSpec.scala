@@ -19,19 +19,19 @@ package views.declaration
 import base.ExportsTestData.eori
 import base.Injector
 import forms.common.Eori
-import forms.common.YesNoAnswer.{allYesNoAnswers, No, Yes, YesNoAnswers}
+import forms.common.YesNoAnswer._
 import forms.declaration.AuthorisationProcedureCodeChoice
-import forms.declaration.AuthorisationProcedureCodeChoice.{allProcedureCodes, Choice1007, Choice1040, ChoiceOthers}
+import forms.declaration.AuthorisationProcedureCodeChoice._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
 import forms.declaration.declarationHolder.DeclarationHolder
-import models.DeclarationType.{allDeclarationTypes, CLEARANCE, DeclarationType, OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
+import models.DeclarationType._
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
 import org.jsoup.nodes.Document
 import org.scalatest.{Assertion, GivenWhenThen}
 import tools.Stubs
 import views.declaration.spec.UnitViewSpec
-import views.helpers.DeclarationHolderHelper.{bodyId, exrrHelpTextId, insetTextId, valuesToMatch, warningBodyId}
+import views.helpers.DeclarationHolderEditHelper._
 import views.html.declaration.declarationHolder.declaration_holder_edit_content
 import views.tags.ViewTest
 
@@ -53,7 +53,6 @@ class DeclarationHolderEditContentSpec extends UnitViewSpec with GivenWhenThen w
       messages must haveTranslationFor(s"$prefix.body.simplified.arrived.1007")
       messages must haveTranslationFor(s"$prefix.body.supplementary")
       messages must haveTranslationFor(s"$prefix.body.arrived.warning")
-      messages must haveTranslationFor(s"$prefix.body.arrived.paragraph")
       messages must haveTranslationFor(s"$prefix.authorisationCode")
       messages must haveTranslationFor(s"$prefix.authorisationCode.empty")
       messages must haveTranslationFor(s"$prefix.authCode.hint.clearance")
@@ -189,22 +188,28 @@ class DeclarationHolderEditContentSpec extends UnitViewSpec with GivenWhenThen w
       }
     }
 
-    "display the expected warning and paragraph" when {
-      val scenarios = Seq(
-        onStandard(aDeclaration(withAdditionalDeclarationType(STANDARD_FRONTIER)))(_),
-        onSimplified(aDeclaration(withAdditionalDeclarationType(SIMPLIFIED_FRONTIER)))(_),
-        onOccasional(aDeclaration(withAdditionalDeclarationType(OCCASIONAL_FRONTIER)))(_),
-        onClearance(aDeclaration(withAdditionalDeclarationType(CLEARANCE_FRONTIER)))(_)
-      )
-      scenarios.foreach(_ { implicit request =>
-        val partial = createPartial
-        val warning = partial.getElementsByClass("govuk-warning-text")
-        val warningParagraph = Option(partial.getElementById(s"$warningBodyId"))
-        warning.size mustBe 1
-        warning.get(0).child(1).text must include(messages(s"$prefix.body.arrived.warning"))
-        warningParagraph.isDefined mustBe true
-        warningParagraph.get.text mustBe messages(s"$prefix.body.arrived.paragraph")
-      })
+    "display the expected warning and expanders" when {
+      arrivedTypes.foreach { declarationType =>
+        s"the additional declaration type is $declarationType" in {
+          val partial = createPartial(withRequest(declarationType))
+          val warning = partial.getElementsByClass("govuk-warning-text")
+          warning.size mustBe 1
+          warning.get(0).text must be(s"! Warning ${messages(s"$prefix.body.arrived.warning")}")
+
+          val expanders = partial.getElementsByClass("govuk-details")
+          expanders.size mustBe 3
+
+          val expanderCSE = expanders.get(0).children
+          expanderCSE.size mustBe 2
+          expanderCSE.first.text mustBe messages(s"$prefix.body.arrived.expander.cse.title")
+          expanderCSE.last.text mustBe messages(s"$prefix.body.arrived.expander.cse.text")
+
+          val expanderMIB = expanders.get(1).children
+          expanderMIB.size mustBe 2
+          expanderMIB.first.text mustBe messages(s"$prefix.body.arrived.expander.mib.title")
+          expanderMIB.last.text mustBe messages(s"$prefix.body.arrived.expander.mib.text")
+        }
+      }
     }
 
     "display the expected inset text below the 'Authorisation Type Code' input field" when {

@@ -57,11 +57,8 @@ case class ExportsDeclaration(
   def inlandModeOfTransportCode: Option[ModeOfTransportCode] = locations.inlandModeOfTransportCode.flatMap(_.inlandModeOfTransportCode)
   def transportLeavingBorderCode: Option[ModeOfTransportCode] = transport.borderModeOfTransportCode.flatMap(_.code)
 
-  def additionalDocumentsIfAny(itemId: String): Option[AdditionalDocuments] =
-    itemBy(itemId).flatMap(_.additionalDocuments)
-
-  def additionalDocuments(itemId: String): AdditionalDocuments =
-    additionalDocumentsIfAny(itemId).getOrElse(AdditionalDocuments(None, Seq.empty))
+  def additionalDocumentsInformation(itemId: String): AdditionalDocuments =
+    additionalDocumentsInformationIfAny(itemId).getOrElse(AdditionalDocuments(None, Seq.empty))
 
   def authCodesRequiringAdditionalDocs: Seq[DeclarationHolder] =
     parties.declarationHoldersData
@@ -69,10 +66,10 @@ case class ExportsDeclaration(
       .getOrElse(List.empty)
 
   def listOfAdditionalDocuments(itemId: String): Seq[AdditionalDocument] =
-    additionalDocumentsIfAny(itemId).map(_.documents).getOrElse(Seq.empty)
+    additionalDocumentsInformationIfAny(itemId).map(_.documents).getOrElse(Seq.empty)
 
   def additionalDocumentsRequired(itemId: String): Option[YesNoAnswer] =
-    additionalDocumentsIfAny(itemId).flatMap(_.isRequired)
+    additionalDocumentsInformationIfAny(itemId).flatMap(_.isRequired)
 
   def addOrUpdateContainer(container: Container): ExportsDeclaration =
     copy(transport = transport.addOrUpdateContainer(container))
@@ -212,6 +209,9 @@ case class ExportsDeclaration(
     copy(readyForSubmission = Some(ready))
 
   def transform(function: ExportsDeclaration => ExportsDeclaration): ExportsDeclaration = function(this)
+
+  private def additionalDocumentsInformationIfAny(itemId: String) =
+    itemBy(itemId).flatMap(_.additionalDocuments)
 }
 
 object ExportsDeclaration {

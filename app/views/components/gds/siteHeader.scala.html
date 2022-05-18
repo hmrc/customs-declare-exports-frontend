@@ -22,10 +22,10 @@
 
 @this(hmrcHeader: HmrcHeader)
 
-@()(implicit request: Request[_], messages: Messages)
+@(displaySignOut: Boolean = false)(implicit request: Request[_], messages: Messages)
 
 @signOutHref = @{
-    if (request.isInstanceOf[AuthenticatedRequest[_]] || request.isInstanceOf[JourneyRequest[_]])
+    if (request.isInstanceOf[AuthenticatedRequest[_]] || request.isInstanceOf[JourneyRequest[_]] || displaySignOut)
         Some(controllers.routes.SignOutController.signOut(models.SignOutReason.UserAction).url)
     else
         None

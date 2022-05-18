@@ -52,7 +52,8 @@ class AdditionalProcedureCodesViewSpec extends UnitViewSpec with ExportsTestData
 
     "have proper messages for labels" in {
       messages must haveTranslationFor("declaration.additionalProcedureCodes.title")
-      messages must haveTranslationFor("declaration.additionalProcedureCodes.paragraph")
+      messages must haveTranslationFor("declaration.additionalProcedureCodes.paragraph1")
+      messages must haveTranslationFor("declaration.additionalProcedureCodes.paragraph2")
       messages must haveTranslationFor("declaration.additionalProcedureCodes.jersey.hint")
       messages must haveTranslationFor("declaration.additionalProcedureCodes.jersey.clearanceNonEidr.hint")
       messages must haveTranslationFor("declaration.additionalProcedureCodes.table.header")
