@@ -1300,7 +1300,7 @@ declaration.inlandOrBorder.inset.bullet.3.text = Customs warehouses
 declaration.inlandOrBorder.inset.bullet.4.text = Excise warehouses
 
 declaration.transportInformation.expressConsignment.title = Is this an express consignment?
-declaration.transportInformation.expressConsignment.paragraph = This is when the goods are carried by an express courier or express cargo services.
+declaration.transportInformation.expressConsignment.paragraph = This is when an Express Courier Service is being used to export the goods.
 declaration.transportInformation.expressConsignment.empty = Select yes if this is an express consignment
 
 declaration.transportInformation.transportPayment.paymentMethod = How did you pay for the express transport?
