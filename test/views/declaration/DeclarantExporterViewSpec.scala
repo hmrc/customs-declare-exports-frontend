@@ -48,6 +48,7 @@ class DeclarantExporterViewSpec extends UnitViewSpec with ExportsTestData with C
       messages must haveTranslationFor("declaration.declarant.exporter.body")
       messages must haveTranslationFor("declaration.declarant.exporter.answer.yes")
       messages must haveTranslationFor("declaration.declarant.exporter.answer.no")
+      messages must haveTranslationFor("declaration.declarant.exporter.answer.no.hint")
       messages must haveTranslationFor("declaration.declarant.exporter.error")
       messages must haveTranslationFor("tariff.declaration.areYouTheExporter.clearance.text")
     }
@@ -81,6 +82,7 @@ class DeclarantExporterViewSpec extends UnitViewSpec with ExportsTestData with C
         val view = createView()
         view.getElementById("code_no").attr("value") mustBe YesNoAnswers.no
         view.getElementsByAttributeValue("for", "code_no") must containMessageForElements("declaration.declarant.exporter.answer.no")
+        view.getElementById("code_no-item-hint") must containMessage("declaration.declarant.exporter.answer.no.hint")
       }
 
       "display 'Save and continue' button on page" in {
