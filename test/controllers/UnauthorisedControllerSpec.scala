@@ -17,42 +17,71 @@
 package controllers
 
 import base.ControllerWithoutFormSpec
+import models.UnauthorisedReason.{UrlDirect, UserEoriNotAllowed, UserIsAgent, UserIsNotEnrolled}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import views.html.{unauthorised, unauthorisedEori}
+import views.html.{unauthorised, unauthorisedAgent, unauthorisedEori}
 
 class UnauthorisedControllerSpec extends ControllerWithoutFormSpec {
 
   val unauthorisedPage = mock[unauthorised]
   val unauthorisedEoriPage = mock[unauthorisedEori]
+  val unauthorisedAgentPage = mock[unauthorisedAgent]
 
   val controller =
-    new UnauthorisedController(mockTdrUnauthorisedMsgConfig, stubMessagesControllerComponents(), unauthorisedPage, unauthorisedEoriPage)
+    new UnauthorisedController(
+      mockTdrUnauthorisedMsgConfig,
+      stubMessagesControllerComponents(),
+      unauthorisedPage,
+      unauthorisedEoriPage,
+      unauthorisedAgentPage
+    )
 
   "Unauthorised controller" should {
 
     "return 200 (OK)" when {
 
-      "display page method is invoked and" when {
+      "onPageLoad method is invoked and" when {
 
         "user has insufficient enrolments" in {
           when(unauthorisedPage(any())(any(), any())).thenReturn(HtmlFormat.empty)
-          val result = controller.onPageLoad(false, true)(getRequest())
+          val result = controller.onPageLoad(UserIsNotEnrolled)(getRequest())
           status(result) must be(OK)
         }
 
         "user has sufficient enrollments but the EORI is not in the allow list" in {
           when(unauthorisedEoriPage()(any(), any())).thenReturn(HtmlFormat.empty)
-          val result = controller.onPageLoad(true, true)(getRequest())
+          val result = controller.onPageLoad(UserEoriNotAllowed)(getRequest())
           status(result) must be(OK)
         }
 
         "tdr is enabled" in {
           when(mockTdrUnauthorisedMsgConfig.isTdrUnauthorisedMessageEnabled).thenReturn(true)
           when(unauthorisedEoriPage()(any(), any())).thenReturn(HtmlFormat.empty)
-          val result = controller.onPageLoad(false, true)(getRequest())
+          val result = controller.onPageLoad(UrlDirect)(getRequest())
+          status(result) must be(OK)
+        }
+
+        "someone travels to the URL directly" in {
+          when(unauthorisedPage(any())(any(), any())).thenReturn(HtmlFormat.empty)
+          val result = controller.onPageLoad(UrlDirect)(getRequest())
+          status(result) must be(OK)
+        }
+      }
+
+      "onAgentKickOut method is invoked and" when {
+
+        "User has agent affinity group" in {
+          when(unauthorisedAgentPage(any())(any(), any())).thenReturn(HtmlFormat.empty)
+          val result = controller.onAgentKickOut(UserIsAgent)(getRequest())
+          status(result) must be(OK)
+        }
+
+        "someone travels to the URL directly" in {
+          when(unauthorisedAgentPage(any())(any(), any())).thenReturn(HtmlFormat.empty)
+          val result = controller.onAgentKickOut(UrlDirect)(getRequest())
           status(result) must be(OK)
         }
       }

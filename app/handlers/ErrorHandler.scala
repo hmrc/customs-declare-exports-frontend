@@ -18,13 +18,15 @@ package handlers
 
 import config.AppConfig
 import controllers.routes
+import models.UnauthorisedReason.{UserIsAgent, UserIsNotEnrolled}
+
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.mvc.Results.BadRequest
 import play.api.mvc.{Request, RequestHeader, Result, Results}
 import play.api.{Configuration, Environment}
 import play.twirl.api.Html
-import uk.gov.hmrc.auth.core.{InsufficientEnrolments, NoActiveSession}
+import uk.gov.hmrc.auth.core.{InsufficientEnrolments, NoActiveSession, UnsupportedAffinityGroup}
 import uk.gov.hmrc.play.bootstrap.config.AuthRedirects
 import uk.gov.hmrc.play.bootstrap.frontend.http.FrontendErrorHandler
 import views.html.error_template
@@ -42,9 +44,10 @@ class ErrorHandler @Inject()(override val messagesApi: MessagesApi, errorPage: e
     errorPage(pageTitle, heading, message)
 
   override def resolveError(rh: RequestHeader, ex: Throwable): Result = ex match {
-    case _: NoActiveSession        => Results.Redirect(appConfig.loginUrl, Map("continue" -> Seq(appConfig.loginContinueUrl)))
-    case _: InsufficientEnrolments => Results.SeeOther(routes.UnauthorisedController.onPageLoad().url)
-    case _                         => super.resolveError(rh, ex)
+    case _: NoActiveSession          => Results.Redirect(appConfig.loginUrl, Map("continue" -> Seq(appConfig.loginContinueUrl)))
+    case _: InsufficientEnrolments   => Results.SeeOther(routes.UnauthorisedController.onPageLoad(UserIsNotEnrolled).url)
+    case _: UnsupportedAffinityGroup => Results.Redirect(routes.UnauthorisedController.onAgentKickOut(UserIsAgent))
+    case _                           => super.resolveError(rh, ex)
   }
 
   def globalErrorPage()(implicit request: Request[_]): Html =

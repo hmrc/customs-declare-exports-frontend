@@ -20,12 +20,14 @@ import com.google.inject.{ImplementedBy, Inject, ProvidedBy}
 import com.kenshoo.play.metrics.Metrics
 import config.AppConfig
 import controllers.routes
-import models.{IdentityData, SignedInUser}
 import models.AuthKey.{enrolment, identifierKey}
+import models.UnauthorisedReason.{UserEoriNotAllowed, UserIsAgent, UserIsNotEnrolled}
 import models.requests.AuthenticatedRequest
-import play.api.{Configuration, Logging}
+import models.{IdentityData, SignedInUser}
 import play.api.mvc._
-import uk.gov.hmrc.auth.core.{NoActiveSession, _}
+import play.api.{Configuration, Logging}
+import uk.gov.hmrc.auth.core.AffinityGroup.Agent
+import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals._
 import uk.gov.hmrc.auth.core.retrieve.~
 import uk.gov.hmrc.http.HeaderCarrier
@@ -64,7 +66,8 @@ class AuthActionImpl @Inject()(
         authorisation.stop()
         val eori = getEoriFromEnrolments(allEnrolments)
 
-        validateEnrollments(eori, externalId)
+        validateAffinityGroup(affinityGroup)
+        validateEnrolments(eori, externalId)
 
         val identityData = IdentityData(
           internalId,
@@ -94,18 +97,20 @@ class AuthActionImpl @Inject()(
           block(new AuthenticatedRequest(request, cdsLoggedInUser))
         } else {
           logger.warn("User is not in allow list")
-          val unauthorizedDueToEoriNotAllowed = true
-          Future.successful(Results.Redirect(routes.UnauthorisedController.onPageLoad(unauthorizedDueToEoriNotAllowed, displaySignOut = true)))
+          Future.successful(Results.Redirect(routes.UnauthorisedController.onPageLoad(UserEoriNotAllowed)))
         }
     }
 
     result.recoverWith {
+      case _: UnsupportedAffinityGroup =>
+        logger.warn("User is an agent")
+        Future.successful(Results.Redirect(routes.UnauthorisedController.onAgentKickOut(UserIsAgent)))
       case _: NoActiveSession =>
         logger.warn("User is not currently logged in.")
         Future.successful(Results.Redirect(appConfig.loginUrl, Map("continue" -> Seq(appConfig.loginContinueUrl))))
       case _: InsufficientEnrolments =>
         logger.warn("User does not have sufficient enrolments.")
-        Future.successful(Results.Redirect(routes.UnauthorisedController.onPageLoad(displaySignOut = true)))
+        Future.successful(Results.Redirect(routes.UnauthorisedController.onPageLoad(UserIsNotEnrolled)))
       case e: Throwable =>
         logger.warn("User failed auth-check.")
         Future.failed(e)
@@ -116,7 +121,13 @@ class AuthActionImpl @Inject()(
   private def getEoriFromEnrolments(enrolments: Enrolments): Option[EnrolmentIdentifier] =
     enrolments.getEnrolment(enrolment).flatMap(_.getIdentifier(identifierKey))
 
-  private def validateEnrollments(eori: Option[EnrolmentIdentifier], externalId: Option[String]): Unit = {
+  private def validateAffinityGroup(affinityGroup: Option[AffinityGroup]): Unit =
+    if (affinityGroup == Some(Agent)) {
+      logger.error("User is an agent")
+      throw UnsupportedAffinityGroup()
+    }
+
+  private def validateEnrolments(eori: Option[EnrolmentIdentifier], externalId: Option[String]): Unit = {
     if (eori.isEmpty) {
       // $COVERAGE-OFF$Trivial
       logger.error("User doesn't have eori")
