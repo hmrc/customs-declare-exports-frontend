@@ -25,8 +25,10 @@ import play.api.http.Status
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import tools.Stubs
-import uk.gov.hmrc.auth.core.{InsufficientEnrolments, NoActiveSession}
+import uk.gov.hmrc.auth.core.{InsufficientEnrolments, NoActiveSession, UnsupportedAffinityGroup}
 import views.html.error_template
+import controllers.routes
+import models.UnauthorisedReason.{UserIsAgent, UserIsNotEnrolled}
 
 import java.net.URLEncoder
 import scala.concurrent.Future
@@ -64,11 +66,12 @@ class ErrorHandlerSpec extends UnitWithMocksSpec with Stubs with OptionValues wi
 
       val error = new NoActiveSession("A user is not logged in") {}
       val result = Future.successful(errorHandler.resolveError(request, error))
+      val start = "http://localhost:6791/customs-declare-exports/start"
 
       status(result) mustBe Status.SEE_OTHER
 
       val expectedLocation =
-        s"http://localhost:9949/auth-login-stub/gg-sign-in?continue=${urlEncode("http://localhost:6791/customs-declare-exports/start")}"
+        s"http://localhost:9949/auth-login-stub/gg-sign-in?continue=${urlEncode(start)}"
 
       redirectLocation(result) mustBe Some(expectedLocation)
     }
@@ -79,7 +82,15 @@ class ErrorHandlerSpec extends UnitWithMocksSpec with Stubs with OptionValues wi
       val result = Future.successful(errorHandler.resolveError(request, error))
 
       status(result) mustBe Status.SEE_OTHER
-      redirectLocation(result).value must endWith("/unauthorised")
+      redirectLocation(result) mustBe Some(routes.UnauthorisedController.onPageLoad(UserIsNotEnrolled).url)
+    }
+
+    "handle unsupported affinity group exception" in {
+      val error = UnsupportedAffinityGroup()
+      val result = Future.successful(errorHandler.resolveError(request, error))
+
+      status(result) mustBe Status.SEE_OTHER
+      redirectLocation(result) mustBe Some(routes.UnauthorisedController.onAgentKickOut(UserIsAgent).url)
     }
   }
 }

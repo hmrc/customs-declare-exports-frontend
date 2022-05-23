@@ -20,24 +20,34 @@ import javax.inject.Inject
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import views.html.{unauthorised, unauthorisedEori}
+import views.html.{unauthorised, unauthorisedAgent, unauthorisedEori}
 import config.featureFlags.TdrUnauthorisedMsgConfig
+import models.UnauthorisedReason
+import models.UnauthorisedReason._
 
 class UnauthorisedController @Inject()(
   tdrUnauthorisedMsgConfig: TdrUnauthorisedMsgConfig,
   mcc: MessagesControllerComponents,
   unauthorisedPage: unauthorised,
-  unauthorisedEoriPage: unauthorisedEori
+  unauthorisedEoriPage: unauthorisedEori,
+  unauthorisedAgent: unauthorisedAgent
 ) extends FrontendController(mcc) with I18nSupport {
 
-  def onPageLoad(unauthorizedDueToEoriNotAllowed: Boolean, displaySignOut: Boolean): Action[AnyContent] = Action { implicit request =>
+  def onPageLoad(unauthorisedReason: UnauthorisedReason): Action[AnyContent] = Action { implicit request =>
     val tdrFlagEnabled = tdrUnauthorisedMsgConfig.isTdrUnauthorisedMessageEnabled
 
-    if (tdrFlagEnabled || unauthorizedDueToEoriNotAllowed) {
-      Ok(unauthorisedEoriPage())
-    } else {
-      Ok(unauthorisedPage(displaySignOut))
+    unauthorisedReason match {
+      case _ if tdrFlagEnabled => Ok(unauthorisedEoriPage())
+      case UserEoriNotAllowed  => Ok(unauthorisedEoriPage())
+      case UserIsNotEnrolled   => Ok(unauthorisedPage(displaySignOut = true))
+      case UrlDirect           => Ok(unauthorisedPage(displaySignOut = false))
     }
+  }
 
+  def onAgentKickOut(unauthorisedReason: UnauthorisedReason): Action[AnyContent] = Action { implicit request =>
+    unauthorisedReason match {
+      case UserIsAgent => Ok(unauthorisedAgent(displaySignOut = true))
+      case _           => Ok(unauthorisedAgent(displaySignOut = false))
+    }
   }
 }

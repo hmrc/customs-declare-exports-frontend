@@ -16,9 +16,11 @@
 
 package controllers.actions
 
+import base.ExportsTestData.newUser
 import base.{ControllerWithoutFormSpec, Injector}
 import config.AppConfig
 import controllers.{routes, ChoiceController}
+import models.UnauthorisedReason.{UserEoriNotAllowed, UserIsAgent, UserIsNotEnrolled}
 import org.mockito.Mockito.{reset, when}
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.{BearerTokenExpired, FailedRelationship}
@@ -32,7 +34,7 @@ class AuthActionSpec extends ControllerWithoutFormSpec with Injector {
   override val appConfig = mock[AppConfig]
 
   override val mockAuthAction =
-    new AuthActionImpl(mockAuthConnector, new EoriAllowList(Seq.empty), stubMessagesControllerComponents(), metricsMock, appConfig)
+    new AuthActionImpl(mockAuthConnector, new EoriAllowList(Seq("12345")), stubMessagesControllerComponents(), metricsMock, appConfig)
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -69,7 +71,25 @@ class AuthActionSpec extends ControllerWithoutFormSpec with Injector {
       val result = controller.displayPage(None)(getRequest())
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(routes.UnauthorisedController.onPageLoad(displaySignOut = true).url)
+      redirectLocation(result) mustBe Some(routes.UnauthorisedController.onPageLoad(UserIsNotEnrolled).url)
+    }
+
+    "redirect to /Unauthorised when EORI is not on allow list" in {
+      authorizedUser(newUser("11111", "external1"))
+
+      val result = controller.displayPage(None)(getRequest())
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(routes.UnauthorisedController.onPageLoad(UserEoriNotAllowed).url)
+    }
+
+    "redirect to /you-cannot-use-this-service when user is an Agent" in {
+      agentUser()
+
+      val result = controller.displayPage(None)(getRequest())
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(routes.UnauthorisedController.onAgentKickOut(UserIsAgent).url)
     }
 
     "redirect to login page for environment when External Id is missing" in {

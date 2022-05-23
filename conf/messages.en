@@ -74,6 +74,10 @@ unauthorised.tdr.heading = The EORI you entered is not yet valid on the CDS test
 unauthorised.tdr.body = Please contact {0} to ensure access has been set up for your EORI number.
 unauthorised.tdr.body.link = cdsexportsuiteam@hmrc.gov.uk
 
+unauthorisedAgent.heading = You cannot use this service
+unauthorisedAgent.paragraph.1 = You’ve signed in with Government Gateway details for an agent services account. If you are a freight forwarder or customs broker representing an exporter, sign in with the Government Gateway details for your business.
+unauthorisedAgent.paragraph.2 = You will be able to declare your representation as part of the export declaration.
+
 dateTime.date.day.error.empty = The date must include a day
 dateTime.date.month.error.empty = The date must include a month
 dateTime.date.year.error.empty = The date must include a year
