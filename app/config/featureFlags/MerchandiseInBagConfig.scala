@@ -14,21 +14,14 @@
  * limitations under the License.
  */
 
-package features
+package config.featureFlags
 
-import play.api.mvc.PathBindable
+import features.Feature
 
-object Feature extends Enumeration {
-  type Feature = Value
-  val betaBanner, default, ead, sfus, secureMessagingInbox, googleFormFeedbackLink, queryNotificationMessage, commodities, tdrUnauthorisedMessage,
-  waiver999L, merchandiseInBag =
-    Value
+import javax.inject.{Inject, Singleton}
 
-  implicit object FeaturePathStringBinder
-      extends PathBindable.Parsing[Feature.Feature](
-        withName,
-        _.toString,
-        (k: String, e: Exception) => "Cannot parse %s as Feature: %s".format(k, e.getMessage)
-      )
+@Singleton
+class MerchandiseInBagConfig @Inject()(featureSwitchConfig: FeatureSwitchConfig) {
 
+  val isMerchandiseInBagEnabled: Boolean = featureSwitchConfig.isFeatureOn(Feature.merchandiseInBag)
 }

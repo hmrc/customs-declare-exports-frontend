@@ -25,17 +25,18 @@ import org.mockito.Mockito._
 import org.mockito.ArgumentMatchers.{eq => meq, _}
 import org.scalatest.BeforeAndAfterEach
 import ProcedureCodeServiceSpec._
+import _root_.mock.FeatureFlagMocks
+
 import java.util.Locale
 import java.util.Locale.ENGLISH
-
 import scala.collection.immutable.ListMap
 
-class ProcedureCodeServiceSpec extends UnitWithMocksSpec with BeforeAndAfterEach {
+class ProcedureCodeServiceSpec extends UnitWithMocksSpec with BeforeAndAfterEach with FeatureFlagMocks {
 
   private val codeListConnector = mock[CodeListConnector]
   private val codeLinkConnector = mock[CodeLinkConnector]
 
-  private val service = new ProcedureCodeService(codeListConnector, codeLinkConnector)
+  private val service = new ProcedureCodeService(codeListConnector, codeLinkConnector, mockMerchandiseInBagConfig)
 
   private val nonC21Journeys = DeclarationType.values.filter(_ != DeclarationType.CLEARANCE)
 
@@ -113,10 +114,23 @@ class ProcedureCodeServiceSpec extends UnitWithMocksSpec with BeforeAndAfterEach
   }
 
   "ProcedureCodeService getAdditionalProcedureCodesFor" should {
-    "return list of all valid additional procedure codes for a given procedure code" in {
-      service.getAdditionalProcedureCodesFor(sampleProcedureCode1.code, ENGLISH) must equal(
-        Seq(sampleAdditionalProcedureCode1, sampleAdditionalProcedureCode2)
-      )
+    "return list of all valid additional procedure codes for a given procedure code" when {
+      "merchandiseInBag is turned on" in {
+
+        when(mockMerchandiseInBagConfig.isMerchandiseInBagEnabled).thenReturn(true)
+
+        service.getAdditionalProcedureCodesFor(sampleProcedureCode1.code, ENGLISH) must equal(
+          Seq(sampleAdditionalProcedureCode1, sampleAdditionalProcedureCode2, sampleAdditionalProcedureCode1MB)
+        )
+      }
+      "merchandiseInBag is turned off" in {
+
+        when(mockMerchandiseInBagConfig.isMerchandiseInBagEnabled).thenReturn(false)
+
+        service.getAdditionalProcedureCodesFor(sampleProcedureCode1.code, ENGLISH) must equal(
+          Seq(sampleAdditionalProcedureCode1, sampleAdditionalProcedureCode2)
+        )
+      }
     }
 
     "return list of all valid C21 additional procedure codes for a given C21 procedure code" in {
@@ -151,10 +165,12 @@ object ProcedureCodeServiceSpec {
 
   val sampleAdditionalProcedureCode1 = AdditionalProcedureCode("001", "First additional procedure code")
   val sampleAdditionalProcedureCode2 = AdditionalProcedureCode("002", "Second additional procedure code")
+  val sampleAdditionalProcedureCode1MB = AdditionalProcedureCode("1MB", "Merchandise In Baggage")
 
   val additionalProcedureCodesMap = ListMap(
     sampleAdditionalProcedureCode1.code -> sampleAdditionalProcedureCode1,
-    sampleAdditionalProcedureCode2.code -> sampleAdditionalProcedureCode2
+    sampleAdditionalProcedureCode2.code -> sampleAdditionalProcedureCode2,
+    sampleAdditionalProcedureCode1MB.code -> sampleAdditionalProcedureCode1MB
   )
 
   val sampleC21AdditionalProcedureCodes1 = AdditionalProcedureCode("101", "First C21 additional procedure code")
@@ -165,6 +181,7 @@ object ProcedureCodeServiceSpec {
     sampleC21AdditionalProcedureCodes2.code -> sampleC21AdditionalProcedureCodes2
   )
 
-  val validAdditionalCodesForProcedureCode1 = Seq(sampleAdditionalProcedureCode1.code, sampleAdditionalProcedureCode2.code)
+  val validAdditionalCodesForProcedureCode1 =
+    Seq(sampleAdditionalProcedureCode1.code, sampleAdditionalProcedureCode2.code, sampleAdditionalProcedureCode1MB.code)
   val validAdditionalCodesForC21ProcedureCode1 = Seq(sampleC21AdditionalProcedureCodes1.code, sampleC21AdditionalProcedureCodes2.code)
 }

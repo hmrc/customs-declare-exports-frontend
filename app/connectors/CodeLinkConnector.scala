@@ -45,10 +45,11 @@ trait CodeLinkConnector {
 class FileBasedCodeLinkConnector @Inject()(appConfig: AppConfig) extends CodeLinkConnector {
 
   private def readCodeLinksFromFile[T <: CommonCode](srcFile: String): Map[String, Seq[String]] = {
+
     val codeLinks = JsonFile.getJsonArrayFromFile(srcFile, CodeLink.formats)
 
     codeLinks.map { codeLink =>
-      (codeLink.parentCode -> codeLink.childCodes)
+      codeLink.parentCode -> codeLink.childCodes
     }.toMap
   }
 

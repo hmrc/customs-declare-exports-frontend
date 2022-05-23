@@ -90,6 +90,11 @@
 	"cy": "Goods exported or dispatched under diplomatic privilege (official use)"
   },
   {
+    "code":"1MB",
+    "en": "Merchandise in Baggage",
+    "cy": "Merchandise in Baggage"
+  },
+  {
     "code":"1MP",
 	"en": "Prior export of equivalent milk and milk products (EX/IM)",
 	"cy": "Prior export of equivalent milk and milk products (EX/IM)"
