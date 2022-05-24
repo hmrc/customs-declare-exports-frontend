@@ -16,16 +16,14 @@
 
 package services.view
 
-import config.AppConfig
 import config.featureFlags.MerchandiseInBagConfig
-
-import java.util.Locale
 import connectors.CodeListConnector
 import forms.declaration.declarationHolder.AuthorizationTypeCodes.codesFilteredFromView
 import forms.declaration.declarationHolder.DeclarationHolder
-
-import javax.inject.{Inject, Singleton}
 import models.codes.HolderOfAuthorisationCode
+
+import java.util.Locale
+import javax.inject.{Inject, Singleton}
 
 @Singleton
 class HolderOfAuthorisationCodes @Inject()(codeListConnector: CodeListConnector, merchandiseInBagConfig: MerchandiseInBagConfig) {

@@ -23,7 +23,7 @@ import controllers.{routes, ChoiceController}
 import models.UnauthorisedReason.{UserEoriNotAllowed, UserIsAgent, UserIsNotEnrolled}
 import org.mockito.Mockito.{reset, when}
 import play.api.test.Helpers._
-import uk.gov.hmrc.auth.core.{BearerTokenExpired, FailedRelationship}
+import uk.gov.hmrc.auth.core.{BearerTokenExpired, FailedRelationship, UnsupportedAffinityGroup}
 import views.html.choice_page
 
 import java.net.URLEncoder
@@ -84,7 +84,7 @@ class AuthActionSpec extends ControllerWithoutFormSpec with Injector {
     }
 
     "redirect to /you-cannot-use-this-service when user is an Agent" in {
-      agentUser()
+      unauthorizedUser(UnsupportedAffinityGroup())
 
       val result = controller.displayPage(None)(getRequest())
 

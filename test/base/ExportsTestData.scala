@@ -17,8 +17,8 @@
 package base
 
 import forms.Choice
-import forms.Choice._
 import forms.Choice.AllowedChoiceValues._
+import forms.Choice._
 import forms.declaration.LocationOfGoods
 import forms.declaration.ModeOfTransportCode.RoRo
 import models.AuthKey.{enrolment, identifierKey}
@@ -30,7 +30,7 @@ import org.joda.time.DateTimeZone.UTC
 import org.joda.time.{DateTime, LocalDate}
 import play.api.libs.json._
 import services.cache.{ExportsDeclarationBuilder, ExportsItemBuilder}
-import uk.gov.hmrc.auth.core.AffinityGroup.{Agent, Individual}
+import uk.gov.hmrc.auth.core.AffinityGroup.Individual
 import uk.gov.hmrc.auth.core.ConfidenceLevel.L50
 import uk.gov.hmrc.auth.core.retrieve._
 import uk.gov.hmrc.auth.core.{Enrolment, Enrolments, User}
@@ -49,7 +49,6 @@ object ExportsTestData extends ExportsDeclarationBuilder with ExportsItemBuilder
   val nrsItmpAddress =
     ItmpAddress(Some("line1"), Some("line2"), Some("line3"), Some("line4"), Some("line5"), Some("postCode"), Some("countryName"), Some("countryCode"))
   val nrsAffinityGroup = Some(Individual)
-  val nrsAgentAffinityGroup = Some(Agent)
   val nrsCredentialStrength = Some("STRONG")
   val nrsDateOfBirth = Some(LocalDate.now().minusYears(25))
   val eori = "GB123456789012000"
@@ -59,7 +58,6 @@ object ExportsTestData extends ExportsDeclarationBuilder with ExportsItemBuilder
   val mrn = "20GB46J8TMJ4RFGVA0"
   val mucr = "CZYX123A"
   val eidrDateStamp = "20001231"
-  val externalId = "0401"
 
   val pc1040 = Some(ProcedureCodesData(Some("1040"), List(NO_APC_APPLIES_CODE)))
 

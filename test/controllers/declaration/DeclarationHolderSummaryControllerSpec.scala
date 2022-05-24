@@ -17,9 +17,8 @@
 package controllers.declaration
 
 import base.ControllerSpec
-import forms.common.{Eori, YesNoAnswer}
 import forms.common.YesNoAnswer.formId
-import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
+import forms.common.{Eori, YesNoAnswer}
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.arrivedTypes
 import forms.declaration.declarationHolder.{AuthorizationTypeCodes, DeclarationHolder}
 import models.DeclarationType._

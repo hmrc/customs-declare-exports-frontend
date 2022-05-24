@@ -23,7 +23,7 @@ import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.{formId, YesNoAnswers}
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.isArrived
-import forms.declaration.declarationHolder.AuthorizationTypeCodes.{containAtLeastOneOfAuthCodes, isAuthCode, mutuallyExclusiveAuthCodes}
+import forms.declaration.declarationHolder.AuthorizationTypeCodes.{containAtLeastOneOfAuthCodes, isAuthCode}
 import models.Mode
 import models.requests.JourneyRequest
 import play.api.data.{Form, FormError}

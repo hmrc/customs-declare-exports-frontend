@@ -26,7 +26,7 @@ import models.requests.AuthenticatedRequest
 import models.{IdentityData, SignedInUser}
 import play.api.mvc._
 import play.api.{Configuration, Logging}
-import uk.gov.hmrc.auth.core.AffinityGroup.Agent
+import uk.gov.hmrc.auth.core.AffinityGroup.{Individual, Organisation}
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals._
 import uk.gov.hmrc.auth.core.retrieve.~
@@ -59,14 +59,13 @@ class AuthActionImpl @Inject()(
 
     val authorisation = authTimer.time()
 
-    val result = authorised(Enrolment(enrolment)).retrieve(authData) {
+    val result = authorised((Individual or Organisation) and Enrolment(enrolment)).retrieve(authData) {
       case credentials ~ name ~ email ~ externalId ~ internalId ~ affinityGroup ~ allEnrolments ~ agentCode ~
             confidenceLevel ~ authNino ~ saUtr ~ dateOfBirth ~ agentInformation ~ groupIdentifier ~
             credentialRole ~ mdtpInformation ~ itmpName ~ itmpDateOfBirth ~ itmpAddress ~ credentialStrength ~ loginTimes =>
         authorisation.stop()
         val eori = getEoriFromEnrolments(allEnrolments)
 
-        validateAffinityGroup(affinityGroup)
         validateEnrolments(eori, externalId)
 
         val identityData = IdentityData(
@@ -120,12 +119,6 @@ class AuthActionImpl @Inject()(
 
   private def getEoriFromEnrolments(enrolments: Enrolments): Option[EnrolmentIdentifier] =
     enrolments.getEnrolment(enrolment).flatMap(_.getIdentifier(identifierKey))
-
-  private def validateAffinityGroup(affinityGroup: Option[AffinityGroup]): Unit =
-    if (affinityGroup == Some(Agent)) {
-      logger.error("User is an agent")
-      throw UnsupportedAffinityGroup()
-    }
 
   private def validateEnrolments(eori: Option[EnrolmentIdentifier], externalId: Option[String]): Unit = {
     if (eori.isEmpty) {
