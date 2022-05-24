@@ -19,7 +19,6 @@ package forms.declaration.declarationHolder
 import config.featureFlags.MerchandiseInBagConfig
 import controllers.helpers.DeclarationHolderHelper.declarationHolders
 import models.ExportsDeclaration
-import models.codes.HolderOfAuthorisationCode
 import models.requests.JourneyRequest
 
 object AuthorizationTypeCodes {
