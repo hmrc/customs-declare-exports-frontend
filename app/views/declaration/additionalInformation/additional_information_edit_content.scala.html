@@ -77,6 +77,6 @@
     html = HtmlFormat.fill(immutable.Seq(
         pageFields,
         tariffExpander(AdditionalInformation, request.declarationType)(messages, appConfig),
-        saveButtons()
+        saveButtons(mode)
     ))
 ))

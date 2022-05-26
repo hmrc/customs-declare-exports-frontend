@@ -85,7 +85,7 @@
             html = HtmlFormat.fill(immutable.Seq(
                 inputFields,
                 tariffExpander(AdditionalFiscalReference, request.declarationType)(messages, appConfig),
-                saveButtons()
+                saveButtons(mode)
             ))
         ))
     }

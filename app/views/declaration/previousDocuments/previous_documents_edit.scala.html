@@ -80,6 +80,6 @@
     html = HtmlFormat.fill(List(
         formFields,
         tariffExpander(Document, request.declarationType)(messages, appConfig),
-        saveButtons()
+        saveButtons(mode)
     ))
 ))

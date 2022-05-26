@@ -133,7 +133,7 @@
         @govukFieldset(Fieldset(
             html = HtmlFormat.fill(immutable.Seq(
                 addAnotherQuestion("declaration.declarationHolders.add.another", form),
-                saveButtons()
+                saveButtons(mode)
             ))
         ))
     }
