@@ -27,19 +27,21 @@ object FormAction {
   private val addFieldLabel = "AddField"
   private val saveAndContinueLabel = "SaveAndContinue"
   private val saveAndReturnLabel = "SaveAndReturn"
+  private val saveAndReturnToSummaryLabel = "SaveAndReturnToSummary"
   private val continueLabel = "Continue"
   private val removeLabel = "Remove"
 
   def bindFromRequest()(implicit request: Request[AnyContent]): FormAction =
     request.body.asFormUrlEncoded.flatMap { body =>
       body.flatMap {
-        case (`addFieldLabel`, values)   => Some(AddField(values.headOption.getOrElse("")))
-        case (`addLabel`, _)             => Some(Add)
-        case (`saveAndContinueLabel`, _) => Some(SaveAndContinue)
-        case (`saveAndReturnLabel`, _)   => Some(SaveAndReturn)
-        case (`continueLabel`, _)        => Some(Continue)
-        case (`removeLabel`, values)     => Some(Remove(values))
-        case _                           => None
+        case (`addFieldLabel`, values)          => Some(AddField(values.headOption.getOrElse("")))
+        case (`addLabel`, _)                    => Some(Add)
+        case (`saveAndContinueLabel`, _)        => Some(SaveAndContinue)
+        case (`saveAndReturnLabel`, _)          => Some(SaveAndReturn)
+        case (`saveAndReturnToSummaryLabel`, _) => Some(SaveAndReturnToSummary)
+        case (`continueLabel`, _)               => Some(Continue)
+        case (`removeLabel`, values)            => Some(Remove(values))
+        case _                                  => None
       }.headOption
     }.getOrElse(Unknown)
 }
@@ -48,6 +50,7 @@ case object Add extends FormAction
 case object Unknown extends FormAction
 case object SaveAndContinue extends FormAction
 case object SaveAndReturn extends FormAction
+case object SaveAndReturnToSummary extends FormAction
 case object Continue extends FormAction
 case class Remove(keys: Seq[String]) extends FormAction
 case class AddField(field: String) extends FormAction
