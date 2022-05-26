@@ -1,0 +1,12 @@
+@import controllers.helpers.SaveAndReturnToSummary
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+
+@this(govukButton : GovukButton)
+
+@(messageKey: String = "site.saveAndReturnToSummary")(implicit messages: Messages)
+
+@govukButton(Button(
+  attributes = Map("id" -> "save_and_return_to_summary", "name" -> SaveAndReturnToSummary.toString),
+  classes = "govuk-button--secondary",
+  content = Text(messages(messageKey))
+))
