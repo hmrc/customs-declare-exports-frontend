@@ -66,7 +66,7 @@ object Mode {
     override val next: Mode = Normal
   }
 
-  private val modes = Set[Mode](Normal, Amend, Draft, Change, ChangeAmend, ErrorFix)
+  val modes: Set[Mode] = Set[Mode](Normal, Amend, Draft, Change, ChangeAmend, ErrorFix)
 
   def withName(str: String): Option[Mode] =
     modes.find(_.name == str)
