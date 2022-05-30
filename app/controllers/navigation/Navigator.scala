@@ -370,11 +370,15 @@ class Navigator @Inject()(
   ): Result =
     (mode, FormAction.bindFromRequest) match {
       case (ErrorFix, formAction) => handleErrorFixMode(factory, formAction, isErrorFixInProgress)
-
       case (_, SaveAndReturn) =>
         auditService.auditAllPagesUserInput(AuditTypes.SaveAndReturnSubmission, req.cacheModel)
         goToDraftDeclaration
-
+      case (Mode.Draft, SaveAndReturnToSummary) =>
+        Results.Redirect(routes.SummaryController.displayPage(Mode.Draft))
+      case (Mode.ChangeAmend, SaveAndReturnToSummary) =>
+        Results.Redirect(routes.SummaryController.displayPageOnAmend)
+      case (Mode.Change, SaveAndReturnToSummary) =>
+        Results.Redirect(routes.SummaryController.displayPage(Mode.Normal))
       case _ => Results.Redirect(factory(mode))
     }
 

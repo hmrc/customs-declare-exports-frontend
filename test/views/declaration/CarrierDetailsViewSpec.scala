@@ -19,7 +19,6 @@ package views.declaration
 import base.Injector
 import connectors.CodeListConnector
 import controllers.declaration.routes.CarrierEoriNumberController
-import controllers.helpers.SaveAndReturn
 import forms.common.Address
 import forms.common.AddressSpec._
 import forms.declaration.EntityDetails
@@ -62,8 +61,8 @@ class CarrierDetailsViewSpec extends AddressViewSpec with CommonMessages with St
   private def form(implicit request: JourneyRequest[_]): Form[CarrierDetails] =
     CarrierDetails.form(request.declarationType)
 
-  private def createView(form: Form[CarrierDetails])(implicit request: JourneyRequest[_]): Document =
-    carrierDetailsPage(Mode.Normal, form)(request, messages)
+  private def createView(form: Form[CarrierDetails], mode: Mode = Mode.Normal)(implicit request: JourneyRequest[_]): Document =
+    carrierDetailsPage(mode, form)(request, messages)
 
   "Carrier Details View on empty page" should {
 
@@ -170,15 +169,8 @@ class CarrierDetailsViewSpec extends AddressViewSpec with CommonMessages with St
         actualText mustBe removeLineBreakIfAny(expectedText)
       }
 
-      "display 'Save and continue' button on page" in {
-        view.getElementById("submit").text mustBe messages(saveAndContinueCaption)
-      }
-
-      "display 'Save and return' button on page" in {
-        val button = view.getElementById("submit_and_return")
-        button.text mustBe messages(saveAndReturnCaption)
-        button.attr("name") mustBe SaveAndReturn.toString
-      }
+      val createViewWithMode: Mode => Document = mode => createView(form, mode)
+      checkAllSaveButtonsAreDisplayed(createViewWithMode)
     }
   }
 

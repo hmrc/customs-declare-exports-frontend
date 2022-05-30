@@ -14,11 +14,19 @@
  * limitations under the License.
  *@
 
-@this(saveAndContinue: saveAndContinue)
+@import models.Mode._
 
-@(saveAndContinueKey: String = "site.save_and_continue", saveAsDraftKey: String = "site.save_and_come_back_later")(implicit messages: Messages)
 
-@saveAndContinue(saveAndContinueKey)
+@this(saveAndContinue: saveAndContinue, saveAndReturnToSummary: saveAndReturnToSummary)
+
+@(mode: Mode)(implicit messages: Messages)
+
+<div class="govuk-button-group">
+@saveAndContinue()
+@if(Seq(Draft, ChangeAmend, Change).contains(mode)) {
+  @saveAndReturnToSummary()
+}
+</div>
 <p class="govuk-body">
- @saveAsDraft(saveAsDraftKey)
+ @saveAsDraft()
 </p>

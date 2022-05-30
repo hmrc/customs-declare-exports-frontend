@@ -19,7 +19,6 @@ package views.declaration
 import base.Injector
 import connectors.CodeListConnector
 import controllers.declaration.routes
-import controllers.helpers.SaveAndReturn
 import forms.common.{Address, AddressSpec}
 import forms.declaration.EntityDetails
 import forms.declaration.exporter.ExporterDetails
@@ -59,8 +58,8 @@ class ExporterDetailsViewSpec extends AddressViewSpec with CommonMessages with S
 
   private def form()(implicit request: JourneyRequest[_]): Form[ExporterDetails] = ExporterDetails.form(request.declarationType)
 
-  private def createView(form: Form[ExporterDetails])(implicit request: JourneyRequest[_]): Document =
-    exporterDetailsPage(Mode.Normal, form)(request, messages)
+  private def createView(form: Form[ExporterDetails], mode: Mode = Mode.Normal)(implicit request: JourneyRequest[_]): Document =
+    exporterDetailsPage(mode, form)(request, messages)
 
   "Exporter Details View on empty page" should {
 
@@ -114,16 +113,8 @@ class ExporterDetailsViewSpec extends AddressViewSpec with CommonMessages with S
         view.getElementById("details_address_country").attr("value") mustBe empty
       }
 
-      "display 'Save and continue' button" in {
-        val saveButton = createView(form()).getElementById("submit")
-        saveButton.text() mustBe messages(saveAndContinueCaption)
-      }
-
-      "display 'Save and return' button" in {
-        val saveButton = createView(form()).getElementById("submit_and_return")
-        saveButton.text() mustBe messages(saveAndReturnCaption)
-        saveButton.attr("name") mustBe SaveAndReturn.toString
-      }
+      val createViewWithMode: Mode => Document = mode => createView(form(), mode = mode)
+      checkAllSaveButtonsAreDisplayed(createViewWithMode)
     }
 
     onEveryDeclarationJourney() { implicit request =>

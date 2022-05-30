@@ -120,13 +120,8 @@ class InlandTransportDetailsViewSpec extends UnitViewSpec with ExportsTestData w
         }
       }
 
-      "display 'Save and continue' button on page" in {
-        view.getElementById("submit") must containMessage("site.save_and_continue")
-      }
-
-      "display 'Save and return' button on page" in {
-        view.getElementById("submit_and_return") must containMessage("site.save_and_come_back_later")
-      }
+      val createViewWithMode: Mode => Document = mode => createView(mode = mode)
+      checkAllSaveButtonsAreDisplayed(createViewWithMode)
     }
 
     "display 'Back' button that links to /inland-or-border" when {

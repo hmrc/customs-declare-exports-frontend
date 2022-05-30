@@ -35,8 +35,8 @@ class TransportPaymentViewSpec extends UnitViewSpec with ExportsTestData with St
 
   private val page = instanceOf[transport_payment]
   private val form: Form[TransportPayment] = TransportPayment.form()
-  private def createView()(implicit request: JourneyRequest[_]): Document =
-    page(Mode.Normal, form)(request, messages)
+  private def createView(mode: Mode = Mode.Normal)(implicit request: JourneyRequest[_]): Document =
+    page(mode, form)(request, messages)
 
   "Transport Payment View" must {
     onJourney(DeclarationType.SIMPLIFIED, DeclarationType.STANDARD) { implicit request =>
@@ -62,15 +62,8 @@ class TransportPaymentViewSpec extends UnitViewSpec with ExportsTestData with St
         choices must containMessage("declaration.transportInformation.transportPayment.paymentMethod.notAvailable")
       }
 
-      "display 'Save and continue' button on page" in {
-        val saveButton = view.getElementById("submit")
-        saveButton must containMessage(saveAndContinueCaption)
-      }
-
-      "display 'Save and return' button on page" in {
-        val saveAndReturnButton = view.getElementById("submit_and_return")
-        saveAndReturnButton must containMessage(saveAndReturnCaption)
-      }
+      val createViewWithMode: Mode => Document = mode => createView(mode = mode)
+      checkAllSaveButtonsAreDisplayed(createViewWithMode)
 
       "display 'Back' button that links to the 'Express Consignment' page" in {
         val backLinkContainer = view.getElementById("back-link")

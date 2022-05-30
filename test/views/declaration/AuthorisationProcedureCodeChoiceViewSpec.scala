@@ -18,11 +18,10 @@ package views.declaration
 
 import base.Injector
 import controllers.declaration.routes
-import controllers.helpers.SaveAndReturn
 import forms.common.YesNoAnswer._
 import forms.declaration.AuthorisationProcedureCodeChoice
-import models.Mode
 import models.DeclarationType._
+import models.Mode
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import tools.Stubs
@@ -33,7 +32,8 @@ import views.html.declaration.authorisation_procedure_code_choice
 class AuthorisationProcedureCodeChoiceViewSpec extends UnitViewSpec with Stubs with Injector {
 
   private val page = instanceOf[authorisation_procedure_code_choice]
-  private def view(implicit request: JourneyRequest[_]): Document = page(AuthorisationProcedureCodeChoice.form(), Mode.Normal)
+  private def createView(mode: Mode = Mode.Normal)(implicit request: JourneyRequest[_]): Document =
+    page(AuthorisationProcedureCodeChoice.form(), mode)
 
   "Which export procedure are you using Page" must {
 
@@ -65,6 +65,8 @@ class AuthorisationProcedureCodeChoiceViewSpec extends UnitViewSpec with Stubs w
     }
 
     onEveryDeclarationJourney() { implicit request =>
+      val view = createView()
+
       "display section header" in {
         view.getElementById("section-header") must containMessage("declaration.section.2")
       }
@@ -108,18 +110,13 @@ class AuthorisationProcedureCodeChoiceViewSpec extends UnitViewSpec with Stubs w
         )
       }
 
-      "display 'Save and continue' button on page" in {
-        view.getElementById("submit") must containMessage("site.save_and_continue")
-      }
-
-      "display 'Save and return' button on page" in {
-        val saveAndReturn = view.getElementById("submit_and_return")
-        saveAndReturn must containMessage("site.save_and_come_back_later")
-        saveAndReturn must haveAttribute("name", SaveAndReturn.toString)
-      }
+      val createViewWithMode: Mode => Document = mode => createView(mode = mode)
+      checkAllSaveButtonsAreDisplayed(createViewWithMode)
     }
 
     onJourney(STANDARD, SIMPLIFIED, SUPPLEMENTARY, OCCASIONAL) { implicit request =>
+      val view = createView()
+
       "display 'Back' button that links to 'Authorisations Required' page" in {
         val backButton = view.getElementById("back-link")
         backButton must containMessage("site.back")
@@ -129,6 +126,8 @@ class AuthorisationProcedureCodeChoiceViewSpec extends UnitViewSpec with Stubs w
     }
 
     onClearance(aDeclaration(withType(CLEARANCE), withEntryIntoDeclarantsRecords(YesNoAnswers.yes))) { implicit request =>
+      val view = createView()
+
       "EIDR is true" must {
         "display 'Back' button that links to 'Consignee Details' page" in {
           val backButton = view.getElementById("back-link")
@@ -139,6 +138,8 @@ class AuthorisationProcedureCodeChoiceViewSpec extends UnitViewSpec with Stubs w
     }
 
     onClearance(aDeclaration(withType(CLEARANCE), withEntryIntoDeclarantsRecords(YesNoAnswers.no))) { implicit request =>
+      val view = createView()
+
       "EIDR is false" must {
         "display 'Back' button that links to 'Other parties' page" in {
           val backButton = view.getElementById("back-link")

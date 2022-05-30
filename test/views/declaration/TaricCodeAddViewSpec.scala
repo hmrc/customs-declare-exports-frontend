@@ -35,8 +35,8 @@ class TaricCodeAddViewSpec extends UnitViewSpec with ExportsTestData with Stubs 
   private val form: Form[TaricCode] = TaricCode.form()
   private val page = instanceOf[taric_code_add]
 
-  private def createView(form: Form[TaricCode] = form): Document =
-    page(Mode.Normal, itemId, form)(journeyRequest(), messages)
+  private def createView(form: Form[TaricCode] = form, mode: Mode = Mode.Normal): Document =
+    page(mode, itemId, form)(journeyRequest(), messages)
 
   "Taric Code Add View" should {
     val view = createView()
@@ -53,15 +53,8 @@ class TaricCodeAddViewSpec extends UnitViewSpec with ExportsTestData with Stubs 
       )
     }
 
-    "display 'Save and continue' button on page" in {
-      val saveButton = view.getElementById("submit")
-      saveButton must containMessage(saveAndContinueCaption)
-    }
-
-    "display 'Save and return' button on page" in {
-      val saveAndReturnButton = view.getElementById("submit_and_return")
-      saveAndReturnButton must containMessage(saveAndReturnCaption)
-    }
+    val createViewWithMode: Mode => Document = mode => createView(mode = mode)
+    checkAllSaveButtonsAreDisplayed(createViewWithMode)
   }
 
   "Taric Code Add View for invalid input" should {

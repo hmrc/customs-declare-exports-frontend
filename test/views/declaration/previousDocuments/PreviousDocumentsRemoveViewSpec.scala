@@ -19,9 +19,9 @@ package views.declaration.previousDocuments
 import base.Injector
 import forms.common.YesNoAnswer
 import forms.declaration.Document
+import org.jsoup.nodes.{Document => nodeDocument}
 import models.Mode
 import models.requests.JourneyRequest
-import play.twirl.api.Html
 import utils.ListItem
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.previousDocuments.previous_documents_remove
@@ -33,8 +33,8 @@ class PreviousDocumentsRemoveViewSpec extends UnitViewSpec with Injector {
   private val documentWithRelatesTo = Document("355", "reference", Some("3"))
   private val documentWithoutRelatesTo = Document("355", "reference", None)
 
-  private def createView(document: Document = documentWithRelatesTo)(implicit request: JourneyRequest[_]): Html =
-    page(Mode.Normal, ListItem.createId(0, documentWithRelatesTo), document, form)(request, messages)
+  private def createView(document: Document = documentWithRelatesTo, mode: Mode = Mode.Normal)(implicit request: JourneyRequest[_]) =
+    page(mode, ListItem.createId(0, documentWithRelatesTo), document, form)(request, messages)
 
   "Previous Documents Remove page" should {
 
@@ -102,13 +102,8 @@ class PreviousDocumentsRemoveViewSpec extends UnitViewSpec with Injector {
         backButton must haveHref(controllers.declaration.routes.PreviousDocumentsSummaryController.displayPage(Mode.Normal))
       }
 
-      "display 'Save and continue' button on page" in {
-        createView().getElementById("submit") must containMessage("site.save_and_continue")
-      }
-
-      "display 'Save and return' button on page" in {
-        createView().getElementById("submit_and_return") must containMessage("site.save_and_come_back_later")
-      }
+      val createViewWithMode: Mode => nodeDocument = mode => createView(mode = mode)
+      checkAllSaveButtonsAreDisplayed(createViewWithMode)
     }
   }
 }

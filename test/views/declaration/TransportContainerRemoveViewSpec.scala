@@ -38,8 +38,8 @@ class TransportContainerRemoveViewSpec extends UnitViewSpec with Stubs with Comm
   private val form: Form[YesNoAnswer] = YesNoAnswer.form()
   private val page = instanceOf[transport_container_remove]
 
-  private def createView(form: Form[YesNoAnswer] = form, container: Container = container): Document =
-    page(Mode.Normal, form, container)(request, messages)
+  private def createView(form: Form[YesNoAnswer] = form, container: Container = container, mode: Mode = Mode.Normal): Document =
+    page(mode, form, container)(request, messages)
 
   "Transport Containers Remove View" should {
     val view = createView()
@@ -71,15 +71,8 @@ class TransportContainerRemoveViewSpec extends UnitViewSpec with Stubs with Comm
       )
     }
 
-    "display 'Save and continue' button on page" in {
-      val saveButton = view.getElementById("submit")
-      saveButton must containMessage(saveAndContinueCaption)
-    }
-
-    "display 'Save and return' button on page" in {
-      val saveAndReturnButton = view.getElementById("submit_and_return")
-      saveAndReturnButton must containMessage(saveAndReturnCaption)
-    }
+    val createViewWithMode: Mode => Document = mode => createView(mode = mode)
+    checkAllSaveButtonsAreDisplayed(createViewWithMode)
   }
 
   "Seal Remove View for invalid input" should {

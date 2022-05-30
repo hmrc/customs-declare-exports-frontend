@@ -16,13 +16,12 @@
 
 package views.declaration
 
-import base.{Injector, TestHelper}
 import base.ExportsTestData._
+import base.{Injector, TestHelper}
 import controllers.declaration.routes
-import controllers.helpers.SaveAndReturn
-import forms.{Ducr, Lrn, Mrn}
 import forms.declaration.ConsignmentReferences
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.{SUPPLEMENTARY_EIDR, SUPPLEMENTARY_SIMPLIFIED}
+import forms.{Ducr, Lrn, Mrn}
 import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
 import models.Mode
 import models.requests.JourneyRequest
@@ -40,9 +39,9 @@ class ConsignmentReferencesViewSpec extends UnitViewSpec with CommonMessages wit
   private val incorrectDUCR = "7GB000000000000-1234512345123451234512345"
   private val consignmentReferencesPage = instanceOf[consignment_references]
 
-  private def createView(maybeForm: Option[Form[ConsignmentReferences]])(implicit request: JourneyRequest[_]): Document =
+  private def createView(maybeForm: Option[Form[ConsignmentReferences]], mode: Mode = Mode.Normal)(implicit request: JourneyRequest[_]): Document =
     consignmentReferencesPage(
-      Mode.Normal,
+      mode,
       maybeForm.getOrElse(ConsignmentReferences.form(request.declarationType, request.cacheModel.additionalDeclarationType))
     )(request, messages)
 
@@ -97,18 +96,8 @@ class ConsignmentReferencesViewSpec extends UnitViewSpec with CommonMessages wit
         createView().getElementById("section-header").text() must include(messages("declaration.section.1"))
       }
 
-      "display 'Save and continue' button on page" in {
-        val view = createView()
-        val saveButton = view.getElementById("submit")
-        saveButton.text() mustBe messages(saveAndContinueCaption)
-      }
-
-      "display 'Save and return' button on page" in {
-        val view = createView()
-        val saveButton = view.getElementById("submit_and_return")
-        saveButton.text() mustBe messages(saveAndReturnCaption)
-        saveButton.attr("name") mustBe SaveAndReturn.toString
-      }
+      val createViewWithMode: Mode => Document = mode => createView(None, mode)
+      checkAllSaveButtonsAreDisplayed(createViewWithMode)
     }
 
     onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, CLEARANCE) { implicit request =>

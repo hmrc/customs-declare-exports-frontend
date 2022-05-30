@@ -20,6 +20,7 @@ import base.Injector
 import forms.declaration.SupervisingCustomsOffice
 import models.requests.JourneyRequest
 import models.{DeclarationType, ExportsDeclaration, Mode}
+import org.jsoup.nodes.Document
 import play.api.data.Form
 import services.cache.ExportsTestData
 import tools.Stubs
@@ -62,13 +63,8 @@ class SupervisingCustomsOfficeViewSpec extends UnitViewSpec with ExportsTestData
         view.getElementById("section-header") must containMessage("declaration.section.6")
       }
 
-      "display 'Save and continue' button on page" in {
-        view.getElementById("submit") must containMessage("site.save_and_continue")
-      }
-
-      "display 'Save and return' button on page" in {
-        view.getElementById("submit_and_return") must containMessage("site.save_and_come_back_later")
-      }
+      val createViewWithMode: Mode => Document = mode => createView(mode = mode)
+      checkAllSaveButtonsAreDisplayed(createViewWithMode)
     }
 
     onJourney(DeclarationType.CLEARANCE) { implicit request =>

@@ -35,8 +35,8 @@ class TaricCodeRemoveViewSpec extends UnitViewSpec with Stubs with CommonMessage
   private val form: Form[YesNoAnswer] = YesNoAnswer.form()
   private val page = instanceOf[taric_code_remove]
 
-  private def createView(form: Form[YesNoAnswer] = form, code: String = taricCode): Document =
-    page(Mode.Normal, itemId, code, form)(request, messages)
+  private def createView(form: Form[YesNoAnswer] = form, code: String = taricCode, mode: Mode = Mode.Normal): Document =
+    page(mode, itemId, code, form)(request, messages)
 
   "Taric Code Remove View" should {
     val view = createView()
@@ -62,15 +62,8 @@ class TaricCodeRemoveViewSpec extends UnitViewSpec with Stubs with CommonMessage
       )
     }
 
-    "display 'Save and continue' button on page" in {
-      val saveButton = view.getElementById("submit")
-      saveButton must containMessage(saveAndContinueCaption)
-    }
-
-    "display 'Save and return' button on page" in {
-      val saveAndReturnButton = view.getElementById("submit_and_return")
-      saveAndReturnButton must containMessage(saveAndReturnCaption)
-    }
+    val createViewWithMode: Mode => Document = mode => createView(mode = mode)
+    checkAllSaveButtonsAreDisplayed(createViewWithMode)
   }
 
   "Taric Code Remove View for invalid input" should {

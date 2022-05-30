@@ -18,7 +18,6 @@ package views.declaration
 
 import base.Injector
 import controllers.declaration.routes
-import controllers.helpers.SaveAndReturn
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.{DeclarantIsExporter, IsExs}
 import models.Mode
@@ -35,8 +34,8 @@ import views.html.declaration.is_exs
 class IsExsViewSpec extends UnitViewSpec with ExportsTestData with CommonMessages with Stubs with Injector {
 
   private val page = instanceOf[is_exs]
-  private def createView()(implicit request: JourneyRequest[_]): Document =
-    page(Mode.Normal, IsExs.form)(request, messages)
+  private def createView(mode: Mode = Mode.Normal)(implicit request: JourneyRequest[_]): Document =
+    page(mode, IsExs.form)(request, messages)
 
   "Is Exs View" should {
 
@@ -100,20 +99,8 @@ class IsExsViewSpec extends UnitViewSpec with ExportsTestData with CommonMessage
         }
       }
 
-      "display 'Save and continue' button on page" in {
-
-        val saveButton = createView().getElementById("submit")
-
-        saveButton must containMessage(saveAndContinueCaption)
-      }
-
-      "display 'Save and return' button on page" in {
-
-        val saveButton = createView().getElementById("submit_and_return")
-
-        saveButton must containMessage(saveAndReturnCaption)
-        saveButton.attr("name") mustBe SaveAndReturn.toString
-      }
+      val createViewWithMode: Mode => Document = mode => createView(mode = mode)
+      checkAllSaveButtonsAreDisplayed(createViewWithMode)
     }
   }
 }

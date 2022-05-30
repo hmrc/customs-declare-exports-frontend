@@ -72,7 +72,7 @@
             html = HtmlFormat.fill(immutable.Seq(
                 groupAddress,
                 tariffExpander(ExporterDetails, request.declarationType)(messages, appConfig),
-                saveButtons()
+                saveButtons(mode)
             ))
         ))
     }

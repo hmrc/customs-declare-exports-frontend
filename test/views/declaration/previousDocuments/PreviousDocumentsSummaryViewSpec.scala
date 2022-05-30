@@ -25,6 +25,7 @@ import play.twirl.api.Html
 import services.cache.ExportsDeclarationBuilder
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.previousDocuments.previous_documents_summary
+import org.jsoup.nodes.{Document => nodeDocument}
 
 class PreviousDocumentsSummaryViewSpec extends UnitViewSpec with ExportsDeclarationBuilder with Injector {
 
@@ -34,8 +35,8 @@ class PreviousDocumentsSummaryViewSpec extends UnitViewSpec with ExportsDeclarat
   private val document2 = Document("740", "reference2", None)
   private val documents = Seq(document1, document2)
 
-  private def createView(documents: Seq[Document] = documents)(implicit request: JourneyRequest[_]): Html =
-    page(Mode.Normal, form, documents)(request, messages)
+  private def createView(documents: Seq[Document] = documents, mode: Mode = Mode.Normal)(implicit request: JourneyRequest[_]): Html =
+    page(mode, form, documents)(request, messages)
 
   "Previous Documents Summary page" should {
 
@@ -110,13 +111,8 @@ class PreviousDocumentsSummaryViewSpec extends UnitViewSpec with ExportsDeclarat
         view.getElementsByAttributeValue("for", "code_no") must containMessageForElements("site.no")
       }
 
-      "display 'Save and continue' button on page" in {
-        createView().getElementById("submit") must containMessage("site.save_and_continue")
-      }
-
-      "display 'Save and return' button on page" in {
-        createView().getElementById("submit_and_return") must containMessage("site.save_and_come_back_later")
-      }
+      val createViewWithMode: Mode => nodeDocument = mode => createView(mode = mode)
+      checkAllSaveButtonsAreDisplayed(createViewWithMode)
     }
 
     onJourney(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY) { implicit request =>

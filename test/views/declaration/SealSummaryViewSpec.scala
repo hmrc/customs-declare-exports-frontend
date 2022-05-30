@@ -38,8 +38,8 @@ class SealSummaryViewSpec extends UnitViewSpec with Stubs with CommonMessages wi
   private val form: Form[YesNoAnswer] = YesNoAnswer.form()
   private val page = instanceOf[seal_summary]
 
-  private def createView(form: Form[YesNoAnswer] = form, seals: Seq[Seal] = Seq(seal)): Document =
-    page(Mode.Normal, form, containerId, seals)(journeyRequest(), messages)
+  private def createView(form: Form[YesNoAnswer] = form, seals: Seq[Seal] = Seq(seal), mode: Mode = Mode.Normal): Document =
+    page(mode, form, containerId, seals)(journeyRequest(), messages)
 
   "Seal Summary View" should {
     val view = createView()
@@ -90,15 +90,8 @@ class SealSummaryViewSpec extends UnitViewSpec with Stubs with CommonMessages wi
       )
     }
 
-    "display 'Save and continue' button on page" in {
-      val saveButton = view.getElementById("submit")
-      saveButton must containMessage(saveAndContinueCaption)
-    }
-
-    "display 'Save and return' button on page" in {
-      val saveAndReturnButton = view.getElementById("submit_and_return")
-      saveAndReturnButton must containMessage(saveAndReturnCaption)
-    }
+    val createViewWithMode: Mode => Document = mode => createView(mode = mode)
+    checkAllSaveButtonsAreDisplayed(createViewWithMode)
   }
 
   "Seal Summary View for invalid input" should {

@@ -41,8 +41,8 @@ class NactCodeAddFirstViewSpec extends UnitViewSpec with ExportsTestData with St
   private val form: Form[NactCodeFirst] = NactCodeFirst.form()
   private val page = instanceOf[nact_code_add_first]
 
-  private def createView(form: Form[NactCodeFirst] = form): Document =
-    page(Mode.Normal, itemId, form)(journeyRequest(), messages)
+  private def createView(form: Form[NactCodeFirst] = form, mode: Mode = Mode.Normal): Document =
+    page(mode, itemId, form)(journeyRequest(), messages)
 
   "Nact Code Add First View" should {
     val view = createView()
@@ -68,15 +68,8 @@ class NactCodeAddFirstViewSpec extends UnitViewSpec with ExportsTestData with St
       backLink.getElementById("back-link") must haveHref(TaricCodeSummaryController.displayPage(Mode.Normal, itemId))
     }
 
-    "display 'Save and continue' button on page" in {
-      val saveButton = view.getElementById("submit")
-      saveButton must containMessage(saveAndContinueCaption)
-    }
-
-    "display 'Save and return' button on page" in {
-      val saveAndReturnButton = view.getElementById("submit_and_return")
-      saveAndReturnButton must containMessage(saveAndReturnCaption)
-    }
+    val createViewWithMode: Mode => Document = mode => createView(mode = mode)
+    checkAllSaveButtonsAreDisplayed(createViewWithMode)
   }
 
   "Nact Code Add First View for invalid input" should {

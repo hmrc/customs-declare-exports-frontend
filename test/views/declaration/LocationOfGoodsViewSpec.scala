@@ -62,7 +62,7 @@ class LocationOfGoodsViewSpec extends UnitViewSpec with Stubs with Injector with
   private val page = instanceOf[location_of_goods]
 
   "Goods Location View" when {
-    def createView(implicit request: JourneyRequest[_]): Document = page(Mode.Normal, form)
+    def createView(mode: Mode = Mode.Normal)(implicit request: JourneyRequest[_]): Document = page(mode, form)
 
     val prefix = "declaration.locationOfGoods"
 
@@ -70,7 +70,7 @@ class LocationOfGoodsViewSpec extends UnitViewSpec with Stubs with Injector with
     AdditionalDeclarationType.values.toList.foreach { additionalType =>
       s"AdditionalDeclarationType is $additionalType" should {
         implicit val request = withRequest(additionalType)
-        val view = createView
+        val view = createView()
 
         "display same page title as header" in {
           view.title must include(view.getElementsByTag("h1").text)
@@ -117,15 +117,8 @@ class LocationOfGoodsViewSpec extends UnitViewSpec with Stubs with Injector with
           removeBlanksIfAnyBeforeDot(tariffDetails) mustBe expectedText
         }
 
-        "display 'Save and continue' button" in {
-          val saveButton = view.getElementById("submit")
-          saveButton must containMessage("site.save_and_continue")
-        }
-
-        "display 'Save and return' button" in {
-          val saveButton = view.getElementById("submit_and_return")
-          saveButton must containMessage("site.save_and_come_back_later")
-        }
+        val createViewWithMode: Mode => Document = mode => createView(mode = mode)
+        checkAllSaveButtonsAreDisplayed(createViewWithMode)
       }
     }
 
@@ -133,7 +126,7 @@ class LocationOfGoodsViewSpec extends UnitViewSpec with Stubs with Injector with
     List(STANDARD_FRONTIER, SIMPLIFIED_FRONTIER, OCCASIONAL_FRONTIER, CLEARANCE_FRONTIER).foreach { additionalType =>
       s"AdditionalDeclarationType is $additionalType and the authorisation code is 'CSE'" should {
         implicit val request = withRequest(additionalType, withDeclarationHolders(Some("CSE")))
-        val view = createView
+        val view = createView()
 
         "display the expected page title" in {
           val title = view.getElementsByTag("h1").text
@@ -178,7 +171,7 @@ class LocationOfGoodsViewSpec extends UnitViewSpec with Stubs with Injector with
     List(STANDARD_FRONTIER, SIMPLIFIED_FRONTIER, OCCASIONAL_FRONTIER, CLEARANCE_FRONTIER).foreach { additionalType =>
       s"AdditionalDeclarationType is $additionalType and the authorisation code is 'EXRR'" should {
         implicit val request = withRequest(additionalType, withDeclarationHolders(Some("EXRR")))
-        val view = createView
+        val view = createView()
 
         "display the expected page title" in {
           val title = view.getElementsByTag("h1").text
@@ -233,7 +226,7 @@ class LocationOfGoodsViewSpec extends UnitViewSpec with Stubs with Injector with
       List(Choice1007, ChoiceOthers).foreach { authProcedureCode =>
         s"AdditionalDeclarationType is $additionalType and the authorisation procedure code is '$authProcedureCode'" should {
           implicit val request = withRequest(additionalType, withAuthorisationProcedureCodeChoice(authProcedureCode))
-          val view = createView
+          val view = createView()
 
           "display the expected page title" in {
             val title = view.getElementsByTag("h1").text

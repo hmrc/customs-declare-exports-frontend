@@ -54,7 +54,7 @@
 
 @buttons = @{
   request.declarationType match {
-    case DeclarationType.CLEARANCE => saveButtons()
+    case DeclarationType.CLEARANCE => saveButtons(mode)
     case _                         => saveAndContinue()
   }
 }

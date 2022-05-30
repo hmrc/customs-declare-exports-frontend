@@ -32,6 +32,7 @@ import models.Mode.Normal
 import models.codes.{Country => ModelCountry}
 import models.declaration.EoriSource
 import models.requests.JourneyRequest
+import org.jsoup.nodes.Document
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
@@ -64,8 +65,8 @@ class DestinationCountryViewSpec extends UnitViewSpec with Stubs with ExportsTes
   private def form(request: JourneyRequest[_]): Form[Country] =
     Countries.form(DestinationCountryPage)(request, messages(request), mockCodeListConnector)
 
-  private def view(implicit request: JourneyRequest[_]): Html =
-    destinationCountryPage(Mode.Normal, form(request))(request, messages)
+  private def createView(mode: Mode = Mode.Normal)(implicit request: JourneyRequest[_]): Html =
+    destinationCountryPage(mode, form(request))(request, messages)
 
   "Destination country view spec" should {
 
@@ -76,7 +77,7 @@ class DestinationCountryViewSpec extends UnitViewSpec with Stubs with ExportsTes
 
     onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED) { implicit request =>
       "display a back button linking to the /authorisation-choice page" in {
-        val backButton = view.getElementById("back-link")
+        val backButton = createView().getElementById("back-link")
         backButton.text mustBe messages("site.back")
         backButton must haveHref(AuthorisationProcedureCodeChoiceController.displayPage(Normal))
       }
@@ -87,7 +88,7 @@ class DestinationCountryViewSpec extends UnitViewSpec with Stubs with ExportsTes
         List(Choice1040, ChoiceOthers).foreach { choice =>
           s"AuthorisationProcedureCodeChoice is '${choice.value}'" in {
             implicit val request = withRequest(STANDARD_PRE_LODGED, withAuthorisationProcedureCodeChoice(choice))
-            val backButton = view.getElementById("back-link")
+            val backButton = createView().getElementById("back-link")
             backButton.text mustBe messages("site.back")
             backButton must haveHref(DeclarationHolderRequiredController.displayPage())
           }
@@ -97,7 +98,7 @@ class DestinationCountryViewSpec extends UnitViewSpec with Stubs with ExportsTes
 
     onJourney(CLEARANCE, OCCASIONAL) { implicit request =>
       "display a back button linking to the /is-authorisation-required  page" in {
-        val backButton = view.getElementById("back-link")
+        val backButton = createView().getElementById("back-link")
         backButton.text mustBe messages("site.back")
         backButton must haveHref(DeclarationHolderRequiredController.displayPage(Normal))
       }
@@ -110,7 +111,7 @@ class DestinationCountryViewSpec extends UnitViewSpec with Stubs with ExportsTes
         s"on $declarationType journey and" when {
           "the declaration contains at least one authorisation" in {
             implicit val request = withRequestOfType(declarationType, withDeclarationHolders(holder))
-            val backButton = view.getElementById("back-link")
+            val backButton = createView().getElementById("back-link")
             backButton.text mustBe messages("site.back")
             backButton must haveHref(routes.DeclarationHolderSummaryController.displayPage())
           }
@@ -123,24 +124,19 @@ class DestinationCountryViewSpec extends UnitViewSpec with Stubs with ExportsTes
     "Destination country view spec" should {
 
       s"display page question for ${request.declarationType}" in {
-        view(request).getElementsByTag("h1").text mustBe messages("declaration.destinationCountry.title")
+        createView()(request).getElementsByTag("h1").text mustBe messages("declaration.destinationCountry.title")
       }
 
       s"display page heading for ${request.declarationType}" in {
-        view(request).getElementById("section-header").text must include(messages("declaration.section.3"))
+        createView()(request).getElementById("section-header").text must include(messages("declaration.section.3"))
       }
 
       "display the expected body text" in {
-        view(request).getElementsByClass("govuk-body").get(0).text mustBe messages("declaration.destinationCountry.body")
+        createView()(request).getElementsByClass("govuk-body").get(0).text mustBe messages("declaration.destinationCountry.body")
       }
 
-      s"display 'Save and continue' button for ${request.declarationType}" in {
-        view(request).getElementById("submit").text mustBe messages("site.save_and_continue")
-      }
-
-      s"display 'Save and return' button for ${request.declarationType}" in {
-        view(request).getElementById("submit_and_return").text mustBe messages("site.save_and_come_back_later")
-      }
+      val createViewWithMode: Mode => Document = mode => createView(mode = mode)
+      checkAllSaveButtonsAreDisplayed(createViewWithMode)
     }
   }
 }

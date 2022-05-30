@@ -35,6 +35,7 @@ site.confirm_and_continue = Confirm and continue
 site.save_and_continue = Save and continue
 site.acceptAndSubmitDeclaration = Accept and submit declaration
 site.save_and_come_back_later = Save and come back later
+site.saveAndReturnToSummary = Save and return to summary
 site.submit = Submit
 site.backToChoice = Back to choice page
 site.add = Add

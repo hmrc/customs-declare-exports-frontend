@@ -79,7 +79,7 @@ class AdditionalProcedureCodesController @Inject()(
         returnErrorPage(mode, itemId, boundForm.get, procedureCode, cachedData.additionalProcedureCodes, validAdditionalProcedureCodes)(_)
 
       formAction match {
-        case Add | SaveAndContinue | SaveAndReturn if !boundForm.hasErrors =>
+        case Add | SaveAndContinue | SaveAndReturn | SaveAndReturnToSummary if !boundForm.hasErrors =>
           validateForm(formAction, mode, errorHandler, itemId, boundForm.get, cachedData)
 
         case Remove(values) =>

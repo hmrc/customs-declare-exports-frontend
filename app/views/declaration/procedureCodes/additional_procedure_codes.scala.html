@@ -86,7 +86,7 @@
     @addToTable(ListRows(codes, "additionalProcedureCodes"))
 
     @tariffExpander(AdditionalProcedureCode, request.declarationType)(messages, appConfig)
-    @saveButtons()
+    @saveButtons(mode)
 
   }
 }

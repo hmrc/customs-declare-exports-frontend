@@ -21,6 +21,7 @@ import controllers.declaration.routes.{InvoiceAndExchangeRateChoiceController, I
 import forms.declaration.TotalPackageQuantity
 import forms.declaration.TotalPackageQuantity.form
 import models.DeclarationType._
+import models.Mode
 import models.Mode.Normal
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
@@ -33,7 +34,7 @@ class TotalPackageQuantityViewSpec extends UnitViewSpec with ExportsTestData wit
 
   val template = instanceOf[total_package_quantity]
 
-  def createView(implicit request: JourneyRequest[_]): Document = template(Normal, form(request.declarationType))
+  def createView(mode: Mode = Mode.Normal)(implicit request: JourneyRequest[_]): Document = template(mode, form(request.declarationType))
 
   "Total Package Quantity view" should {
 
@@ -46,7 +47,7 @@ class TotalPackageQuantityViewSpec extends UnitViewSpec with ExportsTestData wit
     }
 
     onJourney(STANDARD, SUPPLEMENTARY) { implicit request =>
-      val view = createView
+      val view = createView()
 
       "display same page title as header" in {
         view.title must include(view.getElementsByTag("h1").text)
@@ -65,11 +66,6 @@ class TotalPackageQuantityViewSpec extends UnitViewSpec with ExportsTestData wit
         view.getElementById("totalPackage-hint").text() mustBe messages("declaration.totalPackageQuantity.hint")
       }
 
-      "display 'Save and continue' button on page" in {
-        val saveButton = view.getElementById("submit")
-        saveButton must containMessage("site.save_and_continue")
-      }
-
       "display Tariff section text" in {
         val tariffText = view.getElementsByClass("govuk-details__summary-text").first()
 
@@ -81,10 +77,8 @@ class TotalPackageQuantityViewSpec extends UnitViewSpec with ExportsTestData wit
         tariffText must containMessage(titleKey)
       }
 
-      "display 'Save and return' button on page" in {
-        val saveAndReturnButton = view.getElementById("submit_and_return")
-        saveAndReturnButton must containMessage("site.save_and_come_back_later")
-      }
+      val createViewWithMode: Mode => Document = mode => createView(mode = mode)
+      checkAllSaveButtonsAreDisplayed(createViewWithMode)
 
       "display error when all entered input is incorrect" in {
         val error = "declaration.totalPackageQuantity.error"
@@ -109,7 +103,7 @@ class TotalPackageQuantityViewSpec extends UnitViewSpec with ExportsTestData wit
           implicit val request = withRequestOfType(declarationType)
 
           "the invoice's total amount is NOT defined" in {
-            val backButton = createView.getElementById("back-link")
+            val backButton = createView().getElementById("back-link")
             backButton must containMessage("site.back")
             backButton.getElementById("back-link") must haveHref(InvoiceAndExchangeRateChoiceController.displayPage(Normal))
           }
@@ -121,7 +115,7 @@ class TotalPackageQuantityViewSpec extends UnitViewSpec with ExportsTestData wit
           implicit val request = withRequestOfType(declarationType, withTotalNumberOfItems(Some("1000000")))
 
           "the invoice's total amount entered is defined (it should always be equal or greater than 100,000)" in {
-            val backButton = createView.getElementById("back-link")
+            val backButton = createView().getElementById("back-link")
             backButton must containMessage("site.back")
             backButton.getElementById("back-link") must haveHref(InvoiceAndExchangeRateController.displayPage(Normal))
           }

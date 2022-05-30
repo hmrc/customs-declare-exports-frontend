@@ -39,8 +39,10 @@ class CommodityMeasureViewSpec extends UnitViewSpec with Stubs with Injector {
 
   private val commodityMeasurePage = instanceOf[commodity_measure]
 
-  private def createView(form: Form[CommodityMeasure] = CommodityMeasure.form)(implicit request: JourneyRequest[_]): Document =
-    commodityMeasurePage(Mode.Normal, itemId, form)(request, messages)
+  private def createView(form: Form[CommodityMeasure] = CommodityMeasure.form, mode: Mode = Mode.Normal)(
+    implicit request: JourneyRequest[_]
+  ): Document =
+    commodityMeasurePage(mode, itemId, form)(request, messages)
 
   "Commodity Measure View on empty page" should {
     onJourney(STANDARD, SUPPLEMENTARY, CLEARANCE) { implicit request =>
@@ -76,15 +78,8 @@ class CommodityMeasureViewSpec extends UnitViewSpec with Stubs with Injector {
         view.getElementById("netMass").attr("value") mustBe empty
       }
 
-      "display 'Save and continue' button on page" in {
-        val saveButton = view.getElementById("submit")
-        saveButton must containMessage("site.save_and_continue")
-      }
-
-      "display 'Save and return' button on page" in {
-        val saveAndReturnButton = view.getElementById("submit_and_return")
-        saveAndReturnButton must containMessage("site.save_and_come_back_later")
-      }
+      val createViewWithMode: Mode => Document = mode => createView(mode = mode)
+      checkAllSaveButtonsAreDisplayed(createViewWithMode)
     }
   }
 

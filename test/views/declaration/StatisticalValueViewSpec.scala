@@ -110,15 +110,8 @@ class StatisticalValueViewSpec extends UnitViewSpec with ExportsTestData with St
       )
     }
 
-    "display 'Save and continue' button" in {
-      val saveButton = view.getElementById("submit")
-      saveButton must containMessage("site.save_and_continue")
-    }
-
-    "display 'Save and return' button" in {
-      val saveButton = view.getElementById("submit_and_return")
-      saveButton must containMessage("site.save_and_come_back_later")
-    }
+    val createViewWithMode: Mode => Document = mode => createView(mode = mode)
+    checkAllSaveButtonsAreDisplayed(createViewWithMode)
   }
 
   "Item Type View with entered data" should {

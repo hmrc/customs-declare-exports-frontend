@@ -37,8 +37,8 @@ class PackageInformationRemoveViewSpec extends UnitViewSpec with Stubs with Comm
   private val form: Form[YesNoAnswer] = YesNoAnswer.form()
   private val page = instanceOf[package_information_remove]
 
-  private def createView(form: Form[YesNoAnswer] = form, packageInfo: PackageInformation = packageInformation): Document =
-    page(Mode.Normal, itemId, packageInfo, form)(request, messages)
+  private def createView(form: Form[YesNoAnswer] = form, packageInfo: PackageInformation = packageInformation, mode: Mode = Mode.Normal): Document =
+    page(mode, itemId, packageInfo, form)(request, messages)
 
   "PackageInformation Remove View" should {
     val view = createView()
@@ -62,15 +62,8 @@ class PackageInformationRemoveViewSpec extends UnitViewSpec with Stubs with Comm
       )
     }
 
-    "display 'Save and continue' button on page" in {
-      val saveButton = view.getElementById("submit")
-      saveButton must containMessage(saveAndContinueCaption)
-    }
-
-    "display 'Save and return' button on page" in {
-      val saveAndReturnButton = view.getElementById("submit_and_return")
-      saveAndReturnButton must containMessage(saveAndReturnCaption)
-    }
+    val createViewWithMode: Mode => Document = mode => createView(mode = mode)
+    checkAllSaveButtonsAreDisplayed(createViewWithMode)
   }
 
   "PackageInformation Remove View for invalid input" should {

@@ -20,6 +20,7 @@ import base.Injector
 import forms.common.YesNoAnswer
 import forms.declaration.Seal
 import models.Mode
+import models.Mode.Normal
 import models.declaration.Container
 import org.jsoup.nodes.Document
 import play.api.data.Form
@@ -38,8 +39,8 @@ class SealRemoveViewSpec extends UnitViewSpec with Stubs with CommonMessages wit
   private val form: Form[YesNoAnswer] = YesNoAnswer.form()
   private val page = instanceOf[seal_remove]
 
-  private def createView(form: Form[YesNoAnswer] = form, containerId: String = containerId, sealId: String = sealId): Document =
-    page(Mode.Normal, form, containerId, sealId)
+  private def createView(form: Form[YesNoAnswer] = form, containerId: String = containerId, sealId: String = sealId, mode: Mode = Normal): Document =
+    page(mode, form, containerId, sealId)
 
   "Seal Remove View" should {
 
@@ -70,15 +71,8 @@ class SealRemoveViewSpec extends UnitViewSpec with Stubs with CommonMessages wit
       )
     }
 
-    "display 'Save and continue' button on page" in {
-      val saveButton = view.getElementById("submit")
-      saveButton.text() must be(messages(saveAndContinueCaption))
-    }
-
-    "display 'Save and return' button on page" in {
-      val saveAndReturnButton = view.getElementById("submit_and_return")
-      saveAndReturnButton.text() must be(messages(saveAndReturnCaption))
-    }
+    val createViewWithMode: Mode => Document = mode => createView(mode = mode)
+    checkAllSaveButtonsAreDisplayed(createViewWithMode)
   }
 
   "Seal Remove View for invalid input" should {

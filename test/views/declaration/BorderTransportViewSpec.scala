@@ -21,7 +21,7 @@ import controllers.declaration.routes.DepartureTransportController
 import forms.declaration.BorderTransport
 import forms.declaration.TransportCodes.transportCodesOnBorderTransport
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
-import models.Mode.Normal
+import models.Mode
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import services.cache.ExportsTestData
@@ -36,7 +36,7 @@ class BorderTransportViewSpec extends UnitViewSpec with ExportsTestData with Stu
 
   private val page = instanceOf[border_transport]
 
-  private def createView(implicit request: JourneyRequest[_]): Document = page(Normal, BorderTransport.form)
+  private def createView(mode: Mode = Mode.Normal)(implicit request: JourneyRequest[_]): Document = page(mode, BorderTransport.form)
 
   private val prefix = "declaration.transportInformation.meansOfTransport.crossingTheBorder"
 
@@ -45,7 +45,8 @@ class BorderTransportViewSpec extends UnitViewSpec with ExportsTestData with Stu
     List(STANDARD_FRONTIER, STANDARD_PRE_LODGED, SUPPLEMENTARY_SIMPLIFIED, SUPPLEMENTARY_EIDR).foreach { additionalType =>
       s"AdditionalDeclarationType is $additionalType and" when {
 
-        val view = createView(withRequest(additionalType))
+        implicit val request = withRequest(additionalType)
+        val view = createView()
 
         "display a 'Back' button that links to the /departure-transport page" in {
           val backButton = view.getElementById("back-link")
@@ -102,13 +103,8 @@ class BorderTransportViewSpec extends UnitViewSpec with ExportsTestData with Stu
           actualText mustBe removeLineBreakIfAny(expectedText)
         }
 
-        "display the 'Save and continue' button" in {
-          view.getElementById("submit") must containMessage(saveAndContinueCaption)
-        }
-
-        "display the 'Save and return' button" in {
-          view.getElementById("submit_and_return") must containMessage(saveAndReturnCaption)
-        }
+        val createViewWithMode: Mode => Document = mode => createView(mode = mode)
+        checkAllSaveButtonsAreDisplayed(createViewWithMode)
       }
     }
   }

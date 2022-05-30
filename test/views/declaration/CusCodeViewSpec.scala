@@ -27,11 +27,12 @@ import play.api.data.Form
 import services.cache.ExportsTestData
 import tools.Stubs
 import views.declaration.spec.UnitViewSpec
+import views.helpers.CommonMessages
 import views.html.declaration.cus_code
 import views.tags.ViewTest
 
 @ViewTest
-class CusCodeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
+class CusCodeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector with CommonMessages {
 
   private val page = instanceOf[cus_code]
   private val form: Form[CusCode] = CusCode.form()
@@ -86,15 +87,8 @@ class CusCodeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with 
         )
       }
 
-      "display 'Save and continue' button on page" in {
-        val saveButton = view.getElementById("submit")
-        saveButton must containMessage("site.save_and_continue")
-      }
-
-      "display 'Save and return' button on page" in {
-        val saveAndReturnButton = view.getElementById("submit_and_return")
-        saveAndReturnButton must containMessage("site.save_and_come_back_later")
-      }
+      val createViewWithMode = createView(_, form)
+      checkAllSaveButtonsAreDisplayed(createViewWithMode)
     }
   }
 

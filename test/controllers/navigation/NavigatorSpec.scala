@@ -22,6 +22,7 @@ import controllers.declaration.routes.{
   CommodityMeasureController,
   DraftDeclarationController,
   PackageInformationSummaryController,
+  SummaryController,
   SupplementaryUnitsController
 }
 import controllers.helpers._
@@ -158,6 +159,36 @@ class NavigatorSpec
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some("url")
+        verifyNoInteractions(auditService)
+      }
+    }
+
+    "Go to the summary page when Save and return to summary form action" when {
+
+      "user is in draft mode" in {
+        val mode = Mode.Draft
+        val result = navigator.continueTo(mode, call)(decoratedRequest(request(Some(SaveAndReturnToSummary))), hc)
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(SummaryController.displayPage(mode).url)
+        verifyNoInteractions(auditService)
+      }
+
+      "user is in change-amend mode" in {
+        val mode = Mode.ChangeAmend
+        val result = navigator.continueTo(mode, call)(decoratedRequest(request(Some(SaveAndReturnToSummary))), hc)
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(SummaryController.displayPageOnAmend.url)
+        verifyNoInteractions(auditService)
+      }
+
+      "user is in change mode" in {
+        val mode = Mode.Change
+        val result = navigator.continueTo(mode, call)(decoratedRequest(request(Some(SaveAndReturnToSummary))), hc)
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(SummaryController.displayPage(Mode.Normal).url)
         verifyNoInteractions(auditService)
       }
     }

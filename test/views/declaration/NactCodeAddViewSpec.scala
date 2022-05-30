@@ -35,8 +35,8 @@ class NactCodeAddViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
   private val form: Form[NactCode] = NactCode.form()
   private val page = instanceOf[nact_code_add]
 
-  private def createView(form: Form[NactCode] = form): Document =
-    page(Mode.Normal, itemId, form)(journeyRequest(), messages)
+  private def createView(form: Form[NactCode] = form, mode: Mode = Mode.Normal): Document =
+    page(mode, itemId, form)(journeyRequest(), messages)
 
   "Nact Code Add View" should {
     val view = createView()
@@ -53,15 +53,8 @@ class NactCodeAddViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
       )
     }
 
-    "display 'Save and continue' button on page" in {
-      val saveButton = view.getElementById("submit")
-      saveButton must containMessage(saveAndContinueCaption)
-    }
-
-    "display 'Save and return' button on page" in {
-      val saveAndReturnButton = view.getElementById("submit_and_return")
-      saveAndReturnButton must containMessage(saveAndReturnCaption)
-    }
+    val createViewWithMode: Mode => Document = mode => createView(mode = mode)
+    checkAllSaveButtonsAreDisplayed(createViewWithMode)
   }
 
   "Nact Code Add View for invalid input" should {

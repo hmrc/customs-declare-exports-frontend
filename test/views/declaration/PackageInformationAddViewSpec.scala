@@ -41,10 +41,10 @@ class PackageInformationAddViewSpec extends UnitViewSpec with ExportsTestData wi
   private def form(): Form[PackageInformation] = PackageInformation.form()
   private val page = instanceOf[package_information_add]
 
-  private def createView(withForm: Option[Form[PackageInformation]] = None, packages: Seq[PackageInformation] = Seq.empty)(
+  private def createView(withForm: Option[Form[PackageInformation]] = None, packages: Seq[PackageInformation] = Seq.empty, mode: Mode = Mode.Normal)(
     implicit request: JourneyRequest[_]
   ): Document =
-    page(Mode.Normal, itemId, withForm.getOrElse(form), packages)(request, messages)
+    page(mode, itemId, withForm.getOrElse(form), packages)(request, messages)
 
   "PackageInformation Add View" should {
 
@@ -97,15 +97,8 @@ class PackageInformationAddViewSpec extends UnitViewSpec with ExportsTestData wi
         forAll(indexedListOfParagraphs)(t => paragraphs.get(t._2) mustBe (t._1))
       }
 
-      "display 'Save and continue' button on page" in {
-        val saveButton = view.getElementById("submit")
-        saveButton must containMessage(saveAndContinueCaption)
-      }
-
-      "display 'Save and return' button on page" in {
-        val saveAndReturnButton = view.getElementById("submit_and_return")
-        saveAndReturnButton must containMessage(saveAndReturnCaption)
-      }
+      val createViewWithMode: Mode => Document = mode => createView(mode = mode)
+      checkAllSaveButtonsAreDisplayed(createViewWithMode)
     }
   }
 

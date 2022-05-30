@@ -35,7 +35,7 @@ class SealAddViewSpec extends UnitViewSpec with ExportsTestData with Stubs with 
   private val form: Form[Seal] = Seal.form()
   private val page = instanceOf[seal_add]
 
-  private def createView(form: Form[Seal] = form): Document = page(Mode.Normal, form, containerId)(journeyRequest(), messages)
+  private def createView(form: Form[Seal] = form, mode: Mode = Mode.Normal): Document = page(mode, form, containerId)(journeyRequest(), messages)
 
   "Seal Add View" should {
     val view = createView()
@@ -57,15 +57,8 @@ class SealAddViewSpec extends UnitViewSpec with ExportsTestData with Stubs with 
       )
     }
 
-    "display 'Save and continue' button on page" in {
-      val saveButton = view.getElementById("submit")
-      saveButton.text() must be(messages(saveAndContinueCaption))
-    }
-
-    "display 'Save and return' button on page" in {
-      val saveAndReturnButton = view.getElementById("submit_and_return")
-      saveAndReturnButton.text() must be(messages(saveAndReturnCaption))
-    }
+    val createViewWithMode: Mode => Document = mode => createView(mode = mode)
+    checkAllSaveButtonsAreDisplayed(createViewWithMode)
   }
 
   "Seal Add View for invalid input" should {

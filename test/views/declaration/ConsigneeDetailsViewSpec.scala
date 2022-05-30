@@ -19,7 +19,6 @@ package views.declaration
 import base.Injector
 import connectors.CodeListConnector
 import controllers.declaration.routes
-import controllers.helpers.SaveAndReturn
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.common.{Address, AddressSpec}
 import forms.declaration._
@@ -61,8 +60,8 @@ class ConsigneeDetailsViewSpec extends AddressViewSpec with CommonMessages with 
 
   private val form: Form[ConsigneeDetails] = ConsigneeDetails.form()
 
-  private def createView(form: Form[ConsigneeDetails] = form)(implicit request: JourneyRequest[_]): Document =
-    consigneeDetailsPage(Mode.Normal, form)(request, messages)
+  private def createView(form: Form[ConsigneeDetails] = form, mode: Mode = Mode.Normal)(implicit request: JourneyRequest[_]): Document =
+    consigneeDetailsPage(mode, form)(request, messages)
 
   "Consignee Details View on empty page" should {
 
@@ -142,15 +141,8 @@ class ConsigneeDetailsViewSpec extends AddressViewSpec with CommonMessages with 
         view.getElementById("details_address_country").attr("value") mustBe empty
       }
 
-      "display 'Save and continue' button on page" in {
-        createView().getElementById("submit").text() mustBe messages(saveAndContinueCaption)
-      }
-
-      "display 'Save and return' button on page" in {
-        val button = createView().getElementById("submit_and_return")
-        button.text() mustBe messages(saveAndReturnCaption)
-        button.attr("name") mustBe SaveAndReturn.toString
-      }
+      val createViewWithMode: Mode => Document = mode => createView(mode = mode)
+      checkAllSaveButtonsAreDisplayed(createViewWithMode)
     }
   }
 

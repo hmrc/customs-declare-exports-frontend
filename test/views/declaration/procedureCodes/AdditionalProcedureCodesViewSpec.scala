@@ -44,9 +44,10 @@ class AdditionalProcedureCodesViewSpec extends UnitViewSpec with ExportsTestData
   private def createView(
     form: Form[AdditionalProcedureCode] = form,
     validCodes: Seq[AdditionalProcedureCodeModel] = defaultAdditionalProcedureCodes,
-    codes: Seq[String] = Seq.empty
+    codes: Seq[String] = Seq.empty,
+    mode: Mode = Mode.Normal
   )(implicit request: JourneyRequest[_]): Document =
-    page(Mode.Normal, itemId, form, sampleProcedureCode, validCodes, codes)(request, messages)
+    page(mode, itemId, form, sampleProcedureCode, validCodes, codes)(request, messages)
 
   "Additional Procedure Codes View" should {
 
@@ -92,15 +93,8 @@ class AdditionalProcedureCodesViewSpec extends UnitViewSpec with ExportsTestData
           addButton.text() must include(messages("declaration.additionalProcedureCodes.add.hint"))
         }
 
-        "display 'Save and continue' button on page" in {
-          val saveButton = view.getElementById("submit")
-          saveButton.text() mustBe messages("site.save_and_continue")
-        }
-
-        "display 'Save and return' button on page" in {
-          val saveAndReturnButton = view.getElementById("submit_and_return")
-          saveAndReturnButton must containMessage("site.save_and_come_back_later")
-        }
+        val createViewWithMode: Mode => Document = mode => createView(mode = mode)
+        checkAllSaveButtonsAreDisplayed(createViewWithMode)
       }
 
       "provided with filled form" should {

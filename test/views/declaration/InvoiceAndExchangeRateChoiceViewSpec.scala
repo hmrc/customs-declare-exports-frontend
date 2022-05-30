@@ -20,6 +20,7 @@ import base.Injector
 import controllers.declaration.routes
 import forms.common.YesNoAnswer
 import models.DeclarationType.{STANDARD, SUPPLEMENTARY}
+import models.Mode
 import models.Mode.Normal
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
@@ -35,8 +36,8 @@ class InvoiceAndExchangeRateChoiceViewSpec extends UnitViewSpec with CommonMessa
   private val page = instanceOf[invoice_and_exchange_rate_choice]
   private val form: Form[YesNoAnswer] = YesNoAnswer.form()
 
-  private def createView(form: Form[YesNoAnswer] = form)(implicit request: JourneyRequest[_]): Document =
-    page(Normal, form)(request, messages)
+  private def createView(form: Form[YesNoAnswer] = form, mode: Mode = Mode.Normal)(implicit request: JourneyRequest[_]): Document =
+    page(mode, form)(request, messages)
 
   "'Invoice And Exchange Rate Choice' view" should {
 
@@ -85,14 +86,8 @@ class InvoiceAndExchangeRateChoiceViewSpec extends UnitViewSpec with CommonMessa
         view must containErrorElementWithMessageKey(errorKey)
       }
 
-      "display 'Save and continue' button" in {
-        val saveButton = view.getElementById("submit")
-        saveButton must containMessage("site.save_and_continue")
-      }
-
-      "display 'Save and return' button on page" in {
-        view.getElementById("submit_and_return") must containMessage(saveAndReturnCaption)
-      }
+      val createViewWithMode: Mode => Document = mode => createView(mode = mode)
+      checkAllSaveButtonsAreDisplayed(createViewWithMode)
 
       "display the expected tariff details" in {
         val tariffTitle = view.getElementsByClass("govuk-details__summary-text")

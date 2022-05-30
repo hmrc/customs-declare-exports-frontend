@@ -18,7 +18,6 @@ package views.declaration.fiscalInformation
 
 import base.Injector
 import connectors.CodeListConnector
-import controllers.helpers.{SaveAndContinue, SaveAndReturn}
 import forms.declaration.AdditionalFiscalReference
 import models.DeclarationType._
 import models.Mode
@@ -61,10 +60,12 @@ class AdditionalFiscalReferencesAddViewSpec
 
   val itemId = new ExportItemIdGeneratorService().generateItemId()
 
-  private def createView(form: Form[AdditionalFiscalReference] = form, references: Seq[AdditionalFiscalReference] = Seq.empty)(
-    implicit request: JourneyRequest[_]
-  ): Document =
-    additionalFiscalReferencesPage(Mode.Normal, itemId, form, references)
+  private def createView(
+    form: Form[AdditionalFiscalReference] = form,
+    references: Seq[AdditionalFiscalReference] = Seq.empty,
+    mode: Mode = Mode.Normal
+  )(implicit request: JourneyRequest[_]): Document =
+    additionalFiscalReferencesPage(mode, itemId, form, references)
 
   "Additional Fiscal References View on empty page" should {
     onEveryDeclarationJourney() { implicit request =>
@@ -93,7 +94,7 @@ class AdditionalFiscalReferencesAddViewSpec
         val backButton = view.getElementById("back-link")
 
         backButton.text() mustBe messages(backCaption)
-        backButton must haveHref(controllers.declaration.routes.FiscalInformationController.displayPage(Mode.Normal, itemId, fastForward = false))
+        backButton must haveHref(controllers.declaration.routes.FiscalInformationController.displayPage(Mode.Normal, itemId))
       }
 
       "display 'For more information about this' summary text" in {
@@ -105,13 +106,8 @@ class AdditionalFiscalReferencesAddViewSpec
         detailsSummaryText.text() mustBe messages(titleKey)
       }
 
-      "display 'Save and continue' button" in {
-        view must containElement("button").withName(SaveAndContinue.toString)
-      }
-
-      "display 'Save and return' button" in {
-        view must containElement("button").withName(SaveAndReturn.toString)
-      }
+      val createViewWithMode: Mode => Document = mode => createView(mode = mode)
+      checkAllSaveButtonsAreDisplayed(createViewWithMode)
     }
   }
 

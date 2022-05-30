@@ -17,7 +17,6 @@
 package views.declaration.fiscalInformation
 
 import base.Injector
-import controllers.helpers.SaveAndReturn
 import forms.declaration.FiscalInformation
 import models.Mode
 import models.requests.JourneyRequest
@@ -36,8 +35,10 @@ class FiscalInformationViewSpec extends UnitViewSpec with ExportsTestData with S
 
   private val form: Form[FiscalInformation] = FiscalInformation.form()
   private val page = instanceOf[fiscal_information]
-  private def createView(itemId: String = "itemId", form: Form[FiscalInformation] = form)(implicit request: JourneyRequest[_]): Document =
-    page(Mode.Normal, itemId, form)(request, messages)
+  private def createView(itemId: String = "itemId", form: Form[FiscalInformation] = form, mode: Mode = Mode.Normal)(
+    implicit request: JourneyRequest[_]
+  ): Document =
+    page(mode, itemId, form)(request, messages)
 
   "Fiscal Information View on empty page" should {
 
@@ -96,16 +97,8 @@ class FiscalInformationViewSpec extends UnitViewSpec with ExportsTestData with S
         )
       }
 
-      "display 'Save and continue' button" in {
-        val saveButton = view.getElementById("submit")
-        saveButton must containMessage("site.save_and_continue")
-      }
-
-      "display 'Save and return' button" in {
-        val saveButton = view.getElementById("submit_and_return")
-        saveButton must containMessage("site.save_and_come_back_later")
-        saveButton.attr("name") must be(SaveAndReturn.toString)
-      }
+      val createViewWithMode: Mode => Document = mode => createView(mode = mode)
+      checkAllSaveButtonsAreDisplayed(createViewWithMode)
     }
   }
 

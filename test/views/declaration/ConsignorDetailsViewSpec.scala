@@ -19,14 +19,13 @@ package views.declaration
 import base.Injector
 import connectors.CodeListConnector
 import controllers.declaration.routes
-import controllers.helpers.SaveAndReturn
 import forms.common.{Address, AddressSpec}
 import forms.declaration.EntityDetails
 import forms.declaration.consignor.ConsignorDetails
 import models.DeclarationType.CLEARANCE
+import models.codes.Country
 import models.requests.JourneyRequest
 import models.{DeclarationType, Mode}
-import models.codes.Country
 import org.jsoup.nodes.Document
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
@@ -60,8 +59,8 @@ class ConsignorDetailsViewSpec extends AddressViewSpec with CommonMessages with 
 
   private val form: Form[ConsignorDetails] = ConsignorDetails.form()
 
-  private def createView(form: Form[ConsignorDetails] = form)(implicit request: JourneyRequest[_]): Document =
-    consignorDetailsPage(Mode.Normal, form)(request, messages)
+  private def createView(form: Form[ConsignorDetails] = form, mode: Mode = Mode.Normal)(implicit request: JourneyRequest[_]): Document =
+    consignorDetailsPage(mode, form)(request, messages)
 
   "Consignor Details View on empty page" should {
 
@@ -141,15 +140,8 @@ class ConsignorDetailsViewSpec extends AddressViewSpec with CommonMessages with 
         view.getElementById("details_address_country").attr("value") mustBe empty
       }
 
-      "display 'Save and continue' button on page" in {
-        createView().getElementById("submit").text() mustBe messages(saveAndContinueCaption)
-      }
-
-      "display 'Save and return' button on page" in {
-        val button = createView().getElementById("submit_and_return")
-        button.text() mustBe messages(saveAndReturnCaption)
-        button.attr("name") mustBe SaveAndReturn.toString
-      }
+      val createViewWithMode: Mode => Document = mode => createView(mode = mode)
+      checkAllSaveButtonsAreDisplayed(createViewWithMode)
     }
   }
 
