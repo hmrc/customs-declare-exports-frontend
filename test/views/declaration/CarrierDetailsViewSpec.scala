@@ -19,7 +19,6 @@ package views.declaration
 import base.Injector
 import connectors.CodeListConnector
 import controllers.declaration.routes.CarrierEoriNumberController
-import controllers.helpers.SaveAndReturn
 import forms.common.Address
 import forms.common.AddressSpec._
 import forms.declaration.EntityDetails

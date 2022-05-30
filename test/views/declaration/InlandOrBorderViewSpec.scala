@@ -16,13 +16,12 @@
 
 package views.declaration
 
-import base.{Injector, MockExportCacheService}
 import base.ExportsTestData.itemWithPC
+import base.{Injector, MockExportCacheService}
 import controllers.declaration.routes.{SupervisingCustomsOfficeController, TransportLeavingTheBorderController}
 import controllers.helpers.TransportSectionHelper.additionalDeclTypesAllowedOnInlandOrBorder
 import forms.declaration.InlandOrBorder.{form, Border, Inland}
 import models.Mode
-import models.Mode.Normal
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import services.cache.ExportsTestData

@@ -20,7 +20,6 @@ import base.Injector
 import controllers.declaration.routes
 import forms.declaration.RoutingCountryQuestionYesNo
 import models.Mode
-import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import services.cache.ExportsTestData

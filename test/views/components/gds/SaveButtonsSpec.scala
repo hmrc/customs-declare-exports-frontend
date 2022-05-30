@@ -47,7 +47,7 @@ class SaveButtonsSpec extends UnitViewSpec {
 
       mode match {
         case Draft | ChangeAmend | Change => buttons.isDefined
-        case _                => buttons.isEmpty
+        case _                            => buttons.isEmpty
       }
     }
   }

@@ -18,7 +18,6 @@ package views.declaration
 
 import base.Injector
 import controllers.declaration.routes
-import controllers.helpers.SaveAndReturn
 import controllers.routes.GuidanceController
 import forms.declaration.TransportLeavingTheBorder
 import models.DeclarationType._

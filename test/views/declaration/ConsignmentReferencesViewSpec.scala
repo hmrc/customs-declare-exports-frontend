@@ -16,13 +16,12 @@
 
 package views.declaration
 
-import base.{Injector, TestHelper}
 import base.ExportsTestData._
+import base.{Injector, TestHelper}
 import controllers.declaration.routes
-import controllers.helpers.SaveAndReturn
-import forms.{Ducr, Lrn, Mrn}
 import forms.declaration.ConsignmentReferences
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.{SUPPLEMENTARY_EIDR, SUPPLEMENTARY_SIMPLIFIED}
+import forms.{Ducr, Lrn, Mrn}
 import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
 import models.Mode
 import models.requests.JourneyRequest

@@ -22,7 +22,6 @@ import forms.declaration.BorderTransport
 import forms.declaration.TransportCodes.transportCodesOnBorderTransport
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
 import models.Mode
-import models.Mode.Normal
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import services.cache.ExportsTestData

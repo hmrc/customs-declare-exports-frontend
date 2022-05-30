@@ -19,14 +19,13 @@ package views.declaration
 import base.Injector
 import connectors.CodeListConnector
 import controllers.declaration.routes
-import controllers.helpers.SaveAndReturn
 import forms.common.{Address, AddressSpec}
 import forms.declaration.EntityDetails
 import forms.declaration.consignor.ConsignorDetails
 import models.DeclarationType.CLEARANCE
+import models.codes.Country
 import models.requests.JourneyRequest
 import models.{DeclarationType, Mode}
-import models.codes.Country
 import org.jsoup.nodes.Document
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
