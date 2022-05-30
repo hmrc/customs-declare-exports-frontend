@@ -56,7 +56,11 @@
     @paragraphBody(messages("declaration.itemsAdd.paragraph.2"))
     @paragraphBody(messages("declaration.itemsAdd.paragraph.3"))
 
-    @addButton(label = "site.add.item", hiddenLabel = Some(messages("site.add.item")))
+    @addButton(
+        label = "site.add.item",
+        hiddenLabel = Some(messages("site.add.item")),
+        classes = "govuk-button--primary"
+    )
     
     @saveAsDraftButton
 
