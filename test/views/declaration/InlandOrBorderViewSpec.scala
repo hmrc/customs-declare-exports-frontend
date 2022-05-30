@@ -21,6 +21,7 @@ import base.ExportsTestData.itemWithPC
 import controllers.declaration.routes.{SupervisingCustomsOfficeController, TransportLeavingTheBorderController}
 import controllers.helpers.TransportSectionHelper.additionalDeclTypesAllowedOnInlandOrBorder
 import forms.declaration.InlandOrBorder.{form, Border, Inland}
+import models.Mode
 import models.Mode.Normal
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
@@ -35,14 +36,14 @@ class InlandOrBorderViewSpec extends UnitViewSpec with ExportsTestData with Mock
 
   private val page = instanceOf[inland_border]
 
-  private def createView(implicit request: JourneyRequest[_]): Document = page(Normal, form)(request, messages)
+  private def createView(mode: Mode = Mode.Normal)(implicit request: JourneyRequest[_]): Document = page(mode, form)(request, messages)
 
   "Inland or Border View" when {
 
     additionalDeclTypesAllowedOnInlandOrBorder.foreach { additionalType =>
       s"AdditionalDeclarationType is ${additionalType} and" should {
         implicit val request = withRequest(additionalType)
-        val view = createView
+        val view = createView()
 
         "display page title" in {
           view.getElementsByTag("legend").text mustBe messages("declaration.inlandOrBorder.title")
@@ -72,13 +73,8 @@ class InlandOrBorderViewSpec extends UnitViewSpec with ExportsTestData with Mock
             bulletPoints.get(ix - 1).text mustBe messages(s"declaration.inlandOrBorder.inset.bullet.$ix.text")
         }
 
-        "display 'Save and continue' button on page" in {
-          view.getElementById("submit") must containMessage("site.save_and_continue")
-        }
-
-        "display 'Save and return' button on page" in {
-          view.getElementById("submit_and_return") must containMessage("site.save_and_come_back_later")
-        }
+        val createViewWithMode: Mode => Document = mode => createView(mode = mode)
+        checkAllSaveButtonsAreDisplayed(createViewWithMode)
 
         "display 'Back' button that links to the 'Supervising Customs Office' page" in {
           val backButton = view.getElementById("back-link")
@@ -94,7 +90,7 @@ class InlandOrBorderViewSpec extends UnitViewSpec with ExportsTestData with Mock
           implicit val request = withRequest(additionalType, withItem(itemWithPC("1040")))
 
           "display 'Back' button that links to the 'Transport Leaving the Border' page" in {
-            val backButton = createView.getElementById("back-link")
+            val backButton = createView().getElementById("back-link")
             backButton must containMessage("site.back")
             backButton must haveHref(TransportLeavingTheBorderController.displayPage())
           }

@@ -34,8 +34,8 @@ class TransportContainerAddViewSpec extends UnitViewSpec with ExportsTestData wi
   private val form: Form[ContainerAdd] = ContainerAdd.form()
   private val page = instanceOf[transport_container_add]
 
-  private def createView(form: Form[ContainerAdd] = form): Document =
-    page(Mode.Normal, form)(journeyRequest(), messages)
+  private def createView(form: Form[ContainerAdd] = form, mode: Mode = Mode.Normal): Document =
+    page(mode, form)(journeyRequest(), messages)
 
   "Transport Containers Add View" should {
     val view = createView()
@@ -56,15 +56,8 @@ class TransportContainerAddViewSpec extends UnitViewSpec with ExportsTestData wi
       )
     }
 
-    "display 'Save and continue' button on page" in {
-      val saveButton = view.getElementById("submit")
-      saveButton must containMessage(saveAndContinueCaption)
-    }
-
-    "display 'Save and return' button on page" in {
-      val saveAndReturnButton = view.getElementById("submit_and_return")
-      saveAndReturnButton must containMessage(saveAndReturnCaption)
-    }
+    val createViewWithMode: Mode => Document = mode => createView(mode = mode)
+    checkAllSaveButtonsAreDisplayed(createViewWithMode)
   }
 
   "Transport Containers Add View for invalid input" should {

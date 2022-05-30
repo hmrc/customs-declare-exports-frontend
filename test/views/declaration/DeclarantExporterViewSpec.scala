@@ -38,8 +38,10 @@ import views.tags.ViewTest
 class DeclarantExporterViewSpec extends UnitViewSpec with ExportsTestData with CommonMessages with Stubs with Injector {
 
   private val declarantExporterPage = instanceOf[declarant_exporter]
-  private def createView(form: Form[DeclarantIsExporter] = DeclarantIsExporter.form())(implicit request: JourneyRequest[_]): Document =
-    declarantExporterPage(Mode.Normal, form)(request, messages)
+  private def createView(form: Form[DeclarantIsExporter] = DeclarantIsExporter.form(), mode: Mode = Mode.Normal)(
+    implicit request: JourneyRequest[_]
+  ): Document =
+    declarantExporterPage(mode, form)(request, messages)
 
   "Declarant Exporter View on empty page" should {
 
@@ -85,16 +87,8 @@ class DeclarantExporterViewSpec extends UnitViewSpec with ExportsTestData with C
         view.getElementById("code_no-item-hint") must containMessage("declaration.declarant.exporter.answer.no.hint")
       }
 
-      "display 'Save and continue' button on page" in {
-        val saveButton = createView().getElementById("submit")
-        saveButton must containMessage(saveAndContinueCaption)
-      }
-
-      "display 'Save and return' button on page" in {
-        val saveButton = createView().getElementById("submit_and_return")
-        saveButton must containMessage(saveAndReturnCaption)
-        saveButton.attr("name") mustBe SaveAndReturn.toString
-      }
+      val createViewWithMode: Mode => Document = mode => createView(mode = mode)
+      checkAllSaveButtonsAreDisplayed(createViewWithMode)
     }
 
     onJourney(STANDARD, SIMPLIFIED, OCCASIONAL) { implicit request =>

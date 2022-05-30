@@ -32,6 +32,7 @@ import services.cache.ExportsTestData
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.previousDocuments.previous_documents
 import views.tags.ViewTest
+import org.jsoup.nodes.{Document => nodeDocument}
 
 @ViewTest
 class PreviousDocumentsViewSpec extends UnitViewSpec with ExportsTestData with Injector {
@@ -41,8 +42,8 @@ class PreviousDocumentsViewSpec extends UnitViewSpec with ExportsTestData with I
   private val page = instanceOf[previous_documents]
   private val form: Form[Document] = Document.form
 
-  private def createView(implicit request: JourneyRequest[_]): Html =
-    page(Mode.Normal, form)(request, messages)
+  private def createView(mode: Mode = Mode.Normal)(implicit request: JourneyRequest[_]): Html =
+    page(mode, form)(request, messages)
 
   "Previous Documents View" should {
 
@@ -57,7 +58,7 @@ class PreviousDocumentsViewSpec extends UnitViewSpec with ExportsTestData with I
     onJourney(STANDARD, SIMPLIFIED, SUPPLEMENTARY, CLEARANCE)(
       aDeclaration(withAuthorisationProcedureCodeChoice(Choice1040), withEntryIntoDeclarantsRecords(YesNoAnswers.yes))
     ) { implicit request =>
-      val view = createView
+      val view = createView()
 
       "display the expected page V1 title" in {
         view.getElementsByTag("h1").text mustBe messages("declaration.previousDocuments.v1.title")
@@ -90,7 +91,7 @@ class PreviousDocumentsViewSpec extends UnitViewSpec with ExportsTestData with I
     onJourney(STANDARD, SIMPLIFIED, SUPPLEMENTARY, CLEARANCE)(
       aDeclaration(withAuthorisationProcedureCodeChoice(Choice1007), withEntryIntoDeclarantsRecords(YesNoAnswers.yes))
     ) { implicit request =>
-      val view = createView
+      val view = createView()
 
       "display the expected page V2 title" in {
         view.getElementsByTag("h1").text mustBe messages("declaration.previousDocuments.v2.title")
@@ -128,7 +129,7 @@ class PreviousDocumentsViewSpec extends UnitViewSpec with ExportsTestData with I
     onJourney(STANDARD, SIMPLIFIED, SUPPLEMENTARY, CLEARANCE)(
       aDeclaration(withAuthorisationProcedureCodeChoice(ChoiceOthers), withEntryIntoDeclarantsRecords(YesNoAnswers.yes))
     ) { implicit request =>
-      val view = createView
+      val view = createView()
 
       "display the expected page V3 title" in {
         view.getElementsByTag("h1").text mustBe messages("declaration.previousDocuments.v3.title")
@@ -159,7 +160,7 @@ class PreviousDocumentsViewSpec extends UnitViewSpec with ExportsTestData with I
     }
 
     onJourney(STANDARD, SIMPLIFIED, SUPPLEMENTARY, CLEARANCE)(aDeclaration(withEntryIntoDeclarantsRecords(YesNoAnswers.yes))) { implicit request =>
-      val view = createView
+      val view = createView()
 
       "display the expected page V4 title" in {
         view.getElementsByTag("h1").text mustBe messages("declaration.previousDocuments.v4.title")
@@ -189,7 +190,7 @@ class PreviousDocumentsViewSpec extends UnitViewSpec with ExportsTestData with I
     }
 
     onClearance { implicit request =>
-      val view = createView
+      val view = createView()
 
       "display the expected page V5 title" in {
         view.getElementsByTag("h1").text mustBe messages("declaration.previousDocuments.v5.title")
@@ -219,7 +220,7 @@ class PreviousDocumentsViewSpec extends UnitViewSpec with ExportsTestData with I
     }
 
     onOccasional { implicit request =>
-      val view = createView
+      val view = createView()
 
       "display the expected page V6 title" in {
         view.getElementsByTag("h1").text mustBe messages("declaration.previousDocuments.v6.title")
@@ -250,7 +251,7 @@ class PreviousDocumentsViewSpec extends UnitViewSpec with ExportsTestData with I
 
     onJourney(STANDARD, SUPPLEMENTARY) { implicit request =>
       "display 'Back' button that links to 'Nature of Transaction' page" in {
-        val backButton = createView.getElementById("back-link")
+        val backButton = createView().getElementById("back-link")
 
         backButton must containMessage("site.back")
         backButton must haveHref(NatureOfTransactionController.displayPage(Mode.Normal))
@@ -259,14 +260,14 @@ class PreviousDocumentsViewSpec extends UnitViewSpec with ExportsTestData with I
 
     onJourney(CLEARANCE, OCCASIONAL, SIMPLIFIED) { implicit request =>
       "display 'Back' button that links to 'Office of Exit' page" in {
-        val backButton = createView.getElementById("back-link")
+        val backButton = createView().getElementById("back-link")
         backButton must containMessage("site.back")
         backButton must haveHref(OfficeOfExitController.displayPage(Mode.Normal))
       }
     }
 
     onEveryDeclarationJourney() { implicit request =>
-      val view = createView
+      val view = createView()
 
       "display section header" in {
         view.getElementById("section-header") must containMessage("declaration.section.4")
@@ -277,22 +278,15 @@ class PreviousDocumentsViewSpec extends UnitViewSpec with ExportsTestData with I
           val previousDocuments = PreviousDocumentsData(Seq(Document("MCR", "reference", None)))
           val requestWithPreviousDocuments = journeyRequest(request.cacheModel.copy(previousDocuments = Some(previousDocuments)))
 
-          val backButton = createView(requestWithPreviousDocuments).getElementById("back-link")
+          val backButton = createView()(requestWithPreviousDocuments).getElementById("back-link")
 
           backButton must containMessage("site.back")
           backButton must haveHref(PreviousDocumentsSummaryController.displayPage(Mode.Normal))
         }
       }
 
-      "display 'Save and continue' button on page" in {
-        val saveButton = createView.getElementById("submit")
-        saveButton must containMessage("site.save_and_continue")
-      }
-
-      "display 'Save and return' button on page" in {
-        val saveAndReturnButton = createView.getElementById("submit_and_return")
-        saveAndReturnButton must containMessage("site.save_and_come_back_later")
-      }
+      val createViewWithMode: Mode => nodeDocument = mode => createView(mode = mode)
+      checkAllSaveButtonsAreDisplayed(createViewWithMode)
     }
 
     def verifyBodyBulletList(view: Html): Assertion = {

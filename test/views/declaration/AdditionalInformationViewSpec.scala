@@ -18,7 +18,6 @@ package views.declaration
 
 import base.Injector
 import controllers.declaration.routes.{AdditionalInformationChangeController, AdditionalInformationRemoveController}
-import controllers.helpers.{SaveAndContinue, SaveAndReturn}
 import forms.common.YesNoAnswer
 import forms.declaration.AdditionalInformation
 import models.requests.JourneyRequest
@@ -43,10 +42,10 @@ class AdditionalInformationViewSpec extends UnitViewSpec with ExportsTestData wi
   private val form: Form[YesNoAnswer] = YesNoAnswer.form()
   private val page = instanceOf[additional_information]
 
-  private def createView(form: Form[YesNoAnswer] = form, cachedData: Seq[AdditionalInformation] = Seq.empty)(
+  private def createView(form: Form[YesNoAnswer] = form, cachedData: Seq[AdditionalInformation] = Seq.empty, mode: Mode = Mode.Normal)(
     implicit request: JourneyRequest[_]
   ): Document =
-    page(Mode.Normal, itemId, form, cachedData, Call("GET", url))(request, messages)
+    page(mode, itemId, form, cachedData, Call("GET", url))(request, messages)
 
   "Additional Information View" should {
 
@@ -80,16 +79,8 @@ class AdditionalInformationViewSpec extends UnitViewSpec with ExportsTestData wi
         createView().getElementById("section-header") must containMessage("declaration.section.5")
       }
 
-      "display 'Save and continue' button" in {
-        val view: Document = createView()
-        view must containElement("button").withName(SaveAndContinue.toString)
-      }
-
-      "display 'Save and return' button" in {
-        val view: Document = createView()
-        view must containElement("button").withName(SaveAndReturn.toString)
-      }
-
+      val createViewWithMode: Mode => Document = mode => createView(mode = mode)
+      checkAllSaveButtonsAreDisplayed(createViewWithMode)
     }
   }
 

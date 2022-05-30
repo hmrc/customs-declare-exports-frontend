@@ -18,7 +18,6 @@ package views.declaration
 
 import base.{Injector, TestHelper}
 import controllers.declaration.routes
-import controllers.helpers.{SaveAndContinue, SaveAndReturn}
 import forms.common.Eori
 import forms.declaration.DeclarationAdditionalActors
 import models.DeclarationType._
@@ -40,8 +39,8 @@ class AdditionalActorsAddViewSpec extends UnitViewSpec with CommonMessages with 
   private val form: Form[DeclarationAdditionalActors] = DeclarationAdditionalActors.form
   private val declarationAdditionalActorsPage = instanceOf[additional_actors_add]
 
-  private def createView(form: Form[DeclarationAdditionalActors])(implicit request: JourneyRequest[_]): Document =
-    declarationAdditionalActorsPage(Mode.Normal, form)
+  private def createView(form: Form[DeclarationAdditionalActors] = form, mode: Mode = Mode.Normal)(implicit request: JourneyRequest[_]): Document =
+    declarationAdditionalActorsPage(mode, form)
 
   "Declaration Additional Actors" should {
 
@@ -88,13 +87,8 @@ class AdditionalActorsAddViewSpec extends UnitViewSpec with CommonMessages with 
         view.getElementById("WH-item-hint").text mustBe messages("declaration.partyType.warehouseKeeper.hint")
       }
 
-      "display 'Save and continue' button on page" in {
-        val saveAndContinueButton = view.getElementsByAttributeValueMatching("name", SaveAndContinue.toString).first()
-        saveAndContinueButton must containMessage(saveAndContinueCaption)
-
-        val saveAndReturn = view.getElementsByAttributeValueMatching("name", SaveAndReturn.toString).first()
-        saveAndReturn must containMessage(saveAndReturnCaption)
-      }
+      val createViewWithMode: Mode => Document = mode => createView(mode = mode)
+      checkAllSaveButtonsAreDisplayed(createViewWithMode)
     }
 
     onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, SUPPLEMENTARY) { implicit request =>

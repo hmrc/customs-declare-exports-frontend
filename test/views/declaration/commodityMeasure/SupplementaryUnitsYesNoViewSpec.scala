@@ -40,24 +40,24 @@ class SupplementaryUnitsYesNoViewSpec extends UnitViewSpec with ExportsTestData 
   private val appConfig = instanceOf[AppConfig]
 
   private val page = instanceOf[supplementary_units_yes_no]
-
+  private val form = SupplementaryUnits.form(yesNoPage)
   private val itemId = "item1"
   private val yesNoPage = true
 
-  private def request(declarationType: DeclarationType, maybeCommodityCode: Option[String] = None): JourneyRequest[_] =
+  private def makeRequest(declarationType: DeclarationType, maybeCommodityCode: Option[String] = None): JourneyRequest[_] =
     maybeCommodityCode.fold(journeyRequest()) { commodityCode =>
       val item = anItem(withItemId(itemId), withCommodityDetails(CommodityDetails(Some(commodityCode), None)))
       withRequestOfType(declarationType, withItem(item))
     }
 
-  private def createView(form: Form[SupplementaryUnits] = SupplementaryUnits.form(yesNoPage))(implicit request: JourneyRequest[_]): Document =
-    page(Mode.Normal, itemId, form)(request, messages)
+  private def createView(form: Form[SupplementaryUnits] = form, mode: Mode = Mode.Normal)(implicit request: JourneyRequest[_]): Document =
+    page(mode, itemId, form)(request, messages)
 
   "SupplementaryUnitsYesNo View" when {
 
-    List(STANDARD, SUPPLEMENTARY).foreach { declarationType =>
-      s"the declarationType is $declarationType" should {
-        val view = createView()(request(declarationType))
+    onJourney(STANDARD, SUPPLEMENTARY) { implicit request =>
+      val view = createView()
+      s"the declarationType is ${request.declarationType}" should {
 
         "display 'Back' button that links to 'Commodity Details' page" in {
           val backButton = view.getElementById("back-link")
@@ -75,7 +75,7 @@ class SupplementaryUnitsYesNoViewSpec extends UnitViewSpec with ExportsTestData 
 
         "display the expected body text when a commodity code of 10-digits has been entered" in {
           val commodityCode = "4602191000"
-          val view = createView()(request(declarationType, Some(commodityCode)))
+          val view = createView()(makeRequest(request.declarationType, Some(commodityCode)))
 
           val body = view.getElementsByClass("govuk-body").get(0)
 
@@ -88,7 +88,7 @@ class SupplementaryUnitsYesNoViewSpec extends UnitViewSpec with ExportsTestData 
 
         "display the expected body text when a commodity code of 8-digits has been entered" in {
           val commodityCode = "46021910"
-          val view = createView()(request(declarationType, Some(commodityCode)))
+          val view = createView()(makeRequest(request.declarationType, Some(commodityCode)))
 
           val body = view.getElementsByClass("govuk-body").get(0)
 
@@ -152,18 +152,10 @@ class SupplementaryUnitsYesNoViewSpec extends UnitViewSpec with ExportsTestData 
           )
         }
 
-        "display 'Save and continue' button on page" in {
-          val saveButton = view.getElementById("submit")
-          saveButton must containMessage("site.save_and_continue")
-        }
-
-        "display 'Save and return' button on page" in {
-          val saveAndReturnButton = view.getElementById("submit_and_return")
-          saveAndReturnButton must containMessage("site.save_and_come_back_later")
-        }
+        val createViewWithMode: Mode => Document = mode => createView(mode = mode)
+        checkAllSaveButtonsAreDisplayed(createViewWithMode)
 
         "not display any error when the value entered in the 'supplementaryUnits' field is valid" in {
-          implicit val theRequest = request(declarationType)
           val view = createView(SupplementaryUnits.form(yesNoPage).fillAndValidate(SupplementaryUnits(Some("100"))))
           view mustNot haveGovukGlobalErrorSummary
         }
@@ -173,7 +165,7 @@ class SupplementaryUnitsYesNoViewSpec extends UnitViewSpec with ExportsTestData 
             SupplementaryUnits
               .form(yesNoPage)
               .fillAndValidate(SupplementaryUnits(Some("ABC")))
-          )(request(declarationType))
+          )
 
           view must haveGovukGlobalErrorSummary
           view must containErrorElementWithTagAndHref("a", s"#$supplementaryUnits")
@@ -185,7 +177,7 @@ class SupplementaryUnitsYesNoViewSpec extends UnitViewSpec with ExportsTestData 
             SupplementaryUnits
               .form(yesNoPage)
               .fillAndValidate(SupplementaryUnits(Some("0000")))
-          )(request(declarationType))
+          )
 
           view must haveGovukGlobalErrorSummary
           view must containErrorElementWithTagAndHref("a", s"#$supplementaryUnits")
@@ -197,7 +189,7 @@ class SupplementaryUnitsYesNoViewSpec extends UnitViewSpec with ExportsTestData 
             SupplementaryUnits
               .form(yesNoPage)
               .fillAndValidate(SupplementaryUnits(Some("12345678901234567")))
-          )(request(declarationType))
+          )
 
           view must haveGovukGlobalErrorSummary
           view must containErrorElementWithTagAndHref("a", s"#$supplementaryUnits")
@@ -209,7 +201,7 @@ class SupplementaryUnitsYesNoViewSpec extends UnitViewSpec with ExportsTestData 
             SupplementaryUnits
               .form(yesNoPage)
               .fillAndValidate(SupplementaryUnits(Some("")))
-          )(request(declarationType))
+          )
 
           view must haveGovukGlobalErrorSummary
           view must containErrorElementWithTagAndHref("a", s"#$supplementaryUnits")

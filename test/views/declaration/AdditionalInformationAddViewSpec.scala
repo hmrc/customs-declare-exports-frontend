@@ -18,7 +18,6 @@ package views.declaration
 
 import base.{Injector, TestHelper}
 import controllers.declaration.routes
-import controllers.helpers.{SaveAndContinue, SaveAndReturn}
 import forms.declaration.AdditionalInformation
 import models.Mode
 import models.requests.JourneyRequest
@@ -40,8 +39,8 @@ class AdditionalInformationAddViewSpec extends UnitViewSpec with ExportsTestData
 
   private val page = instanceOf[additional_information_add]
 
-  private def createView(form: Form[AdditionalInformation] = form)(implicit request: JourneyRequest[_]): Document =
-    page(Mode.Normal, itemId, form)(request, messages)
+  private def createView(form: Form[AdditionalInformation] = form, mode: Mode = Mode.Normal)(implicit request: JourneyRequest[_]): Document =
+    page(mode, itemId, form)(request, messages)
 
   "Additional Information Add View" should {
 
@@ -87,15 +86,8 @@ class AdditionalInformationAddViewSpec extends UnitViewSpec with ExportsTestData
         view.getElementById("description").attr("value") mustBe empty
       }
 
-      "display 'Save and continue' button" in {
-        val view: Document = createView()
-        view must containElement("button").withName(SaveAndContinue.toString)
-      }
-
-      "display 'Save and return' button" in {
-        val view: Document = createView()
-        view must containElement("button").withName(SaveAndReturn.toString)
-      }
+      val createViewWithMode: Mode => Document = mode => createView(mode = mode)
+      checkAllSaveButtonsAreDisplayed(createViewWithMode)
     }
 
   }

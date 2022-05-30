@@ -25,6 +25,7 @@ import models.codes.{Country => ModelCountry}
 import models.DeclarationType.{OCCASIONAL, SIMPLIFIED, STANDARD}
 import models.Mode
 import models.requests.JourneyRequest
+import org.jsoup.nodes.Document
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
@@ -57,8 +58,8 @@ class CountryOfRoutingViewSpec extends UnitViewSpec with Stubs with ExportsTestD
   private def routingForm(request: JourneyRequest[_]): Form[Country] =
     Countries.form(RoutingCountryPage)(request, messages(request), mockCodeListConnector)
 
-  private def routingView(implicit request: JourneyRequest[_]): Html =
-    countryOfRoutingPage(Mode.Normal, routingForm(request), "Somewhere", Seq.empty[ModelCountry])(request, messages)
+  private def createView(mode: Mode = Mode.Normal)(implicit request: JourneyRequest[_]): Html =
+    countryOfRoutingPage(mode, routingForm(request), "Somewhere", Seq.empty[ModelCountry])(request, messages)
 
   "Routing Country view" should {
 
@@ -79,26 +80,19 @@ class CountryOfRoutingViewSpec extends UnitViewSpec with Stubs with ExportsTestD
 
       s"have page heading for ${request.declarationType}" in {
 
-        routingView(request).getElementById("section-header").text() must include(messages("declaration.section.3"))
+        createView()(request).getElementById("section-header").text() must include(messages("declaration.section.3"))
       }
 
       s"display back button that links to 'Country of Routing question' page  for ${request.declarationType}" in {
 
-        val backButton = routingView(request).getElementById("back-link")
+        val backButton = createView()(request).getElementById("back-link")
 
         backButton.text() mustBe messages("site.back")
         backButton must haveHref(routes.RoutingCountriesController.displayRoutingQuestion())
       }
 
-      s"display 'Save and continue' button for ${request.declarationType}" in {
-
-        routingView(request).getElementById("submit").text() mustBe messages("site.save_and_continue")
-      }
-
-      s"display 'Save and return' button for ${request.declarationType}" in {
-
-        routingView(request).getElementById("submit_and_return").text() mustBe messages("site.save_and_come_back_later")
-      }
+      val createViewWithMode: Mode => Document = mode => createView(mode = mode)
+      checkAllSaveButtonsAreDisplayed(createViewWithMode)
     }
   }
 }

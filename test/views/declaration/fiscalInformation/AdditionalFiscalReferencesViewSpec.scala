@@ -41,8 +41,10 @@ class AdditionalFiscalReferencesViewSpec extends UnitViewSpec with Stubs with Co
 
   val itemId = new ExportItemIdGeneratorService().generateItemId()
 
-  private def createView(form: Form[YesNoAnswer] = form, references: Seq[AdditionalFiscalReference])(implicit request: JourneyRequest[_]): Document =
-    additionalFiscalReferencesPage(Mode.Normal, itemId, form, references)
+  private def createView(form: Form[YesNoAnswer] = form, references: Seq[AdditionalFiscalReference], mode: Mode = Mode.Normal)(
+    implicit request: JourneyRequest[_]
+  ): Document =
+    additionalFiscalReferencesPage(mode, itemId, form, references)
 
   "Additional Fiscal References View" should {
     onEveryDeclarationJourney() { implicit request =>
@@ -65,13 +67,8 @@ class AdditionalFiscalReferencesViewSpec extends UnitViewSpec with Stubs with Co
         backButton must haveHref(controllers.declaration.routes.AdditionalProcedureCodesController.displayPage(Mode.Normal, itemId))
       }
 
-      "display 'Save and continue' button" in {
-        view must containElement("button").withName(SaveAndContinue.toString)
-      }
-
-      "display 'Save and return' button" in {
-        view must containElement("button").withName(SaveAndReturn.toString)
-      }
+      val createViewWithMode: Mode => Document = mode => createView(references = Seq(additionalReferences), mode = mode)
+      checkAllSaveButtonsAreDisplayed(createViewWithMode)
 
       "display table header" in {
         view.getElementsByClass("govuk-table__header").get(0) must containMessage("declaration.additionalFiscalReferences.country.header")

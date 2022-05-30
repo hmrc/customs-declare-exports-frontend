@@ -49,8 +49,10 @@ class TaricCodeAddFirstViewSpec extends UnitViewSpec with ExportsTestData with S
       withRequestOfType(STANDARD, withItem(item))
     }
 
-  private def createView(form: Form[TaricCodeFirst] = form)(implicit req: JourneyRequest[AnyContent] = request()): Document =
-    page(Mode.Normal, itemId, form)(req, messages)
+  private def createView(form: Form[TaricCodeFirst] = form, mode: Mode = Mode.Normal)(
+    implicit req: JourneyRequest[AnyContent] = request()
+  ): Document =
+    page(mode, itemId, form)(req, messages)
 
   "Taric Code Add First View" should {
     val view = createView()
@@ -109,15 +111,8 @@ class TaricCodeAddFirstViewSpec extends UnitViewSpec with ExportsTestData with S
       paragraph.child(0) must haveHref(appConfig.commodityCode9306909000)
     }
 
-    "display a 'Save and continue' button" in {
-      val saveButton = view.getElementById("submit")
-      saveButton must containMessage(saveAndContinueCaption)
-    }
-
-    "display a 'Save and return' button" in {
-      val saveAndReturnButton = view.getElementById("submit_and_return")
-      saveAndReturnButton must containMessage(saveAndReturnCaption)
-    }
+    val createViewWithMode: Mode => Document = mode => createView(mode = mode)
+    checkAllSaveButtonsAreDisplayed(createViewWithMode)
   }
 
   "Taric Code Add First View for invalid input" should {

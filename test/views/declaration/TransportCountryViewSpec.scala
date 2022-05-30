@@ -26,6 +26,7 @@ import forms.declaration.ModeOfTransportCode.RoRo
 import forms.declaration.TransportCountry
 import forms.declaration.TransportCountry._
 import models.DeclarationType.{STANDARD, SUPPLEMENTARY}
+import models.Mode
 import models.Mode.Normal
 import models.codes.Country
 import models.requests.JourneyRequest
@@ -62,8 +63,10 @@ class TransportCountryViewSpec extends UnitViewSpec with ExportsTestData with St
   private val page = instanceOf[transport_country]
   private def form(transportMode: String): Form[TransportCountry] = TransportCountry.form(transportMode)
 
-  private def createView(form: Form[TransportCountry], transportMode: String)(implicit request: JourneyRequest[_]): Document =
-    page(Normal, transportMode, form)(request, messages)
+  private def createView(form: Form[TransportCountry], transportMode: String, mode: Mode = Mode.Normal)(
+    implicit request: JourneyRequest[_]
+  ): Document =
+    page(mode, transportMode, form)(request, messages)
 
   "TransportCountry View" when {
 
@@ -130,15 +133,9 @@ class TransportCountryViewSpec extends UnitViewSpec with ExportsTestData with St
                 label.id mustBe s"${transportCountry}-label"
               }
 
-              "display 'Save and continue' button on page" in {
-                val saveButton = view.getElementById("submit")
-                saveButton must containMessage("site.save_and_continue")
-              }
-
-              "display 'Save and return' button on page" in {
-                val saveAndReturnButton = view.getElementById("submit_and_return")
-                saveAndReturnButton must containMessage("site.save_and_come_back_later")
-              }
+              val createViewWithMode: Mode => Document =
+                mode => createView(form(transportMode), transportMode, mode = mode)(journeyRequest(declarationType))
+              checkAllSaveButtonsAreDisplayed(createViewWithMode)
             }
 
             "display an error" when {

@@ -20,6 +20,8 @@ import base.Injector
 import controllers.declaration.routes
 import forms.declaration.RoutingCountryQuestionYesNo
 import models.Mode
+import models.requests.JourneyRequest
+import org.jsoup.nodes.Document
 import play.api.data.Form
 import services.cache.ExportsTestData
 import tools.Stubs
@@ -31,9 +33,12 @@ class RoutingCountryQuestionViewSpec extends UnitViewSpec with Stubs with Export
   val countryOfDestination = "Poland"
   val form: Form[Boolean] = RoutingCountryQuestionYesNo.formAdd()
   val routingQuestionPage = instanceOf[routing_country_question]
-  val view = routingQuestionPage(Mode.Normal, form, countryOfDestination)(journeyRequest(), messages)
+  def createView(mode: Mode = Mode.Normal) =
+    routingQuestionPage(mode, form, countryOfDestination)(journeyRequest(), messages)
 
   "Routing country question page" should {
+
+    val view = createView()
 
     "have defined translation for used labels" in {
 
@@ -72,14 +77,7 @@ class RoutingCountryQuestionViewSpec extends UnitViewSpec with Stubs with Export
       backButton must haveHref(routes.DestinationCountryController.displayPage())
     }
 
-    "display 'Save and continue' button" in {
-
-      view.getElementById("submit").text mustBe messages("site.save_and_continue")
-    }
-
-    "display 'Save and return' button" in {
-
-      view.getElementById("submit_and_return").text mustBe messages("site.save_and_come_back_later")
-    }
+    val createViewWithMode: Mode => Document = mode => createView(mode = mode)
+    checkAllSaveButtonsAreDisplayed(createViewWithMode)
   }
 }

@@ -35,6 +35,7 @@ import forms.declaration.{ModeOfTransportCode, TransportCodes}
 import models.DeclarationType.CLEARANCE
 import models.Mode
 import models.requests.JourneyRequest
+import org.jsoup.nodes.Document
 import play.api.mvc.Call
 import play.twirl.api.Html
 import tools.Stubs
@@ -52,8 +53,8 @@ class DepartureTransportViewSpec extends UnitViewSpec with CommonMessages with S
 
   private val departureTransportPage = instanceOf[departure_transport]
 
-  def createView(transportCodes: TransportCodes = transportCodesForV1)(implicit request: JourneyRequest[_]): Html =
-    departureTransportPage(Mode.Normal, form(transportCodes))(request, messages)
+  def createView(transportCodes: TransportCodes = transportCodesForV1, mode: Mode = Mode.Normal)(implicit request: JourneyRequest[_]): Html =
+    departureTransportPage(mode, form(transportCodes))(request, messages)
 
   "Departure Transport View" should {
 
@@ -81,15 +82,8 @@ class DepartureTransportViewSpec extends UnitViewSpec with CommonMessages with S
         removeBlanksIfAnyBeforeDot(tariffDetails) mustBe expectedText
       }
 
-      "display 'Save and continue' button on page" in {
-        view.getElementById("submit").text() mustBe messages(saveAndContinueCaption)
-      }
-
-      "display 'Save and return' button on page" in {
-        val saveAndReturn = view.getElementById("submit_and_return")
-        saveAndReturn.text() mustBe messages(saveAndReturnCaption)
-        saveAndReturn must haveAttribute("name", SaveAndReturn.toString)
-      }
+      val createViewWithMode: Mode => Document = mode => createView(mode = mode)
+      checkAllSaveButtonsAreDisplayed(createViewWithMode)
     }
   }
 

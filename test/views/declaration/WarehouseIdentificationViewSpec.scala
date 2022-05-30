@@ -74,13 +74,8 @@ class WarehouseIdentificationViewSpec extends UnitViewSpec with ExportsTestData 
         view.getElementsByAttributeValue("for", "identificationNumber").text() must include("declaration.warehouse.identification.required.title")
       }
 
-      "display 'Save and continue' button on page" in {
-        view.getElementById("submit").text() mustBe "site.save_and_continue"
-      }
-
-      "display 'Save and return' button on page" in {
-        view.getElementById("submit_and_return").text() mustBe "site.save_and_come_back_later"
-      }
+      val createViewWithMode: Mode => Document = mode => createView(mode = mode, messages = messages)
+      checkAllSaveButtonsAreDisplayed(createViewWithMode)
     }
 
     onJourney(STANDARD, SUPPLEMENTARY, CLEARANCE) { implicit request =>

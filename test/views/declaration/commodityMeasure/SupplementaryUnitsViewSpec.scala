@@ -39,11 +39,11 @@ class SupplementaryUnitsViewSpec extends UnitViewSpec with ExportsTestData with 
 
   private val itemId = "item1"
   private val yesNoPage = false
-
+  private val form = SupplementaryUnits.form(yesNoPage)
   private val commodityInfo = CommodityInfo("2208303000", "number of items", "p/st")
 
-  private def createView(form: Form[SupplementaryUnits] = SupplementaryUnits.form(yesNoPage))(implicit request: JourneyRequest[_]): Document =
-    page(Mode.Normal, itemId, form, commodityInfo)(request, messages)
+  private def createView(form: Form[SupplementaryUnits] = form, mode: Mode = Mode.Normal)(implicit request: JourneyRequest[_]): Document =
+    page(mode, itemId, form, commodityInfo)(request, messages)
 
   "SupplementaryUnits View" should {
 
@@ -98,15 +98,8 @@ class SupplementaryUnitsViewSpec extends UnitViewSpec with ExportsTestData with 
         )
       }
 
-      "display 'Save and continue' button on page" in {
-        val saveButton = view.getElementById("submit")
-        saveButton must containMessage("site.save_and_continue")
-      }
-
-      "display 'Save and return' button on page" in {
-        val saveAndReturnButton = view.getElementById("submit_and_return")
-        saveAndReturnButton must containMessage("site.save_and_come_back_later")
-      }
+      val createViewWithMode: Mode => Document = mode => createView(mode = mode)
+      checkAllSaveButtonsAreDisplayed(createViewWithMode)
 
       "not display any error when the value entered in the 'supplementaryUnits' field is valid" in {
         val view = createView(SupplementaryUnits.form(yesNoPage).fillAndValidate(SupplementaryUnits(Some("100"))))

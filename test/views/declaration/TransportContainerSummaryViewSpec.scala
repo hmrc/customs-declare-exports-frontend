@@ -21,6 +21,7 @@ import controllers.declaration.routes
 import forms.common.YesNoAnswer
 import forms.declaration.Seal
 import models.DeclarationType.SUPPLEMENTARY
+import models.Mode
 import models.Mode.Normal
 import models.declaration.Container
 import org.jsoup.nodes.Document
@@ -41,8 +42,8 @@ class TransportContainerSummaryViewSpec extends UnitViewSpec with ExportsTestDat
   private val form: Form[YesNoAnswer] = YesNoAnswer.form()
   private val page = instanceOf[transport_container_summary]
 
-  private def createView(form: Form[YesNoAnswer] = form, containers: Seq[Container] = List(container)): Document =
-    page(Normal, form, containers)(journeyRequest(), messages)
+  private def createView(form: Form[YesNoAnswer] = form, containers: Seq[Container] = List(container), mode: Mode = Mode.Normal): Document =
+    page(mode, form, containers)(journeyRequest(), messages)
 
   "Transport Containers Summary View" should {
     val view = createView()
@@ -105,15 +106,8 @@ class TransportContainerSummaryViewSpec extends UnitViewSpec with ExportsTestDat
       }
     }
 
-    "display 'Save and continue' button on page" in {
-      val saveButton = view.getElementById("submit")
-      saveButton must containMessage(saveAndContinueCaption)
-    }
-
-    "display 'Save and return' button on page" in {
-      val saveAndReturnButton = view.getElementById("submit_and_return")
-      saveAndReturnButton must containMessage(saveAndReturnCaption)
-    }
+    val createViewWithMode: Mode => Document = mode => createView(mode = mode)
+    checkAllSaveButtonsAreDisplayed(createViewWithMode)
   }
 
   "Transport Containers Summary View for invalid input" should {

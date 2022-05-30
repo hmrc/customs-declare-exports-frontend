@@ -18,6 +18,8 @@ package views.declaration.spec
 
 import base.{Injector, JourneyTypeTestRunner, UnitWithMocksSpec}
 import mock.FeatureFlagMocks
+import models.Mode
+import models.Mode.{ChangeAmend, Draft}
 import org.jsoup.nodes.Document
 import org.scalatest.Assertion
 import org.scalatest.matchers.{BeMatcher, MatchResult}
@@ -25,8 +27,9 @@ import play.api.i18n.{Lang, Messages, MessagesApi}
 import play.api.mvc.{AnyContent, Request}
 import play.api.test.FakeRequest
 import services.cache.ExportsTestData
+import views.helpers.CommonMessages
 
-class UnitViewSpec extends UnitWithMocksSpec with ViewMatchers with JourneyTypeTestRunner with FeatureFlagMocks {
+class UnitViewSpec extends UnitWithMocksSpec with ViewMatchers with JourneyTypeTestRunner with FeatureFlagMocks with CommonMessages {
 
   import utils.FakeRequestCSRFSupport._
 
@@ -42,6 +45,34 @@ class UnitViewSpec extends UnitWithMocksSpec with ViewMatchers with JourneyTypeT
   def checkErrorsSummary(view: Document): Assertion = {
     view.getElementById("error-summary-heading").text() must be("error.summary.title")
     view.getElementsByClass("error-summary error-summary--show").get(0).getElementsByTag("p").text() must be("error.summary.text")
+  }
+
+  def checkSaveAndReturnLinkIsDisplayed(view: Document): Unit =
+    "display 'Save and return' button" in {
+      val saveAndReturnButton = view.getElementById("submit_and_return")
+      saveAndReturnButton must containMessage("site.save_and_come_back_later")
+    }
+
+  def checkSaveAndContinueButtonIsDisplayed(view: Document): Unit =
+    "display 'Save and continue' button" in {
+      val saveButton = view.getElementById("submit")
+      saveButton must containMessage("site.save_and_continue")
+    }
+
+  def checkSaveAndReturnToSummaryButtonIsDisplayed(createView: Mode => Document): Unit =
+    for (mode <- Seq(Draft, ChangeAmend))
+      s"display 'Save and return to summary' button in $mode mode" in {
+        val view = createView(mode)
+        val saveAndReturnToSummaryButton = view.getElementById("save_and_return_to_summary")
+        saveAndReturnToSummaryButton must containMessage(saveAndReturnToSummaryCaption)
+      }
+
+  def checkAllSaveButtonsAreDisplayed(createView: Mode => Document): Unit = {
+    val view = createView(Mode.Normal)
+
+    checkSaveAndContinueButtonIsDisplayed(view)
+    checkSaveAndReturnLinkIsDisplayed(view)
+    checkSaveAndReturnToSummaryButtonIsDisplayed(createView)
   }
 }
 

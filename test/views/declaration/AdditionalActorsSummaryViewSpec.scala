@@ -77,13 +77,8 @@ class AdditionalActorsSummaryViewSpec extends UnitViewSpec with ExportsTestData 
         view.getElementById("section-header").text() must include(messages("declaration.section.2"))
       }
 
-      "display'Save and continue' button on page" in {
-        view.getElementById("submit").text() mustBe messages("site.save_and_continue")
-      }
-
-      "display 'Save and return' button on page" in {
-        view.getElementById("submit_and_return").text() mustBe messages("site.save_and_come_back_later")
-      }
+      val createViewWithMode: Mode => Document = mode => createView(mode = mode)
+      checkAllSaveButtonsAreDisplayed(createViewWithMode)
     }
   }
 

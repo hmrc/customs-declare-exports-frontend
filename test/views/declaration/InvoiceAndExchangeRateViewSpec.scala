@@ -22,6 +22,7 @@ import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.InvoiceAndExchangeRate
 import forms.declaration.InvoiceAndExchangeRate.form
 import forms.declaration.officeOfExit.OfficeOfExit
+import models.Mode
 import models.Mode.Normal
 import models.declaration.Locations
 import models.requests.JourneyRequest
@@ -39,8 +40,10 @@ class InvoiceAndExchangeRateViewSpec extends UnitViewSpec with ExportsTestData w
   private val page = instanceOf[invoice_and_exchange_rate]
   private val validCurrencyCode = "GBP"
 
-  private def createView(form: Form[InvoiceAndExchangeRate] = InvoiceAndExchangeRate.form)(implicit request: JourneyRequest[_]): Document =
-    page(Normal, form)(request, messages)
+  private def createView(form: Form[InvoiceAndExchangeRate] = InvoiceAndExchangeRate.form, mode: Mode = Mode.Normal)(
+    implicit request: JourneyRequest[_]
+  ): Document =
+    page(mode, form)(request, messages)
 
   "Total Number Of Items View on empty page" should {
 
@@ -108,15 +111,8 @@ class InvoiceAndExchangeRateViewSpec extends UnitViewSpec with ExportsTestData w
         backButton.getElementById("back-link") must haveHref(InvoiceAndExchangeRateChoiceController.displayPage(Normal))
       }
 
-      "display 'Save and continue' button on page" in {
-        val saveButton = view.getElementById("submit")
-        saveButton must containMessage("site.save_and_continue")
-      }
-
-      "display 'Save and return' button on page" in {
-        val saveAndReturnButton = view.getElementById("submit_and_return")
-        saveAndReturnButton must containMessage("site.save_and_come_back_later")
-      }
+      val createViewWithMode: Mode => Document = mode => createView(mode = mode)
+      checkAllSaveButtonsAreDisplayed(createViewWithMode)
 
     }
   }

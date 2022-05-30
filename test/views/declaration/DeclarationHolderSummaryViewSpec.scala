@@ -24,6 +24,7 @@ import forms.declaration.AuthorisationProcedureCodeChoice.{Choice1040, ChoiceOth
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.STANDARD_PRE_LODGED
 import forms.declaration.declarationHolder.DeclarationHolder
 import models.DeclarationType._
+import models.Mode
 import models.Mode.Normal
 import models.declaration.{EoriSource, Parties}
 import models.requests.JourneyRequest
@@ -41,8 +42,8 @@ class DeclarationHolderSummaryViewSpec extends UnitViewSpec with ExportsTestData
   val declarationHolder1: DeclarationHolder = DeclarationHolder(Some("ACE"), Some(Eori("GB123456543")), Some(EoriSource.OtherEori))
   val declarationHolder2: DeclarationHolder = DeclarationHolder(Some("CVA"), Some(Eori("GB6543253678")), Some(EoriSource.OtherEori))
 
-  private def createView(holders: Seq[DeclarationHolder] = Seq.empty)(implicit request: JourneyRequest[_]): Document =
-    page(Normal, YesNoAnswer.form(), holders)
+  private def createView(holders: Seq[DeclarationHolder] = Seq.empty, mode: Mode = Mode.Normal)(implicit request: JourneyRequest[_]): Document =
+    page(mode, YesNoAnswer.form(), holders)
 
   "have proper messages for labels" in {
     messages must haveTranslationFor("declaration.declarationHolders.add.another")
@@ -113,13 +114,8 @@ class DeclarationHolderSummaryViewSpec extends UnitViewSpec with ExportsTestData
         view.getElementById("section-header") must containMessage("declaration.section.2")
       }
 
-      "display'Save and continue' button on page" in {
-        view.getElementById("submit") must containMessage("site.save_and_continue")
-      }
-
-      "display 'Save and return' button on page" in {
-        view.getElementById("submit_and_return") must containMessage("site.save_and_come_back_later")
-      }
+      val createViewWithMode: Mode => Document = mode => createView(mode = mode)
+      checkAllSaveButtonsAreDisplayed(createViewWithMode)
     }
   }
 

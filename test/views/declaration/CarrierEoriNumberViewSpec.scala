@@ -23,6 +23,7 @@ import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.carrier.CarrierEoriNumber
 import forms.declaration.carrier.CarrierEoriNumber.form
 import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED, STANDARD}
+import models.Mode
 import models.Mode.Normal
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
@@ -39,8 +40,8 @@ class CarrierEoriNumberViewSpec extends UnitViewSpec with CommonMessages with Ex
 
   private val page: carrier_eori_number = instanceOf[carrier_eori_number]
 
-  private def createView(form: Form[CarrierEoriNumber])(implicit request: JourneyRequest[_]): Document =
-    page(Normal, form)(request, messages)
+  private def createView(form: Form[CarrierEoriNumber], mode: Mode = Mode.Normal)(implicit request: JourneyRequest[_]): Document =
+    page(mode, form)(request, messages)
 
   "Carrier Eori Number View" should {
 
@@ -119,13 +120,8 @@ class CarrierEoriNumberViewSpec extends UnitViewSpec with CommonMessages with Ex
         actualText mustBe removeLineBreakIfAny(expectedText)
       }
 
-      "display 'Save and continue' button" in {
-        view.getElementById("submit") must containMessage(saveAndContinueCaption)
-      }
-
-      "display 'Save and return' button on page" in {
-        view.getElementById("submit_and_return") must containMessage(saveAndReturnCaption)
-      }
+      val createViewWithMode: Mode => Document = mode => createView(form, mode)
+      checkAllSaveButtonsAreDisplayed(createViewWithMode)
 
       "display errors when all inputs are incorrect" in {
         val data = CarrierEoriNumber(Some(Eori("123456789")), YesNoAnswers.yes)

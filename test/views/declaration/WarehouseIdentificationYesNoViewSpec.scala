@@ -24,8 +24,7 @@ import models.Mode
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
-import play.api.i18n.{Messages, MessagesApi}
-import play.api.test.Helpers.stubMessages
+import play.api.i18n.MessagesApi
 import services.cache.ExportsTestData
 import tools.Stubs
 import views.components.gds.Styles
@@ -39,9 +38,7 @@ class WarehouseIdentificationYesNoViewSpec extends UnitViewSpec with ExportsTest
   private val page = instanceOf[warehouse_identification_yesno]
   private val form: Form[WarehouseIdentification] = WarehouseIdentification.form(yesNo = false)
 
-  private def createView(mode: Mode = Mode.Normal, form: Form[WarehouseIdentification] = form, messages: Messages = stubMessages())(
-    implicit request: JourneyRequest[_]
-  ): Document =
+  private def createView(mode: Mode = Mode.Normal, form: Form[WarehouseIdentification] = form)(implicit request: JourneyRequest[_]): Document =
     page(mode, form)(request, messages)
 
   "Warehouse Identification Number View" should {
@@ -59,34 +56,29 @@ class WarehouseIdentificationYesNoViewSpec extends UnitViewSpec with ExportsTest
       }
 
       "display same page title as header" in {
-        val viewWithMessage = createView(messages = realMessagesApi.preferred(request))
+        val viewWithMessage = createView()
         viewWithMessage.title() must include(viewWithMessage.getElementsByTag("h1").text())
       }
 
       "have the correct section header" in {
-        view.getElementById("section-header").text() must include("declaration.section.6")
+        view.getElementById("section-header") must containMessage("declaration.section.6")
       }
 
       "have the correct page title" in {
-        view.getElementsByClass(Styles.gdsPageLegend).text() mustBe "declaration.warehouse.identification.optional.title"
+        view.getElementsByClass(Styles.gdsPageLegend) must containMessageForElements("declaration.warehouse.identification.optional.title")
       }
 
       "display radio button with Yes option" in {
         view.getElementById("code_yes").attr("value") mustBe YesNoAnswers.yes
-        view.getElementsByAttributeValue("for", "code_yes").text() mustBe "site.yes"
+        view.getElementsByAttributeValue("for", "code_yes") must containMessageForElements("site.yes")
       }
       "display radio button with No option" in {
         view.getElementById("code_no").attr("value") mustBe YesNoAnswers.no
-        view.getElementsByAttributeValue("for", "code_no").text() mustBe "site.no"
+        view.getElementsByAttributeValue("for", "code_no") must containMessageForElements("site.no")
       }
 
-      "display 'Save and continue' button on page" in {
-        view.getElementById("submit").text() mustBe "site.save_and_continue"
-      }
-
-      "display 'Save and return' button on page" in {
-        view.getElementById("submit_and_return").text() mustBe "site.save_and_come_back_later"
-      }
+      val createViewWithMode: Mode => Document = mode => createView(mode = mode)
+      checkAllSaveButtonsAreDisplayed(createViewWithMode)
     }
 
     onJourney(STANDARD, SUPPLEMENTARY, CLEARANCE) { implicit request =>
@@ -95,7 +87,7 @@ class WarehouseIdentificationYesNoViewSpec extends UnitViewSpec with ExportsTest
       "display 'Back' button that links to 'Transport Leaving the Border' page" in {
         val backButton = view.getElementById("back-link")
 
-        backButton.text() mustBe "site.back"
+        backButton must containMessage("site.back")
         backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.TransportLeavingTheBorderController.displayPage())
       }
     }
@@ -105,7 +97,7 @@ class WarehouseIdentificationYesNoViewSpec extends UnitViewSpec with ExportsTest
       "display 'Back' button that links to 'Items Summary' page" in {
         val backButton = view.getElementById("back-link")
 
-        backButton.text() mustBe "site.back"
+        backButton must containMessage("site.back")
         backButton.getElementById("back-link") must haveHref(
           controllers.declaration.routes.ItemsSummaryController.displayItemsSummaryPage(Mode.Normal)
         )
@@ -121,7 +113,7 @@ class WarehouseIdentificationYesNoViewSpec extends UnitViewSpec with ExportsTest
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#identificationNumber")
 
-        view must containErrorElementWithMessage("declaration.warehouse.identification.identificationNumber.empty")
+        view must containErrorElementWithMessageKey("declaration.warehouse.identification.identificationNumber.empty")
       }
 
       "display error when code is incorrect" in {
@@ -130,7 +122,7 @@ class WarehouseIdentificationYesNoViewSpec extends UnitViewSpec with ExportsTest
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#identificationNumber")
 
-        view must containErrorElementWithMessage("declaration.warehouse.identification.identificationNumber.format")
+        view must containErrorElementWithMessageKey("declaration.warehouse.identification.identificationNumber.format")
       }
     }
   }

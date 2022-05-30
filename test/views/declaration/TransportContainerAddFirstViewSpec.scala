@@ -21,6 +21,7 @@ import controllers.declaration.routes
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.ContainerFirst
 import models.DeclarationType.SUPPLEMENTARY
+import models.Mode
 import models.Mode.Normal
 import org.jsoup.nodes.Document
 import play.api.data.Form
@@ -37,8 +38,8 @@ class TransportContainerAddFirstViewSpec extends UnitViewSpec with ExportsTestDa
   private val form: Form[ContainerFirst] = ContainerFirst.form()
   private val page = instanceOf[transport_container_add_first]
 
-  private def createView(form: Form[ContainerFirst] = form): Document =
-    page(Normal, form)(journeyRequest(), messages)
+  private def createView(form: Form[ContainerFirst] = form, mode: Mode = Mode.Normal): Document =
+    page(mode, form)(journeyRequest(), messages)
 
   "Transport Containers Add First View" should {
     val view = createView()
@@ -94,15 +95,8 @@ class TransportContainerAddFirstViewSpec extends UnitViewSpec with ExportsTestDa
       }
     }
 
-    "display 'Save and continue' button on page" in {
-      val saveButton = view.getElementById("submit")
-      saveButton must containMessage(saveAndContinueCaption)
-    }
-
-    "display 'Save and return' button on page" in {
-      val saveAndReturnButton = view.getElementById("submit_and_return")
-      saveAndReturnButton must containMessage(saveAndReturnCaption)
-    }
+    val createViewWithMode: Mode => Document = mode => createView(mode = mode)
+    checkAllSaveButtonsAreDisplayed(createViewWithMode)
   }
 
   "Transport Containers Add View" should {

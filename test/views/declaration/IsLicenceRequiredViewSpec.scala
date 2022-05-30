@@ -46,8 +46,8 @@ class IsLicenceRequiredViewSpec extends UnitViewSpec with ExportsTestData with C
   private val appConfig = instanceOf[AppConfig]
   private val isLicenceRequiredPage = instanceOf[is_licence_required]
 
-  private def createView(form: Form[YesNoAnswer] = IsLicenceRequired.form)(implicit request: JourneyRequest[_]): Document =
-    isLicenceRequiredPage(Mode.Normal, "itemId", form)(request, messages)
+  private def createView(form: Form[YesNoAnswer] = IsLicenceRequired.form, mode: Mode = Mode.Normal)(implicit request: JourneyRequest[_]): Document =
+    isLicenceRequiredPage(mode, "itemId", form)(request, messages)
 
   "IsLicenceReq View on empty page" should {
 
@@ -74,16 +74,8 @@ class IsLicenceRequiredViewSpec extends UnitViewSpec with ExportsTestData with C
         view.getElementsByAttributeValue("for", "code_no") must containMessageForElements("site.no")
       }
 
-      "display 'Save and continue' button on page" in {
-        val saveButton = createView().getElementById("submit")
-        saveButton must containMessage(saveAndContinueCaption)
-      }
-
-      "display 'Save and return' button on page" in {
-        val saveButton = createView().getElementById("submit_and_return")
-        saveButton must containMessage(saveAndReturnCaption)
-        saveButton.attr("name") mustBe SaveAndReturn.toString
-      }
+      val createViewWithMode: Mode => Document = mode => createView(mode = mode)
+      checkAllSaveButtonsAreDisplayed(createViewWithMode)
 
       "display 'Back' button that links to 'AdditionalInfo' page" in {
 

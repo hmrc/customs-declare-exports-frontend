@@ -38,45 +38,29 @@ import views.tags.ViewTest
 class DeclarantDetailsViewSpec extends UnitViewSpec with ExportsTestData with CommonMessages with Stubs with Injector {
 
   private val declarantDetailsPage = instanceOf[declarant_details]
-  private def createView(form: Form[DeclarantEoriConfirmation])(implicit request: JourneyRequest[_]): Document =
-    declarantDetailsPage(Mode.Normal, form)(request, messages)
-
-  "Declarant Details View on empty page" should {
-
-    "have correct message keys" in {
-      messages must haveTranslationFor("declaration.declarant.title")
-      messages must haveTranslationFor("declaration.eori.error.format")
-      messages must haveTranslationFor("declaration.eori.empty")
-    }
-  }
+  private def createView(form: Form[DeclarantEoriConfirmation], mode: Mode = Mode.Normal)(implicit request: JourneyRequest[_]): Document =
+    declarantDetailsPage(mode, form)(request, messages)
 
   "Declarant Details View on empty page" should {
 
     onEveryDeclarationJourney() { implicit request =>
+      val view = createView(form())
+
       "display page title" in {
 
-        createView(form())
-          .getElementsByTag("h1") must containMessageForElements("declaration.declarant.title", request.eori)
+        view.getElementsByTag("h1") must containMessageForElements("declaration.declarant.title", request.eori)
       }
 
       "display radio button with Yes option" in {
-
-        val view = createView(form())
         view.getElementById("code_yes").attr("value") mustBe YesNoAnswers.yes
         view.getElementsByAttributeValue("for", "code_yes") must containMessageForElements("site.yes")
       }
       "display radio button with No option" in {
-
-        val view = createView(form())
         view.getElementById("code_no").attr("value") mustBe YesNoAnswers.no
         view.getElementsByAttributeValue("for", "code_no") must containMessageForElements("site.no")
       }
 
-      "display 'Save and continue' button on page" in {
-
-        val saveButton = createView(form()).getElementById("submit")
-        saveButton must containMessage(saveAndContinueCaption)
-      }
+      checkSaveAndContinueButtonIsDisplayed(view)
     }
 
     onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { implicit request =>
@@ -95,8 +79,7 @@ class DeclarantDetailsViewSpec extends UnitViewSpec with ExportsTestData with Co
       }
 
       "not display 'Save and return' button on page" in {
-
-        createView(form()).getElementById("submit_and_return") mustBe null
+        Option(createView(form()).getElementById("submit_and_return")).isEmpty
       }
     }
 
@@ -115,12 +98,7 @@ class DeclarantDetailsViewSpec extends UnitViewSpec with ExportsTestData with Co
         backButton must haveHref(routes.EntryIntoDeclarantsRecordsController.displayPage().url)
       }
 
-      "display 'Save and return' button on page" in {
-
-        val saveButton = createView(form()).getElementById("submit_and_return")
-        saveButton must containMessage(saveAndReturnCaption)
-        saveButton.attr("name") mustBe SaveAndReturn.toString
-      }
+      checkSaveAndReturnLinkIsDisplayed(createView(form()))
     }
   }
 
