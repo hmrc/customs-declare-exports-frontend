@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import models.Mode
+@import models.Mode._
 
 
 @this(saveAndContinue: saveAndContinue, saveAndReturnToSummary: saveAndReturnToSummary)
@@ -23,7 +23,7 @@
 
 <div class="govuk-button-group">
 @saveAndContinue()
-@if(mode == Mode.Draft || mode == Mode.ChangeAmend) {
+@if(Seq(Draft, ChangeAmend, Change).contains(mode)) {
   @saveAndReturnToSummary()
 }
 </div>

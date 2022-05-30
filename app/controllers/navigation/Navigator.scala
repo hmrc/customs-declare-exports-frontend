@@ -377,6 +377,8 @@ class Navigator @Inject()(
         Results.Redirect(routes.SummaryController.displayPage(Mode.Draft))
       case (Mode.ChangeAmend, SaveAndReturnToSummary) =>
         Results.Redirect(routes.SummaryController.displayPageOnAmend)
+      case (Mode.Change, SaveAndReturnToSummary) =>
+        Results.Redirect(routes.SummaryController.displayPage(Mode.Normal))
       case _ => Results.Redirect(factory(mode))
     }
 

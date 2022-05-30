@@ -182,6 +182,15 @@ class NavigatorSpec
         redirectLocation(result) mustBe Some(SummaryController.displayPageOnAmend.url)
         verifyNoInteractions(auditService)
       }
+
+      "user is in change mode" in {
+        val mode = Mode.Change
+        val result = navigator.continueTo(mode, call)(decoratedRequest(request(Some(SaveAndReturnToSummary))), hc)
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(SummaryController.displayPage(Mode.Normal).url)
+        verifyNoInteractions(auditService)
+      }
     }
   }
 

@@ -17,7 +17,7 @@
 package views.components.gds
 
 import models.Mode
-import models.Mode.{ChangeAmend, Draft, Normal}
+import models.Mode.{Change, ChangeAmend, Draft, Normal}
 import play.twirl.api.Html
 import views.declaration.spec.UnitViewSpec
 import views.declaration.spec.UnitViewSpec.instanceOf
@@ -42,10 +42,12 @@ class SaveButtonsSpec extends UnitViewSpec {
     }
 
     for (mode <- Mode.modes) s"display Save and return to summary button appropriately in $mode mode" in {
-      val buttons = createButtons(mode)
+      val buttonsPage = createButtons(mode)
+      val buttons = Option(buttonsPage.getElementById("save_and_return_to_summary"))
+
       mode match {
-        case Draft | ChangeAmend => Option(buttons.getElementsByAttributeValue("name", "SaveAndReturnToSummary")).isDefined
-        case _                   => Option(buttons.getElementsByAttributeValue("name", "SaveAndReturnToSummary")).isEmpty
+        case Draft | ChangeAmend | Change => buttons.isDefined
+        case _                => buttons.isEmpty
       }
     }
   }
