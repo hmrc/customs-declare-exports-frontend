@@ -1507,7 +1507,7 @@ declaration.taricAdditionalCodes.remove.hint = Remove additional code {0}.
 declaration.nationalAdditionalCode.addfirst.header = Do you need to add a national additional code?
 declaration.nationalAdditionalCode.addfirst.body = Add a national additional code from {0} if exemptions or reduced rates of taxes are applicable.
 declaration.nationalAdditionalCode.addfirst.body.link = Appendix 19 (opens in new tab)
-declaration.nationalAdditionalCode.addfirst.hint = For example VATZ, to indicate that the goods are being zero-rated for VAT.
+declaration.nationalAdditionalCode.addfirst.hint = Codes must be 4 characters, starting with a letter.
 declaration.nationalAdditionalCode.addfirst.label = National additional code
 
 declaration.nationalAdditionalCode.addnext.header = What is the next national additional code?
