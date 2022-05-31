@@ -87,11 +87,12 @@ class LocationOfGoodsViewSpec extends UnitViewSpec with Stubs with Injector with
 
         "display the expected body" in {
           val paragraphs = view.getElementsByClass("govuk-body")
-          paragraphs.size mustBe 5
+          paragraphs.size mustBe 6
 
           paragraphs.get(0).text mustBe messages(s"$prefix.body.v1.1")
-          paragraphs.get(1).text mustBe messages(s"$prefix.body.v1.2")
-          paragraphs.get(2).text mustBe messages(s"$prefix.body.v1.3")
+          paragraphs.get(1).text mustBe messages(s"$prefix.body.v1.1.1")
+          paragraphs.get(2).text mustBe messages(s"$prefix.body.v1.2")
+          paragraphs.get(3).text mustBe messages(s"$prefix.body.v1.3")
         }
 
         "display the 'Find the goods location code' expander " in {
@@ -235,21 +236,24 @@ class LocationOfGoodsViewSpec extends UnitViewSpec with Stubs with Injector with
 
           "display the expected body" in {
             val paragraphs = view.getElementsByClass("govuk-body")
-            paragraphs.size mustBe 5
+            paragraphs.size mustBe 6
 
             paragraphs.get(0).text mustBe messages(s"$prefix.body.v4.1")
 
             val paragraph2 = paragraphs.get(1)
-            paragraph2.text mustBe messages(s"$prefix.body.v4.2", messages(s"$prefix.body.v4.2.link"))
-            paragraph2.child(0) must haveHref(appConfig.previousProcedureCodes)
+            paragraph2.text mustBe messages(s"$prefix.body.v4.1.1")
 
-            val label = paragraph2.nextElementSibling
+            val paragraph3 = paragraphs.get(2)
+            paragraph3.text mustBe messages(s"$prefix.body.v4.2", messages(s"$prefix.body.v4.2.link"))
+            paragraph3.child(0) must haveHref(appConfig.previousProcedureCodes)
+
+            val label = paragraph3.nextElementSibling
             assert(label.hasClass("govuk-heading-s"))
             label.text mustBe messages(s"$prefix.body.v4.3.label")
 
-            val paragraph3 = paragraphs.get(2)
-            paragraph3.text mustBe messages(s"$prefix.body.v4.3", messages(s"$prefix.body.v4.3.link"))
-            paragraph3.child(0) must haveHref(appConfig.locationCodesForPortsUsingGVMS)
+            val paragraph4 = paragraphs.get(3)
+            paragraph4.text mustBe messages(s"$prefix.body.v4.3", messages(s"$prefix.body.v4.3.link"))
+            paragraph4.child(0) must haveHref(appConfig.locationCodesForPortsUsingGVMS)
           }
 
           "display the expected hint" in {

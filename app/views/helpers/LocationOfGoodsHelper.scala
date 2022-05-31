@@ -67,13 +67,14 @@ class LocationOfGoodsHelper @Inject()(
 
         List(
           body(messages(s"$prefix.body.v4.1")),
+          body(messages(s"$prefix.body.v4.1.1")),
           body(messages(s"$prefix.body.v4.2", link(linkText2, Call("GET", appConfig.previousProcedureCodes), "_blank"))),
           body(messages(s"$prefix.body.v4.3.label"), "govuk-heading-s"),
           body(messages(s"$prefix.body.v4.3", link(linkText3, Call("GET", appConfig.locationCodesForPortsUsingGVMS), "_blank")))
         )
 
       // version 1
-      case _ => List(s"$prefix.body.v1.1", s"$prefix.body.v1.2", s"$prefix.body.v1.3").map(key => body(messages(key)))
+      case _ => List(s"$prefix.body.v1.1", s"$prefix.body.v1.1.1", s"$prefix.body.v1.2", s"$prefix.body.v1.3").map(key => body(messages(key)))
     }
 
     HtmlFormat.fill(sections)
