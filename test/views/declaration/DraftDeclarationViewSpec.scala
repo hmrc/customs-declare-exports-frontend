@@ -16,11 +16,7 @@
 
 package views.declaration
 
-import java.time.{LocalDateTime, ZoneOffset}
-
 import base.Injector
-import models.responses.FlashKeys
-import play.api.mvc.Flash
 import play.twirl.api.Html
 import tools.Stubs
 import views.declaration.spec.UnitViewSpec
@@ -28,23 +24,25 @@ import views.helpers.CommonMessages
 import views.html.declaration.draft_declaration_page
 import views.tags.ViewTest
 
+import java.time.{LocalDateTime, ZoneOffset}
+
 @ViewTest
 class DraftDeclarationViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector {
 
   private val page = instanceOf[draft_declaration_page]
-  private def createView(flash: (String, String)*): Html = page()(request, Flash(Map(flash: _*)), messages)
+  val declarationId = Some("declarationId")
+  val date: String = LocalDateTime.of(2019, 1, 1, 1, 1).toInstant(ZoneOffset.UTC).toEpochMilli.toString
+  private def createView(): Html = page(declarationId, date)(request, messages)
 
   "View" should {
-    "render expiry date" when {
-      "present in flash" in {
-        val date = LocalDateTime.of(2019, 1, 1, 1, 1).toInstant(ZoneOffset.UTC)
-        val view = createView(FlashKeys.expiryDate -> date.toEpochMilli.toString)
-        view.getElementById("draft_confirmation-expiry") must containText("1 January 2019")
-      }
+    "render expiry date" in {
+      val view = createView()
+      view.getElementById("draft_confirmation-expiry") must containText("1 January 2019")
+    }
 
-      "missing from flash" in {
-        Option(createView().getElementById("draft_confirmation-expiry")) mustBe None
-      }
+    "render view declaration summary link" in {
+      val link = createView().getElementById("view_declaration_summary")
+      link must haveHref(controllers.routes.SavedDeclarationsController.continueDeclaration(declarationId.get).url)
     }
 
     "render continue link" in {

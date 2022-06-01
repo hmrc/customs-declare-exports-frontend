@@ -18,20 +18,13 @@ package controllers.navigation
 
 import base.{JourneyTypeTestRunner, MockExportCacheService, RequestBuilder, UnitWithMocksSpec}
 import config.AppConfig
-import controllers.declaration.routes.{
-  CommodityMeasureController,
-  DraftDeclarationController,
-  PackageInformationSummaryController,
-  SummaryController,
-  SupplementaryUnitsController
-}
+import controllers.declaration.routes._
 import controllers.helpers._
 import controllers.routes.{RejectedNotificationsController, SubmissionsController}
 import forms.declaration.AdditionalInformationSummary
 import forms.declaration.carrier.CarrierDetails
 import mock.FeatureFlagMocks
 import models.requests.{ExportsSessionKeys, JourneyRequest}
-import models.responses.FlashKeys
 import models.{DeclarationType, ExportsDeclaration, Mode, SignedInUser}
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
@@ -47,7 +40,7 @@ import services.audit.{AuditService, AuditTypes}
 import services.cache.ExportsDeclarationBuilder
 import uk.gov.hmrc.http.HeaderCarrier
 
-import java.time.{LocalDate, ZoneOffset}
+import java.time.LocalDate
 import java.util.concurrent.TimeUnit
 import scala.concurrent.duration.FiniteDuration
 import scala.concurrent.{ExecutionContext, Future}
@@ -83,7 +76,6 @@ class NavigatorSpec
 
   "Continue To" should {
     val updatedDate = LocalDate.of(2020, 1, 1)
-    val expiryDate = LocalDate.of(2020, 1, 1).plusDays(10)
 
     implicit val declaration = aDeclaration(withUpdateDate(updatedDate))
 
@@ -99,7 +91,6 @@ class NavigatorSpec
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(DraftDeclarationController.displayPage.url)
-      flash(result).get(FlashKeys.expiryDate) mustBe Some(expiryDate.atStartOfDay(ZoneOffset.UTC).toInstant.toEpochMilli.toString)
       session(result).get(ExportsSessionKeys.declarationId) mustBe None
 
       verify(auditService).auditAllPagesUserInput(ArgumentMatchers.eq(AuditTypes.SaveAndReturnSubmission), any())(any())

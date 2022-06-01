@@ -17,8 +17,7 @@
 package controllers.declaration
 
 import config.AppConfig
-import connectors.CustomsDeclareExportsConnector
-import controllers.actions.{AuthAction, JourneyAction, VerifiedEmailAction}
+import controllers.actions.{AuthAction, JourneyAction}
 import models.requests.ExportsSessionKeys
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -32,16 +31,14 @@ class DraftDeclarationController @Inject()(
   appConfig: AppConfig,
   mcc: MessagesControllerComponents,
   draftDeclarationPage: draft_declaration_page,
-  journeyType: JourneyAction,
-  customsDeclareExportsConnector: CustomsDeclareExportsConnector,
-  verifyEmail: VerifiedEmailAction
+  journeyType: JourneyAction
 ) extends FrontendController(mcc) with I18nSupport {
 
   def displayPage: Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     val updatedDateTime = request.cacheModel.updatedDateTime
     val expiry = updatedDateTime.plusSeconds(appConfig.draftTimeToLive.toSeconds).toEpochMilli.toString
 
-    Ok(draftDeclarationPage(request.declarationId.getOrElse(""), expiry))
+    Ok(draftDeclarationPage(request.declarationId, expiry))
       .removingFromSession(ExportsSessionKeys.declarationId)
   }
 }

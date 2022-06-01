@@ -31,7 +31,7 @@
     paragraph: paragraph
 )
 
-@(declarationId: String, expiry: String)(implicit request: Request[_], messages: Messages)
+@(declarationId: Option[String], expiry: String)(implicit request: Request[_], messages: Messages)
 
 @expiresMessage = {
     <div id="draft_confirmation-expiry" class="govuk-panel__body">
@@ -40,15 +40,15 @@
     </div>
 }
 
-@viewDeclarationSummaryLink = {
+@viewDeclarationSummaryLink = { @if(declarationId.isDefined) {
   <p class="govuk-body">
     @link(
       id = Some("view_declaration_summary"),
       text = messages("declaration.draft.viewSummary"),
-      call = SavedDeclarationsController.continueDeclaration(declarationId)
+      call = SavedDeclarationsController.continueDeclaration(declarationId.get)
     )
   </p>
-}
+}}
 
 @whatNext = {
     @heading(messages("declaration.draft.nextHeading"), "govuk-heading-m", "h2")
