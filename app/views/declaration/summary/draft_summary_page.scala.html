@@ -22,6 +22,7 @@
 @import views.helpers.{BackButton, Title}
 @import views.html.components.gds._
 @import views.html.declaration.summary.sections._
+@import views.html.components.buttons.save_as_draft_on_summary
 
 @this(
     govukLayout: gdsMainTemplate,
@@ -35,7 +36,8 @@
     locations_section: locations_section,
     transaction_section: transaction_section,
     items_section: items_section,
-    transport_section: transport_section
+    transport_section: transport_section,
+    saveAsDraftButton: save_as_draft_on_summary
 )
 
 @(backLink: Call, maybeContinuePlaceholder: Option[String] = None)(implicit request: JourneyRequest[_], messages: Messages, appConfig: AppConfig)
@@ -78,6 +80,10 @@
             attributes = Map("id" -> continuePlaceholder)
         ))
     }
+
+    <p class="govuk-body">
+      @saveAsDraftButton()
+    </p>
 
     <br/>
 }
