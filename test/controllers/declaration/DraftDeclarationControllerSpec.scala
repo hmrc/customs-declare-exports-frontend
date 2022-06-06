@@ -16,33 +16,32 @@
 
 package controllers.declaration
 
-import scala.concurrent.Future
-
 import base.{ControllerWithoutFormSpec, Injector}
-import play.api.mvc.{AnyContentAsEmpty, Flash, Request, Result}
+import models.requests.ExportsSessionKeys
+import play.api.mvc.Result
 import play.api.test.Helpers._
 import views.html.declaration.draft_declaration_page
+
+import scala.concurrent.Future
 
 class DraftDeclarationControllerSpec extends ControllerWithoutFormSpec with Injector {
 
   trait SetUp {
     val draftDeclarationPage = instanceOf[draft_declaration_page]
 
-    val controller = new DraftDeclarationController(mockAuthAction, stubMessagesControllerComponents(), draftDeclarationPage)
+    val controller =
+      new DraftDeclarationController(mockAuthAction, appConfig, stubMessagesControllerComponents(), draftDeclarationPage, mockJourneyAction)
+
     authorizedUser()
   }
 
   "GET draft declaration" should {
     "return 200 status code" in new SetUp {
-      val request: Request[AnyContentAsEmpty.type] = getRequest()
-      val result: Future[Result] = controller.displayPage(request)
+      withNewCaching(aDeclaration())
+      val result: Future[Result] = controller.displayPage(getRequest())
 
       status(result) mustBe OK
-      viewOf(result) mustBe draftDeclarationPage()(
-        getAuthenticatedRequest(),
-        Flash(),
-        stubMessagesControllerComponents().messagesApi.preferred(request)
-      )
+      session(result).get(ExportsSessionKeys.declarationId) mustBe None
     }
   }
 }

@@ -21,7 +21,7 @@ import org.jsoup.nodes.Document
 import views.html.declaration.summary._
 import views.html.declaration.summary.sections._
 
-class SummaryPageViewAmmendSpec extends SummaryPageViewSpec {
+class SummaryPageViewAmendSpec extends SummaryPageViewSpec {
 
   val draftInfoPage = instanceOf[draft_info_section]
 
@@ -55,6 +55,5 @@ class SummaryPageViewAmmendSpec extends SummaryPageViewSpec {
       backButton.text() mustBe messages("site.back")
       backButton must haveHref(controllers.routes.SubmissionsController.displayListOfSubmissions())
     }
-
   }
 }

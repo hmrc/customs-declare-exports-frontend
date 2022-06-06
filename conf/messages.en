@@ -2110,6 +2110,7 @@ declaration.draft.nextHeading = What you can do next
 declaration.draft.nextText = You can {0} or you can {1}.
 declaration.draft.nextContinueLink = continue a saved declaration
 declaration.draft.nextStartFreshLink = start a new one
+declaration.draft.viewSummary = View declaration summary
 
 legal.declaration.heading=Now submit your declaration
 legal.declaration.info=Before you proceed, ensure that you have fully reviewed the information you have provided above and ensure that it is correct.

@@ -17,6 +17,7 @@
 @import java.time.{Instant, ZoneOffset}
 @import models.responses.FlashKeys
 @import play.twirl.api.HtmlFormat
+@import routes.SavedDeclarationsController
 @import uk.gov.hmrc.govukfrontend.views.html.components.{GovukPanel, HtmlContent, Panel, Text}
 @import views.helpers.{Title, ViewDates}
 @import views.html.components.gds.{gdsMainTemplate, govUkLink, heading, link, paragraph}
@@ -30,14 +31,24 @@
     paragraph: paragraph
 )
 
-@()(implicit request: Request[_], flash: Flash, messages: Messages)
+@(declarationId: Option[String], expiry: String)(implicit request: Request[_], messages: Messages)
 
-@expiresMessage(date: String) = {
+@expiresMessage = {
     <div id="draft_confirmation-expiry" class="govuk-panel__body">
         @messages("declaration.draft.info")<br>
-        @ViewDates.formatDate(Instant.ofEpochMilli(date.toLong).atOffset(ZoneOffset.UTC))
+        @ViewDates.formatDate(Instant.ofEpochMilli(expiry.toLong).atOffset(ZoneOffset.UTC))
     </div>
 }
+
+@viewDeclarationSummaryLink = { @if(declarationId.isDefined) {
+  <p class="govuk-body">
+    @link(
+      id = Some("view_declaration_summary"),
+      text = messages("declaration.draft.viewSummary"),
+      call = SavedDeclarationsController.continueDeclaration(declarationId.get)
+    )
+  </p>
+}}
 
 @whatNext = {
     @heading(messages("declaration.draft.nextHeading"), "govuk-heading-m", "h2")
@@ -61,8 +72,10 @@
 
     @govukPanel(Panel(
         title = Text(messages("declaration.draft.title")),
-        content = HtmlContent(flash.get(FlashKeys.expiryDate).map(expires => expiresMessage(expires)).getOrElse(HtmlFormat.empty))
+        content = HtmlContent(expiresMessage)
     ))
+
+    @viewDeclarationSummaryLink
 
     @whatNext
 
