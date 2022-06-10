@@ -1,0 +1,94 @@
+@*
+* Copyright 2021 HM Revenue & Customs
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*@
+
+@import controllers.declaration.routes
+@import controllers.declaration.PackageInformationAddController.PackageInformationFormGroupId
+@import forms.declaration.PackageInformation
+@import models.requests.JourneyRequest
+@import services.PackageTypes
+@import services.view.AutoCompleteItem
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.html.components.gds._
+@import config.AppConfig
+
+@this(
+    govukDetails: GovukDetails,
+    link: link,
+    formGroupWrapper: formGroupWrapper,
+    errorSummary: errorSummary,
+    sectionHeader: sectionHeader,
+    pageTitle: pageTitle,
+    paragraphBody: paragraphBody,
+    exportsInputText: exportsInputText,
+    appConfig: AppConfig
+)
+
+@(form: Form[_])(implicit request: JourneyRequest[_], messages: Messages)
+
+@errorSummary(form.errors)
+
+@numberOfPackagesDetails = {
+    @paragraphBody(messages("declaration.packageInformation.numberOfPackages.details.paragraph.1"))
+    @paragraphBody(messages("declaration.packageInformation.numberOfPackages.details.paragraph.2"))
+    @paragraphBody(
+        message = messages("declaration.packageInformation.numberOfPackages.details.paragraph.3", link(
+            text = messages("declaration.packageInformation.numberOfPackages.details.paragraph.3.link"),
+            call = Call("GET", appConfig.combinedPackaging),
+            target = "_blank"))
+    )
+}
+
+@sectionHeader(messages("declaration.section.5"))
+@pageTitle(text = messages("declaration.packageInformation.title"))
+
+@paragraphBody(messages("declaration.packageInformation.paragraph"))
+
+@formGroupWrapper(field = form(PackageInformationFormGroupId)){
+
+    @components.fields.field_accessible_autocomplete(
+        field = form("typesOfPackages"),
+        label = messages("declaration.packageInformation.typesOfPackages.label"),
+        labelClass = Some("govuk-label--m"),
+        bodyHtml = Some(paragraphBody(messages("declaration.packageInformation.typesOfPackages.paragraph"))),
+        hintParagraphs = List(
+            messages("declaration.packageInformation.typesOfPackages.hint.1")
+        ),
+        emptySelectValue = messages("declaration.packageInformation.typesOfPackages.empty"),
+        items = AutoCompleteItem.fromPackageType(PackageTypes.all),
+        args = List('otherErrorFields -> Seq("typesOfPackages"))
+    )
+
+    @exportsInputText(
+        field = form("numberOfPackages"),
+        labelKey = "declaration.packageInformation.numberOfPackages",
+        labelClasses = "govuk-label--m",
+        hintKey = Some("declaration.packageInformation.numberOfPackages.hint"),
+        inputClasses = Some("govuk-input--width-10")
+    )
+
+    @govukDetails(Details(
+        summary = Text(messages("declaration.packageInformation.numberOfPackages.details.summary")),
+        content = HtmlContent(numberOfPackagesDetails)
+    ))
+
+    @exportsInputText(
+        field = form("shippingMarks"),
+        labelKey = "declaration.packageInformation.shippingMark",
+        labelClasses = "govuk-label--m",
+        bodyHtml = Some(paragraphBody(messages("declaration.packageInformation.shippingMark.paragraph"))),
+        inputClasses = Some("govuk-input--width-20")
+    )
+}
