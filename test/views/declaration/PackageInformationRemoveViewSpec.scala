@@ -25,7 +25,7 @@ import play.api.data.Form
 import tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.helpers.CommonMessages
-import views.html.declaration.package_information_remove
+import views.html.declaration.packageInformation.package_information_remove
 import views.tags.ViewTest
 
 @ViewTest

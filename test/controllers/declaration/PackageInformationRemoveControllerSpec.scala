@@ -28,7 +28,7 @@ import play.api.data.Form
 import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import views.html.declaration.package_information_remove
+import views.html.declaration.packageInformation.package_information_remove
 
 class PackageInformationRemoveControllerSpec extends ControllerSpec with OptionValues {
 
