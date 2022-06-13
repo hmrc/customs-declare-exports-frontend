@@ -31,8 +31,14 @@ trait SummaryPageViewSpec extends UnitViewSpec with Injector with Stubs {
   val dummyFormError = Seq(FormError("dummy", "error.unknown"))
 
   def commonBehaviour(document: Document): Unit =
-    "have references section" in {
-      document.getElementById("declaration-references-summary").text() mustNot be(empty)
+    "have common behaviours such as" when {
+      "have references section" in {
+        document.getElementById("declaration-references-summary").text() mustNot be(empty)
+      }
+
+      "display Save and come back later button" in {
+        document.getElementById("save-and-come-back-later").text mustBe (messages("site.save_and_come_back_later"))
+      }
     }
 
   def displayWarning(document: Document): Unit =

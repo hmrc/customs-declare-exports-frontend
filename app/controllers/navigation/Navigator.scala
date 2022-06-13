@@ -44,8 +44,7 @@ import forms.{Choice, DeclarationPage}
 import models.DeclarationType._
 import models.Mode.ErrorFix
 import models.declaration.ExportItem
-import models.requests.{ExportsSessionKeys, JourneyRequest}
-import models.responses.FlashKeys
+import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
 import play.api.mvc.{AnyContent, Call, Result, Results}
 import services.TariffApiService
@@ -372,7 +371,7 @@ class Navigator @Inject()(
       case (ErrorFix, formAction) => handleErrorFixMode(factory, formAction, isErrorFixInProgress)
       case (_, SaveAndReturn) =>
         auditService.auditAllPagesUserInput(AuditTypes.SaveAndReturnSubmission, req.cacheModel)
-        goToDraftDeclaration
+        Results.Redirect(routes.DraftDeclarationController.displayPage)
       case (Mode.Draft, SaveAndReturnToSummary) =>
         Results.Redirect(routes.SummaryController.displayPage(Mode.Draft))
       case (Mode.ChangeAmend, SaveAndReturnToSummary) =>
@@ -381,15 +380,6 @@ class Navigator @Inject()(
         Results.Redirect(routes.SummaryController.displayPage(Mode.Normal))
       case _ => Results.Redirect(factory(mode))
     }
-
-  private def goToDraftDeclaration(implicit req: JourneyRequest[_]): Result = {
-    val updatedDateTime = req.cacheModel.updatedDateTime
-    val expiry = updatedDateTime.plusSeconds(appConfig.draftTimeToLive.toSeconds)
-    Results
-      .Redirect(routes.DraftDeclarationController.displayPage)
-      .flashing(FlashKeys.expiryDate -> expiry.toEpochMilli.toString)
-      .removingFromSession(ExportsSessionKeys.declarationId)
-  }
 
   private def handleErrorFixMode(factory: Mode => Call, formAction: FormAction, isErrorFixInProgress: Boolean)(
     implicit req: JourneyRequest[AnyContent]

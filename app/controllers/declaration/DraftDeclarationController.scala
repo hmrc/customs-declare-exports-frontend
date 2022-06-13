@@ -16,17 +16,29 @@
 
 package controllers.declaration
 
-import controllers.actions.AuthAction
-import javax.inject.Inject
+import config.AppConfig
+import controllers.actions.{AuthAction, JourneyAction}
+import models.requests.ExportsSessionKeys
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.draft_declaration_page
 
-class DraftDeclarationController @Inject()(authenticate: AuthAction, mcc: MessagesControllerComponents, draftDeclarationPage: draft_declaration_page)
-    extends FrontendController(mcc) with I18nSupport {
+import javax.inject.Inject
 
-  val displayPage: Action[AnyContent] = authenticate { implicit request =>
-    Ok(draftDeclarationPage())
+class DraftDeclarationController @Inject()(
+  authenticate: AuthAction,
+  appConfig: AppConfig,
+  mcc: MessagesControllerComponents,
+  draftDeclarationPage: draft_declaration_page,
+  journeyType: JourneyAction
+) extends FrontendController(mcc) with I18nSupport {
+
+  def displayPage: Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    val updatedDateTime = request.cacheModel.updatedDateTime
+    val expiry = updatedDateTime.plusSeconds(appConfig.draftTimeToLive.toSeconds).toEpochMilli.toString
+
+    Ok(draftDeclarationPage(request.declarationId, expiry))
+      .removingFromSession(ExportsSessionKeys.declarationId)
   }
 }
