@@ -38,16 +38,10 @@
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
-@backLink = @{
-    if(packages.nonEmpty)
-        routes.PackageInformationSummaryController.displayPage(mode, itemId)
-    else
-        navigator.backLink(PackageInformation, mode, ItemId(itemId))
-}
 
 @govukLayout(
     title = Title("declaration.packageInformation.title", "declaration.section.5", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.back"), backLink))
+    backButton = Some(BackButton(messages("site.back"), controllers.declaration.routes.PackageInformationSummaryController.displayPage(mode, itemId)))
 ) {
 
     @formHelper(action = routes.PackageInformationChangeController.submitForm(mode, itemId, code), 'autoComplete -> "off") {

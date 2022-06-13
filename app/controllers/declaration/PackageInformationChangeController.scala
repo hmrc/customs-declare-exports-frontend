@@ -23,8 +23,9 @@ import controllers.helpers.PackageInformationHelper.{allCachedPackageInformation
 import controllers.navigation.Navigator
 import forms.declaration.PackageInformation
 import forms.declaration.PackageInformation.form
-import models.{ExportsDeclaration, Mode}
+import handlers.ErrorHandler
 import models.requests.JourneyRequest
+import models.{ExportsDeclaration, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -40,20 +41,27 @@ class PackageInformationChangeController @Inject()(
   journeyType: JourneyAction,
   navigator: Navigator,
   val exportsCacheService: ExportsCacheService,
+  errorHandler: ErrorHandler,
   mcc: MessagesControllerComponents,
   packageChangePage: package_information_change
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
-  def displayPage(mode: Mode, itemId: String, code: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    val existingPackageInformation = singleCachedPackageInformation(code, itemId)
-    Ok(packageChangePage(mode, itemId, PackageInformation.form().fill(existingPackageInformation).withSubmissionErrors(), code, Seq.empty))
+  def displayPage(mode: Mode, itemId: String, code: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+    val maybePackageInformation = singleCachedPackageInformation(code, itemId)
+
+    maybePackageInformation.fold(errorHandler.displayErrorPage()) { packageInfo =>
+      Future.successful(Ok(packageChangePage(mode, itemId, PackageInformation.form().fill(packageInfo).withSubmissionErrors(), code, Seq.empty)))
+    }
   }
 
   def submitForm(mode: Mode, itemId: String, code: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    val packageInfoToRemove = singleCachedPackageInformation(code, itemId)
+    val maybePackageInfoToRemove = singleCachedPackageInformation(code, itemId)
     val boundForm = form().bindFromRequest()
-    saveInformation(mode, itemId, boundForm, allCachedPackageInformation(itemId), packageInfoToRemove)
+
+    maybePackageInfoToRemove.fold(errorHandler.displayErrorPage()) { packageInfoToRemove =>
+      saveInformation(mode, itemId, boundForm, allCachedPackageInformation(itemId), packageInfoToRemove)
+    }
   }
 
   private def saveInformation(

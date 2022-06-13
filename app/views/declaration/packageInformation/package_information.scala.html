@@ -82,13 +82,13 @@
               messages("site.change"),
               routes.PackageInformationChangeController.displayPage(mode, itemId, item.id),
               textHidden = Some(messages(
-                "declaration.packageInformation.remove.hint",
+                "declaration.packageInformation.change.hint",
                 item.typesOfPackages.getOrElse(""),
                 item.shippingMarks.getOrElse("")
               ))
             )),
             classes = "govuk-table__cell--numeric",
-            attributes = Map("id" -> s"package-table-row$index-remove_button")
+            attributes = Map("id" -> s"package-table-row$index-change_button")
           ),
           TableRow(
              content = HtmlContent(link(

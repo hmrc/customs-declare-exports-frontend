@@ -24,8 +24,8 @@ object PackageInformationHelper {
   def allCachedPackageInformation(itemId: String)(implicit request: JourneyRequest[_]): Seq[PackageInformation] =
     maybePackageInformation(itemId).getOrElse(List.empty)
 
-  def singleCachedPackageInformation(id: String, itemId: String)(implicit request: JourneyRequest[_]): PackageInformation =
-    maybePackageInformation(itemId).flatMap(_.find(_.id == id)).getOrElse(PackageInformation(id, None, None, None))
+  def singleCachedPackageInformation(id: String, itemId: String)(implicit request: JourneyRequest[_]): Option[PackageInformation] =
+    maybePackageInformation(itemId).flatMap(_.find(_.id == id))
 
   private def maybePackageInformation(itemId: String)(implicit request: JourneyRequest[_]) =
     request.cacheModel.itemBy(itemId).flatMap(_.packageInformation)

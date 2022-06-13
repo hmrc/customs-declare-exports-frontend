@@ -66,7 +66,7 @@ class PackageInformationChangeViewSpec extends UnitViewSpec with ExportsTestData
         view.getElementsByTag("h1") must containMessageForElements("declaration.packageInformation.title")
       }
 
-      "display 'Back' button that links to 'PackageInformation summary' page when changeing subsequent value" in {
+      "display 'Back' button that links to 'PackageInformation summary' page when changing subsequent value" in {
         val backLinkContainer = createView(packages = Seq(packageInformation)).getElementById("back-link")
 
         backLinkContainer.getElementById("back-link") must haveHref(
@@ -100,38 +100,6 @@ class PackageInformationChangeViewSpec extends UnitViewSpec with ExportsTestData
 
       val createViewWithMode: Mode => Document = mode => createView(mode = mode)
       checkAllSaveButtonsAreDisplayed(createViewWithMode)
-    }
-  }
-
-  "PackageInformation Change View when changeing first value" should {
-    onJourney(STANDARD, SUPPLEMENTARY) { implicit request =>
-      "display 'Back' button that links to 'statistical value' page when changing first value" in {
-        val backLinkContainer = createView(packages = Seq.empty).getElementById("back-link")
-
-        backLinkContainer.getElementById("back-link") must haveHref(
-          controllers.declaration.routes.StatisticalValueController.displayPage(Mode.Normal, itemId)
-        )
-      }
-    }
-
-    onJourney(OCCASIONAL, SIMPLIFIED) { implicit request =>
-      "display 'Back' button that links to 'NACT code' page when changing first value" in {
-        val backLinkContainer = createView(packages = Seq.empty).getElementById("back-link")
-
-        backLinkContainer.getElementById("back-link") must haveHref(
-          controllers.declaration.routes.NactCodeSummaryController.displayPage(Mode.Normal, itemId)
-        )
-      }
-    }
-
-    onJourney(CLEARANCE) { implicit request =>
-      "display 'Back' button that links to 'commodity details' page when changing first value" in {
-        val backLinkContainer = createView(packages = Seq.empty).getElementById("back-link")
-
-        backLinkContainer.getElementById("back-link") must haveHref(
-          controllers.declaration.routes.CommodityDetailsController.displayPage(Mode.Normal, itemId)
-        )
-      }
     }
   }
 
