@@ -17,10 +17,12 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
+import controllers.helpers.PackageInformationHelper.singleCachedPackageInformation
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.PackageInformation
+import handlers.ErrorHandler
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
 import play.api.data.Form
@@ -28,7 +30,7 @@ import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import views.html.declaration.package_information_remove
+import views.html.declaration.packageInformation.package_information_remove
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -37,39 +39,44 @@ class PackageInformationRemoveController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
+  errorHandler: ErrorHandler,
   navigator: Navigator,
   mcc: MessagesControllerComponents,
   packageTypeRemove: package_information_remove
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
-  def displayPage(mode: Mode, itemId: String, id: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    Ok(packageTypeRemove(mode, itemId, packageInformation(id, itemId), removeYesNoForm.withSubmissionErrors()))
+  def displayPage(mode: Mode, itemId: String, id: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+    val maybePackageInformation = singleCachedPackageInformation(id, itemId)
+
+    maybePackageInformation.fold(errorHandler.displayErrorPage()) { packageInfo =>
+      Future.successful(Ok(packageTypeRemove(mode, itemId, packageInfo, removeYesNoForm.withSubmissionErrors())))
+    }
   }
 
   def submitForm(mode: Mode, itemId: String, id: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    val packageInformationToRemove = packageInformation(id, itemId)
-    removeYesNoForm
-      .bindFromRequest()
-      .fold(
-        (formWithErrors: Form[YesNoAnswer]) =>
-          Future.successful(BadRequest(packageTypeRemove(mode, itemId, packageInformationToRemove, formWithErrors))),
-        formData => {
-          formData.answer match {
-            case YesNoAnswers.yes =>
-              updateExportsCache(itemId, packageInformationToRemove)
-                .map(_ => navigator.continueTo(mode, routes.PackageInformationSummaryController.displayPage(_, itemId)))
-            case YesNoAnswers.no =>
-              Future.successful(navigator.continueTo(mode, routes.PackageInformationSummaryController.displayPage(_, itemId)))
+    val maybePackageInformationToRemove = singleCachedPackageInformation(id, itemId)
+
+    maybePackageInformationToRemove.fold(errorHandler.displayErrorPage()) { packageInformationToRemove =>
+      removeYesNoForm
+        .bindFromRequest()
+        .fold(
+          (formWithErrors: Form[YesNoAnswer]) =>
+            Future.successful(BadRequest(packageTypeRemove(mode, itemId, packageInformationToRemove, formWithErrors))),
+          formData => {
+            formData.answer match {
+              case YesNoAnswers.yes =>
+                updateExportsCache(itemId, packageInformationToRemove)
+                  .map(_ => navigator.continueTo(mode, routes.PackageInformationSummaryController.displayPage(_, itemId)))
+              case YesNoAnswers.no =>
+                Future.successful(navigator.continueTo(mode, routes.PackageInformationSummaryController.displayPage(_, itemId)))
+            }
           }
-        }
-      )
+        )
+    }
   }
 
   private def removeYesNoForm: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.packageInformation.remove.empty")
-
-  private def packageInformation(id: String, itemId: String)(implicit request: JourneyRequest[_]): PackageInformation =
-    request.cacheModel.itemBy(itemId).flatMap(_.packageInformation).flatMap(_.find(_.id == id)).getOrElse(PackageInformation(id, None, None, None))
 
   private def updateExportsCache(itemId: String, itemToRemove: PackageInformation)(
     implicit request: JourneyRequest[AnyContent]

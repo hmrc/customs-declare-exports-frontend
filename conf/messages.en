@@ -1687,6 +1687,7 @@ declaration.packageInformation.remove.hint = Remove package type {0} shipping re
 declaration.packageInformation.remove.typesOfPackages = Package type
 declaration.packageInformation.remove.numberOfPackages = Number of packages
 declaration.packageInformation.remove.shippingMarks = Shipping marks
+declaration.packageInformation.change.hint = Change package type {0} shipping reference {1}.
 declaration.packageInformation.table.caption = Package types added
 declaration.packageInformation.add.another = Do you need to add another package type?
 declaration.packageInformation.add.empty = Select yes if you need to add another package type

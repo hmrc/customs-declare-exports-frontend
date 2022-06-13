@@ -67,6 +67,7 @@
         HeadCell(content = Text(messages("declaration.packageInformation.table.heading.typesOfPackages"))),
         HeadCell(content = Text(messages("declaration.packageInformation.table.heading.numberOfPackages"))),
         HeadCell(content = Text(messages("declaration.packageInformation.table.heading.shippingMarks"))),
+        HeadCell(content = HtmlContent(spanVisuallyHidden(messages("site.change.header")))),
         HeadCell(content = HtmlContent(spanVisuallyHidden(messages("site.remove.header"))))
       )),
       caption = Some(messages("declaration.packageInformation.table.caption")),
@@ -76,6 +77,19 @@
           TableRow(content = Text(item.typesOfPackages.map(PackageTypes.findByCode).map(_.asText()).getOrElse(""))),
           TableRow(content = Text(item.numberOfPackages.getOrElse(0).toString)),
           TableRow(content = Text(item.shippingMarks.getOrElse(""))),
+          TableRow(
+            content = HtmlContent(link(
+              messages("site.change"),
+              routes.PackageInformationChangeController.displayPage(mode, itemId, item.id),
+              textHidden = Some(messages(
+                "declaration.packageInformation.change.hint",
+                item.typesOfPackages.getOrElse(""),
+                item.shippingMarks.getOrElse("")
+              ))
+            )),
+            classes = "govuk-table__cell--numeric",
+            attributes = Map("id" -> s"package-table-row$index-change_button")
+          ),
           TableRow(
              content = HtmlContent(link(
                  messages("site.remove"),

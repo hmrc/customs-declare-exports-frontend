@@ -19,59 +19,72 @@ package controllers.declaration
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.PackageInformationAddController.PackageInformationFormGroupId
 import controllers.helpers.MultipleItemsHelper
-import controllers.helpers.PackageInformationHelper.allCachedPackageInformation
+import controllers.helpers.PackageInformationHelper.{allCachedPackageInformation, singleCachedPackageInformation}
 import controllers.navigation.Navigator
 import forms.declaration.PackageInformation
 import forms.declaration.PackageInformation.form
-import models.{ExportsDeclaration, Mode}
+import handlers.ErrorHandler
 import models.requests.JourneyRequest
+import models.{ExportsDeclaration, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc._
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import views.html.declaration.packageInformation.package_information_add
+import views.html.declaration.packageInformation.package_information_change
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class PackageInformationAddController @Inject()(
+class PackageInformationChangeController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
-  override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
+  val exportsCacheService: ExportsCacheService,
+  errorHandler: ErrorHandler,
   mcc: MessagesControllerComponents,
-  packageInformationPage: package_information_add
+  packageChangePage: package_information_change
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
-  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    Ok(packageInformationPage(mode, itemId, form().withSubmissionErrors(), allCachedPackageInformation(itemId)))
+  def displayPage(mode: Mode, itemId: String, code: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+    val maybePackageInformation = singleCachedPackageInformation(code, itemId)
+
+    maybePackageInformation.fold(errorHandler.displayErrorPage()) { packageInfo =>
+      Future.successful(Ok(packageChangePage(mode, itemId, PackageInformation.form().fill(packageInfo).withSubmissionErrors(), code, Seq.empty)))
+    }
   }
 
-  def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def submitForm(mode: Mode, itemId: String, code: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+    val maybePackageInfoToRemove = singleCachedPackageInformation(code, itemId)
     val boundForm = form().bindFromRequest()
-    saveInformation(mode, itemId, boundForm, allCachedPackageInformation(itemId))
+
+    maybePackageInfoToRemove.fold(errorHandler.displayErrorPage()) { packageInfoToRemove =>
+      saveInformation(mode, itemId, boundForm, allCachedPackageInformation(itemId), packageInfoToRemove)
+    }
   }
 
-  private def saveInformation(mode: Mode, itemId: String, boundForm: Form[PackageInformation], cachedData: Seq[PackageInformation])(
-    implicit request: JourneyRequest[AnyContent]
-  ): Future[Result] =
+  private def saveInformation(
+    mode: Mode,
+    itemId: String,
+    boundForm: Form[PackageInformation],
+    cachedData: Seq[PackageInformation],
+    packageInfoToRemove: PackageInformation
+  )(implicit request: JourneyRequest[AnyContent]): Future[Result] = {
+    val listWithRemovedPackageInfo = MultipleItemsHelper.remove(cachedData, packageInfoToRemove.equals(_: PackageInformation))
     MultipleItemsHelper
-      .add(boundForm, cachedData, PackageInformation.limit, fieldId = PackageInformationFormGroupId, "declaration.packageInformation")
+      .add(boundForm, listWithRemovedPackageInfo, PackageInformation.limit, fieldId = PackageInformationFormGroupId, "declaration.packageInformation")
       .fold(
-        formWithErrors => Future.successful(BadRequest(packageInformationPage(mode, itemId, formWithErrors, cachedData))),
+        formWithErrors => Future.successful(BadRequest(packageChangePage(mode, itemId, formWithErrors, packageInfoToRemove.id, cachedData))),
         updatedCache =>
           updateExportsCache(itemId, updatedCache)
             .map(_ => navigator.continueTo(mode, controllers.declaration.routes.PackageInformationSummaryController.displayPage(_, itemId)))
       )
+  }
 
   private def updateExportsCache(itemId: String, updatedPackageInformation: Seq[PackageInformation])(
     implicit request: JourneyRequest[AnyContent]
   ): Future[ExportsDeclaration] =
     updateDeclarationFromRequest(model => model.updatedItem(itemId, _.copy(packageInformation = Some(updatedPackageInformation.toList))))
-}
 
-object PackageInformationAddController {
-  val PackageInformationFormGroupId: String = "packageInformation"
 }

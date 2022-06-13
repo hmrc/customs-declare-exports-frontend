@@ -19,18 +19,19 @@ package controllers.declaration
 import base.ControllerSpec
 import forms.common.YesNoAnswer
 import forms.declaration.PackageInformation
+import mock.ErrorHandlerMocks
 import models.Mode
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, times, verify, when}
+import org.mockito.Mockito.{reset, times, verify, verifyNoInteractions, when}
 import org.scalatest.OptionValues
 import play.api.data.Form
 import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import views.html.declaration.package_information_remove
+import views.html.declaration.packageInformation.package_information_remove
 
-class PackageInformationRemoveControllerSpec extends ControllerSpec with OptionValues {
+class PackageInformationRemoveControllerSpec extends ControllerSpec with OptionValues with ErrorHandlerMocks {
 
   val mockRemovePage = mock[package_information_remove]
 
@@ -39,6 +40,7 @@ class PackageInformationRemoveControllerSpec extends ControllerSpec with OptionV
       mockAuthAction,
       mockJourneyAction,
       mockExportsCacheService,
+      mockErrorHandler,
       navigator,
       stubMessagesControllerComponents(),
       mockRemovePage
@@ -47,6 +49,7 @@ class PackageInformationRemoveControllerSpec extends ControllerSpec with OptionV
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
+    setupErrorHandler()
     when(mockRemovePage.apply(any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
@@ -56,8 +59,8 @@ class PackageInformationRemoveControllerSpec extends ControllerSpec with OptionV
   }
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
-    withNewCaching(aDeclaration())
-    await(controller.displayPage(Mode.Normal, item.id, "id")(request))
+    withNewCaching(aDeclaration(withItems(item)))
+    await(controller.displayPage(Mode.Normal, item.id, id)(request))
     theResponseForm
   }
 
@@ -76,30 +79,30 @@ class PackageInformationRemoveControllerSpec extends ControllerSpec with OptionV
   private def verifyRemovePageInvoked(numberOfTimes: Int = 1) =
     verify(mockRemovePage, times(numberOfTimes)).apply(any(), any(), any(), any())(any(), any())
 
-  val item = anItem()
   val id = "pkgId"
+  val packageInformation = PackageInformation(id, Some("AB"), Some(1), Some("SHIP"))
+  val item = anItem(withPackageInformation(packageInformation))
 
   "PackageInformation Remove Controller" must {
 
     onEveryDeclarationJourney() { request =>
       "return 200 (OK)" that {
-        "display page method is invoked and cache is empty" in {
-
-          withNewCaching(request.cacheModel)
+        "display page method is invoked with existing package info id" in {
+          withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
 
           val result = controller.displayPage(Mode.Normal, item.id, id)(getRequest())
 
           status(result) mustBe OK
           verifyRemovePageInvoked()
 
-          thePackageInformation mustBe PackageInformation(id, None, None, None)
+          thePackageInformation mustBe packageInformation
         }
 
       }
 
       "return 400 (BAD_REQUEST)" when {
         "user submits an invalid answer" in {
-          withNewCaching(request.cacheModel)
+          withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
 
           val requestBody = Seq("yesNo" -> "invalid")
           val result = controller.submitForm(Mode.Normal, item.id, id)(postRequestAsFormUrlEncoded(requestBody: _*))
@@ -108,11 +111,29 @@ class PackageInformationRemoveControllerSpec extends ControllerSpec with OptionV
           verifyRemovePageInvoked()
         }
 
+        "user tries to display page with non-existent package info" in {
+          withNewCaching(aDeclarationAfter(request.cacheModel))
+
+          val result = controller.displayPage(Mode.Normal, item.id, id)(getRequest())
+
+          status(result) mustBe BAD_REQUEST
+          verifyNoInteractions(mockRemovePage)
+          verify(mockErrorHandler).displayErrorPage()(any())
+        }
+
+        "user tries to remove non-existent package info" in {
+          withNewCaching(aDeclarationAfter(request.cacheModel))
+
+          val result = controller.submitForm(Mode.Normal, item.id, id)(getRequest())
+
+          status(result) mustBe BAD_REQUEST
+          verifyNoInteractions(mockRemovePage)
+          verify(mockErrorHandler).displayErrorPage()(any())
+        }
+
       }
       "return 303 (SEE_OTHER)" when {
         "user submits 'Yes' answer" in {
-          val packageInformation = PackageInformation(id, Some("AB"), Some(1), Some("SHIP"))
-          val item = anItem(withPackageInformation(packageInformation))
           withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
 
           val requestBody = Seq("yesNo" -> "Yes")
@@ -125,8 +146,6 @@ class PackageInformationRemoveControllerSpec extends ControllerSpec with OptionV
         }
 
         "user submits 'No' answer" in {
-          val packageInformation = PackageInformation(id, Some("AB"), Some(1), Some("SHIP"))
-          val item = anItem(withPackageInformation(packageInformation))
           withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
 
           val requestBody = Seq("yesNo" -> "No")
