@@ -316,6 +316,10 @@ POST        /items/:itemId/additional-taric-code/:code/remove  controllers.decla
 
 # NACT Code
 
+GET         /items/:itemId/vat-rating                          controllers.declaration.ZeroRatedForVatController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId)
+
+POST        /items/:itemId/vat-rating                          controllers.declaration.ZeroRatedForVatController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId)
+
 GET         /items/:itemId/national-additional-code            controllers.declaration.NactCodeAddController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId)
 
 POST        /items/:itemId/national-additional-code            controllers.declaration.NactCodeAddController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId)

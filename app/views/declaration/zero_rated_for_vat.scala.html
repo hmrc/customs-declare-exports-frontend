@@ -1,0 +1,110 @@
+@*
+ * Copyright 2021 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import config.AppConfig
+@import controllers.declaration.routes._
+@import controllers.navigation.{ItemId, Navigator}
+@import forms.declaration.ZeroRatedForVat
+@import forms.declaration.NactCode
+@import forms.declaration.NactCode._
+@import models.requests.JourneyRequest
+@import play.twirl.api.HtmlFormat
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.components.gds.Styles._
+@import views.helpers.{BackButton, Title}
+@import views.html.components.gds._
+
+@this(govukLayout: gdsMainTemplate,
+    govukFieldset: GovukFieldset,
+    govukButton: GovukButton,
+    govukRadios: GovukRadios,
+    formGroupWrapper: formGroupWrapper,
+    paragraphBody: paragraphBody,
+    errorSummary: errorSummary,
+    sectionHeader: sectionHeader,
+    exportsInputText: exportsInputText,
+    tariffExpander: tariffExpander,
+    saveButtons: saveButtons,
+    formHelper: FormWithCSRF,
+    navigator: Navigator,
+    appConfig: AppConfig
+)
+
+
+@(mode: Mode, itemId: String, form: Form[NactCode])(implicit request: JourneyRequest[_], messages: Messages)
+
+@hasErrors = @{form.hasErrors || form.hasGlobalErrors}
+
+@radios = {
+    @formGroupWrapper(field = form("zeroRatedForVat")) {
+        @govukRadios(Radios(
+            name = "zeroRatedForVat",
+            items = Seq(
+                RadioItem(
+                    id = Some(VatZeroRatedYes.toString),
+                    value = Some(VatZeroRatedYes.toString),
+                    content = Text(messages(s"declaration.zeroRatedForVat.VatZeroRatedYes")),
+                    checked = form("zeroRatedForVat").value.contains(VatZeroRatedYes.toString)
+                ),
+                RadioItem(
+                    id = Some(VatZeroRatedReduced.toString),
+                    value = Some(VatZeroRatedReduced.toString),
+                    content = Text(messages(s"declaration.zeroRatedForVat.VatZeroRatedReduced")),
+                    checked = form("zeroRatedForVat").value.contains(VatZeroRatedReduced.toString)
+                ),
+                RadioItem(
+                    id = Some(VatZeroRatedExempt.toString),
+                    value = Some(VatZeroRatedExempt.toString),
+                    content = Text(messages(s"declaration.zeroRatedForVat.VatZeroRatedExempt")),
+                    checked = form("zeroRatedForVat").value.contains(VatZeroRatedExempt.toString)
+                ),
+                RadioItem(
+                    id = Some(VatZeroRatedPaid.toString),
+                    value = Some(VatZeroRatedPaid.toString),
+                    content = Text(messages(s"declaration.zeroRatedForVat.VatZeroRatedPaid")),
+                    checked = form("zeroRatedForVat").value.contains(VatZeroRatedPaid.toString)
+                )
+            ),
+            errorMessage = form("zeroRatedForVat").error.map(err => ErrorMessage(content = Text(messages("declaration.zeroRatedForVat.error"))))
+        ))
+    }
+}
+
+@govukLayout(
+    title = Title("declaration.zeroRatedForVat.title",  "declaration.section.2", hasErrors = hasErrors),
+    backButton = Some(BackButton(messages("site.back"), navigator.backLink(NactCode, mode, ItemId(itemId))))) {
+
+    @formHelper(action = ZeroRatedForVatController.submitForm(mode, itemId), 'autoComplete -> "off") {
+
+        @errorSummary(form.errors)
+
+        @sectionHeader(messages("declaration.section.2"))
+
+        @govukFieldset(Fieldset(
+            legend = Some(Legend(
+                content = Text(messages("declaration.zeroRatedForVat.title")),
+                classes = gdsPageLegend,
+                isPageHeading = true
+            )),
+            html = HtmlFormat.fill(List(
+              paragraphBody(messages("declaration.zeroRatedForVat.body.text")),
+              radios,
+              tariffExpander(NactCode, request.declarationType)(messages, appConfig),
+              saveButtons(mode)
+            ))
+        ))
+    }
+}

@@ -25,20 +25,31 @@ import utils.validators.forms.FieldValidator._
 
 case class NactCode(nactCode: String)
 
+case class ZeroRatedForVat(nactCode: NactCode)
+
 object NactCode extends DeclarationPage {
 
   implicit val format = Json.format[NactCode]
 
   val nactCodeKey = "nactCode"
+
   val nactCodeLength = 4
   val nactCodeLimit = 99
+
+  val VatZeroRatedYes = "VATZ"
+  val VatZeroRatedReduced = "VATR"
+  val VatZeroRatedExempt = "VATE"
+  val VatZeroRatedPaid = "VAT_NO"
 
   val mapping =
     Forms.mapping(
       nactCodeKey ->
         text()
           .verifying("declaration.nationalAdditionalCode.error.empty", nonEmpty)
-          .verifying("declaration.nationalAdditionalCode.error.invalid", isEmpty or (hasSpecificLength(nactCodeLength) and isAlphanumeric))
+          .verifying(
+            "declaration.nationalAdditionalCode.error.invalid",
+            isEmpty or (hasSpecificLength(nactCodeLength) and isAlphanumeric) or (_ == VatZeroRatedPaid)
+          )
     )(NactCode.apply)(NactCode.unapply)
 
   def form(): Form[NactCode] = Form(mapping)
