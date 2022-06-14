@@ -31,7 +31,7 @@ import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.declaration.PackageInformationViewSpec.packageInformation
-import views.html.declaration.package_information
+import views.html.declaration.packageInformation.package_information
 
 class PackageInformationSummaryControllerSpec extends ControllerSpec with OptionValues {
 

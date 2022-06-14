@@ -352,6 +352,10 @@ GET         /items/:itemId/package-information/:code/remove    controllers.decla
 
 POST        /items/:itemId/package-information/:code/remove    controllers.declaration.PackageInformationRemoveController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId, code)
 
+GET         /items/:itemId/package-information/:code/change    controllers.declaration.PackageInformationChangeController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId, code)
+
+POST        /items/:itemId/package-information/:code/change    controllers.declaration.PackageInformationChangeController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId, code)
+
 # Commodity Measure Information
 
 GET         /items/:itemId/commodity-measure                   controllers.declaration.CommodityMeasureController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId)

@@ -28,25 +28,26 @@ import services.cache.ExportsTestData
 import tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.helpers.CommonMessages
-import views.html.declaration.packageInformation.package_information_add
+import views.html.declaration.packageInformation.package_information_change
 import views.tags.ViewTest
 
 @ViewTest
-class PackageInformationAddViewSpec extends UnitViewSpec with ExportsTestData with Stubs with CommonMessages with Injector {
+class PackageInformationChangeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with CommonMessages with Injector {
 
   import PackageInformationViewSpec._
 
   private val itemId = "item1"
+  private val packageInfoId = "id"
 
   private def form(): Form[PackageInformation] = PackageInformation.form()
-  private val page = instanceOf[package_information_add]
+  private val page = instanceOf[package_information_change]
 
   private def createView(withForm: Option[Form[PackageInformation]] = None, packages: Seq[PackageInformation] = Seq.empty, mode: Mode = Mode.Normal)(
     implicit request: JourneyRequest[_]
   ): Document =
-    page(mode, itemId, withForm.getOrElse(form), packages)(request, messages)
+    page(mode, itemId, withForm.getOrElse(form()), packageInfoId, packages)(request, messages)
 
-  "PackageInformation Add View" should {
+  "PackageInformation Change View" should {
 
     "have necessary message keys" in {
       messages must haveTranslationFor("declaration.packageInformation.paragraph")
@@ -65,7 +66,7 @@ class PackageInformationAddViewSpec extends UnitViewSpec with ExportsTestData wi
         view.getElementsByTag("h1") must containMessageForElements("declaration.packageInformation.title")
       }
 
-      "display 'Back' button that links to 'PackageInformation summary' page when adding subsequent value" in {
+      "display 'Back' button that links to 'PackageInformation summary' page when changing subsequent value" in {
         val backLinkContainer = createView(packages = Seq(packageInformation)).getElementById("back-link")
 
         backLinkContainer.getElementById("back-link") must haveHref(
@@ -102,39 +103,7 @@ class PackageInformationAddViewSpec extends UnitViewSpec with ExportsTestData wi
     }
   }
 
-  "PackageInformation Add View when adding first value" should {
-    onJourney(STANDARD, SUPPLEMENTARY) { implicit request =>
-      "display 'Back' button that links to 'statistical value' page when adding first value" in {
-        val backLinkContainer = createView(packages = Seq.empty).getElementById("back-link")
-
-        backLinkContainer.getElementById("back-link") must haveHref(
-          controllers.declaration.routes.StatisticalValueController.displayPage(Mode.Normal, itemId)
-        )
-      }
-    }
-
-    onJourney(OCCASIONAL, SIMPLIFIED) { implicit request =>
-      "display 'Back' button that links to 'NACT code' page when adding first value" in {
-        val backLinkContainer = createView(packages = Seq.empty).getElementById("back-link")
-
-        backLinkContainer.getElementById("back-link") must haveHref(
-          controllers.declaration.routes.NactCodeSummaryController.displayPage(Mode.Normal, itemId)
-        )
-      }
-    }
-
-    onJourney(CLEARANCE) { implicit request =>
-      "display 'Back' button that links to 'commodity details' page when adding first value" in {
-        val backLinkContainer = createView(packages = Seq.empty).getElementById("back-link")
-
-        backLinkContainer.getElementById("back-link") must haveHref(
-          controllers.declaration.routes.CommodityDetailsController.displayPage(Mode.Normal, itemId)
-        )
-      }
-    }
-  }
-
-  "PackageInformation Add View for invalid input" should {
+  "PackageInformation Change View for invalid input" should {
     onEveryDeclarationJourney() { implicit request =>
       "display error if nothing is entered" in {
         val view = createView(Some(form.fillAndValidate(PackageInformation("id", None, None, None))))
@@ -162,7 +131,7 @@ class PackageInformationAddViewSpec extends UnitViewSpec with ExportsTestData wi
     }
   }
 
-  "PackageInformation Add View when filled" should {
+  "PackageInformation Change View when filled" should {
     onEveryDeclarationJourney() { implicit request =>
       "display data in PackageInformation code input" in {
 
