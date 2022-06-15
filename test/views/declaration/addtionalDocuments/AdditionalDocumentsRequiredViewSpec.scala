@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package views.declaration
+package views.declaration.addtionalDocuments
 
 import base.Injector
 import com.typesafe.config.ConfigFactory
