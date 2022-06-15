@@ -1215,6 +1215,22 @@ declaration.additionalDocument.remove.dateOfValidity = Date of validity
 declaration.additionalDocument.remove.measurementUnitAndQualifier = Measurement unit and qualifier
 declaration.additionalDocument.remove.documentQuantity = Quantity of the measurement unit
 
+declaration.additionalDocument.hint.prefix=For example
+declaration.additionalDocument.AEOF.hint=GB AEOF 12345/00
+declaration.additionalDocument.CGU.hint=GBCGU12345678900020191023163657
+declaration.additionalDocument.CSE.hint=GBCGU12345678900020191023163657
+declaration.additionalDocument.EIR.hint=GBEIR123456789000I20191023163657
+declaration.additionalDocument.EPSS.hint=GBEPSS12345678900020191023163657
+declaration.additionalDocument.EUS.hint=GBEUS12345678900020191023163657
+declaration.additionalDocument.IPO.hint=GBIPO12345678900020191023163657
+declaration.additionalDocument.OPO.hint=GBOPO12345678900020191023163657
+declaration.additionalDocument.SDE.hint=GBSDE123456789000I20191023163657
+declaration.additionalDocument.SIVA.hint=GBSIVAGB12345678900020191023163657
+declaration.additionalDocument.TEA.hint=GBTEA12345678900020191023163657
+declaration.additionalDocument.CWP.hint=GBCWP12345678900020191023163657
+declaration.additionalDocument.DPO.hint=GBDPO1000131
+declaration.additionalDocument.MOU.hint=GBMOU12345678900020191023163657
+
 declaration.item.isLicenceRequired.title = Do these goods require a licence?
 declaration.item.isLicenceRequired.body = It is your responsibility to check if your goods require a licence.
 declaration.item.isLicenceRequired.error = Select yes if the goods require a licence

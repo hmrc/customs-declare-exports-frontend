@@ -28,7 +28,7 @@ import uk.gov.hmrc.govukfrontend.views.html.components.{GovukDetails, GovukInset
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.details.Details
 import uk.gov.hmrc.govukfrontend.views.viewmodels.insettext.InsetText
-import views.helpers.AdditionalDocumentHelper.{prefix, versionSelection}
+import views.helpers.AdditionalDocumentHelper.{authCodesNeedingSpecificHintText, prefix, versionSelection}
 import views.helpers.CommodityCodeHelper.commodityCodeOfItem
 import views.html.components.gds.{bulletList, link, paragraphBody}
 
@@ -92,6 +92,24 @@ class AdditionalDocumentHelper @Inject()(
       case 4 => paragraph(messages(s"$prefix.v4.identifier.body"))
       case _ => paragraph(messages(s"$prefix.identifier.body"))
     }
+
+  def documentIdentifierHint(itemId: String)(implicit messages: Messages, request: JourneyRequest[_]): Option[String] = {
+    val authorisationTypeCodes =
+      request.cacheModel.parties.declarationHoldersData.fold(Seq.empty[String])(_.holders.map(_.authorisationTypeCode).flatten)
+    constructHintText(authorisationTypeCodes)
+  }
+
+  private def constructHintText(authorisationTypeCodes: Seq[String])(implicit messages: Messages): Option[String] = {
+    val authCodesNeedingHintText = authorisationTypeCodes.filter(authCodesNeedingSpecificHintText.contains(_))
+
+    authCodesNeedingHintText.headOption.map { _ =>
+      val firstMatchingCodes = authCodesNeedingHintText
+        .take(3)
+        .map(code => messages(s"declaration.additionalDocument.${code}.hint"))
+
+      (Seq(messages("declaration.additionalDocument.hint.prefix")) ++ firstMatchingCodes).mkString(", ")
+    }
+  }
 
   def documentIdentifierInsets(itemId: String)(implicit messages: Messages, request: JourneyRequest[_]): Option[Html] = {
     def insets(content: List[Html]): Option[Html] = Some(insetText(InsetText(content = HtmlContent(new Html(content)))))
@@ -193,4 +211,6 @@ object AdditionalDocumentHelper {
       case (_, false, false)     => 4
     }
   }
+
+  val authCodesNeedingSpecificHintText = Seq("AEOF", "CGU", "CSE", "EIR", "EPSS", "EUS", "IPO", "OPO", "SDE", "SIVA", "TEA", "CWP", "DPO", "MOU")
 }

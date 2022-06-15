@@ -44,7 +44,7 @@ class SupplementaryUnitsYesNoViewSpec extends UnitViewSpec with ExportsTestData 
   private val form = SupplementaryUnits.form(yesNoPage)
   private val itemId = "item1"
 
-  private def makeRequest(declarationType: DeclarationType, maybeCommodityCode: Option[String] = None): JourneyRequest[_] =
+  private def makeRequest(declarationType: DeclarationType, maybeCommodityCode: Option[String]): JourneyRequest[_] =
     maybeCommodityCode.fold(journeyRequest()) { commodityCode =>
       val item = anItem(withItemId(itemId), withCommodityDetails(CommodityDetails(Some(commodityCode), None)))
       withRequestOfType(declarationType, withItem(item))
