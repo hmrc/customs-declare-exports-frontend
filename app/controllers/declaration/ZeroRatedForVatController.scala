@@ -44,13 +44,14 @@ class ZeroRatedForVatController @Inject()(
   val validTypes = Seq(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL)
 
   def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
-    Ok(zero_rated_for_vat(mode, itemId, NactCode.form().withSubmissionErrors()))
+    Ok(zero_rated_for_vat(mode, itemId, ZeroRatedForVat.form().withSubmissionErrors()))
   }
 
   def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async { implicit request =>
-    NactCode.form.bindFromRequest
+    println(">>>" + request.body)
+    ZeroRatedForVat.form.bindFromRequest
       .fold(
-        (formWithErrors: Form[NactCode]) => Future.successful(BadRequest),
+        (formWithErrors: Form[NactCode]) => Future.successful(BadRequest(zero_rated_for_vat(mode, itemId, formWithErrors))),
         validForm => Future.successful(Ok(zero_rated_for_vat(mode, itemId, NactCode.form().withSubmissionErrors())))
       )
   }

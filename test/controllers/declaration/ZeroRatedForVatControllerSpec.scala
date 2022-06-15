@@ -17,8 +17,8 @@
 package controllers.declaration
 
 import base.{ControllerSpec, Injector}
-import forms.declaration.NactCode.{VatZeroRatedExempt, VatZeroRatedPaid, VatZeroRatedReduced, VatZeroRatedYes}
-import forms.declaration.{NactCode, ZeroRatedForVat}
+import forms.declaration.ZeroRatedForVat._
+import forms.declaration.NactCode
 import mock.ErrorHandlerMocks
 import models.{DeclarationType, Mode}
 import org.mockito.ArgumentCaptor
@@ -28,7 +28,7 @@ import play.api.data.Form
 import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import views.html.declaration.additionalActors.zero_rated_for_vat
+import views.html.declaration.zero_rated_for_vat
 
 class ZeroRatedForVatControllerSpec extends ControllerSpec with ErrorHandlerMocks with Injector {
 
@@ -40,7 +40,14 @@ class ZeroRatedForVatControllerSpec extends ControllerSpec with ErrorHandlerMock
   val declarationWithZeroRated = aDeclaration(withItem(anItem(withNactCodes(nactCode))))
 
   val controller =
-    new ZeroRatedForVatController(mockAuthAction, mockJourneyAction, mockExportsCacheService, navigator, stubMessagesControllerComponents())(ec)
+    new ZeroRatedForVatController(
+      mockAuthAction,
+      mockJourneyAction,
+      mockExportsCacheService,
+      navigator,
+      stubMessagesControllerComponents(),
+      zeroRatedForVatPage
+    )(ec)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -56,8 +63,8 @@ class ZeroRatedForVatControllerSpec extends ControllerSpec with ErrorHandlerMock
     super.afterEach()
   }
 
-  def theResponseForm: Form[ZeroRatedForVat] = {
-    val formCaptor = ArgumentCaptor.forClass(classOf[Form[ZeroRatedForVat]])
+  def theResponseForm: Form[NactCode] = {
+    val formCaptor = ArgumentCaptor.forClass(classOf[Form[NactCode]])
     verify(zeroRatedForVatPage)(any(), any(), formCaptor.capture())(any(), any())
     formCaptor.getValue
   }

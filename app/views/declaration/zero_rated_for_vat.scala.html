@@ -19,13 +19,14 @@
 @import controllers.navigation.{ItemId, Navigator}
 @import forms.declaration.ZeroRatedForVat
 @import forms.declaration.NactCode
-@import forms.declaration.NactCode._
+@import forms.declaration.ZeroRatedForVat._
 @import models.requests.JourneyRequest
 @import play.twirl.api.HtmlFormat
-@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.html.components.gds._
 @import views.components.gds.Styles._
 @import views.helpers.{BackButton, Title}
-@import views.html.components.gds._
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+
 
 @this(govukLayout: gdsMainTemplate,
     govukFieldset: GovukFieldset,
@@ -40,6 +41,7 @@
     saveButtons: saveButtons,
     formHelper: FormWithCSRF,
     navigator: Navigator,
+    link: link,
     appConfig: AppConfig
 )
 
@@ -51,30 +53,32 @@
 @radios = {
     @formGroupWrapper(field = form("zeroRatedForVat")) {
         @govukRadios(Radios(
-            name = "zeroRatedForVat",
+            name = "nactCode",
             items = Seq(
                 RadioItem(
                     id = Some(VatZeroRatedYes.toString),
                     value = Some(VatZeroRatedYes.toString),
-                    content = Text(messages(s"declaration.zeroRatedForVat.VatZeroRatedYes")),
+                    content = Text(messages("declaration.zeroRatedForVat.radio.VatZeroRatedYes")),
                     checked = form("zeroRatedForVat").value.contains(VatZeroRatedYes.toString)
                 ),
                 RadioItem(
                     id = Some(VatZeroRatedReduced.toString),
                     value = Some(VatZeroRatedReduced.toString),
-                    content = Text(messages(s"declaration.zeroRatedForVat.VatZeroRatedReduced")),
+                    content = Text(messages("declaration.zeroRatedForVat.radio.VatZeroRatedReduced")),
+                    hint = Some(Hint(content = Text(messages("declaration.zeroRatedForVat.radio.VatZeroRatedReduced.hint")))),
                     checked = form("zeroRatedForVat").value.contains(VatZeroRatedReduced.toString)
                 ),
                 RadioItem(
                     id = Some(VatZeroRatedExempt.toString),
                     value = Some(VatZeroRatedExempt.toString),
-                    content = Text(messages(s"declaration.zeroRatedForVat.VatZeroRatedExempt")),
+                    content = Text(messages("declaration.zeroRatedForVat.radio.VatZeroRatedExempt")),
+                    hint = Some(Hint(content = Text(messages("declaration.zeroRatedForVat.radio.VatZeroRatedExempt.hint")))),
                     checked = form("zeroRatedForVat").value.contains(VatZeroRatedExempt.toString)
                 ),
                 RadioItem(
                     id = Some(VatZeroRatedPaid.toString),
                     value = Some(VatZeroRatedPaid.toString),
-                    content = Text(messages(s"declaration.zeroRatedForVat.VatZeroRatedPaid")),
+                    content = Text(messages(s"declaration.zeroRatedForVat.radio.VatZeroRatedPaid")),
                     checked = form("zeroRatedForVat").value.contains(VatZeroRatedPaid.toString)
                 )
             ),
@@ -100,9 +104,9 @@
                 isPageHeading = true
             )),
             html = HtmlFormat.fill(List(
-              paragraphBody(messages("declaration.zeroRatedForVat.body.text")),
+              paragraphBody(messages("declaration.zeroRatedForVat.body.text", link(text = messages("declaration.zeroRatedForVat.body.linkText"), call = Call("GET", appConfig.guidance.vatOnGoodsExportedFromUK)))),
               radios,
-              tariffExpander(NactCode, request.declarationType)(messages, appConfig),
+              tariffExpander(ZeroRatedForVat, request.declarationType)(messages, appConfig),
               saveButtons(mode)
             ))
         ))

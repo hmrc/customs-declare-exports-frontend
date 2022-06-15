@@ -22,5 +22,10 @@ import play.api.i18n.Messages
 case class TariffContentKey(key: String) {
   def getTextKey(): String = s"$key.text"
   def getLinkText(idx: Int)(implicit messages: Messages): String = messages(s"$key.linkText.${idx}")
-  def getUrl(idx: Int)(implicit appConfig: AppConfig): String = appConfig.tariffGuideUrl(s"urls.$key.${idx}")
+  def getUrl(idx: Int)(implicit appConfig: AppConfig): String = {
+
+    println(">>>>>" + s"urls.$key.${idx}")
+
+    appConfig.tariffGuideUrl(s"urls.$key.${idx}")
+  }
 }
