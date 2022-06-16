@@ -18,8 +18,7 @@ package views.declaration
 
 import base.Injector
 import controllers.declaration.routes
-import forms.common.YesNoAnswer._
-import forms.declaration.{AuthorisationProcedureCodeChoice, NactCode}
+import forms.declaration.NactCode
 import models.DeclarationType._
 import models.Mode
 import models.requests.JourneyRequest
@@ -39,23 +38,20 @@ class ZeroRatedForVatViewSpec extends UnitViewSpec with Stubs with Injector {
   "Which export procedure are you using Page" must {
 
     "have proper messages for labels" in {
-      messages must haveTranslationFor("declaration.authorisations.zeroRatedForVat.title")
-      messages must haveTranslationFor("declaration.authorisations.zeroRatedForVat.error.empty")
+      messages must haveTranslationFor("declaration.zeroRatedForVat.title")
+      messages must haveTranslationFor("declaration.zeroRatedForVat.body.text")
+      messages must haveTranslationFor("declaration.zeroRatedForVat.body.linkText")
       messages must haveTranslationFor("declaration.zeroRatedForVat.radio.VatZeroRatedYes")
       messages must haveTranslationFor("declaration.zeroRatedForVat.radio.VatZeroRatedReduced")
       messages must haveTranslationFor("declaration.zeroRatedForVat.radio.VatZeroRatedReduced.hint")
       messages must haveTranslationFor("declaration.zeroRatedForVat.radio.VatZeroRatedExempt")
-      messages must haveTranslationFor("declaration.zeroRatedForVat.radio.VatZeroRatedExempt")
       messages must haveTranslationFor("declaration.zeroRatedForVat.radio.VatZeroRatedExempt.hint")
-      messages must haveTranslationFor(
-        "declaration.zeroRatedForVat.radio.VatZeroRatedExempt.hintdeclaration.zeroRatedForVat.radio.VatZeroRatedExempt.hint"
-      )
-      messages must haveTranslationFor("declaration.authorisations.procedureCodeChoice.readMoreExpander.header")
-      messages must haveTranslationFor("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.1")
-      messages must haveTranslationFor("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.1.linkText")
+      messages must haveTranslationFor("declaration.zeroRatedForVat.radio.VatZeroRatedPaid")
+      messages must haveTranslationFor("tariff.declaration.item.zeroRatedForVat.common.text")
+      messages must haveTranslationFor("tariff.declaration.item.zeroRatedForVat.common.linkText.0")
     }
 
-    onEveryDeclarationJourney() { implicit request =>
+    onJourney(STANDARD) { implicit request =>
       val view = createView()
 
       "display section header" in {
@@ -66,69 +62,42 @@ class ZeroRatedForVatViewSpec extends UnitViewSpec with Stubs with Injector {
         view.getElementsByClass(Styles.gdsPageLegend) must containMessageForElements("declaration.zeroRatedForVat.title")
       }
 
-      "display 'Mode of Transport' section" which {
-        "have '1040' option" in {
-          view.getElementsByAttributeValue("for", "Code1040") must containMessageForElements(
-            "declaration.authorisations.procedureCodeChoice.radio.1040"
+      "display radio buttons" which {
+        "have 'VatZeroRatedYes' option" in {
+          view.getElementsByAttributeValue("for", "VatZeroRatedYes") must containMessageForElements(
+            "declaration.zeroRatedForVat.radio.VatZeroRatedYes"
           )
         }
 
-        "have '1007' option" in {
-          view.getElementsByAttributeValue("for", "Code1007") must containMessageForElements(
-            "declaration.authorisations.procedureCodeChoice.radio.1007"
+        "have 'VatZeroRatedReduced' option" in {
+          view.getElementsByAttributeValue("for", "VatZeroRatedReduced") must containMessageForElements(
+            "declaration.zeroRatedForVat.radio.VatZeroRatedReduced"
           )
         }
 
-        "have 'Other' option" in {
-          view.getElementsByAttributeValue("for", "CodeOther") must containMessageForElements(
-            "declaration.authorisations.procedureCodeChoice.radio.other"
+        "have 'VatZeroRatedExempt' option" in {
+          view.getElementsByAttributeValue("for", "VatZeroRatedExempt") must containMessageForElements(
+            "declaration.zeroRatedForVat.radio.VatZeroRatedExempt"
           )
         }
-      }
 
-      "display expander" in {
-        view.getElementsByClass("govuk-details__summary-text").first() must containHtml(
-          messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.header")
-        )
+        "have 'VatZeroRatedPaid' option" in {
+          view.getElementsByAttributeValue("for", "VatZeroRatedPaid") must containMessageForElements(
+            "declaration.zeroRatedForVat.radio.VatZeroRatedPaid"
+          )
+        }
       }
 
       val createViewWithMode: Mode => Document = mode => createView(mode = mode)
       checkAllSaveButtonsAreDisplayed(createViewWithMode)
-    }
 
-    onJourney(STANDARD, SIMPLIFIED, SUPPLEMENTARY, OCCASIONAL) { implicit request =>
-      val view = createView()
-
-      "display 'Back' button that links to 'Authorisations Required' page" in {
+      "display 'Back' button that links to 'Taric' page" in {
         val backButton = view.getElementById("back-link")
         backButton must containMessage("site.back")
-        backButton must haveHref(routes.AdditionalActorsSummaryController.displayPage())
+        backButton must haveHref(routes.TaricCodeSummaryController.displayPage(Mode.Normal, itemId))
       }
 
     }
 
-    onClearance(aDeclaration(withType(CLEARANCE), withEntryIntoDeclarantsRecords(YesNoAnswers.yes))) { implicit request =>
-      val view = createView()
-
-      "EIDR is true" must {
-        "display 'Back' button that links to 'Consignee Details' page" in {
-          val backButton = view.getElementById("back-link")
-          backButton must containMessage("site.back")
-          backButton must haveHref(routes.ConsigneeDetailsController.displayPage())
-        }
-      }
-    }
-
-    onClearance(aDeclaration(withType(CLEARANCE), withEntryIntoDeclarantsRecords(YesNoAnswers.no))) { implicit request =>
-      val view = createView()
-
-      "EIDR is false" must {
-        "display 'Back' button that links to 'Other parties' page" in {
-          val backButton = view.getElementById("back-link")
-          backButton must containMessage("site.back")
-          backButton must haveHref(routes.AdditionalActorsSummaryController.displayPage())
-        }
-      }
-    }
   }
 }

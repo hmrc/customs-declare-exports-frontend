@@ -99,6 +99,7 @@ class Navigator @Inject()(
     case TaricCode                         => routes.TaricCodeSummaryController.displayPage
     case StatisticalValue                  => routes.NactCodeSummaryController.displayPage
     case SupplementaryUnits                => routes.CommodityMeasureController.displayPage
+    case ZeroRatedForVat                   => routes.TaricCodeSummaryController.displayPage
   }
 
   val commonCacheDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode) => Call] = {
@@ -142,7 +143,7 @@ class Navigator @Inject()(
     case PackageInformation => routes.StatisticalValueController.displayPage
     case CusCode            => routes.UNDangerousGoodsCodeController.displayPage
     case NactCode           => routes.NactCodeSummaryController.displayPage
-    case NactCodeFirst      => routes.TaricCodeSummaryController.displayPage
+    case NactCodeFirst      => routes.ZeroRatedForVatController.displayPage
     case CommodityMeasure   => routes.PackageInformationSummaryController.displayPage
     case page               => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on standard")
   }

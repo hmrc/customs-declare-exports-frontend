@@ -18,11 +18,13 @@ package views.declaration
 
 import base.Injector
 import config.AppConfig
-import controllers.declaration.routes.TaricCodeSummaryController
+import controllers.declaration.routes.{TaricCodeSummaryController, ZeroRatedForVatController}
 import forms.declaration.NactCodeFirst
-import models.Mode
+import models.requests.JourneyRequest
+import models.{DeclarationType, Mode}
 import org.jsoup.nodes.Document
 import play.api.data.Form
+import play.api.mvc.AnyContent
 import services.cache.ExportsTestData
 import tools.Stubs
 import views.declaration.spec.UnitViewSpec
@@ -41,11 +43,11 @@ class NactCodeAddFirstViewSpec extends UnitViewSpec with ExportsTestData with St
   private val form: Form[NactCodeFirst] = NactCodeFirst.form()
   private val page = instanceOf[nact_code_add_first]
 
-  private def createView(form: Form[NactCodeFirst] = form, mode: Mode = Mode.Normal): Document =
-    page(mode, itemId, form)(journeyRequest(), messages)
+  private def createView(form: Form[NactCodeFirst] = form, mode: Mode = Mode.Normal)(implicit request: JourneyRequest[_]): Document =
+    page(mode, itemId, form)(request, messages)
 
   "Nact Code Add First View" should {
-    val view = createView()
+    val view = createView()(journeyRequest())
 
     "display page title" in {
       view.getElementsByTag("h1") must containMessageForElements(s"$prefix.addfirst.header")
@@ -63,16 +65,32 @@ class NactCodeAddFirstViewSpec extends UnitViewSpec with ExportsTestData with St
       hint.text mustBe messages(s"$prefix.addfirst.hint")
     }
 
-    "display 'Back' button that links to 'taric codes' page" in {
-      val backLink = view.getElementById("back-link")
-      backLink.getElementById("back-link") must haveHref(TaricCodeSummaryController.displayPage(Mode.Normal, itemId))
+    "display 'Back' button that links to 'taric codes' page" when {
+
+      "STANDARD journey" in {
+
+        val view = createView()(journeyRequest())
+
+        val backLink = view.getElementById("back-link")
+        backLink.getElementById("back-link") must haveHref(ZeroRatedForVatController.displayPage(Mode.Normal, itemId))
+      }
+
+      onJourney(DeclarationType.SUPPLEMENTARY, DeclarationType.OCCASIONAL, DeclarationType.SIMPLIFIED) { implicit request =>
+        s"${request.declarationType} journey" in {
+
+          val backLink = createView().getElementById("back-link")
+          backLink.getElementById("back-link") must haveHref(TaricCodeSummaryController.displayPage(Mode.Normal, itemId))
+        }
+      }
     }
 
-    val createViewWithMode: Mode => Document = mode => createView(mode = mode)
+    val createViewWithMode: Mode => Document = mode => createView(mode = mode)(journeyRequest())
     checkAllSaveButtonsAreDisplayed(createViewWithMode)
   }
 
   "Nact Code Add First View for invalid input" should {
+
+    implicit val request = journeyRequest()
 
     "display errors when invalid" in {
       val view = createView(NactCodeFirst.form().fillAndValidate(NactCodeFirst(Some("12345678901234567890"))))
@@ -93,7 +111,7 @@ class NactCodeAddFirstViewSpec extends UnitViewSpec with ExportsTestData with St
 
   "Nact Code Add First View when filled" should {
     "display data in nact code input" in {
-      val view = createView(NactCodeFirst.form().fill(NactCodeFirst(Some("VATR"))))
+      val view = createView(NactCodeFirst.form().fill(NactCodeFirst(Some("VATR"))))(journeyRequest())
       view.getElementById("nactCode").attr("value") must be("VATR")
     }
   }

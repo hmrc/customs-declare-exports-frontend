@@ -19,7 +19,7 @@ package controllers.declaration
 import base.ControllerSpec
 import forms.common.YesNoAnswer
 import forms.declaration.TaricCode
-import models.Mode
+import models.{DeclarationType, Mode}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -137,7 +137,25 @@ class TaricCodeSummaryControllerSpec extends ControllerSpec with OptionValues {
       }
     }
 
-    onEveryDeclarationJourney() { request =>
+    onJourney(DeclarationType.STANDARD) { request =>
+      "re-direct to next question" when {
+
+        "user submits valid No answer" in {
+          val taricCode = TaricCode("QWER")
+          val item = anItem(withTaricCodes(taricCode))
+          withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
+
+          val requestBody = Seq("yesNo" -> "No")
+          val result = controller.submitForm(Mode.Normal, item.id)(postRequestAsFormUrlEncoded(requestBody: _*))
+
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe controllers.declaration.routes.ZeroRatedForVatController.displayPage(Mode.Normal, item.id)
+        }
+
+      }
+    }
+
+    onJourney(DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL, DeclarationType.SUPPLEMENTARY, DeclarationType.CLEARANCE) { request =>
       "re-direct to next question" when {
 
         "user submits valid No answer" in {

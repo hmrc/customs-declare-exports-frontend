@@ -20,7 +20,7 @@ import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
-import models.Mode
+import models.{DeclarationType, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
@@ -54,8 +54,12 @@ class TaricCodeSummaryController @Inject()(
         (formWithErrors: Form[YesNoAnswer]) => BadRequest(taricCodesPage(mode, itemId, formWithErrors, taricCodes)),
         validYesNo =>
           validYesNo.answer match {
-            case YesNoAnswers.yes => navigator.continueTo(mode, controllers.declaration.routes.TaricCodeAddController.displayPage(_, itemId))
-            case YesNoAnswers.no  => navigator.continueTo(mode, controllers.declaration.routes.NactCodeSummaryController.displayPage(_, itemId))
+            case YesNoAnswers.yes =>
+              navigator.continueTo(mode, controllers.declaration.routes.TaricCodeAddController.displayPage(_, itemId))
+            case YesNoAnswers.no if request.declarationType == DeclarationType.STANDARD =>
+              navigator.continueTo(mode, controllers.declaration.routes.ZeroRatedForVatController.displayPage(_, itemId))
+            case YesNoAnswers.no =>
+              navigator.continueTo(mode, controllers.declaration.routes.NactCodeSummaryController.displayPage(_, itemId))
         }
       )
   }

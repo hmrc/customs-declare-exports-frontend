@@ -19,6 +19,7 @@ package controllers.declaration
 import base.{ControllerSpec, Injector}
 import forms.declaration.ZeroRatedForVat._
 import forms.declaration.NactCode
+import forms.declaration.NactCode.nactCodeKey
 import mock.ErrorHandlerMocks
 import models.{DeclarationType, Mode}
 import org.mockito.ArgumentCaptor
@@ -37,7 +38,7 @@ class ZeroRatedForVatControllerSpec extends ControllerSpec with ErrorHandlerMock
   val id = "id"
   val item = anItem(withItemId(id))
   val nactCode = NactCode(VatZeroRatedYes)
-  val declarationWithZeroRated = aDeclaration(withItem(anItem(withNactCodes(nactCode))))
+  val declarationWithZeroRated = aDeclaration(withType(DeclarationType.STANDARD), withItem(anItem(withNactCodes(nactCode))))
 
   val controller =
     new ZeroRatedForVatController(
@@ -53,7 +54,7 @@ class ZeroRatedForVatControllerSpec extends ControllerSpec with ErrorHandlerMock
     super.beforeEach()
     setupErrorHandler()
     authorizedUser()
-    withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY)))
+    withNewCaching(aDeclaration(withType(DeclarationType.STANDARD)))
 
     when(zeroRatedForVatPage(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
@@ -122,42 +123,42 @@ class ZeroRatedForVatControllerSpec extends ControllerSpec with ErrorHandlerMock
 
       "VatZeroRatedYes" in {
 
-        val correctForm = Seq(("zeroRatedForVat", VatZeroRatedYes), saveAndContinueActionUrlEncoded)
+        val correctForm = Seq((nactCodeKey, VatZeroRatedYes), saveAndContinueActionUrlEncoded)
 
         val result = controller.submitForm(Mode.Normal, item.id)(postRequestAsFormUrlEncoded(correctForm: _*))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalActorsSummaryController.displayPage(Mode.Normal)
+        thePageNavigatedTo mustBe controllers.declaration.routes.NactCodeSummaryController.displayPage(Mode.Normal, item.id)
       }
 
       "VatZeroRatedReduced" in {
 
-        val correctForm = Seq(("zeroRatedForVat", VatZeroRatedReduced), saveAndContinueActionUrlEncoded)
+        val correctForm = Seq((nactCodeKey, VatZeroRatedReduced), saveAndContinueActionUrlEncoded)
 
         val result = controller.submitForm(Mode.Normal, item.id)(postRequestAsFormUrlEncoded(correctForm: _*))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalActorsSummaryController.displayPage(Mode.Normal)
+        thePageNavigatedTo mustBe controllers.declaration.routes.NactCodeSummaryController.displayPage(Mode.Normal, item.id)
       }
 
       "VatZeroRatedExempt" in {
 
-        val correctForm = Seq(("zeroRatedForVat", VatZeroRatedExempt), saveAndContinueActionUrlEncoded)
+        val correctForm = Seq((nactCodeKey, VatZeroRatedExempt), saveAndContinueActionUrlEncoded)
 
         val result = controller.submitForm(Mode.Normal, item.id)(postRequestAsFormUrlEncoded(correctForm: _*))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalActorsSummaryController.displayPage(Mode.Normal)
+        thePageNavigatedTo mustBe controllers.declaration.routes.NactCodeSummaryController.displayPage(Mode.Normal, item.id)
       }
 
       "VatZeroRatedPaid" in {
 
-        val correctForm = Seq(("zeroRatedForVat", VatZeroRatedPaid), saveAndContinueActionUrlEncoded)
+        val correctForm = Seq((nactCodeKey, VatZeroRatedPaid), saveAndContinueActionUrlEncoded)
 
         val result = controller.submitForm(Mode.Normal, item.id)(postRequestAsFormUrlEncoded(correctForm: _*))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalActorsSummaryController.displayPage(Mode.Normal)
+        thePageNavigatedTo mustBe controllers.declaration.routes.NactCodeSummaryController.displayPage(Mode.Normal, item.id)
       }
     }
   }

@@ -18,7 +18,7 @@
 @import controllers.declaration.routes._
 @import controllers.navigation.{ItemId, Navigator}
 @import forms.declaration.ZeroRatedForVat
-@import forms.declaration.NactCode
+@import forms.declaration.{ZeroRatedForVat, NactCode}
 @import forms.declaration.ZeroRatedForVat._
 @import models.requests.JourneyRequest
 @import play.twirl.api.HtmlFormat
@@ -53,30 +53,30 @@
 @radios = {
     @formGroupWrapper(field = form("zeroRatedForVat")) {
         @govukRadios(Radios(
-            name = "nactCode",
+            name = NactCode.nactCodeKey,
             items = Seq(
                 RadioItem(
-                    id = Some(VatZeroRatedYes.toString),
+                    id = Some("VatZeroRatedYes"),
                     value = Some(VatZeroRatedYes.toString),
                     content = Text(messages("declaration.zeroRatedForVat.radio.VatZeroRatedYes")),
                     checked = form("zeroRatedForVat").value.contains(VatZeroRatedYes.toString)
                 ),
                 RadioItem(
-                    id = Some(VatZeroRatedReduced.toString),
+                    id = Some("VatZeroRatedReduced"),
                     value = Some(VatZeroRatedReduced.toString),
                     content = Text(messages("declaration.zeroRatedForVat.radio.VatZeroRatedReduced")),
                     hint = Some(Hint(content = Text(messages("declaration.zeroRatedForVat.radio.VatZeroRatedReduced.hint")))),
                     checked = form("zeroRatedForVat").value.contains(VatZeroRatedReduced.toString)
                 ),
                 RadioItem(
-                    id = Some(VatZeroRatedExempt.toString),
+                    id = Some("VatZeroRatedExempt"),
                     value = Some(VatZeroRatedExempt.toString),
                     content = Text(messages("declaration.zeroRatedForVat.radio.VatZeroRatedExempt")),
                     hint = Some(Hint(content = Text(messages("declaration.zeroRatedForVat.radio.VatZeroRatedExempt.hint")))),
                     checked = form("zeroRatedForVat").value.contains(VatZeroRatedExempt.toString)
                 ),
                 RadioItem(
-                    id = Some(VatZeroRatedPaid.toString),
+                    id = Some("VatZeroRatedPaid"),
                     value = Some(VatZeroRatedPaid.toString),
                     content = Text(messages(s"declaration.zeroRatedForVat.radio.VatZeroRatedPaid")),
                     checked = form("zeroRatedForVat").value.contains(VatZeroRatedPaid.toString)
@@ -89,7 +89,7 @@
 
 @govukLayout(
     title = Title("declaration.zeroRatedForVat.title",  "declaration.section.2", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.back"), navigator.backLink(NactCode, mode, ItemId(itemId))))) {
+    backButton = Some(BackButton(messages("site.back"), navigator.backLink(ZeroRatedForVat, mode, ItemId(itemId))))) {
 
     @formHelper(action = ZeroRatedForVatController.submitForm(mode, itemId), 'autoComplete -> "off") {
 

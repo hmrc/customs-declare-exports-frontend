@@ -62,10 +62,23 @@ class NactCodesViewSpec extends UnitViewSpec with ExportsTestData with Stubs wit
         saveButton must containMessageForElements(saveAndContinueCaption)
       }
 
+    }
+    onJourney(SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { implicit request =>
+      val view = createView(YesNoAnswer.form(), List.empty)
       "display 'Back' button that links to 'TARIC Code' page" in {
         val backButton = view.getElementById("back-link")
         backButton.getElementById("back-link") must haveHref(
           controllers.declaration.routes.TaricCodeSummaryController.displayPage(Mode.Normal, itemId)
+        )
+      }
+    }
+    onJourney(STANDARD) { implicit request =>
+      val view = createView(YesNoAnswer.form(), List.empty)
+
+      "display 'Back' button that links to 'TARIC Code' page" in {
+        val backButton = view.getElementById("back-link")
+        backButton.getElementById("back-link") must haveHref(
+          controllers.declaration.routes.ZeroRatedForVatController.displayPage(Mode.Normal, itemId)
         )
       }
     }

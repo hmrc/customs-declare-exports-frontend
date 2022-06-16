@@ -41,22 +41,28 @@ class ZeroRatedForVatController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
-  val validTypes = Seq(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL)
+  val validTypes = Seq(DeclarationType.STANDARD)
 
   def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
-    Ok(zero_rated_for_vat(mode, itemId, ZeroRatedForVat.form().withSubmissionErrors()))
+    request.cacheModel.itemBy(itemId).flatMap(_.nactExemptionCode) match {
+      case Some(code) => Ok(zero_rated_for_vat(mode, itemId, ZeroRatedForVat.form().fill(code).withSubmissionErrors))
+      case _          => Ok(zero_rated_for_vat(mode, itemId, ZeroRatedForVat.form().withSubmissionErrors()))
+    }
   }
 
   def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async { implicit request =>
-    println(">>>" + request.body)
-    ZeroRatedForVat.form.bindFromRequest
+    ZeroRatedForVat
+      .form()
+      .bindFromRequest
       .fold(
-        (formWithErrors: Form[NactCode]) => Future.successful(BadRequest(zero_rated_for_vat(mode, itemId, formWithErrors))),
-        validForm => Future.successful(Ok(zero_rated_for_vat(mode, itemId, NactCode.form().withSubmissionErrors())))
+        formWithErrors => Future.successful(BadRequest(zero_rated_for_vat(mode, itemId, formWithErrors))),
+        updatedCache =>
+          updateExportsCache(itemId, updatedCache)
+            .map(_ => navigator.continueTo(mode, routes.NactCodeSummaryController.displayPage(_, itemId)))
       )
   }
 
-  private def updateExportsCache(itemId: String, updatedCache: Seq[NactCode])(implicit r: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
-    updateDeclarationFromRequest(model => model.updatedItem(itemId, _.copy(nactCodes = Some(updatedCache.toList))))
+  private def updateExportsCache(itemId: String, updatedCache: NactCode)(implicit r: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
+    updateDeclarationFromRequest(model => model.updatedItem(itemId, _.copy(nactExemptionCode = Some(updatedCache))))
 
 }
