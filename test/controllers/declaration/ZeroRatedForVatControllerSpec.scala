@@ -56,7 +56,7 @@ class ZeroRatedForVatControllerSpec extends ControllerSpec with ErrorHandlerMock
     authorizedUser()
     withNewCaching(aDeclaration(withType(DeclarationType.STANDARD)))
 
-    when(zeroRatedForVatPage(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(zeroRatedForVatPage(any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -66,7 +66,7 @@ class ZeroRatedForVatControllerSpec extends ControllerSpec with ErrorHandlerMock
 
   def theResponseForm: Form[NactCode] = {
     val formCaptor = ArgumentCaptor.forClass(classOf[Form[NactCode]])
-    verify(zeroRatedForVatPage)(any(), any(), formCaptor.capture())(any(), any())
+    verify(zeroRatedForVatPage)(any(), any(), formCaptor.capture(), any())(any(), any())
     formCaptor.getValue
   }
 

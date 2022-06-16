@@ -46,7 +46,7 @@
 )
 
 
-@(mode: Mode, itemId: String, form: Form[NactCode])(implicit request: JourneyRequest[_], messages: Messages)
+@(mode: Mode, itemId: String, form: Form[NactCode], restrictedForZeroVat: Boolean)(implicit request: JourneyRequest[_], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
@@ -104,7 +104,13 @@
                 isPageHeading = true
             )),
             html = HtmlFormat.fill(List(
-              paragraphBody(messages("declaration.zeroRatedForVat.body.text", link(text = messages("declaration.zeroRatedForVat.body.linkText"), call = Call("GET", appConfig.guidance.vatOnGoodsExportedFromUK)))),
+              {
+                if(restrictedForZeroVat){
+                    paragraphBody(messages("declaration.zeroRatedForVat.body.restricted.text", link(text = messages("declaration.zeroRatedForVat.body.restricted.linkText"), call = Call("GET", appConfig.guidance.vatOnGoodsExportedFromUK))))
+                } else {
+                    paragraphBody(messages("declaration.zeroRatedForVat.body.text", link(text = messages("declaration.zeroRatedForVat.body.linkText"), call = Call("GET", appConfig.guidance.vatOnGoodsExportedFromUK))))
+                }
+              },
               radios,
               tariffExpander(ZeroRatedForVat, request.declarationType)(messages, appConfig),
               saveButtons(mode)

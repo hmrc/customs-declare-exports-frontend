@@ -21,4 +21,5 @@ object Styles {
   val gdsPageLegend = "govuk-fieldset__legend--xl"
   val gdsPageHeading = "govuk-heading-xl"
   val gdsPageLabel = "govuk-label--xl"
+  val gdsPageBody = "govuk-body"
 }

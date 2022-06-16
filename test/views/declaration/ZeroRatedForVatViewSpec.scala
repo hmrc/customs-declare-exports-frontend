@@ -32,8 +32,8 @@ class ZeroRatedForVatViewSpec extends UnitViewSpec with Stubs with Injector {
 
   private val itemId = "itemId"
   private val page = instanceOf[zero_rated_for_vat]
-  private def createView(mode: Mode = Mode.Normal)(implicit request: JourneyRequest[_]): Document =
-    page(mode, itemId, NactCode.form())
+  private def createView(mode: Mode = Mode.Normal, restrictedForZeroVat: Boolean = false)(implicit request: JourneyRequest[_]): Document =
+    page(mode, itemId, NactCode.form(), restrictedForZeroVat)
 
   "Which export procedure are you using Page" must {
 
@@ -41,6 +41,8 @@ class ZeroRatedForVatViewSpec extends UnitViewSpec with Stubs with Injector {
       messages must haveTranslationFor("declaration.zeroRatedForVat.title")
       messages must haveTranslationFor("declaration.zeroRatedForVat.body.text")
       messages must haveTranslationFor("declaration.zeroRatedForVat.body.linkText")
+      messages must haveTranslationFor("declaration.zeroRatedForVat.body.restricted.text")
+      messages must haveTranslationFor("declaration.zeroRatedForVat.body.restricted.linkText")
       messages must haveTranslationFor("declaration.zeroRatedForVat.radio.VatZeroRatedYes")
       messages must haveTranslationFor("declaration.zeroRatedForVat.radio.VatZeroRatedReduced")
       messages must haveTranslationFor("declaration.zeroRatedForVat.radio.VatZeroRatedReduced.hint")
@@ -88,13 +90,36 @@ class ZeroRatedForVatViewSpec extends UnitViewSpec with Stubs with Injector {
         }
       }
 
-      val createViewWithMode: Mode => Document = mode => createView(mode = mode)
-      checkAllSaveButtonsAreDisplayed(createViewWithMode)
+      "display conditional text when restricted for vat" when {
+        "no restrictions on zero vat" in {
+          view.getElementsByClass(Styles.gdsPageBody).get(0).text mustBe messages(
+            "declaration.zeroRatedForVat.body.text",
+            messages("declaration.zeroRatedForVat.body.linkText")
+          )
+        }
+      }
 
       "display 'Back' button that links to 'Taric' page" in {
         val backButton = view.getElementById("back-link")
         backButton must containMessage("site.back")
         backButton must haveHref(routes.TaricCodeSummaryController.displayPage(Mode.Normal, itemId))
+      }
+
+      val createViewWithMode: Mode => Document = mode => createView(mode = mode)
+      checkAllSaveButtonsAreDisplayed(createViewWithMode)
+
+    }
+
+    onJourney(STANDARD) { implicit request =>
+      val view = createView(restrictedForZeroVat = true)
+
+      "display conditional text" when {
+        "restricted for vat" in {
+          view.getElementsByClass(Styles.gdsPageBody).get(0).text mustBe messages(
+            "declaration.zeroRatedForVat.body.restricted.text",
+            messages("declaration.zeroRatedForVat.body.restricted.linkText")
+          )
+        }
       }
 
     }

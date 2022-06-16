@@ -45,8 +45,8 @@ class ZeroRatedForVatController @Inject()(
 
   def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
     request.cacheModel.itemBy(itemId).flatMap(_.nactExemptionCode) match {
-      case Some(code) => Ok(zero_rated_for_vat(mode, itemId, ZeroRatedForVat.form().fill(code).withSubmissionErrors))
-      case _          => Ok(zero_rated_for_vat(mode, itemId, ZeroRatedForVat.form().withSubmissionErrors()))
+      case Some(code) => Ok(zero_rated_for_vat(mode, itemId, ZeroRatedForVat.form().withSubmissionErrors.fill(code), eligibleForZeroVat(itemId)))
+      case _          => Ok(zero_rated_for_vat(mode, itemId, ZeroRatedForVat.form().withSubmissionErrors(), eligibleForZeroVat(itemId)))
     }
   }
 
@@ -55,7 +55,7 @@ class ZeroRatedForVatController @Inject()(
       .form()
       .bindFromRequest
       .fold(
-        formWithErrors => Future.successful(BadRequest(zero_rated_for_vat(mode, itemId, formWithErrors))),
+        formWithErrors => Future.successful(BadRequest(zero_rated_for_vat(mode, itemId, formWithErrors, eligibleForZeroVat(itemId)))),
         updatedCache =>
           updateExportsCache(itemId, updatedCache)
             .map(_ => navigator.continueTo(mode, routes.NactCodeSummaryController.displayPage(_, itemId)))
@@ -64,5 +64,10 @@ class ZeroRatedForVatController @Inject()(
 
   private def updateExportsCache(itemId: String, updatedCache: NactCode)(implicit r: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
     updateDeclarationFromRequest(model => model.updatedItem(itemId, _.copy(nactExemptionCode = Some(updatedCache))))
+
+  val procedureCodesRestrictingZeroVat = List("1007", "1042", "2151", "2154", "2200", "3151", "3154", "3171", "2100", "2144", "2244", "2300", "3153")
+
+  private def eligibleForZeroVat(itemId: String)(implicit request: JourneyRequest[_]): Boolean =
+    request.cacheModel.procedureCodeOfItem(itemId).flatMap(_.procedureCode).fold(false)(procedureCodesRestrictingZeroVat.contains)
 
 }
