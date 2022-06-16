@@ -108,7 +108,7 @@
                 if(restrictedForZeroVat){
                     paragraphBody(messages("declaration.zeroRatedForVat.body.restricted.text", link(text = messages("declaration.zeroRatedForVat.body.restricted.linkText"), call = Call("GET", appConfig.guidance.vatOnGoodsExportedFromUK))))
                 } else {
-                    paragraphBody(messages("declaration.zeroRatedForVat.body.text", link(text = messages("declaration.zeroRatedForVat.body.linkText"), call = Call("GET", appConfig.guidance.vatOnGoodsExportedFromUK))))
+                    paragraphBody(messages("declaration.zeroRatedForVat.body.text", link(text = messages("declaration.zeroRatedForVat.body.linkText"), call = Call("GET", appConfig.previousProcedureCodes))))
                 }
               },
               radios,
