@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package views.declaration
+package views.declaration.addtionalDocuments
 
 import base.Injector
 import com.typesafe.config.ConfigFactory
@@ -22,8 +22,8 @@ import controllers.declaration.routes
 import forms.common.{Eori, YesNoAnswer}
 import forms.declaration.additionaldocuments.AdditionalDocument
 import forms.declaration.declarationHolder.DeclarationHolder
-import models.DeclarationType._
 import models.{ExportsDeclaration, Mode}
+import models.DeclarationType._
 import models.declaration.EoriSource
 import models.declaration.ExportDeclarationTestData.declaration
 import models.requests.JourneyRequest

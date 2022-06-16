@@ -133,7 +133,8 @@
             field = form(documentIdentifierKey),
             labelKey = "declaration.additionalDocument.identifier",
             inputClasses = Some("govuk-input--width-30"),
-            bodyHtml = Some(additionalDocumentHelper.documentIdentifierBody(itemId))
+            bodyHtml = Some(additionalDocumentHelper.documentIdentifierBody(itemId)),
+            hintHtml = additionalDocumentHelper.documentIdentifierHint(itemId).map( paragraphBody(_, "govuk-hint"))
         )
 
         @additionalDocumentHelper.documentIdentifierInsets(itemId)

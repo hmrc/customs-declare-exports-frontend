@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package views.declaration
+package views.declaration.addtionalDocuments
 
 import base.{Injector, TestHelper}
 import config.AppConfig
 import connectors.FileBasedCodeListConnector
 import controllers.helpers.SaveAndReturn
 import forms.common.Date.{dayKey, monthKey, yearKey}
+import forms.common.Eori
 import forms.declaration.AdditionalDocumentSpec._
 import forms.declaration.CommodityDetails
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
@@ -31,12 +32,12 @@ import forms.declaration.additionaldocuments.DocumentWriteOffSpec.incorrectDocum
 import forms.declaration.declarationHolder.DeclarationHolder
 import models.ExportsDeclaration
 import models.Mode.Normal
+import models.declaration.{EoriSource, ExportItem}
 import models.declaration.ExportDeclarationTestData.{allRecords, declaration}
-import models.declaration.ExportItem
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
-import org.scalatest.Inspectors.forAll
 import org.scalatest.{Assertion, OptionValues}
+import org.scalatest.Inspectors.forAll
 import play.api.data.Form
 import services.view.HolderOfAuthorisationCodes
 import tools.Stubs
@@ -133,6 +134,22 @@ class AdditionalDocumentEditViewSpec extends UnitViewSpec with CommonMessages wi
       messages must haveTranslationFor(s"$prefix.remove.dateOfValidity")
       messages must haveTranslationFor(s"$prefix.remove.measurementUnitAndQualifier")
       messages must haveTranslationFor(s"$prefix.remove.documentQuantity")
+
+      messages must haveTranslationFor(s"$prefix.hint.prefix")
+      messages must haveTranslationFor(s"$prefix.AEOF.hint")
+      messages must haveTranslationFor(s"$prefix.CGU.hint")
+      messages must haveTranslationFor(s"$prefix.CSE.hint")
+      messages must haveTranslationFor(s"$prefix.EIR.hint")
+      messages must haveTranslationFor(s"$prefix.EPSS.hint")
+      messages must haveTranslationFor(s"$prefix.EUS.hint")
+      messages must haveTranslationFor(s"$prefix.IPO.hint")
+      messages must haveTranslationFor(s"$prefix.OPO.hint")
+      messages must haveTranslationFor(s"$prefix.SDE.hint")
+      messages must haveTranslationFor(s"$prefix.SIVA.hint")
+      messages must haveTranslationFor(s"$prefix.TEA.hint")
+      messages must haveTranslationFor(s"$prefix.CWP.hint")
+      messages must haveTranslationFor(s"$prefix.DPO.hint")
+      messages must haveTranslationFor(s"$prefix.MOU.hint")
     }
   }
 
@@ -142,6 +159,86 @@ class AdditionalDocumentEditViewSpec extends UnitViewSpec with CommonMessages wi
     val holders = List(DeclarationHolder(Some("OPO"), None, None), DeclarationHolder(Some("FZ"), None, None))
 
     val authCodeHelper = new HolderOfAuthorisationCodes(new FileBasedCodeListConnector(appConfig), mockMerchandiseInBagConfig)
+
+    allAdditionalDeclarationTypes.foreach { declarationType =>
+      val item = anItem(withItemId(itemId))
+      val hintPrefix = messages(s"${prefix}.hint.prefix")
+      val hintSeparator = ", "
+
+      s"the declaration is of type $declarationType" should {
+        "display no hint text on the Document Identifier field" when {
+          "user has selected no auth codes" in {
+            implicit val request = withRequest(declarationType, withItem(item))
+
+            val text = Option(createView.getElementById("documentIdentifier-hint"))
+            text mustBe None
+          }
+
+          "user has selected no auth codes that requiring hint text" in {
+            val authCode1 = "OTHER"
+            val holders = List(DeclarationHolder(Some(authCode1), Some(Eori("GB123456789012")), Some(EoriSource.OtherEori)))
+            implicit val request = withRequest(declarationType, withDeclarationHolders(holders: _*), withItem(item))
+
+            val text = Option(createView.getElementById("documentIdentifier-hint"))
+            text mustBe None
+          }
+        }
+
+        "display hint text on the Document Identifier field for that auth code" when {
+          "user has selected one auth codes that requiring hint text" in {
+            val authCode1 = "AEOF"
+            val holders = List(DeclarationHolder(Some(authCode1), Some(Eori("GB123456789012")), Some(EoriSource.OtherEori)))
+            implicit val request = withRequest(declarationType, withDeclarationHolders(holders: _*), withItem(item))
+
+            val text = createView.getElementById("documentIdentifier-hint").getElementsByClass("govuk-hint").get(0).text()
+            val expectedAuthCodeHintText = s"${hintPrefix}${hintSeparator}" + messages(s"${prefix}.${authCode1}.hint")
+            text mustBe expectedAuthCodeHintText
+          }
+        }
+
+        "display 2 hint texts on the Document Identifier field for those auth codes" when {
+          "user has selected two auth codes that requiring hint text" in {
+            val authCodes = List("AEOF", "TEA")
+            val holders = authCodes.map(authCode => DeclarationHolder(Some(authCode), Some(Eori("GB123456789012")), Some(EoriSource.OtherEori)))
+            implicit val request = withRequest(declarationType, withDeclarationHolders(holders: _*), withItem(item))
+
+            val text = createView.getElementById("documentIdentifier-hint").getElementsByClass("govuk-hint").get(0).text()
+
+            val codeHints = authCodes.map(authCode => messages(s"${prefix}.${authCode}.hint")).mkString(hintSeparator)
+            text mustBe s"${hintPrefix}${hintSeparator}${codeHints}"
+          }
+        }
+
+        "display 3 hint texts on the Document Identifier field for those auth codes" when {
+          "user has selected three auth codes that requiring hint text" in {
+            val authCodes = List("AEOF", "TEA", "SIVA")
+            val holders = authCodes.map(authCode => DeclarationHolder(Some(authCode), Some(Eori("GB123456789012")), Some(EoriSource.OtherEori)))
+            implicit val request = withRequest(declarationType, withDeclarationHolders(holders: _*), withItem(item))
+
+            val text = createView.getElementById("documentIdentifier-hint").getElementsByClass("govuk-hint").get(0).text()
+
+            val codeHints = authCodes.map(authCode => messages(s"${prefix}.${authCode}.hint")).mkString(hintSeparator)
+            text mustBe s"${hintPrefix}${hintSeparator}${codeHints}"
+          }
+        }
+
+        "display 3 hint texts on the Document Identifier field for the first 3 auth codes" when {
+          "user has selected more than three auth codes that requiring hint text" in {
+            val authCodes = List("AEOF", "TEA", "SIVA", "DPO")
+            val holders = authCodes.map(authCode => DeclarationHolder(Some(authCode), Some(Eori("GB123456789012")), Some(EoriSource.OtherEori)))
+            implicit val request = withRequest(declarationType, withDeclarationHolders(holders: _*), withItem(item))
+
+            val text = createView.getElementById("documentIdentifier-hint").getElementsByClass("govuk-hint").get(0).text()
+
+            val codeHints = authCodes.take(3).map(authCode => messages(s"${prefix}.${authCode}.hint")).mkString(hintSeparator)
+            text mustBe s"${hintPrefix}${hintSeparator}${codeHints}"
+
+            val excludedAuthHint = messages(s"${prefix}.${authCodes(3)}.hint")
+            text.contains(excludedAuthHint) mustBe false
+          }
+        }
+      }
+    }
 
     allAdditionalDeclarationTypes.filterNot(clearanceJourneys.contains).foreach { declarationType =>
       s"the declaration is of type $declarationType and" when {
