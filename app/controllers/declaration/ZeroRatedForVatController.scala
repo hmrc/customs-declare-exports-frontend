@@ -18,10 +18,9 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
-import forms.declaration.{NactCode, NactCodeFirst, ZeroRatedForVat}
+import forms.declaration.{NactCode, ZeroRatedForVat}
 import models.requests.JourneyRequest
 import models.{DeclarationType, ExportsDeclaration, Mode}
-import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.cache.ExportsCacheService
@@ -44,10 +43,12 @@ class ZeroRatedForVatController @Inject()(
   val validTypes = Seq(DeclarationType.STANDARD)
 
   def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
-    request.cacheModel.itemBy(itemId).flatMap(_.nactExemptionCode) match {
-      case Some(code) => Ok(zero_rated_for_vat(mode, itemId, ZeroRatedForVat.form().withSubmissionErrors.fill(code), eligibleForZeroVat(itemId)))
-      case _          => Ok(zero_rated_for_vat(mode, itemId, ZeroRatedForVat.form().withSubmissionErrors(), eligibleForZeroVat(itemId)))
+    val form = request.cacheModel.itemBy(itemId).flatMap(_.nactExemptionCode) match {
+      case Some(code) => ZeroRatedForVat.form().withSubmissionErrors.fill(code)
+      case _          => ZeroRatedForVat.form().withSubmissionErrors()
     }
+
+    Ok(zero_rated_for_vat(mode, itemId, form, eligibleForZeroVat(itemId)))
   }
 
   def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async { implicit request =>

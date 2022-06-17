@@ -1940,6 +1940,13 @@ declaration.summary.items.item.taricAdditionalCodes = TARIC additional codes
 declaration.summary.items.item.taricAdditionalCodes.change = Change additional TARIC codes for item {0}
 declaration.summary.items.item.nationalAdditionalCodes = National additional codes
 declaration.summary.items.item.nationalAdditionalCodes.change = Change national additional codes for item {0}
+declaration.summary.items.item.zeroRatedForVat = VAT zero rating
+declaration.summary.items.item.zeroRatedForVat.change = Change VAT zero rating for item {0}
+declaration.summary.items.item.zeroRatedForVat.VATZ = Yes
+declaration.summary.items.item.zeroRatedForVat.VATR = No, reduced
+declaration.summary.items.item.zeroRatedForVat.VATE = No, exempt
+declaration.summary.items.item.zeroRatedForVat.VAT_NO = No, paid
+
 declaration.summary.items.item.itemValue = Item value
 declaration.summary.items.item.itemValue.change = Change item value for item {0}
 declaration.summary.items.item.supplementaryUnits = Supplementary units

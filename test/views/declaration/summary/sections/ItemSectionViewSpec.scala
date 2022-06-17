@@ -45,6 +45,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestData {
     withCUSCode(CusCode(Some("321"))),
     withTaricCodes(TaricCode("999"), TaricCode("888")),
     withNactCodes(NactCode("111"), NactCode("222")),
+    withNactExemptionCode(NactCode("VATE")),
     withPackageInformation("PB", 10, "marks"),
     withCommodityMeasure(commodityMeasure),
     withAdditionalInformation("1234", "additionalDescription"),
@@ -169,6 +170,16 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestData {
           row must haveSummaryActionsTexts("site.change", "declaration.summary.items.item.nationalAdditionalCodes.change", "1")
 
           row must haveSummaryActionsHref(NactCodeSummaryController.displayPage(Mode.Normal, itemWithAnswers.id))
+        }
+
+        "have zero rated for vat row with change button" in {
+          val row = view.getElementsByClass("item-1-zeroRatedForVat-row")
+          row must haveSummaryKey(messages("declaration.summary.items.item.zeroRatedForVat"))
+          row must haveSummaryValue(messages("declaration.summary.items.item.zeroRatedForVat.VATE"))
+
+          row must haveSummaryActionsTexts("site.change", "declaration.summary.items.item.zeroRatedForVat.change", "1")
+
+          row must haveSummaryActionsHref(ZeroRatedForVatController.displayPage(Mode.Normal, itemWithAnswers.id))
         }
 
         "have statistical item value with change button" in {
@@ -335,6 +346,15 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestData {
           row mustNot haveSummaryActionsHref(NactCodeSummaryController.displayPage(Mode.Normal, itemWithAnswers.id))
         }
 
+        "have zero rated for vat row with change button" in {
+          val row = view.getElementsByClass("item-1-zeroRatedForVat-row")
+          row must haveSummaryKey(messages("declaration.summary.items.item.zeroRatedForVat"))
+          row must haveSummaryValue(messages("declaration.summary.items.item.zeroRatedForVat.VATE"))
+
+          row mustNot haveSummaryActionsText("site.change declaration.summary.items.item.zeroRatedForVat.change")
+          row mustNot haveSummaryActionsHref(ZeroRatedForVatController.displayPage(Mode.Normal, itemWithAnswers.id))
+        }
+
         "have statistical item value with change button" in {
           val row = view.getElementsByClass("item-1-itemValue-row")
           row must haveSummaryKey(messages("declaration.summary.items.item.itemValue"))
@@ -484,6 +504,15 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestData {
 
           row mustNot haveSummaryActionsText("site.change declaration.summary.items.item.nationalAdditionalCodes.change")
           row mustNot haveSummaryActionsHref(NactCodeSummaryController.displayPage(Mode.Normal, itemWithAnswers.id))
+        }
+
+        "have zero rated for vat row with change button" in {
+          val row = view.getElementsByClass("item-1-zeroRatedForVat-row")
+          row must haveSummaryKey(messages("declaration.summary.items.item.zeroRatedForVat"))
+          row must haveSummaryValue(messages("declaration.summary.items.item.zeroRatedForVat.VATE"))
+
+          row mustNot haveSummaryActionsText("site.change declaration.summary.items.item.zeroRatedForVat.change")
+          row mustNot haveSummaryActionsHref(ZeroRatedForVatController.displayPage(Mode.Normal, itemWithAnswers.id))
         }
 
         "have statistical item value with change button" in {

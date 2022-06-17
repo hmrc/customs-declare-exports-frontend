@@ -69,8 +69,10 @@ class TaricCodeSummaryController @Inject()(
 
   private def eligibleForZeroVat(implicit request: JourneyRequest[_]): Boolean =
     request.cacheModel.natureOfTransaction match {
-      case Some(NatureOfTransaction(`Sale`)) if request.declarationType == DeclarationType.STANDARD => true
-      case _                                                                                        => false
+      case Some(NatureOfTransaction(`Sale`)) | Some(NatureOfTransaction(`BusinessPurchase`)) =>
+        request.declarationType == DeclarationType.STANDARD
+      case _ =>
+        false
     }
 
   private def addYesNoForm: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.taricAdditionalCodes.add.answer.empty")

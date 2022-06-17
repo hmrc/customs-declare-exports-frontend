@@ -20,9 +20,10 @@ import controllers.actions.{AuthAction, JourneyAction}
 import controllers.helpers.MultipleItemsHelper
 import controllers.navigation.Navigator
 import forms.declaration.TaricCode.taricCodeLimit
-import forms.declaration.{TaricCode, TaricCodeFirst}
+import forms.declaration.{NatureOfTransaction, TaricCode, TaricCodeFirst}
+import forms.declaration.NatureOfTransaction._
 import models.requests.JourneyRequest
-import models.{ExportsDeclaration, Mode}
+import models.{DeclarationType, ExportsDeclaration, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
@@ -83,7 +84,13 @@ class TaricCodeAddController @Inject()(
 
       case None =>
         updateExportsCache(itemId, Seq.empty)
-          .map(_ => navigator.continueTo(mode, controllers.declaration.routes.NactCodeSummaryController.displayPage(_, itemId)))
+          .map(
+            _ =>
+              navigator.continueTo(mode, {
+                if (eligibleForZeroVat) controllers.declaration.routes.ZeroRatedForVatController.displayPage(_, itemId)
+                else controllers.declaration.routes.NactCodeSummaryController.displayPage(_, itemId)
+              })
+          )
     }
 
   private def saveAdditionalTaricCode(mode: Mode, itemId: String, boundForm: Form[TaricCode], cachedData: Seq[TaricCode])(
@@ -100,4 +107,12 @@ class TaricCodeAddController @Inject()(
 
   private def updateExportsCache(itemId: String, updatedCache: Seq[TaricCode])(implicit r: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
     updateDeclarationFromRequest(model => model.updatedItem(itemId, _.copy(taricCodes = Some(updatedCache.toList))))
+
+  private def eligibleForZeroVat(implicit request: JourneyRequest[_]): Boolean =
+    request.cacheModel.natureOfTransaction match {
+      case Some(NatureOfTransaction(`Sale`)) | Some(NatureOfTransaction(`BusinessPurchase`)) =>
+        request.declarationType == DeclarationType.STANDARD
+      case _ =>
+        false
+    }
 }

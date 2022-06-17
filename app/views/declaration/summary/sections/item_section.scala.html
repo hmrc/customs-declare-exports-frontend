@@ -238,6 +238,26 @@
             ))
         )
     ),
+    item.nactExemptionCode.map( nactCode =>
+        SummaryListRow(
+            classes = s"item-${item.sequenceId}-zeroRatedForVat-row",
+            key = Key(
+                content = Text(messages("declaration.summary.items.item.zeroRatedForVat"))
+            ),
+            value = Value(
+                content = Text(messages(s"declaration.summary.items.item.zeroRatedForVat.${nactCode.nactCode}"))
+            ),
+            actions = actions(Actions(
+                items = Seq(
+                    actionItem(
+                        href = routes.ZeroRatedForVatController.displayPage(mode, item.id).url,
+                        content = HtmlContent(linkContent(messages("site.change"))),
+                        visuallyHiddenText = Some(messages("declaration.summary.items.item.zeroRatedForVat.change", item.sequenceId))
+                    )
+                )
+            ))
+        )
+    ),
     item.statisticalValue.map(statisticalValue =>
         SummaryListRow(
             classes = s"item-${item.sequenceId}-itemValue-row",

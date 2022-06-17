@@ -18,7 +18,7 @@ package controllers.declaration
 
 import base.ControllerSpec
 import forms.common.YesNoAnswer
-import forms.declaration.NatureOfTransaction.{NationalPurposes, Sale}
+import forms.declaration.NatureOfTransaction.{BusinessPurchase, NationalPurposes, Sale}
 import forms.declaration.TaricCode
 import models.{DeclarationType, Mode}
 import org.mockito.ArgumentCaptor
@@ -147,6 +147,18 @@ class TaricCodeSummaryControllerSpec extends ControllerSpec with OptionValues {
             val item = anItem(withTaricCodes(taricCode))
 
             withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item), withNatureOfTransaction(Sale)))
+
+            val requestBody = Seq("yesNo" -> "No")
+            val result = controller.submitForm(Mode.Normal, item.id)(postRequestAsFormUrlEncoded(requestBody: _*))
+
+            await(result) mustBe aRedirectToTheNextPage
+            thePageNavigatedTo mustBe controllers.declaration.routes.ZeroRatedForVatController.displayPage(Mode.Normal, item.id)
+          }
+          "user has answered business purchase transaction" in {
+            val taricCode = TaricCode("QWER")
+            val item = anItem(withTaricCodes(taricCode))
+
+            withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item), withNatureOfTransaction(BusinessPurchase)))
 
             val requestBody = Seq("yesNo" -> "No")
             val result = controller.submitForm(Mode.Normal, item.id)(postRequestAsFormUrlEncoded(requestBody: _*))
