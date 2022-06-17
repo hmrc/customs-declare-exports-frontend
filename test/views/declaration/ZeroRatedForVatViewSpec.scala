@@ -19,6 +19,7 @@ package views.declaration
 import base.Injector
 import controllers.declaration.routes
 import forms.declaration.NactCode
+import forms.declaration.ZeroRatedForVat._
 import models.DeclarationType._
 import models.Mode
 import models.requests.JourneyRequest
@@ -66,25 +67,23 @@ class ZeroRatedForVatViewSpec extends UnitViewSpec with Stubs with Injector {
 
       "display radio buttons" which {
         "have 'VatZeroRatedYes' option" in {
-          view.getElementsByAttributeValue("for", "VatZeroRatedYes") must containMessageForElements(
-            "declaration.zeroRatedForVat.radio.VatZeroRatedYes"
-          )
+          view.getElementsByAttributeValue("for", VatZeroRatedYes) must containMessageForElements("declaration.zeroRatedForVat.radio.VatZeroRatedYes")
         }
 
         "have 'VatZeroRatedReduced' option" in {
-          view.getElementsByAttributeValue("for", "VatZeroRatedReduced") must containMessageForElements(
+          view.getElementsByAttributeValue("for", VatZeroRatedReduced) must containMessageForElements(
             "declaration.zeroRatedForVat.radio.VatZeroRatedReduced"
           )
         }
 
         "have 'VatZeroRatedExempt' option" in {
-          view.getElementsByAttributeValue("for", "VatZeroRatedExempt") must containMessageForElements(
+          view.getElementsByAttributeValue("for", VatZeroRatedExempt) must containMessageForElements(
             "declaration.zeroRatedForVat.radio.VatZeroRatedExempt"
           )
         }
 
         "have 'VatZeroRatedPaid' option" in {
-          view.getElementsByAttributeValue("for", "VatZeroRatedPaid") must containMessageForElements(
+          view.getElementsByAttributeValue("for", VatZeroRatedPaid) must containMessageForElements(
             "declaration.zeroRatedForVat.radio.VatZeroRatedPaid"
           )
         }

@@ -26,7 +26,7 @@ import controllers.helpers._
 import controllers.routes.{ChoiceController, RejectedNotificationsController, SubmissionsController}
 import forms.Choice.AllowedChoiceValues
 import forms.declaration.InlandOrBorder.Border
-import forms.declaration.NatureOfTransaction.Sale
+import forms.declaration.NatureOfTransaction.{BusinessPurchase, Sale}
 import forms.declaration.RoutingCountryQuestionYesNo.{ChangeCountryPage, RemoveCountryPage, RoutingCountryQuestionPage}
 import forms.declaration._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.{STANDARD_FRONTIER, STANDARD_PRE_LODGED, SUPPLEMENTARY_SIMPLIFIED}
@@ -396,8 +396,8 @@ class Navigator @Inject()(
 
   private def nactCodeFirstPreviousPage(cacheModel: ExportsDeclaration, mode: Mode, itemId: String): Call =
     cacheModel.natureOfTransaction match {
-      case Some(NatureOfTransaction(`Sale`)) => routes.ZeroRatedForVatController.displayPage(mode, itemId)
-      case _                                 => routes.TaricCodeSummaryController.displayPage(mode, itemId)
+      case Some(NatureOfTransaction(`Sale`) | NatureOfTransaction(`BusinessPurchase`)) => routes.ZeroRatedForVatController.displayPage(mode, itemId)
+      case _                                                                           => routes.TaricCodeSummaryController.displayPage(mode, itemId)
     }
 
   private def declarantIsExporterPreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =

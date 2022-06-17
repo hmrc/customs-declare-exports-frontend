@@ -20,7 +20,7 @@ import base.Injector
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.NactCode
-import forms.declaration.NatureOfTransaction.{HouseRemoval, Sale}
+import forms.declaration.NatureOfTransaction.{BusinessPurchase, HouseRemoval, Sale}
 import models.DeclarationType._
 import models.{DeclarationType, Mode}
 import models.requests.JourneyRequest
@@ -79,6 +79,17 @@ class NactCodesViewSpec extends UnitViewSpec with ExportsTestData with Stubs wit
 
           val view = createView(YesNoAnswer.form(), List.empty)(
             journeyRequest(aDeclaration(withType(DeclarationType.STANDARD), withNatureOfTransaction(Sale)))
+          )
+
+          val backButton = view.getElementById("back-link")
+          backButton.getElementById("back-link") must haveHref(
+            controllers.declaration.routes.ZeroRatedForVatController.displayPage(Mode.Normal, itemId)
+          )
+        }
+        "business purchase answered to nature-of-transaction" in {
+
+          val view = createView(YesNoAnswer.form(), List.empty)(
+            journeyRequest(aDeclaration(withType(DeclarationType.STANDARD), withNatureOfTransaction(BusinessPurchase)))
           )
 
           val backButton = view.getElementById("back-link")

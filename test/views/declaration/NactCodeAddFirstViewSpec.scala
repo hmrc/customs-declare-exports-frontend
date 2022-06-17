@@ -20,7 +20,7 @@ import base.Injector
 import config.AppConfig
 import controllers.declaration.routes.{TaricCodeSummaryController, ZeroRatedForVatController}
 import forms.declaration.NactCodeFirst
-import forms.declaration.NatureOfTransaction.{BusinessPurchase, Sale}
+import forms.declaration.NatureOfTransaction.{BusinessPurchase, Construction, Sale}
 import models.requests.JourneyRequest
 import models.{DeclarationType, Mode}
 import org.jsoup.nodes.Document
@@ -76,9 +76,16 @@ class NactCodeAddFirstViewSpec extends UnitViewSpec with ExportsTestData with St
           val backLink = view.getElementById("back-link")
           backLink.getElementById("back-link") must haveHref(ZeroRatedForVatController.displayPage(Mode.Normal, itemId))
         }
-        "answered other nature of transaction" in {
+        "answered business purchase nature of transaction" in {
 
           val view = createView()(journeyRequest(aDeclaration(withType(DeclarationType.STANDARD), withNatureOfTransaction(BusinessPurchase))))
+
+          val backLink = view.getElementById("back-link")
+          backLink.getElementById("back-link") must haveHref(ZeroRatedForVatController.displayPage(Mode.Normal, itemId))
+        }
+        "answered other nature of transaction" in {
+
+          val view = createView()(journeyRequest(aDeclaration(withType(DeclarationType.STANDARD), withNatureOfTransaction(Construction))))
 
           val backLink = view.getElementById("back-link")
           backLink.getElementById("back-link") must haveHref(TaricCodeSummaryController.displayPage(Mode.Normal, itemId))

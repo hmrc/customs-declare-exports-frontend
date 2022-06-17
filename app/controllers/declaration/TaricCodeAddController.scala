@@ -110,7 +110,7 @@ class TaricCodeAddController @Inject()(
 
   private def eligibleForZeroVat(implicit request: JourneyRequest[_]): Boolean =
     request.cacheModel.natureOfTransaction match {
-      case Some(NatureOfTransaction(`Sale`)) | Some(NatureOfTransaction(`BusinessPurchase`)) =>
+      case Some(NatureOfTransaction(`Sale`) | NatureOfTransaction(`BusinessPurchase`)) =>
         request.declarationType == DeclarationType.STANDARD
       case _ =>
         false

@@ -22,6 +22,7 @@ import forms.declaration.{NactCode, ZeroRatedForVat}
 import models.requests.JourneyRequest
 import models.{DeclarationType, ExportsDeclaration, Mode}
 import play.api.i18n.I18nSupport
+import play.api.libs.json.Json
 import play.api.mvc._
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
@@ -44,8 +45,14 @@ class ZeroRatedForVatController @Inject()(
 
   def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
     val form = request.cacheModel.itemBy(itemId).flatMap(_.nactExemptionCode) match {
-      case Some(code) => ZeroRatedForVat.form().withSubmissionErrors.fill(code)
-      case _          => ZeroRatedForVat.form().withSubmissionErrors()
+      case Some(code) => {
+        println(".<<>>>" + code)
+        println(".<<>>>" + Json.toJson(code))
+        println("++++" + ZeroRatedForVat.form().withSubmissionErrors.fill(code))
+
+        ZeroRatedForVat.form().fill(code).withSubmissionErrors
+      }
+      case _ => ZeroRatedForVat.form().withSubmissionErrors()
     }
 
     Ok(zero_rated_for_vat(mode, itemId, form, eligibleForZeroVat(itemId)))

@@ -36,7 +36,6 @@
     paragraphBody: paragraphBody,
     errorSummary: errorSummary,
     sectionHeader: sectionHeader,
-    exportsInputText: exportsInputText,
     tariffExpander: tariffExpander,
     saveButtons: saveButtons,
     formHelper: FormWithCSRF,
@@ -56,30 +55,30 @@
             name = NactCode.nactCodeKey,
             items = Seq(
                 RadioItem(
-                    id = Some("VatZeroRatedYes"),
+                    id = Some(VatZeroRatedYes.toString),
                     value = Some(VatZeroRatedYes.toString),
                     content = Text(messages("declaration.zeroRatedForVat.radio.VatZeroRatedYes")),
-                    checked = form("zeroRatedForVat").value.contains(VatZeroRatedYes.toString)
+                    checked = form(NactCode.nactCodeKey).value.contains(VatZeroRatedYes.toString)
                 ),
                 RadioItem(
-                    id = Some("VatZeroRatedReduced"),
+                    id = Some(VatZeroRatedReduced.toString),
                     value = Some(VatZeroRatedReduced.toString),
                     content = Text(messages("declaration.zeroRatedForVat.radio.VatZeroRatedReduced")),
                     hint = Some(Hint(content = Text(messages("declaration.zeroRatedForVat.radio.VatZeroRatedReduced.hint")))),
-                    checked = form("zeroRatedForVat").value.contains(VatZeroRatedReduced.toString)
+                    checked = form(NactCode.nactCodeKey).value.contains(VatZeroRatedReduced.toString)
                 ),
                 RadioItem(
-                    id = Some("VatZeroRatedExempt"),
+                    id = Some(VatZeroRatedExempt.toString),
                     value = Some(VatZeroRatedExempt.toString),
                     content = Text(messages("declaration.zeroRatedForVat.radio.VatZeroRatedExempt")),
                     hint = Some(Hint(content = Text(messages("declaration.zeroRatedForVat.radio.VatZeroRatedExempt.hint")))),
-                    checked = form("zeroRatedForVat").value.contains(VatZeroRatedExempt.toString)
+                    checked = form(NactCode.nactCodeKey).value.contains(VatZeroRatedExempt.toString)
                 ),
                 RadioItem(
-                    id = Some("VatZeroRatedPaid"),
+                    id = Some(VatZeroRatedPaid.toString),
                     value = Some(VatZeroRatedPaid.toString),
                     content = Text(messages(s"declaration.zeroRatedForVat.radio.VatZeroRatedPaid")),
-                    checked = form("zeroRatedForVat").value.contains(VatZeroRatedPaid.toString)
+                    checked = form(NactCode.nactCodeKey).value.contains(VatZeroRatedPaid.toString)
                 )
             ),
             errorMessage = form("zeroRatedForVat").error.map(err => ErrorMessage(content = Text(messages("declaration.zeroRatedForVat.error"))))
