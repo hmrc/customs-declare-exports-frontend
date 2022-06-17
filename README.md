@@ -42,8 +42,6 @@ The list of feature flags and what they are responsible for:
 
 `secureMessagingInbox = [disabled / sfus / exports]` - Controls which Secure Messaging Inbox is used - none, the one embedded into exports service, or redirects to inbox in Secure File Upload Service.
 
-`queryNotificationMessage = [enabled/disabled]` - Controls the content version of */submissions* page.
-
 `use-improved-error-messages = [true/false]` - When enabled, DMS errors have descriptions made by Exports team designers. Otherwise, they have default CDS descriptions.
 
 ### Scalastyle

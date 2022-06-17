@@ -16,7 +16,6 @@
 
 package controllers
 
-import config.featureFlags.QueryNotificationMessageConfig
 import connectors.CustomsDeclareExportsConnector
 import controllers.actions.{AuthAction, VerifiedEmailAction}
 import play.api.i18n.I18nSupport
@@ -32,8 +31,6 @@ class DeclarationDetailsController @Inject()(
   verifyEmail: VerifiedEmailAction,
   customsDeclareExportsConnector: CustomsDeclareExportsConnector,
   mcc: MessagesControllerComponents,
-  queryNotificationMessageConfig: QueryNotificationMessageConfig,
-  declarationInformationPage: declaration_information,
   declarationDetailsPage: declaration_details
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
@@ -42,8 +39,7 @@ class DeclarationDetailsController @Inject()(
     customsDeclareExportsConnector.findSubmission(submissionId).flatMap {
       case Some(submission) =>
         customsDeclareExportsConnector.findNotifications(submissionId).map { notifications =>
-          if (queryNotificationMessageConfig.isQueryNotificationMessageEnabled) Ok(declarationDetailsPage(submission, notifications))
-          else Ok(declarationInformationPage(submission, notifications))
+          Ok(declarationDetailsPage(submission, notifications))
         }
 
       case _ => Future.successful(Redirect(routes.SubmissionsController.displayListOfSubmissions()))
