@@ -14,22 +14,17 @@
  * limitations under the License.
  */
 
-package models.declaration.submissions
+package views.helpers
 
-import models.declaration.submissions.Action.defaultDateTimeZone
+import models.declaration.submissions.EnhancedStatus.EnhancedStatus
+import models.declaration.submissions.NotificationSummary
+import play.api.i18n.Messages
 
-import java.time.{ZoneId, ZonedDateTime}
-import play.api.libs.json.Json
+object EnhancedStatusTranslator {
 
-case class Action(
-  id: String,
-  requestType: RequestType,
-  requestTimestamp: ZonedDateTime = ZonedDateTime.now(defaultDateTimeZone),
-  notifications: Option[Seq[NotificationSummary]] = None
-)
+  def asText(status: EnhancedStatus)(implicit messages: Messages): String =
+    messages(s"submission.enhancedStatus.${status.toString}")
 
-object Action {
-  implicit val format = Json.format[Action]
-
-  val defaultDateTimeZone: ZoneId = ZoneId.of("UTC")
+  def asText(notification: NotificationSummary)(implicit messages: Messages): String =
+    asText(notification.enhancedStatus)
 }

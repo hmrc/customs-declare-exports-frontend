@@ -16,20 +16,17 @@
 
 package models.declaration.submissions
 
-import models.declaration.submissions.Action.defaultDateTimeZone
-
-import java.time.{ZoneId, ZonedDateTime}
+import models.declaration.submissions.EnhancedStatus.EnhancedStatus
 import play.api.libs.json.Json
 
-case class Action(
-  id: String,
-  requestType: RequestType,
-  requestTimestamp: ZonedDateTime = ZonedDateTime.now(defaultDateTimeZone),
-  notifications: Option[Seq[NotificationSummary]] = None
-)
+import java.time.ZonedDateTime
+import java.util.UUID
 
-object Action {
-  implicit val format = Json.format[Action]
+case class NotificationSummary(notificationId: UUID, dateTimeIssued: ZonedDateTime, enhancedStatus: EnhancedStatus)
+    extends Ordered[NotificationSummary] {
+  override def compare(that: NotificationSummary): Int = dateTimeIssued.compareTo(that.dateTimeIssued)
+}
 
-  val defaultDateTimeZone: ZoneId = ZoneId.of("UTC")
+object NotificationSummary {
+  implicit val formats = Json.format[NotificationSummary]
 }

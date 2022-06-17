@@ -21,7 +21,7 @@ import controllers.actions.{AuthAction, VerifiedEmailAction}
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import views.html.{declaration_details, declaration_information}
+import views.html.declaration_details
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -36,13 +36,11 @@ class DeclarationDetailsController @Inject()(
     extends FrontendController(mcc) with I18nSupport {
 
   def displayPage(submissionId: String): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
-    customsDeclareExportsConnector.findSubmission(submissionId).flatMap {
+    customsDeclareExportsConnector.findSubmission(submissionId).map {
       case Some(submission) =>
-        customsDeclareExportsConnector.findNotifications(submissionId).map { notifications =>
-          Ok(declarationDetailsPage(submission, notifications))
-        }
-
-      case _ => Future.successful(Redirect(routes.SubmissionsController.displayListOfSubmissions()))
+        Ok(declarationDetailsPage(submission))
+      case _ =>
+        Redirect(routes.SubmissionsController.displayListOfSubmissions())
     }
   }
 }

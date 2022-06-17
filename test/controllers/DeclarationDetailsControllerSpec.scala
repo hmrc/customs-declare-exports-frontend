@@ -32,7 +32,7 @@ import org.mockito.stubbing.OngoingStubbing
 import org.scalatest.BeforeAndAfterEach
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import views.html.{declaration_details, declaration_information}
+import views.html.declaration_details
 
 class DeclarationDetailsControllerSpec extends ControllerWithoutFormSpec with BeforeAndAfterEach {
 
@@ -62,7 +62,7 @@ class DeclarationDetailsControllerSpec extends ControllerWithoutFormSpec with Be
     super.beforeEach()
 
     authorizedUser()
-    when(declarationDetailsPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(declarationDetailsPage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit =
@@ -72,7 +72,6 @@ class DeclarationDetailsControllerSpec extends ControllerWithoutFormSpec with Be
 
     "return 200 (OK)" when {
       val submissionCaptor: ArgumentCaptor[Submission] = ArgumentCaptor.forClass(classOf[Submission])
-      val notificationsCaptor: ArgumentCaptor[Seq[Notification]] = ArgumentCaptor.forClass(classOf[Seq[Notification]])
 
       "submission but no notifications are provided for the Declaration" in {
         responsesToReturn(isQueryNotificationMessageEnabled = true, List.empty)
@@ -80,18 +79,15 @@ class DeclarationDetailsControllerSpec extends ControllerWithoutFormSpec with Be
         val result = controller.displayPage(actionId)(getRequest())
         status(result) mustBe OK
 
-        verify(declarationDetailsPage).apply(submissionCaptor.capture(), notificationsCaptor.capture())(any(), any())
+        verify(declarationDetailsPage).apply(submissionCaptor.capture())(any(), any())
         submissionCaptor.getValue mustBe submission
-        notificationsCaptor.getValue mustBe List.empty
       }
 
       def responsesToReturn(
         isQueryNotificationMessageEnabled: Boolean,
         notifications: Seq[Notification] = List(notification)
-      ): OngoingStubbing[Future[Seq[Notification]]] = {
+      ): OngoingStubbing[Future[Option[Submission]]] =
         when(mockCustomsDeclareExportsConnector.findSubmission(any())(any(), any())).thenReturn(Future.successful(Some(submission)))
-        when(mockCustomsDeclareExportsConnector.findNotifications(any())(any(), any())).thenReturn(Future.successful(notifications))
-      }
     }
 
     "return 303 (SEE_OTHER)" when {
