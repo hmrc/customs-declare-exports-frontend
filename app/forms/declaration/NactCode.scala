@@ -16,10 +16,11 @@
 
 package forms.declaration
 import forms.DeclarationPage
+import forms.MappingHelper.requiredRadio
 import models.DeclarationType.DeclarationType
 import models.viewmodels.TariffContentKey
 import play.api.data.Forms.text
-import play.api.data.{Form, Forms}
+import play.api.data.{Form, Forms, Mapping}
 import play.api.libs.json.Json
 import utils.validators.forms.FieldValidator._
 
@@ -30,6 +31,7 @@ object NactCode extends DeclarationPage {
   implicit val format = Json.format[NactCode]
 
   val nactCodeKey = "nactCode"
+
   val nactCodeLength = 4
   val nactCodeLimit = 99
 
@@ -45,4 +47,26 @@ object NactCode extends DeclarationPage {
 
   override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
     Seq(TariffContentKey("tariff.declaration.item.nationalAdditionalCode.common"))
+}
+
+object ZeroRatedForVat extends DeclarationPage {
+
+  implicit val format = Json.format[NactCode]
+
+  val VatZeroRatedYes = "VATZ"
+  val VatZeroRatedReduced = "VATR"
+  val VatZeroRatedExempt = "VATE"
+  val VatZeroRatedPaid = "VAT_NO"
+
+  val allowedValues = Seq(VatZeroRatedYes, VatZeroRatedReduced, VatZeroRatedExempt, VatZeroRatedPaid)
+
+  val mapping: Mapping[NactCode] = Forms.mapping(
+    NactCode.nactCodeKey -> requiredRadio("declaration.zeroRatedForVat.error")
+      .verifying("declaration.zeroRatedForVat.error", isContainedIn(allowedValues))
+  )(NactCode.apply)(NactCode.unapply)
+
+  def form(): Form[NactCode] = Form(mapping)
+
+  override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
+    Seq(TariffContentKey("tariff.declaration.item.zeroRatedForVat.common"))
 }

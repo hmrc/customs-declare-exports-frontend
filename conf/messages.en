@@ -312,6 +312,8 @@ tariff.declaration.item.additionalTaricCode.common.text = This entry will comple
 tariff.declaration.item.additionalTaricCode.common.linkText.0 = data element 6/16 - Commodity Code: TARIC Additional Code (opens in new tab)
 tariff.declaration.item.nationalAdditionalCode.common.text = This entry will complete<br>{0}.
 tariff.declaration.item.nationalAdditionalCode.common.linkText.0 = data element 6/17 - National Additional Code (opens in new tab)
+tariff.declaration.item.zeroRatedForVat.common.text = This entry will send code VATZ for ‘Yes’, VATR for ‘Reduced’, or VATE for ‘Exempt’ to complete {0}
+tariff.declaration.item.zeroRatedForVat.common.linkText.0 = data element 6/17 - National Additional Code (opens in new tab)
 tariff.declaration.item.statisticalValue.common.text = For full details about how to calculate this value go to {0}.
 tariff.declaration.item.statisticalValue.common.linkText.0 = data element 8/6 - Statistical Value (opens in new tab)
 tariff.declaration.item.packageInformation.1.common.text = For details about package type, go to<br>{0}.
@@ -1528,6 +1530,23 @@ declaration.nationalAdditionalCode.addfirst.body.link = Appendix 19 (opens in ne
 declaration.nationalAdditionalCode.addfirst.hint = Codes must be 4 characters, starting with a letter.
 declaration.nationalAdditionalCode.addfirst.label = National additional code
 
+declaration.zeroRatedForVat.title = Are these goods being zero-rated for VAT?
+declaration.zeroRatedForVat.body.text = To confirm you can apply a zero rating, see {0}.
+declaration.zeroRatedForVat.body.linkText = VAT Notice 703 (opens in new tab)
+declaration.zeroRatedForVat.body.restricted.text = Note that zero-rating for VAT (code ‘VATZ’ in data element 6/17) is either not allowed or restricted for this procedure code. Check the {0} for more details.
+declaration.zeroRatedForVat.body.restricted.linkText = appendix 1 guide for your procedure code (opens in new tab)
+declaration.zeroRatedForVat.radio.VatZeroRatedYes = Yes
+declaration.zeroRatedForVat.radio.VatZeroRatedReduced = No, a reduced VAT 5% duty rate applies in the UK and is being paid
+declaration.zeroRatedForVat.radio.VatZeroRatedReduced.hint = For example, children’s car seats
+declaration.zeroRatedForVat.radio.VatZeroRatedExempt = No, the goods are VAT exempt in the UK anyway
+declaration.zeroRatedForVat.radio.VatZeroRatedExempt.hint = For example, children’s clothes
+declaration.zeroRatedForVat.radio.VatZeroRatedPaid = No, 20% VAT is being paid in the UK on these goods
+declaration.zeroRatedForVat.expander = This entry will send code VATZ for ‘Yes’, VATR for ‘Reduced’, or VATE for ‘Exempt’ to complete
+declaration.zeroRatedForVat.expander.linkText = data element 6/17 - National Additional Code (opens in new tab).
+
+
+
+
 declaration.nationalAdditionalCode.addnext.header = What is the next national additional code?
 declaration.nationalAdditionalCode.remove.header = Are you sure you want to remove this national additional code?
 
@@ -1921,6 +1940,13 @@ declaration.summary.items.item.taricAdditionalCodes = TARIC additional codes
 declaration.summary.items.item.taricAdditionalCodes.change = Change additional TARIC codes for item {0}
 declaration.summary.items.item.nationalAdditionalCodes = National additional codes
 declaration.summary.items.item.nationalAdditionalCodes.change = Change national additional codes for item {0}
+declaration.summary.items.item.zeroRatedForVat = VAT zero rating
+declaration.summary.items.item.zeroRatedForVat.change = Change VAT zero rating for item {0}
+declaration.summary.items.item.zeroRatedForVat.VATZ = Yes
+declaration.summary.items.item.zeroRatedForVat.VATR = No, reduced
+declaration.summary.items.item.zeroRatedForVat.VATE = No, exempt
+declaration.summary.items.item.zeroRatedForVat.VAT_NO = No, paid
+
 declaration.summary.items.item.itemValue = Item value
 declaration.summary.items.item.itemValue.change = Change item value for item {0}
 declaration.summary.items.item.supplementaryUnits = Supplementary units

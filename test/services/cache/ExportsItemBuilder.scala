@@ -89,6 +89,9 @@ trait ExportsItemBuilder {
   def withNactCodes(codes: List[NactCode]): ItemModifier =
     _.copy(nactCodes = Some(codes))
 
+  def withNactExemptionCode(code: NactCode): ItemModifier =
+    _.copy(nactExemptionCode = Some(code))
+
   def withStatisticalValue(statisticalValue: String = ""): ItemModifier =
     withStatisticalValue(StatisticalValue(statisticalValue))
 

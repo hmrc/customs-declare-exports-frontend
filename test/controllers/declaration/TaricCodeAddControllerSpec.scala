@@ -17,8 +17,9 @@
 package controllers.declaration
 
 import base.{ControllerSpec, TestHelper}
+import forms.declaration.NatureOfTransaction.{BusinessPurchase, NationalPurposes, Sale}
 import forms.declaration.{TaricCode, TaricCodeFirst}
-import models.Mode
+import models.{DeclarationType, Mode}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -206,6 +207,55 @@ class TaricCodeAddControllerSpec extends ControllerSpec with OptionValues {
 
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe controllers.declaration.routes.NactCodeSummaryController.displayPage(Mode.Normal, item.id)
+        }
+
+      }
+    }
+
+    onJourney(DeclarationType.STANDARD) { request =>
+      "re-direct to next question" when {
+
+        "user submits valid No answer" when {
+          "user has answered sale transaction" in {
+            val item = anItem()
+            withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item), withNatureOfTransaction(Sale)))
+
+            val requestBody = Seq(TaricCodeFirst.hasTaricCodeKey -> "No")
+            val result = controller.submitForm(Mode.Normal, item.id)(postRequestAsFormUrlEncoded(requestBody: _*))
+
+            await(result) mustBe aRedirectToTheNextPage
+            thePageNavigatedTo mustBe controllers.declaration.routes.ZeroRatedForVatController.displayPage(Mode.Normal, item.id)
+          }
+          "user has answered business purchase transaction" in {
+            val item = anItem()
+            withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item), withNatureOfTransaction(BusinessPurchase)))
+
+            val requestBody = Seq(TaricCodeFirst.hasTaricCodeKey -> "No")
+            val result = controller.submitForm(Mode.Normal, item.id)(postRequestAsFormUrlEncoded(requestBody: _*))
+
+            await(result) mustBe aRedirectToTheNextPage
+            thePageNavigatedTo mustBe controllers.declaration.routes.ZeroRatedForVatController.displayPage(Mode.Normal, item.id)
+          }
+          "user has not answered nature of transaction" in {
+            val item = anItem()
+            withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
+
+            val requestBody = Seq(TaricCodeFirst.hasTaricCodeKey -> "No")
+            val result = controller.submitForm(Mode.Normal, item.id)(postRequestAsFormUrlEncoded(requestBody: _*))
+
+            await(result) mustBe aRedirectToTheNextPage
+            thePageNavigatedTo mustBe controllers.declaration.routes.NactCodeSummaryController.displayPage(Mode.Normal, item.id)
+          }
+          "user has answered other nature of transaction" in {
+            val item = anItem()
+            withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item), withNatureOfTransaction(NationalPurposes)))
+
+            val requestBody = Seq(TaricCodeFirst.hasTaricCodeKey -> "No")
+            val result = controller.submitForm(Mode.Normal, item.id)(postRequestAsFormUrlEncoded(requestBody: _*))
+
+            await(result) mustBe aRedirectToTheNextPage
+            thePageNavigatedTo mustBe controllers.declaration.routes.NactCodeSummaryController.displayPage(Mode.Normal, item.id)
+          }
         }
 
       }

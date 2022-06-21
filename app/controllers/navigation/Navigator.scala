@@ -26,6 +26,7 @@ import controllers.helpers._
 import controllers.routes.{ChoiceController, RejectedNotificationsController, SubmissionsController}
 import forms.Choice.AllowedChoiceValues
 import forms.declaration.InlandOrBorder.Border
+import forms.declaration.NatureOfTransaction.{BusinessPurchase, Sale}
 import forms.declaration.RoutingCountryQuestionYesNo.{ChangeCountryPage, RemoveCountryPage, RoutingCountryQuestionPage}
 import forms.declaration._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.{STANDARD_FRONTIER, STANDARD_PRE_LODGED, SUPPLEMENTARY_SIMPLIFIED}
@@ -99,6 +100,7 @@ class Navigator @Inject()(
     case TaricCode                         => routes.TaricCodeSummaryController.displayPage
     case StatisticalValue                  => routes.NactCodeSummaryController.displayPage
     case SupplementaryUnits                => routes.CommodityMeasureController.displayPage
+    case ZeroRatedForVat                   => routes.TaricCodeSummaryController.displayPage
   }
 
   val commonCacheDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode) => Call] = {
@@ -142,7 +144,6 @@ class Navigator @Inject()(
     case PackageInformation => routes.StatisticalValueController.displayPage
     case CusCode            => routes.UNDangerousGoodsCodeController.displayPage
     case NactCode           => routes.NactCodeSummaryController.displayPage
-    case NactCodeFirst      => routes.TaricCodeSummaryController.displayPage
     case CommodityMeasure   => routes.PackageInformationSummaryController.displayPage
     case page               => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on standard")
   }
@@ -170,6 +171,8 @@ class Navigator @Inject()(
     case AdditionalDocumentsRequired                                   => additionalDocumentsSummaryNoWaiverPreviousPage
     case AdditionalDocumentsSummary                                    => additionalDocumentsSummaryNoWaiverPreviousPage
     case AdditionalDocument                                            => additionalDocumentsNoWaiverPreviousPage
+    case NactCodeFirst                                                 => nactCodeFirstPreviousPage
+
   }
 
   val clearance: PartialFunction[DeclarationPage, Mode => Call] = {
@@ -389,6 +392,12 @@ class Navigator @Inject()(
       case _ if isErrorFixInProgress      => Results.Redirect(factory(ErrorFix))
       case _ if req.sourceDecId.isDefined => Results.Redirect(RejectedNotificationsController.displayPage(req.sourceDecId.get))
       case _                              => Results.Redirect(SubmissionsController.displayListOfSubmissions())
+    }
+
+  private def nactCodeFirstPreviousPage(cacheModel: ExportsDeclaration, mode: Mode, itemId: String): Call =
+    cacheModel.natureOfTransaction match {
+      case Some(NatureOfTransaction(`Sale`) | NatureOfTransaction(`BusinessPurchase`)) => routes.ZeroRatedForVatController.displayPage(mode, itemId)
+      case _                                                                           => routes.TaricCodeSummaryController.displayPage(mode, itemId)
     }
 
   private def declarantIsExporterPreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
