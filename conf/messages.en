@@ -1543,6 +1543,7 @@ declaration.zeroRatedForVat.radio.VatZeroRatedExempt.hint = For example, childre
 declaration.zeroRatedForVat.radio.VatZeroRatedPaid = No, 20% VAT is being paid in the UK on these goods
 declaration.zeroRatedForVat.expander = This entry will send code VATZ for ‘Yes’, VATR for ‘Reduced’, or VATE for ‘Exempt’ to complete
 declaration.zeroRatedForVat.expander.linkText = data element 6/17 - National Additional Code (opens in new tab).
+declaration.zeroRatedForVat.error = Declare if these goods are being zero rated for VAT
 
 
 
