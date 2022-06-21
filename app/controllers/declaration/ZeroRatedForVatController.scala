@@ -45,14 +45,8 @@ class ZeroRatedForVatController @Inject()(
 
   def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
     val form = request.cacheModel.itemBy(itemId).flatMap(_.nactExemptionCode) match {
-      case Some(code) => {
-        println(".<<>>>" + code)
-        println(".<<>>>" + Json.toJson(code))
-        println("++++" + ZeroRatedForVat.form().withSubmissionErrors.fill(code))
-
-        ZeroRatedForVat.form().fill(code).withSubmissionErrors
-      }
-      case _ => ZeroRatedForVat.form().withSubmissionErrors()
+      case Some(code) => ZeroRatedForVat.form().fill(code).withSubmissionErrors
+      case _          => ZeroRatedForVat.form().withSubmissionErrors()
     }
 
     Ok(zero_rated_for_vat(mode, itemId, form, eligibleForZeroVat(itemId)))
