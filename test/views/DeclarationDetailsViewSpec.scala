@@ -19,9 +19,9 @@ package views
 import base.{ExportsTestData, Injector, OverridableInjector, RequestBuilder}
 import config.featureFlags._
 import controllers.routes
-import models.declaration.notifications.Notification
-import models.declaration.submissions.SubmissionStatus._
-import models.declaration.submissions.{Submission, SubmissionStatus}
+import models.declaration.submissions.{Action, EnhancedStatus, NotificationSummary, Submission}
+import models.declaration.submissions.EnhancedStatus._
+import models.declaration.submissions.RequestType.SubmissionRequest
 import models.requests.VerifiedEmailRequest
 import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
@@ -29,15 +29,18 @@ import org.mockito.Mockito.when
 import org.scalatest.{Assertion, GivenWhenThen}
 import play.api.inject.bind
 import views.declaration.spec.UnitViewSpec
-import views.helpers.{StatusOfSubmission, ViewDates}
+import views.helpers.{EnhancedStatusTranslator, ViewDates}
 import views.html.declaration_details
 
 import java.time.ZonedDateTime
+import java.util.UUID
 import scala.collection.JavaConverters.asScalaIteratorConverter
 
 class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with Injector {
 
-  private val msgKey = "submissions.declarationDetails"
+  private val keyPrefix = "submission"
+  private val msgKey = s"${keyPrefix}s.declarationDetails"
+  private val statusKey = s"$keyPrefix.enhancedStatus"
 
   private val mrn = "mrn"
   private val now = ZonedDateTime.now
@@ -46,15 +49,15 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
   private val testEmail = "testEmail@mail.org"
 
   private val uuid = "uuid"
-  private val submission = Submission(uuid, "eori", "lrn", Some(mrn), Some("ducr"), Seq.empty)
+  private val submission = Submission(uuid, "eori", "lrn", Some(mrn), Some("ducr"), None, None, Seq.empty)
 
-  private val dmsqry1Notification = Notification("id1", mrn, now, QUERY_NOTIFICATION_MESSAGE, Seq.empty)
-  private val dmsqry2Notification = Notification("id2", mrn, now, QUERY_NOTIFICATION_MESSAGE, Seq.empty)
-  private val dmsdocNotification = Notification("id", mrn, now, ADDITIONAL_DOCUMENTS_REQUIRED, Seq.empty)
-  private val dmsctlNotification = Notification("id", mrn, now, UNDERGOING_PHYSICAL_CHECK, Seq.empty)
-  private val acceptedNotification = Notification("id", mrn, now, ACCEPTED, Seq.empty)
+  private val dmsqry1Notification = NotificationSummary(UUID.randomUUID(), now, QUERY_NOTIFICATION_MESSAGE)
+  private val dmsqry2Notification = NotificationSummary(UUID.randomUUID(), now.plusMinutes(1), QUERY_NOTIFICATION_MESSAGE)
+  private val dmsdocNotification = NotificationSummary(UUID.randomUUID(), now.plusMinutes(2), ADDITIONAL_DOCUMENTS_REQUIRED)
+  private val dmsctlNotification = NotificationSummary(UUID.randomUUID(), now.plusMinutes(3), UNDERGOING_PHYSICAL_CHECK)
+  private val acceptedNotification = NotificationSummary(UUID.randomUUID(), now.plusMinutes(4), RECEIVED)
 
-  private val dmsrejNotification = Notification("id", mrn, now, REJECTED, Seq.empty)
+  private val dmsrejNotification = NotificationSummary(UUID.randomUUID(), now.plusMinutes(5), ERRORS)
 
   // Since the notification list is reverse-ordered (most to least recent) in TimelineEvents...
 
@@ -69,10 +72,29 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
   // 3. button for dmsctlNotification will be a primary button, while button for dmsqry2Notification
   //    will be a secondary button being placed on the timeline after the former.
 
-  private val notifications = List(dmsqry1Notification, dmsqry2Notification, dmsdocNotification, dmsctlNotification, acceptedNotification)
+  private val notificationSummaries = List(dmsqry1Notification, dmsqry2Notification, dmsdocNotification, dmsctlNotification, acceptedNotification)
 
   private def verifiedEmailRequest(email: String = testEmail): VerifiedEmailRequest[_] =
     VerifiedEmailRequest(RequestBuilder.buildAuthenticatedRequest(request, user), email)
+
+  private def createSubmissionWith(status: EnhancedStatus) = {
+    val action = Action("id", SubmissionRequest, now, Some(Seq(NotificationSummary(UUID.randomUUID(), now, status))))
+    Submission(uuid, "eori", "lrn", Some(mrn), Some("ducr"), Some(status), Some(now), Seq(action))
+  }
+
+  private def createSubmissionWith(notificationSummaries: Seq[NotificationSummary]) = {
+    val action = Action("id", SubmissionRequest, now, Some(notificationSummaries))
+    Submission(
+      uuid,
+      "eori",
+      "lrn",
+      Some(mrn),
+      Some("ducr"),
+      notificationSummaries.reverse.headOption.map(_.enhancedStatus),
+      notificationSummaries.headOption.map(_ => now),
+      Seq(action)
+    )
+  }
 
   "Declaration details page" should {
 
@@ -82,7 +104,7 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
     "contain the navigation banner" when {
       "the Secure Messaging feature flag is enabled" in {
         when(mockSecureMessagingConfig.isSecureMessagingEnabled).thenReturn(true)
-        val view = page(submission, notifications)(verifiedEmailRequest(), messages)
+        val view = page(submission)(verifiedEmailRequest(), messages)
 
         val banner = view.getElementById("navigation-banner")
         assert(Option(banner).isDefined && banner.childrenSize == 2)
@@ -97,7 +119,7 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
     "not contain the navigation banner" when {
       "the Secure Messaging feature flag is disabled" in {
         when(mockSecureMessagingConfig.isSecureMessagingEnabled).thenReturn(false)
-        val view = page(submission, notifications)(verifiedEmailRequest(), messages)
+        val view = page(submission)(verifiedEmailRequest(), messages)
         Option(view.getElementById("navigation-banner")) mustBe None
       }
     }
@@ -112,30 +134,29 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
       when(mockEadConfig.isEadEnabled).thenReturn(true)
 
       "contain the PDF-for-EAD link for any accepted notification's status" in {
-        SubmissionStatus.values
+        EnhancedStatus.values
           .filter(eadAcceptableStatuses.contains)
-          .foreach(status => verifyPdfForEadLink(dmsdocNotification.copy(status = status)))
+          .foreach(status => verifyPdfForEadLink(status))
       }
 
       "not contain the PDF-for-EAD link" when {
-
         "the notification's status is not an accepted status" in {
-          SubmissionStatus.values
+          EnhancedStatus.values
             .filterNot(eadAcceptableStatuses.contains)
             .foreach { status =>
-              val view = page(submission, List(dmsdocNotification.copy(status = status)))(verifiedEmailRequest(), messages)
+              val view = page(createSubmissionWith(status))(verifiedEmailRequest(), messages)
               Option(view.getElementById("generate-ead")) mustBe None
             }
         }
 
         "there is no mrn" in {
-          val view = page(submission.copy(mrn = None), notifications)(verifiedEmailRequest(), messages)
+          val view = page(submission.copy(mrn = None))(verifiedEmailRequest(), messages)
           Option(view.getElementById("generate-ead")) mustBe None
         }
       }
 
-      def verifyPdfForEadLink(notification: Notification): Assertion = {
-        val view = page(submission, List(notification))(verifiedEmailRequest(), messages)
+      def verifyPdfForEadLink(status: EnhancedStatus): Assertion = {
+        val view = page(createSubmissionWith(status))(verifiedEmailRequest(), messages)
 
         val declarationLink = view.getElementById("generate-ead")
         declarationLink must containMessage("submissions.generateEAD")
@@ -147,7 +168,7 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
       "not contain the PDF-for-EAD link" in {
         when(mockEadConfig.isEadEnabled).thenReturn(false)
         val page = injector.instanceOf[declaration_details]
-        val view = page(submission, notifications)(verifiedEmailRequest(), messages)
+        val view = page(submission)(verifiedEmailRequest(), messages)
         Option(view.getElementById("generate-ead")) mustBe None
       }
     }
@@ -200,6 +221,37 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
       messages must haveTranslationFor(s"$msgKey.readMoreAboutDecStatus.goodsExamined.paragraph.3")
     }
 
+    "have correct message keys for enhanced statuses" in {
+      messages must haveTranslationFor(s"$statusKey.ADDITIONAL_DOCUMENTS_REQUIRED")
+      messages must haveTranslationFor(s"$statusKey.AMENDED")
+      messages must haveTranslationFor(s"$statusKey.AWAITING_EXIT_RESULTS")
+      messages must haveTranslationFor(s"$statusKey.CANCELLED")
+      messages must haveTranslationFor(s"$statusKey.CLEARED")
+      messages must haveTranslationFor(s"$statusKey.CUSTOMS_POSITION_DENIED")
+      messages must haveTranslationFor(s"$statusKey.CUSTOMS_POSITION_GRANTED")
+      messages must haveTranslationFor(s"$statusKey.DECLARATION_HANDLED_EXTERNALLY")
+      messages must haveTranslationFor(s"$statusKey.EXPIRED_NO_ARRIVAL")
+      messages must haveTranslationFor(s"$statusKey.EXPIRED_NO_DEPARTURE")
+      messages must haveTranslationFor(s"$statusKey.GOODS_ARRIVED")
+      messages must haveTranslationFor(s"$statusKey.GOODS_ARRIVED_MESSAGE")
+      messages must haveTranslationFor(s"$statusKey.GOODS_HAVE_EXITED")
+      messages must haveTranslationFor(s"$statusKey.QUERY_NOTIFICATION_MESSAGE")
+      messages must haveTranslationFor(s"$statusKey.RECEIVED")
+      messages must haveTranslationFor(s"$statusKey.RELEASED")
+      messages must haveTranslationFor(s"$statusKey.UNDERGOING_PHYSICAL_CHECK")
+      messages must haveTranslationFor(s"$statusKey.WITHDRAWN")
+      messages must haveTranslationFor(s"$statusKey.REQUESTED_CANCELLATION")
+      messages must haveTranslationFor(s"$statusKey.UNKNOWN")
+
+      messages must haveTranslationFor(s"$statusKey.CANCELLED.body")
+      messages must haveTranslationFor(s"$statusKey.WITHDRAWN.body")
+      messages must haveTranslationFor(s"$statusKey.EXPIRED_NO_ARRIVAL.body")
+      messages must haveTranslationFor(s"$statusKey.EXPIRED_NO_DEPARTURE.body")
+      messages must haveTranslationFor(s"$statusKey.CLEARED.body")
+      messages must haveTranslationFor(s"$statusKey.RECEIVED.body")
+      messages must haveTranslationFor(s"$statusKey.GOODS_ARRIVED_MESSAGE.body")
+    }
+
     val dummyInboxLink = "dummyInboxLink"
 
     when(mockSecureMessagingInboxConfig.sfusInboxLink).thenReturn(dummyInboxLink)
@@ -216,7 +268,7 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
       )
 
     val page = injector.instanceOf[declaration_details]
-    val view = page(submission, notifications)(verifiedEmailRequest(), messages)
+    val view = page(createSubmissionWith(notificationSummaries))(verifiedEmailRequest(), messages)
 
     "display 'Back' button to the 'Submission list' page" in {
       val backButton = view.getElementById("back-link")
@@ -247,9 +299,9 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
     }
 
     s"contain the uploading-documents link" when {
-      List(ACCEPTED, RECEIVED).foreach { status =>
-        s"notification's status is $status" in {
-          val view = page(submission, List(acceptedNotification.copy(status = status)))(verifiedEmailRequest(), messages)
+      List(GOODS_ARRIVED, RECEIVED).foreach { status =>
+        s"enhanced status is $status" in {
+          val view = page(createSubmissionWith(status))(verifiedEmailRequest(), messages)
 
           val uploadingDocumentsLink = view.getElementById("uploading-documents-link")
           uploadingDocumentsLink must containMessage("submissions.uploading.documents")
@@ -259,17 +311,17 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
     }
 
     s"not contain the uploading-documents link" when {
-      (SubmissionStatus.values &~ Set(ACCEPTED, RECEIVED)).foreach { status =>
+      (EnhancedStatus.values &~ Set(GOODS_ARRIVED, GOODS_ARRIVED_MESSAGE, RECEIVED)).foreach { status =>
         s"notification's status is $status" in {
-          val view = page(submission, List(acceptedNotification.copy(status = status)))(verifiedEmailRequest(), messages)
+          val view = page(createSubmissionWith(status))(verifiedEmailRequest(), messages)
           Option(view.getElementById("uploading-documents-link")) mustBe None
         }
       }
     }
 
-    SubmissionStatus.values.filter(_ != REJECTED) foreach { status =>
+    EnhancedStatus.values.filter(_ != ERRORS) foreach { status =>
       s"contain the view-declaration link when notification's status is ${status}" in {
-        val view = page(submission, List(dmsdocNotification.copy(status = status)))(verifiedEmailRequest(), messages)
+        val view = page(createSubmissionWith(status))(verifiedEmailRequest(), messages)
 
         val declarationLink = view.getElementById("view-declaration")
         declarationLink must containMessage("submissions.viewDeclaration")
@@ -277,8 +329,8 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
       }
     }
 
-    s"not contain the view-declaration link when notification's status is REJECTED" in {
-      val view = page(submission, List(dmsdocNotification.copy(status = REJECTED)))(verifiedEmailRequest(), messages)
+    s"not contain the view-declaration link when notification's status is ERRORS" in {
+      val view = page(createSubmissionWith(ERRORS))(verifiedEmailRequest(), messages)
       Option(view.getElementById("view-declaration")) mustBe None
     }
 
@@ -287,17 +339,17 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
 
       And("the Timeline should display an event for each notification")
       val events = view.getElementsByClass("hmrc-timeline__event")
-      events.size mustBe notifications.size
+      events.size() mustBe notificationSummaries.size
 
-      def dateTimeAsShown(notification: Notification): String =
-        ViewDates.formatDateAtTime(notification.dateTimeIssuedInUK)
+      def dateTimeAsShown(notification: NotificationSummary): String =
+        ViewDates.formatDateAtTime(notification.dateTimeIssued)
 
-      notifications.reverse.zipWithIndex.foreach {
+      notificationSummaries.reverse.zipWithIndex.foreach {
         case (notification, ix) =>
           And("each Timeline event should always include a title")
           val title = events.get(ix).getElementsByTag("h2")
           assert(title.hasClass("hmrc-timeline__event-title"))
-          title.text mustBe StatusOfSubmission.asText(notification)
+          title.text mustBe EnhancedStatusTranslator.asText(notification)
 
           And("a date and time")
           val datetime = events.get(ix).getElementsByTag("time")
@@ -310,37 +362,44 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
 
       "must include one primary button and one secondary button" when {
 
-        "a DMSCTL notification is more recent than a DMSQRY notification" in {
-          val events = eventsOnTimeline(notifications)
-          content(events.get(0)).size mustBe 0
+        "a UNDERGOING_PHYSICAL_CHECK notification is more recent than a QUERY_NOTIFICATION_MESSAGE notification" in {
+          val events = eventsOnTimeline(notificationSummaries)
+
           verifyUploadFilesContent(content(events.get(1)), false)
-          content(events.get(2)).size mustBe 0
           verifyViewQueriesContent(content(events.get(3)), true)
-          content(events.get(4)).size mustBe 0
         }
 
-        "a DMSDOC notification is more recent than a DMSQRY notification" in {
-          val notifications = List(dmsqry2Notification, dmsdocNotification)
+        "a ADDITIONAL_DOCUMENTS_REQUIRED notification is more recent than a QUERY_NOTIFICATION_MESSAGE notification" in {
+          val notifications = List(dmsdocNotification, dmsqry2Notification)
           val events = eventsOnTimeline(notifications)
+
           verifyUploadFilesContent(content(events.get(0)), false)
           verifyViewQueriesContent(content(events.get(1)), true)
         }
 
-        "a DMSQRY notification is more recent than a DMSCTL notification" in {
-          val notifications = List(dmsctlNotification, dmsqry2Notification)
+        "a QUERY_NOTIFICATION_MESSAGE notification is more recent than a UNDERGOING_PHYSICAL_CHECK notification" in {
+          val notifications = List(
+            NotificationSummary(UUID.randomUUID(), now, UNDERGOING_PHYSICAL_CHECK),
+            NotificationSummary(UUID.randomUUID(), now.plusMinutes(1), QUERY_NOTIFICATION_MESSAGE)
+          )
           val events = eventsOnTimeline(notifications)
+
           verifyViewQueriesContent(content(events.get(0)), false)
           verifyUploadFilesContent(content(events.get(1)), true)
         }
 
-        "a DMSQRY notification is more recent than a DMSDOC notification" in {
-          val notifications = List(dmsdocNotification, dmsqry2Notification)
+        "a QUERY_NOTIFICATION_MESSAGE notification is more recent than a ADDITIONAL_DOCUMENTS_REQUIRED notification" in {
+          val notifications = List(
+            NotificationSummary(UUID.randomUUID(), now, ADDITIONAL_DOCUMENTS_REQUIRED),
+            NotificationSummary(UUID.randomUUID(), now.plusMinutes(1), QUERY_NOTIFICATION_MESSAGE)
+          )
           val events = eventsOnTimeline(notifications)
+
           verifyViewQueriesContent(content(events.get(0)), false)
           verifyUploadFilesContent(content(events.get(1)), true)
         }
 
-        "one notification at least is a DMSREJ notification in addition to a DMSQRY notification" in {
+        "one notification at least is a ERRORS notification in addition to a ADDITIONAL_DOCUMENTS_REQUIRED notification" in {
           val notifications = List(dmsqry2Notification, dmsdocNotification, dmsrejNotification)
           val events = eventsOnTimeline(notifications)
           verifyRejectedContent(content(events.get(0)))
@@ -351,7 +410,7 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
 
       "must only include one primary button and no secondary buttons" when {
 
-        "one notification at least is a DMSREJ notification in addition to only DMSCTL and/or DMSDOC notifications" in {
+        "one notification at least is a ERRORS notification in addition to only UNDERGOING_PHYSICAL_CHECK and/or ADDITIONAL_DOCUMENTS_REQUIRED notifications" in {
           val notifications = List(dmsdocNotification, dmsctlNotification, dmsrejNotification)
           val events = eventsOnTimeline(notifications)
           verifyRejectedContent(content(events.get(0)))
@@ -359,29 +418,50 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
           content(events.get(2)).size mustBe 0
         }
 
-        "there is one only DMSREJ notification" in {
+        "there is one only ERRORS notification" in {
           val events = eventsOnTimeline(List(dmsrejNotification))
           verifyRejectedContent(content(events.get(0)))
         }
 
-        "there is one only DMSDOC notification" in {
+        "there is one only ADDITIONAL_DOCUMENTS_REQUIRED notification" in {
           val events = eventsOnTimeline(List(dmsdocNotification))
           verifyUploadFilesContent(content(events.get(0)), false)
         }
 
-        "there is one only DMSCTL notification" in {
+        "there is one only UNDERGOING_PHYSICAL_CHECK notification" in {
           val events = eventsOnTimeline(List(dmsctlNotification))
           verifyUploadFilesContent(content(events.get(0)), false)
         }
 
-        "there is one only DMSQRY notification" in {
+        "there is one only QUERY_NOTIFICATION_MESSAGE notification" in {
           val events = eventsOnTimeline(List(dmsqry2Notification))
           verifyViewQueriesContent(content(events.get(0)), false)
         }
       }
 
-      def eventsOnTimeline(notifications: List[Notification]): Elements = {
-        val view = page(submission, notifications)(verifiedEmailRequest(), messages)
+      "must include additional body text" when {
+        val statusesWithBodyText = Seq(CANCELLED, WITHDRAWN, EXPIRED_NO_DEPARTURE, EXPIRED_NO_ARRIVAL, CLEARED, RECEIVED, GOODS_ARRIVED_MESSAGE)
+
+        statusesWithBodyText.foreach { status =>
+          s"displaying a ${status} notification" in {
+            verifyBodyText(status)
+          }
+        }
+      }
+
+      def verifyBodyText(status: EnhancedStatus) = {
+        val notifications = List(NotificationSummary(UUID.randomUUID(), now, status))
+        val events = eventsOnTimeline(notifications)
+        val elements = content(events.get(0))
+
+        val bodyElements = elements.get(0).children
+        bodyElements.size mustBe 1
+        bodyElements.get(0).hasClass("govuk-body") mustBe true
+        bodyElements.get(0).text mustBe messages(s"$statusKey.$status.body")
+      }
+
+      def eventsOnTimeline(notifications: List[NotificationSummary]): Elements = {
+        val view = page(createSubmissionWith(notifications))(verifiedEmailRequest(), messages)
         view.getElementsByClass("hmrc-timeline__event")
       }
 
@@ -499,7 +579,7 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
     }
 
     "omit the Declaration Timeline from the page when there are no notifications for the declaration" in {
-      val view = page(submission, List.empty)(verifiedEmailRequest(), messages)
+      val view = page(submission)(verifiedEmailRequest(), messages)
       val element = view.getElementsByTag("ol")
       assert(element.isEmpty || !element.hasClass("hmrc-timeline"))
     }

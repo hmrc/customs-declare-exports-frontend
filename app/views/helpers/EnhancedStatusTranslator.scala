@@ -14,20 +14,17 @@
  * limitations under the License.
  */
 
-package features
+package views.helpers
 
-import play.api.mvc.PathBindable
+import models.declaration.submissions.EnhancedStatus.EnhancedStatus
+import models.declaration.submissions.NotificationSummary
+import play.api.i18n.Messages
 
-object Feature extends Enumeration {
-  type Feature = Value
-  val betaBanner, default, ead, sfus, secureMessagingInbox, googleFormFeedbackLink, commodities, tdrUnauthorisedMessage, waiver999L,
-  merchandiseInBag =
-    Value
+object EnhancedStatusTranslator {
 
-  implicit object FeaturePathStringBinder
-      extends PathBindable.Parsing[Feature.Feature](
-        withName,
-        _.toString,
-        (k: String, e: Exception) => "Cannot parse %s as Feature: %s".format(k, e.getMessage)
-      )
+  def asText(status: EnhancedStatus)(implicit messages: Messages): String =
+    messages(s"submission.enhancedStatus.${status.toString}")
+
+  def asText(notification: NotificationSummary)(implicit messages: Messages): String =
+    asText(notification.enhancedStatus)
 }

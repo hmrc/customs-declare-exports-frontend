@@ -38,7 +38,7 @@
   secureMessagingConfig: SecureMessagingConfig
 )
 
-@(submission: Submission, notifications: Seq[Notification])(implicit request: VerifiedEmailRequest[_], messages: Messages)
+@(submission: Submission)(implicit request: VerifiedEmailRequest[_], messages: Messages)
 
 @navBanner = {
     @if(secureMessagingConfig.isSecureMessagingEnabled) {
@@ -51,7 +51,7 @@
 }
 
 @uploadingDocumentsLink = {
-    @mrnIfDMSRcvOrDMSAcc(submission, notifications).map { mrn =>
+    @mrnIfAccepted(submission).map { mrn =>
         <p>
             @link(
                 id = Some("uploading-documents-link"),
@@ -64,7 +64,7 @@
 }
 
 @pdfForEadLink = {
-    @mrnIfEadStatus(submission, notifications, eadConfig).map { mrn =>
+    @mrnIfEadStatus(submission, eadConfig).map { mrn =>
         <p>
             @link(
                 id = Some("generate-ead"),
@@ -76,7 +76,7 @@
 }
 
 @viewDeclarationLink = {
-  @if(displayViewDeclarationLink(notifications)){
+  @if(displayViewDeclarationLink(submission)){
     <div>
         @link(
             id = Some("view-declaration"),
@@ -190,7 +190,7 @@
             <span class="submission-mrn govuk-caption-l">@messages("submissions.declarationDetails.mrn") @mrn</span>
         }
 
-        @timeline(timelineEvents(submission, notifications), ViewDates.formatDateAtTime)
+        @timeline(timelineEvents(submission), ViewDates.formatDateAtTime)
     </div>
 
     <div class="govuk-grid-column-one-third">
