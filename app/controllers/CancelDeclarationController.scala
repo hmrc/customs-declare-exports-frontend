@@ -22,16 +22,17 @@ import forms.CancelDeclaration
 import forms.CancelDeclaration._
 import metrics.ExportsMetrics
 import metrics.MetricIdentifiers._
-import models.{CancellationAlreadyRequested, CancellationRequestSent, CancellationStatus, MrnNotFound}
 import models.requests.AuthenticatedRequest
+import models.requests.ExportsSessionKeys.submissionMrn
+import models.{CancellationAlreadyRequested, CancellationRequestSent, CancellationStatus, MrnNotFound}
 import play.api.Logging
 import play.api.data.{Form, FormError}
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.audit.{AuditService, AuditTypes}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Session}
 import services.audit.EventData._
+import services.audit.{AuditService, AuditTypes}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import views.html.{cancel_declaration, cancellation_confirmation_page}
+import views.html.cancel_declaration
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -44,8 +45,7 @@ class CancelDeclarationController @Inject()(
   exportsMetrics: ExportsMetrics,
   mcc: MessagesControllerComponents,
   auditService: AuditService,
-  cancelDeclarationPage: cancel_declaration,
-  cancelConfirmationPage: cancellation_confirmation_page
+  cancelDeclarationPage: cancel_declaration
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with Logging {
 
@@ -59,12 +59,10 @@ class CancelDeclarationController @Inject()(
       .fold(
         (formWithErrors: Form[CancelDeclaration]) => Future.successful(BadRequest(cancelDeclarationPage(formWithErrors))),
         userInput => {
-          sendAuditedCancellationRequest(userInput).map { response =>
-            response match {
-              case CancellationRequestSent      => Ok(cancelConfirmationPage())
-              case MrnNotFound                  => Ok(cancelDeclarationPage(createFormWithErrors(userInput, "cancellation.mrn.error.denied")))
-              case CancellationAlreadyRequested => Ok(cancelDeclarationPage(createFormWithErrors(userInput, "cancellation.duplicateRequest.error")))
-            }
+          sendAuditedCancellationRequest(userInput).map {
+            case CancellationRequestSent      => Redirect(routes.CancellationResultController.displayHoldingPage()).withSession(session(userInput))
+            case MrnNotFound                  => Ok(cancelDeclarationPage(createFormWithErrors(userInput, "cancellation.mrn.error.denied")))
+            case CancellationAlreadyRequested => Ok(cancelDeclarationPage(createFormWithErrors(userInput, "cancellation.duplicateRequest.error")))
           }
         }
       )
@@ -94,6 +92,9 @@ class CancelDeclarationController @Inject()(
       .fill(userInput)
       .copy(errors = List(FormError.apply(mrnKey, messages(errorMessageKey))))
   }
+
+  private def session(userInput: CancelDeclaration)(implicit request: AuthenticatedRequest[_]): Session =
+    request.session + (submissionMrn -> userInput.mrn)
 
   private def auditData(form: CancelDeclaration, result: String)(implicit request: AuthenticatedRequest[_]): Map[String, String] =
     Map(

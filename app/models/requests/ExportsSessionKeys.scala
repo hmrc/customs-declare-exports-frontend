@@ -23,4 +23,5 @@ object ExportsSessionKeys {
   val submissionDucr = "submission.ducr"
   val submissionId = "submission.uuid"
   val submissionLrn = "submission.lrn"
+  val submissionMrn = "submission.mrn"
 }

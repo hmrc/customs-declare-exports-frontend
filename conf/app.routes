@@ -44,6 +44,12 @@ GET         /cancel-declaration                            controllers.CancelDec
 
 POST        /cancel-declaration                            controllers.CancelDeclarationController.onSubmit()
 
+# Cancellation Result
+
+GET         /cancellation-holding                          controllers.CancellationResultController.displayHoldingPage()
+
+GET         /cancellation-result                           controllers.CancellationResultController.displayResultPage()
+
 # Saved declaration
 
 GET         /saved-declarations                            controllers.SavedDeclarationsController.displayDeclarations(page: Int ?= 1)
