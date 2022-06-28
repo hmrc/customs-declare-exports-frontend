@@ -60,16 +60,12 @@ class DeclarationHolderRemoveViewSpec extends UnitViewSpec with ExportsTestData 
 
     onEveryDeclarationJourney() { implicit request =>
       "display data in table" in {
-
         val view = createView()
-
         view.select("dl>div:nth-child(1)>dt").text() mustBe messages("declaration.declarationHolders.table.type")
         view.select("dl>div:nth-child(1)>dd").text() mustBe "ACE"
         view.select("dl>div:nth-child(2)>dt").text() mustBe messages("declaration.declarationHolders.table.eori")
         view.select("dl>div:nth-child(2)>dd").text() mustBe "GB123456543"
-
       }
-
     }
   }
 }

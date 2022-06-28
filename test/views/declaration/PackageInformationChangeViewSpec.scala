@@ -18,7 +18,6 @@ package views.declaration
 
 import base.Injector
 import forms.declaration.PackageInformation
-import models.DeclarationType._
 import models.Mode
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
