@@ -16,16 +16,16 @@
 
 package testdata
 
-import java.time.{ZoneOffset, ZonedDateTime}
-import java.time.temporal.ChronoUnit.{DAYS, HOURS, MINUTES}
-import java.util.UUID
-
 import base.TestHelper.createRandomAlphanumericString
 import models.Pointer
 import models.declaration.notifications.{Notification, NotificationError}
+import models.declaration.submissions.EnhancedStatus.{ADDITIONAL_DOCUMENTS_REQUIRED, CUSTOMS_POSITION_GRANTED, QUERY_NOTIFICATION_MESSAGE}
 import models.declaration.submissions.RequestType.{CancellationRequest, SubmissionRequest}
-import models.declaration.submissions.{Action, Submission, SubmissionStatus}
+import models.declaration.submissions.{Action, NotificationSummary, Submission, SubmissionStatus}
 
+import java.time.temporal.ChronoUnit.{DAYS, HOURS, MINUTES}
+import java.time.{ZoneOffset, ZonedDateTime}
+import java.util.UUID
 import scala.util.Random
 
 object SubmissionsTestData {
@@ -43,11 +43,15 @@ object SubmissionsTestData {
   val conversationId_2: String = "b1c09f1b-7c94-4e90-b754-7c5c71c55e22"
   val conversationId_3: String = "b1c09f1b-7c94-4e90-b754-7c5c71c55e23"
 
-  lazy val action = Action(requestType = SubmissionRequest, id = conversationId)
-  lazy val action_2 = Action(requestType = SubmissionRequest, id = conversationId_2, requestTimestamp = action.requestTimestamp.plus(2, DAYS))
-  lazy val action_3 = Action(requestType = SubmissionRequest, id = conversationId_2, requestTimestamp = action.requestTimestamp.minus(2, DAYS))
+  lazy val action = Action(requestType = SubmissionRequest, id = conversationId, notifications = None)
+  lazy val action_2 =
+    Action(requestType = SubmissionRequest, id = conversationId_2, requestTimestamp = action.requestTimestamp.plus(2, DAYS), notifications = None)
+  lazy val action_3 =
+    Action(requestType = SubmissionRequest, id = conversationId_2, requestTimestamp = action.requestTimestamp.minus(2, DAYS), notifications = None)
   lazy val actionCancellation =
-    Action(requestType = CancellationRequest, id = conversationId, requestTimestamp = action.requestTimestamp.plus(3, HOURS))
+    Action(requestType = CancellationRequest, id = conversationId, requestTimestamp = action.requestTimestamp.plus(3, HOURS), notifications = None)
+  lazy val actionCancellation_2 =
+    Action(requestType = CancellationRequest, id = conversationId, requestTimestamp = action.requestTimestamp.plus(6, HOURS), notifications = None)
 
   lazy val submission: Submission =
     Submission(uuid = uuid, eori = eori, lrn = lrn, mrn = Some(mrn), ducr = Some(ducr), actions = Seq(action))
@@ -84,4 +88,11 @@ object SubmissionsTestData {
     Notification(actionId = conversationId, mrn = mrn, dateTimeIssued = dateTimeIssued_2, status = SubmissionStatus.REJECTED, errors = errors)
   val notification_3 =
     Notification(actionId = conversationId_2, mrn = mrn, dateTimeIssued = dateTimeIssued_3, status = SubmissionStatus.ACCEPTED, errors = Seq.empty)
+
+  val notificationSummary =
+    NotificationSummary(notificationId = UUID.fromString(uuid), dateTimeIssued = dateTimeIssued, enhancedStatus = CUSTOMS_POSITION_GRANTED)
+  val notificationSummary_2 =
+    NotificationSummary(notificationId = UUID.fromString(uuid_2), dateTimeIssued = dateTimeIssued_2, enhancedStatus = QUERY_NOTIFICATION_MESSAGE)
+  val notificationSummary_3 =
+    NotificationSummary(notificationId = UUID.fromString(uuid_3), dateTimeIssued = dateTimeIssued_3, enhancedStatus = ADDITIONAL_DOCUMENTS_REQUIRED)
 }

@@ -23,6 +23,7 @@ import forms.cancellation.CancellationChangeReason.NoLongerRequired
 import forms.{CancelDeclaration, Lrn}
 import metrics.{ExportsMetrics, MetricIdentifiers}
 import mock.{ErrorHandlerMocks, ExportsMetricsMocks}
+import models.requests.ExportsSessionKeys
 import models.{CancellationAlreadyRequested, MrnNotFound}
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
@@ -30,7 +31,7 @@ import org.mockito.Mockito.{verify, when}
 import play.api.libs.json.{JsValue, Json}
 import play.api.test.Helpers._
 import services.audit.{AuditService, AuditTypes}
-import views.html.{cancel_declaration, cancellation_confirmation_page}
+import views.html.cancel_declaration
 
 class CancelDeclarationControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerMocks with ExportsMetricsMocks with Injector {
   import CancelDeclarationControllerSpec._
@@ -38,7 +39,6 @@ class CancelDeclarationControllerSpec extends ControllerWithoutFormSpec with Err
   trait SetUp {
     val mockAuditService = mock[AuditService]
     val cancelDeclarationPage = instanceOf[cancel_declaration]
-    val cancelConfirmationPage = instanceOf[cancellation_confirmation_page]
 
     val controller = new CancelDeclarationController(
       mockAuthAction,
@@ -47,8 +47,7 @@ class CancelDeclarationControllerSpec extends ControllerWithoutFormSpec with Err
       mockExportsMetrics,
       stubMessagesControllerComponents(),
       mockAuditService,
-      cancelDeclarationPage,
-      cancelConfirmationPage
+      cancelDeclarationPage
     )(ec)
 
     setupErrorHandler()
@@ -67,13 +66,6 @@ class CancelDeclarationControllerSpec extends ControllerWithoutFormSpec with Err
         status(result) must be(OK)
       }
 
-      "cancellation is requested with success" in new SetUp {
-        cancelDeclarationResponse()
-
-        val result = controller.onSubmit()(postRequest(correctCancelDeclarationJSON))
-        status(result) must be(OK)
-      }
-
       "cancellation is requested with MRN not found error" in new SetUp {
         cancelDeclarationResponse(MrnNotFound)
 
@@ -86,6 +78,18 @@ class CancelDeclarationControllerSpec extends ControllerWithoutFormSpec with Err
 
         val result = controller.onSubmit()(postRequest(correctCancelDeclarationJSON))
         status(result) must be(OK)
+      }
+    }
+
+    "return a 303 redirect to holding page" when {
+
+      "cancellation is requested with success" in new SetUp {
+        cancelDeclarationResponse()
+
+        val result = controller.onSubmit()(postRequest(correctCancelDeclarationJSON))
+        status(result) must be(SEE_OTHER)
+        redirectLocation(result) mustBe Some(controllers.routes.CancellationResultController.displayHoldingPage().url)
+        session(result).get(ExportsSessionKeys.submissionMrn) mustBe defined
       }
     }
   }
@@ -111,10 +115,8 @@ class CancelDeclarationControllerSpec extends ControllerWithoutFormSpec with Err
 
       val result = controller.onSubmit()(postRequest(correctCancelDeclarationJSON))
 
-      status(result) must be(OK)
+      status(result) must be(SEE_OTHER)
 
-      val stringResult = contentAsString(result)
-      stringResult must include("cancellation.confirmationPage.message")
       cancelTimer.getCount mustBe >=(timerBefore)
       cancelCounter.getCount mustBe >=(counterBefore)
       verify(mockAuditService).auditAllPagesDeclarationCancellation(any())(any())

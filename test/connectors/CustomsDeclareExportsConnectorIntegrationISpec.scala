@@ -40,7 +40,7 @@ class CustomsDeclareExportsConnectorIntegrationISpec extends ConnectorISpec with
   private val id = "id"
   private val existingDeclaration = aDeclaration(withId(id))
 
-  private val action = Action(UUID.randomUUID().toString, SubmissionRequest)
+  private val action = Action(id = UUID.randomUUID().toString, requestType = SubmissionRequest, notifications = None)
   private val submission = Submission(id, "eori", "lrn", Some("mrn"), None, None, None, Seq(action))
   private val notification = Notification("action-id", "mrn", ZonedDateTime.now(ZoneOffset.UTC), SubmissionStatus.UNKNOWN, Seq.empty)
   private val connector = app.injector.instanceOf[CustomsDeclareExportsConnector]
@@ -247,6 +247,26 @@ class CustomsDeclareExportsConnectorIntegrationISpec extends ConnectorISpec with
 
       response mustBe Seq(submission, submission_2)
       verify(getRequestedFor(urlEqualTo(s"/submissions?lrn=${lrn.value}")))
+    }
+  }
+
+  "Find Submissions by MRN" should {
+    "return Ok" in {
+      val mrn = "mrn"
+      val submission_2 = submission.copy(uuid = "id2", ducr = Some("ducr"))
+      stubForExports(
+        get(s"/submissions?mrn=$mrn")
+          .willReturn(
+            aResponse()
+              .withStatus(Status.OK)
+              .withBody(json(Seq(submission, submission_2)))
+          )
+      )
+
+      val response = await(connector.findSubmissionByMrn(mrn))
+
+      response mustBe Some(submission)
+      verify(getRequestedFor(urlEqualTo(s"/submissions?mrn=$mrn")))
     }
   }
 

@@ -65,7 +65,14 @@ trait MockConnectors extends MockitoSugar {
               lrn = "lrn",
               mrn = None,
               ducr = None,
-              actions = Seq(Action(requestType = SubmissionRequest, id = "conversationID", requestTimestamp = ZonedDateTime.now(ZoneOffset.UTC)))
+              actions = Seq(
+                Action(
+                  requestType = SubmissionRequest,
+                  id = "conversationID",
+                  requestTimestamp = ZonedDateTime.now(ZoneOffset.UTC),
+                  notifications = None
+                )
+              )
             )
           )
         )
