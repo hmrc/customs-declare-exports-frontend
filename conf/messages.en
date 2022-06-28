@@ -1602,9 +1602,9 @@ declaration.nationalAdditionalCode.remove.hint = Remove national additional code
 declaration.statisticalValue.title = What is the statistical value of this item?
 declaration.statisticalValue.label = Statistical value
 declaration.statisticalValue.hint = The statistical value is defined as the value in GBP of the item plus expenses for the UK portion of the journey. Add together:
-declaration.statisticalValue.hint.bullet.1 = the amount paid (if there is a sale)
-declaration.statisticalValue.hint.bullet.2 = the amount the goods could reasonably be sold for (if there is no sale)
-declaration.statisticalValue.hint.bullet.3 = packing, loading, insurance and transport - calculated or paid - for the UK portion of the journey
+declaration.statisticalValue.hint.bullet.1 = the amount paid (or, if there is no sale agreed, the amount the goods could reasonably be sold for)
+declaration.statisticalValue.hint.bullet.2 = packing, loading, insurance and transport - calculated or paid - for the UK portion of the journey
+
 declaration.statisticalValue.inset.text.1 = If you paid transport or insurance for the whole journey, calculate the UK portion based on what percentage of the total distance is within the UK.
 declaration.statisticalValue.inset.text.2 = To convert any invoices in another currency, use the {0} for the month when your declaration will be lodged.
 declaration.statisticalValue.inset.text.2.link = HMRC exchange rate (opens in new tab)
