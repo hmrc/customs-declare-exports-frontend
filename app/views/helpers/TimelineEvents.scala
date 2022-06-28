@@ -16,20 +16,18 @@
 
 package views.helpers
 
-import java.time.ZonedDateTime
 import config.featureFlags.{SecureMessagingInboxConfig, SfusConfig}
-
-import javax.inject.{Inject, Singleton}
-import models.declaration.notifications.Notification
+import models.declaration.submissions.EnhancedStatus._
 import models.declaration.submissions.RequestType.SubmissionRequest
 import models.declaration.submissions.{NotificationSummary, Submission}
-import models.declaration.submissions.EnhancedStatus._
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import play.twirl.api.{Html, HtmlFormat}
-import views.html.components.gds.linkButton
-import views.html.components.gds.paragraphBody
+import views.html.components.gds.{linkButton, paragraphBody}
 import views.html.components.upload_files_partial_for_timeline
+
+import java.time.ZonedDateTime
+import javax.inject.{Inject, Singleton}
 
 case class TimelineEvent(title: String, dateTime: ZonedDateTime, content: Option[Html])
 
