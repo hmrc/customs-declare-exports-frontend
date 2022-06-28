@@ -19,15 +19,11 @@ package views.declaration
 import base.ExportsTestData._
 import base.Injector
 import base.TestHelper.createRandomAlphanumericString
-import controllers.declaration.routes.{
-  AuthorisationProcedureCodeChoiceController,
-  DeclarationHolderRequiredController,
-  DeclarationHolderSummaryController
-}
+import controllers.declaration.routes
 import controllers.helpers.SaveAndReturn
 import forms.common.Eori
 import forms.declaration.AuthorisationProcedureCodeChoice.{Choice1040, ChoiceOthers}
-import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.STANDARD_PRE_LODGED
+import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.{STANDARD_FRONTIER, STANDARD_PRE_LODGED}
 import forms.declaration.declarationHolder.DeclarationHolder
 import models.DeclarationType._
 import models.Mode.Normal
@@ -35,6 +31,7 @@ import models.declaration.EoriSource.{OtherEori, UserEori}
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
+import play.api.mvc.Call
 import tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.helpers.CommonMessages
@@ -108,15 +105,42 @@ class DeclarationHolderAddViewSpec extends UnitViewSpec with CommonMessages with
 
     onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED) { implicit request =>
       "have a 'Back' link to the /authorisation-choice page" in {
-        val view = createView(createForm)
-        view.getElementById("back-link") must haveHref(AuthorisationProcedureCodeChoiceController.displayPage(Normal))
+        verifyBackLink(routes.AuthorisationProcedureCodeChoiceController.displayPage(Normal))
+      }
+    }
+
+    "display a back button linking to the /is-authorisation-required page" when {
+      "AdditionalDeclarationType is 'STANDARD_PRE_LODGED' and" when {
+        List(Choice1040, ChoiceOthers).foreach { choice =>
+          s"AuthorisationProcedureCodeChoice is '${choice.value}'" in {
+            implicit val request = withRequest(STANDARD_PRE_LODGED, withAuthorisationProcedureCodeChoice(choice))
+            verifyBackLink(routes.DeclarationHolderRequiredController.displayPage())
+          }
+        }
+      }
+    }
+
+    "display a back button linking to the /is-authorisation-required page" when {
+      "AdditionalDeclarationType is 'STANDARD_FRONTIER' and" when {
+        s"AuthorisationProcedureCodeChoice is 'Code1040'" in {
+          implicit val request = withRequest(STANDARD_FRONTIER, withAuthorisationProcedureCodeChoice(Choice1040))
+          verifyBackLink(routes.DeclarationHolderRequiredController.displayPage())
+        }
+      }
+    }
+
+    "display a back button linking to the /authorisation-choice page" when {
+      "AdditionalDeclarationType is 'STANDARD_FRONTIER' and" when {
+        s"AuthorisationProcedureCodeChoice is 'CodeOthers'" in {
+          implicit val request = withRequest(STANDARD_FRONTIER, withAuthorisationProcedureCodeChoice(ChoiceOthers))
+          verifyBackLink(routes.AuthorisationProcedureCodeChoiceController.displayPage())
+        }
       }
     }
 
     onJourney(CLEARANCE, OCCASIONAL) { implicit request =>
       "have a 'Back' link to the /is-authorisation-required page" in {
-        val view = createView(createForm)
-        view.getElementById("back-link") must haveHref(DeclarationHolderRequiredController.displayPage(Normal))
+        verifyBackLink(routes.DeclarationHolderRequiredController.displayPage(Normal))
       }
     }
   }
@@ -130,8 +154,7 @@ class DeclarationHolderAddViewSpec extends UnitViewSpec with CommonMessages with
         "the declaration already includes one or more declarationHolders" should {
           "have a 'Back' link to the /authorisations-required page" in {
             implicit val request = withRequestOfType(declarationType, withDeclarationHolders(declarationHolder))
-            val view = createView(createForm)
-            view.getElementById("back-link") must haveHref(DeclarationHolderSummaryController.displayPage(Normal))
+            verifyBackLink(routes.DeclarationHolderSummaryController.displayPage(Normal))
           }
         }
       }
@@ -141,9 +164,8 @@ class DeclarationHolderAddViewSpec extends UnitViewSpec with CommonMessages with
       "AdditionalDeclarationType is 'STANDARD_PRE_LODGED' and" when {
         s"AuthorisationProcedureCodeChoice is '${choice.value}'" should {
           "have a 'Back' link to the /is-authorisation-required page" in {
-            val request = withRequest(STANDARD_PRE_LODGED, withAuthorisationProcedureCodeChoice(choice))
-            val view = createView(createForm(request))(request)
-            view.getElementById("back-link") must haveHref(DeclarationHolderRequiredController.displayPage(Normal))
+            implicit val request = withRequest(STANDARD_PRE_LODGED, withAuthorisationProcedureCodeChoice(choice))
+            verifyBackLink(routes.DeclarationHolderRequiredController.displayPage(Normal))
           }
         }
       }
@@ -232,5 +254,11 @@ class DeclarationHolderAddViewSpec extends UnitViewSpec with CommonMessages with
         view.getElementById("eori").attr("value") mustBe "test1"
       }
     }
+  }
+
+  private def verifyBackLink(call: Call)(implicit request: JourneyRequest[_]): Unit = {
+    val backButton = createView(createForm).getElementById("back-link")
+    backButton.text mustBe messages("site.back")
+    backButton must haveHref(call)
   }
 }

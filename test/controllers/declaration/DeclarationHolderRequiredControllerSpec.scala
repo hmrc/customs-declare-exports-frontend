@@ -19,7 +19,7 @@ package controllers.declaration
 import base.ControllerSpec
 import controllers.declaration.routes.{DeclarationHolderAddController, DeclarationHolderSummaryController, DestinationCountryController}
 import forms.common.{Eori, YesNoAnswer}
-import forms.declaration.AuthorisationProcedureCodeChoice.{Choice1040, ChoiceOthers}
+import forms.declaration.AuthorisationProcedureCodeChoice.{Choice1007, Choice1040, ChoiceOthers}
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
 import forms.declaration.declarationHolder.DeclarationHolder
 import models.DeclarationType.{CLEARANCE, OCCASIONAL}
@@ -77,14 +77,34 @@ class DeclarationHolderRequiredControllerSpec extends ControllerSpec with Option
 
   "DeclarationHolderRequiredController.displayPage" when {
 
-    "additional declaration type is STANDARD_PRE_LODGED and" when {
-      List(Choice1040, ChoiceOthers) foreach { choice =>
-        s"AuthorisationProcedureCodeChoice is '${choice.value}'" should {
-          val declaration = withRequest(STANDARD_PRE_LODGED, withAuthorisationProcedureCodeChoice(choice)).cacheModel
+    List(STANDARD_FRONTIER, STANDARD_PRE_LODGED) foreach { additionalType =>
+      s"additional declaration type is $additionalType and" when {
+        "AuthorisationProcedureCodeChoice is 'Code1040'" should {
+          val declaration = withRequest(additionalType, withAuthorisationProcedureCodeChoice(Choice1040)).cacheModel
 
           verify200(declaration)
-
           verify303(declaration)
+        }
+      }
+    }
+
+    List(STANDARD_FRONTIER, STANDARD_PRE_LODGED) foreach { additionalType =>
+      s"additional declaration type is $additionalType and" when {
+        List(Choice1007, ChoiceOthers).foreach { choice =>
+          s"AuthorisationProcedureCodeChoice is '$choice'" should {
+            val declaration = withRequest(additionalType, withAuthorisationProcedureCodeChoice(choice)).cacheModel
+
+            if (additionalType == STANDARD_PRE_LODGED && choice == ChoiceOthers) {
+              verify200(declaration)
+              verify303(declaration)
+            } else
+              "redirect to the /add-authorisations-required page" in {
+                withNewCaching(declaration)
+                val result = controller.displayPage(Mode.Normal)(getRequest())
+                await(result) mustBe aRedirectToTheNextPage
+                thePageNavigatedTo mustBe DeclarationHolderAddController.displayPage(Mode.Normal)
+              }
+          }
         }
       }
     }
@@ -97,7 +117,7 @@ class DeclarationHolderRequiredControllerSpec extends ControllerSpec with Option
       verify303(request.cacheModel)
     }
 
-    List(STANDARD_FRONTIER, SIMPLIFIED_FRONTIER, SIMPLIFIED_PRE_LODGED, SUPPLEMENTARY_SIMPLIFIED, SUPPLEMENTARY_EIDR) foreach { additionalType =>
+    List(SIMPLIFIED_FRONTIER, SIMPLIFIED_PRE_LODGED, SUPPLEMENTARY_SIMPLIFIED, SUPPLEMENTARY_EIDR) foreach { additionalType =>
       s"the additional declaration type is $additionalType" should {
         "redirect to the /add-authorisations-required page" in {
           withNewCaching(withRequest(additionalType).cacheModel)
@@ -121,8 +141,8 @@ class DeclarationHolderRequiredControllerSpec extends ControllerSpec with Option
       }
 
     def verify303(declaration: ExportsDeclaration): Unit =
-      "the declaration contains already one or more authorisations" should {
-        "redirect to the /authorisations-required page" in {
+      "but if the declaration contains already one or more authorisations" should {
+        "instead redirect to the /authorisations-required page" in {
           val declarationHolder = DeclarationHolder(Some("ACE"), Some(Eori("GB56523343784324")), Some(EoriSource.OtherEori))
           withNewCaching(aDeclarationAfter(declaration, withDeclarationHolders(declarationHolder)))
 
@@ -137,25 +157,26 @@ class DeclarationHolderRequiredControllerSpec extends ControllerSpec with Option
 
   "DeclarationHolderRequiredController.submitForm" when {
 
-    "additional declaration type is STANDARD_PRE_LODGED and" when {
-      List(Choice1040, ChoiceOthers) foreach { choice =>
-        s"AuthorisationProcedureCodeChoice is '${choice.value}' and" when {
-          val declaration = withRequest(STANDARD_PRE_LODGED, withAuthorisationProcedureCodeChoice(choice)).cacheModel
+    List(STANDARD_FRONTIER, STANDARD_PRE_LODGED).foreach { additionalType =>
+      s"additional declaration type is '$additionalType' and" when {
+        List(Choice1040, ChoiceOthers) foreach { choice =>
+          s"AuthorisationProcedureCodeChoice is '${choice.value}'" when {
+            if (additionalType == STANDARD_FRONTIER && choice == ChoiceOthers) ()
+            else {
+              val declaration = withRequest(STANDARD_PRE_LODGED, withAuthorisationProcedureCodeChoice(choice)).cacheModel
 
-          verify303ReturnedOnYes(declaration)
-
-          verify303ReturnedOnNo(declaration)
-
-          verify400(declaration)
+              verify303ReturnedOnYes(declaration)
+              verify303ReturnedOnNo(declaration)
+              verify400(declaration)
+            }
+          }
         }
       }
     }
 
     onJourney(CLEARANCE, OCCASIONAL) { request =>
       verify303ReturnedOnYes(request.cacheModel)
-
       verify303ReturnedOnNo(request.cacheModel)
-
       verify400(request.cacheModel)
     }
 

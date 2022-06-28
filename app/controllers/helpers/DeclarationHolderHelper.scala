@@ -33,7 +33,8 @@ object DeclarationHolderHelper {
 
   def userCanLandOnIsAuthRequiredPage(declaration: ExportsDeclaration): Boolean =
     (declaration.additionalDeclarationType, declaration.parties.authorisationProcedureCodeChoice) match {
-      case (Some(STANDARD_PRE_LODGED), Choice1040 | ChoiceOthers) => true
-      case _                                                      => declaration.isType(CLEARANCE) || declaration.isType(OCCASIONAL)
+      case (Some(STANDARD_PRE_LODGED) | Some(STANDARD_FRONTIER), Choice1040) => true
+      case (Some(STANDARD_PRE_LODGED), ChoiceOthers)                         => true
+      case _                                                                 => declaration.isType(CLEARANCE) || declaration.isType(OCCASIONAL)
     }
 }
