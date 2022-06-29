@@ -122,6 +122,11 @@ class CustomsDeclareExportsConnector @Inject()(appConfig: AppConfig, httpClient:
   def findSubmissionsByLrn(lrn: Lrn)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[Submission]] =
     httpClient.GET[Seq[Submission]](url(s"${appConfig.submissionsPath}"), Seq("lrn" -> lrn.value))
 
+  def findSubmissionByMrn(mrn: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[Submission]] =
+    httpClient
+      .GET[Seq[Submission]](url(s"${appConfig.submissionsPath}"), Seq("mrn" -> mrn))
+      .map(_.headOption)
+
   def findNotifications(id: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[Notification]] =
     httpClient.GET[Seq[Notification]](url(s"${appConfig.singleSubmissionPath}${appConfig.notificationsPath}/$id"))
 

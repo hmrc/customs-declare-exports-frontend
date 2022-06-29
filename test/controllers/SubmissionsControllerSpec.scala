@@ -51,7 +51,8 @@ class SubmissionsControllerSpec extends ControllerWithoutFormSpec with BeforeAnd
     lrn = "lrn",
     mrn = None,
     ducr = None,
-    actions = Seq(Action(requestType = SubmissionRequest, id = "conversationID", requestTimestamp = ZonedDateTime.now(ZoneOffset.UTC)))
+    actions =
+      Seq(Action(requestType = SubmissionRequest, id = "conversationID", requestTimestamp = ZonedDateTime.now(ZoneOffset.UTC), notifications = None))
   )
 
   private val submissionsPage = mock[submissions]

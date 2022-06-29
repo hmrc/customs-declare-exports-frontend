@@ -60,10 +60,20 @@ class SubmissionsViewSpec extends UnitViewSpec with BeforeAndAfterEach with Expo
   private val zone: ZoneId = ZoneId.of("UTC")
 
   val actionSubmission =
-    Action(requestType = SubmissionRequest, id = "conv-id", requestTimestamp = ZonedDateTime.of(LocalDateTime.of(2019, 1, 1, 12, 0, 0), zone))
+    Action(
+      requestType = SubmissionRequest,
+      id = "conv-id",
+      requestTimestamp = ZonedDateTime.of(LocalDateTime.of(2019, 1, 1, 12, 0, 0), zone),
+      notifications = None
+    )
 
   val actionCancellation =
-    Action(requestType = CancellationRequest, id = "conv-id", requestTimestamp = ZonedDateTime.of(LocalDateTime.of(2021, 6, 1, 12, 0, 0), zone))
+    Action(
+      requestType = CancellationRequest,
+      id = "conv-id",
+      requestTimestamp = ZonedDateTime.of(LocalDateTime.of(2021, 6, 1, 12, 0, 0), zone),
+      notifications = None
+    )
 
   def submissionWithDucr(ducr: String = "ducr") =
     Submission(uuid = "id", eori = "eori", lrn = "lrn", mrn = Some("mrn"), ducr = Some(ducr), actions = Seq(actionSubmission, actionCancellation))
@@ -265,7 +275,8 @@ class SubmissionsViewSpec extends UnitViewSpec with BeforeAndAfterEach with Expo
             Action(
               requestType = SubmissionRequest,
               id = "conv-id",
-              requestTimestamp = ZonedDateTime.of(LocalDateTime.of(2019, 5, 1, 12, 45, 0), zone)
+              requestTimestamp = ZonedDateTime.of(LocalDateTime.of(2019, 5, 1, 12, 45, 0), zone),
+              notifications = None
             )
           val bstSubmission = Submission(
             uuid = "id",

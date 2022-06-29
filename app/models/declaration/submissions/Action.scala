@@ -25,11 +25,16 @@ case class Action(
   id: String,
   requestType: RequestType,
   requestTimestamp: ZonedDateTime = ZonedDateTime.now(defaultDateTimeZone),
-  notifications: Option[Seq[NotificationSummary]] = None
-)
+  notifications: Option[Seq[NotificationSummary]]
+) {
+  val latestNotificationSummary: Option[NotificationSummary] =
+    notifications.flatMap(_.lastOption)
+}
 
 object Action {
   implicit val format = Json.format[Action]
+
+  val dateTimeOrdering: Ordering[ZonedDateTime] = Ordering.fromLessThan[ZonedDateTime]((a, b) => b.isBefore(a))
 
   val defaultDateTimeZone: ZoneId = ZoneId.of("UTC")
 }

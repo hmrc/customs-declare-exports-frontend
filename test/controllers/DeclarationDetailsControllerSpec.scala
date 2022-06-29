@@ -45,7 +45,7 @@ class DeclarationDetailsControllerSpec extends ControllerWithoutFormSpec with Be
     lrn = "lrn",
     mrn = None,
     ducr = None,
-    actions = Seq(Action(id = actionId, requestType = SubmissionRequest, requestTimestamp = ZonedDateTime.now))
+    actions = Seq(Action(id = actionId, requestType = SubmissionRequest, requestTimestamp = ZonedDateTime.now, notifications = None))
   )
 
   private val declarationDetailsPage = mock[declaration_details]
