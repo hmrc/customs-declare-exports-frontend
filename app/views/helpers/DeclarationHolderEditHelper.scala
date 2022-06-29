@@ -31,7 +31,6 @@ import uk.gov.hmrc.govukfrontend.views.html.components.{GovukDetails, GovukInset
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.details.Details
 import uk.gov.hmrc.govukfrontend.views.viewmodels.insettext.InsetText
-import uk.gov.hmrc.govukfrontend.views.viewmodels.warningtext.WarningText
 import views.helpers.DeclarationHolderEditHelper._
 import views.html.components.gds.{bulletList, link, numberedList, paragraphBody}
 
@@ -65,7 +64,7 @@ class DeclarationHolderEditHelper @Inject()(
 
   def additionalBodyForArrivedDeclarationsOnly(implicit messages: Messages, request: JourneyRequest[_]): Html =
     if (isArrived(request.cacheModel.additionalDeclarationType))
-      new Html(List(warningTextForArrivedDeclarations, expandersForArrivedDeclarations))
+      new Html(List(expandersForArrivedDeclarations))
     else HtmlFormat.empty
 
   def hintForAuthorisationCode(implicit messages: Messages, request: JourneyRequest[_]): List[String] =
@@ -179,9 +178,6 @@ class DeclarationHolderEditHelper @Inject()(
 
   private def paragraph(key: String, id: String)(implicit messages: Messages): Html =
     paragraphBody(message = messages(key), id = Some(id))
-
-  private def warningTextForArrivedDeclarations(implicit messages: Messages): Html =
-    govukWarningText(WarningText(iconFallbackText = messages("site.warning"), content = Text(messages(s"$prefix.body.arrived.warning"))))
 }
 
 object DeclarationHolderEditHelper {

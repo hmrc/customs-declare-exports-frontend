@@ -52,7 +52,6 @@ class DeclarationHolderEditContentSpec extends UnitViewSpec with GivenWhenThen w
       messages must haveTranslationFor(s"$prefix.body.simplified")
       messages must haveTranslationFor(s"$prefix.body.simplified.arrived.1007")
       messages must haveTranslationFor(s"$prefix.body.supplementary")
-      messages must haveTranslationFor(s"$prefix.body.arrived.warning")
       messages must haveTranslationFor(s"$prefix.authorisationCode")
       messages must haveTranslationFor(s"$prefix.authorisationCode.empty")
       messages must haveTranslationFor(s"$prefix.authCode.hint.clearance")
@@ -192,9 +191,6 @@ class DeclarationHolderEditContentSpec extends UnitViewSpec with GivenWhenThen w
       arrivedTypes.foreach { declarationType =>
         s"the additional declaration type is $declarationType" in {
           val partial = createPartial(withRequest(declarationType))
-          val warning = partial.getElementsByClass("govuk-warning-text")
-          warning.size mustBe 1
-          warning.get(0).text must be(s"! Warning ${messages(s"$prefix.body.arrived.warning")}")
 
           val expanders = partial.getElementsByClass("govuk-details")
           expanders.size mustBe 3
