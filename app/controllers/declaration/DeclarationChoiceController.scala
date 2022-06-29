@@ -28,6 +28,7 @@ import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.declaration_choice
 
@@ -42,7 +43,7 @@ class DeclarationChoiceController @Inject()(
   mcc: MessagesControllerComponents,
   choicePage: declaration_choice
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with Logging with ModelCacheable {
+    extends FrontendController(mcc) with I18nSupport with Logging with ModelCacheable with WithDefaultFormBinding {
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
     request.declarationId match {

@@ -31,6 +31,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.cache.ExportsCacheService
 import services.{Countries => ServiceCountries}
 import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.helpers.CountryHelper
 import views.html.declaration.destinationCountries.{country_of_routing, routing_country_question}
@@ -47,7 +48,7 @@ class RoutingCountriesController @Inject()(
   routingQuestionPage: routing_country_question,
   countryOfRoutingPage: country_of_routing
 )(implicit ec: ExecutionContext, codeListConnector: CodeListConnector, countryHelper: CountryHelper)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
   def displayRoutingQuestion(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     val frm = formFirst().withSubmissionErrors()

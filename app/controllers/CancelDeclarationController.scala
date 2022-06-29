@@ -31,6 +31,7 @@ import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Session}
 import services.audit.EventData._
 import services.audit.{AuditService, AuditTypes}
+import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.cancel_declaration
 
@@ -47,7 +48,7 @@ class CancelDeclarationController @Inject()(
   auditService: AuditService,
   cancelDeclarationPage: cancel_declaration
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with Logging {
+    extends FrontendController(mcc) with I18nSupport with Logging with WithDefaultFormBinding {
 
   def displayPage(): Action[AnyContent] = (authenticate andThen verifyEmail) { implicit request =>
     Ok(cancelDeclarationPage(CancelDeclaration.form))

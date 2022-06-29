@@ -30,6 +30,7 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.cache.ExportsCacheService
+import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.helpers.DepartureTransportHelper
 import views.html.declaration.departure_transport
@@ -47,7 +48,7 @@ class DepartureTransportController @Inject()(
   departureTransportHelper: DepartureTransportHelper,
   departureTransportPage: departure_transport
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
   private def form(implicit request: JourneyRequest[_]): Form[DepartureTransport] =
     DepartureTransport.form(departureTransportHelper.transportCodes)

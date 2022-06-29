@@ -27,6 +27,7 @@ import models.{ExportsDeclaration, Mode}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import services.cache.ExportsCacheService
+import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.helpers.ModeOfTransportCodeHelper
 import views.html.declaration.transport_country
@@ -42,7 +43,7 @@ class TransportCountryController @Inject()(
   mcc: MessagesControllerComponents,
   transportCountry: transport_country
 )(implicit ec: ExecutionContext, codeListConnector: CodeListConnector)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
   private val validTypes = Seq(STANDARD, SUPPLEMENTARY)
 

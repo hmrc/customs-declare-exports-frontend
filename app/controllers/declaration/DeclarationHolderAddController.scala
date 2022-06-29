@@ -17,13 +17,13 @@
 package controllers.declaration
 
 import scala.concurrent.{ExecutionContext, Future}
-
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.helpers.DeclarationHolderHelper._
 import controllers.helpers.MultipleItemsHelper
 import controllers.navigation.Navigator
 import forms.declaration.declarationHolder.DeclarationHolder
 import forms.declaration.declarationHolder.DeclarationHolder.{validateMutuallyExclusiveAuthCodes, DeclarationHolderFormGroupId}
+
 import javax.inject.Inject
 import models.declaration.DeclarationHoldersData
 import models.declaration.DeclarationHoldersData.limitOfHolders
@@ -33,6 +33,7 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.cache.ExportsCacheService
+import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.declarationHolder.declaration_holder_add
 
@@ -44,7 +45,7 @@ class DeclarationHolderAddController @Inject()(
   mcc: MessagesControllerComponents,
   declarationHolderPage: declaration_holder_add
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     Ok(declarationHolderPage(mode, form.withSubmissionErrors, request.eori))

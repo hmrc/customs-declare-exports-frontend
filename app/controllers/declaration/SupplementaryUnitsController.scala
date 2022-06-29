@@ -17,11 +17,11 @@
 package controllers.declaration
 
 import scala.concurrent.{ExecutionContext, Future}
-
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.routes.AdditionalInformationRequiredController
 import controllers.navigation.Navigator
 import forms.declaration.commodityMeasure.SupplementaryUnits
+
 import javax.inject.Inject
 import models.DeclarationType.{STANDARD, SUPPLEMENTARY}
 import models.Mode
@@ -33,6 +33,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.TariffApiService
 import services.TariffApiService.{CommodityCodeNotFound, SupplementaryUnitsNotRequired}
 import services.cache.ExportsCacheService
+import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.commodityMeasure.{supplementary_units, supplementary_units_yes_no}
 
@@ -46,7 +47,7 @@ class SupplementaryUnitsController @Inject()(
   supplementaryUnitsPage: supplementary_units,
   supplementaryUnitsYesNoPage: supplementary_units_yes_no
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
   private val validTypes = Seq(STANDARD, SUPPLEMENTARY)
 

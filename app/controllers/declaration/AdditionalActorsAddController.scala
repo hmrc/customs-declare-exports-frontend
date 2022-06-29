@@ -30,6 +30,7 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.cache.ExportsCacheService
+import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.additionalActors.additional_actors_add
 
@@ -44,7 +45,7 @@ class AdditionalActorsAddController @Inject()(
   mcc: MessagesControllerComponents,
   declarationAdditionalActorsPage: additional_actors_add
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
   val validTypes = List(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL)
 

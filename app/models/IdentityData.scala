@@ -16,11 +16,11 @@
 
 package models
 
-import org.joda.time.{DateTime, LocalDate}
 import play.api.libs.json._
 import uk.gov.hmrc.auth.core.retrieve.{Credentials, LoginTimes, Name, _}
 import uk.gov.hmrc.auth.core.{AffinityGroup, ConfidenceLevel}
-import uk.gov.hmrc.http.controllers.RestFormats
+
+import java.time.LocalDate
 
 case class IdentityData(
   internalId: Option[String] = None,
@@ -46,8 +46,6 @@ case class IdentityData(
 )
 
 object IdentityData {
-  implicit val localDateFormat: Format[LocalDate] = RestFormats.localDateFormats
-  implicit val dateTimeReads: Format[DateTime] = RestFormats.dateTimeFormats
   implicit val credentialsFormat = Json.format[Credentials]
   implicit val nameFormat = Json.format[Name]
   implicit val agentInformationFormat = Json.format[AgentInformation]

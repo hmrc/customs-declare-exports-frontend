@@ -20,6 +20,7 @@ import controllers.actions.ItemActionBuilder
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
+
 import javax.inject.Inject
 import models.requests.JourneyRequest
 import models.Mode
@@ -27,6 +28,7 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.cache.ExportsCacheService
+import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.fiscalInformation.additional_fiscal_references
 
@@ -36,7 +38,7 @@ class AdditionalFiscalReferencesController @Inject()(
   navigator: Navigator,
   mcc: MessagesControllerComponents,
   additionalFiscalReferencesPage: additional_fiscal_references
-) extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
+) extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
   def displayPage(mode: Mode, itemId: String): Action[AnyContent] = itemAction(itemId) { implicit request =>
     val frm = addAnotherYesNoForm.withSubmissionErrors()
