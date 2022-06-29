@@ -95,7 +95,7 @@ notifications.status = Status
 notifications.amend = Amend and resubmit
 
 cancellation.title = Cancel declaration
-cancellation.functionalReferenceId = Enter the LRN
+cancellation.functionalReferenceId = Enter the Loader Reference Number (LRN)
 cancellation.functionalReferenceId.error.empty = Enter a local reference number (LRN)
 cancellation.functionalReferenceId.error.length = Local reference number (LRN) must contain 22 characters or fewer
 cancellation.functionalReferenceId.error.specialCharacter = Local reference number (LRN) must contain only letters and numbers
