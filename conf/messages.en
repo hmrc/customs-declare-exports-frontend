@@ -710,6 +710,7 @@ declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.9.link
 declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.10 = {0} (requested procedure 31)
 declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.10.linkText = Re-export following a special procedure
 
+#TODO: Remove below if no longer used
 submission.status.PENDING                         = Pending
 submission.status.REQUESTED_CANCELLATION          = Cancellation requested
 submission.status.ACCEPTED                        = Arrived and accepted
@@ -728,6 +729,37 @@ submission.status.DECLARATION_HANDLED_EXTERNALLY  = Declaration handled external
 submission.status.AWAITING_EXIT_RESULTS           = Awaiting exit results
 submission.status.QUERY_NOTIFICATION_MESSAGE      = Query raised
 submission.status.UNKNOWN                         = Unknown status
+
+submission.enhancedStatus.ADDITIONAL_DOCUMENTS_REQUIRED = Documents required
+submission.enhancedStatus.AMENDED                       = Amended
+submission.enhancedStatus.AWAITING_EXIT_RESULTS         = Awaiting exit results
+submission.enhancedStatus.CANCELLED                     = Cancelled
+submission.enhancedStatus.CLEARED                       = Declaration cleared
+submission.enhancedStatus.CUSTOMS_POSITION_DENIED       = Customs position denied
+submission.enhancedStatus.CUSTOMS_POSITION_GRANTED      = Customs position granted
+submission.enhancedStatus.DECLARATION_HANDLED_EXTERNALLY= Declaration handled externally
+submission.enhancedStatus.ERRORS                        = Declaration has errors
+submission.enhancedStatus.EXPIRED_NO_ARRIVAL            = Declaration expired
+submission.enhancedStatus.EXPIRED_NO_DEPARTURE          = Declaration expired
+submission.enhancedStatus.GOODS_ARRIVED                 = Arrived and accepted
+submission.enhancedStatus.GOODS_ARRIVED_MESSAGE         = Arrived and accepted
+submission.enhancedStatus.GOODS_HAVE_EXITED             = Goods have exited the UK
+submission.enhancedStatus.QUERY_NOTIFICATION_MESSAGE    = Query raised
+submission.enhancedStatus.RECEIVED                      = Declaration submitted
+submission.enhancedStatus.RELEASED                      = Released
+submission.enhancedStatus.UNDERGOING_PHYSICAL_CHECK     = Goods being examined
+submission.enhancedStatus.WITHDRAWN                     = Withdrawn
+submission.enhancedStatus.PENDING                       = Pending
+submission.enhancedStatus.REQUESTED_CANCELLATION        = Cancellation request made
+submission.enhancedStatus.UNKNOWN                       = Unknown
+
+submission.enhancedStatus.CANCELLED.body = You cancelled this declaration.
+submission.enhancedStatus.WITHDRAWN.body = You cancelled this declaration.
+submission.enhancedStatus.EXPIRED_NO_ARRIVAL.body = The goods arrival message was not received within 30 days of the pre-lodged declaration.
+submission.enhancedStatus.EXPIRED_NO_DEPARTURE.body = Declaration was automatically cancelled by CDS as no departure message was received within 150 days of clearance.
+submission.enhancedStatus.CLEARED.body = Goods have permission to progress.
+submission.enhancedStatus.RECEIVED.body = Declaration will be checked when goods arrive into customs control.
+submission.enhancedStatus.GOODS_ARRIVED_MESSAGE.body = Goods arrival message received.
 
 submissions.title = Your declarations
 submissions.hint.no.action.needed = Check the status of your submitted declarations.
@@ -1237,15 +1269,15 @@ declaration.additionalDocument.MOU.hint=GBMOU12345678900020191023163657
 declaration.item.isLicenceRequired.title = Do these goods require a licence?
 declaration.item.isLicenceRequired.body = It is your responsibility to check if your goods require a licence.
 declaration.item.isLicenceRequired.error = Select yes if the goods require a licence
-declaration.item.isLicenceRequired.no.hint = The answer 'No' will apply CDS waiver 999L and export licence waiver code Y999 against any licensing measure on your goods.
+declaration.item.isLicenceRequired.no.hint = The answer ‘No’ will apply CDS waiver 999L, and other waiver codes Y999, Y923 and Y903 against any licensing measure on your goods.
 declaration.item.isLicenceRequired.inset.title = How do I know if the goods require a licence?
 declaration.item.isLicenceRequired.inset.1.text = The {0} will list any requirements under the ‘Exports’ tab if you see a link that says ‘Conditions’.
 declaration.item.isLicenceRequired.inset.1.linkText = Tariff entry for the code you entered (opens in new tab)
 declaration.item.isLicenceRequired.inset.1.linkText.0 = Tariff entry for {0}, the code you entered (opens in new tab)
-declaration.item.isLicenceRequired.inset.2.text = If there are no requirements, it will say ‘There are no export measures for this commodity on this date.‘ You should then select ‘No‘.
-declaration.item.isLicenceRequired.inset.3.text = If you are allowed to declare 999L or Y999 this will be listed in the 'Conditions' box. Use of either code constitutes a legal declaration that the goods do not require the certificate or licence shown. See more information about {0}.
+declaration.item.isLicenceRequired.inset.2.text = If there are no requirements, it will say ‘There are no export measures for this commodity on this date.’ You should then select ‘No’.
+declaration.item.isLicenceRequired.inset.3.text = If you are allowed to declare 999L, Y999, Y923 or Y903 this will be listed in the ‘Conditions’ box. Use of waivers constitutes a legal declaration that the goods do not require the certificate or licence shown. See more information about {0}.
 declaration.item.isLicenceRequired.inset.3.linkText = prohibitions and restrictions on exports (opens in new tab).
-declaration.item.isLicenceRequired.inset.4.text = Waiver code 999L or Y999 are permitted to be used in a similar way to LIC99 on the CHIEF system, when a waiver may be applied.
+declaration.item.isLicenceRequired.inset.4.text = Waiver code 999L is permitted to be used in a similar way to LIC99 on the CHIEF system, when a waiver may be applied.
 declaration.item.isLicenceRequired.inset.5.text = Sufficient evidence must be held in records to demonstrate eligibility for this waiver which must be produced on demand.
 
 declaration.totalPackageQuantity.title = What is the total number of packages in this declaration?
@@ -1369,36 +1401,36 @@ declaration.transportInformation.meansOfTransport.crossingTheBorder.error.incorr
 declaration.transportInformation.meansOfTransport.aircraftRegistrationNumber = Aircraft registration number and date of flight
 declaration.transportInformation.meansOfTransport.aircraftRegistrationNumber.v2 = Aircraft registration number and date of flight (domestic)
 declaration.transportInformation.meansOfTransport.aircraftRegistrationNumber.label = Registration number and flight date in 6 figures
-declaration.transportInformation.meansOfTransport.aircraftRegistrationNumber.hint = For example, RP-C111220321 or 'Unknown'.
+declaration.transportInformation.meansOfTransport.aircraftRegistrationNumber.hint = For example, RP-C111220321 or ‘Unknown’.
 declaration.transportInformation.meansOfTransport.europeanVesselIDNumber = European vessel identification (ENI) number
 declaration.transportInformation.meansOfTransport.europeanVesselIDNumber.label = ENI number
-declaration.transportInformation.meansOfTransport.europeanVesselIDNumber.hint = For example, 12345678 or 'Unknown'.
+declaration.transportInformation.meansOfTransport.europeanVesselIDNumber.hint = For example, 12345678 or ‘Unknown’.
 declaration.transportInformation.meansOfTransport.flightNumber = Flight number and date of flight
 declaration.transportInformation.meansOfTransport.flightNumber.v2 = Flight number and date of flight (domestic)
 declaration.transportInformation.meansOfTransport.flightNumber.label = IATA flight number and the flight date in 6 figures
-declaration.transportInformation.meansOfTransport.flightNumber.hint = For example, BA3456110821 or 'Unknown'.
+declaration.transportInformation.meansOfTransport.flightNumber.hint = For example, BA3456110821 or ‘Unknown’.
 declaration.transportInformation.meansOfTransport.nameOfInlandWaterwayVessel = Inland vessel’s name
 declaration.transportInformation.meansOfTransport.nameOfInlandWaterwayVessel.label = Vessel name
-declaration.transportInformation.meansOfTransport.nameOfInlandWaterwayVessel.hint = For example, Marie or 'Unknown'.
+declaration.transportInformation.meansOfTransport.nameOfInlandWaterwayVessel.hint = For example, Marie or ‘Unknown’.
 declaration.transportInformation.meansOfTransport.nameOfVessel = Ship name
 declaration.transportInformation.meansOfTransport.nameOfVessel.vBT = Ship or RoRo ferry name
 declaration.transportInformation.meansOfTransport.nameOfVessel.label = Name of vessel
-declaration.transportInformation.meansOfTransport.nameOfVessel.hint = For example, Seraphim or 'Unknown'.
+declaration.transportInformation.meansOfTransport.nameOfVessel.hint = For example, Seraphim or ‘Unknown’.
 declaration.transportInformation.meansOfTransport.notApplicable = Does not apply
 declaration.transportInformation.meansOfTransport.notApplicable.vBT = I don’t know
 declaration.transportInformation.meansOfTransport.shipOrRoroImoNumber = Ship IMO number
 declaration.transportInformation.meansOfTransport.shipOrRoroImoNumber.vBT = Ship or RoRo ferry IMO number
 declaration.transportInformation.meansOfTransport.shipOrRoroImoNumber.label = IMO identification number
-declaration.transportInformation.meansOfTransport.shipOrRoroImoNumber.hint = For example, 1234567 or 'Unknown'.
+declaration.transportInformation.meansOfTransport.shipOrRoroImoNumber.hint = For example, 1234567 or ‘Unknown’.
 declaration.transportInformation.meansOfTransport.vehicleRegistrationNumber = Vehicle registration number
 declaration.transportInformation.meansOfTransport.vehicleRegistrationNumber.vBT = Vehicle registration number (at the Republic of Ireland border crossing only)
 declaration.transportInformation.meansOfTransport.vehicleRegistrationNumber.label = Vehicle registration number
-declaration.transportInformation.meansOfTransport.vehicleRegistrationNumber.hint = For example, HY49 8PA or 'Unknown'.
+declaration.transportInformation.meansOfTransport.vehicleRegistrationNumber.hint = For example, HY49 8PA or ‘Unknown’.
 declaration.transportInformation.meansOfTransport.wagonNumber = Eurotunnel or other rail details (for unaccompanied freight)
 declaration.transportInformation.meansOfTransport.wagonNumber.v2 = Rail details
 declaration.transportInformation.meansOfTransport.wagonNumber.vBT = Eurotunnel or other rail details
 declaration.transportInformation.meansOfTransport.wagonNumber.label = Wagon number
-declaration.transportInformation.meansOfTransport.wagonNumber.hint = For example, 6767 or 'Unknown'.
+declaration.transportInformation.meansOfTransport.wagonNumber.hint = For example, 6767 or ‘Unknown’.
 
 declaration.transportInformation.transportCountry.title = Do you know the country where the {0} is registered?
 declaration.transportInformation.transportCountry.roro.body = For Eurotunnel, select France as the country of registration.
@@ -1454,7 +1486,7 @@ declaration.totalAmountInvoiced.currency.label = Currency code
 declaration.totalAmountInvoiced.hint = For example, USD 898,000 or GBP 676,000
 declaration.exchangeRate.error = Rate of exchange must contain only numbers, commas and a single full stop
 declaration.exchangeRate.noFixedRate.error = You have declared a total invoiced value less than GBP 100,000 so a fixed rate of exchange should not be entered
-declaration.exchangeRate.required.error = Select 'Yes' if the invoice or contract has an agreed rate of exchange
+declaration.exchangeRate.required.error = Select ‘Yes’ if the invoice or contract has an agreed rate of exchange
 declaration.exchangeRate.yesRadioSelected.error = Enter an agreed rate of exchange
 declaration.exchangeRate = Does the invoice or contract have an agreed rate of exchange?
 declaration.exchangeRate.paragraph1.text = This means a rate agreed in advance, not the standard HMRC exchange rate.
@@ -1545,9 +1577,6 @@ declaration.zeroRatedForVat.radio.VatZeroRatedPaid = No, 20% VAT is being paid i
 declaration.zeroRatedForVat.expander = This entry will send code VATZ for ‘Yes’, VATR for ‘Reduced’, or VATE for ‘Exempt’ to complete
 declaration.zeroRatedForVat.expander.linkText = data element 6/17 - National Additional Code (opens in new tab).
 declaration.zeroRatedForVat.error = Declare if these goods are being zero rated for VAT
-
-
-
 
 declaration.nationalAdditionalCode.addnext.header = What is the next national additional code?
 declaration.nationalAdditionalCode.remove.header = Are you sure you want to remove this national additional code?
@@ -2565,7 +2594,7 @@ guidance.roro.section.2.list.1.bullet.2 = For arrived declarations only, on ‘A
 guidance.roro.section.2.list.1.bullet.3 = In ‘What is the goods location code?’ (section 3) enter one of: <ul class="govuk-list  govuk-list--bullet"><li>Dover - GBAUDVRDOVDVRGVM</li><li>Eurotunnel - GBAUEUTEUTEUTGVM</li><li>Dover/Eurotunnel - GBAUDEUDEUDEUGVM</li><li>Fishguard - GBAUFISFISFISGVM</li><li>Holyhead - GBAUHLYHLDHLYGVM</li><li>Liverpool - GBAULIVLIVLIVGVM</li><li>Heysham - GBAUHYMHEYHYMGVM</li><li>Pembroke Dock/Milford Haven - GBAUPEDMILPEDGVM</li><li>Sheerness - GBAUMEDMEDMEDGVM</li><li>Newhaven - GBAUNHVNHVNHVGVM</li></ul>These codes are for the new {0}. For Liverpool, Heysham or Pembroke/Milford Haven, make sure your haulier is using GVMS to handle the movement of the goods. If they are using inventory linking they can advise you the correct code to use.
 guidance.roro.section.2.list.1.bullet.3.link = Goods Vehicle Movement Service (GVMS) (opens in new tab)
 guidance.roro.section.2.list.1.bullet.4 = In ‘Where is the customs office of exit?’ (section 3) select the intended departure point out of: <ul class="govuk-list  govuk-list--bullet"><li>Dover (OTS) Freight Clearance - GB000040</li><li>Eurotunnel Freight - GB000060</li><li>Fishguard - GB005200</li><li>Holyhead - GB000124</li><li>Liverpool, Seaforth S2 berth - GB000080</li><li>Heysham - GB005210</li><li>Pembroke Dock - GB000126</li><li>Sheerness - Sheerness - GB000045</li><li>Newhaven - GB003250</li></ul>
-guidance.roro.section.2.list.1.bullet.5 = In ‘How will the goods be transported to the UK border?’ or ‘What mode of transport took the goods from the warehouse to the border? (section 6) select ‘Road transport’.
+guidance.roro.section.2.list.1.bullet.5 = In ‘How will the goods be transported to the UK border?’ or ‘What mode of transport took the goods from the warehouse to the border?’ (section 6) select ‘Road transport’.
 guidance.roro.section.2.list.1.bullet.6 = In ‘What are the details for the road transport?’ (section 6) select ‘Vehicle registration number’ and enter the registration number of the truck that will carry your goods out of the UK or to the terminal. For unaccompanied goods enter the trailer number as well. You may enter ‘Unknown’ if you do not have the details, but do not leave this blank.
 guidance.roro.section.2.list.1.bullet.7 = In ‘What are the details for the transport that left the border?’ enter the ferry number, ferry name, or (for Eurotunnel) the wagon number. You may enter ‘Unknown’ if you do not have the details, but do not leave this blank.
 guidance.roro.section.2.list.1.bullet.8 = In ‘Are the goods in a container or containers?’ enter the container identification number, or enter ‘Unknown’ if you do not have the details, but do not leave this blank. Note that ‘container’ includes all container types including swap bodies.

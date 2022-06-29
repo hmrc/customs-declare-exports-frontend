@@ -16,32 +16,35 @@
 
 package views.helpers
 
-import java.time.{ZoneId, ZonedDateTime}
 import base.Injector
-import models.declaration.notifications.Notification
-import models.declaration.submissions.SubmissionStatus._
-import models.declaration.submissions.{Submission, SubmissionStatus}
+import models.declaration.submissions.{Action, EnhancedStatus, NotificationSummary, Submission}
+import models.declaration.submissions.EnhancedStatus._
+import models.declaration.submissions.RequestType.SubmissionRequest
 import org.mockito.Mockito.when
 import org.scalatest.BeforeAndAfterEach
 import views.declaration.spec.UnitViewSpec
-import views.html.components.gds.linkButton
+import views.html.components.gds.{linkButton, paragraphBody}
 import views.html.components.upload_files_partial_for_timeline
+
+import java.time.{ZoneId, ZonedDateTime}
+import java.util.UUID
 
 class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injector {
 
-  private val submission = mock[Submission]
+  private val submission = Submission("id", "eori", "lrn", Some("mrn"), None, None, None, Seq.empty)
   private val uploadFilesPartialForTimeline = instanceOf[upload_files_partial_for_timeline]
 
   override def beforeEach(): Unit = {
     super.beforeEach()
     when(mockSecureMessagingInboxConfig.sfusInboxLink).thenReturn("dummyInboxLink")
-    when(submission.mrn).thenReturn(Some("mrn"))
-    when(submission.uuid).thenReturn("id")
   }
 
-  private def createTimeline(notifications: Seq[Notification], enableSfusConfig: Boolean = true): Seq[TimelineEvent] = {
+  private def createTimeline(notificationSummaries: Seq[NotificationSummary], enableSfusConfig: Boolean = true): Seq[TimelineEvent] = {
     when(mockSfusConfig.isSfusUploadEnabled).thenReturn(enableSfusConfig)
-    new TimelineEvents(new linkButton(), mockSecureMessagingInboxConfig, mockSfusConfig, uploadFilesPartialForTimeline)(submission, notifications)
+    val subReqestAction = Action("id", SubmissionRequest, ZonedDateTime.now, Some(notificationSummaries))
+    new TimelineEvents(new linkButton(), new paragraphBody(), mockSecureMessagingInboxConfig, mockSfusConfig, uploadFilesPartialForTimeline)(
+      submission.copy(actions = Seq(subReqestAction))
+    )
   }
 
   "TimelineEvents" should {
@@ -50,7 +53,7 @@ class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injec
       assert(createTimeline(List.empty).isEmpty)
     }
 
-    "transform an unordered sequence of Notifications into an ordered sequence of TimelineEvent instances" in {
+    "transform an unordered sequence of NotificationSummaries into an ordered sequence of TimelineEvent instances" in {
       def withGBZone(dateTime: ZonedDateTime): ZonedDateTime =
         dateTime.withZoneSameInstant(ZoneId.of("Europe/London"))
 
@@ -60,36 +63,51 @@ class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injec
       val issued4th = withGBZone(issued1st.plusDays(3L))
 
       val notifications = List(
-        Notification("ign", "ign", issued2nd, RECEIVED, Seq.empty),
-        Notification("ign", "ign", issued4th, UNKNOWN, Seq.empty),
-        Notification("ign", "ign", issued1st, ACCEPTED, Seq.empty),
-        Notification("ign", "ign", issued3rd, REJECTED, Seq.empty)
+        NotificationSummary(UUID.randomUUID(), issued2nd, RECEIVED),
+        NotificationSummary(UUID.randomUUID(), issued4th, UNKNOWN),
+        NotificationSummary(UUID.randomUUID(), issued1st, PENDING),
+        NotificationSummary(UUID.randomUUID(), issued3rd, ERRORS)
       )
       val timelineEvents = createTimeline(notifications)
 
       timelineEvents(0).dateTime mustBe issued4th
-      timelineEvents(0).title mustBe messages(s"submission.status.${UNKNOWN.toString}")
+      timelineEvents(0).title mustBe messages(s"submission.enhancedStatus.${UNKNOWN.toString}")
 
       timelineEvents(1).dateTime mustBe issued3rd
-      timelineEvents(1).title mustBe messages(s"submission.status.${REJECTED.toString}")
+      timelineEvents(1).title mustBe messages(s"submission.enhancedStatus.${ERRORS.toString}")
 
       timelineEvents(2).dateTime mustBe issued2nd
-      timelineEvents(2).title mustBe messages(s"submission.status.${RECEIVED.toString}")
+      timelineEvents(2).title mustBe messages(s"submission.enhancedStatus.${RECEIVED.toString}")
 
       timelineEvents(3).dateTime mustBe issued1st
-      timelineEvents(3).title mustBe messages(s"submission.status.${ACCEPTED.toString}")
+      timelineEvents(3).title mustBe messages(s"submission.enhancedStatus.${PENDING.toString}")
     }
 
     "generate a sequence of TimelineEvent instances" which {
 
       "have an Html content only" when {
         "the source notifications have submission statuses that require it (the Html content)" in {
-          val notification = Notification("ign", "ign", ZonedDateTime.now, ACCEPTED, Seq.empty)
+          val notification = NotificationSummary(UUID.randomUUID(), ZonedDateTime.now, PENDING)
 
-          val statusesWithContent = Set(ADDITIONAL_DOCUMENTS_REQUIRED, UNDERGOING_PHYSICAL_CHECK, QUERY_NOTIFICATION_MESSAGE, REJECTED)
-          SubmissionStatus.values.foreach { status =>
-            val content = createTimeline(List(notification.copy(status = status)))(0).content
-            content.isDefined mustBe statusesWithContent.contains(status)
+          val statusesWithContent = Set(
+            ADDITIONAL_DOCUMENTS_REQUIRED,
+            UNDERGOING_PHYSICAL_CHECK,
+            QUERY_NOTIFICATION_MESSAGE,
+            ERRORS,
+            CANCELLED,
+            WITHDRAWN,
+            EXPIRED_NO_DEPARTURE,
+            EXPIRED_NO_ARRIVAL,
+            CLEARED,
+            RECEIVED,
+            GOODS_ARRIVED_MESSAGE
+          )
+
+          EnhancedStatus.values.foreach { status =>
+            val content = createTimeline(List(notification.copy(enhancedStatus = status)))(0).content
+            withClue(s"$status has content must be ${statusesWithContent.contains(status)}") {
+              content.isDefined mustBe statusesWithContent.contains(status)
+            }
           }
         }
       }
@@ -97,10 +115,10 @@ class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injec
       "does not have 'Upload files' Html content" when {
         "at least one of the notifications has REJECTED (DMSREJ) as status" in {
           val notifications = List(
-            Notification("ign", "ign", ZonedDateTime.now, ADDITIONAL_DOCUMENTS_REQUIRED, Seq.empty),
-            Notification("ign", "ign", ZonedDateTime.now, QUERY_NOTIFICATION_MESSAGE, Seq.empty),
-            Notification("ign", "ign", ZonedDateTime.now, UNDERGOING_PHYSICAL_CHECK, Seq.empty),
-            Notification("ign", "ign", ZonedDateTime.now, REJECTED, Seq.empty)
+            NotificationSummary(UUID.randomUUID(), ZonedDateTime.now, ADDITIONAL_DOCUMENTS_REQUIRED),
+            NotificationSummary(UUID.randomUUID(), ZonedDateTime.now, QUERY_NOTIFICATION_MESSAGE),
+            NotificationSummary(UUID.randomUUID(), ZonedDateTime.now, UNDERGOING_PHYSICAL_CHECK),
+            NotificationSummary(UUID.randomUUID(), ZonedDateTime.now, ERRORS)
           )
           val timelineEvents = createTimeline(notifications)
           assert(timelineEvents(0).content.isDefined)
@@ -114,8 +132,8 @@ class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injec
         "have a 'Documents required' Html content" when {
           "multiple DMSDOC and/or DMSCTL notifications are present" in {
             val notifications = List(
-              Notification("ign", "ign", ZonedDateTime.now, ADDITIONAL_DOCUMENTS_REQUIRED, Seq.empty),
-              Notification("ign", "ign", ZonedDateTime.now, UNDERGOING_PHYSICAL_CHECK, Seq.empty),
+              NotificationSummary(UUID.randomUUID(), ZonedDateTime.now, ADDITIONAL_DOCUMENTS_REQUIRED),
+              NotificationSummary(UUID.randomUUID(), ZonedDateTime.now, UNDERGOING_PHYSICAL_CHECK),
             )
             val timelineEvents = createTimeline(notifications)
             assert(timelineEvents(0).content.isDefined)
@@ -128,8 +146,8 @@ class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injec
         "have a 'View queries' Html content" when {
           "multiple DMSQRY notifications are present" in {
             val notifications = List(
-              Notification("ign", "ign", ZonedDateTime.now, QUERY_NOTIFICATION_MESSAGE, Seq.empty),
-              Notification("ign", "ign", ZonedDateTime.now, QUERY_NOTIFICATION_MESSAGE, Seq.empty),
+              NotificationSummary(UUID.randomUUID(), ZonedDateTime.now, QUERY_NOTIFICATION_MESSAGE),
+              NotificationSummary(UUID.randomUUID(), ZonedDateTime.now, QUERY_NOTIFICATION_MESSAGE),
             )
             val timelineEvents = createTimeline(notifications)
             assert(timelineEvents(0).content.isDefined)
@@ -142,8 +160,8 @@ class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injec
         "have a 'Fix and resubmit' Html content" when {
           "multiple DMSREJ notifications are present" in {
             val notifications = List(
-              Notification("ign", "ign", ZonedDateTime.now, REJECTED, Seq.empty),
-              Notification("ign", "ign", ZonedDateTime.now, REJECTED, Seq.empty),
+              NotificationSummary(UUID.randomUUID(), ZonedDateTime.now, ERRORS),
+              NotificationSummary(UUID.randomUUID(), ZonedDateTime.now, ERRORS),
             )
             val timelineEvents = createTimeline(notifications)
             assert(timelineEvents(0).content.isDefined)
@@ -155,7 +173,7 @@ class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injec
       // Test to remove once the sfus feature flag is gone
       "do not have 'Documents required' Html content" when {
         "the 'Sfus' feature flag is disabled" in {
-          val notification = Notification("ign", "ign", ZonedDateTime.now, ADDITIONAL_DOCUMENTS_REQUIRED, Seq.empty)
+          val notification = NotificationSummary(UUID.randomUUID(), ZonedDateTime.now, ADDITIONAL_DOCUMENTS_REQUIRED)
           val timelineEvents = createTimeline(List(notification), false)
           assert(timelineEvents(0).content.isEmpty)
         }

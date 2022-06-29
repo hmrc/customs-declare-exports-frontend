@@ -14,14 +14,19 @@
  * limitations under the License.
  */
 
-package config.featureFlags
+package models.declaration.submissions
 
-import features.Feature
+import models.declaration.submissions.EnhancedStatus.EnhancedStatus
+import play.api.libs.json.Json
 
-import javax.inject.{Inject, Singleton}
+import java.time.ZonedDateTime
+import java.util.UUID
 
-@Singleton
-class QueryNotificationMessageConfig @Inject()(featureSwitchConfig: FeatureSwitchConfig) {
+case class NotificationSummary(notificationId: UUID, dateTimeIssued: ZonedDateTime, enhancedStatus: EnhancedStatus)
+    extends Ordered[NotificationSummary] {
+  override def compare(that: NotificationSummary): Int = dateTimeIssued.compareTo(that.dateTimeIssued)
+}
 
-  val isQueryNotificationMessageEnabled: Boolean = featureSwitchConfig.isFeatureOn(Feature.queryNotificationMessage)
+object NotificationSummary {
+  implicit val formats = Json.format[NotificationSummary]
 }

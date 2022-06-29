@@ -16,47 +16,50 @@
 
 package views.helpers
 
-import java.time.ZonedDateTime
-
 import config.featureFlags.{SecureMessagingInboxConfig, SfusConfig}
-import javax.inject.{Inject, Singleton}
-import models.declaration.notifications.Notification
-import models.declaration.submissions.Submission
+import models.declaration.submissions.EnhancedStatus._
+import models.declaration.submissions.RequestType.SubmissionRequest
+import models.declaration.submissions.{NotificationSummary, Submission}
 import play.api.i18n.Messages
 import play.api.mvc.Call
-import play.twirl.api.Html
-import views.html.components.gds.linkButton
+import play.twirl.api.{Html, HtmlFormat}
+import views.html.components.gds.{linkButton, paragraphBody}
 import views.html.components.upload_files_partial_for_timeline
+
+import java.time.ZonedDateTime
+import javax.inject.{Inject, Singleton}
 
 case class TimelineEvent(title: String, dateTime: ZonedDateTime, content: Option[Html])
 
 @Singleton
 class TimelineEvents @Inject()(
   linkButton: linkButton,
+  paragraphBody: paragraphBody,
   secureMessagingInboxConfig: SecureMessagingInboxConfig,
   sfusConfig: SfusConfig,
   uploadFilesPartialForTimeline: upload_files_partial_for_timeline
 ) {
-  def apply(submission: Submission, notifications: Seq[Notification])(implicit messages: Messages): Seq[TimelineEvent] = {
-    val sortedNotifications = {
-      /*
-      Not sure if the normalisation we are doing by using ZonedDateTime.withZoneSameInstant (dateTimeIssuedInUK)
-      could potentially affect or not the order in case the source ZonedDateTime instances in Notification have
-      different time zones. Accordingly, just to be safe, I decided to apply the normalisation before sorting.
-       */
-      notifications
-        .map(notification => notification.copy(dateTimeIssued = notification.dateTimeIssuedInUK))
-        .sorted
-        .reverse
-    }
+  def apply(submission: Submission)(implicit messages: Messages): Seq[TimelineEvent] = {
 
-    val IndexToMatchForUploadFilesContent = sortedNotifications.indexWhere(_.isStatusDMSDocOrDMSCtl)
-    val IndexToMatchForViewQueriesContent = sortedNotifications.indexWhere(_.isStatusDMSQry)
-    val IndexToMatchForFixResubmitContent = sortedNotifications.indexWhere(_.isStatusDMSRej)
+    val submissionRequestAction = submission.actions.filter(_.requestType == SubmissionRequest)
+    val sortedNotificationsSummaries =
+      submissionRequestAction.headOption.flatMap(_.notifications).getOrElse(Seq.empty[NotificationSummary]).sorted.reverse
 
-    sortedNotifications.zipWithIndex.map {
-      case (notification, index) =>
-        val content = index match {
+    val IndexToMatchForUploadFilesContent = sortedNotificationsSummaries.indexWhere(
+      summary => summary.enhancedStatus == ADDITIONAL_DOCUMENTS_REQUIRED || summary.enhancedStatus == UNDERGOING_PHYSICAL_CHECK
+    )
+    val IndexToMatchForViewQueriesContent = sortedNotificationsSummaries.indexWhere(_.enhancedStatus == QUERY_NOTIFICATION_MESSAGE)
+    val IndexToMatchForFixResubmitContent = sortedNotificationsSummaries.indexWhere(_.enhancedStatus == ERRORS)
+
+    sortedNotificationsSummaries.zipWithIndex.map {
+      case (notificationSummary, index) =>
+        val bodyContent =
+          if (messages.isDefinedAt(s"submission.enhancedStatus.${notificationSummary.enhancedStatus}.body"))
+            paragraphBody(messages(s"submission.enhancedStatus.${notificationSummary.enhancedStatus}.body"))
+          else
+            HtmlFormat.empty
+
+        val actionContent = index match {
           case IndexToMatchForFixResubmitContent => fixAndResubmitContent(submission.uuid)
 
           case IndexToMatchForUploadFilesContent if sfusConfig.isSfusUploadEnabled && IndexToMatchForFixResubmitContent < 0 =>
@@ -67,31 +70,38 @@ class TimelineEvents @Inject()(
             val dmsqryMoreRecentThanDmsdoc = isIndex1Primary(IndexToMatchForViewQueriesContent, IndexToMatchForUploadFilesContent)
             viewQueriesContent(noDmsrejNotification && dmsqryMoreRecentThanDmsdoc)
 
-          case _ => None
+          case _ => HtmlFormat.empty
         }
-        TimelineEvent(title = StatusOfSubmission.asText(notification), dateTime = notification.dateTimeIssued, content = content)
+
+        val content = new Html(List(bodyContent, actionContent))
+        val maybeContent =
+          if (content.body.isEmpty)
+            None
+          else
+            Some(new Html(List(bodyContent, actionContent)))
+
+        TimelineEvent(
+          title = EnhancedStatusTranslator.asText(notificationSummary),
+          dateTime = notificationSummary.dateTimeIssued,
+          content = maybeContent
+        )
     }
   }
 
   private def isIndex1Primary(index1: Int, index2: Int): Boolean = index2 < 0 || index1 < index2
 
-  private def fixAndResubmitContent(declarationID: String)(implicit messages: Messages): Option[Html] = {
+  private def fixAndResubmitContent(declarationID: String)(implicit messages: Messages): Html = {
     val call = controllers.routes.RejectedNotificationsController.displayPage(declarationID)
-    val element = linkButton("submissions.declarationDetails.fix.resubmit.button", call)
-    Some(new Html(List(element)))
+    linkButton("submissions.declarationDetails.fix.resubmit.button", call)
   }
 
-  private def uploadFilesContent(mrn: Option[String], isPrimary: Boolean)(implicit messages: Messages): Option[Html] = {
-    val element = uploadFilesPartialForTimeline(mrn, isPrimary)
-    Some(new Html(List(element)))
-  }
+  private def uploadFilesContent(mrn: Option[String], isPrimary: Boolean)(implicit messages: Messages): Html =
+    uploadFilesPartialForTimeline(mrn, isPrimary)
 
-  private def viewQueriesContent(isPrimary: Boolean)(implicit messages: Messages): Option[Html] = {
-    val element = linkButton(
+  private def viewQueriesContent(isPrimary: Boolean)(implicit messages: Messages): Html =
+    linkButton(
       "submissions.declarationDetails.view.queries.button",
       Call("GET", secureMessagingInboxConfig.sfusInboxLink),
       if (isPrimary) "govuk-button" else "govuk-button govuk-button--secondary"
     )
-    Some(new Html(List(element)))
-  }
 }

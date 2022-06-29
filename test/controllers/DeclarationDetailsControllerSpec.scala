@@ -32,7 +32,7 @@ import org.mockito.stubbing.OngoingStubbing
 import org.scalatest.BeforeAndAfterEach
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import views.html.{declaration_details, declaration_information}
+import views.html.declaration_details
 
 class DeclarationDetailsControllerSpec extends ControllerWithoutFormSpec with BeforeAndAfterEach {
 
@@ -48,7 +48,6 @@ class DeclarationDetailsControllerSpec extends ControllerWithoutFormSpec with Be
     actions = Seq(Action(id = actionId, requestType = SubmissionRequest, requestTimestamp = ZonedDateTime.now))
   )
 
-  private val declarationInformationPage = mock[declaration_information]
   private val declarationDetailsPage = mock[declaration_details]
 
   val controller = new DeclarationDetailsController(
@@ -56,8 +55,6 @@ class DeclarationDetailsControllerSpec extends ControllerWithoutFormSpec with Be
     mockVerifiedEmailAction,
     mockCustomsDeclareExportsConnector,
     stubMessagesControllerComponents(),
-    mockQueryNotificationMessageConfig,
-    declarationInformationPage,
     declarationDetailsPage
   )(ec)
 
@@ -65,85 +62,32 @@ class DeclarationDetailsControllerSpec extends ControllerWithoutFormSpec with Be
     super.beforeEach()
 
     authorizedUser()
-    when(declarationInformationPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
-    when(declarationDetailsPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(declarationDetailsPage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit =
-    reset(mockQueryNotificationMessageConfig, declarationInformationPage, declarationDetailsPage, mockCustomsDeclareExportsConnector)
+    reset(declarationDetailsPage, mockCustomsDeclareExportsConnector)
 
   "displayPage method of Declaration Details page" should {
 
     "return 200 (OK)" when {
       val submissionCaptor: ArgumentCaptor[Submission] = ArgumentCaptor.forClass(classOf[Submission])
-      val notificationsCaptor: ArgumentCaptor[Seq[Notification]] = ArgumentCaptor.forClass(classOf[Seq[Notification]])
 
-      "submission and notifications are provided for the Declaration" when {
+      "submission but no notifications are provided for the Declaration" in {
+        responsesToReturn(isQueryNotificationMessageEnabled = true, List.empty)
 
-        "QueryNotificationMessage feature flag is disabled" in {
-          responsesToReturn(isQueryNotificationMessageEnabled = false)
+        val result = controller.displayPage(actionId)(getRequest())
+        status(result) mustBe OK
 
-          val result = controller.displayPage(actionId)(getRequest())
-          status(result) mustBe OK
-
-          verifyNoInteractions(declarationDetailsPage)
-
-          verify(declarationInformationPage).apply(submissionCaptor.capture(), notificationsCaptor.capture())(any(), any())
-          submissionCaptor.getValue mustBe submission
-          notificationsCaptor.getValue mustBe List(notification)
-        }
-
-        "QueryNotificationMessage feature flag is enabled" in {
-          responsesToReturn(isQueryNotificationMessageEnabled = true)
-
-          val result = controller.displayPage(actionId)(getRequest())
-          status(result) mustBe OK
-
-          verifyNoInteractions(declarationInformationPage)
-
-          verify(declarationDetailsPage).apply(submissionCaptor.capture(), notificationsCaptor.capture())(any(), any())
-          submissionCaptor.getValue mustBe submission
-          notificationsCaptor.getValue mustBe List(notification)
-        }
-      }
-
-      "submission but no notifications are provided for the Declaration" when {
-
-        "QueryNotificationMessage feature flag is disabled" in {
-          responsesToReturn(isQueryNotificationMessageEnabled = false, List.empty)
-
-          val result = controller.displayPage(actionId)(getRequest())
-          status(result) mustBe OK
-
-          verifyNoInteractions(declarationDetailsPage)
-
-          verify(declarationInformationPage).apply(submissionCaptor.capture(), notificationsCaptor.capture())(any(), any())
-          submissionCaptor.getValue mustBe submission
-          notificationsCaptor.getValue mustBe List.empty
-        }
-
-        "QueryNotificationMessage feature flag is enabled" in {
-          responsesToReturn(isQueryNotificationMessageEnabled = true, List.empty)
-
-          val result = controller.displayPage(actionId)(getRequest())
-          status(result) mustBe OK
-
-          verifyNoInteractions(declarationInformationPage)
-
-          verify(declarationDetailsPage).apply(submissionCaptor.capture(), notificationsCaptor.capture())(any(), any())
-          submissionCaptor.getValue mustBe submission
-          notificationsCaptor.getValue mustBe List.empty
-        }
+        verify(declarationDetailsPage).apply(submissionCaptor.capture())(any(), any())
+        submissionCaptor.getValue mustBe submission
       }
 
       def responsesToReturn(
         isQueryNotificationMessageEnabled: Boolean,
         notifications: Seq[Notification] = List(notification)
-      ): OngoingStubbing[Future[Seq[Notification]]] = {
-        when(mockQueryNotificationMessageConfig.isQueryNotificationMessageEnabled).thenReturn(isQueryNotificationMessageEnabled)
+      ): OngoingStubbing[Future[Option[Submission]]] =
         when(mockCustomsDeclareExportsConnector.findSubmission(any())(any(), any())).thenReturn(Future.successful(Some(submission)))
-        when(mockCustomsDeclareExportsConnector.findNotifications(any())(any(), any())).thenReturn(Future.successful(notifications))
-      }
     }
 
     "return 303 (SEE_OTHER)" when {
@@ -158,7 +102,6 @@ class DeclarationDetailsControllerSpec extends ControllerWithoutFormSpec with Be
         redirectLocation(result).get mustBe routes.SubmissionsController.displayListOfSubmissions().url
 
         verifyNoInteractions(declarationDetailsPage)
-        verifyNoInteractions(declarationInformationPage)
       }
     }
   }

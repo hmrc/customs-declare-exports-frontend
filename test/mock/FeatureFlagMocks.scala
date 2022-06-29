@@ -29,7 +29,6 @@ trait FeatureFlagMocks extends MockExportCacheService with BeforeAndAfterEach {
 
   val mockWaiver999LConfig: Waiver999LConfig = mock[Waiver999LConfig]
   val mockEadConfig: EadConfig = mock[EadConfig]
-  val mockQueryNotificationMessageConfig: QueryNotificationMessageConfig = mock[QueryNotificationMessageConfig]
   val mockSecureMessagingConfig: SecureMessagingConfig = mock[SecureMessagingConfig]
   val mockSecureMessagingInboxConfig: SecureMessagingInboxConfig = mock[SecureMessagingInboxConfig]
   val mockSfusConfig: SfusConfig = mock[SfusConfig]

@@ -19,10 +19,9 @@ package views.declaration.destinationCountries
 import base.{ExportsTestData, Injector}
 import connectors.CodeListConnector
 import controllers.declaration.routes
-import controllers.declaration.routes.{AuthorisationProcedureCodeChoiceController, DeclarationHolderRequiredController}
 import forms.common.Eori
 import forms.declaration.AuthorisationProcedureCodeChoice.{Choice1040, ChoiceOthers}
-import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.STANDARD_PRE_LODGED
+import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.{STANDARD_FRONTIER, STANDARD_PRE_LODGED}
 import forms.declaration.countries.Countries.DestinationCountryPage
 import forms.declaration.countries.{Countries, Country}
 import forms.declaration.declarationHolder.DeclarationHolder
@@ -37,6 +36,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 import play.api.data.Form
+import play.api.mvc.Call
 import play.twirl.api.Html
 import services.cache.ExportsTestData
 import tools.Stubs
@@ -77,9 +77,7 @@ class DestinationCountryViewSpec extends UnitViewSpec with Stubs with ExportsTes
 
     onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED) { implicit request =>
       "display a back button linking to the /authorisation-choice page" in {
-        val backButton = createView().getElementById("back-link")
-        backButton.text mustBe messages("site.back")
-        backButton must haveHref(AuthorisationProcedureCodeChoiceController.displayPage(Normal))
+        verifyBackLink(routes.AuthorisationProcedureCodeChoiceController.displayPage(Normal))
       }
     }
 
@@ -88,19 +86,34 @@ class DestinationCountryViewSpec extends UnitViewSpec with Stubs with ExportsTes
         List(Choice1040, ChoiceOthers).foreach { choice =>
           s"AuthorisationProcedureCodeChoice is '${choice.value}'" in {
             implicit val request = withRequest(STANDARD_PRE_LODGED, withAuthorisationProcedureCodeChoice(choice))
-            val backButton = createView().getElementById("back-link")
-            backButton.text mustBe messages("site.back")
-            backButton must haveHref(DeclarationHolderRequiredController.displayPage())
+            verifyBackLink(routes.DeclarationHolderRequiredController.displayPage())
           }
+        }
+      }
+    }
+
+    "display a back button linking to the /is-authorisation-required page" when {
+      "AdditionalDeclarationType is 'STANDARD_FRONTIER' and" when {
+        s"AuthorisationProcedureCodeChoice is 'Code1040'" in {
+          implicit val request = withRequest(STANDARD_FRONTIER, withAuthorisationProcedureCodeChoice(Choice1040))
+          verifyBackLink(routes.DeclarationHolderRequiredController.displayPage())
+        }
+      }
+    }
+
+    "display a back button linking to the /authorisation-choice page" when {
+      "AdditionalDeclarationType is 'STANDARD_FRONTIER' and" when {
+        s"AuthorisationProcedureCodeChoice is 'CodeOthers'" in {
+          // However this should not be possible, since the user should always be forced to enter at least one auth.
+          implicit val request = withRequest(STANDARD_FRONTIER, withAuthorisationProcedureCodeChoice(ChoiceOthers))
+          verifyBackLink(routes.AuthorisationProcedureCodeChoiceController.displayPage())
         }
       }
     }
 
     onJourney(CLEARANCE, OCCASIONAL) { implicit request =>
       "display a back button linking to the /is-authorisation-required  page" in {
-        val backButton = createView().getElementById("back-link")
-        backButton.text mustBe messages("site.back")
-        backButton must haveHref(DeclarationHolderRequiredController.displayPage(Normal))
+        verifyBackLink(routes.DeclarationHolderRequiredController.displayPage(Normal))
       }
     }
 
@@ -111,12 +124,16 @@ class DestinationCountryViewSpec extends UnitViewSpec with Stubs with ExportsTes
         s"on $declarationType journey and" when {
           "the declaration contains at least one authorisation" in {
             implicit val request = withRequestOfType(declarationType, withDeclarationHolders(holder))
-            val backButton = createView().getElementById("back-link")
-            backButton.text mustBe messages("site.back")
-            backButton must haveHref(routes.DeclarationHolderSummaryController.displayPage())
+            verifyBackLink(routes.DeclarationHolderSummaryController.displayPage())
           }
         }
       }
+    }
+
+    def verifyBackLink(call: Call)(implicit request: JourneyRequest[_]): Unit = {
+      val backButton = createView().getElementById("back-link")
+      backButton.text mustBe messages("site.back")
+      backButton must haveHref(call)
     }
   }
 

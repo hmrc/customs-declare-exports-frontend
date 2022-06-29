@@ -21,7 +21,12 @@ import models.declaration.submissions.Action.defaultDateTimeZone
 import java.time.{ZoneId, ZonedDateTime}
 import play.api.libs.json.Json
 
-case class Action(id: String, requestType: RequestType, requestTimestamp: ZonedDateTime = ZonedDateTime.now(defaultDateTimeZone))
+case class Action(
+  id: String,
+  requestType: RequestType,
+  requestTimestamp: ZonedDateTime = ZonedDateTime.now(defaultDateTimeZone),
+  notifications: Option[Seq[NotificationSummary]] = None
+)
 
 object Action {
   implicit val format = Json.format[Action]

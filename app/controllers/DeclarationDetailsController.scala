@@ -16,37 +16,31 @@
 
 package controllers
 
-import config.featureFlags.QueryNotificationMessageConfig
 import connectors.CustomsDeclareExportsConnector
 import controllers.actions.{AuthAction, VerifiedEmailAction}
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import views.html.{declaration_details, declaration_information}
+import views.html.declaration_details
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class DeclarationDetailsController @Inject()(
   authenticate: AuthAction,
   verifyEmail: VerifiedEmailAction,
   customsDeclareExportsConnector: CustomsDeclareExportsConnector,
   mcc: MessagesControllerComponents,
-  queryNotificationMessageConfig: QueryNotificationMessageConfig,
-  declarationInformationPage: declaration_information,
   declarationDetailsPage: declaration_details
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
   def displayPage(submissionId: String): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
-    customsDeclareExportsConnector.findSubmission(submissionId).flatMap {
+    customsDeclareExportsConnector.findSubmission(submissionId).map {
       case Some(submission) =>
-        customsDeclareExportsConnector.findNotifications(submissionId).map { notifications =>
-          if (queryNotificationMessageConfig.isQueryNotificationMessageEnabled) Ok(declarationDetailsPage(submission, notifications))
-          else Ok(declarationInformationPage(submission, notifications))
-        }
-
-      case _ => Future.successful(Redirect(routes.SubmissionsController.displayListOfSubmissions()))
+        Ok(declarationDetailsPage(submission))
+      case _ =>
+        Redirect(routes.SubmissionsController.displayListOfSubmissions())
     }
   }
 }

@@ -17,20 +17,19 @@
 package views.helpers
 
 import config.featureFlags.EadConfig
-import models.declaration.notifications.Notification
 import models.declaration.submissions.Submission
-import models.declaration.submissions.SubmissionStatus.eadAcceptableStatuses
+import models.declaration.submissions.EnhancedStatus._
 
 object DeclarationDetailsLinks {
 
-  def displayViewDeclarationLink(notifications: Seq[Notification]): Boolean = !notifications.exists(_.isStatusDMSRej)
+  def displayViewDeclarationLink(submission: Submission): Boolean = submission.latestEnhancedStatus != Some(ERRORS)
 
-  def mrnIfDMSRcvOrDMSAcc(submission: Submission, notifications: Seq[Notification]): Option[String] =
-    notifications.headOption.flatMap(notification => if (notification.isStatusDMSAccOrDMSRcv) submission.mrn else None)
+  def mrnIfAccepted(submission: Submission): Option[String] =
+    if (submission.isStatusAcceptedOrReceived) submission.mrn else None
 
-  def mrnIfEadStatus(submission: Submission, notifications: Seq[Notification], eadConfig: EadConfig): Option[String] =
+  def mrnIfEadStatus(submission: Submission, eadConfig: EadConfig): Option[String] =
     if (eadConfig.isEadEnabled) {
-      val hasEadAcceptableStatus = notifications.headOption.map(_.status).exists(eadAcceptableStatuses.contains)
+      val hasEadAcceptableStatus = submission.allSubmissionRequestStatuses.exists(eadAcceptableStatuses.contains)
       if (hasEadAcceptableStatus) submission.mrn else None
     } else None
 }

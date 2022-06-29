@@ -832,6 +832,13 @@ function additionalTaricCodes(){
     }
 }
 
+function vatRating(){
+    if (currentPageIs('/customs-declare-exports/declaration/items/.*/vat-rating')) {
+        selectRadioOptionFromInputs(document.getElementsByName('nactCode'), 0)
+        document.getElementById('submit').click();
+    }
+}
+
 function nactCodes(){
     if (currentPageIs('/customs-declare-exports/declaration/items/.*/national-additional-code')) {
         document.getElementById('code_no').checked = 'checked';
@@ -1269,6 +1276,7 @@ function completeJourney() {
     unDangerousGoodsCode();
     cusCode();
     additionalTaricCodes();
+    vatRating();
     nactCodes();
     statisticalValue();
     addPackageInformation();

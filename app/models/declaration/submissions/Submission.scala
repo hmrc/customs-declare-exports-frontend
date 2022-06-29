@@ -16,17 +16,21 @@
 
 package models.declaration.submissions
 
+import models.declaration.submissions.EnhancedStatus._
+import models.declaration.submissions.RequestType.SubmissionRequest
+
 import java.time.ZonedDateTime
 import java.util.UUID
-
 import play.api.libs.json.Json
 
 case class Submission(
-  uuid: String = UUID.randomUUID().toString,
+  uuid: String = UUID.randomUUID.toString,
   eori: String,
   lrn: String,
   mrn: Option[String] = None,
   ducr: Option[String] = None,
+  latestEnhancedStatus: Option[EnhancedStatus] = None,
+  enhancedStatusLastUpdated: Option[ZonedDateTime] = None,
   actions: Seq[Action]
 ) {
 
@@ -35,6 +39,17 @@ case class Submission(
   } else {
     None
   }
+
+  lazy val allSubmissionRequestStatuses: Seq[EnhancedStatus] = {
+    val maybeExistingStatuses = for {
+      subRequestAction <- actions.filter(_.requestType == SubmissionRequest).headOption
+      notificationSummaries <- subRequestAction.notifications
+    } yield notificationSummaries.map(_.enhancedStatus)
+    maybeExistingStatuses.getOrElse(Seq.empty[EnhancedStatus])
+  }
+
+  lazy val isStatusAcceptedOrReceived: Boolean =
+    allSubmissionRequestStatuses.intersect(Seq(GOODS_ARRIVED_MESSAGE, GOODS_ARRIVED, RECEIVED)).nonEmpty
 }
 
 object Submission {
