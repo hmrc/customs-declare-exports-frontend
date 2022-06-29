@@ -6,7 +6,6 @@ object AppDependencies {
   val compile: Seq[ModuleID] = Seq(
     "uk.gov.hmrc"                   %% "bootstrap-frontend-play-28"     % "5.9.0",
     "uk.gov.hmrc"                   %% "logback-json-logger"            % "5.1.0",
-    "uk.gov.hmrc"                   %% "govuk-template"                 % "5.69.0-play-28",
     "uk.gov.hmrc"                   %% "play-allowlist-filter"          % "1.0.0-play-28",
     "uk.gov.hmrc"                   %% "play-conditional-form-mapping"  % "1.9.0-play-28",
     "uk.gov.hmrc"                   %% "play-frontend-hmrc"             % "3.9.0-play-28",
