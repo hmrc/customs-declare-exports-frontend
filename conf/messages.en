@@ -889,7 +889,6 @@ declaration.declarationHolder.body.clearance.eidr.others = Check your EIDR appro
 declaration.declarationHolder.body.simplified = You need to select SDE as the authorisation for the simplified declaration.
 declaration.declarationHolder.body.simplified.arrived.1007 = SDP (regular use) may not be used with CSE for excise suspense goods. See the {0} and look at ‘Restrictions on usage’.
 declaration.declarationHolder.body.supplementary = Enter the same authorisations as you entered for part 1.
-declaration.declarationHolder.body.arrived.warning = You must select and add EXRR for the arrived declaration if the goods are departing from Dover, Eurotunnel (Folkestone), Fishguard or Holyhead, and some exports from Liverpool, Heysham, Pembroke.
 declaration.declarationHolder.body.arrived.expander.cse.title = What if I have customs supervised exports (CSE) authorisation?
 declaration.declarationHolder.body.arrived.expander.cse.text = Do not use your customs supervised exports (CSE) authorisation when EXRR is required.
 declaration.declarationHolder.body.arrived.expander.mib.title = What if I am declaring merchandise in baggage or personal vehicle (MIB)?
