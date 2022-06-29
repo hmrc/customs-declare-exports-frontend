@@ -27,11 +27,8 @@ case class Action(
   requestTimestamp: ZonedDateTime = ZonedDateTime.now(defaultDateTimeZone),
   notifications: Option[Seq[NotificationSummary]]
 ) {
-  val latestNotificationSummary: Option[NotificationSummary] = if (notifications.isDefined && notifications.get.nonEmpty) {
-    Some(notifications.get.minBy(_.dateTimeIssued)(Action.dateTimeOrdering))
-  } else {
-    None
-  }
+  val latestNotificationSummary: Option[NotificationSummary] =
+    notifications.flatMap(_.lastOption)
 }
 
 object Action {

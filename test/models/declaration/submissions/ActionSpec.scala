@@ -23,8 +23,7 @@ class ActionSpec extends UnitSpec {
 
   "latestNotificationSummary" should {
     val notifications = Some(Seq(notificationSummary, notificationSummary_2, notificationSummary_3))
-    val actionWithNotifications =
-      action.copy(notifications = notifications)
+    val actionWithNotifications = action.copy(notifications = notifications)
 
     "return latest notification summary" in {
       actionWithNotifications.latestNotificationSummary mustBe Some(notificationSummary_3)
