@@ -60,8 +60,8 @@ general.inquiries.help.link = General enquires help
 
 unauthorised.heading = You do not have access to the Customs Declaration Service using these sign-in details
 unauthorised.heading.1 = First attempt to access CDS
-unauthorised.paragraph.1 = If you think you need to set up access to CDS, you can do that right away, from the {0}. You can also use this service to check and see if access has been set up already.
-unauthorised.paragraph.1.linkText = Get access to CDS start page on GOV.UK (opens in new tab)
+unauthorised.paragraph.1 = If you think you need to set up access to CDS, you can do that right away, from the {0}. You can also use this service to check and see if your business or organisation is already subscribed to CDS.
+unauthorised.paragraph.1.linkText = Subscribe to CDS start page on GOV.UK (opens in new tab).
 unauthorised.heading.2 = If you set up access before
 unauthorised.paragraph.2 = If you have used any other Government Gateway user ID and password, try again with those details. {0}.
 unauthorised.paragraph.2.linkText = Get help if you have problems signing in (opens in new tab)

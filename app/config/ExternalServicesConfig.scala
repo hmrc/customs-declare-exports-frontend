@@ -37,6 +37,7 @@ class ExternalServicesConfig @Inject()(val configuration: Configuration) {
 
   val eoriService: String = loadUrl("eoriService")
   val cdsRegister: String = loadUrl("cdsRegister")
+  val problemsSigningIn: String = loadUrl("problemsSigningIn")
   val cdsCheckStatus: String = loadUrl("cdsCheckStatus")
   val organisationsUrl: String = loadUrl("organisationsLink")
   val importExports: String = loadUrl("importExports")
