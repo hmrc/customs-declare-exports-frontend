@@ -118,6 +118,19 @@ cancellation.reason.duplication = Duplication
 cancellation.reason.otherReason = Other reason
 cancellation.reason.noLongerRequired = No longer required
 
+cancellation.holding.title = Cancel your declaration
+cancellation.holding.paragraph = We are processing your cancellation request, please wait.
+cancellation.mrn.header = MRN: {0}
+
+cancellation.result.cancelled.title = Your declaration has been cancelled
+cancellation.result.cancelled.p1 = You can make a copy of this declaration and submit it as a new declaration.
+cancellation.result.cancelled.p2 = On submission you will get a new movement reference number (MRN).
+cancellation.result.denied.title = Your cancellation request has been denied
+cancellation.result.denied.p1 = This may be because your declaration is still being checked. You can try to cancel it again once you see ‘Cleared’ on the declaration details page.
+cancellation.result.unprocessed.title = Your cancellation request has not been processed
+cancellation.result.unprocessed.p1 = Processing your request took longer than expected. Please check the status of your submitted declarations to view the progress of your request.
+
+
 declaration.choice.description = What do you want to do?
 declaration.choice.link.sfus.description = If you receive a notification to upload documents or respond to a query, you can use the CDS document uploads and secure messages service.
 declaration.choice.link.exports.description = If you need to upload documents
@@ -890,7 +903,6 @@ declaration.declarationHolder.body.clearance.eidr.others = Check your EIDR appro
 declaration.declarationHolder.body.simplified = You need to select SDE as the authorisation for the simplified declaration.
 declaration.declarationHolder.body.simplified.arrived.1007 = SDP (regular use) may not be used with CSE for excise suspense goods. See the {0} and look at ‘Restrictions on usage’.
 declaration.declarationHolder.body.supplementary = Enter the same authorisations as you entered for part 1.
-declaration.declarationHolder.body.arrived.warning = You must select and add EXRR for the arrived declaration if the goods are departing from Dover, Eurotunnel (Folkestone), Fishguard or Holyhead, and some exports from Liverpool, Heysham, Pembroke.
 declaration.declarationHolder.body.arrived.expander.cse.title = What if I have customs supervised exports (CSE) authorisation?
 declaration.declarationHolder.body.arrived.expander.cse.text = Do not use your customs supervised exports (CSE) authorisation when EXRR is required.
 declaration.declarationHolder.body.arrived.expander.mib.title = What if I am declaring merchandise in baggage or personal vehicle (MIB)?

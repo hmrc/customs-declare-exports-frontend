@@ -16,11 +16,14 @@
 
 package models.declaration.submissions
 
+import models.declaration.submissions.RequestType.CancellationRequest
+
 import models.declaration.submissions.EnhancedStatus._
 import models.declaration.submissions.RequestType.SubmissionRequest
 
 import java.time.ZonedDateTime
 import java.util.UUID
+
 import play.api.libs.json.Json
 
 case class Submission(
@@ -40,6 +43,13 @@ case class Submission(
     None
   }
 
+  val latestCancellationAction: Option[Action] = {
+    val cancelActions = actions.filter(_.requestType == CancellationRequest)
+    if (cancelActions.nonEmpty) {
+      Some(cancelActions.minBy(_.requestTimestamp)(Submission.dateTimeOrdering))
+    } else None
+  }
+
   lazy val allSubmissionRequestStatuses: Seq[EnhancedStatus] = {
     val maybeExistingStatuses = for {
       subRequestAction <- actions.filter(_.requestType == SubmissionRequest).headOption
@@ -54,12 +64,12 @@ case class Submission(
 
 object Submission {
 
-  val dateTimeOrdering: Ordering[ZonedDateTime] = Ordering.fromLessThan[ZonedDateTime]((a, b) => a.isBefore(b))
+  val dateTimeOrdering: Ordering[ZonedDateTime] = Ordering.fromLessThan[ZonedDateTime]((a, b) => b.isBefore(a))
 
   implicit val formats = Json.format[Submission]
 
   implicit val ordering: Ordering[Submission] =
     Ordering.by[Submission, Option[ZonedDateTime]](submission => submission.latestAction.map(_.requestTimestamp))(Ordering.Option(dateTimeOrdering))
 
-  val newestEarlierOrdering: Ordering[Submission] = ordering.reverse
+  val newestEarlierOrdering: Ordering[Submission] = ordering
 }
