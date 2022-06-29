@@ -38,7 +38,7 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class TransportLeavingTheBorderController @Inject()(
+class TransportLeavingTheBorderController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
@@ -79,8 +79,8 @@ class TransportLeavingTheBorderController @Inject()(
       declaration.copy(
         transport = declaration.transport
           .copy(borderModeOfTransportCode = Some(code), transportCrossingTheBorderNationality = transportCrossingTheBorderNationality),
-        locations = declaration.locations.copy(
-          inlandOrBorder = if (code.code == Some(RoRo)) None else inlandOrBorderHelper.resetInlandOrBorderIfRequired(declaration)
+        locations = declaration.locations.copy(inlandOrBorder =
+          if (code.code == Some(RoRo)) None else inlandOrBorderHelper.resetInlandOrBorderIfRequired(declaration)
         )
       )
     }

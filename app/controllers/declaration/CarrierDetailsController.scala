@@ -35,7 +35,7 @@ import views.html.declaration.carrier_details
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class CarrierDetailsController @Inject()(
+class CarrierDetailsController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,

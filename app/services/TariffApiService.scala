@@ -29,7 +29,7 @@ import services.TariffApiService._
 case class CommodityInfo(code: String, description: String, units: String)
 
 @Singleton
-class TariffApiService @Inject()(tariffApiConfig: TariffApiConfig, tariffApiConnector: TariffApiConnector)(implicit ec: ExecutionContext)
+class TariffApiService @Inject() (tariffApiConfig: TariffApiConfig, tariffApiConnector: TariffApiConnector)(implicit ec: ExecutionContext)
     extends Logging {
 
   def retrieveCommodityInfoIfAny(declaration: ExportsDeclaration, itemId: String): Future[TariffApiResult] =

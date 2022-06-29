@@ -32,7 +32,7 @@ import views.html.declaration.additionalActors.additional_actors_summary
 
 import javax.inject.Inject
 
-class AdditionalActorsSummaryController @Inject()(
+class AdditionalActorsSummaryController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
@@ -61,7 +61,7 @@ class AdditionalActorsSummaryController @Inject()(
           validYesNo.answer match {
             case YesNoAnswers.yes => navigator.continueTo(mode, routes.AdditionalActorsAddController.displayPage, mode.isErrorFix)
             case YesNoAnswers.no  => navigator.continueTo(mode, routes.AuthorisationProcedureCodeChoiceController.displayPage)
-        }
+          }
       )
   }
 

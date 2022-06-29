@@ -33,7 +33,7 @@ import views.html.declaration.procedureCodes.procedure_codes
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class ProcedureCodesController @Inject()(
+class ProcedureCodesController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   navigator: Navigator,
@@ -69,18 +69,21 @@ class ProcedureCodesController @Inject()(
   ): Future[ExportsDeclaration] = {
 
     val updateProcedureCode: ExportsDeclaration => ExportsDeclaration = { model =>
-      model.updatedItem(itemId, item => {
-        val newProcedureCode = Some(procedureCodeEntered.procedureCode)
-        val newProcedureCodes = item.procedureCodes.fold(ProcedureCodesData(newProcedureCode, Seq.empty))(_.copy(procedureCode = newProcedureCode))
+      model.updatedItem(
+        itemId,
+        item => {
+          val newProcedureCode = Some(procedureCodeEntered.procedureCode)
+          val newProcedureCodes = item.procedureCodes.fold(ProcedureCodesData(newProcedureCode, Seq.empty))(_.copy(procedureCode = newProcedureCode))
 
-        item.copy(procedureCodes = Some(newProcedureCodes))
-      })
+          item.copy(procedureCodes = Some(newProcedureCodes))
+        }
+      )
     }
 
     val updateAdditionalProcedureCodes: ExportsDeclaration => ExportsDeclaration = { model =>
       model.updatedItem(
         itemId,
-        item => {
+        item =>
           (for {
             procedureCodesData <- item.procedureCodes
             cachedProcedureCode <- procedureCodesData.procedureCode
@@ -89,7 +92,6 @@ class ProcedureCodesController @Inject()(
 
             updatedItem = item.copy(procedureCodes = newProcedureCodesData)
           } yield updatedItem).getOrElse(item)
-        }
       )
     }
 

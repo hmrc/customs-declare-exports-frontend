@@ -84,8 +84,8 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestData with In
     "display transport reference if option none selected" in {
       val view = section(
         mode,
-        data.copy(
-          transport = data.transport
+        data.copy(transport =
+          data.transport
             .copy(meansOfTransportOnDepartureType = Some(TransportCodes.NotApplicable.value), meansOfTransportOnDepartureIDNumber = Some(""))
         )
       )(messages)

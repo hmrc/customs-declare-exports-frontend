@@ -36,7 +36,7 @@ import java.time.Instant
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class DeclarationChoiceController @Inject()(
+class DeclarationChoiceController @Inject() (
   authenticate: AuthAction,
   verifyEmail: VerifiedEmailAction,
   override val exportsCacheService: ExportsCacheService,
@@ -65,7 +65,7 @@ class DeclarationChoiceController @Inject()(
           request.declarationId match {
             case Some(id) => updateDeclarationType(id, declarationType.value).map(_ => nextPage(mode, id))
             case _        => create(declarationType.value).map(created => nextPage(mode, created.id))
-        }
+          }
       )
   }
 

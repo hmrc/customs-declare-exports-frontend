@@ -31,7 +31,7 @@ import views.html.declaration.previousDocuments.previous_documents_summary
 
 import javax.inject.Inject
 
-class PreviousDocumentsSummaryController @Inject()(
+class PreviousDocumentsSummaryController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   navigator: Navigator,
@@ -60,7 +60,7 @@ class PreviousDocumentsSummaryController @Inject()(
             case YesNoAnswers.yes =>
               navigator.continueTo(mode, controllers.declaration.routes.PreviousDocumentsController.displayPage, mode.isErrorFix)
             case YesNoAnswers.no => navigator.continueTo(mode, controllers.declaration.routes.ItemsSummaryController.displayAddItemPage)
-        }
+          }
       )
   }
 

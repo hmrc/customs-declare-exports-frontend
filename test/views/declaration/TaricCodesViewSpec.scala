@@ -90,13 +90,11 @@ class TaricCodesViewSpec extends UnitViewSpec with ExportsTestData with Stubs wi
       }
 
       "display existing NACT codes table" in {
-        codes.zipWithIndex.foreach {
-          case (code, index) => {
-            view.getElementById(s"taricCode-table-row$index-label").text mustBe code.taricCode
-            val removeButton = view.getElementById(s"taricCode-table-row$index-remove_button")
-            removeButton.text must include(messages(removeCaption))
-            removeButton.text must include(messages("declaration.taricAdditionalCodes.remove.hint", code.taricCode))
-          }
+        codes.zipWithIndex.foreach { case (code, index) =>
+          view.getElementById(s"taricCode-table-row$index-label").text mustBe code.taricCode
+          val removeButton = view.getElementById(s"taricCode-table-row$index-remove_button")
+          removeButton.text must include(messages(removeCaption))
+          removeButton.text must include(messages("declaration.taricAdditionalCodes.remove.hint", code.taricCode))
         }
       }
     }

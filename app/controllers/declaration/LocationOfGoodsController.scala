@@ -35,7 +35,7 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class LocationOfGoodsController @Inject()(
+class LocationOfGoodsController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   mcc: MessagesControllerComponents,
@@ -65,7 +65,7 @@ class LocationOfGoodsController @Inject()(
           locationOfGoods =>
             updateDeclarationFromRequest(updateDeclaration(_, locationOfGoods)).map { _ =>
               navigator.continueTo(mode, OfficeOfExitController.displayPage)
-          }
+            }
         )
   }
 

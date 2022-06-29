@@ -21,7 +21,7 @@ import features.Feature
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class Waiver999LConfig @Inject()(featureSwitchConfig: FeatureSwitchConfig) {
+class Waiver999LConfig @Inject() (featureSwitchConfig: FeatureSwitchConfig) {
 
   val is999LEnabled: Boolean = featureSwitchConfig.isFeatureOn(Feature.waiver999L)
 }

@@ -37,7 +37,7 @@ case class ItemAction(itemId: String)(implicit val executionContext: ExecutionCo
     }
 }
 
-class ItemActionBuilder @Inject()(authorized: AuthAction, journeyAction: JourneyAction)(implicit val executionContext: ExecutionContext) {
+class ItemActionBuilder @Inject() (authorized: AuthAction, journeyAction: JourneyAction)(implicit val executionContext: ExecutionContext) {
 
   def apply(itemId: String) = authorized andThen journeyAction andThen ItemAction(itemId)
 }

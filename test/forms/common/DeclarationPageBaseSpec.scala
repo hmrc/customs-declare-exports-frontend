@@ -30,9 +30,8 @@ trait DeclarationPageBaseSpec extends UnitSpec {
       "is passed a specific DeclarationType" should {
         "return the correct collection of TariffContentKeys" in {
 
-          for (decType: DeclarationType <- commonKeyDeclarationTypes) {
+          for (decType: DeclarationType <- commonKeyDeclarationTypes)
             page.defineTariffContentKeys(decType) mustBe getCommonTariffKeys(messageKey)
-          }
 
           page.defineTariffContentKeys(SUPPLEMENTARY) mustBe getSupplementaryTariffKeys(messageKey)
           page.defineTariffContentKeys(CLEARANCE) mustBe getClearanceTariffKeys(messageKey)
@@ -48,9 +47,8 @@ trait DeclarationPageBaseSpec extends UnitSpec {
     "defineTariffContentKeys is called" which {
       "is passed any DeclarationType" should {
         "always return the same collection of TariffContentKeys" in {
-          for (decType: DeclarationType <- DeclarationType.values) {
+          for (decType: DeclarationType <- DeclarationType.values)
             page.defineTariffContentKeys(decType) mustBe getKeys(messageKey)
-          }
         }
       }
     }

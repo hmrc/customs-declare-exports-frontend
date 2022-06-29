@@ -40,8 +40,8 @@ object ConsignmentReferences extends DeclarationPage {
 
   def form(decType: DeclarationType, additionalDecType: Option[AdditionalDeclarationType]): Form[ConsignmentReferences] = {
 
-    def form2Model: (Ducr, Lrn, Option[Mrn], Option[String]) => ConsignmentReferences = {
-      case (ducr, lrn, mrn, eidrDateStamp) => ConsignmentReferences(ducr, lrn, mrn, eidrDateStamp)
+    def form2Model: (Ducr, Lrn, Option[Mrn], Option[String]) => ConsignmentReferences = { case (ducr, lrn, mrn, eidrDateStamp) =>
+      ConsignmentReferences(ducr, lrn, mrn, eidrDateStamp)
     }
 
     def model2Form: ConsignmentReferences => Option[(Ducr, Lrn, Option[Mrn], Option[String])] =

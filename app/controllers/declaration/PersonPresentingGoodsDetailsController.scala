@@ -33,7 +33,7 @@ import views.html.declaration.person_presenting_goods_details
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class PersonPresentingGoodsDetailsController @Inject()(
+class PersonPresentingGoodsDetailsController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,

@@ -35,7 +35,7 @@ import views.html.declaration.invoice_and_exchange_rate_choice
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class InvoiceAndExchangeRateChoiceController @Inject()(
+class InvoiceAndExchangeRateChoiceController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   navigator: Navigator,
@@ -69,8 +69,8 @@ class InvoiceAndExchangeRateChoiceController @Inject()(
 
   private def resetCachedInvoiceData(implicit r: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
     updateDeclarationFromRequest { declaration =>
-      declaration.copy(
-        totalNumberOfItems = Some(
+      declaration.copy(totalNumberOfItems =
+        Some(
           InvoiceAndPackageTotals(
             totalAmountInvoiced = None,
             totalAmountInvoicedCurrency = None,

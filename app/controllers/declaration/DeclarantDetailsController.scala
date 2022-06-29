@@ -34,7 +34,7 @@ import views.html.declaration.declarant_details
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class DeclarantDetailsController @Inject()(
+class DeclarantDetailsController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
@@ -65,14 +65,12 @@ class DeclarantDetailsController @Inject()(
             Future(
               Redirect(controllers.declaration.routes.NotEligibleController.displayNotDeclarant())
                 .removingFromSession(ExportsSessionKeys.declarationId)
-          )
+            )
       )
   }
 
   private def updateCache(declarant: DeclarantDetails)(implicit r: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
-    updateDeclarationFromRequest(model => {
-      model.copy(parties = model.parties.copy(declarantDetails = Some(declarant)))
-    })
+    updateDeclarationFromRequest(model => model.copy(parties = model.parties.copy(declarantDetails = Some(declarant))))
 
   private def nextPage(implicit request: JourneyRequest[_]): Mode => Call = request.declarationType match {
     case DeclarationType.CLEARANCE => controllers.declaration.routes.DeclarantExporterController.displayPage

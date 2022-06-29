@@ -60,7 +60,7 @@ case class ItemId(id: String)
 
 // scalastyle:off number.of.methods
 @Singleton
-class Navigator @Inject()(
+class Navigator @Inject() (
   appConfig: AppConfig,
   waiver999LConfig: Waiver999LConfig,
   auditService: AuditService,
@@ -71,8 +71,7 @@ class Navigator @Inject()(
 
   val common: PartialFunction[DeclarationPage, Mode => Call] = {
     case DeclarationChoice =>
-      _ =>
-        ChoiceController.displayPage(Some(Choice(AllowedChoiceValues.CreateDec)))
+      _ => ChoiceController.displayPage(Some(Choice(AllowedChoiceValues.CreateDec)))
 
     case LinkDucrToMucr                => routes.ConsignmentReferencesController.displayPage
     case Mucr                          => routes.LinkDucrToMucrController.displayPage
@@ -112,8 +111,7 @@ class Navigator @Inject()(
     case AuthorisationProcedureCodeChoice => authorisationProcedureCodeChoicePreviousPage
     case OfficeOfExit                     => officeOfExitPreviousPage
     case RoutingCountryPage =>
-      (_, mode) =>
-        routes.RoutingCountriesController.displayRoutingQuestion(mode)
+      (_, mode) => routes.RoutingCountriesController.displayRoutingQuestion(mode)
   }
 
   val commonCacheItemDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode, String) => Call] = {
@@ -715,6 +713,6 @@ class Navigator @Inject()(
       case Mode.Change                                    => routes.SummaryController.displayPage(Mode.Normal)
       case Mode.ChangeAmend                               => routes.SummaryController.displayPageOnAmend
       case Mode.Draft                                     => routes.SummaryController.displayPage(Mode.Draft)
-      case _                                              => throw new IllegalArgumentException(s"Illegal mode [${mode.name}] for Navigator back-link")
+      case _ => throw new IllegalArgumentException(s"Illegal mode [${mode.name}] for Navigator back-link")
     }
 }

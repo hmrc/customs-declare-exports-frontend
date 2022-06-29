@@ -23,13 +23,13 @@ import uk.gov.voa.play.form.Condition
 case class ConditionalConstraint[T](shouldConstraintBeApplied: Condition, errorKey: String, constraint: (T => Boolean))
 
 /**
-  * A mapping that extends another mapping with additional constraints that are only added if their
-  * conditions are satisfied.
-  *
-  * @param baseMappings the wrapped mapping that should always be applied.
-  * @param conditionalAdditionalConstraints a Seq of additional constraints to be applied. Only the first constraints in
-  *                                         the sequence who's condition is satisfied is added (the others are ignored).
-  */
+ * A mapping that extends another mapping with additional constraints that are only added if their
+ * conditions are satisfied.
+ *
+ * @param baseMappings the wrapped mapping that should always be applied.
+ * @param conditionalAdditionalConstraints a Seq of additional constraints to be applied. Only the first constraints in
+ *                                         the sequence who's condition is satisfied is added (the others are ignored).
+ */
 case class AdditionalConstraintsMapping[T](
   baseMappings: Mapping[T],
   conditionalAdditionalConstraints: Seq[ConditionalConstraint[T]],

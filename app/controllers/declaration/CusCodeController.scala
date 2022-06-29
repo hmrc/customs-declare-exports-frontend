@@ -33,7 +33,7 @@ import views.html.declaration.cus_code
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class CusCodeController @Inject()(
+class CusCodeController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
@@ -61,7 +61,7 @@ class CusCodeController @Inject()(
         validForm =>
           updateExportsCache(itemId, validForm).map { _ =>
             navigator.continueTo(mode, nextPage(itemId, request.declarationType))
-        }
+          }
       )
   }
 

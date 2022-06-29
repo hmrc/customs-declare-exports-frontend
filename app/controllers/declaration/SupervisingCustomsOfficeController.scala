@@ -33,7 +33,7 @@ import views.html.declaration.supervising_customs_office
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class SupervisingCustomsOfficeController @Inject()(
+class SupervisingCustomsOfficeController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   navigator: Navigator,
@@ -63,8 +63,8 @@ class SupervisingCustomsOfficeController @Inject()(
 
   private def updateCache(formData: SupervisingCustomsOffice)(implicit request: JourneyRequest[_]): Future[ExportsDeclaration] =
     updateDeclarationFromRequest { declaration =>
-      declaration.copy(
-        locations = declaration.locations
+      declaration.copy(locations =
+        declaration.locations
           .copy(supervisingCustomsOffice = Some(formData), inlandOrBorder = inlandOrBorderHelper.resetInlandOrBorderIfRequired(declaration))
       )
     }

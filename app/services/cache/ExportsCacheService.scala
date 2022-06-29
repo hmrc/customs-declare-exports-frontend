@@ -25,7 +25,7 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ExportsCacheService @Inject()(connector: CustomsDeclareExportsConnector)(implicit ec: ExecutionContext) {
+class ExportsCacheService @Inject() (connector: CustomsDeclareExportsConnector)(implicit ec: ExecutionContext) {
 
   def create(declaration: ExportsDeclaration)(implicit hc: HeaderCarrier): Future[ExportsDeclaration] =
     connector.createDeclaration(declaration)

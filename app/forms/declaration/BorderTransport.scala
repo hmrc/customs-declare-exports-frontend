@@ -75,15 +75,15 @@ object BorderTransport extends DeclarationPage {
     Option[String]
   ) => BorderTransport = {
     case (
-        transportType,
-        shipIdNumber,
-        nameOfVessel,
-        wagonNumber,
-        vehicleRegistrationNumber,
-        flightNumber,
-        aircraftRegistrationNumber,
-        europeanVesselIDNumber,
-        nameOfInlandWaterwayVessel
+          transportType,
+          shipIdNumber,
+          nameOfVessel,
+          wagonNumber,
+          vehicleRegistrationNumber,
+          flightNumber,
+          aircraftRegistrationNumber,
+          europeanVesselIDNumber,
+          nameOfInlandWaterwayVessel
         ) =>
       BorderTransport(
         transportType,
@@ -116,7 +116,7 @@ object BorderTransport extends DeclarationPage {
           model2Ref(EuropeanVesselIDNumber),
           model2Ref(NameOfInlandWaterwayVessel)
         )
-    )
+      )
 
   private def form2Ref(refs: Option[String]*): String = refs.map(_.getOrElse("")).mkString
 

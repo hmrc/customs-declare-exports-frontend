@@ -26,7 +26,7 @@ import views.html.declaration.draft_declaration_page
 
 import javax.inject.Inject
 
-class DraftDeclarationController @Inject()(
+class DraftDeclarationController @Inject() (
   authenticate: AuthAction,
   appConfig: AppConfig,
   mcc: MessagesControllerComponents,

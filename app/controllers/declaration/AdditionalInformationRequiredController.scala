@@ -37,7 +37,7 @@ import views.html.declaration.additionalInformation.additional_information_requi
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class AdditionalInformationRequiredController @Inject()(
+class AdditionalInformationRequiredController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   waiver999LConfig: Waiver999LConfig,
@@ -68,7 +68,7 @@ class AdditionalInformationRequiredController @Inject()(
           yesNo =>
             updateCache(yesNo, itemId).map { _ =>
               navigator.continueTo(mode, nextPage(yesNo, itemId))
-          }
+            }
         )
     }
 

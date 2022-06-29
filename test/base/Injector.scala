@@ -27,12 +27,12 @@ trait Injector {
   val configuration = Configuration.empty
 
   /**
-    * Clearing shared metrics registries to avoid `A metric named jvm.attribute.vendor already exists` error.
-    *
-    * It appears very often with places with injector. This is enough solution for this problem.
-    *
-    * Reference and other solutions: https://github.com/kenshoo/metrics-play/issues/74
-    */
+   * Clearing shared metrics registries to avoid `A metric named jvm.attribute.vendor already exists` error.
+   *
+   * It appears very often with places with injector. This is enough solution for this problem.
+   *
+   * Reference and other solutions: https://github.com/kenshoo/metrics-play/issues/74
+   */
   SharedMetricRegistries.clear()
 
   private lazy val injector = GuiceApplicationBuilder().configure(configuration).injector()

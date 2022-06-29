@@ -32,7 +32,7 @@ import javax.inject.{Inject, Singleton}
 case class TimelineEvent(title: String, dateTime: ZonedDateTime, content: Option[Html])
 
 @Singleton
-class TimelineEvents @Inject()(
+class TimelineEvents @Inject() (
   linkButton: linkButton,
   paragraphBody: paragraphBody,
   secureMessagingInboxConfig: SecureMessagingInboxConfig,
@@ -45,46 +45,45 @@ class TimelineEvents @Inject()(
     val sortedNotificationsSummaries =
       submissionRequestAction.headOption.flatMap(_.notifications).getOrElse(Seq.empty[NotificationSummary]).sorted.reverse
 
-    val IndexToMatchForUploadFilesContent = sortedNotificationsSummaries.indexWhere(
-      summary => summary.enhancedStatus == ADDITIONAL_DOCUMENTS_REQUIRED || summary.enhancedStatus == UNDERGOING_PHYSICAL_CHECK
+    val IndexToMatchForUploadFilesContent = sortedNotificationsSummaries.indexWhere(summary =>
+      summary.enhancedStatus == ADDITIONAL_DOCUMENTS_REQUIRED || summary.enhancedStatus == UNDERGOING_PHYSICAL_CHECK
     )
     val IndexToMatchForViewQueriesContent = sortedNotificationsSummaries.indexWhere(_.enhancedStatus == QUERY_NOTIFICATION_MESSAGE)
     val IndexToMatchForFixResubmitContent = sortedNotificationsSummaries.indexWhere(_.enhancedStatus == ERRORS)
 
-    sortedNotificationsSummaries.zipWithIndex.map {
-      case (notificationSummary, index) =>
-        val bodyContent =
-          if (messages.isDefinedAt(s"submission.enhancedStatus.${notificationSummary.enhancedStatus}.body"))
-            paragraphBody(messages(s"submission.enhancedStatus.${notificationSummary.enhancedStatus}.body"))
-          else
-            HtmlFormat.empty
+    sortedNotificationsSummaries.zipWithIndex.map { case (notificationSummary, index) =>
+      val bodyContent =
+        if (messages.isDefinedAt(s"submission.enhancedStatus.${notificationSummary.enhancedStatus}.body"))
+          paragraphBody(messages(s"submission.enhancedStatus.${notificationSummary.enhancedStatus}.body"))
+        else
+          HtmlFormat.empty
 
-        val actionContent = index match {
-          case IndexToMatchForFixResubmitContent => fixAndResubmitContent(submission.uuid)
+      val actionContent = index match {
+        case IndexToMatchForFixResubmitContent => fixAndResubmitContent(submission.uuid)
 
-          case IndexToMatchForUploadFilesContent if sfusConfig.isSfusUploadEnabled && IndexToMatchForFixResubmitContent < 0 =>
-            uploadFilesContent(submission.mrn, isIndex1Primary(IndexToMatchForUploadFilesContent, IndexToMatchForViewQueriesContent))
+        case IndexToMatchForUploadFilesContent if sfusConfig.isSfusUploadEnabled && IndexToMatchForFixResubmitContent < 0 =>
+          uploadFilesContent(submission.mrn, isIndex1Primary(IndexToMatchForUploadFilesContent, IndexToMatchForViewQueriesContent))
 
-          case IndexToMatchForViewQueriesContent =>
-            val noDmsrejNotification = IndexToMatchForFixResubmitContent < 0
-            val dmsqryMoreRecentThanDmsdoc = isIndex1Primary(IndexToMatchForViewQueriesContent, IndexToMatchForUploadFilesContent)
-            viewQueriesContent(noDmsrejNotification && dmsqryMoreRecentThanDmsdoc)
+        case IndexToMatchForViewQueriesContent =>
+          val noDmsrejNotification = IndexToMatchForFixResubmitContent < 0
+          val dmsqryMoreRecentThanDmsdoc = isIndex1Primary(IndexToMatchForViewQueriesContent, IndexToMatchForUploadFilesContent)
+          viewQueriesContent(noDmsrejNotification && dmsqryMoreRecentThanDmsdoc)
 
-          case _ => HtmlFormat.empty
-        }
+        case _ => HtmlFormat.empty
+      }
 
-        val content = new Html(List(bodyContent, actionContent))
-        val maybeContent =
-          if (content.body.isEmpty)
-            None
-          else
-            Some(new Html(List(bodyContent, actionContent)))
+      val content = new Html(List(bodyContent, actionContent))
+      val maybeContent =
+        if (content.body.isEmpty)
+          None
+        else
+          Some(new Html(List(bodyContent, actionContent)))
 
-        TimelineEvent(
-          title = EnhancedStatusTranslator.asText(notificationSummary),
-          dateTime = notificationSummary.dateTimeIssued,
-          content = maybeContent
-        )
+      TimelineEvent(
+        title = EnhancedStatusTranslator.asText(notificationSummary),
+        dateTime = notificationSummary.dateTimeIssued,
+        content = maybeContent
+      )
     }
   }
 

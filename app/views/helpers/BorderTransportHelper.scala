@@ -30,7 +30,7 @@ import views.html.components.gds.exportsInputText
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class BorderTransportHelper @Inject()(exportsInputText: exportsInputText) {
+class BorderTransportHelper @Inject() (exportsInputText: exportsInputText) {
 
   private val prefix = "declaration.transportInformation.meansOfTransport"
 

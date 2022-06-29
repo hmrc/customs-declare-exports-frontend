@@ -32,7 +32,7 @@ import views.html.declaration.nact_codes
 
 import javax.inject.Inject
 
-class NactCodeSummaryController @Inject()(
+class NactCodeSummaryController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
@@ -62,7 +62,7 @@ class NactCodeSummaryController @Inject()(
           validYesNo.answer match {
             case YesNoAnswers.yes => navigator.continueTo(mode, controllers.declaration.routes.NactCodeAddController.displayPage(_, itemId))
             case YesNoAnswers.no  => navigator.continueTo(mode, nextPage(itemId))
-        }
+          }
       )
   }
 

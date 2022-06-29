@@ -34,7 +34,7 @@ import views.html.declaration.consignee_details
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class ConsigneeDetailsController @Inject()(
+class ConsigneeDetailsController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,

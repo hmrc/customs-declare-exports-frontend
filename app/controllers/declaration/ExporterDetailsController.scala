@@ -33,7 +33,7 @@ import views.html.declaration.exporter_address
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class ExporterDetailsController @Inject()(
+class ExporterDetailsController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
@@ -69,10 +69,10 @@ class ExporterDetailsController @Inject()(
     }
 
   private def updateCache(formData: ExporterDetails)(implicit r: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
-    updateDeclarationFromRequest(model => {
+    updateDeclarationFromRequest { model =>
       val updatedParties = model.parties.copy(exporterDetails = Some(formData))
       model.copy(parties = updatedParties)
-    })
+    }
 
   private def form()(implicit request: JourneyRequest[AnyContent]): Form[ExporterDetails] =
     ExporterDetails.form(request.declarationType, Some(request.cacheModel))

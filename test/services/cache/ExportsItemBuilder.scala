@@ -31,7 +31,7 @@ trait ExportsItemBuilder {
 
   private type ItemModifier = ExportItem => ExportItem
 
-  def anItem(modifiers: (ItemModifier)*): ExportItem =
+  def anItem(modifiers: ItemModifier*): ExportItem =
     modifiers.foldLeft(modelWithDefaults)((current, modifier) => modifier(current))
 
   // ************************************************* Builders ********************************************************
@@ -107,8 +107,8 @@ trait ExportsItemBuilder {
 
   def withPackageInformation(typesOfPackages: String = "", numberOfPackages: Int = 0, shippingMarks: String = ""): ItemModifier =
     cache =>
-      cache.copy(
-        packageInformation = Some(
+      cache.copy(packageInformation =
+        Some(
           cache.packageInformation.getOrElse(List.empty) :+ PackageInformation(
             UUID.randomUUID().toString,
             Some(typesOfPackages),
@@ -116,7 +116,7 @@ trait ExportsItemBuilder {
             Some(shippingMarks)
           )
         )
-    )
+      )
 
   def withAdditionalDocuments(isRequired: Option[YesNoAnswer], first: AdditionalDocument, documents: AdditionalDocument*): ItemModifier =
     cache => {

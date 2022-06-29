@@ -31,7 +31,7 @@ import views.components.gds.ActionItemBuilder.actionItem
 import views.html.components.gds.paragraphBody
 
 @Singleton
-class NotificationErrorHelper @Inject()(codeListConnector: CodeListConnector, paragraphBody: paragraphBody) {
+class NotificationErrorHelper @Inject() (codeListConnector: CodeListConnector, paragraphBody: paragraphBody) {
   import NotificationErrorHelper._
 
   def formattedErrorDescription(notificationError: NotificationError)(implicit messages: Messages): List[Html] = {
@@ -99,8 +99,8 @@ class NotificationErrorHelper @Inject()(codeListConnector: CodeListConnector, pa
     val groupedErrorRows = groupRowsByErrorCode(errorRows)
     val redactedErrorRows = removeRepeatFieldNameAndDescriptions(groupedErrorRows).flatten
 
-    SummaryList(redactedErrorRows.zipWithIndex.map {
-      case (errorRow, index) => createSummaryListRow(errorRow, index)
+    SummaryList(redactedErrorRows.zipWithIndex.map { case (errorRow, index) =>
+      createSummaryListRow(errorRow, index)
     })
   }
 
@@ -122,7 +122,7 @@ class NotificationErrorHelper @Inject()(codeListConnector: CodeListConnector, pa
   def groupRowsByErrorCode(rows: ErrorRows): List[ErrorRows] =
     rows.foldLeft(List.empty[ErrorRows]) { (acc, row) =>
       acc.lastOption match {
-        case Some(lastGrouping) if (lastGrouping.last.code == row.code) =>
+        case Some(lastGrouping) if lastGrouping.last.code == row.code =>
           val newLastGrouping = lastGrouping.:+(row)
           acc.dropRight(1).:+(newLastGrouping)
         case _ => acc.:+(List(row))
@@ -132,10 +132,10 @@ class NotificationErrorHelper @Inject()(codeListConnector: CodeListConnector, pa
   def removeRepeatFieldNameAndDescriptions(groupedErrorRows: List[ErrorRows]): List[ErrorRows] =
     groupedErrorRows.map { errorRows =>
       if (errorRows.forall(_.action.isEmpty)) {
-        //no change links in group so just allow first item to have fieldName & description
+        // no change links in group so just allow first item to have fieldName & description
         errorRows.head :: errorRows.tail.map(row => row.removeFieldNameAndDescription())
       } else {
-        //some change links in group so only allow the first item with a change link to have fieldName & description
+        // some change links in group so only allow the first item with a change link to have fieldName & description
         val redactedWithFlag = errorRows.foldLeft((List.empty[ErrorRow], false)) { (acc, row) =>
           acc match {
             case (_, true) => (acc._1 :+ row.removeFieldNameAndDescription(), true)

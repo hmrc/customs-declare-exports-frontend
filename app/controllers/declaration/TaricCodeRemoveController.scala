@@ -33,7 +33,7 @@ import views.html.declaration.taric_code_remove
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class TaricCodeRemoveController @Inject()(
+class TaricCodeRemoveController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
@@ -52,7 +52,7 @@ class TaricCodeRemoveController @Inject()(
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[YesNoAnswer]) => Future.successful(BadRequest(taricCodeRemove(mode, itemId, code, formWithErrors))),
-        formData => {
+        formData =>
           formData.answer match {
             case YesNoAnswers.yes =>
               updateExportsCache(itemId, code)
@@ -60,7 +60,6 @@ class TaricCodeRemoveController @Inject()(
             case YesNoAnswers.no =>
               Future.successful(navigator.continueTo(mode, routes.TaricCodeSummaryController.displayPage(_, itemId)))
           }
-        }
       )
   }
 

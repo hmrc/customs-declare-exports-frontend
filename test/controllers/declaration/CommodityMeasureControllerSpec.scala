@@ -20,7 +20,7 @@ import base.ControllerSpec
 import forms.declaration.commodityMeasure.CommodityMeasure
 import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
 import models.Mode
-import models.declaration.{ExportItem, CommodityMeasure => CM}
+import models.declaration.{CommodityMeasure => CM, ExportItem}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}

@@ -80,8 +80,8 @@ class RepresentativeDetailsStatusViewSpec extends UnitViewSpec with ExportsTestD
 
     "display errors when status is incorrect" in {
 
-      val view = createView(
-        form = RepresentativeStatus
+      val view = createView(form =
+        RepresentativeStatus
           .form()
           .bind(Map("statusCode" -> "invalid"))
       )

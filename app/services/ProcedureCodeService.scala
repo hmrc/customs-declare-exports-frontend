@@ -25,7 +25,7 @@ import play.api.Logging
 import java.util.Locale
 import javax.inject.Inject
 
-class ProcedureCodeService @Inject()(
+class ProcedureCodeService @Inject() (
   codeListConnector: CodeListConnector,
   codeLinkConnector: CodeLinkConnector,
   merchandiseInBagConfig: MerchandiseInBagConfig

@@ -34,7 +34,7 @@ import views.html.declaration.consignor_eori_number
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class ConsignorEoriNumberController @Inject()(
+class ConsignorEoriNumberController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   navigator: Navigator,
@@ -81,7 +81,7 @@ class ConsignorEoriNumberController @Inject()(
   private def updateCache(formData: ConsignorEoriNumber, savedConsignorDetails: Option[ConsignorDetails])(
     implicit r: JourneyRequest[AnyContent]
   ): Future[ExportsDeclaration] =
-    updateDeclarationFromRequest(
-      model => model.copy(parties = model.parties.copy(consignorDetails = Some(ConsignorDetails.from(formData, savedConsignorDetails))))
+    updateDeclarationFromRequest(model =>
+      model.copy(parties = model.parties.copy(consignorDetails = Some(ConsignorDetails.from(formData, savedConsignorDetails))))
     )
 }

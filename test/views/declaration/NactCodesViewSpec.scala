@@ -141,13 +141,11 @@ class NactCodesViewSpec extends UnitViewSpec with ExportsTestData with Stubs wit
       }
 
       "display existing NACT codes table" in {
-        codes.zipWithIndex.foreach {
-          case (code, index) => {
-            view.getElementById(s"nactCode-table-row$index-label").text mustBe code.nactCode
-            val removeButton = view.getElementById(s"nactCode-table-row$index-remove_button")
-            removeButton must containMessage(removeCaption)
-            removeButton must containMessage("declaration.nationalAdditionalCode.remove.hint", code.nactCode)
-          }
+        codes.zipWithIndex.foreach { case (code, index) =>
+          view.getElementById(s"nactCode-table-row$index-label").text mustBe code.nactCode
+          val removeButton = view.getElementById(s"nactCode-table-row$index-remove_button")
+          removeButton must containMessage(removeCaption)
+          removeButton must containMessage("declaration.nationalAdditionalCode.remove.hint", code.nactCode)
         }
       }
     }

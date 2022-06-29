@@ -33,7 +33,7 @@ import views.html.declaration.border_transport
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class BorderTransportController @Inject()(
+class BorderTransportController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   navigator: Navigator,

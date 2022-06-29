@@ -21,7 +21,7 @@ import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class SecureMessagingConfig @Inject()(servicesConfig: ServicesConfig, secureMessagingInboxConfig: SecureMessagingInboxConfig) {
+class SecureMessagingConfig @Inject() (servicesConfig: ServicesConfig, secureMessagingInboxConfig: SecureMessagingInboxConfig) {
 
   lazy val isSecureMessagingEnabled: Boolean = secureMessagingInboxConfig.isExportsSecureMessagingEnabled
 

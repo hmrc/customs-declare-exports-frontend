@@ -22,7 +22,7 @@ import play.api.Configuration
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class SfusConfig @Inject()(featureSwitchConfig: FeatureSwitchConfig, config: Configuration) {
+class SfusConfig @Inject() (featureSwitchConfig: FeatureSwitchConfig, config: Configuration) {
 
   val sfusUploadLink: String =
     config

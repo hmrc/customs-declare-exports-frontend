@@ -33,7 +33,7 @@ import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.additionalDocuments.additional_documents_required
 
-class AdditionalDocumentsRequiredController @Inject()(
+class AdditionalDocumentsRequiredController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,

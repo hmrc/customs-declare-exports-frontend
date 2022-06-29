@@ -107,9 +107,12 @@ class ProcedureCodeServiceSpec extends UnitWithMocksSpec with BeforeAndAfterEach
       service.getProcedureCodeFor(sampleProcedureCode1.code, DeclarationType.CLEARANCE, true, new Locale(ENGLISH.getCountry, "gb")) must equal(
         Some(sampleProcedureCode1)
       )
-      service.getProcedureCodeFor(sampleProcedureCode1.code, DeclarationType.CLEARANCE, true, new Locale(ENGLISH.getCountry, "gb", "scouse")) must equal(
-        Some(sampleProcedureCode1)
-      )
+      service.getProcedureCodeFor(
+        sampleProcedureCode1.code,
+        DeclarationType.CLEARANCE,
+        true,
+        new Locale(ENGLISH.getCountry, "gb", "scouse")
+      ) must equal(Some(sampleProcedureCode1))
     }
   }
 

@@ -41,9 +41,9 @@ trait SchemaValidation extends Logging {
     }
     val validator = schema.newValidator()
 
-    try {
+    try
       validator.validate(new StreamSource(new StringReader(xml)))
-    } catch {
+    catch {
       case e: Exception =>
         logger.error(s"Invalid XML: ${e.getMessage}\n$xml", e)
         throw e

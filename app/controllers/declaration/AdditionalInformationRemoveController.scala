@@ -37,7 +37,7 @@ import views.html.declaration.additionalInformation.additional_information_remov
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class AdditionalInformationRemoveController @Inject()(
+class AdditionalInformationRemoveController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
@@ -58,10 +58,13 @@ class AdditionalInformationRemoveController @Inject()(
     findAdditionalInformation(itemId, id) match {
       case Some(information) =>
         removeYesNoForm.bindFromRequest
-          .fold(formWithErrors => Future.successful(BadRequest(removePage(mode, itemId, id, information, formWithErrors))), _.answer match {
-            case YesNoAnswers.yes => removeAdditionalInformation(itemId, information).map(declaration => afterRemove(mode, itemId, declaration))
-            case YesNoAnswers.no  => Future.successful(returnToSummary(mode, itemId))
-          })
+          .fold(
+            formWithErrors => Future.successful(BadRequest(removePage(mode, itemId, id, information, formWithErrors))),
+            _.answer match {
+              case YesNoAnswers.yes => removeAdditionalInformation(itemId, information).map(declaration => afterRemove(mode, itemId, declaration))
+              case YesNoAnswers.no  => Future.successful(returnToSummary(mode, itemId))
+            }
+          )
       case _ => Future.successful(returnToSummary(mode, itemId))
     }
   }
@@ -85,8 +88,6 @@ class AdditionalInformationRemoveController @Inject()(
   ): Future[ExportsDeclaration] = {
     val cachedInformation = request.cacheModel.itemBy(itemId).flatMap(_.additionalInformation).getOrElse(AdditionalInformationData.default)
     val updatedInformation = cachedInformation.copy(items = remove(cachedInformation.items, itemToRemove.equals(_: AdditionalInformation)))
-    updateDeclarationFromRequest(model => {
-      model.updatedItem(itemId, item => item.copy(additionalInformation = Some(updatedInformation)))
-    })
+    updateDeclarationFromRequest(model => model.updatedItem(itemId, item => item.copy(additionalInformation = Some(updatedInformation))))
   }
 }

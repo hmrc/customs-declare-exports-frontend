@@ -36,7 +36,7 @@ import views.html.declaration.additionalInformation.additional_information
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class AdditionalInformationController @Inject()(
+class AdditionalInformationController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   waiver999LConfig: Waiver999LConfig,
@@ -98,7 +98,6 @@ class AdditionalInformationController @Inject()(
   ): Future[Result] =
     resolveBackLink(mode, itemId) map {
       val items = cachedAdditionalInformationData(itemId).map(_.items).getOrElse(Seq.empty)
-      backLink =>
-        BadRequest(additionalInformationPage(mode, itemId, formWithErrors, items, backLink))
+      backLink => BadRequest(additionalInformationPage(mode, itemId, formWithErrors, items, backLink))
     }
 }

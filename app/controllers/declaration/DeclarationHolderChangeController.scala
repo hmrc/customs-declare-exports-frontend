@@ -39,7 +39,7 @@ import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.declarationHolder.declaration_holder_change
 
-class DeclarationHolderChangeController @Inject()(
+class DeclarationHolderChangeController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
@@ -64,11 +64,10 @@ class DeclarationHolderChangeController @Inject()(
 
     boundForm.fold(
       formWithErrors => Future.successful(BadRequest(declarationHolderChangePage(mode, id, formWithErrors, request.eori))),
-      newHolder => {
+      newHolder =>
         maybeExistingHolder.fold(errorHandler.displayErrorPage) { existingHolder =>
           changeHolder(mode, existingHolder, newHolder, boundForm)
         }
-      }
     )
   }
 
@@ -91,9 +90,9 @@ class DeclarationHolderChangeController @Inject()(
   }
 
   private def updateExportsCache(holders: Seq[DeclarationHolder])(implicit r: JourneyRequest[_]): Future[ExportsDeclaration] =
-    updateDeclarationFromRequest(model => {
+    updateDeclarationFromRequest { model =>
       val isRequired = model.parties.declarationHoldersData.flatMap(_.isRequired)
       val updatedParties = model.parties.copy(declarationHoldersData = Some(DeclarationHoldersData(holders, isRequired)))
       model.copy(parties = updatedParties)
-    })
+    }
 }

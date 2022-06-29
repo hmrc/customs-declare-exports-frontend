@@ -38,11 +38,11 @@ object CancellationStatus {
   }
 
   def apply(`class`: String, data: JsValue): CancellationStatus =
-    (`class` match {
+    `class` match {
       case "CancellationRequestExists" => CancellationRequestExists
       case "CancellationRequested"     => CancellationRequested
       case "MissingDeclaration"        => MissingDeclaration
-    })
+    }
 
   implicit object CancellationStatusReads extends Reads[CancellationStatus] {
     def reads(jsValue: JsValue): JsResult[CancellationStatus] = jsValue match {

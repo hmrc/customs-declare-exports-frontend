@@ -35,7 +35,7 @@ import views.html.components.gds.{bulletList, link, paragraphBody}
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class AdditionalDocumentHelper @Inject()(
+class AdditionalDocumentHelper @Inject() (
   appConfig: AppConfig,
   authCodeHelper: HolderOfAuthorisationCodes,
   govukDetails: GovukDetails,

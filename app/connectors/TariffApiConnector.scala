@@ -29,7 +29,7 @@ import play.mvc.Http.Status.{NOT_FOUND, OK}
 import uk.gov.hmrc.http.HttpClient
 
 @Singleton
-class TariffApiConnector @Inject()(config: TariffApiConfig, httpClient: HttpClient, metrics: ExportsMetrics)(implicit ec: ExecutionContext) {
+class TariffApiConnector @Inject() (config: TariffApiConfig, httpClient: HttpClient, metrics: ExportsMetrics)(implicit ec: ExecutionContext) {
 
   private val logger = Logger(this.getClass)
 

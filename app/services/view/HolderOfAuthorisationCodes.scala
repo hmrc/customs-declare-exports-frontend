@@ -26,7 +26,7 @@ import java.util.Locale
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class HolderOfAuthorisationCodes @Inject()(codeListConnector: CodeListConnector, merchandiseInBagConfig: MerchandiseInBagConfig) {
+class HolderOfAuthorisationCodes @Inject() (codeListConnector: CodeListConnector, merchandiseInBagConfig: MerchandiseInBagConfig) {
 
   def asListOfAutoCompleteItems(locale: Locale): List[AutoCompleteItem] =
     codeListConnector

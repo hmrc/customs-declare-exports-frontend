@@ -36,7 +36,7 @@ import views.html.declaration.declarationHolder.declaration_holder_summary
 
 import javax.inject.Inject
 
-class DeclarationHolderSummaryController @Inject()(
+class DeclarationHolderSummaryController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
@@ -52,10 +52,13 @@ class DeclarationHolderSummaryController @Inject()(
 
   def submitForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     addAnotherYesNoForm.bindFromRequest
-      .fold(formWithErrors => BadRequest(declarationHolderPage(mode, formWithErrors, declarationHolders)), _.answer match {
-        case YesNoAnswers.yes => navigator.continueTo(mode, DeclarationHolderAddController.displayPage, mode.isErrorFix)
-        case YesNoAnswers.no  => validateNoAnswerAndGoNextPage(mode)
-      })
+      .fold(
+        formWithErrors => BadRequest(declarationHolderPage(mode, formWithErrors, declarationHolders)),
+        _.answer match {
+          case YesNoAnswers.yes => navigator.continueTo(mode, DeclarationHolderAddController.displayPage, mode.isErrorFix)
+          case YesNoAnswers.no  => validateNoAnswerAndGoNextPage(mode)
+        }
+      )
   }
 
   private def addAnotherYesNoForm: Form[YesNoAnswer] =

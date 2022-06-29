@@ -35,7 +35,7 @@ import views.html.declaration.transport_country
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class TransportCountryController @Inject()(
+class TransportCountryController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   navigator: Navigator,

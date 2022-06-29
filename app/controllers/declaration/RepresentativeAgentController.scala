@@ -34,7 +34,7 @@ import views.html.declaration.representative_details_agent
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class RepresentativeAgentController @Inject()(
+class RepresentativeAgentController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   navigator: Navigator,
@@ -72,8 +72,8 @@ class RepresentativeAgentController @Inject()(
     updateDeclarationFromRequest { model =>
       val representativeDetails: RepresentativeDetails = model.parties.representativeDetails.getOrElse(RepresentativeDetails())
       val updatedParties =
-        model.parties.copy(
-          representativeDetails = Some(
+        model.parties.copy(representativeDetails =
+          Some(
             representativeDetails.copy(
               representingOtherAgent = Some(formData.representingAgent),
               details = if (formData.representingAgent == yes) None else representativeDetails.details

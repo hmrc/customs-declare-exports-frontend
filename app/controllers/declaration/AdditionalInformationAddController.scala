@@ -37,7 +37,7 @@ import views.html.declaration.additionalInformation.additional_information_add
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class AdditionalInformationAddController @Inject()(
+class AdditionalInformationAddController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
@@ -78,9 +78,7 @@ class AdditionalInformationAddController @Inject()(
   private def updateCache(itemId: String, updatedData: AdditionalInformationData)(
     implicit req: JourneyRequest[AnyContent]
   ): Future[ExportsDeclaration] =
-    updateDeclarationFromRequest(model => {
-      model.updatedItem(itemId, item => item.copy(additionalInformation = Some(updatedData)))
-    })
+    updateDeclarationFromRequest(model => model.updatedItem(itemId, item => item.copy(additionalInformation = Some(updatedData))))
 }
 
 object AdditionalInformationAddController {

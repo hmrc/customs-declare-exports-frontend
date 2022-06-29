@@ -24,7 +24,7 @@ import play.api.Configuration
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class FeatureSwitchConfig @Inject()(configuration: Configuration) {
+class FeatureSwitchConfig @Inject() (configuration: Configuration) {
 
   private def loadConfig(key: String): String =
     configuration.getOptional[String](key).getOrElse(throw new IllegalStateException(s"Missing configuration key: $key"))

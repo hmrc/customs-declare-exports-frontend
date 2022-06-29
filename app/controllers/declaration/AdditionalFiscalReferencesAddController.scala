@@ -37,7 +37,7 @@ import views.html.declaration.fiscalInformation.additional_fiscal_references_add
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class AdditionalFiscalReferencesAddController @Inject()(
+class AdditionalFiscalReferencesAddController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,

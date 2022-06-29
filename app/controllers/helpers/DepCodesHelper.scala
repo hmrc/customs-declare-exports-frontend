@@ -22,7 +22,7 @@ import models.ExportsDeclaration
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class DepCodesHelper @Inject()(codeLinkConnector: CodeLinkConnector) {
+class DepCodesHelper @Inject() (codeLinkConnector: CodeLinkConnector) {
 
   def isDesignatedExportPlaceCode(declaration: ExportsDeclaration): Boolean =
     declaration.locations.goodsLocation.exists(location => checkDesignatedExportPlaceCodes(location.code))

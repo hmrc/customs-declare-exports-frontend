@@ -36,7 +36,7 @@ import views.html.declaration.packageInformation.package_information_add
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class PackageInformationAddController @Inject()(
+class PackageInformationAddController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,

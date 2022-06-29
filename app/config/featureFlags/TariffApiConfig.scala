@@ -21,7 +21,7 @@ import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 @Singleton
-class TariffApiConfig @Inject()(featureSwitchConfig: FeatureSwitchConfig, servicesConfig: ServicesConfig) {
+class TariffApiConfig @Inject() (featureSwitchConfig: FeatureSwitchConfig, servicesConfig: ServicesConfig) {
 
   val tariffCommoditiesUri: String = s"${servicesConfig.baseUrl("tariff-api")}/api/v2/commodities"
 

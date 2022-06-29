@@ -83,9 +83,8 @@ class EADServiceSpec
           pdfData must include(MrnStatusSpec.completeMrnStatus.versionId)
           pdfData must include(MrnStatusSpec.completeMrnStatus.previousDocuments.head.typeCode)
           pdfData must include(MrnStatusSpec.completeMrnStatus.previousDocuments.head.id)
-        } finally {
+        } finally
           pdfDocument.close()
-        }
       }
     }
 

@@ -34,7 +34,7 @@ import views.html.declaration.entry_into_declarants_records
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class EntryIntoDeclarantsRecordsController @Inject()(
+class EntryIntoDeclarantsRecordsController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,

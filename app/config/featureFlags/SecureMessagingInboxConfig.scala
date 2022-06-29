@@ -24,7 +24,7 @@ import play.api.Configuration
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class SecureMessagingInboxConfig @Inject()(config: Configuration) {
+class SecureMessagingInboxConfig @Inject() (config: Configuration) {
 
   val sfusInboxLink: String =
     config

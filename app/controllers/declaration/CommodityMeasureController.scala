@@ -24,7 +24,7 @@ import forms.declaration.commodityMeasure.CommodityMeasure
 
 import javax.inject.Inject
 import models.DeclarationType.{CLEARANCE, STANDARD, SUPPLEMENTARY}
-import models.declaration.{ExportItem, CommodityMeasure => CommodityMeasureModel}
+import models.declaration.{CommodityMeasure => CommodityMeasureModel, ExportItem}
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
 import play.api.data.Form
@@ -35,7 +35,7 @@ import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.commodityMeasure.commodity_measure
 
-class CommodityMeasureController @Inject()(
+class CommodityMeasureController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,

@@ -22,10 +22,9 @@ object FileReader {
 
   def apply(path: String): List[String] = {
     val source = Source.fromURL(getClass.getClassLoader.getResource(path), "UTF-8")
-    try {
+    try
       source.getLines().toList
-    } finally {
+    finally
       source.close()
-    }
   }
 }

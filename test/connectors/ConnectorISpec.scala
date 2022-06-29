@@ -44,8 +44,8 @@ class ConnectorISpec extends UnitSpec with BeforeAndAfterEach with GuiceOneAppPe
   )
 
   /**
-    * @see [[base.Injector]]
-    */
+   * @see [[base.Injector]]
+   */
   override def fakeApplication(): Application = {
     SharedMetricRegistries.clear()
     new GuiceApplicationBuilder().configure(overrideConfig).build()

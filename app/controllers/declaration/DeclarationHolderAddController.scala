@@ -37,7 +37,7 @@ import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.declarationHolder.declaration_holder_add
 
-class DeclarationHolderAddController @Inject()(
+class DeclarationHolderAddController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
@@ -65,7 +65,7 @@ class DeclarationHolderAddController @Inject()(
       .add(boundForm, declarationHolders, limitOfHolders, DeclarationHolderFormGroupId, "declaration.declarationHolder")
       .fold(
         formWithErrors => Future.successful(BadRequest(declarationHolderPage(mode, formWithErrors, r.eori))),
-        updatedHolders => {
+        updatedHolders =>
           validateMutuallyExclusiveAuthCodes(boundForm.value, declarationHolders) match {
             case Some(error) =>
               val formWithError = boundForm.copy(errors = Seq(error))
@@ -75,13 +75,12 @@ class DeclarationHolderAddController @Inject()(
               updateExportsCache(updatedHolders)
                 .map(_ => navigator.continueTo(mode, routes.DeclarationHolderSummaryController.displayPage))
           }
-        }
       )
 
   private def updateExportsCache(holders: Seq[DeclarationHolder])(implicit r: JourneyRequest[_]): Future[ExportsDeclaration] =
-    updateDeclarationFromRequest(model => {
+    updateDeclarationFromRequest { model =>
       val isRequired = model.parties.declarationHoldersData.flatMap(_.isRequired)
       val updatedParties = model.parties.copy(declarationHoldersData = Some(DeclarationHoldersData(holders, isRequired)))
       model.copy(parties = updatedParties)
-    })
+    }
 }

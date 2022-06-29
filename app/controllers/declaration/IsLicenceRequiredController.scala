@@ -38,7 +38,7 @@ import views.html.declaration.is_licence_required
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class IsLicenceRequiredController @Inject()(
+class IsLicenceRequiredController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   featureFlagAction: FeatureFlagAction,
@@ -67,14 +67,17 @@ class IsLicenceRequiredController @Inject()(
   def submitForm(mode: Mode, itemId: String): Action[AnyContent] =
     (authenticate andThen journeyType andThen featureFlagAction(Feature.waiver999L)).async { implicit request =>
       form.bindFromRequest
-        .fold(formWithErrors => Future.successful(BadRequest(is_licence_required(mode, itemId, formWithErrors))), yesNo => {
+        .fold(
+          formWithErrors => Future.successful(BadRequest(is_licence_required(mode, itemId, formWithErrors))),
+          yesNo => {
 
-          val isLicenceRequired = yesNo.answer == YesNoAnswers.yes
+            val isLicenceRequired = yesNo.answer == YesNoAnswers.yes
 
-          updateCache(isLicenceRequired, itemId) map { _ =>
-            navigator.continueTo(mode, nextPage(yesNo, itemId))
+            updateCache(isLicenceRequired, itemId) map { _ =>
+              navigator.continueTo(mode, nextPage(yesNo, itemId))
+            }
           }
-        })
+        )
     }
 
   private def nextPage(yesNoAnswer: YesNoAnswer, itemId: String)(implicit request: JourneyRequest[AnyContent]): Mode => Call =

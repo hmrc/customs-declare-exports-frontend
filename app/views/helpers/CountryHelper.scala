@@ -25,7 +25,7 @@ import services.Countries
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class CountryHelper @Inject()(codeListConnector: CodeListConnector, codeLinkConnector: CodeLinkConnector) {
+class CountryHelper @Inject() (codeListConnector: CodeListConnector, codeLinkConnector: CodeLinkConnector) {
   def generateAutocompleteEnhancementJson(countryKey: Country => String)(implicit messages: Messages) = {
     val jsObjects = for {
       country <- codeListConnector.getCountryCodes(messages.lang.toLocale).values

@@ -32,7 +32,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.link_ducr_to_mucr
 
 @Singleton
-class LinkDucrToMucrController @Inject()(
+class LinkDucrToMucrController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,

@@ -33,7 +33,7 @@ import views.html.declaration.additional_declaration_type
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class AdditionalDeclarationTypeController @Inject()(
+class AdditionalDeclarationTypeController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,

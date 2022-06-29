@@ -36,7 +36,7 @@ import views.html.declaration.additionalActors.additional_actors_remove
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class AdditionalActorsRemoveController @Inject()(
+class AdditionalActorsRemoveController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
@@ -60,7 +60,7 @@ class AdditionalActorsRemoveController @Inject()(
           .bindFromRequest()
           .fold(
             (formWithErrors: Form[YesNoAnswer]) => Future.successful(BadRequest(removePage(mode, id, actor, formWithErrors))),
-            formData => {
+            formData =>
               formData.answer match {
                 case YesNoAnswers.yes =>
                   updateExportsCache(actor)
@@ -68,7 +68,6 @@ class AdditionalActorsRemoveController @Inject()(
                 case YesNoAnswers.no =>
                   Future.successful(navigator.continueTo(mode, routes.AdditionalActorsSummaryController.displayPage))
               }
-            }
           )
       case _ => Future.successful(navigator.continueTo(mode, routes.AdditionalActorsSummaryController.displayPage))
     }

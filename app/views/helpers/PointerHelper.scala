@@ -73,21 +73,21 @@ object PointerHelper extends Logging {
   }
 
   /**
-    * Export Error Pointers to their corresponding UI edit/summary page
-    */
-  //mappings to pages that require two parameters
+   * Export Error Pointers to their corresponding UI edit/summary page
+   */
+  // mappings to pages that require two parameters
   private val urlMapping2Params: Map[String, (Mode, String) => Call] = Map(
     "declaration.items.$.statisticalValue.statisticalValue" -> routes.StatisticalValueController.displayPage,
     "declaration.items.$.additionalDocument" -> routes.AdditionalDocumentsController.displayPage,
     "declaration.items.$.additionalDocument.$.documentIdentifier" -> routes.AdditionalDocumentsController.displayPage,
-    "declaration.items.$.additionalDocument.$.documentTypeCode" -> routes.AdditionalDocumentsController.displayPage, //?? AdditionalDocumentChangeController.displayPage
-    "declaration.items.$.additionalDocument.$.dateOfValidity" -> routes.AdditionalDocumentsController.displayPage, //?? AdditionalDocumentChangeController.displayPage
-    "declaration.items.$.additionalDocument.$.documentStatus" -> routes.AdditionalDocumentsController.displayPage, //?? AdditionalDocumentChangeController.displayPage
-    "declaration.items.$.additionalDocument.$.documentStatusReason" -> routes.AdditionalDocumentsController.displayPage, //?? AdditionalDocumentChangeController.displayPage
-    "declaration.items.$.additionalDocument.$.issuingAuthorityName" -> routes.AdditionalDocumentsController.displayPage, //?? AdditionalDocumentChangeController.displayPage
-    "declaration.items.$.additionalDocument.$.documentWriteOff.documentQuantity" -> routes.AdditionalDocumentsController.displayPage, //?? AdditionalDocumentChangeController.displayPage
-    "declaration.items.$.additionalInformation.$.code" -> routes.AdditionalInformationController.displayPage, //?? AdditionalInformationChangeController.displayPage
-    "declaration.items.$.additionalInformation.$.description" -> routes.AdditionalInformationController.displayPage, //?? AdditionalInformationChangeController.displayPage
+    "declaration.items.$.additionalDocument.$.documentTypeCode" -> routes.AdditionalDocumentsController.displayPage, // ?? AdditionalDocumentChangeController.displayPage
+    "declaration.items.$.additionalDocument.$.dateOfValidity" -> routes.AdditionalDocumentsController.displayPage, // ?? AdditionalDocumentChangeController.displayPage
+    "declaration.items.$.additionalDocument.$.documentStatus" -> routes.AdditionalDocumentsController.displayPage, // ?? AdditionalDocumentChangeController.displayPage
+    "declaration.items.$.additionalDocument.$.documentStatusReason" -> routes.AdditionalDocumentsController.displayPage, // ?? AdditionalDocumentChangeController.displayPage
+    "declaration.items.$.additionalDocument.$.issuingAuthorityName" -> routes.AdditionalDocumentsController.displayPage, // ?? AdditionalDocumentChangeController.displayPage
+    "declaration.items.$.additionalDocument.$.documentWriteOff.documentQuantity" -> routes.AdditionalDocumentsController.displayPage, // ?? AdditionalDocumentChangeController.displayPage
+    "declaration.items.$.additionalInformation.$.code" -> routes.AdditionalInformationController.displayPage, // ?? AdditionalInformationChangeController.displayPage
+    "declaration.items.$.additionalInformation.$.description" -> routes.AdditionalInformationController.displayPage, // ?? AdditionalInformationChangeController.displayPage
     "declaration.items.$.commodityDetails.descriptionOfGoods" -> routes.CommodityDetailsController.displayPage,
     "declaration.items.$.cusCode.id" -> routes.CusCodeController.displayPage,
     "declaration.items.$.cusCode.cusCode" -> routes.CusCodeController.displayPage,
@@ -95,8 +95,8 @@ object PointerHelper extends Logging {
     "declaration.items.$.commodityMeasure.grossMass" -> routes.CommodityMeasureController.displayPage,
     "declaration.items.$.commodityMeasure.netMass" -> routes.CommodityMeasureController.displayPage,
     "declaration.items.$.commodityMeasure.supplementaryUnits" -> routes.SupplementaryUnitsController.displayPage,
-    "declaration.items.$.additionalFiscalReferences.$.id" -> routes.AdditionalFiscalReferencesController.displayPage, //?? AdditionalFiscalReferencesRemoveController.displayPage
-    "declaration.items.$.additionalFiscalReferences.$.roleCode" -> routes.AdditionalFiscalReferencesController.displayPage, //?? AdditionalFiscalReferencesRemoveController.displayPage
+    "declaration.items.$.additionalFiscalReferences.$.id" -> routes.AdditionalFiscalReferencesController.displayPage, // ?? AdditionalFiscalReferencesRemoveController.displayPage
+    "declaration.items.$.additionalFiscalReferences.$.roleCode" -> routes.AdditionalFiscalReferencesController.displayPage, // ?? AdditionalFiscalReferencesRemoveController.displayPage
     "declaration.items.$.procedureCodes.procedureCode.current" -> routes.ProcedureCodesController.displayPage,
     "declaration.items.$.procedureCodes.procedureCode.previous" -> routes.ProcedureCodesController.displayPage,
     "declaration.items.$.packageInformation.$.shippingMarks" -> routes.PackageInformationSummaryController.displayPage,
@@ -104,15 +104,15 @@ object PointerHelper extends Logging {
     "declaration.items.$.packageInformation.$.typesOfPackages" -> routes.PackageInformationSummaryController.displayPage
   )
 
-  //mappings to pages that require only one parameter
+  // mappings to pages that require only one parameter
   private val urlMapping1Param: Map[String, Mode => Call] = Map(
     "declaration.consignmentReferences.lrn" -> routes.ConsignmentReferencesController.displayPage,
     "declaration.totalNumberOfItems.totalAmountInvoiced" -> routes.InvoiceAndExchangeRateController.displayPage,
     "declaration.totalPackageQuantity" -> routes.TotalPackageQuantityController.displayPage,
     "declaration.parties.representativeDetails.details.eori" -> routes.RepresentativeEntityController.displayPage,
     "declaration.parties.representativeDetails.statusCode" -> routes.RepresentativeStatusController.displayPage,
-    "declaration.parties.declarationHolders.$.eori" -> routes.DeclarationHolderSummaryController.displayPage, //?? DeclarationHolderChangeController with seq No
-    "declaration.parties.declarationHolders.$.authorisationTypeCode" -> routes.DeclarationHolderSummaryController.displayPage, //?? DeclarationHolderChangeController with seq No
+    "declaration.parties.declarationHolders.$.eori" -> routes.DeclarationHolderSummaryController.displayPage, // ?? DeclarationHolderChangeController with seq No
+    "declaration.parties.declarationHolders.$.authorisationTypeCode" -> routes.DeclarationHolderSummaryController.displayPage, // ?? DeclarationHolderChangeController with seq No
     "declaration.transport.meansOfTransportCrossingTheBorderIDNumber" -> routes.BorderTransportController.displayPage,
     "declaration.transport.meansOfTransportCrossingTheBorderType" -> routes.BorderTransportController.displayPage,
     "declaration.transport.transportCrossingTheBorderNationality.countryName" -> routes.TransportCountryController.displayPage,
@@ -125,10 +125,10 @@ object PointerHelper extends Logging {
     "declaration.parties.carrierDetails.details.address.postCode" -> routes.CarrierDetailsController.displayPage,
     "declaration.transport.transportPayment.paymentMethod" -> routes.TransportPaymentController.displayPage,
     "declaration.locations.destinationCountries.countryOfRouting" -> routes.RoutingCountriesController.displayRoutingQuestion,
-    "declaration.locations.destinationCountries.countriesOfRouting.$" -> routes.RoutingCountriesController.displayRoutingCountry, //?? RoutingCountriesSummaryController.displayChangeCountryPage
+    "declaration.locations.destinationCountries.countriesOfRouting.$" -> routes.RoutingCountriesController.displayRoutingCountry, // ?? RoutingCountriesSummaryController.displayChangeCountryPage
     "declaration.locations.destinationCountries.countryOfDestination" -> routes.DestinationCountryController.displayPage,
     "declaration.totalNumberOfItems.exchangeRate" -> routes.InvoiceAndExchangeRateController.displayPage,
-    "declaration.declarantDetails.details.eori" -> routes.DeclarantDetailsController.displayPage, //Alters if dec is CLEARANCE and isEXS and personPresentingGoodsDetails is nonEmpty
+    "declaration.declarantDetails.details.eori" -> routes.DeclarantDetailsController.displayPage, // Alters if dec is CLEARANCE and isEXS and personPresentingGoodsDetails is nonEmpty
     "declaration.locations.officeOfExit.circumstancesCode" -> routes.OfficeOfExitController.displayPage,
     "declaration.locations.officeOfExit.officeId" -> routes.OfficeOfExitController.displayPage,
     "declaration.parties.exporterDetails.details.eori" -> routes.ExporterEoriNumberController.displayPage,
@@ -156,12 +156,12 @@ object PointerHelper extends Logging {
     "declaration.locations.goodsLocation.postCode" -> routes.LocationOfGoodsController.displayPage,
     "declaration.locations.goodsLocation.qualifierOfIdentification" -> routes.LocationOfGoodsController.displayPage,
     "declaration.locations.goodsLocation.typeOfLocation" -> routes.LocationOfGoodsController.displayPage,
-    "declaration.containers.container.$.id" -> routes.TransportContainerController.displayContainerSummary, //?? SealController.displaySealSummary
-    "declaration.containers.container.$.seals.seal.$.id" -> routes.TransportContainerController.displayContainerSummary, //?? SealController.displaySealRemove
-    "declaration.previousDocuments.$.documentCategory" -> routes.PreviousDocumentsSummaryController.displayPage, //?? PreviousDocumentsChangeController.displayPage
-    "declaration.previousDocuments.$.documentReference" -> routes.PreviousDocumentsSummaryController.displayPage, //?? PreviousDocumentsChangeController.displayPage
-    "declaration.previousDocuments.$.documentType" -> routes.PreviousDocumentsSummaryController.displayPage, //?? PreviousDocumentsChangeController.displayPage
-    "declaration.previousDocuments.$.goodsItemIdentifier" -> routes.PreviousDocumentsSummaryController.displayPage, //?? PreviousDocumentsChangeController.displayPage
+    "declaration.containers.container.$.id" -> routes.TransportContainerController.displayContainerSummary, // ?? SealController.displaySealSummary
+    "declaration.containers.container.$.seals.seal.$.id" -> routes.TransportContainerController.displayContainerSummary, // ?? SealController.displaySealRemove
+    "declaration.previousDocuments.$.documentCategory" -> routes.PreviousDocumentsSummaryController.displayPage, // ?? PreviousDocumentsChangeController.displayPage
+    "declaration.previousDocuments.$.documentReference" -> routes.PreviousDocumentsSummaryController.displayPage, // ?? PreviousDocumentsChangeController.displayPage
+    "declaration.previousDocuments.$.documentType" -> routes.PreviousDocumentsSummaryController.displayPage, // ?? PreviousDocumentsChangeController.displayPage
+    "declaration.previousDocuments.$.goodsItemIdentifier" -> routes.PreviousDocumentsSummaryController.displayPage, // ?? PreviousDocumentsChangeController.displayPage
     "declaration.locations.warehouseIdentification.identificationNumber" -> routes.WarehouseIdentificationController.displayPage,
     "declaration.locations.warehouseIdentification.identificationType" -> routes.WarehouseIdentificationController.displayPage,
     "declaration.locations.warehouseIdentification.supervisingCustomsOffice" -> routes.SupervisingCustomsOfficeController.displayPage,

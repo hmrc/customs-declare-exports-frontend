@@ -28,7 +28,7 @@ import play.api.mvc.Call
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class SupervisingCustomsOfficeHelper @Inject()(inlandOrBorderHelper: InlandOrBorderHelper) {
+class SupervisingCustomsOfficeHelper @Inject() (inlandOrBorderHelper: InlandOrBorderHelper) {
 
   private def isConditionForProcedureCodesDataVerified(data: ProcedureCodesData): Boolean =
     data.procedureCode.contains("1040") && data.additionalProcedureCodes.contains(NO_APC_APPLIES_CODE)

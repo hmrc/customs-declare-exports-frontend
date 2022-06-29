@@ -33,7 +33,7 @@ import views.html.declaration.packageInformation.package_information
 
 import javax.inject.Inject
 
-class PackageInformationSummaryController @Inject()(
+class PackageInformationSummaryController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
@@ -63,7 +63,7 @@ class PackageInformationSummaryController @Inject()(
               navigator.continueTo(mode, controllers.declaration.routes.PackageInformationAddController.displayPage(_, itemId), mode.isErrorFix)
             case YesNoAnswers.no =>
               navigator.continueTo(mode, nextPage(itemId))
-        }
+          }
       )
   }
 

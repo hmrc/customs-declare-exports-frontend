@@ -31,7 +31,7 @@ import views.html.declaration.commodity_details
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class CommodityDetailsController @Inject()(
+class CommodityDetailsController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,

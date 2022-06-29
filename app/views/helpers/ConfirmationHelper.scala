@@ -45,7 +45,7 @@ case class Confirmation(
 )
 
 @Singleton
-class ConfirmationHelper @Inject()(
+class ConfirmationHelper @Inject() (
   appConfig: AppConfig,
   exitSurvey: exit_survey,
   govukPanel: GovukPanel,

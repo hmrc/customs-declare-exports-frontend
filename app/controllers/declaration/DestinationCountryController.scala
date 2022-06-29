@@ -36,7 +36,7 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class DestinationCountryController @Inject()(
+class DestinationCountryController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
@@ -65,7 +65,7 @@ class DestinationCountryController @Inject()(
         validCountry =>
           updateDeclarationFromRequest(_.updateDestinationCountry(validCountry)).map { _ =>
             redirectToNextPage(mode)
-        }
+          }
       )
   }
 

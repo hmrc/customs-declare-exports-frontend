@@ -36,7 +36,7 @@ import views.html.declaration.representative_details_status
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class RepresentativeStatusController @Inject()(
+class RepresentativeStatusController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   navigator: Navigator,
@@ -61,7 +61,7 @@ class RepresentativeStatusController @Inject()(
         validRepresentativeDetails =>
           updateCache(validRepresentativeDetails).map { updatedCache =>
             navigator.continueTo(mode, nextPage(request.declarationType, updatedCache))
-        }
+          }
       )
   }
 

@@ -44,7 +44,7 @@ import views.html.declaration.summary._
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class SummaryController @Inject()(
+class SummaryController @Inject() (
   authenticate: AuthAction,
   verifyEmail: VerifiedEmailAction,
   journeyType: JourneyAction,
@@ -81,12 +81,11 @@ class SummaryController @Inject()(
   def submitDeclaration(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType).async { implicit request =>
     form.bindFromRequest.fold(
       (formWithErrors: Form[LegalDeclaration]) => Future.successful(BadRequest(legalDeclarationPage(formWithErrors, mode))),
-      legalDeclaration => {
+      legalDeclaration =>
         submissionService.submit(request.eori, request.cacheModel, legalDeclaration).map {
           case Some(submission) => Redirect(routes.ConfirmationController.displayHoldingPage).withSession(session(submission))
           case _                => handleError(s"Error from Customs Declarations API")
         }
-      }
     )
   }
 

@@ -33,7 +33,7 @@ import views.html.declaration.total_package_quantity
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class TotalPackageQuantityController @Inject()(
+class TotalPackageQuantityController @Inject() (
   authorize: AuthAction,
   journey: JourneyAction,
   mcc: MessagesControllerComponents,

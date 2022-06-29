@@ -36,7 +36,7 @@ import views.html.declaration.fiscalInformation.additional_fiscal_references_rem
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class AdditionalFiscalReferencesRemoveController @Inject()(
+class AdditionalFiscalReferencesRemoveController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
@@ -60,7 +60,7 @@ class AdditionalFiscalReferencesRemoveController @Inject()(
           .bindFromRequest()
           .fold(
             (formWithErrors: Form[YesNoAnswer]) => Future.successful(BadRequest(removePage(mode, itemId, id, reference, formWithErrors))),
-            formData => {
+            formData =>
               formData.answer match {
                 case YesNoAnswers.yes =>
                   removeAdditionalFiscalReference(itemId, reference)
@@ -68,7 +68,6 @@ class AdditionalFiscalReferencesRemoveController @Inject()(
                 case YesNoAnswers.no =>
                   Future.successful(returnToSummary(mode, itemId))
               }
-            }
           )
       case _ => Future.successful(returnToSummary(mode, itemId))
     }
@@ -97,8 +96,6 @@ class AdditionalFiscalReferencesRemoveController @Inject()(
       request.cacheModel.itemBy(itemId).flatMap(_.additionalFiscalReferencesData).getOrElse(AdditionalFiscalReferencesData(Seq.empty))
     val updatedInformation =
       cachedInformation.copy(references = remove(cachedInformation.references, itemToRemove.equals(_: AdditionalFiscalReference)))
-    updateDeclarationFromRequest(model => {
-      model.updatedItem(itemId, item => item.copy(additionalFiscalReferencesData = Some(updatedInformation)))
-    })
+    updateDeclarationFromRequest(model => model.updatedItem(itemId, item => item.copy(additionalFiscalReferencesData = Some(updatedInformation))))
   }
 }

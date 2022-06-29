@@ -19,22 +19,22 @@ package controllers.helpers
 import play.api.data.{Form, FormError}
 
 /**
-  * Object to help dealing with multiple items page.
-  *
-  * Handled logic: Add, Remove and Continue.
-  */
+ * Object to help dealing with multiple items page.
+ *
+ * Handled logic: Add, Remove and Continue.
+ */
 object MultipleItemsHelper {
 
   /**
-    * Method to handle adding item with simple validation for duplication or limit for amount of items.
-    *
-    * @param form - multiple item form
-    * @param cachedData - cached data which contains sequence of added items
-    * @param limit - maximum limit of items
-    * @param fieldId - (optional) - field id of the HTML element to which the error should be attached
-    * @tparam A - type of case class represents form
-    * @return Either which can contain Form with errors or Sequence ready to insert to db
-    */
+   * Method to handle adding item with simple validation for duplication or limit for amount of items.
+   *
+   * @param form - multiple item form
+   * @param cachedData - cached data which contains sequence of added items
+   * @param limit - maximum limit of items
+   * @param fieldId - (optional) - field id of the HTML element to which the error should be attached
+   * @tparam A - type of case class represents form
+   * @return Either which can contain Form with errors or Sequence ready to insert to db
+   */
   def add[A](form: Form[A], cachedData: Seq[A], limit: Int, fieldId: String = "", messageKey: String): Either[Form[A], Seq[A]] = form.value match {
     case Some(document) => prepareData(form, document, cachedData, limit, fieldId, messageKey)
     case _              => Left(form)
@@ -67,15 +67,15 @@ object MultipleItemsHelper {
     cachedData.filterNot(filterNot)
 
   /**
-    * Method to handle continue with items.
-    *
-    * @param form - multiple item form
-    * @param cachedData - cached data which contains sequence of added items
-    * @param isMandatory - defines that screen is mandatory
-    * @param fieldId - (optional) - field id of the HTML element to which the error should be attached
-    * @tparam A - type of case class represents form
-    * @return Form with updated errors
-    */
+   * Method to handle continue with items.
+   *
+   * @param form - multiple item form
+   * @param cachedData - cached data which contains sequence of added items
+   * @param isMandatory - defines that screen is mandatory
+   * @param fieldId - (optional) - field id of the HTML element to which the error should be attached
+   * @tparam A - type of case class represents form
+   * @return Form with updated errors
+   */
   def continue[A](form: Form[A], cachedData: Seq[A], isMandatory: Boolean, fieldId: String = ""): Form[A] = {
     val errors = checkInputs(form, fieldId) ++ checkMandatory(isMandatory, cachedData, fieldId)
     form.copy(errors = errors)
@@ -90,16 +90,16 @@ object MultipleItemsHelper {
     else Seq.empty
 
   /**
-    * Method to handle save and continue.
-    *
-    * @param form - multiple item form
-    * @param cachedData - cached data which contains sequence of added items
-    * @param isMandatory - defines that screen is mandatory
-    * @param limit - limit of elements allowed for page
-    * @param fieldId - (optional) - field id of the HTML element to which the error should be attached
-    * @tparam A - type of case class represents form
-    * @return Form with updated errors or Sequence ready to insert to db
-    */
+   * Method to handle save and continue.
+   *
+   * @param form - multiple item form
+   * @param cachedData - cached data which contains sequence of added items
+   * @param isMandatory - defines that screen is mandatory
+   * @param limit - limit of elements allowed for page
+   * @param fieldId - (optional) - field id of the HTML element to which the error should be attached
+   * @tparam A - type of case class represents form
+   * @return Form with updated errors or Sequence ready to insert to db
+   */
   def saveAndContinue[A](
     form: Form[A],
     cachedData: Seq[A],

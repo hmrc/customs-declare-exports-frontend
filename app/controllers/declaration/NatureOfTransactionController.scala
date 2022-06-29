@@ -33,7 +33,7 @@ import views.html.declaration.nature_of_transaction
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class NatureOfTransactionController @Inject()(
+class NatureOfTransactionController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   navigator: Navigator,

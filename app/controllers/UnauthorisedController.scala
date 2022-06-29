@@ -25,7 +25,7 @@ import config.featureFlags.TdrUnauthorisedMsgConfig
 import models.UnauthorisedReason
 import models.UnauthorisedReason._
 
-class UnauthorisedController @Inject()(
+class UnauthorisedController @Inject() (
   tdrUnauthorisedMsgConfig: TdrUnauthorisedMsgConfig,
   mcc: MessagesControllerComponents,
   unauthorisedPage: unauthorised,

@@ -40,7 +40,7 @@ import views.html.declaration._
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class TransportContainerController @Inject()(
+class TransportContainerController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   navigator: Navigator,

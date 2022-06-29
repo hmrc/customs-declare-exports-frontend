@@ -78,9 +78,9 @@ class SubmissionDisplayHelperSpec extends UnitSpec {
         result.size must equal(2)
         result.keySet must equal(expectedKeySet)
         result(submission).length must equal(2)
-        expectedNotificationsForFirstSubmission.foreach { result(submission) must contain(_) }
+        expectedNotificationsForFirstSubmission.foreach(result(submission) must contain(_))
         result(submission_2).length must equal(1)
-        expectedNotificationsForSecondSubmission.foreach { result(submission_2) must contain(_) }
+        expectedNotificationsForSecondSubmission.foreach(result(submission_2) must contain(_))
       }
     }
 
@@ -100,9 +100,9 @@ class SubmissionDisplayHelperSpec extends UnitSpec {
         result.size must equal(2)
         result.keySet must equal(expectedKeySet)
         result(submission).length must equal(2)
-        expectedNotificationsForFirstSubmission.foreach { result(submission) must contain(_) }
+        expectedNotificationsForFirstSubmission.foreach(result(submission) must contain(_))
         result(submission_2).length must equal(1)
-        expectedNotificationsForSecondSubmission.foreach { result(submission_2) must contain(_) }
+        expectedNotificationsForSecondSubmission.foreach(result(submission_2) must contain(_))
       }
     }
 

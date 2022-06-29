@@ -62,8 +62,8 @@ class RepresentativeDetailsEntityViewSpec extends UnitViewSpec with ExportsTestD
 
     "display errors when EORI is incorrect" in {
 
-      val view = createView(
-        form = RepresentativeEntity
+      val view = createView(form =
+        RepresentativeEntity
           .form()
           .bind(Map("details.eori" -> TestHelper.createRandomAlphanumericString(50)))
       )
@@ -76,8 +76,8 @@ class RepresentativeDetailsEntityViewSpec extends UnitViewSpec with ExportsTestD
 
     "display errors when EORI is missing" in {
 
-      val view = createView(
-        form = RepresentativeEntity
+      val view = createView(form =
+        RepresentativeEntity
           .form()
           .bind(Map("details.eori" -> ""))
       )

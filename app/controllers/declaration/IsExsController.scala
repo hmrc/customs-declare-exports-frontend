@@ -34,7 +34,7 @@ import views.html.declaration.is_exs
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class IsExsController @Inject()(
+class IsExsController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,

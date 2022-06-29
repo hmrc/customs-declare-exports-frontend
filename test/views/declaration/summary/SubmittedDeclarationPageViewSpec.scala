@@ -102,11 +102,10 @@ class SubmittedDeclarationPageViewSpec extends UnitViewSpec with Stubs with Expo
     }
 
     for (decType <- List(CLEARANCE, SIMPLIFIED, OCCASIONAL))
-      yield
-        s"not have transaction section in $decType declaration" in {
-          val view = createView(declaration = aDeclaration(withType(decType)))
-          Option(view.getElementById("declaration-transaction-summary")) mustBe None
-        }
+      yield s"not have transaction section in $decType declaration" in {
+        val view = createView(declaration = aDeclaration(withType(decType)))
+        Option(view.getElementById("declaration-transaction-summary")) mustBe None
+      }
 
     "have transaction section" in {
       val view = createView(declaration = aDeclaration(withNatureOfTransaction("1")))

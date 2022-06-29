@@ -33,7 +33,7 @@ import views.html.declaration.un_dangerous_goods_code
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class UNDangerousGoodsCodeController @Inject()(
+class UNDangerousGoodsCodeController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
@@ -59,7 +59,7 @@ class UNDangerousGoodsCodeController @Inject()(
         validForm =>
           updateExportsCache(itemId, validForm).map { _ =>
             redirectToNextPage(mode, itemId)
-        }
+          }
       )
   }
 

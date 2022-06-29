@@ -52,12 +52,11 @@ object SupplementaryUnits extends DeclarationPage {
   private val mappingForMandatorySupplementaryUnits =
     Forms.mapping(supplementaryUnits -> supplementaryUnitsMapping)(inputValue => SupplementaryUnits(Some(inputValue)))(_.supplementaryUnits)
 
-  private def form2Model: (String, Option[String]) => SupplementaryUnits = {
-    case (hasSupplementaryUnits, value) =>
-      hasSupplementaryUnits match {
-        case YesNoAnswers.yes => SupplementaryUnits(value)
-        case YesNoAnswers.no  => SupplementaryUnits(None)
-      }
+  private def form2Model: (String, Option[String]) => SupplementaryUnits = { case (hasSupplementaryUnits, value) =>
+    hasSupplementaryUnits match {
+      case YesNoAnswers.yes => SupplementaryUnits(value)
+      case YesNoAnswers.no  => SupplementaryUnits(None)
+    }
   }
 
   private def model2Form: SupplementaryUnits => Option[(String, Option[String])] =

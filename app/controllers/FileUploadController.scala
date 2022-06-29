@@ -25,7 +25,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
 import javax.inject.Inject
 
-class FileUploadController @Inject()(sfusConfig: SfusConfig, authenticate: AuthAction, mcc: MessagesControllerComponents, auditService: AuditService)
+class FileUploadController @Inject() (sfusConfig: SfusConfig, authenticate: AuthAction, mcc: MessagesControllerComponents, auditService: AuditService)
     extends FrontendController(mcc) {
 
   def startFileUpload(mrn: String = ""): Action[AnyContent] = authenticate { implicit request =>

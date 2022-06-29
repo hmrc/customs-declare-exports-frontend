@@ -75,8 +75,8 @@ object EoriOrAddress {
       key = Key(content = Text(messages(eoriLabel))),
       value = Value(content = maybeEori.map(eori => Text(eori.value)).getOrElse(Empty)),
       actions = Some(
-        Actions(
-          items = actionItems(
+        Actions(items =
+          actionItems(
             actionsEnabled,
             actionItem(
               href = changeController.url,
@@ -102,8 +102,8 @@ object EoriOrAddress {
       key = Key(content = Text(messages(addressLabel))),
       value = Value(content = maybeAddress.map(address => HtmlContent(extractAddress(address))).getOrElse(Empty)),
       actions = Some(
-        Actions(
-          items = actionItems(
+        Actions(items =
+          actionItems(
             actionsEnabled,
             actionItem(
               href = changeController.url,

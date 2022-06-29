@@ -59,7 +59,7 @@ trait CodeListConnector {
 }
 
 @Singleton
-class FileBasedCodeListConnector @Inject()(appConfig: AppConfig) extends CodeListConnector {
+class FileBasedCodeListConnector @Inject() (appConfig: AppConfig) extends CodeListConnector {
 
   def getAdditionalProcedureCodesMap(locale: Locale): ListMap[String, AdditionalProcedureCode] =
     additionalProcedureCodeMapsByLang.getOrElse(locale.getLanguage, additionalProcedureCodeMapsByLang.value.head._2)

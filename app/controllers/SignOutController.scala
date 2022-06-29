@@ -24,7 +24,7 @@ import views.html.{session_timed_out, user_signed_out}
 
 import javax.inject.Inject
 
-class SignOutController @Inject()(mcc: MessagesControllerComponents, sessionTimedOut: session_timed_out, userSignedOutPage: user_signed_out)
+class SignOutController @Inject() (mcc: MessagesControllerComponents, sessionTimedOut: session_timed_out, userSignedOutPage: user_signed_out)
     extends FrontendController(mcc) with I18nSupport {
 
   def signOut(signOutReason: SignOutReason): Action[AnyContent] = Action { _ =>

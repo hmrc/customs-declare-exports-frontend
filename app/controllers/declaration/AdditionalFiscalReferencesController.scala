@@ -32,7 +32,7 @@ import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.fiscalInformation.additional_fiscal_references
 
-class AdditionalFiscalReferencesController @Inject()(
+class AdditionalFiscalReferencesController @Inject() (
   itemAction: ItemActionBuilder,
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
@@ -64,14 +64,14 @@ class AdditionalFiscalReferencesController @Inject()(
               formWithErrors,
               cachedAdditionalReferencesData(itemId).map(_.references).getOrElse(Seq.empty)
             )
-        ),
+          ),
         validYesNo =>
           validYesNo.answer match {
             case YesNoAnswers.yes =>
               navigator
                 .continueTo(mode, controllers.declaration.routes.AdditionalFiscalReferencesAddController.displayPage(_, itemId), mode.isErrorFix)
             case YesNoAnswers.no => navigator.continueTo(mode, routes.CommodityDetailsController.displayPage(_, itemId))
-        }
+          }
       )
   }
 

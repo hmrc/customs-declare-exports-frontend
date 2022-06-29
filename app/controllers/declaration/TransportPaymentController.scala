@@ -32,7 +32,7 @@ import views.html.declaration.transport_payment
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class TransportPaymentController @Inject()(
+class TransportPaymentController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   navigator: Navigator,

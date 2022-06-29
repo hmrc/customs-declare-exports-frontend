@@ -26,7 +26,7 @@ import views.html.{undeliverable_email, unverified_email}
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class UnverifiedEmailController @Inject()(
+class UnverifiedEmailController @Inject() (
   authenticate: AuthAction,
   mcc: MessagesControllerComponents,
   unverified_email: unverified_email,

@@ -34,7 +34,7 @@ import views.html.declaration.taric_codes
 
 import javax.inject.Inject
 
-class TaricCodeSummaryController @Inject()(
+class TaricCodeSummaryController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
@@ -64,7 +64,7 @@ class TaricCodeSummaryController @Inject()(
               navigator.continueTo(mode, controllers.declaration.routes.ZeroRatedForVatController.displayPage(_, itemId))
             case YesNoAnswers.no =>
               navigator.continueTo(mode, controllers.declaration.routes.NactCodeSummaryController.displayPage(_, itemId))
-        }
+          }
       )
   }
 

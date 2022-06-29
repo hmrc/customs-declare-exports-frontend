@@ -34,7 +34,7 @@ import views.html.declaration.previousDocuments.previous_documents_change
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class PreviousDocumentsChangeController @Inject()(
+class PreviousDocumentsChangeController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,

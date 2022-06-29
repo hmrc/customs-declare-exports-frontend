@@ -24,12 +24,12 @@ import scala.reflect.ClassTag
 class OverridableInjector(overrides: GuiceableModule*) extends Injector {
 
   /**
-    * Clearing shared metrics registries to avoid `A metric named jvm.attribute.vendor already exists` error.
-    *
-    * It appears very often with places with injector. This is enough solution for this problem.
-    *
-    * Reference and other solutions: https://github.com/kenshoo/metrics-play/issues/74
-    */
+   * Clearing shared metrics registries to avoid `A metric named jvm.attribute.vendor already exists` error.
+   *
+   * It appears very often with places with injector. This is enough solution for this problem.
+   *
+   * Reference and other solutions: https://github.com/kenshoo/metrics-play/issues/74
+   */
   SharedMetricRegistries.clear()
 
   private val injector = GuiceApplicationBuilder().overrides(overrides: _*).injector()

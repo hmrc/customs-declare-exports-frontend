@@ -33,7 +33,7 @@ import views.html.declaration.statistical_value
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class StatisticalValueController @Inject()(
+class StatisticalValueController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
@@ -62,7 +62,7 @@ class StatisticalValueController @Inject()(
           updateExportsCache(itemId, validForm).map { _ =>
             navigator
               .continueTo(mode, controllers.declaration.routes.PackageInformationSummaryController.displayPage(_, itemId))
-        }
+          }
       )
   }
 

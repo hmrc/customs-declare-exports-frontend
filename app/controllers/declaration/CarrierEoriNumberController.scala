@@ -35,7 +35,7 @@ import views.html.declaration.carrier_eori_number
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class CarrierEoriNumberController @Inject()(
+class CarrierEoriNumberController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   navigator: Navigator,
@@ -74,7 +74,7 @@ class CarrierEoriNumberController @Inject()(
   private def updateCache(formData: CarrierEoriNumber, savedCarrierDetails: Option[CarrierDetails])(
     implicit r: JourneyRequest[AnyContent]
   ): Future[ExportsDeclaration] =
-    updateDeclarationFromRequest(
-      model => model.copy(parties = model.parties.copy(carrierDetails = Some(CarrierDetails.from(formData, savedCarrierDetails))))
+    updateDeclarationFromRequest(model =>
+      model.copy(parties = model.parties.copy(carrierDetails = Some(CarrierDetails.from(formData, savedCarrierDetails))))
     )
 }

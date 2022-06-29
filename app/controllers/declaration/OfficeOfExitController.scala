@@ -34,7 +34,7 @@ import views.html.declaration.office_of_exit
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class OfficeOfExitController @Inject()(
+class OfficeOfExitController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   navigator: Navigator,

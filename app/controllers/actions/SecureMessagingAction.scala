@@ -24,7 +24,7 @@ import models.requests.VerifiedEmailRequest
 import play.api.mvc.{ActionFunction, Result}
 
 @Singleton
-class SecureMessagingAction @Inject()(secureMessagingConfig: SecureMessagingConfig)(implicit ec: ExecutionContext)
+class SecureMessagingAction @Inject() (secureMessagingConfig: SecureMessagingConfig)(implicit ec: ExecutionContext)
     extends ActionFunction[VerifiedEmailRequest, VerifiedEmailRequest] {
 
   override def invokeBlock[A](request: VerifiedEmailRequest[A], block: VerifiedEmailRequest[A] => Future[Result]): Future[Result] =

@@ -22,7 +22,7 @@ import play.api.Configuration
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class TdrUnauthorisedMsgConfig @Inject()(featureSwitchConfig: FeatureSwitchConfig, config: Configuration) {
+class TdrUnauthorisedMsgConfig @Inject() (featureSwitchConfig: FeatureSwitchConfig, config: Configuration) {
 
   val isTdrUnauthorisedMessageEnabled: Boolean = featureSwitchConfig.isFeatureOn(Feature.tdrUnauthorisedMessage)
 }

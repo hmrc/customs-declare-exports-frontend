@@ -36,7 +36,7 @@ import views.html.declaration.previousDocuments.previous_documents_remove
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class PreviousDocumentsRemoveController @Inject()(
+class PreviousDocumentsRemoveController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
@@ -67,7 +67,7 @@ class PreviousDocumentsRemoveController @Inject()(
                     returnToSummary(mode)
                   }
                 case YesNoAnswers.no => Future.successful(returnToSummary(mode))
-            }
+              }
           )
       case _ => Future.successful(returnToSummary(mode))
     }

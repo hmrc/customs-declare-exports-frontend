@@ -52,13 +52,12 @@ object Choice {
 
   implicit val queryStringBindable: QueryStringBindable[Choice] = new QueryStringBindable[Choice] {
     override def bind(key: String, params: Map[String, Seq[String]]): Option[Either[String, Choice]] =
-      QueryStringBindable.bindableString.bind(key, params).map {
-        case Right(choice) =>
-          correctChoices
-            .find(_ == choice)
-            .map(Choice.apply)
-            .map(choice => Right(choice))
-            .getOrElse(Left("Unrecognized option"))
+      QueryStringBindable.bindableString.bind(key, params).map { case Right(choice) =>
+        correctChoices
+          .find(_ == choice)
+          .map(Choice.apply)
+          .map(choice => Right(choice))
+          .getOrElse(Left("Unrecognized option"))
       }
     override def unbind(key: String, value: Choice): String = s"$key=${value.value}"
   }

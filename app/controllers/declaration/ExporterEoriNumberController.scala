@@ -33,7 +33,7 @@ import views.html.declaration.exporter_eori_number
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class ExporterEoriNumberController @Inject()(
+class ExporterEoriNumberController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   navigator: Navigator,
@@ -80,7 +80,7 @@ class ExporterEoriNumberController @Inject()(
   private def updateCache(formData: ExporterEoriNumber, savedExporterDetails: Option[ExporterDetails])(
     implicit r: JourneyRequest[AnyContent]
   ): Future[ExportsDeclaration] =
-    updateDeclarationFromRequest(
-      model => model.copy(parties = model.parties.copy(exporterDetails = Some(ExporterDetails.from(formData, savedExporterDetails))))
+    updateDeclarationFromRequest(model =>
+      model.copy(parties = model.parties.copy(exporterDetails = Some(ExporterDetails.from(formData, savedExporterDetails))))
     )
 }

@@ -34,7 +34,7 @@ import views.html.declaration.invoice_and_exchange_rate
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class InvoiceAndExchangeRateController @Inject()(
+class InvoiceAndExchangeRateController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   navigator: Navigator,
@@ -62,8 +62,8 @@ class InvoiceAndExchangeRateController @Inject()(
 
   private def updateCache(invoiceAndExchangeRate: InvoiceAndExchangeRate)(implicit r: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
     updateDeclarationFromRequest { declaration =>
-      declaration.copy(
-        totalNumberOfItems = Some(
+      declaration.copy(totalNumberOfItems =
+        Some(
           InvoiceAndPackageTotals(
             totalAmountInvoiced = Some(invoiceAndExchangeRate.totalAmountInvoiced),
             totalAmountInvoicedCurrency = invoiceAndExchangeRate.totalAmountInvoicedCurrency,

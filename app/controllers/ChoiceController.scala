@@ -33,7 +33,7 @@ import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.choice_page
 
-class ChoiceController @Inject()(
+class ChoiceController @Inject() (
   authenticate: AuthAction,
   verifyEmail: VerifiedEmailAction,
   mcc: MessagesControllerComponents,

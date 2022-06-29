@@ -38,7 +38,7 @@ import views.html.declaration.{seal_add, seal_remove, seal_summary}
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class SealController @Inject()(
+class SealController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   navigator: Navigator,
@@ -66,7 +66,7 @@ class SealController @Inject()(
             case Some(container) =>
               saveSeal(mode, Seal.form.fill(validSeal), container)
             case _ => errorHandler.displayErrorPage()
-        }
+          }
       )
   }
 
@@ -114,7 +114,7 @@ class SealController @Inject()(
             case YesNoAnswers.no =>
               Future
                 .successful(navigator.continueTo(mode, routes.TransportContainerController.displayContainerSummary))
-        }
+          }
       )
 
   private def removeSealAnswer(mode: Mode, containerId: String, sealId: String)(implicit request: JourneyRequest[AnyContent]) =
@@ -129,7 +129,7 @@ class SealController @Inject()(
             case YesNoAnswers.no =>
               Future
                 .successful(navigator.continueTo(mode, routes.SealController.displaySealSummary(_, containerId)))
-        }
+          }
       )
 
   private def confirmRemoveSeal(containerId: String, sealId: String, mode: Mode)(implicit request: JourneyRequest[AnyContent]) =
@@ -150,7 +150,8 @@ class SealController @Inject()(
       updatedCache =>
         if (updatedCache != cachedContainer.seals) updateCache(cachedContainer.copy(seals = updatedCache)).map { _ =>
           navigator.continueTo(mode, routes.SealController.displaySealSummary(_, cachedContainer.id))
-        } else
+        }
+        else
           Future.successful(navigator.continueTo(mode, routes.SealController.displaySealSummary(_, cachedContainer.id)))
     )
 

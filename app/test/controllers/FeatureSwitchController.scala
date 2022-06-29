@@ -27,7 +27,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import scala.concurrent.Future
 
 @Singleton
-class FeatureSwitchController @Inject()(implicit val featureSwitchConfig: FeatureSwitchConfig, mcc: MessagesControllerComponents)
+class FeatureSwitchController @Inject() (implicit val featureSwitchConfig: FeatureSwitchConfig, mcc: MessagesControllerComponents)
     extends FrontendController(mcc) {
 
   def set(feature: Feature, status: FeatureStatus): Action[AnyContent] = Action.async { _ =>

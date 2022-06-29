@@ -135,8 +135,8 @@ class PackageInformationViewSpec extends UnitViewSpec with ExportsTestData with 
 
       "display two rows with data in table" in {
 
-        val view = createView(
-          packages = Seq(
+        val view = createView(packages =
+          Seq(
             PackageInformation("ID1", Some("PA"), Some(100), Some("Shipping Mark")),
             PackageInformation("ID2", Some("PB"), Some(101), Some("Shipping Mark"))
           )

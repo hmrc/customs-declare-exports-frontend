@@ -33,7 +33,7 @@ import views.html.declaration.nact_code_remove
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class NactCodeRemoveController @Inject()(
+class NactCodeRemoveController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
@@ -55,7 +55,7 @@ class NactCodeRemoveController @Inject()(
         .bindFromRequest()
         .fold(
           (formWithErrors: Form[YesNoAnswer]) => Future.successful(BadRequest(nactCodeRemove(mode, itemId, code, formWithErrors))),
-          formData => {
+          formData =>
             formData.answer match {
               case YesNoAnswers.yes =>
                 updateExportsCache(itemId, code)
@@ -63,7 +63,6 @@ class NactCodeRemoveController @Inject()(
               case YesNoAnswers.no =>
                 Future.successful(navigator.continueTo(mode, routes.NactCodeSummaryController.displayPage(_, itemId)))
             }
-          }
         )
     }
 

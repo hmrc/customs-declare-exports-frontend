@@ -32,7 +32,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.helpers.Confirmation
 import views.html.declaration.confirmation.{confirmation_page, holding_page}
 
-class ConfirmationController @Inject()(
+class ConfirmationController @Inject() (
   authenticate: AuthAction,
   verifyEmail: VerifiedEmailAction,
   customsDeclareExportsConnector: CustomsDeclareExportsConnector,

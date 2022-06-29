@@ -34,7 +34,7 @@ import views.html.declaration.{warehouse_identification, warehouse_identificatio
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class WarehouseIdentificationController @Inject()(
+class WarehouseIdentificationController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   navigator: Navigator,
@@ -56,11 +56,14 @@ class WarehouseIdentificationController @Inject()(
 
   def saveIdentificationNumber(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     form.bindFromRequest
-      .fold(formWithErrors => Future.successful(BadRequest(page(mode, formWithErrors))), updateCache(_).map { declaration =>
-        // Next page should always be '/supervising-customs-office' for CLEARANCE
-        // since Procedure code '1040' is not applicable to this declaration type
-        navigator.continueTo(mode, supervisingCustomsOfficeHelper.landOnOrSkipToNextPage(declaration))
-      })
+      .fold(
+        formWithErrors => Future.successful(BadRequest(page(mode, formWithErrors))),
+        updateCache(_).map { declaration =>
+          // Next page should always be '/supervising-customs-office' for CLEARANCE
+          // since Procedure code '1040' is not applicable to this declaration type
+          navigator.continueTo(mode, supervisingCustomsOfficeHelper.landOnOrSkipToNextPage(declaration))
+        }
+      )
   }
 
   private def form(implicit request: JourneyRequest[AnyContent]): Form[WarehouseIdentification] =

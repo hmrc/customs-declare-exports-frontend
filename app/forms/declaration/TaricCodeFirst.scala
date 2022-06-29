@@ -37,12 +37,11 @@ object TaricCodeFirst extends DeclarationPage {
   val hasTaricCodeKey = "hasTaric"
   val none = TaricCodeFirst(None)
 
-  private def form2Model: (String, Option[String]) => TaricCodeFirst = {
-    case (hasNactCode, code) =>
-      hasNactCode match {
-        case YesNoAnswers.yes => TaricCodeFirst(code)
-        case YesNoAnswers.no  => none
-      }
+  private def form2Model: (String, Option[String]) => TaricCodeFirst = { case (hasNactCode, code) =>
+    hasNactCode match {
+      case YesNoAnswers.yes => TaricCodeFirst(code)
+      case YesNoAnswers.no  => none
+    }
   }
 
   private def model2Form: TaricCodeFirst => Option[(String, Option[String])] =
@@ -50,7 +49,7 @@ object TaricCodeFirst extends DeclarationPage {
       model.code match {
         case Some(code) => Some((YesNoAnswers.yes, Some(code)))
         case None       => Some((YesNoAnswers.no, None))
-    }
+      }
 
   val mapping = Forms.mapping(
     hasTaricCodeKey -> requiredRadio("declaration.taricAdditionalCodes.answer.empty"),

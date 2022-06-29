@@ -34,7 +34,7 @@ import views.html.declaration.consignment_references
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class ConsignmentReferencesController @Inject()(
+class ConsignmentReferencesController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,

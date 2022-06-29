@@ -36,7 +36,7 @@ import views.html.declaration.additionalDocuments.additional_document_add
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class AdditionalDocumentAddController @Inject()(
+class AdditionalDocumentAddController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
@@ -53,11 +53,14 @@ class AdditionalDocumentAddController @Inject()(
   def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val boundForm = globalErrors(form(request.cacheModel).bindFromRequest)
 
-    boundForm.fold(formWithErrors => Future.successful(BadRequest(additionalDocumentAddPage(mode, itemId, formWithErrors))), document => {
-      val documents = request.cacheModel.additionalDocumentsInformation(itemId)
-      if (document.isDefined) saveDocuments(mode, itemId, boundForm, documents)
-      else continue(mode, itemId, documents)
-    })
+    boundForm.fold(
+      formWithErrors => Future.successful(BadRequest(additionalDocumentAddPage(mode, itemId, formWithErrors))),
+      document => {
+        val documents = request.cacheModel.additionalDocumentsInformation(itemId)
+        if (document.isDefined) saveDocuments(mode, itemId, boundForm, documents)
+        else continue(mode, itemId, documents)
+      }
+    )
   }
 
   private def continue(mode: Mode, itemId: String, documents: AdditionalDocuments)(implicit request: JourneyRequest[AnyContent]): Future[Result] =

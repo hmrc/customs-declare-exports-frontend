@@ -33,7 +33,7 @@ import views.html.declaration.additionalDocuments.additional_documents
 
 import javax.inject.Inject
 
-class AdditionalDocumentsController @Inject()(
+class AdditionalDocumentsController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,

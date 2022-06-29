@@ -37,7 +37,7 @@ import views.html.declaration.packageInformation.package_information_change
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class PackageInformationChangeController @Inject()(
+class PackageInformationChangeController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   navigator: Navigator,

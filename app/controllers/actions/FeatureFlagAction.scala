@@ -26,7 +26,7 @@ import play.api.mvc.{ActionRefiner, Result, Results}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class FeatureFlagAction @Inject()(featureSwitchConfig: FeatureSwitchConfig)(implicit val exc: ExecutionContext)
+class FeatureFlagAction @Inject() (featureSwitchConfig: FeatureSwitchConfig)(implicit val exc: ExecutionContext)
     extends ActionRefiner[JourneyRequest, JourneyRequest] with Logging {
 
   type RefineResult[A] = Future[Either[Result, JourneyRequest[A]]]

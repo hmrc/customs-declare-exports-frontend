@@ -22,7 +22,7 @@ import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import scala.concurrent.duration.{Duration, FiniteDuration}
 
 @Singleton
-class TimeoutDialogConfig @Inject()(config: ServicesConfig) {
+class TimeoutDialogConfig @Inject() (config: ServicesConfig) {
 
   val timeout: Duration = config.getDuration("timeoutDialog.timeout").asInstanceOf[FiniteDuration]
   val countdown: Duration = config.getDuration("timeoutDialog.countdown").asInstanceOf[FiniteDuration]

@@ -33,7 +33,7 @@ import views.html.{cancellation_holding, cancellation_result}
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class CancellationResultController @Inject()(
+class CancellationResultController @Inject() (
   authenticate: AuthAction,
   verifyEmail: VerifiedEmailAction,
   customsDeclareExportsConnector: CustomsDeclareExportsConnector,

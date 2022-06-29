@@ -26,9 +26,8 @@ object JsonFile {
 
     Json.parse(jsonInputStream) match {
       case JsArray(cs) =>
-        cs.toList.collect {
-          case JsArray(Seq(label: JsString, code: JsString)) =>
-            deserializer(label.value, code.value)
+        cs.toList.collect { case JsArray(Seq(label: JsString, code: JsString)) =>
+          deserializer(label.value, code.value)
         }
       case _ => throwError(file)
     }

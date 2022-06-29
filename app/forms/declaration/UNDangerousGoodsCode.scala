@@ -43,12 +43,11 @@ object UNDangerousGoodsCode extends DeclarationPage {
 
   import AllowedUNDangerousGoodsCodeAnswers._
 
-  private def form2Model: (String, Option[String]) => UNDangerousGoodsCode = {
-    case (hasCode, codeValue) =>
-      hasCode match {
-        case AllowedUNDangerousGoodsCodeAnswers.yes => UNDangerousGoodsCode(codeValue)
-        case AllowedUNDangerousGoodsCodeAnswers.no  => UNDangerousGoodsCode(None)
-      }
+  private def form2Model: (String, Option[String]) => UNDangerousGoodsCode = { case (hasCode, codeValue) =>
+    hasCode match {
+      case AllowedUNDangerousGoodsCodeAnswers.yes => UNDangerousGoodsCode(codeValue)
+      case AllowedUNDangerousGoodsCodeAnswers.no  => UNDangerousGoodsCode(None)
+    }
   }
 
   private def model2Form: UNDangerousGoodsCode => Option[(String, Option[String])] =
@@ -56,7 +55,7 @@ object UNDangerousGoodsCode extends DeclarationPage {
       model.dangerousGoodsCode match {
         case Some(code) => Some((yes, Some(code)))
         case None       => Some((no, None))
-    }
+      }
 
   val mapping =
     Forms.mapping(

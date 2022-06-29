@@ -33,7 +33,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.express_consignment
 
 @Singleton
-class ExpressConsignmentController @Inject()(
+class ExpressConsignmentController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
@@ -70,8 +70,8 @@ class ExpressConsignmentController @Inject()(
 
   private def updateCache(yesNoAnswer: YesNoAnswer)(implicit request: JourneyRequest[_]): Future[ExportsDeclaration] =
     updateDeclarationFromRequest { model =>
-      model.copy(
-        transport = model.transport.copy(
+      model.copy(transport =
+        model.transport.copy(
           expressConsignment = Some(yesNoAnswer),
           transportPayment = if (yesNoAnswer.answer == YesNoAnswers.no) None else model.transport.transportPayment
         )

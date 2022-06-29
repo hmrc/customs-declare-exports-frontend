@@ -36,7 +36,7 @@ import views.html.declaration.packageInformation.package_information_remove
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class PackageInformationRemoveController @Inject()(
+class PackageInformationRemoveController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
@@ -64,7 +64,7 @@ class PackageInformationRemoveController @Inject()(
         .fold(
           (formWithErrors: Form[YesNoAnswer]) =>
             Future.successful(BadRequest(packageTypeRemove(mode, itemId, packageInformationToRemove, formWithErrors))),
-          formData => {
+          formData =>
             formData.answer match {
               case YesNoAnswers.yes =>
                 updateExportsCache(itemId, packageInformationToRemove)
@@ -72,7 +72,6 @@ class PackageInformationRemoveController @Inject()(
               case YesNoAnswers.no =>
                 Future.successful(navigator.continueTo(mode, routes.PackageInformationSummaryController.displayPage(_, itemId)))
             }
-          }
         )
     }
   }

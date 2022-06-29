@@ -36,7 +36,7 @@ import views.html.declaration.declarationHolder.declaration_holder_required
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class DeclarationHolderRequiredController @Inject()(
+class DeclarationHolderRequiredController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
@@ -77,9 +77,9 @@ class DeclarationHolderRequiredController @Inject()(
     }
 
   private def updateCache(yesNoAnswer: Option[YesNoAnswer])(implicit r: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
-    updateDeclarationFromRequest(declaration => {
+    updateDeclarationFromRequest { declaration =>
       val holders = if (yesNoAnswer == YesNoAnswer.Yes) declarationHolders else Seq.empty
       val holdersData = Some(DeclarationHoldersData(holders, yesNoAnswer))
       declaration.copy(parties = declaration.parties.copy(declarationHoldersData = holdersData))
-    })
+    }
 }

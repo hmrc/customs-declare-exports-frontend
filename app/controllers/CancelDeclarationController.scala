@@ -39,7 +39,7 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}
 
-class CancelDeclarationController @Inject()(
+class CancelDeclarationController @Inject() (
   authenticate: AuthAction,
   verifyEmail: VerifiedEmailAction,
   customsDeclareExportsConnector: CustomsDeclareExportsConnector,
@@ -59,13 +59,12 @@ class CancelDeclarationController @Inject()(
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[CancelDeclaration]) => Future.successful(BadRequest(cancelDeclarationPage(formWithErrors))),
-        userInput => {
+        userInput =>
           sendAuditedCancellationRequest(userInput).map {
             case CancellationRequestSent      => Redirect(routes.CancellationResultController.displayHoldingPage()).withSession(session(userInput))
             case MrnNotFound                  => Ok(cancelDeclarationPage(createFormWithErrors(userInput, "cancellation.mrn.error.denied")))
             case CancellationAlreadyRequested => Ok(cancelDeclarationPage(createFormWithErrors(userInput, "cancellation.duplicateRequest.error")))
           }
-        }
       )
   }
 

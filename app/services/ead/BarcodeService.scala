@@ -27,7 +27,7 @@ import org.krysalis.barcode4j.impl.code128.Code128Bean
 import org.krysalis.barcode4j.output.bitmap.BitmapCanvasProvider
 import org.krysalis.barcode4j.tools.UnitConv
 
-class BarcodeService @Inject()(code128Bean: Code128Bean) {
+class BarcodeService @Inject() (code128Bean: Code128Bean) {
   private val dpi = 200
 
   def base64Image(mrn: String) = {

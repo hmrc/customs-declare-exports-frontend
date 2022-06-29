@@ -36,7 +36,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.ListItem
 import views.html.declaration.additionalDocuments.additional_document_remove
 
-class AdditionalDocumentRemoveController @Inject()(
+class AdditionalDocumentRemoveController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,

@@ -34,7 +34,7 @@ import views.html.declaration.fiscalInformation.fiscal_information
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class FiscalInformationController @Inject()(
+class FiscalInformationController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,

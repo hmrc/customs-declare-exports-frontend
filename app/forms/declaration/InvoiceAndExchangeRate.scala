@@ -89,7 +89,7 @@ object InvoiceAndExchangeRate extends DeclarationPage {
         if (decimalPoint > 0) input.substring(0, decimalPoint)
         else if (decimalPoint == 0) "0"
         else input
-  }
+      }
 
   val equalsIgnoreCaseOptionString = (value: String) => (input: Option[String]) => input.exists(_.equalsIgnoreCase(value))
   val isEmptyOptionString = (input: Option[String]) => isEmpty(input.getOrElse(""))
@@ -109,9 +109,9 @@ object InvoiceAndExchangeRate extends DeclarationPage {
     }
   def isNumber(field: String): Condition = _.get(field).exists(isNumeric)
 
-  //We allow the user to enter commas when specifying these optional numerical values but we strip out the commas with `validateWithoutCommas` before validating
-  //the number of digits. To prevent the validation from allowing an invalid value like ",,,," we also must use the `isNotOnlyCommas`
-  //function to specifically guard against this.
+  // We allow the user to enter commas when specifying these optional numerical values but we strip out the commas with `validateWithoutCommas` before validating
+  // the number of digits. To prevent the validation from allowing an invalid value like ",,,," we also must use the `isNotOnlyCommas`
+  // function to specifically guard against this.
   val mapping: Mapping[InvoiceAndExchangeRate] = Forms.mapping(
     totalAmountInvoiced -> validateTotalAmountInvoiced,
     totalAmountInvoicedCurrency -> validateTotalAmountInvoicedCurrency,

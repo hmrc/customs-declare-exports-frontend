@@ -23,7 +23,7 @@ import controllers.navigation.Navigator
 import forms.declaration.procedurecodes.AdditionalProcedureCode
 import forms.declaration.procedurecodes.AdditionalProcedureCode._
 import models.codes.AdditionalProcedureCode.NO_APC_APPLIES_CODE
-import models.codes.{ProcedureCode, AdditionalProcedureCode => AdditionalProcedureCodeModel}
+import models.codes.{AdditionalProcedureCode => AdditionalProcedureCodeModel, ProcedureCode}
 import models.declaration.ProcedureCodesData
 import models.declaration.ProcedureCodesData.limitOfCodes
 import models.requests.JourneyRequest
@@ -41,7 +41,7 @@ import views.html.declaration.procedureCodes.additional_procedure_codes
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class AdditionalProcedureCodesController @Inject()(
+class AdditionalProcedureCodesController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   navigator: Navigator,
@@ -186,7 +186,7 @@ class AdditionalProcedureCodesController @Inject()(
           )
           item.copy(procedureCodes = Some(newProcedureCodes))
         }
-    )
+      )
     updateDeclarationFromRequest(updatedModel(_))
   }
 

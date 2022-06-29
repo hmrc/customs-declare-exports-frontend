@@ -73,8 +73,8 @@ class ItemsSummaryViewSpec extends UnitViewSpec with ExportsTestData with Stubs 
 
       "some items" in {
 
-        val view = createView(
-          items = List(
+        val view = createView(items =
+          List(
             ExportItem(
               "id1",
               sequenceId = 1,
@@ -133,8 +133,8 @@ class ItemsSummaryViewSpec extends UnitViewSpec with ExportsTestData with Stubs 
 
       "item has two package information elements with one having empty number of packages" in {
 
-        val view = createView(
-          items = List(
+        val view = createView(items =
+          List(
             ExportItem(
               "id1",
               sequenceId = 1,

@@ -31,7 +31,7 @@ import views.html.declaration.zero_rated_for_vat
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class ZeroRatedForVatController @Inject()(
+class ZeroRatedForVatController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,

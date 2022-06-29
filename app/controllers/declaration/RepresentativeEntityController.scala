@@ -35,7 +35,7 @@ import views.html.declaration.representative_details_entity
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class RepresentativeEntityController @Inject()(
+class RepresentativeEntityController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   navigator: Navigator,
