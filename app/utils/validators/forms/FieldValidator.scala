@@ -141,8 +141,8 @@ object FieldValidator {
       (input: String) =>
         try
           BigDecimal(input) > 0 &&
-          BigDecimal(input).scale <= decimalPlaces &&
-          input.length <= totalLength
+            BigDecimal(input).scale <= decimalPlaces &&
+            input.length <= totalLength
         catch {
           case _: java.lang.NumberFormatException => false
         }
