@@ -880,6 +880,7 @@ saved.declarations.remove.option.error.empty = Select yes if you want to remove 
 declaration.declarationHolderRequired.title = Do you want to add any authorisations?
 declaration.declarationHolderRequired.title.standard.prelodged.1040 = Do you have any authorisations you want to declare?
 declaration.declarationHolderRequired.body.default = Authorisations allow you to use specific procedures or types of declaration.
+declaration.declarationHolderRequired.body.standard.arrived = You must add an authorisation if you are taking merchandise in baggage (MIB) or doing customs supervised exports (CSE).
 declaration.declarationHolderRequired.body.standard.prelodged.1040 = Authorisations from HMRC, such as Approved Economic Operator, can speed up customs processing.
 declaration.declarationHolderRequired.body.occasional.1 = You indicated you’re making a simplified declaration (occasional use).
 declaration.declarationHolderRequired.body.occasional.2 = You do not have to hold any authorisations to do this for a pre-lodged declaration. If you are making an arrived declaration you need to add one of these authorisations:

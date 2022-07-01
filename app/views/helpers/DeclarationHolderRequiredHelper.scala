@@ -40,6 +40,7 @@ class DeclarationHolderRequiredHelper @Inject()(bulletList: bulletList, govukIns
     val body = (model.`type`, model.additionalDeclarationType, model.parties.authorisationProcedureCodeChoice) match {
       case (STANDARD, Some(STANDARD_PRE_LODGED), Choice1040)   => List(paragraph(s"$bodyKey.standard.prelodged.1040"))
       case (STANDARD, Some(STANDARD_PRE_LODGED), ChoiceOthers) => List(paragraph(s"$bodyKey.standard.prelodged.others"))
+      case (STANDARD, Some(STANDARD_FRONTIER), _)              => List(paragraph(s"$bodyKey.standard.arrived"))
 
       case (OCCASIONAL, Some(OCCASIONAL_PRE_LODGED), _) =>
         List(paragraph(s"$bodyKey.occasional.1"), paragraph(s"$bodyKey.occasional.2"))
