@@ -27,7 +27,6 @@ object AuthorizationTypeCodes {
   val codeThatSkipLocationOfGoods = "MOU"
 
   val mutuallyExclusiveAuthCodes = List("CSE", "EXRR")
-  val containAtLeastOneOfAuthCodes = List("CSE", "EXRR", "MIB")
 
   val authCodesThatSkipInlandOrBorder = mutuallyExclusiveAuthCodes
 
