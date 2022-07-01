@@ -83,10 +83,9 @@ trait SummaryPageViewSpec extends UnitViewSpec with Injector with Stubs {
     }
 
     for (decType <- List(CLEARANCE, SIMPLIFIED, OCCASIONAL))
-      yield
-        s"not have transaction section in $decType declaration" in {
-          assertNull(view(aDeclaration(withType(decType))).getElementById("declaration-transaction-summary"))
-        }
+      yield s"not have transaction section in $decType declaration" in {
+        assertNull(view(aDeclaration(withType(decType))).getElementById("declaration-transaction-summary"))
+      }
 
     "have transaction section" in {
       view(aDeclaration(withNatureOfTransaction("1"))).getElementById("declaration-transaction-summary").text() mustNot be(empty)

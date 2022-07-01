@@ -35,7 +35,7 @@ import views.html.submissions
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class SubmissionsController @Inject()(
+class SubmissionsController @Inject() (
   authenticate: AuthAction,
   verifyEmail: VerifiedEmailAction,
   customsDeclareExportsConnector: CustomsDeclareExportsConnector,

@@ -28,13 +28,14 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import services.cache.ExportsCacheService
+import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.carrier_eori_number
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class CarrierEoriNumberController @Inject()(
+class CarrierEoriNumberController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   navigator: Navigator,
@@ -42,7 +43,7 @@ class CarrierEoriNumberController @Inject()(
   carrierEoriDetailsPage: carrier_eori_number,
   override val exportsCacheService: ExportsCacheService
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
   val validJourneys = Seq(STANDARD, SIMPLIFIED, OCCASIONAL, CLEARANCE)
 
@@ -73,7 +74,7 @@ class CarrierEoriNumberController @Inject()(
   private def updateCache(formData: CarrierEoriNumber, savedCarrierDetails: Option[CarrierDetails])(
     implicit r: JourneyRequest[AnyContent]
   ): Future[ExportsDeclaration] =
-    updateDeclarationFromRequest(
-      model => model.copy(parties = model.parties.copy(carrierDetails = Some(CarrierDetails.from(formData, savedCarrierDetails))))
+    updateDeclarationFromRequest(model =>
+      model.copy(parties = model.parties.copy(carrierDetails = Some(CarrierDetails.from(formData, savedCarrierDetails))))
     )
 }

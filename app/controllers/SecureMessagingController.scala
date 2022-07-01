@@ -30,7 +30,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.messaging.{inbox_wrapper, partial_wrapper}
 
 @Singleton
-class SecureMessagingController @Inject()(
+class SecureMessagingController @Inject() (
   authenticate: AuthAction,
   verifiedEmail: VerifiedEmailAction,
   secureMessagingAction: SecureMessagingAction,
@@ -54,15 +54,14 @@ class SecureMessagingController @Inject()(
   def displayConversation(client: String, conversationId: String): Action[AnyContent] = actions.async { implicit request =>
     secureMessagingFrontendConnector
       .retrieveConversationPartial(client, conversationId)
-      .map(
-        partial =>
-          Ok(
-            partial_wrapper(
-              HtmlFormat.raw(partial.body),
-              "conversation.heading",
-              defineUploadLink(routes.SecureMessagingController.displayConversation(client, conversationId).url),
-              Some(routes.SecureMessagingController.displayInbox)
-            )
+      .map(partial =>
+        Ok(
+          partial_wrapper(
+            HtmlFormat.raw(partial.body),
+            "conversation.heading",
+            defineUploadLink(routes.SecureMessagingController.displayConversation(client, conversationId).url),
+            Some(routes.SecureMessagingController.displayInbox)
+          )
         )
       )
   }
@@ -70,14 +69,13 @@ class SecureMessagingController @Inject()(
   def displayReplyResult(client: String, conversationId: String): Action[AnyContent] = actions.async { implicit request =>
     secureMessagingFrontendConnector
       .retrieveReplyResult(client, conversationId)
-      .map(
-        partial =>
-          Ok(
-            partial_wrapper(
-              HtmlFormat.raw(partial.body),
-              "replyResult.heading",
-              defineUploadLink(routes.SecureMessagingController.displayReplyResult(client, conversationId).url)
-            )
+      .map(partial =>
+        Ok(
+          partial_wrapper(
+            HtmlFormat.raw(partial.body),
+            "replyResult.heading",
+            defineUploadLink(routes.SecureMessagingController.displayReplyResult(client, conversationId).url)
+          )
         )
       )
   }

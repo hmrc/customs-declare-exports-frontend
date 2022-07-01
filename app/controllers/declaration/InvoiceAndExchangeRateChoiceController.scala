@@ -28,13 +28,14 @@ import models.{DeclarationType, ExportsDeclaration, Mode}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.cache.ExportsCacheService
+import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.invoice_and_exchange_rate_choice
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class InvoiceAndExchangeRateChoiceController @Inject()(
+class InvoiceAndExchangeRateChoiceController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   navigator: Navigator,
@@ -42,7 +43,7 @@ class InvoiceAndExchangeRateChoiceController @Inject()(
   invoiceAndExchangeRateChoicePage: invoice_and_exchange_rate_choice,
   override val exportsCacheService: ExportsCacheService
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
   private val validTypes = Seq(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY)
 
@@ -68,8 +69,8 @@ class InvoiceAndExchangeRateChoiceController @Inject()(
 
   private def resetCachedInvoiceData(implicit r: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
     updateDeclarationFromRequest { declaration =>
-      declaration.copy(
-        totalNumberOfItems = Some(
+      declaration.copy(totalNumberOfItems =
+        Some(
           InvoiceAndPackageTotals(
             totalAmountInvoiced = None,
             totalAmountInvoicedCurrency = None,

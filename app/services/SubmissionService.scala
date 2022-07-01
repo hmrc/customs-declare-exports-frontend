@@ -33,7 +33,7 @@ import services.audit.{AuditService, AuditTypes, EventData}
 import uk.gov.hmrc.http.HeaderCarrier
 
 @Singleton
-class SubmissionService @Inject()(exportsConnector: CustomsDeclareExportsConnector, auditService: AuditService, exportsMetrics: ExportsMetrics)
+class SubmissionService @Inject() (exportsConnector: CustomsDeclareExportsConnector, auditService: AuditService, exportsMetrics: ExportsMetrics)
     extends Logging {
 
   def submit(eori: String, exportsDeclaration: ExportsDeclaration, legalDeclaration: LegalDeclaration)(

@@ -29,6 +29,7 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.cache.ExportsCacheService
+import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.ListItem
 import views.html.declaration.additionalDocuments.additional_document_change
@@ -36,7 +37,7 @@ import views.html.declaration.additionalDocuments.additional_document_change
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class AdditionalDocumentChangeController @Inject()(
+class AdditionalDocumentChangeController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
@@ -44,7 +45,7 @@ class AdditionalDocumentChangeController @Inject()(
   mcc: MessagesControllerComponents,
   additionalDocumentChangePage: additional_document_change
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
   def displayPage(mode: Mode, itemId: String, documentId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     findAdditionalDocument(itemId, documentId) match {
@@ -61,15 +62,12 @@ class AdditionalDocumentChangeController @Inject()(
       case Some(existingDocument) =>
         val boundForm = globalErrors(form(request.cacheModel).bindFromRequest())
         boundForm.fold(
-          formWithErrors => {
-            Future.successful(BadRequest(additionalDocumentChangePage(mode, itemId, documentId, formWithErrors)))
-          },
-          updatedDocument => {
+          formWithErrors => Future.successful(BadRequest(additionalDocumentChangePage(mode, itemId, documentId, formWithErrors))),
+          updatedDocument =>
             if (updatedDocument.isDefined)
               changeDocument(mode, itemId, documentId, existingDocument, updatedDocument, boundForm)
             else
               Future.successful(returnToSummary(mode, itemId))
-          }
         )
       case _ => Future.successful(returnToSummary(mode, itemId))
     }
@@ -91,9 +89,7 @@ class AdditionalDocumentChangeController @Inject()(
     MultipleItemsHelper
       .add(boundForm, documentsWithoutExisting, maxNumberOfItems, AdditionalDocumentFormGroupId, "declaration.additionalDocument")
       .fold(
-        formWithErrors => {
-          Future.successful(BadRequest(additionalDocumentChangePage(mode, itemId, documentId, formWithErrors)))
-        },
+        formWithErrors => Future.successful(BadRequest(additionalDocumentChangePage(mode, itemId, documentId, formWithErrors))),
         _ => {
           val updatedDocuments = existingDocuments.map(doc => if (doc == existingDocument) newDocument else doc)
           updateCache(itemId, additionalDocuments.copy(documents = updatedDocuments))
@@ -111,7 +107,5 @@ class AdditionalDocumentChangeController @Inject()(
   private def updateCache(itemId: String, additionalDocuments: AdditionalDocuments)(
     implicit req: JourneyRequest[AnyContent]
   ): Future[ExportsDeclaration] =
-    updateDeclarationFromRequest(model => {
-      model.updatedItem(itemId, item => item.copy(additionalDocuments = Some(additionalDocuments)))
-    })
+    updateDeclarationFromRequest(model => model.updatedItem(itemId, item => item.copy(additionalDocuments = Some(additionalDocuments))))
 }

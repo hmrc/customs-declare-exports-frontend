@@ -28,7 +28,7 @@ import scala.concurrent.{ExecutionContext, Future}
 import models.AuthKey.enrolment
 import services.audit.AuditService
 
-class SecureMessagingFrontendConnector @Inject()(httpClient: HttpClient, config: SecureMessagingConfig, auditService: AuditService)(
+class SecureMessagingFrontendConnector @Inject() (httpClient: HttpClient, config: SecureMessagingConfig, auditService: AuditService)(
   implicit ec: ExecutionContext
 ) extends Logging with Status {
 
@@ -55,12 +55,11 @@ class SecureMessagingFrontendConnector @Inject()(httpClient: HttpClient, config:
             Future.failed(UpstreamErrorResponse(s"Unhappy response($statusCode) posting reply form to secure-messaging-frontend", statusCode))
         }
       }
-      .recoverWith {
-        case exc: UpstreamErrorResponse =>
-          logger.warn(
-            s"Received a ${exc.statusCode} response from secure-messaging-frontend while submitting a reply for '$client/$conversationId'. ${exc.message}"
-          )
-          Future.failed(exc)
+      .recoverWith { case exc: UpstreamErrorResponse =>
+        logger.warn(
+          s"Received a ${exc.statusCode} response from secure-messaging-frontend while submitting a reply for '$client/$conversationId'. ${exc.message}"
+        )
+        Future.failed(exc)
       }
 
   def retrieveReplyResult(client: String, conversationId: String)(implicit hc: HeaderCarrier): Future[ReplyResultPartial] =
@@ -79,10 +78,9 @@ class SecureMessagingFrontendConnector @Inject()(httpClient: HttpClient, config:
             Future.failed(UpstreamErrorResponse(s"Unhappy response($statusCode) fetching $errorInfo", statusCode))
         }
       }
-      .recoverWith {
-        case exc: UpstreamErrorResponse =>
-          logger.warn(s"Received a ${exc.statusCode} response from secure-messaging-frontend while retrieving $errorInfo. ${exc.message}")
-          Future.failed(exc)
+      .recoverWith { case exc: UpstreamErrorResponse =>
+        logger.warn(s"Received a ${exc.statusCode} response from secure-messaging-frontend while retrieving $errorInfo. ${exc.message}")
+        Future.failed(exc)
       }
 
   private def constructInboxEndpointQueryParams(eori: String): Seq[(String, String)] = {

@@ -42,7 +42,7 @@ trait CodeLinkConnector {
 }
 
 @Singleton
-class FileBasedCodeLinkConnector @Inject()(appConfig: AppConfig) extends CodeLinkConnector {
+class FileBasedCodeLinkConnector @Inject() (appConfig: AppConfig) extends CodeLinkConnector {
 
   private def readCodeLinksFromFile[T <: CommonCode](srcFile: String): Map[String, Seq[String]] = {
 

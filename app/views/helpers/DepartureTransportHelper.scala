@@ -37,7 +37,7 @@ import views.html.components.gds.{exportsInputText, pageTitle, paragraphBody}
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class DepartureTransportHelper @Inject()(
+class DepartureTransportHelper @Inject() (
   govukRadios: GovukRadios,
   govukInsetText: GovukInsetText,
   pageTitle: pageTitle,

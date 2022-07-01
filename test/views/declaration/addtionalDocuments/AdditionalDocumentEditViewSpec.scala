@@ -264,10 +264,10 @@ class AdditionalDocumentEditViewSpec extends UnitViewSpec with CommonMessages wi
             bulletPoints.get(1).text mustBe authCodeHelper.codeDescription(ENGLISH, "FZ")
           }
 
-          "display the expected top expander" in { topExpander(false) }
-          "display the expected 'Document Code' section" in { documentCode(1) }
-          "display the 'Document Code' expander" in { documentCodeExpander }
-          "display the expected 'Document Identifier' section" in { documentIdentifier(1) }
+          "display the expected top expander" in topExpander(false)
+          "display the expected 'Document Code' section" in documentCode(1)
+          "display the 'Document Code' expander" in documentCodeExpander
+          "display the expected 'Document Identifier' section" in documentIdentifier(1)
           "NOT display any inset text" in { createView.getElementsByClass("govuk-inset-text").size mustBe 0 }
         }
 
@@ -282,10 +282,10 @@ class AdditionalDocumentEditViewSpec extends UnitViewSpec with CommonMessages wi
             createView.getElementsByClass("govuk-body").get(0).text mustBe messages(s"$prefix.v2.body")
           }
 
-          "display the expected top expander" in { topExpander(false) }
-          "display the expected 'Document Code' section" in { documentCode(2) }
-          "display the 'Document Code' expander" in { documentCodeExpander }
-          "display the expected 'Document Identifier' section" in { documentIdentifier(2) }
+          "display the expected top expander" in topExpander(false)
+          "display the expected 'Document Code' section" in documentCode(2)
+          "display the 'Document Code' expander" in documentCodeExpander
+          "display the expected 'Document Identifier' section" in documentIdentifier(2)
 
           "display the expected insets placed after the 'Document Identifier' input field" in {
             val insets = createView.getElementsByClass("govuk-inset-text")
@@ -315,10 +315,10 @@ class AdditionalDocumentEditViewSpec extends UnitViewSpec with CommonMessages wi
             bulletPoints.get(1).text mustBe authCodeHelper.codeDescription(ENGLISH, "FZ")
           }
 
-          "display the expected top expander" in { topExpander(true) }
-          "display the expected 'Document Code' section" in { documentCode(3) }
-          "display the 'Document Code' expander" in { documentCodeExpander }
-          "display the expected 'Document Identifier' section" in { documentIdentifier(3) }
+          "display the expected top expander" in topExpander(true)
+          "display the expected 'Document Code' section" in documentCode(3)
+          "display the 'Document Code' expander" in documentCodeExpander
+          "display the expected 'Document Identifier' section" in documentIdentifier(3)
 
           "display the expected insets placed after the 'Document Identifier' input field" in {
             val insets = createView.getElementsByClass("govuk-inset-text")
@@ -340,9 +340,9 @@ class AdditionalDocumentEditViewSpec extends UnitViewSpec with CommonMessages wi
           }
 
           "NOT display the top expander" in { Option(createView.getElementById("top-expander")) mustBe None }
-          "display the expected 'Document Code' section" in { documentCode(4) }
-          "display the 'Document Code' expander" in { documentCodeExpander }
-          "display the expected 'Document Identifier' section" in { documentIdentifier(4) }
+          "display the expected 'Document Code' section" in documentCode(4)
+          "display the 'Document Code' expander" in documentCodeExpander
+          "display the expected 'Document Identifier' section" in documentIdentifier(4)
           "NOT display any inset text" in { createView.getElementsByClass("govuk-inset-text").size mustBe 0 }
         }
       }
@@ -365,10 +365,10 @@ class AdditionalDocumentEditViewSpec extends UnitViewSpec with CommonMessages wi
             text.get(1).text mustBe messages(s"$prefix.v5.body.2")
           }
 
-          "display the expected top expander" in { topExpander(true) }
-          "display the expected 'Document Code' section" in { documentCode(5) }
-          "display the 'Document Code' expander" in { documentCodeExpander }
-          "display the expected 'Document Identifier' section" in { documentIdentifier(5) }
+          "display the expected top expander" in topExpander(true)
+          "display the expected 'Document Code' section" in documentCode(5)
+          "display the 'Document Code' expander" in documentCodeExpander
+          "display the expected 'Document Identifier' section" in documentIdentifier(5)
 
           "display the expected insets placed after the 'Document Identifier' input field" in {
             val insets = createView.getElementsByClass("govuk-inset-text")
@@ -390,10 +390,10 @@ class AdditionalDocumentEditViewSpec extends UnitViewSpec with CommonMessages wi
             createView.getElementsByClass("govuk-body").get(0).text mustBe messages(s"$prefix.v6.body")
           }
 
-          "display the expected top expander" in { topExpander(true) }
-          "display the expected 'Document Code' section" in { documentCode(6) }
-          "display the 'Document Code' expander" in { documentCodeExpander }
-          "display the expected 'Document Identifier' section" in { documentIdentifier(6) }
+          "display the expected top expander" in topExpander(true)
+          "display the expected 'Document Code' section" in documentCode(6)
+          "display the 'Document Code' expander" in documentCodeExpander
+          "display the expected 'Document Identifier' section" in documentIdentifier(6)
           "NOT display any inset text" in { createView.getElementsByClass("govuk-inset-text").size mustBe 0 }
         }
       }
@@ -696,7 +696,7 @@ class AdditionalDocumentEditViewSpec extends UnitViewSpec with CommonMessages wi
         }
 
         "there is a scale error" in {
-          val incorrectDocumentQuantity = s"$documentWriteOffKey.$documentQuantityKey" -> 0.000000001D.toString
+          val incorrectDocumentQuantity = s"$documentWriteOffKey.$documentQuantityKey" -> 0.000000001d.toString
           val view = createView(correctAdditionalDocumentMap + incorrectDocumentQuantity)
 
           view must haveGovukGlobalErrorSummary

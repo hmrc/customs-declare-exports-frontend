@@ -23,7 +23,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.guidance._
 
-class GuidanceController @Inject()(
+class GuidanceController @Inject() (
   authenticate: AuthAction,
   mcc: MessagesControllerComponents,
   completeDeclarationPage: complete_declaration,

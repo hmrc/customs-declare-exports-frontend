@@ -57,7 +57,7 @@ trait JourneyTypeTestRunner extends UnitSpec with ExportsTestData {
         case kind @ DeclarationType.SIMPLIFIED    => onSimplified(aDeclarationAfter(declaration, withType(kind)))(f)
         case kind @ DeclarationType.OCCASIONAL    => onOccasional(aDeclarationAfter(declaration, withType(kind)))(f)
         case kind @ DeclarationType.CLEARANCE     => onClearance(aDeclarationAfter(declaration, withType(kind)))(f)
-        case _                                    => throw new RuntimeException("Unrecognized declaration type - you could have to implement helper methods")
+        case _ => throw new RuntimeException("Unrecognized declaration type - you could have to implement helper methods")
       }
     }
   }

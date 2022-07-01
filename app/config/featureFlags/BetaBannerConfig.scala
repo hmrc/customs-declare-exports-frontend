@@ -21,7 +21,7 @@ import features.Feature
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class BetaBannerConfig @Inject()(featureSwitchConfig: FeatureSwitchConfig) {
+class BetaBannerConfig @Inject() (featureSwitchConfig: FeatureSwitchConfig) {
 
   val isBetaBannerEnabled: Boolean = featureSwitchConfig.isFeatureOn(Feature.betaBanner)
 }

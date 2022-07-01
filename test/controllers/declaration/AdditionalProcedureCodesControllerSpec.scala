@@ -25,7 +25,7 @@ import forms.declaration.procedurecodes.AdditionalProcedureCode
 import forms.declaration.procedurecodes.AdditionalProcedureCode.additionalProcedureCodeKey
 import mock.ErrorHandlerMocks
 import models.codes.AdditionalProcedureCode.NO_APC_APPLIES_CODE
-import models.codes.{ProcedureCode, AdditionalProcedureCode => AdditionalProcedureCodeModel}
+import models.codes.{AdditionalProcedureCode => AdditionalProcedureCodeModel, ProcedureCode}
 import models.declaration.ProcedureCodesData.limitOfCodes
 import models.declaration.{ExportItem, ProcedureCodesData}
 import models.requests.JourneyRequest

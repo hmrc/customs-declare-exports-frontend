@@ -26,13 +26,14 @@ import models.{DeclarationType, ExportsDeclaration, Mode}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import services.cache.ExportsCacheService
+import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.cus_code
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class CusCodeController @Inject()(
+class CusCodeController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
@@ -40,7 +41,7 @@ class CusCodeController @Inject()(
   mcc: MessagesControllerComponents,
   cusCodePage: cus_code
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
   val validTypes = Seq(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL)
 
@@ -60,7 +61,7 @@ class CusCodeController @Inject()(
         validForm =>
           updateExportsCache(itemId, validForm).map { _ =>
             navigator.continueTo(mode, nextPage(itemId, request.declarationType))
-        }
+          }
       )
   }
 

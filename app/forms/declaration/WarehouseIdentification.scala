@@ -37,12 +37,11 @@ object WarehouseIdentification extends DeclarationPage {
   val inWarehouseKey = "inWarehouse"
   val warehouseIdKey = "identificationNumber"
 
-  private def form2ModelYesNo: (String, Option[String]) => WarehouseIdentification = {
-    case (inWarehouse, warehouseId) =>
-      inWarehouse match {
-        case YesNoAnswers.yes => WarehouseIdentification(warehouseId.map(_.toUpperCase))
-        case YesNoAnswers.no  => WarehouseIdentification(None)
-      }
+  private def form2ModelYesNo: (String, Option[String]) => WarehouseIdentification = { case (inWarehouse, warehouseId) =>
+    inWarehouse match {
+      case YesNoAnswers.yes => WarehouseIdentification(warehouseId.map(_.toUpperCase))
+      case YesNoAnswers.no  => WarehouseIdentification(None)
+    }
   }
 
   private def model2FormYesNo: WarehouseIdentification => Option[(String, Option[String])] =
@@ -50,7 +49,7 @@ object WarehouseIdentification extends DeclarationPage {
       model.identificationNumber match {
         case Some(id) => Some((YesNoAnswers.yes, Some(id)))
         case None     => Some((YesNoAnswers.no, None))
-    }
+      }
 
   private def form2Model: (String) => WarehouseIdentification = id => WarehouseIdentification(Some(id.toUpperCase))
 

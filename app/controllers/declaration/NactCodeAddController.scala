@@ -17,12 +17,12 @@
 package controllers.declaration
 
 import scala.concurrent.{ExecutionContext, Future}
-
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import controllers.helpers.MultipleItemsHelper
 import forms.declaration.NactCode.nactCodeLimit
 import forms.declaration.{NactCode, NactCodeFirst}
+
 import javax.inject.Inject
 import models.requests.JourneyRequest
 import models.{DeclarationType, ExportsDeclaration, Mode}
@@ -30,10 +30,11 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.cache.ExportsCacheService
+import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.{nact_code_add, nact_code_add_first}
 
-class NactCodeAddController @Inject()(
+class NactCodeAddController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
@@ -42,7 +43,7 @@ class NactCodeAddController @Inject()(
   nactCodeAddFirstPage: nact_code_add_first,
   nactCodeAdd: nact_code_add
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
   import NactCodeSummaryController._
 

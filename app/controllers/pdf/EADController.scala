@@ -27,7 +27,7 @@ import java.time.LocalDate
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class EADController @Inject()(authenticate: AuthAction, mcc: MessagesControllerComponents, eadService: EADService)(implicit ec: ExecutionContext)
+class EADController @Inject() (authenticate: AuthAction, mcc: MessagesControllerComponents, eadService: EADService)(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
   def generatePdf(mrn: String): Action[AnyContent] = authenticate.async { implicit request =>

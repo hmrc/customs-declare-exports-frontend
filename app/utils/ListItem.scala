@@ -21,12 +21,12 @@ object ListItem {
   def createId[A](index: Int, item: A) = s"$index.${item.hashCode()}"
 
   def findById[A](id: String, items: Seq[A]): Option[A] =
-    try {
+    try
       id.split("\\.") match {
         case Array(index: String, hashcode: String) if items(index.toInt).hashCode() == hashcode.toInt => Some(items(index.toInt))
         case _                                                                                         => None
       }
-    } catch {
+    catch {
       case _: Exception => None
     }
 }

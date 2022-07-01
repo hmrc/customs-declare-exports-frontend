@@ -20,7 +20,7 @@ import javax.inject.{Inject, Singleton}
 import play.api.Configuration
 
 @Singleton
-class GoogleFormFeedbackLinkConfig @Inject()(configuration: Configuration) {
+class GoogleFormFeedbackLinkConfig @Inject() (configuration: Configuration) {
 
   val googleFormFeedbackLink: Option[String] = configuration.getOptional[String](s"urls.googleFormFeedbackLink")
 }

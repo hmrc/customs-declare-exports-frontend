@@ -21,20 +21,21 @@ import controllers.actions.{AuthAction, VerifiedEmailAction}
 import forms.RemoveDraftDeclaration.form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.remove_declaration
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class RemoveSavedDeclarationsController @Inject()(
+class RemoveSavedDeclarationsController @Inject() (
   authenticate: AuthAction,
   verifyEmail: VerifiedEmailAction,
   customsDeclareExportsConnector: CustomsDeclareExportsConnector,
   mcc: MessagesControllerComponents,
   removeDeclarationPage: remove_declaration
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport {
+    extends FrontendController(mcc) with I18nSupport with WithDefaultFormBinding {
 
   def displayPage(id: String): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
     customsDeclareExportsConnector.findDeclaration(id) flatMap {
@@ -52,7 +53,7 @@ class RemoveSavedDeclarationsController @Inject()(
           customsDeclareExportsConnector.findDeclaration(id) flatMap {
             case Some(declaration) => Future.successful(BadRequest(removeDeclarationPage(declaration, formWithErrors)))
             case _                 => Future.successful(Redirect(controllers.routes.SavedDeclarationsController.displayDeclarations()))
-        },
+          },
         validAction =>
           if (validAction.remove)
             customsDeclareExportsConnector

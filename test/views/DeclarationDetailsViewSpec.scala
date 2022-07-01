@@ -344,17 +344,16 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
       def dateTimeAsShown(notification: NotificationSummary): String =
         ViewDates.formatDateAtTime(notification.dateTimeIssued)
 
-      notificationSummaries.reverse.zipWithIndex.foreach {
-        case (notification, ix) =>
-          And("each Timeline event should always include a title")
-          val title = events.get(ix).getElementsByTag("h2")
-          assert(title.hasClass("hmrc-timeline__event-title"))
-          title.text mustBe EnhancedStatusTranslator.asText(notification)
+      notificationSummaries.reverse.zipWithIndex.foreach { case (notification, ix) =>
+        And("each Timeline event should always include a title")
+        val title = events.get(ix).getElementsByTag("h2")
+        assert(title.hasClass("hmrc-timeline__event-title"))
+        title.text mustBe EnhancedStatusTranslator.asText(notification)
 
-          And("a date and time")
-          val datetime = events.get(ix).getElementsByTag("time")
-          assert(datetime.hasClass("hmrc-timeline__event-meta"))
-          datetime.text mustBe dateTimeAsShown(notification)
+        And("a date and time")
+        val datetime = events.get(ix).getElementsByTag("time")
+        assert(datetime.hasClass("hmrc-timeline__event-meta"))
+        datetime.text mustBe dateTimeAsShown(notification)
       }
     }
 

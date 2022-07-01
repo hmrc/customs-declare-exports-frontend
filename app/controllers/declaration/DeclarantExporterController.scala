@@ -25,13 +25,14 @@ import models.{DeclarationType, ExportsDeclaration, Mode}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import services.cache.ExportsCacheService
+import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.declarant_exporter
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class DeclarantExporterController @Inject()(
+class DeclarantExporterController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
@@ -39,7 +40,7 @@ class DeclarantExporterController @Inject()(
   mcc: MessagesControllerComponents,
   declarantExporterPage: declarant_exporter
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     val frm = form().withSubmissionErrors()
@@ -53,9 +54,7 @@ class DeclarantExporterController @Inject()(
     form()
       .bindFromRequest()
       .fold(
-        formWithErrors => {
-          Future.successful(BadRequest(declarantExporterPage(mode, formWithErrors)))
-        },
+        formWithErrors => Future.successful(BadRequest(declarantExporterPage(mode, formWithErrors))),
         validForm =>
           updateCache(validForm)
             .map(_ => navigator.continueTo(mode, nextPage(validForm)))
@@ -75,11 +74,11 @@ class DeclarantExporterController @Inject()(
     } else controllers.declaration.routes.ExporterEoriNumberController.displayPage
 
   private def updateCache(answer: DeclarantIsExporter)(implicit r: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
-    updateDeclarationFromRequest(model => {
+    updateDeclarationFromRequest { model =>
       if (answer.isExporter) {
         // clear possible previous answers to irrelevant questions
         model.copy(parties = model.parties.copy(declarantIsExporter = Some(answer), exporterDetails = None, representativeDetails = None))
       } else
         model.copy(parties = model.parties.copy(declarantIsExporter = Some(answer)))
-    })
+    }
 }

@@ -27,19 +27,20 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.cache.ExportsCacheService
+import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.packageInformation.package_information
 
 import javax.inject.Inject
 
-class PackageInformationSummaryController @Inject()(
+class PackageInformationSummaryController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
   mcc: MessagesControllerComponents,
   packageInformationPage: package_information
-) extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
+) extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
   import PackageInformationSummaryController._
 
@@ -62,7 +63,7 @@ class PackageInformationSummaryController @Inject()(
               navigator.continueTo(mode, controllers.declaration.routes.PackageInformationAddController.displayPage(_, itemId), mode.isErrorFix)
             case YesNoAnswers.no =>
               navigator.continueTo(mode, nextPage(itemId))
-        }
+          }
       )
   }
 

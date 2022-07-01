@@ -37,13 +37,14 @@ import play.twirl.api.Html
 import services.SubmissionService
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.summary._
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class SummaryController @Inject()(
+class SummaryController @Inject() (
   authenticate: AuthAction,
   verifyEmail: VerifiedEmailAction,
   journeyType: JourneyAction,
@@ -58,7 +59,7 @@ class SummaryController @Inject()(
   legalDeclarationPage: legal_declaration_page,
   lrnValidator: LrnValidator
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
-    extends FrontendController(mcc) with I18nSupport with Logging with ModelCacheable {
+    extends FrontendController(mcc) with I18nSupport with Logging with ModelCacheable with WithDefaultFormBinding {
 
   val form: Form[LegalDeclaration] = LegalDeclaration.form()
 
@@ -80,12 +81,11 @@ class SummaryController @Inject()(
   def submitDeclaration(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType).async { implicit request =>
     form.bindFromRequest.fold(
       (formWithErrors: Form[LegalDeclaration]) => Future.successful(BadRequest(legalDeclarationPage(formWithErrors, mode))),
-      legalDeclaration => {
+      legalDeclaration =>
         submissionService.submit(request.eori, request.cacheModel, legalDeclaration).map {
           case Some(submission) => Redirect(routes.ConfirmationController.displayHoldingPage).withSession(session(submission))
           case _                => handleError(s"Error from Customs Declarations API")
         }
-      }
     )
   }
 

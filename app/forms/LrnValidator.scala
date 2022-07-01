@@ -24,7 +24,7 @@ import java.time.ZonedDateTime
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class LrnValidator @Inject()(customsDeclareExportsConnector: CustomsDeclareExportsConnector) {
+class LrnValidator @Inject() (customsDeclareExportsConnector: CustomsDeclareExportsConnector) {
 
   def hasBeenSubmittedInThePast48Hours(lrn: Lrn)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean] = {
     val now = ZonedDateTime.now(Action.defaultDateTimeZone)

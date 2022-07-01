@@ -17,7 +17,6 @@
 package controllers.declaration
 
 import scala.concurrent.{ExecutionContext, Future}
-
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.PreviousDocumentsController.PreviousDocumentsFormGroupId
 import controllers.navigation.Navigator
@@ -25,16 +24,18 @@ import controllers.helpers.MultipleItemsHelper
 import forms.declaration.Document.form
 import forms.declaration.{Document, PreviousDocumentsData}
 import forms.declaration.PreviousDocumentsData.maxAmountOfItems
+
 import javax.inject.Inject
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.cache.ExportsCacheService
+import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.previousDocuments.previous_documents
 
-class PreviousDocumentsController @Inject()(
+class PreviousDocumentsController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   navigator: Navigator,
@@ -42,7 +43,7 @@ class PreviousDocumentsController @Inject()(
   previousDocumentsPage: previous_documents,
   override val exportsCacheService: ExportsCacheService
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     Ok(previousDocumentsPage(mode, form))

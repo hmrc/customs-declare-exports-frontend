@@ -35,13 +35,14 @@ import models.{ExportsDeclaration, Mode}
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.cache.ExportsCacheService
+import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.inland_border
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class InlandOrBorderController @Inject()(
+class InlandOrBorderController @Inject() (
   authenticate: AuthAction,
   journeyAction: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
@@ -50,9 +51,9 @@ class InlandOrBorderController @Inject()(
   inlandOrBorderPage: inland_border,
   inlandOrBorderHelper: InlandOrBorderHelper
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
-  private val actionBuilder = (authenticate andThen journeyAction.onAdditionalTypes(additionalDeclTypesAllowedOnInlandOrBorder))
+  private val actionBuilder = authenticate andThen journeyAction.onAdditionalTypes(additionalDeclTypesAllowedOnInlandOrBorder)
 
   def displayPage(mode: Mode): Action[AnyContent] = actionBuilder { implicit request =>
     if (inlandOrBorderHelper.skipInlandOrBorder(request.cacheModel)) Results.Redirect(RootController.displayPage)
@@ -84,8 +85,8 @@ class InlandOrBorderController @Inject()(
 
   private def updateExportsCache(mode: Mode, inlandOrBorder: InlandOrBorder)(implicit request: JourneyRequest[AnyContent]): Future[Result] =
     updateDeclarationFromRequest { declaration =>
-      declaration.copy(
-        locations = declaration.locations.copy(
+      declaration.copy(locations =
+        declaration.locations.copy(
           inlandOrBorder = Some(inlandOrBorder),
           inlandModeOfTransportCode = if (inlandOrBorder == Border) None else declaration.locations.inlandModeOfTransportCode
         )

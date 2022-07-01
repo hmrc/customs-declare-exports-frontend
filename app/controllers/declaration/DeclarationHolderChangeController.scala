@@ -17,7 +17,6 @@
 package controllers.declaration
 
 import scala.concurrent.{ExecutionContext, Future}
-
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.routes.DeclarationHolderSummaryController
 import controllers.helpers.DeclarationHolderHelper._
@@ -26,6 +25,7 @@ import controllers.navigation.Navigator
 import forms.declaration.declarationHolder.DeclarationHolder
 import forms.declaration.declarationHolder.DeclarationHolder.DeclarationHolderFormGroupId
 import handlers.ErrorHandler
+
 import javax.inject.Inject
 import models.declaration.DeclarationHoldersData
 import models.declaration.DeclarationHoldersData.limitOfHolders
@@ -35,10 +35,11 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.cache.ExportsCacheService
+import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.declarationHolder.declaration_holder_change
 
-class DeclarationHolderChangeController @Inject()(
+class DeclarationHolderChangeController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
@@ -47,7 +48,7 @@ class DeclarationHolderChangeController @Inject()(
   mcc: MessagesControllerComponents,
   declarationHolderChangePage: declaration_holder_change
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
   def displayPage(mode: Mode, id: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val maybeExistingHolder = declarationHolders.find(_.id.equals(id))
@@ -63,11 +64,10 @@ class DeclarationHolderChangeController @Inject()(
 
     boundForm.fold(
       formWithErrors => Future.successful(BadRequest(declarationHolderChangePage(mode, id, formWithErrors, request.eori))),
-      newHolder => {
+      newHolder =>
         maybeExistingHolder.fold(errorHandler.displayErrorPage) { existingHolder =>
           changeHolder(mode, existingHolder, newHolder, boundForm)
         }
-      }
     )
   }
 
@@ -90,9 +90,9 @@ class DeclarationHolderChangeController @Inject()(
   }
 
   private def updateExportsCache(holders: Seq[DeclarationHolder])(implicit r: JourneyRequest[_]): Future[ExportsDeclaration] =
-    updateDeclarationFromRequest(model => {
+    updateDeclarationFromRequest { model =>
       val isRequired = model.parties.declarationHoldersData.flatMap(_.isRequired)
       val updatedParties = model.parties.copy(declarationHoldersData = Some(DeclarationHoldersData(holders, isRequired)))
       model.copy(parties = updatedParties)
-    })
+    }
 }

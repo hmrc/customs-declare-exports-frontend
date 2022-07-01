@@ -33,7 +33,7 @@ import views.html.components.gds.{bulletList, heading, link, paragraphBody, row}
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class LocationOfGoodsHelper @Inject()(
+class LocationOfGoodsHelper @Inject() (
   govukDetails: GovukDetails,
   govukHint: GovukHint,
   bulletList: bulletList,

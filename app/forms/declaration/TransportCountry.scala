@@ -62,8 +62,8 @@ object TransportCountry extends DeclarationPage {
       if (country.trim.nonEmpty) Valid else Invalid(List(ValidationError(s"$prefix.country.error.empty", transportMode)))
     }
 
-  private def form2Model: (String, Option[String]) => TransportCountry = {
-    case (hasTransportCountry, countryName) => TransportCountry(if (hasTransportCountry == yes) countryName else None)
+  private def form2Model: (String, Option[String]) => TransportCountry = { case (hasTransportCountry, countryName) =>
+    TransportCountry(if (hasTransportCountry == yes) countryName else None)
   }
 
   private def model2Form: TransportCountry => Option[(String, Option[String])] =

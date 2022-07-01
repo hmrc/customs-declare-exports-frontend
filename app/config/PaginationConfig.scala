@@ -20,7 +20,7 @@ import javax.inject.{Inject, Singleton}
 import play.api.Configuration
 
 @Singleton
-class PaginationConfig @Inject()(configuration: Configuration) {
+class PaginationConfig @Inject() (configuration: Configuration) {
 
   val itemsPerPage: Int = configuration
     .getOptional[Int]("pagination.itemsPerPage")

@@ -26,13 +26,15 @@ import models.{ExportsDeclaration, Mode}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.cache.ExportsCacheService
+import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.ListItem
 import views.html.declaration.previousDocuments.previous_documents_change
+
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class PreviousDocumentsChangeController @Inject()(
+class PreviousDocumentsChangeController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
@@ -40,7 +42,7 @@ class PreviousDocumentsChangeController @Inject()(
   mcc: MessagesControllerComponents,
   changePage: previous_documents_change
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
   def displayPage(mode: Mode, id: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     findDocument(id) match {

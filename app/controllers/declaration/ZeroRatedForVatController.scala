@@ -24,13 +24,14 @@ import models.{DeclarationType, ExportsDeclaration, Mode}
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.cache.ExportsCacheService
+import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.zero_rated_for_vat
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class ZeroRatedForVatController @Inject()(
+class ZeroRatedForVatController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
@@ -38,7 +39,7 @@ class ZeroRatedForVatController @Inject()(
   mcc: MessagesControllerComponents,
   zero_rated_for_vat: zero_rated_for_vat
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
   val validTypes = Seq(DeclarationType.STANDARD)
 

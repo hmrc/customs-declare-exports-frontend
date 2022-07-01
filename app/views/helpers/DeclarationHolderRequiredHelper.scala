@@ -30,7 +30,7 @@ import views.html.components.gds.{bulletList, paragraphBody}
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class DeclarationHolderRequiredHelper @Inject()(bulletList: bulletList, govukInsetText: GovukInsetText, paragraphBody: paragraphBody) {
+class DeclarationHolderRequiredHelper @Inject() (bulletList: bulletList, govukInsetText: GovukInsetText, paragraphBody: paragraphBody) {
 
   private val key = "declaration.declarationHolderRequired"
   private val bodyKey = "declaration.declarationHolderRequired.body"

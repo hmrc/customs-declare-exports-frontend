@@ -37,7 +37,7 @@ object EntityDetails {
 
   def optionalAddressMapping()(implicit messages: Messages, codeListConnector: CodeListConnector): Mapping[EntityDetails] =
     Forms
-      .mapping("address" -> optional(Address.mapping))(maybeAddress => EntityDetails(None, maybeAddress))(
-        entityDetails => Some(entityDetails.address)
+      .mapping("address" -> optional(Address.mapping))(maybeAddress => EntityDetails(None, maybeAddress))(entityDetails =>
+        Some(entityDetails.address)
       )
 }

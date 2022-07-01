@@ -35,12 +35,11 @@ object NactCodeFirst extends DeclarationPage {
 
   val hasNactCodeKey = "hasNact"
 
-  private def form2Model: (String, Option[String]) => NactCodeFirst = {
-    case (hasNactCode, code) =>
-      hasNactCode match {
-        case YesNoAnswers.yes => NactCodeFirst(code)
-        case YesNoAnswers.no  => NactCodeFirst(None)
-      }
+  private def form2Model: (String, Option[String]) => NactCodeFirst = { case (hasNactCode, code) =>
+    hasNactCode match {
+      case YesNoAnswers.yes => NactCodeFirst(code)
+      case YesNoAnswers.no  => NactCodeFirst(None)
+    }
   }
 
   private def model2Form: NactCodeFirst => Option[(String, Option[String])] =
@@ -48,7 +47,7 @@ object NactCodeFirst extends DeclarationPage {
       model.code match {
         case Some(code) => Some((YesNoAnswers.yes, Some(code)))
         case None       => Some((YesNoAnswers.no, None))
-    }
+      }
 
   val mapping = Forms.mapping(
     hasNactCodeKey -> requiredRadio("declaration.nationalAdditionalCode.answer.empty"),

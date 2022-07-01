@@ -28,7 +28,7 @@ import views.html.components.gds.{exportsInsetText, link, paragraphBody}
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class AdditionalInformationRequiredHelper @Inject()(appConfig: AppConfig, paragraphBody: paragraphBody, insetText: exportsInsetText, link: link) {
+class AdditionalInformationRequiredHelper @Inject() (appConfig: AppConfig, paragraphBody: paragraphBody, insetText: exportsInsetText, link: link) {
   def getBodyContent(decType: DeclarationType, mayBeProcedureCode: Option[ProcedureCodesData])(implicit messages: Messages): Html =
     (decType, mayBeProcedureCode.flatMap(_.procedureCode)) match {
       case (CLEARANCE, _)                => getBodyContentForClearanceOr1040()

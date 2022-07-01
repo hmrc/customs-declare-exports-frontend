@@ -28,6 +28,7 @@ import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.declaration_choice
 
@@ -35,14 +36,14 @@ import java.time.Instant
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class DeclarationChoiceController @Inject()(
+class DeclarationChoiceController @Inject() (
   authenticate: AuthAction,
   verifyEmail: VerifiedEmailAction,
   override val exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents,
   choicePage: declaration_choice
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with Logging with ModelCacheable {
+    extends FrontendController(mcc) with I18nSupport with Logging with ModelCacheable with WithDefaultFormBinding {
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
     request.declarationId match {
@@ -64,7 +65,7 @@ class DeclarationChoiceController @Inject()(
           request.declarationId match {
             case Some(id) => updateDeclarationType(id, declarationType.value).map(_ => nextPage(mode, id))
             case _        => create(declarationType.value).map(created => nextPage(mode, created.id))
-        }
+          }
       )
   }
 

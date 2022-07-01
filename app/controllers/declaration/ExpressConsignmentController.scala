@@ -18,7 +18,6 @@ package controllers.declaration
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
-
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
@@ -29,11 +28,12 @@ import models.{ExportsDeclaration, Mode}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import services.cache.ExportsCacheService
+import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.express_consignment
 
 @Singleton
-class ExpressConsignmentController @Inject()(
+class ExpressConsignmentController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
@@ -41,7 +41,7 @@ class ExpressConsignmentController @Inject()(
   mcc: MessagesControllerComponents,
   expressConsignmentPage: express_consignment
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
   private lazy val emptyKey = "declaration.transportInformation.expressConsignment.empty"
 
@@ -70,8 +70,8 @@ class ExpressConsignmentController @Inject()(
 
   private def updateCache(yesNoAnswer: YesNoAnswer)(implicit request: JourneyRequest[_]): Future[ExportsDeclaration] =
     updateDeclarationFromRequest { model =>
-      model.copy(
-        transport = model.transport.copy(
+      model.copy(transport =
+        model.transport.copy(
           expressConsignment = Some(yesNoAnswer),
           transportPayment = if (yesNoAnswer.answer == YesNoAnswers.no) None else model.transport.transportPayment
         )

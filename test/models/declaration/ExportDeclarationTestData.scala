@@ -134,7 +134,7 @@ object ExportDeclarationTestData {
       exporterDetails = Some(correctExporterDetails),
       declarantDetails = Some(correctDeclarantDetailsEORIOnly),
       consigneeDetails = Some(ConsigneeDetails(EntityDetailsSpec.correctEntityDetails)),
-      representativeDetails = None, //Some(correctRepresentativeDetails),
+      representativeDetails = None, // Some(correctRepresentativeDetails),
       declarationAdditionalActorsData = Some(DeclarationAdditionalActorsData(Seq(correctAdditionalActors1))),
       declarationHoldersData = Some(
         DeclarationHoldersData(
@@ -174,7 +174,7 @@ object ExportDeclarationTestData {
     GovernmentAgencyGoodsItem(
       sequenceNumeric = 0,
       statisticalValueAmount = Some(Amount(Some("GBP"), Some(BigDecimal(12)))),
-      commodity = None, //parsed from cached CommodityForm
+      commodity = None, // parsed from cached CommodityForm
       additionalInformations = Seq(),
       additionalDocuments = Seq(),
       governmentProcedures = Seq(),

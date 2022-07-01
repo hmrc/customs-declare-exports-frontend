@@ -36,7 +36,7 @@ import uk.gov.hmrc.play.http.HeaderCarrierConverter
 import javax.inject.Provider
 import scala.concurrent.{ExecutionContext, Future}
 
-class AuthActionImpl @Inject()(
+class AuthActionImpl @Inject() (
   override val authConnector: AuthConnector,
   eoriAllowList: EoriAllowList,
   mcc: MessagesControllerComponents,
@@ -61,8 +61,8 @@ class AuthActionImpl @Inject()(
 
     val result = authorised((Individual or Organisation) and Enrolment(enrolment)).retrieve(authData) {
       case credentials ~ name ~ email ~ externalId ~ internalId ~ affinityGroup ~ allEnrolments ~ agentCode ~
-            confidenceLevel ~ authNino ~ saUtr ~ dateOfBirth ~ agentInformation ~ groupIdentifier ~
-            credentialRole ~ mdtpInformation ~ itmpName ~ itmpDateOfBirth ~ itmpAddress ~ credentialStrength ~ loginTimes =>
+          confidenceLevel ~ authNino ~ saUtr ~ dateOfBirth ~ agentInformation ~ groupIdentifier ~
+          credentialRole ~ mdtpInformation ~ itmpName ~ itmpDateOfBirth ~ itmpAddress ~ credentialStrength ~ loginTimes =>
         authorisation.stop()
         val eori = getEoriFromEnrolments(allEnrolments)
 
@@ -147,7 +147,7 @@ class EoriAllowList(values: Seq[String]) {
   def allows(eori: String): Boolean = values.isEmpty || values.contains(eori)
 }
 
-class EoriAllowListProvider @Inject()(configuration: Configuration) extends Provider[EoriAllowList] {
+class EoriAllowListProvider @Inject() (configuration: Configuration) extends Provider[EoriAllowList] {
   override def get(): EoriAllowList =
     new EoriAllowList(configuration.get[Seq[String]]("allowList.eori"))
 }

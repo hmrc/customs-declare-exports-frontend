@@ -29,7 +29,7 @@ import services.cache.ExportsCacheService
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
-class JourneyAction @Inject()(cacheService: ExportsCacheService)(implicit val exc: ExecutionContext)
+class JourneyAction @Inject() (cacheService: ExportsCacheService)(implicit val exc: ExecutionContext)
     extends ActionRefiner[AuthenticatedRequest, JourneyRequest] with Logging {
 
   type RefineResult[A] = Future[Either[Result, JourneyRequest[A]]]

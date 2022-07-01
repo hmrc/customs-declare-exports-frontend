@@ -25,7 +25,7 @@ import models.ExportsDeclaration
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class InlandOrBorderHelper @Inject()(depCodes: DepCodesHelper) {
+class InlandOrBorderHelper @Inject() (depCodes: DepCodesHelper) {
 
   val notAllowedOnInlandOrBorder = List(CLEARANCE, OCCASIONAL, SIMPLIFIED)
 

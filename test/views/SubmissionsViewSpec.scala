@@ -182,9 +182,8 @@ class SubmissionsViewSpec extends UnitViewSpec with BeforeAndAfterEach with Expo
       "there are submissions requiring action and submissions with DMSQRY notification" in {
         val warningText =
           s"! ${messages("site.warning")} ${messages("submissions.hint.action.needed.queryNotificationMessage")}"
-        val view = createView(
-          actionSubmissions =
-            Paginated(Seq(submission -> Seq(actionNotification), submissionWithDucr("ducr_2") -> Seq(dmsQryNotification)), Page(), 2)
+        val view = createView(actionSubmissions =
+          Paginated(Seq(submission -> Seq(actionNotification), submissionWithDucr("ducr_2") -> Seq(dmsQryNotification)), Page(), 2)
         )
 
         view.getElementsByClass("govuk-warning-text").text mustBe warningText

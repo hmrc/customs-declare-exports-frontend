@@ -30,13 +30,14 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.cache.ExportsCacheService
+import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.packageInformation.package_information_change
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class PackageInformationChangeController @Inject()(
+class PackageInformationChangeController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   navigator: Navigator,
@@ -45,7 +46,7 @@ class PackageInformationChangeController @Inject()(
   mcc: MessagesControllerComponents,
   packageChangePage: package_information_change
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
   def displayPage(mode: Mode, itemId: String, code: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val maybePackageInformation = singleCachedPackageInformation(code, itemId)

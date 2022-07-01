@@ -46,16 +46,16 @@ class MrnSpec extends UnitWithMocksSpec {
     }
 
     "correctly detect invalid MRN values" in {
-      withClue("empty") { Mrn.isValid("") mustBe false }
-      withClue("too long") { Mrn.isValid(s"${ExportsTestData.mrn}EXTRA") mustBe false }
+      withClue("empty")(Mrn.isValid("") mustBe false)
+      withClue("too long")(Mrn.isValid(s"${ExportsTestData.mrn}EXTRA") mustBe false)
 
-      withClue("first char is not a digit") { Mrn.isValid(s"X0${ExportsTestData.mrn.drop(2)}") mustBe false }
-      withClue("second char is not a digit") { Mrn.isValid(s"1X${ExportsTestData.mrn.drop(2)}") mustBe false }
+      withClue("first char is not a digit")(Mrn.isValid(s"X0${ExportsTestData.mrn.drop(2)}") mustBe false)
+      withClue("second char is not a digit")(Mrn.isValid(s"1X${ExportsTestData.mrn.drop(2)}") mustBe false)
 
-      withClue("third char is not an alpha") { Mrn.isValid(s"001B${ExportsTestData.mrn.drop(4)}") mustBe false }
-      withClue("forth char is not an alpha") { Mrn.isValid(s"00G1${ExportsTestData.mrn.drop(4)}") mustBe false }
+      withClue("third char is not an alpha")(Mrn.isValid(s"001B${ExportsTestData.mrn.drop(4)}") mustBe false)
+      withClue("forth char is not an alpha")(Mrn.isValid(s"00G1${ExportsTestData.mrn.drop(4)}") mustBe false)
 
-      withClue("non-alphanumeric char present") { Mrn.isValid(s"!${ExportsTestData.mrn.drop(1)}") mustBe false }
+      withClue("non-alphanumeric char present")(Mrn.isValid(s"!${ExportsTestData.mrn.drop(1)}") mustBe false)
     }
   }
 }

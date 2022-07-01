@@ -34,7 +34,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.insettext.InsetText
 import views.html.components.gds.{bulletList, exportsInputText, link, paragraphBody}
 
 @Singleton
-class PreviousDocumentsHelper @Inject()(
+class PreviousDocumentsHelper @Inject() (
   bulletList: bulletList,
   govukHint: GovukHint,
   govukInsetText: GovukInsetText,

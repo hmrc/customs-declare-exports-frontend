@@ -31,6 +31,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.cache.ExportsCacheService
 import services.{Countries => ServiceCountries}
 import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.helpers.CountryHelper
 import views.html.declaration.destinationCountries.{country_of_routing, routing_country_question}
@@ -38,7 +39,7 @@ import views.html.declaration.destinationCountries.{country_of_routing, routing_
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class RoutingCountriesController @Inject()(
+class RoutingCountriesController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
@@ -47,7 +48,7 @@ class RoutingCountriesController @Inject()(
   routingQuestionPage: routing_country_question,
   countryOfRoutingPage: country_of_routing
 )(implicit ec: ExecutionContext, codeListConnector: CodeListConnector, countryHelper: CountryHelper)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
   def displayRoutingQuestion(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     val frm = formFirst().withSubmissionErrors()
@@ -65,7 +66,7 @@ class RoutingCountriesController @Inject()(
       .bindFromRequest()
       .fold(
         formWithErrors => Future.successful(BadRequest(routingQuestionPage(mode, formWithErrors, destinationCountry))),
-        validAnswer => {
+        validAnswer =>
           updateDeclarationFromRequest { dec =>
             if (validAnswer) dec.updateRoutingQuestion(validAnswer)
             else dec.clearRoutingCountries()
@@ -73,7 +74,6 @@ class RoutingCountriesController @Inject()(
             if (validAnswer) navigator.continueTo(mode, RoutingCountriesController.displayRoutingCountry, mode.isErrorFix)
             else navigator.continueTo(mode, LocationOfGoodsController.displayPage)
           }
-        }
       )
   }
 
@@ -118,9 +118,9 @@ class RoutingCountriesController @Inject()(
 
         values.headOption
           .map(services.Countries.findByCode)
-          .fold(Future.successful(continueTo))({ country =>
+          .fold(Future.successful(continueTo)) { country =>
             updateAndRedirect(_.removeCountryOfRouting(Country(Some(country.countryCode))), continueTo)
-          })
+          }
     }
   }
 
@@ -137,10 +137,10 @@ class RoutingCountriesController @Inject()(
         }
       )
 
-  private def updateAndRedirect(
-    update: ExportsDeclaration => ExportsDeclaration,
-    redirect: Result
-  )(implicit request: JourneyRequest[AnyContent], hc: HeaderCarrier): Future[Result] =
+  private def updateAndRedirect(update: ExportsDeclaration => ExportsDeclaration, redirect: Result)(
+    implicit request: JourneyRequest[AnyContent],
+    hc: HeaderCarrier
+  ): Future[Result] =
     updateDeclarationFromRequest(update).map(_ => redirect)
 
   private def routingCountriesList(implicit request: JourneyRequest[_]): Seq[models.codes.Country] =

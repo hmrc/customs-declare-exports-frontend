@@ -43,8 +43,8 @@ object Paginated {
           (json \ "total").as[Long]
         )
       }.map(JsSuccess(_))
-        .recover {
-          case t: Throwable => JsError(t.getMessage)
+        .recover { case t: Throwable =>
+          JsError(t.getMessage)
         }
         .get
   }

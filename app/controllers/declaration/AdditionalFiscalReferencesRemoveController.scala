@@ -28,6 +28,7 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.cache.ExportsCacheService
+import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.ListItem
 import views.html.declaration.fiscalInformation.additional_fiscal_references_remove
@@ -35,7 +36,7 @@ import views.html.declaration.fiscalInformation.additional_fiscal_references_rem
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class AdditionalFiscalReferencesRemoveController @Inject()(
+class AdditionalFiscalReferencesRemoveController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
@@ -43,7 +44,7 @@ class AdditionalFiscalReferencesRemoveController @Inject()(
   mcc: MessagesControllerComponents,
   removePage: additional_fiscal_references_remove
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
   def displayPage(mode: Mode, itemId: String, id: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     findAdditionalFiscalReference(itemId, id) match {
@@ -59,7 +60,7 @@ class AdditionalFiscalReferencesRemoveController @Inject()(
           .bindFromRequest()
           .fold(
             (formWithErrors: Form[YesNoAnswer]) => Future.successful(BadRequest(removePage(mode, itemId, id, reference, formWithErrors))),
-            formData => {
+            formData =>
               formData.answer match {
                 case YesNoAnswers.yes =>
                   removeAdditionalFiscalReference(itemId, reference)
@@ -67,7 +68,6 @@ class AdditionalFiscalReferencesRemoveController @Inject()(
                 case YesNoAnswers.no =>
                   Future.successful(returnToSummary(mode, itemId))
               }
-            }
           )
       case _ => Future.successful(returnToSummary(mode, itemId))
     }
@@ -96,8 +96,6 @@ class AdditionalFiscalReferencesRemoveController @Inject()(
       request.cacheModel.itemBy(itemId).flatMap(_.additionalFiscalReferencesData).getOrElse(AdditionalFiscalReferencesData(Seq.empty))
     val updatedInformation =
       cachedInformation.copy(references = remove(cachedInformation.references, itemToRemove.equals(_: AdditionalFiscalReference)))
-    updateDeclarationFromRequest(model => {
-      model.updatedItem(itemId, item => item.copy(additionalFiscalReferencesData = Some(updatedInformation)))
-    })
+    updateDeclarationFromRequest(model => model.updatedItem(itemId, item => item.copy(additionalFiscalReferencesData = Some(updatedInformation))))
   }
 }

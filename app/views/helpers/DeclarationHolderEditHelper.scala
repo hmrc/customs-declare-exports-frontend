@@ -37,7 +37,7 @@ import views.html.components.gds.{bulletList, link, numberedList, paragraphBody}
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class DeclarationHolderEditHelper @Inject()(
+class DeclarationHolderEditHelper @Inject() (
   bulletList: bulletList,
   govukDetails: GovukDetails,
   govukInsetText: GovukInsetText,

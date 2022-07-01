@@ -161,7 +161,7 @@ class NotificationErrorHelperSpec extends UnitViewSpec with ExportsTestData with
       ErrorRow(code2, None, "", List.empty, None),
       ErrorRow(code2, None, "", List.empty, None),
       ErrorRow(code3, None, "", List.empty, None),
-      ErrorRow(code2, None, "", List.empty, None),
+      ErrorRow(code2, None, "", List.empty, None)
     )
 
     "preserve the order in which the errors appear" in {

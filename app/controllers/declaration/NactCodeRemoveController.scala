@@ -26,13 +26,14 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.cache.ExportsCacheService
+import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.nact_code_remove
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class NactCodeRemoveController @Inject()(
+class NactCodeRemoveController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
@@ -40,7 +41,7 @@ class NactCodeRemoveController @Inject()(
   mcc: MessagesControllerComponents,
   nactCodeRemove: nact_code_remove
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
   val validTypes = Seq(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL)
 
@@ -54,7 +55,7 @@ class NactCodeRemoveController @Inject()(
         .bindFromRequest()
         .fold(
           (formWithErrors: Form[YesNoAnswer]) => Future.successful(BadRequest(nactCodeRemove(mode, itemId, code, formWithErrors))),
-          formData => {
+          formData =>
             formData.answer match {
               case YesNoAnswers.yes =>
                 updateExportsCache(itemId, code)
@@ -62,7 +63,6 @@ class NactCodeRemoveController @Inject()(
               case YesNoAnswers.no =>
                 Future.successful(navigator.continueTo(mode, routes.NactCodeSummaryController.displayPage(_, itemId)))
             }
-          }
         )
     }
 

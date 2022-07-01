@@ -22,23 +22,25 @@ import controllers.actions.{AuthAction, VerifiedEmailAction}
 import forms.Choice
 import forms.Choice.AllowedChoiceValues._
 import forms.Choice._
+
 import javax.inject.Inject
 import models.requests.ExportsSessionKeys
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import play.twirl.api.HtmlFormat
+import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.choice_page
 
-class ChoiceController @Inject()(
+class ChoiceController @Inject() (
   authenticate: AuthAction,
   verifyEmail: VerifiedEmailAction,
   mcc: MessagesControllerComponents,
   secureMessagingInboxConfig: SecureMessagingInboxConfig,
   choicePage: choice_page,
   appConfig: AppConfig
-) extends FrontendController(mcc) with I18nSupport {
+) extends FrontendController(mcc) with I18nSupport with WithDefaultFormBinding {
 
   lazy val availableJourneys =
     if (secureMessagingInboxConfig.isExportsSecureMessagingEnabled)

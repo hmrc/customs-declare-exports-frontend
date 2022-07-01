@@ -26,7 +26,7 @@ import views.html.declaration_details
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class DeclarationDetailsController @Inject()(
+class DeclarationDetailsController @Inject() (
   authenticate: AuthAction,
   verifyEmail: VerifiedEmailAction,
   customsDeclareExportsConnector: CustomsDeclareExportsConnector,

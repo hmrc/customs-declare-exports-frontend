@@ -129,24 +129,23 @@ object FieldValidator {
     Try(input.tail) match {
       case Success(value) => isNumeric(value)
       case _              => false
-  }
+    }
 
   def isDecimalWithNoMoreDecimalPlacesThan(decimalPlaces: Int): String => Boolean = {
     val pattern = noMoreDecimalPlacesThanRegexValue(decimalPlaces)
-    input =>
-      pattern.matcher(input).matches()
+    input => pattern.matcher(input).matches()
   }
 
   val validateDecimalGreaterThanZero: Int => Int => String => Boolean = (totalLength: Int) =>
     (decimalPlaces: Int) =>
       (input: String) =>
-        try {
+        try
           BigDecimal(input) > 0 &&
-          BigDecimal(input).scale <= decimalPlaces &&
-          input.length <= totalLength
-        } catch {
+            BigDecimal(input).scale <= decimalPlaces &&
+            input.length <= totalLength
+        catch {
           case _: java.lang.NumberFormatException => false
-  }
+        }
 
   val containsDuplicates: Iterable[_] => Boolean = (input: Iterable[_]) => input.toSet.size != input.size
 
@@ -154,8 +153,7 @@ object FieldValidator {
 
   val ofPattern: String => String => Boolean = (pattern: String) => {
     val compiledPattern = Pattern.compile(pattern)
-    input =>
-      compiledPattern.matcher(input).matches()
+    input => compiledPattern.matcher(input).matches()
   }
 
   private val namePattern = Pattern.compile("[\\p{IsLatin} ,.'-]+")

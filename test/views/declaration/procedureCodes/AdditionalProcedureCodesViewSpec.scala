@@ -22,7 +22,7 @@ import forms.declaration.countries.Country
 import forms.declaration.procedurecodes.AdditionalProcedureCode
 import models.DeclarationType.CLEARANCE
 import models.Mode
-import models.codes.{ProcedureCode, AdditionalProcedureCode => AdditionalProcedureCodeModel}
+import models.codes.{AdditionalProcedureCode => AdditionalProcedureCodeModel, ProcedureCode}
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form

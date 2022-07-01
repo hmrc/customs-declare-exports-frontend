@@ -133,7 +133,7 @@ class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injec
           "multiple DMSDOC and/or DMSCTL notifications are present" in {
             val notifications = List(
               NotificationSummary(UUID.randomUUID(), ZonedDateTime.now, ADDITIONAL_DOCUMENTS_REQUIRED),
-              NotificationSummary(UUID.randomUUID(), ZonedDateTime.now, UNDERGOING_PHYSICAL_CHECK),
+              NotificationSummary(UUID.randomUUID(), ZonedDateTime.now, UNDERGOING_PHYSICAL_CHECK)
             )
             val timelineEvents = createTimeline(notifications)
             assert(timelineEvents(0).content.isDefined)
@@ -147,7 +147,7 @@ class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injec
           "multiple DMSQRY notifications are present" in {
             val notifications = List(
               NotificationSummary(UUID.randomUUID(), ZonedDateTime.now, QUERY_NOTIFICATION_MESSAGE),
-              NotificationSummary(UUID.randomUUID(), ZonedDateTime.now, QUERY_NOTIFICATION_MESSAGE),
+              NotificationSummary(UUID.randomUUID(), ZonedDateTime.now, QUERY_NOTIFICATION_MESSAGE)
             )
             val timelineEvents = createTimeline(notifications)
             assert(timelineEvents(0).content.isDefined)
@@ -161,7 +161,7 @@ class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injec
           "multiple DMSREJ notifications are present" in {
             val notifications = List(
               NotificationSummary(UUID.randomUUID(), ZonedDateTime.now, ERRORS),
-              NotificationSummary(UUID.randomUUID(), ZonedDateTime.now, ERRORS),
+              NotificationSummary(UUID.randomUUID(), ZonedDateTime.now, ERRORS)
             )
             val timelineEvents = createTimeline(notifications)
             assert(timelineEvents(0).content.isDefined)

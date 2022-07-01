@@ -33,7 +33,7 @@ import uk.gov.hmrc.play.http.HeaderCarrierConverter
 trait VerifiedEmailAction extends ActionRefiner[AuthenticatedRequest, VerifiedEmailRequest]
 
 @Singleton
-class VerifiedEmailActionImpl @Inject()(backendConnector: CustomsDeclareExportsConnector, mcc: MessagesControllerComponents)
+class VerifiedEmailActionImpl @Inject() (backendConnector: CustomsDeclareExportsConnector, mcc: MessagesControllerComponents)
     extends VerifiedEmailAction {
 
   implicit val executionContext: ExecutionContext = mcc.executionContext

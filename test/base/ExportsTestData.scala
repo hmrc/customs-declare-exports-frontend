@@ -26,8 +26,6 @@ import models.codes.AdditionalProcedureCode.NO_APC_APPLIES_CODE
 import models.declaration.ProcedureCodesData.warehouseRequiredProcedureCodes
 import models.declaration.{ExportItem, ProcedureCodesData}
 import models.{IdentityData, SignedInUser}
-import org.joda.time.DateTimeZone.UTC
-import org.joda.time.{DateTime, LocalDate}
 import play.api.libs.json._
 import services.cache.{ExportsDeclarationBuilder, ExportsItemBuilder}
 import uk.gov.hmrc.auth.core.AffinityGroup.Individual
@@ -35,6 +33,7 @@ import uk.gov.hmrc.auth.core.ConfidenceLevel.L50
 import uk.gov.hmrc.auth.core.retrieve._
 import uk.gov.hmrc.auth.core.{Enrolment, Enrolments, User}
 
+import java.time.{Instant, LocalDate, ZoneId, ZonedDateTime}
 import java.util.UUID
 
 object ExportsTestData extends ExportsDeclarationBuilder with ExportsItemBuilder {
@@ -68,9 +67,11 @@ object ExportsTestData extends ExportsDeclarationBuilder with ExportsItemBuilder
   ) =
     ExportItem(itemId, procedureCodes = Some(ProcedureCodesData(Some(procedureCode), additionalProcedureCodes)))
 
-  val currentLoginTime: DateTime = new DateTime(1530442800000L, UTC)
-  val previousLoginTime: DateTime = new DateTime(1530464400000L, UTC)
-  val nrsTimeStamp: DateTime = new DateTime(1530475200000L, UTC)
+  val zoneUTC = ZoneId.of("UTC")
+
+  val currentLoginTime: Instant = Instant.ofEpochSecond(1530442800000L)
+  val previousLoginTime: Instant = Instant.ofEpochSecond(1530464400000L)
+  val nrsTimeStamp: ZonedDateTime = Instant.ofEpochSecond(1530475200000L).atZone(zoneUTC)
 
   val nrsLoginTimes = LoginTimes(currentLoginTime, Some(previousLoginTime))
 
@@ -109,7 +110,7 @@ object ExportsTestData extends ExportsDeclarationBuilder with ExportsItemBuilder
         None,
         None,
         Some("crdentialStrength 50"),
-        Some(LoginTimes(DateTime.now, None))
+        Some(LoginTimes(Instant.now, None))
       )
     )
 

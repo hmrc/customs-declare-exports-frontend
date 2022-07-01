@@ -28,19 +28,20 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.cache.ExportsCacheService
+import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.taric_codes
 
 import javax.inject.Inject
 
-class TaricCodeSummaryController @Inject()(
+class TaricCodeSummaryController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
   mcc: MessagesControllerComponents,
   taricCodesPage: taric_codes
-) extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
+) extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
   def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.itemBy(itemId).flatMap(_.taricCodes) match {
@@ -63,7 +64,7 @@ class TaricCodeSummaryController @Inject()(
               navigator.continueTo(mode, controllers.declaration.routes.ZeroRatedForVatController.displayPage(_, itemId))
             case YesNoAnswers.no =>
               navigator.continueTo(mode, controllers.declaration.routes.NactCodeSummaryController.displayPage(_, itemId))
-        }
+          }
       )
   }
 

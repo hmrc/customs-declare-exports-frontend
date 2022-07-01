@@ -30,19 +30,20 @@ import play.api.data.{Form, FormError}
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.cache.ExportsCacheService
+import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.declarationHolder.declaration_holder_summary
 
 import javax.inject.Inject
 
-class DeclarationHolderSummaryController @Inject()(
+class DeclarationHolderSummaryController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
   mcc: MessagesControllerComponents,
   declarationHolderPage: declaration_holder_summary
-) extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
+) extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     if (declarationHolders.isEmpty) navigator.continueTo(mode, DeclarationHolderAddController.displayPage)
@@ -51,10 +52,13 @@ class DeclarationHolderSummaryController @Inject()(
 
   def submitForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     addAnotherYesNoForm.bindFromRequest
-      .fold(formWithErrors => BadRequest(declarationHolderPage(mode, formWithErrors, declarationHolders)), _.answer match {
-        case YesNoAnswers.yes => navigator.continueTo(mode, DeclarationHolderAddController.displayPage, mode.isErrorFix)
-        case YesNoAnswers.no  => validateNoAnswerAndGoNextPage(mode)
-      })
+      .fold(
+        formWithErrors => BadRequest(declarationHolderPage(mode, formWithErrors, declarationHolders)),
+        _.answer match {
+          case YesNoAnswers.yes => navigator.continueTo(mode, DeclarationHolderAddController.displayPage, mode.isErrorFix)
+          case YesNoAnswers.no  => validateNoAnswerAndGoNextPage(mode)
+        }
+      )
   }
 
   private def addAnotherYesNoForm: Form[YesNoAnswer] =

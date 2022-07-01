@@ -29,13 +29,14 @@ import play.api.data.{Form, FormError}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import services.cache.{ExportItemIdGeneratorService, ExportsCacheService}
+import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.declarationitems.{items_add_item, items_remove_item, items_summary}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class ItemsSummaryController @Inject()(
+class ItemsSummaryController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   exportsCacheService: ExportsCacheService,
@@ -47,7 +48,7 @@ class ItemsSummaryController @Inject()(
   removeItemPage: items_remove_item,
   supervisingCustomsOfficeHelper: SupervisingCustomsOfficeHelper
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport {
+    extends FrontendController(mcc) with I18nSupport with WithDefaultFormBinding {
 
   private def itemSummaryForm: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.itemsSummary.addAnotherItem.error.empty")
   private def removeItemForm: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.itemsRemove.error.empty")
@@ -69,13 +70,13 @@ class ItemsSummaryController @Inject()(
   }
 
   def displayItemsSummaryPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    removeEmptyItems.map(declaration => {
+    removeEmptyItems.map { declaration =>
       if (declaration.items.isEmpty) navigator.continueTo(mode, routes.ItemsSummaryController.displayAddItemPage)
       else Ok(itemsSummaryPage(mode, itemSummaryForm, declaration.items.toList))
-    })
+    }
   }
 
-  //TODO Should we add validation for POST without items?
+  // TODO Should we add validation for POST without items?
   def submit(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val incorrectItems: Seq[FormError] = buildIncorrectItemsErrors(request)
 
@@ -93,7 +94,7 @@ class ItemsSummaryController @Inject()(
 
             case YesNoAnswers.no =>
               Future.successful(navigator.continueTo(mode, nextPage))
-        }
+          }
       )
   }
 
@@ -107,9 +108,8 @@ class ItemsSummaryController @Inject()(
     }
 
   private def buildIncorrectItemsErrors(request: JourneyRequest[AnyContent]): Seq[FormError] =
-    request.cacheModel.items.zipWithIndex.filterNot { case (item, _) => item.isCompleted(request.declarationType) }.map {
-      case (item, index) =>
-        FormError("item_" + index, "declaration.itemsSummary.item.incorrect", Seq(item.sequenceId.toString))
+    request.cacheModel.items.zipWithIndex.filterNot { case (item, _) => item.isCompleted(request.declarationType) }.map { case (item, index) =>
+      FormError("item_" + index, "declaration.itemsSummary.item.incorrect", Seq(item.sequenceId.toString))
     }
 
   private def createNewItemInCache(implicit request: JourneyRequest[AnyContent]): Future[ExportItem] = {
@@ -156,8 +156,8 @@ class ItemsSummaryController @Inject()(
     request.cacheModel.itemBy(itemId) match {
       case Some(itemToDelete) =>
         val updatedItems =
-          request.cacheModel.items.filterNot(_ == itemToDelete).zipWithIndex.map {
-            case (item, index) => item.copy(sequenceId = index + 1)
+          request.cacheModel.items.filterNot(_ == itemToDelete).zipWithIndex.map { case (item, index) =>
+            item.copy(sequenceId = index + 1)
           }
 
         val updatedModel = removeWarehouseIdentification(request.cacheModel.copy(items = updatedItems))

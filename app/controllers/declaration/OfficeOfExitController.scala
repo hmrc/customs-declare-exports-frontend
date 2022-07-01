@@ -27,13 +27,14 @@ import models.{ExportsDeclaration, Mode}
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.cache.ExportsCacheService
+import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.office_of_exit
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class OfficeOfExitController @Inject()(
+class OfficeOfExitController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   navigator: Navigator,
@@ -41,7 +42,7 @@ class OfficeOfExitController @Inject()(
   officeOfExitPage: office_of_exit,
   override val exportsCacheService: ExportsCacheService
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.locations.officeOfExit match {

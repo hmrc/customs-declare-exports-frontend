@@ -29,7 +29,7 @@ import play.twirl.api.XmlFormat
 import uk.gov.hmrc.http.HeaderCarrier
 import views.xml.pdf.pdfTemplate
 
-class EADService @Inject()(barcodeService: BarcodeService, pdfTemplate: pdfTemplate, val playFop: PlayFop, connector: CustomsDeclareExportsConnector)
+class EADService @Inject() (barcodeService: BarcodeService, pdfTemplate: pdfTemplate, val playFop: PlayFop, connector: CustomsDeclareExportsConnector)
     extends Logging {
 
   def generatePdf(mrn: String)(implicit hc: HeaderCarrier, ec: ExecutionContext, messages: Messages): Future[Array[Byte]] = {
@@ -40,17 +40,15 @@ class EADService @Inject()(barcodeService: BarcodeService, pdfTemplate: pdfTempl
     connector
       .fetchMrnStatus(mrn)
       .map {
-        case Some(mrnStatus) => {
+        case Some(mrnStatus) =>
           val xml: XmlFormat.Appendable = pdfTemplate.render(mrn, mrnStatus, barcodeService.base64Image(mrn), messages)
 
           playFop.processTwirlXml(xml, MimeConstants.MIME_PDF, autoDetectFontsForPDF = true, foUserAgentBlock = myFOUserAgentBlock)
-        }
         case _ => throw new IllegalArgumentException(s"No declaration information was found")
       }
-      .recoverWith {
-        case _: Throwable =>
-          logger.error("An error occurred whilst trying to retrieve mrn status")
-          throw new IllegalArgumentException(s"No declaration information was found")
+      .recoverWith { case _: Throwable =>
+        logger.error("An error occurred whilst trying to retrieve mrn status")
+        throw new IllegalArgumentException(s"No declaration information was found")
       }
   }
 }

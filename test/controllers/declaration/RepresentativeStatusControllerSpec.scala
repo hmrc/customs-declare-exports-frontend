@@ -95,7 +95,7 @@ class RepresentativeStatusControllerSpec extends ControllerSpec with OptionValue
 
           val result = controller.displayPage(Mode.Normal)(getRequest())
 
-          status(result) mustBe (OK)
+          status(result) mustBe OK
           verifyPage(1)
 
           theResponseForm.value.flatMap(_.statusCode) mustBe Some(statusCode)

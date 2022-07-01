@@ -31,13 +31,14 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.cache.ExportsCacheService
+import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.is_licence_required
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class IsLicenceRequiredController @Inject()(
+class IsLicenceRequiredController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   featureFlagAction: FeatureFlagAction,
@@ -46,7 +47,7 @@ class IsLicenceRequiredController @Inject()(
   mcc: MessagesControllerComponents,
   is_licence_required: is_licence_required
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
   private val validTypes = Seq(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL)
 
@@ -66,14 +67,17 @@ class IsLicenceRequiredController @Inject()(
   def submitForm(mode: Mode, itemId: String): Action[AnyContent] =
     (authenticate andThen journeyType andThen featureFlagAction(Feature.waiver999L)).async { implicit request =>
       form.bindFromRequest
-        .fold(formWithErrors => Future.successful(BadRequest(is_licence_required(mode, itemId, formWithErrors))), yesNo => {
+        .fold(
+          formWithErrors => Future.successful(BadRequest(is_licence_required(mode, itemId, formWithErrors))),
+          yesNo => {
 
-          val isLicenceRequired = yesNo.answer == YesNoAnswers.yes
+            val isLicenceRequired = yesNo.answer == YesNoAnswers.yes
 
-          updateCache(isLicenceRequired, itemId) map { _ =>
-            navigator.continueTo(mode, nextPage(yesNo, itemId))
+            updateCache(isLicenceRequired, itemId) map { _ =>
+              navigator.continueTo(mode, nextPage(yesNo, itemId))
+            }
           }
-        })
+        )
     }
 
   private def nextPage(yesNoAnswer: YesNoAnswer, itemId: String)(implicit request: JourneyRequest[AnyContent]): Mode => Call =

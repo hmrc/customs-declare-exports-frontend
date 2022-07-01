@@ -21,7 +21,7 @@ import features.Feature
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class MerchandiseInBagConfig @Inject()(featureSwitchConfig: FeatureSwitchConfig) {
+class MerchandiseInBagConfig @Inject() (featureSwitchConfig: FeatureSwitchConfig) {
 
   val isMerchandiseInBagEnabled: Boolean = featureSwitchConfig.isFeatureOn(Feature.merchandiseInBag)
 }

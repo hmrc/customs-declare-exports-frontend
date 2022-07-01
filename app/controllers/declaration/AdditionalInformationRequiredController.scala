@@ -30,13 +30,14 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.cache.ExportsCacheService
+import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.additionalInformation.additional_information_required
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class AdditionalInformationRequiredController @Inject()(
+class AdditionalInformationRequiredController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   waiver999LConfig: Waiver999LConfig,
@@ -45,7 +46,7 @@ class AdditionalInformationRequiredController @Inject()(
   mcc: MessagesControllerComponents,
   additionalInfoReq: additional_information_required
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
   def displayPage(mode: Mode, itemId: String): Action[AnyContent] =
     (authenticate andThen journeyType).async { implicit request =>
@@ -67,7 +68,7 @@ class AdditionalInformationRequiredController @Inject()(
           yesNo =>
             updateCache(yesNo, itemId).map { _ =>
               navigator.continueTo(mode, nextPage(yesNo, itemId))
-          }
+            }
         )
     }
 

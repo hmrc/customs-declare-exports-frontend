@@ -28,13 +28,14 @@ import models.{ExportsDeclaration, Mode}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.cache.ExportsCacheService
+import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.authorisation_procedure_code_choice
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class AuthorisationProcedureCodeChoiceController @Inject()(
+class AuthorisationProcedureCodeChoiceController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
@@ -42,7 +43,7 @@ class AuthorisationProcedureCodeChoiceController @Inject()(
   mcc: MessagesControllerComponents,
   authorisationProcedureCodeChoice: authorisation_procedure_code_choice
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.declarationType match {
@@ -72,13 +73,13 @@ class AuthorisationProcedureCodeChoiceController @Inject()(
   }
 
   private def updateCache(choice: AuthorisationProcedureCodeChoice)(implicit request: JourneyRequest[_]): Future[ExportsDeclaration] =
-    updateDeclarationFromRequest(declaration => {
+    updateDeclarationFromRequest { declaration =>
       def holdersData(maybeHoldersData: Option[DeclarationHoldersData]): Option[DeclarationHoldersData] =
         if (userCanLandOnIsAuthRequiredPage(declaration)) maybeHoldersData else maybeHoldersData.map(_.copy(isRequired = None))
 
-      declaration.copy(
-        parties = declaration.parties
+      declaration.copy(parties =
+        declaration.parties
           .copy(authorisationProcedureCodeChoice = Some(choice), declarationHoldersData = holdersData(declaration.parties.declarationHoldersData))
       )
-    })
+    }
 }

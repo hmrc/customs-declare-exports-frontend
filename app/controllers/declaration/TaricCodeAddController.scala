@@ -28,13 +28,14 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.cache.ExportsCacheService
+import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.{taric_code_add, taric_code_add_first}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class TaricCodeAddController @Inject()(
+class TaricCodeAddController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
@@ -43,7 +44,7 @@ class TaricCodeAddController @Inject()(
   taricCodeAddFirstPage: taric_code_add_first,
   taricCodeAdd: taric_code_add
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
   def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.itemBy(itemId).flatMap(_.taricCodes) match {
@@ -84,12 +85,12 @@ class TaricCodeAddController @Inject()(
 
       case None =>
         updateExportsCache(itemId, Seq.empty)
-          .map(
-            _ =>
-              navigator.continueTo(mode, {
-                if (eligibleForZeroVat) controllers.declaration.routes.ZeroRatedForVatController.displayPage(_, itemId)
-                else controllers.declaration.routes.NactCodeSummaryController.displayPage(_, itemId)
-              })
+          .map(_ =>
+            navigator.continueTo(
+              mode,
+              if (eligibleForZeroVat) controllers.declaration.routes.ZeroRatedForVatController.displayPage(_, itemId)
+              else controllers.declaration.routes.NactCodeSummaryController.displayPage(_, itemId)
+            )
           )
     }
 

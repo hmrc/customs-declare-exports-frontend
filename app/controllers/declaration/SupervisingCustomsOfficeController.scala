@@ -26,13 +26,14 @@ import models.{ExportsDeclaration, Mode}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.cache.ExportsCacheService
+import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.supervising_customs_office
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class SupervisingCustomsOfficeController @Inject()(
+class SupervisingCustomsOfficeController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   navigator: Navigator,
@@ -42,7 +43,7 @@ class SupervisingCustomsOfficeController @Inject()(
   inlandOrBorderHelper: InlandOrBorderHelper,
   supervisingCustomsOfficeHelper: SupervisingCustomsOfficeHelper
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     val frm = form.withSubmissionErrors
@@ -62,8 +63,8 @@ class SupervisingCustomsOfficeController @Inject()(
 
   private def updateCache(formData: SupervisingCustomsOffice)(implicit request: JourneyRequest[_]): Future[ExportsDeclaration] =
     updateDeclarationFromRequest { declaration =>
-      declaration.copy(
-        locations = declaration.locations
+      declaration.copy(locations =
+        declaration.locations
           .copy(supervisingCustomsOffice = Some(formData), inlandOrBorder = inlandOrBorderHelper.resetInlandOrBorderIfRequired(declaration))
       )
     }

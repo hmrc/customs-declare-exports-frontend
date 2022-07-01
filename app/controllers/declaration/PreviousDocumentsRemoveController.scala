@@ -28,6 +28,7 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.cache.ExportsCacheService
+import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.ListItem
 import views.html.declaration.previousDocuments.previous_documents_remove
@@ -35,7 +36,7 @@ import views.html.declaration.previousDocuments.previous_documents_remove
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class PreviousDocumentsRemoveController @Inject()(
+class PreviousDocumentsRemoveController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
@@ -43,7 +44,7 @@ class PreviousDocumentsRemoveController @Inject()(
   mcc: MessagesControllerComponents,
   removePage: previous_documents_remove
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with WithDefaultFormBinding {
 
   def displayPage(mode: Mode, id: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     findDocument(id) match {
@@ -66,7 +67,7 @@ class PreviousDocumentsRemoveController @Inject()(
                     returnToSummary(mode)
                   }
                 case YesNoAnswers.no => Future.successful(returnToSummary(mode))
-            }
+              }
           )
       case _ => Future.successful(returnToSummary(mode))
     }

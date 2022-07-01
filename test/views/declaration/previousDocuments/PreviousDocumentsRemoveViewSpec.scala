@@ -71,8 +71,8 @@ class PreviousDocumentsRemoveViewSpec extends UnitViewSpec with Injector {
 
         val valueClasses = view.getElementsByClass("govuk-summary-list__value")
         valueClasses.size mustBe 3
-        valueClasses.get(0).text() mustBe ("Entry Summary Declaration (ENS) (355)")
-        valueClasses.get(1).text() mustBe ("reference")
+        valueClasses.get(0).text() mustBe "Entry Summary Declaration (ENS) (355)"
+        valueClasses.get(1).text() mustBe "reference"
         valueClasses.get(2).text() mustBe "3"
       }
 

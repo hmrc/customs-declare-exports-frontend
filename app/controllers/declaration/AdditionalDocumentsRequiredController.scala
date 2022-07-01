@@ -17,11 +17,11 @@
 package controllers.declaration
 
 import scala.concurrent.{ExecutionContext, Future}
-
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.{form, YesNoAnswers}
+
 import javax.inject.Inject
 import models.declaration.AdditionalDocuments
 import models.requests.JourneyRequest
@@ -29,10 +29,11 @@ import models.{ExportsDeclaration, Mode}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import services.cache.ExportsCacheService
+import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.additionalDocuments.additional_documents_required
 
-class AdditionalDocumentsRequiredController @Inject()(
+class AdditionalDocumentsRequiredController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
@@ -40,7 +41,7 @@ class AdditionalDocumentsRequiredController @Inject()(
   mcc: MessagesControllerComponents,
   additionalDocumentsRequired: additional_documents_required
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
   private val emptyKey = "declaration.additionalDocumentsRequired.empty"
 

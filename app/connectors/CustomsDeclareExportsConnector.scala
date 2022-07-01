@@ -34,7 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}
 
 @Singleton
-class CustomsDeclareExportsConnector @Inject()(appConfig: AppConfig, httpClient: HttpClient, metrics: Metrics) extends Logging {
+class CustomsDeclareExportsConnector @Inject() (appConfig: AppConfig, httpClient: HttpClient, metrics: Metrics) extends Logging {
 
   private def url(path: String): String =
     s"${appConfig.customsDeclareExportsBaseUrl}$path"
@@ -100,8 +100,8 @@ class CustomsDeclareExportsConnector @Inject()(appConfig: AppConfig, httpClient:
 
     httpClient
       .GET[Option[ExportsDeclaration]](url(s"${appConfig.declarationsPath}/$id"))
-      .andThen {
-        case _ => fetchStopwatch.stop()
+      .andThen { case _ =>
+        fetchStopwatch.stop()
       }
   }
 
@@ -141,8 +141,8 @@ class CustomsDeclareExportsConnector @Inject()(appConfig: AppConfig, httpClient:
 
     httpClient
       .GET[Option[MrnStatus]](url(s"${appConfig.fetchMrnStatusPath}/$mrn"))
-      .andThen {
-        case _ => fetchStopwatch.stop()
+      .andThen { case _ =>
+        fetchStopwatch.stop()
       }
   }
 

@@ -45,8 +45,8 @@ object LocationOfGoods extends DeclarationPage {
   val formId = "Location"
 
   /**
-    * Country is in two first characters in Location Code
-    */
+   * Country is in two first characters in Location Code
+   */
   private def validateCountry(implicit messages: Messages, codeListConnector: CodeListConnector): String => Boolean =
     (input: String) => {
       val countryCode = input.take(2).toUpperCase
@@ -54,8 +54,8 @@ object LocationOfGoods extends DeclarationPage {
     }
 
   /**
-    * Location Type is defined as third character in Location Code
-    */
+   * Location Type is defined as third character in Location Code
+   */
   private val validateLocationType: String => Boolean = (input: String) => {
     val correctLocationType: Set[String] = Set("A", "B", "C", "D")
     val predicate = isContainedIn(correctLocationType)
@@ -63,8 +63,8 @@ object LocationOfGoods extends DeclarationPage {
   }
 
   /**
-    * Qualifier Code is defined in fourth characted in Location Code
-    */
+   * Qualifier Code is defined in fourth characted in Location Code
+   */
   private val validateQualifierCode: String => Boolean = (input: String) => {
     val correctQualifierCode: Set[String] = Set("U", "Y")
     val predicate = isContainedIn(correctQualifierCode)

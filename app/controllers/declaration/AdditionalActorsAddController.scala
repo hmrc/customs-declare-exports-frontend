@@ -30,13 +30,14 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.cache.ExportsCacheService
+import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.additionalActors.additional_actors_add
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class AdditionalActorsAddController @Inject()(
+class AdditionalActorsAddController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
@@ -44,7 +45,7 @@ class AdditionalActorsAddController @Inject()(
   mcc: MessagesControllerComponents,
   declarationAdditionalActorsPage: additional_actors_add
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
   val validTypes = List(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL)
 
@@ -86,8 +87,8 @@ class AdditionalActorsAddController @Inject()(
       )
 
   private def updateCache(formData: DeclarationAdditionalActorsData)(implicit r: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
-    updateDeclarationFromRequest(model => {
+    updateDeclarationFromRequest { model =>
       val updatedParties = model.parties.copy(declarationAdditionalActorsData = Some(formData))
       model.copy(parties = updatedParties)
-    })
+    }
 }

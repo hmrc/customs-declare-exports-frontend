@@ -23,7 +23,7 @@ import javax.inject.{Inject, Singleton}
 import metrics.MetricIdentifiers._
 
 @Singleton
-class ExportsMetrics @Inject()(metrics: Metrics) {
+class ExportsMetrics @Inject() (metrics: Metrics) {
 
   def timerName(feature: String): String = s"$feature.timer"
 

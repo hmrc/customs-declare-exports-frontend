@@ -32,7 +32,7 @@ import uk.gov.hmrc.play.audit.http.connector.AuditResult.{Disabled, Failure, Suc
 import uk.gov.hmrc.play.audit.http.connector.{AuditConnector, AuditResult}
 import uk.gov.hmrc.play.audit.model.{DataEvent, ExtendedDataEvent}
 
-class AuditService @Inject()(connector: AuditConnector, appConfig: AppConfig)(implicit ec: ExecutionContext) extends Logging {
+class AuditService @Inject() (connector: AuditConnector, appConfig: AppConfig)(implicit ec: ExecutionContext) extends Logging {
 
   def audit(audit: Audit, auditData: Map[String, String])(implicit hc: HeaderCarrier): Future[AuditResult] = {
     val event = createAuditEvent(audit: Audit, auditData: Map[String, String])
@@ -114,7 +114,7 @@ class AuditService @Inject()(connector: AuditConnector, appConfig: AppConfig)(im
 object AuditTypes extends Enumeration {
   type Audit = Value
   val Submission, SaveAndReturnSubmission, SubmissionPayload, Cancellation, SubmissionSuccess, SubmissionFailure, NavigateToMessages,
-  UploadDocumentLink = Value
+    UploadDocumentLink = Value
 }
 
 object EventData extends Enumeration {

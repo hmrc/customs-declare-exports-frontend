@@ -24,7 +24,7 @@ import play.api.{Configuration, Environment}
 import scala.collection.breakOut
 
 @Singleton
-class ExportsMessagesApiProvider @Inject()(environment: Environment, config: Configuration, langs: Langs, httpConfiguration: HttpConfiguration)
+class ExportsMessagesApiProvider @Inject() (environment: Environment, config: Configuration, langs: Langs, httpConfiguration: HttpConfiguration)
     extends DefaultMessagesApiProvider(environment, config, langs, httpConfiguration) {
 
   override protected def loadAllMessages: Map[String, Map[String, String]] =
@@ -35,7 +35,7 @@ class ExportsMessagesApiProvider @Inject()(environment: Environment, config: Con
       }(breakOut): Map[String, Map[String, String]]) + ("default" -> loadMessageFiles("")) + ("default.play" -> loadMessageFiles(".default"))
 
   private def loadMessageFiles(suffix: String): Map[String, String] =
-    config.get[Seq[String]]("messages.file.names").foldLeft(Map.empty[String, String]) {
-      case (acc, name) => acc ++ loadMessages(name + suffix)
+    config.get[Seq[String]]("messages.file.names").foldLeft(Map.empty[String, String]) { case (acc, name) =>
+      acc ++ loadMessages(name + suffix)
     }
 }

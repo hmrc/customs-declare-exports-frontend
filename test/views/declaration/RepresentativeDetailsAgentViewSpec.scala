@@ -123,8 +123,8 @@ class RepresentativeDetailsAgentViewSpec extends UnitViewSpec with ExportsTestDa
       onEveryDeclarationJourney() { implicit request =>
         "display errors when answer is incorrect" in {
 
-          val view = createView(
-            form = RepresentativeAgent
+          val view = createView(form =
+            RepresentativeAgent
               .form()
               .bind(Map("representingAgent" -> "invalid"))
           )

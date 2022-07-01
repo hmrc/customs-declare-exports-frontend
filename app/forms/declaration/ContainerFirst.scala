@@ -41,12 +41,11 @@ object ContainerFirst extends DeclarationPage {
 
   import HasContainerAnswers._
 
-  private def form2Model: (String, Option[String]) => ContainerFirst = {
-    case (hasContainer, containerId) =>
-      hasContainer match {
-        case HasContainerAnswers.yes => ContainerFirst(containerId)
-        case HasContainerAnswers.no  => ContainerFirst(None)
-      }
+  private def form2Model: (String, Option[String]) => ContainerFirst = { case (hasContainer, containerId) =>
+    hasContainer match {
+      case HasContainerAnswers.yes => ContainerFirst(containerId)
+      case HasContainerAnswers.no  => ContainerFirst(None)
+    }
   }
 
   private def model2Form: ContainerFirst => Option[(String, Option[String])] =
@@ -54,7 +53,7 @@ object ContainerFirst extends DeclarationPage {
       model.id match {
         case Some(id) => Some((yes, Some(id)))
         case None     => Some((no, None))
-    }
+      }
 
   val mapping = Forms.mapping(
     hasContainerKey -> requiredRadio("declaration.transportInformation.container.answer.empty"),

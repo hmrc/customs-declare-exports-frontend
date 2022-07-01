@@ -29,6 +29,7 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.cache.ExportsCacheService
+import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.ListItem
 import views.html.declaration.additionalInformation.additional_information_remove
@@ -36,7 +37,7 @@ import views.html.declaration.additionalInformation.additional_information_remov
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class AdditionalInformationRemoveController @Inject()(
+class AdditionalInformationRemoveController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
@@ -44,7 +45,7 @@ class AdditionalInformationRemoveController @Inject()(
   mcc: MessagesControllerComponents,
   removePage: additional_information_remove
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
   def displayPage(mode: Mode, itemId: String, id: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     findAdditionalInformation(itemId, id) match {
@@ -57,10 +58,13 @@ class AdditionalInformationRemoveController @Inject()(
     findAdditionalInformation(itemId, id) match {
       case Some(information) =>
         removeYesNoForm.bindFromRequest
-          .fold(formWithErrors => Future.successful(BadRequest(removePage(mode, itemId, id, information, formWithErrors))), _.answer match {
-            case YesNoAnswers.yes => removeAdditionalInformation(itemId, information).map(declaration => afterRemove(mode, itemId, declaration))
-            case YesNoAnswers.no  => Future.successful(returnToSummary(mode, itemId))
-          })
+          .fold(
+            formWithErrors => Future.successful(BadRequest(removePage(mode, itemId, id, information, formWithErrors))),
+            _.answer match {
+              case YesNoAnswers.yes => removeAdditionalInformation(itemId, information).map(declaration => afterRemove(mode, itemId, declaration))
+              case YesNoAnswers.no  => Future.successful(returnToSummary(mode, itemId))
+            }
+          )
       case _ => Future.successful(returnToSummary(mode, itemId))
     }
   }
@@ -84,8 +88,6 @@ class AdditionalInformationRemoveController @Inject()(
   ): Future[ExportsDeclaration] = {
     val cachedInformation = request.cacheModel.itemBy(itemId).flatMap(_.additionalInformation).getOrElse(AdditionalInformationData.default)
     val updatedInformation = cachedInformation.copy(items = remove(cachedInformation.items, itemToRemove.equals(_: AdditionalInformation)))
-    updateDeclarationFromRequest(model => {
-      model.updatedItem(itemId, item => item.copy(additionalInformation = Some(updatedInformation)))
-    })
+    updateDeclarationFromRequest(model => model.updatedItem(itemId, item => item.copy(additionalInformation = Some(updatedInformation))))
   }
 }

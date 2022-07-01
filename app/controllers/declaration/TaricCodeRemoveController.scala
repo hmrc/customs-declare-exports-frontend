@@ -26,13 +26,14 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.cache.ExportsCacheService
+import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.taric_code_remove
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class TaricCodeRemoveController @Inject()(
+class TaricCodeRemoveController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
@@ -40,7 +41,7 @@ class TaricCodeRemoveController @Inject()(
   mcc: MessagesControllerComponents,
   taricCodeRemove: taric_code_remove
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
   def displayPage(mode: Mode, itemId: String, code: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     Ok(taricCodeRemove(mode, itemId, code, removeYesNoForm.withSubmissionErrors()))
@@ -51,7 +52,7 @@ class TaricCodeRemoveController @Inject()(
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[YesNoAnswer]) => Future.successful(BadRequest(taricCodeRemove(mode, itemId, code, formWithErrors))),
-        formData => {
+        formData =>
           formData.answer match {
             case YesNoAnswers.yes =>
               updateExportsCache(itemId, code)
@@ -59,7 +60,6 @@ class TaricCodeRemoveController @Inject()(
             case YesNoAnswers.no =>
               Future.successful(navigator.continueTo(mode, routes.TaricCodeSummaryController.displayPage(_, itemId)))
           }
-        }
       )
   }
 

@@ -103,21 +103,19 @@ class CommodityDetailsViewSpec extends UnitViewSpec with ExportsTestData with St
 
   "Commodity Details View on empty page" when {
 
-    for (decType <- DeclarationType.values) {
+    for (decType <- DeclarationType.values)
       s"we are on $decType journey" should {
         behave like commodityDetailsView(decType, CommodityDetails.form(decType))
       }
-    }
   }
 
   "Commodity Details View on populated page" when {
 
     val details = Some(CommodityDetails(Some("1234567890"), Some("Description")))
 
-    for (decType <- DeclarationType.values) {
+    for (decType <- DeclarationType.values)
       s"we are on $decType journey" should {
         behave like commodityDetailsView(decType, CommodityDetails.form(decType), details)
       }
-    }
   }
 }

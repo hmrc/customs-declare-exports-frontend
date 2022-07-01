@@ -26,13 +26,14 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.cache.ExportsCacheService
+import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.statistical_value
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class StatisticalValueController @Inject()(
+class StatisticalValueController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
@@ -40,7 +41,7 @@ class StatisticalValueController @Inject()(
   mcc: MessagesControllerComponents,
   itemTypePage: statistical_value
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
   val validTypes = Seq(DeclarationType.SUPPLEMENTARY, DeclarationType.STANDARD)
 
@@ -61,7 +62,7 @@ class StatisticalValueController @Inject()(
           updateExportsCache(itemId, validForm).map { _ =>
             navigator
               .continueTo(mode, controllers.declaration.routes.PackageInformationSummaryController.displayPage(_, itemId))
-        }
+          }
       )
   }
 

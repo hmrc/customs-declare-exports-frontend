@@ -42,12 +42,11 @@ object CusCode extends DeclarationPage {
 
   import AllowedCUSCodeAnswers._
 
-  private def form2Model: (String, Option[String]) => CusCode = {
-    case (hasCode, codeValue) =>
-      hasCode match {
-        case AllowedCUSCodeAnswers.yes => CusCode(codeValue)
-        case AllowedCUSCodeAnswers.no  => CusCode(None)
-      }
+  private def form2Model: (String, Option[String]) => CusCode = { case (hasCode, codeValue) =>
+    hasCode match {
+      case AllowedCUSCodeAnswers.yes => CusCode(codeValue)
+      case AllowedCUSCodeAnswers.no  => CusCode(None)
+    }
   }
 
   private def model2Form: CusCode => Option[(String, Option[String])] =
@@ -55,7 +54,7 @@ object CusCode extends DeclarationPage {
       model.cusCode match {
         case Some(code) => Some((yes, Some(code)))
         case None       => Some((no, None))
-    }
+      }
 
   val mapping =
     Forms.mapping(

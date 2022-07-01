@@ -153,8 +153,8 @@ case class ExportsDeclaration(
     copy(locations = locations.copy(supervisingCustomsOffice = None))
 
   def updateDepartureTransport(departure: DepartureTransport): ExportsDeclaration =
-    copy(
-      transport = transport.copy(
+    copy(transport =
+      transport.copy(
         meansOfTransportOnDepartureType = departure.meansOfTransportOnDepartureType,
         meansOfTransportOnDepartureIDNumber = departure.meansOfTransportOnDepartureIDNumber,
         meansOfTransportCrossingTheBorderType = None,
@@ -165,8 +165,8 @@ case class ExportsDeclaration(
   def updateBorderTransport(borderTransport: BorderTransport): ExportsDeclaration = {
     val transportType = borderTransport.meansOfTransportCrossingTheBorderType.trim
     val transportRef = borderTransport.meansOfTransportCrossingTheBorderIDNumber.trim
-    copy(
-      transport = transport.copy(
+    copy(transport =
+      transport.copy(
         meansOfTransportCrossingTheBorderType = if (transportType.isEmpty) None else Some(transportType),
         meansOfTransportCrossingTheBorderIDNumber = if (transportRef.isEmpty) None else Some(transportRef)
       )

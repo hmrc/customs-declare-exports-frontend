@@ -26,13 +26,14 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import services.cache.ExportsCacheService
+import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.exporter_address
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class ExporterDetailsController @Inject()(
+class ExporterDetailsController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
@@ -40,7 +41,7 @@ class ExporterDetailsController @Inject()(
   mcc: MessagesControllerComponents,
   exporterDetailsPage: exporter_address
 )(implicit ec: ExecutionContext, codeListConnector: CodeListConnector)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     val frm = form().withSubmissionErrors()
@@ -68,10 +69,10 @@ class ExporterDetailsController @Inject()(
     }
 
   private def updateCache(formData: ExporterDetails)(implicit r: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
-    updateDeclarationFromRequest(model => {
+    updateDeclarationFromRequest { model =>
       val updatedParties = model.parties.copy(exporterDetails = Some(formData))
       model.copy(parties = updatedParties)
-    })
+    }
 
   private def form()(implicit request: JourneyRequest[AnyContent]): Form[ExporterDetails] =
     ExporterDetails.form(request.declarationType, Some(request.cacheModel))

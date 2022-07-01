@@ -27,13 +27,14 @@ import models.{DeclarationType, ExportsDeclaration, Mode}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import services.cache.ExportsCacheService
+import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.declarant_details
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class DeclarantDetailsController @Inject()(
+class DeclarantDetailsController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
@@ -41,7 +42,7 @@ class DeclarantDetailsController @Inject()(
   mcc: MessagesControllerComponents,
   declarantDetailsPage: declarant_details
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     val frm = form().withSubmissionErrors()
@@ -64,14 +65,12 @@ class DeclarantDetailsController @Inject()(
             Future(
               Redirect(controllers.declaration.routes.NotEligibleController.displayNotDeclarant())
                 .removingFromSession(ExportsSessionKeys.declarationId)
-          )
+            )
       )
   }
 
   private def updateCache(declarant: DeclarantDetails)(implicit r: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
-    updateDeclarationFromRequest(model => {
-      model.copy(parties = model.parties.copy(declarantDetails = Some(declarant)))
-    })
+    updateDeclarationFromRequest(model => model.copy(parties = model.parties.copy(declarantDetails = Some(declarant))))
 
   private def nextPage(implicit request: JourneyRequest[_]): Mode => Call = request.declarationType match {
     case DeclarationType.CLEARANCE => controllers.declaration.routes.DeclarantExporterController.displayPage

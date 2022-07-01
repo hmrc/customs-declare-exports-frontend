@@ -31,13 +31,14 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.cache.ExportsCacheService
+import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.declarationHolder.declaration_holder_remove
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class DeclarationHolderRemoveController @Inject()(
+class DeclarationHolderRemoveController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
@@ -46,7 +47,7 @@ class DeclarationHolderRemoveController @Inject()(
   mcc: MessagesControllerComponents,
   holderRemovePage: declaration_holder_remove
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
   def displayPage(mode: Mode, id: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val maybeExistingHolder = declarationHolders.find(_.id.equals(id))
@@ -61,12 +62,15 @@ class DeclarationHolderRemoveController @Inject()(
 
     maybeExistingHolder.fold(errorHandler.displayErrorPage) { holderToRemove =>
       removeYesNoForm.bindFromRequest
-        .fold(formWithErrors => Future.successful(BadRequest(holderRemovePage(mode, holderToRemove, formWithErrors))), _.answer match {
-          case YesNoAnswers.yes => updateExportsCache(holderToRemove).map(nextPage(mode, _))
+        .fold(
+          formWithErrors => Future.successful(BadRequest(holderRemovePage(mode, holderToRemove, formWithErrors))),
+          _.answer match {
+            case YesNoAnswers.yes => updateExportsCache(holderToRemove).map(nextPage(mode, _))
 
-          case YesNoAnswers.no =>
-            Future.successful(navigator.continueTo(mode, DeclarationHolderSummaryController.displayPage))
-        })
+            case YesNoAnswers.no =>
+              Future.successful(navigator.continueTo(mode, DeclarationHolderSummaryController.displayPage))
+          }
+        )
     }
   }
 
@@ -81,7 +85,7 @@ class DeclarationHolderRemoveController @Inject()(
   private val removeYesNoForm: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.declarationHolders.remove.empty")
 
   private def updateExportsCache(holderToRemove: DeclarationHolder)(implicit r: JourneyRequest[_]): Future[ExportsDeclaration] =
-    updateDeclarationFromRequest(declaration => {
+    updateDeclarationFromRequest { declaration =>
       val maybeHoldersData = declaration.parties.declarationHoldersData
 
       val newHoldersData = maybeHoldersData.flatMap { holdersData =>
@@ -91,5 +95,5 @@ class DeclarationHolderRemoveController @Inject()(
       }
 
       declaration.copy(parties = declaration.parties.copy(declarationHoldersData = newHoldersData))
-    })
+    }
 }

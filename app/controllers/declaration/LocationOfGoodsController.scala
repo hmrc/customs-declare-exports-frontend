@@ -27,6 +27,7 @@ import models.{ExportsDeclaration, Mode}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Results}
 import services.cache.ExportsCacheService
+import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.location_of_goods
 
@@ -34,7 +35,7 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class LocationOfGoodsController @Inject()(
+class LocationOfGoodsController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   mcc: MessagesControllerComponents,
@@ -42,7 +43,7 @@ class LocationOfGoodsController @Inject()(
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator
 )(implicit ec: ExecutionContext, codeListConnector: CodeListConnector)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     if (skipLocationOfGoods(request.cacheModel)) Results.Redirect(RootController.displayPage)
@@ -64,7 +65,7 @@ class LocationOfGoodsController @Inject()(
           locationOfGoods =>
             updateDeclarationFromRequest(updateDeclaration(_, locationOfGoods)).map { _ =>
               navigator.continueTo(mode, OfficeOfExitController.displayPage)
-          }
+            }
         )
   }
 

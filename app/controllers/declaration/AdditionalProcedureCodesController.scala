@@ -23,7 +23,7 @@ import controllers.navigation.Navigator
 import forms.declaration.procedurecodes.AdditionalProcedureCode
 import forms.declaration.procedurecodes.AdditionalProcedureCode._
 import models.codes.AdditionalProcedureCode.NO_APC_APPLIES_CODE
-import models.codes.{ProcedureCode, AdditionalProcedureCode => AdditionalProcedureCodeModel}
+import models.codes.{AdditionalProcedureCode => AdditionalProcedureCodeModel, ProcedureCode}
 import models.declaration.ProcedureCodesData
 import models.declaration.ProcedureCodesData.limitOfCodes
 import models.requests.JourneyRequest
@@ -34,13 +34,14 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.ProcedureCodeService
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.procedureCodes.additional_procedure_codes
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class AdditionalProcedureCodesController @Inject()(
+class AdditionalProcedureCodesController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   navigator: Navigator,
@@ -50,7 +51,7 @@ class AdditionalProcedureCodesController @Inject()(
   additionalProcedureCodesPage: additional_procedure_codes,
   supervisingCustomsOfficeHelper: SupervisingCustomsOfficeHelper
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
   private val emptyProcedureCodesData = ProcedureCodesData(None, Seq())
 
@@ -185,7 +186,7 @@ class AdditionalProcedureCodesController @Inject()(
           )
           item.copy(procedureCodes = Some(newProcedureCodes))
         }
-    )
+      )
     updateDeclarationFromRequest(updatedModel(_))
   }
 

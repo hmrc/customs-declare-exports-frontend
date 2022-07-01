@@ -24,7 +24,7 @@ import views.html.declaration.{not_declarant, not_eligible}
 
 import javax.inject.Inject
 
-class NotEligibleController @Inject()(
+class NotEligibleController @Inject() (
   authenticate: AuthAction,
   mcc: MessagesControllerComponents,
   notEligiblePage: not_eligible,

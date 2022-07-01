@@ -26,13 +26,14 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.cache.ExportsCacheService
+import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.exporter_eori_number
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class ExporterEoriNumberController @Inject()(
+class ExporterEoriNumberController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   navigator: Navigator,
@@ -40,7 +41,7 @@ class ExporterEoriNumberController @Inject()(
   exporterEoriDetailsPage: exporter_eori_number,
   override val exportsCacheService: ExportsCacheService
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     val frm = ExporterEoriNumber.form().withSubmissionErrors()
@@ -79,7 +80,7 @@ class ExporterEoriNumberController @Inject()(
   private def updateCache(formData: ExporterEoriNumber, savedExporterDetails: Option[ExporterDetails])(
     implicit r: JourneyRequest[AnyContent]
   ): Future[ExportsDeclaration] =
-    updateDeclarationFromRequest(
-      model => model.copy(parties = model.parties.copy(exporterDetails = Some(ExporterDetails.from(formData, savedExporterDetails))))
+    updateDeclarationFromRequest(model =>
+      model.copy(parties = model.parties.copy(exporterDetails = Some(ExporterDetails.from(formData, savedExporterDetails))))
     )
 }

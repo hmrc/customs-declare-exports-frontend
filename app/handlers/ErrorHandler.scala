@@ -34,7 +34,7 @@ import views.html.error_template
 import scala.concurrent.Future
 
 @Singleton
-class ErrorHandler @Inject()(override val messagesApi: MessagesApi, errorPage: error_template)(implicit appConfig: AppConfig)
+class ErrorHandler @Inject() (override val messagesApi: MessagesApi, errorPage: error_template)(implicit appConfig: AppConfig)
     extends FrontendErrorHandler with AuthRedirects {
   override def config: Configuration = appConfig.runModeConfiguration
 
