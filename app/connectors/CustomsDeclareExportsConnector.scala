@@ -133,9 +133,6 @@ class CustomsDeclareExportsConnector @Inject() (appConfig: AppConfig, httpClient
   def findLatestNotification(id: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[Notification]] =
     httpClient.GET[Option[Notification]](url(s"${appConfig.latestNotificationPath}/$id"))
 
-  def fetchNotifications()(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[Notification]] =
-    httpClient.GET[Seq[Notification]](url(s"${appConfig.notificationsPath}"))
-
   def fetchMrnStatus(mrn: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[MrnStatus]] = {
     val fetchStopwatch = fetchTimer.time()
 

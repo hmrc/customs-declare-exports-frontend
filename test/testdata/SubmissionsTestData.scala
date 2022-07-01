@@ -55,10 +55,13 @@ object SubmissionsTestData {
 
   lazy val submission: Submission =
     Submission(uuid = uuid, eori = eori, lrn = lrn, mrn = Some(mrn), ducr = Some(ducr), actions = Seq(action))
+
   lazy val submission_2: Submission =
     Submission(uuid = uuid_2, eori = eori, lrn = lrn, mrn = Some(mrn_2), ducr = Some(ducr), actions = Seq(action_2))
+
   lazy val submission_3: Submission =
     Submission(uuid = uuid_3, eori = eori, lrn = lrn, mrn = Some(mrn_3), ducr = Some(ducr), actions = Seq(action_3))
+
   lazy val cancelledSubmission: Submission =
     Submission(uuid = uuid, eori = eori, lrn = lrn, mrn = Some(mrn), ducr = Some(ducr), actions = Seq(action, actionCancellation))
 
@@ -84,8 +87,10 @@ object SubmissionsTestData {
 
   val notification =
     Notification(actionId = conversationId, mrn = mrn, dateTimeIssued = dateTimeIssued, status = SubmissionStatus.ACCEPTED, errors = errors)
+
   val notification_2 =
     Notification(actionId = conversationId, mrn = mrn, dateTimeIssued = dateTimeIssued_2, status = SubmissionStatus.REJECTED, errors = errors)
+
   val notification_3 =
     Notification(actionId = conversationId_2, mrn = mrn, dateTimeIssued = dateTimeIssued_3, status = SubmissionStatus.ACCEPTED, errors = Seq.empty)
 

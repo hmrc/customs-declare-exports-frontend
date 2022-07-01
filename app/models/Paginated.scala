@@ -29,7 +29,7 @@ case class Paginated[T](currentPageElements: Seq[T], page: Page, elementsTotal: 
 
 object Paginated {
   def apply[T](results: T*): Paginated[T] = Paginated[T](results, Page(), results.size)
-  def empty[T](page: Page) = Paginated(Seq.empty[T], page, 0)
+  def empty[T](page: Page): Paginated[T] = Paginated(Seq.empty[T], page, 0)
 
   implicit def reads[T](implicit fmt: Reads[T]): Reads[Paginated[T]] = new Reads[Paginated[T]] {
     override def reads(json: JsValue): JsResult[Paginated[T]] =

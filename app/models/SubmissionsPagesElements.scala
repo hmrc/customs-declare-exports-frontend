@@ -17,41 +17,33 @@
 package models
 
 import config.PaginationConfig
-import controllers.helpers.SubmissionDisplayHelper.filterSubmissions
-import models.declaration.notifications.Notification
-import models.declaration.submissions.{Submission, SubmissionStatus}
+import models.declaration.submissions.EnhancedStatus.EnhancedStatus
+import models.declaration.submissions.{EnhancedStatus, Submission}
 
 case class SubmissionsPagesElements(
-  rejectedSubmissions: Paginated[(Submission, Seq[Notification])],
-  actionSubmissions: Paginated[(Submission, Seq[Notification])],
-  otherSubmissions: Paginated[(Submission, Seq[Notification])]
+  rejectedSubmissions: Paginated[Submission],
+  actionSubmissions: Paginated[Submission],
+  otherSubmissions: Paginated[Submission]
 )
 
 object SubmissionsPagesElements {
 
-  def apply(submissions: Seq[(Submission, Seq[Notification])], submissionsPages: SubmissionsPages = SubmissionsPages())(
+  def apply(submissions: Seq[Submission], submissionsPages: SubmissionsPages = SubmissionsPages())(
     implicit paginationConfig: PaginationConfig
-  ): SubmissionsPagesElements = SubmissionsPagesElements(
-    rejectedSubmissions = paginateSubmissions(
-      filterSubmissions(submissions, _.headOption.map(_.status).exists(SubmissionStatus.rejectedStatuses.contains)),
-      submissionsPages.rejectedPageNumber
-    ),
-    actionSubmissions = paginateSubmissions(
-      filterSubmissions(submissions, _.headOption.map(_.status).exists(SubmissionStatus.actionRequiredStatuses.contains)),
-      submissionsPages.actionPageNumber
-    ),
-    otherSubmissions = paginateSubmissions(
-      filterSubmissions(
-        submissions,
-        notifications => notifications.isEmpty || notifications.headOption.map(_.status).exists(SubmissionStatus.otherStatuses.contains)
-      ),
-      submissionsPages.otherPageNumber
+  ): SubmissionsPagesElements =
+    SubmissionsPagesElements(
+      rejectedSubmissions = paginateSubmissions(filterSubmissions(submissions, EnhancedStatus.rejectedStatuses), submissionsPages.rejectedPageNumber),
+      actionSubmissions =
+        paginateSubmissions(filterSubmissions(submissions, EnhancedStatus.actionRequiredStatuses), submissionsPages.actionPageNumber),
+      otherSubmissions = paginateSubmissions(filterSubmissions(submissions, EnhancedStatus.otherStatuses), submissionsPages.otherPageNumber)
     )
-  )
 
-  private def paginateSubmissions(submissions: Seq[(Submission, Seq[Notification])], pageNumber: Int)(
+  private def filterSubmissions(submissions: Seq[Submission], enhancedStatuses: Set[EnhancedStatus]): Seq[Submission] =
+    submissions.filter(_.latestEnhancedStatus.exists(enhancedStatuses.contains))
+
+  private def paginateSubmissions(submissions: Seq[Submission], pageNumber: Int)(
     implicit paginationConfig: PaginationConfig
-  ): Paginated[(Submission, Seq[Notification])] = {
+  ): Paginated[Submission] = {
     val currentPage = Page(pageNumber, paginationConfig.itemsPerPage)
     val currentPageElements =
       submissions.slice((currentPage.index - 1) * currentPage.size, (currentPage.index - 1) * currentPage.size + currentPage.size)

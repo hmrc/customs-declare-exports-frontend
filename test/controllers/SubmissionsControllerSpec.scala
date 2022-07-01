@@ -22,6 +22,7 @@ import config.PaginationConfig
 import controllers.declaration.routes._
 import models._
 import models.declaration.notifications.Notification
+import models.declaration.submissions.EnhancedStatus.GOODS_ARRIVED
 import models.declaration.submissions.RequestType.SubmissionRequest
 import models.declaration.submissions.{Action, Submission, SubmissionStatus}
 import models.requests.ExportsSessionKeys
@@ -42,8 +43,9 @@ import scala.concurrent.duration._
 
 class SubmissionsControllerSpec extends ControllerWithoutFormSpec with BeforeAndAfterEach {
 
-  private val notification =
-    Notification("conversationID", "mrn", ZonedDateTime.now(ZoneOffset.UTC), SubmissionStatus.UNKNOWN, Seq.empty)
+  val dateTime = ZonedDateTime.now(ZoneOffset.UTC)
+
+  private val action = Action(requestType = SubmissionRequest, id = "conversationID", requestTimestamp = dateTime, notifications = None)
 
   private val submission = Submission(
     uuid = UUID.randomUUID().toString,
@@ -51,8 +53,8 @@ class SubmissionsControllerSpec extends ControllerWithoutFormSpec with BeforeAnd
     lrn = "lrn",
     mrn = None,
     ducr = None,
-    actions =
-      Seq(Action(requestType = SubmissionRequest, id = "conversationID", requestTimestamp = ZonedDateTime.now(ZoneOffset.UTC), notifications = None))
+    latestEnhancedStatus = Some(GOODS_ARRIVED),
+    actions = Seq(action)
   )
 
   private val submissionsPage = mock[submissions]
@@ -92,12 +94,9 @@ class SubmissionsControllerSpec extends ControllerWithoutFormSpec with BeforeAnd
         when(mockCustomsDeclareExportsConnector.fetchSubmissions(any(), any()))
           .thenReturn(Future.successful(Seq(submission)))
 
-        when(mockCustomsDeclareExportsConnector.fetchNotifications()(any(), any()))
-          .thenReturn(Future.successful(Seq(notification)))
-
         val result = controller.displayListOfSubmissions()(getRequest())
 
-        val expectedOtherSubmissionsPassed = Paginated(Seq((submission, Seq(notification))), Page(), 1)
+        val expectedOtherSubmissionsPassed = Paginated(List(submission), Page(), 1)
 
         status(result) mustBe OK
         submissionsPagesElementsCaptor.otherSubmissions mustBe expectedOtherSubmissionsPassed
@@ -113,7 +112,10 @@ class SubmissionsControllerSpec extends ControllerWithoutFormSpec with BeforeAnd
         "has related Notifications" in {
           when(mockCustomsDeclareExportsConnector.findDeclaration(any())(any(), any()))
             .thenReturn(Future.successful(Some(aDeclaration(withId("some-id")))))
-          when(mockCustomsDeclareExportsConnector.findNotifications(any())(any(), any())).thenReturn(Future.successful(Seq(notification)))
+
+          val notification = Notification("conversationID", "mrn", dateTime, SubmissionStatus.UNKNOWN, Seq.empty)
+          when(mockCustomsDeclareExportsConnector.findNotifications(any())(any(), any()))
+            .thenReturn(Future.successful(Seq(notification)))
 
           val result = controller.viewDeclaration("some-id")(getRequest())
 
@@ -123,7 +125,9 @@ class SubmissionsControllerSpec extends ControllerWithoutFormSpec with BeforeAnd
         "has NO related Notifications" in {
           when(mockCustomsDeclareExportsConnector.findDeclaration(any())(any(), any()))
             .thenReturn(Future.successful(Some(aDeclaration(withId("some-id")))))
-          when(mockCustomsDeclareExportsConnector.findNotifications(any())(any(), any())).thenReturn(Future.successful(Seq.empty))
+
+          when(mockCustomsDeclareExportsConnector.findNotifications(any())(any(), any()))
+            .thenReturn(Future.successful(Seq.empty))
 
           val result = controller.viewDeclaration("some-id")(getRequest())
 
