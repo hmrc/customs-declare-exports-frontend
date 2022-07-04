@@ -17,12 +17,13 @@
 package controllers.declaration
 
 import scala.concurrent.{ExecutionContext, Future}
-
 import connectors.CustomsDeclareExportsConnector
 import controllers.actions.{AuthAction, VerifiedEmailAction}
 import controllers.declaration.ConfirmationController._
 import controllers.routes.{RejectedNotificationsController, SubmissionsController}
 import handlers.ErrorHandler
+import models.declaration.submissions.EnhancedStatus
+
 import javax.inject.Inject
 import models.requests.{AuthenticatedRequest, ExportsSessionKeys}
 import play.api.Logging
@@ -76,16 +77,16 @@ class ConfirmationController @Inject() (
       logger.warn("Session on /confirmation does not include the submission's uuid!?")
       Future.successful(Redirect(SubmissionsController.displayListOfSubmissions()))
     } { submissionId =>
-      customsDeclareExportsConnector.findLatestNotification(submissionId).flatMap {
-        case Some(notification) if notification.isStatusDMSRej =>
+      customsDeclareExportsConnector.findSubmission(submissionId).flatMap {
+        case Some(submission) if submission.latestEnhancedStatus == Some(EnhancedStatus.ERRORS) =>
           Future.successful(Redirect(RejectedNotificationsController.displayPage(submissionId)))
 
-        case Some(notification) =>
-          val confirmation = Confirmation(request.email, submissionId, extractDeclarationType, extractDucr, extractLrn, Some(notification))
+        case Some(submission) =>
+          val confirmation = Confirmation(request.email, extractDeclarationType, Some(submission))
           Future.successful(Ok(confirmationPage(confirmation)))
 
         case _ =>
-          val confirmation = Confirmation(request.email, submissionId, extractDeclarationType, extractDucr, extractLrn, None)
+          val confirmation = Confirmation(request.email, extractDeclarationType, None)
           Future.successful(Ok(confirmationPage(confirmation)))
       }
     }
@@ -93,12 +94,6 @@ class ConfirmationController @Inject() (
 
   private def extractDeclarationType(implicit request: AuthenticatedRequest[_]): String =
     request.session.data.get(ExportsSessionKeys.declarationType).fold("")(identity)
-
-  private def extractDucr(implicit request: AuthenticatedRequest[_]): Option[String] =
-    request.session.data.get(ExportsSessionKeys.submissionDucr).map(_.trim).filter(_.nonEmpty)
-
-  private def extractLrn(implicit request: AuthenticatedRequest[_]): Option[String] =
-    request.session.data.get(ExportsSessionKeys.submissionLrn)
 
   private def extractSubmissionId(implicit request: AuthenticatedRequest[_]): Option[String] =
     request.session.data.get(ExportsSessionKeys.submissionId)
@@ -108,7 +103,7 @@ class ConfirmationController @Inject() (
       logger.warn("Session on /holding does not include the submission's uuid!?")
       Future.successful(false)
     } {
-      customsDeclareExportsConnector.findLatestNotification(_).map(_.isDefined)
+      customsDeclareExportsConnector.findSubmission(_).map(_.fold(false)(_.latestEnhancedStatus.isDefined))
     }
 }
 
