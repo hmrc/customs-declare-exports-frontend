@@ -25,6 +25,7 @@
 @import models.declaration.submissions.SubmissionStatus.{PENDING, QUERY_NOTIFICATION_MESSAGE}
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.helpers.{BackButton, StatusOfSubmission, Title, ViewDates}
+@import views.helpers.StatusOfSubmission.hasQueryNotificationMessageStatus
 @import views.html.components.gds._
 
 @this(
@@ -49,12 +50,9 @@
 }
 
 @warningText = @{
-    val elements = submissionsPagesElements.actionSubmissions.currentPageElements
-    if (elements.exists(_._2.exists(_.status == QUERY_NOTIFICATION_MESSAGE))) {
-        messages("submissions.hint.action.needed.queryNotificationMessage")
-    } else {
-        messages("submissions.hint.action.needed.generic")
-    }
+    val submissions = submissionsPagesElements.actionSubmissions.currentPageElements
+    if (!submissions.exists(hasQueryNotificationMessageStatus)) messages("submissions.hint.action.needed.generic")
+    else messages("submissions.hint.action.needed.queryNotificationMessage")
 }
 
 @submissionsPages = @{
@@ -79,7 +77,7 @@
     )
 }
 
-@tabTable(id: String, tabSubmissions: Paginated[(Submission, Seq[Notification])], onPageChange: Int => Call) = {
+@tabTable(id: String, tabSubmissions: Paginated[Submission], onPageChange: Int => Call) = {
 
     <h2 class="govuk-heading-l">@messages(s"submissions.${id}.content.title")</h2>
 
@@ -89,7 +87,7 @@
 
         @govukTable(Table(
             attributes = Map("id" -> s"submissions-tab-$id"),
-            rows = tabSubmissions.currentPageElements.zipWithIndex.map { case ((submission, notifications), index) =>
+            rows = tabSubmissions.currentPageElements.zipWithIndex.map { case (submission, index) =>
                 Seq(
                     TableRow(
                         content = mrnLink(submission),
@@ -117,7 +115,7 @@
                         attributes = Map("id" -> s"submission-tab-$id-row$index-dateAndTime")
                     ),
                     TableRow(
-                        content = Text(StatusOfSubmission.asText(notifications.headOption.map(n => n.status).getOrElse(PENDING))),
+                        content = Text(StatusOfSubmission.asText(submission)),
                         attributes = Map("id" -> s"submission-tab-$id-row$index-status")
                     )
                 )
@@ -221,9 +219,7 @@
                 )
             ))
 
-
             @linkButton("supplementary.startNewDec", routes.ChoiceController.displayPage())
-
         </div>
     </div>
 }

@@ -20,9 +20,9 @@ import config.PaginationConfig
 import connectors.CustomsDeclareExportsConnector
 import controllers.actions.{AuthAction, VerifiedEmailAction}
 import controllers.declaration.routes._
-import controllers.helpers.SubmissionDisplayHelper
 import models.Mode.ErrorFix
 import models._
+import models.declaration.submissions.Submission
 import models.requests.ExportsSessionKeys
 import models.responses.FlashKeys
 import play.api.i18n.I18nSupport
@@ -49,11 +49,9 @@ class SubmissionsController @Inject() (
     (authenticate andThen verifyEmail).async { implicit request =>
       for {
         submissions <- customsDeclareExportsConnector.fetchSubmissions
-        notifications <- customsDeclareExportsConnector.fetchNotifications()
-
-        result = SubmissionDisplayHelper.createSubmissionsWithSortedNotificationsMap(submissions, notifications)
-
-      } yield Ok(submissionsPage(SubmissionsPagesElements(result, submissionsPages))).removingFromSession(ExportsSessionKeys.declarationId)
+        submissionsInDescOrder = submissions.sorted(Submission.newestEarlierOrdering)
+      } yield Ok(submissionsPage(SubmissionsPagesElements(submissionsInDescOrder, submissionsPages)))
+        .removingFromSession(ExportsSessionKeys.declarationId)
     }
 
   def amend(id: String): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>

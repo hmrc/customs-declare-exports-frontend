@@ -20,7 +20,7 @@ import connectors.CustomsDeclareExportsConnector
 import models._
 import models.declaration.notifications.Notification
 import models.declaration.submissions.RequestType.SubmissionRequest
-import models.declaration.submissions.{Action, Submission, SubmissionStatus}
+import models.declaration.submissions.{Action, Submission}
 import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito.when
 import org.mockito.invocation.InvocationOnMock
@@ -47,12 +47,6 @@ trait MockConnectors extends MockitoSugar {
   def customsDeclaration400Response(): Unit =
     when(mockCustomsDeclareExportsConnector.createDeclaration(any())(any[HeaderCarrier], any[ExecutionContext]))
       .thenReturn(Future.failed(new IllegalArgumentException("Bad Request")))
-
-  def listOfNotifications(): OngoingStubbing[Future[Seq[Notification]]] =
-    when(mockCustomsDeclareExportsConnector.fetchNotifications()(any(), any()))
-      .thenReturn(
-        Future.successful(Seq(Notification("actionId", "123456789012345678", ZonedDateTime.now(ZoneOffset.UTC), SubmissionStatus.UNKNOWN, Seq.empty)))
-      )
 
   def listOfSubmissions(): OngoingStubbing[Future[Seq[Submission]]] =
     when(mockCustomsDeclareExportsConnector.fetchSubmissions(any(), any()))
