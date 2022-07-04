@@ -54,7 +54,6 @@ class StatisticalValueViewSpec extends UnitViewSpec with ExportsTestData with St
       messages must haveTranslationFor("declaration.statisticalValue.hint")
       messages must haveTranslationFor("declaration.statisticalValue.hint.bullet.1")
       messages must haveTranslationFor("declaration.statisticalValue.hint.bullet.2")
-      messages must haveTranslationFor("declaration.statisticalValue.hint.bullet.3")
       messages must haveTranslationFor("declaration.statisticalValue.inset.text.1")
       messages must haveTranslationFor("declaration.statisticalValue.inset.text.2")
       messages must haveTranslationFor("tariff.declaration.item.statisticalValue.common.text")
@@ -79,11 +78,7 @@ class StatisticalValueViewSpec extends UnitViewSpec with ExportsTestData with St
     }
 
     "display the expected bullet list" in {
-      val indexedListOfMessages = List(
-        "declaration.statisticalValue.hint.bullet.1",
-        "declaration.statisticalValue.hint.bullet.2",
-        "declaration.statisticalValue.hint.bullet.3"
-      ).zipWithIndex
+      val indexedListOfMessages = List("declaration.statisticalValue.hint.bullet.1", "declaration.statisticalValue.hint.bullet.2").zipWithIndex
 
       val bulletPoints = view.getElementsByClass("govuk-list--bullet").get(0).children
       forAll(indexedListOfMessages)(t => bulletPoints.get(t._2) must containMessage(t._1))
