@@ -23,7 +23,6 @@ import models.declaration.submissions.RequestType.SubmissionRequest
 
 import java.time.ZonedDateTime
 import java.util.UUID
-
 import play.api.libs.json.Json
 
 case class Submission(
@@ -37,11 +36,9 @@ case class Submission(
   actions: Seq[Action]
 ) {
 
-  val latestAction: Option[Action] = if (actions.nonEmpty) {
-    Some(actions.minBy(_.requestTimestamp)(Submission.dateTimeOrdering))
-  } else {
-    None
-  }
+  val latestAction: Option[Action] =
+    if (actions.isEmpty) None
+    else Some(actions.minBy(_.requestTimestamp)(Submission.dateTimeOrdering))
 
   val latestCancellationAction: Option[Action] = {
     val cancelActions = actions.filter(_.requestType == CancellationRequest)
@@ -50,13 +47,12 @@ case class Submission(
     } else None
   }
 
-  lazy val allSubmissionRequestStatuses: Seq[EnhancedStatus] = {
-    val maybeExistingStatuses = for {
+  lazy val allSubmissionRequestStatuses: Seq[EnhancedStatus] = (
+    for {
       subRequestAction <- actions.filter(_.requestType == SubmissionRequest).headOption
       notificationSummaries <- subRequestAction.notifications
     } yield notificationSummaries.map(_.enhancedStatus)
-    maybeExistingStatuses.getOrElse(Seq.empty[EnhancedStatus])
-  }
+  ).getOrElse(Seq.empty[EnhancedStatus])
 
   lazy val isStatusAcceptedOrReceived: Boolean =
     allSubmissionRequestStatuses.intersect(Seq(GOODS_ARRIVED_MESSAGE, GOODS_ARRIVED, RECEIVED)).nonEmpty
@@ -64,12 +60,13 @@ case class Submission(
 
 object Submission {
 
-  val dateTimeOrdering: Ordering[ZonedDateTime] = Ordering.fromLessThan[ZonedDateTime]((a, b) => b.isBefore(a))
-
   implicit val formats = Json.format[Submission]
 
-  implicit val ordering: Ordering[Submission] =
-    Ordering.by[Submission, Option[ZonedDateTime]](submission => submission.latestAction.map(_.requestTimestamp))(Ordering.Option(dateTimeOrdering))
+  val dateTimeOrdering: Ordering[ZonedDateTime] = Ordering.fromLessThan[ZonedDateTime]((a, b) => b.isBefore(a))
+
+  implicit val ordering: Ordering[Submission] = Ordering.by[Submission, Option[ZonedDateTime]] { submission =>
+    submission.latestAction.map(_.requestTimestamp)
+  }(Ordering.Option(dateTimeOrdering))
 
   val newestEarlierOrdering: Ordering[Submission] = ordering
 }

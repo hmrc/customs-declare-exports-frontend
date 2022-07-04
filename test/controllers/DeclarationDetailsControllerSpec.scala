@@ -16,28 +16,24 @@
 
 package controllers
 
-import java.time.ZonedDateTime
-import java.util.UUID
-
-import scala.concurrent.Future
-
 import base.ControllerWithoutFormSpec
-import models.declaration.notifications.Notification
 import models.declaration.submissions.RequestType.SubmissionRequest
-import models.declaration.submissions.{Action, Submission, SubmissionStatus}
+import models.declaration.submissions.{Action, Submission}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
-import org.mockito.stubbing.OngoingStubbing
 import org.scalatest.BeforeAndAfterEach
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.declaration_details
 
+import java.time.ZonedDateTime
+import java.util.UUID
+import scala.concurrent.Future
+
 class DeclarationDetailsControllerSpec extends ControllerWithoutFormSpec with BeforeAndAfterEach {
 
   private val actionId = "actionId"
-  private val notification = Notification(actionId, "mrn", ZonedDateTime.now, SubmissionStatus.UNKNOWN, Seq.empty)
 
   private val submission = Submission(
     uuid = UUID.randomUUID().toString,
@@ -71,29 +67,21 @@ class DeclarationDetailsControllerSpec extends ControllerWithoutFormSpec with Be
   "displayPage method of Declaration Details page" should {
 
     "return 200 (OK)" when {
-      val submissionCaptor: ArgumentCaptor[Submission] = ArgumentCaptor.forClass(classOf[Submission])
-
       "submission but no notifications are provided for the Declaration" in {
-        responsesToReturn(isQueryNotificationMessageEnabled = true, List.empty)
+        when(mockCustomsDeclareExportsConnector.findSubmission(any())(any(), any()))
+          .thenReturn(Future.successful(Some(submission)))
 
         val result = controller.displayPage(actionId)(getRequest())
         status(result) mustBe OK
 
+        val submissionCaptor: ArgumentCaptor[Submission] = ArgumentCaptor.forClass(classOf[Submission])
         verify(declarationDetailsPage).apply(submissionCaptor.capture())(any(), any())
         submissionCaptor.getValue mustBe submission
       }
-
-      def responsesToReturn(
-        isQueryNotificationMessageEnabled: Boolean,
-        notifications: Seq[Notification] = List(notification)
-      ): OngoingStubbing[Future[Option[Submission]]] =
-        when(mockCustomsDeclareExportsConnector.findSubmission(any())(any(), any())).thenReturn(Future.successful(Some(submission)))
     }
 
     "return 303 (SEE_OTHER)" when {
-
       "there is no submission for the Declaration" in {
-
         when(mockCustomsDeclareExportsConnector.findSubmission(any())(any(), any())).thenReturn(Future.successful(None))
 
         val result = controller.displayPage(actionId)(getRequest())

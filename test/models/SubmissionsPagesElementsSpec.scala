@@ -18,9 +18,7 @@ package models
 
 import base.UnitWithMocksSpec
 import config.PaginationConfig
-import models.declaration.notifications.Notification
-import models.declaration.submissions.Submission
-import models.declaration.submissions.SubmissionStatus._
+import models.declaration.submissions.EnhancedStatus._
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.BeforeAndAfterEach
 import testdata.SubmissionsTestData._
@@ -39,53 +37,40 @@ class SubmissionsPagesElementsSpec extends UnitWithMocksSpec with BeforeAndAfter
   "SubmissionsPagesElements on apply" should {
 
     "call AppConfig for paginationItemsPerPage" in {
-
-      val input = Seq.empty[(Submission, Seq[Notification])]
-
-      SubmissionsPagesElements(input)
-
+      SubmissionsPagesElements(Seq.empty)
       verify(paginationConfig, times(3)).itemsPerPage
     }
 
     "build default SubmissionsPagesElements" when {
-
       "provided with empty submissions list" in {
-
-        val input = Seq.empty[(Submission, Seq[Notification])]
         val expectedResult = SubmissionsPagesElements(
           rejectedSubmissions = Paginated(Seq.empty, Page(), 0),
           actionSubmissions = Paginated(Seq.empty, Page(), 0),
           otherSubmissions = Paginated(Seq.empty, Page(), 0)
         )
 
-        SubmissionsPagesElements(input) mustBe expectedResult
+        SubmissionsPagesElements(Seq.empty) mustBe expectedResult
       }
     }
 
     "create correct Page elements inside Pagination" when {
 
       "provided with none" in {
+        val result = SubmissionsPagesElements(Seq.empty)
 
-        val input = Seq.empty[(Submission, Seq[Notification])]
         val expectedPage = Page()
-
-        val result = SubmissionsPagesElements(input)
-
         result.rejectedSubmissions.page mustBe expectedPage
         result.actionSubmissions.page mustBe expectedPage
         result.otherSubmissions.page mustBe expectedPage
       }
 
       "provided with SubmissionsPages" in {
-
-        val input = Seq.empty[(Submission, Seq[Notification])]
         val submissionsPages = SubmissionsPages(rejectedPageNumber = 3, actionPageNumber = 4, otherPageNumber = 7)
+        val result = SubmissionsPagesElements(Seq.empty, submissionsPages)
 
         val expectedPageRejected = Page(index = 3)
         val expectedPageAction = Page(index = 4)
         val expectedPageOther = Page(index = 7)
-
-        val result = SubmissionsPagesElements(input, submissionsPages)
 
         result.rejectedSubmissions.page mustBe expectedPageRejected
         result.actionSubmissions.page mustBe expectedPageAction
@@ -101,72 +86,61 @@ class SubmissionsPagesElementsSpec extends UnitWithMocksSpec with BeforeAndAfter
       "build SubmissionsPagesElements containing rejectedSubmissions" when {
 
         "provided with Notification with REJECTED status" in {
+          val rejectedSubmission = submission_2.copy(latestEnhancedStatus = Some(EXPIRED_NO_ARRIVAL))
 
-          val rejectedSubmission = submission_2 -> Seq(notification.copy(status = REJECTED))
-
-          val input = Seq(rejectedSubmission)
+          val rejectedSubmissions = Seq(rejectedSubmission)
 
           val expectedResult = SubmissionsPagesElements(
-            rejectedSubmissions = Paginated(Seq(rejectedSubmission), Page(), 1),
+            rejectedSubmissions = Paginated(rejectedSubmissions, Page(), 1),
             actionSubmissions = Paginated(Seq.empty, Page(), 0),
             otherSubmissions = Paginated(Seq.empty, Page(), 0)
           )
-
-          SubmissionsPagesElements(input) mustBe expectedResult
-
+          SubmissionsPagesElements(rejectedSubmissions) mustBe expectedResult
         }
       }
 
       "build SubmissionsPagesElements containing actionSubmissions" when {
-
-        Seq(ADDITIONAL_DOCUMENTS_REQUIRED, UNDERGOING_PHYSICAL_CHECK, QUERY_NOTIFICATION_MESSAGE).foreach { status =>
+        actionRequiredStatuses.foreach { status =>
           s"provided with Notification with $status status" in {
+            val actionSubmission = submission_3.copy(latestEnhancedStatus = Some(status))
 
-            val actionSubmission = submission_3 -> Seq(notification.copy(status = status, actionId = conversationId))
-
-            val input = Seq(actionSubmission)
+            val actionSubmissions = Seq(actionSubmission)
 
             val expectedResult = SubmissionsPagesElements(
               rejectedSubmissions = Paginated(Seq.empty, Page(), 0),
-              actionSubmissions = Paginated(Seq(actionSubmission), Page(), 1),
+              actionSubmissions = Paginated(actionSubmissions, Page(), 1),
               otherSubmissions = Paginated(Seq.empty, Page(), 0)
             )
-
-            SubmissionsPagesElements(input) mustBe expectedResult
+            SubmissionsPagesElements(actionSubmissions) mustBe expectedResult
           }
         }
       }
 
       "build SubmissionsPagesElements containing otherSubmissions" when {
-
         otherStatuses.foreach { status =>
           s"provided with Notification with $status status" in {
+            val otherSubmission = submission.copy(latestEnhancedStatus = Some(status))
 
-            val otherSubmission = submission -> Seq(notification.copy(status = status))
-
-            val input = Seq(otherSubmission)
+            val otherSubmissions = Seq(otherSubmission)
 
             val expectedResult = SubmissionsPagesElements(
               rejectedSubmissions = Paginated(Seq.empty, Page(), 0),
               actionSubmissions = Paginated(Seq.empty, Page(), 0),
-              otherSubmissions = Paginated(Seq(otherSubmission), Page(), 1)
+              otherSubmissions = Paginated(otherSubmissions, Page(), 1)
             )
-
-            SubmissionsPagesElements(input) mustBe expectedResult
+            SubmissionsPagesElements(otherSubmissions) mustBe expectedResult
           }
         }
       }
     }
 
     "provided with all types of submissions" should {
-
       "build correct SubmissionsPagesElements" in {
+        val rejectedSubmission = submission_3.copy(latestEnhancedStatus = Some(EXPIRED_NO_ARRIVAL))
+        val actionSubmission = submission.copy(latestEnhancedStatus = Some(ADDITIONAL_DOCUMENTS_REQUIRED))
+        val otherSubmission = submission_2.copy(latestEnhancedStatus = Some(AWAITING_EXIT_RESULTS))
 
-        val otherSubmission = submission -> Seq(notification)
-        val rejectedSubmission = submission_2 -> Seq(notification.copy(status = REJECTED))
-        val actionSubmission = submission_3 -> Seq(notification.copy(status = ADDITIONAL_DOCUMENTS_REQUIRED, actionId = conversationId))
-
-        val input = Seq(otherSubmission, rejectedSubmission, actionSubmission)
+        val submissions = Seq(otherSubmission, rejectedSubmission, actionSubmission)
 
         val expectedResult = SubmissionsPagesElements(
           rejectedSubmissions = Paginated(Seq(rejectedSubmission), Page(), 1),
@@ -174,10 +148,8 @@ class SubmissionsPagesElementsSpec extends UnitWithMocksSpec with BeforeAndAfter
           otherSubmissions = Paginated(Seq(otherSubmission), Page(), 1)
         )
 
-        SubmissionsPagesElements(input) mustBe expectedResult
+        SubmissionsPagesElements(submissions) mustBe expectedResult
       }
     }
-
   }
-
 }

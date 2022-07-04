@@ -29,7 +29,11 @@ object EnhancedStatus extends Enumeration {
     DECLARATION_HANDLED_EXTERNALLY, ERRORS, EXPIRED_NO_ARRIVAL, EXPIRED_NO_DEPARTURE, GOODS_ARRIVED, GOODS_ARRIVED_MESSAGE, GOODS_HAVE_EXITED,
     QUERY_NOTIFICATION_MESSAGE, RECEIVED, RELEASED, UNDERGOING_PHYSICAL_CHECK, WITHDRAWN, PENDING, REQUESTED_CANCELLATION, UNKNOWN = Value
 
-  lazy val rejectedStatuses = Seq(CANCELLED, ERRORS, WITHDRAWN)
+  lazy val actionRequiredStatuses: Set[EnhancedStatus] = Set(ADDITIONAL_DOCUMENTS_REQUIRED, QUERY_NOTIFICATION_MESSAGE, UNDERGOING_PHYSICAL_CHECK)
 
-  lazy val eadAcceptableStatuses: Set[EnhancedStatus.Value] = values &~ (Set(PENDING, UNKNOWN) ++ rejectedStatuses)
+  lazy val rejectedStatuses = Set(CANCELLED, ERRORS, EXPIRED_NO_ARRIVAL)
+
+  lazy val otherStatuses = values &~ rejectedStatuses &~ actionRequiredStatuses
+
+  lazy val eadAcceptableStatuses = values &~ Set(CANCELLED, ERRORS, PENDING, UNKNOWN, WITHDRAWN)
 }

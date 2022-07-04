@@ -21,9 +21,9 @@ import config.featureFlags.SecureMessagingConfig
 import controllers.routes
 import forms.Choice
 import forms.Choice.AllowedChoiceValues.Submissions
-import models.declaration.notifications.Notification
+import models.declaration.submissions.EnhancedStatus._
 import models.declaration.submissions.RequestType.{CancellationRequest, SubmissionRequest}
-import models.declaration.submissions.{Action, Submission, SubmissionStatus}
+import models.declaration.submissions.{Action, NotificationSummary, Submission}
 import models.{Page, Paginated, SubmissionsPagesElements}
 import org.jsoup.nodes.Element
 import org.mockito.Mockito.when
@@ -36,7 +36,8 @@ import views.declaration.spec.UnitViewSpec
 import views.html.submissions
 import views.tags.ViewTest
 
-import java.time.{LocalDateTime, ZoneId, ZonedDateTime}
+import java.time.{ZoneId, ZonedDateTime}
+import java.util.UUID
 
 @ViewTest
 class SubmissionsViewSpec extends UnitViewSpec with BeforeAndAfterEach with ExportsTestData with Stubs {
@@ -46,9 +47,9 @@ class SubmissionsViewSpec extends UnitViewSpec with BeforeAndAfterEach with Expo
   private val page = injector.instanceOf[submissions]
 
   private def createView(
-    rejectedSubmissions: Paginated[(Submission, Seq[Notification])] = Paginated(Seq.empty, Page(), 0),
-    actionSubmissions: Paginated[(Submission, Seq[Notification])] = Paginated(Seq.empty, Page(), 0),
-    otherSubmissions: Paginated[(Submission, Seq[Notification])] = Paginated(Seq.empty, Page(), 0)
+    rejectedSubmissions: Paginated[Submission] = Paginated(Seq.empty, Page(), 0),
+    actionSubmissions: Paginated[Submission] = Paginated(Seq.empty, Page(), 0),
+    otherSubmissions: Paginated[Submission] = Paginated(Seq.empty, Page(), 0)
   ): Html =
     page(SubmissionsPagesElements(rejectedSubmissions, actionSubmissions, otherSubmissions))(request, messages)
 
@@ -60,61 +61,30 @@ class SubmissionsViewSpec extends UnitViewSpec with BeforeAndAfterEach with Expo
   private val zone: ZoneId = ZoneId.of("UTC")
 
   val actionSubmission =
-    Action(
-      requestType = SubmissionRequest,
-      id = "conv-id",
-      requestTimestamp = ZonedDateTime.of(LocalDateTime.of(2019, 1, 1, 12, 0, 0), zone),
-      notifications = None
+    Action(requestType = SubmissionRequest, id = "conv-id", requestTimestamp = ZonedDateTime.of(2019, 1, 1, 12, 0, 0, 0, zone), notifications = None)
+
+  val actionCancellation = Action(
+    requestType = CancellationRequest,
+    id = "conv-id",
+    requestTimestamp = ZonedDateTime.of(2021, 6, 1, 12, 0, 0, 0, zone),
+    notifications = None
+  )
+
+  def submissionWithStatus(status: EnhancedStatus = GOODS_ARRIVED, ducr: String = "ducr") =
+    Submission(
+      uuid = "id",
+      eori = "eori",
+      lrn = "lrn",
+      mrn = Some("mrn"),
+      ducr = Some(ducr),
+      latestEnhancedStatus = Some(status),
+      actions = List(actionSubmission, actionCancellation)
     )
 
-  val actionCancellation =
-    Action(
-      requestType = CancellationRequest,
-      id = "conv-id",
-      requestTimestamp = ZonedDateTime.of(LocalDateTime.of(2021, 6, 1, 12, 0, 0), zone),
-      notifications = None
-    )
+  def submissions(status: EnhancedStatus = GOODS_ARRIVED): Paginated[Submission] =
+    Paginated(List(submissionWithStatus(status)), Page(), 1)
 
-  def submissionWithDucr(ducr: String = "ducr") =
-    Submission(uuid = "id", eori = "eori", lrn = "lrn", mrn = Some("mrn"), ducr = Some(ducr), actions = Seq(actionSubmission, actionCancellation))
-
-  val submission = submissionWithDucr()
-
-  val acceptedNotification = Notification(
-    actionId = "action-id",
-    mrn = "mrn",
-    dateTimeIssued = ZonedDateTime.of(LocalDateTime.of(2020, 1, 1, 12, 30, 0), zone),
-    status = SubmissionStatus.ACCEPTED,
-    errors = Seq.empty
-  )
-
-  val rejectedNotification = Notification(
-    actionId = "actionId",
-    mrn = "mrn",
-    dateTimeIssued = ZonedDateTime.now(ZoneId.of("UTC")),
-    status = SubmissionStatus.REJECTED,
-    errors = Seq.empty
-  )
-
-  val actionNotification = Notification(
-    actionId = "actionId",
-    mrn = "mrn",
-    dateTimeIssued = ZonedDateTime.now(ZoneId.of("UTC")),
-    status = SubmissionStatus.ADDITIONAL_DOCUMENTS_REQUIRED,
-    errors = Seq.empty
-  )
-
-  val dmsQryNotification = Notification(
-    actionId = "actionId",
-    mrn = "mrn",
-    dateTimeIssued = ZonedDateTime.now(ZoneId.of("UTC")),
-    status = SubmissionStatus.QUERY_NOTIFICATION_MESSAGE,
-    errors = Seq.empty
-  )
-
-  def submissions(notification: Notification = acceptedNotification) =
-    Paginated(Seq(submission -> Seq(notification)), Page(), 1)
-
+  def submissions(submission: Submission): Paginated[Submission] = Paginated(List(submission), Page(), 1)
   "Submission View" should {
 
     "have proper messages for labels" in {
@@ -164,29 +134,30 @@ class SubmissionsViewSpec extends UnitViewSpec with BeforeAndAfterEach with Expo
     "display the action-needed hint" when {
 
       "there are submissions requiring action" in {
-        val warningText =
-          s"! ${messages("site.warning")} ${messages("submissions.hint.action.needed.generic")}"
-        val view = createView(actionSubmissions = submissions(actionNotification))
-
+        val warningText = s"! ${messages("site.warning")} ${messages("submissions.hint.action.needed.generic")}"
+        val view = createView(actionSubmissions = submissions(ADDITIONAL_DOCUMENTS_REQUIRED))
         view.getElementsByClass("govuk-warning-text").text mustBe warningText
       }
 
       "there are submissions with DMSQRY notification" in {
-        val warningText =
-          s"! ${messages("site.warning")} ${messages("submissions.hint.action.needed.queryNotificationMessage")}"
-        val view = createView(actionSubmissions = submissions(dmsQryNotification))
+        val view = createView(actionSubmissions = submissions(submission(QUERY_NOTIFICATION_MESSAGE)))
 
+        val warningText = s"! ${messages("site.warning")} ${messages("submissions.hint.action.needed.queryNotificationMessage")}"
         view.getElementsByClass("govuk-warning-text").text mustBe warningText
       }
 
       "there are submissions requiring action and submissions with DMSQRY notification" in {
-        val warningText =
-          s"! ${messages("site.warning")} ${messages("submissions.hint.action.needed.queryNotificationMessage")}"
-        val view = createView(actionSubmissions =
-          Paginated(Seq(submission -> Seq(actionNotification), submissionWithDucr("ducr_2") -> Seq(dmsQryNotification)), Page(), 2)
-        )
+        val submissions = List(submission(ADDITIONAL_DOCUMENTS_REQUIRED), submission(QUERY_NOTIFICATION_MESSAGE))
+        val view = createView(actionSubmissions = Paginated(submissions, Page(), submissions.size))
 
+        val warningText = s"! ${messages("site.warning")} ${messages("submissions.hint.action.needed.queryNotificationMessage")}"
         view.getElementsByClass("govuk-warning-text").text mustBe warningText
+      }
+
+      def submission(status: EnhancedStatus): Submission = {
+        val notificationSummary = NotificationSummary(UUID.randomUUID, ZonedDateTime.now, status)
+        val action = actionSubmission.copy(notifications = Some(List(notificationSummary)))
+        submissionWithStatus(status).copy(actions = List(action, actionCancellation))
       }
     }
 
@@ -201,7 +172,6 @@ class SubmissionsViewSpec extends UnitViewSpec with BeforeAndAfterEach with Expo
 
     "display the expected tab heading" in {
       val view = createView()
-
       val testExpectedTabHeading =
         (tab: String) => view.getElementById(s"${tab}-submissions").getElementsByTag("h2").text == messages(s"submissions.${tab}.content.title")
 
@@ -210,9 +180,9 @@ class SubmissionsViewSpec extends UnitViewSpec with BeforeAndAfterEach with Expo
 
     "display the expected tab hints" when {
       "there are submissions" in {
-        val view = createView(submissions(rejectedNotification), submissions(actionNotification), submissions(acceptedNotification))
-
-        val testExpectedTabHint = (tab: String) => view.getElementById(s"${tab}-content-hint").text == messages(s"submissions.${tab}.content.hint")
+        val view = createView(submissions(EXPIRED_NO_ARRIVAL), submissions(ADDITIONAL_DOCUMENTS_REQUIRED), submissions())
+        val testExpectedTabHint =
+          (tab: String) => view.getElementById(s"${tab}-content-hint").text == messages(s"submissions.${tab}.content.hint")
 
         assert(List("rejected", "action", "other").forall(testExpectedTabHint))
       }
@@ -220,7 +190,7 @@ class SubmissionsViewSpec extends UnitViewSpec with BeforeAndAfterEach with Expo
 
     "display one pagination summary" when {
       "there are submissions" in {
-        val view = createView(submissions(rejectedNotification), submissions(actionNotification), submissions(acceptedNotification))
+        val view = createView(submissions(EXPIRED_NO_ARRIVAL), submissions(ADDITIONAL_DOCUMENTS_REQUIRED), submissions())
         val paginationText = s"${messages("site.pagination.showing")} 1 ${messages("submissions.pagination.singular")}"
 
         val testPaginationSummary =
@@ -244,7 +214,6 @@ class SubmissionsViewSpec extends UnitViewSpec with BeforeAndAfterEach with Expo
 
     "display table headers" in {
       val view = createView(otherSubmissions = submissions())
-
       tableHead(view)(0) must containMessage("submissions.mrn.header")
       tableHead(view)(1) must containMessage("submissions.ducr.header")
       tableHead(view)(2) must containMessage("submissions.lrn.header")
@@ -261,104 +230,97 @@ class SubmissionsViewSpec extends UnitViewSpec with BeforeAndAfterEach with Expo
           val mrnLink = tableCell(view)(1, 0)
           mrnLink must containText("mrn")
           mrnLink must containMessage("submissions.hidden.text", "ducr")
-          tableCell(view)(1, 1).text() mustBe "ducr"
-          tableCell(view)(1, 2).text() mustBe "lrn"
-          tableCell(view)(1, 3).text() mustBe "1 January 2019 at 12:00pm"
-          tableCell(view)(1, 4).text() mustBe messages("submission.status.ACCEPTED")
+          tableCell(view)(1, 1).text mustBe "ducr"
+          tableCell(view)(1, 2).text mustBe "lrn"
+          tableCell(view)(1, 3).text mustBe "1 January 2019 at 12:00pm"
+          tableCell(view)(1, 4).text mustBe messages("submission.enhancedStatus.GOODS_ARRIVED")
           val decInformationLink = tableCell(view)(1, 0).getElementsByTag("a").first()
           decInformationLink.attr("href") mustBe routes.DeclarationDetailsController.displayPage("id").url
         }
 
         "during BST" in {
-          val bstActionSubmission =
-            Action(
-              requestType = SubmissionRequest,
-              id = "conv-id",
-              requestTimestamp = ZonedDateTime.of(LocalDateTime.of(2019, 5, 1, 12, 45, 0), zone),
-              notifications = None
-            )
+          val bstActionSubmission = Action(
+            requestType = SubmissionRequest,
+            id = "conv-id",
+            requestTimestamp = ZonedDateTime.of(2019, 5, 1, 12, 45, 0, 0, zone),
+            notifications = None
+          )
           val bstSubmission = Submission(
             uuid = "id",
             eori = "eori",
             lrn = "lrn",
             mrn = Some("mrn"),
             ducr = Some("ducr"),
-            actions = Seq(bstActionSubmission, actionCancellation)
+            latestEnhancedStatus = Some(GOODS_ARRIVED),
+            actions = List(bstActionSubmission, actionCancellation)
           )
-          val view = tab("other", createView(otherSubmissions = Paginated(Seq(bstSubmission -> Seq(acceptedNotification)), Page(), 1)))
+          val view = tab("other", createView(otherSubmissions = submissions(bstSubmission)))
 
           val mrnLink = tableCell(view)(1, 0)
           mrnLink must containText("mrn")
           mrnLink must containMessage("submissions.hidden.text", "ducr")
-          tableCell(view)(1, 1).text() mustBe "ducr"
-          tableCell(view)(1, 2).text() mustBe "lrn"
-          tableCell(view)(1, 3).text() mustBe "1 May 2019 at 1:45pm"
-          tableCell(view)(1, 4).text() mustBe messages("submission.status.ACCEPTED")
+          tableCell(view)(1, 1).text mustBe "ducr"
+          tableCell(view)(1, 2).text mustBe "lrn"
+          tableCell(view)(1, 3).text mustBe "1 May 2019 at 1:45pm"
+          tableCell(view)(1, 4).text mustBe messages("submission.enhancedStatus.GOODS_ARRIVED")
           val decInformationLink = tableCell(view)(1, 0).getElementsByTag("a").first()
           decInformationLink.attr("href") mustBe routes.DeclarationDetailsController.displayPage("id").url
         }
       }
-      "optional fields are unpopulated" in {
-        val submissionWithOptionalFieldsEmpty = submission.copy(ducr = None, mrn = None)
-        val view =
-          tab("other", createView(otherSubmissions = Paginated(Seq(submissionWithOptionalFieldsEmpty -> Seq(acceptedNotification)), Page(), 1)))
 
-        tableCell(view)(1, 1).text() mustBe empty
-        tableCell(view)(1, 2).text() mustBe "lrn"
-        tableCell(view)(1, 3).text() mustBe "1 January 2019 at 12:00pm"
-        tableCell(view)(1, 4).text() mustBe messages("submission.status.ACCEPTED")
+      "optional fields are unpopulated" in {
+        val submissionWithOptionalFieldsEmpty = submissionWithStatus().copy(ducr = None, mrn = None)
+        val view = tab("other", createView(otherSubmissions = submissions(submissionWithOptionalFieldsEmpty)))
+
+        tableCell(view)(1, 1).text mustBe empty
+        tableCell(view)(1, 2).text mustBe "lrn"
+        tableCell(view)(1, 3).text mustBe "1 January 2019 at 12:00pm"
+        tableCell(view)(1, 4).text mustBe messages("submission.enhancedStatus.GOODS_ARRIVED")
         val decInformationLink = tableCell(view)(1, 0).getElementsByTag("a").first()
         decInformationLink.attr("href") mustBe routes.DeclarationDetailsController.displayPage("id").url
       }
 
       "optional mrn field is populated with default" in {
-        val submissionWithOptionalFieldsEmpty = submission.copy(ducr = None, mrn = None)
-        val view =
-          tab("other", createView(otherSubmissions = Paginated(Seq(submissionWithOptionalFieldsEmpty -> Seq(acceptedNotification)), Page(), 1)))
-
+        val submissionWithOptionalFieldsEmpty = submissionWithStatus().copy(ducr = None, mrn = None)
+        val view = tab("other", createView(otherSubmissions = submissions(submissionWithOptionalFieldsEmpty)))
         tableCell(view)(1, 0) must containMessage("submissions.declarationDetails.mrn.pending")
-
       }
 
       "submission status is 'pending' due to missing notification" in {
-        val view = tab("other", createView(otherSubmissions = Paginated(Seq(submission -> Seq.empty), Page(), 1)))
-
-        tableCell(view)(1, 4).text() mustBe "Pending"
+        val submission = submissionWithStatus().copy(latestEnhancedStatus = None)
+        val view = tab("other", createView(otherSubmissions = submissions(submission)))
+        tableCell(view)(1, 4).text mustBe "Pending"
       }
 
       "submission has link when contains rejected notification" in {
-        val view = tab("rejected", createView(rejectedSubmissions = submissions(rejectedNotification)))
+        val submission = submissionWithStatus(EXPIRED_NO_ARRIVAL)
+        val view = tab("rejected", createView(rejectedSubmissions = submissions(submission)))
 
-        tableCell(view)(1, 0).text() must include(submission.ducr.get)
+        tableCell(view)(1, 0).text must include(submission.ducr.get)
         tableCell(view)(1, 0).toString must include(routes.DeclarationDetailsController.displayPage(submission.uuid).url)
       }
 
       "submission date is unknown due to missing submit action" in {
-        val submissionWithMissingSubmitAction = submission.copy(actions = Seq(actionCancellation))
-        val view =
-          tab("other", createView(otherSubmissions = Paginated(Seq(submissionWithMissingSubmitAction -> Seq(acceptedNotification)), Page(), 1)))
-
-        tableCell(view)(1, 3).text() mustBe empty
+        val submissionWithMissingSubmitAction = submissionWithStatus().copy(actions = List(actionCancellation))
+        val view = tab("other", createView(otherSubmissions = submissions(submissionWithMissingSubmitAction)))
+        tableCell(view)(1, 3).text mustBe empty
       }
 
       "submissions are shown on correct tabs" in {
-        val view =
-          createView(
-            rejectedSubmissions = Paginated(Seq(submissionWithDucr("ducr_rejected") -> Seq(rejectedNotification)), Page(), 1),
-            actionSubmissions = Paginated(Seq(submissionWithDucr("ducr_action") -> Seq(actionNotification)), Page(), 1),
-            otherSubmissions = Paginated(Seq(submissionWithDucr("ducr_accepted") -> Seq(acceptedNotification)), Page(), 1)
-          )
+        val view = createView(
+          rejectedSubmissions = submissions(submissionWithStatus(EXPIRED_NO_ARRIVAL, "ducr_rejected")),
+          actionSubmissions = submissions(submissionWithStatus(ADDITIONAL_DOCUMENTS_REQUIRED, "ducr_action")),
+          otherSubmissions = submissions(submissionWithStatus(ducr = "ducr_accepted"))
+        )
 
-        tableCell(tab("other", view))(1, 0).text() must include("ducr_accepted")
-        tableCell(tab("rejected", view))(1, 0).text() must include("ducr_rejected")
-        tableCell(tab("action", view))(1, 0).text() must include("ducr_action")
+        tableCell(tab("other", view))(1, 0).text must include("ducr_accepted")
+        tableCell(tab("rejected", view))(1, 0).text must include("ducr_rejected")
+        tableCell(tab("action", view))(1, 0).text must include("ducr_action")
       }
 
       "submissions without status are shown on 'other' tab" in {
-        val view =
-          createView(otherSubmissions = Paginated(Seq(submissionWithDucr("ducr_pending") -> Seq.empty), Page(), 1))
-
-        tableCell(tab("other", view))(1, 0).text() must include("ducr_pending")
+        val view = createView(otherSubmissions = submissions(submissionWithStatus(CLEARED, "ducr_pending")))
+        tableCell(tab("other", view))(1, 0).text must include("ducr_pending")
       }
     }
 

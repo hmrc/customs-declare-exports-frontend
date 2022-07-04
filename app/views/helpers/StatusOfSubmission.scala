@@ -17,17 +17,25 @@
 package views.helpers
 
 import models.declaration.notifications.Notification
+import models.declaration.submissions.EnhancedStatus.{PENDING, QUERY_NOTIFICATION_MESSAGE}
+import models.declaration.submissions.RequestType.SubmissionRequest
+import models.declaration.submissions.Submission
 import models.declaration.submissions.SubmissionStatus.SubmissionStatus
 import play.api.i18n.Messages
 
 object StatusOfSubmission {
 
-  def asText(status: SubmissionStatus)(implicit messages: Messages): String =
-    messages(s"submission.status.${status.toString}")
-
   def asText(notification: Notification)(implicit messages: Messages): String =
     asText(notification.status)
 
-  def toLowerCase(notification: Notification)(implicit messages: Messages): String =
-    asText(notification).toLowerCase
+  def asText(submission: Submission)(implicit messages: Messages): String =
+    messages(s"submission.enhancedStatus.${submission.latestEnhancedStatus.fold(PENDING)(identity).toString}")
+
+  def asText(status: SubmissionStatus)(implicit messages: Messages): String =
+    messages(s"submission.status.${status.toString}")
+
+  def hasQueryNotificationMessageStatus(submission: Submission): Boolean =
+    submission.actions.exists { action =>
+      action.requestType == SubmissionRequest && action.notifications.exists(_.exists(_.enhancedStatus == QUERY_NOTIFICATION_MESSAGE))
+    }
 }

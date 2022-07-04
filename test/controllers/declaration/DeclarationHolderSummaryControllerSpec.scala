@@ -20,7 +20,7 @@ import base.ControllerSpec
 import forms.common.YesNoAnswer.formId
 import forms.common.{Eori, YesNoAnswer}
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.arrivedTypes
-import forms.declaration.declarationHolder.{AuthorizationTypeCodes, DeclarationHolder}
+import forms.declaration.declarationHolder.DeclarationHolder
 import models.DeclarationType._
 import models.Mode
 import models.declaration.EoriSource
@@ -114,27 +114,6 @@ class DeclarationHolderSummaryControllerSpec extends ControllerSpec with OptionV
 
   "DeclarationHolderSummaryController on submitForm" should {
 
-    "return 400 (BAD_REQUEST)" when {
-
-      arrivedTypes.foreach { additionalType =>
-        s"AdditionalDeclarationType is ${additionalType} and" when {
-
-          s"user has NOT selected ${AuthorizationTypeCodes.containAtLeastOneOfAuthCodes.mkString(",")} and" when {
-            val request = withRequest(additionalType, withDeclarationHolders(Some("APE")))
-
-            "the user submits the page answering No" in {
-              withNewCaching(request.cacheModel)
-              val requestBody = Json.obj(formId -> "No")
-              val result = controller.submitForm(Mode.Normal)(postRequest(requestBody))
-
-              status(result) mustBe BAD_REQUEST
-              verifyPageInvoked()
-            }
-          }
-        }
-      }
-    }
-
     onEveryDeclarationJourney() { request =>
       "return 400 (BAD_REQUEST)" when {
         "the user submits the page but does not answer with yes or no" in {
@@ -186,17 +165,15 @@ class DeclarationHolderSummaryControllerSpec extends ControllerSpec with OptionV
       }
 
       arrivedTypes.foreach { additionalType =>
-        AuthorizationTypeCodes.containAtLeastOneOfAuthCodes.foreach { authCode =>
-          s"the user submits the page answering No with auth code '${authCode}' for a '${additionalType}' declaration" in {
-            val request = withRequest(additionalType, withDeclarationHolders(Some(authCode)))
-            withNewCaching(aDeclarationAfter(request.cacheModel, withAdditionalDeclarationType(additionalType)))
+        s"the user submits the page answering No with a '${additionalType}' declaration" in {
+          val request = withRequest(additionalType)
+          withNewCaching(aDeclarationAfter(request.cacheModel, withAdditionalDeclarationType(additionalType)))
 
-            val requestBody = Json.obj(formId -> "No")
-            val result = controller.submitForm(Mode.Normal)(postRequest(requestBody))
+          val requestBody = Json.obj(formId -> "No")
+          val result = controller.submitForm(Mode.Normal)(postRequest(requestBody))
 
-            await(result) mustBe aRedirectToTheNextPage
-            thePageNavigatedTo mustBe routes.DestinationCountryController.displayPage(Mode.Normal)
-          }
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe routes.DestinationCountryController.displayPage(Mode.Normal)
         }
       }
     }
