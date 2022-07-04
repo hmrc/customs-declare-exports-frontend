@@ -25,8 +25,8 @@ import controllers.routes.{RejectedNotificationsController, SubmissionsControlle
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.STANDARD_FRONTIER
 import handlers.ErrorHandler
 import mock.ErrorHandlerMocks
-import models.declaration.notifications.Notification
-import models.declaration.submissions.SubmissionStatus.{RECEIVED, REJECTED}
+import models.declaration.submissions.{Action, Submission}
+import models.declaration.submissions.EnhancedStatus.{ERRORS, RECEIVED}
 import models.requests.{ExportsSessionKeys, VerifiedEmailRequest}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
@@ -35,6 +35,7 @@ import play.api.i18n.Lang
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import testdata.SubmissionsTestData.submission
 import views.helpers.Confirmation
 import views.html.declaration.confirmation._
 import views.html.error_template
@@ -47,8 +48,8 @@ class ConfirmationControllerSpec extends ControllerWithoutFormSpec with BeforeAn
   val ducr = "1GB12121212121212-TRADER-REF-XYZ"
   val submissionId = UUID.randomUUID.toString
 
-  private val notificationDMSRCV = Notification("submissionId", "mrn", ZonedDateTime.now, RECEIVED, Seq.empty)
-  private val notificationDMSREJ = Notification("submissionId", "mrn", ZonedDateTime.now, REJECTED, Seq.empty)
+  val submissionRecieved = Submission(submissionId, "eori", lrn, Some("mrn"), Some(ducr), Some(RECEIVED), Some(ZonedDateTime.now), Seq.empty[Action])
+  val submissionWithErrors = Submission(submissionId, "eori", lrn, Some("mrn"), Some(ducr), Some(ERRORS), Some(ZonedDateTime.now), Seq.empty[Action])
 
   trait SetUp {
     val holdingPage = instanceOf[holding_page]
@@ -101,8 +102,8 @@ class ConfirmationControllerSpec extends ControllerWithoutFormSpec with BeforeAn
 
       "the request's query parameter 'js' is equal to 'disabled'" in new SetUp {
         And("no notifications have been received yet")
-        when(mockCustomsDeclareExportsConnector.findLatestNotification(any())(any(), any()))
-          .thenReturn(Future.successful(None))
+        when(mockCustomsDeclareExportsConnector.findSubmission(any())(any(), any()))
+          .thenReturn(Future.successful(Some(submission)))
 
         val request = buildRequest("/?js=disabled")
         val result = controller.displayHoldingPage(request)
@@ -120,8 +121,8 @@ class ConfirmationControllerSpec extends ControllerWithoutFormSpec with BeforeAn
     "return 303(SEE_OTHER) status code" when {
       "the request's query parameter 'js' is equal to 'disabled'" in new SetUp {
         And("at least one notification has been received yet")
-        when(mockCustomsDeclareExportsConnector.findLatestNotification(any())(any(), any()))
-          .thenReturn(Future.successful(Some(notificationDMSRCV)))
+        when(mockCustomsDeclareExportsConnector.findSubmission(any())(any(), any()))
+          .thenReturn(Future.successful(Some(submissionRecieved)))
 
         val request = buildRequest("/?js=disabled")
         val result = controller.displayHoldingPage(request)
@@ -134,8 +135,8 @@ class ConfirmationControllerSpec extends ControllerWithoutFormSpec with BeforeAn
     "return 200(OK) status code" when {
       "the request's query parameter 'js' is equal to 'enabled'" in new SetUp {
         And("at least one notification has been received yet")
-        when(mockCustomsDeclareExportsConnector.findLatestNotification(any())(any(), any()))
-          .thenReturn(Future.successful(Some(notificationDMSRCV)))
+        when(mockCustomsDeclareExportsConnector.findSubmission(any())(any(), any()))
+          .thenReturn(Future.successful(Some(submissionRecieved)))
 
         val request = buildRequest("/?js=enabled")
         val result = controller.displayHoldingPage(request)
@@ -156,7 +157,7 @@ class ConfirmationControllerSpec extends ControllerWithoutFormSpec with BeforeAn
     "return 404(NOT_FOUND) status code" when {
       "the request's query parameter 'js' is equal to 'enabled'" in new SetUp {
         And("no notifications have been received yet")
-        when(mockCustomsDeclareExportsConnector.findLatestNotification(any())(any(), any()))
+        when(mockCustomsDeclareExportsConnector.findSubmission(any())(any(), any()))
           .thenReturn(Future.successful(None))
 
         val request = buildRequest("/?js=enabled")
@@ -181,8 +182,8 @@ class ConfirmationControllerSpec extends ControllerWithoutFormSpec with BeforeAn
 
       "at least one notification has been received yet" in new SetUp {
         And("the declaration has been rejected")
-        when(mockCustomsDeclareExportsConnector.findLatestNotification(any())(any(), any()))
-          .thenReturn(Future.successful(Some(notificationDMSREJ)))
+        when(mockCustomsDeclareExportsConnector.findSubmission(any())(any(), any()))
+          .thenReturn(Future.successful(Some(submissionWithErrors)))
 
         val request = buildRequest()
         val result = controller.displayConfirmationPage(request)
@@ -195,7 +196,7 @@ class ConfirmationControllerSpec extends ControllerWithoutFormSpec with BeforeAn
     "return the expected page" when {
 
       "no notifications have been received yet" in new SetUp {
-        when(mockCustomsDeclareExportsConnector.findLatestNotification(any())(any(), any()))
+        when(mockCustomsDeclareExportsConnector.findSubmission(any())(any(), any()))
           .thenReturn(Future.successful(None))
 
         val request = buildRequest()
@@ -203,7 +204,8 @@ class ConfirmationControllerSpec extends ControllerWithoutFormSpec with BeforeAn
 
         status(result) mustBe OK
 
-        val confirmation = Confirmation(request.email, submissionId, STANDARD_FRONTIER.toString, Some(ducr), Some(lrn), None)
+        val submission = Submission(submissionId, "eori", lrn, None, Some(ducr), None, None, Seq.empty[Action])
+        val confirmation = Confirmation(request.email, STANDARD_FRONTIER.toString, Some(submission))
         val expectedView = confirmationPage(confirmation)(request, messages)
 
         val actualView = viewOf(result)
@@ -211,15 +213,15 @@ class ConfirmationControllerSpec extends ControllerWithoutFormSpec with BeforeAn
       }
 
       "at least one notification has been received yet" in new SetUp {
-        when(mockCustomsDeclareExportsConnector.findLatestNotification(any())(any(), any()))
-          .thenReturn(Future.successful(Some(notificationDMSRCV)))
+        when(mockCustomsDeclareExportsConnector.findSubmission(any())(any(), any()))
+          .thenReturn(Future.successful(Some(submissionRecieved)))
 
         val request = buildRequest()
         val result = controller.displayConfirmationPage(request)
 
         status(result) mustBe OK
 
-        val confirmation = Confirmation(request.email, submissionId, STANDARD_FRONTIER.toString, Some(ducr), Some(lrn), Some(notificationDMSRCV))
+        val confirmation = Confirmation(request.email, STANDARD_FRONTIER.toString, Some(submissionRecieved))
         val expectedView = confirmationPage(confirmation)(request, messages)
 
         val actualView = viewOf(result)

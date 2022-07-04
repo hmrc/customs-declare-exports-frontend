@@ -19,9 +19,15 @@ package testdata
 import base.TestHelper.createRandomAlphanumericString
 import models.Pointer
 import models.declaration.notifications.{Notification, NotificationError}
-import models.declaration.submissions.EnhancedStatus.{ADDITIONAL_DOCUMENTS_REQUIRED, CUSTOMS_POSITION_GRANTED, QUERY_NOTIFICATION_MESSAGE}
+import models.declaration.submissions.EnhancedStatus.{
+  ADDITIONAL_DOCUMENTS_REQUIRED,
+  CUSTOMS_POSITION_GRANTED,
+  EnhancedStatus,
+  QUERY_NOTIFICATION_MESSAGE
+}
 import models.declaration.submissions.RequestType.{CancellationRequest, SubmissionRequest}
 import models.declaration.submissions.{Action, NotificationSummary, Submission, SubmissionStatus}
+import models.declaration.submissions.Action.defaultDateTimeZone
 
 import java.time.temporal.ChronoUnit.{DAYS, HOURS, MINUTES}
 import java.time.{ZoneOffset, ZonedDateTime}
@@ -42,6 +48,22 @@ object SubmissionsTestData {
   val conversationId: String = "b1c09f1b-7c94-4e90-b754-7c5c71c44e11"
   val conversationId_2: String = "b1c09f1b-7c94-4e90-b754-7c5c71c55e22"
   val conversationId_3: String = "b1c09f1b-7c94-4e90-b754-7c5c71c55e23"
+
+  def createSubmission(
+    uuid: String = uuid,
+    lrn: String = lrn,
+    specifiedMrn: Option[String] = Some(mrn),
+    specifiedDucr: Option[String] = Some(ducr),
+    statuses: Seq[EnhancedStatus]
+  ) = {
+
+    val now = ZonedDateTime.now(defaultDateTimeZone)
+    val summaries = statuses.map { status =>
+      NotificationSummary(UUID.randomUUID(), now, enhancedStatus = status)
+    }
+    val action = Action(requestType = SubmissionRequest, id = conversationId, notifications = summaries.headOption.map(_ => summaries))
+    Submission(uuid = uuid, eori, lrn, specifiedMrn, specifiedDucr, statuses.lastOption, statuses.lastOption.map(_ => now), actions = Seq(action))
+  }
 
   lazy val action = Action(requestType = SubmissionRequest, id = conversationId, notifications = None)
   lazy val action_2 =
