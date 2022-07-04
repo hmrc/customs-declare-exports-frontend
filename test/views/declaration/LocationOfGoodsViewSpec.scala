@@ -187,8 +187,15 @@ class LocationOfGoodsViewSpec extends UnitViewSpec with Stubs with Injector with
 
           val bulletPoints = view.getElementsByClass("govuk-list--bullet").first.children
           bulletPoints.size mustBe 8
-          for (ix <- 1 to 8)
-            bulletPoints.get(ix - 1).text mustBe messages(s"$prefix.body.v3.bullet$ix")
+
+          bulletPoints.get(0).text mustBe messages(s"$prefix.body.v3.bullet1")
+          bulletPoints.get(1).text mustBe messages(s"$prefix.body.v3.bullet2")
+          bulletPoints.get(2).text mustBe messages(s"$prefix.body.v3.bullet8", messages(s"$prefix.body.v3.bullet8.hint"))
+          bulletPoints.get(3).text mustBe messages(s"$prefix.body.v3.bullet3")
+          bulletPoints.get(4).text mustBe messages(s"$prefix.body.v3.bullet4")
+          bulletPoints.get(5).text mustBe messages(s"$prefix.body.v3.bullet5")
+          bulletPoints.get(6).text mustBe messages(s"$prefix.body.v3.bullet6")
+          bulletPoints.get(7).text mustBe messages(s"$prefix.body.v3.bullet7")
         }
 
         "display the expected inset text" in {

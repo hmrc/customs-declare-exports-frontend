@@ -59,7 +59,20 @@ class LocationOfGoodsHelper @Inject() (
         ).map(body(_))
 
       case 3 =>
-        List(body(messages(s"$prefix.body.v3.1")), bulletList((1 to 8).map(ix => Html(messages(s"$prefix.body.v3.bullet$ix")))))
+        List(
+          body(messages(s"$prefix.body.v3.1")),
+          bulletList {
+
+            val (front, back) = (1 to 7)
+              .map(ix => Html(messages(s"$prefix.body.v3.bullet$ix")))
+              .splitAt(2)
+
+            front ++ List(
+              Html(messages(s"$prefix.body.v3.bullet8", govukHint(Hint(content = HtmlContent(messages(s"$prefix.body.v3.bullet8.hint"))))))
+            ) ++ back
+
+          }
+        )
 
       case 4 =>
         val linkText2 = messages(s"$prefix.body.v4.2.link")
