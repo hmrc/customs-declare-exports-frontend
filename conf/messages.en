@@ -171,8 +171,8 @@ declaration.type.details.p2 = For more details about when you can use simplified
 declaration.type.details.p2.linkText = group 3 additional procedure codes (opens in new tab)
 declaration.type.error = Select a declaration type
 
-tariff.expander.title.common = Check the Export Declaration Completion Guide for CDS
-tariff.expander.title.clearance = Check the Clearance Request Completion Guide for CDS
+tariff.expander.title.common = More details about what is required on this page
+tariff.expander.title.clearance = More details about what is required on this page
 
 tariff.declaration.dispatchLocation.common.text = This answer will complete<br>{0}.
 tariff.declaration.dispatchLocation.common.linkText.0 = data element 1/1 - Declaration Type (opens in new tab)
