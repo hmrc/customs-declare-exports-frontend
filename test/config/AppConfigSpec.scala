@@ -288,7 +288,7 @@ class AppConfigSpec extends UnitWithMocksSpec {
     }
 
     "have single Submission URL" in {
-      validAppConfig.singleSubmissionPath must be("/submission")
+      validAppConfig.submissionPath must be("/submission")
     }
 
     "have Submissions URL" in {
@@ -375,7 +375,7 @@ class AppConfigSpec extends UnitWithMocksSpec {
       }
 
       "Single Submission uri is missing" in {
-        intercept[Exception](missingAppConfig.singleSubmissionPath).getMessage must be(
+        intercept[Exception](missingAppConfig.submissionPath).getMessage must be(
           "Missing configuration for Customs Declaration Exports single submission URI"
         )
       }

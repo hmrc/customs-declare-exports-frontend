@@ -70,8 +70,8 @@ class SubmissionsController @Inject() (
   def viewDeclaration(id: String): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
     customsDeclareExportsConnector.findDeclaration(id).flatMap {
       case Some(declaration) =>
-        customsDeclareExportsConnector.findNotifications(id).map { notifications =>
-          Ok(submittedDeclarationPage(notifications, declaration))
+        customsDeclareExportsConnector.findSubmission(id).map { maybeSubmission =>
+          Ok(submittedDeclarationPage(maybeSubmission, declaration))
         }
 
       case None => Future.successful(Redirect(routes.SubmissionsController.displayListOfSubmissions()))

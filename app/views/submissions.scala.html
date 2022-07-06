@@ -24,8 +24,8 @@
 @import models.declaration.submissions.Submission
 @import models.declaration.submissions.SubmissionStatus.{PENDING, QUERY_NOTIFICATION_MESSAGE}
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import views.helpers.{BackButton, StatusOfSubmission, Title, ViewDates}
-@import views.helpers.StatusOfSubmission.hasQueryNotificationMessageStatus
+@import views.helpers.{BackButton, EnhancedStatusHelper, Title, ViewDates}
+@import views.helpers.EnhancedStatusHelper.hasQueryNotificationMessageStatus
 @import views.html.components.gds._
 
 @this(
@@ -115,7 +115,7 @@
                         attributes = Map("id" -> s"submission-tab-$id-row$index-dateAndTime")
                     ),
                     TableRow(
-                        content = Text(StatusOfSubmission.asText(submission)),
+                        content = Text(EnhancedStatusHelper.asText(submission)),
                         attributes = Map("id" -> s"submission-tab-$id-row$index-status")
                     )
                 )

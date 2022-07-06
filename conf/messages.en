@@ -723,26 +723,6 @@ declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.9.link
 declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.10 = {0} (requested procedure 31)
 declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.10.linkText = Re-export following a special procedure
 
-#TODO: Remove below if no longer used
-submission.status.PENDING                         = Pending
-submission.status.REQUESTED_CANCELLATION          = Cancellation requested
-submission.status.ACCEPTED                        = Arrived and accepted
-submission.status.RECEIVED                        = Declaration submitted
-submission.status.REJECTED                        = Declaration has errors
-submission.status.UNDERGOING_PHYSICAL_CHECK       = Goods being examined
-submission.status.ADDITIONAL_DOCUMENTS_REQUIRED   = Documents required
-submission.status.AMENDED                         = Amended
-submission.status.RELEASED                        = Released
-submission.status.CLEARED                         = Cleared
-submission.status.CANCELLED                       = Cancelled
-submission.status.CUSTOMS_POSITION_GRANTED        = Customs position granted
-submission.status.CUSTOMS_POSITION_DENIED         = Customs position denied
-submission.status.GOODS_HAVE_EXITED_THE_COMMUNITY = Goods have exited the UK
-submission.status.DECLARATION_HANDLED_EXTERNALLY  = Declaration handled externally
-submission.status.AWAITING_EXIT_RESULTS           = Awaiting exit results
-submission.status.QUERY_NOTIFICATION_MESSAGE      = Query raised
-submission.status.UNKNOWN                         = Unknown status
-
 submission.enhancedStatus.ADDITIONAL_DOCUMENTS_REQUIRED = Documents required
 submission.enhancedStatus.AMENDED                       = Amended
 submission.enhancedStatus.AWAITING_EXIT_RESULTS         = Awaiting exit results

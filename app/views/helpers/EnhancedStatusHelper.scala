@@ -1,0 +1,56 @@
+/*
+ * Copyright 2022 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package views.helpers
+
+import models.declaration.submissions.EnhancedStatus.{EnhancedStatus, PENDING, QUERY_NOTIFICATION_MESSAGE}
+import models.declaration.submissions.RequestType.SubmissionRequest
+import models.declaration.submissions.{NotificationSummary, Submission}
+import play.api.i18n.Messages
+import uk.gov.hmrc.govukfrontend.views.html.components.{Key, SummaryListRow, Text, Value}
+
+object EnhancedStatusHelper {
+
+  def asText(status: EnhancedStatus)(implicit messages: Messages): String =
+    messages(s"submission.enhancedStatus.${status.toString}")
+
+  def asText(notification: NotificationSummary)(implicit messages: Messages): String =
+    asText(notification.enhancedStatus)
+
+  def asText(submission: Submission)(implicit messages: Messages): String =
+    asText(submission.latestEnhancedStatus.fold(PENDING)(identity))
+
+  def extractNotificationRows(maybeSubmission: Option[Submission])(implicit messages: Messages): Seq[SummaryListRow] =
+    maybeSubmission.map { submission =>
+      val actions = submission.actions.filter(_.requestType == SubmissionRequest)
+      actions flatMap {
+        _.notifications.map {
+          _.map { notification =>
+            SummaryListRow(
+              classes = s"${notification.enhancedStatus.toString.toLowerCase}-row",
+              key = Key(content = Text(asText(notification.enhancedStatus))),
+              value = Value(content = Text(ViewDates.formatDateAtTime(notification.dateTimeIssued)))
+            )
+          }
+        }.getOrElse(List.empty)
+      }
+    }.getOrElse(List.empty)
+
+  def hasQueryNotificationMessageStatus(submission: Submission): Boolean =
+    submission.actions.exists { action =>
+      action.requestType == SubmissionRequest && action.notifications.exists(_.exists(_.enhancedStatus == QUERY_NOTIFICATION_MESSAGE))
+    }
+}
