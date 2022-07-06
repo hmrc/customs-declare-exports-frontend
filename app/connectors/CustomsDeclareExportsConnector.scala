@@ -106,7 +106,7 @@ class CustomsDeclareExportsConnector @Inject() (appConfig: AppConfig, httpClient
   }
 
   def submitDeclaration(id: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Submission] =
-    httpClient.POSTEmpty[Submission](url(s"${appConfig.singleSubmissionPath}/$id"))
+    httpClient.POSTEmpty[Submission](url(s"${appConfig.submissionPath}/$id"))
 
   def fetchSubmissions(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[Submission]] =
     httpClient.GET[Seq[Submission]](url(s"${appConfig.submissionsPath}")).map { response =>
@@ -114,9 +114,9 @@ class CustomsDeclareExportsConnector @Inject() (appConfig: AppConfig, httpClient
       response
     }
 
-  def findSubmission(id: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[Submission]] =
+  def findSubmission(uuid: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[Submission]] =
     httpClient
-      .GET[Seq[Submission]](url(s"${appConfig.submissionsPath}"), Seq("id" -> id))
+      .GET[Seq[Submission]](url(s"${appConfig.submissionsPath}"), Seq("id" -> uuid))
       .map(_.headOption)
 
   def findSubmissionsByLrn(lrn: Lrn)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[Submission]] =
@@ -128,7 +128,7 @@ class CustomsDeclareExportsConnector @Inject() (appConfig: AppConfig, httpClient
       .map(_.headOption)
 
   def findNotifications(id: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[Notification]] =
-    httpClient.GET[Seq[Notification]](url(s"${appConfig.singleSubmissionPath}${appConfig.notificationsPath}/$id"))
+    httpClient.GET[Seq[Notification]](url(s"${appConfig.submissionPath}${appConfig.notificationsPath}/$id"))
 
   def findLatestNotification(id: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[Notification]] =
     httpClient.GET[Option[Notification]](url(s"${appConfig.latestNotificationPath}/$id"))

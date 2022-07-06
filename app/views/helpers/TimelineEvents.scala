@@ -79,11 +79,7 @@ class TimelineEvents @Inject() (
         else
           Some(new Html(List(bodyContent, actionContent)))
 
-      TimelineEvent(
-        title = EnhancedStatusTranslator.asText(notificationSummary),
-        dateTime = notificationSummary.dateTimeIssued,
-        content = maybeContent
-      )
+      TimelineEvent(title = EnhancedStatusHelper.asText(notificationSummary), dateTime = notificationSummary.dateTimeIssued, content = maybeContent)
     }
   }
 

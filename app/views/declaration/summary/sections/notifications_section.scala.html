@@ -14,36 +14,24 @@
  * limitations under the License.
  *@
 
-@import models.declaration.notifications.Notification
+@import models.declaration.submissions.Submission
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import views.helpers.{StatusOfSubmission, ViewDates}
+@import views.helpers.EnhancedStatusHelper.extractNotificationRows
+@import views.helpers.ViewDates
 
 @this(govukSummaryList: GovukSummaryList)
 
-@(notifications: Seq[Notification])(implicit messages: Messages)
+@(maybeSubmission: Option[Submission])(implicit messages: Messages)
 
 @govukSummaryList(SummaryList(
     rows = Seq(
         SummaryListRow(
             classes = "mrn-row",
-            key = Key(
-                content = Text(messages("declaration.summary.accepted.mrn"))
-            ),
-            value = Value(
-                content = Text(notifications.headOption.map(_.mrn).getOrElse(""))
-            )
-        ))
-        ++ notifications.map(notification =>
-            SummaryListRow(
-                classes = s"${notification.status.toString.toLowerCase}-row",
-                key = Key(
-                    content = Text(StatusOfSubmission.asText(notification))
-                ),
-                value = Value(
-                    content = Text(ViewDates.formatDateAtTime(notification.dateTimeIssuedInUK))
-                )
-            )
-        ),
+            key = Key(content = Text(messages("declaration.summary.accepted.mrn"))),
+            value = Value(content = Text(maybeSubmission.flatMap(_.mrn).getOrElse("")))
+        )
+    ) ++ extractNotificationRows(maybeSubmission),
+
     classes = "govuk-!-margin-bottom-9",
     attributes = Map("id" -> "declaration-notifications-summary")
 ))

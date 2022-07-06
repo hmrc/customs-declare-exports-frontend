@@ -164,10 +164,8 @@ class ConfirmationHelper @Inject() (
     )
 
     val acceptanceTime = confirmation.submission.flatMap { submission =>
-      if (submission.latestEnhancedStatus == Some(RECEIVED))
-        None
-      else
-        submission.enhancedStatusLastUpdated.map(formatTimeDate(_))
+      if (submission.latestEnhancedStatus == Some(RECEIVED)) None
+      else submission.enhancedStatusLastUpdated.map(formatTimeDate(_))
     }
 
     val next2Args =
