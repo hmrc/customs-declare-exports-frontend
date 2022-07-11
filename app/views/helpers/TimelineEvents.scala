@@ -17,8 +17,8 @@
 package views.helpers
 
 import config.featureFlags.{SecureMessagingInboxConfig, SfusConfig}
-import models.declaration.submissions.EnhancedStatus._
-import models.declaration.submissions.RequestType.SubmissionRequest
+import models.declaration.submissions.EnhancedStatus.{uploadFilesStatuses, _}
+import models.declaration.submissions.RequestType.CancellationRequest
 import models.declaration.submissions.{NotificationSummary, Submission}
 import play.api.i18n.Messages
 import play.api.mvc.Call
@@ -27,6 +27,7 @@ import views.html.components.gds.{linkButton, paragraphBody}
 import views.html.components.upload_files_partial_for_timeline
 
 import java.time.ZonedDateTime
+import java.util.UUID
 import javax.inject.{Inject, Singleton}
 
 case class TimelineEvent(title: String, dateTime: ZonedDateTime, content: Option[Html])
@@ -41,22 +42,23 @@ class TimelineEvents @Inject() (
 ) {
   def apply(submission: Submission)(implicit messages: Messages): Seq[TimelineEvent] = {
 
-    val submissionRequestAction = submission.actions.filter(_.requestType == SubmissionRequest)
-    val sortedNotificationsSummaries =
-      submissionRequestAction.headOption.flatMap(_.notifications).getOrElse(Seq.empty[NotificationSummary]).sorted.reverse
+    val allNotificationSummaries = submission.actions.flatMap { action =>
+      val summaries = action.notifications.fold(Seq.empty[NotificationSummary])(identity)
+      if (action.requestType != CancellationRequest) summaries
+      else summaries ++ Seq(NotificationSummary(UUID.randomUUID, action.requestTimestamp, REQUESTED_CANCELLATION))
+    }.sorted
 
-    val IndexToMatchForUploadFilesContent = sortedNotificationsSummaries.indexWhere(summary =>
-      summary.enhancedStatus == ADDITIONAL_DOCUMENTS_REQUIRED || summary.enhancedStatus == UNDERGOING_PHYSICAL_CHECK
-    )
-    val IndexToMatchForViewQueriesContent = sortedNotificationsSummaries.indexWhere(_.enhancedStatus == QUERY_NOTIFICATION_MESSAGE)
-    val IndexToMatchForFixResubmitContent = sortedNotificationsSummaries.indexWhere(_.enhancedStatus == ERRORS)
+    val notificationSummaries =
+      if (!allNotificationSummaries.exists(_.enhancedStatus == CANCELLED)) allNotificationSummaries
+      else allNotificationSummaries.filterNot(_.enhancedStatus == CUSTOMS_POSITION_GRANTED)
 
-    sortedNotificationsSummaries.zipWithIndex.map { case (notificationSummary, index) =>
-      val bodyContent =
-        if (messages.isDefinedAt(s"submission.enhancedStatus.${notificationSummary.enhancedStatus}.body"))
-          paragraphBody(messages(s"submission.enhancedStatus.${notificationSummary.enhancedStatus}.body"))
-        else
-          HtmlFormat.empty
+    val IndexToMatchForUploadFilesContent = notificationSummaries.indexWhere(_.enhancedStatus in uploadFilesStatuses)
+    val IndexToMatchForViewQueriesContent = notificationSummaries.indexWhere(_.enhancedStatus == QUERY_NOTIFICATION_MESSAGE)
+    val IndexToMatchForFixResubmitContent = notificationSummaries.indexWhere(_.enhancedStatus == ERRORS)
+
+    notificationSummaries.zipWithIndex.map { case (notificationSummary, index) =>
+      val messageKey = s"submission.enhancedStatus.timeline.content.${notificationSummary.enhancedStatus}"
+      val bodyContent = if (messages.isDefinedAt(messageKey)) paragraphBody(messages(messageKey)) else HtmlFormat.empty
 
       val actionContent = index match {
         case IndexToMatchForFixResubmitContent => fixAndResubmitContent(submission.uuid)
@@ -73,13 +75,12 @@ class TimelineEvents @Inject() (
       }
 
       val content = new Html(List(bodyContent, actionContent))
-      val maybeContent =
-        if (content.body.isEmpty)
-          None
-        else
-          Some(new Html(List(bodyContent, actionContent)))
 
-      TimelineEvent(title = EnhancedStatusHelper.asText(notificationSummary), dateTime = notificationSummary.dateTimeIssued, content = maybeContent)
+      TimelineEvent(
+        title = EnhancedStatusHelper.asTimelineTitle(notificationSummary),
+        dateTime = notificationSummary.dateTimeIssued,
+        content = if (content.body.isEmpty) None else Some(content)
+      )
     }
   }
 

@@ -743,16 +743,18 @@ submission.enhancedStatus.RELEASED                      = Released
 submission.enhancedStatus.UNDERGOING_PHYSICAL_CHECK     = Goods being examined
 submission.enhancedStatus.WITHDRAWN                     = Withdrawn
 submission.enhancedStatus.PENDING                       = Pending
-submission.enhancedStatus.REQUESTED_CANCELLATION        = Cancellation request made
+submission.enhancedStatus.REQUESTED_CANCELLATION        = Cancellation request submitted
 submission.enhancedStatus.UNKNOWN                       = Unknown
 
-submission.enhancedStatus.CANCELLED.body = You cancelled this declaration.
-submission.enhancedStatus.WITHDRAWN.body = You cancelled this declaration.
-submission.enhancedStatus.EXPIRED_NO_ARRIVAL.body = The goods arrival message was not received within 30 days of the pre-lodged declaration.
-submission.enhancedStatus.EXPIRED_NO_DEPARTURE.body = Declaration was automatically cancelled by CDS as no departure message was received within 150 days of clearance.
-submission.enhancedStatus.CLEARED.body = Goods have permission to progress.
-submission.enhancedStatus.RECEIVED.body = Declaration will be checked when goods arrive into customs control.
-submission.enhancedStatus.GOODS_ARRIVED_MESSAGE.body = Goods arrival message received.
+submission.enhancedStatus.timeline.title.CUSTOMS_POSITION_DENIED = Cancellation request denied
+
+submission.enhancedStatus.timeline.content.CANCELLED = You cancelled this declaration.
+submission.enhancedStatus.timeline.content.WITHDRAWN = You cancelled this declaration.
+submission.enhancedStatus.timeline.content.EXPIRED_NO_ARRIVAL = The goods arrival message was not received within 30 days of the pre-lodged declaration.
+submission.enhancedStatus.timeline.content.EXPIRED_NO_DEPARTURE = Declaration was automatically cancelled by CDS as no departure message was received within 150 days of clearance.
+submission.enhancedStatus.timeline.content.CLEARED = Goods have permission to progress.
+submission.enhancedStatus.timeline.content.RECEIVED = Declaration will be checked when goods arrive into customs control.
+submission.enhancedStatus.timeline.content.GOODS_ARRIVED_MESSAGE = Goods arrival message received.
 
 submissions.title = Your declarations
 submissions.hint.no.action.needed = Check the status of your submitted declarations.

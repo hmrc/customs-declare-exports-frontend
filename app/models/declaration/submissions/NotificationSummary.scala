@@ -24,7 +24,7 @@ import java.util.UUID
 
 case class NotificationSummary(notificationId: UUID, dateTimeIssued: ZonedDateTime, enhancedStatus: EnhancedStatus)
     extends Ordered[NotificationSummary] {
-  override def compare(that: NotificationSummary): Int = dateTimeIssued.compareTo(that.dateTimeIssued)
+  override def compare(that: NotificationSummary): Int = -dateTimeIssued.compareTo(that.dateTimeIssued)
 }
 
 object NotificationSummary {

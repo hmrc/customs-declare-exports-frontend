@@ -25,15 +25,21 @@ object EnhancedStatus extends Enumeration {
 
   implicit val format: Format[EnhancedStatus.Value] = EnumJson.format(EnhancedStatus)
 
+  implicit class InclusionInSet(status: EnhancedStatus) {
+    def in(set: Set[EnhancedStatus]): Boolean = set.contains(status)
+  }
+
   val ADDITIONAL_DOCUMENTS_REQUIRED, AMENDED, AWAITING_EXIT_RESULTS, CANCELLED, CLEARED, CUSTOMS_POSITION_DENIED, CUSTOMS_POSITION_GRANTED,
     DECLARATION_HANDLED_EXTERNALLY, ERRORS, EXPIRED_NO_ARRIVAL, EXPIRED_NO_DEPARTURE, GOODS_ARRIVED, GOODS_ARRIVED_MESSAGE, GOODS_HAVE_EXITED,
     QUERY_NOTIFICATION_MESSAGE, RECEIVED, RELEASED, UNDERGOING_PHYSICAL_CHECK, WITHDRAWN, PENDING, REQUESTED_CANCELLATION, UNKNOWN = Value
 
-  lazy val actionRequiredStatuses: Set[EnhancedStatus] = Set(ADDITIONAL_DOCUMENTS_REQUIRED, QUERY_NOTIFICATION_MESSAGE, UNDERGOING_PHYSICAL_CHECK)
+  lazy val actionRequiredStatuses = Set(ADDITIONAL_DOCUMENTS_REQUIRED, QUERY_NOTIFICATION_MESSAGE, UNDERGOING_PHYSICAL_CHECK)
 
   lazy val rejectedStatuses = Set(CANCELLED, ERRORS, EXPIRED_NO_ARRIVAL)
 
   lazy val otherStatuses = values &~ rejectedStatuses &~ actionRequiredStatuses
 
   lazy val eadAcceptableStatuses = values &~ Set(CANCELLED, ERRORS, PENDING, UNKNOWN, WITHDRAWN)
+
+  lazy val uploadFilesStatuses = Set(ADDITIONAL_DOCUMENTS_REQUIRED, UNDERGOING_PHYSICAL_CHECK)
 }

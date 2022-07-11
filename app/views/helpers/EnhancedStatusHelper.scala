@@ -16,7 +16,7 @@
 
 package views.helpers
 
-import models.declaration.submissions.EnhancedStatus.{EnhancedStatus, PENDING, QUERY_NOTIFICATION_MESSAGE}
+import models.declaration.submissions.EnhancedStatus.{CUSTOMS_POSITION_DENIED, EnhancedStatus, PENDING, QUERY_NOTIFICATION_MESSAGE}
 import models.declaration.submissions.RequestType.SubmissionRequest
 import models.declaration.submissions.{NotificationSummary, Submission}
 import play.api.i18n.Messages
@@ -27,11 +27,12 @@ object EnhancedStatusHelper {
   def asText(status: EnhancedStatus)(implicit messages: Messages): String =
     messages(s"submission.enhancedStatus.${status.toString}")
 
-  def asText(notification: NotificationSummary)(implicit messages: Messages): String =
-    asText(notification.enhancedStatus)
-
   def asText(submission: Submission)(implicit messages: Messages): String =
     asText(submission.latestEnhancedStatus.fold(PENDING)(identity))
+
+  def asTimelineTitle(notification: NotificationSummary)(implicit messages: Messages): String =
+    if (notification.enhancedStatus != CUSTOMS_POSITION_DENIED) asText(notification.enhancedStatus)
+    else messages("submission.enhancedStatus.timeline.title.CUSTOMS_POSITION_DENIED")
 
   def extractNotificationRows(maybeSubmission: Option[Submission])(implicit messages: Messages): Seq[SummaryListRow] =
     maybeSubmission.map { submission =>

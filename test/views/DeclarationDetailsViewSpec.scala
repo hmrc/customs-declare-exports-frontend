@@ -135,14 +135,14 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
 
       "contain the PDF-for-EAD link for any accepted notification's status" in {
         EnhancedStatus.values
-          .filter(eadAcceptableStatuses.contains)
+          .filter(_ in eadAcceptableStatuses)
           .foreach(status => verifyPdfForEadLink(status))
       }
 
       "not contain the PDF-for-EAD link" when {
         "the notification's status is not an accepted status" in {
           EnhancedStatus.values
-            .filterNot(eadAcceptableStatuses.contains)
+            .filterNot(_ in eadAcceptableStatuses)
             .foreach { status =>
               val view = page(createSubmissionWith(status))(verifiedEmailRequest(), messages)
               Option(view.getElementById("generate-ead")) mustBe None
@@ -243,13 +243,13 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
       messages must haveTranslationFor(s"$statusKey.REQUESTED_CANCELLATION")
       messages must haveTranslationFor(s"$statusKey.UNKNOWN")
 
-      messages must haveTranslationFor(s"$statusKey.CANCELLED.body")
-      messages must haveTranslationFor(s"$statusKey.WITHDRAWN.body")
-      messages must haveTranslationFor(s"$statusKey.EXPIRED_NO_ARRIVAL.body")
-      messages must haveTranslationFor(s"$statusKey.EXPIRED_NO_DEPARTURE.body")
-      messages must haveTranslationFor(s"$statusKey.CLEARED.body")
-      messages must haveTranslationFor(s"$statusKey.RECEIVED.body")
-      messages must haveTranslationFor(s"$statusKey.GOODS_ARRIVED_MESSAGE.body")
+      messages must haveTranslationFor(s"$statusKey.timeline.content.CANCELLED")
+      messages must haveTranslationFor(s"$statusKey.timeline.content.WITHDRAWN")
+      messages must haveTranslationFor(s"$statusKey.timeline.content.EXPIRED_NO_ARRIVAL")
+      messages must haveTranslationFor(s"$statusKey.timeline.content.EXPIRED_NO_DEPARTURE")
+      messages must haveTranslationFor(s"$statusKey.timeline.content.CLEARED")
+      messages must haveTranslationFor(s"$statusKey.timeline.content.RECEIVED")
+      messages must haveTranslationFor(s"$statusKey.timeline.content.GOODS_ARRIVED_MESSAGE")
     }
 
     val dummyInboxLink = "dummyInboxLink"
@@ -348,7 +348,7 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
         And("each Timeline event should always include a title")
         val title = events.get(ix).getElementsByTag("h2")
         assert(title.hasClass("hmrc-timeline__event-title"))
-        title.text mustBe EnhancedStatusHelper.asText(notification)
+        title.text mustBe EnhancedStatusHelper.asTimelineTitle(notification)
 
         And("a date and time")
         val datetime = events.get(ix).getElementsByTag("time")
@@ -448,7 +448,7 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
         }
       }
 
-      def verifyBodyText(status: EnhancedStatus) = {
+      def verifyBodyText(status: EnhancedStatus): Assertion = {
         val notifications = List(NotificationSummary(UUID.randomUUID(), now, status))
         val events = eventsOnTimeline(notifications)
         val elements = content(events.get(0))
@@ -456,7 +456,7 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
         val bodyElements = elements.get(0).children
         bodyElements.size mustBe 1
         bodyElements.get(0).hasClass("govuk-body") mustBe true
-        bodyElements.get(0).text mustBe messages(s"$statusKey.$status.body")
+        bodyElements.get(0).text mustBe messages(s"$statusKey.timeline.content.$status")
       }
 
       def eventsOnTimeline(notifications: List[NotificationSummary]): Elements = {

@@ -48,7 +48,7 @@ class EnhancedStatusHelperSpec extends UnitViewSpec {
       asText(UNDERGOING_PHYSICAL_CHECK) mustBe "Goods being examined"
       asText(WITHDRAWN) mustBe "Withdrawn"
       asText(PENDING) mustBe "Pending"
-      asText(REQUESTED_CANCELLATION) mustBe "Cancellation request made"
+      asText(REQUESTED_CANCELLATION) mustBe "Cancellation request submitted"
       asText(UNKNOWN) mustBe "Unknown"
     }
 

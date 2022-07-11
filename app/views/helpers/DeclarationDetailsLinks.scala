@@ -29,7 +29,7 @@ object DeclarationDetailsLinks {
 
   def mrnIfEadStatus(submission: Submission, eadConfig: EadConfig): Option[String] =
     if (eadConfig.isEadEnabled) {
-      val hasEadAcceptableStatus = submission.allSubmissionRequestStatuses.exists(eadAcceptableStatuses.contains)
+      val hasEadAcceptableStatus = submission.allSubmissionRequestStatuses.exists(_ in eadAcceptableStatuses)
       if (hasEadAcceptableStatus) submission.mrn else None
     } else None
 }
