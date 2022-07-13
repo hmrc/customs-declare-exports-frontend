@@ -24,7 +24,7 @@ import org.mockito.Mockito.when
 import org.scalatest.BeforeAndAfterEach
 import play.api.libs.json.Json
 import views.declaration.spec.UnitViewSpec
-import views.helpers.TimelineEventsSpec.{cancellationDenied, cancellationGranted}
+import views.helpers.TimelineEventsSpec.{cancellationDenied, cancellationGranted, cancellationRequestNotConfirmedYet}
 import views.html.components.gds.{linkButton, paragraphBody}
 import views.html.components.upload_files_partial_for_timeline
 
@@ -47,7 +47,7 @@ class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injec
   private val timelineEvents =
     new TimelineEvents(new linkButton, new paragraphBody, mockSecureMessagingInboxConfig, mockSfusConfig, uploadFilesPartialForTimeline)
 
-  private def createTimeline(notificationSummaries: Seq[NotificationSummary]): Seq[TimelineEvent] = {
+  private def genTimelineEvents(notificationSummaries: Seq[NotificationSummary]): Seq[TimelineEvent] = {
     val action = Action("id", SubmissionRequest, issued(0), Some(notificationSummaries))
     timelineEvents.apply(submission.copy(actions = Seq(action)))
   }
@@ -58,7 +58,7 @@ class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injec
   "TimelineEvents" should {
 
     "transform an empty sequence of Notifications into an empty sequence of TimelineEvent instances" in {
-      assert(createTimeline(List.empty[NotificationSummary]).isEmpty)
+      assert(genTimelineEvents(List.empty[NotificationSummary]).isEmpty)
     }
 
     "transform an unordered sequence of NotificationSummaries into an ordered sequence of TimelineEvent instances" in {
@@ -73,7 +73,9 @@ class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injec
         NotificationSummary(UUID.randomUUID, issued1, PENDING),
         NotificationSummary(UUID.randomUUID, issued3, ERRORS)
       )
-      val timelineEvents = createTimeline(notifications)
+      val timelineEvents = genTimelineEvents(notifications)
+
+      timelineEvents.size mustBe 4
 
       timelineEvents(0).dateTime mustBe issued4
       timelineEvents(0).title mustBe messages(s"submission.enhancedStatus.$UNKNOWN")
@@ -96,6 +98,8 @@ class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injec
 
       val timelineEvents = createTimelineFromActions(List(action1, action2))
 
+      timelineEvents.size mustBe 2
+
       timelineEvents(0).dateTime mustBe action1.requestTimestamp
       timelineEvents(0).title mustBe messages(s"submission.enhancedStatus.$REQUESTED_CANCELLATION")
 
@@ -106,6 +110,7 @@ class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injec
     "generate the expected sequence of TimelineEvent instances when the cancellation request is denied" in {
       val timelineEvents = createTimelineFromActions(cancellationDenied)
 
+      timelineEvents.size mustBe 3
       timelineEvents(0).title mustBe messages("submission.enhancedStatus.timeline.title.CUSTOMS_POSITION_DENIED")
       timelineEvents(1).title mustBe messages(s"submission.enhancedStatus.$REQUESTED_CANCELLATION")
       timelineEvents(2).title mustBe messages(s"submission.enhancedStatus.$RECEIVED")
@@ -114,9 +119,18 @@ class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injec
     "generate the expected sequence of TimelineEvent instances when the cancellation request is successful" in {
       val timelineEvents = createTimelineFromActions(cancellationGranted)
 
+      timelineEvents.size mustBe 3
       timelineEvents(0).title mustBe messages(s"submission.enhancedStatus.$CANCELLED")
       timelineEvents(1).title mustBe messages(s"submission.enhancedStatus.$REQUESTED_CANCELLATION")
       timelineEvents(2).title mustBe messages(s"submission.enhancedStatus.$RECEIVED")
+    }
+
+    "generate the expected sequence of TimelineEvent instances when the cancellation request is not confirmed yet" in {
+      val timelineEvents = createTimelineFromActions(cancellationRequestNotConfirmedYet)
+
+      timelineEvents.size mustBe 2
+      timelineEvents(0).title mustBe messages(s"submission.enhancedStatus.$REQUESTED_CANCELLATION")
+      timelineEvents(1).title mustBe messages(s"submission.enhancedStatus.$RECEIVED")
     }
 
     "generate a sequence of TimelineEvent instances" which {
@@ -140,9 +154,10 @@ class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injec
           )
 
           EnhancedStatus.values.foreach { status =>
-            val content = createTimeline(List(notification.copy(enhancedStatus = status)))(0).content
             withClue(s"$status has content must be ${statusesWithContent.contains(status)}") {
-              content.isDefined mustBe statusesWithContent.contains(status)
+              val timelineEvents = genTimelineEvents(List(notification.copy(enhancedStatus = status)))
+              val result = if (timelineEvents.isEmpty) false else timelineEvents(0).content.isDefined
+              result mustBe statusesWithContent.contains(status)
             }
           }
         }
@@ -156,7 +171,7 @@ class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injec
             NotificationSummary(UUID.randomUUID, issued(3), UNDERGOING_PHYSICAL_CHECK),
             NotificationSummary(UUID.randomUUID, issued(4), ERRORS)
           )
-          val timelineEvents = createTimeline(notifications)
+          val timelineEvents = genTimelineEvents(notifications)
           assert(timelineEvents(0).content.isDefined)
           assert(timelineEvents(1).content.isEmpty)
           assert(timelineEvents(2).content.isDefined)
@@ -171,7 +186,7 @@ class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injec
               NotificationSummary(UUID.randomUUID, issued(1), ADDITIONAL_DOCUMENTS_REQUIRED),
               NotificationSummary(UUID.randomUUID, issued(2), UNDERGOING_PHYSICAL_CHECK)
             )
-            val timelineEvents = createTimeline(notifications)
+            val timelineEvents = genTimelineEvents(notifications)
             assert(timelineEvents(0).content.isDefined)
             assert(timelineEvents(1).content.isEmpty)
           }
@@ -185,7 +200,7 @@ class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injec
               NotificationSummary(UUID.randomUUID, issued(1), QUERY_NOTIFICATION_MESSAGE),
               NotificationSummary(UUID.randomUUID, issued(2), QUERY_NOTIFICATION_MESSAGE)
             )
-            val timelineEvents = createTimeline(notifications)
+            val timelineEvents = genTimelineEvents(notifications)
             assert(timelineEvents(0).content.isDefined)
             assert(timelineEvents(1).content.isEmpty)
           }
@@ -196,7 +211,7 @@ class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injec
         "have a 'Fix and resubmit' Html content" when {
           "multiple DMSREJ notifications are present" in {
             val notifications = List(NotificationSummary(UUID.randomUUID, issued(1), ERRORS), NotificationSummary(UUID.randomUUID, issued(2), ERRORS))
-            val timelineEvents = createTimeline(notifications)
+            val timelineEvents = genTimelineEvents(notifications)
             assert(timelineEvents(0).content.isDefined)
             assert(timelineEvents(1).content.isEmpty)
           }
@@ -208,7 +223,7 @@ class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injec
         "the 'Sfus' feature flag is disabled" in {
           when(mockSfusConfig.isSfusUploadEnabled).thenReturn(false)
           val notification = NotificationSummary(UUID.randomUUID, issued(1), ADDITIONAL_DOCUMENTS_REQUIRED)
-          val timelineEvents = createTimeline(List(notification))
+          val timelineEvents = genTimelineEvents(List(notification))
           assert(timelineEvents(0).content.isEmpty)
         }
       }
@@ -260,6 +275,36 @@ object TimelineEventsSpec {
       |          "dateTimeIssued" : "2022-05-15T17:33:31Z[UTC]",
       |          "enhancedStatus" : "CANCELLED"
       |        },
+      |        {
+      |          "notificationId" : "f0245e51-2be3-440c-9cf7-da09f3a0874b",
+      |          "dateTimeIssued" : "2022-05-12T17:32:31Z[UTC]",
+      |          "enhancedStatus" : "RECEIVED"
+      |        }
+      |      ]
+      |    },
+      |    {
+      |      "id": "202bcfdb-60e0-4710-949a-ecd2db0487b3",
+      |      "requestType": "CancellationRequest",
+      |      "requestTimestamp": "2022-05-13T12:31:03.937Z[UTC]",
+      |      "notifications": [
+      |        {
+      |          "notificationId": "855e4c4a-2889-417b-9338-d2f487dd19c4",
+      |          "dateTimeIssued": "2022-05-14T12:31:06Z[UTC]",
+      |          "enhancedStatus": "CUSTOMS_POSITION_GRANTED"
+      |        }
+      |      ]
+      |    }
+      |]
+      |""".stripMargin)
+    .as[Seq[Action]]
+
+  val cancellationRequestNotConfirmedYet = Json
+    .parse(s"""[
+      |    {
+      |      "id": "49cadcf1-167f-4c03-b4a4-5433cdea894e",
+      |      "requestType" : "SubmissionRequest",
+      |      "requestTimestamp" : "2022-05-11T09:42:41.138Z[UTC]",
+      |      "notifications" : [
       |        {
       |          "notificationId" : "f0245e51-2be3-440c-9cf7-da09f3a0874b",
       |          "dateTimeIssued" : "2022-05-12T17:32:31Z[UTC]",
