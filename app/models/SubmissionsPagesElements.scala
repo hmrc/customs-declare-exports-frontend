@@ -39,7 +39,7 @@ object SubmissionsPagesElements {
     )
 
   private def filterSubmissions(submissions: Seq[Submission], enhancedStatuses: Set[EnhancedStatus]): Seq[Submission] =
-    submissions.filter(_.latestEnhancedStatus.exists(enhancedStatuses.contains))
+    submissions.filter(_.latestEnhancedStatus.exists(_ in enhancedStatuses))
 
   private def paginateSubmissions(submissions: Seq[Submission], pageNumber: Int)(
     implicit paginationConfig: PaginationConfig

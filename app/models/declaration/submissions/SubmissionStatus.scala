@@ -37,3 +37,24 @@ object SubmissionStatus extends Enumeration {
 
   lazy val eadAcceptableStatuses: Set[submissions.SubmissionStatus.Value] = values &~ Set(PENDING, REJECTED, UNKNOWN)
 }
+
+/*
+    "01" -> ACCEPTED                         -> DMSACC
+    "02" -> RECEIVED                         -> DMSRCV
+    "03" -> REJECTED                         -> DMSREJ
+    "05" -> UNDERGOING_PHYSICAL_CHECK        -> DMSCTL
+    "06" -> ADDITIONAL_DOCUMENTS_REQUIRED    -> DMSDOC
+    "07" -> AMENDED                          -> DMSRES
+    "08" -> RELEASED                         -> DMSROG
+    "09" -> CLEARED                          -> DMSCLE
+    "10" -> CANCELLED                        -> DMSINV
+    "1139" -> CUSTOMS_POSITION_GRANTED       -> DMSREQ (11)
+    "1141" -> CUSTOMS_POSITION_DENIED        -> DMSREQ (11)
+                                             -> DMSCPI (14)
+                                             -> DMSCPR (15)
+    "16" -> GOODS_HAVE_EXITED_THE_COMMUNITY  -> DMSEOG
+    "17" -> DECLARATION_HANDLED_EXTERNALLY   -> DMSEXT
+    "18" -> AWAITING_EXIT_RESULTS            -> DMSGER
+                                             -> DMSALV (50)
+    "51" -> QUERY_NOTIFICATION_MESSAGE       -> DMSQRY
+ */
