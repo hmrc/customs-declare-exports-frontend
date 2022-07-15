@@ -25,6 +25,7 @@ import forms.declaration.countries.Country
 import forms.declaration.declarationHolder.DeclarationHolder
 import models.DeclarationStatus.DeclarationStatus
 import models.DeclarationType.DeclarationType
+import models.ExportsDeclaration.isCodePrefixedWith
 import models.declaration._
 import play.api.libs.json._
 
@@ -115,11 +116,7 @@ case class ExportsDeclaration(
     parties.declarationHoldersData.exists(_.holders.exists(_.isAdditionalDocumentationRequired))
 
   def isCommodityCodeOfItemPrefixedWith(itemId: String, prefix: Seq[Int]): Boolean =
-    commodityCodeOfItem(itemId) match {
-      case Some(commodityCode) if commodityCode.trim.nonEmpty =>
-        prefix.exists(digits => commodityCode.startsWith(digits.toString))
-      case _ => false
-    }
+    isCodePrefixedWith(commodityCodeOfItem(itemId), prefix)
 
   def isComplete: Boolean = status == DeclarationStatus.COMPLETE
 
@@ -216,4 +213,10 @@ case class ExportsDeclaration(
 
 object ExportsDeclaration {
   implicit val format: OFormat[ExportsDeclaration] = Json.format[ExportsDeclaration]
+
+  def isCodePrefixedWith(maybeCode: Option[String], prefix: Seq[Int]): Boolean = maybeCode match {
+    case Some(code) if code.trim.nonEmpty =>
+      prefix.exists(digits => code.startsWith(digits.toString))
+    case _ => false
+  }
 }

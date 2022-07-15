@@ -19,10 +19,13 @@ package controllers.declaration
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.declaration.CommodityDetails
+import models.DeclarationType.CLEARANCE
+import models.ExportsDeclaration.isCodePrefixedWith
 import models.requests.JourneyRequest
-import models.{DeclarationType, ExportsDeclaration, Mode}
+import models.{ExportsDeclaration, Mode}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import services.CatAndDogFurCommodityCodes.allCatAndDogFurCommCodes
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
@@ -55,30 +58,45 @@ class CommodityDetailsController @Inject() (
       .bindFromRequest
       .fold(
         formWithErrors => Future.successful(BadRequest(commodityDetailsPage(mode, itemId, formWithErrors))),
-        commodityDetails => updateExportsCache(itemId, trimCommodityCode(commodityDetails)).map(_ => nextPage(mode, itemId))
+        commodityDetails => {
+          val trimmedDetails = trimCommodityCode(commodityDetails)
+          updateExportsCache(itemId, trimmedDetails).map(_ => nextPage(mode, itemId, trimmedDetails))
+        }
       )
   }
 
-  private def nextPage(mode: Mode, itemId: String)(implicit request: JourneyRequest[AnyContent]): Result =
-    if (request.isType(DeclarationType.CLEARANCE) && request.cacheModel.isNotExs) {
-      if (request.cacheModel.itemBy(itemId).exists(_.isExportInventoryCleansingRecord))
+  private def nextPage(mode: Mode, itemId: String, details: CommodityDetails)(implicit request: JourneyRequest[AnyContent]): Result = {
+    val currentItem = request.cacheModel.itemBy(itemId)
+
+    (request.declarationType, request.cacheModel.isNotExs) match {
+      case (CLEARANCE, true) if currentItem.exists(_.isExportInventoryCleansingRecord) =>
         navigator.continueTo(mode, controllers.declaration.routes.CommodityMeasureController.displayPage(_, itemId))
-      else
+      case (CLEARANCE, true) =>
         navigator.continueTo(mode, routes.PackageInformationSummaryController.displayPage(_, itemId))
-    } else {
-      navigator.continueTo(mode, routes.UNDangerousGoodsCodeController.displayPage(_, itemId))
+      case (CLEARANCE, _) =>
+        navigator.continueTo(mode, routes.UNDangerousGoodsCodeController.displayPage(_, itemId))
+      case _ if allCatAndDogFurCommCodes.contains(details.combinedNomenclatureCode.getOrElse("")) =>
+        navigator.continueTo(mode, routes.CatOrDogFurController.displayPage(_, itemId))
+      case _ =>
+        navigator.continueTo(mode, routes.UNDangerousGoodsCodeController.displayPage(_, itemId))
     }
+  }
 
   private def updateExportsCache(itemId: String, commodityDetails: CommodityDetails)(
     implicit request: JourneyRequest[AnyContent]
   ): Future[ExportsDeclaration] =
     updateDeclarationFromRequest { declaration =>
-      val postFormAppliedModel = declaration.updatedItem(itemId, item => item.copy(commodityDetails = Some(commodityDetails)))
+      val catOrDogFurDetails =
+        if (allCatAndDogFurCommCodes.contains(commodityDetails.combinedNomenclatureCode.getOrElse("")))
+          request.cacheModel.itemBy(itemId).flatMap(_.catOrDogFurDetails)
+        else None
+      val cusCode =
+        if (isCodePrefixedWith(commodityDetails.combinedNomenclatureCode, CommodityDetails.commodityCodeChemicalPrefixes))
+          request.cacheModel.itemBy(itemId).flatMap(_.cusCode)
+        else None
 
-      if (!postFormAppliedModel.isCommodityCodeOfItemPrefixedWith(itemId, CommodityDetails.commodityCodeChemicalPrefixes))
-        postFormAppliedModel.updatedItem(itemId, item => item.copy(cusCode = None))
-      else
-        postFormAppliedModel
+      declaration
+        .updatedItem(itemId, item => item.copy(commodityDetails = Some(commodityDetails), catOrDogFurDetails = catOrDogFurDetails, cusCode = cusCode))
     }
 
   private def trimCommodityCode(commodityDetails: CommodityDetails): CommodityDetails =

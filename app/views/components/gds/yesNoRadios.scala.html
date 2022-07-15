@@ -25,6 +25,8 @@
     heading: Option[Fieldset] = None,
     yesKey: Option[String] = None,
     noKey: Option[String] = None,
+    yesValue: Option[String] = Some(yes),
+    noValue: Option[String] = Some(no),
     answerKey: String = "yesNo",
     hint: Option[Hint] = None,
     yesHint: Option[String] = None,
@@ -62,19 +64,19 @@
     items = Seq(
         RadioItem(
             id = Some("code_yes"),
-            value = Some(yes),
+            value = yesValue,
             content = yesContent,
             conditionalHtml = yesConditionalHtml,
             hint = yesHint.map{ hint => Hint(content = Text(messages(hint)))},
-            checked = form(answerKey).value.contains(yes)
+            checked = form(answerKey).value.contains(yesValue.get)
         ),
         RadioItem(
             id = Some("code_no"),
-            value = Some(no),
+            value = noValue,
             content = noContent,
             conditionalHtml = noConditionalHtml,
             hint = noHint.map{ hint => Hint(content = Text(messages(hint)))},
-            checked = form(answerKey).value.contains(no)
+            checked = form(answerKey).value.contains(noValue.get)
         )
     ),
     errorMessage = form(answerKey).error.map(err => ErrorMessage(content = Text(messages(err.message, err.args: _*))))
