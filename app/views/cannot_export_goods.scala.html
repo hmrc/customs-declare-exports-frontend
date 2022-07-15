@@ -28,12 +28,12 @@
     appConfig: AppConfig,
 )
 
-@(displaySignOut: Boolean = false, reason: Option[CannotExportGoodsReason])(implicit request: Request[_], messages: Messages)
+@(reason: Option[CannotExportGoodsReason])(implicit request: Request[_], messages: Messages)
 
-@govukLayout(title = Title("cannotExportGoods.header"), displaySignOut = displaySignOut) {
+@govukLayout(title = Title("cannotExportGoods.header")) {
     @pageTitle(messages("cannotExportGoods.header"))
 
-    @reason.map{ reason => @paragraphBody(messages(CannotExportGoodsHelper.getMessageForBody(reason))) }
+    @reason.map{ reason => @paragraphBody(messages(CannotExportGoodsController.getMessageForBody(reason))) }
 
     @heading(message = messages("cannotExportGoods.helpAndSupport.heading"), tier = "h2", classes = "govuk-heading-m")
 
@@ -41,6 +41,6 @@
 
     @paragraph(link(text = messages("cannotExportGoods.link"), call = routes.SavedDeclarationsController.displayDeclarations(), id = Some("back-to-declaration")))
 
-    @paragraph(link(text = messages("cannotExportGoods.generalEnquiries.link"), call = Call("GET", appConfig.generalEnquiriesHelp), id = Some("general-enquiries-help")))
+    @paragraph(link(text = messages("cannotExportGoods.generalEnquiries.link"), call = Call("GET", appConfig.generalEnquiriesHelpUrl), id = Some("general-enquiries-help")))
 }
 

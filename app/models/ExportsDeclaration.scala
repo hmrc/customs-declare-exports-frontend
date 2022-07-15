@@ -115,8 +115,8 @@ case class ExportsDeclaration(
   def hasAuthCodeRequiringAdditionalDocs: Boolean =
     parties.declarationHoldersData.exists(_.holders.exists(_.isAdditionalDocumentationRequired))
 
-  def isCommodityCodeOfItemPrefixedWith(itemId: String, prefix: Seq[Int]): Boolean =
-    isCodePrefixedWith(commodityCodeOfItem(itemId), prefix)
+  def isCommodityCodeOfItemPrefixedWith(itemId: String, prefixes: Seq[Int]): Boolean =
+    isCodePrefixedWith(commodityCodeOfItem(itemId), prefixes)
 
   def isComplete: Boolean = status == DeclarationStatus.COMPLETE
 
@@ -214,9 +214,9 @@ case class ExportsDeclaration(
 object ExportsDeclaration {
   implicit val format: OFormat[ExportsDeclaration] = Json.format[ExportsDeclaration]
 
-  def isCodePrefixedWith(maybeCode: Option[String], prefix: Seq[Int]): Boolean = maybeCode match {
+  def isCodePrefixedWith(maybeCode: Option[String], prefixes: Seq[Int]): Boolean = maybeCode match {
     case Some(code) if code.trim.nonEmpty =>
-      prefix.exists(digits => code.startsWith(digits.toString))
+      prefixes.exists(prefix => code.startsWith(prefix.toString))
     case _ => false
   }
 }

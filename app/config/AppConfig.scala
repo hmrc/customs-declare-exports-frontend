@@ -121,7 +121,6 @@ class AppConfig @Inject() (
   val commodityCode9306909000 = loadConfig("urls.commodityCode9306909000")
   val simplifiedDeclPreviousDoc = loadConfig("urls.simplifiedDeclPreviousDoc")
   val getGoodsMovementReference = loadConfig("urls.getGoodsMovementReference")
-  val generalEnquiriesHelp = loadConfig("urls.generalEnquiriesHelp")
 
   val additionalDeclarationType = loadConfig("urls.additionalDeclarationType")
   val declareGoodsExported = loadConfig("urls.declareGoodsExported")

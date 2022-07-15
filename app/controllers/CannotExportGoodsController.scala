@@ -19,7 +19,7 @@ package controllers
 import controllers.actions.AuthAction
 import handlers.ErrorHandler
 import models.CannotExportGoodsReason
-import models.CannotExportGoodsReason.UrlDirect
+import models.CannotExportGoodsReason.{CatAndDogFur, UrlDirect}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
@@ -38,7 +38,15 @@ class CannotExportGoodsController @Inject() (
   def displayPage(reason: CannotExportGoodsReason): Action[AnyContent] = authenticate.async { implicit request =>
     reason match {
       case UrlDirect => errorHandler.displayErrorPage()
-      case _         => Future.successful(Ok(cannotExportGoodsPage(displaySignOut = true, Some(reason))))
+      case _         => Future.successful(Ok(cannotExportGoodsPage(Some(reason))))
     }
   }
+}
+
+object CannotExportGoodsController {
+  def getMessageForBody(reason: CannotExportGoodsReason): String =
+    reason match {
+      case CatAndDogFur => "declaration.catOrDogFur.cannotExportGoods.body"
+      case _            => ""
+    }
 }
