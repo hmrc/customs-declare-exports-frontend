@@ -19,7 +19,7 @@
 @import views.helpers.{BackButton, Title}
 @import views.html.components.gds._
 @import views.html.declaration.summary.sections._
-@import models.declaration.notifications.Notification
+@import models.declaration.submissions.Submission
 
 @this(
     govukLayout: gdsMainTemplate,
@@ -34,7 +34,7 @@
     transport_section: transport_section
 )
 
-@(notifications: Seq[Notification], declarationData: ExportsDeclaration)(implicit request: Request[_], messages: Messages)
+@(maybeSubmission: Option[Submission], declarationData: ExportsDeclaration)(implicit request: Request[_], messages: Messages)
 
 @backLink = @{routes.DeclarationDetailsController.displayPage(declarationData.id)}
 
@@ -52,7 +52,7 @@
 
     @pageTitle(messages("declaration.summary.submitted-header"))
 
-    @notificationsSection(notifications)
+    @notificationsSection(maybeSubmission)
 
     @printThisPage
 

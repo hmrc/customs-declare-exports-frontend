@@ -143,7 +143,7 @@ class AppConfig @Inject() (
     throw new IllegalStateException("Missing configuration for Customs Declarations Exports declaration URI")
   )
 
-  lazy val singleSubmissionPath = servicesConfig.getConfString(
+  lazy val submissionPath = servicesConfig.getConfString(
     "customs-declare-exports.submission",
     throw new IllegalStateException("Missing configuration for Customs Declaration Exports single submission URI")
   )

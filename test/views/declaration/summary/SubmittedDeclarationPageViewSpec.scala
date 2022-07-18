@@ -20,24 +20,20 @@ import base.Injector
 import forms.declaration.CommodityDetails
 import models.DeclarationType._
 import models.ExportsDeclaration
-import models.declaration.notifications.Notification
-import models.declaration.submissions.SubmissionStatus
 import org.jsoup.nodes.{Document, Element}
 import services.cache.ExportsTestData
+import testdata.SubmissionsTestData.submission
 import tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.summary.submitted_declaration_page
 
-import java.time.{ZoneOffset, ZonedDateTime}
 import java.util.function.Predicate
 
 class SubmittedDeclarationPageViewSpec extends UnitViewSpec with Stubs with ExportsTestData with Injector {
 
-  private val notification = Notification("actionId", "mrn", ZonedDateTime.now(ZoneOffset.UTC), SubmissionStatus.ACCEPTED, Seq.empty)
-
   val declarationPage = instanceOf[submitted_declaration_page]
   def createView(declaration: ExportsDeclaration = aDeclaration()): Document =
-    declarationPage(Seq(notification), declaration)(request, messages)
+    declarationPage(Some(submission), declaration)(request, messages)
 
   def links(view: Document) = {
     val allLinks = view.getElementsByClass("govuk-link")

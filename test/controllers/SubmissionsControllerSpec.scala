@@ -21,10 +21,9 @@ import base.ControllerWithoutFormSpec
 import config.PaginationConfig
 import controllers.declaration.routes._
 import models._
-import models.declaration.notifications.Notification
 import models.declaration.submissions.EnhancedStatus.GOODS_ARRIVED
 import models.declaration.submissions.RequestType.SubmissionRequest
-import models.declaration.submissions.{Action, Submission, SubmissionStatus}
+import models.declaration.submissions.{Action, Submission}
 import models.requests.ExportsSessionKeys
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers._
@@ -113,9 +112,8 @@ class SubmissionsControllerSpec extends ControllerWithoutFormSpec with BeforeAnd
           when(mockCustomsDeclareExportsConnector.findDeclaration(any())(any(), any()))
             .thenReturn(Future.successful(Some(aDeclaration(withId("some-id")))))
 
-          val notification = Notification("conversationID", "mrn", dateTime, SubmissionStatus.UNKNOWN, Seq.empty)
-          when(mockCustomsDeclareExportsConnector.findNotifications(any())(any(), any()))
-            .thenReturn(Future.successful(Seq(notification)))
+          when(mockCustomsDeclareExportsConnector.findSubmission(any())(any(), any()))
+            .thenReturn(Future.successful(Some(submission)))
 
           val result = controller.viewDeclaration("some-id")(getRequest())
 
@@ -126,8 +124,8 @@ class SubmissionsControllerSpec extends ControllerWithoutFormSpec with BeforeAnd
           when(mockCustomsDeclareExportsConnector.findDeclaration(any())(any(), any()))
             .thenReturn(Future.successful(Some(aDeclaration(withId("some-id")))))
 
-          when(mockCustomsDeclareExportsConnector.findNotifications(any())(any(), any()))
-            .thenReturn(Future.successful(Seq.empty))
+          when(mockCustomsDeclareExportsConnector.findSubmission(any())(any(), any()))
+            .thenReturn(Future.successful(None))
 
           val result = controller.viewDeclaration("some-id")(getRequest())
 

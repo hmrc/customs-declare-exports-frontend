@@ -723,26 +723,6 @@ declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.9.link
 declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.10 = {0} (requested procedure 31)
 declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.10.linkText = Re-export following a special procedure
 
-#TODO: Remove below if no longer used
-submission.status.PENDING                         = Pending
-submission.status.REQUESTED_CANCELLATION          = Cancellation requested
-submission.status.ACCEPTED                        = Arrived and accepted
-submission.status.RECEIVED                        = Declaration submitted
-submission.status.REJECTED                        = Declaration has errors
-submission.status.UNDERGOING_PHYSICAL_CHECK       = Goods being examined
-submission.status.ADDITIONAL_DOCUMENTS_REQUIRED   = Documents required
-submission.status.AMENDED                         = Amended
-submission.status.RELEASED                        = Released
-submission.status.CLEARED                         = Cleared
-submission.status.CANCELLED                       = Cancelled
-submission.status.CUSTOMS_POSITION_GRANTED        = Customs position granted
-submission.status.CUSTOMS_POSITION_DENIED         = Customs position denied
-submission.status.GOODS_HAVE_EXITED_THE_COMMUNITY = Goods have exited the UK
-submission.status.DECLARATION_HANDLED_EXTERNALLY  = Declaration handled externally
-submission.status.AWAITING_EXIT_RESULTS           = Awaiting exit results
-submission.status.QUERY_NOTIFICATION_MESSAGE      = Query raised
-submission.status.UNKNOWN                         = Unknown status
-
 submission.enhancedStatus.ADDITIONAL_DOCUMENTS_REQUIRED = Documents required
 submission.enhancedStatus.AMENDED                       = Amended
 submission.enhancedStatus.AWAITING_EXIT_RESULTS         = Awaiting exit results
@@ -763,16 +743,18 @@ submission.enhancedStatus.RELEASED                      = Released
 submission.enhancedStatus.UNDERGOING_PHYSICAL_CHECK     = Goods being examined
 submission.enhancedStatus.WITHDRAWN                     = Withdrawn
 submission.enhancedStatus.PENDING                       = Pending
-submission.enhancedStatus.REQUESTED_CANCELLATION        = Cancellation request made
+submission.enhancedStatus.REQUESTED_CANCELLATION        = Cancellation request submitted
 submission.enhancedStatus.UNKNOWN                       = Unknown
 
-submission.enhancedStatus.CANCELLED.body = You cancelled this declaration.
-submission.enhancedStatus.WITHDRAWN.body = You cancelled this declaration.
-submission.enhancedStatus.EXPIRED_NO_ARRIVAL.body = The goods arrival message was not received within 30 days of the pre-lodged declaration.
-submission.enhancedStatus.EXPIRED_NO_DEPARTURE.body = Declaration was automatically cancelled by CDS as no departure message was received within 150 days of clearance.
-submission.enhancedStatus.CLEARED.body = Goods have permission to progress.
-submission.enhancedStatus.RECEIVED.body = Declaration will be checked when goods arrive into customs control.
-submission.enhancedStatus.GOODS_ARRIVED_MESSAGE.body = Goods arrival message received.
+submission.enhancedStatus.timeline.title.CUSTOMS_POSITION_DENIED = Cancellation request denied
+
+submission.enhancedStatus.timeline.content.CANCELLED = You cancelled this declaration.
+submission.enhancedStatus.timeline.content.WITHDRAWN = You cancelled this declaration.
+submission.enhancedStatus.timeline.content.EXPIRED_NO_ARRIVAL = The goods arrival message was not received within 30 days of the pre-lodged declaration.
+submission.enhancedStatus.timeline.content.EXPIRED_NO_DEPARTURE = Declaration was automatically cancelled by CDS as no departure message was received within 150 days of clearance.
+submission.enhancedStatus.timeline.content.CLEARED = Goods have permission to progress.
+submission.enhancedStatus.timeline.content.RECEIVED = Declaration will be checked when goods arrive into customs control.
+submission.enhancedStatus.timeline.content.GOODS_ARRIVED_MESSAGE = Goods arrival message received.
 
 submissions.title = Your declarations
 submissions.hint.no.action.needed = Check the status of your submitted declarations.
