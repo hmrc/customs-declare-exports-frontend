@@ -8,6 +8,7 @@
 // @grant GM_setValue
 // @grant GM_getValue
 // @updateURL    https://raw.githubusercontent.com/hmrc/customs-declare-exports-frontend/master/docs/Customs%20Declare%20Exports%20AutoComplete.js
+// @downloadURL  https://raw.githubusercontent.com/hmrc/customs-declare-exports-frontend/master/docs/Customs%20Declare%20Exports%20AutoComplete.js
 // ==/UserScript==
 
 (function() {
@@ -782,9 +783,16 @@ function commodityDetails(){
                 document.getElementById('descriptionOfGoods').value ='Oilwell equipment'
                 break
             default:
-                document.getElementById('combinedNomenclatureCode').value ='4602191000'
+                document.getElementById('combinedNomenclatureCode').value ='4106920000'
                 document.getElementById('descriptionOfGoods').value ='Straw for bottles'
         }
+        submit()
+    }
+}
+
+function catOrDogFurDetails(){
+    if (currentPageIs('/customs-declare-exports/declaration/items/.*/cat-and-dog-fur')) {
+        document.getElementById('code_no').checked = 'checked'
         submit()
     }
 }
@@ -912,7 +920,7 @@ function additionalInformationSummary(){
 }
 
 function isLicenceRequired(){
-    if (currentPageIs('/customs-declare-exports/declaration/items/.*/is-license-required')) {
+    if (currentPageIs('/customs-declare-exports/declaration/items/.*/is-licence-required')) {
         document.getElementById('code_yes').checked = 'checked'
         submit()
     }
@@ -1268,6 +1276,7 @@ function completeJourney() {
     fiscalReferences()
     fiscalReferencesSummary()
     commodityDetails()
+    catOrDogFurDetails()
     unDangerousGoodsCode()
     cusCode()
     additionalTaricCodes()
