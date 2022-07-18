@@ -87,14 +87,14 @@
 }
 
 @govukLayout(
-    title = Title("declaration.zeroRatedForVat.title",  "declaration.section.2", hasErrors = hasErrors),
+    title = Title("declaration.zeroRatedForVat.title",  "declaration.section.5", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.back"), navigator.backLink(ZeroRatedForVat, mode, ItemId(itemId))))) {
 
     @formHelper(action = ZeroRatedForVatController.submitForm(mode, itemId), 'autoComplete -> "off") {
 
         @errorSummary(form.errors)
 
-        @sectionHeader(messages("declaration.section.2"))
+        @sectionHeader(messages("declaration.section.5"))
 
         @govukFieldset(Fieldset(
             legend = Some(Legend(

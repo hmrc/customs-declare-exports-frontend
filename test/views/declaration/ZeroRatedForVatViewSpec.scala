@@ -58,7 +58,7 @@ class ZeroRatedForVatViewSpec extends UnitViewSpec with Stubs with Injector {
       val view = createView()
 
       "display section header" in {
-        view.getElementById("section-header") must containMessage("declaration.section.2")
+        view.getElementById("section-header") must containMessage("declaration.section.5")
       }
 
       "display page title" in {
