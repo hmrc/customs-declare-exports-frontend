@@ -18,6 +18,7 @@ package connectors
 
 import base.UnitWithMocksSpec
 import config.AppConfig
+import forms.declaration.declarationHolder.AuthorizationTypeCodes.{EXRR, MIB}
 import models.codes._
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
@@ -147,9 +148,9 @@ class CodeListConnectorSpec extends UnitWithMocksSpec with BeforeAndAfterEach {
           val codes = codeListConnector.getHolderOfAuthorisationCodes(locale).keys.toList
           codes.size mustBe 53
 
-          codes.head mustBe "EXRR"
+          codes.head mustBe EXRR
 
-          codes(4) mustBe "MIB"
+          codes(4) mustBe MIB
 
           codes(26) mustBe "TST"
 

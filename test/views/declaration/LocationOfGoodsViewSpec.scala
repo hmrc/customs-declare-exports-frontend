@@ -25,6 +25,7 @@ import forms.declaration.LocationOfGoods
 import forms.declaration.LocationOfGoods.form
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
+import forms.declaration.declarationHolder.AuthorizationTypeCodes.{CSE, EXRR, MIB}
 import models.DeclarationType._
 import models.Mode
 import models.codes.Country
@@ -70,7 +71,7 @@ class LocationOfGoodsViewSpec extends UnitViewSpec with Stubs with Injector with
     // V1 Content (Arrived,MIB)
     AdditionalDeclarationType.values.toList.foreach { additionalType =>
       s"AdditionalDeclarationType is $additionalType" should {
-        val modifier = if (isArrived(additionalType)) withDeclarationHolders(Some("MIB")) else withoutDeclarationHolders
+        val modifier = if (isArrived(additionalType)) withDeclarationHolders(Some(MIB)) else withoutDeclarationHolders
         implicit val request = withRequest(additionalType, modifier)
         val view = createView()
 
@@ -128,7 +129,7 @@ class LocationOfGoodsViewSpec extends UnitViewSpec with Stubs with Injector with
     // V2 Content (Arrived,CSE)
     arrivedTypes.foreach { additionalType =>
       s"AdditionalDeclarationType is $additionalType and the authorisation code is 'CSE'" should {
-        implicit val request = withRequest(additionalType, withDeclarationHolders(Some("CSE")))
+        implicit val request = withRequest(additionalType, withDeclarationHolders(Some(CSE)))
         val view = createView()
 
         "display the expected page title" in {
@@ -173,7 +174,7 @@ class LocationOfGoodsViewSpec extends UnitViewSpec with Stubs with Injector with
     // V3 Content (Arrived,EXRR)
     // V5 Content (Arrived,non-{EXRR|CSE|MIB})
     arrivedTypes.foreach { additionalType =>
-      List("AEOC", "EXRR").foreach { authCode =>
+      List("AEOC", EXRR).foreach { authCode =>
         s"AdditionalDeclarationType is $additionalType and the authorisation code is '$authCode'" should {
           val version = if (authCode == "AEOC") 5 else 3
           implicit val request = withRequest(additionalType, withDeclarationHolders(Some(authCode)))

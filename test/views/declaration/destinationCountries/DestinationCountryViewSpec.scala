@@ -24,6 +24,7 @@ import forms.declaration.AuthorisationProcedureCodeChoice.{Choice1040, ChoiceOth
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.{STANDARD_FRONTIER, STANDARD_PRE_LODGED}
 import forms.declaration.countries.Countries.DestinationCountryPage
 import forms.declaration.countries.{Countries, Country}
+import forms.declaration.declarationHolder.AuthorizationTypeCodes.CSE
 import forms.declaration.declarationHolder.DeclarationHolder
 import models.DeclarationType._
 import models.Mode
@@ -118,7 +119,7 @@ class DestinationCountryViewSpec extends UnitViewSpec with Stubs with ExportsTes
     }
 
     "display a back button linking to the /authorisations-required page" when {
-      val holder = DeclarationHolder(Some("CSE"), Some(Eori(ExportsTestData.eori)), Some(EoriSource.OtherEori))
+      val holder = DeclarationHolder(Some(CSE), Some(Eori(ExportsTestData.eori)), Some(EoriSource.OtherEori))
 
       allDeclarationTypes.foreach { declarationType =>
         s"on $declarationType journey and" when {

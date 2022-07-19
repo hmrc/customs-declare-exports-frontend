@@ -19,7 +19,7 @@ package views.helpers
 import config.AppConfig
 import forms.declaration.AuthorisationProcedureCodeChoice.{Choice1007, ChoiceOthers}
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
-import forms.declaration.declarationHolder.AuthorizationTypeCodes.isAuthCode
+import forms.declaration.declarationHolder.AuthorizationTypeCodes.{isAuthCode, CSE, EXRR, MIB}
 import models.requests.JourneyRequest
 import play.api.i18n.Messages
 import play.api.mvc.Call
@@ -106,9 +106,9 @@ class LocationOfGoodsHelper @Inject() (
       case STANDARD_PRE_LODGED | SIMPLIFIED_PRE_LODGED | OCCASIONAL_PRE_LODGED | CLEARANCE_PRE_LODGED if isAuthProcedureCodeForV4 => 4
 
       case STANDARD_FRONTIER | SIMPLIFIED_FRONTIER | OCCASIONAL_FRONTIER | CLEARANCE_FRONTIER =>
-        if (isAuthCode("CSE")) 2
-        else if (isAuthCode("EXRR")) 3
-        else if (isAuthCode("MIB")) 1
+        if (isAuthCode(CSE)) 2
+        else if (isAuthCode(EXRR)) 3
+        else if (isAuthCode(MIB)) 1
         else 5 // contents of versions 3 and 5 are pretty much equal. They only differ in the body under the page title.
 
       case _ => 1
