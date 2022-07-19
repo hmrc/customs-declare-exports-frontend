@@ -528,7 +528,7 @@ object AppConfigSpec {
       |guidance.takingCommercialGoodsOnYourPerson = "https://www.gov.uk/guidance/taking-commercial-goods-out-of-great-britain-in-your-baggage"
       |guidance.vatOnGoodsExportedFromUK = "https://www.gov.uk/guidance/vat-on-goods-exported-from-the-uk-notice-703"
       |guidance.vatRatingForStandardExport = "https://www.gov.uk/government/publications/appendix-1-de-110-requested-and-previous-procedure-codes/requested-procedure-10-permanent-export-or-dispatch#vat-1"
-      |guidance.moveGoodsThroughPortsUsingGVMS = "https://www.gov.uk/guidance/check-how-to-move-goods-through-ports-that-use-the-goods-vehicle-movement-service_"
+      |guidance.moveGoodsThroughPortsUsingGVMS = "https://www.gov.uk/guidance/check-how-to-move-goods-through-ports-that-use-the-goods-vehicle-movement-service"
       |guidance.january2022locations = "https://www.gov.uk/guidance/check-which-locations-need-an-arrived-export-declaration-from-1-january-2022"
       |
       """.stripMargin

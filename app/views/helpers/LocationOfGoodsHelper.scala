@@ -58,11 +58,10 @@ class LocationOfGoodsHelper @Inject() (
           messages(s"$prefix.body.v2.3", link(email, Call("GET", s"mailto:$email?subject=$subject")))
         ).map(body(_))
 
-      case 3 =>
+      case 3 | 5 =>
         List(
-          body(messages(s"$prefix.body.v3.1")),
+          body(messages(s"$prefix.body.v$version.1")),
           bulletList {
-
             val (front, back) = (1 to 7)
               .map(ix => Html(messages(s"$prefix.body.v3.bullet$ix")))
               .splitAt(2)
@@ -70,7 +69,6 @@ class LocationOfGoodsHelper @Inject() (
             front ++ List(
               Html(messages(s"$prefix.body.v3.bullet8", govukHint(Hint(content = HtmlContent(messages(s"$prefix.body.v3.bullet8.hint"))))))
             ) ++ back
-
           }
         )
 
@@ -93,6 +91,7 @@ class LocationOfGoodsHelper @Inject() (
     HtmlFormat.fill(sections)
   }
 
+  // Currently only displayed for version 1 and 4
   def expander(version: Int)(implicit messages: Messages): Html =
     govukDetails(
       Details(
@@ -107,7 +106,10 @@ class LocationOfGoodsHelper @Inject() (
       case STANDARD_PRE_LODGED | SIMPLIFIED_PRE_LODGED | OCCASIONAL_PRE_LODGED | CLEARANCE_PRE_LODGED if isAuthProcedureCodeForV4 => 4
 
       case STANDARD_FRONTIER | SIMPLIFIED_FRONTIER | OCCASIONAL_FRONTIER | CLEARANCE_FRONTIER =>
-        if (isAuthCode("CSE")) 2 else if (isAuthCode("EXRR")) 3 else 1
+        if (isAuthCode("CSE")) 2
+        else if (isAuthCode("EXRR")) 3
+        else if (isAuthCode("MIB")) 1
+        else 5 // contents of versions 3 and 5 are pretty much equal. They only differ in the body under the page title.
 
       case _ => 1
     }

@@ -66,10 +66,12 @@ class LocationOfGoodsViewSpec extends UnitViewSpec with Stubs with Injector with
 
     val prefix = "declaration.locationOfGoods"
 
-    // V1 Content (default)
+    // V1 Content (non-'Arrived' declarations)
+    // V1 Content (Arrived,MIB)
     AdditionalDeclarationType.values.toList.foreach { additionalType =>
       s"AdditionalDeclarationType is $additionalType" should {
-        implicit val request = withRequest(additionalType)
+        val modifier = if (isArrived(additionalType)) withDeclarationHolders(Some("MIB")) else withoutDeclarationHolders
+        implicit val request = withRequest(additionalType, modifier)
         val view = createView()
 
         "display same page title as header" in {
@@ -123,8 +125,8 @@ class LocationOfGoodsViewSpec extends UnitViewSpec with Stubs with Injector with
       }
     }
 
-    // V2 Content
-    List(STANDARD_FRONTIER, SIMPLIFIED_FRONTIER, OCCASIONAL_FRONTIER, CLEARANCE_FRONTIER).foreach { additionalType =>
+    // V2 Content (Arrived,CSE)
+    arrivedTypes.foreach { additionalType =>
       s"AdditionalDeclarationType is $additionalType and the authorisation code is 'CSE'" should {
         implicit val request = withRequest(additionalType, withDeclarationHolders(Some("CSE")))
         val view = createView()
@@ -168,69 +170,73 @@ class LocationOfGoodsViewSpec extends UnitViewSpec with Stubs with Injector with
       }
     }
 
-    // V3 Content
-    List(STANDARD_FRONTIER, SIMPLIFIED_FRONTIER, OCCASIONAL_FRONTIER, CLEARANCE_FRONTIER).foreach { additionalType =>
-      s"AdditionalDeclarationType is $additionalType and the authorisation code is 'EXRR'" should {
-        implicit val request = withRequest(additionalType, withDeclarationHolders(Some("EXRR")))
-        val view = createView()
+    // V3 Content (Arrived,EXRR)
+    // V5 Content (Arrived,non-{EXRR|CSE|MIB})
+    arrivedTypes.foreach { additionalType =>
+      List("AEOC", "EXRR").foreach { authCode =>
+        s"AdditionalDeclarationType is $additionalType and the authorisation code is '$authCode'" should {
+          val version = if (authCode == "AEOC") 5 else 3
+          implicit val request = withRequest(additionalType, withDeclarationHolders(Some(authCode)))
+          val view = createView()
 
-        "display the expected page title" in {
-          val title = view.getElementsByTag("h1").text
-          title mustBe messages(s"$prefix.title.v3")
-        }
+          "display the expected page title" in {
+            val title = view.getElementsByTag("h1").text
+            title mustBe messages(s"$prefix.title.v$version")
+          }
 
-        "display the expected body" in {
-          val paragraphs = view.getElementsByClass("govuk-body")
-          paragraphs.size mustBe 4
+          "display the expected body" in {
+            val paragraphs = view.getElementsByClass("govuk-body")
+            paragraphs.size mustBe 4
 
-          paragraphs.get(0).text mustBe messages(s"$prefix.body.v3.1")
+            paragraphs.get(0).text mustBe messages(s"$prefix.body.v$version.1")
 
-          val bulletPoints = view.getElementsByClass("govuk-list--bullet").first.children
-          bulletPoints.size mustBe 8
+            val bulletPoints = view.getElementsByClass("govuk-list--bullet").first.children
+            bulletPoints.size mustBe 8
 
-          bulletPoints.get(0).text mustBe messages(s"$prefix.body.v3.bullet1")
-          bulletPoints.get(1).text mustBe messages(s"$prefix.body.v3.bullet2")
-          bulletPoints.get(2).text mustBe messages(s"$prefix.body.v3.bullet8", messages(s"$prefix.body.v3.bullet8.hint"))
-          bulletPoints.get(3).text mustBe messages(s"$prefix.body.v3.bullet3")
-          bulletPoints.get(4).text mustBe messages(s"$prefix.body.v3.bullet4")
-          bulletPoints.get(5).text mustBe messages(s"$prefix.body.v3.bullet5")
-          bulletPoints.get(6).text mustBe messages(s"$prefix.body.v3.bullet6")
-          bulletPoints.get(7).text mustBe messages(s"$prefix.body.v3.bullet7")
-        }
+            bulletPoints.get(0).text mustBe messages(s"$prefix.body.v3.bullet1")
+            bulletPoints.get(1).text mustBe messages(s"$prefix.body.v3.bullet2")
+            bulletPoints.get(2).text mustBe messages(s"$prefix.body.v3.bullet8", messages(s"$prefix.body.v3.bullet8.hint"))
+            bulletPoints.get(3).text mustBe messages(s"$prefix.body.v3.bullet3")
+            bulletPoints.get(4).text mustBe messages(s"$prefix.body.v3.bullet4")
+            bulletPoints.get(5).text mustBe messages(s"$prefix.body.v3.bullet5")
+            bulletPoints.get(6).text mustBe messages(s"$prefix.body.v3.bullet6")
+            bulletPoints.get(7).text mustBe messages(s"$prefix.body.v3.bullet7")
+          }
 
-        "display the expected inset text" in {
-          val insetText = view.getElementsByClass("govuk-inset-text")
-          insetText.size mustBe 1
+          "display the expected inset text" in {
+            val insetText = view.getElementsByClass("govuk-inset-text")
+            insetText.size mustBe 1
 
-          val paragraphs = insetText.get(0).getElementsByClass("govuk-body")
-          paragraphs.size mustBe 2
+            val paragraphs = insetText.get(0).getElementsByClass("govuk-body")
+            paragraphs.size mustBe 2
 
-          val paragraph1 = paragraphs.get(0)
-          paragraph1.text mustBe messages(s"$prefix.inset.v3.body1", messages(s"$prefix.inset.v3.body1.link"))
-          paragraph1.child(0) must haveHref(appConfig.getGoodsMovementReference)
+            val paragraph1 = paragraphs.get(0)
+            paragraph1.text mustBe messages(s"$prefix.inset.v3.body1", messages(s"$prefix.inset.v3.body1.link"))
+            paragraph1.child(0) must haveHref(appConfig.getGoodsMovementReference)
 
-          val paragraph2 = paragraphs.get(1)
-          paragraph2.text mustBe messages(s"$prefix.inset.v3.body2", messages(s"$prefix.inset.v3.body2.link"))
-          paragraph2.child(0) must haveHref(appConfig.guidance.january2022locations)
-        }
+            val paragraph2 = paragraphs.get(1)
+            paragraph2.text mustBe messages(s"$prefix.inset.v3.body2", messages(s"$prefix.inset.v3.body2.link"))
+            paragraph2.child(0) must haveHref(appConfig.guidance.january2022locations)
+          }
 
-        "display the expected hint" in {
-          val hint = view.getElementById("code-hint")
-          assert(hint.hasClass("govuk-hint"))
-          hint.text mustBe messages(s"$prefix.hint.v3")
-        }
+          "display the expected hint" in {
+            val hint = view.getElementById("code-hint")
+            assert(hint.hasClass("govuk-hint"))
+            hint.text mustBe messages(s"$prefix.hint.v$version")
+          }
 
-        "NOT display the 'Find the goods location code' expander " in {
-          val expander = view.getElementsByClass("govuk-details").first.children
-          expander.size mustBe 2
-          val key = if (request.isType(CLEARANCE)) "clearance" else "common"
-          expander.first.text mustBe messages(s"tariff.expander.title.$key")
+          "NOT display the 'Find the goods location code' expander " in {
+            val expander = view.getElementsByClass("govuk-details").first.children
+            expander.size mustBe 2
+            val key = if (request.isType(CLEARANCE)) "clearance" else "common"
+            expander.first.text mustBe messages(s"tariff.expander.title.$key")
+          }
         }
       }
     }
 
     // V4 Content
-    List(STANDARD_PRE_LODGED, SIMPLIFIED_PRE_LODGED, OCCASIONAL_PRE_LODGED, CLEARANCE_PRE_LODGED).foreach { additionalType =>
+    preLodgedTypes.foreach { additionalType =>
       List(Choice1007, ChoiceOthers).foreach { authProcedureCode =>
         s"AdditionalDeclarationType is $additionalType and the authorisation procedure code is '$authProcedureCode'" should {
           implicit val request = withRequest(additionalType, withAuthorisationProcedureCodeChoice(authProcedureCode))

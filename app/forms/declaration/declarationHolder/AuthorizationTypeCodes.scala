@@ -30,7 +30,7 @@ object AuthorizationTypeCodes {
 
   val authCodesThatSkipInlandOrBorder = mutuallyExclusiveAuthCodes
 
-  def codesFilteredFromView(merchandiseInBagConfig: MerchandiseInBagConfig) =
+  def codesFilteredFromView(merchandiseInBagConfig: MerchandiseInBagConfig): List[String] =
     if (merchandiseInBagConfig.isMerchandiseInBagEnabled) List("EORI")
     else List("EORI", "MIB")
 
