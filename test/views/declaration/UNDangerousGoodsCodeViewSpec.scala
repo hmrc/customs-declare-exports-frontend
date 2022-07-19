@@ -112,4 +112,6 @@ class UNDangerousGoodsCodeViewSpec extends UnitViewSpec with ExportsTestData wit
       }
     }
   }
+
+  "UNDangerousGoodsCode View for code with potential Cat or dog fur" should {}
 }

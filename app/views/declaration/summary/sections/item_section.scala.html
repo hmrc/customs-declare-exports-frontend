@@ -18,6 +18,8 @@
 @import models.declaration.ExportItem
 @import models.DeclarationType.{DeclarationType, STANDARD, SUPPLEMENTARY}
 @import models.Mode
+@import forms.declaration.CatOrDogFurDetails
+@import forms.declaration.CatOrDogFurDetails.EducationalOrTaxidermyPurposes
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.components.gds.ActionItemBuilder._
 @import views.html.components.elements_in_separate_lines
@@ -153,6 +155,30 @@
                         href = routes.CommodityDetailsController.displayPage(mode, item.id).url,
                         content = HtmlContent(linkContent(messages("site.change"))),
                         visuallyHiddenText = Some(messages("declaration.summary.items.item.goodsDescription.change", item.sequenceId))
+                    )
+                )
+            ))
+        )
+    ),
+    item.catOrDogFurDetails.map(catOrDogFurDetails =>
+        SummaryListRow(
+            classes = s"item-${item.sequenceId}-catOrDogFurDetails-row",
+            key = Key(
+                content = Text(messages("declaration.summary.items.item.catOrDogFurDetails"))
+            ),
+            value = Value(
+                content = Text(catOrDogFurDetails match {
+                                case CatOrDogFurDetails(_, Some(EducationalOrTaxidermyPurposes)) =>
+                                    messages("declaration.summary.items.item.catOrDogFurDetails.yes")
+                                case _ => messages("declaration.summary.items.item.catOrDogFurDetails.no")
+                })
+            ),
+            actions = actions(Actions(
+                items = Seq(
+                    actionItem(
+                        href = routes.CatOrDogFurController.displayPage(mode, item.id).url,
+                        content = HtmlContent(linkContent(messages("site.change"))),
+                        visuallyHiddenText = Some(messages("declaration.summary.items.item.catOrDogFurDetails.change", item.sequenceId))
                     )
                 )
             ))

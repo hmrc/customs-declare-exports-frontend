@@ -1,0 +1,46 @@
+@*
+ * Copyright 2022 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import views.helpers._
+@import views.html.components.gds._
+@import config.AppConfig
+
+@this(
+    govukLayout: gdsMainTemplate,
+    pageTitle: pageTitle,
+    paragraphBody: paragraphBody,
+    paragraph: paragraph,
+    heading: heading,
+    link: link,
+    appConfig: AppConfig,
+)
+
+@(reason: Option[CannotExportGoodsReason])(implicit request: Request[_], messages: Messages)
+
+@govukLayout(title = Title("cannotExportGoods.header")) {
+    @pageTitle(messages("cannotExportGoods.header"))
+
+    @reason.map{ reason => @paragraphBody(messages(CannotExportGoodsController.getMessageForBody(reason))) }
+
+    @heading(message = messages("cannotExportGoods.helpAndSupport.heading"), tier = "h2", classes = "govuk-heading-m")
+
+    @paragraphBody(messages("cannotExportGoods.helpAndSupport.body"))
+
+    @paragraph(link(text = messages("cannotExportGoods.link"), call = routes.SavedDeclarationsController.displayDeclarations(), id = Some("back-to-declaration")))
+
+    @paragraph(link(text = messages("cannotExportGoods.generalEnquiries.link"), call = Call("GET", appConfig.generalEnquiriesHelpUrl), id = Some("general-enquiries-help")))
+}
+

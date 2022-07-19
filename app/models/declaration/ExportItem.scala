@@ -19,6 +19,7 @@ package models.declaration
 import forms.DeclarationPage
 import forms.declaration.{
   AdditionalFiscalReferencesData,
+  CatOrDogFurDetails,
   CommodityDetails,
   CusCode,
   FiscalInformation,
@@ -32,7 +33,8 @@ import forms.declaration.FiscalInformation.AllowedFiscalInformationAnswers.yes
 import models.DeclarationType
 import models.DeclarationType.DeclarationType
 import models.viewmodels.TariffContentKey
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
+import services.CatAndDogFurCommodityCodes.allCatAndDogFurCommCodes
 
 case class ExportItem(
   id: String,
@@ -42,6 +44,7 @@ case class ExportItem(
   additionalFiscalReferencesData: Option[AdditionalFiscalReferencesData] = None,
   statisticalValue: Option[StatisticalValue] = None,
   commodityDetails: Option[CommodityDetails] = None,
+  catOrDogFurDetails: Option[CatOrDogFurDetails] = None,
   dangerousGoodsCode: Option[UNDangerousGoodsCode] = None,
   cusCode: Option[CusCode] = None,
   taricCodes: Option[List[TaricCode]] = None,
@@ -77,6 +80,12 @@ case class ExportItem(
       .flatMap(_.procedureCode)
       .exists(code => ProcedureCodesData.eicrProcedureCodes.contains(code))
 
+  def hasCatOrDogFurCommodityCode: Boolean =
+    (for {
+      commodityDetails <- commodityDetails
+      commodityCode <- commodityDetails.combinedNomenclatureCode
+    } yield allCatAndDogFurCommCodes.contains(commodityCode)).contains(true)
+
   private def isProcedureCodesAndFiscalInformationComplete = {
 
     def isFiscalInformationCompleted: Boolean =
@@ -93,7 +102,7 @@ case class ExportItem(
 
 object ExportItem extends DeclarationPage {
 
-  implicit val format = Json.format[ExportItem]
+  implicit val format: OFormat[ExportItem] = Json.format[ExportItem]
 
   def containsAnswers(item: ExportItem): Boolean = item != ExportItem(id = item.id, sequenceId = item.sequenceId)
 
