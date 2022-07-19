@@ -44,7 +44,7 @@ object Address {
       "addressLine" -> text()
         .verifying("declaration.address.addressLine.empty", nonEmpty)
         .verifying("declaration.address.addressLine.error", isEmpty or isValidAddressField)
-        .verifying("declaration.address.addressLine.length", isEmpty or noLongerThan(35)),
+        .verifying("declaration.address.addressLine.length", isEmpty or noLongerThan(70)),
       "townOrCity" -> text()
         .verifying("declaration.address.townOrCity.empty", nonEmpty)
         .verifying("declaration.address.townOrCity.error", isEmpty or isValidAddressField)
