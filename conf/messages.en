@@ -1539,7 +1539,7 @@ declaration.unDangerousGoodsCode.error.empty = Enter a UN dangerous goods code
 declaration.unDangerousGoodsCode.error.invalid = A UN dangerous goods code must be 4 digits exactly
 
 declaration.cusCode.header = Is there a CUS code for this item?
-declaration.cusCode.paragraph = A customs union and statistics number (CUS code) is required for chemicals classified in chapters 28, 29 and some in chapter 38 of the UK Trade Tariff. You can check this using the {0}.
+declaration.cusCode.paragraph = A customs union and statistics number (CUS code) is required for chemicals classified in chapters 28, 29 and some in chapter 38 of the UK Trade Tariff. You can check this by entering the name of the commodity or the UN number into the {0}.
 declaration.cusCode.paragraph.link = ECICS chemical substance information tool (opens in new tab)
 declaration.cusCode.label = CUS code
 declaration.cusCode.hasCode = Yes
