@@ -20,11 +20,11 @@ import base.Injector
 import forms.declaration.Seal
 import models.Mode
 import models.declaration.Container
-import services.cache.ExportsTestData
+import services.cache.ExportsTestHelper
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.summary.containers
 
-class ContainersViewSpec extends UnitViewSpec with ExportsTestData with Injector {
+class ContainersViewSpec extends UnitViewSpec with ExportsTestHelper with Injector {
 
   val firstContainerID = "951357"
   val secondContainerID = "456789"

@@ -21,14 +21,14 @@ import forms.declaration.RepresentativeEntity
 import models.Mode
 import org.jsoup.nodes.Document
 import play.api.data.Form
-import services.cache.ExportsTestData
+import services.cache.ExportsTestHelper
 import tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.representative_details_entity
 import views.tags.ViewTest
 
 @ViewTest
-class RepresentativeDetailsEntityViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
+class RepresentativeDetailsEntityViewSpec extends UnitViewSpec with ExportsTestHelper with Stubs with Injector {
 
   private val page = instanceOf[representative_details_entity]
   private val form: Form[RepresentativeEntity] = RepresentativeEntity.form()

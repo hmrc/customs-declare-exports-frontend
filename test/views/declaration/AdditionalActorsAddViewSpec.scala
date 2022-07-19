@@ -26,7 +26,7 @@ import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import org.scalatest.Assertion
 import play.api.data.Form
-import services.cache.ExportsTestData
+import services.cache.ExportsTestHelper
 import tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.helpers.CommonMessages
@@ -34,7 +34,7 @@ import views.html.declaration.additionalActors.additional_actors_add
 import views.tags.ViewTest
 
 @ViewTest
-class AdditionalActorsAddViewSpec extends UnitViewSpec with CommonMessages with ExportsTestData with Stubs with Injector {
+class AdditionalActorsAddViewSpec extends UnitViewSpec with CommonMessages with ExportsTestHelper with Stubs with Injector {
 
   private val form: Form[DeclarationAdditionalActors] = DeclarationAdditionalActors.form
   private val declarationAdditionalActorsPage = instanceOf[additional_actors_add]

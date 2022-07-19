@@ -19,13 +19,13 @@ package views.declaration.summary.sections
 import base.Injector
 import controllers.declaration.routes._
 import models.Mode
-import services.cache.ExportsTestData
+import services.cache.ExportsTestHelper
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.summary.sections.transaction_section
 
 import scala.collection.JavaConverters._
 
-class TransactionSectionViewSpec extends UnitViewSpec with ExportsTestData with Injector {
+class TransactionSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injector {
 
   val data = aDeclaration(
     withTotalNumberOfItems(Some("123"), Some("1.23"), Some("GBP")),

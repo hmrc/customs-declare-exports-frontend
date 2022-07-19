@@ -36,7 +36,7 @@ import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 import play.api.data.Form
 import play.api.libs.json.Json
-import services.cache.ExportsTestData
+import services.cache.ExportsTestHelper
 import tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.helpers.ModeOfTransportCodeHelper
@@ -46,7 +46,7 @@ import views.tags.ViewTest
 import scala.collection.immutable.ListMap
 
 @ViewTest
-class TransportCountryViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector with BeforeAndAfterEach {
+class TransportCountryViewSpec extends UnitViewSpec with ExportsTestHelper with Stubs with Injector with BeforeAndAfterEach {
 
   implicit val codeListConnector = mock[CodeListConnector]
 

@@ -28,7 +28,7 @@ import models.declaration.Parties
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
-import services.cache.ExportsTestData
+import services.cache.ExportsTestHelper
 import tools.Stubs
 import views.components.gds.Styles
 import views.declaration.spec.UnitViewSpec
@@ -36,7 +36,7 @@ import views.html.declaration.exporter_eori_number
 import views.tags.ViewTest
 
 @ViewTest
-class ExporterEoriNumberViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
+class ExporterEoriNumberViewSpec extends UnitViewSpec with ExportsTestHelper with Stubs with Injector {
 
   private val page: exporter_eori_number = instanceOf[exporter_eori_number]
 

@@ -22,12 +22,12 @@ import forms.declaration.RoutingCountryQuestionYesNo
 import models.Mode
 import org.jsoup.nodes.Document
 import play.api.data.Form
-import services.cache.ExportsTestData
+import services.cache.ExportsTestHelper
 import tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.destinationCountries.routing_country_question
 
-class RoutingCountryQuestionViewSpec extends UnitViewSpec with Stubs with ExportsTestData with Injector {
+class RoutingCountryQuestionViewSpec extends UnitViewSpec with Stubs with ExportsTestHelper with Injector {
 
   val countryOfDestination = "Poland"
   val form: Form[Boolean] = RoutingCountryQuestionYesNo.formAdd()

@@ -24,14 +24,14 @@ import forms.declaration.InlandOrBorder.{form, Border, Inland}
 import models.Mode
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
-import services.cache.ExportsTestData
+import services.cache.ExportsTestHelper
 import tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.inland_border
 import views.tags.ViewTest
 
 @ViewTest
-class InlandOrBorderViewSpec extends UnitViewSpec with ExportsTestData with MockExportCacheService with Injector with Stubs {
+class InlandOrBorderViewSpec extends UnitViewSpec with ExportsTestHelper with MockExportCacheService with Injector with Stubs {
 
   private val page = instanceOf[inland_border]
 

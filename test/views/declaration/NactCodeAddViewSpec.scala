@@ -21,7 +21,7 @@ import forms.declaration.NactCode
 import models.Mode
 import org.jsoup.nodes.Document
 import play.api.data.Form
-import services.cache.ExportsTestData
+import services.cache.ExportsTestHelper
 import tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.helpers.CommonMessages
@@ -29,7 +29,7 @@ import views.html.declaration.nact_code_add
 import views.tags.ViewTest
 
 @ViewTest
-class NactCodeAddViewSpec extends UnitViewSpec with ExportsTestData with Stubs with CommonMessages with Injector {
+class NactCodeAddViewSpec extends UnitViewSpec with ExportsTestHelper with Stubs with CommonMessages with Injector {
 
   private val itemId = "item1"
   private val form: Form[NactCode] = NactCode.form()

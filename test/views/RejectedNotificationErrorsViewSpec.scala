@@ -25,12 +25,12 @@ import models.Mode.Normal
 import org.jsoup.nodes.Document
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
-import services.cache.ExportsTestData
+import services.cache.ExportsTestHelper
 import tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.html.rejected_notification_errors
 
-class RejectedNotificationErrorsViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
+class RejectedNotificationErrorsViewSpec extends UnitViewSpec with ExportsTestHelper with Stubs with Injector {
 
   private val page = instanceOf[rejected_notification_errors]
   private val declaration = aDeclaration(withConsignmentReferences("DUCR", "lrn"))

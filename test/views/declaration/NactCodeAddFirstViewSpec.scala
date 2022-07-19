@@ -25,7 +25,7 @@ import models.requests.JourneyRequest
 import models.{DeclarationType, Mode}
 import org.jsoup.nodes.Document
 import play.api.data.Form
-import services.cache.ExportsTestData
+import services.cache.ExportsTestHelper
 import tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.helpers.CommonMessages
@@ -33,7 +33,7 @@ import views.html.declaration.nact_code_add_first
 import views.tags.ViewTest
 
 @ViewTest
-class NactCodeAddFirstViewSpec extends UnitViewSpec with ExportsTestData with Stubs with CommonMessages with Injector {
+class NactCodeAddFirstViewSpec extends UnitViewSpec with ExportsTestHelper with Stubs with CommonMessages with Injector {
 
   private val appConfig = instanceOf[AppConfig]
 

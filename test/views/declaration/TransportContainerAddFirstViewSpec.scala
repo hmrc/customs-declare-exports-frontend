@@ -25,7 +25,7 @@ import models.Mode
 import models.Mode.Normal
 import org.jsoup.nodes.Document
 import play.api.data.Form
-import services.cache.ExportsTestData
+import services.cache.ExportsTestHelper
 import tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.helpers.CommonMessages
@@ -33,7 +33,7 @@ import views.html.declaration.transport_container_add_first
 import views.tags.ViewTest
 
 @ViewTest
-class TransportContainerAddFirstViewSpec extends UnitViewSpec with ExportsTestData with Stubs with CommonMessages with Injector {
+class TransportContainerAddFirstViewSpec extends UnitViewSpec with ExportsTestHelper with Stubs with CommonMessages with Injector {
 
   private val form: Form[ContainerFirst] = ContainerFirst.form()
   private val page = instanceOf[transport_container_add_first]

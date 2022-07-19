@@ -28,7 +28,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 import play.api.data.Form
-import services.cache.{ExportItemIdGeneratorService, ExportsTestData}
+import services.cache.{ExportItemIdGeneratorService, ExportsTestHelper}
 import tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.helpers.CommonMessages
@@ -39,7 +39,7 @@ import scala.collection.immutable.ListMap
 
 @ViewTest
 class AdditionalFiscalReferencesAddViewSpec
-    extends UnitViewSpec with ExportsTestData with Stubs with CommonMessages with Injector with BeforeAndAfterEach {
+    extends UnitViewSpec with ExportsTestHelper with Stubs with CommonMessages with Injector with BeforeAndAfterEach {
 
   implicit val mockCodeListConnector = mock[CodeListConnector]
 

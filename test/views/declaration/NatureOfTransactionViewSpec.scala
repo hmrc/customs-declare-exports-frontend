@@ -24,7 +24,7 @@ import models.Mode
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
-import services.cache.ExportsTestData
+import services.cache.ExportsTestHelper
 import tools.Stubs
 import views.components.gds.Styles
 import views.declaration.spec.UnitViewSpec
@@ -32,7 +32,7 @@ import views.html.declaration.nature_of_transaction
 import views.tags.ViewTest
 
 @ViewTest
-class NatureOfTransactionViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
+class NatureOfTransactionViewSpec extends UnitViewSpec with ExportsTestHelper with Stubs with Injector {
 
   private val page = instanceOf[nature_of_transaction]
   private val form: Form[NatureOfTransaction] = NatureOfTransaction.form()

@@ -19,14 +19,14 @@ package views.declaration.summary.sections
 import base.Injector
 import config.AppConfig
 import org.mockito.Mockito.when
-import services.cache.ExportsTestData
+import services.cache.ExportsTestHelper
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.summary.sections.draft_info_section
 
 import java.time.LocalDateTime
 import scala.concurrent.duration.FiniteDuration
 
-class DraftInfoSectionViewSpec extends UnitViewSpec with ExportsTestData with Injector {
+class DraftInfoSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injector {
 
   val appConfig = mock[AppConfig]
 

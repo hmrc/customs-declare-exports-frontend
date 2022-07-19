@@ -31,14 +31,14 @@ import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 import play.api.data.Form
 import play.twirl.api.Html
-import services.cache.ExportsTestData
+import services.cache.ExportsTestHelper
 import tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.destinationCountries.country_of_routing
 
 import scala.collection.immutable.ListMap
 
-class CountryOfRoutingViewSpec extends UnitViewSpec with Stubs with ExportsTestData with Injector with BeforeAndAfterEach {
+class CountryOfRoutingViewSpec extends UnitViewSpec with Stubs with ExportsTestHelper with Injector with BeforeAndAfterEach {
 
   implicit val mockCodeListConnector = mock[CodeListConnector]
 

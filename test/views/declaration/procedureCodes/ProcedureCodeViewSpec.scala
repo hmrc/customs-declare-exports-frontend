@@ -24,13 +24,13 @@ import models.Mode
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
-import services.cache.{ExportsDeclarationBuilder, ExportsTestData}
+import services.cache.{ExportsDeclarationBuilder, ExportsTestHelper}
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.procedureCodes.procedure_codes
 import views.tags.ViewTest
 
 @ViewTest
-class ProcedureCodeViewSpec extends UnitViewSpec with ExportsTestData with Injector with ExportsDeclarationBuilder {
+class ProcedureCodeViewSpec extends UnitViewSpec with ExportsTestHelper with Injector with ExportsDeclarationBuilder {
 
   private val page = instanceOf[procedure_codes]
   private val form: Form[ProcedureCode] = ProcedureCode.form()

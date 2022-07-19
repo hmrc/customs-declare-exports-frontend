@@ -29,7 +29,7 @@ import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.Configuration
 import play.api.data.Form
-import services.cache.ExportsTestData
+import services.cache.ExportsTestHelper
 import tools.Stubs
 import views.components.gds.Styles
 import views.declaration.spec.UnitViewSpec
@@ -38,7 +38,7 @@ import views.html.declaration.is_licence_required
 import views.tags.ViewTest
 
 @ViewTest
-class IsLicenceRequiredViewSpec extends UnitViewSpec with ExportsTestData with CommonMessages with Stubs with Injector {
+class IsLicenceRequiredViewSpec extends UnitViewSpec with ExportsTestHelper with CommonMessages with Stubs with Injector {
 
   override val configuration: Configuration = Configuration(ConfigFactory.parseString("microservice.services.features.waiver999L=enabled"))
 

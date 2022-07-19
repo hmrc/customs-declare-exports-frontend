@@ -38,14 +38,14 @@ import org.scalatest.BeforeAndAfterEach
 import play.api.data.Form
 import play.api.mvc.Call
 import play.twirl.api.Html
-import services.cache.ExportsTestData
+import services.cache.ExportsTestHelper
 import tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.destinationCountries.destination_country
 
 import scala.collection.immutable.ListMap
 
-class DestinationCountryViewSpec extends UnitViewSpec with Stubs with ExportsTestData with Injector with BeforeAndAfterEach {
+class DestinationCountryViewSpec extends UnitViewSpec with Stubs with ExportsTestHelper with Injector with BeforeAndAfterEach {
 
   implicit val mockCodeListConnector = mock[CodeListConnector]
 

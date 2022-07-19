@@ -27,7 +27,7 @@ import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
 import utils.FakeRequestCSRFSupport._
 
-trait ExportsTestData extends ExportsDeclarationBuilder with ExportsItemBuilder with RequestBuilder {
+trait ExportsTestHelper extends ExportsDeclarationBuilder with ExportsItemBuilder with RequestBuilder {
 
   private def declaration(`type`: DeclarationType): ExportsDeclaration = aDeclaration(
     withType(`type`),

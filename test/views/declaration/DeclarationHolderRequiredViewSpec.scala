@@ -27,7 +27,7 @@ import models.Mode
 import models.declaration.Parties
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
-import services.cache.ExportsTestData
+import services.cache.ExportsTestHelper
 import tools.Stubs
 import views.components.gds.Styles
 import views.declaration.spec.UnitViewSpec
@@ -36,7 +36,7 @@ import views.html.declaration.declarationHolder.declaration_holder_required
 import views.tags.ViewTest
 
 @ViewTest
-class DeclarationHolderRequiredViewSpec extends UnitViewSpec with ExportsTestData with CommonMessages with Stubs with Injector {
+class DeclarationHolderRequiredViewSpec extends UnitViewSpec with ExportsTestHelper with CommonMessages with Stubs with Injector {
 
   private val form = YesNoAnswer.form()
   private val declarationHolderRequiredPage = instanceOf[declaration_holder_required]

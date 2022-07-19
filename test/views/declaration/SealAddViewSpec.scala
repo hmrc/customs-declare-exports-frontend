@@ -21,7 +21,7 @@ import forms.declaration.Seal
 import models.Mode
 import org.jsoup.nodes.Document
 import play.api.data.Form
-import services.cache.ExportsTestData
+import services.cache.ExportsTestHelper
 import tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.helpers.CommonMessages
@@ -29,7 +29,7 @@ import views.html.declaration.seal_add
 import views.tags.ViewTest
 
 @ViewTest
-class SealAddViewSpec extends UnitViewSpec with ExportsTestData with Stubs with CommonMessages with Injector {
+class SealAddViewSpec extends UnitViewSpec with ExportsTestHelper with Stubs with CommonMessages with Injector {
 
   val containerId = "867126538"
   private val form: Form[Seal] = Seal.form()

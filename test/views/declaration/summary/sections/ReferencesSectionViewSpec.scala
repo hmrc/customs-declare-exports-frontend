@@ -22,11 +22,11 @@ import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
 import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
 import models.{DeclarationType, Mode}
-import services.cache.ExportsTestData
+import services.cache.ExportsTestHelper
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.summary.sections.references_section
 
-class ReferencesSectionViewSpec extends UnitViewSpec with ExportsTestData with Injector {
+class ReferencesSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injector {
 
   val data = aDeclaration(
     withType(DeclarationType.STANDARD),

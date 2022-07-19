@@ -20,11 +20,11 @@ import base.Injector
 import controllers.declaration.routes._
 import forms.declaration.LocationOfGoods
 import models.Mode
-import services.cache.ExportsTestData
+import services.cache.ExportsTestHelper
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.summary.sections.locations_section
 
-class LocationsSectionViewSpec extends UnitViewSpec with ExportsTestData with Injector {
+class LocationsSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injector {
 
   val data = aDeclaration(withGoodsLocation(LocationOfGoods("GBAUEMAEMAEMA")), withOfficeOfExit("123"))
 

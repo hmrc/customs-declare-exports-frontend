@@ -19,11 +19,11 @@ package views.declaration.summary
 import base.Injector
 import forms.declaration.PackageInformation
 import models.Mode
-import services.cache.ExportsTestData
+import services.cache.ExportsTestHelper
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.summary.package_information
 
-class PackageInformationViewSpec extends UnitViewSpec with ExportsTestData with Injector {
+class PackageInformationViewSpec extends UnitViewSpec with ExportsTestHelper with Injector {
 
   "Package information" should {
 

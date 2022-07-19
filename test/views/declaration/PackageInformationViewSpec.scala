@@ -25,14 +25,14 @@ import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import play.api.mvc.Call
-import services.cache.ExportsTestData
+import services.cache.ExportsTestHelper
 import tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.packageInformation.package_information
 import views.tags.ViewTest
 
 @ViewTest
-class PackageInformationViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
+class PackageInformationViewSpec extends UnitViewSpec with ExportsTestHelper with Stubs with Injector {
 
   private val page = instanceOf[package_information]
   private val packageInformation = PackageInformation("ID", Some("1A"), Some(10), Some("packs"))

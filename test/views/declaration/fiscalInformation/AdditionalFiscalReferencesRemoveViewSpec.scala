@@ -22,7 +22,7 @@ import forms.declaration.AdditionalFiscalReference
 import models.Mode
 import org.jsoup.nodes.Document
 import play.api.data.Form
-import services.cache.ExportsTestData
+import services.cache.ExportsTestHelper
 import tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.helpers.CommonMessages
@@ -30,7 +30,7 @@ import views.html.declaration.fiscalInformation.additional_fiscal_references_rem
 import views.tags.ViewTest
 
 @ViewTest
-class AdditionalFiscalReferencesRemoveViewSpec extends UnitViewSpec with ExportsTestData with Stubs with CommonMessages with Injector {
+class AdditionalFiscalReferencesRemoveViewSpec extends UnitViewSpec with ExportsTestHelper with Stubs with CommonMessages with Injector {
 
   private val itemId = "74fd3906"
   private val referenceId = "0.200378103"

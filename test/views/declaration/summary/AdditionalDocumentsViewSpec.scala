@@ -24,11 +24,11 @@ import forms.declaration.additionaldocuments.AdditionalDocument
 import models.declaration.AdditionalDocuments
 import models.{DeclarationType, Mode}
 import play.api.Configuration
-import services.cache.ExportsTestData
+import services.cache.ExportsTestHelper
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.summary.additional_documents
 
-class AdditionalDocumentsViewSpec extends UnitViewSpec with ExportsTestData {
+class AdditionalDocumentsViewSpec extends UnitViewSpec with ExportsTestHelper {
 
   private val item = anItem(withItemId("itemId"), withSequenceId(1))
   private val itemWithLicenceReq = anItem(withItemId("itemId"), withSequenceId(1)).copy(isLicenceRequired = Some(true))

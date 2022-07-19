@@ -22,14 +22,14 @@ import models.requests.JourneyRequest
 import models.{DeclarationType, ExportsDeclaration, Mode}
 import org.jsoup.nodes.Document
 import play.api.data.Form
-import services.cache.ExportsTestData
+import services.cache.ExportsTestHelper
 import tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.supervising_customs_office
 import views.tags.ViewTest
 
 @ViewTest
-class SupervisingCustomsOfficeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
+class SupervisingCustomsOfficeViewSpec extends UnitViewSpec with ExportsTestHelper with Stubs with Injector {
 
   private val page = instanceOf[supervising_customs_office]
   private val form: Form[SupervisingCustomsOffice] = SupervisingCustomsOffice.form()
