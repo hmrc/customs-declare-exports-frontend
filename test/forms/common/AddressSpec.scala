@@ -167,7 +167,7 @@ object AddressSpec {
 
   val validAddress = Address(
     fullName = "Some Name,'-&",
-    addressLine = "Test Street,'-&",
+    addressLine = "(Test Street,'-& . , /)",
     townOrCity = "Leeds,'-&",
     postCode = "LS18 BN",
     country = "United Kingdom, Great Britain, Northern Ireland"

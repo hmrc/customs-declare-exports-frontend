@@ -39,7 +39,7 @@ object Address {
     Forms.mapping(
       "fullName" -> text()
         .verifying("declaration.address.fullName.empty", nonEmpty)
-        .verifying("declaration.address.fullName.error", isEmpty or isValidAddressField)
+        .verifying("declaration.address.fullName.error", isEmpty or isValidFieldForAddresses)
         .verifying("declaration.address.fullName.length", isEmpty or noLongerThan(35)),
       "addressLine" -> text()
         .verifying("declaration.address.addressLine.empty", nonEmpty)
@@ -47,7 +47,7 @@ object Address {
         .verifying("declaration.address.addressLine.length", isEmpty or noLongerThan(70)),
       "townOrCity" -> text()
         .verifying("declaration.address.townOrCity.empty", nonEmpty)
-        .verifying("declaration.address.townOrCity.error", isEmpty or isValidAddressField)
+        .verifying("declaration.address.townOrCity.error", isEmpty or isValidFieldForAddresses)
         .verifying("declaration.address.townOrCity.length", isEmpty or noLongerThan(35)),
       "postCode" -> text()
         .verifying("declaration.address.postCode.empty", nonEmpty)
