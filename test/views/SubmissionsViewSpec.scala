@@ -30,7 +30,7 @@ import org.mockito.Mockito.when
 import org.scalatest.BeforeAndAfterEach
 import play.api.inject.bind
 import play.twirl.api.Html
-import services.cache.ExportsTestData
+import services.cache.ExportsTestHelper
 import tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.html.submissions
@@ -40,7 +40,7 @@ import java.time.{ZoneId, ZonedDateTime}
 import java.util.UUID
 
 @ViewTest
-class SubmissionsViewSpec extends UnitViewSpec with BeforeAndAfterEach with ExportsTestData with Stubs {
+class SubmissionsViewSpec extends UnitViewSpec with BeforeAndAfterEach with ExportsTestHelper with Stubs {
 
   private val injector = new OverridableInjector(bind[SecureMessagingConfig].toInstance(mockSecureMessagingConfig))
 

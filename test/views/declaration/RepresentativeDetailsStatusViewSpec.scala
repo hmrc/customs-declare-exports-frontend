@@ -24,7 +24,7 @@ import forms.declaration.RepresentativeStatus.StatusCodes
 import models.Mode
 import org.jsoup.nodes.Document
 import play.api.data.Form
-import services.cache.ExportsTestData
+import services.cache.ExportsTestHelper
 import tools.Stubs
 import views.components.gds.Styles
 import views.declaration.spec.UnitViewSpec
@@ -32,7 +32,7 @@ import views.html.declaration.representative_details_status
 import views.tags.ViewTest
 
 @ViewTest
-class RepresentativeDetailsStatusViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
+class RepresentativeDetailsStatusViewSpec extends UnitViewSpec with ExportsTestHelper with Stubs with Injector {
 
   private val page = instanceOf[representative_details_status]
   private val form: Form[RepresentativeStatus] = RepresentativeStatus.form()

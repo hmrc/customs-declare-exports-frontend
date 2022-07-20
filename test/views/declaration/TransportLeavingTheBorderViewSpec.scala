@@ -20,6 +20,7 @@ import base.Injector
 import controllers.declaration.routes
 import controllers.routes.GuidanceController
 import forms.declaration.TransportLeavingTheBorder
+import forms.declaration.declarationHolder.AuthorizationTypeCodes.EXRR
 import models.DeclarationType._
 import models.Mode
 import models.requests.JourneyRequest
@@ -159,7 +160,7 @@ class TransportLeavingTheBorderViewSpec extends UnitViewSpec with Stubs with Inj
       }
     }
 
-    onEveryAdditionalType(withDeclarationHolders(Some("EXRR"))) { implicit request =>
+    onEveryAdditionalType(withDeclarationHolders(Some(EXRR))) { implicit request =>
       val view = createView()
 
       "display the expected inset text when an 'EXRR' authorisation code has been entered" in {

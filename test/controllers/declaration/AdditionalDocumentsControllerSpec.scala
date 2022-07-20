@@ -20,6 +20,7 @@ import base.ControllerSpec
 import forms.common.YesNoAnswer.Yes
 import forms.common.{Eori, YesNoAnswer}
 import forms.declaration.additionaldocuments.AdditionalDocument
+import forms.declaration.declarationHolder.AuthorizationTypeCodes.EXRR
 import forms.declaration.declarationHolder.DeclarationHolder
 import mock.ErrorHandlerMocks
 import models.Mode
@@ -129,7 +130,7 @@ class AdditionalDocumentsControllerSpec extends ControllerSpec with ErrorHandler
         }
 
         "the authorisation code does not require additional documents but mode is 'ErrorFix'" in {
-          val declarationHolder = DeclarationHolder(Some("EXRR"), Some(Eori("GB123456789012")), Some(EoriSource.OtherEori))
+          val declarationHolder = DeclarationHolder(Some(EXRR), Some(Eori("GB123456789012")), Some(EoriSource.OtherEori))
           withNewCaching(aDeclaration(withDeclarationHolders(declarationHolder)))
 
           val result = controller.displayPage(Mode.ErrorFix, itemId)(getRequest())

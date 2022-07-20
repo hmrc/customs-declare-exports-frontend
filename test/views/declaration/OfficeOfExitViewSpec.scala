@@ -26,14 +26,14 @@ import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import play.api.mvc.AnyContent
-import services.cache.ExportsTestData
+import services.cache.ExportsTestHelper
 import tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.office_of_exit
 import views.tags.ViewTest
 
 @ViewTest
-class OfficeOfExitViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
+class OfficeOfExitViewSpec extends UnitViewSpec with ExportsTestHelper with Stubs with Injector {
 
   private val page: office_of_exit = instanceOf[office_of_exit]
 

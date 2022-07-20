@@ -20,7 +20,7 @@
 @import controllers.navigation.Navigator
 @import controllers.routes.GuidanceController
 @import forms.declaration.{ModeOfTransportCode, TransportLeavingTheBorder}
-@import forms.declaration.declarationHolder.AuthorizationTypeCodes.isAuthCode
+@import forms.declaration.declarationHolder.AuthorizationTypeCodes.{EXRR, isAuthCode}
 @import forms.declaration.ModeOfTransportCode._
 @import models.DeclarationType.CLEARANCE
 @import models.requests.JourneyRequest
@@ -50,7 +50,7 @@
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
 @insetSectionIfAny = {
-    @if(isAuthCode("EXRR")) {
+    @if(isAuthCode(EXRR)) {
         @insetText(content = HtmlContent(messages(
             "declaration.transport.leavingTheBorder.inset",
             link(

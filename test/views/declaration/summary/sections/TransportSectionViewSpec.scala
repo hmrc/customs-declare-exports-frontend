@@ -22,11 +22,11 @@ import forms.declaration.InlandOrBorder.Border
 import forms.declaration._
 import models.Mode
 import models.declaration.Container
-import services.cache.ExportsTestData
+import services.cache.ExportsTestHelper
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.summary.sections.transport_section
 
-class TransportSectionViewSpec extends UnitViewSpec with ExportsTestData with Injector {
+class TransportSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injector {
 
   val data = aDeclaration(
     withDepartureTransport(ModeOfTransportCode.Maritime, "10", "identifier"),

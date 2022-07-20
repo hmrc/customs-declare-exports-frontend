@@ -24,7 +24,7 @@ import models.Mode
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
-import services.cache.ExportsTestData
+import services.cache.ExportsTestHelper
 import tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.helpers.CommonMessages
@@ -32,7 +32,7 @@ import views.html.declaration.cus_code
 import views.tags.ViewTest
 
 @ViewTest
-class CusCodeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector with CommonMessages {
+class CusCodeViewSpec extends UnitViewSpec with ExportsTestHelper with Stubs with Injector with CommonMessages {
 
   private val page = instanceOf[cus_code]
   private val form: Form[CusCode] = CusCode.form()

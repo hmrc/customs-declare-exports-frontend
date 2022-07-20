@@ -19,11 +19,11 @@ package views.declaration.summary
 import base.Injector
 import forms.declaration.Document
 import models.Mode
-import services.cache.ExportsTestData
+import services.cache.ExportsTestHelper
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.summary.related_documents
 
-class RelatedDocumentsViewSpec extends UnitViewSpec with ExportsTestData with Injector {
+class RelatedDocumentsViewSpec extends UnitViewSpec with ExportsTestHelper with Injector {
   private val section = instanceOf[related_documents]
 
   "Related documents" should {

@@ -24,14 +24,14 @@ import models.Mode
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
-import services.cache.ExportsTestData
+import services.cache.ExportsTestHelper
 import tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.additionalActors.additional_actors_summary
 import views.tags.ViewTest
 
 @ViewTest
-class AdditionalActorsSummaryViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
+class AdditionalActorsSummaryViewSpec extends UnitViewSpec with ExportsTestHelper with Stubs with Injector {
 
   val additionalActor1 = DeclarationAdditionalActors(Some(Eori("GB56523343784324")), Some("CS"))
   val additionalActor2 = DeclarationAdditionalActors(Some(Eori("GB56523399999999")), Some("MF"))

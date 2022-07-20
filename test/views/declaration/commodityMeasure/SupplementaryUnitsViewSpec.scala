@@ -26,14 +26,14 @@ import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import services.CommodityInfo
-import services.cache.ExportsTestData
+import services.cache.ExportsTestHelper
 import tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.commodityMeasure.supplementary_units
 import views.tags.ViewTest
 
 @ViewTest
-class SupplementaryUnitsViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
+class SupplementaryUnitsViewSpec extends UnitViewSpec with ExportsTestHelper with Stubs with Injector {
 
   private val page = instanceOf[supplementary_units]
 

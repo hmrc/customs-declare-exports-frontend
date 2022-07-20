@@ -21,11 +21,11 @@ import forms.common.{Address, Eori}
 import forms.declaration.IsExs
 import models.Mode
 import models.declaration.{DeclarationAdditionalActorsData, RepresentativeDetails}
-import services.cache.ExportsTestData
+import services.cache.ExportsTestHelper
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.summary.sections.parties_section
 
-class PartiesSectionViewSpec extends UnitViewSpec with ExportsTestData with Injector {
+class PartiesSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injector {
 
   private val exampleEori = "GB123456"
   private val exampleAddress = Address("fullName", "addressLine", "townOrCity", "postCode", "GB")

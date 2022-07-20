@@ -28,7 +28,7 @@ import models.Mode.Normal
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
-import services.cache.ExportsTestData
+import services.cache.ExportsTestHelper
 import tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.helpers.CommonMessages
@@ -36,7 +36,7 @@ import views.html.declaration.carrier_eori_number
 import views.tags.ViewTest
 
 @ViewTest
-class CarrierEoriNumberViewSpec extends UnitViewSpec with CommonMessages with ExportsTestData with Stubs with Injector {
+class CarrierEoriNumberViewSpec extends UnitViewSpec with CommonMessages with ExportsTestHelper with Stubs with Injector {
 
   private val page: carrier_eori_number = instanceOf[carrier_eori_number]
 

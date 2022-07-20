@@ -19,6 +19,7 @@ package controllers.declaration
 import base.{ControllerSpec, ExportsTestData}
 import forms.common.Eori
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
+import forms.declaration.declarationHolder.AuthorizationTypeCodes.{CSE, EXRR}
 import forms.declaration.declarationHolder.DeclarationHolder
 import models.DeclarationType._
 import models.Mode
@@ -136,10 +137,10 @@ class DeclarationHolderAddControllerSpec extends ControllerSpec with GivenWhenTh
 
         "user adds mutually exclusive data" when {
           "attempted to add EXRR when already having CSE present" in {
-            val holder = DeclarationHolder(Some("CSE"), Some(Eori(ExportsTestData.eori)), Some(EoriSource.OtherEori))
+            val holder = DeclarationHolder(Some(CSE), Some(Eori(ExportsTestData.eori)), Some(EoriSource.OtherEori))
             withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationHolders(holder)))
 
-            val requestBody = List("authorisationTypeCode" -> "EXRR", "eori" -> ExportsTestData.eori)
+            val requestBody = List("authorisationTypeCode" -> EXRR, "eori" -> ExportsTestData.eori)
             val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded(requestBody: _*))
 
             status(result) mustBe BAD_REQUEST
@@ -147,10 +148,10 @@ class DeclarationHolderAddControllerSpec extends ControllerSpec with GivenWhenTh
           }
 
           "attempted to add CSE when already having EXRR present" in {
-            val holder = DeclarationHolder(Some("EXRR"), Some(Eori(ExportsTestData.eori)), Some(EoriSource.OtherEori))
+            val holder = DeclarationHolder(Some(EXRR), Some(Eori(ExportsTestData.eori)), Some(EoriSource.OtherEori))
             withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationHolders(holder)))
 
-            val requestBody = List("authorisationTypeCode" -> "CSE", "eori" -> ExportsTestData.eori)
+            val requestBody = List("authorisationTypeCode" -> CSE, "eori" -> ExportsTestData.eori)
             val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded(requestBody: _*))
 
             status(result) mustBe BAD_REQUEST
@@ -193,7 +194,7 @@ class DeclarationHolderAddControllerSpec extends ControllerSpec with GivenWhenTh
           }
           withNewCaching(aDeclarationAfter(request.cacheModel, withAdditionalDeclarationType(additionalDeclarationType)))
 
-          val requestBody = List("authorisationTypeCode" -> "EXRR", "eori" -> ExportsTestData.eori, "eoriSource" -> "OtherEori")
+          val requestBody = List("authorisationTypeCode" -> EXRR, "eori" -> ExportsTestData.eori, "eoriSource" -> "OtherEori")
           val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           status(result) mustBe BAD_REQUEST

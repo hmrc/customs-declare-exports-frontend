@@ -66,7 +66,7 @@ object DeclarationHolder extends DeclarationPage {
   private def nonExrrSelectedForPrelodgedDecl(maybeCode: Option[String], maybeAdditionalDeclarationType: Option[AdditionalDeclarationType]): Boolean =
     maybeCode.fold(true) { authorisationCode =>
       maybeAdditionalDeclarationType.fold(true) { additionalDeclarationType =>
-        !(authorisationCode == "EXRR" && isPreLodged(additionalDeclarationType))
+        !(authorisationCode == EXRR && isPreLodged(additionalDeclarationType))
       }
     }
 

@@ -18,6 +18,7 @@ package views.helpers
 
 import config.AppConfig
 import forms.declaration.CommodityDetails
+import forms.declaration.declarationHolder.AuthorizationTypeCodes.CSE
 import models.DeclarationType.CLEARANCE
 import models.requests.JourneyRequest
 import play.api.i18n.Messages
@@ -212,5 +213,5 @@ object AdditionalDocumentHelper {
     }
   }
 
-  val authCodesNeedingSpecificHintText = Seq("AEOF", "CGU", "CSE", "EIR", "EPSS", "EUS", "IPO", "OPO", "SDE", "SIVA", "TEA", "CWP", "DPO", "MOU")
+  val authCodesNeedingSpecificHintText = Seq("AEOF", "CGU", CSE, "EIR", "EPSS", "EUS", "IPO", "OPO", "SDE", "SIVA", "TEA", "CWP", "DPO", "MOU")
 }

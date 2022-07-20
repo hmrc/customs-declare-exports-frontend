@@ -28,14 +28,14 @@ import models.requests.JourneyRequest
 import org.scalatest.Assertion
 import play.api.data.Form
 import play.twirl.api.Html
-import services.cache.ExportsTestData
+import services.cache.ExportsTestHelper
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.previousDocuments.previous_documents
 import views.tags.ViewTest
 import org.jsoup.nodes.{Document => nodeDocument}
 
 @ViewTest
-class PreviousDocumentsViewSpec extends UnitViewSpec with ExportsTestData with Injector {
+class PreviousDocumentsViewSpec extends UnitViewSpec with ExportsTestHelper with Injector {
 
   private val appConfig = instanceOf[AppConfig]
 

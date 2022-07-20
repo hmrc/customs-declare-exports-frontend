@@ -21,7 +21,7 @@ import forms.declaration.CommodityDetails
 import models.DeclarationType._
 import models.ExportsDeclaration
 import org.jsoup.nodes.{Document, Element}
-import services.cache.ExportsTestData
+import services.cache.ExportsTestHelper
 import testdata.SubmissionsTestData.submission
 import tools.Stubs
 import views.declaration.spec.UnitViewSpec
@@ -29,7 +29,7 @@ import views.html.declaration.summary.submitted_declaration_page
 
 import java.util.function.Predicate
 
-class SubmittedDeclarationPageViewSpec extends UnitViewSpec with Stubs with ExportsTestData with Injector {
+class SubmittedDeclarationPageViewSpec extends UnitViewSpec with Stubs with ExportsTestHelper with Injector {
 
   val declarationPage = instanceOf[submitted_declaration_page]
   def createView(declaration: ExportsDeclaration = aDeclaration()): Document =

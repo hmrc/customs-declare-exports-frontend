@@ -23,7 +23,7 @@ import models.Mode
 import models.declaration.ExportItem
 import org.jsoup.nodes.Document
 import play.api.data.{Form, FormError}
-import services.cache.ExportsTestData
+import services.cache.ExportsTestHelper
 import tools.Stubs
 import views.components.gds.Styles
 import views.declaration.spec.UnitViewSpec
@@ -31,7 +31,7 @@ import views.html.declaration.declarationitems.items_remove_item
 import views.tags.ViewTest
 
 @ViewTest
-class ItemsRemoveItemViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
+class ItemsRemoveItemViewSpec extends UnitViewSpec with ExportsTestHelper with Stubs with Injector {
 
   private val page = instanceOf[items_remove_item]
   private val form = YesNoAnswer.form()

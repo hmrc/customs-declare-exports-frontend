@@ -25,7 +25,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 import play.twirl.api.Html
-import services.cache.ExportsTestData
+import services.cache.ExportsTestHelper
 import uk.gov.hmrc.govukfrontend.views.Aliases.{Actions, Text}
 import views.declaration.spec.UnitViewSpec
 import views.helpers.NotificationErrorHelper.ErrorRow
@@ -34,7 +34,7 @@ import views.html.components.gds.paragraphBody
 import java.util.Locale
 import scala.collection.immutable.ListMap
 
-class NotificationErrorHelperSpec extends UnitViewSpec with ExportsTestData with BeforeAndAfterEach with Injector {
+class NotificationErrorHelperSpec extends UnitViewSpec with ExportsTestHelper with BeforeAndAfterEach with Injector {
 
   private val injector = new OverridableInjector()
   val paragraphBody = injector.instanceOf[paragraphBody]

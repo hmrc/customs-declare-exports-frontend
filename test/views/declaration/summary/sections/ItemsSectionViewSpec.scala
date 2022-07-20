@@ -18,11 +18,11 @@ package views.declaration.summary.sections
 
 import base.Injector
 import models.Mode
-import services.cache.ExportsTestData
+import services.cache.ExportsTestHelper
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.summary.sections.items_section
 
-class ItemsSectionViewSpec extends UnitViewSpec with ExportsTestData with Injector {
+class ItemsSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injector {
 
   "Items section" should {
 

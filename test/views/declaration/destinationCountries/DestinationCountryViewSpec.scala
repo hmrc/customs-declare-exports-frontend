@@ -24,6 +24,7 @@ import forms.declaration.AuthorisationProcedureCodeChoice.{Choice1040, ChoiceOth
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.{STANDARD_FRONTIER, STANDARD_PRE_LODGED}
 import forms.declaration.countries.Countries.DestinationCountryPage
 import forms.declaration.countries.{Countries, Country}
+import forms.declaration.declarationHolder.AuthorizationTypeCodes.CSE
 import forms.declaration.declarationHolder.DeclarationHolder
 import models.DeclarationType._
 import models.Mode
@@ -38,14 +39,14 @@ import org.scalatest.BeforeAndAfterEach
 import play.api.data.Form
 import play.api.mvc.Call
 import play.twirl.api.Html
-import services.cache.ExportsTestData
+import services.cache.ExportsTestHelper
 import tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.destinationCountries.destination_country
 
 import scala.collection.immutable.ListMap
 
-class DestinationCountryViewSpec extends UnitViewSpec with Stubs with ExportsTestData with Injector with BeforeAndAfterEach {
+class DestinationCountryViewSpec extends UnitViewSpec with Stubs with ExportsTestHelper with Injector with BeforeAndAfterEach {
 
   implicit val mockCodeListConnector = mock[CodeListConnector]
 
@@ -118,7 +119,7 @@ class DestinationCountryViewSpec extends UnitViewSpec with Stubs with ExportsTes
     }
 
     "display a back button linking to the /authorisations-required page" when {
-      val holder = DeclarationHolder(Some("CSE"), Some(Eori(ExportsTestData.eori)), Some(EoriSource.OtherEori))
+      val holder = DeclarationHolder(Some(CSE), Some(Eori(ExportsTestData.eori)), Some(EoriSource.OtherEori))
 
       allDeclarationTypes.foreach { declarationType =>
         s"on $declarationType journey and" when {

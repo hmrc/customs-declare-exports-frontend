@@ -23,7 +23,7 @@ import models.Mode
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
-import services.cache.ExportsTestData
+import services.cache.ExportsTestHelper
 import tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.helpers.CommonMessages
@@ -31,7 +31,7 @@ import views.html.declaration.additionalInformation.additional_information_add
 import views.tags.ViewTest
 
 @ViewTest
-class AdditionalInformationAddViewSpec extends UnitViewSpec with ExportsTestData with CommonMessages with Stubs with Injector {
+class AdditionalInformationAddViewSpec extends UnitViewSpec with ExportsTestHelper with CommonMessages with Stubs with Injector {
 
   val itemId = "a7sc78"
 
