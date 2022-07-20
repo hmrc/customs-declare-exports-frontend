@@ -25,11 +25,11 @@ import forms.declaration.additionaldocuments.AdditionalDocument
 import models.declaration.CommodityMeasure
 import models.{DeclarationType, Mode}
 import play.api.Configuration
-import services.cache.ExportsTestData
+import services.cache.ExportsTestHelper
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.summary.sections.item_section
 
-class ItemSectionViewSpec extends UnitViewSpec with ExportsTestData {
+class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper {
 
   val commodityMeasure = CommodityMeasure(Some("12"), Some(false), Some("666"), Some("555"))
 

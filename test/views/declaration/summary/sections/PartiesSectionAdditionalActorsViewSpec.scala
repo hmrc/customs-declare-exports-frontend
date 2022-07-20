@@ -21,11 +21,11 @@ import controllers.declaration.routes.{AdditionalActorsAddController, Additional
 import forms.common.Eori
 import forms.declaration.DeclarationAdditionalActors
 import models.Mode
-import services.cache.ExportsTestData
+import services.cache.ExportsTestHelper
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.summary.sections.parties_section_additional_actors
 
-class PartiesSectionAdditionalActorsViewSpec extends UnitViewSpec with ExportsTestData with Injector {
+class PartiesSectionAdditionalActorsViewSpec extends UnitViewSpec with ExportsTestHelper with Injector {
 
   val eori1 = "eori1"
   val partyType1 = "CS"

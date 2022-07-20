@@ -19,6 +19,7 @@ package controllers.declaration
 import base.ControllerSpec
 import forms.common.Eori
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
+import forms.declaration.declarationHolder.AuthorizationTypeCodes.{CSE, EXRR}
 import forms.declaration.declarationHolder.DeclarationHolder
 import mock.ErrorHandlerMocks
 import models.DeclarationType._
@@ -76,7 +77,7 @@ class DeclarationHolderChangeControllerSpec extends ControllerSpec with ErrorHan
     verify(mockChangePage, times(numberOfTimes)).apply(any(), any(), any(), any())(any(), any())
 
   val declarationHolder1 = DeclarationHolder(Some("ACE"), Some(Eori("GB42354735346235")), Some(EoriSource.UserEori))
-  val declarationHolder2 = DeclarationHolder(Some("CSE"), Some(Eori("FR65435642343253")), Some(EoriSource.OtherEori))
+  val declarationHolder2 = DeclarationHolder(Some(CSE), Some(Eori("FR65435642343253")), Some(EoriSource.OtherEori))
 
   "DeclarationHolder Change Controller" must {
 
@@ -185,7 +186,7 @@ class DeclarationHolderChangeControllerSpec extends ControllerSpec with ErrorHan
             )
           )
 
-          val requestBody = List("authorisationTypeCode" -> "EXRR", "eori" -> "GB42354735346235", "eoriSource" -> "OtherEori")
+          val requestBody = List("authorisationTypeCode" -> EXRR, "eori" -> "GB42354735346235", "eoriSource" -> "OtherEori")
           val result = controller.submitForm(Mode.Normal, declarationHolder1.id)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           status(result) mustBe BAD_REQUEST

@@ -23,9 +23,9 @@ import forms.common.Eori
 import models.DeclarationType.{CLEARANCE, STANDARD}
 import models.Mode.Normal
 import models.Pointer
-import services.cache.ExportsTestData
+import services.cache.ExportsTestHelper
 
-class PointerHelperSpec extends UnitSpec with ExportsTestData with Injector {
+class PointerHelperSpec extends UnitSpec with ExportsTestHelper with Injector {
 
   private val sampleItemId = "Item_Id"
 

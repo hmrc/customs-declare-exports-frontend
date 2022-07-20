@@ -23,16 +23,20 @@ import models.requests.JourneyRequest
 
 object AuthorizationTypeCodes {
 
+  val CSE = "CSE"
+  val EXRR = "EXRR"
+  val MIB = "MIB"
+
   val codeThatOverrideInlandOrBorderSkip = "FP"
   val codeThatSkipLocationOfGoods = "MOU"
 
-  val mutuallyExclusiveAuthCodes = List("CSE", "EXRR")
+  val mutuallyExclusiveAuthCodes = List(CSE, EXRR)
 
   val authCodesThatSkipInlandOrBorder = mutuallyExclusiveAuthCodes
 
-  def codesFilteredFromView(merchandiseInBagConfig: MerchandiseInBagConfig) =
+  def codesFilteredFromView(merchandiseInBagConfig: MerchandiseInBagConfig): List[String] =
     if (merchandiseInBagConfig.isMerchandiseInBagEnabled) List("EORI")
-    else List("EORI", "MIB")
+    else List("EORI", MIB)
 
   def isAuthCode(code: String)(implicit request: JourneyRequest[_]): Boolean =
     declarationHolders.exists(_.authorisationTypeCode.exists(_ == code))
@@ -51,12 +55,12 @@ object AuthorizationTypeCodes {
     "AEOC",
     "AEOF",
     "AEOS",
-    "MIB",
+    MIB,
     "BOI",
     "BTI",
     "CCL",
     "CGU",
-    "CSE",
+    CSE,
     "CVA",
     "CW1",
     "CW2",

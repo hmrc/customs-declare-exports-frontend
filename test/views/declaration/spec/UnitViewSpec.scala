@@ -26,7 +26,7 @@ import org.scalatest.matchers.{BeMatcher, MatchResult}
 import play.api.i18n.{Lang, Messages, MessagesApi}
 import play.api.mvc.{AnyContent, Request}
 import play.api.test.FakeRequest
-import services.cache.ExportsTestData
+import services.cache.ExportsTestHelper
 import views.helpers.CommonMessages
 
 class UnitViewSpec extends UnitWithMocksSpec with ViewMatchers with JourneyTypeTestRunner with FeatureFlagMocks with CommonMessages {
@@ -95,7 +95,7 @@ object MessagesKeyMatcher {
   val langs: Seq[Lang] = Seq(Lang("en"))
 }
 
-object UnitViewSpec extends Injector with ExportsTestData {
+object UnitViewSpec extends Injector with ExportsTestHelper {
   val realMessagesApi: MessagesApi = instanceOf[MessagesApi]
 }
 

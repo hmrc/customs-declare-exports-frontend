@@ -24,7 +24,7 @@ import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
 import models.Mode
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
-import services.cache.ExportsTestData
+import services.cache.ExportsTestHelper
 import tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.helpers.CommonMessages
@@ -32,7 +32,7 @@ import views.html.declaration.border_transport
 import views.tags.ViewTest
 
 @ViewTest
-class BorderTransportViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector with CommonMessages {
+class BorderTransportViewSpec extends UnitViewSpec with ExportsTestHelper with Stubs with Injector with CommonMessages {
 
   private val page = instanceOf[border_transport]
 

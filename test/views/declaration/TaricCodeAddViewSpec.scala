@@ -21,7 +21,7 @@ import forms.declaration.TaricCode
 import models.Mode
 import org.jsoup.nodes.Document
 import play.api.data.Form
-import services.cache.ExportsTestData
+import services.cache.ExportsTestHelper
 import tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.helpers.CommonMessages
@@ -29,7 +29,7 @@ import views.html.declaration.taric_code_add
 import views.tags.ViewTest
 
 @ViewTest
-class TaricCodeAddViewSpec extends UnitViewSpec with ExportsTestData with Stubs with CommonMessages with Injector {
+class TaricCodeAddViewSpec extends UnitViewSpec with ExportsTestHelper with Stubs with CommonMessages with Injector {
 
   private val itemId = "item1"
   private val form: Form[TaricCode] = TaricCode.form()

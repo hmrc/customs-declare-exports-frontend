@@ -26,14 +26,14 @@ import models.codes.{AdditionalProcedureCode => AdditionalProcedureCodeModel, Pr
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
-import services.cache.ExportsTestData
+import services.cache.ExportsTestHelper
 import tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.procedureCodes.additional_procedure_codes
 import views.tags.ViewTest
 
 @ViewTest
-class AdditionalProcedureCodesViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
+class AdditionalProcedureCodesViewSpec extends UnitViewSpec with ExportsTestHelper with Stubs with Injector {
 
   private val page = instanceOf[additional_procedure_codes]
   private val form: Form[AdditionalProcedureCode] = AdditionalProcedureCode.form()

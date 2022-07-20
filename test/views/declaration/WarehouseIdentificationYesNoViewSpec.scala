@@ -25,7 +25,7 @@ import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import play.api.i18n.MessagesApi
-import services.cache.ExportsTestData
+import services.cache.ExportsTestHelper
 import tools.Stubs
 import views.components.gds.Styles
 import views.declaration.spec.UnitViewSpec
@@ -33,7 +33,7 @@ import views.html.declaration.warehouse_identification_yesno
 import views.tags.ViewTest
 
 @ViewTest
-class WarehouseIdentificationYesNoViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
+class WarehouseIdentificationYesNoViewSpec extends UnitViewSpec with ExportsTestHelper with Stubs with Injector {
 
   private val page = instanceOf[warehouse_identification_yesno]
   private val form: Form[WarehouseIdentification] = WarehouseIdentification.form(yesNo = false)

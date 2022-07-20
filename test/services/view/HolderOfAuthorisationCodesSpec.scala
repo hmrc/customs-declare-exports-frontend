@@ -19,6 +19,7 @@ package services.view
 import base.UnitWithMocksSpec
 import config.AppConfig
 import connectors.FileBasedCodeListConnector
+import forms.declaration.declarationHolder.AuthorizationTypeCodes.{EXRR, MIB}
 import forms.declaration.declarationHolder.DeclarationHolder
 import mock.FeatureFlagMocks
 import org.mockito.Mockito.{reset, when}
@@ -58,9 +59,9 @@ class HolderOfAuthorisationCodesSpec extends UnitWithMocksSpec with BeforeAndAft
         autoCompleteItems.size mustBe 53
 
         val item0 = "EXRR - Submission of an arrived export declaration for RoRo movements (where CSE Authorisation is not used)"
-        autoCompleteItems.head mustBe AutoCompleteItem(item0, "EXRR")
+        autoCompleteItems.head mustBe AutoCompleteItem(item0, EXRR)
 
-        autoCompleteItems(4) mustBe AutoCompleteItem("MIB - Merchandise in Baggage", "MIB")
+        autoCompleteItems(4) mustBe AutoCompleteItem("MIB - Merchandise in Baggage", MIB)
 
         val item24 = "TEAH - Temporary Admission authorisation – Auction Houses (no guarantee for VAT required)"
         autoCompleteItems(25) mustBe AutoCompleteItem(item24, "TEAH")
@@ -82,7 +83,7 @@ class HolderOfAuthorisationCodesSpec extends UnitWithMocksSpec with BeforeAndAft
         val autoCompleteItems = holderOfAuthorisationCodes.asListOfAutoCompleteItems(ENGLISH)
         autoCompleteItems.size mustBe 52
 
-        autoCompleteItems must not contain AutoCompleteItem("MIB - Merchandise in Baggage", "MIB")
+        autoCompleteItems must not contain AutoCompleteItem("MIB - Merchandise in Baggage", MIB)
       }
     }
   }

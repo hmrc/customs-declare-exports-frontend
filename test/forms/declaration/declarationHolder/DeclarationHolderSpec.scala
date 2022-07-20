@@ -20,6 +20,7 @@ import base.ExportsTestData._
 import base.JourneyTypeTestRunner
 import forms.common.{DeclarationPageBaseSpec, Eori}
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.{preLodgedTypes, STANDARD_PRE_LODGED}
+import forms.declaration.declarationHolder.AuthorizationTypeCodes.{CSE, EXRR}
 import forms.declaration.declarationHolder.DeclarationHolder._
 import models.declaration.EoriSource
 import models.declaration.ExportDeclarationTestData.correctDeclarationHolder
@@ -149,7 +150,7 @@ class DeclarationHolderSpec extends DeclarationPageBaseSpec with JourneyTypeTest
       }
 
       "provided with 'EXRR' as authorisationTypeCode with a pre-lodged declaration" in {
-        val input = Map("authorisationTypeCode" -> "EXRR", "eori" -> eori, "eoriSource" -> eoriSource)
+        val input = Map("authorisationTypeCode" -> EXRR, "eori" -> eori, "eoriSource" -> eoriSource)
         forAll(preLodgedTypes) { additionalDeclarationType =>
           val result = DeclarationHolder.mapping(eori, Some(additionalDeclarationType)).bind(input)
 
@@ -226,22 +227,22 @@ class DeclarationHolderSpec extends DeclarationPageBaseSpec with JourneyTypeTest
 
     "the user enters a new 'CSE' authorisation and the cache already includes an 'EXRR' one" should {
       "return a FormError" in {
-        val result = validateMutuallyExclusiveAuthCodes(Some(holder("CSE")), List(holder("EXRR")))
-        result.get mustBe error("CSE")
+        val result = validateMutuallyExclusiveAuthCodes(Some(holder(CSE)), List(holder(EXRR)))
+        result.get mustBe error(CSE)
       }
     }
 
     "the user enters a new 'EXRR' authorisation and the cache already includes a 'CSE' one" should {
       "return a FormError" in {
-        val result = validateMutuallyExclusiveAuthCodes(Some(holder("EXRR")), List(holder("CSE")))
-        result.get mustBe error("EXRR")
+        val result = validateMutuallyExclusiveAuthCodes(Some(holder(EXRR)), List(holder(CSE)))
+        result.get mustBe error(EXRR)
       }
     }
 
     "the user does not enter an authorisation code" should {
       "return None" in {
-        validateMutuallyExclusiveAuthCodes(None, List(holder("CSE"))) mustBe None
-        validateMutuallyExclusiveAuthCodes(None, List(holder("EXRR"))) mustBe None
+        validateMutuallyExclusiveAuthCodes(None, List(holder(CSE))) mustBe None
+        validateMutuallyExclusiveAuthCodes(None, List(holder(EXRR))) mustBe None
       }
     }
   }

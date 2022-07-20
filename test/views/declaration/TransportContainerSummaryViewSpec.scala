@@ -26,7 +26,7 @@ import models.Mode.Normal
 import models.declaration.Container
 import org.jsoup.nodes.Document
 import play.api.data.Form
-import services.cache.ExportsTestData
+import services.cache.ExportsTestHelper
 import tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.helpers.CommonMessages
@@ -34,7 +34,7 @@ import views.html.declaration.transport_container_summary
 import views.tags.ViewTest
 
 @ViewTest
-class TransportContainerSummaryViewSpec extends UnitViewSpec with ExportsTestData with Stubs with CommonMessages with Injector {
+class TransportContainerSummaryViewSpec extends UnitViewSpec with ExportsTestHelper with Stubs with CommonMessages with Injector {
 
   val containerId = "212374"
   val sealId = "76434574"

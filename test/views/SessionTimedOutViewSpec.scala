@@ -18,14 +18,14 @@ package views
 
 import base.Injector
 import play.twirl.api.Html
-import services.cache.ExportsTestData
+import services.cache.ExportsTestHelper
 import tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.html.session_timed_out
 import views.tags.ViewTest
 
 @ViewTest
-class SessionTimedOutViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
+class SessionTimedOutViewSpec extends UnitViewSpec with ExportsTestHelper with Stubs with Injector {
 
   private val page = instanceOf[session_timed_out]
   private def createView(): Html =

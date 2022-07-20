@@ -77,7 +77,7 @@
 
         @if(version == 1) { @locationOfGoodsHelper.expander(version) }
 
-        @if(version == 3) {
+        @if(version == 3 || version == 5) {
           @insetText(content = HtmlContent(HtmlFormat.fill(List(
               paragraphBody(messages("declaration.locationOfGoods.inset.v3.body1", link(
                   messages("declaration.locationOfGoods.inset.v3.body1.link"),

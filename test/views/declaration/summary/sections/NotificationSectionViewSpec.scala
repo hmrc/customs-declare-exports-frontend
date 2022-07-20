@@ -21,7 +21,7 @@ import models.declaration.submissions.EnhancedStatus.{CLEARED, GOODS_ARRIVED, GO
 import models.declaration.submissions.RequestType.SubmissionRequest
 import models.declaration.submissions.Submission
 import play.api.libs.json.Json
-import services.cache.ExportsTestData
+import services.cache.ExportsTestHelper
 import views.declaration.spec.UnitViewSpec
 import views.declaration.summary.sections.NotificationSectionViewSpec._
 import views.helpers.EnhancedStatusHelper.asText
@@ -30,7 +30,7 @@ import views.html.declaration.summary.sections.notifications_section
 
 import java.time.ZonedDateTime
 
-class NotificationSectionViewSpec extends UnitViewSpec with ExportsTestData with Injector {
+class NotificationSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injector {
 
   val section = instanceOf[notifications_section]
 

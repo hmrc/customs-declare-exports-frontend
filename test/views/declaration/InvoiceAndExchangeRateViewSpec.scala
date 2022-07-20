@@ -28,14 +28,14 @@ import models.declaration.Locations
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
-import services.cache.ExportsTestData
+import services.cache.ExportsTestHelper
 import tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.invoice_and_exchange_rate
 import views.tags.ViewTest
 
 @ViewTest
-class InvoiceAndExchangeRateViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
+class InvoiceAndExchangeRateViewSpec extends UnitViewSpec with ExportsTestHelper with Stubs with Injector {
 
   private val page = instanceOf[invoice_and_exchange_rate]
   private val validCurrencyCode = "GBP"

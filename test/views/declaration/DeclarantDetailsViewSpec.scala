@@ -26,7 +26,7 @@ import models.Mode
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
-import services.cache.ExportsTestData
+import services.cache.ExportsTestHelper
 import tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.helpers.CommonMessages
@@ -34,7 +34,7 @@ import views.html.declaration.declarant_details
 import views.tags.ViewTest
 
 @ViewTest
-class DeclarantDetailsViewSpec extends UnitViewSpec with ExportsTestData with CommonMessages with Stubs with Injector {
+class DeclarantDetailsViewSpec extends UnitViewSpec with ExportsTestHelper with CommonMessages with Stubs with Injector {
 
   private val declarantDetailsPage = instanceOf[declarant_details]
   private def createView(form: Form[DeclarantEoriConfirmation], mode: Mode = Mode.Normal)(implicit request: JourneyRequest[_]): Document =

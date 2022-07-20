@@ -28,14 +28,14 @@ import models.Mode
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
-import services.cache.ExportsTestData
+import services.cache.ExportsTestHelper
 import tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.commodityMeasure.supplementary_units_yes_no
 import views.tags.ViewTest
 
 @ViewTest
-class SupplementaryUnitsYesNoViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
+class SupplementaryUnitsYesNoViewSpec extends UnitViewSpec with ExportsTestHelper with Stubs with Injector {
 
   private val appConfig = instanceOf[AppConfig]
 

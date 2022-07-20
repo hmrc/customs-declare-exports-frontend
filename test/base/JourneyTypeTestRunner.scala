@@ -22,9 +22,9 @@ import models.DeclarationType.DeclarationType
 import models.requests.JourneyRequest
 import models.{DeclarationType, ExportsDeclaration}
 import play.api.mvc.AnyContent
-import services.cache.ExportsTestData
+import services.cache.ExportsTestHelper
 
-trait JourneyTypeTestRunner extends UnitSpec with ExportsTestData {
+trait JourneyTypeTestRunner extends UnitSpec with ExportsTestHelper {
 
   val simpleStandardDeclaration: ExportsDeclaration = aDeclaration(withType(DeclarationType.STANDARD))
   val simpleSupplementaryDeclaration: ExportsDeclaration = aDeclaration(withType(DeclarationType.SUPPLEMENTARY))

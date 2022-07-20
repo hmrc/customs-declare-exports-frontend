@@ -29,14 +29,14 @@ import models.Mode.Normal
 import models.declaration.{EoriSource, Parties}
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
-import services.cache.ExportsTestData
+import services.cache.ExportsTestHelper
 import tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.declarationHolder.declaration_holder_summary
 import views.tags.ViewTest
 
 @ViewTest
-class DeclarationHolderSummaryViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
+class DeclarationHolderSummaryViewSpec extends UnitViewSpec with ExportsTestHelper with Stubs with Injector {
 
   private val page = instanceOf[declaration_holder_summary]
   val declarationHolder1: DeclarationHolder = DeclarationHolder(Some("ACE"), Some(Eori("GB123456543")), Some(EoriSource.OtherEori))

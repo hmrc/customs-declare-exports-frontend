@@ -24,14 +24,14 @@ import models.Mode
 import models.declaration.Parties
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
-import services.cache.ExportsTestData
+import services.cache.ExportsTestHelper
 import tools.Stubs
 import views.components.gds.Styles
 import views.declaration.spec.UnitViewSpec
 import views.helpers.CommonMessages
 import views.html.declaration.is_exs
 
-class IsExsViewSpec extends UnitViewSpec with ExportsTestData with CommonMessages with Stubs with Injector {
+class IsExsViewSpec extends UnitViewSpec with ExportsTestHelper with CommonMessages with Stubs with Injector {
 
   private val page = instanceOf[is_exs]
   private def createView(mode: Mode = Mode.Normal)(implicit request: JourneyRequest[_]): Document =

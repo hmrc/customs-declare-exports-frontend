@@ -23,7 +23,7 @@ import models.requests.JourneyRequest
 import models.{DeclarationType, Mode}
 import org.jsoup.nodes.Document
 import play.api.data.Form
-import services.cache.ExportsTestData
+import services.cache.ExportsTestHelper
 import tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.helpers.CommonMessages
@@ -31,7 +31,7 @@ import views.html.declaration.commodity_details
 import views.tags.ViewTest
 
 @ViewTest
-class CommodityDetailsViewSpec extends UnitViewSpec with ExportsTestData with Stubs with CommonMessages with Injector {
+class CommodityDetailsViewSpec extends UnitViewSpec with ExportsTestHelper with Stubs with CommonMessages with Injector {
 
   private val page = instanceOf[commodity_details]
   private val itemId = "item1"

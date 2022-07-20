@@ -24,14 +24,14 @@ import models.declaration.EoriSource
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
-import services.cache.ExportsTestData
+import services.cache.ExportsTestHelper
 import tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.declarationHolder.declaration_holder_remove
 import views.tags.ViewTest
 
 @ViewTest
-class DeclarationHolderRemoveViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
+class DeclarationHolderRemoveViewSpec extends UnitViewSpec with ExportsTestHelper with Stubs with Injector {
 
   private val page = instanceOf[declaration_holder_remove]
   val declarationHolder: DeclarationHolder = DeclarationHolder(Some("ACE"), Some(Eori("GB123456543")), Some(EoriSource.OtherEori))

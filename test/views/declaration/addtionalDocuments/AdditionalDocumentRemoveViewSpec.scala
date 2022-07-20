@@ -25,14 +25,14 @@ import models.Mode
 import models.requests.JourneyRequest
 import org.jsoup.nodes.{Document, Element}
 import play.api.data.Form
-import services.cache.ExportsTestData
+import services.cache.ExportsTestHelper
 import tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.additionalDocuments.additional_document_remove
 import views.tags.ViewTest
 
 @ViewTest
-class AdditionalDocumentRemoveViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
+class AdditionalDocumentRemoveViewSpec extends UnitViewSpec with ExportsTestHelper with Stubs with Injector {
 
   private val itemId = "a7sc78"
   private val documentId = "1.2131231"

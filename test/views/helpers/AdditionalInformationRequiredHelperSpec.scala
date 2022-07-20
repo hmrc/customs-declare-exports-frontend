@@ -21,10 +21,10 @@ import base.Injector
 import models.DeclarationType._
 import models.declaration.{ExportItem, ProcedureCodesData}
 import org.scalatest.Assertion
-import services.cache.ExportsTestData
+import services.cache.ExportsTestHelper
 import views.declaration.spec.UnitViewSpec
 
-class AdditionalInformationRequiredHelperSpec extends UnitViewSpec with ExportsTestData with Injector {
+class AdditionalInformationRequiredHelperSpec extends UnitViewSpec with ExportsTestHelper with Injector {
 
   val helper = instanceOf[AdditionalInformationRequiredHelper]
 
