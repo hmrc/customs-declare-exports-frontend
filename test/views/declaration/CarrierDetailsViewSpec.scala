@@ -213,7 +213,7 @@ class CarrierDetailsViewSpec extends AddressViewSpec with CommonMessages with St
       }
 
       "display error for addressLine too long" in {
-        assertElementIsIncorrect(validAddress.copy(addressLine = fieldWithLengthOver35), "addressLine", "length")
+        assertElementIsIncorrect(validAddress.copy(addressLine = fieldWithLengthOver70), "addressLine", "length")
       }
 
       "display error for empty townOrCity" in {
