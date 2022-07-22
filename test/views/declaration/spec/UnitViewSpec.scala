@@ -19,7 +19,7 @@ package views.declaration.spec
 import base.{Injector, JourneyTypeTestRunner, UnitWithMocksSpec}
 import mock.FeatureFlagMocks
 import models.Mode
-import models.Mode.{Change, ChangeAmend, Draft}
+import models.Mode.{Change, ChangeAmend, Draft, ErrorFix}
 import org.jsoup.nodes.Document
 import org.scalatest.Assertion
 import org.scalatest.matchers.{BeMatcher, MatchResult}
@@ -67,12 +67,20 @@ class UnitViewSpec extends UnitWithMocksSpec with ViewMatchers with JourneyTypeT
         saveAndReturnToSummaryButton must containMessage(saveAndReturnToSummaryCaption)
       }
 
+  def checkSaveAndReturnToErrorsButtonIsDisplayed(createView: Mode => Document): Unit =
+    "display 'Save and return to errors' button in ErrorFix mode" in {
+      val view = createView(ErrorFix)
+      val saveAndReturnToSummaryButton = view.getElementById("save_and_return_to_errors")
+      saveAndReturnToSummaryButton must containMessage(saveAndReturnToErrorsCaption)
+    }
+
   def checkAllSaveButtonsAreDisplayed(createView: Mode => Document): Unit = {
     val view = createView(Mode.Normal)
 
     checkSaveAndContinueButtonIsDisplayed(view)
     checkSaveAndReturnLinkIsDisplayed(view)
     checkSaveAndReturnToSummaryButtonIsDisplayed(createView)
+    checkSaveAndReturnToErrorsButtonIsDisplayed(createView)
   }
 }
 

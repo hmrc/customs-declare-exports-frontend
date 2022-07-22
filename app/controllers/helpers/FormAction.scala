@@ -28,6 +28,7 @@ object FormAction {
   private val saveAndContinueLabel = "SaveAndContinue"
   private val saveAndReturnLabel = "SaveAndReturn"
   private val saveAndReturnToSummaryLabel = "SaveAndReturnToSummary"
+  private val saveAndReturnToErrorsLabel = "SaveAndReturnToErrors"
   private val continueLabel = "Continue"
   private val removeLabel = "Remove"
 
@@ -39,6 +40,7 @@ object FormAction {
         case (`saveAndContinueLabel`, _)        => Some(SaveAndContinue)
         case (`saveAndReturnLabel`, _)          => Some(SaveAndReturn)
         case (`saveAndReturnToSummaryLabel`, _) => Some(SaveAndReturnToSummary)
+        case (`saveAndReturnToErrorsLabel`, _)  => Some(SaveAndReturnToErrors)
         case (`continueLabel`, _)               => Some(Continue)
         case (`removeLabel`, values)            => Some(Remove(values))
         case _                                  => None
@@ -51,6 +53,7 @@ case object Unknown extends FormAction
 case object SaveAndContinue extends FormAction
 case object SaveAndReturn extends FormAction
 case object SaveAndReturnToSummary extends FormAction
+case object SaveAndReturnToErrors extends FormAction
 case object Continue extends FormAction
 case class Remove(keys: Seq[String]) extends FormAction
 case class AddField(field: String) extends FormAction
