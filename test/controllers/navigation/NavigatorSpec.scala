@@ -74,20 +74,20 @@ class NavigatorSpec
   private def decoratedRequest(sourceRequest: FakeRequest[AnyContent])(implicit declaration: ExportsDeclaration) =
     new JourneyRequest[AnyContent](buildVerifiedEmailRequest(sourceRequest, mock[SignedInUser]), declaration)
 
+  private def requestWithFormAction(action: Option[FormAction]) =
+    FakeRequest("GET", "uri")
+      .withFormUrlEncodedBody(action.getOrElse("other-field").toString -> "")
+      .withSession(ExportsSessionKeys.declarationId -> existingDeclarationId)
+
   "Continue To" should {
     val updatedDate = LocalDate.of(2020, 1, 1)
 
     implicit val declaration = aDeclaration(withUpdateDate(updatedDate))
 
-    def request(action: Option[FormAction]) =
-      FakeRequest("GET", "uri")
-        .withFormUrlEncodedBody(action.getOrElse("other-field").toString -> "")
-        .withSession(ExportsSessionKeys.declarationId -> existingDeclarationId)
-
     "Go to Save as Draft" in {
       given(config.draftTimeToLive).willReturn(FiniteDuration(10, TimeUnit.DAYS))
 
-      val result = navigator.continueTo(mode, call(_))(decoratedRequest(request(Some(SaveAndReturn))), hc)
+      val result = navigator.continueTo(mode, call(_))(decoratedRequest(requestWithFormAction(Some(SaveAndReturn))), hc)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(DraftDeclarationController.displayPage.url)
@@ -98,7 +98,7 @@ class NavigatorSpec
 
     "go to the URL provided" when {
       "Save And Continue" in {
-        val result = navigator.continueTo(mode, call(_))(decoratedRequest(request(Some(SaveAndContinue))), hc)
+        val result = navigator.continueTo(mode, call(_))(decoratedRequest(requestWithFormAction(Some(SaveAndContinue))), hc)
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some("url")
@@ -106,7 +106,7 @@ class NavigatorSpec
       }
 
       "Add" in {
-        val result = navigator.continueTo(mode, call(_))(decoratedRequest(request(Some(Add))), hc)
+        val result = navigator.continueTo(mode, call(_))(decoratedRequest(requestWithFormAction(Some(Add))), hc)
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some("url")
@@ -114,7 +114,7 @@ class NavigatorSpec
       }
 
       "Remove" in {
-        val result = navigator.continueTo(mode, call(_))(decoratedRequest(request(Some(Remove(Seq.empty)))), hc)
+        val result = navigator.continueTo(mode, call(_))(decoratedRequest(requestWithFormAction(Some(Remove(Seq.empty)))), hc)
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some("url")
@@ -122,7 +122,7 @@ class NavigatorSpec
       }
 
       "Unknown Action" in {
-        val result = navigator.continueTo(mode, call(_))(decoratedRequest(request(Some(Unknown))), hc)
+        val result = navigator.continueTo(mode, call(_))(decoratedRequest(requestWithFormAction(Some(Unknown))), hc)
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some("url")
@@ -130,7 +130,7 @@ class NavigatorSpec
       }
 
       "Error-fix flag is passed in error-fix mode" in {
-        val result = navigator.continueTo(Mode.ErrorFix, call, true)(decoratedRequest(request(Some(SaveAndContinue))), hc)
+        val result = navigator.continueTo(Mode.ErrorFix, call, true)(decoratedRequest(requestWithFormAction(Some(SaveAndContinue))), hc)
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some("url")
@@ -138,7 +138,7 @@ class NavigatorSpec
       }
 
       "Add in error-fix mode with error-fix flag passed" in {
-        val result = navigator.continueTo(Mode.ErrorFix, call, true)(decoratedRequest(request(Some(Add))), hc)
+        val result = navigator.continueTo(Mode.ErrorFix, call, true)(decoratedRequest(requestWithFormAction(Some(Add))), hc)
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some("url")
@@ -146,7 +146,7 @@ class NavigatorSpec
       }
 
       "Remove in error-fix mode with error-fix flag passed" in {
-        val result = navigator.continueTo(Mode.ErrorFix, call, true)(decoratedRequest(request(Some(Remove(Seq.empty)))), hc)
+        val result = navigator.continueTo(Mode.ErrorFix, call, true)(decoratedRequest(requestWithFormAction(Some(Remove(Seq.empty)))), hc)
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some("url")
@@ -158,7 +158,7 @@ class NavigatorSpec
 
       "user is in draft mode" in {
         val mode = Mode.Draft
-        val result = navigator.continueTo(mode, call)(decoratedRequest(request(Some(SaveAndReturnToSummary))), hc)
+        val result = navigator.continueTo(mode, call)(decoratedRequest(requestWithFormAction(Some(SaveAndReturnToSummary))), hc)
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(SummaryController.displayPage(mode).url)
@@ -167,7 +167,7 @@ class NavigatorSpec
 
       "user is in change-amend mode" in {
         val mode = Mode.ChangeAmend
-        val result = navigator.continueTo(mode, call)(decoratedRequest(request(Some(SaveAndReturnToSummary))), hc)
+        val result = navigator.continueTo(mode, call)(decoratedRequest(requestWithFormAction(Some(SaveAndReturnToSummary))), hc)
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(SummaryController.displayPageOnAmend.url)
@@ -176,7 +176,7 @@ class NavigatorSpec
 
       "user is in change mode" in {
         val mode = Mode.Change
-        val result = navigator.continueTo(mode, call)(decoratedRequest(request(Some(SaveAndReturnToSummary))), hc)
+        val result = navigator.continueTo(mode, call)(decoratedRequest(requestWithFormAction(Some(SaveAndReturnToSummary))), hc)
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(SummaryController.displayPage(Mode.Normal).url)
@@ -196,6 +196,7 @@ class NavigatorSpec
       implicit val declaration = aDeclaration(withSourceId(sourceId))
 
       "continueTo method is invoked with mode ErrorFix and sourceId in request" in {
+        val request = requestWithFormAction(Some(SaveAndReturnToErrors))
         val result = navigator.continueTo(Mode.ErrorFix, call)(decoratedRequest(request), hc)
         redirectLocation(result) mustBe Some(RejectedNotificationsController.displayPage(sourceId).url)
       }
@@ -214,6 +215,12 @@ class NavigatorSpec
     "redirect to SubmissionsController.displayListOfSubmissions" when {
 
       implicit val declaration = aDeclaration(withoutSourceId())
+
+      "continueTo method is invoked with mode ErrorFix and form action SaveAndReturnToErrors but without sourceId in request" in {
+        val request = requestWithFormAction(Some(SaveAndReturnToErrors))
+        val result = navigator.continueTo(Mode.ErrorFix, call)(decoratedRequest(request), hc)
+        redirectLocation(result) mustBe Some(SubmissionsController.displayListOfSubmissions().url)
+      }
 
       "continueTo method is invoked with mode ErrorFix but without sourceId in request" in {
         val result = navigator.continueTo(Mode.ErrorFix, call)(decoratedRequest(request), hc)

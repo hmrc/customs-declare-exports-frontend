@@ -17,7 +17,7 @@
 package views.components.gds
 
 import models.Mode
-import models.Mode.{Change, ChangeAmend, Draft, Normal}
+import models.Mode.{Change, ChangeAmend, Draft, ErrorFix, Normal}
 import play.twirl.api.Html
 import views.declaration.spec.UnitViewSpec
 import views.declaration.spec.UnitViewSpec.instanceOf
@@ -41,13 +41,27 @@ class SaveButtonsSpec extends UnitViewSpec {
       Option(buttons.getElementsByAttributeValue("name", "SaveAndReturn")).isDefined
     }
 
-    for (mode <- Mode.modes) s"display Save and return to summary button appropriately in $mode mode" in {
-      val buttonsPage = createButtons(mode)
-      val buttons = Option(buttonsPage.getElementById("save_and_return_to_summary"))
+    "display Save and return to summary button appropriately" when {
+      for (mode <- Mode.modes) s"$mode" in {
+        val buttonsPage = createButtons(mode)
+        val buttons = Option(buttonsPage.getElementById("save_and_return_to_summary"))
 
-      mode match {
-        case Draft | ChangeAmend | Change => buttons.isDefined
-        case _                            => buttons.isEmpty
+        mode match {
+          case Draft | ChangeAmend | Change => buttons.isDefined mustBe true
+          case _                            => buttons.isEmpty mustBe true
+        }
+      }
+    }
+
+    "display Save and return to errors button appropriately" when {
+      for (mode <- Mode.modes) s"$mode" in {
+        val buttonsPage = createButtons(mode)
+        val buttons = Option(buttonsPage.getElementById("save_and_return_to_errors"))
+
+        mode match {
+          case ErrorFix => buttons.isDefined mustBe true
+          case _        => buttons.isEmpty mustBe true
+        }
       }
     }
   }

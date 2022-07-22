@@ -17,7 +17,7 @@
 @import models.Mode._
 
 
-@this(saveAndContinue: saveAndContinue, saveAndReturnToSummary: saveAndReturnToSummary)
+@this(saveAndContinue: saveAndContinue, saveAndReturnToSummary: saveAndReturnToSummary, saveAndReturnToErrors: saveAndReturnToErrors)
 
 @(mode: Mode)(implicit messages: Messages)
 
@@ -25,6 +25,9 @@
 @saveAndContinue()
 @if(Seq(Draft, ChangeAmend, Change).contains(mode)) {
   @saveAndReturnToSummary()
+}
+@if(mode == ErrorFix) {
+  @saveAndReturnToErrors()
 }
 </div>
 <p class="govuk-body">

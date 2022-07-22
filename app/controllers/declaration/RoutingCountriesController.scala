@@ -19,7 +19,7 @@ package controllers.declaration
 import connectors.CodeListConnector
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.routes.{LocationOfGoodsController, RoutingCountriesController}
-import controllers.helpers.{Add, FormAction, Remove, SaveAndContinue, SaveAndReturn, SaveAndReturnToSummary}
+import controllers.helpers.{Add, FormAction, Remove, SaveAndContinue, SaveAndReturn, SaveAndReturnToErrors, SaveAndReturnToSummary}
 import controllers.navigation.Navigator
 import forms.declaration.RoutingCountryQuestionYesNo._
 import forms.declaration.countries.{Countries, Country}
@@ -107,10 +107,11 @@ class RoutingCountriesController @Inject() (
       case Add =>
         validateAndRedirect(navigator.continueTo(mode, RoutingCountriesController.displayRoutingCountry, mode.isErrorFix), mode)
 
-      case SaveAndContinue | SaveAndReturn | SaveAndReturnToSummary if isFormEmpty && request.cacheModel.containRoutingCountries =>
+      case SaveAndContinue | SaveAndReturn | SaveAndReturnToSummary | SaveAndReturnToErrors
+          if isFormEmpty && request.cacheModel.containRoutingCountries =>
         Future.successful(navigator.continueTo(mode, LocationOfGoodsController.displayPage))
 
-      case SaveAndContinue | SaveAndReturn | SaveAndReturnToSummary =>
+      case SaveAndContinue | SaveAndReturn | SaveAndReturnToSummary | SaveAndReturnToErrors =>
         validateAndRedirect(navigator.continueTo(mode, LocationOfGoodsController.displayPage), mode)
 
       case Remove(values) =>

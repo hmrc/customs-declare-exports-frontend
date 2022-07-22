@@ -388,10 +388,11 @@ class Navigator @Inject() (
     implicit req: JourneyRequest[AnyContent]
   ): Result =
     formAction match {
-      case Add | Remove(_)                => Results.Redirect(factory(ErrorFix))
-      case _ if isErrorFixInProgress      => Results.Redirect(factory(ErrorFix))
-      case _ if req.sourceDecId.isDefined => Results.Redirect(RejectedNotificationsController.displayPage(req.sourceDecId.get))
-      case _                              => Results.Redirect(SubmissionsController.displayListOfSubmissions())
+      case SaveAndReturnToErrors if req.sourceDecId.isDefined => Results.Redirect(RejectedNotificationsController.displayPage(req.sourceDecId.get))
+      case SaveAndReturnToErrors                              => Results.Redirect(SubmissionsController.displayListOfSubmissions())
+      case Add | Remove(_)                                    => Results.Redirect(factory(ErrorFix))
+      case _ if isErrorFixInProgress                          => Results.Redirect(factory(ErrorFix))
+      case _                                                  => Results.Redirect(SubmissionsController.displayListOfSubmissions())
     }
 
   private def nactCodeFirstPreviousPage(cacheModel: ExportsDeclaration, mode: Mode, itemId: String): Call =

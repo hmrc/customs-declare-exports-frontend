@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,19 +12,17 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package views.helpers
+@import controllers.helpers.SaveAndReturnToErrors
+@import uk.gov.hmrc.govukfrontend.views.html.components._
 
-trait CommonMessages {
+@this(govukButton : GovukButton)
 
-  val backCaption: String = "site.back"
-  val backToSelectionCaption: String = "site.backToSelectionPage"
-  val removeCaption: String = "site.remove"
-  val addCaption: String = "site.add"
-  val continueCaption: String = "site.continue"
-  val saveAndContinueCaption: String = "site.save_and_continue"
-  val saveAndReturnCaption: String = "site.save_and_come_back_later"
-  val saveAndReturnToSummaryCaption: String = "site.saveAndReturnToSummary"
-  val saveAndReturnToErrorsCaption: String = "site.saveAndReturnToErrors"
-}
+@(messageKey: String = "site.saveAndReturnToErrors")(implicit messages: Messages)
+
+@govukButton(Button(
+    attributes = Map("id" -> "save_and_return_to_errors", "name" -> SaveAndReturnToErrors.toString),
+    classes = "govuk-button--secondary",
+    content = Text(messages(messageKey))
+))
