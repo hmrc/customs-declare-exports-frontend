@@ -35,10 +35,9 @@ import play.twirl.api.HtmlFormat
 import views.html.declaration.summary.submitted_declaration_page
 import views.html.submissions
 
-import java.time.{Instant, LocalDate, ZoneOffset, ZonedDateTime}
+import java.time.{Instant, ZoneOffset, ZonedDateTime}
 import java.util.UUID
 import scala.concurrent.Future
-import scala.concurrent.duration._
 
 class SubmissionsControllerSpec extends ControllerWithoutFormSpec with BeforeAndAfterEach {
 
@@ -47,7 +46,7 @@ class SubmissionsControllerSpec extends ControllerWithoutFormSpec with BeforeAnd
   private val action = Action(requestType = SubmissionRequest, id = "conversationID", requestTimestamp = dateTime, notifications = None)
 
   private val submission = Submission(
-    uuid = UUID.randomUUID().toString,
+    uuid = UUID.randomUUID.toString,
     eori = "eori",
     lrn = "lrn",
     mrn = None,
@@ -164,152 +163,33 @@ class SubmissionsControllerSpec extends ControllerWithoutFormSpec with BeforeAnd
     captor.getValue
   }
 
-  "Amend Declaration" should {
+  private val rejectedId = "id"
 
-    "return 303 (SEE OTHER)" when {
+  "SubmissionsController on amend" should {
+    "return 303 (SEE OTHER) with the new declaration-id as one the Session keys" in {
+      when(mockCustomsDeclareExportsConnector.findOrCreateDraftForRejected(refEq(rejectedId))(any(), any()))
+        .thenReturn(Future.successful("new-id"))
 
-      "declaration found without declaration in progress" in {
-        val rejectedDeclaration: ExportsDeclaration =
-          aDeclaration(withId("id"), withStatus(DeclarationStatus.COMPLETE), withUpdateDate(LocalDate.MIN), withCreatedDate(LocalDate.MIN))
+      val result = controller.amend(rejectedId)(getRequest(None))
 
-        val newDeclaration: ExportsDeclaration = aDeclaration(withId("new-id"), withStatus(DeclarationStatus.DRAFT))
-
-        when(mockCustomsDeclareExportsConnector.findDeclaration(refEq("id"))(any(), any()))
-          .thenReturn(Future.successful(Some(rejectedDeclaration)))
-
-        when(mockCustomsDeclareExportsConnector.createDeclaration(any[ExportsDeclaration])(any(), any()))
-          .thenReturn(Future.successful(newDeclaration))
-
-        val result = controller.amend("id")(getRequest(None))
-
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(SummaryController.displayPageOnAmend.url)
-        session(result).get(ExportsSessionKeys.declarationId) mustBe Some("new-id")
-
-        val created = theDeclarationCreated
-
-        created.status mustBe DeclarationStatus.DRAFT
-        created.sourceId mustBe Some("id")
-        created.updatedDateTime mustBe inTheLast(1 seconds)
-        created.createdDateTime mustBe inTheLast(1 seconds)
-      }
-
-      "there is a declaration in progress" in {
-        val decId = UUID.randomUUID().toString
-        val declaration: ExportsDeclaration = aDeclaration(withId(decId), withStatus(DeclarationStatus.DRAFT))
-
-        when(mockCustomsDeclareExportsConnector.findDeclaration(refEq(decId))(any(), any()))
-          .thenReturn(Future.successful(Some(declaration)))
-
-        val result = controller.amend(decId)(getRequest(Some(decId)))
-
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result).get mustBe SummaryController.displayPageOnAmend.url
-      }
-
-      "declaration not found" in {
-        when(mockCustomsDeclareExportsConnector.findDeclaration(refEq("id"))(any(), any()))
-          .thenReturn(Future.successful(None))
-
-        val result = controller.amend("id")(getRequest(None))
-
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.routes.SubmissionsController.displayListOfSubmissions().url)
-      }
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(SummaryController.displayPageOnAmend.url)
+      session(result).get(ExportsSessionKeys.declarationId) mustBe Some("new-id")
     }
   }
 
-  "Amend Errors" should {
+  "SubmissionsController on amendErrors" should {
+    "return 303 (SEE OTHER) with the new declaration-id as one the Session keys" in {
+      val redirectUrl = "/specific-page-url"
 
-    "return 303 (SEE OTHER)" when {
+      when(mockCustomsDeclareExportsConnector.findOrCreateDraftForRejected(refEq(rejectedId))(any(), any()))
+        .thenReturn(Future.successful("new-id"))
 
-      "declaration found without declaration in progress" in {
-        val redirectUrl = "/specific-page-url"
-        val rejectedDeclaration: ExportsDeclaration =
-          aDeclaration(withId("id"), withStatus(DeclarationStatus.COMPLETE), withUpdateDate(LocalDate.MIN), withCreatedDate(LocalDate.MIN))
+      val result = controller.amendErrors(rejectedId, redirectUrl, "pattern", "message")(getRequest(None))
 
-        val newDeclaration: ExportsDeclaration = aDeclaration(withId("new-id"), withStatus(DeclarationStatus.DRAFT))
-
-        when(mockCustomsDeclareExportsConnector.findDeclaration(refEq("id"))(any(), any()))
-          .thenReturn(Future.successful(Some(rejectedDeclaration)))
-
-        when(mockCustomsDeclareExportsConnector.createDeclaration(any[ExportsDeclaration])(any(), any()))
-          .thenReturn(Future.successful(newDeclaration))
-
-        val result = controller.amendErrors("id", redirectUrl, "pattern", "message")(getRequest(None))
-
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result).get mustBe redirectUrl + "?mode=Error-Fix"
-        session(result).get(ExportsSessionKeys.declarationId) mustBe Some("new-id")
-
-        val created = theDeclarationCreated
-
-        created.status mustBe DeclarationStatus.DRAFT
-        created.sourceId mustBe Some("id")
-        created.updatedDateTime mustBe inTheLast(1 seconds)
-        created.createdDateTime mustBe inTheLast(1 seconds)
-      }
-
-      "there is a declaration in progress with the same source Id" in {
-        val redirectUrl = "/specific-page-url"
-        val sourceId = UUID.randomUUID().toString
-        val decId = UUID.randomUUID().toString
-        val declaration: ExportsDeclaration = aDeclaration(withId(decId), withSourceId(sourceId), withStatus(DeclarationStatus.DRAFT))
-
-        when(mockCustomsDeclareExportsConnector.findDeclaration(refEq(decId))(any(), any()))
-          .thenReturn(Future.successful(Some(declaration)))
-
-        val result = controller.amendErrors(sourceId, redirectUrl, "pattern", "message")(getRequest(Some(decId)))
-
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result).get mustBe redirectUrl + "?mode=Error-Fix"
-      }
-
-      "there is declaration in progress without sourceId" in {
-        val redirectUrl = "/specific-page-url"
-        val rejDecId = UUID.randomUUID().toString
-        val actualDecId = UUID.randomUUID().toString
-        val newDecId = UUID.randomUUID().toString
-        val rejectedDeclaration: ExportsDeclaration =
-          aDeclaration(withId(rejDecId), withStatus(DeclarationStatus.COMPLETE), withUpdateDate(LocalDate.MIN), withCreatedDate(LocalDate.MIN))
-
-        val actualDeclaration: ExportsDeclaration = aDeclaration(withId(actualDecId), withoutSourceId())
-        val newDeclaration: ExportsDeclaration = aDeclaration(withId(newDecId), withStatus(DeclarationStatus.DRAFT))
-
-        when(mockCustomsDeclareExportsConnector.findDeclaration(refEq(rejDecId))(any(), any()))
-          .thenReturn(Future.successful(Some(rejectedDeclaration)))
-
-        when(mockCustomsDeclareExportsConnector.findDeclaration(refEq(actualDecId))(any(), any()))
-          .thenReturn(Future.successful(Some(actualDeclaration)))
-
-        when(mockCustomsDeclareExportsConnector.createDeclaration(any[ExportsDeclaration])(any(), any()))
-          .thenReturn(Future.successful(newDeclaration))
-
-        val result = controller.amendErrors(rejDecId, redirectUrl, "pattern", "message")(getRequest(Some(actualDecId)))
-
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result).get mustBe redirectUrl + "?mode=Error-Fix"
-        session(result).get(ExportsSessionKeys.declarationId) mustBe Some(newDecId)
-
-        val created = theDeclarationCreated
-
-        created.status mustBe DeclarationStatus.DRAFT
-        created.sourceId mustBe Some(rejDecId)
-        created.updatedDateTime mustBe inTheLast(1 seconds)
-        created.createdDateTime mustBe inTheLast(1 seconds)
-      }
-
-      "declaration not found" in {
-        val sourceId = UUID.randomUUID().toString
-
-        when(mockCustomsDeclareExportsConnector.findDeclaration(refEq(sourceId))(any(), any()))
-          .thenReturn(Future.successful(None))
-
-        val result = controller.amendErrors(sourceId, "redirectUrl", "pattern", "message")(getRequest(None))
-
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.routes.SubmissionsController.displayListOfSubmissions().url)
-      }
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result).get mustBe s"$redirectUrl?mode=Error-Fix"
+      session(result).get(ExportsSessionKeys.declarationId) mustBe Some("new-id")
     }
   }
 }

@@ -45,6 +45,23 @@ class SubmissionsController @Inject() (
 )(implicit ec: ExecutionContext, paginationConfig: PaginationConfig)
     extends FrontendController(mcc) with I18nSupport {
 
+  def amend(rejectedId: String): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
+    findOrCreateDraftForRejected(rejectedId, Redirect(SummaryController.displayPageOnAmend))
+  }
+
+  def amendErrors(rejectedId: String, redirectUrl: String, pattern: String, message: String): Action[AnyContent] =
+    (authenticate andThen verifyEmail).async { implicit request =>
+      val flashData = FieldNamePointer.getFieldName(pattern) match {
+        case Some(name) if message.nonEmpty => Map(FlashKeys.fieldName -> name, FlashKeys.errorMessage -> message)
+        case Some(name)                     => Map(FlashKeys.fieldName -> name)
+        case None if message.nonEmpty       => Map(FlashKeys.errorMessage -> message)
+        case _                              => Map.empty[String, String]
+      }
+
+      val redirectUrlWithMode = redirectUrl + ErrorFix.queryParameter
+      findOrCreateDraftForRejected(rejectedId, Redirect(redirectUrlWithMode).flashing(Flash(flashData)))
+    }
+
   def displayListOfSubmissions(submissionsPages: SubmissionsPages = SubmissionsPages()): Action[AnyContent] =
     (authenticate andThen verifyEmail).async { implicit request =>
       for {
@@ -53,19 +70,6 @@ class SubmissionsController @Inject() (
       } yield Ok(submissionsPage(SubmissionsPagesElements(submissionsInDescOrder, submissionsPages)))
         .removingFromSession(ExportsSessionKeys.declarationId)
     }
-
-  def amend(id: String): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
-    val redirect = Redirect(SummaryController.displayPageOnAmend)
-
-    val actualDeclaration: Future[Option[ExportsDeclaration]] = request.declarationId.map { decId =>
-      customsDeclareExportsConnector.findDeclaration(decId)
-    }.getOrElse(Future.successful(None))
-
-    actualDeclaration.flatMap {
-      case Some(_) => Future.successful(Redirect(SummaryController.displayPageOnAmend))
-      case _       => createDraftDeclaration(id, redirect)
-    }
-  }
 
   def viewDeclaration(id: String): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
     customsDeclareExportsConnector.findDeclaration(id).flatMap {
@@ -78,37 +82,8 @@ class SubmissionsController @Inject() (
     }
   }
 
-  def amendErrors(id: String, redirectUrl: String, pattern: String, message: String): Action[AnyContent] =
-    (authenticate andThen verifyEmail).async { implicit request =>
-      val redirectUrlWithMode = redirectUrl + ErrorFix.queryParameter
-      val fieldName = FieldNamePointer.getFieldName(pattern)
-      val flashData = fieldName match {
-        case Some(name) if message.nonEmpty => Map(FlashKeys.fieldName -> name, FlashKeys.errorMessage -> message)
-        case Some(name)                     => Map(FlashKeys.fieldName -> name)
-        case None if message.nonEmpty       => Map(FlashKeys.errorMessage -> message)
-        case _                              => Map.empty[String, String]
-      }
-      val redirect = Redirect(redirectUrlWithMode).flashing(Flash(flashData))
-
-      val actualDeclaration: Future[Option[ExportsDeclaration]] = request.declarationId.map { decId =>
-        customsDeclareExportsConnector.findDeclaration(decId)
-      }.getOrElse(Future.successful(None))
-
-      actualDeclaration.flatMap {
-        case Some(dec) if dec.sourceId.contains(id) => Future.successful(redirect)
-        case _                                      => createDraftDeclaration(id, redirect)
-      }
-    }
-
-  private def createDraftDeclaration(id: String, redirect: Result)(implicit request: WrappedRequest[AnyContent]): Future[Result] =
-    customsDeclareExportsConnector.findDeclaration(id) flatMap {
-      case Some(declaration) =>
-        customsDeclareExportsConnector
-          .createDeclaration(declaration.asDraft)
-          .map { draftDeclaration =>
-            redirect.addingToSession(ExportsSessionKeys.declarationId -> draftDeclaration.id)
-          }
-
-      case _ => Future.successful(Redirect(routes.SubmissionsController.displayListOfSubmissions()))
+  private def findOrCreateDraftForRejected(rejectedId: String, redirect: Result)(implicit request: WrappedRequest[AnyContent]): Future[Result] =
+    customsDeclareExportsConnector.findOrCreateDraftForRejected(rejectedId).map { id =>
+      redirect.addingToSession(ExportsSessionKeys.declarationId -> id)
     }
 }

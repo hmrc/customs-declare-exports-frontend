@@ -34,6 +34,7 @@ import java.time.{Clock, Instant}
 // scalastyle:off
 case class ExportsDeclaration(
   id: String,
+  parentDeclarationId: Option[String] = None,
   status: DeclarationStatus,
   createdDateTime: Instant,
   updatedDateTime: Instant,

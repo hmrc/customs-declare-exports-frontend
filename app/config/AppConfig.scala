@@ -140,7 +140,12 @@ class AppConfig @Inject() (
 
   lazy val declarationsPath = servicesConfig.getConfString(
     "customs-declare-exports.declarations",
-    throw new IllegalStateException("Missing configuration for Customs Declarations Exports declaration URI")
+    throw new IllegalStateException("Missing configuration for Customs Declarations Exports declarations URI")
+  )
+
+  lazy val draftDeclarationPath = servicesConfig.getConfString(
+    "customs-declare-exports.draft-declaration",
+    throw new IllegalStateException("Missing configuration for Customs Declarations Exports draft declaration URI")
   )
 
   lazy val submissionPath = servicesConfig.getConfString(

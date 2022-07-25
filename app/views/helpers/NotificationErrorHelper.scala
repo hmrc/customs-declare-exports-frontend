@@ -34,6 +34,16 @@ import views.html.components.gds.paragraphBody
 class NotificationErrorHelper @Inject() (codeListConnector: CodeListConnector, paragraphBody: paragraphBody) {
   import NotificationErrorHelper._
 
+  def createSummaryList(declaration: ExportsDeclaration, errors: Seq[NotificationError])(implicit messages: Messages): SummaryList = {
+    val errorRows = createRowsFromErrors(declaration, errors)
+    val groupedErrorRows = groupRowsByErrorCode(errorRows)
+    val redactedErrorRows = removeRepeatFieldNameAndDescriptions(groupedErrorRows).flatten
+
+    SummaryList(redactedErrorRows.zipWithIndex.map { case (errorRow, index) =>
+      createSummaryListRow(errorRow, index)
+    })
+  }
+
   def formattedErrorDescription(notificationError: NotificationError)(implicit messages: Messages): List[Html] = {
     val description = codeListConnector
       .getDmsErrorCodesMap(messages.lang.toLocale)
@@ -58,66 +68,6 @@ class NotificationErrorHelper @Inject() (codeListConnector: CodeListConnector, p
         .dropRight(1)
     }
   }
-
-  def errorChangeAction(notificationError: NotificationError, declaration: ExportsDeclaration)(implicit messages: Messages): Option[Actions] = {
-    def constructChangeLinkAction(call: Call): Actions = {
-      val errorPattern = notificationError.pointer.map(_.pattern).getOrElse("")
-      val errorMessage = messages(s"dmsError.${notificationError.validationCode}.title")
-      val url = routes.SubmissionsController.amendErrors(declaration.id, call.url, errorPattern, errorMessage).url
-      val action = actionItem(
-        href = url,
-        content = Text(messages("site.change")),
-        visuallyHiddenText = Some(notificationError.pointer.map(p => messages(p.messageKey, p.sequenceArgs: _*)).getOrElse(""))
-      )
-
-      Actions(items = Seq(action))
-    }
-
-    PointerHelper
-      .getChangeLinkCall(notificationError.pointer, declaration)
-      .map(call => constructChangeLinkAction(call))
-  }
-
-  def createSummaryListRow(errorRow: ErrorRow, index: Int)(implicit messages: Messages): SummaryListRow =
-    SummaryListRow(
-      key = Key(content = HtmlContent(errorRow.fieldName.getOrElse("")), classes = s"rejected-field-name rejected_notifications-row-$index-name"),
-      value = Value(
-        content = HtmlContent(
-          HtmlFormat.fill(
-            List(paragraphBody(errorRow.title, classes = "govuk-heading-s")) ++
-              errorRow.description ++
-              List(paragraphBody(messages("rejected.notification.description.format", errorRow.code), classes = "govuk-body-s"))
-          )
-        ),
-        classes = s"rejected_notifications-row-$index-description"
-      ),
-      actions = errorRow.action
-    )
-
-  def createSummaryList(declaration: ExportsDeclaration, errors: Seq[NotificationError])(implicit messages: Messages): SummaryList = {
-    val errorRows = createRowsFromErrors(declaration, errors)
-    val groupedErrorRows = groupRowsByErrorCode(errorRows)
-    val redactedErrorRows = removeRepeatFieldNameAndDescriptions(groupedErrorRows).flatten
-
-    SummaryList(redactedErrorRows.zipWithIndex.map { case (errorRow, index) =>
-      createSummaryListRow(errorRow, index)
-    })
-  }
-
-  def createRowsFromErrors(declaration: ExportsDeclaration, errors: Seq[NotificationError])(implicit messages: Messages): ErrorRows =
-    errors.map { notificationError =>
-      val maybeFieldName = notificationError.pointer.map(p => messages(p.messageKey, p.sequenceArgs: _*))
-      val maybeAction = errorChangeAction(notificationError, declaration)
-      val code = notificationError.validationCode
-
-      ErrorRow(
-        code,
-        maybeFieldName,
-        messages(s"dmsError.${notificationError.validationCode}.title"),
-        formattedErrorDescription(notificationError),
-        maybeAction
-      )
-    }.toList
 
   def groupRowsByErrorCode(rows: ErrorRows): List[ErrorRows] =
     rows.foldLeft(List.empty[ErrorRows]) { (acc, row) =>
@@ -150,9 +100,62 @@ class NotificationErrorHelper @Inject() (codeListConnector: CodeListConnector, p
         redactedWithFlag._1
       }
     }
+
+  private def errorChangeAction(notificationError: NotificationError, declaration: ExportsDeclaration)(
+    implicit messages: Messages
+  ): Option[Actions] = {
+    def constructChangeLinkAction(call: Call): Actions = {
+      val errorPattern = notificationError.pointer.map(_.pattern).getOrElse("")
+      val errorMessage = messages(s"dmsError.${notificationError.validationCode}.title")
+      val url = routes.SubmissionsController.amendErrors(declaration.id, call.url, errorPattern, errorMessage).url
+      val action = actionItem(
+        href = url,
+        content = Text(messages("site.change")),
+        visuallyHiddenText = Some(notificationError.pointer.map(p => messages(p.messageKey, p.sequenceArgs: _*)).getOrElse(""))
+      )
+
+      Actions(items = Seq(action))
+    }
+
+    PointerHelper
+      .getChangeLinkCall(notificationError.pointer, declaration)
+      .map(call => constructChangeLinkAction(call))
+  }
+
+  private def createSummaryListRow(errorRow: ErrorRow, index: Int)(implicit messages: Messages): SummaryListRow =
+    SummaryListRow(
+      key = Key(content = HtmlContent(errorRow.fieldName.getOrElse("")), classes = s"rejected-field-name rejected_notifications-row-$index-name"),
+      value = Value(
+        content = HtmlContent(
+          HtmlFormat.fill(
+            List(paragraphBody(errorRow.title, classes = "govuk-heading-s")) ++
+              errorRow.description ++
+              List(paragraphBody(messages("rejected.notification.description.format", errorRow.code), classes = "govuk-body-s"))
+          )
+        ),
+        classes = s"rejected_notifications-row-$index-description"
+      ),
+      actions = errorRow.action
+    )
+
+  private def createRowsFromErrors(declaration: ExportsDeclaration, errors: Seq[NotificationError])(implicit messages: Messages): ErrorRows =
+    errors.map { notificationError =>
+      val maybeFieldName = notificationError.pointer.map(p => messages(p.messageKey, p.sequenceArgs: _*))
+      val maybeAction = errorChangeAction(notificationError, declaration)
+      val code = notificationError.validationCode
+
+      ErrorRow(
+        code,
+        maybeFieldName,
+        messages(s"dmsError.${notificationError.validationCode}.title"),
+        formattedErrorDescription(notificationError),
+        maybeAction
+      )
+    }.toList
 }
 
 object NotificationErrorHelper {
+
   case class ErrorRow(code: String, fieldName: Option[String], title: String, description: List[Html], action: Option[Actions]) {
     def removeFieldNameAndDescription(): ErrorRow = this.copy(fieldName = None, description = List.empty)
   }

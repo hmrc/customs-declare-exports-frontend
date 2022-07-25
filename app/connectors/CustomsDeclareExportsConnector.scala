@@ -96,13 +96,21 @@ class CustomsDeclareExportsConnector @Inject() (appConfig: AppConfig, httpClient
   private val fetchTimer: Timer = metrics.defaultRegistry.timer("declaration.fetch.timer")
 
   def findDeclaration(id: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[ExportsDeclaration]] = {
-    val fetchStopwatch = fetchTimer.time()
+    val fetchStopwatch = fetchTimer.time
 
     httpClient
       .GET[Option[ExportsDeclaration]](url(s"${appConfig.declarationsPath}/$id"))
       .andThen { case _ =>
-        fetchStopwatch.stop()
+        fetchStopwatch.stop
       }
+  }
+
+  def findOrCreateDraftForRejected(rejectedId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[String] = {
+    val fetchStopwatch = fetchTimer.time
+
+    httpClient.GET[String](url(s"${appConfig.draftDeclarationPath}/$rejectedId")).andThen { case _ =>
+      fetchStopwatch.stop
+    }
   }
 
   def submitDeclaration(id: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Submission] =
@@ -134,12 +142,12 @@ class CustomsDeclareExportsConnector @Inject() (appConfig: AppConfig, httpClient
     httpClient.GET[Option[Notification]](url(s"${appConfig.latestNotificationPath}/$id"))
 
   def fetchMrnStatus(mrn: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[MrnStatus]] = {
-    val fetchStopwatch = fetchTimer.time()
+    val fetchStopwatch = fetchTimer.time
 
     httpClient
       .GET[Option[MrnStatus]](url(s"${appConfig.fetchMrnStatusPath}/$mrn"))
       .andThen { case _ =>
-        fetchStopwatch.stop()
+        fetchStopwatch.stop
       }
   }
 
