@@ -352,7 +352,7 @@ class AppConfigSpec extends UnitWithMocksSpec {
 
       "submit declaration uri is missing" in {
         intercept[Exception](missingAppConfig.declarationsPath).getMessage must be(
-          "Missing configuration for Customs Declarations Exports declaration URI"
+          "Missing configuration for Customs Declarations Exports declarations URI"
         )
       }
 
