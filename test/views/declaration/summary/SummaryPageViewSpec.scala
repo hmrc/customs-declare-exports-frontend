@@ -33,7 +33,7 @@ trait SummaryPageViewSpec extends UnitViewSpec with Injector with Stubs {
   def commonBehaviour(document: Document): Unit =
     "have common behaviours such as" when {
       "have references section" in {
-        document.getElementById("declaration-references-summary").text() mustNot be(empty)
+        document.getElementById("declaration-references-summary").text mustNot be(empty)
       }
 
       "display Save and come back later button" in {
@@ -55,13 +55,13 @@ trait SummaryPageViewSpec extends UnitViewSpec with Injector with Stubs {
     }
 
   // scalastyle:off
-  def sectionsVisiblity(view: ExportsDeclaration => Document): Unit = {
+  def sectionsVisibility(view: ExportsDeclaration => Document): Unit = {
     "not have parties section" in {
       assertNull(view(aDeclaration()).getElementById("declaration-parties-summary"))
     }
 
     "have parties section" in {
-      view(aDeclaration(withExporterDetails())).getElementById("declaration-parties-summary").text() mustNot be(empty)
+      view(aDeclaration(withExporterDetails())).getElementById("declaration-parties-summary").text mustNot be(empty)
     }
 
     "not have countries section" in {
@@ -69,7 +69,7 @@ trait SummaryPageViewSpec extends UnitViewSpec with Injector with Stubs {
     }
 
     "have countries section" in {
-      view(aDeclaration(withDestinationCountry())).getElementById("declaration-countries-summary").text() mustNot be(empty)
+      view(aDeclaration(withDestinationCountry())).getElementById("declaration-countries-summary").text mustNot be(empty)
     }
 
     "not have locations section" in {
@@ -79,7 +79,7 @@ trait SummaryPageViewSpec extends UnitViewSpec with Injector with Stubs {
     "have locations section with UK office of exit" in {
       view(aDeclaration(withOfficeOfExit(officeId = "office-Id")))
         .getElementById("declaration-locations-summary")
-        .text() must include("office-Id")
+        .text must include("office-Id")
     }
 
     for (decType <- List(CLEARANCE, SIMPLIFIED, OCCASIONAL))
@@ -88,7 +88,7 @@ trait SummaryPageViewSpec extends UnitViewSpec with Injector with Stubs {
       }
 
     "have transaction section" in {
-      view(aDeclaration(withNatureOfTransaction("1"))).getElementById("declaration-transaction-summary").text() mustNot be(empty)
+      view(aDeclaration(withNatureOfTransaction("1"))).getElementById("declaration-transaction-summary").text mustNot be(empty)
     }
 
     "not have items section" in {
@@ -99,7 +99,7 @@ trait SummaryPageViewSpec extends UnitViewSpec with Injector with Stubs {
       val details = CommodityDetails(Some("1234567890"), Some("Description"))
       view(aDeclaration(withItem(anItem(withCommodityDetails(details)))))
         .getElementById("declaration-items-summary-0")
-        .text() mustNot be(empty)
+        .text mustNot be(empty)
     }
 
     "not have transport section" in {
@@ -107,7 +107,7 @@ trait SummaryPageViewSpec extends UnitViewSpec with Injector with Stubs {
     }
 
     "have transport section" in {
-      view(aDeclaration(withBorderTransport())).getElementById("declaration-transport-summary").text() mustNot be(empty)
+      view(aDeclaration(withBorderTransport())).getElementById("declaration-transport-summary").text mustNot be(empty)
     }
   }
   // scalastyle:on

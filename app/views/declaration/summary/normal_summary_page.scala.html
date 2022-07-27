@@ -16,6 +16,8 @@
 
 @import config.AppConfig
 @import controllers.declaration.routes.{SummaryController, TransportContainerController}
+@import controllers.routes.RejectedNotificationsController
+@import models.DeclarationStatus.DRAFT
 @import models.Mode
 @import models.requests.JourneyRequest
 @import views.helpers.{BackButton, Title}
@@ -46,6 +48,18 @@
 @continueLink = @{
   if (errors.isEmpty) linkButton("site.confirm_and_continue", SummaryController.displayDeclarationPage(Mode.Normal))
   else linkButton("site.confirm_and_continue", SummaryController.displayPage(Mode.Normal))
+}
+
+@viewDeclarationErrors = @{
+  val declaration = request.cacheModel
+  declaration.parentDeclarationId.map { parentId =>
+    if (declaration.status == DRAFT)
+      linkButton(
+        "site.view.declaration.errors",
+        RejectedNotificationsController.displayPage(parentId),
+        "govuk-button govuk-button--secondary"
+      )
+  }
 }
 
 @govukLayout(
@@ -79,11 +93,13 @@
 
     @transport_section(Mode.Change, request.cacheModel)
 
-    @continueLink
+    <div class="govuk-button-group">
+        @continueLink
+        @viewDeclarationErrors
+    </div>
 
     <p class="govuk-body">
     @saveAsDraftButton()
     </p>
-    <br />
-
+    <br/>
 }

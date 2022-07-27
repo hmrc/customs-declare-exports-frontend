@@ -37,6 +37,7 @@ site.acceptAndSubmitDeclaration = Accept and submit declaration
 site.save_and_come_back_later = Save and come back later
 site.saveAndReturnToSummary = Save and return to summary
 site.saveAndReturnToErrors = Save and return to errors
+site.view.declaration.errors = View declaration errors
 site.submit = Submit
 site.backToChoice = Back to choice page
 site.add = Add

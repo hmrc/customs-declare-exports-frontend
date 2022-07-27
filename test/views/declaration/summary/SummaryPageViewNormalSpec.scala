@@ -16,6 +16,8 @@
 
 package views.declaration.summary
 
+import controllers.routes.RejectedNotificationsController
+import models.DeclarationStatus.{COMPLETE, DRAFT, INITIAL}
 import models.ExportsDeclaration
 import org.jsoup.nodes.Document
 import play.api.mvc.Call
@@ -43,7 +45,7 @@ class SummaryPageViewNormalSpec extends SummaryPageViewSpec {
 
     behave like commonBehaviour(document)
 
-    behave like sectionsVisiblity(view)
+    behave like sectionsVisibility(view)
 
     behave like displayErrorSummary(documentWithError)
 
@@ -56,6 +58,34 @@ class SummaryPageViewNormalSpec extends SummaryPageViewSpec {
 
       backButton.text() mustBe messages("site.back")
       backButton must haveHref(backLink.url)
+    }
+
+    "not display a 'View Declaration Errors' button" when {
+      List(DRAFT, INITIAL, COMPLETE).foreach { status =>
+        s"the declaration is in '$status' status and" when {
+          "declaration's 'parenDeclarationId' is NOT defined" in {
+            val document = view(aDeclaration(withStatus(DRAFT)))
+            val buttons = document.getElementsByClass("govuk-button--secondary")
+            buttons.size mustBe 0
+          }
+        }
+      }
+    }
+
+    "display a 'View Declaration Errors' button" when {
+      "the declaration is in 'DRAFT' status and" when {
+        "declaration's 'parenDeclarationId' is defined" in {
+          val parentId = "parentId"
+          val document = view(aDeclaration(withStatus(DRAFT), withParentDeclarationId(parentId)))
+          val buttons = document.getElementsByClass("govuk-button--secondary")
+          buttons.size mustBe 1
+
+          val button = buttons.get(0)
+          button.tagName mustBe "a"
+          button.text mustBe messages("site.view.declaration.errors")
+          button must haveHref(RejectedNotificationsController.displayPage(parentId))
+        }
+      }
     }
   }
 }
