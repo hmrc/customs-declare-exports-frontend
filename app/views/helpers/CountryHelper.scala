@@ -18,20 +18,28 @@ package views.helpers
 
 import connectors.{CodeLinkConnector, CodeListConnector}
 import models.codes.Country
+import models.requests.JourneyRequest
 import play.api.i18n.Messages
-import play.api.libs.json.Json
+import play.api.libs.json.{JsValue, Json}
 import services.Countries
 
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class CountryHelper @Inject() (codeListConnector: CodeListConnector, codeLinkConnector: CodeLinkConnector) {
-  def generateAutocompleteEnhancementJson(countryKey: Country => String)(implicit messages: Messages) = {
+class CountryHelper @Inject() (codeLinkConnector: CodeLinkConnector)(implicit codeListConnector: CodeListConnector) {
+
+  def countryNameFromDestinationCountry(implicit messages: Messages, request: JourneyRequest[_]): String =
+    request.cacheModel.locations.destinationCountry
+      .flatMap(_.code)
+      .map(Countries.findByCode(_))
+      .map(getShortNameForCountry)
+      .getOrElse("")
+
+  def generateAutocompleteEnhancementJson(countryKey: Country => String)(implicit messages: Messages): JsValue = {
     val jsObjects = for {
       country <- codeListConnector.getCountryCodes(messages.lang.toLocale).values
     } yield {
       val aliases = codeLinkConnector.getAliasesForCountryCode(country.countryCode).getOrElse(Seq.empty)
-
       Json.obj("code" -> countryKey(country), "displayName" -> country.asString(), "synonyms" -> aliases)
     }
 
@@ -45,4 +53,9 @@ class CountryHelper @Inject() (codeListConnector: CodeListConnector, codeLinkCon
       .getShortNamesForCountryCode(country.countryCode)
       .flatMap(_.headOption)
       .getOrElse(country.countryName)
+
+  def listOfRoutingCountries(implicit messages: Messages, request: JourneyRequest[_]): Seq[models.codes.Country] =
+    request.cacheModel.locations.routingCountries
+      .flatMap(_.code)
+      .map(Countries.findByCode(_))
 }

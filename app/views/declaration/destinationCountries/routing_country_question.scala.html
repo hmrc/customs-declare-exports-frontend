@@ -29,29 +29,32 @@
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.fieldset.Fieldset
 @import views.components.gds.Styles.gdsPageLegend
 @import views.html.components.gds._
-@import views.helpers.{BackButton, Title}
+@import views.helpers.{BackButton, CountryHelper, Title}
 @import views.helpers.ErrorMapper.radioGroupErrors
 @import config.AppConfig
 
 @this(
-        govukLayout: gdsMainTemplate,
-        govukButton: GovukButton,
-        govukRadios: GovukRadios,
-        govukDetails : GovukDetails,
-        errorSummary: errorSummary,
-        sectionHeader: sectionHeader,
-        heading: heading,
-        paragraphBody: paragraphBody,
-        saveButtons: saveButtons,
-        tariffExpander: tariffExpander,
-        formHelper: FormWithCSRF,
-        navigator: Navigator,
-        appConfig: AppConfig
+    govukLayout: gdsMainTemplate,
+    govukButton: GovukButton,
+    govukRadios: GovukRadios,
+    govukDetails : GovukDetails,
+    errorSummary: errorSummary,
+    sectionHeader: sectionHeader,
+    heading: heading,
+    paragraphBody: paragraphBody,
+    saveButtons: saveButtons,
+    tariffExpander: tariffExpander,
+    formHelper: FormWithCSRF,
+    navigator: Navigator,
+    appConfig: AppConfig,
+    countryHelper: CountryHelper
 )
 
-@(mode: Mode, form: Form[Boolean], countryOfDestination: String)(implicit request: JourneyRequest[AnyContent], messages: Messages)
+@(mode: Mode, form: Form[Boolean])(implicit request: JourneyRequest[AnyContent], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
+
+@countryOfDestination = @{countryHelper.countryNameFromDestinationCountry}
 
 @govukLayout(
     title = Title("declaration.routingCountryQuestion.title", "declaration.section.3", countryOfDestination, hasErrors = hasErrors),
