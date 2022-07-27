@@ -66,6 +66,8 @@ trait ExportsDeclarationBuilder {
 
   // ************************************************* Builders ********************************************************
 
+  def withParentDeclarationId(parentId: String): ExportsDeclarationModifier = _.copy(parentDeclarationId = Some(parentId))
+
   def withStatus(status: DeclarationStatus): ExportsDeclarationModifier = _.copy(status = status)
 
   def withType(`type`: DeclarationType): ExportsDeclarationModifier = _.copy(`type` = `type`)

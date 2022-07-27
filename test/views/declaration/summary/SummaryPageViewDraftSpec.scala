@@ -38,7 +38,7 @@ class SummaryPageViewDraftSpec extends SummaryPageViewSpec {
 
     behave like commonBehaviour(document)
 
-    behave like sectionsVisiblity(view)
+    behave like sectionsVisibility(view)
 
     behave like displayWarning(document)
 

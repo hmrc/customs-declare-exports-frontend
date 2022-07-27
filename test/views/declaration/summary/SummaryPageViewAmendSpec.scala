@@ -16,6 +16,8 @@
 
 package views.declaration.summary
 
+import controllers.routes.{RejectedNotificationsController, SubmissionsController}
+import models.DeclarationStatus._
 import models.ExportsDeclaration
 import org.jsoup.nodes.Document
 import views.html.declaration.summary._
@@ -26,6 +28,7 @@ class SummaryPageViewAmendSpec extends SummaryPageViewSpec {
   val draftInfoPage = instanceOf[draft_info_section]
 
   val amend_summaryPage = instanceOf[amend_summary_page]
+
   def view(declaration: ExportsDeclaration = aDeclaration()): Document =
     amend_summaryPage()(journeyRequest(declaration), messages, minimalAppConfig)
 
@@ -41,19 +44,59 @@ class SummaryPageViewAmendSpec extends SummaryPageViewSpec {
 
     behave like commonBehaviour(document)
 
-    behave like sectionsVisiblity(view)
+    behave like sectionsVisibility(view)
 
     behave like displayWarning(document)
 
     "should display correct title" in {
-      document.getElementById("title").text() mustBe messages("declaration.summary.amend-header")
+      document.getElementById("title").text mustBe messages("declaration.summary.amend-header")
     }
 
     "should display correct back link" in {
       val backButton = document.getElementById("back-link")
 
-      backButton.text() mustBe messages("site.back")
-      backButton must haveHref(controllers.routes.SubmissionsController.displayListOfSubmissions())
+      backButton.text mustBe messages("site.back")
+      backButton must haveHref(SubmissionsController.displayListOfSubmissions())
+    }
+
+    "not display a 'View Declaration Errors' button" when {
+
+      List(DRAFT, INITIAL, COMPLETE).foreach { status =>
+        s"the declaration is in '$status' status and" when {
+          "declaration's 'parenDeclarationId' is NOT defined" in {
+            val document = view(aDeclaration(withStatus(status)))
+            val buttons = document.getElementsByClass("govuk-button--secondary")
+            buttons.size mustBe 0
+          }
+        }
+      }
+
+      List(INITIAL, COMPLETE).foreach { status =>
+        s"the declaration is in '$status' status and" when {
+          "declaration's 'parenDeclarationId' is defined" in {
+            val parentId = "parentId"
+            val document = view(aDeclaration(withStatus(status), withParentDeclarationId(parentId)))
+            val buttons = document.getElementsByClass("govuk-button--secondary")
+            buttons.size mustBe 0
+          }
+        }
+      }
+    }
+
+    "display a 'View Declaration Errors' button" when {
+      "the declaration is in 'DRAFT' status and" when {
+        "declaration's 'parenDeclarationId' is defined" in {
+          val parentId = "parentId"
+          val document = view(aDeclaration(withStatus(DRAFT), withParentDeclarationId(parentId)))
+          val buttons = document.getElementsByClass("govuk-button--secondary")
+          buttons.size mustBe 1
+
+          val button = buttons.get(0)
+          button.tagName mustBe "a"
+          button.text mustBe messages("site.view.declaration.errors")
+          button must haveHref(RejectedNotificationsController.displayPage(parentId))
+        }
+      }
     }
   }
 }
