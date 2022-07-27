@@ -52,13 +52,6 @@
   }
 }
 
-@buttons = @{
-  request.declarationType match {
-    case DeclarationType.CLEARANCE => saveButtons(mode)
-    case _                         => saveAndContinue()
-  }
-}
-
 @govukLayout(
     title = Title("declaration.declarant.title", sectionMessagesKey, request.eori, hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.back"), navigator.backLink(DeclarantDetails, mode)))) {
@@ -100,6 +93,6 @@
 
         @tariffExpander(DeclarantEoriConfirmation, request.declarationType)(messages, appConfig)
 
-        @buttons
+        @saveButtons(mode)
     }
 }

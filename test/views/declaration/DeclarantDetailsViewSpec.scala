@@ -59,7 +59,8 @@ class DeclarantDetailsViewSpec extends UnitViewSpec with ExportsTestHelper with 
         view.getElementsByAttributeValue("for", "code_no") must containMessageForElements("site.no")
       }
 
-      checkSaveAndContinueButtonIsDisplayed(view)
+      val createViewWithMode: Mode => Document = mode => createView(form, mode)
+      checkAllSaveButtonsAreDisplayed(createViewWithMode)
     }
 
     onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { implicit request =>
@@ -75,10 +76,6 @@ class DeclarantDetailsViewSpec extends UnitViewSpec with ExportsTestHelper with 
 
         backButton must containMessage(backCaption)
         backButton must haveHref(routes.AdditionalDeclarationTypeController.displayPage().url)
-      }
-
-      "not display 'Save and return' button on page" in {
-        Option(createView(form()).getElementById("submit_and_return")).isEmpty
       }
     }
 
@@ -96,8 +93,6 @@ class DeclarantDetailsViewSpec extends UnitViewSpec with ExportsTestHelper with 
         backButton must containMessage(backCaption)
         backButton must haveHref(routes.EntryIntoDeclarantsRecordsController.displayPage().url)
       }
-
-      checkSaveAndReturnLinkIsDisplayed(createView(form()))
     }
   }
 
