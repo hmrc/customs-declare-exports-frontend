@@ -60,10 +60,22 @@ class SummaryPageViewAmendSpec extends SummaryPageViewSpec {
     }
 
     "not display a 'View Declaration Errors' button" when {
+
       List(DRAFT, INITIAL, COMPLETE).foreach { status =>
         s"the declaration is in '$status' status and" when {
           "declaration's 'parenDeclarationId' is NOT defined" in {
-            val document = view(aDeclaration(withStatus(DRAFT)))
+            val document = view(aDeclaration(withStatus(status)))
+            val buttons = document.getElementsByClass("govuk-button--secondary")
+            buttons.size mustBe 0
+          }
+        }
+      }
+
+      List(INITIAL, COMPLETE).foreach { status =>
+        s"the declaration is in '$status' status and" when {
+          "declaration's 'parenDeclarationId' is defined" in {
+            val parentId = "parentId"
+            val document = view(aDeclaration(withStatus(status), withParentDeclarationId(parentId)))
             val buttons = document.getElementsByClass("govuk-button--secondary")
             buttons.size mustBe 0
           }
