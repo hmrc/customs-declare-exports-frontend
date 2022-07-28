@@ -72,10 +72,6 @@ trait ExportsDeclarationBuilder {
 
   def withType(`type`: DeclarationType): ExportsDeclarationModifier = _.copy(`type` = `type`)
 
-  def withSourceId(id: String = uuid): ExportsDeclarationModifier = _.copy(sourceId = Some(id))
-
-  def withoutSourceId(): ExportsDeclarationModifier = _.copy(sourceId = None)
-
   def withCreatedDate(date: LocalDateTime): ExportsDeclarationModifier =
     _.copy(createdDateTime = date.toInstant(ZoneOffset.UTC))
 

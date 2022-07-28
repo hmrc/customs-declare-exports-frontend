@@ -17,33 +17,16 @@
 package models
 
 import base.UnitSpec
-import forms.declaration.declarationHolder.DeclarationHolder
 import forms.declaration.CommodityDetails
+import forms.declaration.countries.Country
+import forms.declaration.declarationHolder.DeclarationHolder
 import models.declaration.{DeclarationHoldersData, ProcedureCodesData}
 import org.mockito.Mockito.when
 import org.scalatest.OptionValues
 import org.scalatestplus.mockito.MockitoSugar
 import services.cache.{ExportsDeclarationBuilder, ExportsItemBuilder}
-import java.time.{Clock, Instant, LocalDate, ZoneOffset}
-
-import forms.declaration.countries.Country
 
 class ExportsDeclarationSpec extends UnitSpec with ExportsDeclarationBuilder with ExportsItemBuilder with OptionValues with MockitoSugar {
-
-  "Amend" should {
-    val currentTime = Instant.now()
-    val clock = Clock.fixed(currentTime, ZoneOffset.UTC)
-
-    "override required fields" in {
-      val declaration =
-        aDeclaration(withStatus(DeclarationStatus.COMPLETE), withCreatedDate(LocalDate.of(2019, 1, 1)), withUpdateDate(LocalDate.of(2019, 1, 1)))
-      val amendedDeclaration = declaration.asDraft(clock)
-      amendedDeclaration.status mustBe DeclarationStatus.DRAFT
-      amendedDeclaration.createdDateTime mustBe currentTime
-      amendedDeclaration.updatedDateTime mustBe currentTime
-      amendedDeclaration.sourceId.value mustBe declaration.id
-    }
-  }
 
   "Update Item" should {
     "preserve item sequence" in {

@@ -192,47 +192,47 @@ class NavigatorSpec
 
     "redirect to RejectedNotificationsController.displayPage" when {
 
-      val sourceId = "1234"
-      implicit val declaration = aDeclaration(withSourceId(sourceId))
+      val parentDeclarationId = "1234"
+      implicit val declaration = aDeclaration(withParentDeclarationId(parentDeclarationId))
 
-      "continueTo method is invoked with mode ErrorFix and sourceId in request" in {
+      "continueTo method is invoked with mode ErrorFix and parentDeclarationId in request" in {
         val request = requestWithFormAction(Some(SaveAndReturnToErrors))
         val result = navigator.continueTo(Mode.ErrorFix, call)(decoratedRequest(request), hc)
-        redirectLocation(result) mustBe Some(RejectedNotificationsController.displayPage(sourceId).url)
+        redirectLocation(result) mustBe Some(RejectedNotificationsController.displayPage(parentDeclarationId).url)
       }
 
-      "backLink method is invoked with mode ErrorFix and sourceId in request" in {
+      "backLink method is invoked with mode ErrorFix and parentDeclarationId in request" in {
         val result = navigator.backLink(CarrierDetails, Mode.ErrorFix)(decoratedRequest(request))
-        result mustBe RejectedNotificationsController.displayPage(sourceId)
+        result mustBe RejectedNotificationsController.displayPage(parentDeclarationId)
       }
 
-      "backLink method for items is invoked with mode ErrorFix and sourceId in request" in {
+      "backLink method for items is invoked with mode ErrorFix and parentDeclarationId in request" in {
         val result = navigator.backLink(CarrierDetails, Mode.ErrorFix, ItemId("123456"))(decoratedRequest(request))
-        result mustBe RejectedNotificationsController.displayPage(sourceId)
+        result mustBe RejectedNotificationsController.displayPage(parentDeclarationId)
       }
     }
 
     "redirect to SubmissionsController.displayListOfSubmissions" when {
 
-      implicit val declaration = aDeclaration(withoutSourceId())
+      implicit val declaration = aDeclaration()
 
-      "continueTo method is invoked with mode ErrorFix and form action SaveAndReturnToErrors but without sourceId in request" in {
+      "continueTo method is invoked with mode ErrorFix and form action SaveAndReturnToErrors but without parentDeclarationId in request" in {
         val request = requestWithFormAction(Some(SaveAndReturnToErrors))
         val result = navigator.continueTo(Mode.ErrorFix, call)(decoratedRequest(request), hc)
         redirectLocation(result) mustBe Some(SubmissionsController.displayListOfSubmissions().url)
       }
 
-      "continueTo method is invoked with mode ErrorFix but without sourceId in request" in {
+      "continueTo method is invoked with mode ErrorFix but without parentDeclarationId in request" in {
         val result = navigator.continueTo(Mode.ErrorFix, call)(decoratedRequest(request), hc)
         redirectLocation(result) mustBe Some(SubmissionsController.displayListOfSubmissions().url)
       }
 
-      "backLink method is invoked with mode ErrorFix but without sourceId in request" in {
+      "backLink method is invoked with mode ErrorFix but without parentDeclarationId in request" in {
         val result = navigator.backLink(CarrierDetails, Mode.ErrorFix)(decoratedRequest(request))
         result mustBe SubmissionsController.displayListOfSubmissions()
       }
 
-      "backLink method for items is invoked with mode ErrorFix but without sourceId in request" in {
+      "backLink method for items is invoked with mode ErrorFix but without parentDeclarationId in request" in {
         val result = navigator.backLink(CarrierDetails, Mode.ErrorFix, ItemId("123456"))(decoratedRequest(request))
         result mustBe SubmissionsController.displayListOfSubmissions()
       }
