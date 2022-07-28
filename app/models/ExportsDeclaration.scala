@@ -29,7 +29,7 @@ import models.ExportsDeclaration.isCodePrefixedWith
 import models.declaration._
 import play.api.libs.json._
 
-import java.time.{Clock, Instant}
+import java.time.Instant
 
 // scalastyle:off
 case class ExportsDeclaration(
@@ -75,11 +75,6 @@ case class ExportsDeclaration(
 
   def addOrUpdateContainer(container: Container): ExportsDeclaration =
     copy(transport = transport.addOrUpdateContainer(container))
-
-  def asDraft(implicit clock: Clock = Clock.systemUTC()): ExportsDeclaration = {
-    val currentTime = Instant.now(clock)
-    this.copy(status = DeclarationStatus.DRAFT, createdDateTime = currentTime, updatedDateTime = currentTime, sourceId = Some(id))
-  }
 
   def clearRoutingCountries(): ExportsDeclaration =
     copy(locations = locations.copy(hasRoutingCountries = Some(false), routingCountries = Seq.empty))

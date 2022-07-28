@@ -387,12 +387,11 @@ class Navigator @Inject() (
   private def handleErrorFixMode(factory: Mode => Call, formAction: FormAction, isErrorFixInProgress: Boolean)(
     implicit req: JourneyRequest[AnyContent]
   ): Result =
-    formAction match {
-      case SaveAndReturnToErrors if req.sourceDecId.isDefined => Results.Redirect(RejectedNotificationsController.displayPage(req.sourceDecId.get))
-      case SaveAndReturnToErrors                              => Results.Redirect(SubmissionsController.displayListOfSubmissions())
-      case Add | Remove(_)                                    => Results.Redirect(factory(ErrorFix))
-      case _ if isErrorFixInProgress                          => Results.Redirect(factory(ErrorFix))
-      case _                                                  => Results.Redirect(SubmissionsController.displayListOfSubmissions())
+    (formAction, req.cacheModel.parentDeclarationId) match {
+      case (SaveAndReturnToErrors, Some(parentId)) => Results.Redirect(RejectedNotificationsController.displayPage(parentId))
+      case (Add | Remove(_), _)                    => Results.Redirect(factory(ErrorFix))
+      case _ if isErrorFixInProgress               => Results.Redirect(factory(ErrorFix))
+      case _                                       => Results.Redirect(SubmissionsController.displayListOfSubmissions())
     }
 
   private def nactCodeFirstPreviousPage(cacheModel: ExportsDeclaration, mode: Mode, itemId: String): Call =
@@ -718,12 +717,12 @@ class Navigator @Inject() (
   }
 
   private def backLinkOnOtherModes(mode: Mode)(implicit request: JourneyRequest[_]): Call =
-    mode match {
-      case Mode.ErrorFix if request.sourceDecId.isDefined => RejectedNotificationsController.displayPage(request.sourceDecId.get)
-      case Mode.ErrorFix                                  => SubmissionsController.displayListOfSubmissions()
-      case Mode.Change                                    => routes.SummaryController.displayPage(Mode.Normal)
-      case Mode.ChangeAmend                               => routes.SummaryController.displayPageOnAmend
-      case Mode.Draft                                     => routes.SummaryController.displayPage(Mode.Draft)
-      case _ => throw new IllegalArgumentException(s"Illegal mode [${mode.name}] for Navigator back-link")
+    (mode, request.cacheModel.parentDeclarationId) match {
+      case (Mode.ErrorFix, Some(parentId)) => RejectedNotificationsController.displayPage(parentId)
+      case (Mode.ErrorFix, _)              => SubmissionsController.displayListOfSubmissions()
+      case (Mode.Change, _)                => routes.SummaryController.displayPage(Mode.Normal)
+      case (Mode.ChangeAmend, _)           => routes.SummaryController.displayPageOnAmend
+      case (Mode.Draft, _)                 => routes.SummaryController.displayPage(Mode.Draft)
+      case _                               => throw new IllegalArgumentException(s"Illegal mode [${mode.name}] for Navigator back-link")
     }
 }

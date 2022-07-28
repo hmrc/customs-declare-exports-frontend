@@ -24,7 +24,7 @@ import services.cache.ExportsDeclarationBuilder
 class JourneyRequestSpec extends UnitWithMocksSpec with ExportsDeclarationBuilder with MockAuthAction {
 
   val sourceId = UUID.randomUUID().toString
-  val declaration = aDeclaration(withType(DeclarationType.OCCASIONAL), withSourceId(sourceId))
+  val declaration = aDeclaration(withType(DeclarationType.OCCASIONAL))
   val authenticatedRequest = getAuthenticatedRequest()
   val request = new JourneyRequest(authenticatedRequest, declaration)
 
@@ -33,11 +33,6 @@ class JourneyRequestSpec extends UnitWithMocksSpec with ExportsDeclarationBuilde
     "have a correct declaration type" in {
 
       request.declarationType mustBe DeclarationType.OCCASIONAL
-    }
-
-    "have correct source dec Id" in {
-
-      request.sourceDecId mustBe Some(sourceId)
     }
 
     "check if type is contained in allowed values" in {
