@@ -21,9 +21,9 @@ import connectors.CodeListConnector
 import controllers.declaration.routes
 import forms.declaration.countries.Countries.RoutingCountryPage
 import forms.declaration.countries.{Countries, Country}
-import models.codes.{Country => ModelCountry}
 import models.DeclarationType.{OCCASIONAL, SIMPLIFIED, STANDARD}
 import models.Mode
+import models.codes.{Country => ModelCountry}
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import org.mockito.ArgumentMatchers.any
@@ -42,10 +42,11 @@ class CountryOfRoutingViewSpec extends UnitViewSpec with Stubs with ExportsTestH
 
   implicit val mockCodeListConnector = mock[CodeListConnector]
 
+  val expectedCountryName = "Mauritius"
+
   override def beforeEach(): Unit = {
     super.beforeEach()
-
-    when(mockCodeListConnector.getCountryCodes(any())).thenReturn(ListMap("GB" -> ModelCountry("United Kingdom", "GB")))
+    when(mockCodeListConnector.getCountryCodes(any())).thenReturn(ListMap("MU" -> ModelCountry(expectedCountryName, "MU")))
   }
 
   override protected def afterEach(): Unit = {
@@ -59,12 +60,11 @@ class CountryOfRoutingViewSpec extends UnitViewSpec with Stubs with ExportsTestH
     Countries.form(RoutingCountryPage)(request, messages(request), mockCodeListConnector)
 
   private def createView(mode: Mode = Mode.Normal)(implicit request: JourneyRequest[_]): Html =
-    countryOfRoutingPage(mode, routingForm(request), "Somewhere", Seq.empty[ModelCountry])(request, messages)
+    countryOfRoutingPage(mode, routingForm(request))(request, messages)
 
   "Routing Country view" should {
 
     "have defined translation for used labels" in {
-
       val messages = realMessagesApi.preferred(request)
       messages must haveTranslationFor("declaration.routingCountries.title")
       messages must haveTranslationFor("declaration.routingCountry.empty")
@@ -79,12 +79,15 @@ class CountryOfRoutingViewSpec extends UnitViewSpec with Stubs with ExportsTestH
     "Routing Country view" should {
 
       s"have page heading for ${request.declarationType}" in {
-
         createView()(request).getElementById("section-header").text() must include(messages("declaration.section.3"))
       }
 
-      s"display back button that links to 'Country of Routing question' page  for ${request.declarationType}" in {
+      "display the expected page title" in {
+        val view = createView()(journeyRequest(aDeclaration(withDestinationCountry(Country(Some("MU"))))))
+        view.getElementsByTag("h1").text mustBe messages("declaration.routingCountries.title", expectedCountryName)
+      }
 
+      s"display back button that links to 'Country of Routing question' page  for ${request.declarationType}" in {
         val backButton = createView()(request).getElementById("back-link")
 
         backButton.text() mustBe messages("site.back")

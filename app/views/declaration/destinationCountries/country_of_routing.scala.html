@@ -17,17 +17,15 @@
 @import config.AppConfig
 @import controllers.declaration.routes
 @import controllers.navigation.Navigator
-@import views.helpers.CountryHelper
 @import forms.declaration.countries.Countries._
 @import forms.declaration.countries.Country
-@import views.html.components.addToTable
-@import models.codes.{Country => CountryModel}
 @import models.requests.JourneyRequest
+@import models.viewmodels.ListRows
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.components.gds.Styles._
-@import views.helpers.{BackButton, Title, CountryHelper}
+@import views.helpers.{BackButton, CountryHelper, Title}
+@import views.html.components.addToTable
 @import views.html.components.gds._
-@import models.viewmodels.ListRows
 
 @this(
     govukLayout: gdsMainTemplate,
@@ -47,15 +45,18 @@
     appConfig: AppConfig
 )(implicit countryHelper: CountryHelper)
 
-@(mode: Mode, form: Form[Country], destinationCountryName: String, routingCounties: Seq[CountryModel])(implicit request: JourneyRequest[_], messages: Messages)
+@(mode: Mode, form: Form[Country])(implicit request: JourneyRequest[_], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
+
+@countryOfDestination = @{countryHelper.countryNameFromDestinationCountry}
+@listOfRoutingCountries = @{countryHelper.listOfRoutingCountries}
 
 @govukLayout(
     title = Title(
         headingKey = "declaration.routingCountries.title",
         sectionKey = "declaration.section.3",
-        headingArg = destinationCountryName,
+        headingArg = countryOfDestination,
         hasErrors = hasErrors
     ),
     backButton = Some(BackButton(messages("site.back"), navigator.backLink(RoutingCountryPage, mode)))){
@@ -67,21 +68,21 @@
 
         @components.fields.field_accessible_location_autocomplete_with_header(
             field = form("countryCode"),
-            label = Some(messages("declaration.routingCountries.title", destinationCountryName)),
+            label = Some(messages("declaration.routingCountries.title", countryOfDestination)),
             labelClass = Some(gdsPageLabel),
             hintParagraphs = List(messages("declaration.country.dropdown.hint")),
             bodyHtml = Some(
                 Html(Seq("declaration.routingCountries.body.p1", "declaration.routingCountries.body.p2").map(msg => body(messages(msg))).mkString)
             ),
-            countryKey = (c: CountryModel) => c.countryCode,
+            countryKey = _.countryCode,
             isPageHeading = true,
             rightElement = Some(addButton())
         )
 
         @addToTable(ListRows(
-            rowLabels = routingCounties.map(countryHelper.getShortNameForCountry),
+            rowLabels = listOfRoutingCountries.map(countryHelper.getShortNameForCountry),
             msgKey = "routingCountries",
-            removeKeys = Some(routingCounties.map(_.countryCode))
+            removeKeys = Some(listOfRoutingCountries.map(_.countryCode))
         ))
 
         @tariffExpander(RoutingCountryPage, request.declarationType)(messages, appConfig)

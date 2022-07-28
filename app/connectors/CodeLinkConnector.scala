@@ -55,12 +55,16 @@ class FileBasedCodeLinkConnector @Inject() (appConfig: AppConfig) extends CodeLi
 
   private val procedureCodeToAdditionalProcedureCodes: Map[String, Seq[String]] =
     readCodeLinksFromFile(appConfig.procedureCodeToAdditionalProcedureCodesLinkFile)
+
   private val procedureCodeToAdditionalProcedureCodesC21: Map[String, Seq[String]] =
     readCodeLinksFromFile(appConfig.procedureCodeToAdditionalProcedureCodesC21LinkFile)
+
   private val countryCodeToCountryAliases: Map[String, Seq[String]] =
     readCodeLinksFromFile(appConfig.countryCodeToAliasesLinkFile)
+
   private val countryCodeToShortName: Map[String, Seq[String]] =
     readCodeLinksFromFile(appConfig.countryCodeToShortNameLinkFile)
+
   private val goodsLocationCodeToLocationTypes: Map[String, Seq[String]] =
     readCodeLinksFromFile(appConfig.goodsLocationCodeToLocationTypeFile)
 
