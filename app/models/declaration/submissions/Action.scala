@@ -28,7 +28,10 @@ case class Action(
   notifications: Option[Seq[NotificationSummary]]
 ) {
   val latestNotificationSummary: Option[NotificationSummary] =
-    notifications.flatMap(_.lastOption)
+    notifications.flatMap {
+      case seq if seq.isEmpty => None
+      case seq                => Some(seq.minBy(_.dateTimeIssued)(Action.dateTimeOrdering))
+    }
 }
 
 object Action {
