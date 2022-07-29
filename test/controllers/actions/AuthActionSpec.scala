@@ -18,7 +18,7 @@ package controllers.actions
 
 import base.ExportsTestData.newUser
 import base.{ControllerWithoutFormSpec, Injector}
-import config.AppConfig
+import config.{AppConfig, ExternalServicesConfig}
 import controllers.{routes, ChoiceController}
 import models.UnauthorisedReason.{UserEoriNotAllowed, UserIsAgent, UserIsNotEnrolled}
 import org.mockito.Mockito.{reset, when}
@@ -32,6 +32,7 @@ class AuthActionSpec extends ControllerWithoutFormSpec with Injector {
 
   val choicePage = instanceOf[choice_page]
   override val appConfig = mock[AppConfig]
+  val externalServicesConfig = mock[ExternalServicesConfig]
 
   override val mockAuthAction =
     new AuthActionImpl(mockAuthConnector, new EoriAllowList(Seq("12345")), stubMessagesControllerComponents(), metricsMock, appConfig)
@@ -50,7 +51,8 @@ class AuthActionSpec extends ControllerWithoutFormSpec with Injector {
     stubMessagesControllerComponents(),
     mockSecureMessagingInboxConfig,
     choicePage,
-    appConfig
+    appConfig,
+    externalServicesConfig
   )
 
   "Auth Action" should {
