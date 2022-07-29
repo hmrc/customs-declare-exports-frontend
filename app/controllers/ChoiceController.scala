@@ -16,7 +16,7 @@
 
 package controllers
 
-import config.AppConfig
+import config.{AppConfig, ExternalServicesConfig}
 import config.featureFlags.SecureMessagingInboxConfig
 import controllers.actions.{AuthAction, VerifiedEmailAction}
 import forms.Choice
@@ -27,7 +27,7 @@ import javax.inject.Inject
 import models.requests.ExportsSessionKeys
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
@@ -39,7 +39,8 @@ class ChoiceController @Inject() (
   mcc: MessagesControllerComponents,
   secureMessagingInboxConfig: SecureMessagingInboxConfig,
   choicePage: choice_page,
-  appConfig: AppConfig
+  appConfig: AppConfig,
+  externalServicesConfig: ExternalServicesConfig
 ) extends FrontendController(mcc) with I18nSupport with WithDefaultFormBinding {
 
   lazy val availableJourneys =
@@ -65,6 +66,7 @@ class ChoiceController @Inject() (
         choice =>
           (choice.value match {
             case CreateDec   => Redirect(declaration.routes.DeclarationChoiceController.displayPage())
+            case Movements   => Redirect(Call("GET", externalServicesConfig.customsMovementsFrontendUrl))
             case ContinueDec => Redirect(routes.SavedDeclarationsController.displayDeclarations())
             case CancelDec   => Redirect(routes.CancelDeclarationController.displayPage())
             case Submissions => Redirect(routes.SubmissionsController.displayListOfSubmissions())

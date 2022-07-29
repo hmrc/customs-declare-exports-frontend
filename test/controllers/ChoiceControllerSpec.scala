@@ -16,9 +16,9 @@
 
 package controllers
 
-import base.ControllerWithoutFormSpec
+import base.{ControllerWithoutFormSpec, Injector}
 import base.ExportsTestData._
-import config.AppConfig
+import config.{AppConfig, ExternalServicesConfig}
 import forms.Choice
 import forms.Choice.AllowedChoiceValues._
 import models.DeclarationType
@@ -34,11 +34,12 @@ import play.twirl.api.HtmlFormat
 import utils.FakeRequestCSRFSupport._
 import views.html.choice_page
 
-class ChoiceControllerSpec extends ControllerWithoutFormSpec with OptionValues {
+class ChoiceControllerSpec extends ControllerWithoutFormSpec with OptionValues with Injector {
   import ChoiceControllerSpec._
 
   val choicePage = mock[choice_page]
   override val appConfig = mock[AppConfig]
+  val externalServicesConfig = instanceOf[ExternalServicesConfig]
 
   val controller =
     new ChoiceController(
@@ -47,7 +48,8 @@ class ChoiceControllerSpec extends ControllerWithoutFormSpec with OptionValues {
       stubMessagesControllerComponents(),
       mockSecureMessagingInboxConfig,
       choicePage,
-      appConfig
+      appConfig,
+      externalServicesConfig
     )
 
   override def beforeEach(): Unit = {
@@ -149,6 +151,16 @@ class ChoiceControllerSpec extends ControllerWithoutFormSpec with OptionValues {
       }
     }
 
+    "redirect to movements service" when {
+      "user selects Arrive, depart or consolidate a dec" in {
+        val result = controller.submitChoice()(postChoiceRequest(movementsChoice))
+
+        status(result) must be(SEE_OTHER)
+        redirectLocation(result) must be(Some(externalServicesConfig.customsMovementsFrontendUrl))
+        verifyTheCacheIsUnchanged()
+      }
+    }
+
     "redirect to Cancel Declaration page" when {
       "user chose Cancel Dec" in {
         val result = controller.submitChoice()(postChoiceRequest(cancelChoice))
@@ -200,7 +212,8 @@ class ChoiceControllerSpec extends ControllerWithoutFormSpec with OptionValues {
         stubMessagesControllerComponents(),
         mockSecureMessagingInboxConfig,
         choicePage,
-        appConfig
+        appConfig,
+        externalServicesConfig
       )
       allJourneys.diff(choiceCtrl.availableJourneys).size mustBe 0
     }
@@ -214,7 +227,8 @@ class ChoiceControllerSpec extends ControllerWithoutFormSpec with OptionValues {
         stubMessagesControllerComponents(),
         mockSecureMessagingInboxConfig,
         choicePage,
-        appConfig
+        appConfig,
+        externalServicesConfig
       )
       val missingJourneyTypes = allJourneys.diff(choiceCtrl.availableJourneys)
       missingJourneyTypes.size mustBe 1
@@ -226,6 +240,7 @@ class ChoiceControllerSpec extends ControllerWithoutFormSpec with OptionValues {
 object ChoiceControllerSpec {
   val incorrectChoice: JsValue = Json.toJson(Choice("Incorrect Choice"))
   val createChoice: JsValue = Json.toJson(Choice(CreateDec))
+  val movementsChoice: JsValue = Json.toJson(Choice(Movements))
   val cancelChoice: JsValue = Json.toJson(Choice(CancelDec))
   val submissionsChoice: JsValue = Json.toJson(Choice(Submissions))
   val continueDeclarationChoice: JsValue = Json.toJson(Choice(ContinueDec))

@@ -30,7 +30,7 @@ object Choice {
   val choiceId = "Choice"
 
   import AllowedChoiceValues._
-  private val correctChoices = Set(CreateDec, ContinueDec, CancelDec, Submissions, Inbox)
+  private val correctChoices = Set(CreateDec, Movements, ContinueDec, CancelDec, Submissions, Inbox)
 
   val choiceMapping: Mapping[Choice] = Forms.single(
     "value" -> optional(
@@ -44,6 +44,7 @@ object Choice {
 
   object AllowedChoiceValues {
     val CreateDec = "CRT"
+    val Movements = "MVT"
     val ContinueDec = "CON"
     val CancelDec = "CAN"
     val Submissions = "SUB"
