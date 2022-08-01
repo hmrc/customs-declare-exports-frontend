@@ -24,7 +24,7 @@ import org.mockito.Mockito.when
 import org.scalatest.BeforeAndAfterEach
 import play.api.libs.json.Json
 import views.declaration.spec.UnitViewSpec
-import views.helpers.TimelineEventsSpec.{cancellationDenied, cancellationGranted, cancellationRequestNotConfirmedYet}
+import views.helpers.TimelineEventsSpec.{cancellationDenied, cancellationGranted, cancellationRequestNotConfirmedYet, declarationCancelled}
 import views.html.components.gds.{linkButton, paragraphBody}
 import views.html.components.upload_files_partial_for_timeline
 
@@ -116,7 +116,7 @@ class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injec
       timelineEvents(2).title mustBe messages(s"submission.enhancedStatus.$RECEIVED")
     }
 
-    "generate the expected sequence of TimelineEvent instances when the cancellation request is successful" in {
+    "generate the expected sequence of TimelineEvent instances when the cancellation request is granted" in {
       val timelineEvents = createTimelineFromActions(cancellationGranted)
 
       timelineEvents.size mustBe 3
@@ -131,6 +131,15 @@ class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injec
       timelineEvents.size mustBe 2
       timelineEvents(0).title mustBe messages(s"submission.enhancedStatus.$REQUESTED_CANCELLATION")
       timelineEvents(1).title mustBe messages(s"submission.enhancedStatus.$RECEIVED")
+    }
+
+    "generate the expected sequence of TimelineEvent instances when the declaration is cancelled" in {
+      val timelineEvents = createTimelineFromActions(declarationCancelled)
+
+      timelineEvents.size mustBe 3
+      timelineEvents(0).title mustBe messages(s"submission.enhancedStatus.$CANCELLED")
+      timelineEvents(1).title mustBe messages(s"submission.enhancedStatus.$REQUESTED_CANCELLATION")
+      timelineEvents(2).title mustBe messages(s"submission.enhancedStatus.$RECEIVED")
     }
 
     "generate a sequence of TimelineEvent instances" which {
@@ -210,7 +219,9 @@ class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injec
       "in one single instance only" should {
         "have a 'Fix and resubmit' Html content" when {
           "multiple DMSREJ notifications are present" in {
-            val notifications = List(NotificationSummary(UUID.randomUUID, issued(1), ERRORS), NotificationSummary(UUID.randomUUID, issued(2), ERRORS))
+            val notificationSummary1 = NotificationSummary(UUID.randomUUID, issued(1), ERRORS)
+            val notificationSummary2 = NotificationSummary(UUID.randomUUID, issued(2), ERRORS)
+            val notifications = List(notificationSummary1, notificationSummary2)
             val timelineEvents = genTimelineEvents(notifications)
             assert(timelineEvents(0).content.isDefined)
             assert(timelineEvents(1).content.isEmpty)
@@ -246,7 +257,7 @@ object TimelineEventsSpec {
       |          "enhancedStatus" : "RECEIVED"
       |        }
       |      ]
-      |    },
+      |        },
       |    {
       |      "id": "202bcfdb-60e0-4710-949a-ecd2db0487b3",
       |      "requestType": "CancellationRequest",
@@ -326,5 +337,39 @@ object TimelineEventsSpec {
       |    }
       |]
       |""".stripMargin)
+    .as[Seq[Action]]
+
+  val declarationCancelled = Json
+    .parse(s"""[
+      |  {
+      |      "id" : "8fdfd197-04ee-488e-910c-786cbfa63edf",
+      |      "requestType" : "SubmissionRequest",
+      |      "requestTimestamp" : "2022-08-01T07:59:36.406Z[UTC]",
+      |      "notifications" : [
+      |          {
+      |              "notificationId" : "b843f297-1092-41bb-83f6-dcc49e181594",
+      |              "dateTimeIssued" : "2022-08-01T08:08:08Z[UTC]",
+      |              "enhancedStatus" : "RECEIVED"
+      |          },
+      |          {
+      |              "notificationId" : "d843f297-1092-41bb-83f6-dcc49e181599",
+      |              "dateTimeIssued" : "2022-10-01T08:08:08Z[UTC]",
+      |              "enhancedStatus" : "CANCELLED"
+      |          }
+      |      ]
+      |  },
+      |  {
+      |      "id" : "9fdfd197-04ee-488e-910c-786cbfa63eda",
+      |      "requestType" : "CancellationRequest",
+      |      "requestTimestamp" : "2022-09-01T07:59:36.406Z[UTC]",
+      |      "notifications" : [
+      |          {
+      |              "notificationId" : "c843f297-1092-41bb-83f6-dcc49e181596",
+      |              "dateTimeIssued" : "2022-09-01T07:59:36.406Z[UTC]",
+      |              "enhancedStatus" : "RECEIVED"
+      |          }
+      |      ]
+      |  }
+      |]""".stripMargin)
     .as[Seq[Action]]
 }
