@@ -43,9 +43,12 @@ class TimelineEvents @Inject() (
   def apply(submission: Submission)(implicit messages: Messages): Seq[TimelineEvent] = {
 
     val notificationSummaries = submission.actions.flatMap { action =>
-      val summaries = action.notifications.fold(Seq.empty[NotificationSummary])(_.filterNot(_.enhancedStatus == CUSTOMS_POSITION_GRANTED))
+      val summaries = action.notifications.fold(Seq.empty[NotificationSummary])(identity)
       if (action.requestType != CancellationRequest) summaries
-      else summaries ++ Seq(NotificationSummary(UUID.randomUUID, action.requestTimestamp, REQUESTED_CANCELLATION))
+      else {
+        val cancellationRequest = Seq(NotificationSummary(UUID.randomUUID, action.requestTimestamp, REQUESTED_CANCELLATION))
+        summaries.filter(_.enhancedStatus == CUSTOMS_POSITION_DENIED) ++ cancellationRequest
+      }
     }.sorted
 
     val IndexToMatchForUploadFilesContent = notificationSummaries.indexWhere(_.enhancedStatus in uploadFilesStatuses)
