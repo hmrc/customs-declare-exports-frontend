@@ -2233,7 +2233,7 @@ legal.declaration.email.error=Enter a valid email address
 legal.declaration.confirmation=I confirm the information given is correct to the best of my knowledge
 legal.declaration.confirmation.missing=You must confirm the information is correct to the best of your knowledge
 
-rejected.notification.mrn = MRN {0}
+rejected.notification.mrn = MRN: {0}
 rejected.notification.mrn.missing = No MRN
 rejected.notification.title = Fix declaration errors
 rejected.notification.table.title = Declaration errors
