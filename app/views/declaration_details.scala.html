@@ -14,10 +14,12 @@
  * limitations under the License.
  *@
 
+@import config.ExternalServicesConfig
 @import config.featureFlags.{EadConfig, SecureMessagingConfig}
 @import models.declaration.notifications.Notification
 @import models.declaration.submissions.Submission
 @import models.requests.VerifiedEmailRequest
+@import play.api.mvc.Call
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.helpers.DeclarationDetailsLinks._
 @import views.helpers.{BackButton, TimelineEvents, Title, ViewDates}
@@ -35,7 +37,8 @@
   bulletList: bulletList,
   govukDetails : GovukDetails,
   eadConfig: EadConfig,
-  secureMessagingConfig: SecureMessagingConfig
+  secureMessagingConfig: SecureMessagingConfig,
+  externalServicesConfig: ExternalServicesConfig
 )
 
 @(submission: Submission)(implicit request: VerifiedEmailRequest[_], messages: Messages)
@@ -85,6 +88,16 @@
         )
     </div>
   }
+}
+
+@movementsRedirectionLink = {
+    <div>
+        @link(
+            id = Some("movements-redirection"),
+            text = messages("submissions.movements.redirection"),
+            call = Call("GET", externalServicesConfig.customsMovementsFrontendUrl)
+        )
+    </div>
 }
 
 @documentsRequiredDetailsContent = {
@@ -215,6 +228,7 @@
             @uploadingDocumentsLink
             @pdfForEadLink
             @viewDeclarationLink
+            @movementsRedirectionLink
         </div>
 
         <div>

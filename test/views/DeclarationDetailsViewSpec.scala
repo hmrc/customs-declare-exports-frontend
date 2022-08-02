@@ -17,6 +17,7 @@
 package views
 
 import base.{ExportsTestData, Injector, OverridableInjector, RequestBuilder}
+import config.ExternalServicesConfig
 import config.featureFlags._
 import controllers.routes
 import models.declaration.submissions.{Action, EnhancedStatus, NotificationSummary, Submission}
@@ -28,6 +29,7 @@ import org.jsoup.select.Elements
 import org.mockito.Mockito.when
 import org.scalatest.{Assertion, GivenWhenThen}
 import play.api.inject.bind
+import play.api.mvc.Call
 import views.declaration.spec.UnitViewSpec
 import views.helpers.{EnhancedStatusHelper, ViewDates}
 import views.html.declaration_details
@@ -37,6 +39,8 @@ import java.util.UUID
 import scala.collection.JavaConverters.asScalaIteratorConverter
 
 class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with Injector {
+
+  private val externalServicesConfig = instanceOf[ExternalServicesConfig]
 
   private val keyPrefix = "submission"
   private val msgKey = s"${keyPrefix}s.declarationDetails"
@@ -51,13 +55,13 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
   private val uuid = "uuid"
   private val submission = Submission(uuid, "eori", "lrn", Some(mrn), Some("ducr"), None, None, Seq.empty)
 
-  private val dmsqry1Notification = NotificationSummary(UUID.randomUUID(), now, QUERY_NOTIFICATION_MESSAGE)
-  private val dmsqry2Notification = NotificationSummary(UUID.randomUUID(), now.plusMinutes(1), QUERY_NOTIFICATION_MESSAGE)
-  private val dmsdocNotification = NotificationSummary(UUID.randomUUID(), now.plusMinutes(2), ADDITIONAL_DOCUMENTS_REQUIRED)
-  private val dmsctlNotification = NotificationSummary(UUID.randomUUID(), now.plusMinutes(3), UNDERGOING_PHYSICAL_CHECK)
-  private val acceptedNotification = NotificationSummary(UUID.randomUUID(), now.plusMinutes(4), RECEIVED)
+  private val dmsqry1Notification = NotificationSummary(UUID.randomUUID, now, QUERY_NOTIFICATION_MESSAGE)
+  private val dmsqry2Notification = NotificationSummary(UUID.randomUUID, now.plusMinutes(1), QUERY_NOTIFICATION_MESSAGE)
+  private val dmsdocNotification = NotificationSummary(UUID.randomUUID, now.plusMinutes(2), ADDITIONAL_DOCUMENTS_REQUIRED)
+  private val dmsctlNotification = NotificationSummary(UUID.randomUUID, now.plusMinutes(3), UNDERGOING_PHYSICAL_CHECK)
+  private val acceptedNotification = NotificationSummary(UUID.randomUUID, now.plusMinutes(4), RECEIVED)
 
-  private val dmsrejNotification = NotificationSummary(UUID.randomUUID(), now.plusMinutes(5), ERRORS)
+  private val dmsrejNotification = NotificationSummary(UUID.randomUUID, now.plusMinutes(5), ERRORS)
 
   // Since the notification list is reverse-ordered (most to least recent) in TimelineEvents...
 
@@ -78,7 +82,7 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
     VerifiedEmailRequest(RequestBuilder.buildAuthenticatedRequest(request, user), email)
 
   private def createSubmissionWith(status: EnhancedStatus) = {
-    val action = Action("id", SubmissionRequest, now, Some(Seq(NotificationSummary(UUID.randomUUID(), now, status))))
+    val action = Action("id", SubmissionRequest, now, Some(Seq(NotificationSummary(UUID.randomUUID, now, status))))
     Submission(uuid, "eori", "lrn", Some(mrn), Some("ducr"), Some(status), Some(now), Seq(action))
   }
 
@@ -298,7 +302,7 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
       lrn.getElementsByClass("govuk-summary-list__value").text mustBe submission.lrn
     }
 
-    s"contain the uploading-documents link" when {
+    "contain the uploading-documents link" when {
       List(GOODS_ARRIVED, RECEIVED).foreach { status =>
         s"enhanced status is $status" in {
           val view = page(createSubmissionWith(status))(verifiedEmailRequest(), messages)
@@ -310,7 +314,7 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
       }
     }
 
-    s"not contain the uploading-documents link" when {
+    "not contain the uploading-documents link" when {
       (EnhancedStatus.values &~ Set(GOODS_ARRIVED, GOODS_ARRIVED_MESSAGE, RECEIVED)).foreach { status =>
         s"notification's status is $status" in {
           val view = page(createSubmissionWith(status))(verifiedEmailRequest(), messages)
@@ -329,9 +333,15 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
       }
     }
 
-    s"not contain the view-declaration link when notification's status is ERRORS" in {
+    "not contain the view-declaration link when notification's status is ERRORS" in {
       val view = page(createSubmissionWith(ERRORS))(verifiedEmailRequest(), messages)
       Option(view.getElementById("view-declaration")) mustBe None
+    }
+
+    "display the link to redirect the user to the 'Movements' service" in {
+      val redirectionLink = view.getElementById("movements-redirection")
+      redirectionLink.text mustBe messages("submissions.movements.redirection")
+      redirectionLink must haveHref(Call("GET", externalServicesConfig.customsMovementsFrontendUrl))
     }
 
     "display the Declaration Timeline when there is at least one notification for the declaration" in {
@@ -339,7 +349,7 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
 
       And("the Timeline should display an event for each notification")
       val events = view.getElementsByClass("hmrc-timeline__event")
-      events.size() mustBe notificationSummaries.size
+      events.size mustBe notificationSummaries.size
 
       def dateTimeAsShown(notification: NotificationSummary): String =
         ViewDates.formatDateAtTime(notification.dateTimeIssued)
@@ -378,8 +388,8 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
 
         "a QUERY_NOTIFICATION_MESSAGE notification is more recent than a UNDERGOING_PHYSICAL_CHECK notification" in {
           val notifications = List(
-            NotificationSummary(UUID.randomUUID(), now, UNDERGOING_PHYSICAL_CHECK),
-            NotificationSummary(UUID.randomUUID(), now.plusMinutes(1), QUERY_NOTIFICATION_MESSAGE)
+            NotificationSummary(UUID.randomUUID, now, UNDERGOING_PHYSICAL_CHECK),
+            NotificationSummary(UUID.randomUUID, now.plusMinutes(1), QUERY_NOTIFICATION_MESSAGE)
           )
           val events = eventsOnTimeline(notifications)
 
@@ -389,8 +399,8 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
 
         "a QUERY_NOTIFICATION_MESSAGE notification is more recent than a ADDITIONAL_DOCUMENTS_REQUIRED notification" in {
           val notifications = List(
-            NotificationSummary(UUID.randomUUID(), now, ADDITIONAL_DOCUMENTS_REQUIRED),
-            NotificationSummary(UUID.randomUUID(), now.plusMinutes(1), QUERY_NOTIFICATION_MESSAGE)
+            NotificationSummary(UUID.randomUUID, now, ADDITIONAL_DOCUMENTS_REQUIRED),
+            NotificationSummary(UUID.randomUUID, now.plusMinutes(1), QUERY_NOTIFICATION_MESSAGE)
           )
           val events = eventsOnTimeline(notifications)
 
@@ -449,7 +459,7 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
       }
 
       def verifyBodyText(status: EnhancedStatus): Assertion = {
-        val notifications = List(NotificationSummary(UUID.randomUUID(), now, status))
+        val notifications = List(NotificationSummary(UUID.randomUUID, now, status))
         val events = eventsOnTimeline(notifications)
         val elements = content(events.get(0))
 
