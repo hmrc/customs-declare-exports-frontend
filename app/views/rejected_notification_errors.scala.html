@@ -47,8 +47,8 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-full">
 
-            @sectionHeader(messages("rejected.notification.mrn", maybeMrn.getOrElse(messages("rejected.notification.mrn.missing"))))
             @pageTitle(text = messages("rejected.notification.title"), classes = "govuk-heading-l")
+            @sectionHeader(messages("rejected.notification.mrn", maybeMrn.getOrElse(messages("rejected.notification.mrn.missing"))))
 
             @govukWarningText(WarningText(
                 iconFallbackText = messages("site.warning"),
