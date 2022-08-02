@@ -16,14 +16,12 @@
 
 package controllers
 
-import config.{AppConfig, ExternalServicesConfig}
 import config.featureFlags.SecureMessagingInboxConfig
+import config.{AppConfig, ExternalServicesConfig}
 import controllers.actions.{AuthAction, VerifiedEmailAction}
 import forms.Choice
 import forms.Choice.AllowedChoiceValues._
 import forms.Choice._
-
-import javax.inject.Inject
 import models.requests.ExportsSessionKeys
 import play.api.data.Form
 import play.api.i18n.I18nSupport
@@ -32,6 +30,8 @@ import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.choice_page
+
+import javax.inject.Inject
 
 class ChoiceController @Inject() (
   authenticate: AuthAction,
@@ -51,7 +51,7 @@ class ChoiceController @Inject() (
 
   def displayPage(previousChoice: Option[Choice]): Action[AnyContent] = (authenticate andThen verifyEmail) { implicit request =>
     def pageForPreviousChoice(previousChoice: Option[Choice]): HtmlFormat.Appendable = {
-      val form = Choice.form()
+      val form = Choice.form
       choicePage(previousChoice.fold(form)(form.fill), availableJourneys)
     }
 
@@ -59,8 +59,7 @@ class ChoiceController @Inject() (
   }
 
   def submitChoice(): Action[AnyContent] = (authenticate andThen verifyEmail) { implicit request =>
-    form()
-      .bindFromRequest()
+    form.bindFromRequest
       .fold(
         (formWithErrors: Form[Choice]) => BadRequest(choicePage(formWithErrors, availableJourneys)),
         choice =>
