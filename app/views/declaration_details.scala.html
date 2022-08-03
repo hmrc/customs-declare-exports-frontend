@@ -91,13 +91,13 @@
 }
 
 @movementsRedirectionLink = {
-    <div>
+    <p>
         @link(
             id = Some("movements-redirection"),
             text = messages("submissions.movements.redirection"),
             call = Call("GET", externalServicesConfig.customsMovementsFrontendUrl)
         )
-    </div>
+    </p>
 }
 
 @documentsRequiredDetailsContent = {
