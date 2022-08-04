@@ -195,8 +195,14 @@ class NavigatorSpec
       val parentDeclarationId = "1234"
       implicit val declaration = aDeclaration(withParentDeclarationId(parentDeclarationId))
 
-      "continueTo method is invoked with mode ErrorFix and parentDeclarationId in request" in {
+      "Save and return to errors is clicked with mode ErrorFix and parentDeclarationId in request" in {
         val request = requestWithFormAction(Some(SaveAndReturnToErrors))
+        val result = navigator.continueTo(Mode.ErrorFix, call)(decoratedRequest(request), hc)
+        redirectLocation(result) mustBe Some(RejectedNotificationsController.displayPage(parentDeclarationId).url)
+      }
+
+      "Save and continue is clicked with mode ErrorFix and parentDeclarationId in request" in {
+        val request = requestWithFormAction(Some(SaveAndContinue))
         val result = navigator.continueTo(Mode.ErrorFix, call)(decoratedRequest(request), hc)
         redirectLocation(result) mustBe Some(RejectedNotificationsController.displayPage(parentDeclarationId).url)
       }
