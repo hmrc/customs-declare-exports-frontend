@@ -204,7 +204,7 @@ class NavigatorSpec
       "Save and continue is clicked with mode ErrorFix and parentDeclarationId in request" in {
         val request = requestWithFormAction(Some(SaveAndContinue))
         val result = navigator.continueTo(Mode.ErrorFix, call)(decoratedRequest(request), hc)
-        redirectLocation(result) mustBe Some(RejectedNotificationsController.displayPage(parentDeclarationId).url)
+        redirectLocation(result) mustBe Some("url")
       }
 
       "backLink method is invoked with mode ErrorFix and parentDeclarationId in request" in {
