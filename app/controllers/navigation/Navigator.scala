@@ -389,7 +389,7 @@ class Navigator @Inject() (
   ): Result =
     (formAction, req.cacheModel.parentDeclarationId) match {
       case (SaveAndReturnToErrors, Some(parentId)) => Results.Redirect(RejectedNotificationsController.displayPage(parentId))
-      case (Add | Remove(_), _)                    => Results.Redirect(factory(ErrorFix))
+      case (Add | Remove(_) | SaveAndContinue, _)  => Results.Redirect(factory(ErrorFix))
       case _ if isErrorFixInProgress               => Results.Redirect(factory(ErrorFix))
       case (_, Some(parentId))                     => Results.Redirect(RejectedNotificationsController.displayPage(parentId))
       case _                                       => Results.Redirect(SubmissionsController.displayListOfSubmissions())
