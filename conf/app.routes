@@ -48,6 +48,12 @@ GET         /cancel-declaration                            controllers.CancelDec
 
 POST        /cancel-declaration                            controllers.CancelDeclarationController.onSubmit()
 
+# Copy declaration
+
+GET         /copy-declaration/:id                          controllers.CopyDeclarationController.redirectToReceiveJourneyRequest(id: String)
+GET         /copy-declaration                              controllers.CopyDeclarationController.displayPage
+POST        /copy-declaration                              controllers.CopyDeclarationController.submitPage
+
 # Cancellation Result
 
 GET         /cancellation-holding                          controllers.CancellationResultController.displayHoldingPage()

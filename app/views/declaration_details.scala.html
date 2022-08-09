@@ -83,10 +83,22 @@
     <div>
         @link(
             id = Some("view-declaration"),
-            text = messages("submissions.viewDeclaration"),
+            text = messages("submissions.view.declaration"),
             call = routes.SubmissionsController.viewDeclaration(submission.uuid)
         )
     </div>
+  }
+}
+
+@copyDeclarationLink = {
+  @if(!isDeclarationRejected(submission)){
+    <p>
+        @link(
+            id = Some("copy-declaration"),
+            text = messages("submissions.copy.declaration"),
+            call = routes.CopyDeclarationController.redirectToReceiveJourneyRequest(submission.uuid)
+        )
+    </p>
   }
 }
 
@@ -228,6 +240,7 @@
             @uploadingDocumentsLink
             @pdfForEadLink
             @viewDeclarationLink
+            @copyDeclarationLink
             @movementsRedirectionLink
         </div>
 

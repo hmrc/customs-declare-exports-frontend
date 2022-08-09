@@ -545,7 +545,6 @@ declaration.consignmentReferences.ducr.paragraph.bullet5 = trader reference of u
 declaration.consignmentReferences.ducr.inset.1 = Use the EORI of the exporter and create the trader reference based on the exporter’s commercial records, for instance an invoice number.
 declaration.consignmentReferences.ducr.inset.2 = Do not use the same DUCR for different declarations. Only use the same DUCR if you are doing a fix and resubmit after getting errors, or if you have cancelled your declaration and are submitting the same one.
 declaration.consignmentReferences.ducr.hint = For example, 1GB121212121212-INVOICE123/4.
-declaration.consignmentReferences.ducr.error.duplicate = You already submitted a declaration with this DUCR; if you are resubmitting after correcting an error or updating information, add a version number at the end
 declaration.consignmentReferences.ducr.error.empty = Enter a Declaration Unique Consignment Reference (DUCR)
 declaration.consignmentReferences.ducr.error.invalid = Declaration Unique Consignment Reference (DUCR) must be in the correct format
 declaration.consignmentReferences.lrn.info = Your reference
@@ -736,6 +735,14 @@ declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.9.link
 declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.10 = {0} (requested procedure 31)
 declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.10.linkText = Re-export following a special procedure
 
+declaration.copy.title = Copy declaration
+declaration.copy.ducr.label = Enter a new Declaration Unique Consignment Reference (DUCR)
+declaration.copy.ducr.paragraph = If you are copying a pre-lodged declaration, you can repeat the same DUCR.
+declaration.copy.ducr.hint = For example, 1GB121212121212-INVOICE123/4.
+declaration.copy.lrn.label = Enter a new local reference number (LRN)
+declaration.copy.lrn.paragraph = You can enter any reference you like, but do not use the same LRN within 48 hours. Add a version number if you have used it in the past 48 hours.
+declaration.copy.lrn.hint = This can be up to 22 capital letters and numbers, but no special characters. For example, SMITH 8TH JAN KEYRINGS.
+
 submission.enhancedStatus.ADDITIONAL_DOCUMENTS_REQUIRED = Documents required
 submission.enhancedStatus.AMENDED                       = Amended
 submission.enhancedStatus.AWAITING_EXIT_RESULTS         = Awaiting exit results
@@ -793,7 +800,8 @@ submissions.sfus.inbox.link = CDS secure inbox (opens in new tab)
 submissions.sfus.upload.files = Upload files (opens in new tab)
 submissions.uploading.documents = Upload supporting documents (opens in new tab)
 submissions.generateEAD = Download an Export Accompanying Document (EAD) - PDF
-submissions.viewDeclaration = View submitted declaration
+submissions.view.declaration = View submitted declaration
+submissions.copy.declaration = Copy declaration
 submissions.movements.redirection = Arrive, depart or consolidate a declaration
 submissions.rejected.tab.title = Rejected
 submissions.rejected.content.title = Rejected declarations

@@ -328,7 +328,7 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
         val view = page(createSubmissionWith(status))(verifiedEmailRequest(), messages)
 
         val declarationLink = view.getElementById("view-declaration")
-        declarationLink must containMessage("submissions.viewDeclaration")
+        declarationLink must containMessage("submissions.view.declaration")
         declarationLink must haveHref(routes.SubmissionsController.viewDeclaration(submission.uuid))
       }
     }
@@ -336,6 +336,23 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
     "not contain the view-declaration link when notification's status is ERRORS" in {
       val view = page(createSubmissionWith(ERRORS))(verifiedEmailRequest(), messages)
       Option(view.getElementById("view-declaration")) mustBe None
+    }
+
+    EnhancedStatus.values.filterNot(rejectedStatuses.contains) foreach { status =>
+      s"contain the copy-declaration link when notification's status is ${status}" in {
+        val view = page(createSubmissionWith(status))(verifiedEmailRequest(), messages)
+
+        val copyDeclarationLink = view.getElementById("copy-declaration")
+        copyDeclarationLink must containMessage("submissions.copy.declaration")
+        copyDeclarationLink must haveHref(routes.CopyDeclarationController.redirectToReceiveJourneyRequest(submission.uuid))
+      }
+    }
+
+    EnhancedStatus.values.filter(rejectedStatuses.contains) foreach { status =>
+      s"not contain the copy-declaration link when notification's status is ${status}" in {
+        val view = page(createSubmissionWith(status))(verifiedEmailRequest(), messages)
+        Option(view.getElementById("copy-declaration")) mustBe None
+      }
     }
 
     "display the link to redirect the user to the 'Movements' service" in {

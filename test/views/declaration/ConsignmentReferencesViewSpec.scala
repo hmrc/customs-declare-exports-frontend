@@ -65,7 +65,6 @@ class ConsignmentReferencesViewSpec extends UnitViewSpec with CommonMessages wit
       messages must haveTranslationFor("declaration.consignmentReferences.ducr.paragraph.bullet5")
       messages must haveTranslationFor("declaration.consignmentReferences.ducr.hint")
       messages must haveTranslationFor("declaration.consignmentReferences.ducr.inset.1")
-      messages must haveTranslationFor("declaration.consignmentReferences.ducr.error.duplicate")
       messages must haveTranslationFor("declaration.consignmentReferences.ducr.error.empty")
       messages must haveTranslationFor("declaration.consignmentReferences.ducr.error.invalid")
       messages must haveTranslationFor("declaration.consignmentReferences.supplementary.ducr.hint1")
