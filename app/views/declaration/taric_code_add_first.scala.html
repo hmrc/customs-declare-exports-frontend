@@ -57,13 +57,13 @@
     @commodityCodeOfItem(itemId).fold {
         @link(
             text = messages("declaration.taricAdditionalCodes.addfirst.body.altlink"),
-            Call("GET", appConfig.tradeTariffUrl), "_blank"
+            Call("GET", appConfig.tradeTariffUrl), Some("_blank")
         )
     } { commodityCode =>
         @link(
             text = messages("declaration.taricAdditionalCodes.addfirst.body.link", commodityCode.codeAsShown),
           Call("GET", appConfig.commodityCodeTariffPageUrl.replace(CommodityDetails.placeholder, commodityCode.codeAsRef)),
-          "_blank"
+          Some("_blank")
         )
     }
 }
@@ -86,7 +86,7 @@
             paragraphBody(messages("declaration.taricAdditionalCodes.addfirst.inset.text", link(
                 messages("declaration.taricAdditionalCodes.addfirst.inset.text.link"),
                 Call("GET", appConfig.commodityCode9306909000),
-                "_blank"
+                Some("_blank")
             )))
         ))))
 

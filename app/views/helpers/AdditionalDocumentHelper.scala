@@ -73,8 +73,8 @@ class AdditionalDocumentHelper @Inject() (
     s"$prefix.v${versionSelection(itemId)}.code.hint"
 
   def documentCodeExpander(implicit messages: Messages): Html = {
-    val link1 = link(messages(s"$prefix.code.expander.body.1.link"), Call("GET", appConfig.additionalDocumentsUnionCodes), "_blank")
-    val link2 = link(messages(s"$prefix.code.expander.body.2.link"), Call("GET", appConfig.additionalDocumentsReferenceCodes), "_blank")
+    val link1 = link(messages(s"$prefix.code.expander.body.1.link"), Call("GET", appConfig.additionalDocumentsUnionCodes), Some("_blank"))
+    val link2 = link(messages(s"$prefix.code.expander.body.2.link"), Call("GET", appConfig.additionalDocumentsReferenceCodes), Some("_blank"))
 
     val content = List(
       paragraph(messages(s"$prefix.code.expander.body.1", link1)),
@@ -158,7 +158,7 @@ class AdditionalDocumentHelper @Inject() (
             link(
               text = messages(s"$prefix.expander.body.1.withoutCommodityCode.link"),
               call = Call("GET", appConfig.tradeTariffSections),
-              target = "_blank"
+              target = Some("_blank")
             )
           )
         )
@@ -169,7 +169,7 @@ class AdditionalDocumentHelper @Inject() (
             link(
               text = messages(s"$prefix.expander.body.1.withCommodityCode.link", commodityCode.codeAsShown),
               call = Call("GET", appConfig.commodityCodeTariffPageUrl.replace(CommodityDetails.placeholder, commodityCode.codeAsRef)),
-              target = "_blank"
+              target = Some("_blank")
             )
           )
         )
@@ -178,7 +178,11 @@ class AdditionalDocumentHelper @Inject() (
       paragraph(
         messages(
           s"$prefix.expander.body.3",
-          link(text = messages(s"$prefix.expander.body.3.link"), call = Call("GET", appConfig.additionalDocumentsLicenceTypes), target = "_blank")
+          link(
+            text = messages(s"$prefix.expander.body.3.link"),
+            call = Call("GET", appConfig.additionalDocumentsLicenceTypes),
+            target = Some("_blank")
+          )
         )
       )
     )
@@ -187,7 +191,7 @@ class AdditionalDocumentHelper @Inject() (
     paragraph(
       messages(
         s"$prefix.expander.body.4",
-        link(messages(s"$prefix.expander.body.4.link"), Call("GET", appConfig.guidance.commodityCode0306310010), "_blank")
+        link(messages(s"$prefix.expander.body.4.link"), Call("GET", appConfig.guidance.commodityCode0306310010), Some("_blank"))
       )
     )
 }

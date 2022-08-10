@@ -76,7 +76,7 @@ class PreviousDocumentsHelper @Inject() (
 
     val paragraphsForInsetText =
       if (versionSelection == 2) {
-        val linkForV2 = link(messages(s"$prefix.inset.text.3.link"), Call("GET", appConfig.simplifiedDeclPreviousDoc), "_blank")
+        val linkForV2 = link(messages(s"$prefix.inset.text.3.link"), Call("GET", appConfig.simplifiedDeclPreviousDoc), Some("_blank"))
         commonParagraphs :+ paragraph("inset.text.3", linkForV2)
       } else commonParagraphs
 

@@ -56,7 +56,7 @@
             link(
                 call = Call("GET", GuidanceController.sendByRoro.url),
                 text = messages("declaration.transport.leavingTheBorder.inset.link"),
-                target = "_blank"
+                target = Some("_blank")
             )
         )))
     }

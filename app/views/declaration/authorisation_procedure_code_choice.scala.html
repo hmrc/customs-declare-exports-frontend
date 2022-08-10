@@ -56,49 +56,49 @@
         link(
             text = messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.1.linkText"),
             call = Call("GET", appConfig.procedureCodesRemovalOfGoodsFromExciseWarehouse),
-            target = "_blank"
+            target = Some("_blank")
         )))
     @paragraphBody(messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.2"))
     @paragraphBody(messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.3",
         link(
             text = messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.3.linkText"),
             call = Call("GET", appConfig.procedureCodesRemovalOfGoodsFromExciseWarehouse),
-            target = "_blank"
+            target = Some("_blank")
         )))
     @paragraphBody(messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.4",
         link(
             text = messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.4.linkText"),
             call = Call("GET", appConfig.procedureCodesOnwardSupplyRelief),
-            target = "_blank"
+            target = Some("_blank")
         )))
     @paragraphBody(messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.5",
         link(
             text = messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.5.linkText"),
             call = Call("GET", appConfig.procedureCodesEndUseRelief),
-            target = "_blank"
+            target = Some("_blank")
         )))
     @paragraphBody(messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.6",
         link(
             text = messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.6.linkText"),
             call = Call("GET", appConfig.permanentExportOrDispatch.section),
-            target = "_blank"
+            target = Some("_blank")
         )))
     @paragraphBody(messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.7"))
     <p>@link(
         text = messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.8.linkText"),
         call = Call("GET", appConfig.procedureCodesOutwardProcessing),
-        target = "_blank"
+        target = Some("_blank")
     )</p>
     <p>@link(
         text = messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.9.linkText"),
         call = Call("GET", appConfig.procedureCodesTemporaryExport),
-        target = "_blank"
+        target = Some("_blank")
     )</p>
     @paragraphBody(messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.10",
         link(
             text = messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.10.linkText"),
             call = Call("GET", appConfig.procedureCodesReExportFollowingSpecialProcedure),
-            target = "_blank"
+            target = Some("_blank")
         )))
 }
 

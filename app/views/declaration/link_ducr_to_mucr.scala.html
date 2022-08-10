@@ -53,7 +53,7 @@
         message = messages("declaration.linkDucrToMucr.details.hint1", link(
             text = messages("declaration.linkDucrToMucr.details.hint1.link"),
             call = Call("GET", appConfig.notesForMucrConsolidationUrl),
-            target = "_blank"
+            target = Some("_blank")
         ))
     )
 

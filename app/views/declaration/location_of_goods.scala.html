@@ -82,12 +82,12 @@
               paragraphBody(messages("declaration.locationOfGoods.inset.v3.body1", link(
                   messages("declaration.locationOfGoods.inset.v3.body1.link"),
                   Call("GET", appConfig.getGoodsMovementReference),
-                  "_blank"
+                  Some("_blank")
               ))),
               paragraphBody(messages("declaration.locationOfGoods.inset.v3.body2", link(
                   messages("declaration.locationOfGoods.inset.v3.body2.link"),
                   Call("GET", appConfig.guidance.january2022locations),
-                  "_blank"
+                  Some("_blank")
               )))
           ))))
         }

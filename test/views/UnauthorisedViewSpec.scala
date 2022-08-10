@@ -54,18 +54,14 @@ class UnauthorisedViewSpec extends UnitViewSpec with Stubs with Injector with Be
 
         link.get(0) must containMessage("unauthorised.paragraph.1.linkText")
         link.get(0) must haveHref("https://www.gov.uk/guidance/get-access-to-the-customs-declaration-service")
-        link.get(0).attr("target") mustBe "_self"
 
         link.get(1) must containMessage("unauthorised.paragraph.2.linkText")
         link.get(1) must haveHref("https://www.gov.uk/log-in-register-hmrc-online-services/problems-signing-in")
-        link.get(1).attr("target") mustBe "_self"
 
         link.get(2) must containMessage("unauthorised.paragraph.3.linkText")
         link.get(2) must haveHref(
           "https://www.gov.uk/government/publications/use-hmrcs-business-tax-account/use-hmrcs-business-tax-account#adding-a-team-member"
         )
-        link.get(2).attr("target") mustBe "_self"
-
       }
 
       "display the expected sign out link" in {

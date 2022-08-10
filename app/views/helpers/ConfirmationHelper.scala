@@ -183,7 +183,7 @@ class ConfirmationHelper @Inject() (
     val paragraph2 = paragraph(
       messages(
         "declaration.confirmation.whatYouCanDoNow.paragraph.2",
-        link(messages("declaration.confirmation.whatYouCanDoNow.paragraph.2.link"), FileUploadController.startFileUpload(mrn), "_blank")
+        link(messages("declaration.confirmation.whatYouCanDoNow.paragraph.2.link"), FileUploadController.startFileUpload(mrn), Some("_blank"))
       )
     )
 

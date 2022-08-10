@@ -57,7 +57,7 @@
 
         @heading(messages("declaration.unDangerousGoodsCode.header"))
 
-        @body(messages("declaration.unDangerousGoodsCode.paragraph", link(text = messages("declaration.unDangerousGoodsCode.paragraph.link"), call = Call("GET", appConfig.unDangerousGoodsUrl), target = "_blank")))
+        @body(messages("declaration.unDangerousGoodsCode.paragraph", link(text = messages("declaration.unDangerousGoodsCode.paragraph.link"), call = Call("GET", appConfig.unDangerousGoodsUrl), target = Some("_blank"))))
 
         @govukRadios(Radios(
             name = hasDangerousGoodsCodeKey,

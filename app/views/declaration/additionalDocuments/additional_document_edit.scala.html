@@ -67,7 +67,7 @@
             link(
                 text = messages("declaration.additionalDocument.measurementUnit.link.text"),
                 call = Call("GET", appConfig.additionalDocumentsUnitCodes),
-                target = "_blank"
+                target = Some("_blank")
             )
         ))
     </p>

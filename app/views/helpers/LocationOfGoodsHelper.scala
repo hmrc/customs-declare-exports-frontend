@@ -54,7 +54,7 @@ class LocationOfGoodsHelper @Inject() (
 
         List(
           messages(s"$prefix.body.v2.1"),
-          messages(s"$prefix.body.v2.2", link(linkText2, Call("GET", appConfig.locationCodesForCsePremises), "_blank")),
+          messages(s"$prefix.body.v2.2", link(linkText2, Call("GET", appConfig.locationCodesForCsePremises), Some("_blank"))),
           messages(s"$prefix.body.v2.3", link(email, Call("GET", s"mailto:$email?subject=$subject")))
         ).map(body(_))
 
@@ -79,9 +79,9 @@ class LocationOfGoodsHelper @Inject() (
         List(
           body(messages(s"$prefix.body.v4.1")),
           body(messages(s"$prefix.body.v4.1.1")),
-          body(messages(s"$prefix.body.v4.2", link(linkText2, Call("GET", appConfig.previousProcedureCodes), "_blank"))),
+          body(messages(s"$prefix.body.v4.2", link(linkText2, Call("GET", appConfig.previousProcedureCodes), Some("_blank")))),
           body(messages(s"$prefix.body.v4.3.label"), "govuk-heading-s"),
-          body(messages(s"$prefix.body.v4.3", link(linkText3, Call("GET", appConfig.locationCodesForPortsUsingGVMS), "_blank")))
+          body(messages(s"$prefix.body.v4.3", link(linkText3, Call("GET", appConfig.locationCodesForPortsUsingGVMS), Some("_blank"))))
         )
 
       // version 1
@@ -138,10 +138,10 @@ class LocationOfGoodsHelper @Inject() (
     (1 to 10).flatMap { ix =>
       val title = if (ix <= 9) Some(heading(text(s"$ix.title"), titleClasses, "h2")) else None
       val hint =
-        if (ix <= 8) row(link(text(s"$ix.link1"), Call("GET", expanderLinks(ix)._1), "_blank"), classes = "")
+        if (ix <= 8) row(link(text(s"$ix.link1"), Call("GET", expanderLinks(ix)._1), Some("_blank")), classes = "")
         else {
-          val link1 = link(text(s"$ix.link1"), Call("GET", expanderLinks(ix)._1), "_blank")
-          val link2 = link(text(s"$ix.link2"), Call("GET", expanderLinks(ix)._2), "_blank")
+          val link1 = link(text(s"$ix.link1"), Call("GET", expanderLinks(ix)._1), Some("_blank"))
+          val link2 = link(text(s"$ix.link2"), Call("GET", expanderLinks(ix)._2), Some("_blank"))
           govukHint(Hint(content = HtmlContent(text(s"$ix.text", link1, link2))))
         }
 
