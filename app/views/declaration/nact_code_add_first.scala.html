@@ -67,7 +67,7 @@
             link(
                 messages("declaration.nationalAdditionalCode.addfirst.body.link"),
                 Call("GET", appConfig.nationalAdditionalCodes),
-                "_blank"
+                Some("_blank")
             )
         ))
 

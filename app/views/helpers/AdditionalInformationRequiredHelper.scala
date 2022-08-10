@@ -44,7 +44,7 @@ class AdditionalInformationRequiredHelper @Inject() (appConfig: AppConfig, parag
           id = Some("ai_containers_link"),
           text = messages("declaration.additionalInformationRequired.clearanceOr1040.para1.link"),
           call = Call("GET", appConfig.guidance.aiCodesForContainers),
-          target = "_blank"
+          target = Some("_blank")
         )
       )
     )
@@ -56,7 +56,7 @@ class AdditionalInformationRequiredHelper @Inject() (appConfig: AppConfig, parag
           id = Some("ai_codes_link"),
           text = messages("declaration.additionalInformationRequired.clearanceOr1040.para2.link"),
           call = Call("GET", appConfig.guidance.aiCodes),
-          target = "_blank"
+          target = Some("_blank")
         )
       )
     )
@@ -78,7 +78,7 @@ class AdditionalInformationRequiredHelper @Inject() (appConfig: AppConfig, parag
           id = Some("proc_codes_link"),
           text = messages("declaration.additionalInformationRequired.not1040.inset.para1.link"),
           call = Call("GET", appConfig.previousProcedureCodes),
-          target = "_blank"
+          target = Some("_blank")
         )
       )
     )
@@ -90,7 +90,7 @@ class AdditionalInformationRequiredHelper @Inject() (appConfig: AppConfig, parag
           id = Some("ai_codes_link"),
           text = messages("declaration.additionalInformationRequired.not1040.inset.para2.link"),
           call = Call("GET", appConfig.guidance.aiCodes),
-          target = "_blank"
+          target = Some("_blank")
         )
       )
     )

@@ -61,7 +61,7 @@
 
     @paragraphBody(messages(
         "declaration.statisticalValue.inset.text.2",
-        link(messages("declaration.statisticalValue.inset.text.2.link"), Call("GET", appConfig.hmrcExchangeRatesFor2021), "_blank")
+        link(messages("declaration.statisticalValue.inset.text.2.link"), Call("GET", appConfig.hmrcExchangeRatesFor2021), Some("_blank"))
     ))
 }
 

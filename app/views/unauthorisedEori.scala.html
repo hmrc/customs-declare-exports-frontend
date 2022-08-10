@@ -37,7 +37,7 @@
             id = Some("contact_support_link"),
             text = messages("unauthorised.tdr.body.link"),
             call = Call("GET", s"mailto:${messages("unauthorised.tdr.body.link")}"),
-            target="_blank"
+            target = Some("_blank")
         ))
     )
 }

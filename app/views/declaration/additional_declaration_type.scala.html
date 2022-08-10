@@ -71,7 +71,7 @@
                 content = paragraphBody(messages("declaration.declarationType.notification.content", link(
                     text = messages("declaration.declarationType.notification.content.link"),
                     call = Call("GET", appConfig.guidance.january2022locations),
-                    target = "_blank"
+                    target = Some("_blank")
                 )))
             )
         }

@@ -54,7 +54,7 @@
 
         @heading(messages("declaration.mucr.title"))
 
-        @body(messages("declaration.mucr.paragraph", link(text = messages("declaration.mucr.paragraph.link"), call = Call("GET", appConfig.notesForMucrConsolidationUrl), target = "_blank")))
+        @body(messages("declaration.mucr.paragraph", link(text = messages("declaration.mucr.paragraph.link"), call = Call("GET", appConfig.notesForMucrConsolidationUrl), target = Some("_blank"))))
 
         @exportsInputText(
             field = form(Mucr.MUCR),

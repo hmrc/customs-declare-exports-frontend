@@ -79,14 +79,14 @@
             id = Some("general-trade-tariff-inset-link"),
             text = messages("declaration.additionalDocumentsRequired.inset.link2Alt"),
             call = Call("GET", appConfig.tradeTariffUrl),
-            target = "_blank"
+            target = Some("_blank")
         )
     } { commodityCode =>
         @link(
             id = Some("commodity-code-inset-link"),
             text = messages("declaration.additionalDocumentsRequired.inset.link2", commodityCode.codeAsShown),
             call = Call("GET", appConfig.commodityCodeTariffPageUrl.replace(CommodityDetails.placeholder, commodityCode.codeAsRef)),
-            target = "_blank"
+            target = Some("_blank")
         )
     }
 }
@@ -96,7 +96,7 @@
         id = Some("licenses-and-certificates-inset-link"),
         call = Call("GET", appConfig.licensesForExportingGoods),
         text = messages("declaration.additionalDocumentsRequired.inset.link3"),
-        target = "_blank"
+        target = Some("_blank")
     )
 }
 

@@ -57,7 +57,7 @@
     link(
         text = messages("declaration.type.insetText.linkText"),
         call = Call("GET", appConfig.declareGoodsExported),
-        target = "_blank"
+        target = Some("_blank")
     )
 }
 
@@ -65,7 +65,7 @@
     link(
         text = messages("declaration.type.details.p1.linkText"),
         call = Call("GET", appConfig.additionalDeclarationType),
-        target = "_blank"
+        target = Some("_blank")
     )
 }
 
@@ -73,7 +73,7 @@
     link(
         text = messages("declaration.type.details.p2.linkText"),
         call = Call("GET", appConfig.simplifiedDeclarationOccasionalUse),
-        target = "_blank"
+        target = Some("_blank")
     )
 }
 

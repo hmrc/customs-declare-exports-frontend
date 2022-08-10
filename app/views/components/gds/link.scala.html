@@ -19,7 +19,7 @@
 @(
   text: String,
   call: Call,
-  target: String = "_self",
+  target: Option[String] = None,
   id: Option[String] = None,
   classes: String = "govuk-link govuk-link--no-visited-state",
   textHidden: Option[String] = None
@@ -28,5 +28,5 @@
 @hasHint = @{textHidden.exists(_.nonEmpty)}
 
 @* The <a> tag is split on purpose - to avoid inline-block whitespace problem *@
-<a class="@classes" href="@call" target=@target @id.map{id => id="@id" } @if(target == "_blank"){rel="noopener noreferrer"}
+<a class="@classes" href="@call" @target.map{t => target="@t"} @id.map{id => id="@id" } @if(target == Some("_blank")){rel="noopener noreferrer"}
   ><span @if(hasHint){aria-hidden="true"}>@text</span>@if(hasHint){<span class="govuk-visually-hidden">@{textHidden.getOrElse("")}</span>}</a>

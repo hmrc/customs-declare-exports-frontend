@@ -60,7 +60,7 @@
                 id = Some("uploading-documents-link"),
                 text = messages("submissions.uploading.documents"),
                 call = controllers.routes.FileUploadController.startFileUpload(mrn),
-                target = "_blank"
+                target = Some("_blank")
             )
         </p>
     }

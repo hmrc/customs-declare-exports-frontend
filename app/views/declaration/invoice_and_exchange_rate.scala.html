@@ -136,7 +136,7 @@
             link(
                 text = messages("declaration.invoice.details.body.2.link.text"),
                 call = Call("GET", appConfig.exchangeRatesForCustoms),
-                target = "_blank"
+                target = Some("_blank")
             )
         ))
 

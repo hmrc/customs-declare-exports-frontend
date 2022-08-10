@@ -55,13 +55,13 @@
         @link(
             text = messages("declaration.supplementaryUnits.yesNo.body.link.2"),
             call = Call("GET", appConfig.tradeTariffSections),
-            target = "_blank"
+            target = Some("_blank")
         )
     } { commodityCode =>
         @link(
             text = messages("declaration.supplementaryUnits.yesNo.body.link.1", commodityCode.codeAsShown),
             call = Call("GET", appConfig.suppUnitsCommodityCodeTariffPageUrl.replace(CommodityDetails.placeholder, commodityCode.codeAsRef)),
-            target = "_blank"
+            target = Some("_blank")
         )
     }
 }
