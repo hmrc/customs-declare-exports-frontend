@@ -37,10 +37,8 @@ class DeclarationDetailsController @Inject() (
 
   def displayPage(submissionId: String): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
     customsDeclareExportsConnector.findSubmission(submissionId).map {
-      case Some(submission) =>
-        Ok(declarationDetailsPage(submission))
-      case _ =>
-        Redirect(routes.SubmissionsController.displayListOfSubmissions())
+      case Some(submission) => Ok(declarationDetailsPage(submission))
+      case _                => Redirect(routes.SubmissionsController.displayListOfSubmissions())
     }
   }
 }

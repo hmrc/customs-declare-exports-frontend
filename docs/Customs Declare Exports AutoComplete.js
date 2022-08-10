@@ -1215,6 +1215,14 @@ function submission(){
     }
 }
 
+function copyDeclaration(){
+    if (currentPageIs('/customs-declare-exports/copy-declaration')) {
+        document.getElementById('lrn').value = 'DSLRN' + Math.floor(Math.random() * 8999) + 100
+        document.getElementById('ducr_ducr').value = '8GB654321' + Math.floor(Math.random() * 899999 + 100000) + '-101SHIP1'
+        submit()
+    }
+}
+
 // grand journey
 function completeJourney() {
 

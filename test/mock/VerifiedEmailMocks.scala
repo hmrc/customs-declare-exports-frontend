@@ -23,11 +23,11 @@ import play.api.mvc.Result
 import scala.concurrent.{ExecutionContext, Future}
 
 trait VerifiedEmailMocks {
-  val mockVerifiedEmailAction =
-    new VerifiedEmailAction() {
-      implicit val executionContext: ExecutionContext = ExecutionContext.global
 
-      override protected def refine[A](request: AuthenticatedRequest[A]): Future[Either[Result, VerifiedEmailRequest[A]]] =
-        Future.successful(Right(VerifiedEmailRequest(request, "example@example.com")))
-    }
+  val mockVerifiedEmailAction = new VerifiedEmailAction() {
+    implicit val executionContext: ExecutionContext = ExecutionContext.global
+
+    override protected def refine[A](request: AuthenticatedRequest[A]): Future[Either[Result, VerifiedEmailRequest[A]]] =
+      Future.successful(Right(VerifiedEmailRequest(request, "example@example.com")))
+  }
 }

@@ -97,7 +97,6 @@ class CommodityDetailsControllerSpec extends ControllerSpec with OptionValues {
 
         status(result) mustBe OK
         verify(mockCommodityDetailsPage, times(1)).apply(any(), any(), any())(any(), any())
-        println(theResponseForm.value)
         theResponseForm.value mustBe Some(details)
       }
 

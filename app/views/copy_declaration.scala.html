@@ -1,0 +1,80 @@
+@*
+ * Copyright 2022 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import config.AppConfig
+@import controllers.routes.{CopyDeclarationController, DeclarationDetailsController}
+@import forms.CopyDeclaration
+@import forms.declaration.ConsignmentReferences.ducrId
+@import models.requests.JourneyRequest
+@import play.twirl.api.HtmlFormat
+@import uk.gov.hmrc.govukfrontend.views.html.components.{Button, FormWithCSRF, GovukButton, Text}
+@import views.helpers.{BackButton, Title}
+@import views.html.components.gds._
+
+@this(
+    govukLayout: gdsMainTemplate,
+    govukButton: GovukButton,
+    pageTitle: pageTitle,
+    exportsInputText: exportsInputText,
+    errorSummary: errorSummary,
+    sectionHeader: sectionHeader,
+    tariffExpander: tariffExpander,
+    paragraphBody: paragraphBody,
+    formHelper: FormWithCSRF,
+    appConfig: AppConfig
+)
+
+
+@(form: Form[CopyDeclaration])(implicit request: JourneyRequest[_], messages: Messages)
+
+@hasErrors = @{form.hasErrors || form.hasGlobalErrors}
+
+@govukLayout(
+    title = Title("declaration.copy.title", hasErrors = hasErrors),
+    backButton = Some(BackButton(messages("site.back"), DeclarationDetailsController.displayPage(request.cacheModel.id)))
+) {
+
+    @formHelper(action = CopyDeclarationController.submitPage, 'autoComplete -> "off") {
+        @errorSummary(form.errors)
+
+        @pageTitle(messages("declaration.copy.title"))
+
+        @paragraphBody(messages("declaration.copy.ducr.label"), "govuk-label govuk-label--m")
+
+        @paragraphBody(messages("declaration.copy.ducr.paragraph"))
+
+        @paragraphBody(messages("declaration.copy.ducr.hint"), "govuk-hint")
+
+        @exportsInputText(field = form(ducrId), inputClasses = Some("govuk-input"))
+
+        @paragraphBody(messages("declaration.copy.lrn.label"), "govuk-label govuk-label--m")
+
+        @paragraphBody(messages("declaration.copy.lrn.paragraph"))
+
+        @paragraphBody(messages("declaration.copy.lrn.hint"), "govuk-hint")
+
+        @exportsInputText(field = form("lrn"), inputClasses = Some("govuk-input"))
+
+        @tariffExpander(CopyDeclaration, request.declarationType)(messages, appConfig)
+
+        <p class="govuk-body">
+             @govukButton(Button(
+                content = Text(messages("declaration.copy.title")),
+                attributes = Map("id" -> "submit", "name" -> "CopyDeclaration")
+            ))
+        </p>
+    }
+}

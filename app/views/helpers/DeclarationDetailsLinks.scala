@@ -24,6 +24,9 @@ object DeclarationDetailsLinks {
 
   def displayViewDeclarationLink(submission: Submission): Boolean = submission.latestEnhancedStatus != Some(ERRORS)
 
+  def isDeclarationRejected(submission: Submission): Boolean =
+    submission.latestEnhancedStatus.fold(false)(rejectedStatuses.contains)
+
   def mrnIfAccepted(submission: Submission): Option[String] =
     if (submission.isStatusAcceptedOrReceived) submission.mrn else None
 
