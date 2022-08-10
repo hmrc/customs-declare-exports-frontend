@@ -14,13 +14,15 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.govukfrontend.views.html.components._
 @import controllers.declaration.routes
+@import models.DeclarationStatus.DRAFT
 @import models.DeclarationType.SUPPLEMENTARY
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 @import views.components.gds.ActionItemBuilder._
-@import views.html.components.gds.{linkContent, paragraphBody, summary_list}
+@import views.html.components.gds.{exportsInsetText, link, linkContent, paragraphBody, summary_list}
 
-@this(summaryList: summary_list, linkContent: linkContent, paragraphBody: paragraphBody)
+@this(summaryList: summary_list, insetText: exportsInsetText, link: link, linkContent: linkContent, body: paragraphBody)
 
 @(mode: Mode, declaration: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages)
 
@@ -34,9 +36,16 @@
     else "declaration.summary.references.lrn"
 }
 
+@if(declaration.status == DRAFT && declaration.parentDeclarationId.isDefined){
+    @insetText(HtmlContent(body(link(
+        text = messages("declaration.summary.goto.additional.type"),
+        call = routes.AdditionalDeclarationTypeController.displayPage(mode)
+    ).toString)))
+}
+
 <h2 class="govuk-heading-m">@messages("declaration.summary.references")</h2>
 
-@paragraphBody(messages("declaration.summary.amend.body"))
+@body(messages("declaration.summary.amend.body"))
 
 @summaryList("declaration-references-summary", None, Seq(
         Some(SummaryListRow(
