@@ -496,6 +496,7 @@ object AppConfigSpec {
       |files.codelists.countryCodeToShortNameLink="countryCodeToShortNameLink"
       |files.codelists.goodsLocationCode="goodsLocationCode"
       |files.codelists.goodsLocationCodeToLocationTypeLink="goodsLocationCodeToLocationTypeLink"
+      |files.codelists.packageTypeCode="packageTypeCode"
       |
       |draft.timeToLive=30d
       |microservice.services.nrs.host=localhostnrs

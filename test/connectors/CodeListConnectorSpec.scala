@@ -22,6 +22,7 @@ import forms.declaration.declarationHolder.AuthorizationTypeCodes.{EXRR, MIB}
 import models.codes._
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
+import services.model.PackageType
 
 import java.util.Locale.{ENGLISH, JAPANESE}
 import scala.collection.immutable.ListMap
@@ -42,6 +43,7 @@ class CodeListConnectorSpec extends UnitWithMocksSpec with BeforeAndAfterEach {
     when(appConfig.dmsErrorCodes).thenReturn("/code-lists/manyCodes.json")
     when(appConfig.countryCodes).thenReturn("/code-lists/manyCodes.json")
     when(appConfig.goodsLocationCodeFile).thenReturn("/code-lists/manyCodes.json")
+    when(appConfig.packageTypeCodeFile).thenReturn("/code-lists/manyCodes.json")
   }
 
   private lazy val codeListConnector = new FileBasedCodeListConnector(appConfig)
@@ -206,6 +208,20 @@ class CodeListConnectorSpec extends UnitWithMocksSpec with BeforeAndAfterEach {
         codeListConnector.getGoodsLocationCodes(JAPANESE) must be(sampleGlcsEnglish)
       }
     }
+
+    "return a map of Package Type Codes" when {
+      "'ENGLISH' locale passed return codes with English descriptions" in {
+        codeListConnector.getPackageTypes(ENGLISH) must be(samplePtcsEnglish)
+      }
+
+      "'WELSH' local passed return codes with Welsh descriptions" in {
+        codeListConnector.getPackageTypes(codeListConnector.WELSH) must be(samplePtcsWelsh)
+      }
+
+      "unsupported 'JAPANESE' locale is passed return codes with English descriptions" in {
+        codeListConnector.getPackageTypes(JAPANESE) must be(samplePtcsEnglish)
+      }
+    }
   }
 
   private val samplePCsEnglish =
@@ -255,4 +271,10 @@ class CodeListConnectorSpec extends UnitWithMocksSpec with BeforeAndAfterEach {
 
   private val sampleGlcsWelsh =
     ListMap("001" -> GoodsLocationCode("001", "Welsh"), "002" -> GoodsLocationCode("002", "Welsh"), "003" -> GoodsLocationCode("003", "Welsh"))
+
+  private val samplePtcsEnglish =
+    ListMap("001" -> PackageType("001", "English"), "002" -> PackageType("002", "English"), "003" -> PackageType("003", "English"))
+
+  private val samplePtcsWelsh =
+    ListMap("001" -> PackageType("001", "Welsh"), "002" -> PackageType("002", "Welsh"), "003" -> PackageType("003", "Welsh"))
 }

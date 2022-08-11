@@ -18,11 +18,11 @@
 @import controllers.declaration.PackageInformationAddController.PackageInformationFormGroupId
 @import forms.declaration.PackageInformation
 @import models.requests.JourneyRequest
-@import services.PackageTypes
 @import services.view.AutoCompleteItem
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.html.components.gds._
 @import config.AppConfig
+@import services.PackageTypesService
 
 @this(
     govukDetails: GovukDetails,
@@ -33,7 +33,8 @@
     pageTitle: pageTitle,
     paragraphBody: paragraphBody,
     exportsInputText: exportsInputText,
-    appConfig: AppConfig
+    appConfig: AppConfig,
+    packageTypesService: PackageTypesService
 )
 
 @(form: Form[_])(implicit request: JourneyRequest[_], messages: Messages)
@@ -67,7 +68,7 @@
             messages("declaration.packageInformation.typesOfPackages.hint.1")
         ),
         emptySelectValue = messages("declaration.packageInformation.typesOfPackages.empty"),
-        items = AutoCompleteItem.fromPackageType(PackageTypes.all),
+        items = AutoCompleteItem.fromPackageType(packageTypesService.all),
         args = List('otherErrorFields -> Seq("typesOfPackages"))
     )
 

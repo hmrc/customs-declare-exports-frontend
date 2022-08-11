@@ -21,6 +21,7 @@ import com.google.inject.ImplementedBy
 import config.AppConfig
 import models.codes._
 import play.api.libs.json.{Json, OFormat}
+import services.model.PackageType
 import utils.JsonFile
 
 import java.util.Locale
@@ -53,6 +54,7 @@ trait CodeListConnector {
   def getProcedureCodes(locale: Locale): ListMap[String, ProcedureCode]
   def getProcedureCodesForC21(locale: Locale): ListMap[String, ProcedureCode]
   def getGoodsLocationCodes(locale: Locale): ListMap[String, GoodsLocationCode]
+  def getPackageTypes(locale: Locale): ListMap[String, PackageType]
 
   val WELSH = new Locale("cy", "GB", "");
   val supportedLanguages = Seq(ENGLISH, WELSH)
@@ -84,6 +86,9 @@ class FileBasedCodeListConnector @Inject() (appConfig: AppConfig) extends CodeLi
 
   def getGoodsLocationCodes(locale: Locale): ListMap[String, GoodsLocationCode] =
     goodsLocationCodeByLang.getOrElse(locale.getLanguage, goodsLocationCodeByLang.value.head._2)
+
+  def getPackageTypes(locale: Locale): ListMap[String, PackageType] =
+    packageTypeCodeByLang.getOrElse(locale.getLanguage, packageTypeCodeByLang.value.head._2)
 
   private val additionalProcedureCodeMapsByLang = loadCommonCodesAsOrderedMap(
     appConfig.additionalProcedureCodes,
@@ -123,6 +128,11 @@ class FileBasedCodeListConnector @Inject() (appConfig: AppConfig) extends CodeLi
   private val goodsLocationCodeByLang = loadCommonCodesAsOrderedMap(
     appConfig.goodsLocationCodeFile,
     (codeItem: CodeItem, locale: Locale) => GoodsLocationCode(codeItem.code, codeItem.getDescriptionByLocale(locale))
+  )
+
+  private val packageTypeCodeByLang = loadCommonCodesAsOrderedMap(
+    appConfig.packageTypeCodeFile,
+    (codeItem: CodeItem, locale: Locale) => PackageType(codeItem.code, codeItem.getDescriptionByLocale(locale))
   )
 
   private def loadCommonCodesAsOrderedMap[T <: CommonCode](srcFile: String, factory: (CodeItem, Locale) => T): CodeMap[T] = {

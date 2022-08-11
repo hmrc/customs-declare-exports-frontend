@@ -24,13 +24,15 @@
 @import views.html.components.gds.summary_list
 @import views.declaration.summary.TableCell
 @import views.components.gds.ActionItemBuilder._
+@import services.PackageTypesService
 
 @this(
     govukTable: GovukTable,
     link: link,
     linkContent: linkContent,
     spanVisuallyHidden: spanVisuallyHidden,
-    summaryList: summary_list
+    summaryList: summary_list,
+    packageTypesService: PackageTypesService
 )
 
 @(
@@ -54,7 +56,7 @@
                 routes.PackageInformationSummaryController.displayPage(mode, itemId),
                 textHidden = Some(messages(
                     "declaration.summary.items.item.packageInformation.change",
-                    information.typesOfPackagesText.getOrElse(""),
+                    packageTypesService.typesOfPackagesText(information.typesOfPackages).getOrElse(""),
                     information.shippingMarks.getOrElse(""), itemNo
                 ))
             )
@@ -82,7 +84,7 @@
         rows = packageInformation.map(information =>
             Seq(
                 TableRow(
-                    content = Text(information.typesOfPackagesText.getOrElse(""))
+                    content = Text(packageTypesService.typesOfPackagesText(information.typesOfPackages).getOrElse(""))
                 ),
                 TableRow(
                     content = Text(information.numberOfPackages.map(_.toString).getOrElse(""))

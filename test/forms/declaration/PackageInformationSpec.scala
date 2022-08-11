@@ -16,11 +16,19 @@
 
 package forms.declaration
 
-import base.{JourneyTypeTestRunner, TestHelper, UnitWithMocksSpec}
+import base.{Injector, JourneyTypeTestRunner, TestHelper, UnitWithMocksSpec}
 import forms.common.DeclarationPageBaseSpec
 import models.viewmodels.TariffContentKey
+import play.api.i18n.{Lang, Messages}
+import play.api.test.Helpers.stubMessagesApi
+import services.PackageTypesService
 
-class PackageInformationSpec extends UnitWithMocksSpec with JourneyTypeTestRunner with DeclarationPageBaseSpec {
+import java.util.Locale
+
+class PackageInformationSpec extends UnitWithMocksSpec with JourneyTypeTestRunner with DeclarationPageBaseSpec with Injector {
+
+  private implicit val messages: Messages = stubMessagesApi().preferred(Seq(Lang(Locale.ENGLISH)))
+  private implicit val packageTypesService = instanceOf[PackageTypesService]
 
   private def formAllFieldsMandatory = PackageInformation.form()
 
@@ -39,20 +47,8 @@ class PackageInformationSpec extends UnitWithMocksSpec with JourneyTypeTestRunne
     "has correct type of package text" in {
       val model = PackageInformation("id", Some("PK"), Some(10), Some("marks"))
 
-      model.typesOfPackagesText mustBe Some("Package (PK)")
+      packageTypesService.typesOfPackagesText(model.typesOfPackages) mustBe Some("Package (PK)")
     }
-  }
-
-  "Package Information form" when {
-
-    onEveryDeclarationJourney() { _ =>
-      "return form with mappingAllFieldsMandatory" in {
-
-        val form = PackageInformation.form()
-        form.mapping mustBe PackageInformation.mapping
-      }
-    }
-
   }
 
   "Package Information form with mappingAllFieldsMandatory" should {
