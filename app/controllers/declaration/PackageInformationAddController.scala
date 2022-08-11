@@ -28,6 +28,7 @@ import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
+import services.PackageTypesService
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
@@ -43,7 +44,7 @@ class PackageInformationAddController @Inject() (
   navigator: Navigator,
   mcc: MessagesControllerComponents,
   packageInformationPage: package_information_add
-)(implicit ec: ExecutionContext)
+)(implicit ec: ExecutionContext, packageTypesService: PackageTypesService)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
   def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>

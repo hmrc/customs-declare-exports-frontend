@@ -17,7 +17,6 @@
 @import controllers.declaration.routes
 @import controllers.navigation.Navigator
 @import forms.declaration.PackageInformation
-@import services.PackageTypes
 @import models.requests.JourneyRequest
 @import views.helpers.{BackButton, Title}
 @import uk.gov.hmrc.govukfrontend.views.html.components._
@@ -28,6 +27,7 @@
 @import views.components.gds.Styles._
 @import views.helpers.ErrorMapper.yesNoErrors
 @import config.AppConfig
+@import services.PackageTypesService
 
 @this(
     govukLayout: gdsMainTemplate,
@@ -41,7 +41,8 @@
     saveButtons: saveButtons,
     formHelper: FormWithCSRF,
     navigator: Navigator,
-    appConfig: AppConfig
+    appConfig: AppConfig,
+    packageTypesService: PackageTypesService
 )
 
 @(mode: Mode, itemId: String, form: Form[_], packages: Seq[PackageInformation])(implicit request: JourneyRequest[_], messages: Messages)
@@ -74,7 +75,7 @@
       captionClasses = "govuk-visually-hidden",
       rows = packages.zipWithIndex.map { case (item, index) =>
         Seq(
-          TableRow(content = Text(item.typesOfPackages.map(PackageTypes.findByCode).map(_.asText()).getOrElse(""))),
+          TableRow(content = Text(item.typesOfPackages.map(packageTypesService.findByCode).map(_.asText()).getOrElse(""))),
           TableRow(content = Text(item.numberOfPackages.getOrElse(0).toString)),
           TableRow(content = Text(item.shippingMarks.getOrElse(""))),
           TableRow(

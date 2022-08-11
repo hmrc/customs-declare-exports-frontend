@@ -19,10 +19,11 @@ package forms.declaration
 import forms.DeclarationPage
 import models.DeclarationType.{CLEARANCE, DeclarationType}
 import models.viewmodels.TariffContentKey
-import play.api.data.{Form, Forms}
 import play.api.data.Forms.{number, optional, text}
+import play.api.data.{Form, Forms}
+import play.api.i18n.Messages
 import play.api.libs.json.Json
-import services.PackageTypes
+import services.PackageTypesService
 import utils.validators.forms.FieldValidator._
 
 case class PackageInformation(id: String, typesOfPackages: Option[String], numberOfPackages: Option[Int], shippingMarks: Option[String]) {
@@ -37,9 +38,6 @@ case class PackageInformation(id: String, typesOfPackages: Option[String], numbe
   def isEmpty: Boolean = typesOfPackages.isEmpty && numberOfPackages.isEmpty && shippingMarks.isEmpty
 
   def nonEmpty: Boolean = !isEmpty
-
-  def typesOfPackagesText: Option[String] = typesOfPackages.map(types => PackageTypes.findByCode(types).asText())
-
 }
 
 object PackageInformation extends DeclarationPage {
@@ -62,11 +60,11 @@ object PackageInformation extends DeclarationPage {
   def data2Form(data: PackageInformation): Option[(Option[String], Option[Int], Option[String])] =
     Some((data.typesOfPackages, data.numberOfPackages, data.shippingMarks))
 
-  val mapping = Forms
+  def mapping(implicit messages: Messages, packageTypesService: PackageTypesService) = Forms
     .mapping(
       "typesOfPackages" -> optional(
         text()
-          .verifying("declaration.packageInformation.typesOfPackages.error", isContainedIn(PackageTypes.all.map(_.code)))
+          .verifying("declaration.packageInformation.typesOfPackages.error", isContainedIn(packageTypesService.all.map(_.code)))
       ).verifying("declaration.packageInformation.typesOfPackages.empty", isPresent),
       "numberOfPackages" -> optional(
         number()
@@ -79,7 +77,7 @@ object PackageInformation extends DeclarationPage {
       ).verifying("declaration.packageInformation.shippingMark.empty", isPresent)
     )(form2Data)(data2Form)
 
-  def form(): Form[PackageInformation] = Form(mapping)
+  def form()(implicit messages: Messages, packageTypesService: PackageTypesService): Form[PackageInformation] = Form(mapping)
 
   override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
     decType match {

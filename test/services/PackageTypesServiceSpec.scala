@@ -19,7 +19,7 @@ package services
 import base.UnitWithMocksSpec
 import services.model.PackageType
 
-class PackageTypesSpec extends UnitWithMocksSpec {
+class PackageTypesServiceSpec extends UnitWithMocksSpec {
 
   "Package type" should {
 
@@ -32,7 +32,7 @@ class PackageTypesSpec extends UnitWithMocksSpec {
   "Package type list" should {
 
     "return package types containing commas and quotes" in {
-      val somePackageTypes = PackageTypes.all.filter(_.code == "43")
+      val somePackageTypes = PackageTypesService.all.filter(_.code == "43")
 
       somePackageTypes mustBe List(PackageType("43", "Bag, super bulk"))
     }
@@ -40,7 +40,7 @@ class PackageTypesSpec extends UnitWithMocksSpec {
     "return package types' with codes in alphabetical order of name" in {
       val expectedCodes = Set("43", "AD", "ZZ")
 
-      val somePackageTypes = PackageTypes.all.filter(packageType => expectedCodes.contains(packageType.code))
+      val somePackageTypes = PackageTypesService.all.filter(packageType => expectedCodes.contains(packageType.code))
 
       somePackageTypes mustBe List(
         PackageType("43", "Bag, super bulk"),

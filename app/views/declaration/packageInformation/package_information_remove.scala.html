@@ -24,8 +24,8 @@
 @import views.html.components.gds._
 @import scala.collection.immutable
 @import forms.declaration.PackageInformation
-@import services.PackageTypes
 @import views.helpers.ErrorMapper.yesNoErrors
+@import services.PackageTypesService
 
 @this(
     govukLayout: gdsMainTemplate,
@@ -35,7 +35,8 @@
     errorSummary: errorSummary,
     saveButtons: saveButtons,
     yesNoRadios: yesNoRadios,
-    formHelper: FormWithCSRF
+    formHelper: FormWithCSRF,
+    packageTypesService: PackageTypesService
 )
 
 @(mode: Mode, itemId: String, info: PackageInformation, form: Form[YesNoAnswer])(implicit request: Request[_], messages: Messages)
@@ -47,7 +48,7 @@
         rows = Seq(
           SummaryListRow(
               Key(Text(messages("declaration.packageInformation.remove.typesOfPackages"))),
-              Value(Text(info.typesOfPackages.map(PackageTypes.findByCode).map(_.asText()).getOrElse("")))
+              Value(Text(info.typesOfPackages.map(packageTypesService.findByCode).map(_.asText()).getOrElse("")))
           ),
           SummaryListRow(
               Key(Text(messages("declaration.packageInformation.remove.numberOfPackages"))),
