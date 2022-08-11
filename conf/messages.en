@@ -2119,7 +2119,7 @@ declaration.summary.container.id = Container ID
 declaration.summary.container.securitySeals = Security seals
 declaration.summary.container.change = Change container {0}
 
-declaration.summary.continue.link = Check through from start of declaration
+declaration.summary.goto.additional.type = Start here to go through the questions from the beginning
 declaration.summary.warning = If you change the arrived or pre-lodged declaration type, authorisations, commodity codes, procedure codes, mode of transport or location codes, go through the questions from the beginning to ensure you do not try to submit an incomplete or invalid declaration.
 declaration.summary.saved.label = To continue with your declaration
 declaration.summary.saved.body = To continue where you left off, click the most recent ‘Change’ link. When you have completed all the questions you will be able to submit your declaration.
