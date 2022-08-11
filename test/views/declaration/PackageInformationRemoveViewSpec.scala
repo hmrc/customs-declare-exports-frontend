@@ -22,6 +22,7 @@ import forms.declaration.PackageInformation
 import models.Mode
 import org.jsoup.nodes.Document
 import play.api.data.Form
+import services.PackageTypesService
 import tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.helpers.CommonMessages
@@ -36,6 +37,7 @@ class PackageInformationRemoveViewSpec extends UnitViewSpec with Stubs with Comm
   private val itemId = "item1"
   private val form: Form[YesNoAnswer] = YesNoAnswer.form()
   private val page = instanceOf[package_information_remove]
+  private val packageTypesService = instanceOf[PackageTypesService]
 
   private def createView(form: Form[YesNoAnswer] = form, packageInfo: PackageInformation = packageInformation, mode: Mode = Mode.Normal): Document =
     page(mode, itemId, packageInfo, form)(request, messages)
@@ -48,7 +50,9 @@ class PackageInformationRemoveViewSpec extends UnitViewSpec with Stubs with Comm
     }
 
     "display PackageInformation to remove" in {
-      view.getElementsByClass("govuk-summary-list__value").get(0).text() mustBe packageInformation.typesOfPackagesText.get
+      view.getElementsByClass("govuk-summary-list__value").get(0).text() mustBe packageTypesService
+        .typesOfPackagesText(packageInformation.typesOfPackages)
+        .get
       view.getElementsByClass("govuk-summary-list__value").get(1).text() mustBe packageInformation.numberOfPackages.get.toString
       view.getElementsByClass("govuk-summary-list__value").get(2).text() mustBe packageInformation.shippingMarks.get
     }

@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import base.ControllerSpec
+import base.{ControllerSpec, Injector}
 import forms.declaration.PackageInformation
 import models.Mode
 import org.mockito.ArgumentCaptor
@@ -27,12 +27,14 @@ import play.api.data.Form
 import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
+import services.PackageTypesService
 import views.declaration.PackageInformationViewSpec.packageInformation
 import views.html.declaration.packageInformation.package_information_add
 
-class PackageInformationAddControllerSpec extends ControllerSpec with OptionValues {
+class PackageInformationAddControllerSpec extends ControllerSpec with OptionValues with Injector {
 
   val mockAddPage = mock[package_information_add]
+  val mockPackageTypesService = instanceOf[PackageTypesService]
 
   val controller =
     new PackageInformationAddController(
@@ -42,7 +44,7 @@ class PackageInformationAddControllerSpec extends ControllerSpec with OptionValu
       navigator,
       stubMessagesControllerComponents(),
       mockAddPage
-    )(ec)
+    )(ec, mockPackageTypesService)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()

@@ -25,14 +25,17 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatest.OptionValues
 import play.api.data.Form
+import base.Injector
 import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
+import services.PackageTypesService
 import views.html.declaration.packageInformation.package_information_change
 
-class PackageInformationChangeControllerSpec extends ControllerSpec with OptionValues with ErrorHandlerMocks {
+class PackageInformationChangeControllerSpec extends ControllerSpec with OptionValues with ErrorHandlerMocks with Injector {
 
   val mockChangePage = mock[package_information_change]
+  val mockPackageTypesService = instanceOf[PackageTypesService]
 
   val controller =
     new PackageInformationChangeController(
@@ -43,7 +46,7 @@ class PackageInformationChangeControllerSpec extends ControllerSpec with OptionV
       mockErrorHandler,
       stubMessagesControllerComponents(),
       mockChangePage
-    )(ec)
+    )(ec, mockPackageTypesService)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()

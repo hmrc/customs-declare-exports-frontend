@@ -23,6 +23,7 @@ import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import org.scalatest.Inspectors.forAll
 import play.api.data.Form
+import services.PackageTypesService
 import services.cache.ExportsTestHelper
 import tools.Stubs
 import views.declaration.spec.UnitViewSpec
@@ -37,6 +38,7 @@ class PackageInformationChangeViewSpec extends UnitViewSpec with ExportsTestHelp
 
   private val itemId = "item1"
   private val packageInfoId = "id"
+  private implicit val packageTypesService = instanceOf[PackageTypesService]
 
   private def form(): Form[PackageInformation] = PackageInformation.form()
   private val page = instanceOf[package_information_change]

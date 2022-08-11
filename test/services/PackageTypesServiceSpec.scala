@@ -16,10 +16,17 @@
 
 package services
 
-import base.UnitWithMocksSpec
+import base.{Injector, UnitWithMocksSpec}
+import play.api.i18n.{Lang, Messages}
+import play.api.test.Helpers.stubMessagesApi
 import services.model.PackageType
 
-class PackageTypesServiceSpec extends UnitWithMocksSpec {
+import java.util.Locale
+
+class PackageTypesServiceSpec extends UnitWithMocksSpec with Injector {
+
+  private implicit val packageTypesService = instanceOf[PackageTypesService]
+  private implicit val messages: Messages = stubMessagesApi().preferred(Seq(Lang(Locale.ENGLISH)))
 
   "Package type" should {
 
@@ -32,7 +39,7 @@ class PackageTypesServiceSpec extends UnitWithMocksSpec {
   "Package type list" should {
 
     "return package types containing commas and quotes" in {
-      val somePackageTypes = PackageTypesService.all.filter(_.code == "43")
+      val somePackageTypes = packageTypesService.all.filter(_.code == "43")
 
       somePackageTypes mustBe List(PackageType("43", "Bag, super bulk"))
     }
@@ -40,7 +47,7 @@ class PackageTypesServiceSpec extends UnitWithMocksSpec {
     "return package types' with codes in alphabetical order of name" in {
       val expectedCodes = Set("43", "AD", "ZZ")
 
-      val somePackageTypes = PackageTypesService.all.filter(packageType => expectedCodes.contains(packageType.code))
+      val somePackageTypes = packageTypesService.all.filter(packageType => expectedCodes.contains(packageType.code))
 
       somePackageTypes mustBe List(
         PackageType("43", "Bag, super bulk"),
