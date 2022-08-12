@@ -17,4 +17,7 @@
 @import controllers.helpers.SaveAndReturn
 
 @(messageKey: String = "site.save_and_come_back_later")(implicit messages: Messages)
-<button id="submit_and_return" class="button-link govuk-link govuk-link--no-visited-state focus" name="@SaveAndReturn.toString">@messages(messageKey)</button>
+
+<button id="submit_and_return" class="button-link govuk-link govuk-link--no-visited-state focus" name="@SaveAndReturn.toString">
+  @messages(messageKey)
+</button>

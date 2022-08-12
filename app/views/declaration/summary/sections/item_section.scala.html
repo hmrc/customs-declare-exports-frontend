@@ -36,10 +36,7 @@
 
 @(mode: Mode, item: ExportItem, declarationType: DeclarationType, actionsEnabled: Boolean = true)(implicit messages: Messages)
 
-@actions(action: Actions) = @{
-    if(actionsEnabled) Some(action)
-    else None
-}
+@actions(action: => Actions) = @{ if(actionsEnabled) Some(action) else None }
 
 @summaryList(s"declaration-items-summary-${item.sequenceId}", Some(messages("declaration.summary.items.item.sequenceId", item.sequenceId)), Seq(
     item.procedureCodes.flatMap(_.procedureCode).map(data =>
@@ -384,12 +381,4 @@
     )
 </div>
 
-@item.additionalDocuments.map(additionalDocuments =>
-    additional_documents(
-        mode,
-        item,
-        additionalDocuments,
-        declarationType,
-        actionsEnabled
-    )
-)
+@additional_documents(mode, item, actionsEnabled)
