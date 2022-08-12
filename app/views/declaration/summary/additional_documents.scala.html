@@ -17,11 +17,10 @@
 @import controllers.declaration.routes
 @import config.featureFlags.Waiver999LConfig
 @import forms.declaration.additionaldocuments.AdditionalDocument
-@import models.declaration.ExportItem
-@import models.declaration.AdditionalDocuments
+@import models.declaration.{AdditionalDocuments, ExportItem}
 @import models.Mode
-@import models.DeclarationType._
 @import models.requests.JourneyRequest
+@import play.twirl.api.HtmlFormat
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.components.gds.ActionItemBuilder._
 @import views.declaration.summary.TableCell
@@ -37,56 +36,32 @@
     heading: heading
 )
 
-@(
-    mode: Mode,
-    item: ExportItem,
-    additionalDocuments: AdditionalDocuments,
-    declarationType: DeclarationType,
-    actionsEnabled: Boolean = true
-)(implicit messages: Messages)
+@(mode: Mode, item: ExportItem, actionsEnabled: Boolean = true)(implicit messages: Messages)
 
-@change(document: AdditionalDocument) = {
-    @{
-        if(actionsEnabled)
-            link(
-                messages("site.change"),
-                routes.AdditionalDocumentsController.displayPage(mode, item.id),
-                textHidden = Some(messages(
-                    "declaration.summary.items.item.additionalDocuments.change",
-                    document.documentTypeCode.getOrElse(""),
-                    document.documentIdentifier.getOrElse(""),
-                    item.sequenceId
-                ))
-            )
-        else
-            ""
-    }
-}
+@hasDocuments = @{ item.additionalDocuments.fold(false)(_.documents.nonEmpty) }
 
-@licenceRequired = @{
-    item.isLicenceRequired.contains(true)
-}
+@actions(actions: => Actions) = @{ if (actionsEnabled) Some(actions) else None }
 
-@additionalDocumentsHeading = @{
-    heading(messages("declaration.summary.items.item.additionalDocuments"), "govuk-heading-s govuk-!-margin-bottom-0", "h3")
-}
-
-@licenceRowValue = @{
-    if (!licenceRequired) Text(messages("site.no"))
-    else Text(messages("site.yes"))
-}
-
-@summaryListBottomMargin = @{
-    if (additionalDocuments.documents.nonEmpty) "0"
-    else "6"
+@change(document: AdditionalDocument) = @{
+    if (!actionsEnabled) HtmlFormat.empty
+    else link(
+        messages("site.change"),
+        routes.AdditionalDocumentsController.displayPage(mode, item.id),
+        textHidden = Some(messages(
+            "declaration.summary.items.item.additionalDocuments.change",
+            document.documentTypeCode.getOrElse(""),
+            document.documentIdentifier.getOrElse(""),
+            item.sequenceId
+        ))
+    )
 }
 
 @licenceRow = @{
-    if(item.isLicenceRequired.isDefined)
-        Some(SummaryListRow(
+    item.isLicenceRequired.map { isLicenceRequired =>
+        SummaryListRow(
             classes = s"licences-${item.sequenceId}-row",
             key = Key(content = Text(messages("declaration.summary.items.item.licences"))),
-            value = Value(content = licenceRowValue),
+            value = Value(content = Text(messages(s"""site.${if (isLicenceRequired) "yes" else "no"}"""))),
             actions = actions(Actions(
                 items = Seq(
                     actionItem(
@@ -96,35 +71,34 @@
                     )
                 )
             ))
-        ))
-    else None
+        )
+    }
 }
 
-@noDocumentsKey = @{
-    if(waiver999LConfig.is999LEnabled) "declaration.summary.items.item.additionalDocuments"
+@documentsHeaderKey = @{
+    if (waiver999LConfig.is999LEnabled) "declaration.summary.items.item.additionalDocuments"
     else "declaration.summary.items.item.additionalDocuments.otherDocuments"
 }
 
-@noDocumentsRow = @{
-    if(additionalDocuments.documents.isEmpty)
-        Some(SummaryListRow(
-            classes = s"additional-documents-${item.sequenceId}-row",
-            key = Key(content = Text(messages(noDocumentsKey))),
-            value = Value(content = Text(messages("site.no"))),
-            actions = actions(Actions(
-                items = Seq(
-                    actionItem(
-                        href = routes.AdditionalDocumentsController.displayPage(mode, item.id).url,
-                        content = HtmlContent(linkContent(messages("site.change"))),
-                        visuallyHiddenText = Some(messages("declaration.summary.items.item.additionalDocuments.changeAll", item.sequenceId))
-                    )
+@documentsHeader = @{
+    if (hasDocuments) None
+    else Some(SummaryListRow(
+        classes = s"additional-documents-${item.sequenceId}-row",
+        key = Key(content = Text(messages(documentsHeaderKey))),
+        value = Value(content = Text(messages("site.no"))),
+        actions = actions(Actions(
+            items = Seq(
+                actionItem(
+                    href = routes.AdditionalDocumentsController.displayPage(mode, item.id).url,
+                    content = HtmlContent(linkContent(messages("site.change"))),
+                    visuallyHiddenText = Some(messages("declaration.summary.items.item.additionalDocuments.changeAll", item.sequenceId))
                 )
-            ))
+            )
         ))
-    else None
+    ))
 }
 
-@documentRows = @{
+@documentsRows(additionalDocuments: AdditionalDocuments) = @{
     additionalDocuments.documents.map(document =>
         Seq(
             TableRow(content = Text(document.documentTypeCode.getOrElse(""))),
@@ -134,7 +108,7 @@
     )
 }
 
-@documentHead = @{
+@documentsTableHeader = @{
     Some(List(
         HeadCell(content = Text(messages("declaration.summary.items.item.additionalDocuments.code"))),
         HeadCell(content = Text(messages("declaration.summary.items.item.additionalDocuments.identifier"))),
@@ -142,28 +116,28 @@
     ))
 }
 
-@actions(action: Actions) = @{
-    if (actionsEnabled) Some(action) else None
+@documentsTable = @{
+    item.additionalDocuments.map { additionalDocuments =>
+        if (additionalDocuments.documents.isEmpty) None
+        else Some(govukTable(Table(
+            rows = documentsRows(additionalDocuments),
+            head = documentsTableHeader,
+            attributes = Map("id" -> s"additional-documents-${item.sequenceId}-table")
+        )))
+   }
 }
 
-<div id="additional-docs-section-item-@item.sequenceId">
-    @additionalDocumentsHeading
+@if(item.isLicenceRequired.isDefined || item.additionalDocuments.isDefined) {
+  <div id="additional-docs-section-item-@item.sequenceId">
+    @heading(messages("declaration.summary.items.item.additionalDocuments"), "govuk-heading-s govuk-!-margin-bottom-0", "h3")
 
     @summaryList(
         s"additional-docs-summary-list-${item.sequenceId}",
         None,
-        Seq(
-            licenceRow,
-            noDocumentsRow,
-        ),
-        classes = s"govuk-!-margin-bottom-${summaryListBottomMargin}"
+        Seq(licenceRow, documentsHeader),
+        classes = s"govuk-!-margin-bottom-${if (hasDocuments) "0" else "6"}"
     )
 
-    @if(additionalDocuments.documents.nonEmpty) {
-        @govukTable(Table(
-            rows = documentRows,
-            head = documentHead,
-            attributes = Map("id" -> s"additional-documents-${item.sequenceId}-table")
-        ))
-    }
-</div>
+    @documentsTable
+  </div>
+}
