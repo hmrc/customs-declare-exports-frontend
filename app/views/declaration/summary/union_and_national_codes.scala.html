@@ -59,55 +59,57 @@
     else None
 }
 
-@if(additionalInformation.nonEmpty){
-    @govukTable(Table(
-        head = Some(List(
-            HeadCell(
-                content = Text(messages("declaration.summary.items.item.additionalInformation.code"))
-            ),
-            HeadCell(
-                content = Text(messages("declaration.summary.items.item.additionalInformation.information"))
-            ),
-            HeadCell(
-                content = HtmlContent(spanVisuallyHidden(messages("site.change.header")))
-            )
-        )),
-        rows = additionalInformation.map(information =>
-            Seq(
-                TableRow(
-                    content = Text(information.code)
+<div class="govuk-section-break">
+    @if(additionalInformation.nonEmpty){
+        @govukTable(Table(
+            head = Some(List(
+                HeadCell(
+                    content = Text(messages("declaration.summary.items.item.additionalInformation.code"))
                 ),
-                TableRow(
-                    content = Text(information.description)
+                HeadCell(
+                    content = Text(messages("declaration.summary.items.item.additionalInformation.information"))
                 ),
-                TableCell.changeLink(change(information))
-            )
-        ),
-        caption = Some(messages("declaration.summary.items.item.additionalInformation")),
-        classes = "govuk-table govuk-!-margin-bottom-3",
-        attributes = Map("id" -> s"additional-information-$itemNo-table")
-    ))
-} else {
-    @summaryList(s"additional-information-$itemNo", None, Seq(
-        Some(SummaryListRow(
-            classes = s"additional-information-$itemNo-row",
-            key = Key(
-                content = Text(messages("declaration.summary.items.item.additionalInformation"))
-            ),
-            value = Value(
-                content = Text(messages("site.no"))
-            ),
-            actions = actions(Actions(
-                items = Seq(
-                    actionItem(
-                        href = routes.AdditionalInformationRequiredController.displayPage(mode, itemId).url,
-                        content = HtmlContent(linkContent(messages("site.change"))),
-                        visuallyHiddenText = Some(messages("declaration.summary.items.item.additionalInformation.changeAll"))
-                    )
+                HeadCell(
+                    content = HtmlContent(spanVisuallyHidden(messages("site.change.header")))
                 )
-            ))
+            )),
+            rows = additionalInformation.map(information =>
+                Seq(
+                    TableRow(
+                        content = Text(information.code)
+                    ),
+                    TableRow(
+                        content = Text(information.description)
+                    ),
+                    TableCell.changeLink(change(information))
+                )
+            ),
+            caption = Some(messages("declaration.summary.items.item.additionalInformation")),
+            classes = "govuk-table govuk-!-margin-bottom-3",
+            attributes = Map("id" -> s"additional-information-$itemNo-table")
         ))
-    ),
-        classes = "govuk-!-margin-bottom-3"
-    )
-}
+    } else {
+        @summaryList(s"additional-information-$itemNo", None, Seq(
+            Some(SummaryListRow(
+                classes = s"additional-information-$itemNo-row",
+                key = Key(
+                    content = Text(messages("declaration.summary.items.item.additionalInformation"))
+                ),
+                value = Value(
+                    content = Text(messages("site.no"))
+                ),
+                actions = actions(Actions(
+                    items = Seq(
+                        actionItem(
+                            href = routes.AdditionalInformationRequiredController.displayPage(mode, itemId).url,
+                            content = HtmlContent(linkContent(messages("site.change"))),
+                            visuallyHiddenText = Some(messages("declaration.summary.items.item.additionalInformation.changeAll"))
+                        )
+                    )
+                ))
+            ))
+        ),
+            classes = "govuk-!-margin-bottom-3"
+        )
+    }
+</div>
