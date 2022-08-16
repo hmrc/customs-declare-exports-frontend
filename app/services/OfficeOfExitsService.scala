@@ -14,8 +14,16 @@
  * limitations under the License.
  */
 
-package services.model
+package services
 
-import models.codes.CommonCode
+import connectors.CodeListConnector
+import play.api.i18n.Messages
+import services.model.OfficeOfExit
 
-case class OfficeOfExit(code: String, description: String) extends CommonCode
+import javax.inject.Inject
+
+class OfficeOfExitsService @Inject() (codeListConnector: CodeListConnector) {
+
+  def all(implicit messages: Messages): List[OfficeOfExit] =
+    codeListConnector.getOfficeOfExits(messages.lang.toLocale).values.toList.sortBy(_.description)
+}

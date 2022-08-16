@@ -249,4 +249,5 @@ class AppConfig @Inject() (
   val goodsLocationCodeFile = loadConfig("files.codelists.goodsLocationCode")
   val goodsLocationCodeToLocationTypeFile = loadConfig("files.codelists.goodsLocationCodeToLocationTypeLink")
   val packageTypeCodeFile = loadConfig("files.codelists.packageTypeCode")
+  val officeOfExitsCodeFile = loadConfig("files.codelists.officeOfExits")
 }
