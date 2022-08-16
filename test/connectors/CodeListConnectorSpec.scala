@@ -22,7 +22,7 @@ import forms.declaration.declarationHolder.AuthorizationTypeCodes.{EXRR, MIB}
 import models.codes._
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
-import services.model.PackageType
+import services.model.{OfficeOfExit, PackageType}
 
 import java.util.Locale.{ENGLISH, JAPANESE}
 import scala.collection.immutable.ListMap
@@ -44,6 +44,7 @@ class CodeListConnectorSpec extends UnitWithMocksSpec with BeforeAndAfterEach {
     when(appConfig.countryCodes).thenReturn("/code-lists/manyCodes.json")
     when(appConfig.goodsLocationCodeFile).thenReturn("/code-lists/manyCodes.json")
     when(appConfig.packageTypeCodeFile).thenReturn("/code-lists/manyCodes.json")
+    when(appConfig.officeOfExitsCodeFile).thenReturn("/code-lists/manyCodes.json")
   }
 
   private lazy val codeListConnector = new FileBasedCodeListConnector(appConfig)
@@ -222,6 +223,20 @@ class CodeListConnectorSpec extends UnitWithMocksSpec with BeforeAndAfterEach {
         codeListConnector.getPackageTypes(JAPANESE) must be(samplePtcsEnglish)
       }
     }
+
+    "return a map of Office of Exit Codes" when {
+      "'ENGLISH' locale passed return codes with English descriptions" in {
+        codeListConnector.getOfficeOfExits(ENGLISH) must be(sampleOocsEnglish)
+      }
+
+      "'WELSH' local passed return codes with Welsh descriptions" in {
+        codeListConnector.getOfficeOfExits(codeListConnector.WELSH) must be(sampleOocsWelsh)
+      }
+
+      "unsupported 'JAPANESE' locale is passed return codes with English descriptions" in {
+        codeListConnector.getOfficeOfExits(JAPANESE) must be(sampleOocsEnglish)
+      }
+    }
   }
 
   private val samplePCsEnglish =
@@ -277,4 +292,10 @@ class CodeListConnectorSpec extends UnitWithMocksSpec with BeforeAndAfterEach {
 
   private val samplePtcsWelsh =
     ListMap("001" -> PackageType("001", "Welsh"), "002" -> PackageType("002", "Welsh"), "003" -> PackageType("003", "Welsh"))
+
+  private val sampleOocsEnglish =
+    ListMap("001" -> OfficeOfExit("001", "English"), "002" -> OfficeOfExit("002", "English"), "003" -> OfficeOfExit("003", "English"))
+
+  private val sampleOocsWelsh =
+    ListMap("001" -> OfficeOfExit("001", "Welsh"), "002" -> OfficeOfExit("002", "Welsh"), "003" -> OfficeOfExit("003", "Welsh"))
 }
