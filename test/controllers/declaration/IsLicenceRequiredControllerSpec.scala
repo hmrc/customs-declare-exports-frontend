@@ -17,7 +17,6 @@
 package controllers.declaration
 
 import base.ControllerSpec
-import features.Feature
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.Yes
 import forms.declaration.CommodityDetails
@@ -81,7 +80,6 @@ class IsLicenceRequiredControllerSpec extends ControllerSpec with OptionValues {
   "IsLicenceRequired Controller" should {
 
     onJourney(DeclarationType.STANDARD, DeclarationType.OCCASIONAL, DeclarationType.SIMPLIFIED, DeclarationType.SUPPLEMENTARY) { _ =>
-
       "return 200 (OK)" that {
 
         "display page method is invoked" in {
