@@ -300,7 +300,16 @@
                 )
             ))
         )
-    ),
+    )
+),
+    classes = "govuk-!-margin-bottom-2"
+)
+
+@item.packageInformation.map(packageInformation =>
+    package_information(mode, item.id, item.sequenceId, packageInformation, actionsEnabled)
+)
+
+@summaryList("", None, Seq(
     item.commodityMeasure.map(commodityMeasure =>
         SummaryListRow(
             classes = s"item-${item.sequenceId}-grossWeight-row",
@@ -369,16 +378,8 @@
     classes = "govuk-!-margin-bottom-3"
 )
 
-<div class="govuk-section-break">
-    @item.packageInformation.map(packageInformation =>
-        package_information(mode, item.id, item.sequenceId, packageInformation, actionsEnabled)
-    )
-</div>
-
-<div class="govuk-section-break">
-    @item.additionalInformation.map(additionalInformation =>
-        union_and_national_codes(mode, item.id, item.sequenceId, additionalInformation.items, actionsEnabled)
-    )
-</div>
+@item.additionalInformation.map(additionalInformation =>
+    union_and_national_codes(mode, item.id, item.sequenceId, additionalInformation.items, actionsEnabled)
+)
 
 @additional_documents(mode, item, actionsEnabled)

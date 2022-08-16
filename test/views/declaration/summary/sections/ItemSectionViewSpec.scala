@@ -63,7 +63,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper {
 
     val itemSection = injector.instanceOf[item_section]
 
-    "has item answers" when {
+    "has item answers and" when {
 
       "actions are enabled" should {
         val view = itemSection(Normal, itemWithAnswers, STANDARD)(messages)
@@ -192,6 +192,19 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper {
           row must haveSummaryActionsHref(StatisticalValueController.displayPage(Normal, itemWithAnswers.id))
         }
 
+        "have package information section" in {
+          view.getElementById("package-information-1-table").getElementsByClass("govuk-table__caption").text mustBe messages(
+            "declaration.summary.items.item.packageInformation"
+          )
+        }
+
+        "have package information displayed on the page before 'Commodity Measures'" in {
+          val body = view.child(0).children.get(1)
+          val elements = body.children
+          assert(elements.get(2).text.startsWith("Packing details"))
+          assert(elements.get(3).text.startsWith("Gross weight"))
+        }
+
         "have supplementary units with change button" in {
           val row = view.getElementsByClass("item-1-supplementaryUnits-row")
           row must haveSummaryKey(messages("declaration.summary.items.item.supplementaryUnits"))
@@ -229,12 +242,6 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper {
           row must haveSummaryActionsTexts("site.change", "declaration.summary.items.item.netWeight.change", "1")
 
           row must haveSummaryActionsHref(CommodityMeasureController.displayPage(Normal, itemWithAnswers.id))
-        }
-
-        "have package information section" in {
-          view.getElementById("package-information-1-table").getElementsByClass("govuk-table__caption").text mustBe messages(
-            "declaration.summary.items.item.packageInformation"
-          )
         }
 
         "have union and national codes section" in {
