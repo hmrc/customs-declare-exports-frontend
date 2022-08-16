@@ -17,7 +17,6 @@
 package views.declaration.summary
 
 import base.Injector
-import com.typesafe.config.ConfigFactory
 import controllers.declaration.routes
 import forms.common.YesNoAnswer.{Yes, YesNoAnswers}
 import forms.declaration.additionaldocuments.AdditionalDocument
@@ -26,13 +25,12 @@ import models.Mode.Normal
 import models.declaration.{AdditionalDocuments, ExportItem}
 import org.jsoup.select.Elements
 import org.scalatest.Assertion
-import play.api.Configuration
 import play.twirl.api.HtmlFormat.Appendable
 import services.cache.ExportsTestHelper
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.summary.additional_documents
 
-class AdditionalDocumentsViewSpec extends UnitViewSpec with ExportsTestHelper {
+class AdditionalDocumentsViewSpec extends UnitViewSpec with ExportsTestHelper with Injector {
 
   private val documents = Seq(
     AdditionalDocument(Some("typ1"), Some("identifier1"), None, None, None, None, None),
@@ -55,12 +53,8 @@ class AdditionalDocumentsViewSpec extends UnitViewSpec with ExportsTestHelper {
 
   "AdditionalDocuments view" when {
 
-    val is999LKey = "microservice.services.features.waiver999L"
-    val config = ConfigFactory.parseString(s"$is999LKey=enabled")
-    val injector = new Injector {
-      override val configuration: Configuration = Configuration(config)
-    }
-    val additionalDocumentsSection = injector.instanceOf[additional_documents]
+
+    val additionalDocumentsSection = instanceOf[additional_documents]
 
     "with additionalDocuments defined but without actual documents or defined licence answer" should {
       "display title and 'No Additional documents' row only" in {
@@ -70,7 +64,7 @@ class AdditionalDocumentsViewSpec extends UnitViewSpec with ExportsTestHelper {
         view.getElementsByClass("licences-1-row") mustBe empty
         view.getElementsByTag("table") mustBe empty
 
-        verifyAdditionalDocumentsEq2No(view, config.getString(is999LKey))
+        verifyAdditionalDocumentsEq2No(view)
       }
     }
 
@@ -124,28 +118,6 @@ class AdditionalDocumentsViewSpec extends UnitViewSpec with ExportsTestHelper {
     }
   }
 
-  "AdditionalDocuments view" when {
-    "with additionalDocuments defined but without actual documents or defined licence answer" should {
-      "only display title and 'Other Documents' as header in the 'No Additional Documents' section" when {
-        "the '999l' flag is disabled" in {
-          val is999LKey = "microservice.services.features.waiver999L"
-          val config = ConfigFactory.parseString(s"$is999LKey=disabled")
-          val injector = new Injector {
-            override val configuration: Configuration = Configuration(config)
-          }
-          val additionalDocumentsSection = injector.instanceOf[additional_documents]
-          val view = additionalDocumentsSection(Normal, itemWithNoLicenceReq(Some(AdditionalDocuments(None, Seq.empty))))(messages)
-          verifyHeader(view)
-
-          view.getElementsByClass("licences-1-row") mustBe empty
-          view.getElementsByTag("table") mustBe empty
-
-          verifyAdditionalDocumentsEq2No(view, config.getString(is999LKey))
-        }
-      }
-    }
-  }
-
   private def verifyHeader(view: Appendable): Assertion = {
     val section = view.getElementById("additional-docs-section-item-1")
     section.child(0).tagName mustBe "h3"
@@ -160,10 +132,9 @@ class AdditionalDocumentsViewSpec extends UnitViewSpec with ExportsTestHelper {
     licencesRow must haveSummaryActionsHref(routes.IsLicenceRequiredController.displayPage(Normal, "itemId"))
   }
 
-  private def verifyAdditionalDocumentsEq2No(view: Appendable, flag999L: String): Assertion = {
-    val is999L = flag999L == "enabled"
+  private def verifyAdditionalDocumentsEq2No(view: Appendable): Assertion = {
     val row = view.getElementsByClass("additional-documents-1-row")
-    row must haveSummaryKey(messages(s"declaration.summary.items.item.additionalDocuments${if (is999L) "" else ".otherDocuments"}"))
+    row must haveSummaryKey(messages("declaration.summary.items.item.additionalDocuments"))
     row must haveSummaryValue("No")
     row must haveSummaryActionsTexts("site.change", "declaration.summary.items.item.additionalDocuments.changeAll", "1")
     row must haveSummaryActionsHref(routes.AdditionalDocumentsController.displayPage(Normal, "itemId"))

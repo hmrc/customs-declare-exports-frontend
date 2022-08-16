@@ -16,7 +16,6 @@
 
 package controllers.declaration
 
-import config.featureFlags.Waiver999LConfig
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer

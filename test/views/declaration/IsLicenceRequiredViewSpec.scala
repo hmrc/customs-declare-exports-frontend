@@ -17,7 +17,6 @@
 package views.declaration
 
 import base.Injector
-import com.typesafe.config.ConfigFactory
 import config.AppConfig
 import controllers.declaration.routes
 import forms.common.YesNoAnswer
@@ -27,7 +26,6 @@ import forms.declaration.{CommodityDetails, IsLicenceRequired}
 import models.Mode
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
-import play.api.Configuration
 import play.api.data.Form
 import services.cache.ExportsTestHelper
 import tools.Stubs
@@ -39,8 +37,6 @@ import views.tags.ViewTest
 
 @ViewTest
 class IsLicenceRequiredViewSpec extends UnitViewSpec with ExportsTestHelper with CommonMessages with Stubs with Injector {
-
-  override val configuration: Configuration = Configuration(ConfigFactory.parseString("microservice.services.features.waiver999L=enabled"))
 
   private val appConfig = instanceOf[AppConfig]
   private val isLicenceRequiredPage = instanceOf[is_licence_required]

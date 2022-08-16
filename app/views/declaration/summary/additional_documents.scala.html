@@ -15,7 +15,6 @@
  *@
 
 @import controllers.declaration.routes
-@import config.featureFlags.Waiver999LConfig
 @import forms.declaration.additionaldocuments.AdditionalDocument
 @import models.declaration.{AdditionalDocuments, ExportItem}
 @import models.Mode
@@ -32,7 +31,6 @@
     linkContent: linkContent,
     spanVisuallyHidden: spanVisuallyHidden,
     summaryList: summary_list,
-    waiver999LConfig: Waiver999LConfig,
     heading: heading
 )
 
@@ -73,18 +71,13 @@
     }
 }
 
-@documentsHeaderKey = @{
-    if (waiver999LConfig.is999LEnabled) "declaration.summary.items.item.additionalDocuments"
-    else "declaration.summary.items.item.additionalDocuments.otherDocuments"
-}
-
 @dontShowNoDocumentHeader = @{ item.additionalDocuments.fold(true)(_.documents.nonEmpty) }
 
 @documentsHeader = @{
     if (dontShowNoDocumentHeader) None
     else Some(SummaryListRow(
         classes = s"additional-documents-${item.sequenceId}-row",
-        key = Key(content = Text(messages(documentsHeaderKey))),
+        key = Key(content = Text(messages("declaration.summary.items.item.additionalDocuments"))),
         value = Value(content = Text(messages("site.no"))),
         actions = actions(Actions(
             items = Seq(

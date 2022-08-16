@@ -36,7 +36,7 @@ lazy val microservice = Project(appName, file("."))
   )
   .settings(scoverageSettings)
   .settings(silencerSettings)
-  .disablePlugins(JUnitXmlReportPlugin) //Required to prevent https://github.com/scalatest/scalatest/issues/1427
+  .disablePlugins(JUnitXmlReportPlugin) // Required to prevent https://github.com/scalatest/scalatest/issues/1427
 
 lazy val scoverageSettings: Seq[Setting[_]] = Seq(
   coverageExcludedPackages := List(

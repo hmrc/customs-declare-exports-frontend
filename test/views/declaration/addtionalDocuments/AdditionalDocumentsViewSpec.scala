@@ -17,7 +17,6 @@
 package views.declaration.addtionalDocuments
 
 import base.Injector
-import com.typesafe.config.ConfigFactory
 import controllers.declaration.routes
 import controllers.helpers.SaveAndReturn
 import forms.common.YesNoAnswer
@@ -28,7 +27,6 @@ import models.Mode
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import org.scalatest.OptionValues
-import play.api.Configuration
 import play.api.data.Form
 import tools.Stubs
 import utils.ListItem
@@ -39,8 +37,6 @@ import views.tags.ViewTest
 
 @ViewTest
 class AdditionalDocumentsViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector with OptionValues {
-
-  override val configuration: Configuration = Configuration(ConfigFactory.parseString("microservice.services.features.waiver999L=enabled"))
 
   private val itemId = "a7sc78"
   private val mode = Mode.Normal

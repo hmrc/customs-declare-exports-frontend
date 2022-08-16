@@ -30,7 +30,7 @@ import services.cache.ExportsTestHelper
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.summary.sections.item_section
 
-class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper {
+class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injector {
 
   val commodityMeasure = CommodityMeasure(Some("12"), Some(false), Some("666"), Some("555"))
 
@@ -55,13 +55,9 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper {
 
   private val itemWithoutAnswers = anItem(withItemId("itemId"), withSequenceId(1))
 
-  "Item section with 999l enabled" when {
+  "Item section" when {
 
-    val injector = new Injector {
-      override val configuration: Configuration = Configuration(ConfigFactory.parseString("microservice.services.features.waiver999L=enabled"))
-    }
-
-    val itemSection = injector.instanceOf[item_section]
+    val itemSection = instanceOf[item_section]
 
     "has item answers and" when {
 
@@ -641,48 +637,4 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper {
 
   }
 
-  "Item section with 999l disabled" when {
-
-    val injector = new Injector {
-      override val configuration: Configuration = Configuration(ConfigFactory.parseString("microservice.services.features.waiver999L=disabled"))
-    }
-
-    val itemSection = injector.instanceOf[item_section]
-
-    "has item answers" when {
-
-      "actions are enabled" should {
-
-        val view = itemSection(Normal, itemWithAnswers, STANDARD)(messages)
-
-        "have additional documents section" in {
-          view.getElementById("additional-docs-section-item-1").child(0).text mustBe messages(
-            "declaration.summary.items.item.clearance.additionalDocuments"
-          )
-        }
-      }
-
-      "actions are disabled using actionsEnabled = false" should {
-
-        val view = itemSection(Normal, itemWithAnswers, STANDARD, actionsEnabled = false)(messages)
-
-        "have additional documents section" in {
-          view.getElementById("additional-docs-section-item-1").child(0).text mustBe messages(
-            "declaration.summary.items.item.clearance.additionalDocuments"
-          )
-        }
-      }
-
-      "actions are disabled using actionsEnabled flag" should {
-
-        val view = itemSection(Normal, itemWithAnswers, STANDARD, actionsEnabled = false)(messages)
-
-        "have additional documents section" in {
-          view.getElementById("additional-docs-section-item-1").child(0).text mustBe messages(
-            "declaration.summary.items.item.clearance.additionalDocuments"
-          )
-        }
-      }
-    }
-  }
 }

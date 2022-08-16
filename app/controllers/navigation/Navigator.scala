@@ -17,7 +17,6 @@
 package controllers.navigation
 
 import config.AppConfig
-import config.featureFlags.Waiver999LConfig
 import controllers.declaration.routes
 import controllers.helpers.DeclarationHolderHelper.userCanLandOnIsAuthRequiredPage
 import controllers.helpers.LocationOfGoodsHelper.skipLocationOfGoods
