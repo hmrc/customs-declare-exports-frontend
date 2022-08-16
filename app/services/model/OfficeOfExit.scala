@@ -16,4 +16,6 @@
 
 package services.model
 
-case class OfficeOfExit(code: String, description: String)
+import models.codes.CommonCode
+
+case class OfficeOfExit(code: String, description: String) extends CommonCode

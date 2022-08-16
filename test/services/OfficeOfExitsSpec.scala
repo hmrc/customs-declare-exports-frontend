@@ -16,19 +16,26 @@
 
 package services
 
-import base.UnitSpec
+import base.{Injector, UnitSpec}
+import play.api.i18n.{Lang, Messages}
+import play.api.test.Helpers.stubMessagesApi
 import services.model.OfficeOfExit
 
-class OfficeOfExitsSpec extends UnitSpec {
+import java.util.Locale
+
+class OfficeOfExitsSpec extends UnitSpec with Injector {
+
+  private val officeOfExitsService = instanceOf[OfficeOfExitsService]
+  private implicit val messages: Messages = stubMessagesApi().preferred(Seq(Lang(Locale.ENGLISH)))
 
   "OfficeOfExits" should {
 
     "have 131 entries" in {
-      OfficeOfExits.all.length mustBe 134
+      officeOfExitsService.all.length mustBe 134
     }
 
     "read values from CSV and order by description, alphabetically ascending" in {
-      OfficeOfExits.all must contain inOrder (
+      officeOfExitsService.all must contain inOrder (
         OfficeOfExit("GB000411", "Aberdeen Airport"),
         OfficeOfExit("GB000060", "Dover/ Folkestone Eurotunnel Freight"),
         OfficeOfExit("GB003280", "Workington")
