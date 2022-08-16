@@ -70,7 +70,7 @@ class AdditionalDocumentsViewSpec extends UnitViewSpec with ExportsTestHelper {
         view.getElementsByClass("licences-1-row") mustBe empty
         view.getElementsByTag("table") mustBe empty
 
-        verifyNoAdditionalDocuments(view, config.getString(is999LKey))
+        verifyAdditionalDocumentsEq2No(view, config.getString(is999LKey))
       }
     }
 
@@ -94,7 +94,7 @@ class AdditionalDocumentsViewSpec extends UnitViewSpec with ExportsTestHelper {
               val view = additionalDocumentsSection(Normal, itemWithLicenceReq(answer, None))(messages)
               verifyHeader(view)
               verifyLicenseRow(view, answer)
-              verifyNoAdditionalDocuments(view, config.getString(is999LKey))
+              view.getElementsByClass("additional-documents-1-row") mustBe empty
             }
           }
         }
@@ -140,7 +140,7 @@ class AdditionalDocumentsViewSpec extends UnitViewSpec with ExportsTestHelper {
           view.getElementsByClass("licences-1-row") mustBe empty
           view.getElementsByTag("table") mustBe empty
 
-          verifyNoAdditionalDocuments(view, config.getString(is999LKey))
+          verifyAdditionalDocumentsEq2No(view, config.getString(is999LKey))
         }
       }
     }
@@ -160,7 +160,7 @@ class AdditionalDocumentsViewSpec extends UnitViewSpec with ExportsTestHelper {
     licencesRow must haveSummaryActionsHref(routes.IsLicenceRequiredController.displayPage(Normal, "itemId"))
   }
 
-  private def verifyNoAdditionalDocuments(view: Appendable, flag999L: String): Assertion = {
+  private def verifyAdditionalDocumentsEq2No(view: Appendable, flag999L: String): Assertion = {
     val is999L = flag999L == "enabled"
     val row = view.getElementsByClass("additional-documents-1-row")
     row must haveSummaryKey(messages(s"declaration.summary.items.item.additionalDocuments${if (is999L) "" else ".otherDocuments"}"))
