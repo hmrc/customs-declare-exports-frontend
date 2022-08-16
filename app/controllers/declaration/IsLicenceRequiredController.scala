@@ -41,7 +41,6 @@ import scala.concurrent.{ExecutionContext, Future}
 class IsLicenceRequiredController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
-  featureFlagAction: FeatureFlagAction,
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
   mcc: MessagesControllerComponents,
@@ -52,7 +51,7 @@ class IsLicenceRequiredController @Inject() (
   private val validTypes = Seq(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL)
 
   def displayPage(mode: Mode, itemId: String): Action[AnyContent] =
-    (authenticate andThen journeyType(validTypes) andThen featureFlagAction(Feature.waiver999L)) { implicit request =>
+    (authenticate andThen journeyType(validTypes)) { implicit request =>
       val formWithErrors = form.withSubmissionErrors.fill(_)
 
       val frm = request.cacheModel.itemBy(itemId).flatMap(_.isLicenceRequired).fold(form.withSubmissionErrors) {
@@ -65,7 +64,7 @@ class IsLicenceRequiredController @Inject() (
     }
 
   def submitForm(mode: Mode, itemId: String): Action[AnyContent] =
-    (authenticate andThen journeyType andThen featureFlagAction(Feature.waiver999L)).async { implicit request =>
+    (authenticate andThen journeyType).async { implicit request =>
       form.bindFromRequest
         .fold(
           formWithErrors => Future.successful(BadRequest(is_licence_required(mode, itemId, formWithErrors))),

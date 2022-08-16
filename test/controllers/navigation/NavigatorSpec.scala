@@ -59,7 +59,7 @@ class NavigatorSpec
   private val supervisingCustomsOfficeHelper = mock[SupervisingCustomsOfficeHelper]
 
   private val navigator =
-    new Navigator(config, mockWaiver999LConfig, auditService, tariffApiService, inlandOrBorderHelper, supervisingCustomsOfficeHelper)
+    new Navigator(config, auditService, tariffApiService, inlandOrBorderHelper, supervisingCustomsOfficeHelper)
 
   override def beforeEach(): Unit = {
     super.beforeEach()

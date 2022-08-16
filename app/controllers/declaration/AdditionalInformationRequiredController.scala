@@ -40,7 +40,6 @@ import scala.concurrent.{ExecutionContext, Future}
 class AdditionalInformationRequiredController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
-  waiver999LConfig: Waiver999LConfig,
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
   mcc: MessagesControllerComponents,
@@ -79,9 +78,9 @@ class AdditionalInformationRequiredController @Inject() (
     val isClearanceJourney = request.declarationType == DeclarationType.CLEARANCE
 
     yesNoAnswer.answer match {
-      case YesNoAnswers.yes                                                         => AdditionalInformationController.displayPage(_, itemId)
-      case YesNoAnswers.no if isClearanceJourney || !waiver999LConfig.is999LEnabled => AdditionalDocumentsController.displayPage(_, itemId)
-      case _                                                                        => IsLicenceRequiredController.displayPage(_, itemId)
+      case YesNoAnswers.yes                      => AdditionalInformationController.displayPage(_, itemId)
+      case YesNoAnswers.no if isClearanceJourney => AdditionalDocumentsController.displayPage(_, itemId)
+      case _                                     => IsLicenceRequiredController.displayPage(_, itemId)
 
     }
   }
