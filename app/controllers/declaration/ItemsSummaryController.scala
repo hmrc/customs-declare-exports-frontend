@@ -55,7 +55,7 @@ class ItemsSummaryController @Inject() (
 
   def displayAddItemPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     if (request.cacheModel.items.isEmpty) Ok(addItemPage(mode))
-    else navigator.continueTo(mode, routes.ItemsSummaryController.displayItemsSummaryPage)
+    else navigator.continueTo(mode, routes.ItemsSummaryController.displayItemsSummaryPage, mode.isErrorFix)
   }
 
   def addFirstItem(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
