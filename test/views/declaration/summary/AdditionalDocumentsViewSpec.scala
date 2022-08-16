@@ -53,7 +53,6 @@ class AdditionalDocumentsViewSpec extends UnitViewSpec with ExportsTestHelper wi
 
   "AdditionalDocuments view" when {
 
-
     val additionalDocumentsSection = instanceOf[additional_documents]
 
     "with additionalDocuments defined but without actual documents or defined licence answer" should {
