@@ -55,7 +55,7 @@ class AdditionalInformationRequiredController @Inject() (
             Ok(additionalInfoReq(mode, itemId, previousAnswer(itemId).withSubmissionErrors, backLink, request.cacheModel.procedureCodeOfItem(itemId)))
           }
 
-        case _ => Future.successful(navigator.continueTo(mode, AdditionalInformationController.displayPage(_, itemId)))
+        case _ => Future.successful(navigator.continueTo(mode, AdditionalInformationController.displayPage(_, itemId), mode.isErrorFix))
       }
     }
 

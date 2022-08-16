@@ -24,7 +24,7 @@ import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.ContainerAdd.form
 import forms.declaration.{ContainerAdd, ContainerFirst}
-import models.Mode.{Amend, Change, ChangeAmend, Normal}
+import models.Mode.{Amend, Change, ChangeAmend, ErrorFix, Normal}
 import models.declaration.Container
 import models.declaration.Container.maxNumberOfItems
 import models.requests.JourneyRequest
@@ -182,7 +182,7 @@ class TransportContainerController @Inject() (
     navigator.continueTo(mode, routes.SealController.displaySealSummary(_, containerId))
 
   private def summaryControllerRoute(mode: Mode): Mode => Call =
-    if (mode == Amend || mode == ChangeAmend) _ => routes.SummaryController.displayPageOnAmend
+    if (mode == Amend || mode == ChangeAmend || mode == ErrorFix) _ => routes.SummaryController.displayPageOnAmend
     else if (mode == Change) _ => routes.SummaryController.displayPage(Normal)
     else routes.SummaryController.displayPage
 }

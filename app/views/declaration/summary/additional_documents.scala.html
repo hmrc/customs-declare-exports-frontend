@@ -38,8 +38,6 @@
 
 @(mode: Mode, item: ExportItem, actionsEnabled: Boolean = true)(implicit messages: Messages)
 
-@hasDocuments = @{ item.additionalDocuments.fold(false)(_.documents.nonEmpty) }
-
 @actions(actions: => Actions) = @{ if (actionsEnabled) Some(actions) else None }
 
 @change(document: AdditionalDocument) = @{
@@ -80,8 +78,10 @@
     else "declaration.summary.items.item.additionalDocuments.otherDocuments"
 }
 
+@dontShowNoDocumentHeader = @{ item.additionalDocuments.fold(true)(_.documents.nonEmpty) }
+
 @documentsHeader = @{
-    if (hasDocuments) None
+    if (dontShowNoDocumentHeader) None
     else Some(SummaryListRow(
         classes = s"additional-documents-${item.sequenceId}-row",
         key = Key(content = Text(messages(documentsHeaderKey))),
@@ -126,6 +126,8 @@
         )))
    }
 }
+
+@hasDocuments = @{ item.additionalDocuments.fold(false)(_.documents.nonEmpty) }
 
 @if(item.isLicenceRequired.isDefined || item.additionalDocuments.isDefined) {
   <div id="additional-docs-section-item-@item.sequenceId">
