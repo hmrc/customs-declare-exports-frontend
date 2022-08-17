@@ -498,6 +498,7 @@ object AppConfigSpec {
       |files.codelists.goodsLocationCodeToLocationTypeLink="goodsLocationCodeToLocationTypeLink"
       |files.codelists.packageTypeCode="packageTypeCode"
       |files.codelists.officeOfExits="officeOfExit"
+      |files.codelists.customsOffices="customsOffice"
       |
       |draft.timeToLive=30d
       |microservice.services.nrs.host=localhostnrs

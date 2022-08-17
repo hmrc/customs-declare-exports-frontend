@@ -18,7 +18,7 @@
 @import controllers.navigation.Navigator
 @import forms.declaration.SupervisingCustomsOffice
 @import models.requests.JourneyRequest
-@import services.CustomsOffices
+@import services.CustomsOfficesService
 @import services.view.AutoCompleteItem
 @import uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF
 @import views.html.components.gds._
@@ -35,7 +35,8 @@
     tariffExpander: tariffExpander,
     formHelper: FormWithCSRF,
     navigator: Navigator,
-    appConfig: AppConfig
+    appConfig: AppConfig,
+    customsOfficesService: CustomsOfficesService
 )
 
 @(mode: Mode, form: Form[SupervisingCustomsOffice])(implicit request: JourneyRequest[_], messages: Messages)
@@ -63,7 +64,7 @@
             label = messages("declaration.warehouse.supervisingCustomsOffice.title"),
             labelClass = Some("govuk-visually-hidden"),
             emptySelectValue = messages("declaration.warehouse.supervisingCustomsOffice.label"),
-            items = AutoCompleteItem.fromSupervisingCustomsOffice(CustomsOffices.all),
+            items = AutoCompleteItem.fromSupervisingCustomsOffice(customsOfficesService.all),
             isPageHeading = false
         )
 
