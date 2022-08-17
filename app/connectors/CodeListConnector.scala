@@ -21,7 +21,7 @@ import com.google.inject.ImplementedBy
 import config.AppConfig
 import models.codes._
 import play.api.libs.json.{Json, OFormat}
-import services.model.{OfficeOfExit, PackageType}
+import services.model.{CustomsOffice, OfficeOfExit, PackageType}
 import utils.JsonFile
 
 import java.util.Locale
@@ -57,6 +57,8 @@ trait CodeListConnector {
   def getPackageTypes(locale: Locale): ListMap[String, PackageType]
 
   def getOfficeOfExits(locale: Locale): ListMap[String, OfficeOfExit]
+
+  def getCustomsOffices(locale: Locale): ListMap[String, CustomsOffice]
 
   val WELSH = new Locale("cy", "GB", "");
   val supportedLanguages = Seq(ENGLISH, WELSH)
@@ -94,6 +96,9 @@ class FileBasedCodeListConnector @Inject() (appConfig: AppConfig) extends CodeLi
 
   def getOfficeOfExits(locale: Locale): ListMap[String, OfficeOfExit] =
     officeOfExitCodesByLang.getOrElse(locale.getLanguage, officeOfExitCodesByLang.value.head._2)
+
+  def getCustomsOffices(locale: Locale): ListMap[String, CustomsOffice] =
+    customsOfficesCodesByLang.getOrElse(locale.getLanguage, customsOfficesCodesByLang.value.head._2)
 
   private val additionalProcedureCodeMapsByLang = loadCommonCodesAsOrderedMap(
     appConfig.additionalProcedureCodes,
@@ -143,6 +148,11 @@ class FileBasedCodeListConnector @Inject() (appConfig: AppConfig) extends CodeLi
   private val officeOfExitCodesByLang = loadCommonCodesAsOrderedMap(
     appConfig.officeOfExitsCodeFile,
     (codeItem: CodeItem, locale: Locale) => OfficeOfExit(codeItem.code, codeItem.getDescriptionByLocale(locale))
+  )
+
+  private val customsOfficesCodesByLang = loadCommonCodesAsOrderedMap(
+    appConfig.customsOfficesCodeFile,
+    (codeItem: CodeItem, locale: Locale) => CustomsOffice(codeItem.code, codeItem.getDescriptionByLocale(locale))
   )
 
   private def loadCommonCodesAsOrderedMap[T <: CommonCode](srcFile: String, factory: (CodeItem, Locale) => T): CodeMap[T] = {
