@@ -23,7 +23,7 @@ import services.model.OfficeOfExit
 
 import java.util.Locale
 
-class OfficeOfExitsSpec extends UnitSpec with Injector {
+class OfficeOfExitsServiceSpec extends UnitSpec with Injector {
 
   private val officeOfExitsService = instanceOf[OfficeOfExitsService]
   private implicit val messages: Messages = stubMessagesApi().preferred(Seq(Lang(Locale.ENGLISH)))

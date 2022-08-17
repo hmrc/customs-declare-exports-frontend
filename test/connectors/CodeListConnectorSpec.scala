@@ -22,7 +22,7 @@ import forms.declaration.declarationHolder.AuthorizationTypeCodes.{EXRR, MIB}
 import models.codes._
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
-import services.model.{OfficeOfExit, PackageType}
+import services.model.{CustomsOffice, OfficeOfExit, PackageType}
 
 import java.util.Locale.{ENGLISH, JAPANESE}
 import scala.collection.immutable.ListMap
@@ -45,6 +45,7 @@ class CodeListConnectorSpec extends UnitWithMocksSpec with BeforeAndAfterEach {
     when(appConfig.goodsLocationCodeFile).thenReturn("/code-lists/manyCodes.json")
     when(appConfig.packageTypeCodeFile).thenReturn("/code-lists/manyCodes.json")
     when(appConfig.officeOfExitsCodeFile).thenReturn("/code-lists/manyCodes.json")
+    when(appConfig.customsOfficesCodeFile).thenReturn("/code-lists/manyCodes.json")
   }
 
   private lazy val codeListConnector = new FileBasedCodeListConnector(appConfig)
@@ -237,6 +238,20 @@ class CodeListConnectorSpec extends UnitWithMocksSpec with BeforeAndAfterEach {
         codeListConnector.getOfficeOfExits(JAPANESE) must be(sampleOocsEnglish)
       }
     }
+
+    "return a map of Customs Office Codes" when {
+      "'ENGLISH' locale passed return codes with English descriptions" in {
+        codeListConnector.getCustomsOffices(ENGLISH) must be(sampleCocsEnglish)
+      }
+
+      "'WELSH' local passed return codes with Welsh descriptions" in {
+        codeListConnector.getCustomsOffices(codeListConnector.WELSH) must be(sampleCocsWelsh)
+      }
+
+      "unsupported 'JAPANESE' locale is passed return codes with English descriptions" in {
+        codeListConnector.getCustomsOffices(JAPANESE) must be(sampleCocsEnglish)
+      }
+    }
   }
 
   private val samplePCsEnglish =
@@ -298,4 +313,10 @@ class CodeListConnectorSpec extends UnitWithMocksSpec with BeforeAndAfterEach {
 
   private val sampleOocsWelsh =
     ListMap("001" -> OfficeOfExit("001", "Welsh"), "002" -> OfficeOfExit("002", "Welsh"), "003" -> OfficeOfExit("003", "Welsh"))
+
+  private val sampleCocsEnglish =
+    ListMap("001" -> CustomsOffice("001", "English"), "002" -> CustomsOffice("002", "English"), "003" -> CustomsOffice("003", "English"))
+
+  private val sampleCocsWelsh =
+    ListMap("001" -> CustomsOffice("001", "Welsh"), "002" -> CustomsOffice("002", "Welsh"), "003" -> CustomsOffice("003", "Welsh"))
 }
