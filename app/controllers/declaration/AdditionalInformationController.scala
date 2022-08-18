@@ -16,7 +16,6 @@
 
 package controllers.declaration
 
-import config.featureFlags.Waiver999LConfig
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
@@ -39,7 +38,6 @@ import scala.concurrent.{ExecutionContext, Future}
 class AdditionalInformationController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
-  waiver999LConfig: Waiver999LConfig,
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
   mcc: MessagesControllerComponents,
@@ -81,7 +79,7 @@ class AdditionalInformationController @Inject() (
       case YesNoAnswers.yes =>
         navigator.continueTo(mode, routes.AdditionalInformationAddController.displayPage(_, itemId), mode.isErrorFix)(request, hc)
 
-      case YesNoAnswers.no if isClearanceJourney || !waiver999LConfig.is999LEnabled =>
+      case YesNoAnswers.no if isClearanceJourney =>
         navigator.continueTo(mode, routes.AdditionalDocumentsController.displayPage(_, itemId))(request, hc)
 
       case _ =>

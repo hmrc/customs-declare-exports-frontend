@@ -15,7 +15,6 @@
  *@
 
 @import config.AppConfig
-@import config.featureFlags.Waiver999LConfig
 @import controllers.declaration.routes
 @import controllers.navigation.{ItemId, Navigator}
 @import forms.common.YesNoAnswer
@@ -42,8 +41,7 @@
     saveButtons: saveButtons,
     formHelper: FormWithCSRF,
     navigator: Navigator,
-    appConfig: AppConfig,
-    waiver999LConfig: Waiver999LConfig
+    appConfig: AppConfig
 )
 
 @(mode: Mode, itemId: String, form: Form[YesNoAnswer])(implicit request: JourneyRequest[_], messages: Messages)
@@ -51,7 +49,7 @@
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
 @showWaiverInfo = @{
-    request.declarationType != DeclarationType.CLEARANCE && waiver999LConfig.is999LEnabled
+    request.declarationType != DeclarationType.CLEARANCE
 }
 
 @title = @{

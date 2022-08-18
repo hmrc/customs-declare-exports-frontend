@@ -38,7 +38,6 @@ class AdditionalInformationRequiredControllerSpec extends ControllerSpec with Op
   val controller = new AdditionalInformationRequiredController(
     mockAuthAction,
     mockJourneyAction,
-    mockWaiver999LConfig,
     mockExportsCacheService,
     navigator,
     stubMessagesControllerComponents(),
@@ -133,10 +132,6 @@ class AdditionalInformationRequiredControllerSpec extends ControllerSpec with Op
     onClearance { request =>
       "user submits valid No answer go to 'Additional Documents'" in {
 
-        when {
-          mockWaiver999LConfig.is999LEnabled
-        } thenReturn true
-
         withNewCaching(aDeclarationAfter(request.cacheModel, withItem(anItem(withItemId(itemId)))))
 
         val requestBody = Seq("yesNo" -> "No")
@@ -151,10 +146,6 @@ class AdditionalInformationRequiredControllerSpec extends ControllerSpec with Op
     onJourney(DeclarationType.STANDARD, DeclarationType.OCCASIONAL, DeclarationType.SUPPLEMENTARY, DeclarationType.SIMPLIFIED) { request =>
       "user submits valid No answer go to 'Is License Required?'" in {
 
-        when {
-          mockWaiver999LConfig.is999LEnabled
-        } thenReturn true
-
         withNewCaching(aDeclarationAfter(request.cacheModel, withItem(anItem(withItemId(itemId)))))
 
         val requestBody = Seq("yesNo" -> "No")
@@ -162,24 +153,6 @@ class AdditionalInformationRequiredControllerSpec extends ControllerSpec with Op
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe routes.IsLicenceRequiredController.displayPage(Mode.Normal, itemId)
-      }
-
-    }
-
-    onEveryDeclarationJourney() { request =>
-      "user submits valid No answer go to 'Additional Documents' when 999L disabled" in {
-
-        when {
-          mockWaiver999LConfig.is999LEnabled
-        } thenReturn false
-
-        withNewCaching(aDeclarationAfter(request.cacheModel, withItem(anItem(withItemId(itemId)))))
-
-        val requestBody = Seq("yesNo" -> "No")
-        val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(requestBody: _*))
-
-        await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe routes.AdditionalDocumentsController.displayPage(Mode.Normal, itemId)
       }
 
     }
