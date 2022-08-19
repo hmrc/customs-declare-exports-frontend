@@ -14,19 +14,14 @@
  * limitations under the License.
  *@
 
-@import views.html.components.gds._
-@import controllers.declaration.routes.DraftDeclarationController
-@import models.requests.JourneyRequest
+@this()
 
-@this(
-  link: link
+@(
+  text: String,
+  url: String,
+  id: Option[String] = None,
+  classes: Option[String] = None,
+  textHidden: Option[String] = None
 )
 
-@()(implicit request: JourneyRequest[_], messages: Messages)
-
-@link(
-  id = Some("save-and-come-back-later"),
-  text = messages("site.save_and_come_back_later"),
-  call = DraftDeclarationController.displayPage,
-  classes = Some("button-link govuk-link govuk-link--no-visited-state focus")
-)
+link(id = id, text = text, call = Call("GET", url), target = Some("_blank"), textHidden)
