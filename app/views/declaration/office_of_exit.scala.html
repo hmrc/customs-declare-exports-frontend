@@ -19,7 +19,7 @@
 @import forms.declaration.officeOfExit.OfficeOfExit
 @import models.requests.JourneyRequest
 @import services.view.AutoCompleteItem
-@import services.OfficeOfExits
+@import services.OfficeOfExitsService
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.components.gds.Styles._
 @import views.helpers.{BackButton, Title}
@@ -37,7 +37,8 @@
     tariffExpander: tariffExpander,
     formHelper: FormWithCSRF,
     navigator: Navigator,
-    appConfig: AppConfig
+    appConfig: AppConfig,
+    officeOfExitsService: OfficeOfExitsService
 )
 
 @(mode: Mode, form: Form[OfficeOfExit])(implicit request: JourneyRequest[_], messages: Messages)
@@ -62,7 +63,7 @@
             labelClass = Some("govuk-visually-hidden"),
             hintParagraphs = List(messages("declaration.officeOfExit.hint")),
             emptySelectValue = messages("declaration.officeOfExit.empty"),
-            items = AutoCompleteItem.fromOfficeOfExit(OfficeOfExits.all),
+            items = AutoCompleteItem.fromOfficeOfExit(officeOfExitsService.all),
             isPageHeading = false
         )
 

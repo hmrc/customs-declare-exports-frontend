@@ -16,23 +16,14 @@
 
 package services
 
-import base.UnitSpec
-import services.model.OfficeOfExit
+import connectors.CodeListConnector
+import play.api.i18n.Messages
+import services.model.CustomsOffice
 
-class OfficeOfExitsSpec extends UnitSpec {
+import javax.inject.Inject
 
-  "OfficeOfExits" should {
+class CustomsOfficesService @Inject() (codeListConnector: CodeListConnector) {
 
-    "have 131 entries" in {
-      OfficeOfExits.all.length mustBe 134
-    }
-
-    "read values from CSV and order by description, alphabetically ascending" in {
-      OfficeOfExits.all must contain inOrder (
-        OfficeOfExit("GB000411", "Aberdeen Airport"),
-        OfficeOfExit("GB000060", "Dover/ Folkestone Eurotunnel Freight"),
-        OfficeOfExit("GB003280", "Workington")
-      )
-    }
-  }
+  def all(implicit messages: Messages): List[CustomsOffice] =
+    codeListConnector.getCustomsOffices(messages.lang.toLocale).values.toList.sortBy(_.description)
 }

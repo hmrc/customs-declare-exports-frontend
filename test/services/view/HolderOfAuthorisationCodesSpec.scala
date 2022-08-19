@@ -48,6 +48,8 @@ class HolderOfAuthorisationCodesSpec extends UnitWithMocksSpec with BeforeAndAft
     when(appConfig.countryCodes).thenReturn("/code-lists/manyCodes.json")
     when(appConfig.goodsLocationCodeFile).thenReturn("/code-lists/manyCodes.json")
     when(appConfig.packageTypeCodeFile).thenReturn("/code-lists/manyCodes.json")
+    when(appConfig.officeOfExitsCodeFile).thenReturn("/code-lists/manyCodes.json")
+    when(appConfig.customsOfficesCodeFile).thenReturn("/code-lists/manyCodes.json")
   }
 
   "HolderOfAuthorisationCodes.asListOfAutoCompleteItems" should {

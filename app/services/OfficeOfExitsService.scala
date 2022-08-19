@@ -16,18 +16,14 @@
 
 package services
 
-import com.github.tototoshi.csv.CSVReader
-import services.model.CustomsOffice
+import connectors.CodeListConnector
+import play.api.i18n.Messages
+import services.model.OfficeOfExit
 
-import scala.io.Source
+import javax.inject.Inject
 
-object CustomsOffices {
+class OfficeOfExitsService @Inject() (codeListConnector: CodeListConnector) {
 
-  val all: List[CustomsOffice] = {
-
-    val reader = CSVReader.open(Source.fromURL(getClass.getClassLoader.getResource("code-lists/customs-offices.csv"), "UTF-8"))
-    val codes: List[Map[String, String]] = reader.allWithHeaders()
-
-    codes.map(row => CustomsOffice(row("Code"), row("Description"))).sortBy(_.description)
-  }
+  def all(implicit messages: Messages): List[OfficeOfExit] =
+    codeListConnector.getOfficeOfExits(messages.lang.toLocale).values.toList.sortBy(_.description)
 }
