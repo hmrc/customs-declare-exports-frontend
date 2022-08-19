@@ -14,11 +14,13 @@
  * limitations under the License.
  *@
 
+@import config.AppConfig
 @import views.helpers.Title
 @import views.html.components.gds._
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 
 @this(
+    appConfig: AppConfig,
     govukLayout: gdsMainTemplate,
     pageTitle: pageTitle,
     paragraphBody: paragraphBody,
@@ -30,14 +32,7 @@
 @cdsCompletionGuide = @{
     externalLink(
         text = "CDS data element completion guide (opens in new tab)",
-        url = "https://www.gov.uk/government/publications/uk-trade-tariff-cds-volume-3-export-declaration-completion-guide"
-    )
-}
-
-@cdsCompletionGuide1 = @{
-    externalLink(
-        text = "may only be declared at header level where (opens in new tab)",
-        url = "https://www.gov.uk/government/publications/uk-trade-tariff-cds-volume-3-export-declaration-completion-guide"
+        url = appConfig.guidance.cdsTariffCompletionGuide
     )
 }
 
@@ -564,7 +559,10 @@
             <td class="govuk-table__cell">
             <p><strong>The same data element has been completed twice</strong></p>
 
-            <p>Data elements @cdsCompletionGuide1 the information applies equally
+            <p>Data elements @externalLink(
+                text = "may only be declared at header level where (opens in new tab)",
+                url = appConfig.guidance.cdsTariffCompletionGuide
+                ) the information applies equally
             to all goods items. Otherwise it should only be completed for each individual
             goods item. For example, previous document or container ID can be entered at
             header level or item level, but if you use both header and item level you may
