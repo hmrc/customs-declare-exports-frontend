@@ -33,7 +33,7 @@
     pageTitle: pageTitle,
     paragraphBody: paragraphBody,
     insetText: exportsInsetText,
-    link: link,
+    externalLink: externalLink,
     saveButtons: saveButtons,
     tariffExpander: tariffExpander,
     formHelper: FormWithCSRF,
@@ -79,15 +79,13 @@
 
         @if(version == 3 || version == 5) {
           @insetText(content = HtmlContent(HtmlFormat.fill(List(
-              paragraphBody(messages("declaration.locationOfGoods.inset.v3.body1", link(
-                  messages("declaration.locationOfGoods.inset.v3.body1.link"),
-                  Call("GET", appConfig.getGoodsMovementReference),
-                  Some("_blank")
+              paragraphBody(messages("declaration.locationOfGoods.inset.v3.body1", externalLink(
+                  text = messages("declaration.locationOfGoods.inset.v3.body1.link"),
+                  url = appConfig.getGoodsMovementReference
               ))),
-              paragraphBody(messages("declaration.locationOfGoods.inset.v3.body2", link(
-                  messages("declaration.locationOfGoods.inset.v3.body2.link"),
-                  Call("GET", appConfig.guidance.january2022locations),
-                  Some("_blank")
+              paragraphBody(messages("declaration.locationOfGoods.inset.v3.body2", externalLink(
+                  text = messages("declaration.locationOfGoods.inset.v3.body2.link"),
+                  url = appConfig.guidance.january2022locations
               )))
           ))))
         }

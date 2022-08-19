@@ -22,11 +22,11 @@
 @import views.html.components.gds._
 
 @this(
-  govukLayout: gdsMainTemplate,
-  pageTitle: pageTitle,
-  formHelper: FormWithCSRF,
-  link: link,
-  appConfig: AppConfig
+    govukLayout: gdsMainTemplate,
+    pageTitle: pageTitle,
+    formHelper: FormWithCSRF,
+    externalLink: externalLink,
+    appConfig: AppConfig
 )
 
 @()(implicit request: Request[_], messages: Messages)
@@ -41,11 +41,17 @@
 @pageTitle(messages("notDeclarent.title"))
 
 <p class="govuk-body">
-  @Html(messages("notDeclarent.paragraph1", link(text = messages("notDeclarent.paragraph1Link"), call = Call("GET", controllers.routes.RootController.displayPage.url))))
+    @Html(messages("notDeclarent.paragraph1", externalLink(
+        text = messages("notDeclarent.paragraph1Link"),
+        url = controllers.routes.RootController.displayPage.url
+    )))
 </p>
 
 <p class="govuk-body">
-  @Html(messages("notDeclarent.paragraph2", link(text = messages("notDeclarent.paragraph2Link"), call = Call("GET", appConfig.notDeclarantEoriContactTeamUrl))))
+    @Html(messages("notDeclarent.paragraph2", externalLink(
+        text = messages("notDeclarent.paragraph2Link"),
+        url = appConfig.notDeclarantEoriContactTeamUrl
+    )))
 </p>
 
 <h2 class="govuk-heading-m">@messages("notDeclarent.referenceTitle")</h2>
@@ -55,6 +61,9 @@
 </p>
 
 <p class="govuk-body">
-    @link(text = messages("general.inquiries.help.link"), call = Call("GET", appConfig.generalEnquiriesHelpUrl), target = Some("_blank"))
+    @externalLink(
+        text = messages("general.inquiries.help.link"),
+        url = appConfig.generalEnquiriesHelpUrl
+    )
 </p>
 }

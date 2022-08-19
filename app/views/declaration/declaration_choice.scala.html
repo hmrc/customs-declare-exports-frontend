@@ -34,7 +34,7 @@
     errorSummary: errorSummary,
     insetText: exportsInsetText,
     paragraphBody: paragraphBody,
-    link: link,
+    externalLink: externalLink,
     saveAndContinue: saveAndContinue,
     formHelper: FormWithCSRF,
     appConfig: AppConfig
@@ -54,26 +54,23 @@
 }
 
 @insetLink = @{
-    link(
+    externalLink(
         text = messages("declaration.type.insetText.linkText"),
-        call = Call("GET", appConfig.declareGoodsExported),
-        target = Some("_blank")
+        url = appConfig.declareGoodsExported
     )
 }
 
 @detailsLink1 = @{
-    link(
+    externalLink(
         text = messages("declaration.type.details.p1.linkText"),
-        call = Call("GET", appConfig.additionalDeclarationType),
-        target = Some("_blank")
+        url = appConfig.additionalDeclarationType
     )
 }
 
 @detailsLink2 = @{
-    link(
+    externalLink(
         text = messages("declaration.type.details.p2.linkText"),
-        call = Call("GET", appConfig.simplifiedDeclarationOccasionalUse),
-        target = Some("_blank")
+        url = appConfig.simplifiedDeclarationOccasionalUse
     )
 }
 

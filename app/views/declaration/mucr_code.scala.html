@@ -30,7 +30,7 @@
     exportsInputText: exportsInputText,
     heading: heading,
     body: paragraphBody,
-    link: link,
+    externalLink: externalLink,
     tariffExpander: tariffExpander,
     saveButtons: saveButtons,
     formHelper: FormWithCSRF,
@@ -54,7 +54,11 @@
 
         @heading(messages("declaration.mucr.title"))
 
-        @body(messages("declaration.mucr.paragraph", link(text = messages("declaration.mucr.paragraph.link"), call = Call("GET", appConfig.notesForMucrConsolidationUrl), target = Some("_blank"))))
+        @body(
+            messages("declaration.mucr.paragraph", externalLink(
+                text = messages("declaration.mucr.paragraph.link"),
+                url = appConfig.notesForMucrConsolidationUrl
+        )))
 
         @exportsInputText(
             field = form(Mucr.MUCR),

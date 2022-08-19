@@ -30,7 +30,7 @@
     govukLayout: gdsMainTemplate,
     errorSummary: errorSummary,
     sectionHeader: sectionHeader,
-    link: link,
+    externalLink: externalLink,
     heading: heading,
     body: paragraphBody,
     group_address: group_address,
@@ -47,10 +47,9 @@
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
 @hintLink = {
-    @link(
+    @externalLink(
         text = messages("declaration.carrierAddress.body.2.link"),
-        call = Call("GET", appConfig.companyInformationRegister),
-        target = Some("_blank")
+        url = appConfig.companyInformationRegister
     )
 }
 

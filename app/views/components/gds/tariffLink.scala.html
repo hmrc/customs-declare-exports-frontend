@@ -16,8 +16,8 @@
 
 @import views.html.components.gds.link
 
-@this(link: link)
+@this(link: externalLink)
 
 @(linkText: String, linkUrl: String)
 
-@link(text = linkText, call = Call("GET", linkUrl), target = Some("_blank"))
+@link(text = linkText, url = linkUrl)

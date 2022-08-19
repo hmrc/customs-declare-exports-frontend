@@ -24,7 +24,7 @@
         govukLayout: gdsMainTemplate,
         pageTitle: pageTitle,
         formHelper: FormWithCSRF,
-        link: link
+        externalLink: externalLink
 )
 
 @()(implicit request: Request[_], messages: Messages)
@@ -32,7 +32,10 @@
 @descriptionLink = {<a href="https://www.gov.uk/guidance/dispatching-your-goods-within-the-eu" class="govuk-link">@messages("notEligible.descriptionLink")</a>}
 @supportPhone = {<b>0300 200 3700</b>}
 @enquiriesLink = {
-  @link(text = messages("general.inquiries.help.link"), call = Call("GET", "https://www.gov.uk/government/organisations/hm-revenue-customs/contact/customs-international-trade-and-excise-enquiries"), target = Some("_blank"))
+    @externalLink(
+        text = messages("general.inquiries.help.link"),
+        url = "https://www.gov.uk/government/organisations/hm-revenue-customs/contact/customs-international-trade-and-excise-enquiries"
+    )
 }
 
 @govukLayout(

@@ -32,7 +32,7 @@
     errorSummary: errorSummary,
     sectionHeader: sectionHeader,
     paragraphBody: paragraphBody,
-    link: link,
+    externalLink: externalLink,
     heading: heading,
     bulletList: bulletList,
     insetText: exportsInsetText,
@@ -60,9 +60,10 @@
     @paragraphBody(messages("declaration.statisticalValue.inset.text.1"))
 
     @paragraphBody(messages(
-        "declaration.statisticalValue.inset.text.2",
-        link(messages("declaration.statisticalValue.inset.text.2.link"), Call("GET", appConfig.hmrcExchangeRatesFor2021), Some("_blank"))
-    ))
+        "declaration.statisticalValue.inset.text.2", externalLink(
+            text = messages("declaration.statisticalValue.inset.text.2.link"),
+            url = appConfig.hmrcExchangeRatesFor2021
+    )))
 }
 
 @govukLayout(

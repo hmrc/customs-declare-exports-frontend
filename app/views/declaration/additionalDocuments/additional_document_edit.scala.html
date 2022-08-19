@@ -41,7 +41,7 @@
     paragraphBody: paragraphBody,
     tariffExpander: tariffExpander,
     saveButtons: saveButtons,
-    link: link,
+    externalLink: externalLink,
     appConfig: AppConfig
 )
 
@@ -64,10 +64,9 @@
 @measurementUnitAndQualifierContent = {
     <p class="govuk-body" id="documentWriteOff-text">
         @Html(messages("declaration.additionalDocument.measurementUnit.text",
-            link(
+            externalLink(
                 text = messages("declaration.additionalDocument.measurementUnit.link.text"),
-                call = Call("GET", appConfig.additionalDocumentsUnitCodes),
-                target = Some("_blank")
+                url = appConfig.additionalDocumentsUnitCodes
             )
         ))
     </p>

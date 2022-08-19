@@ -22,7 +22,7 @@
     govukLayout: gdsMainTemplate,
     pageTitle: pageTitle,
     paragraphBody: paragraphBody,
-    link: link,
+    externalLink: externalLink,
     bulletList: bulletList,
     config: ExternalServicesConfig
 )
@@ -33,11 +33,10 @@
     @pageTitle(messages("unauthorised.tdr.heading"))
 
     @paragraphBody(messages("unauthorised.tdr.body",
-        link(
+        externalLink(
             id = Some("contact_support_link"),
             text = messages("unauthorised.tdr.body.link"),
-            call = Call("GET", s"mailto:${messages("unauthorised.tdr.body.link")}"),
-            target = Some("_blank")
+            url = s"mailto:${messages("unauthorised.tdr.body.link")}"
         ))
     )
 }

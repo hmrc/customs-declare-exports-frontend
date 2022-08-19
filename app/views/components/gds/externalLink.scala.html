@@ -14,14 +14,14 @@
  * limitations under the License.
  *@
 
-@this()
+@this(link: link)
 
 @(
-  text: String,
-  url: String,
-  id: Option[String] = None,
-  classes: Option[String] = None,
-  textHidden: Option[String] = None
+    text: String,
+    url: String,
+    id: Option[String] = None,
+    classes: Option[String] = None,
+    textHidden: Option[String] = None
 )
 
-link(id = id, text = text, call = Call("GET", url), target = Some("_blank"), textHidden)
+@link(id = id, text = text, call = Call("GET", url), target = Some("_blank"), textHidden = textHidden)

@@ -33,6 +33,7 @@
   timeline: timeline,
   timelineEvents: TimelineEvents,
   link: link,
+  externalLink: externalLink,
   paragraph: paragraphBody,
   bulletList: bulletList,
   govukDetails : GovukDetails,
@@ -56,11 +57,10 @@
 @uploadingDocumentsLink = {
     @mrnIfAccepted(submission).map { mrn =>
         <p>
-            @link(
+            @externalLink(
                 id = Some("uploading-documents-link"),
                 text = messages("submissions.uploading.documents"),
-                call = controllers.routes.FileUploadController.startFileUpload(mrn),
-                target = Some("_blank")
+                url = controllers.routes.FileUploadController.startFileUpload(mrn).url
             )
         </p>
     }
