@@ -96,7 +96,7 @@ class AdditionalDocumentHelper @Inject() (
 
   def documentIdentifierHint(itemId: String)(implicit messages: Messages, request: JourneyRequest[_]): Option[String] = {
     val authorisationTypeCodes =
-      request.cacheModel.parties.declarationHoldersData.fold(Seq.empty[String])(_.holders.map(_.authorisationTypeCode).flatten)
+      request.cacheModel.parties.declarationHoldersData.fold(Seq.empty[String])(_.holders.flatMap(_.authorisationTypeCode))
     constructHintText(authorisationTypeCodes)
   }
 
