@@ -25,6 +25,7 @@
     govukLayout: gdsMainTemplate,
     pageTitle: pageTitle,
     formHelper: FormWithCSRF,
+    link: link,
     externalLink: externalLink,
     appConfig: AppConfig
 )
@@ -41,17 +42,11 @@
 @pageTitle(messages("notDeclarent.title"))
 
 <p class="govuk-body">
-    @Html(messages("notDeclarent.paragraph1", externalLink(
-        text = messages("notDeclarent.paragraph1Link"),
-        url = controllers.routes.RootController.displayPage.url
-    )))
+  @Html(messages("notDeclarent.paragraph1", link(text = messages("notDeclarent.paragraph1Link"), call = Call("GET", controllers.routes.RootController.displayPage.url))))
 </p>
 
 <p class="govuk-body">
-    @Html(messages("notDeclarent.paragraph2", externalLink(
-        text = messages("notDeclarent.paragraph2Link"),
-        url = appConfig.notDeclarantEoriContactTeamUrl
-    )))
+  @Html(messages("notDeclarent.paragraph2", link(text = messages("notDeclarent.paragraph2Link"), call = Call("GET", appConfig.notDeclarantEoriContactTeamUrl))))
 </p>
 
 <h2 class="govuk-heading-m">@messages("notDeclarent.referenceTitle")</h2>
