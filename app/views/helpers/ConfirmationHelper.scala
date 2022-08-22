@@ -20,8 +20,6 @@ import config.AppConfig
 import controllers.routes.{DeclarationDetailsController, FileUploadController, SubmissionsController}
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.from
-
-import javax.inject.{Inject, Singleton}
 import models.declaration.submissions.EnhancedStatus._
 import models.declaration.submissions.Submission
 import play.api.i18n.Messages
@@ -33,7 +31,9 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.panel.Panel
 import uk.gov.hmrc.govukfrontend.views.viewmodels.warningtext.WarningText
 import views.helpers.ViewDates.formatTimeDate
 import views.html.components.exit_survey
-import views.html.components.gds.{heading, externalLink, link, pageTitle, paragraphBody}
+import views.html.components.gds._
+
+import javax.inject.{Inject, Singleton}
 
 case class Confirmation(email: String, declarationType: String, submission: Option[Submission])
 
