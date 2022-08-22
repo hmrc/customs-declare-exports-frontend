@@ -32,7 +32,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.details.Details
 import uk.gov.hmrc.govukfrontend.views.viewmodels.insettext.InsetText
 import views.helpers.DeclarationHolderEditHelper._
-import views.html.components.gds.{bulletList, link, numberedList, paragraphBody}
+import views.html.components.gds.{bulletList, externalLink, numberedList, paragraphBody}
 
 import javax.inject.{Inject, Singleton}
 
@@ -41,8 +41,7 @@ class DeclarationHolderEditHelper @Inject() (
   bulletList: bulletList,
   govukDetails: GovukDetails,
   govukInsetText: GovukInsetText,
-  govukWarningText: GovukWarningText,
-  link: link,
+  externalLink: externalLink,
   numberedList: numberedList,
   paragraphBody: paragraphBody
 ) {
@@ -114,14 +113,10 @@ class DeclarationHolderEditHelper @Inject() (
   }
 
   private def insetTextForExciseRemovals(appConfig: AppConfig)(implicit messages: Messages): Option[Html] = {
-    val call1 = Call("GET", appConfig.permanentExportOrDispatch.authHolder)
-    val link1 = link(messages(s"$prefix.authCode.inset.excise.bullet1.link"), call1, Some("_blank"))
 
-    val call2 = Call("GET", appConfig.permanentExportOrDispatch.conditions)
-    val link2 = link(messages(s"$prefix.authCode.inset.excise.bullet2.link"), call2, Some("_blank"))
-
-    val call3 = Call("GET", appConfig.permanentExportOrDispatch.documents)
-    val link3 = link(messages(s"$prefix.authCode.inset.excise.bullet3.link"), call3, Some("_blank"))
+    val link1 = externalLink(messages(s"$prefix.authCode.inset.excise.bullet1.link"), appConfig.permanentExportOrDispatch.authHolder)
+    val link2 = externalLink(messages(s"$prefix.authCode.inset.excise.bullet2.link"), appConfig.permanentExportOrDispatch.conditions)
+    val link3 = externalLink(messages(s"$prefix.authCode.inset.excise.bullet3.link"), appConfig.permanentExportOrDispatch.documents)
 
     insetText(
       bulletList(
@@ -136,8 +131,8 @@ class DeclarationHolderEditHelper @Inject() (
   }
 
   private def insetTextForNonStandardProcedures(appConfig: AppConfig)(implicit messages: Messages): Option[Html] = {
-    val call1 = Call("GET", appConfig.previousProcedureCodes)
-    val link1 = link(messages(s"$prefix.authCode.inset.special.bullet1.link"), call1, Some("_blank"))
+
+    val link1 = externalLink(messages(s"$prefix.authCode.inset.special.bullet1.link"), appConfig.previousProcedureCodes)
 
     insetText(
       numberedList(
@@ -156,12 +151,7 @@ class DeclarationHolderEditHelper @Inject() (
     List(messages(s"$prefix.$key"))
 
   private def messagesWithLinkFor1007(appConfig: AppConfig, key: String)(implicit messages: Messages): List[String] =
-    List(
-      messages(
-        s"$prefix.body.$key.1007",
-        link(messages(s"$prefix.body.1007.link"), Call("GET", appConfig.permanentExportOrDispatch.section), Some("_blank"))
-      )
-    )
+    List(messages(s"$prefix.body.$key.1007", externalLink(messages(s"$prefix.body.1007.link"), appConfig.permanentExportOrDispatch.section)))
 
   private val eoriKey = s"$prefix.eori"
 

@@ -31,7 +31,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.details.Details
 import uk.gov.hmrc.govukfrontend.views.viewmodels.insettext.InsetText
 import views.helpers.AdditionalDocumentHelper.{authCodesNeedingSpecificHintText, prefix, versionSelection}
 import views.helpers.CommodityCodeHelper.commodityCodeOfItem
-import views.html.components.gds.{bulletList, link, paragraphBody}
+import views.html.components.gds.{bulletList, externalLink, paragraphBody}
 
 import javax.inject.{Inject, Singleton}
 
@@ -42,7 +42,7 @@ class AdditionalDocumentHelper @Inject() (
   govukDetails: GovukDetails,
   insetText: GovukInsetText,
   bulletList: bulletList,
-  link: link,
+  externalLink: externalLink,
   paragraph: paragraphBody
 ) {
   def body(itemId: String)(implicit messages: Messages, request: JourneyRequest[_]): Html =
@@ -73,8 +73,8 @@ class AdditionalDocumentHelper @Inject() (
     s"$prefix.v${versionSelection(itemId)}.code.hint"
 
   def documentCodeExpander(implicit messages: Messages): Html = {
-    val link1 = link(messages(s"$prefix.code.expander.body.1.link"), Call("GET", appConfig.additionalDocumentsUnionCodes), Some("_blank"))
-    val link2 = link(messages(s"$prefix.code.expander.body.2.link"), Call("GET", appConfig.additionalDocumentsReferenceCodes), Some("_blank"))
+    val link1 = externalLink(messages(s"$prefix.code.expander.body.1.link"), appConfig.additionalDocumentsUnionCodes)
+    val link2 = externalLink(messages(s"$prefix.code.expander.body.2.link"), appConfig.additionalDocumentsReferenceCodes)
 
     val content = List(
       paragraph(messages(s"$prefix.code.expander.body.1", link1)),
@@ -155,21 +155,16 @@ class AdditionalDocumentHelper @Inject() (
         paragraph(
           messages(
             s"$prefix.expander.body.1.withoutCommodityCode",
-            link(
-              text = messages(s"$prefix.expander.body.1.withoutCommodityCode.link"),
-              call = Call("GET", appConfig.tradeTariffSections),
-              target = Some("_blank")
-            )
+            externalLink(text = messages(s"$prefix.expander.body.1.withoutCommodityCode.link"), url = appConfig.tradeTariffSections)
           )
         )
       } { commodityCode =>
         paragraph(
           messages(
             s"$prefix.expander.body.1.withCommodityCode",
-            link(
+            externalLink(
               text = messages(s"$prefix.expander.body.1.withCommodityCode.link", commodityCode.codeAsShown),
-              call = Call("GET", appConfig.commodityCodeTariffPageUrl.replace(CommodityDetails.placeholder, commodityCode.codeAsRef)),
-              target = Some("_blank")
+              url = appConfig.commodityCodeTariffPageUrl.replace(CommodityDetails.placeholder, commodityCode.codeAsRef)
             )
           )
         )
@@ -178,21 +173,14 @@ class AdditionalDocumentHelper @Inject() (
       paragraph(
         messages(
           s"$prefix.expander.body.3",
-          link(
-            text = messages(s"$prefix.expander.body.3.link"),
-            call = Call("GET", appConfig.additionalDocumentsLicenceTypes),
-            target = Some("_blank")
-          )
+          externalLink(text = messages(s"$prefix.expander.body.3.link"), url = appConfig.additionalDocumentsLicenceTypes)
         )
       )
     )
 
   private def topExpanderLastParagraph(implicit messages: Messages): Html =
     paragraph(
-      messages(
-        s"$prefix.expander.body.4",
-        link(messages(s"$prefix.expander.body.4.link"), Call("GET", appConfig.guidance.commodityCode0306310010), Some("_blank"))
-      )
+      messages(s"$prefix.expander.body.4", externalLink(messages(s"$prefix.expander.body.4.link"), appConfig.guidance.commodityCode0306310010))
     )
 }
 

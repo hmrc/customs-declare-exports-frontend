@@ -33,7 +33,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.panel.Panel
 import uk.gov.hmrc.govukfrontend.views.viewmodels.warningtext.WarningText
 import views.helpers.ViewDates.formatTimeDate
 import views.html.components.exit_survey
-import views.html.components.gds.{heading, link, pageTitle, paragraphBody}
+import views.html.components.gds.{heading, externalLink, link, pageTitle, paragraphBody}
 
 case class Confirmation(email: String, declarationType: String, submission: Option[Submission])
 
@@ -45,6 +45,7 @@ class ConfirmationHelper @Inject() (
   govukWarningText: GovukWarningText,
   heading: heading,
   link: link,
+  externalLink: externalLink,
   pageTitle: pageTitle,
   paragraph: paragraphBody
 ) {
@@ -183,7 +184,7 @@ class ConfirmationHelper @Inject() (
     val paragraph2 = paragraph(
       messages(
         "declaration.confirmation.whatYouCanDoNow.paragraph.2",
-        link(messages("declaration.confirmation.whatYouCanDoNow.paragraph.2.link"), FileUploadController.startFileUpload(mrn), Some("_blank"))
+        externalLink(messages("declaration.confirmation.whatYouCanDoNow.paragraph.2.link"), FileUploadController.startFileUpload(mrn).url)
       )
     )
 

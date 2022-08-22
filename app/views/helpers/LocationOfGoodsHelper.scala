@@ -28,7 +28,7 @@ import uk.gov.hmrc.govukfrontend.views.html.components.{GovukDetails, GovukHint}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.details.Details
 import uk.gov.hmrc.govukfrontend.views.viewmodels.hint.Hint
-import views.html.components.gds.{bulletList, heading, link, paragraphBody, row}
+import views.html.components.gds.{bulletList, externalLink, heading, link, paragraphBody, row}
 
 import javax.inject.{Inject, Singleton}
 
@@ -38,6 +38,7 @@ class LocationOfGoodsHelper @Inject() (
   govukHint: GovukHint,
   bulletList: bulletList,
   heading: heading,
+  externalLink: externalLink,
   link: link,
   body: paragraphBody,
   row: row,
@@ -54,7 +55,7 @@ class LocationOfGoodsHelper @Inject() (
 
         List(
           messages(s"$prefix.body.v2.1"),
-          messages(s"$prefix.body.v2.2", link(linkText2, Call("GET", appConfig.locationCodesForCsePremises), Some("_blank"))),
+          messages(s"$prefix.body.v2.2", externalLink(linkText2, appConfig.locationCodesForCsePremises)),
           messages(s"$prefix.body.v2.3", link(email, Call("GET", s"mailto:$email?subject=$subject")))
         ).map(body(_))
 
@@ -79,9 +80,9 @@ class LocationOfGoodsHelper @Inject() (
         List(
           body(messages(s"$prefix.body.v4.1")),
           body(messages(s"$prefix.body.v4.1.1")),
-          body(messages(s"$prefix.body.v4.2", link(linkText2, Call("GET", appConfig.previousProcedureCodes), Some("_blank")))),
+          body(messages(s"$prefix.body.v4.2", externalLink(linkText2, appConfig.previousProcedureCodes))),
           body(messages(s"$prefix.body.v4.3.label"), "govuk-heading-s"),
-          body(messages(s"$prefix.body.v4.3", link(linkText3, Call("GET", appConfig.locationCodesForPortsUsingGVMS), Some("_blank"))))
+          body(messages(s"$prefix.body.v4.3", externalLink(linkText3, appConfig.locationCodesForPortsUsingGVMS)))
         )
 
       // version 1
@@ -138,10 +139,10 @@ class LocationOfGoodsHelper @Inject() (
     (1 to 10).flatMap { ix =>
       val title = if (ix <= 9) Some(heading(text(s"$ix.title"), titleClasses, "h2")) else None
       val hint =
-        if (ix <= 8) row(link(text(s"$ix.link1"), Call("GET", expanderLinks(ix)._1), Some("_blank")), classes = "")
+        if (ix <= 8) row(externalLink(text(s"$ix.link1"), expanderLinks(ix)._1), classes = "")
         else {
-          val link1 = link(text(s"$ix.link1"), Call("GET", expanderLinks(ix)._1), Some("_blank"))
-          val link2 = link(text(s"$ix.link2"), Call("GET", expanderLinks(ix)._2), Some("_blank"))
+          val link1 = externalLink(text(s"$ix.link1"), expanderLinks(ix)._1)
+          val link2 = externalLink(text(s"$ix.link2"), expanderLinks(ix)._2)
           govukHint(Hint(content = HtmlContent(text(s"$ix.text", link1, link2))))
         }
 

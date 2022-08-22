@@ -23,12 +23,17 @@ import play.api.mvc.Call
 import play.api.i18n.Messages
 import play.twirl.api.Html
 import uk.gov.hmrc.govukfrontend.views.Aliases.HtmlContent
-import views.html.components.gds.{exportsInsetText, link, paragraphBody}
+import views.html.components.gds.{exportsInsetText, externalLink, paragraphBody}
 
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class AdditionalInformationRequiredHelper @Inject() (appConfig: AppConfig, paragraphBody: paragraphBody, insetText: exportsInsetText, link: link) {
+class AdditionalInformationRequiredHelper @Inject() (
+  appConfig: AppConfig,
+  paragraphBody: paragraphBody,
+  insetText: exportsInsetText,
+  externalLink: externalLink
+) {
   def getBodyContent(decType: DeclarationType, mayBeProcedureCode: Option[ProcedureCodesData])(implicit messages: Messages): Html =
     (decType, mayBeProcedureCode.flatMap(_.procedureCode)) match {
       case (CLEARANCE, _)                => getBodyContentForClearanceOr1040()
@@ -40,11 +45,10 @@ class AdditionalInformationRequiredHelper @Inject() (appConfig: AppConfig, parag
     val para1 = paragraphBody(
       messages(
         "declaration.additionalInformationRequired.clearanceOr1040.para1",
-        link(
+        externalLink(
           id = Some("ai_containers_link"),
           text = messages("declaration.additionalInformationRequired.clearanceOr1040.para1.link"),
-          call = Call("GET", appConfig.guidance.aiCodesForContainers),
-          target = Some("_blank")
+          url = appConfig.guidance.aiCodesForContainers
         )
       )
     )
@@ -52,11 +56,10 @@ class AdditionalInformationRequiredHelper @Inject() (appConfig: AppConfig, parag
     val para2 = paragraphBody(
       messages(
         "declaration.additionalInformationRequired.clearanceOr1040.para2",
-        link(
+        externalLink(
           id = Some("ai_codes_link"),
           text = messages("declaration.additionalInformationRequired.clearanceOr1040.para2.link"),
-          call = Call("GET", appConfig.guidance.aiCodes),
-          target = Some("_blank")
+          url = appConfig.guidance.aiCodes
         )
       )
     )
@@ -74,11 +77,10 @@ class AdditionalInformationRequiredHelper @Inject() (appConfig: AppConfig, parag
       messages(
         "declaration.additionalInformationRequired.not1040.inset.para1",
         procedureCode,
-        link(
+        externalLink(
           id = Some("proc_codes_link"),
           text = messages("declaration.additionalInformationRequired.not1040.inset.para1.link"),
-          call = Call("GET", appConfig.previousProcedureCodes),
-          target = Some("_blank")
+          url = appConfig.previousProcedureCodes
         )
       )
     )
@@ -86,11 +88,10 @@ class AdditionalInformationRequiredHelper @Inject() (appConfig: AppConfig, parag
     val insetPara2 = paragraphBody(
       messages(
         "declaration.additionalInformationRequired.not1040.inset.para2",
-        link(
+        externalLink(
           id = Some("ai_codes_link"),
           text = messages("declaration.additionalInformationRequired.not1040.inset.para2.link"),
-          call = Call("GET", appConfig.guidance.aiCodes),
-          target = Some("_blank")
+          url = appConfig.guidance.aiCodes
         )
       )
     )
