@@ -17,6 +17,12 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
+import controllers.declaration.routes.{
+  ItemsSummaryController,
+  ProcedureCodesController,
+  TransportLeavingTheBorderController,
+  WarehouseIdentificationController
+}
 import controllers.helpers.{FormAction, SaveAndReturn, SupervisingCustomsOfficeHelper}
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
@@ -55,23 +61,19 @@ class ItemsSummaryController @Inject() (
 
   def displayAddItemPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     if (request.cacheModel.items.isEmpty) Ok(addItemPage(mode))
-    else navigator.continueTo(mode, routes.ItemsSummaryController.displayItemsSummaryPage, mode.isErrorFix)
+    else navigator.continueTo(mode, ItemsSummaryController.displayItemsSummaryPage)
   }
 
   def addFirstItem(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    val actionTypeOpt = FormAction.bindFromRequest
-
-    actionTypeOpt match {
-      case SaveAndReturn => Future.successful(navigator.continueTo(mode, routes.ItemsSummaryController.displayAddItemPage))
-      case _ =>
-        createNewItemInCache
-          .map(newItem => navigator.continueTo(mode, routes.ProcedureCodesController.displayPage(_, newItem.id)))
+    FormAction.bindFromRequest match {
+      case SaveAndReturn => Future.successful(navigator.continueTo(mode, ItemsSummaryController.displayAddItemPage))
+      case _             => createNewItemInCache.map(itemId => navigator.continueTo(mode, ProcedureCodesController.displayPage(_, itemId)))
     }
   }
 
   def displayItemsSummaryPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     removeEmptyItems.map { declaration =>
-      if (declaration.items.isEmpty) navigator.continueTo(mode, routes.ItemsSummaryController.displayAddItemPage)
+      if (declaration.items.isEmpty) navigator.continueTo(mode, ItemsSummaryController.displayAddItemPage)
       else Ok(itemsSummaryPage(mode, itemSummaryForm, declaration.items.toList))
     }
   }
@@ -86,8 +88,7 @@ class ItemsSummaryController @Inject() (
         validYesNo =>
           validYesNo.answer match {
             case YesNoAnswers.yes =>
-              createNewItemInCache
-                .map(newItem => navigator.continueTo(mode, routes.ProcedureCodesController.displayPage(_, newItem.id)))
+              createNewItemInCache.map(itemId => navigator.continueTo(mode, ProcedureCodesController.displayPage(_, itemId)))
 
             case YesNoAnswers.no if incorrectItems.nonEmpty =>
               Future.successful(BadRequest(itemsSummaryPage(mode, itemSummaryForm.fill(validYesNo), request.cacheModel.items.toList, incorrectItems)))
@@ -100,26 +101,24 @@ class ItemsSummaryController @Inject() (
 
   private def nextPage(implicit request: JourneyRequest[AnyContent]): Mode => Call =
     request.declarationType match {
-      case SUPPLEMENTARY | STANDARD | CLEARANCE => routes.TransportLeavingTheBorderController.displayPage
+      case SUPPLEMENTARY | STANDARD | CLEARANCE => TransportLeavingTheBorderController.displayPage
 
       case SIMPLIFIED | OCCASIONAL =>
-        if (request.cacheModel.requiresWarehouseId) routes.WarehouseIdentificationController.displayPage
+        if (request.cacheModel.requiresWarehouseId) WarehouseIdentificationController.displayPage
         else supervisingCustomsOfficeHelper.landOnOrSkipToNextPage(request.cacheModel)
     }
 
   private def buildIncorrectItemsErrors(request: JourneyRequest[AnyContent]): Seq[FormError] =
-    request.cacheModel.items.zipWithIndex.filterNot { case (item, _) => item.isCompleted(request.declarationType) }.map { case (item, index) =>
+    request.cacheModel.items.zipWithIndex.filterNot { case (item, _) =>
+      item.isCompleted(request.declarationType)
+    }.map { case (item, index) =>
       FormError("item_" + index, "declaration.itemsSummary.item.incorrect", Seq(item.sequenceId.toString))
     }
 
-  private def createNewItemInCache(implicit request: JourneyRequest[AnyContent]): Future[ExportItem] = {
+  private def createNewItemInCache(implicit request: JourneyRequest[AnyContent]): Future[String] = {
     val newItem = ExportItem(id = exportItemIdGeneratorService.generateItemId())
-    exportsCacheService
-      .update(
-        request.cacheModel
-          .copy(items = request.cacheModel.items :+ newItem.copy(sequenceId = request.cacheModel.items.size + 1))
-      )
-      .map(_ => newItem)
+    val items = request.cacheModel.items :+ newItem.copy(sequenceId = request.cacheModel.items.size + 1)
+    exportsCacheService.update(request.cacheModel.copy(items = items)).map(_ => newItem.id)
   }
 
   private def removeEmptyItems(implicit request: JourneyRequest[AnyContent]): Future[ExportsDeclaration] = {
@@ -130,7 +129,7 @@ class ItemsSummaryController @Inject() (
   def displayRemoveItemConfirmationPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.itemBy(itemId) match {
       case Some(item) => Ok(removeItemPage(mode, removeItemForm, item))
-      case None       => navigator.continueTo(mode, routes.ItemsSummaryController.displayItemsSummaryPage)
+      case None       => navigator.continueTo(mode, ItemsSummaryController.displayItemsSummaryPage)
     }
   }
 
@@ -144,10 +143,10 @@ class ItemsSummaryController @Inject() (
           }),
         _.answer match {
           case YesNoAnswers.yes =>
-            removeItemFromCache(itemId).map(_ => navigator.continueTo(mode, routes.ItemsSummaryController.displayItemsSummaryPage))
+            removeItemFromCache(itemId).map(_ => navigator.continueTo(mode, ItemsSummaryController.displayItemsSummaryPage))
 
           case YesNoAnswers.no =>
-            Future.successful(navigator.continueTo(mode, routes.ItemsSummaryController.displayItemsSummaryPage))
+            Future.successful(navigator.continueTo(mode, ItemsSummaryController.displayItemsSummaryPage))
         }
       )
   }

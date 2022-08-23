@@ -25,13 +25,14 @@ import forms.declaration.AdditionalInformationSummary
 import forms.declaration.carrier.CarrierDetails
 import mock.FeatureFlagMocks
 import models.requests.{ExportsSessionKeys, JourneyRequest}
+import models.responses.FlashKeys
 import models.{DeclarationType, ExportsDeclaration, Mode, SignedInUser}
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.BDDMockito._
 import org.mockito.Mockito.{reset, verify, verifyNoInteractions, when}
 import org.scalatest.concurrent.ScalaFutures
-import play.api.mvc.{AnyContent, Call, Result}
+import play.api.mvc.{AnyContent, AnyContentAsFormUrlEncoded, Call, Flash, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.TariffApiService
@@ -50,7 +51,8 @@ class NavigatorSpec
     with ScalaFutures with FeatureFlagMocks {
 
   private val mode = Mode.Normal
-  private val call: Mode => Call = _ => Call("GET", "url")
+  private val url = "url"
+  private val call: Mode => Call = _ => Call("GET", url)
   private val config = mock[AppConfig]
   private val auditService = mock[AuditService]
   private val hc: HeaderCarrier = mock[HeaderCarrier]
@@ -74,7 +76,7 @@ class NavigatorSpec
   private def decoratedRequest(sourceRequest: FakeRequest[AnyContent])(implicit declaration: ExportsDeclaration) =
     new JourneyRequest[AnyContent](buildVerifiedEmailRequest(sourceRequest, mock[SignedInUser]), declaration)
 
-  private def requestWithFormAction(action: Option[FormAction]) =
+  private def requestWithFormAction(action: Option[FormAction]): FakeRequest[AnyContentAsFormUrlEncoded] =
     FakeRequest("GET", "uri")
       .withFormUrlEncodedBody(action.getOrElse("other-field").toString -> "")
       .withSession(ExportsSessionKeys.declarationId -> existingDeclarationId)
@@ -101,7 +103,7 @@ class NavigatorSpec
         val result = navigator.continueTo(mode, call(_))(decoratedRequest(requestWithFormAction(Some(SaveAndContinue))), hc)
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some("url")
+        redirectLocation(result) mustBe Some(url)
         verifyNoInteractions(auditService)
       }
 
@@ -109,7 +111,7 @@ class NavigatorSpec
         val result = navigator.continueTo(mode, call(_))(decoratedRequest(requestWithFormAction(Some(Add))), hc)
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some("url")
+        redirectLocation(result) mustBe Some(url)
         verifyNoInteractions(auditService)
       }
 
@@ -117,7 +119,7 @@ class NavigatorSpec
         val result = navigator.continueTo(mode, call(_))(decoratedRequest(requestWithFormAction(Some(Remove(Seq.empty)))), hc)
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some("url")
+        redirectLocation(result) mustBe Some(url)
         verifyNoInteractions(auditService)
       }
 
@@ -125,31 +127,31 @@ class NavigatorSpec
         val result = navigator.continueTo(mode, call(_))(decoratedRequest(requestWithFormAction(Some(Unknown))), hc)
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some("url")
+        redirectLocation(result) mustBe Some(url)
         verifyNoInteractions(auditService)
       }
 
       "Error-fix flag is passed in error-fix mode" in {
-        val result = navigator.continueTo(Mode.ErrorFix, call, true)(decoratedRequest(requestWithFormAction(Some(SaveAndContinue))), hc)
+        val result = navigator.continueTo(Mode.ErrorFix, call)(decoratedRequest(requestWithFormAction(Some(SaveAndContinue))), hc)
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some("url")
+        redirectLocation(result) mustBe Some(url)
         verifyNoInteractions(auditService)
       }
 
       "Add in error-fix mode with error-fix flag passed" in {
-        val result = navigator.continueTo(Mode.ErrorFix, call, true)(decoratedRequest(requestWithFormAction(Some(Add))), hc)
+        val result = navigator.continueTo(Mode.ErrorFix, call)(decoratedRequest(requestWithFormAction(Some(Add))), hc)
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some("url")
+        redirectLocation(result) mustBe Some(url)
         verifyNoInteractions(auditService)
       }
 
       "Remove in error-fix mode with error-fix flag passed" in {
-        val result = navigator.continueTo(Mode.ErrorFix, call, true)(decoratedRequest(requestWithFormAction(Some(Remove(Seq.empty)))), hc)
+        val result = navigator.continueTo(Mode.ErrorFix, call)(decoratedRequest(requestWithFormAction(Some(Remove(Seq.empty)))), hc)
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some("url")
+        redirectLocation(result) mustBe Some(url)
         verifyNoInteractions(auditService)
       }
     }
@@ -204,7 +206,7 @@ class NavigatorSpec
       "Save and continue is clicked with mode ErrorFix and parentDeclarationId in request" in {
         val request = requestWithFormAction(Some(SaveAndContinue))
         val result = navigator.continueTo(Mode.ErrorFix, call)(decoratedRequest(request), hc)
-        redirectLocation(result) mustBe Some("url")
+        redirectLocation(result) mustBe Some(url)
       }
 
       "backLink method is invoked with mode ErrorFix and parentDeclarationId in request" in {
@@ -222,17 +224,6 @@ class NavigatorSpec
 
       implicit val declaration = aDeclaration()
 
-      "continueTo method is invoked with mode ErrorFix and form action SaveAndReturnToErrors but without parentDeclarationId in request" in {
-        val request = requestWithFormAction(Some(SaveAndReturnToErrors))
-        val result = navigator.continueTo(Mode.ErrorFix, call)(decoratedRequest(request), hc)
-        redirectLocation(result) mustBe Some(SubmissionsController.displayListOfSubmissions().url)
-      }
-
-      "continueTo method is invoked with mode ErrorFix but without parentDeclarationId in request" in {
-        val result = navigator.continueTo(Mode.ErrorFix, call)(decoratedRequest(request), hc)
-        redirectLocation(result) mustBe Some(SubmissionsController.displayListOfSubmissions().url)
-      }
-
       "backLink method is invoked with mode ErrorFix but without parentDeclarationId in request" in {
         val result = navigator.backLink(CarrierDetails, Mode.ErrorFix)(decoratedRequest(request))
         result mustBe SubmissionsController.displayListOfSubmissions()
@@ -241,6 +232,35 @@ class NavigatorSpec
       "backLink method for items is invoked with mode ErrorFix but without parentDeclarationId in request" in {
         val result = navigator.backLink(CarrierDetails, Mode.ErrorFix, ItemId("123456"))(decoratedRequest(request))
         result mustBe SubmissionsController.displayListOfSubmissions()
+      }
+    }
+
+    "redirect to the url provided" when {
+
+      "continueTo method is invoked with mode ErrorFix and form action SaveAndReturnToErrors and" when {
+        "parentDeclarationId is None" in {
+          val request = requestWithFormAction(Some(SaveAndReturnToErrors))
+          val result = navigator.continueTo(Mode.ErrorFix, call)(decoratedRequest(request)(aDeclaration()), hc)
+          result.header.headers.get("Location") mustBe Some(url)
+          result.newFlash mustBe Some(Flash(Map.empty))
+        }
+      }
+
+      "continueTo method is invoked with mode ErrorFix and" when {
+        "parentDeclarationId is None" in {
+          val result = navigator.continueTo(Mode.ErrorFix, call)(decoratedRequest(request)(aDeclaration()), hc)
+          result.header.headers.get("Location") mustBe Some(url)
+          result.newFlash mustBe Some(Flash(Map.empty))
+        }
+      }
+    }
+
+    "preserve any Flash Data" when {
+      "continueTo method is invoked with mode ErrorFix and" in {
+        val flash = Map(FlashKeys.fieldName -> "Some name", FlashKeys.errorMessage -> "Some message")
+        val request = requestWithFormAction(Some(Unknown)).withFlash(flash.toList: _*)
+        val result = navigator.continueTo(Mode.ErrorFix, call)(decoratedRequest(request)(aDeclaration()), hc)
+        result.newFlash mustBe Some(Flash(flash))
       }
     }
   }

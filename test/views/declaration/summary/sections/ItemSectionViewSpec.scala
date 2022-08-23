@@ -17,7 +17,6 @@
 package views.declaration.summary.sections
 
 import base.Injector
-import com.typesafe.config.ConfigFactory
 import controllers.declaration.routes._
 import forms.common.YesNoAnswer
 import forms.declaration._
@@ -25,7 +24,6 @@ import forms.declaration.additionaldocuments.AdditionalDocument
 import models.DeclarationType.STANDARD
 import models.Mode.Normal
 import models.declaration.CommodityMeasure
-import play.api.Configuration
 import services.cache.ExportsTestHelper
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.summary.sections.item_section
@@ -634,7 +632,5 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
         Option(view.getElementById("additional-documents-1")) mustBe None
       }
     }
-
   }
-
 }

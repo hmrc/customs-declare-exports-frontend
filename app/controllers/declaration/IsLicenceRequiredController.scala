@@ -16,10 +16,9 @@
 
 package controllers.declaration
 
-import controllers.actions.{AuthAction, FeatureFlagAction, JourneyAction}
+import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.routes._
 import controllers.navigation.Navigator
-import features.Feature
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.common.YesNoAnswer.YesNoAnswers.{no, yes}

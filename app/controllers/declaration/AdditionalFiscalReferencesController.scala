@@ -17,13 +17,13 @@
 package controllers.declaration
 
 import controllers.actions.ItemActionBuilder
+import controllers.declaration.routes.{CommodityDetailsController, FiscalInformationController}
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
-
-import javax.inject.Inject
-import models.requests.JourneyRequest
+import forms.declaration.AdditionalFiscalReferencesData
 import models.Mode
+import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
@@ -31,6 +31,8 @@ import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.fiscalInformation.additional_fiscal_references
+
+import javax.inject.Inject
 
 class AdditionalFiscalReferencesController @Inject() (
   itemAction: ItemActionBuilder,
@@ -41,42 +43,33 @@ class AdditionalFiscalReferencesController @Inject() (
 ) extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
   def displayPage(mode: Mode, itemId: String): Action[AnyContent] = itemAction(itemId) { implicit request =>
-    val frm = addAnotherYesNoForm.withSubmissionErrors()
-    cachedAdditionalReferencesData(itemId) match {
+    val form = yesNoForm.withSubmissionErrors
+    cachedAdditionalReferencesData(itemId, request) match {
       case Some(data) if data.references.nonEmpty =>
-        Ok(additionalFiscalReferencesPage(mode, itemId, frm, data.references))
-      case Some(_) =>
-        navigator.continueTo(mode, controllers.declaration.routes.AdditionalFiscalReferencesAddController.displayPage(_, itemId))
-      case _ =>
-        navigator.continueTo(mode, controllers.declaration.routes.FiscalInformationController.displayPage(_, itemId))
+        Ok(additionalFiscalReferencesPage(mode, itemId, form, data.references))
+
+      case Some(_) => navigator.continueTo(mode, routes.AdditionalFiscalReferencesAddController.displayPage(_, itemId))
+      case _       => navigator.continueTo(mode, FiscalInformationController.displayPage(_, itemId))
     }
   }
 
   def submitForm(mode: Mode, itemId: String): Action[AnyContent] = itemAction(itemId) { implicit request =>
-    addAnotherYesNoForm
-      .bindFromRequest()
+    yesNoForm.bindFromRequest
       .fold(
-        (formWithErrors: Form[YesNoAnswer]) =>
-          BadRequest(
-            additionalFiscalReferencesPage(
-              mode,
-              itemId,
-              formWithErrors,
-              cachedAdditionalReferencesData(itemId).map(_.references).getOrElse(Seq.empty)
-            )
-          ),
-        validYesNo =>
-          validYesNo.answer match {
-            case YesNoAnswers.yes =>
-              navigator
-                .continueTo(mode, controllers.declaration.routes.AdditionalFiscalReferencesAddController.displayPage(_, itemId), mode.isErrorFix)
-            case YesNoAnswers.no => navigator.continueTo(mode, routes.CommodityDetailsController.displayPage(_, itemId))
-          }
+        formWithErrors => {
+          val data = cachedAdditionalReferencesData(itemId, request).map(_.references).getOrElse(Seq.empty)
+          BadRequest(additionalFiscalReferencesPage(mode, itemId, formWithErrors, data))
+        },
+        _.answer match {
+          case YesNoAnswers.yes => navigator.continueTo(mode, routes.AdditionalFiscalReferencesAddController.displayPage(_, itemId))
+          case YesNoAnswers.no  => navigator.continueTo(mode, CommodityDetailsController.displayPage(_, itemId))
+        }
       )
   }
 
-  private def addAnotherYesNoForm: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.additionalFiscalReferences.add.another.empty")
+  private def yesNoForm: Form[YesNoAnswer] =
+    YesNoAnswer.form(errorKey = "declaration.additionalFiscalReferences.add.another.empty")
 
-  private def cachedAdditionalReferencesData(itemId: String)(implicit request: JourneyRequest[AnyContent]) =
+  private def cachedAdditionalReferencesData(itemId: String, request: JourneyRequest[_]): Option[AdditionalFiscalReferencesData] =
     request.cacheModel.itemBy(itemId).flatMap(_.additionalFiscalReferencesData)
 }

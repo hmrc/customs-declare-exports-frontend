@@ -17,6 +17,7 @@
 package controllers.declaration
 
 import base.{ControllerSpec, Injector}
+import controllers.declaration.routes.{SealController, TransportContainerController}
 import controllers.helpers.Remove
 import forms.common.YesNoAnswer
 import forms.declaration.{ContainerAdd, ContainerFirst, Seal}
@@ -119,8 +120,7 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
         val result = controller.displayContainerSummary(Mode.Normal)(getRequest())
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.TransportContainerController
-          .displayAddContainer(Mode.Normal)
+        thePageNavigatedTo mustBe TransportContainerController.displayAddContainer(Mode.Normal)
       }
     }
   }
@@ -141,8 +141,7 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
         val result = controller.displayContainerRemove(Mode.Normal, containerId)(getRequest())
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.TransportContainerController
-          .displayContainerSummary(Mode.Normal)
+        thePageNavigatedTo mustBe TransportContainerController.displayContainerSummary(Mode.Normal)
       }
     }
   }
@@ -159,8 +158,7 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
         val result = controller.submitAddContainer(Mode.Normal)(postRequestAsFormUrlEncoded(requestBody: _*))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.SealController
-          .displaySealSummary(Mode.Normal, "value")
+        thePageNavigatedTo mustBe SealController.displaySealSummary(Mode.Normal, "value")
 
         theCacheModelUpdated.containers mustBe Seq(Container("value", Seq.empty))
       }
@@ -171,8 +169,7 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
         val result = controller.submitAddContainer(Mode.Normal)(postRequestAsFormUrlEncoded(requestBody: _*))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.SealController
-          .displaySealSummary(Mode.Normal, "value")
+        thePageNavigatedTo mustBe SealController.displaySealSummary(Mode.Normal, "value")
 
         theCacheModelUpdated.containers mustBe Seq(Container("value", Seq.empty))
       }
@@ -183,8 +180,7 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
         val result = controller.submitAddContainer(Mode.Normal)(postRequestAsFormUrlEncoded(requestBody: _*))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.SealController
-          .displaySealSummary(Mode.Normal, "value")
+        thePageNavigatedTo mustBe SealController.displaySealSummary(Mode.Normal, "value")
 
         theCacheModelUpdated.containers mustBe Seq(Container("value", Seq.empty))
       }
@@ -195,45 +191,38 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
       val requestBody = Seq(ContainerAdd.containerIdKey -> "C2")
 
       "working on standard declaration with existing container" in {
-
         withNewCaching(aDeclaration(withType(DeclarationType.STANDARD), withContainerData(Container("C1", Seq.empty))))
 
         val result = controller.submitAddContainer(Mode.Normal)(postRequestAsFormUrlEncoded(requestBody: _*))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.SealController
-          .displaySealSummary(Mode.Normal, "C2")
+        thePageNavigatedTo mustBe SealController.displaySealSummary(Mode.Normal, "C2")
 
         theCacheModelUpdated.containers mustBe Seq(Container("C1", Seq.empty), Container("C2", Seq.empty))
       }
 
       "working on supplementary declaration with existing container" in {
-
         withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withContainerData(Container("C1", Seq.empty))))
 
         val result = controller.submitAddContainer(Mode.Normal)(postRequestAsFormUrlEncoded(requestBody: _*))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.SealController
-          .displaySealSummary(Mode.Normal, "C2")
+        thePageNavigatedTo mustBe SealController.displaySealSummary(Mode.Normal, "C2")
 
         theCacheModelUpdated.containers mustBe Seq(Container("C1", Seq.empty), Container("C2", Seq.empty))
       }
 
       "working on simplified declaration with existing container" in {
-
         withNewCaching(aDeclaration(withType(DeclarationType.SIMPLIFIED), withContainerData(Container("C1", Seq.empty))))
 
         val result = controller.submitAddContainer(Mode.Normal)(postRequestAsFormUrlEncoded(requestBody: _*))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.SealController
-          .displaySealSummary(Mode.Normal, "C2")
+        thePageNavigatedTo mustBe SealController.displaySealSummary(Mode.Normal, "C2")
 
         theCacheModelUpdated.containers mustBe Seq(Container("C1", Seq.empty), Container("C2", Seq.empty))
       }
     }
-
   }
 
   "Transport Container submit summary page" should {
@@ -245,8 +234,7 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
         val result = controller.submitSummaryAction(Mode.Normal)(postRequestAsFormUrlEncoded(removeAction))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.TransportContainerController
-          .displayContainerRemove(Mode.Normal, "value")
+        thePageNavigatedTo mustBe TransportContainerController.displayContainerRemove(Mode.Normal, "value")
       }
     }
 
@@ -257,8 +245,7 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
         val result = controller.submitSummaryAction(Mode.Normal)(postRequest(body))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.TransportContainerController
-          .displayAddContainer(Mode.Normal)
+        thePageNavigatedTo mustBe TransportContainerController.displayAddContainer(Mode.Normal)
       }
 
       "user indicates they want to add another container in error-fix mode" in {
@@ -267,19 +254,19 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
         val result = controller.submitSummaryAction(Mode.ErrorFix)(postRequest(body))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.TransportContainerController
-          .displayAddContainer(Mode.ErrorFix)
+        thePageNavigatedTo mustBe TransportContainerController.displayAddContainer(Mode.ErrorFix)
       }
     }
 
     "redirect to summary page" when {
+
       "user indicates they do not want to add another container" in {
         val body = Json.obj("yesNo" -> "No")
 
         val result = controller.submitSummaryAction(Mode.Normal)(postRequest(body))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.SummaryController.displayPage(Mode.Normal)
+        thePageNavigatedTo mustBe routes.SummaryController.displayPage(Mode.Normal)
       }
 
       "user indicates they do not want to add another container and they are in draft mode" in {
@@ -288,10 +275,9 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
         val result = controller.submitSummaryAction(Mode.Draft)(postRequest(body))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.SummaryController.displayPage(Mode.Normal)
+        thePageNavigatedTo mustBe routes.SummaryController.displayPage(Mode.Draft)
       }
     }
-
   }
 
   "Transport Container submit remove page" should {
@@ -304,8 +290,7 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
         val result = controller.submitContainerRemove(Mode.Normal, containerId)(postRequest(body))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.TransportContainerController
-          .displayContainerSummary(Mode.Normal)
+        thePageNavigatedTo mustBe TransportContainerController.displayContainerSummary(Mode.Normal)
 
         theCacheModelUpdated.containers mustBe Seq.empty
       }
@@ -319,8 +304,7 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
         val result = controller.submitContainerRemove(Mode.Normal, containerId)(postRequest(body))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.TransportContainerController
-          .displayContainerSummary(Mode.Normal)
+        thePageNavigatedTo mustBe TransportContainerController.displayContainerSummary(Mode.Normal)
 
         verifyTheCacheIsUnchanged
       }
@@ -328,8 +312,8 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
   }
 
   "return 400 (BAD_REQUEST)" when {
-    "user adds container with incorrect item" in {
 
+    "user adds container with incorrect item" in {
       val body = Json.obj("id" -> "!@#$")
 
       val result = controller.submitAddContainer(Mode.Normal)(postRequest(body))
@@ -357,5 +341,4 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
       status(result) must be(BAD_REQUEST)
     }
   }
-
 }

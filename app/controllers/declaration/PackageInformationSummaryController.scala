@@ -17,6 +17,7 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
+import controllers.declaration.routes.{AdditionalInformationRequiredController, CommodityMeasureController}
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
@@ -46,37 +47,35 @@ class PackageInformationSummaryController @Inject() (
 
   def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.itemBy(itemId).flatMap(_.packageInformation) match {
-      case Some(items) if items.nonEmpty => Ok(packageInformationPage(mode, itemId, anotherYesNoForm.withSubmissionErrors(), items))
-      case _                             => navigator.continueTo(mode, routes.PackageInformationAddController.displayPage(_, itemId))
+      case Some(items) if items.nonEmpty =>
+        Ok(packageInformationPage(mode, itemId, yesNoForm.withSubmissionErrors(), items))
+
+      case _ => navigator.continueTo(mode, routes.PackageInformationAddController.displayPage(_, itemId))
     }
   }
 
   def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    val items = request.cacheModel.itemBy(itemId).flatMap(_.packageInformation).getOrElse(List.empty)
-    anotherYesNoForm
-      .bindFromRequest()
+    yesNoForm.bindFromRequest
       .fold(
-        (formWithErrors: Form[YesNoAnswer]) => BadRequest(packageInformationPage(mode, itemId, formWithErrors, items)),
-        validYesNo =>
-          validYesNo.answer match {
-            case YesNoAnswers.yes =>
-              navigator.continueTo(mode, controllers.declaration.routes.PackageInformationAddController.displayPage(_, itemId), mode.isErrorFix)
-            case YesNoAnswers.no =>
-              navigator.continueTo(mode, nextPage(itemId))
-          }
+        formWithErrors => {
+          val items = request.cacheModel.itemBy(itemId).flatMap(_.packageInformation).getOrElse(List.empty)
+          BadRequest(packageInformationPage(mode, itemId, formWithErrors, items))
+        },
+        _.answer match {
+          case YesNoAnswers.yes => navigator.continueTo(mode, routes.PackageInformationAddController.displayPage(_, itemId))
+          case YesNoAnswers.no  => navigator.continueTo(mode, nextPage(itemId))
+        }
       )
   }
 
-  private def anotherYesNoForm: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.packageInformation.add.empty")
+  private def yesNoForm: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.packageInformation.add.empty")
 }
 
 object PackageInformationSummaryController {
 
   def nextPage(itemId: String)(implicit request: JourneyRequest[_]): Mode => Call =
     request.declarationType match {
-      case SUPPLEMENTARY | STANDARD | CLEARANCE =>
-        controllers.declaration.routes.CommodityMeasureController.displayPage(_, itemId)
-      case SIMPLIFIED | OCCASIONAL =>
-        controllers.declaration.routes.AdditionalInformationRequiredController.displayPage(_, itemId)
+      case SUPPLEMENTARY | STANDARD | CLEARANCE => CommodityMeasureController.displayPage(_, itemId)
+      case SIMPLIFIED | OCCASIONAL              => AdditionalInformationRequiredController.displayPage(_, itemId)
     }
 }

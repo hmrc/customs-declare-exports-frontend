@@ -65,7 +65,7 @@ class TransportContainerController @Inject() (
     } else
       ContainerFirst.form.bindFromRequest
         .fold(
-          (formWithErrors: Form[ContainerFirst]) => Future.successful(BadRequest(addFirstPage(mode, formWithErrors))),
+          formWithErrors => Future.successful(BadRequest(addFirstPage(mode, formWithErrors))),
           containerId => saveFirstContainer(mode, containerId.id)
         )
   }
@@ -73,32 +73,31 @@ class TransportContainerController @Inject() (
   def displayContainerSummary(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.containers match {
       case containers if containers.nonEmpty => Ok(summaryPage(mode, addAnotherContainerYesNoForm.withSubmissionErrors, containers))
-      case _ =>
-        navigator.continueTo(mode, TransportContainerController.displayAddContainer)
+
+      case _ => navigator.continueTo(mode, TransportContainerController.displayAddContainer)
     }
   }
 
   def submitSummaryAction(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     FormAction.bindFromRequest match {
       case Remove(values) =>
-        Future.successful(navigator.continueTo(mode, TransportContainerController.displayContainerRemove(_, containerId(values))))
+        val result = navigator.continueTo(mode, TransportContainerController.displayContainerRemove(_, containerId(values)))
+        Future.successful(result)
 
       case _ => addContainerAnswer(mode)
     }
   }
 
-  def displayContainerRemove(mode: Mode, containerId: String): Action[AnyContent] =
-    (authenticate andThen journeyType) { implicit request =>
-      request.cacheModel.containerBy(containerId) match {
-        case Some(container) => Ok(removePage(mode, removeContainerYesNoForm, container))
-        case _               => navigator.continueTo(mode, TransportContainerController.displayContainerSummary)
-      }
+  def displayContainerRemove(mode: Mode, containerId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    request.cacheModel.containerBy(containerId) match {
+      case Some(container) => Ok(removePage(mode, removeContainerYesNoForm, container))
+      case _               => navigator.continueTo(mode, TransportContainerController.displayContainerSummary)
     }
+  }
 
-  def submitContainerRemove(mode: Mode, containerId: String): Action[AnyContent] =
-    (authenticate andThen journeyType).async { implicit request =>
-      removeContainerAnswer(mode, containerId)
-    }
+  def submitContainerRemove(mode: Mode, containerId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+    removeContainerAnswer(mode, containerId)
+  }
 
   private def saveFirstContainer(mode: Mode, containerId: Option[String])(implicit request: JourneyRequest[AnyContent]): Future[Result] =
     containerId match {
@@ -146,10 +145,10 @@ class TransportContainerController @Inject() (
   private def addContainerAnswer(mode: Mode)(implicit request: JourneyRequest[AnyContent]): Future[Result] =
     addAnotherContainerYesNoForm.bindFromRequest
       .fold(
-        (formWithErrors: Form[YesNoAnswer]) => Future.successful(BadRequest(summaryPage(mode, formWithErrors, request.cacheModel.containers))),
+        formWithErrors => Future.successful(BadRequest(summaryPage(mode, formWithErrors, request.cacheModel.containers))),
         _.answer match {
           case YesNoAnswers.yes =>
-            Future.successful(navigator.continueTo(mode, TransportContainerController.displayAddContainer, mode.isErrorFix))
+            Future.successful(navigator.continueTo(mode, TransportContainerController.displayAddContainer))
 
           case YesNoAnswers.no =>
             updateDeclarationFromRequest(_.updateReadyForSubmission(true)) map { _ =>
