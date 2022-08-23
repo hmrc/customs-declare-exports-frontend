@@ -44,20 +44,20 @@ class DeclarationHolderSummaryController @Inject() (
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     if (declarationHolders.isEmpty) navigator.continueTo(mode, DeclarationHolderAddController.displayPage)
-    else Ok(declarationHolderPage(mode, addAnotherYesNoForm.withSubmissionErrors, declarationHolders))
+    else Ok(declarationHolderPage(mode, yesNoForm.withSubmissionErrors, declarationHolders))
   }
 
   def submitForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    addAnotherYesNoForm.bindFromRequest
+    yesNoForm.bindFromRequest
       .fold(
         formWithErrors => BadRequest(declarationHolderPage(mode, formWithErrors, declarationHolders)),
         _.answer match {
-          case YesNoAnswers.yes => navigator.continueTo(mode, DeclarationHolderAddController.displayPage, mode.isErrorFix)
+          case YesNoAnswers.yes => navigator.continueTo(mode, DeclarationHolderAddController.displayPage)
           case YesNoAnswers.no  => navigator.continueTo(mode, DestinationCountryController.displayPage)
         }
       )
   }
 
-  private def addAnotherYesNoForm: Form[YesNoAnswer] =
+  private def yesNoForm: Form[YesNoAnswer] =
     YesNoAnswer.form(errorKey = "declaration.declarationHolders.add.another.empty")
 }

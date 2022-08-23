@@ -17,6 +17,7 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
+import controllers.declaration.routes.{AdditionalActorsAddController, AuthorisationProcedureCodeChoiceController}
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
@@ -45,25 +46,23 @@ class AdditionalActorsSummaryController @Inject() (
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
     request.cacheModel.parties.declarationAdditionalActorsData match {
-      case Some(data) if data.actors.nonEmpty =>
-        Ok(additionalActorsPage(mode, anotherYesNoForm.withSubmissionErrors(), data.actors))
-      case _ => navigator.continueTo(mode, routes.AdditionalActorsAddController.displayPage)
+      case Some(data) if data.actors.nonEmpty => Ok(additionalActorsPage(mode, form.withSubmissionErrors(), data.actors))
+
+      case _ => navigator.continueTo(mode, AdditionalActorsAddController.displayPage)
     }
   }
 
   def submitForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     val actors = request.cacheModel.parties.declarationAdditionalActorsData.map(_.actors).getOrElse(Seq.empty)
-    anotherYesNoForm
-      .bindFromRequest()
+    form.bindFromRequest
       .fold(
-        (formWithErrors: Form[YesNoAnswer]) => BadRequest(additionalActorsPage(mode, formWithErrors, actors)),
-        validYesNo =>
-          validYesNo.answer match {
-            case YesNoAnswers.yes => navigator.continueTo(mode, routes.AdditionalActorsAddController.displayPage, mode.isErrorFix)
-            case YesNoAnswers.no  => navigator.continueTo(mode, routes.AuthorisationProcedureCodeChoiceController.displayPage)
-          }
+        formWithErrors => BadRequest(additionalActorsPage(mode, formWithErrors, actors)),
+        _.answer match {
+          case YesNoAnswers.yes => navigator.continueTo(mode, AdditionalActorsAddController.displayPage)
+          case YesNoAnswers.no  => navigator.continueTo(mode, AuthorisationProcedureCodeChoiceController.displayPage)
+        }
       )
   }
 
-  private def anotherYesNoForm: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.additionalActors.add.another.empty")
+  private def form: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.additionalActors.add.another.empty")
 }

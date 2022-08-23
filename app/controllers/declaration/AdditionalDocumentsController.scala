@@ -17,6 +17,7 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
+import controllers.declaration.routes.{AdditionalDocumentAddController, AdditionalDocumentsRequiredController, ItemsSummaryController}
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
@@ -45,35 +46,33 @@ class AdditionalDocumentsController @Inject() (
   def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     val additionalDocuments = cachedAdditionalDocuments(itemId)
     if (additionalDocuments.nonEmpty) {
-      val frm = yesNoForm.withSubmissionErrors()
-      Ok(additionalDocumentsPage(mode, itemId, frm, additionalDocuments))
-    } else navigator.continueTo(mode, redirectIfNoDocuments(mode, itemId), mode.isErrorFix)
+      val form = yesNoForm.withSubmissionErrors
+      Ok(additionalDocumentsPage(mode, itemId, form, additionalDocuments))
+    } else navigator.continueTo(mode, redirectIfNoDocuments(mode, itemId))
   }
 
   def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     def showFormWithErrors(formWithErrors: Form[YesNoAnswer]): Result =
       BadRequest(additionalDocumentsPage(mode, itemId, formWithErrors, cachedAdditionalDocuments(itemId)))
 
-    yesNoForm
-      .bindFromRequest()
+    yesNoForm.bindFromRequest
       .fold(showFormWithErrors, yesNoAnswer => nextPage(mode, yesNoAnswer, itemId))
   }
 
-  private def yesNoForm: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.additionalDocument.summary.add.another.empty")
+  private def yesNoForm: Form[YesNoAnswer] =
+    YesNoAnswer.form(errorKey = "declaration.additionalDocument.summary.add.another.empty")
 
   private def cachedAdditionalDocuments(itemId: String)(implicit request: JourneyRequest[_]): Seq[AdditionalDocument] =
     request.cacheModel.listOfAdditionalDocuments(itemId)
 
   private def nextPage(mode: Mode, yesNoAnswer: YesNoAnswer, itemId: String)(implicit request: JourneyRequest[AnyContent]): Result =
     yesNoAnswer.answer match {
-      case YesNoAnswers.yes =>
-        navigator.continueTo(mode, routes.AdditionalDocumentAddController.displayPage(_, itemId), mode.isErrorFix)(request, hc)
-      case _ =>
-        navigator.continueTo(mode, routes.ItemsSummaryController.displayItemsSummaryPage)(request, hc)
+      case YesNoAnswers.yes => navigator.continueTo(mode, AdditionalDocumentAddController.displayPage(_, itemId))(request, hc)
+      case _                => navigator.continueTo(mode, ItemsSummaryController.displayItemsSummaryPage)(request, hc)
     }
 
   private def redirectIfNoDocuments(mode: Mode, itemId: String)(implicit request: JourneyRequest[_]): Mode => Call =
     if (mode.isErrorFix || request.cacheModel.hasAuthCodeRequiringAdditionalDocs || request.cacheModel.isLicenseRequired(itemId))
-      routes.AdditionalDocumentAddController.displayPage(_, itemId)
-    else routes.AdditionalDocumentsRequiredController.displayPage(_, itemId)
+      AdditionalDocumentAddController.displayPage(_, itemId)
+    else AdditionalDocumentsRequiredController.displayPage(_, itemId)
 }

@@ -17,6 +17,7 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
+import controllers.declaration.routes.ItemsSummaryController
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
@@ -41,28 +42,27 @@ class PreviousDocumentsSummaryController @Inject() (
 ) extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    val form = anotherYesNoForm.withSubmissionErrors()
+    val form = yesNoForm.withSubmissionErrors
     request.cacheModel.previousDocuments.map(_.documents) match {
       case Some(documents) if documents.nonEmpty => Ok(previousDocumentsSummary(mode, form, documents))
-      case _                                     => navigator.continueTo(mode, controllers.declaration.routes.PreviousDocumentsController.displayPage)
+
+      case _ => navigator.continueTo(mode, routes.PreviousDocumentsController.displayPage)
     }
   }
 
   def submit(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    val previousDocuments = request.cacheModel.previousDocuments.map(_.documents).getOrElse(Seq.empty)
-
-    anotherYesNoForm
-      .bindFromRequest()
+    yesNoForm.bindFromRequest
       .fold(
-        formWithErrors => BadRequest(previousDocumentsSummary(mode, formWithErrors, previousDocuments)),
-        validAnswer =>
-          validAnswer.answer match {
-            case YesNoAnswers.yes =>
-              navigator.continueTo(mode, controllers.declaration.routes.PreviousDocumentsController.displayPage, mode.isErrorFix)
-            case YesNoAnswers.no => navigator.continueTo(mode, controllers.declaration.routes.ItemsSummaryController.displayAddItemPage)
-          }
+        formWithErrors => {
+          val previousDocuments = request.cacheModel.previousDocuments.map(_.documents).getOrElse(Seq.empty)
+          BadRequest(previousDocumentsSummary(mode, formWithErrors, previousDocuments))
+        },
+        _.answer match {
+          case YesNoAnswers.yes => navigator.continueTo(mode, routes.PreviousDocumentsController.displayPage)
+          case YesNoAnswers.no  => navigator.continueTo(mode, ItemsSummaryController.displayAddItemPage)
+        }
       )
   }
 
-  private def anotherYesNoForm: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.previousDocuments.add.another.empty")
+  private def yesNoForm: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.previousDocuments.add.another.empty")
 }
