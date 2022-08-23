@@ -338,7 +338,7 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
       Option(view.getElementById("view-declaration")) mustBe None
     }
 
-    EnhancedStatus.values.filterNot(rejectedStatuses.contains) foreach { status =>
+    EnhancedStatus.values.diff(rejectedStatuses) foreach { status =>
       s"contain the copy-declaration link when notification's status is ${status}" in {
         val view = page(createSubmissionWith(status))(verifiedEmailRequest(), messages)
 
@@ -348,11 +348,19 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
       }
     }
 
-    EnhancedStatus.values.filter(rejectedStatuses.contains) foreach { status =>
+    EnhancedStatus.values.intersect(rejectedStatuses) foreach { status =>
       s"not contain the copy-declaration link when notification's status is ${status}" in {
         val view = page(createSubmissionWith(status))(verifiedEmailRequest(), messages)
         Option(view.getElementById("copy-declaration")) mustBe None
       }
+    }
+
+    "contain the cancel-declaration link" in {
+      val view = page(createSubmissionWith(Seq.empty))(verifiedEmailRequest(), messages)
+
+      val cancelDeclarationLink = view.getElementById("cancel-declaration")
+      cancelDeclarationLink must containMessage("submissions.cancel.declaration")
+      cancelDeclarationLink must haveHref(routes.CancelDeclarationController.displayPage())
     }
 
     "display the link to redirect the user to the 'Movements' service" in {

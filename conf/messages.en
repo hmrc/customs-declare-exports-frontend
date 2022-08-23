@@ -142,7 +142,6 @@ declaration.choice.link.sfusInbox.txt = View messages (opens in new tab)
 declaration.choice.link.sfusUpload.txt = Upload documents (opens in new tab)
 declaration.choice.CRT = Create a declaration
 declaration.choice.MVT = Arrive, depart or consolidate a declaration
-declaration.choice.CAN = Cancel a declaration
 declaration.choice.CON = Continue a declaration you saved
 declaration.choice.SUB = View and manage your submitted declarations
 declaration.choice.MSG = View messages
