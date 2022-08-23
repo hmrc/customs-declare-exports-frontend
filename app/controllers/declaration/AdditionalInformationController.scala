@@ -17,7 +17,9 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
+import controllers.declaration.routes.{AdditionalDocumentsController, AdditionalInformationRequiredController, IsLicenceRequiredController}
 import controllers.navigation.Navigator
+import forms.common
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.AdditionalInformationSummary
@@ -46,27 +48,25 @@ class AdditionalInformationController @Inject() (
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
   def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    val frm = form.withSubmissionErrors()
+    val form = yesNoForm.withSubmissionErrors
     cachedAdditionalInformationData(itemId) match {
+
       case Some(additionalInformationData) if additionalInformationData.items.nonEmpty =>
         resolveBackLink(mode, itemId) map { backLink =>
-          Ok(additionalInformationPage(mode, itemId, frm, additionalInformationData.items, backLink))
+          Ok(additionalInformationPage(mode, itemId, form, additionalInformationData.items, backLink))
         }
 
-      case Some(_) =>
-        Future.successful(navigator.continueTo(mode, routes.AdditionalInformationAddController.displayPage(_, itemId)))
-
-      case _ =>
-        Future.successful(navigator.continueTo(mode, routes.AdditionalInformationRequiredController.displayPage(_, itemId)))
+      case Some(_) => Future.successful(navigator.continueTo(mode, routes.AdditionalInformationAddController.displayPage(_, itemId)))
+      case _       => Future.successful(navigator.continueTo(mode, AdditionalInformationRequiredController.displayPage(_, itemId)))
     }
   }
 
   def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    form.bindFromRequest
+    yesNoForm.bindFromRequest
       .fold(showFormWithErrors(mode, itemId, _), yesNoAnswer => Future.successful(nextPage(mode, yesNoAnswer, itemId)))
   }
 
-  private def form: Form[YesNoAnswer] =
+  private def yesNoForm: Form[common.YesNoAnswer] =
     YesNoAnswer.form(errorKey = "declaration.additionalInformation.add.another.empty")
 
   private def cachedAdditionalInformationData(itemId: String)(implicit request: JourneyRequest[_]): Option[AdditionalInformationData] =
@@ -77,13 +77,12 @@ class AdditionalInformationController @Inject() (
 
     yesNoAnswer.answer match {
       case YesNoAnswers.yes =>
-        navigator.continueTo(mode, routes.AdditionalInformationAddController.displayPage(_, itemId), mode.isErrorFix)(request, hc)
+        navigator.continueTo(mode, routes.AdditionalInformationAddController.displayPage(_, itemId))(request, hc)
 
       case YesNoAnswers.no if isClearanceJourney =>
-        navigator.continueTo(mode, routes.AdditionalDocumentsController.displayPage(_, itemId))(request, hc)
+        navigator.continueTo(mode, AdditionalDocumentsController.displayPage(_, itemId))(request, hc)
 
-      case _ =>
-        navigator.continueTo(mode, routes.IsLicenceRequiredController.displayPage(_, itemId), mode.isErrorFix)(request, hc)
+      case _ => navigator.continueTo(mode, IsLicenceRequiredController.displayPage(_, itemId))(request, hc)
     }
 
   }

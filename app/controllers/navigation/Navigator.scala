@@ -352,33 +352,26 @@ class Navigator @Inject() (
     case AdditionalDocument          => additionalDocumentsPreviousPage
   }
 
-  def continueTo(mode: Mode, factory: Mode => Call, isErrorFixInProgress: Boolean = false)(
-    implicit req: JourneyRequest[AnyContent],
-    hc: HeaderCarrier
-  ): Result =
+  def continueTo(mode: Mode, factory: Mode => Call)(implicit request: JourneyRequest[AnyContent], hc: HeaderCarrier): Result =
     (mode, FormAction.bindFromRequest) match {
-      case (ErrorFix, formAction) => handleErrorFixMode(factory, formAction, isErrorFixInProgress)
+      case (ErrorFix, formAction) => handleErrorFixMode(factory, formAction)
+
       case (_, SaveAndReturn) =>
-        auditService.auditAllPagesUserInput(AuditTypes.SaveAndReturnSubmission, req.cacheModel)
+        auditService.auditAllPagesUserInput(AuditTypes.SaveAndReturnSubmission, request.cacheModel)
         Results.Redirect(routes.DraftDeclarationController.displayPage)
-      case (Mode.Draft, SaveAndReturnToSummary) =>
-        Results.Redirect(routes.SummaryController.displayPage(Mode.Draft))
-      case (Mode.ChangeAmend, SaveAndReturnToSummary) =>
-        Results.Redirect(routes.SummaryController.displayPageOnAmend)
-      case (Mode.Change, SaveAndReturnToSummary) =>
-        Results.Redirect(routes.SummaryController.displayPage(Mode.Normal))
+
+      case (Mode.Draft, SaveAndReturnToSummary)       => Results.Redirect(routes.SummaryController.displayPage(Mode.Draft))
+      case (Mode.ChangeAmend, SaveAndReturnToSummary) => Results.Redirect(routes.SummaryController.displayPageOnAmend)
+      case (Mode.Change, SaveAndReturnToSummary)      => Results.Redirect(routes.SummaryController.displayPage(Mode.Normal))
+
       case _ => Results.Redirect(factory(mode))
     }
 
-  private def handleErrorFixMode(factory: Mode => Call, formAction: FormAction, isErrorFixInProgress: Boolean)(
-    implicit req: JourneyRequest[AnyContent]
-  ): Result =
-    (formAction, req.cacheModel.parentDeclarationId) match {
+  private def handleErrorFixMode(factory: Mode => Call, formAction: FormAction)(implicit request: JourneyRequest[_]): Result =
+    (formAction, request.cacheModel.parentDeclarationId) match {
       case (SaveAndReturnToErrors, Some(parentId)) => Results.Redirect(RejectedNotificationsController.displayPage(parentId))
       case (Add | Remove(_) | SaveAndContinue, _)  => Results.Redirect(factory(ErrorFix))
-      case _ if isErrorFixInProgress               => Results.Redirect(factory(ErrorFix))
-      case (_, Some(parentId))                     => Results.Redirect(RejectedNotificationsController.displayPage(parentId))
-      case _                                       => Results.Redirect(SubmissionsController.displayListOfSubmissions())
+      case _                                       => Results.Redirect(factory(ErrorFix)).flashing(request.flash)
     }
 
   private def nactCodeFirstPreviousPage(cacheModel: ExportsDeclaration, mode: Mode, itemId: String): Call =

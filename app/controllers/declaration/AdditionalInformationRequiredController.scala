@@ -46,41 +46,32 @@ class AdditionalInformationRequiredController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
-  def displayPage(mode: Mode, itemId: String): Action[AnyContent] =
-    (authenticate andThen journeyType).async { implicit request =>
-      request.cacheModel.listOfAdditionalInformationOfItem(itemId) match {
-        case additionalInformations if additionalInformations.isEmpty =>
-          resolveBackLink(mode, itemId) map { backLink =>
-            Ok(additionalInfoReq(mode, itemId, previousAnswer(itemId).withSubmissionErrors, backLink, request.cacheModel.procedureCodeOfItem(itemId)))
-          }
+  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+    request.cacheModel.listOfAdditionalInformationOfItem(itemId) match {
+      case additionalInformations if additionalInformations.isEmpty =>
+        resolveBackLink(mode, itemId) map { backLink =>
+          val code = request.cacheModel.procedureCodeOfItem(itemId)
+          Ok(additionalInfoReq(mode, itemId, previousAnswer(itemId).withSubmissionErrors, backLink, code))
+        }
 
-        case _ => Future.successful(navigator.continueTo(mode, AdditionalInformationController.displayPage(_, itemId), mode.isErrorFix))
-      }
+      case _ => Future.successful(navigator.continueTo(mode, AdditionalInformationController.displayPage(_, itemId)))
     }
+  }
 
-  def submitForm(mode: Mode, itemId: String): Action[AnyContent] =
-    (authenticate andThen journeyType).async { implicit request =>
-      form.bindFromRequest
-        .fold(
-          showFormWithErrors(mode, itemId, _),
-          yesNo =>
-            updateCache(yesNo, itemId).map { _ =>
-              navigator.continueTo(mode, nextPage(yesNo, itemId))
-            }
-        )
-    }
+  def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+    form.bindFromRequest
+      .fold(showFormWithErrors(mode, itemId, _), yesNo => updateCache(yesNo, itemId).map(_ => navigator.continueTo(mode, nextPage(yesNo, itemId))))
+  }
 
   private def form: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.additionalInformationRequired.error")
 
   private def nextPage(yesNoAnswer: YesNoAnswer, itemId: String)(implicit request: JourneyRequest[_]): Mode => Call = {
-
     val isClearanceJourney = request.declarationType == DeclarationType.CLEARANCE
 
     yesNoAnswer.answer match {
       case YesNoAnswers.yes                      => AdditionalInformationController.displayPage(_, itemId)
       case YesNoAnswers.no if isClearanceJourney => AdditionalDocumentsController.displayPage(_, itemId)
       case _                                     => IsLicenceRequiredController.displayPage(_, itemId)
-
     }
   }
 
@@ -100,11 +91,11 @@ class AdditionalInformationRequiredController @Inject() (
       BadRequest(additionalInfoReq(mode, itemId, formWithErrors, backLink, request.cacheModel.procedureCodeOfItem(itemId)))
     }
 
-  private def updateCache(yesNoAnswer: YesNoAnswer, itemId: String)(implicit request: JourneyRequest[AnyContent]): Future[ExportsDeclaration] = {
-    val updatedAdditionalInformation = yesNoAnswer.answer match {
-      case YesNoAnswers.yes => AdditionalInformationData(Some(yesNoAnswer), request.cacheModel.listOfAdditionalInformationOfItem(itemId))
-      case YesNoAnswers.no  => AdditionalInformationData(Some(yesNoAnswer), Seq.empty)
+  private def updateCache(answer: YesNoAnswer, itemId: String)(implicit request: JourneyRequest[_]): Future[ExportsDeclaration] = {
+    val updatedAdditionalInformation = answer.answer match {
+      case YesNoAnswers.yes => AdditionalInformationData(Some(answer), request.cacheModel.listOfAdditionalInformationOfItem(itemId))
+      case YesNoAnswers.no  => AdditionalInformationData(Some(answer), Seq.empty)
     }
-    updateDeclarationFromRequest(model => model.updatedItem(itemId, _.copy(additionalInformation = Some(updatedAdditionalInformation))))
+    updateDeclarationFromRequest(_.updatedItem(itemId, _.copy(additionalInformation = Some(updatedAdditionalInformation))))
   }
 }
