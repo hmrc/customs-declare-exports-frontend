@@ -803,6 +803,7 @@ submissions.uploading.documents = Upload supporting documents (opens in new tab)
 submissions.generateEAD = Download an Export Accompanying Document (EAD) - PDF
 submissions.view.declaration = View submitted declaration
 submissions.copy.declaration = Copy declaration
+submissions.cancel.declaration = Cancel declaration
 submissions.movements.redirection = Arrive, depart or consolidate a declaration
 submissions.rejected.tab.title = Rejected
 submissions.rejected.content.title = Rejected declarations
