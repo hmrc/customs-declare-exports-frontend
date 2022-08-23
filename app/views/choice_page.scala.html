@@ -32,6 +32,7 @@
     paragraphBody: paragraphBody,
     saveAndContinue: saveAndContinue,
     link: link,
+    externalLink: externalLink,
     sfusConfig: SfusConfig,
     secureMessagingInboxConfig: SecureMessagingInboxConfig,
     appConfig: AppConfig,
@@ -106,8 +107,8 @@
 
             @heading(messages("declaration.choice.link.sfus.description"), "govuk-heading-s", "h2")
 
-            @paragraph(link(id = Some("sfusUploadLink"), text = messages("declaration.choice.link.sfusUpload.txt"), call = routes.FileUploadController.startFileUpload(""), target = Some("_blank")))
-            @paragraph(link(id = Some("sfusInboxLink"), text = messages("declaration.choice.link.sfusInbox.txt"), call = Call("GET", secureMessagingInboxConfig.sfusInboxLink), target = Some("_blank")))
+            @paragraph(externalLink(id = Some("sfusUploadLink"), text = messages("declaration.choice.link.sfusUpload.txt"), url = routes.FileUploadController.startFileUpload("").url))
+            @paragraph(externalLink(id = Some("sfusInboxLink"), text = messages("declaration.choice.link.sfusInbox.txt"), url = secureMessagingInboxConfig.sfusInboxLink))
 
             <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible govuk-!-margin-bottom-6 govuk-!-margin-top-2" />
         }
@@ -123,7 +124,7 @@
                 )
             )
 
-            @paragraph(link(id = Some("cdsUploadLink"), text = messages("declaration.choice.link.sfusUpload.txt"), call = Call("GET", appConfig.cdsUploadDocs), target = Some("_blank")))
+            @paragraph(externalLink(id = Some("cdsUploadLink"), text = messages("declaration.choice.link.sfusUpload.txt"), url = appConfig.cdsUploadDocs))
 
             <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible govuk-!-margin-bottom-6 govuk-!-margin-top-2" />
         }

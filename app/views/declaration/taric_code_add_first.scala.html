@@ -39,7 +39,7 @@
     pageTitle: pageTitle,
     heading: heading,
     paragraphBody: paragraphBody,
-    link: link,
+    externalLink: externalLink,
     insetText: exportsInsetText,
     exportsInputText: exportsInputText,
     saveButtons: saveButtons,
@@ -55,15 +55,14 @@
 
 @linkForCommodityCode = {
     @commodityCodeOfItem(itemId).fold {
-        @link(
+        @externalLink(
             text = messages("declaration.taricAdditionalCodes.addfirst.body.altlink"),
-            Call("GET", appConfig.tradeTariffUrl), Some("_blank")
+            url = appConfig.tradeTariffUrl
         )
     } { commodityCode =>
-        @link(
+        @externalLink(
             text = messages("declaration.taricAdditionalCodes.addfirst.body.link", commodityCode.codeAsShown),
-          Call("GET", appConfig.commodityCodeTariffPageUrl.replace(CommodityDetails.placeholder, commodityCode.codeAsRef)),
-          Some("_blank")
+            appConfig.commodityCodeTariffPageUrl.replace(CommodityDetails.placeholder, commodityCode.codeAsRef)
         )
     }
 }
@@ -83,10 +82,9 @@
 
         @insetText(content = HtmlContent(HtmlFormat.fill(List(
             heading(message = messages("site.example"), classes = "govuk-heading-s", tier = "h2"),
-            paragraphBody(messages("declaration.taricAdditionalCodes.addfirst.inset.text", link(
-                messages("declaration.taricAdditionalCodes.addfirst.inset.text.link"),
-                Call("GET", appConfig.commodityCode9306909000),
-                Some("_blank")
+            paragraphBody(messages("declaration.taricAdditionalCodes.addfirst.inset.text", externalLink(
+                text = messages("declaration.taricAdditionalCodes.addfirst.inset.text.link"),
+                url = appConfig.commodityCode9306909000
             )))
         ))))
 

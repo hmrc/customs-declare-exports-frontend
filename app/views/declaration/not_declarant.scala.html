@@ -22,11 +22,12 @@
 @import views.html.components.gds._
 
 @this(
-  govukLayout: gdsMainTemplate,
-  pageTitle: pageTitle,
-  formHelper: FormWithCSRF,
-  link: link,
-  appConfig: AppConfig
+    govukLayout: gdsMainTemplate,
+    pageTitle: pageTitle,
+    formHelper: FormWithCSRF,
+    link: link,
+    externalLink: externalLink,
+    appConfig: AppConfig
 )
 
 @()(implicit request: Request[_], messages: Messages)
@@ -55,6 +56,9 @@
 </p>
 
 <p class="govuk-body">
-    @link(text = messages("general.inquiries.help.link"), call = Call("GET", appConfig.generalEnquiriesHelpUrl), target = Some("_blank"))
+    @externalLink(
+        text = messages("general.inquiries.help.link"),
+        url = appConfig.generalEnquiriesHelpUrl
+    )
 </p>
 }

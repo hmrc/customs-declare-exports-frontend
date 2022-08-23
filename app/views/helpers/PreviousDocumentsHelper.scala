@@ -31,7 +31,7 @@ import uk.gov.hmrc.govukfrontend.views.html.components.{GovukHint, GovukInsetTex
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.hint.Hint
 import uk.gov.hmrc.govukfrontend.views.viewmodels.insettext.InsetText
-import views.html.components.gds.{bulletList, exportsInputText, link, paragraphBody}
+import views.html.components.gds.{bulletList, exportsInputText, externalLink, paragraphBody}
 
 @Singleton
 class PreviousDocumentsHelper @Inject() (
@@ -39,7 +39,7 @@ class PreviousDocumentsHelper @Inject() (
   govukHint: GovukHint,
   govukInsetText: GovukInsetText,
   exportsInputText: exportsInputText,
-  link: link,
+  externalLink: externalLink,
   paragraphBody: paragraphBody
 ) {
 
@@ -76,7 +76,7 @@ class PreviousDocumentsHelper @Inject() (
 
     val paragraphsForInsetText =
       if (versionSelection == 2) {
-        val linkForV2 = link(messages(s"$prefix.inset.text.3.link"), Call("GET", appConfig.simplifiedDeclPreviousDoc), Some("_blank"))
+        val linkForV2 = externalLink(messages(s"$prefix.inset.text.3.link"), appConfig.simplifiedDeclPreviousDoc)
         commonParagraphs :+ paragraph("inset.text.3", linkForV2)
       } else commonParagraphs
 

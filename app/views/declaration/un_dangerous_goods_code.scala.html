@@ -34,7 +34,7 @@
     exportsInputText: exportsInputText,
     heading: heading,
     body: paragraphBody,
-    link: link,
+    externalLink: externalLink,
     saveButtons: saveButtons,
     tariffExpander: tariffExpander,
     appConfig: AppConfig,
@@ -57,7 +57,11 @@
 
         @heading(messages("declaration.unDangerousGoodsCode.header"))
 
-        @body(messages("declaration.unDangerousGoodsCode.paragraph", link(text = messages("declaration.unDangerousGoodsCode.paragraph.link"), call = Call("GET", appConfig.unDangerousGoodsUrl), target = Some("_blank"))))
+        @body(
+            messages("declaration.unDangerousGoodsCode.paragraph", externalLink(
+                text = messages("declaration.unDangerousGoodsCode.paragraph.link"),
+                url = appConfig.unDangerousGoodsUrl
+        )))
 
         @govukRadios(Radios(
             name = hasDangerousGoodsCodeKey,

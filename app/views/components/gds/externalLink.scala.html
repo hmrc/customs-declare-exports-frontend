@@ -14,10 +14,14 @@
  * limitations under the License.
  *@
 
-@import views.html.components.gds.link
+@this(link: link)
 
-@this(link: externalLink)
+@(
+    text: String,
+    url: String,
+    id: Option[String] = None,
+    classes: Option[String] = None,
+    textHidden: Option[String] = None
+)
 
-@(linkText: String, linkUrl: String)
-
-@link(text = linkText, url = linkUrl)
+@link(id = id, text = text, call = Call("GET", url), target = Some("_blank"), textHidden = textHidden)

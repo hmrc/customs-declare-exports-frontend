@@ -14,18 +14,27 @@
  * limitations under the License.
  *@
 
+@import config.AppConfig
 @import views.helpers.Title
 @import views.html.components.gds._
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 
 @this(
+    appConfig: AppConfig,
     govukLayout: gdsMainTemplate,
     pageTitle: pageTitle,
     paragraphBody: paragraphBody,
-    link: link
+    externalLink: externalLink
 )
 
 @()(implicit request: Request[_], messages: Messages)
+
+@cdsCompletionGuide = @{
+    externalLink(
+        text = "CDS data element completion guide (opens in new tab)",
+        url = "https://www.gov.uk/government/publications/uk-trade-tariff-cds-volume-3-export-declaration-completion-guide"
+    )
+}
 
 @govukLayout(title = Title("guidance.error.explanation.title"), useCustomContentWidth = true) {
 
@@ -534,7 +543,7 @@
             <td class="govuk-table__cell">
             <p><strong>You declared 2 values that cannot be declared both together</strong></p>
 
-            <p>Check the @link(text = "CDS data element completion guide (opens in new tab)", call = Call("GET", "https://www.gov.uk/government/publications/uk-trade-tariff-cds-volume-3-export-declaration-completion-guide"), target = Some("_blank")).</p>
+            <p>Check the @cdsCompletionGuide.</p>
             </td>
         </tr>
 
@@ -550,13 +559,16 @@
             <td class="govuk-table__cell">
             <p><strong>The same data element has been completed twice</strong></p>
 
-            <p>Data elements @link(text = "may only be declared at header level where (opens in new tab)", call = Call("GET", "https://www.gov.uk/government/publications/uk-trade-tariff-cds-volume-3-export-declaration-completion-guide"), target=Some("_blank")) the information applies equally
+            <p>Data elements @externalLink(
+                text = "may only be declared at header level where (opens in new tab)",
+                url = "https://www.gov.uk/government/publications/uk-trade-tariff-cds-volume-3-export-declaration-completion-guide"
+                ) the information applies equally
             to all goods items. Otherwise it should only be completed for each individual
             goods item. For example, previous document or container ID can be entered at
             header level or item level, but if you use both header and item level you may
             cause an invalidation.</p>
 
-            <p>Check the @link(text = "CDS data element completion guide (opens in new tab)", call = Call("GET", "https://www.gov.uk/government/publications/uk-trade-tariff-cds-volume-3-export-declaration-completion-guide"), target=Some("_blank")).</p>
+            <p>Check the @cdsCompletionGuide.</p>
             </td>
         </tr>
 

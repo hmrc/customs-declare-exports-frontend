@@ -37,7 +37,7 @@
     insetText: exportsInsetText,
     heading: heading,
     paragraph: paragraphBody,
-    link: link,
+    externalLink: externalLink,
     saveButtons: saveButtons,
     formHelper: FormWithCSRF,
     navigator: Navigator,
@@ -73,28 +73,25 @@
 
 @commodityCodeLink = {
     @commodityCodeOfItem(itemId).fold {
-        @link(
+        @externalLink(
             id = Some("general-trade-tariff-inset-link"),
             text = messages("declaration.additionalDocumentsRequired.inset.link2Alt"),
-            call = Call("GET", appConfig.tradeTariffUrl),
-            target = Some("_blank")
+            url = appConfig.tradeTariffUrl
         )
     } { commodityCode =>
-        @link(
+        @externalLink(
             id = Some("commodity-code-inset-link"),
             text = messages("declaration.additionalDocumentsRequired.inset.link2", commodityCode.codeAsShown),
-            call = Call("GET", appConfig.commodityCodeTariffPageUrl.replace(CommodityDetails.placeholder, commodityCode.codeAsRef)),
-            target = Some("_blank")
+            url = appConfig.commodityCodeTariffPageUrl.replace(CommodityDetails.placeholder, commodityCode.codeAsRef)
         )
     }
 }
 
 @licenseAndCertificates = {
-    @link(
+    @externalLink(
         id = Some("licenses-and-certificates-inset-link"),
-        call = Call("GET", appConfig.licensesForExportingGoods),
-        text = messages("declaration.additionalDocumentsRequired.inset.link3"),
-        target = Some("_blank")
+        url = appConfig.licensesForExportingGoods,
+        text = messages("declaration.additionalDocumentsRequired.inset.link3")
     )
 }
 

@@ -37,7 +37,7 @@
     sectionHeader: sectionHeader,
     pageTitle: pageTitle,
     paragraphBody: paragraphBody,
-    link: link,
+    externalLink: externalLink,
     exportsInputText: exportsInputText,
     saveButtons: saveButtons,
     tariffExpander: tariffExpander,
@@ -64,10 +64,9 @@
 
         @paragraphBody(messages(
             "declaration.nationalAdditionalCode.addfirst.body",
-            link(
-                messages("declaration.nationalAdditionalCode.addfirst.body.link"),
-                Call("GET", appConfig.nationalAdditionalCodes),
-                Some("_blank")
+            externalLink(
+                text = messages("declaration.nationalAdditionalCode.addfirst.body.link"),
+                url = appConfig.nationalAdditionalCodes
             )
         ))
 

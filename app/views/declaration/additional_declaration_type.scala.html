@@ -36,7 +36,7 @@
     saveAndContinue: saveAndContinue,
     notificationBanner: notificationBanner,
     paragraphBody: paragraphBody,
-    link: link,
+    externalLink: externalLink,
     tariffExpander: tariffExpander,
     formHelper: FormWithCSRF,
     navigator: Navigator,
@@ -68,10 +68,9 @@
         @if(!request.isType(SUPPLEMENTARY)) {
             @notificationBanner(
                 title = messages("declaration.declarationType.notification.title"),
-                content = paragraphBody(messages("declaration.declarationType.notification.content", link(
+                content = paragraphBody(messages("declaration.declarationType.notification.content", externalLink(
                     text = messages("declaration.declarationType.notification.content.link"),
-                    call = Call("GET", appConfig.guidance.january2022locations),
-                    target = Some("_blank")
+                    url = appConfig.guidance.january2022locations
                 )))
             )
         }

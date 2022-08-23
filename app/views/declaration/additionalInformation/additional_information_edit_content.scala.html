@@ -31,7 +31,7 @@
     sectionHeader: sectionHeader,
     heading: heading,
     paragraphBody: paragraphBody,
-    link: link,
+    externalLink: externalLink,
     exportsInputText: exportsInputText,
     characterCount: exportsInputCharacterCount,
     tariffExpander: tariffExpander,
@@ -67,11 +67,10 @@
 @sectionHeader(messages("declaration.section.5"))
 @heading(messages("declaration.additionalInformation.title"))
 
-@paragraphBody(messages("declaration.additionalInformation.code.paragraph", link(
+@paragraphBody(messages("declaration.additionalInformation.code.paragraph", externalLink(
     id = Some("trade_tariff_link"),
     text = messages("declaration.additionalInformation.code.paragraph.link"),
-    call = Call("GET", appConfig.additionalInformationAppendix4),
-    target = Some("_blank")
+    url = appConfig.additionalInformationAppendix4
 )))
 
 @govukFieldset(Fieldset(

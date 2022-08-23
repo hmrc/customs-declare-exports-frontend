@@ -33,7 +33,7 @@
     sectionHeader: sectionHeader,
     heading: heading,
     exportsInputText: exportsInputText,
-    link: link,
+    externalLink: externalLink,
     body: paragraphBody,
     saveButtons: saveButtons,
     tariffExpander: tariffExpander,
@@ -58,10 +58,9 @@
 
         @body(messages(
             "declaration.cusCode.paragraph",
-            link(
-                messages("declaration.cusCode.paragraph.link"),
-                Call("GET", appConfig.ecicsToolUrl),
-                Some("_blank")
+            externalLink(
+                text = messages("declaration.cusCode.paragraph.link"),
+                url = appConfig.ecicsToolUrl
             )
         ))
 

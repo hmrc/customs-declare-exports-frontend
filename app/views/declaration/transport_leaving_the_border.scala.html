@@ -35,7 +35,7 @@
     pageTitle: pageTitle,
     paragraphBody: paragraphBody,
     insetText: exportsInsetText,
-    link: link,
+    externalLink: externalLink,
     errorSummary: errorSummary,
     sectionHeader: sectionHeader,
     saveButtons: saveButtons,
@@ -53,10 +53,9 @@
     @if(isAuthCode(EXRR)) {
         @insetText(content = HtmlContent(messages(
             "declaration.transport.leavingTheBorder.inset",
-            link(
-                call = Call("GET", GuidanceController.sendByRoro.url),
-                text = messages("declaration.transport.leavingTheBorder.inset.link"),
-                target = Some("_blank")
+            externalLink(
+                url = GuidanceController.sendByRoro.url,
+                text = messages("declaration.transport.leavingTheBorder.inset.link")
             )
         )))
     }

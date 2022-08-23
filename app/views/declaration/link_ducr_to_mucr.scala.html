@@ -34,7 +34,7 @@
     sectionHeader: sectionHeader,
     heading: heading,
     paragraph: paragraphBody,
-    link: link,
+    externalLink: externalLink,
     saveButtons: saveButtons,
     formHelper: FormWithCSRF,
     navigator: Navigator,
@@ -50,10 +50,9 @@
 @mucrDetails = {
     @paragraph(
         id = Some("link-ducr-to-mucr-hint1"),
-        message = messages("declaration.linkDucrToMucr.details.hint1", link(
+        message = messages("declaration.linkDucrToMucr.details.hint1", externalLink(
             text = messages("declaration.linkDucrToMucr.details.hint1.link"),
-            call = Call("GET", appConfig.notesForMucrConsolidationUrl),
-            target = Some("_blank")
+            url = appConfig.notesForMucrConsolidationUrl
         ))
     )
 
