@@ -21,10 +21,9 @@ import base.TestHelper.createRandomAlphanumericString
 import controllers.routes
 import forms.Choice.AllowedChoiceValues.CancelDec
 import forms.cancellation.CancellationChangeReason.NoLongerRequired
-import forms.{CancelDeclaration, Choice, Lrn}
-import forms.CancelDeclaration.mrnKey
+import forms.{CancelDeclarationDescription, Choice, Lrn}
 import org.jsoup.nodes.Document
-import play.api.data.{Form, FormError}
+import play.api.data.Form
 import tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.helpers.CommonMessages
@@ -34,7 +33,7 @@ import views.tags.ViewTest
 @ViewTest
 class CancelDeclarationViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector {
 
-  private val form: Form[CancelDeclaration] = CancelDeclaration.form
+  private val form: Form[CancelDeclarationDescription] = CancelDeclarationDescription.form
   private val cancelDeclarationPage = instanceOf[cancel_declaration]
 
   "Cancel DeclarationView on empty page" should {
@@ -42,22 +41,6 @@ class CancelDeclarationViewSpec extends UnitViewSpec with CommonMessages with St
     "display page title" in {
 
       createView().getElementById("title").text() mustBe messages("cancellation.title")
-    }
-
-    "display empty input with label for 'Functional Reference ID'" in {
-
-      val view = createView()
-
-      view.getElementsByAttributeValue("for", "functionalReferenceId").text() mustBe messages("cancellation.functionalReferenceId")
-      view.getElementById("functionalReferenceId").attr("value") mustBe empty
-    }
-
-    "display empty input with label for 'mrn'" in {
-
-      val view = createView()
-
-      view.getElementsByAttributeValue("for", "mrn").text() mustBe messages("cancellation.mrn")
-      view.getElementById("mrn").attr("value") mustBe empty
     }
 
     "display empty input with label for 'statement Description'" in {
@@ -70,7 +53,7 @@ class CancelDeclarationViewSpec extends UnitViewSpec with CommonMessages with St
 
     "display three radio buttons with description (not selected)" in {
 
-      val view = createView(CancelDeclaration.form.fill(CancelDeclaration(Lrn(""), "", "", "")))
+      val view = createView(CancelDeclarationDescription.form.fill(CancelDeclarationDescription("", "")))
 
       val noLongerRequired = view.getElementById("noLongerRequired")
       noLongerRequired.attr("checked") mustBe empty
@@ -105,126 +88,23 @@ class CancelDeclarationViewSpec extends UnitViewSpec with CommonMessages with St
   }
 
   "Cancellation View for invalid input" should {
-    val view = createView(CancelDeclaration.form.bind(Map[String, String]()))
-
-    "display referenceId error" when {
-      "field is empty" in {
-        view must haveGovukGlobalErrorSummary
-        view must containErrorElementWithTagAndHref("a", "#functionalReferenceId")
-        view must containErrorElementWithMessageKey("error.required")
-      }
-
-      "field is entered but is too long" in {
-        val view = createView(
-          CancelDeclaration.form
-            .fillAndValidate(
-              CancelDeclaration(
-                Lrn("1SA1234567890121FSA1234567IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII"),
-                "123456789",
-                "Some Description",
-                NoLongerRequired.toString
-              )
-            )
-        )
-
-        view must haveGovukGlobalErrorSummary
-        view must containErrorElementWithTagAndHref("a", "#functionalReferenceId")
-
-        view must containErrorElementWithMessageKey("cancellation.functionalReferenceId.error.length")
-      }
-
-      "field is entered but is in the wrong format" in {
-        val view = createView(
-          CancelDeclaration.form
-            .fillAndValidate(CancelDeclaration(Lrn("12345566++"), "123456789", "Some Description", NoLongerRequired.toString))
-        )
-
-        view must haveGovukGlobalErrorSummary
-        view must containErrorElementWithTagAndHref("a", "#functionalReferenceId")
-
-        view must containErrorElementWithMessageKey("cancellation.functionalReferenceId.error.specialCharacter")
-      }
-    }
-
-    "display mrn error" when {
-      "field is empty" in {
-        testView("", "Some Description", "mrn", "empty")
-      }
-
-      "field is entered but is too long" in {
-        val view = createView(
-          CancelDeclaration.form
-            .fillAndValidate(
-              CancelDeclaration(Lrn("1SA123456789012-1FSA1234567"), createRandomAlphanumericString(19), "Some Description", NoLongerRequired.toString)
-            )
-        )
-
-        view must haveGovukGlobalErrorSummary
-        view must containErrorElementWithTagAndHref("a", "#mrn")
-
-        view must containErrorElementWithMessageKey("cancellation.mrn.error.length")
-      }
-
-      "field is entered but is in the wrong format" in {
-        val view = createView(
-          CancelDeclaration.form
-            .fillAndValidate(CancelDeclaration(Lrn("1SA123456789012-1FSA1234567"), "1234567890123-", "Some Description", NoLongerRequired.toString))
-        )
-
-        view must haveGovukGlobalErrorSummary
-        view must containErrorElementWithTagAndHref("a", "#mrn")
-
-        view must containErrorElementWithMessageKey("cancellation.mrn.error.wrongFormat")
-      }
-
-      "field value is not found for the current user" in {
-        val view = createView(
-          CancelDeclaration.form
-            .fillAndValidate(
-              CancelDeclaration(Lrn("1SA123456789012-1FSA1234567"), "20GB46J8TMJ4RFGVA0", "Some Description", NoLongerRequired.toString)
-            )
-            .copy(errors = Seq(FormError.apply(mrnKey, "cancellation.mrn.error.denied")))
-        )
-
-        view must haveGovukGlobalErrorSummary
-        view must containErrorElementWithTagAndHref("a", "#mrn")
-
-        view must containErrorElementWithMessageKey("cancellation.mrn.error.denied")
-      }
-
-      "field value has already been submitted in a previous cancellation request" in {
-        val view = createView(
-          CancelDeclaration.form
-            .fillAndValidate(
-              CancelDeclaration(Lrn("1SA123456789012-1FSA1234567"), "20GB46J8TMJ4RFGVA0", "Some Description", NoLongerRequired.toString)
-            )
-            .copy(errors = Seq(FormError.apply(mrnKey, "cancellation.duplicateRequest.error")))
-        )
-
-        view must haveGovukGlobalErrorSummary
-        view must containErrorElementWithTagAndHref("a", "#mrn")
-
-        view must containErrorElementWithMessageKey("cancellation.duplicateRequest.error")
-      }
-    }
+    val view = createView(CancelDeclarationDescription.form.bind(Map[String, String]()))
 
     "display statementDescription error" when {
 
       "field is empty " in {
-        testView("123456789012345678", "", "statementDescription", "empty")
+        testView("", "statementDescription", "empty")
       }
 
       "field is entered but is too long" in {
         val longDesc = createRandomAlphanumericString(600)
-        testView("123456789012345678", longDesc, "statementDescription", "length")
+        testView(longDesc, "statementDescription", "length")
       }
 
       "field is entered but is in the wrong format" in {
         val view = createView(
-          CancelDeclaration.form
-            .fillAndValidate(
-              CancelDeclaration(Lrn("1SA123456789012-1FSA1234567"), "123456789012345678", "Some Description$$$$", NoLongerRequired.toString)
-            )
+          CancelDeclarationDescription.form
+            .fillAndValidate(CancelDeclarationDescription("Some Description$$$$", NoLongerRequired.toString))
         )
 
         view must haveGovukGlobalErrorSummary
@@ -243,8 +123,8 @@ class CancelDeclarationViewSpec extends UnitViewSpec with CommonMessages with St
 
       "field is entered but the value is unknown" in {
         val view = createView(
-          CancelDeclaration.form
-            .fillAndValidate(CancelDeclaration(Lrn("1SA123456789012-1FSA1234567"), "1234567890123", "Some Description", "wrong value"))
+          CancelDeclarationDescription.form
+            .fillAndValidate(CancelDeclarationDescription("Some Description", "wrong value"))
         )
 
         view must haveGovukGlobalErrorSummary
@@ -255,10 +135,10 @@ class CancelDeclarationViewSpec extends UnitViewSpec with CommonMessages with St
     }
   }
 
-  def testView(mrn: String, description: String, key: String, errorType: String): Unit = {
+  def testView(description: String, key: String, errorType: String): Unit = {
     val view = createView(
-      CancelDeclaration.form
-        .fillAndValidate(CancelDeclaration(Lrn("1SA123456789012-1FSA1234567"), mrn, description, NoLongerRequired.toString))
+      CancelDeclarationDescription.form
+        .fillAndValidate(CancelDeclarationDescription(description, NoLongerRequired.toString))
     )
 
     view must haveGovukGlobalErrorSummary
@@ -267,6 +147,6 @@ class CancelDeclarationViewSpec extends UnitViewSpec with CommonMessages with St
     view must containErrorElementWithMessage(messages(s"cancellation.$key.error.$errorType"))
   }
 
-  private def createView(form: Form[CancelDeclaration] = form): Document =
-    cancelDeclarationPage(form)(request, messages)
+  private def createView(form: Form[CancelDeclarationDescription] = form): Document =
+    cancelDeclarationPage(form, Lrn("098765432"), "34567890", "456789")(request, messages)
 }

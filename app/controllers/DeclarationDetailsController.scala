@@ -18,6 +18,8 @@ package controllers
 
 import connectors.CustomsDeclareExportsConnector
 import controllers.actions.{AuthAction, VerifiedEmailAction}
+import models.declaration.submissions.Submission
+import models.requests.ExportsSessionKeys
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
@@ -37,8 +39,20 @@ class DeclarationDetailsController @Inject() (
 
   def displayPage(submissionId: String): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
     customsDeclareExportsConnector.findSubmission(submissionId).map {
-      case Some(submission) => Ok(declarationDetailsPage(submission))
-      case _                => Redirect(routes.SubmissionsController.displayListOfSubmissions())
+      case Some(submission) =>
+        Ok(declarationDetailsPage(submission))
+          .addingToSession(sessionKeys(submission): _*)
+      case _ => Redirect(routes.SubmissionsController.displayListOfSubmissions())
     }
+  }
+
+  private def sessionKeys(submission: Submission): Seq[(String, String)] = {
+    val submissionId = Some(ExportsSessionKeys.submissionId -> submission.uuid)
+    val lrn = Some(ExportsSessionKeys.submissionLrn -> submission.lrn)
+    val mrn = submission.mrn.map(ExportsSessionKeys.submissionMrn -> _)
+    val ducr = submission.ducr.map(ExportsSessionKeys.submissionDucr -> _)
+
+    Seq(submissionId, lrn, mrn, ducr).flatten
+
   }
 }

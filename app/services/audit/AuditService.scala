@@ -16,13 +16,10 @@
 
 package services.audit
 
-import scala.concurrent.{ExecutionContext, Future}
-
 import com.google.inject.Inject
 import config.AppConfig
-import forms.CancelDeclaration
 import models.AuthKey.enrolment
-import models.ExportsDeclaration
+import models.{CancelDeclaration, ExportsDeclaration}
 import play.api.Logging
 import play.api.libs.json.{JsObject, JsValue, Json}
 import services.audit.AuditTypes.Audit
@@ -31,6 +28,8 @@ import uk.gov.hmrc.play.audit.AuditExtensions
 import uk.gov.hmrc.play.audit.http.connector.AuditResult.{Disabled, Failure, Success}
 import uk.gov.hmrc.play.audit.http.connector.{AuditConnector, AuditResult}
 import uk.gov.hmrc.play.audit.model.{DataEvent, ExtendedDataEvent}
+
+import scala.concurrent.{ExecutionContext, Future}
 
 class AuditService @Inject() (connector: AuditConnector, appConfig: AppConfig)(implicit ec: ExecutionContext) extends Logging {
 

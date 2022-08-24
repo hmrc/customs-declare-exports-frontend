@@ -19,7 +19,7 @@ package connectors
 import com.codahale.metrics.Timer
 import com.kenshoo.play.metrics.Metrics
 import config.AppConfig
-import forms.{CancelDeclaration, Lrn}
+import forms.Lrn
 import models._
 import models.declaration.notifications.Notification
 import models.declaration.submissions.Submission

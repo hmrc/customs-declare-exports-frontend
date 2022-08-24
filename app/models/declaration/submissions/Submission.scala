@@ -49,7 +49,7 @@ case class Submission(
 
   lazy val allSubmissionRequestStatuses: Seq[EnhancedStatus] = (
     for {
-      subRequestAction <- actions.filter(_.requestType == SubmissionRequest).headOption
+      subRequestAction <- actions.find(_.requestType == SubmissionRequest)
       notificationSummaries <- subRequestAction.notifications
     } yield notificationSummaries.map(_.enhancedStatus)
   ).getOrElse(Seq.empty[EnhancedStatus])

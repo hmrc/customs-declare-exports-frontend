@@ -19,12 +19,11 @@ package controllers
 import base.{ControllerWithoutFormSpec, Injector}
 import com.codahale.metrics.Timer
 import com.kenshoo.play.metrics.Metrics
+import forms.CancelDeclarationDescription
 import forms.cancellation.CancellationChangeReason.NoLongerRequired
-import forms.{CancelDeclaration, Lrn}
 import metrics.{ExportsMetrics, MetricIdentifiers}
 import mock.{ErrorHandlerMocks, ExportsMetricsMocks}
-import models.requests.ExportsSessionKeys
-import models.{CancellationAlreadyRequested, MrnNotFound}
+import models.{CancelDeclaration, CancellationAlreadyRequested}
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{verify, when}
@@ -66,13 +65,6 @@ class CancelDeclarationControllerSpec extends ControllerWithoutFormSpec with Err
         status(result) must be(OK)
       }
 
-      "cancellation is requested with MRN not found error" in new SetUp {
-        cancelDeclarationResponse(MrnNotFound)
-
-        val result = controller.onSubmit()(postRequest(correctCancelDeclarationJSON))
-        status(result) must be(OK)
-      }
-
       "cancellation is requested with duplicate request error" in new SetUp {
         cancelDeclarationResponse(CancellationAlreadyRequested)
 
@@ -89,7 +81,6 @@ class CancelDeclarationControllerSpec extends ControllerWithoutFormSpec with Err
         val result = controller.onSubmit()(postRequest(correctCancelDeclarationJSON))
         status(result) must be(SEE_OTHER)
         redirectLocation(result) mustBe Some(controllers.routes.CancellationResultController.displayHoldingPage().url)
-        session(result).get(ExportsSessionKeys.submissionMrn) mustBe defined
       }
     }
   }
@@ -136,17 +127,12 @@ class CancelDeclarationControllerSpec extends ControllerWithoutFormSpec with Err
 
 object CancelDeclarationControllerSpec {
   val correctCancelDeclaration =
-    CancelDeclaration(
-      functionalReferenceId = Lrn("1SA123456789012"),
-      mrn = "123456789012345678",
-      statementDescription = "Some description",
-      changeReason = NoLongerRequired.toString
-    )
+    CancelDeclarationDescription(statementDescription = "Some description", changeReason = NoLongerRequired.toString)
 
   val correctCancelDeclarationJSON: JsValue = Json.toJson(correctCancelDeclaration)
 
   val incorrectCancelDeclaration =
-    CancelDeclaration(Lrn("functionalRefernceId"), "decId", "description", "wrong reason")
+    CancelDeclarationDescription("description", "wrong reason")
 
   val incorrectCancelDeclarationJSON: JsValue = Json.toJson(incorrectCancelDeclaration)
 }
