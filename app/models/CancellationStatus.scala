@@ -20,13 +20,13 @@ import play.api.libs.json._
 
 sealed trait CancellationStatus
 
-case object MrnNotFound extends CancellationStatus
+case object NotFound extends CancellationStatus
 case object CancellationAlreadyRequested extends CancellationStatus
 case object CancellationRequestSent extends CancellationStatus
 
 object CancellationStatus {
 
-  val MrnNotFoundName = MrnNotFound.toString
+  val MrnNotFoundName = NotFound.toString
   val CancellationAlreadyRequestedName = CancellationAlreadyRequested.toString
   val CancellationRequestSentName = CancellationRequestSent.toString
 
@@ -34,7 +34,7 @@ object CancellationStatus {
     val (prod: Product, sub) = status match {
       case CancellationAlreadyRequested => (CancellationAlreadyRequested, Json.toJson(CancellationAlreadyRequestedName))
       case CancellationRequestSent      => (CancellationRequestSent, Json.toJson(CancellationRequestSentName))
-      case MrnNotFound                  => (MrnNotFound, Json.toJson(MrnNotFoundName))
+      case NotFound                  => (NotFound, Json.toJson(MrnNotFoundName))
     }
     Some(prod.productPrefix -> sub)
   }
@@ -43,14 +43,14 @@ object CancellationStatus {
     `class` match {
       case CancellationAlreadyRequestedName => CancellationAlreadyRequested
       case CancellationRequestSentName      => CancellationRequestSent
-      case MrnNotFoundName                  => MrnNotFound
+      case MrnNotFoundName                  => NotFound
     }
 
   implicit object CancellationStatusReads extends Reads[CancellationStatus] {
     def reads(jsValue: JsValue): JsResult[CancellationStatus] = jsValue match {
       case JsString(CancellationAlreadyRequestedName) => JsSuccess(CancellationAlreadyRequested)
       case JsString(CancellationRequestSentName)      => JsSuccess(CancellationRequestSent)
-      case JsString(MrnNotFoundName)                  => JsSuccess(MrnNotFound)
+      case JsString(MrnNotFoundName)                  => JsSuccess(NotFound)
       case _                                          => JsError("Incorrect cancellation status")
     }
   }

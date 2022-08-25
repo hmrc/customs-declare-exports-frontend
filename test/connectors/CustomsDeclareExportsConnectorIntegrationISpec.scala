@@ -312,7 +312,7 @@ class CustomsDeclareExportsConnectorIntegrationISpec extends ConnectorISpec with
   }
 
   "Create Cancellation" should {
-    val cancellation = CancelDeclaration(Lrn("ref"), "id", "statement", "reason")
+    val cancellation = CancelDeclaration(id, Lrn("ref"), "id", "statement", "reason")
 
     "return payload" in {
       stubForExports(

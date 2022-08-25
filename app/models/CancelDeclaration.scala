@@ -19,7 +19,7 @@ package models
 import forms.Lrn
 import play.api.libs.json.{Json, OFormat}
 
-case class CancelDeclaration(functionalReferenceId: Lrn, mrn: String, statementDescription: String, changeReason: String)
+case class CancelDeclaration(submissionId: String, functionalReferenceId: Lrn, mrn: String, statementDescription: String, changeReason: String)
 
 object CancelDeclaration {
   implicit val format: OFormat[CancelDeclaration] = Json.format[CancelDeclaration]

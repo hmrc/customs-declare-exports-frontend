@@ -23,7 +23,7 @@ import forms.{CancelDeclarationDescription, Lrn}
 import metrics.ExportsMetrics
 import metrics.MetricIdentifiers._
 import models.requests.{AuthenticatedRequest, ExportsSessionKeys}
-import models.{CancelDeclaration, CancellationAlreadyRequested, CancellationRequestSent, CancellationStatus, MrnNotFound}
+import models._
 import play.api.Logging
 import play.api.data.{Form, FormError}
 import play.api.i18n.I18nSupport
@@ -59,9 +59,9 @@ class CancelDeclarationController @Inject() (
         (formWithErrors: Form[CancelDeclarationDescription]) => Future.successful(BadRequest(cancelDeclarationPage(formWithErrors, lrn, ducr, mrn))),
         userInput =>
           sendAuditedCancellationRequest(userInput).map {
-            case CancellationRequestSent => Redirect(routes.CancellationResultController.displayHoldingPage())
-            case MrnNotFound => Ok(cancelDeclarationPage(createFormWithErrors(userInput, "cancellation.mrn.error.denied"), lrn, ducr, mrn))
-            case CancellationAlreadyRequested =>
+            case models.CancellationRequestSent => Redirect(routes.CancellationResultController.displayHoldingPage())
+            case models.NotFound => Ok(cancelDeclarationPage(createFormWithErrors(userInput, "cancellation.mrn.error.denied"), lrn, ducr, mrn))
+            case models.CancellationAlreadyRequested =>
               Ok(cancelDeclarationPage(createFormWithErrors(userInput, "cancellation.duplicateRequest.error"), lrn, ducr, mrn))
           }
       )
@@ -70,10 +70,14 @@ class CancelDeclarationController @Inject() (
   private def sendAuditedCancellationRequest(
     userInput: CancelDeclarationDescription
   )(implicit request: AuthenticatedRequest[_]): Future[CancellationStatus] = {
-    auditService.auditAllPagesDeclarationCancellation(CancelDeclaration(lrn, mrn, userInput.statementDescription, userInput.changeReason))
+    auditService.auditAllPagesDeclarationCancellation(
+      CancelDeclaration(submissionId, lrn, mrn, userInput.statementDescription, userInput.changeReason)
+    )
     val context = exportsMetrics.startTimer(cancelMetric)
 
-    customsDeclareExportsConnector.createCancellation(CancelDeclaration(lrn, mrn, userInput.statementDescription, userInput.changeReason)) andThen {
+    customsDeclareExportsConnector.createCancellation(
+      CancelDeclaration(submissionId, lrn, mrn, userInput.statementDescription, userInput.changeReason)
+    ) andThen {
       case Failure(exception) =>
         logger.error(s"Error response from backend $exception")
         auditService.audit(AuditTypes.Cancellation, auditData(userInput, Failure.toString))
@@ -104,6 +108,7 @@ class CancelDeclarationController @Inject() (
       EventData.submissionResult.toString -> result
     )
 
+  private def submissionId(implicit request: AuthenticatedRequest[_]): String = request.session.get(ExportsSessionKeys.submissionId).getOrElse("")
   private def mrn(implicit request: AuthenticatedRequest[_]): String = request.session.get(ExportsSessionKeys.submissionMrn).getOrElse("")
   private def lrn(implicit request: AuthenticatedRequest[_]): Lrn = Lrn(request.session.get(ExportsSessionKeys.submissionLrn).getOrElse(""))
   private def ducr(implicit request: AuthenticatedRequest[_]): String = request.session.get(ExportsSessionKeys.submissionDucr).getOrElse("")

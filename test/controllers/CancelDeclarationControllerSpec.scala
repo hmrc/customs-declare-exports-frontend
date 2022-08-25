@@ -23,7 +23,7 @@ import forms.CancelDeclarationDescription
 import forms.cancellation.CancellationChangeReason.NoLongerRequired
 import metrics.{ExportsMetrics, MetricIdentifiers}
 import mock.{ErrorHandlerMocks, ExportsMetricsMocks}
-import models.{CancelDeclaration, CancellationAlreadyRequested, MrnNotFound}
+import models.{CancelDeclaration, CancellationAlreadyRequested, NotFound}
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{verify, when}
@@ -66,7 +66,7 @@ class CancelDeclarationControllerSpec extends ControllerWithoutFormSpec with Err
       }
 
       "cancellation is requested with MRN not found error" in new SetUp {
-        cancelDeclarationResponse(MrnNotFound)
+        cancelDeclarationResponse(NotFound)
 
         val result = controller.onSubmit()(postRequest(correctCancelDeclarationJSON))
         status(result) must be(OK)
