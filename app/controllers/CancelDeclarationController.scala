@@ -20,10 +20,11 @@ import connectors.CustomsDeclareExportsConnector
 import controllers.actions.{AuthAction, VerifiedEmailAction}
 import forms.CancelDeclarationDescription._
 import forms.{CancelDeclarationDescription, Lrn}
+import handlers.ErrorHandler
 import metrics.ExportsMetrics
 import metrics.MetricIdentifiers._
-import models.requests.{AuthenticatedRequest, ExportsSessionKeys}
 import models._
+import models.requests.{AuthenticatedRequest, ExportsSessionKeys}
 import play.api.Logging
 import play.api.data.{Form, FormError}
 import play.api.i18n.I18nSupport
@@ -40,6 +41,7 @@ import scala.util.{Failure, Success}
 class CancelDeclarationController @Inject() (
   authenticate: AuthAction,
   verifyEmail: VerifiedEmailAction,
+  errorHandler: ErrorHandler,
   customsDeclareExportsConnector: CustomsDeclareExportsConnector,
   exportsMetrics: ExportsMetrics,
   mcc: MessagesControllerComponents,
@@ -48,28 +50,36 @@ class CancelDeclarationController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with Logging with WithDefaultFormBinding {
 
-  def displayPage(): Action[AnyContent] = (authenticate andThen verifyEmail) { implicit request =>
-    Ok(cancelDeclarationPage(CancelDeclarationDescription.form, lrn, ducr, mrn))
+  def displayPage(): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
+    getSessionData() match {
+      case Some((submissionId, mrn, lrn, ducr)) => Future.successful(Ok(cancelDeclarationPage(CancelDeclarationDescription.form, lrn, ducr, mrn)))
+      case _                                    => errorHandler.displayErrorPage()
+    }
   }
 
   def onSubmit(): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
-    form
-      .bindFromRequest()
-      .fold(
-        (formWithErrors: Form[CancelDeclarationDescription]) => Future.successful(BadRequest(cancelDeclarationPage(formWithErrors, lrn, ducr, mrn))),
-        userInput =>
-          sendAuditedCancellationRequest(userInput).map {
-            case models.CancellationRequestSent => Redirect(routes.CancellationResultController.displayHoldingPage())
-            case models.NotFound => Ok(cancelDeclarationPage(createFormWithErrors(userInput, "cancellation.mrn.error.denied"), lrn, ducr, mrn))
-            case models.CancellationAlreadyRequested =>
-              Ok(cancelDeclarationPage(createFormWithErrors(userInput, "cancellation.duplicateRequest.error"), lrn, ducr, mrn))
-          }
-      )
+    getSessionData() match {
+      case Some((submissionId, mrn, lrn, ducr)) =>
+        form
+          .bindFromRequest()
+          .fold(
+            (formWithErrors: Form[CancelDeclarationDescription]) =>
+              Future.successful(BadRequest(cancelDeclarationPage(formWithErrors, lrn, ducr, mrn))),
+            userInput =>
+              sendAuditedCancellationRequest(userInput, submissionId, lrn, mrn).map {
+                case models.CancellationRequestSent => Redirect(routes.CancellationResultController.displayHoldingPage())
+                case models.NotFound => Ok(cancelDeclarationPage(createFormWithErrors(userInput, "cancellation.mrn.error.denied"), lrn, ducr, mrn))
+                case models.CancellationAlreadyRequested =>
+                  Ok(cancelDeclarationPage(createFormWithErrors(userInput, "cancellation.duplicateRequest.error"), lrn, ducr, mrn))
+              }
+          )
+      case _ => errorHandler.displayErrorPage()
+    }
   }
 
-  private def sendAuditedCancellationRequest(
-    userInput: CancelDeclarationDescription
-  )(implicit request: AuthenticatedRequest[_]): Future[CancellationStatus] = {
+  private def sendAuditedCancellationRequest(userInput: CancelDeclarationDescription, submissionId: String, lrn: Lrn, mrn: String)(
+    implicit request: AuthenticatedRequest[_]
+  ): Future[CancellationStatus] = {
     auditService.auditAllPagesDeclarationCancellation(
       CancelDeclaration(submissionId, lrn, mrn, userInput.statementDescription, userInput.changeReason)
     )
@@ -80,9 +90,9 @@ class CancelDeclarationController @Inject() (
     ) andThen {
       case Failure(exception) =>
         logger.error(s"Error response from backend $exception")
-        auditService.audit(AuditTypes.Cancellation, auditData(userInput, Failure.toString))
+        auditService.audit(AuditTypes.Cancellation, auditData(userInput, Failure.toString, submissionId, lrn, mrn))
       case Success(_) =>
-        auditService.audit(AuditTypes.Cancellation, auditData(userInput, Success.toString))
+        auditService.audit(AuditTypes.Cancellation, auditData(userInput, Success.toString, submissionId, lrn, mrn))
         exportsMetrics.incrementCounter(cancelMetric)
         context.stop()
     }
@@ -98,7 +108,9 @@ class CancelDeclarationController @Inject() (
       .copy(errors = List(FormError("mrnKey", messages(errorMessageKey))))
   }
 
-  private def auditData(form: CancelDeclarationDescription, result: String)(implicit request: AuthenticatedRequest[_]): Map[String, String] =
+  private def auditData(form: CancelDeclarationDescription, result: String, submissionId: String, lrn: Lrn, mrn: String)(
+    implicit request: AuthenticatedRequest[_]
+  ): Map[String, String] =
     Map(
       EventData.eori.toString -> request.user.eori,
       EventData.lrn.toString -> lrn.value,
@@ -108,8 +120,14 @@ class CancelDeclarationController @Inject() (
       EventData.submissionResult.toString -> result
     )
 
-  private def submissionId(implicit request: AuthenticatedRequest[_]): String = request.session.get(ExportsSessionKeys.submissionId).getOrElse("")
-  private def mrn(implicit request: AuthenticatedRequest[_]): String = request.session.get(ExportsSessionKeys.submissionMrn).getOrElse("")
-  private def lrn(implicit request: AuthenticatedRequest[_]): Lrn = Lrn(request.session.get(ExportsSessionKeys.submissionLrn).getOrElse(""))
-  private def ducr(implicit request: AuthenticatedRequest[_]): String = request.session.get(ExportsSessionKeys.submissionDucr).getOrElse("")
+  private def getSessionData()(implicit request: AuthenticatedRequest[_]): Option[(String, String, Lrn, String)] =
+    for {
+      submissionId <- getSessionValue(ExportsSessionKeys.submissionId)
+      mrn <- getSessionValue(ExportsSessionKeys.submissionMrn)
+      lrn <- getSessionValue(ExportsSessionKeys.submissionLrn).map(Lrn(_))
+      ducr <- getSessionValue(ExportsSessionKeys.submissionDucr)
+    } yield (submissionId, mrn, lrn, ducr)
+
+  private def getSessionValue(str: String)(implicit request: AuthenticatedRequest[_]): Option[String] = request.session.get(str)
+
 }

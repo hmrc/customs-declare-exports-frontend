@@ -23,11 +23,13 @@ import forms.CancelDeclarationDescription
 import forms.cancellation.CancellationChangeReason.NoLongerRequired
 import metrics.{ExportsMetrics, MetricIdentifiers}
 import mock.{ErrorHandlerMocks, ExportsMetricsMocks}
+import models.requests.ExportsSessionKeys
 import models.{CancelDeclaration, CancellationAlreadyRequested, NotFound}
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{verify, when}
 import play.api.libs.json.{JsValue, Json}
+import play.api.mvc.{AnyContent, Request}
 import play.api.test.Helpers._
 import services.audit.{AuditService, AuditTypes}
 import views.html.cancel_declaration
@@ -39,9 +41,17 @@ class CancelDeclarationControllerSpec extends ControllerWithoutFormSpec with Err
     val mockAuditService = mock[AuditService]
     val cancelDeclarationPage = instanceOf[cancel_declaration]
 
+    val sessionData = Seq(
+      ExportsSessionKeys.submissionId -> "submissionId",
+      ExportsSessionKeys.submissionLrn -> "lrn",
+      ExportsSessionKeys.submissionMrn -> "mrn",
+      ExportsSessionKeys.submissionDucr -> "ducr"
+    )
+
     val controller = new CancelDeclarationController(
       mockAuthAction,
       mockVerifiedEmailAction,
+      mockErrorHandler,
       mockCustomsDeclareExportsConnector,
       mockExportsMetrics,
       stubMessagesControllerComponents(),
@@ -60,7 +70,7 @@ class CancelDeclarationControllerSpec extends ControllerWithoutFormSpec with Err
     "return 200 (OK)" when {
 
       "display page method is invoked" in new SetUp {
-        val result = controller.displayPage()(getRequest())
+        val result = controller.displayPage()(getRequestWithSession(sessionData))
 
         status(result) must be(OK)
       }
@@ -68,14 +78,14 @@ class CancelDeclarationControllerSpec extends ControllerWithoutFormSpec with Err
       "cancellation is requested with MRN not found error" in new SetUp {
         cancelDeclarationResponse(NotFound)
 
-        val result = controller.onSubmit()(postRequest(correctCancelDeclarationJSON))
+        val result = controller.onSubmit()(postRequestWithSession(correctCancelDeclarationJSON, sessionData))
         status(result) must be(OK)
       }
 
       "cancellation is requested with duplicate request error" in new SetUp {
         cancelDeclarationResponse(CancellationAlreadyRequested)
 
-        val result = controller.onSubmit()(postRequest(correctCancelDeclarationJSON))
+        val result = controller.onSubmit()(postRequestWithSession(correctCancelDeclarationJSON, sessionData))
         status(result) must be(OK)
       }
     }
@@ -85,7 +95,7 @@ class CancelDeclarationControllerSpec extends ControllerWithoutFormSpec with Err
       "cancellation is requested with success" in new SetUp {
         cancelDeclarationResponse()
 
-        val result = controller.onSubmit()(postRequest(correctCancelDeclarationJSON))
+        val result = controller.onSubmit()(postRequestWithSession(correctCancelDeclarationJSON, sessionData))
         status(result) must be(SEE_OTHER)
         redirectLocation(result) mustBe Some(controllers.routes.CancellationResultController.displayHoldingPage().url)
       }
@@ -111,7 +121,7 @@ class CancelDeclarationControllerSpec extends ControllerWithoutFormSpec with Err
       successfulCustomsDeclareExportsResponse()
       cancelDeclarationResponse()
 
-      val result = controller.onSubmit()(postRequest(correctCancelDeclarationJSON))
+      val result = controller.onSubmit()(postRequestWithSession(correctCancelDeclarationJSON, sessionData))
 
       status(result) must be(SEE_OTHER)
 
@@ -125,7 +135,7 @@ class CancelDeclarationControllerSpec extends ControllerWithoutFormSpec with Err
       val error = new RuntimeException("some error")
       when(mockCustomsDeclareExportsConnector.createCancellation(any[CancelDeclaration])(any(), any())).thenThrow(error)
 
-      val result = controller.onSubmit()(postRequest(correctCancelDeclarationJSON))
+      val result = controller.onSubmit()(postRequestWithSession(correctCancelDeclarationJSON, sessionData))
 
       intercept[Exception](status(result)) mustBe error
     }
