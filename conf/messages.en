@@ -105,6 +105,7 @@ cancellation.mrn = Enter the Movement Reference Number (MRN)
 cancellation.mrn.error.empty = Enter a movement reference number (MRN)
 cancellation.mrn.error.length = Movement reference number (MRN) must be 18 characters long
 cancellation.mrn.error.wrongFormat = Movement reference number (MRN) must contain only letters and numbers
+cancellation.mrn.error.denied = You do not have access to any declaration with this MRN on this service
 cancellation.duplicateRequest.error = You have already requested a cancellation for this MRN. Check your declaration dashboard in the ‘Rejected’ tab and the ‘Progressing’ tab to see if it has been cancelled
 cancellation.statementDescription = Please give more details, for example a consignment reference description.
 cancellation.statementDescription.error.empty = Enter details up to 512 characters
@@ -118,6 +119,9 @@ cancellation.submitButton = Submit
 cancellation.reason.duplication = Duplication
 cancellation.reason.otherReason = Other reason
 cancellation.reason.noLongerRequired = No longer required
+cancellation.ducr = Declaration Unique Consignment Reference (DUCR): {0}
+cancellation.lrn = Your reference number (LRN): {0}
+cancellation.mrn = MRN: {0}
 
 cancellation.holding.title = Cancel your declaration
 cancellation.holding.paragraph = We are processing your cancellation request, please wait.

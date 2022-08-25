@@ -23,7 +23,7 @@ import forms.CancelDeclarationDescription
 import forms.cancellation.CancellationChangeReason.NoLongerRequired
 import metrics.{ExportsMetrics, MetricIdentifiers}
 import mock.{ErrorHandlerMocks, ExportsMetricsMocks}
-import models.{CancelDeclaration, CancellationAlreadyRequested}
+import models.{CancelDeclaration, CancellationAlreadyRequested, MrnNotFound}
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{verify, when}
@@ -62,6 +62,13 @@ class CancelDeclarationControllerSpec extends ControllerWithoutFormSpec with Err
       "display page method is invoked" in new SetUp {
         val result = controller.displayPage()(getRequest())
 
+        status(result) must be(OK)
+      }
+
+      "cancellation is requested with MRN not found error" in new SetUp {
+        cancelDeclarationResponse(MrnNotFound)
+
+        val result = controller.onSubmit()(postRequest(correctCancelDeclarationJSON))
         status(result) must be(OK)
       }
 

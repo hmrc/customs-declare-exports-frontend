@@ -104,7 +104,7 @@ class CancelDeclarationViewSpec extends UnitViewSpec with CommonMessages with St
       "field is entered but is in the wrong format" in {
         val view = createView(
           CancelDeclarationDescription.form
-            .fillAndValidate(CancelDeclarationDescription("Some Description$$$$", NoLongerRequired.toString))
+            .fillAndValidate(CancelDeclarationDescription(NoLongerRequired.toString, "Some Description$$$$"))
         )
 
         view must haveGovukGlobalErrorSummary
@@ -124,7 +124,7 @@ class CancelDeclarationViewSpec extends UnitViewSpec with CommonMessages with St
       "field is entered but the value is unknown" in {
         val view = createView(
           CancelDeclarationDescription.form
-            .fillAndValidate(CancelDeclarationDescription("Some Description", "wrong value"))
+            .fillAndValidate(CancelDeclarationDescription("wrong value", "Some Description"))
         )
 
         view must haveGovukGlobalErrorSummary
@@ -138,7 +138,7 @@ class CancelDeclarationViewSpec extends UnitViewSpec with CommonMessages with St
   def testView(description: String, key: String, errorType: String): Unit = {
     val view = createView(
       CancelDeclarationDescription.form
-        .fillAndValidate(CancelDeclarationDescription(description, NoLongerRequired.toString))
+        .fillAndValidate(CancelDeclarationDescription(NoLongerRequired.toString, description))
     )
 
     view must haveGovukGlobalErrorSummary

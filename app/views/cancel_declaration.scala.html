@@ -49,13 +49,13 @@
     @formHelper(action = CancelDeclarationController.onSubmit(), 'autoComplete -> "off") {
         @errorSummary(radioGroupErrors("changeReason", "noLongerRequired", form.errors))
 
-        @sectionHeader(messages("declaration.section.2"))
+        @sectionHeader(messages("cancellation.mrn", {mrn}))
 
         @pageTitle(messages("cancellation.title"))
 
-        @paragraphBody("Declaration Unique Consignment Reference (DUCR):")
+        @paragraphBody(messages("cancellation.ducr", <b>{ducr}</b>))
 
-        @paragraphBody("Your reference number (LRN):")
+        @paragraphBody(messages("cancellation.lrn", <b>{lrn.value}</b>))
 
         @govukRadios(Radios(
             name = CancelDeclarationDescription.changeReasonKey,

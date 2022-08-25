@@ -23,9 +23,9 @@ import forms.{CancelDeclarationDescription, Lrn}
 import metrics.ExportsMetrics
 import metrics.MetricIdentifiers._
 import models.requests.{AuthenticatedRequest, ExportsSessionKeys}
-import models.{CancelDeclaration, CancellationAlreadyRequested, CancellationRequestSent, CancellationStatus}
+import models.{CancelDeclaration, CancellationAlreadyRequested, CancellationRequestSent, CancellationStatus, MrnNotFound}
 import play.api.Logging
-import play.api.data.Form
+import play.api.data.{Form, FormError}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.audit.{AuditService, AuditTypes, EventData}
@@ -60,6 +60,7 @@ class CancelDeclarationController @Inject() (
         userInput =>
           sendAuditedCancellationRequest(userInput).map {
             case CancellationRequestSent => Redirect(routes.CancellationResultController.displayHoldingPage())
+            case MrnNotFound => Ok(cancelDeclarationPage(createFormWithErrors(userInput, "cancellation.mrn.error.denied"), lrn, ducr, mrn))
             case CancellationAlreadyRequested =>
               Ok(cancelDeclarationPage(createFormWithErrors(userInput, "cancellation.duplicateRequest.error"), lrn, ducr, mrn))
           }
@@ -90,6 +91,7 @@ class CancelDeclarationController @Inject() (
 
     CancelDeclarationDescription.form
       .fill(userInput)
+      .copy(errors = List(FormError("mrnKey", messages(errorMessageKey))))
   }
 
   private def auditData(form: CancelDeclarationDescription, result: String)(implicit request: AuthenticatedRequest[_]): Map[String, String] =
