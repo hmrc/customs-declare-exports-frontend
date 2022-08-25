@@ -36,11 +36,24 @@ class CancelDeclarationViewSpec extends UnitViewSpec with CommonMessages with St
   private val form: Form[CancelDeclarationDescription] = CancelDeclarationDescription.form
   private val cancelDeclarationPage = instanceOf[cancel_declaration]
 
+  private val mrn = "456789"
+  private val lrn = Lrn("098765432")
+  private val ducr = "34567890"
+
   "Cancel DeclarationView on empty page" should {
+
+    "display mrn in header" in {
+      createView().getElementById("section-header").text() must include(messages("cancellation.mrn", mrn))
+    }
 
     "display page title" in {
 
       createView().getElementById("title").text() mustBe messages("cancellation.title")
+    }
+
+    "display ducr and lrn" in {
+      createView().getElementsByClass("govuk-body").first.text mustBe messages("cancellation.ducr", ducr)
+      createView().getElementsByClass("govuk-body").last.text mustBe messages("cancellation.lrn", lrn.value)
     }
 
     "display empty input with label for 'statement Description'" in {
@@ -148,5 +161,5 @@ class CancelDeclarationViewSpec extends UnitViewSpec with CommonMessages with St
   }
 
   private def createView(form: Form[CancelDeclarationDescription] = form): Document =
-    cancelDeclarationPage(form, Lrn("098765432"), "34567890", "456789")(request, messages)
+    cancelDeclarationPage(form, lrn, ducr, mrn)(request, messages)
 }

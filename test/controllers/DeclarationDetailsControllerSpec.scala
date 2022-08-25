@@ -19,10 +19,11 @@ package controllers
 import base.ControllerWithoutFormSpec
 import models.declaration.submissions.RequestType.SubmissionRequest
 import models.declaration.submissions.{Action, Submission}
+import models.requests.ExportsSessionKeys
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
-import org.scalatest.BeforeAndAfterEach
+import org.scalatest.{BeforeAndAfterEach, OptionValues}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.declaration_details
@@ -31,7 +32,7 @@ import java.time.ZonedDateTime
 import java.util.UUID
 import scala.concurrent.Future
 
-class DeclarationDetailsControllerSpec extends ControllerWithoutFormSpec with BeforeAndAfterEach {
+class DeclarationDetailsControllerSpec extends ControllerWithoutFormSpec with BeforeAndAfterEach with OptionValues {
 
   private val actionId = "actionId"
 
@@ -39,8 +40,8 @@ class DeclarationDetailsControllerSpec extends ControllerWithoutFormSpec with Be
     uuid = UUID.randomUUID().toString,
     eori = "eori",
     lrn = "lrn",
-    mrn = None,
-    ducr = None,
+    mrn = Some("mrn"),
+    ducr = Some("ducr"),
     actions = Seq(Action(id = actionId, requestType = SubmissionRequest, requestTimestamp = ZonedDateTime.now, notifications = None))
   )
 
@@ -73,6 +74,11 @@ class DeclarationDetailsControllerSpec extends ControllerWithoutFormSpec with Be
 
         val result = controller.displayPage(actionId)(getRequest())
         status(result) mustBe OK
+
+        session(result).get(ExportsSessionKeys.submissionId).value mustBe submission.uuid
+        session(result).get(ExportsSessionKeys.submissionMrn).value mustBe submission.mrn.value
+        session(result).get(ExportsSessionKeys.submissionLrn).value mustBe submission.lrn
+        session(result).get(ExportsSessionKeys.submissionDucr).value mustBe submission.ducr.value
 
         val submissionCaptor: ArgumentCaptor[Submission] = ArgumentCaptor.forClass(classOf[Submission])
         verify(declarationDetailsPage).apply(submissionCaptor.capture())(any(), any())
