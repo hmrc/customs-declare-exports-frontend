@@ -16,7 +16,6 @@
 
 package models.requests
 
-import java.util.UUID
 import base.{MockAuthAction, UnitWithMocksSpec}
 import models.DeclarationType
 import services.cache.ExportsDeclarationBuilder

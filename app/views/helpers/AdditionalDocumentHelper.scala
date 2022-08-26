@@ -22,7 +22,6 @@ import forms.declaration.declarationHolder.AuthorizationTypeCodes.CSE
 import models.DeclarationType.CLEARANCE
 import models.requests.JourneyRequest
 import play.api.i18n.Messages
-import play.api.mvc.Call
 import play.twirl.api.{Html, HtmlFormat}
 import services.view.HolderOfAuthorisationCodes
 import uk.gov.hmrc.govukfrontend.views.html.components.{GovukDetails, GovukInsetText}
