@@ -26,8 +26,8 @@ import models.declaration.submissions.EnhancedStatus
 import models.declaration.submissions.EnhancedStatus.rejectedStatuses
 import models.requests.ExportsSessionKeys
 import org.mockito.ArgumentCaptor
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, verify, when}
+import org.mockito.ArgumentMatchers.{any, refEq}
+import org.mockito.Mockito.{clearInvocations, reset, verify, when}
 import org.scalatest.GivenWhenThen
 import play.api.data.Form
 import play.api.libs.json.Json
@@ -187,12 +187,56 @@ class CopyDeclarationControllerSpec extends ControllerSpec with GivenWhenThen {
 
         status(result) must be(SEE_OTHER)
         redirectLocation(result) mustBe Some(SummaryController.displayPage(Normal).url)
+      }
+    }
 
-        val declaration = theCacheModelCreated
-        declaration.parentDeclarationId mustBe None
-        declaration.status mustBe DRAFT
-        declaration.linkDucrToMucr mustBe None
-        declaration.mucr mustBe None
+    "lookup the declaration's related submission details" when {
+      onStandard { request =>
+        "submission found then use it to populate the new declaration" in {
+
+          withNewCaching(request.cacheModel)
+
+          clearInvocations(mockCustomsDeclareExportsConnector)
+
+          val correctForm = Json.toJson(CopyDeclaration(Ducr(DUCR), LRN))
+          val result = controller.submitPage(postRequest(correctForm))
+
+          status(result) must be(SEE_OTHER)
+          redirectLocation(result) mustBe Some(SummaryController.displayPage(Normal).url)
+
+          verify(mockCustomsDeclareExportsConnector).findSubmission(refEq(request.cacheModel.id))(any(), any())
+
+          val declaration = theCacheModelCreated
+          declaration.parentDeclarationId mustBe Some(request.cacheModel.id)
+          declaration.parentDeclarationEnhancedStatus mustBe Some(EnhancedStatus.UNKNOWN)
+          declaration.status mustBe DRAFT
+          declaration.linkDucrToMucr mustBe None
+          declaration.mucr mustBe None
+        }
+
+        "no submission found leave new declaration's parentDeclarationEnhancedStatus empty" in {
+
+          val sessionDecId = "noSuchSubmission"
+          withNewCaching(request.cacheModel.copy(id = sessionDecId))
+
+          clearInvocations(mockCustomsDeclareExportsConnector)
+          when(mockCustomsDeclareExportsConnector.findSubmission(refEq(sessionDecId))(any(), any())).thenReturn(Future.successful(None))
+
+          val correctForm = Json.toJson(CopyDeclaration(Ducr(DUCR), LRN))
+          val result = controller.submitPage(postRequest(correctForm))
+
+          status(result) must be(SEE_OTHER)
+          redirectLocation(result) mustBe Some(SummaryController.displayPage(Normal).url)
+
+          verify(mockCustomsDeclareExportsConnector).findSubmission(refEq(sessionDecId))(any(), any())
+
+          val declaration = theCacheModelCreated
+          declaration.parentDeclarationId mustBe Some(sessionDecId)
+          declaration.parentDeclarationEnhancedStatus mustBe None
+          declaration.status mustBe DRAFT
+          declaration.linkDucrToMucr mustBe None
+          declaration.mucr mustBe None
+        }
       }
     }
   }

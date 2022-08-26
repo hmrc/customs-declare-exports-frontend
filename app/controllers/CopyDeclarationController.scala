@@ -73,18 +73,26 @@ class CopyDeclarationController @Inject() (
       }
   }
 
-  private def copyDeclaration(data: CopyDeclaration)(implicit request: JourneyRequest[_]): Future[Result] = {
-    val declaration = request.cacheModel.copy(
-      parentDeclarationId = None,
-      status = DRAFT,
-      createdDateTime = Instant.now,
-      updatedDateTime = Instant.now,
-      consignmentReferences = Some(ConsignmentReferences(Ducr(data.ducr.ducr.toUpperCase), data.lrn)),
-      linkDucrToMucr = None,
-      mucr = None
-    )
-    exportsCacheService.create(declaration).map { declaration =>
-      Redirect(SummaryController.displayPage(Normal)).addingToSession(ExportsSessionKeys.declarationId -> declaration.id)
+  private def copyDeclaration(data: CopyDeclaration)(implicit request: JourneyRequest[_]): Future[Result] =
+    customsDeclareExportsConnector.findSubmission(request.cacheModel.id).flatMap { maybeSubmssion =>
+      val maybeEnhancedStatus = maybeSubmssion match {
+        case Some(submission) => submission.latestEnhancedStatus
+        case _                => None
+      }
+
+      val declaration = request.cacheModel.copy(
+        parentDeclarationId = Some(request.cacheModel.id),
+        parentDeclarationEnhancedStatus = maybeEnhancedStatus,
+        status = DRAFT,
+        createdDateTime = Instant.now,
+        updatedDateTime = Instant.now,
+        consignmentReferences = Some(ConsignmentReferences(Ducr(data.ducr.ducr.toUpperCase), data.lrn)),
+        linkDucrToMucr = None,
+        mucr = None
+      )
+      exportsCacheService.create(declaration).map { declaration =>
+        Redirect(SummaryController.displayPage(Normal)).addingToSession(ExportsSessionKeys.declarationId -> declaration.id)
+      }
+
     }
-  }
 }
