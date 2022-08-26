@@ -19,7 +19,6 @@ package views.helpers
 import config.AppConfig
 import models.DeclarationType.{CLEARANCE, DeclarationType}
 import models.declaration.ProcedureCodesData
-import play.api.mvc.Call
 import play.api.i18n.Messages
 import play.twirl.api.Html
 import uk.gov.hmrc.govukfrontend.views.Aliases.HtmlContent
