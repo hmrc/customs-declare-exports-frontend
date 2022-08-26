@@ -61,7 +61,6 @@ class CopyDeclarationViewSpec extends UnitViewSpec with CommonMessages with Stub
 
       "display the expected label, body and hint for the DUCR field" in {
         view.getElementsByClass("govuk-label").get(0).text mustBe messages("declaration.copy.ducr.label")
-        view.getElementsByClass("govuk-body").get(0) must containMessage("declaration.copy.ducr.paragraph")
         view.getElementsByClass("govuk-hint").get(0) must containMessage("declaration.copy.ducr.hint")
 
         val input = view.getElementsByAttributeValue("name", ducrId).get(0)
@@ -71,7 +70,7 @@ class CopyDeclarationViewSpec extends UnitViewSpec with CommonMessages with Stub
 
       "display the expected label, body and hint for the LRN field" in {
         view.getElementsByClass("govuk-label").get(1).text mustBe messages("declaration.copy.lrn.label")
-        view.getElementsByClass("govuk-body").get(1) must containMessage("declaration.copy.lrn.paragraph")
+        view.getElementsByClass("govuk-body").get(0) must containMessage("declaration.copy.lrn.paragraph")
         view.getElementsByClass("govuk-hint").get(1) must containMessage("declaration.copy.lrn.hint")
 
         val input = view.getElementsByAttributeValue("name", "lrn").get(0)
