@@ -74,13 +74,6 @@ class CancelDeclarationControllerSpec extends ControllerWithoutFormSpec with Err
         status(result) must be(OK)
       }
 
-      "cancellation is requested with not found error" in new SetUp {
-        cancelDeclarationResponse(NotFound)
-
-        val result = controller.onSubmit()(postRequestWithSession(correctCancelDeclarationJSON, sessionData.toSeq))
-        status(result) must be(OK)
-      }
-
       "cancellation is requested with duplicate request error" in new SetUp {
         cancelDeclarationResponse(CancellationAlreadyRequested)
 
@@ -158,6 +151,14 @@ class CancelDeclarationControllerSpec extends ControllerWithoutFormSpec with Err
           contentAsString(postResult) mustBe empty
 
         }
+      }
+
+      "cancellation is requested with not found error" in new SetUp {
+        cancelDeclarationResponse(NotFound)
+
+        val result = controller.onSubmit()(postRequestWithSession(correctCancelDeclarationJSON, sessionData.toSeq))
+        status(result) must be(BAD_REQUEST)
+        contentAsString(result) mustBe empty
       }
     }
   }

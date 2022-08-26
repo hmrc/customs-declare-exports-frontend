@@ -68,9 +68,10 @@ class CancelDeclarationController @Inject() (
             userInput =>
               sendAuditedCancellationRequest(userInput, submissionId, lrn, mrn).map {
                 case models.CancellationRequestSent => Redirect(routes.CancellationResultController.displayHoldingPage())
-                case models.NotFound => Ok(cancelDeclarationPage(createFormWithErrors(userInput, "cancellation.mrn.error.denied"), lrn, ducr, mrn))
                 case models.CancellationAlreadyRequested =>
                   Ok(cancelDeclarationPage(createFormWithErrors(userInput, "cancellation.duplicateRequest.error"), lrn, ducr, mrn))
+              } recoverWith { case _ =>
+                errorHandler.displayErrorPage()
               }
           )
       case _ => errorHandler.displayErrorPage()
