@@ -90,9 +90,9 @@ class CancelDeclarationController @Inject() (
     ) andThen {
       case Failure(exception) =>
         logger.error(s"Error response from backend $exception")
-        auditService.audit(AuditTypes.Cancellation, auditData(userInput, Failure.toString, submissionId, lrn, mrn))
+        auditService.audit(AuditTypes.Cancellation, auditData(userInput, Failure.toString, lrn, mrn))
       case Success(_) =>
-        auditService.audit(AuditTypes.Cancellation, auditData(userInput, Success.toString, submissionId, lrn, mrn))
+        auditService.audit(AuditTypes.Cancellation, auditData(userInput, Success.toString, lrn, mrn))
         exportsMetrics.incrementCounter(cancelMetric)
         context.stop()
     }
@@ -108,7 +108,7 @@ class CancelDeclarationController @Inject() (
       .copy(errors = List(FormError("mrnKey", messages(errorMessageKey))))
   }
 
-  private def auditData(form: CancelDeclarationDescription, result: String, submissionId: String, lrn: Lrn, mrn: String)(
+  private def auditData(form: CancelDeclarationDescription, result: String, lrn: Lrn, mrn: String)(
     implicit request: AuthenticatedRequest[_]
   ): Map[String, String] =
     Map(

@@ -34,7 +34,7 @@ object CancellationStatus {
     val (prod: Product, sub) = status match {
       case CancellationAlreadyRequested => (CancellationAlreadyRequested, Json.toJson(CancellationAlreadyRequestedName))
       case CancellationRequestSent      => (CancellationRequestSent, Json.toJson(CancellationRequestSentName))
-      case NotFound                  => (NotFound, Json.toJson(MrnNotFoundName))
+      case NotFound                     => (NotFound, Json.toJson(MrnNotFoundName))
     }
     Some(prod.productPrefix -> sub)
   }
