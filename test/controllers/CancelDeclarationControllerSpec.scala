@@ -24,7 +24,7 @@ import forms.cancellation.CancellationChangeReason.NoLongerRequired
 import metrics.{ExportsMetrics, MetricIdentifiers}
 import mock.{ErrorHandlerMocks, ExportsMetricsMocks}
 import models.requests.ExportsSessionKeys
-import models.{CancelDeclaration, CancellationAlreadyRequested, NotFound}
+import models.{CancelDeclaration, CancellationAlreadyRequested}
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{verify, when}
@@ -151,14 +151,6 @@ class CancelDeclarationControllerSpec extends ControllerWithoutFormSpec with Err
           contentAsString(postResult) mustBe empty
 
         }
-      }
-
-      "cancellation is requested with not found error" in new SetUp {
-        cancelDeclarationResponse(NotFound)
-
-        val result = controller.onSubmit()(postRequestWithSession(correctCancelDeclarationJSON, sessionData.toSeq))
-        status(result) must be(BAD_REQUEST)
-        contentAsString(result) mustBe empty
       }
     }
   }
