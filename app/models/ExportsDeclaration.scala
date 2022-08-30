@@ -27,6 +27,7 @@ import models.DeclarationStatus.DeclarationStatus
 import models.DeclarationType.DeclarationType
 import models.ExportsDeclaration.isCodePrefixedWith
 import models.declaration._
+import models.declaration.submissions.EnhancedStatus.EnhancedStatus
 import play.api.libs.json._
 
 import java.time.Instant
@@ -35,10 +36,10 @@ import java.time.Instant
 case class ExportsDeclaration(
   id: String,
   parentDeclarationId: Option[String] = None,
+  parentDeclarationEnhancedStatus: Option[EnhancedStatus] = None,
   status: DeclarationStatus,
   createdDateTime: Instant,
   updatedDateTime: Instant,
-  sourceId: Option[String],
   `type`: DeclarationType,
   additionalDeclarationType: Option[AdditionalDeclarationType] = None,
   consignmentReferences: Option[ConsignmentReferences] = None,
