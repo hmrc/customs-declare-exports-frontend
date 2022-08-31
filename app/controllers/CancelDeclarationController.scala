@@ -81,14 +81,14 @@ class CancelDeclarationController @Inject() (
   private def sendAuditedCancellationRequest(userInput: CancelDeclarationDescription, submissionId: String, lrn: Lrn, mrn: String)(
     implicit request: AuthenticatedRequest[_]
   ): Future[CancellationStatus] = {
-    auditService.auditAllPagesDeclarationCancellation(
-      CancelDeclaration(submissionId, lrn, mrn, userInput.statementDescription, userInput.changeReason)
-    )
+
+    val cancelDeclaration = CancelDeclaration(submissionId, lrn, mrn, userInput.statementDescription, userInput.changeReason)
+
+    auditService.auditAllPagesDeclarationCancellation(cancelDeclaration)
+
     val context = exportsMetrics.startTimer(cancelMetric)
 
-    customsDeclareExportsConnector.createCancellation(
-      CancelDeclaration(submissionId, lrn, mrn, userInput.statementDescription, userInput.changeReason)
-    ) andThen {
+    customsDeclareExportsConnector.createCancellation(cancelDeclaration) andThen {
       case Failure(exception) =>
         logger.error(s"Error response from backend $exception")
         auditService.audit(AuditTypes.Cancellation, auditData(userInput, Failure.toString, lrn, mrn))
@@ -106,7 +106,7 @@ class CancelDeclarationController @Inject() (
 
     CancelDeclarationDescription.form
       .fill(userInput)
-      .copy(errors = List(FormError("mrnKey", messages(errorMessageKey))))
+      .copy(errors = List(FormError(CancelDeclarationDescription.statementDescriptionKey, messages(errorMessageKey))))
   }
 
   private def auditData(form: CancelDeclarationDescription, result: String, lrn: Lrn, mrn: String)(

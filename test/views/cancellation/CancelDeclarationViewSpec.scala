@@ -23,7 +23,7 @@ import forms.Choice.AllowedChoiceValues.CancelDec
 import forms.cancellation.CancellationChangeReason.NoLongerRequired
 import forms.{CancelDeclarationDescription, Choice, Lrn}
 import org.jsoup.nodes.Document
-import play.api.data.Form
+import play.api.data.{Form, FormError}
 import tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.helpers.CommonMessages
@@ -102,6 +102,19 @@ class CancelDeclarationViewSpec extends UnitViewSpec with CommonMessages with St
 
   "Cancellation View for invalid input" should {
     val view = createView(CancelDeclarationDescription.form.bind(Map[String, String]()))
+
+    "field value has already been submitted in a previous cancellation request" in {
+      val view = createView(
+        CancelDeclarationDescription.form
+          .fillAndValidate(CancelDeclarationDescription(NoLongerRequired.toString, "Some Description"))
+          .copy(errors = Seq(FormError(CancelDeclarationDescription.statementDescriptionKey, "cancellation.duplicateRequest.error")))
+      )
+
+      view must haveGovukGlobalErrorSummary
+      view must containErrorElementWithTagAndHref("a", s"#${CancelDeclarationDescription.statementDescriptionKey}")
+
+      view must containErrorElementWithMessageKey("cancellation.duplicateRequest.error")
+    }
 
     "display statementDescription error" when {
 
