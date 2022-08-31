@@ -87,7 +87,7 @@
 
 @govukLayout(
     title = Title("declaration.type.description", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.back"), backCall))){
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), backCall))){
 
     @formHelper(action = controllers.declaration.routes.DeclarationChoiceController.submitChoice(mode), 'autoComplete -> "off") {
         @errorSummary(radioGroupErrors("type", DeclarationType.STANDARD.toString, form.errors))

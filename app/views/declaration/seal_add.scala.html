@@ -42,7 +42,7 @@
 
 @govukLayout(
     title = Title("declaration.seal.title", "declaration.section.6", containerId, hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.back"), controllers.declaration.routes.SealController.displaySealSummary(mode, containerId)))) {
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), controllers.declaration.routes.SealController.displaySealSummary(mode, containerId)))) {
 
     @formHelper(action = SealController.submitAddSeal(mode, containerId), 'autoComplete -> "off") {
 

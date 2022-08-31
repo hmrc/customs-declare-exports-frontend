@@ -22,7 +22,7 @@ import controllers.helpers.DeclarationHolderHelper.userCanLandOnIsAuthRequiredPa
 import controllers.helpers.LocationOfGoodsHelper.skipLocationOfGoods
 import controllers.helpers.TransportSectionHelper.{additionalDeclTypesAllowedOnInlandOrBorder, isPostalOrFTIModeOfTransport}
 import controllers.helpers._
-import controllers.routes.{ChoiceController, RejectedNotificationsController, SubmissionsController}
+import controllers.routes.{ChoiceController, RejectedNotificationsController}
 import forms.Choice.AllowedChoiceValues
 import forms.declaration.InlandOrBorder.Border
 import forms.declaration.NatureOfTransaction.{BusinessPurchase, Sale}

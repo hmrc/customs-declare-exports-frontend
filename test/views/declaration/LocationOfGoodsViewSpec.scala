@@ -376,7 +376,7 @@ class LocationOfGoodsViewSpec extends UnitViewSpec with Stubs with Injector with
 
           val backButton = view.getElementById("back-link")
 
-          backButton must containMessage("site.back")
+          backButton must containMessage("site.backToPreviousQuestion")
           backButton.getElementById("back-link") must haveHref(redirect)
         }
       }

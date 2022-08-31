@@ -251,7 +251,7 @@ class ConsigneeDetailsViewSpec extends AddressViewSpec with CommonMessages with 
 
         val backButton = createView().getElementById("back-link")
 
-        backButton.text() mustBe messages(backCaption)
+        backButton.text() mustBe messages(backToPreviousQuestionCaption)
         backButton.attr("href") mustBe routes.CarrierDetailsController.displayPage().url
       }
     }
@@ -264,7 +264,7 @@ class ConsigneeDetailsViewSpec extends AddressViewSpec with CommonMessages with 
 
         val backButton = createView()(requestWithCachedParties).getElementById("back-link")
 
-        backButton.text() mustBe messages(backCaption)
+        backButton.text() mustBe messages(backToPreviousQuestionCaption)
         backButton.attr("href") mustBe routes.CarrierDetailsController.displayPage().url
       }
 
@@ -275,7 +275,7 @@ class ConsigneeDetailsViewSpec extends AddressViewSpec with CommonMessages with 
 
         val backButton = createView()(requestWithCachedParties).getElementById("back-link")
 
-        backButton.text() mustBe messages(backCaption)
+        backButton.text() mustBe messages(backToPreviousQuestionCaption)
         backButton.attr("href") mustBe routes.IsExsController.displayPage().url
       }
 
@@ -286,7 +286,7 @@ class ConsigneeDetailsViewSpec extends AddressViewSpec with CommonMessages with 
 
         val backButton = createView()(requestWithCachedParties).getElementById("back-link")
 
-        backButton.text() mustBe messages(backCaption)
+        backButton.text() mustBe messages(backToPreviousQuestionCaption)
         backButton.attr("href") mustBe routes.RepresentativeStatusController.displayPage().url
       }
     }
@@ -299,7 +299,7 @@ class ConsigneeDetailsViewSpec extends AddressViewSpec with CommonMessages with 
 
         val backButton = createView()(requestWithCachedParties).getElementById("back-link")
 
-        backButton.text() mustBe messages(backCaption)
+        backButton.text() mustBe messages(backToPreviousQuestionCaption)
         backButton.attr("href") mustBe routes.RepresentativeStatusController.displayPage().url
       }
 
@@ -310,7 +310,7 @@ class ConsigneeDetailsViewSpec extends AddressViewSpec with CommonMessages with 
 
         val backButton = createView()(requestWithCachedParties).getElementById("back-link")
 
-        backButton.text() mustBe messages(backCaption)
+        backButton.text() mustBe messages(backToPreviousQuestionCaption)
         backButton.attr("href") mustBe routes.DeclarantExporterController.displayPage().url
       }
     }

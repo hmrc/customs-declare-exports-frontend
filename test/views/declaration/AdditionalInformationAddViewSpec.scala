@@ -127,7 +127,7 @@ class AdditionalInformationAddViewSpec extends UnitViewSpec with ExportsTestHelp
 
         val backButton = createView().getElementById("back-link")
 
-        backButton must containText(messages(backCaption))
+        backButton must containText(messages(backToPreviousQuestionCaption))
         backButton must haveHref(routes.AdditionalInformationRequiredController.displayPage(Mode.Normal, itemId))
       }
     }
@@ -136,7 +136,7 @@ class AdditionalInformationAddViewSpec extends UnitViewSpec with ExportsTestHelp
 
         val backButton = createView().getElementById("back-link")
 
-        backButton must containText(messages(backCaption))
+        backButton must containText(messages(backToPreviousQuestionCaption))
         backButton must haveHref(routes.AdditionalInformationController.displayPage(Mode.Normal, itemId))
       }
     }

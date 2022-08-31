@@ -80,7 +80,7 @@ class UNDangerousGoodsCodeViewSpec extends UnitViewSpec with ExportsTestHelper w
 
         val backButton = view.getElementById("back-link")
 
-        backButton must containMessage("site.back")
+        backButton must containMessage("site.backToPreviousQuestion")
         backButton.getElementById("back-link") must haveHref(
           controllers.declaration.routes.CommodityDetailsController.displayPage(Mode.Normal, itemId)
         )

@@ -144,7 +144,7 @@
 
 @govukLayout(
     title = Title("declaration.consignmentReferences.header", "declaration.section.1", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.back"), navigator.backLink(ConsignmentReferences, mode)))) {
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(ConsignmentReferences, mode)))) {
 
     @formHelper(action = ConsignmentReferencesController.submitConsignmentReferences(mode), 'autoComplete -> "off") {
         @errorSummary(form.errors)

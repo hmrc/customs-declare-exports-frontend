@@ -63,7 +63,7 @@ class DeclarationHolderChangeViewSpec extends UnitViewSpec with CommonMessages w
       "display 'Back' button that links to 'Summary' page" in {
         val backButton = view.getElementById("back-link")
 
-        backButton.text mustBe messages(backCaption)
+        backButton.text mustBe messages(backToPreviousQuestionCaption)
         backButton.attr("href") mustBe routes.DeclarationHolderSummaryController.displayPage().url
       }
 

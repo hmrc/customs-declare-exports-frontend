@@ -45,7 +45,7 @@
 
 @govukLayout(
     title = Title("declaration.transportInformation.containers.add.title", "declaration.section.6", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.back"), navigator.backLink(ContainerAdd, mode)))) {
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(ContainerAdd, mode)))) {
 
     @formHelper(action = TransportContainerController.submitAddContainer(mode), 'autoComplete -> "off") {
 

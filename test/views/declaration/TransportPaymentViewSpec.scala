@@ -68,7 +68,7 @@ class TransportPaymentViewSpec extends UnitViewSpec with ExportsTestHelper with 
       "display 'Back' button that links to the 'Express Consignment' page" in {
         val backLinkContainer = view.getElementById("back-link")
 
-        backLinkContainer must containMessage(backCaption)
+        backLinkContainer must containMessage(backToPreviousQuestionCaption)
         backLinkContainer.getElementById("back-link") must haveHref(routes.ExpressConsignmentController.displayPage(Mode.Normal))
       }
     }

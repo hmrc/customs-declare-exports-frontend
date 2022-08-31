@@ -165,7 +165,7 @@ class AdditionalDocumentsRequiredViewSpec extends UnitViewSpec with CommonMessag
 
     def verifyBackButton(call: Call)(implicit request: JourneyRequest[_]): Assertion = {
       val backButton = createView().getElementById("back-link")
-      backButton must containMessage(backCaption)
+      backButton must containMessage(backToPreviousQuestionCaption)
       backButton must haveHref(call)
     }
 

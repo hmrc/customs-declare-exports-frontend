@@ -133,7 +133,7 @@ class DestinationCountryViewSpec extends UnitViewSpec with Stubs with ExportsTes
 
     def verifyBackLink(call: Call)(implicit request: JourneyRequest[_]): Unit = {
       val backButton = createView().getElementById("back-link")
-      backButton.text mustBe messages("site.back")
+      backButton.text mustBe messages("site.backToPreviousQuestion")
       backButton must haveHref(call)
     }
   }

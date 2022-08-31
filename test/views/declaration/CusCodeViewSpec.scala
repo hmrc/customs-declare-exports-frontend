@@ -81,7 +81,7 @@ class CusCodeViewSpec extends UnitViewSpec with ExportsTestHelper with Stubs wit
 
         val backButton = view.getElementById("back-link")
 
-        backButton must containMessage("site.back")
+        backButton must containMessage("site.backToPreviousQuestion")
         backButton.getElementById("back-link") must haveHref(
           controllers.declaration.routes.UNDangerousGoodsCodeController.displayPage(Mode.Normal, itemId)
         )

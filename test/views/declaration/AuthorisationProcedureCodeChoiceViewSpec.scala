@@ -119,7 +119,7 @@ class AuthorisationProcedureCodeChoiceViewSpec extends UnitViewSpec with Stubs w
 
       "display 'Back' button that links to 'Authorisations Required' page" in {
         val backButton = view.getElementById("back-link")
-        backButton must containMessage("site.back")
+        backButton must containMessage("site.backToPreviousQuestion")
         backButton must haveHref(routes.AdditionalActorsSummaryController.displayPage())
       }
 
@@ -131,7 +131,7 @@ class AuthorisationProcedureCodeChoiceViewSpec extends UnitViewSpec with Stubs w
       "EIDR is true" must {
         "display 'Back' button that links to 'Consignee Details' page" in {
           val backButton = view.getElementById("back-link")
-          backButton must containMessage("site.back")
+          backButton must containMessage("site.backToPreviousQuestion")
           backButton must haveHref(routes.ConsigneeDetailsController.displayPage())
         }
       }
@@ -143,7 +143,7 @@ class AuthorisationProcedureCodeChoiceViewSpec extends UnitViewSpec with Stubs w
       "EIDR is false" must {
         "display 'Back' button that links to 'Other parties' page" in {
           val backButton = view.getElementById("back-link")
-          backButton must containMessage("site.back")
+          backButton must containMessage("site.backToPreviousQuestion")
           backButton must haveHref(routes.AdditionalActorsSummaryController.displayPage())
         }
       }

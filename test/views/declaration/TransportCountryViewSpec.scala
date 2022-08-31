@@ -83,7 +83,7 @@ class TransportCountryViewSpec extends UnitViewSpec with ExportsTestHelper with 
 
               "display 'Back' button that links to the 'Border Transport' page" in {
                 val backButton = view.getElementById("back-link")
-                backButton must containMessage("site.back")
+                backButton must containMessage("site.backToPreviousQuestion")
                 backButton.getElementById("back-link") must haveHref(BorderTransportController.displayPage(Normal))
               }
 
@@ -92,7 +92,7 @@ class TransportCountryViewSpec extends UnitViewSpec with ExportsTestHelper with 
                   implicit val request = withRequestOfType(declarationType, withInlandOrBorder(Some(Border)))
                   val view = createView(form(transportMode), transportMode)
                   val backButton = view.getElementById("back-link")
-                  backButton must containMessage("site.back")
+                  backButton must containMessage("site.backToPreviousQuestion")
                   backButton.getElementById("back-link") must haveHref(DepartureTransportController.displayPage(Normal))
                 }
               }

@@ -50,7 +50,7 @@ class RepresentativeDetailsEntityViewSpec extends UnitViewSpec with ExportsTestH
 
       val backButton = view.getElementById("back-link")
 
-      backButton must containMessage("site.back")
+      backButton must containMessage("site.backToPreviousQuestion")
       backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.RepresentativeAgentController.displayPage(Mode.Normal))
     }
 

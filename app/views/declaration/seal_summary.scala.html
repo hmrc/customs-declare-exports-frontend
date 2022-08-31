@@ -101,7 +101,7 @@
     title = if(seals.isEmpty) Title("declaration.seal.add.first", "declaration.section.6", containerId)
             else if(seals.size == 1) Title("declaration.seal.summary.title", "declaration.section.6", containerId)
             else Title("declaration.seal.summary.multiple.title", "declaration.section.6", "", Some(Seq(seals.size.toString, containerId))),
-    backButton = Some(BackButton(messages("site.back"), controllers.declaration.routes.TransportContainerController.displayContainerSummary(mode)))) {
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), controllers.declaration.routes.TransportContainerController.displayContainerSummary(mode)))) {
 
     @formHelper(action = SealController.submitSummaryAction(mode, containerId), 'autoComplete -> "off") {
         @errorSummary(yesNoErrors(form.errors))

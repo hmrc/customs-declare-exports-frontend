@@ -48,7 +48,7 @@
 
 @govukLayout(
     title = borderTransportHelper.titleInHeadTag(form.hasErrors || form.hasGlobalErrors),
-    backButton = Some(BackButton(messages("site.back"), navigator.backLink(BorderTransport, mode)))) {
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(BorderTransport, mode)))) {
 
     @formHelper(action = BorderTransportController.submitForm(mode), 'autoComplete -> "off") {
 

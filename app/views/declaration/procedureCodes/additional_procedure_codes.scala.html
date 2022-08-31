@@ -59,7 +59,7 @@
 
 @govukLayout(
   title = Title("declaration.additionalProcedureCodes.title", "declaration.section.5", procedureCode.code, hasErrors = hasErrors),
-  backButton = Some(BackButton(messages("site.back"), navigator.backLink(AdditionalProcedureCode, mode, ItemId(itemId))))) {
+  backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(AdditionalProcedureCode, mode, ItemId(itemId))))) {
 
   @formHelper(action = controllers.declaration.routes.AdditionalProcedureCodesController.submitAdditionalProcedureCodes(mode, itemId), 'autoComplete -> "off") {
 

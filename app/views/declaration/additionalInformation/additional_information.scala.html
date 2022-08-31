@@ -116,7 +116,7 @@
     }
 }
 
-@govukLayout(title = title, backButton = Some(BackButton(messages("site.back"), backLink))) {
+@govukLayout(title = title, backButton = Some(BackButton(messages("site.backToPreviousQuestion"), backLink))) {
 
     @formHelper(action = AdditionalInformationController.submitForm(mode, itemId), 'autoComplete -> "off") {
         @errorSummary(yesNoErrors(form.errors))

@@ -100,7 +100,7 @@ class ZeroRatedForVatViewSpec extends UnitViewSpec with Stubs with Injector {
 
       "display 'Back' button that links to 'Taric' page" in {
         val backButton = view.getElementById("back-link")
-        backButton must containMessage("site.back")
+        backButton must containMessage("site.backToPreviousQuestion")
         backButton must haveHref(routes.TaricCodeSummaryController.displayPage(Mode.Normal, itemId))
       }
 

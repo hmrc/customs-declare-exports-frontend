@@ -95,7 +95,7 @@ class DeclarantExporterViewSpec extends UnitViewSpec with ExportsTestHelper with
 
         val backButton = createView().getElementById("back-link")
 
-        backButton must containMessage(backCaption)
+        backButton must containMessage(backToPreviousQuestionCaption)
         backButton must haveHref(routes.LinkDucrToMucrController.displayPage().url)
       }
     }
@@ -105,7 +105,7 @@ class DeclarantExporterViewSpec extends UnitViewSpec with ExportsTestHelper with
 
         val backButton = createView().getElementById("back-link")
 
-        backButton must containMessage(backCaption)
+        backButton must containMessage(backToPreviousQuestionCaption)
         backButton must haveHref(routes.ConsignmentReferencesController.displayPage().url)
       }
     }
@@ -115,7 +115,7 @@ class DeclarantExporterViewSpec extends UnitViewSpec with ExportsTestHelper with
 
         val backButton = createView().getElementById("back-link")
 
-        backButton must containMessage(backCaption)
+        backButton must containMessage(backToPreviousQuestionCaption)
         backButton must haveHref(routes.DeclarantDetailsController.displayPage().url)
       }
     }

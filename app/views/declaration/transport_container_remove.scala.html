@@ -57,7 +57,7 @@
 
 @govukLayout(
     title = Title("declaration.transportInformation.container.remove.title", "declaration.section.6", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.back"), controllers.declaration.routes.TransportContainerController.displayContainerSummary(mode)))) {
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), controllers.declaration.routes.TransportContainerController.displayContainerSummary(mode)))) {
 
     @formHelper(action = TransportContainerController.submitContainerRemove(mode, container.id), 'autoComplete -> "off") {
         @errorSummary(yesNoErrors(form.errors))

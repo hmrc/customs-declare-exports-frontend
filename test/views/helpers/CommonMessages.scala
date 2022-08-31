@@ -19,6 +19,7 @@ package views.helpers
 trait CommonMessages {
 
   val backCaption: String = "site.back"
+  val backToPreviousQuestionCaption = "site.backToPreviousQuestion"
   val backToSelectionCaption: String = "site.backToSelectionPage"
   val removeCaption: String = "site.remove"
   val addCaption: String = "site.add"

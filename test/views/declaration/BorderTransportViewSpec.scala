@@ -50,7 +50,7 @@ class BorderTransportViewSpec extends UnitViewSpec with ExportsTestHelper with S
 
         "display a 'Back' button that links to the /departure-transport page" in {
           val backButton = view.getElementById("back-link")
-          backButton must containMessage(backCaption)
+          backButton must containMessage(backToPreviousQuestionCaption)
           backButton must haveHref(DepartureTransportController.displayPage())
         }
 

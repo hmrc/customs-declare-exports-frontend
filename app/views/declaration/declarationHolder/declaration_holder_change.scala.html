@@ -33,7 +33,7 @@
 
 @govukLayout(
     title = Title("declaration.declarationHolder.title", "declaration.section.2", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.back"), DeclarationHolderSummaryController.displayPage(mode)))
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), DeclarationHolderSummaryController.displayPage(mode)))
 ) {
 
     @formHelper(action = DeclarationHolderChangeController.submitForm(mode, id), 'autoComplete -> "off") {

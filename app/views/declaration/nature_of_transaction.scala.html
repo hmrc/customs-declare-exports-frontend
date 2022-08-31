@@ -53,7 +53,7 @@
 
 @govukLayout(
     title = Title("declaration.natureOfTransaction.heading", "declaration.section.4", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.back"), navigator.backLink(NatureOfTransaction, mode)))) {
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(NatureOfTransaction, mode)))) {
 
     @formHelper(action = controllers.declaration.routes.NatureOfTransactionController.saveTransactionType(mode), 'autoComplete -> "off") {
         @errorSummary(radioGroupErrors("natureType", "Sale", form.errors))

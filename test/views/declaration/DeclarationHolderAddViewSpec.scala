@@ -258,7 +258,7 @@ class DeclarationHolderAddViewSpec extends UnitViewSpec with CommonMessages with
 
   private def verifyBackLink(call: Call)(implicit request: JourneyRequest[_]): Unit = {
     val backButton = createView(createForm).getElementById("back-link")
-    backButton.text mustBe messages("site.back")
+    backButton.text mustBe messages("site.backToPreviousQuestion")
     backButton must haveHref(call)
   }
 }

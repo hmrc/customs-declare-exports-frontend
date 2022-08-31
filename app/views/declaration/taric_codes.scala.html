@@ -98,7 +98,7 @@
 
 @govukLayout(
     title = title,
-    backButton = Some(BackButton(messages("site.back"), navigator.backLink(TaricCodeFirst, mode, ItemId(itemId))))) {
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(TaricCodeFirst, mode, ItemId(itemId))))) {
 
     @formHelper(action = routes.TaricCodeSummaryController.submitForm(mode, itemId), 'autoComplete -> "off") {
 

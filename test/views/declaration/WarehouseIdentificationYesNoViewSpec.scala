@@ -87,7 +87,7 @@ class WarehouseIdentificationYesNoViewSpec extends UnitViewSpec with ExportsTest
       "display 'Back' button that links to 'Transport Leaving the Border' page" in {
         val backButton = view.getElementById("back-link")
 
-        backButton must containMessage("site.back")
+        backButton must containMessage("site.backToPreviousQuestion")
         backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.TransportLeavingTheBorderController.displayPage())
       }
     }
@@ -97,7 +97,7 @@ class WarehouseIdentificationYesNoViewSpec extends UnitViewSpec with ExportsTest
       "display 'Back' button that links to 'Items Summary' page" in {
         val backButton = view.getElementById("back-link")
 
-        backButton must containMessage("site.back")
+        backButton must containMessage("site.backToPreviousQuestion")
         backButton.getElementById("back-link") must haveHref(
           controllers.declaration.routes.ItemsSummaryController.displayItemsSummaryPage(Mode.Normal)
         )

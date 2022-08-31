@@ -84,7 +84,7 @@ class SealSummaryViewSpec extends UnitViewSpec with Stubs with CommonMessages wi
     "display 'Back' button that links to 'containers summary' page" in {
       val backLinkContainer = view.getElementById("back-link")
 
-      backLinkContainer must containMessage(backCaption)
+      backLinkContainer must containMessage(backToPreviousQuestionCaption)
       backLinkContainer.getElementById("back-link") must haveHref(
         controllers.declaration.routes.TransportContainerController.displayContainerSummary(Mode.Normal)
       )

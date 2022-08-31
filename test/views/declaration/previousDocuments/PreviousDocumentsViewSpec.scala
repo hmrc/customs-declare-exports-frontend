@@ -253,7 +253,7 @@ class PreviousDocumentsViewSpec extends UnitViewSpec with ExportsTestHelper with
       "display 'Back' button that links to 'Nature of Transaction' page" in {
         val backButton = createView().getElementById("back-link")
 
-        backButton must containMessage("site.back")
+        backButton must containMessage("site.backToPreviousQuestion")
         backButton must haveHref(NatureOfTransactionController.displayPage(Mode.Normal))
       }
     }
@@ -261,7 +261,7 @@ class PreviousDocumentsViewSpec extends UnitViewSpec with ExportsTestHelper with
     onJourney(CLEARANCE, OCCASIONAL, SIMPLIFIED) { implicit request =>
       "display 'Back' button that links to 'Office of Exit' page" in {
         val backButton = createView().getElementById("back-link")
-        backButton must containMessage("site.back")
+        backButton must containMessage("site.backToPreviousQuestion")
         backButton must haveHref(OfficeOfExitController.displayPage(Mode.Normal))
       }
     }
@@ -280,7 +280,7 @@ class PreviousDocumentsViewSpec extends UnitViewSpec with ExportsTestHelper with
 
           val backButton = createView()(requestWithPreviousDocuments).getElementById("back-link")
 
-          backButton must containMessage("site.back")
+          backButton must containMessage("site.backToPreviousQuestion")
           backButton must haveHref(PreviousDocumentsSummaryController.displayPage(Mode.Normal))
         }
       }

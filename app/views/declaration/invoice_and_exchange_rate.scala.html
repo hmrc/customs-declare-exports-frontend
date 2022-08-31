@@ -123,7 +123,7 @@
 
 @govukLayout(
     title = Title("declaration.invoice.details.title", "declaration.section.4", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.back"), navigator.backLink(InvoiceAndExchangeRate, mode)))) {
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(InvoiceAndExchangeRate, mode)))) {
 
     @formHelper(action = InvoiceAndExchangeRateController.saveNoOfItems(mode), 'autoComplete -> "off") {
         @errorSummary(form.errors)

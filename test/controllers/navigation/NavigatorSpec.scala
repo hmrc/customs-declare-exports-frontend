@@ -20,9 +20,8 @@ import base.{JourneyTypeTestRunner, MockExportCacheService, RequestBuilder, Unit
 import config.AppConfig
 import controllers.declaration.routes._
 import controllers.helpers._
-import controllers.routes.{RejectedNotificationsController, SubmissionsController}
+import controllers.routes.RejectedNotificationsController
 import forms.declaration.AdditionalInformationSummary
-import forms.declaration.carrier.CarrierDetails
 import mock.FeatureFlagMocks
 import models.requests.{ExportsSessionKeys, JourneyRequest}
 import models.responses.FlashKeys
@@ -32,7 +31,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.BDDMockito._
 import org.mockito.Mockito.{reset, verify, verifyNoInteractions, when}
 import org.scalatest.concurrent.ScalaFutures
-import play.api.mvc.{AnyContent, AnyContentAsFormUrlEncoded, Call, Flash, Result}
+import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.TariffApiService
@@ -207,31 +206,6 @@ class NavigatorSpec
         val request = requestWithFormAction(Some(SaveAndContinue))
         val result = navigator.continueTo(Mode.ErrorFix, call)(decoratedRequest(request), hc)
         redirectLocation(result) mustBe Some(url)
-      }
-
-      "backLink method is invoked with mode ErrorFix and parentDeclarationId in request" in {
-        val result = navigator.backLink(CarrierDetails, Mode.ErrorFix)(decoratedRequest(request))
-        result mustBe RejectedNotificationsController.displayPage(parentDeclarationId)
-      }
-
-      "backLink method for items is invoked with mode ErrorFix and parentDeclarationId in request" in {
-        val result = navigator.backLink(CarrierDetails, Mode.ErrorFix, ItemId("123456"))(decoratedRequest(request))
-        result mustBe RejectedNotificationsController.displayPage(parentDeclarationId)
-      }
-    }
-
-    "redirect to SubmissionsController.displayListOfSubmissions" when {
-
-      implicit val declaration = aDeclaration()
-
-      "backLink method is invoked with mode ErrorFix but without parentDeclarationId in request" in {
-        val result = navigator.backLink(CarrierDetails, Mode.ErrorFix)(decoratedRequest(request))
-        result mustBe SubmissionsController.displayListOfSubmissions()
-      }
-
-      "backLink method for items is invoked with mode ErrorFix but without parentDeclarationId in request" in {
-        val result = navigator.backLink(CarrierDetails, Mode.ErrorFix, ItemId("123456"))(decoratedRequest(request))
-        result mustBe SubmissionsController.displayListOfSubmissions()
       }
     }
 
