@@ -93,7 +93,6 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Stubs with Be
       ensureAllLabelTextIsCorrect(view)
 
       ensureRadioIsUnChecked(view, "CRT")
-      ensureRadioIsUnChecked(view, "CAN")
       ensureRadioIsUnChecked(view, "SUB")
       ensureRadioIsUnChecked(view, "CON")
       ensureRadioIsUnChecked(view, "MSG")
@@ -226,19 +225,6 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Stubs with Be
       ensureAllLabelTextIsCorrect(view)
 
       ensureRadioIsChecked(view, "CRT")
-      ensureRadioIsUnChecked(view, "CAN")
-      ensureRadioIsUnChecked(view, "SUB")
-      ensureRadioIsUnChecked(view, "CON")
-      ensureRadioIsUnChecked(view, "MSG")
-    }
-
-    "display selected radio button - Cancel a declaration (CAN)" in {
-      withSecureMessagingFeatureStatus(EXPORTS)
-      val view = createView(Choice.form().fill(Choice("CAN")))
-      ensureAllLabelTextIsCorrect(view)
-
-      ensureRadioIsUnChecked(view, "CRT")
-      ensureRadioIsChecked(view, "CAN")
       ensureRadioIsUnChecked(view, "SUB")
       ensureRadioIsUnChecked(view, "CON")
       ensureRadioIsUnChecked(view, "MSG")
@@ -251,7 +237,6 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Stubs with Be
       ensureAllLabelTextIsCorrect(view)
 
       ensureRadioIsUnChecked(view, "CRT")
-      ensureRadioIsUnChecked(view, "CAN")
       ensureRadioIsChecked(view, "SUB")
       ensureRadioIsUnChecked(view, "CON")
       ensureRadioIsUnChecked(view, "MSG")
@@ -264,7 +249,6 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Stubs with Be
       ensureAllLabelTextIsCorrect(view)
 
       ensureRadioIsUnChecked(view, "CRT")
-      ensureRadioIsUnChecked(view, "CAN")
       ensureRadioIsUnChecked(view, "SUB")
       ensureRadioIsChecked(view, "CON")
       ensureRadioIsUnChecked(view, "MSG")
@@ -277,7 +261,6 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Stubs with Be
       ensureAllLabelTextIsCorrect(view)
 
       ensureRadioIsUnChecked(view, "CRT")
-      ensureRadioIsUnChecked(view, "CAN")
       ensureRadioIsUnChecked(view, "SUB")
       ensureRadioIsUnChecked(view, "CON")
       ensureRadioIsChecked(view, "MSG")
@@ -285,10 +268,9 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Stubs with Be
   }
 
   private def ensureAllLabelTextIsCorrect(view: Document): Unit = {
-    view.getElementsByTag("label").size mustBe 5
+    view.getElementsByTag("label").size mustBe 4
     view.getElementsByAttributeValue("for", "CRT") must containMessageForElements("declaration.choice.CRT")
     view.getElementsByAttributeValue("for", "SUB") must containMessageForElements("declaration.choice.SUB")
-    view.getElementsByAttributeValue("for", "CAN") must containMessageForElements("declaration.choice.CAN")
     view.getElementsByAttributeValue("for", "CON") must containMessageForElements("declaration.choice.CON")
     view.getElementsByAttributeValue("for", "MSG") must containMessageForElements("declaration.choice.MSG")
   }

@@ -16,6 +16,7 @@
 
 package models.declaration
 
+import forms.Lrn
 import forms.common.YesNoAnswer.Yes
 import forms.common.{Date, Eori}
 import forms.declaration.ConsignmentReferencesSpec._
@@ -30,11 +31,10 @@ import forms.declaration.countries.Country
 import forms.declaration.declarationHolder.DeclarationHolder
 import forms.declaration.exporter.ExporterDetails
 import forms.declaration.officeOfExit.OfficeOfExit
-import forms.{CancelDeclaration, Lrn}
 import models.declaration.DeclarationAdditionalActorsDataSpec._
 import models.declaration.governmentagencygoodsitem.Formats._
 import models.declaration.governmentagencygoodsitem.{Amount, GovernmentAgencyGoodsItem}
-import models.{DeclarationStatus, DeclarationType, ExportsDeclaration}
+import models.{CancelDeclaration, DeclarationStatus, DeclarationType, ExportsDeclaration}
 import play.api.libs.json._
 
 import java.time.Instant
@@ -96,7 +96,7 @@ object ExportDeclarationTestData {
     )
   )
 
-  lazy val cancellationDeclarationTest = CancelDeclaration(Lrn("FG7676767889"), "mrn", "description", "reason")
+  lazy val cancellationDeclarationTest = CancelDeclaration("id", Lrn("FG7676767889"), "mrn", "description", "reason")
 
   lazy val allRecordsXmlMarshallingTest = allRecords.copy(
     items = Seq(

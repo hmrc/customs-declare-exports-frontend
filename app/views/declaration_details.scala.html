@@ -102,6 +102,16 @@
   }
 }
 
+@cancelDeclarationLink = {
+    <p>
+        @link(
+            id = Some("cancel-declaration"),
+            text = messages("submissions.cancel.declaration"),
+            call = routes.CancelDeclarationController.displayPage()
+        )
+    </p>
+}
+
 @movementsRedirectionLink = {
     <p>
         @link(
@@ -241,6 +251,7 @@
             @pdfForEadLink
             @viewDeclarationLink
             @copyDeclarationLink
+            @cancelDeclarationLink
             @movementsRedirectionLink
         </div>
 

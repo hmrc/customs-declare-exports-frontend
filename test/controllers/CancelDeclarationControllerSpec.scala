@@ -19,12 +19,12 @@ package controllers
 import base.{ControllerWithoutFormSpec, Injector}
 import com.codahale.metrics.Timer
 import com.kenshoo.play.metrics.Metrics
+import forms.CancelDeclarationDescription
 import forms.cancellation.CancellationChangeReason.NoLongerRequired
-import forms.{CancelDeclaration, Lrn}
 import metrics.{ExportsMetrics, MetricIdentifiers}
 import mock.{ErrorHandlerMocks, ExportsMetricsMocks}
 import models.requests.ExportsSessionKeys
-import models.{CancellationAlreadyRequested, MrnNotFound}
+import models.{CancelDeclaration, CancellationAlreadyRequested}
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{verify, when}
@@ -40,9 +40,17 @@ class CancelDeclarationControllerSpec extends ControllerWithoutFormSpec with Err
     val mockAuditService = mock[AuditService]
     val cancelDeclarationPage = instanceOf[cancel_declaration]
 
+    val sessionData = Map(
+      ExportsSessionKeys.submissionId -> "submissionId",
+      ExportsSessionKeys.submissionLrn -> "lrn",
+      ExportsSessionKeys.submissionMrn -> "mrn",
+      ExportsSessionKeys.submissionDucr -> "ducr"
+    )
+
     val controller = new CancelDeclarationController(
       mockAuthAction,
       mockVerifiedEmailAction,
+      mockErrorHandler,
       mockCustomsDeclareExportsConnector,
       mockExportsMetrics,
       stubMessagesControllerComponents(),
@@ -61,22 +69,15 @@ class CancelDeclarationControllerSpec extends ControllerWithoutFormSpec with Err
     "return 200 (OK)" when {
 
       "display page method is invoked" in new SetUp {
-        val result = controller.displayPage()(getRequest())
+        val result = controller.displayPage()(getRequestWithSession(sessionData.toSeq))
 
-        status(result) must be(OK)
-      }
-
-      "cancellation is requested with MRN not found error" in new SetUp {
-        cancelDeclarationResponse(MrnNotFound)
-
-        val result = controller.onSubmit()(postRequest(correctCancelDeclarationJSON))
         status(result) must be(OK)
       }
 
       "cancellation is requested with duplicate request error" in new SetUp {
         cancelDeclarationResponse(CancellationAlreadyRequested)
 
-        val result = controller.onSubmit()(postRequest(correctCancelDeclarationJSON))
+        val result = controller.onSubmit()(postRequestWithSession(correctCancelDeclarationJSON, sessionData.toSeq))
         status(result) must be(OK)
       }
     }
@@ -86,10 +87,70 @@ class CancelDeclarationControllerSpec extends ControllerWithoutFormSpec with Err
       "cancellation is requested with success" in new SetUp {
         cancelDeclarationResponse()
 
-        val result = controller.onSubmit()(postRequest(correctCancelDeclarationJSON))
+        val result = controller.onSubmit()(postRequestWithSession(correctCancelDeclarationJSON, sessionData.toSeq))
         status(result) must be(SEE_OTHER)
         redirectLocation(result) mustBe Some(controllers.routes.CancellationResultController.displayHoldingPage().url)
-        session(result).get(ExportsSessionKeys.submissionMrn) mustBe defined
+      }
+    }
+
+    "return 400 BadRequest error page" when {
+      "session data is missing" when {
+        "submissionId" in new SetUp {
+
+          val session = (sessionData - ExportsSessionKeys.submissionId).toSeq
+
+          val getResult = controller.displayPage()(getRequestWithSession(session))
+          val postResult = controller.onSubmit()(postRequestWithSession(correctCancelDeclarationJSON, session))
+
+          status(getResult) must be(BAD_REQUEST)
+          contentAsString(postResult) mustBe empty
+
+          status(postResult) must be(BAD_REQUEST)
+          contentAsString(postResult) mustBe empty
+
+        }
+        "lrn" in new SetUp {
+
+          val session = (sessionData - ExportsSessionKeys.submissionLrn).toSeq
+
+          val getResult = controller.displayPage()(getRequestWithSession(session))
+          val postResult = controller.onSubmit()(postRequestWithSession(correctCancelDeclarationJSON, session))
+
+          status(postResult) must be(BAD_REQUEST)
+          contentAsString(postResult) mustBe empty
+
+          status(getResult) must be(BAD_REQUEST)
+          contentAsString(postResult) mustBe empty
+
+        }
+        "mrn" in new SetUp {
+
+          val session = (sessionData - ExportsSessionKeys.submissionMrn).toSeq
+
+          val getResult = controller.displayPage()(getRequestWithSession(session))
+          val postResult = controller.onSubmit()(postRequestWithSession(correctCancelDeclarationJSON, session))
+
+          status(postResult) must be(BAD_REQUEST)
+          contentAsString(postResult) mustBe empty
+
+          status(getResult) must be(BAD_REQUEST)
+          contentAsString(postResult) mustBe empty
+
+        }
+        "ducr" in new SetUp {
+
+          val session = (sessionData - ExportsSessionKeys.submissionDucr).toSeq
+
+          val getResult = controller.displayPage()(getRequestWithSession(session))
+          val postResult = controller.onSubmit()(postRequestWithSession(correctCancelDeclarationJSON, session))
+
+          status(postResult) must be(BAD_REQUEST)
+          contentAsString(postResult) mustBe empty
+
+          status(getResult) must be(BAD_REQUEST)
+          contentAsString(postResult) mustBe empty
+
+        }
       }
     }
   }
@@ -113,7 +174,7 @@ class CancelDeclarationControllerSpec extends ControllerWithoutFormSpec with Err
       successfulCustomsDeclareExportsResponse()
       cancelDeclarationResponse()
 
-      val result = controller.onSubmit()(postRequest(correctCancelDeclarationJSON))
+      val result = controller.onSubmit()(postRequestWithSession(correctCancelDeclarationJSON, sessionData.toSeq))
 
       status(result) must be(SEE_OTHER)
 
@@ -127,7 +188,7 @@ class CancelDeclarationControllerSpec extends ControllerWithoutFormSpec with Err
       val error = new RuntimeException("some error")
       when(mockCustomsDeclareExportsConnector.createCancellation(any[CancelDeclaration])(any(), any())).thenThrow(error)
 
-      val result = controller.onSubmit()(postRequest(correctCancelDeclarationJSON))
+      val result = controller.onSubmit()(postRequestWithSession(correctCancelDeclarationJSON, sessionData.toSeq))
 
       intercept[Exception](status(result)) mustBe error
     }
@@ -136,17 +197,12 @@ class CancelDeclarationControllerSpec extends ControllerWithoutFormSpec with Err
 
 object CancelDeclarationControllerSpec {
   val correctCancelDeclaration =
-    CancelDeclaration(
-      functionalReferenceId = Lrn("1SA123456789012"),
-      mrn = "123456789012345678",
-      statementDescription = "Some description",
-      changeReason = NoLongerRequired.toString
-    )
+    CancelDeclarationDescription(statementDescription = "Some description", changeReason = NoLongerRequired.toString)
 
   val correctCancelDeclarationJSON: JsValue = Json.toJson(correctCancelDeclaration)
 
   val incorrectCancelDeclaration =
-    CancelDeclaration(Lrn("functionalRefernceId"), "decId", "description", "wrong reason")
+    CancelDeclarationDescription("description", "wrong reason")
 
   val incorrectCancelDeclarationJSON: JsValue = Json.toJson(incorrectCancelDeclaration)
 }

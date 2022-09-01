@@ -66,6 +66,11 @@ trait ControllerSpec
       .withSession(ExportsSessionKeys.declarationId -> declaration.id)
       .withJsonBody(body)
       .withCSRFToken
+  protected def postRequestWithSession(body: JsValue, sessionData: Seq[(String, String)]): Request[AnyContent] =
+    FakeRequest("POST", "")
+      .withSession(sessionData: _*)
+      .withJsonBody(body)
+      .withCSRFToken
 
   protected def postRequestAsFormUrlEncoded(body: (String, String)*): Request[AnyContentAsFormUrlEncoded] =
     FakeRequest("POST", "")

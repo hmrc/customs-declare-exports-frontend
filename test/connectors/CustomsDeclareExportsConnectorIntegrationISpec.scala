@@ -19,12 +19,12 @@ package connectors
 import base.TestHelper._
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.WireMock._
-import forms.{CancelDeclaration, Lrn}
+import forms.Lrn
 import models.CancellationStatus.CancellationStatusWrites
 import models.declaration.notifications.Notification
 import models.declaration.submissions.RequestType.SubmissionRequest
 import models.declaration.submissions.{Action, Submission, SubmissionStatus}
-import models.{CancellationRequestSent, Page, Paginated}
+import models.{CancelDeclaration, CancellationRequestSent, Page, Paginated}
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.time.{Millis, Seconds, Span}
 import play.api.http.Status
@@ -312,7 +312,7 @@ class CustomsDeclareExportsConnectorIntegrationISpec extends ConnectorISpec with
   }
 
   "Create Cancellation" should {
-    val cancellation = CancelDeclaration(Lrn("ref"), "id", "statement", "reason")
+    val cancellation = CancelDeclaration(id, Lrn("ref"), "id", "statement", "reason")
 
     "return payload" in {
       stubForExports(

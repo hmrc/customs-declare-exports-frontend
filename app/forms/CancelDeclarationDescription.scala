@@ -23,37 +23,28 @@ import play.api.data.{Form, Forms}
 import play.api.libs.json.{Json, OFormat}
 import utils.validators.forms.FieldValidator._
 
-case class CancelDeclaration(functionalReferenceId: Lrn, mrn: String, statementDescription: String, changeReason: String)
+case class CancelDeclarationDescription(changeReason: String, statementDescription: String)
 
-object CancelDeclaration {
-  implicit val format: OFormat[CancelDeclaration] = Json.format[CancelDeclaration]
+object CancelDeclarationDescription {
+  implicit val format: OFormat[CancelDeclarationDescription] = Json.format[CancelDeclarationDescription]
 
-  val functionalReferenceIdKey = "functionalReferenceId"
-  val mrnKey = "mrn"
   val statementDescriptionKey = "statementDescription"
   val changeReasonKey = "changeReason"
 
-  val mrnLength = 18
   val statementDescriptionMaxLength = 512
 
   val mapping = Forms.mapping(
-    functionalReferenceIdKey -> Lrn.mapping("cancellation.functionalReferenceId"),
-    mrnKey -> text()
-      .transform(_.trim, (s: String) => s)
-      .verifying("cancellation.mrn.error.empty", nonEmpty)
-      .verifying("cancellation.mrn.error.length", isEmpty or hasSpecificLength(mrnLength))
-      .verifying("cancellation.mrn.error.wrongFormat", isEmpty or isAlphanumeric),
-    statementDescriptionKey -> text()
-      .verifying("cancellation.statementDescription.error.empty", nonEmpty)
-      .verifying("cancellation.statementDescription.error.length", isEmpty or noLongerThan(statementDescriptionMaxLength))
-      .verifying("cancellation.statementDescription.error.invalid", isEmpty or isAlphanumericWithAllowedSpecialCharacters),
     changeReasonKey ->
       requiredRadio("cancellation.changeReason.error.wrongValue")
         .verifying(
           "cancellation.changeReason.error.wrongValue",
           isContainedIn(Seq(NoLongerRequired.toString, Duplication.toString, OtherReason.toString))
-        )
-  )(CancelDeclaration.apply)(CancelDeclaration.unapply)
+        ),
+    statementDescriptionKey -> text()
+      .verifying("cancellation.statementDescription.error.empty", nonEmpty)
+      .verifying("cancellation.statementDescription.error.length", isEmpty or noLongerThan(statementDescriptionMaxLength))
+      .verifying("cancellation.statementDescription.error.invalid", isEmpty or isAlphanumericWithAllowedSpecialCharacters)
+  )(CancelDeclarationDescription.apply)(CancelDeclarationDescription.unapply)
 
-  def form: Form[CancelDeclaration] = Form(mapping)
+  def form: Form[CancelDeclarationDescription] = Form(mapping)
 }

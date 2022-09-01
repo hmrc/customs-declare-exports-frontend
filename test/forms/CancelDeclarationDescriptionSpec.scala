@@ -20,11 +20,11 @@ import base.UnitSpec
 import play.api.data.Form
 import play.api.libs.json.{JsObject, JsString}
 
-class CancelDeclarationSpec extends UnitSpec {
+class CancelDeclarationDescriptionSpec extends UnitSpec {
 
   private val validMrn = "123456789012345678"
   def getBoundedForm(lrn: String = "lrn", mrn: String = validMrn, description: String = "description", reason: String = "1") =
-    CancelDeclaration.form.bind(
+    CancelDeclarationDescription.form.bind(
       JsObject(
         Map(
           "functionalReferenceId" -> JsString(lrn),
@@ -39,53 +39,6 @@ class CancelDeclarationSpec extends UnitSpec {
   "Validation defined in CancelDeclaration mapping" should {
 
     "attach errors to form" when {
-      "provided with empty lrn" in {
-        val form = getBoundedForm(lrn = "")
-
-        form.hasErrors must be(true)
-        form.errors.length must equal(1)
-        form.errors.head.message must equal("cancellation.functionalReferenceId.error.empty")
-      }
-
-      "provided with too long lrn" in {
-        val form = getBoundedForm(lrn = "1234567890" * 3)
-
-        form.hasErrors must be(true)
-        form.errors.length must equal(1)
-        form.errors.head.message must equal("cancellation.functionalReferenceId.error.length")
-      }
-
-      "provided with invalid lrn" in {
-        val form = getBoundedForm(lrn = "inv@l!d")
-
-        form.hasErrors must be(true)
-        form.errors.length must equal(1)
-        form.errors.head.message must equal("cancellation.functionalReferenceId.error.specialCharacter")
-      }
-
-      "provided with empty mrn" in {
-        val form = getBoundedForm(mrn = "")
-
-        form.hasErrors must be(true)
-        form.errors.length must equal(1)
-        form.errors.head.message must equal("cancellation.mrn.error.empty")
-      }
-
-      "provided with too long mrn" in {
-        val form = getBoundedForm(mrn = "1234567890123456789")
-
-        form.hasErrors must be(true)
-        form.errors.length must equal(1)
-        form.errors.head.message must equal("cancellation.mrn.error.length")
-      }
-
-      "provided with invalid mrn" in {
-        val form = getBoundedForm(mrn = "12345678901234567~")
-
-        form.hasErrors must be(true)
-        form.errors.length must equal(1)
-        form.errors.head.message must equal("cancellation.mrn.error.wrongFormat")
-      }
 
       "provided with empty description" in {
         val form = getBoundedForm(description = "")
@@ -133,13 +86,6 @@ class CancelDeclarationSpec extends UnitSpec {
         val form = getBoundedForm()
 
         form.errors mustBe empty
-      }
-
-      "provided with an MRN string requiring trimming" in {
-        val form = getBoundedForm(mrn = s"\n \t${validMrn}\t \n")
-
-        form.errors mustBe empty
-        form.value.map(_.mrn) must be(Some(validMrn))
       }
     }
   }

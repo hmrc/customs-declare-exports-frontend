@@ -15,7 +15,7 @@
  *@
 
 @import controllers.routes._
-@import forms.CancelDeclaration
+@import forms.{CancelDeclarationDescription, Lrn}
 @import forms.cancellation.CancellationChangeReason.{NoLongerRequired, Duplication, OtherReason}
 @import forms.Choice
 @import forms.Choice.AllowedChoiceValues.CancelDec
@@ -25,17 +25,19 @@
 @import views.html.components.gds._
 
 @this(
-  govukLayout: gdsMainTemplate,
-  govukButton: GovukButton,
-  govukRadios: GovukRadios,
-  errorSummary: errorSummary,
-  pageTitle: pageTitle,
-  exportsInputText: exportsInputText,
-  characterCount: exportsInputCharacterCount,
-  formHelper: FormWithCSRF
+    govukLayout: gdsMainTemplate,
+    govukButton: GovukButton,
+    govukRadios: GovukRadios,
+    errorSummary: errorSummary,
+    sectionHeader: sectionHeader,
+    pageTitle: pageTitle,
+    paragraphBody: paragraphBody,
+    exportsInputText: exportsInputText,
+    characterCount: exportsInputCharacterCount,
+    formHelper: FormWithCSRF
 )
 
-@(form: Form[CancelDeclaration])(implicit request: Request[_], messages: Messages)
+@(form: Form[CancelDeclarationDescription], lrn: Lrn, ducr: String, mrn: String)(implicit request: Request[_], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
@@ -47,29 +49,16 @@
     @formHelper(action = CancelDeclarationController.onSubmit(), 'autoComplete -> "off") {
         @errorSummary(radioGroupErrors("changeReason", "noLongerRequired", form.errors))
 
+        @sectionHeader(messages("cancellation.mrn", {mrn}))
+
         @pageTitle(messages("cancellation.title"))
 
-        @exportsInputText(
-            field = form(CancelDeclaration.functionalReferenceIdKey),
-            inputClasses = Some("govuk-!-width-two-thirds"),
-            labelKey = "cancellation.functionalReferenceId"
-        )
+        @paragraphBody(messages("cancellation.ducr", <b>{ducr}</b>))
 
-        @exportsInputText(
-            field = form(CancelDeclaration.mrnKey),
-            inputClasses = Some("govuk-!-width-two-thirds"),
-            labelKey = "cancellation.mrn"
-        )
-
-        @characterCount(
-            field = form(CancelDeclaration.statementDescriptionKey),
-            labelKey = Some("cancellation.statementDescription"),
-            maxLength = Some(CancelDeclaration.statementDescriptionMaxLength),
-            inputClasses = "govuk-!-width-two-thirds"
-        )
+        @paragraphBody(messages("cancellation.lrn", <b>{lrn.value}</b>))
 
         @govukRadios(Radios(
-            name = CancelDeclaration.changeReasonKey,
+            name = CancelDeclarationDescription.changeReasonKey,
             fieldset = Some(Fieldset(
                 legend = Some(Legend(
                     content = Text(messages("cancellation.changeReason")),
@@ -98,6 +87,13 @@
             ),
             errorMessage = form("changeReason").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
         ))
+
+        @characterCount(
+            field = form(CancelDeclarationDescription.statementDescriptionKey),
+            labelKey = Some("cancellation.statementDescription"),
+            maxLength = Some(CancelDeclarationDescription.statementDescriptionMaxLength),
+            inputClasses = "govuk-!-width-two-thirds"
+        )
 
         @govukButton(Button(content = Text(messages("cancellation.submitButton")), attributes = Map("id" -> "submit", "name" -> "Save")))
     }
