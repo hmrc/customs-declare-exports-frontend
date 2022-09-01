@@ -52,7 +52,7 @@ class SupplementaryUnitsViewSpec extends UnitViewSpec with ExportsTestHelper wit
 
       "display 'Back' button that links to 'Commodity Details' page" in {
         val backButton = view.getElementById("back-link")
-        backButton must containMessage("site.back")
+        backButton must containMessage("site.backToPreviousQuestion")
         backButton must haveHref(CommodityMeasureController.displayPage(Mode.Normal, itemId))
       }
 

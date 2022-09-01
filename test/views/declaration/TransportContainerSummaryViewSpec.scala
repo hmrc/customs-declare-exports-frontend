@@ -92,7 +92,7 @@ class TransportContainerSummaryViewSpec extends UnitViewSpec with ExportsTestHel
     "display 'Back' button that links to the 'Express Consignment' page" when {
       "declaration's type is STANDARD" in {
         val backLinkContainer = view.getElementById("back-link")
-        backLinkContainer must containMessage(backCaption)
+        backLinkContainer must containMessage(backToPreviousQuestionCaption)
         backLinkContainer must haveHref(routes.ExpressConsignmentController.displayPage(Normal))
       }
     }
@@ -101,7 +101,7 @@ class TransportContainerSummaryViewSpec extends UnitViewSpec with ExportsTestHel
       "declaration's type is SUPPLEMENTARY" in {
         val view = page(Normal, form, List(container))(journeyRequest(SUPPLEMENTARY), messages)
         val backLinkContainer = view.getElementById("back-link")
-        backLinkContainer must containMessage(backCaption)
+        backLinkContainer must containMessage(backToPreviousQuestionCaption)
         backLinkContainer must haveHref(routes.TransportCountryController.displayPage(Normal))
       }
     }

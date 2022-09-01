@@ -76,7 +76,7 @@ class IsLicenceRequiredViewSpec extends UnitViewSpec with ExportsTestHelper with
 
         val backButton = createView().getElementById("back-link")
 
-        backButton must containMessage(backCaption)
+        backButton must containMessage(backToPreviousQuestionCaption)
         backButton must haveHref(routes.AdditionalInformationRequiredController.displayPage(Mode.Normal, "itemId").url)
       }
     }

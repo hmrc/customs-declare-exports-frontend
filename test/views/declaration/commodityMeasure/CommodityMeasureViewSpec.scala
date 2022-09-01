@@ -163,7 +163,7 @@ class CommodityMeasureViewSpec extends UnitViewSpec with Stubs with Injector {
       "display 'Back' button that links to 'Package Information' page" in {
         val backButton = createView().getElementById("back-link")
 
-        backButton must containMessage("site.back")
+        backButton must containMessage("site.backToPreviousQuestion")
         backButton must haveHref(PackageInformationSummaryController.displayPage(Mode.Normal, itemId).url)
       }
     }
@@ -175,7 +175,7 @@ class CommodityMeasureViewSpec extends UnitViewSpec with Stubs with Injector {
 
         val backButton = createView()(journeyRequest(declaration)).getElementById("back-link")
 
-        backButton must containMessage("site.back")
+        backButton must containMessage("site.backToPreviousQuestion")
         backButton must haveHref(call.url)
       }
 

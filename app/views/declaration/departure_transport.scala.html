@@ -41,7 +41,7 @@
 
 @govukLayout(
     title = departureTransportHelper.titleInHeadTag(form.hasErrors || form.hasGlobalErrors),
-    backButton = Some(BackButton(messages("site.back"), navigator.backLink(DepartureTransport, mode)))) {
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(DepartureTransport, mode)))) {
 
     @formHelper(action = DepartureTransportController.submitForm(mode), 'autoComplete -> "off") {
         @errorSummary(radioGroupErrors(radioButtonGroupId, departureTransportHelper.transportCodes.code1.id, form.errors))

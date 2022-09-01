@@ -72,7 +72,7 @@ class RepresentativeDetailsAgentViewSpec extends UnitViewSpec with ExportsTestHe
 
         val backButton = view.getElementById("back-link")
 
-        backButton must containMessage("site.back")
+        backButton must containMessage("site.backToPreviousQuestion")
         backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.ExporterDetailsController.displayPage(Mode.Normal))
       }
     }
@@ -89,7 +89,7 @@ class RepresentativeDetailsAgentViewSpec extends UnitViewSpec with ExportsTestHe
 
         val backButton = createView()(requestWithCachedParties).getElementById("back-link")
 
-        backButton must containMessage("site.back")
+        backButton must containMessage("site.backToPreviousQuestion")
         backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.ConsignorDetailsController.displayPage(Mode.Normal))
       }
 
@@ -103,7 +103,7 @@ class RepresentativeDetailsAgentViewSpec extends UnitViewSpec with ExportsTestHe
 
         val backButton = createView()(requestWithCachedParties).getElementById("back-link")
 
-        backButton must containMessage("site.back")
+        backButton must containMessage("site.backToPreviousQuestion")
         backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.ConsignorEoriNumberController.displayPage(Mode.Normal))
       }
 
@@ -114,7 +114,7 @@ class RepresentativeDetailsAgentViewSpec extends UnitViewSpec with ExportsTestHe
 
         val backButton = createView()(requestWithCachedParties).getElementById("back-link")
 
-        backButton must containMessage("site.back")
+        backButton must containMessage("site.backToPreviousQuestion")
         backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.IsExsController.displayPage(Mode.Normal))
       }
     }

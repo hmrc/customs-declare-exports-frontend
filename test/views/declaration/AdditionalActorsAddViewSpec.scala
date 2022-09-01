@@ -97,7 +97,7 @@ class AdditionalActorsAddViewSpec extends UnitViewSpec with CommonMessages with 
         val view = declarationAdditionalActorsPage(Mode.Normal, form)(request, messages)
         val backButton = view.getElementById("back-link")
 
-        backButton must containMessage(backCaption)
+        backButton must containMessage(backToPreviousQuestionCaption)
         backButton.attr("href") mustBe routes.ConsigneeDetailsController.displayPage().url
       }
     }

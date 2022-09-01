@@ -48,7 +48,7 @@ class AdditionalDocumentChangeViewSpec extends UnitViewSpec with CommonMessages 
     onEveryDeclarationJourney() { implicit request =>
       "display 'Back' button that links to summary page" in {
         val backButton = createView.getElementById("back-link")
-        backButton must containMessage(backCaption)
+        backButton must containMessage(backToPreviousQuestionCaption)
         backButton must haveHref(routes.AdditionalDocumentsController.displayPage(mode, itemId))
       }
     }

@@ -56,7 +56,7 @@ class NactCodeRemoveViewSpec extends UnitViewSpec with Stubs with CommonMessages
     "display 'Back' button that links to 'nact codes summary' page" in {
       val backLinkContainer = view.getElementById("back-link")
 
-      backLinkContainer must containMessage(backCaption)
+      backLinkContainer must containMessage(backToPreviousQuestionCaption)
       backLinkContainer.getElementById("back-link") must haveHref(
         controllers.declaration.routes.NactCodeSummaryController.displayPage(Mode.Normal, itemId)
       )

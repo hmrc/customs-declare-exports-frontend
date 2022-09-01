@@ -90,7 +90,7 @@ class CountryOfRoutingViewSpec extends UnitViewSpec with Stubs with ExportsTestH
       s"display back button that links to 'Country of Routing question' page  for ${request.declarationType}" in {
         val backButton = createView()(request).getElementById("back-link")
 
-        backButton.text() mustBe messages("site.back")
+        backButton.text() mustBe messages("site.backToPreviousQuestion")
         backButton must haveHref(routes.RoutingCountriesController.displayRoutingQuestion())
       }
 

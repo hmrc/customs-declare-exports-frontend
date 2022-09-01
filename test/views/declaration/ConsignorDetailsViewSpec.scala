@@ -250,7 +250,7 @@ class ConsignorDetailsViewSpec extends AddressViewSpec with CommonMessages with 
 
         val backButton = createView().getElementById("back-link")
 
-        backButton.text() mustBe messages(backCaption)
+        backButton.text() mustBe messages(backToPreviousQuestionCaption)
         backButton.attr("href") mustBe routes.ConsignorEoriNumberController.displayPage().url
       }
     }

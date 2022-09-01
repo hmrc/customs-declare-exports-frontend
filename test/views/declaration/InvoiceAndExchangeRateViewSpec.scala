@@ -107,7 +107,7 @@ class InvoiceAndExchangeRateViewSpec extends UnitViewSpec with ExportsTestHelper
 
         val backButton = createView()(requestWithOfficeOfExitInsideUK).getElementById("back-link")
 
-        backButton must containMessage("site.back")
+        backButton must containMessage("site.backToPreviousQuestion")
         backButton.getElementById("back-link") must haveHref(InvoiceAndExchangeRateChoiceController.displayPage(Normal))
       }
 

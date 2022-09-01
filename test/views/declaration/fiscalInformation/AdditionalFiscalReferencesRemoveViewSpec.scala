@@ -59,7 +59,7 @@ class AdditionalFiscalReferencesRemoveViewSpec extends UnitViewSpec with Exports
     "display 'Back' button that links to 'AdditionalFiscalReferences summary' page" in {
       val backLink = view.getElementById("back-link")
 
-      backLink must containMessage(backCaption)
+      backLink must containMessage(backToPreviousQuestionCaption)
       backLink must haveHref(controllers.declaration.routes.AdditionalFiscalReferencesController.displayPage(Mode.Normal, itemId))
     }
 

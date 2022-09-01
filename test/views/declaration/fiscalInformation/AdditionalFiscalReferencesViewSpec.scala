@@ -62,7 +62,7 @@ class AdditionalFiscalReferencesViewSpec extends UnitViewSpec with Stubs with Co
 
         val backButton = view.getElementById("back-link")
 
-        backButton must containMessage(backCaption)
+        backButton must containMessage(backToPreviousQuestionCaption)
         backButton must haveHref(controllers.declaration.routes.AdditionalProcedureCodesController.displayPage(Mode.Normal, itemId))
       }
 

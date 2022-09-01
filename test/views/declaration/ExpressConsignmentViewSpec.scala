@@ -177,7 +177,7 @@ class ExpressConsignmentViewSpec extends UnitViewSpec with CommonMessages with I
 
   private def verifyBackButton(view: Document, call: Call): Assertion = {
     val backButton = view.getElementById("back-link")
-    backButton must containMessage(backCaption)
+    backButton must containMessage(backToPreviousQuestionCaption)
     backButton must haveHref(call)
   }
 

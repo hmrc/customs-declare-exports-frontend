@@ -236,7 +236,7 @@ class DepartureTransportViewSpec extends UnitViewSpec with CommonMessages with S
     s"AdditionalDeclarationType is ${request.cacheModel.additionalDeclarationType}" should {
       s"display 'Back' button that links to the '${call.url}' page" in {
         val backButton = createView().getElementById("back-link")
-        backButton must containMessage(backCaption)
+        backButton must containMessage(backToPreviousQuestionCaption)
         backButton must haveHref(call)
       }
     }

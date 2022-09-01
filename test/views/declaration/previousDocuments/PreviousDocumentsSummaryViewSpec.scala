@@ -118,7 +118,7 @@ class PreviousDocumentsSummaryViewSpec extends UnitViewSpec with ExportsDeclarat
     onJourney(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY) { implicit request =>
       "display 'Back' link to 'Nature of Transaction' page" in {
         val backButton = createView().getElementById("back-link")
-        backButton must containMessage("site.back")
+        backButton must containMessage("site.backToPreviousQuestion")
         backButton must haveHref(controllers.declaration.routes.NatureOfTransactionController.displayPage(Mode.Normal))
       }
     }
@@ -128,7 +128,7 @@ class PreviousDocumentsSummaryViewSpec extends UnitViewSpec with ExportsDeclarat
         val specificRequest = journeyRequest(aDeclaration(withType(request.declarationType), withOfficeOfExit("officeId")))
 
         val backButton = createView()(specificRequest).getElementById("back-link")
-        backButton must containMessage("site.back")
+        backButton must containMessage("site.backToPreviousQuestion")
         backButton must haveHref(controllers.declaration.routes.OfficeOfExitController.displayPage(Mode.Normal))
       }
     }

@@ -57,7 +57,7 @@
 
 @govukLayout(
     title = Title("declaration.carrierEori.title", "declaration.section.2", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.back"), navigator.backLink(CarrierEoriNumber, mode)))){
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(CarrierEoriNumber, mode)))){
 
     @formHelper(action = CarrierEoriNumberController.submit(mode), 'autoComplete -> "off") {
         @errorSummary(radioGroupErrors("hasEori", "Yes", form.errors))

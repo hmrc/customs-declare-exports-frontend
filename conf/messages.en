@@ -24,6 +24,7 @@ error.yesNo.required = Select yes or no
 error.unknown = Unknown error
 
 site.back = Back
+site.backToPreviousQuestion = Back to previous question
 site.backToSelectionPage = Back to selection page
 site.backToDeclarations = Back to your declarations
 site.backToGovUk = Back to GOV.UK

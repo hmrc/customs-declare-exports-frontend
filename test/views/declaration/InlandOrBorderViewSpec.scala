@@ -77,7 +77,7 @@ class InlandOrBorderViewSpec extends UnitViewSpec with ExportsTestHelper with Mo
 
         "display 'Back' button that links to the 'Supervising Customs Office' page" in {
           val backButton = view.getElementById("back-link")
-          backButton must containMessage("site.back")
+          backButton must containMessage("site.backToPreviousQuestion")
           backButton must haveHref(SupervisingCustomsOfficeController.displayPage())
         }
       }
@@ -90,7 +90,7 @@ class InlandOrBorderViewSpec extends UnitViewSpec with ExportsTestHelper with Mo
 
           "display 'Back' button that links to the 'Transport Leaving the Border' page" in {
             val backButton = createView().getElementById("back-link")
-            backButton must containMessage("site.back")
+            backButton must containMessage("site.backToPreviousQuestion")
             backButton must haveHref(TransportLeavingTheBorderController.displayPage())
           }
         }

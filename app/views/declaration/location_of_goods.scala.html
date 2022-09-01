@@ -63,7 +63,7 @@
         "declaration.section.3",
         hasErrors = hasErrors
     ),
-    backButton = Some(BackButton(messages("site.back"), navigator.backLink(LocationOfGoods, mode)))) {
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(LocationOfGoods, mode)))) {
 
     @formHelper(action = LocationOfGoodsController.saveLocation(mode), 'autoComplete -> "off") {
 

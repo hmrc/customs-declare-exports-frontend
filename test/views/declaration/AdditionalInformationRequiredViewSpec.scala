@@ -57,7 +57,7 @@ class AdditionalInformationRequiredViewSpec extends UnitViewSpec with ExportsTes
     onEveryDeclarationJourney() { implicit request =>
       "display 'Back' button that links to the given url" in {
         val backButton = createView.getElementById("back-link")
-        backButton must containMessage(backCaption)
+        backButton must containMessage(backToPreviousQuestionCaption)
         backButton.attr("href") mustBe url
       }
 

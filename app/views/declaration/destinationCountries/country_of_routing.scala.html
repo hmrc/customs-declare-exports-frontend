@@ -59,7 +59,7 @@
         headingArg = countryOfDestination,
         hasErrors = hasErrors
     ),
-    backButton = Some(BackButton(messages("site.back"), navigator.backLink(RoutingCountryPage, mode)))){
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(RoutingCountryPage, mode)))){
 
     @formHelper(action = controllers.declaration.routes.RoutingCountriesController.submitRoutingCountry(mode), 'autoComplete -> "off") {
         @errorSummary(form.errors)

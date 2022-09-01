@@ -225,7 +225,7 @@ class ConsignmentReferencesViewSpec extends UnitViewSpec with CommonMessages wit
 
         val backButton = createView().getElementById("back-link")
 
-        backButton must containMessage(backCaption)
+        backButton must containMessage(backToPreviousQuestionCaption)
         backButton must haveHref(routes.DeclarantDetailsController.displayPage().url)
       }
     }
@@ -235,7 +235,7 @@ class ConsignmentReferencesViewSpec extends UnitViewSpec with CommonMessages wit
 
         val backButton = createView().getElementById("back-link")
 
-        backButton must containMessage(backCaption)
+        backButton must containMessage(backToPreviousQuestionCaption)
         backButton must haveHref(routes.AdditionalDeclarationTypeController.displayPage().url)
       }
     }

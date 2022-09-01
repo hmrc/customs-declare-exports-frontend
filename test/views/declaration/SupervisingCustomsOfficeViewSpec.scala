@@ -71,7 +71,7 @@ class SupervisingCustomsOfficeViewSpec extends UnitViewSpec with ExportsTestHelp
       "display 'Back' button that links to 'Warehouse Identification Number' page" in {
         val backButton = createView().getElementById("back-link")
 
-        backButton must containMessage("site.back")
+        backButton must containMessage("site.backToPreviousQuestion")
         backButton.getElementById("back-link") must haveHref(
           controllers.declaration.routes.WarehouseIdentificationController.displayPage(Mode.Normal)
         )
@@ -85,7 +85,7 @@ class SupervisingCustomsOfficeViewSpec extends UnitViewSpec with ExportsTestHelp
           aDeclarationAfter(request.cacheModel, withItem(anItem(withProcedureCodes(Some("1078"), Seq("000")))))
         val backButton = createView()(journeyRequest(modelWithProcedureCode)).getElementById("back-link")
 
-        backButton must containMessage("site.back")
+        backButton must containMessage("site.backToPreviousQuestion")
         backButton.getElementById("back-link") must haveHref(
           controllers.declaration.routes.WarehouseIdentificationController.displayPage(Mode.Normal)
         )
@@ -99,7 +99,7 @@ class SupervisingCustomsOfficeViewSpec extends UnitViewSpec with ExportsTestHelp
           aDeclarationAfter(request.cacheModel, withItem(anItem(withProcedureCodes(Some("0000"), Seq("000")))))
         val backButton = createView()(journeyRequest(modelWithProcedureCode)).getElementById("back-link")
 
-        backButton must containMessage("site.back")
+        backButton must containMessage("site.backToPreviousQuestion")
         backButton.getElementById("back-link") must haveHref(
           controllers.declaration.routes.TransportLeavingTheBorderController.displayPage(Mode.Normal)
         )
@@ -113,7 +113,7 @@ class SupervisingCustomsOfficeViewSpec extends UnitViewSpec with ExportsTestHelp
           aDeclarationAfter(request.cacheModel, withItem(anItem(withProcedureCodes(Some("0000"), Seq("000")))))
         val backButton = createView()(journeyRequest(modelWithProcedureCode)).getElementById("back-link")
 
-        backButton must containMessage("site.back")
+        backButton must containMessage("site.backToPreviousQuestion")
         backButton.getElementById("back-link") must haveHref(
           controllers.declaration.routes.ItemsSummaryController.displayItemsSummaryPage(Mode.Normal)
         )

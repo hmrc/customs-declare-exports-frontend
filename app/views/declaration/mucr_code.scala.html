@@ -45,7 +45,7 @@
 
 @govukLayout(
     title = Title("declaration.mucr.title", "declaration.section.1", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.back"), navigator.backLink(Mucr, mode)))) {
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(Mucr, mode)))) {
 
     @formHelper(action = routes.MucrController.submitForm(mode), 'autoComplete -> "off") {
         @errorSummary(form.errors)

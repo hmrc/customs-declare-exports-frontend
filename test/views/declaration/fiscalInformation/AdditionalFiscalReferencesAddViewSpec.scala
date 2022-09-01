@@ -93,7 +93,7 @@ class AdditionalFiscalReferencesAddViewSpec
 
         val backButton = view.getElementById("back-link")
 
-        backButton.text() mustBe messages(backCaption)
+        backButton.text() mustBe messages(backToPreviousQuestionCaption)
         backButton must haveHref(controllers.declaration.routes.FiscalInformationController.displayPage(Mode.Normal, itemId))
       }
 

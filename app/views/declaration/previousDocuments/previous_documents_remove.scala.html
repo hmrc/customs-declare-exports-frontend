@@ -68,7 +68,7 @@
 
 @govukLayout(
     title = Title("declaration.previousDocuments.remove.title", "declaration.section.4", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.back"), navigator.backLink(DocumentChangeOrRemove, mode)))
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(DocumentChangeOrRemove, mode)))
 ) {
     @formHelper(action = PreviousDocumentsRemoveController.submit(mode, documentId), 'autoComplete -> "off") {
 

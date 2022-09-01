@@ -45,7 +45,7 @@
 
 @govukLayout(
     title = Title("declaration.warehouse.identification.optional.title", "declaration.section.6", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.back"), navigator.backLink(WarehouseIdentification, mode)))) {
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(WarehouseIdentification, mode)))) {
 
     @formHelper(action = routes.WarehouseIdentificationController.saveIdentificationNumber(mode), 'autoComplete -> "off") {
         @errorSummary(form.errors)

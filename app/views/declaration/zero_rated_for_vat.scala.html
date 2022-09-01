@@ -88,7 +88,7 @@
 
 @govukLayout(
     title = Title("declaration.zeroRatedForVat.title",  "declaration.section.5", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.back"), navigator.backLink(ZeroRatedForVat, mode, ItemId(itemId))))) {
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(ZeroRatedForVat, mode, ItemId(itemId))))) {
 
     @formHelper(action = ZeroRatedForVatController.submitForm(mode, itemId), 'autoComplete -> "off") {
 

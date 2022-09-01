@@ -59,7 +59,7 @@
 
 @govukLayout(
     title = Title("declaration.additionalFiscalReferences.remove.title", "declaration.section.5", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.back"), AdditionalFiscalReferencesController.displayPage(mode, itemId)))) {
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), AdditionalFiscalReferencesController.displayPage(mode, itemId)))) {
 
     @formHelper(action = AdditionalFiscalReferencesRemoveController.submitForm(mode, itemId, referenceId), 'autoComplete -> "off") {
         @errorSummary(yesNoErrors(form.errors))

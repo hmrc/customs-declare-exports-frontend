@@ -55,7 +55,7 @@
 
 @govukLayout(
     title = Title(s"$prefix.title", "declaration.section.6", transportMode, hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.back"), navigator.backLink(TransportCountry, mode)))
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(TransportCountry, mode)))
 ) {
     @formHelper(action = TransportCountryController.submitForm(mode), 'autoComplete -> "off") {
         @errorSummary(radioGroupErrors(hasTransportCountry, "code_yes", form.errors))

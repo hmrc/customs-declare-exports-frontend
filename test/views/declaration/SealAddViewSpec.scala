@@ -51,7 +51,7 @@ class SealAddViewSpec extends UnitViewSpec with ExportsTestHelper with Stubs wit
     "display 'Back' button that links to 'seals summary' page" in {
       val backLinkContainer = view.getElementById("back-link")
 
-      backLinkContainer.text() must be(messages(backCaption))
+      backLinkContainer.text() must be(messages(backToPreviousQuestionCaption))
       backLinkContainer.getElementById("back-link") must haveHref(
         controllers.declaration.routes.SealController.displaySealSummary(Mode.Normal, containerId)
       )

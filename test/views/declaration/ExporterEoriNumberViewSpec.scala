@@ -122,7 +122,7 @@ class ExporterEoriNumberViewSpec extends UnitViewSpec with ExportsTestHelper wit
       val view = createView()(req)
       val backButton = view.getElementById("back-link")
 
-      backButton must containMessage("site.back")
+      backButton must containMessage("site.backToPreviousQuestion")
       backButton.getElementById("back-link") must haveHref(
         controllers.declaration.routes.PersonPresentingGoodsDetailsController.displayPage(Mode.Normal)
       )
@@ -133,7 +133,7 @@ class ExporterEoriNumberViewSpec extends UnitViewSpec with ExportsTestHelper wit
     "display 'Back' button that links to the correct page" in {
       val backButton = createView().getElementById("back-link")
 
-      backButton must containMessage("site.back")
+      backButton must containMessage("site.backToPreviousQuestion")
       backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.DeclarantExporterController.displayPage(Mode.Normal))
     }
   }
