@@ -55,16 +55,7 @@
             ),
             value = Value(
                 content = Text(messages(s"declaration.type.${declaration.`type`.toString().toLowerCase()}"))
-            ),
-            actions = actions(Actions(
-                items = Seq(
-                    actionItem(
-                        href = routes.DeclarationChoiceController.displayPage(mode).url,
-                        content = HtmlContent(linkContent(messages("site.change"))),
-                        visuallyHiddenText = Some(messages("declaration.summary.references.type.change"))
-                    )
-                )
-            ))
+            )
         )),
         declaration.additionalDeclarationType.map(decType =>
             SummaryListRow(
@@ -74,16 +65,7 @@
                 ),
                 value = Value(
                     content = Text(messages(s"declaration.summary.references.additionalType.${decType.toString}"))
-                ),
-                actions = actions(Actions(
-                    items = Seq(
-                        actionItem(
-                            href = routes.AdditionalDeclarationTypeController.displayPage(mode).url,
-                            content = HtmlContent(linkContent(messages("site.change"))),
-                            visuallyHiddenText = Some(messages("declaration.summary.references.additionalType.change"))
-                        )
-                    )
-                ))
+                )
             )
         ),
         declaration.consignmentReferences.map(refs =>
