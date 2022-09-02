@@ -134,7 +134,7 @@ class AdditionalDocumentsViewSpec extends UnitViewSpec with ExportsTestHelper wi
   private def verifyAdditionalDocumentsEq2No(view: Appendable): Assertion = {
     val row = view.getElementsByClass("additional-documents-1-row")
     row must haveSummaryKey(messages("declaration.summary.items.item.additionalDocuments"))
-    row must haveSummaryValue("No")
+    row must haveSummaryValue("None")
     row must haveSummaryActionsTexts("site.change", "declaration.summary.items.item.additionalDocuments.changeAll", "1")
     row must haveSummaryActionsHref(routes.AdditionalDocumentsController.displayPage(Normal, "itemId"))
   }
