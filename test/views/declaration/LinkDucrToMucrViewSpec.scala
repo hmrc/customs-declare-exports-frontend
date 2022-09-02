@@ -46,7 +46,7 @@ class LinkDucrToMucrViewSpec extends UnitViewSpec with CommonMessages with Injec
 
       "display 'Back' button to 'Consignment Reference' page" in {
         val backButton = view.getElementById("back-link")
-        backButton must containMessage(backCaption)
+        backButton must containMessage(backToPreviousQuestionCaption)
         backButton must haveHref(routes.ConsignmentReferencesController.displayPage(Mode.Normal))
       }
 

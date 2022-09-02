@@ -91,7 +91,7 @@ class FiscalInformationViewSpec extends UnitViewSpec with ExportsTestHelper with
 
         val backButton = view.getElementById("back-link")
 
-        backButton must containMessage("site.back")
+        backButton must containMessage("site.backToPreviousQuestion")
         backButton.getElementById("back-link") must haveHref(
           controllers.declaration.routes.AdditionalProcedureCodesController.displayPage(Mode.Normal, "itemId")
         )

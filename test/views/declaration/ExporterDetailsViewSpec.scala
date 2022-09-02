@@ -122,7 +122,7 @@ class ExporterDetailsViewSpec extends AddressViewSpec with CommonMessages with S
 
         val backButton = createView(form()).getElementById("back-link")
 
-        backButton.text() mustBe messages(backCaption)
+        backButton.text() mustBe messages(backToPreviousQuestionCaption)
         backButton.attr("href") mustBe routes.ExporterEoriNumberController.displayPage().url
       }
     }

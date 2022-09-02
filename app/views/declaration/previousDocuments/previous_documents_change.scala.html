@@ -37,7 +37,7 @@
 
 @govukLayout(
     title = Title(templateHelper.title, "declaration.section.4", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.back"), navigator.backLink(DocumentChangeOrRemove, mode)))
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(DocumentChangeOrRemove, mode)))
 ) {
     @formHelper(action = PreviousDocumentsChangeController.submit(mode, id), 'autoComplete -> "off") {
 

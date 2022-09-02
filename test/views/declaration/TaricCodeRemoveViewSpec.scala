@@ -56,7 +56,7 @@ class TaricCodeRemoveViewSpec extends UnitViewSpec with Stubs with CommonMessage
     "display 'Back' button that links to 'taric codes summary' page" in {
       val backLinkContainer = view.getElementById("back-link")
 
-      backLinkContainer must containMessage(backCaption)
+      backLinkContainer must containMessage(backToPreviousQuestionCaption)
       backLinkContainer.getElementById("back-link") must haveHref(
         controllers.declaration.routes.TaricCodeSummaryController.displayPage(Mode.Normal, itemId)
       )

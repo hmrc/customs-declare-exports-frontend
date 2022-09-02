@@ -45,7 +45,7 @@
 
 @govukLayout(
     title = Title("declaration.invoice.amount.choice.title", "declaration.section.4", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.back"), navigator.backLink(InvoiceAndExchangeRateChoice, mode)))) {
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(InvoiceAndExchangeRateChoice, mode)))) {
 
     @formHelper(action = routes.InvoiceAndExchangeRateChoiceController.submitForm(mode), 'autoComplete -> "off") {
         @errorSummary(yesNoErrors(form.errors))

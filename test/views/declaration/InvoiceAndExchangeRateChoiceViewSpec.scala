@@ -46,7 +46,7 @@ class InvoiceAndExchangeRateChoiceViewSpec extends UnitViewSpec with CommonMessa
 
       "display 'Back' button to the /office-of-exit page" in {
         val backButton = view.getElementById("back-link")
-        backButton must containMessage(backCaption)
+        backButton must containMessage(backToPreviousQuestionCaption)
         backButton must haveHref(routes.OfficeOfExitController.displayPage(Normal))
       }
 

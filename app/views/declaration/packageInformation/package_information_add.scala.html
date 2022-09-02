@@ -48,7 +48,7 @@
 
 @govukLayout(
     title = Title("declaration.packageInformation.title", "declaration.section.5", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.back"), backLink))
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), backLink))
 ) {
 
     @formHelper(action = routes.PackageInformationAddController.submitForm(mode, itemId), 'autoComplete -> "off") {

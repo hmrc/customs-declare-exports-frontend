@@ -78,7 +78,7 @@ class ConsignorEoriNumberViewSpec extends UnitViewSpec with ExportsTestHelper wi
 
         val backButton = view.getElementById("back-link")
 
-        backButton must containMessage("site.back")
+        backButton must containMessage("site.backToPreviousQuestion")
         backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.IsExsController.displayPage(Mode.Normal))
       }
 

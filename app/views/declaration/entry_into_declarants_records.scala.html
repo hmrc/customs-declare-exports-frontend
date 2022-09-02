@@ -42,7 +42,7 @@
 
 @govukLayout(
     title = Title("declaration.entryIntoDeclarantRecords.title", "declaration.section.2", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.back"), navigator.backLink(EntryIntoDeclarantsRecords, mode)))) {
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(EntryIntoDeclarantsRecords, mode)))) {
 
     @formHelper(action = controllers.declaration.routes.EntryIntoDeclarantsRecordsController.submitForm(mode), 'autocomplete -> "off") {
       @errorSummary(radioGroupErrors(fieldName, "answer_yes", form.errors))

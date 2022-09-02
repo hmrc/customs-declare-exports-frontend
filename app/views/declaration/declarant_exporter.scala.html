@@ -45,7 +45,7 @@
 
 @govukLayout(
     title = Title("declaration.declarant.exporter.title", "declaration.section.2", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.back"), navigator.backLink(DeclarantIsExporter, mode)))) {
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(DeclarantIsExporter, mode)))) {
 
     @formHelper(action = controllers.declaration.routes.DeclarantExporterController.submitForm(mode), 'autoComplete -> "off") {
         @errorSummary(yesNoErrors(form.errors, DeclarantIsExporter.answerKey))

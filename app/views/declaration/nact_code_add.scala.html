@@ -44,7 +44,7 @@
 
 @govukLayout(
     title = Title("declaration.nationalAdditionalCode.addnext.header", "declaration.section.5", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.back"), navigator.backLink(NactCode, mode, ItemId(itemId))))) {
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(NactCode, mode, ItemId(itemId))))) {
 
     @formHelper(action = NactCodeAddController.submitForm(mode, itemId), 'autoComplete -> "off") {
         @errorSummary(form.errors)

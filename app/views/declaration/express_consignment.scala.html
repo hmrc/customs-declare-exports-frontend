@@ -47,7 +47,7 @@
 
 @govukLayout(
     title = Title("declaration.transportInformation.expressConsignment.title", "declaration.section.6", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.back"), navigator.backLink(ExpressConsignment, mode)))) {
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(ExpressConsignment, mode)))) {
 
     @formHelper(action = routes.ExpressConsignmentController.submitForm(mode), 'autoComplete -> "off") {
         @errorSummary(yesNoErrors(form.errors))

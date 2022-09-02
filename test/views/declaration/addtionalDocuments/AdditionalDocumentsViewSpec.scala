@@ -111,7 +111,7 @@ class AdditionalDocumentsViewSpec extends UnitViewSpec with CommonMessages with 
 
         val backButton = view.getElementById("back-link")
 
-        backButton must containMessage(backCaption)
+        backButton must containMessage(backToPreviousQuestionCaption)
         backButton must haveHref(routes.IsLicenceRequiredController.displayPage(mode, itemId))
       }
 
@@ -123,7 +123,7 @@ class AdditionalDocumentsViewSpec extends UnitViewSpec with CommonMessages with 
 
         val backButton = view.getElementById("back-link")
 
-        backButton must containMessage(backCaption)
+        backButton must containMessage(backToPreviousQuestionCaption)
         backButton must haveHref(routes.AdditionalInformationController.displayPage(mode, itemId))
       }
 
@@ -136,7 +136,7 @@ class AdditionalDocumentsViewSpec extends UnitViewSpec with CommonMessages with 
 
         val backButton = view.getElementById("back-link")
 
-        backButton must containMessage(backCaption)
+        backButton must containMessage(backToPreviousQuestionCaption)
         backButton must haveHref(routes.AdditionalInformationRequiredController.displayPage(mode, itemId))
       }
     }

@@ -22,7 +22,7 @@ import controllers.helpers.DeclarationHolderHelper.userCanLandOnIsAuthRequiredPa
 import controllers.helpers.LocationOfGoodsHelper.skipLocationOfGoods
 import controllers.helpers.TransportSectionHelper.{additionalDeclTypesAllowedOnInlandOrBorder, isPostalOrFTIModeOfTransport}
 import controllers.helpers._
-import controllers.routes.{ChoiceController, RejectedNotificationsController, SubmissionsController}
+import controllers.routes.{ChoiceController, RejectedNotificationsController}
 import forms.Choice.AllowedChoiceValues
 import forms.declaration.InlandOrBorder.Border
 import forms.declaration.NatureOfTransaction.{BusinessPurchase, Sale}
@@ -629,46 +629,39 @@ class Navigator @Inject() (
     else
       routes.CommodityDetailsController.displayPage(mode, itemId)
 
-  def backLink(page: DeclarationPage, mode: Mode)(implicit request: JourneyRequest[_]): Call =
-    mode match {
-      case Mode.Normal | Mode.Amend =>
-        val specific = request.declarationType match {
-          case STANDARD      => standardCacheDependent.orElse(standard)
-          case SUPPLEMENTARY => supplementaryCacheDependent.orElse(supplementary)
-          case SIMPLIFIED    => simplifiedCacheDependent.orElse(simplified)
-          case OCCASIONAL    => occasionalCacheDependent.orElse(occasional)
-          case CLEARANCE     => clearanceCacheDependent.orElse(clearance)
-        }
+  def backLink(page: DeclarationPage, mode: Mode)(implicit request: JourneyRequest[_]): Call = {
 
-        commonCacheDependent.orElse(common).orElse(specific)(page) match {
-          case mapping: (Mode => Call) =>
-            mapping(mode)
-          case mapping: ((ExportsDeclaration, Mode) => Call) =>
-            mapping(request.cacheModel, mode)
-        }
-
-      case _ => backLinkOnOtherModes(mode)
+    val specific = request.declarationType match {
+      case STANDARD      => standardCacheDependent.orElse(standard)
+      case SUPPLEMENTARY => supplementaryCacheDependent.orElse(supplementary)
+      case SIMPLIFIED    => simplifiedCacheDependent.orElse(simplified)
+      case OCCASIONAL    => occasionalCacheDependent.orElse(occasional)
+      case CLEARANCE     => clearanceCacheDependent.orElse(clearance)
     }
 
-  def backLink(page: DeclarationPage, mode: Mode, itemId: ItemId)(implicit request: JourneyRequest[_]): Call =
-    mode match {
-      case Mode.Normal | Mode.Amend =>
-        val specific = request.declarationType match {
-          case STANDARD      => standardCacheItemDependent.orElse(standardItemPage)
-          case SUPPLEMENTARY => supplementaryCacheItemDependent.orElse(supplementaryItemPage)
-          case SIMPLIFIED    => simplifiedCacheItemDependent.orElse(simplifiedItemPage)
-          case OCCASIONAL    => occasionalCacheItemDependent.orElse(occasionalItemPage)
-          case CLEARANCE     => clearanceCacheItemDependent.orElse(clearanceItemPage)
-        }
-        commonCacheItemDependent.orElse(commonItem).orElse(specific)(page) match {
-          case mapping: ((Mode, String) => Call) =>
-            mapping(mode, itemId.id)
-          case mapping: ((ExportsDeclaration, Mode, String) => Call) =>
-            mapping(request.cacheModel, mode, itemId.id)
-        }
-
-      case _ => backLinkOnOtherModes(mode)
+    commonCacheDependent.orElse(common).orElse(specific)(page) match {
+      case mapping: (Mode => Call) =>
+        mapping(mode)
+      case mapping: ((ExportsDeclaration, Mode) => Call) =>
+        mapping(request.cacheModel, mode)
     }
+  }
+
+  def backLink(page: DeclarationPage, mode: Mode, itemId: ItemId)(implicit request: JourneyRequest[_]): Call = {
+    val specific = request.declarationType match {
+      case STANDARD      => standardCacheItemDependent.orElse(standardItemPage)
+      case SUPPLEMENTARY => supplementaryCacheItemDependent.orElse(supplementaryItemPage)
+      case SIMPLIFIED    => simplifiedCacheItemDependent.orElse(simplifiedItemPage)
+      case OCCASIONAL    => occasionalCacheItemDependent.orElse(occasionalItemPage)
+      case CLEARANCE     => clearanceCacheItemDependent.orElse(clearanceItemPage)
+    }
+    commonCacheItemDependent.orElse(commonItem).orElse(specific)(page) match {
+      case mapping: ((Mode, String) => Call) =>
+        mapping(mode, itemId.id)
+      case mapping: ((ExportsDeclaration, Mode, String) => Call) =>
+        mapping(request.cacheModel, mode, itemId.id)
+    }
+  }
 
   def backLinkForAdditionalInformation(page: DeclarationPage, mode: Mode, itemId: String)(
     implicit request: JourneyRequest[_],
@@ -682,27 +675,11 @@ class Navigator @Inject() (
 
     page match {
       case AdditionalInformationSummary | AdditionalInformationRequired =>
-        mode match {
-          case Mode.Normal | Mode.Amend =>
-            request.declarationType match {
-              case STANDARD | SUPPLEMENTARY => pageSelection
-              case _                        => Future.successful(backLink(page, mode, ItemId(itemId)))
-            }
-
-          case _ => Future.successful(backLinkOnOtherModes(mode))
+        request.declarationType match {
+          case STANDARD | SUPPLEMENTARY => pageSelection
+          case _                        => Future.successful(backLink(page, mode, ItemId(itemId)))
         }
-
       case _ => Future.successful(backLink(page, mode, ItemId(itemId)))
     }
   }
-
-  private def backLinkOnOtherModes(mode: Mode)(implicit request: JourneyRequest[_]): Call =
-    (mode, request.cacheModel.parentDeclarationId) match {
-      case (Mode.ErrorFix, Some(parentId)) => RejectedNotificationsController.displayPage(parentId)
-      case (Mode.ErrorFix, _)              => SubmissionsController.displayListOfSubmissions()
-      case (Mode.Change, _)                => routes.SummaryController.displayPage(Mode.Normal)
-      case (Mode.ChangeAmend, _)           => routes.SummaryController.displayPageOnAmend
-      case (Mode.Draft, _)                 => routes.SummaryController.displayPage(Mode.Draft)
-      case _                               => throw new IllegalArgumentException(s"Illegal mode [${mode.name}] for Navigator back-link")
-    }
 }

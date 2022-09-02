@@ -168,7 +168,7 @@ object ExportDeclarationTestData {
     Map("sequenceNumeric" -> JsString("0"), "marksNumbersId" -> JsString("wefdsf"), "typeCode" -> JsString("22"))
   )
   val declaration =
-    ExportsDeclaration(UUID.randomUUID.toString, None, DeclarationStatus.DRAFT, Instant.now, Instant.now, None, DeclarationType.SUPPLEMENTARY)
+    ExportsDeclaration(UUID.randomUUID.toString, None, None, DeclarationStatus.DRAFT, Instant.now, Instant.now, DeclarationType.SUPPLEMENTARY)
 
   def createGovernmentAgencyGoodsItem(): GovernmentAgencyGoodsItem =
     GovernmentAgencyGoodsItem(

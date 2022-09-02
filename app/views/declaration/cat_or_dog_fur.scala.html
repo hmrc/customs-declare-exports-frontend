@@ -67,7 +67,7 @@
 
 @govukLayout(
     title = Title("declaration.catOrDogFur.header", "declaration.section.4", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.back"), navigator.backLink(CatOrDogFurDetails, mode, ItemId(itemId))))) {
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(CatOrDogFurDetails, mode, ItemId(itemId))))) {
 
     @formHelper(action = routes.CatOrDogFurController.submitForm(mode, itemId), 'autoComplete -> "off") {
         @errorSummary(yesNoErrors(form.errors))

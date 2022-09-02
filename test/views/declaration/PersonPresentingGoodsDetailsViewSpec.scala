@@ -64,7 +64,7 @@ class PersonPresentingGoodsDetailsViewSpec extends UnitViewSpec with Injector wi
 
         val backButton = createView().getElementById("back-link")
 
-        backButton must containMessage(backCaption)
+        backButton must containMessage(backToPreviousQuestionCaption)
         backButton must haveHref(routes.EntryIntoDeclarantsRecordsController.displayPage().url)
       }
 

@@ -103,7 +103,7 @@
 
 @govukLayout(
     title = title,
-    backButton = Some(BackButton(messages("site.back"), navigator.backLink(AdditionalActorsSummary  , mode)))
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(AdditionalActorsSummary  , mode)))
 ) {
 
     @formHelper(action = AdditionalActorsSummaryController.submitForm(mode), 'autoComplete -> "off") {

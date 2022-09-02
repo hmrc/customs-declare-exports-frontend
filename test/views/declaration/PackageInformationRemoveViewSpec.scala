@@ -60,7 +60,7 @@ class PackageInformationRemoveViewSpec extends UnitViewSpec with Stubs with Comm
     "display 'Back' button that links to 'PackageInformation summary' page" in {
       val backLinkContainer = view.getElementById("back-link")
 
-      backLinkContainer must containMessage(backCaption)
+      backLinkContainer must containMessage(backToPreviousQuestionCaption)
       backLinkContainer.getElementById("back-link") must haveHref(
         controllers.declaration.routes.PackageInformationSummaryController.displayPage(Mode.Normal, itemId)
       )

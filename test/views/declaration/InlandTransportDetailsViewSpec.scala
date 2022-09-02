@@ -129,7 +129,7 @@ class InlandTransportDetailsViewSpec extends UnitViewSpec with ExportsTestHelper
         s"AdditionalDeclarationType is $additionalType" in {
           val view = createView()(withRequest(additionalType))
           val backButton = view.getElementById("back-link")
-          backButton must containMessage("site.back")
+          backButton must containMessage("site.backToPreviousQuestion")
           backButton.getElementById("back-link") must haveHref(InlandOrBorderController.displayPage())
         }
       }
@@ -143,7 +143,7 @@ class InlandTransportDetailsViewSpec extends UnitViewSpec with ExportsTestHelper
             allValuesRequiringToSkipInlandOrBorder.foreach { modifier =>
               val view = createView()(withRequest(additionalType, modifier))
               val backButton = view.getElementById("back-link")
-              backButton must containMessage("site.back")
+              backButton must containMessage("site.backToPreviousQuestion")
               backButton.getElementById("back-link") must haveHref(SupervisingCustomsOfficeController.displayPage())
             }
           }
@@ -154,7 +154,7 @@ class InlandTransportDetailsViewSpec extends UnitViewSpec with ExportsTestHelper
         s"AdditionalDeclarationType is ${additionalType}" in {
           val view = createView()(withRequest(additionalType))
           val backButton = view.getElementById("back-link")
-          backButton must containMessage("site.back")
+          backButton must containMessage("site.backToPreviousQuestion")
           backButton.getElementById("back-link") must haveHref(SupervisingCustomsOfficeController.displayPage())
         }
       }
@@ -169,7 +169,7 @@ class InlandTransportDetailsViewSpec extends UnitViewSpec with ExportsTestHelper
               valuesRequiringToSkipInlandOrBorder.foreach { modifier =>
                 val view = createView()(withRequest(additionalType, modifier, withItem(itemWithPC("1040"))))
                 val backButton = view.getElementById("back-link")
-                backButton must containMessage("site.back")
+                backButton must containMessage("site.backToPreviousQuestion")
                 backButton.getElementById("back-link") must haveHref(TransportLeavingTheBorderController.displayPage())
               }
             }
@@ -180,7 +180,7 @@ class InlandTransportDetailsViewSpec extends UnitViewSpec with ExportsTestHelper
           s"AdditionalDeclarationType is ${additionalType}" in {
             val view = createView()(withRequest(additionalType, withItem(itemWithPC("1040"))))
             val backButton = view.getElementById("back-link")
-            backButton must containMessage("site.back")
+            backButton must containMessage("site.backToPreviousQuestion")
             backButton.getElementById("back-link") must haveHref(TransportLeavingTheBorderController.displayPage())
           }
         }
@@ -193,7 +193,7 @@ class InlandTransportDetailsViewSpec extends UnitViewSpec with ExportsTestHelper
           s"AdditionalDeclarationType is ${additionalType}" in {
             val view = createView()(withRequest(additionalType, withItem(itemWithPC("1040"))))
             val backButton = view.getElementById("back-link")
-            backButton must containMessage("site.back")
+            backButton must containMessage("site.backToPreviousQuestion")
             backButton.getElementById("back-link") must haveHref(ItemsSummaryController.displayItemsSummaryPage())
           }
         }

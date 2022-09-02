@@ -55,7 +55,7 @@ class CarrierEoriNumberViewSpec extends UnitViewSpec with CommonMessages with Ex
 
       "display 'Back' button that links to 'Exporter Details' page" in {
         val backButton = view.getElementById("back-link")
-        backButton must containMessage("site.back")
+        backButton must containMessage("site.backToPreviousQuestion")
         backButton.getElementById("back-link") must haveHref(RepresentativeStatusController.displayPage(Normal))
       }
 

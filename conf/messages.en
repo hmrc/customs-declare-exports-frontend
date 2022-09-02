@@ -24,6 +24,7 @@ error.yesNo.required = Select yes or no
 error.unknown = Unknown error
 
 site.back = Back
+site.backToPreviousQuestion = Back to previous question
 site.backToSelectionPage = Back to selection page
 site.backToDeclarations = Back to your declarations
 site.backToGovUk = Back to GOV.UK
@@ -740,7 +741,6 @@ declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.10.lin
 
 declaration.copy.title = Copy declaration
 declaration.copy.ducr.label = Enter a new Declaration Unique Consignment Reference (DUCR)
-declaration.copy.ducr.paragraph = If you are copying a pre-lodged declaration, you can repeat the same DUCR.
 declaration.copy.ducr.hint = For example, 1GB121212121212-INVOICE123/4.
 declaration.copy.lrn.label = Enter a new local reference number (LRN)
 declaration.copy.lrn.paragraph = You can enter any reference you like, but do not use the same LRN within 48 hours. Add a version number if you have used it in the past 48 hours.

@@ -25,9 +25,8 @@ import models.ExportsDeclaration
 import models.declaration.Parties
 import models.requests.JourneyRequest
 import play.api.i18n.Messages
-import play.api.mvc.Call
 import play.twirl.api.{Html, HtmlFormat}
-import uk.gov.hmrc.govukfrontend.views.html.components.{GovukDetails, GovukInsetText, GovukWarningText}
+import uk.gov.hmrc.govukfrontend.views.html.components.{GovukDetails, GovukInsetText}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.details.Details
 import uk.gov.hmrc.govukfrontend.views.viewmodels.insettext.InsetText

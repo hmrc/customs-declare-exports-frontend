@@ -44,7 +44,7 @@
 
 @govukLayout(
     title = Title("declaration.additionalInformationRequired.title", "declaration.section.5", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.back"), backLink))
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), backLink))
 ) {
     @formHelper(action = controllers.declaration.routes.AdditionalInformationRequiredController.submitForm(mode, (itemId)), 'autoComplete -> "off") {
         @errorSummary(yesNoErrors(form.errors))

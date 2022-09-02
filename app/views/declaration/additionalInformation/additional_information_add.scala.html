@@ -36,7 +36,7 @@
 
 @govukLayout(
     title = Title("declaration.additionalInformation.title", "declaration.section.5", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.back"), navigator.backLink(AdditionalInformation, mode, ItemId(itemId))))) {
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(AdditionalInformation, mode, ItemId(itemId))))) {
 
     @formHelper(action = AdditionalInformationAddController.submitForm(mode, itemId), 'autoComplete -> "off") {
 
