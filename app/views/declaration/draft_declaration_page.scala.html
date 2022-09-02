@@ -21,11 +21,13 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components.{GovukPanel, HtmlContent, Panel, Text}
 @import views.helpers.{Title, ViewDates}
 @import views.html.components.gds.{gdsMainTemplate, govUkLink, heading, link, paragraph}
+@import views.html.components.viewDeclarationSummaryLink
 
 @this(
     govukLayout: gdsMainTemplate,
     govukPanel : GovukPanel,
     link: link,
+    viewDeclarationSummaryLink: viewDeclarationSummaryLink,
     govUkLink: govUkLink,
     heading: heading,
     paragraph: paragraph
@@ -39,16 +41,6 @@
         @ViewDates.formatDate(Instant.ofEpochMilli(expiry.toLong).atOffset(ZoneOffset.UTC))
     </div>
 }
-
-@viewDeclarationSummaryLink = { @if(declarationId.isDefined) {
-  <p class="govuk-body">
-    @link(
-      id = Some("view_declaration_summary"),
-      text = messages("declaration.draft.viewSummary"),
-      call = SavedDeclarationsController.continueDeclaration(declarationId.get)
-    )
-  </p>
-}}
 
 @whatNext = {
     @heading(messages("declaration.draft.nextHeading"), "govuk-heading-m", "h2")
@@ -68,14 +60,18 @@
     )))
 }
 
-@govukLayout(title = Title("declaration.draft.title")) {
+@govukLayout(title = Title("declaration.draft.title"), showDeclarationSummaryLink = false) {
 
     @govukPanel(Panel(
         title = Text(messages("declaration.draft.title")),
         content = HtmlContent(expiresMessage)
     ))
 
-    @viewDeclarationSummaryLink
+    @declarationId.map { id =>
+        @paragraph(
+            viewDeclarationSummaryLink(id)
+        )
+    }
 
     @whatNext
 

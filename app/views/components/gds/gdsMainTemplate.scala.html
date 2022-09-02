@@ -17,7 +17,7 @@
 @import config.{AppConfig, TimeoutDialogConfig}
 @import config.featureFlags.BetaBannerConfig
 @import controllers.routes.{Assets, SignOutController}
-@import models.requests.AuthenticatedRequest
+@import models.requests.{AuthenticatedRequest, ExportsSessionKeys}
 @import play.twirl.api.HtmlFormat
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers._
@@ -26,31 +26,34 @@
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.language.{En, Cy}
 @import views.helpers.{BackButton, Title}
 @import views.html.components.gds.{phaseBanner, siteHeader}
+@import views.html.components._
 
 @this(
-  govukHeader: GovukHeader,
-  govukLayout: GovukLayout,
-  govukFlexibleLayout: govukFlexibleLayout,
-  govukBackLink: GovukBackLink,
-  siteHeader: siteHeader,
-  phaseBanner: phaseBanner,
-  timeoutDialogConfig: TimeoutDialogConfig,
-  betaBannerConfig: BetaBannerConfig,
-  hmrcHead: HmrcHead,
-  hmrcTimeoutDialogHelper: HmrcTimeoutDialogHelper,
-  hmrcTrackingConsentSnippet: HmrcTrackingConsentSnippet,
-  hmrcReportTechnicalIssue: HmrcReportTechnicalIssue,
-  hmrcFooter: HmrcStandardFooter,
-  appConfig: AppConfig
+    govukHeader: GovukHeader,
+    govukLayout: GovukLayout,
+    govukFlexibleLayout: govukFlexibleLayout,
+    govukBackLink: GovukBackLink,
+    siteHeader: siteHeader,
+    phaseBanner: phaseBanner,
+    timeoutDialogConfig: TimeoutDialogConfig,
+    betaBannerConfig: BetaBannerConfig,
+    hmrcHead: HmrcHead,
+    hmrcTimeoutDialogHelper: HmrcTimeoutDialogHelper,
+    hmrcTrackingConsentSnippet: HmrcTrackingConsentSnippet,
+    hmrcReportTechnicalIssue: HmrcReportTechnicalIssue,
+    hmrcFooter: HmrcStandardFooter,
+    viewDeclarationSummaryLink: viewDeclarationSummaryLink,
+    appConfig: AppConfig
 )
 
 @(
-  title: Title,
-  backButton: Option[BackButton] = None,
-  useCustomContentWidth: Boolean = false,
-  navigationBanner: Html = HtmlFormat.empty,
-  headContentOnJavaScriptDisabled: Option[Html] = None,
-  displaySignOut: Boolean = false
+    title: Title,
+    backButton: Option[BackButton] = None,
+    useCustomContentWidth: Boolean = false,
+    navigationBanner: Html = HtmlFormat.empty,
+    headContentOnJavaScriptDisabled: Option[Html] = None,
+    displaySignOut: Boolean = false,
+    showDeclarationSummaryLink: Boolean = true
 )(contentBlock: Html)(implicit request: Request[_], messages: Messages)
 
 @userIsSignedIn = @{ request.isInstanceOf[AuthenticatedRequest[_]]}
@@ -105,7 +108,15 @@
                 href = back.call.url
             ))
         )
+
+        @if(showDeclarationSummaryLink){
+            @request.session.data.get(ExportsSessionKeys.declarationId).map{ declarationId =>
+                <p>@viewDeclarationSummaryLink(declarationId)</p>
+            }
+        }
+
     </div>
+
 }
 
 @content = {
