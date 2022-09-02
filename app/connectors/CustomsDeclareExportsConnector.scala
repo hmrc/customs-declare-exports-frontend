@@ -116,24 +116,22 @@ class CustomsDeclareExportsConnector @Inject() (appConfig: AppConfig, httpClient
   def submitDeclaration(id: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Submission] =
     httpClient.POSTEmpty[Submission](url(s"${appConfig.submissionPath}/$id"))
 
+  // repurpose this endpoint to be the retrieve all submissions for user
   def fetchSubmissions(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[Submission]] =
     httpClient.GET[Seq[Submission]](url(s"${appConfig.submissionsPath}")).map { response =>
       logger.debug(s"CUSTOMS_DECLARE_EXPORTS fetch submission response is --> ${response.toString}")
       response
     }
 
+  // New endpoint has been created for retrieving a specific Submission record by its uuid
   def findSubmission(uuid: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[Submission]] =
     httpClient
       .GET[Seq[Submission]](url(s"${appConfig.submissionsPath}"), Seq("id" -> uuid))
       .map(_.headOption)
 
+  // used to check if LRN has been used in last 48hrs
   def findSubmissionsByLrn(lrn: Lrn)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[Submission]] =
     httpClient.GET[Seq[Submission]](url(s"${appConfig.submissionsPath}"), Seq("lrn" -> lrn.value))
-
-  def findSubmissionByMrn(mrn: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[Submission]] =
-    httpClient
-      .GET[Seq[Submission]](url(s"${appConfig.submissionsPath}"), Seq("mrn" -> mrn))
-      .map(_.headOption)
 
   def findNotifications(id: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[Notification]] =
     httpClient.GET[Seq[Notification]](url(s"${appConfig.submissionPath}${appConfig.notificationsPath}/$id"))

@@ -250,26 +250,6 @@ class CustomsDeclareExportsConnectorIntegrationISpec extends ConnectorISpec with
     }
   }
 
-  "Find Submissions by MRN" should {
-    "return Ok" in {
-      val mrn = "mrn"
-      val submission_2 = submission.copy(uuid = "id2", ducr = Some("ducr"))
-      stubForExports(
-        get(s"/submissions?mrn=$mrn")
-          .willReturn(
-            aResponse()
-              .withStatus(Status.OK)
-              .withBody(json(Seq(submission, submission_2)))
-          )
-      )
-
-      val response = await(connector.findSubmissionByMrn(mrn))
-
-      response mustBe Some(submission)
-      verify(getRequestedFor(urlEqualTo(s"/submissions?mrn=$mrn")))
-    }
-  }
-
   "Find Notifications" should {
     "return Ok" in {
       stubForExports(
