@@ -17,7 +17,6 @@
 package tools
 
 import scala.concurrent.ExecutionContext
-
 import akka.stream.testkit.NoMaterializer
 import com.typesafe.config.{Config, ConfigFactory}
 import config.featureFlags.{BetaBannerConfig, FeatureSwitchConfig}
@@ -34,6 +33,7 @@ import uk.gov.hmrc.hmrcfrontend.views.html.components._
 import uk.gov.hmrc.hmrcfrontend.views.html.helpers._
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import views.html.components.gds._
+import views.html.components.viewDeclarationSummaryLink
 
 trait Stubs {
 
@@ -108,6 +108,8 @@ trait Stubs {
   val hmrcTrackingConsentSnippet = new HmrcTrackingConsentSnippet(new TrackingConsentConfig(minimalConfiguration))
   val hmrcReportTechnicalIssue = new HmrcReportTechnicalIssue()
 
+  val viewDeclarationSummaryLink = new viewDeclarationSummaryLink(new link(), new paragraph())
+
   val govukHeader = new GovukHeader()
   val pBanner = new phaseBanner(new GovukPhaseBanner(new GovukTag()), minimalAppConfig)
   val sHeader = new siteHeader(new HmrcHeader(new HmrcBanner(), new HmrcUserResearchBanner(), new GovukPhaseBanner(new GovukTag())))
@@ -126,6 +128,7 @@ trait Stubs {
     hmrcTrackingConsentSnippet = hmrcTrackingConsentSnippet,
     hmrcReportTechnicalIssue = hmrcReportTechnicalIssue,
     hmrcFooter = hmrcFooter,
+    viewDeclarationSummaryLink = viewDeclarationSummaryLink,
     appConfig = minimalAppConfig
   )
 }

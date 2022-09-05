@@ -63,9 +63,10 @@
 }
 
 @govukLayout(
- title = Title("declaration.summary.amend-header"),
- backButton = Some(BackButton(messages("site.back"), SubmissionsController.displayListOfSubmissions())),
- useCustomContentWidth = true
+    title = Title("declaration.summary.amend-header"),
+    backButton = Some(BackButton(messages("site.back"), SubmissionsController.displayListOfSubmissions())),
+    useCustomContentWidth = true,
+    showDeclarationSummaryLink = false
 ) {
 
   @pageTitle(messages("declaration.summary.amend-header"))
