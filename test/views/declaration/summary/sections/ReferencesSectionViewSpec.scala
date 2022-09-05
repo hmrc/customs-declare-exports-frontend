@@ -67,20 +67,12 @@ class ReferencesSectionViewSpec extends UnitViewSpec with ExportsTestHelper with
       val row = view.getElementsByClass("declarationType-row")
       row must haveSummaryKey(messages("declaration.summary.references.type"))
       row must haveSummaryValue("Standard declaration")
-
-      row must haveSummaryActionsTexts("site.change", "declaration.summary.references.type.change")
-
-      row must haveSummaryActionsHref(routes.DeclarationChoiceController.displayPage(Change))
     }
 
     "have additional declaration type with change button" in {
       val row = view.getElementsByClass("additionalType-row")
       row must haveSummaryKey(messages("declaration.summary.references.additionalType"))
       row must haveSummaryValue(messages("declaration.summary.references.additionalType.A"))
-
-      row must haveSummaryActionsTexts("site.change", "declaration.summary.references.additionalType.change")
-
-      row must haveSummaryActionsHref(routes.AdditionalDeclarationTypeController.displayPage(Change))
     }
 
     "have DUCR with change button" in {
@@ -147,7 +139,6 @@ class ReferencesSectionViewSpec extends UnitViewSpec with ExportsTestHelper with
     "have declaration type" in {
       val row = viewNoAnswers.getElementsByClass("declarationType-row")
       row must haveSummaryKey(messages("declaration.summary.references.type"))
-      row must haveSummaryActionsHref(routes.DeclarationChoiceController.displayPage(Change))
     }
 
     "not have additional declaration type" in {
