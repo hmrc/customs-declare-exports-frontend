@@ -2042,6 +2042,7 @@ declaration.summary.items.item.additionalDocuments.change = Change additional do
 declaration.summary.items.item.additionalDocuments.changeAll = Change additional documents for item {0}
 declaration.summary.items.item.additionalDocuments.code = Document code
 declaration.summary.items.item.additionalDocuments.identifier = Document identifier
+declaration.summary.items.item.additionalDocuments.none = None
 declaration.summary.items.item.clearance.additionalDocuments = Additional references and documents
 declaration.summary.items.item.licences = Licences
 declaration.summary.transport.warehouse.id = Warehouse ID
