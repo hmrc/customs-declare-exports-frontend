@@ -26,14 +26,6 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class LrnValidator @Inject() (customsDeclareExportsConnector: CustomsDeclareExportsConnector) {
 
-  def hasBeenSubmittedInThePast48Hours(lrn: Lrn)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean] = {
-    val now = ZonedDateTime.now(Action.defaultDateTimeZone)
-
-    def isSubmissionOlderThan48Hours(submission: Submission): Boolean =
-      submission.actions.exists(_.requestTimestamp.isAfter(now.minusHours(48)))
-
-    customsDeclareExportsConnector.findSubmissionsByLrn(lrn).map { submissions =>
-      submissions.exists(isSubmissionOlderThan48Hours)
-    }
-  }
+  def hasBeenSubmittedInThePast48Hours(lrn: Lrn)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean] =
+    customsDeclareExportsConnector.isLrnAlreadyUsed(lrn)
 }
