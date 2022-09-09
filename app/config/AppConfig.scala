@@ -158,6 +158,11 @@ class AppConfig @Inject() (
     throw new IllegalStateException("Missing configuration for Customs Declaration Exports submissions URI")
   )
 
+  lazy val lrnAlreadyUsedPath = servicesConfig.getConfString(
+    "customs-declare-exports.lrn-already-used",
+    throw new IllegalStateException("Missing configuration for Customs Declaration Exports lrn-already-used URI")
+  )
+
   lazy val notificationsPath = servicesConfig.getConfString(
     "customs-declare-exports.notifications",
     throw new IllegalStateException("Missing configuration for Customs Declarations Exports notifications URI")

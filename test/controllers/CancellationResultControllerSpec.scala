@@ -30,7 +30,7 @@ import play.api.i18n.Lang
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{redirectLocation, session, status, OK}
-import testdata.SubmissionsTestData.{eori, lrn, mrn}
+import testdata.SubmissionsTestData.{eori, lrn, mrn, uuid}
 import views.html.{cancellation_holding, cancellation_result}
 
 import java.time.ZonedDateTime
@@ -64,8 +64,8 @@ class CancellationResultControllerSpec extends ControllerWithoutFormSpec with Er
   override protected def afterEach(): Unit =
     reset(mockCustomsDeclareExportsConnector)
 
-  def buildRequest(queryParam: String = "", mrn: Option[String] = None): VerifiedEmailRequest[AnyContentAsEmpty.type] = {
-    val session = if (mrn.isDefined) ExportsSessionKeys.submissionMrn -> mrn.get else ("", "")
+  def buildRequest(queryParam: String = "", submissionId: Option[String] = None): VerifiedEmailRequest[AnyContentAsEmpty.type] = {
+    val session = if (submissionId.isDefined) ExportsSessionKeys.submissionId -> submissionId.get else ("", "")
     val request = FakeRequest("GET", queryParam).withSession(session)
     buildVerifiedEmailRequest(request, exampleUser)
   }
@@ -89,7 +89,7 @@ class CancellationResultControllerSpec extends ControllerWithoutFormSpec with Er
     "return the expected page" when {
 
       "the request does not include a 'js' query parameter" in {
-        val request = buildRequest(mrn = Some(mrn))
+        val request = buildRequest(submissionId = Some(uuid))
         val result = controller.displayHoldingPage(request)
 
         status(result) mustBe OK
@@ -103,10 +103,10 @@ class CancellationResultControllerSpec extends ControllerWithoutFormSpec with Er
 
       "the request's query parameter 'js' is equal to 'disabled'" in {
         And("no notifications have been received yet")
-        when(mockCustomsDeclareExportsConnector.findSubmissionByMrn(any())(any(), any()))
+        when(mockCustomsDeclareExportsConnector.findSubmission(any())(any(), any()))
           .thenReturn(Future.successful(submissionWithStatus(None)))
 
-        val request = buildRequest("/?js=disabled", Some(mrn))
+        val request = buildRequest("/?js=disabled", Some(uuid))
         val result = controller.displayHoldingPage(request)
 
         status(result) mustBe OK
@@ -122,10 +122,10 @@ class CancellationResultControllerSpec extends ControllerWithoutFormSpec with Er
     "return 303(SEE_OTHER) status code" when {
       "the request's query parameter 'js' is equal to 'disabled'" in {
         And("at least one notification has been received yet")
-        when(mockCustomsDeclareExportsConnector.findSubmissionByMrn(any())(any(), any()))
+        when(mockCustomsDeclareExportsConnector.findSubmission(any())(any(), any()))
           .thenReturn(Future.successful(submissionWithStatus(Some(CUSTOMS_POSITION_GRANTED))))
 
-        val request = buildRequest("/?js=disabled", Some(mrn))
+        val request = buildRequest("/?js=disabled", Some(uuid))
         val result = controller.displayHoldingPage(request)
 
         status(result) mustBe SEE_OTHER
@@ -136,10 +136,10 @@ class CancellationResultControllerSpec extends ControllerWithoutFormSpec with Er
     "return 200(OK) status code" when {
       "the request's query parameter 'js' is equal to 'enabled'" in {
         And("at least one notification has been received yet")
-        when(mockCustomsDeclareExportsConnector.findSubmissionByMrn(any())(any(), any()))
+        when(mockCustomsDeclareExportsConnector.findSubmission(any())(any(), any()))
           .thenReturn(Future.successful(submissionWithStatus(Some(CUSTOMS_POSITION_GRANTED))))
 
-        val request = buildRequest("/?js=enabled", Some(mrn))
+        val request = buildRequest("/?js=enabled", Some(uuid))
         val result = controller.displayHoldingPage(request)
 
         status(result) mustBe OK
@@ -148,7 +148,7 @@ class CancellationResultControllerSpec extends ControllerWithoutFormSpec with Er
 
     "return 400(BAD_REQUEST) status code" when {
       "the request's query parameter 'js' is not equal to 'disabled' or 'enabled'" in {
-        val request = buildRequest("/?js=blabla", Some(mrn))
+        val request = buildRequest("/?js=blabla", Some(uuid))
         val result = controller.displayHoldingPage(request)
 
         status(result) mustBe BAD_REQUEST
@@ -158,10 +158,10 @@ class CancellationResultControllerSpec extends ControllerWithoutFormSpec with Er
     "return 404(NOT_FOUND) status code" when {
       "the request's query parameter 'js' is equal to 'enabled'" in {
         And("no notifications have been received yet")
-        when(mockCustomsDeclareExportsConnector.findSubmissionByMrn(any())(any(), any()))
+        when(mockCustomsDeclareExportsConnector.findSubmission(any())(any(), any()))
           .thenReturn(Future.successful(submissionWithStatus(None)))
 
-        val request = buildRequest("/?js=enabled", Some(mrn))
+        val request = buildRequest("/?js=enabled", Some(uuid))
         val result = controller.displayHoldingPage(request)
 
         status(result) mustBe NOT_FOUND
@@ -170,7 +170,7 @@ class CancellationResultControllerSpec extends ControllerWithoutFormSpec with Er
 
     "return 400 status code" when {
 
-      "the request's session does not include the MRN" in {
+      "the request's session does not include the submissionId" in {
         val request = buildRequest()
         val result = controller.displayHoldingPage(request)
 
@@ -183,12 +183,12 @@ class CancellationResultControllerSpec extends ControllerWithoutFormSpec with Er
 
     "return 400 status code" when {
 
-      "the request's session does not include the MRN" in {
+      "the request's session does not include the submissionId" in {
         val request = buildRequest()
         val result = controller.displayResultPage(request)
 
         status(result) mustBe BAD_REQUEST
-        session(result).data.keys mustNot contain(ExportsSessionKeys.submissionMrn)
+        session(result).data.keys mustNot contain(ExportsSessionKeys.submissionId)
       }
     }
 
@@ -196,14 +196,14 @@ class CancellationResultControllerSpec extends ControllerWithoutFormSpec with Er
 
       for (notificationStatus <- List(None, Some(CUSTOMS_POSITION_GRANTED), Some(CUSTOMS_POSITION_DENIED), Some(QUERY_NOTIFICATION_MESSAGE)))
         s"submission with notification status $notificationStatus has been received" in {
-          when(mockCustomsDeclareExportsConnector.findSubmissionByMrn(any())(any(), any()))
+          when(mockCustomsDeclareExportsConnector.findSubmission(any())(any(), any()))
             .thenReturn(Future.successful(submissionWithStatus(notificationStatus)))
 
-          val request = buildRequest(mrn = Some(mrn))
+          val request = buildRequest(submissionId = Some(uuid))
           val result = controller.displayResultPage(request)
 
           status(result) mustBe OK
-          session(result).data.keys mustNot contain(ExportsSessionKeys.submissionMrn)
+          session(result).data.keys mustNot contain(ExportsSessionKeys.submissionId)
 
           val expectedView = resultPage(notificationStatus, mrn)(request, messages)
 

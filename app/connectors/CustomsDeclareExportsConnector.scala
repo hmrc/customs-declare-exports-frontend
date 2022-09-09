@@ -124,16 +124,10 @@ class CustomsDeclareExportsConnector @Inject() (appConfig: AppConfig, httpClient
 
   def findSubmission(uuid: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[Submission]] =
     httpClient
-      .GET[Seq[Submission]](url(s"${appConfig.submissionsPath}"), Seq("id" -> uuid))
-      .map(_.headOption)
+      .GET[Option[Submission]](url(s"${appConfig.submissionPath}/$uuid"))
 
-  def findSubmissionsByLrn(lrn: Lrn)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[Submission]] =
-    httpClient.GET[Seq[Submission]](url(s"${appConfig.submissionsPath}"), Seq("lrn" -> lrn.value))
-
-  def findSubmissionByMrn(mrn: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[Submission]] =
-    httpClient
-      .GET[Seq[Submission]](url(s"${appConfig.submissionsPath}"), Seq("mrn" -> mrn))
-      .map(_.headOption)
+  def isLrnAlreadyUsed(lrn: Lrn)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean] =
+    httpClient.GET[Boolean](url(s"${appConfig.lrnAlreadyUsedPath}/${lrn.value}"))
 
   def findNotifications(id: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[Notification]] =
     httpClient.GET[Seq[Notification]](url(s"${appConfig.submissionPath}${appConfig.notificationsPath}/$id"))
