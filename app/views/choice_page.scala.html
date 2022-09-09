@@ -45,7 +45,9 @@
 
 @govukLayout(
     title = Title("declaration.choice.description", hasErrors = hasErrors),
-    backButton = None) {
+    backButton = None,
+    showDeclarationSummaryLink = false
+) {
 
     @formHelper(action = routes.ChoiceController.submitChoice(), 'autoComplete -> "off") {
         @errorSummary(radioGroupErrors("value", CreateDec, form.errors))

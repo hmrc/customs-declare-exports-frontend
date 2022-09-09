@@ -61,7 +61,9 @@
 
 @govukLayout(
     title = Title("declaration.declarant.title", sectionMessagesKey, request.eori, hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(DeclarantDetails, mode)))) {
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(DeclarantDetails, mode))),
+    showDeclarationSummaryLink = false
+    ) {
 
     @formHelper(action = routes.DeclarantDetailsController.submitForm(mode), 'autoComplete -> "off") {
         @errorSummary(radioGroupErrors(isEoriKey, "code_yes", form.errors))

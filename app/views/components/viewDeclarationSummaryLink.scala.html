@@ -14,28 +14,18 @@
  * limitations under the License.
  *@
 
-@import views.helpers.Title
+@import routes.SavedDeclarationsController
 @import views.html.components.gds._
 
 @this(
-        govukLayout: gdsMainTemplate,
-        pageTitle: pageTitle,
-        paragraphBody: paragraphBody,
-        linkButton: linkButton
+    link: link,
+    paragraph: paragraph
 )
 
-@()(implicit request: Request[_], messages: Messages)
+@(declarationId: String)(implicit messages: Messages)
 
-@govukLayout(
-    title = Title("declaration.summary.noData.header"),
-    useCustomContentWidth = true,
-    showDeclarationSummaryLink = false
-) {
-
-    @pageTitle(messages("declaration.summary.noData.header"))
-
-    @paragraphBody(messages("declaration.summary.noData.header.secondary"))
-
-    @linkButton("declaration.summary.noData.button", routes.RootController.displayPage())
-
-}
+@link(
+    id = Some("view_declaration_summary"),
+    text = messages("declaration.draft.viewSummary"),
+    call = SavedDeclarationsController.continueDeclaration(declarationId)
+)

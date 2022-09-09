@@ -78,7 +78,9 @@
 
 @govukLayout(
     title = Title("declaration.type.description", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), controllers.routes.ChoiceController.displayPage(Some(Choice(CreateDec)))))){
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), controllers.routes.ChoiceController.displayPage(Some(Choice(CreateDec))))),
+    showDeclarationSummaryLink = false
+){
 
     @formHelper(action = controllers.declaration.routes.DeclarationChoiceController.submitChoice(mode), 'autoComplete -> "off") {
         @errorSummary(radioGroupErrors("type", DeclarationType.STANDARD.toString, form.errors))
