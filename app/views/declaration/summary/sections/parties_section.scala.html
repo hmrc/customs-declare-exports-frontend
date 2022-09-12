@@ -202,14 +202,14 @@
             controllers.declaration.routes.RepresentativeEntityController.displayPage(mode)
         )).getOrElse(Seq.empty)
 
-                ++ (Seq.empty :+ declarationData.parties.representativeDetails.map(_.statusCode).map(statusCode =>
+                ++ (Seq.empty :+ declarationData.parties.representativeDetails.flatMap(_.statusCode.map(code =>
             SummaryListRow(
                 classes = "representationType-row",
                 key = Key(
                     content = Text(messages("declaration.summary.parties.representative.type"))
                 ),
                 value = Value(
-                    content = Text(statusCode.map(code => messages(s"declaration.summary.parties.representative.type.$code")).getOrElse(""))
+                    content = Text(messages(s"declaration.summary.parties.representative.type.$code"))
                 ),
                 actions = Some(Actions(
                     items = actionItems(
@@ -221,7 +221,7 @@
                     )
                 ))
             )
-        ))
+        )))
 
                 ++ declarationData.parties.carrierDetails.map(carrier => eoriOrAddress(
             "carrier",
