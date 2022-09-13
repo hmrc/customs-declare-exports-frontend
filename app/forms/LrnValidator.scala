@@ -17,10 +17,8 @@
 package forms
 
 import connectors.CustomsDeclareExportsConnector
-import models.declaration.submissions.{Action, Submission}
 import uk.gov.hmrc.http.HeaderCarrier
 
-import java.time.ZonedDateTime
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
