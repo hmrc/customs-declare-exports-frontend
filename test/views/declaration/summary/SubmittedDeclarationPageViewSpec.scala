@@ -21,6 +21,7 @@ import forms.declaration.CommodityDetails
 import models.DeclarationType._
 import models.ExportsDeclaration
 import org.jsoup.nodes.{Document, Element}
+import org.jsoup.select.Elements
 import services.cache.ExportsTestHelper
 import testdata.SubmissionsTestData.submission
 import tools.Stubs
@@ -35,13 +36,13 @@ class SubmittedDeclarationPageViewSpec extends UnitViewSpec with Stubs with Expo
   def createView(declaration: ExportsDeclaration = aDeclaration()): Document =
     declarationPage(Some(submission), declaration)(request, messages)
 
-  def links(view: Document) = {
+  def links(view: Document): Elements = {
     val allLinks = view.getElementsByClass("govuk-link")
 
     val filter = new Predicate[Element] {
       override def test(elm: Element): Boolean =
-        elm.text().contains("Print") || elm.text().contains("feedback") ||
-          elm.text().contains("Sign out") || elm.text().contains("page not working")
+        elm.text.contains("Print") || elm.text.contains("feedback") ||
+          elm.text.contains("Sign out") || elm.text.contains("page not working")
     }
     allLinks.removeIf(filter)
     allLinks
@@ -50,19 +51,26 @@ class SubmittedDeclarationPageViewSpec extends UnitViewSpec with Stubs with Expo
   "SubmittedDeclarationPageView" should {
 
     "display correct title" in {
-      createView().getElementById("title").text() mustBe messages("declaration.summary.submitted-header")
+      createView().getElementById("title").text mustBe messages("declaration.summary.submitted-header")
     }
 
     "display correct back link" in {
       val backButton = createView(aDeclaration(withId("declaration-id"))).getElementById("back-link")
 
-      backButton.text() mustBe messages("site.back")
+      backButton.text mustBe messages("site.back")
       backButton must haveHref(controllers.routes.DeclarationDetailsController.displayPage("declaration-id"))
+    }
+
+    "have the expected 'Print page' buttons" in {
+      val buttons = createView().getElementsByClass("gem-c-print-link__button")
+      buttons.size mustBe 2
+      buttons.get(0).text mustBe messages("site.print")
+      buttons.get(1).text mustBe messages("site.print")
     }
 
     "have references section" in {
       val view = createView()
-      view.getElementById("declaration-references-summary").text() mustNot be(empty)
+      view.getElementById("declaration-references-summary").text mustNot be(empty)
 
       links(view) mustBe empty
     }
@@ -73,7 +81,7 @@ class SubmittedDeclarationPageViewSpec extends UnitViewSpec with Stubs with Expo
 
     "have parties section" in {
       val view = createView(declaration = aDeclaration(withExporterDetails()))
-      view.getElementById("declaration-parties-summary").text() mustNot be(empty)
+      view.getElementById("declaration-parties-summary").text mustNot be(empty)
       links(view) mustBe empty
     }
 
@@ -83,7 +91,7 @@ class SubmittedDeclarationPageViewSpec extends UnitViewSpec with Stubs with Expo
 
     "have countries section" in {
       val view = createView(declaration = aDeclaration(withDestinationCountry()))
-      view.getElementById("declaration-countries-summary").text() mustNot be(empty)
+      view.getElementById("declaration-countries-summary").text mustNot be(empty)
       links(view) mustBe empty
     }
 
@@ -93,7 +101,7 @@ class SubmittedDeclarationPageViewSpec extends UnitViewSpec with Stubs with Expo
 
     "have locations section with UK office of exit" in {
       val view = createView(declaration = aDeclaration(withOfficeOfExit(officeId = "office-Id")))
-      view.getElementById("declaration-locations-summary").text() must include("office-Id")
+      view.getElementById("declaration-locations-summary").text must include("office-Id")
       links(view) mustBe empty
     }
 
@@ -105,7 +113,7 @@ class SubmittedDeclarationPageViewSpec extends UnitViewSpec with Stubs with Expo
 
     "have transaction section" in {
       val view = createView(declaration = aDeclaration(withNatureOfTransaction("1")))
-      view.getElementById("declaration-transaction-summary").text() mustNot be(empty)
+      view.getElementById("declaration-transaction-summary").text mustNot be(empty)
       links(view) mustBe empty
     }
 
@@ -116,7 +124,7 @@ class SubmittedDeclarationPageViewSpec extends UnitViewSpec with Stubs with Expo
     "have items section" in {
       val details = CommodityDetails(Some("1234567890"), Some("Description"))
       val view = createView(declaration = aDeclaration(withItem(anItem(withCommodityDetails(details)))))
-      view.getElementById("declaration-items-summary-0").text() mustNot be(empty)
+      view.getElementById("declaration-items-summary-0").text mustNot be(empty)
       links(view) mustBe empty
     }
 
@@ -126,7 +134,7 @@ class SubmittedDeclarationPageViewSpec extends UnitViewSpec with Stubs with Expo
 
     "have transport section" in {
       val view = createView(declaration = aDeclaration(withBorderTransport()))
-      view.getElementById("declaration-transport-summary").text() mustNot be(empty)
+      view.getElementById("declaration-transport-summary").text mustNot be(empty)
       links(view) mustBe empty
     }
   }

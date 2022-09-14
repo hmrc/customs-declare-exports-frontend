@@ -215,58 +215,37 @@ class CustomsDeclareExportsConnectorIntegrationISpec extends ConnectorISpec with
   "Find Submission" should {
     "return Ok" in {
       stubForExports(
-        get(s"/submissions?id=${submission.uuid}")
+        get(s"/submission/${submission.uuid}")
           .willReturn(
             aResponse()
               .withStatus(Status.OK)
-              .withBody(json(Seq(submission)))
+              .withBody(json(Some(submission)))
           )
       )
 
       val response = await(connector.findSubmission(id))
 
       response mustBe Some(submission)
-      verify(getRequestedFor(urlEqualTo(s"/submissions?id=${submission.uuid}")))
+      verify(getRequestedFor(urlEqualTo(s"/submission/${submission.uuid}")))
     }
   }
 
-  "Find Submissions by Lrn" should {
+  "Find if Lrn already used" should {
     "return Ok" in {
       val lrn = Lrn(submission.lrn)
-      val submission_2 = submission.copy(uuid = "id2", ducr = Some("ducr"))
       stubForExports(
-        get(s"/submissions?lrn=${lrn.value}")
+        get(s"/lrn-already-used/${lrn.value}")
           .willReturn(
             aResponse()
               .withStatus(Status.OK)
-              .withBody(json(Seq(submission, submission_2)))
+              .withBody(json(true))
           )
       )
 
-      val response = await(connector.findSubmissionsByLrn(lrn))
+      val response = await(connector.isLrnAlreadyUsed(lrn))
 
-      response mustBe Seq(submission, submission_2)
-      verify(getRequestedFor(urlEqualTo(s"/submissions?lrn=${lrn.value}")))
-    }
-  }
-
-  "Find Submissions by MRN" should {
-    "return Ok" in {
-      val mrn = "mrn"
-      val submission_2 = submission.copy(uuid = "id2", ducr = Some("ducr"))
-      stubForExports(
-        get(s"/submissions?mrn=$mrn")
-          .willReturn(
-            aResponse()
-              .withStatus(Status.OK)
-              .withBody(json(Seq(submission, submission_2)))
-          )
-      )
-
-      val response = await(connector.findSubmissionByMrn(mrn))
-
-      response mustBe Some(submission)
-      verify(getRequestedFor(urlEqualTo(s"/submissions?mrn=$mrn")))
+      response mustBe true
+      verify(getRequestedFor(urlEqualTo(s"/lrn-already-used/${lrn.value}")))
     }
   }
 

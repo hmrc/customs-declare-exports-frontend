@@ -46,8 +46,8 @@ class LrnValidatorSpec extends UnitSpec with ScalaFutures {
 
         "has not been used" in {
 
-          when(customsDeclareExportsConnector.findSubmissionsByLrn(any[Lrn])(any(), any()))
-            .thenReturn(Future.successful(Seq.empty))
+          when(customsDeclareExportsConnector.isLrnAlreadyUsed(any[Lrn])(any(), any()))
+            .thenReturn(Future.successful(false))
 
           val testLrn = Lrn(lrn)
 
@@ -59,13 +59,9 @@ class LrnValidatorSpec extends UnitSpec with ScalaFutures {
         "has been used more than 48 hours in the past" in {
 
           val now = ZonedDateTime.now(defaultDateTimeZone)
-          val testAction_1 = action.copy(requestTimestamp = now.minusHours(49))
-          val testAction_2 = action.copy(requestTimestamp = now.minusHours(100))
-          val testSubmission_1 = submission.copy(lrn = lrn, actions = Seq(testAction_1))
-          val testSubmission_2 = submission.copy(lrn = lrn, actions = Seq(testAction_2))
 
-          when(customsDeclareExportsConnector.findSubmissionsByLrn(any[Lrn])(any(), any()))
-            .thenReturn(Future.successful(Seq(testSubmission_1, testSubmission_2)))
+          when(customsDeclareExportsConnector.isLrnAlreadyUsed(any[Lrn])(any(), any()))
+            .thenReturn(Future.successful(false))
 
           val testLrn = Lrn(lrn)
 
@@ -74,28 +70,25 @@ class LrnValidatorSpec extends UnitSpec with ScalaFutures {
           result mustBe false
         }
       }
-    }
 
-    "return true" when {
+      "return true" when {
 
-      "provided with form containing LRN that has been used in the past 48 hours" in {
+        "provided with form containing LRN that has been used in the past 48 hours" in {
 
-        val now = ZonedDateTime.now(defaultDateTimeZone)
-        val testAction_1 = action.copy(requestTimestamp = now.minusHours(49))
-        val testAction_2 = action.copy(requestTimestamp = now.minusHours(47))
-        val testSubmission_1 = submission.copy(lrn = lrn, actions = Seq(testAction_1))
-        val testSubmission_2 = submission.copy(lrn = lrn, actions = Seq(testAction_2))
+          val now = ZonedDateTime.now(defaultDateTimeZone)
+          val testAction_1 = action.copy(requestTimestamp = now.minusHours(49))
+          val testAction_2 = action.copy(requestTimestamp = now.minusHours(47))
 
-        when(customsDeclareExportsConnector.findSubmissionsByLrn(any[Lrn])(any(), any()))
-          .thenReturn(Future.successful(Seq(testSubmission_1, testSubmission_2)))
+          when(customsDeclareExportsConnector.isLrnAlreadyUsed(any[Lrn])(any(), any()))
+            .thenReturn(Future.successful(true))
 
-        val testLrn = Lrn(lrn)
+          val testLrn = Lrn(lrn)
 
-        val result = lrnValidator.hasBeenSubmittedInThePast48Hours(testLrn).futureValue
+          val result = lrnValidator.hasBeenSubmittedInThePast48Hours(testLrn).futureValue
 
-        result mustBe true
+          result mustBe true
+        }
       }
     }
   }
-
 }
