@@ -9,28 +9,10 @@
 
 .gem-c-print-link__button,
 .gem-c-print-link__link {
-  background: url(https://www.gov.uk/assets/government-frontend/govuk_publishing_components/icon-print-9785e3a205c49d1efe1bfe07f3b60cafe820be2d0ca670aa2f4565f5deed4d5f.png) no-repeat 10px 50%;
+  background: url("../images/icon-print.png") no-repeat 10px 50%;
   background-size: 16px 18px;
   padding: 10px 10px 10px 36px;
   text-decoration: none;
-}
-
-.gem-a-print-link__button,
-.gem-a-print-link__link {
-  background: url(https://www.gov.uk/assets/government-frontend/govuk_publishing_components/icon-print-9785e3a205c49d1efe1bfe07f3b60cafe820be2d0ca670aa2f4565f5deed4d5f.png) no-repeat 10px 50%;
-  background-size: 16px 18px;
-  background-position: 1px;
-  padding: 0px 0px 0px 26px;
-  text-decoration: underline;
-  text-decoration-thickness: 0.0625em;
-  text-underline-offset: 0.1em;
-}
-
-@media only screen and (min-resolution: 2dppx), only screen and (min-resolution: 192dpi) {
-  .gem-c-print-link__button,
-  .gem-c-print-link__link {
-    background-image: url(/public/images/icon-print-2x.png);
-  }
 }
 
 .gem-c-print-link__button:hover,
