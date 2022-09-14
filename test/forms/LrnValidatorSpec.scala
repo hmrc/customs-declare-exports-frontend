@@ -19,15 +19,12 @@ package forms
 import base.ExportsTestData.lrn
 import base.UnitSpec
 import connectors.CustomsDeclareExportsConnector
-import models.declaration.submissions.Action.defaultDateTimeZone
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar.mock
-import testdata.SubmissionsTestData.{action, submission}
 import uk.gov.hmrc.http.HeaderCarrier
 
-import java.time.ZonedDateTime
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
@@ -45,47 +42,34 @@ class LrnValidatorSpec extends UnitSpec with ScalaFutures {
       "provided with form containing LRN" that {
 
         "has not been used" in {
-
           when(customsDeclareExportsConnector.isLrnAlreadyUsed(any[Lrn])(any(), any()))
             .thenReturn(Future.successful(false))
 
           val testLrn = Lrn(lrn)
 
           val result = lrnValidator.hasBeenSubmittedInThePast48Hours(testLrn).futureValue
-
           result mustBe false
         }
 
         "has been used more than 48 hours in the past" in {
-
-          val now = ZonedDateTime.now(defaultDateTimeZone)
-
           when(customsDeclareExportsConnector.isLrnAlreadyUsed(any[Lrn])(any(), any()))
             .thenReturn(Future.successful(false))
 
           val testLrn = Lrn(lrn)
 
           val result = lrnValidator.hasBeenSubmittedInThePast48Hours(testLrn).futureValue
-
           result mustBe false
         }
       }
 
       "return true" when {
-
         "provided with form containing LRN that has been used in the past 48 hours" in {
-
-          val now = ZonedDateTime.now(defaultDateTimeZone)
-          val testAction_1 = action.copy(requestTimestamp = now.minusHours(49))
-          val testAction_2 = action.copy(requestTimestamp = now.minusHours(47))
-
           when(customsDeclareExportsConnector.isLrnAlreadyUsed(any[Lrn])(any(), any()))
             .thenReturn(Future.successful(true))
 
           val testLrn = Lrn(lrn)
 
           val result = lrnValidator.hasBeenSubmittedInThePast48Hours(testLrn).futureValue
-
           result mustBe true
         }
       }
