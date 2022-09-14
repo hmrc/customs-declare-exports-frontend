@@ -59,8 +59,6 @@ class LrnValidatorSpec extends UnitSpec with ScalaFutures {
         "has been used more than 48 hours in the past" in {
 
           val now = ZonedDateTime.now(defaultDateTimeZone)
-          val testAction_1 = action.copy(requestTimestamp = now.minusHours(49))
-          val testAction_2 = action.copy(requestTimestamp = now.minusHours(100))
 
           when(customsDeclareExportsConnector.isLrnAlreadyUsed(any[Lrn])(any(), any()))
             .thenReturn(Future.successful(false))
@@ -80,8 +78,6 @@ class LrnValidatorSpec extends UnitSpec with ScalaFutures {
           val now = ZonedDateTime.now(defaultDateTimeZone)
           val testAction_1 = action.copy(requestTimestamp = now.minusHours(49))
           val testAction_2 = action.copy(requestTimestamp = now.minusHours(47))
-          val testSubmission_1 = submission.copy(lrn = lrn, actions = Seq(testAction_1))
-          val testSubmission_2 = submission.copy(lrn = lrn, actions = Seq(testAction_2))
 
           when(customsDeclareExportsConnector.isLrnAlreadyUsed(any[Lrn])(any(), any()))
             .thenReturn(Future.successful(true))

@@ -17,6 +17,7 @@
 @import models.Mode
 @import models.ExportsDeclaration
 @import views.helpers.{BackButton, Title}
+@import views.html.components.buttons.print_page_button
 @import views.html.components.gds._
 @import views.html.declaration.summary.sections._
 @import models.declaration.submissions.Submission
@@ -38,12 +39,6 @@
 
 @backLink = @{routes.DeclarationDetailsController.displayPage(declarationData.id)}
 
-@printThisPage = {
-    <p class="govuk-body">
-        <a class="govuk-link govuk-link--visually-hidden govuk-!-display-none-print" href="javascript:if(window.print)window.print()">@messages("site.print")</a>
-    </p>
-}
-
 @govukLayout(
     title = Title("declaration.summary.submitted-header"),
     backButton = Some(BackButton(messages("site.back"), backLink)),
@@ -54,7 +49,7 @@
 
     @notificationsSection(maybeSubmission)
 
-    @printThisPage
+    @print_page_button(marginBottom = 2)
 
     <div class="govuk-section-break">@references_section(Mode.Normal, declarationData, false)</div>
 
@@ -70,5 +65,5 @@
 
     <div class="govuk-section-break">@transport_section(Mode.Normal, declarationData, false)</div>
 
-    @printThisPage
+    @print_page_button(marginBottom = 1)
 }
