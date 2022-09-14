@@ -98,7 +98,7 @@ class DeclarationHolderAddViewSpec extends UnitViewSpec with CommonMessages with
         saveAndContinueButton.text mustBe messages(saveAndContinueCaption)
 
         val saveAndReturnButton = view.getElementById("submit_and_return")
-        saveAndReturnButton.text mustBe messages(saveAndReturnCaption)
+        saveAndReturnButton.text mustBe messages(exitAndReturnCaption)
         saveAndReturnButton.attr("name") mustBe SaveAndReturn.toString
       }
     }

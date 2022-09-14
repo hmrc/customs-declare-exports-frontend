@@ -47,10 +47,10 @@ class UnitViewSpec extends UnitWithMocksSpec with ViewMatchers with JourneyTypeT
     view.getElementsByClass("error-summary error-summary--show").get(0).getElementsByTag("p").text() must be("error.summary.text")
   }
 
-  def checkSaveAndReturnLinkIsDisplayed(view: Document): Unit =
-    "display 'Save and return' button" in {
-      val saveAndReturnButton = view.getElementById("submit_and_return")
-      saveAndReturnButton must containMessage("site.save_and_come_back_later")
+  def checkExitAndReturnLinkIsDisplayed(view: Document): Unit =
+    "display 'Exit and return' button" in {
+      val exitAndReturnButton = view.getElementById("submit_and_return")
+      exitAndReturnButton must containMessage(exitAndReturnCaption)
     }
 
   def checkSaveAndContinueButtonIsDisplayed(view: Document): Unit =
@@ -78,7 +78,7 @@ class UnitViewSpec extends UnitWithMocksSpec with ViewMatchers with JourneyTypeT
     val view = createView(Mode.Normal)
 
     checkSaveAndContinueButtonIsDisplayed(view)
-    checkSaveAndReturnLinkIsDisplayed(view)
+    checkExitAndReturnLinkIsDisplayed(view)
     checkSaveAndReturnToSummaryButtonIsDisplayed(createView)
     checkSaveAndReturnToErrorsButtonIsDisplayed(createView)
   }

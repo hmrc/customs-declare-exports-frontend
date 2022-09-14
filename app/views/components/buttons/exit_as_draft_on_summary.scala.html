@@ -14,8 +14,19 @@
  * limitations under the License.
  *@
 
-@import controllers.helpers.SaveAndReturn
+@import views.html.components.gds._
+@import controllers.declaration.routes.DraftDeclarationController
+@import models.requests.JourneyRequest
 
-@(messageKey: String = "site.save_and_come_back_later")(implicit messages: Messages)
+@this(
+  link: link
+)
 
-<button id="submit_and_return" class="button-link" name="@SaveAndReturn.toString">@messages(messageKey)</button>
+@()(implicit request: JourneyRequest[_], messages: Messages)
+
+@link(
+  id = Some("exit-and-complete-later"),
+  text = messages("site.exit_and_complete_later"),
+  call = DraftDeclarationController.displayPage,
+  classes = Some("button-link govuk-link govuk-link--no-visited-state focus")
+)

@@ -94,7 +94,7 @@ class AdditionalDocumentsViewSpec extends UnitViewSpec with CommonMessages with 
         saveAndContinueButton must containMessage(saveAndContinueCaption)
 
         val saveAndReturnButton = view.getElementById("submit_and_return")
-        saveAndReturnButton must containMessage(saveAndReturnCaption)
+        saveAndReturnButton must containMessage(exitAndReturnCaption)
         saveAndReturnButton must haveAttribute("name", SaveAndReturn.toString)
       }
     }

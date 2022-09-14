@@ -93,9 +93,9 @@ class MucrViewSpec extends UnitViewSpec with CommonMessages with Injector {
         saveButton must containMessage("site.save_and_continue")
       }
 
-      "display 'Save and come back later' link" in {
-        val saveAndReturnButton = view.getElementById("submit_and_return")
-        saveAndReturnButton must containMessage("site.save_and_come_back_later")
+      "display 'Exit and complete later' link" in {
+        val exitAndReturnButton = view.getElementById("submit_and_return")
+        exitAndReturnButton must containMessage(exitAndReturnCaption)
       }
 
       def verifyError(mucr: String, errorKey: String): Assertion = {

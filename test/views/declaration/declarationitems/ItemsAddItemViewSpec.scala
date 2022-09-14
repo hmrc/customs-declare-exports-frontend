@@ -73,10 +73,10 @@ class ItemsAddItemViewSpec extends UnitViewSpec with ExportsTestHelper with Stub
       view.getElementById("add") must containMessage("site.add.item")
     }
 
-    "display 'Save and come back later' link" in {
+    "display 'Exit and complete later' link" in {
 
       view must containElementWithID("submit_and_return")
-      view.getElementById("submit_and_return") must containMessage("site.save_and_come_back_later")
+      view.getElementById("submit_and_return") must containMessage(exitAndReturnCaption)
     }
   }
 

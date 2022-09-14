@@ -36,8 +36,8 @@ trait SummaryPageViewSpec extends UnitViewSpec with Injector with Stubs {
         document.getElementById("declaration-references-summary").text mustNot be(empty)
       }
 
-      "display Save and come back later button" in {
-        document.getElementById("save-and-come-back-later").text mustBe (messages("site.save_and_come_back_later"))
+      "display Exit and come back later button" in {
+        document.getElementById("exit-and-complete-later").text mustBe messages(exitAndReturnCaption)
       }
     }
 

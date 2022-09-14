@@ -74,7 +74,7 @@ class EntryIntoDeclarantsRecordsViewSpec extends UnitViewSpec with Injector with
       "display 'Save and come back later' button" in {
 
         val saveAndReturnButton = createView().getElementById("submit_and_return")
-        saveAndReturnButton must containMessage(saveAndReturnCaption)
+        saveAndReturnButton must containMessage(exitAndReturnCaption)
         saveAndReturnButton.attr("name") mustBe SaveAndReturn.toString
       }
     }

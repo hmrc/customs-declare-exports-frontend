@@ -111,7 +111,7 @@ class TransportCountryViewSpec extends UnitViewSpec with ExportsTestHelper with 
 
                   body.size mustBe (if (code == RoRo) 2 else 1)
 
-                  val expectedText = messages(if (code == RoRo) s"$prefix.roro.body" else "site.save_and_come_back_later")
+                  val expectedText = messages(if (code == RoRo) s"$prefix.roro.body" else exitAndReturnCaption)
                   body.get(0).text mustBe expectedText
                 }
               }
