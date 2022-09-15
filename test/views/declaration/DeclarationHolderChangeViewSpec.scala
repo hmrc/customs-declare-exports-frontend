@@ -20,7 +20,6 @@ import base.ExportsTestData.eori
 import base.Injector
 import base.TestHelper.createRandomAlphanumericString
 import controllers.declaration.routes
-import controllers.helpers.SaveAndReturn
 import forms.common.Eori
 import forms.declaration.declarationHolder.DeclarationHolder
 import models.Mode
@@ -89,14 +88,6 @@ class DeclarationHolderChangeViewSpec extends UnitViewSpec with CommonMessages w
         view.getElementById("eori").attr("value") mustBe "test"
       }
 
-      "display 'Save and continue' button on page" in {
-        val saveAndContinueButton = view.getElementById("submit")
-        saveAndContinueButton.text mustBe messages(saveAndContinueCaption)
-
-        val saveAndReturnButton = view.getElementById("submit_and_return")
-        saveAndReturnButton.text mustBe messages(exitAndReturnCaption)
-        saveAndReturnButton.attr("name") mustBe SaveAndReturn.toString
-      }
     }
   }
 

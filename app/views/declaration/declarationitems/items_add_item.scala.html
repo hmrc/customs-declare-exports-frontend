@@ -26,13 +26,14 @@
 @import scala.collection.immutable
 
 @this(
-  govukLayout: gdsMainTemplate,
-  sectionHeader: sectionHeader,
-  pageTitle: pageTitle,
-  paragraphBody: paragraphBody,
-  addButton: addButton,
-  navigator: Navigator,
-  formHelper: FormWithCSRF
+    govukLayout: gdsMainTemplate,
+    sectionHeader: sectionHeader,
+    pageTitle: pageTitle,
+    paragraphBody: paragraphBody,
+    addButton: addButton,
+    navigator: Navigator,
+    formHelper: FormWithCSRF,
+    saveAsDraft: saveAsDraft
 )
 
 @(mode: Mode)(implicit request: JourneyRequest[_], messages: Messages)

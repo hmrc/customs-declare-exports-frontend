@@ -49,7 +49,7 @@ class UnitViewSpec extends UnitWithMocksSpec with ViewMatchers with JourneyTypeT
 
   def checkExitAndReturnLinkIsDisplayed(view: Document): Unit =
     "display 'Exit and return' button" in {
-      val exitAndReturnButton = view.getElementById("submit_and_return")
+      val exitAndReturnButton = view.getElementById("exit-and-complete-later")
       exitAndReturnButton must containMessage(exitAndReturnCaption)
     }
 

@@ -129,16 +129,6 @@ class AdditionalDocumentsRequiredViewSpec extends UnitViewSpec with CommonMessag
         removeBlanksIfAnyBeforeDot(paragraph.text) mustBe expectedText
       }
 
-      "display 'Save and continue' button" in {
-        val saveButton = view.getElementById("submit")
-        saveButton must containMessage("site.save_and_continue")
-      }
-
-      "display 'Exit and complete later' link" in {
-        val exitAndReturnButton = view.getElementById("submit_and_return")
-        exitAndReturnButton must containMessage(exitAndReturnCaption)
-      }
-
     }
 
     onJourney(CLEARANCE)(aDeclaration(withItem(item))) { implicit request =>

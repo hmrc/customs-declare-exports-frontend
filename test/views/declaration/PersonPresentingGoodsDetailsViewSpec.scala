@@ -18,7 +18,6 @@ package views.declaration
 
 import base.Injector
 import controllers.declaration.routes
-import controllers.helpers.SaveAndReturn
 import forms.common.Eori
 import forms.declaration.PersonPresentingGoodsDetails
 import models.{DeclarationType, Mode}
@@ -68,17 +67,6 @@ class PersonPresentingGoodsDetailsViewSpec extends UnitViewSpec with Injector wi
         backButton must haveHref(routes.EntryIntoDeclarantsRecordsController.displayPage().url)
       }
 
-      "display 'Save and continue' button" in {
-
-        createView().getElementById("submit") must containMessage(saveAndContinueCaption)
-      }
-
-      "display 'Save and come back later' button" in {
-
-        val saveAndReturnButton = createView().getElementById("submit_and_return")
-        saveAndReturnButton must containMessage(exitAndReturnCaption)
-        saveAndReturnButton.attr("name") mustBe SaveAndReturn.toString
-      }
     }
 
     "on page filled" should {

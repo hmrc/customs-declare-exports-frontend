@@ -185,16 +185,6 @@ class ItemsSummaryViewSpec extends UnitViewSpec with ExportsTestHelper with Stub
       view must containElementWithID("code_no")
     }
 
-    "render actions section" when {
-      "some items" in {
-
-        val view = createView(items = List(ExportItem("id")))
-
-        view must containElementWithID("submit")
-        view must containElementWithID("submit_and_return")
-      }
-    }
-
     "render error section" when {
 
       "there are some errors in items" in {

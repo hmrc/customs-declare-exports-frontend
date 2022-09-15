@@ -93,14 +93,6 @@ class DeclarationHolderAddViewSpec extends UnitViewSpec with CommonMessages with
         view.getElementById("eori").attr("value") mustBe empty
       }
 
-      "display 'Save and continue' button on page" in {
-        val saveAndContinueButton = view.getElementById("submit")
-        saveAndContinueButton.text mustBe messages(saveAndContinueCaption)
-
-        val saveAndReturnButton = view.getElementById("submit_and_return")
-        saveAndReturnButton.text mustBe messages(exitAndReturnCaption)
-        saveAndReturnButton.attr("name") mustBe SaveAndReturn.toString
-      }
     }
 
     onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED) { implicit request =>
