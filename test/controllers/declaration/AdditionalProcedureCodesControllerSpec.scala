@@ -16,7 +16,6 @@
 
 package controllers.declaration
 
-import java.util.{Locale, UUID}
 import base.ControllerSpec
 import base.ExportsTestData.pc1040
 import controllers.helpers.{Remove, SupervisingCustomsOfficeHelper}
@@ -43,6 +42,8 @@ import play.api.test.Helpers.{await, status, _}
 import play.twirl.api.HtmlFormat
 import services.ProcedureCodeService
 import views.html.declaration.procedureCodes.additional_procedure_codes
+
+import java.util.{Locale, UUID}
 
 class AdditionalProcedureCodesControllerSpec extends ControllerSpec with ErrorHandlerMocks with OptionValues with ScalaFutures {
 
@@ -408,41 +409,6 @@ class AdditionalProcedureCodesControllerSpec extends ControllerSpec with ErrorHa
             val procedureCodesData2 = updatedModel.itemBy(itemId).get.procedureCodes.get
             procedureCodesData2.procedureCode.get mustBe sampleProcedureCode
             procedureCodesData2.additionalProcedureCodes mustBe List(NO_APC_APPLIES_CODE)
-          }
-        }
-      }
-
-      "provided with 'Save and come back later' Action" when {
-        "cache currently contains no AdditionalProcedureCodes for this item" when {
-          testBadCodes(validExportItem, saveAndReturnActionUrlEncoded)
-
-          "provided with correct code" should {
-            testAddCodeSuccess(
-              ExportItem(itemId, procedureCodes = Some(ProcedureCodesData(Some(sampleProcedureCode), Seq("111")))),
-              saveAndReturnActionUrlEncoded
-            )
-          }
-        }
-
-        "cache contains some AdditionalProcedureCodes for this item" when {
-          val exportItem = ExportItem(itemId, procedureCodes = Some(ProcedureCodesData(Some(sampleProcedureCode), Seq("111"))))
-
-          "provided with incorrect code" should {
-            "return 400 (BAD_REQUEST)" in {
-              prepareCache(exportItem)
-              val formData = Seq(("additionalProcedureCode", "incorrect"), saveAndReturnActionUrlEncoded)
-
-              val result = controller.submitAdditionalProcedureCodes(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(formData: _*))
-
-              status(result) mustBe BAD_REQUEST
-              verify(additionalProcedureCodesPage).apply(any(), any(), any(), any(), any(), any())(any(), any())
-            }
-          }
-
-          testCodesWithCachePopulated(exportItem, saveAndReturnActionUrlEncoded)
-
-          "provided with correct code" should {
-            testAddCodeSuccess(exportItem, saveAndReturnActionUrlEncoded)
           }
         }
       }

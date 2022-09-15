@@ -93,11 +93,10 @@ class RoutingCountriesController @Inject() (
       case Add =>
         validateAndRedirect(navigator.continueTo(mode, RoutingCountriesController.displayRoutingCountry), mode)
 
-      case SaveAndContinue | SaveAndReturn | SaveAndReturnToSummary | SaveAndReturnToErrors
-          if isFormEmpty && request.cacheModel.containRoutingCountries =>
+      case SaveAndContinue | SaveAndReturnToSummary | SaveAndReturnToErrors if isFormEmpty && request.cacheModel.containRoutingCountries =>
         Future.successful(navigator.continueTo(mode, LocationOfGoodsController.displayPage))
 
-      case SaveAndContinue | SaveAndReturn | SaveAndReturnToSummary | SaveAndReturnToErrors =>
+      case SaveAndContinue | SaveAndReturnToSummary | SaveAndReturnToErrors =>
         validateAndRedirect(navigator.continueTo(mode, LocationOfGoodsController.displayPage), mode)
 
       case Remove(values) =>

@@ -17,7 +17,7 @@
 package controllers.declaration
 
 import base.ControllerSpec
-import controllers.helpers.{Remove, SaveAndContinue, SaveAndReturn}
+import controllers.helpers.{Remove, SaveAndContinue}
 import forms.common.YesNoAnswer
 import forms.declaration.Seal
 import mock.ErrorHandlerMocks
@@ -195,7 +195,7 @@ class SealControllerSpec extends ControllerSpec with ErrorHandlerMocks {
 
         "user clicks 'save and return" in {
           withNewCaching(aDeclaration(withContainerData(Container(containerId, Seq.empty))))
-          val body = Seq("id" -> "value", (SaveAndReturn.toString, ""))
+          val body = Seq("id" -> "value", ("SaveAndReturn", ""))
 
           val result = controller.submitAddSeal(Mode.Normal, containerId)(postRequestAsFormUrlEncoded(body: _*))
 
