@@ -21,7 +21,7 @@
  link: link
 )
 
-@()(implicit messages: Messages)
+@(call: Call = DraftDeclarationController.displayPage)(implicit messages: Messages)
 
 @link(
  id = Some("exit-and-complete-later"),

@@ -38,11 +38,6 @@
 
 @(mode: Mode)(implicit request: JourneyRequest[_], messages: Messages)
 
-@saveAsDraftButton = {
-  <p class="govuk-body">
-    @saveAsDraft()
-  </p>
-}
 
 @govukLayout(
   title = Title("declaration.itemsAdd.title", "declaration.section.5"),
@@ -62,8 +57,10 @@
         hiddenLabel = Some(messages("site.add.item")),
         classes = "govuk-button--primary"
     )
-    
-    @saveAsDraftButton
+
+    <p class="govuk-body">
+        @saveAsDraft()
+    </p>
 
   }
 }

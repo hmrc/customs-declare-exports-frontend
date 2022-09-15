@@ -26,7 +26,6 @@ object FormAction {
   private val addLabel = "Add"
   private val addFieldLabel = "AddField"
   private val saveAndContinueLabel = "SaveAndContinue"
-  private val saveAndReturnLabel = "SaveAndReturn"
   private val saveAndReturnToSummaryLabel = "SaveAndReturnToSummary"
   private val saveAndReturnToErrorsLabel = "SaveAndReturnToErrors"
   private val continueLabel = "Continue"
@@ -38,7 +37,6 @@ object FormAction {
         case (`addFieldLabel`, values)          => Some(AddField(values.headOption.getOrElse("")))
         case (`addLabel`, _)                    => Some(Add)
         case (`saveAndContinueLabel`, _)        => Some(SaveAndContinue)
-        case (`saveAndReturnLabel`, _)          => Some(SaveAndReturn)
         case (`saveAndReturnToSummaryLabel`, _) => Some(SaveAndReturnToSummary)
         case (`saveAndReturnToErrorsLabel`, _)  => Some(SaveAndReturnToErrors)
         case (`continueLabel`, _)               => Some(Continue)
@@ -51,7 +49,6 @@ object FormAction {
 case object Add extends FormAction
 case object Unknown extends FormAction
 case object SaveAndContinue extends FormAction
-case object SaveAndReturn extends FormAction
 case object SaveAndReturnToSummary extends FormAction
 case object SaveAndReturnToErrors extends FormAction
 case object Continue extends FormAction

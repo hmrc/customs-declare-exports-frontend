@@ -23,7 +23,7 @@ import controllers.declaration.routes.{
   TransportLeavingTheBorderController,
   WarehouseIdentificationController
 }
-import controllers.helpers.{FormAction, SaveAndReturn, SupervisingCustomsOfficeHelper}
+import controllers.helpers.SupervisingCustomsOfficeHelper
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
@@ -65,10 +65,7 @@ class ItemsSummaryController @Inject() (
   }
 
   def addFirstItem(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    FormAction.bindFromRequest match {
-      case SaveAndReturn => Future.successful(navigator.continueTo(mode, ItemsSummaryController.displayAddItemPage))
-      case _             => createNewItemInCache.map(itemId => navigator.continueTo(mode, ProcedureCodesController.displayPage(_, itemId)))
-    }
+    createNewItemInCache.map(itemId => navigator.continueTo(mode, ProcedureCodesController.displayPage(_, itemId)))
   }
 
   def displayItemsSummaryPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
