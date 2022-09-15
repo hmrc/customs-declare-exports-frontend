@@ -22,7 +22,6 @@
 @import models.requests.JourneyRequest
 @import views.helpers.{BackButton, Title}
 @import views.html.components.gds._
-@import views.html.components.buttons.exit_as_draft_on_summary
 @import views.html.declaration.summary.sections._
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 
@@ -40,7 +39,7 @@
     transport_section: transport_section,
     errorSummary: errorSummary,
     linkButton: linkButton,
-    exitAsDraftButton: exit_as_draft_on_summary
+    saveAsDraft: saveAsDraft
 )
 
 @(errors: Seq[FormError] = Seq.empty[FormError])(implicit request: JourneyRequest[_], messages: Messages, appConfig: AppConfig)
@@ -98,7 +97,7 @@
   </div>
 
   <p class="govuk-body">
-    @exitAsDraftButton()
+    @saveAsDraft()
   </p>
   <br/>
 }
