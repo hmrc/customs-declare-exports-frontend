@@ -39,7 +39,7 @@
     transport_section: transport_section,
     errorSummary: errorSummary,
     linkButton: linkButton,
-    saveAsDraft: saveAsDraft
+    exitAndCompleteLater: exitAndCompleteLater
 )
 
 @(errors: Seq[FormError] = Seq.empty[FormError])(implicit request: JourneyRequest[_], messages: Messages, appConfig: AppConfig)
@@ -97,7 +97,7 @@
   </div>
 
   <p class="govuk-body">
-    @saveAsDraft()
+    @exitAndCompleteLater()
   </p>
   <br/>
 }

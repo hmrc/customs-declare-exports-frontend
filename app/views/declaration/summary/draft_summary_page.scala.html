@@ -36,7 +36,7 @@
     transaction_section: transaction_section,
     items_section: items_section,
     transport_section: transport_section,
-    saveAsDraft: saveAsDraft
+    exitAndCompleteLater: exitAndCompleteLater
 )
 
 @(backLink: Call, maybeContinuePlaceholder: Option[String] = None)(implicit request: JourneyRequest[_], messages: Messages, appConfig: AppConfig)
@@ -82,7 +82,7 @@
     }
 
     <p class="govuk-body">
-      @saveAsDraft()
+      @exitAndCompleteLater()
     </p>
 
     <br/>

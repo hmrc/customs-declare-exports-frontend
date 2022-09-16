@@ -33,7 +33,7 @@
     addButton: addButton,
     navigator: Navigator,
     formHelper: FormWithCSRF,
-    saveAsDraft: saveAsDraft
+    exitAndCompleteLater: exitAndCompleteLater
 )
 
 @(mode: Mode)(implicit request: JourneyRequest[_], messages: Messages)
@@ -59,7 +59,7 @@
     )
 
     <p class="govuk-body">
-        @saveAsDraft()
+        @exitAndCompleteLater()
     </p>
 
   }

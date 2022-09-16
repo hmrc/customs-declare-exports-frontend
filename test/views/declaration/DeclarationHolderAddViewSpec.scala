@@ -20,7 +20,6 @@ import base.ExportsTestData._
 import base.Injector
 import base.TestHelper.createRandomAlphanumericString
 import controllers.declaration.routes
-import controllers.helpers.SaveAndReturn
 import forms.common.Eori
 import forms.declaration.AuthorisationProcedureCodeChoice.{Choice1040, ChoiceOthers}
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.{STANDARD_FRONTIER, STANDARD_PRE_LODGED}
