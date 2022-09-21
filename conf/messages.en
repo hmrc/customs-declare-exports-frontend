@@ -35,7 +35,7 @@ site.yes = Yes
 site.confirm_and_continue = Confirm and continue
 site.save_and_continue = Save and continue
 site.acceptAndSubmitDeclaration = Accept and submit declaration
-site.save_and_come_back_later = Save and come back later
+site.exit_and_complete_later = Exit and complete later
 site.saveAndReturnToSummary = Save and return to summary
 site.saveAndReturnToErrors = Save and return to errors
 site.view.declaration.errors = View declaration errors
@@ -2219,8 +2219,9 @@ declaration.exitSurvey.link = Send us your feedback
 
 declaration.country.dropdown.hint = Type in 2 letters to search.
 
-declaration.draft.title = Your declaration has been saved
+declaration.draft.title = You have exited your declaration
 declaration.draft.info = Your information is held until
+declaration.draft.saved = Your declaration has been saved up to the point at which you exited.
 declaration.draft.nextHeading = What you can do next
 declaration.draft.nextText = You can {0} or you can {1}.
 declaration.draft.nextContinueLink = continue a saved declaration

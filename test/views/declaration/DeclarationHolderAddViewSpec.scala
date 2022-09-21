@@ -20,7 +20,6 @@ import base.ExportsTestData._
 import base.Injector
 import base.TestHelper.createRandomAlphanumericString
 import controllers.declaration.routes
-import controllers.helpers.SaveAndReturn
 import forms.common.Eori
 import forms.declaration.AuthorisationProcedureCodeChoice.{Choice1040, ChoiceOthers}
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.{STANDARD_FRONTIER, STANDARD_PRE_LODGED}
@@ -93,14 +92,6 @@ class DeclarationHolderAddViewSpec extends UnitViewSpec with CommonMessages with
         view.getElementById("eori").attr("value") mustBe empty
       }
 
-      "display 'Save and continue' button on page" in {
-        val saveAndContinueButton = view.getElementById("submit")
-        saveAndContinueButton.text mustBe messages(saveAndContinueCaption)
-
-        val saveAndReturnButton = view.getElementById("submit_and_return")
-        saveAndReturnButton.text mustBe messages(saveAndReturnCaption)
-        saveAndReturnButton.attr("name") mustBe SaveAndReturn.toString
-      }
     }
 
     onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED) { implicit request =>

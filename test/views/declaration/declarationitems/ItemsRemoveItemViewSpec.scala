@@ -87,11 +87,6 @@ class ItemsRemoveItemViewSpec extends UnitViewSpec with ExportsTestHelper with S
       view must containElementWithID("code_no")
     }
 
-    "display buttons section" in {
-
-      view must containElementWithID("submit")
-      view must containElementWithID("submit_and_return")
-    }
   }
 
 }

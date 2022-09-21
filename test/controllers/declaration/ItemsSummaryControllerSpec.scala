@@ -18,7 +18,7 @@ package controllers.declaration
 
 import base.ControllerWithoutFormSpec
 import base.ExportsTestData.pc1040
-import controllers.helpers.{SaveAndReturn, SupervisingCustomsOfficeHelper}
+import controllers.helpers.SupervisingCustomsOfficeHelper
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.FiscalInformation.AllowedFiscalInformationAnswers
@@ -174,16 +174,6 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
         theCacheModelUpdated.items.size mustBe 1
       }
 
-      "not update cache when save and return" in {
-
-        withNewCaching(aDeclaration(withType(request.declarationType)))
-
-        val body = Seq(SaveAndReturn.toString -> "")
-
-        val result = controller.addFirstItem(Mode.Normal)(postRequestAsFormUrlEncoded(body: _*))
-        status(result) mustBe SEE_OTHER
-        verifyTheCacheIsUnchanged()
-      }
     }
   }
 

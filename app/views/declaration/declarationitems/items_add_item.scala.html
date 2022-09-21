@@ -26,22 +26,18 @@
 @import scala.collection.immutable
 
 @this(
-  govukLayout: gdsMainTemplate,
-  sectionHeader: sectionHeader,
-  pageTitle: pageTitle,
-  paragraphBody: paragraphBody,
-  addButton: addButton,
-  navigator: Navigator,
-  formHelper: FormWithCSRF
+    govukLayout: gdsMainTemplate,
+    sectionHeader: sectionHeader,
+    pageTitle: pageTitle,
+    paragraphBody: paragraphBody,
+    addButton: addButton,
+    navigator: Navigator,
+    formHelper: FormWithCSRF,
+    exitAndCompleteLater: exitAndCompleteLater
 )
 
 @(mode: Mode)(implicit request: JourneyRequest[_], messages: Messages)
 
-@saveAsDraftButton = {
-  <p class="govuk-body">
-    @saveAsDraft()
-  </p>
-}
 
 @govukLayout(
   title = Title("declaration.itemsAdd.title", "declaration.section.5"),
@@ -61,8 +57,10 @@
         hiddenLabel = Some(messages("site.add.item")),
         classes = "govuk-button--primary"
     )
-    
-    @saveAsDraftButton
+
+    <p class="govuk-body">
+        @exitAndCompleteLater()
+    </p>
 
   }
 }

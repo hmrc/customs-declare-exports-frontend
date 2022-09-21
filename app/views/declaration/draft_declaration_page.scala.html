@@ -67,6 +67,8 @@
         content = HtmlContent(expiresMessage)
     ))
 
+    @paragraph(Html(messages("declaration.draft.saved")))
+
     @declarationId.map { id =>
         @paragraph(
             viewDeclarationSummaryLink(id)

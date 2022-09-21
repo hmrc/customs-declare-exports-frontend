@@ -97,7 +97,7 @@ class DeclarantDetailsViewSpec extends UnitViewSpec with ExportsTestHelper with 
         backButton must haveHref(routes.EntryIntoDeclarantsRecordsController.displayPage().url)
       }
 
-      checkSaveAndReturnLinkIsDisplayed(createView(form()))
+      checkExitAndReturnLinkIsDisplayed(createView(form()))
     }
   }
 

@@ -16,7 +16,7 @@
 
 package base
 
-import controllers.helpers.{Add, AddField, SaveAndContinue, SaveAndReturn}
+import controllers.helpers.{Add, AddField, SaveAndContinue}
 import mock.{FeatureFlagMocks, JourneyActionMocks, VerifiedEmailMocks}
 import models.ExportsDeclaration
 import models.requests.{ExportsSessionKeys, JourneyRequest}
@@ -47,8 +47,6 @@ trait ControllerSpec
   protected def addActionUrlEncoded(field: String = ""): (String, String) = if (field.isEmpty) (Add.toString, field) else (AddField.toString, field)
 
   protected val saveAndContinueActionUrlEncoded: (String, String) = (SaveAndContinue.toString, "")
-
-  protected val saveAndReturnActionUrlEncoded: (String, String) = (SaveAndReturn.toString, "")
 
   protected def viewOf(result: Future[Result]) = Html(contentAsString(result))
 

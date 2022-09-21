@@ -88,16 +88,6 @@ class MucrViewSpec extends UnitViewSpec with CommonMessages with Injector {
         verifyError("CXZY123-#@", "invalid")
       }
 
-      "display 'Save and continue' button" in {
-        val saveButton = view.getElementById("submit")
-        saveButton must containMessage("site.save_and_continue")
-      }
-
-      "display 'Save and come back later' link" in {
-        val saveAndReturnButton = view.getElementById("submit_and_return")
-        saveAndReturnButton must containMessage("site.save_and_come_back_later")
-      }
-
       def verifyError(mucr: String, errorKey: String): Assertion = {
         val form = Mucr.form.fillAndValidate(Mucr(mucr))
         val view = createView(form = form)

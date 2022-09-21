@@ -87,16 +87,6 @@ class LinkDucrToMucrViewSpec extends UnitViewSpec with CommonMessages with Injec
         view.getElementById("code_no") must beSelected
       }
 
-      "display 'Save and continue' button" in {
-        val saveButton = view.getElementById("submit")
-        saveButton must containMessage("site.save_and_continue")
-      }
-
-      "display 'Save and come back later' link" in {
-        val saveAndReturnButton = view.getElementById("submit_and_return")
-        saveAndReturnButton must containMessage("site.save_and_come_back_later")
-      }
-
       "display the 'MUCR consolidation' details" in {
         val detailsTitle = view.getElementsByClass("govuk-details__summary-text").first.text
         detailsTitle mustBe messages("declaration.linkDucrToMucr.details")

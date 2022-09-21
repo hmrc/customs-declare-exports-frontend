@@ -22,7 +22,6 @@
 @import views.helpers.{BackButton, Title}
 @import views.html.components.gds._
 @import views.html.declaration.summary.sections._
-@import views.html.components.buttons.save_as_draft_on_summary
 
 @this(
     govukLayout: gdsMainTemplate,
@@ -37,7 +36,7 @@
     transaction_section: transaction_section,
     items_section: items_section,
     transport_section: transport_section,
-    saveAsDraftButton: save_as_draft_on_summary
+    exitAndCompleteLater: exitAndCompleteLater
 )
 
 @(backLink: Call, maybeContinuePlaceholder: Option[String] = None)(implicit request: JourneyRequest[_], messages: Messages, appConfig: AppConfig)
@@ -83,7 +82,7 @@
     }
 
     <p class="govuk-body">
-      @saveAsDraftButton()
+      @exitAndCompleteLater()
     </p>
 
     <br/>

@@ -16,7 +16,7 @@
 
 @import models.Mode._
 
-@this(saveAndContinue: saveAndContinue, saveAndReturnToSummary: saveAndReturnToSummary, saveAndReturnToErrors: saveAndReturnToErrors)
+@this(saveAndContinue: saveAndContinue, saveAndReturnToSummary: saveAndReturnToSummary, saveAndReturnToErrors: saveAndReturnToErrors, exitAndCompleteLater: exitAndCompleteLater)
 
 @(mode: Mode)(implicit messages: Messages)
 
@@ -30,5 +30,5 @@
 }
 </div>
 <p class="govuk-body">
- @saveAsDraft()
+ @exitAndCompleteLater()
 </p>

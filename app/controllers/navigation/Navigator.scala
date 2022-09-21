@@ -49,7 +49,7 @@ import models.{ExportsDeclaration, Mode}
 import play.api.mvc.{AnyContent, Call, Result, Results}
 import services.TariffApiService
 import services.TariffApiService.SupplementaryUnitsNotRequired
-import services.audit.{AuditService, AuditTypes}
+import services.audit.AuditService
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.{Inject, Singleton}
@@ -355,10 +355,6 @@ class Navigator @Inject() (
   def continueTo(mode: Mode, factory: Mode => Call)(implicit request: JourneyRequest[AnyContent], hc: HeaderCarrier): Result =
     (mode, FormAction.bindFromRequest) match {
       case (ErrorFix, formAction) => handleErrorFixMode(factory, formAction)
-
-      case (_, SaveAndReturn) =>
-        auditService.auditAllPagesUserInput(AuditTypes.SaveAndReturnSubmission, request.cacheModel)
-        Results.Redirect(routes.DraftDeclarationController.displayPage)
 
       case (Mode.Draft, SaveAndReturnToSummary)       => Results.Redirect(routes.SummaryController.displayPage(Mode.Draft))
       case (Mode.ChangeAmend, SaveAndReturnToSummary) => Results.Redirect(routes.SummaryController.displayPageOnAmend)

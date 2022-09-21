@@ -26,23 +26,19 @@ import mock.FeatureFlagMocks
 import models.requests.{ExportsSessionKeys, JourneyRequest}
 import models.responses.FlashKeys
 import models.{DeclarationType, ExportsDeclaration, Mode, SignedInUser}
-import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
-import org.mockito.BDDMockito._
-import org.mockito.Mockito.{reset, verify, verifyNoInteractions, when}
+import org.mockito.Mockito.{reset, verifyNoInteractions, when}
 import org.scalatest.concurrent.ScalaFutures
 import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.TariffApiService
 import services.TariffApiService.{CommodityCodeNotFound, SupplementaryUnitsNotRequired}
-import services.audit.{AuditService, AuditTypes}
+import services.audit.AuditService
 import services.cache.ExportsDeclarationBuilder
 import uk.gov.hmrc.http.HeaderCarrier
 
 import java.time.LocalDate
-import java.util.concurrent.TimeUnit
-import scala.concurrent.duration.FiniteDuration
 import scala.concurrent.{ExecutionContext, Future}
 
 class NavigatorSpec
@@ -84,18 +80,6 @@ class NavigatorSpec
     val updatedDate = LocalDate.of(2020, 1, 1)
 
     implicit val declaration = aDeclaration(withUpdateDate(updatedDate))
-
-    "Go to Save as Draft" in {
-      given(config.draftTimeToLive).willReturn(FiniteDuration(10, TimeUnit.DAYS))
-
-      val result = navigator.continueTo(mode, call(_))(decoratedRequest(requestWithFormAction(Some(SaveAndReturn))), hc)
-
-      status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(DraftDeclarationController.displayPage.url)
-      session(result).get(ExportsSessionKeys.declarationId) mustBe None
-
-      verify(auditService).auditAllPagesUserInput(ArgumentMatchers.eq(AuditTypes.SaveAndReturnSubmission), any())(any())
-    }
 
     "go to the URL provided" when {
       "Save And Continue" in {

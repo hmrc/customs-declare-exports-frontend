@@ -79,15 +79,6 @@ class ExpressConsignmentViewSpec extends UnitViewSpec with CommonMessages with I
         view.getElementById("code_no") must beSelected
       }
 
-      "display 'Save and continue' button" in {
-        val saveButton = view.getElementById("submit")
-        saveButton must containMessage("site.save_and_continue")
-      }
-
-      "display 'Save and come back later' link" in {
-        val saveAndReturnButton = view.getElementById("submit_and_return")
-        saveAndReturnButton must containMessage("site.save_and_come_back_later")
-      }
     }
 
     onStandard { implicit request =>

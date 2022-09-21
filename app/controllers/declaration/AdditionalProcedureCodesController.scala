@@ -78,7 +78,7 @@ class AdditionalProcedureCodesController @Inject() (
     def handleActionTypes(procedureCode: ProcedureCode, validAdditionalProcedureCodes: Seq[AdditionalProcedureCodeModel]): Future[Result] = {
       val errorHandler =
         returnErrorPage(mode, itemId, boundForm.get, procedureCode, cachedData.additionalProcedureCodes, validAdditionalProcedureCodes)(_)
-      val actionsRequiringValidation = Seq(Add, SaveAndContinue, SaveAndReturn, SaveAndReturnToSummary, SaveAndReturnToErrors)
+      val actionsRequiringValidation = Seq(Add, SaveAndContinue, SaveAndReturnToSummary, SaveAndReturnToErrors)
 
       formAction match {
         case Remove(values) =>

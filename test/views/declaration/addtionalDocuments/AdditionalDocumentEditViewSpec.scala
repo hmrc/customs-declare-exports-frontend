@@ -19,7 +19,6 @@ package views.declaration.addtionalDocuments
 import base.{Injector, TestHelper}
 import config.AppConfig
 import connectors.FileBasedCodeListConnector
-import controllers.helpers.SaveAndReturn
 import forms.common.Date.{dayKey, monthKey, yearKey}
 import forms.common.Eori
 import forms.declaration.AdditionalDocumentSpec._
@@ -32,12 +31,12 @@ import forms.declaration.additionaldocuments.DocumentWriteOffSpec.incorrectDocum
 import forms.declaration.declarationHolder.DeclarationHolder
 import models.ExportsDeclaration
 import models.Mode.Normal
-import models.declaration.{EoriSource, ExportItem}
 import models.declaration.ExportDeclarationTestData.{allRecords, declaration}
+import models.declaration.{EoriSource, ExportItem}
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
-import org.scalatest.{Assertion, OptionValues}
 import org.scalatest.Inspectors.forAll
+import org.scalatest.{Assertion, OptionValues}
 import play.api.data.Form
 import services.view.HolderOfAuthorisationCodes
 import tools.Stubs
@@ -537,14 +536,6 @@ class AdditionalDocumentEditViewSpec extends UnitViewSpec with CommonMessages wi
         )
       }
 
-      "display 'Save and continue' button on page" in {
-        val saveAndContinueButton = view.getElementById("submit")
-        saveAndContinueButton must containMessage(saveAndContinueCaption)
-
-        val saveAndReturnButton = view.getElementById("submit_and_return")
-        saveAndReturnButton must containMessage(saveAndReturnCaption)
-        saveAndReturnButton must haveAttribute("name", SaveAndReturn.toString)
-      }
     }
   }
 

@@ -92,7 +92,7 @@ class PackageInformationChangeViewSpec extends UnitViewSpec with ExportsTestHelp
           messages("declaration.packageInformation.numberOfPackages.details.paragraph.3").substring(0, 8) ++
             messages("declaration.packageInformation.numberOfPackages.details.paragraph.3.link"),
           messages("declaration.packageInformation.shippingMark.paragraph"),
-          messages("site.save_and_come_back_later")
+          messages(exitAndReturnCaption)
         ).zipWithIndex
 
         val paragraphs = view.getElementsByClass("govuk-body").eachText()

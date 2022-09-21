@@ -25,7 +25,7 @@ trait CommonMessages {
   val addCaption: String = "site.add"
   val continueCaption: String = "site.continue"
   val saveAndContinueCaption: String = "site.save_and_continue"
-  val saveAndReturnCaption: String = "site.save_and_come_back_later"
+  val exitAndReturnCaption: String = "site.exit_and_complete_later"
   val saveAndReturnToSummaryCaption: String = "site.saveAndReturnToSummary"
   val saveAndReturnToErrorsCaption: String = "site.saveAndReturnToErrors"
 }

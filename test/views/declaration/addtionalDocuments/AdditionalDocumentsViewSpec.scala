@@ -18,7 +18,6 @@ package views.declaration.addtionalDocuments
 
 import base.Injector
 import controllers.declaration.routes
-import controllers.helpers.SaveAndReturn
 import forms.common.YesNoAnswer
 import forms.declaration.AdditionalDocumentSpec._
 import forms.declaration.additionaldocuments.AdditionalDocument
@@ -89,14 +88,6 @@ class AdditionalDocumentsViewSpec extends UnitViewSpec with CommonMessages with 
         view.getElementsByClass("govuk-warning-text").first.text mustBe warningText
       }
 
-      "display 'Save and continue' button on page" in {
-        val saveAndContinueButton = view.getElementById("submit")
-        saveAndContinueButton must containMessage(saveAndContinueCaption)
-
-        val saveAndReturnButton = view.getElementById("submit_and_return")
-        saveAndReturnButton must containMessage(saveAndReturnCaption)
-        saveAndReturnButton must haveAttribute("name", SaveAndReturn.toString)
-      }
     }
   }
 
