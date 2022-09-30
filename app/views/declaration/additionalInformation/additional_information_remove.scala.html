@@ -24,6 +24,7 @@
 @import views.helpers.{BackButton, Title}
 @import scala.collection.immutable
 @import views.helpers.ErrorMapper.yesNoErrors
+@import models.requests.JourneyRequest
 
 @this(
     govukLayout: gdsMainTemplate,
@@ -36,7 +37,7 @@
     formHelper: FormWithCSRF
 )
 
-@(mode: Mode, itemId: String, informationId: String, information: AdditionalInformation, form: Form[YesNoAnswer])(implicit request: Request[_], messages: Messages)
+@(mode: Mode, itemId: String, informationId: String, information: AdditionalInformation, form: Form[YesNoAnswer])(implicit request: JourneyRequest[_], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 

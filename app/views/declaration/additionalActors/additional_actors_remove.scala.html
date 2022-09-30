@@ -25,6 +25,7 @@
 @import views.helpers.{BackButton, Title}
 @import views.helpers.ErrorMapper.yesNoErrors
 @import views.html.components.gds._
+@import models.requests.JourneyRequest
 
 @this(
     govukLayout: gdsMainTemplate,
@@ -38,7 +39,7 @@
     formHelper: FormWithCSRF
 )
 
-@(mode: Mode, id: String, actor: DeclarationAdditionalActors, form: Form[YesNoAnswer])(implicit request: Request[_], messages: Messages)
+@(mode: Mode, id: String, actor: DeclarationAdditionalActors, form: Form[YesNoAnswer])(implicit request: JourneyRequest[_], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 

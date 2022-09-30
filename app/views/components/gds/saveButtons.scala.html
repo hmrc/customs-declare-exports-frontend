@@ -15,14 +15,16 @@
  *@
 
 @import models.Mode._
+@import models.requests.JourneyRequest
+@import models.declaration.submissions.EnhancedStatus._
 
 @this(saveAndContinue: saveAndContinue, saveAndReturnToSummary: saveAndReturnToSummary, saveAndReturnToErrors: saveAndReturnToErrors, exitAndCompleteLater: exitAndCompleteLater)
 
-@(mode: Mode)(implicit messages: Messages)
+@(mode: Mode)(implicit request: JourneyRequest[_], messages: Messages)
 
 <div class="govuk-button-group">
 @saveAndContinue()
-@if(Seq(Draft, ChangeAmend, Change).contains(mode)) {
+@if(Seq(Draft, Change).contains(mode) || request.cacheModel.parentDeclarationEnhancedStatus.contains(ERRORS)) {
   @saveAndReturnToSummary()
 }
 @if(mode == ErrorFix) {

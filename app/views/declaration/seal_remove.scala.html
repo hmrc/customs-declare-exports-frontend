@@ -23,6 +23,7 @@
 @import views.html.components.gds._
 @import scala.collection.immutable
 @import views.helpers.ErrorMapper.yesNoErrors
+@import models.requests.JourneyRequest
 
 @this(
     govukLayout: gdsMainTemplate,
@@ -35,7 +36,7 @@
     formHelper: FormWithCSRF
 )
 
-@(mode: Mode, form: Form[YesNoAnswer], containerId: String, sealId: String)(implicit request: Request[_], messages: Messages)
+@(mode: Mode, form: Form[YesNoAnswer], containerId: String, sealId: String)(implicit request: JourneyRequest[_], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
