@@ -17,7 +17,7 @@
 package models
 
 import base.UnitWithMocksSpec
-import models.Mode.{Amend, Change, ChangeAmend, Draft, ErrorFix, Normal}
+import models.Mode.{Amend, Change, Draft, ErrorFix, Normal}
 
 class ModeSpec extends UnitWithMocksSpec {
 
@@ -36,12 +36,6 @@ class ModeSpec extends UnitWithMocksSpec {
   "Amend mode" must {
     "be same after submitting form" in {
       Amend.next mustBe Amend
-    }
-  }
-
-  "Change-Amend" must {
-    "become Amend after submitting form" in {
-      ChangeAmend.next mustBe Amend
     }
   }
 

@@ -19,7 +19,7 @@ package views.declaration.spec
 import base.{Injector, JourneyTypeTestRunner, UnitWithMocksSpec}
 import mock.FeatureFlagMocks
 import models.Mode
-import models.Mode.{Change, ChangeAmend, Draft, ErrorFix}
+import models.Mode.{Change, Draft, ErrorFix}
 import org.jsoup.nodes.Document
 import org.scalatest.Assertion
 import org.scalatest.matchers.{BeMatcher, MatchResult}
@@ -60,7 +60,7 @@ class UnitViewSpec extends UnitWithMocksSpec with ViewMatchers with JourneyTypeT
     }
 
   def checkSaveAndReturnToSummaryButtonIsDisplayed(createView: Mode => Document): Unit =
-    for (mode <- Seq(Draft, ChangeAmend, Change))
+    for (mode <- Seq(Draft, Change))
       s"display 'Save and return to summary' button in $mode mode" in {
         val view = createView(mode)
         val saveAndReturnToSummaryButton = view.getElementById("save_and_return_to_summary")

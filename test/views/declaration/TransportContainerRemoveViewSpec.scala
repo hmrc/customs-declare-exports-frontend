@@ -16,7 +16,7 @@
 
 package views.declaration
 
-import base.Injector
+import base.{Injector, MockAuthAction}
 import forms.common.YesNoAnswer
 import forms.declaration.Seal
 import models.Mode
@@ -30,7 +30,7 @@ import views.html.declaration.transport_container_remove
 import views.tags.ViewTest
 
 @ViewTest
-class TransportContainerRemoveViewSpec extends UnitViewSpec with Stubs with CommonMessages with Injector {
+class TransportContainerRemoveViewSpec extends UnitViewSpec with Stubs with CommonMessages with Injector with MockAuthAction {
 
   val containerId = "434732435324"
   val sealId = "934545754"
@@ -39,7 +39,7 @@ class TransportContainerRemoveViewSpec extends UnitViewSpec with Stubs with Comm
   private val page = instanceOf[transport_container_remove]
 
   private def createView(form: Form[YesNoAnswer] = form, container: Container = container, mode: Mode = Mode.Normal): Document =
-    page(mode, form, container)(request, messages)
+    page(mode, form, container)(getJourneyRequest(), messages)
 
   "Transport Containers Remove View" should {
     val view = createView()

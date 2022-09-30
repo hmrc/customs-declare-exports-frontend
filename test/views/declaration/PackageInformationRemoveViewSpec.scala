@@ -16,7 +16,7 @@
 
 package views.declaration
 
-import base.Injector
+import base.{Injector, MockAuthAction}
 import forms.common.YesNoAnswer
 import forms.declaration.PackageInformation
 import models.Mode
@@ -30,7 +30,7 @@ import views.html.declaration.packageInformation.package_information_remove
 import views.tags.ViewTest
 
 @ViewTest
-class PackageInformationRemoveViewSpec extends UnitViewSpec with Stubs with CommonMessages with Injector {
+class PackageInformationRemoveViewSpec extends UnitViewSpec with Stubs with CommonMessages with Injector with MockAuthAction {
 
   import PackageInformationViewSpec._
 
@@ -40,7 +40,7 @@ class PackageInformationRemoveViewSpec extends UnitViewSpec with Stubs with Comm
   private val packageTypesService = instanceOf[PackageTypesService]
 
   private def createView(form: Form[YesNoAnswer] = form, packageInfo: PackageInformation = packageInformation, mode: Mode = Mode.Normal): Document =
-    page(mode, itemId, packageInfo, form)(request, messages)
+    page(mode, itemId, packageInfo, form)(getJourneyRequest(), messages)
 
   "PackageInformation Remove View" should {
     val view = createView()

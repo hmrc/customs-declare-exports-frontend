@@ -23,6 +23,7 @@ import controllers.helpers._
 import controllers.routes.RejectedNotificationsController
 import forms.declaration.AdditionalInformationSummary
 import mock.FeatureFlagMocks
+import models.declaration.submissions.EnhancedStatus.ERRORS
 import models.requests.{ExportsSessionKeys, JourneyRequest}
 import models.responses.FlashKeys
 import models.{DeclarationType, ExportsDeclaration, Mode, SignedInUser}
@@ -83,7 +84,7 @@ class NavigatorSpec
 
     "go to the URL provided" when {
       "Save And Continue" in {
-        val result = navigator.continueTo(mode, call(_))(decoratedRequest(requestWithFormAction(Some(SaveAndContinue))), hc)
+        val result = navigator.continueTo(mode, call(_))(decoratedRequest(requestWithFormAction(Some(SaveAndContinue))))
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(url)
@@ -91,7 +92,7 @@ class NavigatorSpec
       }
 
       "Add" in {
-        val result = navigator.continueTo(mode, call(_))(decoratedRequest(requestWithFormAction(Some(Add))), hc)
+        val result = navigator.continueTo(mode, call(_))(decoratedRequest(requestWithFormAction(Some(Add))))
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(url)
@@ -99,7 +100,7 @@ class NavigatorSpec
       }
 
       "Remove" in {
-        val result = navigator.continueTo(mode, call(_))(decoratedRequest(requestWithFormAction(Some(Remove(Seq.empty)))), hc)
+        val result = navigator.continueTo(mode, call(_))(decoratedRequest(requestWithFormAction(Some(Remove(Seq.empty)))))
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(url)
@@ -107,7 +108,7 @@ class NavigatorSpec
       }
 
       "Unknown Action" in {
-        val result = navigator.continueTo(mode, call(_))(decoratedRequest(requestWithFormAction(Some(Unknown))), hc)
+        val result = navigator.continueTo(mode, call(_))(decoratedRequest(requestWithFormAction(Some(Unknown))))
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(url)
@@ -115,7 +116,7 @@ class NavigatorSpec
       }
 
       "Error-fix flag is passed in error-fix mode" in {
-        val result = navigator.continueTo(Mode.ErrorFix, call)(decoratedRequest(requestWithFormAction(Some(SaveAndContinue))), hc)
+        val result = navigator.continueTo(Mode.ErrorFix, call)(decoratedRequest(requestWithFormAction(Some(SaveAndContinue))))
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(url)
@@ -123,7 +124,7 @@ class NavigatorSpec
       }
 
       "Add in error-fix mode with error-fix flag passed" in {
-        val result = navigator.continueTo(Mode.ErrorFix, call)(decoratedRequest(requestWithFormAction(Some(Add))), hc)
+        val result = navigator.continueTo(Mode.ErrorFix, call)(decoratedRequest(requestWithFormAction(Some(Add))))
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(url)
@@ -131,7 +132,7 @@ class NavigatorSpec
       }
 
       "Remove in error-fix mode with error-fix flag passed" in {
-        val result = navigator.continueTo(Mode.ErrorFix, call)(decoratedRequest(requestWithFormAction(Some(Remove(Seq.empty)))), hc)
+        val result = navigator.continueTo(Mode.ErrorFix, call)(decoratedRequest(requestWithFormAction(Some(Remove(Seq.empty)))))
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(url)
@@ -143,16 +144,18 @@ class NavigatorSpec
 
       "user is in draft mode" in {
         val mode = Mode.Draft
-        val result = navigator.continueTo(mode, call)(decoratedRequest(requestWithFormAction(Some(SaveAndReturnToSummary))), hc)
+        val result = navigator.continueTo(mode, call)(decoratedRequest(requestWithFormAction(Some(SaveAndReturnToSummary))))
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(SummaryController.displayPage(mode).url)
         verifyNoInteractions(auditService)
       }
 
-      "user is in change-amend mode" in {
-        val mode = Mode.ChangeAmend
-        val result = navigator.continueTo(mode, call)(decoratedRequest(requestWithFormAction(Some(SaveAndReturnToSummary))), hc)
+      "user is on a declaration whose parent declaration has errors" in {
+        val mode = Mode.Normal
+        val result = navigator.continueTo(mode, call)(
+          decoratedRequest(requestWithFormAction(Some(SaveAndReturnToSummary)))(aDeclaration(withParentDeclarationEnhancedStatus(ERRORS)))
+        )
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(SummaryController.displayPageOnAmend.url)
@@ -161,7 +164,7 @@ class NavigatorSpec
 
       "user is in change mode" in {
         val mode = Mode.Change
-        val result = navigator.continueTo(mode, call)(decoratedRequest(requestWithFormAction(Some(SaveAndReturnToSummary))), hc)
+        val result = navigator.continueTo(mode, call)(decoratedRequest(requestWithFormAction(Some(SaveAndReturnToSummary))))
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(SummaryController.displayPage(Mode.Normal).url)
@@ -182,13 +185,13 @@ class NavigatorSpec
 
       "Save and return to errors is clicked with mode ErrorFix and parentDeclarationId in request" in {
         val request = requestWithFormAction(Some(SaveAndReturnToErrors))
-        val result = navigator.continueTo(Mode.ErrorFix, call)(decoratedRequest(request), hc)
+        val result = navigator.continueTo(Mode.ErrorFix, call)(decoratedRequest(request))
         redirectLocation(result) mustBe Some(RejectedNotificationsController.displayPage(parentDeclarationId).url)
       }
 
       "Save and continue is clicked with mode ErrorFix and parentDeclarationId in request" in {
         val request = requestWithFormAction(Some(SaveAndContinue))
-        val result = navigator.continueTo(Mode.ErrorFix, call)(decoratedRequest(request), hc)
+        val result = navigator.continueTo(Mode.ErrorFix, call)(decoratedRequest(request))
         redirectLocation(result) mustBe Some(url)
       }
     }
@@ -198,7 +201,7 @@ class NavigatorSpec
       "continueTo method is invoked with mode ErrorFix and form action SaveAndReturnToErrors and" when {
         "parentDeclarationId is None" in {
           val request = requestWithFormAction(Some(SaveAndReturnToErrors))
-          val result = navigator.continueTo(Mode.ErrorFix, call)(decoratedRequest(request)(aDeclaration()), hc)
+          val result = navigator.continueTo(Mode.ErrorFix, call)(decoratedRequest(request)(aDeclaration()))
           result.header.headers.get("Location") mustBe Some(url)
           result.newFlash mustBe Some(Flash(Map.empty))
         }
@@ -206,7 +209,7 @@ class NavigatorSpec
 
       "continueTo method is invoked with mode ErrorFix and" when {
         "parentDeclarationId is None" in {
-          val result = navigator.continueTo(Mode.ErrorFix, call)(decoratedRequest(request)(aDeclaration()), hc)
+          val result = navigator.continueTo(Mode.ErrorFix, call)(decoratedRequest(request)(aDeclaration()))
           result.header.headers.get("Location") mustBe Some(url)
           result.newFlash mustBe Some(Flash(Map.empty))
         }
@@ -217,7 +220,7 @@ class NavigatorSpec
       "continueTo method is invoked with mode ErrorFix and" in {
         val flash = Map(FlashKeys.fieldName -> "Some name", FlashKeys.errorMessage -> "Some message")
         val request = requestWithFormAction(Some(Unknown)).withFlash(flash.toList: _*)
-        val result = navigator.continueTo(Mode.ErrorFix, call)(decoratedRequest(request)(aDeclaration()), hc)
+        val result = navigator.continueTo(Mode.ErrorFix, call)(decoratedRequest(request)(aDeclaration()))
         result.newFlash mustBe Some(Flash(flash))
       }
     }

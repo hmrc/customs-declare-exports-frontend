@@ -16,7 +16,7 @@
 
 package views.declaration
 
-import base.Injector
+import base.{Injector, MockAuthAction}
 import forms.common.YesNoAnswer
 import models.Mode
 import org.jsoup.nodes.Document
@@ -28,7 +28,7 @@ import views.html.declaration.taric_code_remove
 import views.tags.ViewTest
 
 @ViewTest
-class TaricCodeRemoveViewSpec extends UnitViewSpec with Stubs with CommonMessages with Injector {
+class TaricCodeRemoveViewSpec extends UnitViewSpec with Stubs with CommonMessages with Injector with MockAuthAction {
 
   private val itemId = "item1"
   private val taricCode = "TARI"
@@ -36,7 +36,7 @@ class TaricCodeRemoveViewSpec extends UnitViewSpec with Stubs with CommonMessage
   private val page = instanceOf[taric_code_remove]
 
   private def createView(form: Form[YesNoAnswer] = form, code: String = taricCode, mode: Mode = Mode.Normal): Document =
-    page(mode, itemId, code, form)(request, messages)
+    page(mode, itemId, code, form)(getJourneyRequest(), messages)
 
   "Taric Code Remove View" should {
     val view = createView()

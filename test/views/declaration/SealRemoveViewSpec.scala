@@ -16,7 +16,7 @@
 
 package views.declaration
 
-import base.Injector
+import base.{Injector, MockAuthAction}
 import forms.common.YesNoAnswer
 import forms.declaration.Seal
 import models.Mode
@@ -31,13 +31,14 @@ import views.html.declaration.seal_remove
 import views.tags.ViewTest
 
 @ViewTest
-class SealRemoveViewSpec extends UnitViewSpec with Stubs with CommonMessages with Injector {
+class SealRemoveViewSpec extends UnitViewSpec with Stubs with CommonMessages with Injector with MockAuthAction {
 
   val containerId = "42354542"
   val sealId = "SealToRemove54214"
   val container = Some(Container(containerId, Seq(Seal(sealId))))
   private val form: Form[YesNoAnswer] = YesNoAnswer.form()
   private val page = instanceOf[seal_remove]
+  override implicit val request = getJourneyRequest()
 
   private def createView(form: Form[YesNoAnswer] = form, containerId: String = containerId, sealId: String = sealId, mode: Mode = Normal): Document =
     page(mode, form, containerId, sealId)
