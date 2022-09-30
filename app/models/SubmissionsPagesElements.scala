@@ -35,11 +35,17 @@ object SubmissionsPagesElements {
       rejectedSubmissions = paginateSubmissions(filterSubmissions(submissions, EnhancedStatus.rejectedStatuses), submissionsPages.rejectedPageNumber),
       actionSubmissions =
         paginateSubmissions(filterSubmissions(submissions, EnhancedStatus.actionRequiredStatuses), submissionsPages.actionPageNumber),
-      otherSubmissions = paginateSubmissions(filterSubmissions(submissions, EnhancedStatus.otherStatuses), submissionsPages.otherPageNumber)
+      otherSubmissions = paginateSubmissions(
+        excludeSubmissions(submissions, EnhancedStatus.rejectedStatuses ++ EnhancedStatus.actionRequiredStatuses),
+        submissionsPages.otherPageNumber
+      )
     )
 
   private def filterSubmissions(submissions: Seq[Submission], enhancedStatuses: Set[EnhancedStatus]): Seq[Submission] =
     submissions.filter(_.latestEnhancedStatus.exists(_ in enhancedStatuses))
+
+  private def excludeSubmissions(submissions: Seq[Submission], enhancedStatuses: Set[EnhancedStatus]): Seq[Submission] =
+    submissions.filter(!_.latestEnhancedStatus.exists(_ in enhancedStatuses))
 
   private def paginateSubmissions(submissions: Seq[Submission], pageNumber: Int)(
     implicit paginationConfig: PaginationConfig
