@@ -67,8 +67,8 @@ class AdditionalDocumentsController @Inject() (
 
   private def nextPage(mode: Mode, yesNoAnswer: YesNoAnswer, itemId: String)(implicit request: JourneyRequest[AnyContent]): Result =
     yesNoAnswer.answer match {
-      case YesNoAnswers.yes => navigator.continueTo(mode, AdditionalDocumentAddController.displayPage(_, itemId))(request, hc)
-      case _                => navigator.continueTo(mode, ItemsSummaryController.displayItemsSummaryPage)(request, hc)
+      case YesNoAnswers.yes => navigator.continueTo(mode, AdditionalDocumentAddController.displayPage(_, itemId))(request)
+      case _                => navigator.continueTo(mode, ItemsSummaryController.displayItemsSummaryPage)(request)
     }
 
   private def redirectIfNoDocuments(mode: Mode, itemId: String)(implicit request: JourneyRequest[_]): Mode => Call =

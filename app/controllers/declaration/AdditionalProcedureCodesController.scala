@@ -167,8 +167,7 @@ class AdditionalProcedureCodesController @Inject() (
   }
 
   private def removeCodeHandler(mode: Mode, itemId: String, code: String, cachedData: ProcedureCodesData)(
-    implicit request: JourneyRequest[AnyContent],
-    hc: HeaderCarrier
+    implicit request: JourneyRequest[AnyContent]
   ): Future[Result] = {
     val updatedCache = cachedData.copy(additionalProcedureCodes = remove(cachedData.additionalProcedureCodes, (_: String) == code))
     updateCache(itemId, updatedCache).map(_ => navigator.continueTo(mode, routes.AdditionalProcedureCodesController.displayPage(_, itemId)))
