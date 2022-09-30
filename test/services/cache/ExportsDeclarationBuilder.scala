@@ -17,9 +17,9 @@
 package services.cache
 
 import base.ExportsTestData._
+
 import java.time.{Instant, LocalDate, LocalDateTime, ZoneOffset}
 import java.util.UUID
-
 import forms.common.YesNoAnswer.{No, YesNoAnswers}
 import forms.common.{Address, Eori, YesNoAnswer}
 import forms.declaration._
@@ -35,6 +35,7 @@ import forms.{Ducr, Lrn, Mrn}
 import models.DeclarationStatus.DeclarationStatus
 import models.DeclarationType.DeclarationType
 import models.declaration._
+import models.declaration.submissions.EnhancedStatus.EnhancedStatus
 import models.{DeclarationStatus, DeclarationType, ExportsDeclaration}
 
 //noinspection ScalaStyle
@@ -66,6 +67,8 @@ trait ExportsDeclarationBuilder {
   // ************************************************* Builders ********************************************************
 
   def withParentDeclarationId(parentId: String): ExportsDeclarationModifier = _.copy(parentDeclarationId = Some(parentId))
+
+  def withParentDeclarationEnhancedStatus(status: EnhancedStatus): ExportsDeclarationModifier = _.copy(parentDeclarationEnhancedStatus = Some(status))
 
   def withStatus(status: DeclarationStatus): ExportsDeclarationModifier = _.copy(status = status)
 
