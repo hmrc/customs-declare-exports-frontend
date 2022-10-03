@@ -160,7 +160,7 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
         val result = controller.addFirstItem(Mode.Normal)(postRequest(Json.obj()))
         status(result) mustBe SEE_OTHER
 
-        verify(navigator).continueTo(any[Mode], any())(any(), any())
+        verify(navigator).continueTo(any[Mode], any())(any())
       }
 
       "return 303 (SEE_OTHER) and redirect to Procedure Codes page" in {
@@ -247,7 +247,7 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
           val result = controller.submit(Mode.Normal)(postRequest(answerForm))
           status(result) mustBe SEE_OTHER
 
-          verify(navigator).continueTo(any[Mode], any())(any(), any())
+          verify(navigator).continueTo(any[Mode], any())(any())
         }
 
         "return 303 (SEE_OTHER) and redirect to Procedure Codes page" in {
@@ -261,7 +261,7 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
 
           thePageNavigatedTo mustBe routes.ProcedureCodesController.displayPage(Mode.Normal, itemId)
 
-          verify(navigator).continueTo(any[Mode], any())(any(), any())
+          verify(navigator).continueTo(any[Mode], any())(any())
         }
       }
 
@@ -282,7 +282,7 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
             case _ => thePageNavigatedTo mustBe routes.TransportLeavingTheBorderController.displayPage(Mode.Normal)
           }
 
-          verify(navigator).continueTo(any[Mode], any())(any(), any())
+          verify(navigator).continueTo(any[Mode], any())(any())
         }
       }
 

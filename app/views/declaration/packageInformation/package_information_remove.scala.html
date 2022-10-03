@@ -26,6 +26,7 @@
 @import forms.declaration.PackageInformation
 @import views.helpers.ErrorMapper.yesNoErrors
 @import services.PackageTypesService
+@import models.requests.JourneyRequest
 
 @this(
     govukLayout: gdsMainTemplate,
@@ -39,7 +40,7 @@
     packageTypesService: PackageTypesService
 )
 
-@(mode: Mode, itemId: String, info: PackageInformation, form: Form[YesNoAnswer])(implicit request: Request[_], messages: Messages)
+@(mode: Mode, itemId: String, info: PackageInformation, form: Form[YesNoAnswer])(implicit request: JourneyRequest[_], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 

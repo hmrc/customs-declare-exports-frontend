@@ -16,11 +16,13 @@
 
 package views.declaration
 
-import base.Injector
+import base.{Injector, MockAuthAction}
 import forms.common.YesNoAnswer
 import models.Mode
+import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
+import play.api.mvc.AnyContentAsEmpty
 import tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.helpers.CommonMessages
@@ -28,12 +30,13 @@ import views.html.declaration.nact_code_remove
 import views.tags.ViewTest
 
 @ViewTest
-class NactCodeRemoveViewSpec extends UnitViewSpec with Stubs with CommonMessages with Injector {
+class NactCodeRemoveViewSpec extends UnitViewSpec with Stubs with CommonMessages with Injector with MockAuthAction {
 
   private val itemId = "item1"
   private val nactCode = "VATR"
   private val form: Form[YesNoAnswer] = YesNoAnswer.form()
   private val page = instanceOf[nact_code_remove]
+  override implicit val request: JourneyRequest[AnyContentAsEmpty.type] = getJourneyRequest()
 
   private def createView(form: Form[YesNoAnswer] = form, code: String = nactCode, mode: Mode = Mode.Normal): Document =
     page(mode, itemId, code, form)(request, messages)

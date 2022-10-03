@@ -52,7 +52,7 @@ class TaricCodeAddFirstViewSpec extends UnitViewSpec with ExportsTestHelper with
   private def createView(form: Form[TaricCodeFirst] = form, mode: Mode = Mode.Normal)(
     implicit req: JourneyRequest[AnyContent] = request()
   ): Document =
-    page(mode, itemId, form)(req, messages)
+    page(mode, itemId, form)(req, messages(req))
 
   "Taric Code Add First View" should {
     val view = createView()

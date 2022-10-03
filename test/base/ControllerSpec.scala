@@ -51,7 +51,7 @@ trait ControllerSpec
   protected def viewOf(result: Future[Result]) = Html(contentAsString(result))
 
   protected def getRequest(declaration: ExportsDeclaration): JourneyRequest[AnyContentAsEmpty.type] =
-    new JourneyRequest(getAuthenticatedRequest(), declaration)
+    getJourneyRequest(declaration)
 
   protected def postRequest(body: JsValue): Request[AnyContentAsJson] =
     FakeRequest("POST", "")

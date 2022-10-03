@@ -77,19 +77,19 @@
       content = Text(messages("declaration.summary.warning"))
   ))
 
-  @references_section(Mode.ChangeAmend, request.cacheModel)
+  @references_section(Mode.Normal, request.cacheModel)
 
-  @parties_section(Mode.ChangeAmend, request.cacheModel)
+  @parties_section(Mode.Normal, request.cacheModel)
 
-  @countries_section(Mode.ChangeAmend, request.cacheModel)
+  @countries_section(Mode.Normal, request.cacheModel)
 
-  @locations_section(Mode.ChangeAmend, request.cacheModel)
+  @locations_section(Mode.Normal, request.cacheModel)
 
-  @transaction_section(Mode.ChangeAmend, request.cacheModel)
+  @transaction_section(Mode.Normal, request.cacheModel)
 
-  @items_section(Mode.ChangeAmend, request.cacheModel)
+  @items_section(Mode.Normal, request.cacheModel)
 
-  @transport_section(Mode.ChangeAmend, request.cacheModel)
+  @transport_section(Mode.Normal, request.cacheModel)
 
   <div class="govuk-button-group">
       @continueLink

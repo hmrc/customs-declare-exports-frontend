@@ -36,7 +36,7 @@ trait MockNavigator extends MockitoSugar with BeforeAndAfterEach { self: Mockito
   protected val hc: HeaderCarrier = HeaderCarrier()
 
   override protected def beforeEach(): Unit = {
-    given(navigator.continueTo(any[Mode], any[Mode => Call]())(any[JourneyRequest[AnyContent]], any()))
+    given(navigator.continueTo(any[Mode], any[Mode => Call]())(any[JourneyRequest[AnyContent]]))
       .willReturn(aRedirectToTheNextPage)
     given(aRedirectToTheNextPage.header).willReturn(ResponseHeader(Status.SEE_OTHER))
   }
@@ -48,7 +48,7 @@ trait MockNavigator extends MockitoSugar with BeforeAndAfterEach { self: Mockito
 
   protected def initMockNavigatorForMultipleCallsInTheSameTest(): Unit = {
     Mockito.reset(navigator)
-    given(navigator.continueTo(any[Mode], any[Mode => Call]())(any[JourneyRequest[AnyContent]], any()))
+    given(navigator.continueTo(any[Mode], any[Mode => Call]())(any[JourneyRequest[AnyContent]]))
       .willReturn(aRedirectToTheNextPage)
     given(aRedirectToTheNextPage.header).willReturn(ResponseHeader(Status.SEE_OTHER))
   }
@@ -56,7 +56,7 @@ trait MockNavigator extends MockitoSugar with BeforeAndAfterEach { self: Mockito
   protected def thePageNavigatedTo: Call = {
     val modeCaptor: ArgumentCaptor[Mode] = ArgumentCaptor.forClass(classOf[Mode])
     val callCaptor: ArgumentCaptor[Mode => Call] = ArgumentCaptor.forClass(classOf[Mode => Call])
-    Mockito.verify(navigator).continueTo(modeCaptor.capture(), callCaptor.capture())(any(), any())
+    Mockito.verify(navigator).continueTo(modeCaptor.capture(), callCaptor.capture())(any())
     callCaptor.getValue.apply(modeCaptor.getValue)
   }
 }

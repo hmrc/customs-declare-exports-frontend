@@ -16,7 +16,7 @@
 
 package views.declaration.fiscalInformation
 
-import base.Injector
+import base.{Injector, MockAuthAction}
 import forms.common.YesNoAnswer
 import forms.declaration.AdditionalFiscalReference
 import models.Mode
@@ -30,7 +30,8 @@ import views.html.declaration.fiscalInformation.additional_fiscal_references_rem
 import views.tags.ViewTest
 
 @ViewTest
-class AdditionalFiscalReferencesRemoveViewSpec extends UnitViewSpec with ExportsTestHelper with Stubs with CommonMessages with Injector {
+class AdditionalFiscalReferencesRemoveViewSpec
+    extends UnitViewSpec with ExportsTestHelper with Stubs with CommonMessages with Injector with MockAuthAction {
 
   private val itemId = "74fd3906"
   private val referenceId = "0.200378103"
@@ -43,7 +44,7 @@ class AdditionalFiscalReferencesRemoveViewSpec extends UnitViewSpec with Exports
     reference: AdditionalFiscalReference = additionalReference,
     mode: Mode = Mode.Normal
   ): Document =
-    page(mode, itemId, referenceId, reference, form)(request, messages)
+    page(mode, itemId, referenceId, reference, form)(getJourneyRequest(), messages)
 
   "AdditionalFiscalReferences Remove View" should {
     val view = createView()

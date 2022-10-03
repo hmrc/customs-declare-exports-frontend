@@ -164,7 +164,7 @@ class EntryIntoDeclarantsRecordsControllerSpec extends ControllerSpec with Scala
 
           controller.submitForm(Mode.Normal)(postRequest(correctForm)).futureValue
 
-          verify(navigator).continueTo(any(), any())(any(), any())
+          verify(navigator).continueTo(any(), any())(any())
         }
       }
 

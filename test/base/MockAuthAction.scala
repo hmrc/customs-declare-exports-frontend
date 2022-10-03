@@ -19,8 +19,8 @@ package base
 import base.ExportsTestData._
 import config.AppConfig
 import controllers.actions.{AuthActionImpl, EoriAllowList}
-import models.SignedInUser
-import models.requests.{ExportsSessionKeys, VerifiedEmailRequest}
+import models.{ExportsDeclaration, SignedInUser}
+import models.requests.{ExportsSessionKeys, JourneyRequest, VerifiedEmailRequest}
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -269,6 +269,9 @@ trait MockAuthAction extends MockitoSugar with Stubs with MetricsMocks with Inje
 
   def getRequest(): Request[AnyContentAsEmpty.type] =
     FakeRequest("GET", "").withSession((ExportsSessionKeys.declarationId, "declarationId")).withCSRFToken
+
+  def getJourneyRequest(declaration: ExportsDeclaration = aDeclaration()): JourneyRequest[AnyContentAsEmpty.type] =
+    new JourneyRequest[AnyContentAsEmpty.type](getAuthenticatedRequest(), declaration)
 
   def getRequestWithSession(sessionData: Seq[(String, String)]): Request[AnyContentAsEmpty.type] =
     FakeRequest("GET", "").withSession(sessionData: _*).withCSRFToken
