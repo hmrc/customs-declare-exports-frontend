@@ -46,7 +46,7 @@ class SaveButtonsSpec extends UnitViewSpec with MockAuthAction {
       Option(buttons.getElementsByAttributeValue("name", "SaveAndReturn")).isDefined
     }
 
-    "display Save and return to summary button in draft or change mode or when parent dec has errors" when {
+    "display Save and return to summary button in draft or change mode or when parent dec has errors and user is amending" when {
       for {
         mode <- Mode.modes
         status <- List(RECEIVED, ERRORS)
@@ -55,9 +55,10 @@ class SaveButtonsSpec extends UnitViewSpec with MockAuthAction {
         val buttons = Option(buttonsPage.getElementById("save_and_return_to_summary"))
 
         mode match {
-          case _ if status == ERRORS => buttons.isDefined mustBe true
-          case Draft | Change        => buttons.isDefined mustBe true
-          case _                     => buttons.isEmpty mustBe true
+          case ErrorFix if status == ERRORS => buttons.isDefined mustBe false
+          case _ if status == ERRORS        => buttons.isDefined mustBe true
+          case Draft | Change               => buttons.isDefined mustBe true
+          case _                            => buttons.isEmpty mustBe true
         }
       }
     }

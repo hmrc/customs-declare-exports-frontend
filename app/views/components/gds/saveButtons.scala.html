@@ -24,7 +24,7 @@
 
 <div class="govuk-button-group">
 @saveAndContinue()
-@if(Seq(Draft, Change).contains(mode) || request.cacheModel.parentDeclarationEnhancedStatus.contains(ERRORS)) {
+@if(Seq(Draft, Change).contains(mode) || (request.cacheModel.parentDeclarationEnhancedStatus.contains(ERRORS) && mode != ErrorFix)) {
   @saveAndReturnToSummary()
 }
 @if(mode == ErrorFix) {
