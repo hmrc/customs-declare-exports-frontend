@@ -1,0 +1,115 @@
+@*
+ * Copyright 2022 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import java.time.ZoneId
+@import views.html.components.gds._
+@import models.declaration.submissions.Submission
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import models.declaration.submissions.RequestType.SubmissionRequest
+@import views.helpers.{EnhancedStatusHelper, ViewDates}
+
+@this(
+    govukLayout: gdsMainTemplate,
+    govukWarningText: GovukWarningText,
+    govukTable: GovukTable,
+    paragraphBody: paragraphBody,
+    link: link,
+    linkButton: linkButton
+)
+
+@(id: String, tabSubmissions: Paginated[Submission], onPageChange: Int => Call)(implicit request: Request[_], messages: Messages)
+
+@mrnLink(submission: Submission) = @{
+    HtmlContent(
+        link(
+            text = submission.mrn.getOrElse(messages("submissions.declarationDetails.mrn.pending")),
+            call = routes.DeclarationDetailsController.displayPage(submission.uuid),
+            textHidden = Some(messages("submissions.hidden.text", submission.ducr.getOrElse("")))
+        )
+    )
+}
+
+@headCell(key: String) = @{
+    HeadCell( content = Text(messages(s"submissions.$key.header")) )
+}
+
+<h2 class="govuk-heading-l">@messages(s"submissions.${id}.content.title")</h2>
+
+@if(tabSubmissions.nonEmpty) {
+
+    <p id="@{s"${id}-content-hint"}" class="govuk-body">@messages(s"submissions.${id}.content.hint")</p>
+
+    @govukTable(Table(
+        attributes = Map("id" -> s"submissions-tab-$id"),
+        rows = tabSubmissions.currentPageElements.zipWithIndex.map { case (submission, index) =>
+            Seq(
+                TableRow(
+                    content = mrnLink(submission),
+                    classes = "govuk-table__cell_break-all",
+                    attributes = Map("id" -> s"submission-tab-$id-row$index-mrn")
+                ),
+                TableRow(
+                    content = Text(submission.ducr.getOrElse("")),
+                    classes = "govuk-table__cell_break-all",
+                    attributes = Map("id" -> s"submission-tab-$id-row$index-ducr")
+                ),
+                TableRow(
+                    content = Text(submission.lrn),
+                    classes = "govuk-table__cell_break-all",
+                    attributes = Map("id" -> s"submission-tab-$id-row$index-lrn")
+                ),
+                TableRow(
+                    content = Text(
+                        submission.actions
+                            .find(_.requestType == SubmissionRequest)
+                            .map(_.requestTimestamp.withZoneSameInstant(ZoneId.of("Europe/London")))
+                            .map(ViewDates.formatDateAtTime)
+                            .getOrElse("")
+                        ),
+                    attributes = Map("id" -> s"submission-tab-$id-row$index-dateAndTime")
+                ),
+                TableRow(
+                    content = Text(EnhancedStatusHelper.asText(submission)),
+                    attributes = Map("id" -> s"submission-tab-$id-row$index-status")
+                )
+            )
+        },
+        head = Some(List(
+            headCell("mrn"),
+            headCell("ducr"),
+            headCell("lrn"),
+            headCell("dateAndTime"),
+            headCell("status")
+        ))
+    ))
+
+}
+
+<div class="govuk-grid-row">
+    @if(tabSubmissions.nonEmpty) {
+        @pagination(
+            singularName = messages("submissions.pagination.singular"),
+            pluralName = messages("submissions.pagination.plural"),
+            pager = tabSubmissions,
+            onChange = onPageChange,
+            neighbourPagesAmount = 2
+        )
+    } else {
+        <div class="ceds-pagination__summary">
+            <p class="govuk-body">@{messages("submissions.empty.tab")}</p>
+        </div>
+    }
+</div>
