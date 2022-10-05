@@ -172,21 +172,6 @@
             @govukTabs(Tabs(
                 items = Seq(
                     TabItem(
-                        id = Some("rejected-submissions"),
-                        label = messages("submissions.rejected.tab.title"),
-                        panel = TabPanel(
-                            content = HtmlContent(
-                                tabTable(
-                                    id = "rejected",
-                                    submissionsPagesElements.rejectedSubmissions,
-                                    page => controllers.routes.SubmissionsController.displayListOfSubmissions(
-                                        submissionsPages.changeRejectedPageNumber(page)
-                                    ).withFragment("rejected-submissions")
-                                )
-                            )
-                        )
-                    ),
-                    TabItem(
                         id = Some("action-submissions"),
                         label = messages("submissions.action.tab.title"),
                         panel = TabPanel(
@@ -197,6 +182,21 @@
                                     page => controllers.routes.SubmissionsController.displayListOfSubmissions(
                                         submissionsPages.changeActionPageNumber(page)
                                     ).withFragment("action-submissions")
+                                )
+                            )
+                        )
+                    ),
+                    TabItem(
+                        id = Some("rejected-submissions"),
+                        label = messages("submissions.rejected.tab.title"),
+                        panel = TabPanel(
+                            content = HtmlContent(
+                                tabTable(
+                                    id = "rejected",
+                                    submissionsPagesElements.rejectedSubmissions,
+                                    page => controllers.routes.SubmissionsController.displayListOfSubmissions(
+                                        submissionsPages.changeRejectedPageNumber(page)
+                                    ).withFragment("rejected-submissions")
                                 )
                             )
                         )
