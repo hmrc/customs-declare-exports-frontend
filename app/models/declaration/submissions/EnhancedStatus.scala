@@ -35,9 +35,11 @@ object EnhancedStatus extends Enumeration {
 
   lazy val actionRequiredStatuses = Set(ADDITIONAL_DOCUMENTS_REQUIRED, QUERY_NOTIFICATION_MESSAGE, UNDERGOING_PHYSICAL_CHECK)
 
-  lazy val rejectedStatuses = Set(CANCELLED, ERRORS, EXPIRED_NO_ARRIVAL)
+  lazy val cancelledStatuses = Set(CANCELLED, EXPIRED_NO_ARRIVAL)
 
-  lazy val otherStatuses = values &~ rejectedStatuses &~ actionRequiredStatuses
+  lazy val rejectedStatuses = Set(ERRORS)
+
+  lazy val otherStatuses = values &~ rejectedStatuses &~ cancelledStatuses &~ actionRequiredStatuses
 
   lazy val eadAcceptableStatuses = values &~ Set(CANCELLED, ERRORS, PENDING, UNKNOWN, WITHDRAWN)
 

@@ -47,11 +47,12 @@ class SubmissionsViewSpec extends UnitViewSpec with BeforeAndAfterEach with Expo
   private val page = injector.instanceOf[submissions]
 
   private def createView(
-    rejectedSubmissions: Paginated[Submission] = Paginated(Seq.empty, Page(), 0),
+    otherSubmissions: Paginated[Submission] = Paginated(Seq.empty, Page(), 0),
     actionSubmissions: Paginated[Submission] = Paginated(Seq.empty, Page(), 0),
-    otherSubmissions: Paginated[Submission] = Paginated(Seq.empty, Page(), 0)
+    rejectedSubmissions: Paginated[Submission] = Paginated(Seq.empty, Page(), 0),
+    cancelledSubmissions: Paginated[Submission] = Paginated(Seq.empty, Page(), 0)
   ): Html =
-    page(SubmissionsPagesElements(rejectedSubmissions, actionSubmissions, otherSubmissions))(request, messages)
+    page(SubmissionsPagesElements(otherSubmissions, actionSubmissions, rejectedSubmissions, cancelledSubmissions))(request, messages)
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -308,14 +309,16 @@ class SubmissionsViewSpec extends UnitViewSpec with BeforeAndAfterEach with Expo
 
       "submissions are shown on correct tabs" in {
         val view = createView(
-          rejectedSubmissions = submissions(submissionWithStatus(EXPIRED_NO_ARRIVAL, "ducr_rejected")),
+          otherSubmissions = submissions(submissionWithStatus(ducr = "ducr_accepted")),
           actionSubmissions = submissions(submissionWithStatus(ADDITIONAL_DOCUMENTS_REQUIRED, "ducr_action")),
-          otherSubmissions = submissions(submissionWithStatus(ducr = "ducr_accepted"))
+          rejectedSubmissions = submissions(submissionWithStatus(EXPIRED_NO_ARRIVAL, "ducr_rejected")),
+          cancelledSubmissions = submissions(submissionWithStatus(CANCELLED, "ducr_cancelled"))
         )
 
         tableCell(tab("other", view))(1, 0).text must include("ducr_accepted")
-        tableCell(tab("rejected", view))(1, 0).text must include("ducr_rejected")
         tableCell(tab("action", view))(1, 0).text must include("ducr_action")
+        tableCell(tab("rejected", view))(1, 0).text must include("ducr_rejected")
+        tableCell(tab("cancelled", view))(1, 0).text must include("ducr_cancelled")
       }
 
       "submissions without status are shown on 'other' tab" in {

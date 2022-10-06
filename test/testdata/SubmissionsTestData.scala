@@ -39,15 +39,18 @@ object SubmissionsTestData {
   val uuid: String = UUID.randomUUID().toString
   val uuid_2: String = UUID.randomUUID().toString
   val uuid_3: String = UUID.randomUUID().toString
+  val uuid_4: String = UUID.randomUUID().toString
   val eori: String = "GB167676"
   val ducr: String = createRandomAlphanumericString(16)
   val lrn: String = createRandomAlphanumericString(22)
   val mrn: String = "MRN87878797"
   val mrn_2: String = "MRN12341234"
   val mrn_3: String = "MRN12341235"
+  val mrn_4: String = "MRN12341236"
   val conversationId: String = "b1c09f1b-7c94-4e90-b754-7c5c71c44e11"
   val conversationId_2: String = "b1c09f1b-7c94-4e90-b754-7c5c71c55e22"
   val conversationId_3: String = "b1c09f1b-7c94-4e90-b754-7c5c71c55e23"
+  val conversationId_4: String = "b1c09f1b-7c94-4e90-b754-7c5c71c55e24"
 
   def createSubmission(
     uuid: String = uuid,
@@ -70,6 +73,9 @@ object SubmissionsTestData {
     Action(requestType = SubmissionRequest, id = conversationId_2, requestTimestamp = action.requestTimestamp.plus(2, DAYS), notifications = None)
   lazy val action_3 =
     Action(requestType = SubmissionRequest, id = conversationId_2, requestTimestamp = action.requestTimestamp.minus(2, DAYS), notifications = None)
+  lazy val action_4 =
+    Action(requestType = SubmissionRequest, id = conversationId_4, requestTimestamp = action.requestTimestamp.minus(2, DAYS), notifications = None)
+
   lazy val actionCancellation =
     Action(requestType = CancellationRequest, id = conversationId, requestTimestamp = action.requestTimestamp.plus(3, HOURS), notifications = None)
   lazy val actionCancellation_2 =
@@ -83,6 +89,9 @@ object SubmissionsTestData {
 
   lazy val submission_3: Submission =
     Submission(uuid = uuid_3, eori = eori, lrn = lrn, mrn = Some(mrn_3), ducr = Some(ducr), actions = Seq(action_3))
+
+  lazy val submission_4: Submission =
+    Submission(uuid = uuid_4, eori = eori, lrn = lrn, mrn = Some(mrn_4), ducr = Some(ducr), actions = Seq(action_4))
 
   lazy val cancelledSubmission: Submission =
     Submission(uuid = uuid, eori = eori, lrn = lrn, mrn = Some(mrn), ducr = Some(ducr), actions = Seq(action, actionCancellation))

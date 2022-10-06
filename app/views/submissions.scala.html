@@ -89,14 +89,14 @@
 
             @govukTabs(Tabs(
                 items = Seq(
-                    SubmissionTabItem("rejected").tabItem(
+                    SubmissionTabItem("other").tabItem(
                         content = HtmlContent(
                             tabTable(
-                                id = "rejected",
-                                submissionsPagesElements.rejectedSubmissions,
+                                id = "other",
+                                submissionsPagesElements.otherSubmissions,
                                 page => controllers.routes.SubmissionsController.displayListOfSubmissions(
-                                    submissionsPages.changeRejectedPageNumber(page)
-                                ).withFragment("rejected-submissions")
+                                    submissionsPages.changeOtherPageNumber(page)
+                                ).withFragment("other-submissions")
                             )
                         )
                     ),
@@ -111,14 +111,25 @@
                             )
                         )
                     ),
-                    SubmissionTabItem("action").tabItem(
+                    SubmissionTabItem("rejected").tabItem(
                         content = HtmlContent(
                             tabTable(
-                                id = "other",
-                                submissionsPagesElements.otherSubmissions,
+                                id = "rejected",
+                                submissionsPagesElements.rejectedSubmissions,
                                 page => controllers.routes.SubmissionsController.displayListOfSubmissions(
-                                    submissionsPages.changeOtherPageNumber(page)
-                                ).withFragment("other-submissions")
+                                    submissionsPages.changeRejectedPageNumber(page)
+                                ).withFragment("rejected-submissions")
+                            )
+                        )
+                    ),
+                    SubmissionTabItem("cancelled").tabItem(
+                        content = HtmlContent(
+                            tabTable(
+                                id = "cancelled",
+                                submissionsPagesElements.cancelledSubmissions,
+                                page => controllers.routes.SubmissionsController.displayListOfSubmissions(
+                                    submissionsPages.changeCancelledPageNumber(page)
+                                ).withFragment("cancelled-submissions")
                             )
                         )
                     )

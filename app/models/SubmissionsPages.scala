@@ -19,13 +19,15 @@ package models
 import play.api.mvc.QueryStringBindable
 
 case class SubmissionsPages(
-  rejectedPageNumber: Int = SubmissionsPages.DefaultPageNumber,
+  otherPageNumber: Int = SubmissionsPages.DefaultPageNumber,
   actionPageNumber: Int = SubmissionsPages.DefaultPageNumber,
-  otherPageNumber: Int = SubmissionsPages.DefaultPageNumber
+  rejectedPageNumber: Int = SubmissionsPages.DefaultPageNumber,
+  cancelledPageNumber: Int = SubmissionsPages.DefaultPageNumber
 ) {
-  def changeRejectedPageNumber(newRejectedPageNumber: Int): SubmissionsPages = this.copy(rejectedPageNumber = newRejectedPageNumber)
-  def changeActionPageNumber(newActionPageNumber: Int): SubmissionsPages = this.copy(actionPageNumber = newActionPageNumber)
   def changeOtherPageNumber(newOtherPageNumber: Int): SubmissionsPages = this.copy(otherPageNumber = newOtherPageNumber)
+  def changeActionPageNumber(newActionPageNumber: Int): SubmissionsPages = this.copy(actionPageNumber = newActionPageNumber)
+  def changeRejectedPageNumber(newRejectedPageNumber: Int): SubmissionsPages = this.copy(rejectedPageNumber = newRejectedPageNumber)
+  def changeCancelledPageNumber(newCancelledPageNumber: Int): SubmissionsPages = this.copy(cancelledPageNumber = newCancelledPageNumber)
 }
 
 object SubmissionsPages {
@@ -33,16 +35,27 @@ object SubmissionsPages {
 
   implicit val binder: QueryStringBindable[SubmissionsPages] = new QueryStringBindable[SubmissionsPages] {
     private val intBinder = implicitly[QueryStringBindable[Int]]
-    private def queryParamRejected(key: String): String = key + "-rejected"
-    private def queryParamAction(key: String): String = key + "-action"
     private def queryParamOther(key: String): String = key + "-other"
+    private def queryParamAction(key: String): String = key + "-action"
+    private def queryParamRejected(key: String): String = key + "-rejected"
+    private def queryParamCancelled(key: String): String = key + "-cancelled"
 
     override def bind(key: String, params: Map[String, Seq[String]]): Option[Either[String, SubmissionsPages]] = {
-      val rejectedPageNumber = params.get(queryParamRejected(key)).flatMap(_.headOption).map(_.toInt).getOrElse(DefaultPageNumber)
-      val actionPageNumber = params.get(queryParamAction(key)).flatMap(_.headOption).map(_.toInt).getOrElse(DefaultPageNumber)
       val otherPageNumber = params.get(queryParamOther(key)).flatMap(_.headOption).map(_.toInt).getOrElse(DefaultPageNumber)
+      val actionPageNumber = params.get(queryParamAction(key)).flatMap(_.headOption).map(_.toInt).getOrElse(DefaultPageNumber)
+      val rejectedPageNumber = params.get(queryParamRejected(key)).flatMap(_.headOption).map(_.toInt).getOrElse(DefaultPageNumber)
+      val cancelledPageNumber = params.get(queryParamCancelled(key)).flatMap(_.headOption).map(_.toInt).getOrElse(DefaultPageNumber)
 
-      Some(Right(SubmissionsPages(rejectedPageNumber = rejectedPageNumber, actionPageNumber = actionPageNumber, otherPageNumber = otherPageNumber)))
+      Some(
+        Right(
+          SubmissionsPages(
+            otherPageNumber = otherPageNumber,
+            actionPageNumber = actionPageNumber,
+            rejectedPageNumber = rejectedPageNumber,
+            cancelledPageNumber = cancelledPageNumber
+          )
+        )
+      )
     }
 
     override def unbind(key: String, submissionsPages: SubmissionsPages): String = {
@@ -51,9 +64,10 @@ object SubmissionsPages {
         Some(number).filterNot(_ == 1).map(intBinder.unbind(queryParam(key), _))
 
       Seq(
-        mapPage(submissionsPages.rejectedPageNumber, queryParamRejected),
+        mapPage(submissionsPages.otherPageNumber, queryParamOther),
         mapPage(submissionsPages.actionPageNumber, queryParamAction),
-        mapPage(submissionsPages.otherPageNumber, queryParamOther)
+        mapPage(submissionsPages.rejectedPageNumber, queryParamRejected),
+        mapPage(submissionsPages.cancelledPageNumber, queryParamCancelled)
       ).flatten.mkString("&")
     }
   }
