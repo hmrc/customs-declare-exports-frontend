@@ -46,7 +46,7 @@ class SubmissionsController @Inject() (
     extends FrontendController(mcc) with I18nSupport {
 
   def amend(rejectedId: String): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
-    findOrCreateDraftForRejected(rejectedId, Redirect(SummaryController.displayPageOnAmend))
+    findOrCreateDraftForRejected(rejectedId, Redirect(SummaryController.displayPage(Mode.Normal)))
   }
 
   def amendErrors(rejectedId: String, redirectUrl: String, pattern: String, message: String): Action[AnyContent] =

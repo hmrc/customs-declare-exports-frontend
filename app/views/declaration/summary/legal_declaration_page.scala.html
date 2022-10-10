@@ -17,7 +17,8 @@
 @import config.AppConfig
 @import controllers.declaration.routes.SummaryController
 @import forms.declaration.LegalDeclaration
-@import models.Mode
+@import models.Mode.Normal
+@import models.declaration.submissions.EnhancedStatus.ERRORS
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF
 @import views.helpers.{BackButton, Title}
@@ -33,22 +34,22 @@
     saveAndContinue: saveAndContinue
 )
 
-@(legalDeclarationForm: Form[LegalDeclaration], mode: Mode)(implicit request: JourneyRequest[_], messages: Messages, appConfig: AppConfig)
+@(legalDeclarationForm: Form[LegalDeclaration])(implicit request: JourneyRequest[_], messages: Messages, appConfig: AppConfig)
 
 @headerMsgKey = @{
-    mode match {
-        case Mode.Amend => "declaration.summary.amend.legal-header"
+    request.cacheModel.parentDeclarationEnhancedStatus match {
+        case Some(ERRORS) => "declaration.summary.amend.legal-header"
         case _ => "declaration.summary.legal-header"
     }
 }
 
 @govukLayout(
     title = Title(headerMsgKey),
-    backButton = Some(BackButton(messages("site.back"), SummaryController.displayPage(mode))),
+    backButton = Some(BackButton(messages("site.back"), SummaryController.displayPage(Mode.Normal))),
     useCustomContentWidth = true
 ) {
 
-    @formHelper(action = SummaryController.submitDeclaration(mode), 'autoComplete -> "off") {
+    @formHelper(action = SummaryController.submitDeclaration(), 'autoComplete -> "off") {
         @errorSummary(legalDeclarationForm.errors)
 
         @pageTitle(messages(headerMsgKey))
