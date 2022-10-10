@@ -48,9 +48,9 @@
 
 @draftContinueLink = { @if(request.cacheModel.readyForSubmission != Some(true)) {
     @maybeContinuePlaceholder.map { continuePlaceholder =>
-        <br/>
         @govukButton(Button(
             content = Text(messages("site.continue")),
+            classes = "govuk-!-margin-top-4",
             href = Some(continuePlaceholder),
             attributes = Map("id" -> continuePlaceholder)
         ))
@@ -124,9 +124,8 @@
 
     @transport_section(Mode.Change, request.cacheModel)
 
-    @draftContinueLink
-
     <div class="govuk-button-group">
+        @draftContinueLink
         @continueLink
         @viewDeclarationErrors
     </div>
