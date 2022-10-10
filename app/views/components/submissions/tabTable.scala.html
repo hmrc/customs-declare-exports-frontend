@@ -48,7 +48,7 @@
 
 @if(tabSubmissions.nonEmpty) {
 
-    <p id="@{s"${id}-content-hint"}" class="govuk-body">@messages(s"submissions.${id}.content.hint")</p>
+    <p id="@{s"${id}-content-hint"}" class="govuk-body">@Html(messages(s"submissions.${id}.content.hint", <br />))</p>
 
     @govukTable(Table(
         attributes = Map("id" -> s"submissions-tab-$id"),

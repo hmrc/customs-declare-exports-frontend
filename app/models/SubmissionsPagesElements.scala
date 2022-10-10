@@ -33,17 +33,13 @@ object SubmissionsPagesElements {
     implicit paginationConfig: PaginationConfig
   ): SubmissionsPagesElements =
     SubmissionsPagesElements(
-      otherSubmissions =
-        paginateSubmissions(
-          excludeSubmissions(submissions, EnhancedStatus.rejectedStatuses ++ EnhancedStatus.cancelledStatuses ++ EnhancedStatus.actionRequiredStatuses),
-          submissionsPages.otherPageNumber
+      otherSubmissions = paginateSubmissions(
+        excludeSubmissions(submissions, EnhancedStatus.rejectedStatuses ++ EnhancedStatus.cancelledStatuses ++ EnhancedStatus.actionRequiredStatuses),
+        submissionsPages.otherPageNumber
       ),
       actionSubmissions =
         paginateSubmissions(filterSubmissions(submissions, EnhancedStatus.actionRequiredStatuses), submissionsPages.actionPageNumber),
-
-      rejectedSubmissions =
-        paginateSubmissions(filterSubmissions(submissions, EnhancedStatus.rejectedStatuses), submissionsPages.rejectedPageNumber),
-
+      rejectedSubmissions = paginateSubmissions(filterSubmissions(submissions, EnhancedStatus.rejectedStatuses), submissionsPages.rejectedPageNumber),
       cancelledSubmissions =
         paginateSubmissions(filterSubmissions(submissions, EnhancedStatus.cancelledStatuses), submissionsPages.cancelledPageNumber)
     )

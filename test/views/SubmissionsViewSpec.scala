@@ -23,7 +23,7 @@ import forms.Choice
 import forms.Choice.AllowedChoiceValues.Submissions
 import models.declaration.submissions.EnhancedStatus._
 import models.declaration.submissions.RequestType.{CancellationRequest, SubmissionRequest}
-import models.declaration.submissions.{Action, NotificationSummary, Submission}
+import models.declaration.submissions.{Action, Submission}
 import models.{Page, Paginated, SubmissionsPagesElements}
 import org.jsoup.nodes.Element
 import org.mockito.Mockito.when
@@ -37,7 +37,6 @@ import views.html.submissions
 import views.tags.ViewTest
 
 import java.time.{ZoneId, ZonedDateTime}
-import java.util.UUID
 
 @ViewTest
 class SubmissionsViewSpec extends UnitViewSpec with BeforeAndAfterEach with ExportsTestHelper with Stubs {
@@ -143,11 +142,12 @@ class SubmissionsViewSpec extends UnitViewSpec with BeforeAndAfterEach with Expo
 
     "display the expected tab hints" when {
       "there are submissions" in {
-        val view = createView(submissions(EXPIRED_NO_ARRIVAL), submissions(ADDITIONAL_DOCUMENTS_REQUIRED), submissions())
-        val testExpectedTabHint =
-          (tab: String) => view.getElementById(s"${tab}-content-hint").text == messages(s"submissions.${tab}.content.hint")
+        val view = createView(submissions(RECEIVED), submissions(ADDITIONAL_DOCUMENTS_REQUIRED), submissions(ERRORS), submissions(CANCELLED))
 
-        assert(List("rejected", "action", "other").forall(testExpectedTabHint))
+        view.getElementById("other-content-hint").text must include(messages(s"submissions.other.content.hint"))
+        view.getElementById("action-content-hint").text must include(Html(messages(s"submissions.action.content.hint", "<br />")).text)
+        view.getElementById("rejected-content-hint").text must include(Html(messages(s"submissions.rejected.content.hint", "<br />")).text)
+        view.getElementById("cancelled-content-hint").text must include(messages(s"submissions.cancelled.content.hint"))
       }
     }
 
