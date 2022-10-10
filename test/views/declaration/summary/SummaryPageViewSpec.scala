@@ -23,28 +23,48 @@ import models.ExportsDeclaration
 import org.jsoup.nodes.Document
 import org.junit.Assert.assertNull
 import play.api.data.FormError
+import play.api.mvc.Call
 import tools.Stubs
 import views.declaration.spec.UnitViewSpec
 
 trait SummaryPageViewSpec extends UnitViewSpec with Injector with Stubs {
 
   val dummyFormError = Seq(FormError("dummy", "error.unknown"))
+  private val backLink = Call("GET", "/backLink")
 
-  def commonBehaviour(document: Document): Unit =
-    "have common behaviours such as" when {
-      "have references section" in {
-        document.getElementById("declaration-references-summary").text mustNot be(empty)
+  def commonBehaviour(state: String, document: Document): Unit =
+    s"declaration in $state state" should {
+
+      "have common behaviours such as" when {
+        "have references section" in {
+          document.getElementById("declaration-references-summary").text mustNot be(empty)
+        }
+
+        "display Exit and come back later button" in {
+          document.getElementById("exit-and-complete-later").text mustBe messages(exitAndReturnCaption)
+        }
+
+        "should display correct title" in {
+          val correctTitle = state match {
+            case "errors" => "declaration.summary.amend-header"
+            case "ready"  => "declaration.summary.normal-header"
+            case "draft"  => "declaration.summary.saved-header"
+          }
+          document.getElementById("title").text() mustBe messages(correctTitle)
+        }
+
+        "should display correct back link" in {
+          val backButton = document.getElementById("back-link")
+
+          backButton.text() mustBe messages("site.backToDeclarations")
+          backButton must haveHref(backLink.url)
+        }
+
+        "warning text should be displayed" in {
+          val warningText = s"! ${messages("site.warning")} ${messages("declaration.summary.warning")}"
+          document.getElementsByClass("govuk-warning-text").text mustBe warningText
+        }
       }
-
-      "display Exit and come back later button" in {
-        document.getElementById("exit-and-complete-later").text mustBe messages(exitAndReturnCaption)
-      }
-    }
-
-  def displayWarning(document: Document): Unit =
-    "warning text should be displayed" in {
-      val warningText = s"! ${messages("site.warning")} ${messages("declaration.summary.warning")}"
-      document.getElementsByClass("govuk-warning-text").text mustBe warningText
     }
 
   def displayErrorSummary(document: Document): Unit =

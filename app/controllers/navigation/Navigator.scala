@@ -44,7 +44,6 @@ import forms.{Choice, DeclarationPage}
 import models.DeclarationType._
 import models.Mode.ErrorFix
 import models.declaration.ExportItem
-import models.declaration.submissions.EnhancedStatus.ERRORS
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
 import play.api.mvc.{AnyContent, Call, Result, Results}
@@ -353,14 +352,10 @@ class Navigator @Inject() (
   }
 
   def continueTo(mode: Mode, factory: Mode => Call)(implicit request: JourneyRequest[AnyContent]): Result =
-    (mode, FormAction.bindFromRequest, request.cacheModel.parentDeclarationEnhancedStatus) match {
-      case (ErrorFix, formAction, _) => handleErrorFixMode(factory, formAction)
-
-      case (Mode.Draft, SaveAndReturnToSummary, _)   => Results.Redirect(routes.SummaryController.displayPage(Mode.Draft))
-      case (_, SaveAndReturnToSummary, Some(ERRORS)) => Results.Redirect(routes.SummaryController.displayPageOnAmend)
-      case (Mode.Change, SaveAndReturnToSummary, _)  => Results.Redirect(routes.SummaryController.displayPage(Mode.Normal))
-
-      case _ => Results.Redirect(factory(mode))
+    (mode, FormAction.bindFromRequest) match {
+      case (ErrorFix, formAction)      => handleErrorFixMode(factory, formAction)
+      case (_, SaveAndReturnToSummary) => Results.Redirect(routes.SummaryController.displayPage(Mode.Normal))
+      case _                           => Results.Redirect(factory(mode))
     }
 
   private def handleErrorFixMode(factory: Mode => Call, formAction: FormAction)(implicit request: JourneyRequest[_]): Result =
