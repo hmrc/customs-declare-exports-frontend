@@ -46,8 +46,6 @@
     HeadCell( content = Text(messages(s"submissions.$key.header")) )
 }
 
-<h2 class="govuk-heading-l">@messages(s"submissions.${id}.content.title")</h2>
-
 @if(tabSubmissions.nonEmpty) {
 
     <p id="@{s"${id}-content-hint"}" class="govuk-body">@messages(s"submissions.${id}.content.hint")</p>

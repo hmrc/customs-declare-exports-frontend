@@ -32,7 +32,6 @@
 
 @this(
     govukLayout: gdsMainTemplate,
-    govukWarningText: GovukWarningText,
     pageTitle: pageTitle,
     govukTabs: GovukTabs,
     govukTable: GovukTable,
@@ -50,12 +49,6 @@
     @if(secureMessagingConfig.isSecureMessagingEnabled) {
         @navigationBanner(withLinkToSubmissions = false)
     }
-}
-
-@warningText = @{
-    val submissions = submissionsPagesElements.actionSubmissions.currentPageElements
-    if (!submissions.exists(hasQueryNotificationMessageStatus)) messages("submissions.hint.action.needed.generic")
-    else messages("submissions.hint.action.needed.queryNotificationMessage")
 }
 
 @submissionsPages = @{
@@ -78,14 +71,7 @@
 
             @pageTitle(messages("submissions.title"))
 
-            @if(submissionsPagesElements.actionSubmissions.elementsTotal > 0) {
-                @govukWarningText(WarningText(
-                    iconFallbackText = messages("site.warning"),
-                    content = Text(warningText)
-                ))
-            } else {
-                @paragraphBody(message = messages("submissions.hint.no.action.needed"), classes = "govuk-body govuk-warning-text")
-            }
+            @paragraphBody(message = messages("submissions.hint.no.action.needed"), classes = "govuk-body govuk-warning-text")
 
             @govukTabs(Tabs(
                 items = Seq(
