@@ -21,9 +21,10 @@ import models.declaration.submissions.EnhancedStatus.EnhancedStatus
 import models.declaration.submissions.{EnhancedStatus, Submission}
 
 case class SubmissionsPagesElements(
-  rejectedSubmissions: Paginated[Submission],
+  otherSubmissions: Paginated[Submission],
   actionSubmissions: Paginated[Submission],
-  otherSubmissions: Paginated[Submission]
+  rejectedSubmissions: Paginated[Submission],
+  cancelledSubmissions: Paginated[Submission]
 )
 
 object SubmissionsPagesElements {
@@ -32,13 +33,15 @@ object SubmissionsPagesElements {
     implicit paginationConfig: PaginationConfig
   ): SubmissionsPagesElements =
     SubmissionsPagesElements(
-      rejectedSubmissions = paginateSubmissions(filterSubmissions(submissions, EnhancedStatus.rejectedStatuses), submissionsPages.rejectedPageNumber),
+      otherSubmissions = paginateSubmissions(
+        excludeSubmissions(submissions, EnhancedStatus.rejectedStatuses ++ EnhancedStatus.cancelledStatuses ++ EnhancedStatus.actionRequiredStatuses),
+        submissionsPages.otherPageNumber
+      ),
       actionSubmissions =
         paginateSubmissions(filterSubmissions(submissions, EnhancedStatus.actionRequiredStatuses), submissionsPages.actionPageNumber),
-      otherSubmissions = paginateSubmissions(
-        excludeSubmissions(submissions, EnhancedStatus.rejectedStatuses ++ EnhancedStatus.actionRequiredStatuses),
-        submissionsPages.otherPageNumber
-      )
+      rejectedSubmissions = paginateSubmissions(filterSubmissions(submissions, EnhancedStatus.rejectedStatuses), submissionsPages.rejectedPageNumber),
+      cancelledSubmissions =
+        paginateSubmissions(filterSubmissions(submissions, EnhancedStatus.cancelledStatuses), submissionsPages.cancelledPageNumber)
     )
 
   private def filterSubmissions(submissions: Seq[Submission], enhancedStatuses: Set[EnhancedStatus]): Seq[Submission] =
