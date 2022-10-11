@@ -8,7 +8,6 @@ GET         /assets/*file                                  controllers.Assets.ve
 
 GET         /unauthorised                                  controllers.UnauthorisedController.onPageLoad(unauthorisedReason: models.UnauthorisedReason)
 GET         /you-cannot-use-service                        controllers.UnauthorisedController.onAgentKickOut(unauthorisedReason: models.UnauthorisedReason)
-GET         /cannot-export-goods                           controllers.CannotExportGoodsController.displayPage(cannotExportGoodsReason: models.CannotExportGoodsReason)
 
 # Unverified/Undeclared Email
 

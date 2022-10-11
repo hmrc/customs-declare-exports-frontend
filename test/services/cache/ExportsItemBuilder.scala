@@ -68,9 +68,6 @@ trait ExportsItemBuilder {
   def withAdditionalInformationData(informationData: AdditionalInformationData): ItemModifier =
     cache => cache.copy(additionalInformation = Some(informationData))
 
-  def withCatOrDogFurDetails(data: CatOrDogFurDetails): ItemModifier =
-    _.copy(catOrDogFurDetails = Some(data))
-
   def withCommodityDetails(data: CommodityDetails): ItemModifier =
     _.copy(commodityDetails = Some(data))
 
