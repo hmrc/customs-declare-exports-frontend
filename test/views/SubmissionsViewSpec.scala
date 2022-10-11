@@ -303,18 +303,6 @@ class SubmissionsViewSpec extends UnitViewSpec with BeforeAndAfterEach with Expo
             tableCell(tab("submitted", view))(index + 1, 0).text must include(submissions.ducr.get)
           }
 
-//          tableCell(tab("other", view))(1, 0).text must include("ducr_accepted_received")
-//          tableCell(tab("other", view))(2, 0).text must include("ducr_accepted_arrived_msg")
-//          tableCell(tab("other", view))(3, 0).text must include("ducr_accepted_msg")
-//          tableCell(tab("other", view))(4, 0).text must include("ducr_accepted_cleared")
-//          tableCell(tab("other", view))(5, 0).text must include("ducr_accepted_awaiting")
-//          tableCell(tab("other", view))(6, 0).text must include("ducr_accepted_exited")
-//          tableCell(tab("other", view))(7, 0).text must include("ducr_accepted_released")
-//          tableCell(tab("other", view))(8, 0).text must include("ducr_accepted_check")
-//          tableCell(tab("other", view))(9, 0).text must include("ducr_accepted_external")
-//          tableCell(tab("other", view))(10, 0).text must include("ducr_accepted_unknown")
-//          tableCell(tab("other", view))(11, 0).text must include("ducr_accepted_pending")
-//          tableCell(tab("other", view))(12, 0).text must include("ducr_accepted_amended")
         }
         "action needed" in {
 
