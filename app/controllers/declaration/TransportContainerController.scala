@@ -24,10 +24,8 @@ import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.ContainerAdd.form
 import forms.declaration.{ContainerAdd, ContainerFirst}
-import models.Mode.{Amend, Change, ErrorFix, Normal}
 import models.declaration.Container
 import models.declaration.Container.maxNumberOfItems
-import models.declaration.submissions.EnhancedStatus.{ERRORS, EnhancedStatus}
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
 import play.api.data.{Form, FormError}
@@ -61,7 +59,6 @@ class TransportContainerController @Inject() (
 
   def submitAddContainer(mode: Mode): Action[AnyContent] =
     (authenticate andThen journeyType).async { implicit request =>
-      val parentDeclarationEnhancedStatus = request.cacheModel.parentDeclarationEnhancedStatus
       if (request.cacheModel.hasContainers) {
         val boundForm = form.bindFromRequest
         saveAdditionalContainer(mode, boundForm, maxNumberOfItems, request.cacheModel.containers)
@@ -69,7 +66,7 @@ class TransportContainerController @Inject() (
         ContainerFirst.form.bindFromRequest
           .fold(
             formWithErrors => Future.successful(BadRequest(addFirstPage(mode, formWithErrors))),
-            containerId => saveFirstContainer(mode, containerId.id, parentDeclarationEnhancedStatus)
+            containerId => saveFirstContainer(mode, containerId.id)
           )
     }
 
@@ -83,13 +80,12 @@ class TransportContainerController @Inject() (
 
   def submitSummaryAction(mode: Mode): Action[AnyContent] =
     (authenticate andThen journeyType).async { implicit request =>
-      val parentDeclarationEnhancedStatus = request.cacheModel.parentDeclarationEnhancedStatus
       FormAction.bindFromRequest match {
         case Remove(values) =>
           val result = navigator.continueTo(mode, TransportContainerController.displayContainerRemove(_, containerId(values)))
           Future.successful(result)
 
-        case _ => addContainerAnswer(mode, parentDeclarationEnhancedStatus)
+        case _ => addContainerAnswer(mode)
       }
     }
 
@@ -104,14 +100,12 @@ class TransportContainerController @Inject() (
     removeContainerAnswer(mode, containerId)
   }
 
-  private def saveFirstContainer(mode: Mode, containerId: Option[String], parentDeclarationEnhancedStatus: Option[EnhancedStatus])(
-    implicit request: JourneyRequest[AnyContent]
-  ): Future[Result] =
+  private def saveFirstContainer(mode: Mode, containerId: Option[String])(implicit request: JourneyRequest[AnyContent]): Future[Result] =
     containerId match {
       case Some(id) => updateCache(Seq(Container(id, Seq.empty))).map(_ => redirectAfterAdd(mode, id))
       case None =>
         updateDeclarationFromRequest(_.updateContainers(Seq.empty).updateReadyForSubmission(true)) map { _ =>
-          navigator.continueTo(mode, summaryControllerRoute(mode, parentDeclarationEnhancedStatus))
+          navigator.continueTo(mode, routes.SummaryController.displayPage)
         }
     }
 
@@ -149,9 +143,7 @@ class TransportContainerController @Inject() (
   private def limitOfElems[A](limit: Int, cachedData: Seq[Container]): Seq[FormError] =
     if (cachedData.length >= limit) Seq(FormError("", "supplementary.limit")) else Seq.empty
 
-  private def addContainerAnswer(mode: Mode, parentDeclarationEnhancedStatus: Option[EnhancedStatus])(
-    implicit request: JourneyRequest[AnyContent]
-  ): Future[Result] =
+  private def addContainerAnswer(mode: Mode)(implicit request: JourneyRequest[AnyContent]): Future[Result] =
     addAnotherContainerYesNoForm.bindFromRequest
       .fold(
         formWithErrors => Future.successful(BadRequest(summaryPage(mode, formWithErrors, request.cacheModel.containers))),
@@ -161,7 +153,7 @@ class TransportContainerController @Inject() (
 
           case YesNoAnswers.no =>
             updateDeclarationFromRequest(_.updateReadyForSubmission(true)) map { _ =>
-              navigator.continueTo(mode, summaryControllerRoute(mode, parentDeclarationEnhancedStatus))
+              navigator.continueTo(mode, routes.SummaryController.displayPage)
             }
         }
       )
@@ -188,9 +180,4 @@ class TransportContainerController @Inject() (
 
   private def redirectAfterAdd(mode: Mode, containerId: String)(implicit request: JourneyRequest[AnyContent]): Result =
     navigator.continueTo(mode, routes.SealController.displaySealSummary(_, containerId))
-
-  private def summaryControllerRoute(mode: Mode, parentDeclarationEnhancedStatus: Option[EnhancedStatus]): Mode => Call =
-    if (mode == Amend || mode == ErrorFix || parentDeclarationEnhancedStatus.contains(ERRORS)) _ => routes.SummaryController.displayPageOnAmend
-    else if (mode == Change) _ => routes.SummaryController.displayPage(Normal)
-    else routes.SummaryController.displayPage
 }

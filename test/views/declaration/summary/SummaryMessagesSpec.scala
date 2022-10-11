@@ -35,14 +35,14 @@ class SummaryMessagesSpec extends UnitViewSpec {
     "have defined draft messages" in {
 
       messages must haveTranslationFor("declaration.summary.draft.ducr")
-      messages must haveTranslationFor("declaration.summary.draft.createdDate")
-      messages must haveTranslationFor("declaration.summary.draft.expireDate")
       messages must haveTranslationFor("declaration.summary.draft")
     }
 
     "have defined references messages" in {
 
       messages must haveTranslationFor("declaration.summary.references")
+      messages must haveTranslationFor("declaration.summary.references.createdDate")
+      messages must haveTranslationFor("declaration.summary.references.expireDate")
       messages must haveTranslationFor("declaration.summary.references.type")
       messages must haveTranslationFor("declaration.summary.references.location")
       messages must haveTranslationFor("declaration.summary.references.additionalType")

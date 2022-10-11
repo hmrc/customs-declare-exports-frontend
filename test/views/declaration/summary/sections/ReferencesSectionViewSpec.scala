@@ -28,20 +28,29 @@ import services.cache.ExportsTestHelper
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.summary.sections.references_section
 
+import java.time.LocalDateTime
+
 class ReferencesSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injector {
+
+  val localDateTime = LocalDateTime.of(2019, 11, 28, 14, 48)
 
   val data = aDeclaration(
     withType(DeclarationType.STANDARD),
     withAdditionalDeclarationType(AdditionalDeclarationType.STANDARD_FRONTIER),
     withConsignmentReferences(ducr = "DUCR", lrn = "LRN"),
     withLinkDucrToMucr(),
-    withMucr()
+    withMucr(),
+    withCreatedDate(localDateTime),
+    withUpdateDate(localDateTime)
   )
 
   val section = instanceOf[references_section]
 
   val view = section(Change, data)(messages)
   val viewNoAnswers = section(Change, aDeclaration(withType(DeclarationType.STANDARD)))(messages)
+
+  val expectedCreatedTime = "28 November 2019 at 2:48pm"
+  val expectedUpdatedTime = "28 December 2019 at 2:48pm"
 
   "References section" should {
 
@@ -61,6 +70,18 @@ class ReferencesSectionViewSpec extends UnitViewSpec with ExportsTestHelper with
       "a declaration has 'parentDeclarationId' undefined" in {
         view.getElementsByClass("govuk-inset-text").size mustBe 0
       }
+    }
+
+    "have Date Created" in {
+      val row = view.getElementsByClass("createdDate-row")
+      row must haveSummaryKey(messages("declaration.summary.references.createdDate"))
+      row must haveSummaryValue(expectedCreatedTime)
+    }
+
+    "have Expiry Date" in {
+      val row = view.getElementsByClass("expiryDate-row")
+      row must haveSummaryKey(messages("declaration.summary.references.expireDate"))
+      row must haveSummaryValue(expectedUpdatedTime)
     }
 
     "have capitalized declaration type with change button" in {

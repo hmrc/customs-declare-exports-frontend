@@ -19,18 +19,15 @@ package views.declaration.summary
 import controllers.routes.RejectedNotificationsController
 import models.DeclarationStatus.{COMPLETE, DRAFT, INITIAL}
 import models.ExportsDeclaration
+import models.declaration.submissions.EnhancedStatus.ERRORS
 import org.jsoup.nodes.Document
 import play.api.mvc.Call
 import views.html.declaration.summary.normal_summary_page
-import views.html.declaration.summary.sections._
 
 class SummaryPageViewNormalSpec extends SummaryPageViewSpec {
 
-  val backLink = Call("GET", "/backLink")
-
-  val draftInfoPage = instanceOf[draft_info_section]
-
-  val normal_summaryPage = instanceOf[normal_summary_page]
+  private val backLink = Call("GET", "/backLink")
+  private val normal_summaryPage = instanceOf[normal_summary_page]
 
   def view(declaration: ExportsDeclaration = aDeclaration()): Document =
     normal_summaryPage(backLink)(journeyRequest(declaration), messages, minimalAppConfig)
@@ -38,26 +35,26 @@ class SummaryPageViewNormalSpec extends SummaryPageViewSpec {
   def viewWithError(declaration: ExportsDeclaration = aDeclaration()): Document =
     normal_summaryPage(backLink, dummyFormError)(journeyRequest(declaration), messages, minimalAppConfig)
 
-  "Summary page" should {
+  private val declarationInDraft = aDeclarationAfter(aDeclaration().updateReadyForSubmission(false))
+  private val declarationReadyForSubmission = aDeclarationAfter(aDeclaration().updateReadyForSubmission(true))
+  private val declarationWithErrors = aDeclaration(withParentDeclarationEnhancedStatus(ERRORS))
+  private val documentWithFormError = viewWithError(aDeclaration())
 
-    val document = view(aDeclaration())
-    val documentWithError = viewWithError(aDeclaration())
+  private val allDeclarationStates = List(declarationInDraft, declarationReadyForSubmission, declarationWithErrors)
 
-    behave like commonBehaviour(document)
+  "Summary page" when {
 
     behave like sectionsVisibility(view)
+    behave like displayErrorSummary(documentWithFormError)
 
-    behave like displayErrorSummary(documentWithError)
+    allDeclarationStates.foreach { declaration =>
+      val document = view(declaration)
 
-    "should display correct title" in {
-      document.getElementById("title").text() mustBe messages("declaration.summary.normal-header")
-    }
-
-    "should display correct back link" in {
-      val backButton = document.getElementById("back-link")
-
-      backButton.text() mustBe messages("site.back")
-      backButton must haveHref(backLink.url)
+      (declaration.readyForSubmission, declaration.parentDeclarationEnhancedStatus) match {
+        case (_, Some(ERRORS)) => behave like commonBehaviour("errors", document)
+        case (Some(true), _)   => behave like commonBehaviour("ready", document)
+        case _                 => behave like commonBehaviour("draft", document)
+      }
     }
 
     "not display a 'View Declaration Errors' button" when {
@@ -86,9 +83,9 @@ class SummaryPageViewNormalSpec extends SummaryPageViewSpec {
 
     "display a 'View Declaration Errors' button" when {
       "the declaration is in 'DRAFT' status and" when {
-        "declaration's 'parenDeclarationId' is defined" in {
+        "declaration's 'parentDeclarationId' is defined" in {
           val parentId = "parentId"
-          val document = view(aDeclaration(withStatus(DRAFT), withParentDeclarationId(parentId)))
+          val document = view(aDeclaration(withParentDeclarationEnhancedStatus(ERRORS), withParentDeclarationId(parentId)))
           val buttons = document.getElementsByClass("govuk-button--secondary")
           buttons.size mustBe 1
 

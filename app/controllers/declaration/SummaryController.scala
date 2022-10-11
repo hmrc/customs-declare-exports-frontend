@@ -19,12 +19,11 @@ package controllers.declaration
 import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction, VerifiedEmailAction}
 import controllers.declaration.SummaryController.{continuePlaceholder, lrnDuplicateError}
-import controllers.declaration.routes.TransportContainerController
-import controllers.routes.SavedDeclarationsController
+import controllers.routes.{SavedDeclarationsController, SubmissionsController}
 import forms.declaration.LegalDeclaration
 import forms.{Lrn, LrnValidator}
 import handlers.ErrorHandler
-import models.Mode.Amend
+import models.declaration.submissions.EnhancedStatus.ERRORS
 import models.declaration.submissions.Submission
 import models.requests.ExportsSessionKeys._
 import models.requests.JourneyRequest
@@ -53,8 +52,6 @@ class SummaryController @Inject() (
   submissionService: SubmissionService,
   mcc: MessagesControllerComponents,
   normalSummaryPage: normal_summary_page,
-  amendSummaryPage: amend_summary_page,
-  draftSummaryPage: draft_summary_page,
   summaryPageNoData: summary_page_no_data,
   legalDeclarationPage: legal_declaration_page,
   lrnValidator: LrnValidator
@@ -67,20 +64,16 @@ class SummaryController @Inject() (
     displayPageOnMandatoryData(mode)
   }
 
-  val displayPageOnAmend: Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType).async { implicit request =>
-    displayPageOnMandatoryData(Amend)
-  }
-
   def displayDeclarationPage(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType) { implicit request =>
     mode match {
-      case Mode.Draft | Mode.Normal | Mode.Amend => Ok(legalDeclarationPage(form, mode))
+      case Mode.Draft | Mode.Normal | Mode.Amend => Ok(legalDeclarationPage(form))
       case _                                     => handleError("Invalid mode on summary page")
     }
   }
 
-  def submitDeclaration(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType).async { implicit request =>
+  def submitDeclaration(): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType).async { implicit request =>
     form.bindFromRequest.fold(
-      (formWithErrors: Form[LegalDeclaration]) => Future.successful(BadRequest(legalDeclarationPage(formWithErrors, mode))),
+      (formWithErrors: Form[LegalDeclaration]) => Future.successful(BadRequest(legalDeclarationPage(formWithErrors))),
       legalDeclaration =>
         submissionService.submit(request.eori, request.cacheModel, legalDeclaration).map {
           case Some(submission) => Redirect(routes.ConfirmationController.displayHoldingPage).withSession(session(submission))
@@ -90,43 +83,28 @@ class SummaryController @Inject() (
   }
 
   def displayPageOnMandatoryData(mode: Mode)(implicit request: JourneyRequest[_]): Future[Result] =
-    if (containsMandatoryData(request.cacheModel, mode)) displaySummaryPage(mode)
+    if (containsMandatoryData(request.cacheModel, mode)) displaySummaryPage
     else Future.successful(Ok(summaryPageNoData()))
 
-  private def displaySummaryPage(mode: Mode)(implicit request: JourneyRequest[_]): Future[Result] = {
+  private def displaySummaryPage(implicit request: JourneyRequest[_]): Future[Result] = {
 
-    val readyForSubmission = request.cacheModel.readyForSubmission.contains(true)
     val maybeLrn = request.cacheModel.lrn.map(Lrn(_))
+    val backlink =
+      if (request.cacheModel.parentDeclarationEnhancedStatus.contains(ERRORS)) SubmissionsController.displayListOfSubmissions()
+      else SavedDeclarationsController.displayDeclarations()
+    val duplicateLrnError = Seq(lrnDuplicateError)
 
     isLrnADuplicate(maybeLrn).map { lrnIsDuplicate =>
-      (mode, lrnIsDuplicate) match {
-        case (Mode.Normal, true) if readyForSubmission =>
-          Ok(normalSummaryPage(TransportContainerController.displayContainerSummary(Mode.Normal), Seq(lrnDuplicateError)))
-        case (Mode.Normal, _) if readyForSubmission =>
-          Ok(normalSummaryPage(TransportContainerController.displayContainerSummary(Mode.Normal)))
-        case (Mode.Normal, _) =>
-          Ok(draftSummaryPage(TransportContainerController.displayContainerSummary(Mode.Normal)))
-        case (Mode.Draft, true) if readyForSubmission =>
-          Ok(normalSummaryPage(SavedDeclarationsController.displayDeclarations(), Seq(lrnDuplicateError)))
-        case (Mode.Draft, _) if readyForSubmission =>
-          Ok(normalSummaryPage(SavedDeclarationsController.displayDeclarations()))
-        case (Mode.Draft, _) =>
-          Ok(amendDraftSummaryPage)
-        case (Mode.Amend, true) =>
-          Ok(amendSummaryPage(Seq(lrnDuplicateError)))
-        case (Mode.Amend, _) =>
-          Ok(amendSummaryPage())
-        case _ =>
-          handleError("Invalid mode on summary page")
-      }
+      if (lrnIsDuplicate) Ok(normalSummaryPage(backlink, duplicateLrnError))
+      else Ok(amendDraftSummaryPage(backlink))
     }
   }
 
-  private val hrefSourcePattern = """href="/customs-declare-exports/declaration/.+\?mode=Draft"""".r
+  private val hrefSourcePattern = """href="/customs-declare-exports/declaration/.+\?mode=Change"""".r
   private val hrefDestPattern = s"""href="$continuePlaceholder""""
 
-  private def amendDraftSummaryPage(implicit request: JourneyRequest[_]): Html = {
-    val page = draftSummaryPage(SavedDeclarationsController.displayDeclarations(), Some(continuePlaceholder)).toString
+  private def amendDraftSummaryPage(backlink: Call)(implicit request: JourneyRequest[_]): Html = {
+    val page = normalSummaryPage(backlink, Seq.empty, Some(continuePlaceholder)).toString
     hrefSourcePattern.findAllIn(page).toList.lastOption.fold(Html(page)) { lastChangeLink =>
       Html(page.replaceFirst(hrefDestPattern, lastChangeLink))
     }

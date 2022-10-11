@@ -1852,12 +1852,12 @@ declaration.summary.noData.header.secondary = Please, go back and provide necess
 declaration.summary.noData.button = Make an export declaration
 declaration.summary.accepted.mrn = MRN
 declaration.summary.draft.ducr = DUCR
-declaration.summary.draft.createdDate = Date created
-declaration.summary.draft.expireDate = Expiry date
 declaration.summary.draft = Review the information you entered so far.
 declaration.summary.unknown = Unknown
 
 declaration.summary.references = This declaration
+declaration.summary.references.createdDate = Date created
+declaration.summary.references.expireDate = Expiry date
 declaration.summary.references.type = Declaration type
 declaration.summary.references.type.change = Change declaration type
 declaration.summary.references.location = Goods are being sent out of EU

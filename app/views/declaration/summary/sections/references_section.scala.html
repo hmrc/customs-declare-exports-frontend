@@ -20,9 +20,11 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 @import views.components.gds.ActionItemBuilder._
+@import views.helpers.ViewDates
+@import config.AppConfig
 @import views.html.components.gds.{exportsInsetText, link, linkContent, paragraphBody, summary_list}
 
-@this(summaryList: summary_list, insetText: exportsInsetText, link: link, linkContent: linkContent, body: paragraphBody)
+@this(summaryList: summary_list, insetText: exportsInsetText, link: link, linkContent: linkContent, body: paragraphBody, appConfig: AppConfig)
 
 @(mode: Mode, declaration: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages)
 
@@ -48,6 +50,31 @@
 @body(messages("declaration.summary.amend.body"), classes = "govuk-body govuk-!-display-none-print")
 
 @summaryList("declaration-references-summary", None, Seq(
+        Some(SummaryListRow(
+            classes = "createdDate-row",
+            key = Key(
+                content = Text(messages("declaration.summary.references.createdDate"))
+            ),
+            value = Value(
+                content = Text(ViewDates.formatDateAtTime(declaration.createdDateTime))
+            ),
+            actions = Some(Actions(
+
+            ))
+        )),
+
+        Some(SummaryListRow(
+            classes = "expiryDate-row",
+            key = Key(
+                content = Text(messages("declaration.summary.references.expireDate"))
+            ),
+            value = Value(
+                content = Text(ViewDates.formatDateAtTime(declaration.updatedDateTime.plusSeconds(appConfig.draftTimeToLive.toSeconds)))
+            ),
+            actions = Some(Actions(
+
+            ))
+        )),
         Some(SummaryListRow(
             classes = "declarationType-row",
             key = Key(

@@ -19,6 +19,7 @@
 @import controllers.routes.RejectedNotificationsController
 @import models.DeclarationStatus.DRAFT
 @import models.Mode
+@import models.declaration.submissions.EnhancedStatus.ERRORS
 @import models.requests.JourneyRequest
 @import views.helpers.{BackButton, Title}
 @import views.html.components.gds._
@@ -28,8 +29,8 @@
 @this(
     govukLayout: gdsMainTemplate,
     govukWarningText: GovukWarningText,
+    govukButton: GovukButton,
     pageTitle: pageTitle,
-    draftInfoSection: draft_info_section,
     references_section: references_section,
     countries_section: countries_section,
     parties_section: parties_section,
@@ -39,36 +40,66 @@
     transport_section: transport_section,
     errorSummary: errorSummary,
     linkButton: linkButton,
-    exitAndCompleteLater: exitAndCompleteLater
+    exitAndCompleteLater: exitAndCompleteLater,
+    paragraphBody: paragraphBody
 )
 
-@(backLink: Call, errors: Seq[FormError] = Seq.empty[FormError])(implicit request: JourneyRequest[_], messages: Messages, appConfig: AppConfig)
+@(backLink: Call, errors: Seq[FormError] = Seq.empty[FormError], maybeContinuePlaceholder: Option[String] = None)(implicit request: JourneyRequest[_], messages: Messages, appConfig: AppConfig)
+
+@draftContinueLink = { @if(request.cacheModel.readyForSubmission != Some(true)) {
+    @maybeContinuePlaceholder.map { continuePlaceholder =>
+        @govukButton(Button(
+            content = Text(messages("site.continue")),
+            classes = "govuk-!-margin-top-4",
+            href = Some(continuePlaceholder),
+            attributes = Map("id" -> continuePlaceholder)
+        ))
+    }
+    }
+}
 
 @continueLink = @{
-  if (errors.isEmpty) linkButton("site.confirm_and_continue", SummaryController.displayDeclarationPage(Mode.Normal))
-  else linkButton("site.confirm_and_continue", SummaryController.displayPage(Mode.Normal))
+    request.cacheModel.readyForSubmission match {
+        case Some(true) if errors.isEmpty => linkButton("site.confirm_and_continue", SummaryController.displayDeclarationPage(Mode.Normal))
+        case Some(true) => linkButton("site.confirm_and_continue", SummaryController.displayPage(Mode.Normal))
+        case _ =>
+    }
 }
 
 @viewDeclarationErrors = @{
-  val declaration = request.cacheModel
-  declaration.parentDeclarationId.map { parentId =>
-    if (declaration.status == DRAFT)
-      linkButton(
-        "site.view.declaration.errors",
-        RejectedNotificationsController.displayPage(parentId),
-        "govuk-button govuk-button--secondary"
-      )
-  }
+    val declaration = request.cacheModel
+    if(declaration.parentDeclarationEnhancedStatus == Some(ERRORS)) {
+        declaration.parentDeclarationId.map { parentId =>
+          linkButton(
+            "site.view.declaration.errors",
+            RejectedNotificationsController.displayPage(parentId),
+            "govuk-button govuk-button--secondary"
+          )
+        }
+    }
+}
+
+@titleKey = @{
+    if(request.cacheModel.parentDeclarationEnhancedStatus == Some(ERRORS))
+        "declaration.summary.amend-header"
+    else if(request.cacheModel.readyForSubmission == Some(true))
+        "declaration.summary.normal-header"
+    else "declaration.summary.saved-header"
+}
+
+@draftBodyText = @{
+    if(request.cacheModel.readyForSubmission != Some(true))
+        paragraphBody(messages("declaration.summary.draft.body"))
 }
 
 @govukLayout(
-    title = Title("declaration.summary.normal-header"),
-    backButton = Some(BackButton(messages("site.back"), backLink)),
+    title = Title(titleKey),
+    backButton = Some(BackButton(messages("site.backToDeclarations"), backLink)),
     useCustomContentWidth = true,
     showDeclarationSummaryLink = false
 ) {
 
-    @pageTitle(messages("declaration.summary.normal-header"))
+    @pageTitle(messages(titleKey))
 
     @errorSummary(errors)
 
@@ -77,7 +108,7 @@
         content = Text(messages("declaration.summary.warning"))
     ))
 
-    @draftInfoSection(request.cacheModel)
+    @draftBodyText
 
     @references_section(Mode.Change, request.cacheModel)
 
@@ -94,6 +125,7 @@
     @transport_section(Mode.Change, request.cacheModel)
 
     <div class="govuk-button-group">
+        @draftContinueLink
         @continueLink
         @viewDeclarationErrors
     </div>

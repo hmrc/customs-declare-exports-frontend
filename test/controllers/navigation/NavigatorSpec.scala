@@ -23,7 +23,6 @@ import controllers.helpers._
 import controllers.routes.RejectedNotificationsController
 import forms.declaration.AdditionalInformationSummary
 import mock.FeatureFlagMocks
-import models.declaration.submissions.EnhancedStatus.ERRORS
 import models.requests.{ExportsSessionKeys, JourneyRequest}
 import models.responses.FlashKeys
 import models.{DeclarationType, ExportsDeclaration, Mode, SignedInUser}
@@ -80,7 +79,7 @@ class NavigatorSpec
   "Continue To" should {
     val updatedDate = LocalDate.of(2020, 1, 1)
 
-    implicit val declaration = aDeclaration(withUpdateDate(updatedDate))
+    implicit val declaration: ExportsDeclaration = aDeclaration(withUpdateDate(updatedDate))
 
     "go to the URL provided" when {
       "Save And Continue" in {
@@ -140,36 +139,12 @@ class NavigatorSpec
       }
     }
 
-    "Go to the summary page when Save and return to summary form action" when {
+    "Go to the summary page when Save and return to summary form action" in {
+      val result = navigator.continueTo(mode, call)(decoratedRequest(requestWithFormAction(Some(SaveAndReturnToSummary))))
 
-      "user is in draft mode" in {
-        val mode = Mode.Draft
-        val result = navigator.continueTo(mode, call)(decoratedRequest(requestWithFormAction(Some(SaveAndReturnToSummary))))
-
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(SummaryController.displayPage(mode).url)
-        verifyNoInteractions(auditService)
-      }
-
-      "user is on a declaration whose parent declaration has errors" in {
-        val mode = Mode.Normal
-        val result = navigator.continueTo(mode, call)(
-          decoratedRequest(requestWithFormAction(Some(SaveAndReturnToSummary)))(aDeclaration(withParentDeclarationEnhancedStatus(ERRORS)))
-        )
-
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(SummaryController.displayPageOnAmend.url)
-        verifyNoInteractions(auditService)
-      }
-
-      "user is in change mode" in {
-        val mode = Mode.Change
-        val result = navigator.continueTo(mode, call)(decoratedRequest(requestWithFormAction(Some(SaveAndReturnToSummary))))
-
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(SummaryController.displayPage(Mode.Normal).url)
-        verifyNoInteractions(auditService)
-      }
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(SummaryController.displayPage(mode).url)
+      verifyNoInteractions(auditService)
     }
   }
 
