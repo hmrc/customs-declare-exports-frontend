@@ -75,10 +75,10 @@
 
             @govukTabs(Tabs(
                 items = Seq(
-                    SubmissionTabItem("other").tabItem(
+                    SubmissionTabItem("submitted").tabItem(
                         content = HtmlContent(
                             tabTable(
-                                id = "other",
+                                id = "submitted",
                                 submissionsPagesElements.otherSubmissions,
                                 page => controllers.routes.SubmissionsController.displayListOfSubmissions(
                                     submissionsPages.changeOtherPageNumber(page)

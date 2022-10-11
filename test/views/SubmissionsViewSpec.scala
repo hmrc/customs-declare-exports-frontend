@@ -137,14 +137,14 @@ class SubmissionsViewSpec extends UnitViewSpec with BeforeAndAfterEach with Expo
       val testExpectedTabTitleAsLink =
         (tab: String) => view.getElementsByAttributeValue("href", s"#${tab}-submissions").text == messages(s"submissions.${tab}.tab.title")
 
-      assert(List("rejected", "action", "other").forall(testExpectedTabTitleAsLink))
+      assert(List("submitted", "action", "rejected", "cancelled").forall(testExpectedTabTitleAsLink))
     }
 
     "display the expected tab hints" when {
       "there are submissions" in {
         val view = createView(submissions(RECEIVED), submissions(ADDITIONAL_DOCUMENTS_REQUIRED), submissions(ERRORS), submissions(CANCELLED))
 
-        view.getElementById("other-content-hint").text must include(messages(s"submissions.other.content.hint"))
+        view.getElementById("submitted-content-hint").text must include(messages(s"submissions.submitted.content.hint"))
         view.getElementById("action-content-hint").text must include(Html(messages(s"submissions.action.content.hint", "<br />")).text)
         view.getElementById("rejected-content-hint").text must include(Html(messages(s"submissions.rejected.content.hint", "<br />")).text)
         view.getElementById("cancelled-content-hint").text must include(messages(s"submissions.cancelled.content.hint"))
@@ -153,13 +153,13 @@ class SubmissionsViewSpec extends UnitViewSpec with BeforeAndAfterEach with Expo
 
     "display one pagination summary" when {
       "there are submissions" in {
-        val view = createView(submissions(EXPIRED_NO_ARRIVAL), submissions(ADDITIONAL_DOCUMENTS_REQUIRED), submissions())
+        val view = createView(submissions(RECEIVED), submissions(ADDITIONAL_DOCUMENTS_REQUIRED), submissions(ERRORS), submissions(CANCELLED))
         val paginationText = s"${messages("site.pagination.showing")} 1 ${messages("submissions.pagination.singular")}"
 
         val testPaginationSummary =
           (tab: String) => paginationText == view.getElementById(s"${tab}-submissions").getElementsByClass("ceds-pagination__summary").text
 
-        assert(List("rejected", "action", "other").forall(testPaginationSummary))
+        assert(List("submitted", "action", "rejected", "cancelled").forall(testPaginationSummary))
       }
     }
 
@@ -171,7 +171,7 @@ class SubmissionsViewSpec extends UnitViewSpec with BeforeAndAfterEach with Expo
         val testNoPaginationSummary =
           (tab: String) => noDeclarations == view.getElementById(s"${tab}-submissions").getElementsByClass("ceds-pagination__summary").text
 
-        assert(List("rejected", "action", "other").forall(testNoPaginationSummary))
+        assert(List("submitted", "action", "rejected", "cancelled").forall(testNoPaginationSummary))
       }
     }
 
@@ -188,7 +188,7 @@ class SubmissionsViewSpec extends UnitViewSpec with BeforeAndAfterEach with Expo
 
       "all fields are populated with timestamp" when {
         "before BST" in {
-          val view = tab("other", createView(otherSubmissions = submissions()))
+          val view = tab("submitted", createView(otherSubmissions = submissions()))
 
           val mrnLink = tableCell(view)(1, 0)
           mrnLink must containText("mrn")
@@ -217,7 +217,7 @@ class SubmissionsViewSpec extends UnitViewSpec with BeforeAndAfterEach with Expo
             latestEnhancedStatus = Some(GOODS_ARRIVED),
             actions = List(bstActionSubmission, actionCancellation)
           )
-          val view = tab("other", createView(otherSubmissions = submissions(List(bstSubmission))))
+          val view = tab("submitted", createView(otherSubmissions = submissions(List(bstSubmission))))
 
           val mrnLink = tableCell(view)(1, 0)
           mrnLink must containText("mrn")
@@ -233,7 +233,7 @@ class SubmissionsViewSpec extends UnitViewSpec with BeforeAndAfterEach with Expo
 
       "optional fields are unpopulated" in {
         val submissionWithOptionalFieldsEmpty = submissionWithStatus().copy(ducr = None, mrn = None)
-        val view = tab("other", createView(otherSubmissions = submissions(List(submissionWithOptionalFieldsEmpty))))
+        val view = tab("submitted", createView(otherSubmissions = submissions(List(submissionWithOptionalFieldsEmpty))))
 
         tableCell(view)(1, 1).text mustBe empty
         tableCell(view)(1, 2).text mustBe "lrn"
@@ -245,13 +245,13 @@ class SubmissionsViewSpec extends UnitViewSpec with BeforeAndAfterEach with Expo
 
       "optional mrn field is populated with default" in {
         val submissionWithOptionalFieldsEmpty = submissionWithStatus().copy(ducr = None, mrn = None)
-        val view = tab("other", createView(otherSubmissions = submissions(List(submissionWithOptionalFieldsEmpty))))
+        val view = tab("submitted", createView(otherSubmissions = submissions(List(submissionWithOptionalFieldsEmpty))))
         tableCell(view)(1, 0) must containMessage("submissions.declarationDetails.mrn.pending")
       }
 
       "submission status is 'pending' due to missing notification" in {
         val submission = submissionWithStatus().copy(latestEnhancedStatus = None)
-        val view = tab("other", createView(otherSubmissions = submissions(List(submission))))
+        val view = tab("submitted", createView(otherSubmissions = submissions(List(submission))))
         tableCell(view)(1, 4).text mustBe "Pending"
       }
 
@@ -265,7 +265,7 @@ class SubmissionsViewSpec extends UnitViewSpec with BeforeAndAfterEach with Expo
 
       "submission date is unknown due to missing submit action" in {
         val submissionWithMissingSubmitAction = submissionWithStatus().copy(actions = List(actionCancellation))
-        val view = tab("other", createView(otherSubmissions = submissions(List(submissionWithMissingSubmitAction))))
+        val view = tab("submitted", createView(otherSubmissions = submissions(List(submissionWithMissingSubmitAction))))
         tableCell(view)(1, 3).text mustBe empty
       }
 
@@ -299,18 +299,22 @@ class SubmissionsViewSpec extends UnitViewSpec with BeforeAndAfterEach with Expo
           tab("rejected", view).text must include(messages("submissions.empty.tab"))
           tab("cancelled", view).text must include(messages("submissions.empty.tab"))
 
-          tableCell(tab("other", view))(1, 0).text must include("ducr_accepted_received")
-          tableCell(tab("other", view))(2, 0).text must include("ducr_accepted_arrived_msg")
-          tableCell(tab("other", view))(3, 0).text must include("ducr_accepted_msg")
-          tableCell(tab("other", view))(4, 0).text must include("ducr_accepted_cleared")
-          tableCell(tab("other", view))(5, 0).text must include("ducr_accepted_awaiting")
-          tableCell(tab("other", view))(6, 0).text must include("ducr_accepted_exited")
-          tableCell(tab("other", view))(7, 0).text must include("ducr_accepted_released")
-          tableCell(tab("other", view))(8, 0).text must include("ducr_accepted_check")
-          tableCell(tab("other", view))(9, 0).text must include("ducr_accepted_external")
-          tableCell(tab("other", view))(10, 0).text must include("ducr_accepted_unknown")
-          tableCell(tab("other", view))(11, 0).text must include("ducr_accepted_pending")
-          tableCell(tab("other", view))(12, 0).text must include("ducr_accepted_amended")
+          otherSubmissions.zipWithIndex.foreach { case (submissions, index) =>
+            tableCell(tab("submitted", view))(index + 1, 0).text must include(submissions.ducr.get)
+          }
+
+//          tableCell(tab("other", view))(1, 0).text must include("ducr_accepted_received")
+//          tableCell(tab("other", view))(2, 0).text must include("ducr_accepted_arrived_msg")
+//          tableCell(tab("other", view))(3, 0).text must include("ducr_accepted_msg")
+//          tableCell(tab("other", view))(4, 0).text must include("ducr_accepted_cleared")
+//          tableCell(tab("other", view))(5, 0).text must include("ducr_accepted_awaiting")
+//          tableCell(tab("other", view))(6, 0).text must include("ducr_accepted_exited")
+//          tableCell(tab("other", view))(7, 0).text must include("ducr_accepted_released")
+//          tableCell(tab("other", view))(8, 0).text must include("ducr_accepted_check")
+//          tableCell(tab("other", view))(9, 0).text must include("ducr_accepted_external")
+//          tableCell(tab("other", view))(10, 0).text must include("ducr_accepted_unknown")
+//          tableCell(tab("other", view))(11, 0).text must include("ducr_accepted_pending")
+//          tableCell(tab("other", view))(12, 0).text must include("ducr_accepted_amended")
         }
         "action needed" in {
 
@@ -327,7 +331,7 @@ class SubmissionsViewSpec extends UnitViewSpec with BeforeAndAfterEach with Expo
             cancelledSubmissions = submissions(List())
           )
 
-          tab("other", view).text must include(messages("submissions.empty.tab"))
+          tab("submitted", view).text must include(messages("submissions.empty.tab"))
           tab("rejected", view).text must include(messages("submissions.empty.tab"))
           tab("cancelled", view).text must include(messages("submissions.empty.tab"))
 
@@ -345,7 +349,7 @@ class SubmissionsViewSpec extends UnitViewSpec with BeforeAndAfterEach with Expo
             cancelledSubmissions = submissions(List.empty)
           )
 
-          tab("other", view).text must include(messages("submissions.empty.tab"))
+          tab("submitted", view).text must include(messages("submissions.empty.tab"))
           tab("action", view).text must include(messages("submissions.empty.tab"))
           tab("cancelled", view).text must include(messages("submissions.empty.tab"))
 
@@ -367,7 +371,7 @@ class SubmissionsViewSpec extends UnitViewSpec with BeforeAndAfterEach with Expo
             cancelledSubmissions = submissions(cancelledSubmission)
           )
 
-          tab("other", view).text must include(messages("submissions.empty.tab"))
+          tab("submitted", view).text must include(messages("submissions.empty.tab"))
           tab("action", view).text must include(messages("submissions.empty.tab"))
           tab("rejected", view).text must include(messages("submissions.empty.tab"))
 
@@ -380,7 +384,7 @@ class SubmissionsViewSpec extends UnitViewSpec with BeforeAndAfterEach with Expo
 
       "submissions without status are shown on 'other' tab" in {
         val view = createView(otherSubmissions = submissions(List(submissionWithStatus(CLEARED, "ducr_pending"))))
-        tableCell(tab("other", view))(1, 0).text must include("ducr_pending")
+        tableCell(tab("submitted", view))(1, 0).text must include("ducr_pending")
       }
     }
 
