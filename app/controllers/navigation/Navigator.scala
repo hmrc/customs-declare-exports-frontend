@@ -97,7 +97,6 @@ class Navigator @Inject() (
     case StatisticalValue                  => routes.NactCodeSummaryController.displayPage
     case SupplementaryUnits                => routes.CommodityMeasureController.displayPage
     case ZeroRatedForVat                   => routes.TaricCodeSummaryController.displayPage
-    case CatOrDogFurDetails                => routes.CommodityDetailsController.displayPage
   }
 
   val commonCacheDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode) => Call] = {
@@ -117,7 +116,6 @@ class Navigator @Inject() (
     case AdditionalInformation     => additionalInformationAddPreviousPage
     case AdditionalFiscalReference => additionalFiscalReferencesPreviousPage
     case TaricCodeFirst            => additionalTaricCodesPreviousPage
-    case UNDangerousGoodsCode      => unDangerousGoodsCodePreviousPage
   }
 
   val standard: PartialFunction[DeclarationPage, Mode => Call] = {
@@ -611,14 +609,6 @@ class Navigator @Inject() (
   private def totalPackageQuantityPreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
     if (cacheModel.isInvoiceAmountGreaterThan100000) routes.InvoiceAndExchangeRateController.displayPage(mode)
     else routes.InvoiceAndExchangeRateChoiceController.displayPage(mode)
-
-  private def unDangerousGoodsCodePreviousPage(cacheModel: ExportsDeclaration, mode: Mode, itemId: String): Call =
-    if (cacheModel.isType(CLEARANCE))
-      routes.CommodityDetailsController.displayPage(mode, itemId)
-    else if (cacheModel.itemBy(itemId).exists(_.hasCatOrDogFurCommodityCode))
-      routes.CatOrDogFurController.displayPage(mode, itemId)
-    else
-      routes.CommodityDetailsController.displayPage(mode, itemId)
 
   def backLink(page: DeclarationPage, mode: Mode)(implicit request: JourneyRequest[_]): Call = {
 

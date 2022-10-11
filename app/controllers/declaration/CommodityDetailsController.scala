@@ -25,7 +25,6 @@ import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
-import services.CatAndDogFurCommodityCodes.allCatAndDogFurCommCodes
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
@@ -75,8 +74,6 @@ class CommodityDetailsController @Inject() (
         navigator.continueTo(mode, routes.PackageInformationSummaryController.displayPage(_, itemId))
       case (CLEARANCE, _) =>
         navigator.continueTo(mode, routes.UNDangerousGoodsCodeController.displayPage(_, itemId))
-      case _ if allCatAndDogFurCommCodes.contains(details.combinedNomenclatureCode.getOrElse("")) =>
-        navigator.continueTo(mode, routes.CatOrDogFurController.displayPage(_, itemId))
       case _ =>
         navigator.continueTo(mode, routes.UNDangerousGoodsCodeController.displayPage(_, itemId))
     }
@@ -86,17 +83,13 @@ class CommodityDetailsController @Inject() (
     implicit request: JourneyRequest[AnyContent]
   ): Future[ExportsDeclaration] =
     updateDeclarationFromRequest { declaration =>
-      val catOrDogFurDetails =
-        if (allCatAndDogFurCommCodes.contains(commodityDetails.combinedNomenclatureCode.getOrElse("")))
-          request.cacheModel.itemBy(itemId).flatMap(_.catOrDogFurDetails)
-        else None
       val cusCode =
         if (isCodePrefixedWith(commodityDetails.combinedNomenclatureCode, CommodityDetails.commodityCodeChemicalPrefixes))
           request.cacheModel.itemBy(itemId).flatMap(_.cusCode)
         else None
 
       declaration
-        .updatedItem(itemId, item => item.copy(commodityDetails = Some(commodityDetails), catOrDogFurDetails = catOrDogFurDetails, cusCode = cusCode))
+        .updatedItem(itemId, item => item.copy(commodityDetails = Some(commodityDetails), cusCode = cusCode))
     }
 
   private def trimCommodityCode(commodityDetails: CommodityDetails): CommodityDetails =
