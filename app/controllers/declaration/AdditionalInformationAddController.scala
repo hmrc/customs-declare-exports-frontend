@@ -20,6 +20,7 @@ import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.AdditionalInformationAddController.AdditionalInformationFormGroupId
 import controllers.navigation.Navigator
 import controllers.helpers.MultipleItemsHelper
+import forms.common.YesNoAnswer
 import forms.declaration.AdditionalInformation
 import forms.declaration.AdditionalInformation.form
 import models.declaration.AdditionalInformationData
@@ -71,7 +72,7 @@ class AdditionalInformationAddController @Inject() (
       .fold(
         formWithErrors => Future.successful(BadRequest(additionalInformationPage(mode, itemId, formWithErrors))),
         updatedItems =>
-          updateCache(itemId, cachedData.copy(items = updatedItems))
+          updateCache(itemId, cachedData.copy(isRequired = YesNoAnswer.Yes, items = updatedItems))
             .map(_ => navigator.continueTo(mode, routes.AdditionalInformationController.displayPage(_, itemId)))
       )
 

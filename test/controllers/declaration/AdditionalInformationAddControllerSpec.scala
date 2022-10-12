@@ -18,7 +18,7 @@ package controllers.declaration
 
 import base.ControllerSpec
 import controllers.declaration.routes.AdditionalInformationController
-import forms.common.YesNoAnswer.Yes
+import forms.common.YesNoAnswer.{No, Yes}
 import forms.declaration.AdditionalInformation
 import mock.ErrorHandlerMocks
 import models.Mode
@@ -153,6 +153,23 @@ class AdditionalInformationAddControllerSpec extends ControllerSpec with ErrorHa
         val savedDocuments = theCacheModelUpdated.itemBy(itemId).flatMap(_.additionalInformation)
         savedDocuments mustBe Some(AdditionalInformationData(Seq(additionalInformation)))
       }
+    }
+  }
+
+  "AdditionalItems isRequired is changed to true if currently set to false" when {
+    "user adds an item" in {
+      val modifier = withAdditionalInformationData(AdditionalInformationData(No, Seq.empty))
+      withNewCaching(aDeclaration(withItems(anItem(withItemId("itemId"), modifier))))
+
+      val correctForm = Json.toJson(additionalInformation)
+      val result = controller.submitForm(Mode.Normal, itemId)(postRequest(correctForm))
+
+      await(result) mustBe aRedirectToTheNextPage
+      thePageNavigatedTo mustBe AdditionalInformationController.displayPage(Mode.Normal, itemId)
+      verifyPageInvoked(0)
+
+      val isRequired = theCacheModelUpdated.itemBy(itemId).flatMap(_.additionalInformation.flatMap(_.isRequired))
+      isRequired mustBe Yes
     }
   }
 }
