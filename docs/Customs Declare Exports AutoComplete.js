@@ -790,13 +790,6 @@ function commodityDetails(){
     }
 }
 
-function catOrDogFurDetails(){
-    if (currentPageIs('/customs-declare-exports/declaration/items/.*/cat-and-dog-fur')) {
-        document.getElementById('code_no').checked = 'checked'
-        submit()
-    }
-}
-
 function unDangerousGoodsCode(){
     if (currentPageIs('/customs-declare-exports/declaration/items/.*/un-dangerous-goods-code')) {
         document.getElementById('code_no').checked = 'checked'
@@ -1284,7 +1277,6 @@ function completeJourney() {
     fiscalReferences()
     fiscalReferencesSummary()
     commodityDetails()
-    catOrDogFurDetails()
     unDangerousGoodsCode()
     cusCode()
     additionalTaricCodes()

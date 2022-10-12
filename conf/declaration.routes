@@ -288,12 +288,6 @@ GET         /items/:itemId/commodity-details                   controllers.decla
 
 POST        /items/:itemId/commodity-details                   controllers.declaration.CommodityDetailsController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId)
 
-# Cat Or Dog Fur
-
-GET         /items/:itemId/cat-and-dog-fur                      controllers.declaration.CatOrDogFurController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId)
-
-POST        /items/:itemId/cat-and-dog-fur                      controllers.declaration.CatOrDogFurController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId)
-
 # UN Dangerous Goods Code
 
 GET         /items/:itemId/un-dangerous-goods-code             controllers.declaration.UNDangerousGoodsCodeController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId)
