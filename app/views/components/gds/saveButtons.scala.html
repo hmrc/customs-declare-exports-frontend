@@ -20,7 +20,7 @@
 
 @this(saveAndContinue: saveAndContinue, saveAndReturnToSummary: saveAndReturnToSummary, saveAndReturnToErrors: saveAndReturnToErrors, exitAndCompleteLater: exitAndCompleteLater)
 
-@(mode: Mode)(implicit request: JourneyRequest[_], messages: Messages)
+@(mode: Mode, showExitButton: Boolean = true)(implicit request: JourneyRequest[_], messages: Messages)
 
 <div class="govuk-button-group">
 @saveAndContinue()
@@ -31,6 +31,8 @@
   @saveAndReturnToErrors()
 }
 </div>
+@if(showExitButton){
 <p class="govuk-body">
  @exitAndCompleteLater()
 </p>
+}

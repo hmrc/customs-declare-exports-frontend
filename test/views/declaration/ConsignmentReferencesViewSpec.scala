@@ -96,7 +96,14 @@ class ConsignmentReferencesViewSpec extends UnitViewSpec with CommonMessages wit
       }
 
       val createViewWithMode: Mode => Document = mode => createView(None, mode)
-      checkAllSaveButtonsAreDisplayed(createViewWithMode)
+
+      "not display 'Exit and return' button" in {
+        createView.getElementsContainingText("site.exit_and_complete_later") mustBe empty
+      }
+
+      checkSaveAndContinueButtonIsDisplayed(createView)
+      checkSaveAndReturnToSummaryButtonIsDisplayed(createViewWithMode)
+      checkSaveAndReturnToErrorsButtonIsDisplayed(createViewWithMode)
     }
 
     onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, CLEARANCE) { implicit request =>
