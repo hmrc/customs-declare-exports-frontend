@@ -17,6 +17,7 @@
 package controllers.declaration
 
 import base.ControllerSpec
+import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.Yes
 import forms.declaration.additionaldocuments.AdditionalDocument
 import mock.ErrorHandlerMocks
@@ -149,7 +150,24 @@ class AdditionalDocumentAddControllerSpec extends ControllerSpec with ErrorHandl
         verifyPageInvoked(0)
 
         val savedDocuments = theCacheModelUpdated.itemBy(itemId).flatMap(_.additionalDocuments)
-        savedDocuments mustBe Some(AdditionalDocuments(None, Seq(additionalDocument)))
+        savedDocuments mustBe Some(AdditionalDocuments(YesNoAnswer.Yes, Seq(additionalDocument)))
+      }
+    }
+
+    "AdditionalDocuments isRequired is changed to true if currently set to false" when {
+      "user adds a document" in {
+        val modifier = withAdditionalDocuments(AdditionalDocuments(YesNoAnswer.No, Seq()))
+        withNewCaching(aDeclaration(withItems(anItem(withItemId("itemId"), modifier))))
+
+        val correctForm = Json.toJson(additionalDocument)
+        val result = controller.submitForm(Mode.Normal, itemId)(postRequest(correctForm))
+
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe routes.AdditionalDocumentsController.displayPage(Mode.Normal, itemId)
+        verifyPageInvoked(0)
+
+        val isRequired = theCacheModelUpdated.itemBy(itemId).flatMap(_.additionalDocuments.flatMap(_.isRequired))
+        isRequired mustBe Yes
       }
     }
   }
