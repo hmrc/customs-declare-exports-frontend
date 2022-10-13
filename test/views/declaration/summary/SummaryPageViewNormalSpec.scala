@@ -20,6 +20,7 @@ import controllers.routes.RejectedNotificationsController
 import models.DeclarationStatus.{COMPLETE, DRAFT, INITIAL}
 import models.ExportsDeclaration
 import models.declaration.submissions.EnhancedStatus.ERRORS
+import models.Mode.Draft
 import org.jsoup.nodes.Document
 import play.api.mvc.Call
 import views.html.declaration.summary.normal_summary_page
@@ -30,10 +31,10 @@ class SummaryPageViewNormalSpec extends SummaryPageViewSpec {
   private val normal_summaryPage = instanceOf[normal_summary_page]
 
   def view(declaration: ExportsDeclaration = aDeclaration()): Document =
-    normal_summaryPage(backLink)(journeyRequest(declaration), messages, minimalAppConfig)
+    normal_summaryPage(Draft, backLink)(journeyRequest(declaration), messages, minimalAppConfig)
 
   def viewWithError(declaration: ExportsDeclaration = aDeclaration()): Document =
-    normal_summaryPage(backLink, dummyFormError)(journeyRequest(declaration), messages, minimalAppConfig)
+    normal_summaryPage(Draft, backLink, dummyFormError)(journeyRequest(declaration), messages, minimalAppConfig)
 
   private val declarationInDraft = aDeclarationAfter(aDeclaration().updateReadyForSubmission(false))
   private val declarationReadyForSubmission = aDeclarationAfter(aDeclaration().updateReadyForSubmission(true))
@@ -82,7 +83,7 @@ class SummaryPageViewNormalSpec extends SummaryPageViewSpec {
     }
 
     "display a 'View Declaration Errors' button" when {
-      "the declaration is in 'DRAFT' status and" when {
+      "the declaration has errors and" when {
         "declaration's 'parentDeclarationId' is defined" in {
           val parentId = "parentId"
           val document = view(aDeclaration(withParentDeclarationEnhancedStatus(ERRORS), withParentDeclarationId(parentId)))

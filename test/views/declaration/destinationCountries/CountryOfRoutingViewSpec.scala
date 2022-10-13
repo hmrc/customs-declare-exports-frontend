@@ -23,22 +23,21 @@ import forms.declaration.countries.Countries.RoutingCountryPage
 import forms.declaration.countries.{Countries, Country}
 import models.DeclarationType.{OCCASIONAL, SIMPLIFIED, STANDARD}
 import models.Mode
+import models.Mode.Normal
 import models.codes.{Country => ModelCountry}
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
-import org.scalatest.BeforeAndAfterEach
 import play.api.data.Form
 import play.twirl.api.Html
 import services.cache.ExportsTestHelper
-import tools.Stubs
-import views.declaration.spec.UnitViewSpec
+import views.declaration.spec.PageWithButtonsSpec
 import views.html.declaration.destinationCountries.country_of_routing
 
 import scala.collection.immutable.ListMap
 
-class CountryOfRoutingViewSpec extends UnitViewSpec with Stubs with ExportsTestHelper with Injector with BeforeAndAfterEach {
+class CountryOfRoutingViewSpec extends PageWithButtonsSpec with ExportsTestHelper with Injector {
 
   implicit val mockCodeListConnector = mock[CodeListConnector]
 
@@ -54,13 +53,15 @@ class CountryOfRoutingViewSpec extends UnitViewSpec with Stubs with ExportsTestH
     super.afterEach()
   }
 
-  private val countryOfRoutingPage = instanceOf[country_of_routing]
+  private val page = instanceOf[country_of_routing]
+
+  override val typeAndViewInstance = (STANDARD, page(Normal, routingForm(request))(_, _))
+
+  private def createView(mode: Mode = Normal)(implicit request: JourneyRequest[_]): Html =
+    page(mode, routingForm(request))(request, messages)
 
   private def routingForm(request: JourneyRequest[_]): Form[Country] =
     Countries.form(RoutingCountryPage)(request, messages(request), mockCodeListConnector)
-
-  private def createView(mode: Mode = Mode.Normal)(implicit request: JourneyRequest[_]): Html =
-    countryOfRoutingPage(mode, routingForm(request))(request, messages)
 
   "Routing Country view" should {
 
@@ -77,9 +78,10 @@ class CountryOfRoutingViewSpec extends UnitViewSpec with Stubs with ExportsTestH
 
   onJourney(OCCASIONAL, SIMPLIFIED, STANDARD) { implicit request =>
     "Routing Country view" should {
+      val view = createView()
 
       s"have page heading for ${request.declarationType}" in {
-        createView()(request).getElementById("section-header").text() must include(messages("declaration.section.3"))
+        view.getElementById("section-header").text() must include(messages("declaration.section.3"))
       }
 
       "display the expected page title" in {
@@ -88,7 +90,7 @@ class CountryOfRoutingViewSpec extends UnitViewSpec with Stubs with ExportsTestH
       }
 
       s"display back button that links to 'Country of Routing question' page  for ${request.declarationType}" in {
-        val backButton = createView()(request).getElementById("back-link")
+        val backButton = view.getElementById("back-link")
 
         backButton.text() mustBe messages("site.backToPreviousQuestion")
         backButton must haveHref(routes.RoutingCountriesController.displayRoutingQuestion())

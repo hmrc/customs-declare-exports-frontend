@@ -17,19 +17,16 @@
 package views
 
 import base.Injector
-import play.twirl.api.Html
-import services.cache.ExportsTestHelper
-import tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.html.session_timed_out
 import views.tags.ViewTest
 
 @ViewTest
-class SessionTimedOutViewSpec extends UnitViewSpec with ExportsTestHelper with Stubs with Injector {
+class SessionTimedOutViewSpec extends UnitViewSpec with Injector {
 
   private val page = instanceOf[session_timed_out]
-  private def createView(): Html =
-    page()(request, messages)
+
+  val view = page()(request, messages)
 
   "SessionTimedOut View" should {
 
@@ -38,8 +35,6 @@ class SessionTimedOutViewSpec extends UnitViewSpec with ExportsTestHelper with S
       messages must haveTranslationFor("sessionTimout.paragraph.saved")
       messages must haveTranslationFor("sessionTimout.signin.button")
     }
-
-    val view = createView()
 
     "display same page header" in {
       view.getElementsByTag("h1").text() mustBe messages("sessionTimout.title")
@@ -57,5 +52,4 @@ class SessionTimedOutViewSpec extends UnitViewSpec with ExportsTestHelper with S
       link.attr("href") mustBe "https://www.gov.uk"
     }
   }
-
 }

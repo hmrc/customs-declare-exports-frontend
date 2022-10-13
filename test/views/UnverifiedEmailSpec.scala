@@ -17,42 +17,40 @@
 package views
 
 import base.Injector
-import tools.Stubs
 import views.declaration.spec.UnitViewSpec
-import views.helpers.CommonMessages
 import views.html.unverified_email
 
 import scala.collection.JavaConverters._
 
-class UnverifiedEmailSpec extends UnitViewSpec with CommonMessages with Stubs with Injector {
+class UnverifiedEmailSpec extends UnitViewSpec with Injector {
 
   lazy val redirectUrl = "/some/url"
 
   val page = instanceOf[unverified_email]
 
-  val view = () => page(redirectUrl)(request, messages)
+  val view = page(redirectUrl)(request, messages)
 
   val messageKeyPrefix = "emailUnverified"
 
   "Unverified Email Page" must {
 
     "display page header" in {
-      view().getElementsByTag("h1").first() must containMessage(s"$messageKeyPrefix.heading")
+      view.getElementsByTag("h1").first() must containMessage(s"$messageKeyPrefix.heading")
     }
 
     "have a 'Verify your email address' button with correct link" in {
-      val link = view().getElementsByClass("govuk-button").first()
+      val link = view.getElementsByClass("govuk-button").first()
 
       link must haveHref(redirectUrl)
       link must containMessage(s"${messageKeyPrefix}.link")
     }
 
     "have paragraph1 with text" in {
-      view().getElementById("emailUnverified.para1") must containMessage(s"${messageKeyPrefix}.paragraph1")
+      view.getElementById("emailUnverified.para1") must containMessage(s"${messageKeyPrefix}.paragraph1")
     }
 
     "have bullet list with expected items" in {
-      val ul = view().getElementById("emailUnverified.bullets")
+      val ul = view.getElementById("emailUnverified.bullets")
 
       val expectedBulletTextKeys = (1 to 4).map { idx =>
         s"${messageKeyPrefix}.bullets.item${idx}"

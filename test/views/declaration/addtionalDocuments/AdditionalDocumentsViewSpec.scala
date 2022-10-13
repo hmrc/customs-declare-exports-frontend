@@ -18,35 +18,35 @@ package views.declaration.addtionalDocuments
 
 import base.Injector
 import controllers.declaration.routes
+import controllers.declaration.routes.{
+  AdditionalDocumentChangeController,
+  AdditionalDocumentRemoveController,
+  AdditionalInformationController,
+  AdditionalInformationRequiredController
+}
 import forms.common.YesNoAnswer
+import forms.common.YesNoAnswer.form
 import forms.declaration.AdditionalDocumentSpec._
 import forms.declaration.additionaldocuments.AdditionalDocument
-import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
-import models.Mode
+import models.DeclarationType._
+import models.Mode.Normal
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
-import org.scalatest.OptionValues
 import play.api.data.Form
-import tools.Stubs
 import utils.ListItem
 import views.declaration.spec.UnitViewSpec
-import views.helpers.CommonMessages
 import views.html.declaration.additionalDocuments.additional_documents
 import views.tags.ViewTest
 
 @ViewTest
-class AdditionalDocumentsViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector with OptionValues {
+class AdditionalDocumentsViewSpec extends UnitViewSpec with Injector {
 
-  private val itemId = "a7sc78"
-  private val mode = Mode.Normal
+  val page = instanceOf[additional_documents]
 
-  private val form: Form[YesNoAnswer] = YesNoAnswer.form()
-  private val additionalDocumentsPage = instanceOf[additional_documents]
-
-  private def createView(form: Form[YesNoAnswer] = form, cachedDocuments: Seq[AdditionalDocument] = Seq())(
+  def createView(frm: Form[YesNoAnswer] = form(), cachedDocuments: Seq[AdditionalDocument] = Seq.empty)(
     implicit request: JourneyRequest[_]
   ): Document =
-    additionalDocumentsPage(mode, itemId, form, cachedDocuments)(request, messages)
+    page(Normal, itemId, frm, cachedDocuments)(request, messages)
 
   "additional_documents view" should {
 
@@ -87,48 +87,34 @@ class AdditionalDocumentsViewSpec extends UnitViewSpec with CommonMessages with 
         val warningText = s"! ${messages("site.warning")} ${messages("declaration.additionalDocument.summary.warning.text")}"
         view.getElementsByClass("govuk-warning-text").first.text mustBe warningText
       }
-
     }
   }
 
   "additional_documents view on empty page with cached Additional Information" should {
-
     val declarationWithAdditionalInfo = aDeclaration(withItem(anItem(withItemId(itemId), withAdditionalInformation("1234", "Description"))))
 
     onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, SUPPLEMENTARY)(aDeclaration()) { implicit request =>
-      val view = createView()
-
       "display 'Back' button that links to 'Is License Required' page" in {
-
-        val backButton = view.getElementById("back-link")
-
+        val backButton = createView().getElementById("back-link")
         backButton must containMessage(backToPreviousQuestionCaption)
-        backButton must haveHref(routes.IsLicenceRequiredController.displayPage(mode, itemId))
+        backButton must haveHref(routes.IsLicenceRequiredController.displayPage(Normal, itemId))
       }
 
     }
     onJourney(CLEARANCE)(declarationWithAdditionalInfo) { implicit request =>
-      val view = createView()
-
       "display 'Back' button that links to 'Additional Info' page when additional info present" in {
-
-        val backButton = view.getElementById("back-link")
-
+        val backButton = createView().getElementById("back-link")
         backButton must containMessage(backToPreviousQuestionCaption)
-        backButton must haveHref(routes.AdditionalInformationController.displayPage(mode, itemId))
+        backButton must haveHref(AdditionalInformationController.displayPage(Normal, itemId))
       }
 
     }
 
     onJourney(CLEARANCE)(aDeclaration()) { implicit request =>
-      val view = createView()
-
       "display 'Back' button that links to 'Additional Information Required' page when no additional info present" in {
-
-        val backButton = view.getElementById("back-link")
-
+        val backButton = createView().getElementById("back-link")
         backButton must containMessage(backToPreviousQuestionCaption)
-        backButton must haveHref(routes.AdditionalInformationRequiredController.displayPage(mode, itemId))
+        backButton must haveHref(AdditionalInformationRequiredController.displayPage(Normal, itemId))
       }
     }
   }
@@ -136,8 +122,7 @@ class AdditionalDocumentsViewSpec extends UnitViewSpec with CommonMessages with 
   "additional_documents view for invalid input" should {
     onEveryDeclarationJourney() { implicit request =>
       "display error" in {
-
-        val view = createView(YesNoAnswer.form().fillAndValidate(YesNoAnswer("invalid")))
+        val view = createView(form().fillAndValidate(YesNoAnswer("invalid")))
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#code_yes")
@@ -150,7 +135,6 @@ class AdditionalDocumentsViewSpec extends UnitViewSpec with CommonMessages with 
   "additional_documents view when filled" should {
     onEveryDeclarationJourney() { implicit request =>
       "display a table with previously entered document" which {
-
         val view = createView(cachedDocuments = Seq(correctAdditionalDocument))
 
         "have header row" that {
@@ -171,11 +155,9 @@ class AdditionalDocumentsViewSpec extends UnitViewSpec with CommonMessages with 
           "have visually hidden header for Remove links" in {
             header.getElementsByClass("govuk-table__header").get(4) must containMessage("site.remove.header")
           }
-
         }
 
         "have data row" that {
-
           val row = view.selectFirst("#additional_documents tbody tr")
 
           "have Document Type" in {
@@ -188,22 +170,20 @@ class AdditionalDocumentsViewSpec extends UnitViewSpec with CommonMessages with 
 
           "have change link" in {
             val removeLink = row.select(".govuk-link").get(0)
-
             removeLink must containMessage("site.change")
             removeLink must containMessage("declaration.additionalDocument.summary.change.hint", "ABCDEF1234567890")
-            removeLink must haveHref(
-              routes.AdditionalDocumentChangeController.displayPage(Mode.Normal, itemId, ListItem.createId(0, correctAdditionalDocument))
-            )
+
+            val href = AdditionalDocumentChangeController.displayPage(Normal, itemId, ListItem.createId(0, correctAdditionalDocument))
+            removeLink must haveHref(href)
           }
 
           "have remove link" in {
             val removeLink = row.select(".govuk-link").get(1)
-
             removeLink must containMessage("site.remove")
             removeLink must containMessage("declaration.additionalDocument.summary.remove.hint", "ABCDEF1234567890")
-            removeLink must haveHref(
-              routes.AdditionalDocumentRemoveController.displayPage(Mode.Normal, itemId, ListItem.createId(0, correctAdditionalDocument))
-            )
+
+            val href = AdditionalDocumentRemoveController.displayPage(Normal, itemId, ListItem.createId(0, correctAdditionalDocument))
+            removeLink must haveHref(href)
           }
         }
       }

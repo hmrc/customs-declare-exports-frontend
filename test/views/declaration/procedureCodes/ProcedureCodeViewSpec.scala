@@ -19,23 +19,27 @@ package views.declaration.procedureCodes
 import base.Injector
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.procedurecodes.ProcedureCode
+import forms.declaration.procedurecodes.ProcedureCode.form
 import models.DeclarationType._
 import models.Mode
+import models.Mode.Normal
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
-import services.cache.{ExportsDeclarationBuilder, ExportsTestHelper}
-import views.declaration.spec.UnitViewSpec
+import services.cache.ExportsTestHelper
+import views.declaration.spec.PageWithButtonsSpec
 import views.html.declaration.procedureCodes.procedure_codes
 import views.tags.ViewTest
 
 @ViewTest
-class ProcedureCodeViewSpec extends UnitViewSpec with ExportsTestHelper with Injector with ExportsDeclarationBuilder {
+class ProcedureCodeViewSpec extends PageWithButtonsSpec with ExportsTestHelper with Injector {
 
-  private val page = instanceOf[procedure_codes]
-  private val form: Form[ProcedureCode] = ProcedureCode.form()
-  private def createView(mode: Mode = Mode.Normal, form: Form[ProcedureCode] = form)(implicit request: JourneyRequest[_]): Document =
-    page(mode, "itemId", form)(request, messages)
+  val page = instanceOf[procedure_codes]
+
+  override val typeAndViewInstance = (STANDARD, page(Normal, itemId, form())(_, _))
+
+  def createView(frm: Form[ProcedureCode] = form(), mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document =
+    page(mode, itemId, frm)(request, messages)
 
   "Procedure Code View" should {
 
@@ -86,13 +90,10 @@ class ProcedureCodeViewSpec extends UnitViewSpec with ExportsTestHelper with Inj
         }
 
         "display 'Back' button that links to 'Export Items' page" in {
-
           val backButton = view.getElementById("back-link")
 
           backButton must containMessage("site.backToPreviousQuestion")
-          backButton.getElementById("back-link") must haveHref(
-            controllers.declaration.routes.ItemsSummaryController.displayItemsSummaryPage(Mode.Normal)
-          )
+          backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.ItemsSummaryController.displayItemsSummaryPage(Normal))
         }
 
         val createViewWithMode: Mode => Document = mode => createView(mode = mode)
@@ -101,8 +102,7 @@ class ProcedureCodeViewSpec extends UnitViewSpec with ExportsTestHelper with Inj
 
       "provided with filled form" should {
         "display data in Procedure Code input" in {
-
-          val view = createView(form = ProcedureCode.form().fill(ProcedureCode("1234")))
+          val view = createView(form().fill(ProcedureCode("1234")))
           view.getElementById("procedureCode").attr("value") mustBe "1234"
         }
       }
@@ -131,6 +131,7 @@ class ProcedureCodeViewSpec extends UnitViewSpec with ExportsTestHelper with Inj
 
     onJourney(CLEARANCE)(aDeclaration(withEntryIntoDeclarantsRecords(YesNoAnswers.yes))) { implicit request =>
       "declaration is EIDR" should {
+
         "display inset text" in {
           val inset = createView().getElementsByClass("govuk-inset-text")
           val expected = Seq(
@@ -153,6 +154,7 @@ class ProcedureCodeViewSpec extends UnitViewSpec with ExportsTestHelper with Inj
 
     onJourney(CLEARANCE)(aDeclaration(withEntryIntoDeclarantsRecords(YesNoAnswers.no))) { implicit request =>
       "declaration is NOT EIDR" should {
+
         "NOT display inset text" in {
           createView().getElementsByClass("govuk-inset-text") must be(empty)
         }

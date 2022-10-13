@@ -17,25 +17,28 @@
 package views.declaration
 
 import base.Injector
+import controllers.declaration.routes.SealController
 import forms.declaration.Seal
+import forms.declaration.Seal.form
+import models.DeclarationType.STANDARD
 import models.Mode
+import models.Mode.Normal
 import org.jsoup.nodes.Document
 import play.api.data.Form
-import services.cache.ExportsTestHelper
-import tools.Stubs
-import views.declaration.spec.UnitViewSpec
-import views.helpers.CommonMessages
+import views.declaration.spec.PageWithButtonsSpec
 import views.html.declaration.seal_add
 import views.tags.ViewTest
 
 @ViewTest
-class SealAddViewSpec extends UnitViewSpec with ExportsTestHelper with Stubs with CommonMessages with Injector {
+class SealAddViewSpec extends PageWithButtonsSpec with Injector {
 
   val containerId = "867126538"
-  private val form: Form[Seal] = Seal.form()
-  private val page = instanceOf[seal_add]
 
-  private def createView(form: Form[Seal] = form, mode: Mode = Mode.Normal): Document = page(mode, form, containerId)(journeyRequest(), messages)
+  val page = instanceOf[seal_add]
+
+  override val typeAndViewInstance = (STANDARD, page(Normal, form(), containerId)(_, _))
+
+  def createView(frm: Form[Seal] = form(), mode: Mode = Normal): Document = page(mode, frm, containerId)
 
   "Seal Add View" should {
     val view = createView()
@@ -52,9 +55,7 @@ class SealAddViewSpec extends UnitViewSpec with ExportsTestHelper with Stubs wit
       val backLinkContainer = view.getElementById("back-link")
 
       backLinkContainer.text() must be(messages(backToPreviousQuestionCaption))
-      backLinkContainer.getElementById("back-link") must haveHref(
-        controllers.declaration.routes.SealController.displaySealSummary(Mode.Normal, containerId)
-      )
+      backLinkContainer.getElementById("back-link") must haveHref(SealController.displaySealSummary(Normal, containerId))
     }
 
     val createViewWithMode: Mode => Document = mode => createView(mode = mode)
@@ -64,7 +65,7 @@ class SealAddViewSpec extends UnitViewSpec with ExportsTestHelper with Stubs wit
   "Seal Add View for invalid input" should {
 
     "display error if nothing is entered" in {
-      val view = createView(Seal.form().bind(Map[String, String]()))
+      val view = createView(form().bind(Map[String, String]()))
 
       view must haveGovukGlobalErrorSummary
       view must containErrorElementWithTagAndHref("a", "#id")
@@ -73,13 +74,12 @@ class SealAddViewSpec extends UnitViewSpec with ExportsTestHelper with Stubs wit
     }
 
     "display error if incorrect seal is entered" in {
-      val view = createView(Seal.form().fillAndValidate(Seal("Invalid!!!")))
+      val view = createView(form().fillAndValidate(Seal("Invalid!!!")))
 
       view must haveGovukGlobalErrorSummary
       view must containErrorElementWithTagAndHref("a", "#id")
 
       view must containErrorElementWithMessageKey("declaration.transport.sealId.error.invalid")
     }
-
   }
 }

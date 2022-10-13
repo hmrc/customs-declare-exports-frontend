@@ -18,35 +18,35 @@ package views.declaration
 
 import base.Injector
 import forms.declaration.PackageInformation
+import forms.declaration.PackageInformation.form
 import models.DeclarationType._
 import models.Mode
+import models.Mode.Normal
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import org.scalatest.Inspectors.forAll
 import play.api.data.Form
 import services.PackageTypesService
 import services.cache.ExportsTestHelper
-import tools.Stubs
-import views.declaration.spec.UnitViewSpec
-import views.helpers.CommonMessages
+import views.declaration.spec.PageWithButtonsSpec
 import views.html.declaration.packageInformation.package_information_add
 import views.tags.ViewTest
 
 @ViewTest
-class PackageInformationAddViewSpec extends UnitViewSpec with ExportsTestHelper with Stubs with CommonMessages with Injector {
+class PackageInformationAddViewSpec extends PageWithButtonsSpec with ExportsTestHelper with Injector {
 
   import PackageInformationViewSpec._
 
-  private val itemId = "item1"
-  private implicit val packageTypesService = instanceOf[PackageTypesService]
+  implicit val packageTypesService = instanceOf[PackageTypesService]
 
-  private def form(): Form[PackageInformation] = PackageInformation.form()
-  private val page = instanceOf[package_information_add]
+  val page = instanceOf[package_information_add]
 
-  private def createView(withForm: Option[Form[PackageInformation]] = None, packages: Seq[PackageInformation] = Seq.empty, mode: Mode = Mode.Normal)(
+  override val typeAndViewInstance = (STANDARD, page(Normal, itemId, form(), Seq.empty)(_, _))
+
+  def createView(frm: Form[PackageInformation] = form(), packages: Seq[PackageInformation] = Seq.empty, mode: Mode = Normal)(
     implicit request: JourneyRequest[_]
   ): Document =
-    page(mode, itemId, withForm.getOrElse(form), packages)(request, messages)
+    page(mode, itemId, frm, packages)(request, messages)
 
   "PackageInformation Add View" should {
 
@@ -71,7 +71,7 @@ class PackageInformationAddViewSpec extends UnitViewSpec with ExportsTestHelper 
         val backLinkContainer = createView(packages = Seq(packageInformation)).getElementById("back-link")
 
         backLinkContainer.getElementById("back-link") must haveHref(
-          controllers.declaration.routes.PackageInformationSummaryController.displayPage(Mode.Normal, itemId)
+          controllers.declaration.routes.PackageInformationSummaryController.displayPage(Normal, itemId)
         )
       }
 
@@ -110,7 +110,7 @@ class PackageInformationAddViewSpec extends UnitViewSpec with ExportsTestHelper 
         val backLinkContainer = createView(packages = Seq.empty).getElementById("back-link")
 
         backLinkContainer.getElementById("back-link") must haveHref(
-          controllers.declaration.routes.StatisticalValueController.displayPage(Mode.Normal, itemId)
+          controllers.declaration.routes.StatisticalValueController.displayPage(Normal, itemId)
         )
       }
     }
@@ -120,7 +120,7 @@ class PackageInformationAddViewSpec extends UnitViewSpec with ExportsTestHelper 
         val backLinkContainer = createView(packages = Seq.empty).getElementById("back-link")
 
         backLinkContainer.getElementById("back-link") must haveHref(
-          controllers.declaration.routes.NactCodeSummaryController.displayPage(Mode.Normal, itemId)
+          controllers.declaration.routes.NactCodeSummaryController.displayPage(Normal, itemId)
         )
       }
     }
@@ -130,7 +130,7 @@ class PackageInformationAddViewSpec extends UnitViewSpec with ExportsTestHelper 
         val backLinkContainer = createView(packages = Seq.empty).getElementById("back-link")
 
         backLinkContainer.getElementById("back-link") must haveHref(
-          controllers.declaration.routes.CommodityDetailsController.displayPage(Mode.Normal, itemId)
+          controllers.declaration.routes.CommodityDetailsController.displayPage(Normal, itemId)
         )
       }
     }
@@ -139,7 +139,7 @@ class PackageInformationAddViewSpec extends UnitViewSpec with ExportsTestHelper 
   "PackageInformation Add View for invalid input" should {
     onEveryDeclarationJourney() { implicit request =>
       "display error if nothing is entered" in {
-        val view = createView(Some(form.fillAndValidate(PackageInformation("id", None, None, None))))
+        val view = createView(form().fillAndValidate(PackageInformation("id", None, None, None)))
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#typesOfPackages")
@@ -152,7 +152,7 @@ class PackageInformationAddViewSpec extends UnitViewSpec with ExportsTestHelper 
       }
 
       "display error if incorrect PackageInformation is entered" in {
-        val view = createView(Some(form.fillAndValidate(PackageInformation("id", Some("invalid"), Some(1), Some("wrong!")))))
+        val view = createView(form().fillAndValidate(PackageInformation("id", Some("invalid"), Some(1), Some("wrong!"))))
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#typesOfPackages")
@@ -167,8 +167,7 @@ class PackageInformationAddViewSpec extends UnitViewSpec with ExportsTestHelper 
   "PackageInformation Add View when filled" should {
     onEveryDeclarationJourney() { implicit request =>
       "display data in PackageInformation code input" in {
-
-        val view = createView(Some(form.fill(packageInformation)))
+        val view = createView(form().fill(packageInformation))
 
         view.getElementById("typesOfPackages").attr("value") must be(packageInformation.typesOfPackages.get)
         view.getElementById("numberOfPackages").attr("value") must be(packageInformation.numberOfPackages.get.toString)

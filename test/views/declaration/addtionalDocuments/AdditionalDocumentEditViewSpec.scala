@@ -26,7 +26,7 @@ import forms.declaration.CommodityDetails
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
 import forms.declaration.additionaldocuments.AdditionalDocument
 import forms.declaration.additionaldocuments.AdditionalDocument._
-import forms.declaration.additionaldocuments.DocumentWriteOff._
+import forms.declaration.additionaldocuments.DocumentWriteOff.{documentQuantityKey, documentWriteOffKey, measurementUnitKey, qualifierKey}
 import forms.declaration.additionaldocuments.DocumentWriteOffSpec.incorrectDocumentWriteOff
 import forms.declaration.declarationHolder.DeclarationHolder
 import models.ExportsDeclaration
@@ -35,38 +35,34 @@ import models.declaration.ExportDeclarationTestData.{allRecords, declaration}
 import models.declaration.{EoriSource, ExportItem}
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
+import org.scalatest.Assertion
 import org.scalatest.Inspectors.forAll
-import org.scalatest.{Assertion, OptionValues}
 import play.api.data.Form
 import services.view.HolderOfAuthorisationCodes
-import tools.Stubs
 import views.declaration.spec.UnitViewSpec
-import views.helpers.CommonMessages
 import views.html.declaration.additionalDocuments.additional_document_edit
+import views.tags.ViewTest
 
 import java.util.Locale.ENGLISH
 
-class AdditionalDocumentEditViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector with OptionValues {
+@ViewTest
+class AdditionalDocumentEditViewSpec extends UnitViewSpec with Injector {
 
-  private val appConfig = instanceOf[AppConfig]
+  val appConfig = instanceOf[AppConfig]
 
-  private val itemId = "a7sc78"
+  val page = instanceOf[additional_document_edit]
 
-  private val additionalDocumentEditPage = instanceOf[additional_document_edit]
+  def createView(implicit request: JourneyRequest[_]): Document =
+    page(Normal, itemId, form(request.cacheModel))(request, messages)
 
-  private def createView(implicit request: JourneyRequest[_]): Document =
-    additionalDocumentEditPage(Normal, itemId, AdditionalDocument.form(request.cacheModel))(request, messages)
+  def createView(input: Map[String, String])(implicit request: JourneyRequest[_]): Document =
+    page(Normal, itemId, form(declaration).bind(input))(request, messages)
 
-  private def createView(input: Map[String, String])(implicit request: JourneyRequest[_]): Document = {
-    val form: Form[AdditionalDocument] = AdditionalDocument.form(declaration).bind(input)
-    additionalDocumentEditPage(Normal, itemId, form)(request, messages)
-  }
-
-  private def createView(input: Option[AdditionalDocument] = None, declaration: ExportsDeclaration = declaration)(
+  def createView(input: Option[AdditionalDocument] = None, declaration: ExportsDeclaration = declaration)(
     implicit request: JourneyRequest[_]
   ): Document = {
-    val form: Form[AdditionalDocument] = AdditionalDocument.form(declaration)
-    additionalDocumentEditPage(Normal, itemId, input.fold(form)(form.fillAndValidate))(request, messages)
+    val frm: Form[AdditionalDocument] = form(declaration)
+    page(Normal, itemId, input.fold(frm)(frm.fillAndValidate))(request, messages)
   }
 
   private val prefix = "declaration.additionalDocument"
@@ -743,8 +739,7 @@ class AdditionalDocumentEditViewSpec extends UnitViewSpec with CommonMessages wi
     onEveryDeclarationJourney() { implicit request =>
       "display data in all inputs" in {
         val data = correctAdditionalDocument
-        val form = AdditionalDocument.form(declaration).fill(data)
-        val view = additionalDocumentEditPage(Normal, itemId, form)(request, messages)
+        val view = page(Normal, itemId, form(declaration).fill(data))(request, messages)
 
         def assert[T](elementId: String, value: Option[T]): Assertion =
           view.getElementById(elementId).attr("value") mustBe value.value.toString

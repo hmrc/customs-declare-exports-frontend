@@ -18,25 +18,27 @@ package views.declaration
 
 import base.{Injector, MockAuthAction}
 import forms.common.YesNoAnswer
+import forms.common.YesNoAnswer.form
+import models.DeclarationType.STANDARD
 import models.Mode
+import models.Mode.Normal
 import org.jsoup.nodes.Document
 import play.api.data.Form
-import tools.Stubs
-import views.declaration.spec.UnitViewSpec
-import views.helpers.CommonMessages
+import views.declaration.spec.PageWithButtonsSpec
 import views.html.declaration.taric_code_remove
 import views.tags.ViewTest
 
 @ViewTest
-class TaricCodeRemoveViewSpec extends UnitViewSpec with Stubs with CommonMessages with Injector with MockAuthAction {
+class TaricCodeRemoveViewSpec extends PageWithButtonsSpec with Injector with MockAuthAction {
 
-  private val itemId = "item1"
-  private val taricCode = "TARI"
-  private val form: Form[YesNoAnswer] = YesNoAnswer.form()
-  private val page = instanceOf[taric_code_remove]
+  val taricCode = "TARI"
 
-  private def createView(form: Form[YesNoAnswer] = form, code: String = taricCode, mode: Mode = Mode.Normal): Document =
-    page(mode, itemId, code, form)(getJourneyRequest(), messages)
+  val page = instanceOf[taric_code_remove]
+
+  override val typeAndViewInstance = (STANDARD, page(Normal, itemId, taricCode, form())(_, _))
+
+  def createView(frm: Form[YesNoAnswer] = form(), code: String = taricCode, mode: Mode = Normal): Document =
+    page(mode, itemId, code, frm)(getJourneyRequest(), messages)
 
   "Taric Code Remove View" should {
     val view = createView()
@@ -58,7 +60,7 @@ class TaricCodeRemoveViewSpec extends UnitViewSpec with Stubs with CommonMessage
 
       backLinkContainer must containMessage(backToPreviousQuestionCaption)
       backLinkContainer.getElementById("back-link") must haveHref(
-        controllers.declaration.routes.TaricCodeSummaryController.displayPage(Mode.Normal, itemId)
+        controllers.declaration.routes.TaricCodeSummaryController.displayPage(Normal, itemId)
       )
     }
 
@@ -67,15 +69,13 @@ class TaricCodeRemoveViewSpec extends UnitViewSpec with Stubs with CommonMessage
   }
 
   "Taric Code Remove View for invalid input" should {
-
     "display error if nothing is entered" in {
-      val view = createView(YesNoAnswer.form().bind(Map[String, String]()))
+      val view = createView(form().bind(Map[String, String]()))
 
       view must haveGovukGlobalErrorSummary
       view must containErrorElementWithTagAndHref("a", "#code_yes")
 
       view must containErrorElementWithMessageKey("error.yesNo.required")
     }
-
   }
 }

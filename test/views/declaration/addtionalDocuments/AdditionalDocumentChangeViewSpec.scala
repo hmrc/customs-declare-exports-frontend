@@ -17,39 +17,32 @@
 package views.declaration.addtionalDocuments
 
 import base.Injector
-import controllers.declaration.routes
-import forms.declaration.additionaldocuments.AdditionalDocument
-import models.Mode
+import controllers.declaration.routes.AdditionalDocumentsController
+import forms.declaration.additionaldocuments.AdditionalDocument.form
+import models.Mode.Normal
 import models.declaration.ExportDeclarationTestData.declaration
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
-import org.scalatest.OptionValues
-import play.api.data.Form
-import tools.Stubs
 import views.declaration.spec.UnitViewSpec
-import views.helpers.CommonMessages
 import views.html.declaration.additionalDocuments.additional_document_change
 import views.tags.ViewTest
 
 @ViewTest
-class AdditionalDocumentChangeViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector with OptionValues {
+class AdditionalDocumentChangeViewSpec extends UnitViewSpec with Injector {
 
-  private val itemId = "a7sc78"
-  private val documentId = "1.2131231"
-  private val mode = Mode.Normal
+  val documentId = "1.2131231"
 
-  private val form: Form[AdditionalDocument] = AdditionalDocument.form(declaration)
-  private val additionalDocumentChangePage = instanceOf[additional_document_change]
+  val page = instanceOf[additional_document_change]
 
-  private def createView(implicit request: JourneyRequest[_]): Document =
-    additionalDocumentChangePage(mode, itemId, documentId, form)(request, messages)
+  def createView(implicit request: JourneyRequest[_]): Document =
+    page(Normal, itemId, documentId, form(declaration))(request, messages)
 
   "additional_document_change view on empty page" should {
     onEveryDeclarationJourney() { implicit request =>
       "display 'Back' button that links to summary page" in {
         val backButton = createView.getElementById("back-link")
         backButton must containMessage(backToPreviousQuestionCaption)
-        backButton must haveHref(routes.AdditionalDocumentsController.displayPage(mode, itemId))
+        backButton must haveHref(AdditionalDocumentsController.displayPage(Normal, itemId))
       }
     }
   }

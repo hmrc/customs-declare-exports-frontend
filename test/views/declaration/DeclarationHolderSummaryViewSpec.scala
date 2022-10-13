@@ -18,8 +18,8 @@ package views.declaration
 
 import base.Injector
 import controllers.declaration.routes.{AdditionalActorsSummaryController, AuthorisationProcedureCodeChoiceController, ConsigneeDetailsController}
-import forms.common.YesNoAnswer.{No, Yes}
-import forms.common.{Eori, YesNoAnswer}
+import forms.common.Eori
+import forms.common.YesNoAnswer.{form, No, Yes}
 import forms.declaration.AuthorisationProcedureCodeChoice.{Choice1040, ChoiceOthers}
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.STANDARD_PRE_LODGED
 import forms.declaration.declarationHolder.DeclarationHolder
@@ -29,21 +29,22 @@ import models.Mode.Normal
 import models.declaration.{EoriSource, Parties}
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
-import services.cache.ExportsTestHelper
-import tools.Stubs
-import views.declaration.spec.UnitViewSpec
+import views.declaration.spec.PageWithButtonsSpec
 import views.html.declaration.declarationHolder.declaration_holder_summary
 import views.tags.ViewTest
 
 @ViewTest
-class DeclarationHolderSummaryViewSpec extends UnitViewSpec with ExportsTestHelper with Stubs with Injector {
+class DeclarationHolderSummaryViewSpec extends PageWithButtonsSpec with Injector {
 
-  private val page = instanceOf[declaration_holder_summary]
   val declarationHolder1: DeclarationHolder = DeclarationHolder(Some("ACE"), Some(Eori("GB123456543")), Some(EoriSource.OtherEori))
   val declarationHolder2: DeclarationHolder = DeclarationHolder(Some("CVA"), Some(Eori("GB6543253678")), Some(EoriSource.OtherEori))
 
-  private def createView(holders: Seq[DeclarationHolder] = Seq.empty, mode: Mode = Mode.Normal)(implicit request: JourneyRequest[_]): Document =
-    page(mode, YesNoAnswer.form(), holders)
+  val page = instanceOf[declaration_holder_summary]
+
+  override val typeAndViewInstance = (STANDARD, page(Normal, form(), Seq.empty)(_, _))
+
+  def createView(holders: Seq[DeclarationHolder] = Seq.empty, mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document =
+    page(mode, form(), holders)
 
   "have proper messages for labels" in {
     messages must haveTranslationFor("declaration.declarationHolders.add.another")
@@ -120,10 +121,8 @@ class DeclarationHolderSummaryViewSpec extends UnitViewSpec with ExportsTestHelp
   }
 
   "DeclarationHolder Summary View when filled" should {
-
     onEveryDeclarationJourney() { implicit request =>
       "display one row with data in table" in {
-
         val view = createView(Seq(declarationHolder1))
 
         // check table header
@@ -146,7 +145,6 @@ class DeclarationHolderSummaryViewSpec extends UnitViewSpec with ExportsTestHelp
       }
 
       "display two rows with data in table" in {
-
         val view = createView(Seq(declarationHolder1, declarationHolder2))
 
         // check table header

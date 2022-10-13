@@ -17,8 +17,10 @@
 package views.declaration.summary.sections
 
 import base.Injector
+import controllers.declaration.routes.{DestinationCountryController, RoutingCountriesController}
 import forms.declaration.countries.Country
-import models.{ExportsDeclaration, Mode}
+import models.ExportsDeclaration
+import models.Mode.Draft
 import services.cache.ExportsTestHelper
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.summary.sections.countries_section
@@ -27,7 +29,7 @@ class CountriesSectionViewSpec extends UnitViewSpec with ExportsTestHelper with 
 
   val section = instanceOf[countries_section]
 
-  def view(data: ExportsDeclaration) = section(Mode.Change, data)(messages)
+  def view(data: ExportsDeclaration) = section(Draft, data)(messages)
 
   "Countries section" should {
 
@@ -41,7 +43,7 @@ class CountriesSectionViewSpec extends UnitViewSpec with ExportsTestHelper with 
 
       row must haveSummaryActionsTexts("site.change", "declaration.summary.countries.routingCountries.change")
 
-      row must haveSummaryActionsHref(controllers.declaration.routes.RoutingCountriesController.displayRoutingCountry(Mode.Change))
+      row must haveSummaryActionsHref(RoutingCountriesController.displayRoutingCountry(Draft))
     }
 
     "display single routing country" in {
@@ -76,7 +78,7 @@ class CountriesSectionViewSpec extends UnitViewSpec with ExportsTestHelper with 
 
       row must haveSummaryActionsTexts("site.change", "declaration.summary.countries.routingCountries.change")
 
-      row must haveSummaryActionsHref(controllers.declaration.routes.RoutingCountriesController.displayRoutingCountry(Mode.Change))
+      row must haveSummaryActionsHref(RoutingCountriesController.displayRoutingCountry(Draft))
     }
 
     "not have routing country section when question not answered" in {
@@ -110,7 +112,7 @@ class CountriesSectionViewSpec extends UnitViewSpec with ExportsTestHelper with 
       val row = view(data).getElementsByClass("countryOfDestination-row")
 
       row must haveSummaryActionsTexts("site.change", "declaration.summary.countries.countryOfDestination.change")
-      row must haveSummaryActionsHref(controllers.declaration.routes.DestinationCountryController.displayPage(Mode.Change))
+      row must haveSummaryActionsHref(DestinationCountryController.displayPage(Draft))
     }
   }
 }

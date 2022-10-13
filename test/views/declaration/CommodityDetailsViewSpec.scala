@@ -17,26 +17,25 @@
 package views.declaration
 
 import base.Injector
+import controllers.declaration.routes.FiscalInformationController
 import forms.declaration.CommodityDetails
+import models.DeclarationType
 import models.DeclarationType.DeclarationType
+import models.Mode.Normal
 import models.requests.JourneyRequest
-import models.{DeclarationType, Mode}
 import org.jsoup.nodes.Document
 import play.api.data.Form
-import services.cache.ExportsTestHelper
-import tools.Stubs
 import views.declaration.spec.UnitViewSpec
-import views.helpers.CommonMessages
 import views.html.declaration.commodity_details
 import views.tags.ViewTest
 
 @ViewTest
-class CommodityDetailsViewSpec extends UnitViewSpec with ExportsTestHelper with Stubs with CommonMessages with Injector {
+class CommodityDetailsViewSpec extends UnitViewSpec with Injector {
 
-  private val page = instanceOf[commodity_details]
-  private val itemId = "item1"
-  private def createView(form: Form[CommodityDetails])(implicit request: JourneyRequest[_]): Document =
-    page(Mode.Normal, itemId, form)(request, messages)
+  val page = instanceOf[commodity_details]
+
+  def createView(form: Form[CommodityDetails])(implicit request: JourneyRequest[_]): Document =
+    page(Normal, itemId, form)(request, messages)
 
   // scalastyle:off
   def commodityDetailsView(
@@ -89,9 +88,7 @@ class CommodityDetailsViewSpec extends UnitViewSpec with ExportsTestHelper with 
 
     "display 'Back' button that links to 'Fiscal Information' page with 'fast-forward' enabled" in {
       val backButton = view.getElementById("back-link")
-      backButton.getElementById("back-link") must haveHref(
-        controllers.declaration.routes.FiscalInformationController.displayPage(Mode.Normal, itemId, fastForward = true)
-      )
+      backButton.getElementById("back-link") must haveHref(FiscalInformationController.displayPage(Normal, itemId, true))
     }
 
     "display 'Save and continue' button on page" in {
@@ -102,7 +99,6 @@ class CommodityDetailsViewSpec extends UnitViewSpec with ExportsTestHelper with 
   // scalastyle:on
 
   "Commodity Details View on empty page" when {
-
     for (decType <- DeclarationType.values)
       s"we are on $decType journey" should {
         behave like commodityDetailsView(decType, CommodityDetails.form(decType))
@@ -110,7 +106,6 @@ class CommodityDetailsViewSpec extends UnitViewSpec with ExportsTestHelper with 
   }
 
   "Commodity Details View on populated page" when {
-
     val details = Some(CommodityDetails(Some("1234567890"), Some("Description")))
 
     for (decType <- DeclarationType.values)

@@ -17,28 +17,30 @@
 package views.declaration.fiscalInformation
 
 import base.Injector
+import controllers.declaration.routes.AdditionalProcedureCodesController
 import forms.declaration.FiscalInformation
+import forms.declaration.FiscalInformation.form
+import models.DeclarationType.STANDARD
 import models.Mode
+import models.Mode.Normal
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import play.api.i18n.MessagesApi
-import services.cache.ExportsTestHelper
-import tools.Stubs
 import views.components.gds.Styles
-import views.declaration.spec.UnitViewSpec
+import views.declaration.spec.PageWithButtonsSpec
 import views.html.declaration.fiscalInformation.fiscal_information
 import views.tags.ViewTest
 
 @ViewTest
-class FiscalInformationViewSpec extends UnitViewSpec with ExportsTestHelper with Stubs with Injector {
+class FiscalInformationViewSpec extends PageWithButtonsSpec with Injector {
 
-  private val form: Form[FiscalInformation] = FiscalInformation.form()
-  private val page = instanceOf[fiscal_information]
-  private def createView(itemId: String = "itemId", form: Form[FiscalInformation] = form, mode: Mode = Mode.Normal)(
-    implicit request: JourneyRequest[_]
-  ): Document =
-    page(mode, itemId, form)(request, messages)
+  val page = instanceOf[fiscal_information]
+
+  override val typeAndViewInstance = (STANDARD, page(Normal, itemId, form())(_, _))
+
+  def createView(frm: Form[FiscalInformation] = form(), mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document =
+    page(mode, itemId, frm)(request, messages)
 
   "Fiscal Information View on empty page" should {
 
@@ -74,7 +76,7 @@ class FiscalInformationViewSpec extends UnitViewSpec with ExportsTestHelper with
       }
 
       "display two radio buttons with description (not selected)" in {
-        val view = createView(form = FiscalInformation.form().fill(FiscalInformation("")))
+        val view = createView(form().fill(FiscalInformation("")))
 
         view.getElementById("Yes") must not(beSelected)
 
@@ -88,13 +90,10 @@ class FiscalInformationViewSpec extends UnitViewSpec with ExportsTestHelper with
       }
 
       "display 'Back' button that links to 'Additional Procedure Codes' page" in {
-
         val backButton = view.getElementById("back-link")
 
         backButton must containMessage("site.backToPreviousQuestion")
-        backButton.getElementById("back-link") must haveHref(
-          controllers.declaration.routes.AdditionalProcedureCodesController.displayPage(Mode.Normal, "itemId")
-        )
+        backButton.getElementById("back-link") must haveHref(AdditionalProcedureCodesController.displayPage(Normal, itemId))
       }
 
       val createViewWithMode: Mode => Document = mode => createView(mode = mode)
@@ -105,8 +104,7 @@ class FiscalInformationViewSpec extends UnitViewSpec with ExportsTestHelper with
   "Fiscal Information View for invalid input" should {
     onEveryDeclarationJourney() { implicit request =>
       "display error if nothing is selected" in {
-
-        val view = createView(form = FiscalInformation.form().bind(Map[String, String]()))
+        val view = createView(form().bind(Map[String, String]()))
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#Yes")
@@ -115,8 +113,7 @@ class FiscalInformationViewSpec extends UnitViewSpec with ExportsTestHelper with
       }
 
       "display error if incorrect fiscal information is selected" in {
-
-        val view = createView(form = FiscalInformation.form().fillAndValidate(FiscalInformation("Incorrect")))
+        val view = createView(form().fillAndValidate(FiscalInformation("Incorrect")))
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#Yes")
@@ -129,16 +126,14 @@ class FiscalInformationViewSpec extends UnitViewSpec with ExportsTestHelper with
   "Dispatch Border Transport View when filled" should {
     onEveryDeclarationJourney() { implicit request =>
       "display selected first radio button - Yes" in {
-
-        val view = createView(form = FiscalInformation.form().fill(FiscalInformation("Yes")))
+        val view = createView(form().fill(FiscalInformation("Yes")))
 
         view.getElementById("Yes") must beSelected
         view.getElementById("No") must not(beSelected)
       }
 
       "display selected second radio button - No" in {
-
-        val view = createView(form = FiscalInformation.form().fill(FiscalInformation("No")))
+        val view = createView(form().fill(FiscalInformation("No")))
 
         view.getElementById("Yes") must not(beSelected)
         view.getElementById("No") must beSelected

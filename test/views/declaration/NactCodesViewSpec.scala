@@ -17,33 +17,29 @@
 package views.declaration
 
 import base.Injector
-import forms.common.YesNoAnswer
-import forms.common.YesNoAnswer.YesNoAnswers
+import controllers.declaration.routes.{TaricCodeSummaryController, ZeroRatedForVatController}
+import forms.common.YesNoAnswer.{form, YesNoAnswers}
 import forms.declaration.NactCode
 import forms.declaration.NatureOfTransaction.{BusinessPurchase, HouseRemoval, Sale}
 import models.DeclarationType._
-import models.{DeclarationType, Mode}
+import models.Mode.Normal
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
-import play.api.data.Form
-import services.cache.ExportsTestHelper
-import tools.Stubs
 import views.declaration.spec.UnitViewSpec
-import views.helpers.CommonMessages
 import views.html.declaration.nact_codes
 import views.tags.ViewTest
 
 @ViewTest
-class NactCodesViewSpec extends UnitViewSpec with ExportsTestHelper with Stubs with CommonMessages with Injector {
+class NactCodesViewSpec extends UnitViewSpec with Injector {
 
-  private val page = instanceOf[nact_codes]
-  private val itemId = "item1"
-  private def createView(form: Form[YesNoAnswer], codes: List[NactCode])(implicit request: JourneyRequest[_]): Document =
-    page(Mode.Normal, itemId, form, codes)(request, messages)
+  val page = instanceOf[nact_codes]
+
+  def createView(codes: List[NactCode] = List.empty)(implicit request: JourneyRequest[_]): Document =
+    page(Normal, itemId, form(), codes)(request, messages)
 
   "NACT Code View on empty page" must {
     onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { implicit request =>
-      val view = createView(YesNoAnswer.form(), List.empty)
+      val view = createView()
 
       "display page title" in {
         view.getElementsByTag("h1") must containMessageForElements("declaration.nationalAdditionalCode.header.plural", "0")
@@ -53,6 +49,7 @@ class NactCodesViewSpec extends UnitViewSpec with ExportsTestHelper with Stubs w
         view.getElementById("code_yes").attr("value") mustBe YesNoAnswers.yes
         view.getElementsByAttributeValue("for", "code_yes") must containMessageForElements("site.yes")
       }
+
       "display radio button with No option" in {
         view.getElementById("code_no").attr("value") mustBe YesNoAnswers.no
         view.getElementsByAttributeValue("for", "code_no") must containMessageForElements("site.no")
@@ -62,60 +59,39 @@ class NactCodesViewSpec extends UnitViewSpec with ExportsTestHelper with Stubs w
         val saveButton = view.select("#submit")
         saveButton must containMessageForElements(saveAndContinueCaption)
       }
-
     }
+
     onJourney(SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { implicit request =>
-      val view = createView(YesNoAnswer.form(), List.empty)
       "display 'Back' button that links to 'TARIC Code' page" in {
-        val backButton = view.getElementById("back-link")
-        backButton.getElementById("back-link") must haveHref(
-          controllers.declaration.routes.TaricCodeSummaryController.displayPage(Mode.Normal, itemId)
-        )
+        val backButton = createView().getElementById("back-link")
+        backButton.getElementById("back-link") must haveHref(TaricCodeSummaryController.displayPage(Normal, itemId))
       }
     }
     onJourney(STANDARD) { implicit request =>
       "display 'Back' button" when {
+
         "sale answered to nature-of-transaction" in {
-
-          val view = createView(YesNoAnswer.form(), List.empty)(
-            journeyRequest(aDeclaration(withType(DeclarationType.STANDARD), withNatureOfTransaction(Sale)))
-          )
-
+          val view = createView()(journeyRequest(aDeclaration(withType(STANDARD), withNatureOfTransaction(Sale))))
           val backButton = view.getElementById("back-link")
-          backButton.getElementById("back-link") must haveHref(
-            controllers.declaration.routes.ZeroRatedForVatController.displayPage(Mode.Normal, itemId)
-          )
+          backButton.getElementById("back-link") must haveHref(ZeroRatedForVatController.displayPage(Normal, itemId))
         }
+
         "business purchase answered to nature-of-transaction" in {
-
-          val view = createView(YesNoAnswer.form(), List.empty)(
-            journeyRequest(aDeclaration(withType(DeclarationType.STANDARD), withNatureOfTransaction(BusinessPurchase)))
-          )
-
+          val view = createView()(journeyRequest(aDeclaration(withType(STANDARD), withNatureOfTransaction(BusinessPurchase))))
           val backButton = view.getElementById("back-link")
-          backButton.getElementById("back-link") must haveHref(
-            controllers.declaration.routes.ZeroRatedForVatController.displayPage(Mode.Normal, itemId)
-          )
+          backButton.getElementById("back-link") must haveHref(ZeroRatedForVatController.displayPage(Normal, itemId))
         }
+
         "sale is not answer to nature-of-transaction" in {
-
-          val view = createView(YesNoAnswer.form(), List.empty)(
-            journeyRequest(aDeclaration(withType(DeclarationType.STANDARD), withNatureOfTransaction(HouseRemoval)))
-          )
-
+          val view = createView()(journeyRequest(aDeclaration(withType(STANDARD), withNatureOfTransaction(HouseRemoval))))
           val backButton = view.getElementById("back-link")
-          backButton.getElementById("back-link") must haveHref(
-            controllers.declaration.routes.TaricCodeSummaryController.displayPage(Mode.Normal, itemId)
-          )
+          backButton.getElementById("back-link") must haveHref(TaricCodeSummaryController.displayPage(Normal, itemId))
         }
+
         "nature-of-transaction is empty" in {
-
-          val view = createView(YesNoAnswer.form(), List.empty)
-
+          val view = createView()
           val backButton = view.getElementById("back-link")
-          backButton.getElementById("back-link") must haveHref(
-            controllers.declaration.routes.TaricCodeSummaryController.displayPage(Mode.Normal, itemId)
-          )
+          backButton.getElementById("back-link") must haveHref(TaricCodeSummaryController.displayPage(Normal, itemId))
         }
       }
     }
@@ -125,10 +101,9 @@ class NactCodesViewSpec extends UnitViewSpec with ExportsTestHelper with Stubs w
     val codes = List(NactCode("ABCD"), NactCode("4321"))
 
     onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { implicit request =>
-      val view = createView(YesNoAnswer.form(), codes)
+      val view = createView(codes)
 
       "display page title" in {
-
         view.getElementsByTag("h1") must containMessageForElements("declaration.nationalAdditionalCode.header.plural", "2")
       }
 
@@ -155,10 +130,9 @@ class NactCodesViewSpec extends UnitViewSpec with ExportsTestHelper with Stubs w
     val codes = List(NactCode("ABCD"))
 
     onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { implicit request =>
-      val view = createView(YesNoAnswer.form(), codes)
+      val view = createView(codes)
 
       "display page title" in {
-
         view.getElementsByTag("h1") must containMessageForElements("declaration.nationalAdditionalCode.header.singular")
       }
     }

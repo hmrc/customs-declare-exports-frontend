@@ -17,38 +17,30 @@
 package views.declaration.fiscalInformation
 
 import base.Injector
-import forms.common.YesNoAnswer
+import controllers.declaration.routes.{AdditionalFiscalReferencesRemoveController, AdditionalProcedureCodesController}
+import forms.common.YesNoAnswer.form
 import forms.declaration.AdditionalFiscalReference
 import models.Mode
+import models.Mode.Normal
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
-import play.api.data.Form
-import services.cache.ExportItemIdGeneratorService
-import tools.Stubs
 import utils.ListItem
 import views.declaration.spec.UnitViewSpec
-import views.helpers.CommonMessages
 import views.html.declaration.fiscalInformation.additional_fiscal_references
 import views.tags.ViewTest
 
 @ViewTest
-class AdditionalFiscalReferencesViewSpec extends UnitViewSpec with Stubs with CommonMessages with Injector {
+class AdditionalFiscalReferencesViewSpec extends UnitViewSpec with Injector {
 
-  private val form: Form[YesNoAnswer] = YesNoAnswer.form()
+  val page = instanceOf[additional_fiscal_references]
 
-  private val additionalFiscalReferencesPage = instanceOf[additional_fiscal_references]
-
-  val itemId = new ExportItemIdGeneratorService().generateItemId()
-
-  private def createView(form: Form[YesNoAnswer] = form, references: Seq[AdditionalFiscalReference], mode: Mode = Mode.Normal)(
-    implicit request: JourneyRequest[_]
-  ): Document =
-    additionalFiscalReferencesPage(mode, itemId, form, references)
+  def createView(references: Seq[AdditionalFiscalReference], mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document =
+    page(mode, itemId, form(), references)
 
   "Additional Fiscal References View" should {
     onEveryDeclarationJourney() { implicit request =>
       val additionalReferences = AdditionalFiscalReference("FR", "12345")
-      val view = createView(references = Seq(additionalReferences))
+      val view = createView(Seq(additionalReferences))
 
       "display page title" in {
         view.getElementsByTag("h1") must containMessageForElements("declaration.additionalFiscalReferences.table.heading", "0")
@@ -59,14 +51,13 @@ class AdditionalFiscalReferencesViewSpec extends UnitViewSpec with Stubs with Co
       }
 
       "display 'Back' button to Additional Procedure Codes page" in {
-
         val backButton = view.getElementById("back-link")
 
         backButton must containMessage(backToPreviousQuestionCaption)
-        backButton must haveHref(controllers.declaration.routes.AdditionalProcedureCodesController.displayPage(Mode.Normal, itemId))
+        backButton must haveHref(AdditionalProcedureCodesController.displayPage(Normal, itemId))
       }
 
-      val createViewWithMode: Mode => Document = mode => createView(references = Seq(additionalReferences), mode = mode)
+      val createViewWithMode: Mode => Document = mode => createView(Seq(additionalReferences), mode = mode)
       checkAllSaveButtonsAreDisplayed(createViewWithMode)
 
       "display table header" in {
@@ -86,10 +77,9 @@ class AdditionalFiscalReferencesViewSpec extends UnitViewSpec with Stubs with Co
       "display remove link" in {
         val removeLink = view.getElementsByTag("tr").select(".govuk-link").get(0)
         removeLink must containMessage("site.remove", ("declaration.additionalInformation.table.remove.hint", "12345"))
-        removeLink must haveHref(
-          controllers.declaration.routes.AdditionalFiscalReferencesRemoveController
-            .displayPage(Mode.Normal, itemId, ListItem.createId(0, additionalReferences))
-        )
+
+        val href = AdditionalFiscalReferencesRemoveController.displayPage(Normal, itemId, ListItem.createId(0, additionalReferences))
+        removeLink must haveHref(href)
       }
     }
   }

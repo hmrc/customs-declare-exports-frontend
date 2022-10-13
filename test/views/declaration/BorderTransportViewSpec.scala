@@ -18,27 +18,28 @@ package views.declaration
 
 import base.Injector
 import controllers.declaration.routes.DepartureTransportController
-import forms.declaration.BorderTransport
+import forms.declaration.BorderTransport.form
 import forms.declaration.TransportCodes.transportCodesOnBorderTransport
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
+import models.DeclarationType.STANDARD
 import models.Mode
+import models.Mode.Normal
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
-import services.cache.ExportsTestHelper
-import tools.Stubs
-import views.declaration.spec.UnitViewSpec
-import views.helpers.CommonMessages
+import views.declaration.spec.PageWithButtonsSpec
 import views.html.declaration.border_transport
 import views.tags.ViewTest
 
 @ViewTest
-class BorderTransportViewSpec extends UnitViewSpec with ExportsTestHelper with Stubs with Injector with CommonMessages {
+class BorderTransportViewSpec extends PageWithButtonsSpec with Injector {
 
-  private val page = instanceOf[border_transport]
+  val prefix = "declaration.transportInformation.meansOfTransport.crossingTheBorder"
 
-  private def createView(mode: Mode = Mode.Normal)(implicit request: JourneyRequest[_]): Document = page(mode, BorderTransport.form)
+  val page = instanceOf[border_transport]
 
-  private val prefix = "declaration.transportInformation.meansOfTransport.crossingTheBorder"
+  override val typeAndViewInstance = (STANDARD, page(Normal, form)(_, _))
+
+  def createView(mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document = page(mode, form)
 
   "Border Transport view" when {
 

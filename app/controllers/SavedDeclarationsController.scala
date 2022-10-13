@@ -54,6 +54,7 @@ class SavedDeclarationsController @Inject() (
           Redirect(SummaryController.displayPage(Mode.Draft))
             .addingToSession(ExportsSessionKeys.declarationId -> id)
         )
+
       case None => Future.successful(Redirect(SavedDeclarationsController.displayDeclarations()))
     }
   }

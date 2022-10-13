@@ -17,31 +17,40 @@
 package views.declaration
 
 import base.Injector
+import controllers.declaration.routes.{
+  CommodityDetailsController,
+  NactCodeSummaryController,
+  StatisticalValueController,
+  UNDangerousGoodsCodeController
+}
 import forms.common.YesNoAnswer
+import forms.common.YesNoAnswer.form
 import forms.declaration.{IsExs, PackageInformation}
 import models.DeclarationType._
 import models.Mode
+import models.Mode.Normal
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
+import org.scalatest.Assertion
 import play.api.data.Form
 import play.api.mvc.Call
-import services.cache.ExportsTestHelper
-import tools.Stubs
-import views.declaration.spec.UnitViewSpec
+import views.declaration.spec.PageWithButtonsSpec
 import views.html.declaration.packageInformation.package_information
 import views.tags.ViewTest
 
 @ViewTest
-class PackageInformationViewSpec extends UnitViewSpec with ExportsTestHelper with Stubs with Injector {
+class PackageInformationViewSpec extends PageWithButtonsSpec with Injector {
 
-  private val page = instanceOf[package_information]
-  private val packageInformation = PackageInformation("ID", Some("1A"), Some(10), Some("packs"))
+  override val typeAndViewInstance =
+    (STANDARD, page(Normal, itemId, form(), List(PackageInformationViewSpec.packageInformation))(_, _))
 
-  private def createView(
-    mode: Mode = Mode.Normal,
-    form: Form[YesNoAnswer] = YesNoAnswer.form(),
-    packages: Seq[PackageInformation] = Seq(packageInformation)
-  )(implicit request: JourneyRequest[_]): Document = page(mode, "itemId", form, packages)(request, messages)
+  val page = instanceOf[package_information]
+
+  def createView(
+    frm: Form[YesNoAnswer] = form(),
+    packages: Seq[PackageInformation] = List(PackageInformationViewSpec.packageInformation),
+    mode: Mode = Normal
+  )(implicit request: JourneyRequest[_]): Document = page(mode, itemId, frm, packages)(request, messages)
 
   "have proper messages for labels" in {
     messages must haveTranslationFor("declaration.packageInformation.title")
@@ -56,11 +65,12 @@ class PackageInformationViewSpec extends UnitViewSpec with ExportsTestHelper wit
   }
 
   "Package Information View back link" should {
+
     onJourney(STANDARD, SUPPLEMENTARY) { implicit request =>
       "display back link" in {
         val view = createView()
         view must containElementWithID("back-link")
-        view.getElementById("back-link") must haveHref(controllers.declaration.routes.StatisticalValueController.displayPage(Mode.Normal, "itemId"))
+        view.getElementById("back-link") must haveHref(StatisticalValueController.displayPage(Normal, itemId))
       }
     }
 
@@ -68,25 +78,24 @@ class PackageInformationViewSpec extends UnitViewSpec with ExportsTestHelper wit
       "display back link" in {
         val view = createView()
         view must containElementWithID("back-link")
-        view.getElementById("back-link") must haveHref(controllers.declaration.routes.NactCodeSummaryController.displayPage(Mode.Normal, "itemId"))
+        view.getElementById("back-link") must haveHref(NactCodeSummaryController.displayPage(Normal, itemId))
       }
     }
 
     onJourney(CLEARANCE) { implicit request =>
-      def viewHasBackLinkForExsStatus(exsStatus: String, call: Call) = {
-        val requestWithCache =
-          journeyRequest(aDeclarationAfter(request.cacheModel, withIsExs(IsExs(exsStatus))))
+      def viewHasBackLinkForExsStatus(exsStatus: String, call: Call): Assertion = {
+        val requestWithCache = journeyRequest(aDeclarationAfter(request.cacheModel, withIsExs(IsExs(exsStatus))))
         val view = createView()(requestWithCache)
         view must containElementWithID("back-link")
         view.getElementById("back-link") must haveHref(call)
       }
 
       "display back link when Is EXS is 'Yes'" in {
-        viewHasBackLinkForExsStatus("Yes", controllers.declaration.routes.UNDangerousGoodsCodeController.displayPage(Mode.Normal, "itemId"))
+        viewHasBackLinkForExsStatus("Yes", UNDangerousGoodsCodeController.displayPage(Normal, itemId))
       }
 
       "display back link when Is EXS is 'No'" in {
-        viewHasBackLinkForExsStatus("No", controllers.declaration.routes.CommodityDetailsController.displayPage(Mode.Normal, "itemId"))
+        viewHasBackLinkForExsStatus("No", CommodityDetailsController.displayPage(Normal, itemId))
       }
     }
   }
@@ -113,10 +122,8 @@ class PackageInformationViewSpec extends UnitViewSpec with ExportsTestHelper wit
   }
 
   "Package Information View when filled" should {
-
     onEveryDeclarationJourney() { implicit request =>
       "display one row with data in table" in {
-
         val view = createView(packages = Seq(PackageInformation("ID", Some("PA"), Some(100), Some("Shipping Mark"))))
 
         // check table header
@@ -134,7 +141,6 @@ class PackageInformationViewSpec extends UnitViewSpec with ExportsTestHelper wit
       }
 
       "display two rows with data in table" in {
-
         val view = createView(packages =
           Seq(
             PackageInformation("ID1", Some("PA"), Some(100), Some("Shipping Mark")),
@@ -164,6 +170,6 @@ class PackageInformationViewSpec extends UnitViewSpec with ExportsTestHelper wit
 }
 
 object PackageInformationViewSpec {
-  val id = "pkgId"
-  val packageInformation: PackageInformation = PackageInformation(id, Some("1A"), Some(1), Some("Marks"))
+
+  val packageInformation: PackageInformation = PackageInformation("pkgId", Some("1A"), Some(1), Some("Marks"))
 }

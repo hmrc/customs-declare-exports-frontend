@@ -20,34 +20,34 @@ import base.Injector
 import config.AppConfig
 import controllers.declaration.routes.{TaricCodeSummaryController, ZeroRatedForVatController}
 import forms.declaration.NactCodeFirst
+import forms.declaration.NactCodeFirst.form
 import forms.declaration.NatureOfTransaction.{BusinessPurchase, Construction, Sale}
+import models.DeclarationType.STANDARD
+import models.Mode.Normal
 import models.requests.JourneyRequest
 import models.{DeclarationType, Mode}
 import org.jsoup.nodes.Document
 import play.api.data.Form
-import services.cache.ExportsTestHelper
-import tools.Stubs
-import views.declaration.spec.UnitViewSpec
-import views.helpers.CommonMessages
+import views.declaration.spec.PageWithButtonsSpec
 import views.html.declaration.nact_code_add_first
 import views.tags.ViewTest
 
 @ViewTest
-class NactCodeAddFirstViewSpec extends UnitViewSpec with ExportsTestHelper with Stubs with CommonMessages with Injector {
+class NactCodeAddFirstViewSpec extends PageWithButtonsSpec with Injector {
 
-  private val appConfig = instanceOf[AppConfig]
+  val appConfig = instanceOf[AppConfig]
 
-  private val prefix = "declaration.nationalAdditionalCode"
+  val prefix = "declaration.nationalAdditionalCode"
 
-  private val itemId = "item1"
-  private val form: Form[NactCodeFirst] = NactCodeFirst.form()
-  private val page = instanceOf[nact_code_add_first]
+  val page = instanceOf[nact_code_add_first]
 
-  private def createView(form: Form[NactCodeFirst] = form, mode: Mode = Mode.Normal)(implicit request: JourneyRequest[_]): Document =
-    page(mode, itemId, form)(request, messages)
+  override val typeAndViewInstance = (STANDARD, page(Normal, itemId, form())(_, _))
+
+  def createView(frm: Form[NactCodeFirst] = form(), mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document =
+    page(mode, itemId, frm)(request, messages)
 
   "Nact Code Add First View" should {
-    val view = createView()(journeyRequest())
+    val view = createView()
 
     "display page title" in {
       view.getElementsByTag("h1") must containMessageForElements(s"$prefix.addfirst.header")
@@ -68,41 +68,40 @@ class NactCodeAddFirstViewSpec extends UnitViewSpec with ExportsTestHelper with 
     "display 'Back' button" when {
 
       "STANDARD journey" when {
-        "answered sale in nature of transaction" in {
 
+        "answered sale in nature of transaction" in {
           val view = createView()(journeyRequest(aDeclaration(withType(DeclarationType.STANDARD), withNatureOfTransaction(Sale))))
 
           val backLink = view.getElementById("back-link")
-          backLink.getElementById("back-link") must haveHref(ZeroRatedForVatController.displayPage(Mode.Normal, itemId))
+          backLink.getElementById("back-link") must haveHref(ZeroRatedForVatController.displayPage(Normal, itemId))
         }
-        "answered business purchase nature of transaction" in {
 
+        "answered business purchase nature of transaction" in {
           val view = createView()(journeyRequest(aDeclaration(withType(DeclarationType.STANDARD), withNatureOfTransaction(BusinessPurchase))))
 
           val backLink = view.getElementById("back-link")
-          backLink.getElementById("back-link") must haveHref(ZeroRatedForVatController.displayPage(Mode.Normal, itemId))
+          backLink.getElementById("back-link") must haveHref(ZeroRatedForVatController.displayPage(Normal, itemId))
         }
-        "answered other nature of transaction" in {
 
+        "answered other nature of transaction" in {
           val view = createView()(journeyRequest(aDeclaration(withType(DeclarationType.STANDARD), withNatureOfTransaction(Construction))))
 
           val backLink = view.getElementById("back-link")
-          backLink.getElementById("back-link") must haveHref(TaricCodeSummaryController.displayPage(Mode.Normal, itemId))
+          backLink.getElementById("back-link") must haveHref(TaricCodeSummaryController.displayPage(Normal, itemId))
         }
-        "not answered nature of transaction" in {
 
+        "not answered nature of transaction" in {
           val view = createView()(journeyRequest(aDeclaration(withType(DeclarationType.STANDARD))))
 
           val backLink = view.getElementById("back-link")
-          backLink.getElementById("back-link") must haveHref(TaricCodeSummaryController.displayPage(Mode.Normal, itemId))
+          backLink.getElementById("back-link") must haveHref(TaricCodeSummaryController.displayPage(Normal, itemId))
         }
       }
 
       onJourney(DeclarationType.SUPPLEMENTARY, DeclarationType.OCCASIONAL, DeclarationType.SIMPLIFIED) { implicit request =>
         s"${request.declarationType} journey" in {
-
           val backLink = createView().getElementById("back-link")
-          backLink.getElementById("back-link") must haveHref(TaricCodeSummaryController.displayPage(Mode.Normal, itemId))
+          backLink.getElementById("back-link") must haveHref(TaricCodeSummaryController.displayPage(Normal, itemId))
         }
       }
     }
@@ -113,10 +112,8 @@ class NactCodeAddFirstViewSpec extends UnitViewSpec with ExportsTestHelper with 
 
   "Nact Code Add First View for invalid input" should {
 
-    implicit val request = journeyRequest()
-
     "display errors when invalid" in {
-      val view = createView(NactCodeFirst.form().fillAndValidate(NactCodeFirst(Some("12345678901234567890"))))
+      val view = createView(form().fillAndValidate(NactCodeFirst(Some("12345678901234567890"))))
 
       view must haveGovukGlobalErrorSummary
       view must containErrorElementWithTagAndHref("a", "#nactCode")
@@ -124,7 +121,7 @@ class NactCodeAddFirstViewSpec extends UnitViewSpec with ExportsTestHelper with 
     }
 
     "display errors when empty" in {
-      val view = createView(NactCodeFirst.form().fillAndValidate(NactCodeFirst(Some(""))))
+      val view = createView(form().fillAndValidate(NactCodeFirst(Some(""))))
 
       view must haveGovukGlobalErrorSummary
       view must containErrorElementWithTagAndHref("a", "#nactCode")
@@ -134,7 +131,7 @@ class NactCodeAddFirstViewSpec extends UnitViewSpec with ExportsTestHelper with 
 
   "Nact Code Add First View when filled" should {
     "display data in nact code input" in {
-      val view = createView(NactCodeFirst.form().fill(NactCodeFirst(Some("VATR"))))(journeyRequest())
+      val view = createView(form().fill(NactCodeFirst(Some("VATR"))))(journeyRequest())
       view.getElementById("nactCode").attr("value") must be("VATR")
     }
   }

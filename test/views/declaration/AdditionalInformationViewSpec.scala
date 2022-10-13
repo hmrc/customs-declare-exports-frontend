@@ -18,39 +18,30 @@ package views.declaration
 
 import base.Injector
 import controllers.declaration.routes.{AdditionalInformationChangeController, AdditionalInformationRemoveController}
-import forms.common.YesNoAnswer
+import forms.common.YesNoAnswer.form
 import forms.declaration.AdditionalInformation
+import models.Mode
+import models.Mode.Normal
 import models.requests.JourneyRequest
-import models.{DeclarationType, Mode}
 import org.jsoup.nodes.Document
-import play.api.data.Form
 import play.api.mvc.Call
-import services.cache.ExportsTestHelper
-import tools.Stubs
 import utils.ListItem
 import views.declaration.spec.UnitViewSpec
-import views.helpers.CommonMessages
 import views.html.declaration.additionalInformation.additional_information
 import views.tags.ViewTest
 
 @ViewTest
-class AdditionalInformationViewSpec extends UnitViewSpec with ExportsTestHelper with CommonMessages with Stubs with Injector {
+class AdditionalInformationViewSpec extends UnitViewSpec with Injector {
 
-  private val itemId = "a7sc78"
-  private val url = "/test"
+  val url = "/test"
 
-  private val form: Form[YesNoAnswer] = YesNoAnswer.form()
-  private val page = instanceOf[additional_information]
+  val page = instanceOf[additional_information]
 
-  private def createView(form: Form[YesNoAnswer] = form, cachedData: Seq[AdditionalInformation] = Seq.empty, mode: Mode = Mode.Normal)(
-    implicit request: JourneyRequest[_]
-  ): Document =
-    page(mode, itemId, form, cachedData, Call("GET", url))(request, messages)
+  def createView(cachedData: Seq[AdditionalInformation] = Seq.empty, mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document =
+    page(mode, itemId, form(), cachedData, Call("GET", url))(request, messages)
 
   "Additional Information View" should {
-
     "have a proper messages" in {
-
       messages must haveTranslationFor("declaration.additionalInformation.table.heading")
       messages must haveTranslationFor("declaration.additionalInformation.table.multiple.heading")
       messages must haveTranslationFor("declaration.additionalInformation.code")
@@ -63,7 +54,6 @@ class AdditionalInformationViewSpec extends UnitViewSpec with ExportsTestHelper 
   }
 
   "Additional Information View on empty page" should {
-
     onEveryDeclarationJourney() { implicit request =>
       "display 'Back' button that links to given url" in {
         val backButton = createView().getElementById("back-link")
@@ -87,9 +77,9 @@ class AdditionalInformationViewSpec extends UnitViewSpec with ExportsTestHelper 
   "Additional Information View when filled" should {
 
     "display one row with data in table" which {
-      onEveryDeclarationJourney() { implicit request =>
+      onStandard { implicit request =>
         val additionalInformation = AdditionalInformation("12345", "12345678")
-        val view = page(Mode.Normal, itemId, form, Seq(additionalInformation), Call("GET", url))(journeyRequest(DeclarationType.STANDARD), messages)
+        val view = createView(List(additionalInformation))
         val row = view.selectFirst("#additional_information tbody tr")
 
         "has Code header" in {
@@ -128,7 +118,7 @@ class AdditionalInformationViewSpec extends UnitViewSpec with ExportsTestHelper 
           removeLink must containMessage("site.change")
           removeLink must containMessage("declaration.additionalInformation.table.change.hint", "12345")
 
-          val call = AdditionalInformationChangeController.displayPage(Mode.Normal, itemId, ListItem.createId(0, additionalInformation))
+          val call = AdditionalInformationChangeController.displayPage(Normal, itemId, ListItem.createId(0, additionalInformation))
           removeLink must haveHref(call)
         }
 
@@ -138,10 +128,9 @@ class AdditionalInformationViewSpec extends UnitViewSpec with ExportsTestHelper 
           removeLink must containMessage("site.remove")
           removeLink must containMessage("declaration.additionalInformation.table.remove.hint", "12345")
 
-          val call = AdditionalInformationRemoveController.displayPage(Mode.Normal, itemId, ListItem.createId(0, additionalInformation))
+          val call = AdditionalInformationRemoveController.displayPage(Normal, itemId, ListItem.createId(0, additionalInformation))
           removeLink must haveHref(call)
         }
-
       }
     }
   }

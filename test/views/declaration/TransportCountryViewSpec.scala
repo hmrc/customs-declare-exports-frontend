@@ -22,7 +22,7 @@ import controllers.declaration.routes.{BorderTransportController, DepartureTrans
 import controllers.helpers.TransportSectionHelper.nonPostalOrFTIModeOfTransportCodes
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.InlandOrBorder.Border
-import forms.declaration.ModeOfTransportCode.RoRo
+import forms.declaration.ModeOfTransportCode.{Maritime, RoRo}
 import forms.declaration.TransportCountry
 import forms.declaration.TransportCountry._
 import models.DeclarationType.{STANDARD, SUPPLEMENTARY}
@@ -33,12 +33,9 @@ import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
-import org.scalatest.BeforeAndAfterEach
 import play.api.data.Form
 import play.api.libs.json.Json
-import services.cache.ExportsTestHelper
-import tools.Stubs
-import views.declaration.spec.UnitViewSpec
+import views.declaration.spec.PageWithButtonsSpec
 import views.helpers.ModeOfTransportCodeHelper
 import views.html.declaration.transport_country
 import views.tags.ViewTest
@@ -46,7 +43,7 @@ import views.tags.ViewTest
 import scala.collection.immutable.ListMap
 
 @ViewTest
-class TransportCountryViewSpec extends UnitViewSpec with ExportsTestHelper with Stubs with Injector with BeforeAndAfterEach {
+class TransportCountryViewSpec extends PageWithButtonsSpec with Injector {
 
   implicit val codeListConnector = mock[CodeListConnector]
 
@@ -60,12 +57,16 @@ class TransportCountryViewSpec extends UnitViewSpec with ExportsTestHelper with 
     super.afterEach()
   }
 
-  private val page = instanceOf[transport_country]
-  private def form(transportMode: String): Form[TransportCountry] = TransportCountry.form(transportMode)
+  def form(transportMode: String): Form[TransportCountry] = TransportCountry.form(transportMode)
 
-  private def createView(form: Form[TransportCountry], transportMode: String, mode: Mode = Mode.Normal)(
-    implicit request: JourneyRequest[_]
-  ): Document =
+  val page = instanceOf[transport_country]
+
+  override val typeAndViewInstance = {
+    val maritime = ModeOfTransportCodeHelper.transportMode(Some(Maritime))
+    (STANDARD, page(Normal, maritime, form(maritime))(_, _))
+  }
+
+  def createView(form: Form[TransportCountry], transportMode: String, mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document =
     page(mode, transportMode, form)(request, messages)
 
   "TransportCountry View" when {

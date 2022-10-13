@@ -18,35 +18,36 @@ package views.declaration
 
 import base.Injector
 import forms.declaration.PackageInformation
+import forms.declaration.PackageInformation.form
+import models.DeclarationType.STANDARD
 import models.Mode
+import models.Mode.Normal
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import org.scalatest.Inspectors.forAll
 import play.api.data.Form
 import services.PackageTypesService
 import services.cache.ExportsTestHelper
-import tools.Stubs
-import views.declaration.spec.UnitViewSpec
-import views.helpers.CommonMessages
+import views.declaration.spec.PageWithButtonsSpec
 import views.html.declaration.packageInformation.package_information_change
 import views.tags.ViewTest
 
 @ViewTest
-class PackageInformationChangeViewSpec extends UnitViewSpec with ExportsTestHelper with Stubs with CommonMessages with Injector {
+class PackageInformationChangeViewSpec extends PageWithButtonsSpec with ExportsTestHelper with Injector {
 
   import PackageInformationViewSpec._
 
-  private val itemId = "item1"
-  private val packageInfoId = "id"
-  private implicit val packageTypesService = instanceOf[PackageTypesService]
+  val packageInfoId = "id"
+  implicit val packageTypesService = instanceOf[PackageTypesService]
 
-  private def form(): Form[PackageInformation] = PackageInformation.form()
-  private val page = instanceOf[package_information_change]
+  val page = instanceOf[package_information_change]
 
-  private def createView(withForm: Option[Form[PackageInformation]] = None, packages: Seq[PackageInformation] = Seq.empty, mode: Mode = Mode.Normal)(
+  override val typeAndViewInstance = (STANDARD, page(Normal, itemId, form(), packageInfoId, Seq.empty)(_, _))
+
+  def createView(frm: Form[PackageInformation] = form(), packages: Seq[PackageInformation] = Seq.empty, mode: Mode = Normal)(
     implicit request: JourneyRequest[_]
   ): Document =
-    page(mode, itemId, withForm.getOrElse(form()), packageInfoId, packages)(request, messages)
+    page(mode, itemId, frm, packageInfoId, packages)(request, messages)
 
   "PackageInformation Change View" should {
 
@@ -71,7 +72,7 @@ class PackageInformationChangeViewSpec extends UnitViewSpec with ExportsTestHelp
         val backLinkContainer = createView(packages = Seq(packageInformation)).getElementById("back-link")
 
         backLinkContainer.getElementById("back-link") must haveHref(
-          controllers.declaration.routes.PackageInformationSummaryController.displayPage(Mode.Normal, itemId)
+          controllers.declaration.routes.PackageInformationSummaryController.displayPage(Normal, itemId)
         )
       }
 
@@ -107,7 +108,7 @@ class PackageInformationChangeViewSpec extends UnitViewSpec with ExportsTestHelp
   "PackageInformation Change View for invalid input" should {
     onEveryDeclarationJourney() { implicit request =>
       "display error if nothing is entered" in {
-        val view = createView(Some(form.fillAndValidate(PackageInformation("id", None, None, None))))
+        val view = createView(form().fillAndValidate(PackageInformation("id", None, None, None)))
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#typesOfPackages")
@@ -120,7 +121,7 @@ class PackageInformationChangeViewSpec extends UnitViewSpec with ExportsTestHelp
       }
 
       "display error if incorrect PackageInformation is entered" in {
-        val view = createView(Some(form.fillAndValidate(PackageInformation("id", Some("invalid"), Some(1), Some("wrong!")))))
+        val view = createView(form().fillAndValidate(PackageInformation("id", Some("invalid"), Some(1), Some("wrong!"))))
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#typesOfPackages")
@@ -135,9 +136,7 @@ class PackageInformationChangeViewSpec extends UnitViewSpec with ExportsTestHelp
   "PackageInformation Change View when filled" should {
     onEveryDeclarationJourney() { implicit request =>
       "display data in PackageInformation code input" in {
-
-        val view = createView(Some(form.fill(packageInformation)))
-
+        val view = createView(form().fill(packageInformation))
         view.getElementById("typesOfPackages").attr("value") must be(packageInformation.typesOfPackages.get)
         view.getElementById("numberOfPackages").attr("value") must be(packageInformation.numberOfPackages.get.toString)
         view.getElementById("shippingMarks").attr("value") must be(packageInformation.shippingMarks.get)

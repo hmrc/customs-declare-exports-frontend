@@ -18,25 +18,26 @@ package views.declaration
 
 import base.Injector
 import forms.declaration.NactCode
+import forms.declaration.NactCode.form
+import models.DeclarationType.STANDARD
 import models.Mode
+import models.Mode.Normal
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import services.cache.ExportsTestHelper
-import tools.Stubs
-import views.declaration.spec.UnitViewSpec
-import views.helpers.CommonMessages
+import views.declaration.spec.PageWithButtonsSpec
 import views.html.declaration.nact_code_add
 import views.tags.ViewTest
 
 @ViewTest
-class NactCodeAddViewSpec extends UnitViewSpec with ExportsTestHelper with Stubs with CommonMessages with Injector {
+class NactCodeAddViewSpec extends PageWithButtonsSpec with ExportsTestHelper with Injector {
 
-  private val itemId = "item1"
-  private val form: Form[NactCode] = NactCode.form()
-  private val page = instanceOf[nact_code_add]
+  val page = instanceOf[nact_code_add]
 
-  private def createView(form: Form[NactCode] = form, mode: Mode = Mode.Normal): Document =
-    page(mode, itemId, form)(journeyRequest(), messages)
+  override val typeAndViewInstance = (STANDARD, page(Normal, itemId, form())(_, _))
+
+  private def createView(frm: Form[NactCode] = form(), mode: Mode = Normal): Document =
+    page(mode, itemId, frm)(journeyRequest(), messages)
 
   "Nact Code Add View" should {
     val view = createView()
@@ -49,7 +50,7 @@ class NactCodeAddViewSpec extends UnitViewSpec with ExportsTestHelper with Stubs
       val backLinkContainer = view.getElementById("back-link")
 
       backLinkContainer.getElementById("back-link") must haveHref(
-        controllers.declaration.routes.NactCodeSummaryController.displayPage(Mode.Normal, itemId)
+        controllers.declaration.routes.NactCodeSummaryController.displayPage(Normal, itemId)
       )
     }
 
@@ -60,7 +61,7 @@ class NactCodeAddViewSpec extends UnitViewSpec with ExportsTestHelper with Stubs
   "Nact Code Add View for invalid input" should {
 
     "display error if nothing is entered" in {
-      val view = createView(NactCode.form().fillAndValidate(NactCode("")))
+      val view = createView(form().fillAndValidate(NactCode("")))
 
       view must haveGovukGlobalErrorSummary
       view must containErrorElementWithTagAndHref("a", "#nactCode")
@@ -69,7 +70,7 @@ class NactCodeAddViewSpec extends UnitViewSpec with ExportsTestHelper with Stubs
     }
 
     "display error if incorrect nact code is entered" in {
-      val view = createView(NactCode.form().fillAndValidate(NactCode("12345678901234567890")))
+      val view = createView(form().fillAndValidate(NactCode("12345678901234567890")))
 
       view must haveGovukGlobalErrorSummary
       view must containErrorElementWithTagAndHref("a", "#nactCode")
@@ -80,11 +81,8 @@ class NactCodeAddViewSpec extends UnitViewSpec with ExportsTestHelper with Stubs
   }
 
   "Nact Code Add View when filled" should {
-
     "display data in Nact code input" in {
-
-      val view = createView(NactCode.form().fill(NactCode("VATR")))
-
+      val view = createView(form().fill(NactCode("VATR")))
       view.getElementById("nactCode").attr("value") must be("VATR")
     }
   }

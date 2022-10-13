@@ -18,28 +18,31 @@ package views.declaration
 
 import base.Injector
 import forms.common.YesNoAnswer
+import forms.common.YesNoAnswer.form
 import forms.declaration.Seal
+import models.DeclarationType.STANDARD
 import models.Mode
+import models.Mode.Normal
 import org.jsoup.nodes.Document
 import play.api.data.Form
-import tools.Stubs
 import views.components.gds.Styles
-import views.declaration.spec.UnitViewSpec
-import views.helpers.CommonMessages
+import views.declaration.spec.PageWithButtonsSpec
 import views.html.declaration.seal_summary
 import views.tags.ViewTest
 
 @ViewTest
-class SealSummaryViewSpec extends UnitViewSpec with Stubs with CommonMessages with Injector {
+class SealSummaryViewSpec extends PageWithButtonsSpec with Injector {
 
   val containerId = "212374"
   val sealId = "76434574"
   val seal = Seal(sealId)
-  private val form: Form[YesNoAnswer] = YesNoAnswer.form()
-  private val page = instanceOf[seal_summary]
 
-  private def createView(form: Form[YesNoAnswer] = form, seals: Seq[Seal] = Seq(seal), mode: Mode = Mode.Normal): Document =
-    page(mode, form, containerId, seals)(journeyRequest(), messages)
+  val page = instanceOf[seal_summary]
+
+  override val typeAndViewInstance = (STANDARD, page(Normal, form(), containerId, Seq(seal))(_, _))
+
+  def createView(frm: Form[YesNoAnswer] = form(), seals: Seq[Seal] = Seq(seal), mode: Mode = Normal): Document =
+    page(mode, frm, containerId, seals)(journeyRequest(), messages)
 
   "Seal Summary View" should {
     val view = createView()
@@ -86,7 +89,7 @@ class SealSummaryViewSpec extends UnitViewSpec with Stubs with CommonMessages wi
 
       backLinkContainer must containMessage(backToPreviousQuestionCaption)
       backLinkContainer.getElementById("back-link") must haveHref(
-        controllers.declaration.routes.TransportContainerController.displayContainerSummary(Mode.Normal)
+        controllers.declaration.routes.TransportContainerController.displayContainerSummary(Normal)
       )
     }
 
@@ -95,15 +98,13 @@ class SealSummaryViewSpec extends UnitViewSpec with Stubs with CommonMessages wi
   }
 
   "Seal Summary View for invalid input" should {
-
     "display error if nothing is entered" in {
-      val view = createView(YesNoAnswer.form().bind(Map[String, String]()))
+      val view = createView(form().bind(Map[String, String]()))
 
       view must haveGovukGlobalErrorSummary
       view must containErrorElementWithTagAndHref("a", "#code_yes")
 
       view must containErrorElementWithMessageKey("error.yesNo.required")
     }
-
   }
 }

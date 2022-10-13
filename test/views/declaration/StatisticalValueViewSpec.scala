@@ -18,32 +18,30 @@ package views.declaration
 
 import base.Injector
 import config.AppConfig
+import controllers.declaration.routes.NactCodeSummaryController
 import forms.declaration.StatisticalValue
+import forms.declaration.StatisticalValue.form
+import models.DeclarationType.STANDARD
 import models.Mode
-import models.declaration.ExportItem
+import models.Mode.Normal
 import org.jsoup.nodes.Document
 import org.scalatest.Inspectors.forAll
 import play.api.data.Form
-import services.cache.ExportsTestHelper
-import tools.Stubs
-import views.declaration.spec.UnitViewSpec
+import views.declaration.spec.PageWithButtonsSpec
 import views.html.declaration.statistical_value
 import views.tags.ViewTest
 
 @ViewTest
-class StatisticalValueViewSpec extends UnitViewSpec with ExportsTestHelper with Stubs with Injector {
+class StatisticalValueViewSpec extends PageWithButtonsSpec with Injector {
 
-  private val appConfig = instanceOf[AppConfig]
+  val appConfig = instanceOf[AppConfig]
 
-  private val page = instanceOf[statistical_value]
-  private val form: Form[StatisticalValue] = StatisticalValue.form()
+  val page = instanceOf[statistical_value]
 
-  private def createView(
-    mode: Mode = Mode.Normal,
-    item: ExportItem = ExportItem(id = "itemId", sequenceId = 1),
-    form: Form[StatisticalValue] = form
-  ): Document =
-    page(mode, item.id, form)(journeyRequest(), messages)
+  override val typeAndViewInstance = (STANDARD, page(Normal, itemId, form())(_, _))
+
+  def createView(frm: Form[StatisticalValue] = form(), mode: Mode = Normal): Document =
+    page(mode, itemId, frm)(journeyRequest(), messages)
 
   "Item Type View on empty page" should {
 
@@ -100,9 +98,7 @@ class StatisticalValueViewSpec extends UnitViewSpec with ExportsTestHelper with 
     "display 'Back' button that links to 'TARIC Codes' page" in {
       val backButton = view.getElementById("back-link")
       backButton must containMessage("site.backToPreviousQuestion")
-      backButton.getElementById("back-link") must haveHref(
-        controllers.declaration.routes.NactCodeSummaryController.displayPage(Mode.Normal, itemId = "itemId")
-      )
+      backButton.getElementById("back-link") must haveHref(NactCodeSummaryController.displayPage(Normal, itemId))
     }
 
     val createViewWithMode: Mode => Document = mode => createView(mode = mode)
@@ -112,7 +108,7 @@ class StatisticalValueViewSpec extends UnitViewSpec with ExportsTestHelper with 
   "Item Type View with entered data" should {
     "display data in Statistical Value input" in {
       val itemType = StatisticalValue("12345")
-      val view = createView(form = StatisticalValue.form().fill(itemType))
+      val view = createView(form().fill(itemType))
 
       assertViewDataEntered(view, itemType)
     }

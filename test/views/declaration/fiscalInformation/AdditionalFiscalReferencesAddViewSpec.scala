@@ -18,34 +18,31 @@ package views.declaration.fiscalInformation
 
 import base.Injector
 import connectors.CodeListConnector
+import controllers.declaration.routes.FiscalInformationController
 import forms.declaration.AdditionalFiscalReference
+import forms.declaration.AdditionalFiscalReference.form
 import models.DeclarationType._
 import models.Mode
+import models.Mode.Normal
 import models.codes.Country
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
-import org.scalatest.BeforeAndAfterEach
 import play.api.data.Form
-import services.cache.{ExportItemIdGeneratorService, ExportsTestHelper}
-import tools.Stubs
-import views.declaration.spec.UnitViewSpec
-import views.helpers.CommonMessages
+import views.declaration.spec.PageWithButtonsSpec
 import views.html.declaration.fiscalInformation.additional_fiscal_references_add
 import views.tags.ViewTest
 
 import scala.collection.immutable.ListMap
 
 @ViewTest
-class AdditionalFiscalReferencesAddViewSpec
-    extends UnitViewSpec with ExportsTestHelper with Stubs with CommonMessages with Injector with BeforeAndAfterEach {
+class AdditionalFiscalReferencesAddViewSpec extends PageWithButtonsSpec with Injector {
 
   implicit val mockCodeListConnector = mock[CodeListConnector]
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-
     when(mockCodeListConnector.getCountryCodes(any())).thenReturn(ListMap("GB" -> Country("United Kingdom", "GB")))
   }
 
@@ -54,18 +51,12 @@ class AdditionalFiscalReferencesAddViewSpec
     super.afterEach()
   }
 
-  private val form: Form[AdditionalFiscalReference] = AdditionalFiscalReference.form()
+  val page = instanceOf[additional_fiscal_references_add]
 
-  private val additionalFiscalReferencesPage = instanceOf[additional_fiscal_references_add]
+  override val typeAndViewInstance = (STANDARD, page(Normal, itemId, form(), Seq.empty)(_, _))
 
-  val itemId = new ExportItemIdGeneratorService().generateItemId()
-
-  private def createView(
-    form: Form[AdditionalFiscalReference] = form,
-    references: Seq[AdditionalFiscalReference] = Seq.empty,
-    mode: Mode = Mode.Normal
-  )(implicit request: JourneyRequest[_]): Document =
-    additionalFiscalReferencesPage(mode, itemId, form, references)
+  def createView(frm: Form[AdditionalFiscalReference] = form(), mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document =
+    page(mode, itemId, frm, Seq.empty)
 
   "Additional Fiscal References View on empty page" should {
     onEveryDeclarationJourney() { implicit request =>
@@ -90,11 +81,10 @@ class AdditionalFiscalReferencesAddViewSpec
       }
 
       "display 'Back' button to Fiscal Information page" in {
-
         val backButton = view.getElementById("back-link")
 
         backButton.text() mustBe messages(backToPreviousQuestionCaption)
-        backButton must haveHref(controllers.declaration.routes.FiscalInformationController.displayPage(Mode.Normal, itemId))
+        backButton must haveHref(FiscalInformationController.displayPage(Normal, itemId))
       }
 
       "display 'For more information about this' summary text" in {
@@ -118,7 +108,7 @@ class AdditionalFiscalReferencesAddViewSpec
       "display error" when {
 
         "country is empty" in {
-          val view = createView(form.bind(emptyCountry))
+          val view = createView(form().bind(emptyCountry))
 
           view must haveGovukGlobalErrorSummary
           view must containErrorElementWithTagAndHref("a", "#country")
@@ -127,7 +117,7 @@ class AdditionalFiscalReferencesAddViewSpec
         }
 
         "country is incorrect" in {
-          val view = createView(form.bind(incorrectCountry))
+          val view = createView(form().bind(incorrectCountry))
 
           view must haveGovukGlobalErrorSummary
           view must containErrorElementWithTagAndHref("a", "#country")
@@ -136,7 +126,7 @@ class AdditionalFiscalReferencesAddViewSpec
         }
 
         "reference is empty" in {
-          val view = createView(form.bind(emptyReference))
+          val view = createView(form().bind(emptyReference))
 
           view must haveGovukGlobalErrorSummary
           view must containErrorElementWithTagAndHref("a", "#reference")
@@ -145,15 +135,16 @@ class AdditionalFiscalReferencesAddViewSpec
         }
 
         "reference is incorrect" in {
-          val view = createView(form.bind(incorrectReference))
+          val view = createView(form().bind(incorrectReference))
 
           view must haveGovukGlobalErrorSummary
           view must containErrorElementWithTagAndHref("a", "#reference")
 
           view must containErrorElementWithMessage(messages("declaration.additionalFiscalReferences.reference.error"))
         }
+
         "both country and reference are empty" in {
-          val view = createView(form.bind(emptyCountryAndRef))
+          val view = createView(form().bind(emptyCountryAndRef))
 
           view must haveGovukGlobalErrorSummary
           view must containErrorElementWithTagAndHref("a", "#country")
@@ -164,7 +155,7 @@ class AdditionalFiscalReferencesAddViewSpec
         }
 
         "both country and reference are incorrect" in {
-          val view = createView(form.bind(incorrectCountryAndRef))
+          val view = createView(form().bind(incorrectCountryAndRef))
 
           view must haveGovukGlobalErrorSummary
           view must containErrorElementWithTagAndHref("a", "#country")

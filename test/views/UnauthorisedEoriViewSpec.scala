@@ -16,29 +16,17 @@
 
 package views
 
-import base.{Injector, OverridableInjector}
-import config.featureFlags.TdrUnauthorisedMsgConfig
-import org.mockito.Mockito.reset
-import org.scalatest.{Assertion, BeforeAndAfterEach}
-import play.api.inject.bind
-import play.twirl.api.Html
-import tools.Stubs
+import base.Injector
 import views.declaration.spec.UnitViewSpec
 import views.html.unauthorisedEori
 import views.tags.ViewTest
 
 @ViewTest
-class UnauthorisedEoriViewSpec extends UnitViewSpec with Stubs with Injector with BeforeAndAfterEach {
+class UnauthorisedEoriViewSpec extends UnitViewSpec with Injector {
 
-  override def beforeEach(): Unit = {
-    super.beforeEach
-    reset(mockTdrUnauthorisedMsgConfig)
-  }
+  val page = instanceOf[unauthorisedEori]
 
-  val injector = new OverridableInjector(bind[TdrUnauthorisedMsgConfig].toInstance(mockTdrUnauthorisedMsgConfig))
-  val unauthorisedEoriPage = injector.instanceOf[unauthorisedEori]
-
-  val view: Html = unauthorisedEoriPage()(request, messages)
+  val view = page()(request, messages)
 
   "UnauthorisedEori Page view" when {
 
@@ -47,17 +35,11 @@ class UnauthorisedEoriViewSpec extends UnitViewSpec with Stubs with Injector wit
     }
 
     "display the expected contact email address link" in {
-      checkContactEmailAddress(view)
+      val link = view.getElementById("contact_support_link")
+
+      link must containMessage("unauthorised.tdr.body.link")
+      link must haveHref(s"mailto:${messages("unauthorised.tdr.body.link")}")
+      link.attr("target") mustBe "_blank"
     }
-
   }
-
-  def checkContactEmailAddress(view: Html): Assertion = {
-    val link = view.getElementById("contact_support_link")
-
-    link must containMessage("unauthorised.tdr.body.link")
-    link must haveHref(s"mailto:${messages("unauthorised.tdr.body.link")}")
-    link.attr("target") mustBe "_blank"
-  }
-
 }

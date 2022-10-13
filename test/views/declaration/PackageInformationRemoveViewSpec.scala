@@ -16,31 +16,31 @@
 
 package views.declaration
 
-import base.{Injector, MockAuthAction}
+import base.Injector
 import forms.common.YesNoAnswer
+import forms.common.YesNoAnswer.form
 import forms.declaration.PackageInformation
+import models.DeclarationType.STANDARD
 import models.Mode
+import models.Mode.Normal
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import services.PackageTypesService
-import tools.Stubs
-import views.declaration.spec.UnitViewSpec
-import views.helpers.CommonMessages
+import views.declaration.spec.PageWithButtonsSpec
 import views.html.declaration.packageInformation.package_information_remove
 import views.tags.ViewTest
 
 @ViewTest
-class PackageInformationRemoveViewSpec extends UnitViewSpec with Stubs with CommonMessages with Injector with MockAuthAction {
+class PackageInformationRemoveViewSpec extends PageWithButtonsSpec with Injector {
 
   import PackageInformationViewSpec._
 
-  private val itemId = "item1"
-  private val form: Form[YesNoAnswer] = YesNoAnswer.form()
   private val page = instanceOf[package_information_remove]
-  private val packageTypesService = instanceOf[PackageTypesService]
 
-  private def createView(form: Form[YesNoAnswer] = form, packageInfo: PackageInformation = packageInformation, mode: Mode = Mode.Normal): Document =
-    page(mode, itemId, packageInfo, form)(getJourneyRequest(), messages)
+  override val typeAndViewInstance = (STANDARD, page(Normal, itemId, packageInformation, form())(_, _))
+
+  def createView(frm: Form[YesNoAnswer] = form(), packageInfo: PackageInformation = packageInformation, mode: Mode = Normal): Document =
+    page(mode, itemId, packageInfo, frm)(request, messages)
 
   "PackageInformation Remove View" should {
     val view = createView()
@@ -50,9 +50,9 @@ class PackageInformationRemoveViewSpec extends UnitViewSpec with Stubs with Comm
     }
 
     "display PackageInformation to remove" in {
-      view.getElementsByClass("govuk-summary-list__value").get(0).text() mustBe packageTypesService
-        .typesOfPackagesText(packageInformation.typesOfPackages)
-        .get
+      val packageTypesService = instanceOf[PackageTypesService]
+      val expectedText = packageTypesService.typesOfPackagesText(packageInformation.typesOfPackages).get
+      view.getElementsByClass("govuk-summary-list__value").get(0).text() mustBe expectedText
       view.getElementsByClass("govuk-summary-list__value").get(1).text() mustBe packageInformation.numberOfPackages.get.toString
       view.getElementsByClass("govuk-summary-list__value").get(2).text() mustBe packageInformation.shippingMarks.get
     }
@@ -62,7 +62,7 @@ class PackageInformationRemoveViewSpec extends UnitViewSpec with Stubs with Comm
 
       backLinkContainer must containMessage(backToPreviousQuestionCaption)
       backLinkContainer.getElementById("back-link") must haveHref(
-        controllers.declaration.routes.PackageInformationSummaryController.displayPage(Mode.Normal, itemId)
+        controllers.declaration.routes.PackageInformationSummaryController.displayPage(Normal, itemId)
       )
     }
 
@@ -71,15 +71,13 @@ class PackageInformationRemoveViewSpec extends UnitViewSpec with Stubs with Comm
   }
 
   "PackageInformation Remove View for invalid input" should {
-
     "display error if nothing is entered" in {
-      val view = createView(YesNoAnswer.form().bind(Map[String, String]()))
+      val view = createView(form().bind(Map[String, String]()))
 
       view must haveGovukGlobalErrorSummary
       view must containErrorElementWithTagAndHref("a", "#code_yes")
 
       view must containErrorElementWithMessageKey("error.yesNo.required")
     }
-
   }
 }

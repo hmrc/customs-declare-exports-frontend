@@ -18,7 +18,7 @@ package views.declaration.summary
 
 import base.Injector
 import forms.declaration.Document
-import models.Mode
+import models.Mode.{Draft, Normal}
 import services.cache.ExportsTestHelper
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.summary.related_documents
@@ -32,7 +32,7 @@ class RelatedDocumentsViewSpec extends UnitViewSpec with ExportsTestHelper with 
 
       "documents are empty" in {
 
-        val view = section(Mode.Normal, Seq.empty)(messages)
+        val view = section(Normal, Seq.empty)(messages)
         val row = view.getElementsByClass("previous-documents-row")
 
         row must haveSummaryKey(messages("declaration.summary.transaction.previousDocuments"))
@@ -40,7 +40,7 @@ class RelatedDocumentsViewSpec extends UnitViewSpec with ExportsTestHelper with 
 
         row must haveSummaryActionsTexts("site.change", "declaration.summary.transaction.previousDocuments.change")
 
-        row must haveSummaryActionsHref(controllers.declaration.routes.PreviousDocumentsController.displayPage(Mode.Normal))
+        row must haveSummaryActionsHref(controllers.declaration.routes.PreviousDocumentsController.displayPage(Normal))
       }
     }
 
@@ -50,7 +50,7 @@ class RelatedDocumentsViewSpec extends UnitViewSpec with ExportsTestHelper with 
 
         val data = Seq(Document("325", "123456", None), Document("271", "654321", None))
 
-        val view = section(Mode.Change, data)(messages)
+        val view = section(Draft, data)(messages)
         val table = view.getElementById("previous-documents")
 
         table.getElementsByTag("caption").text() mustBe messages("declaration.summary.transaction.previousDocuments")
@@ -63,7 +63,7 @@ class RelatedDocumentsViewSpec extends UnitViewSpec with ExportsTestHelper with 
         row1.getElementsByClass("govuk-table__cell").get(1).text() mustBe "123456"
 
         val row1ChangeLink = row1.getElementsByClass("govuk-table__cell").get(2).getElementsByTag("a").first()
-        row1ChangeLink must haveHref(controllers.declaration.routes.PreviousDocumentsSummaryController.displayPage(Mode.Change))
+        row1ChangeLink must haveHref(controllers.declaration.routes.PreviousDocumentsSummaryController.displayPage(Draft))
         row1ChangeLink must containMessage("site.change")
         row1ChangeLink must containMessage("declaration.summary.transaction.previousDocuments.document.change", "123456")
 
@@ -72,7 +72,7 @@ class RelatedDocumentsViewSpec extends UnitViewSpec with ExportsTestHelper with 
         row2.getElementsByClass("govuk-table__cell").get(1).text() mustBe "654321"
 
         val row2ChangeLink = row2.getElementsByClass("govuk-table__cell").get(2).getElementsByTag("a").first()
-        row2ChangeLink must haveHref(controllers.declaration.routes.PreviousDocumentsSummaryController.displayPage(Mode.Change))
+        row2ChangeLink must haveHref(controllers.declaration.routes.PreviousDocumentsSummaryController.displayPage(Draft))
         row2ChangeLink must containMessage("site.change")
         row2ChangeLink must containMessage("declaration.summary.transaction.previousDocuments.document.change", "654321")
       }

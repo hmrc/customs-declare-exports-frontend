@@ -16,30 +16,33 @@
 
 package views.declaration
 
-import base.{Injector, MockAuthAction}
+import base.Injector
+import controllers.declaration.routes.TransportContainerController
 import forms.common.YesNoAnswer
+import forms.common.YesNoAnswer.form
 import forms.declaration.Seal
+import models.DeclarationType.STANDARD
 import models.Mode
+import models.Mode.Normal
 import models.declaration.Container
 import org.jsoup.nodes.Document
 import play.api.data.Form
-import tools.Stubs
-import views.declaration.spec.UnitViewSpec
-import views.helpers.CommonMessages
+import views.declaration.spec.PageWithButtonsSpec
 import views.html.declaration.transport_container_remove
 import views.tags.ViewTest
 
 @ViewTest
-class TransportContainerRemoveViewSpec extends UnitViewSpec with Stubs with CommonMessages with Injector with MockAuthAction {
+class TransportContainerRemoveViewSpec extends PageWithButtonsSpec with Injector {
 
   val containerId = "434732435324"
   val sealId = "934545754"
   val container = Container(containerId, Seq(Seal(sealId)))
-  private val form: Form[YesNoAnswer] = YesNoAnswer.form()
-  private val page = instanceOf[transport_container_remove]
 
-  private def createView(form: Form[YesNoAnswer] = form, container: Container = container, mode: Mode = Mode.Normal): Document =
-    page(mode, form, container)(getJourneyRequest(), messages)
+  val page = instanceOf[transport_container_remove]
+
+  override val typeAndViewInstance = (STANDARD, page(Normal, form(), container)(_, _))
+
+  def createView(frm: Form[YesNoAnswer] = form(), mode: Mode = Normal): Document = page(mode, frm, container)
 
   "Transport Containers Remove View" should {
     val view = createView()
@@ -66,9 +69,7 @@ class TransportContainerRemoveViewSpec extends UnitViewSpec with Stubs with Comm
       val backLinkContainer = view.getElementById("back-link")
 
       backLinkContainer must containMessage(backToPreviousQuestionCaption)
-      backLinkContainer.getElementById("back-link") must haveHref(
-        controllers.declaration.routes.TransportContainerController.displayContainerSummary(Mode.Normal)
-      )
+      backLinkContainer.getElementById("back-link") must haveHref(TransportContainerController.displayContainerSummary(Normal))
     }
 
     val createViewWithMode: Mode => Document = mode => createView(mode = mode)
@@ -76,15 +77,13 @@ class TransportContainerRemoveViewSpec extends UnitViewSpec with Stubs with Comm
   }
 
   "Seal Remove View for invalid input" should {
-
     "display error if nothing is entered" in {
-      val view = createView(YesNoAnswer.form().bind(Map[String, String]()))
+      val view = createView(form().bind(Map[String, String]()))
 
       view must haveGovukGlobalErrorSummary
       view must containErrorElementWithTagAndHref("a", "#code_yes")
 
       view must containErrorElementWithMessageKey("error.yesNo.required")
     }
-
   }
 }

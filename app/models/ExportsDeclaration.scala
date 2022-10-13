@@ -49,10 +49,11 @@ case class ExportsDeclaration(
   parties: Parties = Parties(),
   locations: Locations = Locations(),
   items: Seq[ExportItem] = Seq.empty,
-  readyForSubmission: Option[Boolean] = None,
   totalNumberOfItems: Option[InvoiceAndPackageTotals] = None,
   previousDocuments: Option[PreviousDocumentsData] = None,
-  natureOfTransaction: Option[NatureOfTransaction] = None
+  natureOfTransaction: Option[NatureOfTransaction] = None,
+  summaryWasVisited: Option[Boolean] = None,
+  readyForSubmission: Option[Boolean] = None
 ) {
 
   def lrn: Option[String] = consignmentReferences.map(_.lrn.value)

@@ -17,53 +17,56 @@
 package views.declaration
 
 import base.Injector
+import controllers.declaration.routes.TotalPackageQuantityController
 import forms.declaration.NatureOfTransaction
 import forms.declaration.NatureOfTransaction._
 import models.DeclarationType._
 import models.Mode
+import models.Mode.Normal
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
-import services.cache.ExportsTestHelper
-import tools.Stubs
 import views.components.gds.Styles
-import views.declaration.spec.UnitViewSpec
+import views.declaration.spec.PageWithButtonsSpec
 import views.html.declaration.nature_of_transaction
 import views.tags.ViewTest
 
 @ViewTest
-class NatureOfTransactionViewSpec extends UnitViewSpec with ExportsTestHelper with Stubs with Injector {
+class NatureOfTransactionViewSpec extends PageWithButtonsSpec with Injector {
 
-  private val page = instanceOf[nature_of_transaction]
-  private val form: Form[NatureOfTransaction] = NatureOfTransaction.form()
+  val page = instanceOf[nature_of_transaction]
 
-  private def createView(mode: Mode = Mode.Normal, form: Form[NatureOfTransaction] = form)(implicit request: JourneyRequest[_]): Document =
-    page(mode, form)(request, messages)
+  override val typeAndViewInstance = (STANDARD, page(Normal, form())(_, _))
+
+  def createView(frm: Form[NatureOfTransaction] = form(), mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document =
+    page(mode, frm)(request, messages)
 
   "Nature Of Transaction View on empty page" should {
-    onJourney(STANDARD, SUPPLEMENTARY) { implicit request =>
-      "have proper messages for labels" in {
-        messages must haveTranslationFor("declaration.natureOfTransaction.heading")
-        messages must haveTranslationFor("declaration.natureOfTransaction.sale")
-        messages must haveTranslationFor("declaration.natureOfTransaction.businessPurchase")
-        messages must haveTranslationFor("declaration.natureOfTransaction.houseRemoval")
-        messages must haveTranslationFor("declaration.natureOfTransaction.return")
-        messages must haveTranslationFor("declaration.natureOfTransaction.return.hint")
-        messages must haveTranslationFor("declaration.natureOfTransaction.donation")
-        messages must haveTranslationFor("declaration.natureOfTransaction.donation.hint")
-        messages must haveTranslationFor("declaration.natureOfTransaction.processing")
-        messages must haveTranslationFor("declaration.natureOfTransaction.processing.hint")
-        messages must haveTranslationFor("declaration.natureOfTransaction.processed")
-        messages must haveTranslationFor("declaration.natureOfTransaction.processed.hint")
-        messages must haveTranslationFor("declaration.natureOfTransaction.nationalPurposes")
-        messages must haveTranslationFor("declaration.natureOfTransaction.military")
-        messages must haveTranslationFor("declaration.natureOfTransaction.construction")
-        messages must haveTranslationFor("declaration.natureOfTransaction.other")
-        messages must haveTranslationFor("declaration.natureOfTransaction.empty")
-        messages must haveTranslationFor("declaration.natureOfTransaction.error")
-      }
 
+    "have proper messages for labels" in {
+      messages must haveTranslationFor("declaration.natureOfTransaction.heading")
+      messages must haveTranslationFor("declaration.natureOfTransaction.sale")
+      messages must haveTranslationFor("declaration.natureOfTransaction.businessPurchase")
+      messages must haveTranslationFor("declaration.natureOfTransaction.houseRemoval")
+      messages must haveTranslationFor("declaration.natureOfTransaction.return")
+      messages must haveTranslationFor("declaration.natureOfTransaction.return.hint")
+      messages must haveTranslationFor("declaration.natureOfTransaction.donation")
+      messages must haveTranslationFor("declaration.natureOfTransaction.donation.hint")
+      messages must haveTranslationFor("declaration.natureOfTransaction.processing")
+      messages must haveTranslationFor("declaration.natureOfTransaction.processing.hint")
+      messages must haveTranslationFor("declaration.natureOfTransaction.processed")
+      messages must haveTranslationFor("declaration.natureOfTransaction.processed.hint")
+      messages must haveTranslationFor("declaration.natureOfTransaction.nationalPurposes")
+      messages must haveTranslationFor("declaration.natureOfTransaction.military")
+      messages must haveTranslationFor("declaration.natureOfTransaction.construction")
+      messages must haveTranslationFor("declaration.natureOfTransaction.other")
+      messages must haveTranslationFor("declaration.natureOfTransaction.empty")
+      messages must haveTranslationFor("declaration.natureOfTransaction.error")
+    }
+
+    onJourney(STANDARD, SUPPLEMENTARY) { implicit request =>
       val view = createView()
+
       "display page title" in {
         view.getElementsByClass(Styles.gdsPageLegend) must containMessageForElements("declaration.natureOfTransaction.heading")
       }
@@ -118,11 +121,10 @@ class NatureOfTransactionViewSpec extends UnitViewSpec with ExportsTestHelper wi
       }
 
       "display 'Back' button that links to 'Total Number Of Items' page" in {
-
         val backButton = view.getElementById("back-link")
 
         backButton must containMessage("site.backToPreviousQuestion")
-        backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.TotalPackageQuantityController.displayPage(Mode.Normal))
+        backButton.getElementById("back-link") must haveHref(TotalPackageQuantityController.displayPage(Normal))
       }
 
       val createViewWithMode: Mode => Document = mode => createView(mode = mode)
@@ -133,7 +135,7 @@ class NatureOfTransactionViewSpec extends UnitViewSpec with ExportsTestHelper wi
   "Nature Of Transaction View for invalid input" should {
     onJourney(STANDARD, SUPPLEMENTARY) { implicit request =>
       "display error when nature of transaction is empty" in {
-        val view = createView(form = NatureOfTransaction.form().fillAndValidate(NatureOfTransaction("")))
+        val view = createView(form().fillAndValidate(NatureOfTransaction("")))
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#Sale")
@@ -142,7 +144,7 @@ class NatureOfTransactionViewSpec extends UnitViewSpec with ExportsTestHelper wi
       }
 
       "display error when nature of transaction is incorrect" in {
-        val view = createView(form = NatureOfTransaction.form().fillAndValidate(NatureOfTransaction("ABC")))
+        val view = createView(form().fillAndValidate(NatureOfTransaction("ABC")))
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#Sale")

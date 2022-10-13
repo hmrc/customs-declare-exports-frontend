@@ -19,21 +19,21 @@ package views.declaration.spec
 import base.{Injector, JourneyTypeTestRunner, UnitWithMocksSpec}
 import mock.FeatureFlagMocks
 import models.Mode
-import models.Mode.{Change, Draft, ErrorFix}
+import models.Mode.{Draft, ErrorFix, Normal}
 import org.jsoup.nodes.Document
-import org.scalatest.Assertion
+import org.scalatest.{Assertion, OptionValues}
 import org.scalatest.matchers.{BeMatcher, MatchResult}
 import play.api.i18n.{Lang, Messages, MessagesApi}
-import play.api.mvc.{AnyContent, Request}
-import play.api.test.FakeRequest
+import play.api.mvc.Request
 import services.cache.ExportsTestHelper
+import tools.Stubs
 import views.helpers.CommonMessages
 
-class UnitViewSpec extends UnitWithMocksSpec with ViewMatchers with JourneyTypeTestRunner with FeatureFlagMocks with CommonMessages {
+trait UnitViewSpec
+    extends UnitWithMocksSpec with CommonMessages with FeatureFlagMocks with JourneyTypeTestRunner with OptionValues with Stubs with ViewMatchers {
+  val itemId = "item1"
 
-  import utils.FakeRequestCSRFSupport._
-
-  implicit val request: Request[AnyContent] = FakeRequest().withCSRFToken
+  implicit val request = journeyRequest()
 
   protected implicit def messages(implicit request: Request[_]): Messages =
     new AllMessageKeysAreMandatoryMessages(realMessagesApi.preferred(request))
@@ -59,14 +59,6 @@ class UnitViewSpec extends UnitWithMocksSpec with ViewMatchers with JourneyTypeT
       saveButton must containMessage("site.save_and_continue")
     }
 
-  def checkSaveAndReturnToSummaryButtonIsDisplayed(createView: Mode => Document): Unit =
-    for (mode <- Seq(Draft, Change))
-      s"display 'Save and return to summary' button in $mode mode" in {
-        val view = createView(mode)
-        val saveAndReturnToSummaryButton = view.getElementById("save_and_return_to_summary")
-        saveAndReturnToSummaryButton must containMessage(saveAndReturnToSummaryCaption)
-      }
-
   def checkSaveAndReturnToErrorsButtonIsDisplayed(createView: Mode => Document): Unit =
     "display 'Save and return to errors' button in ErrorFix mode" in {
       val view = createView(ErrorFix)
@@ -75,11 +67,10 @@ class UnitViewSpec extends UnitWithMocksSpec with ViewMatchers with JourneyTypeT
     }
 
   def checkAllSaveButtonsAreDisplayed(createView: Mode => Document): Unit = {
-    val view = createView(Mode.Normal)
+    val view = createView(Normal)
 
     checkSaveAndContinueButtonIsDisplayed(view)
     checkExitAndReturnLinkIsDisplayed(view)
-    checkSaveAndReturnToSummaryButtonIsDisplayed(createView)
     checkSaveAndReturnToErrorsButtonIsDisplayed(createView)
   }
 }

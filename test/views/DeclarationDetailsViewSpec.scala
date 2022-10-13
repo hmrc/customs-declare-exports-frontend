@@ -20,9 +20,9 @@ import base.{ExportsTestData, Injector, OverridableInjector, RequestBuilder}
 import config.ExternalServicesConfig
 import config.featureFlags._
 import controllers.routes
-import models.declaration.submissions.{Action, EnhancedStatus, NotificationSummary, Submission}
 import models.declaration.submissions.EnhancedStatus._
 import models.declaration.submissions.RequestType.SubmissionRequest
+import models.declaration.submissions.{Action, EnhancedStatus, NotificationSummary, Submission}
 import models.requests.VerifiedEmailRequest
 import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
@@ -171,7 +171,6 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
     "the EAD feature flag is disabled" should {
       "not contain the PDF-for-EAD link" in {
         when(mockEadConfig.isEadEnabled).thenReturn(false)
-        val page = injector.instanceOf[declaration_details]
         val view = page(submission)(verifiedEmailRequest(), messages)
         Option(view.getElementById("generate-ead")) mustBe None
       }

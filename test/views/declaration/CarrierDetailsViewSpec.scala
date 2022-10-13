@@ -25,31 +25,28 @@ import forms.declaration.EntityDetails
 import forms.declaration.carrier.CarrierDetails
 import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED, STANDARD}
 import models.Mode
+import models.Mode.Normal
 import models.codes.Country
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
-import org.scalatest.{Assertion, BeforeAndAfterEach}
+import org.scalatest.Assertion
 import play.api.data.Form
 import play.api.i18n.MessagesApi
-import tools.Stubs
-import views.declaration.spec.AddressViewSpec
-import views.helpers.CommonMessages
+import views.declaration.spec.{AddressViewSpec, PageWithButtonsSpec}
 import views.html.declaration.carrier_details
 import views.tags.ViewTest
 
 import scala.collection.immutable.ListMap
 
 @ViewTest
-class CarrierDetailsViewSpec extends AddressViewSpec with CommonMessages with Stubs with Injector with BeforeAndAfterEach {
+class CarrierDetailsViewSpec extends AddressViewSpec with PageWithButtonsSpec with Injector {
 
-  private val carrierDetailsPage = instanceOf[carrier_details]
   implicit val mockCodeListConnector = mock[CodeListConnector]
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-
     when(mockCodeListConnector.getCountryCodes(any())).thenReturn(ListMap("GB" -> Country("United Kingdom", "GB")))
   }
 
@@ -58,11 +55,15 @@ class CarrierDetailsViewSpec extends AddressViewSpec with CommonMessages with St
     super.afterEach()
   }
 
-  private def form(implicit request: JourneyRequest[_]): Form[CarrierDetails] =
+  def form(implicit request: JourneyRequest[_]): Form[CarrierDetails] =
     CarrierDetails.form(request.declarationType)
 
-  private def createView(form: Form[CarrierDetails], mode: Mode = Mode.Normal)(implicit request: JourneyRequest[_]): Document =
-    carrierDetailsPage(mode, form)(request, messages)
+  val page = instanceOf[carrier_details]
+
+  override val typeAndViewInstance = (STANDARD, page(Normal, CarrierDetails.form(STANDARD))(_, _))
+
+  def createView(form: Form[CarrierDetails], mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document =
+    page(mode, form)(request, messages)
 
   "Carrier Details View on empty page" should {
 
@@ -190,7 +191,6 @@ class CarrierDetailsViewSpec extends AddressViewSpec with CommonMessages with St
   }
 
   "Carrier Details View when filled with invalid data" should {
-
     onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, CLEARANCE) { implicit request =>
       "display error for empty fullName" in {
         assertElementIsIncorrect(validAddress.copy(fullName = ""), "fullName", "empty")

@@ -18,21 +18,33 @@
 @import models.requests.JourneyRequest
 @import models.declaration.submissions.EnhancedStatus._
 
-@this(saveAndContinue: saveAndContinue, saveAndReturnToSummary: saveAndReturnToSummary, saveAndReturnToErrors: saveAndReturnToErrors, exitAndCompleteLater: exitAndCompleteLater)
+@this(
+    saveAndContinue: saveAndContinue,
+    saveAndReturnToSummary: saveAndReturnToSummary,
+    saveAndReturnToErrors: saveAndReturnToErrors,
+    exitAndCompleteLater: exitAndCompleteLater
+)
 
 @(mode: Mode, showExitButton: Boolean = true)(implicit request: JourneyRequest[_], messages: Messages)
 
+@onErrorStatus = @{ request.cacheModel.parentDeclarationEnhancedStatus.contains(ERRORS) && mode != ErrorFix }
+
+@onSummaryVisited = @{ request.cacheModel.summaryWasVisited.contains(true) }
+
 <div class="govuk-button-group">
-@saveAndContinue()
-@if(Seq(Draft, Change).contains(mode) || (request.cacheModel.parentDeclarationEnhancedStatus.contains(ERRORS) && mode != ErrorFix)) {
-  @saveAndReturnToSummary()
-}
-@if(mode == ErrorFix) {
-  @saveAndReturnToErrors()
-}
+    @saveAndContinue()
+
+    @if(onSummaryVisited || onErrorStatus) {
+      @saveAndReturnToSummary()
+    }
+
+    @if(mode == ErrorFix) {
+      @saveAndReturnToErrors()
+    }
 </div>
+
 @if(showExitButton){
-<p class="govuk-body">
- @exitAndCompleteLater()
-</p>
+    <p class="govuk-body">
+        @exitAndCompleteLater()
+    </p>
 }

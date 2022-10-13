@@ -22,28 +22,28 @@ import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.InvoiceAndExchangeRate
 import forms.declaration.InvoiceAndExchangeRate.form
 import forms.declaration.officeOfExit.OfficeOfExit
+import models.DeclarationType.STANDARD
 import models.Mode
 import models.Mode.Normal
 import models.declaration.Locations
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
-import services.cache.ExportsTestHelper
-import tools.Stubs
-import views.declaration.spec.UnitViewSpec
+import views.declaration.spec.PageWithButtonsSpec
 import views.html.declaration.invoice_and_exchange_rate
 import views.tags.ViewTest
 
 @ViewTest
-class InvoiceAndExchangeRateViewSpec extends UnitViewSpec with ExportsTestHelper with Stubs with Injector {
+class InvoiceAndExchangeRateViewSpec extends PageWithButtonsSpec with Injector {
 
-  private val page = instanceOf[invoice_and_exchange_rate]
-  private val validCurrencyCode = "GBP"
+  val validCurrencyCode = "GBP"
 
-  private def createView(form: Form[InvoiceAndExchangeRate] = InvoiceAndExchangeRate.form, mode: Mode = Mode.Normal)(
-    implicit request: JourneyRequest[_]
-  ): Document =
-    page(mode, form)(request, messages)
+  val page = instanceOf[invoice_and_exchange_rate]
+
+  override val typeAndViewInstance = (STANDARD, page(Normal, form)(_, _))
+
+  def createView(frm: Form[InvoiceAndExchangeRate] = form, mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document =
+    page(mode, frm)(request, messages)
 
   "Total Number Of Items View on empty page" should {
 

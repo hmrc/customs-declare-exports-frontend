@@ -17,7 +17,7 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.declaration.routes.TransportContainerController
+import controllers.declaration.routes.{SealController, TransportContainerController}
 import controllers.helpers.{FormAction, Remove}
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
@@ -179,5 +179,5 @@ class TransportContainerController @Inject() (
     updateDeclarationFromRequest(_.updateContainers(updatedContainers))
 
   private def redirectAfterAdd(mode: Mode, containerId: String)(implicit request: JourneyRequest[AnyContent]): Result =
-    navigator.continueTo(mode, routes.SealController.displaySealSummary(_, containerId))
+    navigator.continueTo(mode, SealController.displaySealSummary(_, containerId))
 }

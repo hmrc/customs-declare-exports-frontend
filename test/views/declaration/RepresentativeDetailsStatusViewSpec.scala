@@ -18,30 +18,27 @@ package views.declaration
 
 import base.Injector
 import controllers.declaration.routes._
-import forms.DeclarationPage
 import forms.declaration.RepresentativeStatus
-import forms.declaration.RepresentativeStatus.StatusCodes
+import forms.declaration.RepresentativeStatus.{form, StatusCodes}
+import models.DeclarationType.STANDARD
 import models.Mode
+import models.Mode.Normal
 import org.jsoup.nodes.Document
 import play.api.data.Form
-import services.cache.ExportsTestHelper
-import tools.Stubs
 import views.components.gds.Styles
-import views.declaration.spec.UnitViewSpec
+import views.declaration.spec.PageWithButtonsSpec
 import views.html.declaration.representative_details_status
 import views.tags.ViewTest
 
 @ViewTest
-class RepresentativeDetailsStatusViewSpec extends UnitViewSpec with ExportsTestHelper with Stubs with Injector {
+class RepresentativeDetailsStatusViewSpec extends PageWithButtonsSpec with Injector {
 
-  private val page = instanceOf[representative_details_status]
-  private val form: Form[RepresentativeStatus] = RepresentativeStatus.form()
-  private def createView(
-    mode: Mode = Mode.Normal,
-    navigationForm: DeclarationPage = RepresentativeStatus,
-    form: Form[RepresentativeStatus] = form
-  ): Document =
-    page(mode, navigationForm, form)(journeyRequest(), messages)
+  val page = instanceOf[representative_details_status]
+
+  override val typeAndViewInstance = (STANDARD, page(Normal, RepresentativeStatus, form())(_, _))
+
+  def createView(frm: Form[RepresentativeStatus] = form(), mode: Mode = Normal): Document =
+    page(mode, RepresentativeStatus, frm)(journeyRequest(), messages)
 
   "Representative Details Status View on empty page" should {
     val view = createView()
@@ -51,8 +48,7 @@ class RepresentativeDetailsStatusViewSpec extends UnitViewSpec with ExportsTestH
     }
 
     "display two radio buttons with description (not selected)" in {
-
-      val view = createView(form = RepresentativeStatus.form().fill(RepresentativeStatus(None)))
+      val view = createView(form().fill(RepresentativeStatus(None)))
 
       view.getElementsByClass("govuk-radios__item").size mustBe 2
 
@@ -65,11 +61,10 @@ class RepresentativeDetailsStatusViewSpec extends UnitViewSpec with ExportsTestH
     }
 
     "display 'Back' button that links to 'Representative Eori' page" in {
-
       val backButton = view.getElementById("back-link")
 
       backButton must containMessage("site.backToPreviousQuestion")
-      backButton.getElementById("back-link") must haveHref(RepresentativeEntityController.displayPage(Mode.Normal))
+      backButton.getElementById("back-link") must haveHref(RepresentativeEntityController.displayPage(Normal))
     }
 
     val createViewWithMode: Mode => Document = mode => createView(mode = mode)
@@ -77,14 +72,8 @@ class RepresentativeDetailsStatusViewSpec extends UnitViewSpec with ExportsTestH
   }
 
   "Representative Details Status View for invalid input" should {
-
     "display errors when status is incorrect" in {
-
-      val view = createView(form =
-        RepresentativeStatus
-          .form()
-          .bind(Map("statusCode" -> "invalid"))
-      )
+      val view = createView(form().bind(Map("statusCode" -> "invalid")))
 
       view must haveGovukGlobalErrorSummary
       view must containErrorElementWithTagAndHref("a", s"#${StatusCodes.DirectRepresentative}")
@@ -94,16 +83,9 @@ class RepresentativeDetailsStatusViewSpec extends UnitViewSpec with ExportsTestH
   }
 
   "Representative Details Status View when filled" should {
-
     "display data" in {
-
-      val form = RepresentativeStatus
-        .form()
-        .bind(Map("statusCode" -> "2"))
-      val view = createView(form = form)
-
+      val view = createView(form().bind(Map("statusCode" -> "2")))
       view.getElementById("2").getElementsByAttribute("checked").size() mustBe 1
     }
-
   }
 }

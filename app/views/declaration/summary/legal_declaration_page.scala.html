@@ -48,7 +48,6 @@
     backButton = Some(BackButton(messages("site.back"), SummaryController.displayPage(Mode.Normal))),
     useCustomContentWidth = true
 ) {
-
     @formHelper(action = SummaryController.submitDeclaration(), 'autoComplete -> "off") {
         @errorSummary(legalDeclarationForm.errors)
 

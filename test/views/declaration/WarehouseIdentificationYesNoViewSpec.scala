@@ -17,47 +17,49 @@
 package views.declaration
 
 import base.Injector
+import controllers.declaration.routes.{ItemsSummaryController, TransportLeavingTheBorderController}
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.WarehouseIdentification
+import forms.declaration.WarehouseIdentification.form
 import models.DeclarationType._
 import models.Mode
+import models.Mode.Normal
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import play.api.i18n.MessagesApi
-import services.cache.ExportsTestHelper
-import tools.Stubs
 import views.components.gds.Styles
-import views.declaration.spec.UnitViewSpec
+import views.declaration.spec.PageWithButtonsSpec
 import views.html.declaration.warehouse_identification_yesno
 import views.tags.ViewTest
 
 @ViewTest
-class WarehouseIdentificationYesNoViewSpec extends UnitViewSpec with ExportsTestHelper with Stubs with Injector {
+class WarehouseIdentificationYesNoViewSpec extends PageWithButtonsSpec with Injector {
 
-  private val page = instanceOf[warehouse_identification_yesno]
-  private val form: Form[WarehouseIdentification] = WarehouseIdentification.form(yesNo = false)
+  val page = instanceOf[warehouse_identification_yesno]
 
-  private def createView(mode: Mode = Mode.Normal, form: Form[WarehouseIdentification] = form)(implicit request: JourneyRequest[_]): Document =
-    page(mode, form)(request, messages)
+  override val typeAndViewInstance = (STANDARD, page(Normal, form(false))(_, _))
+
+  def createView(frm: Form[WarehouseIdentification] = form(false), mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document =
+    page(mode, frm)(request, messages)
 
   "Warehouse Identification Number View" should {
+
+    "have proper messages for labels" in {
+      val messages = instanceOf[MessagesApi].preferred(journeyRequest())
+      messages must haveTranslationFor("declaration.warehouse.identification.optional.title")
+      messages must haveTranslationFor("declaration.warehouse.identification.label")
+      messages must haveTranslationFor("declaration.warehouse.identification.label.hint")
+      messages must haveTranslationFor("declaration.warehouse.identification.identificationNumber.error")
+      messages must haveTranslationFor("declaration.warehouse.identification.identificationNumber.empty")
+      messages must haveTranslationFor("declaration.warehouse.identification.answer.error")
+    }
+
     onEveryDeclarationJourney() { implicit request =>
       val view = createView()
 
-      "have proper messages for labels" in {
-        val messages = instanceOf[MessagesApi].preferred(journeyRequest())
-        messages must haveTranslationFor("declaration.warehouse.identification.optional.title")
-        messages must haveTranslationFor("declaration.warehouse.identification.label")
-        messages must haveTranslationFor("declaration.warehouse.identification.label.hint")
-        messages must haveTranslationFor("declaration.warehouse.identification.identificationNumber.error")
-        messages must haveTranslationFor("declaration.warehouse.identification.identificationNumber.empty")
-        messages must haveTranslationFor("declaration.warehouse.identification.answer.error")
-      }
-
       "display same page title as header" in {
-        val viewWithMessage = createView()
-        viewWithMessage.title() must include(viewWithMessage.getElementsByTag("h1").text())
+        view.title() must include(view.getElementsByTag("h1").text())
       }
 
       "have the correct section header" in {
@@ -82,25 +84,19 @@ class WarehouseIdentificationYesNoViewSpec extends UnitViewSpec with ExportsTest
     }
 
     onJourney(STANDARD, SUPPLEMENTARY, CLEARANCE) { implicit request =>
-      val view = createView()
-
       "display 'Back' button that links to 'Transport Leaving the Border' page" in {
-        val backButton = view.getElementById("back-link")
+        val backButton = createView().getElementById("back-link")
 
         backButton must containMessage("site.backToPreviousQuestion")
-        backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.TransportLeavingTheBorderController.displayPage())
+        backButton.getElementById("back-link") must haveHref(TransportLeavingTheBorderController.displayPage())
       }
     }
     onJourney(SIMPLIFIED, OCCASIONAL) { implicit request =>
-      val view = createView()
-
       "display 'Back' button that links to 'Items Summary' page" in {
-        val backButton = view.getElementById("back-link")
+        val backButton = createView().getElementById("back-link")
 
         backButton must containMessage("site.backToPreviousQuestion")
-        backButton.getElementById("back-link") must haveHref(
-          controllers.declaration.routes.ItemsSummaryController.displayItemsSummaryPage(Mode.Normal)
-        )
+        backButton.getElementById("back-link") must haveHref(ItemsSummaryController.displayItemsSummaryPage(Normal))
       }
     }
   }
@@ -108,7 +104,7 @@ class WarehouseIdentificationYesNoViewSpec extends UnitViewSpec with ExportsTest
   "Warehouse Identification Number View for invalid input" should {
     onEveryDeclarationJourney() { implicit request =>
       "display error when code is empty" in {
-        val view = createView(form = form.fillAndValidate(WarehouseIdentification(Some(""))))
+        val view = createView(form(false).fillAndValidate(WarehouseIdentification(Some(""))))
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#identificationNumber")
@@ -117,7 +113,7 @@ class WarehouseIdentificationYesNoViewSpec extends UnitViewSpec with ExportsTest
       }
 
       "display error when code is incorrect" in {
-        val view = createView(form = form.fillAndValidate(WarehouseIdentification(Some("ABC!!!"))))
+        val view = createView(form(false).fillAndValidate(WarehouseIdentification(Some("ABC!!!"))))
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#identificationNumber")

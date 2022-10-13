@@ -17,41 +17,44 @@
 package views.declaration
 
 import base.Injector
+import controllers.declaration.routes.CommodityDetailsController
 import forms.declaration.UNDangerousGoodsCode
-import forms.declaration.UNDangerousGoodsCode.AllowedUNDangerousGoodsCodeAnswers
+import forms.declaration.UNDangerousGoodsCode.{form, AllowedUNDangerousGoodsCodeAnswers}
+import models.DeclarationType.STANDARD
 import models.Mode
+import models.Mode.Normal
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
-import services.cache.ExportsTestHelper
-import tools.Stubs
-import views.declaration.spec.UnitViewSpec
+import views.declaration.spec.PageWithButtonsSpec
 import views.html.declaration.un_dangerous_goods_code
 import views.tags.ViewTest
 
 @ViewTest
-class UNDangerousGoodsCodeViewSpec extends UnitViewSpec with ExportsTestHelper with Stubs with Injector {
+class UNDangerousGoodsCodeViewSpec extends PageWithButtonsSpec with Injector {
 
-  private val page = instanceOf[un_dangerous_goods_code]
-  private val form: Form[UNDangerousGoodsCode] = UNDangerousGoodsCode.form()
-  private val itemId = "item1"
+  val page = instanceOf[un_dangerous_goods_code]
 
-  private def createView(mode: Mode = Mode.Normal, form: Form[UNDangerousGoodsCode] = form)(implicit request: JourneyRequest[_]): Document =
-    page(mode, itemId, form)(request, messages)
+  override val typeAndViewInstance = (STANDARD, page(Normal, itemId, form())(_, _))
+
+  def createView(frm: Form[UNDangerousGoodsCode] = form(), mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document =
+    page(mode, itemId, frm)(request, messages)
 
   "UNDangerousGoodsCode View on empty page" should {
-    onEveryDeclarationJourney() { implicit request =>
-      "have proper messages for labels" in {
-        messages must haveTranslationFor("declaration.unDangerousGoodsCode.header")
-        messages must haveTranslationFor("declaration.unDangerousGoodsCode.paragraph")
-        messages must haveTranslationFor("declaration.unDangerousGoodsCode.paragraph.link")
-        messages must haveTranslationFor("declaration.unDangerousGoodsCode.hasCode")
-        messages must haveTranslationFor("declaration.unDangerousGoodsCode.noCode")
-        messages must haveTranslationFor("declaration.unDangerousGoodsCode.label")
-        messages must haveTranslationFor("declaration.unDangerousGoodsCode.answer.empty")
-      }
 
+    "have proper messages for labels" in {
+      messages must haveTranslationFor("declaration.unDangerousGoodsCode.header")
+      messages must haveTranslationFor("declaration.unDangerousGoodsCode.paragraph")
+      messages must haveTranslationFor("declaration.unDangerousGoodsCode.paragraph.link")
+      messages must haveTranslationFor("declaration.unDangerousGoodsCode.hasCode")
+      messages must haveTranslationFor("declaration.unDangerousGoodsCode.noCode")
+      messages must haveTranslationFor("declaration.unDangerousGoodsCode.label")
+      messages must haveTranslationFor("declaration.unDangerousGoodsCode.answer.empty")
+    }
+
+    onEveryDeclarationJourney() { implicit request =>
       val view = createView()
+
       "display page title" in {
         view.getElementsByTag("h1") must containMessageForElements("declaration.unDangerousGoodsCode.header")
       }
@@ -77,13 +80,10 @@ class UNDangerousGoodsCodeViewSpec extends UnitViewSpec with ExportsTestHelper w
       }
 
       "display 'Back' button that links to 'Commodity Details' page" in {
-
         val backButton = view.getElementById("back-link")
 
         backButton must containMessage("site.backToPreviousQuestion")
-        backButton.getElementById("back-link") must haveHref(
-          controllers.declaration.routes.CommodityDetailsController.displayPage(Mode.Normal, itemId)
-        )
+        backButton.getElementById("back-link") must haveHref(CommodityDetailsController.displayPage(Normal, itemId))
       }
 
       val createViewWithMode: Mode => Document = mode => createView(mode = mode)
@@ -94,7 +94,7 @@ class UNDangerousGoodsCodeViewSpec extends UnitViewSpec with ExportsTestHelper w
   "UNDangerousGoodsCode View for invalid input" should {
     onEveryDeclarationJourney() { implicit request =>
       "display error when code is empty" in {
-        val view = createView(form = UNDangerousGoodsCode.form().fillAndValidate(UNDangerousGoodsCode(Some(""))))
+        val view = createView(form().fillAndValidate(UNDangerousGoodsCode(Some(""))))
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#dangerousGoodsCode")
@@ -103,7 +103,7 @@ class UNDangerousGoodsCodeViewSpec extends UnitViewSpec with ExportsTestHelper w
       }
 
       "display error when code is incorrect" in {
-        val view = createView(form = UNDangerousGoodsCode.form().fillAndValidate(UNDangerousGoodsCode(Some("ABC"))))
+        val view = createView(form().fillAndValidate(UNDangerousGoodsCode(Some("ABC"))))
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#dangerousGoodsCode")
@@ -112,6 +112,4 @@ class UNDangerousGoodsCodeViewSpec extends UnitViewSpec with ExportsTestHelper w
       }
     }
   }
-
-  "UNDangerousGoodsCode View for code with potential Cat or dog fur" should {}
 }

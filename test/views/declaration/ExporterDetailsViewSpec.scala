@@ -18,36 +18,33 @@ package views.declaration
 
 import base.Injector
 import connectors.CodeListConnector
-import controllers.declaration.routes
+import controllers.declaration.routes.ExporterEoriNumberController
 import forms.common.{Address, AddressSpec}
 import forms.declaration.EntityDetails
 import forms.declaration.exporter.ExporterDetails
 import models.DeclarationType._
 import models.Mode
+import models.Mode.Normal
 import models.codes.Country
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
-import org.scalatest.{Assertion, BeforeAndAfterEach}
+import org.scalatest.Assertion
 import play.api.data.Form
-import tools.Stubs
-import views.declaration.spec.AddressViewSpec
-import views.helpers.CommonMessages
+import views.declaration.spec.{AddressViewSpec, PageWithButtonsSpec}
 import views.html.declaration.exporter_address
 import views.tags.ViewTest
 
 import scala.collection.immutable.ListMap
 
 @ViewTest
-class ExporterDetailsViewSpec extends AddressViewSpec with CommonMessages with Stubs with Injector with BeforeAndAfterEach {
+class ExporterDetailsViewSpec extends AddressViewSpec with PageWithButtonsSpec with Injector {
 
-  private val exporterDetailsPage = instanceOf[exporter_address]
   implicit val mockCodeListConnector = mock[CodeListConnector]
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-
     when(mockCodeListConnector.getCountryCodes(any())).thenReturn(ListMap("GB" -> Country("United Kingdom", "GB")))
   }
 
@@ -56,75 +53,62 @@ class ExporterDetailsViewSpec extends AddressViewSpec with CommonMessages with S
     super.afterEach()
   }
 
-  private def form()(implicit request: JourneyRequest[_]): Form[ExporterDetails] = ExporterDetails.form(request.declarationType)
+  def form()(implicit request: JourneyRequest[_]): Form[ExporterDetails] = ExporterDetails.form(request.declarationType)
 
-  private def createView(form: Form[ExporterDetails], mode: Mode = Mode.Normal)(implicit request: JourneyRequest[_]): Document =
-    exporterDetailsPage(mode, form)(request, messages)
+  val page = instanceOf[exporter_address]
+
+  override val typeAndViewInstance = (STANDARD, page(Normal, ExporterDetails.form(STANDARD))(_, _))
+
+  def createView(form: Form[ExporterDetails], mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document =
+    page(mode, form)(request, messages)
 
   "Exporter Details View on empty page" should {
 
     onEveryDeclarationJourney() { implicit request =>
+      val view = createView(form())
+
       "display same page title as header" in {
-        val viewWithMessage = createView(form())
-        viewWithMessage.title() must include(viewWithMessage.getElementsByTag("h1").text())
+        view.title() must include(view.getElementsByTag("h1").text())
       }
 
       "display section header" in {
-
-        createView(form()).getElementById("section-header").text() must include(messages("declaration.section.2"))
+        view.getElementById("section-header").text() must include(messages("declaration.section.2"))
       }
 
       "display empty input with label for Full name" in {
-
-        val view = createView(form())
-
         view.getElementsByAttributeValue("for", "details_address_fullName").text() mustBe messages("declaration.address.fullName")
         view.getElementById("details_address_fullName").attr("value") mustBe empty
       }
 
       "display empty input with label for Address" in {
-
-        val view = createView(form())
         view.getElementsByAttributeValue("for", "details_address_addressLine").text() mustBe messages("declaration.address.addressLine")
         view.getElementById("details_address_addressLine").attr("value") mustBe empty
       }
 
       "display empty input with label for Town or City" in {
-
-        val view = createView(form())
         view.getElementsByAttributeValue("for", "details_address_townOrCity").text() mustBe messages("declaration.address.townOrCity")
         view.getElementById("details_address_townOrCity").attr("value") mustBe empty
       }
 
       "display empty input with label for Postcode" in {
-
-        val view = createView(form())
         view.getElementsByAttributeValue("for", "details_address_postCode").text() mustBe messages("declaration.address.postCode")
-
         view.getElementById("details_address_postCode").attr("value") mustBe empty
       }
 
       "display empty input with label for Country" in {
-
-        val view = createView(form())
-
         view.getElementsByAttributeValue("for", "details_address_country").text() mustBe messages("declaration.address.country")
-
         view.getElementById("details_address_country").attr("value") mustBe empty
+      }
+
+      "display 'Back' button that links to 'Exporter Eori Number' page" in {
+        val backButton = view.getElementById("back-link")
+
+        backButton.text() mustBe messages(backToPreviousQuestionCaption)
+        backButton.attr("href") mustBe ExporterEoriNumberController.displayPage().url
       }
 
       val createViewWithMode: Mode => Document = mode => createView(form(), mode = mode)
       checkAllSaveButtonsAreDisplayed(createViewWithMode)
-    }
-
-    onEveryDeclarationJourney() { implicit request =>
-      "display 'Back' button that links to 'Exporter Eori Number' page" in {
-
-        val backButton = createView(form()).getElementById("back-link")
-
-        backButton.text() mustBe messages(backToPreviousQuestionCaption)
-        backButton.attr("href") mustBe routes.ExporterEoriNumberController.displayPage().url
-      }
     }
   }
 
@@ -208,15 +192,9 @@ class ExporterDetailsViewSpec extends AddressViewSpec with CommonMessages with S
   }
 
   "Exporter Details View when filled" should {
-
     onEveryDeclarationJourney() { implicit request =>
       "display data in Business address inputs" in {
-
-        val view = createView(
-          form()
-            .fill(ExporterDetails(EntityDetails(None, Some(Address("test", "test1", "test2", "test3", "test4")))))
-        )
-
+        val view = createView(form().fill(ExporterDetails(EntityDetails(None, Some(Address("test", "test1", "test2", "test3", "test4"))))))
         view.getElementById("details_address_fullName").attr("value") mustBe "test"
         view.getElementById("details_address_addressLine").attr("value") mustBe "test1"
         view.getElementById("details_address_townOrCity").attr("value") mustBe "test2"
