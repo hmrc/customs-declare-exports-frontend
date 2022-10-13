@@ -19,6 +19,7 @@ package controllers.declaration
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.helpers._
 import controllers.navigation.Navigator
+import forms.common.YesNoAnswer.Yes
 import forms.declaration.additionaldocuments.AdditionalDocument
 import forms.declaration.additionaldocuments.AdditionalDocument._
 import models.declaration.AdditionalDocuments
@@ -84,5 +85,5 @@ class AdditionalDocumentAddController @Inject() (
       )
 
   private def updateCache(itemId: String, docs: AdditionalDocuments)(implicit r: JourneyRequest[_]): Future[ExportsDeclaration] =
-    updateDeclarationFromRequest(_.updatedItem(itemId, _.copy(additionalDocuments = Some(docs))))
+    updateDeclarationFromRequest(_.updatedItem(itemId, _.copy(additionalDocuments = Some(docs.copy(isRequired = Yes)))))
 }
