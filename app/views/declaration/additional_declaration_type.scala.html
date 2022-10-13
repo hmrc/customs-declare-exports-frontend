@@ -64,9 +64,6 @@
     @formHelper(action = AdditionalDeclarationTypeController.submitForm(mode), 'autoComplete -> "off") {
         @errorSummary(declarationTypeHelper.radioGroupErrors(form))
 
-        @sectionHeader(messages("declaration.section.1"))
-        @heading(messages(s"declaration.declarationType.header.${request.declarationType}"))
-
         @if(!request.isType(SUPPLEMENTARY)) {
             @notificationBanner(
                 title = messages("declaration.declarationType.notification.title"),
@@ -76,6 +73,9 @@
                 )))
             )
         }
+
+        @sectionHeader(messages("declaration.section.1"))
+        @heading(messages(s"declaration.declarationType.header.${request.declarationType}"))
 
         @govukRadios(Radios(
             name = "additionalDeclarationType",
