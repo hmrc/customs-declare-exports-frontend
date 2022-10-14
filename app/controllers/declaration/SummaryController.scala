@@ -99,13 +99,14 @@ class SummaryController @Inject() (
     }
   }
 
-  private val hrefSourcePattern = """href="/customs-declare-exports/declaration/.+\?mode=Change"""".r
-  private val hrefDestPattern = s"""href="$continuePlaceholder""""
+  private val hrefSource = """href="/customs-declare-exports/declaration/.+\?mode="""
+  private val hrefDest = s"""href="$continuePlaceholder""""
 
   private def amendDraftSummaryPage(mode: Mode, backlink: Call)(implicit request: JourneyRequest[_]): Html = {
     val page = normalSummaryPage(mode, backlink, Seq.empty, Some(continuePlaceholder)).toString
-    hrefSourcePattern.findAllIn(page).toList.lastOption.fold(Html(page)) { lastChangeLink =>
-      Html(page.replaceFirst(hrefDestPattern, lastChangeLink))
+    val hrefSourceRegex = s"""$hrefSource$mode"""".r
+    hrefSourceRegex.findAllIn(page).toList.lastOption.fold(Html(page)) { lastChangeLink =>
+      Html(page.replaceFirst(hrefDest, lastChangeLink))
     }
   }
 

@@ -19,10 +19,10 @@ package views.declaration.spec
 import base.{Injector, JourneyTypeTestRunner, UnitWithMocksSpec}
 import mock.FeatureFlagMocks
 import models.Mode
-import models.Mode.{Draft, ErrorFix, Normal}
+import models.Mode.{ErrorFix, Normal}
 import org.jsoup.nodes.Document
-import org.scalatest.{Assertion, OptionValues}
 import org.scalatest.matchers.{BeMatcher, MatchResult}
+import org.scalatest.{Assertion, OptionValues}
 import play.api.i18n.{Lang, Messages, MessagesApi}
 import play.api.mvc.Request
 import services.cache.ExportsTestHelper

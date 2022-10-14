@@ -224,15 +224,15 @@ object SummaryControllerSpec {
 
   import controllers.declaration.SummaryController.continuePlaceholder
 
-  val expectedHref = "/customs-declare-exports/declaration/consignment-references?mode=Change"
+  val expectedHref = "/customs-declare-exports/declaration/consignment-references?mode=Draft"
 
   val fakeSummaryPage = Html(s"""
        |<!DOCTYPE html>
        |<html lang="en">
        |<body>
        |  <div>
-       |    <a href="/customs-declare-exports/declaration/declaration-choice?mode=Change">Change</a>
-       |    <a href="/customs-declare-exports/declaration/type?mode=Change">Change</a>
+       |    <a href="/customs-declare-exports/declaration/declaration-choice?mode=Draft">Change</a>
+       |    <a href="/customs-declare-exports/declaration/type?mode=Draft">Change</a>
        |    <a href="$expectedHref">Change</a>
        |    <a href="$continuePlaceholder" id="$continuePlaceholder">Continue</a>
        |  </div>
