@@ -148,7 +148,7 @@ declaration.choice.CRT = Create a declaration
 declaration.choice.MVT = Arrive, depart or consolidate a declaration
 declaration.choice.CON = Continue a declaration you saved
 declaration.choice.SUB = View and manage your submitted declarations
-declaration.choice.MSG = View messages
+declaration.choice.MSG = View messages from HMRC
 
 declaration.section.1 = Section 1 of 6
 declaration.section.2 = Section 2 of 6
