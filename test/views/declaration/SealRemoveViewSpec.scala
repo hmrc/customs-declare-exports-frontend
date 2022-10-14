@@ -16,35 +16,32 @@
 
 package views.declaration
 
-import base.{Injector, MockAuthAction}
+import base.Injector
+import controllers.declaration.routes.SealController
 import forms.common.YesNoAnswer
-import forms.declaration.Seal
+import forms.common.YesNoAnswer.form
+import models.DeclarationType.STANDARD
 import models.Mode
 import models.Mode.Normal
-import models.declaration.Container
 import org.jsoup.nodes.Document
 import play.api.data.Form
-import tools.Stubs
-import views.declaration.spec.UnitViewSpec
-import views.helpers.CommonMessages
+import views.declaration.spec.PageWithButtonsSpec
 import views.html.declaration.seal_remove
 import views.tags.ViewTest
 
 @ViewTest
-class SealRemoveViewSpec extends UnitViewSpec with Stubs with CommonMessages with Injector with MockAuthAction {
+class SealRemoveViewSpec extends PageWithButtonsSpec with Injector {
 
   val containerId = "42354542"
   val sealId = "SealToRemove54214"
-  val container = Some(Container(containerId, Seq(Seal(sealId))))
-  private val form: Form[YesNoAnswer] = YesNoAnswer.form()
-  private val page = instanceOf[seal_remove]
-  override implicit val request = getJourneyRequest()
 
-  private def createView(form: Form[YesNoAnswer] = form, containerId: String = containerId, sealId: String = sealId, mode: Mode = Normal): Document =
-    page(mode, form, containerId, sealId)
+  val page = instanceOf[seal_remove]
+
+  override val typeAndViewInstance = (STANDARD, page(Normal, form(), containerId, sealId)(_, _))
+
+  def createView(frm: Form[YesNoAnswer] = form(), mode: Mode = Normal): Document = page(mode, frm, containerId, sealId)
 
   "Seal Remove View" should {
-
     val view = createView()
 
     "display page title" in {
@@ -67,9 +64,7 @@ class SealRemoveViewSpec extends UnitViewSpec with Stubs with CommonMessages wit
       val backLinkContainer = view.getElementById("back-link")
 
       backLinkContainer.text() must be(messages(backToPreviousQuestionCaption))
-      backLinkContainer.getElementById("back-link") must haveHref(
-        controllers.declaration.routes.SealController.displaySealSummary(Mode.Normal, containerId)
-      )
+      backLinkContainer.getElementById("back-link") must haveHref(SealController.displaySealSummary(Mode.Normal, containerId))
     }
 
     val createViewWithMode: Mode => Document = mode => createView(mode = mode)
@@ -78,13 +73,12 @@ class SealRemoveViewSpec extends UnitViewSpec with Stubs with CommonMessages wit
 
   "Seal Remove View for invalid input" should {
     "display error if nothing is entered" in {
-      val view = createView(YesNoAnswer.form().bind(Map[String, String]()))
+      val view = createView(form().bind(Map[String, String]()))
 
       view must haveGovukGlobalErrorSummary
       view must containErrorElementWithTagAndHref("a", "#code_yes")
 
       view must containErrorElementWithMessageKey("error.yesNo.required")
     }
-
   }
 }

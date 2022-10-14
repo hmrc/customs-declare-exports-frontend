@@ -19,22 +19,25 @@ package views.declaration
 import base.Injector
 import controllers.declaration.routes
 import controllers.routes.GuidanceController
-import forms.declaration.TransportLeavingTheBorder
+import forms.declaration.TransportLeavingTheBorder.form
 import forms.declaration.declarationHolder.AuthorizationTypeCodes.EXRR
 import models.DeclarationType._
 import models.Mode
+import models.Mode.Normal
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
-import tools.Stubs
-import views.declaration.spec.UnitViewSpec
+import views.declaration.spec.PageWithButtonsSpec
 import views.html.declaration.transport_leaving_the_border
+import views.tags.ViewTest
 
-class TransportLeavingTheBorderViewSpec extends UnitViewSpec with Stubs with Injector {
+@ViewTest
+class TransportLeavingTheBorderViewSpec extends PageWithButtonsSpec with Injector {
 
-  private val page = instanceOf[transport_leaving_the_border]
+  val page = instanceOf[transport_leaving_the_border]
 
-  private def createView(mode: Mode = Mode.Normal)(implicit request: JourneyRequest[_]): Document =
-    page(TransportLeavingTheBorder.form, mode)
+  override val typeAndViewInstance = (STANDARD, page(form, Normal)(_, _))
+
+  def createView(mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document = page(form, mode)
 
   "Transport Leaving The Border Page" must {
 

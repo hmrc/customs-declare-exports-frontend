@@ -16,22 +16,17 @@
 
 package views
 
-import org.scalatest.BeforeAndAfterEach
-import play.twirl.api.Html
+import base.Injector
 import views.declaration.spec.UnitViewSpec
-import views.declaration.spec.UnitViewSpec.instanceOf
 import views.html.unauthorisedAgent
 import views.tags.ViewTest
 
 @ViewTest
-class UnauthorisedAgentViewSpec extends UnitViewSpec with BeforeAndAfterEach {
+class UnauthorisedAgentViewSpec extends UnitViewSpec with Injector {
 
-  override def beforeEach(): Unit =
-    super.beforeEach
+  val page = instanceOf[unauthorisedAgent]
 
-  val unauthorisedAgentPage = instanceOf[unauthorisedAgent]
-
-  val view: Html = unauthorisedAgentPage()(request, messages)
+  val view = page()(request, messages)
 
   "UnauthorisedAgent Page view" should {
 
@@ -45,7 +40,5 @@ class UnauthorisedAgentViewSpec extends UnitViewSpec with BeforeAndAfterEach {
       paragraphs.get(0) must containMessage("unauthorisedAgent.paragraph.1")
       paragraphs.get(1) must containMessage("unauthorisedAgent.paragraph.2")
     }
-
   }
-
 }

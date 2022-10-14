@@ -34,12 +34,6 @@ object Mode {
     override val next: Mode = this
   }
 
-  case object Change extends Mode {
-    override val name: String = "Change"
-
-    override val next: Mode = Normal
-  }
-
   case object Amend extends Mode {
     override val name: String = "Amend"
 
@@ -60,7 +54,7 @@ object Mode {
     override val next: Mode = Normal
   }
 
-  val modes: Set[Mode] = Set[Mode](Normal, Amend, Draft, Change, ErrorFix)
+  val modes: Set[Mode] = Set[Mode](Normal, Amend, Draft, ErrorFix)
 
   def withName(str: String): Option[Mode] =
     modes.find(_.name == str)

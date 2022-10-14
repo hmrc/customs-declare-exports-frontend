@@ -17,31 +17,27 @@
 package views.declaration
 
 import base.Injector
-import forms.common.YesNoAnswer
-import forms.common.YesNoAnswer.YesNoAnswers
+import controllers.declaration.routes.UNDangerousGoodsCodeController
+import forms.common.YesNoAnswer.{form, YesNoAnswers}
 import forms.declaration.TaricCode
-import models.Mode
+import models.Mode.Normal
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
-import play.api.data.Form
-import services.cache.ExportsTestHelper
-import tools.Stubs
 import views.declaration.spec.UnitViewSpec
-import views.helpers.CommonMessages
 import views.html.declaration.taric_codes
 import views.tags.ViewTest
 
 @ViewTest
-class TaricCodesViewSpec extends UnitViewSpec with ExportsTestHelper with Stubs with CommonMessages with Injector {
+class TaricCodesViewSpec extends UnitViewSpec with Injector {
 
-  private val page = instanceOf[taric_codes]
-  private val itemId = "item1"
-  private def createView(form: Form[YesNoAnswer], codes: List[TaricCode])(implicit request: JourneyRequest[_]): Document =
-    page(Mode.Normal, itemId, form, codes)(request, messages)
+  val page = instanceOf[taric_codes]
+
+  def createView(codes: List[TaricCode])(implicit request: JourneyRequest[_]): Document =
+    page(Normal, itemId, form(), codes)(request, messages)
 
   "Taric Code View on empty page" must {
     onEveryDeclarationJourney() { implicit request =>
-      val view = createView(YesNoAnswer.form(), List.empty)
+      val view = createView(List.empty)
 
       "display page title" in {
         view.getElementsByTag("h1") must containMessageForElements("declaration.taricAdditionalCodes.header.plural", "0")
@@ -63,9 +59,7 @@ class TaricCodesViewSpec extends UnitViewSpec with ExportsTestHelper with Stubs 
 
       "display 'Back' button that links to 'UN Dangerous Goods' page" in {
         val backButton = view.getElementById("back-link")
-        backButton.getElementById("back-link") must haveHref(
-          controllers.declaration.routes.UNDangerousGoodsCodeController.displayPage(Mode.Normal, itemId)
-        )
+        backButton.getElementById("back-link") must haveHref(UNDangerousGoodsCodeController.displayPage(Normal, itemId))
       }
     }
   }
@@ -74,10 +68,9 @@ class TaricCodesViewSpec extends UnitViewSpec with ExportsTestHelper with Stubs 
     val codes = List(TaricCode("ABCD"), TaricCode("4321"))
 
     onEveryDeclarationJourney() { implicit request =>
-      val view = createView(YesNoAnswer.form(), codes)
+      val view = createView(codes)
 
       "display page title" in {
-
         view.getElementsByTag("h1") must containMessageForElements("declaration.taricAdditionalCodes.header.plural", "2")
       }
 
@@ -104,13 +97,11 @@ class TaricCodesViewSpec extends UnitViewSpec with ExportsTestHelper with Stubs 
     val codes = List(TaricCode("ABCD"))
 
     onEveryDeclarationJourney() { implicit request =>
-      val view = createView(YesNoAnswer.form(), codes)
+      val view = createView(codes)
 
       "display page title" in {
-
         view.getElementsByTag("h1") must containMessageForElements("declaration.taricAdditionalCodes.header.singular")
       }
     }
   }
-
 }

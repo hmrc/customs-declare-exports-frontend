@@ -17,9 +17,6 @@
 package views
 
 import base.Injector
-import org.scalatest.BeforeAndAfterEach
-import play.twirl.api.Html
-import tools.Stubs
 import controllers.routes
 import models.SignOutReason.UserAction
 import views.declaration.spec.UnitViewSpec
@@ -27,14 +24,11 @@ import views.html.unauthorised
 import views.tags.ViewTest
 
 @ViewTest
-class UnauthorisedViewSpec extends UnitViewSpec with Stubs with Injector with BeforeAndAfterEach {
+class UnauthorisedViewSpec extends UnitViewSpec with Injector {
 
-  override def beforeEach(): Unit =
-    super.beforeEach
+  val page = instanceOf[unauthorised]
 
-  val unauthorisedPage = instanceOf[unauthorised]
-
-  val view: Html = unauthorisedPage(true)(request, messages)
+  val view = page(true)(request, messages)
 
   "Unauthorised Page view" when {
 
@@ -69,9 +63,6 @@ class UnauthorisedViewSpec extends UnitViewSpec with Stubs with Injector with Be
 
         link must haveHref(routes.SignOutController.signOut(UserAction))
       }
-
     }
-
   }
-
 }

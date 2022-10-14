@@ -16,30 +16,29 @@
 
 package views.declaration
 
-import base.{Injector, MockAuthAction}
+import base.Injector
 import forms.common.YesNoAnswer
+import forms.common.YesNoAnswer.form
+import models.DeclarationType.STANDARD
 import models.Mode
-import models.requests.JourneyRequest
+import models.Mode.Normal
 import org.jsoup.nodes.Document
 import play.api.data.Form
-import play.api.mvc.AnyContentAsEmpty
-import tools.Stubs
-import views.declaration.spec.UnitViewSpec
-import views.helpers.CommonMessages
+import views.declaration.spec.PageWithButtonsSpec
 import views.html.declaration.nact_code_remove
 import views.tags.ViewTest
 
 @ViewTest
-class NactCodeRemoveViewSpec extends UnitViewSpec with Stubs with CommonMessages with Injector with MockAuthAction {
+class NactCodeRemoveViewSpec extends PageWithButtonsSpec with Injector {
 
-  private val itemId = "item1"
-  private val nactCode = "VATR"
-  private val form: Form[YesNoAnswer] = YesNoAnswer.form()
-  private val page = instanceOf[nact_code_remove]
-  override implicit val request: JourneyRequest[AnyContentAsEmpty.type] = getJourneyRequest()
+  val nactCode = "VATR"
 
-  private def createView(form: Form[YesNoAnswer] = form, code: String = nactCode, mode: Mode = Mode.Normal): Document =
-    page(mode, itemId, code, form)(request, messages)
+  val page = instanceOf[nact_code_remove]
+
+  override val typeAndViewInstance = (STANDARD, page(Normal, itemId, nactCode, form())(_, _))
+
+  def createView(frm: Form[YesNoAnswer] = form(), code: String = nactCode, mode: Mode = Normal): Document =
+    page(mode, itemId, code, frm)(request, messages)
 
   "Nact Code Remove View" should {
     val view = createView()
@@ -49,7 +48,8 @@ class NactCodeRemoveViewSpec extends UnitViewSpec with Stubs with CommonMessages
     }
 
     "display National Additional Code label" in {
-      view.getElementsByClass("govuk-summary-list__key") must containMessageForElements("declaration.nationalAdditionalCode.table.header")
+      val elements = view.getElementsByClass("govuk-summary-list__key")
+      elements must containMessageForElements("declaration.nationalAdditionalCode.table.header")
     }
 
     "display Nact code to remove" in {
@@ -61,7 +61,7 @@ class NactCodeRemoveViewSpec extends UnitViewSpec with Stubs with CommonMessages
 
       backLinkContainer must containMessage(backToPreviousQuestionCaption)
       backLinkContainer.getElementById("back-link") must haveHref(
-        controllers.declaration.routes.NactCodeSummaryController.displayPage(Mode.Normal, itemId)
+        controllers.declaration.routes.NactCodeSummaryController.displayPage(Normal, itemId)
       )
     }
 
@@ -70,15 +70,13 @@ class NactCodeRemoveViewSpec extends UnitViewSpec with Stubs with CommonMessages
   }
 
   "Nact Code Remove View for invalid input" should {
-
     "display error if nothing is entered" in {
-      val view = createView(YesNoAnswer.form().bind(Map[String, String]()))
+      val view = createView(form().bind(Map[String, String]()))
 
       view must haveGovukGlobalErrorSummary
       view must containErrorElementWithTagAndHref("a", "#code_yes")
 
       view must containErrorElementWithMessageKey("error.yesNo.required")
     }
-
   }
 }

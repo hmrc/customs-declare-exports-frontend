@@ -18,33 +18,32 @@ package views.declaration
 
 import base.ExportsTestData.pc1040
 import base.Injector
-import forms.common.YesNoAnswer
-import forms.common.YesNoAnswer.YesNoAnswers
-import models.Mode
+import forms.common.YesNoAnswer.{form, YesNoAnswers}
+import models.DeclarationType.STANDARD
+import models.Mode.Normal
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.mvc.Call
 import services.cache.ExportsTestHelper
-import tools.Stubs
 import views.components.gds.Styles
-import views.declaration.spec.UnitViewSpec
-import views.helpers.CommonMessages
+import views.declaration.spec.PageWithButtonsSpec
 import views.html.declaration.additionalInformation.additional_information_required
 import views.tags.ViewTest
 
 @ViewTest
-class AdditionalInformationRequiredViewSpec extends UnitViewSpec with ExportsTestHelper with CommonMessages with Stubs with Injector {
+class AdditionalInformationRequiredViewSpec extends PageWithButtonsSpec with ExportsTestHelper with Injector {
 
-  private val itemId = "a7sc78"
-  private val url = "/test"
+  val url = "/test"
+  val call = Call("GET", url)
 
-  private val additionalInfoRequiredPage = instanceOf[additional_information_required]
+  override val typeAndViewInstance = (STANDARD, page(Normal, itemId, form(), call, pc1040)(_, _))
 
-  private def createView(implicit request: JourneyRequest[_]): Document =
-    additionalInfoRequiredPage(Mode.Normal, itemId, YesNoAnswer.form(), Call("GET", url), pc1040)
+  val page = instanceOf[additional_information_required]
+
+  def createView(implicit request: JourneyRequest[_]): Document =
+    page(Normal, itemId, form(), call, pc1040)
 
   "Additional Information Required View on empty page" should {
-
     "have correct message keys" in {
       messages must haveTranslationFor("declaration.additionalInformationRequired.title")
       messages must haveTranslationFor("declaration.additionalInformationRequired.error")
@@ -74,6 +73,7 @@ class AdditionalInformationRequiredViewSpec extends UnitViewSpec with ExportsTes
         view.getElementById("code_yes").attr("value") mustBe YesNoAnswers.yes
         view.getElementsByAttributeValue("for", "code_yes") must containMessageForElements("site.yes")
       }
+
       "display radio button with No option" in {
         val view = createView
         view.getElementById("code_no").attr("value") mustBe YesNoAnswers.no

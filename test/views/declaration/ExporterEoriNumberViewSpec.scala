@@ -22,35 +22,35 @@ import forms.common.{Address, Eori, YesNoAnswer}
 import forms.declaration.EntityDetails
 import forms.declaration.consignor.ConsignorDetails
 import forms.declaration.exporter.ExporterEoriNumber
+import forms.declaration.exporter.ExporterEoriNumber.form
 import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
 import models.Mode
+import models.Mode.Normal
 import models.declaration.Parties
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import services.cache.ExportsTestHelper
-import tools.Stubs
 import views.components.gds.Styles
-import views.declaration.spec.UnitViewSpec
+import views.declaration.spec.PageWithButtonsSpec
 import views.html.declaration.exporter_eori_number
 import views.tags.ViewTest
 
 @ViewTest
-class ExporterEoriNumberViewSpec extends UnitViewSpec with ExportsTestHelper with Stubs with Injector {
+class ExporterEoriNumberViewSpec extends PageWithButtonsSpec with ExportsTestHelper with Injector {
 
-  private val page: exporter_eori_number = instanceOf[exporter_eori_number]
+  val page: exporter_eori_number = instanceOf[exporter_eori_number]
 
-  private def createView(mode: Mode = Mode.Normal, form: Form[ExporterEoriNumber] = ExporterEoriNumber.form())(
-    implicit request: JourneyRequest[_]
-  ): Document =
-    page(mode, form)(request, messages)
+  override val typeAndViewInstance = (STANDARD, page(Normal, form())(_, _))
+
+  def createView(frm: Form[ExporterEoriNumber] = form(), mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document =
+    page(mode, frm)(request, messages)
 
   onEveryDeclarationJourney() { implicit request =>
     "ExporterEoriNumber Eori Number View" should {
       val view = createView()
       "display answer input" in {
-        val exporterEoriNumber = ExporterEoriNumber.form().fill(ExporterEoriNumber(Some(Eori("GB123456789")), YesNoAnswers.yes))
-        val view = createView(form = exporterEoriNumber)
+        val view = createView(form().fill(ExporterEoriNumber(Some(Eori("GB123456789")), YesNoAnswers.yes)))
 
         view
           .getElementById("Yes")
@@ -89,8 +89,7 @@ class ExporterEoriNumberViewSpec extends UnitViewSpec with ExportsTestHelper wit
       "handle invalid input" should {
         "display errors when all inputs are incorrect" in {
           val data = ExporterEoriNumber(Some(Eori("123456789")), YesNoAnswers.yes)
-          val form = ExporterEoriNumber.form().fillAndValidate(data)
-          val view = createView(form = form)
+          val view = createView(form().fillAndValidate(data))
 
           view must haveGovukGlobalErrorSummary
           view must containErrorElementWithTagAndHref("a", "#eori")
@@ -99,8 +98,7 @@ class ExporterEoriNumberViewSpec extends UnitViewSpec with ExportsTestHelper wit
 
         "display errors when eori contains special characters" in {
           val data = ExporterEoriNumber(eori = Some(Eori("12#$%^78")), hasEori = YesNoAnswers.yes)
-          val form = ExporterEoriNumber.form().fillAndValidate(data)
-          val view = createView(form = form)
+          val view = createView(form().fillAndValidate(data))
 
           view must haveGovukGlobalErrorSummary
           view must containErrorElementWithTagAndHref("a", "#eori")
@@ -123,9 +121,7 @@ class ExporterEoriNumberViewSpec extends UnitViewSpec with ExportsTestHelper wit
       val backButton = view.getElementById("back-link")
 
       backButton must containMessage("site.backToPreviousQuestion")
-      backButton.getElementById("back-link") must haveHref(
-        controllers.declaration.routes.PersonPresentingGoodsDetailsController.displayPage(Mode.Normal)
-      )
+      backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.PersonPresentingGoodsDetailsController.displayPage(Normal))
     }
   }
 
@@ -134,7 +130,7 @@ class ExporterEoriNumberViewSpec extends UnitViewSpec with ExportsTestHelper wit
       val backButton = createView().getElementById("back-link")
 
       backButton must containMessage("site.backToPreviousQuestion")
-      backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.DeclarantExporterController.displayPage(Mode.Normal))
+      backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.DeclarantExporterController.displayPage(Normal))
     }
   }
 }

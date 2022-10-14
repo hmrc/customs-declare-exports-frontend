@@ -18,7 +18,11 @@ package views.declaration.destinationCountries
 
 import base.{ExportsTestData, Injector}
 import connectors.CodeListConnector
-import controllers.declaration.routes
+import controllers.declaration.routes.{
+  AuthorisationProcedureCodeChoiceController,
+  DeclarationHolderRequiredController,
+  DeclarationHolderSummaryController
+}
 import forms.common.Eori
 import forms.declaration.AuthorisationProcedureCodeChoice.{Choice1040, ChoiceOthers}
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.{STANDARD_FRONTIER, STANDARD_PRE_LODGED}
@@ -35,24 +39,19 @@ import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
-import org.scalatest.BeforeAndAfterEach
 import play.api.data.Form
 import play.api.mvc.Call
-import play.twirl.api.Html
-import services.cache.ExportsTestHelper
-import tools.Stubs
-import views.declaration.spec.UnitViewSpec
+import views.declaration.spec.PageWithButtonsSpec
 import views.html.declaration.destinationCountries.destination_country
 
 import scala.collection.immutable.ListMap
 
-class DestinationCountryViewSpec extends UnitViewSpec with Stubs with ExportsTestHelper with Injector with BeforeAndAfterEach {
+class DestinationCountryViewSpec extends PageWithButtonsSpec with Injector {
 
   implicit val mockCodeListConnector = mock[CodeListConnector]
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-
     when(mockCodeListConnector.getCountryCodes(any())).thenReturn(ListMap("GB" -> ModelCountry("United Kingdom", "GB")))
   }
 
@@ -61,13 +60,15 @@ class DestinationCountryViewSpec extends UnitViewSpec with Stubs with ExportsTes
     super.afterEach()
   }
 
-  private val destinationCountryPage = instanceOf[destination_country]
+  val page = instanceOf[destination_country]
 
-  private def form(request: JourneyRequest[_]): Form[Country] =
+  override val typeAndViewInstance = (STANDARD, page(Normal, form(request))(_, _))
+
+  def form(request: JourneyRequest[_]): Form[Country] =
     Countries.form(DestinationCountryPage)(request, messages(request), mockCodeListConnector)
 
-  private def createView(mode: Mode = Mode.Normal)(implicit request: JourneyRequest[_]): Html =
-    destinationCountryPage(mode, form(request))(request, messages)
+  def createView(mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document =
+    page(mode, form(request))(request, messages)
 
   "Destination country view spec" should {
 
@@ -78,7 +79,7 @@ class DestinationCountryViewSpec extends UnitViewSpec with Stubs with ExportsTes
 
     onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED) { implicit request =>
       "display a back button linking to the /authorisation-choice page" in {
-        verifyBackLink(routes.AuthorisationProcedureCodeChoiceController.displayPage(Normal))
+        verifyBackLink(AuthorisationProcedureCodeChoiceController.displayPage(Normal))
       }
     }
 
@@ -87,7 +88,7 @@ class DestinationCountryViewSpec extends UnitViewSpec with Stubs with ExportsTes
         List(Choice1040, ChoiceOthers).foreach { choice =>
           s"AuthorisationProcedureCodeChoice is '${choice.value}'" in {
             implicit val request = withRequest(STANDARD_PRE_LODGED, withAuthorisationProcedureCodeChoice(choice))
-            verifyBackLink(routes.DeclarationHolderRequiredController.displayPage())
+            verifyBackLink(DeclarationHolderRequiredController.displayPage())
           }
         }
       }
@@ -97,7 +98,7 @@ class DestinationCountryViewSpec extends UnitViewSpec with Stubs with ExportsTes
       "AdditionalDeclarationType is 'STANDARD_FRONTIER' and" when {
         s"AuthorisationProcedureCodeChoice is 'Code1040'" in {
           implicit val request = withRequest(STANDARD_FRONTIER, withAuthorisationProcedureCodeChoice(Choice1040))
-          verifyBackLink(routes.DeclarationHolderRequiredController.displayPage())
+          verifyBackLink(DeclarationHolderRequiredController.displayPage())
         }
       }
     }
@@ -107,14 +108,14 @@ class DestinationCountryViewSpec extends UnitViewSpec with Stubs with ExportsTes
         s"AuthorisationProcedureCodeChoice is 'CodeOthers'" in {
           // However this should not be possible, since the user should always be forced to enter at least one auth.
           implicit val request = withRequest(STANDARD_FRONTIER, withAuthorisationProcedureCodeChoice(ChoiceOthers))
-          verifyBackLink(routes.AuthorisationProcedureCodeChoiceController.displayPage())
+          verifyBackLink(AuthorisationProcedureCodeChoiceController.displayPage())
         }
       }
     }
 
     onJourney(CLEARANCE, OCCASIONAL) { implicit request =>
       "display a back button linking to the /is-authorisation-required  page" in {
-        verifyBackLink(routes.DeclarationHolderRequiredController.displayPage(Normal))
+        verifyBackLink(DeclarationHolderRequiredController.displayPage(Normal))
       }
     }
 
@@ -125,7 +126,7 @@ class DestinationCountryViewSpec extends UnitViewSpec with Stubs with ExportsTes
         s"on $declarationType journey and" when {
           "the declaration contains at least one authorisation" in {
             implicit val request = withRequestOfType(declarationType, withDeclarationHolders(holder))
-            verifyBackLink(routes.DeclarationHolderSummaryController.displayPage())
+            verifyBackLink(DeclarationHolderSummaryController.displayPage())
           }
         }
       }

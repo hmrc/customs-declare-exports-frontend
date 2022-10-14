@@ -17,27 +17,28 @@
 package views.declaration
 
 import base.Injector
-import controllers.declaration.routes
+import controllers.declaration.routes.OfficeOfExitController
 import forms.common.YesNoAnswer
+import forms.common.YesNoAnswer.form
 import models.DeclarationType.{STANDARD, SUPPLEMENTARY}
 import models.Mode
 import models.Mode.Normal
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
-import views.declaration.spec.UnitViewSpec
-import views.helpers.CommonMessages
+import views.declaration.spec.PageWithButtonsSpec
 import views.html.declaration.invoice_and_exchange_rate_choice
 import views.tags.ViewTest
 
 @ViewTest
-class InvoiceAndExchangeRateChoiceViewSpec extends UnitViewSpec with CommonMessages with Injector {
+class InvoiceAndExchangeRateChoiceViewSpec extends PageWithButtonsSpec with Injector {
 
-  private val page = instanceOf[invoice_and_exchange_rate_choice]
-  private val form: Form[YesNoAnswer] = YesNoAnswer.form()
+  val page = instanceOf[invoice_and_exchange_rate_choice]
 
-  private def createView(form: Form[YesNoAnswer] = form, mode: Mode = Mode.Normal)(implicit request: JourneyRequest[_]): Document =
-    page(mode, form)(request, messages)
+  override val typeAndViewInstance = (STANDARD, page(Normal, form())(_, _))
+
+  def createView(frm: Form[YesNoAnswer] = form(), mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document =
+    page(mode, frm)(request, messages)
 
   "'Invoice And Exchange Rate Choice' view" should {
 
@@ -47,7 +48,7 @@ class InvoiceAndExchangeRateChoiceViewSpec extends UnitViewSpec with CommonMessa
       "display 'Back' button to the /office-of-exit page" in {
         val backButton = view.getElementById("back-link")
         backButton must containMessage(backToPreviousQuestionCaption)
-        backButton must haveHref(routes.OfficeOfExitController.displayPage(Normal))
+        backButton must haveHref(OfficeOfExitController.displayPage(Normal))
       }
 
       "display header" in {
@@ -68,14 +69,12 @@ class InvoiceAndExchangeRateChoiceViewSpec extends UnitViewSpec with CommonMessa
       }
 
       "select the 'Yes' radio when clicked" in {
-        val form = YesNoAnswer.form().bind(Map("yesNo" -> "Yes"))
-        val view = createView(form = form)
+        val view = createView(form().bind(Map("yesNo" -> "Yes")))
         view.getElementById("code_yes") must beSelected
       }
 
       "select the 'No' radio when clicked" in {
-        val form = YesNoAnswer.form().bind(Map("yesNo" -> "No"))
-        val view = createView(form = form)
+        val view = createView(form().bind(Map("yesNo" -> "No")))
         view.getElementById("code_no") must beSelected
       }
 

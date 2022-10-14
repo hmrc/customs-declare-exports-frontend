@@ -23,6 +23,7 @@ import controllers.helpers._
 import controllers.routes.RejectedNotificationsController
 import forms.declaration.AdditionalInformationSummary
 import mock.FeatureFlagMocks
+import models.Mode.Normal
 import models.requests.{ExportsSessionKeys, JourneyRequest}
 import models.responses.FlashKeys
 import models.{DeclarationType, ExportsDeclaration, Mode, SignedInUser}
@@ -45,7 +46,7 @@ class NavigatorSpec
     extends UnitWithMocksSpec with ExportsDeclarationBuilder with JourneyTypeTestRunner with MockExportCacheService with RequestBuilder
     with ScalaFutures with FeatureFlagMocks {
 
-  private val mode = Mode.Normal
+  private val mode = Normal
   private val url = "url"
   private val call: Mode => Call = _ => Call("GET", url)
   private val config = mock[AppConfig]
@@ -79,7 +80,7 @@ class NavigatorSpec
   "Continue To" should {
     val updatedDate = LocalDate.of(2020, 1, 1)
 
-    implicit val declaration: ExportsDeclaration = aDeclaration(withUpdateDate(updatedDate))
+    implicit val declaration = aDeclaration(withUpdateDate(updatedDate))
 
     "go to the URL provided" when {
       "Save And Continue" in {
@@ -205,7 +206,7 @@ class NavigatorSpec
 
     implicit val ec: ExecutionContext = ExecutionContext.global
 
-    val mode = Mode.Normal
+    val mode = Normal
     val itemId = "itemId"
 
     onJourney(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY) { implicit request =>

@@ -26,26 +26,28 @@ import controllers.declaration.routes.{
 }
 import controllers.helpers.TransportSectionHelper.additionalDeclTypesAllowedOnInlandOrBorder
 import forms.declaration.InlandModeOfTransportCode
+import forms.declaration.InlandModeOfTransportCode.form
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
 import models.DeclarationType._
 import models.Mode
+import models.Mode.Normal
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import services.cache.ExportsTestHelper
-import tools.Stubs
-import views.declaration.spec.UnitViewSpec
+import views.declaration.spec.PageWithButtonsSpec
 import views.html.declaration.inland_transport_details
 import views.tags.ViewTest
 
 @ViewTest
-class InlandTransportDetailsViewSpec extends UnitViewSpec with ExportsTestHelper with Stubs with Injector {
+class InlandTransportDetailsViewSpec extends PageWithButtonsSpec with ExportsTestHelper with Injector {
 
-  private val page = instanceOf[inland_transport_details]
-  private val form: Form[InlandModeOfTransportCode] = InlandModeOfTransportCode.form()
+  val page = instanceOf[inland_transport_details]
 
-  private def createView(mode: Mode = Mode.Normal, form: Form[InlandModeOfTransportCode] = form)(implicit request: JourneyRequest[_]): Document =
-    page(mode, form)(request, messages)
+  override val typeAndViewInstance = (STANDARD, page(Normal, form())(_, _))
+
+  def createView(mode: Mode = Normal, frm: Form[InlandModeOfTransportCode] = form())(implicit request: JourneyRequest[_]): Document =
+    page(mode, frm)(request, messages)
 
   "Inland Transport Details View" should {
 

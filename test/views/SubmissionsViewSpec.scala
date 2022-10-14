@@ -27,11 +27,9 @@ import models.declaration.submissions.{Action, Submission}
 import models.{Page, Paginated, SubmissionsPagesElements}
 import org.jsoup.nodes.Element
 import org.mockito.Mockito.when
-import org.scalatest.BeforeAndAfterEach
 import play.api.inject.bind
 import play.twirl.api.Html
 import services.cache.ExportsTestHelper
-import tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.html.submissions
 import views.tags.ViewTest
@@ -39,7 +37,7 @@ import views.tags.ViewTest
 import java.time.{ZoneId, ZonedDateTime}
 
 @ViewTest
-class SubmissionsViewSpec extends UnitViewSpec with BeforeAndAfterEach with ExportsTestHelper with Stubs {
+class SubmissionsViewSpec extends UnitViewSpec with ExportsTestHelper {
 
   private val injector = new OverridableInjector(bind[SecureMessagingConfig].toInstance(mockSecureMessagingConfig))
 

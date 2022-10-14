@@ -16,8 +16,6 @@
 
 package views
 
-import java.time.{LocalDateTime, ZoneOffset}
-
 import base.{ExportsTestData, Injector}
 import controllers.routes
 import forms.Choice
@@ -25,28 +23,33 @@ import forms.Choice.AllowedChoiceValues.ContinueDec
 import models.{DeclarationStatus, ExportsDeclaration, Page, Paginated}
 import org.jsoup.nodes.Element
 import play.twirl.api.Html
-import views.declaration.spec.{UnitViewSpec, ViewMatchers}
+import play.twirl.api.HtmlFormat.Appendable
+import views.declaration.spec.UnitViewSpec
 import views.html.saved_declarations
 import views.tags.ViewTest
 
+import java.time.{LocalDateTime, ZoneOffset}
+
 @ViewTest
-class SavedDeclarationsViewSpec extends UnitViewSpec with Injector with ViewMatchers {
+class SavedDeclarationsViewSpec extends UnitViewSpec with Injector {
+
   val title: String = "saved.declarations.title"
 
   val ducr: String = "saved.declarations.ducr"
-  private val noDucrLabel = "No DUCR added"
+  val noDucrLabel = "No DUCR added"
 
   val dateSaved: String = "saved.declarations.dateSaved"
-  private val savedDeclarationsPage = instanceOf[saved_declarations]
+
+  val page = instanceOf[saved_declarations]
 
   private val decWithoutDucr = ExportsTestData.aDeclaration(
     withStatus(DeclarationStatus.DRAFT),
     withUpdateTime(LocalDateTime.of(2019, 1, 1, 9, 45, 0).toInstant(ZoneOffset.UTC))
   )
 
-  private def createView(declarations: Seq[ExportsDeclaration] = Seq.empty, page: Int = 1, pageSize: Int = 10, total: Int = 0) = {
-    val data = Paginated(declarations, Page(page, pageSize), total)
-    savedDeclarationsPage(data)(request, messages)
+  private def createView(declarations: Seq[ExportsDeclaration] = Seq.empty, pageIx: Int = 1, pageSize: Int = 10, total: Int = 0): Appendable = {
+    val data = Paginated(declarations, Page(pageIx, pageSize), total)
+    page(data)(request, messages)
   }
 
   "Saved Declarations View" should {
@@ -104,7 +107,6 @@ class SavedDeclarationsViewSpec extends UnitViewSpec with Injector with ViewMatc
       backButton must containMessage("site.back")
       backButton must haveHref(routes.ChoiceController.displayPage(Some(Choice(ContinueDec))))
     }
-
   }
 
   private def numberOfTableRows(view: Html) = view.getElementsByClass("govuk-table__row").size() - 1

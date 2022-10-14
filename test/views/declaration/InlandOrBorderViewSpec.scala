@@ -17,25 +17,27 @@
 package views.declaration
 
 import base.ExportsTestData.itemWithPC
-import base.{Injector, MockExportCacheService}
+import base.Injector
 import controllers.declaration.routes.{SupervisingCustomsOfficeController, TransportLeavingTheBorderController}
 import controllers.helpers.TransportSectionHelper.additionalDeclTypesAllowedOnInlandOrBorder
 import forms.declaration.InlandOrBorder.{form, Border, Inland}
+import models.DeclarationType.STANDARD
 import models.Mode
+import models.Mode.Normal
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
-import services.cache.ExportsTestHelper
-import tools.Stubs
-import views.declaration.spec.UnitViewSpec
+import views.declaration.spec.PageWithButtonsSpec
 import views.html.declaration.inland_border
 import views.tags.ViewTest
 
 @ViewTest
-class InlandOrBorderViewSpec extends UnitViewSpec with ExportsTestHelper with MockExportCacheService with Injector with Stubs {
+class InlandOrBorderViewSpec extends PageWithButtonsSpec with Injector {
 
-  private val page = instanceOf[inland_border]
+  val page = instanceOf[inland_border]
 
-  private def createView(mode: Mode = Mode.Normal)(implicit request: JourneyRequest[_]): Document = page(mode, form)(request, messages)
+  override val typeAndViewInstance = (STANDARD, page(Normal, form)(_, _))
+
+  def createView(mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document = page(mode, form)(request, messages)
 
   "Inland or Border View" when {
 

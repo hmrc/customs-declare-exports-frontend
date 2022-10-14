@@ -20,29 +20,28 @@ import base.Injector
 import controllers.declaration.routes.{CommodityDetailsController, PackageInformationSummaryController, UNDangerousGoodsCodeController}
 import forms.declaration.IsExs
 import forms.declaration.commodityMeasure.CommodityMeasure
+import forms.declaration.commodityMeasure.CommodityMeasure.form
 import models.DeclarationType._
 import models.Mode
+import models.Mode.Normal
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import org.scalatest.Assertion
 import play.api.data.Form
 import play.api.mvc.Call
-import tools.Stubs
-import views.declaration.spec.UnitViewSpec
+import views.declaration.spec.PageWithButtonsSpec
 import views.html.declaration.commodityMeasure.commodity_measure
 import views.tags.ViewTest
 
 @ViewTest
-class CommodityMeasureViewSpec extends UnitViewSpec with Stubs with Injector {
+class CommodityMeasureViewSpec extends PageWithButtonsSpec with Injector {
 
-  val itemId = "a7sc78"
+  val page = instanceOf[commodity_measure]
 
-  private val commodityMeasurePage = instanceOf[commodity_measure]
+  override val typeAndViewInstance = (STANDARD, page(Normal, itemId, form)(_, _))
 
-  private def createView(form: Form[CommodityMeasure] = CommodityMeasure.form, mode: Mode = Mode.Normal)(
-    implicit request: JourneyRequest[_]
-  ): Document =
-    commodityMeasurePage(mode, itemId, form)(request, messages)
+  def createView(frm: Form[CommodityMeasure] = form, mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document =
+    page(mode, itemId, frm)(request, messages)
 
   "Commodity Measure View on empty page" should {
     onJourney(STANDARD, SUPPLEMENTARY, CLEARANCE) { implicit request =>
@@ -86,7 +85,7 @@ class CommodityMeasureViewSpec extends UnitViewSpec with Stubs with Injector {
   "Commodity Measure with invalid input" should {
     onJourney(STANDARD, SUPPLEMENTARY, CLEARANCE) { implicit request =>
       "display error when nothing is entered" in {
-        val view = createView(CommodityMeasure.form.bind(Map("grossMass" -> "", "netMass" -> "")))
+        val view = createView(form.bind(Map("grossMass" -> "", "netMass" -> "")))
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#netMass")
@@ -97,7 +96,7 @@ class CommodityMeasureViewSpec extends UnitViewSpec with Stubs with Injector {
       }
 
       "display error when net mass is empty" in {
-        val view = createView(CommodityMeasure.form.bind(Map("grossMass" -> "10.00", "netMass" -> "")))
+        val view = createView(form.bind(Map("grossMass" -> "10.00", "netMass" -> "")))
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#netMass")
@@ -105,7 +104,7 @@ class CommodityMeasureViewSpec extends UnitViewSpec with Stubs with Injector {
       }
 
       "display error when net mass is incorrect" in {
-        val view = createView(CommodityMeasure.form.bind(Map("grossMass" -> "20.99", "netMass" -> "10.0055345")))
+        val view = createView(form.bind(Map("grossMass" -> "20.99", "netMass" -> "10.0055345")))
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#netMass")
@@ -113,7 +112,7 @@ class CommodityMeasureViewSpec extends UnitViewSpec with Stubs with Injector {
       }
 
       "display error when gross mass is empty" in {
-        val view = createView(CommodityMeasure.form.bind(Map("grossMass" -> "", "netMass" -> "10.00")))
+        val view = createView(form.bind(Map("grossMass" -> "", "netMass" -> "10.00")))
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#grossMass")
@@ -121,7 +120,7 @@ class CommodityMeasureViewSpec extends UnitViewSpec with Stubs with Injector {
       }
 
       "display error when gross mass is incorrect" in {
-        val view = createView(CommodityMeasure.form.bind(Map("grossMass" -> "5.00234ff", "netMass" -> "100.100")))
+        val view = createView(form.bind(Map("grossMass" -> "5.00234ff", "netMass" -> "100.100")))
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#grossMass")
@@ -164,7 +163,7 @@ class CommodityMeasureViewSpec extends UnitViewSpec with Stubs with Injector {
         val backButton = createView().getElementById("back-link")
 
         backButton must containMessage("site.backToPreviousQuestion")
-        backButton must haveHref(PackageInformationSummaryController.displayPage(Mode.Normal, itemId).url)
+        backButton must haveHref(PackageInformationSummaryController.displayPage(Normal, itemId).url)
       }
     }
 
@@ -181,19 +180,19 @@ class CommodityMeasureViewSpec extends UnitViewSpec with Stubs with Injector {
 
       "display 'Back' button that links to 'Commodity Details' " when {
         "procedure code was '0019' and is EXS was 'No" in {
-          viewHasBackLinkForProcedureCodeAndExsStatus("0019", "No", CommodityDetailsController.displayPage(Mode.Normal, itemId))
+          viewHasBackLinkForProcedureCodeAndExsStatus("0019", "No", CommodityDetailsController.displayPage(Normal, itemId))
         }
       }
 
       "display 'Back' button that links to 'UN Dangerous Goods Code' " when {
         "procedure code was '0019' and is EXS was 'Yes" in {
-          viewHasBackLinkForProcedureCodeAndExsStatus("0019", "Yes", UNDangerousGoodsCodeController.displayPage(Mode.Normal, itemId))
+          viewHasBackLinkForProcedureCodeAndExsStatus("0019", "Yes", UNDangerousGoodsCodeController.displayPage(Normal, itemId))
         }
       }
 
       "display 'Back' button that links to 'Package Information' " when {
         "procedure code was '1234'" in {
-          viewHasBackLinkForProcedureCodeAndExsStatus("1234", "ANY", PackageInformationSummaryController.displayPage(Mode.Normal, itemId))
+          viewHasBackLinkForProcedureCodeAndExsStatus("1234", "ANY", PackageInformationSummaryController.displayPage(Normal, itemId))
         }
       }
     }

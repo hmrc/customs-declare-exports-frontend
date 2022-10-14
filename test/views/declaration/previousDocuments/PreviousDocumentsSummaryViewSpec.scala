@@ -17,26 +17,30 @@
 package views.declaration.previousDocuments
 
 import base.Injector
-import forms.common.YesNoAnswer
+import controllers.declaration.routes.{NatureOfTransactionController, OfficeOfExitController}
+import forms.common.YesNoAnswer.form
 import forms.declaration.Document
+import models.DeclarationType.STANDARD
+import models.Mode.Normal
 import models.requests.JourneyRequest
 import models.{DeclarationType, Mode}
-import play.twirl.api.Html
-import services.cache.ExportsDeclarationBuilder
-import views.declaration.spec.UnitViewSpec
-import views.html.declaration.previousDocuments.previous_documents_summary
 import org.jsoup.nodes.{Document => nodeDocument}
+import play.twirl.api.Html
+import views.declaration.spec.PageWithButtonsSpec
+import views.html.declaration.previousDocuments.previous_documents_summary
 
-class PreviousDocumentsSummaryViewSpec extends UnitViewSpec with ExportsDeclarationBuilder with Injector {
+class PreviousDocumentsSummaryViewSpec extends PageWithButtonsSpec with Injector {
 
-  private val page = instanceOf[previous_documents_summary]
-  private val form = YesNoAnswer.form()
   private val document1 = Document("355", "reference1", Some("3"))
   private val document2 = Document("740", "reference2", None)
   private val documents = Seq(document1, document2)
 
-  private def createView(documents: Seq[Document] = documents, mode: Mode = Mode.Normal)(implicit request: JourneyRequest[_]): Html =
-    page(mode, form, documents)(request, messages)
+  val page = instanceOf[previous_documents_summary]
+
+  override val typeAndViewInstance = (STANDARD, page(Normal, form(), documents)(_, _))
+
+  def createView(documents: Seq[Document] = documents, mode: Mode = Normal)(implicit request: JourneyRequest[_]): Html =
+    page(mode, form(), documents)(request, messages)
 
   "Previous Documents Summary page" should {
 
@@ -119,7 +123,7 @@ class PreviousDocumentsSummaryViewSpec extends UnitViewSpec with ExportsDeclarat
       "display 'Back' link to 'Nature of Transaction' page" in {
         val backButton = createView().getElementById("back-link")
         backButton must containMessage("site.backToPreviousQuestion")
-        backButton must haveHref(controllers.declaration.routes.NatureOfTransactionController.displayPage(Mode.Normal))
+        backButton must haveHref(NatureOfTransactionController.displayPage(Normal))
       }
     }
 
@@ -129,7 +133,7 @@ class PreviousDocumentsSummaryViewSpec extends UnitViewSpec with ExportsDeclarat
 
         val backButton = createView()(specificRequest).getElementById("back-link")
         backButton must containMessage("site.backToPreviousQuestion")
-        backButton must haveHref(controllers.declaration.routes.OfficeOfExitController.displayPage(Mode.Normal))
+        backButton must haveHref(OfficeOfExitController.displayPage(Normal))
       }
     }
   }

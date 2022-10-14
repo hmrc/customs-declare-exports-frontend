@@ -17,26 +17,24 @@
 package views.declaration
 
 import base.Injector
+import controllers.declaration.routes.TaricCodeSummaryController
 import forms.declaration.TaricCode
+import forms.declaration.TaricCode.form
 import models.Mode
+import models.Mode.Normal
 import org.jsoup.nodes.Document
 import play.api.data.Form
-import services.cache.ExportsTestHelper
-import tools.Stubs
 import views.declaration.spec.UnitViewSpec
-import views.helpers.CommonMessages
 import views.html.declaration.taric_code_add
 import views.tags.ViewTest
 
 @ViewTest
-class TaricCodeAddViewSpec extends UnitViewSpec with ExportsTestHelper with Stubs with CommonMessages with Injector {
+class TaricCodeAddViewSpec extends UnitViewSpec with Injector {
 
-  private val itemId = "item1"
-  private val form: Form[TaricCode] = TaricCode.form()
-  private val page = instanceOf[taric_code_add]
+  val page = instanceOf[taric_code_add]
 
-  private def createView(form: Form[TaricCode] = form, mode: Mode = Mode.Normal): Document =
-    page(mode, itemId, form)(journeyRequest(), messages)
+  def createView(frm: Form[TaricCode] = form(), mode: Mode = Normal): Document =
+    page(mode, itemId, frm)(journeyRequest(), messages)
 
   "Taric Code Add View" should {
     val view = createView()
@@ -47,10 +45,7 @@ class TaricCodeAddViewSpec extends UnitViewSpec with ExportsTestHelper with Stub
 
     "display 'Back' button that links to 'Taric code summary' page" in {
       val backLinkContainer = view.getElementById("back-link")
-
-      backLinkContainer.getElementById("back-link") must haveHref(
-        controllers.declaration.routes.TaricCodeSummaryController.displayPage(Mode.Normal, itemId)
-      )
+      backLinkContainer.getElementById("back-link") must haveHref(TaricCodeSummaryController.displayPage(Normal, itemId))
     }
 
     val createViewWithMode: Mode => Document = mode => createView(mode = mode)
@@ -60,31 +55,23 @@ class TaricCodeAddViewSpec extends UnitViewSpec with ExportsTestHelper with Stub
   "Taric Code Add View for invalid input" should {
 
     "display error if nothing is entered" in {
-      val view = createView(TaricCode.form().fillAndValidate(TaricCode("")))
-
+      val view = createView(form().fillAndValidate(TaricCode("")))
       view must haveGovukGlobalErrorSummary
       view must containErrorElementWithTagAndHref("a", "#taricCode")
-
       view must containErrorElementWithMessageKey("declaration.taricAdditionalCodes.error.empty")
     }
 
     "display error if incorrect tric code is entered" in {
-      val view = createView(TaricCode.form().fillAndValidate(TaricCode("12345678901234567890")))
-
+      val view = createView(form().fillAndValidate(TaricCode("12345678901234567890")))
       view must haveGovukGlobalErrorSummary
       view must containErrorElementWithTagAndHref("a", "#taricCode")
-
       view must containErrorElementWithMessageKey("declaration.taricAdditionalCodes.error.invalid")
     }
-
   }
 
   "Taric Code Add View when filled" should {
-
     "display data in taric code input" in {
-
-      val view = createView(TaricCode.form().fill(TaricCode("4321")))
-
+      val view = createView(form().fill(TaricCode("4321")))
       view.getElementById("taricCode").attr("value") must be("4321")
     }
   }

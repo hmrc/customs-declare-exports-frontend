@@ -17,64 +17,51 @@
 package views.declaration.addtionalDocuments
 
 import base.Injector
-import controllers.declaration.routes
-import forms.common.YesNoAnswer
+import controllers.declaration.routes.AdditionalDocumentsController
+import forms.common.YesNoAnswer.form
 import forms.declaration.AdditionalDocumentSpec.correctAdditionalDocument
 import forms.declaration.additionaldocuments.{AdditionalDocument, DocumentWriteOff}
-import models.Mode
+import models.Mode.Normal
 import models.requests.JourneyRequest
 import org.jsoup.nodes.{Document, Element}
-import play.api.data.Form
-import services.cache.ExportsTestHelper
-import tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.additionalDocuments.additional_document_remove
 import views.tags.ViewTest
 
 @ViewTest
-class AdditionalDocumentRemoveViewSpec extends UnitViewSpec with ExportsTestHelper with Stubs with Injector {
+class AdditionalDocumentRemoveViewSpec extends UnitViewSpec with Injector {
 
-  private val itemId = "a7sc78"
-  private val documentId = "1.2131231"
+  val documentId = "1.2131231"
 
-  private val additionalDocumentRemovePage = instanceOf[additional_document_remove]
+  val page = instanceOf[additional_document_remove]
 
-  private def createView(
-    mode: Mode = Mode.Normal,
-    form: Form[YesNoAnswer] = YesNoAnswer.form(),
-    documents: AdditionalDocument = correctAdditionalDocument
-  )(implicit request: JourneyRequest[_]): Document =
-    additionalDocumentRemovePage(mode, itemId, documentId, documents, form)(request, messages)
+  def createView(documents: AdditionalDocument = correctAdditionalDocument)(implicit request: JourneyRequest[_]): Document =
+    page(Normal, itemId, documentId, documents, form())(request, messages)
 
-  "have proper messages for labels" in {
-    messages must haveTranslationFor("declaration.additionalDocument.remove.title")
-    messages must haveTranslationFor("declaration.additionalDocument.remove.code")
-    messages must haveTranslationFor("declaration.additionalDocument.remove.reference")
-    messages must haveTranslationFor("declaration.additionalDocument.remove.statusCode")
-    messages must haveTranslationFor("declaration.additionalDocument.remove.statusReason")
-    messages must haveTranslationFor("declaration.additionalDocument.remove.issuingAuthorityName")
-    messages must haveTranslationFor("declaration.additionalDocument.remove.dateOfValidity")
-    messages must haveTranslationFor("declaration.additionalDocument.remove.measurementUnitAndQualifier")
-    messages must haveTranslationFor("declaration.additionalDocument.remove.documentQuantity")
-  }
-
-  "additional_document_remove view back link" should {
-    onEveryDeclarationJourney() { implicit request =>
-      "display back link" in {
-        val view = createView()
-        view must containElementWithID("back-link")
-        view.getElementById("back-link") must haveHref(routes.AdditionalDocumentsController.displayPage(Mode.Normal, itemId))
-      }
+  "additional_document_remove view" should {
+    "have proper messages for labels" in {
+      messages must haveTranslationFor("declaration.additionalDocument.remove.title")
+      messages must haveTranslationFor("declaration.additionalDocument.remove.code")
+      messages must haveTranslationFor("declaration.additionalDocument.remove.reference")
+      messages must haveTranslationFor("declaration.additionalDocument.remove.statusCode")
+      messages must haveTranslationFor("declaration.additionalDocument.remove.statusReason")
+      messages must haveTranslationFor("declaration.additionalDocument.remove.issuingAuthorityName")
+      messages must haveTranslationFor("declaration.additionalDocument.remove.dateOfValidity")
+      messages must haveTranslationFor("declaration.additionalDocument.remove.measurementUnitAndQualifier")
+      messages must haveTranslationFor("declaration.additionalDocument.remove.documentQuantity")
     }
   }
 
-  "additional_document_remove view when filled" should {
-
+  "additional_document_remove view" should {
     onEveryDeclarationJourney() { implicit request =>
+      val view = createView()
+
+      "display back link" in {
+        view must containElementWithID("back-link")
+        view.getElementById("back-link") must haveHref(AdditionalDocumentsController.displayPage(Normal, itemId))
+      }
+
       "display data in table" in {
-
-        val view = createView()
-
         val descriptions = view.getElementsByClass("govuk-summary-list__key")
         val values = view.getElementsByClass("govuk-summary-list__value")
 
@@ -102,7 +89,11 @@ class AdditionalDocumentRemoveViewSpec extends UnitViewSpec with ExportsTestHelp
         descriptions.get(7).text mustBe messages("declaration.additionalDocument.remove.documentQuantity")
         values.get(7).text mustBe correctAdditionalDocument.documentWriteOff.flatMap(_.documentQuantity).map(_.toString).get
       }
+    }
+  }
 
+  "additional_document_remove view when filled" should {
+    onEveryDeclarationJourney() { implicit request =>
       def summary(documents: AdditionalDocument): Element = createView(documents = documents).select("dl").first()
 
       "not display code when not present" in {
@@ -150,7 +141,6 @@ class AdditionalDocumentRemoveViewSpec extends UnitViewSpec with ExportsTestHelp
           messages("declaration.additionalDocument.remove.documentQuantity")
         )
       }
-
     }
   }
 }

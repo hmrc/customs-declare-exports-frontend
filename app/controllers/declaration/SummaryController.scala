@@ -23,6 +23,7 @@ import controllers.routes.{SavedDeclarationsController, SubmissionsController}
 import forms.declaration.LegalDeclaration
 import forms.{Lrn, LrnValidator}
 import handlers.ErrorHandler
+import models.Mode.{Amend, Draft, Normal}
 import models.declaration.submissions.EnhancedStatus.ERRORS
 import models.declaration.submissions.Submission
 import models.requests.ExportsSessionKeys._
@@ -61,13 +62,16 @@ class SummaryController @Inject() (
   val form: Form[LegalDeclaration] = LegalDeclaration.form()
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType).async { implicit request =>
-    displayPageOnMandatoryData(mode)
+    updateDeclarationFromRequest(_.copy(summaryWasVisited = Some(true))).flatMap { _ =>
+      if (containsMandatoryData(request.cacheModel, mode)) displaySummaryPage(mode)
+      else Future.successful(Ok(summaryPageNoData()))
+    }
   }
 
   def displayDeclarationPage(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType) { implicit request =>
     mode match {
-      case Mode.Draft | Mode.Normal | Mode.Amend => Ok(legalDeclarationPage(form))
-      case _                                     => handleError("Invalid mode on summary page")
+      case Draft | Normal | Amend => Ok(legalDeclarationPage(form))
+      case _                      => handleError("Invalid mode on summary page")
     }
   }
 
@@ -82,12 +86,7 @@ class SummaryController @Inject() (
     )
   }
 
-  def displayPageOnMandatoryData(mode: Mode)(implicit request: JourneyRequest[_]): Future[Result] =
-    if (containsMandatoryData(request.cacheModel, mode)) displaySummaryPage
-    else Future.successful(Ok(summaryPageNoData()))
-
-  private def displaySummaryPage(implicit request: JourneyRequest[_]): Future[Result] = {
-
+  private def displaySummaryPage(mode: Mode)(implicit request: JourneyRequest[_]): Future[Result] = {
     val maybeLrn = request.cacheModel.lrn.map(Lrn(_))
     val backlink =
       if (request.cacheModel.parentDeclarationEnhancedStatus.contains(ERRORS)) SubmissionsController.displayListOfSubmissions()
@@ -95,23 +94,24 @@ class SummaryController @Inject() (
     val duplicateLrnError = Seq(lrnDuplicateError)
 
     isLrnADuplicate(maybeLrn).map { lrnIsDuplicate =>
-      if (lrnIsDuplicate) Ok(normalSummaryPage(backlink, duplicateLrnError))
-      else Ok(amendDraftSummaryPage(backlink))
+      if (lrnIsDuplicate) Ok(normalSummaryPage(mode, backlink, duplicateLrnError))
+      else Ok(amendDraftSummaryPage(mode, backlink))
     }
   }
 
-  private val hrefSourcePattern = """href="/customs-declare-exports/declaration/.+\?mode=Change"""".r
-  private val hrefDestPattern = s"""href="$continuePlaceholder""""
+  private val hrefSource = """href="/customs-declare-exports/declaration/.+\?mode="""
+  private val hrefDest = s"""href="$continuePlaceholder""""
 
-  private def amendDraftSummaryPage(backlink: Call)(implicit request: JourneyRequest[_]): Html = {
-    val page = normalSummaryPage(backlink, Seq.empty, Some(continuePlaceholder)).toString
-    hrefSourcePattern.findAllIn(page).toList.lastOption.fold(Html(page)) { lastChangeLink =>
-      Html(page.replaceFirst(hrefDestPattern, lastChangeLink))
+  private def amendDraftSummaryPage(mode: Mode, backlink: Call)(implicit request: JourneyRequest[_]): Html = {
+    val page = normalSummaryPage(mode, backlink, Seq.empty, Some(continuePlaceholder)).toString
+    val hrefSourceRegex = s"""$hrefSource$mode"""".r
+    hrefSourceRegex.findAllIn(page).toList.lastOption.fold(Html(page)) { lastChangeLink =>
+      Html(page.replaceFirst(hrefDest, lastChangeLink))
     }
   }
 
   private def containsMandatoryData(declaration: ExportsDeclaration, mode: Mode): Boolean =
-    mode.equals(Mode.Draft) || declaration.consignmentReferences.exists(references => references.lrn.nonEmpty)
+    mode.equals(Draft) || declaration.consignmentReferences.exists(references => references.lrn.nonEmpty)
 
   private def isLrnADuplicate(lrn: Option[Lrn])(implicit hc: HeaderCarrier): Future[Boolean] =
     lrn.fold(Future.successful(false))(lrnValidator.hasBeenSubmittedInThePast48Hours)

@@ -50,7 +50,7 @@
     countryHelper: CountryHelper
 )
 
-@(mode: Mode, form: Form[Boolean])(implicit request: JourneyRequest[AnyContent], messages: Messages)
+@(mode: Mode, form: Form[Boolean])(implicit request: JourneyRequest[_], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 

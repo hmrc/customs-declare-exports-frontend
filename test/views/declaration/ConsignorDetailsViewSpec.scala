@@ -22,33 +22,31 @@ import controllers.declaration.routes
 import forms.common.{Address, AddressSpec}
 import forms.declaration.EntityDetails
 import forms.declaration.consignor.ConsignorDetails
+import forms.declaration.consignor.ConsignorDetails.form
 import models.DeclarationType.CLEARANCE
+import models.Mode
+import models.Mode.Normal
 import models.codes.Country
 import models.requests.JourneyRequest
-import models.{DeclarationType, Mode}
 import org.jsoup.nodes.Document
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
-import org.scalatest.{Assertion, BeforeAndAfterEach}
+import org.scalatest.Assertion
 import play.api.data.Form
 import play.api.i18n.MessagesApi
-import tools.Stubs
-import views.declaration.spec.AddressViewSpec
-import views.helpers.CommonMessages
+import views.declaration.spec.{AddressViewSpec, PageWithButtonsSpec}
 import views.html.declaration.consignor_details
 import views.tags.ViewTest
 
 import scala.collection.immutable.ListMap
 
 @ViewTest
-class ConsignorDetailsViewSpec extends AddressViewSpec with CommonMessages with Stubs with Injector with BeforeAndAfterEach {
+class ConsignorDetailsViewSpec extends AddressViewSpec with Injector with PageWithButtonsSpec {
 
-  private val consignorDetailsPage = instanceOf[consignor_details]
   implicit val mockCodeListConnector = mock[CodeListConnector]
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-
     when(mockCodeListConnector.getCountryCodes(any())).thenReturn(ListMap("GB" -> Country("United Kingdom", "GB")))
   }
 
@@ -57,10 +55,12 @@ class ConsignorDetailsViewSpec extends AddressViewSpec with CommonMessages with 
     super.afterEach()
   }
 
-  private val form: Form[ConsignorDetails] = ConsignorDetails.form()
+  val page = instanceOf[consignor_details]
 
-  private def createView(form: Form[ConsignorDetails] = form, mode: Mode = Mode.Normal)(implicit request: JourneyRequest[_]): Document =
-    consignorDetailsPage(mode, form)(request, messages)
+  override val typeAndViewInstance = (CLEARANCE, page(Normal, form())(_, _))
+
+  def createView(frm: Form[ConsignorDetails] = form(), mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document =
+    page(mode, frm)(request, messages)
 
   "Consignor Details View on empty page" should {
 
@@ -87,21 +87,18 @@ class ConsignorDetailsViewSpec extends AddressViewSpec with CommonMessages with 
       messages must haveTranslationFor("tariff.declaration.consignorAddress.clearance.text")
     }
 
-    onJourney(CLEARANCE) { implicit request =>
+    onClearance { implicit request =>
       "display page title" in {
-
         createView().getElementsByClass("govuk-fieldset__heading").first().text() mustBe messages("declaration.consignorAddress.title")
       }
 
       "display section header" in {
-
         val view = createView()
 
         view.getElementById("section-header").text() must include(messages("declaration.section.2"))
       }
 
       "display empty input with label for Full name" in {
-
         val view = createView()
 
         view.getElementsByAttributeValue("for", "details_address_fullName").first().text() mustBe messages("declaration.address.fullName")
@@ -109,7 +106,6 @@ class ConsignorDetailsViewSpec extends AddressViewSpec with CommonMessages with 
       }
 
       "display empty input with label for Address" in {
-
         val view = createView()
 
         view.getElementsByAttributeValue("for", "details_address_addressLine").first().text() mustBe messages("declaration.address.addressLine")
@@ -117,7 +113,6 @@ class ConsignorDetailsViewSpec extends AddressViewSpec with CommonMessages with 
       }
 
       "display empty input with label for Town or City" in {
-
         val view = createView()
 
         view.getElementsByAttributeValue("for", "details_address_townOrCity").first().text() mustBe messages("declaration.address.townOrCity")
@@ -125,7 +120,6 @@ class ConsignorDetailsViewSpec extends AddressViewSpec with CommonMessages with 
       }
 
       "display empty input with label for Postcode" in {
-
         val view = createView()
 
         view.getElementsByAttributeValue("for", "details_address_postCode").first().text() mustBe messages("declaration.address.postCode")
@@ -133,7 +127,6 @@ class ConsignorDetailsViewSpec extends AddressViewSpec with CommonMessages with 
       }
 
       "display empty input with label for Country" in {
-
         val view = createView()
 
         view.getElementsByAttributeValue("for", "details_address_country").first().text() mustBe messages("declaration.address.country")
@@ -146,10 +139,9 @@ class ConsignorDetailsViewSpec extends AddressViewSpec with CommonMessages with 
   }
 
   "Consignor Details View with invalid input" should {
-
     import AddressSpec._
 
-    onJourney(CLEARANCE) { implicit request =>
+    onClearance { implicit request =>
       "display error for empty fullName" in {
         assertIncorrectView(validAddress.copy(fullName = ""), "fullName", "empty")
       }
@@ -225,8 +217,7 @@ class ConsignorDetailsViewSpec extends AddressViewSpec with CommonMessages with 
   }
 
   "Consignor Details View when filled" should {
-
-    onJourney(CLEARANCE) { implicit request =>
+    onClearance { implicit request =>
       "display data in Business address inputs" in {
 
         val form = ConsignorDetails
@@ -244,10 +235,8 @@ class ConsignorDetailsViewSpec extends AddressViewSpec with CommonMessages with 
   }
 
   "Consignor Details View back links" should {
-
-    onJourney(DeclarationType.CLEARANCE) { implicit request =>
+    onClearance { implicit request =>
       "display 'Back' button that links to 'Consignor Eori Number' page" in {
-
         val backButton = createView().getElementById("back-link")
 
         backButton.text() mustBe messages(backToPreviousQuestionCaption)

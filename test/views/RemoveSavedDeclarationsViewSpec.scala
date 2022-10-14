@@ -17,36 +17,35 @@
 package views
 
 import base.{ExportsTestData, Injector}
+import forms.RemoveDraftDeclaration.form
 import forms.declaration.ConsignmentReferences
 import forms.{Ducr, Lrn, RemoveDraftDeclaration}
 import models.{DeclarationStatus, ExportsDeclaration}
 import org.jsoup.nodes.{Document, Element}
 import play.api.data.Form
-import tools.Stubs
 import views.declaration.spec.UnitViewSpec
-import views.helpers.CommonMessages
 import views.html.remove_declaration
 import views.tags.ViewTest
 
 import java.time.{LocalDateTime, ZoneOffset}
 
 @ViewTest
-class RemoveSavedDeclarationsViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector {
+class RemoveSavedDeclarationsViewSpec extends UnitViewSpec with Injector {
 
   val title: String = "saved.declarations.remove.title"
   val ducr: String = "saved.declarations.ducr"
   val dateSaved: String = "saved.declarations.dateSaved"
 
-  private val removeSavedDeclarationsPage = instanceOf[remove_declaration]
+  val page = instanceOf[remove_declaration]
 
-  private def decWithDucr(index: Int = 1) = ExportsTestData.aDeclaration(
+  def decWithDucr(index: Int = 1): ExportsDeclaration = ExportsTestData.aDeclaration(
     withStatus(DeclarationStatus.DRAFT),
     withConsignmentReferences(ConsignmentReferences(Ducr(s"DUCR-XXXX-$index"), Lrn("LRN-1234"))),
     withUpdateTime(LocalDateTime.of(2019, 1, 1, 10, 0, 0).toInstant(ZoneOffset.UTC))
   )
 
-  private def createView(dec: ExportsDeclaration, form: Form[RemoveDraftDeclaration] = RemoveDraftDeclaration.form): Document =
-    removeSavedDeclarationsPage(declaration = dec, form)(request, messages)
+  def createView(dec: ExportsDeclaration, frm: Form[RemoveDraftDeclaration] = form): Document =
+    page(declaration = dec, frm)(request, messages)
 
   "Remove Saved Declarations View" should {
 
@@ -72,7 +71,7 @@ class RemoveSavedDeclarationsViewSpec extends UnitViewSpec with CommonMessages w
 
     "display errors if no option has been chosen" in {
 
-      val view = createView(decWithDucr(), RemoveDraftDeclaration.form.bind(Map[String, String]()))
+      val view = createView(decWithDucr(), form.bind(Map[String, String]()))
 
       view must haveGovukGlobalErrorSummary
       view must containErrorElementWithTagAndHref("a", "#Yes")

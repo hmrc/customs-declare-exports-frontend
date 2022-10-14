@@ -19,47 +19,42 @@ package views.declaration
 import base.Injector
 import config.AppConfig
 import controllers.declaration.routes.UNDangerousGoodsCodeController
+import forms.declaration.TaricCodeFirst.form
 import forms.declaration.{CommodityDetails, TaricCodeFirst}
 import models.DeclarationType.STANDARD
 import models.Mode
+import models.Mode.Normal
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import play.api.mvc.AnyContent
-import services.cache.ExportsTestHelper
-import tools.Stubs
-import views.declaration.spec.UnitViewSpec
-import views.helpers.CommonMessages
+import views.declaration.spec.PageWithButtonsSpec
 import views.html.declaration.taric_code_add_first
 import views.tags.ViewTest
 
 @ViewTest
-class TaricCodeAddFirstViewSpec extends UnitViewSpec with ExportsTestHelper with Stubs with CommonMessages with Injector {
+class TaricCodeAddFirstViewSpec extends PageWithButtonsSpec with Injector {
 
-  private val appConfig = instanceOf[AppConfig]
+  val appConfig = instanceOf[AppConfig]
 
-  private val form: Form[TaricCodeFirst] = TaricCodeFirst.form
-  private val page = instanceOf[taric_code_add_first]
+  private def request(commodityCode: String): JourneyRequest[AnyContent] = {
+    val item = anItem(withItemId(itemId), withCommodityDetails(CommodityDetails(Some(commodityCode), None)))
+    withRequestOfType(STANDARD, withItem(item))
+  }
 
-  private val itemId = "item1"
+  val page = instanceOf[taric_code_add_first]
 
-  private def request(maybeCommodityCode: Option[String] = None): JourneyRequest[AnyContent] =
-    maybeCommodityCode.fold(journeyRequest()) { commodityCode =>
-      val item = anItem(withItemId(itemId), withCommodityDetails(CommodityDetails(Some(commodityCode), None)))
-      withRequestOfType(STANDARD, withItem(item))
-    }
+  override val typeAndViewInstance = (STANDARD, page(Normal, itemId, form())(_, _))
 
-  private def createView(form: Form[TaricCodeFirst] = form, mode: Mode = Mode.Normal)(
-    implicit req: JourneyRequest[AnyContent] = request()
-  ): Document =
-    page(mode, itemId, form)(req, messages(req))
+  def createView(frm: Form[TaricCodeFirst] = form(), mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document =
+    page(mode, itemId, frm)(request, messages(request))
 
   "Taric Code Add First View" should {
     val view = createView()
 
     "display a 'Back' button that links to 'UN Dangerous Goods' page" in {
       val backButton = view.getElementById("back-link")
-      backButton.getElementById("back-link") must haveHref(UNDangerousGoodsCodeController.displayPage(Mode.Normal, itemId))
+      backButton.getElementById("back-link") must haveHref(UNDangerousGoodsCodeController.displayPage(Normal, itemId))
     }
 
     "display the expected page title" in {
@@ -70,7 +65,7 @@ class TaricCodeAddFirstViewSpec extends UnitViewSpec with ExportsTestHelper with
 
       "a commodity code of 10-digits has been entered" in {
         val commodityCode = "4602191000"
-        val body = createView()(request(Some(commodityCode))).getElementsByClass("govuk-body").get(0)
+        val body = createView()(request(commodityCode)).getElementsByClass("govuk-body").get(0)
 
         val expectedLinkText = messages("declaration.taricAdditionalCodes.addfirst.body.link", commodityCode)
         val expectedHref = appConfig.commodityCodeTariffPageUrl.replace(CommodityDetails.placeholder, commodityCode)
@@ -81,7 +76,7 @@ class TaricCodeAddFirstViewSpec extends UnitViewSpec with ExportsTestHelper with
 
       "a commodity code of 8-digits has been entered" in {
         val commodityCode = "46021910"
-        val body = createView()(request(Some(commodityCode))).getElementsByClass("govuk-body").get(0)
+        val body = createView()(request(commodityCode)).getElementsByClass("govuk-body").get(0)
 
         val expectedLinkText = messages("declaration.taricAdditionalCodes.addfirst.body.link", commodityCode)
         val expectedHref = appConfig.commodityCodeTariffPageUrl.replace(CommodityDetails.placeholder, s"${commodityCode}00")
@@ -118,7 +113,7 @@ class TaricCodeAddFirstViewSpec extends UnitViewSpec with ExportsTestHelper with
   "Taric Code Add First View for invalid input" should {
 
     "display errors when invalid" in {
-      val view = createView(TaricCodeFirst.form.fillAndValidate(TaricCodeFirst(Some("12345678901234567890"))))
+      val view = createView(form().fillAndValidate(TaricCodeFirst(Some("12345678901234567890"))))
 
       view must haveGovukGlobalErrorSummary
       view must containErrorElementWithTagAndHref("a", "#taricCode")
@@ -126,7 +121,7 @@ class TaricCodeAddFirstViewSpec extends UnitViewSpec with ExportsTestHelper with
     }
 
     "display errors when empty" in {
-      val view = createView(TaricCodeFirst.form.fillAndValidate(TaricCodeFirst(Some(""))))
+      val view = createView(form().fillAndValidate(TaricCodeFirst(Some(""))))
 
       view must haveGovukGlobalErrorSummary
       view must containErrorElementWithTagAndHref("a", "#taricCode")
@@ -137,7 +132,7 @@ class TaricCodeAddFirstViewSpec extends UnitViewSpec with ExportsTestHelper with
 
   "Taric Code Add First View when filled" should {
     "display data in taric code input" in {
-      val view = createView(TaricCodeFirst.form.fill(TaricCodeFirst(Some("ABCD"))))
+      val view = createView(form().fill(TaricCodeFirst(Some("ABCD"))))
       view.getElementById("taricCode").attr("value") must be("ABCD")
     }
   }

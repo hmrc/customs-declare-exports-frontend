@@ -17,30 +17,30 @@
 package views.declaration
 
 import base.Injector
-import controllers.declaration.routes
+import controllers.declaration.routes.{ConsignmentReferencesController, DeclarantDetailsController, LinkDucrToMucrController}
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.DeclarantIsExporter
+import forms.declaration.DeclarantIsExporter.form
 import models.DeclarationType.{OCCASIONAL, SIMPLIFIED, STANDARD}
 import models.Mode
+import models.Mode.Normal
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
-import services.cache.ExportsTestHelper
-import tools.Stubs
 import views.components.gds.Styles
-import views.declaration.spec.UnitViewSpec
-import views.helpers.CommonMessages
+import views.declaration.spec.PageWithButtonsSpec
 import views.html.declaration.declarant_exporter
 import views.tags.ViewTest
 
 @ViewTest
-class DeclarantExporterViewSpec extends UnitViewSpec with ExportsTestHelper with CommonMessages with Stubs with Injector {
+class DeclarantExporterViewSpec extends PageWithButtonsSpec with Injector {
 
-  private val declarantExporterPage = instanceOf[declarant_exporter]
-  private def createView(form: Form[DeclarantIsExporter] = DeclarantIsExporter.form(), mode: Mode = Mode.Normal)(
-    implicit request: JourneyRequest[_]
-  ): Document =
-    declarantExporterPage(mode, form)(request, messages)
+  val page = instanceOf[declarant_exporter]
+
+  override val typeAndViewInstance = (STANDARD, page(Normal, form)(_, _))
+
+  def createView(frm: Form[DeclarantIsExporter] = form(), mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document =
+    page(mode, frm)(request, messages)
 
   "Declarant Exporter View on empty page" should {
 
@@ -59,17 +59,14 @@ class DeclarantExporterViewSpec extends UnitViewSpec with ExportsTestHelper with
 
     onEveryDeclarationJourney() { implicit request =>
       "display page title" in {
-
         createView().getElementsByClass(Styles.gdsPageHeading) must containMessageForElements("declaration.declarant.exporter.title")
       }
 
       "display section header" in {
-
         createView().getElementById("section-header") must containMessage("declaration.section.2")
       }
 
       "display paragraph body" in {
-
         createView().getElementsByTag("p") must containMessageForElements("declaration.declarant.exporter.body")
       }
 
@@ -92,40 +89,35 @@ class DeclarantExporterViewSpec extends UnitViewSpec with ExportsTestHelper with
 
     onJourney(STANDARD, SIMPLIFIED, OCCASIONAL) { implicit request =>
       "display 'Back' button that links to 'Link DUCR to a MUCR' page" in {
-
         val backButton = createView().getElementById("back-link")
 
         backButton must containMessage(backToPreviousQuestionCaption)
-        backButton must haveHref(routes.LinkDucrToMucrController.displayPage().url)
+        backButton must haveHref(LinkDucrToMucrController.displayPage().url)
       }
     }
 
     onSupplementary { implicit request =>
       "display 'Back' button that links to 'Are you the exporter' page" in {
-
         val backButton = createView().getElementById("back-link")
 
         backButton must containMessage(backToPreviousQuestionCaption)
-        backButton must haveHref(routes.ConsignmentReferencesController.displayPage().url)
+        backButton must haveHref(ConsignmentReferencesController.displayPage().url)
       }
     }
 
     onClearance { implicit request =>
       "display 'Back' button that links to 'Declarant Details' page" in {
-
         val backButton = createView().getElementById("back-link")
 
         backButton must containMessage(backToPreviousQuestionCaption)
-        backButton must haveHref(routes.DeclarantDetailsController.displayPage().url)
+        backButton must haveHref(DeclarantDetailsController.displayPage().url)
       }
     }
   }
 
   "Declarant Exporter View with invalid input" should {
-
     onEveryDeclarationJourney() { implicit request =>
       "display error when answer is empty" in {
-
         val view = createView(DeclarantIsExporter.form().fillAndValidate(DeclarantIsExporter("")))
 
         view must haveGovukGlobalErrorSummary
@@ -135,12 +127,7 @@ class DeclarantExporterViewSpec extends UnitViewSpec with ExportsTestHelper with
       }
 
       "display error when EORI is provided, but is incorrect" in {
-
-        val view = createView(
-          DeclarantIsExporter
-            .form()
-            .fillAndValidate(DeclarantIsExporter("wrong"))
-        )
+        val view = createView(form().fillAndValidate(DeclarantIsExporter("wrong")))
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#code_yes")
@@ -148,14 +135,11 @@ class DeclarantExporterViewSpec extends UnitViewSpec with ExportsTestHelper with
         view must containErrorElementWithMessageKey("declaration.declarant.exporter.error")
       }
     }
-
   }
 
   "Declarant Exporter View when filled" should {
-
     onEveryDeclarationJourney() { implicit request =>
       "display answer input" in {
-
         val form = DeclarantIsExporter.form().fill(DeclarantIsExporter(YesNoAnswers.yes))
         val view = createView(form)
 

@@ -44,7 +44,11 @@
     paragraphBody: paragraphBody
 )
 
-@(backLink: Call, errors: Seq[FormError] = Seq.empty[FormError], maybeContinuePlaceholder: Option[String] = None)(implicit request: JourneyRequest[_], messages: Messages, appConfig: AppConfig)
+@(mode: Mode,
+  backLink: Call,
+  errors: Seq[FormError] = Seq.empty[FormError],
+  maybeContinuePlaceholder: Option[String] = None
+)(implicit request: JourneyRequest[_], messages: Messages, appConfig: AppConfig)
 
 @draftContinueLink = { @if(request.cacheModel.readyForSubmission != Some(true)) {
     @maybeContinuePlaceholder.map { continuePlaceholder =>
@@ -110,19 +114,19 @@
 
     @draftBodyText
 
-    @references_section(Mode.Change, request.cacheModel)
+    @references_section(mode, request.cacheModel)
 
-    @parties_section(Mode.Change, request.cacheModel)
+    @parties_section(mode, request.cacheModel)
 
-    @countries_section(Mode.Change, request.cacheModel)
+    @countries_section(mode, request.cacheModel)
 
-    @locations_section(Mode.Change, request.cacheModel)
+    @locations_section(mode, request.cacheModel)
 
-    @transaction_section(Mode.Change, request.cacheModel)
+    @transaction_section(mode, request.cacheModel)
 
-    @items_section(Mode.Change, request.cacheModel)
+    @items_section(mode, request.cacheModel)
 
-    @transport_section(Mode.Change, request.cacheModel)
+    @transport_section(mode, request.cacheModel)
 
     <div class="govuk-button-group">
         @draftContinueLink

@@ -16,56 +16,64 @@
 
 package views.components.gds
 
-import base.MockAuthAction
+import base.Injector
 import models.Mode
-import models.Mode.{Change, Draft, ErrorFix, Normal}
+import models.Mode.{ErrorFix, Normal}
+import models.declaration.submissions.EnhancedStatus
 import models.declaration.submissions.EnhancedStatus.{ERRORS, EnhancedStatus, RECEIVED}
-import models.requests.JourneyRequest
-import play.api.mvc.AnyContent
 import play.twirl.api.Html
 import views.declaration.spec.UnitViewSpec
 import views.html.components.gds.saveButtons
 
-class SaveButtonsSpec extends UnitViewSpec with MockAuthAction {
+class SaveButtonsSpec extends UnitViewSpec with Injector {
 
-  private val saveButtons = instanceOf[saveButtons]
-  private def request(status: EnhancedStatus) =
-    new JourneyRequest[AnyContent](getAuthenticatedRequest(""), aDeclaration(withParentDeclarationEnhancedStatus(status)))
+  private val page = instanceOf[saveButtons]
 
-  private def createButtons(mode: Mode, status: EnhancedStatus): Html = saveButtons(mode)(request(status), messages)
+  private def createView(mode: Mode, status: EnhancedStatus): Html =
+    page(mode)(journeyRequest(aDeclaration(withParentDeclarationEnhancedStatus(status))), messages)
 
   "Save buttons" should {
 
-    "display Save and Continue button" in {
-      val buttons = createButtons(Normal, RECEIVED)
+    "display' 'Save and Continue' button" in {
+      val buttons = createView(Normal, RECEIVED)
       Option(buttons.getElementsByAttributeValue("name", "SaveAndContinue")).isDefined
     }
 
-    "display Save and come back later link" in {
-      val buttons = createButtons(Normal, RECEIVED)
+    "display 'Save and come back' later link" in {
+      val buttons = createView(Normal, RECEIVED)
       Option(buttons.getElementsByAttributeValue("name", "SaveAndReturn")).isDefined
     }
 
-    "display Save and return to summary button in draft or change mode or when parent dec has errors and user is amending" when {
-      for {
-        mode <- Mode.modes
-        status <- List(RECEIVED, ERRORS)
-      } s" mode is $mode and status is $status" in {
-        val buttonsPage = createButtons(mode, status)
-        val buttons = Option(buttonsPage.getElementById("save_and_return_to_summary"))
+    "NOT display the 'Save and return to summary' button when the declaration has no errors" in {
+      EnhancedStatus.values.filterNot(_ == ERRORS).foreach { status =>
+        val element = Option(createView(Normal, status).getElementById("save_and_return_to_summary"))
+        assert(element.isEmpty)
+      }
+    }
 
-        mode match {
-          case ErrorFix if status == ERRORS => buttons.isDefined mustBe false
-          case _ if status == ERRORS        => buttons.isDefined mustBe true
-          case Draft | Change               => buttons.isDefined mustBe true
-          case _                            => buttons.isEmpty mustBe true
-        }
+    "NOT display the 'Save and return to summary' button when the declaration has errors but mode is ErrorFix" in {
+      val element = Option(createView(ErrorFix, ERRORS).getElementById("save_and_return_to_summary"))
+      assert(element.isEmpty)
+    }
+
+    "display the 'Save and return to summary' button when the declaration has errors and mode is NOT ErrorFix" in {
+      Mode.modes.filterNot(_ == ErrorFix).foreach { mode =>
+        val element = Option(createView(mode, ERRORS).getElementById("save_and_return_to_summary"))
+        assert(element.isDefined)
+      }
+    }
+
+    "display the 'Save and return to summary' button when the Summary page has been visited" in {
+      Mode.modes.foreach { mode =>
+        val view = page(mode)(journeyRequest(aDeclaration(withSummaryWasVisited())), messages)
+        val element = Option(view.getElementById("save_and_return_to_summary"))
+        assert(element.isDefined)
       }
     }
 
     "display Save and return to errors button appropriately" when {
       for (mode <- Mode.modes) s"$mode" in {
-        val buttonsPage = createButtons(mode, RECEIVED)
+        val buttonsPage = createView(mode, RECEIVED)
         val buttons = Option(buttonsPage.getElementById("save_and_return_to_errors"))
 
         mode match {

@@ -31,29 +31,30 @@ import forms.declaration.ModeOfTransportCode.{RoRo, Road}
 import forms.declaration.TransportCodes._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
 import forms.declaration.{ModeOfTransportCode, TransportCodes}
-import models.DeclarationType.CLEARANCE
+import models.DeclarationType.{CLEARANCE, STANDARD}
 import models.Mode
+import models.Mode.Normal
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.mvc.Call
-import play.twirl.api.Html
-import tools.Stubs
-import views.declaration.spec.UnitViewSpec
-import views.helpers.{CommonMessages, ModeOfTransportCodeHelper}
+import views.declaration.spec.PageWithButtonsSpec
+import views.helpers.ModeOfTransportCodeHelper
 import views.html.declaration.departure_transport
 import views.tags.ViewTest
 
 import scala.collection.JavaConverters.asScalaIteratorConverter
 
 @ViewTest
-class DepartureTransportViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector {
+class DepartureTransportViewSpec extends PageWithButtonsSpec with Injector {
 
   private val prefix = "declaration.transportInformation.meansOfTransport"
 
-  private val departureTransportPage = instanceOf[departure_transport]
+  val page = instanceOf[departure_transport]
 
-  def createView(transportCodes: TransportCodes = transportCodesForV1, mode: Mode = Mode.Normal)(implicit request: JourneyRequest[_]): Html =
-    departureTransportPage(mode, form(transportCodes))(request, messages)
+  override val typeAndViewInstance = (STANDARD, page(Normal, form(transportCodesForV1))(_, _))
+
+  def createView(transportCodes: TransportCodes = transportCodesForV1, mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document =
+    page(mode, form(transportCodes))(request, messages)
 
   "Departure Transport View" should {
 

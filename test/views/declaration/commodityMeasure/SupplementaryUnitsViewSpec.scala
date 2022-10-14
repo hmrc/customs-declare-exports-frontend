@@ -22,28 +22,30 @@ import forms.declaration.commodityMeasure.SupplementaryUnits
 import forms.declaration.commodityMeasure.SupplementaryUnits.supplementaryUnits
 import models.DeclarationType.{STANDARD, SUPPLEMENTARY}
 import models.Mode
+import models.Mode.Normal
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import services.CommodityInfo
 import services.cache.ExportsTestHelper
-import tools.Stubs
-import views.declaration.spec.UnitViewSpec
+import views.declaration.spec.PageWithButtonsSpec
 import views.html.declaration.commodityMeasure.supplementary_units
 import views.tags.ViewTest
 
 @ViewTest
-class SupplementaryUnitsViewSpec extends UnitViewSpec with ExportsTestHelper with Stubs with Injector {
+class SupplementaryUnitsViewSpec extends PageWithButtonsSpec with ExportsTestHelper with Injector {
 
-  private val page = instanceOf[supplementary_units]
+  val yesNoPage = false
+  val form = SupplementaryUnits.form(yesNoPage)
 
-  private val itemId = "item1"
-  private val yesNoPage = false
-  private val form = SupplementaryUnits.form(yesNoPage)
-  private val commodityInfo = CommodityInfo("2208303000", "number of items", "p/st")
+  val commodityInfo = CommodityInfo("2208303000", "number of items", "p/st")
 
-  private def createView(form: Form[SupplementaryUnits] = form, mode: Mode = Mode.Normal)(implicit request: JourneyRequest[_]): Document =
-    page(mode, itemId, form, commodityInfo)(request, messages)
+  val page = instanceOf[supplementary_units]
+
+  override val typeAndViewInstance = (STANDARD, page(Normal, itemId, form, commodityInfo)(_, _))
+
+  def createView(frm: Form[SupplementaryUnits] = form, mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document =
+    page(mode, itemId, frm, commodityInfo)(request, messages)
 
   "SupplementaryUnits View" should {
 
@@ -53,7 +55,7 @@ class SupplementaryUnitsViewSpec extends UnitViewSpec with ExportsTestHelper wit
       "display 'Back' button that links to 'Commodity Details' page" in {
         val backButton = view.getElementById("back-link")
         backButton must containMessage("site.backToPreviousQuestion")
-        backButton must haveHref(CommodityMeasureController.displayPage(Mode.Normal, itemId))
+        backButton must haveHref(CommodityMeasureController.displayPage(Normal, itemId))
       }
 
       "display page title" in {
@@ -102,12 +104,12 @@ class SupplementaryUnitsViewSpec extends UnitViewSpec with ExportsTestHelper wit
       checkAllSaveButtonsAreDisplayed(createViewWithMode)
 
       "not display any error when the value entered in the 'supplementaryUnits' field is valid" in {
-        val view = createView(SupplementaryUnits.form(yesNoPage).fillAndValidate(SupplementaryUnits(Some("100"))))
+        val view = createView(form.fillAndValidate(SupplementaryUnits(Some("100"))))
         view mustNot haveGovukGlobalErrorSummary
       }
 
       "display an error when the value entered in the 'supplementaryUnits' field is invalid" in {
-        val view = createView(SupplementaryUnits.form(yesNoPage).fillAndValidate(SupplementaryUnits(Some("ABC"))))
+        val view = createView(form.fillAndValidate(SupplementaryUnits(Some("ABC"))))
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", s"#$supplementaryUnits")
@@ -115,7 +117,7 @@ class SupplementaryUnitsViewSpec extends UnitViewSpec with ExportsTestHelper wit
       }
 
       "display an error when the value entered in the 'supplementaryUnits' field consists of zeroes only" in {
-        val view = createView(SupplementaryUnits.form(yesNoPage).fillAndValidate(SupplementaryUnits(Some("0000"))))
+        val view = createView(form.fillAndValidate(SupplementaryUnits(Some("0000"))))
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", s"#$supplementaryUnits")
@@ -123,7 +125,7 @@ class SupplementaryUnitsViewSpec extends UnitViewSpec with ExportsTestHelper wit
       }
 
       "display an error when the value entered in the 'supplementaryUnits' field is too long" in {
-        val view = createView(SupplementaryUnits.form(yesNoPage).fillAndValidate(SupplementaryUnits(Some("12345678901234567"))))
+        val view = createView(form.fillAndValidate(SupplementaryUnits(Some("12345678901234567"))))
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", s"#$supplementaryUnits")
@@ -131,7 +133,7 @@ class SupplementaryUnitsViewSpec extends UnitViewSpec with ExportsTestHelper wit
       }
 
       "display error when the 'supplementaryUnits' field is left empty" in {
-        val view = createView(SupplementaryUnits.form(yesNoPage).fillAndValidate(SupplementaryUnits(Some(""))))
+        val view = createView(form.fillAndValidate(SupplementaryUnits(Some(""))))
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", s"#$supplementaryUnits")

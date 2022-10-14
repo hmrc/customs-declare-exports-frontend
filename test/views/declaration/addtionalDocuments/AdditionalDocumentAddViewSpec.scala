@@ -17,37 +17,35 @@
 package views.declaration.addtionalDocuments
 
 import base.Injector
-import controllers.declaration.routes
+import controllers.declaration.routes.{
+  AdditionalDocumentsController,
+  AdditionalDocumentsRequiredController,
+  AdditionalInformationController,
+  IsLicenceRequiredController
+}
 import forms.common.{Eori, YesNoAnswer}
 import forms.declaration.additionaldocuments.AdditionalDocument
+import forms.declaration.additionaldocuments.AdditionalDocument.form
 import forms.declaration.declarationHolder.DeclarationHolder
-import models.{ExportsDeclaration, Mode}
 import models.DeclarationType._
+import models.ExportsDeclaration
+import models.Mode.Normal
 import models.declaration.EoriSource
 import models.declaration.ExportDeclarationTestData.declaration
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
-import org.scalatest.{Assertion, OptionValues}
-import play.api.data.Form
+import org.scalatest.Assertion
 import play.api.mvc.Call
-import tools.Stubs
 import views.declaration.spec.UnitViewSpec
-import views.helpers.CommonMessages
 import views.html.declaration.additionalDocuments.additional_document_add
 import views.tags.ViewTest
 
 @ViewTest
-class AdditionalDocumentAddViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector with OptionValues {
+class AdditionalDocumentAddViewSpec extends UnitViewSpec with Injector {
 
-  private val itemId = "a7sc78"
-  private val mode = Mode.Normal
+  val page = instanceOf[additional_document_add]
 
-  private val additionalDocumentAddPage = instanceOf[additional_document_add]
-
-  private val form: Form[AdditionalDocument] = AdditionalDocument.form(declaration)
-
-  private def createView(implicit request: JourneyRequest[_]): Document =
-    additionalDocumentAddPage(mode, itemId, form)(request, messages)
+  def createView(implicit request: JourneyRequest[_]): Document = page(Normal, itemId, form(declaration))(request, messages)
 
   object TestDeclaration {
     private val withAdditionalInfo = withAdditionalInformation("code", "desc")
@@ -70,7 +68,7 @@ class AdditionalDocumentAddViewSpec extends UnitViewSpec with CommonMessages wit
       onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL)(TestDeclaration.licenseRequired) { implicit request =>
         "display a 'Back' button that links to the 'Is License Required' page" when {
           "license is required" in {
-            verifyBackButton(routes.IsLicenceRequiredController.displayPage(mode, itemId))
+            verifyBackButton(IsLicenceRequiredController.displayPage(Normal, itemId))
           }
         }
       }
@@ -79,33 +77,27 @@ class AdditionalDocumentAddViewSpec extends UnitViewSpec with CommonMessages wit
         "display a 'Back' button that links to the 'Is License Required' page" when {
           "license is not required" when {
             "the authorisation code requires additional documents" in {
-              verifyBackButton(routes.IsLicenceRequiredController.displayPage(mode, itemId))
+              verifyBackButton(IsLicenceRequiredController.displayPage(Normal, itemId))
             }
-
           }
         }
-
       }
 
       onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL)(TestDeclaration.licenseNotRequired) { implicit request =>
         "display a 'Back' button that links to the 'Additional Documents Required' page" when {
-
           "license is not required" when {
             "the authorisation code does not require additional documents" in {
-
-              verifyBackButton(routes.AdditionalDocumentsRequiredController.displayPage(mode, itemId))
+              verifyBackButton(AdditionalDocumentsRequiredController.displayPage(Normal, itemId))
             }
           }
         }
-
       }
-
     }
 
     "additional documents are present" should {
       onJourney(CLEARANCE)(TestDeclaration.withDocs) { implicit request =>
         "display a 'Back' button that links to the 'Additional Documents Required' page" in {
-          verifyBackButton(routes.AdditionalDocumentsController.displayPage(mode, itemId))
+          verifyBackButton(AdditionalDocumentsController.displayPage(Normal, itemId))
         }
       }
     }
@@ -115,16 +107,15 @@ class AdditionalDocumentAddViewSpec extends UnitViewSpec with CommonMessages wit
       "the authorisation code does not require additional documents" should {
         onJourney(CLEARANCE)(TestDeclaration.licenseNotRequired) { implicit request =>
           "display a 'Back' button that links to the 'Additional Documents Required' page" in {
-            verifyBackButton(routes.AdditionalDocumentsRequiredController.displayPage(mode, itemId))
+            verifyBackButton(AdditionalDocumentsRequiredController.displayPage(Normal, itemId))
           }
         }
       }
 
       "the authorisation code requires additional documents" should {
-
         onJourney(CLEARANCE)(TestDeclaration.authCodeRequiresDocs) { implicit request =>
           "display a 'Back' button that links to the 'Additional Information List' page" in {
-            verifyBackButton(routes.AdditionalInformationController.displayPage(mode, itemId))
+            verifyBackButton(AdditionalInformationController.displayPage(Normal, itemId))
           }
         }
       }

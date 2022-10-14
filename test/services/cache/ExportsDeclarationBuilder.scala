@@ -66,6 +66,12 @@ trait ExportsDeclarationBuilder {
 
   // ************************************************* Builders ********************************************************
 
+  def withReadyForSubmission(readyForSubmission: Boolean = true): ExportsDeclarationModifier =
+    _.copy(readyForSubmission = Some(readyForSubmission))
+
+  def withSummaryWasVisited(summaryWasVisited: Boolean = true): ExportsDeclarationModifier =
+    _.copy(summaryWasVisited = Some(summaryWasVisited))
+
   def withParentDeclarationId(parentId: String): ExportsDeclarationModifier = _.copy(parentDeclarationId = Some(parentId))
 
   def withParentDeclarationEnhancedStatus(status: EnhancedStatus): ExportsDeclarationModifier = _.copy(parentDeclarationEnhancedStatus = Some(status))

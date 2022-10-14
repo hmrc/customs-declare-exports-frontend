@@ -18,10 +18,11 @@ package views.declaration.addtionalDocuments
 
 import base.Injector
 import config.AppConfig
-import controllers.declaration.routes
+import controllers.declaration.routes.{AdditionalInformationController, IsLicenceRequiredController}
 import forms.common.YesNoAnswer
+import forms.common.YesNoAnswer.form
 import forms.declaration.CommodityDetails
-import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
+import models.DeclarationType._
 import models.Mode
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
@@ -29,27 +30,24 @@ import org.scalatest.Assertion
 import play.api.data.Form
 import play.api.mvc.Call
 import views.declaration.spec.UnitViewSpec
-import views.helpers.CommonMessages
 import views.html.declaration.additionalDocuments.additional_documents_required
 import views.tags.ViewTest
 
 @ViewTest
-class AdditionalDocumentsRequiredViewSpec extends UnitViewSpec with CommonMessages with Injector {
+class AdditionalDocumentsRequiredViewSpec extends UnitViewSpec with Injector {
 
-  private val form: Form[YesNoAnswer] = YesNoAnswer.form()
+  val appConfig = instanceOf[AppConfig]
 
-  private val itemId = "itemId"
-  private val item = anItem(withItemId(itemId), withAdditionalInformation("1234", "description"))
+  val msgKey = "declaration.additionalDocumentsRequired"
 
-  private val msgKey = "declaration.additionalDocumentsRequired"
+  val item = anItem(withItemId(itemId), withAdditionalInformation("1234", "description"))
+
+  val page = instanceOf[additional_documents_required]
+
+  def createView(frm: Form[YesNoAnswer] = form())(implicit request: JourneyRequest[_]): Document =
+    page(Mode.Normal, itemId, frm)(request, messages)
 
   "'Additional Documents Required' view" should {
-
-    val appConfig = instanceOf[AppConfig]
-    val additionalDocumentsRequiredPage = instanceOf[additional_documents_required]
-
-    def createView(form: Form[YesNoAnswer] = form)(implicit request: JourneyRequest[_]): Document =
-      additionalDocumentsRequiredPage(Mode.Normal, itemId, form)(request, messages)
 
     onEveryDeclarationJourney() { implicit request =>
       val view = createView()
@@ -66,14 +64,12 @@ class AdditionalDocumentsRequiredViewSpec extends UnitViewSpec with CommonMessag
       }
 
       "select the 'Yes' radio when clicked" in {
-        val form = YesNoAnswer.form().bind(Map("yesNo" -> "Yes"))
-        val view = createView(form = form)
+        val view = createView(form().bind(Map("yesNo" -> "Yes")))
         view.getElementById("code_yes") must beSelected
       }
 
       "select the 'No' radio when clicked" in {
-        val form = YesNoAnswer.form().bind(Map("yesNo" -> "No"))
-        val view = createView(form = form)
+        val view = createView(form().bind(Map("yesNo" -> "No")))
         view.getElementById("code_no") must beSelected
       }
 
@@ -128,7 +124,6 @@ class AdditionalDocumentsRequiredViewSpec extends UnitViewSpec with CommonMessag
         val expectedText = messages(s"$msgKey.inset.text3", messages(s"$msgKey.inset.link3"))
         removeBlanksIfAnyBeforeDot(paragraph.text) mustBe expectedText
       }
-
     }
 
     onJourney(CLEARANCE)(aDeclaration(withItem(item))) { implicit request =>
@@ -137,9 +132,8 @@ class AdditionalDocumentsRequiredViewSpec extends UnitViewSpec with CommonMessag
       }
 
       "display a 'Back' button that links to the 'Additional Information' page" when {
-
         "Additional Information are present" in {
-          verifyBackButton(routes.AdditionalInformationController.displayPage(Mode.Normal, itemId))
+          verifyBackButton(AdditionalInformationController.displayPage(Mode.Normal, itemId))
         }
       }
     }
@@ -149,7 +143,7 @@ class AdditionalDocumentsRequiredViewSpec extends UnitViewSpec with CommonMessag
       }
 
       "display a 'Back' button that links to the 'Is License Required' page" in {
-        verifyBackButton(routes.IsLicenceRequiredController.displayPage(Mode.Normal, itemId))
+        verifyBackButton(IsLicenceRequiredController.displayPage(Mode.Normal, itemId))
       }
     }
 
@@ -158,7 +152,5 @@ class AdditionalDocumentsRequiredViewSpec extends UnitViewSpec with CommonMessag
       backButton must containMessage(backToPreviousQuestionCaption)
       backButton must haveHref(call)
     }
-
   }
-
 }

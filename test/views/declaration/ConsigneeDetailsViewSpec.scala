@@ -18,38 +18,35 @@ package views.declaration
 
 import base.Injector
 import connectors.CodeListConnector
-import controllers.declaration.routes
+import controllers.declaration.routes.{CarrierDetailsController, DeclarantExporterController, IsExsController, RepresentativeStatusController}
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.common.{Address, AddressSpec}
-import forms.declaration._
+import forms.declaration.ConsigneeDetails.form
+import forms.declaration.{ConsigneeDetails, DeclarantIsExporter, EntityDetails, IsExs}
 import models.DeclarationType._
 import models.Mode
+import models.Mode.Normal
 import models.codes.Country
 import models.declaration.Parties
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
-import org.scalatest.{Assertion, BeforeAndAfterEach}
+import org.scalatest.Assertion
 import play.api.data.Form
-import play.api.i18n.MessagesApi
-import tools.Stubs
-import views.declaration.spec.AddressViewSpec
-import views.helpers.CommonMessages
+import views.declaration.spec.{AddressViewSpec, PageWithButtonsSpec}
 import views.html.declaration.consignee_details
 import views.tags.ViewTest
 
 import scala.collection.immutable.ListMap
 
 @ViewTest
-class ConsigneeDetailsViewSpec extends AddressViewSpec with CommonMessages with Stubs with Injector with BeforeAndAfterEach {
+class ConsigneeDetailsViewSpec extends AddressViewSpec with PageWithButtonsSpec with Injector {
 
-  private val consigneeDetailsPage = instanceOf[consignee_details]
   implicit val mockCodeListConnector = mock[CodeListConnector]
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-
     when(mockCodeListConnector.getCountryCodes(any())).thenReturn(ListMap("GB" -> Country("United Kingdom", "GB")))
   }
 
@@ -58,15 +55,16 @@ class ConsigneeDetailsViewSpec extends AddressViewSpec with CommonMessages with 
     super.afterEach()
   }
 
-  private val form: Form[ConsigneeDetails] = ConsigneeDetails.form()
+  val page = instanceOf[consignee_details]
 
-  private def createView(form: Form[ConsigneeDetails] = form, mode: Mode = Mode.Normal)(implicit request: JourneyRequest[_]): Document =
-    consigneeDetailsPage(mode, form)(request, messages)
+  override val typeAndViewInstance = (STANDARD, page(Normal, form)(_, _))
+
+  def createView(frm: Form[ConsigneeDetails] = form(), mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document =
+    page(mode, frm)(request, messages)
 
   "Consignee Details View on empty page" should {
 
     "have proper messages for labels" in {
-      val messages = instanceOf[MessagesApi].preferred(journeyRequest())
       messages must haveTranslationFor("declaration.consignee.title")
       messages must haveTranslationFor("declaration.address.fullName")
       messages must haveTranslationFor("declaration.address.fullName.empty")
@@ -89,54 +87,37 @@ class ConsigneeDetailsViewSpec extends AddressViewSpec with CommonMessages with 
     }
 
     onEveryDeclarationJourney() { implicit request =>
-      "display page title" in {
+      val view = createView()
 
-        createView().getElementsByTag("h1").first().text() mustBe messages("declaration.consignee.title")
+      "display page title" in {
+        view.getElementsByTag("h1").first().text() mustBe messages("declaration.consignee.title")
       }
 
       "display section header" in {
-
-        val view = createView()
-
         view.getElementById("section-header").text() must include(messages("declaration.section.2"))
       }
 
       "display empty input with label for fullName" in {
-
-        val view = createView()
-
         view.getElementsByAttributeValue("for", "details_address_fullName").first().text() mustBe messages("declaration.address.fullName")
         view.getElementById("details_address_fullName").attr("value") mustBe empty
       }
 
       "display empty input with label for addressLine" in {
-
-        val view = createView()
-
         view.getElementsByAttributeValue("for", "details_address_addressLine").first().text() mustBe messages("declaration.address.addressLine")
         view.getElementById("details_address_addressLine").attr("value") mustBe empty
       }
 
       "display empty input with label for townOrCity" in {
-
-        val view = createView()
-
         view.getElementsByAttributeValue("for", "details_address_townOrCity").first().text() mustBe messages("declaration.address.townOrCity")
         view.getElementById("details_address_townOrCity").attr("value") mustBe empty
       }
 
       "display empty input with label for postCode" in {
-
-        val view = createView()
-
         view.getElementsByAttributeValue("for", "details_address_postCode").first().text() mustBe messages("declaration.address.postCode")
         view.getElementById("details_address_postCode").attr("value") mustBe empty
       }
 
       "display empty input with label for country" in {
-
-        val view = createView()
-
         view.getElementsByAttributeValue("for", "details_address_country").first().text() mustBe messages("declaration.address.country")
         view.getElementById("details_address_country").attr("value") mustBe empty
       }
@@ -226,14 +207,9 @@ class ConsigneeDetailsViewSpec extends AddressViewSpec with CommonMessages with 
   }
 
   "Consignee Details View when filled" should {
-
     onEveryDeclarationJourney() { implicit request =>
       "display data in Business address inputs" in {
-
-        val form = ConsigneeDetails
-          .form()
-          .fill(ConsigneeDetails(EntityDetails(None, Some(Address("test", "test1", "test2", "test3", "Ukraine")))))
-        val view = createView(form)
+        val view = createView(form().fill(ConsigneeDetails(EntityDetails(None, Some(Address("test", "test1", "test2", "test3", "Ukraine"))))))
 
         view.getElementById("details_address_fullName").attr("value") mustBe "test"
         view.getElementById("details_address_addressLine").attr("value") mustBe "test1"
@@ -245,84 +221,77 @@ class ConsigneeDetailsViewSpec extends AddressViewSpec with CommonMessages with 
   }
 
   "Consignee Details View back links" should {
-
     onJourney(STANDARD, SIMPLIFIED, OCCASIONAL) { implicit request =>
       "display 'Back' button that links to 'Carrier Details' page" in {
-
         val backButton = createView().getElementById("back-link")
 
         backButton.text() mustBe messages(backToPreviousQuestionCaption)
-        backButton.attr("href") mustBe routes.CarrierDetailsController.displayPage().url
+        backButton.attr("href") mustBe CarrierDetailsController.displayPage().url
       }
     }
 
     onClearance { implicit request =>
       "display 'Back' button that links to 'Carrier Details' page" in {
-
         val cachedParties = Parties(isExs = Some(IsExs(YesNoAnswers.yes)))
         val requestWithCachedParties = journeyRequest(request.cacheModel.copy(parties = cachedParties))
 
         val backButton = createView()(requestWithCachedParties).getElementById("back-link")
 
         backButton.text() mustBe messages(backToPreviousQuestionCaption)
-        backButton.attr("href") mustBe routes.CarrierDetailsController.displayPage().url
+        backButton.attr("href") mustBe CarrierDetailsController.displayPage().url
       }
 
       "display 'Back' button that links to 'Is Exs?' page" in {
-
         val cachedParties = Parties(isExs = Some(IsExs(YesNoAnswers.no)), declarantIsExporter = Some(DeclarantIsExporter(YesNoAnswers.yes)))
         val requestWithCachedParties = journeyRequest(request.cacheModel.copy(parties = cachedParties))
 
         val backButton = createView()(requestWithCachedParties).getElementById("back-link")
 
         backButton.text() mustBe messages(backToPreviousQuestionCaption)
-        backButton.attr("href") mustBe routes.IsExsController.displayPage().url
+        backButton.attr("href") mustBe IsExsController.displayPage().url
       }
 
       "display 'Back' button that links to 'Representative Status' page" in {
-
         val cachedParties = Parties(isExs = Some(IsExs(YesNoAnswers.no)), declarantIsExporter = Some(DeclarantIsExporter(YesNoAnswers.no)))
         val requestWithCachedParties = journeyRequest(request.cacheModel.copy(parties = cachedParties))
 
         val backButton = createView()(requestWithCachedParties).getElementById("back-link")
 
         backButton.text() mustBe messages(backToPreviousQuestionCaption)
-        backButton.attr("href") mustBe routes.RepresentativeStatusController.displayPage().url
+        backButton.attr("href") mustBe RepresentativeStatusController.displayPage().url
       }
     }
 
     onSupplementary { implicit request =>
       "display 'Back' button that links to 'Representative Status' page" in {
-
         val cachedParties = Parties(declarantIsExporter = Some(DeclarantIsExporter(YesNoAnswers.no)))
         val requestWithCachedParties = journeyRequest(request.cacheModel.copy(parties = cachedParties))
 
         val backButton = createView()(requestWithCachedParties).getElementById("back-link")
 
         backButton.text() mustBe messages(backToPreviousQuestionCaption)
-        backButton.attr("href") mustBe routes.RepresentativeStatusController.displayPage().url
+        backButton.attr("href") mustBe RepresentativeStatusController.displayPage().url
       }
 
       "display 'Back' button that links to 'Declarant is exporter?' page" in {
-
         val cachedParties = Parties(declarantIsExporter = Some(DeclarantIsExporter(YesNoAnswers.yes)))
         val requestWithCachedParties = journeyRequest(request.cacheModel.copy(parties = cachedParties))
 
         val backButton = createView()(requestWithCachedParties).getElementById("back-link")
 
         backButton.text() mustBe messages(backToPreviousQuestionCaption)
-        backButton.attr("href") mustBe routes.DeclarantExporterController.displayPage().url
+        backButton.attr("href") mustBe DeclarantExporterController.displayPage().url
       }
     }
   }
 
   private def assertIncorrectView(address: Address, field: String, errorKey: String)(implicit request: JourneyRequest[_]): Assertion = {
-    val view = createView(form.fillAndValidate(ConsigneeDetails(EntityDetails(None, Some(address)))))
+    val view = createView(form().fillAndValidate(ConsigneeDetails(EntityDetails(None, Some(address)))))
     assertIncorrectElement(view, field, errorKey)
   }
 
   private def assertIncorrectElements(address: Address, fields: List[String], errorKey: String)(implicit request: JourneyRequest[_]): Assertion = {
-    val view = createView(form.fillAndValidate(ConsigneeDetails(EntityDetails(None, Some(address)))))
+    val view = createView(form().fillAndValidate(ConsigneeDetails(EntityDetails(None, Some(address)))))
     assertIncorrectElements(view, fields, errorKey)
   }
 }

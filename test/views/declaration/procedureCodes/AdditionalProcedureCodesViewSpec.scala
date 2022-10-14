@@ -20,34 +20,37 @@ import base.Injector
 import forms.common.YesNoAnswer.allYesNoAnswers
 import forms.declaration.countries.Country
 import forms.declaration.procedurecodes.AdditionalProcedureCode
-import models.DeclarationType.CLEARANCE
+import forms.declaration.procedurecodes.AdditionalProcedureCode.form
+import models.DeclarationType.{CLEARANCE, STANDARD}
 import models.Mode
+import models.Mode.Normal
 import models.codes.{AdditionalProcedureCode => AdditionalProcedureCodeModel, ProcedureCode}
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import services.cache.ExportsTestHelper
-import tools.Stubs
-import views.declaration.spec.UnitViewSpec
+import views.declaration.spec.PageWithButtonsSpec
 import views.html.declaration.procedureCodes.additional_procedure_codes
 import views.tags.ViewTest
 
 @ViewTest
-class AdditionalProcedureCodesViewSpec extends UnitViewSpec with ExportsTestHelper with Stubs with Injector {
+class AdditionalProcedureCodesViewSpec extends PageWithButtonsSpec with ExportsTestHelper with Injector {
 
-  private val page = instanceOf[additional_procedure_codes]
-  private val form: Form[AdditionalProcedureCode] = AdditionalProcedureCode.form()
-  private val itemId = "itemId"
-  private val sampleProcedureCode = ProcedureCode("1040", "blah blah blah")
-  private val defaultAdditionalProcedureCodes = Seq(AdditionalProcedureCodeModel("000", "None"))
+  val sampleProcedureCode = ProcedureCode("1040", "blah blah blah")
+  val defaultAdditionalProcedureCodes = Seq(AdditionalProcedureCodeModel("000", "None"))
 
-  private def createView(
-    form: Form[AdditionalProcedureCode] = form,
+  val page = instanceOf[additional_procedure_codes]
+
+  override val typeAndViewInstance =
+    (STANDARD, page(Normal, itemId, form(), sampleProcedureCode, defaultAdditionalProcedureCodes, Seq.empty)(_, _))
+
+  def createView(
+    frm: Form[AdditionalProcedureCode] = form(),
     validCodes: Seq[AdditionalProcedureCodeModel] = defaultAdditionalProcedureCodes,
     codes: Seq[String] = Seq.empty,
-    mode: Mode = Mode.Normal
+    mode: Mode = Normal
   )(implicit request: JourneyRequest[_]): Document =
-    page(mode, itemId, form, sampleProcedureCode, validCodes, codes)(request, messages)
+    page(mode, itemId, frm, sampleProcedureCode, validCodes, codes)(request, messages)
 
   "Additional Procedure Codes View" should {
 
@@ -82,9 +85,7 @@ class AdditionalProcedureCodesViewSpec extends UnitViewSpec with ExportsTestHelp
           val backButton = view.getElementById("back-link")
 
           backButton must containMessage("site.backToPreviousQuestion")
-          backButton.getElementById("back-link") must haveHref(
-            controllers.declaration.routes.ProcedureCodesController.displayPage(Mode.Normal, itemId)
-          )
+          backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.ProcedureCodesController.displayPage(Normal, itemId))
         }
 
         "display 'Add' button on page" in {
@@ -99,7 +100,7 @@ class AdditionalProcedureCodesViewSpec extends UnitViewSpec with ExportsTestHelp
 
       "provided with filled form" should {
         "display data in Additional Procedure Code input" in {
-          val view = createView(form = AdditionalProcedureCode.form().fill(AdditionalProcedureCode(Some("123"))))
+          val view = createView(form().fill(AdditionalProcedureCode(Some("123"))))
 
           view.getElementById("additionalProcedureCode").attr("value") mustBe "123"
         }

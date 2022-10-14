@@ -17,19 +17,13 @@
 package models
 
 import base.UnitWithMocksSpec
-import models.Mode.{Amend, Change, Draft, ErrorFix, Normal}
+import models.Mode.{Amend, Draft, ErrorFix, Normal}
 
 class ModeSpec extends UnitWithMocksSpec {
 
   "Normal mode" must {
     "be same after submitting form" in {
       Normal.next mustBe Normal
-    }
-  }
-
-  "Change mode" must {
-    "become Normal after submitting form" in {
-      Change.next mustBe Normal
     }
   }
 

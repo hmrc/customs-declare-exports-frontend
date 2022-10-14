@@ -19,25 +19,26 @@ package views.declaration.destinationCountries
 import base.Injector
 import connectors.CodeListConnector
 import controllers.declaration.routes
-import forms.declaration.RoutingCountryQuestionYesNo
+import forms.declaration.RoutingCountryQuestionYesNo.formAdd
 import forms.declaration.countries.Country
+import models.DeclarationType.STANDARD
 import models.Mode
+import models.Mode.Normal
 import models.codes.{Country => ModelCountry}
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
-import play.api.data.Form
 import play.api.mvc.AnyContent
 import play.twirl.api.HtmlFormat.Appendable
-import services.cache.ExportsTestHelper
-import tools.Stubs
-import views.declaration.spec.UnitViewSpec
+import views.declaration.spec.PageWithButtonsSpec
 import views.html.declaration.destinationCountries.routing_country_question
+import views.tags.ViewTest
 
 import scala.collection.immutable.ListMap
 
-class RoutingCountryQuestionViewSpec extends UnitViewSpec with Stubs with ExportsTestHelper with Injector {
+@ViewTest
+class RoutingCountryQuestionViewSpec extends PageWithButtonsSpec with Injector {
 
   implicit val mockCodeListConnector = mock[CodeListConnector]
 
@@ -53,14 +54,14 @@ class RoutingCountryQuestionViewSpec extends UnitViewSpec with Stubs with Export
     super.afterEach()
   }
 
-  val form: Form[Boolean] = RoutingCountryQuestionYesNo.formAdd()
-  val routingQuestionPage = instanceOf[routing_country_question]
+  val page = instanceOf[routing_country_question]
 
-  def createView(mode: Mode = Mode.Normal, request: JourneyRequest[AnyContent] = journeyRequest()): Appendable =
-    routingQuestionPage(mode, form)(request, messages(request))
+  override val typeAndViewInstance = (STANDARD, page(Normal, formAdd())(_, _))
+
+  def createView(mode: Mode = Normal)(implicit request: JourneyRequest[AnyContent]): Appendable =
+    page(mode, formAdd())(request, messages(request))
 
   "Routing country question page" should {
-
     val view = createView()
 
     "have defined translation for used labels" in {
@@ -75,7 +76,7 @@ class RoutingCountryQuestionViewSpec extends UnitViewSpec with Stubs with Export
     }
 
     "display the expected page title" in {
-      val view = createView(request = journeyRequest(aDeclaration(withDestinationCountry(Country(Some("MU"))))))
+      val view = createView()(journeyRequest(aDeclaration(withDestinationCountry(Country(Some("MU"))))))
       view.getElementsByTag("h1").text mustBe messages("declaration.routingCountryQuestion.title", expectedCountryName)
     }
 

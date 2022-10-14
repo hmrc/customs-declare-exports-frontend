@@ -20,33 +20,36 @@ import base.Injector
 import forms.common.Eori
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.consignor.ConsignorEoriNumber
+import forms.declaration.consignor.ConsignorEoriNumber.form
+import models.DeclarationType.CLEARANCE
+import models.Mode
+import models.Mode.Normal
 import models.requests.JourneyRequest
-import models.{DeclarationType, Mode}
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import services.cache.ExportsTestHelper
-import tools.Stubs
 import views.components.gds.Styles
-import views.declaration.spec.UnitViewSpec
+import views.declaration.spec.PageWithButtonsSpec
 import views.html.declaration.consignor_eori_number
 import views.tags.ViewTest
 
 @ViewTest
-class ConsignorEoriNumberViewSpec extends UnitViewSpec with ExportsTestHelper with Stubs with Injector {
+class ConsignorEoriNumberViewSpec extends PageWithButtonsSpec with ExportsTestHelper with Injector {
 
   private val page: consignor_eori_number = instanceOf[consignor_eori_number]
 
-  private def createView(mode: Mode = Mode.Normal, form: Form[ConsignorEoriNumber] = ConsignorEoriNumber.form())(
-    implicit request: JourneyRequest[_]
-  ): Document =
-    page(mode, form)(request, messages)
+  override val typeAndViewInstance = (CLEARANCE, page(Normal, form())(_, _))
+
+  private def createView(frm: Form[ConsignorEoriNumber] = form(), mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document =
+    page(mode, frm)(request, messages)
 
   "Consignor Eori Number View" should {
-    onJourney(DeclarationType.CLEARANCE) { implicit request =>
+
+    onJourney(CLEARANCE) { implicit request =>
       val view = createView()
+
       "display answer input" in {
-        val consignorEoriNumber = ConsignorEoriNumber.form().fill(ConsignorEoriNumber(Some(Eori("GB123456789")), YesNoAnswers.yes))
-        val view = createView(form = consignorEoriNumber)
+        val view = createView(form().fill(ConsignorEoriNumber(Some(Eori("GB123456789")), YesNoAnswers.yes)))
 
         view
           .getElementById("Yes")
@@ -75,21 +78,20 @@ class ConsignorEoriNumberViewSpec extends UnitViewSpec with ExportsTestHelper wi
       }
 
       "display 'Back' button that links to 'Exporter Details' page" in {
-
         val backButton = view.getElementById("back-link")
 
         backButton must containMessage("site.backToPreviousQuestion")
-        backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.IsExsController.displayPage(Mode.Normal))
+        backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.IsExsController.displayPage(Normal))
       }
 
       val createViewWithMode: Mode => Document = mode => createView(mode = mode)
       checkAllSaveButtonsAreDisplayed(createViewWithMode)
 
       "handle invalid input" should {
+
         "display errors when all inputs are incorrect" in {
           val data = ConsignorEoriNumber(Some(Eori("123456789")), YesNoAnswers.yes)
-          val form = ConsignorEoriNumber.form().fillAndValidate(data)
-          val view = createView(form = form)
+          val view = createView(form().fillAndValidate(data))
 
           view must haveGovukGlobalErrorSummary
           view must containErrorElementWithTagAndHref("a", "#eori")
@@ -98,8 +100,7 @@ class ConsignorEoriNumberViewSpec extends UnitViewSpec with ExportsTestHelper wi
 
         "display errors when eori contains special characters" in {
           val data = ConsignorEoriNumber(eori = Some(Eori("12#$%^78")), hasEori = YesNoAnswers.yes)
-          val form = ConsignorEoriNumber.form().fillAndValidate(data)
-          val view = createView(form = form)
+          val view = createView(form().fillAndValidate(data))
 
           view must haveGovukGlobalErrorSummary
           view must containErrorElementWithTagAndHref("a", "#eori")

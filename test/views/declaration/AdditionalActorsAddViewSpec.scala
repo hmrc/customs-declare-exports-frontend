@@ -20,27 +20,27 @@ import base.{Injector, TestHelper}
 import controllers.declaration.routes
 import forms.common.Eori
 import forms.declaration.DeclarationAdditionalActors
+import forms.declaration.DeclarationAdditionalActors.form
 import models.DeclarationType._
 import models.Mode
+import models.Mode.Normal
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import org.scalatest.Assertion
 import play.api.data.Form
-import services.cache.ExportsTestHelper
-import tools.Stubs
-import views.declaration.spec.UnitViewSpec
-import views.helpers.CommonMessages
+import views.declaration.spec.PageWithButtonsSpec
 import views.html.declaration.additionalActors.additional_actors_add
 import views.tags.ViewTest
 
 @ViewTest
-class AdditionalActorsAddViewSpec extends UnitViewSpec with CommonMessages with ExportsTestHelper with Stubs with Injector {
+class AdditionalActorsAddViewSpec extends PageWithButtonsSpec with Injector {
 
-  private val form: Form[DeclarationAdditionalActors] = DeclarationAdditionalActors.form
-  private val declarationAdditionalActorsPage = instanceOf[additional_actors_add]
+  val page = instanceOf[additional_actors_add]
 
-  private def createView(form: Form[DeclarationAdditionalActors] = form, mode: Mode = Mode.Normal)(implicit request: JourneyRequest[_]): Document =
-    declarationAdditionalActorsPage(mode, form)
+  override val typeAndViewInstance = (STANDARD, page(Normal, form)(_, _))
+
+  def createView(frm: Form[DeclarationAdditionalActors] = form, mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document =
+    page(mode, frm)
 
   "Declaration Additional Actors" should {
 
@@ -93,8 +93,7 @@ class AdditionalActorsAddViewSpec extends UnitViewSpec with CommonMessages with 
 
     onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, SUPPLEMENTARY) { implicit request =>
       "display 'Back' button that links to 'Consignee Details' page" in {
-
-        val view = declarationAdditionalActorsPage(Mode.Normal, form)(request, messages)
+        val view = page(Normal, form)(request, messages)
         val backButton = view.getElementById("back-link")
 
         backButton must containMessage(backToPreviousQuestionCaption)
@@ -125,7 +124,6 @@ class AdditionalActorsAddViewSpec extends UnitViewSpec with CommonMessages with 
         incorrectEori("FW")
         incorrectEori("WH")
       }
-
     }
   }
 

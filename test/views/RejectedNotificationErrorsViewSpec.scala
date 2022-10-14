@@ -19,9 +19,9 @@ package views
 import base.Injector
 import controllers.declaration.routes.AdditionalDocumentsController
 import controllers.routes.{DeclarationDetailsController, SavedDeclarationsController, SubmissionsController}
+import models.Mode.Normal
 import models.Pointer
 import models.declaration.notifications.NotificationError
-import models.Mode.Normal
 import org.jsoup.nodes.Document
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
@@ -30,9 +30,10 @@ import tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.html.rejected_notification_errors
 
-class RejectedNotificationErrorsViewSpec extends UnitViewSpec with ExportsTestHelper with Stubs with Injector {
+class RejectedNotificationErrorsViewSpec extends UnitViewSpec with ExportsTestHelper with Injector with Stubs {
 
   private val page = instanceOf[rejected_notification_errors]
+
   private val declaration = aDeclaration(withConsignmentReferences("DUCR", "lrn"))
 
   private def view(
@@ -46,6 +47,7 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with ExportsTestHe
   val defaultRejectionCode = "CDS10001"
 
   "Rejected notification errors page" should {
+
     "have proper messages for labels" in {
       messages must haveTranslationFor("rejected.notification.mrn")
       messages must haveTranslationFor("rejected.notification.mrn.missing")
@@ -137,9 +139,10 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with ExportsTestHe
     "contain change error link" when {
       "link for the error exists" in {
         val itemId = "12sd31"
-        val declaration = aDeclaration(withConsignmentReferences("DUCR", "lrn"), withItem(anItem(withSequenceId(1), withItemId(itemId))))
+        val item = withItem(anItem(withSequenceId(1), withItemId(itemId)))
+        val declaration = aDeclaration(withConsignmentReferences("DUCR", "lrn"), item)
 
-        val expectedUrl = AdditionalDocumentsController.displayPage(Normal, itemId)
+        val `expectedUrl` = AdditionalDocumentsController.displayPage(Normal, itemId)
 
         val pointerPattern = "declaration.items.#1.additionalDocument.#1.documentStatus"
         val urlPattern = "declaration.items.$.additionalDocument.$.documentStatus"
@@ -148,7 +151,7 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with ExportsTestHe
 
         val view: Document = page(declaration, Some(MRN.value), Seq(noteError))(request, messages)
 
-        val changeLink = view.getElementsByClass("govuk-link").get(1)
+        val changeLink = view.getElementsByClass("govuk-link").get(2)
 
         changeLink must haveHref(
           SubmissionsController.amendErrors(declaration.id, expectedUrl.url, urlPattern, messages("dmsError.CDS12062.title")).url

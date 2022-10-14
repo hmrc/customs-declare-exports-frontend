@@ -16,35 +16,31 @@
 
 package views.declaration.fiscalInformation
 
-import base.{Injector, MockAuthAction}
+import base.Injector
 import forms.common.YesNoAnswer
+import forms.common.YesNoAnswer.form
 import forms.declaration.AdditionalFiscalReference
+import models.DeclarationType.STANDARD
 import models.Mode
+import models.Mode.Normal
 import org.jsoup.nodes.Document
 import play.api.data.Form
-import services.cache.ExportsTestHelper
-import tools.Stubs
-import views.declaration.spec.UnitViewSpec
-import views.helpers.CommonMessages
+import views.declaration.spec.PageWithButtonsSpec
 import views.html.declaration.fiscalInformation.additional_fiscal_references_remove
 import views.tags.ViewTest
 
 @ViewTest
-class AdditionalFiscalReferencesRemoveViewSpec
-    extends UnitViewSpec with ExportsTestHelper with Stubs with CommonMessages with Injector with MockAuthAction {
+class AdditionalFiscalReferencesRemoveViewSpec extends PageWithButtonsSpec with Injector {
 
-  private val itemId = "74fd3906"
-  private val referenceId = "0.200378103"
-  private val additionalReference = AdditionalFiscalReference("FR", "12345")
+  val referenceId = "0.200378103"
+  val additionalReference = AdditionalFiscalReference("FR", "12345")
 
-  private val page = instanceOf[additional_fiscal_references_remove]
+  val page = instanceOf[additional_fiscal_references_remove]
 
-  private def createView(
-    form: Form[YesNoAnswer] = YesNoAnswer.form(),
-    reference: AdditionalFiscalReference = additionalReference,
-    mode: Mode = Mode.Normal
-  ): Document =
-    page(mode, itemId, referenceId, reference, form)(getJourneyRequest(), messages)
+  override val typeAndViewInstance = (STANDARD, page(Normal, itemId, referenceId, additionalReference, form())(_, _))
+
+  def createView(frm: Form[YesNoAnswer] = form(), mode: Mode = Normal): Document =
+    page(mode, itemId, referenceId, additionalReference, frm)(request, messages)
 
   "AdditionalFiscalReferences Remove View" should {
     val view = createView()
@@ -61,7 +57,7 @@ class AdditionalFiscalReferencesRemoveViewSpec
       val backLink = view.getElementById("back-link")
 
       backLink must containMessage(backToPreviousQuestionCaption)
-      backLink must haveHref(controllers.declaration.routes.AdditionalFiscalReferencesController.displayPage(Mode.Normal, itemId))
+      backLink must haveHref(controllers.declaration.routes.AdditionalFiscalReferencesController.displayPage(Normal, itemId))
     }
 
     val createViewWithMode: Mode => Document = mode => createView(mode = mode)
@@ -69,9 +65,8 @@ class AdditionalFiscalReferencesRemoveViewSpec
   }
 
   "AdditionalFiscalReferences Remove View for invalid input" should {
-
     "display error if nothing is entered" in {
-      val view = createView(YesNoAnswer.form().bind(Map[String, String]()))
+      val view = createView(form().bind(Map[String, String]()))
 
       view must haveGovukGlobalErrorSummary
       view must containErrorElementWithTagAndHref("a", "#code_yes")

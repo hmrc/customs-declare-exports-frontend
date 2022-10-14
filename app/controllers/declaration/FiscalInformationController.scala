@@ -17,6 +17,7 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
+import controllers.declaration.routes.{AdditionalFiscalReferencesController, AdditionalProcedureCodesController, CommodityDetailsController}
 import controllers.navigation.Navigator
 import forms.declaration.FiscalInformation
 import forms.declaration.FiscalInformation._
@@ -46,14 +47,14 @@ class FiscalInformationController @Inject() (
 
   def displayPage(mode: Mode, itemId: String, fastForward: Boolean): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     def cacheContainsFiscalReferenceData = request.cacheModel.itemBy(itemId).exists(_.additionalFiscalReferencesData.exists(_.references.nonEmpty))
-    def cacheItemIneligibleForOSR =
+    def cacheItemIneligibleForOSR: Boolean =
       request.cacheModel
         .itemBy(itemId)
         .flatMap(_.procedureCodes)
         .flatMap(_.procedureCode)
         .exists(code => !ProcedureCodesData.osrProcedureCodes.contains(code))
 
-    def displayFiscalInformationPage() = {
+    def displayFiscalInformationPage(): Result = {
       val frm = form().withSubmissionErrors()
       request.cacheModel.itemBy(itemId).flatMap(_.fiscalInformation) match {
         case Some(fiscalInformation) => Ok(fiscalInformationPage(mode, itemId, frm.fill(fiscalInformation)))
@@ -61,19 +62,11 @@ class FiscalInformationController @Inject() (
       }
     }
 
-    if (mode == Mode.Change) {
-      displayFiscalInformationPage()
-    } else if (fastForward && cacheContainsFiscalReferenceData) {
-      navigator.continueTo(mode, routes.AdditionalFiscalReferencesController.displayPage(_, itemId))
-    } else if (fastForward && cacheItemIneligibleForOSR) {
-      navigator.continueTo(mode, routes.AdditionalProcedureCodesController.displayPage(_, itemId))
-    } else {
-      if (cacheContainsFiscalReferenceData) {
-        navigator.continueTo(mode, controllers.declaration.routes.AdditionalFiscalReferencesController.displayPage(_, itemId))
-      } else {
-        displayFiscalInformationPage()
-      }
-    }
+    if (request.cacheModel.summaryWasVisited.contains(true)) displayFiscalInformationPage()
+    else if (fastForward && cacheContainsFiscalReferenceData) navigator.continueTo(mode, AdditionalFiscalReferencesController.displayPage(_, itemId))
+    else if (fastForward && cacheItemIneligibleForOSR) navigator.continueTo(mode, AdditionalProcedureCodesController.displayPage(_, itemId))
+    else if (cacheContainsFiscalReferenceData) navigator.continueTo(mode, AdditionalFiscalReferencesController.displayPage(_, itemId))
+    else displayFiscalInformationPage()
   }
 
   def saveFiscalInformation(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
@@ -106,6 +99,6 @@ class FiscalInformationController @Inject() (
       case FiscalInformation.AllowedFiscalInformationAnswers.yes =>
         navigator.continueTo(mode, routes.AdditionalFiscalReferencesAddController.displayPage(_, itemId))
       case FiscalInformation.AllowedFiscalInformationAnswers.no =>
-        navigator.continueTo(mode, routes.CommodityDetailsController.displayPage(_, itemId))
+        navigator.continueTo(mode, CommodityDetailsController.displayPage(_, itemId))
     }
 }

@@ -17,24 +17,33 @@
 package views.declaration.previousDocuments
 
 import base.Injector
-import forms.common.YesNoAnswer
+import controllers.declaration.routes.PreviousDocumentsSummaryController
+import forms.common.YesNoAnswer.form
 import forms.declaration.Document
-import org.jsoup.nodes.{Document => nodeDocument}
+import models.DeclarationType.STANDARD
 import models.Mode
+import models.Mode.Normal
 import models.requests.JourneyRequest
+import org.jsoup.nodes.{Document => nodeDocument}
+import play.twirl.api.Html
 import utils.ListItem
-import views.declaration.spec.UnitViewSpec
+import views.declaration.spec.PageWithButtonsSpec
 import views.html.declaration.previousDocuments.previous_documents_remove
+import views.tags.ViewTest
 
-class PreviousDocumentsRemoveViewSpec extends UnitViewSpec with Injector {
+@ViewTest
+class PreviousDocumentsRemoveViewSpec extends PageWithButtonsSpec with Injector {
 
-  private val page = instanceOf[previous_documents_remove]
-  private val form = YesNoAnswer.form()
-  private val documentWithRelatesTo = Document("355", "reference", Some("3"))
-  private val documentWithoutRelatesTo = Document("355", "reference", None)
+  val documentWithRelatesTo = Document("355", "reference", Some("3"))
+  val documentWithoutRelatesTo = Document("355", "reference", None)
+  val documentId = ListItem.createId(0, documentWithRelatesTo)
 
-  private def createView(document: Document = documentWithRelatesTo, mode: Mode = Mode.Normal)(implicit request: JourneyRequest[_]) =
-    page(mode, ListItem.createId(0, documentWithRelatesTo), document, form)(request, messages)
+  val page = instanceOf[previous_documents_remove]
+
+  override val typeAndViewInstance = (STANDARD, page(Normal, documentId, documentWithRelatesTo, form())(_, _))
+
+  def createView(document: Document = documentWithRelatesTo, mode: Mode = Normal)(implicit request: JourneyRequest[_]): Html =
+    page(mode, documentId, document, form())(request, messages)
 
   "Previous Documents Remove page" should {
 
@@ -99,7 +108,7 @@ class PreviousDocumentsRemoveViewSpec extends UnitViewSpec with Injector {
       "display 'Back' link to 'Previous Documents Summary' page" in {
         val backButton = createView().getElementById("back-link")
         backButton must containMessage("site.backToPreviousQuestion")
-        backButton must haveHref(controllers.declaration.routes.PreviousDocumentsSummaryController.displayPage(Mode.Normal))
+        backButton must haveHref(PreviousDocumentsSummaryController.displayPage(Normal))
       }
 
       val createViewWithMode: Mode => nodeDocument = mode => createView(mode = mode)
