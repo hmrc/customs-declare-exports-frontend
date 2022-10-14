@@ -62,8 +62,10 @@ class SummaryController @Inject() (
   val form: Form[LegalDeclaration] = LegalDeclaration.form()
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType).async { implicit request =>
-    if (containsMandatoryData(request.cacheModel, mode)) displaySummaryPage(mode)
-    else Future.successful(Ok(summaryPageNoData()))
+    updateDeclarationFromRequest(_.copy(summaryWasVisited = Some(true))).flatMap { _ =>
+      if (containsMandatoryData(request.cacheModel, mode)) displaySummaryPage(mode)
+      else Future.successful(Ok(summaryPageNoData()))
+    }
   }
 
   def displayDeclarationPage(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType) { implicit request =>
