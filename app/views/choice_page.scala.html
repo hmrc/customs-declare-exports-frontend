@@ -69,12 +69,6 @@
                     checked = form("value").value.contains(CreateDec)
                 ),
                 RadioItem(
-                    id = Some(Movements),
-                    value = Some(Movements),
-                    content = Text(messages(s"declaration.choice.$Movements")),
-                    checked = form("value").value.contains(Movements)
-                ),
-                RadioItem(
                     id = Some(ContinueDec),
                     value = Some(ContinueDec),
                     content = Text(messages(s"declaration.choice.$ContinueDec")),
@@ -85,6 +79,12 @@
                     value = Some(Submissions),
                     content = Text(messages(s"declaration.choice.$Submissions")),
                     checked = form("value").value.contains(Submissions)
+                ),
+                RadioItem(
+                    id = Some(Movements),
+                    value = Some(Movements),
+                    content = Text(messages(s"declaration.choice.$Movements")),
+                    checked = form("value").value.contains(Movements)
                 ),
                 RadioItem(
                     id = Some(Inbox),

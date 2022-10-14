@@ -93,9 +93,10 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Stubs with Be
       ensureAllLabelTextIsCorrect(view)
 
       ensureRadioIsUnChecked(view, "CRT")
-      ensureRadioIsUnChecked(view, "SUB")
       ensureRadioIsUnChecked(view, "CON")
+      ensureRadioIsUnChecked(view, "SUB")
       ensureRadioIsUnChecked(view, "MSG")
+      ensureRadioIsUnChecked(view, "MVT")
     }
 
     "not display 'Back' button" in {
@@ -228,6 +229,7 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Stubs with Be
       ensureRadioIsUnChecked(view, "SUB")
       ensureRadioIsUnChecked(view, "CON")
       ensureRadioIsUnChecked(view, "MSG")
+      ensureRadioIsUnChecked(view, "MVT")
     }
 
     "display selected radio button - View recent declarations (SUB)" in {
@@ -240,6 +242,7 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Stubs with Be
       ensureRadioIsChecked(view, "SUB")
       ensureRadioIsUnChecked(view, "CON")
       ensureRadioIsUnChecked(view, "MSG")
+      ensureRadioIsUnChecked(view, "MVT")
     }
 
     "display selected radio button - Continue saved declaration (Con)" in {
@@ -252,6 +255,7 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Stubs with Be
       ensureRadioIsUnChecked(view, "SUB")
       ensureRadioIsChecked(view, "CON")
       ensureRadioIsUnChecked(view, "MSG")
+      ensureRadioIsUnChecked(view, "MVT")
     }
 
     "display selected radio button - View Messages (Msg)" in {
@@ -264,15 +268,17 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Stubs with Be
       ensureRadioIsUnChecked(view, "SUB")
       ensureRadioIsUnChecked(view, "CON")
       ensureRadioIsChecked(view, "MSG")
+      ensureRadioIsUnChecked(view, "MVT")
     }
   }
 
   private def ensureAllLabelTextIsCorrect(view: Document): Unit = {
-    view.getElementsByTag("label").size mustBe 4
+    view.getElementsByTag("label").size mustBe 5
     view.getElementsByAttributeValue("for", "CRT") must containMessageForElements("declaration.choice.CRT")
     view.getElementsByAttributeValue("for", "SUB") must containMessageForElements("declaration.choice.SUB")
     view.getElementsByAttributeValue("for", "CON") must containMessageForElements("declaration.choice.CON")
     view.getElementsByAttributeValue("for", "MSG") must containMessageForElements("declaration.choice.MSG")
+    view.getElementsByAttributeValue("for", "MVT") must containMessageForElements("declaration.choice.MVT")
   }
 
   private def ensureRadioIsChecked(view: Document, elementId: String): Unit = {
