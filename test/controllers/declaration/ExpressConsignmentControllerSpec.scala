@@ -53,7 +53,7 @@ class ExpressConsignmentControllerSpec extends ControllerSpec {
     super.beforeEach()
     authorizedUser()
     withNewCaching(aDeclaration(withType(DeclarationType.STANDARD)))
-    when(expressConsignmentPage.apply(any[Mode], any[Form[YesNoAnswer]])(any(), any())).thenReturn(HtmlFormat.empty)
+    when(expressConsignmentPage.apply(any[Form[YesNoAnswer]])(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -132,7 +132,7 @@ class ExpressConsignmentControllerSpec extends ControllerSpec {
   }
 
   private def verifyPageInvoked: HtmlFormat.Appendable =
-    verify(expressConsignmentPage).apply(any[Mode], any[Form[YesNoAnswer]])(any(), any())
+    verify(expressConsignmentPage).apply(any[Form[YesNoAnswer]])(any(), any())
 
   private def verifyRedirect(yesOrNo: Option[String], call: Option[Call] = None)(implicit request: JourneyRequest[_]): Assertion = {
     withNewCaching(request.cacheModel)

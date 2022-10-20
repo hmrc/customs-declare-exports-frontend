@@ -54,7 +54,7 @@ class AdditionalDocumentChangeControllerSpec extends ControllerSpec with ErrorHa
     super.beforeEach()
     authorizedUser()
     withNewCaching(aDeclaration(withItem(anItem(withItemId(itemId), withAdditionalDocuments(Yes, existingDocument1, existingDocument2)))))
-    when(additionalDocumentChangePage.apply(any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(additionalDocumentChangePage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -64,7 +64,7 @@ class AdditionalDocumentChangeControllerSpec extends ControllerSpec with ErrorHa
 
   def theResponseForm: Form[AdditionalDocument] = {
     val formCaptor = ArgumentCaptor.forClass(classOf[Form[AdditionalDocument]])
-    verify(additionalDocumentChangePage).apply(any(), any(), any(), formCaptor.capture())(any(), any())
+    verify(additionalDocumentChangePage).apply(any(), any(), formCaptor.capture())(any(), any())
     formCaptor.getValue
   }
 
@@ -74,12 +74,11 @@ class AdditionalDocumentChangeControllerSpec extends ControllerSpec with ErrorHa
   }
 
   private def verifyPageInvoked(numberOfTimes: Int = 1): HtmlFormat.Appendable =
-    verify(additionalDocumentChangePage, times(numberOfTimes)).apply(any(), any(), any(), any())(any(), any())
+    verify(additionalDocumentChangePage, times(numberOfTimes)).apply(any(), any(), any())(any(), any())
 
   "AdditionalDocumentChangeController" should {
 
     "return 200 (OK)" when {
-
       "display page method is invoked" in {
         val result = controller.displayPage(itemId, documentId)(getRequest())
 

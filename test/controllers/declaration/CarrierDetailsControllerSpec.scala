@@ -53,7 +53,7 @@ class CarrierDetailsControllerSpec extends ControllerSpec {
     super.beforeEach()
 
     authorizedUser()
-    when(mockCarrierDetailsPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockCarrierDetailsPage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
     when(mockCodeListConnector.getCountryCodes(any())).thenReturn(ListMap("GB" -> Country("United Kingdom, Great Britain, Northern Ireland", "GB")))
   }
 
@@ -65,12 +65,12 @@ class CarrierDetailsControllerSpec extends ControllerSpec {
 
   def theResponseForm: Form[CarrierDetails] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[CarrierDetails]])
-    verify(mockCarrierDetailsPage).apply(any(), captor.capture())(any(), any())
+    verify(mockCarrierDetailsPage).apply(captor.capture())(any(), any())
     captor.getValue
   }
 
   def verifyPageInvocations(numberOfInvocations: Int) =
-    verify(mockCarrierDetailsPage, times(numberOfInvocations)).apply(any(), any())(any(), any())
+    verify(mockCarrierDetailsPage, times(numberOfInvocations)).apply(any())(any(), any())
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration())

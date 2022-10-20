@@ -64,7 +64,8 @@ class SummaryController @Inject() (
   def displayPage(): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType).async { implicit request =>
     updateDeclarationFromRequest(_.copy(summaryWasVisited = Some(true))).flatMap { _ =>
       val hasMandatoryData = request.cacheModel.consignmentReferences.exists(references => references.lrn.nonEmpty)
-      if (hasMandatoryData) displaySummaryPage() else Future.successful(Ok(summaryPageNoData()))
+      if (hasMandatoryData) displaySummaryPage()
+      else Future.successful(Ok(summaryPageNoData()).removingFromSession(errorFixModeSessionKey))
     }
   }
 
@@ -91,8 +92,11 @@ class SummaryController @Inject() (
     val duplicateLrnError = Seq(lrnDuplicateError)
 
     isLrnADuplicate(maybeLrn).map { lrnIsDuplicate =>
-      if (lrnIsDuplicate) Ok(normalSummaryPage(backlink, duplicateLrnError))
-      else Ok(amendSummaryPage(backlink))
+      val result =
+        if (lrnIsDuplicate) Ok(normalSummaryPage(backlink, duplicateLrnError))
+        else Ok(amendSummaryPage(backlink))
+
+      result.removingFromSession(errorFixModeSessionKey)
     }
   }
 

@@ -50,7 +50,7 @@ class LinkDucrToMucrControllerSpec extends ControllerSpec {
     super.beforeEach()
     authorizedUser()
     withNewCaching(aDeclaration(withType(DeclarationType.STANDARD)))
-    when(linkDucrToMucrPage.apply(any[Mode], any[Form[YesNoAnswer]])(any(), any())).thenReturn(HtmlFormat.empty)
+    when(linkDucrToMucrPage.apply(any[Form[YesNoAnswer]])(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -60,7 +60,7 @@ class LinkDucrToMucrControllerSpec extends ControllerSpec {
 
   def theResponseForm: Form[YesNoAnswer] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[YesNoAnswer]])
-    verify(linkDucrToMucrPage).apply(any(), captor.capture())(any(), any())
+    verify(linkDucrToMucrPage).apply(captor.capture())(any(), any())
     captor.getValue
   }
 
@@ -136,7 +136,7 @@ class LinkDucrToMucrControllerSpec extends ControllerSpec {
   }
 
   private def verifyPageInvoked: HtmlFormat.Appendable =
-    verify(linkDucrToMucrPage).apply(any[Mode], any[Form[YesNoAnswer]])(any(), any())
+    verify(linkDucrToMucrPage).apply(any[Form[YesNoAnswer]])(any(), any())
 
   private def verifyRedirect(yesOrNo: String, call: Call)(implicit request: JourneyRequest[_]): Assertion = {
     withNewCaching(request.cacheModel)

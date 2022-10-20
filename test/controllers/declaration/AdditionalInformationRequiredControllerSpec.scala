@@ -54,15 +54,15 @@ class AdditionalInformationRequiredControllerSpec extends ControllerSpec with Op
 
   def theResponseForm: Form[YesNoAnswer] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[YesNoAnswer]])
-    verify(mockPage).apply(any(), any(), captor.capture(), any(), any())(any(), any())
+    verify(mockPage).apply(any(), captor.capture(), any(), any())(any(), any())
     captor.getValue
   }
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    when(mockPage.apply(any(), any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
-    when(navigator.backLinkForAdditionalInformation(any(), any(), any())(any(), any()))
+    when(mockPage.apply(any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(navigator.backLinkForAdditionalInformation(any(), any())(any(), any()))
       .thenReturn(Future.successful(routes.CommodityMeasureController.displayPage(itemId)))
   }
 

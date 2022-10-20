@@ -27,6 +27,7 @@ import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
+import play.twirl.api.HtmlFormat.Appendable
 import views.html.declaration.additionalDocuments.additional_documents_required
 
 class AdditionalDocumentsRequiredControllerSpec extends ControllerSpec {
@@ -45,7 +46,7 @@ class AdditionalDocumentsRequiredControllerSpec extends ControllerSpec {
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    when(page.apply(any[Mode], any[String], any[Form[YesNoAnswer]])(any(), any())).thenReturn(HtmlFormat.empty)
+    when(page.apply(any[String], any[Form[YesNoAnswer]])(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -63,15 +64,15 @@ class AdditionalDocumentsRequiredControllerSpec extends ControllerSpec {
 
   def theResponseForm: Form[YesNoAnswer] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[YesNoAnswer]])
-    verify(page).apply(any[Mode], any[String], captor.capture())(any(), any())
+    verify(page).apply(any[String], captor.capture())(any(), any())
     captor.getValue
   }
 
   "AdditionalDocumentsRequiredController" should {
 
     onEveryDeclarationJourney() { implicit request =>
-      "return 200 (OK)" when {
 
+      "return 200 (OK)" when {
         "display page method is invoked" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withItem(anItem(withItemId(itemId)))))
           val result = controller.displayPage(itemId)(getRequest())
@@ -116,6 +117,5 @@ class AdditionalDocumentsRequiredControllerSpec extends ControllerSpec {
     }
   }
 
-  private def verifyPageInvoked: HtmlFormat.Appendable =
-    verify(page).apply(any[Mode], any[String], any[Form[YesNoAnswer]])(any(), any())
+  private def verifyPageInvoked: Appendable = verify(page).apply(any[String], any[Form[YesNoAnswer]])(any(), any())
 }

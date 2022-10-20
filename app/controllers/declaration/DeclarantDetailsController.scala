@@ -17,12 +17,14 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
+import controllers.declaration.routes.{ConsignmentReferencesController, DeclarantExporterController, NotEligibleController}
 import controllers.navigation.Navigator
 import forms.common.Eori
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.DeclarantEoriConfirmation.form
 import forms.declaration.{DeclarantDetails, DeclarantEoriConfirmation, EntityDetails}
-import models.requests.{ExportsSessionKeys, JourneyRequest}
+import models.requests.ExportsSessionKeys._
+import models.requests.JourneyRequest
 import models.{DeclarationType, ExportsDeclaration}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
@@ -59,13 +61,9 @@ class DeclarantDetailsController @Inject() (
         formWithErrors => Future.successful(BadRequest(declarantDetailsPage(formWithErrors))),
         validForm =>
           if (validForm.answer == YesNoAnswers.yes)
-            updateCache(DeclarantDetails(EntityDetails(Some(Eori(request.eori)), None)))
-              .map(_ => navigator.continueTo(nextPage))
+            updateCache(DeclarantDetails(EntityDetails(Some(Eori(request.eori)), None))).map(_ => navigator.continueTo(nextPage))
           else
-            Future(
-              Redirect(controllers.declaration.routes.NotEligibleController.displayNotDeclarant())
-                .removingFromSession(ExportsSessionKeys.declarationId)
-            )
+            Future(Redirect(NotEligibleController.displayNotDeclarant).removingFromSession(declarationId, errorFixModeSessionKey))
       )
   }
 
@@ -73,7 +71,7 @@ class DeclarantDetailsController @Inject() (
     updateDeclarationFromRequest(model => model.copy(parties = model.parties.copy(declarantDetails = Some(declarant))))
 
   private def nextPage(implicit request: JourneyRequest[_]): Call = request.declarationType match {
-    case DeclarationType.CLEARANCE => controllers.declaration.routes.DeclarantExporterController.displayPage
-    case _                         => controllers.declaration.routes.ConsignmentReferencesController.displayPage
+    case DeclarationType.CLEARANCE => DeclarantExporterController.displayPage
+    case _                         => ConsignmentReferencesController.displayPage
   }
 }

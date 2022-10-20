@@ -17,6 +17,7 @@
 package controllers.declaration
 
 import base.ControllerSpec
+import controllers.declaration.routes.CommodityDetailsController
 import forms.common.YesNoAnswer
 import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData}
 import mock.{ErrorHandlerMocks, ItemActionMocks}
@@ -51,7 +52,7 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec with ItemA
 
     setupErrorHandler()
     authorizedUser()
-    when(additionalFiscalReferencesPage.apply(any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(additionalFiscalReferencesPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -62,7 +63,7 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec with ItemA
 
   def theResponseForm: Form[YesNoAnswer] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[YesNoAnswer]])
-    verify(additionalFiscalReferencesPage).apply(any(), any(), captor.capture(), any())(any(), any())
+    verify(additionalFiscalReferencesPage).apply(any(), captor.capture(), any())(any(), any())
     captor.getValue
   }
 
@@ -73,19 +74,18 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec with ItemA
     theResponseForm
   }
 
-  private def verifyPageInvoked(numberOfTimes: Int = 1) =
-    verify(additionalFiscalReferencesPage, times(numberOfTimes)).apply(any(), any(), any(), any())(any(), any())
+  private def verifyPageInvoked(numberOfTimes: Int = 1): HtmlFormat.Appendable =
+    verify(additionalFiscalReferencesPage, times(numberOfTimes)).apply(any(), any(), any())(any(), any())
 
   "Additional fiscal references controller" should {
 
     "return 200 (OK)" when {
 
       "display page method is invoked with data in cache" in {
-
-        val itemCacheData =
-          ExportItem("itemId", additionalFiscalReferencesData = Some(AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("PL", "12345")))))
-        val cachedData: ExportsDeclaration =
-          aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withItem(itemCacheData))
+        val itemCacheData = ExportItem("itemId",
+          additionalFiscalReferencesData = Some(AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("PL", "12345"))))
+        )
+        val cachedData = aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withItem(itemCacheData))
         withNewCaching(cachedData)
 
         val result: Future[Result] = controller.displayPage(itemCacheData.id)(getRequest())
@@ -120,7 +120,7 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec with ItemA
         val result = controller.submitForm(item.id)(postRequest(requestBody))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalFiscalReferencesAddController.displayPage(item.id)
+        thePageNavigatedTo mustBe routes.AdditionalFiscalReferencesAddController.displayPage(item.id)
       }
 
       "user submits valid Yes answer in error-fix mode" in {
@@ -128,10 +128,10 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec with ItemA
         withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withItem(item)))
 
         val requestBody = Json.obj("yesNo" -> "Yes")
-        val result = controller.submitForm(Mode.ErrorFix, item.id)(postRequest(requestBody))
+        val result = controller.submitForm(item.id)(postRequest(requestBody))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalFiscalReferencesAddController.displayPage(Mode.ErrorFix, item.id)
+        thePageNavigatedTo mustBe routes.AdditionalFiscalReferencesAddController.displayPage(item.id)
       }
 
       "user submits valid No answer" in {
@@ -142,9 +142,8 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec with ItemA
         val result = controller.submitForm(item.id)(postRequest(requestBody))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.CommodityDetailsController.displayPage(item.id)
+        thePageNavigatedTo mustBe CommodityDetailsController.displayPage(item.id)
       }
-
     }
   }
 }

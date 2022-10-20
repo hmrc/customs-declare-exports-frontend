@@ -55,20 +55,20 @@ class AdditionalActorsSummaryControllerSpec extends ControllerSpec with OptionVa
 
   def theResponseForm: Form[YesNoAnswer] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[YesNoAnswer]])
-    verify(mockPage).apply(any(), captor.capture(), any())(any(), any())
+    verify(mockPage).apply(captor.capture(), any())(any(), any())
     captor.getValue
   }
 
   def additionalActorsList: Seq[DeclarationAdditionalActors] = {
     val captor = ArgumentCaptor.forClass(classOf[Seq[DeclarationAdditionalActors]])
-    verify(mockPage).apply(any(), any(), captor.capture())(any(), any())
+    verify(mockPage).apply(any(), captor.capture())(any(), any())
     captor.getValue
   }
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    when(mockPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -76,7 +76,8 @@ class AdditionalActorsSummaryControllerSpec extends ControllerSpec with OptionVa
     super.afterEach()
   }
 
-  private def verifyPageInvoked(numberOfTimes: Int = 1) = verify(mockPage, times(numberOfTimes)).apply(any(), any(), any())(any(), any())
+  private def verifyPageInvoked(numberOfTimes: Int = 1): HtmlFormat.Appendable =
+    verify(mockPage, times(numberOfTimes)).apply(any(), any())(any(), any())
 
   "AdditionalActors Summary Controller" should {
 
@@ -95,7 +96,6 @@ class AdditionalActorsSummaryControllerSpec extends ControllerSpec with OptionVa
       }
 
       "return 400 (BAD_REQUEST)" when {
-
         "user submits invalid answer" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationAdditionalActors(additionalActorsData)))
 
@@ -105,7 +105,6 @@ class AdditionalActorsSummaryControllerSpec extends ControllerSpec with OptionVa
           status(result) mustBe BAD_REQUEST
           verifyPageInvoked()
         }
-
       }
 
       "return 303 (SEE_OTHER)" when {
@@ -133,10 +132,10 @@ class AdditionalActorsSummaryControllerSpec extends ControllerSpec with OptionVa
           withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationAdditionalActors(additionalActorsData)))
 
           val requestBody = Json.obj("yesNo" -> "Yes")
-          val result = controller.submitForm(Mode.ErrorFix)(postRequest(requestBody))
+          val result = controller.submitForm()(postRequest(requestBody))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalActorsAddController.displayPage(Mode.ErrorFix)
+          thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalActorsAddController.displayPage()
         }
       }
     }

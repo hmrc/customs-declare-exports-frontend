@@ -17,8 +17,10 @@
 package controllers.declaration
 
 import base.{ControllerSpec, TestHelper}
+import controllers.declaration.routes.StatisticalValueController
+import controllers.routes.RootController
 import forms.declaration.{NactCode, NactCodeFirst}
-import models.{DeclarationType}
+import models.DeclarationType._
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -48,8 +50,8 @@ class NactCodeAddControllerSpec extends ControllerSpec with OptionValues {
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    when(mockAddFirstPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
-    when(mockAddPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockAddFirstPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockAddPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -65,28 +67,28 @@ class NactCodeAddControllerSpec extends ControllerSpec with OptionValues {
 
   def theNactCode: Form[NactCode] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[NactCode]])
-    verify(mockAddPage).apply(any(), any(), captor.capture())(any(), any())
+    verify(mockAddPage).apply(any(), captor.capture())(any(), any())
     captor.getValue
   }
 
   def theNactCodeFirst: Form[NactCodeFirst] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[NactCodeFirst]])
-    verify(mockAddFirstPage).apply(any(), any(), captor.capture())(any(), any())
+    verify(mockAddFirstPage).apply(any(), captor.capture())(any(), any())
     captor.getValue
   }
 
-  private def verifyAddPageInvoked(numberOfTimes: Int = 1) = verify(mockAddPage, times(numberOfTimes)).apply(any(), any(), any())(any(), any())
-  private def verifyAddPageFirstInvoked(numberOfTimes: Int = 1) =
-    verify(mockAddFirstPage, times(numberOfTimes)).apply(any(), any(), any())(any(), any())
+  private def verifyAddPageInvoked(numberOfTimes: Int = 1) = verify(mockAddPage, times(numberOfTimes)).apply(any(), any())(any(), any())
+  private def verifyAddPageFirstInvoked(numberOfTimes: Int = 1): HtmlFormat.Appendable =
+    verify(mockAddFirstPage, times(numberOfTimes)).apply(any(), any())(any(), any())
 
   val item = anItem()
 
   "Nact Code Add Controller" must {
 
-    onJourney(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL) { request =>
+    onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { request =>
       "return 200 (OK)" that {
-        "display page method is invoked and cache is empty" in {
 
+        "display page method is invoked and cache is empty" in {
           withNewCaching(request.cacheModel)
 
           val result = controller.displayPage(item.id)(getRequest())
@@ -99,7 +101,6 @@ class NactCodeAddControllerSpec extends ControllerSpec with OptionValues {
         }
 
         "display page method is invoked and user said no" in {
-
           val item = anItem(withNactCodes(List.empty))
           withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
 
@@ -128,6 +129,7 @@ class NactCodeAddControllerSpec extends ControllerSpec with OptionValues {
       }
 
       "return 400 (BAD_REQUEST)" when {
+
         "user adds invalid code" in {
           withNewCaching(request.cacheModel)
 
@@ -162,7 +164,9 @@ class NactCodeAddControllerSpec extends ControllerSpec with OptionValues {
           verifyAddPageInvoked()
         }
       }
+
       "return 303 (SEE_OTHER)" when {
+
         "user submits valid first code" in {
           val item = anItem()
           withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
@@ -171,7 +175,7 @@ class NactCodeAddControllerSpec extends ControllerSpec with OptionValues {
           val result = controller.submitForm(item.id)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.NactCodeSummaryController.displayPage(item.id)
+          thePageNavigatedTo mustBe routes.NactCodeSummaryController.displayPage(item.id)
 
           theCacheModelUpdated.itemBy(item.id).flatMap(_.nactCodes) mustBe Some(Seq(NactCode("VATR")))
         }
@@ -185,16 +189,15 @@ class NactCodeAddControllerSpec extends ControllerSpec with OptionValues {
           val result = controller.submitForm(item.id)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.NactCodeSummaryController.displayPage(item.id)
+          thePageNavigatedTo mustBe routes.NactCodeSummaryController.displayPage(item.id)
 
           theCacheModelUpdated.itemBy(item.id).flatMap(_.nactCodes) mustBe Some(Seq(nactCode, NactCode("VATR")))
         }
       }
     }
 
-    onJourney(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY) { request =>
+    onJourney(STANDARD, SUPPLEMENTARY) { request =>
       "re-direct to next question" when {
-
         "user submits valid No answer" in {
           val item = anItem()
           withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
@@ -203,15 +206,13 @@ class NactCodeAddControllerSpec extends ControllerSpec with OptionValues {
           val result = controller.submitForm(item.id)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.StatisticalValueController.displayPage(item.id)
+          thePageNavigatedTo mustBe StatisticalValueController.displayPage(item.id)
         }
-
       }
     }
 
-    onJourney(DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL) { request =>
+    onJourney(SIMPLIFIED, OCCASIONAL) { request =>
       "re-direct to next question" when {
-
         "user submits valid No answer" in {
           val item = anItem()
           withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
@@ -220,22 +221,21 @@ class NactCodeAddControllerSpec extends ControllerSpec with OptionValues {
           val result = controller.submitForm(item.id)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.PackageInformationSummaryController.displayPage(item.id)
+          thePageNavigatedTo mustBe routes.PackageInformationSummaryController.displayPage(item.id)
         }
-
       }
     }
 
-    onJourney(DeclarationType.CLEARANCE) { request =>
+    onJourney(CLEARANCE) { request =>
       "return 303 (SEE_OTHER)" that {
-        "display page method is invoked" in {
 
+        "display page method is invoked" in {
           withNewCaching(request.cacheModel)
 
           val result = controller.displayPage(item.id)(getRequest())
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.routes.RootController.displayPage().url)
+          redirectLocation(result) mustBe Some(RootController.displayPage().url)
         }
 
         "user submits valid data" in {
@@ -246,7 +246,7 @@ class NactCodeAddControllerSpec extends ControllerSpec with OptionValues {
           val result = controller.submitForm(item.id)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.routes.RootController.displayPage().url)
+          redirectLocation(result) mustBe Some(RootController.displayPage().url)
         }
       }
     }

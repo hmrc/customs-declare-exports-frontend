@@ -52,7 +52,7 @@ class AdditionalInformationAddControllerSpec extends ControllerSpec with ErrorHa
     super.beforeEach()
     authorizedUser()
     withNewCaching(aDeclaration(withItem(anItem(withItemId(itemId)))))
-    when(mockAddPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockAddPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -62,7 +62,7 @@ class AdditionalInformationAddControllerSpec extends ControllerSpec with ErrorHa
 
   def theResponseForm: Form[AdditionalInformation] = {
     val formCaptor = ArgumentCaptor.forClass(classOf[Form[AdditionalInformation]])
-    verify(mockAddPage).apply(any(), any(), formCaptor.capture())(any(), any())
+    verify(mockAddPage).apply(any(), formCaptor.capture())(any(), any())
     formCaptor.getValue
   }
 
@@ -72,7 +72,7 @@ class AdditionalInformationAddControllerSpec extends ControllerSpec with ErrorHa
   }
 
   private def verifyPageInvoked(numberOfTimes: Int = 1): HtmlFormat.Appendable =
-    verify(mockAddPage, times(numberOfTimes)).apply(any(), any(), any())(any(), any())
+    verify(mockAddPage, times(numberOfTimes)).apply(any(), any())(any(), any())
 
   private val additionalInformation = AdditionalInformation("12345", "Description")
 

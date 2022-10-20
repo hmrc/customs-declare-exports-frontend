@@ -51,7 +51,7 @@ class AdditionalDocumentAddControllerSpec extends ControllerSpec with ErrorHandl
     super.beforeEach()
     authorizedUser()
     withNewCaching(aDeclaration(withItem(anItem(withItemId(itemId)))))
-    when(additionalDocumentAddPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(additionalDocumentAddPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -61,7 +61,7 @@ class AdditionalDocumentAddControllerSpec extends ControllerSpec with ErrorHandl
 
   def theResponseForm: Form[AdditionalDocument] = {
     val formCaptor = ArgumentCaptor.forClass(classOf[Form[AdditionalDocument]])
-    verify(additionalDocumentAddPage).apply(any(), any(), formCaptor.capture())(any(), any())
+    verify(additionalDocumentAddPage).apply(any(), formCaptor.capture())(any(), any())
     formCaptor.getValue
   }
 
@@ -71,7 +71,7 @@ class AdditionalDocumentAddControllerSpec extends ControllerSpec with ErrorHandl
   }
 
   private def verifyPageInvoked(numberOfTimes: Int = 1): HtmlFormat.Appendable =
-    verify(additionalDocumentAddPage, times(numberOfTimes)).apply(any(), any(), any())(any(), any())
+    verify(additionalDocumentAddPage, times(numberOfTimes)).apply(any(), any())(any(), any())
 
   val additionalDocument = AdditionalDocument(Some("1234"), None, None, None, None, None, None)
 

@@ -49,7 +49,7 @@ class AdditionalDeclarationTypeControllerSpec extends ControllerSpec {
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    when(additionalDeclarationTypePage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(additionalDeclarationTypePage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -59,7 +59,7 @@ class AdditionalDeclarationTypeControllerSpec extends ControllerSpec {
 
   def theResponseForm: Form[AdditionalDeclarationType] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[AdditionalDeclarationType]])
-    verify(additionalDeclarationTypePage).apply(any(), captor.capture())(any(), any())
+    verify(additionalDeclarationTypePage).apply(captor.capture())(any(), any())
     captor.getValue
   }
 

@@ -49,7 +49,7 @@ class AdditionalDocumentRemoveControllerSpec extends ControllerSpec with OptionV
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    when(additionalDocumentRemovePage.apply(any(), any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(additionalDocumentRemovePage.apply(any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -65,18 +65,18 @@ class AdditionalDocumentRemoveControllerSpec extends ControllerSpec with OptionV
 
   def theResponseForm: Form[YesNoAnswer] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[YesNoAnswer]])
-    verify(additionalDocumentRemovePage).apply(any(), any(), any(), any(), captor.capture())(any(), any())
+    verify(additionalDocumentRemovePage).apply(any(), any(), any(), captor.capture())(any(), any())
     captor.getValue
   }
 
   def theDocumentProduced: AdditionalDocument = {
     val captor = ArgumentCaptor.forClass(classOf[AdditionalDocument])
-    verify(additionalDocumentRemovePage).apply(any(), any(), any(), captor.capture(), any())(any(), any())
+    verify(additionalDocumentRemovePage).apply(any(), any(), captor.capture(), any())(any(), any())
     captor.getValue
   }
 
   private def verifyRemovePageInvoked(numberOfTimes: Int = 1): HtmlFormat.Appendable =
-    verify(additionalDocumentRemovePage, times(numberOfTimes)).apply(any(), any(), any(), any(), any())(any(), any())
+    verify(additionalDocumentRemovePage, times(numberOfTimes)).apply(any(), any(), any(), any())(any(), any())
 
   val additionalDocument = AdditionalDocument(Some("1234"), None, None, None, None, None, None)
   val documentId = ListItem.createId(0, additionalDocument)
@@ -86,9 +86,9 @@ class AdditionalDocumentRemoveControllerSpec extends ControllerSpec with OptionV
   "AdditionalDocumentRemoveController" must {
 
     onEveryDeclarationJourney() { request =>
+
       "return 200 (OK)" that {
         "display page method is invoked" in {
-
           withNewCaching(aDeclarationAfter(request.cacheModel, withItem(itemWithDocument)))
 
           val result = controller.displayPage(itemId, documentId)(getRequest())
@@ -117,7 +117,6 @@ class AdditionalDocumentRemoveControllerSpec extends ControllerSpec with OptionV
       "return 303 (SEE_OTHER)" when {
 
         "requested document id invalid" in {
-
           withNewCaching(aDeclarationAfter(request.cacheModel, withItem(itemWithDocument)))
 
           val result = controller.displayPage(itemId, "doc-id")(getRequest())
@@ -151,6 +150,5 @@ class AdditionalDocumentRemoveControllerSpec extends ControllerSpec with OptionV
         }
       }
     }
-
   }
 }

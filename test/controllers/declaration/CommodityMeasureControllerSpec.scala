@@ -48,7 +48,7 @@ class CommodityMeasureControllerSpec extends ControllerSpec {
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    when(commodityMeasurePage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(commodityMeasurePage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -58,7 +58,7 @@ class CommodityMeasureControllerSpec extends ControllerSpec {
 
   def theResponseForm: Form[CommodityMeasure] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[CommodityMeasure]])
-    verify(commodityMeasurePage).apply(any(), any(), captor.capture())(any(), any())
+    verify(commodityMeasurePage).apply(any(), captor.capture())(any(), any())
     captor.getValue
   }
 

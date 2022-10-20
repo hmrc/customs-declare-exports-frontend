@@ -76,34 +76,34 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
 
   private def formPassedToItemsSummaryView: Form[YesNoAnswer] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[YesNoAnswer]])
-    verify(itemsSummaryPage).apply(any(), captor.capture(), any(), any())(any(), any())
+    verify(itemsSummaryPage).apply(captor.capture(), any(), any())(any(), any())
     captor.getValue
   }
 
   private def itemsPassedToItemsSummaryView: List[ExportItem] = {
     val captor = ArgumentCaptor.forClass(classOf[List[ExportItem]])
-    verify(itemsSummaryPage).apply(any(), any(), captor.capture(), any())(any(), any())
+    verify(itemsSummaryPage).apply(any(), captor.capture(), any())(any(), any())
     captor.getValue
   }
 
   private def itemsErrorsPassedToItemsSummaryView: Seq[FormError] = {
     val captor = ArgumentCaptor.forClass(classOf[Seq[FormError]])
-    verify(itemsSummaryPage).apply(any(), any(), any(), captor.capture())(any(), any())
+    verify(itemsSummaryPage).apply(any(), any(), captor.capture())(any(), any())
     captor.getValue
   }
 
   private def itemPassedToRemoveItemView: ExportItem = {
     val captor = ArgumentCaptor.forClass(classOf[ExportItem])
-    verify(removeItemPage).apply(any(), any(), captor.capture())(any(), any())
+    verify(removeItemPage).apply(any(), captor.capture())(any(), any())
     captor.getValue
   }
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    when(addItemPage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
-    when(itemsSummaryPage.apply(any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
-    when(removeItemPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(addItemPage.apply()(any(), any())).thenReturn(HtmlFormat.empty)
+    when(itemsSummaryPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(removeItemPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
     when(mockExportIdGeneratorService.generateItemId()).thenReturn(itemId)
   }
 
@@ -115,8 +115,8 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
   "displayAddItemPage" should {
 
     onEveryDeclarationJourney() { request =>
-      "call cache" in {
 
+      "call cache" in {
         withNewCaching(aDeclaration(withType(request.declarationType)))
 
         val result = controller.displayAddItemPage()(getRequest())
@@ -126,18 +126,16 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
 
       "return 200 (OK)" when {
         "there is no item in cache" in {
-
           withNewCaching(aDeclaration(withType(request.declarationType)))
 
           val result = controller.displayAddItemPage()(getRequest())
           status(result) mustBe OK
-          verify(addItemPage).apply(any())(any(), any())
+          verify(addItemPage).apply()(any(), any())
         }
       }
 
       "return 303 (SEE_OTHER) and redirect to displayItemsSummaryPage" when {
         "there are items in cache" in {
-
           val cachedData = aDeclaration(withType(request.declarationType), withItem(exportItem))
           withNewCaching(cachedData)
 
@@ -153,18 +151,17 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
   "addFirstItem" should {
 
     onEveryDeclarationJourney() { request =>
-      "call Navigator" in {
 
+      "call Navigator" in {
         withNewCaching(aDeclaration(withType(request.declarationType)))
 
         val result = controller.addFirstItem()(postRequest(Json.obj()))
         status(result) mustBe SEE_OTHER
 
-        verify(navigator).continueTo(any[Mode], any())(any())
+        verify(navigator).continueTo(any())(any())
       }
 
       "return 303 (SEE_OTHER) and redirect to Procedure Codes page" in {
-
         withNewCaching(aDeclaration(withType(request.declarationType)))
 
         val result = controller.addFirstItem()(postRequest(Json.obj()))
@@ -173,15 +170,14 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
 
         theCacheModelUpdated.items.size mustBe 1
       }
-
     }
   }
 
   "displayItemsSummaryPage" should {
 
     onEveryDeclarationJourney() { request =>
-      "call cache" in {
 
+      "call cache" in {
         withNewCaching(aDeclaration(withType(request.declarationType)))
 
         val result = controller.displayItemsSummaryPage()(getRequest())
@@ -192,21 +188,19 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
 
       "return 200 (OK)" when {
         "there are items in cache" in {
-
           val cachedData = aDeclaration(withType(request.declarationType), withItem(exportItem))
           withNewCaching(cachedData)
 
           val result = controller.displayItemsSummaryPage()(getRequest())
           status(result) mustBe OK
 
-          verify(itemsSummaryPage).apply(any(), any(), any(), any())(any(), any())
+          verify(itemsSummaryPage).apply(any(), any(), any())(any(), any())
           itemsPassedToItemsSummaryView mustBe Seq(exportItem)
         }
       }
 
       "return 303 (SEE_OTHER) and redirect to displayAddItemPage" when {
         "there is no item in cache" in {
-
           withNewCaching(aDeclaration(withType(request.declarationType)))
 
           val result = controller.displayItemsSummaryPage()(getRequest())
@@ -218,7 +212,6 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
 
       "remove un-used item" when {
         "there is unused item in cache" in {
-
           val emptyItem = anItem()
           val cachedData = aDeclaration(withType(request.declarationType), withItem(exportItem), withItem(emptyItem))
           withNewCaching(cachedData)
@@ -226,7 +219,7 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
           val result = controller.displayItemsSummaryPage()(getRequest())
 
           status(result) mustBe OK
-          verify(itemsSummaryPage).apply(any(), any(), any(), any())(any(), any())
+          verify(itemsSummaryPage).apply(any(), any(), any())(any(), any())
           itemsPassedToItemsSummaryView mustBe Seq(exportItem)
         }
       }
@@ -239,7 +232,6 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
       "user wants to add another item" should {
 
         "call Navigator" in {
-
           val cachedData = aDeclaration(withType(request.declarationType), withItem(exportItem))
           withNewCaching(cachedData)
           val answerForm = Json.obj("yesNo" -> YesNoAnswers.yes)
@@ -247,11 +239,10 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
           val result = controller.submit()(postRequest(answerForm))
           status(result) mustBe SEE_OTHER
 
-          verify(navigator).continueTo(any[Mode], any())(any())
+          verify(navigator).continueTo(any())(any())
         }
 
         "return 303 (SEE_OTHER) and redirect to Procedure Codes page" in {
-
           val cachedData = aDeclaration(withType(request.declarationType), withItem(exportItem))
           withNewCaching(cachedData)
           val answerForm = Json.obj("yesNo" -> YesNoAnswers.yes)
@@ -261,14 +252,12 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
 
           thePageNavigatedTo mustBe routes.ProcedureCodesController.displayPage(itemId)
 
-          verify(navigator).continueTo(any[Mode], any())(any())
+          verify(navigator).continueTo(any())(any())
         }
       }
 
       "user does not want to add another item" should {
-
         "return 303 (SEE_OTHER) and redirect to next page" in {
-
           val cachedData = aDeclaration(withType(request.declarationType), withItem(exportItem))
           withNewCaching(cachedData)
           val answerForm = Json.obj("yesNo" -> YesNoAnswers.no)
@@ -282,14 +271,13 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
             case _ => thePageNavigatedTo mustBe routes.TransportLeavingTheBorderController.displayPage()
           }
 
-          verify(navigator).continueTo(any[Mode], any())(any())
+          verify(navigator).continueTo(any())(any())
         }
       }
 
       "return 400 (BAD_REQUEST)" when {
 
         "there is no answer from user" in {
-
           val cachedData = aDeclaration(withType(request.declarationType), withItem(exportItem))
           withNewCaching(cachedData)
 
@@ -300,7 +288,6 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
         }
 
         "there is incomplete item in the cache" in {
-
           val cachedData = aDeclaration(withType(request.declarationType), withItem(anItem(withItemId("id"))))
           withNewCaching(cachedData)
           val answerForm = Json.obj("yesNo" -> YesNoAnswers.no)
@@ -315,9 +302,7 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
 
     onJourney(STANDARD, SUPPLEMENTARY, CLEARANCE) { request =>
       "user does not want to add another item" should {
-
         "return 303 (SEE_OTHER) and redirect to Transport Leaving the Border page" in {
-
           val cachedData = aDeclaration(withType(request.declarationType), withItem(exportItem))
           withNewCaching(cachedData)
           val answerForm = Json.obj("yesNo" -> YesNoAnswers.no)
@@ -331,6 +316,7 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
     }
 
     onJourney(SIMPLIFIED, OCCASIONAL) { request =>
+
       "return 303 (SEE_OTHER)" in {
         val cachedData = aDeclaration(withType(request.declarationType), withItem(exportItem))
         withNewCaching(cachedData)
@@ -372,23 +358,21 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
   }
 
   "displayRemoveItemConfirmationPage" should {
-
     onEveryDeclarationJourney() { request =>
-      "return 200 (OK)" in {
 
+      "return 200 (OK)" in {
         val cachedData = aDeclaration(withType(request.declarationType), withItem(exportItem))
         withNewCaching(cachedData)
 
         val result = controller.displayRemoveItemConfirmationPage(itemId)(getRequest())
 
         status(result) mustBe OK
-        verify(removeItemPage).apply(any(), any(), any())(any(), any())
+        verify(removeItemPage).apply(any(), any())(any(), any())
         itemPassedToRemoveItemView mustBe exportItem
       }
 
       "return 303 (SEE_OTHER) and redirect to Items Summary page" when {
         "provided with itemId not matching any Item in cache" in {
-
           val cachedData = aDeclaration(withType(request.declarationType), withItem(exportItem))
           withNewCaching(cachedData)
 
@@ -402,7 +386,6 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
   }
 
   "removeItem" when {
-
     val cachedItem = ExportItem(itemId)
     val secondItem = ExportItem("123654")
 
@@ -414,13 +397,11 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
 
     onEveryDeclarationJourney() { request =>
       "user wants to remove an Item" when {
-
         val removeItemForm = Json.obj("yesNo" -> YesNoAnswers.yes)
 
         "there is no Item in declaration with requested Id" should {
 
           "not call ExportsCacheService update method" in {
-
             withNewCaching(aDeclaration(withType(request.declarationType), withItem(cachedItem), withItem(secondItem)))
 
             val result = controller.removeItem("someId123")(postRequest(removeItemForm))
@@ -430,7 +411,6 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
           }
 
           "return 303 (SEE_OTHER) and redirect to Items Summary page" in {
-
             withNewCaching(aDeclaration(withType(request.declarationType), withItem(cachedItem), withItem(secondItem)))
 
             val result = controller.removeItem("someId123")(postRequest(removeItemForm))
@@ -443,7 +423,6 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
         "there is Item in declaration with requested Id" should {
 
           "remove the Item from cache" in {
-
             withNewCaching(aDeclaration(withType(request.declarationType), withItem(cachedItem), withItem(secondItem)))
 
             val result = controller.removeItem(itemId)(postRequest(removeItemForm))
@@ -455,7 +434,6 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
           }
 
           "return 303 (SEE_OTHER) and redirect to Items Summary page" in {
-
             withNewCaching(aDeclaration(withType(request.declarationType), withItem(cachedItem), withItem(secondItem)))
 
             val result = controller.removeItem(itemId)(postRequest(removeItemForm))
@@ -471,11 +449,9 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
       }
 
       "user does not want to remove an Item" should {
-
         val removeItemForm = Json.obj("yesNo" -> YesNoAnswers.no)
 
         "redirect to Items Summary page" in {
-
           withNewCaching(aDeclaration(withType(request.declarationType), withItem(cachedItem), withItem(secondItem)))
 
           val result = controller.removeItem(itemId)(postRequest(removeItemForm))
@@ -490,18 +466,16 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
       "provided with empty form" should {
 
         "return 400 (BAD_REQUEST)" in {
-
           withNewCaching(aDeclaration(withType(request.declarationType), withItem(cachedItem), withItem(secondItem)))
           val incorrectRemoveItemForm = Json.obj("yesNo" -> "")
 
           val result = controller.removeItem(itemId)(postRequest(incorrectRemoveItemForm))
 
           status(result) mustBe BAD_REQUEST
-          verify(removeItemPage).apply(any(), any(), any())(any(), any())
+          verify(removeItemPage).apply(any(), any())(any(), any())
         }
 
         "throw IllegalStateException if the Item has already been removed" in {
-
           withNewCaching(aDeclaration(withType(request.declarationType)))
           val incorrectRemoveItemForm = Json.obj("yesNo" -> "")
 
@@ -514,7 +488,6 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
 
     onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { request =>
       "warehouse identification answer is updated" when {
-
         val removeItemForm = Json.obj("yesNo" -> YesNoAnswers.yes)
 
         val warehouseItem = anItem(withItemId("warehouseItem"), withProcedureCodes(Some("0007"), Seq("000")))
@@ -526,9 +499,7 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
         )
 
         "user removes item contain 'warehouse procedure code'" should {
-
           "remove the Item from cache" in {
-
             withNewCaching(declaration)
 
             val result = controller.removeItem("warehouseItem")(postRequest(removeItemForm))
@@ -539,15 +510,12 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
 
             declarationPassedToUpdateCache.locations.warehouseIdentification mustBe None
           }
-
         }
       }
-
     }
 
     onJourney(CLEARANCE) { request =>
       "warehouse identification answer is retained" when {
-
         val removeItemForm = Json.obj("yesNo" -> YesNoAnswers.yes)
 
         val warehouseItem = anItem(withItemId("warehouseItem"), withProcedureCodes(Some("0007"), Seq("000")))
@@ -559,9 +527,7 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
         )
 
         "user removes item contain 'warehouse procedure code'" should {
-
           "remove the Item from cache" in {
-
             withNewCaching(declaration)
 
             val result = controller.removeItem("warehouseItem")(postRequest(removeItemForm))
@@ -572,10 +538,8 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
 
             declarationPassedToUpdateCache.locations.warehouseIdentification mustBe Some(WarehouseIdentification(Some("id")))
           }
-
         }
       }
-
     }
   }
 }

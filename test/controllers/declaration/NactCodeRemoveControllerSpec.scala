@@ -17,9 +17,10 @@
 package controllers.declaration
 
 import base.ControllerSpec
+import controllers.routes.RootController
 import forms.common.YesNoAnswer
 import forms.declaration.NactCode
-import models.{DeclarationType}
+import models.DeclarationType._
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -47,7 +48,7 @@ class NactCodeRemoveControllerSpec extends ControllerSpec with OptionValues {
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    when(mockRemovePage.apply(any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockRemovePage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -57,7 +58,7 @@ class NactCodeRemoveControllerSpec extends ControllerSpec with OptionValues {
 
   private def theResponseForm: Form[YesNoAnswer] = {
     val formCaptor = ArgumentCaptor.forClass(classOf[Form[YesNoAnswer]])
-    verify(mockRemovePage).apply(any(), any(), any(), formCaptor.capture())(any(), any())
+    verify(mockRemovePage).apply(any(), any(), formCaptor.capture())(any(), any())
     formCaptor.getValue
   }
 
@@ -69,21 +70,21 @@ class NactCodeRemoveControllerSpec extends ControllerSpec with OptionValues {
 
   def theNactCode: String = {
     val captor = ArgumentCaptor.forClass(classOf[String])
-    verify(mockRemovePage).apply(any(), any(), captor.capture(), any())(any(), any())
+    verify(mockRemovePage).apply(any(), captor.capture(), any())(any(), any())
     captor.getValue
   }
 
-  private def verifyRemovePageInvoked(numberOfTimes: Int = 1) =
-    verify(mockRemovePage, times(numberOfTimes)).apply(any(), any(), any(), any())(any(), any())
+  private def verifyRemovePageInvoked(numberOfTimes: Int = 1): HtmlFormat.Appendable =
+    verify(mockRemovePage, times(numberOfTimes)).apply(any(), any(), any())(any(), any())
 
   val item = anItem()
 
   "Nact Code Remove Controller" must {
 
-    onJourney(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL) { request =>
+    onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { request =>
+
       "return 200 (OK)" that {
         "display page method is invoked and cache is empty" in {
-
           withNewCaching(request.cacheModel)
 
           val result = controller.displayPage(item.id, "VATX")(getRequest())
@@ -93,7 +94,6 @@ class NactCodeRemoveControllerSpec extends ControllerSpec with OptionValues {
 
           theNactCode mustBe "VATX"
         }
-
       }
 
       "return 400 (BAD_REQUEST)" when {
@@ -106,9 +106,10 @@ class NactCodeRemoveControllerSpec extends ControllerSpec with OptionValues {
           status(result) mustBe BAD_REQUEST
           verifyRemovePageInvoked()
         }
-
       }
+
       "return 303 (SEE_OTHER)" when {
+
         "user submits 'Yes' answer" in {
           val nactCode = NactCode("VATX")
           val item = anItem(withNactCodes(nactCode))
@@ -118,7 +119,7 @@ class NactCodeRemoveControllerSpec extends ControllerSpec with OptionValues {
           val result = controller.submitForm(item.id, "VATX")(postRequestAsFormUrlEncoded(requestBody: _*))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.NactCodeSummaryController.displayPage(item.id)
+          thePageNavigatedTo mustBe routes.NactCodeSummaryController.displayPage(item.id)
 
           theCacheModelUpdated.itemBy(item.id).flatMap(_.nactCodes) mustBe Some(Seq.empty)
         }
@@ -132,23 +133,23 @@ class NactCodeRemoveControllerSpec extends ControllerSpec with OptionValues {
           val result = controller.submitForm(item.id, "VATX")(postRequestAsFormUrlEncoded(requestBody: _*))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.NactCodeSummaryController.displayPage(item.id)
+          thePageNavigatedTo mustBe routes.NactCodeSummaryController.displayPage(item.id)
 
           verifyTheCacheIsUnchanged()
         }
       }
     }
 
-    onJourney(DeclarationType.CLEARANCE) { request =>
+    onJourney(CLEARANCE) { request =>
       "return 303 (SEE_OTHER)" that {
-        "display page method is invoked" in {
 
+        "display page method is invoked" in {
           withNewCaching(request.cacheModel)
 
           val result = controller.displayPage(item.id, "VATX")(getRequest())
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.routes.RootController.displayPage().url)
+          redirectLocation(result) mustBe Some(RootController.displayPage().url)
         }
 
         "user submits valid data" in {
@@ -159,7 +160,7 @@ class NactCodeRemoveControllerSpec extends ControllerSpec with OptionValues {
           val result = controller.submitForm(item.id, "VATX")(postRequestAsFormUrlEncoded(requestBody: _*))
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.routes.RootController.displayPage().url)
+          redirectLocation(result) mustBe Some(RootController.displayPage().url)
         }
       }
     }

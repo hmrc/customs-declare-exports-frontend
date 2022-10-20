@@ -52,7 +52,7 @@ class AuthorisationProcedureCodeChoiceControllerSpec extends ControllerSpec {
     super.beforeEach()
 
     authorizedUser()
-    when(authorisationProcedureCodeChoice.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(authorisationProcedureCodeChoice.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -68,12 +68,12 @@ class AuthorisationProcedureCodeChoiceControllerSpec extends ControllerSpec {
 
   def theResponseForm: Form[AuthorisationProcedureCodeChoice] = {
     val captor: ArgumentCaptor[Form[AuthorisationProcedureCodeChoice]] = ArgumentCaptor.forClass(classOf[Form[AuthorisationProcedureCodeChoice]])
-    verify(authorisationProcedureCodeChoice).apply(captor.capture(), any())(any(), any())
+    verify(authorisationProcedureCodeChoice).apply(captor.capture())(any(), any())
     captor.getValue
   }
 
   private def verifyPageInvoked(numberOfTimes: Int = 1): HtmlFormat.Appendable =
-    verify(authorisationProcedureCodeChoice, times(numberOfTimes)).apply(any(), any())(any(), any())
+    verify(authorisationProcedureCodeChoice, times(numberOfTimes)).apply(any())(any(), any())
 
   "AuthorisationProcedureCodeChoiceController.displayPage" should {
 

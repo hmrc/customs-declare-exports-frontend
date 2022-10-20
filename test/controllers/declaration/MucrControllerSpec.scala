@@ -44,7 +44,7 @@ class MucrControllerSpec extends ControllerSpec {
     super.beforeEach()
     authorizedUser()
     withNewCaching(aDeclaration(withType(DeclarationType.STANDARD)))
-    when(mucrPage.apply(any[Mode], any[Form[Mucr]])(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mucrPage.apply(any[Form[Mucr]])(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -54,7 +54,7 @@ class MucrControllerSpec extends ControllerSpec {
 
   def theResponseForm: Form[Mucr] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[Mucr]])
-    verify(mucrPage).apply(any(), captor.capture())(any(), any())
+    verify(mucrPage).apply(captor.capture())(any(), any())
     captor.getValue
   }
 
@@ -130,7 +130,7 @@ class MucrControllerSpec extends ControllerSpec {
   }
 
   private def verifyPageInvoked: HtmlFormat.Appendable =
-    verify(mucrPage).apply(any[Mode], any[Form[Mucr]])(any(), any())
+    verify(mucrPage).apply(any[Form[Mucr]])(any(), any())
 
   private def verifyRedirect(call: Call)(implicit request: JourneyRequest[_]): Assertion = {
     withNewCaching(request.cacheModel)

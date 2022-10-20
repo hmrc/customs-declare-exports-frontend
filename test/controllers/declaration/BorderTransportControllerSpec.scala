@@ -47,7 +47,7 @@ class BorderTransportControllerSpec extends ControllerSpec {
 
   def theResponseForm: Form[BorderTransport] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[BorderTransport]])
-    verify(borderTransportPage).apply(any(), captor.capture())(any(), any())
+    verify(borderTransportPage).apply(captor.capture())(any(), any())
     captor.getValue
   }
 
@@ -60,7 +60,7 @@ class BorderTransportControllerSpec extends ControllerSpec {
   override def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    when(borderTransportPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(borderTransportPage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {

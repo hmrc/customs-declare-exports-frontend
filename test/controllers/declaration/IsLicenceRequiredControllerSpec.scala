@@ -17,13 +17,14 @@
 package controllers.declaration
 
 import base.ControllerSpec
+import controllers.declaration.routes.{AdditionalDocumentAddController, AdditionalDocumentsController, AdditionalDocumentsRequiredController}
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.Yes
 import forms.declaration.CommodityDetails
 import forms.declaration.additionaldocuments.AdditionalDocument
 import forms.declaration.declarationHolder.AuthorizationTypeCodes
 import models.declaration.AdditionalDocuments
-import models.{DeclarationType}
+import models.DeclarationType
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
@@ -60,14 +61,14 @@ class IsLicenceRequiredControllerSpec extends ControllerSpec with OptionValues {
 
   def theResponseForm: Form[YesNoAnswer] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[YesNoAnswer]])
-    verify(mockPage).apply(any[Mode], any[String], captor.capture())(any(), any())
+    verify(mockPage).apply(any[String], captor.capture())(any(), any())
     captor.getValue
   }
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    when(mockPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit =
@@ -75,13 +76,13 @@ class IsLicenceRequiredControllerSpec extends ControllerSpec with OptionValues {
   super.afterEach()
 
   private def verifyPageInvoked(numberOfTimes: Int = 1): HtmlFormat.Appendable =
-    verify(mockPage, times(numberOfTimes)).apply(any(), any(), any())(any(), any())
+    verify(mockPage, times(numberOfTimes)).apply(any(), any())(any(), any())
 
   "IsLicenceRequired Controller" should {
 
     onJourney(DeclarationType.STANDARD, DeclarationType.OCCASIONAL, DeclarationType.SIMPLIFIED, DeclarationType.SUPPLEMENTARY) { _ =>
-      "return 200 (OK)" that {
 
+      "return 200 (OK)" that {
         "display page method is invoked" in {
           withNewCaching(declaration)
 
@@ -93,7 +94,6 @@ class IsLicenceRequiredControllerSpec extends ControllerSpec with OptionValues {
       }
 
       "return 400 (BAD_REQUEST)" when {
-
         "user submits invalid answer" in {
           withNewCaching(declaration)
 
@@ -103,13 +103,11 @@ class IsLicenceRequiredControllerSpec extends ControllerSpec with OptionValues {
           status(result) mustBe BAD_REQUEST
           verifyPageInvoked()
         }
-
       }
 
       "return 303 (SEE_OTHER)" when {
 
         "documents have been added" when {
-
           val declaration = aDeclaration(
             withItem(
               anItem(
@@ -120,40 +118,33 @@ class IsLicenceRequiredControllerSpec extends ControllerSpec with OptionValues {
           )
 
           "user submits valid Yes answer" in {
-
             withNewCaching(declaration)
 
             val result = controller.submitForm(itemId)(postRequestAsFormUrlEncoded(Seq("yesNo" -> "Yes"): _*))
             await(result) mustBe aRedirectToTheNextPage
-            thePageNavigatedTo mustBe routes.AdditionalDocumentsController.displayPage(itemId)
-
+            thePageNavigatedTo mustBe AdditionalDocumentsController.displayPage(itemId)
           }
 
           "user submits valid No answer" in {
-
             withNewCaching(declaration)
 
             val result = controller.submitForm(itemId)(postRequestAsFormUrlEncoded(Seq("yesNo" -> "No"): _*))
             await(result) mustBe aRedirectToTheNextPage
-            thePageNavigatedTo mustBe routes.AdditionalDocumentsController.displayPage(itemId)
-
+            thePageNavigatedTo mustBe AdditionalDocumentsController.displayPage(itemId)
           }
         }
 
         "documents have not been added" when {
           "user submits valid Yes answer" in {
-
             withNewCaching(declaration)
 
             val result = controller.submitForm(itemId)(postRequestAsFormUrlEncoded(Seq("yesNo" -> "Yes"): _*))
             await(result) mustBe aRedirectToTheNextPage
-            thePageNavigatedTo mustBe routes.AdditionalDocumentAddController.displayPage(itemId)
-
+            thePageNavigatedTo mustBe AdditionalDocumentAddController.displayPage(itemId)
           }
 
           "user submits valid No answer" when {
             "authorisation from List" in {
-
               val declaration = aDeclaration(
                 withItem(anItem(withItemId(itemId), withCommodityDetails(commodityDetails))),
                 withDeclarationHolders(authorisationTypeCode = Some(AuthorizationTypeCodes.codesRequiringDocumentation.head))
@@ -164,23 +155,18 @@ class IsLicenceRequiredControllerSpec extends ControllerSpec with OptionValues {
               val result = controller.submitForm(itemId)(postRequestAsFormUrlEncoded(Seq("yesNo" -> "No"): _*))
 
               await(result) mustBe aRedirectToTheNextPage
-              thePageNavigatedTo mustBe routes.AdditionalDocumentAddController.displayPage(itemId)
-
+              thePageNavigatedTo mustBe AdditionalDocumentAddController.displayPage(itemId)
             }
 
             "NO authorisation from List" in {
-
               withNewCaching(declaration)
 
               val result = controller.submitForm(itemId)(postRequestAsFormUrlEncoded(Seq("yesNo" -> "No"): _*))
               await(result) mustBe aRedirectToTheNextPage
-              thePageNavigatedTo mustBe routes.AdditionalDocumentsRequiredController.displayPage(itemId)
-
+              thePageNavigatedTo mustBe AdditionalDocumentsRequiredController.displayPage(itemId)
             }
           }
-
         }
-
       }
     }
   }

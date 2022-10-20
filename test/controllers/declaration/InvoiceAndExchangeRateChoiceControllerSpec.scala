@@ -51,7 +51,7 @@ class InvoiceAndExchangeRateChoiceControllerSpec extends ControllerSpec {
     super.beforeEach()
     authorizedUser()
     withNewCaching(aDeclaration(withType(DeclarationType.STANDARD)))
-    when(invoiceAndExchangeRateChoicePage.apply(any[Mode], any[Form[YesNoAnswer]])(any(), any())).thenReturn(HtmlFormat.empty)
+    when(invoiceAndExchangeRateChoicePage.apply(any[Form[YesNoAnswer]])(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -145,7 +145,7 @@ class InvoiceAndExchangeRateChoiceControllerSpec extends ControllerSpec {
   }
 
   private def verifyPageInvoked: HtmlFormat.Appendable =
-    verify(invoiceAndExchangeRateChoicePage).apply(any[Mode], any[Form[YesNoAnswer]])(any(), any())
+    verify(invoiceAndExchangeRateChoicePage).apply(any[Form[YesNoAnswer]])(any(), any())
 
   private def verifyRedirect(yesOrNo: String, call: Call)(implicit request: JourneyRequest[_]): Assertion = {
     withNewCaching(request.cacheModel)

@@ -47,7 +47,7 @@ class AdditionalFiscalReferencesRemoveControllerSpec extends ControllerSpec with
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    when(mockRemovePage.apply(any(), any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockRemovePage.apply(any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -63,18 +63,18 @@ class AdditionalFiscalReferencesRemoveControllerSpec extends ControllerSpec with
 
   def theResponseForm: Form[YesNoAnswer] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[YesNoAnswer]])
-    verify(mockRemovePage).apply(any(), any(), any(), any(), captor.capture())(any(), any())
+    verify(mockRemovePage).apply(any(), any(), any(), captor.capture())(any(), any())
     captor.getValue
   }
 
   def theAdditionalReference: AdditionalFiscalReference = {
     val captor = ArgumentCaptor.forClass(classOf[AdditionalFiscalReference])
-    verify(mockRemovePage).apply(any(), any(), any(), captor.capture(), any())(any(), any())
+    verify(mockRemovePage).apply(any(), any(), captor.capture(), any())(any(), any())
     captor.getValue
   }
 
   private def verifyRemovePageInvoked(numberOfTimes: Int = 1) =
-    verify(mockRemovePage, times(numberOfTimes)).apply(any(), any(), any(), any(), any())(any(), any())
+    verify(mockRemovePage, times(numberOfTimes)).apply(any(), any(), any(), any())(any(), any())
 
   val additionalReference = AdditionalFiscalReference("FR", "12345")
   val additionalReferenceOther = AdditionalFiscalReference("PL", "54321")
@@ -118,7 +118,6 @@ class AdditionalFiscalReferencesRemoveControllerSpec extends ControllerSpec with
       "return 303 (SEE_OTHER)" when {
 
         "requested reference id invalid" in {
-
           withNewCaching(request.cacheModel)
 
           val result = controller.displayPage(item.id, "ref-id")(getRequest())
@@ -166,6 +165,5 @@ class AdditionalFiscalReferencesRemoveControllerSpec extends ControllerSpec with
         }
       }
     }
-
   }
 }

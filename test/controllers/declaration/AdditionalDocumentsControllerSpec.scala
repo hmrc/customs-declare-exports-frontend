@@ -53,7 +53,7 @@ class AdditionalDocumentsControllerSpec extends ControllerSpec with ErrorHandler
     super.beforeEach()
     authorizedUser()
     withNewCaching(aDeclaration())
-    when(additionalDocumentsPage.apply(any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(additionalDocumentsPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -63,7 +63,7 @@ class AdditionalDocumentsControllerSpec extends ControllerSpec with ErrorHandler
 
   def theResponseForm: Form[YesNoAnswer] = {
     val formCaptor = ArgumentCaptor.forClass(classOf[Form[YesNoAnswer]])
-    verify(additionalDocumentsPage).apply(any(), any(), formCaptor.capture(), any())(any(), any())
+    verify(additionalDocumentsPage).apply(any(), formCaptor.capture(), any())(any(), any())
     formCaptor.getValue
   }
 
@@ -75,16 +75,14 @@ class AdditionalDocumentsControllerSpec extends ControllerSpec with ErrorHandler
   }
 
   private def verifyPageInvoked(numberOfTimes: Int = 1): HtmlFormat.Appendable =
-    verify(additionalDocumentsPage, times(numberOfTimes)).apply(any(), any(), any(), any())(any(), any())
+    verify(additionalDocumentsPage, times(numberOfTimes)).apply(any(), any(), any())(any(), any())
 
   val additionalDocument = AdditionalDocument(Some("1234"), None, None, None, None, None, None)
 
   "AdditionalDocumentsController" should {
 
     "return 200 (OK)" when {
-
       "display page method is invoked with data in cache" in {
-
         val item = anItem(withAdditionalDocuments(Yes, additionalDocument))
         withNewCaching(aDeclaration(withItems(item)))
 
@@ -96,9 +94,7 @@ class AdditionalDocumentsControllerSpec extends ControllerSpec with ErrorHandler
     }
 
     "return 400 (BAD_REQUEST)" when {
-
       "user provide wrong action" in {
-
         val requestBody = Json.obj("yesNo" -> "invalid")
         val result = controller.submitForm(itemId)(postRequest(requestBody))
 
@@ -132,10 +128,10 @@ class AdditionalDocumentsControllerSpec extends ControllerSpec with ErrorHandler
           val declarationHolder = DeclarationHolder(Some(EXRR), Some(Eori("GB123456789012")), Some(EoriSource.OtherEori))
           withNewCaching(aDeclaration(withDeclarationHolders(declarationHolder)))
 
-          val result = controller.displayPage(Mode.ErrorFix, itemId)(getRequest())
+          val result = controller.displayPage(itemId)(getRequest())
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe routes.AdditionalDocumentAddController.displayPage(Mode.ErrorFix, itemId)
+          thePageNavigatedTo mustBe routes.AdditionalDocumentAddController.displayPage(itemId)
         }
       }
 
@@ -155,10 +151,10 @@ class AdditionalDocumentsControllerSpec extends ControllerSpec with ErrorHandler
         withNewCaching(aDeclaration(withItems(item)))
 
         val requestBody = Json.obj("yesNo" -> "Yes")
-        val result = controller.submitForm(Mode.ErrorFix, itemId)(postRequest(requestBody))
+        val result = controller.submitForm(itemId)(postRequest(requestBody))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe routes.AdditionalDocumentAddController.displayPage(Mode.ErrorFix, itemId)
+        thePageNavigatedTo mustBe routes.AdditionalDocumentAddController.displayPage(itemId)
       }
 
       "user submits valid No answer" in {

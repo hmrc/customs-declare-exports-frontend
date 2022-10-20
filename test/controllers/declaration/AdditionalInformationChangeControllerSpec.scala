@@ -55,7 +55,7 @@ class AdditionalInformationChangeControllerSpec extends ControllerSpec with Erro
     super.beforeEach()
     authorizedUser()
     withNewCaching(aDeclaration(withItem(anItem(withItemId(itemId), withAdditionalInformation(additionalInformation1, additionalInformation2)))))
-    when(mockChangePage.apply(any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockChangePage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -65,7 +65,7 @@ class AdditionalInformationChangeControllerSpec extends ControllerSpec with Erro
 
   def theResponseForm: Form[AdditionalInformation] = {
     val formCaptor = ArgumentCaptor.forClass(classOf[Form[AdditionalInformation]])
-    verify(mockChangePage).apply(any(), any(), any(), formCaptor.capture())(any(), any())
+    verify(mockChangePage).apply(any(), any(), formCaptor.capture())(any(), any())
     formCaptor.getValue
   }
 
@@ -75,7 +75,7 @@ class AdditionalInformationChangeControllerSpec extends ControllerSpec with Erro
   }
 
   private def verifyPageInvoked(numberOfTimes: Int = 1): HtmlFormat.Appendable =
-    verify(mockChangePage, times(numberOfTimes)).apply(any(), any(), any(), any())(any(), any())
+    verify(mockChangePage, times(numberOfTimes)).apply(any(), any(), any())(any(), any())
 
   "AdditionalInformation controller" should {
 
@@ -121,7 +121,6 @@ class AdditionalInformationChangeControllerSpec extends ControllerSpec with Erro
         status(result) mustBe BAD_REQUEST
         verifyPageInvoked()
       }
-
     }
 
     "return 303 (SEE_OTHER)" when {
@@ -149,7 +148,6 @@ class AdditionalInformationChangeControllerSpec extends ControllerSpec with Erro
         val savedDocuments = theCacheModelUpdated.itemBy(itemId).flatMap(_.additionalInformation)
         savedDocuments mustBe Some(AdditionalInformationData(Yes, Seq(additionalInformation1, additionalInformation2)))
       }
-
     }
   }
 }

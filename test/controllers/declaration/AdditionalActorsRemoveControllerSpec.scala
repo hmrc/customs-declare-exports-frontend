@@ -48,7 +48,7 @@ class AdditionalActorsRemoveControllerSpec extends ControllerSpec with OptionVal
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    when(mockPage.apply(any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -64,18 +64,18 @@ class AdditionalActorsRemoveControllerSpec extends ControllerSpec with OptionVal
 
   def theResponseForm: Form[YesNoAnswer] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[YesNoAnswer]])
-    verify(mockPage).apply(any(), any(), any(), captor.capture())(any(), any())
+    verify(mockPage).apply(any(), any(), captor.capture())(any(), any())
     captor.getValue
   }
 
   def additionalActorCaptor: DeclarationAdditionalActors = {
     val captor = ArgumentCaptor.forClass(classOf[DeclarationAdditionalActors])
-    verify(mockPage).apply(any(), any(), captor.capture(), any())(any(), any())
+    verify(mockPage).apply(any(), captor.capture(), any())(any(), any())
     captor.getValue
   }
 
-  private def verifyRemovePageInvoked(numberOfTimes: Int = 1) =
-    verify(mockPage, times(numberOfTimes)).apply(any(), any(), any(), any())(any(), any())
+  private def verifyRemovePageInvoked(numberOfTimes: Int = 1): HtmlFormat.Appendable =
+    verify(mockPage, times(numberOfTimes)).apply(any(), any(), any())(any(), any())
 
   val additionalActor: DeclarationAdditionalActors = DeclarationAdditionalActors(Some(Eori("GB123456789000")), Some("MF"))
   val id = ListItem.createId(0, additionalActor)
@@ -136,6 +136,5 @@ class AdditionalActorsRemoveControllerSpec extends ControllerSpec with OptionVal
         }
       }
     }
-
   }
 }

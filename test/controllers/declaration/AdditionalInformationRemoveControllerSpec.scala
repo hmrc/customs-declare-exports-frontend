@@ -48,7 +48,7 @@ class AdditionalInformationRemoveControllerSpec extends ControllerSpec with Opti
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    when(mockRemovePage.apply(any(), any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockRemovePage.apply(any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -64,18 +64,18 @@ class AdditionalInformationRemoveControllerSpec extends ControllerSpec with Opti
 
   def theResponseForm: Form[YesNoAnswer] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[YesNoAnswer]])
-    verify(mockRemovePage).apply(any(), any(), any(), any(), captor.capture())(any(), any())
+    verify(mockRemovePage).apply(any(), any(), any(), captor.capture())(any(), any())
     captor.getValue
   }
 
   def theAdditionalInformation: AdditionalInformation = {
     val captor = ArgumentCaptor.forClass(classOf[AdditionalInformation])
-    verify(mockRemovePage).apply(any(), any(), any(), captor.capture(), any())(any(), any())
+    verify(mockRemovePage).apply(any(), any(), captor.capture(), any())(any(), any())
     captor.getValue
   }
 
   private def verifyRemovePageInvoked(numberOfTimes: Int = 1) =
-    verify(mockRemovePage, times(numberOfTimes)).apply(any(), any(), any(), any(), any())(any(), any())
+    verify(mockRemovePage, times(numberOfTimes)).apply(any(), any(), any(), any())(any(), any())
 
   private val additionalInformation = AdditionalInformation("00400", "Some description")
   private val additionalInformationOther = AdditionalInformation("00401", "Some description")

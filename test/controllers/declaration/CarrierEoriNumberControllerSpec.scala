@@ -48,11 +48,11 @@ class CarrierEoriNumberControllerSpec extends ControllerSpec with OptionValues {
   )(ec)
 
   def checkViewInteractions(noOfInvocations: Int = 1): Unit =
-    verify(mockCarrierEoriNumberPage, times(noOfInvocations)).apply(any(), any())(any(), any())
+    verify(mockCarrierEoriNumberPage, times(noOfInvocations)).apply(any())(any(), any())
 
   def theResponseForm: Form[CarrierEoriNumber] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[CarrierEoriNumber]])
-    verify(mockCarrierEoriNumberPage).apply(any(), captor.capture())(any(), any())
+    verify(mockCarrierEoriNumberPage).apply(captor.capture())(any(), any())
     captor.getValue
   }
 
@@ -65,7 +65,7 @@ class CarrierEoriNumberControllerSpec extends ControllerSpec with OptionValues {
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    when(mockCarrierEoriNumberPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockCarrierEoriNumberPage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {

@@ -47,7 +47,7 @@ class CommodityDetailsControllerSpec extends ControllerSpec with OptionValues {
     super.beforeEach()
 
     authorizedUser()
-    when(mockCommodityDetailsPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockCommodityDetailsPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -60,7 +60,7 @@ class CommodityDetailsControllerSpec extends ControllerSpec with OptionValues {
 
   def theResponseForm: Form[CommodityDetails] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[CommodityDetails]])
-    verify(mockCommodityDetailsPage).apply(any(), any(), captor.capture())(any(), any())
+    verify(mockCommodityDetailsPage).apply(any(), captor.capture())(any(), any())
     captor.getValue
   }
 
@@ -81,7 +81,7 @@ class CommodityDetailsControllerSpec extends ControllerSpec with OptionValues {
         val result = controller.displayPage(itemId)(getRequest())
 
         status(result) mustBe OK
-        verify(mockCommodityDetailsPage, times(1)).apply(any(), any(), any())(any(), any())
+        verify(mockCommodityDetailsPage, times(1)).apply(any(), any())(any(), any())
 
         theResponseForm.value mustBe empty
       }
@@ -95,7 +95,7 @@ class CommodityDetailsControllerSpec extends ControllerSpec with OptionValues {
         val result = controller.displayPage(item.id)(getRequest())
 
         status(result) mustBe OK
-        verify(mockCommodityDetailsPage, times(1)).apply(any(), any(), any())(any(), any())
+        verify(mockCommodityDetailsPage, times(1)).apply(any(), any())(any(), any())
         theResponseForm.value mustBe Some(details)
       }
 
@@ -112,7 +112,7 @@ class CommodityDetailsControllerSpec extends ControllerSpec with OptionValues {
         val result = controller.submitForm(itemId)(postRequest(incorrectForm))
 
         status(result) mustBe BAD_REQUEST
-        verify(mockCommodityDetailsPage, times(1)).apply(any(), any(), any())(any(), any())
+        verify(mockCommodityDetailsPage, times(1)).apply(any(), any())(any(), any())
       }
     }
 

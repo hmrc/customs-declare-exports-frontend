@@ -74,7 +74,7 @@ class AdditionalProcedureCodesControllerSpec extends ControllerSpec with ErrorHa
   private def templateParameters: (Form[AdditionalProcedureCode], Seq[String]) = {
     val formCaptor = ArgumentCaptor.forClass(classOf[Form[AdditionalProcedureCode]])
     val dataCaptor = ArgumentCaptor.forClass(classOf[Seq[String]])
-    verify(additionalProcedureCodesPage).apply(any(), any(), formCaptor.capture(), any(), any(), dataCaptor.capture())(any(), any())
+    verify(additionalProcedureCodesPage).apply(any(), formCaptor.capture(), any(), any(), dataCaptor.capture())(any(), any())
     (formCaptor.getValue, dataCaptor.getValue)
   }
 
@@ -82,7 +82,7 @@ class AdditionalProcedureCodesControllerSpec extends ControllerSpec with ErrorHa
     super.beforeEach()
     authorizedUser()
     setupErrorHandler()
-    when(additionalProcedureCodesPage.apply(any(), any(), any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(additionalProcedureCodesPage.apply(any(), any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
     when(procedureCodeService.getAdditionalProcedureCodesFor(any(), any())).thenReturn(Seq.empty[AdditionalProcedureCodeModel])
     when(procedureCodeService.getAdditionalProcedureCodesFor(meq(sampleProcedureCode), any())).thenReturn(validAdditionalProcedureCodes)
     when(procedureCodeService.getProcedureCodeFor(any(), any(), any(), any())).thenReturn(None)

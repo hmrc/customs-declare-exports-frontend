@@ -66,9 +66,9 @@ class SubmissionsController @Inject() (
       for {
         submissions <- customsDeclareExportsConnector.fetchSubmissions
         submissionsInDescOrder = submissions.sorted(Submission.newestEarlierOrdering)
-      } yield Ok(submissionsPage(SubmissionsPagesElements(submissionsInDescOrder, submissionsPages)))
-        .removingFromSession(declarationId)
-        .removingFromSession(errorFixModeSessionKey)
+      }
+      yield Ok(submissionsPage(SubmissionsPagesElements(submissionsInDescOrder, submissionsPages)))
+        .removingFromSession(declarationId, errorFixModeSessionKey)
     }
 
   def viewDeclaration(id: String): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
