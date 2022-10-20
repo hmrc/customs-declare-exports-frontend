@@ -20,7 +20,6 @@ import controllers.routes.RejectedNotificationsController
 import models.DeclarationStatus.{COMPLETE, DRAFT, INITIAL}
 import models.ExportsDeclaration
 import models.declaration.submissions.EnhancedStatus.ERRORS
-import models.Mode.Draft
 import org.jsoup.nodes.Document
 import play.api.mvc.Call
 import views.html.declaration.summary.normal_summary_page

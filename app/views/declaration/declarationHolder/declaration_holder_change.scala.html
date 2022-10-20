@@ -27,16 +27,16 @@
     formHelper: FormWithCSRF
 )
 
-@(mode: Mode, id: String, form: Form[DeclarationHolder], userEori: String)(implicit request: JourneyRequest[_], messages: Messages)
+@(id: String, form: Form[DeclarationHolder], userEori: String)(implicit request: JourneyRequest[_], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
 @govukLayout(
     title = Title("declaration.declarationHolder.title", "declaration.section.2", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), DeclarationHolderSummaryController.displayPage(mode)))
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), DeclarationHolderSummaryController.displayPage()))
 ) {
 
-    @formHelper(action = DeclarationHolderChangeController.submitForm(mode, id), 'autoComplete -> "off") {
-        @editContent(mode, form, userEori)
+    @formHelper(action = DeclarationHolderChangeController.submitForm(id), 'autoComplete -> "off") {
+        @editContent(form, userEori)
     }
 }

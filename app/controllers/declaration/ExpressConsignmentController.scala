@@ -24,7 +24,7 @@ import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.{form, YesNoAnswers}
 import models.DeclarationType._
 import models.requests.JourneyRequest
-import models.{ExportsDeclaration, Mode}
+import models.ExportsDeclaration
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import services.cache.ExportsCacheService
@@ -47,24 +47,24 @@ class ExpressConsignmentController @Inject() (
 
   private val validTypes = Seq(STANDARD, SIMPLIFIED, OCCASIONAL, CLEARANCE)
 
-  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
+  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
     val frm = form(errorKey = emptyKey).withSubmissionErrors()
     request.cacheModel.transport.expressConsignment match {
-      case Some(yesNoAnswer) => Ok(expressConsignmentPage(mode, frm.fill(yesNoAnswer)))
-      case _                 => Ok(expressConsignmentPage(mode, frm))
+      case Some(yesNoAnswer) => Ok(expressConsignmentPage(frm.fill(yesNoAnswer)))
+      case _                 => Ok(expressConsignmentPage(frm))
     }
   }
 
-  def submitForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async { implicit request =>
+  def submitForm(): Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async { implicit request =>
     form(errorKey = emptyKey)
       .bindFromRequest()
       .fold(
-        formWithErrors => Future.successful(BadRequest(expressConsignmentPage(mode, formWithErrors))),
-        yesNoAnswer => updateCache(yesNoAnswer).map(_ => navigator.continueTo(mode, nextPage(yesNoAnswer)))
+        formWithErrors => Future.successful(BadRequest(expressConsignmentPage(formWithErrors))),
+        yesNoAnswer => updateCache(yesNoAnswer).map(_ => navigator.continueTo(nextPage(yesNoAnswer)))
       )
   }
 
-  private def nextPage(yesNoAnswer: YesNoAnswer): Mode => Call =
+  private def nextPage(yesNoAnswer: YesNoAnswer): Call =
     if (yesNoAnswer.answer == YesNoAnswers.yes) routes.TransportPaymentController.displayPage
     else routes.TransportContainerController.displayContainerSummary
 

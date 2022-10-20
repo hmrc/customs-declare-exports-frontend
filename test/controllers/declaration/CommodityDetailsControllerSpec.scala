@@ -19,7 +19,6 @@ package controllers.declaration
 import base.ControllerSpec
 import forms.declaration.{CommodityDetails, CusCode, IsExs}
 import models.DeclarationType._
-import models.Mode
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -67,7 +66,7 @@ class CommodityDetailsControllerSpec extends ControllerSpec with OptionValues {
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration())
-    await(controller.displayPage(Mode.Normal, itemId)(request))
+    await(controller.displayPage(itemId)(request))
     theResponseForm
   }
 
@@ -79,7 +78,7 @@ class CommodityDetailsControllerSpec extends ControllerSpec with OptionValues {
 
         withNewCaching(aDeclaration())
 
-        val result = controller.displayPage(Mode.Normal, itemId)(getRequest())
+        val result = controller.displayPage(itemId)(getRequest())
 
         status(result) mustBe OK
         verify(mockCommodityDetailsPage, times(1)).apply(any(), any(), any())(any(), any())
@@ -93,7 +92,7 @@ class CommodityDetailsControllerSpec extends ControllerSpec with OptionValues {
         val item = anItem(withCommodityDetails(details))
         withNewCaching(aDeclaration(withItems(item)))
 
-        val result = controller.displayPage(Mode.Normal, item.id)(getRequest())
+        val result = controller.displayPage(item.id)(getRequest())
 
         status(result) mustBe OK
         verify(mockCommodityDetailsPage, times(1)).apply(any(), any(), any())(any(), any())
@@ -110,7 +109,7 @@ class CommodityDetailsControllerSpec extends ControllerSpec with OptionValues {
 
         val incorrectForm = Json.toJson(CommodityDetails(None, Some("Description")))
 
-        val result = controller.submitForm(Mode.Normal, itemId)(postRequest(incorrectForm))
+        val result = controller.submitForm(itemId)(postRequest(incorrectForm))
 
         status(result) mustBe BAD_REQUEST
         verify(mockCommodityDetailsPage, times(1)).apply(any(), any(), any())(any(), any())
@@ -123,10 +122,10 @@ class CommodityDetailsControllerSpec extends ControllerSpec with OptionValues {
         withNewCaching(request.cacheModel)
         val correctForm = Json.toJson(CommodityDetails(Some("1234567809"), Some("Description")))
 
-        val result = controller.submitForm(Mode.Normal, itemId)(postRequest(correctForm))
+        val result = controller.submitForm(itemId)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.UNDangerousGoodsCodeController.displayPage(Mode.Normal, itemId)
+        thePageNavigatedTo mustBe controllers.declaration.routes.UNDangerousGoodsCodeController.displayPage(itemId)
       }
     }
 
@@ -136,10 +135,10 @@ class CommodityDetailsControllerSpec extends ControllerSpec with OptionValues {
         withNewCaching(request.cacheModel)
         val correctForm = Json.toJson(CommodityDetails(None, Some("Description")))
 
-        val result = controller.submitForm(Mode.Normal, itemId)(postRequest(correctForm))
+        val result = controller.submitForm(itemId)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.UNDangerousGoodsCodeController.displayPage(Mode.Normal, itemId)
+        thePageNavigatedTo mustBe controllers.declaration.routes.UNDangerousGoodsCodeController.displayPage(itemId)
       }
     }
 
@@ -155,7 +154,7 @@ class CommodityDetailsControllerSpec extends ControllerSpec with OptionValues {
         )
         val correctForm = Json.toJson(CommodityDetails(Some("1234567809"), Some("Description")))
 
-        val result = controller.submitForm(Mode.Normal, itemId)(postRequest(correctForm))
+        val result = controller.submitForm(itemId)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe expectedCall
@@ -166,7 +165,7 @@ class CommodityDetailsControllerSpec extends ControllerSpec with OptionValues {
         controllerRedirectsToNextPageForProcedureCodeAndExsStatus(
           "1234",
           "No",
-          controllers.declaration.routes.PackageInformationSummaryController.displayPage(Mode.Normal, itemId)
+          controllers.declaration.routes.PackageInformationSummaryController.displayPage(itemId)
         )
       }
 
@@ -175,7 +174,7 @@ class CommodityDetailsControllerSpec extends ControllerSpec with OptionValues {
         controllerRedirectsToNextPageForProcedureCodeAndExsStatus(
           "0019",
           "No",
-          controllers.declaration.routes.CommodityMeasureController.displayPage(Mode.Normal, itemId)
+          controllers.declaration.routes.CommodityMeasureController.displayPage(itemId)
         )
       }
 
@@ -184,7 +183,7 @@ class CommodityDetailsControllerSpec extends ControllerSpec with OptionValues {
         controllerRedirectsToNextPageForProcedureCodeAndExsStatus(
           "0000",
           "Yes",
-          controllers.declaration.routes.UNDangerousGoodsCodeController.displayPage(Mode.Normal, itemId)
+          controllers.declaration.routes.UNDangerousGoodsCodeController.displayPage(itemId)
         )
       }
     }
@@ -194,7 +193,7 @@ class CommodityDetailsControllerSpec extends ControllerSpec with OptionValues {
 
       val commodityCode = "1234567809"
       val correctForm = Json.toJson(CommodityDetails(Some(s"  ${commodityCode}  "), Some("Description")))
-      val result = controller.submitForm(Mode.Normal, itemId)(postRequest(correctForm))
+      val result = controller.submitForm(itemId)(postRequest(correctForm))
 
       await(result) mustBe aRedirectToTheNextPage
 
@@ -207,7 +206,7 @@ class CommodityDetailsControllerSpec extends ControllerSpec with OptionValues {
       withNewCaching(aDeclaration(withItem(anItem(withItemId(itemId), withCUSCode(cusCode)))))
 
       val correctForm = Json.toJson(CommodityDetails(Some("1234567809"), Some("Description")))
-      val result = controller.submitForm(Mode.Normal, itemId)(postRequest(correctForm))
+      val result = controller.submitForm(itemId)(postRequest(correctForm))
 
       await(result) mustBe aRedirectToTheNextPage
 
@@ -220,7 +219,7 @@ class CommodityDetailsControllerSpec extends ControllerSpec with OptionValues {
       withNewCaching(aDeclaration(withItem(anItem(withItemId(itemId), withCUSCode(cusCode)))))
 
       val correctForm = Json.toJson(CommodityDetails(Some("2800000000"), Some("Description")))
-      val result = controller.submitForm(Mode.Normal, itemId)(postRequest(correctForm))
+      val result = controller.submitForm(itemId)(postRequest(correctForm))
 
       await(result) mustBe aRedirectToTheNextPage
 

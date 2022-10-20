@@ -38,7 +38,7 @@
     formHelper: FormWithCSRF
 )
 
-@(mode: Mode, form: Form[InlandOrBorder])(implicit request: JourneyRequest[_], messages: Messages)
+@(form: Form[InlandOrBorder])(implicit request: JourneyRequest[_], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
@@ -55,9 +55,9 @@
 
 @govukLayout(
     title = Title("declaration.inlandOrBorder.title", "declaration.section.6", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(InlandOrBorder, mode)))) {
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(InlandOrBorder)))) {
 
-    @formHelper(action = InlandOrBorderController.submitPage(mode), 'autoComplete -> "off") {
+    @formHelper(action = InlandOrBorderController.submitPage(), 'autoComplete -> "off") {
         @errorSummary(radioGroupErrors(fieldId, Border.location, form.errors))
 
         @sectionHeader(messages("declaration.section.6"))
@@ -89,6 +89,6 @@
 
         @insetText(content = HtmlContent(insetContent))
 
-        @saveButtons(mode)
+        @saveButtons()
     }
 }

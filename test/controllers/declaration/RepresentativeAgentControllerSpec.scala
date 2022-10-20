@@ -19,7 +19,6 @@ package controllers.declaration
 import base.ControllerSpec
 import forms.common.Eori
 import forms.declaration.RepresentativeAgent
-import models.Mode
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -63,7 +62,7 @@ class RepresentativeAgentControllerSpec extends ControllerSpec with OptionValues
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration())
-    await(controller.displayPage(Mode.Normal)(request))
+    await(controller.displayPage()(request))
     theResponseForm
   }
 
@@ -76,7 +75,7 @@ class RepresentativeAgentControllerSpec extends ControllerSpec with OptionValues
         "display page method is invoked with empty cache" in {
           withNewCaching(request.cacheModel)
 
-          val result = controller.displayPage(Mode.Normal)(getRequest())
+          val result = controller.displayPage()(getRequest())
 
           status(result) mustBe OK
           verifyPage(1)
@@ -87,7 +86,7 @@ class RepresentativeAgentControllerSpec extends ControllerSpec with OptionValues
         "display page method is invoked with data in cache" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withRepresentativeDetails(None, None, Some("Yes"))))
 
-          val result = controller.displayPage(Mode.Normal)(getRequest())
+          val result = controller.displayPage()(getRequest())
 
           status(result) mustBe OK
           verifyPage(1)
@@ -102,7 +101,7 @@ class RepresentativeAgentControllerSpec extends ControllerSpec with OptionValues
           withNewCaching(request.cacheModel)
 
           val incorrectForm = Json.toJson(RepresentativeAgent("invalid"))
-          val result = controller.submitForm(Mode.Normal)(postRequest(incorrectForm))
+          val result = controller.submitForm()(postRequest(incorrectForm))
 
           status(result) mustBe BAD_REQUEST
           verifyPage(1)
@@ -117,7 +116,7 @@ class RepresentativeAgentControllerSpec extends ControllerSpec with OptionValues
           withNewCaching(request.cacheModel)
 
           val correctForm = Json.toJson(RepresentativeAgent(formAnswer))
-          val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
+          val result = controller.submitForm()(postRequest(correctForm))
 
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe controllers.declaration.routes.RepresentativeStatusController.displayPage()
@@ -129,7 +128,7 @@ class RepresentativeAgentControllerSpec extends ControllerSpec with OptionValues
           withNewCaching(aDeclarationAfter(request.cacheModel, withRepresentativeDetails(Some(Eori("GB1234567890")), None, None)))
 
           val correctForm = Json.toJson(RepresentativeAgent(formAnswer))
-          val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
+          val result = controller.submitForm()(postRequest(correctForm))
 
           await(result) mustBe aRedirectToTheNextPage
 
@@ -145,7 +144,7 @@ class RepresentativeAgentControllerSpec extends ControllerSpec with OptionValues
           withNewCaching(request.cacheModel)
 
           val correctForm = Json.toJson(RepresentativeAgent(formAnswer))
-          val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
+          val result = controller.submitForm()(postRequest(correctForm))
 
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe controllers.declaration.routes.RepresentativeEntityController.displayPage()
@@ -157,7 +156,7 @@ class RepresentativeAgentControllerSpec extends ControllerSpec with OptionValues
           withNewCaching(aDeclarationAfter(request.cacheModel, withRepresentativeDetails(Some(Eori("GB1234567890")), None, None)))
 
           val correctForm = Json.toJson(RepresentativeAgent(formAnswer))
-          val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
+          val result = controller.submitForm()(postRequest(correctForm))
 
           await(result) mustBe aRedirectToTheNextPage
 

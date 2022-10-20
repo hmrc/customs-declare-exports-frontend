@@ -21,7 +21,7 @@ import forms.common.YesNoAnswer.YesNoAnswers
 import forms.common.{Address, Eori}
 import forms.declaration.consignor.ConsignorDetails
 import forms.declaration.{EntityDetails, IsExs, UNDangerousGoodsCode}
-import models.{DeclarationType, Mode}
+import models.{DeclarationType}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
@@ -61,7 +61,7 @@ class IsExsControllerSpec extends ControllerSpec with ScalaFutures {
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration(withType(DeclarationType.CLEARANCE)))
-    await(controller.displayPage(Mode.Normal)(request))
+    await(controller.displayPage()(request))
     theResponseForm
   }
 
@@ -73,7 +73,7 @@ class IsExsControllerSpec extends ControllerSpec with ScalaFutures {
 
         withNewCaching(aDeclaration(withType(DeclarationType.CLEARANCE), withoutIsExs()))
 
-        val result = controller.displayPage(Mode.Normal)(getRequest())
+        val result = controller.displayPage()(getRequest())
 
         status(result) mustBe OK
       }
@@ -82,7 +82,7 @@ class IsExsControllerSpec extends ControllerSpec with ScalaFutures {
 
         withNewCaching(aDeclaration(withType(DeclarationType.CLEARANCE), withIsExs()))
 
-        val result = controller.displayPage(Mode.Normal)(getRequest())
+        val result = controller.displayPage()(getRequest())
 
         status(result) mustBe OK
       }
@@ -99,7 +99,7 @@ class IsExsControllerSpec extends ControllerSpec with ScalaFutures {
 
         val emptyForm = Json.toJson(IsExs(""))
 
-        val result = controller.submit(Mode.Normal)(postRequest(emptyForm))
+        val result = controller.submit()(postRequest(emptyForm))
 
         status(result) mustBe BAD_REQUEST
       }
@@ -112,11 +112,11 @@ class IsExsControllerSpec extends ControllerSpec with ScalaFutures {
 
         withNewCaching(aDeclaration(withType(DeclarationType.CLEARANCE)))
 
-        val result = controller.submit(Mode.Normal)(postRequest(correctForm))
+        val result = controller.submit()(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.ConsignorEoriNumberController
-          .displayPage(Mode.Normal)
+          .displayPage()
       }
 
       "correctly update UNDangerous goods codes for items" in {
@@ -129,7 +129,7 @@ class IsExsControllerSpec extends ControllerSpec with ScalaFutures {
           )
         )
 
-        val result = controller.submit(Mode.Normal)(postRequest(correctForm))
+        val result = controller.submit()(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
 
@@ -169,7 +169,7 @@ class IsExsControllerSpec extends ControllerSpec with ScalaFutures {
 
         val correctForm = Json.toJson(IsExs(YesNoAnswers.no))
 
-        controller.submit(Mode.Normal)(postRequest(correctForm)).futureValue
+        controller.submit()(postRequest(correctForm)).futureValue
 
         val modelPassedToCache = theCacheModelUpdated
         modelPassedToCache.parties.isExs mustBe Some(IsExs(YesNoAnswers.no))
@@ -186,11 +186,11 @@ class IsExsControllerSpec extends ControllerSpec with ScalaFutures {
 
         val correctForm = Json.toJson(IsExs(YesNoAnswers.no))
 
-        val result = controller.submit(Mode.Normal)(postRequest(correctForm))
+        val result = controller.submit()(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.RepresentativeAgentController
-          .displayPage(Mode.Normal)
+          .displayPage()
       }
     }
 
@@ -201,11 +201,11 @@ class IsExsControllerSpec extends ControllerSpec with ScalaFutures {
 
         val correctForm = Json.toJson(IsExs(YesNoAnswers.no))
 
-        val result = controller.submit(Mode.Normal)(postRequest(correctForm))
+        val result = controller.submit()(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.ConsigneeDetailsController
-          .displayPage(Mode.Normal)
+          .displayPage()
       }
     }
 

@@ -22,8 +22,6 @@ import controllers.declaration.routes.NactCodeSummaryController
 import forms.declaration.StatisticalValue
 import forms.declaration.StatisticalValue.form
 import models.DeclarationType.STANDARD
-import models.Mode
-import models.Mode.Normal
 import org.jsoup.nodes.Document
 import org.scalatest.Inspectors.forAll
 import play.api.data.Form
@@ -38,10 +36,10 @@ class StatisticalValueViewSpec extends PageWithButtonsSpec with Injector {
 
   val page = instanceOf[statistical_value]
 
-  override val typeAndViewInstance = (STANDARD, page(Normal, itemId, form())(_, _))
+  override val typeAndViewInstance = (STANDARD, page(itemId, form())(_, _))
 
   def createView(frm: Form[StatisticalValue] = form(), mode: Mode = Normal): Document =
-    page(mode, itemId, frm)(journeyRequest(), messages)
+    page(itemId, frm)(journeyRequest(), messages)
 
   "Item Type View on empty page" should {
 
@@ -98,7 +96,7 @@ class StatisticalValueViewSpec extends PageWithButtonsSpec with Injector {
     "display 'Back' button that links to 'TARIC Codes' page" in {
       val backButton = view.getElementById("back-link")
       backButton must containMessage("site.backToPreviousQuestion")
-      backButton.getElementById("back-link") must haveHref(NactCodeSummaryController.displayPage(Normal, itemId))
+      backButton.getElementById("back-link") must haveHref(NactCodeSummaryController.displayPage(itemId))
     }
 
     val createViewWithMode: Mode => Document = mode => createView(mode = mode)

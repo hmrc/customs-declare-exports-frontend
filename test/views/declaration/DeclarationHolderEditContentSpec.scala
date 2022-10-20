@@ -26,7 +26,7 @@ import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
 import forms.declaration.declarationHolder.DeclarationHolder
 import models.DeclarationType._
 import models.requests.JourneyRequest
-import models.{ExportsDeclaration, Mode}
+import models.ExportsDeclaration
 import org.jsoup.nodes.Document
 import org.scalatest.{Assertion, GivenWhenThen}
 import tools.Stubs
@@ -94,7 +94,7 @@ class DeclarationHolderEditContentSpec extends UnitViewSpec with GivenWhenThen w
 
     def createPartial(implicit request: JourneyRequest[_]): Document = {
       val form = DeclarationHolder.form(eori, request.cacheModel.additionalDeclarationType)
-      declarationHolderPage(Mode.Normal, form, eori)(request, messages)
+      declarationHolderPage(form, eori)(request, messages)
     }
 
     "display the expected body (the text under page's H1)" when {

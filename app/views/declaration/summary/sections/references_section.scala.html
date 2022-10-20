@@ -19,19 +19,16 @@
 @import models.DeclarationType.SUPPLEMENTARY
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
-@import views.components.gds.ActionItemBuilder._
+@import views.helpers.ActionItemBuilder.actionSummaryItem
 @import views.helpers.ViewDates
 @import config.AppConfig
 @import views.html.components.gds.{exportsInsetText, link, linkContent, paragraphBody, summary_list}
 
 @this(summaryList: summary_list, insetText: exportsInsetText, link: link, linkContent: linkContent, body: paragraphBody, appConfig: AppConfig)
 
-@(mode: Mode, declaration: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages)
+@(declaration: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages)
 
-@actions(action: Actions) = @{
-    if(actionsEnabled) Some(action)
-    else None
-}
+@actions(action: Actions) = @{ if(actionsEnabled) Some(action) else None }
 
 @lrnLabelText = @{
     if (declaration.isType(SUPPLEMENTARY)) "declaration.summary.references.supplementary.lrn"
@@ -41,7 +38,7 @@
 @if(declaration.status == DRAFT && declaration.parentDeclarationId.isDefined){
     @insetText(HtmlContent(body(link(
         text = messages("declaration.summary.goto.additional.type"),
-        call = routes.AdditionalDeclarationTypeController.displayPage(mode)
+        call = routes.AdditionalDeclarationTypeController.displayPage()
     ).toString)))
 }
 
@@ -106,8 +103,8 @@
                 ),
                 actions = actions(Actions(
                     items = Seq(
-                        actionItem(
-                            href = routes.ConsignmentReferencesController.displayPage(mode).url,
+                        actionSummaryItem(
+                            href = routes.ConsignmentReferencesController.displayPage().url,
                             content = HtmlContent(linkContent(messages("site.change"))),
                             visuallyHiddenText = Some(messages("declaration.summary.references.ducr.change"))
                         )
@@ -126,8 +123,8 @@
                 ),
                 actions = actions(Actions(
                     items = Seq(
-                        actionItem(
-                            href = routes.ConsignmentReferencesController.displayPage(mode).url,
+                        actionSummaryItem(
+                            href = routes.ConsignmentReferencesController.displayPage().url,
                             content = HtmlContent(linkContent(messages("site.change"))),
                             visuallyHiddenText = Some(messages("declaration.summary.references.mrn.change"))
                         )
@@ -146,8 +143,8 @@
                 ),
                 actions = actions(Actions(
                     items = Seq(
-                        actionItem(
-                            href = routes.ConsignmentReferencesController.displayPage(mode).url,
+                        actionSummaryItem(
+                            href = routes.ConsignmentReferencesController.displayPage().url,
                             content = HtmlContent(linkContent(messages("site.change"))),
                             visuallyHiddenText = Some(messages("declaration.summary.references.eidr.change"))
                         )
@@ -166,8 +163,8 @@
                 ),
                 actions = actions(Actions(
                     items = Seq(
-                        actionItem(
-                            href = routes.ConsignmentReferencesController.displayPage(mode).url,
+                        actionSummaryItem(
+                            href = routes.ConsignmentReferencesController.displayPage().url,
                             content = HtmlContent(linkContent(messages("site.change"))),
                             visuallyHiddenText = Some(messages("declaration.summary.references.lrn.change"))
                         )
@@ -186,8 +183,8 @@
                 ),
                 actions = actions(Actions(
                     items = Seq(
-                        actionItem(
-                            href = routes.LinkDucrToMucrController.displayPage(mode).url,
+                        actionSummaryItem(
+                            href = routes.LinkDucrToMucrController.displayPage().url,
                             content = HtmlContent(linkContent(messages("site.change"))),
                             visuallyHiddenText = Some(messages("declaration.summary.references.linkDucrToMucr.change"))
                         )
@@ -206,8 +203,8 @@
                 ),
                 actions = actions(Actions(
                     items = Seq(
-                        actionItem(
-                            href = routes.MucrController.displayPage(mode).url,
+                        actionSummaryItem(
+                            href = routes.MucrController.displayPage().url,
                             content = HtmlContent(linkContent(messages("site.change"))),
                             visuallyHiddenText = Some(messages("declaration.summary.references.mucr.change"))
                         )

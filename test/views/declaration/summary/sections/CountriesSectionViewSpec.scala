@@ -20,7 +20,6 @@ import base.Injector
 import controllers.declaration.routes.{DestinationCountryController, RoutingCountriesController}
 import forms.declaration.countries.Country
 import models.ExportsDeclaration
-import models.Mode.Draft
 import services.cache.ExportsTestHelper
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.summary.sections.countries_section

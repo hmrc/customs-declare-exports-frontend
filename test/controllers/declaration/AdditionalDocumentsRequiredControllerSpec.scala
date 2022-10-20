@@ -19,7 +19,6 @@ package controllers.declaration
 import base.ControllerSpec
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
-import models.Mode
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
@@ -58,7 +57,7 @@ class AdditionalDocumentsRequiredControllerSpec extends ControllerSpec {
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration(withItem(anItem(withItemId(itemId)))))
-    await(controller.displayPage(Mode.Normal, itemId)(request))
+    await(controller.displayPage(itemId)(request))
     theResponseForm
   }
 
@@ -75,7 +74,7 @@ class AdditionalDocumentsRequiredControllerSpec extends ControllerSpec {
 
         "display page method is invoked" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withItem(anItem(withItemId(itemId)))))
-          val result = controller.displayPage(Mode.Normal, itemId)(getRequest())
+          val result = controller.displayPage(itemId)(getRequest())
           status(result) must be(OK)
           verifyPageInvoked
         }
@@ -85,10 +84,10 @@ class AdditionalDocumentsRequiredControllerSpec extends ControllerSpec {
         "answer is 'yes'" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withItem(anItem(withItemId(itemId)))))
 
-          val result = controller.submitForm(Mode.Normal, itemId)(postRequest(Json.obj("yesNo" -> YesNoAnswers.yes)))
+          val result = controller.submitForm(itemId)(postRequest(Json.obj("yesNo" -> YesNoAnswers.yes)))
 
           status(result) mustBe SEE_OTHER
-          thePageNavigatedTo mustBe routes.AdditionalDocumentAddController.displayPage(Mode.Normal, itemId)
+          thePageNavigatedTo mustBe routes.AdditionalDocumentAddController.displayPage(itemId)
         }
       }
 
@@ -96,7 +95,7 @@ class AdditionalDocumentsRequiredControllerSpec extends ControllerSpec {
         "answer is 'no'" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withItem(anItem(withItemId(itemId)))))
 
-          val result = controller.submitForm(Mode.Normal, itemId)(postRequest(Json.obj("yesNo" -> YesNoAnswers.no)))
+          val result = controller.submitForm(itemId)(postRequest(Json.obj("yesNo" -> YesNoAnswers.no)))
 
           status(result) mustBe SEE_OTHER
           thePageNavigatedTo mustBe routes.ItemsSummaryController.displayItemsSummaryPage()
@@ -109,7 +108,7 @@ class AdditionalDocumentsRequiredControllerSpec extends ControllerSpec {
           withNewCaching(aDeclarationAfter(request.cacheModel, withItem(anItem(withItemId(itemId)))))
           val incorrectForm = Json.obj("yesNo" -> "")
 
-          val result = controller.submitForm(Mode.Normal, itemId)(postRequest(incorrectForm))
+          val result = controller.submitForm(itemId)(postRequest(incorrectForm))
           status(result) must be(BAD_REQUEST)
           verifyPageInvoked
         }

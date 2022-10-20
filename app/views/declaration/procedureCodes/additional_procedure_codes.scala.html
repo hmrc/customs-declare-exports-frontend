@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import models.Mode
 @import models.requests.JourneyRequest
 @import controllers.navigation.ItemId
 @import controllers.navigation.Navigator
@@ -51,7 +50,7 @@
   addProcCodesHelper: AdditionalProcedureCodesHelper
 )
 
-@(mode: Mode, itemId: String, form: Form[AdditionalProcedureCode], procedureCode: ProcedureCode, validAdditionalProcedureCodes: Seq[AdditionalProcedureCodeModel], codes: Seq[String])(implicit request: JourneyRequest[_], messages: Messages)
+@(itemId: String, form: Form[AdditionalProcedureCode], procedureCode: ProcedureCode, validAdditionalProcedureCodes: Seq[AdditionalProcedureCodeModel], codes: Seq[String])(implicit request: JourneyRequest[_], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
@@ -59,9 +58,9 @@
 
 @govukLayout(
   title = Title("declaration.additionalProcedureCodes.title", "declaration.section.5", procedureCode.code, hasErrors = hasErrors),
-  backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(AdditionalProcedureCode, mode, ItemId(itemId))))) {
+  backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(AdditionalProcedureCode, ItemId(itemId))))) {
 
-  @formHelper(action = controllers.declaration.routes.AdditionalProcedureCodesController.submitAdditionalProcedureCodes(mode, itemId), 'autoComplete -> "off") {
+  @formHelper(action = controllers.declaration.routes.AdditionalProcedureCodesController.submitAdditionalProcedureCodes(itemId), 'autoComplete -> "off") {
 
     @errorSummary(form.errors)
 
@@ -86,7 +85,7 @@
     @addToTable(ListRows(codes, "additionalProcedureCodes"))
 
     @tariffExpander(AdditionalProcedureCode, request.declarationType)(messages, appConfig)
-    @saveButtons(mode)
+    @saveButtons()
 
   }
 }

@@ -16,22 +16,22 @@
 
 package controllers.declaration
 
-import scala.concurrent.{ExecutionContext, Future}
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
-import forms.common.YesNoAnswer.{form, YesNoAnswers}
-
-import javax.inject.Inject
+import forms.common.YesNoAnswer.{YesNoAnswers, form}
+import models.ExportsDeclaration
 import models.declaration.AdditionalDocuments
 import models.requests.JourneyRequest
-import models.{ExportsDeclaration, Mode}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.additionalDocuments.additional_documents_required
+
+import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
 class AdditionalDocumentsRequiredController @Inject() (
   authenticate: AuthAction,
@@ -45,26 +45,26 @@ class AdditionalDocumentsRequiredController @Inject() (
 
   private val emptyKey = "declaration.additionalDocumentsRequired.empty"
 
-  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     val frm = form(errorKey = emptyKey).withSubmissionErrors()
     request.cacheModel.additionalDocumentsRequired(itemId) match {
-      case Some(yesNoAnswer) => Ok(additionalDocumentsRequired(mode, itemId, frm.fill(yesNoAnswer)))
-      case _                 => Ok(additionalDocumentsRequired(mode, itemId, frm))
+      case Some(yesNoAnswer) => Ok(additionalDocumentsRequired(itemId, frm.fill(yesNoAnswer)))
+      case _                 => Ok(additionalDocumentsRequired(itemId, frm))
     }
   }
 
-  def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def submitForm(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     form(errorKey = emptyKey)
       .bindFromRequest()
       .fold(
-        formWithErrors => Future.successful(BadRequest(additionalDocumentsRequired(mode, itemId, formWithErrors))),
-        yesNoAnswer => updateCache(yesNoAnswer, itemId).map(_ => navigator.continueTo(mode, nextPage(yesNoAnswer, itemId)))
+        formWithErrors => Future.successful(BadRequest(additionalDocumentsRequired(itemId, formWithErrors))),
+        yesNoAnswer => updateCache(yesNoAnswer, itemId).map(_ => navigator.continueTo(nextPage(yesNoAnswer, itemId)))
       )
   }
 
-  private def nextPage(yesNoAnswer: YesNoAnswer, itemId: String): Mode => Call =
-    if (yesNoAnswer.answer == YesNoAnswers.yes) routes.AdditionalDocumentAddController.displayPage(_, itemId)
-    else routes.ItemsSummaryController.displayItemsSummaryPage(_)
+  private def nextPage(yesNoAnswer: YesNoAnswer, itemId: String): Call =
+    if (yesNoAnswer.answer == YesNoAnswers.yes) routes.AdditionalDocumentAddController.displayPage(itemId)
+    else routes.ItemsSummaryController.displayItemsSummaryPage
 
   private def updateCache(yesNoAnswer: YesNoAnswer, itemId: String)(implicit request: JourneyRequest[AnyContent]): Future[ExportsDeclaration] = {
     val documents =

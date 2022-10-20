@@ -18,7 +18,6 @@ package views.declaration.summary
 
 import base.Injector
 import forms.declaration.Document
-import models.Mode.{Draft, Normal}
 import services.cache.ExportsTestHelper
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.summary.related_documents
@@ -32,7 +31,7 @@ class RelatedDocumentsViewSpec extends UnitViewSpec with ExportsTestHelper with 
 
       "documents are empty" in {
 
-        val view = section(Normal, Seq.empty)(messages)
+        val view = section(Seq.empty)(messages)
         val row = view.getElementsByClass("previous-documents-row")
 
         row must haveSummaryKey(messages("declaration.summary.transaction.previousDocuments"))
@@ -40,7 +39,7 @@ class RelatedDocumentsViewSpec extends UnitViewSpec with ExportsTestHelper with 
 
         row must haveSummaryActionsTexts("site.change", "declaration.summary.transaction.previousDocuments.change")
 
-        row must haveSummaryActionsHref(controllers.declaration.routes.PreviousDocumentsController.displayPage(Normal))
+        row must haveSummaryActionsHref(controllers.declaration.routes.PreviousDocumentsController.displayPage())
       }
     }
 

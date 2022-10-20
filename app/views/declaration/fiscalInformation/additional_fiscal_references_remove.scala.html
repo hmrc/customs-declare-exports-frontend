@@ -39,7 +39,7 @@
     formHelper: FormWithCSRF
 )(implicit codeListConnector: CodeListConnector)
 
-@(mode: Mode, itemId: String, referenceId: String, additionalReference: AdditionalFiscalReference, form: Form[YesNoAnswer])(implicit request: JourneyRequest[_], messages: Messages)
+@(itemId: String, referenceId: String, additionalReference: AdditionalFiscalReference, form: Form[YesNoAnswer])(implicit request: JourneyRequest[_], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
@@ -60,9 +60,9 @@
 
 @govukLayout(
     title = Title("declaration.additionalFiscalReferences.remove.title", "declaration.section.5", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), AdditionalFiscalReferencesController.displayPage(mode, itemId)))) {
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), AdditionalFiscalReferencesController.displayPage(itemId)))) {
 
-    @formHelper(action = AdditionalFiscalReferencesRemoveController.submitForm(mode, itemId, referenceId), 'autoComplete -> "off") {
+    @formHelper(action = AdditionalFiscalReferencesRemoveController.submitForm(itemId, referenceId), 'autoComplete -> "off") {
         @errorSummary(yesNoErrors(form.errors))
 
         @sectionHeader(messages("declaration.section.5"))
@@ -76,7 +76,7 @@
             html = HtmlFormat.fill(immutable.Seq(
                 informationTable,
                 yesNoRadios(form),
-                saveButtons(mode)
+                saveButtons()
             ))
         ))
     }

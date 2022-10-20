@@ -15,25 +15,23 @@
  *@
 
 @import connectors.CodeListConnector
+@import controllers.declaration.routes
 @import models.declaration.Locations
 @import services.Countries
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import views.components.gds.ActionItemBuilder._
+@import views.helpers.ActionItemBuilder.actionSummaryItem
 @import views.helpers.CountryHelper
 @import views.html.components.gds.{linkContent, summary_list}
 
 @this(summaryList: summary_list, linkContent: linkContent, countryHelper: CountryHelper)(implicit codeListConnector: CodeListConnector)
 
-@(mode: Mode, declarationData: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages)
+@(declarationData: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages)
 
 @sectionRequired(locations: Locations) = @{
     locations.hasRoutingCountries.isDefined || locations.routingCountries.nonEmpty || locations.destinationCountry.isDefined
 }
 
-@actions(action: Actions) = @{
-    if(actionsEnabled) Some(action)
-    else None
-}
+@actions(action: Actions) = @{ if(actionsEnabled) Some(action) else None }
 
 @if(sectionRequired(declarationData.locations)) {
 
@@ -59,8 +57,8 @@
                 ),
                 actions = actions(Actions(
                     items = Seq(
-                        actionItem(
-                            href = controllers.declaration.routes.RoutingCountriesController.submitRoutingCountry(mode).url,
+                        actionSummaryItem(
+                            href = routes.RoutingCountriesController.submitRoutingCountry().url,
                             content = HtmlContent(linkContent(messages("site.change"))),
                             visuallyHiddenText = Some(messages("declaration.summary.countries.routingCountries.change"))
                         )
@@ -79,8 +77,8 @@
                 ),
                 actions = actions(Actions(
                     items = Seq(
-                        actionItem(
-                            href = controllers.declaration.routes.DestinationCountryController.displayPage(mode).url,
+                        actionSummaryItem(
+                            href = routes.DestinationCountryController.displayPage().url,
                             content = HtmlContent(linkContent(messages("site.change"))),
                             visuallyHiddenText = Some(messages("declaration.summary.countries.countryOfDestination.change"))
                         )

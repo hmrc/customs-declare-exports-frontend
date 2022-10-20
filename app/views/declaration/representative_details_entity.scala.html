@@ -38,15 +38,15 @@
         appConfig: AppConfig
 )
 
-@(mode: Mode, form: Form[RepresentativeEntity])(implicit request: JourneyRequest[_], messages: Messages)
+@(form: Form[RepresentativeEntity])(implicit request: JourneyRequest[_], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
 @govukLayout(
     title = Title("declaration.representative.entity.title", "declaration.section.2", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(RepresentativeEntity, mode)))) {
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(RepresentativeEntity)))) {
 
-    @formHelper(action = RepresentativeEntityController.submitForm(mode), 'autoComplete -> "off") {
+    @formHelper(action = RepresentativeEntityController.submitForm(), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
         @sectionHeader(messages("declaration.section.2"))
@@ -59,7 +59,7 @@
 
         @tariffExpander(RepresentativeEntity, request.declarationType)(messages, appConfig)
 
-        @saveButtons(mode)
+        @saveButtons()
     }
 }
 

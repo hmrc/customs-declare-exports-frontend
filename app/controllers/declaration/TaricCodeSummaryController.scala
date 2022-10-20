@@ -17,13 +17,14 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
+import controllers.declaration.routes.{TaricCodeAddController, ZeroRatedForVatController}
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.NatureOfTransaction
 import forms.declaration.NatureOfTransaction._
+import models.DeclarationType.STANDARD
 import models.requests.JourneyRequest
-import models.{DeclarationType, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
@@ -32,8 +33,9 @@ import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.taric_codes
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 
+@Singleton
 class TaricCodeSummaryController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
@@ -43,37 +45,32 @@ class TaricCodeSummaryController @Inject() (
   taricCodesPage: taric_codes
 ) extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
-  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.itemBy(itemId).flatMap(_.taricCodes) match {
-      case Some(taricCodes) if taricCodes.nonEmpty => Ok(taricCodesPage(mode, itemId, addYesNoForm.withSubmissionErrors(), taricCodes))
-      case _                                       => navigator.continueTo(mode, routes.TaricCodeAddController.displayPage(_, itemId))
+      case Some(taricCodes) if taricCodes.nonEmpty => Ok(taricCodesPage(itemId, addYesNoForm.withSubmissionErrors(), taricCodes))
+      case _                                       => navigator.continueTo(TaricCodeAddController.displayPage(itemId))
     }
   }
 
-  def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def submitForm(itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     val taricCodes = request.cacheModel.itemBy(itemId).flatMap(_.taricCodes).getOrElse(List.empty)
     addYesNoForm
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[YesNoAnswer]) => BadRequest(taricCodesPage(mode, itemId, formWithErrors, taricCodes)),
+        (formWithErrors: Form[YesNoAnswer]) => BadRequest(taricCodesPage(itemId, formWithErrors, taricCodes)),
         validYesNo =>
           validYesNo.answer match {
-            case YesNoAnswers.yes =>
-              navigator.continueTo(mode, controllers.declaration.routes.TaricCodeAddController.displayPage(_, itemId))
-            case YesNoAnswers.no if eligibleForZeroVat =>
-              navigator.continueTo(mode, controllers.declaration.routes.ZeroRatedForVatController.displayPage(_, itemId))
-            case YesNoAnswers.no =>
-              navigator.continueTo(mode, controllers.declaration.routes.NactCodeSummaryController.displayPage(_, itemId))
+            case YesNoAnswers.yes                      => navigator.continueTo(TaricCodeAddController.displayPage(itemId))
+            case YesNoAnswers.no if eligibleForZeroVat => navigator.continueTo(ZeroRatedForVatController.displayPage(itemId))
+            case YesNoAnswers.no                       => navigator.continueTo(routes.NactCodeSummaryController.displayPage(itemId))
           }
       )
   }
 
   private def eligibleForZeroVat(implicit request: JourneyRequest[_]): Boolean =
     request.cacheModel.natureOfTransaction match {
-      case Some(NatureOfTransaction(`Sale`) | NatureOfTransaction(`BusinessPurchase`)) =>
-        request.declarationType == DeclarationType.STANDARD
-      case _ =>
-        false
+      case Some(NatureOfTransaction(`Sale`) | NatureOfTransaction(`BusinessPurchase`)) => request.declarationType == STANDARD
+      case _ => false
     }
 
   private def addYesNoForm: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.taricAdditionalCodes.add.answer.empty")

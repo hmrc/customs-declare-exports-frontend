@@ -19,7 +19,6 @@ package controllers.declaration
 import base.ControllerSpec
 import forms.common.YesNoAnswer
 import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData}
-import models.Mode
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -58,7 +57,7 @@ class AdditionalFiscalReferencesRemoveControllerSpec extends ControllerSpec with
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration(withItem(itemWithTwoAdditionalReferences)))
-    await(controller.displayPage(Mode.Normal, item.id, referenceId)(request))
+    await(controller.displayPage(item.id, referenceId)(request))
     theResponseForm
   }
 
@@ -94,7 +93,7 @@ class AdditionalFiscalReferencesRemoveControllerSpec extends ControllerSpec with
 
           withNewCaching(aDeclarationAfter(request.cacheModel, withItem(itemWithAdditionalReference)))
 
-          val result = controller.displayPage(Mode.Normal, item.id, referenceId)(getRequest())
+          val result = controller.displayPage(item.id, referenceId)(getRequest())
 
           status(result) mustBe OK
           verifyRemovePageInvoked()
@@ -109,7 +108,7 @@ class AdditionalFiscalReferencesRemoveControllerSpec extends ControllerSpec with
           withNewCaching(aDeclarationAfter(request.cacheModel, withItem(itemWithAdditionalReference)))
 
           val requestBody = Seq("yesNo" -> "invalid")
-          val result = controller.submitForm(Mode.Normal, item.id, referenceId)(postRequestAsFormUrlEncoded(requestBody: _*))
+          val result = controller.submitForm(item.id, referenceId)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           status(result) mustBe BAD_REQUEST
           verifyRemovePageInvoked()
@@ -122,20 +121,20 @@ class AdditionalFiscalReferencesRemoveControllerSpec extends ControllerSpec with
 
           withNewCaching(request.cacheModel)
 
-          val result = controller.displayPage(Mode.Normal, item.id, "ref-id")(getRequest())
+          val result = controller.displayPage(item.id, "ref-id")(getRequest())
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalFiscalReferencesController.displayPage(Mode.Normal, item.id)
+          thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalFiscalReferencesController.displayPage(item.id)
         }
 
         "user submits 'Yes' answer when multiple additional information exists" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withItem(itemWithTwoAdditionalReferences)))
 
           val requestBody = Seq("yesNo" -> "Yes")
-          val result = controller.submitForm(Mode.Normal, item.id, referenceId)(postRequestAsFormUrlEncoded(requestBody: _*))
+          val result = controller.submitForm(item.id, referenceId)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalFiscalReferencesController.displayPage(Mode.Normal, item.id)
+          thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalFiscalReferencesController.displayPage(item.id)
 
           theCacheModelUpdated
             .itemBy(item.id)
@@ -146,10 +145,10 @@ class AdditionalFiscalReferencesRemoveControllerSpec extends ControllerSpec with
           withNewCaching(aDeclarationAfter(request.cacheModel, withItem(itemWithAdditionalReference)))
 
           val requestBody = Seq("yesNo" -> "Yes")
-          val result = controller.submitForm(Mode.Normal, item.id, referenceId)(postRequestAsFormUrlEncoded(requestBody: _*))
+          val result = controller.submitForm(item.id, referenceId)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.FiscalInformationController.displayPage(Mode.Normal, item.id)
+          thePageNavigatedTo mustBe controllers.declaration.routes.FiscalInformationController.displayPage(item.id)
 
           theCacheModelUpdated.itemBy(item.id).flatMap(_.additionalFiscalReferencesData) mustBe Some(AdditionalFiscalReferencesData(Seq.empty))
         }
@@ -158,10 +157,10 @@ class AdditionalFiscalReferencesRemoveControllerSpec extends ControllerSpec with
           withNewCaching(aDeclarationAfter(request.cacheModel, withItem(itemWithTwoAdditionalReferences)))
 
           val requestBody = Seq("yesNo" -> "No")
-          val result = controller.submitForm(Mode.Normal, item.id, referenceId)(postRequestAsFormUrlEncoded(requestBody: _*))
+          val result = controller.submitForm(item.id, referenceId)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalFiscalReferencesController.displayPage(Mode.Normal, item.id)
+          thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalFiscalReferencesController.displayPage(item.id)
 
           verifyTheCacheIsUnchanged()
         }

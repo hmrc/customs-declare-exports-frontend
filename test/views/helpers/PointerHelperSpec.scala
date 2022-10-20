@@ -21,7 +21,6 @@ import base.ExportsTestData.eori
 import controllers.declaration.routes
 import forms.common.Eori
 import models.DeclarationType.{CLEARANCE, STANDARD}
-import models.Mode.Normal
 import models.Pointer
 import services.cache.ExportsTestHelper
 
@@ -48,7 +47,7 @@ class PointerHelperSpec extends UnitSpec with ExportsTestHelper with Injector {
           val result = PointerHelper.getChangeLinkCall(Some(Pointer("declaration.totalPackageQuantity")), aDeclaration())
 
           result.isDefined mustBe true
-          result.get.url mustBe routes.TotalPackageQuantityController.displayPage(Normal).url
+          result.get.url mustBe routes.TotalPackageQuantityController.displayPage().url
         }
       }
 
@@ -77,7 +76,7 @@ class PointerHelperSpec extends UnitSpec with ExportsTestHelper with Injector {
           )
 
           result.isDefined mustBe true
-          result.get.url mustBe routes.AdditionalDocumentsController.displayPage(Normal, sampleItemId).url
+          result.get.url mustBe routes.AdditionalDocumentsController.displayPage(sampleItemId).url
         }
       }
 
@@ -89,14 +88,14 @@ class PointerHelperSpec extends UnitSpec with ExportsTestHelper with Injector {
           )
 
           result.isDefined mustBe true
-          result.get mustBe routes.PersonPresentingGoodsDetailsController.displayPage(Normal)
+          result.get mustBe routes.PersonPresentingGoodsDetailsController.displayPage()
         }
 
         "also has a declaration that is NOT of type CLEARANCE, EXS=true and personPresentingGoodsDetails is populated" in {
           val result = PointerHelper.getChangeLinkCall(Some(Pointer("declaration.declarantDetails.details.eori")), aDeclaration(withType(STANDARD)))
 
           result.isDefined mustBe true
-          result.get mustBe routes.DeclarantDetailsController.displayPage(Normal)
+          result.get mustBe routes.DeclarantDetailsController.displayPage()
         }
       }
     }

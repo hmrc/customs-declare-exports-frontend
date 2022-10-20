@@ -23,8 +23,6 @@ import forms.declaration.InvoiceAndExchangeRate
 import forms.declaration.InvoiceAndExchangeRate.form
 import forms.declaration.officeOfExit.OfficeOfExit
 import models.DeclarationType.STANDARD
-import models.Mode
-import models.Mode.Normal
 import models.declaration.Locations
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
@@ -40,10 +38,10 @@ class InvoiceAndExchangeRateViewSpec extends PageWithButtonsSpec with Injector {
 
   val page = instanceOf[invoice_and_exchange_rate]
 
-  override val typeAndViewInstance = (STANDARD, page(Normal, form)(_, _))
+  override val typeAndViewInstance = (STANDARD, page(form)(_, _))
 
   def createView(frm: Form[InvoiceAndExchangeRate] = form, mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document =
-    page(mode, frm)(request, messages)
+    page(frm)(request, messages)
 
   "Total Number Of Items View on empty page" should {
 
@@ -108,7 +106,7 @@ class InvoiceAndExchangeRateViewSpec extends PageWithButtonsSpec with Injector {
         val backButton = createView()(requestWithOfficeOfExitInsideUK).getElementById("back-link")
 
         backButton must containMessage("site.backToPreviousQuestion")
-        backButton.getElementById("back-link") must haveHref(InvoiceAndExchangeRateChoiceController.displayPage(Normal))
+        backButton.getElementById("back-link") must haveHref(InvoiceAndExchangeRateChoiceController.displayPage())
       }
 
       val createViewWithMode: Mode => Document = mode => createView(mode = mode)

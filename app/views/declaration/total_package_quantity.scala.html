@@ -39,16 +39,16 @@
         appConfig: AppConfig
 )
 
-@(mode: Mode, form: Form[TotalPackageQuantity])(implicit request: JourneyRequest[_], messages: Messages)
+@(form: Form[TotalPackageQuantity])(implicit request: JourneyRequest[_], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
 @govukLayout(
     title = Title("declaration.totalPackageQuantity.title", "declaration.section.4", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(TotalPackageQuantity, mode)))
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(TotalPackageQuantity)))
 ) {
 
-    @formHelper(action = TotalPackageQuantityController.saveTotalPackageQuantity(mode), 'autoComplete -> "off") {
+    @formHelper(action = TotalPackageQuantityController.saveTotalPackageQuantity(), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
         @sectionHeader(messages("declaration.section.4"))
@@ -66,6 +66,6 @@
 
         @tariffExpander(TotalPackageQuantity, request.declarationType)(messages, appConfig)
 
-        @saveButtons(mode)
+        @saveButtons()
     }
 }

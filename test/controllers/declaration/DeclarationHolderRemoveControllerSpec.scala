@@ -25,7 +25,6 @@ import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.STA
 import forms.declaration.declarationHolder.DeclarationHolder
 import mock.ErrorHandlerMocks
 import models.DeclarationType._
-import models.Mode.Normal
 import models.declaration.{DeclarationHoldersData, EoriSource}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -67,7 +66,7 @@ class DeclarationHolderRemoveControllerSpec extends ControllerSpec with ErrorHan
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration(withDeclarationHolders(declarationHolder)))
-    await(controller.displayPage(Normal, id)(request))
+    await(controller.displayPage(id)(request))
     theResponseForm
   }
 
@@ -98,7 +97,7 @@ class DeclarationHolderRemoveControllerSpec extends ControllerSpec with ErrorHan
 
           withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationHolders(declarationHolder)))
 
-          val result = controller.displayPage(Normal, id)(getRequest())
+          val result = controller.displayPage(id)(getRequest())
 
           status(result) mustBe OK
           verifyRemovePageInvoked()
@@ -111,7 +110,7 @@ class DeclarationHolderRemoveControllerSpec extends ControllerSpec with ErrorHan
         "display page method is invoked with invalid holderId" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationHolders(declarationHolder)))
 
-          val result = controller.displayPage(Normal, "invalid")(getRequest())
+          val result = controller.displayPage("invalid")(getRequest())
 
           result.map(_ => ()).recover { case ex => ex.printStackTrace() }
 
@@ -131,7 +130,7 @@ class DeclarationHolderRemoveControllerSpec extends ControllerSpec with ErrorHan
           withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationHolders(declarationHolder)))
 
           val body = Json.obj("yesNo" -> "Yes")
-          val result = controller.submitForm(Normal, "invalid")(postRequest(body))
+          val result = controller.submitForm("invalid")(postRequest(body))
 
           status(result) mustBe BAD_REQUEST
           verifyNoInteractions(mockRemovePage)
@@ -141,7 +140,7 @@ class DeclarationHolderRemoveControllerSpec extends ControllerSpec with ErrorHan
           withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationHolders(declarationHolder)))
 
           val body = Json.obj("yesNo" -> "invalid")
-          val result = controller.submitForm(Normal, id)(postRequest(body))
+          val result = controller.submitForm(id)(postRequest(body))
 
           status(result) mustBe BAD_REQUEST
           verifyRemovePageInvoked()
@@ -161,10 +160,10 @@ class DeclarationHolderRemoveControllerSpec extends ControllerSpec with ErrorHan
             withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationHolders(holdersData)))
 
             val body = Json.obj("yesNo" -> "Yes")
-            val result = controller.submitForm(Normal, id)(postRequest(body))
+            val result = controller.submitForm(id)(postRequest(body))
 
             await(result) mustBe aRedirectToTheNextPage
-            thePageNavigatedTo mustBe DeclarationHolderSummaryController.displayPage(Normal)
+            thePageNavigatedTo mustBe DeclarationHolderSummaryController.displayPage()
 
             And("'isRequired' should be set to None when the journey requires to skip /is-authorisation-required")
             val expectedHoldersData = request.declarationType match {
@@ -179,10 +178,10 @@ class DeclarationHolderRemoveControllerSpec extends ControllerSpec with ErrorHan
           withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationHolders(declarationHolder)))
 
           val body = Json.obj("yesNo" -> "No")
-          val result = controller.submitForm(Normal, id)(postRequest(body))
+          val result = controller.submitForm(id)(postRequest(body))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe DeclarationHolderSummaryController.displayPage(Normal)
+          thePageNavigatedTo mustBe DeclarationHolderSummaryController.displayPage()
 
           verifyTheCacheIsUnchanged()
         }
@@ -204,10 +203,10 @@ class DeclarationHolderRemoveControllerSpec extends ControllerSpec with ErrorHan
             "redirect to the /add-authorisation-required page" in {
               withNewCaching(aDeclarationAfter(declaration, withDeclarationHolders(declarationHolder)))
 
-              val result = controller.submitForm(Normal, id)(postRequest(body))
+              val result = controller.submitForm(id)(postRequest(body))
 
               await(result) mustBe aRedirectToTheNextPage
-              thePageNavigatedTo mustBe DeclarationHolderAddController.displayPage(Normal)
+              thePageNavigatedTo mustBe DeclarationHolderAddController.displayPage()
               theCacheModelUpdated.parties.declarationHoldersData mustBe None
             }
           }
@@ -220,10 +219,10 @@ class DeclarationHolderRemoveControllerSpec extends ControllerSpec with ErrorHan
             "redirect to the /is-authorisation-required page" in {
               withNewCaching(aDeclarationAfter(declaration, withDeclarationHolders(declarationHolder)))
 
-              val result = controller.submitForm(Normal, id)(postRequest(body))
+              val result = controller.submitForm(id)(postRequest(body))
 
               await(result) mustBe aRedirectToTheNextPage
-              thePageNavigatedTo mustBe DeclarationHolderRequiredController.displayPage(Normal)
+              thePageNavigatedTo mustBe DeclarationHolderRequiredController.displayPage()
 
               theCacheModelUpdated.parties.declarationHoldersData mustBe None
             }
@@ -238,10 +237,10 @@ class DeclarationHolderRemoveControllerSpec extends ControllerSpec with ErrorHan
               "redirect to the /is-authorisation-required page" in {
                 withNewCaching(aDeclarationAfter(declaration, withDeclarationHolders(declarationHolder)))
 
-                val result = controller.submitForm(Normal, id)(postRequest(body))
+                val result = controller.submitForm(id)(postRequest(body))
 
                 await(result) mustBe aRedirectToTheNextPage
-                thePageNavigatedTo mustBe DeclarationHolderRequiredController.displayPage(Normal)
+                thePageNavigatedTo mustBe DeclarationHolderRequiredController.displayPage()
 
                 theCacheModelUpdated.parties.declarationHoldersData mustBe None
               }

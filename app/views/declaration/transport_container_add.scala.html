@@ -39,15 +39,15 @@
         appConfig: AppConfig
 )
 
-@(mode: Mode, form: Form[ContainerAdd])(implicit request: JourneyRequest[_], messages: Messages)
+@(form: Form[ContainerAdd])(implicit request: JourneyRequest[_], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
 @govukLayout(
     title = Title("declaration.transportInformation.containers.add.title", "declaration.section.6", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(ContainerAdd, mode)))) {
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(ContainerAdd)))) {
 
-    @formHelper(action = TransportContainerController.submitAddContainer(mode), 'autoComplete -> "off") {
+    @formHelper(action = TransportContainerController.submitAddContainer(), 'autoComplete -> "off") {
 
         @errorSummary(form.errors)
 
@@ -62,6 +62,6 @@
 
         @tariffExpander(ContainerAdd, request.declarationType)(messages, appConfig)
 
-        @saveButtons(mode)
+        @saveButtons()
     }
 }

@@ -24,7 +24,7 @@ import forms.declaration.countries.Country
 import forms.declaration.declarationHolder.AuthorizationTypeCodes.codeThatSkipLocationOfGoods
 import models.DeclarationType.DeclarationType
 import models.codes.{Country => ModelCountry}
-import models.{DeclarationType, Mode}
+import models.{DeclarationType}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
@@ -74,7 +74,7 @@ class DestinationCountryControllerSpec extends ControllerSpec {
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration())
-    await(controller.displayPage(Mode.Normal)(request))
+    await(controller.displayPage()(request))
     theResponseForm
   }
 
@@ -85,7 +85,7 @@ class DestinationCountryControllerSpec extends ControllerSpec {
 
         withNewCaching(aDeclaration())
 
-        val result = controller.displayPage(Mode.Normal)(getRequest())
+        val result = controller.displayPage()(getRequest())
 
         status(result) mustBe OK
         verify(destinationCountryPage).apply(any(), any())(any(), any())
@@ -95,7 +95,7 @@ class DestinationCountryControllerSpec extends ControllerSpec {
 
         withNewCaching(aDeclaration(withDestinationCountries()))
 
-        val result = controller.displayPage(Mode.Normal)(getRequest())
+        val result = controller.displayPage()(getRequest())
 
         status(result) mustBe OK
         verify(destinationCountryPage).apply(any(), any())(any(), any())
@@ -110,7 +110,7 @@ class DestinationCountryControllerSpec extends ControllerSpec {
 
         val incorrectForm = JsObject(Map("countryCode" -> JsString("incorrect")))
 
-        val result = controller.submit(Mode.Normal)(postRequest(incorrectForm))
+        val result = controller.submit()(postRequest(incorrectForm))
 
         status(result) mustBe BAD_REQUEST
       }
@@ -126,7 +126,7 @@ class DestinationCountryControllerSpec extends ControllerSpec {
 
           val correctForm = JsObject(Map("countryCode" -> JsString("PL")))
 
-          val result = controller.submit(Mode.Normal)(postRequest(correctForm))
+          val result = controller.submit()(postRequest(correctForm))
 
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe redirect
@@ -144,7 +144,7 @@ class DestinationCountryControllerSpec extends ControllerSpec {
 
           val correctForm = JsObject(Map("countryCode" -> JsString("PL")))
 
-          val result = controller.submit(Mode.Normal)(postRequest(correctForm))
+          val result = controller.submit()(postRequest(correctForm))
 
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe OfficeOfExitController.displayPage()

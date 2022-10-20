@@ -22,7 +22,6 @@ import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.DeclarantEoriConfirmation
 import forms.declaration.DeclarantEoriConfirmation.form
 import models.DeclarationType.{OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
-import models.Mode
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
@@ -38,7 +37,7 @@ class DeclarantDetailsViewSpec extends UnitViewSpec with ExportsTestHelper with 
 
   private val declarantDetailsPage = instanceOf[declarant_details]
   private def createView(form: Form[DeclarantEoriConfirmation], mode: Mode = Mode.Normal)(implicit request: JourneyRequest[_]): Document =
-    declarantDetailsPage(mode, form)(request, messages)
+    declarantDetailsPage(form)(request, messages)
 
   "Declarant Details View on empty page" should {
 
@@ -70,7 +69,7 @@ class DeclarantDetailsViewSpec extends UnitViewSpec with ExportsTestHelper with 
 
       "display 'Back' button that links to 'Additional Declaration Type' page" in {
 
-        val view = declarantDetailsPage(Mode.Normal, form())(request, messages)
+        val view = declarantDetailsPage(form())(request, messages)
         val backButton = view.getElementById("back-link")
 
         backButton must containMessage(backCaption)
@@ -90,7 +89,7 @@ class DeclarantDetailsViewSpec extends UnitViewSpec with ExportsTestHelper with 
 
       "display 'Back' button that links to 'Entry into Declarant's Records' page" in {
 
-        val view = declarantDetailsPage(Mode.Normal, form())(request, messages)
+        val view = declarantDetailsPage(form())(request, messages)
         val backButton = view.getElementById("back-link")
 
         backButton must containMessage(backCaption)

@@ -22,7 +22,7 @@ import controllers.navigation.Navigator
 import forms.declaration.NatureOfTransaction
 import forms.declaration.NatureOfTransaction._
 import models.requests.JourneyRequest
-import models.{ExportsDeclaration, Mode}
+import models.ExportsDeclaration
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.cache.ExportsCacheService
@@ -43,19 +43,19 @@ class NatureOfTransactionController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
-  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     val frm = form.withSubmissionErrors
     request.cacheModel.natureOfTransaction match {
-      case Some(data) => Ok(natureOfTransactionPage(mode, frm.fill(data)))
-      case _          => Ok(natureOfTransactionPage(mode, frm))
+      case Some(data) => Ok(natureOfTransactionPage(frm.fill(data)))
+      case _          => Ok(natureOfTransactionPage(frm))
     }
   }
 
-  def saveTransactionType(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def saveTransactionType(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     form.bindFromRequest
       .fold(
-        formWithErrors => Future.successful(BadRequest(natureOfTransactionPage(mode, formWithErrors))),
-        updateCache(_).map(_ => navigator.continueTo(mode, PreviousDocumentsSummaryController.displayPage))
+        formWithErrors => Future.successful(BadRequest(natureOfTransactionPage(formWithErrors))),
+        updateCache(_).map(_ => navigator.continueTo(PreviousDocumentsSummaryController.displayPage))
       )
   }
 

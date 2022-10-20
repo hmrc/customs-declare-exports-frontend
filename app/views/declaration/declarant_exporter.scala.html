@@ -39,15 +39,15 @@
     appConfig: AppConfig
 )
 
-@(mode: Mode, form: Form[DeclarantIsExporter])(implicit request: JourneyRequest[_], messages: Messages)
+@(form: Form[DeclarantIsExporter])(implicit request: JourneyRequest[_], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
 @govukLayout(
     title = Title("declaration.declarant.exporter.title", "declaration.section.2", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(DeclarantIsExporter, mode)))) {
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(DeclarantIsExporter)))) {
 
-    @formHelper(action = controllers.declaration.routes.DeclarantExporterController.submitForm(mode), 'autoComplete -> "off") {
+    @formHelper(action = controllers.declaration.routes.DeclarantExporterController.submitForm(), 'autoComplete -> "off") {
         @errorSummary(yesNoErrors(form.errors, DeclarantIsExporter.answerKey))
 
         @sectionHeader(messages("declaration.section.2"))
@@ -71,6 +71,6 @@
 
         @tariffExpander(DeclarantIsExporter, request.declarationType)(messages, appConfig)
 
-        @saveButtons(mode)
+        @saveButtons()
     }
 }

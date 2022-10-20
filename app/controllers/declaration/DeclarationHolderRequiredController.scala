@@ -24,7 +24,7 @@ import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import models.declaration.DeclarationHoldersData
 import models.requests.JourneyRequest
-import models.{ExportsDeclaration, Mode}
+import models.ExportsDeclaration
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
@@ -46,17 +46,17 @@ class DeclarationHolderRequiredController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
-  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    if (declarationHolders.nonEmpty) navigator.continueTo(mode, DeclarationHolderSummaryController.displayPage)
-    else if (userCanLandOnIsAuthRequiredPage(request.cacheModel)) Ok(declarationHolderRequired(mode, formWithPreviousAnswer.withSubmissionErrors))
-    else navigator.continueTo(mode, DeclarationHolderAddController.displayPage)
+  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    if (declarationHolders.nonEmpty) navigator.continueTo(DeclarationHolderSummaryController.displayPage)
+    else if (userCanLandOnIsAuthRequiredPage(request.cacheModel)) Ok(declarationHolderRequired(formWithPreviousAnswer.withSubmissionErrors))
+    else navigator.continueTo(DeclarationHolderAddController.displayPage)
   }
 
-  def submitForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def submitForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     form.bindFromRequest
       .fold(
-        formWithErrors => Future.successful(BadRequest(declarationHolderRequired(mode, formWithErrors))),
-        validYesNo => updateCache(Some(validYesNo)).map(_ => navigator.continueTo(mode, nextPage(validYesNo)))
+        formWithErrors => Future.successful(BadRequest(declarationHolderRequired(formWithErrors))),
+        validYesNo => updateCache(Some(validYesNo)).map(_ => navigator.continueTo(nextPage(validYesNo)))
       )
   }
 
@@ -68,7 +68,7 @@ class DeclarationHolderRequiredController @Inject() (
       case _            => form
     }
 
-  private def nextPage(yesNoAnswer: YesNoAnswer): Mode => Call =
+  private def nextPage(yesNoAnswer: YesNoAnswer): Call =
     yesNoAnswer.answer match {
       case YesNoAnswers.yes => DeclarationHolderAddController.displayPage
       case YesNoAnswers.no  => DestinationCountryController.displayPage

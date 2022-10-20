@@ -46,7 +46,7 @@
     formHelper: FormWithCSRF
 )
 
-@(mode: Mode, itemId: String, form: Form[YesNoAnswer], items: Seq[AdditionalInformation], backLink: Call)(implicit request: JourneyRequest[_], messages: Messages)
+@(itemId: String, form: Form[YesNoAnswer], items: Seq[AdditionalInformation], backLink: Call)(implicit request: JourneyRequest[_], messages: Messages)
 
 @title = @{
     if(items.size == 1)
@@ -79,7 +79,7 @@
                     TableRow(
                         content = HtmlContent(link(
                             messages("site.change"),
-                            AdditionalInformationChangeController.displayPage(mode, itemId, createId(index, item)),
+                            AdditionalInformationChangeController.displayPage(itemId, createId(index, item)),
                             textHidden = Some(messages("declaration.additionalInformation.table.change.hint", item.code))
                         )),
                         classes = "govuk-table__cell--numeric",
@@ -88,7 +88,7 @@
                     TableRow(
                         content = HtmlContent(link(
                             messages("site.remove"),
-                            AdditionalInformationRemoveController.displayPage(mode, itemId, createId(index, item)),
+                            AdditionalInformationRemoveController.displayPage(itemId, createId(index, item)),
                             textHidden = Some(messages("declaration.additionalInformation.table.remove.hint", item.code))
                         )),
                         classes = "govuk-table__cell--numeric",
@@ -118,7 +118,7 @@
 
 @govukLayout(title = title, backButton = Some(BackButton(messages("site.backToPreviousQuestion"), backLink))) {
 
-    @formHelper(action = AdditionalInformationController.submitForm(mode, itemId), 'autoComplete -> "off") {
+    @formHelper(action = AdditionalInformationController.submitForm(itemId), 'autoComplete -> "off") {
         @errorSummary(yesNoErrors(form.errors))
 
         @sectionHeader(messages("declaration.section.5"))
@@ -132,7 +132,7 @@
             html = HtmlFormat.fill(immutable.Seq(
                 additionalInformationTable,
                 addAnotherQuestion("declaration.additionalInformation.add.another", form),
-                saveButtons(mode)
+                saveButtons()
             ))
         ))
     }

@@ -21,8 +21,6 @@ import controllers.declaration.routes.TransportContainerController
 import forms.declaration.ContainerAdd
 import forms.declaration.ContainerAdd.form
 import models.DeclarationType.STANDARD
-import models.Mode
-import models.Mode.Normal
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import views.declaration.spec.PageWithButtonsSpec
@@ -34,9 +32,9 @@ class TransportContainerAddViewSpec extends PageWithButtonsSpec with Injector {
 
   val page = instanceOf[transport_container_add]
 
-  override val typeAndViewInstance = (STANDARD, page(Normal, form())(_, _))
+  override val typeAndViewInstance = (STANDARD, page(form())(_, _))
 
-  def createView(frm: Form[ContainerAdd] = form(), mode: Mode = Normal): Document = page(mode, frm)(journeyRequest(), messages)
+  def createView(frm: Form[ContainerAdd] = form(), mode: Mode = Normal): Document = page(frm)(journeyRequest(), messages)
 
   "Transport Containers Add View" should {
     val view = createView()
@@ -51,7 +49,7 @@ class TransportContainerAddViewSpec extends PageWithButtonsSpec with Injector {
 
     "display 'Back' button that links to 'containers summary' page" in {
       val backLinkContainer = view.getElementById("back-link")
-      backLinkContainer.getElementById("back-link") must haveHref(TransportContainerController.displayContainerSummary(Normal))
+      backLinkContainer.getElementById("back-link") must haveHref(TransportContainerController.displayContainerSummary())
     }
 
     val createViewWithMode: Mode => Document = mode => createView(mode = mode)

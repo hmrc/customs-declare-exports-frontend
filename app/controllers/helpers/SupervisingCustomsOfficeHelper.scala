@@ -22,7 +22,7 @@ import forms.declaration.declarationHolder.AuthorizationTypeCodes.{codeThatOverr
 import models.DeclarationType._
 import models.codes.AdditionalProcedureCode.NO_APC_APPLIES_CODE
 import models.declaration.ProcedureCodesData
-import models.{ExportsDeclaration, Mode}
+import models.ExportsDeclaration
 import play.api.mvc.Call
 
 import javax.inject.{Inject, Singleton}
@@ -48,11 +48,11 @@ class SupervisingCustomsOfficeHelper @Inject() (inlandOrBorderHelper: InlandOrBo
     cachedModel.items.nonEmpty &&
       cachedModel.items.forall(_.procedureCodes.forall(isConditionForProcedureCodesDataVerified))
 
-  def landOnOrSkipToNextPage(declaration: ExportsDeclaration): Mode => Call =
+  def landOnOrSkipToNextPage(declaration: ExportsDeclaration): Call =
     if (isConditionForAllProcedureCodesVerified(declaration)) nextPage(declaration)
     else SupervisingCustomsOfficeController.displayPage
 
-  def nextPage(declaration: ExportsDeclaration): Mode => Call =
+  def nextPage(declaration: ExportsDeclaration): Call =
     declaration.`type` match {
       case STANDARD | SUPPLEMENTARY =>
         if (inlandOrBorderHelper.skipInlandOrBorder(declaration)) InlandTransportDetailsController.displayPage
@@ -62,7 +62,7 @@ class SupervisingCustomsOfficeHelper @Inject() (inlandOrBorderHelper: InlandOrBo
       case SIMPLIFIED | OCCASIONAL => ExpressConsignmentController.displayPage
     }
 
-  private def nextPageOnClearance(declaration: ExportsDeclaration): Mode => Call = {
+  private def nextPageOnClearance(declaration: ExportsDeclaration): Call = {
     val condition = isPostalOrFTIModeOfTransport(declaration.transportLeavingBorderCode)
     if (condition) ExpressConsignmentController.displayPage else DepartureTransportController.displayPage
   }

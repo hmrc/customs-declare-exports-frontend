@@ -21,7 +21,7 @@ import controllers.helpers.SupervisingCustomsOfficeHelper
 import controllers.navigation.Navigator
 import forms.declaration.WarehouseIdentification
 import models.requests.JourneyRequest
-import models.{DeclarationType, ExportsDeclaration, Mode}
+import models.{DeclarationType, ExportsDeclaration}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -46,22 +46,22 @@ class WarehouseIdentificationController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
-  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     val frm = form.withSubmissionErrors
     request.cacheModel.locations.warehouseIdentification match {
-      case Some(data) => Ok(page(mode, frm.fill(data)))
-      case _          => Ok(page(mode, frm))
+      case Some(data) => Ok(page(frm.fill(data)))
+      case _          => Ok(page(frm))
     }
   }
 
-  def saveIdentificationNumber(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def saveIdentificationNumber(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     form.bindFromRequest
       .fold(
-        formWithErrors => Future.successful(BadRequest(page(mode, formWithErrors))),
+        formWithErrors => Future.successful(BadRequest(page(formWithErrors))),
         updateCache(_).map { declaration =>
           // Next page should always be '/supervising-customs-office' for CLEARANCE
           // since Procedure code '1040' is not applicable to this declaration type
-          navigator.continueTo(mode, supervisingCustomsOfficeHelper.landOnOrSkipToNextPage(declaration))
+          navigator.continueTo(supervisingCustomsOfficeHelper.landOnOrSkipToNextPage(declaration))
         }
       )
   }
@@ -72,10 +72,10 @@ class WarehouseIdentificationController @Inject() (
       case _                         => WarehouseIdentification.form(yesNo = false)
     }
 
-  private def page(mode: Mode, form: Form[WarehouseIdentification])(implicit request: JourneyRequest[AnyContent]): HtmlFormat.Appendable =
+  private def page(form: Form[WarehouseIdentification])(implicit request: JourneyRequest[AnyContent]): HtmlFormat.Appendable =
     request.declarationType match {
-      case DeclarationType.CLEARANCE => warehouseIdentificationYesNoPage(mode, form)
-      case _                         => warehouseIdentificationPage(mode, form)
+      case DeclarationType.CLEARANCE => warehouseIdentificationYesNoPage(form)
+      case _                         => warehouseIdentificationPage(form)
     }
 
   private def updateCache(formData: WarehouseIdentification)(implicit request: JourneyRequest[_]): Future[ExportsDeclaration] =

@@ -26,7 +26,7 @@ import forms.declaration.additionaldocuments.AdditionalDocument
 
 import javax.inject.Inject
 import models.requests.JourneyRequest
-import models.{ExportsDeclaration, Mode}
+import models.ExportsDeclaration
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
@@ -46,34 +46,34 @@ class AdditionalDocumentRemoveController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
-  def displayPage(mode: Mode, itemId: String, documentId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayPage(itemId: String, documentId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     findAdditionalDocument(itemId, documentId) match {
-      case Some(document) => Ok(additionalDocumentRemovePage(mode, itemId, documentId, document, removeYesNoForm.withSubmissionErrors()))
-      case _              => returnToSummary(mode, itemId)
+      case Some(document) => Ok(additionalDocumentRemovePage(itemId, documentId, document, removeYesNoForm.withSubmissionErrors()))
+      case _              => returnToSummary(itemId)
     }
   }
 
-  def submitForm(mode: Mode, itemId: String, documentId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def submitForm(itemId: String, documentId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     findAdditionalDocument(itemId, documentId) match {
       case Some(document) =>
         removeYesNoForm
           .bindFromRequest()
           .fold(
-            formWithErrors => Future.successful(BadRequest(additionalDocumentRemovePage(mode, itemId, documentId, document, formWithErrors))),
+            formWithErrors => Future.successful(BadRequest(additionalDocumentRemovePage(itemId, documentId, document, formWithErrors))),
             _.answer match {
-              case YesNoAnswers.yes => removeAdditionalDocument(itemId, document).map(_ => returnToSummary(mode, itemId))
-              case YesNoAnswers.no  => Future.successful(returnToSummary(mode, itemId))
+              case YesNoAnswers.yes => removeAdditionalDocument(itemId, document).map(_ => returnToSummary(itemId))
+              case YesNoAnswers.no  => Future.successful(returnToSummary(itemId))
             }
           )
-      case _ => Future.successful(returnToSummary(mode, itemId))
+      case _ => Future.successful(returnToSummary(itemId))
     }
 
   }
 
   private def removeYesNoForm: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.additionalDocument.remove.empty")
 
-  private def returnToSummary(mode: Mode, itemId: String)(implicit request: JourneyRequest[AnyContent]): Result =
-    navigator.continueTo(mode, routes.AdditionalDocumentsController.displayPage(_, itemId))
+  private def returnToSummary(itemId: String)(implicit request: JourneyRequest[AnyContent]): Result =
+    navigator.continueTo(routes.AdditionalDocumentsController.displayPage(itemId))
 
   private def findAdditionalDocument(itemId: String, id: String)(implicit request: JourneyRequest[AnyContent]): Option[AdditionalDocument] =
     ListItem.findById(id, request.cacheModel.listOfAdditionalDocuments(itemId))

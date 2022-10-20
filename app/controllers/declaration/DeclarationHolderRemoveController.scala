@@ -26,7 +26,7 @@ import forms.declaration.declarationHolder.DeclarationHolder
 import handlers.ErrorHandler
 import models.declaration.DeclarationHoldersData
 import models.requests.JourneyRequest
-import models.{ExportsDeclaration, Mode}
+import models.ExportsDeclaration
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
@@ -49,34 +49,33 @@ class DeclarationHolderRemoveController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
-  def displayPage(mode: Mode, id: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def displayPage(id: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val maybeExistingHolder = declarationHolders.find(_.id.equals(id))
 
     maybeExistingHolder.fold(errorHandler.displayErrorPage) { holder =>
-      Future.successful(Ok(holderRemovePage(mode, holder, removeYesNoForm.withSubmissionErrors)))
+      Future.successful(Ok(holderRemovePage(holder, removeYesNoForm.withSubmissionErrors)))
     }
   }
 
-  def submitForm(mode: Mode, id: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def submitForm(id: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val maybeExistingHolder = declarationHolders.find(_.id.equals(id))
 
     maybeExistingHolder.fold(errorHandler.displayErrorPage) { holderToRemove =>
       removeYesNoForm.bindFromRequest
         .fold(
-          formWithErrors => Future.successful(BadRequest(holderRemovePage(mode, holderToRemove, formWithErrors))),
+          formWithErrors => Future.successful(BadRequest(holderRemovePage(holderToRemove, formWithErrors))),
           _.answer match {
-            case YesNoAnswers.yes => updateExportsCache(holderToRemove).map(nextPage(mode, _))
+            case YesNoAnswers.yes => updateExportsCache(holderToRemove).map(nextPage(_))
 
             case YesNoAnswers.no =>
-              Future.successful(navigator.continueTo(mode, DeclarationHolderSummaryController.displayPage))
+              Future.successful(navigator.continueTo(DeclarationHolderSummaryController.displayPage))
           }
         )
     }
   }
 
-  private def nextPage(mode: Mode, declaration: ExportsDeclaration)(implicit r: JourneyRequest[AnyContent]): Result =
+  private def nextPage(declaration: ExportsDeclaration)(implicit r: JourneyRequest[AnyContent]): Result =
     navigator.continueTo(
-      mode,
       if (declaration.declarationHolders.nonEmpty) DeclarationHolderSummaryController.displayPage
       else if (userCanLandOnIsAuthRequiredPage(declaration)) DeclarationHolderRequiredController.displayPage
       else DeclarationHolderAddController.displayPage

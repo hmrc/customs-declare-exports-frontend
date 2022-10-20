@@ -20,7 +20,7 @@ import base.ControllerSpec
 import forms.common.YesNoAnswer
 import forms.declaration.NatureOfTransaction.{BusinessPurchase, NationalPurposes, Sale}
 import forms.declaration.TaricCode
-import models.{DeclarationType, Mode}
+import models.{DeclarationType}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -55,7 +55,7 @@ class TaricCodeSummaryControllerSpec extends ControllerSpec with OptionValues {
     val taricCode = TaricCode("1234")
     val item = anItem(withTaricCodes(taricCode))
     withNewCaching(aDeclaration(withItems(item)))
-    await(controller.displayPage(Mode.Normal, item.id)(request))
+    await(controller.displayPage(item.id)(request))
     theResponseForm
   }
   override protected def beforeEach(): Unit = {
@@ -86,7 +86,7 @@ class TaricCodeSummaryControllerSpec extends ControllerSpec with OptionValues {
           val item = anItem(withTaricCodes(taricCode))
           withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
 
-          val result = controller.displayPage(Mode.Normal, item.id)(getRequest())
+          val result = controller.displayPage(item.id)(getRequest())
 
           status(result) mustBe OK
           verifyPageInvoked()
@@ -103,7 +103,7 @@ class TaricCodeSummaryControllerSpec extends ControllerSpec with OptionValues {
           withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
 
           val requestBody = Seq("yesNo" -> "invalid")
-          val result = controller.submitForm(Mode.Normal, item.id)(postRequestAsFormUrlEncoded(requestBody: _*))
+          val result = controller.submitForm(item.id)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           status(result) mustBe BAD_REQUEST
           verifyPageInvoked()
@@ -117,10 +117,10 @@ class TaricCodeSummaryControllerSpec extends ControllerSpec with OptionValues {
           val item = anItem()
           withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
 
-          val result = controller.displayPage(Mode.Normal, item.id)(getRequest())
+          val result = controller.displayPage(item.id)(getRequest())
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.TaricCodeAddController.displayPage(Mode.Normal, item.id)
+          thePageNavigatedTo mustBe controllers.declaration.routes.TaricCodeAddController.displayPage(item.id)
         }
 
         "user submits valid Yes answer" in {
@@ -129,10 +129,10 @@ class TaricCodeSummaryControllerSpec extends ControllerSpec with OptionValues {
           withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
 
           val requestBody = Seq("yesNo" -> "Yes")
-          val result = controller.submitForm(Mode.Normal, item.id)(postRequestAsFormUrlEncoded(requestBody: _*))
+          val result = controller.submitForm(item.id)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.TaricCodeAddController.displayPage(Mode.Normal, item.id)
+          thePageNavigatedTo mustBe controllers.declaration.routes.TaricCodeAddController.displayPage(item.id)
         }
 
       }
@@ -149,10 +149,10 @@ class TaricCodeSummaryControllerSpec extends ControllerSpec with OptionValues {
             withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item), withNatureOfTransaction(Sale)))
 
             val requestBody = Seq("yesNo" -> "No")
-            val result = controller.submitForm(Mode.Normal, item.id)(postRequestAsFormUrlEncoded(requestBody: _*))
+            val result = controller.submitForm(item.id)(postRequestAsFormUrlEncoded(requestBody: _*))
 
             await(result) mustBe aRedirectToTheNextPage
-            thePageNavigatedTo mustBe controllers.declaration.routes.ZeroRatedForVatController.displayPage(Mode.Normal, item.id)
+            thePageNavigatedTo mustBe controllers.declaration.routes.ZeroRatedForVatController.displayPage(item.id)
           }
           "user has answered business purchase transaction" in {
             val taricCode = TaricCode("QWER")
@@ -161,10 +161,10 @@ class TaricCodeSummaryControllerSpec extends ControllerSpec with OptionValues {
             withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item), withNatureOfTransaction(BusinessPurchase)))
 
             val requestBody = Seq("yesNo" -> "No")
-            val result = controller.submitForm(Mode.Normal, item.id)(postRequestAsFormUrlEncoded(requestBody: _*))
+            val result = controller.submitForm(item.id)(postRequestAsFormUrlEncoded(requestBody: _*))
 
             await(result) mustBe aRedirectToTheNextPage
-            thePageNavigatedTo mustBe controllers.declaration.routes.ZeroRatedForVatController.displayPage(Mode.Normal, item.id)
+            thePageNavigatedTo mustBe controllers.declaration.routes.ZeroRatedForVatController.displayPage(item.id)
           }
           "user has not answered nature of transaction" in {
             val taricCode = TaricCode("QWER")
@@ -173,10 +173,10 @@ class TaricCodeSummaryControllerSpec extends ControllerSpec with OptionValues {
             withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
 
             val requestBody = Seq("yesNo" -> "No")
-            val result = controller.submitForm(Mode.Normal, item.id)(postRequestAsFormUrlEncoded(requestBody: _*))
+            val result = controller.submitForm(item.id)(postRequestAsFormUrlEncoded(requestBody: _*))
 
             await(result) mustBe aRedirectToTheNextPage
-            thePageNavigatedTo mustBe controllers.declaration.routes.NactCodeSummaryController.displayPage(Mode.Normal, item.id)
+            thePageNavigatedTo mustBe controllers.declaration.routes.NactCodeSummaryController.displayPage(item.id)
           }
           "user has answered other nature of transaction" in {
             val taricCode = TaricCode("QWER")
@@ -185,10 +185,10 @@ class TaricCodeSummaryControllerSpec extends ControllerSpec with OptionValues {
             withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item), withNatureOfTransaction(NationalPurposes)))
 
             val requestBody = Seq("yesNo" -> "No")
-            val result = controller.submitForm(Mode.Normal, item.id)(postRequestAsFormUrlEncoded(requestBody: _*))
+            val result = controller.submitForm(item.id)(postRequestAsFormUrlEncoded(requestBody: _*))
 
             await(result) mustBe aRedirectToTheNextPage
-            thePageNavigatedTo mustBe controllers.declaration.routes.NactCodeSummaryController.displayPage(Mode.Normal, item.id)
+            thePageNavigatedTo mustBe controllers.declaration.routes.NactCodeSummaryController.displayPage(item.id)
           }
         }
 
@@ -204,10 +204,10 @@ class TaricCodeSummaryControllerSpec extends ControllerSpec with OptionValues {
           withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
 
           val requestBody = Seq("yesNo" -> "No")
-          val result = controller.submitForm(Mode.Normal, item.id)(postRequestAsFormUrlEncoded(requestBody: _*))
+          val result = controller.submitForm(item.id)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.NactCodeSummaryController.displayPage(Mode.Normal, item.id)
+          thePageNavigatedTo mustBe controllers.declaration.routes.NactCodeSummaryController.displayPage(item.id)
         }
 
       }

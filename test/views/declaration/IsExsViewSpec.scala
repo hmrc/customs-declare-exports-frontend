@@ -20,7 +20,6 @@ import base.Injector
 import controllers.declaration.routes
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.{DeclarantIsExporter, IsExs}
-import models.Mode
 import models.declaration.Parties
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
@@ -35,7 +34,7 @@ class IsExsViewSpec extends UnitViewSpec with ExportsTestHelper with CommonMessa
 
   private val page = instanceOf[is_exs]
   private def createView(mode: Mode = Mode.Normal)(implicit request: JourneyRequest[_]): Document =
-    page(mode, IsExs.form)(request, messages)
+    page(IsExs.form)(request, messages)
 
   "Is Exs View" should {
 

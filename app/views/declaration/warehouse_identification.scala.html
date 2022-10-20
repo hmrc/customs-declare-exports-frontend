@@ -39,15 +39,15 @@
         appConfig: AppConfig
 )
 
-@(mode: Mode, form: Form[WarehouseIdentification])(implicit request: JourneyRequest[_], messages: Messages)
+@(form: Form[WarehouseIdentification])(implicit request: JourneyRequest[_], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
 @govukLayout(
     title = Title("declaration.warehouse.identification.required.title", "declaration.section.6", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(WarehouseIdentification, mode)))) {
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(WarehouseIdentification)))) {
 
-    @formHelper(action = WarehouseIdentificationController.saveIdentificationNumber(mode), 'autoComplete -> "off") {
+    @formHelper(action = WarehouseIdentificationController.saveIdentificationNumber(), 'autoComplete -> "off") {
 
         @errorSummary(form.errors)
 
@@ -65,6 +65,6 @@
 
         @tariffExpander(WarehouseIdentification, request.declarationType)(messages, appConfig)
 
-        @saveButtons(mode)
+        @saveButtons()
     }
 }

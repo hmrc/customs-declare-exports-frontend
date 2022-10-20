@@ -42,7 +42,7 @@
     formHelper: FormWithCSRF
 )
 
-@(mode: Mode, form: Form[_], actors: Seq[DeclarationAdditionalActors])(implicit request: JourneyRequest[_], messages: Messages)
+@(form: Form[_], actors: Seq[DeclarationAdditionalActors])(implicit request: JourneyRequest[_], messages: Messages)
 
 @title = @{
     if(actors.size == 1)
@@ -74,7 +74,7 @@
                 TableRow(
                     content = HtmlContent(link(
                         messages("site.remove"),
-                        AdditionalActorsRemoveController.displayPage(mode, createId(index, actor)),
+                        AdditionalActorsRemoveController.displayPage(createId(index, actor)),
                         textHidden = Some(messages(
                             "declaration.additionalActors.table.remove.hint",
                             messages(s"declaration.partyType.${actor.partyType.getOrElse("")}"),
@@ -103,10 +103,10 @@
 
 @govukLayout(
     title = title,
-    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(AdditionalActorsSummary  , mode)))
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(AdditionalActorsSummary  )))
 ) {
 
-    @formHelper(action = AdditionalActorsSummaryController.submitForm(mode), 'autoComplete -> "off") {
+    @formHelper(action = AdditionalActorsSummaryController.submitForm(), 'autoComplete -> "off") {
         @errorSummary(yesNoErrors(form.errors))
 
         @sectionHeader(messages("declaration.section.2"))
@@ -120,7 +120,7 @@
             html = HtmlFormat.fill(immutable.Seq(
                 actorsTable,
                 addAnotherQuestion("declaration.additionalActors.add.another", form),
-                saveButtons(mode)
+                saveButtons()
             ))
         ))
     }

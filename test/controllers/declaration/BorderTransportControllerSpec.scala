@@ -22,7 +22,6 @@ import forms.declaration.BorderTransport
 import forms.declaration.BorderTransport.radioButtonGroupId
 import forms.declaration.TransportCodes._
 import models.DeclarationType._
-import models.Mode.Normal
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
@@ -54,7 +53,7 @@ class BorderTransportControllerSpec extends ControllerSpec {
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration())
-    await(controller.displayPage(Normal)(request))
+    await(controller.displayPage()(request))
     theResponseForm
   }
 
@@ -90,14 +89,14 @@ class BorderTransportControllerSpec extends ControllerSpec {
         "display page method is invoked and cache is empty" in {
           withNewCaching(request.cacheModel)
 
-          val result = controller.displayPage(Normal)(getRequest())
+          val result = controller.displayPage()(getRequest())
           status(result) must be(OK)
         }
 
         "display page method is invoked and cache is not empty" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withBorderTransport()))
 
-          val result = controller.displayPage(Normal)(getRequest())
+          val result = controller.displayPage()(getRequest())
           status(result) must be(OK)
         }
       }
@@ -108,7 +107,7 @@ class BorderTransportControllerSpec extends ControllerSpec {
 
           val incorrectForm = formData("incorrect", "")
 
-          val result = controller.submitForm(Normal)(postRequest(incorrectForm))
+          val result = controller.submitForm()(postRequest(incorrectForm))
           status(result) must be(BAD_REQUEST)
         }
       }
@@ -119,7 +118,7 @@ class BorderTransportControllerSpec extends ControllerSpec {
 
           val correctForm = formData(ShipOrRoroImoNumber.value, "SHIP001")
 
-          val result = controller.submitForm(Normal)(postRequest(correctForm))
+          val result = controller.submitForm()(postRequest(correctForm))
 
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe routes.TransportCountryController.displayPage()
@@ -133,7 +132,7 @@ class BorderTransportControllerSpec extends ControllerSpec {
         "the 'displayPage' method is invoked" in {
           withNewCaching(request.cacheModel)
 
-          val result = controller.displayPage(Normal)(getRequest())
+          val result = controller.displayPage()(getRequest())
 
           status(result) must be(SEE_OTHER)
           redirectLocation(result) mustBe Some(RootController.displayPage().url)
@@ -144,7 +143,7 @@ class BorderTransportControllerSpec extends ControllerSpec {
 
           val correctForm = formData(ShipOrRoroImoNumber.value, "SHIP001")
 
-          val result = controller.submitForm(Normal)(postRequest(correctForm))
+          val result = controller.submitForm()(postRequest(correctForm))
 
           status(result) must be(SEE_OTHER)
           redirectLocation(result) mustBe Some(RootController.displayPage().url)

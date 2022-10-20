@@ -19,7 +19,7 @@ package controllers.declaration
 import base.ControllerSpec
 import forms.common.YesNoAnswer
 import forms.declaration.{NactCode, NactCodeFirst}
-import models.{DeclarationType, Mode}
+import models.{DeclarationType}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -57,7 +57,7 @@ class NactCodeSummaryControllerSpec extends ControllerSpec with OptionValues {
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     val item = anItem(withNactCodes(NactCode("VATE")))
     withNewCaching(aDeclaration(withItems(item)))
-    await(controller.displayPage(Mode.Normal, item.id)(request))
+    await(controller.displayPage(item.id)(request))
     theResponseForm
   }
   def theNactCodes: List[NactCode] = {
@@ -77,7 +77,7 @@ class NactCodeSummaryControllerSpec extends ControllerSpec with OptionValues {
           val item = anItem(withNactCodes(nactCode))
           withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
 
-          val result = controller.displayPage(Mode.Normal, item.id)(getRequest())
+          val result = controller.displayPage(item.id)(getRequest())
 
           status(result) mustBe OK
           verifyPageInvoked()
@@ -94,7 +94,7 @@ class NactCodeSummaryControllerSpec extends ControllerSpec with OptionValues {
           withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
 
           val requestBody = Seq("yesNo" -> "invalid")
-          val result = controller.submitForm(Mode.Normal, item.id)(postRequestAsFormUrlEncoded(requestBody: _*))
+          val result = controller.submitForm(item.id)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           status(result) mustBe BAD_REQUEST
           verifyPageInvoked()
@@ -108,10 +108,10 @@ class NactCodeSummaryControllerSpec extends ControllerSpec with OptionValues {
           val item = anItem()
           withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
 
-          val result = controller.displayPage(Mode.Normal, item.id)(getRequest())
+          val result = controller.displayPage(item.id)(getRequest())
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.NactCodeAddController.displayPage(Mode.Normal, item.id)
+          thePageNavigatedTo mustBe controllers.declaration.routes.NactCodeAddController.displayPage(item.id)
         }
 
         "user submits valid Yes answer" in {
@@ -120,10 +120,10 @@ class NactCodeSummaryControllerSpec extends ControllerSpec with OptionValues {
           withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
 
           val requestBody = Seq("yesNo" -> "Yes")
-          val result = controller.submitForm(Mode.Normal, item.id)(postRequestAsFormUrlEncoded(requestBody: _*))
+          val result = controller.submitForm(item.id)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.NactCodeAddController.displayPage(Mode.Normal, item.id)
+          thePageNavigatedTo mustBe controllers.declaration.routes.NactCodeAddController.displayPage(item.id)
         }
 
       }
@@ -138,10 +138,10 @@ class NactCodeSummaryControllerSpec extends ControllerSpec with OptionValues {
           withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
 
           val requestBody = Seq("yesNo" -> "No")
-          val result = controller.submitForm(Mode.Normal, item.id)(postRequestAsFormUrlEncoded(requestBody: _*))
+          val result = controller.submitForm(item.id)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.StatisticalValueController.displayPage(Mode.Normal, item.id)
+          thePageNavigatedTo mustBe controllers.declaration.routes.StatisticalValueController.displayPage(item.id)
         }
 
       }
@@ -156,10 +156,10 @@ class NactCodeSummaryControllerSpec extends ControllerSpec with OptionValues {
           withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
 
           val requestBody = Seq("yesNo" -> "No")
-          val result = controller.submitForm(Mode.Normal, item.id)(postRequestAsFormUrlEncoded(requestBody: _*))
+          val result = controller.submitForm(item.id)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.PackageInformationSummaryController.displayPage(Mode.Normal, item.id)
+          thePageNavigatedTo mustBe controllers.declaration.routes.PackageInformationSummaryController.displayPage(item.id)
         }
 
       }
@@ -171,7 +171,7 @@ class NactCodeSummaryControllerSpec extends ControllerSpec with OptionValues {
 
           withNewCaching(request.cacheModel)
 
-          val result = controller.displayPage(Mode.Normal, "id")(getRequest())
+          val result = controller.displayPage("id")(getRequest())
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(controllers.routes.RootController.displayPage().url)
@@ -182,7 +182,7 @@ class NactCodeSummaryControllerSpec extends ControllerSpec with OptionValues {
           withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
 
           val requestBody = Seq(NactCodeFirst.hasNactCodeKey -> "Yes", NactCode.nactCodeKey -> "VATR")
-          val result = controller.submitForm(Mode.Normal, item.id)(postRequestAsFormUrlEncoded(requestBody: _*))
+          val result = controller.submitForm(item.id)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(controllers.routes.RootController.displayPage().url)

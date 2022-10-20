@@ -25,7 +25,6 @@ import forms.declaration.WarehouseIdentification
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
 import models.DeclarationType
 import models.DeclarationType._
-import models.Mode.Normal
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
@@ -81,7 +80,7 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec {
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration())
-    await(controller.displayPage(Normal)(request))
+    await(controller.displayPage()(request))
     theResponseForm
   }
 
@@ -93,7 +92,7 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec {
       "return 200 (OK)" when {
 
         "display page method is invoked and cache is empty" in {
-          val result = controller.displayPage(Normal)(getRequest())
+          val result = controller.displayPage()(getRequest())
 
           status(result) must be(OK)
         }
@@ -101,7 +100,7 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec {
         "display page method is invoked and cache is not empty" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withWarehouseIdentification(Some(identification))))
 
-          val result = controller.displayPage(Normal)(getRequest())
+          val result = controller.displayPage()(getRequest())
 
           status(result) must be(OK)
           theResponseForm.value mustBe Some(identification)
@@ -114,7 +113,7 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec {
 
           val incorrectForm = Json.obj(WarehouseIdentification.warehouseIdKey -> "incorrect")
 
-          val result = controller.saveIdentificationNumber(Normal)(postRequest(incorrectForm))
+          val result = controller.saveIdentificationNumber()(postRequest(incorrectForm))
 
           status(result) must be(BAD_REQUEST)
         }
@@ -125,7 +124,7 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec {
           withNewCaching(request.cacheModel)
           val correctForm = Json.obj(WarehouseIdentification.warehouseIdKey -> "R12341234")
 
-          val result = controller.saveIdentificationNumber(Normal)(postRequest(correctForm))
+          val result = controller.saveIdentificationNumber()(postRequest(correctForm))
 
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe routes.SupervisingCustomsOfficeController.displayPage()
@@ -139,7 +138,7 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec {
           withNewCaching(withRequest(SUPPLEMENTARY_EIDR, withItem(itemWithPC("1040"))).cacheModel)
           val correctForm = Json.obj(WarehouseIdentification.warehouseIdKey -> "R12341234")
 
-          val result = controller.saveIdentificationNumber(Normal)(postRequest(correctForm))
+          val result = controller.saveIdentificationNumber()(postRequest(correctForm))
 
           status(result) mustBe SEE_OTHER
 
@@ -155,7 +154,7 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec {
             withNewCaching(withRequest(additionalType, withItem(itemWithPC("1040"))).cacheModel)
             val correctForm = Json.obj(WarehouseIdentification.warehouseIdKey -> "R12341234")
 
-            val result = controller.saveIdentificationNumber(Normal)(postRequest(correctForm))
+            val result = controller.saveIdentificationNumber()(postRequest(correctForm))
 
             status(result) mustBe SEE_OTHER
             thePageNavigatedTo mustBe routes.InlandOrBorderController.displayPage()
@@ -170,7 +169,7 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec {
           withNewCaching(request.cacheModel)
           val correctForm = Json.obj(WarehouseIdentification.warehouseIdKey -> "R12341234")
 
-          val result = controller.saveIdentificationNumber(Normal)(postRequest(correctForm))
+          val result = controller.saveIdentificationNumber()(postRequest(correctForm))
 
           status(result) mustBe SEE_OTHER
           thePageNavigatedTo mustBe routes.ExpressConsignmentController.displayPage()
@@ -182,7 +181,7 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec {
       "return 200 (OK)" when {
 
         "display page method is invoked and cache is empty" in {
-          val result = controller.displayPage(Normal)(getRequest())
+          val result = controller.displayPage()(getRequest())
 
           status(result) must be(OK)
         }
@@ -190,7 +189,7 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec {
         "display page method is invoked and cache is not empty" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withWarehouseIdentification(Some(identification))))
 
-          val result = controller.displayPage(Normal)(getRequest())
+          val result = controller.displayPage()(getRequest())
 
           status(result) must be(OK)
           theResponseFormYesNo.value mustBe Some(identification)
@@ -203,7 +202,7 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec {
 
           val incorrectForm = Json.obj(WarehouseIdentification.inWarehouseKey -> "Yes", WarehouseIdentification.warehouseIdKey -> "incorrect")
 
-          val result = controller.saveIdentificationNumber(Normal)(postRequest(incorrectForm))
+          val result = controller.saveIdentificationNumber()(postRequest(incorrectForm))
 
           status(result) must be(BAD_REQUEST)
         }
@@ -215,7 +214,7 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec {
 
           val correctForm = Json.obj(WarehouseIdentification.inWarehouseKey -> "Yes", WarehouseIdentification.warehouseIdKey -> "R12341234")
 
-          val result = controller.saveIdentificationNumber(Normal)(postRequest(correctForm))
+          val result = controller.saveIdentificationNumber()(postRequest(correctForm))
 
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe routes.SupervisingCustomsOfficeController.displayPage()
@@ -228,7 +227,7 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec {
 
           val correctForm = Json.obj(WarehouseIdentification.inWarehouseKey -> "Yes", WarehouseIdentification.warehouseIdKey -> "R12341234")
 
-          val result = controller.saveIdentificationNumber(Normal)(postRequest(correctForm))
+          val result = controller.saveIdentificationNumber()(postRequest(correctForm))
 
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe routes.DepartureTransportController.displayPage()
@@ -263,7 +262,7 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec {
             val inlandOrBorder = withInlandOrBorder(Some(actualCachedInlandOrBorder))
             withNewCaching(withRequest(additionalType, inlandOrBorder).cacheModel)
 
-            await(controller.saveIdentificationNumber(Normal)(postRequest(body)))
+            await(controller.saveIdentificationNumber()(postRequest(body)))
 
             theCacheModelUpdated.locations.inlandOrBorder mustBe None
           }

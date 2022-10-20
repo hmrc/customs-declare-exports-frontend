@@ -21,7 +21,6 @@ import forms.declaration._
 import forms.declaration.procedurecodes.ProcedureCode
 import mock.ErrorHandlerMocks
 import models.DeclarationType._
-import models.Mode
 import models.declaration.ProcedureCodesData.warehouseRequiredProcedureCodes
 import models.declaration.{ExportItem, ProcedureCodesData}
 import org.mockito.ArgumentCaptor
@@ -71,7 +70,7 @@ class ProcedureCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks 
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration())
-    await(controller.displayPage(Mode.Normal, itemId)(request))
+    await(controller.displayPage(itemId)(request))
     templateParameters
   }
 
@@ -84,7 +83,7 @@ class ProcedureCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks 
 
           withNewCaching(aDeclaration(withType(request.declarationType), withItem(ExportItem(itemId))))
 
-          val result = controller.displayPage(Mode.Normal, itemId)(getRequest())
+          val result = controller.displayPage(itemId)(getRequest())
 
           status(result) mustBe OK
           verify(procedureCodesPage).apply(any(), any(), any())(any(), any())
@@ -98,7 +97,7 @@ class ProcedureCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks 
           val item = ExportItem(itemId, procedureCodes = Some(ProcedureCodesData(Some("1234"), Seq.empty)))
           withNewCaching(aDeclaration(withType(request.declarationType), withItem(item)))
 
-          val result = controller.displayPage(Mode.Normal, itemId)(getRequest())
+          val result = controller.displayPage(itemId)(getRequest())
 
           status(result) mustBe OK
           verify(procedureCodesPage).apply(any(), any(), any())(any(), any())
@@ -125,7 +124,7 @@ class ProcedureCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks 
 
           val incorrectForm = Seq(("procedureCode", "12345"))
 
-          val result = controller.submitProcedureCodes(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(incorrectForm: _*))
+          val result = controller.submitProcedureCodes(itemId)(postRequestAsFormUrlEncoded(incorrectForm: _*))
 
           status(result) mustBe BAD_REQUEST
           verify(procedureCodesPage).apply(any(), any(), any())(any(), any())
@@ -139,7 +138,7 @@ class ProcedureCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks 
 
           val incorrectForm = Seq(("procedureCode", ""))
 
-          val result = controller.submitProcedureCodes(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(incorrectForm: _*))
+          val result = controller.submitProcedureCodes(itemId)(postRequestAsFormUrlEncoded(incorrectForm: _*))
 
           status(result) mustBe BAD_REQUEST
           verify(procedureCodesPage).apply(any(), any(), any())(any(), any())
@@ -152,10 +151,10 @@ class ProcedureCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks 
           withNewCaching(aDeclaration(withType(request.declarationType), withItem(anItem(withItemId(itemId)))))
           val correctForm = Seq(("procedureCode", "1234"))
 
-          val result = controller.submitProcedureCodes(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(correctForm: _*))
+          val result = controller.submitProcedureCodes(itemId)(postRequestAsFormUrlEncoded(correctForm: _*))
 
           status(result) mustBe SEE_OTHER
-          thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalProcedureCodesController.displayPage(Mode.Normal, itemId)
+          thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalProcedureCodesController.displayPage(itemId)
           verify(procedureCodesPage, never()).apply(any(), any(), any())(any(), any())
         }
       }
@@ -169,7 +168,7 @@ class ProcedureCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks 
             withNewCaching(aDeclaration(withType(request.declarationType), withItem(anItem(withItemId(itemId)))))
             val correctForm = Seq(("procedureCode", "1234"))
 
-            controller.submitProcedureCodes(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(correctForm: _*)).futureValue
+            controller.submitProcedureCodes(itemId)(postRequestAsFormUrlEncoded(correctForm: _*)).futureValue
 
             val updatedItem = theCacheModelUpdated.itemBy(itemId)
             updatedItem mustBe defined
@@ -184,7 +183,7 @@ class ProcedureCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks 
             withNewCaching(aDeclaration(withType(request.declarationType), withItem(item)))
             val correctForm = Seq(("procedureCode", "1234"))
 
-            controller.submitProcedureCodes(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(correctForm: _*)).futureValue
+            controller.submitProcedureCodes(itemId)(postRequestAsFormUrlEncoded(correctForm: _*)).futureValue
 
             val updatedItem = theCacheModelUpdated.itemBy(itemId)
             updatedItem mustBe defined
@@ -201,7 +200,7 @@ class ProcedureCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks 
             withNewCaching(aDeclaration(withType(request.declarationType), withItem(item)))
             val correctForm = Seq(("procedureCode", "5678"))
 
-            controller.submitProcedureCodes(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(correctForm: _*)).futureValue
+            controller.submitProcedureCodes(itemId)(postRequestAsFormUrlEncoded(correctForm: _*)).futureValue
 
             val updatedItem = theCacheModelUpdated.itemBy(itemId)
             updatedItem mustBe defined
@@ -216,7 +215,7 @@ class ProcedureCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks 
             withNewCaching(aDeclaration(withType(request.declarationType), withItem(item)))
             val correctForm = Seq(("procedureCode", "5678"))
 
-            controller.submitProcedureCodes(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(correctForm: _*)).futureValue
+            controller.submitProcedureCodes(itemId)(postRequestAsFormUrlEncoded(correctForm: _*)).futureValue
 
             val updatedItem = theCacheModelUpdated.itemBy(itemId)
             updatedItem mustBe defined
@@ -231,7 +230,7 @@ class ProcedureCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks 
               withNewCaching(aDeclaration(withType(request.declarationType), withItem(item)))
               val correctForm = Seq(("procedureCode", "1234"))
 
-              controller.submitProcedureCodes(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(correctForm: _*)).futureValue
+              controller.submitProcedureCodes(itemId)(postRequestAsFormUrlEncoded(correctForm: _*)).futureValue
 
               val updatedItem = theCacheModelUpdated.itemBy(itemId)
               updatedItem mustBe defined
@@ -253,7 +252,7 @@ class ProcedureCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks 
           )
           val correctForm = Seq(("procedureCode", "1042"))
 
-          controller.submitProcedureCodes(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(correctForm: _*)).futureValue
+          controller.submitProcedureCodes(itemId)(postRequestAsFormUrlEncoded(correctForm: _*)).futureValue
 
           val updatedItem = theCacheModelUpdated.itemBy(itemId)
           updatedItem.flatMap(_.fiscalInformation).value mustBe fiscalInformation
@@ -272,7 +271,7 @@ class ProcedureCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks 
           )
           val correctForm = Seq(("procedureCode", "1234"))
 
-          controller.submitProcedureCodes(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(correctForm: _*)).futureValue
+          controller.submitProcedureCodes(itemId)(postRequestAsFormUrlEncoded(correctForm: _*)).futureValue
 
           val updatedItem = theCacheModelUpdated.itemBy(itemId)
           updatedItem.flatMap(_.fiscalInformation) mustBe None
@@ -291,7 +290,7 @@ class ProcedureCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks 
           )
           val correctForm = Seq(("procedureCode", "0019"))
 
-          controller.submitProcedureCodes(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(correctForm: _*)).futureValue
+          controller.submitProcedureCodes(itemId)(postRequestAsFormUrlEncoded(correctForm: _*)).futureValue
 
           val updatedItem = theCacheModelUpdated.itemBy(itemId)
           updatedItem.flatMap(_.packageInformation) mustBe Some(Seq(PackageInformationViewSpec.packageInformation))
@@ -306,7 +305,7 @@ class ProcedureCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks 
           )
           val correctForm = Seq(("procedureCode", "0019"))
 
-          controller.submitProcedureCodes(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(correctForm: _*)).futureValue
+          controller.submitProcedureCodes(itemId)(postRequestAsFormUrlEncoded(correctForm: _*)).futureValue
 
           val updatedItem = theCacheModelUpdated.itemBy(itemId)
           updatedItem.flatMap(_.packageInformation) mustBe None
@@ -328,7 +327,7 @@ class ProcedureCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks 
             )
             val correctForm = Seq(("procedureCode", "1234"))
 
-            controller.submitProcedureCodes(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(correctForm: _*)).futureValue
+            controller.submitProcedureCodes(itemId)(postRequestAsFormUrlEncoded(correctForm: _*)).futureValue
 
             val updatedLocations = theCacheModelUpdated.locations
             updatedLocations.warehouseIdentification mustBe None
@@ -347,7 +346,7 @@ class ProcedureCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks 
             )
             val correctForm = Seq(("procedureCode", "1234"))
 
-            controller.submitProcedureCodes(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(correctForm: _*)).futureValue
+            controller.submitProcedureCodes(itemId)(postRequestAsFormUrlEncoded(correctForm: _*)).futureValue
 
             val updatedLocations = theCacheModelUpdated.locations
             updatedLocations.warehouseIdentification.value mustBe warehouseIdentification

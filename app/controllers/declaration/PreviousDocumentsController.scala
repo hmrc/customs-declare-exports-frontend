@@ -27,7 +27,7 @@ import forms.declaration.PreviousDocumentsData.maxAmountOfItems
 
 import javax.inject.Inject
 import models.requests.JourneyRequest
-import models.{ExportsDeclaration, Mode}
+import models.ExportsDeclaration
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.cache.ExportsCacheService
@@ -45,18 +45,18 @@ class PreviousDocumentsController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
-  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    Ok(previousDocumentsPage(mode, form))
+  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    Ok(previousDocumentsPage(form))
   }
 
-  def submit(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def submit(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val documents = request.cacheModel.previousDocuments.getOrElse(PreviousDocumentsData(Seq.empty)).documents
 
     MultipleItemsHelper
       .add(form.bindFromRequest, documents, maxAmountOfItems, PreviousDocumentsFormGroupId, "declaration.previousDocuments")
       .fold(
-        formWithErrors => Future.successful(BadRequest(previousDocumentsPage(mode, formWithErrors))),
-        updateCache(_).map(_ => navigator.continueTo(mode, routes.PreviousDocumentsSummaryController.displayPage))
+        formWithErrors => Future.successful(BadRequest(previousDocumentsPage(formWithErrors))),
+        updateCache(_).map(_ => navigator.continueTo(routes.PreviousDocumentsSummaryController.displayPage))
       )
   }
 

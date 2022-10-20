@@ -20,7 +20,6 @@ import base.Injector
 import controllers.declaration.routes.{AdditionalActorsAddController, AdditionalActorsSummaryController}
 import forms.common.Eori
 import forms.declaration.DeclarationAdditionalActors
-import models.Mode
 import services.cache.ExportsTestHelper
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.summary.sections.parties_section_additional_actors
@@ -50,7 +49,7 @@ class PartiesSectionAdditionalActorsViewSpec extends UnitViewSpec with ExportsTe
 
     "display additional actors with answer no if empty" in {
 
-      val view = section(Mode.Normal, Seq.empty)(messages)
+      val view = section(Seq.empty)(messages)
       val row = view.getElementsByClass("additionalActors-row")
 
       row must haveSummaryKey(messages("declaration.summary.parties.additional"))
@@ -58,12 +57,12 @@ class PartiesSectionAdditionalActorsViewSpec extends UnitViewSpec with ExportsTe
 
       row must haveSummaryActionsTexts("site.change", "declaration.summary.parties.additional.empty.change")
 
-      row must haveSummaryActionsHref(AdditionalActorsAddController.displayPage(Mode.Normal))
+      row must haveSummaryActionsHref(AdditionalActorsAddController.displayPage())
     }
 
     "display additional actors if exists" in {
 
-      val view = section(Mode.Normal, additionalActors)(messages)
+      val view = section(additionalActors)(messages)
       val table = view.getElementById("additionalActors-table")
 
       table.getElementsByTag("caption").text mustBe messages("declaration.summary.parties.additional")

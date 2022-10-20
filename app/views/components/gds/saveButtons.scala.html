@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import models.Mode._
+@import controllers.helpers.ErrorFixModeHelper.inErrorFixMode
 @import models.requests.JourneyRequest
 @import models.declaration.submissions.EnhancedStatus._
 
@@ -25,20 +25,22 @@
     exitAndCompleteLater: exitAndCompleteLater
 )
 
-@(mode: Mode, showExitButton: Boolean = true)(implicit request: JourneyRequest[_], messages: Messages)
+@(showExitButton: Boolean = true)(implicit request: JourneyRequest[_], messages: Messages)
 
-@onErrorStatus = @{ request.cacheModel.parentDeclarationEnhancedStatus.contains(ERRORS) }
+@onErrorStatus = @{
+  request.cacheModel.parentDeclarationEnhancedStatus.contains(ERRORS) && inErrorFixMode == false
+}
 
 @onSummaryVisited = @{ request.cacheModel.summaryWasVisited.contains(true) }
 
 <div class="govuk-button-group">
     @saveAndContinue()
 
-    @if((onSummaryVisited || onErrorStatus) && mode != ErrorFix ) {
+    @if(onSummaryVisited || onErrorStatus) {
       @saveAndReturnToSummary()
     }
 
-    @if(mode == ErrorFix) {
+    @if(inErrorFixMode) {
       @saveAndReturnToErrors()
     }
 </div>

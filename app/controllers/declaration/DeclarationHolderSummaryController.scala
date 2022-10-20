@@ -22,7 +22,6 @@ import controllers.helpers.DeclarationHolderHelper.declarationHolders
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
-import models.Mode
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
@@ -42,18 +41,18 @@ class DeclarationHolderSummaryController @Inject() (
   declarationHolderPage: declaration_holder_summary
 ) extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
-  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    if (declarationHolders.isEmpty) navigator.continueTo(mode, DeclarationHolderAddController.displayPage)
-    else Ok(declarationHolderPage(mode, yesNoForm.withSubmissionErrors, declarationHolders))
+  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    if (declarationHolders.isEmpty) navigator.continueTo(DeclarationHolderAddController.displayPage)
+    else Ok(declarationHolderPage(yesNoForm.withSubmissionErrors, declarationHolders))
   }
 
-  def submitForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def submitForm(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     yesNoForm.bindFromRequest
       .fold(
-        formWithErrors => BadRequest(declarationHolderPage(mode, formWithErrors, declarationHolders)),
+        formWithErrors => BadRequest(declarationHolderPage(formWithErrors, declarationHolders)),
         _.answer match {
-          case YesNoAnswers.yes => navigator.continueTo(mode, DeclarationHolderAddController.displayPage)
-          case YesNoAnswers.no  => navigator.continueTo(mode, DestinationCountryController.displayPage)
+          case YesNoAnswers.yes => navigator.continueTo(DeclarationHolderAddController.displayPage)
+          case YesNoAnswers.no  => navigator.continueTo(DestinationCountryController.displayPage)
         }
       )
   }

@@ -19,7 +19,6 @@ package controllers.declaration
 import base.ControllerWithoutFormSpec
 import forms.common.YesNoAnswer
 import forms.declaration.Document
-import models.Mode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import play.api.libs.json.{JsObject, JsString, Json}
@@ -65,7 +64,7 @@ class PreviousDocumentsRemoveControllerSpec extends ControllerWithoutFormSpec {
 
         withNewCaching(aDeclaration(withPreviousDocuments(document)))
 
-        val result = controller.displayPage(Mode.Normal, documentId)(getRequest())
+        val result = controller.displayPage(documentId)(getRequest())
 
         status(result) mustBe OK
       }
@@ -79,7 +78,7 @@ class PreviousDocumentsRemoveControllerSpec extends ControllerWithoutFormSpec {
 
         val incorrectForm = Json.toJson(YesNoAnswer(""))
 
-        val result = controller.submit(Mode.Normal, documentId)(postRequest(incorrectForm))
+        val result = controller.submit(documentId)(postRequest(incorrectForm))
 
         status(result) mustBe BAD_REQUEST
       }
@@ -91,7 +90,7 @@ class PreviousDocumentsRemoveControllerSpec extends ControllerWithoutFormSpec {
 
         withNewCaching(aDeclaration(withoutPreviousDocuments()))
 
-        val result = controller.displayPage(Mode.Normal, documentId)(getRequest())
+        val result = controller.displayPage(documentId)(getRequest())
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.PreviousDocumentsSummaryController.displayPage()
@@ -103,7 +102,7 @@ class PreviousDocumentsRemoveControllerSpec extends ControllerWithoutFormSpec {
 
         val correctForm = JsObject(Seq("yesNo" -> JsString("Yes")))
 
-        val result = controller.submit(Mode.Normal, documentId)(postRequest(correctForm))
+        val result = controller.submit(documentId)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.PreviousDocumentsSummaryController.displayPage()
@@ -115,7 +114,7 @@ class PreviousDocumentsRemoveControllerSpec extends ControllerWithoutFormSpec {
 
         val correctForm = JsObject(Seq("yesNo" -> JsString("No")))
 
-        val result = controller.submit(Mode.Normal, documentId)(postRequest(correctForm))
+        val result = controller.submit(documentId)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.PreviousDocumentsSummaryController.displayPage()
@@ -127,7 +126,7 @@ class PreviousDocumentsRemoveControllerSpec extends ControllerWithoutFormSpec {
 
         val correctForm = JsObject(Seq("yesNo" -> JsString("Yes")))
 
-        val result = controller.submit(Mode.Normal, "incorrectId")(postRequest(correctForm))
+        val result = controller.submit("incorrectId")(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.PreviousDocumentsSummaryController.displayPage()
@@ -142,7 +141,7 @@ class PreviousDocumentsRemoveControllerSpec extends ControllerWithoutFormSpec {
 
         val correctForm = JsObject(Seq("yesNo" -> JsString("Yes")))
 
-        val result = controller.submit(Mode.Normal, documentId)(postRequest(correctForm))
+        val result = controller.submit(documentId)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.PreviousDocumentsSummaryController.displayPage()

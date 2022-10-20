@@ -18,8 +18,6 @@ package views.declaration.spec
 
 import base.{Injector, JourneyTypeTestRunner, UnitWithMocksSpec}
 import mock.FeatureFlagMocks
-import models.Mode
-import models.Mode.{ErrorFix, Normal}
 import org.jsoup.nodes.Document
 import org.scalatest.matchers.{BeMatcher, MatchResult}
 import org.scalatest.{Assertion, OptionValues}
@@ -67,7 +65,7 @@ trait UnitViewSpec
     }
 
   def checkAllSaveButtonsAreDisplayed(createView: Mode => Document): Unit = {
-    val view = createView(Normal)
+    val view = createView()
 
     checkSaveAndContinueButtonIsDisplayed(view)
     checkExitAndReturnLinkIsDisplayed(view)

@@ -17,12 +17,14 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
+import controllers.declaration.routes.AdditionalProcedureCodesController
 import controllers.navigation.Navigator
 import forms.declaration.procedurecodes.ProcedureCode
 import forms.declaration.procedurecodes.ProcedureCode.form
+import models.DeclarationType.CLEARANCE
+import models.ExportsDeclaration
 import models.declaration.ProcedureCodesData
 import models.requests.JourneyRequest
-import models.{DeclarationType, ExportsDeclaration, Mode}
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.cache.ExportsCacheService
@@ -43,30 +45,29 @@ class ProcedureCodesController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
-  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     val frm = form().withSubmissionErrors()
     val filledForm = request.cacheModel.itemBy(itemId) match {
       case Some(exportItem) => exportItem.procedureCodes.fold(frm)(cachedData => frm.fill(cachedData.toProcedureCode()))
       case None             => frm
     }
 
-    Ok(procedureCodesPage(mode, itemId, filledForm))
+    Ok(procedureCodesPage(itemId, filledForm))
   }
 
-  def submitProcedureCodes(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def submitProcedureCodes(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     form()
       .bindFromRequest()
       .fold(
-        formWithErrors => Future.successful(BadRequest(procedureCodesPage(mode, itemId, formWithErrors))),
+        formWithErrors => Future.successful(BadRequest(procedureCodesPage(itemId, formWithErrors))),
         correctProcedureCode =>
           updateCache(itemId, correctProcedureCode)
-            .map(_ => navigator.continueTo(mode, routes.AdditionalProcedureCodesController.displayPage(_, itemId)))
+            .map(_ => navigator.continueTo(AdditionalProcedureCodesController.displayPage(itemId)))
       )
   }
 
-  private def updateCache(itemId: String, procedureCodeEntered: ProcedureCode)(
-    implicit request: JourneyRequest[AnyContent]
-  ): Future[ExportsDeclaration] = {
+  // scalastyle:off
+  private def updateCache(itemId: String, procedureCodeEntered: ProcedureCode)(implicit request: JourneyRequest[AnyContent]): Future[ExportsDeclaration] = {
 
     val updateProcedureCode: ExportsDeclaration => ExportsDeclaration = { model =>
       model.updatedItem(
@@ -102,13 +103,13 @@ class ProcedureCodesController @Inject() (
     }
 
     val removePackageInformationForCode: ExportsDeclaration => ExportsDeclaration = { model =>
-      if (request.isType(DeclarationType.CLEARANCE) && ProcedureCodesData.eicrProcedureCodes.contains(procedureCodeEntered.procedureCode))
+      if (request.isType(CLEARANCE) && ProcedureCodesData.eicrProcedureCodes.contains(procedureCodeEntered.procedureCode))
         model.updatedItem(itemId, item => item.copy(packageInformation = None))
       else model
     }
 
     val removeWarehouseIdentificationForCode: ExportsDeclaration => ExportsDeclaration = { model =>
-      if (request.isType(DeclarationType.CLEARANCE) || model.requiresWarehouseId)
+      if (request.isType(CLEARANCE) || model.requiresWarehouseId)
         model
       else
         model.copy(locations = model.locations.copy(warehouseIdentification = None))
@@ -123,5 +124,4 @@ class ProcedureCodesController @Inject() (
         .transform(removeWarehouseIdentificationForCode)
     }
   }
-
 }

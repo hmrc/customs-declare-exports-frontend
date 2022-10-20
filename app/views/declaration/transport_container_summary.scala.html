@@ -46,7 +46,7 @@
     appConfig: AppConfig
 )
 
-@(mode: Mode, form: Form[YesNoAnswer], containers: Seq[Container])(implicit request: JourneyRequest[_], messages: Messages)
+@(form: Form[YesNoAnswer], containers: Seq[Container])(implicit request: JourneyRequest[_], messages: Messages)
 
 @containersTable = {
     @if(containers.nonEmpty) {
@@ -65,7 +65,7 @@
                     TableRow(
                         content = HtmlContent(link(
                             messages("declaration.transportInformation.containers.change"),
-                            SealController.displaySealSummary(mode, container.id),
+                            SealController.displaySealSummary(container.id),
                             textHidden = Some(messages("declaration.transportInformation.containers.change.hint", container.id))
                         )),
                         attributes = Map("id" -> s"containers-row$index-change_button")
@@ -73,7 +73,7 @@
                     TableRow(
                         content = HtmlContent(link(
                             messages("site.remove"),
-                            TransportContainerController.submitContainerRemove(mode, container.id),
+                            TransportContainerController.submitContainerRemove(container.id),
                             textHidden = Some(messages("declaration.transportInformation.containers.remove.hint", container.id))
                         )),
                         attributes = Map("id" -> s"containers-row$index-remove_button")
@@ -117,9 +117,9 @@
 @govukLayout(
     title = if(containers.size == 1) Title("declaration.transportInformation.containers.title", "declaration.section.6")
             else Title("declaration.transportInformation.containers.multiple.title", "declaration.section.6", containers.size.toString),
-    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(ContainerFirst, mode)))) {
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(ContainerFirst)))) {
 
-    @formHelper(action = TransportContainerController.submitSummaryAction(mode), 'autoComplete -> "off") {
+    @formHelper(action = TransportContainerController.submitSummaryAction(), 'autoComplete -> "off") {
         @errorSummary(yesNoErrors(form.errors))
 
         @sectionHeader(messages("declaration.section.6"))
@@ -136,7 +136,7 @@
             html = HtmlFormat.fill(immutable.Seq(
                 containersTable,
                 addContainerRadios,
-                saveButtons(mode)
+                saveButtons()
             ))
         ))
     }

@@ -20,7 +20,6 @@ import base.ControllerSpec
 import forms.declaration.StatisticalValue
 import mock.ErrorHandlerMocks
 import models.DeclarationType._
-import models.Mode
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -68,7 +67,7 @@ class StatisticalValueControllerSpec extends ControllerSpec with ErrorHandlerMoc
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration())
-    await(controller.displayPage(Mode.Normal, itemId)(request))
+    await(controller.displayPage(itemId)(request))
     theResponseForm
   }
 
@@ -86,7 +85,7 @@ class StatisticalValueControllerSpec extends ControllerSpec with ErrorHandlerMoc
 
           withNewCaching(aDeclaration(withItem(anItem(withItemId(itemId), withStatisticalValue()))))
 
-          val result = controller.displayPage(Mode.Normal, itemId)(getRequest(request.cacheModel))
+          val result = controller.displayPage(itemId)(getRequest(request.cacheModel))
 
           status(result) mustBe OK
           theResponseForm.value mustNot be(empty)
@@ -96,7 +95,7 @@ class StatisticalValueControllerSpec extends ControllerSpec with ErrorHandlerMoc
 
           withNewCaching(aDeclaration(withItem(anItem(withItemId(itemId)))))
 
-          val result = controller.displayPage(Mode.Normal, itemId)(getRequest(request.cacheModel))
+          val result = controller.displayPage(itemId)(getRequest(request.cacheModel))
 
           status(result) mustBe OK
           theResponseForm.value mustBe empty
@@ -115,7 +114,7 @@ class StatisticalValueControllerSpec extends ControllerSpec with ErrorHandlerMoc
 
           val badData = Json.toJson(StatisticalValue("Seven"))
 
-          val result = controller.submitItemType(Mode.Normal, itemId)(postRequest(badData))
+          val result = controller.submitItemType(itemId)(postRequest(badData))
 
           status(result) mustBe BAD_REQUEST
           verify(mockItemTypePage, times(1)).apply(any(), any(), any())(any(), any())
@@ -131,7 +130,7 @@ class StatisticalValueControllerSpec extends ControllerSpec with ErrorHandlerMoc
 
           withNewCaching(request.cacheModel)
 
-          val result = controller.displayPage(Mode.Normal, itemId).apply(getRequest(request.cacheModel))
+          val result = controller.displayPage(itemId).apply(getRequest(request.cacheModel))
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(controllers.routes.RootController.displayPage().url)
@@ -146,11 +145,11 @@ class StatisticalValueControllerSpec extends ControllerSpec with ErrorHandlerMoc
 
           val badData = Json.toJson(StatisticalValue("7"))
 
-          val result = controller.submitItemType(Mode.Normal, itemId)(postRequest(badData))
+          val result = controller.submitItemType(itemId)(postRequest(badData))
 
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe controllers.declaration.routes.PackageInformationSummaryController
-            .displayPage(Mode.Normal, itemId)
+            .displayPage(itemId)
           verify(mockItemTypePage, times(0)).apply(any(), any(), any())(any(), any())
 
           validateCache(StatisticalValue("7"))

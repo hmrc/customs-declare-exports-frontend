@@ -22,7 +22,7 @@ import connectors.CodeListConnector
 import forms.common.{Address, Eori}
 import forms.declaration.EntityDetails
 import forms.declaration.exporter.ExporterDetails
-import models.{DeclarationType, Mode}
+import models.{DeclarationType}
 import models.codes.Country
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -62,7 +62,7 @@ class ExporterDetailsControllerSpec extends ControllerSpec with OptionValues {
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration())
-    await(controller.displayPage(Mode.Normal)(request))
+    await(controller.displayPage()(request))
     theResponseForm
   }
 
@@ -84,13 +84,13 @@ class ExporterDetailsControllerSpec extends ControllerSpec with OptionValues {
 
         "details are empty" in {
           withNewCaching(request.cacheModel)
-          val response = controller.displayPage(Mode.Normal)(getRequest())
+          val response = controller.displayPage()(getRequest())
           status(response) mustBe OK
         }
 
         "details are filled" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withExporterDetails(eori = eori, address = address)))
-          val response = controller.displayPage(Mode.Normal)(getRequest())
+          val response = controller.displayPage()(getRequest())
           status(response) mustBe OK
           val details = theResponseForm.value.value.details
           details.eori mustBe defined
@@ -103,7 +103,7 @@ class ExporterDetailsControllerSpec extends ControllerSpec with OptionValues {
         "form contains errors" in {
           withNewCaching(request.cacheModel)
           val body = Json.obj("details" -> Json.obj("eori" -> "!nva!id"))
-          val response = controller.saveAddress(Mode.Normal)(postRequest(body))
+          val response = controller.saveAddress()(postRequest(body))
           status(response) mustBe BAD_REQUEST
         }
       }
@@ -113,7 +113,7 @@ class ExporterDetailsControllerSpec extends ControllerSpec with OptionValues {
           withNewCaching(request.cacheModel)
           val exporterDetails = ExporterDetails(EntityDetails(eori, address))
           val body = Json.toJson(exporterDetails)
-          val response = await(controller.saveAddress(Mode.Normal)(postRequest(body)))
+          val response = await(controller.saveAddress()(postRequest(body)))
 
           response mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe controllers.declaration.routes.RepresentativeAgentController.displayPage()
@@ -126,7 +126,7 @@ class ExporterDetailsControllerSpec extends ControllerSpec with OptionValues {
         "correct form is submitted" in {
           withNewCaching(request.cacheModel)
           val body = Json.obj("details" -> Json.obj("eori" -> "GB213472539481923"))
-          val response = await(controller.saveAddress(Mode.Normal)(postRequest(body)))
+          val response = await(controller.saveAddress()(postRequest(body)))
 
           response mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe controllers.declaration.routes.IsExsController.displayPage()

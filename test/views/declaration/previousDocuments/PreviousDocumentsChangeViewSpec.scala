@@ -19,7 +19,6 @@ package views.declaration.previousDocuments
 import base.Injector
 import controllers.declaration.routes.PreviousDocumentsSummaryController
 import forms.declaration.Document
-import models.Mode
 import models.requests.JourneyRequest
 import play.twirl.api.Html
 import utils.ListItem
@@ -33,7 +32,7 @@ class PreviousDocumentsChangeViewSpec extends UnitViewSpec with Injector {
   private val form = Document.form.fill(document)
 
   private def createView(implicit request: JourneyRequest[_]): Html =
-    page(Mode.Normal, ListItem.createId(0, document), form)(request, messages)
+    page(ListItem.createId(0, document), form)(request, messages)
 
   "Previous Documents Change page" should {
 
@@ -47,7 +46,7 @@ class PreviousDocumentsChangeViewSpec extends UnitViewSpec with Injector {
       "display 'Back' button that links to 'Previous Documents Summary' page" in {
         val backButton = view.getElementById("back-link")
         backButton must containMessage("site.backToPreviousQuestion")
-        backButton must haveHref(PreviousDocumentsSummaryController.displayPage(Mode.Normal))
+        backButton must haveHref(PreviousDocumentsSummaryController.displayPage())
       }
     }
   }

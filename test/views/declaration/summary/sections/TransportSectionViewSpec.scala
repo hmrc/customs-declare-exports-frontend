@@ -20,7 +20,6 @@ import base.Injector
 import controllers.declaration.routes
 import forms.declaration.InlandOrBorder.Border
 import forms.declaration._
-import models.Mode
 import models.declaration.Container
 import services.cache.ExportsTestHelper
 import views.declaration.spec.UnitViewSpec
@@ -45,7 +44,7 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestHelper with 
 
   "Transport section" should {
 
-    val view = section(mode, data)(messages)
+    val view = section(data)(messages)
 
     "display border transport with change button" in {
       val row = view.getElementsByClass("border-transport-row")
@@ -110,7 +109,7 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestHelper with 
     "display active transport country with change button" when {
       List(Some("South Africa"), None).foreach { transportCountry =>
         s"transport.transportCrossingTheBorderNationality is $transportCountry" in {
-          val view = section(mode, aDeclarationAfter(data, withTransportCountry(transportCountry)))(messages)
+          val view = section(aDeclarationAfter(data, withTransportCountry(transportCountry)))(messages)
           val row = view.getElementsByClass("active-transport-country-row")
 
           row must haveSummaryKey(messages("declaration.summary.transport.registrationCountry"))
@@ -158,17 +157,17 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestHelper with 
     }
 
     "not display border transport if question not answered" in {
-      val view = section(mode, aDeclarationAfter(data, withoutBorderModeOfTransportCode))(messages)
+      val view = section(aDeclarationAfter(data, withoutBorderModeOfTransportCode))(messages)
       view.getElementsByClass("border-transport-row") mustBe empty
     }
 
     "not display transport reference if question not answered" in {
-      val view = section(mode, aDeclarationAfter(data, withoutMeansOfTransportOnDepartureType))(messages)
+      val view = section(aDeclarationAfter(data, withoutMeansOfTransportOnDepartureType))(messages)
       view.getElementsByClass("transport-reference-row") mustBe empty
     }
 
     "not display active transport type if question not answered" in {
-      val view = section(mode, aDeclarationAfter(data, withoutBorderTransport))(messages)
+      val view = section(aDeclarationAfter(data, withoutBorderTransport))(messages)
       view.getElementsByClass("active-transport-type-row") mustBe empty
     }
 
@@ -177,17 +176,17 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestHelper with 
     }
 
     "not display transport payment if question not answered" in {
-      val view = section(mode, aDeclarationAfter(data, withoutTransportPayment))(messages)
+      val view = section(aDeclarationAfter(data, withoutTransportPayment))(messages)
       view.getElementsByClass("transport-payment-row") mustBe empty
     }
 
     "skip containers part if empty" in {
-      val view = section(mode, aDeclaration(withoutContainerData()))(messages)
+      val view = section(aDeclaration(withoutContainerData()))(messages)
       view.getElementsByClass("containers-row") mustBe empty
     }
 
     "display containers section (but not yes/no answer) if containers are not empty" in {
-      val view = section(mode, aDeclaration(withContainerData(Container("123", Seq.empty))))(messages)
+      val view = section(aDeclaration(withContainerData(Container("123", Seq.empty))))(messages)
       view.getElementById("containers-table").text() mustNot be(empty)
     }
 
@@ -232,7 +231,7 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestHelper with 
     }
 
     "display warehouse label when user said 'no'" in {
-      val row = section(mode, aDeclarationAfter(data, withWarehouseIdentification(Some(WarehouseIdentification(None)))))(messages)
+      val row = section(aDeclarationAfter(data, withWarehouseIdentification(Some(WarehouseIdentification(None)))))(messages)
         .getElementsByClass("warehouse-id-row")
 
       row must haveSummaryKey(messages("declaration.summary.transport.warehouse.no.label"))
@@ -240,22 +239,22 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestHelper with 
     }
 
     "not display warehouse id when question not answered" in {
-      val view = section(mode, aDeclarationAfter(data, withoutWarehouseIdentification()))(messages)
+      val view = section(aDeclarationAfter(data, withoutWarehouseIdentification()))(messages)
       view.getElementsByClass("warehouse-id-row") mustBe empty
     }
 
     "not display supervising office when question not answered" in {
-      val view = section(mode, aDeclarationAfter(data, withoutSupervisingCustomsOffice()))(messages)
+      val view = section(aDeclarationAfter(data, withoutSupervisingCustomsOffice()))(messages)
       view.getElementsByClass("supervising-office-row") mustBe empty
     }
 
     "not display inland or border when question not answered" in {
-      val view = section(mode, aDeclarationAfter(data, withoutInlandOrBorder))(messages)
+      val view = section(aDeclarationAfter(data, withoutInlandOrBorder))(messages)
       view.getElementsByClass("inland-or-border-row") mustBe empty
     }
 
     "not display mode of transport when question not answered" in {
-      val view = section(mode, aDeclarationAfter(data, withoutInlandModeOfTransportCode()))(messages)
+      val view = section(aDeclarationAfter(data, withoutInlandModeOfTransportCode()))(messages)
       view.getElementsByClass("mode-of-transport-row") mustBe empty
     }
   }

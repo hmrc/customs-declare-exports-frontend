@@ -40,15 +40,15 @@
     formHelper: FormWithCSRF
 )
 
-@(mode: Mode, itemId: String, form: Form[TaricCode])(implicit request: JourneyRequest[_], messages: Messages)
+@(itemId: String, form: Form[TaricCode])(implicit request: JourneyRequest[_], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
 @govukLayout(
     title = Title("declaration.taricAdditionalCodes.addnext.header", "declaration.section.5", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(TaricCode, mode, ItemId(itemId))))) {
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(TaricCode, ItemId(itemId))))) {
 
-    @formHelper(action = TaricCodeAddController.submitForm(mode, itemId), 'autoComplete -> "off") {
+    @formHelper(action = TaricCodeAddController.submitForm(itemId), 'autoComplete -> "off") {
 
         @errorSummary(form.errors)
 
@@ -63,6 +63,6 @@
 
         @tariffExpander(TaricCode, request.declarationType)(messages, appConfig)
 
-        @saveButtons(mode)
+        @saveButtons()
     }
 }

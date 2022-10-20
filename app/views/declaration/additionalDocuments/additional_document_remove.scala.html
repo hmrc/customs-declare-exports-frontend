@@ -37,7 +37,7 @@
     formHelper: FormWithCSRF
 )
 
-@(mode: Mode, itemId: String, documentId: String, document: AdditionalDocument, form: Form[YesNoAnswer])(implicit request: JourneyRequest[_], messages: Messages)
+@(itemId: String, documentId: String, document: AdditionalDocument, form: Form[YesNoAnswer])(implicit request: JourneyRequest[_], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
@@ -93,9 +93,9 @@
 
 @govukLayout(
     title = Title("declaration.additionalDocument.remove.title", "declaration.section.5", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), AdditionalDocumentsController.displayPage(mode, itemId)))) {
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), AdditionalDocumentsController.displayPage(itemId)))) {
 
-    @formHelper(action = AdditionalDocumentRemoveController.submitForm(mode, itemId, documentId), 'autoComplete -> "off") {
+    @formHelper(action = AdditionalDocumentRemoveController.submitForm(itemId, documentId), 'autoComplete -> "off") {
         @errorSummary(yesNoErrors(form.errors))
 
         @sectionHeader(messages("declaration.section.5"))
@@ -109,7 +109,7 @@
             html = HtmlFormat.fill(immutable.Seq(
                 holderTable,
                 yesNoRadios(form, inline = true),
-                saveButtons(mode)
+                saveButtons()
             ))
         ))
     }

@@ -22,8 +22,6 @@ import controllers.declaration.routes
 import forms.declaration.countries.Countries.RoutingCountryPage
 import forms.declaration.countries.{Countries, Country}
 import models.DeclarationType.{OCCASIONAL, SIMPLIFIED, STANDARD}
-import models.Mode
-import models.Mode.Normal
 import models.codes.{Country => ModelCountry}
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
@@ -55,10 +53,10 @@ class CountryOfRoutingViewSpec extends PageWithButtonsSpec with ExportsTestHelpe
 
   private val page = instanceOf[country_of_routing]
 
-  override val typeAndViewInstance = (STANDARD, page(Normal, routingForm(request))(_, _))
+  override val typeAndViewInstance = (STANDARD, page(routingForm(request))(_, _))
 
   private def createView(mode: Mode = Normal)(implicit request: JourneyRequest[_]): Html =
-    page(mode, routingForm(request))(request, messages)
+    page(routingForm(request))(request, messages)
 
   private def routingForm(request: JourneyRequest[_]): Form[Country] =
     Countries.form(RoutingCountryPage)(request, messages(request), mockCodeListConnector)

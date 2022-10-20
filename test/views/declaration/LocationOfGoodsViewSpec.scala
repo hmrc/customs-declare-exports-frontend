@@ -27,8 +27,6 @@ import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
 import forms.declaration.declarationHolder.AuthorizationTypeCodes.{CSE, EXRR, MIB}
 import models.DeclarationType._
-import models.Mode
-import models.Mode.Normal
 import models.codes.Country
 import models.requests.JourneyRequest
 import org.jsoup.nodes.{Document, Element}
@@ -62,10 +60,10 @@ class LocationOfGoodsViewSpec extends PageWithButtonsSpec with Injector {
 
   val page = instanceOf[location_of_goods]
 
-  override val typeAndViewInstance = (STANDARD, page(Normal, form())(_, _))
+  override val typeAndViewInstance = (STANDARD, page(form())(_, _))
 
   "Goods Location View" when {
-    def createView(mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document = page(mode, form())
+    def createView(mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document = page(form())
 
     val prefix = "declaration.locationOfGoods"
 
@@ -374,7 +372,7 @@ class LocationOfGoodsViewSpec extends PageWithButtonsSpec with Injector {
     def viewWithCorrectBackButton(declarationType: DeclarationType, redirect: Call): Unit =
       "have correct back-link" when {
         "display 'Back' button that links to correct page" in {
-          val view = page(Normal, form())(journeyRequest(declarationType), messages)
+          val view = page(form())(journeyRequest(declarationType), messages)
 
           val backButton = view.getElementById("back-link")
 
@@ -385,7 +383,7 @@ class LocationOfGoodsViewSpec extends PageWithButtonsSpec with Injector {
   }
 
   private def verifyError(code: String, errorKey: String = "error"): Assertion = {
-    val view: Document = page(Normal, form().fillAndValidate(LocationOfGoods(code)))(journeyRequest(STANDARD), messages)
+    val view: Document = page(form().fillAndValidate(LocationOfGoods(code)))(journeyRequest(STANDARD), messages)
 
     view must haveGovukGlobalErrorSummary
     view must containErrorElementWithTagAndHref("a", "#code")

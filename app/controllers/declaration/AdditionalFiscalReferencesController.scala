@@ -22,7 +22,6 @@ import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.AdditionalFiscalReferencesData
-import models.Mode
 import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
@@ -42,27 +41,27 @@ class AdditionalFiscalReferencesController @Inject() (
   additionalFiscalReferencesPage: additional_fiscal_references
 ) extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
-  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = itemAction(itemId) { implicit request =>
+  def displayPage(itemId: String): Action[AnyContent] = itemAction(itemId) { implicit request =>
     val form = yesNoForm.withSubmissionErrors
     cachedAdditionalReferencesData(itemId, request) match {
       case Some(data) if data.references.nonEmpty =>
-        Ok(additionalFiscalReferencesPage(mode, itemId, form, data.references))
+        Ok(additionalFiscalReferencesPage(itemId, form, data.references))
 
-      case Some(_) => navigator.continueTo(mode, routes.AdditionalFiscalReferencesAddController.displayPage(_, itemId))
-      case _       => navigator.continueTo(mode, FiscalInformationController.displayPage(_, itemId))
+      case Some(_) => navigator.continueTo(routes.AdditionalFiscalReferencesAddController.displayPage(itemId))
+      case _       => navigator.continueTo(FiscalInformationController.displayPage(itemId))
     }
   }
 
-  def submitForm(mode: Mode, itemId: String): Action[AnyContent] = itemAction(itemId) { implicit request =>
+  def submitForm(itemId: String): Action[AnyContent] = itemAction(itemId) { implicit request =>
     yesNoForm.bindFromRequest
       .fold(
         formWithErrors => {
           val data = cachedAdditionalReferencesData(itemId, request).map(_.references).getOrElse(Seq.empty)
-          BadRequest(additionalFiscalReferencesPage(mode, itemId, formWithErrors, data))
+          BadRequest(additionalFiscalReferencesPage(itemId, formWithErrors, data))
         },
         _.answer match {
-          case YesNoAnswers.yes => navigator.continueTo(mode, routes.AdditionalFiscalReferencesAddController.displayPage(_, itemId))
-          case YesNoAnswers.no  => navigator.continueTo(mode, CommodityDetailsController.displayPage(_, itemId))
+          case YesNoAnswers.yes => navigator.continueTo(routes.AdditionalFiscalReferencesAddController.displayPage(itemId))
+          case YesNoAnswers.no  => navigator.continueTo(CommodityDetailsController.displayPage(itemId))
         }
       )
   }

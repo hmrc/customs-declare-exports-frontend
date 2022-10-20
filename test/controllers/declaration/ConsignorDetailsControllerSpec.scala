@@ -22,7 +22,7 @@ import forms.common.{Address, Eori}
 import forms.declaration.EntityDetails
 import forms.declaration.consignor.ConsignorDetails
 import models.DeclarationType._
-import models.{DeclarationType, Mode}
+import models.{DeclarationType}
 import models.codes.Country
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -72,7 +72,7 @@ class ConsignorDetailsControllerSpec extends ControllerSpec {
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration(withType(DeclarationType.CLEARANCE)))
-    await(controller.displayPage(Mode.Normal)(request))
+    await(controller.displayPage()(request))
     theResponseForm
   }
 
@@ -85,7 +85,7 @@ class ConsignorDetailsControllerSpec extends ControllerSpec {
 
           withNewCaching(request.cacheModel)
 
-          val result = controller.displayPage(Mode.Normal)(getRequest())
+          val result = controller.displayPage()(getRequest())
 
           status(result) must be(OK)
         }
@@ -102,7 +102,7 @@ class ConsignorDetailsControllerSpec extends ControllerSpec {
             )
           )
 
-          val result = controller.displayPage(Mode.Normal)(getRequest())
+          val result = controller.displayPage()(getRequest())
 
           status(result) must be(OK)
         }
@@ -116,7 +116,7 @@ class ConsignorDetailsControllerSpec extends ControllerSpec {
 
           val incorrectForm = Json.toJson(ConsignorDetails(EntityDetails(None, None)))
 
-          val result = controller.saveAddress(Mode.Normal)(postRequest(incorrectForm))
+          val result = controller.saveAddress()(postRequest(incorrectForm))
 
           status(result) must be(BAD_REQUEST)
         }
@@ -140,7 +140,7 @@ class ConsignorDetailsControllerSpec extends ControllerSpec {
               )
             )
 
-          val result = controller.saveAddress(Mode.Normal)(postRequest(correctForm))
+          val result = controller.saveAddress()(postRequest(correctForm))
 
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe controllers.declaration.routes.RepresentativeAgentController.displayPage()
@@ -169,7 +169,7 @@ class ConsignorDetailsControllerSpec extends ControllerSpec {
               )
             )
 
-          val result = controller.saveAddress(Mode.Normal)(postRequest(correctForm))
+          val result = controller.saveAddress()(postRequest(correctForm))
 
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe controllers.declaration.routes.CarrierEoriNumberController.displayPage()
@@ -191,7 +191,7 @@ class ConsignorDetailsControllerSpec extends ControllerSpec {
             )
           )
 
-        val result = controller.saveAddress(Mode.Normal)(postRequest(correctForm))
+        val result = controller.saveAddress()(postRequest(correctForm))
 
         status(result) must be(SEE_OTHER)
         redirectLocation(result) mustBe Some(controllers.routes.RootController.displayPage().url)
@@ -205,7 +205,7 @@ class ConsignorDetailsControllerSpec extends ControllerSpec {
 
           withNewCaching(request.cacheModel)
 
-          val result = controller.displayPage(Mode.Normal)(getRequest())
+          val result = controller.displayPage()(getRequest())
 
           status(result) must be(SEE_OTHER)
           redirectLocation(result) mustBe Some(controllers.routes.RootController.displayPage().url)

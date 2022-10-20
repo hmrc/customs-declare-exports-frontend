@@ -19,7 +19,7 @@ package controllers.declaration
 import base.ControllerSpec
 import forms.declaration.TransportPayment
 import models.DeclarationType._
-import models.{DeclarationType, Mode}
+import models.{DeclarationType}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -63,7 +63,7 @@ class TransportPaymentControllerSpec extends ControllerSpec {
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration())
-    await(controller.displayPage(Mode.Normal)(request))
+    await(controller.displayPage()(request))
     theResponseForm
   }
 
@@ -76,7 +76,7 @@ class TransportPaymentControllerSpec extends ControllerSpec {
 
         "display page method is invoked and cache is empty" in {
 
-          val result = controller.displayPage(Mode.Normal)(getRequest())
+          val result = controller.displayPage()(getRequest())
 
           status(result) must be(OK)
           theResponseForm.value mustBe empty
@@ -87,7 +87,7 @@ class TransportPaymentControllerSpec extends ControllerSpec {
           val payment = TransportPayment(TransportPayment.cash)
           withNewCaching(aDeclarationAfter(request.cacheModel, withTransportPayment(Some(payment))))
 
-          val result = controller.displayPage(Mode.Normal)(getRequest())
+          val result = controller.displayPage()(getRequest())
 
           status(result) must be(OK)
           theResponseForm.value mustBe Some(payment)
@@ -102,7 +102,7 @@ class TransportPaymentControllerSpec extends ControllerSpec {
 
           val incorrectForm = Json.toJson(TransportPayment("incorrect"))
 
-          val result = controller.submitForm(Mode.Normal)(postRequest(incorrectForm))
+          val result = controller.submitForm()(postRequest(incorrectForm))
 
           status(result) must be(BAD_REQUEST)
         }
@@ -114,7 +114,7 @@ class TransportPaymentControllerSpec extends ControllerSpec {
           withNewCaching(request.cacheModel)
           val correctForm = formData(TransportPayment.other)
 
-          val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
+          val result = controller.submitForm()(postRequest(correctForm))
 
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe routes.TransportContainerController.displayContainerSummary()
@@ -130,7 +130,7 @@ class TransportPaymentControllerSpec extends ControllerSpec {
         "display page method is invoked" in {
           withNewCaching(request.cacheModel)
 
-          val result = controller.displayPage(Mode.Normal)(getRequest())
+          val result = controller.displayPage()(getRequest())
 
           status(result) must be(SEE_OTHER)
           redirectLocation(result) must contain(controllers.routes.RootController.displayPage().url)

@@ -16,67 +16,61 @@
 
 package models
 
-import models.Mode.ErrorFix
+import models.OldMode.ErrorFix
 import play.api.mvc.{JavascriptLiteral, QueryStringBindable}
 
-sealed trait Mode {
+sealed trait OldMode {
   val name: String
 
-  def next: Mode
+  def next: OldMode
 
   val isErrorFix: Boolean = this == ErrorFix
 }
-object Mode {
+object OldMode {
 
-  case object Normal extends Mode {
+  case object Normal extends OldMode {
     override val name: String = "Normal"
 
-    override val next: Mode = this
+    override val next: OldMode = this
   }
 
-  case object Amend extends Mode {
-    override val name: String = "Amend"
-
-    override val next: Mode = this
-  }
-
-  case object ErrorFix extends Mode {
+  case object ErrorFix extends OldMode {
     override val name: String = "Error-Fix"
 
-    override val next: Mode = this
+    override val next: OldMode = this
 
     val queryParameter: String = s"?mode=$name"
   }
 
-  case object Draft extends Mode {
+  case object Draft extends OldMode {
     override val name: String = "Draft"
 
-    override val next: Mode = Normal
+    override val next: OldMode = Normal
   }
 
-  val modes: Set[Mode] = Set[Mode](Normal, Amend, Draft, ErrorFix)
+  val modes: Set[OldMode] = Set[OldMode](Draft, ErrorFix)
 
-  def withName(str: String): Option[Mode] =
+  def withName(str: String): Option[OldMode] =
     modes.find(_.name == str)
 
-  implicit val binder: QueryStringBindable[Mode] = new QueryStringBindable[Mode] {
+  implicit val binder: QueryStringBindable[OldMode] = new QueryStringBindable[OldMode] {
     private val strBinder: QueryStringBindable[String] = implicitly[QueryStringBindable[String]]
 
-    override def bind(key: String, params: Map[String, Seq[String]]): Option[Either[String, Mode]] =
+    override def bind(key: String, params: Map[String, Seq[String]]): Option[Either[String, OldMode]] =
       Some(
         Right(
           params
             .get(key)
             .flatMap(_.headOption)
-            .flatMap(mode => Mode.withName(mode))
-            .getOrElse(Mode.Normal)
+            .flatMap(mode => OldMode.withName(mode))
+            .getOrElse(OldMode.Normal)
         )
       )
 
-    override def unbind(key: String, value: Mode): String = strBinder.unbind(key, value.name)
+    override def unbind(key: String, value: OldMode): String = strBinder.unbind(key, value.name)
   }
 
-  implicit val jsLiteral: JavascriptLiteral[Mode] = new JavascriptLiteral[Mode] {
-    override def to(value: Mode): String = value.toString
+  implicit val jsLiteral: JavascriptLiteral[OldMode] = new JavascriptLiteral[OldMode] {
+    override def to(value: OldMode): String = value.toString
   }
 }

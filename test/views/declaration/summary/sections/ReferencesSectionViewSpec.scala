@@ -23,7 +23,6 @@ import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
 import models.DeclarationStatus.DRAFT
 import models.DeclarationType
 import models.DeclarationType._
-import models.Mode.Draft
 import services.cache.ExportsTestHelper
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.summary.sections.references_section

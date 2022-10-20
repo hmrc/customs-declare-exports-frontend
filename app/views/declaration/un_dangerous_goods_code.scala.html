@@ -42,15 +42,15 @@
     formHelper: FormWithCSRF
 )
 
-@(mode: Mode, itemId: String, form: Form[UNDangerousGoodsCode])(implicit request: JourneyRequest[_], messages: Messages)
+@(itemId: String, form: Form[UNDangerousGoodsCode])(implicit request: JourneyRequest[_], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
 @govukLayout(
     title = Title("declaration.unDangerousGoodsCode.header", "declaration.section.5", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(UNDangerousGoodsCode, mode, ItemId(itemId))))) {
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(UNDangerousGoodsCode, ItemId(itemId))))) {
 
-    @formHelper(action = routes.UNDangerousGoodsCodeController.submitForm(mode, itemId), 'autoComplete -> "off") {
+    @formHelper(action = routes.UNDangerousGoodsCodeController.submitForm(itemId), 'autoComplete -> "off") {
         @errorSummary(radioGroupErrors(hasDangerousGoodsCodeKey, "code_yes", form.errors))
 
         @sectionHeader(messages("declaration.section.5"))
@@ -95,6 +95,6 @@
 
         @tariffExpander(UNDangerousGoodsCode, request.declarationType)(messages, appConfig)
 
-        @saveButtons(mode)
+        @saveButtons()
     }
 }

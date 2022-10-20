@@ -20,7 +20,6 @@ import base.Injector
 import controllers.declaration.routes.UNDangerousGoodsCodeController
 import forms.common.YesNoAnswer.{form, YesNoAnswers}
 import forms.declaration.TaricCode
-import models.Mode.Normal
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import views.declaration.spec.UnitViewSpec
@@ -33,7 +32,7 @@ class TaricCodesViewSpec extends UnitViewSpec with Injector {
   val page = instanceOf[taric_codes]
 
   def createView(codes: List[TaricCode])(implicit request: JourneyRequest[_]): Document =
-    page(Normal, itemId, form(), codes)(request, messages)
+    page(itemId, form(), codes)(request, messages)
 
   "Taric Code View on empty page" must {
     onEveryDeclarationJourney() { implicit request =>
@@ -59,7 +58,7 @@ class TaricCodesViewSpec extends UnitViewSpec with Injector {
 
       "display 'Back' button that links to 'UN Dangerous Goods' page" in {
         val backButton = view.getElementById("back-link")
-        backButton.getElementById("back-link") must haveHref(UNDangerousGoodsCodeController.displayPage(Normal, itemId))
+        backButton.getElementById("back-link") must haveHref(UNDangerousGoodsCodeController.displayPage(itemId))
       }
     }
   }

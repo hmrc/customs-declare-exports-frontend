@@ -22,7 +22,7 @@ import forms.common.{Address, Eori}
 import forms.declaration.EntityDetails
 import forms.declaration.consignor.{ConsignorDetails, ConsignorEoriNumber}
 import models.DeclarationType.{OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
-import models.{DeclarationType, Mode}
+import models.{DeclarationType}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -58,7 +58,7 @@ class ConsignorEoriNumberControllerSpec extends ControllerSpec with OptionValues
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration(withType(DeclarationType.CLEARANCE)))
-    await(controller.displayPage(Mode.Normal)(request))
+    await(controller.displayPage()(request))
     theResponseForm
   }
 
@@ -79,7 +79,7 @@ class ConsignorEoriNumberControllerSpec extends ControllerSpec with OptionValues
 
         withNewCaching(request.cacheModel)
 
-        val result = controller.displayPage(Mode.Normal)(getRequest())
+        val result = controller.displayPage()(getRequest())
 
         status(result) mustBe OK
         checkViewInteractions()
@@ -96,7 +96,7 @@ class ConsignorEoriNumberControllerSpec extends ControllerSpec with OptionValues
           )
         )
 
-        val result = controller.displayPage(Mode.Normal)(getRequest())
+        val result = controller.displayPage()(getRequest())
 
         status(result) mustBe OK
         checkViewInteractions()
@@ -111,7 +111,7 @@ class ConsignorEoriNumberControllerSpec extends ControllerSpec with OptionValues
         val hasEori = YesNoAnswers.yes
         withNewCaching(aDeclarationAfter(request.cacheModel, withConsignorDetails(Some(Eori(eori)), None)))
 
-        val result = controller.displayPage(Mode.Normal)(getRequest())
+        val result = controller.displayPage()(getRequest())
 
         status(result) mustBe OK
         checkViewInteractions()
@@ -124,7 +124,7 @@ class ConsignorEoriNumberControllerSpec extends ControllerSpec with OptionValues
 
         withNewCaching(aDeclarationAfter(request.cacheModel))
 
-        val result = controller.displayPage(Mode.Normal)(getRequest())
+        val result = controller.displayPage()(getRequest())
 
         status(result) mustBe OK
         checkViewInteractions()
@@ -138,7 +138,7 @@ class ConsignorEoriNumberControllerSpec extends ControllerSpec with OptionValues
       "redirect to start" in {
         withNewCaching(request.cacheModel)
 
-        val result = controller.displayPage(Mode.Normal)(getRequest())
+        val result = controller.displayPage()(getRequest())
 
         status(result) must be(SEE_OTHER)
         redirectLocation(result) mustBe Some(controllers.routes.RootController.displayPage().url)
@@ -154,7 +154,7 @@ class ConsignorEoriNumberControllerSpec extends ControllerSpec with OptionValues
 
         val incorrectForm = Json.toJson(ConsignorEoriNumber(eori = Some(Eori("!@#$")), hasEori = YesNoAnswers.yes))
 
-        val result = controller.submit(Mode.Normal)(postRequest(incorrectForm))
+        val result = controller.submit()(postRequest(incorrectForm))
 
         status(result) mustBe BAD_REQUEST
         checkViewInteractions()
@@ -166,7 +166,7 @@ class ConsignorEoriNumberControllerSpec extends ControllerSpec with OptionValues
 
         val incorrectForm = Json.toJson(ConsignorEoriNumber(eori = None, hasEori = YesNoAnswers.yes))
 
-        val result = controller.submit(Mode.Normal)(postRequest(incorrectForm))
+        val result = controller.submit()(postRequest(incorrectForm))
 
         status(result) mustBe BAD_REQUEST
         checkViewInteractions()
@@ -178,7 +178,7 @@ class ConsignorEoriNumberControllerSpec extends ControllerSpec with OptionValues
 
         val correctForm = Json.toJson(ConsignorEoriNumber(eori = None, hasEori = ""))
 
-        val result = controller.submit(Mode.Normal)(postRequest(correctForm))
+        val result = controller.submit()(postRequest(correctForm))
 
         status(result) mustBe BAD_REQUEST
         checkViewInteractions()
@@ -194,7 +194,7 @@ class ConsignorEoriNumberControllerSpec extends ControllerSpec with OptionValues
 
         val correctForm = Json.toJson(ConsignorEoriNumber(eori = None, YesNoAnswers.no))
 
-        val result = controller.submit(Mode.Normal)(postRequest(correctForm))
+        val result = controller.submit()(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.ConsignorDetailsController.displayPage()
@@ -209,7 +209,7 @@ class ConsignorEoriNumberControllerSpec extends ControllerSpec with OptionValues
         val eoriInput = Some(Eori("GB123456789000"))
         val correctForm = Json.toJson(ConsignorEoriNumber(eori = eoriInput, YesNoAnswers.yes))
 
-        val result = controller.submit(Mode.Normal)(postRequest(correctForm))
+        val result = controller.submit()(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.RepresentativeAgentController.displayPage()
@@ -227,7 +227,7 @@ class ConsignorEoriNumberControllerSpec extends ControllerSpec with OptionValues
 
         val correctForm = Json.toJson(ConsignorEoriNumber(eori = eoriInput, hasEori = YesNoAnswers.yes))
 
-        val result = controller.submit(Mode.Normal)(postRequest(correctForm))
+        val result = controller.submit()(postRequest(correctForm))
 
         status(result) must be(SEE_OTHER)
         redirectLocation(result) mustBe Some(controllers.routes.RootController.displayPage().url)

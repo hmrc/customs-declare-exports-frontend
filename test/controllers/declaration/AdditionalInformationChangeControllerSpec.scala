@@ -21,7 +21,6 @@ import controllers.declaration.routes.AdditionalInformationController
 import forms.common.YesNoAnswer.Yes
 import forms.declaration.AdditionalInformation
 import mock.ErrorHandlerMocks
-import models.Mode
 import models.declaration.AdditionalInformationData
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -71,7 +70,7 @@ class AdditionalInformationChangeControllerSpec extends ControllerSpec with Erro
   }
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
-    await(controller.displayPage(Mode.Normal, itemId, additionalInformationId)(request))
+    await(controller.displayPage(itemId, additionalInformationId)(request))
     theResponseForm
   }
 
@@ -82,7 +81,7 @@ class AdditionalInformationChangeControllerSpec extends ControllerSpec with Erro
 
     "return 200 (OK)" when {
       "display page method is invoked" in {
-        val result = controller.displayPage(Mode.Normal, itemId, additionalInformationId)(getRequest())
+        val result = controller.displayPage(itemId, additionalInformationId)(getRequest())
 
         status(result) mustBe OK
         verifyPageInvoked()
@@ -93,7 +92,7 @@ class AdditionalInformationChangeControllerSpec extends ControllerSpec with Erro
 
       "user does not enter any data" in {
         val formData = Json.toJson(AdditionalInformation("", ""))
-        val result = controller.submitForm(Mode.Normal, itemId, additionalInformationId)(postRequest(formData))
+        val result = controller.submitForm(itemId, additionalInformationId)(postRequest(formData))
 
         status(result) mustBe BAD_REQUEST
         verifyPageInvoked()
@@ -101,7 +100,7 @@ class AdditionalInformationChangeControllerSpec extends ControllerSpec with Erro
 
       "user enters 'RRS01' as code" in {
         val formData = Json.toJson(AdditionalInformation("RRS01", "description"))
-        val result = controller.submitForm(Mode.Normal, itemId, additionalInformationId)(postRequest(formData))
+        val result = controller.submitForm(itemId, additionalInformationId)(postRequest(formData))
 
         status(result) mustBe BAD_REQUEST
         verifyPageInvoked()
@@ -109,7 +108,7 @@ class AdditionalInformationChangeControllerSpec extends ControllerSpec with Erro
 
       "user enters 'LIC99' as code" in {
         val formData = Json.toJson(AdditionalInformation("LIC99", "description"))
-        val result = controller.submitForm(Mode.Normal, itemId, additionalInformationId)(postRequest(formData))
+        val result = controller.submitForm(itemId, additionalInformationId)(postRequest(formData))
 
         status(result) mustBe BAD_REQUEST
         verifyPageInvoked()
@@ -117,7 +116,7 @@ class AdditionalInformationChangeControllerSpec extends ControllerSpec with Erro
 
       "user enters duplicated item" in {
         val duplicatedForm = Json.toJson(additionalInformation2)
-        val result = controller.submitForm(Mode.Normal, itemId, additionalInformationId)(postRequest(duplicatedForm))
+        val result = controller.submitForm(itemId, additionalInformationId)(postRequest(duplicatedForm))
 
         status(result) mustBe BAD_REQUEST
         verifyPageInvoked()
@@ -129,10 +128,10 @@ class AdditionalInformationChangeControllerSpec extends ControllerSpec with Erro
 
       "user correctly changes document" in {
         val correctForm = Json.obj("code" -> "00000", "description" -> "Change")
-        val result = controller.submitForm(Mode.Normal, itemId, additionalInformationId)(postRequest(correctForm))
+        val result = controller.submitForm(itemId, additionalInformationId)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe AdditionalInformationController.displayPage(Mode.Normal, itemId)
+        thePageNavigatedTo mustBe AdditionalInformationController.displayPage(itemId)
         verifyPageInvoked(0)
 
         val savedData = theCacheModelUpdated.itemBy(itemId).flatMap(_.additionalInformation)
@@ -141,10 +140,10 @@ class AdditionalInformationChangeControllerSpec extends ControllerSpec with Erro
 
       "user does not change document" in {
         val unchangedForm = Json.toJson(additionalInformation1)
-        val result = controller.submitForm(Mode.Normal, itemId, additionalInformationId)(postRequest(unchangedForm))
+        val result = controller.submitForm(itemId, additionalInformationId)(postRequest(unchangedForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe AdditionalInformationController.displayPage(Mode.Normal, itemId)
+        thePageNavigatedTo mustBe AdditionalInformationController.displayPage(itemId)
         verifyPageInvoked(0)
 
         val savedDocuments = theCacheModelUpdated.itemBy(itemId).flatMap(_.additionalInformation)

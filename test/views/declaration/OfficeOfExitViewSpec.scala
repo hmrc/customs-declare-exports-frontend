@@ -21,7 +21,6 @@ import controllers.declaration.routes.{DestinationCountryController, LocationOfG
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.SUPPLEMENTARY_EIDR
 import forms.declaration.declarationHolder.AuthorizationTypeCodes.codeThatSkipLocationOfGoods
 import forms.declaration.officeOfExit.OfficeOfExit
-import models.Mode
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
@@ -38,7 +37,7 @@ class OfficeOfExitViewSpec extends UnitViewSpec with ExportsTestHelper with Stub
   private val page: office_of_exit = instanceOf[office_of_exit]
 
   private def createView(form: Form[OfficeOfExit] = OfficeOfExit.form, mode: Mode = Mode.Normal): Document =
-    page(mode, form)(journeyRequest(), messages)
+    page(form)(journeyRequest(), messages)
 
   "Office of Exit View" should {
     val view = createView()
@@ -69,7 +68,7 @@ class OfficeOfExitViewSpec extends UnitViewSpec with ExportsTestHelper with Stub
         val backButton = view.getElementById("back-link")
 
         backButton must containMessage("site.backToPreviousQuestion")
-        backButton.getElementById("back-link") must haveHref(LocationOfGoodsController.displayPage(Mode.Normal))
+        backButton.getElementById("back-link") must haveHref(LocationOfGoodsController.displayPage())
       }
 
       val createViewWithMode: Mode => Document = mode => createView(mode = mode)
@@ -112,12 +111,12 @@ class OfficeOfExitViewSpec extends UnitViewSpec with ExportsTestHelper with Stub
     "display 'Back' button that links to 'Destination Country' page" in {
       val modifier = withDeclarationHolders(Some(codeThatSkipLocationOfGoods))
       implicit val request: JourneyRequest[AnyContent] = withRequest(SUPPLEMENTARY_EIDR, modifier)
-      val skipLocationOfGoodsView = page(Mode.Normal, OfficeOfExit.form)
+      val skipLocationOfGoodsView = page(OfficeOfExit.form)
 
       val backButton = skipLocationOfGoodsView.getElementById("back-link")
 
       backButton must containMessage("site.backToPreviousQuestion")
-      backButton.getElementById("back-link") must haveHref(DestinationCountryController.displayPage(Mode.Normal))
+      backButton.getElementById("back-link") must haveHref(DestinationCountryController.displayPage())
     }
   }
 }

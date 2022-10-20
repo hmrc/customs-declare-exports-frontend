@@ -21,7 +21,7 @@ import controllers.navigation.Navigator
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.exporter.{ExporterDetails, ExporterEoriNumber}
 import models.requests.JourneyRequest
-import models.{DeclarationType, ExportsDeclaration, Mode}
+import models.{DeclarationType, ExportsDeclaration}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
@@ -43,15 +43,15 @@ class ExporterEoriNumberController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
-  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     val frm = ExporterEoriNumber.form().withSubmissionErrors()
     request.cacheModel.parties.exporterDetails match {
-      case Some(data) => Ok(exporterEoriDetailsPage(mode, frm.fill(ExporterEoriNumber(data))))
-      case _          => Ok(exporterEoriDetailsPage(mode, frm))
+      case Some(data) => Ok(exporterEoriDetailsPage(frm.fill(ExporterEoriNumber(data))))
+      case _          => Ok(exporterEoriDetailsPage(frm))
     }
   }
 
-  def submit(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def submit(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     ExporterEoriNumber
       .form()
       .bindFromRequest()
@@ -59,15 +59,15 @@ class ExporterEoriNumberController @Inject() (
         (formWithErrors: Form[ExporterEoriNumber]) => {
           val formWithAdjustedErrors = formWithErrors
 
-          Future.successful(BadRequest(exporterEoriDetailsPage(mode, formWithAdjustedErrors)))
+          Future.successful(BadRequest(exporterEoriDetailsPage(formWithAdjustedErrors)))
         },
         form =>
           updateCache(form, request.cacheModel.parties.exporterDetails)
-            .map(_ => navigator.continueTo(mode, nextPage(form.hasEori)))
+            .map(_ => navigator.continueTo(nextPage(form.hasEori)))
       )
   }
 
-  private def nextPage(hasEori: String)(implicit request: JourneyRequest[_]): Mode => Call =
+  private def nextPage(hasEori: String)(implicit request: JourneyRequest[_]): Call =
     if (hasEori == YesNoAnswers.no) {
       controllers.declaration.routes.ExporterDetailsController.displayPage
     } else {

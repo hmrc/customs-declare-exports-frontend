@@ -28,7 +28,7 @@ import models.codes.{AdditionalProcedureCode => AdditionalProcedureCodeModel, Pr
 import models.declaration.ProcedureCodesData.limitOfCodes
 import models.declaration.{ExportItem, ProcedureCodesData}
 import models.requests.JourneyRequest
-import models.{DeclarationType, Mode}
+import models.{DeclarationType}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.{reset, verify, when}
@@ -97,7 +97,7 @@ class AdditionalProcedureCodesControllerSpec extends ControllerSpec with ErrorHa
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration(withType(DeclarationType.STANDARD), withItem(ExportItem(itemId, procedureCodes = Some(procedureCodeDataValid)))))
-    await(controller.displayPage(Mode.Normal, itemId)(request))
+    await(controller.displayPage(itemId)(request))
     templateParameters._1
   }
 
@@ -110,7 +110,7 @@ class AdditionalProcedureCodesControllerSpec extends ControllerSpec with ErrorHa
 
           withNewCaching(aDeclaration(withType(request.declarationType), withItem(ExportItem(itemId, procedureCodes = Some(procedureCodeDataValid)))))
 
-          val result = controller.displayPage(Mode.Normal, itemId)(getRequest())
+          val result = controller.displayPage(itemId)(getRequest())
 
           status(result) mustBe OK
           verify(additionalProcedureCodesPage).apply(any(), any(), any(), any(), any(), any())(any(), any())
@@ -125,7 +125,7 @@ class AdditionalProcedureCodesControllerSpec extends ControllerSpec with ErrorHa
           val item = ExportItem(itemId, procedureCodes = Some(procedureCodeDataValid))
           withNewCaching(aDeclaration(withType(request.declarationType), withItem(item)))
 
-          val result = controller.displayPage(Mode.Normal, itemId)(getRequest())
+          val result = controller.displayPage(itemId)(getRequest())
 
           status(result) mustBe OK
           verify(additionalProcedureCodesPage).apply(any(), any(), any(), any(), any(), any())(any(), any())
@@ -142,10 +142,10 @@ class AdditionalProcedureCodesControllerSpec extends ControllerSpec with ErrorHa
         "display page method is invoked with missing Procedure Code in cache" in {
           withNewCaching(aDeclaration(withType(request.declarationType), withItem(ExportItem(itemId))))
 
-          val result = controller.displayPage(Mode.Normal, itemId)(getRequest())
+          val result = controller.displayPage(itemId)(getRequest())
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(routes.ProcedureCodesController.displayPage(Mode.Normal, itemId).url)
+          redirectLocation(result) mustBe Some(routes.ProcedureCodesController.displayPage(itemId).url)
         }
 
         "display page method is invoked with invalid Procedure Code in cache" in {
@@ -153,10 +153,10 @@ class AdditionalProcedureCodesControllerSpec extends ControllerSpec with ErrorHa
             aDeclaration(withType(request.declarationType), withItem(ExportItem(itemId, procedureCodes = Some(procedureCodeDataInvalid))))
           )
 
-          val result = controller.displayPage(Mode.Normal, itemId)(getRequest())
+          val result = controller.displayPage(itemId)(getRequest())
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(routes.ProcedureCodesController.displayPage(Mode.Normal, itemId).url)
+          redirectLocation(result) mustBe Some(routes.ProcedureCodesController.displayPage(itemId).url)
         }
       }
     }
@@ -173,7 +173,7 @@ class AdditionalProcedureCodesControllerSpec extends ControllerSpec with ErrorHa
 
           val formData = Seq(("additionalProcedureCode", sampleProcedureCode), ("WrongAction", ""))
 
-          val result = controller.submitAdditionalProcedureCodes(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(formData: _*))
+          val result = controller.submitAdditionalProcedureCodes(itemId)(postRequestAsFormUrlEncoded(formData: _*))
 
           status(result) mustBe BAD_REQUEST
           verify(additionalProcedureCodesPage).apply(any(), any(), any(), any(), any(), any())(any(), any())
@@ -193,10 +193,10 @@ class AdditionalProcedureCodesControllerSpec extends ControllerSpec with ErrorHa
               prepareCache(validExportItem)
 
               val correctForm = Seq(("additionalProcedureCode", "123"), addActionUrlEncoded())
-              val result = controller.submitAdditionalProcedureCodes(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(correctForm: _*))
+              val result = controller.submitAdditionalProcedureCodes(itemId)(postRequestAsFormUrlEncoded(correctForm: _*))
 
               status(result) mustBe SEE_OTHER
-              thePageNavigatedTo mustBe routes.AdditionalProcedureCodesController.displayPage(Mode.Normal, itemId)
+              thePageNavigatedTo mustBe routes.AdditionalProcedureCodesController.displayPage(itemId)
             }
           }
         }
@@ -218,10 +218,10 @@ class AdditionalProcedureCodesControllerSpec extends ControllerSpec with ErrorHa
               prepareCache(exportItem)
 
               val correctForm = Seq(("additionalProcedureCode", "123"), addActionUrlEncoded())
-              val result = controller.submitAdditionalProcedureCodes(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(correctForm: _*))
+              val result = controller.submitAdditionalProcedureCodes(itemId)(postRequestAsFormUrlEncoded(correctForm: _*))
 
               status(result) mustBe SEE_OTHER
-              thePageNavigatedTo mustBe routes.AdditionalProcedureCodesController.displayPage(Mode.Normal, itemId)
+              thePageNavigatedTo mustBe routes.AdditionalProcedureCodesController.displayPage(itemId)
             }
           }
         }
@@ -246,10 +246,10 @@ class AdditionalProcedureCodesControllerSpec extends ControllerSpec with ErrorHa
                 val item = ExportItem(itemId, procedureCodes = Some(ProcedureCodesData(Some(procedureCode), Seq.empty)))
                 prepareCache(item)
 
-                val result = controller.submitAdditionalProcedureCodes(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(correctForm: _*))
+                val result = controller.submitAdditionalProcedureCodes(itemId)(postRequestAsFormUrlEncoded(correctForm: _*))
 
                 status(result) mustBe SEE_OTHER
-                thePageNavigatedTo mustBe routes.FiscalInformationController.displayPage(Mode.Normal, itemId)
+                thePageNavigatedTo mustBe routes.FiscalInformationController.displayPage(itemId)
               }
             }
 
@@ -259,19 +259,19 @@ class AdditionalProcedureCodesControllerSpec extends ControllerSpec with ErrorHa
                 val item = ExportItem(itemId, procedureCodes = Some(ProcedureCodesData(Some(procedureCode), Seq.empty)))
                 prepareCache(item)
 
-                val result = controller.submitAdditionalProcedureCodes(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(correctForm: _*))
+                val result = controller.submitAdditionalProcedureCodes(itemId)(postRequestAsFormUrlEncoded(correctForm: _*))
 
                 status(result) mustBe SEE_OTHER
-                thePageNavigatedTo mustBe routes.CommodityDetailsController.displayPage(Mode.Normal, itemId)
+                thePageNavigatedTo mustBe routes.CommodityDetailsController.displayPage(itemId)
               }
 
               "the ProcedureCode in cache is empty'" in {
                 prepareCache(validExportItem)
 
-                val result = controller.submitAdditionalProcedureCodes(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(correctForm: _*))
+                val result = controller.submitAdditionalProcedureCodes(itemId)(postRequestAsFormUrlEncoded(correctForm: _*))
 
                 status(result) mustBe SEE_OTHER
-                thePageNavigatedTo mustBe routes.CommodityDetailsController.displayPage(Mode.Normal, itemId)
+                thePageNavigatedTo mustBe routes.CommodityDetailsController.displayPage(itemId)
               }
             }
           }
@@ -285,7 +285,7 @@ class AdditionalProcedureCodesControllerSpec extends ControllerSpec with ErrorHa
 
               val correctForm = List(saveAndContinueActionUrlEncoded)
 
-              controller.submitAdditionalProcedureCodes(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(correctForm: _*)).futureValue
+              controller.submitAdditionalProcedureCodes(itemId)(postRequestAsFormUrlEncoded(correctForm: _*)).futureValue
 
               val updatedModel = theCacheModelUpdated
               updatedModel.locations.supervisingCustomsOffice mustBe None
@@ -307,10 +307,10 @@ class AdditionalProcedureCodesControllerSpec extends ControllerSpec with ErrorHa
                 val item = ExportItem(itemId, procedureCodes = Some(ProcedureCodesData(Some("1042"), Seq("111"))))
                 prepareCache(item)
 
-                val result = controller.submitAdditionalProcedureCodes(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(formData: _*))
+                val result = controller.submitAdditionalProcedureCodes(itemId)(postRequestAsFormUrlEncoded(formData: _*))
 
                 status(result) mustBe SEE_OTHER
-                thePageNavigatedTo mustBe routes.FiscalInformationController.displayPage(Mode.Normal, itemId)
+                thePageNavigatedTo mustBe routes.FiscalInformationController.displayPage(itemId)
               }
             }
 
@@ -320,10 +320,10 @@ class AdditionalProcedureCodesControllerSpec extends ControllerSpec with ErrorHa
                 val item = ExportItem(itemId, procedureCodes = Some(ProcedureCodesData(Some("1234"), Seq("111"))))
                 prepareCache(item)
 
-                val result = controller.submitAdditionalProcedureCodes(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(formData: _*))
+                val result = controller.submitAdditionalProcedureCodes(itemId)(postRequestAsFormUrlEncoded(formData: _*))
 
                 status(result) mustBe SEE_OTHER
-                thePageNavigatedTo mustBe routes.CommodityDetailsController.displayPage(Mode.Normal, itemId)
+                thePageNavigatedTo mustBe routes.CommodityDetailsController.displayPage(itemId)
               }
 
             }
@@ -336,7 +336,7 @@ class AdditionalProcedureCodesControllerSpec extends ControllerSpec with ErrorHa
               prepareCache(exportItem)
               val formData = Seq(("additionalProcedureCode", "incorrect"), saveAndContinueActionUrlEncoded)
 
-              val result = controller.submitAdditionalProcedureCodes(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(formData: _*))
+              val result = controller.submitAdditionalProcedureCodes(itemId)(postRequestAsFormUrlEncoded(formData: _*))
 
               status(result) mustBe BAD_REQUEST
               verify(additionalProcedureCodesPage).apply(any(), any(), any(), any(), any(), any())(any(), any())
@@ -356,10 +356,10 @@ class AdditionalProcedureCodesControllerSpec extends ControllerSpec with ErrorHa
                 val item = ExportItem(itemId, procedureCodes = Some(ProcedureCodesData(Some("1042"), Seq("111"))))
                 prepareCache(item)
 
-                val result = controller.submitAdditionalProcedureCodes(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(correctForm: _*))
+                val result = controller.submitAdditionalProcedureCodes(itemId)(postRequestAsFormUrlEncoded(correctForm: _*))
 
                 status(result) mustBe SEE_OTHER
-                thePageNavigatedTo mustBe routes.FiscalInformationController.displayPage(Mode.Normal, itemId)
+                thePageNavigatedTo mustBe routes.FiscalInformationController.displayPage(itemId)
               }
             }
 
@@ -369,19 +369,19 @@ class AdditionalProcedureCodesControllerSpec extends ControllerSpec with ErrorHa
                 val item = ExportItem(itemId, procedureCodes = Some(ProcedureCodesData(Some("1234"), Seq("111"))))
                 prepareCache(item)
 
-                val result = controller.submitAdditionalProcedureCodes(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(correctForm: _*))
+                val result = controller.submitAdditionalProcedureCodes(itemId)(postRequestAsFormUrlEncoded(correctForm: _*))
 
                 status(result) mustBe SEE_OTHER
-                thePageNavigatedTo mustBe routes.CommodityDetailsController.displayPage(Mode.Normal, itemId)
+                thePageNavigatedTo mustBe routes.CommodityDetailsController.displayPage(itemId)
               }
 
               "the ProcedureCode in cache is empty'" in {
                 prepareCache(exportItem)
 
-                val result = controller.submitAdditionalProcedureCodes(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(correctForm: _*))
+                val result = controller.submitAdditionalProcedureCodes(itemId)(postRequestAsFormUrlEncoded(correctForm: _*))
 
                 status(result) mustBe SEE_OTHER
-                thePageNavigatedTo mustBe routes.CommodityDetailsController.displayPage(Mode.Normal, itemId)
+                thePageNavigatedTo mustBe routes.CommodityDetailsController.displayPage(itemId)
               }
             }
           }
@@ -397,7 +397,7 @@ class AdditionalProcedureCodesControllerSpec extends ControllerSpec with ErrorHa
 
             val correctForm = List(saveAndContinueActionUrlEncoded)
 
-            controller.submitAdditionalProcedureCodes(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(correctForm: _*)).futureValue
+            controller.submitAdditionalProcedureCodes(itemId)(postRequestAsFormUrlEncoded(correctForm: _*)).futureValue
 
             val updatedModel = theCacheModelUpdated
             updatedModel.locations.supervisingCustomsOffice mustBe None
@@ -421,7 +421,7 @@ class AdditionalProcedureCodesControllerSpec extends ControllerSpec with ErrorHa
           "not change the cache" in {
             prepareCache(validExportItem)
 
-            controller.submitAdditionalProcedureCodes(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(removeAction)).futureValue
+            controller.submitAdditionalProcedureCodes(itemId)(postRequestAsFormUrlEncoded(removeAction)).futureValue
 
             val updatedItem = theCacheModelUpdated.itemBy(itemId)
             updatedItem mustBe defined
@@ -433,10 +433,10 @@ class AdditionalProcedureCodesControllerSpec extends ControllerSpec with ErrorHa
           "redirect to AdditionalProcedureCodes page" in {
             prepareCache(validExportItem)
 
-            val result = controller.submitAdditionalProcedureCodes(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(removeAction))
+            val result = controller.submitAdditionalProcedureCodes(itemId)(postRequestAsFormUrlEncoded(removeAction))
 
             status(result) mustBe SEE_OTHER
-            thePageNavigatedTo mustBe routes.AdditionalProcedureCodesController.displayPage(Mode.Normal, itemId)
+            thePageNavigatedTo mustBe routes.AdditionalProcedureCodesController.displayPage(itemId)
           }
         }
 
@@ -447,7 +447,7 @@ class AdditionalProcedureCodesControllerSpec extends ControllerSpec with ErrorHa
           "remove the code from cache" in {
             prepareCache(exportItem)
 
-            controller.submitAdditionalProcedureCodes(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(removeAction)).futureValue
+            controller.submitAdditionalProcedureCodes(itemId)(postRequestAsFormUrlEncoded(removeAction)).futureValue
 
             val updatedItem = theCacheModelUpdated.itemBy(itemId)
             updatedItem mustBe defined
@@ -458,7 +458,7 @@ class AdditionalProcedureCodesControllerSpec extends ControllerSpec with ErrorHa
           "not change previously cached ProcedureCode" in {
             prepareCache(exportItem)
 
-            controller.submitAdditionalProcedureCodes(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(removeAction)).futureValue
+            controller.submitAdditionalProcedureCodes(itemId)(postRequestAsFormUrlEncoded(removeAction)).futureValue
 
             val updatedItem = theCacheModelUpdated.itemBy(itemId)
             updatedItem mustBe defined
@@ -470,10 +470,10 @@ class AdditionalProcedureCodesControllerSpec extends ControllerSpec with ErrorHa
           "redirect to AdditionalProcedureCodes page" in {
             prepareCache(exportItem)
 
-            val result = controller.submitAdditionalProcedureCodes(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(removeAction))
+            val result = controller.submitAdditionalProcedureCodes(itemId)(postRequestAsFormUrlEncoded(removeAction))
 
             status(result) mustBe SEE_OTHER
-            thePageNavigatedTo mustBe routes.AdditionalProcedureCodesController.displayPage(Mode.Normal, itemId)
+            thePageNavigatedTo mustBe routes.AdditionalProcedureCodesController.displayPage(itemId)
           }
         }
       }
@@ -491,7 +491,7 @@ class AdditionalProcedureCodesControllerSpec extends ControllerSpec with ErrorHa
         prepareCache(exportItem)
         val formData = Seq(("additionalProcedureCode", ""), formAction)
 
-        val result = controller.submitAdditionalProcedureCodes(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(formData: _*))
+        val result = controller.submitAdditionalProcedureCodes(itemId)(postRequestAsFormUrlEncoded(formData: _*))
 
         status(result) mustBe BAD_REQUEST
         verify(additionalProcedureCodesPage).apply(any(), any(), any(), any(), any(), any())(any(), any())
@@ -503,7 +503,7 @@ class AdditionalProcedureCodesControllerSpec extends ControllerSpec with ErrorHa
         prepareCache(exportItem)
         val formData = Seq(("additionalProcedureCode", "incorrect"), addActionUrlEncoded())
 
-        val result = controller.submitAdditionalProcedureCodes(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(formData: _*))
+        val result = controller.submitAdditionalProcedureCodes(itemId)(postRequestAsFormUrlEncoded(formData: _*))
 
         status(result) mustBe BAD_REQUEST
         verify(additionalProcedureCodesPage).apply(any(), any(), any(), any(), any(), any())(any(), any())
@@ -517,7 +517,7 @@ class AdditionalProcedureCodesControllerSpec extends ControllerSpec with ErrorHa
         prepareCache(defaultExportItem)
         val formData = Seq(("additionalProcedureCode", "111"), formAction)
 
-        val result = controller.submitAdditionalProcedureCodes(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(formData: _*))
+        val result = controller.submitAdditionalProcedureCodes(itemId)(postRequestAsFormUrlEncoded(formData: _*))
 
         status(result) mustBe BAD_REQUEST
         verify(additionalProcedureCodesPage).apply(any(), any(), any(), any(), any(), any())(any(), any())
@@ -530,7 +530,7 @@ class AdditionalProcedureCodesControllerSpec extends ControllerSpec with ErrorHa
         prepareCache(item)
         val formData = Seq(("additionalProcedureCode", "123"), formAction)
 
-        val result = controller.submitAdditionalProcedureCodes(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(formData: _*))
+        val result = controller.submitAdditionalProcedureCodes(itemId)(postRequestAsFormUrlEncoded(formData: _*))
 
         status(result) mustBe BAD_REQUEST
         verify(additionalProcedureCodesPage).apply(any(), any(), any(), any(), any(), any())(any(), any())
@@ -543,7 +543,7 @@ class AdditionalProcedureCodesControllerSpec extends ControllerSpec with ErrorHa
         prepareCache(item)
         val formData = Seq(("additionalProcedureCode", NO_APC_APPLIES_CODE), formAction)
 
-        val result = controller.submitAdditionalProcedureCodes(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(formData: _*))
+        val result = controller.submitAdditionalProcedureCodes(itemId)(postRequestAsFormUrlEncoded(formData: _*))
 
         status(result) mustBe BAD_REQUEST
 
@@ -560,7 +560,7 @@ class AdditionalProcedureCodesControllerSpec extends ControllerSpec with ErrorHa
         prepareCache(item)
         val formData = Seq(("additionalProcedureCode", "111"), formAction)
 
-        val result = controller.submitAdditionalProcedureCodes(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(formData: _*))
+        val result = controller.submitAdditionalProcedureCodes(itemId)(postRequestAsFormUrlEncoded(formData: _*))
 
         status(result) mustBe BAD_REQUEST
 
@@ -578,7 +578,7 @@ class AdditionalProcedureCodesControllerSpec extends ControllerSpec with ErrorHa
     "add the code to the cache" in {
       prepareCache(defaultExportItem)
 
-      controller.submitAdditionalProcedureCodes(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(correctForm: _*)).futureValue
+      controller.submitAdditionalProcedureCodes(itemId)(postRequestAsFormUrlEncoded(correctForm: _*)).futureValue
 
       val updatedItem = theCacheModelUpdated.itemBy(itemId)
       updatedItem mustBe defined
@@ -593,7 +593,7 @@ class AdditionalProcedureCodesControllerSpec extends ControllerSpec with ErrorHa
       val item = ExportItem(itemId, procedureCodes = Some(ProcedureCodesData(Some(sampleProcedureCode), Seq.empty)))
       prepareCache(item)
 
-      controller.submitAdditionalProcedureCodes(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(correctForm: _*)).futureValue
+      controller.submitAdditionalProcedureCodes(itemId)(postRequestAsFormUrlEncoded(correctForm: _*)).futureValue
 
       val updatedItem = theCacheModelUpdated.itemBy(itemId)
       updatedItem mustBe defined

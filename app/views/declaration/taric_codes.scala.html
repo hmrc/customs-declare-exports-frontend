@@ -47,7 +47,7 @@
     formHelper: FormWithCSRF
 )
 
-@(mode: Mode, itemId: String, form: Form[YesNoAnswer], taricCodes: Seq[TaricCode] = Seq.empty)(implicit request: JourneyRequest[_], messages: Messages)
+@(itemId: String, form: Form[YesNoAnswer], taricCodes: Seq[TaricCode] = Seq.empty)(implicit request: JourneyRequest[_], messages: Messages)
 
 @title = @{
     if(taricCodes.size == 1)
@@ -76,7 +76,7 @@
                     TableRow(
                         content = HtmlContent(link(
                             messages("site.remove"),
-                            routes.TaricCodeRemoveController.displayPage(mode, itemId, code.taricCode),
+                            routes.TaricCodeRemoveController.displayPage(itemId, code.taricCode),
                             textHidden = Some(messages("declaration.taricAdditionalCodes.remove.hint", code.taricCode))
                         )),
                         classes = "govuk-table__cell--numeric",
@@ -98,9 +98,9 @@
 
 @govukLayout(
     title = title,
-    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(TaricCodeFirst, mode, ItemId(itemId))))) {
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(TaricCodeFirst, ItemId(itemId))))) {
 
-    @formHelper(action = routes.TaricCodeSummaryController.submitForm(mode, itemId), 'autoComplete -> "off") {
+    @formHelper(action = routes.TaricCodeSummaryController.submitForm(itemId), 'autoComplete -> "off") {
 
         @errorSummary(yesNoErrors(form.errors))
 
@@ -115,7 +115,7 @@
             html = HtmlFormat.fill(immutable.Seq(
                 taricCodesTable,
                 addAnotherQuestion("declaration.taricAdditionalCodes.label", form),
-                saveButtons(mode)
+                saveButtons()
             ))
         ))
 

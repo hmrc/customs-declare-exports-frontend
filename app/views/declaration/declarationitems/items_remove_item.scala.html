@@ -41,15 +41,15 @@
   formHelper: FormWithCSRF
 )
 
-@(mode: Mode, form: Form[YesNoAnswer], item: ExportItem)(implicit request: JourneyRequest[_], messages: Messages)
+@(form: Form[YesNoAnswer], item: ExportItem)(implicit request: JourneyRequest[_], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
 @govukLayout(
     title = Title("declaration.itemsRemove.title", "declaration.section.5", item.sequenceId.toString, hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(RemoveItem, mode)))) {
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(RemoveItem)))) {
 
-    @formHelper(action = routes.ItemsSummaryController.removeItem(mode, item.id), 'autoComplete -> "off") {
+    @formHelper(action = routes.ItemsSummaryController.removeItem(item.id), 'autoComplete -> "off") {
 
       @errorSummary(yesNoErrors(form.errors))
 
@@ -62,9 +62,9 @@
           isPageHeading = true
         )),
         html = HtmlFormat.fill(immutable.Seq(
-          item_section(mode, item, request.declarationType, actionsEnabled = false),
+          item_section(item, request.declarationType, actionsEnabled = false),
           yesNoRadios(form, inline = true),
-          saveButtons(mode)
+          saveButtons()
         ))
       ))
     }

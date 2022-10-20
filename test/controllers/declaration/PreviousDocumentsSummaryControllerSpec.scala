@@ -19,7 +19,6 @@ package controllers.declaration
 import base.ControllerSpec
 import forms.common.YesNoAnswer
 import forms.declaration.Document
-import models.Mode
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
@@ -66,7 +65,7 @@ class PreviousDocumentsSummaryControllerSpec extends ControllerSpec {
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration(withPreviousDocuments(document)))
-    await(controller.displayPage(Mode.Normal)(request))
+    await(controller.displayPage()(request))
     theResponseForm
   }
 
@@ -78,7 +77,7 @@ class PreviousDocumentsSummaryControllerSpec extends ControllerSpec {
 
         withNewCaching(aDeclaration(withPreviousDocuments(document)))
 
-        val result = controller.displayPage(Mode.Normal)(getRequest())
+        val result = controller.displayPage()(getRequest())
 
         status(result) mustBe OK
       }
@@ -92,7 +91,7 @@ class PreviousDocumentsSummaryControllerSpec extends ControllerSpec {
 
         val incorrectForm = Json.obj("yesNo" -> "")
 
-        val result = controller.submit(Mode.Normal)(postRequest(incorrectForm))
+        val result = controller.submit()(postRequest(incorrectForm))
 
         status(result) mustBe BAD_REQUEST
       }
@@ -104,7 +103,7 @@ class PreviousDocumentsSummaryControllerSpec extends ControllerSpec {
 
         withNewCaching(aDeclaration(withoutPreviousDocuments()))
 
-        val result = controller.displayPage(Mode.Normal)(getRequest())
+        val result = controller.displayPage()(getRequest())
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.PreviousDocumentsController.displayPage()
@@ -116,7 +115,7 @@ class PreviousDocumentsSummaryControllerSpec extends ControllerSpec {
 
         val correctForm = Json.obj("yesNo" -> "Yes")
 
-        val result = controller.submit(Mode.Normal)(postRequest(correctForm))
+        val result = controller.submit()(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.PreviousDocumentsController.displayPage()
@@ -143,7 +142,7 @@ class PreviousDocumentsSummaryControllerSpec extends ControllerSpec {
 
         val correctForm = Json.obj("yesNo" -> "No")
 
-        val result = controller.submit(Mode.Normal)(postRequest(correctForm))
+        val result = controller.submit()(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.ItemsSummaryController.displayAddItemPage()

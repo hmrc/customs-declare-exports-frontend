@@ -21,8 +21,6 @@ import controllers.declaration.routes.CommodityMeasureController
 import forms.declaration.commodityMeasure.SupplementaryUnits
 import forms.declaration.commodityMeasure.SupplementaryUnits.supplementaryUnits
 import models.DeclarationType.{STANDARD, SUPPLEMENTARY}
-import models.Mode
-import models.Mode.Normal
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
@@ -42,10 +40,10 @@ class SupplementaryUnitsViewSpec extends PageWithButtonsSpec with ExportsTestHel
 
   val page = instanceOf[supplementary_units]
 
-  override val typeAndViewInstance = (STANDARD, page(Normal, itemId, form, commodityInfo)(_, _))
+  override val typeAndViewInstance = (STANDARD, page(itemId, form, commodityInfo)(_, _))
 
   def createView(frm: Form[SupplementaryUnits] = form, mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document =
-    page(mode, itemId, frm, commodityInfo)(request, messages)
+    page(itemId, frm, commodityInfo)(request, messages)
 
   "SupplementaryUnits View" should {
 
@@ -55,7 +53,7 @@ class SupplementaryUnitsViewSpec extends PageWithButtonsSpec with ExportsTestHel
       "display 'Back' button that links to 'Commodity Details' page" in {
         val backButton = view.getElementById("back-link")
         backButton must containMessage("site.backToPreviousQuestion")
-        backButton must haveHref(CommodityMeasureController.displayPage(Normal, itemId))
+        backButton must haveHref(CommodityMeasureController.displayPage(itemId))
       }
 
       "display page title" in {

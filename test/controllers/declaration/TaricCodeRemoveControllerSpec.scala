@@ -19,7 +19,6 @@ package controllers.declaration
 import base.ControllerSpec
 import forms.common.YesNoAnswer
 import forms.declaration.TaricCode
-import models.Mode
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -63,7 +62,7 @@ class TaricCodeRemoveControllerSpec extends ControllerSpec with OptionValues {
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration())
-    await(controller.displayPage(Mode.Normal, item.id, "ABCD")(request))
+    await(controller.displayPage(item.id, "ABCD")(request))
     theResponseForm
   }
 
@@ -86,7 +85,7 @@ class TaricCodeRemoveControllerSpec extends ControllerSpec with OptionValues {
 
           withNewCaching(request.cacheModel)
 
-          val result = controller.displayPage(Mode.Normal, item.id, "ABCD")(getRequest())
+          val result = controller.displayPage(item.id, "ABCD")(getRequest())
 
           status(result) mustBe OK
           verifyRemovePageInvoked()
@@ -101,7 +100,7 @@ class TaricCodeRemoveControllerSpec extends ControllerSpec with OptionValues {
           withNewCaching(request.cacheModel)
 
           val requestBody = Seq("yesNo" -> "invalid")
-          val result = controller.submitForm(Mode.Normal, item.id, "ABCD")(postRequestAsFormUrlEncoded(requestBody: _*))
+          val result = controller.submitForm(item.id, "ABCD")(postRequestAsFormUrlEncoded(requestBody: _*))
 
           status(result) mustBe BAD_REQUEST
           verifyRemovePageInvoked()
@@ -115,10 +114,10 @@ class TaricCodeRemoveControllerSpec extends ControllerSpec with OptionValues {
           withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
 
           val requestBody = Seq("yesNo" -> "Yes")
-          val result = controller.submitForm(Mode.Normal, item.id, "ABCD")(postRequestAsFormUrlEncoded(requestBody: _*))
+          val result = controller.submitForm(item.id, "ABCD")(postRequestAsFormUrlEncoded(requestBody: _*))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.TaricCodeSummaryController.displayPage(Mode.Normal, item.id)
+          thePageNavigatedTo mustBe controllers.declaration.routes.TaricCodeSummaryController.displayPage(item.id)
 
           theCacheModelUpdated.itemBy(item.id).flatMap(_.taricCodes) mustBe Some(Seq.empty)
         }
@@ -129,10 +128,10 @@ class TaricCodeRemoveControllerSpec extends ControllerSpec with OptionValues {
           withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
 
           val requestBody = Seq("yesNo" -> "No")
-          val result = controller.submitForm(Mode.Normal, item.id, "ABCD")(postRequestAsFormUrlEncoded(requestBody: _*))
+          val result = controller.submitForm(item.id, "ABCD")(postRequestAsFormUrlEncoded(requestBody: _*))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.TaricCodeSummaryController.displayPage(Mode.Normal, item.id)
+          thePageNavigatedTo mustBe controllers.declaration.routes.TaricCodeSummaryController.displayPage(item.id)
 
           verifyTheCacheIsUnchanged()
         }

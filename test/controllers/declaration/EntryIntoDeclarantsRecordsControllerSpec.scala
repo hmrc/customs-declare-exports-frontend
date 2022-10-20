@@ -22,7 +22,7 @@ import forms.common.{Eori, YesNoAnswer}
 import forms.declaration.AuthorisationProcedureCodeChoice.Choice1040
 import forms.declaration.{EntryIntoDeclarantsRecords, PersonPresentingGoodsDetails}
 import models.DeclarationType._
-import models.{DeclarationType, ExportsDeclaration, Mode}
+import models.{DeclarationType, ExportsDeclaration}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.{reset, verify, when}
@@ -60,7 +60,7 @@ class EntryIntoDeclarantsRecordsControllerSpec extends ControllerSpec with Scala
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration(withType(DeclarationType.CLEARANCE)))
-    await(controller.displayPage(Mode.Normal)(request))
+    await(controller.displayPage()(request))
     theFormPassedToView
   }
 
@@ -85,7 +85,7 @@ class EntryIntoDeclarantsRecordsControllerSpec extends ControllerSpec with Scala
 
           withNewCaching(request.cacheModel)
 
-          val result = controller.displayPage(Mode.Normal)(getRequest())
+          val result = controller.displayPage()(getRequest())
 
           status(result) mustBe OK
         }
@@ -94,7 +94,7 @@ class EntryIntoDeclarantsRecordsControllerSpec extends ControllerSpec with Scala
 
           withNewCaching(request.cacheModel)
 
-          controller.displayPage(Mode.Normal)(getRequest()).futureValue
+          controller.displayPage()(getRequest()).futureValue
 
           verify(mockExportsCacheService).get(meq(existingDeclarationId))(any())
         }
@@ -103,7 +103,7 @@ class EntryIntoDeclarantsRecordsControllerSpec extends ControllerSpec with Scala
 
           withNewCaching(aDeclarationAfter(request.cacheModel, withEntryIntoDeclarantsRecords()))
 
-          controller.displayPage(Mode.Normal)(getRequest()).futureValue
+          controller.displayPage()(getRequest()).futureValue
 
           theFormPassedToView.value mustBe defined
           theFormPassedToView.value.map(_.answer) mustBe Some(YesNoAnswers.yes)
@@ -116,7 +116,7 @@ class EntryIntoDeclarantsRecordsControllerSpec extends ControllerSpec with Scala
 
         withNewCaching(request.cacheModel)
 
-        val result = controller.displayPage(Mode.Normal)(getRequest())
+        val result = controller.displayPage()(getRequest())
 
         status(result) mustBe SEE_OTHER
       }
@@ -125,7 +125,7 @@ class EntryIntoDeclarantsRecordsControllerSpec extends ControllerSpec with Scala
 
         withNewCaching(request.cacheModel)
 
-        val result = controller.displayPage(Mode.Normal)(getRequest())
+        val result = controller.displayPage()(getRequest())
 
         redirectLocation(result) mustBe Some(controllers.routes.RootController.displayPage().url)
       }
@@ -142,7 +142,7 @@ class EntryIntoDeclarantsRecordsControllerSpec extends ControllerSpec with Scala
           withNewCaching(request.cacheModel)
           val correctForm = Json.toJson(Map(EntryIntoDeclarantsRecords.fieldName -> YesNoAnswers.yes))
 
-          val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
+          val result = controller.submitForm()(postRequest(correctForm))
 
           status(result) mustBe SEE_OTHER
         }
@@ -152,7 +152,7 @@ class EntryIntoDeclarantsRecordsControllerSpec extends ControllerSpec with Scala
           withNewCaching(request.cacheModel)
           val correctForm = Json.toJson(Map(EntryIntoDeclarantsRecords.fieldName -> YesNoAnswers.yes))
 
-          controller.submitForm(Mode.Normal)(postRequest(correctForm)).futureValue
+          controller.submitForm()(postRequest(correctForm)).futureValue
 
           theModelPassedToCacheUpdate.parties.isEntryIntoDeclarantsRecords mustBe Yes
         }
@@ -162,7 +162,7 @@ class EntryIntoDeclarantsRecordsControllerSpec extends ControllerSpec with Scala
           withNewCaching(request.cacheModel)
           val correctForm = Json.toJson(Map(EntryIntoDeclarantsRecords.fieldName -> YesNoAnswers.yes))
 
-          controller.submitForm(Mode.Normal)(postRequest(correctForm)).futureValue
+          controller.submitForm()(postRequest(correctForm)).futureValue
 
           verify(navigator).continueTo(any(), any())(any())
         }
@@ -176,7 +176,7 @@ class EntryIntoDeclarantsRecordsControllerSpec extends ControllerSpec with Scala
           withNewCaching(request.cacheModel.copy(parties = cachedParties))
           val correctForm = Json.toJson(Map(EntryIntoDeclarantsRecords.fieldName -> YesNoAnswers.yes))
 
-          controller.submitForm(Mode.Normal)(postRequest(correctForm)).futureValue
+          controller.submitForm()(postRequest(correctForm)).futureValue
 
           val modelPassedToCache = theModelPassedToCacheUpdate
           modelPassedToCache.parties.isEntryIntoDeclarantsRecords mustBe Yes
@@ -187,7 +187,7 @@ class EntryIntoDeclarantsRecordsControllerSpec extends ControllerSpec with Scala
           withNewCaching(aDeclarationAfter(request.cacheModel, withAuthorisationProcedureCodeChoice(Choice1040)))
           val correctForm = Json.obj(EntryIntoDeclarantsRecords.fieldName -> YesNoAnswers.yes)
 
-          controller.submitForm(Mode.Normal)(postRequest(correctForm)).futureValue
+          controller.submitForm()(postRequest(correctForm)).futureValue
 
           val modelPassedToCache = theModelPassedToCacheUpdate
           modelPassedToCache.parties.isEntryIntoDeclarantsRecords mustBe Yes
@@ -199,7 +199,7 @@ class EntryIntoDeclarantsRecordsControllerSpec extends ControllerSpec with Scala
           withNewCaching(request.cacheModel)
           val correctForm = Json.toJson(Map(EntryIntoDeclarantsRecords.fieldName -> YesNoAnswers.yes))
 
-          controller.submitForm(Mode.Normal)(postRequest(correctForm)).futureValue
+          controller.submitForm()(postRequest(correctForm)).futureValue
 
           thePageNavigatedTo mustBe controllers.declaration.routes.PersonPresentingGoodsDetailsController.displayPage()
         }
@@ -213,7 +213,7 @@ class EntryIntoDeclarantsRecordsControllerSpec extends ControllerSpec with Scala
           withNewCaching(request.cacheModel.copy(parties = cachedParties))
           val correctForm = Json.toJson(Map(EntryIntoDeclarantsRecords.fieldName -> YesNoAnswers.no))
 
-          controller.submitForm(Mode.Normal)(postRequest(correctForm)).futureValue
+          controller.submitForm()(postRequest(correctForm)).futureValue
 
           val modelPassedToCache = theModelPassedToCacheUpdate
           modelPassedToCache.parties.isEntryIntoDeclarantsRecords mustBe No
@@ -224,7 +224,7 @@ class EntryIntoDeclarantsRecordsControllerSpec extends ControllerSpec with Scala
           withNewCaching(aDeclarationAfter(request.cacheModel, withAuthorisationProcedureCodeChoice(Choice1040)))
           val correctForm = Json.obj(EntryIntoDeclarantsRecords.fieldName -> YesNoAnswers.no)
 
-          controller.submitForm(Mode.Normal)(postRequest(correctForm)).futureValue
+          controller.submitForm()(postRequest(correctForm)).futureValue
 
           val modelPassedToCache = theModelPassedToCacheUpdate
           modelPassedToCache.parties.isEntryIntoDeclarantsRecords mustBe No
@@ -236,7 +236,7 @@ class EntryIntoDeclarantsRecordsControllerSpec extends ControllerSpec with Scala
           withNewCaching(request.cacheModel)
           val correctForm = Json.toJson(Map(EntryIntoDeclarantsRecords.fieldName -> YesNoAnswers.no))
 
-          controller.submitForm(Mode.Normal)(postRequest(correctForm)).futureValue
+          controller.submitForm()(postRequest(correctForm)).futureValue
 
           thePageNavigatedTo mustBe controllers.declaration.routes.DeclarantDetailsController.displayPage()
         }
@@ -248,7 +248,7 @@ class EntryIntoDeclarantsRecordsControllerSpec extends ControllerSpec with Scala
           withNewCaching(request.cacheModel)
           val incorrectForm = Json.toJson(Map(EntryIntoDeclarantsRecords.fieldName -> "Incorrect"))
 
-          val result = controller.submitForm(Mode.Normal)(postRequest(incorrectForm))
+          val result = controller.submitForm()(postRequest(incorrectForm))
 
           status(result) mustBe BAD_REQUEST
         }
@@ -261,7 +261,7 @@ class EntryIntoDeclarantsRecordsControllerSpec extends ControllerSpec with Scala
         withNewCaching(request.cacheModel)
         val correctForm = Json.toJson(Yes.value)
 
-        val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
+        val result = controller.submitForm()(postRequest(correctForm))
 
         status(result) mustBe SEE_OTHER
       }
@@ -271,7 +271,7 @@ class EntryIntoDeclarantsRecordsControllerSpec extends ControllerSpec with Scala
         withNewCaching(request.cacheModel)
         val correctForm = Json.toJson(Yes.value)
 
-        val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
+        val result = controller.submitForm()(postRequest(correctForm))
 
         redirectLocation(result) mustBe Some(controllers.routes.RootController.displayPage().url)
       }

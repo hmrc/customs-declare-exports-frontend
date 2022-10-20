@@ -21,8 +21,6 @@ import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.procedurecodes.ProcedureCode
 import forms.declaration.procedurecodes.ProcedureCode.form
 import models.DeclarationType._
-import models.Mode
-import models.Mode.Normal
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
@@ -36,10 +34,10 @@ class ProcedureCodeViewSpec extends PageWithButtonsSpec with ExportsTestHelper w
 
   val page = instanceOf[procedure_codes]
 
-  override val typeAndViewInstance = (STANDARD, page(Normal, itemId, form())(_, _))
+  override val typeAndViewInstance = (STANDARD, page(itemId, form())(_, _))
 
   def createView(frm: Form[ProcedureCode] = form(), mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document =
-    page(mode, itemId, frm)(request, messages)
+    page(itemId, frm)(request, messages)
 
   "Procedure Code View" should {
 
@@ -93,7 +91,7 @@ class ProcedureCodeViewSpec extends PageWithButtonsSpec with ExportsTestHelper w
           val backButton = view.getElementById("back-link")
 
           backButton must containMessage("site.backToPreviousQuestion")
-          backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.ItemsSummaryController.displayItemsSummaryPage(Normal))
+          backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.ItemsSummaryController.displayItemsSummaryPage())
         }
 
         val createViewWithMode: Mode => Document = mode => createView(mode = mode)

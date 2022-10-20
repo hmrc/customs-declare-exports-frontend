@@ -22,7 +22,6 @@ import forms.common.Address
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.{ConsigneeDetails, EntityDetails}
 import models.DeclarationType._
-import models.Mode
 import models.codes.Country
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -72,7 +71,7 @@ class ConsigneeDetailsControllerSpec extends ControllerSpec {
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration())
-    await(controller.displayPage(Mode.Normal)(request))
+    await(controller.displayPage()(request))
     theResponseForm
   }
 
@@ -87,7 +86,7 @@ class ConsigneeDetailsControllerSpec extends ControllerSpec {
 
           withNewCaching(request.cacheModel)
 
-          val result = controller.displayPage(Mode.Normal)(getRequest())
+          val result = controller.displayPage()(getRequest())
 
           status(result) must be(OK)
         }
@@ -96,7 +95,7 @@ class ConsigneeDetailsControllerSpec extends ControllerSpec {
 
           withNewCaching(aDeclarationAfter(request.cacheModel, withConsigneeDetails(None, Some(correctAddress))))
 
-          val result = controller.displayPage(Mode.Normal)(getRequest())
+          val result = controller.displayPage()(getRequest())
 
           status(result) must be(OK)
         }
@@ -110,7 +109,7 @@ class ConsigneeDetailsControllerSpec extends ControllerSpec {
 
           val incorrectForm = Json.toJson(ConsigneeDetails(EntityDetails(None, None)))
 
-          val result = controller.saveAddress(Mode.Normal)(postRequest(incorrectForm))
+          val result = controller.saveAddress()(postRequest(incorrectForm))
 
           status(result) must be(BAD_REQUEST)
         }
@@ -149,7 +148,7 @@ class ConsigneeDetailsControllerSpec extends ControllerSpec {
   private def testFormSubmitRedirectsTo(expectedRedirectionLocation: Call) = {
     val correctForm = Json.toJson(ConsigneeDetails(EntityDetails(None, Some(correctAddress))))
 
-    val result = controller.saveAddress(Mode.Normal)(postRequest(correctForm))
+    val result = controller.saveAddress()(postRequest(correctForm))
 
     await(result) mustBe aRedirectToTheNextPage
     thePageNavigatedTo mustBe expectedRedirectionLocation

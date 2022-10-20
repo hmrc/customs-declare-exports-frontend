@@ -34,7 +34,6 @@ import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
 import forms.declaration.{LocationOfGoods, ModeOfTransportCode, TransportLeavingTheBorder}
 import models.DeclarationType
 import models.DeclarationType._
-import models.Mode.Normal
 import models.declaration.ProcedureCodesData.warehouseRequiredProcedureCodes
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -79,7 +78,7 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec with Option
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration())
-    await(controller.displayPage(Normal)(request))
+    await(controller.displayPage()(request))
     theResponseForm
   }
 
@@ -95,7 +94,7 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec with Option
       "return 200 (OK)" when {
 
         "display page method is invoked and cache is empty" in {
-          val result = controller.displayPage(Normal)(getRequest())
+          val result = controller.displayPage()(getRequest())
 
           status(result) must be(OK)
           theResponseForm.value mustBe empty
@@ -104,7 +103,7 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec with Option
         "display page method is invoked and cache is not empty" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withDepartureTransport(ModeOfTransportCode.Rail)))
 
-          val result = controller.displayPage(Normal)(getRequest())
+          val result = controller.displayPage()(getRequest())
 
           status(result) must be(OK)
           theResponseForm.value mustBe Some(TransportLeavingTheBorder(Some(ModeOfTransportCode.Rail)))
@@ -116,7 +115,7 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec with Option
       "redirect to the starting page on displayPage" in {
         withNewCaching(request.cacheModel)
 
-        val result = controller.displayPage(Normal)(getRequest())
+        val result = controller.displayPage()(getRequest())
         redirectLocation(result) mustBe Some(RootController.displayPage.url)
       }
     }
@@ -129,7 +128,7 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec with Option
         "return 400 (BAD_REQUEST)" in {
           withNewCaching(request.cacheModel)
 
-          val result = controller.submitForm(Normal)(postRequest(Json.obj()))
+          val result = controller.submitForm()(postRequest(Json.obj()))
           status(result) must be(BAD_REQUEST)
         }
       }
@@ -142,7 +141,7 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec with Option
             withNewCaching(aDeclarationAfter(request.cacheModel, goodsLocation))
 
             val body = Json.obj("transportLeavingTheBorder" -> RoRo.value)
-            await(controller.submitForm(Normal)(postRequest(body)))
+            await(controller.submitForm()(postRequest(body)))
 
             theCacheModelUpdated.transportLeavingBorderCode mustBe Some(RoRo)
           }
@@ -155,7 +154,7 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec with Option
 
               val body = Json.obj("transportLeavingTheBorder" -> modeOfTransportCode.value)
 
-              val result = controller.submitForm(Normal)(postRequest(body))
+              val result = controller.submitForm()(postRequest(body))
               status(result) must be(BAD_REQUEST)
             }
           }
@@ -168,7 +167,7 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec with Option
             withNewCaching(aDeclarationAfter(request.cacheModel, withTransportCountry(Some("South Africa"))))
 
             val body = Json.obj("transportLeavingTheBorder" -> modeOfTransportCode.value.value)
-            await(controller.submitForm(Normal)(postRequest(body)))
+            await(controller.submitForm()(postRequest(body)))
 
             theCacheModelUpdated.transport.transportCrossingTheBorderNationality mustBe None
           }
@@ -187,7 +186,7 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec with Option
           "update the cache after a successful bind" in {
             withNewCaching(request.cacheModel)
 
-            await(controller.submitForm(Normal)(postRequest(body)))
+            await(controller.submitForm()(postRequest(body)))
 
             theCacheModelUpdated.transportLeavingBorderCode.value mustBe modeOfTransportCode
           }
@@ -200,7 +199,7 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec with Option
                 val item = withItem(anItem(withProcedureCodes(Some(s"10$suffix"))))
                 withNewCaching(aDeclarationAfter(request.cacheModel, item))
 
-                val result = controller.submitForm(Normal)(postRequest(body))
+                val result = controller.submitForm()(postRequest(body))
 
                 await(result) mustBe aRedirectToTheNextPage
                 thePageNavigatedTo mustBe WarehouseIdentificationController.displayPage()
@@ -211,7 +210,7 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec with Option
           "redirect to /supervising-customs-office after a successful bind" in {
             withNewCaching(request.cacheModel)
 
-            val result = controller.submitForm(Normal)(postRequest(body))
+            val result = controller.submitForm()(postRequest(body))
 
             await(result) mustBe aRedirectToTheNextPage
             thePageNavigatedTo mustBe SupervisingCustomsOfficeController.displayPage()
@@ -226,7 +225,7 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec with Option
               s"AdditionalDeclarationType is $additionalType and" in {
                 withNewCaching(withRequest(additionalType, item).cacheModel)
 
-                val result = controller.submitForm(Normal)(postRequest(body))
+                val result = controller.submitForm()(postRequest(body))
 
                 await(result) mustBe aRedirectToTheNextPage
 
@@ -248,7 +247,7 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec with Option
               "AdditionalDeclarationType is SUPPLEMENTARY_EIDR" in {
                 withNewCaching(withRequest(additionalType, item).cacheModel)
 
-                val result = controller.submitForm(Normal)(postRequest(body))
+                val result = controller.submitForm()(postRequest(body))
 
                 await(result) mustBe aRedirectToTheNextPage
                 thePageNavigatedTo mustBe InlandTransportDetailsController.displayPage()
@@ -273,7 +272,7 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec with Option
 
                     withNewCaching(declaration)
 
-                    val result = controller.submitForm(Normal)(postRequest(body))
+                    val result = controller.submitForm()(postRequest(body))
 
                     await(result) mustBe aRedirectToTheNextPage
                     thePageNavigatedTo mustBe expectedPage
@@ -288,7 +287,7 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec with Option
           "redirect to the 'Warehouse Identification' page after a successful bind" in {
             withNewCaching(request.cacheModel)
 
-            val result = controller.submitForm(Normal)(postRequest(body))
+            val result = controller.submitForm()(postRequest(body))
 
             await(result) mustBe aRedirectToTheNextPage
             thePageNavigatedTo mustBe WarehouseIdentificationController.displayPage()
@@ -302,7 +301,7 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec with Option
         withNewCaching(request.cacheModel)
         val body = Json.obj("transportLeavingTheBorder" -> "any")
 
-        val result = controller.submitForm(Normal)(postRequest(body))
+        val result = controller.submitForm()(postRequest(body))
         redirectLocation(result) mustBe Some(RootController.displayPage.url)
       }
     }
@@ -330,7 +329,7 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec with Option
               withNewCaching(withRequest(additionalType, withInlandOrBorder(Some(actualCachedInlandOrBorder))).cacheModel)
 
               val body = Json.obj("transportLeavingTheBorder" -> modeOfTransportCode.value)
-              await(controller.submitForm(Normal)(postRequest(body)))
+              await(controller.submitForm()(postRequest(body)))
 
               theCacheModelUpdated.locations.inlandOrBorder mustBe expectedCachedInlandOrBorder
             }

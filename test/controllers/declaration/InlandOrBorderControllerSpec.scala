@@ -32,7 +32,6 @@ import forms.declaration.InlandOrBorder.{fieldId, Border, Inland}
 import forms.declaration.ModeOfTransportCode.Maritime
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
 import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED}
-import models.Mode.Normal
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
@@ -79,7 +78,7 @@ class InlandOrBorderControllerSpec extends ControllerSpec with OptionValues {
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration(withAdditionalDeclarationType(STANDARD_FRONTIER)))
-    await(controller.displayPage(Normal)(request))
+    await(controller.displayPage()(request))
     theResponseForm
   }
 
@@ -94,14 +93,14 @@ class InlandOrBorderControllerSpec extends ControllerSpec with OptionValues {
 
           "location.inlandOrBorder is not cached yet" in {
             cacheRequest(additionalType)
-            val result = controller.displayPage(Normal)(getRequest())
+            val result = controller.displayPage()(getRequest())
             status(result) must be(OK)
             theResponseForm.value mustBe empty
           }
 
           "location.inlandOrBorder have been already cached" in {
             cacheRequest(additionalType, withInlandOrBorder(Some(Border)))
-            val result = controller.displayPage(Normal)(getRequest())
+            val result = controller.displayPage()(getRequest())
             status(result) must be(OK)
             theResponseForm.value mustBe Some(Border)
           }
@@ -113,7 +112,7 @@ class InlandOrBorderControllerSpec extends ControllerSpec with OptionValues {
       "redirect to the starting page" in {
         withNewCaching(request.cacheModel)
 
-        val result = controller.displayPage(Normal)(getRequest())
+        val result = controller.displayPage()(getRequest())
         redirectLocation(result) mustBe Some(RootController.displayPage.url)
       }
     }
@@ -122,7 +121,7 @@ class InlandOrBorderControllerSpec extends ControllerSpec with OptionValues {
 
       "AdditionalDeclarationType is SUPPLEMENTARY_EIDR" in {
         cacheRequest(SUPPLEMENTARY_EIDR)
-        val result = controller.displayPage(Normal)(getRequest())
+        val result = controller.displayPage()(getRequest())
         redirectLocation(result) mustBe Some(RootController.displayPage.url)
       }
 
@@ -131,7 +130,7 @@ class InlandOrBorderControllerSpec extends ControllerSpec with OptionValues {
           "the user has previously entered a value which requires to skip the /inland-or-border page" in {
             allValuesRequiringToSkipInlandOrBorder.foreach { modifier =>
               cacheRequest(additionalType, modifier)
-              val result = controller.displayPage(Normal)(getRequest())
+              val result = controller.displayPage()(getRequest())
               redirectLocation(result) mustBe Some(RootController.displayPage.url)
             }
           }
@@ -152,7 +151,7 @@ class InlandOrBorderControllerSpec extends ControllerSpec with OptionValues {
           "update the cache after a successful bind" in {
             cacheRequest(additionalType)
 
-            await(controller.submitPage(Normal)(postRequest(body)))
+            await(controller.submitPage()(postRequest(body)))
 
             theCacheModelUpdated.locations.inlandOrBorder.value mustBe Inland
           }
@@ -160,7 +159,7 @@ class InlandOrBorderControllerSpec extends ControllerSpec with OptionValues {
           s"redirect to ${expectedNextPage.url}" in {
             cacheRequest(additionalType)
 
-            val result = await(controller.submitPage(Normal)(postRequest(body)))
+            val result = await(controller.submitPage()(postRequest(body)))
 
             result mustBe aRedirectToTheNextPage
             thePageNavigatedTo mustBe expectedNextPage
@@ -174,7 +173,7 @@ class InlandOrBorderControllerSpec extends ControllerSpec with OptionValues {
           "update the cache after a successful bind" in {
             cacheRequest(additionalType)
 
-            await(controller.submitPage(Normal)(postRequest(body)))
+            await(controller.submitPage()(postRequest(body)))
 
             theCacheModelUpdated.locations.inlandOrBorder.value mustBe Border
           }
@@ -182,7 +181,7 @@ class InlandOrBorderControllerSpec extends ControllerSpec with OptionValues {
           "reset the cached value from /inland-transport-details, if any, after a successful bind" in {
             cacheRequest(additionalType, withInlandModeOfTransportCode(Maritime))
 
-            await(controller.submitPage(Normal)(postRequest(body)))
+            await(controller.submitPage()(postRequest(body)))
 
             val locations = theCacheModelUpdated.locations
             locations.inlandOrBorder.value mustBe Border
@@ -192,7 +191,7 @@ class InlandOrBorderControllerSpec extends ControllerSpec with OptionValues {
           s"redirect to ${expectedNextPage.url}" in {
             cacheRequest(additionalType)
 
-            val result = await(controller.submitPage(Normal)(postRequest(body)))
+            val result = await(controller.submitPage()(postRequest(body)))
 
             result mustBe aRedirectToTheNextPage
             thePageNavigatedTo mustBe expectedNextPage
@@ -204,7 +203,7 @@ class InlandOrBorderControllerSpec extends ControllerSpec with OptionValues {
             cacheRequest(additionalType)
 
             val body = Json.obj(fieldId -> JsNull)
-            val result = controller.submitPage(Normal)(postRequest(body))
+            val result = controller.submitPage()(postRequest(body))
 
             status(result) mustBe BAD_REQUEST
           }
@@ -225,7 +224,7 @@ class InlandOrBorderControllerSpec extends ControllerSpec with OptionValues {
               s"redirect to ${expectedNextPage.url}" in {
                 cacheRequest(additionalType, withBorderModeOfTransportCode(modeOfTransportCode))
 
-                val result = await(controller.submitPage(Normal)(postRequest(body)))
+                val result = await(controller.submitPage()(postRequest(body)))
 
                 result mustBe aRedirectToTheNextPage
                 thePageNavigatedTo mustBe expectedNextPage
@@ -239,7 +238,7 @@ class InlandOrBorderControllerSpec extends ControllerSpec with OptionValues {
             s"redirect to ${expectedNextPage.url}" in {
               cacheRequest(SUPPLEMENTARY_SIMPLIFIED, withBorderModeOfTransportCode(modeOfTransportCode))
 
-              val result = await(controller.submitPage(Normal)(postRequest(body)))
+              val result = await(controller.submitPage()(postRequest(body)))
 
               result mustBe aRedirectToTheNextPage
               thePageNavigatedTo mustBe expectedNextPage
@@ -256,7 +255,7 @@ class InlandOrBorderControllerSpec extends ControllerSpec with OptionValues {
       "redirect to the starting page" in {
         withNewCaching(request.cacheModel)
 
-        val result = controller.submitPage(Normal)(postRequest(JsString("")))
+        val result = controller.submitPage()(postRequest(JsString("")))
         redirectLocation(result) mustBe Some(RootController.displayPage.url)
       }
     }
@@ -265,7 +264,7 @@ class InlandOrBorderControllerSpec extends ControllerSpec with OptionValues {
 
       "AdditionalDeclarationType is SUPPLEMENTARY_EIDR" in {
         cacheRequest(SUPPLEMENTARY_EIDR)
-        val result = controller.submitPage(Normal)(postRequest(JsString("")))
+        val result = controller.submitPage()(postRequest(JsString("")))
         redirectLocation(result) mustBe Some(RootController.displayPage.url)
       }
 
@@ -274,7 +273,7 @@ class InlandOrBorderControllerSpec extends ControllerSpec with OptionValues {
           "the user has previously entered a value which requires to skip the /inland-or-border page" in {
             allValuesRequiringToSkipInlandOrBorder.foreach { modifier =>
               cacheRequest(additionalType, modifier)
-              val result = controller.submitPage(Normal)(postRequest(JsString("")))
+              val result = controller.submitPage()(postRequest(JsString("")))
               redirectLocation(result) mustBe Some(RootController.displayPage.url)
             }
           }

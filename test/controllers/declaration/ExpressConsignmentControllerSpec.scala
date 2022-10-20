@@ -24,7 +24,7 @@ import forms.declaration.TransportPayment
 import forms.declaration.TransportPayment.cash
 import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
 import models.requests.JourneyRequest
-import models.{DeclarationType, Mode}
+import models.{DeclarationType}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
@@ -68,7 +68,7 @@ class ExpressConsignmentControllerSpec extends ControllerSpec {
   }
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
-    await(controller.displayPage(Mode.Normal)(request))
+    await(controller.displayPage()(request))
     theResponseForm
   }
 
@@ -78,7 +78,7 @@ class ExpressConsignmentControllerSpec extends ControllerSpec {
       "return 200 (OK)" when {
 
         "display page method is invoked and cache is empty" in {
-          val result = controller.displayPage(Mode.Normal)(getRequest())
+          val result = controller.displayPage()(getRequest())
           status(result) must be(OK)
           verifyPageInvoked
         }
@@ -87,7 +87,7 @@ class ExpressConsignmentControllerSpec extends ControllerSpec {
           val payment = Some(TransportPayment(cash))
           withNewCaching(aDeclaration(withTransportPayment(payment)))
 
-          val result = controller.displayPage(Mode.Normal)(getRequest())
+          val result = controller.displayPage()(getRequest())
           status(result) must be(OK)
           verifyPageInvoked
         }
@@ -110,7 +110,7 @@ class ExpressConsignmentControllerSpec extends ControllerSpec {
         "neither Yes or No have been selected on the page" in {
           val incorrectForm = Json.obj("yesNo" -> "")
 
-          val result = controller.submitForm(Mode.Normal)(postRequest(incorrectForm))
+          val result = controller.submitForm()(postRequest(incorrectForm))
           status(result) must be(BAD_REQUEST)
           verifyPageInvoked
         }
@@ -138,9 +138,9 @@ class ExpressConsignmentControllerSpec extends ControllerSpec {
     withNewCaching(request.cacheModel)
 
     val result = yesOrNo.fold {
-      controller.displayPage(Mode.Normal)(getRequest())
+      controller.displayPage()(getRequest())
     } { yn =>
-      controller.submitForm(Mode.Normal)(postRequest(Json.obj("yesNo" -> yn)))
+      controller.submitForm()(postRequest(Json.obj("yesNo" -> yn)))
     }
 
     status(result) mustBe SEE_OTHER

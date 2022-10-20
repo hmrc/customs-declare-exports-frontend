@@ -22,7 +22,7 @@ import controllers.navigation.Navigator
 import forms.declaration.BorderTransport
 import models.DeclarationType.{STANDARD, SUPPLEMENTARY}
 import models.requests.JourneyRequest
-import models.{ExportsDeclaration, Mode}
+import models.ExportsDeclaration
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.cache.ExportsCacheService
@@ -45,7 +45,7 @@ class BorderTransportController @Inject() (
 
   private val validTypes = Seq(STANDARD, SUPPLEMENTARY)
 
-  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
+  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
     val transport = request.cacheModel.transport
     val form = (transport.meansOfTransportCrossingTheBorderType, transport.meansOfTransportCrossingTheBorderIDNumber) match {
       case (Some(meansType), Some(meansId)) =>
@@ -57,14 +57,14 @@ class BorderTransportController @Inject() (
       case _ => BorderTransport.form.withSubmissionErrors
     }
 
-    Ok(borderTransport(mode, form))
+    Ok(borderTransport(form))
   }
 
-  def submitForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async { implicit request =>
+  def submitForm(): Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async { implicit request =>
     BorderTransport.form.bindFromRequest
       .fold(
-        formWithErrors => Future.successful(BadRequest(borderTransport(mode, formWithErrors))),
-        updateCache(_).map(_ => navigator.continueTo(mode, TransportCountryController.displayPage))
+        formWithErrors => Future.successful(BadRequest(borderTransport(formWithErrors))),
+        updateCache(_).map(_ => navigator.continueTo(TransportCountryController.displayPage))
       )
   }
 

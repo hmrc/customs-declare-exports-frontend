@@ -25,7 +25,7 @@ import forms.declaration.AdditionalFiscalReference.form
 import forms.declaration.AdditionalFiscalReferencesData._
 import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData}
 import models.requests.JourneyRequest
-import models.{ExportsDeclaration, Mode}
+import models.ExportsDeclaration
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
@@ -47,33 +47,33 @@ class AdditionalFiscalReferencesAddController @Inject() (
 )(implicit ec: ExecutionContext, codeListConnector: CodeListConnector)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
-  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     val frm = form().withSubmissionErrors()
-    Ok(additionalFiscalReferencesPage(mode, itemId, frm))
+    Ok(additionalFiscalReferencesPage(itemId, frm))
   }
 
-  def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def submitForm(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val boundForm = form().bindFromRequest()
 
     boundForm.fold(
-      formWithErrors => Future.successful(BadRequest(additionalFiscalReferencesPage(mode, itemId, formWithErrors))),
-      _ => saveAndContinue(mode, itemId, boundForm, cachedData(itemId))
+      formWithErrors => Future.successful(BadRequest(additionalFiscalReferencesPage(itemId, formWithErrors))),
+      _ => saveAndContinue(itemId, boundForm, cachedData(itemId))
     )
   }
 
   private def cachedData(itemId: String)(implicit request: JourneyRequest[AnyContent]) =
     request.cacheModel.itemBy(itemId).flatMap(_.additionalFiscalReferencesData).getOrElse(AdditionalFiscalReferencesData.default)
 
-  private def saveAndContinue(mode: Mode, itemId: String, form: Form[AdditionalFiscalReference], cachedData: AdditionalFiscalReferencesData)(
+  private def saveAndContinue(itemId: String, form: Form[AdditionalFiscalReference], cachedData: AdditionalFiscalReferencesData)(
     implicit request: JourneyRequest[AnyContent]
   ): Future[Result] =
     MultipleItemsHelper
       .add(form, cachedData.references, limit, AdditionalFiscalReferencesFormGroupId, "declaration.additionalFiscalReferences")
       .fold(
-        formWithErrors => Future.successful(BadRequest(additionalFiscalReferencesPage(mode, itemId, formWithErrors))),
+        formWithErrors => Future.successful(BadRequest(additionalFiscalReferencesPage(itemId, formWithErrors))),
         updatedCache =>
           updateExportsCache(itemId, cachedData.copy(references = updatedCache))
-            .map(_ => navigator.continueTo(mode, routes.AdditionalFiscalReferencesController.displayPage(_, itemId)))
+            .map(_ => navigator.continueTo(routes.AdditionalFiscalReferencesController.displayPage(itemId)))
       )
 
   private def updateExportsCache(itemId: String, updatedAdditionalFiscalReferencesData: AdditionalFiscalReferencesData)(

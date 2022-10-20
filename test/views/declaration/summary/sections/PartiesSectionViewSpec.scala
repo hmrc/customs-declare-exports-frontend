@@ -20,8 +20,6 @@ import base.Injector
 import controllers.declaration.routes._
 import forms.common.{Address, Eori}
 import forms.declaration.IsExs
-import models.Mode
-import models.Mode.Draft
 import models.declaration.{DeclarationAdditionalActorsData, RepresentativeDetails}
 import services.cache.ExportsTestHelper
 import views.declaration.spec.UnitViewSpec
@@ -181,42 +179,42 @@ class PartiesSectionViewSpec extends UnitViewSpec with ExportsTestHelper with In
       }
 
       "does not contain exporter when section not answered" in {
-        val view = section(Mode.Normal, aDeclarationAfter(data, withoutExporterDetails()))(messages)
+        val view = section(aDeclarationAfter(data, withoutExporterDetails()))(messages)
 
         view.getElementsByClass("exporter-eori-row") mustBe empty
         view.getElementsByClass("exporter-address-row") mustBe empty
       }
 
       "does not contain consignee when section not answered" in {
-        val view = section(Mode.Normal, aDeclarationAfter(data, withoutConsigneeDetails()))(messages)
+        val view = section(aDeclarationAfter(data, withoutConsigneeDetails()))(messages)
 
         view.getElementsByClass("consignee-eori-row") mustBe empty
         view.getElementsByClass("consignee-address-row") mustBe empty
       }
 
       "does not contain declarant when section not answered" in {
-        val view = section(Mode.Normal, aDeclarationAfter(data, withoutDeclarantDetails()))(messages)
+        val view = section(aDeclarationAfter(data, withoutDeclarantDetails()))(messages)
 
         view.getElementsByClass("declarant-eori-row") mustBe empty
         view.getElementsByClass("declarant-address-row") mustBe empty
       }
 
       "does not contain representative when section not answered" in {
-        val view = section(Mode.Normal, aDeclarationAfter(data, withoutRepresentativeDetails()))(messages)
+        val view = section(aDeclarationAfter(data, withoutRepresentativeDetails()))(messages)
 
         view.getElementsByClass("representative-eori-row") mustBe empty
         view.getElementsByClass("representative-address-row") mustBe empty
       }
 
       "does not contain carrier details when section not answered" in {
-        val view = section(Mode.Normal, aDeclarationAfter(data, withoutCarrierDetails()))(messages)
+        val view = section(aDeclarationAfter(data, withoutCarrierDetails()))(messages)
 
         view.getElementsByClass("carrier-eori-row") mustBe empty
         view.getElementsByClass("carrier-address-row") mustBe empty
       }
 
       "does not contain anything when there are no parties" in {
-        val view = section(Mode.Normal, aDeclaration())(messages)
+        val view = section(aDeclaration())(messages)
 
         view.getAllElements.text() must be(empty)
       }

@@ -16,14 +16,10 @@
 
 @import controllers.declaration.routes
 @import models.declaration.Container
-@import models.Mode
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import views.html.components.gds.link
-@import views.html.components.gds.spanVisuallyHidden
-@import views.html.components.gds.linkContent
-@import views.html.components.gds.summary_list
 @import views.declaration.summary.TableCell
-@import views.components.gds.ActionItemBuilder._
+@import views.helpers.ActionItemBuilder._
+@import views.html.components.gds.{link, linkContent, spanVisuallyHidden, summary_list}
 
 @this(
     govukTable: GovukTable,
@@ -33,20 +29,18 @@
     spanVisuallyHidden: spanVisuallyHidden
 )
 
-@(mode: Mode, containers: Seq[Container], actionsEnabled: Boolean = true)(implicit messages: Messages)
+@(containers: Seq[Container], actionsEnabled: Boolean = true)(implicit messages: Messages)
 
-@change(container: Container) = {
-    @{
-        if(actionsEnabled)
-            link(
-                messages("site.change"),
-                routes.TransportContainerController.displayContainerSummary(mode),
-                textHidden = Some(messages("declaration.summary.container.change", container.id))
-            )
-        else
-            ""
-    }
-}
+@change(container: Container) = { @{
+    if (actionsEnabled)
+        link(
+            messages("site.change"),
+            callForSummaryChangeLink(routes.TransportContainerController.displayContainerSummary()),
+            textHidden = Some(messages("declaration.summary.container.change", container.id))
+        )
+    else
+        ""
+}}
 
 @actions(action: Actions) = @{
     if(actionsEnabled) Some(action)
@@ -91,8 +85,8 @@
             value = Value(Text(messages("site.no"))),
             actions = actions(Actions(
                 items = Seq(
-                    actionItem(
-                        href = controllers.declaration.routes.TransportContainerController.displayContainerSummary(mode).url,
+                    actionSummaryItem(
+                        href = routes.TransportContainerController.displayContainerSummary().url,
                         content = HtmlContent(linkContent(messages("site.change"))),
                         visuallyHiddenText = Some(messages("declaration.summary.transport.containers.change"))
                     )

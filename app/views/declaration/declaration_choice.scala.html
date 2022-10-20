@@ -40,7 +40,7 @@
     appConfig: AppConfig
 )
 
-@(mode: Mode, form: Form[_])(implicit request: Request[_], messages: Messages)
+@(form: Form[_])(implicit request: Request[_], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
@@ -82,7 +82,7 @@
     showDeclarationSummaryLink = false
 ){
 
-    @formHelper(action = controllers.declaration.routes.DeclarationChoiceController.submitChoice(mode), 'autoComplete -> "off") {
+    @formHelper(action = controllers.declaration.routes.DeclarationChoiceController.submitChoice(), 'autoComplete -> "off") {
         @errorSummary(radioGroupErrors("type", DeclarationType.STANDARD.toString, form.errors))
 
         @govukRadios(Radios(

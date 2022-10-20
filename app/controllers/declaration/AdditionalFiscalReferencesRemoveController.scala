@@ -17,13 +17,13 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.navigation.Navigator
 import controllers.helpers.MultipleItemsHelper.remove
+import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData}
+import models.ExportsDeclaration
 import models.requests.JourneyRequest
-import models.{ExportsDeclaration, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
@@ -46,43 +46,42 @@ class AdditionalFiscalReferencesRemoveController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
-  def displayPage(mode: Mode, itemId: String, id: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayPage(itemId: String, id: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     findAdditionalFiscalReference(itemId, id) match {
-      case Some(reference) => Ok(removePage(mode, itemId, id, reference, removalYesNoForm.withSubmissionErrors()))
-      case _               => returnToSummary(mode, itemId)
+      case Some(reference) => Ok(removePage(itemId, id, reference, removalYesNoForm.withSubmissionErrors()))
+      case _               => returnToSummary(itemId)
     }
   }
 
-  def submitForm(mode: Mode, itemId: String, id: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def submitForm(itemId: String, id: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     findAdditionalFiscalReference(itemId, id) match {
       case Some(reference) =>
         removalYesNoForm
           .bindFromRequest()
           .fold(
-            (formWithErrors: Form[YesNoAnswer]) => Future.successful(BadRequest(removePage(mode, itemId, id, reference, formWithErrors))),
+            (formWithErrors: Form[YesNoAnswer]) => Future.successful(BadRequest(removePage(itemId, id, reference, formWithErrors))),
             formData =>
               formData.answer match {
                 case YesNoAnswers.yes =>
-                  removeAdditionalFiscalReference(itemId, reference)
-                    .map(declaration => redirectAfterRemove(mode, itemId, declaration))
-                case YesNoAnswers.no =>
-                  Future.successful(returnToSummary(mode, itemId))
+                  removeAdditionalFiscalReference(itemId, reference).map(declaration => redirectAfterRemove(itemId, declaration))
+
+                case YesNoAnswers.no => Future.successful(returnToSummary(itemId))
               }
           )
-      case _ => Future.successful(returnToSummary(mode, itemId))
+      case _ => Future.successful(returnToSummary(itemId))
     }
   }
 
   private def removalYesNoForm: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.additionalFiscalReferences.remove.empty")
 
-  private def redirectAfterRemove(mode: Mode, itemId: String, declaration: ExportsDeclaration)(implicit request: JourneyRequest[AnyContent]): Result =
+  private def redirectAfterRemove(itemId: String, declaration: ExportsDeclaration)(implicit request: JourneyRequest[AnyContent]): Result =
     declaration.itemBy(itemId).flatMap(_.additionalFiscalReferencesData).map(_.references) match {
-      case Some(references) if references.nonEmpty => returnToSummary(mode, itemId)
-      case _                                       => navigator.continueTo(mode, routes.FiscalInformationController.displayPage(_, itemId))
+      case Some(references) if references.nonEmpty => returnToSummary(itemId)
+      case _                                       => navigator.continueTo(routes.FiscalInformationController.displayPage(itemId))
     }
 
-  private def returnToSummary(mode: Mode, itemId: String)(implicit request: JourneyRequest[AnyContent]): Result =
-    navigator.continueTo(mode, routes.AdditionalFiscalReferencesController.displayPage(_, itemId))
+  private def returnToSummary(itemId: String)(implicit request: JourneyRequest[AnyContent]): Result =
+    navigator.continueTo(routes.AdditionalFiscalReferencesController.displayPage(itemId))
 
   private def findAdditionalFiscalReference(itemId: String, id: String)(
     implicit request: JourneyRequest[AnyContent]

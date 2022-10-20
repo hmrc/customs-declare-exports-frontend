@@ -23,7 +23,7 @@ import forms.declaration.CommodityDetails
 import forms.declaration.additionaldocuments.AdditionalDocument
 import forms.declaration.declarationHolder.AuthorizationTypeCodes
 import models.declaration.AdditionalDocuments
-import models.{DeclarationType, Mode}
+import models.{DeclarationType}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
@@ -54,7 +54,7 @@ class IsLicenceRequiredControllerSpec extends ControllerSpec with OptionValues {
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(declaration)
-    await(controller.displayPage(Mode.Normal, itemId)(request))
+    await(controller.displayPage(itemId)(request))
     theResponseForm
   }
 
@@ -85,7 +85,7 @@ class IsLicenceRequiredControllerSpec extends ControllerSpec with OptionValues {
         "display page method is invoked" in {
           withNewCaching(declaration)
 
-          val result = controller.displayPage(Mode.Normal, itemId)(getRequest())
+          val result = controller.displayPage(itemId)(getRequest())
 
           status(result) mustBe OK
           verifyPageInvoked()
@@ -98,7 +98,7 @@ class IsLicenceRequiredControllerSpec extends ControllerSpec with OptionValues {
           withNewCaching(declaration)
 
           val requestBody = Seq("yesNo" -> "invalid")
-          val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(requestBody: _*))
+          val result = controller.submitForm(itemId)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           status(result) mustBe BAD_REQUEST
           verifyPageInvoked()
@@ -123,9 +123,9 @@ class IsLicenceRequiredControllerSpec extends ControllerSpec with OptionValues {
 
             withNewCaching(declaration)
 
-            val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(Seq("yesNo" -> "Yes"): _*))
+            val result = controller.submitForm(itemId)(postRequestAsFormUrlEncoded(Seq("yesNo" -> "Yes"): _*))
             await(result) mustBe aRedirectToTheNextPage
-            thePageNavigatedTo mustBe routes.AdditionalDocumentsController.displayPage(Mode.Normal, itemId)
+            thePageNavigatedTo mustBe routes.AdditionalDocumentsController.displayPage(itemId)
 
           }
 
@@ -133,9 +133,9 @@ class IsLicenceRequiredControllerSpec extends ControllerSpec with OptionValues {
 
             withNewCaching(declaration)
 
-            val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(Seq("yesNo" -> "No"): _*))
+            val result = controller.submitForm(itemId)(postRequestAsFormUrlEncoded(Seq("yesNo" -> "No"): _*))
             await(result) mustBe aRedirectToTheNextPage
-            thePageNavigatedTo mustBe routes.AdditionalDocumentsController.displayPage(Mode.Normal, itemId)
+            thePageNavigatedTo mustBe routes.AdditionalDocumentsController.displayPage(itemId)
 
           }
         }
@@ -145,9 +145,9 @@ class IsLicenceRequiredControllerSpec extends ControllerSpec with OptionValues {
 
             withNewCaching(declaration)
 
-            val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(Seq("yesNo" -> "Yes"): _*))
+            val result = controller.submitForm(itemId)(postRequestAsFormUrlEncoded(Seq("yesNo" -> "Yes"): _*))
             await(result) mustBe aRedirectToTheNextPage
-            thePageNavigatedTo mustBe routes.AdditionalDocumentAddController.displayPage(Mode.Normal, itemId)
+            thePageNavigatedTo mustBe routes.AdditionalDocumentAddController.displayPage(itemId)
 
           }
 
@@ -161,10 +161,10 @@ class IsLicenceRequiredControllerSpec extends ControllerSpec with OptionValues {
 
               withNewCaching(declaration)
 
-              val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(Seq("yesNo" -> "No"): _*))
+              val result = controller.submitForm(itemId)(postRequestAsFormUrlEncoded(Seq("yesNo" -> "No"): _*))
 
               await(result) mustBe aRedirectToTheNextPage
-              thePageNavigatedTo mustBe routes.AdditionalDocumentAddController.displayPage(Mode.Normal, itemId)
+              thePageNavigatedTo mustBe routes.AdditionalDocumentAddController.displayPage(itemId)
 
             }
 
@@ -172,9 +172,9 @@ class IsLicenceRequiredControllerSpec extends ControllerSpec with OptionValues {
 
               withNewCaching(declaration)
 
-              val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(Seq("yesNo" -> "No"): _*))
+              val result = controller.submitForm(itemId)(postRequestAsFormUrlEncoded(Seq("yesNo" -> "No"): _*))
               await(result) mustBe aRedirectToTheNextPage
-              thePageNavigatedTo mustBe routes.AdditionalDocumentsRequiredController.displayPage(Mode.Normal, itemId)
+              thePageNavigatedTo mustBe routes.AdditionalDocumentsRequiredController.displayPage(itemId)
 
             }
           }

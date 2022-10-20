@@ -20,7 +20,6 @@ import base.ControllerSpec
 import forms.common.{Eori, YesNoAnswer}
 import forms.declaration.DeclarationAdditionalActors
 import models.DeclarationType._
-import models.Mode
 import models.declaration.DeclarationAdditionalActorsData
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -50,7 +49,7 @@ class AdditionalActorsSummaryControllerSpec extends ControllerSpec with OptionVa
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration(withDeclarationAdditionalActors(additionalActorsData)))
-    await(controller.displayPage(Mode.Normal)(request))
+    await(controller.displayPage()(request))
     theResponseForm
   }
 
@@ -86,7 +85,7 @@ class AdditionalActorsSummaryControllerSpec extends ControllerSpec with OptionVa
         "display page method is invoked and cache contains data" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationAdditionalActors(additionalActorsData)))
 
-          val result = controller.displayPage(Mode.Normal)(getRequest())
+          val result = controller.displayPage()(getRequest())
 
           status(result) mustBe OK
           verifyPageInvoked()
@@ -101,7 +100,7 @@ class AdditionalActorsSummaryControllerSpec extends ControllerSpec with OptionVa
           withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationAdditionalActors(additionalActorsData)))
 
           val requestBody = Json.obj("yesNo" -> "invalid")
-          val result = controller.submitForm(Mode.Normal)(postRequest(requestBody))
+          val result = controller.submitForm()(postRequest(requestBody))
 
           status(result) mustBe BAD_REQUEST
           verifyPageInvoked()
@@ -114,20 +113,20 @@ class AdditionalActorsSummaryControllerSpec extends ControllerSpec with OptionVa
         "there are no additional actors in the cache" in {
           withNewCaching(request.cacheModel)
 
-          val result = controller.displayPage(Mode.Normal)(getRequest())
+          val result = controller.displayPage()(getRequest())
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalActorsAddController.displayPage(Mode.Normal)
+          thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalActorsAddController.displayPage()
         }
 
         "user submits valid Yes answer" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationAdditionalActors(additionalActorsData)))
 
           val requestBody = Json.obj("yesNo" -> "Yes")
-          val result = controller.submitForm(Mode.Normal)(postRequest(requestBody))
+          val result = controller.submitForm()(postRequest(requestBody))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalActorsAddController.displayPage(Mode.Normal)
+          thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalActorsAddController.displayPage()
         }
 
         "user submits valid Yes answer with error-fix flag" in {
@@ -148,10 +147,10 @@ class AdditionalActorsSummaryControllerSpec extends ControllerSpec with OptionVa
           withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationAdditionalActors(additionalActorsData)))
 
           val requestBody = Json.obj("yesNo" -> "No")
-          val result = controller.submitForm(Mode.Normal)(postRequest(requestBody))
+          val result = controller.submitForm()(postRequest(requestBody))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.AuthorisationProcedureCodeChoiceController.displayPage(Mode.Normal)
+          thePageNavigatedTo mustBe controllers.declaration.routes.AuthorisationProcedureCodeChoiceController.displayPage()
         }
       }
     }

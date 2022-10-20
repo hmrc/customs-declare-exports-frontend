@@ -18,7 +18,7 @@ package controllers.declaration
 
 import base.ControllerSpec
 import forms.declaration.officeOfExit.OfficeOfExit
-import models.{DeclarationType, Mode}
+import models.{DeclarationType}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -65,7 +65,7 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration())
-    await(controller.displayPage(Mode.Normal)(request))
+    await(controller.displayPage()(request))
     theResponseForm
   }
 
@@ -74,7 +74,7 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
       "display page method is invoked and cache is empty" in {
         withNewCaching(request.cacheModel)
 
-        val result = controller.displayPage(Mode.Normal)(getRequest())
+        val result = controller.displayPage()(getRequest())
 
         status(result) mustBe OK
         checkViewInteractions()
@@ -86,7 +86,7 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
         val officeId = "GB123456"
         withNewCaching(aDeclarationAfter(request.cacheModel, withOfficeOfExit(officeId)))
 
-        val result = controller.displayPage(Mode.Normal)(getRequest())
+        val result = controller.displayPage()(getRequest())
 
         status(result) mustBe OK
         checkViewInteractions()
@@ -103,7 +103,7 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
 
         val incorrectForm = Json.toJson(OfficeOfExit("!@#$"))
 
-        val result = controller.saveOffice(Mode.Normal)(postRequest(incorrectForm))
+        val result = controller.saveOffice()(postRequest(incorrectForm))
 
         status(result) mustBe BAD_REQUEST
         checkViewInteractions()
@@ -121,7 +121,7 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
 
         val correctForm = Json.toJson(OfficeOfExit(officeOfExitInput))
 
-        val result = controller.saveOffice(Mode.Normal)(postRequest(correctForm))
+        val result = controller.saveOffice()(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe routes.InvoiceAndExchangeRateChoiceController.displayPage()
@@ -139,7 +139,7 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
 
         val correctForm = Json.toJson(OfficeOfExit(officeOfExitInput))
 
-        val result = controller.saveOffice(Mode.Normal)(postRequest(correctForm))
+        val result = controller.saveOffice()(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe routes.PreviousDocumentsSummaryController.displayPage()

@@ -18,7 +18,7 @@ package controllers.declaration
 
 import base.ControllerSpec
 import forms.declaration.DeclarantIsExporter
-import models.{DeclarationType, Mode}
+import models.{DeclarationType}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -51,7 +51,7 @@ class DeclarantExporterControllerSpec extends ControllerSpec with OptionValues {
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration())
-    await(controller.displayPage(Mode.Normal)(request))
+    await(controller.displayPage()(request))
     theResponseForm
   }
 
@@ -77,7 +77,7 @@ class DeclarantExporterControllerSpec extends ControllerSpec with OptionValues {
 
           withNewCaching(request.cacheModel)
 
-          val result = controller.displayPage(Mode.Normal)(getRequest())
+          val result = controller.displayPage()(getRequest())
 
           status(result) mustBe OK
           verifyPage(1)
@@ -89,7 +89,7 @@ class DeclarantExporterControllerSpec extends ControllerSpec with OptionValues {
 
           withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarantIsExporter()))
 
-          val result = controller.displayPage(Mode.Normal)(getRequest())
+          val result = controller.displayPage()(getRequest())
 
           status(result) mustBe OK
           verifyPage(1)
@@ -107,7 +107,7 @@ class DeclarantExporterControllerSpec extends ControllerSpec with OptionValues {
 
           val incorrectForm = Json.toJson(DeclarantIsExporter("invalid"))
 
-          val result = controller.submitForm(Mode.Normal)(postRequest(incorrectForm))
+          val result = controller.submitForm()(postRequest(incorrectForm))
 
           status(result) mustBe BAD_REQUEST
           verifyPage(1)
@@ -122,7 +122,7 @@ class DeclarantExporterControllerSpec extends ControllerSpec with OptionValues {
 
         val correctForm = Json.toJson(DeclarantIsExporter("No"))
 
-        val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
+        val result = controller.submitForm()(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.ExporterEoriNumberController.displayPage()
@@ -138,7 +138,7 @@ class DeclarantExporterControllerSpec extends ControllerSpec with OptionValues {
 
         val correctForm = Json.toJson(DeclarantIsExporter("Yes"))
 
-        val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
+        val result = controller.submitForm()(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.CarrierEoriNumberController.displayPage()
@@ -154,7 +154,7 @@ class DeclarantExporterControllerSpec extends ControllerSpec with OptionValues {
 
         val correctForm = Json.toJson(DeclarantIsExporter("Yes"))
 
-        val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
+        val result = controller.submitForm()(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.IsExsController.displayPage()
@@ -170,7 +170,7 @@ class DeclarantExporterControllerSpec extends ControllerSpec with OptionValues {
 
         val correctForm = Json.toJson(DeclarantIsExporter("Yes"))
 
-        val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
+        val result = controller.submitForm()(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.ConsigneeDetailsController.displayPage()

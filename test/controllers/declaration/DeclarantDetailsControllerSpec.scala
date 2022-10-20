@@ -22,7 +22,7 @@ import forms.declaration.DeclarantEoriConfirmation
 import forms.declaration.DeclarantEoriConfirmation.isEoriKey
 import models.DeclarationType.{OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
 import models.requests.ExportsSessionKeys
-import models.{DeclarationType, Mode}
+import models.{DeclarationType}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
@@ -65,7 +65,7 @@ class DeclarantDetailsControllerSpec extends ControllerSpec {
   }
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
-    await(controller.displayPage(Mode.Normal)(request))
+    await(controller.displayPage()(request))
     theResponseForm
   }
 
@@ -75,7 +75,7 @@ class DeclarantDetailsControllerSpec extends ControllerSpec {
 
       "display page method is invoked and cache is empty" in {
 
-        val result = controller.displayPage(Mode.Normal)(getRequest())
+        val result = controller.displayPage()(getRequest())
 
         status(result) must be(OK)
       }
@@ -84,7 +84,7 @@ class DeclarantDetailsControllerSpec extends ControllerSpec {
 
         withNewCaching(aDeclaration(withDeclarantDetails()))
 
-        val result = controller.displayPage(Mode.Normal)(getRequest())
+        val result = controller.displayPage()(getRequest())
 
         status(result) must be(OK)
       }
@@ -99,7 +99,7 @@ class DeclarantDetailsControllerSpec extends ControllerSpec {
 
         val incorrectForm = Json.obj(isEoriKey -> "wrong")
 
-        val result = controller.submitForm(Mode.Normal)(postRequest(incorrectForm))
+        val result = controller.submitForm()(postRequest(incorrectForm))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -113,7 +113,7 @@ class DeclarantDetailsControllerSpec extends ControllerSpec {
           withNewCaching(request.cacheModel)
           val correctForm = Json.obj(isEoriKey -> YesNoAnswers.yes)
 
-          val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
+          val result = controller.submitForm()(postRequest(correctForm))
 
           status(result) mustBe SEE_OTHER
           thePageNavigatedTo mustBe controllers.declaration.routes.ConsignmentReferencesController.displayPage()
@@ -126,7 +126,7 @@ class DeclarantDetailsControllerSpec extends ControllerSpec {
           withNewCaching(request.cacheModel)
           val correctForm = Json.obj(isEoriKey -> YesNoAnswers.yes)
 
-          val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
+          val result = controller.submitForm()(postRequest(correctForm))
 
           status(result) mustBe SEE_OTHER
           thePageNavigatedTo mustBe controllers.declaration.routes.DeclarantExporterController.displayPage()
@@ -142,7 +142,7 @@ class DeclarantDetailsControllerSpec extends ControllerSpec {
 
           val correctForm = Json.obj(isEoriKey -> YesNoAnswers.no)
 
-          val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
+          val result = controller.submitForm()(postRequest(correctForm))
 
           session(result).get(ExportsSessionKeys.declarationId) must be(None)
         }

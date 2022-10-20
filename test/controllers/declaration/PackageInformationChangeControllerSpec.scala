@@ -19,7 +19,6 @@ package controllers.declaration
 import base.ControllerSpec
 import forms.declaration.PackageInformation
 import mock.ErrorHandlerMocks
-import models.Mode
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
@@ -62,7 +61,7 @@ class PackageInformationChangeControllerSpec extends ControllerSpec with OptionV
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration(withItems(item)))
-    await(controller.displayPage(Mode.Normal, item.id, id)(request))
+    await(controller.displayPage(item.id, id)(request))
     thePackageInformation
   }
 
@@ -87,7 +86,7 @@ class PackageInformationChangeControllerSpec extends ControllerSpec with OptionV
           val item = anItem(withPackageInformation(packageInformation))
           withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
 
-          val result = controller.displayPage(Mode.Normal, item.id, id)(getRequest())
+          val result = controller.displayPage(item.id, id)(getRequest())
 
           status(result) mustBe OK
           verifyChangePageInvoked()
@@ -101,7 +100,7 @@ class PackageInformationChangeControllerSpec extends ControllerSpec with OptionV
           withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
 
           val requestBody = Seq("typesOfPackages" -> "invalid", "numberOfPackages" -> "invalid", "shippingMarks" -> "inva!id")
-          val result = controller.submitForm(Mode.Normal, item.id, id)(postRequestAsFormUrlEncoded(requestBody: _*))
+          val result = controller.submitForm(item.id, id)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           status(result) mustBe BAD_REQUEST
           verifyChangePageInvoked()
@@ -117,7 +116,7 @@ class PackageInformationChangeControllerSpec extends ControllerSpec with OptionV
             "numberOfPackages" -> packageInformation.numberOfPackages.get.toString,
             "shippingMarks" -> packageInformation.shippingMarks.get
           )
-          val result = controller.submitForm(Mode.Normal, item.id, anotherId)(postRequestAsFormUrlEncoded(requestBody: _*))
+          val result = controller.submitForm(item.id, anotherId)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           status(result) mustBe BAD_REQUEST
           verifyChangePageInvoked()
@@ -126,7 +125,7 @@ class PackageInformationChangeControllerSpec extends ControllerSpec with OptionV
         "user tries to display page with non-existent package info" in {
           withNewCaching(aDeclarationAfter(request.cacheModel))
 
-          val result = controller.displayPage(Mode.Normal, item.id, id)(getRequest())
+          val result = controller.displayPage(item.id, id)(getRequest())
 
           status(result) mustBe BAD_REQUEST
           verifyNoInteractions(mockChangePage)
@@ -136,7 +135,7 @@ class PackageInformationChangeControllerSpec extends ControllerSpec with OptionV
         "user tries to remove non-existent package info" in {
           withNewCaching(aDeclarationAfter(request.cacheModel))
 
-          val result = controller.submitForm(Mode.Normal, item.id, id)(getRequest())
+          val result = controller.submitForm(item.id, id)(getRequest())
 
           status(result) mustBe BAD_REQUEST
           verify(mockErrorHandler).displayErrorPage()(any())
@@ -148,10 +147,10 @@ class PackageInformationChangeControllerSpec extends ControllerSpec with OptionV
           withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
 
           val requestBody = Seq("typesOfPackages" -> "AE", "numberOfPackages" -> "1", "shippingMarks" -> "1234")
-          val result = controller.submitForm(Mode.Normal, item.id, id)(postRequestAsFormUrlEncoded(requestBody: _*))
+          val result = controller.submitForm(item.id, id)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.PackageInformationSummaryController.displayPage(Mode.Normal, item.id)
+          thePageNavigatedTo mustBe controllers.declaration.routes.PackageInformationSummaryController.displayPage(item.id)
 
           val savedPackage = theCacheModelUpdated.itemBy(item.id).flatMap(_.packageInformation).map(_.head)
           savedPackage.flatMap(_.typesOfPackages) mustBe Some("AE")

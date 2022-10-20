@@ -45,7 +45,7 @@
     appConfig: AppConfig
 )
 
-@(mode: Mode, itemId: String, form: Form[AdditionalDocument])(implicit request: JourneyRequest[_], messages: Messages)
+@(itemId: String, form: Form[AdditionalDocument])(implicit request: JourneyRequest[_], messages: Messages)
 
 @measurementInput(field: Field, labelKey: String, inputClasses: String) = {
     @govukInput(Input(
@@ -202,4 +202,4 @@
 
 @tariffExpander(AdditionalDocument, request.declarationType)(messages, appConfig),
 
-@saveButtons(mode)
+@saveButtons()

@@ -23,7 +23,6 @@ import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.common.YesNoAnswer.YesNoAnswers.yes
 import forms.declaration.{CommodityDetails, IsLicenceRequired}
-import models.Mode
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
@@ -42,7 +41,7 @@ class IsLicenceRequiredViewSpec extends UnitViewSpec with ExportsTestHelper with
   private val isLicenceRequiredPage = instanceOf[is_licence_required]
 
   private def createView(form: Form[YesNoAnswer] = IsLicenceRequired.form, mode: Mode = Mode.Normal)(implicit request: JourneyRequest[_]): Document =
-    isLicenceRequiredPage(mode, "itemId", form)(request, messages)
+    isLicenceRequiredPage("itemId", form)(request, messages)
 
   "IsLicenceReq View on empty page" should {
 
@@ -77,7 +76,7 @@ class IsLicenceRequiredViewSpec extends UnitViewSpec with ExportsTestHelper with
         val backButton = createView().getElementById("back-link")
 
         backButton must containMessage(backToPreviousQuestionCaption)
-        backButton must haveHref(routes.AdditionalInformationRequiredController.displayPage(Mode.Normal, "itemId").url)
+        backButton must haveHref(routes.AdditionalInformationRequiredController.displayPage("itemId").url)
       }
     }
 

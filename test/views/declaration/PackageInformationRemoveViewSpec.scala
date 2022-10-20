@@ -21,8 +21,6 @@ import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.form
 import forms.declaration.PackageInformation
 import models.DeclarationType.STANDARD
-import models.Mode
-import models.Mode.Normal
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import services.PackageTypesService
@@ -37,10 +35,10 @@ class PackageInformationRemoveViewSpec extends PageWithButtonsSpec with Injector
 
   private val page = instanceOf[package_information_remove]
 
-  override val typeAndViewInstance = (STANDARD, page(Normal, itemId, packageInformation, form())(_, _))
+  override val typeAndViewInstance = (STANDARD, page(itemId, packageInformation, form())(_, _))
 
   def createView(frm: Form[YesNoAnswer] = form(), packageInfo: PackageInformation = packageInformation, mode: Mode = Normal): Document =
-    page(mode, itemId, packageInfo, frm)(request, messages)
+    page(itemId, packageInfo, frm)(request, messages)
 
   "PackageInformation Remove View" should {
     val view = createView()
@@ -62,7 +60,7 @@ class PackageInformationRemoveViewSpec extends PageWithButtonsSpec with Injector
 
       backLinkContainer must containMessage(backToPreviousQuestionCaption)
       backLinkContainer.getElementById("back-link") must haveHref(
-        controllers.declaration.routes.PackageInformationSummaryController.displayPage(Normal, itemId)
+        controllers.declaration.routes.PackageInformationSummaryController.displayPage(itemId)
       )
     }
 

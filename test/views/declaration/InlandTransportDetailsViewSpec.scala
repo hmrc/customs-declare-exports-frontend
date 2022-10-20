@@ -29,8 +29,6 @@ import forms.declaration.InlandModeOfTransportCode
 import forms.declaration.InlandModeOfTransportCode.form
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
 import models.DeclarationType._
-import models.Mode
-import models.Mode.Normal
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
@@ -44,10 +42,10 @@ class InlandTransportDetailsViewSpec extends PageWithButtonsSpec with ExportsTes
 
   val page = instanceOf[inland_transport_details]
 
-  override val typeAndViewInstance = (STANDARD, page(Normal, form())(_, _))
+  override val typeAndViewInstance = (STANDARD, page(form())(_, _))
 
   def createView(mode: Mode = Normal, frm: Form[InlandModeOfTransportCode] = form())(implicit request: JourneyRequest[_]): Document =
-    page(mode, frm)(request, messages)
+    page(frm)(request, messages)
 
   "Inland Transport Details View" should {
 

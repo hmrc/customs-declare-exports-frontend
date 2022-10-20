@@ -24,8 +24,6 @@ import forms.declaration.EntityDetails
 import forms.declaration.consignor.ConsignorDetails
 import forms.declaration.consignor.ConsignorDetails.form
 import models.DeclarationType.CLEARANCE
-import models.Mode
-import models.Mode.Normal
 import models.codes.Country
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
@@ -57,10 +55,10 @@ class ConsignorDetailsViewSpec extends AddressViewSpec with Injector with PageWi
 
   val page = instanceOf[consignor_details]
 
-  override val typeAndViewInstance = (CLEARANCE, page(Normal, form())(_, _))
+  override val typeAndViewInstance = (CLEARANCE, page(form())(_, _))
 
   def createView(frm: Form[ConsignorDetails] = form(), mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document =
-    page(mode, frm)(request, messages)
+    page(frm)(request, messages)
 
   "Consignor Details View on empty page" should {
 

@@ -22,8 +22,6 @@ import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.form
 import forms.declaration.Seal
 import models.DeclarationType.STANDARD
-import models.Mode
-import models.Mode.Normal
 import models.declaration.Container
 import org.jsoup.nodes.Document
 import play.api.data.Form
@@ -40,9 +38,9 @@ class TransportContainerRemoveViewSpec extends PageWithButtonsSpec with Injector
 
   val page = instanceOf[transport_container_remove]
 
-  override val typeAndViewInstance = (STANDARD, page(Normal, form(), container)(_, _))
+  override val typeAndViewInstance = (STANDARD, page(form(), container)(_, _))
 
-  def createView(frm: Form[YesNoAnswer] = form(), mode: Mode = Normal): Document = page(mode, frm, container)
+  def createView(frm: Form[YesNoAnswer] = form(), mode: Mode = Normal): Document = page(frm, container)
 
   "Transport Containers Remove View" should {
     val view = createView()
@@ -69,7 +67,7 @@ class TransportContainerRemoveViewSpec extends PageWithButtonsSpec with Injector
       val backLinkContainer = view.getElementById("back-link")
 
       backLinkContainer must containMessage(backToPreviousQuestionCaption)
-      backLinkContainer.getElementById("back-link") must haveHref(TransportContainerController.displayContainerSummary(Normal))
+      backLinkContainer.getElementById("back-link") must haveHref(TransportContainerController.displayContainerSummary())
     }
 
     val createViewWithMode: Mode => Document = mode => createView(mode = mode)

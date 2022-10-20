@@ -42,15 +42,15 @@
     appConfig: AppConfig
 )
 
-@(mode: Mode, form: Form[ContainerFirst])(implicit request: JourneyRequest[_], messages: Messages)
+@(form: Form[ContainerFirst])(implicit request: JourneyRequest[_], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
 @govukLayout(
     title = Title("declaration.transportInformation.containers.first.title", "declaration.section.6", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(ContainerFirst, mode)))) {
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(ContainerFirst)))) {
 
-    @formHelper(action = TransportContainerController.submitAddContainer(mode), 'autoComplete -> "off") {
+    @formHelper(action = TransportContainerController.submitAddContainer(), 'autoComplete -> "off") {
         @errorSummary(radioGroupErrors(hasContainerKey, "code_yes", form.errors))
 
         @sectionHeader(messages("declaration.section.6"))
@@ -98,6 +98,6 @@
 
         @tariffExpander(ContainerFirst, request.declarationType)(messages, appConfig)
 
-        @saveButtons(mode)
+        @saveButtons()
     }
 }

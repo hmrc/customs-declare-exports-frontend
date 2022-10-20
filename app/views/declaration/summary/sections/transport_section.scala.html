@@ -16,12 +16,10 @@
 
 @import controllers.declaration.routes
 @import forms.declaration.ModeOfTransportCode.Empty
-@import models.Mode
 @import models.declaration.{Transport,Locations}
-@import views.html.components.gds.linkContent
-@import views.html.components.gds.summary_list
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import views.components.gds.ActionItemBuilder._
+@import views.helpers.ActionItemBuilder.actionSummaryItem
+@import views.html.components.gds.{linkContent, summary_list}
 @import views.html.declaration.summary._
 
 @this(
@@ -30,7 +28,7 @@
     containers: containers
 )
 
-@(mode: Mode, declaration: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages)
+@(declaration: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages)
 
 @sectionRequired(transport: Transport, locations: Locations) = @{
     transport.transportPayment.isDefined ||
@@ -77,8 +75,8 @@
                 ),
                 actions = actions(Actions(
                     items = Seq(
-                        actionItem(
-                            href = routes.TransportLeavingTheBorderController.displayPage(mode).url,
+                        actionSummaryItem(
+                            href = routes.TransportLeavingTheBorderController.displayPage().url,
                             content = HtmlContent(linkContent(messages("site.change"))),
                             visuallyHiddenText = Some(messages("declaration.summary.transport.departure.transportCode.header.change"))
                         )
@@ -99,8 +97,8 @@
                 ),
                 actions = actions(Actions(
                     items = Seq(
-                        actionItem(
-                            href = routes.WarehouseIdentificationController.displayPage(mode).url,
+                        actionSummaryItem(
+                            href = routes.WarehouseIdentificationController.displayPage().url,
                             content = HtmlContent(linkContent(messages("site.change"))),
                             visuallyHiddenText = Some(messages("declaration.summary.transport.warehouse.id.change"))
                         )
@@ -119,8 +117,8 @@
                 ),
                 actions = actions(Actions(
                     items = Seq(
-                        actionItem(
-                            href = routes.SupervisingCustomsOfficeController.displayPage(mode).url,
+                        actionSummaryItem(
+                            href = routes.SupervisingCustomsOfficeController.displayPage().url,
                             content = HtmlContent(linkContent(messages("site.change"))),
                             visuallyHiddenText = Some(messages("declaration.summary.transport.supervisingOffice.change"))
                         )
@@ -139,8 +137,8 @@
                 ),
                 actions = actions(Actions(
                     items = Seq(
-                        actionItem(
-                            href = routes.InlandOrBorderController.displayPage(mode).url,
+                        actionSummaryItem(
+                            href = routes.InlandOrBorderController.displayPage().url,
                             content = HtmlContent(linkContent(messages("site.change"))),
                             visuallyHiddenText = Some(messages("declaration.summary.transport.inlandOrBorder.change"))
                         )
@@ -160,8 +158,8 @@
                 ),
                 actions = actions(Actions(
                     items = Seq(
-                        actionItem(
-                            href = routes.InlandTransportDetailsController.displayPage(mode).url,
+                        actionSummaryItem(
+                            href = routes.InlandTransportDetailsController.displayPage().url,
                             content = HtmlContent(linkContent(messages("site.change"))),
                             visuallyHiddenText = Some(messages("declaration.summary.transport.inlandModeOfTransport.change"))
                         )
@@ -181,8 +179,8 @@
                   ),
                   actions = actions(Actions(
                       items = Seq(
-                          actionItem(
-                              href = routes.DepartureTransportController.displayPage(mode).url,
+                          actionSummaryItem(
+                              href = routes.DepartureTransportController.displayPage().url,
                               content = HtmlContent(linkContent(messages("site.change"))),
                               visuallyHiddenText = Some(messages("declaration.summary.transport.departure.meansOfTransport.header.change"))
                           )
@@ -202,8 +200,8 @@
                     ),
                     actions = actions(Actions(
                         items = Seq(
-                            actionItem(
-                                href = routes.BorderTransportController.displayPage(mode).url,
+                            actionSummaryItem(
+                                href = routes.BorderTransportController.displayPage().url,
                                 content = HtmlContent(linkContent(messages("site.change"))),
                                 visuallyHiddenText = Some(messages("declaration.summary.transport.border.meansOfTransport.header.change"))
                             )
@@ -225,8 +223,8 @@
                     ),
                     actions = actions(Actions(
                         items = Seq(
-                            actionItem(
-                                href = routes.TransportCountryController.displayPage(mode).url,
+                            actionSummaryItem(
+                                href = routes.TransportCountryController.displayPage().url,
                                 content = HtmlContent(linkContent(messages("site.change"))),
                                 visuallyHiddenText = Some(messages("declaration.summary.transport.registrationCountry.change"))
                             )
@@ -245,8 +243,8 @@
                 ),
                 actions = actions(Actions(
                     items = Seq(
-                        actionItem(
-                            href = routes.ExpressConsignmentController.displayPage(mode).url,
+                        actionSummaryItem(
+                            href = routes.ExpressConsignmentController.displayPage().url,
                             content = HtmlContent(linkContent(messages("site.change"))),
                             visuallyHiddenText = Some(messages("declaration.summary.transport.expressConsignment.change"))
                         )
@@ -265,8 +263,8 @@
                 ),
                 actions = actions(Actions(
                     items = Seq(
-                        actionItem(
-                            href = routes.TransportPaymentController.displayPage(mode).url,
+                        actionSummaryItem(
+                            href = routes.TransportPaymentController.displayPage().url,
                             content = HtmlContent(linkContent(messages("site.change"))),
                             visuallyHiddenText = Some(messages("declaration.summary.transport.payment.change"))
                         )
@@ -278,6 +276,6 @@
     )
 
     @declaration.transport.containers.map(containerSeq =>
-        containers(mode, containerSeq, actionsEnabled)
+        containers(containerSeq, actionsEnabled)
     )
 }

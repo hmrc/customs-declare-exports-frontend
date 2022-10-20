@@ -25,7 +25,7 @@ import forms.declaration.FiscalInformation.AllowedFiscalInformationAnswers
 import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData, FiscalInformation, WarehouseIdentification}
 import models.DeclarationType._
 import models.declaration.{CommodityMeasure, ExportItem, ProcedureCodesData}
-import models.{DeclarationType, ExportsDeclaration, Mode}
+import models.{DeclarationType, ExportsDeclaration}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.{any, anyString}
 import org.mockito.Mockito.{reset, verify, when}
@@ -119,7 +119,7 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
 
         withNewCaching(aDeclaration(withType(request.declarationType)))
 
-        val result = controller.displayAddItemPage(Mode.Normal)(getRequest())
+        val result = controller.displayAddItemPage()(getRequest())
         status(result) mustBe OK
         verify(mockExportsCacheService).get(anyString())(any())
       }
@@ -129,7 +129,7 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
 
           withNewCaching(aDeclaration(withType(request.declarationType)))
 
-          val result = controller.displayAddItemPage(Mode.Normal)(getRequest())
+          val result = controller.displayAddItemPage()(getRequest())
           status(result) mustBe OK
           verify(addItemPage).apply(any())(any(), any())
         }
@@ -141,10 +141,10 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
           val cachedData = aDeclaration(withType(request.declarationType), withItem(exportItem))
           withNewCaching(cachedData)
 
-          val result = controller.displayAddItemPage(Mode.Normal)(getRequest())
+          val result = controller.displayAddItemPage()(getRequest())
 
           status(result) mustBe SEE_OTHER
-          thePageNavigatedTo mustBe routes.ItemsSummaryController.displayItemsSummaryPage(Mode.Normal)
+          thePageNavigatedTo mustBe routes.ItemsSummaryController.displayItemsSummaryPage()
         }
       }
     }
@@ -157,7 +157,7 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
 
         withNewCaching(aDeclaration(withType(request.declarationType)))
 
-        val result = controller.addFirstItem(Mode.Normal)(postRequest(Json.obj()))
+        val result = controller.addFirstItem()(postRequest(Json.obj()))
         status(result) mustBe SEE_OTHER
 
         verify(navigator).continueTo(any[Mode], any())(any())
@@ -167,9 +167,9 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
 
         withNewCaching(aDeclaration(withType(request.declarationType)))
 
-        val result = controller.addFirstItem(Mode.Normal)(postRequest(Json.obj()))
+        val result = controller.addFirstItem()(postRequest(Json.obj()))
         status(result) mustBe SEE_OTHER
-        thePageNavigatedTo mustBe routes.ProcedureCodesController.displayPage(Mode.Normal, itemId)
+        thePageNavigatedTo mustBe routes.ProcedureCodesController.displayPage(itemId)
 
         theCacheModelUpdated.items.size mustBe 1
       }
@@ -184,7 +184,7 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
 
         withNewCaching(aDeclaration(withType(request.declarationType)))
 
-        val result = controller.displayItemsSummaryPage(Mode.Normal)(getRequest())
+        val result = controller.displayItemsSummaryPage()(getRequest())
         status(result) mustBe SEE_OTHER
 
         verify(mockExportsCacheService).get(anyString())(any())
@@ -196,7 +196,7 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
           val cachedData = aDeclaration(withType(request.declarationType), withItem(exportItem))
           withNewCaching(cachedData)
 
-          val result = controller.displayItemsSummaryPage(Mode.Normal)(getRequest())
+          val result = controller.displayItemsSummaryPage()(getRequest())
           status(result) mustBe OK
 
           verify(itemsSummaryPage).apply(any(), any(), any(), any())(any(), any())
@@ -209,10 +209,10 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
 
           withNewCaching(aDeclaration(withType(request.declarationType)))
 
-          val result = controller.displayItemsSummaryPage(Mode.Normal)(getRequest())
+          val result = controller.displayItemsSummaryPage()(getRequest())
 
           status(result) mustBe SEE_OTHER
-          thePageNavigatedTo mustBe routes.ItemsSummaryController.displayAddItemPage(Mode.Normal)
+          thePageNavigatedTo mustBe routes.ItemsSummaryController.displayAddItemPage()
         }
       }
 
@@ -223,7 +223,7 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
           val cachedData = aDeclaration(withType(request.declarationType), withItem(exportItem), withItem(emptyItem))
           withNewCaching(cachedData)
 
-          val result = controller.displayItemsSummaryPage(Mode.Normal)(getRequest())
+          val result = controller.displayItemsSummaryPage()(getRequest())
 
           status(result) mustBe OK
           verify(itemsSummaryPage).apply(any(), any(), any(), any())(any(), any())
@@ -244,7 +244,7 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
           withNewCaching(cachedData)
           val answerForm = Json.obj("yesNo" -> YesNoAnswers.yes)
 
-          val result = controller.submit(Mode.Normal)(postRequest(answerForm))
+          val result = controller.submit()(postRequest(answerForm))
           status(result) mustBe SEE_OTHER
 
           verify(navigator).continueTo(any[Mode], any())(any())
@@ -256,10 +256,10 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
           withNewCaching(cachedData)
           val answerForm = Json.obj("yesNo" -> YesNoAnswers.yes)
 
-          val result = controller.submit(Mode.Normal)(postRequest(answerForm))
+          val result = controller.submit()(postRequest(answerForm))
           status(result) mustBe SEE_OTHER
 
-          thePageNavigatedTo mustBe routes.ProcedureCodesController.displayPage(Mode.Normal, itemId)
+          thePageNavigatedTo mustBe routes.ProcedureCodesController.displayPage(itemId)
 
           verify(navigator).continueTo(any[Mode], any())(any())
         }
@@ -273,13 +273,13 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
           withNewCaching(cachedData)
           val answerForm = Json.obj("yesNo" -> YesNoAnswers.no)
 
-          val result = controller.submit(Mode.Normal)(postRequest(answerForm))
+          val result = controller.submit()(postRequest(answerForm))
 
           status(result) mustBe SEE_OTHER
           request.declarationType match {
             case DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL =>
-              thePageNavigatedTo mustBe routes.SupervisingCustomsOfficeController.displayPage(Mode.Normal)
-            case _ => thePageNavigatedTo mustBe routes.TransportLeavingTheBorderController.displayPage(Mode.Normal)
+              thePageNavigatedTo mustBe routes.SupervisingCustomsOfficeController.displayPage()
+            case _ => thePageNavigatedTo mustBe routes.TransportLeavingTheBorderController.displayPage()
           }
 
           verify(navigator).continueTo(any[Mode], any())(any())
@@ -293,7 +293,7 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
           val cachedData = aDeclaration(withType(request.declarationType), withItem(exportItem))
           withNewCaching(cachedData)
 
-          val result = controller.submit(Mode.Normal)(postRequest(Json.obj()))
+          val result = controller.submit()(postRequest(Json.obj()))
 
           status(result) mustBe BAD_REQUEST
           formPassedToItemsSummaryView.errors mustNot be(empty)
@@ -305,7 +305,7 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
           withNewCaching(cachedData)
           val answerForm = Json.obj("yesNo" -> YesNoAnswers.no)
 
-          val result = controller.submit(Mode.Normal)(postRequest(answerForm))
+          val result = controller.submit()(postRequest(answerForm))
 
           status(result) mustBe BAD_REQUEST
           itemsErrorsPassedToItemsSummaryView mustNot be(empty)
@@ -322,10 +322,10 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
           withNewCaching(cachedData)
           val answerForm = Json.obj("yesNo" -> YesNoAnswers.no)
 
-          val result = controller.submit(Mode.Normal)(postRequest(answerForm))
+          val result = controller.submit()(postRequest(answerForm))
 
           status(result) mustBe SEE_OTHER
-          thePageNavigatedTo mustBe routes.TransportLeavingTheBorderController.displayPage(Mode.Normal)
+          thePageNavigatedTo mustBe routes.TransportLeavingTheBorderController.displayPage()
         }
       }
     }
@@ -336,10 +336,10 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
         withNewCaching(cachedData)
         val answerForm = Json.obj("yesNo" -> YesNoAnswers.no)
 
-        val result = controller.submit(Mode.Normal)(postRequest(answerForm))
+        val result = controller.submit()(postRequest(answerForm))
 
         status(result) mustBe SEE_OTHER
-        thePageNavigatedTo mustBe routes.SupervisingCustomsOfficeController.displayPage(Mode.Normal)
+        thePageNavigatedTo mustBe routes.SupervisingCustomsOfficeController.displayPage()
       }
 
       "return 303 (SEE_OTHER) and redirect to Warehouse Identification page when procedure code requires warehouse id" in {
@@ -350,10 +350,10 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
         withNewCaching(cachedData)
         val answerForm = Json.obj("yesNo" -> YesNoAnswers.no)
 
-        val result = controller.submit(Mode.Normal)(postRequest(answerForm))
+        val result = controller.submit()(postRequest(answerForm))
 
         status(result) mustBe SEE_OTHER
-        thePageNavigatedTo mustBe routes.WarehouseIdentificationController.displayPage(Mode.Normal)
+        thePageNavigatedTo mustBe routes.WarehouseIdentificationController.displayPage()
       }
 
       "return 303 (SEE_OTHER) and redirect to Express Consignment page" when {
@@ -362,7 +362,7 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
           withNewCaching(cachedData)
           val answerForm = Json.obj("yesNo" -> YesNoAnswers.no)
 
-          val result = controller.submit(Mode.Normal)(postRequest(answerForm))
+          val result = controller.submit()(postRequest(answerForm))
 
           status(result) mustBe SEE_OTHER
           thePageNavigatedTo mustBe routes.ExpressConsignmentController.displayPage()
@@ -379,7 +379,7 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
         val cachedData = aDeclaration(withType(request.declarationType), withItem(exportItem))
         withNewCaching(cachedData)
 
-        val result = controller.displayRemoveItemConfirmationPage(Mode.Normal, itemId)(getRequest())
+        val result = controller.displayRemoveItemConfirmationPage(itemId)(getRequest())
 
         status(result) mustBe OK
         verify(removeItemPage).apply(any(), any(), any())(any(), any())
@@ -392,10 +392,10 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
           val cachedData = aDeclaration(withType(request.declarationType), withItem(exportItem))
           withNewCaching(cachedData)
 
-          val result = controller.displayRemoveItemConfirmationPage(Mode.Normal, "someItemId")(getRequest())
+          val result = controller.displayRemoveItemConfirmationPage("someItemId")(getRequest())
 
           status(result) mustBe SEE_OTHER
-          thePageNavigatedTo mustBe routes.ItemsSummaryController.displayItemsSummaryPage(Mode.Normal)
+          thePageNavigatedTo mustBe routes.ItemsSummaryController.displayItemsSummaryPage()
         }
       }
     }
@@ -423,7 +423,7 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
 
             withNewCaching(aDeclaration(withType(request.declarationType), withItem(cachedItem), withItem(secondItem)))
 
-            val result = controller.removeItem(Mode.Normal, "someId123")(postRequest(removeItemForm))
+            val result = controller.removeItem("someId123")(postRequest(removeItemForm))
             status(result) mustBe SEE_OTHER
 
             verifyTheCacheIsUnchanged()
@@ -433,10 +433,10 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
 
             withNewCaching(aDeclaration(withType(request.declarationType), withItem(cachedItem), withItem(secondItem)))
 
-            val result = controller.removeItem(Mode.Normal, "someId123")(postRequest(removeItemForm))
+            val result = controller.removeItem("someId123")(postRequest(removeItemForm))
 
             status(result) mustBe SEE_OTHER
-            thePageNavigatedTo mustBe routes.ItemsSummaryController.displayItemsSummaryPage(Mode.Normal)
+            thePageNavigatedTo mustBe routes.ItemsSummaryController.displayItemsSummaryPage()
           }
         }
 
@@ -446,7 +446,7 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
 
             withNewCaching(aDeclaration(withType(request.declarationType), withItem(cachedItem), withItem(secondItem)))
 
-            val result = controller.removeItem(Mode.Normal, itemId)(postRequest(removeItemForm))
+            val result = controller.removeItem(itemId)(postRequest(removeItemForm))
             status(result) mustBe SEE_OTHER
 
             val items = declarationPassedToUpdateCache.items
@@ -458,10 +458,10 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
 
             withNewCaching(aDeclaration(withType(request.declarationType), withItem(cachedItem), withItem(secondItem)))
 
-            val result = controller.removeItem(Mode.Normal, itemId)(postRequest(removeItemForm))
+            val result = controller.removeItem(itemId)(postRequest(removeItemForm))
 
             status(result) mustBe SEE_OTHER
-            thePageNavigatedTo mustBe routes.ItemsSummaryController.displayItemsSummaryPage(Mode.Normal)
+            thePageNavigatedTo mustBe routes.ItemsSummaryController.displayItemsSummaryPage()
 
             val items = declarationPassedToUpdateCache.items
             items.size mustBe 1
@@ -478,10 +478,10 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
 
           withNewCaching(aDeclaration(withType(request.declarationType), withItem(cachedItem), withItem(secondItem)))
 
-          val result = controller.removeItem(Mode.Normal, itemId)(postRequest(removeItemForm))
+          val result = controller.removeItem(itemId)(postRequest(removeItemForm))
 
           status(result) mustBe SEE_OTHER
-          thePageNavigatedTo mustBe routes.ItemsSummaryController.displayItemsSummaryPage(Mode.Normal)
+          thePageNavigatedTo mustBe routes.ItemsSummaryController.displayItemsSummaryPage()
 
           verifyTheCacheIsUnchanged()
         }
@@ -494,7 +494,7 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
           withNewCaching(aDeclaration(withType(request.declarationType), withItem(cachedItem), withItem(secondItem)))
           val incorrectRemoveItemForm = Json.obj("yesNo" -> "")
 
-          val result = controller.removeItem(Mode.Normal, itemId)(postRequest(incorrectRemoveItemForm))
+          val result = controller.removeItem(itemId)(postRequest(incorrectRemoveItemForm))
 
           status(result) mustBe BAD_REQUEST
           verify(removeItemPage).apply(any(), any(), any())(any(), any())
@@ -506,7 +506,7 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
           val incorrectRemoveItemForm = Json.obj("yesNo" -> "")
 
           intercept[IllegalStateException] {
-            Await.result(controller.removeItem(Mode.Normal, itemId)(postRequest(incorrectRemoveItemForm)), 5.seconds)
+            Await.result(controller.removeItem(itemId)(postRequest(incorrectRemoveItemForm)), 5.seconds)
           }
         }
       }
@@ -531,7 +531,7 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
 
             withNewCaching(declaration)
 
-            val result = controller.removeItem(Mode.Normal, "warehouseItem")(postRequest(removeItemForm))
+            val result = controller.removeItem("warehouseItem")(postRequest(removeItemForm))
             status(result) mustBe SEE_OTHER
 
             val items = declarationPassedToUpdateCache.items
@@ -564,7 +564,7 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
 
             withNewCaching(declaration)
 
-            val result = controller.removeItem(Mode.Normal, "warehouseItem")(postRequest(removeItemForm))
+            val result = controller.removeItem("warehouseItem")(postRequest(removeItemForm))
             status(result) mustBe SEE_OTHER
 
             val items = declarationPassedToUpdateCache.items

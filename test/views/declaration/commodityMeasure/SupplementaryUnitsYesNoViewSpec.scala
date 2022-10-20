@@ -24,8 +24,6 @@ import forms.declaration.CommodityDetails
 import forms.declaration.commodityMeasure.SupplementaryUnits
 import forms.declaration.commodityMeasure.SupplementaryUnits.{form, hasSupplementaryUnits, supplementaryUnits}
 import models.DeclarationType.{DeclarationType, STANDARD, SUPPLEMENTARY}
-import models.Mode
-import models.Mode.Normal
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
@@ -47,7 +45,7 @@ class SupplementaryUnitsYesNoViewSpec extends UnitViewSpec with Injector {
   val page = instanceOf[supplementary_units_yes_no]
 
   def createView(frm: Form[SupplementaryUnits] = form(true), mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document =
-    page(mode, itemId, frm)(request, messages)
+    page(itemId, frm)(request, messages)
 
   "SupplementaryUnitsYesNo View" when {
 
@@ -58,7 +56,7 @@ class SupplementaryUnitsYesNoViewSpec extends UnitViewSpec with Injector {
         "display 'Back' button that links to 'Commodity Details' page" in {
           val backButton = view.getElementById("back-link")
           backButton must containMessage("site.backToPreviousQuestion")
-          backButton must haveHref(CommodityMeasureController.displayPage(Normal, itemId))
+          backButton must haveHref(CommodityMeasureController.displayPage(itemId))
         }
 
         "display page title" in {

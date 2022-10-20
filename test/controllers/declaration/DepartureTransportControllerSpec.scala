@@ -27,7 +27,6 @@ import forms.declaration.ModeOfTransportCode.Maritime
 import forms.declaration.TransportCodes.{transportCodesForV1, transportCodesForV3WhenPC0019, NotApplicable, WagonNumber}
 import mock.ErrorHandlerMocks
 import models.DeclarationType._
-import models.Mode.Normal
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
@@ -75,7 +74,7 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration())
-    await(controller.displayPage(Normal)(request))
+    await(controller.displayPage()(request))
     theResponseForm
   }
 
@@ -89,7 +88,7 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
         "display page method is invoked and cache is empty" in {
           withNewCaching(request.cacheModel)
 
-          val result = controller.displayPage(Normal)(getRequest())
+          val result = controller.displayPage()(getRequest())
           status(result) must be(OK)
         }
 
@@ -97,7 +96,7 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
           val departureTransport = withDepartureTransport(Maritime, WagonNumber.value, "FAA")
           withNewCaching(aDeclarationAfter(request.cacheModel, departureTransport))
 
-          val result = controller.displayPage(Normal)(getRequest())
+          val result = controller.displayPage()(getRequest())
           status(result) must be(OK)
         }
       }
@@ -107,7 +106,7 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
           "redirect to the starting page on displayPage" in {
             withNewCaching(aDeclarationAfter(request.cacheModel, withBorderModeOfTransportCode(modeOfTransportCode)))
 
-            val result = controller.displayPage(Normal)(getRequest())
+            val result = controller.displayPage()(getRequest())
 
             status(result) must be(SEE_OTHER)
             redirectLocation(result) mustBe Some(RootController.displayPage().url)
@@ -122,7 +121,7 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
 
           val correctForm = formData("", "", "")
 
-          val result = controller.submitForm(Normal)(postRequest(correctForm))
+          val result = controller.submitForm()(postRequest(correctForm))
           status(result) must be(BAD_REQUEST)
         }
 
@@ -131,7 +130,7 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
 
           val incorrectForm = formData("wrongValue", WagonNumber.id, "FAA")
 
-          val result = controller.submitForm(Normal)(postRequest(incorrectForm))
+          val result = controller.submitForm()(postRequest(incorrectForm))
           status(result) must be(BAD_REQUEST)
         }
       }
@@ -143,7 +142,7 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
 
             val correctForm = formData(WagonNumber.value, WagonNumber.id, "FAA")
 
-            val result = controller.submitForm(Normal)(postRequest(correctForm))
+            val result = controller.submitForm()(postRequest(correctForm))
             redirectLocation(result) mustBe Some(RootController.displayPage.url)
           }
         }
@@ -157,7 +156,7 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
 
           val correctForm = formData(WagonNumber.value, WagonNumber.id, "FAA")
 
-          val result = controller.submitForm(Normal)(postRequest(correctForm))
+          val result = controller.submitForm()(postRequest(correctForm))
 
           status(result) must be(SEE_OTHER)
           thePageNavigatedTo mustBe BorderTransportController.displayPage()
@@ -170,7 +169,7 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
 
           val correctForm = formData(WagonNumber.value, WagonNumber.id, "FAA")
 
-          val result = controller.submitForm(Normal)(postRequest(correctForm))
+          val result = controller.submitForm()(postRequest(correctForm))
 
           status(result) must be(SEE_OTHER)
           thePageNavigatedTo mustBe TransportCountryController.displayPage()
@@ -186,7 +185,7 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
 
           val correctForm = formData(WagonNumber.value, WagonNumber.id, "FAA")
 
-          val result = controller.submitForm(Normal)(postRequest(correctForm))
+          val result = controller.submitForm()(postRequest(correctForm))
 
           status(result) must be(SEE_OTHER)
           thePageNavigatedTo mustBe ExpressConsignmentController.displayPage()
@@ -199,7 +198,7 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
 
             val correctForm = formData(NotApplicable.value, "", "")
 
-            val result = controller.submitForm(Normal)(postRequest(correctForm))
+            val result = controller.submitForm()(postRequest(correctForm))
 
             await(result) mustBe aRedirectToTheNextPage
             thePageNavigatedTo mustBe ExpressConsignmentController.displayPage()
@@ -214,7 +213,7 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
         "displayPage is invoked" in {
           withNewCaching(request.cacheModel)
 
-          val result = controller.displayPage(Normal)(getRequest())
+          val result = controller.displayPage()(getRequest())
           redirectLocation(result) mustBe Some(RootController.displayPage.url)
         }
 
@@ -223,7 +222,7 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
 
           val correctForm = formData(WagonNumber.value, WagonNumber.id, "FAA")
 
-          val result = controller.submitForm(Normal)(postRequest(correctForm))
+          val result = controller.submitForm()(postRequest(correctForm))
           redirectLocation(result) mustBe Some(RootController.displayPage.url)
         }
       }

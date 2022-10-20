@@ -19,7 +19,6 @@ package controllers.declaration
 import base.ControllerSpec
 import forms.common.Eori
 import forms.declaration.{EntityDetails, RepresentativeEntity}
-import models.Mode
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -65,7 +64,7 @@ class RepresentativeEntityControllerSpec extends ControllerSpec with OptionValue
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration())
-    await(controller.displayPage(Mode.Normal)(request))
+    await(controller.displayPage()(request))
     theResponseForm
   }
 
@@ -80,7 +79,7 @@ class RepresentativeEntityControllerSpec extends ControllerSpec with OptionValue
 
           withNewCaching(request.cacheModel)
 
-          val result = controller.displayPage(Mode.Normal)(getRequest())
+          val result = controller.displayPage()(getRequest())
 
           status(result) mustBe OK
           verifyPage(1)
@@ -92,7 +91,7 @@ class RepresentativeEntityControllerSpec extends ControllerSpec with OptionValue
 
           withNewCaching(aDeclarationAfter(request.cacheModel, withRepresentativeDetails(Some(Eori(eori)), None, None)))
 
-          val result = controller.displayPage(Mode.Normal)(getRequest())
+          val result = controller.displayPage()(getRequest())
 
           status(result) mustBe OK
           verifyPage(1)
@@ -110,7 +109,7 @@ class RepresentativeEntityControllerSpec extends ControllerSpec with OptionValue
 
           val incorrectForm = Json.toJson(RepresentativeEntity(EntityDetails(None, None)))
 
-          val result = controller.submitForm(Mode.Normal)(postRequest(incorrectForm))
+          val result = controller.submitForm()(postRequest(incorrectForm))
 
           status(result) mustBe BAD_REQUEST
           verifyPage(1)
@@ -125,7 +124,7 @@ class RepresentativeEntityControllerSpec extends ControllerSpec with OptionValue
 
         val correctForm = Json.toJson(RepresentativeEntity(EntityDetails(Some(Eori(eori)), None)))
 
-        val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
+        val result = controller.submitForm()(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.RepresentativeStatusController.displayPage()

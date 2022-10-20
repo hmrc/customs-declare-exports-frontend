@@ -18,8 +18,8 @@
 @import forms.declaration.declarationHolder.DeclarationHolder
 @import services.view.HolderOfAuthorisationCodes
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import views.components.gds.ActionItemBuilder._
 @import views.declaration.summary.TableCell
+@import views.helpers.ActionItemBuilder._
 @import views.html.components.gds.{link, linkContent, spanVisuallyHidden, summary_list}
 
 @this(
@@ -31,12 +31,9 @@
     holderOfAuthorisationCodes: HolderOfAuthorisationCodes
 )
 
-@(mode: Mode, declarationData: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages)
+@(declarationData: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages)
 
-@actions(action: Actions) = @{
-    if(actionsEnabled) Some(action)
-    else None
-}
+@actions(action: Actions) = @{  if (actionsEnabled) Some(action) else None }
 
 @holderTypeCode(holder: DeclarationHolder) = @{
     holder.authorisationTypeCode.fold("")(holderOfAuthorisationCodes.codeDescription(messages.lang.toLocale, _))
@@ -46,22 +43,20 @@
     holder.eori.map(_.value).getOrElse("")
 }
 
-@change(holder: DeclarationHolder) = {
-    @{
-        if(actionsEnabled)
-            link(
-                messages("site.change"),
-                routes.AuthorisationProcedureCodeChoiceController.displayPage(mode),
-                textHidden = Some(messages(
-                    "declaration.summary.parties.holders.change",
-                    holder.authorisationTypeCode.getOrElse(""),
-                    holderEori(holder)
-                ))
-            )
-        else
-            ""
-    }
-}
+@change(holder: DeclarationHolder) = { @{
+    if (actionsEnabled)
+        link(
+            messages("site.change"),
+            callForSummaryChangeLink(routes.AuthorisationProcedureCodeChoiceController.displayPage()),
+            textHidden = Some(messages(
+                "declaration.summary.parties.holders.change",
+                holder.authorisationTypeCode.getOrElse(""),
+                holderEori(holder)
+            ))
+        )
+    else
+        ""
+}}
 
 @holders = @{
   declarationData.parties.declarationHoldersData.map(_.holders).getOrElse(Seq.empty)
@@ -79,8 +74,8 @@
             ),
             actions = actions(Actions(
                 items = Seq(
-                    actionItem(
-                        href = routes.AuthorisationProcedureCodeChoiceController.displayPage(mode).url,
+                    actionSummaryItem(
+                        href = routes.AuthorisationProcedureCodeChoiceController.displayPage().url,
                         content = HtmlContent(linkContent(messages("site.change"))),
                         visuallyHiddenText = Some(messages("declaration.summary.parties.holders.empty.change"))
                     )

@@ -43,15 +43,15 @@
     formHelper: FormWithCSRF
 )
 
-@(mode: Mode, form: Form[YesNoAnswer])(implicit request: JourneyRequest[_], messages: Messages)
+@(form: Form[YesNoAnswer])(implicit request: JourneyRequest[_], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
 @govukLayout(
     title = Title("declaration.declarationHolderRequired.title", "declaration.section.2", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(DeclarationHolderRequired, mode)))) {
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(DeclarationHolderRequired)))) {
 
-    @formHelper(action = routes.DeclarationHolderRequiredController.submitForm(mode), 'autoComplete -> "off") {
+    @formHelper(action = routes.DeclarationHolderRequiredController.submitForm(), 'autoComplete -> "off") {
         @errorSummary(yesNoErrors(form.errors))
 
         @sectionHeader(messages("declaration.section.2"))
@@ -67,7 +67,7 @@
                 yesNoRadios(form, inline = true),
                 declarationHolderRequiredHelper.insetText,
                 tariffExpander(DeclarationHolderRequired, request.declarationType)(messages, appConfig),
-                saveButtons(mode)
+                saveButtons()
             ))
         ))
     }

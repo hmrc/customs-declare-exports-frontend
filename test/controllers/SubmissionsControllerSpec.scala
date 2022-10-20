@@ -173,7 +173,7 @@ class SubmissionsControllerSpec extends ControllerWithoutFormSpec with BeforeAnd
       val result = controller.amend(rejectedId)(getRequest(None))
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(SummaryController.displayPage(Mode.Normal).url)
+      redirectLocation(result) mustBe Some(SummaryController.displayPage().url)
       session(result).get(ExportsSessionKeys.declarationId) mustBe Some("new-id")
     }
   }

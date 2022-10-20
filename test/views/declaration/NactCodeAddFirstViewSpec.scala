@@ -23,9 +23,8 @@ import forms.declaration.NactCodeFirst
 import forms.declaration.NactCodeFirst.form
 import forms.declaration.NatureOfTransaction.{BusinessPurchase, Construction, Sale}
 import models.DeclarationType.STANDARD
-import models.Mode.Normal
 import models.requests.JourneyRequest
-import models.{DeclarationType, Mode}
+import models.{DeclarationType}
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import views.declaration.spec.PageWithButtonsSpec
@@ -41,10 +40,10 @@ class NactCodeAddFirstViewSpec extends PageWithButtonsSpec with Injector {
 
   val page = instanceOf[nact_code_add_first]
 
-  override val typeAndViewInstance = (STANDARD, page(Normal, itemId, form())(_, _))
+  override val typeAndViewInstance = (STANDARD, page(itemId, form())(_, _))
 
   def createView(frm: Form[NactCodeFirst] = form(), mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document =
-    page(mode, itemId, frm)(request, messages)
+    page(itemId, frm)(request, messages)
 
   "Nact Code Add First View" should {
     val view = createView()
@@ -73,35 +72,35 @@ class NactCodeAddFirstViewSpec extends PageWithButtonsSpec with Injector {
           val view = createView()(journeyRequest(aDeclaration(withType(DeclarationType.STANDARD), withNatureOfTransaction(Sale))))
 
           val backLink = view.getElementById("back-link")
-          backLink.getElementById("back-link") must haveHref(ZeroRatedForVatController.displayPage(Normal, itemId))
+          backLink.getElementById("back-link") must haveHref(ZeroRatedForVatController.displayPage(itemId))
         }
 
         "answered business purchase nature of transaction" in {
           val view = createView()(journeyRequest(aDeclaration(withType(DeclarationType.STANDARD), withNatureOfTransaction(BusinessPurchase))))
 
           val backLink = view.getElementById("back-link")
-          backLink.getElementById("back-link") must haveHref(ZeroRatedForVatController.displayPage(Normal, itemId))
+          backLink.getElementById("back-link") must haveHref(ZeroRatedForVatController.displayPage(itemId))
         }
 
         "answered other nature of transaction" in {
           val view = createView()(journeyRequest(aDeclaration(withType(DeclarationType.STANDARD), withNatureOfTransaction(Construction))))
 
           val backLink = view.getElementById("back-link")
-          backLink.getElementById("back-link") must haveHref(TaricCodeSummaryController.displayPage(Normal, itemId))
+          backLink.getElementById("back-link") must haveHref(TaricCodeSummaryController.displayPage(itemId))
         }
 
         "not answered nature of transaction" in {
           val view = createView()(journeyRequest(aDeclaration(withType(DeclarationType.STANDARD))))
 
           val backLink = view.getElementById("back-link")
-          backLink.getElementById("back-link") must haveHref(TaricCodeSummaryController.displayPage(Normal, itemId))
+          backLink.getElementById("back-link") must haveHref(TaricCodeSummaryController.displayPage(itemId))
         }
       }
 
       onJourney(DeclarationType.SUPPLEMENTARY, DeclarationType.OCCASIONAL, DeclarationType.SIMPLIFIED) { implicit request =>
         s"${request.declarationType} journey" in {
           val backLink = createView().getElementById("back-link")
-          backLink.getElementById("back-link") must haveHref(TaricCodeSummaryController.displayPage(Normal, itemId))
+          backLink.getElementById("back-link") must haveHref(TaricCodeSummaryController.displayPage(itemId))
         }
       }
     }

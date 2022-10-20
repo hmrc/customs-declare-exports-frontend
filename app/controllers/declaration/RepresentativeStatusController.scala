@@ -25,7 +25,7 @@ import forms.declaration.{RepresentativeEntity, RepresentativeStatus}
 import models.DeclarationType._
 import models.declaration.RepresentativeDetails
 import models.requests.JourneyRequest
-import models.{ExportsDeclaration, Mode}
+import models.ExportsDeclaration
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import services.cache.ExportsCacheService
@@ -46,26 +46,26 @@ class RepresentativeStatusController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
-  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     val frm = form.withSubmissionErrors
     request.cacheModel.parties.representativeDetails.map(_.statusCode) match {
-      case Some(data) => Ok(representativeStatusPage(mode, navigationForm, frm.fill(RepresentativeStatus(data))))
-      case _          => Ok(representativeStatusPage(mode, navigationForm, frm))
+      case Some(data) => Ok(representativeStatusPage(navigationForm, frm.fill(RepresentativeStatus(data))))
+      case _          => Ok(representativeStatusPage(navigationForm, frm))
     }
   }
 
-  def submitForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def submitForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     form.bindFromRequest
       .fold(
-        formWithErrors => Future.successful(BadRequest(representativeStatusPage(mode, navigationForm, formWithErrors))),
+        formWithErrors => Future.successful(BadRequest(representativeStatusPage(navigationForm, formWithErrors))),
         validRepresentativeDetails =>
           updateCache(validRepresentativeDetails).map { updatedCache =>
-            navigator.continueTo(mode, nextPage(request.declarationType, updatedCache))
+            navigator.continueTo(nextPage(request.declarationType, updatedCache))
           }
       )
   }
 
-  private def nextPage(declarationType: DeclarationType, declaration: ExportsDeclaration): Mode => Call =
+  private def nextPage(declarationType: DeclarationType, declaration: ExportsDeclaration): Call =
     declarationType match {
       case SUPPLEMENTARY => ConsigneeDetailsController.displayPage
 

@@ -23,8 +23,6 @@ import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.carrier.CarrierEoriNumber
 import forms.declaration.carrier.CarrierEoriNumber.form
 import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED, STANDARD}
-import models.Mode
-import models.Mode.Normal
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
@@ -41,7 +39,7 @@ class CarrierEoriNumberViewSpec extends UnitViewSpec with CommonMessages with Ex
   private val page: carrier_eori_number = instanceOf[carrier_eori_number]
 
   private def createView(form: Form[CarrierEoriNumber], mode: Mode = Mode.Normal)(implicit request: JourneyRequest[_]): Document =
-    page(mode, form)(request, messages)
+    page(form)(request, messages)
 
   "Carrier Eori Number View" should {
 
@@ -56,7 +54,7 @@ class CarrierEoriNumberViewSpec extends UnitViewSpec with CommonMessages with Ex
       "display 'Back' button that links to 'Exporter Details' page" in {
         val backButton = view.getElementById("back-link")
         backButton must containMessage("site.backToPreviousQuestion")
-        backButton.getElementById("back-link") must haveHref(RepresentativeStatusController.displayPage(Normal))
+        backButton.getElementById("back-link") must haveHref(RepresentativeStatusController.displayPage())
       }
 
       "display section header" in {
@@ -120,7 +118,7 @@ class CarrierEoriNumberViewSpec extends UnitViewSpec with CommonMessages with Ex
         actualText mustBe removeLineBreakIfAny(expectedText)
       }
 
-      val createViewWithMode: Mode => Document = mode => createView(form, mode)
+      val createViewWithMode: Mode => Document = mode => createView(form)
       checkAllSaveButtonsAreDisplayed(createViewWithMode)
 
       "display errors when all inputs are incorrect" in {

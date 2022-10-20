@@ -22,8 +22,6 @@ import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.form
 import forms.declaration.Seal
 import models.DeclarationType.{STANDARD, SUPPLEMENTARY}
-import models.Mode
-import models.Mode.Normal
 import models.declaration.Container
 import org.jsoup.nodes.Document
 import play.api.data.Form
@@ -40,10 +38,10 @@ class TransportContainerSummaryViewSpec extends PageWithButtonsSpec with Injecto
 
   val page = instanceOf[transport_container_summary]
 
-  override val typeAndViewInstance = (STANDARD, page(Normal, form(), List(container))(_, _))
+  override val typeAndViewInstance = (STANDARD, page(form(), List(container))(_, _))
 
   def createView(frm: Form[YesNoAnswer] = form(), containers: Seq[Container] = List(container), mode: Mode = Normal): Document =
-    page(mode, frm, containers)(journeyRequest(), messages)
+    page(frm, containers)(journeyRequest(), messages)
 
   "Transport Containers Summary View" should {
     val view = createView()
@@ -93,16 +91,16 @@ class TransportContainerSummaryViewSpec extends PageWithButtonsSpec with Injecto
       "declaration's type is STANDARD" in {
         val backLinkContainer = view.getElementById("back-link")
         backLinkContainer must containMessage(backToPreviousQuestionCaption)
-        backLinkContainer must haveHref(routes.ExpressConsignmentController.displayPage(Normal))
+        backLinkContainer must haveHref(routes.ExpressConsignmentController.displayPage())
       }
     }
 
     "display 'Back' button that links to the 'Transport Country' page" when {
       "declaration's type is SUPPLEMENTARY" in {
-        val view = page(Normal, form(), List(container))(journeyRequest(SUPPLEMENTARY), messages)
+        val view = page(form(), List(container))(journeyRequest(SUPPLEMENTARY), messages)
         val backLinkContainer = view.getElementById("back-link")
         backLinkContainer must containMessage(backToPreviousQuestionCaption)
-        backLinkContainer must haveHref(routes.TransportCountryController.displayPage(Normal))
+        backLinkContainer must haveHref(routes.TransportCountryController.displayPage())
       }
     }
 

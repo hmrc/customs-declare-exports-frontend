@@ -40,7 +40,7 @@
     packageTypesService: PackageTypesService
 )
 
-@(mode: Mode, itemId: String, info: PackageInformation, form: Form[YesNoAnswer])(implicit request: JourneyRequest[_], messages: Messages)
+@(itemId: String, info: PackageInformation, form: Form[YesNoAnswer])(implicit request: JourneyRequest[_], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
@@ -65,9 +65,9 @@
 
 @govukLayout(
     title = Title("declaration.packageInformation.remove.title", "declaration.section.5", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), controllers.declaration.routes.PackageInformationSummaryController.displayPage(mode, itemId)))) {
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), controllers.declaration.routes.PackageInformationSummaryController.displayPage(itemId)))) {
 
-    @formHelper(action = PackageInformationRemoveController.submitForm(mode, itemId, info.id), 'autoComplete -> "off") {
+    @formHelper(action = PackageInformationRemoveController.submitForm(itemId, info.id), 'autoComplete -> "off") {
         @errorSummary(yesNoErrors(form.errors))
 
         @sectionHeader(messages("declaration.section.5"))
@@ -81,7 +81,7 @@
             html = HtmlFormat.fill(immutable.Seq(
                 packageInformationTable,
                 yesNoRadios(form, inline = true),
-                saveButtons(mode)
+                saveButtons()
             ))
         ))
     }

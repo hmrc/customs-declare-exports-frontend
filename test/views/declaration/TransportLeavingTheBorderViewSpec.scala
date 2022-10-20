@@ -22,8 +22,6 @@ import controllers.routes.GuidanceController
 import forms.declaration.TransportLeavingTheBorder.form
 import forms.declaration.declarationHolder.AuthorizationTypeCodes.EXRR
 import models.DeclarationType._
-import models.Mode
-import models.Mode.Normal
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import views.declaration.spec.PageWithButtonsSpec
@@ -37,7 +35,7 @@ class TransportLeavingTheBorderViewSpec extends PageWithButtonsSpec with Injecto
 
   override val typeAndViewInstance = (STANDARD, page(form, Normal)(_, _))
 
-  def createView(mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document = page(form, mode)
+  def createView(mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document = page(form)
 
   "Transport Leaving The Border Page" must {
 

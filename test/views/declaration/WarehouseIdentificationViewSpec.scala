@@ -19,7 +19,6 @@ package views.declaration
 import base.Injector
 import forms.declaration.WarehouseIdentification
 import models.DeclarationType._
-import models.Mode
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
@@ -40,7 +39,7 @@ class WarehouseIdentificationViewSpec extends UnitViewSpec with ExportsTestHelpe
   private def createView(mode: Mode = Mode.Normal, form: Form[WarehouseIdentification] = form, messages: Messages = stubMessages())(
     implicit request: JourneyRequest[_]
   ): Document =
-    page(mode, form)(request, messages)
+    page(form)(request, messages)
 
   "Warehouse Identification Number View" should {
     onEveryDeclarationJourney() { implicit request =>
@@ -96,7 +95,7 @@ class WarehouseIdentificationViewSpec extends UnitViewSpec with ExportsTestHelpe
 
         backButton.text() mustBe "site.backToPreviousQuestion"
         backButton.getElementById("back-link") must haveHref(
-          controllers.declaration.routes.ItemsSummaryController.displayItemsSummaryPage(Mode.Normal)
+          controllers.declaration.routes.ItemsSummaryController.displayItemsSummaryPage()
         )
       }
     }

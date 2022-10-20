@@ -21,7 +21,6 @@ import controllers.declaration.routes.{AdditionalFiscalReferencesController, Add
 import forms.declaration.FiscalInformation.AllowedFiscalInformationAnswers._
 import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData, FiscalInformation}
 import models.DeclarationType
-import models.Mode.{Draft, Normal}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -67,7 +66,7 @@ class FiscalInformationControllerSpec extends ControllerSpec with OptionValues {
   }
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
-    await(controller.displayPage(Normal, itemId, fastForward = false)(request))
+    await(controller.displayPage(itemId, fastForward = false)(request))
     theResponseForm
   }
 
@@ -79,7 +78,7 @@ class FiscalInformationControllerSpec extends ControllerSpec with OptionValues {
     "return 200 (OK)" when {
 
       "display page method is invoked and cache is empty" in {
-        val result = controller.displayPage(Normal, itemId, fastForward = false)(getRequest())
+        val result = controller.displayPage(itemId, fastForward = false)(getRequest())
 
         status(result) mustBe OK
         verify(mockFiscalInformationPage, times(1)).apply(any(), any(), any())(any(), any())
@@ -91,7 +90,7 @@ class FiscalInformationControllerSpec extends ControllerSpec with OptionValues {
         val item = anItem(withFiscalInformation(FiscalInformation(yes)))
         withNewCaching(aDeclaration(withItems(item)))
 
-        val result = controller.displayPage(Normal, item.id, fastForward = false)(getRequest())
+        val result = controller.displayPage(item.id, fastForward = false)(getRequest())
 
         status(result) mustBe OK
         verifyPageAccessed(1)
@@ -117,7 +116,7 @@ class FiscalInformationControllerSpec extends ControllerSpec with OptionValues {
       "form is incorrect" in {
         val incorrectForm = Json.toJson(FiscalInformation("IncorrectValue"))
 
-        val result = controller.saveFiscalInformation(Normal, itemId)(postRequest(incorrectForm))
+        val result = controller.saveFiscalInformation(itemId)(postRequest(incorrectForm))
 
         status(result) mustBe BAD_REQUEST
         verifyPageAccessed(1)
@@ -129,20 +128,20 @@ class FiscalInformationControllerSpec extends ControllerSpec with OptionValues {
       "user answer yes" in {
         val correctForm = Json.toJson(FiscalInformation("Yes"))
 
-        val result = controller.saveFiscalInformation(Normal, itemId)(postRequest(correctForm))
+        val result = controller.saveFiscalInformation(itemId)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe routes.AdditionalFiscalReferencesAddController.displayPage(Normal, itemId)
+        thePageNavigatedTo mustBe routes.AdditionalFiscalReferencesAddController.displayPage(itemId)
         verifyPageAccessed(0)
       }
 
       "user answer no" in {
         val correctForm = Json.toJson(FiscalInformation("No"))
 
-        val result = controller.saveFiscalInformation(Normal, itemId)(postRequest(correctForm))
+        val result = controller.saveFiscalInformation(itemId)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe CommodityDetailsController.displayPage(Normal, itemId)
+        thePageNavigatedTo mustBe CommodityDetailsController.displayPage(itemId)
         verifyPageAccessed(0)
       }
 
@@ -153,10 +152,10 @@ class FiscalInformationControllerSpec extends ControllerSpec with OptionValues {
         )
         withNewCaching(aDeclaration(withItems(item)))
 
-        val result = controller.displayPage(Normal, item.id, fastForward = true)(getRequest())
+        val result = controller.displayPage(item.id, fastForward = true)(getRequest())
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe AdditionalFiscalReferencesController.displayPage(Normal, item.id)
+        thePageNavigatedTo mustBe AdditionalFiscalReferencesController.displayPage(item.id)
         verifyPageAccessed(0)
       }
 
@@ -164,10 +163,10 @@ class FiscalInformationControllerSpec extends ControllerSpec with OptionValues {
         val item = anItem(withProcedureCodes(Some("1000"), Seq("000")))
         withNewCaching(aDeclaration(withItems(item)))
 
-        val result = controller.displayPage(Normal, item.id, fastForward = true)(getRequest())
+        val result = controller.displayPage(item.id, fastForward = true)(getRequest())
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe AdditionalProcedureCodesController.displayPage(Normal, item.id)
+        thePageNavigatedTo mustBe AdditionalProcedureCodesController.displayPage(item.id)
         verifyPageAccessed(0)
       }
 
@@ -178,10 +177,10 @@ class FiscalInformationControllerSpec extends ControllerSpec with OptionValues {
         )
         withNewCaching(aDeclaration(withItems(item)))
 
-        val result = controller.displayPage(Normal, item.id, fastForward = false)(getRequest())
+        val result = controller.displayPage(item.id, fastForward = false)(getRequest())
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe AdditionalFiscalReferencesController.displayPage(Normal, item.id)
+        thePageNavigatedTo mustBe AdditionalFiscalReferencesController.displayPage(item.id)
         verifyPageAccessed(0)
       }
     }

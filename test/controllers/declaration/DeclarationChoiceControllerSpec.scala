@@ -22,7 +22,7 @@ import forms.declaration.AuthorisationProcedureCodeChoice.Choice1040
 import forms.declaration.DeclarationChoiceSpec
 import models.DeclarationType.{DeclarationType, _}
 import models.requests.ExportsSessionKeys
-import models.{DeclarationType, Mode}
+import models.{DeclarationType}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.OptionValues
@@ -79,7 +79,7 @@ class DeclarationChoiceControllerSpec extends ControllerWithoutFormSpec with Opt
       "display page method is invoked with empty cache" in {
         withNoDeclaration()
 
-        val result = controller.displayPage(Mode.Normal)(getRequest())
+        val result = controller.displayPage()(getRequest())
 
         status(result) must be(OK)
       }
@@ -87,7 +87,7 @@ class DeclarationChoiceControllerSpec extends ControllerWithoutFormSpec with Opt
       "display page method is invoked with data in cache" in {
         withNewCaching(existingDeclaration())
 
-        val result = controller.displayPage(Mode.Normal)(getRequest())
+        val result = controller.displayPage()(getRequest())
 
         status(result) must be(OK)
       }
@@ -99,10 +99,10 @@ class DeclarationChoiceControllerSpec extends ControllerWithoutFormSpec with Opt
         withNoDeclaration()
 
         val request = getRequest()
-        val result = controller.displayPage(Mode.Normal)(request)
+        val result = controller.displayPage()(request)
         val form = Choice.form()
 
-        viewOf(result) must be(choicePage(Mode.Normal, form)(request, controller.messagesApi.preferred(request)))
+        viewOf(result) must be(choicePage(form)(request, controller.messagesApi.preferred(request)))
       }
     }
   }
@@ -113,7 +113,7 @@ class DeclarationChoiceControllerSpec extends ControllerWithoutFormSpec with Opt
 
       "form is incorrect" in {
 
-        val result = controller.submitChoice(Mode.Normal)(postChoiceRequest(incorrectChoiceJSON))
+        val result = controller.submitChoice()(postChoiceRequest(incorrectChoiceJSON))
 
         status(result) must be(BAD_REQUEST)
         verifyTheCacheIsUnchanged()
@@ -125,7 +125,7 @@ class DeclarationChoiceControllerSpec extends ControllerWithoutFormSpec with Opt
         s"user creates a new $journeyType declaration" in {
           withCreateResponse(aDeclaration(withId(newDeclarationId), withType(journeyType)))
 
-          val result = controller.submitChoice(Mode.Normal)(postChoiceRequest(createChoiceJSON(journeyType.toString)))
+          val result = controller.submitChoice()(postChoiceRequest(createChoiceJSON(journeyType.toString)))
 
           status(result) must be(SEE_OTHER)
           redirectLocation(result) must be(Some(controllers.declaration.routes.AdditionalDeclarationTypeController.displayPage().url))
@@ -135,7 +135,7 @@ class DeclarationChoiceControllerSpec extends ControllerWithoutFormSpec with Opt
           val dec = aDeclaration(withId(existingDeclarationId), withType(journeyType))
           withNewCaching(aDeclarationAfter(dec, withAuthorisationProcedureCodeChoice(Choice1040)))
 
-          val result = controller.submitChoice(Mode.Normal)(postChoiceRequest(createChoiceJSON(journeyType.toString), Some(existingDeclarationId)))
+          val result = controller.submitChoice()(postChoiceRequest(createChoiceJSON(journeyType.toString), Some(existingDeclarationId)))
 
           status(result) must be(SEE_OTHER)
           redirectLocation(result) must be(Some(controllers.declaration.routes.AdditionalDeclarationTypeController.displayPage().url))
@@ -148,7 +148,7 @@ class DeclarationChoiceControllerSpec extends ControllerWithoutFormSpec with Opt
         s"user creates a new $journeyType declaration" in {
           withCreateResponse(aDeclaration(withId(newDeclarationId), withType(journeyType)))
 
-          val result = controller.submitChoice(Mode.Normal)(postChoiceRequest(createChoiceJSON(journeyType.toString)))
+          val result = controller.submitChoice()(postChoiceRequest(createChoiceJSON(journeyType.toString)))
 
           session(result).get(ExportsSessionKeys.declarationId).value mustEqual newDeclaration.id
         }
@@ -157,7 +157,7 @@ class DeclarationChoiceControllerSpec extends ControllerWithoutFormSpec with Opt
           val dec = aDeclaration(withId(existingDeclarationId), withType(journeyType))
           withNewCaching(aDeclarationAfter(dec, withAuthorisationProcedureCodeChoice(Choice1040)))
 
-          val result = controller.submitChoice(Mode.Normal)(postChoiceRequest(createChoiceJSON(journeyType.toString), Some(existingDeclarationId)))
+          val result = controller.submitChoice()(postChoiceRequest(createChoiceJSON(journeyType.toString), Some(existingDeclarationId)))
 
           session(result).get(ExportsSessionKeys.declarationId).value mustEqual existingDeclarationId
         }
@@ -170,7 +170,7 @@ class DeclarationChoiceControllerSpec extends ControllerWithoutFormSpec with Opt
           val dec = aDeclaration(withId(existingDeclarationId), withType(SIMPLIFIED))
           withNewCaching(aDeclarationAfter(dec, withAuthorisationProcedureCodeChoice(Choice1040)))
 
-          val result = controller.submitChoice(Mode.Normal)(postChoiceRequest(createChoiceJSON(journeyType.toString), Some(existingDeclarationId)))
+          val result = controller.submitChoice()(postChoiceRequest(createChoiceJSON(journeyType.toString), Some(existingDeclarationId)))
           status(result) must be(SEE_OTHER)
 
           val updatedDec = theCacheModelUpdated
@@ -186,7 +186,7 @@ class DeclarationChoiceControllerSpec extends ControllerWithoutFormSpec with Opt
           val dec = aDeclaration(withId(existingDeclarationId), withType(STANDARD))
           withNewCaching(aDeclarationAfter(dec, withAuthorisationProcedureCodeChoice(Choice1040)))
 
-          val result = controller.submitChoice(Mode.Normal)(postChoiceRequest(createChoiceJSON(journeyType.toString), Some(existingDeclarationId)))
+          val result = controller.submitChoice()(postChoiceRequest(createChoiceJSON(journeyType.toString), Some(existingDeclarationId)))
           status(result) must be(SEE_OTHER)
 
           val updatedDec = theCacheModelUpdated

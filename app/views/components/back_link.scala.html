@@ -14,11 +14,7 @@
  * limitations under the License.
  *@
 
-@import models.Mode
-@import models.Mode._
-
-@* mode is not currently used but will be once we add "change field" links to the summary page *@
-@(href: Call, mode: Mode = Mode.Normal, backMessage: String = "site.back")(implicit messages: Messages)
+@(href: Call, backMessage: String = "site.back")(implicit messages: Messages)
 
 <div class="js-visible">
     <a id="back-link" class="link-back" href="@href">@messages(backMessage)</a>

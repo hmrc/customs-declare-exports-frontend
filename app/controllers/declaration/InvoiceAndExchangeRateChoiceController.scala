@@ -24,7 +24,7 @@ import forms.common.YesNoAnswer.YesNoAnswers.{no, yes}
 import forms.common.YesNoAnswer.form
 import models.declaration.InvoiceAndPackageTotals
 import models.requests.JourneyRequest
-import models.{DeclarationType, ExportsDeclaration, Mode}
+import models.{DeclarationType, ExportsDeclaration}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.cache.ExportsCacheService
@@ -47,23 +47,23 @@ class InvoiceAndExchangeRateChoiceController @Inject() (
 
   private val validTypes = Seq(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY)
 
-  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
+  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
     val frm = form(errorKey = "declaration.invoice.amount.choice.answer.empty").withSubmissionErrors
 
     val declaration = request.cacheModel
 
-    if (declaration.isInvoiceAmountGreaterThan100000) Ok(invoiceAndExchangeRateChoicePage(mode, frm.fill(YesNoAnswer(no))))
-    else if (declaration.totalNumberOfItems.isDefined) Ok(invoiceAndExchangeRateChoicePage(mode, frm.fill(YesNoAnswer(yes))))
-    else Ok(invoiceAndExchangeRateChoicePage(mode, frm))
+    if (declaration.isInvoiceAmountGreaterThan100000) Ok(invoiceAndExchangeRateChoicePage(frm.fill(YesNoAnswer(no))))
+    else if (declaration.totalNumberOfItems.isDefined) Ok(invoiceAndExchangeRateChoicePage(frm.fill(YesNoAnswer(yes))))
+    else Ok(invoiceAndExchangeRateChoicePage(frm))
   }
 
-  def submitForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async { implicit request =>
+  def submitForm(): Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async { implicit request =>
     form(errorKey = "declaration.invoice.amount.choice.answer.empty").bindFromRequest
       .fold(
-        formWithErrors => Future.successful(BadRequest(invoiceAndExchangeRateChoicePage(mode, formWithErrors))),
+        formWithErrors => Future.successful(BadRequest(invoiceAndExchangeRateChoicePage(formWithErrors))),
         yesNoAnswer =>
-          if (yesNoAnswer.answer == no) Future.successful(navigator.continueTo(mode, InvoiceAndExchangeRateController.displayPage))
-          else resetCachedInvoiceData.map(_ => navigator.continueTo(mode, TotalPackageQuantityController.displayPage))
+          if (yesNoAnswer.answer == no) Future.successful(navigator.continueTo(InvoiceAndExchangeRateController.displayPage))
+          else resetCachedInvoiceData.map(_ => navigator.continueTo(TotalPackageQuantityController.displayPage))
       )
   }
 

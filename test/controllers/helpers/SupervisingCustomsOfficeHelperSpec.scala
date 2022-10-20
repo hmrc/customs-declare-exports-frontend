@@ -23,7 +23,6 @@ import controllers.helpers.TransportSectionHelper.additionalDeclTypesAllowedOnIn
 import forms.declaration.ModeOfTransportCode.{meaningfulModeOfTransportCodes, FixedTransportInstallations, PostalConsignment}
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.SUPPLEMENTARY_EIDR
 import models.DeclarationType
-import models.Mode.Normal
 import services.cache.{ExportsDeclarationBuilder, ExportsItemBuilder}
 
 class SupervisingCustomsOfficeHelperSpec
@@ -86,7 +85,7 @@ class SupervisingCustomsOfficeHelperSpec
       s"AdditionalDeclarationType is ${additionalType}" should {
         "goto to InlandOrBorderController" in {
           val declaration = withRequest(additionalType).cacheModel
-          supervisingCustomsOfficeHelper.nextPage(declaration)(Normal) mustBe routes.InlandOrBorderController.displayPage(Normal)
+          supervisingCustomsOfficeHelper.nextPage(declaration)() mustBe routes.InlandOrBorderController.displayPage()
         }
       }
     }
@@ -95,14 +94,14 @@ class SupervisingCustomsOfficeHelperSpec
       "AdditionalDeclarationType is SUPPLEMENTARY_EIDR" should {
         "goto to InlandTransportDetailsController" in {
           val declaration = withRequest(additionalType).cacheModel
-          supervisingCustomsOfficeHelper.nextPage(declaration)(Normal) mustBe routes.InlandTransportDetailsController.displayPage(Normal)
+          supervisingCustomsOfficeHelper.nextPage(declaration)() mustBe routes.InlandTransportDetailsController.displayPage()
         }
       }
     }
 
     onJourney(DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL) { request =>
       "goto ExpressConsignmentController for SIMPLIFIED & OCCASIONAL journeys" in {
-        supervisingCustomsOfficeHelper.nextPage(request.cacheModel)(Normal) mustBe routes.ExpressConsignmentController.displayPage(Normal)
+        supervisingCustomsOfficeHelper.nextPage(request.cacheModel)() mustBe routes.ExpressConsignmentController.displayPage()
       }
     }
 
@@ -111,7 +110,7 @@ class SupervisingCustomsOfficeHelperSpec
         s"transportLeavingBoarderCode is ${modeOfTransportCode}" should {
           "goto ExpressConsignmentController" in {
             val declaration = aDeclaration(withType(request.declarationType), withBorderModeOfTransportCode(Some(modeOfTransportCode)))
-            supervisingCustomsOfficeHelper.nextPage(declaration)(Normal) mustBe routes.ExpressConsignmentController.displayPage(Normal)
+            supervisingCustomsOfficeHelper.nextPage(declaration)() mustBe routes.ExpressConsignmentController.displayPage()
           }
         }
       }
@@ -122,7 +121,7 @@ class SupervisingCustomsOfficeHelperSpec
           s"transportLeavingBoarderCode is ${modeOfTransportCode}" should {
             "goto DepartureTransportController" in {
               val declaration = aDeclaration(withType(request.declarationType), withBorderModeOfTransportCode(Some(modeOfTransportCode)))
-              supervisingCustomsOfficeHelper.nextPage(declaration)(Normal) mustBe routes.DepartureTransportController.displayPage(Normal)
+              supervisingCustomsOfficeHelper.nextPage(declaration)() mustBe routes.DepartureTransportController.displayPage()
             }
           }
         }

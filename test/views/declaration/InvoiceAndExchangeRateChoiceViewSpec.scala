@@ -21,8 +21,6 @@ import controllers.declaration.routes.OfficeOfExitController
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.form
 import models.DeclarationType.{STANDARD, SUPPLEMENTARY}
-import models.Mode
-import models.Mode.Normal
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
@@ -35,10 +33,10 @@ class InvoiceAndExchangeRateChoiceViewSpec extends PageWithButtonsSpec with Inje
 
   val page = instanceOf[invoice_and_exchange_rate_choice]
 
-  override val typeAndViewInstance = (STANDARD, page(Normal, form())(_, _))
+  override val typeAndViewInstance = (STANDARD, page(form())(_, _))
 
   def createView(frm: Form[YesNoAnswer] = form(), mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document =
-    page(mode, frm)(request, messages)
+    page(frm)(request, messages)
 
   "'Invoice And Exchange Rate Choice' view" should {
 
@@ -48,7 +46,7 @@ class InvoiceAndExchangeRateChoiceViewSpec extends PageWithButtonsSpec with Inje
       "display 'Back' button to the /office-of-exit page" in {
         val backButton = view.getElementById("back-link")
         backButton must containMessage(backToPreviousQuestionCaption)
-        backButton must haveHref(OfficeOfExitController.displayPage(Normal))
+        backButton must haveHref(OfficeOfExitController.displayPage())
       }
 
       "display header" in {

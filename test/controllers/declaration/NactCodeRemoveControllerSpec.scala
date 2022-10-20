@@ -19,7 +19,7 @@ package controllers.declaration
 import base.ControllerSpec
 import forms.common.YesNoAnswer
 import forms.declaration.NactCode
-import models.{DeclarationType, Mode}
+import models.{DeclarationType}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -63,7 +63,7 @@ class NactCodeRemoveControllerSpec extends ControllerSpec with OptionValues {
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration())
-    await(controller.displayPage(Mode.Normal, item.id, "VATX")(request))
+    await(controller.displayPage(item.id, "VATX")(request))
     theResponseForm
   }
 
@@ -86,7 +86,7 @@ class NactCodeRemoveControllerSpec extends ControllerSpec with OptionValues {
 
           withNewCaching(request.cacheModel)
 
-          val result = controller.displayPage(Mode.Normal, item.id, "VATX")(getRequest())
+          val result = controller.displayPage(item.id, "VATX")(getRequest())
 
           status(result) mustBe OK
           verifyRemovePageInvoked()
@@ -101,7 +101,7 @@ class NactCodeRemoveControllerSpec extends ControllerSpec with OptionValues {
           withNewCaching(request.cacheModel)
 
           val requestBody = Seq("yesNo" -> "invalid")
-          val result = controller.submitForm(Mode.Normal, item.id, "VATX")(postRequestAsFormUrlEncoded(requestBody: _*))
+          val result = controller.submitForm(item.id, "VATX")(postRequestAsFormUrlEncoded(requestBody: _*))
 
           status(result) mustBe BAD_REQUEST
           verifyRemovePageInvoked()
@@ -115,10 +115,10 @@ class NactCodeRemoveControllerSpec extends ControllerSpec with OptionValues {
           withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
 
           val requestBody = Seq("yesNo" -> "Yes")
-          val result = controller.submitForm(Mode.Normal, item.id, "VATX")(postRequestAsFormUrlEncoded(requestBody: _*))
+          val result = controller.submitForm(item.id, "VATX")(postRequestAsFormUrlEncoded(requestBody: _*))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.NactCodeSummaryController.displayPage(Mode.Normal, item.id)
+          thePageNavigatedTo mustBe controllers.declaration.routes.NactCodeSummaryController.displayPage(item.id)
 
           theCacheModelUpdated.itemBy(item.id).flatMap(_.nactCodes) mustBe Some(Seq.empty)
         }
@@ -129,10 +129,10 @@ class NactCodeRemoveControllerSpec extends ControllerSpec with OptionValues {
           withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
 
           val requestBody = Seq("yesNo" -> "No")
-          val result = controller.submitForm(Mode.Normal, item.id, "VATX")(postRequestAsFormUrlEncoded(requestBody: _*))
+          val result = controller.submitForm(item.id, "VATX")(postRequestAsFormUrlEncoded(requestBody: _*))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.NactCodeSummaryController.displayPage(Mode.Normal, item.id)
+          thePageNavigatedTo mustBe controllers.declaration.routes.NactCodeSummaryController.displayPage(item.id)
 
           verifyTheCacheIsUnchanged()
         }
@@ -145,7 +145,7 @@ class NactCodeRemoveControllerSpec extends ControllerSpec with OptionValues {
 
           withNewCaching(request.cacheModel)
 
-          val result = controller.displayPage(Mode.Normal, item.id, "VATX")(getRequest())
+          val result = controller.displayPage(item.id, "VATX")(getRequest())
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(controllers.routes.RootController.displayPage().url)
@@ -156,7 +156,7 @@ class NactCodeRemoveControllerSpec extends ControllerSpec with OptionValues {
           withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
 
           val requestBody = Seq("yesNo" -> "No")
-          val result = controller.submitForm(Mode.Normal, item.id, "VATX")(postRequestAsFormUrlEncoded(requestBody: _*))
+          val result = controller.submitForm(item.id, "VATX")(postRequestAsFormUrlEncoded(requestBody: _*))
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(controllers.routes.RootController.displayPage().url)

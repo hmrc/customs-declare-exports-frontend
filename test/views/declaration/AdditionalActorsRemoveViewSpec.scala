@@ -19,7 +19,6 @@ package views.declaration
 import base.Injector
 import forms.common.{Eori, YesNoAnswer}
 import forms.declaration.DeclarationAdditionalActors
-import models.Mode
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
@@ -40,7 +39,7 @@ class AdditionalActorsRemoveViewSpec extends UnitViewSpec with ExportsTestHelper
     mode: Mode = Mode.Normal,
     form: Form[YesNoAnswer] = YesNoAnswer.form(),
     actor: DeclarationAdditionalActors = additionalActor
-  )(implicit request: JourneyRequest[_]): Document = page(mode, ListItem.createId(0, additionalActor), actor, form)
+  )(implicit request: JourneyRequest[_]): Document = page(ListItem.createId(0, additionalActor), actor, form)
 
   "have proper messages for labels" in {
     messages must haveTranslationFor("declaration.additionalActors.remove.title")
@@ -54,7 +53,7 @@ class AdditionalActorsRemoveViewSpec extends UnitViewSpec with ExportsTestHelper
         val view = createView()
         view must containElementWithID("back-link")
         view.getElementById("back-link") must
-          haveHref(controllers.declaration.routes.AdditionalActorsSummaryController.displayPage(Mode.Normal))
+          haveHref(controllers.declaration.routes.AdditionalActorsSummaryController.displayPage())
       }
     }
   }

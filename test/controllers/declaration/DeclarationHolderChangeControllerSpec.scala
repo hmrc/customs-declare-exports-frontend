@@ -23,7 +23,6 @@ import forms.declaration.declarationHolder.AuthorizationTypeCodes.{CSE, EXRR}
 import forms.declaration.declarationHolder.DeclarationHolder
 import mock.ErrorHandlerMocks
 import models.DeclarationType._
-import models.Mode
 import models.declaration.{DeclarationHoldersData, EoriSource}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -63,7 +62,7 @@ class DeclarationHolderChangeControllerSpec extends ControllerSpec with ErrorHan
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration(withDeclarationHolders(declarationHolder1)))
-    await(controller.displayPage(Mode.Normal, declarationHolder1.id)(request))
+    await(controller.displayPage(declarationHolder1.id)(request))
     theDeclarationHolder
   }
 
@@ -86,7 +85,7 @@ class DeclarationHolderChangeControllerSpec extends ControllerSpec with ErrorHan
         "display page method is invoked" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationHolders(declarationHolder1)))
 
-          val result = controller.displayPage(Mode.Normal, declarationHolder1.id)(getRequest())
+          val result = controller.displayPage(declarationHolder1.id)(getRequest())
 
           status(result) mustBe OK
           verifyChangePageInvoked()
@@ -100,7 +99,7 @@ class DeclarationHolderChangeControllerSpec extends ControllerSpec with ErrorHan
         "display page method is invoked with invalid holderId" in {
           withNewCaching(request.cacheModel)
 
-          val result = controller.displayPage(Mode.Normal, "invalid")(getRequest())
+          val result = controller.displayPage("invalid")(getRequest())
 
           status(result) mustBe BAD_REQUEST
           verifyNoInteractions(mockChangePage)
@@ -115,7 +114,7 @@ class DeclarationHolderChangeControllerSpec extends ControllerSpec with ErrorHan
             "eoriSource" -> declarationHolder2.eoriSource.map(_.toString).get
           )
 
-          val result = controller.submitForm(Mode.Normal, "invalid")(postRequestAsFormUrlEncoded(requestBody: _*))
+          val result = controller.submitForm("invalid")(postRequestAsFormUrlEncoded(requestBody: _*))
 
           status(result) mustBe BAD_REQUEST
           verifyNoInteractions(mockChangePage)
@@ -125,7 +124,7 @@ class DeclarationHolderChangeControllerSpec extends ControllerSpec with ErrorHan
           withNewCaching(request.cacheModel)
 
           val requestBody = List("authorisationTypeCode" -> "inva!id", "eori" -> "inva!id", "eoriSource" -> "inva!id")
-          val result = controller.submitForm(Mode.Normal, declarationHolder1.id)(postRequestAsFormUrlEncoded(requestBody: _*))
+          val result = controller.submitForm(declarationHolder1.id)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           status(result) mustBe BAD_REQUEST
           verifyChangePageInvoked()
@@ -139,7 +138,7 @@ class DeclarationHolderChangeControllerSpec extends ControllerSpec with ErrorHan
             "eori" -> declarationHolder2.eori.map(_.value).get,
             "eoriSource" -> declarationHolder2.eoriSource.map(_.toString).get
           )
-          val result = controller.submitForm(Mode.Normal, declarationHolder1.id)(postRequestAsFormUrlEncoded(requestBody: _*))
+          val result = controller.submitForm(declarationHolder1.id)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           status(result) mustBe BAD_REQUEST
           verifyChangePageInvoked()
@@ -156,10 +155,10 @@ class DeclarationHolderChangeControllerSpec extends ControllerSpec with ErrorHan
               "eori" -> declarationHolder2.eori.map(_.value).get,
               "eoriSource" -> declarationHolder2.eoriSource.map(_.toString).get
             )
-          val result = controller.submitForm(Mode.Normal, declarationHolder1.id)(postRequestAsFormUrlEncoded(requestBody: _*))
+          val result = controller.submitForm(declarationHolder1.id)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.DeclarationHolderSummaryController.displayPage(Mode.Normal)
+          thePageNavigatedTo mustBe controllers.declaration.routes.DeclarationHolderSummaryController.displayPage()
 
           val savedHolder = theCacheModelUpdated.parties.declarationHoldersData
           savedHolder mustBe Some(DeclarationHoldersData(List(declarationHolder2)))
@@ -187,7 +186,7 @@ class DeclarationHolderChangeControllerSpec extends ControllerSpec with ErrorHan
           )
 
           val requestBody = List("authorisationTypeCode" -> EXRR, "eori" -> "GB42354735346235", "eoriSource" -> "OtherEori")
-          val result = controller.submitForm(Mode.Normal, declarationHolder1.id)(postRequestAsFormUrlEncoded(requestBody: _*))
+          val result = controller.submitForm(declarationHolder1.id)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           status(result) mustBe BAD_REQUEST
           verifyChangePageInvoked()

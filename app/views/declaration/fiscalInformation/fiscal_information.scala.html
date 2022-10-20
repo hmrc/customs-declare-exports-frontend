@@ -39,7 +39,7 @@
     appConfig: AppConfig
 )
 
-@(mode: Mode, itemId: String, form: Form[FiscalInformation])(implicit request: JourneyRequest[_], messages: Messages)
+@(itemId: String, form: Form[FiscalInformation])(implicit request: JourneyRequest[_], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
@@ -55,9 +55,9 @@
 
 @govukLayout(
     title = Title("declaration.fiscalInformation.title", "declaration.section.5", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(FiscalInformation, mode, ItemId(itemId))))) {
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(FiscalInformation, ItemId(itemId))))) {
 
-    @formHelper(action = FiscalInformationController.saveFiscalInformation(mode, itemId), 'autoComplete -> "off") {
+    @formHelper(action = FiscalInformationController.saveFiscalInformation(itemId), 'autoComplete -> "off") {
         @errorSummary(radioGroupErrors("onwardSupplyRelief", "Yes", form.errors))
 
         @sectionHeader(messages("declaration.section.5"))
@@ -95,6 +95,6 @@
 
         @tariffExpander(FiscalInformation, request.declarationType)(messages, appConfig)
 
-        @saveButtons(mode)
+        @saveButtons()
     }
 }

@@ -37,7 +37,7 @@
     formHelper: FormWithCSRF
 )
 
-@(mode: Mode, itemId: String, code: String, form: Form[YesNoAnswer])(implicit request: JourneyRequest[_], messages: Messages)
+@(itemId: String, code: String, form: Form[YesNoAnswer])(implicit request: JourneyRequest[_], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
@@ -54,9 +54,9 @@
 
 @govukLayout(
     title = Title("declaration.taricAdditionalCodes.remove.header", "declaration.section.5", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), controllers.declaration.routes.TaricCodeSummaryController.displayPage(mode, itemId)))) {
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), controllers.declaration.routes.TaricCodeSummaryController.displayPage(itemId)))) {
 
-    @formHelper(action = TaricCodeRemoveController.submitForm(mode, itemId, code), 'autoComplete -> "off") {
+    @formHelper(action = TaricCodeRemoveController.submitForm(itemId, code), 'autoComplete -> "off") {
         @errorSummary(yesNoErrors(form.errors))
 
         @sectionHeader(messages("declaration.section.5"))
@@ -70,7 +70,7 @@
             html = HtmlFormat.fill(immutable.Seq(
                 taricCodeSummary,
                 yesNoRadios(form, inline = true),
-                saveButtons(mode)
+                saveButtons()
             ))
         ))
     }

@@ -23,7 +23,6 @@ import forms.declaration.additionaldocuments.AdditionalDocument
 import forms.declaration.declarationHolder.AuthorizationTypeCodes.EXRR
 import forms.declaration.declarationHolder.DeclarationHolder
 import mock.ErrorHandlerMocks
-import models.Mode
 import models.declaration.EoriSource
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -71,7 +70,7 @@ class AdditionalDocumentsControllerSpec extends ControllerSpec with ErrorHandler
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     val item = anItem(withAdditionalDocuments(Yes, additionalDocument))
     withNewCaching(aDeclaration(withItems(item)))
-    await(controller.displayPage(Mode.Normal, item.id)(request))
+    await(controller.displayPage(item.id)(request))
     theResponseForm
   }
 
@@ -89,7 +88,7 @@ class AdditionalDocumentsControllerSpec extends ControllerSpec with ErrorHandler
         val item = anItem(withAdditionalDocuments(Yes, additionalDocument))
         withNewCaching(aDeclaration(withItems(item)))
 
-        val result = controller.displayPage(Mode.Normal, item.id)(getRequest())
+        val result = controller.displayPage(item.id)(getRequest())
 
         status(result) mustBe OK
         verifyPageInvoked()
@@ -101,7 +100,7 @@ class AdditionalDocumentsControllerSpec extends ControllerSpec with ErrorHandler
       "user provide wrong action" in {
 
         val requestBody = Json.obj("yesNo" -> "invalid")
-        val result = controller.submitForm(Mode.Normal, itemId)(postRequest(requestBody))
+        val result = controller.submitForm(itemId)(postRequest(requestBody))
 
         status(result) mustBe BAD_REQUEST
         verifyPageInvoked()
@@ -113,20 +112,20 @@ class AdditionalDocumentsControllerSpec extends ControllerSpec with ErrorHandler
       "there are no documents in the cache" when {
 
         "the authorisation code does not require additional documents" in {
-          val result = controller.displayPage(Mode.Normal, itemId)(getRequest())
+          val result = controller.displayPage(itemId)(getRequest())
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe routes.AdditionalDocumentsRequiredController.displayPage(Mode.Normal, itemId)
+          thePageNavigatedTo mustBe routes.AdditionalDocumentsRequiredController.displayPage(itemId)
         }
 
         "the authorisation code requires additional documents" in {
           val declarationHolder = DeclarationHolder(Some("OPO"), Some(Eori("GB123456789012")), Some(EoriSource.OtherEori))
           withNewCaching(aDeclaration(withDeclarationHolders(declarationHolder)))
 
-          val result = controller.displayPage(Mode.Normal, itemId)(getRequest())
+          val result = controller.displayPage(itemId)(getRequest())
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe routes.AdditionalDocumentAddController.displayPage(Mode.Normal, itemId)
+          thePageNavigatedTo mustBe routes.AdditionalDocumentAddController.displayPage(itemId)
         }
 
         "the authorisation code does not require additional documents but mode is 'ErrorFix'" in {
@@ -145,10 +144,10 @@ class AdditionalDocumentsControllerSpec extends ControllerSpec with ErrorHandler
         withNewCaching(aDeclaration(withItems(item)))
 
         val requestBody = Json.obj("yesNo" -> "Yes")
-        val result = controller.submitForm(Mode.Normal, itemId)(postRequest(requestBody))
+        val result = controller.submitForm(itemId)(postRequest(requestBody))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe routes.AdditionalDocumentAddController.displayPage(Mode.Normal, itemId)
+        thePageNavigatedTo mustBe routes.AdditionalDocumentAddController.displayPage(itemId)
       }
 
       "user submits valid Yes answer in error-fix mode" in {
@@ -167,10 +166,10 @@ class AdditionalDocumentsControllerSpec extends ControllerSpec with ErrorHandler
         withNewCaching(aDeclaration(withItems(item)))
 
         val requestBody = Json.obj("yesNo" -> "No")
-        val result = controller.submitForm(Mode.Normal, itemId)(postRequest(requestBody))
+        val result = controller.submitForm(itemId)(postRequest(requestBody))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe routes.ItemsSummaryController.displayItemsSummaryPage(Mode.Normal)
+        thePageNavigatedTo mustBe routes.ItemsSummaryController.displayItemsSummaryPage()
       }
     }
   }

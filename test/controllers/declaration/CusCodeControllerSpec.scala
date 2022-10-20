@@ -20,7 +20,6 @@ import base.ControllerSpec
 import forms.declaration.CusCode
 import forms.declaration.CusCode._
 import models.DeclarationType.{apply => _, _}
-import models.Mode
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -59,7 +58,7 @@ class CusCodeControllerSpec extends ControllerSpec {
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration())
-    await(controller.displayPage(Mode.Normal, itemId)(request))
+    await(controller.displayPage(itemId)(request))
     theResponseForm
   }
 
@@ -74,7 +73,7 @@ class CusCodeControllerSpec extends ControllerSpec {
 
           withNewCaching(request.cacheModel)
 
-          val result = controller.displayPage(Mode.Normal, itemId)(getRequest())
+          val result = controller.displayPage(itemId)(getRequest())
 
           status(result) mustBe OK
           verify(mockPage, times(1)).apply(any(), any(), any())(any(), any())
@@ -87,7 +86,7 @@ class CusCodeControllerSpec extends ControllerSpec {
           val item = anItem(withCUSCode(cusCode))
           withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
 
-          val result = controller.displayPage(Mode.Normal, item.id)(getRequest())
+          val result = controller.displayPage(item.id)(getRequest())
 
           status(result) mustBe OK
           verify(mockPage, times(1)).apply(any(), any(), any())(any(), any())
@@ -104,7 +103,7 @@ class CusCodeControllerSpec extends ControllerSpec {
 
           val incorrectForm = formData("Invalid Code")
 
-          val result = controller.submitForm(Mode.Normal, itemId)(postRequest(incorrectForm))
+          val result = controller.submitForm(itemId)(postRequest(incorrectForm))
 
           status(result) mustBe BAD_REQUEST
           verify(mockPage, times(1)).apply(any(), any(), any())(any(), any())
@@ -118,10 +117,10 @@ class CusCodeControllerSpec extends ControllerSpec {
           withNewCaching(request.cacheModel)
           val correctForm = formData("12345678")
 
-          val result = controller.submitForm(Mode.Normal, itemId)(postRequest(correctForm))
+          val result = controller.submitForm(itemId)(postRequest(correctForm))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.TaricCodeSummaryController.displayPage(Mode.Normal, itemId)
+          thePageNavigatedTo mustBe controllers.declaration.routes.TaricCodeSummaryController.displayPage(itemId)
           verify(mockPage, times(0)).apply(any(), any(), any())(any(), any())
         }
       }
@@ -132,7 +131,7 @@ class CusCodeControllerSpec extends ControllerSpec {
         "invalid journey CLEARANCE" in {
           withNewCaching(request.cacheModel)
 
-          val result = controller.displayPage(Mode.Normal, "").apply(getRequest())
+          val result = controller.displayPage("").apply(getRequest())
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(controllers.routes.RootController.displayPage().url)

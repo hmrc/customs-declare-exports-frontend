@@ -14,30 +14,26 @@
  * limitations under the License.
  *@
 
+@import controllers.declaration.routes
+@import forms.common.{Address, Eori}
+@import forms.declaration.DeclarantDetails
 @import models.declaration.Parties
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import views.html.components.gds.linkContent
-@import views.html.components.gds.summary_list
-@import forms.common.Address
 @import views.declaration.summary.EoriOrAddress
+@import views.helpers.ActionItemBuilder.actionSummaryItem
+@import views.html.components.gds.{linkContent, summary_list}
 @import views.html.declaration.summary._
-@import forms.common.Eori
-@import forms.declaration.DeclarantDetails
-@import views.components.gds.ActionItemBuilder._
 
 @this(
-        summaryList: summary_list,
-        linkContent: linkContent,
-        additionalActorsSection: parties_section_additional_actors,
-        holdersSection: parties_section_holders
+    summaryList: summary_list,
+    linkContent: linkContent,
+    additionalActorsSection: parties_section_additional_actors,
+    holdersSection: parties_section_holders
 )
 
-@(mode: Mode, declarationData: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages)
+@(declarationData: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages)
 
-@actionItems(item: ActionItem) = @{
-    if(actionsEnabled) Seq(item)
-    else Seq.empty
-}
+@actionItems(item: ActionItem) = @{ if(actionsEnabled) Seq(item) else Seq.empty }
 
 @eoriOrAddress(key: String, eori: Option[Eori], address: Option[Address], change: Call, isEoriDefault: Boolean = true) = @{
     EoriOrAddress.rows(
@@ -102,8 +98,8 @@
                 ),
                 actions = Some(Actions(
                     items = actionItems(
-                        actionItem(
-                            href = controllers.declaration.routes.DeclarantExporterController.displayPage(mode).url,
+                        actionSummaryItem(
+                            href = routes.DeclarantExporterController.displayPage().url,
                             content = HtmlContent(linkContent(messages("site.change"))),
                             visuallyHiddenText = Some(messages("declaration.summary.parties.declarantIsExporter.change"))
                         )
@@ -119,8 +115,8 @@
                 value = Value(content = Text(messages(s"declaration.summary.parties.eidr.${isEidr.answer.toLowerCase}"))),
                 actions = Some(Actions(
                     items = actionItems(
-                        actionItem(
-                            href = controllers.declaration.routes.EntryIntoDeclarantsRecordsController.displayPage(mode).url,
+                        actionSummaryItem(
+                            href = routes.EntryIntoDeclarantsRecordsController.displayPage().url,
                             content = HtmlContent(linkContent(messages("site.change"))),
                             visuallyHiddenText = Some(messages("declaration.summary.parties.eidr.change"))
                         )
@@ -136,8 +132,8 @@
                 value = Value(content = Text(personPresentingGoods.eori.value)),
                 actions = Some(Actions(
                     items = actionItems(
-                        actionItem(
-                            href = controllers.declaration.routes.PersonPresentingGoodsDetailsController.displayPage(mode).url,
+                        actionSummaryItem(
+                            href = routes.PersonPresentingGoodsDetailsController.displayPage().url,
                             content = HtmlContent(linkContent(messages("site.change"))),
                             visuallyHiddenText = Some(messages("declaration.summary.parties.personPresentingGoods.change"))
                         )
@@ -150,7 +146,7 @@
             "exporter",
             export.details.eori,
             export.details.address,
-            controllers.declaration.routes.ExporterEoriNumberController.displayPage(mode)
+            routes.ExporterEoriNumberController.displayPage()
         )).getOrElse(Seq.empty)
 
                 ++ (Seq.empty :+ declarationData.parties.isExs.map { exs =>
@@ -164,8 +160,8 @@
                 ),
                 actions = Some(Actions(
                     items = actionItems(
-                        actionItem(
-                            href = controllers.declaration.routes.IsExsController.displayPage(mode).url,
+                        actionSummaryItem(
+                            href = routes.IsExsController.displayPage().url,
                             content = HtmlContent(linkContent(messages("site.change"))),
                             visuallyHiddenText = Some(messages("declaration.summary.parties.exs.change"))
                         )
@@ -185,8 +181,8 @@
                 ),
                 actions = Some(Actions(
                     items = actionItems(
-                        actionItem(
-                            href = controllers.declaration.routes.RepresentativeAgentController.displayPage(mode).url,
+                        actionSummaryItem(
+                            href = routes.RepresentativeAgentController.displayPage().url,
                             content = HtmlContent(linkContent(messages("site.change"))),
                             visuallyHiddenText = Some(messages("declaration.summary.parties.representative.agent.change"))
                         )
@@ -199,7 +195,7 @@
             "representative",
             details.eori,
             details.address,
-            controllers.declaration.routes.RepresentativeEntityController.displayPage(mode)
+            routes.RepresentativeEntityController.displayPage()
         )).getOrElse(Seq.empty)
 
                 ++ (Seq.empty :+ declarationData.parties.representativeDetails.flatMap(_.statusCode.map(code =>
@@ -213,8 +209,8 @@
                 ),
                 actions = Some(Actions(
                     items = actionItems(
-                        actionItem(
-                            href = controllers.declaration.routes.RepresentativeStatusController.displayPage(mode).url,
+                        actionSummaryItem(
+                            href = routes.RepresentativeStatusController.displayPage().url,
                             content = HtmlContent(linkContent(messages("site.change"))),
                             visuallyHiddenText = Some(messages("declaration.summary.parties.representative.type.change"))
                         )
@@ -227,7 +223,7 @@
             "carrier",
             carrier.details.eori,
             carrier.details.address,
-            controllers.declaration.routes.CarrierEoriNumberController.displayPage(mode),
+            routes.CarrierEoriNumberController.displayPage(),
             isEoriDefault = false
         )).getOrElse(Seq.empty)
 
@@ -235,7 +231,7 @@
             "consignee",
             consignee.details.eori,
             consignee.details.address,
-            controllers.declaration.routes.ConsigneeDetailsController.displayPage(mode),
+            routes.ConsigneeDetailsController.displayPage(),
             isEoriDefault = false
         )).getOrElse(Seq.empty)
 
@@ -243,7 +239,7 @@
             "consignor",
             consignor.details.eori,
             consignor.details.address,
-            controllers.declaration.routes.ConsignorEoriNumberController.displayPage(mode),
+            routes.ConsignorEoriNumberController.displayPage(),
             isEoriDefault = false
         )).getOrElse(Seq.empty),
 
@@ -251,10 +247,10 @@
     )
 
     @declarationData.parties.declarationAdditionalActorsData.map(data =>
-        additionalActorsSection(mode, data.actors, actionsEnabled)
+        additionalActorsSection(data.actors, actionsEnabled)
     )
 
     @declarationData.parties.declarationHoldersData.map(data =>
-        holdersSection(mode, declarationData, actionsEnabled)
+        holdersSection(declarationData, actionsEnabled)
     )
 }

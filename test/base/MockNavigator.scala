@@ -17,7 +17,6 @@
 package base
 
 import controllers.navigation.Navigator
-import models.Mode
 import models.requests.JourneyRequest
 import org.mockito.ArgumentMatchers._
 import org.mockito.BDDMockito._
@@ -32,7 +31,7 @@ trait MockNavigator extends MockitoSugar with BeforeAndAfterEach { self: Mockito
 
   protected val navigator: Navigator = mock[Navigator]
   protected val aRedirectToTheNextPage: Result = mock[Result]
-  protected val redirectFactoryToTheNextPage: Mode => Call = mock[Mode => Call]
+  protected val redirectFactoryToTheNextPage: Call = mock[Mode => Call]
   protected val hc: HeaderCarrier = HeaderCarrier()
 
   override protected def beforeEach(): Unit = {

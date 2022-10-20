@@ -22,8 +22,6 @@ import forms.declaration.countries.Country
 import forms.declaration.procedurecodes.AdditionalProcedureCode
 import forms.declaration.procedurecodes.AdditionalProcedureCode.form
 import models.DeclarationType.{CLEARANCE, STANDARD}
-import models.Mode
-import models.Mode.Normal
 import models.codes.{AdditionalProcedureCode => AdditionalProcedureCodeModel, ProcedureCode}
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
@@ -42,7 +40,7 @@ class AdditionalProcedureCodesViewSpec extends PageWithButtonsSpec with ExportsT
   val page = instanceOf[additional_procedure_codes]
 
   override val typeAndViewInstance =
-    (STANDARD, page(Normal, itemId, form(), sampleProcedureCode, defaultAdditionalProcedureCodes, Seq.empty)(_, _))
+    (STANDARD, page(itemId, form(), sampleProcedureCode, defaultAdditionalProcedureCodes, Seq.empty)(_, _))
 
   def createView(
     frm: Form[AdditionalProcedureCode] = form(),
@@ -50,7 +48,7 @@ class AdditionalProcedureCodesViewSpec extends PageWithButtonsSpec with ExportsT
     codes: Seq[String] = Seq.empty,
     mode: Mode = Normal
   )(implicit request: JourneyRequest[_]): Document =
-    page(mode, itemId, frm, sampleProcedureCode, validCodes, codes)(request, messages)
+    page(itemId, frm, sampleProcedureCode, validCodes, codes)(request, messages)
 
   "Additional Procedure Codes View" should {
 
@@ -85,7 +83,7 @@ class AdditionalProcedureCodesViewSpec extends PageWithButtonsSpec with ExportsT
           val backButton = view.getElementById("back-link")
 
           backButton must containMessage("site.backToPreviousQuestion")
-          backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.ProcedureCodesController.displayPage(Normal, itemId))
+          backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.ProcedureCodesController.displayPage(itemId))
         }
 
         "display 'Add' button on page" in {

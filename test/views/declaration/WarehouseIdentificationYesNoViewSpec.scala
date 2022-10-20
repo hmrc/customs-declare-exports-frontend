@@ -22,8 +22,6 @@ import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.WarehouseIdentification
 import forms.declaration.WarehouseIdentification.form
 import models.DeclarationType._
-import models.Mode
-import models.Mode.Normal
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
@@ -38,10 +36,10 @@ class WarehouseIdentificationYesNoViewSpec extends PageWithButtonsSpec with Inje
 
   val page = instanceOf[warehouse_identification_yesno]
 
-  override val typeAndViewInstance = (STANDARD, page(Normal, form(false))(_, _))
+  override val typeAndViewInstance = (STANDARD, page(form(false))(_, _))
 
   def createView(frm: Form[WarehouseIdentification] = form(false), mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document =
-    page(mode, frm)(request, messages)
+    page(frm)(request, messages)
 
   "Warehouse Identification Number View" should {
 
@@ -96,7 +94,7 @@ class WarehouseIdentificationYesNoViewSpec extends PageWithButtonsSpec with Inje
         val backButton = createView().getElementById("back-link")
 
         backButton must containMessage("site.backToPreviousQuestion")
-        backButton.getElementById("back-link") must haveHref(ItemsSummaryController.displayItemsSummaryPage(Normal))
+        backButton.getElementById("back-link") must haveHref(ItemsSummaryController.displayItemsSummaryPage())
       }
     }
   }

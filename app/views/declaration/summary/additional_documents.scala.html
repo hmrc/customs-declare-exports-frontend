@@ -17,12 +17,11 @@
 @import controllers.declaration.routes
 @import forms.declaration.additionaldocuments.AdditionalDocument
 @import models.declaration.{AdditionalDocuments, ExportItem}
-@import models.Mode
 @import models.requests.JourneyRequest
 @import play.twirl.api.HtmlFormat
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import views.components.gds.ActionItemBuilder._
 @import views.declaration.summary.TableCell
+@import views.helpers.ActionItemBuilder._
 @import views.html.components.gds.{link, linkContent, spanVisuallyHidden, summary_list, heading}
 
 @this(
@@ -34,7 +33,7 @@
     heading: heading
 )
 
-@(mode: Mode, item: ExportItem, actionsEnabled: Boolean = true)(implicit messages: Messages)
+@(item: ExportItem, actionsEnabled: Boolean = true)(implicit messages: Messages)
 
 @actions(actions: => Actions) = @{ if (actionsEnabled) Some(actions) else None }
 
@@ -42,7 +41,7 @@
     if (!actionsEnabled) HtmlFormat.empty
     else link(
         messages("site.change"),
-        routes.AdditionalDocumentsController.displayPage(mode, item.id),
+        callForSummaryChangeLink(routes.AdditionalDocumentsController.displayPage(item.id)),
         textHidden = Some(messages(
             "declaration.summary.items.item.additionalDocuments.change",
             document.documentTypeCode.getOrElse(""),
@@ -60,8 +59,8 @@
             value = Value(content = Text(messages(s"""site.${if (isLicenceRequired) "yes" else "no"}"""))),
             actions = actions(Actions(
                 items = Seq(
-                    actionItem(
-                        href = routes.IsLicenceRequiredController.displayPage(mode, item.id).url,
+                    actionSummaryItem(
+                        href = routes.IsLicenceRequiredController.displayPage(item.id).url,
                         content = HtmlContent(linkContent(messages("site.change"))),
                         visuallyHiddenText = Some(messages("declaration.summary.items.item.additionalDocuments.changeAll", item.sequenceId))
                     )
@@ -81,8 +80,8 @@
         value = Value(content = Text(messages("declaration.summary.items.item.additionalDocuments.none"))),
         actions = actions(Actions(
             items = Seq(
-                actionItem(
-                    href = routes.AdditionalDocumentsController.displayPage(mode, item.id).url,
+                actionSummaryItem(
+                    href = routes.AdditionalDocumentsController.displayPage(item.id).url,
                     content = HtmlContent(linkContent(messages("site.change"))),
                     visuallyHiddenText = Some(messages("declaration.summary.items.item.additionalDocuments.changeAll", item.sequenceId))
                 )

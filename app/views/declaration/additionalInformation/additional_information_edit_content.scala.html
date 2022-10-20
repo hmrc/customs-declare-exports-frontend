@@ -40,7 +40,7 @@
     appConfig: AppConfig
 )
 
-@(mode: Mode, itemId: String, form: Form[AdditionalInformation])(implicit request: JourneyRequest[_], messages: Messages)
+@(itemId: String, form: Form[AdditionalInformation])(implicit request: JourneyRequest[_], messages: Messages)
 
 @pageFields = {
     @formGroupWrapper(field = form(AdditionalInformationFormGroupId)){
@@ -77,6 +77,6 @@
     html = HtmlFormat.fill(immutable.Seq(
         pageFields,
         tariffExpander(AdditionalInformation, request.declarationType)(messages, appConfig),
-        saveButtons(mode)
+        saveButtons()
     ))
 ))

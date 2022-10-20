@@ -31,8 +31,6 @@ import forms.declaration.countries.{Countries, Country}
 import forms.declaration.declarationHolder.AuthorizationTypeCodes.CSE
 import forms.declaration.declarationHolder.DeclarationHolder
 import models.DeclarationType._
-import models.Mode
-import models.Mode.Normal
 import models.codes.{Country => ModelCountry}
 import models.declaration.EoriSource
 import models.requests.JourneyRequest
@@ -62,13 +60,13 @@ class DestinationCountryViewSpec extends PageWithButtonsSpec with Injector {
 
   val page = instanceOf[destination_country]
 
-  override val typeAndViewInstance = (STANDARD, page(Normal, form(request))(_, _))
+  override val typeAndViewInstance = (STANDARD, page(form(request))(_, _))
 
   def form(request: JourneyRequest[_]): Form[Country] =
     Countries.form(DestinationCountryPage)(request, messages(request), mockCodeListConnector)
 
   def createView(mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document =
-    page(mode, form(request))(request, messages)
+    page(form(request))(request, messages)
 
   "Destination country view spec" should {
 
@@ -79,7 +77,7 @@ class DestinationCountryViewSpec extends PageWithButtonsSpec with Injector {
 
     onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED) { implicit request =>
       "display a back button linking to the /authorisation-choice page" in {
-        verifyBackLink(AuthorisationProcedureCodeChoiceController.displayPage(Normal))
+        verifyBackLink(AuthorisationProcedureCodeChoiceController.displayPage())
       }
     }
 
@@ -115,7 +113,7 @@ class DestinationCountryViewSpec extends PageWithButtonsSpec with Injector {
 
     onJourney(CLEARANCE, OCCASIONAL) { implicit request =>
       "display a back button linking to the /is-authorisation-required  page" in {
-        verifyBackLink(DeclarationHolderRequiredController.displayPage(Normal))
+        verifyBackLink(DeclarationHolderRequiredController.displayPage())
       }
     }
 

@@ -22,7 +22,6 @@ import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import models.DeclarationType._
-import models.Mode
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
@@ -44,22 +43,22 @@ class AdditionalActorsSummaryController @Inject() (
 
   private val validTypes = Seq(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL)
 
-  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
+  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
     request.cacheModel.parties.declarationAdditionalActorsData match {
-      case Some(data) if data.actors.nonEmpty => Ok(additionalActorsPage(mode, form.withSubmissionErrors(), data.actors))
+      case Some(data) if data.actors.nonEmpty => Ok(additionalActorsPage(form.withSubmissionErrors(), data.actors))
 
-      case _ => navigator.continueTo(mode, AdditionalActorsAddController.displayPage)
+      case _ => navigator.continueTo(AdditionalActorsAddController.displayPage)
     }
   }
 
-  def submitForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def submitForm(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     val actors = request.cacheModel.parties.declarationAdditionalActorsData.map(_.actors).getOrElse(Seq.empty)
     form.bindFromRequest
       .fold(
-        formWithErrors => BadRequest(additionalActorsPage(mode, formWithErrors, actors)),
+        formWithErrors => BadRequest(additionalActorsPage(formWithErrors, actors)),
         _.answer match {
-          case YesNoAnswers.yes => navigator.continueTo(mode, AdditionalActorsAddController.displayPage)
-          case YesNoAnswers.no  => navigator.continueTo(mode, AuthorisationProcedureCodeChoiceController.displayPage)
+          case YesNoAnswers.yes => navigator.continueTo(AdditionalActorsAddController.displayPage)
+          case YesNoAnswers.no  => navigator.continueTo(AuthorisationProcedureCodeChoiceController.displayPage)
         }
       )
   }

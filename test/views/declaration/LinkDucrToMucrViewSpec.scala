@@ -20,7 +20,6 @@ import base.Injector
 import config.AppConfig
 import controllers.declaration.routes
 import forms.common.YesNoAnswer
-import models.Mode
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
@@ -37,7 +36,7 @@ class LinkDucrToMucrViewSpec extends UnitViewSpec with CommonMessages with Injec
   private val form: Form[YesNoAnswer] = YesNoAnswer.form()
 
   private def createView(mode: Mode = Mode.Normal, form: Form[YesNoAnswer] = form)(implicit request: JourneyRequest[_]): Document =
-    page(mode, form)(request, messages)
+    page(form)(request, messages)
 
   "'Link DUCR to MUCR' view" should {
 
@@ -47,7 +46,7 @@ class LinkDucrToMucrViewSpec extends UnitViewSpec with CommonMessages with Injec
       "display 'Back' button to 'Consignment Reference' page" in {
         val backButton = view.getElementById("back-link")
         backButton must containMessage(backToPreviousQuestionCaption)
-        backButton must haveHref(routes.ConsignmentReferencesController.displayPage(Mode.Normal))
+        backButton must haveHref(routes.ConsignmentReferencesController.displayPage())
       }
 
       "display header" in {

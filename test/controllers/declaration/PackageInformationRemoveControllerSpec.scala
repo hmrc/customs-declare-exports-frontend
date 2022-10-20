@@ -20,7 +20,6 @@ import base.ControllerSpec
 import forms.common.YesNoAnswer
 import forms.declaration.PackageInformation
 import mock.ErrorHandlerMocks
-import models.Mode
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, verifyNoInteractions, when}
@@ -60,7 +59,7 @@ class PackageInformationRemoveControllerSpec extends ControllerSpec with OptionV
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration(withItems(item)))
-    await(controller.displayPage(Mode.Normal, item.id, id)(request))
+    await(controller.displayPage(item.id, id)(request))
     theResponseForm
   }
 
@@ -90,7 +89,7 @@ class PackageInformationRemoveControllerSpec extends ControllerSpec with OptionV
         "display page method is invoked with existing package info id" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
 
-          val result = controller.displayPage(Mode.Normal, item.id, id)(getRequest())
+          val result = controller.displayPage(item.id, id)(getRequest())
 
           status(result) mustBe OK
           verifyRemovePageInvoked()
@@ -105,7 +104,7 @@ class PackageInformationRemoveControllerSpec extends ControllerSpec with OptionV
           withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
 
           val requestBody = Seq("yesNo" -> "invalid")
-          val result = controller.submitForm(Mode.Normal, item.id, id)(postRequestAsFormUrlEncoded(requestBody: _*))
+          val result = controller.submitForm(item.id, id)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           status(result) mustBe BAD_REQUEST
           verifyRemovePageInvoked()
@@ -114,7 +113,7 @@ class PackageInformationRemoveControllerSpec extends ControllerSpec with OptionV
         "user tries to display page with non-existent package info" in {
           withNewCaching(aDeclarationAfter(request.cacheModel))
 
-          val result = controller.displayPage(Mode.Normal, item.id, id)(getRequest())
+          val result = controller.displayPage(item.id, id)(getRequest())
 
           status(result) mustBe BAD_REQUEST
           verifyNoInteractions(mockRemovePage)
@@ -124,7 +123,7 @@ class PackageInformationRemoveControllerSpec extends ControllerSpec with OptionV
         "user tries to remove non-existent package info" in {
           withNewCaching(aDeclarationAfter(request.cacheModel))
 
-          val result = controller.submitForm(Mode.Normal, item.id, id)(getRequest())
+          val result = controller.submitForm(item.id, id)(getRequest())
 
           status(result) mustBe BAD_REQUEST
           verifyNoInteractions(mockRemovePage)
@@ -137,10 +136,10 @@ class PackageInformationRemoveControllerSpec extends ControllerSpec with OptionV
           withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
 
           val requestBody = Seq("yesNo" -> "Yes")
-          val result = controller.submitForm(Mode.Normal, item.id, id)(postRequestAsFormUrlEncoded(requestBody: _*))
+          val result = controller.submitForm(item.id, id)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.PackageInformationSummaryController.displayPage(Mode.Normal, item.id)
+          thePageNavigatedTo mustBe controllers.declaration.routes.PackageInformationSummaryController.displayPage(item.id)
 
           theCacheModelUpdated.itemBy(item.id).flatMap(_.packageInformation) mustBe Some(Seq.empty)
         }
@@ -149,10 +148,10 @@ class PackageInformationRemoveControllerSpec extends ControllerSpec with OptionV
           withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
 
           val requestBody = Seq("yesNo" -> "No")
-          val result = controller.submitForm(Mode.Normal, item.id, id)(postRequestAsFormUrlEncoded(requestBody: _*))
+          val result = controller.submitForm(item.id, id)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.PackageInformationSummaryController.displayPage(Mode.Normal, item.id)
+          thePageNavigatedTo mustBe controllers.declaration.routes.PackageInformationSummaryController.displayPage(item.id)
 
           verifyTheCacheIsUnchanged()
         }

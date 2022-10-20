@@ -25,7 +25,7 @@ import controllers.declaration.routes.SummaryController
 import controllers.routes.SavedDeclarationsController
 import javax.inject.Inject
 import models.requests.ExportsSessionKeys
-import models.{Mode, Page}
+import models.Page
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
@@ -49,13 +49,8 @@ class SavedDeclarationsController @Inject() (
 
   def continueDeclaration(id: String): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
     customsDeclareExportsConnector.findDeclaration(id) flatMap {
-      case Some(_) =>
-        Future.successful(
-          Redirect(SummaryController.displayPage(Mode.Draft))
-            .addingToSession(ExportsSessionKeys.declarationId -> id)
-        )
-
-      case None => Future.successful(Redirect(SavedDeclarationsController.displayDeclarations()))
+      case Some(_) => Future.successful(Redirect(SummaryController.displayPage).addingToSession(ExportsSessionKeys.declarationId -> id))
+      case None    => Future.successful(Redirect(SavedDeclarationsController.displayDeclarations()))
     }
   }
 }

@@ -16,7 +16,7 @@
 
 @import controllers.declaration.routes.{NatureOfTransactionController, InvoiceAndExchangeRateController, TotalPackageQuantityController, InvoiceAndExchangeRateChoiceController}
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import views.components.gds.ActionItemBuilder.actionItem
+@import views.helpers.ActionItemBuilder.actionSummaryItem
 @import views.html.components.gds.{linkContent, summary_list}
 @import views.html.declaration.summary.related_documents
 @import models.DeclarationType._
@@ -27,7 +27,7 @@
     related_documents: related_documents
 )
 
-@(mode: Mode, declaration: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages)
+@(declaration: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages)
 
 @hasTransactionData = @{
    declaration.totalNumberOfItems.isDefined || declaration.natureOfTransaction.isDefined || declaration.previousDocuments.isDefined
@@ -41,8 +41,8 @@
 }
 
 @totalAmountInvoicedActionItemUrl = @{
-    if (declaration.isInvoiceAmountLessThan100000) InvoiceAndExchangeRateChoiceController.displayPage(mode).url
-    else InvoiceAndExchangeRateController.displayPage(mode).url
+    if (declaration.isInvoiceAmountLessThan100000) InvoiceAndExchangeRateChoiceController.displayPage().url
+    else InvoiceAndExchangeRateController.displayPage().url
 }
 
 @totalAmountInvoicedRow = @{
@@ -59,7 +59,7 @@
             ),
             actions = actions(Actions(
                 items = List(
-                    actionItem(
+                    actionSummaryItem(
                         href = totalAmountInvoicedActionItemUrl,
                         content = HtmlContent(linkContent(messages("site.change"))),
                         visuallyHiddenText = Some(messages("declaration.summary.transaction.itemAmount.change"))
@@ -86,8 +86,8 @@
                 ),
                 actions = actions(Actions(
                     items = List(
-                        actionItem(
-                            href = InvoiceAndExchangeRateController.displayPage(mode).url,
+                        actionSummaryItem(
+                            href = InvoiceAndExchangeRateController.displayPage().url,
                             content = HtmlContent(linkContent(messages("site.change"))),
                             visuallyHiddenText = Some(messages("declaration.summary.transaction.exchangeRate.change"))
                         )
@@ -106,8 +106,8 @@
                 ),
                 actions = actions(Actions(
                     items = List(
-                        actionItem(
-                            href = TotalPackageQuantityController.displayPage(mode).url,
+                        actionSummaryItem(
+                            href = TotalPackageQuantityController.displayPage().url,
                             content = HtmlContent(linkContent(messages("site.change"))),
                             visuallyHiddenText = Some(messages("declaration.summary.transaction.totalNoOfPackages.change"))
                         )
@@ -126,8 +126,8 @@
                 ),
                 actions = actions(Actions(
                     items = List(
-                        actionItem(
-                            href = NatureOfTransactionController.displayPage(mode).url,
+                        actionSummaryItem(
+                            href = NatureOfTransactionController.displayPage().url,
                             content = HtmlContent(linkContent(messages("site.change"))),
                             visuallyHiddenText = Some(messages("declaration.summary.transaction.natureOfTransaction.change"))
                         )
@@ -140,7 +140,7 @@
     )
 
     @declaration.previousDocuments.map(previousDocuments =>
-        related_documents(mode, previousDocuments.documents, actionsEnabled)
+        related_documents(previousDocuments.documents, actionsEnabled)
     )
 }
 

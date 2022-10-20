@@ -20,7 +20,7 @@ import base.Injector
 import controllers.declaration.routes
 import forms.common.Eori
 import forms.declaration.PersonPresentingGoodsDetails
-import models.{DeclarationType, Mode}
+import models.{DeclarationType}
 import org.jsoup.nodes.Document
 import play.api.data.{Form, FormError}
 import views.declaration.spec.UnitViewSpec
@@ -31,7 +31,7 @@ class PersonPresentingGoodsDetailsViewSpec extends UnitViewSpec with Injector wi
 
   private val page = instanceOf[person_presenting_goods_details]
   private def createView(form: Form[PersonPresentingGoodsDetails] = PersonPresentingGoodsDetails.form()): Document =
-    page(Mode.Normal, form)(journeyRequest(DeclarationType.CLEARANCE), messages)
+    page(form)(journeyRequest(DeclarationType.CLEARANCE), messages)
 
   "Person Presenting Goods Details view" when {
 

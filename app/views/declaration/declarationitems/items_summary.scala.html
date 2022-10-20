@@ -45,7 +45,7 @@
     appConfig: AppConfig
 )
 
-@(mode: Mode, form: Form[YesNoAnswer], items: List[ExportItem], itemsErrors: Seq[FormError] = Seq.empty)(implicit request: JourneyRequest[_], messages: Messages)
+@(form: Form[YesNoAnswer], items: List[ExportItem], itemsErrors: Seq[FormError] = Seq.empty)(implicit request: JourneyRequest[_], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
@@ -112,7 +112,7 @@
                     TableRow(
                         content = HtmlContent(link(
                             messages("site.change"),
-                            routes.ProcedureCodesController.displayPage(mode, item.id),
+                            routes.ProcedureCodesController.displayPage(item.id),
                             textHidden = Some(messages("declaration.itemsAdd.change.hint", item.sequenceId))
                         )),
                         classes = "govuk-table__cell--numeric",
@@ -121,7 +121,7 @@
                     TableRow(
                         content = HtmlContent(link(
                             messages("site.remove"),
-                            routes.ItemsSummaryController.displayRemoveItemConfirmationPage(mode, item.id),
+                            routes.ItemsSummaryController.displayRemoveItemConfirmationPage(item.id),
                             textHidden = Some(messages("declaration.itemsAdd.remove.hint", item.sequenceId))
                         )),
                         classes = "govuk-table__cell--numeric",
@@ -135,10 +135,10 @@
 
 @govukLayout(
     title = Title(titleMessageKey, "declaration.section.5", items.length.toString, hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(ExportItem, mode))),
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(ExportItem))),
     useCustomContentWidth = true) {
 
-    @formHelper(action = routes.ItemsSummaryController.submit(mode), 'autoComplete -> "off") {
+    @formHelper(action = routes.ItemsSummaryController.submit(), 'autoComplete -> "off") {
 
         @errorSummary(yesNoErrors(itemsErrors ++ form.errors))
 
@@ -153,7 +153,7 @@
                 itemsTable,
                 addAnotherQuestion("declaration.itemsSummary.addAnotherItem.question", form),
                 tariffExpander(ExportItem, request.declarationType)(messages, appConfig),
-                saveButtons(mode)
+                saveButtons()
             ))
         ))
     }

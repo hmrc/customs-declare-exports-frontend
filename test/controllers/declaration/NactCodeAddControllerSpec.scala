@@ -18,7 +18,7 @@ package controllers.declaration
 
 import base.{ControllerSpec, TestHelper}
 import forms.declaration.{NactCode, NactCodeFirst}
-import models.{DeclarationType, Mode}
+import models.{DeclarationType}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -59,7 +59,7 @@ class NactCodeAddControllerSpec extends ControllerSpec with OptionValues {
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration())
-    await(controller.displayPage(Mode.Normal, item.id)(request))
+    await(controller.displayPage(item.id)(request))
     theNactCodeFirst
   }
 
@@ -89,7 +89,7 @@ class NactCodeAddControllerSpec extends ControllerSpec with OptionValues {
 
           withNewCaching(request.cacheModel)
 
-          val result = controller.displayPage(Mode.Normal, item.id)(getRequest())
+          val result = controller.displayPage(item.id)(getRequest())
 
           status(result) mustBe OK
           verifyAddPageFirstInvoked()
@@ -103,7 +103,7 @@ class NactCodeAddControllerSpec extends ControllerSpec with OptionValues {
           val item = anItem(withNactCodes(List.empty))
           withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
 
-          val result = controller.displayPage(Mode.Normal, item.id)(getRequest())
+          val result = controller.displayPage(item.id)(getRequest())
 
           status(result) mustBe OK
           verifyAddPageFirstInvoked()
@@ -117,7 +117,7 @@ class NactCodeAddControllerSpec extends ControllerSpec with OptionValues {
           val item = anItem(withNactCodes(nactCode))
           withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
 
-          val result = controller.displayPage(Mode.Normal, item.id)(getRequest())
+          val result = controller.displayPage(item.id)(getRequest())
 
           status(result) mustBe OK
           verifyAddPageFirstInvoked(0)
@@ -132,7 +132,7 @@ class NactCodeAddControllerSpec extends ControllerSpec with OptionValues {
           withNewCaching(request.cacheModel)
 
           val requestBody = Seq(NactCodeFirst.hasNactCodeKey -> "Yes", NactCode.nactCodeKey -> "invalidCode")
-          val result = controller.submitForm(Mode.Normal, item.id)(postRequestAsFormUrlEncoded(requestBody: _*))
+          val result = controller.submitForm(item.id)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           status(result) mustBe BAD_REQUEST
           verifyAddPageFirstInvoked()
@@ -144,7 +144,7 @@ class NactCodeAddControllerSpec extends ControllerSpec with OptionValues {
           withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
 
           val requestBody = Seq(NactCodeFirst.hasNactCodeKey -> "Yes", NactCode.nactCodeKey -> "VATR")
-          val result = controller.submitForm(Mode.Normal, item.id)(postRequestAsFormUrlEncoded(requestBody: _*))
+          val result = controller.submitForm(item.id)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           status(result) mustBe BAD_REQUEST
           verifyAddPageInvoked()
@@ -156,7 +156,7 @@ class NactCodeAddControllerSpec extends ControllerSpec with OptionValues {
           withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
 
           val requestBody = Seq(NactCodeFirst.hasNactCodeKey -> "Yes", NactCode.nactCodeKey -> "VATR")
-          val result = controller.submitForm(Mode.Normal, item.id)(postRequestAsFormUrlEncoded(requestBody: _*))
+          val result = controller.submitForm(item.id)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           status(result) mustBe BAD_REQUEST
           verifyAddPageInvoked()
@@ -168,10 +168,10 @@ class NactCodeAddControllerSpec extends ControllerSpec with OptionValues {
           withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
 
           val requestBody = Seq(NactCodeFirst.hasNactCodeKey -> "Yes", NactCode.nactCodeKey -> "VATR")
-          val result = controller.submitForm(Mode.Normal, item.id)(postRequestAsFormUrlEncoded(requestBody: _*))
+          val result = controller.submitForm(item.id)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.NactCodeSummaryController.displayPage(Mode.Normal, item.id)
+          thePageNavigatedTo mustBe controllers.declaration.routes.NactCodeSummaryController.displayPage(item.id)
 
           theCacheModelUpdated.itemBy(item.id).flatMap(_.nactCodes) mustBe Some(Seq(NactCode("VATR")))
         }
@@ -182,10 +182,10 @@ class NactCodeAddControllerSpec extends ControllerSpec with OptionValues {
           withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
 
           val requestBody = Seq(NactCode.nactCodeKey -> "VATR")
-          val result = controller.submitForm(Mode.Normal, item.id)(postRequestAsFormUrlEncoded(requestBody: _*))
+          val result = controller.submitForm(item.id)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.NactCodeSummaryController.displayPage(Mode.Normal, item.id)
+          thePageNavigatedTo mustBe controllers.declaration.routes.NactCodeSummaryController.displayPage(item.id)
 
           theCacheModelUpdated.itemBy(item.id).flatMap(_.nactCodes) mustBe Some(Seq(nactCode, NactCode("VATR")))
         }
@@ -200,10 +200,10 @@ class NactCodeAddControllerSpec extends ControllerSpec with OptionValues {
           withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
 
           val requestBody = Seq(NactCodeFirst.hasNactCodeKey -> "No")
-          val result = controller.submitForm(Mode.Normal, item.id)(postRequestAsFormUrlEncoded(requestBody: _*))
+          val result = controller.submitForm(item.id)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.StatisticalValueController.displayPage(Mode.Normal, item.id)
+          thePageNavigatedTo mustBe controllers.declaration.routes.StatisticalValueController.displayPage(item.id)
         }
 
       }
@@ -217,10 +217,10 @@ class NactCodeAddControllerSpec extends ControllerSpec with OptionValues {
           withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
 
           val requestBody = Seq(NactCodeFirst.hasNactCodeKey -> "No")
-          val result = controller.submitForm(Mode.Normal, item.id)(postRequestAsFormUrlEncoded(requestBody: _*))
+          val result = controller.submitForm(item.id)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.PackageInformationSummaryController.displayPage(Mode.Normal, item.id)
+          thePageNavigatedTo mustBe controllers.declaration.routes.PackageInformationSummaryController.displayPage(item.id)
         }
 
       }
@@ -232,7 +232,7 @@ class NactCodeAddControllerSpec extends ControllerSpec with OptionValues {
 
           withNewCaching(request.cacheModel)
 
-          val result = controller.displayPage(Mode.Normal, item.id)(getRequest())
+          val result = controller.displayPage(item.id)(getRequest())
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(controllers.routes.RootController.displayPage().url)
@@ -243,7 +243,7 @@ class NactCodeAddControllerSpec extends ControllerSpec with OptionValues {
           withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
 
           val requestBody = Seq(NactCodeFirst.hasNactCodeKey -> "Yes", NactCode.nactCodeKey -> "VATR")
-          val result = controller.submitForm(Mode.Normal, item.id)(postRequestAsFormUrlEncoded(requestBody: _*))
+          val result = controller.submitForm(item.id)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(controllers.routes.RootController.displayPage().url)

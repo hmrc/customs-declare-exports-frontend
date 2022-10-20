@@ -19,7 +19,6 @@ package views.declaration.summary.sections
 import base.Injector
 import forms.common.Eori
 import forms.declaration.declarationHolder.DeclarationHolder
-import models.Mode
 import models.declaration.EoriSource
 import services.cache.ExportsTestHelper
 import views.declaration.spec.UnitViewSpec
@@ -44,7 +43,7 @@ class PartiesSectionHoldersViewSpec extends UnitViewSpec with ExportsTestHelper 
 
     "display holders with answer no if empty" in {
 
-      val view = section(Mode.Normal, aDeclaration())(messages)
+      val view = section(aDeclaration())(messages)
       val row = view.getElementsByClass("holders-row")
 
       row must haveSummaryKey(messages("declaration.summary.parties.holders"))
@@ -52,12 +51,12 @@ class PartiesSectionHoldersViewSpec extends UnitViewSpec with ExportsTestHelper 
 
       row must haveSummaryActionsTexts("site.change", "declaration.summary.parties.holders.empty.change")
 
-      row must haveSummaryActionsHref(controllers.declaration.routes.AuthorisationProcedureCodeChoiceController.displayPage(Mode.Normal))
+      row must haveSummaryActionsHref(controllers.declaration.routes.AuthorisationProcedureCodeChoiceController.displayPage())
     }
 
     "display holders if exists" in {
 
-      val view = section(Mode.Normal, aDeclaration(withDeclarationHolders(holders: _*)))(messages)
+      val view = section(aDeclaration(withDeclarationHolders(holders: _*)))(messages)
       val table = view.getElementById("holders-table")
 
       table.getElementsByTag("caption").text() mustBe messages("declaration.summary.parties.holders")

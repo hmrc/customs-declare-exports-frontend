@@ -20,7 +20,6 @@ import base.ExportsTestData.pc1040
 import base.Injector
 import forms.common.YesNoAnswer.{form, YesNoAnswers}
 import models.DeclarationType.STANDARD
-import models.Mode.Normal
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.mvc.Call
@@ -36,12 +35,12 @@ class AdditionalInformationRequiredViewSpec extends PageWithButtonsSpec with Exp
   val url = "/test"
   val call = Call("GET", url)
 
-  override val typeAndViewInstance = (STANDARD, page(Normal, itemId, form(), call, pc1040)(_, _))
+  override val typeAndViewInstance = (STANDARD, page(itemId, form(), call, pc1040)(_, _))
 
   val page = instanceOf[additional_information_required]
 
   def createView(implicit request: JourneyRequest[_]): Document =
-    page(Normal, itemId, form(), call, pc1040)
+    page(itemId, form(), call, pc1040)
 
   "Additional Information Required View on empty page" should {
     "have correct message keys" in {

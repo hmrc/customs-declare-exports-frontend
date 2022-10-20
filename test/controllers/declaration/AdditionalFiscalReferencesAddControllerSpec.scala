@@ -21,7 +21,7 @@ import connectors.CodeListConnector
 import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData}
 import mock.{ErrorHandlerMocks, ItemActionMocks}
 import models.declaration.ExportItem
-import models.{DeclarationType, ExportsDeclaration, Mode}
+import models.{DeclarationType, ExportsDeclaration}
 import models.codes.Country
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -73,7 +73,7 @@ class AdditionalFiscalReferencesAddControllerSpec extends ControllerSpec with It
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     val item = anItem()
     withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withItem(item)))
-    await(controller.displayPage(Mode.Normal, item.id)(request))
+    await(controller.displayPage(item.id)(request))
     theResponseForm
   }
 
@@ -84,7 +84,7 @@ class AdditionalFiscalReferencesAddControllerSpec extends ControllerSpec with It
       "display page method is invoked" in {
         val item = anItem()
         withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withItem(item)))
-        val result: Future[Result] = controller.displayPage(Mode.Normal, item.id)(getRequest())
+        val result: Future[Result] = controller.displayPage(item.id)(getRequest())
 
         status(result) must be(OK)
       }
@@ -100,7 +100,7 @@ class AdditionalFiscalReferencesAddControllerSpec extends ControllerSpec with It
           Seq(("country", "PL"), ("reference", "!@#$"), saveAndContinueActionUrlEncoded)
 
         val result: Future[Result] =
-          controller.submitForm(Mode.Normal, item.id)(postRequestAsFormUrlEncoded(incorrectForm: _*))
+          controller.submitForm(item.id)(postRequestAsFormUrlEncoded(incorrectForm: _*))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -117,7 +117,7 @@ class AdditionalFiscalReferencesAddControllerSpec extends ControllerSpec with It
           Seq(("country", "PL"), ("reference", "12345"), saveAndContinueActionUrlEncoded)
 
         val result: Future[Result] =
-          controller.submitForm(Mode.Normal, itemCacheData.id)(postRequestAsFormUrlEncoded(duplicatedForm: _*))
+          controller.submitForm(itemCacheData.id)(postRequestAsFormUrlEncoded(duplicatedForm: _*))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -136,7 +136,7 @@ class AdditionalFiscalReferencesAddControllerSpec extends ControllerSpec with It
           Seq(("country", "PL"), ("reference", "54321"), saveAndContinueActionUrlEncoded)
 
         val result: Future[Result] =
-          controller.submitForm(Mode.Normal, itemCacheData.id)(postRequestAsFormUrlEncoded(form: _*))
+          controller.submitForm(itemCacheData.id)(postRequestAsFormUrlEncoded(form: _*))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -152,10 +152,10 @@ class AdditionalFiscalReferencesAddControllerSpec extends ControllerSpec with It
           Seq(("country", "PL"), ("reference", "12345"), saveAndContinueActionUrlEncoded)
 
         val result: Future[Result] =
-          controller.submitForm(Mode.Normal, item.id)(postRequestAsFormUrlEncoded(correctForm: _*))
+          controller.submitForm(item.id)(postRequestAsFormUrlEncoded(correctForm: _*))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe routes.AdditionalFiscalReferencesController.displayPage(Mode.Normal, item.id)
+        thePageNavigatedTo mustBe routes.AdditionalFiscalReferencesController.displayPage(item.id)
       }
 
     }

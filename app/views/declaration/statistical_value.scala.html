@@ -43,7 +43,7 @@
     appConfig: AppConfig
 )
 
-@(mode: Mode, itemId: String, form: Form[StatisticalValue])(implicit request: JourneyRequest[_], messages: Messages)
+@(itemId: String, form: Form[StatisticalValue])(implicit request: JourneyRequest[_], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
@@ -68,9 +68,9 @@
 
 @govukLayout(
     title = Title("declaration.statisticalValue.title", "declaration.section.5", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(StatisticalValue, mode, ItemId(itemId))))) {
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(StatisticalValue, ItemId(itemId))))) {
 
-    @formHelper(action = routes.StatisticalValueController.submitItemType(mode, itemId), 'autoComplete -> "off") {
+    @formHelper(action = routes.StatisticalValueController.submitItemType(itemId), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
         @sectionHeader(messages("declaration.section.5"))
@@ -94,6 +94,6 @@
 
         @tariffExpander(StatisticalValue, request.declarationType)(messages, appConfig)
 
-        @saveButtons(mode)
+        @saveButtons()
     }
 }

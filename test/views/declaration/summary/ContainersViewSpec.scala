@@ -18,7 +18,6 @@ package views.declaration.summary
 
 import base.Injector
 import forms.declaration.Seal
-import models.Mode.{Draft, Normal}
 import models.declaration.Container
 import services.cache.ExportsTestHelper
 import views.declaration.spec.UnitViewSpec
@@ -42,7 +41,7 @@ class ContainersViewSpec extends UnitViewSpec with ExportsTestHelper with Inject
 
       "Containers is empty" in {
 
-        val view = section(Normal, Seq.empty)(messages)
+        val view = section(Seq.empty)(messages)
         val row = view.getElementsByClass("containers-row")
 
         row must haveSummaryKey(messages("declaration.summary.transport.containers"))
@@ -50,7 +49,7 @@ class ContainersViewSpec extends UnitViewSpec with ExportsTestHelper with Inject
 
         row must haveSummaryActionsTexts("site.change", "declaration.summary.transport.containers.change")
 
-        row must haveSummaryActionsHref(controllers.declaration.routes.TransportContainerController.displayContainerSummary(Normal))
+        row must haveSummaryActionsHref(controllers.declaration.routes.TransportContainerController.displayContainerSummary())
       }
     }
 

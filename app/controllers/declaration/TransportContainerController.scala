@@ -27,7 +27,7 @@ import forms.declaration.{ContainerAdd, ContainerFirst}
 import models.declaration.Container
 import models.declaration.Container.maxNumberOfItems
 import models.requests.JourneyRequest
-import models.{ExportsDeclaration, Mode}
+import models.ExportsDeclaration
 import play.api.data.{Form, FormError}
 import play.api.i18n.I18nSupport
 import play.api.mvc._
@@ -36,9 +36,10 @@ import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration._
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
+@Singleton
 class TransportContainerController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
@@ -52,71 +53,71 @@ class TransportContainerController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
-  def displayAddContainer(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    if (request.cacheModel.hasContainers) Ok(addPage(mode, form.withSubmissionErrors))
-    else Ok(addFirstPage(mode, ContainerFirst.form.withSubmissionErrors))
+  def displayAddContainer(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    if (request.cacheModel.hasContainers) Ok(addPage(form.withSubmissionErrors))
+    else Ok(addFirstPage(ContainerFirst.form.withSubmissionErrors))
   }
 
-  def submitAddContainer(mode: Mode): Action[AnyContent] =
+  def submitAddContainer(): Action[AnyContent] =
     (authenticate andThen journeyType).async { implicit request =>
       if (request.cacheModel.hasContainers) {
         val boundForm = form.bindFromRequest
-        saveAdditionalContainer(mode, boundForm, maxNumberOfItems, request.cacheModel.containers)
+        saveAdditionalContainer(boundForm, maxNumberOfItems, request.cacheModel.containers)
       } else
         ContainerFirst.form.bindFromRequest
           .fold(
-            formWithErrors => Future.successful(BadRequest(addFirstPage(mode, formWithErrors))),
-            containerId => saveFirstContainer(mode, containerId.id)
+            formWithErrors => Future.successful(BadRequest(addFirstPage(formWithErrors))),
+            containerId => saveFirstContainer(containerId.id)
           )
     }
 
-  def displayContainerSummary(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayContainerSummary(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.containers match {
-      case containers if containers.nonEmpty => Ok(summaryPage(mode, addAnotherContainerYesNoForm.withSubmissionErrors, containers))
+      case containers if containers.nonEmpty => Ok(summaryPage(addAnotherContainerYesNoForm.withSubmissionErrors, containers))
 
-      case _ => navigator.continueTo(mode, TransportContainerController.displayAddContainer)
+      case _ => navigator.continueTo(TransportContainerController.displayAddContainer)
     }
   }
 
-  def submitSummaryAction(mode: Mode): Action[AnyContent] =
+  def submitSummaryAction(): Action[AnyContent] =
     (authenticate andThen journeyType).async { implicit request =>
       FormAction.bindFromRequest match {
         case Remove(values) =>
-          val result = navigator.continueTo(mode, TransportContainerController.displayContainerRemove(_, containerId(values)))
+          val result = navigator.continueTo(TransportContainerController.displayContainerRemove(containerId(values)))
           Future.successful(result)
 
-        case _ => addContainerAnswer(mode)
+        case _ => addContainerAnswer()
       }
     }
 
-  def displayContainerRemove(mode: Mode, containerId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayContainerRemove(containerId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.containerBy(containerId) match {
-      case Some(container) => Ok(removePage(mode, removeContainerYesNoForm, container))
-      case _               => navigator.continueTo(mode, TransportContainerController.displayContainerSummary)
+      case Some(container) => Ok(removePage(removeContainerYesNoForm, container))
+      case _               => navigator.continueTo(TransportContainerController.displayContainerSummary)
     }
   }
 
-  def submitContainerRemove(mode: Mode, containerId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    removeContainerAnswer(mode, containerId)
+  def submitContainerRemove(containerId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+    removeContainerAnswer(containerId)
   }
 
-  private def saveFirstContainer(mode: Mode, containerId: Option[String])(implicit request: JourneyRequest[AnyContent]): Future[Result] =
+  private def saveFirstContainer(containerId: Option[String])(implicit request: JourneyRequest[AnyContent]): Future[Result] =
     containerId match {
-      case Some(id) => updateCache(Seq(Container(id, Seq.empty))).map(_ => redirectAfterAdd(mode, id))
+      case Some(id) => updateCache(Seq(Container(id, Seq.empty))).map(_ => redirectAfterAdd(id))
       case None =>
         updateDeclarationFromRequest(_.updateContainers(Seq.empty).updateReadyForSubmission(true)) map { _ =>
-          navigator.continueTo(mode, routes.SummaryController.displayPage)
+          navigator.continueTo(routes.SummaryController.displayPage)
         }
     }
 
-  private def saveAdditionalContainer(mode: Mode, boundForm: Form[ContainerAdd], elementLimit: Int, cache: Seq[Container])(
+  private def saveAdditionalContainer(boundForm: Form[ContainerAdd], elementLimit: Int, cache: Seq[Container])(
     implicit request: JourneyRequest[AnyContent]
   ): Future[Result] =
     prepare(boundForm, elementLimit, cache) fold (
-      formWithErrors => Future.successful(BadRequest(addPage(mode, formWithErrors))),
+      formWithErrors => Future.successful(BadRequest(addPage(formWithErrors))),
       updatedCache =>
-        if (updatedCache != cache) updateCache(updatedCache).map(_ => redirectAfterAdd(mode, updatedCache.last.id))
-        else Future.successful(navigator.continueTo(mode, TransportContainerController.displayContainerSummary))
+        if (updatedCache != cache) updateCache(updatedCache).map(_ => redirectAfterAdd(updatedCache.last.id))
+        else Future.successful(navigator.continueTo(TransportContainerController.displayContainerSummary))
     )
 
   private def prepare(boundForm: Form[ContainerAdd], elementLimit: Int, cache: Seq[Container]): Either[Form[ContainerAdd], Seq[Container]] = {
@@ -143,41 +144,41 @@ class TransportContainerController @Inject() (
   private def limitOfElems[A](limit: Int, cachedData: Seq[Container]): Seq[FormError] =
     if (cachedData.length >= limit) Seq(FormError("", "supplementary.limit")) else Seq.empty
 
-  private def addContainerAnswer(mode: Mode)(implicit request: JourneyRequest[AnyContent]): Future[Result] =
+  private def addContainerAnswer()(implicit request: JourneyRequest[AnyContent]): Future[Result] =
     addAnotherContainerYesNoForm.bindFromRequest
       .fold(
-        formWithErrors => Future.successful(BadRequest(summaryPage(mode, formWithErrors, request.cacheModel.containers))),
+        formWithErrors => Future.successful(BadRequest(summaryPage(formWithErrors, request.cacheModel.containers))),
         _.answer match {
           case YesNoAnswers.yes =>
-            Future.successful(navigator.continueTo(mode, TransportContainerController.displayAddContainer))
+            Future.successful(navigator.continueTo(TransportContainerController.displayAddContainer))
 
           case YesNoAnswers.no =>
             updateDeclarationFromRequest(_.updateReadyForSubmission(true)) map { _ =>
-              navigator.continueTo(mode, routes.SummaryController.displayPage)
+              navigator.continueTo(routes.SummaryController.displayPage)
             }
         }
       )
 
-  private def removeContainerAnswer(mode: Mode, containerId: String)(implicit request: JourneyRequest[AnyContent]): Future[Result] =
+  private def removeContainerAnswer(containerId: String)(implicit request: JourneyRequest[AnyContent]): Future[Result] =
     removeContainerYesNoForm.bindFromRequest
       .fold(
         formWithErrors =>
-          Future.successful(BadRequest(removePage(mode, formWithErrors, request.cacheModel.containers.filter(_.id == containerId).head))),
+          Future.successful(BadRequest(removePage(formWithErrors, request.cacheModel.containers.filter(_.id == containerId).head))),
         _.answer match {
-          case YesNoAnswers.yes => removeContainer(containerId, mode)
-          case YesNoAnswers.no  => Future.successful(navigator.continueTo(mode, TransportContainerController.displayContainerSummary))
+          case YesNoAnswers.yes => removeContainer(containerId)
+          case YesNoAnswers.no  => Future.successful(navigator.continueTo(TransportContainerController.displayContainerSummary))
         }
       )
 
-  private def removeContainer(containerId: String, mode: Mode)(implicit request: JourneyRequest[AnyContent]): Future[Result] =
+  private def removeContainer(containerId: String)(implicit request: JourneyRequest[AnyContent]): Future[Result] =
     updateCache(request.cacheModel.containers.filterNot(_.id == containerId))
-      .map(_ => navigator.continueTo(mode, TransportContainerController.displayContainerSummary))
+      .map(_ => navigator.continueTo(TransportContainerController.displayContainerSummary))
 
   private def containerId(values: Seq[String]): String = values.headOption.getOrElse("")
 
   private def updateCache(updatedContainers: Seq[Container])(implicit r: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
     updateDeclarationFromRequest(_.updateContainers(updatedContainers))
 
-  private def redirectAfterAdd(mode: Mode, containerId: String)(implicit request: JourneyRequest[AnyContent]): Result =
-    navigator.continueTo(mode, SealController.displaySealSummary(_, containerId))
+  private def redirectAfterAdd(containerId: String)(implicit request: JourneyRequest[AnyContent]): Result =
+    navigator.continueTo(SealController.displaySealSummary(containerId))
 }

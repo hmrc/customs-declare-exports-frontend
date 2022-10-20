@@ -23,7 +23,7 @@ import forms.declaration.InvoiceAndExchangeRate
 import forms.declaration.InvoiceAndExchangeRate._
 import models.declaration.InvoiceAndPackageTotals
 import models.requests.JourneyRequest
-import models.{DeclarationType, ExportsDeclaration, Mode}
+import models.{DeclarationType, ExportsDeclaration}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.cache.ExportsCacheService
@@ -46,17 +46,17 @@ class InvoiceAndExchangeRateController @Inject() (
 
   private val validTypes = Seq(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY)
 
-  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
+  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
     request.cacheModel.totalNumberOfItems match {
-      case Some(data) => Ok(invoiceAndExchangeRatePage(mode, form.withSubmissionErrors.fill(InvoiceAndExchangeRate(data))))
-      case _          => Ok(invoiceAndExchangeRatePage(mode, form.withSubmissionErrors))
+      case Some(data) => Ok(invoiceAndExchangeRatePage(form.withSubmissionErrors.fill(InvoiceAndExchangeRate(data))))
+      case _          => Ok(invoiceAndExchangeRatePage(form.withSubmissionErrors))
     }
   }
 
-  def saveNoOfItems(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async { implicit request =>
+  def saveNoOfItems(): Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async { implicit request =>
     form.bindFromRequest.fold(
-      formWithErrors => Future.successful(BadRequest(invoiceAndExchangeRatePage(mode, formWithErrors))),
-      updateCache(_).map(_ => navigator.continueTo(mode, TotalPackageQuantityController.displayPage))
+      formWithErrors => Future.successful(BadRequest(invoiceAndExchangeRatePage(formWithErrors))),
+      updateCache(_).map(_ => navigator.continueTo(TotalPackageQuantityController.displayPage))
     )
   }
 

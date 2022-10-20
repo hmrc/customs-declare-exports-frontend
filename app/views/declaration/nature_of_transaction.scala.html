@@ -41,7 +41,7 @@
     appConfig: AppConfig
 )
 
-@(mode: Mode, form: Form[NatureOfTransaction])(implicit request: JourneyRequest[_], messages: Messages)
+@(form: Form[NatureOfTransaction])(implicit request: JourneyRequest[_], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
@@ -53,9 +53,9 @@
 
 @govukLayout(
     title = Title("declaration.natureOfTransaction.heading", "declaration.section.4", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(NatureOfTransaction, mode)))) {
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(NatureOfTransaction)))) {
 
-    @formHelper(action = controllers.declaration.routes.NatureOfTransactionController.saveTransactionType(mode), 'autoComplete -> "off") {
+    @formHelper(action = controllers.declaration.routes.NatureOfTransactionController.saveTransactionType(), 'autoComplete -> "off") {
         @errorSummary(radioGroupErrors("natureType", "Sale", form.errors))
 
         @sectionHeader(messages("declaration.section.4"))
@@ -145,6 +145,6 @@
 
         @tariffExpander(NatureOfTransaction, request.declarationType)(messages, appConfig)
 
-        @saveButtons(mode)
+        @saveButtons()
     }
 }

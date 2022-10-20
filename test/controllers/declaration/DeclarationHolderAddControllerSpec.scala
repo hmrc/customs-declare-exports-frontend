@@ -22,7 +22,6 @@ import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
 import forms.declaration.declarationHolder.AuthorizationTypeCodes.{CSE, EXRR}
 import forms.declaration.declarationHolder.DeclarationHolder
 import models.DeclarationType._
-import models.Mode
 import models.declaration.{DeclarationHoldersData, EoriSource}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -60,7 +59,7 @@ class DeclarationHolderAddControllerSpec extends ControllerSpec with GivenWhenTh
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration())
-    await(controller.displayPage(Mode.Normal)(request))
+    await(controller.displayPage()(request))
     theDeclarationHolder
   }
 
@@ -82,7 +81,7 @@ class DeclarationHolderAddControllerSpec extends ControllerSpec with GivenWhenTh
         "display page method is invoked" in {
           withNewCaching(request.cacheModel)
 
-          val result = controller.displayPage(Mode.Normal)(getRequest())
+          val result = controller.displayPage()(getRequest())
 
           status(result) mustBe OK
           verifyAddPageInvoked()
@@ -96,7 +95,7 @@ class DeclarationHolderAddControllerSpec extends ControllerSpec with GivenWhenTh
         "user submits no data" in {
           withNewCaching(request.cacheModel)
 
-          val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded())
+          val result = controller.submitForm()(postRequestAsFormUrlEncoded())
 
           status(result) mustBe BAD_REQUEST
           verifyAddPageInvoked()
@@ -106,7 +105,7 @@ class DeclarationHolderAddControllerSpec extends ControllerSpec with GivenWhenTh
           withNewCaching(request.cacheModel)
 
           val requestBody = List("authorisationTypeCode" -> "inva!id", "eori" -> "inva!id")
-          val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded(requestBody: _*))
+          val result = controller.submitForm()(postRequestAsFormUrlEncoded(requestBody: _*))
 
           status(result) mustBe BAD_REQUEST
           verifyAddPageInvoked()
@@ -117,7 +116,7 @@ class DeclarationHolderAddControllerSpec extends ControllerSpec with GivenWhenTh
 
           val requestBody =
             List("authorisationTypeCode" -> declarationHolder.authorisationTypeCode.get, "eori" -> declarationHolder.eori.map(_.value).get)
-          val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded(requestBody: _*))
+          val result = controller.submitForm()(postRequestAsFormUrlEncoded(requestBody: _*))
 
           status(result) mustBe BAD_REQUEST
           verifyAddPageInvoked()
@@ -129,7 +128,7 @@ class DeclarationHolderAddControllerSpec extends ControllerSpec with GivenWhenTh
 
           val requestBody =
             List("authorisationTypeCode" -> declarationHolder.authorisationTypeCode.get, "eori" -> declarationHolder.eori.map(_.value).get)
-          val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded(requestBody: _*))
+          val result = controller.submitForm()(postRequestAsFormUrlEncoded(requestBody: _*))
 
           status(result) mustBe BAD_REQUEST
           verifyAddPageInvoked()
@@ -141,7 +140,7 @@ class DeclarationHolderAddControllerSpec extends ControllerSpec with GivenWhenTh
             withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationHolders(holder)))
 
             val requestBody = List("authorisationTypeCode" -> EXRR, "eori" -> ExportsTestData.eori)
-            val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded(requestBody: _*))
+            val result = controller.submitForm()(postRequestAsFormUrlEncoded(requestBody: _*))
 
             status(result) mustBe BAD_REQUEST
             verifyAddPageInvoked()
@@ -152,7 +151,7 @@ class DeclarationHolderAddControllerSpec extends ControllerSpec with GivenWhenTh
             withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationHolders(holder)))
 
             val requestBody = List("authorisationTypeCode" -> CSE, "eori" -> ExportsTestData.eori)
-            val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded(requestBody: _*))
+            val result = controller.submitForm()(postRequestAsFormUrlEncoded(requestBody: _*))
 
             status(result) mustBe BAD_REQUEST
             verifyAddPageInvoked()
@@ -170,10 +169,10 @@ class DeclarationHolderAddControllerSpec extends ControllerSpec with GivenWhenTh
             "eori" -> declarationHolder.eori.map(_.value).get,
             "eoriSource" -> "OtherEori"
           )
-          val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded(requestBody: _*))
+          val result = controller.submitForm()(postRequestAsFormUrlEncoded(requestBody: _*))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.DeclarationHolderSummaryController.displayPage(Mode.Normal)
+          thePageNavigatedTo mustBe controllers.declaration.routes.DeclarationHolderSummaryController.displayPage()
 
           val savedHolder = theCacheModelUpdated.parties.declarationHoldersData
           savedHolder mustBe Some(DeclarationHoldersData(List(declarationHolder)))
@@ -195,7 +194,7 @@ class DeclarationHolderAddControllerSpec extends ControllerSpec with GivenWhenTh
           withNewCaching(aDeclarationAfter(request.cacheModel, withAdditionalDeclarationType(additionalDeclarationType)))
 
           val requestBody = List("authorisationTypeCode" -> EXRR, "eori" -> ExportsTestData.eori, "eoriSource" -> "OtherEori")
-          val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded(requestBody: _*))
+          val result = controller.submitForm()(postRequestAsFormUrlEncoded(requestBody: _*))
 
           status(result) mustBe BAD_REQUEST
           verifyAddPageInvoked()

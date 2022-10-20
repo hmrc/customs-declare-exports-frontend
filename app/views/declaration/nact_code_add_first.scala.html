@@ -46,16 +46,16 @@
     formHelper: FormWithCSRF
 )
 
-@(mode: Mode, itemId: String, form: Form[NactCodeFirst])(implicit request: JourneyRequest[_], messages: Messages)
+@(itemId: String, form: Form[NactCodeFirst])(implicit request: JourneyRequest[_], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
 @govukLayout(
     title = Title("declaration.nationalAdditionalCode.addfirst.header", "declaration.section.5", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(NactCodeFirst, mode, ItemId(itemId))))
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(NactCodeFirst, ItemId(itemId))))
 ) {
 
-    @formHelper(action = NactCodeAddController.submitForm(mode, itemId), 'autoComplete -> "off") {
+    @formHelper(action = NactCodeAddController.submitForm(itemId), 'autoComplete -> "off") {
         @errorSummary(radioGroupErrors(hasNactCodeKey, "code_yes", form.errors))
 
         @sectionHeader(messages("declaration.section.5"))
@@ -97,6 +97,6 @@
 
         @tariffExpander(NactCodeFirst, request.declarationType)(messages, appConfig)
 
-        @saveButtons(mode)
+        @saveButtons()
     }
 }

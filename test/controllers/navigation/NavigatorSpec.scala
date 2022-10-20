@@ -23,10 +23,9 @@ import controllers.helpers._
 import controllers.routes.RejectedNotificationsController
 import forms.declaration.AdditionalInformationSummary
 import mock.FeatureFlagMocks
-import models.Mode.Normal
 import models.requests.{ExportsSessionKeys, JourneyRequest}
 import models.responses.FlashKeys
-import models.{DeclarationType, ExportsDeclaration, Mode, SignedInUser}
+import models.{DeclarationType, ExportsDeclaration, SignedInUser}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verifyNoInteractions, when}
 import org.scalatest.concurrent.ScalaFutures
@@ -48,7 +47,7 @@ class NavigatorSpec
 
   private val mode = Normal
   private val url = "url"
-  private val call: Mode => Call = _ => Call("GET", url)
+  private val call: Call = _ => Call("GET", url)
   private val config = mock[AppConfig]
   private val auditService = mock[AuditService]
   private val hc: HeaderCarrier = mock[HeaderCarrier]
@@ -84,7 +83,7 @@ class NavigatorSpec
 
     "go to the URL provided" when {
       "Save And Continue" in {
-        val result = navigator.continueTo(mode, call(_))(decoratedRequest(requestWithFormAction(Some(SaveAndContinue))))
+        val result = navigator.continueTo(call(_))(decoratedRequest(requestWithFormAction(Some(SaveAndContinue))))
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(url)
@@ -92,7 +91,7 @@ class NavigatorSpec
       }
 
       "Add" in {
-        val result = navigator.continueTo(mode, call(_))(decoratedRequest(requestWithFormAction(Some(Add))))
+        val result = navigator.continueTo(call(_))(decoratedRequest(requestWithFormAction(Some(Add))))
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(url)
@@ -100,7 +99,7 @@ class NavigatorSpec
       }
 
       "Remove" in {
-        val result = navigator.continueTo(mode, call(_))(decoratedRequest(requestWithFormAction(Some(Remove(Seq.empty)))))
+        val result = navigator.continueTo(call(_))(decoratedRequest(requestWithFormAction(Some(Remove(Seq.empty)))))
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(url)
@@ -108,7 +107,7 @@ class NavigatorSpec
       }
 
       "Unknown Action" in {
-        val result = navigator.continueTo(mode, call(_))(decoratedRequest(requestWithFormAction(Some(Unknown))))
+        val result = navigator.continueTo(call(_))(decoratedRequest(requestWithFormAction(Some(Unknown))))
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(url)
@@ -141,10 +140,10 @@ class NavigatorSpec
     }
 
     "Go to the summary page when Save and return to summary form action" in {
-      val result = navigator.continueTo(mode, call)(decoratedRequest(requestWithFormAction(Some(SaveAndReturnToSummary))))
+      val result = navigator.continueTo(call)(decoratedRequest(requestWithFormAction(Some(SaveAndReturnToSummary))))
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(SummaryController.displayPage(mode).url)
+      redirectLocation(result) mustBe Some(SummaryController.displayPage().url)
       verifyNoInteractions(auditService)
     }
   }
@@ -215,9 +214,9 @@ class NavigatorSpec
           when(tariffApiService.retrieveCommodityInfoIfAny(any(), any()))
             .thenReturn(Future.successful(Left(SupplementaryUnitsNotRequired)))
 
-          val url = navigator.backLinkForAdditionalInformation(AdditionalInformationSummary, mode, itemId).futureValue.url
+          val url = navigator.backLinkForAdditionalInformation(AdditionalInformationSummary, itemId).futureValue.url
 
-          url mustBe CommodityMeasureController.displayPage(mode, itemId).url
+          url mustBe CommodityMeasureController.displayPage(itemId).url
         }
       }
 
@@ -226,26 +225,26 @@ class NavigatorSpec
           when(tariffApiService.retrieveCommodityInfoIfAny(any(), any()))
             .thenReturn(Future.successful(Left(CommodityCodeNotFound)))
 
-          val url = navigator.backLinkForAdditionalInformation(AdditionalInformationSummary, mode, itemId).futureValue.url
+          val url = navigator.backLinkForAdditionalInformation(AdditionalInformationSummary, itemId).futureValue.url
 
-          url mustBe SupplementaryUnitsController.displayPage(mode, itemId).url
+          url mustBe SupplementaryUnitsController.displayPage(itemId).url
         }
       }
     }
 
     onClearance { implicit request =>
       "return a Call instance for CommodityMeasureController" in {
-        val url = navigator.backLinkForAdditionalInformation(AdditionalInformationSummary, mode, itemId).futureValue.url
+        val url = navigator.backLinkForAdditionalInformation(AdditionalInformationSummary, itemId).futureValue.url
 
-        url mustBe CommodityMeasureController.displayPage(mode, itemId).url
+        url mustBe CommodityMeasureController.displayPage(itemId).url
       }
     }
 
     onJourney(DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL) { implicit request =>
       "return a Call instance for PackageInformationSummaryController" in {
-        val url = navigator.backLinkForAdditionalInformation(AdditionalInformationSummary, mode, itemId).futureValue.url
+        val url = navigator.backLinkForAdditionalInformation(AdditionalInformationSummary, itemId).futureValue.url
 
-        url mustBe PackageInformationSummaryController.displayPage(mode, itemId).url
+        url mustBe PackageInformationSummaryController.displayPage(itemId).url
       }
     }
   }

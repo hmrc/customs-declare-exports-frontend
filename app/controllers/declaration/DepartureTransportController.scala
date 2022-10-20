@@ -25,7 +25,7 @@ import forms.declaration.DepartureTransport
 import forms.declaration.InlandOrBorder.Border
 import models.DeclarationType.{CLEARANCE, STANDARD, SUPPLEMENTARY}
 import models.requests.JourneyRequest
-import models.{ExportsDeclaration, Mode}
+import models.ExportsDeclaration
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
@@ -55,29 +55,29 @@ class DepartureTransportController @Inject() (
 
   private val validTypes = Seq(STANDARD, SUPPLEMENTARY, CLEARANCE)
 
-  def displayPage(mode: Mode): Action[AnyContent] =
+  def displayPage(): Action[AnyContent] =
     (authenticate andThen journeyType(validTypes)) { implicit request =>
       if (!isPostalOrFTIModeOfTransport(request.cacheModel.transportLeavingBorderCode)) {
         val frm = form.withSubmissionErrors
         val transport = request.cacheModel.transport
         val formData = DepartureTransport(transport.meansOfTransportOnDepartureType, transport.meansOfTransportOnDepartureIDNumber)
 
-        Ok(departureTransportPage(mode, frm.fill(formData)))
+        Ok(departureTransportPage(frm.fill(formData)))
       } else Results.Redirect(RootController.displayPage)
     }
 
-  def submitForm(mode: Mode): Action[AnyContent] =
+  def submitForm(): Action[AnyContent] =
     (authenticate andThen journeyType(validTypes)).async { implicit request =>
       if (!isPostalOrFTIModeOfTransport(request.cacheModel.transportLeavingBorderCode))
         form.bindFromRequest
           .fold(
-            formWithErrors => Future.successful(BadRequest(departureTransportPage(mode, formWithErrors))),
-            updateCache(_).map(_ => navigator.continueTo(mode, nextPage))
+            formWithErrors => Future.successful(BadRequest(departureTransportPage(formWithErrors))),
+            updateCache(_).map(_ => navigator.continueTo(nextPage))
           )
       else Future.successful(Results.Redirect(RootController.displayPage))
     }
 
-  private def nextPage(implicit request: JourneyRequest[AnyContent]): Mode => Call =
+  private def nextPage(implicit request: JourneyRequest[AnyContent]): Call =
     request.declarationType match {
       case CLEARANCE => ExpressConsignmentController.displayPage
       case STANDARD | SUPPLEMENTARY =>

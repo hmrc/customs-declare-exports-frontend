@@ -19,7 +19,7 @@ package views.declaration
 import base.Injector
 import forms.declaration.SupervisingCustomsOffice
 import models.requests.JourneyRequest
-import models.{DeclarationType, ExportsDeclaration, Mode}
+import models.{DeclarationType, ExportsDeclaration}
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import services.cache.ExportsTestHelper
@@ -35,7 +35,7 @@ class SupervisingCustomsOfficeViewSpec extends UnitViewSpec with ExportsTestHelp
   private val form: Form[SupervisingCustomsOffice] = SupervisingCustomsOffice.form()
 
   private def createView(mode: Mode = Mode.Normal, form: Form[SupervisingCustomsOffice] = form)(implicit request: JourneyRequest[_]) =
-    page(mode, form)(request, messages)
+    page(form)(request, messages)
 
   "Supervising Customs Office View" should {
 
@@ -73,7 +73,7 @@ class SupervisingCustomsOfficeViewSpec extends UnitViewSpec with ExportsTestHelp
 
         backButton must containMessage("site.backToPreviousQuestion")
         backButton.getElementById("back-link") must haveHref(
-          controllers.declaration.routes.WarehouseIdentificationController.displayPage(Mode.Normal)
+          controllers.declaration.routes.WarehouseIdentificationController.displayPage()
         )
       }
     }
@@ -87,7 +87,7 @@ class SupervisingCustomsOfficeViewSpec extends UnitViewSpec with ExportsTestHelp
 
         backButton must containMessage("site.backToPreviousQuestion")
         backButton.getElementById("back-link") must haveHref(
-          controllers.declaration.routes.WarehouseIdentificationController.displayPage(Mode.Normal)
+          controllers.declaration.routes.WarehouseIdentificationController.displayPage()
         )
       }
     }
@@ -101,7 +101,7 @@ class SupervisingCustomsOfficeViewSpec extends UnitViewSpec with ExportsTestHelp
 
         backButton must containMessage("site.backToPreviousQuestion")
         backButton.getElementById("back-link") must haveHref(
-          controllers.declaration.routes.TransportLeavingTheBorderController.displayPage(Mode.Normal)
+          controllers.declaration.routes.TransportLeavingTheBorderController.displayPage()
         )
       }
     }
@@ -115,7 +115,7 @@ class SupervisingCustomsOfficeViewSpec extends UnitViewSpec with ExportsTestHelp
 
         backButton must containMessage("site.backToPreviousQuestion")
         backButton.getElementById("back-link") must haveHref(
-          controllers.declaration.routes.ItemsSummaryController.displayItemsSummaryPage(Mode.Normal)
+          controllers.declaration.routes.ItemsSummaryController.displayItemsSummaryPage()
         )
       }
     }

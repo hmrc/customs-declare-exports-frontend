@@ -21,7 +21,6 @@ import controllers.declaration.routes.ItemsSummaryController
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
-import models.Mode
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -41,25 +40,25 @@ class PreviousDocumentsSummaryController @Inject() (
   previousDocumentsSummary: previous_documents_summary
 ) extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
-  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     val form = yesNoForm.withSubmissionErrors
     request.cacheModel.previousDocuments.map(_.documents) match {
-      case Some(documents) if documents.nonEmpty => Ok(previousDocumentsSummary(mode, form, documents))
+      case Some(documents) if documents.nonEmpty => Ok(previousDocumentsSummary(form, documents))
 
-      case _ => navigator.continueTo(mode, routes.PreviousDocumentsController.displayPage)
+      case _ => navigator.continueTo(routes.PreviousDocumentsController.displayPage)
     }
   }
 
-  def submit(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def submit(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     yesNoForm.bindFromRequest
       .fold(
         formWithErrors => {
           val previousDocuments = request.cacheModel.previousDocuments.map(_.documents).getOrElse(Seq.empty)
-          BadRequest(previousDocumentsSummary(mode, formWithErrors, previousDocuments))
+          BadRequest(previousDocumentsSummary(formWithErrors, previousDocuments))
         },
         _.answer match {
-          case YesNoAnswers.yes => navigator.continueTo(mode, routes.PreviousDocumentsController.displayPage)
-          case YesNoAnswers.no  => navigator.continueTo(mode, ItemsSummaryController.displayAddItemPage)
+          case YesNoAnswers.yes => navigator.continueTo(routes.PreviousDocumentsController.displayPage)
+          case YesNoAnswers.no  => navigator.continueTo(ItemsSummaryController.displayAddItemPage)
         }
       )
   }

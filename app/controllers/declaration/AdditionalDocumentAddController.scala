@@ -25,7 +25,7 @@ import forms.declaration.additionaldocuments.AdditionalDocument._
 import models.declaration.AdditionalDocuments
 import models.declaration.AdditionalDocuments.maxNumberOfItems
 import models.requests.JourneyRequest
-import models.{ExportsDeclaration, Mode}
+import models.ExportsDeclaration
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
@@ -47,41 +47,41 @@ class AdditionalDocumentAddController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
-  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    Ok(additionalDocumentAddPage(mode, itemId, form(request.cacheModel).withSubmissionErrors))
+  def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    Ok(additionalDocumentAddPage(itemId, form(request.cacheModel).withSubmissionErrors))
   }
 
-  def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def submitForm(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val boundForm = globalErrors(form(request.cacheModel).bindFromRequest)
 
     boundForm.fold(
-      formWithErrors => Future.successful(BadRequest(additionalDocumentAddPage(mode, itemId, formWithErrors))),
+      formWithErrors => Future.successful(BadRequest(additionalDocumentAddPage(itemId, formWithErrors))),
       document => {
         val documents = request.cacheModel.additionalDocumentsInformation(itemId)
-        if (document.isDefined) saveDocuments(mode, itemId, boundForm, documents)
-        else continue(mode, itemId, documents)
+        if (document.isDefined) saveDocuments(itemId, boundForm, documents)
+        else continue(itemId, documents)
       }
     )
   }
 
-  private def continue(mode: Mode, itemId: String, documents: AdditionalDocuments)(implicit request: JourneyRequest[AnyContent]): Future[Result] =
+  private def continue(itemId: String, documents: AdditionalDocuments)(implicit request: JourneyRequest[AnyContent]): Future[Result] =
     updateCache(itemId, documents).map { _ =>
       if (documents.documents.isEmpty)
-        navigator.continueTo(mode, routes.ItemsSummaryController.displayItemsSummaryPage)
+        navigator.continueTo(routes.ItemsSummaryController.displayItemsSummaryPage)
       else
-        navigator.continueTo(mode, routes.AdditionalDocumentsController.displayPage(_, itemId))
+        navigator.continueTo(routes.AdditionalDocumentsController.displayPage(itemId))
     }
 
-  private def saveDocuments(mode: Mode, itemId: String, boundForm: Form[AdditionalDocument], documents: AdditionalDocuments)(
+  private def saveDocuments(itemId: String, boundForm: Form[AdditionalDocument], documents: AdditionalDocuments)(
     implicit request: JourneyRequest[AnyContent]
   ): Future[Result] =
     MultipleItemsHelper
       .add(boundForm, documents.documents, maxNumberOfItems, AdditionalDocumentFormGroupId, "declaration.additionalDocument")
       .fold(
-        formWithErrors => Future.successful(BadRequest(additionalDocumentAddPage(mode, itemId, formWithErrors))),
+        formWithErrors => Future.successful(BadRequest(additionalDocumentAddPage(itemId, formWithErrors))),
         docs =>
           updateCache(itemId, documents.copy(documents = docs))
-            .map(_ => navigator.continueTo(mode, routes.AdditionalDocumentsController.displayPage(_, itemId)))
+            .map(_ => navigator.continueTo(routes.AdditionalDocumentsController.displayPage(itemId)))
       )
 
   private def updateCache(itemId: String, docs: AdditionalDocuments)(implicit r: JourneyRequest[_]): Future[ExportsDeclaration] =

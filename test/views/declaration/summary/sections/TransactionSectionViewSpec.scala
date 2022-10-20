@@ -18,7 +18,6 @@ package views.declaration.summary.sections
 
 import base.Injector
 import controllers.declaration.routes._
-import models.Mode
 import services.cache.ExportsTestHelper
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.summary.sections.transaction_section
@@ -45,7 +44,7 @@ class TransactionSectionViewSpec extends UnitViewSpec with ExportsTestHelper wit
 
   "Transaction section" should {
 
-    val view = section(Mode.Normal, data)(messages)
+    val view = section(data)(messages)
 
     "have total amount invoiced with change button" in {
 
@@ -101,43 +100,43 @@ class TransactionSectionViewSpec extends UnitViewSpec with ExportsTestHelper wit
     }
 
     "not display exchange rate when question not asked" in {
-      val view = section(Mode.Normal, aDeclarationAfter(data, withoutTotalNumberOfItems()))(messages)
+      val view = section(aDeclarationAfter(data, withoutTotalNumberOfItems()))(messages)
 
       view.getElementsByClass("exchange-rate-row") mustBe empty
     }
 
     "not display total package when question not asked" in {
-      val view = section(Mode.Normal, aDeclarationAfter(data, withoutTotalPackageQuantity))(messages)
+      val view = section(aDeclarationAfter(data, withoutTotalPackageQuantity))(messages)
 
       view.getElementsByClass("total-no-of-packages-row") mustBe empty
     }
 
     "not display nature of transaction when question not asked" in {
-      val view = section(Mode.Normal, aDeclarationAfter(data, withoutNatureOfTransaction))(messages)
+      val view = section(aDeclarationAfter(data, withoutNatureOfTransaction))(messages)
 
       view.getElementsByClass("nature-of-transaction-row") mustBe empty
     }
 
     "not display related documents section when question not asked" in {
-      val view = section(Mode.Normal, aDeclarationAfter(data, withoutPreviousDocuments()))(messages)
+      val view = section(aDeclarationAfter(data, withoutPreviousDocuments()))(messages)
 
       view.getElementsByClass("previous-documents-row") mustBe empty
     }
 
     "not display exchange rate row when no exchange rate given" in {
-      val view = section(Mode.Normal, aDeclarationAfter(dataWithNoExchangeRate))(messages)
+      val view = section(aDeclarationAfter(dataWithNoExchangeRate))(messages)
 
       view.getElementsByClass("exchange-rate-row") must be(empty)
     }
 
     "display 'Less than £100,000' when Yes answered on exchange rate choice page" in {
-      val view = section(Mode.Normal, aDeclaration(withTotalNumberOfItems()))(messages)
+      val view = section(aDeclaration(withTotalNumberOfItems()))(messages)
 
       view.getElementsByClass("item-amount-row") must haveSummaryValue(messages("declaration.totalAmountInvoiced.value.lessThan100000"))
     }
 
     "have link to exchange rate choice page when Yes answered on exchange rate choice page" in {
-      val view = section(Mode.Normal, aDeclaration(withTotalNumberOfItems()))(messages)
+      val view = section(aDeclaration(withTotalNumberOfItems()))(messages)
 
       view.getElementsByClass("item-amount-row") must haveSummaryActionsHref(InvoiceAndExchangeRateChoiceController.displayPage())
     }

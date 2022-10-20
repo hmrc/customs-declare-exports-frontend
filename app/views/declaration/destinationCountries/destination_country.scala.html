@@ -42,15 +42,15 @@
     appConfig: AppConfig
 )(implicit countryAutoCompleteHelper: CountryHelper)
 
-@(mode: Mode, form: Form[Country])(implicit request: JourneyRequest[_], messages: Messages)
+@(form: Form[Country])(implicit request: JourneyRequest[_], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
 @govukLayout(
     title = Title("declaration.destinationCountry.title", "declaration.section.3", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(DestinationCountryPage, mode)))){
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(DestinationCountryPage)))){
 
-    @formHelper(action = controllers.declaration.routes.DestinationCountryController.submit(mode), 'autoComplete -> "off") {
+    @formHelper(action = controllers.declaration.routes.DestinationCountryController.submit(), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
         @sectionHeader(messages("declaration.section.3"))
@@ -66,6 +66,6 @@
         )
 
         @tariffExpander(DestinationCountryPage, request.declarationType)(messages, appConfig)
-        @saveButtons(mode)
+        @saveButtons()
     }
 }

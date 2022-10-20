@@ -21,7 +21,6 @@ import controllers.declaration.routes.FiscalInformationController
 import forms.declaration.CommodityDetails
 import models.DeclarationType
 import models.DeclarationType.DeclarationType
-import models.Mode.Normal
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
@@ -35,7 +34,7 @@ class CommodityDetailsViewSpec extends UnitViewSpec with Injector {
   val page = instanceOf[commodity_details]
 
   def createView(form: Form[CommodityDetails])(implicit request: JourneyRequest[_]): Document =
-    page(Normal, itemId, form)(request, messages)
+    page(itemId, form)(request, messages)
 
   // scalastyle:off
   def commodityDetailsView(
@@ -88,7 +87,7 @@ class CommodityDetailsViewSpec extends UnitViewSpec with Injector {
 
     "display 'Back' button that links to 'Fiscal Information' page with 'fast-forward' enabled" in {
       val backButton = view.getElementById("back-link")
-      backButton.getElementById("back-link") must haveHref(FiscalInformationController.displayPage(Normal, itemId, true))
+      backButton.getElementById("back-link") must haveHref(FiscalInformationController.displayPage(itemId, true))
     }
 
     "display 'Save and continue' button on page" in {

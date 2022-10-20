@@ -22,8 +22,6 @@ import controllers.declaration.routes
 import forms.declaration.RoutingCountryQuestionYesNo.formAdd
 import forms.declaration.countries.Country
 import models.DeclarationType.STANDARD
-import models.Mode
-import models.Mode.Normal
 import models.codes.{Country => ModelCountry}
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
@@ -56,10 +54,10 @@ class RoutingCountryQuestionViewSpec extends PageWithButtonsSpec with Injector {
 
   val page = instanceOf[routing_country_question]
 
-  override val typeAndViewInstance = (STANDARD, page(Normal, formAdd())(_, _))
+  override val typeAndViewInstance = (STANDARD, page(formAdd())(_, _))
 
   def createView(mode: Mode = Normal)(implicit request: JourneyRequest[AnyContent]): Appendable =
-    page(mode, formAdd())(request, messages(request))
+    page(formAdd())(request, messages(request))
 
   "Routing country question page" should {
     val view = createView()

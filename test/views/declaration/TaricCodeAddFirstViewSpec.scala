@@ -22,8 +22,6 @@ import controllers.declaration.routes.UNDangerousGoodsCodeController
 import forms.declaration.TaricCodeFirst.form
 import forms.declaration.{CommodityDetails, TaricCodeFirst}
 import models.DeclarationType.STANDARD
-import models.Mode
-import models.Mode.Normal
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
@@ -44,17 +42,17 @@ class TaricCodeAddFirstViewSpec extends PageWithButtonsSpec with Injector {
 
   val page = instanceOf[taric_code_add_first]
 
-  override val typeAndViewInstance = (STANDARD, page(Normal, itemId, form())(_, _))
+  override val typeAndViewInstance = (STANDARD, page(itemId, form())(_, _))
 
   def createView(frm: Form[TaricCodeFirst] = form(), mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document =
-    page(mode, itemId, frm)(request, messages(request))
+    page(itemId, frm)(request, messages(request))
 
   "Taric Code Add First View" should {
     val view = createView()
 
     "display a 'Back' button that links to 'UN Dangerous Goods' page" in {
       val backButton = view.getElementById("back-link")
-      backButton.getElementById("back-link") must haveHref(UNDangerousGoodsCodeController.displayPage(Normal, itemId))
+      backButton.getElementById("back-link") must haveHref(UNDangerousGoodsCodeController.displayPage(itemId))
     }
 
     "display the expected page title" in {

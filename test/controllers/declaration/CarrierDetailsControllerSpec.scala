@@ -22,7 +22,6 @@ import forms.common.Address
 import forms.declaration.EntityDetails
 import forms.declaration.carrier.CarrierDetails
 import models.DeclarationType._
-import models.Mode
 import models.codes.Country
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -75,7 +74,7 @@ class CarrierDetailsControllerSpec extends ControllerSpec {
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration())
-    await(controller.displayPage(Mode.Normal)(request))
+    await(controller.displayPage()(request))
     theResponseForm
   }
 
@@ -88,7 +87,7 @@ class CarrierDetailsControllerSpec extends ControllerSpec {
 
           withNewCaching(request.cacheModel)
 
-          val result = controller.displayPage(Mode.Normal)(getRequest())
+          val result = controller.displayPage()(getRequest())
 
           status(result) must be(OK)
         }
@@ -102,7 +101,7 @@ class CarrierDetailsControllerSpec extends ControllerSpec {
             )
           )
 
-          val result = controller.displayPage(Mode.Normal)(getRequest())
+          val result = controller.displayPage()(getRequest())
 
           status(result) must be(OK)
         }
@@ -116,7 +115,7 @@ class CarrierDetailsControllerSpec extends ControllerSpec {
 
           val incorrectForm = Json.toJson(CarrierDetails(EntityDetails(None, Some(Address("", "", "Leeds", "LS1 2PW", "United Kingdom")))))
 
-          val result = controller.saveAddress(Mode.Normal)(postRequest(incorrectForm))
+          val result = controller.saveAddress()(postRequest(incorrectForm))
 
           status(result) must be(BAD_REQUEST)
         }
@@ -132,7 +131,7 @@ class CarrierDetailsControllerSpec extends ControllerSpec {
 
           val incorrectForm = Json.toJson(CarrierDetails(EntityDetails(None, None)))
 
-          val result = controller.saveAddress(Mode.Normal)(postRequest(incorrectForm))
+          val result = controller.saveAddress()(postRequest(incorrectForm))
 
           status(result) must be(SEE_OTHER)
         }
@@ -141,7 +140,7 @@ class CarrierDetailsControllerSpec extends ControllerSpec {
       onJourney(STANDARD, SIMPLIFIED, OCCASIONAL) { request =>
         "method is invoked and cache is empty" in {
           withNoDeclaration()
-          val result = controller.displayPage(Mode.Normal)(getRequest())
+          val result = controller.displayPage()(getRequest())
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(controllers.routes.RootController.displayPage().url)
@@ -155,7 +154,7 @@ class CarrierDetailsControllerSpec extends ControllerSpec {
 
           withNewCaching(request.cacheModel)
 
-          val result = controller.displayPage(Mode.Normal)(getRequest())
+          val result = controller.displayPage()(getRequest())
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(controllers.routes.RootController.displayPage().url)
@@ -176,7 +175,7 @@ class CarrierDetailsControllerSpec extends ControllerSpec {
 
         val incorrectForm = Json.toJson(CarrierDetails(EntityDetails(None, None)))
 
-        val result = controller.saveAddress(Mode.Normal)(postRequest(incorrectForm))
+        val result = controller.saveAddress()(postRequest(incorrectForm))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -198,7 +197,7 @@ class CarrierDetailsControllerSpec extends ControllerSpec {
               )
             )
 
-          val result = controller.saveAddress(Mode.Normal)(postRequest(correctForm))
+          val result = controller.saveAddress()(postRequest(correctForm))
 
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe controllers.declaration.routes.ConsigneeDetailsController.displayPage()
@@ -219,7 +218,7 @@ class CarrierDetailsControllerSpec extends ControllerSpec {
               )
             )
 
-          val result = controller.saveAddress(Mode.Normal)(postRequest(correctForm))
+          val result = controller.saveAddress()(postRequest(correctForm))
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(controllers.routes.RootController.displayPage().url)

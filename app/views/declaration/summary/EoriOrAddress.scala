@@ -21,11 +21,12 @@ import play.api.i18n.Messages
 import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{Empty, HtmlContent, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
-import views.components.gds.ActionItemBuilder._
+import views.helpers.ActionItemBuilder.actionSummaryItem
 import views.html.components.gds.linkContent
 
 object EoriOrAddress {
 
+  // scalastyle:off
   def rows(
     key: String,
     eori: Option[Eori],
@@ -39,14 +40,10 @@ object EoriOrAddress {
     actionsEnabled: Boolean = true
   )(implicit messages: Messages): Seq[Option[SummaryListRow]] = {
 
-    def emptyRow =
-      if (eori.isEmpty && address.isEmpty) {
-        if (isEoriDefault) {
-          Some(rowForEori(key, eoriLabel, eoriChangeLabel, changeController, None, actionsEnabled))
-        } else {
-          Some(forForAddress(key, addressLabel, addressChangeLabel, changeController, extractAddress, None, actionsEnabled))
-        }
-      } else None
+    def emptyRow: Option[SummaryListRow] =
+      if (eori.isDefined || address.isDefined) None
+      else if (isEoriDefault) Some(rowForEori(key, eoriLabel, eoriChangeLabel, changeController, None, actionsEnabled))
+      else Some(forForAddress(key, addressLabel, addressChangeLabel, changeController, extractAddress, None, actionsEnabled))
 
     Seq(
       emptyRow,
@@ -54,12 +51,12 @@ object EoriOrAddress {
       address.map(address => forForAddress(key, addressLabel, addressChangeLabel, changeController, extractAddress _, Some(address), actionsEnabled))
     )
   }
+  // scalastyle:on
 
   private def actionItems(actionsEnabled: Boolean, item: ActionItem) =
-    if (actionsEnabled) Seq(item)
-    else Seq.empty
+    if (actionsEnabled) Seq(item) else Seq.empty
 
-  private def extractAddress(address: Address) =
+  private def extractAddress(address: Address): String =
     Seq(address.fullName, address.addressLine, address.townOrCity, address.postCode, address.country).mkString("<br>")
 
   private def rowForEori(
@@ -78,7 +75,7 @@ object EoriOrAddress {
         Actions(items =
           actionItems(
             actionsEnabled,
-            actionItem(
+            actionSummaryItem(
               href = changeController.url,
               content = HtmlContent(new linkContent()(messages("site.change"))),
               visuallyHiddenText = Some(messages(eoriChangeLabel))
@@ -105,7 +102,7 @@ object EoriOrAddress {
         Actions(items =
           actionItems(
             actionsEnabled,
-            actionItem(
+            actionSummaryItem(
               href = changeController.url,
               content = HtmlContent(new linkContent()(messages("site.change"))),
               visuallyHiddenText = Some(messages(addressChangeLabel))

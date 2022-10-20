@@ -23,7 +23,7 @@ import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.{form, YesNoAnswers}
 import models.requests.JourneyRequest
-import models.{DeclarationType, ExportsDeclaration, Mode}
+import models.{DeclarationType, ExportsDeclaration}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import services.cache.ExportsCacheService
@@ -42,24 +42,24 @@ class LinkDucrToMucrController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
-  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     val frm = form().withSubmissionErrors
     request.cacheModel.linkDucrToMucr match {
-      case Some(yesNoAnswer) => Ok(linkDucrToMucrPage(mode, frm.fill(yesNoAnswer)))
-      case _                 => Ok(linkDucrToMucrPage(mode, frm))
+      case Some(yesNoAnswer) => Ok(linkDucrToMucrPage(frm.fill(yesNoAnswer)))
+      case _                 => Ok(linkDucrToMucrPage(frm))
     }
   }
 
-  def submitForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def submitForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     form()
       .bindFromRequest()
       .fold(
-        formWithErrors => Future.successful(BadRequest(linkDucrToMucrPage(mode, formWithErrors))),
-        yesNoAnswer => updateCache(yesNoAnswer).map(_ => navigator.continueTo(mode, nextPage(yesNoAnswer)))
+        formWithErrors => Future.successful(BadRequest(linkDucrToMucrPage(formWithErrors))),
+        yesNoAnswer => updateCache(yesNoAnswer).map(_ => navigator.continueTo(nextPage(yesNoAnswer)))
       )
   }
 
-  private def nextPage(yesNoAnswer: YesNoAnswer)(implicit request: JourneyRequest[_]): Mode => Call =
+  private def nextPage(yesNoAnswer: YesNoAnswer)(implicit request: JourneyRequest[_]): Call =
     if (yesNoAnswer.answer == YesNoAnswers.yes) routes.MucrController.displayPage
     else {
       request.declarationType match {

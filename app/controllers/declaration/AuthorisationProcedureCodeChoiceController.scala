@@ -24,7 +24,7 @@ import forms.declaration.AuthorisationProcedureCodeChoice
 import models.DeclarationType._
 import models.declaration.DeclarationHoldersData
 import models.requests.JourneyRequest
-import models.{ExportsDeclaration, Mode}
+import models.ExportsDeclaration
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.cache.ExportsCacheService
@@ -45,30 +45,30 @@ class AuthorisationProcedureCodeChoiceController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
-  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.declarationType match {
       case CLEARANCE if request.cacheModel.isNotEntryIntoDeclarantsRecords =>
-        navigator.continueTo(mode, DeclarationHolderRequiredController.displayPage)
+        navigator.continueTo(DeclarationHolderRequiredController.displayPage)
 
       case OCCASIONAL =>
-        navigator.continueTo(mode, DeclarationHolderRequiredController.displayPage)
+        navigator.continueTo(DeclarationHolderRequiredController.displayPage)
 
       case _ =>
         val form = AuthorisationProcedureCodeChoice.form.withSubmissionErrors
         request.cacheModel.parties.authorisationProcedureCodeChoice match {
-          case Some(data) => Ok(authorisationProcedureCodeChoice(form.fill(data), mode))
-          case _          => Ok(authorisationProcedureCodeChoice(form, mode))
+          case Some(data) => Ok(authorisationProcedureCodeChoice(form.fill(data)))
+          case _          => Ok(authorisationProcedureCodeChoice(form))
         }
     }
   }
 
   private val validTypes = Seq(STANDARD, SUPPLEMENTARY, SIMPLIFIED, CLEARANCE)
 
-  def submitForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async { implicit request =>
+  def submitForm(): Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async { implicit request =>
     AuthorisationProcedureCodeChoice.form.bindFromRequest
       .fold(
-        formWithErrors => Future.successful(BadRequest(authorisationProcedureCodeChoice(formWithErrors, mode))),
-        updateCache(_).map(_ => navigator.continueTo(mode, DeclarationHolderRequiredController.displayPage))
+        formWithErrors => Future.successful(BadRequest(authorisationProcedureCodeChoice(formWithErrors))),
+        updateCache(_).map(_ => navigator.continueTo(DeclarationHolderRequiredController.displayPage))
       )
   }
 

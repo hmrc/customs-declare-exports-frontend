@@ -41,7 +41,7 @@
     appConfig: AppConfig
 )
 
-@(mode: Mode, form: Form[DeclarantEoriConfirmation])(implicit request: JourneyRequest[_], messages: Messages)
+@(form: Form[DeclarantEoriConfirmation])(implicit request: JourneyRequest[_], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
@@ -54,18 +54,18 @@
 
 @buttons = @{
   request.declarationType match {
-    case DeclarationType.CLEARANCE => saveButtons(mode)
+    case DeclarationType.CLEARANCE => saveButtons()
     case _                         => saveAndContinue()
   }
 }
 
 @govukLayout(
     title = Title("declaration.declarant.title", sectionMessagesKey, request.eori, hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(DeclarantDetails, mode))),
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(DeclarantDetails))),
     showDeclarationSummaryLink = false
     ) {
 
-    @formHelper(action = routes.DeclarantDetailsController.submitForm(mode), 'autoComplete -> "off") {
+    @formHelper(action = routes.DeclarantDetailsController.submitForm(), 'autoComplete -> "off") {
         @errorSummary(radioGroupErrors(isEoriKey, "code_yes", form.errors))
 
         @sectionHeader(messages(sectionMessagesKey))

@@ -19,7 +19,6 @@ package views.declaration.declarationitems
 import base.Injector
 import controllers.declaration.routes
 import forms.common.YesNoAnswer
-import models.Mode
 import models.declaration.ExportItem
 import org.jsoup.nodes.Document
 import play.api.data.{Form, FormError}
@@ -36,7 +35,7 @@ class ItemsRemoveItemViewSpec extends UnitViewSpec with ExportsTestHelper with S
   private val page = instanceOf[items_remove_item]
   private val form = YesNoAnswer.form()
   private def createView(mode: Mode = Mode.Normal, form: Form[YesNoAnswer] = form, item: ExportItem): Document =
-    page(mode, form, item)(journeyRequest(), messages)
+    page(form, item)(journeyRequest(), messages)
 
   private val exportItem = anItem()
 

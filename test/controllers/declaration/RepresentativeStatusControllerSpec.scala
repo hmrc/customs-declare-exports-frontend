@@ -20,7 +20,6 @@ import base.ControllerSpec
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.{IsExs, RepresentativeStatus}
 import models.DeclarationType._
-import models.Mode
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -66,7 +65,7 @@ class RepresentativeStatusControllerSpec extends ControllerSpec with OptionValue
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration())
-    await(controller.displayPage(Mode.Normal)(request))
+    await(controller.displayPage()(request))
     theResponseForm
   }
 
@@ -81,7 +80,7 @@ class RepresentativeStatusControllerSpec extends ControllerSpec with OptionValue
 
           withNewCaching(request.cacheModel)
 
-          val result = controller.displayPage(Mode.Normal)(getRequest())
+          val result = controller.displayPage()(getRequest())
 
           status(result) mustBe OK
           verifyPage(1)
@@ -93,7 +92,7 @@ class RepresentativeStatusControllerSpec extends ControllerSpec with OptionValue
 
           withNewCaching(aDeclarationAfter(request.cacheModel, withRepresentativeDetails(None, Some(statusCode), None)))
 
-          val result = controller.displayPage(Mode.Normal)(getRequest())
+          val result = controller.displayPage()(getRequest())
 
           status(result) mustBe OK
           verifyPage(1)
@@ -111,7 +110,7 @@ class RepresentativeStatusControllerSpec extends ControllerSpec with OptionValue
 
           val incorrectForm = Json.toJson(RepresentativeStatus(Some("invalid")))
 
-          val result = controller.submitForm(Mode.Normal)(postRequest(incorrectForm))
+          val result = controller.submitForm()(postRequest(incorrectForm))
 
           status(result) mustBe BAD_REQUEST
           verifyPage(1)
@@ -126,7 +125,7 @@ class RepresentativeStatusControllerSpec extends ControllerSpec with OptionValue
 
         val correctForm = Json.toJson(RepresentativeStatus(Some(statusCode)))
 
-        val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
+        val result = controller.submitForm()(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.ConsigneeDetailsController.displayPage()
@@ -142,7 +141,7 @@ class RepresentativeStatusControllerSpec extends ControllerSpec with OptionValue
 
         val correctForm = Json.toJson(RepresentativeStatus(Some(statusCode)))
 
-        val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
+        val result = controller.submitForm()(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.CarrierEoriNumberController.displayPage()
@@ -160,7 +159,7 @@ class RepresentativeStatusControllerSpec extends ControllerSpec with OptionValue
 
           val correctForm = Json.toJson(RepresentativeStatus(Some(statusCode)))
 
-          val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
+          val result = controller.submitForm()(postRequest(correctForm))
 
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe controllers.declaration.routes.CarrierEoriNumberController.displayPage()
@@ -177,7 +176,7 @@ class RepresentativeStatusControllerSpec extends ControllerSpec with OptionValue
 
           val correctForm = Json.toJson(RepresentativeStatus(Some(statusCode)))
 
-          val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
+          val result = controller.submitForm()(postRequest(correctForm))
 
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe controllers.declaration.routes.ConsigneeDetailsController.displayPage()

@@ -21,7 +21,6 @@ import controllers.declaration.routes.NatureOfTransactionController
 import controllers.routes.RootController
 import forms.declaration.TotalPackageQuantity
 import models.DeclarationType._
-import models.Mode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{verify, when}
 import org.mockito.{ArgumentCaptor, Mockito}
@@ -64,7 +63,7 @@ class TotalPackageQuantityControllerSpec extends ControllerSpec {
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration())
-    await(controller.displayPage(Mode.Normal)(request))
+    await(controller.displayPage()(request))
     theResponseForm
   }
 
@@ -76,14 +75,14 @@ class TotalPackageQuantityControllerSpec extends ControllerSpec {
         "cache is empty" in {
           withNewCaching(request.cacheModel)
 
-          val result = controller.displayPage(Mode.Normal).apply(getRequest(request.cacheModel))
+          val result = controller.displayPage().apply(getRequest(request.cacheModel))
           status(result) mustBe OK
         }
 
         "cache is non empty" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withTotalPackageQuantity("1")))
 
-          val result = controller.displayPage(Mode.Normal).apply(getRequest(request.cacheModel))
+          val result = controller.displayPage().apply(getRequest(request.cacheModel))
           status(result) mustBe OK
         }
       }
@@ -93,7 +92,7 @@ class TotalPackageQuantityControllerSpec extends ControllerSpec {
           withNewCaching(request.cacheModel)
 
           val body = Json.obj("totalPackage" -> "one")
-          val result = controller.saveTotalPackageQuantity(Mode.Normal).apply(postRequest(body, request.cacheModel))
+          val result = controller.saveTotalPackageQuantity().apply(postRequest(body, request.cacheModel))
           status(result) mustBe BAD_REQUEST
         }
       }
@@ -102,7 +101,7 @@ class TotalPackageQuantityControllerSpec extends ControllerSpec {
         withNewCaching(request.cacheModel)
 
         val correctForm = Json.toJson(TotalPackageQuantity(Some("1")))
-        val result = controller.saveTotalPackageQuantity(Mode.Normal)(postRequest(correctForm, request.cacheModel))
+        val result = controller.saveTotalPackageQuantity()(postRequest(correctForm, request.cacheModel))
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe NatureOfTransactionController.displayPage()
@@ -113,7 +112,7 @@ class TotalPackageQuantityControllerSpec extends ControllerSpec {
       "redirect 303 (See Other) to start" in {
         withNewCaching(request.cacheModel)
 
-        val result = controller.displayPage(Mode.Normal).apply(getRequest(request.cacheModel))
+        val result = controller.displayPage().apply(getRequest(request.cacheModel))
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) must contain(RootController.displayPage().url)

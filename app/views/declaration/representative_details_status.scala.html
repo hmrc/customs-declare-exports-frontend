@@ -39,15 +39,15 @@
     appConfig: AppConfig
 )
 
-@(mode: Mode, navigationForm: DeclarationPage, form: Form[RepresentativeStatus])(implicit request: JourneyRequest[_], messages: Messages)
+@(navigationForm: DeclarationPage, form: Form[RepresentativeStatus])(implicit request: JourneyRequest[_], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
 @govukLayout(
     title = Title("declaration.representative.status.title", "declaration.section.2", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(navigationForm, mode)))) {
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(navigationForm)))) {
 
-    @formHelper(action = RepresentativeStatusController.submitForm(mode), 'autoComplete -> "off") {
+    @formHelper(action = RepresentativeStatusController.submitForm(), 'autoComplete -> "off") {
         @errorSummary(radioGroupErrors("statusCode", DirectRepresentative, form.errors))
 
         @sectionHeader(messages("declaration.section.2"))
@@ -82,7 +82,7 @@
 
         @tariffExpander(RepresentativeStatus, request.declarationType)(messages, appConfig)
 
-        @saveButtons(mode)
+        @saveButtons()
     }
 }
 

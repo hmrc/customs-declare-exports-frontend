@@ -20,7 +20,6 @@ import base.ControllerSpec
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.Yes
 import forms.declaration.additionaldocuments.AdditionalDocument
-import models.Mode
 import models.declaration.AdditionalDocuments
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -60,7 +59,7 @@ class AdditionalDocumentRemoveControllerSpec extends ControllerSpec with OptionV
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration(withItem(itemWithDocument)))
-    await(controller.displayPage(Mode.Normal, itemId, documentId)(request))
+    await(controller.displayPage(itemId, documentId)(request))
     theResponseForm
   }
 
@@ -92,7 +91,7 @@ class AdditionalDocumentRemoveControllerSpec extends ControllerSpec with OptionV
 
           withNewCaching(aDeclarationAfter(request.cacheModel, withItem(itemWithDocument)))
 
-          val result = controller.displayPage(Mode.Normal, itemId, documentId)(getRequest())
+          val result = controller.displayPage(itemId, documentId)(getRequest())
 
           status(result) mustBe OK
           verifyRemovePageInvoked()
@@ -107,7 +106,7 @@ class AdditionalDocumentRemoveControllerSpec extends ControllerSpec with OptionV
           withNewCaching(aDeclarationAfter(request.cacheModel, withItem(itemWithDocument)))
 
           val requestBody = Seq("yesNo" -> "invalid")
-          val result = controller.submitForm(Mode.Normal, itemId, documentId)(postRequestAsFormUrlEncoded(requestBody: _*))
+          val result = controller.submitForm(itemId, documentId)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           status(result) mustBe BAD_REQUEST
           verifyRemovePageInvoked()
@@ -121,20 +120,20 @@ class AdditionalDocumentRemoveControllerSpec extends ControllerSpec with OptionV
 
           withNewCaching(aDeclarationAfter(request.cacheModel, withItem(itemWithDocument)))
 
-          val result = controller.displayPage(Mode.Normal, itemId, "doc-id")(getRequest())
+          val result = controller.displayPage(itemId, "doc-id")(getRequest())
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe routes.AdditionalDocumentsController.displayPage(Mode.Normal, itemId)
+          thePageNavigatedTo mustBe routes.AdditionalDocumentsController.displayPage(itemId)
         }
 
         "user submits 'Yes' answer" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withItem(itemWithDocument)))
 
           val requestBody = Seq("yesNo" -> "Yes")
-          val result = controller.submitForm(Mode.Normal, itemId, documentId)(postRequestAsFormUrlEncoded(requestBody: _*))
+          val result = controller.submitForm(itemId, documentId)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe routes.AdditionalDocumentsController.displayPage(Mode.Normal, itemId)
+          thePageNavigatedTo mustBe routes.AdditionalDocumentsController.displayPage(itemId)
 
           theCacheModelUpdated.itemBy(itemId).flatMap(_.additionalDocuments) mustBe Some(AdditionalDocuments(None, Seq.empty))
         }
@@ -143,10 +142,10 @@ class AdditionalDocumentRemoveControllerSpec extends ControllerSpec with OptionV
           withNewCaching(aDeclarationAfter(request.cacheModel, withItem(itemWithDocument)))
 
           val requestBody = Seq("yesNo" -> "No")
-          val result = controller.submitForm(Mode.Normal, itemId, documentId)(postRequestAsFormUrlEncoded(requestBody: _*))
+          val result = controller.submitForm(itemId, documentId)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe routes.AdditionalDocumentsController.displayPage(Mode.Normal, itemId)
+          thePageNavigatedTo mustBe routes.AdditionalDocumentsController.displayPage(itemId)
 
           verifyTheCacheIsUnchanged()
         }

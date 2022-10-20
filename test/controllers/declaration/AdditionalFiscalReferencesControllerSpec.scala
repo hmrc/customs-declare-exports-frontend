@@ -21,7 +21,7 @@ import forms.common.YesNoAnswer
 import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData}
 import mock.{ErrorHandlerMocks, ItemActionMocks}
 import models.declaration.ExportItem
-import models.{DeclarationType, ExportsDeclaration, Mode}
+import models.{DeclarationType, ExportsDeclaration}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -69,7 +69,7 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec with ItemA
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     val item = anItem(withAdditionalFiscalReferenceData(AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("GB", "123124124")))))
     withNewCaching(aDeclaration(withItem(item)))
-    await(controller.displayPage(Mode.Normal, item.id)(request))
+    await(controller.displayPage(item.id)(request))
     theResponseForm
   }
 
@@ -88,7 +88,7 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec with ItemA
           aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withItem(itemCacheData))
         withNewCaching(cachedData)
 
-        val result: Future[Result] = controller.displayPage(Mode.Normal, itemCacheData.id)(getRequest())
+        val result: Future[Result] = controller.displayPage(itemCacheData.id)(getRequest())
 
         status(result) must be(OK)
         verifyPageInvoked()
@@ -104,7 +104,7 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec with ItemA
         val wrongAction: Seq[(String, String)] = Seq(("country", "PL"), ("reference", "12345"), ("WrongAction", ""))
 
         val result: Future[Result] =
-          controller.submitForm(Mode.Normal, item.id)(postRequestAsFormUrlEncoded(wrongAction: _*))
+          controller.submitForm(item.id)(postRequestAsFormUrlEncoded(wrongAction: _*))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -117,10 +117,10 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec with ItemA
         withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withItem(item)))
 
         val requestBody = Json.obj("yesNo" -> "Yes")
-        val result = controller.submitForm(Mode.Normal, item.id)(postRequest(requestBody))
+        val result = controller.submitForm(item.id)(postRequest(requestBody))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalFiscalReferencesAddController.displayPage(Mode.Normal, item.id)
+        thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalFiscalReferencesAddController.displayPage(item.id)
       }
 
       "user submits valid Yes answer in error-fix mode" in {
@@ -139,10 +139,10 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec with ItemA
         withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withItem(item)))
 
         val requestBody = Json.obj("yesNo" -> "No")
-        val result = controller.submitForm(Mode.Normal, item.id)(postRequest(requestBody))
+        val result = controller.submitForm(item.id)(postRequest(requestBody))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.CommodityDetailsController.displayPage(Mode.Normal, item.id)
+        thePageNavigatedTo mustBe controllers.declaration.routes.CommodityDetailsController.displayPage(item.id)
       }
 
     }

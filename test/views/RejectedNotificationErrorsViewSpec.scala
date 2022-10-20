@@ -19,7 +19,6 @@ package views
 import base.Injector
 import controllers.declaration.routes.AdditionalDocumentsController
 import controllers.routes.{DeclarationDetailsController, SavedDeclarationsController, SubmissionsController}
-import models.Mode.Normal
 import models.Pointer
 import models.declaration.notifications.NotificationError
 import org.jsoup.nodes.Document
@@ -142,7 +141,7 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with ExportsTestHe
         val item = withItem(anItem(withSequenceId(1), withItemId(itemId)))
         val declaration = aDeclaration(withConsignmentReferences("DUCR", "lrn"), item)
 
-        val `expectedUrl` = AdditionalDocumentsController.displayPage(Normal, itemId)
+        val `expectedUrl` = AdditionalDocumentsController.displayPage(itemId)
 
         val pointerPattern = "declaration.items.#1.additionalDocument.#1.documentStatus"
         val urlPattern = "declaration.items.$.additionalDocument.$.documentStatus"

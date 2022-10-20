@@ -17,7 +17,6 @@
 @import config.AppConfig
 @import controllers.declaration.routes.SummaryController
 @import forms.declaration.LegalDeclaration
-@import models.Mode.Normal
 @import models.declaration.submissions.EnhancedStatus.ERRORS
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF
@@ -45,7 +44,7 @@
 
 @govukLayout(
     title = Title(headerMsgKey),
-    backButton = Some(BackButton(messages("site.back"), SummaryController.displayPage(Mode.Normal))),
+    backButton = Some(BackButton(messages("site.back"), SummaryController.displayPage())),
     useCustomContentWidth = true
 ) {
     @formHelper(action = SummaryController.submitDeclaration(), 'autoComplete -> "off") {

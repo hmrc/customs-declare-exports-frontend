@@ -39,15 +39,15 @@
     appConfig: AppConfig
 )
 
-@(mode: Mode, form: Form[YesNoAnswer])(implicit request: JourneyRequest[_], messages: Messages)
+@(form: Form[YesNoAnswer])(implicit request: JourneyRequest[_], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
 @govukLayout(
     title = Title("declaration.invoice.amount.choice.title", "declaration.section.4", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(InvoiceAndExchangeRateChoice, mode)))) {
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(InvoiceAndExchangeRateChoice)))) {
 
-    @formHelper(action = routes.InvoiceAndExchangeRateChoiceController.submitForm(mode), 'autoComplete -> "off") {
+    @formHelper(action = routes.InvoiceAndExchangeRateChoiceController.submitForm(), 'autoComplete -> "off") {
         @errorSummary(yesNoErrors(form.errors))
 
         @sectionHeader(messages("declaration.section.4"))
@@ -67,6 +67,6 @@
 
         @tariffExpander(InvoiceAndExchangeRateChoice, request.declarationType)(messages, appConfig)
 
-        @saveButtons(mode)
+        @saveButtons()
     }
 }

@@ -18,7 +18,6 @@ package controllers.declaration
 
 import base.{ControllerSpec, Injector}
 import forms.declaration.PackageInformation
-import models.Mode
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -59,7 +58,7 @@ class PackageInformationAddControllerSpec extends ControllerSpec with OptionValu
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration())
-    await(controller.displayPage(Mode.Normal, item.id)(request))
+    await(controller.displayPage(item.id)(request))
     thePackageInformation
   }
 
@@ -81,7 +80,7 @@ class PackageInformationAddControllerSpec extends ControllerSpec with OptionValu
 
           withNewCaching(request.cacheModel)
 
-          val result = controller.displayPage(Mode.Normal, item.id)(getRequest())
+          val result = controller.displayPage(item.id)(getRequest())
 
           status(result) mustBe OK
           verifyAddPageInvoked()
@@ -96,7 +95,7 @@ class PackageInformationAddControllerSpec extends ControllerSpec with OptionValu
           withNewCaching(request.cacheModel)
 
           val requestBody = Seq("typesOfPackages" -> "invalid", "numberOfPackages" -> "invalid", "shippingMarks" -> "inva!id")
-          val result = controller.submitForm(Mode.Normal, item.id)(postRequestAsFormUrlEncoded(requestBody: _*))
+          val result = controller.submitForm(item.id)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           status(result) mustBe BAD_REQUEST
           verifyAddPageInvoked()
@@ -111,7 +110,7 @@ class PackageInformationAddControllerSpec extends ControllerSpec with OptionValu
             "numberOfPackages" -> packageInformation.numberOfPackages.get.toString,
             "shippingMarks" -> packageInformation.shippingMarks.get
           )
-          val result = controller.submitForm(Mode.Normal, item.id)(postRequestAsFormUrlEncoded(requestBody: _*))
+          val result = controller.submitForm(item.id)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           status(result) mustBe BAD_REQUEST
           verifyAddPageInvoked()
@@ -123,7 +122,7 @@ class PackageInformationAddControllerSpec extends ControllerSpec with OptionValu
           withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
 
           val requestBody = Seq("typesOfPackages" -> "AE", "numberOfPackages" -> "1", "shippingMarks" -> "1234")
-          val result = controller.submitForm(Mode.Normal, item.id)(postRequestAsFormUrlEncoded(requestBody: _*))
+          val result = controller.submitForm(item.id)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           status(result) mustBe BAD_REQUEST
           verifyAddPageInvoked()
@@ -135,10 +134,10 @@ class PackageInformationAddControllerSpec extends ControllerSpec with OptionValu
           withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
 
           val requestBody = Seq("typesOfPackages" -> "AE", "numberOfPackages" -> "1", "shippingMarks" -> "1234")
-          val result = controller.submitForm(Mode.Normal, item.id)(postRequestAsFormUrlEncoded(requestBody: _*))
+          val result = controller.submitForm(item.id)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.PackageInformationSummaryController.displayPage(Mode.Normal, item.id)
+          thePageNavigatedTo mustBe controllers.declaration.routes.PackageInformationSummaryController.displayPage(item.id)
 
           val savedPackage = theCacheModelUpdated.itemBy(item.id).flatMap(_.packageInformation).map(_.head)
           savedPackage.flatMap(_.typesOfPackages) mustBe Some("AE")

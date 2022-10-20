@@ -21,8 +21,6 @@ import controllers.declaration.routes.PreviousDocumentsSummaryController
 import forms.common.YesNoAnswer.form
 import forms.declaration.Document
 import models.DeclarationType.STANDARD
-import models.Mode
-import models.Mode.Normal
 import models.requests.JourneyRequest
 import org.jsoup.nodes.{Document => nodeDocument}
 import play.twirl.api.Html
@@ -40,10 +38,10 @@ class PreviousDocumentsRemoveViewSpec extends PageWithButtonsSpec with Injector 
 
   val page = instanceOf[previous_documents_remove]
 
-  override val typeAndViewInstance = (STANDARD, page(Normal, documentId, documentWithRelatesTo, form())(_, _))
+  override val typeAndViewInstance = (STANDARD, page(documentId, documentWithRelatesTo, form())(_, _))
 
   def createView(document: Document = documentWithRelatesTo, mode: Mode = Normal)(implicit request: JourneyRequest[_]): Html =
-    page(mode, documentId, document, form())(request, messages)
+    page(documentId, document, form())(request, messages)
 
   "Previous Documents Remove page" should {
 
@@ -108,7 +106,7 @@ class PreviousDocumentsRemoveViewSpec extends PageWithButtonsSpec with Injector 
       "display 'Back' link to 'Previous Documents Summary' page" in {
         val backButton = createView().getElementById("back-link")
         backButton must containMessage("site.backToPreviousQuestion")
-        backButton must haveHref(PreviousDocumentsSummaryController.displayPage(Normal))
+        backButton must haveHref(PreviousDocumentsSummaryController.displayPage())
       }
 
       val createViewWithMode: Mode => nodeDocument = mode => createView(mode = mode)

@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import models.Mode
 @import models.requests.JourneyRequest
 @import controllers.navigation.Navigator
 @import uk.gov.hmrc.govukfrontend.views.html.components._
@@ -46,7 +45,7 @@
   appConfig: AppConfig
 )
 
-@(mode: Mode, itemId: String, form: Form[ProcedureCode])(implicit request: JourneyRequest[_], messages: Messages)
+@(itemId: String, form: Form[ProcedureCode])(implicit request: JourneyRequest[_], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
@@ -77,9 +76,9 @@
 
 @govukLayout(
     title = Title("declaration.procedureCodes.title", "declaration.section.5", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(ProcedureCode, mode)))) {
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(ProcedureCode)))) {
 
-    @formHelper(action = controllers.declaration.routes.ProcedureCodesController.submitProcedureCodes(mode, itemId), 'autoComplete -> "off") {
+    @formHelper(action = controllers.declaration.routes.ProcedureCodesController.submitProcedureCodes(itemId), 'autoComplete -> "off") {
 
         @errorSummary(form.errors)
 
@@ -110,6 +109,6 @@
         }
 
         @tariffExpander(ProcedureCode, request.declarationType)(messages, appConfig)
-        @saveButtons(mode)
+        @saveButtons()
     }
 }

@@ -46,7 +46,7 @@
     appConfig: AppConfig
 )
 
-@(mode: Mode, form: Form[YesNoAnswer], documents: Seq[Document])(implicit request: JourneyRequest[_], messages: Messages)
+@(form: Form[YesNoAnswer], documents: Seq[Document])(implicit request: JourneyRequest[_], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
@@ -77,7 +77,7 @@
                     TableRow(
                         content = HtmlContent(link(
                             messages("site.change"),
-                            routes.PreviousDocumentsChangeController.displayPage(mode, createId(index, document)),
+                            routes.PreviousDocumentsChangeController.displayPage(createId(index, document)),
                             textHidden = Some(messages(
                                 "declaration.previousDocuments.change.hint",
                                 index + 1,
@@ -91,7 +91,7 @@
                     TableRow(
                         content = HtmlContent(link(
                             messages("site.remove"),
-                            routes.PreviousDocumentsRemoveController.displayPage(mode, createId(index, document)),
+                            routes.PreviousDocumentsRemoveController.displayPage(createId(index, document)),
                             textHidden = Some(messages(
                                 "declaration.previousDocuments.remove.hint",
                                 index + 1,
@@ -123,9 +123,9 @@
 
 @govukLayout(
     title = Title("declaration.previousDocuments.summary.title", "declaration.section.4", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(DocumentSummary, mode)))
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(DocumentSummary)))
 ) {
-    @formHelper(action = routes.PreviousDocumentsSummaryController.submit(mode), 'autoComplete -> "off") {
+    @formHelper(action = routes.PreviousDocumentsSummaryController.submit(), 'autoComplete -> "off") {
 
         @errorSummary(yesNoErrors(form.errors))
 
@@ -141,7 +141,7 @@
                 warning,
                 documentsTable,
                 addAnotherQuestion("declaration.previousDocuments.addAnotherDocument", form),
-                saveButtons(mode)
+                saveButtons()
             ))
         ))
     }

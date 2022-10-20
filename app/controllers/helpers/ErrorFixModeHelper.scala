@@ -14,13 +14,18 @@
  * limitations under the License.
  */
 
-package views.components.gds
+package controllers.helpers
 
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Content
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.ActionItem
+import models.requests.ExportsSessionKeys.errorFixModeSessionKey
+import play.api.mvc.{Request, Result}
 
-object ActionItemBuilder {
+import scala.util.Try
 
-  def actionItem(href: String, content: Content, visuallyHiddenText: Option[String]) =
-    ActionItem(href = href, content = content, visuallyHiddenText = visuallyHiddenText, classes = "govuk-link--no-visited-state")
+object ErrorFixModeHelper {
+
+  def inErrorFixMode(implicit request: Request[_]): Boolean =
+    request.session.get(errorFixModeSessionKey).fold(false)(v => Try(v.toBoolean).getOrElse(false))
+
+  def setErrorFixMode(result: Result)(implicit request: Request[_]): Result =
+    result.addingToSession(errorFixModeSessionKey -> "true")
 }

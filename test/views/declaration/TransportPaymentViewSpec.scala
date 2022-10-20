@@ -20,9 +20,8 @@ import base.Injector
 import controllers.declaration.routes.ExpressConsignmentController
 import forms.declaration.TransportPayment.form
 import models.DeclarationType.STANDARD
-import models.Mode.Normal
 import models.requests.JourneyRequest
-import models.{DeclarationType, Mode}
+import models.{DeclarationType}
 import org.jsoup.nodes.Document
 import views.declaration.spec.PageWithButtonsSpec
 import views.html.declaration.transport_payment
@@ -33,9 +32,9 @@ class TransportPaymentViewSpec extends PageWithButtonsSpec with Injector {
 
   val page = instanceOf[transport_payment]
 
-  override val typeAndViewInstance = (STANDARD, page(Normal, form)(_, _))
+  override val typeAndViewInstance = (STANDARD, page(form)(_, _))
 
-  def createView(mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document = page(mode, form())(request, messages)
+  def createView(mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document = page(form())(request, messages)
 
   "Transport Payment View" must {
     onJourney(DeclarationType.SIMPLIFIED, DeclarationType.STANDARD) { implicit request =>
@@ -68,7 +67,7 @@ class TransportPaymentViewSpec extends PageWithButtonsSpec with Injector {
         val backLinkContainer = view.getElementById("back-link")
 
         backLinkContainer must containMessage(backToPreviousQuestionCaption)
-        backLinkContainer.getElementById("back-link") must haveHref(ExpressConsignmentController.displayPage(Normal))
+        backLinkContainer.getElementById("back-link") must haveHref(ExpressConsignmentController.displayPage())
       }
     }
   }

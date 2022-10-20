@@ -20,8 +20,6 @@ import base.Injector
 import forms.declaration.PackageInformation
 import forms.declaration.PackageInformation.form
 import models.DeclarationType.STANDARD
-import models.Mode
-import models.Mode.Normal
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import org.scalatest.Inspectors.forAll
@@ -42,12 +40,12 @@ class PackageInformationChangeViewSpec extends PageWithButtonsSpec with ExportsT
 
   val page = instanceOf[package_information_change]
 
-  override val typeAndViewInstance = (STANDARD, page(Normal, itemId, form(), packageInfoId, Seq.empty)(_, _))
+  override val typeAndViewInstance = (STANDARD, page(itemId, form(), packageInfoId, Seq.empty)(_, _))
 
   def createView(frm: Form[PackageInformation] = form(), packages: Seq[PackageInformation] = Seq.empty, mode: Mode = Normal)(
     implicit request: JourneyRequest[_]
   ): Document =
-    page(mode, itemId, frm, packageInfoId, packages)(request, messages)
+    page(itemId, frm, packageInfoId, packages)(request, messages)
 
   "PackageInformation Change View" should {
 
@@ -72,7 +70,7 @@ class PackageInformationChangeViewSpec extends PageWithButtonsSpec with ExportsT
         val backLinkContainer = createView(packages = Seq(packageInformation)).getElementById("back-link")
 
         backLinkContainer.getElementById("back-link") must haveHref(
-          controllers.declaration.routes.PackageInformationSummaryController.displayPage(Normal, itemId)
+          controllers.declaration.routes.PackageInformationSummaryController.displayPage(itemId)
         )
       }
 

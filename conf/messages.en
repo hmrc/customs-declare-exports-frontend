@@ -95,7 +95,6 @@ global.error.message = Try again later
 
 notifications.title = Notifications
 notifications.status = Status
-notifications.amend = Amend and resubmit
 
 cancellation.title = Cancel declaration
 cancellation.functionalReferenceId = Enter the Loader Reference Number (LRN)

@@ -22,7 +22,7 @@ import controllers.navigation.Navigator
 import forms.declaration.TotalPackageQuantity
 import models.declaration.InvoiceAndPackageTotals
 import models.requests.JourneyRequest
-import models.{DeclarationType, ExportsDeclaration, Mode}
+import models.{DeclarationType, ExportsDeclaration}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.cache.ExportsCacheService
@@ -45,19 +45,19 @@ class TotalPackageQuantityController @Inject() (
 
   private val validTypes = Seq(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY)
 
-  def displayPage(mode: Mode): Action[AnyContent] = (authorize andThen journey(validTypes)) { implicit request =>
+  def displayPage(): Action[AnyContent] = (authorize andThen journey(validTypes)) { implicit request =>
     val totalPackage = request.cacheModel.totalNumberOfItems.flatMap(_.totalPackage)
     val form = TotalPackageQuantity.form(request.declarationType).withSubmissionErrors
-    Ok(totalPackageQuantity(mode, totalPackage.fold(form)(value => form.fill(TotalPackageQuantity(Some(value))))))
+    Ok(totalPackageQuantity(totalPackage.fold(form)(value => form.fill(TotalPackageQuantity(Some(value))))))
   }
 
-  def saveTotalPackageQuantity(mode: Mode): Action[AnyContent] = (authorize andThen journey(validTypes)).async { implicit request =>
+  def saveTotalPackageQuantity(): Action[AnyContent] = (authorize andThen journey(validTypes)).async { implicit request =>
     TotalPackageQuantity
       .form(request.declarationType)
       .bindFromRequest
       .fold(
-        formWithErrors => Future.successful(BadRequest(totalPackageQuantity(mode, formWithErrors))),
-        updateCache(_).map(_ => navigator.continueTo(mode, NatureOfTransactionController.displayPage))
+        formWithErrors => Future.successful(BadRequest(totalPackageQuantity(formWithErrors))),
+        updateCache(_).map(_ => navigator.continueTo(NatureOfTransactionController.displayPage))
       )
   }
 

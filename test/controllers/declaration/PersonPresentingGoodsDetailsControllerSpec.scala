@@ -20,7 +20,7 @@ import base.ControllerSpec
 import forms.common.Eori
 import forms.declaration.PersonPresentingGoodsDetails
 import models.DeclarationType.{OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
-import models.{DeclarationType, ExportsDeclaration, Mode}
+import models.{DeclarationType, ExportsDeclaration}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.{reset, verify, when}
@@ -60,7 +60,7 @@ class PersonPresentingGoodsDetailsControllerSpec extends ControllerSpec with Sca
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration(withType(DeclarationType.CLEARANCE)))
-    await(controller.displayPage(Mode.Normal)(request))
+    await(controller.displayPage()(request))
     theFormPassedToView
   }
 
@@ -85,7 +85,7 @@ class PersonPresentingGoodsDetailsControllerSpec extends ControllerSpec with Sca
 
           withNewCaching(request.cacheModel)
 
-          val result = controller.displayPage(Mode.Normal)(getRequest())
+          val result = controller.displayPage()(getRequest())
 
           status(result) mustBe OK
         }
@@ -94,7 +94,7 @@ class PersonPresentingGoodsDetailsControllerSpec extends ControllerSpec with Sca
 
           withNewCaching(request.cacheModel)
 
-          controller.displayPage(Mode.Normal)(getRequest()).futureValue
+          controller.displayPage()(getRequest()).futureValue
 
           verify(mockExportsCacheService).get(meq(existingDeclarationId))(any())
         }
@@ -103,7 +103,7 @@ class PersonPresentingGoodsDetailsControllerSpec extends ControllerSpec with Sca
 
           withNewCaching(aDeclarationAfter(request.cacheModel, withPersonPresentingGoodsDetails(Some(Eori(testEori)))))
 
-          controller.displayPage(Mode.Normal)(getRequest()).futureValue
+          controller.displayPage()(getRequest()).futureValue
 
           theFormPassedToView.value mustBe defined
           theFormPassedToView.value.map(_.eori) mustBe Some(Eori(testEori))
@@ -116,7 +116,7 @@ class PersonPresentingGoodsDetailsControllerSpec extends ControllerSpec with Sca
 
         withNewCaching(request.cacheModel)
 
-        val result = controller.displayPage(Mode.Normal)(getRequest())
+        val result = controller.displayPage()(getRequest())
 
         status(result) mustBe SEE_OTHER
       }
@@ -125,7 +125,7 @@ class PersonPresentingGoodsDetailsControllerSpec extends ControllerSpec with Sca
 
         withNewCaching(request.cacheModel)
 
-        val result = controller.displayPage(Mode.Normal)(getRequest())
+        val result = controller.displayPage()(getRequest())
 
         redirectLocation(result) mustBe Some(controllers.routes.RootController.displayPage().url)
       }
@@ -142,7 +142,7 @@ class PersonPresentingGoodsDetailsControllerSpec extends ControllerSpec with Sca
           withNewCaching(request.cacheModel)
           val correctForm = Json.toJson(Map(PersonPresentingGoodsDetails.fieldName -> testEori))
 
-          val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
+          val result = controller.submitForm()(postRequest(correctForm))
 
           status(result) mustBe SEE_OTHER
         }
@@ -152,7 +152,7 @@ class PersonPresentingGoodsDetailsControllerSpec extends ControllerSpec with Sca
           withNewCaching(request.cacheModel)
           val correctForm = Json.toJson(Map(PersonPresentingGoodsDetails.fieldName -> testEori))
 
-          controller.submitForm(Mode.Normal)(postRequest(correctForm)).futureValue
+          controller.submitForm()(postRequest(correctForm)).futureValue
 
           thePageNavigatedTo mustBe controllers.declaration.routes.ExporterEoriNumberController.displayPage()
         }
@@ -162,7 +162,7 @@ class PersonPresentingGoodsDetailsControllerSpec extends ControllerSpec with Sca
           withNewCaching(request.cacheModel)
           val correctForm = Json.toJson(Map(PersonPresentingGoodsDetails.fieldName -> testEori))
 
-          controller.submitForm(Mode.Normal)(postRequest(correctForm)).futureValue
+          controller.submitForm()(postRequest(correctForm)).futureValue
 
           theModelPassedToCacheUpdate.parties.personPresentingGoodsDetails mustBe Some(PersonPresentingGoodsDetails(Eori(testEori)))
         }
@@ -172,7 +172,7 @@ class PersonPresentingGoodsDetailsControllerSpec extends ControllerSpec with Sca
           withNewCaching(request.cacheModel)
           val correctForm = Json.toJson(Map(PersonPresentingGoodsDetails.fieldName -> testEori))
 
-          controller.submitForm(Mode.Normal)(postRequest(correctForm)).futureValue
+          controller.submitForm()(postRequest(correctForm)).futureValue
 
           verify(navigator).continueTo(any(), any())(any())
         }
@@ -184,7 +184,7 @@ class PersonPresentingGoodsDetailsControllerSpec extends ControllerSpec with Sca
           withNewCaching(request.cacheModel)
           val correctForm = Json.toJson(Map(PersonPresentingGoodsDetails.fieldName -> "Incorrect!@#"))
 
-          val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
+          val result = controller.submitForm()(postRequest(correctForm))
 
           status(result) mustBe BAD_REQUEST
         }
@@ -197,7 +197,7 @@ class PersonPresentingGoodsDetailsControllerSpec extends ControllerSpec with Sca
         withNewCaching(request.cacheModel)
         val correctForm = Json.toJson(Map(PersonPresentingGoodsDetails.fieldName -> testEori))
 
-        val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
+        val result = controller.submitForm()(postRequest(correctForm))
 
         status(result) mustBe SEE_OTHER
       }
@@ -207,7 +207,7 @@ class PersonPresentingGoodsDetailsControllerSpec extends ControllerSpec with Sca
         withNewCaching(request.cacheModel)
         val correctForm = Json.toJson(Map(PersonPresentingGoodsDetails.fieldName -> testEori))
 
-        val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
+        val result = controller.submitForm()(postRequest(correctForm))
 
         redirectLocation(result) mustBe Some(controllers.routes.RootController.displayPage().url)
       }

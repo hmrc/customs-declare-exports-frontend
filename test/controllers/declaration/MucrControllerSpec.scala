@@ -21,7 +21,7 @@ import base.ControllerSpec
 import forms.declaration.Mucr
 import models.DeclarationType.{OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
 import models.requests.JourneyRequest
-import models.{DeclarationType, Mode}
+import models.{DeclarationType}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
@@ -59,7 +59,7 @@ class MucrControllerSpec extends ControllerSpec {
   }
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
-    await(controller.displayPage(Mode.Normal)(request))
+    await(controller.displayPage()(request))
     theResponseForm
   }
 
@@ -68,7 +68,7 @@ class MucrControllerSpec extends ControllerSpec {
     "return 200 (OK)" when {
 
       "display page method is invoked and cache is empty" in {
-        val result = controller.displayPage(Mode.Normal)(getRequest())
+        val result = controller.displayPage()(getRequest())
         status(result) must be(OK)
         verifyPageInvoked
       }
@@ -76,7 +76,7 @@ class MucrControllerSpec extends ControllerSpec {
       "display page method is invoked and cache is not empty" in {
         withNewCaching(aDeclaration(withMucr()))
 
-        val result = controller.displayPage(Mode.Normal)(getRequest())
+        val result = controller.displayPage()(getRequest())
         status(result) must be(OK)
         verifyPageInvoked
       }
@@ -106,7 +106,7 @@ class MucrControllerSpec extends ControllerSpec {
       "form contains incorrect values" in {
         val incorrectForm = Json.obj(Mucr.MUCR -> "not-allowed-chars !^&")
 
-        val result = controller.submitForm(Mode.Normal)(postRequest(incorrectForm))
+        val result = controller.submitForm()(postRequest(incorrectForm))
         status(result) must be(BAD_REQUEST)
         verifyPageInvoked
       }
@@ -114,7 +114,7 @@ class MucrControllerSpec extends ControllerSpec {
       "no data has been entered on the page" in {
         val incorrectForm = Json.obj(Mucr.MUCR -> "")
 
-        val result = controller.submitForm(Mode.Normal)(postRequest(incorrectForm))
+        val result = controller.submitForm()(postRequest(incorrectForm))
         status(result) must be(BAD_REQUEST)
         verifyPageInvoked
       }
@@ -122,7 +122,7 @@ class MucrControllerSpec extends ControllerSpec {
       "data entered is too long" in {
         val incorrectForm = Json.obj(Mucr.MUCR -> createRandomAlphanumericString(36))
 
-        val result = controller.submitForm(Mode.Normal)(postRequest(incorrectForm))
+        val result = controller.submitForm()(postRequest(incorrectForm))
         status(result) must be(BAD_REQUEST)
         verifyPageInvoked
       }
@@ -136,7 +136,7 @@ class MucrControllerSpec extends ControllerSpec {
     withNewCaching(request.cacheModel)
     val correctForm = Json.obj(Mucr.MUCR -> MUCR.mucr)
 
-    val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
+    val result = controller.submitForm()(postRequest(correctForm))
 
     status(result) mustBe SEE_OTHER
     thePageNavigatedTo mustBe call

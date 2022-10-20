@@ -23,7 +23,6 @@ import controllers.routes.RootController
 import forms.declaration.TransportCountry
 import forms.declaration.TransportCountry.{hasTransportCountry, transportCountry}
 import models.DeclarationType._
-import models.Mode.Normal
 import models.codes.Country
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -66,7 +65,7 @@ class TransportCountryControllerSpec extends ControllerSpec with OptionValues {
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration())
-    await(controller.displayPage(Normal)(request))
+    await(controller.displayPage()(request))
     theResponseForm
   }
 
@@ -86,7 +85,7 @@ class TransportCountryControllerSpec extends ControllerSpec with OptionValues {
         "display page method is invoked and cache is empty" in {
           withNewCaching(request.cacheModel)
 
-          val result = controller.displayPage(Normal)(getRequest())
+          val result = controller.displayPage()(getRequest())
 
           status(result) mustBe OK
           verify(page, times(1)).apply(any(), any(), any())(any(), any())
@@ -96,7 +95,7 @@ class TransportCountryControllerSpec extends ControllerSpec with OptionValues {
         "display page method is invoked and cache contains data" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withTransportCountry(Some(countryName))))
 
-          val result = controller.displayPage(Normal)(getRequest())
+          val result = controller.displayPage()(getRequest())
 
           status(result) mustBe OK
           verify(page, times(1)).apply(any(), any(), any())(any(), any())
@@ -110,7 +109,7 @@ class TransportCountryControllerSpec extends ControllerSpec with OptionValues {
       "redirect to the starting page" in {
         withNewCaching(request.cacheModel)
 
-        val result = controller.displayPage(Normal)(getRequest())
+        val result = controller.displayPage()(getRequest())
         redirectLocation(result) mustBe Some(RootController.displayPage.url)
       }
     }
@@ -130,7 +129,7 @@ class TransportCountryControllerSpec extends ControllerSpec with OptionValues {
           withNewCaching(request.cacheModel)
 
           val formData = Json.obj(hasTransportCountry -> "No")
-          val result = controller.submitForm(Normal)(postRequest(formData))
+          val result = controller.submitForm()(postRequest(formData))
 
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe nextPage(request.declarationType)
@@ -140,7 +139,7 @@ class TransportCountryControllerSpec extends ControllerSpec with OptionValues {
           withNewCaching(request.cacheModel)
 
           val formData = Json.obj(hasTransportCountry -> "Yes", transportCountry -> countryName)
-          val result = controller.submitForm(Normal)(postRequest(formData))
+          val result = controller.submitForm()(postRequest(formData))
 
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe nextPage(request.declarationType)
@@ -152,7 +151,7 @@ class TransportCountryControllerSpec extends ControllerSpec with OptionValues {
           withNewCaching(request.cacheModel)
 
           val formData = Json.obj(hasTransportCountry -> "Yes", transportCountry -> "some unknown country")
-          val result = controller.submitForm(Normal)(postRequest(formData))
+          val result = controller.submitForm()(postRequest(formData))
 
           status(result) mustBe BAD_REQUEST
           verify(page, times(1)).apply(any(), any(), any())(any(), any())
@@ -166,7 +165,7 @@ class TransportCountryControllerSpec extends ControllerSpec with OptionValues {
         withNewCaching(request.cacheModel)
 
         val formData = Json.obj(hasTransportCountry -> "Yes", transportCountry -> countryName)
-        val result = controller.submitForm(Normal)(postRequest(formData))
+        val result = controller.submitForm()(postRequest(formData))
         redirectLocation(result) mustBe Some(RootController.displayPage.url)
       }
     }
