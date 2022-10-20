@@ -18,7 +18,7 @@ package views.components.gds
 
 import base.Injector
 import models.Mode
-import models.Mode.{ErrorFix, Normal}
+import models.Mode.{Amend, Draft, ErrorFix, Normal}
 import models.declaration.submissions.EnhancedStatus
 import models.declaration.submissions.EnhancedStatus.{ERRORS, EnhancedStatus, RECEIVED}
 import play.twirl.api.Html
@@ -52,7 +52,8 @@ class SaveButtonsSpec extends UnitViewSpec with Injector {
     }
 
     "NOT display the 'Save and return to summary' button when the declaration has errors but mode is ErrorFix" in {
-      val element = Option(createView(ErrorFix, ERRORS).getElementById("save_and_return_to_summary"))
+      val view = page(ErrorFix)(journeyRequest(aDeclaration(withSummaryWasVisited(), withParentDeclarationEnhancedStatus(ERRORS))), messages)
+      val element = Option(view.getElementById("save_and_return_to_summary"))
       assert(element.isEmpty)
     }
 
@@ -63,8 +64,8 @@ class SaveButtonsSpec extends UnitViewSpec with Injector {
       }
     }
 
-    "display the 'Save and return to summary' button when the Summary page has been visited" in {
-      Mode.modes.foreach { mode =>
+    "display the 'Save and return to summary' button when the Summary page has been visited unless in errorfix mode" in {
+      Seq(Normal, Draft, Amend).foreach { mode =>
         val view = page(mode)(journeyRequest(aDeclaration(withSummaryWasVisited())), messages)
         val element = Option(view.getElementById("save_and_return_to_summary"))
         assert(element.isDefined)
