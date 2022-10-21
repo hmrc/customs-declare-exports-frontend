@@ -30,10 +30,10 @@ class SummaryPageViewNormalSpec extends SummaryPageViewSpec {
   private val normal_summaryPage = instanceOf[normal_summary_page]
 
   def view(declaration: ExportsDeclaration = aDeclaration()): Document =
-    normal_summaryPage(Draft, backLink)(journeyRequest(declaration), messages, minimalAppConfig)
+    normal_summaryPage(backLink)(journeyRequest(declaration), messages, minimalAppConfig)
 
   def viewWithError(declaration: ExportsDeclaration = aDeclaration()): Document =
-    normal_summaryPage(Draft, backLink, dummyFormError)(journeyRequest(declaration), messages, minimalAppConfig)
+    normal_summaryPage(backLink, dummyFormError)(journeyRequest(declaration), messages, minimalAppConfig)
 
   private val declarationInDraft = aDeclarationAfter(aDeclaration().updateReadyForSubmission(false))
   private val declarationReadyForSubmission = aDeclarationAfter(aDeclaration().updateReadyForSubmission(true))

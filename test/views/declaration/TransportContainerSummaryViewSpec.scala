@@ -40,7 +40,7 @@ class TransportContainerSummaryViewSpec extends PageWithButtonsSpec with Injecto
 
   override val typeAndViewInstance = (STANDARD, page(form(), List(container))(_, _))
 
-  def createView(frm: Form[YesNoAnswer] = form(), containers: Seq[Container] = List(container), mode: Mode = Normal): Document =
+  def createView(frm: Form[YesNoAnswer] = form(), containers: Seq[Container] = List(container)): Document =
     page(frm, containers)(journeyRequest(), messages)
 
   "Transport Containers Summary View" should {
@@ -104,8 +104,7 @@ class TransportContainerSummaryViewSpec extends PageWithButtonsSpec with Injecto
       }
     }
 
-    val createViewWithMode: Mode => Document = mode => createView(mode = mode)
-    checkAllSaveButtonsAreDisplayed(createViewWithMode)
+    checkAllSaveButtonsAreDisplayed(createView())
   }
 
   "Transport Containers Summary View for invalid input" should {

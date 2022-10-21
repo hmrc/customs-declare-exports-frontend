@@ -38,7 +38,7 @@ class CommodityMeasureViewSpec extends PageWithButtonsSpec with Injector {
 
   override val typeAndViewInstance = (STANDARD, page(itemId, form)(_, _))
 
-  def createView(frm: Form[CommodityMeasure] = form, mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document =
+  def createView(frm: Form[CommodityMeasure] = form)(implicit request: JourneyRequest[_]): Document =
     page(itemId, frm)(request, messages)
 
   "Commodity Measure View on empty page" should {
@@ -75,8 +75,7 @@ class CommodityMeasureViewSpec extends PageWithButtonsSpec with Injector {
         view.getElementById("netMass").attr("value") mustBe empty
       }
 
-      val createViewWithMode: Mode => Document = mode => createView(mode = mode)
-      checkAllSaveButtonsAreDisplayed(createViewWithMode)
+      checkAllSaveButtonsAreDisplayed(createView())
     }
   }
 

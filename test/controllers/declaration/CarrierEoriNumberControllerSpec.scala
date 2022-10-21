@@ -22,7 +22,7 @@ import forms.common.{Address, Eori}
 import forms.declaration.EntityDetails
 import forms.declaration.carrier.{CarrierDetails, CarrierEoriNumber}
 import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
-import models.{DeclarationType}
+import models.DeclarationType
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}

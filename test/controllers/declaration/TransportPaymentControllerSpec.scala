@@ -17,9 +17,10 @@
 package controllers.declaration
 
 import base.ControllerSpec
+import controllers.declaration.routes.TransportContainerController
+import controllers.routes.RootController
 import forms.declaration.TransportPayment
 import models.DeclarationType._
-import models.{DeclarationType}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -46,8 +47,8 @@ class TransportPaymentControllerSpec extends ControllerSpec {
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    withNewCaching(aDeclaration(withType(DeclarationType.STANDARD)))
-    when(transportPaymentPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    withNewCaching(aDeclaration())
+    when(transportPaymentPage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -57,7 +58,7 @@ class TransportPaymentControllerSpec extends ControllerSpec {
 
   def theResponseForm: Form[TransportPayment] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[TransportPayment]])
-    verify(transportPaymentPage).apply(any(), captor.capture())(any(), any())
+    verify(transportPaymentPage).apply(captor.capture())(any(), any())
     captor.getValue
   }
 
@@ -75,7 +76,6 @@ class TransportPaymentControllerSpec extends ControllerSpec {
       "return 200 (OK)" when {
 
         "display page method is invoked and cache is empty" in {
-
           val result = controller.displayPage()(getRequest())
 
           status(result) must be(OK)
@@ -83,7 +83,6 @@ class TransportPaymentControllerSpec extends ControllerSpec {
         }
 
         "display page method is invoked and cache is not empty" in {
-
           val payment = TransportPayment(TransportPayment.cash)
           withNewCaching(aDeclarationAfter(request.cacheModel, withTransportPayment(Some(payment))))
 
@@ -95,13 +94,10 @@ class TransportPaymentControllerSpec extends ControllerSpec {
       }
 
       "return 400 (BAD_REQUEST)" when {
-
         "form contains incorrect values" in {
-
           withNewCaching(request.cacheModel)
 
           val incorrectForm = Json.toJson(TransportPayment("incorrect"))
-
           val result = controller.submitForm()(postRequest(incorrectForm))
 
           status(result) must be(BAD_REQUEST)
@@ -109,7 +105,6 @@ class TransportPaymentControllerSpec extends ControllerSpec {
       }
 
       "return 303 (SEE_OTHER)" when {
-
         "form contains valid values" in {
           withNewCaching(request.cacheModel)
           val correctForm = formData(TransportPayment.other)
@@ -117,26 +112,23 @@ class TransportPaymentControllerSpec extends ControllerSpec {
           val result = controller.submitForm()(postRequest(correctForm))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe routes.TransportContainerController.displayContainerSummary()
-          verify(transportPaymentPage, times(0)).apply(any(), any())(any(), any())
+          thePageNavigatedTo mustBe TransportContainerController.displayContainerSummary()
+          verify(transportPaymentPage, times(0)).apply(any())(any(), any())
         }
       }
-
     }
 
     onJourney(SUPPLEMENTARY) { request =>
       "return 303 (SEE_OTHER)" when {
-
         "display page method is invoked" in {
           withNewCaching(request.cacheModel)
 
           val result = controller.displayPage()(getRequest())
 
           status(result) must be(SEE_OTHER)
-          redirectLocation(result) must contain(controllers.routes.RootController.displayPage().url)
+          redirectLocation(result) must contain(RootController.displayPage().url)
         }
       }
     }
-
   }
 }

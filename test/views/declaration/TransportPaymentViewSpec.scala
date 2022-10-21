@@ -21,7 +21,7 @@ import controllers.declaration.routes.ExpressConsignmentController
 import forms.declaration.TransportPayment.form
 import models.DeclarationType.STANDARD
 import models.requests.JourneyRequest
-import models.{DeclarationType}
+import models.DeclarationType
 import org.jsoup.nodes.Document
 import views.declaration.spec.PageWithButtonsSpec
 import views.html.declaration.transport_payment
@@ -34,7 +34,7 @@ class TransportPaymentViewSpec extends PageWithButtonsSpec with Injector {
 
   override val typeAndViewInstance = (STANDARD, page(form)(_, _))
 
-  def createView(mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document = page(form())(request, messages)
+  def createView()(implicit request: JourneyRequest[_]): Document = page(form())(request, messages)
 
   "Transport Payment View" must {
     onJourney(DeclarationType.SIMPLIFIED, DeclarationType.STANDARD) { implicit request =>
@@ -60,8 +60,7 @@ class TransportPaymentViewSpec extends PageWithButtonsSpec with Injector {
         choices must containMessage("declaration.transportInformation.transportPayment.paymentMethod.notAvailable")
       }
 
-      val createViewWithMode: Mode => Document = mode => createView(mode = mode)
-      checkAllSaveButtonsAreDisplayed(createViewWithMode)
+      checkAllSaveButtonsAreDisplayed(createView())
 
       "display 'Back' button that links to the 'Express Consignment' page" in {
         val backLinkContainer = view.getElementById("back-link")

@@ -35,7 +35,7 @@ class AdditionalInformationViewSpec extends UnitViewSpec with Injector {
 
   val page = instanceOf[additional_information]
 
-  def createView(cachedData: Seq[AdditionalInformation] = Seq.empty, mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document =
+  def createView(cachedData: Seq[AdditionalInformation] = Seq.empty)(implicit request: JourneyRequest[_]): Document =
     page(itemId, form(), cachedData, Call("GET", url))(request, messages)
 
   "Additional Information View" should {
@@ -67,8 +67,7 @@ class AdditionalInformationViewSpec extends UnitViewSpec with Injector {
         createView().getElementById("section-header") must containMessage("declaration.section.5")
       }
 
-      val createViewWithMode: Mode => Document = mode => createView(mode = mode)
-      checkAllSaveButtonsAreDisplayed(createViewWithMode)
+      checkAllSaveButtonsAreDisplayed(createView())
     }
   }
 

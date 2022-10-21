@@ -18,7 +18,7 @@ package controllers.declaration
 
 import base.ControllerSpec
 import forms.common.YesNoAnswer
-import models.{DeclarationType}
+import models.DeclarationType._
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -72,7 +72,7 @@ class AdditionalInformationRequiredControllerSpec extends ControllerSpec with Op
   }
 
   private def verifyPageInvoked(numberOfTimes: Int = 1): HtmlFormat.Appendable =
-    verify(mockPage, times(numberOfTimes)).apply(any(), any(), any(), any(), any())(any(), any())
+    verify(mockPage, times(numberOfTimes)).apply(any(), any(), any(), any())(any(), any())
 
   "AdditionalInformationRequired Controller" should {
 
@@ -131,7 +131,6 @@ class AdditionalInformationRequiredControllerSpec extends ControllerSpec with Op
 
     onClearance { request =>
       "user submits valid No answer go to 'Additional Documents'" in {
-
         withNewCaching(aDeclarationAfter(request.cacheModel, withItem(anItem(withItemId(itemId)))))
 
         val requestBody = Seq("yesNo" -> "No")
@@ -143,9 +142,8 @@ class AdditionalInformationRequiredControllerSpec extends ControllerSpec with Op
 
     }
 
-    onJourney(DeclarationType.STANDARD, DeclarationType.OCCASIONAL, DeclarationType.SUPPLEMENTARY, DeclarationType.SIMPLIFIED) { request =>
+    onJourney(STANDARD, OCCASIONAL, SUPPLEMENTARY, SIMPLIFIED) { request =>
       "user submits valid No answer go to 'Is License Required?'" in {
-
         withNewCaching(aDeclarationAfter(request.cacheModel, withItem(anItem(withItemId(itemId)))))
 
         val requestBody = Seq("yesNo" -> "No")
@@ -154,8 +152,6 @@ class AdditionalInformationRequiredControllerSpec extends ControllerSpec with Op
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe routes.IsLicenceRequiredController.displayPage(itemId)
       }
-
     }
-
   }
 }

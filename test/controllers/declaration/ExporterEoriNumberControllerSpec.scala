@@ -17,12 +17,12 @@
 package controllers.declaration
 
 import base.ControllerSpec
+import controllers.declaration.routes.{ExporterDetailsController, IsExsController, RepresentativeAgentController}
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.common.{Address, Eori}
 import forms.declaration.EntityDetails
 import forms.declaration.exporter.{ExporterDetails, ExporterEoriNumber}
-import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
-import models.{DeclarationType}
+import models.DeclarationType._
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -48,16 +48,16 @@ class ExporterEoriNumberControllerSpec extends ControllerSpec with OptionValues 
   )(ec)
 
   def checkViewInteractions(noOfInvocations: Int = 1): Unit =
-    verify(mockExporterEoriNumberPage, times(noOfInvocations)).apply(any(), any())(any(), any())
+    verify(mockExporterEoriNumberPage, times(noOfInvocations)).apply(any())(any(), any())
 
   def theResponseForm: Form[ExporterEoriNumber] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[ExporterEoriNumber]])
-    verify(mockExporterEoriNumberPage).apply(any(), captor.capture())(any(), any())
+    verify(mockExporterEoriNumberPage).apply(captor.capture())(any(), any())
     captor.getValue
   }
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
-    withNewCaching(aDeclaration(withType(DeclarationType.CLEARANCE)))
+    withNewCaching(aDeclaration(withType(CLEARANCE)))
     await(controller.displayPage()(request))
     theResponseForm
   }
@@ -65,7 +65,7 @@ class ExporterEoriNumberControllerSpec extends ControllerSpec with OptionValues 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    when(mockExporterEoriNumberPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockExporterEoriNumberPage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -75,8 +75,8 @@ class ExporterEoriNumberControllerSpec extends ControllerSpec with OptionValues 
 
   onEveryDeclarationJourney() { request =>
     "should return a 200 (OK)" when {
-      "display page method is invoked and cache is empty" in {
 
+      "display page method is invoked and cache is empty" in {
         withNewCaching(request.cacheModel)
 
         val result = controller.displayPage()(getRequest())
@@ -88,7 +88,6 @@ class ExporterEoriNumberControllerSpec extends ControllerSpec with OptionValues 
       }
 
       "display page method is invoked and cache contains Exporter Address details" in {
-
         withNewCaching(
           aDeclarationAfter(
             request.cacheModel,
@@ -106,7 +105,6 @@ class ExporterEoriNumberControllerSpec extends ControllerSpec with OptionValues 
       }
 
       "display page method is invoked and cache contains Exporter Eori details" in {
-
         val eori = "GB123456789000"
         val hasEori = YesNoAnswers.yes
         withNewCaching(aDeclarationAfter(request.cacheModel, withExporterDetails(Some(Eori(eori)), None)))
@@ -121,7 +119,6 @@ class ExporterEoriNumberControllerSpec extends ControllerSpec with OptionValues 
       }
 
       "display page method is invoked and cache contains no Exporter data" in {
-
         withNewCaching(aDeclarationAfter(request.cacheModel))
 
         val result = controller.displayPage()(getRequest())
@@ -134,8 +131,8 @@ class ExporterEoriNumberControllerSpec extends ControllerSpec with OptionValues 
     }
 
     "should return a 400 (BAD_REQUEST)" when {
-      "EORI is incorrect" in {
 
+      "EORI is incorrect" in {
         withNewCaching(request.cacheModel)
 
         val incorrectForm = Json.toJson(ExporterEoriNumber(eori = Some(Eori("!@#$")), hasEori = YesNoAnswers.yes))
@@ -147,7 +144,6 @@ class ExporterEoriNumberControllerSpec extends ControllerSpec with OptionValues 
       }
 
       "EORI is not provided but trader selected that it has an EORI" in {
-
         withNewCaching(request.cacheModel)
 
         val incorrectForm = Json.toJson(ExporterEoriNumber(eori = None, hasEori = YesNoAnswers.yes))
@@ -159,7 +155,6 @@ class ExporterEoriNumberControllerSpec extends ControllerSpec with OptionValues 
       }
 
       "no choice is selected and no cached ExporterDetails exist" in {
-
         withNewCaching(request.cacheModel)
 
         val correctForm = Json.toJson(ExporterEoriNumber(eori = None, hasEori = ""))
@@ -170,9 +165,9 @@ class ExporterEoriNumberControllerSpec extends ControllerSpec with OptionValues 
         checkViewInteractions()
       }
     }
+
     "should return a 303 (SEE_OTHER)" when {
       "'No' is selected" in {
-
         withNewCaching(request.cacheModel)
 
         val correctForm = Json.toJson(ExporterEoriNumber(eori = None, YesNoAnswers.no))
@@ -180,7 +175,7 @@ class ExporterEoriNumberControllerSpec extends ControllerSpec with OptionValues 
         val result = controller.submit()(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.ExporterDetailsController.displayPage()
+        thePageNavigatedTo mustBe ExporterDetailsController.displayPage()
         checkViewInteractions(0)
         theCacheModelUpdated.parties.exporterDetails must be(Some(ExporterDetails(EntityDetails(None, None))))
       }
@@ -190,7 +185,6 @@ class ExporterEoriNumberControllerSpec extends ControllerSpec with OptionValues 
   onJourney(STANDARD, SUPPLEMENTARY, OCCASIONAL, SIMPLIFIED) { request =>
     "should return a 303 (SEE_OTHER)" when {
       "'Yes' is selected" in {
-
         withNewCaching(request.cacheModel)
 
         val eoriInput = Some(Eori("GB123456789000"))
@@ -199,7 +193,7 @@ class ExporterEoriNumberControllerSpec extends ControllerSpec with OptionValues 
         val result = controller.submit()(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.RepresentativeAgentController.displayPage()
+        thePageNavigatedTo mustBe RepresentativeAgentController.displayPage()
         checkViewInteractions(0)
         theCacheModelUpdated.parties.exporterDetails must be(Some(ExporterDetails(EntityDetails(eoriInput, None))))
       }
@@ -209,7 +203,6 @@ class ExporterEoriNumberControllerSpec extends ControllerSpec with OptionValues 
   onJourney(CLEARANCE) { request =>
     "should return a 303 (SEE_OTHER)" when {
       "'Yes' is selected" in {
-
         withNewCaching(request.cacheModel)
 
         val eoriInput = Some(Eori("GB123456789000"))
@@ -218,7 +211,7 @@ class ExporterEoriNumberControllerSpec extends ControllerSpec with OptionValues 
         val result = controller.submit()(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.IsExsController.displayPage()
+        thePageNavigatedTo mustBe IsExsController.displayPage()
         checkViewInteractions(0)
         theCacheModelUpdated.parties.exporterDetails must be(Some(ExporterDetails(EntityDetails(eoriInput, None))))
       }

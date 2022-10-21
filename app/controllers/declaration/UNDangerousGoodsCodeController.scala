@@ -71,11 +71,10 @@ class UNDangerousGoodsCodeController @Inject() (
         navigator.continueTo(CommodityMeasureController.displayPage(itemId))
       else
         navigator.continueTo(routes.PackageInformationSummaryController.displayPage(itemId))
-    } else
-      if (request.cacheModel.isCommodityCodeOfItemPrefixedWith(itemId, CommodityDetails.commodityCodeChemicalPrefixes))
-        navigator.continueTo(CusCodeController.displayPage(itemId))
-      else
-        navigator.continueTo(TaricCodeSummaryController.displayPage(itemId))
+    } else if (request.cacheModel.isCommodityCodeOfItemPrefixedWith(itemId, CommodityDetails.commodityCodeChemicalPrefixes))
+      navigator.continueTo(CusCodeController.displayPage(itemId))
+    else
+      navigator.continueTo(TaricCodeSummaryController.displayPage(itemId))
 
   private def updateExportsCache(itemId: String, updatedItem: UNDangerousGoodsCode)(
     implicit request: JourneyRequest[AnyContent]

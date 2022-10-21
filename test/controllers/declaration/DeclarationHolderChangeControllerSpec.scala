@@ -17,6 +17,7 @@
 package controllers.declaration
 
 import base.ControllerSpec
+import controllers.declaration.routes.DeclarationHolderSummaryController
 import forms.common.Eori
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
 import forms.declaration.declarationHolder.AuthorizationTypeCodes.{CSE, EXRR}
@@ -52,7 +53,7 @@ class DeclarationHolderChangeControllerSpec extends ControllerSpec with ErrorHan
     super.beforeEach()
     authorizedUser()
     setupErrorHandler()
-    when(mockChangePage.apply(any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockChangePage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -68,12 +69,12 @@ class DeclarationHolderChangeControllerSpec extends ControllerSpec with ErrorHan
 
   def theDeclarationHolder: Form[DeclarationHolder] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[DeclarationHolder]])
-    verify(mockChangePage).apply(any(), any(), captor.capture(), any())(any(), any())
+    verify(mockChangePage).apply(any(), captor.capture(), any())(any(), any())
     captor.getValue
   }
 
   private def verifyChangePageInvoked(numberOfTimes: Int = 1): Html =
-    verify(mockChangePage, times(numberOfTimes)).apply(any(), any(), any(), any())(any(), any())
+    verify(mockChangePage, times(numberOfTimes)).apply(any(), any(), any())(any(), any())
 
   val declarationHolder1 = DeclarationHolder(Some("ACE"), Some(Eori("GB42354735346235")), Some(EoriSource.UserEori))
   val declarationHolder2 = DeclarationHolder(Some(CSE), Some(Eori("FR65435642343253")), Some(EoriSource.OtherEori))
@@ -158,7 +159,7 @@ class DeclarationHolderChangeControllerSpec extends ControllerSpec with ErrorHan
           val result = controller.submitForm(declarationHolder1.id)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.DeclarationHolderSummaryController.displayPage()
+          thePageNavigatedTo mustBe DeclarationHolderSummaryController.displayPage()
 
           val savedHolder = theCacheModelUpdated.parties.declarationHoldersData
           savedHolder mustBe Some(DeclarationHoldersData(List(declarationHolder2)))
@@ -167,7 +168,6 @@ class DeclarationHolderChangeControllerSpec extends ControllerSpec with ErrorHan
     }
 
     "return 400 (BAD_REQUEST)" when {
-
       onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, CLEARANCE) { implicit request =>
         "the user enters 'EXRR' as authorisationTypeCode" in {
           And("the declaration is of type PRE_LODGED")

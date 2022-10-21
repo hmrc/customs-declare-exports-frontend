@@ -36,7 +36,7 @@ class AdditionalInformationAddViewSpec extends PageWithButtonsSpec with ExportsT
 
   override val typeAndViewInstance = (STANDARD, page(itemId, form)(_, _))
 
-  def createView(frm: Form[AdditionalInformation] = form, mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document =
+  def createView(frm: Form[AdditionalInformation] = form)(implicit request: JourneyRequest[_]): Document =
     page(itemId, frm)(request, messages)
 
   "Additional Information Add View" should {
@@ -75,8 +75,7 @@ class AdditionalInformationAddViewSpec extends PageWithButtonsSpec with ExportsT
         view.getElementById("description").attr("value") mustBe empty
       }
 
-      val createViewWithMode: Mode => Document = mode => createView(mode = mode)
-      checkAllSaveButtonsAreDisplayed(createViewWithMode)
+      checkAllSaveButtonsAreDisplayed(createView())
     }
   }
 

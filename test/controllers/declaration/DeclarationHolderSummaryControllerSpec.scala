@@ -51,7 +51,7 @@ class DeclarationHolderSummaryControllerSpec extends ControllerSpec with OptionV
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    when(mockPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -67,18 +67,18 @@ class DeclarationHolderSummaryControllerSpec extends ControllerSpec with OptionV
 
   def theResponseForm: Form[YesNoAnswer] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[YesNoAnswer]])
-    verify(mockPage).apply(any(), captor.capture(), any())(any(), any())
+    verify(mockPage).apply(captor.capture(), any())(any(), any())
     captor.getValue
   }
 
   def theHoldersList: Seq[DeclarationHolder] = {
     val captor = ArgumentCaptor.forClass(classOf[Seq[DeclarationHolder]])
-    verify(mockPage).apply(any(), any(), captor.capture())(any(), any())
+    verify(mockPage).apply(any(), captor.capture())(any(), any())
     captor.getValue
   }
 
   private def verifyPageInvoked(numberOfTimes: Int = 1): Appendable =
-    verify(mockPage, times(numberOfTimes)).apply(any(), any(), any())(any(), any())
+    verify(mockPage, times(numberOfTimes)).apply(any(), any())(any(), any())
 
   val declarationHolder = DeclarationHolder(Some("ACE"), Some(Eori("GB56523343784324")), Some(EoriSource.OtherEori))
   val id = "ACE-GB56523343784324"
@@ -142,10 +142,10 @@ class DeclarationHolderSummaryControllerSpec extends ControllerSpec with OptionV
           withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationHolders(declarationHolder)))
 
           val requestBody = Json.obj(formId -> "Yes")
-          val result = controller.submitForm(Mode.ErrorFix)(postRequest(requestBody))
+          val result = controller.submitForm()(postRequest(requestBody))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe routes.DeclarationHolderAddController.displayPage(Mode.ErrorFix)
+          thePageNavigatedTo mustBe routes.DeclarationHolderAddController.displayPage()
         }
       }
     }

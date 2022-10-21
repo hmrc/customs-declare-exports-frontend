@@ -49,7 +49,7 @@ class FiscalInformationControllerSpec extends ControllerSpec with OptionValues {
     super.beforeEach()
     authorizedUser()
     withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY)))
-    when(mockFiscalInformationPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockFiscalInformationPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -61,7 +61,7 @@ class FiscalInformationControllerSpec extends ControllerSpec with OptionValues {
 
   def theResponseForm: Form[FiscalInformation] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[FiscalInformation]])
-    verify(mockFiscalInformationPage).apply(any(), any(), captor.capture())(any(), any())
+    verify(mockFiscalInformationPage).apply(any(), captor.capture())(any(), any())
     captor.getValue
   }
 
@@ -71,7 +71,7 @@ class FiscalInformationControllerSpec extends ControllerSpec with OptionValues {
   }
 
   private def verifyPageAccessed(numberOfTimes: Int): HtmlFormat.Appendable =
-    verify(mockFiscalInformationPage, times(numberOfTimes)).apply(any(), any(), any())(any(), any())
+    verify(mockFiscalInformationPage, times(numberOfTimes)).apply(any(), any())(any(), any())
 
   "Fiscal Information controller" should {
 
@@ -81,7 +81,7 @@ class FiscalInformationControllerSpec extends ControllerSpec with OptionValues {
         val result = controller.displayPage(itemId, fastForward = false)(getRequest())
 
         status(result) mustBe OK
-        verify(mockFiscalInformationPage, times(1)).apply(any(), any(), any())(any(), any())
+        verify(mockFiscalInformationPage, times(1)).apply(any(), any())(any(), any())
 
         theResponseForm.value mustBe empty
       }
@@ -105,7 +105,7 @@ class FiscalInformationControllerSpec extends ControllerSpec with OptionValues {
         )
         withNewCaching(aDeclaration(withSummaryWasVisited(), withItems(item)))
 
-        val result = controller.displayPage(Draft, item.id, fastForward = false)(getRequest())
+        val result = controller.displayPage(item.id, fastForward = false)(getRequest())
 
         status(result) mustBe OK
         verifyPageAccessed(1)

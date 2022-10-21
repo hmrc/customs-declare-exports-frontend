@@ -22,7 +22,7 @@ import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import models.DeclarationType._
 import models.requests.JourneyRequest
-import models.{DeclarationType}
+import models.DeclarationType
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
@@ -61,7 +61,7 @@ class InvoiceAndExchangeRateChoiceControllerSpec extends ControllerSpec {
 
   def theResponseForm: Form[YesNoAnswer] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[YesNoAnswer]])
-    verify(invoiceAndExchangeRateChoicePage).apply(any(), captor.capture())(any(), any())
+    verify(invoiceAndExchangeRateChoicePage).apply(captor.capture())(any(), any())
     captor.getValue
   }
 

@@ -56,18 +56,14 @@ class ConsignmentReferencesController @Inject() (
     form(request.declarationType, request.cacheModel.additionalDeclarationType)
       .bindFromRequest()
       .verifyLrnValidity(lrnValidator)
-      .flatMap(
-        _.fold(formWithErrors => Future.successful(BadRequest(consignmentReferencesPage(formWithErrors))), updateCacheAndContinue(_))
-      )
+      .flatMap(_.fold(formWithErrors => Future.successful(BadRequest(consignmentReferencesPage(formWithErrors))), updateCacheAndContinue(_)))
   }
 
   private def nextPage(implicit request: JourneyRequest[AnyContent]): Call =
     if (request.declarationType == SUPPLEMENTARY) routes.DeclarantExporterController.displayPage
     else routes.LinkDucrToMucrController.displayPage
 
-  private def updateCacheAndContinue(consignmentReferences: ConsignmentReferences)(
-    implicit request: JourneyRequest[AnyContent]
-  ): Future[Result] =
+  private def updateCacheAndContinue(consignmentReferences: ConsignmentReferences)(implicit request: JourneyRequest[AnyContent]): Future[Result] =
     updateDeclarationFromRequest(_.copy(consignmentReferences = Some(capitaliseDucr(consignmentReferences))))
       .map(_ => navigator.continueTo(nextPage))
 

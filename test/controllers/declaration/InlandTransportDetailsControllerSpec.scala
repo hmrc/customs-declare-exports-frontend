@@ -52,7 +52,7 @@ class InlandTransportDetailsControllerSpec extends ControllerSpec with GivenWhen
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    when(inlandTransportDetails.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(inlandTransportDetails.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -62,7 +62,7 @@ class InlandTransportDetailsControllerSpec extends ControllerSpec with GivenWhen
 
   private def theResponseForm: Form[InlandModeOfTransportCode] = {
     val formCaptor = ArgumentCaptor.forClass(classOf[Form[InlandModeOfTransportCode]])
-    verify(inlandTransportDetails).apply(any(), formCaptor.capture())(any(), any())
+    verify(inlandTransportDetails).apply(formCaptor.capture())(any(), any())
     formCaptor.getValue
   }
 
@@ -89,7 +89,7 @@ class InlandTransportDetailsControllerSpec extends ControllerSpec with GivenWhen
         await(controller.displayPage()(getRequest()))
 
         verify(mockExportsCacheService).get(any())(any())
-        verify(inlandTransportDetails).apply(any(), any())(any(), any())
+        verify(inlandTransportDetails).apply(any())(any(), any())
       }
     }
 

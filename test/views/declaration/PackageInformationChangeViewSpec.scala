@@ -42,7 +42,7 @@ class PackageInformationChangeViewSpec extends PageWithButtonsSpec with ExportsT
 
   override val typeAndViewInstance = (STANDARD, page(itemId, form(), packageInfoId, Seq.empty)(_, _))
 
-  def createView(frm: Form[PackageInformation] = form(), packages: Seq[PackageInformation] = Seq.empty, mode: Mode = Normal)(
+  def createView(frm: Form[PackageInformation] = form(), packages: Seq[PackageInformation] = Seq.empty)(
     implicit request: JourneyRequest[_]
   ): Document =
     page(itemId, frm, packageInfoId, packages)(request, messages)
@@ -98,8 +98,7 @@ class PackageInformationChangeViewSpec extends PageWithButtonsSpec with ExportsT
         forAll(indexedListOfParagraphs)(t => paragraphs.get(t._2) mustBe (t._1))
       }
 
-      val createViewWithMode: Mode => Document = mode => createView(mode = mode)
-      checkAllSaveButtonsAreDisplayed(createViewWithMode)
+      checkAllSaveButtonsAreDisplayed(createView())
     }
   }
 

@@ -65,10 +65,7 @@ class TransportContainerController @Inject() (
         saveAdditionalContainer(boundForm, maxNumberOfItems, request.cacheModel.containers)
       } else
         ContainerFirst.form.bindFromRequest
-          .fold(
-            formWithErrors => Future.successful(BadRequest(addFirstPage(formWithErrors))),
-            containerId => saveFirstContainer(containerId.id)
-          )
+          .fold(formWithErrors => Future.successful(BadRequest(addFirstPage(formWithErrors))), containerId => saveFirstContainer(containerId.id))
     }
 
   def displayContainerSummary(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
@@ -162,8 +159,7 @@ class TransportContainerController @Inject() (
   private def removeContainerAnswer(containerId: String)(implicit request: JourneyRequest[AnyContent]): Future[Result] =
     removeContainerYesNoForm.bindFromRequest
       .fold(
-        formWithErrors =>
-          Future.successful(BadRequest(removePage(formWithErrors, request.cacheModel.containers.filter(_.id == containerId).head))),
+        formWithErrors => Future.successful(BadRequest(removePage(formWithErrors, request.cacheModel.containers.filter(_.id == containerId).head))),
         _.answer match {
           case YesNoAnswers.yes => removeContainer(containerId)
           case YesNoAnswers.no  => Future.successful(navigator.continueTo(TransportContainerController.displayContainerSummary))

@@ -65,7 +65,7 @@ class DestinationCountryViewSpec extends PageWithButtonsSpec with Injector {
   def form(request: JourneyRequest[_]): Form[Country] =
     Countries.form(DestinationCountryPage)(request, messages(request), mockCodeListConnector)
 
-  def createView(mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document =
+  def createView()(implicit request: JourneyRequest[_]): Document =
     page(form(request))(request, messages)
 
   "Destination country view spec" should {
@@ -152,8 +152,7 @@ class DestinationCountryViewSpec extends PageWithButtonsSpec with Injector {
         createView()(request).getElementsByClass("govuk-body").get(0).text mustBe messages("declaration.destinationCountry.body")
       }
 
-      val createViewWithMode: Mode => Document = mode => createView(mode = mode)
-      checkAllSaveButtonsAreDisplayed(createViewWithMode)
+      checkAllSaveButtonsAreDisplayed(createView())
     }
   }
 }

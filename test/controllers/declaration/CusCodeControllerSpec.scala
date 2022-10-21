@@ -17,6 +17,8 @@
 package controllers.declaration
 
 import base.ControllerSpec
+import controllers.declaration.routes.TaricCodeSummaryController
+import controllers.routes.RootController
 import forms.declaration.CusCode
 import forms.declaration.CusCode._
 import models.DeclarationType.{apply => _, _}
@@ -40,7 +42,7 @@ class CusCodeControllerSpec extends ControllerSpec {
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    when(mockPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -52,7 +54,7 @@ class CusCodeControllerSpec extends ControllerSpec {
 
   def theResponseForm: Form[CusCode] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[CusCode]])
-    verify(mockPage).apply(any(), any(), captor.capture())(any(), any())
+    verify(mockPage).apply(any(), captor.capture())(any(), any())
     captor.getValue
   }
 
@@ -70,13 +72,12 @@ class CusCodeControllerSpec extends ControllerSpec {
       "return 200 (OK)" when {
 
         "display page method is invoked and cache is empty" in {
-
           withNewCaching(request.cacheModel)
 
           val result = controller.displayPage(itemId)(getRequest())
 
           status(result) mustBe OK
-          verify(mockPage, times(1)).apply(any(), any(), any())(any(), any())
+          verify(mockPage, times(1)).apply(any(), any())(any(), any())
 
           theResponseForm.value mustBe empty
         }
@@ -89,7 +90,7 @@ class CusCodeControllerSpec extends ControllerSpec {
           val result = controller.displayPage(item.id)(getRequest())
 
           status(result) mustBe OK
-          verify(mockPage, times(1)).apply(any(), any(), any())(any(), any())
+          verify(mockPage, times(1)).apply(any(), any())(any(), any())
 
           theResponseForm.value mustBe Some(cusCode)
         }
@@ -97,7 +98,6 @@ class CusCodeControllerSpec extends ControllerSpec {
       }
 
       "return 400 (BAD_REQUEST)" when {
-
         "form is incorrect" in {
           withNewCaching(request.cacheModel)
 
@@ -106,7 +106,7 @@ class CusCodeControllerSpec extends ControllerSpec {
           val result = controller.submitForm(itemId)(postRequest(incorrectForm))
 
           status(result) mustBe BAD_REQUEST
-          verify(mockPage, times(1)).apply(any(), any(), any())(any(), any())
+          verify(mockPage, times(1)).apply(any(), any())(any(), any())
         }
       }
     }
@@ -120,8 +120,8 @@ class CusCodeControllerSpec extends ControllerSpec {
           val result = controller.submitForm(itemId)(postRequest(correctForm))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.TaricCodeSummaryController.displayPage(itemId)
-          verify(mockPage, times(0)).apply(any(), any(), any())(any(), any())
+          thePageNavigatedTo mustBe TaricCodeSummaryController.displayPage(itemId)
+          verify(mockPage, times(0)).apply(any(), any())(any(), any())
         }
       }
     }
@@ -134,7 +134,7 @@ class CusCodeControllerSpec extends ControllerSpec {
           val result = controller.displayPage("").apply(getRequest())
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.routes.RootController.displayPage().url)
+          redirectLocation(result) mustBe Some(RootController.displayPage().url)
         }
       }
     }

@@ -35,7 +35,7 @@ class TaricCodeRemoveViewSpec extends PageWithButtonsSpec with Injector with Moc
 
   override val typeAndViewInstance = (STANDARD, page(itemId, taricCode, form())(_, _))
 
-  def createView(frm: Form[YesNoAnswer] = form(), code: String = taricCode, mode: Mode = Normal): Document =
+  def createView(frm: Form[YesNoAnswer] = form(), code: String = taricCode): Document =
     page(itemId, code, frm)(getJourneyRequest(), messages)
 
   "Taric Code Remove View" should {
@@ -57,13 +57,10 @@ class TaricCodeRemoveViewSpec extends PageWithButtonsSpec with Injector with Moc
       val backLinkContainer = view.getElementById("back-link")
 
       backLinkContainer must containMessage(backToPreviousQuestionCaption)
-      backLinkContainer.getElementById("back-link") must haveHref(
-        controllers.declaration.routes.TaricCodeSummaryController.displayPage(itemId)
-      )
+      backLinkContainer.getElementById("back-link") must haveHref(controllers.declaration.routes.TaricCodeSummaryController.displayPage(itemId))
     }
 
-    val createViewWithMode: Mode => Document = mode => createView(mode = mode)
-    checkAllSaveButtonsAreDisplayed(createViewWithMode)
+    checkAllSaveButtonsAreDisplayed(createView())
   }
 
   "Taric Code Remove View for invalid input" should {

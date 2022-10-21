@@ -45,8 +45,8 @@ class ReferencesSectionViewSpec extends UnitViewSpec with ExportsTestHelper with
 
   val section = instanceOf[references_section]
 
-  val view = section(Draft, data)(messages)
-  val viewNoAnswers = section(Draft, aDeclaration(withType(DeclarationType.STANDARD)))(messages)
+  val view = section(data)(messages)
+  val viewNoAnswers = section(aDeclaration(withType(DeclarationType.STANDARD)))(messages)
 
   val expectedCreatedTime = "28 November 2019 at 2:48pm"
   val expectedUpdatedTime = "28 December 2019 at 2:48pm"
@@ -56,12 +56,12 @@ class ReferencesSectionViewSpec extends UnitViewSpec with ExportsTestHelper with
     "have, inside an Inset Text, a link to /type" when {
       "a declaration has DRAFT status and 'parentDeclarationId' is defined" in {
         val declaration = data.copy(status = DRAFT, parentDeclarationId = Some("some id"))
-        val insetText = section(Draft, declaration)(messages).getElementsByClass("govuk-inset-text")
+        val insetText = section(declaration)(messages).getElementsByClass("govuk-inset-text")
         insetText.size mustBe 1
 
         val link = insetText.first.getElementsByClass("govuk-link").first
         link.text mustBe messages("declaration.summary.goto.additional.type")
-        link must haveHref(AdditionalDeclarationTypeController.displayPage(Draft))
+        link must haveHref(AdditionalDeclarationTypeController.displayPage)
       }
     }
 
@@ -101,35 +101,32 @@ class ReferencesSectionViewSpec extends UnitViewSpec with ExportsTestHelper with
       row must haveSummaryValue("DUCR")
 
       row must haveSummaryActionsTexts("site.change", "declaration.summary.references.ducr.change")
-
-      row must haveSummaryActionsHref(ConsignmentReferencesController.displayPage(Draft))
+      row must haveSummaryActionWithPlaceholder(ConsignmentReferencesController.displayPage)
     }
 
     onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, CLEARANCE) { implicit request =>
       "have LRN with change button" in {
-        val view = section(Draft, data.copy(`type` = request.declarationType))(messages)
+        val view = section(data.copy(`type` = request.declarationType))(messages)
 
         val row = view.getElementsByClass("lrn-row")
         row must haveSummaryKey(messages("declaration.summary.references.lrn"))
         row must haveSummaryValue("LRN")
 
         row must haveSummaryActionsTexts("site.change", "declaration.summary.references.lrn.change")
-
-        row must haveSummaryActionsHref(ConsignmentReferencesController.displayPage(Draft))
+        row must haveSummaryActionWithPlaceholder(ConsignmentReferencesController.displayPage)
       }
     }
 
     onJourney(SUPPLEMENTARY) { implicit request =>
       "have LRN with change button" in {
-        val view = section(Draft, data.copy(`type` = request.declarationType))(messages)
+        val view = section(data.copy(`type` = request.declarationType))(messages)
 
         val row = view.getElementsByClass("lrn-row")
         row must haveSummaryKey(messages("declaration.summary.references.supplementary.lrn"))
         row must haveSummaryValue("LRN")
 
         row must haveSummaryActionsTexts("site.change", "declaration.summary.references.lrn.change")
-
-        row must haveSummaryActionsHref(ConsignmentReferencesController.displayPage(Draft))
+        row must haveSummaryActionWithPlaceholder(ConsignmentReferencesController.displayPage)
       }
     }
 
@@ -139,8 +136,7 @@ class ReferencesSectionViewSpec extends UnitViewSpec with ExportsTestHelper with
       row must haveSummaryValue(YesNoAnswers.yes)
 
       row must haveSummaryActionsTexts("site.change", "declaration.summary.references.linkDucrToMucr.change")
-
-      row must haveSummaryActionsHref(LinkDucrToMucrController.displayPage(Draft))
+      row must haveSummaryActionWithPlaceholder(LinkDucrToMucrController.displayPage)
     }
 
     "have MUCR with change button" in {
@@ -149,8 +145,7 @@ class ReferencesSectionViewSpec extends UnitViewSpec with ExportsTestHelper with
       row must haveSummaryValue(MUCR.mucr)
 
       row must haveSummaryActionsTexts("site.change", "declaration.summary.references.mucr.change")
-
-      row must haveSummaryActionsHref(MucrController.displayPage(Draft))
+      row must haveSummaryActionWithPlaceholder(MucrController.displayPage)
     }
   }
 

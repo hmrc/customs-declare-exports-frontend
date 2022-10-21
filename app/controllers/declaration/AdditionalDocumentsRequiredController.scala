@@ -19,7 +19,7 @@ package controllers.declaration
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
-import forms.common.YesNoAnswer.{YesNoAnswers, form}
+import forms.common.YesNoAnswer.{form, YesNoAnswers}
 import models.ExportsDeclaration
 import models.declaration.AdditionalDocuments
 import models.requests.JourneyRequest

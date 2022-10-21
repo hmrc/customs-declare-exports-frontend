@@ -35,7 +35,7 @@ class CusCodeViewSpec extends PageWithButtonsSpec with Injector {
 
   override val typeAndViewInstance = (STANDARD, page(itemId, form)(_, _))
 
-  def createView(frm: Form[CusCode] = form(), mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document =
+  def createView(frm: Form[CusCode] = form())(implicit request: JourneyRequest[_]): Document =
     page(itemId, frm)(request, messages)
 
   "CusCode View on empty page" should {
@@ -84,8 +84,7 @@ class CusCodeViewSpec extends PageWithButtonsSpec with Injector {
         backButton.getElementById("back-link") must haveHref(UNDangerousGoodsCodeController.displayPage(itemId))
       }
 
-      val createViewWithMode = createView(form, _)
-      checkAllSaveButtonsAreDisplayed(createViewWithMode)
+      checkAllSaveButtonsAreDisplayed(createView())
     }
   }
 

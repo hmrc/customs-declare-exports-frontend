@@ -17,6 +17,8 @@
 package controllers.declaration
 
 import base.ControllerSpec
+import controllers.declaration.routes.ExporterEoriNumberController
+import controllers.routes.RootController
 import forms.common.Eori
 import forms.declaration.PersonPresentingGoodsDetails
 import models.DeclarationType.{OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
@@ -50,7 +52,7 @@ class PersonPresentingGoodsDetailsControllerSpec extends ControllerSpec with Sca
   override def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    when(page.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(page.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override def afterEach(): Unit = {
@@ -66,7 +68,7 @@ class PersonPresentingGoodsDetailsControllerSpec extends ControllerSpec with Sca
 
   def theFormPassedToView: Form[PersonPresentingGoodsDetails] = {
     val formCaptor = ArgumentCaptor.forClass(classOf[Form[PersonPresentingGoodsDetails]])
-    verify(page).apply(any(), formCaptor.capture())(any(), any())
+    verify(page).apply(formCaptor.capture())(any(), any())
     formCaptor.getValue
   }
 
@@ -82,7 +84,6 @@ class PersonPresentingGoodsDetailsControllerSpec extends ControllerSpec with Sca
       "everything works correctly" should {
 
         "return 200 (OK)" in {
-
           withNewCaching(request.cacheModel)
 
           val result = controller.displayPage()(getRequest())
@@ -91,7 +92,6 @@ class PersonPresentingGoodsDetailsControllerSpec extends ControllerSpec with Sca
         }
 
         "call ExportsCacheService" in {
-
           withNewCaching(request.cacheModel)
 
           controller.displayPage()(getRequest()).futureValue
@@ -100,7 +100,6 @@ class PersonPresentingGoodsDetailsControllerSpec extends ControllerSpec with Sca
         }
 
         "call page view, passing form with data from cache" in {
-
           withNewCaching(aDeclarationAfter(request.cacheModel, withPersonPresentingGoodsDetails(Some(Eori(testEori)))))
 
           controller.displayPage()(getRequest()).futureValue
@@ -113,7 +112,6 @@ class PersonPresentingGoodsDetailsControllerSpec extends ControllerSpec with Sca
 
     onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { request =>
       "return 303 (SEE_OTHER)" in {
-
         withNewCaching(request.cacheModel)
 
         val result = controller.displayPage()(getRequest())
@@ -122,12 +120,11 @@ class PersonPresentingGoodsDetailsControllerSpec extends ControllerSpec with Sca
       }
 
       "redirect to start page" in {
-
         withNewCaching(request.cacheModel)
 
         val result = controller.displayPage()(getRequest())
 
-        redirectLocation(result) mustBe Some(controllers.routes.RootController.displayPage().url)
+        redirectLocation(result) mustBe Some(RootController.displayPage().url)
       }
     }
   }
@@ -138,7 +135,6 @@ class PersonPresentingGoodsDetailsControllerSpec extends ControllerSpec with Sca
       "everything works correctly" should {
 
         "return 303 (SEE_OTHER)" in {
-
           withNewCaching(request.cacheModel)
           val correctForm = Json.toJson(Map(PersonPresentingGoodsDetails.fieldName -> testEori))
 
@@ -148,17 +144,15 @@ class PersonPresentingGoodsDetailsControllerSpec extends ControllerSpec with Sca
         }
 
         "redirect to Exporter Details page" in {
-
           withNewCaching(request.cacheModel)
           val correctForm = Json.toJson(Map(PersonPresentingGoodsDetails.fieldName -> testEori))
 
           controller.submitForm()(postRequest(correctForm)).futureValue
 
-          thePageNavigatedTo mustBe controllers.declaration.routes.ExporterEoriNumberController.displayPage()
+          thePageNavigatedTo mustBe ExporterEoriNumberController.displayPage()
         }
 
         "call Cache to update it" in {
-
           withNewCaching(request.cacheModel)
           val correctForm = Json.toJson(Map(PersonPresentingGoodsDetails.fieldName -> testEori))
 
@@ -168,19 +162,17 @@ class PersonPresentingGoodsDetailsControllerSpec extends ControllerSpec with Sca
         }
 
         "call Navigator" in {
-
           withNewCaching(request.cacheModel)
           val correctForm = Json.toJson(Map(PersonPresentingGoodsDetails.fieldName -> testEori))
 
           controller.submitForm()(postRequest(correctForm)).futureValue
 
-          verify(navigator).continueTo(any(), any())(any())
+          verify(navigator).continueTo(any())(any())
         }
       }
 
       "provided with incorrect data" should {
         "return 400 (BAD_REQUEST)" in {
-
           withNewCaching(request.cacheModel)
           val correctForm = Json.toJson(Map(PersonPresentingGoodsDetails.fieldName -> "Incorrect!@#"))
 
@@ -193,7 +185,6 @@ class PersonPresentingGoodsDetailsControllerSpec extends ControllerSpec with Sca
 
     onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { request =>
       "return 303 (SEE_OTHER)" in {
-
         withNewCaching(request.cacheModel)
         val correctForm = Json.toJson(Map(PersonPresentingGoodsDetails.fieldName -> testEori))
 
@@ -203,15 +194,13 @@ class PersonPresentingGoodsDetailsControllerSpec extends ControllerSpec with Sca
       }
 
       "redirect to start page" in {
-
         withNewCaching(request.cacheModel)
         val correctForm = Json.toJson(Map(PersonPresentingGoodsDetails.fieldName -> testEori))
 
         val result = controller.submitForm()(postRequest(correctForm))
 
-        redirectLocation(result) mustBe Some(controllers.routes.RootController.displayPage().url)
+        redirectLocation(result) mustBe Some(RootController.displayPage().url)
       }
     }
   }
-
 }

@@ -17,7 +17,7 @@
 package controllers.declaration
 
 import base.ControllerSpec
-import controllers.declaration.routes.{NactCodeAddController, PackageInformationSummaryController, StatisticalValueController}
+import controllers.declaration.routes.{NactCodeAddController, StatisticalValueController}
 import controllers.routes.RootController
 import forms.common.YesNoAnswer
 import forms.declaration.{NactCode, NactCodeFirst}
@@ -74,7 +74,6 @@ class NactCodeSummaryControllerSpec extends ControllerSpec with OptionValues {
   "NACT Code Summary Controller" should {
 
     onJourney(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY, DeclarationType.OCCASIONAL, DeclarationType.SIMPLIFIED) { request =>
-
       "return 200 (OK)" that {
         "display page method is invoked and cache contains data" in {
           val nactCode = NactCode("VATE")

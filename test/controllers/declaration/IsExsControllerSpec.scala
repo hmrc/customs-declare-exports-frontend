@@ -17,11 +17,12 @@
 package controllers.declaration
 
 import base.ControllerSpec
+import controllers.declaration.routes.{ConsigneeDetailsController, ConsignorEoriNumberController, RepresentativeAgentController}
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.common.{Address, Eori}
 import forms.declaration.consignor.ConsignorDetails
 import forms.declaration.{EntityDetails, IsExs, UNDangerousGoodsCode}
-import models.{DeclarationType}
+import models.DeclarationType
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
@@ -44,7 +45,7 @@ class IsExsControllerSpec extends ControllerSpec with ScalaFutures {
     super.beforeEach()
 
     authorizedUser()
-    when(isExsPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(isExsPage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -55,7 +56,7 @@ class IsExsControllerSpec extends ControllerSpec with ScalaFutures {
 
   private def theResponseForm: Form[IsExs] = {
     val formCaptor = ArgumentCaptor.forClass(classOf[Form[IsExs]])
-    verify(isExsPage).apply(any(), formCaptor.capture())(any(), any())
+    verify(isExsPage).apply(formCaptor.capture())(any(), any())
     formCaptor.getValue
   }
 
@@ -70,7 +71,6 @@ class IsExsControllerSpec extends ControllerSpec with ScalaFutures {
     "return 200 (OK)" when {
 
       "display page method is invoked without data in cache" in {
-
         withNewCaching(aDeclaration(withType(DeclarationType.CLEARANCE), withoutIsExs()))
 
         val result = controller.displayPage()(getRequest())
@@ -79,7 +79,6 @@ class IsExsControllerSpec extends ControllerSpec with ScalaFutures {
       }
 
       "display page method is invoked with data in cache" in {
-
         withNewCaching(aDeclaration(withType(DeclarationType.CLEARANCE), withIsExs()))
 
         val result = controller.displayPage()(getRequest())
@@ -92,9 +91,7 @@ class IsExsControllerSpec extends ControllerSpec with ScalaFutures {
   "IsExsController on submit" when {
 
     "answer is missing" should {
-
       "return 400 (BAD_REQUEST)" in {
-
         withNewCaching(aDeclaration(withType(DeclarationType.CLEARANCE), withDeclarantIsExporter()))
 
         val emptyForm = Json.toJson(IsExs(""))
@@ -115,8 +112,7 @@ class IsExsControllerSpec extends ControllerSpec with ScalaFutures {
         val result = controller.submit()(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.ConsignorEoriNumberController
-          .displayPage()
+        thePageNavigatedTo mustBe ConsignorEoriNumberController.displayPage()
       }
 
       "correctly update UNDangerous goods codes for items" in {
@@ -143,7 +139,6 @@ class IsExsControllerSpec extends ControllerSpec with ScalaFutures {
 
     "answer is No" should {
       "remove Carrier and Consignor Details from Parties and UN Code from Items in cache" in {
-
         withNewCaching(
           aDeclaration(
             withType(DeclarationType.CLEARANCE),
@@ -181,7 +176,6 @@ class IsExsControllerSpec extends ControllerSpec with ScalaFutures {
 
     "answer is No and declarant is not an exporter" should {
       "return 303 (SEE_OTHER) and redirect to Representative Agent page" in {
-
         withNewCaching(aDeclaration(withType(DeclarationType.CLEARANCE), withDeclarantIsExporter("No")))
 
         val correctForm = Json.toJson(IsExs(YesNoAnswers.no))
@@ -189,14 +183,12 @@ class IsExsControllerSpec extends ControllerSpec with ScalaFutures {
         val result = controller.submit()(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.RepresentativeAgentController
-          .displayPage()
+        thePageNavigatedTo mustBe RepresentativeAgentController.displayPage()
       }
     }
 
     "answer is No and declarant is an exporter" should {
       "return 303 (SEE_OTHER) and redirect to Consignee Details page" in {
-
         withNewCaching(aDeclaration(withType(DeclarationType.CLEARANCE), withDeclarantIsExporter()))
 
         val correctForm = Json.toJson(IsExs(YesNoAnswers.no))
@@ -204,10 +196,8 @@ class IsExsControllerSpec extends ControllerSpec with ScalaFutures {
         val result = controller.submit()(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.ConsigneeDetailsController
-          .displayPage()
+        thePageNavigatedTo mustBe ConsigneeDetailsController.displayPage()
       }
     }
-
   }
 }

@@ -41,7 +41,7 @@ class ExporterEoriNumberViewSpec extends PageWithButtonsSpec with ExportsTestHel
 
   override val typeAndViewInstance = (STANDARD, page(form())(_, _))
 
-  def createView(frm: Form[ExporterEoriNumber] = form(), mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document =
+  def createView(frm: Form[ExporterEoriNumber] = form())(implicit request: JourneyRequest[_]): Document =
     page(frm)(request, messages)
 
   onEveryDeclarationJourney() { implicit request =>
@@ -81,8 +81,7 @@ class ExporterEoriNumberViewSpec extends PageWithButtonsSpec with ExportsTestHel
         view.getElementById("eori").attr("value") mustBe empty
       }
 
-      val createViewWithMode: Mode => Document = mode => createView(mode = mode)
-      checkAllSaveButtonsAreDisplayed(createViewWithMode)
+      checkAllSaveButtonsAreDisplayed(createView())
 
       "handle invalid input" should {
         "display errors when all inputs are incorrect" in {

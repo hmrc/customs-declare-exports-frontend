@@ -82,7 +82,6 @@ class NactCodeRemoveControllerSpec extends ControllerSpec with OptionValues {
   "Nact Code Remove Controller" must {
 
     onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { request =>
-
       "return 200 (OK)" that {
         "display page method is invoked and cache is empty" in {
           withNewCaching(request.cacheModel)

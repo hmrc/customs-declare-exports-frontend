@@ -22,7 +22,7 @@ import controllers.navigation.Navigator
 import forms.declaration.commodityMeasure.CommodityMeasure
 import models.DeclarationType.{CLEARANCE, STANDARD, SUPPLEMENTARY}
 import models.ExportsDeclaration
-import models.declaration.{ExportItem, CommodityMeasure => CommodityMeasureModel}
+import models.declaration.{CommodityMeasure => CommodityMeasureModel, ExportItem}
 import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport

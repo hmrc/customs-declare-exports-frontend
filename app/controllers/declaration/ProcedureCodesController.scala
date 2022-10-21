@@ -67,7 +67,9 @@ class ProcedureCodesController @Inject() (
   }
 
   // scalastyle:off
-  private def updateCache(itemId: String, procedureCodeEntered: ProcedureCode)(implicit request: JourneyRequest[AnyContent]): Future[ExportsDeclaration] = {
+  private def updateCache(itemId: String, procedureCodeEntered: ProcedureCode)(
+    implicit request: JourneyRequest[AnyContent]
+  ): Future[ExportsDeclaration] = {
 
     val updateProcedureCode: ExportsDeclaration => ExportsDeclaration = { model =>
       model.updatedItem(

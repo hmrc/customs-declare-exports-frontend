@@ -17,6 +17,7 @@
 package controllers.declaration
 
 import base.ControllerSpec
+import controllers.declaration.routes.{RepresentativeEntityController, RepresentativeStatusController}
 import forms.common.Eori
 import forms.declaration.RepresentativeAgent
 import org.mockito.ArgumentCaptor
@@ -45,14 +46,14 @@ class RepresentativeAgentControllerSpec extends ControllerSpec with OptionValues
 
   def theResponseForm: Form[RepresentativeAgent] = {
     val formCaptor = ArgumentCaptor.forClass(classOf[Form[RepresentativeAgent]])
-    verify(mockPage).apply(any(), formCaptor.capture())(any(), any())
+    verify(mockPage).apply(formCaptor.capture())(any(), any())
     formCaptor.getValue
   }
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    when(mockPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockPage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -66,7 +67,8 @@ class RepresentativeAgentControllerSpec extends ControllerSpec with OptionValues
     theResponseForm
   }
 
-  def verifyPage(numberOfTimes: Int) = verify(mockPage, times(numberOfTimes)).apply(any(), any())(any(), any())
+  def verifyPage(numberOfTimes: Int): HtmlFormat.Appendable =
+    verify(mockPage, times(numberOfTimes)).apply(any())(any(), any())
 
   "Representative Agent controller" must {
     onEveryDeclarationJourney() { request =>
@@ -96,7 +98,6 @@ class RepresentativeAgentControllerSpec extends ControllerSpec with OptionValues
       }
 
       "return 400 (BAD_REQUEST)" when {
-
         "form is incorrect" in {
           withNewCaching(request.cacheModel)
 
@@ -112,6 +113,7 @@ class RepresentativeAgentControllerSpec extends ControllerSpec with OptionValues
     onEveryDeclarationJourney() { request =>
       "representing other agent" should {
         val formAnswer = "Yes"
+
         "redirect (303 SEE_OTHER) to representative entity" in {
           withNewCaching(request.cacheModel)
 
@@ -119,7 +121,7 @@ class RepresentativeAgentControllerSpec extends ControllerSpec with OptionValues
           val result = controller.submitForm()(postRequest(correctForm))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.RepresentativeStatusController.displayPage()
+          thePageNavigatedTo mustBe RepresentativeStatusController.displayPage()
 
           verifyPage(0)
         }
@@ -139,20 +141,20 @@ class RepresentativeAgentControllerSpec extends ControllerSpec with OptionValues
 
       "not representing other agent" should {
         val formAnswer = "No"
-        "redirect (303 SEE_OTHER) to representative status" in {
 
+        "redirect (303 SEE_OTHER) to representative status" in {
           withNewCaching(request.cacheModel)
 
           val correctForm = Json.toJson(RepresentativeAgent(formAnswer))
           val result = controller.submitForm()(postRequest(correctForm))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.RepresentativeEntityController.displayPage()
+          thePageNavigatedTo mustBe RepresentativeEntityController.displayPage()
 
           verifyPage(0)
         }
 
-        "not clear the representative eori if already present " in {
+        "not clear the representative eori if already present" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withRepresentativeDetails(Some(Eori("GB1234567890")), None, None)))
 
           val correctForm = Json.toJson(RepresentativeAgent(formAnswer))

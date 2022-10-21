@@ -31,7 +31,7 @@ class RepresentativeDetailsEntityViewSpec extends UnitViewSpec with ExportsTestH
 
   private val page = instanceOf[representative_details_entity]
   private val form: Form[RepresentativeEntity] = RepresentativeEntity.form()
-  private def createView(mode: Mode = Mode.Normal, form: Form[RepresentativeEntity] = form): Document =
+  private def createView(form: Form[RepresentativeEntity] = form): Document =
     page(form)(journeyRequest(), messages)
 
   "Representative Details Entity View on empty page" should {
@@ -53,8 +53,7 @@ class RepresentativeDetailsEntityViewSpec extends UnitViewSpec with ExportsTestH
       backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.RepresentativeAgentController.displayPage())
     }
 
-    val createViewWithMode: Mode => Document = mode => createView(mode = mode)
-    checkAllSaveButtonsAreDisplayed(createViewWithMode)
+    checkAllSaveButtonsAreDisplayed(createView())
   }
 
   "Representative Details Entity View for invalid input" should {

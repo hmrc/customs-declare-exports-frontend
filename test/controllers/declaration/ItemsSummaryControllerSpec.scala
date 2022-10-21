@@ -115,7 +115,6 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
   "displayAddItemPage" should {
 
     onEveryDeclarationJourney() { request =>
-
       "call cache" in {
         withNewCaching(aDeclaration(withType(request.declarationType)))
 
@@ -151,7 +150,6 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
   "addFirstItem" should {
 
     onEveryDeclarationJourney() { request =>
-
       "call Navigator" in {
         withNewCaching(aDeclaration(withType(request.declarationType)))
 
@@ -176,7 +174,6 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
   "displayItemsSummaryPage" should {
 
     onEveryDeclarationJourney() { request =>
-
       "call cache" in {
         withNewCaching(aDeclaration(withType(request.declarationType)))
 
@@ -316,7 +313,6 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
     }
 
     onJourney(SIMPLIFIED, OCCASIONAL) { request =>
-
       "return 303 (SEE_OTHER)" in {
         val cachedData = aDeclaration(withType(request.declarationType), withItem(exportItem))
         withNewCaching(cachedData)
@@ -359,7 +355,6 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
 
   "displayRemoveItemConfirmationPage" should {
     onEveryDeclarationJourney() { request =>
-
       "return 200 (OK)" in {
         val cachedData = aDeclaration(withType(request.declarationType), withItem(exportItem))
         withNewCaching(cachedData)

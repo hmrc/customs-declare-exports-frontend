@@ -36,7 +36,7 @@ class TransportContainerAddFirstViewSpec extends UnitViewSpec with ExportsTestHe
   private val form: Form[ContainerFirst] = ContainerFirst.form()
   private val page = instanceOf[transport_container_add_first]
 
-  private def createView(form: Form[ContainerFirst] = form, mode: Mode = Mode.Normal): Document =
+  private def createView(form: Form[ContainerFirst] = form): Document =
     page(form)(journeyRequest(), messages)
 
   "Transport Containers Add First View" should {
@@ -93,8 +93,7 @@ class TransportContainerAddFirstViewSpec extends UnitViewSpec with ExportsTestHe
       }
     }
 
-    val createViewWithMode: Mode => Document = mode => createView(mode = mode)
-    checkAllSaveButtonsAreDisplayed(createViewWithMode)
+    checkAllSaveButtonsAreDisplayed(createView())
   }
 
   "Transport Containers Add View" should {

@@ -25,7 +25,7 @@ import forms.declaration.ModeOfTransportCode.{FixedTransportInstallations, Posta
 import forms.declaration.{InlandModeOfTransportCode, ModeOfTransportCode}
 import models.DeclarationType.{DeclarationType, SUPPLEMENTARY}
 import models.requests.JourneyRequest
-import models.{DeclarationType}
+import models.DeclarationType
 import play.api.data.FormError
 import play.api.i18n.I18nSupport
 import play.api.mvc._
@@ -68,9 +68,7 @@ class InlandTransportDetailsController @Inject() (
     else if (declarationType == SUPPLEMENTARY) TransportContainerController.displayContainerSummary
     else ExpressConsignmentController.displayPage
 
-  private def returnFormWithErrors(code: InlandModeOfTransportCode, error: String)(
-    implicit request: JourneyRequest[_]
-  ): Future[Result] = {
+  private def returnFormWithErrors(code: InlandModeOfTransportCode, error: String)(implicit request: JourneyRequest[_]): Future[Result] = {
     val messages = messagesApi.preferred(request).messages
     val formWithErrors = form.fill(code).copy(errors = List(FormError(formId, messages(error))))
     Future.successful(BadRequest(inlandTransportDetailsPage(formWithErrors)))

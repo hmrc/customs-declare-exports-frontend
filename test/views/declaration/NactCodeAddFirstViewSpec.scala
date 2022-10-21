@@ -24,7 +24,7 @@ import forms.declaration.NactCodeFirst.form
 import forms.declaration.NatureOfTransaction.{BusinessPurchase, Construction, Sale}
 import models.DeclarationType.STANDARD
 import models.requests.JourneyRequest
-import models.{DeclarationType}
+import models.DeclarationType
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import views.declaration.spec.PageWithButtonsSpec
@@ -42,7 +42,7 @@ class NactCodeAddFirstViewSpec extends PageWithButtonsSpec with Injector {
 
   override val typeAndViewInstance = (STANDARD, page(itemId, form())(_, _))
 
-  def createView(frm: Form[NactCodeFirst] = form(), mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document =
+  def createView(frm: Form[NactCodeFirst] = form())(implicit request: JourneyRequest[_]): Document =
     page(itemId, frm)(request, messages)
 
   "Nact Code Add First View" should {
@@ -105,8 +105,7 @@ class NactCodeAddFirstViewSpec extends PageWithButtonsSpec with Injector {
       }
     }
 
-    val createViewWithMode: Mode => Document = mode => createView(mode = mode)(journeyRequest())
-    checkAllSaveButtonsAreDisplayed(createViewWithMode)
+    checkAllSaveButtonsAreDisplayed(createView())
   }
 
   "Nact Code Add First View for invalid input" should {

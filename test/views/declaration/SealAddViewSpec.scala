@@ -36,7 +36,7 @@ class SealAddViewSpec extends PageWithButtonsSpec with Injector {
 
   override val typeAndViewInstance = (STANDARD, page(form(), containerId)(_, _))
 
-  def createView(frm: Form[Seal] = form(), mode: Mode = Normal): Document = page(frm, containerId)
+  def createView(frm: Form[Seal] = form()): Document = page(frm, containerId)
 
   "Seal Add View" should {
     val view = createView()
@@ -56,8 +56,7 @@ class SealAddViewSpec extends PageWithButtonsSpec with Injector {
       backLinkContainer.getElementById("back-link") must haveHref(SealController.displaySealSummary(containerId))
     }
 
-    val createViewWithMode: Mode => Document = mode => createView(mode = mode)
-    checkAllSaveButtonsAreDisplayed(createViewWithMode)
+    checkAllSaveButtonsAreDisplayed(createView())
   }
 
   "Seal Add View for invalid input" should {

@@ -33,7 +33,7 @@ class ZeroRatedForVatViewSpec extends PageWithButtonsSpec with Injector {
 
   override val typeAndViewInstance = (STANDARD, page(itemId, form(), false)(_, _))
 
-  def createView(mode: Mode = Normal, restrictedForZeroVat: Boolean = false)(implicit request: JourneyRequest[_]): Document =
+  def createView(restrictedForZeroVat: Boolean = false)(implicit request: JourneyRequest[_]): Document =
     page(itemId, form(), restrictedForZeroVat)
 
   "Which export procedure are you using Page" must {
@@ -105,8 +105,7 @@ class ZeroRatedForVatViewSpec extends PageWithButtonsSpec with Injector {
         backButton must haveHref(routes.TaricCodeSummaryController.displayPage(itemId))
       }
 
-      val createViewWithMode: Mode => Document = mode => createView(mode = mode)
-      checkAllSaveButtonsAreDisplayed(createViewWithMode)
+      checkAllSaveButtonsAreDisplayed(createView())
     }
 
     "display conditional text" when {

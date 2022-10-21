@@ -58,7 +58,7 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
     setupErrorHandler()
     authorizedUser()
     when(departureTransportHelper.transportCodes(any())).thenReturn(transportCodesForV1)
-    when(departureTransportPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(departureTransportPage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -68,7 +68,7 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
 
   def theResponseForm: Form[DepartureTransport] = {
     val formCaptor = ArgumentCaptor.forClass(classOf[Form[DepartureTransport]])
-    verify(departureTransportPage).apply(any(), formCaptor.capture())(any(), any())
+    verify(departureTransportPage).apply(formCaptor.capture())(any(), any())
     formCaptor.getValue
   }
 

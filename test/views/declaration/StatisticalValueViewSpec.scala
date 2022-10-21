@@ -38,7 +38,7 @@ class StatisticalValueViewSpec extends PageWithButtonsSpec with Injector {
 
   override val typeAndViewInstance = (STANDARD, page(itemId, form())(_, _))
 
-  def createView(frm: Form[StatisticalValue] = form(), mode: Mode = Normal): Document =
+  def createView(frm: Form[StatisticalValue] = form()): Document =
     page(itemId, frm)(journeyRequest(), messages)
 
   "Item Type View on empty page" should {
@@ -99,8 +99,7 @@ class StatisticalValueViewSpec extends PageWithButtonsSpec with Injector {
       backButton.getElementById("back-link") must haveHref(NactCodeSummaryController.displayPage(itemId))
     }
 
-    val createViewWithMode: Mode => Document = mode => createView(mode = mode)
-    checkAllSaveButtonsAreDisplayed(createViewWithMode)
+    checkAllSaveButtonsAreDisplayed(createView())
   }
 
   "Item Type View with entered data" should {

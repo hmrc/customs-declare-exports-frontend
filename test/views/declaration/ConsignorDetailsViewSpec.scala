@@ -57,7 +57,7 @@ class ConsignorDetailsViewSpec extends AddressViewSpec with Injector with PageWi
 
   override val typeAndViewInstance = (CLEARANCE, page(form())(_, _))
 
-  def createView(frm: Form[ConsignorDetails] = form(), mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document =
+  def createView(frm: Form[ConsignorDetails] = form())(implicit request: JourneyRequest[_]): Document =
     page(frm)(request, messages)
 
   "Consignor Details View on empty page" should {
@@ -131,8 +131,7 @@ class ConsignorDetailsViewSpec extends AddressViewSpec with Injector with PageWi
         view.getElementById("details_address_country").attr("value") mustBe empty
       }
 
-      val createViewWithMode: Mode => Document = mode => createView(mode = mode)
-      checkAllSaveButtonsAreDisplayed(createViewWithMode)
+      checkAllSaveButtonsAreDisplayed(createView())
     }
   }
 

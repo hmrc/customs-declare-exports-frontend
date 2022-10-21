@@ -47,98 +47,82 @@ class TransactionSectionViewSpec extends UnitViewSpec with ExportsTestHelper wit
     val view = section(data)(messages)
 
     "have total amount invoiced with change button" in {
-
       val row = view.getElementsByClass("item-amount-row")
 
       row must haveSummaryKey(messages("declaration.summary.transaction.itemAmount"))
       row must haveSummaryValue("GBP 123")
 
       row must haveSummaryActionsTexts("site.change", "declaration.summary.transaction.itemAmount.change")
-
-      row must haveSummaryActionsHref(InvoiceAndExchangeRateController.displayPage())
+      row must haveSummaryActionWithPlaceholder(InvoiceAndExchangeRateController.displayPage())
     }
 
     "have exchange rate with change button" in {
-
       val row = view.getElementsByClass("exchange-rate-row")
 
       row must haveSummaryKey(messages("declaration.summary.transaction.exchangeRate"))
       row must haveSummaryValue("1.23")
 
       row must haveSummaryActionsTexts("site.change", "declaration.summary.transaction.exchangeRate.change")
-
-      row must haveSummaryActionsHref(InvoiceAndExchangeRateController.displayPage())
+      row must haveSummaryActionWithPlaceholder(InvoiceAndExchangeRateController.displayPage())
     }
 
     "have total package with change button" in {
-
       val row = view.getElementsByClass("total-no-of-packages-row")
 
       row must haveSummaryKey(messages("declaration.summary.transaction.totalNoOfPackages"))
       row must haveSummaryValue("12")
 
       row must haveSummaryActionsTexts("site.change", "declaration.summary.transaction.totalNoOfPackages.change")
-
-      row must haveSummaryActionsHref(TotalPackageQuantityController.displayPage())
+      row must haveSummaryActionWithPlaceholder(TotalPackageQuantityController.displayPage())
     }
 
     "have nature of transaction with change button" in {
-
       val row = view.getElementsByClass("nature-of-transaction-row")
 
       row must haveSummaryKey(messages("declaration.summary.transaction.natureOfTransaction"))
       row must haveSummaryValue(messages("declaration.summary.transaction.natureOfTransaction.2"))
 
       row must haveSummaryActionsTexts("site.change", "declaration.summary.transaction.natureOfTransaction.change")
-
-      row must haveSummaryActionsHref(NatureOfTransactionController.displayPage())
+      row must haveSummaryActionWithPlaceholder(NatureOfTransactionController.displayPage())
     }
 
     "have related documents section" in {
-
       view.getElementById("previous-documents").text() mustNot be(empty)
     }
 
     "not display exchange rate when question not asked" in {
       val view = section(aDeclarationAfter(data, withoutTotalNumberOfItems()))(messages)
-
       view.getElementsByClass("exchange-rate-row") mustBe empty
     }
 
     "not display total package when question not asked" in {
       val view = section(aDeclarationAfter(data, withoutTotalPackageQuantity))(messages)
-
       view.getElementsByClass("total-no-of-packages-row") mustBe empty
     }
 
     "not display nature of transaction when question not asked" in {
       val view = section(aDeclarationAfter(data, withoutNatureOfTransaction))(messages)
-
       view.getElementsByClass("nature-of-transaction-row") mustBe empty
     }
 
     "not display related documents section when question not asked" in {
       val view = section(aDeclarationAfter(data, withoutPreviousDocuments()))(messages)
-
       view.getElementsByClass("previous-documents-row") mustBe empty
     }
 
     "not display exchange rate row when no exchange rate given" in {
       val view = section(aDeclarationAfter(dataWithNoExchangeRate))(messages)
-
       view.getElementsByClass("exchange-rate-row") must be(empty)
     }
 
     "display 'Less than £100,000' when Yes answered on exchange rate choice page" in {
       val view = section(aDeclaration(withTotalNumberOfItems()))(messages)
-
       view.getElementsByClass("item-amount-row") must haveSummaryValue(messages("declaration.totalAmountInvoiced.value.lessThan100000"))
     }
 
     "have link to exchange rate choice page when Yes answered on exchange rate choice page" in {
       val view = section(aDeclaration(withTotalNumberOfItems()))(messages)
-
-      view.getElementsByClass("item-amount-row") must haveSummaryActionsHref(InvoiceAndExchangeRateChoiceController.displayPage())
+      view.getElementsByClass("item-amount-row") must haveSummaryActionWithPlaceholder(InvoiceAndExchangeRateChoiceController.displayPage())
     }
 
     "have the correct order of rows when all displayed" in {

@@ -25,18 +25,18 @@
 @import config.AppConfig
 
 @this(
-        govukLayout: gdsMainTemplate,
-        govukButton: GovukButton,
-        errorSummary: errorSummary,
-        exportsInputText: exportsInputText,
-        saveButtons: saveButtons,
-        tariffExpander: tariffExpander,
-        heading: heading,
-        paragraphBody: paragraphBody,
-        formHelper: FormWithCSRF,
-        sectionHeader: sectionHeader,
-        navigator: Navigator,
-        appConfig: AppConfig
+    govukLayout: gdsMainTemplate,
+    govukButton: GovukButton,
+    errorSummary: errorSummary,
+    exportsInputText: exportsInputText,
+    saveButtons: saveButtons,
+    tariffExpander: tariffExpander,
+    heading: heading,
+    paragraphBody: paragraphBody,
+    formHelper: FormWithCSRF,
+    sectionHeader: sectionHeader,
+    navigator: Navigator,
+    appConfig: AppConfig
 )
 
 @(form: Form[WarehouseIdentification])(implicit request: JourneyRequest[_], messages: Messages)

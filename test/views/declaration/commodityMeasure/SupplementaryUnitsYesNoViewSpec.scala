@@ -44,7 +44,7 @@ class SupplementaryUnitsYesNoViewSpec extends UnitViewSpec with Injector {
 
   val page = instanceOf[supplementary_units_yes_no]
 
-  def createView(frm: Form[SupplementaryUnits] = form(true), mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document =
+  def createView(frm: Form[SupplementaryUnits] = form(true))(implicit request: JourneyRequest[_]): Document =
     page(itemId, frm)(request, messages)
 
   "SupplementaryUnitsYesNo View" when {
@@ -146,8 +146,7 @@ class SupplementaryUnitsYesNoViewSpec extends UnitViewSpec with Injector {
           )
         }
 
-        val createViewWithMode: Mode => Document = mode => createView(mode = mode)
-        checkAllSaveButtonsAreDisplayed(createViewWithMode)
+        checkAllSaveButtonsAreDisplayed(createView())
 
         "not display any error when the value entered in the 'supplementaryUnits' field is valid" in {
           val view = createView(form(true).fillAndValidate(SupplementaryUnits(Some("100"))))

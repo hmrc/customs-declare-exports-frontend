@@ -16,13 +16,13 @@
 
 package controllers.declaration
 
-import scala.concurrent.ExecutionContext
 import base.ControllerSpec
 import connectors.CodeListConnector
+import controllers.declaration.routes.{IsExsController, RepresentativeAgentController}
 import forms.common.{Address, Eori}
 import forms.declaration.EntityDetails
 import forms.declaration.exporter.ExporterDetails
-import models.{DeclarationType}
+import models.DeclarationType._
 import models.codes.Country
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -36,6 +36,7 @@ import play.twirl.api.HtmlFormat
 import views.html.declaration.exporter_address
 
 import scala.collection.immutable.ListMap
+import scala.concurrent.ExecutionContext
 
 class ExporterDetailsControllerSpec extends ControllerSpec with OptionValues {
 
@@ -56,7 +57,7 @@ class ExporterDetailsControllerSpec extends ControllerSpec with OptionValues {
 
   def theResponseForm: Form[ExporterDetails] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[ExporterDetails]])
-    verify(exporter_address).apply(any(), captor.capture())(any(), any())
+    verify(exporter_address).apply(captor.capture())(any(), any())
     captor.getValue
   }
 
@@ -69,7 +70,7 @@ class ExporterDetailsControllerSpec extends ControllerSpec with OptionValues {
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    when(exporter_address.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(exporter_address.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
     when(mockCodeListConnector.getCountryCodes(any())).thenReturn(ListMap("GB" -> Country("United Kingdom, Great Britain, Northern Ireland", "GB")))
   }
 
@@ -79,7 +80,7 @@ class ExporterDetailsControllerSpec extends ControllerSpec with OptionValues {
   }
 
   "Exporter Details Controller" should {
-    onJourney(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY, DeclarationType.OCCASIONAL, DeclarationType.SIMPLIFIED) { request =>
+    onJourney(STANDARD, SUPPLEMENTARY, OCCASIONAL, SIMPLIFIED) { request =>
       "return 200 OK" when {
 
         "details are empty" in {
@@ -116,12 +117,12 @@ class ExporterDetailsControllerSpec extends ControllerSpec with OptionValues {
           val response = await(controller.saveAddress()(postRequest(body)))
 
           response mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.RepresentativeAgentController.displayPage()
+          thePageNavigatedTo mustBe RepresentativeAgentController.displayPage()
         }
       }
     }
 
-    onJourney(DeclarationType.CLEARANCE) { request =>
+    onJourney(CLEARANCE) { request =>
       "return 303 (SEE_OTHER) and redirect to Is Exs page" when {
         "correct form is submitted" in {
           withNewCaching(request.cacheModel)
@@ -129,7 +130,7 @@ class ExporterDetailsControllerSpec extends ControllerSpec with OptionValues {
           val response = await(controller.saveAddress()(postRequest(body)))
 
           response mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.IsExsController.displayPage()
+          thePageNavigatedTo mustBe IsExsController.displayPage()
         }
       }
     }

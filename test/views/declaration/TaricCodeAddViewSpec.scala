@@ -31,7 +31,7 @@ class TaricCodeAddViewSpec extends UnitViewSpec with Injector {
 
   val page = instanceOf[taric_code_add]
 
-  def createView(frm: Form[TaricCode] = form(), mode: Mode = Normal): Document =
+  def createView(frm: Form[TaricCode] = form()): Document =
     page(itemId, frm)(journeyRequest(), messages)
 
   "Taric Code Add View" should {
@@ -46,8 +46,7 @@ class TaricCodeAddViewSpec extends UnitViewSpec with Injector {
       backLinkContainer.getElementById("back-link") must haveHref(TaricCodeSummaryController.displayPage(itemId))
     }
 
-    val createViewWithMode: Mode => Document = mode => createView(mode = mode)
-    checkAllSaveButtonsAreDisplayed(createViewWithMode)
+    checkAllSaveButtonsAreDisplayed(createView())
   }
 
   "Taric Code Add View for invalid input" should {

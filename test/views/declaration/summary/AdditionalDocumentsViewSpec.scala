@@ -127,7 +127,7 @@ class AdditionalDocumentsViewSpec extends UnitViewSpec with ExportsTestHelper wi
     licencesRow must haveSummaryKey(messages("declaration.summary.items.item.licences"))
     licencesRow must haveSummaryValue(expectedValue)
     licencesRow must haveSummaryActionsTexts("site.change", "declaration.summary.items.item.additionalDocuments.changeAll", "1")
-    licencesRow must haveSummaryActionsHref(routes.IsLicenceRequiredController.displayPage("itemId"))
+    licencesRow must haveSummaryActionWithPlaceholder(routes.IsLicenceRequiredController.displayPage("itemId"))
   }
 
   private def verifyAdditionalDocumentsEq2No(view: Appendable): Assertion = {
@@ -135,7 +135,7 @@ class AdditionalDocumentsViewSpec extends UnitViewSpec with ExportsTestHelper wi
     row must haveSummaryKey(messages("declaration.summary.items.item.additionalDocuments"))
     row must haveSummaryValue("None")
     row must haveSummaryActionsTexts("site.change", "declaration.summary.items.item.additionalDocuments.changeAll", "1")
-    row must haveSummaryActionsHref(routes.AdditionalDocumentsController.displayPage("itemId"))
+    row must haveSummaryActionWithPlaceholder(routes.AdditionalDocumentsController.displayPage("itemId"))
   }
 
   private def verifyAdditionalDocumentsTable(view: Appendable, actionsEnabled: Boolean = true): Assertion = {
@@ -158,7 +158,7 @@ class AdditionalDocumentsViewSpec extends UnitViewSpec with ExportsTestHelper wi
     val rowChange = row.getElementsByClass("govuk-table__cell").get(2)
     if (actionsEnabled) {
       val rowChangeLink = rowChange.getElementsByTag("a").first
-      rowChangeLink must haveHref(routes.AdditionalDocumentsController.displayPage("itemId"))
+      rowChangeLink must haveHrefWithPlaceholder(routes.AdditionalDocumentsController.displayPage("itemId"))
       rowChangeLink must containMessage("site.change")
       rowChangeLink must containMessage("declaration.summary.items.item.additionalDocuments.change", s"typ$id", s"identifier$id", 1)
     } else {

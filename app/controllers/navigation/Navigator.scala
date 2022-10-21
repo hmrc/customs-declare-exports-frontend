@@ -613,7 +613,7 @@ class Navigator @Inject() (
     }
 
     commonCacheDependent.orElse(common).orElse(specific)(page) match {
-      case mapping: Call => mapping
+      case mapping: Call                         => mapping
       case mapping: (ExportsDeclaration => Call) => mapping(request.cacheModel)
     }
   }
@@ -632,10 +632,10 @@ class Navigator @Inject() (
     }
   }
 
-  def backLinkForAdditionalInformation(page: DeclarationPage, itemId: String)(
-    implicit request: JourneyRequest[_],
-    ec: ExecutionContext
-  ): Future[Call] = {
+  def backLinkForAdditionalInformation(
+    page: DeclarationPage,
+    itemId: String
+  )(implicit request: JourneyRequest[_], ec: ExecutionContext): Future[Call] = {
     def pageSelection: Future[Call] =
       tariffApiService.retrieveCommodityInfoIfAny(request.cacheModel, itemId) map {
         case Left(SupplementaryUnitsNotRequired) => routes.CommodityMeasureController.displayPage(itemId)

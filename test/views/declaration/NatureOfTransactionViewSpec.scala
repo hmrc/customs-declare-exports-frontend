@@ -36,7 +36,7 @@ class NatureOfTransactionViewSpec extends PageWithButtonsSpec with Injector {
 
   override val typeAndViewInstance = (STANDARD, page(form())(_, _))
 
-  def createView(frm: Form[NatureOfTransaction] = form(), mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document =
+  def createView(frm: Form[NatureOfTransaction] = form())(implicit request: JourneyRequest[_]): Document =
     page(frm)(request, messages)
 
   "Nature Of Transaction View on empty page" should {
@@ -125,8 +125,7 @@ class NatureOfTransactionViewSpec extends PageWithButtonsSpec with Injector {
         backButton.getElementById("back-link") must haveHref(TotalPackageQuantityController.displayPage())
       }
 
-      val createViewWithMode: Mode => Document = mode => createView(mode = mode)
-      checkAllSaveButtonsAreDisplayed(createViewWithMode)
+      checkAllSaveButtonsAreDisplayed(createView())
     }
   }
 

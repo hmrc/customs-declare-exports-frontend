@@ -17,6 +17,7 @@
 package controllers.declaration
 
 import base.ControllerSpec
+import controllers.routes.RootController
 import forms.declaration.commodityMeasure.CommodityMeasure
 import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
 import models.declaration.{CommodityMeasure => CM, ExportItem}
@@ -103,7 +104,7 @@ class CommodityMeasureControllerSpec extends ControllerSpec {
           val result = controller.submitPage("itemId")(postRequest(incorrectForm))
 
           status(result) must be(BAD_REQUEST)
-          verify(commodityMeasurePage).apply(any(), any(), any())(any(), any())
+          verify(commodityMeasurePage).apply(any(), any())(any(), any())
         }
       }
     }
@@ -143,7 +144,7 @@ class CommodityMeasureControllerSpec extends ControllerSpec {
           val response = controller.displayPage("itemId").apply(getRequest())
 
           status(response) must be(SEE_OTHER)
-          redirectLocation(response) mustBe Some(controllers.routes.RootController.displayPage().url)
+          redirectLocation(response) mustBe Some(RootController.displayPage().url)
         }
 
         "the journey is not valid for submitPage" in {
@@ -152,7 +153,7 @@ class CommodityMeasureControllerSpec extends ControllerSpec {
           val response = controller.submitPage("itemId").apply(getRequest())
 
           status(response) must be(SEE_OTHER)
-          redirectLocation(response) mustBe Some(controllers.routes.RootController.displayPage().url)
+          redirectLocation(response) mustBe Some(RootController.displayPage().url)
         }
       }
     }

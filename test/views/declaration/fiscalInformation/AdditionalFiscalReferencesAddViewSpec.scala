@@ -53,7 +53,7 @@ class AdditionalFiscalReferencesAddViewSpec extends PageWithButtonsSpec with Inj
 
   override val typeAndViewInstance = (STANDARD, page(itemId, form(), Seq.empty)(_, _))
 
-  def createView(frm: Form[AdditionalFiscalReference] = form(), mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document =
+  def createView(frm: Form[AdditionalFiscalReference] = form())(implicit request: JourneyRequest[_]): Document =
     page(itemId, frm, Seq.empty)
 
   "Additional Fiscal References View on empty page" should {
@@ -94,8 +94,7 @@ class AdditionalFiscalReferencesAddViewSpec extends PageWithButtonsSpec with Inj
         detailsSummaryText.text() mustBe messages(titleKey)
       }
 
-      val createViewWithMode: Mode => Document = mode => createView(mode = mode)
-      checkAllSaveButtonsAreDisplayed(createViewWithMode)
+      checkAllSaveButtonsAreDisplayed(createView())
     }
   }
 

@@ -73,7 +73,7 @@ class SupervisingCustomsOfficeControllerSpec extends ControllerSpec with BeforeA
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    when(supervisingCustomsOfficeTemplate.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(supervisingCustomsOfficeTemplate.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -89,7 +89,7 @@ class SupervisingCustomsOfficeControllerSpec extends ControllerSpec with BeforeA
 
   def theResponseForm: Form[SupervisingCustomsOffice] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[SupervisingCustomsOffice]])
-    verify(supervisingCustomsOfficeTemplate).apply(any(), captor.capture())(any(), any())
+    verify(supervisingCustomsOfficeTemplate).apply(captor.capture())(any(), any())
     captor.getValue
   }
 
@@ -109,7 +109,7 @@ class SupervisingCustomsOfficeControllerSpec extends ControllerSpec with BeforeA
       await(controller.displayPage()(getRequest()))
 
       verify(mockExportsCacheService).get(any())(any())
-      verify(supervisingCustomsOfficeTemplate).apply(any(), any())(any(), any())
+      verify(supervisingCustomsOfficeTemplate).apply(any())(any(), any())
     }
   }
 

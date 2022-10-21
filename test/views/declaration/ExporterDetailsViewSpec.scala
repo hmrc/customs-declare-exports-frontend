@@ -57,7 +57,7 @@ class ExporterDetailsViewSpec extends AddressViewSpec with PageWithButtonsSpec w
 
   override val typeAndViewInstance = (STANDARD, page(ExporterDetails.form(STANDARD))(_, _))
 
-  def createView(form: Form[ExporterDetails], mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document =
+  def createView(form: Form[ExporterDetails])(implicit request: JourneyRequest[_]): Document =
     page(form)(request, messages)
 
   "Exporter Details View on empty page" should {
@@ -105,8 +105,7 @@ class ExporterDetailsViewSpec extends AddressViewSpec with PageWithButtonsSpec w
         backButton.attr("href") mustBe ExporterEoriNumberController.displayPage().url
       }
 
-      val createViewWithMode: Mode => Document = mode => createView(form(), mode = mode)
-      checkAllSaveButtonsAreDisplayed(createViewWithMode)
+      checkAllSaveButtonsAreDisplayed(createView(form))
     }
   }
 

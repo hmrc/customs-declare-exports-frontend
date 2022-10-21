@@ -24,7 +24,7 @@ import forms.declaration.TransportPayment
 import forms.declaration.TransportPayment.cash
 import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
 import models.requests.JourneyRequest
-import models.{DeclarationType}
+import models.DeclarationType
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
@@ -63,7 +63,7 @@ class ExpressConsignmentControllerSpec extends ControllerSpec {
 
   def theResponseForm: Form[YesNoAnswer] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[YesNoAnswer]])
-    verify(expressConsignmentPage).apply(any(), captor.capture())(any(), any())
+    verify(expressConsignmentPage).apply(captor.capture())(any(), any())
     captor.getValue
   }
 
@@ -106,7 +106,6 @@ class ExpressConsignmentControllerSpec extends ControllerSpec {
       }
 
       "return 400 (BAD_REQUEST)" when {
-
         "neither Yes or No have been selected on the page" in {
           val incorrectForm = Json.obj("yesNo" -> "")
 

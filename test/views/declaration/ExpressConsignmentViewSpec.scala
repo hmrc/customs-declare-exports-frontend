@@ -24,7 +24,7 @@ import forms.common.YesNoAnswer
 import forms.declaration.ModeOfTransportCode.meaningfulModeOfTransportCodes
 import forms.declaration.TransportLeavingTheBorder
 import models.DeclarationType._
-import models.{DeclarationType}
+import models.DeclarationType
 import models.declaration.Transport
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
@@ -42,7 +42,7 @@ class ExpressConsignmentViewSpec extends UnitViewSpec with CommonMessages with I
   private val page = instanceOf[express_consignment]
   private val form: Form[YesNoAnswer] = YesNoAnswer.form()
 
-  private def createView(mode: Mode = Mode.Normal, form: Form[YesNoAnswer] = form)(implicit request: JourneyRequest[_]): Document =
+  private def createView(form: Form[YesNoAnswer] = form)(implicit request: JourneyRequest[_]): Document =
     page(form)(request, messages)
 
   private val msgKey = "declaration.transportInformation.expressConsignment"

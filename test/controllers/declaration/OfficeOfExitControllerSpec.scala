@@ -18,7 +18,7 @@ package controllers.declaration
 
 import base.ControllerSpec
 import forms.declaration.officeOfExit.OfficeOfExit
-import models.{DeclarationType}
+import models.DeclarationType._
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -44,18 +44,18 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
   )(ec)
 
   def checkViewInteractions(noOfInvocations: Int = 1): Unit =
-    verify(mockOfficeOfExitPage, times(noOfInvocations)).apply(any(), any())(any(), any())
+    verify(mockOfficeOfExitPage, times(noOfInvocations)).apply(any())(any(), any())
 
   def theResponseForm: Form[OfficeOfExit] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[OfficeOfExit]])
-    verify(mockOfficeOfExitPage).apply(any(), captor.capture())(any(), any())
+    verify(mockOfficeOfExitPage).apply(captor.capture())(any(), any())
     captor.getValue
   }
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    when(mockOfficeOfExitPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockOfficeOfExitPage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -112,9 +112,9 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
   }
 
   "should return a 303 (SEE_OTHER)" when {
-    onJourney(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY) { request =>
-      "a UK Office of Exit is being used" in {
 
+    onJourney(STANDARD, SUPPLEMENTARY) { request =>
+      "a UK Office of Exit is being used" in {
         withNewCaching(request.cacheModel)
 
         val officeOfExitInput = "GB123456"
@@ -130,9 +130,8 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
       }
     }
 
-    onJourney(DeclarationType.CLEARANCE, DeclarationType.OCCASIONAL, DeclarationType.SIMPLIFIED) { request =>
+    onJourney(CLEARANCE, OCCASIONAL, SIMPLIFIED) { request =>
       "a UK Office of Exit is being used" in {
-
         withNewCaching(request.cacheModel)
 
         val officeOfExitInput = "GB123456"

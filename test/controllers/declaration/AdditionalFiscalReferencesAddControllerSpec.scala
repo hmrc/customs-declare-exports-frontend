@@ -20,9 +20,9 @@ import base.ControllerSpec
 import connectors.CodeListConnector
 import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData}
 import mock.{ErrorHandlerMocks, ItemActionMocks}
-import models.declaration.ExportItem
-import models.{DeclarationType, ExportsDeclaration}
+import models.DeclarationType
 import models.codes.Country
+import models.declaration.ExportItem
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
@@ -104,9 +104,8 @@ class AdditionalFiscalReferencesAddControllerSpec extends ControllerSpec with It
       }
 
       "user adds duplicated item" in {
-        val itemCacheData = ExportItem("itemId",
-          additionalFiscalReferencesData = Some(AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("PL", "12345"))))
-        )
+        val itemCacheData =
+          ExportItem("itemId", additionalFiscalReferencesData = Some(AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("PL", "12345")))))
         val cachedData = aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withItem(itemCacheData))
         withNewCaching(cachedData)
 
@@ -119,7 +118,8 @@ class AdditionalFiscalReferencesAddControllerSpec extends ControllerSpec with It
       }
 
       "user reaches maximum amount of items" in {
-        val itemCacheData = ExportItem("itemId",
+        val itemCacheData = ExportItem(
+          "itemId",
           additionalFiscalReferencesData = Some(AdditionalFiscalReferencesData(Seq.fill(99)(AdditionalFiscalReference("PL", "12345"))))
         )
         val cachedData = aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withItem(itemCacheData))

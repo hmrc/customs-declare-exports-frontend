@@ -44,11 +44,9 @@ class PackageInformationViewSpec extends PageWithButtonsSpec with Injector {
 
   val page = instanceOf[package_information]
 
-  def createView(
-    frm: Form[YesNoAnswer] = form(),
-    packages: Seq[PackageInformation] = List(PackageInformationViewSpec.packageInformation),
-    mode: Mode = Normal
-  )(implicit request: JourneyRequest[_]): Document = page(itemId, frm, packages)(request, messages)
+  def createView(frm: Form[YesNoAnswer] = form(), packages: Seq[PackageInformation] = List(PackageInformationViewSpec.packageInformation))(
+    implicit request: JourneyRequest[_]
+  ): Document = page(itemId, frm, packages)(request, messages)
 
   "have proper messages for labels" in {
     messages must haveTranslationFor("declaration.packageInformation.title")
@@ -114,8 +112,7 @@ class PackageInformationViewSpec extends PageWithButtonsSpec with Injector {
         view.getElementById("section-header") must containMessage("declaration.section.5")
       }
 
-      val createViewWithMode: Mode => Document = mode => createView(mode = mode)
-      checkAllSaveButtonsAreDisplayed(createViewWithMode)
+      checkAllSaveButtonsAreDisplayed(createView())
     }
   }
 

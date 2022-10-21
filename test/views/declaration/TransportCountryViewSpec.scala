@@ -64,7 +64,7 @@ class TransportCountryViewSpec extends PageWithButtonsSpec with Injector {
     (STANDARD, page(maritime, form(maritime))(_, _))
   }
 
-  def createView(form: Form[TransportCountry], transportMode: String, mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document =
+  def createView(form: Form[TransportCountry], transportMode: String)(implicit request: JourneyRequest[_]): Document =
     page(transportMode, form)(request, messages)
 
   "TransportCountry View" when {
@@ -132,9 +132,7 @@ class TransportCountryViewSpec extends PageWithButtonsSpec with Injector {
                 label.id mustBe s"${transportCountry}-label"
               }
 
-              val createViewWithMode: Mode => Document =
-                mode => createView(form(transportMode), transportMode, mode = mode)(journeyRequest(declarationType))
-              checkAllSaveButtonsAreDisplayed(createViewWithMode)
+              checkAllSaveButtonsAreDisplayed(view)
             }
 
             "display an error" when {

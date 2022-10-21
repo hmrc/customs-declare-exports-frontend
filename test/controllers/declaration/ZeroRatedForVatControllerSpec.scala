@@ -17,11 +17,11 @@
 package controllers.declaration
 
 import base.{ControllerSpec, Injector}
-import forms.declaration.ZeroRatedForVat._
 import forms.declaration.NactCode
 import forms.declaration.NactCode.nactCodeKey
+import forms.declaration.ZeroRatedForVat._
 import mock.ErrorHandlerMocks
-import models.{DeclarationType}
+import models.DeclarationType
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
@@ -56,7 +56,7 @@ class ZeroRatedForVatControllerSpec extends ControllerSpec with ErrorHandlerMock
     authorizedUser()
     withNewCaching(aDeclaration(withType(DeclarationType.STANDARD)))
 
-    when(zeroRatedForVatPage(any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(zeroRatedForVatPage(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -66,7 +66,7 @@ class ZeroRatedForVatControllerSpec extends ControllerSpec with ErrorHandlerMock
 
   def theResponseForm: Form[NactCode] = {
     val formCaptor = ArgumentCaptor.forClass(classOf[Form[NactCode]])
-    verify(zeroRatedForVatPage)(any(), any(), formCaptor.capture(), any())(any(), any())
+    verify(zeroRatedForVatPage)(any(), formCaptor.capture(), any())(any(), any())
     formCaptor.getValue
   }
 
@@ -81,14 +81,11 @@ class ZeroRatedForVatControllerSpec extends ControllerSpec with ErrorHandlerMock
     "return 200 (OK)" when {
 
       "display page method is invoked with empty cache" in {
-
         val result = controller.displayPage(item.id)(getRequest())
-
         status(result) must be(OK)
       }
 
       "display page method is invoked with data in cache" in {
-
         withNewCaching(declarationWithZeroRated)
 
         val result = controller.displayPage(item.id)(getRequest())
@@ -100,7 +97,6 @@ class ZeroRatedForVatControllerSpec extends ControllerSpec with ErrorHandlerMock
     "return 400 (BAD_REQUEST)" when {
 
       "user provide wrong action" in {
-
         val wrongAction = Seq(("zeroRatedForVat", VatZeroRatedYes), ("WrongAction", ""))
 
         val result = controller.submitForm(item.id)(postRequestAsFormUrlEncoded(wrongAction: _*))
@@ -109,56 +105,50 @@ class ZeroRatedForVatControllerSpec extends ControllerSpec with ErrorHandlerMock
       }
 
       "incorrect data" in {
-
         val wrongAction = Seq(("zeroRatedForVat", ""), saveAndContinueActionUrlEncoded)
 
         val result = controller.submitForm(item.id)(postRequestAsFormUrlEncoded(wrongAction: _*))
 
         status(result) must be(BAD_REQUEST)
       }
-
     }
 
     "return 303 (SEE_OTHER)" when {
 
       "VatZeroRatedYes" in {
-
         val correctForm = Seq((nactCodeKey, VatZeroRatedYes), saveAndContinueActionUrlEncoded)
 
         val result = controller.submitForm(item.id)(postRequestAsFormUrlEncoded(correctForm: _*))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.NactCodeSummaryController.displayPage(item.id)
+        thePageNavigatedTo mustBe routes.NactCodeSummaryController.displayPage(item.id)
       }
 
       "VatZeroRatedReduced" in {
-
         val correctForm = Seq((nactCodeKey, VatZeroRatedReduced), saveAndContinueActionUrlEncoded)
 
         val result = controller.submitForm(item.id)(postRequestAsFormUrlEncoded(correctForm: _*))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.NactCodeSummaryController.displayPage(item.id)
+        thePageNavigatedTo mustBe routes.NactCodeSummaryController.displayPage(item.id)
       }
 
       "VatZeroRatedExempt" in {
-
         val correctForm = Seq((nactCodeKey, VatZeroRatedExempt), saveAndContinueActionUrlEncoded)
 
         val result = controller.submitForm(item.id)(postRequestAsFormUrlEncoded(correctForm: _*))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.NactCodeSummaryController.displayPage(item.id)
+        thePageNavigatedTo mustBe routes.NactCodeSummaryController.displayPage(item.id)
       }
 
       "VatZeroRatedPaid" in {
-
         val correctForm = Seq((nactCodeKey, VatZeroRatedPaid), saveAndContinueActionUrlEncoded)
 
         val result = controller.submitForm(item.id)(postRequestAsFormUrlEncoded(correctForm: _*))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.NactCodeSummaryController.displayPage(item.id)
+        thePageNavigatedTo mustBe routes.NactCodeSummaryController.displayPage(item.id)
       }
     }
   }

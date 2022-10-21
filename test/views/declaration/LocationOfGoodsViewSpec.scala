@@ -63,7 +63,7 @@ class LocationOfGoodsViewSpec extends PageWithButtonsSpec with Injector {
   override val typeAndViewInstance = (STANDARD, page(form())(_, _))
 
   "Goods Location View" when {
-    def createView(mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document = page(form())
+    def createView()(implicit request: JourneyRequest[_]): Document = page(form())
 
     val prefix = "declaration.locationOfGoods"
 
@@ -121,8 +121,7 @@ class LocationOfGoodsViewSpec extends PageWithButtonsSpec with Injector {
           removeBlanksIfAnyBeforeDot(tariffDetails) mustBe expectedText
         }
 
-        val createViewWithMode: Mode => Document = mode => createView(mode = mode)
-        checkAllSaveButtonsAreDisplayed(createViewWithMode)
+        checkAllSaveButtonsAreDisplayed(createView())
       }
     }
 

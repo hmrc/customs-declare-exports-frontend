@@ -59,8 +59,8 @@ class SupplementaryUnitsControllerSpec extends ControllerSpec {
     super.beforeEach()
     authorizedUser()
     when(tariffApiService.retrieveCommodityInfoIfAny(any(), any())).thenReturn(Future.successful(Left(CommodityCodeNotFound)))
-    when(supplementaryUnitsPage.apply(any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
-    when(supplementaryUnitsYesNoPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(supplementaryUnitsPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(supplementaryUnitsYesNoPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -70,13 +70,13 @@ class SupplementaryUnitsControllerSpec extends ControllerSpec {
 
   def responseMandatoryForm: Form[SupplementaryUnits] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[SupplementaryUnits]])
-    verify(supplementaryUnitsPage).apply(any(), any(), captor.capture(), any())(any(), any())
+    verify(supplementaryUnitsPage).apply(any(), captor.capture(), any())(any(), any())
     captor.getValue
   }
 
   def responseYesNoForm: Form[SupplementaryUnits] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[SupplementaryUnits]])
-    verify(supplementaryUnitsYesNoPage).apply(any(), any(), captor.capture())(any(), any())
+    verify(supplementaryUnitsYesNoPage).apply(any(), captor.capture())(any(), any())
     captor.getValue
   }
 
@@ -212,7 +212,7 @@ class SupplementaryUnitsControllerSpec extends ControllerSpec {
             val result = controller.submitPage("itemId")(postRequest(incorrectForm))
 
             status(result) must be(BAD_REQUEST)
-            verify(supplementaryUnitsYesNoPage).apply(any(), any(), any())(any(), any())
+            verify(supplementaryUnitsYesNoPage).apply(any(), any())(any(), any())
           }
         }
       }
@@ -245,7 +245,7 @@ class SupplementaryUnitsControllerSpec extends ControllerSpec {
             val result = controller.submitPage("itemId")(postRequest(incorrectForm))
 
             status(result) must be(BAD_REQUEST)
-            verify(supplementaryUnitsPage).apply(any(), any(), any(), any())(any(), any())
+            verify(supplementaryUnitsPage).apply(any(), any(), any())(any(), any())
           }
         }
       }

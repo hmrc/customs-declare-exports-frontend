@@ -17,7 +17,12 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.declaration.routes.{ItemsSummaryController, ProcedureCodesController, TransportLeavingTheBorderController, WarehouseIdentificationController}
+import controllers.declaration.routes.{
+  ItemsSummaryController,
+  ProcedureCodesController,
+  TransportLeavingTheBorderController,
+  WarehouseIdentificationController
+}
 import controllers.helpers.SupervisingCustomsOfficeHelper
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer

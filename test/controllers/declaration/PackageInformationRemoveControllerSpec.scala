@@ -22,7 +22,7 @@ import forms.declaration.PackageInformation
 import mock.ErrorHandlerMocks
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, times, verify, verifyNoInteractions, when}
+import org.mockito.Mockito._
 import org.scalatest.OptionValues
 import play.api.data.Form
 import play.api.mvc.{AnyContentAsEmpty, Request}
@@ -49,7 +49,7 @@ class PackageInformationRemoveControllerSpec extends ControllerSpec with OptionV
     super.beforeEach()
     authorizedUser()
     setupErrorHandler()
-    when(mockRemovePage.apply(any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockRemovePage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -65,18 +65,18 @@ class PackageInformationRemoveControllerSpec extends ControllerSpec with OptionV
 
   def theResponseForm: Form[YesNoAnswer] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[YesNoAnswer]])
-    verify(mockRemovePage).apply(any(), any(), any(), captor.capture())(any(), any())
+    verify(mockRemovePage).apply(any(), any(), captor.capture())(any(), any())
     captor.getValue
   }
 
   def thePackageInformation: PackageInformation = {
     val captor = ArgumentCaptor.forClass(classOf[PackageInformation])
-    verify(mockRemovePage).apply(any(), any(), captor.capture(), any())(any(), any())
+    verify(mockRemovePage).apply(any(), captor.capture(), any())(any(), any())
     captor.getValue
   }
 
-  private def verifyRemovePageInvoked(numberOfTimes: Int = 1) =
-    verify(mockRemovePage, times(numberOfTimes)).apply(any(), any(), any(), any())(any(), any())
+  private def verifyRemovePageInvoked(numberOfTimes: Int = 1): HtmlFormat.Appendable =
+    verify(mockRemovePage, times(numberOfTimes)).apply(any(), any(), any())(any(), any())
 
   val id = "pkgId"
   val packageInformation = PackageInformation(id, Some("AB"), Some(1), Some("SHIP"))
@@ -100,6 +100,7 @@ class PackageInformationRemoveControllerSpec extends ControllerSpec with OptionV
       }
 
       "return 400 (BAD_REQUEST)" when {
+
         "user submits an invalid answer" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
 
@@ -129,9 +130,10 @@ class PackageInformationRemoveControllerSpec extends ControllerSpec with OptionV
           verifyNoInteractions(mockRemovePage)
           verify(mockErrorHandler).displayErrorPage()(any())
         }
-
       }
+
       "return 303 (SEE_OTHER)" when {
+
         "user submits 'Yes' answer" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
 
@@ -139,7 +141,7 @@ class PackageInformationRemoveControllerSpec extends ControllerSpec with OptionV
           val result = controller.submitForm(item.id, id)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.PackageInformationSummaryController.displayPage(item.id)
+          thePageNavigatedTo mustBe routes.PackageInformationSummaryController.displayPage(item.id)
 
           theCacheModelUpdated.itemBy(item.id).flatMap(_.packageInformation) mustBe Some(Seq.empty)
         }
@@ -151,12 +153,11 @@ class PackageInformationRemoveControllerSpec extends ControllerSpec with OptionV
           val result = controller.submitForm(item.id, id)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.PackageInformationSummaryController.displayPage(item.id)
+          thePageNavigatedTo mustBe routes.PackageInformationSummaryController.displayPage(item.id)
 
           verifyTheCacheIsUnchanged()
         }
       }
     }
-
   }
 }

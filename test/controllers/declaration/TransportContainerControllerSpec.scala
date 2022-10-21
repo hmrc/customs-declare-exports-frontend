@@ -23,7 +23,7 @@ import forms.common.YesNoAnswer
 import forms.declaration.{ContainerAdd, ContainerFirst, Seal}
 import mock.ErrorHandlerMocks
 import models.declaration.Container
-import models.{DeclarationType}
+import models.DeclarationType
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
@@ -66,7 +66,7 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
     setupErrorHandler()
     withNewCaching(aDeclaration(withType(DeclarationType.STANDARD)))
 
-    when(transportContainersSummaryPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(transportContainersSummaryPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -76,7 +76,7 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
 
   def theResponseForm: Form[YesNoAnswer] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[YesNoAnswer]])
-    verify(transportContainersSummaryPage).apply(any(), captor.capture(), any())(any(), any())
+    verify(transportContainersSummaryPage).apply(captor.capture(), any())(any(), any())
     captor.getValue
   }
 
@@ -89,15 +89,14 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
   "Transport Container controller display add page" should {
 
     "return 200 (OK)" when {
+
       "cache is empty" in {
         val result = controller.displayAddContainer()(getRequest())
-
         status(result) must be(OK)
       }
 
       "cache contains some data" in {
         withNewCaching(aDeclaration(withContainerData(containerData)))
-
         val result = controller.displayAddContainer()(getRequest())
         status(result) must be(OK)
       }
@@ -251,10 +250,10 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
       "user indicates they want to add another container in error-fix mode" in {
         val body = Json.obj("yesNo" -> "Yes")
 
-        val result = controller.submitSummaryAction(Mode.ErrorFix)(postRequest(body))
+        val result = controller.submitSummaryAction()(postRequest(body))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe TransportContainerController.displayAddContainer(Mode.ErrorFix)
+        thePageNavigatedTo mustBe TransportContainerController.displayAddContainer
       }
     }
 
@@ -266,16 +265,16 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
         val result = controller.submitSummaryAction()(postRequest(body))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe routes.SummaryController.displayPage()
+        thePageNavigatedTo mustBe routes.SummaryController.displayPage
       }
 
       "user indicates they do not want to add another container and they are in draft mode" in {
         val body = Json.obj("yesNo" -> "No")
 
-        val result = controller.submitSummaryAction(Mode.Draft)(postRequest(body))
+        val result = controller.submitSummaryAction()(postRequest(body))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe routes.SummaryController.displayPage(Mode.Draft)
+        thePageNavigatedTo mustBe routes.SummaryController.displayPage
       }
     }
   }

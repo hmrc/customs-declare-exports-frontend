@@ -37,7 +37,7 @@ class PackageInformationRemoveViewSpec extends PageWithButtonsSpec with Injector
 
   override val typeAndViewInstance = (STANDARD, page(itemId, packageInformation, form())(_, _))
 
-  def createView(frm: Form[YesNoAnswer] = form(), packageInfo: PackageInformation = packageInformation, mode: Mode = Normal): Document =
+  def createView(frm: Form[YesNoAnswer] = form(), packageInfo: PackageInformation = packageInformation): Document =
     page(itemId, packageInfo, frm)(request, messages)
 
   "PackageInformation Remove View" should {
@@ -64,8 +64,7 @@ class PackageInformationRemoveViewSpec extends PageWithButtonsSpec with Injector
       )
     }
 
-    val createViewWithMode: Mode => Document = mode => createView(mode = mode)
-    checkAllSaveButtonsAreDisplayed(createViewWithMode)
+    checkAllSaveButtonsAreDisplayed(createView())
   }
 
   "PackageInformation Remove View for invalid input" should {

@@ -40,7 +40,7 @@ class TransportContainerRemoveViewSpec extends PageWithButtonsSpec with Injector
 
   override val typeAndViewInstance = (STANDARD, page(form(), container)(_, _))
 
-  def createView(frm: Form[YesNoAnswer] = form(), mode: Mode = Normal): Document = page(frm, container)
+  def createView(frm: Form[YesNoAnswer] = form()): Document = page(frm, container)
 
   "Transport Containers Remove View" should {
     val view = createView()
@@ -70,8 +70,7 @@ class TransportContainerRemoveViewSpec extends PageWithButtonsSpec with Injector
       backLinkContainer.getElementById("back-link") must haveHref(TransportContainerController.displayContainerSummary())
     }
 
-    val createViewWithMode: Mode => Document = mode => createView(mode = mode)
-    checkAllSaveButtonsAreDisplayed(createViewWithMode)
+    checkAllSaveButtonsAreDisplayed(createView())
   }
 
   "Seal Remove View for invalid input" should {

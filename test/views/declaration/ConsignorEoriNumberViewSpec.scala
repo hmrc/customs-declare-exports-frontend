@@ -38,7 +38,7 @@ class ConsignorEoriNumberViewSpec extends PageWithButtonsSpec with ExportsTestHe
 
   override val typeAndViewInstance = (CLEARANCE, page(form())(_, _))
 
-  private def createView(frm: Form[ConsignorEoriNumber] = form(), mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document =
+  private def createView(frm: Form[ConsignorEoriNumber] = form())(implicit request: JourneyRequest[_]): Document =
     page(frm)(request, messages)
 
   "Consignor Eori Number View" should {
@@ -82,8 +82,7 @@ class ConsignorEoriNumberViewSpec extends PageWithButtonsSpec with ExportsTestHe
         backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.IsExsController.displayPage())
       }
 
-      val createViewWithMode: Mode => Document = mode => createView(mode = mode)
-      checkAllSaveButtonsAreDisplayed(createViewWithMode)
+      checkAllSaveButtonsAreDisplayed(createView())
 
       "handle invalid input" should {
 

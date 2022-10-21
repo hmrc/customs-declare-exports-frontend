@@ -37,7 +37,7 @@ class AdditionalActorsAddViewSpec extends PageWithButtonsSpec with Injector {
 
   override val typeAndViewInstance = (STANDARD, page(form)(_, _))
 
-  def createView(frm: Form[DeclarationAdditionalActors] = form, mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document =
+  def createView(frm: Form[DeclarationAdditionalActors] = form)(implicit request: JourneyRequest[_]): Document =
     page(frm)
 
   "Declaration Additional Actors" should {
@@ -85,8 +85,7 @@ class AdditionalActorsAddViewSpec extends PageWithButtonsSpec with Injector {
         view.getElementById("WH-item-hint").text mustBe messages("declaration.partyType.warehouseKeeper.hint")
       }
 
-      val createViewWithMode: Mode => Document = mode => createView(mode = mode)
-      checkAllSaveButtonsAreDisplayed(createViewWithMode)
+      checkAllSaveButtonsAreDisplayed(createView())
     }
 
     onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, SUPPLEMENTARY) { implicit request =>

@@ -33,7 +33,7 @@ import views.html.declaration.is_exs
 class IsExsViewSpec extends UnitViewSpec with ExportsTestHelper with CommonMessages with Stubs with Injector {
 
   private val page = instanceOf[is_exs]
-  private def createView(mode: Mode = Mode.Normal)(implicit request: JourneyRequest[_]): Document =
+  private def createView()(implicit request: JourneyRequest[_]): Document =
     page(IsExs.form)(request, messages)
 
   "Is Exs View" should {
@@ -98,8 +98,7 @@ class IsExsViewSpec extends UnitViewSpec with ExportsTestHelper with CommonMessa
         }
       }
 
-      val createViewWithMode: Mode => Document = mode => createView(mode = mode)
-      checkAllSaveButtonsAreDisplayed(createViewWithMode)
+      checkAllSaveButtonsAreDisplayed(createView())
     }
   }
 }

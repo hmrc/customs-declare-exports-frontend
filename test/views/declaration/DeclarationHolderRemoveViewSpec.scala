@@ -35,7 +35,7 @@ class DeclarationHolderRemoveViewSpec extends UnitViewSpec with ExportsTestHelpe
   private val page = instanceOf[declaration_holder_remove]
   val declarationHolder: DeclarationHolder = DeclarationHolder(Some("ACE"), Some(Eori("GB123456543")), Some(EoriSource.OtherEori))
 
-  private def createView(mode: Mode = Mode.Normal, form: Form[YesNoAnswer] = YesNoAnswer.form(), holder: DeclarationHolder = declarationHolder)(
+  private def createView(form: Form[YesNoAnswer] = YesNoAnswer.form(), holder: DeclarationHolder = declarationHolder)(
     implicit request: JourneyRequest[_]
   ): Document = page(holder, form)(request, messages)
 

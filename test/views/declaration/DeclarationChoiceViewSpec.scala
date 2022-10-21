@@ -22,7 +22,7 @@ import config.{AppConfig, AppConfigSpec}
 import forms.Choice
 import forms.Choice.AllowedChoiceValues.CreateDec
 import forms.declaration.DeclarationChoice
-import models.{DeclarationType}
+import models.DeclarationType
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import play.api.{Configuration, Environment}

@@ -56,8 +56,8 @@ class RoutingCountriesControllerSpec extends ControllerSpec {
     super.beforeEach()
 
     authorizedUser()
-    when(mockRoutingQuestionPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
-    when(mockCountryOfRoutingPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockRoutingQuestionPage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockCountryOfRoutingPage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
     when(mockCodeListConnector.getCountryCodes(any()))
       .thenReturn(ListMap("GB" -> Country("United Kingdom", "GB"), "FR" -> Country("France", "FR"), "IR" -> Country("Ireland", "IE")))
   }
@@ -76,7 +76,7 @@ class RoutingCountriesControllerSpec extends ControllerSpec {
 
   def theRoutingQuestionForm: Form[Boolean] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[Boolean]])
-    verify(mockRoutingQuestionPage).apply(any(), captor.capture())(any(), any())
+    verify(mockRoutingQuestionPage).apply(captor.capture())(any(), any())
     captor.getValue
   }
 
@@ -99,7 +99,7 @@ class RoutingCountriesControllerSpec extends ControllerSpec {
         val result = controller.displayRoutingCountry()(getRequest())
 
         status(result) mustBe OK
-        verify(mockCountryOfRoutingPage).apply(any(), any())(any(), any())
+        verify(mockCountryOfRoutingPage).apply(any())(any(), any())
       }
     }
 
@@ -178,10 +178,10 @@ class RoutingCountriesControllerSpec extends ControllerSpec {
 
           val correctForm = JsObject(Seq("answer" -> JsString("Yes")))
 
-          val result = controller.submitRoutingAnswer(Mode.ErrorFix)(postRequest(correctForm))
+          val result = controller.submitRoutingAnswer()(postRequest(correctForm))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe RoutingCountriesController.displayRoutingCountry(Mode.ErrorFix)
+          thePageNavigatedTo mustBe RoutingCountriesController.displayRoutingCountry
         }
       }
 

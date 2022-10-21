@@ -39,7 +39,7 @@ class SealSummaryViewSpec extends PageWithButtonsSpec with Injector {
 
   override val typeAndViewInstance = (STANDARD, page(form(), containerId, Seq(seal))(_, _))
 
-  def createView(frm: Form[YesNoAnswer] = form(), seals: Seq[Seal] = Seq(seal), mode: Mode = Normal): Document =
+  def createView(frm: Form[YesNoAnswer] = form(), seals: Seq[Seal] = Seq(seal)): Document =
     page(frm, containerId, seals)(journeyRequest(), messages)
 
   "Seal Summary View" should {
@@ -91,8 +91,7 @@ class SealSummaryViewSpec extends PageWithButtonsSpec with Injector {
       )
     }
 
-    val createViewWithMode: Mode => Document = mode => createView(mode = mode)
-    checkAllSaveButtonsAreDisplayed(createViewWithMode)
+    checkAllSaveButtonsAreDisplayed(createView())
   }
 
   "Seal Summary View for invalid input" should {

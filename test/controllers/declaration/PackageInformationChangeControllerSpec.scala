@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import base.ControllerSpec
+import base.{ControllerSpec, Injector}
 import forms.declaration.PackageInformation
 import mock.ErrorHandlerMocks
 import org.mockito.ArgumentCaptor
@@ -24,7 +24,6 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatest.OptionValues
 import play.api.data.Form
-import base.Injector
 import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
@@ -51,7 +50,7 @@ class PackageInformationChangeControllerSpec extends ControllerSpec with OptionV
     super.beforeEach()
     authorizedUser()
     setupErrorHandler()
-    when(mockChangePage.apply(any(), any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockChangePage.apply(any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -67,12 +66,12 @@ class PackageInformationChangeControllerSpec extends ControllerSpec with OptionV
 
   def thePackageInformation: Form[PackageInformation] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[PackageInformation]])
-    verify(mockChangePage).apply(any(), any(), captor.capture(), any(), any())(any(), any())
+    verify(mockChangePage).apply(any(), captor.capture(), any(), any())(any(), any())
     captor.getValue
   }
 
-  private def verifyChangePageInvoked(numberOfTimes: Int = 1) =
-    verify(mockChangePage, times(numberOfTimes)).apply(any(), any(), any(), any(), any())(any(), any())
+  private def verifyChangePageInvoked(numberOfTimes: Int = 1): HtmlFormat.Appendable =
+    verify(mockChangePage, times(numberOfTimes)).apply(any(), any(), any(), any())(any(), any())
 
   val id = "pkgId"
   val packageInformation = PackageInformation(id, Some("AB"), Some(1), Some("SHIP"))
@@ -96,6 +95,7 @@ class PackageInformationChangeControllerSpec extends ControllerSpec with OptionV
       }
 
       "return 400 (BAD_REQUEST)" when {
+
         "user makes invalid changes to data" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
 
@@ -150,7 +150,7 @@ class PackageInformationChangeControllerSpec extends ControllerSpec with OptionV
           val result = controller.submitForm(item.id, id)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.PackageInformationSummaryController.displayPage(item.id)
+          thePageNavigatedTo mustBe routes.PackageInformationSummaryController.displayPage(item.id)
 
           val savedPackage = theCacheModelUpdated.itemBy(item.id).flatMap(_.packageInformation).map(_.head)
           savedPackage.flatMap(_.typesOfPackages) mustBe Some("AE")
@@ -159,6 +159,5 @@ class PackageInformationChangeControllerSpec extends ControllerSpec with OptionV
         }
       }
     }
-
   }
 }

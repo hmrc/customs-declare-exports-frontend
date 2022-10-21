@@ -17,6 +17,7 @@
 package controllers.declaration
 
 import base.{ControllerSpec, ExportsTestData}
+import controllers.declaration.routes.DeclarationHolderSummaryController
 import forms.common.Eori
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
 import forms.declaration.declarationHolder.AuthorizationTypeCodes.{CSE, EXRR}
@@ -49,7 +50,7 @@ class DeclarationHolderAddControllerSpec extends ControllerSpec with GivenWhenTh
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    when(mockAddPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockAddPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -65,12 +66,12 @@ class DeclarationHolderAddControllerSpec extends ControllerSpec with GivenWhenTh
 
   def theDeclarationHolder: Form[DeclarationHolder] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[DeclarationHolder]])
-    verify(mockAddPage).apply(any(), captor.capture(), any())(any(), any())
+    verify(mockAddPage).apply(captor.capture(), any())(any(), any())
     captor.getValue
   }
 
   private def verifyAddPageInvoked(numberOfTimes: Int = 1): Html =
-    verify(mockAddPage, times(numberOfTimes)).apply(any(), any(), any())(any(), any())
+    verify(mockAddPage, times(numberOfTimes)).apply(any(), any())(any(), any())
 
   val declarationHolder = DeclarationHolder(Some("ACE"), Some(Eori(ExportsTestData.eori)), Some(EoriSource.OtherEori))
 
@@ -135,6 +136,7 @@ class DeclarationHolderAddControllerSpec extends ControllerSpec with GivenWhenTh
         }
 
         "user adds mutually exclusive data" when {
+
           "attempted to add EXRR when already having CSE present" in {
             val holder = DeclarationHolder(Some(CSE), Some(Eori(ExportsTestData.eori)), Some(EoriSource.OtherEori))
             withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationHolders(holder)))
@@ -172,7 +174,7 @@ class DeclarationHolderAddControllerSpec extends ControllerSpec with GivenWhenTh
           val result = controller.submitForm()(postRequestAsFormUrlEncoded(requestBody: _*))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.DeclarationHolderSummaryController.displayPage()
+          thePageNavigatedTo mustBe DeclarationHolderSummaryController.displayPage()
 
           val savedHolder = theCacheModelUpdated.parties.declarationHoldersData
           savedHolder mustBe Some(DeclarationHoldersData(List(declarationHolder)))

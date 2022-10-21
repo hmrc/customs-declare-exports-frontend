@@ -17,29 +17,27 @@
 package views.declaration
 
 import base.Injector
+import controllers.declaration.routes.{ItemsSummaryController, TransportLeavingTheBorderController}
 import forms.declaration.WarehouseIdentification
 import models.DeclarationType._
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
-import play.api.i18n.{Messages, MessagesApi}
-import play.api.test.Helpers.stubMessages
-import services.cache.ExportsTestHelper
-import tools.Stubs
-import views.declaration.spec.UnitViewSpec
+import play.api.i18n.MessagesApi
+import views.declaration.spec.PageWithButtonsSpec
 import views.html.declaration.warehouse_identification
 import views.tags.ViewTest
 
 @ViewTest
-class WarehouseIdentificationViewSpec extends UnitViewSpec with ExportsTestHelper with Stubs with Injector {
+class WarehouseIdentificationViewSpec extends PageWithButtonsSpec with Injector {
 
-  private val page = instanceOf[warehouse_identification]
-  private val form: Form[WarehouseIdentification] = WarehouseIdentification.form(yesNo = false)
+  val page = instanceOf[warehouse_identification]
+  val form: Form[WarehouseIdentification] = WarehouseIdentification.form(yesNo = false)
 
-  private def createView(mode: Mode = Mode.Normal, form: Form[WarehouseIdentification] = form, messages: Messages = stubMessages())(
-    implicit request: JourneyRequest[_]
-  ): Document =
-    page(form)(request, messages)
+  override val typeAndViewInstance = (STANDARD, page(form)(_, _))
+
+  def createView(frm: Form[WarehouseIdentification] = form)(implicit request: JourneyRequest[_]): Document =
+    page(frm)(request, messages)
 
   "Warehouse Identification Number View" should {
     onEveryDeclarationJourney() { implicit request =>
@@ -56,47 +54,38 @@ class WarehouseIdentificationViewSpec extends UnitViewSpec with ExportsTestHelpe
       }
 
       "display same page title as header" in {
-        val viewWithMessage = createView(messages = realMessagesApi.preferred(request))
-        viewWithMessage.title() must include(viewWithMessage.getElementsByTag("h1").text())
+        view.title() must include(view.getElementsByTag("h1").text())
       }
 
       "have the correct section header" in {
-        view.getElementById("section-header").text() must include("declaration.section.6")
+        view.getElementById("section-header").text() mustBe messages("declaration.section.6")
       }
 
       "have the correct page title" in {
-        view.getElementsByTag("h1").text() mustBe "declaration.warehouse.identification.required.title"
+        view.getElementsByTag("h1").text() mustBe messages("declaration.warehouse.identification.required.title")
       }
 
       "display input field" in {
         view.getElementById("identificationNumber").attr("value") mustBe empty
-        view.getElementsByAttributeValue("for", "identificationNumber").text() must include("declaration.warehouse.identification.required.title")
+        view.getElementsByAttributeValue("for", "identificationNumber").text() mustBe messages("declaration.warehouse.identification.required.title")
       }
 
-      val createViewWithMode: Mode => Document = mode => createView(mode = mode, messages = messages)
-      checkAllSaveButtonsAreDisplayed(createViewWithMode)
+      checkAllSaveButtonsAreDisplayed(createView())
     }
 
     onJourney(STANDARD, SUPPLEMENTARY, CLEARANCE) { implicit request =>
-      val view = createView()
-
       "display 'Back' button that links to 'Transport Leaving the Border' page" in {
-        val backButton = view.getElementById("back-link")
-
-        backButton.text() mustBe "site.backToPreviousQuestion"
-        backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.TransportLeavingTheBorderController.displayPage())
+        val backButton = createView().getElementById("back-link")
+        backButton.text() mustBe messages("site.backToPreviousQuestion")
+        backButton.getElementById("back-link") must haveHref(TransportLeavingTheBorderController.displayPage())
       }
     }
+
     onJourney(SIMPLIFIED, OCCASIONAL) { implicit request =>
-      val view = createView()
-
       "display 'Back' button that links to 'Items Summary' page" in {
-        val backButton = view.getElementById("back-link")
-
-        backButton.text() mustBe "site.backToPreviousQuestion"
-        backButton.getElementById("back-link") must haveHref(
-          controllers.declaration.routes.ItemsSummaryController.displayItemsSummaryPage()
-        )
+        val backButton = createView().getElementById("back-link")
+        backButton.text() mustBe messages("site.backToPreviousQuestion")
+        backButton.getElementById("back-link") must haveHref(ItemsSummaryController.displayItemsSummaryPage())
       }
     }
   }
@@ -104,21 +93,23 @@ class WarehouseIdentificationViewSpec extends UnitViewSpec with ExportsTestHelpe
   "Warehouse Identification Number View for invalid input" should {
     onEveryDeclarationJourney() { implicit request =>
       "display error when code is empty" in {
-        val view = createView(form = form.fillAndValidate(WarehouseIdentification(Some(""))))
+        val view = createView(form.fillAndValidate(WarehouseIdentification(Some(""))))
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#identificationNumber")
 
-        view must containErrorElementWithMessage("declaration.warehouse.identification.identificationNumber.empty")
+        val text = view.getElementsByClass("govuk-error-message").get(0).text()
+        text contains messages("declaration.warehouse.identification.identificationNumber.empty")
       }
 
       "display error when code is incorrect" in {
-        val view = createView(form = form.fillAndValidate(WarehouseIdentification(Some("ABC!!!"))))
+        val view = createView(form.fillAndValidate(WarehouseIdentification(Some("ABC!!!"))))
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#identificationNumber")
 
-        view must containErrorElementWithMessage("declaration.warehouse.identification.identificationNumber.format")
+        val text = view.getElementsByClass("govuk-error-message").get(0).text()
+        text contains messages("declaration.warehouse.identification.identificationNumber.format")
       }
     }
   }

@@ -17,6 +17,7 @@
 package views.declaration.fiscalInformation
 
 import base.Injector
+import controllers.declaration.routes.AdditionalFiscalReferencesController
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.form
 import forms.declaration.AdditionalFiscalReference
@@ -37,7 +38,7 @@ class AdditionalFiscalReferencesRemoveViewSpec extends PageWithButtonsSpec with 
 
   override val typeAndViewInstance = (STANDARD, page(itemId, referenceId, additionalReference, form())(_, _))
 
-  def createView(frm: Form[YesNoAnswer] = form(), mode: Mode = Normal): Document =
+  def createView(frm: Form[YesNoAnswer] = form()): Document =
     page(itemId, referenceId, additionalReference, frm)(request, messages)
 
   "AdditionalFiscalReferences Remove View" should {
@@ -55,11 +56,10 @@ class AdditionalFiscalReferencesRemoveViewSpec extends PageWithButtonsSpec with 
       val backLink = view.getElementById("back-link")
 
       backLink must containMessage(backToPreviousQuestionCaption)
-      backLink must haveHref(controllers.declaration.routes.AdditionalFiscalReferencesController.displayPage(itemId))
+      backLink must haveHref(AdditionalFiscalReferencesController.displayPage(itemId))
     }
 
-    val createViewWithMode: Mode => Document = mode => createView(mode = mode)
-    checkAllSaveButtonsAreDisplayed(createViewWithMode)
+    checkAllSaveButtonsAreDisplayed(createView())
   }
 
   "AdditionalFiscalReferences Remove View for invalid input" should {

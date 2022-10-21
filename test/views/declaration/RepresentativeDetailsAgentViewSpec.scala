@@ -40,7 +40,7 @@ class RepresentativeDetailsAgentViewSpec extends PageWithButtonsSpec with Export
 
   override val typeAndViewInstance = (STANDARD, page(form())(_, _))
 
-  private def createView(frm: Form[RepresentativeAgent] = form(), mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document =
+  private def createView(frm: Form[RepresentativeAgent] = form())(implicit request: JourneyRequest[_]): Document =
     page(frm)(request, messages)
 
   "Representative Details Agent View on empty page" should {
@@ -63,8 +63,7 @@ class RepresentativeDetailsAgentViewSpec extends PageWithButtonsSpec with Export
 
       }
 
-      val createViewWithMode: Mode => Document = mode => createView(mode = mode)
-      checkAllSaveButtonsAreDisplayed(createViewWithMode)
+      checkAllSaveButtonsAreDisplayed(createView())
     }
 
     onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { implicit request =>

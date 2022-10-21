@@ -17,6 +17,8 @@
 package controllers.declaration
 
 import base.ControllerSpec
+import controllers.declaration.routes.TotalPackageQuantityController
+import controllers.routes.RootController
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.InvoiceAndExchangeRate
 import models.DeclarationType._
@@ -37,13 +39,13 @@ class InvoiceAndExchangeRateControllerSpec extends ControllerSpec with OptionVal
 
   def theResponseForm: Form[InvoiceAndExchangeRate] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[InvoiceAndExchangeRate]])
-    verify(mockInvoiceAndExchangeRatePage).apply(any(), captor.capture())(any(), any())
+    verify(mockInvoiceAndExchangeRatePage).apply(captor.capture())(any(), any())
     captor.getValue
   }
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
-    when(mockInvoiceAndExchangeRatePage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockInvoiceAndExchangeRatePage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
     authorizedUser()
   }
 
@@ -82,12 +84,10 @@ class InvoiceAndExchangeRateControllerSpec extends ControllerSpec with OptionVal
   )
 
   def verifyPage(numberOfTimes: Int = 1): Html =
-    verify(mockInvoiceAndExchangeRatePage, times(numberOfTimes)).apply(any(), any())(any(), any())
+    verify(mockInvoiceAndExchangeRatePage, times(numberOfTimes)).apply(any())(any(), any())
 
   "Total Number of Items controller" should {
-
     implicit val format = Json.format[InvoiceAndExchangeRate]
-
     onJourney(STANDARD, SUPPLEMENTARY) { request =>
       "display page method is invoked and cache is empty" in {
         withNewCaching(request.cacheModel)
@@ -125,7 +125,7 @@ class InvoiceAndExchangeRateControllerSpec extends ControllerSpec with OptionVal
         val result = controller.saveNoOfItems()(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.TotalPackageQuantityController.displayPage()
+        thePageNavigatedTo mustBe TotalPackageQuantityController.displayPage()
         verifyPage(0)
       }
 
@@ -145,7 +145,7 @@ class InvoiceAndExchangeRateControllerSpec extends ControllerSpec with OptionVal
         val result = controller.displayPage().apply(getRequest(request.cacheModel))
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) must contain(controllers.routes.RootController.displayPage().url)
+        redirectLocation(result) must contain(RootController.displayPage().url)
       }
     }
   }

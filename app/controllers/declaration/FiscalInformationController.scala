@@ -92,9 +92,7 @@ class FiscalInformationController @Inject() (
     updateDeclarationFromRequest(updatedModel(_))
   }
 
-  private def redirectToNextPage(itemId: String, fiscalInformation: FiscalInformation)(
-    implicit request: JourneyRequest[AnyContent]
-  ): Result =
+  private def redirectToNextPage(itemId: String, fiscalInformation: FiscalInformation)(implicit request: JourneyRequest[AnyContent]): Result =
     fiscalInformation.onwardSupplyRelief match {
       case FiscalInformation.AllowedFiscalInformationAnswers.yes =>
         navigator.continueTo(routes.AdditionalFiscalReferencesAddController.displayPage(itemId))

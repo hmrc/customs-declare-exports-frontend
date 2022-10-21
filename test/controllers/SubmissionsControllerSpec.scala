@@ -89,8 +89,7 @@ class SubmissionsControllerSpec extends ControllerWithoutFormSpec with BeforeAnd
   "Display Submissions" should {
     "return 200 (OK)" when {
       "display list of submissions method is invoked" in {
-        when(mockCustomsDeclareExportsConnector.fetchSubmissions(any(), any()))
-          .thenReturn(Future.successful(Seq(submission)))
+        when(mockCustomsDeclareExportsConnector.fetchSubmissions(any(), any())).thenReturn(Future.successful(Seq(submission)))
 
         val result = controller.displayListOfSubmissions()(getRequest())
 
@@ -180,15 +179,14 @@ class SubmissionsControllerSpec extends ControllerWithoutFormSpec with BeforeAnd
 
   "SubmissionsController on amendErrors" should {
     "return 303 (SEE OTHER) with the new declaration-id as one the Session keys" in {
-      val redirectUrl = "/specific-page-url"
-
       when(mockCustomsDeclareExportsConnector.findOrCreateDraftForRejected(refEq(rejectedId))(any(), any()))
         .thenReturn(Future.successful("new-id"))
 
+      val redirectUrl = "/specific-page-url"
       val result = controller.amendErrors(rejectedId, redirectUrl, "pattern", "message")(getRequest(None))
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result).get mustBe s"$redirectUrl?mode=Error-Fix"
+      redirectLocation(result).get mustBe redirectUrl
       session(result).get(ExportsSessionKeys.declarationId) mustBe Some("new-id")
     }
   }

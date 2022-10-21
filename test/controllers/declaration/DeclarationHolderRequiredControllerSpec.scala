@@ -52,7 +52,7 @@ class DeclarationHolderRequiredControllerSpec extends ControllerSpec with Option
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    when(mockPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockPage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -68,12 +68,12 @@ class DeclarationHolderRequiredControllerSpec extends ControllerSpec with Option
 
   def theResponseForm: Form[YesNoAnswer] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[YesNoAnswer]])
-    verify(mockPage).apply(any(), captor.capture())(any(), any())
+    verify(mockPage).apply(captor.capture())(any(), any())
     captor.getValue
   }
 
   private def verifyPageInvoked(numberOfTimes: Int = 1): HtmlFormat.Appendable =
-    verify(mockPage, times(numberOfTimes)).apply(any(), any())(any(), any())
+    verify(mockPage, times(numberOfTimes)).apply(any())(any(), any())
 
   "DeclarationHolderRequiredController.displayPage" when {
 

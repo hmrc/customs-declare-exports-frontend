@@ -46,7 +46,7 @@ class TotalPackageQuantityControllerSpec extends ControllerSpec {
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
-    when(totalPackageQuantity.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(totalPackageQuantity.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
     authorizedUser()
   }
 
@@ -57,7 +57,7 @@ class TotalPackageQuantityControllerSpec extends ControllerSpec {
 
   def theResponseForm: Form[TotalPackageQuantity] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[TotalPackageQuantity]])
-    verify(totalPackageQuantity).apply(any(), captor.capture())(any(), any())
+    verify(totalPackageQuantity).apply(captor.capture())(any(), any())
     captor.getValue
   }
 

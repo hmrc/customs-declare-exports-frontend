@@ -21,7 +21,7 @@ import forms.common.Eori
 import forms.declaration.DeclarationAdditionalActors
 import mock.ErrorHandlerMocks
 import models.declaration.DeclarationAdditionalActorsData
-import models.{DeclarationType}
+import models.DeclarationType
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}

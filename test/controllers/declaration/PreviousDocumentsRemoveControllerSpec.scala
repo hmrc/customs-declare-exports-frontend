@@ -17,6 +17,7 @@
 package controllers.declaration
 
 import base.ControllerWithoutFormSpec
+import controllers.declaration.routes.PreviousDocumentsSummaryController
 import forms.common.YesNoAnswer
 import forms.declaration.Document
 import org.mockito.ArgumentMatchers.any
@@ -44,7 +45,7 @@ class PreviousDocumentsRemoveControllerSpec extends ControllerWithoutFormSpec {
     super.beforeEach()
 
     authorizedUser()
-    when(page.apply(any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(page.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -59,9 +60,7 @@ class PreviousDocumentsRemoveControllerSpec extends ControllerWithoutFormSpec {
   "Previous Documents Remove Controller" should {
 
     "return 200 (OK)" when {
-
       "display page method is invoked with document that exists" in {
-
         withNewCaching(aDeclaration(withPreviousDocuments(document)))
 
         val result = controller.displayPage(documentId)(getRequest())
@@ -71,9 +70,7 @@ class PreviousDocumentsRemoveControllerSpec extends ControllerWithoutFormSpec {
     }
 
     "return 400 (BAD_REQUEST)" when {
-
       "user doesn't provide the answer" in {
-
         withNewCaching(aDeclaration(withPreviousDocuments(document)))
 
         val incorrectForm = Json.toJson(YesNoAnswer(""))
@@ -87,17 +84,15 @@ class PreviousDocumentsRemoveControllerSpec extends ControllerWithoutFormSpec {
     "return 303 (SEE_OTHER) and redirect to previous documents summary" when {
 
       "the display page methid is invoked with non existing document" in {
-
         withNewCaching(aDeclaration(withoutPreviousDocuments()))
 
         val result = controller.displayPage(documentId)(getRequest())
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.PreviousDocumentsSummaryController.displayPage()
+        thePageNavigatedTo mustBe PreviousDocumentsSummaryController.displayPage()
       }
 
       "user answer Yes and there are some documents in cache" in {
-
         withNewCaching(aDeclaration(withPreviousDocuments(document, Document("355", "reference", None))))
 
         val correctForm = JsObject(Seq("yesNo" -> JsString("Yes")))
@@ -105,11 +100,10 @@ class PreviousDocumentsRemoveControllerSpec extends ControllerWithoutFormSpec {
         val result = controller.submit(documentId)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.PreviousDocumentsSummaryController.displayPage()
+        thePageNavigatedTo mustBe PreviousDocumentsSummaryController.displayPage()
       }
 
       "user answer No" in {
-
         withNewCaching(aDeclaration(withPreviousDocuments(document)))
 
         val correctForm = JsObject(Seq("yesNo" -> JsString("No")))
@@ -117,11 +111,10 @@ class PreviousDocumentsRemoveControllerSpec extends ControllerWithoutFormSpec {
         val result = controller.submit(documentId)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.PreviousDocumentsSummaryController.displayPage()
+        thePageNavigatedTo mustBe PreviousDocumentsSummaryController.displayPage()
       }
 
       "submit method is invoked for incorrect document" in {
-
         withNewCaching(aDeclaration(withPreviousDocuments(document)))
 
         val correctForm = JsObject(Seq("yesNo" -> JsString("Yes")))
@@ -129,14 +122,12 @@ class PreviousDocumentsRemoveControllerSpec extends ControllerWithoutFormSpec {
         val result = controller.submit("incorrectId")(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.PreviousDocumentsSummaryController.displayPage()
+        thePageNavigatedTo mustBe PreviousDocumentsSummaryController.displayPage()
       }
     }
 
     "return 303 (SEE_OTHER) and redirect to documents page" when {
-
       "user answer Yes and there is no more documents in cache" in {
-
         withNewCaching(aDeclaration(withPreviousDocuments(document)))
 
         val correctForm = JsObject(Seq("yesNo" -> JsString("Yes")))
@@ -144,7 +135,7 @@ class PreviousDocumentsRemoveControllerSpec extends ControllerWithoutFormSpec {
         val result = controller.submit(documentId)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.PreviousDocumentsSummaryController.displayPage()
+        thePageNavigatedTo mustBe PreviousDocumentsSummaryController.displayPage()
       }
     }
   }

@@ -41,7 +41,7 @@ class DeclarationHolderSummaryViewSpec extends PageWithButtonsSpec with Injector
 
   override val typeAndViewInstance = (STANDARD, page(form(), Seq.empty)(_, _))
 
-  def createView(holders: Seq[DeclarationHolder] = Seq.empty, mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document =
+  def createView(holders: Seq[DeclarationHolder] = Seq.empty)(implicit request: JourneyRequest[_]): Document =
     page(form(), holders)
 
   "have proper messages for labels" in {
@@ -113,8 +113,7 @@ class DeclarationHolderSummaryViewSpec extends PageWithButtonsSpec with Injector
         view.getElementById("section-header") must containMessage("declaration.section.2")
       }
 
-      val createViewWithMode: Mode => Document = mode => createView(mode = mode)
-      checkAllSaveButtonsAreDisplayed(createViewWithMode)
+      checkAllSaveButtonsAreDisplayed(createView())
     }
   }
 

@@ -36,7 +36,7 @@ class OfficeOfExitViewSpec extends UnitViewSpec with ExportsTestHelper with Stub
 
   private val page: office_of_exit = instanceOf[office_of_exit]
 
-  private def createView(form: Form[OfficeOfExit] = OfficeOfExit.form, mode: Mode = Mode.Normal): Document =
+  private def createView(form: Form[OfficeOfExit] = OfficeOfExit.form): Document =
     page(form)(journeyRequest(), messages)
 
   "Office of Exit View" should {
@@ -71,8 +71,7 @@ class OfficeOfExitViewSpec extends UnitViewSpec with ExportsTestHelper with Stub
         backButton.getElementById("back-link") must haveHref(LocationOfGoodsController.displayPage())
       }
 
-      val createViewWithMode: Mode => Document = mode => createView(mode = mode)
-      checkAllSaveButtonsAreDisplayed(createViewWithMode)
+      checkAllSaveButtonsAreDisplayed(createView())
 
       "handle invalid input" should {
 

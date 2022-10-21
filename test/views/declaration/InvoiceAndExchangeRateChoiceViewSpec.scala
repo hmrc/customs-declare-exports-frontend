@@ -35,7 +35,7 @@ class InvoiceAndExchangeRateChoiceViewSpec extends PageWithButtonsSpec with Inje
 
   override val typeAndViewInstance = (STANDARD, page(form())(_, _))
 
-  def createView(frm: Form[YesNoAnswer] = form(), mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document =
+  def createView(frm: Form[YesNoAnswer] = form())(implicit request: JourneyRequest[_]): Document =
     page(frm)(request, messages)
 
   "'Invoice And Exchange Rate Choice' view" should {
@@ -83,8 +83,7 @@ class InvoiceAndExchangeRateChoiceViewSpec extends PageWithButtonsSpec with Inje
         view must containErrorElementWithMessageKey(errorKey)
       }
 
-      val createViewWithMode: Mode => Document = mode => createView(mode = mode)
-      checkAllSaveButtonsAreDisplayed(createViewWithMode)
+      checkAllSaveButtonsAreDisplayed(createView())
 
       "display the expected tariff details" in {
         val tariffTitle = view.getElementsByClass("govuk-details__summary-text")

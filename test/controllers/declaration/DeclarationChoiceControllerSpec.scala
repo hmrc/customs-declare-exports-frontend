@@ -17,12 +17,13 @@
 package controllers.declaration
 
 import base.ControllerWithoutFormSpec
+import controllers.declaration.routes.AdditionalDeclarationTypeController
 import forms.Choice
 import forms.declaration.AuthorisationProcedureCodeChoice.Choice1040
 import forms.declaration.DeclarationChoiceSpec
 import models.DeclarationType.{DeclarationType, _}
 import models.requests.ExportsSessionKeys
-import models.{DeclarationType}
+import models.DeclarationType
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.OptionValues
@@ -54,7 +55,7 @@ class DeclarationChoiceControllerSpec extends ControllerWithoutFormSpec with Opt
   override def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    when(choicePage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(choicePage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -94,7 +95,6 @@ class DeclarationChoiceControllerSpec extends ControllerWithoutFormSpec with Opt
     }
 
     "not select any choice " when {
-
       "cache empty" in {
         withNoDeclaration()
 
@@ -110,9 +110,7 @@ class DeclarationChoiceControllerSpec extends ControllerWithoutFormSpec with Opt
   "calling submit method" should {
 
     "return 400 (BAD_REQUEST)" when {
-
       "form is incorrect" in {
-
         val result = controller.submitChoice()(postChoiceRequest(incorrectChoiceJSON))
 
         status(result) must be(BAD_REQUEST)
@@ -128,7 +126,7 @@ class DeclarationChoiceControllerSpec extends ControllerWithoutFormSpec with Opt
           val result = controller.submitChoice()(postChoiceRequest(createChoiceJSON(journeyType.toString)))
 
           status(result) must be(SEE_OTHER)
-          redirectLocation(result) must be(Some(controllers.declaration.routes.AdditionalDeclarationTypeController.displayPage().url))
+          redirectLocation(result) must be(Some(AdditionalDeclarationTypeController.displayPage().url))
         }
 
         s"user updates an existing $journeyType declaration" in {
@@ -138,7 +136,7 @@ class DeclarationChoiceControllerSpec extends ControllerWithoutFormSpec with Opt
           val result = controller.submitChoice()(postChoiceRequest(createChoiceJSON(journeyType.toString), Some(existingDeclarationId)))
 
           status(result) must be(SEE_OTHER)
-          redirectLocation(result) must be(Some(controllers.declaration.routes.AdditionalDeclarationTypeController.displayPage().url))
+          redirectLocation(result) must be(Some(AdditionalDeclarationTypeController.displayPage().url))
         }
       }
     }

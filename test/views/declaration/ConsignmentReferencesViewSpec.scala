@@ -41,7 +41,7 @@ class ConsignmentReferencesViewSpec extends PageWithButtonsSpec with Injector {
 
   override val typeAndViewInstance = (STANDARD, page(form(STANDARD, Some(STANDARD_PRE_LODGED)))(_, _))
 
-  def createView(maybeForm: Option[Form[ConsignmentReferences]], mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document =
+  def createView(maybeForm: Option[Form[ConsignmentReferences]])(implicit request: JourneyRequest[_]): Document =
     page(maybeForm.getOrElse(form(request.declarationType, request.cacheModel.additionalDeclarationType)))(request, messages)
 
   def createView()(implicit request: JourneyRequest[_]): Document =
@@ -92,14 +92,11 @@ class ConsignmentReferencesViewSpec extends PageWithButtonsSpec with Injector {
         createView().getElementById("section-header").text() must include(messages("declaration.section.1"))
       }
 
-      val createViewWithMode: Mode => Document = mode => createView(None)
-
       "not display 'Exit and return' button" in {
         createView.getElementsContainingText("site.exit_and_complete_later") mustBe empty
       }
 
       checkSaveAndContinueButtonIsDisplayed(createView)
-      checkSaveAndReturnToErrorsButtonIsDisplayed(createViewWithMode)
     }
   }
 

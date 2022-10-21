@@ -17,6 +17,7 @@
 package controllers.declaration
 
 import base.ControllerSpec
+import controllers.declaration.routes.{CommodityMeasureController, CusCodeController, TaricCodeSummaryController}
 import forms.declaration.UNDangerousGoodsCode.{dangerousGoodsCodeKey, hasDangerousGoodsCodeKey}
 import forms.declaration.{CommodityDetails, UNDangerousGoodsCode}
 import models.DeclarationType._
@@ -48,7 +49,7 @@ class UNDangerousGoodsCodeControllerSpec extends ControllerSpec with OptionValue
     super.beforeEach()
     authorizedUser()
     withNewCaching(aDeclaration(withType(STANDARD)))
-    when(mockPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -65,7 +66,7 @@ class UNDangerousGoodsCodeControllerSpec extends ControllerSpec with OptionValue
 
   def theResponseForm: Form[UNDangerousGoodsCode] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[UNDangerousGoodsCode]])
-    verify(mockPage).apply(any(), any(), captor.capture())(any(), any())
+    verify(mockPage).apply(any(), captor.capture())(any(), any())
     captor.getValue
   }
 
@@ -80,7 +81,7 @@ class UNDangerousGoodsCodeControllerSpec extends ControllerSpec with OptionValue
         val result = controller.displayPage(itemId)(getRequest())
 
         status(result) mustBe OK
-        verify(mockPage, times(1)).apply(any(), any(), any())(any(), any())
+        verify(mockPage, times(1)).apply(any(), any())(any(), any())
 
         theResponseForm.value mustBe empty
       }
@@ -93,7 +94,7 @@ class UNDangerousGoodsCodeControllerSpec extends ControllerSpec with OptionValue
         val result = controller.displayPage(item.id)(getRequest())
 
         status(result) mustBe OK
-        verify(mockPage, times(1)).apply(any(), any(), any())(any(), any())
+        verify(mockPage, times(1)).apply(any(), any())(any(), any())
 
         theResponseForm.value mustBe Some(dangerousGoodsCode)
       }
@@ -107,14 +108,14 @@ class UNDangerousGoodsCodeControllerSpec extends ControllerSpec with OptionValue
         val result = controller.submitForm(itemId)(postRequest(incorrectForm))
 
         status(result) mustBe BAD_REQUEST
-        verify(mockPage, times(1)).apply(any(), any(), any())(any(), any())
+        verify(mockPage, times(1)).apply(any(), any())(any(), any())
       }
     }
 
     "return 303 (SEE_OTHER)" when {
 
       onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, SUPPLEMENTARY) { request =>
-        def controllerRedirectsToNextPageForCommodityCode(commodityCode: String, expectedCall: Call) = {
+        def controllerRedirectsToNextPageForCommodityCode(commodityCode: String, expectedCall: Call): HtmlFormat.Appendable = {
           val commodityDetails = CommodityDetails(Some(commodityCode), None)
           withNewCaching(aDeclarationAfter(request.cacheModel, withItem(anItem(withItemId(itemId), withCommodityDetails(commodityDetails)))))
           val correctForm = formData("1234")
@@ -123,20 +124,20 @@ class UNDangerousGoodsCodeControllerSpec extends ControllerSpec with OptionValue
 
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe expectedCall
-          verify(mockPage, times(0)).apply(any(), any(), any())(any(), any())
+          verify(mockPage, times(0)).apply(any(), any())(any(), any())
         }
 
         "accept submission and redirect for commodity code 2800000000" in {
-          controllerRedirectsToNextPageForCommodityCode("2800000000", routes.CusCodeController.displayPage(itemId))
+          controllerRedirectsToNextPageForCommodityCode("2800000000", CusCodeController.displayPage(itemId))
         }
 
         "accept submission and redirect for commodity code 2100000000" in {
-          controllerRedirectsToNextPageForCommodityCode("2100000000", routes.TaricCodeSummaryController.displayPage(itemId))
+          controllerRedirectsToNextPageForCommodityCode("2100000000", TaricCodeSummaryController.displayPage(itemId))
         }
       }
 
       onJourney(CLEARANCE) { request =>
-        def controllerRedirectsToNextPageForProcedureCode(procedureCode: String, expectedCall: Call) = {
+        def controllerRedirectsToNextPageForProcedureCode(procedureCode: String, expectedCall: Call): HtmlFormat.Appendable = {
 
           withNewCaching(aDeclarationAfter(request.cacheModel, withItem(anItem(withItemId(itemId), withProcedureCodes(Some(procedureCode))))))
           val correctForm = formData("1234")
@@ -145,11 +146,11 @@ class UNDangerousGoodsCodeControllerSpec extends ControllerSpec with OptionValue
 
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe expectedCall
-          verify(mockPage, times(0)).apply(any(), any(), any())(any(), any())
+          verify(mockPage, times(0)).apply(any(), any())(any(), any())
         }
 
         "accept submission and redirect for procedure code 0019" in {
-          controllerRedirectsToNextPageForProcedureCode("0019", routes.CommodityMeasureController.displayPage(itemId))
+          controllerRedirectsToNextPageForProcedureCode("0019", CommodityMeasureController.displayPage(itemId))
         }
 
         "accept submission and redirect for procedure code 1234" in {

@@ -38,7 +38,7 @@ class AdditionalActorsSummaryViewSpec extends PageWithButtonsSpec with Injector 
 
   override val typeAndViewInstance = (STANDARD, page(form(), Seq.empty)(_, _))
 
-  def createView(actors: Seq[DeclarationAdditionalActors] = Seq.empty, mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document =
+  def createView(actors: Seq[DeclarationAdditionalActors] = Seq.empty)(implicit request: JourneyRequest[_]): Document =
     page(form(), actors)
 
   "AdditionalActors Summary View on empty page" should {
@@ -72,8 +72,7 @@ class AdditionalActorsSummaryViewSpec extends PageWithButtonsSpec with Injector 
         view.getElementById("back-link") must haveHref(ConsigneeDetailsController.displayPage())
       }
 
-      val createViewWithMode: Mode => Document = mode => createView(mode = mode)
-      checkAllSaveButtonsAreDisplayed(createViewWithMode)
+      checkAllSaveButtonsAreDisplayed(createView())
     }
   }
 

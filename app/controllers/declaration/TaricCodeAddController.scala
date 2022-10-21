@@ -74,9 +74,7 @@ class TaricCodeAddController @Inject() (
     }
   }
 
-  private def saveFirstTaricCode(itemId: String, maybeCode: Option[String])(
-    implicit request: JourneyRequest[AnyContent]
-  ): Future[Result] =
+  private def saveFirstTaricCode(itemId: String, maybeCode: Option[String])(implicit request: JourneyRequest[AnyContent]): Future[Result] =
     maybeCode match {
       case Some(code) =>
         updateExportsCache(itemId, Seq(TaricCode(code)))
@@ -103,6 +101,6 @@ class TaricCodeAddController @Inject() (
   private def eligibleForZeroVat(implicit request: JourneyRequest[_]): Boolean =
     request.cacheModel.natureOfTransaction match {
       case Some(NatureOfTransaction(`Sale`) | NatureOfTransaction(`BusinessPurchase`)) => request.declarationType == STANDARD
-      case _ => false
+      case _                                                                           => false
     }
 }

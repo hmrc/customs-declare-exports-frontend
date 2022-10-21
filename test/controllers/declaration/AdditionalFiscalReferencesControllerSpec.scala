@@ -21,8 +21,8 @@ import controllers.declaration.routes.CommodityDetailsController
 import forms.common.YesNoAnswer
 import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData}
 import mock.{ErrorHandlerMocks, ItemActionMocks}
+import models.DeclarationType
 import models.declaration.ExportItem
-import models.{DeclarationType, ExportsDeclaration}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -82,9 +82,8 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec with ItemA
     "return 200 (OK)" when {
 
       "display page method is invoked with data in cache" in {
-        val itemCacheData = ExportItem("itemId",
-          additionalFiscalReferencesData = Some(AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("PL", "12345"))))
-        )
+        val itemCacheData =
+          ExportItem("itemId", additionalFiscalReferencesData = Some(AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("PL", "12345")))))
         val cachedData = aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withItem(itemCacheData))
         withNewCaching(cachedData)
 

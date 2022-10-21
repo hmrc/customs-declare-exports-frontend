@@ -62,7 +62,7 @@ class InlandOrBorderControllerSpec extends ControllerSpec with OptionValues {
     super.beforeEach()
     authorizedUser()
 
-    when(inlandOrBorderPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(inlandOrBorderPage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -72,7 +72,7 @@ class InlandOrBorderControllerSpec extends ControllerSpec with OptionValues {
 
   def theResponseForm: Form[InlandOrBorder] = {
     val formCaptor = ArgumentCaptor.forClass(classOf[Form[InlandOrBorder]])
-    verify(inlandOrBorderPage).apply(any(), formCaptor.capture())(any(), any())
+    verify(inlandOrBorderPage).apply(formCaptor.capture())(any(), any())
     formCaptor.getValue
   }
 

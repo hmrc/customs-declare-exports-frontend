@@ -24,6 +24,7 @@ import forms.declaration.declarationHolder.AuthorizationTypeCodes.EXRR
 import forms.declaration.declarationHolder.DeclarationHolder
 import mock.ErrorHandlerMocks
 import models.declaration.EoriSource
+import models.requests.ExportsSessionKeys.errorFixModeSessionKey
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -124,11 +125,12 @@ class AdditionalDocumentsControllerSpec extends ControllerSpec with ErrorHandler
           thePageNavigatedTo mustBe routes.AdditionalDocumentAddController.displayPage(itemId)
         }
 
-        "the authorisation code does not require additional documents but mode is 'ErrorFix'" in {
+        "the authorisation code does not require additional documents and in error-fix mode" in {
           val declarationHolder = DeclarationHolder(Some(EXRR), Some(Eori("GB123456789012")), Some(EoriSource.OtherEori))
           withNewCaching(aDeclaration(withDeclarationHolders(declarationHolder)))
 
-          val result = controller.displayPage(itemId)(getRequest())
+          val request = getRequestWithSession(errorFixModeSessionKey -> "true")
+          val result = controller.displayPage(itemId)(request)
 
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe routes.AdditionalDocumentAddController.displayPage(itemId)

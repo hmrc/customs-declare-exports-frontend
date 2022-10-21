@@ -62,8 +62,7 @@ class PackageInformationRemoveController @Inject() (
       removeYesNoForm
         .bindFromRequest()
         .fold(
-          (formWithErrors: Form[YesNoAnswer]) =>
-            Future.successful(BadRequest(packageTypeRemove(itemId, packageInformationToRemove, formWithErrors))),
+          (formWithErrors: Form[YesNoAnswer]) => Future.successful(BadRequest(packageTypeRemove(itemId, packageInformationToRemove, formWithErrors))),
           formData =>
             formData.answer match {
               case YesNoAnswers.yes =>

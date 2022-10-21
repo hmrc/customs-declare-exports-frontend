@@ -68,7 +68,7 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec with Option
     super.beforeEach()
     authorizedUser()
     withNewCaching(aDeclaration(withType(DeclarationType.STANDARD)))
-    when(transportLeavingTheBorder.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(transportLeavingTheBorder.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -84,7 +84,7 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec with Option
 
   def theResponseForm: Form[TransportLeavingTheBorder] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[TransportLeavingTheBorder]])
-    verify(transportLeavingTheBorder).apply(captor.capture(), any())(any(), any())
+    verify(transportLeavingTheBorder).apply(captor.capture())(any(), any())
     captor.getValue
   }
 

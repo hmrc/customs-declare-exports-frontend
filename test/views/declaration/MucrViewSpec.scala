@@ -38,7 +38,7 @@ class MucrViewSpec extends UnitViewSpec with CommonMessages with Injector {
   private val page = instanceOf[mucr_code]
   private val form: Form[Mucr] = Mucr.form
 
-  private def createView(mode: Mode = Mode.Normal, form: Form[Mucr] = form)(implicit request: JourneyRequest[_]): Document =
+  private def createView(form: Form[Mucr] = form)(implicit request: JourneyRequest[_]): Document =
     page(form)(request, messages)
 
   private val tooLongMucr = createRandomAlphanumericString(36)

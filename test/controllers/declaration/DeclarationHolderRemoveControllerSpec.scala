@@ -56,7 +56,7 @@ class DeclarationHolderRemoveControllerSpec extends ControllerSpec with ErrorHan
     super.beforeEach()
     authorizedUser()
     setupErrorHandler()
-    when(mockRemovePage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockRemovePage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -72,18 +72,18 @@ class DeclarationHolderRemoveControllerSpec extends ControllerSpec with ErrorHan
 
   def theResponseForm: Form[YesNoAnswer] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[YesNoAnswer]])
-    verify(mockRemovePage).apply(any(), any(), captor.capture())(any(), any())
+    verify(mockRemovePage).apply(any(), captor.capture())(any(), any())
     captor.getValue
   }
 
   def theDeclarationHolder: DeclarationHolder = {
     val captor = ArgumentCaptor.forClass(classOf[DeclarationHolder])
-    verify(mockRemovePage).apply(any(), captor.capture(), any())(any(), any())
+    verify(mockRemovePage).apply(captor.capture(), any())(any(), any())
     captor.getValue
   }
 
   private def verifyRemovePageInvoked(numberOfTimes: Int = 1): Appendable =
-    verify(mockRemovePage, times(numberOfTimes)).apply(any(), any(), any())(any(), any())
+    verify(mockRemovePage, times(numberOfTimes)).apply(any(), any())(any(), any())
 
   val declarationHolder: DeclarationHolder = DeclarationHolder(Some("ACE"), Some(Eori("GB123456543443")), Some(EoriSource.OtherEori))
   val declarationHolder_2: DeclarationHolder = DeclarationHolder(Some("ACF"), Some(Eori("GB123456543445")), Some(EoriSource.OtherEori))
@@ -94,7 +94,6 @@ class DeclarationHolderRemoveControllerSpec extends ControllerSpec with ErrorHan
     onEveryDeclarationJourney() { request =>
       "return 200 (OK)" that {
         "display page method is invoked and cache is empty" in {
-
           withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationHolders(declarationHolder)))
 
           val result = controller.displayPage(id)(getRequest())

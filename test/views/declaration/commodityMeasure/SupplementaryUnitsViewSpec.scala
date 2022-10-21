@@ -42,7 +42,7 @@ class SupplementaryUnitsViewSpec extends PageWithButtonsSpec with ExportsTestHel
 
   override val typeAndViewInstance = (STANDARD, page(itemId, form, commodityInfo)(_, _))
 
-  def createView(frm: Form[SupplementaryUnits] = form, mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document =
+  def createView(frm: Form[SupplementaryUnits] = form)(implicit request: JourneyRequest[_]): Document =
     page(itemId, frm, commodityInfo)(request, messages)
 
   "SupplementaryUnits View" should {
@@ -98,8 +98,7 @@ class SupplementaryUnitsViewSpec extends PageWithButtonsSpec with ExportsTestHel
         )
       }
 
-      val createViewWithMode: Mode => Document = mode => createView(mode = mode)
-      checkAllSaveButtonsAreDisplayed(createViewWithMode)
+      checkAllSaveButtonsAreDisplayed(createView())
 
       "not display any error when the value entered in the 'supplementaryUnits' field is valid" in {
         val view = createView(form.fillAndValidate(SupplementaryUnits(Some("100"))))

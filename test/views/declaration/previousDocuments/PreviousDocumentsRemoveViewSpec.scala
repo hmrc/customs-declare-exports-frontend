@@ -22,7 +22,6 @@ import forms.common.YesNoAnswer.form
 import forms.declaration.Document
 import models.DeclarationType.STANDARD
 import models.requests.JourneyRequest
-import org.jsoup.nodes.{Document => nodeDocument}
 import play.twirl.api.Html
 import utils.ListItem
 import views.declaration.spec.PageWithButtonsSpec
@@ -40,7 +39,7 @@ class PreviousDocumentsRemoveViewSpec extends PageWithButtonsSpec with Injector 
 
   override val typeAndViewInstance = (STANDARD, page(documentId, documentWithRelatesTo, form())(_, _))
 
-  def createView(document: Document = documentWithRelatesTo, mode: Mode = Normal)(implicit request: JourneyRequest[_]): Html =
+  def createView(document: Document = documentWithRelatesTo)(implicit request: JourneyRequest[_]): Html =
     page(documentId, document, form())(request, messages)
 
   "Previous Documents Remove page" should {
@@ -109,8 +108,7 @@ class PreviousDocumentsRemoveViewSpec extends PageWithButtonsSpec with Injector 
         backButton must haveHref(PreviousDocumentsSummaryController.displayPage())
       }
 
-      val createViewWithMode: Mode => nodeDocument = mode => createView(mode = mode)
-      checkAllSaveButtonsAreDisplayed(createViewWithMode)
+      checkAllSaveButtonsAreDisplayed(createView())
     }
   }
 }

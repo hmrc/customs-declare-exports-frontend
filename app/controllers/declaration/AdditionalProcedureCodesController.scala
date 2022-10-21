@@ -23,7 +23,7 @@ import controllers.navigation.Navigator
 import forms.declaration.procedurecodes.AdditionalProcedureCode
 import forms.declaration.procedurecodes.AdditionalProcedureCode._
 import models.codes.AdditionalProcedureCode.NO_APC_APPLIES_CODE
-import models.codes.{ProcedureCode, AdditionalProcedureCode => AdditionalProcedureCodeModel}
+import models.codes.{AdditionalProcedureCode => AdditionalProcedureCodeModel, ProcedureCode}
 import models.declaration.ProcedureCodesData
 import models.declaration.ProcedureCodesData.limitOfCodes
 import models.requests.JourneyRequest
@@ -220,9 +220,7 @@ class AdditionalProcedureCodesController @Inject() (
     val formWithError = form().fill(userInput).copy(errors = updatedErrors)
 
     Future.successful(
-      BadRequest(
-        additionalProcedureCodesPage(itemId, formWithError, procedureCode, validAdditionalProcedureCodes, cachedAdditionalProcedureCodes)
-      )
+      BadRequest(additionalProcedureCodesPage(itemId, formWithError, procedureCode, validAdditionalProcedureCodes, cachedAdditionalProcedureCodes))
     )
   }
 

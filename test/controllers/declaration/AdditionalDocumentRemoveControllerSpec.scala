@@ -86,7 +86,6 @@ class AdditionalDocumentRemoveControllerSpec extends ControllerSpec with OptionV
   "AdditionalDocumentRemoveController" must {
 
     onEveryDeclarationJourney() { request =>
-
       "return 200 (OK)" that {
         "display page method is invoked" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withItem(itemWithDocument)))

@@ -36,7 +36,7 @@ class ProcedureCodeViewSpec extends PageWithButtonsSpec with ExportsTestHelper w
 
   override val typeAndViewInstance = (STANDARD, page(itemId, form())(_, _))
 
-  def createView(frm: Form[ProcedureCode] = form(), mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document =
+  def createView(frm: Form[ProcedureCode] = form())(implicit request: JourneyRequest[_]): Document =
     page(itemId, frm)(request, messages)
 
   "Procedure Code View" should {
@@ -94,8 +94,7 @@ class ProcedureCodeViewSpec extends PageWithButtonsSpec with ExportsTestHelper w
           backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.ItemsSummaryController.displayItemsSummaryPage())
         }
 
-        val createViewWithMode: Mode => Document = mode => createView(mode = mode)
-        checkAllSaveButtonsAreDisplayed(createViewWithMode)
+        checkAllSaveButtonsAreDisplayed(createView())
       }
 
       "provided with filled form" should {

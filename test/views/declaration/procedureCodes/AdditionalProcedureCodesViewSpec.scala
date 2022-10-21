@@ -45,8 +45,7 @@ class AdditionalProcedureCodesViewSpec extends PageWithButtonsSpec with ExportsT
   def createView(
     frm: Form[AdditionalProcedureCode] = form(),
     validCodes: Seq[AdditionalProcedureCodeModel] = defaultAdditionalProcedureCodes,
-    codes: Seq[String] = Seq.empty,
-    mode: Mode = Normal
+    codes: Seq[String] = Seq.empty
   )(implicit request: JourneyRequest[_]): Document =
     page(itemId, frm, sampleProcedureCode, validCodes, codes)(request, messages)
 
@@ -92,8 +91,7 @@ class AdditionalProcedureCodesViewSpec extends PageWithButtonsSpec with ExportsT
           addButton.text() must include(messages("declaration.additionalProcedureCodes.add.hint"))
         }
 
-        val createViewWithMode: Mode => Document = mode => createView(mode = mode)
-        checkAllSaveButtonsAreDisplayed(createViewWithMode)
+        checkAllSaveButtonsAreDisplayed(createView())
       }
 
       "provided with filled form" should {

@@ -35,7 +35,7 @@ class LinkDucrToMucrViewSpec extends UnitViewSpec with CommonMessages with Injec
   private val page = instanceOf[link_ducr_to_mucr]
   private val form: Form[YesNoAnswer] = YesNoAnswer.form()
 
-  private def createView(mode: Mode = Mode.Normal, form: Form[YesNoAnswer] = form)(implicit request: JourneyRequest[_]): Document =
+  private def createView(form: Form[YesNoAnswer] = form)(implicit request: JourneyRequest[_]): Document =
     page(form)(request, messages)
 
   "'Link DUCR to MUCR' view" should {

@@ -32,7 +32,7 @@ class TotalPackageQuantityViewSpec extends UnitViewSpec with ExportsTestHelper w
 
   val template = instanceOf[total_package_quantity]
 
-  def createView(mode: Mode = Mode.Normal)(implicit request: JourneyRequest[_]): Document = template(form(request.declarationType))
+  def createView()(implicit request: JourneyRequest[_]): Document = template(form(request.declarationType))
 
   "Total Package Quantity view" should {
 
@@ -75,8 +75,7 @@ class TotalPackageQuantityViewSpec extends UnitViewSpec with ExportsTestHelper w
         tariffText must containMessage(titleKey)
       }
 
-      val createViewWithMode: Mode => Document = mode => createView(mode = mode)
-      checkAllSaveButtonsAreDisplayed(createViewWithMode)
+      checkAllSaveButtonsAreDisplayed(createView())
 
       "display error when all entered input is incorrect" in {
         val error = "declaration.totalPackageQuantity.error"

@@ -18,6 +18,7 @@ package controllers.declaration
 
 import base.ControllerSpec
 import connectors.CodeListConnector
+import controllers.declaration.routes.{AdditionalActorsSummaryController, AuthorisationProcedureCodeChoiceController}
 import forms.common.Address
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.{ConsigneeDetails, EntityDetails}
@@ -53,7 +54,7 @@ class ConsigneeDetailsControllerSpec extends ControllerSpec {
     super.beforeEach()
 
     authorizedUser()
-    when(consigneeDetailsPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(consigneeDetailsPage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
     when(mockCodeListConnector.getCountryCodes(any())).thenReturn(ListMap("GB" -> Country("United Kingdom, Great Britain, Northern Ireland", "GB")))
   }
 
@@ -65,7 +66,7 @@ class ConsigneeDetailsControllerSpec extends ControllerSpec {
 
   def theResponseForm: Form[ConsigneeDetails] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[ConsigneeDetails]])
-    verify(consigneeDetailsPage).apply(any(), captor.capture())(any(), any())
+    verify(consigneeDetailsPage).apply(captor.capture())(any(), any())
     captor.getValue
   }
 
@@ -83,7 +84,6 @@ class ConsigneeDetailsControllerSpec extends ControllerSpec {
       "return 200 (OK)" when {
 
         "display page method is invoked and cache is empty" in {
-
           withNewCaching(request.cacheModel)
 
           val result = controller.displayPage()(getRequest())
@@ -92,7 +92,6 @@ class ConsigneeDetailsControllerSpec extends ControllerSpec {
         }
 
         "display page method is invoked and cache contains data" in {
-
           withNewCaching(aDeclarationAfter(request.cacheModel, withConsigneeDetails(None, Some(correctAddress))))
 
           val result = controller.displayPage()(getRequest())
@@ -102,9 +101,7 @@ class ConsigneeDetailsControllerSpec extends ControllerSpec {
       }
 
       "return 400 (BAD_REQUEST)" when {
-
         "form is incorrect" in {
-
           withNewCaching(request.cacheModel)
 
           val incorrectForm = Json.toJson(ConsigneeDetails(EntityDetails(None, None)))
@@ -118,28 +115,24 @@ class ConsigneeDetailsControllerSpec extends ControllerSpec {
 
     onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, SUPPLEMENTARY) { request =>
       "return 303 (SEE_OTHER) and redirect to other parties summary page" when {
-
         "form is correct" in {
-
           withNewCaching(request.cacheModel)
-
-          testFormSubmitRedirectsTo(controllers.declaration.routes.AdditionalActorsSummaryController.displayPage())
+          testFormSubmitRedirectsTo(AdditionalActorsSummaryController.displayPage())
         }
       }
     }
 
     onJourney(CLEARANCE) { request =>
       "return 303 (SEE_OTHER) and redirect to appropriate page" when {
+
         "form is correct and EIDR is false" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withEntryIntoDeclarantsRecords(YesNoAnswers.no)))
-
-          testFormSubmitRedirectsTo(controllers.declaration.routes.AuthorisationProcedureCodeChoiceController.displayPage())
+          testFormSubmitRedirectsTo(AuthorisationProcedureCodeChoiceController.displayPage())
         }
 
         "form is correct and EIDR is true" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withEntryIntoDeclarantsRecords(YesNoAnswers.yes)))
-
-          testFormSubmitRedirectsTo(controllers.declaration.routes.AuthorisationProcedureCodeChoiceController.displayPage())
+          testFormSubmitRedirectsTo(AuthorisationProcedureCodeChoiceController.displayPage())
         }
       }
     }

@@ -79,14 +79,12 @@ class SealController @Inject() (
     }
   }
 
-  def displaySealRemove(containerId: String, sealId: String): Action[AnyContent] = (authenticate andThen journeyType) {
-    implicit request =>
-      Ok(removePage(removeSealYesNoForm, containerId, sealId))
+  def displaySealRemove(containerId: String, sealId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    Ok(removePage(removeSealYesNoForm, containerId, sealId))
   }
 
-  def submitSealRemove(containerId: String, sealId: String): Action[AnyContent] = (authenticate andThen journeyType).async {
-    implicit request =>
-      removeSealAnswer(containerId, sealId)
+  def submitSealRemove(containerId: String, sealId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+    removeSealAnswer(containerId, sealId)
   }
 
   private def addSealYesNoForm(containerId: String)(implicit request: JourneyRequest[AnyContent]): Form[YesNoAnswer] = {

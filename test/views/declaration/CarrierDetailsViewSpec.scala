@@ -53,14 +53,13 @@ class CarrierDetailsViewSpec extends AddressViewSpec with PageWithButtonsSpec wi
     super.afterEach()
   }
 
-  def form(implicit request: JourneyRequest[_]): Form[CarrierDetails] =
-    CarrierDetails.form(request.declarationType)
+  def form(implicit request: JourneyRequest[_]): Form[CarrierDetails] = CarrierDetails.form(request.declarationType)
 
   val page = instanceOf[carrier_details]
 
   override val typeAndViewInstance = (STANDARD, page(CarrierDetails.form(STANDARD))(_, _))
 
-  def createView(form: Form[CarrierDetails], mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document =
+  def createView(form: Form[CarrierDetails])(implicit request: JourneyRequest[_]): Document =
     page(form)(request, messages)
 
   "Carrier Details View on empty page" should {
@@ -168,8 +167,7 @@ class CarrierDetailsViewSpec extends AddressViewSpec with PageWithButtonsSpec wi
         actualText mustBe removeLineBreakIfAny(expectedText)
       }
 
-      val createViewWithMode: Mode => Document = mode => createView(form)
-      checkAllSaveButtonsAreDisplayed(createViewWithMode)
+      checkAllSaveButtonsAreDisplayed(createView(form))
     }
   }
 

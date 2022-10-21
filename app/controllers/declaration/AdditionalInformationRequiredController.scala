@@ -84,9 +84,7 @@ class AdditionalInformationRequiredController @Inject() (
   private def resolveBackLink(itemId: String)(implicit request: JourneyRequest[AnyContent]): Future[Call] =
     navigator.backLinkForAdditionalInformation(AdditionalInformationRequired, itemId)
 
-  private def showFormWithErrors(itemId: String, formWithErrors: Form[YesNoAnswer])(
-    implicit request: JourneyRequest[AnyContent]
-  ): Future[Result] =
+  private def showFormWithErrors(itemId: String, formWithErrors: Form[YesNoAnswer])(implicit request: JourneyRequest[AnyContent]): Future[Result] =
     resolveBackLink(itemId) map { backLink =>
       BadRequest(additionalInfoReq(itemId, formWithErrors, backLink, request.cacheModel.procedureCodeOfItem(itemId)))
     }

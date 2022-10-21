@@ -90,9 +90,7 @@ class AdditionalInformationController @Inject() (
   private def resolveBackLink(itemId: String)(implicit request: JourneyRequest[AnyContent]): Future[Call] =
     navigator.backLinkForAdditionalInformation(AdditionalInformationSummary, itemId)
 
-  private def showFormWithErrors(itemId: String, formWithErrors: Form[YesNoAnswer])(
-    implicit request: JourneyRequest[AnyContent]
-  ): Future[Result] =
+  private def showFormWithErrors(itemId: String, formWithErrors: Form[YesNoAnswer])(implicit request: JourneyRequest[AnyContent]): Future[Result] =
     resolveBackLink(itemId) map {
       val items = cachedAdditionalInformationData(itemId).map(_.items).getOrElse(Seq.empty)
       backLink => BadRequest(additionalInformationPage(itemId, formWithErrors, items, backLink))

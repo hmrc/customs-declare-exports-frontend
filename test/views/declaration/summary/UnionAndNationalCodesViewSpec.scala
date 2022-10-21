@@ -17,6 +17,7 @@
 package views.declaration.summary
 
 import base.Injector
+import controllers.declaration.routes.{AdditionalInformationController, AdditionalInformationRequiredController}
 import forms.declaration.AdditionalInformation
 import services.cache.ExportsTestHelper
 import views.declaration.spec.UnitViewSpec
@@ -31,9 +32,7 @@ class UnionAndNationalCodesViewSpec extends UnitViewSpec with ExportsTestHelper 
   "Union and national codes" should {
 
     "display title only and change link" when {
-
       "Sequence is empty" in {
-
         val view = section("itemId", 1, Seq.empty)(messages)
         val row = view.getElementsByClass("additional-information-1-row")
 
@@ -42,12 +41,11 @@ class UnionAndNationalCodesViewSpec extends UnitViewSpec with ExportsTestHelper 
 
         row must haveSummaryActionsTexts("site.change", "declaration.summary.items.item.additionalInformation.changeAll")
 
-        row must haveSummaryActionsHref(controllers.declaration.routes.AdditionalInformationRequiredController.displayPage("itemId"))
+        row must haveSummaryActionWithPlaceholder(AdditionalInformationRequiredController.displayPage("itemId"))
       }
     }
 
     "display additional information with change buttons" in {
-
       val view = section("itemId", 1, data)(messages)
       val table = view.getElementById("additional-information-1-table")
 
@@ -63,7 +61,7 @@ class UnionAndNationalCodesViewSpec extends UnitViewSpec with ExportsTestHelper 
       row1.getElementsByClass("govuk-table__cell").get(0).text() mustBe "12345"
       row1.getElementsByClass("govuk-table__cell").get(1).text() mustBe "description1"
       val row1ChangeLink = row1.getElementsByClass("govuk-table__cell").get(2).getElementsByTag("a").first()
-      row1ChangeLink must haveHref(controllers.declaration.routes.AdditionalInformationController.displayPage("itemId"))
+      row1ChangeLink must haveHrefWithPlaceholder(AdditionalInformationController.displayPage("itemId"))
       row1ChangeLink must containMessage("site.change")
       row1ChangeLink must containMessage("declaration.summary.items.item.additionalInformation.change", "12345", 1)
 
@@ -71,15 +69,13 @@ class UnionAndNationalCodesViewSpec extends UnitViewSpec with ExportsTestHelper 
       row2.getElementsByClass("govuk-table__cell").get(0).text() mustBe "23456"
       row2.getElementsByClass("govuk-table__cell").get(1).text() mustBe "description2"
       val row2ChangeLink = row2.getElementsByClass("govuk-table__cell").get(2).getElementsByTag("a").first()
-      row2ChangeLink must haveHref(controllers.declaration.routes.AdditionalInformationController.displayPage("itemId"))
+      row2ChangeLink must haveHrefWithPlaceholder(AdditionalInformationController.displayPage("itemId"))
       row2ChangeLink must containMessage("site.change")
       row2ChangeLink must containMessage("declaration.summary.items.item.additionalInformation.change", "23456", 1)
     }
 
     "display additional information without change buttons" when {
-
       "actionsEnabled is false" in {
-
         val view = section("itemId", 1, data, actionsEnabled = false)(messages)
         val table = view.getElementById("additional-information-1-table")
 
@@ -104,7 +100,6 @@ class UnionAndNationalCodesViewSpec extends UnitViewSpec with ExportsTestHelper 
         row2ChangeLink.attr("href") mustBe empty
         row2ChangeLink.text() mustBe empty
       }
-
     }
   }
 }

@@ -58,8 +58,7 @@ class RepresentativeAgentController @Inject() (
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[RepresentativeAgent]) => Future.successful(BadRequest(representativeAgentPage(formWithErrors))),
-        validRepresentativeDetails =>
-          updateCache(validRepresentativeDetails).map(_ => navigator.continueTo(nextPage(validRepresentativeDetails)))
+        validRepresentativeDetails => updateCache(validRepresentativeDetails).map(_ => navigator.continueTo(nextPage(validRepresentativeDetails)))
       )
   }
 

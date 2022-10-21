@@ -37,7 +37,7 @@ class BorderTransportViewSpec extends PageWithButtonsSpec with Injector {
 
   override val typeAndViewInstance = (STANDARD, page(form)(_, _))
 
-  def createView(mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document = page(form)
+  def createView()(implicit request: JourneyRequest[_]): Document = page(form)
 
   "Border Transport view" when {
 
@@ -102,8 +102,7 @@ class BorderTransportViewSpec extends PageWithButtonsSpec with Injector {
           actualText mustBe removeLineBreakIfAny(expectedText)
         }
 
-        val createViewWithMode: Mode => Document = mode => createView(mode = mode)
-        checkAllSaveButtonsAreDisplayed(createViewWithMode)
+        checkAllSaveButtonsAreDisplayed(createView())
       }
     }
   }

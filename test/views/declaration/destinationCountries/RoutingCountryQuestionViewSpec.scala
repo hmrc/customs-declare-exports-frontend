@@ -24,7 +24,6 @@ import forms.declaration.countries.Country
 import models.DeclarationType.STANDARD
 import models.codes.{Country => ModelCountry}
 import models.requests.JourneyRequest
-import org.jsoup.nodes.Document
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import play.api.mvc.AnyContent
@@ -56,7 +55,7 @@ class RoutingCountryQuestionViewSpec extends PageWithButtonsSpec with Injector {
 
   override val typeAndViewInstance = (STANDARD, page(formAdd())(_, _))
 
-  def createView(mode: Mode = Normal)(implicit request: JourneyRequest[AnyContent]): Appendable =
+  def createView()(implicit request: JourneyRequest[AnyContent]): Appendable =
     page(formAdd())(request, messages(request))
 
   "Routing country question page" should {
@@ -95,7 +94,6 @@ class RoutingCountryQuestionViewSpec extends PageWithButtonsSpec with Injector {
       backButton must haveHref(routes.DestinationCountryController.displayPage())
     }
 
-    val createViewWithMode: Mode => Document = mode => createView(mode = mode)
-    checkAllSaveButtonsAreDisplayed(createViewWithMode)
+    checkAllSaveButtonsAreDisplayed(createView())
   }
 }

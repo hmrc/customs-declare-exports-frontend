@@ -17,6 +17,7 @@
 package controllers.declaration
 
 import base.ControllerSpec
+import controllers.declaration.routes.AdditionalProcedureCodesController
 import forms.declaration._
 import forms.declaration.procedurecodes.ProcedureCode
 import mock.ErrorHandlerMocks
@@ -52,7 +53,7 @@ class ProcedureCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks 
 
   def templateParameters: Form[ProcedureCode] = {
     val formCaptor = ArgumentCaptor.forClass(classOf[Form[ProcedureCode]])
-    verify(procedureCodesPage).apply(any(), any(), formCaptor.capture())(any(), any())
+    verify(procedureCodesPage).apply(any(), formCaptor.capture())(any(), any())
     formCaptor.getValue
   }
 
@@ -60,7 +61,7 @@ class ProcedureCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks 
     super.beforeEach()
     authorizedUser()
     setupErrorHandler()
-    when(procedureCodesPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(procedureCodesPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -77,30 +78,27 @@ class ProcedureCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks 
   "ProcedureCodesController on displayPage" should {
 
     "return 200 (OK)" when {
-
       onEveryDeclarationJourney() { request =>
         "display page method is invoked with empty cache" in {
-
           withNewCaching(aDeclaration(withType(request.declarationType), withItem(ExportItem(itemId))))
 
           val result = controller.displayPage(itemId)(getRequest())
 
           status(result) mustBe OK
-          verify(procedureCodesPage).apply(any(), any(), any())(any(), any())
+          verify(procedureCodesPage).apply(any(), any())(any(), any())
 
           val responseForm = templateParameters
           responseForm.value mustBe empty
         }
 
         "display page method is invoked with data in cache" in {
-
           val item = ExportItem(itemId, procedureCodes = Some(ProcedureCodesData(Some("1234"), Seq.empty)))
           withNewCaching(aDeclaration(withType(request.declarationType), withItem(item)))
 
           val result = controller.displayPage(itemId)(getRequest())
 
           status(result) mustBe OK
-          verify(procedureCodesPage).apply(any(), any(), any())(any(), any())
+          verify(procedureCodesPage).apply(any(), any())(any(), any())
 
           val responseForm = templateParameters
           responseForm.value.value.procedureCode mustBe "1234"
@@ -119,7 +117,6 @@ class ProcedureCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks 
     onEveryDeclarationJourney() { request =>
       "provided with incorrect code" should {
         "return 400 (BAD_REQUEST)" in {
-
           withNewCaching(aDeclaration(withType(request.declarationType)))
 
           val incorrectForm = Seq(("procedureCode", "12345"))
@@ -127,13 +124,12 @@ class ProcedureCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks 
           val result = controller.submitProcedureCodes(itemId)(postRequestAsFormUrlEncoded(incorrectForm: _*))
 
           status(result) mustBe BAD_REQUEST
-          verify(procedureCodesPage).apply(any(), any(), any())(any(), any())
+          verify(procedureCodesPage).apply(any(), any())(any(), any())
         }
       }
 
       "provided with empty code" should {
         "return 400 (BAD_REQUEST)" in {
-
           withNewCaching(aDeclaration(withType(request.declarationType)))
 
           val incorrectForm = Seq(("procedureCode", ""))
@@ -141,21 +137,20 @@ class ProcedureCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks 
           val result = controller.submitProcedureCodes(itemId)(postRequestAsFormUrlEncoded(incorrectForm: _*))
 
           status(result) mustBe BAD_REQUEST
-          verify(procedureCodesPage).apply(any(), any(), any())(any(), any())
+          verify(procedureCodesPage).apply(any(), any())(any(), any())
         }
       }
 
       "provided with correct code" should {
         "redirect to AdditionalProcedureCodes page" in {
-
           withNewCaching(aDeclaration(withType(request.declarationType), withItem(anItem(withItemId(itemId)))))
           val correctForm = Seq(("procedureCode", "1234"))
 
           val result = controller.submitProcedureCodes(itemId)(postRequestAsFormUrlEncoded(correctForm: _*))
 
           status(result) mustBe SEE_OTHER
-          thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalProcedureCodesController.displayPage(itemId)
-          verify(procedureCodesPage, never()).apply(any(), any(), any())(any(), any())
+          thePageNavigatedTo mustBe AdditionalProcedureCodesController.displayPage(itemId)
+          verify(procedureCodesPage, never()).apply(any(), any())(any(), any())
         }
       }
 
@@ -164,7 +159,6 @@ class ProcedureCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks 
         "cache was empty" should {
 
           "update cache with new Procedure Code" in {
-
             withNewCaching(aDeclaration(withType(request.declarationType), withItem(anItem(withItemId(itemId)))))
             val correctForm = Seq(("procedureCode", "1234"))
 
@@ -178,7 +172,6 @@ class ProcedureCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks 
           }
 
           "NOT remove Additional Procedure Codes from the cache" in {
-
             val item = ExportItem(itemId, procedureCodes = Some(ProcedureCodesData(None, Seq("123", "456"))))
             withNewCaching(aDeclaration(withType(request.declarationType), withItem(item)))
             val correctForm = Seq(("procedureCode", "1234"))
@@ -195,7 +188,6 @@ class ProcedureCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks 
         "cache was NOT empty" should {
 
           "update cache with new Procedure Code" in {
-
             val item = ExportItem(itemId, procedureCodes = Some(ProcedureCodesData(Some("1234"), Seq.empty)))
             withNewCaching(aDeclaration(withType(request.declarationType), withItem(item)))
             val correctForm = Seq(("procedureCode", "5678"))
@@ -210,7 +202,6 @@ class ProcedureCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks 
           }
 
           "remove all Additional Procedure Codes from the cache" in {
-
             val item = ExportItem(itemId, procedureCodes = Some(ProcedureCodesData(Some("1234"), Seq("123", "456"))))
             withNewCaching(aDeclaration(withType(request.declarationType), withItem(item)))
             val correctForm = Seq(("procedureCode", "5678"))
@@ -225,7 +216,6 @@ class ProcedureCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks 
 
           "NOT remove Additional Procedure Codes from the cache" when {
             "Procedure Code provided is the same as cached one" in {
-
               val item = ExportItem(itemId, procedureCodes = Some(ProcedureCodesData(Some("1234"), Seq("123", "456"))))
               withNewCaching(aDeclaration(withType(request.declarationType), withItem(item)))
               val correctForm = Seq(("procedureCode", "1234"))
@@ -243,7 +233,6 @@ class ProcedureCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks 
 
       "provided with '1042' code" should {
         "not make changes to FiscalInformation and AdditionalFiscalReferences in cache" in {
-
           withNewCaching(
             aDeclaration(
               withType(request.declarationType),
@@ -262,7 +251,6 @@ class ProcedureCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks 
 
       "provided with non-'1042' code" should {
         "remove FiscalInformation and AdditionalFiscalReferences from cache" in {
-
           withNewCaching(
             aDeclaration(
               withType(request.declarationType),
@@ -284,7 +272,6 @@ class ProcedureCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks 
 
       onJourney(STANDARD, SIMPLIFIED, SUPPLEMENTARY, OCCASIONAL) { request =>
         "not make changes to PackageInformation in cache" in {
-
           withNewCaching(
             aDeclaration(withType(request.declarationType), withItem(anItem(withItemId(itemId), withPackageInformation(packageInformation))))
           )
@@ -299,7 +286,6 @@ class ProcedureCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks 
 
       onClearance { request =>
         "remove PackageInformation from cache" in {
-
           withNewCaching(
             aDeclaration(withType(request.declarationType), withItem(anItem(withItemId(itemId), withPackageInformation(packageInformation))))
           )
@@ -355,5 +341,4 @@ class ProcedureCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks 
       }
     }
   }
-
 }

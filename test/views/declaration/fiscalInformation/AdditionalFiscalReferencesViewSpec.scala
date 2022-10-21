@@ -32,7 +32,7 @@ class AdditionalFiscalReferencesViewSpec extends UnitViewSpec with Injector {
 
   val page = instanceOf[additional_fiscal_references]
 
-  def createView(references: Seq[AdditionalFiscalReference], mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document =
+  def createView(references: Seq[AdditionalFiscalReference])(implicit request: JourneyRequest[_]): Document =
     page(itemId, form(), references)
 
   "Additional Fiscal References View" should {
@@ -55,8 +55,7 @@ class AdditionalFiscalReferencesViewSpec extends UnitViewSpec with Injector {
         backButton must haveHref(AdditionalProcedureCodesController.displayPage(itemId))
       }
 
-      val createViewWithMode: Mode => Document = mode => createView(Seq(additionalReferences), mode = mode)
-      checkAllSaveButtonsAreDisplayed(createViewWithMode)
+      checkAllSaveButtonsAreDisplayed(view)
 
       "display table header" in {
         view.getElementsByClass("govuk-table__header").get(0) must containMessage("declaration.additionalFiscalReferences.country.header")

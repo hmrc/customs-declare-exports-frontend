@@ -22,7 +22,7 @@ import controllers.declaration.routes.DeclarationChoiceController
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypePage.{form, radioButtonGroupId}
 import models.DeclarationType._
-import models.{DeclarationType}
+import models.DeclarationType
 import play.twirl.api.Html
 import views.declaration.spec.UnitViewSpec
 import views.helpers.CommonMessages

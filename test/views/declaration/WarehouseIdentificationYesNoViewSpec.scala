@@ -38,7 +38,7 @@ class WarehouseIdentificationYesNoViewSpec extends PageWithButtonsSpec with Inje
 
   override val typeAndViewInstance = (STANDARD, page(form(false))(_, _))
 
-  def createView(frm: Form[WarehouseIdentification] = form(false), mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document =
+  def createView(frm: Form[WarehouseIdentification] = form(false))(implicit request: JourneyRequest[_]): Document =
     page(frm)(request, messages)
 
   "Warehouse Identification Number View" should {
@@ -77,8 +77,7 @@ class WarehouseIdentificationYesNoViewSpec extends PageWithButtonsSpec with Inje
         view.getElementsByAttributeValue("for", "code_no") must containMessageForElements("site.no")
       }
 
-      val createViewWithMode: Mode => Document = mode => createView(mode = mode)
-      checkAllSaveButtonsAreDisplayed(createViewWithMode)
+      checkAllSaveButtonsAreDisplayed(createView())
     }
 
     onJourney(STANDARD, SUPPLEMENTARY, CLEARANCE) { implicit request =>

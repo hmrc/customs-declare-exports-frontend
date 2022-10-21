@@ -22,9 +22,8 @@ import controllers.declaration.routes.{LocationOfGoodsController, OfficeOfExitCo
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.SUPPLEMENTARY_EIDR
 import forms.declaration.countries.Country
 import forms.declaration.declarationHolder.AuthorizationTypeCodes.codeThatSkipLocationOfGoods
-import models.DeclarationType.DeclarationType
 import models.codes.{Country => ModelCountry}
-import models.{DeclarationType}
+import models.DeclarationType._
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
@@ -56,7 +55,7 @@ class DestinationCountryControllerSpec extends ControllerSpec {
     super.beforeEach()
 
     authorizedUser()
-    when(destinationCountryPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(destinationCountryPage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
     when(mockCodeListConnector.getCountryCodes(any())).thenReturn(ListMap("PL" -> ModelCountry("Poland", "PL")))
   }
 
@@ -68,7 +67,7 @@ class DestinationCountryControllerSpec extends ControllerSpec {
 
   def theResponseForm: Form[Country] = {
     val formCaptor = ArgumentCaptor.forClass(classOf[Form[Country]])
-    verify(destinationCountryPage).apply(any(), formCaptor.capture())(any(), any())
+    verify(destinationCountryPage).apply(formCaptor.capture())(any(), any())
     formCaptor.getValue
   }
 
@@ -82,30 +81,26 @@ class DestinationCountryControllerSpec extends ControllerSpec {
     "return 200 (OK)" when {
 
       "display page method is invoked and cache is empty" in {
-
         withNewCaching(aDeclaration())
 
         val result = controller.displayPage()(getRequest())
 
         status(result) mustBe OK
-        verify(destinationCountryPage).apply(any(), any())(any(), any())
+        verify(destinationCountryPage).apply(any())(any(), any())
       }
 
       "display page method is invoked and cache contains data" in {
-
         withNewCaching(aDeclaration(withDestinationCountries()))
 
         val result = controller.displayPage()(getRequest())
 
         status(result) mustBe OK
-        verify(destinationCountryPage).apply(any(), any())(any(), any())
+        verify(destinationCountryPage).apply(any())(any(), any())
       }
     }
 
     "return 400 (BAD_REQUEST)" when {
-
       "form contains incorrect country" in {
-
         withNewCaching(aDeclaration())
 
         val incorrectForm = JsObject(Map("countryCode" -> JsString("incorrect")))
@@ -151,23 +146,23 @@ class DestinationCountryControllerSpec extends ControllerSpec {
         }
 
       "submit for Standard declaration" should {
-        behave like redirectForDeclarationType(DeclarationType.STANDARD, RoutingCountriesController.displayRoutingQuestion())
+        behave like redirectForDeclarationType(STANDARD, RoutingCountriesController.displayRoutingQuestion())
       }
 
       "submit for Simplified declaration" should {
-        behave like redirectForDeclarationType(DeclarationType.SIMPLIFIED, RoutingCountriesController.displayRoutingQuestion())
+        behave like redirectForDeclarationType(SIMPLIFIED, RoutingCountriesController.displayRoutingQuestion())
       }
 
       "submit for Occasional declaration" should {
-        behave like redirectForDeclarationType(DeclarationType.OCCASIONAL, RoutingCountriesController.displayRoutingQuestion())
+        behave like redirectForDeclarationType(OCCASIONAL, RoutingCountriesController.displayRoutingQuestion())
       }
 
       "submit for Supplementary declaration" should {
-        behave like redirectForDeclarationType(DeclarationType.SUPPLEMENTARY, LocationOfGoodsController.displayPage())
+        behave like redirectForDeclarationType(SUPPLEMENTARY, LocationOfGoodsController.displayPage())
       }
 
       "submit for Customs Clearance request" should {
-        behave like redirectForDeclarationType(DeclarationType.CLEARANCE, LocationOfGoodsController.displayPage())
+        behave like redirectForDeclarationType(CLEARANCE, LocationOfGoodsController.displayPage())
       }
 
       "conditions for skipping location of goods pass" should {

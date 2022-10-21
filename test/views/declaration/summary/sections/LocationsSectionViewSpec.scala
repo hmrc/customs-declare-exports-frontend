@@ -30,43 +30,36 @@ class LocationsSectionViewSpec extends UnitViewSpec with ExportsTestHelper with 
   val section = instanceOf[locations_section]
 
   "Locations section" must {
-
-    val view = section(Draft, data)(messages)
+    val view = section(data)(messages)
 
     "have a goods location code with change button" in {
-
       val row = view.getElementsByClass("goodsLocationCode-row")
       row must haveSummaryKey(messages("declaration.summary.locations.goodsLocationCode"))
       row must haveSummaryValue("GBAUEMAEMAEMA")
 
       row must haveSummaryActionsTexts("site.change", "declaration.summary.locations.goodsLocationCode.change")
 
-      row must haveSummaryActionsHref(LocationOfGoodsController.displayPage(Draft))
+      row must haveSummaryActionWithPlaceholder(LocationOfGoodsController.displayPage)
     }
 
     "have office of exit id with change button" in {
-
-      val view = section(Draft, data)(messages)
-
       val row = view.getElementsByClass("location-officeOfExit-row")
       row must haveSummaryKey(messages("declaration.summary.locations.officeOfExit"))
       row must haveSummaryValue("123")
 
       row must haveSummaryActionsTexts("site.change", "declaration.summary.locations.officeOfExit.change")
 
-      row must haveSummaryActionsHref(OfficeOfExitController.displayPage(Draft))
+      row must haveSummaryActionWithPlaceholder(OfficeOfExitController.displayPage)
 
     }
 
     "not have answers when goods location not asked" in {
       val view = section(aDeclarationAfter(data, withoutGoodsLocation()))(messages)
-
       view.getElementsByClass("goodsLocationCode-row") mustBe empty
     }
 
     "not have answers when office of exit not asked" in {
       val view = section(aDeclarationAfter(data, withoutOfficeOfExit()))(messages)
-
       view.getElementsByClass("location-officeOfExit-row") mustBe empty
     }
   }

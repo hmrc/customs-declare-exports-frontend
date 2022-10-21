@@ -25,7 +25,6 @@ import forms.declaration.Document.form
 import forms.declaration.{Document, PreviousDocumentsData}
 import models.DeclarationType._
 import models.requests.JourneyRequest
-import org.jsoup.nodes.{Document => nodeDocument}
 import org.scalatest.Assertion
 import play.twirl.api.Html
 import views.declaration.spec.PageWithButtonsSpec
@@ -41,7 +40,7 @@ class PreviousDocumentsViewSpec extends PageWithButtonsSpec with Injector {
 
   override val typeAndViewInstance = (STANDARD, page(form)(_, _))
 
-  def createView(mode: Mode = Normal)(implicit request: JourneyRequest[_]): Html = page(form)(request, messages)
+  def createView()(implicit request: JourneyRequest[_]): Html = page(form)(request, messages)
 
   "Previous Documents View" should {
 
@@ -283,8 +282,7 @@ class PreviousDocumentsViewSpec extends PageWithButtonsSpec with Injector {
         }
       }
 
-      val createViewWithMode: Mode => nodeDocument = mode => createView(mode = mode)
-      checkAllSaveButtonsAreDisplayed(createViewWithMode)
+      checkAllSaveButtonsAreDisplayed(createView())
     }
 
     def verifyBodyBulletList(view: Html): Assertion = {

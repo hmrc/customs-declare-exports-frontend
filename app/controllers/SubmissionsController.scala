@@ -66,8 +66,7 @@ class SubmissionsController @Inject() (
       for {
         submissions <- customsDeclareExportsConnector.fetchSubmissions
         submissionsInDescOrder = submissions.sorted(Submission.newestEarlierOrdering)
-      }
-      yield Ok(submissionsPage(SubmissionsPagesElements(submissionsInDescOrder, submissionsPages)))
+      } yield Ok(submissionsPage(SubmissionsPagesElements(submissionsInDescOrder, submissionsPages)))
         .removingFromSession(declarationId, errorFixModeSessionKey)
     }
 

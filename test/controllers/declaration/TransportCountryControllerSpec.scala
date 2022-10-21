@@ -54,7 +54,7 @@ class TransportCountryControllerSpec extends ControllerSpec with OptionValues {
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    when(page.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(page.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
     when(codeListConnector.getCountryCodes(any())).thenReturn(ListMap(countryCode -> Country(countryName, countryCode)))
   }
 
@@ -73,7 +73,7 @@ class TransportCountryControllerSpec extends ControllerSpec with OptionValues {
 
   def theResponseForm: Form[TransportCountry] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[TransportCountry]])
-    verify(page).apply(any(), any(), captor.capture())(any(), any())
+    verify(page).apply(any(), captor.capture())(any(), any())
     captor.getValue
   }
 
@@ -88,7 +88,7 @@ class TransportCountryControllerSpec extends ControllerSpec with OptionValues {
           val result = controller.displayPage()(getRequest())
 
           status(result) mustBe OK
-          verify(page, times(1)).apply(any(), any(), any())(any(), any())
+          verify(page, times(1)).apply(any(), any())(any(), any())
           theResponseForm.value mustBe empty
         }
 
@@ -98,7 +98,7 @@ class TransportCountryControllerSpec extends ControllerSpec with OptionValues {
           val result = controller.displayPage()(getRequest())
 
           status(result) mustBe OK
-          verify(page, times(1)).apply(any(), any(), any())(any(), any())
+          verify(page, times(1)).apply(any(), any())(any(), any())
 
           theResponseForm.value.get.countryName mustBe Some(countryName)
         }
@@ -154,7 +154,7 @@ class TransportCountryControllerSpec extends ControllerSpec with OptionValues {
           val result = controller.submitForm()(postRequest(formData))
 
           status(result) mustBe BAD_REQUEST
-          verify(page, times(1)).apply(any(), any(), any())(any(), any())
+          verify(page, times(1)).apply(any(), any())(any(), any())
         }
       }
 

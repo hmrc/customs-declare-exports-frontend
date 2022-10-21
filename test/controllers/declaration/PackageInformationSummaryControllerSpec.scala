@@ -17,6 +17,7 @@
 package controllers.declaration
 
 import base.ControllerSpec
+import controllers.declaration.routes.{AdditionalInformationRequiredController, CommodityMeasureController}
 import forms.common.YesNoAnswer
 import forms.declaration.PackageInformation
 import models.DeclarationType._
@@ -48,7 +49,7 @@ class PackageInformationSummaryControllerSpec extends ControllerSpec with Option
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    when(mockPage.apply(any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -65,17 +66,18 @@ class PackageInformationSummaryControllerSpec extends ControllerSpec with Option
 
   def theResponseForm: Form[YesNoAnswer] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[YesNoAnswer]])
-    verify(mockPage).apply(any(), any(), captor.capture(), any())(any(), any())
+    verify(mockPage).apply(any(), captor.capture(), any())(any(), any())
     captor.getValue
   }
 
   def thePackageInformationList: Seq[PackageInformation] = {
     val captor = ArgumentCaptor.forClass(classOf[Seq[PackageInformation]])
-    verify(mockPage).apply(any(), any(), any(), captor.capture())(any(), any())
+    verify(mockPage).apply(any(), any(), captor.capture())(any(), any())
     captor.getValue
   }
 
-  private def verifyPageInvoked(numberOfTimes: Int = 1) = verify(mockPage, times(numberOfTimes)).apply(any(), any(), any(), any())(any(), any())
+  private def verifyPageInvoked(numberOfTimes: Int = 1): HtmlFormat.Appendable =
+    verify(mockPage, times(numberOfTimes)).apply(any(), any(), any())(any(), any())
 
   "PackageInformation Summary Controller" should {
 
@@ -95,7 +97,6 @@ class PackageInformationSummaryControllerSpec extends ControllerSpec with Option
       }
 
       "return 400 (BAD_REQUEST)" when {
-
         "user submits invalid answer" in {
           val item = anItem(withPackageInformation(packageInformation))
           withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
@@ -106,7 +107,6 @@ class PackageInformationSummaryControllerSpec extends ControllerSpec with Option
           status(result) mustBe BAD_REQUEST
           verifyPageInvoked()
         }
-
       }
 
       "return 303 (SEE_OTHER)" when {
@@ -118,7 +118,7 @@ class PackageInformationSummaryControllerSpec extends ControllerSpec with Option
           val result = controller.displayPage(item.id)(getRequest())
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.PackageInformationAddController.displayPage(item.id)
+          thePageNavigatedTo mustBe routes.PackageInformationAddController.displayPage(item.id)
         }
 
         "user submits valid Yes answer" in {
@@ -129,7 +129,7 @@ class PackageInformationSummaryControllerSpec extends ControllerSpec with Option
           val result = controller.submitForm(item.id)(postRequest(requestBody))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.PackageInformationAddController.displayPage(item.id)
+          thePageNavigatedTo mustBe routes.PackageInformationAddController.displayPage(item.id)
         }
 
         "user submits valid Yes answer in error-fix mode" in {
@@ -137,10 +137,10 @@ class PackageInformationSummaryControllerSpec extends ControllerSpec with Option
           withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
 
           val requestBody = Json.obj("yesNo" -> "Yes")
-          val result = controller.submitForm(Mode.ErrorFix, item.id)(postRequest(requestBody))
+          val result = controller.submitForm(item.id)(postRequest(requestBody))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.PackageInformationAddController.displayPage(Mode.ErrorFix, item.id)
+          thePageNavigatedTo mustBe routes.PackageInformationAddController.displayPage(item.id)
         }
       }
     }
@@ -155,7 +155,7 @@ class PackageInformationSummaryControllerSpec extends ControllerSpec with Option
           val result = controller.submitForm(item.id)(postRequest(requestBody))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.CommodityMeasureController.displayPage(item.id)
+          thePageNavigatedTo mustBe CommodityMeasureController.displayPage(item.id)
         }
       }
 
@@ -168,10 +168,9 @@ class PackageInformationSummaryControllerSpec extends ControllerSpec with Option
           val result = controller.submitForm(item.id)(postRequest(requestBody))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalInformationRequiredController.displayPage(item.id)
+          thePageNavigatedTo mustBe AdditionalInformationRequiredController.displayPage(item.id)
         }
       }
     }
-
   }
 }

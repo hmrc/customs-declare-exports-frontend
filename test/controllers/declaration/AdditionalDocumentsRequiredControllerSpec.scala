@@ -71,7 +71,6 @@ class AdditionalDocumentsRequiredControllerSpec extends ControllerSpec {
   "AdditionalDocumentsRequiredController" should {
 
     onEveryDeclarationJourney() { implicit request =>
-
       "return 200 (OK)" when {
         "display page method is invoked" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withItem(anItem(withItemId(itemId)))))

@@ -44,7 +44,7 @@ class InlandTransportDetailsViewSpec extends PageWithButtonsSpec with ExportsTes
 
   override val typeAndViewInstance = (STANDARD, page(form())(_, _))
 
-  def createView(mode: Mode = Normal, frm: Form[InlandModeOfTransportCode] = form())(implicit request: JourneyRequest[_]): Document =
+  def createView(frm: Form[InlandModeOfTransportCode] = form())(implicit request: JourneyRequest[_]): Document =
     page(frm)(request, messages)
 
   "Inland Transport Details View" should {
@@ -120,8 +120,7 @@ class InlandTransportDetailsViewSpec extends PageWithButtonsSpec with ExportsTes
         }
       }
 
-      val createViewWithMode: Mode => Document = mode => createView(mode = mode)
-      checkAllSaveButtonsAreDisplayed(createViewWithMode)
+      checkAllSaveButtonsAreDisplayed(createView())
     }
 
     "display 'Back' button that links to /inland-or-border" when {

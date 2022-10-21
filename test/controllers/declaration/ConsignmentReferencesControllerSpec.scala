@@ -55,7 +55,7 @@ class ConsignmentReferencesControllerSpec extends ControllerSpec with GivenWhenT
 
     authorizedUser()
     when(lrnValidator.hasBeenSubmittedInThePast48Hours(any[Lrn])(any(), any())).thenReturn(Future.successful(false))
-    when(consignmentReferencesPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(consignmentReferencesPage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -72,7 +72,7 @@ class ConsignmentReferencesControllerSpec extends ControllerSpec with GivenWhenT
 
   def theResponseForm: Form[ConsignmentReferences] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[ConsignmentReferences]])
-    verify(consignmentReferencesPage).apply(any(), captor.capture())(any(), any())
+    verify(consignmentReferencesPage).apply(captor.capture())(any(), any())
     captor.getValue
   }
 

@@ -35,7 +35,7 @@ class NactCodeRemoveViewSpec extends PageWithButtonsSpec with Injector {
 
   override val typeAndViewInstance = (STANDARD, page(itemId, nactCode, form())(_, _))
 
-  def createView(frm: Form[YesNoAnswer] = form(), code: String = nactCode, mode: Mode = Normal): Document =
+  def createView(frm: Form[YesNoAnswer] = form(), code: String = nactCode): Document =
     page(itemId, code, frm)(request, messages)
 
   "Nact Code Remove View" should {
@@ -58,13 +58,10 @@ class NactCodeRemoveViewSpec extends PageWithButtonsSpec with Injector {
       val backLinkContainer = view.getElementById("back-link")
 
       backLinkContainer must containMessage(backToPreviousQuestionCaption)
-      backLinkContainer.getElementById("back-link") must haveHref(
-        controllers.declaration.routes.NactCodeSummaryController.displayPage(itemId)
-      )
+      backLinkContainer.getElementById("back-link") must haveHref(controllers.declaration.routes.NactCodeSummaryController.displayPage(itemId))
     }
 
-    val createViewWithMode: Mode => Document = mode => createView(mode = mode)
-    checkAllSaveButtonsAreDisplayed(createViewWithMode)
+    checkAllSaveButtonsAreDisplayed(createView())
   }
 
   "Nact Code Remove View for invalid input" should {

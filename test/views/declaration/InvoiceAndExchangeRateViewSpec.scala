@@ -40,7 +40,7 @@ class InvoiceAndExchangeRateViewSpec extends PageWithButtonsSpec with Injector {
 
   override val typeAndViewInstance = (STANDARD, page(form)(_, _))
 
-  def createView(frm: Form[InvoiceAndExchangeRate] = form, mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document =
+  def createView(frm: Form[InvoiceAndExchangeRate] = form)(implicit request: JourneyRequest[_]): Document =
     page(frm)(request, messages)
 
   "Total Number Of Items View on empty page" should {
@@ -109,8 +109,7 @@ class InvoiceAndExchangeRateViewSpec extends PageWithButtonsSpec with Injector {
         backButton.getElementById("back-link") must haveHref(InvoiceAndExchangeRateChoiceController.displayPage())
       }
 
-      val createViewWithMode: Mode => Document = mode => createView(mode = mode)
-      checkAllSaveButtonsAreDisplayed(createViewWithMode)
+      checkAllSaveButtonsAreDisplayed(createView())
 
     }
   }

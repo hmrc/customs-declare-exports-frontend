@@ -21,7 +21,7 @@ import controllers.declaration.routes
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.{No, Yes, YesNoAnswers}
 import forms.declaration.EntryIntoDeclarantsRecords
-import models.{DeclarationType}
+import models.DeclarationType
 import org.jsoup.nodes.Document
 import play.api.data.{Form, FormError}
 import views.declaration.spec.UnitViewSpec

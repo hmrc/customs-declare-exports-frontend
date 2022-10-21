@@ -36,7 +36,7 @@ import views.tags.ViewTest
 class DeclarantDetailsViewSpec extends UnitViewSpec with ExportsTestHelper with CommonMessages with Stubs with Injector {
 
   private val declarantDetailsPage = instanceOf[declarant_details]
-  private def createView(form: Form[DeclarantEoriConfirmation], mode: Mode = Mode.Normal)(implicit request: JourneyRequest[_]): Document =
+  private def createView(form: Form[DeclarantEoriConfirmation])(implicit request: JourneyRequest[_]): Document =
     declarantDetailsPage(form)(request, messages)
 
   "Declarant Details View on empty page" should {

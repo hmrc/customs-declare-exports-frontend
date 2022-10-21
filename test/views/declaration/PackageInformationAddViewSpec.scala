@@ -41,7 +41,7 @@ class PackageInformationAddViewSpec extends PageWithButtonsSpec with ExportsTest
 
   override val typeAndViewInstance = (STANDARD, page(itemId, form(), Seq.empty)(_, _))
 
-  def createView(frm: Form[PackageInformation] = form(), packages: Seq[PackageInformation] = Seq.empty, mode: Mode = Normal)(
+  def createView(frm: Form[PackageInformation] = form(), packages: Seq[PackageInformation] = Seq.empty)(
     implicit request: JourneyRequest[_]
   ): Document =
     page(itemId, frm, packages)(request, messages)
@@ -97,8 +97,7 @@ class PackageInformationAddViewSpec extends PageWithButtonsSpec with ExportsTest
         forAll(indexedListOfParagraphs)(t => paragraphs.get(t._2) mustBe (t._1))
       }
 
-      val createViewWithMode: Mode => Document = mode => createView(mode = mode)
-      checkAllSaveButtonsAreDisplayed(createViewWithMode)
+      checkAllSaveButtonsAreDisplayed(createView())
     }
   }
 
@@ -107,9 +106,7 @@ class PackageInformationAddViewSpec extends PageWithButtonsSpec with ExportsTest
       "display 'Back' button that links to 'statistical value' page when adding first value" in {
         val backLinkContainer = createView(packages = Seq.empty).getElementById("back-link")
 
-        backLinkContainer.getElementById("back-link") must haveHref(
-          controllers.declaration.routes.StatisticalValueController.displayPage(itemId)
-        )
+        backLinkContainer.getElementById("back-link") must haveHref(controllers.declaration.routes.StatisticalValueController.displayPage(itemId))
       }
     }
 
@@ -117,9 +114,7 @@ class PackageInformationAddViewSpec extends PageWithButtonsSpec with ExportsTest
       "display 'Back' button that links to 'NACT code' page when adding first value" in {
         val backLinkContainer = createView(packages = Seq.empty).getElementById("back-link")
 
-        backLinkContainer.getElementById("back-link") must haveHref(
-          controllers.declaration.routes.NactCodeSummaryController.displayPage(itemId)
-        )
+        backLinkContainer.getElementById("back-link") must haveHref(controllers.declaration.routes.NactCodeSummaryController.displayPage(itemId))
       }
     }
 
@@ -127,9 +122,7 @@ class PackageInformationAddViewSpec extends PageWithButtonsSpec with ExportsTest
       "display 'Back' button that links to 'commodity details' page when adding first value" in {
         val backLinkContainer = createView(packages = Seq.empty).getElementById("back-link")
 
-        backLinkContainer.getElementById("back-link") must haveHref(
-          controllers.declaration.routes.CommodityDetailsController.displayPage(itemId)
-        )
+        backLinkContainer.getElementById("back-link") must haveHref(controllers.declaration.routes.CommodityDetailsController.displayPage(itemId))
       }
     }
   }

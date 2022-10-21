@@ -265,26 +265,29 @@ trait MockAuthAction extends MockitoSugar with Stubs with MetricsMocks with Inje
     )
 
   def getAuthenticatedRequest(declarationId: String = "declarationId"): VerifiedEmailRequest[AnyContentAsEmpty.type] =
-    buildVerifiedEmailRequest(FakeRequest("GET", "").withSession((ExportsSessionKeys.declarationId, declarationId)).withCSRFToken, exampleUser)
+    buildVerifiedEmailRequest(FakeRequest("GET", "").withSession(ExportsSessionKeys.declarationId -> declarationId).withCSRFToken, exampleUser)
 
   def getRequest(): Request[AnyContentAsEmpty.type] =
-    FakeRequest("GET", "").withSession((ExportsSessionKeys.declarationId, "declarationId")).withCSRFToken
+    FakeRequest("GET", "").withSession(ExportsSessionKeys.declarationId -> "declarationId").withCSRFToken
 
   def getJourneyRequest(declaration: ExportsDeclaration = aDeclaration()): JourneyRequest[AnyContentAsEmpty.type] =
     new JourneyRequest[AnyContentAsEmpty.type](getAuthenticatedRequest(), declaration)
 
-  def getRequestWithSession(sessionData: Seq[(String, String)]): Request[AnyContentAsEmpty.type] =
-    FakeRequest("GET", "").withSession(sessionData: _*).withCSRFToken
+  def getRequestWithSession(session: (String, String)*): Request[AnyContentAsEmpty.type] =
+    FakeRequest("GET", "")
+      .withSession(ExportsSessionKeys.declarationId -> "declarationId")
+      .withSession(session: _*)
+      .withCSRFToken
 
   def getRequest(data: (String, String)*): Request[AnyContentAsEmpty.type] =
     FakeRequest("GET", "")
       .withFlash(data: _*)
-      .withSession((ExportsSessionKeys.declarationId, "declarationId"))
+      .withSession(ExportsSessionKeys.declarationId -> "declarationId")
       .withCSRFToken
 
   def getRequest(declarationId: Option[String]): Request[AnyContentAsEmpty.type] =
     declarationId match {
-      case Some(decId) => FakeRequest("GET", "").withSession((ExportsSessionKeys.declarationId, decId)).withCSRFToken
-      case _           => FakeRequest("GET", "").withCSRFToken
+      case Some(declId) => FakeRequest("GET", "").withSession(ExportsSessionKeys.declarationId -> declId).withCSRFToken
+      case _            => FakeRequest("GET", "").withCSRFToken
     }
 }

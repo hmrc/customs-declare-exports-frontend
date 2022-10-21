@@ -57,7 +57,7 @@ class ConsigneeDetailsViewSpec extends AddressViewSpec with PageWithButtonsSpec 
 
   override val typeAndViewInstance = (STANDARD, page(form)(_, _))
 
-  def createView(frm: Form[ConsigneeDetails] = form(), mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document =
+  def createView(frm: Form[ConsigneeDetails] = form())(implicit request: JourneyRequest[_]): Document =
     page(frm)(request, messages)
 
   "Consignee Details View on empty page" should {
@@ -120,8 +120,7 @@ class ConsigneeDetailsViewSpec extends AddressViewSpec with PageWithButtonsSpec 
         view.getElementById("details_address_country").attr("value") mustBe empty
       }
 
-      val createViewWithMode: Mode => Document = mode => createView(mode = mode)
-      checkAllSaveButtonsAreDisplayed(createViewWithMode)
+      checkAllSaveButtonsAreDisplayed(createView())
     }
   }
 

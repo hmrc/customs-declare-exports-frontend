@@ -33,9 +33,9 @@ class TransportLeavingTheBorderViewSpec extends PageWithButtonsSpec with Injecto
 
   val page = instanceOf[transport_leaving_the_border]
 
-  override val typeAndViewInstance = (STANDARD, page(form, Normal)(_, _))
+  override val typeAndViewInstance = (STANDARD, page(form)(_, _))
 
-  def createView(mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document = page(form)
+  def createView()(implicit request: JourneyRequest[_]): Document = page(form)
 
   "Transport Leaving The Border Page" must {
 
@@ -64,8 +64,7 @@ class TransportLeavingTheBorderViewSpec extends PageWithButtonsSpec with Injecto
         backButton must haveHref(routes.ItemsSummaryController.displayItemsSummaryPage())
       }
 
-      val createViewWithMode: Mode => Document = mode => createView(mode = mode)
-      checkAllSaveButtonsAreDisplayed(createViewWithMode)
+      checkAllSaveButtonsAreDisplayed(createView())
 
       "display 'Mode of Transport' section" which {
 

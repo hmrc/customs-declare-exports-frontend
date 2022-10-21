@@ -35,7 +35,7 @@ class RepresentativeDetailsStatusViewSpec extends PageWithButtonsSpec with Injec
 
   override val typeAndViewInstance = (STANDARD, page(RepresentativeStatus, form())(_, _))
 
-  def createView(frm: Form[RepresentativeStatus] = form(), mode: Mode = Normal): Document =
+  def createView(frm: Form[RepresentativeStatus] = form()): Document =
     page(RepresentativeStatus, frm)(journeyRequest(), messages)
 
   "Representative Details Status View on empty page" should {
@@ -65,8 +65,7 @@ class RepresentativeDetailsStatusViewSpec extends PageWithButtonsSpec with Injec
       backButton.getElementById("back-link") must haveHref(RepresentativeEntityController.displayPage())
     }
 
-    val createViewWithMode: Mode => Document = mode => createView(mode = mode)
-    checkAllSaveButtonsAreDisplayed(createViewWithMode)
+    checkAllSaveButtonsAreDisplayed(createView())
   }
 
   "Representative Details Status View for invalid input" should {

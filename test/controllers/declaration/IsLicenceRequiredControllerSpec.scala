@@ -81,7 +81,6 @@ class IsLicenceRequiredControllerSpec extends ControllerSpec with OptionValues {
   "IsLicenceRequired Controller" should {
 
     onJourney(DeclarationType.STANDARD, DeclarationType.OCCASIONAL, DeclarationType.SIMPLIFIED, DeclarationType.SUPPLEMENTARY) { _ =>
-
       "return 200 (OK)" that {
         "display page method is invoked" in {
           withNewCaching(declaration)

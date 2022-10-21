@@ -34,7 +34,7 @@ class TransportContainerAddViewSpec extends PageWithButtonsSpec with Injector {
 
   override val typeAndViewInstance = (STANDARD, page(form())(_, _))
 
-  def createView(frm: Form[ContainerAdd] = form(), mode: Mode = Normal): Document = page(frm)(journeyRequest(), messages)
+  def createView(frm: Form[ContainerAdd] = form()): Document = page(frm)(journeyRequest(), messages)
 
   "Transport Containers Add View" should {
     val view = createView()
@@ -52,8 +52,7 @@ class TransportContainerAddViewSpec extends PageWithButtonsSpec with Injector {
       backLinkContainer.getElementById("back-link") must haveHref(TransportContainerController.displayContainerSummary())
     }
 
-    val createViewWithMode: Mode => Document = mode => createView(mode = mode)
-    checkAllSaveButtonsAreDisplayed(createViewWithMode)
+    checkAllSaveButtonsAreDisplayed(createView())
   }
 
   "Transport Containers Add View for invalid input" should {

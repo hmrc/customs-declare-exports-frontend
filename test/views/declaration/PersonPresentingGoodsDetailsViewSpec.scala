@@ -20,7 +20,7 @@ import base.Injector
 import controllers.declaration.routes
 import forms.common.Eori
 import forms.declaration.PersonPresentingGoodsDetails
-import models.{DeclarationType}
+import models.DeclarationType
 import org.jsoup.nodes.Document
 import play.api.data.{Form, FormError}
 import views.declaration.spec.UnitViewSpec

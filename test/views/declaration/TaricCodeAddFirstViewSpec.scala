@@ -44,7 +44,7 @@ class TaricCodeAddFirstViewSpec extends PageWithButtonsSpec with Injector {
 
   override val typeAndViewInstance = (STANDARD, page(itemId, form())(_, _))
 
-  def createView(frm: Form[TaricCodeFirst] = form(), mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document =
+  def createView(frm: Form[TaricCodeFirst] = form())(implicit request: JourneyRequest[_]): Document =
     page(itemId, frm)(request, messages(request))
 
   "Taric Code Add First View" should {
@@ -104,8 +104,7 @@ class TaricCodeAddFirstViewSpec extends PageWithButtonsSpec with Injector {
       paragraph.child(0) must haveHref(appConfig.commodityCode9306909000)
     }
 
-    val createViewWithMode: Mode => Document = mode => createView(mode = mode)
-    checkAllSaveButtonsAreDisplayed(createViewWithMode)
+    checkAllSaveButtonsAreDisplayed(createView())
   }
 
   "Taric Code Add First View for invalid input" should {

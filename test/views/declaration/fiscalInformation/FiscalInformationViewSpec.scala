@@ -37,7 +37,7 @@ class FiscalInformationViewSpec extends PageWithButtonsSpec with Injector {
 
   override val typeAndViewInstance = (STANDARD, page(itemId, form())(_, _))
 
-  def createView(frm: Form[FiscalInformation] = form(), mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document =
+  def createView(frm: Form[FiscalInformation] = form())(implicit request: JourneyRequest[_]): Document =
     page(itemId, frm)(request, messages)
 
   "Fiscal Information View on empty page" should {
@@ -94,8 +94,7 @@ class FiscalInformationViewSpec extends PageWithButtonsSpec with Injector {
         backButton.getElementById("back-link") must haveHref(AdditionalProcedureCodesController.displayPage(itemId))
       }
 
-      val createViewWithMode: Mode => Document = mode => createView(mode = mode)
-      checkAllSaveButtonsAreDisplayed(createViewWithMode)
+      checkAllSaveButtonsAreDisplayed(createView())
     }
   }
 

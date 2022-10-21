@@ -51,7 +51,7 @@ class DepartureTransportViewSpec extends PageWithButtonsSpec with Injector {
 
   override val typeAndViewInstance = (STANDARD, page(form(transportCodesForV1))(_, _))
 
-  def createView(transportCodes: TransportCodes = transportCodesForV1, mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document =
+  def createView(transportCodes: TransportCodes = transportCodesForV1)(implicit request: JourneyRequest[_]): Document =
     page(form(transportCodes))(request, messages)
 
   "Departure Transport View" should {
@@ -80,8 +80,7 @@ class DepartureTransportViewSpec extends PageWithButtonsSpec with Injector {
         removeBlanksIfAnyBeforeDot(tariffDetails) mustBe expectedText
       }
 
-      val createViewWithMode: Mode => Document = mode => createView(mode = mode)
-      checkAllSaveButtonsAreDisplayed(createViewWithMode)
+      checkAllSaveButtonsAreDisplayed(createView())
     }
   }
 

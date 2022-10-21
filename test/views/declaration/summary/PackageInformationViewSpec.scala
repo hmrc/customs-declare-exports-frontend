@@ -17,6 +17,7 @@
 package views.declaration.summary
 
 import base.Injector
+import controllers.declaration.routes.PackageInformationSummaryController
 import forms.declaration.PackageInformation
 import services.cache.ExportsTestHelper
 import views.declaration.spec.UnitViewSpec
@@ -41,12 +42,10 @@ class PackageInformationViewSpec extends UnitViewSpec with ExportsTestHelper wit
       row must haveSummaryValue("")
 
       row must haveSummaryActionsTexts("site.change", "declaration.summary.items.item.packageInformation.changeAll", "1")
-
-      row must haveSummaryActionsHref(controllers.declaration.routes.PackageInformationSummaryController.displayPage("itemId"))
+      row must haveSummaryActionWithPlaceholder(PackageInformationSummaryController.displayPage("itemId"))
     }
 
     "display package information section with multiple package information and change buttons" in {
-
       val view = packageSection("itemId", 1, data, true)(messages)
       val table = view.getElementById("package-information-1-table")
 
@@ -62,7 +61,7 @@ class PackageInformationViewSpec extends UnitViewSpec with ExportsTestHelper wit
       row1.getElementsByClass("govuk-table__cell").get(1).text() mustBe "123"
       row1.getElementsByClass("govuk-table__cell").get(2).text() mustBe "first-marks"
       val row1ChangeLink = row1.getElementsByClass("govuk-table__cell").get(3).getElementsByTag("a").first()
-      row1ChangeLink must haveHref(controllers.declaration.routes.PackageInformationSummaryController.displayPage("itemId"))
+      row1ChangeLink must haveHrefWithPlaceholder(PackageInformationSummaryController.displayPage("itemId"))
       row1ChangeLink must containMessage("site.change")
       row1ChangeLink must containMessage(
         "declaration.summary.items.item.packageInformation.change",
@@ -76,7 +75,7 @@ class PackageInformationViewSpec extends UnitViewSpec with ExportsTestHelper wit
       row2.getElementsByClass("govuk-table__cell").get(1).text() mustBe "321"
       row2.getElementsByClass("govuk-table__cell").get(2).text() mustBe "second-marks"
       val row2ChangeLink = row2.getElementsByClass("govuk-table__cell").get(3).getElementsByTag("a").first()
-      row2ChangeLink must haveHref(controllers.declaration.routes.PackageInformationSummaryController.displayPage("itemId"))
+      row2ChangeLink must haveHrefWithPlaceholder(PackageInformationSummaryController.displayPage("itemId"))
       row2ChangeLink must containMessage("site.change")
       row2ChangeLink must containMessage(
         "declaration.summary.items.item.packageInformation.change",
@@ -87,9 +86,7 @@ class PackageInformationViewSpec extends UnitViewSpec with ExportsTestHelper wit
     }
 
     "display package information section with multiple package information and no change buttons" when {
-
       "actionsEnabled is false" in {
-
         val view = packageSection("itemId", 1, data, actionsEnabled = false)(messages)
         val table = view.getElementById("package-information-1-table")
 
@@ -115,7 +112,6 @@ class PackageInformationViewSpec extends UnitViewSpec with ExportsTestHelper wit
         row2ChangeLink.attr("href") mustBe empty
         row2ChangeLink.text() mustBe empty
       }
-
     }
   }
 }

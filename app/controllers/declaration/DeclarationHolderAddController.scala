@@ -54,10 +54,7 @@ class DeclarationHolderAddController @Inject() (
   def submitForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val boundForm = form.bindFromRequest
 
-    boundForm.fold(
-      formWithErrors => Future.successful(BadRequest(declarationHolderPage(formWithErrors, request.eori))),
-      _ => saveHolder(boundForm)
-    )
+    boundForm.fold(formWithErrors => Future.successful(BadRequest(declarationHolderPage(formWithErrors, request.eori))), _ => saveHolder(boundForm))
   }
 
   private def saveHolder(boundForm: Form[DeclarationHolder])(implicit r: JourneyRequest[AnyContent]): Future[Result] =

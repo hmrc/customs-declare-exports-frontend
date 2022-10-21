@@ -17,6 +17,7 @@
 package controllers.declaration
 
 import base.ControllerSpec
+import controllers.declaration.routes.TaricCodeSummaryController
 import forms.common.YesNoAnswer
 import forms.declaration.TaricCode
 import org.mockito.ArgumentCaptor
@@ -46,7 +47,7 @@ class TaricCodeRemoveControllerSpec extends ControllerSpec with OptionValues {
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    when(mockRemovePage.apply(any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockRemovePage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -56,7 +57,7 @@ class TaricCodeRemoveControllerSpec extends ControllerSpec with OptionValues {
 
   def theResponseForm: Form[YesNoAnswer] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[YesNoAnswer]])
-    verify(mockRemovePage).apply(any(), any(), any(), captor.capture())(any(), any())
+    verify(mockRemovePage).apply(any(), any(), captor.capture())(any(), any())
     captor.getValue
   }
 
@@ -68,12 +69,12 @@ class TaricCodeRemoveControllerSpec extends ControllerSpec with OptionValues {
 
   def theTaricCode: String = {
     val captor = ArgumentCaptor.forClass(classOf[String])
-    verify(mockRemovePage).apply(any(), any(), captor.capture(), any())(any(), any())
+    verify(mockRemovePage).apply(any(), captor.capture(), any())(any(), any())
     captor.getValue
   }
 
-  private def verifyRemovePageInvoked(numberOfTimes: Int = 1) =
-    verify(mockRemovePage, times(numberOfTimes)).apply(any(), any(), any(), any())(any(), any())
+  private def verifyRemovePageInvoked(numberOfTimes: Int = 1): HtmlFormat.Appendable =
+    verify(mockRemovePage, times(numberOfTimes)).apply(any(), any(), any())(any(), any())
 
   val item = anItem()
 
@@ -82,7 +83,6 @@ class TaricCodeRemoveControllerSpec extends ControllerSpec with OptionValues {
     onEveryDeclarationJourney() { request =>
       "return 200 (OK)" that {
         "display page method is invoked and cache is empty" in {
-
           withNewCaching(request.cacheModel)
 
           val result = controller.displayPage(item.id, "ABCD")(getRequest())
@@ -92,7 +92,6 @@ class TaricCodeRemoveControllerSpec extends ControllerSpec with OptionValues {
 
           theTaricCode mustBe "ABCD"
         }
-
       }
 
       "return 400 (BAD_REQUEST)" when {
@@ -105,9 +104,10 @@ class TaricCodeRemoveControllerSpec extends ControllerSpec with OptionValues {
           status(result) mustBe BAD_REQUEST
           verifyRemovePageInvoked()
         }
-
       }
+
       "return 303 (SEE_OTHER)" when {
+
         "user submits 'Yes' answer" in {
           val taricCode = TaricCode("ABCD")
           val item = anItem(withTaricCodes(taricCode))
@@ -117,7 +117,7 @@ class TaricCodeRemoveControllerSpec extends ControllerSpec with OptionValues {
           val result = controller.submitForm(item.id, "ABCD")(postRequestAsFormUrlEncoded(requestBody: _*))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.TaricCodeSummaryController.displayPage(item.id)
+          thePageNavigatedTo mustBe TaricCodeSummaryController.displayPage(item.id)
 
           theCacheModelUpdated.itemBy(item.id).flatMap(_.taricCodes) mustBe Some(Seq.empty)
         }
@@ -131,12 +131,11 @@ class TaricCodeRemoveControllerSpec extends ControllerSpec with OptionValues {
           val result = controller.submitForm(item.id, "ABCD")(postRequestAsFormUrlEncoded(requestBody: _*))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.TaricCodeSummaryController.displayPage(item.id)
+          thePageNavigatedTo mustBe TaricCodeSummaryController.displayPage(item.id)
 
           verifyTheCacheIsUnchanged()
         }
       }
     }
-
   }
 }

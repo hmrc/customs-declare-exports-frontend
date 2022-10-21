@@ -28,7 +28,7 @@ import models.codes.{AdditionalProcedureCode => AdditionalProcedureCodeModel, Pr
 import models.declaration.ProcedureCodesData.limitOfCodes
 import models.declaration.{ExportItem, ProcedureCodesData}
 import models.requests.JourneyRequest
-import models.{DeclarationType}
+import models.DeclarationType
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.{reset, verify, when}
@@ -113,7 +113,7 @@ class AdditionalProcedureCodesControllerSpec extends ControllerSpec with ErrorHa
           val result = controller.displayPage(itemId)(getRequest())
 
           status(result) mustBe OK
-          verify(additionalProcedureCodesPage).apply(any(), any(), any(), any(), any(), any())(any(), any())
+          verify(additionalProcedureCodesPage).apply(any(), any(), any(), any(), any())(any(), any())
 
           val (responseForm, responseSeq) = templateParameters
           responseForm.value mustBe empty
@@ -128,7 +128,7 @@ class AdditionalProcedureCodesControllerSpec extends ControllerSpec with ErrorHa
           val result = controller.displayPage(itemId)(getRequest())
 
           status(result) mustBe OK
-          verify(additionalProcedureCodesPage).apply(any(), any(), any(), any(), any(), any())(any(), any())
+          verify(additionalProcedureCodesPage).apply(any(), any(), any(), any(), any())(any(), any())
 
           val (responseForm, responseSeq) = templateParameters
           responseForm.value mustBe empty
@@ -176,7 +176,7 @@ class AdditionalProcedureCodesControllerSpec extends ControllerSpec with ErrorHa
           val result = controller.submitAdditionalProcedureCodes(itemId)(postRequestAsFormUrlEncoded(formData: _*))
 
           status(result) mustBe BAD_REQUEST
-          verify(additionalProcedureCodesPage).apply(any(), any(), any(), any(), any(), any())(any(), any())
+          verify(additionalProcedureCodesPage).apply(any(), any(), any(), any(), any())(any(), any())
         }
       }
 
@@ -315,7 +315,6 @@ class AdditionalProcedureCodesControllerSpec extends ControllerSpec with ErrorHa
             }
 
             "redirect to CommodityDetails page" when {
-
               "the ProcedureCode in cache is NOT '1042'" in {
                 val item = ExportItem(itemId, procedureCodes = Some(ProcedureCodesData(Some("1234"), Seq("111"))))
                 prepareCache(item)
@@ -325,7 +324,6 @@ class AdditionalProcedureCodesControllerSpec extends ControllerSpec with ErrorHa
                 status(result) mustBe SEE_OTHER
                 thePageNavigatedTo mustBe routes.CommodityDetailsController.displayPage(itemId)
               }
-
             }
           }
 
@@ -339,7 +337,7 @@ class AdditionalProcedureCodesControllerSpec extends ControllerSpec with ErrorHa
               val result = controller.submitAdditionalProcedureCodes(itemId)(postRequestAsFormUrlEncoded(formData: _*))
 
               status(result) mustBe BAD_REQUEST
-              verify(additionalProcedureCodesPage).apply(any(), any(), any(), any(), any(), any())(any(), any())
+              verify(additionalProcedureCodesPage).apply(any(), any(), any(), any(), any())(any(), any())
             }
           }
 
@@ -494,7 +492,7 @@ class AdditionalProcedureCodesControllerSpec extends ControllerSpec with ErrorHa
         val result = controller.submitAdditionalProcedureCodes(itemId)(postRequestAsFormUrlEncoded(formData: _*))
 
         status(result) mustBe BAD_REQUEST
-        verify(additionalProcedureCodesPage).apply(any(), any(), any(), any(), any(), any())(any(), any())
+        verify(additionalProcedureCodesPage).apply(any(), any(), any(), any(), any())(any(), any())
       }
     }
 
@@ -506,7 +504,7 @@ class AdditionalProcedureCodesControllerSpec extends ControllerSpec with ErrorHa
         val result = controller.submitAdditionalProcedureCodes(itemId)(postRequestAsFormUrlEncoded(formData: _*))
 
         status(result) mustBe BAD_REQUEST
-        verify(additionalProcedureCodesPage).apply(any(), any(), any(), any(), any(), any())(any(), any())
+        verify(additionalProcedureCodesPage).apply(any(), any(), any(), any(), any())(any(), any())
       }
     }
   }
@@ -520,7 +518,7 @@ class AdditionalProcedureCodesControllerSpec extends ControllerSpec with ErrorHa
         val result = controller.submitAdditionalProcedureCodes(itemId)(postRequestAsFormUrlEncoded(formData: _*))
 
         status(result) mustBe BAD_REQUEST
-        verify(additionalProcedureCodesPage).apply(any(), any(), any(), any(), any(), any())(any(), any())
+        verify(additionalProcedureCodesPage).apply(any(), any(), any(), any(), any())(any(), any())
       }
     }
 
@@ -533,7 +531,7 @@ class AdditionalProcedureCodesControllerSpec extends ControllerSpec with ErrorHa
         val result = controller.submitAdditionalProcedureCodes(itemId)(postRequestAsFormUrlEncoded(formData: _*))
 
         status(result) mustBe BAD_REQUEST
-        verify(additionalProcedureCodesPage).apply(any(), any(), any(), any(), any(), any())(any(), any())
+        verify(additionalProcedureCodesPage).apply(any(), any(), any(), any(), any())(any(), any())
       }
     }
 
