@@ -23,7 +23,7 @@ import controllers.navigation.Navigator
 import forms.declaration.carrier.CarrierDetails
 import models.DeclarationType._
 import models.requests.JourneyRequest
-import models.{ExportsDeclaration, Mode}
+import models.ExportsDeclaration
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -47,21 +47,21 @@ class CarrierDetailsController @Inject() (
 
   private val validTypes = Seq(STANDARD, SIMPLIFIED, OCCASIONAL, CLEARANCE)
 
-  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
+  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
     request.cacheModel.parties.carrierDetails match {
-      case Some(data) => Ok(carrierDetailsPage(mode, form.fill(data)))
-      case _          => Ok(carrierDetailsPage(mode, form))
+      case Some(data) => Ok(carrierDetailsPage(form.fill(data)))
+      case _          => Ok(carrierDetailsPage(form))
     }
   }
 
   private def form(implicit request: JourneyRequest[_]): Form[CarrierDetails] =
     CarrierDetails.form(request.declarationType).withSubmissionErrors
 
-  def saveAddress(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async { implicit request =>
+  def saveAddress(): Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async { implicit request =>
     form.bindFromRequest
       .fold(
-        formWithErrors => Future.successful(BadRequest(carrierDetailsPage(mode, formWithErrors))),
-        updateCache(_).map(_ => navigator.continueTo(mode, ConsigneeDetailsController.displayPage))
+        formWithErrors => Future.successful(BadRequest(carrierDetailsPage(formWithErrors))),
+        updateCache(_).map(_ => navigator.continueTo(ConsigneeDetailsController.displayPage))
       )
   }
 

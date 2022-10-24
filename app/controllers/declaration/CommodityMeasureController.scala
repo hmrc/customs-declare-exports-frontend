@@ -16,17 +16,14 @@
 
 package controllers.declaration
 
-import scala.concurrent.{ExecutionContext, Future}
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.routes.{AdditionalInformationRequiredController, SupplementaryUnitsController}
 import controllers.navigation.Navigator
 import forms.declaration.commodityMeasure.CommodityMeasure
-
-import javax.inject.Inject
 import models.DeclarationType.{CLEARANCE, STANDARD, SUPPLEMENTARY}
+import models.ExportsDeclaration
 import models.declaration.{CommodityMeasure => CommodityMeasureModel, ExportItem}
 import models.requests.JourneyRequest
-import models.{ExportsDeclaration, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
@@ -34,6 +31,9 @@ import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.commodityMeasure.commodity_measure
+
+import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
 class CommodityMeasureController @Inject() (
   authenticate: AuthAction,
@@ -47,27 +47,27 @@ class CommodityMeasureController @Inject() (
 
   private val validTypes = Seq(STANDARD, SUPPLEMENTARY, CLEARANCE)
 
-  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
+  def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
     request.cacheModel.commodityMeasure(itemId) match {
-      case Some(data) => Ok(commodityMeasurePage(mode, itemId, form.fill(CommodityMeasure(data))))
-      case _          => Ok(commodityMeasurePage(mode, itemId, form))
+      case Some(data) => Ok(commodityMeasurePage(itemId, form.fill(CommodityMeasure(data))))
+      case _          => Ok(commodityMeasurePage(itemId, form))
     }
   }
 
-  def submitPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async { implicit request =>
+  def submitPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async { implicit request =>
     val test = form.bindFromRequest
     test.fold(
-      formWithErrors => Future.successful(BadRequest(commodityMeasurePage(mode, itemId, formWithErrors))),
-      updateExportsCache(itemId, _).map(_ => navigator.continueTo(mode, nextPage(itemId)))
+      formWithErrors => Future.successful(BadRequest(commodityMeasurePage(itemId, formWithErrors))),
+      updateExportsCache(itemId, _).map(_ => navigator.continueTo(nextPage(itemId)))
     )
   }
 
   private def form(implicit request: JourneyRequest[_]): Form[CommodityMeasure] =
     CommodityMeasure.form.withSubmissionErrors
 
-  private def nextPage(itemId: String)(implicit request: JourneyRequest[_]): Mode => Call =
-    if (request.declarationType == CLEARANCE) AdditionalInformationRequiredController.displayPage(_, itemId)
-    else SupplementaryUnitsController.displayPage(_, itemId)
+  private def nextPage(itemId: String)(implicit request: JourneyRequest[_]): Call =
+    if (request.declarationType == CLEARANCE) AdditionalInformationRequiredController.displayPage(itemId)
+    else SupplementaryUnitsController.displayPage(itemId)
 
   private def updateExportsCache(itemId: String, updatedItem: CommodityMeasure)(implicit r: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
     updateDeclarationFromRequest {

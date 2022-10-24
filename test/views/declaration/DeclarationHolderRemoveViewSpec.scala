@@ -19,7 +19,6 @@ package views.declaration
 import base.Injector
 import forms.common.{Eori, YesNoAnswer}
 import forms.declaration.declarationHolder.DeclarationHolder
-import models.Mode
 import models.declaration.EoriSource
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
@@ -36,9 +35,9 @@ class DeclarationHolderRemoveViewSpec extends UnitViewSpec with ExportsTestHelpe
   private val page = instanceOf[declaration_holder_remove]
   val declarationHolder: DeclarationHolder = DeclarationHolder(Some("ACE"), Some(Eori("GB123456543")), Some(EoriSource.OtherEori))
 
-  private def createView(mode: Mode = Mode.Normal, form: Form[YesNoAnswer] = YesNoAnswer.form(), holder: DeclarationHolder = declarationHolder)(
+  private def createView(form: Form[YesNoAnswer] = YesNoAnswer.form(), holder: DeclarationHolder = declarationHolder)(
     implicit request: JourneyRequest[_]
-  ): Document = page(mode, holder, form)(request, messages)
+  ): Document = page(holder, form)(request, messages)
 
   "have proper messages for labels" in {
     messages must haveTranslationFor("declaration.declarationHolder.remove.title")
@@ -51,7 +50,7 @@ class DeclarationHolderRemoveViewSpec extends UnitViewSpec with ExportsTestHelpe
       "display back link" in {
         val view = createView()
         view must containElementWithID("back-link")
-        view.getElementById("back-link") must haveHref(controllers.declaration.routes.DeclarationHolderSummaryController.displayPage(Mode.Normal))
+        view.getElementById("back-link") must haveHref(controllers.declaration.routes.DeclarationHolderSummaryController.displayPage())
       }
     }
   }

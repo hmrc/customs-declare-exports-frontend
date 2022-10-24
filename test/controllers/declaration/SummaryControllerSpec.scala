@@ -25,7 +25,7 @@ import forms.{Lrn, LrnValidator}
 import mock.ErrorHandlerMocks
 import models.declaration.submissions.Submission
 import models.requests.ExportsSessionKeys
-import models.{ExportsDeclaration, Mode}
+import models.ExportsDeclaration
 import org.jsoup.Jsoup
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
@@ -37,6 +37,7 @@ import play.api.test.Helpers._
 import play.twirl.api.{Html, HtmlFormat}
 import services.SubmissionService
 import uk.gov.hmrc.http.HeaderCarrier
+import views.helpers.ActionItemBuilder.lastUrlPlaceholder
 import views.html.declaration.summary._
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -69,7 +70,7 @@ class SummaryControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerM
     super.beforeEach()
     authorizedUser()
     setupErrorHandler()
-    when(normalSummaryPage.apply(any(), any(), any(), any())(any(), any(), any())).thenReturn(HtmlFormat.empty)
+    when(normalSummaryPage.apply(any(), any(), any())(any(), any(), any())).thenReturn(HtmlFormat.empty)
     when(legalDeclarationPage.apply(any())(any(), any(), any())).thenReturn(HtmlFormat.empty)
     when(mockSummaryPageNoData.apply()(any(), any())).thenReturn(HtmlFormat.empty)
     when(mockLrnValidator.hasBeenSubmittedInThePast48Hours(any[Lrn])(any[HeaderCarrier], any[ExecutionContext])).thenReturn(Future.successful(false))
@@ -85,13 +86,14 @@ class SummaryControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerM
     "return 200 (OK)" when {
 
       "declaration contains mandatory data" when {
+
         "ready for submission" in {
           withNewCaching(aDeclaration(withConsignmentReferences()).copy(readyForSubmission = Some(true)))
 
-          val result = controller.displayPage(Mode.Normal)(getRequest())
+          val result = controller.displayPage()(getRequest())
 
           status(result) mustBe OK
-          verify(normalSummaryPage, times(1)).apply(any(), eqTo(normalModeBackLink), any(), any())(any(), any(), any())
+          verify(normalSummaryPage, times(1)).apply(eqTo(normalModeBackLink), any(), any())(any(), any(), any())
           verify(mockSummaryPageNoData, times(0)).apply()(any(), any())
         }
 
@@ -100,20 +102,20 @@ class SummaryControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerM
           "readyForSubmission exists" in {
             withNewCaching(aDeclaration(withConsignmentReferences()).copy(readyForSubmission = Some(false)))
 
-            val result = controller.displayPage(Mode.Normal)(getRequest())
+            val result = controller.displayPage()(getRequest())
 
             status(result) mustBe OK
-            verify(normalSummaryPage, times(1)).apply(any(), eqTo(normalModeBackLink), any(), any())(any(), any(), any())
+            verify(normalSummaryPage, times(1)).apply(eqTo(normalModeBackLink), any(), any())(any(), any(), any())
             verify(mockSummaryPageNoData, times(0)).apply()(any(), any())
           }
 
           "readyForSubmission does not exist" in {
             withNewCaching(aDeclaration(withConsignmentReferences()).copy(readyForSubmission = None))
 
-            val result = controller.displayPage(Mode.Normal)(getRequest())
+            val result = controller.displayPage()(getRequest())
 
             status(result) mustBe OK
-            verify(normalSummaryPage, times(1)).apply(any(), eqTo(normalModeBackLink), any(), any())(any(), any(), any())
+            verify(normalSummaryPage, times(1)).apply(eqTo(normalModeBackLink), any(), any())(any(), any(), any())
             verify(mockSummaryPageNoData, times(0)).apply()(any(), any())
           }
         }
@@ -122,10 +124,10 @@ class SummaryControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerM
       "declaration doesn't contain mandatory data" in {
         withNewCaching(aDeclaration())
 
-        val result = controller.displayPage(Mode.Normal)(getRequest())
+        val result = controller.displayPage()(getRequest())
 
         status(result) mustBe OK
-        verify(normalSummaryPage, times(0)).apply(any(), any(), any(), any())(any(), any(), any())
+        verify(normalSummaryPage, times(0)).apply(any(), any(), any())(any(), any(), any())
         verify(mockSummaryPageNoData, times(1)).apply()(any(), any())
       }
     }
@@ -137,19 +139,19 @@ class SummaryControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerM
 
       val captor = ArgumentCaptor.forClass(classOf[Seq[FormError]])
 
-      await(controller.displayPage(Mode.Normal)(getRequest()))
+      await(controller.displayPage()(getRequest()))
 
-      verify(normalSummaryPage, times(1)).apply(any(), any(), captor.capture(), any())(any(), any(), any())
-      captor.getValue mustBe Seq(lrnDuplicateError)
+      verify(normalSummaryPage, times(1)).apply(any(), captor.capture(), any())(any(), any(), any())
+      captor.getValue mustBe List(lrnDuplicateError)
     }
 
     "return a draft summary page with a 'Continue' button linking to the same page referenced by the last 'Change' link" when {
       "the declaration is not ready for submission yet" in {
-        when(normalSummaryPage.apply(any(), any(), any(), any())(any(), any(), any())).thenReturn(fakeSummaryPage)
+        when(normalSummaryPage.apply(any(), any(), any())(any(), any(), any())).thenReturn(fakeSummaryPage)
 
         withNewCaching(aDeclaration(withConsignmentReferences()))
 
-        val result = controller.displayPage(Mode.Draft)(getRequest())
+        val result = controller.displayPage()(getRequest())
 
         status(result) mustBe OK
         val view = Jsoup.parse(contentAsString(result))
@@ -213,7 +215,7 @@ class SummaryControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerM
         val result = controller.submitDeclaration()(postRequest(body))
 
         status(result) mustBe INTERNAL_SERVER_ERROR
-        verify(normalSummaryPage, times(0)).apply(any(), any(), any(), any())(any(), any(), any())
+        verify(normalSummaryPage, times(0)).apply(any(), any(), any())(any(), any(), any())
         verify(mockSummaryPageNoData, times(0)).apply()(any(), any())
       }
     }
@@ -224,16 +226,16 @@ object SummaryControllerSpec {
 
   import controllers.declaration.SummaryController.continuePlaceholder
 
-  val expectedHref = "/customs-declare-exports/declaration/consignment-references?mode=Draft"
+  val expectedHref = "/customs-declare-exports/declaration/consignment-references"
 
   val fakeSummaryPage = Html(s"""
        |<!DOCTYPE html>
        |<html lang="en">
        |<body>
        |  <div>
-       |    <a href="/customs-declare-exports/declaration/declaration-choice?mode=Draft">Change</a>
-       |    <a href="/customs-declare-exports/declaration/type?mode=Draft">Change</a>
-       |    <a href="$expectedHref">Change</a>
+       |    <a href="/customs-declare-exports/declaration/declaration-choice?$lastUrlPlaceholder">Change</a>
+       |    <a href="/customs-declare-exports/declaration/type?$lastUrlPlaceholder">Change</a>
+       |    <a href="$expectedHref?$lastUrlPlaceholder">Change</a>
        |    <a href="$continuePlaceholder" id="$continuePlaceholder">Continue</a>
        |  </div>
        |</body>

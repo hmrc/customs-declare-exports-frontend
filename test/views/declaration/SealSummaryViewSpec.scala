@@ -21,8 +21,6 @@ import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.form
 import forms.declaration.Seal
 import models.DeclarationType.STANDARD
-import models.Mode
-import models.Mode.Normal
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import views.components.gds.Styles
@@ -39,10 +37,10 @@ class SealSummaryViewSpec extends PageWithButtonsSpec with Injector {
 
   val page = instanceOf[seal_summary]
 
-  override val typeAndViewInstance = (STANDARD, page(Normal, form(), containerId, Seq(seal))(_, _))
+  override val typeAndViewInstance = (STANDARD, page(form(), containerId, Seq(seal))(_, _))
 
-  def createView(frm: Form[YesNoAnswer] = form(), seals: Seq[Seal] = Seq(seal), mode: Mode = Normal): Document =
-    page(mode, frm, containerId, seals)(journeyRequest(), messages)
+  def createView(frm: Form[YesNoAnswer] = form(), seals: Seq[Seal] = Seq(seal)): Document =
+    page(frm, containerId, seals)(journeyRequest(), messages)
 
   "Seal Summary View" should {
     val view = createView()
@@ -89,12 +87,11 @@ class SealSummaryViewSpec extends PageWithButtonsSpec with Injector {
 
       backLinkContainer must containMessage(backToPreviousQuestionCaption)
       backLinkContainer.getElementById("back-link") must haveHref(
-        controllers.declaration.routes.TransportContainerController.displayContainerSummary(Normal)
+        controllers.declaration.routes.TransportContainerController.displayContainerSummary()
       )
     }
 
-    val createViewWithMode: Mode => Document = mode => createView(mode = mode)
-    checkAllSaveButtonsAreDisplayed(createViewWithMode)
+    checkAllSaveButtonsAreDisplayed(createView())
   }
 
   "Seal Summary View for invalid input" should {

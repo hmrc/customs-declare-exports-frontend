@@ -22,8 +22,6 @@ import forms.common.Eori
 import forms.declaration.DeclarationAdditionalActors
 import forms.declaration.DeclarationAdditionalActors.form
 import models.DeclarationType._
-import models.Mode
-import models.Mode.Normal
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import org.scalatest.Assertion
@@ -37,10 +35,10 @@ class AdditionalActorsAddViewSpec extends PageWithButtonsSpec with Injector {
 
   val page = instanceOf[additional_actors_add]
 
-  override val typeAndViewInstance = (STANDARD, page(Normal, form)(_, _))
+  override val typeAndViewInstance = (STANDARD, page(form)(_, _))
 
-  def createView(frm: Form[DeclarationAdditionalActors] = form, mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document =
-    page(mode, frm)
+  def createView(frm: Form[DeclarationAdditionalActors] = form)(implicit request: JourneyRequest[_]): Document =
+    page(frm)
 
   "Declaration Additional Actors" should {
 
@@ -87,13 +85,12 @@ class AdditionalActorsAddViewSpec extends PageWithButtonsSpec with Injector {
         view.getElementById("WH-item-hint").text mustBe messages("declaration.partyType.warehouseKeeper.hint")
       }
 
-      val createViewWithMode: Mode => Document = mode => createView(mode = mode)
-      checkAllSaveButtonsAreDisplayed(createViewWithMode)
+      checkAllSaveButtonsAreDisplayed(createView())
     }
 
     onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, SUPPLEMENTARY) { implicit request =>
       "display 'Back' button that links to 'Consignee Details' page" in {
-        val view = page(Normal, form)(request, messages)
+        val view = page(form)(request, messages)
         val backButton = view.getElementById("back-link")
 
         backButton must containMessage(backToPreviousQuestionCaption)

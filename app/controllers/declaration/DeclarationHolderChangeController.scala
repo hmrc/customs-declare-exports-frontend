@@ -30,7 +30,7 @@ import javax.inject.Inject
 import models.declaration.DeclarationHoldersData
 import models.declaration.DeclarationHoldersData.limitOfHolders
 import models.requests.JourneyRequest
-import models.{ExportsDeclaration, Mode}
+import models.ExportsDeclaration
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -50,28 +50,28 @@ class DeclarationHolderChangeController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
-  def displayPage(mode: Mode, id: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def displayPage(id: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val maybeExistingHolder = declarationHolders.find(_.id.equals(id))
 
     maybeExistingHolder.fold(errorHandler.displayErrorPage) { holder =>
-      Future.successful(Ok(declarationHolderChangePage(mode, id, form.fill(holder).withSubmissionErrors, request.eori)))
+      Future.successful(Ok(declarationHolderChangePage(id, form.fill(holder).withSubmissionErrors, request.eori)))
     }
   }
 
-  def submitForm(mode: Mode, id: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def submitForm(id: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val boundForm = form.bindFromRequest
     val maybeExistingHolder = declarationHolders.find(_.id.equals(id))
 
     boundForm.fold(
-      formWithErrors => Future.successful(BadRequest(declarationHolderChangePage(mode, id, formWithErrors, request.eori))),
+      formWithErrors => Future.successful(BadRequest(declarationHolderChangePage(id, formWithErrors, request.eori))),
       newHolder =>
         maybeExistingHolder.fold(errorHandler.displayErrorPage) { existingHolder =>
-          changeHolder(mode, existingHolder, newHolder, boundForm)
+          changeHolder(existingHolder, newHolder, boundForm)
         }
     )
   }
 
-  private def changeHolder(mode: Mode, existingHolder: DeclarationHolder, newHolder: DeclarationHolder, boundForm: Form[DeclarationHolder])(
+  private def changeHolder(existingHolder: DeclarationHolder, newHolder: DeclarationHolder, boundForm: Form[DeclarationHolder])(
     implicit request: JourneyRequest[AnyContent]
   ): Future[Result] = {
 
@@ -81,10 +81,10 @@ class DeclarationHolderChangeController @Inject() (
     MultipleItemsHelper
       .add(boundForm, holdersWithoutExisting, limitOfHolders, DeclarationHolderFormGroupId, "declaration.declarationHolder")
       .fold(
-        formWithErrors => Future.successful(BadRequest(declarationHolderChangePage(mode, existingHolder.id, formWithErrors, request.eori))),
+        formWithErrors => Future.successful(BadRequest(declarationHolderChangePage(existingHolder.id, formWithErrors, request.eori))),
         _ => {
           val updatedHolders = cachedHolders.map(holder => if (holder == existingHolder) newHolder else holder)
-          updateExportsCache(updatedHolders).map(_ => navigator.continueTo(mode, DeclarationHolderSummaryController.displayPage))
+          updateExportsCache(updatedHolders).map(_ => navigator.continueTo(DeclarationHolderSummaryController.displayPage))
         }
       )
   }

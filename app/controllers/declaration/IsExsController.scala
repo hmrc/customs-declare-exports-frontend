@@ -23,7 +23,7 @@ import forms.declaration.{IsExs, UNDangerousGoodsCode}
 import models.DeclarationType.{CLEARANCE, DeclarationType}
 import models.declaration.{ExportItem, Parties}
 import models.requests.JourneyRequest
-import models.{ExportsDeclaration, Mode}
+import models.ExportsDeclaration
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import services.cache.ExportsCacheService
@@ -46,20 +46,20 @@ class IsExsController @Inject() (
 
   private val allowedJourney: DeclarationType = CLEARANCE
 
-  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(allowedJourney)) { implicit request =>
+  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType(allowedJourney)) { implicit request =>
     val frm = IsExs.form.withSubmissionErrors()
     request.cacheModel.parties.isExs match {
-      case Some(data) => Ok(isExsPage(mode, frm.fill(data)))
-      case _          => Ok(isExsPage(mode, frm))
+      case Some(data) => Ok(isExsPage(frm.fill(data)))
+      case _          => Ok(isExsPage(frm))
     }
   }
 
-  def submit(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(allowedJourney)).async { implicit request =>
+  def submit(): Action[AnyContent] = (authenticate andThen journeyType(allowedJourney)).async { implicit request =>
     IsExs.form
       .bindFromRequest()
       .fold(
-        formWithErrors => Future.successful(BadRequest(isExsPage(mode, formWithErrors))),
-        answer => updateCache(answer).map(_ => navigator.continueTo(mode, nextPage(answer)))
+        formWithErrors => Future.successful(BadRequest(isExsPage(formWithErrors))),
+        answer => updateCache(answer).map(_ => navigator.continueTo(nextPage(answer)))
       )
   }
 
@@ -80,7 +80,7 @@ class IsExsController @Inject() (
       model.copy(parties = updatedParties, items = updatedItems)
     }
 
-  private def nextPage(isExs: IsExs)(implicit request: JourneyRequest[_]): Mode => Call =
+  private def nextPage(isExs: IsExs)(implicit request: JourneyRequest[_]): Call =
     isExs.isExs match {
       case YesNoAnswers.yes => controllers.declaration.routes.ConsignorEoriNumberController.displayPage
       case YesNoAnswers.no =>

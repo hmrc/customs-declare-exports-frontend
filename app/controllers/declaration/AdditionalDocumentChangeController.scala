@@ -24,7 +24,7 @@ import forms.declaration.additionaldocuments.AdditionalDocument._
 import models.declaration.AdditionalDocuments
 import models.declaration.AdditionalDocuments.maxNumberOfItems
 import models.requests.JourneyRequest
-import models.{ExportsDeclaration, Mode}
+import models.ExportsDeclaration
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
@@ -47,34 +47,33 @@ class AdditionalDocumentChangeController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
-  def displayPage(mode: Mode, itemId: String, documentId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayPage(itemId: String, documentId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     findAdditionalDocument(itemId, documentId) match {
       case Some(document) =>
         val changeForm = form(request.cacheModel).fill(document).withSubmissionErrors()
-        Ok(additionalDocumentChangePage(mode, itemId, documentId, changeForm))
+        Ok(additionalDocumentChangePage(itemId, documentId, changeForm))
 
-      case _ => returnToSummary(mode, itemId)
+      case _ => returnToSummary(itemId)
     }
   }
 
-  def submitForm(mode: Mode, itemId: String, documentId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def submitForm(itemId: String, documentId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     findAdditionalDocument(itemId, documentId) match {
       case Some(existingDocument) =>
         val boundForm = globalErrors(form(request.cacheModel).bindFromRequest())
         boundForm.fold(
-          formWithErrors => Future.successful(BadRequest(additionalDocumentChangePage(mode, itemId, documentId, formWithErrors))),
+          formWithErrors => Future.successful(BadRequest(additionalDocumentChangePage(itemId, documentId, formWithErrors))),
           updatedDocument =>
             if (updatedDocument.isDefined)
-              changeDocument(mode, itemId, documentId, existingDocument, updatedDocument, boundForm)
+              changeDocument(itemId, documentId, existingDocument, updatedDocument, boundForm)
             else
-              Future.successful(returnToSummary(mode, itemId))
+              Future.successful(returnToSummary(itemId))
         )
-      case _ => Future.successful(returnToSummary(mode, itemId))
+      case _ => Future.successful(returnToSummary(itemId))
     }
   }
 
   private def changeDocument(
-    mode: Mode,
     itemId: String,
     documentId: String,
     existingDocument: AdditionalDocument,
@@ -89,11 +88,11 @@ class AdditionalDocumentChangeController @Inject() (
     MultipleItemsHelper
       .add(boundForm, documentsWithoutExisting, maxNumberOfItems, AdditionalDocumentFormGroupId, "declaration.additionalDocument")
       .fold(
-        formWithErrors => Future.successful(BadRequest(additionalDocumentChangePage(mode, itemId, documentId, formWithErrors))),
+        formWithErrors => Future.successful(BadRequest(additionalDocumentChangePage(itemId, documentId, formWithErrors))),
         _ => {
           val updatedDocuments = existingDocuments.map(doc => if (doc == existingDocument) newDocument else doc)
           updateCache(itemId, additionalDocuments.copy(documents = updatedDocuments))
-            .map(_ => returnToSummary(mode, itemId))
+            .map(_ => returnToSummary(itemId))
         }
       )
   }
@@ -101,8 +100,8 @@ class AdditionalDocumentChangeController @Inject() (
   private def findAdditionalDocument(itemId: String, id: String)(implicit request: JourneyRequest[AnyContent]): Option[AdditionalDocument] =
     ListItem.findById(id, request.cacheModel.listOfAdditionalDocuments(itemId))
 
-  private def returnToSummary(mode: Mode, itemId: String)(implicit request: JourneyRequest[AnyContent]): Result =
-    navigator.continueTo(mode, routes.AdditionalDocumentsController.displayPage(_, itemId))
+  private def returnToSummary(itemId: String)(implicit request: JourneyRequest[AnyContent]): Result =
+    navigator.continueTo(routes.AdditionalDocumentsController.displayPage(itemId))
 
   private def updateCache(itemId: String, additionalDocuments: AdditionalDocuments)(
     implicit req: JourneyRequest[AnyContent]

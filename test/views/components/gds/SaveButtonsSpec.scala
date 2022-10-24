@@ -17,10 +17,9 @@
 package views.components.gds
 
 import base.Injector
-import models.Mode
-import models.Mode.{Amend, Draft, ErrorFix, Normal}
 import models.declaration.submissions.EnhancedStatus
 import models.declaration.submissions.EnhancedStatus.{ERRORS, EnhancedStatus, RECEIVED}
+import models.requests.ExportsSessionKeys.errorFixModeSessionKey
 import play.twirl.api.Html
 import views.declaration.spec.UnitViewSpec
 import views.html.components.gds.saveButtons
@@ -29,59 +28,51 @@ class SaveButtonsSpec extends UnitViewSpec with Injector {
 
   private val page = instanceOf[saveButtons]
 
-  private def createView(mode: Mode, status: EnhancedStatus): Html =
-    page(mode)(journeyRequest(aDeclaration(withParentDeclarationEnhancedStatus(status))), messages)
+  private def createView(status: EnhancedStatus, session: (String, String)*): Html =
+    page()(journeyRequest(aDeclaration(withParentDeclarationEnhancedStatus(status)), session: _*), messages)
 
   "Save buttons" should {
 
+    val session = errorFixModeSessionKey -> "true"
+
     "display' 'Save and Continue' button" in {
-      val buttons = createView(Normal, RECEIVED)
+      val buttons = createView(RECEIVED)
       Option(buttons.getElementsByAttributeValue("name", "SaveAndContinue")).isDefined
     }
 
     "display 'Save and come back' later link" in {
-      val buttons = createView(Normal, RECEIVED)
+      val buttons = createView(RECEIVED)
       Option(buttons.getElementsByAttributeValue("name", "SaveAndReturn")).isDefined
     }
 
     "NOT display the 'Save and return to summary' button when the declaration has no errors" in {
       EnhancedStatus.values.filterNot(_ == ERRORS).foreach { status =>
-        val element = Option(createView(Normal, status).getElementById("save_and_return_to_summary"))
-        assert(element.isEmpty)
+        Option(createView(status).getElementById("save_and_return_to_summary")).isEmpty
       }
     }
 
-    "NOT display the 'Save and return to summary' button when the declaration has errors but mode is ErrorFix" in {
-      val view = page(ErrorFix)(journeyRequest(aDeclaration(withSummaryWasVisited(), withParentDeclarationEnhancedStatus(ERRORS))), messages)
-      val element = Option(view.getElementById("save_and_return_to_summary"))
-      assert(element.isEmpty)
+    "NOT display the 'Save and return to summary' button when the declaration has errors but in error-fix mode" in {
+      val view = createView(ERRORS, session)
+      Option(view.getElementById("save_and_return_to_summary")).isEmpty
     }
 
-    "display the 'Save and return to summary' button when the declaration has errors and mode is NOT ErrorFix" in {
-      Mode.modes.filterNot(_ == ErrorFix).foreach { mode =>
-        val element = Option(createView(mode, ERRORS).getElementById("save_and_return_to_summary"))
-        assert(element.isDefined)
-      }
+    "display the 'Save and return to summary' button when the declaration has errors and NOT in error-fix mode" in {
+      Option(createView(ERRORS).getElementById("save_and_return_to_summary")).isDefined
     }
 
-    "display the 'Save and return to summary' button when the Summary page has been visited unless in errorfix mode" in {
-      Seq(Normal, Draft, Amend).foreach { mode =>
-        val view = page(mode)(journeyRequest(aDeclaration(withSummaryWasVisited())), messages)
-        val element = Option(view.getElementById("save_and_return_to_summary"))
-        assert(element.isDefined)
-      }
+    "display the 'Save and return to summary' button when the Summary page has been visited" in {
+      val view = page()(journeyRequest(aDeclaration(withSummaryWasVisited())), messages)
+      Option(view.getElementById("save_and_return_to_summary")).isDefined
     }
 
-    "display Save and return to errors button appropriately" when {
-      for (mode <- Mode.modes) s"$mode" in {
-        val buttonsPage = createView(mode, RECEIVED)
-        val buttons = Option(buttonsPage.getElementById("save_and_return_to_errors"))
+    "display the 'Save and return to errors' button when in error-fix mode" in {
+      val buttonsPage = createView(RECEIVED, session)
+      Option(buttonsPage.getElementById("save_and_return_to_errors")).isDefined
+    }
 
-        mode match {
-          case ErrorFix => buttons.isDefined mustBe true
-          case _        => buttons.isEmpty mustBe true
-        }
-      }
+    "NOT display the 'Save and return to errors' button when NOT in error-fix mode" in {
+      val buttonsPage = createView(RECEIVED)
+      Option(buttonsPage.getElementById("save_and_return_to_errors")).isEmpty
     }
   }
 }

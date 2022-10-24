@@ -17,12 +17,11 @@
 package views.declaration.fiscalInformation
 
 import base.Injector
+import controllers.declaration.routes.AdditionalFiscalReferencesController
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.form
 import forms.declaration.AdditionalFiscalReference
 import models.DeclarationType.STANDARD
-import models.Mode
-import models.Mode.Normal
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import views.declaration.spec.PageWithButtonsSpec
@@ -37,10 +36,10 @@ class AdditionalFiscalReferencesRemoveViewSpec extends PageWithButtonsSpec with 
 
   val page = instanceOf[additional_fiscal_references_remove]
 
-  override val typeAndViewInstance = (STANDARD, page(Normal, itemId, referenceId, additionalReference, form())(_, _))
+  override val typeAndViewInstance = (STANDARD, page(itemId, referenceId, additionalReference, form())(_, _))
 
-  def createView(frm: Form[YesNoAnswer] = form(), mode: Mode = Normal): Document =
-    page(mode, itemId, referenceId, additionalReference, frm)(request, messages)
+  def createView(frm: Form[YesNoAnswer] = form()): Document =
+    page(itemId, referenceId, additionalReference, frm)(request, messages)
 
   "AdditionalFiscalReferences Remove View" should {
     val view = createView()
@@ -57,11 +56,10 @@ class AdditionalFiscalReferencesRemoveViewSpec extends PageWithButtonsSpec with 
       val backLink = view.getElementById("back-link")
 
       backLink must containMessage(backToPreviousQuestionCaption)
-      backLink must haveHref(controllers.declaration.routes.AdditionalFiscalReferencesController.displayPage(Normal, itemId))
+      backLink must haveHref(AdditionalFiscalReferencesController.displayPage(itemId))
     }
 
-    val createViewWithMode: Mode => Document = mode => createView(mode = mode)
-    checkAllSaveButtonsAreDisplayed(createViewWithMode)
+    checkAllSaveButtonsAreDisplayed(createView())
   }
 
   "AdditionalFiscalReferences Remove View for invalid input" should {

@@ -20,8 +20,6 @@ import base.Injector
 import controllers.declaration.routes.{AdditionalInformationChangeController, AdditionalInformationRemoveController}
 import forms.common.YesNoAnswer.form
 import forms.declaration.AdditionalInformation
-import models.Mode
-import models.Mode.Normal
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.mvc.Call
@@ -37,8 +35,8 @@ class AdditionalInformationViewSpec extends UnitViewSpec with Injector {
 
   val page = instanceOf[additional_information]
 
-  def createView(cachedData: Seq[AdditionalInformation] = Seq.empty, mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document =
-    page(mode, itemId, form(), cachedData, Call("GET", url))(request, messages)
+  def createView(cachedData: Seq[AdditionalInformation] = Seq.empty)(implicit request: JourneyRequest[_]): Document =
+    page(itemId, form(), cachedData, Call("GET", url))(request, messages)
 
   "Additional Information View" should {
     "have a proper messages" in {
@@ -69,8 +67,7 @@ class AdditionalInformationViewSpec extends UnitViewSpec with Injector {
         createView().getElementById("section-header") must containMessage("declaration.section.5")
       }
 
-      val createViewWithMode: Mode => Document = mode => createView(mode = mode)
-      checkAllSaveButtonsAreDisplayed(createViewWithMode)
+      checkAllSaveButtonsAreDisplayed(createView())
     }
   }
 
@@ -118,7 +115,7 @@ class AdditionalInformationViewSpec extends UnitViewSpec with Injector {
           removeLink must containMessage("site.change")
           removeLink must containMessage("declaration.additionalInformation.table.change.hint", "12345")
 
-          val call = AdditionalInformationChangeController.displayPage(Normal, itemId, ListItem.createId(0, additionalInformation))
+          val call = AdditionalInformationChangeController.displayPage(itemId, ListItem.createId(0, additionalInformation))
           removeLink must haveHref(call)
         }
 
@@ -128,7 +125,7 @@ class AdditionalInformationViewSpec extends UnitViewSpec with Injector {
           removeLink must containMessage("site.remove")
           removeLink must containMessage("declaration.additionalInformation.table.remove.hint", "12345")
 
-          val call = AdditionalInformationRemoveController.displayPage(Normal, itemId, ListItem.createId(0, additionalInformation))
+          val call = AdditionalInformationRemoveController.displayPage(itemId, ListItem.createId(0, additionalInformation))
           removeLink must haveHref(call)
         }
       }

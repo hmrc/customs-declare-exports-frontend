@@ -23,7 +23,7 @@ import forms.declaration.officeOfExit.OfficeOfExit
 import forms.declaration.officeOfExit.OfficeOfExit.form
 import models.DeclarationType._
 import models.requests.JourneyRequest
-import models.{ExportsDeclaration, Mode}
+import models.ExportsDeclaration
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.cache.ExportsCacheService
@@ -44,22 +44,22 @@ class OfficeOfExitController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
-  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.locations.officeOfExit match {
-      case Some(data) => Ok(officeOfExitPage(mode, form.withSubmissionErrors.fill(data)))
-      case _          => Ok(officeOfExitPage(mode, form.withSubmissionErrors))
+      case Some(data) => Ok(officeOfExitPage(form.withSubmissionErrors.fill(data)))
+      case _          => Ok(officeOfExitPage(form.withSubmissionErrors))
     }
   }
 
-  def saveOffice(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def saveOffice(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     form.bindFromRequest
       .fold(
-        formWithErrors => Future.successful(BadRequest(officeOfExitPage(mode, formWithErrors))),
-        updateCache(_).map(_ => navigator.continueTo(mode, nextPage(request.declarationType)))
+        formWithErrors => Future.successful(BadRequest(officeOfExitPage(formWithErrors))),
+        updateCache(_).map(_ => navigator.continueTo(nextPage(request.declarationType)))
       )
   }
 
-  private def nextPage(declarationType: DeclarationType): Mode => Call =
+  private def nextPage(declarationType: DeclarationType): Call =
     declarationType match {
       case SUPPLEMENTARY | STANDARD            => InvoiceAndExchangeRateChoiceController.displayPage
       case SIMPLIFIED | OCCASIONAL | CLEARANCE => PreviousDocumentsSummaryController.displayPage

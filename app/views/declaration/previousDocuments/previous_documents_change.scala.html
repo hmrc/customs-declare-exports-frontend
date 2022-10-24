@@ -31,16 +31,16 @@
     formHelper: FormWithCSRF
 )
 
-@(mode: Mode, id: String, form: Form[Document])(implicit request: JourneyRequest[_], messages: Messages)
+@(id: String, form: Form[Document])(implicit request: JourneyRequest[_], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
 @govukLayout(
     title = Title(templateHelper.title, "declaration.section.4", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(DocumentChangeOrRemove, mode)))
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(DocumentChangeOrRemove)))
 ) {
-    @formHelper(action = PreviousDocumentsChangeController.submit(mode, id), 'autoComplete -> "off") {
+    @formHelper(action = PreviousDocumentsChangeController.submit(id), 'autoComplete -> "off") {
 
-      @editContent(mode, form)
+      @editContent(form)
     }
 }

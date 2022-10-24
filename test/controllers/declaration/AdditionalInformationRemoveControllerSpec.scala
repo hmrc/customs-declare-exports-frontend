@@ -19,7 +19,6 @@ package controllers.declaration
 import base.ControllerSpec
 import forms.common.YesNoAnswer
 import forms.declaration.AdditionalInformation
-import models.Mode
 import models.declaration.AdditionalInformationData
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -49,7 +48,7 @@ class AdditionalInformationRemoveControllerSpec extends ControllerSpec with Opti
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    when(mockRemovePage.apply(any(), any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockRemovePage.apply(any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -59,24 +58,24 @@ class AdditionalInformationRemoveControllerSpec extends ControllerSpec with Opti
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration(withItems(itemWithTwoAdditionalInformation)))
-    await(controller.displayPage(Mode.Normal, itemId, additionalInformationId)(request))
+    await(controller.displayPage(itemId, additionalInformationId)(request))
     theResponseForm
   }
 
   def theResponseForm: Form[YesNoAnswer] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[YesNoAnswer]])
-    verify(mockRemovePage).apply(any(), any(), any(), any(), captor.capture())(any(), any())
+    verify(mockRemovePage).apply(any(), any(), any(), captor.capture())(any(), any())
     captor.getValue
   }
 
   def theAdditionalInformation: AdditionalInformation = {
     val captor = ArgumentCaptor.forClass(classOf[AdditionalInformation])
-    verify(mockRemovePage).apply(any(), any(), any(), captor.capture(), any())(any(), any())
+    verify(mockRemovePage).apply(any(), any(), captor.capture(), any())(any(), any())
     captor.getValue
   }
 
   private def verifyRemovePageInvoked(numberOfTimes: Int = 1) =
-    verify(mockRemovePage, times(numberOfTimes)).apply(any(), any(), any(), any(), any())(any(), any())
+    verify(mockRemovePage, times(numberOfTimes)).apply(any(), any(), any(), any())(any(), any())
 
   private val additionalInformation = AdditionalInformation("00400", "Some description")
   private val additionalInformationOther = AdditionalInformation("00401", "Some description")
@@ -95,7 +94,7 @@ class AdditionalInformationRemoveControllerSpec extends ControllerSpec with Opti
 
           withNewCaching(aDeclarationAfter(request.cacheModel, withItem(itemWithTwoAdditionalInformation)))
 
-          val result = controller.displayPage(Mode.Normal, itemId, additionalInformationId)(getRequest())
+          val result = controller.displayPage(itemId, additionalInformationId)(getRequest())
 
           status(result) mustBe OK
           verifyRemovePageInvoked()
@@ -110,7 +109,7 @@ class AdditionalInformationRemoveControllerSpec extends ControllerSpec with Opti
           withNewCaching(aDeclarationAfter(request.cacheModel, withItem(itemWithTwoAdditionalInformation)))
 
           val requestBody = Seq("yesNo" -> "invalid")
-          val result = controller.submitForm(Mode.Normal, itemId, additionalInformationId)(postRequestAsFormUrlEncoded(requestBody: _*))
+          val result = controller.submitForm(itemId, additionalInformationId)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           status(result) mustBe BAD_REQUEST
           verifyRemovePageInvoked()
@@ -123,20 +122,20 @@ class AdditionalInformationRemoveControllerSpec extends ControllerSpec with Opti
 
           withNewCaching(aDeclarationAfter(request.cacheModel, withItem(itemWithTwoAdditionalInformation)))
 
-          val result = controller.displayPage(Mode.Normal, itemId, "some-id")(getRequest())
+          val result = controller.displayPage(itemId, "some-id")(getRequest())
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalInformationController.displayPage(Mode.Normal, itemId)
+          thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalInformationController.displayPage(itemId)
         }
 
         "user submits 'Yes' answer when multiple additional information exists" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withItem(itemWithTwoAdditionalInformation)))
 
           val requestBody = Seq("yesNo" -> "Yes")
-          val result = controller.submitForm(Mode.Normal, itemId, additionalInformationId)(postRequestAsFormUrlEncoded(requestBody: _*))
+          val result = controller.submitForm(itemId, additionalInformationId)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalInformationController.displayPage(Mode.Normal, itemId)
+          thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalInformationController.displayPage(itemId)
 
           theCacheModelUpdated.itemBy(itemId).flatMap(_.additionalInformation) mustBe Some(AdditionalInformationData(Seq(additionalInformationOther)))
         }
@@ -145,10 +144,10 @@ class AdditionalInformationRemoveControllerSpec extends ControllerSpec with Opti
           withNewCaching(aDeclarationAfter(request.cacheModel, withItem(itemWithSingleAdditionalInformation)))
 
           val requestBody = Seq("yesNo" -> "Yes")
-          val result = controller.submitForm(Mode.Normal, itemId, additionalInformationId)(postRequestAsFormUrlEncoded(requestBody: _*))
+          val result = controller.submitForm(itemId, additionalInformationId)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalInformationRequiredController.displayPage(Mode.Normal, itemId)
+          thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalInformationRequiredController.displayPage(itemId)
 
           theCacheModelUpdated.itemBy(itemId).flatMap(_.additionalInformation) mustBe Some(AdditionalInformationData(YesNoAnswer.Yes, Seq.empty))
         }
@@ -157,10 +156,10 @@ class AdditionalInformationRemoveControllerSpec extends ControllerSpec with Opti
           withNewCaching(aDeclarationAfter(request.cacheModel, withItem(itemWithTwoAdditionalInformation)))
 
           val requestBody = Seq("yesNo" -> "No")
-          val result = controller.submitForm(Mode.Normal, itemId, additionalInformationId)(postRequestAsFormUrlEncoded(requestBody: _*))
+          val result = controller.submitForm(itemId, additionalInformationId)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalInformationController.displayPage(Mode.Normal, itemId)
+          thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalInformationController.displayPage(itemId)
 
           verifyTheCacheIsUnchanged()
         }

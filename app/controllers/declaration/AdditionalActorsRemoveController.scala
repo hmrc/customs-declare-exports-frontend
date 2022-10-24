@@ -23,7 +23,7 @@ import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.DeclarationAdditionalActors
 import models.declaration.DeclarationAdditionalActorsData
 import models.requests.JourneyRequest
-import models.{ExportsDeclaration, Mode}
+import models.ExportsDeclaration
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
@@ -46,30 +46,30 @@ class AdditionalActorsRemoveController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
-  def displayPage(mode: Mode, id: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayPage(id: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     findActor(id) match {
-      case Some(actor) => Ok(removePage(mode, id, actor, removeYesNoForm.withSubmissionErrors()))
-      case _           => navigator.continueTo(mode, routes.AdditionalActorsSummaryController.displayPage)
+      case Some(actor) => Ok(removePage(id, actor, removeYesNoForm.withSubmissionErrors()))
+      case _           => navigator.continueTo(routes.AdditionalActorsSummaryController.displayPage)
     }
   }
 
-  def submitForm(mode: Mode, id: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def submitForm(id: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     findActor(id) match {
       case Some(actor) =>
         removeYesNoForm
           .bindFromRequest()
           .fold(
-            (formWithErrors: Form[YesNoAnswer]) => Future.successful(BadRequest(removePage(mode, id, actor, formWithErrors))),
+            (formWithErrors: Form[YesNoAnswer]) => Future.successful(BadRequest(removePage(id, actor, formWithErrors))),
             formData =>
               formData.answer match {
                 case YesNoAnswers.yes =>
                   updateExportsCache(actor)
-                    .map(_ => navigator.continueTo(mode, routes.AdditionalActorsSummaryController.displayPage))
+                    .map(_ => navigator.continueTo(routes.AdditionalActorsSummaryController.displayPage))
                 case YesNoAnswers.no =>
-                  Future.successful(navigator.continueTo(mode, routes.AdditionalActorsSummaryController.displayPage))
+                  Future.successful(navigator.continueTo(routes.AdditionalActorsSummaryController.displayPage))
               }
           )
-      case _ => Future.successful(navigator.continueTo(mode, routes.AdditionalActorsSummaryController.displayPage))
+      case _ => Future.successful(navigator.continueTo(routes.AdditionalActorsSummaryController.displayPage))
     }
   }
 

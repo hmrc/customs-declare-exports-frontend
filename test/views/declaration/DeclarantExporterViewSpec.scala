@@ -22,8 +22,6 @@ import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.DeclarantIsExporter
 import forms.declaration.DeclarantIsExporter.form
 import models.DeclarationType.{OCCASIONAL, SIMPLIFIED, STANDARD}
-import models.Mode
-import models.Mode.Normal
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
@@ -37,10 +35,10 @@ class DeclarantExporterViewSpec extends PageWithButtonsSpec with Injector {
 
   val page = instanceOf[declarant_exporter]
 
-  override val typeAndViewInstance = (STANDARD, page(Normal, form)(_, _))
+  override val typeAndViewInstance = (STANDARD, page(form)(_, _))
 
-  def createView(frm: Form[DeclarantIsExporter] = form(), mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document =
-    page(mode, frm)(request, messages)
+  def createView(frm: Form[DeclarantIsExporter] = form())(implicit request: JourneyRequest[_]): Document =
+    page(frm)(request, messages)
 
   "Declarant Exporter View on empty page" should {
 
@@ -83,8 +81,7 @@ class DeclarantExporterViewSpec extends PageWithButtonsSpec with Injector {
         view.getElementById("code_no-item-hint") must containMessage("declaration.declarant.exporter.answer.no.hint")
       }
 
-      val createViewWithMode: Mode => Document = mode => createView(mode = mode)
-      checkAllSaveButtonsAreDisplayed(createViewWithMode)
+      checkAllSaveButtonsAreDisplayed(createView())
     }
 
     onJourney(STANDARD, SIMPLIFIED, OCCASIONAL) { implicit request =>

@@ -28,7 +28,7 @@ import javax.inject.Inject
 import models.declaration.DeclarationHoldersData
 import models.declaration.DeclarationHoldersData.limitOfHolders
 import models.requests.JourneyRequest
-import models.{ExportsDeclaration, Mode}
+import models.ExportsDeclaration
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -47,33 +47,30 @@ class DeclarationHolderAddController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
-  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    Ok(declarationHolderPage(mode, form.withSubmissionErrors, request.eori))
+  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    Ok(declarationHolderPage(form.withSubmissionErrors, request.eori))
   }
 
-  def submitForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def submitForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val boundForm = form.bindFromRequest
 
-    boundForm.fold(
-      formWithErrors => Future.successful(BadRequest(declarationHolderPage(mode, formWithErrors, request.eori))),
-      _ => saveHolder(mode, boundForm)
-    )
+    boundForm.fold(formWithErrors => Future.successful(BadRequest(declarationHolderPage(formWithErrors, request.eori))), _ => saveHolder(boundForm))
   }
 
-  private def saveHolder(mode: Mode, boundForm: Form[DeclarationHolder])(implicit r: JourneyRequest[AnyContent]): Future[Result] =
+  private def saveHolder(boundForm: Form[DeclarationHolder])(implicit r: JourneyRequest[AnyContent]): Future[Result] =
     MultipleItemsHelper
       .add(boundForm, declarationHolders, limitOfHolders, DeclarationHolderFormGroupId, "declaration.declarationHolder")
       .fold(
-        formWithErrors => Future.successful(BadRequest(declarationHolderPage(mode, formWithErrors, r.eori))),
+        formWithErrors => Future.successful(BadRequest(declarationHolderPage(formWithErrors, r.eori))),
         updatedHolders =>
           validateMutuallyExclusiveAuthCodes(boundForm.value, declarationHolders) match {
             case Some(error) =>
               val formWithError = boundForm.copy(errors = Seq(error))
-              Future.successful(BadRequest(declarationHolderPage(mode, formWithError, r.eori)))
+              Future.successful(BadRequest(declarationHolderPage(formWithError, r.eori)))
 
             case _ =>
               updateExportsCache(updatedHolders)
-                .map(_ => navigator.continueTo(mode, routes.DeclarationHolderSummaryController.displayPage))
+                .map(_ => navigator.continueTo(routes.DeclarationHolderSummaryController.displayPage))
           }
       )
 

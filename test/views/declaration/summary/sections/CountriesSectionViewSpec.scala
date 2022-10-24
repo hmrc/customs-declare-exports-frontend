@@ -20,7 +20,7 @@ import base.Injector
 import controllers.declaration.routes.{DestinationCountryController, RoutingCountriesController}
 import forms.declaration.countries.Country
 import models.ExportsDeclaration
-import models.Mode.Draft
+import org.jsoup.nodes.Document
 import services.cache.ExportsTestHelper
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.summary.sections.countries_section
@@ -29,12 +29,11 @@ class CountriesSectionViewSpec extends UnitViewSpec with ExportsTestHelper with 
 
   val section = instanceOf[countries_section]
 
-  def view(data: ExportsDeclaration) = section(Draft, data)(messages)
+  def view(data: ExportsDeclaration): Document = section(data)(messages)
 
   "Countries section" should {
 
     "display 'None' when empty routing countries" in {
-
       val data = aDeclaration(withRoutingQuestion(false), withoutRoutingCountries())
 
       val row = view(data).getElementsByClass("countriesOfRouting-row")
@@ -43,11 +42,10 @@ class CountriesSectionViewSpec extends UnitViewSpec with ExportsTestHelper with 
 
       row must haveSummaryActionsTexts("site.change", "declaration.summary.countries.routingCountries.change")
 
-      row must haveSummaryActionsHref(RoutingCountriesController.displayRoutingCountry(Draft))
+      row must haveSummaryActionWithPlaceholder(RoutingCountriesController.displayRoutingCountry)
     }
 
     "display single routing country" in {
-
       val country = Country(Some("GB"))
       val data = aDeclaration(withRoutingQuestion(), withRoutingCountries(Seq(country)))
 
@@ -59,7 +57,6 @@ class CountriesSectionViewSpec extends UnitViewSpec with ExportsTestHelper with 
     }
 
     "display multiple routing countries separated by comma" in {
-
       val firstCountryCode = Country(Some("GB"))
       val secondCountryCode = Country(Some("PL"))
       val data = aDeclaration(withRoutingQuestion(), withRoutingCountries(Seq(firstCountryCode, secondCountryCode)))
@@ -73,26 +70,22 @@ class CountriesSectionViewSpec extends UnitViewSpec with ExportsTestHelper with 
 
     }
     "display change button for countries of routing" in {
-
       val row = view(aDeclaration(withRoutingQuestion(), withRoutingCountries(Seq(Country(Some("GB")))))).getElementsByClass("countriesOfRouting-row")
 
       row must haveSummaryActionsTexts("site.change", "declaration.summary.countries.routingCountries.change")
 
-      row must haveSummaryActionsHref(RoutingCountriesController.displayRoutingCountry(Draft))
+      row must haveSummaryActionWithPlaceholder(RoutingCountriesController.displayRoutingCountry)
     }
 
     "not have routing country section when question not answered" in {
-
       view(aDeclaration(withoutRoutingQuestion())).getElementsByClass("countriesOfRouting-row") mustBe empty
     }
 
     "not display empty country of destination when question not asked" in {
-
       view(aDeclaration(withoutDestinationCountry())).getElementsByClass("countryOfDestination-row") mustBe empty
     }
 
     "display country of destination" in {
-
       val country = Country(Some("GB"))
       val data = aDeclaration(withDestinationCountry(country))
 
@@ -105,14 +98,13 @@ class CountriesSectionViewSpec extends UnitViewSpec with ExportsTestHelper with 
     }
 
     "display change button for country of destination" in {
-
       val country = Country(Some("GB"))
       val data = aDeclaration(withDestinationCountry(country))
 
       val row = view(data).getElementsByClass("countryOfDestination-row")
 
       row must haveSummaryActionsTexts("site.change", "declaration.summary.countries.countryOfDestination.change")
-      row must haveSummaryActionsHref(DestinationCountryController.displayPage(Draft))
+      row must haveSummaryActionWithPlaceholder(DestinationCountryController.displayPage)
     }
   }
 }

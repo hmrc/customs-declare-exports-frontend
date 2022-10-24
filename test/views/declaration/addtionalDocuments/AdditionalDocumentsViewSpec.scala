@@ -29,7 +29,6 @@ import forms.common.YesNoAnswer.form
 import forms.declaration.AdditionalDocumentSpec._
 import forms.declaration.additionaldocuments.AdditionalDocument
 import models.DeclarationType._
-import models.Mode.Normal
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
@@ -46,7 +45,7 @@ class AdditionalDocumentsViewSpec extends UnitViewSpec with Injector {
   def createView(frm: Form[YesNoAnswer] = form(), cachedDocuments: Seq[AdditionalDocument] = Seq.empty)(
     implicit request: JourneyRequest[_]
   ): Document =
-    page(Normal, itemId, frm, cachedDocuments)(request, messages)
+    page(itemId, frm, cachedDocuments)(request, messages)
 
   "additional_documents view" should {
 
@@ -97,7 +96,7 @@ class AdditionalDocumentsViewSpec extends UnitViewSpec with Injector {
       "display 'Back' button that links to 'Is License Required' page" in {
         val backButton = createView().getElementById("back-link")
         backButton must containMessage(backToPreviousQuestionCaption)
-        backButton must haveHref(routes.IsLicenceRequiredController.displayPage(Normal, itemId))
+        backButton must haveHref(routes.IsLicenceRequiredController.displayPage(itemId))
       }
 
     }
@@ -105,7 +104,7 @@ class AdditionalDocumentsViewSpec extends UnitViewSpec with Injector {
       "display 'Back' button that links to 'Additional Info' page when additional info present" in {
         val backButton = createView().getElementById("back-link")
         backButton must containMessage(backToPreviousQuestionCaption)
-        backButton must haveHref(AdditionalInformationController.displayPage(Normal, itemId))
+        backButton must haveHref(AdditionalInformationController.displayPage(itemId))
       }
 
     }
@@ -114,7 +113,7 @@ class AdditionalDocumentsViewSpec extends UnitViewSpec with Injector {
       "display 'Back' button that links to 'Additional Information Required' page when no additional info present" in {
         val backButton = createView().getElementById("back-link")
         backButton must containMessage(backToPreviousQuestionCaption)
-        backButton must haveHref(AdditionalInformationRequiredController.displayPage(Normal, itemId))
+        backButton must haveHref(AdditionalInformationRequiredController.displayPage(itemId))
       }
     }
   }
@@ -173,7 +172,7 @@ class AdditionalDocumentsViewSpec extends UnitViewSpec with Injector {
             removeLink must containMessage("site.change")
             removeLink must containMessage("declaration.additionalDocument.summary.change.hint", "ABCDEF1234567890")
 
-            val href = AdditionalDocumentChangeController.displayPage(Normal, itemId, ListItem.createId(0, correctAdditionalDocument))
+            val href = AdditionalDocumentChangeController.displayPage(itemId, ListItem.createId(0, correctAdditionalDocument))
             removeLink must haveHref(href)
           }
 
@@ -182,7 +181,7 @@ class AdditionalDocumentsViewSpec extends UnitViewSpec with Injector {
             removeLink must containMessage("site.remove")
             removeLink must containMessage("declaration.additionalDocument.summary.remove.hint", "ABCDEF1234567890")
 
-            val href = AdditionalDocumentRemoveController.displayPage(Normal, itemId, ListItem.createId(0, correctAdditionalDocument))
+            val href = AdditionalDocumentRemoveController.displayPage(itemId, ListItem.createId(0, correctAdditionalDocument))
             removeLink must haveHref(href)
           }
         }

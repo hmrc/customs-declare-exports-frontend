@@ -18,10 +18,12 @@ package controllers.declaration
 
 import base.ControllerSpec
 import connectors.CodeListConnector
+import controllers.declaration.routes.OfficeOfExitController
+import controllers.routes.RootController
 import forms.declaration.LocationOfGoods
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.SUPPLEMENTARY_EIDR
 import forms.declaration.declarationHolder.AuthorizationTypeCodes.codeThatSkipLocationOfGoods
-import models.{DeclarationType, Mode}
+import models.DeclarationType
 import models.codes.Country
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -55,7 +57,7 @@ class LocationOfGoodsControllerSpec extends ControllerSpec with OptionValues {
 
     authorizedUser()
     withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY)))
-    when(mockLocationOfGoods.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockLocationOfGoods.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
     when(mockCodeListConnector.getCountryCodes(any())).thenReturn(ListMap("PL" -> Country("Poland", "PL")))
   }
 
@@ -67,12 +69,12 @@ class LocationOfGoodsControllerSpec extends ControllerSpec with OptionValues {
 
   def theResponseForm: Form[LocationOfGoods] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[LocationOfGoods]])
-    verify(mockLocationOfGoods).apply(any(), captor.capture())(any(), any())
+    verify(mockLocationOfGoods).apply(captor.capture())(any(), any())
     captor.getValue
   }
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
-    await(controller.displayPage(Mode.Normal)(request))
+    await(controller.displayPage()(request))
     theResponseForm
   }
 
@@ -81,10 +83,10 @@ class LocationOfGoodsControllerSpec extends ControllerSpec with OptionValues {
     "return 200 (OK)" when {
 
       "display page method is invoked and cache is empty" in {
-        val result = controller.displayPage(Mode.Normal)(getRequest())
+        val result = controller.displayPage()(getRequest())
 
         status(result) mustBe OK
-        verify(mockLocationOfGoods).apply(any(), any())(any(), any())
+        verify(mockLocationOfGoods).apply(any())(any(), any())
 
         theResponseForm.value mustBe empty
       }
@@ -93,10 +95,10 @@ class LocationOfGoodsControllerSpec extends ControllerSpec with OptionValues {
         val locationOfGoods = LocationOfGoods("GBAUEMAEMAEMA")
         withNewCaching(aDeclaration(withGoodsLocation(locationOfGoods)))
 
-        val result = controller.displayPage(Mode.Normal)(getRequest())
+        val result = controller.displayPage()(getRequest())
 
         status(result) mustBe OK
-        verify(mockLocationOfGoods).apply(any(), any())(any(), any())
+        verify(mockLocationOfGoods).apply(any())(any(), any())
 
         theResponseForm.value mustNot be(empty)
         theResponseForm.value.value.code mustBe "GBAUEMAEMAEMA"
@@ -108,10 +110,10 @@ class LocationOfGoodsControllerSpec extends ControllerSpec with OptionValues {
       "form is incorrect" in {
         val incorrectForm = Json.toJson(LocationOfGoods("incorrect"))
 
-        val result = controller.saveLocation(Mode.Normal)(postRequest(incorrectForm))
+        val result = controller.saveLocation()(postRequest(incorrectForm))
 
         status(result) mustBe BAD_REQUEST
-        verify(mockLocationOfGoods).apply(any(), any())(any(), any())
+        verify(mockLocationOfGoods).apply(any())(any(), any())
       }
     }
 
@@ -120,19 +122,19 @@ class LocationOfGoodsControllerSpec extends ControllerSpec with OptionValues {
       "information provided by user are correct" in {
         val correctForm = Json.toJson(LocationOfGoods("PLAUEMAEMAEMA"))
 
-        val result = controller.saveLocation(Mode.Normal)(postRequest(correctForm))
+        val result = controller.saveLocation()(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.OfficeOfExitController.displayPage()
-        verify(mockLocationOfGoods, times(0)).apply(any(), any())(any(), any())
+        thePageNavigatedTo mustBe OfficeOfExitController.displayPage()
+        verify(mockLocationOfGoods, times(0)).apply(any())(any(), any())
       }
 
       "Additional dec type is Supplementary_EIDR with MOU" in {
         withNewCaching(aDeclaration(withAdditionalDeclarationType(SUPPLEMENTARY_EIDR), withDeclarationHolders(Some(codeThatSkipLocationOfGoods))))
-        val result = controller.displayPage(Mode.Normal)(getRequest())
+        val result = controller.displayPage()(getRequest())
 
         status(result) mustBe 303
-        redirectLocation(result) mustBe Some(controllers.routes.RootController.displayPage.url)
+        redirectLocation(result) mustBe Some(RootController.displayPage.url)
       }
     }
   }

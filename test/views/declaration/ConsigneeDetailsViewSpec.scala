@@ -24,8 +24,6 @@ import forms.common.{Address, AddressSpec}
 import forms.declaration.ConsigneeDetails.form
 import forms.declaration.{ConsigneeDetails, DeclarantIsExporter, EntityDetails, IsExs}
 import models.DeclarationType._
-import models.Mode
-import models.Mode.Normal
 import models.codes.Country
 import models.declaration.Parties
 import models.requests.JourneyRequest
@@ -57,10 +55,10 @@ class ConsigneeDetailsViewSpec extends AddressViewSpec with PageWithButtonsSpec 
 
   val page = instanceOf[consignee_details]
 
-  override val typeAndViewInstance = (STANDARD, page(Normal, form)(_, _))
+  override val typeAndViewInstance = (STANDARD, page(form)(_, _))
 
-  def createView(frm: Form[ConsigneeDetails] = form(), mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document =
-    page(mode, frm)(request, messages)
+  def createView(frm: Form[ConsigneeDetails] = form())(implicit request: JourneyRequest[_]): Document =
+    page(frm)(request, messages)
 
   "Consignee Details View on empty page" should {
 
@@ -122,8 +120,7 @@ class ConsigneeDetailsViewSpec extends AddressViewSpec with PageWithButtonsSpec 
         view.getElementById("details_address_country").attr("value") mustBe empty
       }
 
-      val createViewWithMode: Mode => Document = mode => createView(mode = mode)
-      checkAllSaveButtonsAreDisplayed(createViewWithMode)
+      checkAllSaveButtonsAreDisplayed(createView())
     }
   }
 

@@ -46,7 +46,7 @@
     appConfig: AppConfig
 )
 
-@(mode: Mode, form: Form[DeclarationHolder], userEori: String)(implicit request: JourneyRequest[_], messages: Messages)
+@(form: Form[DeclarationHolder], userEori: String)(implicit request: JourneyRequest[_], messages: Messages)
 
 @otherEoriInput = {
     @exportsInputText(
@@ -110,7 +110,7 @@
     html = HtmlFormat.fill(List(
         formContent,
         tariffExpander(DeclarationHolder, request.declarationType)(messages, appConfig),
-        saveButtons(mode)
+        saveButtons()
     ))
 ))
 

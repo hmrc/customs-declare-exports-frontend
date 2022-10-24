@@ -34,21 +34,21 @@
     editContent: package_information_edit_content
 )
 
-@(mode: Mode, itemId: String, form: Form[_], code: String, packages: Seq[PackageInformation])(implicit request: JourneyRequest[_], messages: Messages)
+@(itemId: String, form: Form[_], code: String, packages: Seq[PackageInformation])(implicit request: JourneyRequest[_], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
 
 @govukLayout(
     title = Title("declaration.packageInformation.title", "declaration.section.5", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), controllers.declaration.routes.PackageInformationSummaryController.displayPage(mode, itemId)))
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), controllers.declaration.routes.PackageInformationSummaryController.displayPage(itemId)))
 ) {
 
-    @formHelper(action = routes.PackageInformationChangeController.submitForm(mode, itemId, code), 'autoComplete -> "off") {
+    @formHelper(action = routes.PackageInformationChangeController.submitForm(itemId, code), 'autoComplete -> "off") {
         @editContent(form)
 
         @tariffExpander(PackageInformation, request.declarationType)(messages, appConfig)
 
-        @saveButtons(mode)
+        @saveButtons()
     }
 }

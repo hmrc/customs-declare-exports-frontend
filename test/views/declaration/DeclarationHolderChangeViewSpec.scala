@@ -22,7 +22,6 @@ import base.TestHelper.createRandomAlphanumericString
 import controllers.declaration.routes
 import forms.common.Eori
 import forms.declaration.declarationHolder.DeclarationHolder
-import models.Mode
 import models.declaration.EoriSource.{OtherEori, UserEori}
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
@@ -45,7 +44,7 @@ class DeclarationHolderChangeViewSpec extends UnitViewSpec with CommonMessages w
     DeclarationHolder.form(eori, request.cacheModel.additionalDeclarationType)
 
   private def createView(form: Form[DeclarationHolder])(implicit request: JourneyRequest[_]): Document =
-    declarationHolderPage(Mode.Normal, id, form, eori)(request, messages)
+    declarationHolderPage(id, form, eori)(request, messages)
 
   "Declaration Holder View when filled" should {
     onEveryDeclarationJourney() { implicit request =>

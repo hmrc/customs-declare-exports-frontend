@@ -21,8 +21,6 @@ import controllers.declaration.routes
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.ContainerFirst
 import models.DeclarationType.SUPPLEMENTARY
-import models.Mode
-import models.Mode.Normal
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import services.cache.ExportsTestHelper
@@ -38,8 +36,8 @@ class TransportContainerAddFirstViewSpec extends UnitViewSpec with ExportsTestHe
   private val form: Form[ContainerFirst] = ContainerFirst.form()
   private val page = instanceOf[transport_container_add_first]
 
-  private def createView(form: Form[ContainerFirst] = form, mode: Mode = Mode.Normal): Document =
-    page(mode, form)(journeyRequest(), messages)
+  private def createView(form: Form[ContainerFirst] = form): Document =
+    page(form)(journeyRequest(), messages)
 
   "Transport Containers Add First View" should {
     val view = createView()
@@ -82,21 +80,20 @@ class TransportContainerAddFirstViewSpec extends UnitViewSpec with ExportsTestHe
       "declaration's type is STANDARD" in {
         val backLinkContainer = view.getElementById("back-link")
         backLinkContainer must containMessage(backToPreviousQuestionCaption)
-        backLinkContainer must haveHref(routes.ExpressConsignmentController.displayPage(Normal))
+        backLinkContainer must haveHref(routes.ExpressConsignmentController.displayPage())
       }
     }
 
     "display 'Back' button that links to the 'Transport Country' page" when {
       "declaration's type is SUPPLEMENTARY" in {
-        val view = page(Normal, form)(journeyRequest(SUPPLEMENTARY), messages)
+        val view = page(form)(journeyRequest(SUPPLEMENTARY), messages)
         val backLinkContainer = view.getElementById("back-link")
         backLinkContainer must containMessage(backToPreviousQuestionCaption)
-        backLinkContainer must haveHref(routes.TransportCountryController.displayPage(Normal))
+        backLinkContainer must haveHref(routes.TransportCountryController.displayPage())
       }
     }
 
-    val createViewWithMode: Mode => Document = mode => createView(mode = mode)
-    checkAllSaveButtonsAreDisplayed(createViewWithMode)
+    checkAllSaveButtonsAreDisplayed(createView())
   }
 
   "Transport Containers Add View" should {

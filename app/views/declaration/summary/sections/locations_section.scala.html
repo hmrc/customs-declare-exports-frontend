@@ -18,20 +18,17 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.html.components.gds.linkContent
 @import views.html.components.gds.summary_list
-@import views.components.gds.ActionItemBuilder._
+@import views.helpers.ActionItemBuilder.actionSummaryItem
 
 @this(summaryList: summary_list, linkContent: linkContent)
 
-@(mode: Mode, declarationData: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages)
+@(declarationData: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages)
 
 @hasLocations(locations: Locations) = @{
     locations.goodsLocation.isDefined || locations.officeOfExit.isDefined
 }
 
-@actions(action: Actions) = @{
-    if(actionsEnabled) Some(action)
-    else None
-}
+@actions(action: Actions) = @{ if (actionsEnabled) Some(action) else None }
 
 @if(hasLocations(declarationData.locations)) {
     @summaryList("declaration-locations-summary", Some(messages("declaration.summary.locations")), Seq(
@@ -46,8 +43,8 @@
                 ),
                 actions = actions(Actions(
                     items = Seq(
-                        actionItem(
-                            href = controllers.declaration.routes.LocationOfGoodsController.displayPage(mode).url,
+                        actionSummaryItem(
+                            href = controllers.declaration.routes.LocationOfGoodsController.displayPage().url,
                             content = HtmlContent(linkContent(messages("site.change"))),
                             visuallyHiddenText = Some(messages("declaration.summary.locations.goodsLocationCode.change"))
                         )
@@ -65,8 +62,8 @@
                 ),
                 actions = actions(Actions(
                     items = Seq(
-                        actionItem(
-                            href = controllers.declaration.routes.OfficeOfExitController.displayPage(mode).url,
+                        actionSummaryItem(
+                            href = controllers.declaration.routes.OfficeOfExitController.displayPage().url,
                             content = HtmlContent(linkContent(messages("site.change"))),
                             visuallyHiddenText = Some(messages("declaration.summary.locations.officeOfExit.change"))
                         )

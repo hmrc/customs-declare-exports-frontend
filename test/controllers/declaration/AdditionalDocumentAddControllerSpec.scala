@@ -21,7 +21,6 @@ import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.Yes
 import forms.declaration.additionaldocuments.AdditionalDocument
 import mock.ErrorHandlerMocks
-import models.Mode
 import models.declaration.AdditionalDocuments
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -52,7 +51,7 @@ class AdditionalDocumentAddControllerSpec extends ControllerSpec with ErrorHandl
     super.beforeEach()
     authorizedUser()
     withNewCaching(aDeclaration(withItem(anItem(withItemId(itemId)))))
-    when(additionalDocumentAddPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(additionalDocumentAddPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -62,17 +61,17 @@ class AdditionalDocumentAddControllerSpec extends ControllerSpec with ErrorHandl
 
   def theResponseForm: Form[AdditionalDocument] = {
     val formCaptor = ArgumentCaptor.forClass(classOf[Form[AdditionalDocument]])
-    verify(additionalDocumentAddPage).apply(any(), any(), formCaptor.capture())(any(), any())
+    verify(additionalDocumentAddPage).apply(any(), formCaptor.capture())(any(), any())
     formCaptor.getValue
   }
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
-    await(controller.displayPage(Mode.Normal, itemId)(request))
+    await(controller.displayPage(itemId)(request))
     theResponseForm
   }
 
   private def verifyPageInvoked(numberOfTimes: Int = 1): HtmlFormat.Appendable =
-    verify(additionalDocumentAddPage, times(numberOfTimes)).apply(any(), any(), any())(any(), any())
+    verify(additionalDocumentAddPage, times(numberOfTimes)).apply(any(), any())(any(), any())
 
   val additionalDocument = AdditionalDocument(Some("1234"), None, None, None, None, None, None)
 
@@ -80,7 +79,7 @@ class AdditionalDocumentAddControllerSpec extends ControllerSpec with ErrorHandl
 
     "return 200 (OK)" when {
       "display page method is invoked" in {
-        val result = controller.displayPage(Mode.Normal, itemId)(getRequest())
+        val result = controller.displayPage(itemId)(getRequest())
 
         status(result) mustBe OK
         verifyPageInvoked()
@@ -89,7 +88,7 @@ class AdditionalDocumentAddControllerSpec extends ControllerSpec with ErrorHandl
 
     "return 400 (BAD_REQUEST) during adding" when {
       def verifyBadRequest(incorrectForm: Seq[(String, String)]): HtmlFormat.Appendable = {
-        val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(incorrectForm: _*))
+        val result = controller.submitForm(itemId)(postRequestAsFormUrlEncoded(incorrectForm: _*))
 
         status(result) mustBe BAD_REQUEST
         verifyPageInvoked()
@@ -120,7 +119,7 @@ class AdditionalDocumentAddControllerSpec extends ControllerSpec with ErrorHandl
 
         val duplicatedForm = Seq(("documentTypeCode", "1234"))
 
-        val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(duplicatedForm: _*))
+        val result = controller.submitForm(itemId)(postRequestAsFormUrlEncoded(duplicatedForm: _*))
 
         status(result) mustBe BAD_REQUEST
         verifyPageInvoked()
@@ -133,7 +132,7 @@ class AdditionalDocumentAddControllerSpec extends ControllerSpec with ErrorHandl
 
         val correctForm = Seq(("documentTypeCode", "4321"))
 
-        val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(correctForm: _*))
+        val result = controller.submitForm(itemId)(postRequestAsFormUrlEncoded(correctForm: _*))
 
         status(result) mustBe BAD_REQUEST
         verifyPageInvoked()
@@ -143,10 +142,10 @@ class AdditionalDocumentAddControllerSpec extends ControllerSpec with ErrorHandl
     "return 303 (SEE_OTHER)" when {
       "user correctly add new item" in {
         val correctForm = Json.toJson(additionalDocument)
-        val result = controller.submitForm(Mode.Normal, itemId)(postRequest(correctForm))
+        val result = controller.submitForm(itemId)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe routes.AdditionalDocumentsController.displayPage(Mode.Normal, itemId)
+        thePageNavigatedTo mustBe routes.AdditionalDocumentsController.displayPage(itemId)
         verifyPageInvoked(0)
 
         val savedDocuments = theCacheModelUpdated.itemBy(itemId).flatMap(_.additionalDocuments)
@@ -160,10 +159,10 @@ class AdditionalDocumentAddControllerSpec extends ControllerSpec with ErrorHandl
         withNewCaching(aDeclaration(withItems(anItem(withItemId("itemId"), modifier))))
 
         val correctForm = Json.toJson(additionalDocument)
-        val result = controller.submitForm(Mode.Normal, itemId)(postRequest(correctForm))
+        val result = controller.submitForm(itemId)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe routes.AdditionalDocumentsController.displayPage(Mode.Normal, itemId)
+        thePageNavigatedTo mustBe routes.AdditionalDocumentsController.displayPage(itemId)
         verifyPageInvoked(0)
 
         val isRequired = theCacheModelUpdated.itemBy(itemId).flatMap(_.additionalDocuments.flatMap(_.isRequired))

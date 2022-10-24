@@ -50,7 +50,7 @@
     countryHelper: CountryHelper
 )
 
-@(mode: Mode, form: Form[Boolean])(implicit request: JourneyRequest[_], messages: Messages)
+@(form: Form[Boolean])(implicit request: JourneyRequest[_], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
@@ -58,9 +58,9 @@
 
 @govukLayout(
     title = Title("declaration.routingCountryQuestion.title", "declaration.section.3", countryOfDestination, hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(RoutingCountryQuestionPage, mode)))){
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(RoutingCountryQuestionPage)))){
 
-    @formHelper(action = controllers.declaration.routes.RoutingCountriesController.submitRoutingAnswer(mode), 'autoComplete -> "off") {
+    @formHelper(action = controllers.declaration.routes.RoutingCountriesController.submitRoutingAnswer(), 'autoComplete -> "off") {
         @errorSummary(radioGroupErrors("answer", "Yes", form.errors))
 
         @sectionHeader(messages("declaration.section.3"))
@@ -96,6 +96,6 @@
 
         @tariffExpander(RoutingCountryPage, request.declarationType)(messages, appConfig)
 
-        @saveButtons(mode)
+        @saveButtons()
     }
 }

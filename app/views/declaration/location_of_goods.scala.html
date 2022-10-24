@@ -41,7 +41,7 @@
     appConfig: AppConfig
 )
 
-@(mode: Mode, form: Form[LocationOfGoods])(implicit request: JourneyRequest[_], messages: Messages)
+@(form: Form[LocationOfGoods])(implicit request: JourneyRequest[_], messages: Messages)
 
 @hasErrors = @{ form.hasErrors || form.hasGlobalErrors }
 @version = @{ locationOfGoodsHelper.versionSelection }
@@ -63,9 +63,9 @@
         "declaration.section.3",
         hasErrors = hasErrors
     ),
-    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(LocationOfGoods, mode)))) {
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(LocationOfGoods)))) {
 
-    @formHelper(action = LocationOfGoodsController.saveLocation(mode), 'autoComplete -> "off") {
+    @formHelper(action = LocationOfGoodsController.saveLocation(), 'autoComplete -> "off") {
 
         @errorSummary(form.errors)
 
@@ -96,6 +96,6 @@
 
         @tariffExpander(LocationOfGoods, request.declarationType)(messages, appConfig)
 
-        @saveButtons(mode)
+        @saveButtons()
     }
 }

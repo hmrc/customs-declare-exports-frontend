@@ -43,7 +43,7 @@
     appConfig: AppConfig
 )
 
-@(mode: Mode, form: Form[AdditionalDeclarationType])(implicit request: JourneyRequest[_], messages: Messages)
+@(form: Form[AdditionalDeclarationType])(implicit request: JourneyRequest[_], messages: Messages)
 
 @expanderContent = {
     @paragraphBody(messages("declaration.declarationType.expander.paragraph.1"))
@@ -57,11 +57,11 @@
 
 @govukLayout(
     title = Title(s"declaration.declarationType.header.${request.declarationType}", "declaration.section.1"),
-    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(AdditionalDeclarationTypePage, mode))),
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(AdditionalDeclarationTypePage))),
     showDeclarationSummaryLink = false
     ){
 
-    @formHelper(action = AdditionalDeclarationTypeController.submitForm(mode), 'autoComplete -> "off") {
+    @formHelper(action = AdditionalDeclarationTypeController.submitForm(), 'autoComplete -> "off") {
         @errorSummary(declarationTypeHelper.radioGroupErrors(form))
 
         @if(!request.isType(SUPPLEMENTARY)) {

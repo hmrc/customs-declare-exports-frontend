@@ -34,15 +34,15 @@
     editContent: package_information_edit_content
 )
 
-@(mode: Mode, itemId: String, form: Form[_], packages: Seq[PackageInformation])(implicit request: JourneyRequest[_], messages: Messages)
+@(itemId: String, form: Form[_], packages: Seq[PackageInformation])(implicit request: JourneyRequest[_], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
 @backLink = @{
   if(packages.nonEmpty)
-      routes.PackageInformationSummaryController.displayPage(mode, itemId)
+      routes.PackageInformationSummaryController.displayPage(itemId)
   else
-      navigator.backLink(PackageInformation, mode, ItemId(itemId))
+      navigator.backLink(PackageInformation, ItemId(itemId))
 }
 
 
@@ -51,11 +51,11 @@
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), backLink))
 ) {
 
-    @formHelper(action = routes.PackageInformationAddController.submitForm(mode, itemId), 'autoComplete -> "off") {
+    @formHelper(action = routes.PackageInformationAddController.submitForm(itemId), 'autoComplete -> "off") {
         @editContent(form)
 
         @tariffExpander(PackageInformation, request.declarationType)(messages, appConfig)
 
-        @saveButtons(mode)
+        @saveButtons()
     }
 }

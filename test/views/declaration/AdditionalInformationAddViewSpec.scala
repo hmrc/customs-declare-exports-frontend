@@ -21,8 +21,6 @@ import controllers.declaration.routes.{AdditionalInformationController, Addition
 import forms.declaration.AdditionalInformation
 import forms.declaration.AdditionalInformation.form
 import models.DeclarationType.STANDARD
-import models.Mode
-import models.Mode.Normal
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
@@ -36,10 +34,10 @@ class AdditionalInformationAddViewSpec extends PageWithButtonsSpec with ExportsT
 
   val page = instanceOf[additional_information_add]
 
-  override val typeAndViewInstance = (STANDARD, page(Normal, itemId, form)(_, _))
+  override val typeAndViewInstance = (STANDARD, page(itemId, form)(_, _))
 
-  def createView(frm: Form[AdditionalInformation] = form, mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document =
-    page(mode, itemId, frm)(request, messages)
+  def createView(frm: Form[AdditionalInformation] = form)(implicit request: JourneyRequest[_]): Document =
+    page(itemId, frm)(request, messages)
 
   "Additional Information Add View" should {
     "have a proper messages" in {
@@ -77,8 +75,7 @@ class AdditionalInformationAddViewSpec extends PageWithButtonsSpec with ExportsT
         view.getElementById("description").attr("value") mustBe empty
       }
 
-      val createViewWithMode: Mode => Document = mode => createView(mode = mode)
-      checkAllSaveButtonsAreDisplayed(createViewWithMode)
+      checkAllSaveButtonsAreDisplayed(createView())
     }
   }
 
@@ -112,7 +109,7 @@ class AdditionalInformationAddViewSpec extends PageWithButtonsSpec with ExportsT
       "have link to is additional information required when cache is empty" in {
         val backButton = createView().getElementById("back-link")
         backButton must containText(messages(backToPreviousQuestionCaption))
-        backButton must haveHref(AdditionalInformationRequiredController.displayPage(Normal, itemId))
+        backButton must haveHref(AdditionalInformationRequiredController.displayPage(itemId))
       }
     }
 
@@ -121,7 +118,7 @@ class AdditionalInformationAddViewSpec extends PageWithButtonsSpec with ExportsT
       "have link to additional information list when cache contains data" in {
         val backButton = createView().getElementById("back-link")
         backButton must containText(messages(backToPreviousQuestionCaption))
-        backButton must haveHref(AdditionalInformationController.displayPage(Normal, itemId))
+        backButton must haveHref(AdditionalInformationController.displayPage(itemId))
       }
     }
   }

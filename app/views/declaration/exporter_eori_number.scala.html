@@ -38,7 +38,7 @@
     appConfig: AppConfig
 )
 
-@(mode: Mode, form: Form[ExporterEoriNumber])(implicit request: JourneyRequest[_], messages: Messages)
+@(form: Form[ExporterEoriNumber])(implicit request: JourneyRequest[_], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
@@ -52,9 +52,9 @@
 
 @govukLayout(
     title = Title("declaration.exporterEori.title", "declaration.section.2", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(ExporterEoriNumber, mode)))){
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(ExporterEoriNumber)))){
 
-    @formHelper(action = controllers.declaration.routes.ExporterEoriNumberController.submit(mode), 'autoComplete -> "off") {
+    @formHelper(action = controllers.declaration.routes.ExporterEoriNumberController.submit(), 'autoComplete -> "off") {
         @errorSummary(radioGroupErrors("hasEori", "Yes", form.errors))
 
         @sectionHeader(messages("declaration.section.2"))
@@ -88,6 +88,6 @@
 
         @tariffExpander(ExporterEoriNumber, request.declarationType)(messages, appConfig)
 
-        @saveButtons(mode)
+        @saveButtons()
     }
 }

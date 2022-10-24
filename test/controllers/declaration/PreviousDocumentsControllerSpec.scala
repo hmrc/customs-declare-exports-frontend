@@ -17,8 +17,9 @@
 package controllers.declaration
 
 import base.ControllerWithoutFormSpec
+import controllers.declaration.routes.PreviousDocumentsSummaryController
 import forms.declaration.{Document, PreviousDocumentsData}
-import models.{DeclarationType, Mode}
+import models.DeclarationType
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -46,7 +47,7 @@ class PreviousDocumentsControllerSpec extends ControllerWithoutFormSpec {
 
     authorizedUser()
     withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY)))
-    when(mockPreviousDocumentsPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockPreviousDocumentsPage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -57,20 +58,18 @@ class PreviousDocumentsControllerSpec extends ControllerWithoutFormSpec {
 
   def theResponse: Form[Document] = {
     val formCaptor = ArgumentCaptor.forClass(classOf[Form[Document]])
-    verify(mockPreviousDocumentsPage).apply(any(), formCaptor.capture())(any(), any())
+    verify(mockPreviousDocumentsPage).apply(formCaptor.capture())(any(), any())
     formCaptor.getValue
   }
 
   def verifyPage(numberOfTimes: Int = 1): Html =
-    verify(mockPreviousDocumentsPage, times(numberOfTimes)).apply(any(), any())(any(), any())
+    verify(mockPreviousDocumentsPage, times(numberOfTimes)).apply(any())(any(), any())
 
   "Previous Documents controller" should {
 
     "return 200 (OK)" when {
-
       "display page method " in {
-
-        val result = controller.displayPage(Mode.Normal)(getRequest())
+        val result = controller.displayPage()(getRequest())
 
         status(result) mustBe OK
         verifyPage()
@@ -85,7 +84,7 @@ class PreviousDocumentsControllerSpec extends ControllerWithoutFormSpec {
         withNewCaching(aDeclaration(withoutPreviousDocuments()))
 
         val emptyForm = Json.toJson(Document("", "reference", Some("123")))
-        val result = controller.submit(Mode.Normal)(postRequest(emptyForm))
+        val result = controller.submit()(postRequest(emptyForm))
 
         status(result) mustBe BAD_REQUEST
         verifyPage()
@@ -95,7 +94,7 @@ class PreviousDocumentsControllerSpec extends ControllerWithoutFormSpec {
         withNewCaching(aDeclaration(withoutPreviousDocuments()))
 
         val emptyForm = Json.toJson(Document("355", "", Some("123")))
-        val result = controller.submit(Mode.Normal)(postRequest(emptyForm))
+        val result = controller.submit()(postRequest(emptyForm))
 
         status(result) mustBe BAD_REQUEST
         verifyPage()
@@ -105,7 +104,7 @@ class PreviousDocumentsControllerSpec extends ControllerWithoutFormSpec {
         withNewCaching(aDeclaration(withoutPreviousDocuments()))
 
         val emptyForm = Json.toJson(Document("", "", Some("123")))
-        val result = controller.submit(Mode.Normal)(postRequest(emptyForm))
+        val result = controller.submit()(postRequest(emptyForm))
 
         status(result) mustBe BAD_REQUEST
         verifyPage()
@@ -116,7 +115,7 @@ class PreviousDocumentsControllerSpec extends ControllerWithoutFormSpec {
         withNewCaching(aDeclaration(withPreviousDocuments(document)))
 
         val duplicatedForm = Json.toJson(Document("355", "reference", Some("123")))
-        val result = controller.submit(Mode.Normal)(postRequest(duplicatedForm))
+        val result = controller.submit()(postRequest(duplicatedForm))
 
         status(result) mustBe BAD_REQUEST
         verifyPage()
@@ -128,7 +127,7 @@ class PreviousDocumentsControllerSpec extends ControllerWithoutFormSpec {
 
         val correctForm = Json.toJson(Document("355", "reference", None))
 
-        val result = controller.submit(Mode.Normal)(postRequest(correctForm))
+        val result = controller.submit()(postRequest(correctForm))
 
         status(result) mustBe BAD_REQUEST
         verifyPage()
@@ -140,10 +139,10 @@ class PreviousDocumentsControllerSpec extends ControllerWithoutFormSpec {
       "user fills in Document type and Document reference" in {
         val correctForm = Json.toJson(Document("355", "reference", None))
 
-        val result = controller.submit(Mode.Normal)(postRequest(correctForm))
+        val result = controller.submit()(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.PreviousDocumentsSummaryController.displayPage()
+        thePageNavigatedTo mustBe PreviousDocumentsSummaryController.displayPage()
 
         verifyPage(0)
       }
@@ -151,10 +150,10 @@ class PreviousDocumentsControllerSpec extends ControllerWithoutFormSpec {
       "user fills in all fields" in {
         val correctForm = Json.toJson(Document("355", "reference", Some("123")))
 
-        val result = controller.submit(Mode.Normal)(postRequest(correctForm))
+        val result = controller.submit()(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.PreviousDocumentsSummaryController.displayPage()
+        thePageNavigatedTo mustBe PreviousDocumentsSummaryController.displayPage()
 
         verifyPage(0)
       }

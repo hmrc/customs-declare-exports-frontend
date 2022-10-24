@@ -17,11 +17,12 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
+import controllers.declaration.routes.TaricCodeSummaryController
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import models.requests.JourneyRequest
-import models.{ExportsDeclaration, Mode}
+import models.ExportsDeclaration
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
@@ -43,22 +44,23 @@ class TaricCodeRemoveController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
-  def displayPage(mode: Mode, itemId: String, code: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    Ok(taricCodeRemove(mode, itemId, code, removeYesNoForm.withSubmissionErrors()))
+  def displayPage(itemId: String, code: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    Ok(taricCodeRemove(itemId, code, removeYesNoForm.withSubmissionErrors()))
   }
 
-  def submitForm(mode: Mode, itemId: String, code: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def submitForm(itemId: String, code: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     removeYesNoForm
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[YesNoAnswer]) => Future.successful(BadRequest(taricCodeRemove(mode, itemId, code, formWithErrors))),
+        (formWithErrors: Form[YesNoAnswer]) => Future.successful(BadRequest(taricCodeRemove(itemId, code, formWithErrors))),
         formData =>
           formData.answer match {
             case YesNoAnswers.yes =>
               updateExportsCache(itemId, code)
-                .map(_ => navigator.continueTo(mode, routes.TaricCodeSummaryController.displayPage(_, itemId)))
+                .map(_ => navigator.continueTo(TaricCodeSummaryController.displayPage(itemId)))
+
             case YesNoAnswers.no =>
-              Future.successful(navigator.continueTo(mode, routes.TaricCodeSummaryController.displayPage(_, itemId)))
+              Future.successful(navigator.continueTo(TaricCodeSummaryController.displayPage(itemId)))
           }
       )
   }

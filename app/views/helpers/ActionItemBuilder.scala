@@ -14,13 +14,21 @@
  * limitations under the License.
  */
 
-package views.components.gds
+package views.helpers
 
+import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Content
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.ActionItem
 
 object ActionItemBuilder {
 
+  val lastUrlPlaceholder = "LAST_URL_PLACEHOLDER"
+
   def actionItem(href: String, content: Content, visuallyHiddenText: Option[String]) =
-    ActionItem(href = href, content = content, visuallyHiddenText = visuallyHiddenText, classes = "govuk-link--no-visited-state")
+    ActionItem(href, content, visuallyHiddenText, "govuk-link--no-visited-state")
+
+  def actionSummaryItem(href: String, content: Content, visuallyHiddenText: Option[String]) =
+    ActionItem(s"$href?$lastUrlPlaceholder", content, visuallyHiddenText, "govuk-link--no-visited-state")
+
+  def callForSummaryChangeLink(call: Call): Call = Call("GET", s"$call?$lastUrlPlaceholder")
 }

@@ -20,10 +20,10 @@ import config.PaginationConfig
 import connectors.CustomsDeclareExportsConnector
 import controllers.actions.{AuthAction, VerifiedEmailAction}
 import controllers.declaration.routes._
-import models.Mode.ErrorFix
+import controllers.helpers.ErrorFixModeHelper.setErrorFixMode
 import models._
 import models.declaration.submissions.Submission
-import models.requests.ExportsSessionKeys
+import models.requests.ExportsSessionKeys.{declarationId, errorFixModeSessionKey}
 import models.responses.FlashKeys
 import play.api.i18n.I18nSupport
 import play.api.mvc._
@@ -46,7 +46,7 @@ class SubmissionsController @Inject() (
     extends FrontendController(mcc) with I18nSupport {
 
   def amend(rejectedId: String): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
-    findOrCreateDraftForRejected(rejectedId, Redirect(SummaryController.displayPage(Mode.Normal)))
+    findOrCreateDraftForRejected(rejectedId, Redirect(SummaryController.displayPage))
   }
 
   def amendErrors(rejectedId: String, redirectUrl: String, pattern: String, message: String): Action[AnyContent] =
@@ -58,8 +58,7 @@ class SubmissionsController @Inject() (
         case _                              => Map.empty[String, String]
       }
 
-      val redirectUrlWithMode = redirectUrl + ErrorFix.queryParameter
-      findOrCreateDraftForRejected(rejectedId, Redirect(redirectUrlWithMode).flashing(Flash(flashData)))
+      findOrCreateDraftForRejected(rejectedId, setErrorFixMode(Redirect(redirectUrl).flashing(Flash(flashData))))
     }
 
   def displayListOfSubmissions(submissionsPages: SubmissionsPages = SubmissionsPages()): Action[AnyContent] =
@@ -68,7 +67,7 @@ class SubmissionsController @Inject() (
         submissions <- customsDeclareExportsConnector.fetchSubmissions
         submissionsInDescOrder = submissions.sorted(Submission.newestEarlierOrdering)
       } yield Ok(submissionsPage(SubmissionsPagesElements(submissionsInDescOrder, submissionsPages)))
-        .removingFromSession(ExportsSessionKeys.declarationId)
+        .removingFromSession(declarationId, errorFixModeSessionKey)
     }
 
   def viewDeclaration(id: String): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
@@ -84,6 +83,6 @@ class SubmissionsController @Inject() (
 
   private def findOrCreateDraftForRejected(rejectedId: String, redirect: Result)(implicit request: WrappedRequest[AnyContent]): Future[Result] =
     customsDeclareExportsConnector.findOrCreateDraftForRejected(rejectedId).map { id =>
-      redirect.addingToSession(ExportsSessionKeys.declarationId -> id)
+      redirect.addingToSession(declarationId -> id)
     }
 }

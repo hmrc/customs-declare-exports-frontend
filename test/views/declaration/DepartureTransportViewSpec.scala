@@ -32,8 +32,6 @@ import forms.declaration.TransportCodes._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
 import forms.declaration.{ModeOfTransportCode, TransportCodes}
 import models.DeclarationType.{CLEARANCE, STANDARD}
-import models.Mode
-import models.Mode.Normal
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.mvc.Call
@@ -51,10 +49,10 @@ class DepartureTransportViewSpec extends PageWithButtonsSpec with Injector {
 
   val page = instanceOf[departure_transport]
 
-  override val typeAndViewInstance = (STANDARD, page(Normal, form(transportCodesForV1))(_, _))
+  override val typeAndViewInstance = (STANDARD, page(form(transportCodesForV1))(_, _))
 
-  def createView(transportCodes: TransportCodes = transportCodesForV1, mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document =
-    page(mode, form(transportCodes))(request, messages)
+  def createView(transportCodes: TransportCodes = transportCodesForV1)(implicit request: JourneyRequest[_]): Document =
+    page(form(transportCodes))(request, messages)
 
   "Departure Transport View" should {
 
@@ -82,8 +80,7 @@ class DepartureTransportViewSpec extends PageWithButtonsSpec with Injector {
         removeBlanksIfAnyBeforeDot(tariffDetails) mustBe expectedText
       }
 
-      val createViewWithMode: Mode => Document = mode => createView(mode = mode)
-      checkAllSaveButtonsAreDisplayed(createViewWithMode)
+      checkAllSaveButtonsAreDisplayed(createView())
     }
   }
 

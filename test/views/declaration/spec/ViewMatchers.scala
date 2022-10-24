@@ -19,7 +19,6 @@ package views.declaration.spec
 import scala.collection.JavaConverters._
 import scala.concurrent.Future
 import scala.util.Try
-
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import org.jsoup.select.Elements
@@ -29,6 +28,7 @@ import play.api.i18n.Messages
 import play.api.mvc.{Call, Result}
 import play.api.test.Helpers.{contentAsString, _}
 import play.twirl.api.Html
+import views.helpers.ActionItemBuilder.callForSummaryChangeLink
 
 //noinspection ScalaStyle
 trait ViewMatchers {
@@ -91,6 +91,9 @@ trait ViewMatchers {
 
   def haveHref(value: Call): Matcher[Element] = new ElementHasAttributeValueMatcher("href", value.url)
 
+  def haveHrefWithPlaceholder(value: Call): Matcher[Element] =
+    new ElementHasAttributeValueMatcher("href", callForSummaryChangeLink(value).url)
+
   def haveTag(tag: String): Matcher[Element] = new ElementTagMatcher(tag)
 
   def haveSummaryKey(value: String) = new ElementsHasElementsContainingTextMatcher("govuk-summary-list__key", value)
@@ -100,7 +103,11 @@ trait ViewMatchers {
   def haveSummaryActionsTexts(label: String, hint: String, hintArgs: String*)(implicit messages: Messages) =
     haveSummaryActionsText(s"${messages(label)} ${messages(hint, hintArgs: _*)}")
 
-  def haveSummaryActionsHref(value: Call) = new ElementsHasSummaryActionMatcher(value)
+  def haveSummaryActionsHref(value: Call) =
+    new ElementsHasSummaryActionMatcher(value)
+
+  def haveSummaryActionWithPlaceholder(value: Call) =
+    new ElementsHasSummaryActionMatcher(callForSummaryChangeLink(value))
 
   def haveChildCount(count: Int): Matcher[Element] = new ElementHasChildCountMatcher(count)
 

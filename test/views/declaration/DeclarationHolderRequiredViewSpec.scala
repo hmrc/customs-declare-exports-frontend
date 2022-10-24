@@ -23,7 +23,6 @@ import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.AuthorisationProcedureCodeChoice.{Choice1007, Choice1040, ChoiceOthers}
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
 import models.DeclarationType._
-import models.Mode
 import models.declaration.Parties
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
@@ -44,7 +43,7 @@ class DeclarationHolderRequiredViewSpec extends UnitViewSpec with ExportsTestHel
   private val prefix = "declaration.declarationHolderRequired"
 
   private def view(implicit request: JourneyRequest[_]): Document =
-    declarationHolderRequiredPage(Mode.Normal, form)
+    declarationHolderRequiredPage(form)
 
   "Declaration Holder Required View" should {
 

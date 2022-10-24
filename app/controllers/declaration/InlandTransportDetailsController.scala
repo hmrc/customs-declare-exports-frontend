@@ -25,7 +25,7 @@ import forms.declaration.ModeOfTransportCode.{FixedTransportInstallations, Posta
 import forms.declaration.{InlandModeOfTransportCode, ModeOfTransportCode}
 import models.DeclarationType.{DeclarationType, SUPPLEMENTARY}
 import models.requests.JourneyRequest
-import models.{DeclarationType, Mode}
+import models.DeclarationType
 import play.api.data.FormError
 import play.api.i18n.I18nSupport
 import play.api.mvc._
@@ -50,33 +50,31 @@ class InlandTransportDetailsController @Inject() (
 
   private val validJourneys = List(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY)
 
-  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validJourneys)) { implicit request =>
+  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType(validJourneys)) { implicit request =>
     val frm = form.withSubmissionErrors
     request.cacheModel.locations.inlandModeOfTransportCode match {
-      case Some(code) => Ok(inlandTransportDetailsPage(mode, frm.fill(code)))
-      case _          => Ok(inlandTransportDetailsPage(mode, frm))
+      case Some(code) => Ok(inlandTransportDetailsPage(frm.fill(code)))
+      case _          => Ok(inlandTransportDetailsPage(frm))
     }
   }
 
-  def submit(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validJourneys)).async { implicit request =>
+  def submit(): Action[AnyContent] = (authenticate andThen journeyType(validJourneys)).async { implicit request =>
     form.bindFromRequest
-      .fold(formWithErrors => Future.successful(BadRequest(inlandTransportDetailsPage(mode, formWithErrors))), validateAndUpdateCache(mode, _))
+      .fold(formWithErrors => Future.successful(BadRequest(inlandTransportDetailsPage(formWithErrors))), validateAndUpdateCache(_))
   }
 
-  private def nextPage(declarationType: DeclarationType, code: InlandModeOfTransportCode): Mode => Call =
+  private def nextPage(declarationType: DeclarationType, code: InlandModeOfTransportCode): Call =
     if (!isPostalOrFTIModeOfTransport(code.inlandModeOfTransportCode)) DepartureTransportController.displayPage
     else if (declarationType == SUPPLEMENTARY) TransportContainerController.displayContainerSummary
     else ExpressConsignmentController.displayPage
 
-  private def returnFormWithErrors(mode: Mode, code: InlandModeOfTransportCode, error: String)(
-    implicit request: JourneyRequest[_]
-  ): Future[Result] = {
+  private def returnFormWithErrors(code: InlandModeOfTransportCode, error: String)(implicit request: JourneyRequest[_]): Future[Result] = {
     val messages = messagesApi.preferred(request).messages
     val formWithErrors = form.fill(code).copy(errors = List(FormError(formId, messages(error))))
-    Future.successful(BadRequest(inlandTransportDetailsPage(mode, formWithErrors)))
+    Future.successful(BadRequest(inlandTransportDetailsPage(formWithErrors)))
   }
 
-  private def updateCacheAndGoNextPage(mode: Mode, code: InlandModeOfTransportCode)(implicit request: JourneyRequest[AnyContent]): Future[Result] =
+  private def updateCacheAndGoNextPage(code: InlandModeOfTransportCode)(implicit request: JourneyRequest[AnyContent]): Future[Result] =
     updateDeclarationFromRequest { declaration =>
       val transportCrossingTheBorderNationality =
         if (isPostalOrFTIModeOfTransport(code.inlandModeOfTransportCode)) None else declaration.transport.transportCrossingTheBorderNationality
@@ -86,11 +84,11 @@ class InlandTransportDetailsController @Inject() (
         locations = declaration.locations.copy(inlandModeOfTransportCode = Some(code))
       )
     } map { _ =>
-      navigator.continueTo(mode, nextPage(request.declarationType, code))
+      navigator.continueTo(nextPage(request.declarationType, code))
     }
 
-  private def validateAndUpdateCache(mode: Mode, code: InlandModeOfTransportCode)(implicit request: JourneyRequest[AnyContent]): Future[Result] =
-    validateWithTransportLeavingBorderCode(code).fold(updateCacheAndGoNextPage(mode, code))(returnFormWithErrors(mode, code, _))
+  private def validateAndUpdateCache(code: InlandModeOfTransportCode)(implicit request: JourneyRequest[AnyContent]): Future[Result] =
+    validateWithTransportLeavingBorderCode(code).fold(updateCacheAndGoNextPage(code))(returnFormWithErrors(code, _))
 
   private def validateEquivalenceOfModeOfTransportCode(
     inlandModeOfTransportCode: InlandModeOfTransportCode,

@@ -22,8 +22,6 @@ import controllers.declaration.routes.FiscalInformationController
 import forms.declaration.AdditionalFiscalReference
 import forms.declaration.AdditionalFiscalReference.form
 import models.DeclarationType._
-import models.Mode
-import models.Mode.Normal
 import models.codes.Country
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
@@ -53,10 +51,10 @@ class AdditionalFiscalReferencesAddViewSpec extends PageWithButtonsSpec with Inj
 
   val page = instanceOf[additional_fiscal_references_add]
 
-  override val typeAndViewInstance = (STANDARD, page(Normal, itemId, form(), Seq.empty)(_, _))
+  override val typeAndViewInstance = (STANDARD, page(itemId, form(), Seq.empty)(_, _))
 
-  def createView(frm: Form[AdditionalFiscalReference] = form(), mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document =
-    page(mode, itemId, frm, Seq.empty)
+  def createView(frm: Form[AdditionalFiscalReference] = form())(implicit request: JourneyRequest[_]): Document =
+    page(itemId, frm, Seq.empty)
 
   "Additional Fiscal References View on empty page" should {
     onEveryDeclarationJourney() { implicit request =>
@@ -84,7 +82,7 @@ class AdditionalFiscalReferencesAddViewSpec extends PageWithButtonsSpec with Inj
         val backButton = view.getElementById("back-link")
 
         backButton.text() mustBe messages(backToPreviousQuestionCaption)
-        backButton must haveHref(FiscalInformationController.displayPage(Normal, itemId))
+        backButton must haveHref(FiscalInformationController.displayPage(itemId))
       }
 
       "display 'For more information about this' summary text" in {
@@ -96,8 +94,7 @@ class AdditionalFiscalReferencesAddViewSpec extends PageWithButtonsSpec with Inj
         detailsSummaryText.text() mustBe messages(titleKey)
       }
 
-      val createViewWithMode: Mode => Document = mode => createView(mode = mode)
-      checkAllSaveButtonsAreDisplayed(createViewWithMode)
+      checkAllSaveButtonsAreDisplayed(createView())
     }
   }
 

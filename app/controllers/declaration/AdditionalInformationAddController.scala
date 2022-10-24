@@ -26,7 +26,7 @@ import forms.declaration.AdditionalInformation.form
 import models.declaration.AdditionalInformationData
 import models.declaration.AdditionalInformationData.maxNumberOfItems
 import models.requests.JourneyRequest
-import models.{ExportsDeclaration, Mode}
+import models.ExportsDeclaration
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -48,32 +48,32 @@ class AdditionalInformationAddController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
-  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    Ok(additionalInformationPage(mode, itemId, form.withSubmissionErrors))
+  def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    Ok(additionalInformationPage(itemId, form.withSubmissionErrors))
   }
 
-  def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def submitForm(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val boundForm = form.bindFromRequest
 
     boundForm.fold(
-      formWithErrors => Future.successful(BadRequest(additionalInformationPage(mode, itemId, formWithErrors))),
-      _ => saveInformation(mode, itemId, boundForm, cachedData(itemId))
+      formWithErrors => Future.successful(BadRequest(additionalInformationPage(itemId, formWithErrors))),
+      _ => saveInformation(itemId, boundForm, cachedData(itemId))
     )
   }
 
   private def cachedData(itemId: String)(implicit request: JourneyRequest[AnyContent]) =
     request.cacheModel.itemBy(itemId).flatMap(_.additionalInformation).getOrElse(AdditionalInformationData.default)
 
-  private def saveInformation(mode: Mode, itemId: String, boundForm: Form[AdditionalInformation], cachedData: AdditionalInformationData)(
+  private def saveInformation(itemId: String, boundForm: Form[AdditionalInformation], cachedData: AdditionalInformationData)(
     implicit request: JourneyRequest[AnyContent]
   ): Future[Result] =
     MultipleItemsHelper
       .add(boundForm, cachedData.items, maxNumberOfItems, AdditionalInformationFormGroupId, "declaration.additionalInformation")
       .fold(
-        formWithErrors => Future.successful(BadRequest(additionalInformationPage(mode, itemId, formWithErrors))),
+        formWithErrors => Future.successful(BadRequest(additionalInformationPage(itemId, formWithErrors))),
         updatedItems =>
           updateCache(itemId, cachedData.copy(isRequired = YesNoAnswer.Yes, items = updatedItems))
-            .map(_ => navigator.continueTo(mode, routes.AdditionalInformationController.displayPage(_, itemId)))
+            .map(_ => navigator.continueTo(routes.AdditionalInformationController.displayPage(itemId)))
       )
 
   private def updateCache(itemId: String, updatedData: AdditionalInformationData)(

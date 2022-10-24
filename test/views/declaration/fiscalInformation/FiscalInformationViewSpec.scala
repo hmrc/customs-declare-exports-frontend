@@ -21,8 +21,6 @@ import controllers.declaration.routes.AdditionalProcedureCodesController
 import forms.declaration.FiscalInformation
 import forms.declaration.FiscalInformation.form
 import models.DeclarationType.STANDARD
-import models.Mode
-import models.Mode.Normal
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
@@ -37,10 +35,10 @@ class FiscalInformationViewSpec extends PageWithButtonsSpec with Injector {
 
   val page = instanceOf[fiscal_information]
 
-  override val typeAndViewInstance = (STANDARD, page(Normal, itemId, form())(_, _))
+  override val typeAndViewInstance = (STANDARD, page(itemId, form())(_, _))
 
-  def createView(frm: Form[FiscalInformation] = form(), mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document =
-    page(mode, itemId, frm)(request, messages)
+  def createView(frm: Form[FiscalInformation] = form())(implicit request: JourneyRequest[_]): Document =
+    page(itemId, frm)(request, messages)
 
   "Fiscal Information View on empty page" should {
 
@@ -93,11 +91,10 @@ class FiscalInformationViewSpec extends PageWithButtonsSpec with Injector {
         val backButton = view.getElementById("back-link")
 
         backButton must containMessage("site.backToPreviousQuestion")
-        backButton.getElementById("back-link") must haveHref(AdditionalProcedureCodesController.displayPage(Normal, itemId))
+        backButton.getElementById("back-link") must haveHref(AdditionalProcedureCodesController.displayPage(itemId))
       }
 
-      val createViewWithMode: Mode => Document = mode => createView(mode = mode)
-      checkAllSaveButtonsAreDisplayed(createViewWithMode)
+      checkAllSaveButtonsAreDisplayed(createView())
     }
   }
 

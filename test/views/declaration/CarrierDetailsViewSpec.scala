@@ -24,8 +24,6 @@ import forms.common.AddressSpec._
 import forms.declaration.EntityDetails
 import forms.declaration.carrier.CarrierDetails
 import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED, STANDARD}
-import models.Mode
-import models.Mode.Normal
 import models.codes.Country
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
@@ -55,15 +53,14 @@ class CarrierDetailsViewSpec extends AddressViewSpec with PageWithButtonsSpec wi
     super.afterEach()
   }
 
-  def form(implicit request: JourneyRequest[_]): Form[CarrierDetails] =
-    CarrierDetails.form(request.declarationType)
+  def form(implicit request: JourneyRequest[_]): Form[CarrierDetails] = CarrierDetails.form(request.declarationType)
 
   val page = instanceOf[carrier_details]
 
-  override val typeAndViewInstance = (STANDARD, page(Normal, CarrierDetails.form(STANDARD))(_, _))
+  override val typeAndViewInstance = (STANDARD, page(CarrierDetails.form(STANDARD))(_, _))
 
-  def createView(form: Form[CarrierDetails], mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document =
-    page(mode, form)(request, messages)
+  def createView(form: Form[CarrierDetails])(implicit request: JourneyRequest[_]): Document =
+    page(form)(request, messages)
 
   "Carrier Details View on empty page" should {
 
@@ -170,8 +167,7 @@ class CarrierDetailsViewSpec extends AddressViewSpec with PageWithButtonsSpec wi
         actualText mustBe removeLineBreakIfAny(expectedText)
       }
 
-      val createViewWithMode: Mode => Document = mode => createView(form, mode)
-      checkAllSaveButtonsAreDisplayed(createViewWithMode)
+      checkAllSaveButtonsAreDisplayed(createView(form))
     }
   }
 

@@ -23,7 +23,7 @@ import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.EntryIntoDeclarantsRecords.form
 import models.DeclarationType.CLEARANCE
 import models.requests.JourneyRequest
-import models.{ExportsDeclaration, Mode}
+import models.ExportsDeclaration
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import services.cache.ExportsCacheService
@@ -44,20 +44,20 @@ class EntryIntoDeclarantsRecordsController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
-  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(CLEARANCE)) { implicit request =>
+  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType(CLEARANCE)) { implicit request =>
     val frm = form().withSubmissionErrors()
     request.cacheModel.parties.isEntryIntoDeclarantsRecords match {
-      case Some(data) => Ok(entryIntoDeclarantsRecordsPage(mode, frm.fill(data)))
-      case _          => Ok(entryIntoDeclarantsRecordsPage(mode, frm))
+      case Some(data) => Ok(entryIntoDeclarantsRecordsPage(frm.fill(data)))
+      case _          => Ok(entryIntoDeclarantsRecordsPage(frm))
     }
   }
 
-  def submitForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(CLEARANCE)).async { implicit request =>
+  def submitForm(): Action[AnyContent] = (authenticate andThen journeyType(CLEARANCE)).async { implicit request =>
     form()
       .bindFromRequest()
       .fold(
-        formWithErrors => Future.successful(BadRequest(entryIntoDeclarantsRecordsPage(mode, formWithErrors))),
-        validData => updateCache(validData).map(_ => navigator.continueTo(mode, nextPage(validData)))
+        formWithErrors => Future.successful(BadRequest(entryIntoDeclarantsRecordsPage(formWithErrors))),
+        validData => updateCache(validData).map(_ => navigator.continueTo(nextPage(validData)))
       )
   }
 
@@ -73,7 +73,7 @@ class EntryIntoDeclarantsRecordsController @Inject() (
       model.copy(parties = updatedParties)
     }
 
-  private def nextPage(answer: YesNoAnswer): Mode => Call =
+  private def nextPage(answer: YesNoAnswer): Call =
     if (answer.answer == YesNoAnswers.yes)
       controllers.declaration.routes.PersonPresentingGoodsDetailsController.displayPage
     else

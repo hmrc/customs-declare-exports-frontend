@@ -20,8 +20,6 @@ import base.Injector
 import controllers.declaration.routes.{AdditionalFiscalReferencesRemoveController, AdditionalProcedureCodesController}
 import forms.common.YesNoAnswer.form
 import forms.declaration.AdditionalFiscalReference
-import models.Mode
-import models.Mode.Normal
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import utils.ListItem
@@ -34,8 +32,8 @@ class AdditionalFiscalReferencesViewSpec extends UnitViewSpec with Injector {
 
   val page = instanceOf[additional_fiscal_references]
 
-  def createView(references: Seq[AdditionalFiscalReference], mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document =
-    page(mode, itemId, form(), references)
+  def createView(references: Seq[AdditionalFiscalReference])(implicit request: JourneyRequest[_]): Document =
+    page(itemId, form(), references)
 
   "Additional Fiscal References View" should {
     onEveryDeclarationJourney() { implicit request =>
@@ -54,11 +52,10 @@ class AdditionalFiscalReferencesViewSpec extends UnitViewSpec with Injector {
         val backButton = view.getElementById("back-link")
 
         backButton must containMessage(backToPreviousQuestionCaption)
-        backButton must haveHref(AdditionalProcedureCodesController.displayPage(Normal, itemId))
+        backButton must haveHref(AdditionalProcedureCodesController.displayPage(itemId))
       }
 
-      val createViewWithMode: Mode => Document = mode => createView(Seq(additionalReferences), mode = mode)
-      checkAllSaveButtonsAreDisplayed(createViewWithMode)
+      checkAllSaveButtonsAreDisplayed(view)
 
       "display table header" in {
         view.getElementsByClass("govuk-table__header").get(0) must containMessage("declaration.additionalFiscalReferences.country.header")
@@ -78,7 +75,7 @@ class AdditionalFiscalReferencesViewSpec extends UnitViewSpec with Injector {
         val removeLink = view.getElementsByTag("tr").select(".govuk-link").get(0)
         removeLink must containMessage("site.remove", ("declaration.additionalInformation.table.remove.hint", "12345"))
 
-        val href = AdditionalFiscalReferencesRemoveController.displayPage(Normal, itemId, ListItem.createId(0, additionalReferences))
+        val href = AdditionalFiscalReferencesRemoveController.displayPage(itemId, ListItem.createId(0, additionalReferences))
         removeLink must haveHref(href)
       }
     }

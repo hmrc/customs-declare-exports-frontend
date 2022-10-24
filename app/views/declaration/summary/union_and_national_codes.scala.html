@@ -16,14 +16,10 @@
 
 @import controllers.declaration.routes
 @import forms.declaration.AdditionalInformation
-@import models.Mode
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import views.html.components.gds.link
-@import views.html.components.gds.linkContent
-@import views.html.components.gds.spanVisuallyHidden
-@import views.html.components.gds.summary_list
 @import views.declaration.summary.TableCell
-@import views.components.gds.ActionItemBuilder._
+@import views.helpers.ActionItemBuilder._
+@import views.html.components.gds.{link, linkContent, spanVisuallyHidden, summary_list}
 
 @this(
     govukTable: GovukTable,
@@ -33,20 +29,14 @@
     summaryList: summary_list
 )
 
-@(
-  mode: Mode,
-  itemId: String,
-  itemNo: Int,
-  additionalInformation: Seq[AdditionalInformation],
-  actionsEnabled: Boolean = true
-)(implicit messages: Messages)
+@(itemId: String, itemNo: Int, additionalInformation: Seq[AdditionalInformation], actionsEnabled: Boolean = true)(implicit messages: Messages)
 
 @change(information: AdditionalInformation) = {
     @{
         if(actionsEnabled)
             link(
                 messages("site.change"),
-                routes.AdditionalInformationController.displayPage(mode, itemId),
+                callForSummaryChangeLink(routes.AdditionalInformationController.displayPage(itemId)),
                 textHidden = Some(messages("declaration.summary.items.item.additionalInformation.change", information.code, itemNo))
             )
         else
@@ -100,8 +90,8 @@
                 ),
                 actions = actions(Actions(
                     items = Seq(
-                        actionItem(
-                            href = routes.AdditionalInformationRequiredController.displayPage(mode, itemId).url,
+                        actionSummaryItem(
+                            href = routes.AdditionalInformationRequiredController.displayPage(itemId).url,
                             content = HtmlContent(linkContent(messages("site.change"))),
                             visuallyHiddenText = Some(messages("declaration.summary.items.item.additionalInformation.changeAll"))
                         )

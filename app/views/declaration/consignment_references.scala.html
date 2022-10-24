@@ -43,7 +43,7 @@
 )
 
 
-@(mode: Mode, form: Form[ConsignmentReferences])(implicit request: JourneyRequest[_], messages: Messages)
+@(form: Form[ConsignmentReferences])(implicit request: JourneyRequest[_], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
@@ -144,9 +144,9 @@
 
 @govukLayout(
     title = Title("declaration.consignmentReferences.header", "declaration.section.1", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(ConsignmentReferences, mode)))) {
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(ConsignmentReferences)))) {
 
-    @formHelper(action = ConsignmentReferencesController.submitConsignmentReferences(mode), 'autoComplete -> "off") {
+    @formHelper(action = ConsignmentReferencesController.submitConsignmentReferences(), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
         @sectionHeader(messages("declaration.section.1"))
@@ -172,6 +172,6 @@
 
         @tariffExpander(ConsignmentReferences, request.declarationType)(messages, appConfig)
 
-        @saveButtons(mode, showExitButton = false)
+        @saveButtons(showExitButton = false)
     }
 }

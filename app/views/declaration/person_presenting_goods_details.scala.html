@@ -38,15 +38,15 @@
     appConfig: AppConfig
 )
 
-@(mode: Mode, form: Form[PersonPresentingGoodsDetails])(implicit request: JourneyRequest[_], messages: Messages)
+@(form: Form[PersonPresentingGoodsDetails])(implicit request: JourneyRequest[_], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
 @govukLayout(
     title = Title("declaration.personPresentingGoodsDetails.title", "declaration.section.2", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(PersonPresentingGoodsDetails, mode)))) {
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(PersonPresentingGoodsDetails)))) {
 
-    @formHelper(action = controllers.declaration.routes.PersonPresentingGoodsDetailsController.submitForm(mode), 'autocomplete -> "off") {
+    @formHelper(action = controllers.declaration.routes.PersonPresentingGoodsDetailsController.submitForm(), 'autocomplete -> "off") {
         @errorSummary(form.errors)
 
         @sectionHeader(messages("declaration.section.2"))
@@ -59,7 +59,7 @@
 
         @tariffExpander(PersonPresentingGoodsDetails, request.declarationType)(messages, appConfig)
 
-        @saveButtons(mode)
+        @saveButtons()
     }
 }
 

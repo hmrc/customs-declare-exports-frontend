@@ -16,12 +16,11 @@
 
 @import controllers.declaration.routes
 @import forms.declaration.PackageInformation
-@import models.Mode
 @import play.twirl.api.HtmlFormat
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import services.PackageTypesService
-@import views.components.gds.ActionItemBuilder._
 @import views.declaration.summary.TableCell
+@import views.helpers.ActionItemBuilder._
 @import views.html.components.gds.{link, linkContent, spanVisuallyHidden, summary_list}
 
 @this(
@@ -33,13 +32,7 @@
     packageTypesService: PackageTypesService
 )
 
-@(
-    mode: Mode,
-    itemId: String,
-    itemNo: Int,
-    packageInformation: Seq[PackageInformation],
-    actionsEnabled: Boolean
-)(implicit messages: Messages)
+@(itemId: String, itemNo: Int, packageInformation: Seq[PackageInformation], actionsEnabled: Boolean)(implicit messages: Messages)
 
 @actions(action: Actions) = @{ if (actionsEnabled) Some(action) else None }
 
@@ -47,7 +40,7 @@
     if(!actionsEnabled) HtmlFormat.empty
     else link(
         messages("site.change"),
-        routes.PackageInformationSummaryController.displayPage(mode, itemId),
+        callForSummaryChangeLink(routes.PackageInformationSummaryController.displayPage(itemId)),
         textHidden = Some(messages(
             "declaration.summary.items.item.packageInformation.change",
             packageTypesService.typesOfPackagesText(information.typesOfPackages).getOrElse(""),
@@ -101,8 +94,8 @@
                 ),
                 actions = actions(Actions(
                     items = Seq(
-                        actionItem(
-                            href = routes.PackageInformationSummaryController.displayPage(mode, itemId).url,
+                        actionSummaryItem(
+                            href = routes.PackageInformationSummaryController.displayPage(itemId).url,
                             content = HtmlContent(linkContent(messages("site.change"))),
                             visuallyHiddenText = Some(messages("declaration.summary.items.item.packageInformation.changeAll", itemNo))
                         )

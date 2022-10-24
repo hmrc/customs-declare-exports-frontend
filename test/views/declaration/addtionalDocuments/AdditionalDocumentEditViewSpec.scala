@@ -30,7 +30,6 @@ import forms.declaration.additionaldocuments.DocumentWriteOff.{documentQuantityK
 import forms.declaration.additionaldocuments.DocumentWriteOffSpec.incorrectDocumentWriteOff
 import forms.declaration.declarationHolder.DeclarationHolder
 import models.ExportsDeclaration
-import models.Mode.Normal
 import models.declaration.ExportDeclarationTestData.{allRecords, declaration}
 import models.declaration.{EoriSource, ExportItem}
 import models.requests.JourneyRequest
@@ -53,16 +52,16 @@ class AdditionalDocumentEditViewSpec extends UnitViewSpec with Injector {
   val page = instanceOf[additional_document_edit]
 
   def createView(implicit request: JourneyRequest[_]): Document =
-    page(Normal, itemId, form(request.cacheModel))(request, messages)
+    page(itemId, form(request.cacheModel))(request, messages)
 
   def createView(input: Map[String, String])(implicit request: JourneyRequest[_]): Document =
-    page(Normal, itemId, form(declaration).bind(input))(request, messages)
+    page(itemId, form(declaration).bind(input))(request, messages)
 
   def createView(input: Option[AdditionalDocument] = None, declaration: ExportsDeclaration = declaration)(
     implicit request: JourneyRequest[_]
   ): Document = {
     val frm: Form[AdditionalDocument] = form(declaration)
-    page(Normal, itemId, input.fold(frm)(frm.fillAndValidate))(request, messages)
+    page(itemId, input.fold(frm)(frm.fillAndValidate))(request, messages)
   }
 
   private val prefix = "declaration.additionalDocument"
@@ -739,7 +738,7 @@ class AdditionalDocumentEditViewSpec extends UnitViewSpec with Injector {
     onEveryDeclarationJourney() { implicit request =>
       "display data in all inputs" in {
         val data = correctAdditionalDocument
-        val view = page(Normal, itemId, form(declaration).fill(data))(request, messages)
+        val view = page(itemId, form(declaration).fill(data))(request, messages)
 
         def assert[T](elementId: String, value: Option[T]): Assertion =
           view.getElementById(elementId).attr("value") mustBe value.value.toString

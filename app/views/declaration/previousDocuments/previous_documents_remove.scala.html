@@ -42,7 +42,7 @@
     appConfig: AppConfig
 )
 
-@(mode: Mode, documentId: String, document: Document, form: Form[YesNoAnswer])(implicit request: JourneyRequest[_], messages: Messages)
+@(documentId: String, document: Document, form: Form[YesNoAnswer])(implicit request: JourneyRequest[_], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
@@ -68,9 +68,9 @@
 
 @govukLayout(
     title = Title("declaration.previousDocuments.remove.title", "declaration.section.4", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(DocumentChangeOrRemove, mode)))
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(DocumentChangeOrRemove)))
 ) {
-    @formHelper(action = PreviousDocumentsRemoveController.submit(mode, documentId), 'autoComplete -> "off") {
+    @formHelper(action = PreviousDocumentsRemoveController.submit(documentId), 'autoComplete -> "off") {
 
         @errorSummary(yesNoErrors(form.errors))
 
@@ -85,7 +85,7 @@
             html = HtmlFormat.fill(List(
                 documentTable,
                 addAnotherQuestion("", form),
-                saveButtons(mode)
+                saveButtons()
             ))
         ))
     }

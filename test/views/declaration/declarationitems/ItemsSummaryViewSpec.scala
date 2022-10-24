@@ -20,7 +20,6 @@ import base.Injector
 import controllers.declaration.routes
 import forms.common.YesNoAnswer
 import forms.declaration.{CommodityDetails, PackageInformation, StatisticalValue}
-import models.Mode
 import models.declaration.{ExportItem, ProcedureCodesData}
 import org.jsoup.nodes.Document
 import play.api.data.FormError
@@ -36,8 +35,8 @@ class ItemsSummaryViewSpec extends UnitViewSpec with ExportsTestHelper with Stub
 
   private val page = instanceOf[items_summary]
   private val form = YesNoAnswer.form()
-  private def createView(mode: Mode = Mode.Normal, items: List[ExportItem] = List.empty, itemErrors: Seq[FormError] = Seq.empty): Document =
-    page(mode, form, items, itemErrors)(journeyRequest(), messages)
+  private def createView(items: List[ExportItem] = List.empty, itemErrors: Seq[FormError] = Seq.empty): Document =
+    page(form, items, itemErrors)(journeyRequest(), messages)
 
   "Items Summary Page View" should {
 
@@ -112,23 +111,15 @@ class ItemsSummaryViewSpec extends UnitViewSpec with ExportsTestHelper with Stub
         rows.get(1).getElementById("item_0--procedure_code") must containText("procedure-code1")
         rows.get(1).getElementById("item_0--item_type") must containText("1234567890")
         rows.get(1).getElementById("item_0--package_count").text() must be("1")
-        rows.get(1).getElementById("item_0--change").getElementsByTag("a").get(0) must haveHref(
-          routes.ProcedureCodesController.displayPage(Mode.Normal, "id1")
-        )
-        rows.get(1).getElementById("item_0--remove").getElementsByTag("a").get(0) must haveHref(
-          routes.ItemsSummaryController.removeItem(Mode.Normal, "id1")
-        )
+        rows.get(1).getElementById("item_0--change").getElementsByTag("a").get(0) must haveHref(routes.ProcedureCodesController.displayPage("id1"))
+        rows.get(1).getElementById("item_0--remove").getElementsByTag("a").get(0) must haveHref(routes.ItemsSummaryController.removeItem("id1"))
 
         rows.get(2).getElementById("item_1--sequence_id") must containText("2")
         rows.get(2).getElementById("item_1--procedure_code") must containText("procedure-code2")
         rows.get(2).getElementById("item_1--item_type") must containText("1234567890")
         rows.get(2).getElementById("item_1--package_count").text() must be("2")
-        rows.get(2).getElementById("item_1--change").getElementsByTag("a").get(0) must haveHref(
-          routes.ProcedureCodesController.displayPage(Mode.Normal, "id2")
-        )
-        rows.get(2).getElementById("item_1--remove").getElementsByTag("a").get(0) must haveHref(
-          routes.ItemsSummaryController.removeItem(Mode.Normal, "id2")
-        )
+        rows.get(2).getElementById("item_1--change").getElementsByTag("a").get(0) must haveHref(routes.ProcedureCodesController.displayPage("id2"))
+        rows.get(2).getElementById("item_1--remove").getElementsByTag("a").get(0) must haveHref(routes.ItemsSummaryController.removeItem("id2"))
       }
 
       "item has two package information elements with one having empty number of packages" in {
@@ -165,12 +156,8 @@ class ItemsSummaryViewSpec extends UnitViewSpec with ExportsTestHelper with Stub
         rows.get(1).getElementById("item_0--procedure_code") must containText("procedure-code1")
         rows.get(1).getElementById("item_0--item_type") must containText("1234567890")
         rows.get(1).getElementById("item_0--package_count").text() must be("1")
-        rows.get(1).getElementById("item_0--change").getElementsByTag("a").get(0) must haveHref(
-          routes.ProcedureCodesController.displayPage(Mode.Normal, "id1")
-        )
-        rows.get(1).getElementById("item_0--remove").getElementsByTag("a").get(0) must haveHref(
-          routes.ItemsSummaryController.removeItem(Mode.Normal, "id1")
-        )
+        rows.get(1).getElementById("item_0--change").getElementsByTag("a").get(0) must haveHref(routes.ProcedureCodesController.displayPage("id1"))
+        rows.get(1).getElementById("item_0--remove").getElementsByTag("a").get(0) must haveHref(routes.ItemsSummaryController.removeItem("id1"))
 
       }
     }

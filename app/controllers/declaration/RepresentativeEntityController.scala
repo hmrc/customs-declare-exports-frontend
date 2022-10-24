@@ -23,7 +23,7 @@ import forms.declaration.RepresentativeEntity.form
 import models.DeclarationType.DeclarationType
 import models.declaration.RepresentativeDetails
 import models.requests.JourneyRequest
-import models.{ExportsDeclaration, Mode}
+import models.ExportsDeclaration
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
@@ -45,24 +45,24 @@ class RepresentativeEntityController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
-  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     val frm = form().withSubmissionErrors()
     request.cacheModel.parties.representativeDetails.flatMap(_.details) match {
-      case Some(data) => Ok(representativeEntityPage(mode, frm.fill(RepresentativeEntity(data))))
-      case _          => Ok(representativeEntityPage(mode, frm))
+      case Some(data) => Ok(representativeEntityPage(frm.fill(RepresentativeEntity(data))))
+      case _          => Ok(representativeEntityPage(frm))
     }
   }
 
-  def submitForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def submitForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     form()
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[RepresentativeEntity]) => Future.successful(BadRequest(representativeEntityPage(mode, formWithErrors))),
-        validRepresentativeDetails => updateCache(validRepresentativeDetails).map(_ => navigator.continueTo(mode, nextPage(request.declarationType)))
+        (formWithErrors: Form[RepresentativeEntity]) => Future.successful(BadRequest(representativeEntityPage(formWithErrors))),
+        validRepresentativeDetails => updateCache(validRepresentativeDetails).map(_ => navigator.continueTo(nextPage(request.declarationType)))
       )
   }
 
-  private def nextPage(declarationType: DeclarationType): Mode => Call =
+  private def nextPage(declarationType: DeclarationType): Call =
     controllers.declaration.routes.RepresentativeStatusController.displayPage
 
   private def updateCache(formData: RepresentativeEntity)(implicit request: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =

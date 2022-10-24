@@ -17,11 +17,12 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
+import controllers.declaration.routes.{CommodityMeasureController, CusCodeController, TaricCodeSummaryController}
 import controllers.navigation.Navigator
-import forms.declaration.{CommodityDetails, UNDangerousGoodsCode}
 import forms.declaration.UNDangerousGoodsCode.form
+import forms.declaration.{CommodityDetails, UNDangerousGoodsCode}
 import models.requests.JourneyRequest
-import models.{DeclarationType, ExportsDeclaration, Mode}
+import models.{DeclarationType, ExportsDeclaration}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -30,9 +31,10 @@ import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.un_dangerous_goods_code
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
+@Singleton
 class UNDangerousGoodsCodeController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
@@ -43,43 +45,39 @@ class UNDangerousGoodsCodeController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
-  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     val frm = form().withSubmissionErrors()
     request.cacheModel.itemBy(itemId).flatMap(_.dangerousGoodsCode) match {
-      case Some(dangerousGoodsCode) => Ok(unDangerousGoodsCodePage(mode, itemId, frm.fill(dangerousGoodsCode)))
-      case _                        => Ok(unDangerousGoodsCodePage(mode, itemId, frm))
+      case Some(dangerousGoodsCode) => Ok(unDangerousGoodsCodePage(itemId, frm.fill(dangerousGoodsCode)))
+      case _                        => Ok(unDangerousGoodsCodePage(itemId, frm))
     }
   }
 
-  def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def submitForm(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     form
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[UNDangerousGoodsCode]) => Future.successful(BadRequest(unDangerousGoodsCodePage(mode, itemId, formWithErrors))),
+        (formWithErrors: Form[UNDangerousGoodsCode]) => Future.successful(BadRequest(unDangerousGoodsCodePage(itemId, formWithErrors))),
         validForm =>
           updateExportsCache(itemId, validForm).map { _ =>
-            redirectToNextPage(mode, itemId)
+            redirectToNextPage(itemId)
           }
       )
   }
 
-  private def redirectToNextPage(mode: Mode, itemId: String)(implicit request: JourneyRequest[AnyContent]): Result =
+  private def redirectToNextPage(itemId: String)(implicit request: JourneyRequest[AnyContent]): Result =
     if (request.isType(DeclarationType.CLEARANCE)) {
       if (request.cacheModel.itemBy(itemId).exists(_.isExportInventoryCleansingRecord))
-        navigator.continueTo(mode, controllers.declaration.routes.CommodityMeasureController.displayPage(_, itemId))
+        navigator.continueTo(CommodityMeasureController.displayPage(itemId))
       else
-        navigator.continueTo(mode, controllers.declaration.routes.PackageInformationSummaryController.displayPage(_, itemId))
-    } else {
-      if (request.cacheModel.isCommodityCodeOfItemPrefixedWith(itemId, CommodityDetails.commodityCodeChemicalPrefixes))
-        navigator.continueTo(mode, controllers.declaration.routes.CusCodeController.displayPage(_, itemId))
-      else
-        navigator.continueTo(mode, controllers.declaration.routes.TaricCodeSummaryController.displayPage(_, itemId))
-    }
+        navigator.continueTo(routes.PackageInformationSummaryController.displayPage(itemId))
+    } else if (request.cacheModel.isCommodityCodeOfItemPrefixedWith(itemId, CommodityDetails.commodityCodeChemicalPrefixes))
+      navigator.continueTo(CusCodeController.displayPage(itemId))
+    else
+      navigator.continueTo(TaricCodeSummaryController.displayPage(itemId))
 
   private def updateExportsCache(itemId: String, updatedItem: UNDangerousGoodsCode)(
     implicit request: JourneyRequest[AnyContent]
   ): Future[ExportsDeclaration] =
-    updateDeclarationFromRequest { model =>
-      model.updatedItem(itemId, item => item.copy(dangerousGoodsCode = Some(updatedItem)))
-    }
+    updateDeclarationFromRequest(_.updatedItem(itemId, item => item.copy(dangerousGoodsCode = Some(updatedItem))))
 }

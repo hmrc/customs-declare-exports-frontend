@@ -1,21 +1,21 @@
 
 # Declaration Choice Page
 
-GET         /declaration-choice                 controllers.declaration.DeclarationChoiceController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+GET         /declaration-choice                 controllers.declaration.DeclarationChoiceController.displayPage()
 
-POST        /declaration-choice                 controllers.declaration.DeclarationChoiceController.submitChoice(mode: models.Mode ?= models.Mode.Normal)
+POST        /declaration-choice                 controllers.declaration.DeclarationChoiceController.submitChoice()
 
 # Declaration type
 
-GET         /type                                controllers.declaration.AdditionalDeclarationTypeController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+GET         /type                                controllers.declaration.AdditionalDeclarationTypeController.displayPage()
 
-POST        /type                                controllers.declaration.AdditionalDeclarationTypeController.submitForm(mode: models.Mode ?= models.Mode.Normal)
+POST        /type                                controllers.declaration.AdditionalDeclarationTypeController.submitForm()
 
 # Declarant EORI
 
-GET         /declarant-details                   controllers.declaration.DeclarantDetailsController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+GET         /declarant-details                   controllers.declaration.DeclarantDetailsController.displayPage()
 
-POST        /declarant-details                   controllers.declaration.DeclarantDetailsController.submitForm(mode: models.Mode ?= models.Mode.Normal)
+POST        /declarant-details                   controllers.declaration.DeclarantDetailsController.submitForm()
 
 # Not Eligible
 
@@ -25,484 +25,484 @@ GET         /not-declarant                      controllers.declaration.NotEligi
 
 # Consignment references
 
-GET         /consignment-references              controllers.declaration.ConsignmentReferencesController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+GET         /consignment-references              controllers.declaration.ConsignmentReferencesController.displayPage()
 
-POST        /consignment-references              controllers.declaration.ConsignmentReferencesController.submitConsignmentReferences(mode: models.Mode ?= models.Mode.Normal)
+POST        /consignment-references              controllers.declaration.ConsignmentReferencesController.submitConsignmentReferences()
 
 # MUCR
 
-GET         /link-to-mucr                        controllers.declaration.LinkDucrToMucrController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+GET         /link-to-mucr                        controllers.declaration.LinkDucrToMucrController.displayPage()
 
-POST        /link-to-mucr                        controllers.declaration.LinkDucrToMucrController.submitForm(mode: models.Mode ?= models.Mode.Normal)
+POST        /link-to-mucr                        controllers.declaration.LinkDucrToMucrController.submitForm()
 
-GET         /enter-a-mucr                        controllers.declaration.MucrController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+GET         /enter-a-mucr                        controllers.declaration.MucrController.displayPage()
 
-POST        /enter-a-mucr                        controllers.declaration.MucrController.submitForm(mode: models.Mode ?= models.Mode.Normal)
+POST        /enter-a-mucr                        controllers.declaration.MucrController.submitForm()
 
 # Entry into Declarant records (Clearance journey)
 
-GET         /entry-into-declarants-records       controllers.declaration.EntryIntoDeclarantsRecordsController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+GET         /entry-into-declarants-records       controllers.declaration.EntryIntoDeclarantsRecordsController.displayPage()
 
-POST        /entry-into-declarants-records       controllers.declaration.EntryIntoDeclarantsRecordsController.submitForm(mode: models.Mode ?= models.Mode.Normal)
+POST        /entry-into-declarants-records       controllers.declaration.EntryIntoDeclarantsRecordsController.submitForm()
 
 # Person presenting goods (Clearance journey)
 
-GET         /person-presenting-goods             controllers.declaration.PersonPresentingGoodsDetailsController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+GET         /person-presenting-goods             controllers.declaration.PersonPresentingGoodsDetailsController.displayPage()
 
-POST        /person-presenting-goods             controllers.declaration.PersonPresentingGoodsDetailsController.submitForm(mode: models.Mode ?= models.Mode.Normal)
+POST        /person-presenting-goods             controllers.declaration.PersonPresentingGoodsDetailsController.submitForm()
 
 # Declarant is exporter
 
-GET         /are-you-the-exporter                controllers.declaration.DeclarantExporterController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+GET         /are-you-the-exporter                controllers.declaration.DeclarantExporterController.displayPage()
 
-POST        /are-you-the-exporter                controllers.declaration.DeclarantExporterController.submitForm(mode: models.Mode ?= models.Mode.Normal)
+POST        /are-you-the-exporter                controllers.declaration.DeclarantExporterController.submitForm()
 
 # Declarant is not the exporter - Exporter EORI (if known)
 
-GET         /exporter-eori-number                controllers.declaration.ExporterEoriNumberController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+GET         /exporter-eori-number                controllers.declaration.ExporterEoriNumberController.displayPage()
 
-POST        /exporter-eori-number                controllers.declaration.ExporterEoriNumberController.submit(mode: models.Mode ?= models.Mode.Normal)
+POST        /exporter-eori-number                controllers.declaration.ExporterEoriNumberController.submit()
 
 # Declarant is not the exporter - Exporter address (EORI is not known)
 
-GET         /exporter-address                    controllers.declaration.ExporterDetailsController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+GET         /exporter-address                    controllers.declaration.ExporterDetailsController.displayPage()
 
-POST        /exporter-address                    controllers.declaration.ExporterDetailsController.saveAddress(mode: models.Mode ?= models.Mode.Normal)
+POST        /exporter-address                    controllers.declaration.ExporterDetailsController.saveAddress()
 
 # EXS Declaration (Clearance journey)
 
-GET         /is-this-exs                         controllers.declaration.IsExsController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+GET         /is-this-exs                         controllers.declaration.IsExsController.displayPage()
 
-POST        /is-this-exs                         controllers.declaration.IsExsController.submit(mode: models.Mode ?= models.Mode.Normal)
+POST        /is-this-exs                         controllers.declaration.IsExsController.submit()
 
 # Consignor Eori Number (Clearance journey)
 
-GET         /consignor-eori-number               controllers.declaration.ConsignorEoriNumberController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+GET         /consignor-eori-number               controllers.declaration.ConsignorEoriNumberController.displayPage()
 
-POST        /consignor-eori-number               controllers.declaration.ConsignorEoriNumberController.submit(mode: models.Mode ?= models.Mode.Normal)
+POST        /consignor-eori-number               controllers.declaration.ConsignorEoriNumberController.submit()
 
 # Consignor address (Clearance journey)
 
-GET         /consignor-address                   controllers.declaration.ConsignorDetailsController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+GET         /consignor-address                   controllers.declaration.ConsignorDetailsController.displayPage()
 
-POST        /consignor-address                   controllers.declaration.ConsignorDetailsController.saveAddress(mode: models.Mode ?= models.Mode.Normal)
+POST        /consignor-address                   controllers.declaration.ConsignorDetailsController.saveAddress()
 
 # Declarant is not the exporter - Representative details
 
-GET         /are-you-completing-this-declaration-on-behalf-of-another-agent  controllers.declaration.RepresentativeAgentController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+GET         /are-you-completing-this-declaration-on-behalf-of-another-agent  controllers.declaration.RepresentativeAgentController.displayPage()
 
-POST        /are-you-completing-this-declaration-on-behalf-of-another-agent  controllers.declaration.RepresentativeAgentController.submitForm(mode: models.Mode ?= models.Mode.Normal)
+POST        /are-you-completing-this-declaration-on-behalf-of-another-agent  controllers.declaration.RepresentativeAgentController.submitForm()
 
 # Declarant is not the exporter - Representative EORI (if known)
 
-GET         /representatives-eori-number         controllers.declaration.RepresentativeEntityController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+GET         /representatives-eori-number         controllers.declaration.RepresentativeEntityController.displayPage()
 
-POST        /representatives-eori-number         controllers.declaration.RepresentativeEntityController.submitForm(mode: models.Mode ?= models.Mode.Normal)
+POST        /representatives-eori-number         controllers.declaration.RepresentativeEntityController.submitForm()
 
 # Declarant is not the exporter - Representative type (EORI not known)
 
-GET         /representation-type-agreed          controllers.declaration.RepresentativeStatusController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+GET         /representation-type-agreed          controllers.declaration.RepresentativeStatusController.displayPage()
 
-POST        /representation-type-agreed          controllers.declaration.RepresentativeStatusController.submitForm(mode: models.Mode ?= models.Mode.Normal)
+POST        /representation-type-agreed          controllers.declaration.RepresentativeStatusController.submitForm()
 
 # Carrier Eori Number (if known)
 
-GET         /carrier-eori-number                 controllers.declaration.CarrierEoriNumberController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+GET         /carrier-eori-number                 controllers.declaration.CarrierEoriNumberController.displayPage()
 
-POST        /carrier-eori-number                 controllers.declaration.CarrierEoriNumberController.submit(mode: models.Mode ?= models.Mode.Normal)
+POST        /carrier-eori-number                 controllers.declaration.CarrierEoriNumberController.submit()
 
 # Carrier details (Carrier's EORI not known)
 
-GET         /carrier-address                     controllers.declaration.CarrierDetailsController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+GET         /carrier-address                     controllers.declaration.CarrierDetailsController.displayPage()
 
-POST        /carrier-address                     controllers.declaration.CarrierDetailsController.saveAddress(mode: models.Mode ?= models.Mode.Normal)
+POST        /carrier-address                     controllers.declaration.CarrierDetailsController.saveAddress()
 
 # Consignee details
 
-GET         /consignee-details                   controllers.declaration.ConsigneeDetailsController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+GET         /consignee-details                   controllers.declaration.ConsigneeDetailsController.displayPage()
 
-POST        /consignee-details                   controllers.declaration.ConsigneeDetailsController.saveAddress(mode: models.Mode ?= models.Mode.Normal)
+POST        /consignee-details                   controllers.declaration.ConsigneeDetailsController.saveAddress()
 
 # Declaration other parties
 
-GET         /other-parties-involved              controllers.declaration.AdditionalActorsAddController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+GET         /other-parties-involved              controllers.declaration.AdditionalActorsAddController.displayPage()
 
-POST        /other-parties-involved              controllers.declaration.AdditionalActorsAddController.saveForm(mode: models.Mode ?= models.Mode.Normal)
+POST        /other-parties-involved              controllers.declaration.AdditionalActorsAddController.saveForm()
 
-GET         /other-parties-list                  controllers.declaration.AdditionalActorsSummaryController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+GET         /other-parties-list                  controllers.declaration.AdditionalActorsSummaryController.displayPage()
 
-POST        /other-parties-list                  controllers.declaration.AdditionalActorsSummaryController.submitForm(mode: models.Mode ?= models.Mode.Normal)
+POST        /other-parties-list                  controllers.declaration.AdditionalActorsSummaryController.submitForm()
 
-GET         /other-party/:id/remove              controllers.declaration.AdditionalActorsRemoveController.displayPage(mode: models.Mode ?= models.Mode.Normal, id: String)
+GET         /other-party/:id/remove              controllers.declaration.AdditionalActorsRemoveController.displayPage(id: String)
 
-POST        /other-party/:id/remove              controllers.declaration.AdditionalActorsRemoveController.submitForm(mode: models.Mode ?= models.Mode.Normal, id: String)
+POST        /other-party/:id/remove              controllers.declaration.AdditionalActorsRemoveController.submitForm(id: String)
 
 # Declaration holder of authorisation
 
-GET         /authorisation-choice                controllers.declaration.AuthorisationProcedureCodeChoiceController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+GET         /authorisation-choice                controllers.declaration.AuthorisationProcedureCodeChoiceController.displayPage()
 
-POST        /authorisation-choice                controllers.declaration.AuthorisationProcedureCodeChoiceController.submitForm(mode: models.Mode ?= models.Mode.Normal)
+POST        /authorisation-choice                controllers.declaration.AuthorisationProcedureCodeChoiceController.submitForm()
 
-GET         /is-authorisation-required           controllers.declaration.DeclarationHolderRequiredController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+GET         /is-authorisation-required           controllers.declaration.DeclarationHolderRequiredController.displayPage()
 
-POST        /is-authorisation-required           controllers.declaration.DeclarationHolderRequiredController.submitForm(mode: models.Mode ?= models.Mode.Normal)
+POST        /is-authorisation-required           controllers.declaration.DeclarationHolderRequiredController.submitForm()
 
-GET         /add-authorisation-required          controllers.declaration.DeclarationHolderAddController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+GET         /add-authorisation-required          controllers.declaration.DeclarationHolderAddController.displayPage()
 
-POST        /add-authorisation-required          controllers.declaration.DeclarationHolderAddController.submitForm(mode: models.Mode ?= models.Mode.Normal)
+POST        /add-authorisation-required          controllers.declaration.DeclarationHolderAddController.submitForm()
 
-GET         /authorisations-required             controllers.declaration.DeclarationHolderSummaryController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+GET         /authorisations-required             controllers.declaration.DeclarationHolderSummaryController.displayPage()
 
-POST        /authorisations-required             controllers.declaration.DeclarationHolderSummaryController.submitForm(mode: models.Mode ?= models.Mode.Normal)
+POST        /authorisations-required             controllers.declaration.DeclarationHolderSummaryController.submitForm()
 
-GET         /authorisations-required/:id/change  controllers.declaration.DeclarationHolderChangeController.displayPage(mode: models.Mode ?= models.Mode.Normal, id: String)
+GET         /authorisations-required/:id/change  controllers.declaration.DeclarationHolderChangeController.displayPage(id: String)
 
-POST        /authorisations-required/:id/change  controllers.declaration.DeclarationHolderChangeController.submitForm(mode: models.Mode ?= models.Mode.Normal, id: String)
+POST        /authorisations-required/:id/change  controllers.declaration.DeclarationHolderChangeController.submitForm(id: String)
 
-GET         /authorisations-required/:id/remove  controllers.declaration.DeclarationHolderRemoveController.displayPage(mode: models.Mode ?= models.Mode.Normal, id: String)
+GET         /authorisations-required/:id/remove  controllers.declaration.DeclarationHolderRemoveController.displayPage(id: String)
 
-POST        /authorisations-required/:id/remove  controllers.declaration.DeclarationHolderRemoveController.submitForm(mode: models.Mode ?= models.Mode.Normal, id: String)
+POST        /authorisations-required/:id/remove  controllers.declaration.DeclarationHolderRemoveController.submitForm(id: String)
 
 # Destination country
 
-GET         /destination-country                 controllers.declaration.DestinationCountryController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+GET         /destination-country                 controllers.declaration.DestinationCountryController.displayPage()
 
-POST        /destination-country                 controllers.declaration.DestinationCountryController.submit(mode: models.Mode ?= models.Mode.Normal)
+POST        /destination-country                 controllers.declaration.DestinationCountryController.submit()
 
 # Routing countries
 
-GET         /country-of-routing                  controllers.declaration.RoutingCountriesController.displayRoutingQuestion(mode: models.Mode ?= models.Mode.Normal)
+GET         /country-of-routing                  controllers.declaration.RoutingCountriesController.displayRoutingQuestion()
 
-POST        /country-of-routing                  controllers.declaration.RoutingCountriesController.submitRoutingAnswer(mode: models.Mode ?= models.Mode.Normal)
+POST        /country-of-routing                  controllers.declaration.RoutingCountriesController.submitRoutingAnswer()
 
-GET         /countries-of-routing                controllers.declaration.RoutingCountriesController.displayRoutingCountry(mode: models.Mode ?= models.Mode.Normal)
+GET         /countries-of-routing                controllers.declaration.RoutingCountriesController.displayRoutingCountry()
 
-POST        /countries-of-routing                controllers.declaration.RoutingCountriesController.submitRoutingCountry(mode: models.Mode ?= models.Mode.Normal)
+POST        /countries-of-routing                controllers.declaration.RoutingCountriesController.submitRoutingCountry()
 
 # Location of goods
 
-GET         /location-of-goods                   controllers.declaration.LocationOfGoodsController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+GET         /location-of-goods                   controllers.declaration.LocationOfGoodsController.displayPage()
 
-POST        /location-of-goods                   controllers.declaration.LocationOfGoodsController.saveLocation(mode: models.Mode ?= models.Mode.Normal)
+POST        /location-of-goods                   controllers.declaration.LocationOfGoodsController.saveLocation()
 
 # Office of exit
 
-GET         /office-of-exit                      controllers.declaration.OfficeOfExitController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+GET         /office-of-exit                      controllers.declaration.OfficeOfExitController.displayPage()
 
-POST        /office-of-exit                      controllers.declaration.OfficeOfExitController.saveOffice(mode: models.Mode ?= models.Mode.Normal)
+POST        /office-of-exit                      controllers.declaration.OfficeOfExitController.saveOffice()
 
 # Invoices & Exchange Rate
 
-GET         /invoices-and-exchange-rate-choice   controllers.declaration.InvoiceAndExchangeRateChoiceController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+GET         /invoices-and-exchange-rate-choice   controllers.declaration.InvoiceAndExchangeRateChoiceController.displayPage()
 
-POST        /invoices-and-exchange-rate-choice   controllers.declaration.InvoiceAndExchangeRateChoiceController.submitForm(mode: models.Mode ?= models.Mode.Normal)
+POST        /invoices-and-exchange-rate-choice   controllers.declaration.InvoiceAndExchangeRateChoiceController.submitForm()
 
-GET         /invoices-and-exchange-rate          controllers.declaration.InvoiceAndExchangeRateController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+GET         /invoices-and-exchange-rate          controllers.declaration.InvoiceAndExchangeRateController.displayPage()
 
-POST        /invoices-and-exchange-rate          controllers.declaration.InvoiceAndExchangeRateController.saveNoOfItems(mode: models.Mode ?= models.Mode.Normal)
+POST        /invoices-and-exchange-rate          controllers.declaration.InvoiceAndExchangeRateController.saveNoOfItems()
 
 # Total package quantity
 
-GET         /total-package-quantity              controllers.declaration.TotalPackageQuantityController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+GET         /total-package-quantity              controllers.declaration.TotalPackageQuantityController.displayPage()
 
-POST        /total-package-quantity              controllers.declaration.TotalPackageQuantityController.saveTotalPackageQuantity(mode: models.Mode ?= models.Mode.Normal)
+POST        /total-package-quantity              controllers.declaration.TotalPackageQuantityController.saveTotalPackageQuantity()
 
 
 # Previous documents
 
-GET         /add-previous-document               controllers.declaration.PreviousDocumentsController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+GET         /add-previous-document               controllers.declaration.PreviousDocumentsController.displayPage()
 
-POST        /add-previous-document               controllers.declaration.PreviousDocumentsController.submit(mode: models.Mode ?= models.Mode.Normal)
+POST        /add-previous-document               controllers.declaration.PreviousDocumentsController.submit()
 
-GET         /previous-documents-list             controllers.declaration.PreviousDocumentsSummaryController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+GET         /previous-documents-list             controllers.declaration.PreviousDocumentsSummaryController.displayPage()
 
-POST        /previous-documents-list             controllers.declaration.PreviousDocumentsSummaryController.submit(mode: models.Mode ?= models.Mode.Normal)
+POST        /previous-documents-list             controllers.declaration.PreviousDocumentsSummaryController.submit()
 
-GET         /previous-documents/:id/remove       controllers.declaration.PreviousDocumentsRemoveController.displayPage(mode: models.Mode ?= models.Mode.Normal, id: String)
+GET         /previous-documents/:id/remove       controllers.declaration.PreviousDocumentsRemoveController.displayPage(id: String)
 
-POST        /previous-documents/:id/remove       controllers.declaration.PreviousDocumentsRemoveController.submit(mode: models.Mode ?= models.Mode.Normal, id: String)
+POST        /previous-documents/:id/remove       controllers.declaration.PreviousDocumentsRemoveController.submit(id: String)
 
-GET         /previous-documents/:id/change       controllers.declaration.PreviousDocumentsChangeController.displayPage(mode: models.Mode ?= models.Mode.Normal, id: String)
+GET         /previous-documents/:id/change       controllers.declaration.PreviousDocumentsChangeController.displayPage(id: String)
 
-POST        /previous-documents/:id/change       controllers.declaration.PreviousDocumentsChangeController.submit(mode: models.Mode ?= models.Mode.Normal, id: String)
+POST        /previous-documents/:id/change       controllers.declaration.PreviousDocumentsChangeController.submit(id: String)
 
 # Transaction type
 
-GET         /nature-of-transaction               controllers.declaration.NatureOfTransactionController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+GET         /nature-of-transaction               controllers.declaration.NatureOfTransactionController.displayPage()
 
-POST        /nature-of-transaction               controllers.declaration.NatureOfTransactionController.saveTransactionType(mode: models.Mode ?= models.Mode.Normal)
+POST        /nature-of-transaction               controllers.declaration.NatureOfTransactionController.saveTransactionType()
 
 
 # **** ITEMS PAGES *****
 
 # Items Summary
 
-GET         /add-declaration-item                controllers.declaration.ItemsSummaryController.displayAddItemPage(mode: models.Mode ?= models.Mode.Normal)
+GET         /add-declaration-item                controllers.declaration.ItemsSummaryController.displayAddItemPage()
 
-POST        /add-declaration-item                controllers.declaration.ItemsSummaryController.addFirstItem(mode: models.Mode ?= models.Mode.Normal)
+POST        /add-declaration-item                controllers.declaration.ItemsSummaryController.addFirstItem()
 
-GET         /declaration-items-list              controllers.declaration.ItemsSummaryController.displayItemsSummaryPage(mode: models.Mode ?= models.Mode.Normal)
+GET         /declaration-items-list              controllers.declaration.ItemsSummaryController.displayItemsSummaryPage()
 
-POST        /declaration-items-list              controllers.declaration.ItemsSummaryController.submit(mode: models.Mode ?= models.Mode.Normal)
+POST        /declaration-items-list              controllers.declaration.ItemsSummaryController.submit()
 
-GET         /remove-declaration-item/:itemId     controllers.declaration.ItemsSummaryController.displayRemoveItemConfirmationPage(mode: models.Mode ?= models.Mode.Normal, itemId)
+GET         /remove-declaration-item/:itemId     controllers.declaration.ItemsSummaryController.displayRemoveItemConfirmationPage(itemId)
 
-POST        /remove-declaration-item/:itemId     controllers.declaration.ItemsSummaryController.removeItem(mode: models.Mode ?= models.Mode.Normal, itemId)
+POST        /remove-declaration-item/:itemId     controllers.declaration.ItemsSummaryController.removeItem(itemId)
 
 # Procedure Codes
 
-GET         /items/:itemId/procedure-codes        controllers.declaration.ProcedureCodesController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId)
+GET         /items/:itemId/procedure-codes        controllers.declaration.ProcedureCodesController.displayPage(itemId)
 
-POST        /items/:itemId/procedure-codes        controllers.declaration.ProcedureCodesController.submitProcedureCodes(mode: models.Mode ?= models.Mode.Normal, itemId)
+POST        /items/:itemId/procedure-codes        controllers.declaration.ProcedureCodesController.submitProcedureCodes(itemId)
 
 # Additional Procedure Codes
 
-GET         /items/:itemId/additional-procedure-codes        controllers.declaration.AdditionalProcedureCodesController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId)
+GET         /items/:itemId/additional-procedure-codes        controllers.declaration.AdditionalProcedureCodesController.displayPage(itemId)
 
-POST        /items/:itemId/additional-procedure-codes        controllers.declaration.AdditionalProcedureCodesController.submitAdditionalProcedureCodes(mode: models.Mode ?= models.Mode.Normal, itemId)
+POST        /items/:itemId/additional-procedure-codes        controllers.declaration.AdditionalProcedureCodesController.submitAdditionalProcedureCodes(itemId)
 
 # Fiscal Information
 
-GET         /items/:itemId/fiscal-information    controllers.declaration.FiscalInformationController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId, fastForward: Boolean ?= false)
+GET         /items/:itemId/fiscal-information    controllers.declaration.FiscalInformationController.displayPage(itemId, fastForward: Boolean ?= false)
 
-POST        /items/:itemId/fiscal-information   controllers.declaration.FiscalInformationController.saveFiscalInformation(mode: models.Mode ?= models.Mode.Normal, itemId)
+POST        /items/:itemId/fiscal-information   controllers.declaration.FiscalInformationController.saveFiscalInformation(itemId)
 
 
 # Additional Fiscal References
 
-GET         /items/:itemId/additional-fiscal-references-list        controllers.declaration.AdditionalFiscalReferencesController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId)
+GET         /items/:itemId/additional-fiscal-references-list        controllers.declaration.AdditionalFiscalReferencesController.displayPage(itemId)
 
-POST        /items/:itemId/additional-fiscal-references-list        controllers.declaration.AdditionalFiscalReferencesController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId)
+POST        /items/:itemId/additional-fiscal-references-list        controllers.declaration.AdditionalFiscalReferencesController.submitForm(itemId)
 
-GET         /items/:itemId/additional-fiscal-references             controllers.declaration.AdditionalFiscalReferencesAddController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId)
+GET         /items/:itemId/additional-fiscal-references             controllers.declaration.AdditionalFiscalReferencesAddController.displayPage(itemId)
 
-POST        /items/:itemId/additional-fiscal-references             controllers.declaration.AdditionalFiscalReferencesAddController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId)
+POST        /items/:itemId/additional-fiscal-references             controllers.declaration.AdditionalFiscalReferencesAddController.submitForm(itemId)
 
-GET         /items/:itemId/additional-fiscal-references/:id/remove   controllers.declaration.AdditionalFiscalReferencesRemoveController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId, id)
+GET         /items/:itemId/additional-fiscal-references/:id/remove   controllers.declaration.AdditionalFiscalReferencesRemoveController.displayPage(itemId, id)
 
-POST        /items/:itemId/additional-fiscal-references/:id/remove   controllers.declaration.AdditionalFiscalReferencesRemoveController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId, id)
+POST        /items/:itemId/additional-fiscal-references/:id/remove   controllers.declaration.AdditionalFiscalReferencesRemoveController.submitForm(itemId, id)
 
 # Commodity Details
 
-GET         /items/:itemId/commodity-details                   controllers.declaration.CommodityDetailsController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId)
+GET         /items/:itemId/commodity-details                   controllers.declaration.CommodityDetailsController.displayPage(itemId)
 
-POST        /items/:itemId/commodity-details                   controllers.declaration.CommodityDetailsController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId)
+POST        /items/:itemId/commodity-details                   controllers.declaration.CommodityDetailsController.submitForm(itemId)
 
 # UN Dangerous Goods Code
 
-GET         /items/:itemId/un-dangerous-goods-code             controllers.declaration.UNDangerousGoodsCodeController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId)
+GET         /items/:itemId/un-dangerous-goods-code             controllers.declaration.UNDangerousGoodsCodeController.displayPage(itemId)
 
-POST        /items/:itemId/un-dangerous-goods-code             controllers.declaration.UNDangerousGoodsCodeController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId)
+POST        /items/:itemId/un-dangerous-goods-code             controllers.declaration.UNDangerousGoodsCodeController.submitForm(itemId)
 
 # CUS Code
 
-GET         /items/:itemId/cus-code                            controllers.declaration.CusCodeController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId)
+GET         /items/:itemId/cus-code                            controllers.declaration.CusCodeController.displayPage(itemId)
 
-POST        /items/:itemId/cus-code                            controllers.declaration.CusCodeController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId)
+POST        /items/:itemId/cus-code                            controllers.declaration.CusCodeController.submitForm(itemId)
 
 # TARIC Code
 
-GET         /items/:itemId/additional-taric-code               controllers.declaration.TaricCodeAddController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId)
+GET         /items/:itemId/additional-taric-code               controllers.declaration.TaricCodeAddController.displayPage(itemId)
 
-POST        /items/:itemId/additional-taric-code               controllers.declaration.TaricCodeAddController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId)
+POST        /items/:itemId/additional-taric-code               controllers.declaration.TaricCodeAddController.submitForm(itemId)
 
-GET         /items/:itemId/additional-taric-codes-list         controllers.declaration.TaricCodeSummaryController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId)
+GET         /items/:itemId/additional-taric-codes-list         controllers.declaration.TaricCodeSummaryController.displayPage(itemId)
 
-POST        /items/:itemId/additional-taric-codes-list         controllers.declaration.TaricCodeSummaryController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId)
+POST        /items/:itemId/additional-taric-codes-list         controllers.declaration.TaricCodeSummaryController.submitForm(itemId)
 
-GET         /items/:itemId/additional-taric-code/:code/remove  controllers.declaration.TaricCodeRemoveController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId, code)
+GET         /items/:itemId/additional-taric-code/:code/remove  controllers.declaration.TaricCodeRemoveController.displayPage(itemId, code)
 
-POST        /items/:itemId/additional-taric-code/:code/remove  controllers.declaration.TaricCodeRemoveController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId, code)
+POST        /items/:itemId/additional-taric-code/:code/remove  controllers.declaration.TaricCodeRemoveController.submitForm(itemId, code)
 
 # NACT Code
 
-GET         /items/:itemId/vat-rating                          controllers.declaration.ZeroRatedForVatController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId)
+GET         /items/:itemId/vat-rating                          controllers.declaration.ZeroRatedForVatController.displayPage(itemId)
 
-POST        /items/:itemId/vat-rating                          controllers.declaration.ZeroRatedForVatController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId)
+POST        /items/:itemId/vat-rating                          controllers.declaration.ZeroRatedForVatController.submitForm(itemId)
 
-GET         /items/:itemId/national-additional-code            controllers.declaration.NactCodeAddController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId)
+GET         /items/:itemId/national-additional-code            controllers.declaration.NactCodeAddController.displayPage(itemId)
 
-POST        /items/:itemId/national-additional-code            controllers.declaration.NactCodeAddController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId)
+POST        /items/:itemId/national-additional-code            controllers.declaration.NactCodeAddController.submitForm(itemId)
 
-GET         /items/:itemId/national-additional-codes-list      controllers.declaration.NactCodeSummaryController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId)
+GET         /items/:itemId/national-additional-codes-list      controllers.declaration.NactCodeSummaryController.displayPage(itemId)
 
-POST        /items/:itemId/national-additional-codes-list      controllers.declaration.NactCodeSummaryController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId)
+POST        /items/:itemId/national-additional-codes-list      controllers.declaration.NactCodeSummaryController.submitForm(itemId)
 
-GET         /items/:itemId/national-additional-code/:code/remove            controllers.declaration.NactCodeRemoveController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId, code)
+GET         /items/:itemId/national-additional-code/:code/remove            controllers.declaration.NactCodeRemoveController.displayPage(itemId, code)
 
-POST        /items/:itemId/national-additional-code/:code/remove            controllers.declaration.NactCodeRemoveController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId, code)
+POST        /items/:itemId/national-additional-code/:code/remove            controllers.declaration.NactCodeRemoveController.submitForm(itemId, code)
 
 # Statistical Value
 
-GET         /items/:itemId/statistical-value                   controllers.declaration.StatisticalValueController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId)
+GET         /items/:itemId/statistical-value                   controllers.declaration.StatisticalValueController.displayPage(itemId)
 
-POST        /items/:itemId/statistical-value                   controllers.declaration.StatisticalValueController.submitItemType(mode: models.Mode ?= models.Mode.Normal, itemId)
+POST        /items/:itemId/statistical-value                   controllers.declaration.StatisticalValueController.submitItemType(itemId)
 
 # Package Information
 
-GET         /items/:itemId/package-information                 controllers.declaration.PackageInformationAddController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId)
+GET         /items/:itemId/package-information                 controllers.declaration.PackageInformationAddController.displayPage(itemId)
 
-POST        /items/:itemId/package-information                 controllers.declaration.PackageInformationAddController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId)
+POST        /items/:itemId/package-information                 controllers.declaration.PackageInformationAddController.submitForm(itemId)
 
-GET         /items/:itemId/packages-list                       controllers.declaration.PackageInformationSummaryController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId)
+GET         /items/:itemId/packages-list                       controllers.declaration.PackageInformationSummaryController.displayPage(itemId)
 
-POST        /items/:itemId/packages-list                       controllers.declaration.PackageInformationSummaryController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId)
+POST        /items/:itemId/packages-list                       controllers.declaration.PackageInformationSummaryController.submitForm(itemId)
 
-GET         /items/:itemId/package-information/:code/remove    controllers.declaration.PackageInformationRemoveController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId, code)
+GET         /items/:itemId/package-information/:code/remove    controllers.declaration.PackageInformationRemoveController.displayPage(itemId, code)
 
-POST        /items/:itemId/package-information/:code/remove    controllers.declaration.PackageInformationRemoveController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId, code)
+POST        /items/:itemId/package-information/:code/remove    controllers.declaration.PackageInformationRemoveController.submitForm(itemId, code)
 
-GET         /items/:itemId/package-information/:code/change    controllers.declaration.PackageInformationChangeController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId, code)
+GET         /items/:itemId/package-information/:code/change    controllers.declaration.PackageInformationChangeController.displayPage(itemId, code)
 
-POST        /items/:itemId/package-information/:code/change    controllers.declaration.PackageInformationChangeController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId, code)
+POST        /items/:itemId/package-information/:code/change    controllers.declaration.PackageInformationChangeController.submitForm(itemId, code)
 
 # Commodity Measure Information
 
-GET         /items/:itemId/commodity-measure                   controllers.declaration.CommodityMeasureController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId)
+GET         /items/:itemId/commodity-measure                   controllers.declaration.CommodityMeasureController.displayPage(itemId)
 
-POST        /items/:itemId/commodity-measure                   controllers.declaration.CommodityMeasureController.submitPage(mode: models.Mode ?= models.Mode.Normal, itemId)
+POST        /items/:itemId/commodity-measure                   controllers.declaration.CommodityMeasureController.submitPage(itemId)
 
-GET         /items/:itemId/supplementary-units                 controllers.declaration.SupplementaryUnitsController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId)
+GET         /items/:itemId/supplementary-units                 controllers.declaration.SupplementaryUnitsController.displayPage(itemId)
 
-POST        /items/:itemId/supplementary-units                 controllers.declaration.SupplementaryUnitsController.submitPage(mode: models.Mode ?= models.Mode.Normal, itemId)
+POST        /items/:itemId/supplementary-units                 controllers.declaration.SupplementaryUnitsController.submitPage(itemId)
 
 # Additional information
 
-GET         /items/:itemId/is-additional-information-required  controllers.declaration.AdditionalInformationRequiredController.displayPage(mode:models.Mode ?= models.Mode.Normal, itemId)
+GET         /items/:itemId/is-additional-information-required  controllers.declaration.AdditionalInformationRequiredController.displayPage(itemId)
 
-POST        /items/:itemId/is-additional-information-required  controllers.declaration.AdditionalInformationRequiredController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId)
+POST        /items/:itemId/is-additional-information-required  controllers.declaration.AdditionalInformationRequiredController.submitForm(itemId)
 
-GET         /items/:itemId/additional-information              controllers.declaration.AdditionalInformationAddController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId)
+GET         /items/:itemId/additional-information              controllers.declaration.AdditionalInformationAddController.displayPage(itemId)
 
-POST        /items/:itemId/additional-information              controllers.declaration.AdditionalInformationAddController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId)
+POST        /items/:itemId/additional-information              controllers.declaration.AdditionalInformationAddController.submitForm(itemId)
 
-GET         /items/:itemId/additional-information/:id/remove   controllers.declaration.AdditionalInformationRemoveController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId, id)
+GET         /items/:itemId/additional-information/:id/remove   controllers.declaration.AdditionalInformationRemoveController.displayPage(itemId, id)
 
-POST        /items/:itemId/additional-information/:id/remove   controllers.declaration.AdditionalInformationRemoveController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId, id)
+POST        /items/:itemId/additional-information/:id/remove   controllers.declaration.AdditionalInformationRemoveController.submitForm(itemId, id)
 
-GET         /items/:itemId/additional-information/:id/change   controllers.declaration.AdditionalInformationChangeController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId, id)
+GET         /items/:itemId/additional-information/:id/change   controllers.declaration.AdditionalInformationChangeController.displayPage(itemId, id)
 
-POST        /items/:itemId/additional-information/:id/change   controllers.declaration.AdditionalInformationChangeController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId, id)
+POST        /items/:itemId/additional-information/:id/change   controllers.declaration.AdditionalInformationChangeController.submitForm(itemId, id)
 
-GET         /items/:itemId/additional-information-list         controllers.declaration.AdditionalInformationController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId)
+GET         /items/:itemId/additional-information-list         controllers.declaration.AdditionalInformationController.displayPage(itemId)
 
-POST        /items/:itemId/additional-information-list         controllers.declaration.AdditionalInformationController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId)
+POST        /items/:itemId/additional-information-list         controllers.declaration.AdditionalInformationController.submitForm(itemId)
 
-GET         /items/:itemId/is-licence-required                 controllers.declaration.IsLicenceRequiredController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId)
+GET         /items/:itemId/is-licence-required                 controllers.declaration.IsLicenceRequiredController.displayPage(itemId)
 
-POST        /items/:itemId/is-licence-required                 controllers.declaration.IsLicenceRequiredController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId)
+POST        /items/:itemId/is-licence-required                 controllers.declaration.IsLicenceRequiredController.submitForm(itemId)
 
 # Additional Documents
 
-GET         /items/:itemId/is-additional-documentation-required controllers.declaration.AdditionalDocumentsRequiredController.displayPage(mode:models.Mode ?= models.Mode.Normal, itemId)
+GET         /items/:itemId/is-additional-documentation-required controllers.declaration.AdditionalDocumentsRequiredController.displayPage(itemId)
 
-POST        /items/:itemId/is-additional-documentation-required controllers.declaration.AdditionalDocumentsRequiredController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId)
+POST        /items/:itemId/is-additional-documentation-required controllers.declaration.AdditionalDocumentsRequiredController.submitForm(itemId)
 
-GET         /items/:itemId/additional-documentation             controllers.declaration.AdditionalDocumentAddController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId)
+GET         /items/:itemId/additional-documentation             controllers.declaration.AdditionalDocumentAddController.displayPage(itemId)
 
-POST        /items/:itemId/additional-documentation             controllers.declaration.AdditionalDocumentAddController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId)
+POST        /items/:itemId/additional-documentation             controllers.declaration.AdditionalDocumentAddController.submitForm(itemId)
 
-GET         /items/:itemId/additional-documentation/:id/remove  controllers.declaration.AdditionalDocumentRemoveController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId, id)
+GET         /items/:itemId/additional-documentation/:id/remove  controllers.declaration.AdditionalDocumentRemoveController.displayPage(itemId, id)
 
-POST        /items/:itemId/additional-documentation/:id/remove  controllers.declaration.AdditionalDocumentRemoveController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId, id)
+POST        /items/:itemId/additional-documentation/:id/remove  controllers.declaration.AdditionalDocumentRemoveController.submitForm(itemId, id)
 
-GET         /items/:itemId/additional-documentation/:id/change  controllers.declaration.AdditionalDocumentChangeController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId, id)
+GET         /items/:itemId/additional-documentation/:id/change  controllers.declaration.AdditionalDocumentChangeController.displayPage(itemId, id)
 
-POST        /items/:itemId/additional-documentation/:id/change  controllers.declaration.AdditionalDocumentChangeController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId, id)
+POST        /items/:itemId/additional-documentation/:id/change  controllers.declaration.AdditionalDocumentChangeController.submitForm(itemId, id)
 
-GET         /items/:itemId/additional-documentation-list        controllers.declaration.AdditionalDocumentsController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId)
+GET         /items/:itemId/additional-documentation-list        controllers.declaration.AdditionalDocumentsController.displayPage(itemId)
 
-POST        /items/:itemId/additional-documentation-list        controllers.declaration.AdditionalDocumentsController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId)
+POST        /items/:itemId/additional-documentation-list        controllers.declaration.AdditionalDocumentsController.submitForm(itemId)
 
 # **** END OF ITEM PAGES ****
 
 # Transport leaving the border
 
-GET         /transport-leaving-the-border       controllers.declaration.TransportLeavingTheBorderController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+GET         /transport-leaving-the-border       controllers.declaration.TransportLeavingTheBorderController.displayPage()
 
-POST        /transport-leaving-the-border       controllers.declaration.TransportLeavingTheBorderController.submitForm(mode: models.Mode ?= models.Mode.Normal)
+POST        /transport-leaving-the-border       controllers.declaration.TransportLeavingTheBorderController.submitForm()
 
 # Identification of a Warehouse
 
-GET         /warehouse-details                   controllers.declaration.WarehouseIdentificationController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+GET         /warehouse-details                   controllers.declaration.WarehouseIdentificationController.displayPage()
 
-POST        /warehouse-details                   controllers.declaration.WarehouseIdentificationController.saveIdentificationNumber(mode: models.Mode ?= models.Mode.Normal)
+POST        /warehouse-details                   controllers.declaration.WarehouseIdentificationController.saveIdentificationNumber()
 
 # Supervising Customs Office
 
-GET         /supervising-customs-office          controllers.declaration.SupervisingCustomsOfficeController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+GET         /supervising-customs-office          controllers.declaration.SupervisingCustomsOfficeController.displayPage()
 
-POST        /supervising-customs-office          controllers.declaration.SupervisingCustomsOfficeController.submit(mode: models.Mode ?= models.Mode.Normal)
+POST        /supervising-customs-office          controllers.declaration.SupervisingCustomsOfficeController.submit()
 
 # UK border or Inland (Customs controlled locations)
 
-GET         /inland-or-border                    controllers.declaration.InlandOrBorderController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+GET         /inland-or-border                    controllers.declaration.InlandOrBorderController.displayPage()
 
-POST        /inland-or-border                    controllers.declaration.InlandOrBorderController.submitPage(mode: models.Mode ?= models.Mode.Normal)
+POST        /inland-or-border                    controllers.declaration.InlandOrBorderController.submitPage()
 
 # Inland Transport Details
 
-GET         /inland-transport-details            controllers.declaration.InlandTransportDetailsController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+GET         /inland-transport-details            controllers.declaration.InlandTransportDetailsController.displayPage()
 
-POST        /inland-transport-details            controllers.declaration.InlandTransportDetailsController.submit(mode: models.Mode ?= models.Mode.Normal)
+POST        /inland-transport-details            controllers.declaration.InlandTransportDetailsController.submit()
 
 # Departure Transport
 
-GET         /departure-transport                controllers.declaration.DepartureTransportController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+GET         /departure-transport                controllers.declaration.DepartureTransportController.displayPage()
 
-POST        /departure-transport                controllers.declaration.DepartureTransportController.submitForm(mode: models.Mode ?= models.Mode.Normal)
+POST        /departure-transport                controllers.declaration.DepartureTransportController.submitForm()
 
 # Border Transport
 
-GET         /border-transport                   controllers.declaration.BorderTransportController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+GET         /border-transport                   controllers.declaration.BorderTransportController.displayPage()
 
-POST        /border-transport                   controllers.declaration.BorderTransportController.submitForm(mode: models.Mode ?= models.Mode.Normal)
+POST        /border-transport                   controllers.declaration.BorderTransportController.submitForm()
 
-GET         /transport-country                  controllers.declaration.TransportCountryController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+GET         /transport-country                  controllers.declaration.TransportCountryController.displayPage()
 
-POST        /transport-country                  controllers.declaration.TransportCountryController.submitForm(mode: models.Mode ?= models.Mode.Normal)
+POST        /transport-country                  controllers.declaration.TransportCountryController.submitForm()
 
 # Transport Payment
 
-GET         /express-consignment                 controllers.declaration.ExpressConsignmentController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+GET         /express-consignment                 controllers.declaration.ExpressConsignmentController.displayPage()
 
-POST        /express-consignment                 controllers.declaration.ExpressConsignmentController.submitForm(mode: models.Mode ?= models.Mode.Normal)
+POST        /express-consignment                 controllers.declaration.ExpressConsignmentController.submitForm()
 
-GET         /transport-payment                   controllers.declaration.TransportPaymentController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+GET         /transport-payment                   controllers.declaration.TransportPaymentController.displayPage()
 
-POST        /transport-payment                   controllers.declaration.TransportPaymentController.submitForm(mode: models.Mode ?= models.Mode.Normal)
+POST        /transport-payment                   controllers.declaration.TransportPaymentController.submitForm()
 
 # Transport Containers & Seals
 
-GET         /containers                          controllers.declaration.TransportContainerController.displayContainerSummary(mode: models.Mode ?= models.Mode.Normal)
+GET         /containers                          controllers.declaration.TransportContainerController.displayContainerSummary()
 
-POST        /containers                          controllers.declaration.TransportContainerController.submitSummaryAction(mode: models.Mode ?= models.Mode.Normal)
+POST        /containers                          controllers.declaration.TransportContainerController.submitSummaryAction()
 
-GET         /container                           controllers.declaration.TransportContainerController.displayAddContainer(mode: models.Mode ?= models.Mode.Normal)
+GET         /container                           controllers.declaration.TransportContainerController.displayAddContainer()
 
-POST        /container                           controllers.declaration.TransportContainerController.submitAddContainer(mode: models.Mode ?= models.Mode.Normal)
+POST        /container                           controllers.declaration.TransportContainerController.submitAddContainer()
 
-GET         /containers/:containerId/remove      controllers.declaration.TransportContainerController.displayContainerRemove(mode: models.Mode ?= models.Mode.Normal, containerId)
+GET         /containers/:containerId/remove      controllers.declaration.TransportContainerController.displayContainerRemove(containerId)
 
-POST        /containers/:containerId/remove      controllers.declaration.TransportContainerController.submitContainerRemove(mode: models.Mode ?= models.Mode.Normal, containerId)
+POST        /containers/:containerId/remove      controllers.declaration.TransportContainerController.submitContainerRemove(containerId)
 
-GET         /containers/:containerId/seals       controllers.declaration.SealController.displaySealSummary(mode: models.Mode ?= models.Mode.Normal, containerId)
+GET         /containers/:containerId/seals       controllers.declaration.SealController.displaySealSummary(containerId)
 
-POST        /containers/:containerId/seals       controllers.declaration.SealController.submitSummaryAction(mode: models.Mode ?= models.Mode.Normal, containerId)
+POST        /containers/:containerId/seals       controllers.declaration.SealController.submitSummaryAction(containerId)
 
-GET         /containers/:containerId/add-seal    controllers.declaration.SealController.displayAddSeal(mode: models.Mode ?= models.Mode.Normal, containerId)
+GET         /containers/:containerId/add-seal    controllers.declaration.SealController.displayAddSeal(containerId)
 
-POST        /containers/:containerId/add-seal    controllers.declaration.SealController.submitAddSeal(mode: models.Mode ?= models.Mode.Normal, containerId)
+POST        /containers/:containerId/add-seal    controllers.declaration.SealController.submitAddSeal(containerId)
 
-GET         /containers/:containerId/seals/:sealId/remove    controllers.declaration.SealController.displaySealRemove(mode: models.Mode ?= models.Mode.Normal, containerId, sealId)
+GET         /containers/:containerId/seals/:sealId/remove    controllers.declaration.SealController.displaySealRemove(containerId, sealId)
 
-POST        /containers/:containerId/seals/:sealId/remove    controllers.declaration.SealController.submitSealRemove(mode: models.Mode ?= models.Mode.Normal, containerId, sealId)
+POST        /containers/:containerId/seals/:sealId/remove    controllers.declaration.SealController.submitSealRemove(containerId, sealId)
 
 # Summary
 
-GET         /saved-summary                       controllers.declaration.SummaryController.displayPage(mode: models.Mode)
+GET         /saved-summary                       controllers.declaration.SummaryController.displayPage()
 
-GET         /submit-your-declaration             controllers.declaration.SummaryController.displayDeclarationPage(mode: models.Mode)
+GET         /submit-your-declaration             controllers.declaration.SummaryController.displayDeclarationPage()
 
 POST        /submit-your-declaration             controllers.declaration.SummaryController.submitDeclaration()
 

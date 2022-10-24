@@ -23,7 +23,6 @@ import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.form
 import forms.declaration.CommodityDetails
 import models.DeclarationType._
-import models.Mode
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import org.scalatest.Assertion
@@ -45,7 +44,7 @@ class AdditionalDocumentsRequiredViewSpec extends UnitViewSpec with Injector {
   val page = instanceOf[additional_documents_required]
 
   def createView(frm: Form[YesNoAnswer] = form())(implicit request: JourneyRequest[_]): Document =
-    page(Mode.Normal, itemId, frm)(request, messages)
+    page(itemId, frm)(request, messages)
 
   "'Additional Documents Required' view" should {
 
@@ -133,7 +132,7 @@ class AdditionalDocumentsRequiredViewSpec extends UnitViewSpec with Injector {
 
       "display a 'Back' button that links to the 'Additional Information' page" when {
         "Additional Information are present" in {
-          verifyBackButton(AdditionalInformationController.displayPage(Mode.Normal, itemId))
+          verifyBackButton(AdditionalInformationController.displayPage(itemId))
         }
       }
     }
@@ -143,7 +142,7 @@ class AdditionalDocumentsRequiredViewSpec extends UnitViewSpec with Injector {
       }
 
       "display a 'Back' button that links to the 'Is License Required' page" in {
-        verifyBackButton(IsLicenceRequiredController.displayPage(Mode.Normal, itemId))
+        verifyBackButton(IsLicenceRequiredController.displayPage(itemId))
       }
     }
 

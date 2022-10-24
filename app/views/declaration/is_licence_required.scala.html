@@ -44,7 +44,7 @@
     formHelper: FormWithCSRF
 )
 
-@(mode: Mode, itemId: String, form: Form[YesNoAnswer])(implicit request: JourneyRequest[_], messages: Messages)
+@(itemId: String, form: Form[YesNoAnswer])(implicit request: JourneyRequest[_], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
@@ -70,10 +70,10 @@
 
 @govukLayout(
     title = Title("declaration.item.isLicenceRequired.title", "declaration.section.5", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(IsLicenceRequired, mode, ItemId(itemId))))
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(IsLicenceRequired, ItemId(itemId))))
 ) {
 
-    @formHelper(action = controllers.declaration.routes.IsLicenceRequiredController.submitForm(mode, itemId), 'autoComplete -> "off") {
+    @formHelper(action = controllers.declaration.routes.IsLicenceRequiredController.submitForm(itemId), 'autoComplete -> "off") {
 
         @errorSummary(yesNoErrors(form.errors))
 
@@ -106,6 +106,6 @@
 
         @tariffExpander(IsLicenceRequired, request.declarationType)(messages, appConfig)
 
-        @saveButtons(mode)
+        @saveButtons()
     }
 }

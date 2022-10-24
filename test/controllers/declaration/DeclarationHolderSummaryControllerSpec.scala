@@ -22,7 +22,6 @@ import forms.common.{Eori, YesNoAnswer}
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.arrivedTypes
 import forms.declaration.declarationHolder.DeclarationHolder
 import models.DeclarationType._
-import models.Mode
 import models.declaration.EoriSource
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -52,7 +51,7 @@ class DeclarationHolderSummaryControllerSpec extends ControllerSpec with OptionV
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    when(mockPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -62,24 +61,24 @@ class DeclarationHolderSummaryControllerSpec extends ControllerSpec with OptionV
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration(withDeclarationHolders(declarationHolder)))
-    await(controller.displayPage(Mode.Normal)(request))
+    await(controller.displayPage()(request))
     theResponseForm
   }
 
   def theResponseForm: Form[YesNoAnswer] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[YesNoAnswer]])
-    verify(mockPage).apply(any(), captor.capture(), any())(any(), any())
+    verify(mockPage).apply(captor.capture(), any())(any(), any())
     captor.getValue
   }
 
   def theHoldersList: Seq[DeclarationHolder] = {
     val captor = ArgumentCaptor.forClass(classOf[Seq[DeclarationHolder]])
-    verify(mockPage).apply(any(), any(), captor.capture())(any(), any())
+    verify(mockPage).apply(any(), captor.capture())(any(), any())
     captor.getValue
   }
 
   private def verifyPageInvoked(numberOfTimes: Int = 1): Appendable =
-    verify(mockPage, times(numberOfTimes)).apply(any(), any(), any())(any(), any())
+    verify(mockPage, times(numberOfTimes)).apply(any(), any())(any(), any())
 
   val declarationHolder = DeclarationHolder(Some("ACE"), Some(Eori("GB56523343784324")), Some(EoriSource.OtherEori))
   val id = "ACE-GB56523343784324"
@@ -92,7 +91,7 @@ class DeclarationHolderSummaryControllerSpec extends ControllerSpec with OptionV
         "the cache contains one or more holders" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationHolders(declarationHolder)))
 
-          val result = controller.displayPage(Mode.Normal)(getRequest())
+          val result = controller.displayPage()(getRequest())
 
           status(result) mustBe OK
           verifyPageInvoked()
@@ -103,10 +102,10 @@ class DeclarationHolderSummaryControllerSpec extends ControllerSpec with OptionV
         "there are no holders in the cache" in {
           withNewCaching(aDeclarationAfter(request.cacheModel))
 
-          val result = controller.displayPage(Mode.Normal)(getRequest())
+          val result = controller.displayPage()(getRequest())
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe routes.DeclarationHolderAddController.displayPage(Mode.Normal)
+          thePageNavigatedTo mustBe routes.DeclarationHolderAddController.displayPage()
         }
       }
     }
@@ -120,7 +119,7 @@ class DeclarationHolderSummaryControllerSpec extends ControllerSpec with OptionV
           withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationHolders(declarationHolder)))
 
           val requestBody = Json.obj(formId -> "")
-          val result = controller.submitForm(Mode.Normal)(postRequest(requestBody))
+          val result = controller.submitForm()(postRequest(requestBody))
 
           status(result) mustBe BAD_REQUEST
           verifyPageInvoked()
@@ -133,20 +132,20 @@ class DeclarationHolderSummaryControllerSpec extends ControllerSpec with OptionV
           withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationHolders(declarationHolder)))
 
           val requestBody = Json.obj(formId -> "Yes")
-          val result = controller.submitForm(Mode.Normal)(postRequest(requestBody))
+          val result = controller.submitForm()(postRequest(requestBody))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe routes.DeclarationHolderAddController.displayPage(Mode.Normal)
+          thePageNavigatedTo mustBe routes.DeclarationHolderAddController.displayPage()
         }
 
         "the user submits the page answering Yes in error-fix mode" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationHolders(declarationHolder)))
 
           val requestBody = Json.obj(formId -> "Yes")
-          val result = controller.submitForm(Mode.ErrorFix)(postRequest(requestBody))
+          val result = controller.submitForm()(postRequest(requestBody))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe routes.DeclarationHolderAddController.displayPage(Mode.ErrorFix)
+          thePageNavigatedTo mustBe routes.DeclarationHolderAddController.displayPage()
         }
       }
     }
@@ -157,10 +156,10 @@ class DeclarationHolderSummaryControllerSpec extends ControllerSpec with OptionV
           withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationHolders(declarationHolder)))
 
           val requestBody = Json.obj(formId -> "No")
-          val result = controller.submitForm(Mode.Normal)(postRequest(requestBody))
+          val result = controller.submitForm()(postRequest(requestBody))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe routes.DestinationCountryController.displayPage(Mode.Normal)
+          thePageNavigatedTo mustBe routes.DestinationCountryController.displayPage()
         }
       }
 
@@ -170,10 +169,10 @@ class DeclarationHolderSummaryControllerSpec extends ControllerSpec with OptionV
           withNewCaching(aDeclarationAfter(request.cacheModel, withAdditionalDeclarationType(additionalType)))
 
           val requestBody = Json.obj(formId -> "No")
-          val result = controller.submitForm(Mode.Normal)(postRequest(requestBody))
+          val result = controller.submitForm()(postRequest(requestBody))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe routes.DestinationCountryController.displayPage(Mode.Normal)
+          thePageNavigatedTo mustBe routes.DestinationCountryController.displayPage()
         }
       }
     }

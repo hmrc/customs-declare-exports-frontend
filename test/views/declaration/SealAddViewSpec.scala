@@ -21,8 +21,6 @@ import controllers.declaration.routes.SealController
 import forms.declaration.Seal
 import forms.declaration.Seal.form
 import models.DeclarationType.STANDARD
-import models.Mode
-import models.Mode.Normal
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import views.declaration.spec.PageWithButtonsSpec
@@ -36,9 +34,9 @@ class SealAddViewSpec extends PageWithButtonsSpec with Injector {
 
   val page = instanceOf[seal_add]
 
-  override val typeAndViewInstance = (STANDARD, page(Normal, form(), containerId)(_, _))
+  override val typeAndViewInstance = (STANDARD, page(form(), containerId)(_, _))
 
-  def createView(frm: Form[Seal] = form(), mode: Mode = Normal): Document = page(mode, frm, containerId)
+  def createView(frm: Form[Seal] = form()): Document = page(frm, containerId)
 
   "Seal Add View" should {
     val view = createView()
@@ -55,11 +53,10 @@ class SealAddViewSpec extends PageWithButtonsSpec with Injector {
       val backLinkContainer = view.getElementById("back-link")
 
       backLinkContainer.text() must be(messages(backToPreviousQuestionCaption))
-      backLinkContainer.getElementById("back-link") must haveHref(SealController.displaySealSummary(Normal, containerId))
+      backLinkContainer.getElementById("back-link") must haveHref(SealController.displaySealSummary(containerId))
     }
 
-    val createViewWithMode: Mode => Document = mode => createView(mode = mode)
-    checkAllSaveButtonsAreDisplayed(createViewWithMode)
+    checkAllSaveButtonsAreDisplayed(createView())
   }
 
   "Seal Add View for invalid input" should {

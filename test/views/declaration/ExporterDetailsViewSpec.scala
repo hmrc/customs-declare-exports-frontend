@@ -23,8 +23,6 @@ import forms.common.{Address, AddressSpec}
 import forms.declaration.EntityDetails
 import forms.declaration.exporter.ExporterDetails
 import models.DeclarationType._
-import models.Mode
-import models.Mode.Normal
 import models.codes.Country
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
@@ -57,10 +55,10 @@ class ExporterDetailsViewSpec extends AddressViewSpec with PageWithButtonsSpec w
 
   val page = instanceOf[exporter_address]
 
-  override val typeAndViewInstance = (STANDARD, page(Normal, ExporterDetails.form(STANDARD))(_, _))
+  override val typeAndViewInstance = (STANDARD, page(ExporterDetails.form(STANDARD))(_, _))
 
-  def createView(form: Form[ExporterDetails], mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document =
-    page(mode, form)(request, messages)
+  def createView(form: Form[ExporterDetails])(implicit request: JourneyRequest[_]): Document =
+    page(form)(request, messages)
 
   "Exporter Details View on empty page" should {
 
@@ -107,8 +105,7 @@ class ExporterDetailsViewSpec extends AddressViewSpec with PageWithButtonsSpec w
         backButton.attr("href") mustBe ExporterEoriNumberController.displayPage().url
       }
 
-      val createViewWithMode: Mode => Document = mode => createView(form(), mode = mode)
-      checkAllSaveButtonsAreDisplayed(createViewWithMode)
+      checkAllSaveButtonsAreDisplayed(createView(form))
     }
   }
 

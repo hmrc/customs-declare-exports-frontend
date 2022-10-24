@@ -18,8 +18,6 @@ package views.declaration.spec
 
 import base.{Injector, JourneyTypeTestRunner, UnitWithMocksSpec}
 import mock.FeatureFlagMocks
-import models.Mode
-import models.Mode.{ErrorFix, Normal}
 import org.jsoup.nodes.Document
 import org.scalatest.matchers.{BeMatcher, MatchResult}
 import org.scalatest.{Assertion, OptionValues}
@@ -59,19 +57,9 @@ trait UnitViewSpec
       saveButton must containMessage("site.save_and_continue")
     }
 
-  def checkSaveAndReturnToErrorsButtonIsDisplayed(createView: Mode => Document): Unit =
-    "display 'Save and return to errors' button in ErrorFix mode" in {
-      val view = createView(ErrorFix)
-      val saveAndReturnToSummaryButton = view.getElementById("save_and_return_to_errors")
-      saveAndReturnToSummaryButton must containMessage(saveAndReturnToErrorsCaption)
-    }
-
-  def checkAllSaveButtonsAreDisplayed(createView: Mode => Document): Unit = {
-    val view = createView(Normal)
-
+  def checkAllSaveButtonsAreDisplayed(view: Document): Unit = {
     checkSaveAndContinueButtonIsDisplayed(view)
     checkExitAndReturnLinkIsDisplayed(view)
-    checkSaveAndReturnToErrorsButtonIsDisplayed(createView)
   }
 }
 

@@ -21,7 +21,6 @@ import controllers.declaration.routes
 import forms.common.YesNoAnswer.{Yes, YesNoAnswers}
 import forms.declaration.additionaldocuments.AdditionalDocument
 import models.DeclarationType._
-import models.Mode.Normal
 import models.declaration.{AdditionalDocuments, ExportItem}
 import org.jsoup.select.Elements
 import org.scalatest.Assertion
@@ -57,7 +56,7 @@ class AdditionalDocumentsViewSpec extends UnitViewSpec with ExportsTestHelper wi
 
     "with additionalDocuments defined but without actual documents or defined licence answer" should {
       "display title and 'No Additional documents' row only" in {
-        val view = additionalDocumentsSection(Normal, itemWithNoLicenceReq(Some(AdditionalDocuments(None, Seq.empty))))(messages)
+        val view = additionalDocumentsSection(itemWithNoLicenceReq(Some(AdditionalDocuments(None, Seq.empty))))(messages)
         verifyHeader(view)
 
         view.getElementsByClass("licences-1-row") mustBe empty
@@ -73,7 +72,7 @@ class AdditionalDocumentsViewSpec extends UnitViewSpec with ExportsTestHelper wi
         onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL)(aDeclaration(withItem(itemWithLicenceReq(answer)))) { implicit request =>
           "with Additional Documents" should {
             "display a licences row and a table for the Additional Documents" in {
-              val view = additionalDocumentsSection(Normal, itemWithLicenceReq(answer))(messages)
+              val view = additionalDocumentsSection(itemWithLicenceReq(answer))(messages)
               verifyHeader(view)
               verifyLicenseRow(view, answer)
               verifyAdditionalDocumentsTable(view)
@@ -84,7 +83,7 @@ class AdditionalDocumentsViewSpec extends UnitViewSpec with ExportsTestHelper wi
         onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL)(aDeclaration(withItem(itemWithLicenceReq(answer, None)))) { implicit request =>
           "without Additional Documents" should {
             "display a licences row" in {
-              val view = additionalDocumentsSection(Normal, itemWithLicenceReq(answer, None))(messages)
+              val view = additionalDocumentsSection(itemWithLicenceReq(answer, None))(messages)
               verifyHeader(view)
               verifyLicenseRow(view, answer)
               view.getElementsByClass("additional-documents-1-row") mustBe empty
@@ -99,7 +98,7 @@ class AdditionalDocumentsViewSpec extends UnitViewSpec with ExportsTestHelper wi
 
         "actions are enabled" should {
           "not have a 'License' section and have 'Change' buttons" in {
-            val view = additionalDocumentsSection(Normal, itemWithNoLicenceReq())(messages)
+            val view = additionalDocumentsSection(itemWithNoLicenceReq())(messages)
             verifyHeader(view)
             view.getElementsByClass("licences-1-row") mustBe empty
             verifyAdditionalDocumentsTable(view)
@@ -108,7 +107,7 @@ class AdditionalDocumentsViewSpec extends UnitViewSpec with ExportsTestHelper wi
 
         "actions are disabled" should {
           "not have a 'License' section and not have 'Change' buttons" in {
-            val view = additionalDocumentsSection(Normal, itemWithNoLicenceReq(), actionsEnabled = false)(messages)
+            val view = additionalDocumentsSection(itemWithNoLicenceReq(), actionsEnabled = false)(messages)
             verifyHeader(view)
             verifyAdditionalDocumentsTable(view, false)
           }
@@ -128,7 +127,7 @@ class AdditionalDocumentsViewSpec extends UnitViewSpec with ExportsTestHelper wi
     licencesRow must haveSummaryKey(messages("declaration.summary.items.item.licences"))
     licencesRow must haveSummaryValue(expectedValue)
     licencesRow must haveSummaryActionsTexts("site.change", "declaration.summary.items.item.additionalDocuments.changeAll", "1")
-    licencesRow must haveSummaryActionsHref(routes.IsLicenceRequiredController.displayPage(Normal, "itemId"))
+    licencesRow must haveSummaryActionWithPlaceholder(routes.IsLicenceRequiredController.displayPage("itemId"))
   }
 
   private def verifyAdditionalDocumentsEq2No(view: Appendable): Assertion = {
@@ -136,7 +135,7 @@ class AdditionalDocumentsViewSpec extends UnitViewSpec with ExportsTestHelper wi
     row must haveSummaryKey(messages("declaration.summary.items.item.additionalDocuments"))
     row must haveSummaryValue("None")
     row must haveSummaryActionsTexts("site.change", "declaration.summary.items.item.additionalDocuments.changeAll", "1")
-    row must haveSummaryActionsHref(routes.AdditionalDocumentsController.displayPage(Normal, "itemId"))
+    row must haveSummaryActionWithPlaceholder(routes.AdditionalDocumentsController.displayPage("itemId"))
   }
 
   private def verifyAdditionalDocumentsTable(view: Appendable, actionsEnabled: Boolean = true): Assertion = {
@@ -159,7 +158,7 @@ class AdditionalDocumentsViewSpec extends UnitViewSpec with ExportsTestHelper wi
     val rowChange = row.getElementsByClass("govuk-table__cell").get(2)
     if (actionsEnabled) {
       val rowChangeLink = rowChange.getElementsByTag("a").first
-      rowChangeLink must haveHref(routes.AdditionalDocumentsController.displayPage(Normal, "itemId"))
+      rowChangeLink must haveHrefWithPlaceholder(routes.AdditionalDocumentsController.displayPage("itemId"))
       rowChangeLink must containMessage("site.change")
       rowChangeLink must containMessage("declaration.summary.items.item.additionalDocuments.change", s"typ$id", s"identifier$id", 1)
     } else {

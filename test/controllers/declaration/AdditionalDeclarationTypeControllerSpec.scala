@@ -22,7 +22,7 @@ import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypePage.radioButtonGroupId
 import models.DeclarationType._
-import models.{DeclarationType, Mode}
+import models.DeclarationType
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
@@ -49,7 +49,7 @@ class AdditionalDeclarationTypeControllerSpec extends ControllerSpec {
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    when(additionalDeclarationTypePage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(additionalDeclarationTypePage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -59,13 +59,13 @@ class AdditionalDeclarationTypeControllerSpec extends ControllerSpec {
 
   def theResponseForm: Form[AdditionalDeclarationType] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[AdditionalDeclarationType]])
-    verify(additionalDeclarationTypePage).apply(any(), captor.capture())(any(), any())
+    verify(additionalDeclarationTypePage).apply(captor.capture())(any(), any())
     captor.getValue
   }
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration())
-    await(controller.displayPage(Mode.Normal)(request))
+    await(controller.displayPage()(request))
     theResponseForm
   }
 
@@ -77,7 +77,7 @@ class AdditionalDeclarationTypeControllerSpec extends ControllerSpec {
         DeclarationType.values.foreach { declarationType =>
           s"the journey selected was $declarationType" in {
             withNewCaching(aDeclaration(withType(declarationType)))
-            val result = controller.displayPage(Mode.Normal)(getRequest())
+            val result = controller.displayPage()(getRequest())
             status(result) must be(OK)
           }
         }
@@ -89,7 +89,7 @@ class AdditionalDeclarationTypeControllerSpec extends ControllerSpec {
           s"the journey selected was $declarationType and" when {
             s"the AdditionalDeclarationType selected was $additionalType" in {
               withNewCaching(aDeclaration(withType(declarationType), withAdditionalDeclarationType(additionalType)))
-              val result = controller.displayPage(Mode.Normal)(getRequest())
+              val result = controller.displayPage()(getRequest())
               status(result) must be(OK)
             }
           }
@@ -107,13 +107,13 @@ class AdditionalDeclarationTypeControllerSpec extends ControllerSpec {
 
           s"no value has been selected" in {
             withNewCaching(aDeclaration(withType(declarationType)))
-            val result = controller.submitForm(Mode.Normal)(postRequest(JsString("")))
+            val result = controller.submitForm()(postRequest(JsString("")))
             status(result) must be(BAD_REQUEST)
           }
 
           s"the value selected is not a valid AdditionalDeclarationType" in {
             withNewCaching(aDeclaration(withType(declarationType)))
-            val result = controller.submitForm(Mode.Normal)(postRequest(JsString("x")))
+            val result = controller.submitForm()(postRequest(JsString("x")))
             status(result) must be(BAD_REQUEST)
           }
         }
@@ -128,7 +128,7 @@ class AdditionalDeclarationTypeControllerSpec extends ControllerSpec {
             withNewCaching(aDeclaration(withType(declarationType), withAdditionalDeclarationType(additionalType)))
 
             val body = Json.obj(radioButtonGroupId -> additionalType.toString)
-            val result = controller.submitForm(Mode.Normal)(postRequest(body))
+            val result = controller.submitForm()(postRequest(body))
 
             status(result) mustBe SEE_OTHER
 

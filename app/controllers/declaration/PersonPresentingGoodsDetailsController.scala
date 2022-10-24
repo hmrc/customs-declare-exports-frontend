@@ -22,7 +22,7 @@ import forms.declaration.PersonPresentingGoodsDetails
 import forms.declaration.PersonPresentingGoodsDetails.form
 import models.DeclarationType.CLEARANCE
 import models.requests.JourneyRequest
-import models.{ExportsDeclaration, Mode}
+import models.ExportsDeclaration
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.cache.ExportsCacheService
@@ -43,21 +43,20 @@ class PersonPresentingGoodsDetailsController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
-  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(CLEARANCE)) { implicit request =>
+  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType(CLEARANCE)) { implicit request =>
     val frm = form().withSubmissionErrors()
     request.cacheModel.parties.personPresentingGoodsDetails match {
-      case Some(data) => Ok(personPresentingGoodsDetailsPage(mode, frm.fill(data)))
-      case _          => Ok(personPresentingGoodsDetailsPage(mode, frm))
+      case Some(data) => Ok(personPresentingGoodsDetailsPage(frm.fill(data)))
+      case _          => Ok(personPresentingGoodsDetailsPage(frm))
     }
   }
 
-  def submitForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(CLEARANCE)).async { implicit request =>
+  def submitForm(): Action[AnyContent] = (authenticate andThen journeyType(CLEARANCE)).async { implicit request =>
     form()
       .bindFromRequest()
       .fold(
-        formWithErrors => Future.successful(BadRequest(personPresentingGoodsDetailsPage(mode, formWithErrors))),
-        validData =>
-          updateCache(validData).map(_ => navigator.continueTo(mode, controllers.declaration.routes.ExporterEoriNumberController.displayPage))
+        formWithErrors => Future.successful(BadRequest(personPresentingGoodsDetailsPage(formWithErrors))),
+        validData => updateCache(validData).map(_ => navigator.continueTo(controllers.declaration.routes.ExporterEoriNumberController.displayPage))
       )
   }
 

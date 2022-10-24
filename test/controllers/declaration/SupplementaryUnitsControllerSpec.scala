@@ -24,7 +24,6 @@ import controllers.routes.RootController
 import forms.declaration.commodityMeasure.SupplementaryUnits
 import forms.declaration.commodityMeasure.SupplementaryUnits.{hasSupplementaryUnits, supplementaryUnits}
 import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
-import models.Mode
 import models.declaration.CommodityMeasure
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -60,8 +59,8 @@ class SupplementaryUnitsControllerSpec extends ControllerSpec {
     super.beforeEach()
     authorizedUser()
     when(tariffApiService.retrieveCommodityInfoIfAny(any(), any())).thenReturn(Future.successful(Left(CommodityCodeNotFound)))
-    when(supplementaryUnitsPage.apply(any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
-    when(supplementaryUnitsYesNoPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(supplementaryUnitsPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(supplementaryUnitsYesNoPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -71,19 +70,19 @@ class SupplementaryUnitsControllerSpec extends ControllerSpec {
 
   def responseMandatoryForm: Form[SupplementaryUnits] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[SupplementaryUnits]])
-    verify(supplementaryUnitsPage).apply(any(), any(), captor.capture(), any())(any(), any())
+    verify(supplementaryUnitsPage).apply(any(), captor.capture(), any())(any(), any())
     captor.getValue
   }
 
   def responseYesNoForm: Form[SupplementaryUnits] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[SupplementaryUnits]])
-    verify(supplementaryUnitsYesNoPage).apply(any(), any(), captor.capture())(any(), any())
+    verify(supplementaryUnitsYesNoPage).apply(any(), captor.capture())(any(), any())
     captor.getValue
   }
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration())
-    await(controller.displayPage(Mode.Normal, "itemId")(request))
+    await(controller.displayPage("itemId")(request))
     responseYesNoForm
   }
 
@@ -98,7 +97,7 @@ class SupplementaryUnitsControllerSpec extends ControllerSpec {
           "no supplementary units are cached yet" in {
             withNewCaching(request.cacheModel)
 
-            val result = controller.displayPage(Mode.Normal, "itemdId")(getRequest())
+            val result = controller.displayPage("itemdId")(getRequest())
 
             status(result) must be(OK)
             responseYesNoForm.value mustBe empty
@@ -111,7 +110,7 @@ class SupplementaryUnitsControllerSpec extends ControllerSpec {
             val item = anItem(withCommodityMeasure(commodityMeasure))
             withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
 
-            val result = controller.displayPage(Mode.Normal, item.id)(getRequest())
+            val result = controller.displayPage(item.id)(getRequest())
 
             status(result) must be(OK)
             responseYesNoForm.value mustBe Some(SupplementaryUnits(Some("100")))
@@ -127,7 +126,7 @@ class SupplementaryUnitsControllerSpec extends ControllerSpec {
 
             withNewCaching(request.cacheModel)
 
-            val result = controller.displayPage(Mode.Normal, "itemId")(getRequest())
+            val result = controller.displayPage("itemId")(getRequest())
 
             status(result) must be(OK)
             responseMandatoryForm.value mustBe empty
@@ -139,7 +138,7 @@ class SupplementaryUnitsControllerSpec extends ControllerSpec {
             when(tariffApiService.retrieveCommodityInfoIfAny(any(), any())).thenReturn(Future.successful(Right(commodityInfo)))
 
             withNewCaching(aDeclaration())
-            await(controller.displayPage(Mode.Normal, "itemId")(getRequestWithSubmissionErrors))
+            await(controller.displayPage("itemId")(getRequestWithSubmissionErrors))
             responseMandatoryForm.errors mustBe Seq(submissionFormError)
           }
         }
@@ -152,7 +151,7 @@ class SupplementaryUnitsControllerSpec extends ControllerSpec {
             val item = anItem(withCommodityMeasure(commodityMeasure))
             withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
 
-            val result = controller.displayPage(Mode.Normal, item.id)(getRequest())
+            val result = controller.displayPage(item.id)(getRequest())
 
             status(result) must be(OK)
             responseMandatoryForm.value mustBe Some(SupplementaryUnits(Some("100")))
@@ -166,10 +165,10 @@ class SupplementaryUnitsControllerSpec extends ControllerSpec {
 
           withNewCaching(request.cacheModel)
 
-          val response = controller.displayPage(Mode.Normal, "itemId").apply(getRequest())
+          val response = controller.displayPage("itemId").apply(getRequest())
 
           await(response) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe AdditionalInformationRequiredController.displayPage(Mode.Normal, "itemId")
+          thePageNavigatedTo mustBe AdditionalInformationRequiredController.displayPage("itemId")
         }
       }
     }
@@ -178,7 +177,7 @@ class SupplementaryUnitsControllerSpec extends ControllerSpec {
       "redirect to the Choice page at '/'" in {
         withNewCaching(request.cacheModel)
 
-        val response = controller.displayPage(Mode.Normal, "itemId").apply(getRequest())
+        val response = controller.displayPage("itemId").apply(getRequest())
 
         status(response) must be(SEE_OTHER)
         redirectLocation(response) mustBe Some(RootController.displayPage().url)
@@ -197,10 +196,10 @@ class SupplementaryUnitsControllerSpec extends ControllerSpec {
 
             val correctForm = Json.obj(hasSupplementaryUnits -> "Yes", supplementaryUnits -> "100")
 
-            val result = controller.submitPage(Mode.Normal, "itemId")(postRequest(correctForm))
+            val result = controller.submitPage("itemId")(postRequest(correctForm))
 
             await(result) mustBe aRedirectToTheNextPage
-            thePageNavigatedTo mustBe AdditionalInformationRequiredController.displayPage(Mode.Normal, "itemId")
+            thePageNavigatedTo mustBe AdditionalInformationRequiredController.displayPage("itemId")
           }
         }
 
@@ -210,10 +209,10 @@ class SupplementaryUnitsControllerSpec extends ControllerSpec {
 
             val incorrectForm = Json.obj(hasSupplementaryUnits -> "Yes", supplementaryUnits -> "abcd")
 
-            val result = controller.submitPage(Mode.Normal, "itemId")(postRequest(incorrectForm))
+            val result = controller.submitPage("itemId")(postRequest(incorrectForm))
 
             status(result) must be(BAD_REQUEST)
-            verify(supplementaryUnitsYesNoPage).apply(any(), any(), any())(any(), any())
+            verify(supplementaryUnitsYesNoPage).apply(any(), any())(any(), any())
           }
         }
       }
@@ -228,10 +227,10 @@ class SupplementaryUnitsControllerSpec extends ControllerSpec {
 
             val correctForm = Json.obj(supplementaryUnits -> "100")
 
-            val result = controller.submitPage(Mode.Normal, "itemId")(postRequest(correctForm))
+            val result = controller.submitPage("itemId")(postRequest(correctForm))
 
             await(result) mustBe aRedirectToTheNextPage
-            thePageNavigatedTo mustBe AdditionalInformationRequiredController.displayPage(Mode.Normal, "itemId")
+            thePageNavigatedTo mustBe AdditionalInformationRequiredController.displayPage("itemId")
           }
         }
 
@@ -243,10 +242,10 @@ class SupplementaryUnitsControllerSpec extends ControllerSpec {
 
             val incorrectForm = Json.obj(supplementaryUnits -> "abcd")
 
-            val result = controller.submitPage(Mode.Normal, "itemId")(postRequest(incorrectForm))
+            val result = controller.submitPage("itemId")(postRequest(incorrectForm))
 
             status(result) must be(BAD_REQUEST)
-            verify(supplementaryUnitsPage).apply(any(), any(), any(), any())(any(), any())
+            verify(supplementaryUnitsPage).apply(any(), any(), any())(any(), any())
           }
         }
       }
@@ -256,7 +255,7 @@ class SupplementaryUnitsControllerSpec extends ControllerSpec {
       "redirect to the Choice page at '/'" in {
         withNewCaching(request.cacheModel)
 
-        val response = controller.submitPage(Mode.Normal, "itemId").apply(getRequest())
+        val response = controller.submitPage("itemId").apply(getRequest())
 
         status(response) must be(SEE_OTHER)
         redirectLocation(response) mustBe Some(RootController.displayPage().url)

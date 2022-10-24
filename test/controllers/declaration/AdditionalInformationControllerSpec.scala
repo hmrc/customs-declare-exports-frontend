@@ -21,7 +21,6 @@ import forms.common.YesNoAnswer
 import forms.declaration.AdditionalInformation
 import mock.ErrorHandlerMocks
 import models.DeclarationType._
-import models.Mode
 import models.declaration.AdditionalInformationData
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -55,9 +54,9 @@ class AdditionalInformationControllerSpec extends ControllerSpec with ErrorHandl
     authorizedUser()
     withNewCaching(aDeclaration())
 
-    when(mockSummaryPage.apply(any(), any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
-    when(navigator.backLinkForAdditionalInformation(any(), any(), any())(any(), any()))
-      .thenReturn(Future.successful(routes.CommodityMeasureController.displayPage(Mode.Normal, itemId)))
+    when(mockSummaryPage.apply(any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(navigator.backLinkForAdditionalInformation(any(), any())(any(), any()))
+      .thenReturn(Future.successful(routes.CommodityMeasureController.displayPage(itemId)))
   }
 
   override protected def afterEach(): Unit = {
@@ -67,32 +66,30 @@ class AdditionalInformationControllerSpec extends ControllerSpec with ErrorHandl
 
   def theResponseForm: Form[YesNoAnswer] = {
     val formCaptor = ArgumentCaptor.forClass(classOf[Form[YesNoAnswer]])
-    verify(mockSummaryPage).apply(any(), any(), formCaptor.capture(), any(), any())(any(), any())
+    verify(mockSummaryPage).apply(any(), formCaptor.capture(), any(), any())(any(), any())
     formCaptor.getValue
   }
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     val item = anItem(withAdditionalInformation(additionalInformation))
     withNewCaching(aDeclaration(withItems(item)))
-    await(controller.displayPage(Mode.Normal, item.id)(request))
+    await(controller.displayPage(item.id)(request))
     theResponseForm
   }
 
   private def verifyPageInvoked(numberOfTimes: Int = 1): HtmlFormat.Appendable =
-    verify(mockSummaryPage, times(numberOfTimes)).apply(any(), any(), any(), any(), any())(any(), any())
+    verify(mockSummaryPage, times(numberOfTimes)).apply(any(), any(), any(), any())(any(), any())
 
   private val additionalInformation = AdditionalInformation("54321", "Some description")
 
   "AdditionalInformation controller" should {
 
     "return 200 (OK)" when {
-
       "display page method is invoked with data in cache" in {
-
         val item = anItem(withAdditionalInformation(additionalInformation))
         withNewCaching(aDeclaration(withItems(item)))
 
-        val result = controller.displayPage(Mode.Normal, item.id)(getRequest())
+        val result = controller.displayPage(item.id)(getRequest())
 
         status(result) mustBe OK
         verifyPageInvoked()
@@ -100,11 +97,9 @@ class AdditionalInformationControllerSpec extends ControllerSpec with ErrorHandl
     }
 
     "return 400 (BAD_REQUEST)" when {
-
       "user provide wrong action" in {
-
         val requestBody = Json.obj("yesNo" -> "invalid")
-        val result = controller.submitForm(Mode.Normal, itemId)(postRequest(requestBody))
+        val result = controller.submitForm(itemId)(postRequest(requestBody))
 
         status(result) mustBe BAD_REQUEST
         verifyPageInvoked()
@@ -114,21 +109,20 @@ class AdditionalInformationControllerSpec extends ControllerSpec with ErrorHandl
     "return 303 (SEE_OTHER)" when {
 
       "user has not answered 'do you need to add additional information'" in {
-
-        val result = controller.displayPage(Mode.Normal, itemId)(getRequest())
+        val result = controller.displayPage(itemId)(getRequest())
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe routes.AdditionalInformationRequiredController.displayPage(Mode.Normal, itemId)
+        thePageNavigatedTo mustBe routes.AdditionalInformationRequiredController.displayPage(itemId)
       }
 
       "no additional information items in the cache" in {
         val item = anItem(withItemId(itemId), withAdditionalInformationData(AdditionalInformationData(Seq.empty)))
         withNewCaching(aDeclaration(withItems(item)))
 
-        val result = controller.displayPage(Mode.Normal, itemId)(getRequest())
+        val result = controller.displayPage(itemId)(getRequest())
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe routes.AdditionalInformationAddController.displayPage(Mode.Normal, itemId)
+        thePageNavigatedTo mustBe routes.AdditionalInformationAddController.displayPage(itemId)
       }
 
       "user submits valid Yes answer" in {
@@ -136,10 +130,10 @@ class AdditionalInformationControllerSpec extends ControllerSpec with ErrorHandl
         withNewCaching(aDeclaration(withItems(item)))
 
         val requestBody = Json.obj("yesNo" -> "Yes")
-        val result = controller.submitForm(Mode.Normal, itemId)(postRequest(requestBody))
+        val result = controller.submitForm(itemId)(postRequest(requestBody))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe routes.AdditionalInformationAddController.displayPage(Mode.Normal, itemId)
+        thePageNavigatedTo mustBe routes.AdditionalInformationAddController.displayPage(itemId)
       }
 
       "user submits valid Yes answer in error-fix mode" in {
@@ -147,40 +141,35 @@ class AdditionalInformationControllerSpec extends ControllerSpec with ErrorHandl
         withNewCaching(aDeclaration(withItems(item)))
 
         val requestBody = Json.obj("yesNo" -> "Yes")
-        val result = controller.submitForm(Mode.ErrorFix, itemId)(postRequest(requestBody))
+        val result = controller.submitForm(itemId)(postRequest(requestBody))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe routes.AdditionalInformationAddController.displayPage(Mode.ErrorFix, itemId)
+        thePageNavigatedTo mustBe routes.AdditionalInformationAddController.displayPage(itemId)
       }
 
       onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, SUPPLEMENTARY)(aDeclaration()) { implicit request =>
         "user submits valid No answer redirect to `Is License Required?` " in {
-
           withNewCaching(aDeclarationAfter(request.cacheModel, withItems(anItem(withAdditionalInformation(additionalInformation)))))
 
           val requestBody = Json.obj("yesNo" -> "No")
-          val result = controller.submitForm(Mode.Normal, itemId)(postRequest(requestBody))
+          val result = controller.submitForm(itemId)(postRequest(requestBody))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe routes.IsLicenceRequiredController.displayPage(Mode.Normal, itemId)
+          thePageNavigatedTo mustBe routes.IsLicenceRequiredController.displayPage(itemId)
         }
-
       }
 
       onJourney(CLEARANCE)(aDeclaration()) { implicit request =>
         "user submits valid No answer redirect to `Additional Documents` " in {
-
           withNewCaching(aDeclarationAfter(request.cacheModel, withItems(anItem(withAdditionalInformation(additionalInformation)))))
 
           val requestBody = Json.obj("yesNo" -> "No")
-          val result = controller.submitForm(Mode.Normal, itemId)(postRequest(requestBody))
+          val result = controller.submitForm(itemId)(postRequest(requestBody))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe routes.AdditionalDocumentsController.displayPage(Mode.Normal, itemId)
+          thePageNavigatedTo mustBe routes.AdditionalDocumentsController.displayPage(itemId)
         }
-
       }
-
     }
   }
 }

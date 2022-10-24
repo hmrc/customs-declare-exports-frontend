@@ -24,7 +24,7 @@ import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
 import forms.declaration.declarationHolder.DeclarationHolder
 import models.DeclarationType.{CLEARANCE, OCCASIONAL}
 import models.declaration.EoriSource
-import models.{ExportsDeclaration, Mode}
+import models.ExportsDeclaration
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -52,7 +52,7 @@ class DeclarationHolderRequiredControllerSpec extends ControllerSpec with Option
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    when(mockPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockPage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -62,18 +62,18 @@ class DeclarationHolderRequiredControllerSpec extends ControllerSpec with Option
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration(withType(OCCASIONAL), withDeclarationHolders()))
-    await(controller.displayPage(Mode.Normal)(request))
+    await(controller.displayPage()(request))
     theResponseForm
   }
 
   def theResponseForm: Form[YesNoAnswer] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[YesNoAnswer]])
-    verify(mockPage).apply(any(), captor.capture())(any(), any())
+    verify(mockPage).apply(captor.capture())(any(), any())
     captor.getValue
   }
 
   private def verifyPageInvoked(numberOfTimes: Int = 1): HtmlFormat.Appendable =
-    verify(mockPage, times(numberOfTimes)).apply(any(), any())(any(), any())
+    verify(mockPage, times(numberOfTimes)).apply(any())(any(), any())
 
   "DeclarationHolderRequiredController.displayPage" when {
 
@@ -100,9 +100,9 @@ class DeclarationHolderRequiredControllerSpec extends ControllerSpec with Option
             } else
               "redirect to the /add-authorisations-required page" in {
                 withNewCaching(declaration)
-                val result = controller.displayPage(Mode.Normal)(getRequest())
+                val result = controller.displayPage()(getRequest())
                 await(result) mustBe aRedirectToTheNextPage
-                thePageNavigatedTo mustBe DeclarationHolderAddController.displayPage(Mode.Normal)
+                thePageNavigatedTo mustBe DeclarationHolderAddController.displayPage()
               }
           }
         }
@@ -122,10 +122,10 @@ class DeclarationHolderRequiredControllerSpec extends ControllerSpec with Option
         "redirect to the /add-authorisations-required page" in {
           withNewCaching(withRequest(additionalType).cacheModel)
 
-          val result = controller.displayPage(Mode.Normal)(getRequest())
+          val result = controller.displayPage()(getRequest())
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe DeclarationHolderAddController.displayPage(Mode.Normal)
+          thePageNavigatedTo mustBe DeclarationHolderAddController.displayPage()
         }
       }
     }
@@ -134,7 +134,7 @@ class DeclarationHolderRequiredControllerSpec extends ControllerSpec with Option
       "return 200 (OK)" in {
         withNewCaching(declaration)
 
-        val result = controller.displayPage(Mode.Normal)(getRequest())
+        val result = controller.displayPage()(getRequest())
 
         status(result) mustBe OK
         verifyPageInvoked()
@@ -146,10 +146,10 @@ class DeclarationHolderRequiredControllerSpec extends ControllerSpec with Option
           val declarationHolder = DeclarationHolder(Some("ACE"), Some(Eori("GB56523343784324")), Some(EoriSource.OtherEori))
           withNewCaching(aDeclarationAfter(declaration, withDeclarationHolders(declarationHolder)))
 
-          val result = controller.displayPage(Mode.Normal)(getRequest())
+          val result = controller.displayPage()(getRequest())
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe DeclarationHolderSummaryController.displayPage(Mode.Normal)
+          thePageNavigatedTo mustBe DeclarationHolderSummaryController.displayPage()
         }
       }
 
@@ -186,10 +186,10 @@ class DeclarationHolderRequiredControllerSpec extends ControllerSpec with Option
           withNewCaching(declaration)
 
           val body = Json.obj("yesNo" -> "Yes")
-          val result = controller.submitForm(Mode.Normal)(postRequest(body))
+          val result = controller.submitForm()(postRequest(body))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe DeclarationHolderAddController.displayPage(Mode.Normal)
+          thePageNavigatedTo mustBe DeclarationHolderAddController.displayPage()
         }
       }
 
@@ -199,10 +199,10 @@ class DeclarationHolderRequiredControllerSpec extends ControllerSpec with Option
           withNewCaching(declaration)
 
           val body = Json.obj("yesNo" -> "No")
-          val result = controller.submitForm(Mode.Normal)(postRequest(body))
+          val result = controller.submitForm()(postRequest(body))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe DestinationCountryController.displayPage(Mode.Normal)
+          thePageNavigatedTo mustBe DestinationCountryController.displayPage()
         }
       }
 
@@ -212,7 +212,7 @@ class DeclarationHolderRequiredControllerSpec extends ControllerSpec with Option
           withNewCaching(declaration)
 
           val body = Json.obj("yesNo" -> "")
-          val result = controller.submitForm(Mode.Normal)(postRequest(body))
+          val result = controller.submitForm()(postRequest(body))
 
           status(result) mustBe BAD_REQUEST
           verifyPageInvoked()

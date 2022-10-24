@@ -39,15 +39,15 @@
     appConfig: AppConfig
 )
 
-@(mode: Mode, form: Form[Mucr])(implicit request: JourneyRequest[_], messages: Messages)
+@(form: Form[Mucr])(implicit request: JourneyRequest[_], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
 @govukLayout(
     title = Title("declaration.mucr.title", "declaration.section.1", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(Mucr, mode)))) {
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(Mucr)))) {
 
-    @formHelper(action = routes.MucrController.submitForm(mode), 'autoComplete -> "off") {
+    @formHelper(action = routes.MucrController.submitForm(), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
         @sectionHeader(messages("declaration.section.1"))
@@ -68,6 +68,6 @@
 
         @tariffExpander(Mucr, request.declarationType)(messages, appConfig)
 
-        @saveButtons(mode)
+        @saveButtons()
     }
 }

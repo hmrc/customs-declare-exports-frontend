@@ -21,7 +21,6 @@ import connectors.CodeListConnector
 import controllers.declaration.routes.{LocationOfGoodsController, RoutingCountriesController}
 import controllers.helpers.Remove
 import forms.declaration.countries.{Country => FormCountry}
-import models.Mode
 import models.codes.Country
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -57,8 +56,8 @@ class RoutingCountriesControllerSpec extends ControllerSpec {
     super.beforeEach()
 
     authorizedUser()
-    when(mockRoutingQuestionPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
-    when(mockCountryOfRoutingPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockRoutingQuestionPage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockCountryOfRoutingPage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
     when(mockCodeListConnector.getCountryCodes(any()))
       .thenReturn(ListMap("GB" -> Country("United Kingdom", "GB"), "FR" -> Country("France", "FR"), "IR" -> Country("Ireland", "IE")))
   }
@@ -71,13 +70,13 @@ class RoutingCountriesControllerSpec extends ControllerSpec {
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration())
-    await(controller.displayRoutingQuestion(Mode.Normal)(request))
+    await(controller.displayRoutingQuestion()(request))
     theRoutingQuestionForm
   }
 
   def theRoutingQuestionForm: Form[Boolean] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[Boolean]])
-    verify(mockRoutingQuestionPage).apply(any(), captor.capture())(any(), any())
+    verify(mockRoutingQuestionPage).apply(captor.capture())(any(), any())
     captor.getValue
   }
 
@@ -88,7 +87,7 @@ class RoutingCountriesControllerSpec extends ControllerSpec {
       "user doesn't have any countries in cache" in {
         withNewCaching(aDeclaration(withRoutingQuestion(false), withoutRoutingCountries()))
 
-        val result = controller.displayRoutingQuestion(Mode.Normal)(getRequest())
+        val result = controller.displayRoutingQuestion()(getRequest())
 
         status(result) mustBe OK
         theRoutingQuestionForm.value mustBe Some(false)
@@ -97,10 +96,10 @@ class RoutingCountriesControllerSpec extends ControllerSpec {
       "user answer Yes on the Routing Question and try to get routing country page" in {
         withNewCaching(aDeclaration(withRoutingQuestion(), withoutRoutingCountries()))
 
-        val result = controller.displayRoutingCountry(Mode.Normal)(getRequest())
+        val result = controller.displayRoutingCountry()(getRequest())
 
         status(result) mustBe OK
-        verify(mockCountryOfRoutingPage).apply(any(), any())(any(), any())
+        verify(mockCountryOfRoutingPage).apply(any())(any(), any())
       }
     }
 
@@ -111,7 +110,7 @@ class RoutingCountriesControllerSpec extends ControllerSpec {
 
         val incorrectForm = JsObject(Seq("answer" -> JsString("incorrect")))
 
-        val result = controller.submitRoutingAnswer(Mode.Normal)(postRequest(incorrectForm))
+        val result = controller.submitRoutingAnswer()(postRequest(incorrectForm))
 
         status(result) mustBe BAD_REQUEST
       }
@@ -121,7 +120,7 @@ class RoutingCountriesControllerSpec extends ControllerSpec {
 
         val incorrectForm = JsObject(Seq("countryCode" -> JsString("incorrect")))
 
-        val result = controller.submitRoutingAnswer(Mode.Normal)(postRequest(incorrectForm))
+        val result = controller.submitRoutingAnswer()(postRequest(incorrectForm))
 
         status(result) mustBe BAD_REQUEST
       }
@@ -131,7 +130,7 @@ class RoutingCountriesControllerSpec extends ControllerSpec {
 
         val duplicatedForm = JsObject(Seq("countryCode" -> JsString("PL")))
 
-        val result = controller.submitRoutingAnswer(Mode.Normal)(postRequest(duplicatedForm))
+        val result = controller.submitRoutingAnswer()(postRequest(duplicatedForm))
 
         status(result) mustBe BAD_REQUEST
       }
@@ -140,7 +139,7 @@ class RoutingCountriesControllerSpec extends ControllerSpec {
         "there are no countries in list" in {
           withNewCaching(aDeclaration(withRoutingQuestion()))
 
-          val result = controller.submitRoutingCountry(Mode.Normal)(postRequestAsFormUrlEncoded(Seq(saveAndContinueActionUrlEncoded): _*))
+          val result = controller.submitRoutingCountry()(postRequestAsFormUrlEncoded(Seq(saveAndContinueActionUrlEncoded): _*))
 
           status(result) mustBe BAD_REQUEST
 
@@ -157,7 +156,7 @@ class RoutingCountriesControllerSpec extends ControllerSpec {
 
           val correctForm = JsObject(Seq("answer" -> JsString("Yes")))
 
-          val result = controller.submitRoutingAnswer(Mode.Normal)(postRequest(correctForm))
+          val result = controller.submitRoutingAnswer()(postRequest(correctForm))
 
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe RoutingCountriesController.displayRoutingCountry()
@@ -168,7 +167,7 @@ class RoutingCountriesControllerSpec extends ControllerSpec {
 
           val correctForm = JsObject(Seq("answer" -> JsString("No")))
 
-          val result = controller.submitRoutingAnswer(Mode.Normal)(postRequest(correctForm))
+          val result = controller.submitRoutingAnswer()(postRequest(correctForm))
 
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe LocationOfGoodsController.displayPage()
@@ -179,10 +178,10 @@ class RoutingCountriesControllerSpec extends ControllerSpec {
 
           val correctForm = JsObject(Seq("answer" -> JsString("Yes")))
 
-          val result = controller.submitRoutingAnswer(Mode.ErrorFix)(postRequest(correctForm))
+          val result = controller.submitRoutingAnswer()(postRequest(correctForm))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe RoutingCountriesController.displayRoutingCountry(Mode.ErrorFix)
+          thePageNavigatedTo mustBe RoutingCountriesController.displayRoutingCountry
         }
       }
 
@@ -191,7 +190,7 @@ class RoutingCountriesControllerSpec extends ControllerSpec {
         "without Routing Question" in {
           withNewCaching(aDeclaration(withoutRoutingQuestion()))
 
-          val result = controller.displayRoutingCountry(Mode.Normal)(getRequest())
+          val result = controller.displayRoutingCountry()(getRequest())
 
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe RoutingCountriesController.displayRoutingQuestion()
@@ -200,7 +199,7 @@ class RoutingCountriesControllerSpec extends ControllerSpec {
         "No for Routing Question" in {
           withNewCaching(aDeclaration(withRoutingQuestion(false)))
 
-          val result = controller.displayRoutingCountry(Mode.Normal)(getRequest())
+          val result = controller.displayRoutingCountry()(getRequest())
 
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe RoutingCountriesController.displayRoutingQuestion()
@@ -215,7 +214,7 @@ class RoutingCountriesControllerSpec extends ControllerSpec {
 
             val correctForm = Seq("countryCode" -> "GB", addActionUrlEncoded())
 
-            val result = controller.submitRoutingCountry(Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
+            val result = controller.submitRoutingCountry()(postRequestAsFormUrlEncoded(correctForm: _*))
 
             await(result) mustBe aRedirectToTheNextPage
             thePageNavigatedTo mustBe RoutingCountriesController.displayRoutingCountry()
@@ -230,7 +229,7 @@ class RoutingCountriesControllerSpec extends ControllerSpec {
 
             val correctForm = Seq("countryCode" -> "IE", addActionUrlEncoded())
 
-            val result = controller.submitRoutingCountry(Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
+            val result = controller.submitRoutingCountry()(postRequestAsFormUrlEncoded(correctForm: _*))
 
             await(result) mustBe aRedirectToTheNextPage
             thePageNavigatedTo mustBe RoutingCountriesController.displayRoutingCountry()
@@ -250,7 +249,7 @@ class RoutingCountriesControllerSpec extends ControllerSpec {
         "country removed not in list" in {
           withNewCaching(aDeclaration(withRoutingQuestion(), withRoutingCountries(Seq(FormCountry(Some("PL")), FormCountry(Some("GB"))))))
 
-          val result = controller.submitRoutingCountry(Mode.Normal)(postRequestAsFormUrlEncoded(Seq(removeAction): _*))
+          val result = controller.submitRoutingCountry()(postRequestAsFormUrlEncoded(Seq(removeAction): _*))
 
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe RoutingCountriesController.displayRoutingCountry()
@@ -264,7 +263,7 @@ class RoutingCountriesControllerSpec extends ControllerSpec {
         "removing country that exists in cache" in {
           withNewCaching(aDeclaration(withRoutingQuestion(), withRoutingCountries(Seq(FormCountry(Some("GB")), FormCountry(Some("FR"))))))
 
-          val result = controller.submitRoutingCountry(Mode.Normal)(postRequestAsFormUrlEncoded(removeAction))
+          val result = controller.submitRoutingCountry()(postRequestAsFormUrlEncoded(removeAction))
 
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe RoutingCountriesController.displayRoutingCountry()
@@ -284,7 +283,7 @@ class RoutingCountriesControllerSpec extends ControllerSpec {
 
             val correctForm = Seq("countryCode" -> "IE", saveAndContinueActionUrlEncoded)
 
-            val result = controller.submitRoutingCountry(Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
+            val result = controller.submitRoutingCountry()(postRequestAsFormUrlEncoded(correctForm: _*))
 
             await(result) mustBe aRedirectToTheNextPage
             thePageNavigatedTo mustBe LocationOfGoodsController.displayPage()
@@ -300,7 +299,7 @@ class RoutingCountriesControllerSpec extends ControllerSpec {
 
             val correctForm = Seq("countryCode" -> "IE", saveAndContinueActionUrlEncoded)
 
-            val result = controller.submitRoutingCountry(Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
+            val result = controller.submitRoutingCountry()(postRequestAsFormUrlEncoded(correctForm: _*))
 
             await(result) mustBe aRedirectToTheNextPage
             thePageNavigatedTo mustBe LocationOfGoodsController.displayPage()
@@ -316,7 +315,7 @@ class RoutingCountriesControllerSpec extends ControllerSpec {
 
           withNewCaching(aDeclaration(withRoutingQuestion(), withRoutingCountries()))
 
-          val result = controller.submitRoutingCountry(Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
+          val result = controller.submitRoutingCountry()(postRequestAsFormUrlEncoded(correctForm: _*))
 
           verifyTheCacheIsUnchanged()
 

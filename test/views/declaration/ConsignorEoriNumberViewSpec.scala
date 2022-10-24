@@ -22,8 +22,6 @@ import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.consignor.ConsignorEoriNumber
 import forms.declaration.consignor.ConsignorEoriNumber.form
 import models.DeclarationType.CLEARANCE
-import models.Mode
-import models.Mode.Normal
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
@@ -38,10 +36,10 @@ class ConsignorEoriNumberViewSpec extends PageWithButtonsSpec with ExportsTestHe
 
   private val page: consignor_eori_number = instanceOf[consignor_eori_number]
 
-  override val typeAndViewInstance = (CLEARANCE, page(Normal, form())(_, _))
+  override val typeAndViewInstance = (CLEARANCE, page(form())(_, _))
 
-  private def createView(frm: Form[ConsignorEoriNumber] = form(), mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document =
-    page(mode, frm)(request, messages)
+  private def createView(frm: Form[ConsignorEoriNumber] = form())(implicit request: JourneyRequest[_]): Document =
+    page(frm)(request, messages)
 
   "Consignor Eori Number View" should {
 
@@ -81,11 +79,10 @@ class ConsignorEoriNumberViewSpec extends PageWithButtonsSpec with ExportsTestHe
         val backButton = view.getElementById("back-link")
 
         backButton must containMessage("site.backToPreviousQuestion")
-        backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.IsExsController.displayPage(Normal))
+        backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.IsExsController.displayPage())
       }
 
-      val createViewWithMode: Mode => Document = mode => createView(mode = mode)
-      checkAllSaveButtonsAreDisplayed(createViewWithMode)
+      checkAllSaveButtonsAreDisplayed(createView())
 
       "handle invalid input" should {
 

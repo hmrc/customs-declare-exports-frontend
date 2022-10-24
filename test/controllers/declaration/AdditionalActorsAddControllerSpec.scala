@@ -21,7 +21,7 @@ import forms.common.Eori
 import forms.declaration.DeclarationAdditionalActors
 import mock.ErrorHandlerMocks
 import models.declaration.DeclarationAdditionalActorsData
-import models.{DeclarationType, Mode}
+import models.DeclarationType
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
@@ -50,7 +50,7 @@ class AdditionalActorsAddControllerSpec extends ControllerSpec with ErrorHandler
     authorizedUser()
     withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY)))
 
-    when(declarationAdditionalActorsPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(declarationAdditionalActorsPage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -60,13 +60,13 @@ class AdditionalActorsAddControllerSpec extends ControllerSpec with ErrorHandler
 
   def theResponseForm: Form[DeclarationAdditionalActors] = {
     val formCaptor = ArgumentCaptor.forClass(classOf[Form[DeclarationAdditionalActors]])
-    verify(declarationAdditionalActorsPage).apply(any(), formCaptor.capture())(any(), any())
+    verify(declarationAdditionalActorsPage).apply(formCaptor.capture())(any(), any())
     formCaptor.getValue
   }
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration())
-    await(controller.displayPage(Mode.Normal)(request))
+    await(controller.displayPage()(request))
     theResponseForm
   }
 
@@ -84,29 +84,25 @@ class AdditionalActorsAddControllerSpec extends ControllerSpec with ErrorHandler
     "return 200 (OK)" when {
 
       "display page method is invoked with empty cache" in {
-
-        val result = controller.displayPage(Mode.Normal)(getRequest())
+        val result = controller.displayPage()(getRequest())
 
         status(result) must be(OK)
       }
 
       "display page method is invoked with data in cache" in {
-
         withNewCaching(declarationWithActor)
 
-        val result = controller.displayPage(Mode.Normal)(getRequest())
+        val result = controller.displayPage()(getRequest())
 
         status(result) must be(OK)
       }
     }
 
     "return 400 (BAD_REQUEST)" when {
-
       "user provide wrong action" in {
-
         val wrongAction = Seq(("eori", "GB123456"), ("partyType", "CS"), ("WrongAction", ""))
 
-        val result = controller.saveForm(Mode.Normal)(postRequestAsFormUrlEncoded(wrongAction: _*))
+        val result = controller.saveForm()(postRequestAsFormUrlEncoded(wrongAction: _*))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -115,33 +111,30 @@ class AdditionalActorsAddControllerSpec extends ControllerSpec with ErrorHandler
     "return 400 (BAD_REQUEST) during saving" when {
 
       "user put incorrect data" in {
-
         val longerEori = TestHelper.createRandomAlphanumericString(18)
         val wrongAction = Seq(("eoriCS", longerEori), ("partyType", "CS"), saveAndContinueActionUrlEncoded)
 
-        val result = controller.saveForm(Mode.Normal)(postRequestAsFormUrlEncoded(wrongAction: _*))
+        val result = controller.saveForm()(postRequestAsFormUrlEncoded(wrongAction: _*))
 
         status(result) must be(BAD_REQUEST)
       }
 
       "user put duplicated item" in {
-
         withNewCaching(declarationWithActor)
 
         val duplication = Seq(("eoriCS", eori), ("partyType", "CS"), saveAndContinueActionUrlEncoded)
 
-        val result = controller.saveForm(Mode.Normal)(postRequestAsFormUrlEncoded(duplication: _*))
+        val result = controller.saveForm()(postRequestAsFormUrlEncoded(duplication: _*))
 
         status(result) must be(BAD_REQUEST)
       }
 
       "user reach maximum amount of items" in {
-
         withNewCaching(maxAmountOfItems)
 
         val correctForm = Seq(("eoriCS", "GB123456"), ("partyType", "CS"), saveAndContinueActionUrlEncoded)
 
-        val result = controller.saveForm(Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
+        val result = controller.saveForm()(postRequestAsFormUrlEncoded(correctForm: _*))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -150,43 +143,39 @@ class AdditionalActorsAddControllerSpec extends ControllerSpec with ErrorHandler
     "return 303 (SEE_OTHER)" when {
 
       "user add correct consolidator" in {
-
         val correctForm = Seq(("eoriCS", eori), ("partyType", "CS"), saveAndContinueActionUrlEncoded)
 
-        val result = controller.saveForm(Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
+        val result = controller.saveForm()(postRequestAsFormUrlEncoded(correctForm: _*))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalActorsSummaryController.displayPage(Mode.Normal)
+        thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalActorsSummaryController.displayPage()
       }
 
       "user add correct manufacturer" in {
-
         val correctForm = Seq(("eoriMF", eori), ("partyType", "MF"), saveAndContinueActionUrlEncoded)
 
-        val result = controller.saveForm(Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
+        val result = controller.saveForm()(postRequestAsFormUrlEncoded(correctForm: _*))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalActorsSummaryController.displayPage(Mode.Normal)
+        thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalActorsSummaryController.displayPage()
       }
 
       "user add correct freight forwarder" in {
-
         val correctForm = Seq(("eoriFW", eori), ("partyType", "FW"), saveAndContinueActionUrlEncoded)
 
-        val result = controller.saveForm(Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
+        val result = controller.saveForm()(postRequestAsFormUrlEncoded(correctForm: _*))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalActorsSummaryController.displayPage(Mode.Normal)
+        thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalActorsSummaryController.displayPage()
       }
 
       "user add correct warehouse keeper" in {
-
         val correctForm = Seq(("eoriWH", eori), ("partyType", "WH"), saveAndContinueActionUrlEncoded)
 
-        val result = controller.saveForm(Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
+        val result = controller.saveForm()(postRequestAsFormUrlEncoded(correctForm: _*))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalActorsSummaryController.displayPage(Mode.Normal)
+        thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalActorsSummaryController.displayPage()
       }
     }
   }

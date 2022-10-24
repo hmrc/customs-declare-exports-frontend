@@ -21,8 +21,6 @@ import controllers.declaration.routes
 import forms.declaration.NactCode.form
 import forms.declaration.ZeroRatedForVat._
 import models.DeclarationType._
-import models.Mode
-import models.Mode.Normal
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import views.components.gds.Styles
@@ -33,10 +31,10 @@ class ZeroRatedForVatViewSpec extends PageWithButtonsSpec with Injector {
 
   val page = instanceOf[zero_rated_for_vat]
 
-  override val typeAndViewInstance = (STANDARD, page(Normal, itemId, form(), false)(_, _))
+  override val typeAndViewInstance = (STANDARD, page(itemId, form(), false)(_, _))
 
-  def createView(mode: Mode = Normal, restrictedForZeroVat: Boolean = false)(implicit request: JourneyRequest[_]): Document =
-    page(mode, itemId, form(), restrictedForZeroVat)
+  def createView(restrictedForZeroVat: Boolean = false)(implicit request: JourneyRequest[_]): Document =
+    page(itemId, form(), restrictedForZeroVat)
 
   "Which export procedure are you using Page" must {
 
@@ -104,11 +102,10 @@ class ZeroRatedForVatViewSpec extends PageWithButtonsSpec with Injector {
       "display 'Back' button that links to 'Taric' page" in {
         val backButton = view.getElementById("back-link")
         backButton must containMessage("site.backToPreviousQuestion")
-        backButton must haveHref(routes.TaricCodeSummaryController.displayPage(Normal, itemId))
+        backButton must haveHref(routes.TaricCodeSummaryController.displayPage(itemId))
       }
 
-      val createViewWithMode: Mode => Document = mode => createView(mode = mode)
-      checkAllSaveButtonsAreDisplayed(createViewWithMode)
+      checkAllSaveButtonsAreDisplayed(createView())
     }
 
     "display conditional text" when {

@@ -22,7 +22,7 @@ import config.{AppConfig, AppConfigSpec}
 import forms.Choice
 import forms.Choice.AllowedChoiceValues.CreateDec
 import forms.declaration.DeclarationChoice
-import models.{DeclarationType, Mode}
+import models.DeclarationType
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import play.api.{Configuration, Environment}
@@ -41,7 +41,7 @@ class DeclarationChoiceViewSpec extends UnitViewSpec with CommonMessages with St
   private val form: Form[DeclarationChoice] = DeclarationChoice.form
   private val choicePage = instanceOf[declaration_choice]
   private def createView(form: Form[DeclarationChoice] = form): Document =
-    choicePage(Mode.Normal, form)(request, messages)
+    choicePage(form)(request, messages)
 
   "Declaration Choice View on empty page" should {
 
@@ -138,7 +138,7 @@ class DeclarationChoiceViewSpec extends UnitViewSpec with CommonMessages with St
         appConfig
       )
 
-      val view = page(Mode.Normal, DeclarationChoice.form)(request, messages)
+      val view = page(DeclarationChoice.form)(request, messages)
 
       view.getElementsByTag("label").size mustBe 1
       view.getElementsByAttributeValue("for", "STANDARD") must containMessageForElements("declaration.type.standard")

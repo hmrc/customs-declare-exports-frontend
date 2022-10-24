@@ -23,8 +23,6 @@ import forms.declaration.RepresentativeAgent.form
 import forms.declaration.consignor.ConsignorDetails
 import forms.declaration.{EntityDetails, IsExs, RepresentativeAgent}
 import models.DeclarationType._
-import models.Mode
-import models.Mode.Normal
 import models.declaration.Parties
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
@@ -40,10 +38,10 @@ class RepresentativeDetailsAgentViewSpec extends PageWithButtonsSpec with Export
 
   private val page = instanceOf[representative_details_agent]
 
-  override val typeAndViewInstance = (STANDARD, page(Normal, form())(_, _))
+  override val typeAndViewInstance = (STANDARD, page(form())(_, _))
 
-  private def createView(frm: Form[RepresentativeAgent] = form(), mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document =
-    page(mode, frm)(request, messages)
+  private def createView(frm: Form[RepresentativeAgent] = form())(implicit request: JourneyRequest[_]): Document =
+    page(frm)(request, messages)
 
   "Representative Details Agent View on empty page" should {
 
@@ -65,8 +63,7 @@ class RepresentativeDetailsAgentViewSpec extends PageWithButtonsSpec with Export
 
       }
 
-      val createViewWithMode: Mode => Document = mode => createView(mode = mode)
-      checkAllSaveButtonsAreDisplayed(createViewWithMode)
+      checkAllSaveButtonsAreDisplayed(createView())
     }
 
     onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { implicit request =>
@@ -76,7 +73,7 @@ class RepresentativeDetailsAgentViewSpec extends PageWithButtonsSpec with Export
         val backButton = view.getElementById("back-link")
 
         backButton must containMessage("site.backToPreviousQuestion")
-        backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.ExporterDetailsController.displayPage(Normal))
+        backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.ExporterDetailsController.displayPage())
       }
     }
 
@@ -92,7 +89,7 @@ class RepresentativeDetailsAgentViewSpec extends PageWithButtonsSpec with Export
         val backButton = createView()(requestWithCachedParties).getElementById("back-link")
 
         backButton must containMessage("site.backToPreviousQuestion")
-        backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.ConsignorDetailsController.displayPage(Normal))
+        backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.ConsignorDetailsController.displayPage())
       }
 
       "display 'Back' button that links to 'Consignor Eori Number' page" in {
@@ -105,7 +102,7 @@ class RepresentativeDetailsAgentViewSpec extends PageWithButtonsSpec with Export
         val backButton = createView()(requestWithCachedParties).getElementById("back-link")
 
         backButton must containMessage("site.backToPreviousQuestion")
-        backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.ConsignorEoriNumberController.displayPage(Normal))
+        backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.ConsignorEoriNumberController.displayPage())
       }
 
       "display 'Back' button that links to 'Is Exs' page" in {
@@ -115,7 +112,7 @@ class RepresentativeDetailsAgentViewSpec extends PageWithButtonsSpec with Export
         val backButton = createView()(requestWithCachedParties).getElementById("back-link")
 
         backButton must containMessage("site.backToPreviousQuestion")
-        backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.IsExsController.displayPage(Normal))
+        backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.IsExsController.displayPage())
       }
     }
 

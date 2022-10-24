@@ -20,8 +20,6 @@ import base.Injector
 import forms.declaration.NactCode
 import forms.declaration.NactCode.form
 import models.DeclarationType.STANDARD
-import models.Mode
-import models.Mode.Normal
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import services.cache.ExportsTestHelper
@@ -34,10 +32,10 @@ class NactCodeAddViewSpec extends PageWithButtonsSpec with ExportsTestHelper wit
 
   val page = instanceOf[nact_code_add]
 
-  override val typeAndViewInstance = (STANDARD, page(Normal, itemId, form())(_, _))
+  override val typeAndViewInstance = (STANDARD, page(itemId, form())(_, _))
 
-  private def createView(frm: Form[NactCode] = form(), mode: Mode = Normal): Document =
-    page(mode, itemId, frm)(journeyRequest(), messages)
+  private def createView(frm: Form[NactCode] = form()): Document =
+    page(itemId, frm)(journeyRequest(), messages)
 
   "Nact Code Add View" should {
     val view = createView()
@@ -49,13 +47,10 @@ class NactCodeAddViewSpec extends PageWithButtonsSpec with ExportsTestHelper wit
     "display 'Back' button that links to 'Nact code summary' page" in {
       val backLinkContainer = view.getElementById("back-link")
 
-      backLinkContainer.getElementById("back-link") must haveHref(
-        controllers.declaration.routes.NactCodeSummaryController.displayPage(Normal, itemId)
-      )
+      backLinkContainer.getElementById("back-link") must haveHref(controllers.declaration.routes.NactCodeSummaryController.displayPage(itemId))
     }
 
-    val createViewWithMode: Mode => Document = mode => createView(mode = mode)
-    checkAllSaveButtonsAreDisplayed(createViewWithMode)
+    checkAllSaveButtonsAreDisplayed(createView())
   }
 
   "Nact Code Add View for invalid input" should {

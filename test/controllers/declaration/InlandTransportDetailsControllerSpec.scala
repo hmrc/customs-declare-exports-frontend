@@ -23,7 +23,6 @@ import controllers.routes.RootController
 import forms.declaration.InlandModeOfTransportCode
 import forms.declaration.ModeOfTransportCode._
 import models.DeclarationType._
-import models.Mode.Normal
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
@@ -53,7 +52,7 @@ class InlandTransportDetailsControllerSpec extends ControllerSpec with GivenWhen
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    when(inlandTransportDetails.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(inlandTransportDetails.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -63,13 +62,13 @@ class InlandTransportDetailsControllerSpec extends ControllerSpec with GivenWhen
 
   private def theResponseForm: Form[InlandModeOfTransportCode] = {
     val formCaptor = ArgumentCaptor.forClass(classOf[Form[InlandModeOfTransportCode]])
-    verify(inlandTransportDetails).apply(any(), formCaptor.capture())(any(), any())
+    verify(inlandTransportDetails).apply(formCaptor.capture())(any(), any())
     formCaptor.getValue
   }
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration())
-    await(controller.displayPage(Normal)(request))
+    await(controller.displayPage()(request))
     theResponseForm
   }
 
@@ -79,7 +78,7 @@ class InlandTransportDetailsControllerSpec extends ControllerSpec with GivenWhen
       "return 200 OK" in {
         withNewCaching(request.cacheModel)
 
-        val response = controller.displayPage(Normal).apply(getRequest())
+        val response = controller.displayPage().apply(getRequest())
 
         status(response) must be(OK)
       }
@@ -87,10 +86,10 @@ class InlandTransportDetailsControllerSpec extends ControllerSpec with GivenWhen
       "read item from cache and display it" in {
         withNewCaching(request.cacheModel)
 
-        await(controller.displayPage(Normal)(getRequest()))
+        await(controller.displayPage()(getRequest()))
 
         verify(mockExportsCacheService).get(any())(any())
-        verify(inlandTransportDetails).apply(any(), any())(any(), any())
+        verify(inlandTransportDetails).apply(any())(any(), any())
       }
     }
 
@@ -98,7 +97,7 @@ class InlandTransportDetailsControllerSpec extends ControllerSpec with GivenWhen
       "redirect to start" in {
         withNewCaching(request.cacheModel)
 
-        val response = controller.displayPage(Normal).apply(getRequest())
+        val response = controller.displayPage().apply(getRequest())
 
         status(response) must be(SEE_OTHER)
         redirectLocation(response) mustBe Some(RootController.displayPage().url)
@@ -114,7 +113,7 @@ class InlandTransportDetailsControllerSpec extends ControllerSpec with GivenWhen
       "update cache after successful bind" in {
         withNewCaching(request.cacheModel)
 
-        await(controller.submit(Normal).apply(postRequest(body)))
+        await(controller.submit().apply(postRequest(body)))
 
         theCacheModelUpdated.locations.inlandModeOfTransportCode.value.inlandModeOfTransportCode.value mustBe exampleTransportMode
       }
@@ -123,7 +122,7 @@ class InlandTransportDetailsControllerSpec extends ControllerSpec with GivenWhen
         withNewCaching(request.cacheModel)
 
         val body = Json.obj("inlandModeOfTransportCode" -> "A")
-        val result = controller.submit(Normal)(postRequest(body))
+        val result = controller.submit()(postRequest(body))
 
         status(result) mustBe BAD_REQUEST
       }
@@ -136,7 +135,7 @@ class InlandTransportDetailsControllerSpec extends ControllerSpec with GivenWhen
             withNewCaching(request.cacheModel)
 
             val body = Json.obj("inlandModeOfTransportCode" -> transportMode.value)
-            val result = await(controller.submit(Normal)(postRequest(body)))
+            val result = await(controller.submit()(postRequest(body)))
 
             result mustBe aRedirectToTheNextPage
             thePageNavigatedTo mustBe expectedRedirect
@@ -154,7 +153,7 @@ class InlandTransportDetailsControllerSpec extends ControllerSpec with GivenWhen
             withNewCaching(request.cacheModel)
 
             val body = Json.obj("inlandModeOfTransportCode" -> transportMode.value.value)
-            val result = await(controller.submit(Normal)(postRequest(body)))
+            val result = await(controller.submit()(postRequest(body)))
 
             result mustBe aRedirectToTheNextPage
             thePageNavigatedTo mustBe expectedRedirect
@@ -166,7 +165,7 @@ class InlandTransportDetailsControllerSpec extends ControllerSpec with GivenWhen
             withNewCaching(aDeclarationAfter(request.cacheModel, withTransportCountry(Some("South Africa"))))
 
             val body = Json.obj("inlandModeOfTransportCode" -> transportMode.value.value)
-            await(controller.submit(Normal)(postRequest(body)))
+            await(controller.submit()(postRequest(body)))
 
             theCacheModelUpdated.transport.transportCrossingTheBorderNationality mustBe None
           }
@@ -181,7 +180,7 @@ class InlandTransportDetailsControllerSpec extends ControllerSpec with GivenWhen
             And("the same option has not been selected on the page at /inland-transport-details page")
             withNewCaching(aDeclaration(withType(request.declarationType), withBorderModeOfTransportCode(modeOfTransportCode)))
 
-            val result = controller.submit(Normal)(postRequest(body))
+            val result = controller.submit()(postRequest(body))
             status(result) mustBe BAD_REQUEST
           }
         }
@@ -194,7 +193,7 @@ class InlandTransportDetailsControllerSpec extends ControllerSpec with GivenWhen
       "redirect to start" in {
         withNewCaching(request.cacheModel)
 
-        val result = controller.submit(Normal)(postRequest(body))
+        val result = controller.submit()(postRequest(body))
 
         status(result) must be(SEE_OTHER)
         redirectLocation(result) mustBe Some(RootController.displayPage().url)

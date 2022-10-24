@@ -23,7 +23,7 @@ import controllers.navigation.Navigator
 import forms.declaration.TransportCountry
 import models.DeclarationType.{STANDARD, SUPPLEMENTARY}
 import models.requests.JourneyRequest
-import models.{ExportsDeclaration, Mode}
+import models.ExportsDeclaration
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import services.cache.ExportsCacheService
@@ -47,29 +47,29 @@ class TransportCountryController @Inject() (
 
   private val validTypes = Seq(STANDARD, SUPPLEMENTARY)
 
-  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
+  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
     val transportMode = ModeOfTransportCodeHelper.transportMode(request.cacheModel.transportLeavingBorderCode)
     val form = TransportCountry.form(transportMode).withSubmissionErrors
     request.cacheModel.transport.transportCrossingTheBorderNationality match {
       case Some(data) =>
-        Ok(transportCountry(mode, transportMode, form.fill(data)))
+        Ok(transportCountry(transportMode, form.fill(data)))
 
-      case _ => Ok(transportCountry(mode, transportMode, form))
+      case _ => Ok(transportCountry(transportMode, form))
     }
   }
 
-  def submitForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async { implicit request =>
+  def submitForm(): Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async { implicit request =>
     val transportMode = ModeOfTransportCodeHelper.transportMode(request.cacheModel.transportLeavingBorderCode)
     TransportCountry
       .form(transportMode)
       .bindFromRequest
       .fold(
-        formWithErrors => Future.successful(BadRequest(transportCountry(mode, transportMode, formWithErrors))),
-        updateCache(_).map(_ => navigator.continueTo(mode, nextPage))
+        formWithErrors => Future.successful(BadRequest(transportCountry(transportMode, formWithErrors))),
+        updateCache(_).map(_ => navigator.continueTo(nextPage))
       )
   }
 
-  private def nextPage(implicit request: JourneyRequest[AnyContent]): Mode => Call =
+  private def nextPage(implicit request: JourneyRequest[AnyContent]): Call =
     request.declarationType match {
       case STANDARD      => ExpressConsignmentController.displayPage
       case SUPPLEMENTARY => TransportContainerController.displayContainerSummary

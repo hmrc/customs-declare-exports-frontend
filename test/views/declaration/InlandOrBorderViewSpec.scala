@@ -22,8 +22,6 @@ import controllers.declaration.routes.{SupervisingCustomsOfficeController, Trans
 import controllers.helpers.TransportSectionHelper.additionalDeclTypesAllowedOnInlandOrBorder
 import forms.declaration.InlandOrBorder.{form, Border, Inland}
 import models.DeclarationType.STANDARD
-import models.Mode
-import models.Mode.Normal
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import views.declaration.spec.PageWithButtonsSpec
@@ -35,9 +33,9 @@ class InlandOrBorderViewSpec extends PageWithButtonsSpec with Injector {
 
   val page = instanceOf[inland_border]
 
-  override val typeAndViewInstance = (STANDARD, page(Normal, form)(_, _))
+  override val typeAndViewInstance = (STANDARD, page(form)(_, _))
 
-  def createView(mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document = page(mode, form)(request, messages)
+  def createView()(implicit request: JourneyRequest[_]): Document = page(form)(request, messages)
 
   "Inland or Border View" when {
 
@@ -74,8 +72,7 @@ class InlandOrBorderViewSpec extends PageWithButtonsSpec with Injector {
             bulletPoints.get(ix - 1).text mustBe messages(s"declaration.inlandOrBorder.inset.bullet.$ix.text")
         }
 
-        val createViewWithMode: Mode => Document = mode => createView(mode = mode)
-        checkAllSaveButtonsAreDisplayed(createViewWithMode)
+        checkAllSaveButtonsAreDisplayed(createView())
 
         "display 'Back' button that links to the 'Supervising Customs Office' page" in {
           val backButton = view.getElementById("back-link")

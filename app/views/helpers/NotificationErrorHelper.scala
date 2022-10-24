@@ -17,8 +17,7 @@
 package views.helpers
 
 import connectors.CodeListConnector
-import controllers.routes
-import javax.inject.{Inject, Singleton}
+import controllers.routes.SubmissionsController
 import models.ExportsDeclaration
 import models.declaration.notifications.NotificationError
 import play.api.i18n.Messages
@@ -27,8 +26,10 @@ import play.twirl.api.{Html, HtmlFormat}
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
-import views.components.gds.ActionItemBuilder.actionItem
+import ActionItemBuilder.actionItem
 import views.html.components.gds.paragraphBody
+
+import javax.inject.{Inject, Singleton}
 
 @Singleton
 class NotificationErrorHelper @Inject() (codeListConnector: CodeListConnector, paragraphBody: paragraphBody) {
@@ -107,7 +108,7 @@ class NotificationErrorHelper @Inject() (codeListConnector: CodeListConnector, p
     def constructChangeLinkAction(call: Call): Actions = {
       val errorPattern = notificationError.pointer.map(_.pattern).getOrElse("")
       val errorMessage = messages(s"dmsError.${notificationError.validationCode}.title")
-      val url = routes.SubmissionsController.amendErrors(declaration.id, call.url, errorPattern, errorMessage).url
+      val url = SubmissionsController.amendErrors(declaration.id, call.url, errorPattern, errorMessage).url
       val action = actionItem(
         href = url,
         content = Text(messages("site.change")),

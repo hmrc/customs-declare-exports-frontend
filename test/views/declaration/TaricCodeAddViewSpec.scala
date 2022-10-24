@@ -20,8 +20,6 @@ import base.Injector
 import controllers.declaration.routes.TaricCodeSummaryController
 import forms.declaration.TaricCode
 import forms.declaration.TaricCode.form
-import models.Mode
-import models.Mode.Normal
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import views.declaration.spec.UnitViewSpec
@@ -33,8 +31,8 @@ class TaricCodeAddViewSpec extends UnitViewSpec with Injector {
 
   val page = instanceOf[taric_code_add]
 
-  def createView(frm: Form[TaricCode] = form(), mode: Mode = Normal): Document =
-    page(mode, itemId, frm)(journeyRequest(), messages)
+  def createView(frm: Form[TaricCode] = form()): Document =
+    page(itemId, frm)(journeyRequest(), messages)
 
   "Taric Code Add View" should {
     val view = createView()
@@ -45,11 +43,10 @@ class TaricCodeAddViewSpec extends UnitViewSpec with Injector {
 
     "display 'Back' button that links to 'Taric code summary' page" in {
       val backLinkContainer = view.getElementById("back-link")
-      backLinkContainer.getElementById("back-link") must haveHref(TaricCodeSummaryController.displayPage(Normal, itemId))
+      backLinkContainer.getElementById("back-link") must haveHref(TaricCodeSummaryController.displayPage(itemId))
     }
 
-    val createViewWithMode: Mode => Document = mode => createView(mode = mode)
-    checkAllSaveButtonsAreDisplayed(createViewWithMode)
+    checkAllSaveButtonsAreDisplayed(createView())
   }
 
   "Taric Code Add View for invalid input" should {

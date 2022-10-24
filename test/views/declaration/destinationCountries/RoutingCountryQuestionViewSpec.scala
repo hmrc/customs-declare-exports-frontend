@@ -22,11 +22,8 @@ import controllers.declaration.routes
 import forms.declaration.RoutingCountryQuestionYesNo.formAdd
 import forms.declaration.countries.Country
 import models.DeclarationType.STANDARD
-import models.Mode
-import models.Mode.Normal
 import models.codes.{Country => ModelCountry}
 import models.requests.JourneyRequest
-import org.jsoup.nodes.Document
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import play.api.mvc.AnyContent
@@ -56,10 +53,10 @@ class RoutingCountryQuestionViewSpec extends PageWithButtonsSpec with Injector {
 
   val page = instanceOf[routing_country_question]
 
-  override val typeAndViewInstance = (STANDARD, page(Normal, formAdd())(_, _))
+  override val typeAndViewInstance = (STANDARD, page(formAdd())(_, _))
 
-  def createView(mode: Mode = Normal)(implicit request: JourneyRequest[AnyContent]): Appendable =
-    page(mode, formAdd())(request, messages(request))
+  def createView()(implicit request: JourneyRequest[AnyContent]): Appendable =
+    page(formAdd())(request, messages(request))
 
   "Routing country question page" should {
     val view = createView()
@@ -97,7 +94,6 @@ class RoutingCountryQuestionViewSpec extends PageWithButtonsSpec with Injector {
       backButton must haveHref(routes.DestinationCountryController.displayPage())
     }
 
-    val createViewWithMode: Mode => Document = mode => createView(mode = mode)
-    checkAllSaveButtonsAreDisplayed(createViewWithMode)
+    checkAllSaveButtonsAreDisplayed(createView())
   }
 }

@@ -21,7 +21,7 @@ import controllers.navigation.Navigator
 import forms.declaration.TransportPayment
 import forms.declaration.TransportPayment._
 import models.requests.JourneyRequest
-import models.{DeclarationType, ExportsDeclaration, Mode}
+import models.{DeclarationType, ExportsDeclaration}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.cache.ExportsCacheService
@@ -44,26 +44,26 @@ class TransportPaymentController @Inject() (
 
   private val validTypes = Seq(DeclarationType.STANDARD, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL, DeclarationType.CLEARANCE)
 
-  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
+  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
     val frm = form().withSubmissionErrors()
     request.cacheModel.transport.transportPayment match {
-      case Some(data) => Ok(transportPayment(mode, frm.fill(data)))
-      case _          => Ok(transportPayment(mode, frm))
+      case Some(data) => Ok(transportPayment(frm.fill(data)))
+      case _          => Ok(transportPayment(frm))
     }
   }
 
-  def submitForm(mode: Mode): Action[AnyContent] =
+  def submitForm(): Action[AnyContent] =
     (authenticate andThen journeyType(validTypes)).async { implicit request =>
       form()
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(transportPayment(mode, formWithErrors))),
-          transportPayment => updateCache(transportPayment).map(_ => nextPage(mode))
+          formWithErrors => Future.successful(BadRequest(transportPayment(formWithErrors))),
+          transportPayment => updateCache(transportPayment).map(_ => nextPage())
         )
     }
 
-  private def nextPage(mode: Mode)(implicit request: JourneyRequest[AnyContent]): Result =
-    navigator.continueTo(mode, routes.TransportContainerController.displayContainerSummary)
+  private def nextPage()(implicit request: JourneyRequest[AnyContent]): Result =
+    navigator.continueTo(routes.TransportContainerController.displayContainerSummary)
 
   private def updateCache(formData: TransportPayment)(implicit r: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
     updateDeclarationFromRequest(_.updateTransportPayment(formData))

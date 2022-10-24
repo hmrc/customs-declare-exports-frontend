@@ -20,7 +20,7 @@ import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.declaration.{NactCode, ZeroRatedForVat}
 import models.requests.JourneyRequest
-import models.{DeclarationType, ExportsDeclaration, Mode}
+import models.{DeclarationType, ExportsDeclaration}
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.cache.ExportsCacheService
@@ -43,24 +43,22 @@ class ZeroRatedForVatController @Inject() (
 
   val validTypes = Seq(DeclarationType.STANDARD)
 
-  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
+  def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
     val form = request.cacheModel.itemBy(itemId).flatMap(_.nactExemptionCode) match {
       case Some(code) => ZeroRatedForVat.form().fill(code).withSubmissionErrors
       case _          => ZeroRatedForVat.form().withSubmissionErrors()
     }
 
-    Ok(zero_rated_for_vat(mode, itemId, form, eligibleForZeroVat(itemId)))
+    Ok(zero_rated_for_vat(itemId, form, eligibleForZeroVat(itemId)))
   }
 
-  def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async { implicit request =>
+  def submitForm(itemId: String): Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async { implicit request =>
     ZeroRatedForVat
       .form()
       .bindFromRequest
       .fold(
-        formWithErrors => Future.successful(BadRequest(zero_rated_for_vat(mode, itemId, formWithErrors, eligibleForZeroVat(itemId)))),
-        updatedCache =>
-          updateExportsCache(itemId, updatedCache)
-            .map(_ => navigator.continueTo(mode, routes.NactCodeSummaryController.displayPage(_, itemId)))
+        formWithErrors => Future.successful(BadRequest(zero_rated_for_vat(itemId, formWithErrors, eligibleForZeroVat(itemId)))),
+        updatedCache => updateExportsCache(itemId, updatedCache).map(_ => navigator.continueTo(routes.NactCodeSummaryController.displayPage(itemId)))
       )
   }
 
@@ -71,5 +69,4 @@ class ZeroRatedForVatController @Inject() (
 
   private def eligibleForZeroVat(itemId: String)(implicit request: JourneyRequest[_]): Boolean =
     request.cacheModel.procedureCodeOfItem(itemId).flatMap(_.procedureCode).fold(false)(procedureCodesRestrictingZeroVat.contains)
-
 }

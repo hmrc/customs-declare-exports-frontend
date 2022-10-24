@@ -18,7 +18,6 @@ package views.declaration
 
 import base.{Injector, TestHelper}
 import forms.declaration.RepresentativeEntity
-import models.Mode
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import services.cache.ExportsTestHelper
@@ -32,8 +31,8 @@ class RepresentativeDetailsEntityViewSpec extends UnitViewSpec with ExportsTestH
 
   private val page = instanceOf[representative_details_entity]
   private val form: Form[RepresentativeEntity] = RepresentativeEntity.form()
-  private def createView(mode: Mode = Mode.Normal, form: Form[RepresentativeEntity] = form): Document =
-    page(mode, form)(journeyRequest(), messages)
+  private def createView(form: Form[RepresentativeEntity] = form): Document =
+    page(form)(journeyRequest(), messages)
 
   "Representative Details Entity View on empty page" should {
     val view = createView()
@@ -51,11 +50,10 @@ class RepresentativeDetailsEntityViewSpec extends UnitViewSpec with ExportsTestH
       val backButton = view.getElementById("back-link")
 
       backButton must containMessage("site.backToPreviousQuestion")
-      backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.RepresentativeAgentController.displayPage(Mode.Normal))
+      backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.RepresentativeAgentController.displayPage())
     }
 
-    val createViewWithMode: Mode => Document = mode => createView(mode = mode)
-    checkAllSaveButtonsAreDisplayed(createViewWithMode)
+    checkAllSaveButtonsAreDisplayed(createView())
   }
 
   "Representative Details Entity View for invalid input" should {

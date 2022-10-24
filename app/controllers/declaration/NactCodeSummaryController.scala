@@ -17,11 +17,12 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
+import controllers.declaration.routes.{NactCodeAddController, StatisticalValueController}
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
+import models.DeclarationType._
 import models.requests.JourneyRequest
-import models.{DeclarationType, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
@@ -43,25 +44,25 @@ class NactCodeSummaryController @Inject() (
 
   import NactCodeSummaryController._
 
-  val validTypes = Seq(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL)
+  val validTypes = Seq(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL)
 
-  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
+  def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
     request.cacheModel.itemBy(itemId).flatMap(_.nactCodes) match {
-      case Some(nactCodes) if nactCodes.nonEmpty => Ok(nactCodesPage(mode, itemId, anotherYesNoForm.withSubmissionErrors(), nactCodes))
-      case _                                     => navigator.continueTo(mode, routes.NactCodeAddController.displayPage(_, itemId))
+      case Some(nactCodes) if nactCodes.nonEmpty => Ok(nactCodesPage(itemId, anotherYesNoForm.withSubmissionErrors(), nactCodes))
+      case _                                     => navigator.continueTo(NactCodeAddController.displayPage(itemId))
     }
   }
 
-  def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
+  def submitForm(itemId: String): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
     val nactCodes = request.cacheModel.itemBy(itemId).flatMap(_.nactCodes).getOrElse(List.empty)
     anotherYesNoForm
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[YesNoAnswer]) => BadRequest(nactCodesPage(mode, itemId, formWithErrors, nactCodes)),
+        (formWithErrors: Form[YesNoAnswer]) => BadRequest(nactCodesPage(itemId, formWithErrors, nactCodes)),
         validYesNo =>
           validYesNo.answer match {
-            case YesNoAnswers.yes => navigator.continueTo(mode, controllers.declaration.routes.NactCodeAddController.displayPage(_, itemId))
-            case YesNoAnswers.no  => navigator.continueTo(mode, nextPage(itemId))
+            case YesNoAnswers.yes => navigator.continueTo(NactCodeAddController.displayPage(itemId))
+            case YesNoAnswers.no  => navigator.continueTo(nextPage(itemId))
           }
       )
   }
@@ -70,11 +71,9 @@ class NactCodeSummaryController @Inject() (
 }
 
 object NactCodeSummaryController {
-  def nextPage(itemId: String)(implicit request: JourneyRequest[AnyContent]): Mode => Call =
+  def nextPage(itemId: String)(implicit request: JourneyRequest[AnyContent]): Call =
     request.declarationType match {
-      case DeclarationType.SUPPLEMENTARY | DeclarationType.STANDARD =>
-        controllers.declaration.routes.StatisticalValueController.displayPage(_, itemId)
-      case DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL =>
-        controllers.declaration.routes.PackageInformationSummaryController.displayPage(_, itemId)
+      case SUPPLEMENTARY | STANDARD => StatisticalValueController.displayPage(itemId)
+      case SIMPLIFIED | OCCASIONAL  => routes.PackageInformationSummaryController.displayPage(itemId)
     }
 }

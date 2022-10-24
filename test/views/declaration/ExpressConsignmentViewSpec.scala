@@ -24,7 +24,7 @@ import forms.common.YesNoAnswer
 import forms.declaration.ModeOfTransportCode.meaningfulModeOfTransportCodes
 import forms.declaration.TransportLeavingTheBorder
 import models.DeclarationType._
-import models.{DeclarationType, Mode}
+import models.DeclarationType
 import models.declaration.Transport
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
@@ -42,8 +42,8 @@ class ExpressConsignmentViewSpec extends UnitViewSpec with CommonMessages with I
   private val page = instanceOf[express_consignment]
   private val form: Form[YesNoAnswer] = YesNoAnswer.form()
 
-  private def createView(mode: Mode = Mode.Normal, form: Form[YesNoAnswer] = form)(implicit request: JourneyRequest[_]): Document =
-    page(mode, form)(request, messages)
+  private def createView(form: Form[YesNoAnswer] = form)(implicit request: JourneyRequest[_]): Document =
+    page(form)(request, messages)
 
   private val msgKey = "declaration.transportInformation.expressConsignment"
 
@@ -85,7 +85,7 @@ class ExpressConsignmentViewSpec extends UnitViewSpec with CommonMessages with I
       val view: Document = createView()
 
       "display 'Back' button to the 'Border Transport' page" in {
-        verifyBackButton(view, routes.TransportCountryController.displayPage(Mode.Normal))
+        verifyBackButton(view, routes.TransportCountryController.displayPage())
       }
 
       "display the expected tariff details" in {
@@ -97,7 +97,7 @@ class ExpressConsignmentViewSpec extends UnitViewSpec with CommonMessages with I
       val view: Document = createView()
 
       "display 'Back' button to the 'Supervising Customs Office' page" in {
-        verifyBackButton(view, routes.SupervisingCustomsOfficeController.displayPage(Mode.Normal))
+        verifyBackButton(view, routes.SupervisingCustomsOfficeController.displayPage())
       }
 
       "display the expected tariff details" in {
@@ -125,7 +125,7 @@ class ExpressConsignmentViewSpec extends UnitViewSpec with CommonMessages with I
             val view: Document = createView()(requestWithUpdatedDec)
 
             s"transportLeavingBoarderCode is ${modeOfTransportCode}" in {
-              verifyBackButton(view, routes.WarehouseIdentificationController.displayPage(Mode.Normal))
+              verifyBackButton(view, routes.WarehouseIdentificationController.displayPage())
             }
           }
         }
@@ -140,7 +140,7 @@ class ExpressConsignmentViewSpec extends UnitViewSpec with CommonMessages with I
           val view: Document = createView()(requestWithUpdatedDec)
 
           s"transportLeavingBoarderCode is ${modeOfTransportCode}" in {
-            verifyBackButton(view, routes.SupervisingCustomsOfficeController.displayPage(Mode.Normal))
+            verifyBackButton(view, routes.SupervisingCustomsOfficeController.displayPage())
           }
         }
       }
@@ -154,7 +154,7 @@ class ExpressConsignmentViewSpec extends UnitViewSpec with CommonMessages with I
             val view: Document = createView()(requestWithUpdatedDec)
 
             s"transportLeavingBoarderCode is ${modeOfTransportCode}" in {
-              verifyBackButton(view, routes.DepartureTransportController.displayPage(Mode.Normal))
+              verifyBackButton(view, routes.DepartureTransportController.displayPage())
             }
           }
       }

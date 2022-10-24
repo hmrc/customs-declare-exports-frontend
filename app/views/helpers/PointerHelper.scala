@@ -16,17 +16,16 @@
 
 package views.helpers
 
-import controllers.declaration.routes
+import controllers.declaration.routes._
 import models.DeclarationType.CLEARANCE
-import models.{ExportsDeclaration, Mode, Pointer}
-import models.Mode.Normal
-import play.api.mvc.Call
+import models.{ExportsDeclaration, Pointer}
 import play.api.Logging
+import play.api.mvc.Call
 
 object PointerHelper extends Logging {
 
-  val defaultItemsCall = routes.ItemsSummaryController.displayItemsSummaryPage(Normal)
-  val clearanceDecDetailsCall = routes.PersonPresentingGoodsDetailsController.displayPage(Normal)
+  val defaultItemsCall = ItemsSummaryController.displayItemsSummaryPage()
+  val clearanceDecDetailsCall = PersonPresentingGoodsDetailsController.displayPage()
 
   private val containsItemsSeqRegEx = """.*items\.\$.*""".r
   private val containsDecDetailsEoriRegEx = """^declaration.declarantDetails.details.eori$""".r
@@ -34,14 +33,9 @@ object PointerHelper extends Logging {
   def getChangeLinkCall(maybePointer: Option[Pointer], declaration: ExportsDeclaration): Option[Call] =
     maybePointer.flatMap { pointer =>
       pointer.pattern match {
-        case containsItemsSeqRegEx(_*) =>
-          getItemId(pointer, declaration)
-
-        case containsDecDetailsEoriRegEx(_*) =>
-          getDecDetailsEoriChangeLinkUrl(pointer, declaration)
-
-        case _ =>
-          getCallForPointer(pointer)
+        case containsItemsSeqRegEx(_*)       => getItemId(pointer, declaration)
+        case containsDecDetailsEoriRegEx(_*) => getDecDetailsEoriChangeLinkUrl(pointer, declaration)
+        case _                               => getCallForPointer(pointer)
       }
     }
 
@@ -52,7 +46,7 @@ object PointerHelper extends Logging {
     } yield item.id
 
     val call = maybeItemId
-      .flatMap(itemId => urlMapping2Params.get(pointer.pattern).map(_(Normal, itemId)))
+      .flatMap(itemId => urlMapping2Params.get(pointer.pattern).map(_(itemId)))
       .getOrElse(logResortingToDefault(defaultItemsCall, declaration))
 
     Some(call)
@@ -64,8 +58,7 @@ object PointerHelper extends Logging {
     else
       getCallForPointer(pointer)
 
-  private def getCallForPointer(pointer: Pointer): Option[Call] =
-    urlMapping1Param.get(pointer.pattern).map(_(Normal))
+  private def getCallForPointer(pointer: Pointer): Option[Call] = urlMapping1Param.get(pointer.pattern)
 
   private def logResortingToDefault(defaultCall: Call, declaration: ExportsDeclaration): Call = {
     logger.warn(s"Was not able to specialise the provided error change link url for declaration ${declaration.id}")
@@ -76,95 +69,95 @@ object PointerHelper extends Logging {
    * Export Error Pointers to their corresponding UI edit/summary page
    */
   // mappings to pages that require two parameters
-  private val urlMapping2Params: Map[String, (Mode, String) => Call] = Map(
-    "declaration.items.$.statisticalValue.statisticalValue" -> routes.StatisticalValueController.displayPage,
-    "declaration.items.$.additionalDocument" -> routes.AdditionalDocumentsController.displayPage,
-    "declaration.items.$.additionalDocument.$.documentIdentifier" -> routes.AdditionalDocumentsController.displayPage,
-    "declaration.items.$.additionalDocument.$.documentTypeCode" -> routes.AdditionalDocumentsController.displayPage, // ?? AdditionalDocumentChangeController.displayPage
-    "declaration.items.$.additionalDocument.$.dateOfValidity" -> routes.AdditionalDocumentsController.displayPage, // ?? AdditionalDocumentChangeController.displayPage
-    "declaration.items.$.additionalDocument.$.documentStatus" -> routes.AdditionalDocumentsController.displayPage, // ?? AdditionalDocumentChangeController.displayPage
-    "declaration.items.$.additionalDocument.$.documentStatusReason" -> routes.AdditionalDocumentsController.displayPage, // ?? AdditionalDocumentChangeController.displayPage
-    "declaration.items.$.additionalDocument.$.issuingAuthorityName" -> routes.AdditionalDocumentsController.displayPage, // ?? AdditionalDocumentChangeController.displayPage
-    "declaration.items.$.additionalDocument.$.documentWriteOff.documentQuantity" -> routes.AdditionalDocumentsController.displayPage, // ?? AdditionalDocumentChangeController.displayPage
-    "declaration.items.$.additionalInformation.$.code" -> routes.AdditionalInformationController.displayPage, // ?? AdditionalInformationChangeController.displayPage
-    "declaration.items.$.additionalInformation.$.description" -> routes.AdditionalInformationController.displayPage, // ?? AdditionalInformationChangeController.displayPage
-    "declaration.items.$.commodityDetails.descriptionOfGoods" -> routes.CommodityDetailsController.displayPage,
-    "declaration.items.$.cusCode.id" -> routes.CusCodeController.displayPage,
-    "declaration.items.$.cusCode.cusCode" -> routes.CusCodeController.displayPage,
-    "declaration.items.$.dangerousGoodsCode.dangerousGoodsCode" -> routes.UNDangerousGoodsCodeController.displayPage,
-    "declaration.items.$.commodityMeasure.grossMass" -> routes.CommodityMeasureController.displayPage,
-    "declaration.items.$.commodityMeasure.netMass" -> routes.CommodityMeasureController.displayPage,
-    "declaration.items.$.commodityMeasure.supplementaryUnits" -> routes.SupplementaryUnitsController.displayPage,
-    "declaration.items.$.additionalFiscalReferences.$.id" -> routes.AdditionalFiscalReferencesController.displayPage, // ?? AdditionalFiscalReferencesRemoveController.displayPage
-    "declaration.items.$.additionalFiscalReferences.$.roleCode" -> routes.AdditionalFiscalReferencesController.displayPage, // ?? AdditionalFiscalReferencesRemoveController.displayPage
-    "declaration.items.$.procedureCodes.procedureCode.current" -> routes.ProcedureCodesController.displayPage,
-    "declaration.items.$.procedureCodes.procedureCode.previous" -> routes.ProcedureCodesController.displayPage,
-    "declaration.items.$.packageInformation.$.shippingMarks" -> routes.PackageInformationSummaryController.displayPage,
-    "declaration.items.$.packageInformation.$.numberOfPackages" -> routes.PackageInformationSummaryController.displayPage,
-    "declaration.items.$.packageInformation.$.typesOfPackages" -> routes.PackageInformationSummaryController.displayPage
+  private val urlMapping2Params: Map[String, String => Call] = Map(
+    "declaration.items.$.statisticalValue.statisticalValue" -> StatisticalValueController.displayPage,
+    "declaration.items.$.additionalDocument" -> AdditionalDocumentsController.displayPage,
+    "declaration.items.$.additionalDocument.$.documentIdentifier" -> AdditionalDocumentsController.displayPage,
+    "declaration.items.$.additionalDocument.$.documentTypeCode" -> AdditionalDocumentsController.displayPage, // ?? AdditionalDocumentChangeController.displayPage
+    "declaration.items.$.additionalDocument.$.dateOfValidity" -> AdditionalDocumentsController.displayPage, // ?? AdditionalDocumentChangeController.displayPage
+    "declaration.items.$.additionalDocument.$.documentStatus" -> AdditionalDocumentsController.displayPage, // ?? AdditionalDocumentChangeController.displayPage
+    "declaration.items.$.additionalDocument.$.documentStatusReason" -> AdditionalDocumentsController.displayPage, // ?? AdditionalDocumentChangeController.displayPage
+    "declaration.items.$.additionalDocument.$.issuingAuthorityName" -> AdditionalDocumentsController.displayPage, // ?? AdditionalDocumentChangeController.displayPage
+    "declaration.items.$.additionalDocument.$.documentWriteOff.documentQuantity" -> AdditionalDocumentsController.displayPage, // ?? AdditionalDocumentChangeController.displayPage
+    "declaration.items.$.additionalInformation.$.code" -> AdditionalInformationController.displayPage, // ?? AdditionalInformationChangeController.displayPage
+    "declaration.items.$.additionalInformation.$.description" -> AdditionalInformationController.displayPage, // ?? AdditionalInformationChangeController.displayPage
+    "declaration.items.$.commodityDetails.descriptionOfGoods" -> CommodityDetailsController.displayPage,
+    "declaration.items.$.cusCode.id" -> CusCodeController.displayPage,
+    "declaration.items.$.cusCode.cusCode" -> CusCodeController.displayPage,
+    "declaration.items.$.dangerousGoodsCode.dangerousGoodsCode" -> UNDangerousGoodsCodeController.displayPage,
+    "declaration.items.$.commodityMeasure.grossMass" -> CommodityMeasureController.displayPage,
+    "declaration.items.$.commodityMeasure.netMass" -> CommodityMeasureController.displayPage,
+    "declaration.items.$.commodityMeasure.supplementaryUnits" -> SupplementaryUnitsController.displayPage,
+    "declaration.items.$.additionalFiscalReferences.$.id" -> AdditionalFiscalReferencesController.displayPage, // ?? AdditionalFiscalReferencesRemoveController.displayPage
+    "declaration.items.$.additionalFiscalReferences.$.roleCode" -> AdditionalFiscalReferencesController.displayPage, // ?? AdditionalFiscalReferencesRemoveController.displayPage
+    "declaration.items.$.procedureCodes.procedureCode.current" -> ProcedureCodesController.displayPage,
+    "declaration.items.$.procedureCodes.procedureCode.previous" -> ProcedureCodesController.displayPage,
+    "declaration.items.$.packageInformation.$.shippingMarks" -> PackageInformationSummaryController.displayPage,
+    "declaration.items.$.packageInformation.$.numberOfPackages" -> PackageInformationSummaryController.displayPage,
+    "declaration.items.$.packageInformation.$.typesOfPackages" -> PackageInformationSummaryController.displayPage
   )
 
   // mappings to pages that require only one parameter
-  private val urlMapping1Param: Map[String, Mode => Call] = Map(
-    "declaration.consignmentReferences.lrn" -> routes.ConsignmentReferencesController.displayPage,
-    "declaration.totalNumberOfItems.totalAmountInvoiced" -> routes.InvoiceAndExchangeRateController.displayPage,
-    "declaration.totalPackageQuantity" -> routes.TotalPackageQuantityController.displayPage,
-    "declaration.parties.representativeDetails.details.eori" -> routes.RepresentativeEntityController.displayPage,
-    "declaration.parties.representativeDetails.statusCode" -> routes.RepresentativeStatusController.displayPage,
-    "declaration.parties.declarationHolders.$.eori" -> routes.DeclarationHolderSummaryController.displayPage, // ?? DeclarationHolderChangeController with seq No
-    "declaration.parties.declarationHolders.$.authorisationTypeCode" -> routes.DeclarationHolderSummaryController.displayPage, // ?? DeclarationHolderChangeController with seq No
-    "declaration.transport.meansOfTransportCrossingTheBorderIDNumber" -> routes.BorderTransportController.displayPage,
-    "declaration.transport.meansOfTransportCrossingTheBorderType" -> routes.BorderTransportController.displayPage,
-    "declaration.transport.transportCrossingTheBorderNationality.countryName" -> routes.TransportCountryController.displayPage,
-    "declaration.borderTransport.modeCode" -> routes.TransportLeavingTheBorderController.displayPage,
-    "declaration.parties.carrierDetails.details.eori" -> routes.CarrierEoriNumberController.displayPage,
-    "declaration.parties.carrierDetails.details.address.fullName" -> routes.CarrierDetailsController.displayPage,
-    "declaration.parties.carrierDetails.details.address.townOrCity" -> routes.CarrierDetailsController.displayPage,
-    "declaration.parties.carrierDetails.details.address.country" -> routes.CarrierDetailsController.displayPage,
-    "declaration.parties.carrierDetails.details.address.addressLine" -> routes.CarrierDetailsController.displayPage,
-    "declaration.parties.carrierDetails.details.address.postCode" -> routes.CarrierDetailsController.displayPage,
-    "declaration.transport.transportPayment.paymentMethod" -> routes.TransportPaymentController.displayPage,
-    "declaration.locations.destinationCountries.countryOfRouting" -> routes.RoutingCountriesController.displayRoutingQuestion,
-    "declaration.locations.destinationCountries.countriesOfRouting.$" -> routes.RoutingCountriesController.displayRoutingCountry, // ?? RoutingCountriesSummaryController.displayChangeCountryPage
-    "declaration.locations.destinationCountries.countryOfDestination" -> routes.DestinationCountryController.displayPage,
-    "declaration.totalNumberOfItems.exchangeRate" -> routes.InvoiceAndExchangeRateController.displayPage,
-    "declaration.declarantDetails.details.eori" -> routes.DeclarantDetailsController.displayPage, // Alters if dec is CLEARANCE and isEXS and personPresentingGoodsDetails is nonEmpty
-    "declaration.locations.officeOfExit.circumstancesCode" -> routes.OfficeOfExitController.displayPage,
-    "declaration.locations.officeOfExit.officeId" -> routes.OfficeOfExitController.displayPage,
-    "declaration.parties.exporterDetails.details.eori" -> routes.ExporterEoriNumberController.displayPage,
-    "declaration.parties.exporterDetails.details.address.fullName" -> routes.ExporterDetailsController.displayPage,
-    "declaration.parties.exporterDetails.details.address.townOrCity" -> routes.ExporterDetailsController.displayPage,
-    "declaration.parties.exporterDetails.details.address.country" -> routes.ExporterDetailsController.displayPage,
-    "declaration.parties.exporterDetails.details.address.addressLine" -> routes.ExporterDetailsController.displayPage,
-    "declaration.parties.exporterDetails.details.address.postCode" -> routes.ExporterDetailsController.displayPage,
-    "declaration.natureOfTransaction.natureType" -> routes.NatureOfTransactionController.displayPage,
-    "declaration.parties.additionalActors.actor.eori" -> routes.AdditionalActorsSummaryController.displayPage,
-    "declaration.parties.additionalActors.actor" -> routes.AdditionalActorsSummaryController.displayPage,
-    "declaration.parties.consigneeDetails.details.address.fullName" -> routes.ConsigneeDetailsController.displayPage,
-    "declaration.parties.consigneeDetails.details.address.townOrCity" -> routes.ConsigneeDetailsController.displayPage,
-    "declaration.parties.consigneeDetails.details.address.country" -> routes.ConsigneeDetailsController.displayPage,
-    "declaration.parties.consigneeDetails.details.address.addressLine" -> routes.ConsigneeDetailsController.displayPage,
-    "declaration.parties.consigneeDetails.details.address.postCode" -> routes.ConsigneeDetailsController.displayPage,
-    "declaration.departureTransport.meansOfTransportOnDepartureIDNumber" -> routes.DepartureTransportController.displayPage,
-    "declaration.departureTransport.borderModeOfTransportCode" -> routes.DepartureTransportController.displayPage,
-    "declaration.departureTransport.meansOfTransportOnDepartureType" -> routes.InlandTransportDetailsController.displayPage,
-    "declaration.locations.goodsLocation.addressLine" -> routes.LocationOfGoodsController.displayPage,
-    "declaration.locations.goodsLocation.city" -> routes.LocationOfGoodsController.displayPage,
-    "declaration.locations.goodsLocation.country" -> routes.LocationOfGoodsController.displayPage,
-    "declaration.locations.goodsLocation.identificationOfLocation" -> routes.LocationOfGoodsController.displayPage,
-    "declaration.locations.goodsLocation.nameOfLocation" -> routes.LocationOfGoodsController.displayPage,
-    "declaration.locations.goodsLocation.postCode" -> routes.LocationOfGoodsController.displayPage,
-    "declaration.locations.goodsLocation.qualifierOfIdentification" -> routes.LocationOfGoodsController.displayPage,
-    "declaration.locations.goodsLocation.typeOfLocation" -> routes.LocationOfGoodsController.displayPage,
-    "declaration.containers.container.$.id" -> routes.TransportContainerController.displayContainerSummary, // ?? SealController.displaySealSummary
-    "declaration.containers.container.$.seals.seal.$.id" -> routes.TransportContainerController.displayContainerSummary, // ?? SealController.displaySealRemove
-    "declaration.previousDocuments.$.documentCategory" -> routes.PreviousDocumentsSummaryController.displayPage, // ?? PreviousDocumentsChangeController.displayPage
-    "declaration.previousDocuments.$.documentReference" -> routes.PreviousDocumentsSummaryController.displayPage, // ?? PreviousDocumentsChangeController.displayPage
-    "declaration.previousDocuments.$.documentType" -> routes.PreviousDocumentsSummaryController.displayPage, // ?? PreviousDocumentsChangeController.displayPage
-    "declaration.previousDocuments.$.goodsItemIdentifier" -> routes.PreviousDocumentsSummaryController.displayPage, // ?? PreviousDocumentsChangeController.displayPage
-    "declaration.locations.warehouseIdentification.identificationNumber" -> routes.WarehouseIdentificationController.displayPage,
-    "declaration.locations.warehouseIdentification.identificationType" -> routes.WarehouseIdentificationController.displayPage,
-    "declaration.locations.warehouseIdentification.supervisingCustomsOffice" -> routes.SupervisingCustomsOfficeController.displayPage,
-    "declaration.consignmentReferences.ucr" -> routes.ConsignmentReferencesController.displayPage
+  private val urlMapping1Param: Map[String, Call] = Map(
+    "declaration.consignmentReferences.lrn" -> ConsignmentReferencesController.displayPage,
+    "declaration.totalNumberOfItems.totalAmountInvoiced" -> InvoiceAndExchangeRateController.displayPage,
+    "declaration.totalPackageQuantity" -> TotalPackageQuantityController.displayPage,
+    "declaration.parties.representativeDetails.details.eori" -> RepresentativeEntityController.displayPage,
+    "declaration.parties.representativeDetails.statusCode" -> RepresentativeStatusController.displayPage,
+    "declaration.parties.declarationHolders.$.eori" -> DeclarationHolderSummaryController.displayPage, // ?? DeclarationHolderChangeController with seq No
+    "declaration.parties.declarationHolders.$.authorisationTypeCode" -> DeclarationHolderSummaryController.displayPage, // ?? DeclarationHolderChangeController with seq No
+    "declaration.transport.meansOfTransportCrossingTheBorderIDNumber" -> BorderTransportController.displayPage,
+    "declaration.transport.meansOfTransportCrossingTheBorderType" -> BorderTransportController.displayPage,
+    "declaration.transport.transportCrossingTheBorderNationality.countryName" -> TransportCountryController.displayPage,
+    "declaration.borderTransport.modeCode" -> TransportLeavingTheBorderController.displayPage,
+    "declaration.parties.carrierDetails.details.eori" -> CarrierEoriNumberController.displayPage,
+    "declaration.parties.carrierDetails.details.address.fullName" -> CarrierDetailsController.displayPage,
+    "declaration.parties.carrierDetails.details.address.townOrCity" -> CarrierDetailsController.displayPage,
+    "declaration.parties.carrierDetails.details.address.country" -> CarrierDetailsController.displayPage,
+    "declaration.parties.carrierDetails.details.address.addressLine" -> CarrierDetailsController.displayPage,
+    "declaration.parties.carrierDetails.details.address.postCode" -> CarrierDetailsController.displayPage,
+    "declaration.transport.transportPayment.paymentMethod" -> TransportPaymentController.displayPage,
+    "declaration.locations.destinationCountries.countryOfRouting" -> RoutingCountriesController.displayRoutingQuestion,
+    "declaration.locations.destinationCountries.countriesOfRouting.$" -> RoutingCountriesController.displayRoutingCountry, // ?? RoutingCountriesSummaryController.displayChangeCountryPage
+    "declaration.locations.destinationCountries.countryOfDestination" -> DestinationCountryController.displayPage,
+    "declaration.totalNumberOfItems.exchangeRate" -> InvoiceAndExchangeRateController.displayPage,
+    "declaration.declarantDetails.details.eori" -> DeclarantDetailsController.displayPage, // Alters if dec is CLEARANCE and isEXS and personPresentingGoodsDetails is nonEmpty
+    "declaration.locations.officeOfExit.circumstancesCode" -> OfficeOfExitController.displayPage,
+    "declaration.locations.officeOfExit.officeId" -> OfficeOfExitController.displayPage,
+    "declaration.parties.exporterDetails.details.eori" -> ExporterEoriNumberController.displayPage,
+    "declaration.parties.exporterDetails.details.address.fullName" -> ExporterDetailsController.displayPage,
+    "declaration.parties.exporterDetails.details.address.townOrCity" -> ExporterDetailsController.displayPage,
+    "declaration.parties.exporterDetails.details.address.country" -> ExporterDetailsController.displayPage,
+    "declaration.parties.exporterDetails.details.address.addressLine" -> ExporterDetailsController.displayPage,
+    "declaration.parties.exporterDetails.details.address.postCode" -> ExporterDetailsController.displayPage,
+    "declaration.natureOfTransaction.natureType" -> NatureOfTransactionController.displayPage,
+    "declaration.parties.additionalActors.actor.eori" -> AdditionalActorsSummaryController.displayPage,
+    "declaration.parties.additionalActors.actor" -> AdditionalActorsSummaryController.displayPage,
+    "declaration.parties.consigneeDetails.details.address.fullName" -> ConsigneeDetailsController.displayPage,
+    "declaration.parties.consigneeDetails.details.address.townOrCity" -> ConsigneeDetailsController.displayPage,
+    "declaration.parties.consigneeDetails.details.address.country" -> ConsigneeDetailsController.displayPage,
+    "declaration.parties.consigneeDetails.details.address.addressLine" -> ConsigneeDetailsController.displayPage,
+    "declaration.parties.consigneeDetails.details.address.postCode" -> ConsigneeDetailsController.displayPage,
+    "declaration.departureTransport.meansOfTransportOnDepartureIDNumber" -> DepartureTransportController.displayPage,
+    "declaration.departureTransport.borderModeOfTransportCode" -> DepartureTransportController.displayPage,
+    "declaration.departureTransport.meansOfTransportOnDepartureType" -> InlandTransportDetailsController.displayPage,
+    "declaration.locations.goodsLocation.addressLine" -> LocationOfGoodsController.displayPage,
+    "declaration.locations.goodsLocation.city" -> LocationOfGoodsController.displayPage,
+    "declaration.locations.goodsLocation.country" -> LocationOfGoodsController.displayPage,
+    "declaration.locations.goodsLocation.identificationOfLocation" -> LocationOfGoodsController.displayPage,
+    "declaration.locations.goodsLocation.nameOfLocation" -> LocationOfGoodsController.displayPage,
+    "declaration.locations.goodsLocation.postCode" -> LocationOfGoodsController.displayPage,
+    "declaration.locations.goodsLocation.qualifierOfIdentification" -> LocationOfGoodsController.displayPage,
+    "declaration.locations.goodsLocation.typeOfLocation" -> LocationOfGoodsController.displayPage,
+    "declaration.containers.container.$.id" -> TransportContainerController.displayContainerSummary, // ?? SealController.displaySealSummary
+    "declaration.containers.container.$.seals.seal.$.id" -> TransportContainerController.displayContainerSummary, // ?? SealController.displaySealRemove
+    "declaration.previousDocuments.$.documentCategory" -> PreviousDocumentsSummaryController.displayPage, // ?? PreviousDocumentsChangeController.displayPage
+    "declaration.previousDocuments.$.documentReference" -> PreviousDocumentsSummaryController.displayPage, // ?? PreviousDocumentsChangeController.displayPage
+    "declaration.previousDocuments.$.documentType" -> PreviousDocumentsSummaryController.displayPage, // ?? PreviousDocumentsChangeController.displayPage
+    "declaration.previousDocuments.$.goodsItemIdentifier" -> PreviousDocumentsSummaryController.displayPage, // ?? PreviousDocumentsChangeController.displayPage
+    "declaration.locations.warehouseIdentification.identificationNumber" -> WarehouseIdentificationController.displayPage,
+    "declaration.locations.warehouseIdentification.identificationType" -> WarehouseIdentificationController.displayPage,
+    "declaration.locations.warehouseIdentification.supervisingCustomsOffice" -> SupervisingCustomsOfficeController.displayPage,
+    "declaration.consignmentReferences.ucr" -> ConsignmentReferencesController.displayPage
   )
 }

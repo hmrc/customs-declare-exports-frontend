@@ -21,8 +21,6 @@ import controllers.declaration.routes._
 import forms.declaration.RepresentativeStatus
 import forms.declaration.RepresentativeStatus.{form, StatusCodes}
 import models.DeclarationType.STANDARD
-import models.Mode
-import models.Mode.Normal
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import views.components.gds.Styles
@@ -35,10 +33,10 @@ class RepresentativeDetailsStatusViewSpec extends PageWithButtonsSpec with Injec
 
   val page = instanceOf[representative_details_status]
 
-  override val typeAndViewInstance = (STANDARD, page(Normal, RepresentativeStatus, form())(_, _))
+  override val typeAndViewInstance = (STANDARD, page(RepresentativeStatus, form())(_, _))
 
-  def createView(frm: Form[RepresentativeStatus] = form(), mode: Mode = Normal): Document =
-    page(mode, RepresentativeStatus, frm)(journeyRequest(), messages)
+  def createView(frm: Form[RepresentativeStatus] = form()): Document =
+    page(RepresentativeStatus, frm)(journeyRequest(), messages)
 
   "Representative Details Status View on empty page" should {
     val view = createView()
@@ -64,11 +62,10 @@ class RepresentativeDetailsStatusViewSpec extends PageWithButtonsSpec with Injec
       val backButton = view.getElementById("back-link")
 
       backButton must containMessage("site.backToPreviousQuestion")
-      backButton.getElementById("back-link") must haveHref(RepresentativeEntityController.displayPage(Normal))
+      backButton.getElementById("back-link") must haveHref(RepresentativeEntityController.displayPage())
     }
 
-    val createViewWithMode: Mode => Document = mode => createView(mode = mode)
-    checkAllSaveButtonsAreDisplayed(createViewWithMode)
+    checkAllSaveButtonsAreDisplayed(createView())
   }
 
   "Representative Details Status View for invalid input" should {

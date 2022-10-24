@@ -21,8 +21,6 @@ import controllers.declaration.routes.{AdditionalActorsSummaryController, Consig
 import forms.common.YesNoAnswer._
 import forms.declaration.AuthorisationProcedureCodeChoice.form
 import models.DeclarationType._
-import models.Mode
-import models.Mode.Normal
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import views.components.gds.Styles
@@ -33,9 +31,9 @@ class AuthorisationProcedureCodeChoiceViewSpec extends PageWithButtonsSpec with 
 
   val page = instanceOf[authorisation_procedure_code_choice]
 
-  override val typeAndViewInstance = (STANDARD, page(form(), Normal)(_, _))
+  override val typeAndViewInstance = (STANDARD, page(form())(_, _))
 
-  def createView(mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document = page(form(), mode)
+  def createView()(implicit request: JourneyRequest[_]): Document = page(form())
 
   "Which export procedure are you using Page" must {
 
@@ -112,8 +110,7 @@ class AuthorisationProcedureCodeChoiceViewSpec extends PageWithButtonsSpec with 
         )
       }
 
-      val createViewWithMode: Mode => Document = mode => createView(mode = mode)
-      checkAllSaveButtonsAreDisplayed(createViewWithMode)
+      checkAllSaveButtonsAreDisplayed(createView())
     }
 
     onJourney(STANDARD, SIMPLIFIED, SUPPLEMENTARY, OCCASIONAL) { implicit request =>

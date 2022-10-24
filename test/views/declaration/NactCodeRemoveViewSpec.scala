@@ -20,8 +20,6 @@ import base.Injector
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.form
 import models.DeclarationType.STANDARD
-import models.Mode
-import models.Mode.Normal
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import views.declaration.spec.PageWithButtonsSpec
@@ -35,10 +33,10 @@ class NactCodeRemoveViewSpec extends PageWithButtonsSpec with Injector {
 
   val page = instanceOf[nact_code_remove]
 
-  override val typeAndViewInstance = (STANDARD, page(Normal, itemId, nactCode, form())(_, _))
+  override val typeAndViewInstance = (STANDARD, page(itemId, nactCode, form())(_, _))
 
-  def createView(frm: Form[YesNoAnswer] = form(), code: String = nactCode, mode: Mode = Normal): Document =
-    page(mode, itemId, code, frm)(request, messages)
+  def createView(frm: Form[YesNoAnswer] = form(), code: String = nactCode): Document =
+    page(itemId, code, frm)(request, messages)
 
   "Nact Code Remove View" should {
     val view = createView()
@@ -60,13 +58,10 @@ class NactCodeRemoveViewSpec extends PageWithButtonsSpec with Injector {
       val backLinkContainer = view.getElementById("back-link")
 
       backLinkContainer must containMessage(backToPreviousQuestionCaption)
-      backLinkContainer.getElementById("back-link") must haveHref(
-        controllers.declaration.routes.NactCodeSummaryController.displayPage(Normal, itemId)
-      )
+      backLinkContainer.getElementById("back-link") must haveHref(controllers.declaration.routes.NactCodeSummaryController.displayPage(itemId))
     }
 
-    val createViewWithMode: Mode => Document = mode => createView(mode = mode)
-    checkAllSaveButtonsAreDisplayed(createViewWithMode)
+    checkAllSaveButtonsAreDisplayed(createView())
   }
 
   "Nact Code Remove View for invalid input" should {

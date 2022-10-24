@@ -16,13 +16,13 @@
 
 package controllers.declaration
 
-import scala.concurrent.ExecutionContext
 import base.ControllerSpec
 import connectors.CodeListConnector
+import controllers.declaration.routes.{IsExsController, RepresentativeAgentController}
 import forms.common.{Address, Eori}
 import forms.declaration.EntityDetails
 import forms.declaration.exporter.ExporterDetails
-import models.{DeclarationType, Mode}
+import models.DeclarationType._
 import models.codes.Country
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -36,6 +36,7 @@ import play.twirl.api.HtmlFormat
 import views.html.declaration.exporter_address
 
 import scala.collection.immutable.ListMap
+import scala.concurrent.ExecutionContext
 
 class ExporterDetailsControllerSpec extends ControllerSpec with OptionValues {
 
@@ -56,20 +57,20 @@ class ExporterDetailsControllerSpec extends ControllerSpec with OptionValues {
 
   def theResponseForm: Form[ExporterDetails] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[ExporterDetails]])
-    verify(exporter_address).apply(any(), captor.capture())(any(), any())
+    verify(exporter_address).apply(captor.capture())(any(), any())
     captor.getValue
   }
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration())
-    await(controller.displayPage(Mode.Normal)(request))
+    await(controller.displayPage()(request))
     theResponseForm
   }
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    when(exporter_address.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(exporter_address.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
     when(mockCodeListConnector.getCountryCodes(any())).thenReturn(ListMap("GB" -> Country("United Kingdom, Great Britain, Northern Ireland", "GB")))
   }
 
@@ -79,18 +80,18 @@ class ExporterDetailsControllerSpec extends ControllerSpec with OptionValues {
   }
 
   "Exporter Details Controller" should {
-    onJourney(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY, DeclarationType.OCCASIONAL, DeclarationType.SIMPLIFIED) { request =>
+    onJourney(STANDARD, SUPPLEMENTARY, OCCASIONAL, SIMPLIFIED) { request =>
       "return 200 OK" when {
 
         "details are empty" in {
           withNewCaching(request.cacheModel)
-          val response = controller.displayPage(Mode.Normal)(getRequest())
+          val response = controller.displayPage()(getRequest())
           status(response) mustBe OK
         }
 
         "details are filled" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withExporterDetails(eori = eori, address = address)))
-          val response = controller.displayPage(Mode.Normal)(getRequest())
+          val response = controller.displayPage()(getRequest())
           status(response) mustBe OK
           val details = theResponseForm.value.value.details
           details.eori mustBe defined
@@ -103,7 +104,7 @@ class ExporterDetailsControllerSpec extends ControllerSpec with OptionValues {
         "form contains errors" in {
           withNewCaching(request.cacheModel)
           val body = Json.obj("details" -> Json.obj("eori" -> "!nva!id"))
-          val response = controller.saveAddress(Mode.Normal)(postRequest(body))
+          val response = controller.saveAddress()(postRequest(body))
           status(response) mustBe BAD_REQUEST
         }
       }
@@ -113,23 +114,23 @@ class ExporterDetailsControllerSpec extends ControllerSpec with OptionValues {
           withNewCaching(request.cacheModel)
           val exporterDetails = ExporterDetails(EntityDetails(eori, address))
           val body = Json.toJson(exporterDetails)
-          val response = await(controller.saveAddress(Mode.Normal)(postRequest(body)))
+          val response = await(controller.saveAddress()(postRequest(body)))
 
           response mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.RepresentativeAgentController.displayPage()
+          thePageNavigatedTo mustBe RepresentativeAgentController.displayPage()
         }
       }
     }
 
-    onJourney(DeclarationType.CLEARANCE) { request =>
+    onJourney(CLEARANCE) { request =>
       "return 303 (SEE_OTHER) and redirect to Is Exs page" when {
         "correct form is submitted" in {
           withNewCaching(request.cacheModel)
           val body = Json.obj("details" -> Json.obj("eori" -> "GB213472539481923"))
-          val response = await(controller.saveAddress(Mode.Normal)(postRequest(body)))
+          val response = await(controller.saveAddress()(postRequest(body)))
 
           response mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.IsExsController.displayPage()
+          thePageNavigatedTo mustBe IsExsController.displayPage()
         }
       }
     }

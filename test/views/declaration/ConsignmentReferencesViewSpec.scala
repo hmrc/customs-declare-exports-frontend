@@ -25,8 +25,6 @@ import forms.declaration.ConsignmentReferences.form
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.{STANDARD_PRE_LODGED, SUPPLEMENTARY_EIDR, SUPPLEMENTARY_SIMPLIFIED}
 import forms.{Ducr, Lrn, Mrn}
 import models.DeclarationType._
-import models.Mode
-import models.Mode.Normal
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
@@ -41,10 +39,10 @@ class ConsignmentReferencesViewSpec extends PageWithButtonsSpec with Injector {
 
   val page = instanceOf[consignment_references]
 
-  override val typeAndViewInstance = (STANDARD, page(Normal, form(STANDARD, Some(STANDARD_PRE_LODGED)))(_, _))
+  override val typeAndViewInstance = (STANDARD, page(form(STANDARD, Some(STANDARD_PRE_LODGED)))(_, _))
 
-  def createView(maybeForm: Option[Form[ConsignmentReferences]], mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document =
-    page(mode, maybeForm.getOrElse(form(request.declarationType, request.cacheModel.additionalDeclarationType)))(request, messages)
+  def createView(maybeForm: Option[Form[ConsignmentReferences]])(implicit request: JourneyRequest[_]): Document =
+    page(maybeForm.getOrElse(form(request.declarationType, request.cacheModel.additionalDeclarationType)))(request, messages)
 
   def createView()(implicit request: JourneyRequest[_]): Document =
     createView(Some(form(request.declarationType, request.cacheModel.additionalDeclarationType)))(request)
@@ -94,14 +92,11 @@ class ConsignmentReferencesViewSpec extends PageWithButtonsSpec with Injector {
         createView().getElementById("section-header").text() must include(messages("declaration.section.1"))
       }
 
-      val createViewWithMode: Mode => Document = mode => createView(None, mode)
-
       "not display 'Exit and return' button" in {
         createView.getElementsContainingText("site.exit_and_complete_later") mustBe empty
       }
 
       checkSaveAndContinueButtonIsDisplayed(createView)
-      checkSaveAndReturnToErrorsButtonIsDisplayed(createViewWithMode)
     }
   }
 

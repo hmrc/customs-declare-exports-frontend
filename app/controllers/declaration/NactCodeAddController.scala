@@ -16,16 +16,13 @@
 
 package controllers.declaration
 
-import scala.concurrent.{ExecutionContext, Future}
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.navigation.Navigator
 import controllers.helpers.MultipleItemsHelper
+import controllers.navigation.Navigator
 import forms.declaration.NactCode.nactCodeLimit
 import forms.declaration.{NactCode, NactCodeFirst}
-
-import javax.inject.Inject
 import models.requests.JourneyRequest
-import models.{DeclarationType, ExportsDeclaration, Mode}
+import models.{DeclarationType, ExportsDeclaration}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
@@ -33,6 +30,9 @@ import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.{nact_code_add, nact_code_add_first}
+
+import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
 class NactCodeAddController @Inject() (
   authenticate: AuthAction,
@@ -49,52 +49,52 @@ class NactCodeAddController @Inject() (
 
   val validTypes = Seq(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL)
 
-  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
+  def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
     val maybeItem = request.cacheModel.itemBy(itemId)
     maybeItem.flatMap(_.nactCodes) match {
-      case Some(nactCode) if nactCode.nonEmpty => Ok(nactCodeAdd(mode, itemId, NactCode.form.withSubmissionErrors))
+      case Some(nactCode) if nactCode.nonEmpty => Ok(nactCodeAdd(itemId, NactCode.form.withSubmissionErrors))
 
       case Some(_) =>
         val form = NactCodeFirst.form.fill(NactCodeFirst(None)).withSubmissionErrors
-        Ok(nactCodeAddFirstPage(mode, itemId, form))
+        Ok(nactCodeAddFirstPage(itemId, form))
 
-      case _ => Ok(nactCodeAddFirstPage(mode, itemId, NactCodeFirst.form.withSubmissionErrors))
+      case _ => Ok(nactCodeAddFirstPage(itemId, NactCodeFirst.form.withSubmissionErrors))
     }
   }
 
-  def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async { implicit request =>
+  def submitForm(itemId: String): Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async { implicit request =>
     val maybeItem = request.cacheModel.itemBy(itemId)
     maybeItem.flatMap(_.nactCodes) match {
-      case Some(nactCodes) if nactCodes.nonEmpty => saveAdditionalNactCode(mode, itemId, NactCode.form.bindFromRequest, nactCodes)
+      case Some(nactCodes) if nactCodes.nonEmpty => saveAdditionalNactCode(itemId, NactCode.form.bindFromRequest, nactCodes)
 
       case _ =>
         NactCodeFirst.form.bindFromRequest
           .fold(
-            (formWithErrors: Form[NactCodeFirst]) => Future.successful(BadRequest(nactCodeAddFirstPage(mode, itemId, formWithErrors))),
-            validForm => saveFirstNactCode(mode, itemId, validForm.code)
+            (formWithErrors: Form[NactCodeFirst]) => Future.successful(BadRequest(nactCodeAddFirstPage(itemId, formWithErrors))),
+            validForm => saveFirstNactCode(itemId, validForm.code)
           )
     }
   }
 
-  private def saveFirstNactCode(mode: Mode, itemId: String, maybeCode: Option[String])(implicit request: JourneyRequest[AnyContent]) =
+  private def saveFirstNactCode(itemId: String, maybeCode: Option[String])(implicit request: JourneyRequest[AnyContent]): Future[Result] =
     maybeCode match {
       case Some(code) =>
         updateExportsCache(itemId, Seq(NactCode(code)))
-          .map(_ => navigator.continueTo(mode, routes.NactCodeSummaryController.displayPage(_, itemId)))
+          .map(_ => navigator.continueTo(routes.NactCodeSummaryController.displayPage(itemId)))
 
-      case None => updateExportsCache(itemId, Seq.empty).map(_ => navigator.continueTo(mode, nextPage(itemId)))
+      case None => updateExportsCache(itemId, Seq.empty).map(_ => navigator.continueTo(nextPage(itemId)))
     }
 
-  private def saveAdditionalNactCode(mode: Mode, itemId: String, boundForm: Form[NactCode], cachedData: Seq[NactCode])(
+  private def saveAdditionalNactCode(itemId: String, boundForm: Form[NactCode], cachedData: Seq[NactCode])(
     implicit request: JourneyRequest[AnyContent]
   ): Future[Result] =
     MultipleItemsHelper
       .add(boundForm, cachedData, nactCodeLimit, "nactCode", "declaration.nationalAdditionalCode")
       .fold(
-        formWithErrors => Future.successful(BadRequest(nactCodeAdd(mode, itemId, formWithErrors))),
+        formWithErrors => Future.successful(BadRequest(nactCodeAdd(itemId, formWithErrors))),
         updatedCache =>
           updateExportsCache(itemId, updatedCache)
-            .map(_ => navigator.continueTo(mode, routes.NactCodeSummaryController.displayPage(_, itemId)))
+            .map(_ => navigator.continueTo(routes.NactCodeSummaryController.displayPage(itemId)))
       )
 
   private def updateExportsCache(itemId: String, updatedCache: Seq[NactCode])(implicit r: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =

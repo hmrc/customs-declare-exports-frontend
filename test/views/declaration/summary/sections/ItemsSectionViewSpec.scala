@@ -17,7 +17,6 @@
 package views.declaration.summary.sections
 
 import base.Injector
-import models.Mode
 import services.cache.ExportsTestHelper
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.summary.sections.items_section
@@ -32,7 +31,7 @@ class ItemsSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Inje
 
       "there is no items in the declaration" in {
 
-        val view = itemsSection(Mode.Normal, aDeclaration())(messages)
+        val view = itemsSection(aDeclaration())(messages)
 
         view.getAllElements.text() must be(empty)
       }
@@ -45,7 +44,7 @@ class ItemsSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Inje
         val data =
           aDeclaration(withItems(anItem(withSequenceId(1), withStatisticalValue("10")), anItem(withSequenceId(2), withProcedureCodes(Some("code")))))
 
-        val view = itemsSection(Mode.Normal, data)(messages)
+        val view = itemsSection(data)(messages)
 
         view.getElementById("declaration-items-summary-1").text() mustNot be(empty)
         view.getElementById("declaration-items-summary-2").text() mustNot be(empty)

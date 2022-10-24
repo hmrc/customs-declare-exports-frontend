@@ -17,9 +17,9 @@
 package controllers.declaration
 
 import base.ControllerSpec
+import controllers.declaration.routes.ItemsSummaryController
 import forms.common.YesNoAnswer
 import forms.declaration.Document
-import models.Mode
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
@@ -47,7 +47,7 @@ class PreviousDocumentsSummaryControllerSpec extends ControllerSpec {
     super.beforeEach()
 
     authorizedUser()
-    when(page.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(page.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -60,39 +60,35 @@ class PreviousDocumentsSummaryControllerSpec extends ControllerSpec {
 
   private def theResponseForm: Form[YesNoAnswer] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[YesNoAnswer]])
-    verify(page).apply(any(), captor.capture(), any())(any(), any())
+    verify(page).apply(captor.capture(), any())(any(), any())
     captor.getValue
   }
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration(withPreviousDocuments(document)))
-    await(controller.displayPage(Mode.Normal)(request))
+    await(controller.displayPage()(request))
     theResponseForm
   }
 
   "Previous Documents Summary Controller" should {
 
     "return 200 (OK)" when {
-
       "display page is invoked with documents in cache" in {
-
         withNewCaching(aDeclaration(withPreviousDocuments(document)))
 
-        val result = controller.displayPage(Mode.Normal)(getRequest())
+        val result = controller.displayPage()(getRequest())
 
         status(result) mustBe OK
       }
     }
 
     "return 400 (BAD_REQUEST)" when {
-
       "user doesn't answer on the question" in {
-
         withNewCaching(aDeclaration(withPreviousDocuments(document)))
 
         val incorrectForm = Json.obj("yesNo" -> "")
 
-        val result = controller.submit(Mode.Normal)(postRequest(incorrectForm))
+        val result = controller.submit()(postRequest(incorrectForm))
 
         status(result) mustBe BAD_REQUEST
       }
@@ -101,52 +97,48 @@ class PreviousDocumentsSummaryControllerSpec extends ControllerSpec {
     "return 303 (SEE_OTHER) and redirect to Previous Documents page" when {
 
       "display page method is invoked without documents in cache" in {
-
         withNewCaching(aDeclaration(withoutPreviousDocuments()))
 
-        val result = controller.displayPage(Mode.Normal)(getRequest())
+        val result = controller.displayPage()(getRequest())
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.PreviousDocumentsController.displayPage()
+        thePageNavigatedTo mustBe routes.PreviousDocumentsController.displayPage()
       }
 
       "user answer Yes to add additional document" in {
-
         withNewCaching(aDeclaration(withPreviousDocuments(document)))
 
         val correctForm = Json.obj("yesNo" -> "Yes")
 
-        val result = controller.submit(Mode.Normal)(postRequest(correctForm))
+        val result = controller.submit()(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.PreviousDocumentsController.displayPage()
+        thePageNavigatedTo mustBe routes.PreviousDocumentsController.displayPage()
       }
 
       "user answer Yes to add additional document in error-fix ode" in {
-
         withNewCaching(aDeclaration(withPreviousDocuments(document)))
 
         val correctForm = Json.obj("yesNo" -> "Yes")
 
-        val result = controller.submit(Mode.ErrorFix)(postRequest(correctForm))
+        val result = controller.submit()(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.PreviousDocumentsController.displayPage(Mode.ErrorFix)
+        thePageNavigatedTo mustBe routes.PreviousDocumentsController.displayPage()
       }
     }
 
     "return 303 (SEE_OTHER) and redirect to Items summary page" when {
 
-      "user answer No" in {
-
+      "user answr No" in {
         withNewCaching(aDeclaration(withPreviousDocuments(document)))
 
         val correctForm = Json.obj("yesNo" -> "No")
 
-        val result = controller.submit(Mode.Normal)(postRequest(correctForm))
+        val result = controller.submit()(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.ItemsSummaryController.displayAddItemPage()
+        thePageNavigatedTo mustBe ItemsSummaryController.displayAddItemPage()
       }
     }
   }

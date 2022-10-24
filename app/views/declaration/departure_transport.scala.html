@@ -37,13 +37,13 @@
     appConfig: AppConfig
 )
 
-@(mode: Mode, form: Form[DepartureTransport])(implicit request: JourneyRequest[_], messages: Messages)
+@(form: Form[DepartureTransport])(implicit request: JourneyRequest[_], messages: Messages)
 
 @govukLayout(
     title = departureTransportHelper.titleInHeadTag(form.hasErrors || form.hasGlobalErrors),
-    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(DepartureTransport, mode)))) {
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(DepartureTransport)))) {
 
-    @formHelper(action = DepartureTransportController.submitForm(mode), 'autoComplete -> "off") {
+    @formHelper(action = DepartureTransportController.submitForm(), 'autoComplete -> "off") {
         @errorSummary(radioGroupErrors(radioButtonGroupId, departureTransportHelper.transportCodes.code1.id, form.errors))
 
         @sectionHeader(messages("declaration.section.6"))
@@ -52,6 +52,6 @@
 
         @tariffExpander(DepartureTransport, request.declarationType)(messages, appConfig)
 
-        @saveButtons(mode)
+        @saveButtons()
     }
 }

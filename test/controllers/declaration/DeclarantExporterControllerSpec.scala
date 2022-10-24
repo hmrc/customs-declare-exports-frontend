@@ -17,8 +17,9 @@
 package controllers.declaration
 
 import base.ControllerSpec
+import controllers.declaration.routes.{CarrierEoriNumberController, ConsigneeDetailsController, ExporterEoriNumberController, IsExsController}
 import forms.declaration.DeclarantIsExporter
-import models.{DeclarationType, Mode}
+import models.DeclarationType
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -45,20 +46,20 @@ class DeclarantExporterControllerSpec extends ControllerSpec with OptionValues {
 
   def theResponseForm: Form[DeclarantIsExporter] = {
     val formCaptor = ArgumentCaptor.forClass(classOf[Form[DeclarantIsExporter]])
-    verify(mockPage).apply(any(), formCaptor.capture())(any(), any())
+    verify(mockPage).apply(formCaptor.capture())(any(), any())
     formCaptor.getValue
   }
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration())
-    await(controller.displayPage(Mode.Normal)(request))
+    await(controller.displayPage()(request))
     theResponseForm
   }
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    when(mockPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockPage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -66,7 +67,8 @@ class DeclarantExporterControllerSpec extends ControllerSpec with OptionValues {
     super.afterEach()
   }
 
-  def verifyPage(numberOfTimes: Int) = verify(mockPage, times(numberOfTimes)).apply(any(), any())(any(), any())
+  def verifyPage(numberOfTimes: Int): HtmlFormat.Appendable =
+    verify(mockPage, times(numberOfTimes)).apply(any())(any(), any())
 
   "Declarant Exporter controller" must {
 
@@ -74,10 +76,9 @@ class DeclarantExporterControllerSpec extends ControllerSpec with OptionValues {
       "return 200 (OK)" when {
 
         "display page method is invoked with empty cache" in {
-
           withNewCaching(request.cacheModel)
 
-          val result = controller.displayPage(Mode.Normal)(getRequest())
+          val result = controller.displayPage()(getRequest())
 
           status(result) mustBe OK
           verifyPage(1)
@@ -86,10 +87,9 @@ class DeclarantExporterControllerSpec extends ControllerSpec with OptionValues {
         }
 
         "display page method is invoked with data in cache" in {
-
           withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarantIsExporter()))
 
-          val result = controller.displayPage(Mode.Normal)(getRequest())
+          val result = controller.displayPage()(getRequest())
 
           status(result) mustBe OK
           verifyPage(1)
@@ -100,14 +100,12 @@ class DeclarantExporterControllerSpec extends ControllerSpec with OptionValues {
       }
 
       "return 400 (BAD_REQUEST)" when {
-
         "form is incorrect" in {
-
           withNewCaching(request.cacheModel)
 
           val incorrectForm = Json.toJson(DeclarantIsExporter("invalid"))
 
-          val result = controller.submitForm(Mode.Normal)(postRequest(incorrectForm))
+          val result = controller.submitForm()(postRequest(incorrectForm))
 
           status(result) mustBe BAD_REQUEST
           verifyPage(1)
@@ -117,15 +115,14 @@ class DeclarantExporterControllerSpec extends ControllerSpec with OptionValues {
 
     onEveryDeclarationJourney() { request =>
       "return 303 (SEE_OTHER) and redirect to exporter page when declarant not exporter" in {
-
         withNewCaching(request.cacheModel)
 
         val correctForm = Json.toJson(DeclarantIsExporter("No"))
 
-        val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
+        val result = controller.submitForm()(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.ExporterEoriNumberController.displayPage()
+        thePageNavigatedTo mustBe ExporterEoriNumberController.displayPage()
 
         verifyPage(0)
       }
@@ -133,15 +130,14 @@ class DeclarantExporterControllerSpec extends ControllerSpec with OptionValues {
 
     onJourney(DeclarationType.STANDARD, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL) { request =>
       "return 303 (SEE_OTHER) and redirect to carrier page when declarant is exporter" in {
-
         withNewCaching(request.cacheModel)
 
         val correctForm = Json.toJson(DeclarantIsExporter("Yes"))
 
-        val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
+        val result = controller.submitForm()(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.CarrierEoriNumberController.displayPage()
+        thePageNavigatedTo mustBe CarrierEoriNumberController.displayPage()
 
         verifyPage(0)
       }
@@ -149,15 +145,14 @@ class DeclarantExporterControllerSpec extends ControllerSpec with OptionValues {
 
     onJourney(DeclarationType.CLEARANCE) { request =>
       "return 303 (SEE_OTHER) and redirect to isExs page when declarant is exporter" in {
-
         withNewCaching(request.cacheModel)
 
         val correctForm = Json.toJson(DeclarantIsExporter("Yes"))
 
-        val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
+        val result = controller.submitForm()(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.IsExsController.displayPage()
+        thePageNavigatedTo mustBe IsExsController.displayPage()
 
         verifyPage(0)
       }
@@ -165,15 +160,14 @@ class DeclarantExporterControllerSpec extends ControllerSpec with OptionValues {
 
     onJourney(DeclarationType.SUPPLEMENTARY) { request =>
       "return 303 (SEE_OTHER) and redirect to consignee page when declarant is exporter" in {
-
         withNewCaching(request.cacheModel)
 
         val correctForm = Json.toJson(DeclarantIsExporter("Yes"))
 
-        val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
+        val result = controller.submitForm()(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.ConsigneeDetailsController.displayPage()
+        thePageNavigatedTo mustBe ConsigneeDetailsController.displayPage()
 
         verifyPage(0)
       }

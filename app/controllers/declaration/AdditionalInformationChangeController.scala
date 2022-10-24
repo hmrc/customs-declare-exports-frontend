@@ -25,7 +25,7 @@ import forms.declaration.AdditionalInformation.form
 import models.declaration.AdditionalInformationData
 import models.declaration.AdditionalInformationData.maxNumberOfItems
 import models.requests.JourneyRequest
-import models.{ExportsDeclaration, Mode}
+import models.ExportsDeclaration
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
@@ -48,27 +48,27 @@ class AdditionalInformationChangeController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
-  def displayPage(mode: Mode, itemId: String, id: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayPage(itemId: String, id: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     findAdditionalInformation(itemId, id) match {
-      case Some(document) => Ok(changePage(mode, itemId, id, form.fill(document).withSubmissionErrors()))
-      case _              => returnToSummary(mode, itemId)
+      case Some(document) => Ok(changePage(itemId, id, form.fill(document).withSubmissionErrors()))
+      case _              => returnToSummary(itemId)
     }
   }
 
-  def submitForm(mode: Mode, itemId: String, id: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def submitForm(itemId: String, id: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     findAdditionalInformation(itemId, id) match {
       case Some(existingInformation) =>
         val boundForm = form.bindFromRequest()
         boundForm.fold(
-          formWithErrors => Future.successful(BadRequest(changePage(mode, itemId, id, formWithErrors))),
-          updatedInformation => changeInformation(mode, itemId, id, existingInformation, updatedInformation, boundForm)
+          formWithErrors => Future.successful(BadRequest(changePage(itemId, id, formWithErrors))),
+          updatedInformation => changeInformation(itemId, id, existingInformation, updatedInformation, boundForm)
         )
-      case _ => Future.successful(returnToSummary(mode, itemId))
+      case _ => Future.successful(returnToSummary(itemId))
     }
   }
 
-  private def returnToSummary(mode: Mode, itemId: String)(implicit request: JourneyRequest[AnyContent]): Result =
-    navigator.continueTo(mode, routes.AdditionalInformationController.displayPage(_, itemId))
+  private def returnToSummary(itemId: String)(implicit request: JourneyRequest[AnyContent]): Result =
+    navigator.continueTo(routes.AdditionalInformationController.displayPage(itemId))
 
   private def findAdditionalInformation(itemId: String, id: String)(implicit request: JourneyRequest[AnyContent]): Option[AdditionalInformation] =
     ListItem.findById(id, request.cacheModel.itemBy(itemId).flatMap(_.additionalInformation).map(_.items).getOrElse(Seq.empty))
@@ -77,7 +77,6 @@ class AdditionalInformationChangeController @Inject() (
     request.cacheModel.itemBy(itemId).flatMap(_.additionalInformation).getOrElse(AdditionalInformationData.default)
 
   private def changeInformation(
-    mode: Mode,
     itemId: String,
     id: String,
     existingInformation: AdditionalInformation,
@@ -91,11 +90,11 @@ class AdditionalInformationChangeController @Inject() (
     MultipleItemsHelper
       .add(boundForm, itemsWithoutExisting, maxNumberOfItems, AdditionalInformationFormGroupId, "declaration.additionalInformation")
       .fold(
-        formWithErrors => Future.successful(BadRequest(changePage(mode, itemId, id, formWithErrors))),
+        formWithErrors => Future.successful(BadRequest(changePage(itemId, id, formWithErrors))),
         _ => {
           val updatedDataItems = cachedData.items.map(item => if (item == existingInformation) newInformation else item)
           updateCache(itemId, cachedData.copy(items = updatedDataItems))
-            .map(_ => returnToSummary(mode, itemId))
+            .map(_ => returnToSummary(itemId))
         }
       )
   }

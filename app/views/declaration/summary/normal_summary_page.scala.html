@@ -18,7 +18,6 @@
 @import controllers.declaration.routes.{SummaryController, TransportContainerController}
 @import controllers.routes.RejectedNotificationsController
 @import models.DeclarationStatus.DRAFT
-@import models.Mode
 @import models.declaration.submissions.EnhancedStatus.ERRORS
 @import models.requests.JourneyRequest
 @import views.helpers.{BackButton, Title}
@@ -44,8 +43,7 @@
     paragraphBody: paragraphBody
 )
 
-@(mode: Mode,
-  backLink: Call,
+@(backLink: Call,
   errors: Seq[FormError] = Seq.empty[FormError],
   maybeContinuePlaceholder: Option[String] = None
 )(implicit request: JourneyRequest[_], messages: Messages, appConfig: AppConfig)
@@ -64,8 +62,8 @@
 
 @continueLink = @{
     request.cacheModel.readyForSubmission match {
-        case Some(true) if errors.isEmpty => linkButton("site.confirm_and_continue", SummaryController.displayDeclarationPage(Mode.Normal))
-        case Some(true) => linkButton("site.confirm_and_continue", SummaryController.displayPage(Mode.Normal))
+        case Some(true) if errors.isEmpty => linkButton("site.confirm_and_continue", SummaryController.displayDeclarationPage())
+        case Some(true) => linkButton("site.confirm_and_continue", SummaryController.displayPage())
         case _ =>
     }
 }
@@ -114,19 +112,19 @@
 
     @draftBodyText
 
-    @references_section(mode, request.cacheModel)
+    @references_section(request.cacheModel)
 
-    @parties_section(mode, request.cacheModel)
+    @parties_section(request.cacheModel)
 
-    @countries_section(mode, request.cacheModel)
+    @countries_section(request.cacheModel)
 
-    @locations_section(mode, request.cacheModel)
+    @locations_section(request.cacheModel)
 
-    @transaction_section(mode, request.cacheModel)
+    @transaction_section(request.cacheModel)
 
-    @items_section(mode, request.cacheModel)
+    @items_section(request.cacheModel)
 
-    @transport_section(mode, request.cacheModel)
+    @transport_section(request.cacheModel)
 
     <div class="govuk-button-group">
         @draftContinueLink

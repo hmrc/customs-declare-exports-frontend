@@ -28,9 +28,9 @@ import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
+import models.ExportsDeclaration
 import models.declaration.ExportItem
 import models.requests.JourneyRequest
-import models.{ExportsDeclaration, Mode}
 import play.api.data.{Form, FormError}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
@@ -59,44 +59,44 @@ class ItemsSummaryController @Inject() (
   private def itemSummaryForm: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.itemsSummary.addAnotherItem.error.empty")
   private def removeItemForm: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.itemsRemove.error.empty")
 
-  def displayAddItemPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    if (request.cacheModel.items.isEmpty) Ok(addItemPage(mode))
-    else navigator.continueTo(mode, ItemsSummaryController.displayItemsSummaryPage)
+  def displayAddItemPage(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    if (request.cacheModel.items.isEmpty) Ok(addItemPage())
+    else navigator.continueTo(ItemsSummaryController.displayItemsSummaryPage)
   }
 
-  def addFirstItem(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    createNewItemInCache.map(itemId => navigator.continueTo(mode, ProcedureCodesController.displayPage(_, itemId)))
+  def addFirstItem(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+    createNewItemInCache.map(itemId => navigator.continueTo(ProcedureCodesController.displayPage(itemId)))
   }
 
-  def displayItemsSummaryPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def displayItemsSummaryPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     removeEmptyItems.map { declaration =>
-      if (declaration.items.isEmpty) navigator.continueTo(mode, ItemsSummaryController.displayAddItemPage)
-      else Ok(itemsSummaryPage(mode, itemSummaryForm, declaration.items.toList))
+      if (declaration.items.isEmpty) navigator.continueTo(ItemsSummaryController.displayAddItemPage)
+      else Ok(itemsSummaryPage(itemSummaryForm, declaration.items.toList))
     }
   }
 
   // TODO Should we add validation for POST without items?
-  def submit(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def submit(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val incorrectItems: Seq[FormError] = buildIncorrectItemsErrors(request)
 
     itemSummaryForm.bindFromRequest
       .fold(
-        formWithErrors => Future.successful(BadRequest(itemsSummaryPage(mode, formWithErrors, request.cacheModel.items.toList, incorrectItems))),
+        formWithErrors => Future.successful(BadRequest(itemsSummaryPage(formWithErrors, request.cacheModel.items.toList, incorrectItems))),
         validYesNo =>
           validYesNo.answer match {
             case YesNoAnswers.yes =>
-              createNewItemInCache.map(itemId => navigator.continueTo(mode, ProcedureCodesController.displayPage(_, itemId)))
+              createNewItemInCache.map(itemId => navigator.continueTo(ProcedureCodesController.displayPage(itemId)))
 
             case YesNoAnswers.no if incorrectItems.nonEmpty =>
-              Future.successful(BadRequest(itemsSummaryPage(mode, itemSummaryForm.fill(validYesNo), request.cacheModel.items.toList, incorrectItems)))
+              Future.successful(BadRequest(itemsSummaryPage(itemSummaryForm.fill(validYesNo), request.cacheModel.items.toList, incorrectItems)))
 
             case YesNoAnswers.no =>
-              Future.successful(navigator.continueTo(mode, nextPage))
+              Future.successful(navigator.continueTo(nextPage))
           }
       )
   }
 
-  private def nextPage(implicit request: JourneyRequest[AnyContent]): Mode => Call =
+  private def nextPage(implicit request: JourneyRequest[AnyContent]): Call =
     request.declarationType match {
       case SUPPLEMENTARY | STANDARD | CLEARANCE => TransportLeavingTheBorderController.displayPage
 
@@ -123,27 +123,27 @@ class ItemsSummaryController @Inject() (
     exportsCacheService.update(request.cacheModel.copy(items = itemsWithAnswers))
   }
 
-  def displayRemoveItemConfirmationPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayRemoveItemConfirmationPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.itemBy(itemId) match {
-      case Some(item) => Ok(removeItemPage(mode, removeItemForm, item))
-      case None       => navigator.continueTo(mode, ItemsSummaryController.displayItemsSummaryPage)
+      case Some(item) => Ok(removeItemPage(removeItemForm, item))
+      case None       => navigator.continueTo(ItemsSummaryController.displayItemsSummaryPage)
     }
   }
 
-  def removeItem(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def removeItem(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     removeItemForm.bindFromRequest
       .fold(
         formWithErrors =>
           Future.successful(request.cacheModel.itemBy(itemId) match {
-            case Some(item) => BadRequest(removeItemPage(mode, formWithErrors, item))
+            case Some(item) => BadRequest(removeItemPage(formWithErrors, item))
             case None       => throw new IllegalStateException(s"Could not find ExportItem with id = [$itemId] to remove")
           }),
         _.answer match {
           case YesNoAnswers.yes =>
-            removeItemFromCache(itemId).map(_ => navigator.continueTo(mode, ItemsSummaryController.displayItemsSummaryPage))
+            removeItemFromCache(itemId).map(_ => navigator.continueTo(ItemsSummaryController.displayItemsSummaryPage))
 
           case YesNoAnswers.no =>
-            Future.successful(navigator.continueTo(mode, ItemsSummaryController.displayItemsSummaryPage))
+            Future.successful(navigator.continueTo(ItemsSummaryController.displayItemsSummaryPage))
         }
       )
   }

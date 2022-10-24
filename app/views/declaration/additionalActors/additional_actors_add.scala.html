@@ -44,7 +44,7 @@
 )
 
 
-@(mode: Mode, form: Form[DeclarationAdditionalActors])(implicit request: JourneyRequest[_], messages: Messages)
+@(form: Form[DeclarationAdditionalActors])(implicit request: JourneyRequest[_], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
@@ -116,9 +116,9 @@
 
 @govukLayout(
     title = Title("declaration.additionalActors.title",  "declaration.section.2", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(DeclarationAdditionalActors, mode)))) {
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(DeclarationAdditionalActors)))) {
 
-    @formHelper(action = AdditionalActorsAddController.saveForm(mode), 'autoComplete -> "off") {
+    @formHelper(action = AdditionalActorsAddController.saveForm(), 'autoComplete -> "off") {
 
         @errorSummary(form.errors)
 
@@ -133,7 +133,7 @@
               paragraphBody(messages("declaration.additionalActors.body.text")),
               radios,
               tariffExpander(DeclarationAdditionalActors, request.declarationType)(messages, appConfig),
-              saveButtons(mode)
+              saveButtons()
             ))
         ))
     }

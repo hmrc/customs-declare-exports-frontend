@@ -17,6 +17,7 @@
 package views.declaration.spec
 
 import models.DeclarationType.DeclarationType
+import models.requests.ExportsSessionKeys.errorFixModeSessionKey
 import models.requests.JourneyRequest
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat.Appendable
@@ -30,5 +31,12 @@ trait PageWithButtonsSpec extends UnitViewSpec {
     val view = typeAndViewInstance._2(request, messages)
     val saveAndReturnToSummaryButton = view.getElementById("save_and_return_to_summary")
     saveAndReturnToSummaryButton must containMessage(saveAndReturnToSummaryCaption)
+  }
+
+  "display 'Save and return to errors' button when in error-fix mode" in {
+    implicit val request = journeyRequest(aDeclaration(withType(typeAndViewInstance._1)), errorFixModeSessionKey -> "true")
+    val view = typeAndViewInstance._2(request, messages)
+    val saveAndReturnToErrorsButton = view.getElementById("save_and_return_to_errors")
+    saveAndReturnToErrorsButton must containMessage(saveAndReturnToErrorsCaption)
   }
 }

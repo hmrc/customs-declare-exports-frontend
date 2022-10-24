@@ -21,8 +21,6 @@ import controllers.declaration.routes.UNDangerousGoodsCodeController
 import forms.declaration.CusCode
 import forms.declaration.CusCode.{form, AllowedCUSCodeAnswers}
 import models.DeclarationType.{OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
-import models.Mode
-import models.Mode.Normal
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
@@ -35,10 +33,10 @@ class CusCodeViewSpec extends PageWithButtonsSpec with Injector {
 
   val page = instanceOf[cus_code]
 
-  override val typeAndViewInstance = (STANDARD, page(Normal, itemId, form)(_, _))
+  override val typeAndViewInstance = (STANDARD, page(itemId, form)(_, _))
 
-  def createView(frm: Form[CusCode] = form(), mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document =
-    page(mode, itemId, frm)(request, messages)
+  def createView(frm: Form[CusCode] = form())(implicit request: JourneyRequest[_]): Document =
+    page(itemId, frm)(request, messages)
 
   "CusCode View on empty page" should {
 
@@ -83,11 +81,10 @@ class CusCodeViewSpec extends PageWithButtonsSpec with Injector {
         val backButton = view.getElementById("back-link")
 
         backButton must containMessage("site.backToPreviousQuestion")
-        backButton.getElementById("back-link") must haveHref(UNDangerousGoodsCodeController.displayPage(Normal, itemId))
+        backButton.getElementById("back-link") must haveHref(UNDangerousGoodsCodeController.displayPage(itemId))
       }
 
-      val createViewWithMode = createView(form, _)
-      checkAllSaveButtonsAreDisplayed(createViewWithMode)
+      checkAllSaveButtonsAreDisplayed(createView())
     }
   }
 

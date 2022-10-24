@@ -21,7 +21,7 @@ import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.declaration.exporter.ExporterDetails
 import models.requests.JourneyRequest
-import models.{DeclarationType, ExportsDeclaration, Mode}
+import models.{DeclarationType, ExportsDeclaration}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
@@ -43,26 +43,26 @@ class ExporterDetailsController @Inject() (
 )(implicit ec: ExecutionContext, codeListConnector: CodeListConnector)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
-  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     val frm = form().withSubmissionErrors()
     request.cacheModel.parties.exporterDetails match {
-      case Some(data) => Ok(exporterDetailsPage(mode, frm.fill(data)))
-      case _          => Ok(exporterDetailsPage(mode, frm))
+      case Some(data) => Ok(exporterDetailsPage(frm.fill(data)))
+      case _          => Ok(exporterDetailsPage(frm))
     }
   }
 
-  def saveAddress(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def saveAddress(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     form()
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[ExporterDetails]) => Future.successful(BadRequest(exporterDetailsPage(mode, formWithErrors))),
+        (formWithErrors: Form[ExporterDetails]) => Future.successful(BadRequest(exporterDetailsPage(formWithErrors))),
         form =>
           updateCache(form)
-            .map(_ => navigator.continueTo(mode, nextPage))
+            .map(_ => navigator.continueTo(nextPage))
       )
   }
 
-  def nextPage(implicit request: JourneyRequest[AnyContent]): Mode => Call =
+  def nextPage(implicit request: JourneyRequest[AnyContent]): Call =
     request.declarationType match {
       case DeclarationType.CLEARANCE => controllers.declaration.routes.IsExsController.displayPage
       case _                         => controllers.declaration.routes.RepresentativeAgentController.displayPage

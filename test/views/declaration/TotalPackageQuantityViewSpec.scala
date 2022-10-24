@@ -21,8 +21,6 @@ import controllers.declaration.routes.{InvoiceAndExchangeRateChoiceController, I
 import forms.declaration.TotalPackageQuantity
 import forms.declaration.TotalPackageQuantity.form
 import models.DeclarationType._
-import models.Mode
-import models.Mode.Normal
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import services.cache.ExportsTestHelper
@@ -34,7 +32,7 @@ class TotalPackageQuantityViewSpec extends UnitViewSpec with ExportsTestHelper w
 
   val template = instanceOf[total_package_quantity]
 
-  def createView(mode: Mode = Mode.Normal)(implicit request: JourneyRequest[_]): Document = template(mode, form(request.declarationType))
+  def createView()(implicit request: JourneyRequest[_]): Document = template(form(request.declarationType))
 
   "Total Package Quantity view" should {
 
@@ -77,13 +75,12 @@ class TotalPackageQuantityViewSpec extends UnitViewSpec with ExportsTestHelper w
         tariffText must containMessage(titleKey)
       }
 
-      val createViewWithMode: Mode => Document = mode => createView(mode = mode)
-      checkAllSaveButtonsAreDisplayed(createViewWithMode)
+      checkAllSaveButtonsAreDisplayed(createView())
 
       "display error when all entered input is incorrect" in {
         val error = "declaration.totalPackageQuantity.error"
         val formWithError = form(request.declarationType).withError("totalPackage", error)
-        val view: Document = template(Normal, formWithError)(request, messages)
+        val view: Document = template(formWithError)(request, messages)
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#totalPackage")
@@ -91,7 +88,7 @@ class TotalPackageQuantityViewSpec extends UnitViewSpec with ExportsTestHelper w
 
       "display existing input data" in {
         val formWithData = form(request.declarationType).fill(TotalPackageQuantity(Some("1")))
-        val view = template(Normal, formWithData)(request, messages)
+        val view = template(formWithData)(request, messages)
 
         view.getElementById("totalPackage").attr("value") mustEqual "1"
       }
@@ -105,7 +102,7 @@ class TotalPackageQuantityViewSpec extends UnitViewSpec with ExportsTestHelper w
           "the invoice's total amount is NOT defined" in {
             val backButton = createView().getElementById("back-link")
             backButton must containMessage("site.backToPreviousQuestion")
-            backButton.getElementById("back-link") must haveHref(InvoiceAndExchangeRateChoiceController.displayPage(Normal))
+            backButton.getElementById("back-link") must haveHref(InvoiceAndExchangeRateChoiceController.displayPage())
           }
         }
       }
@@ -117,7 +114,7 @@ class TotalPackageQuantityViewSpec extends UnitViewSpec with ExportsTestHelper w
           "the invoice's total amount entered is defined (it should always be equal or greater than 100,000)" in {
             val backButton = createView().getElementById("back-link")
             backButton must containMessage("site.backToPreviousQuestion")
-            backButton.getElementById("back-link") must haveHref(InvoiceAndExchangeRateController.displayPage(Normal))
+            backButton.getElementById("back-link") must haveHref(InvoiceAndExchangeRateController.displayPage())
           }
         }
       }

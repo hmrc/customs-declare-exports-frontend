@@ -27,8 +27,6 @@ import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.form
 import forms.declaration.{IsExs, PackageInformation}
 import models.DeclarationType._
-import models.Mode
-import models.Mode.Normal
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import org.scalatest.Assertion
@@ -42,15 +40,13 @@ import views.tags.ViewTest
 class PackageInformationViewSpec extends PageWithButtonsSpec with Injector {
 
   override val typeAndViewInstance =
-    (STANDARD, page(Normal, itemId, form(), List(PackageInformationViewSpec.packageInformation))(_, _))
+    (STANDARD, page(itemId, form(), List(PackageInformationViewSpec.packageInformation))(_, _))
 
   val page = instanceOf[package_information]
 
-  def createView(
-    frm: Form[YesNoAnswer] = form(),
-    packages: Seq[PackageInformation] = List(PackageInformationViewSpec.packageInformation),
-    mode: Mode = Normal
-  )(implicit request: JourneyRequest[_]): Document = page(mode, itemId, frm, packages)(request, messages)
+  def createView(frm: Form[YesNoAnswer] = form(), packages: Seq[PackageInformation] = List(PackageInformationViewSpec.packageInformation))(
+    implicit request: JourneyRequest[_]
+  ): Document = page(itemId, frm, packages)(request, messages)
 
   "have proper messages for labels" in {
     messages must haveTranslationFor("declaration.packageInformation.title")
@@ -70,7 +66,7 @@ class PackageInformationViewSpec extends PageWithButtonsSpec with Injector {
       "display back link" in {
         val view = createView()
         view must containElementWithID("back-link")
-        view.getElementById("back-link") must haveHref(StatisticalValueController.displayPage(Normal, itemId))
+        view.getElementById("back-link") must haveHref(StatisticalValueController.displayPage(itemId))
       }
     }
 
@@ -78,7 +74,7 @@ class PackageInformationViewSpec extends PageWithButtonsSpec with Injector {
       "display back link" in {
         val view = createView()
         view must containElementWithID("back-link")
-        view.getElementById("back-link") must haveHref(NactCodeSummaryController.displayPage(Normal, itemId))
+        view.getElementById("back-link") must haveHref(NactCodeSummaryController.displayPage(itemId))
       }
     }
 
@@ -91,11 +87,11 @@ class PackageInformationViewSpec extends PageWithButtonsSpec with Injector {
       }
 
       "display back link when Is EXS is 'Yes'" in {
-        viewHasBackLinkForExsStatus("Yes", UNDangerousGoodsCodeController.displayPage(Normal, itemId))
+        viewHasBackLinkForExsStatus("Yes", UNDangerousGoodsCodeController.displayPage(itemId))
       }
 
       "display back link when Is EXS is 'No'" in {
-        viewHasBackLinkForExsStatus("No", CommodityDetailsController.displayPage(Normal, itemId))
+        viewHasBackLinkForExsStatus("No", CommodityDetailsController.displayPage(itemId))
       }
     }
   }
@@ -116,8 +112,7 @@ class PackageInformationViewSpec extends PageWithButtonsSpec with Injector {
         view.getElementById("section-header") must containMessage("declaration.section.5")
       }
 
-      val createViewWithMode: Mode => Document = mode => createView(mode = mode)
-      checkAllSaveButtonsAreDisplayed(createViewWithMode)
+      checkAllSaveButtonsAreDisplayed(createView())
     }
   }
 

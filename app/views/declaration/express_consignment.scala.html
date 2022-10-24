@@ -41,15 +41,15 @@
     appConfig: AppConfig
 )
 
-@(mode: Mode, form: Form[YesNoAnswer])(implicit request: JourneyRequest[_], messages: Messages)
+@(form: Form[YesNoAnswer])(implicit request: JourneyRequest[_], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
 @govukLayout(
     title = Title("declaration.transportInformation.expressConsignment.title", "declaration.section.6", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(ExpressConsignment, mode)))) {
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(ExpressConsignment)))) {
 
-    @formHelper(action = routes.ExpressConsignmentController.submitForm(mode), 'autoComplete -> "off") {
+    @formHelper(action = routes.ExpressConsignmentController.submitForm(), 'autoComplete -> "off") {
         @errorSummary(yesNoErrors(form.errors))
 
         @sectionHeader(messages("declaration.section.6"))
@@ -70,6 +70,6 @@
 
         @tariffExpander(ExpressConsignment, request.declarationType)(messages, appConfig)
 
-        @saveButtons(mode)
+        @saveButtons()
     }
 }

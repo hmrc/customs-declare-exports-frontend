@@ -46,12 +46,7 @@
     formHelper: FormWithCSRF
 )
 
-@(
-    mode: Mode,
-    itemId: String,
-    form: Form[YesNoAnswer],
-    nactCodes: Seq[NactCode] = Seq.empty
-)(implicit request: JourneyRequest[_], messages: Messages)
+@(itemId: String, form: Form[YesNoAnswer], nactCodes: Seq[NactCode] = Seq.empty)(implicit request: JourneyRequest[_], messages: Messages)
 
 @title = @{
     if(nactCodes.size == 1)
@@ -80,7 +75,7 @@
                     TableRow(
                         content = HtmlContent(link(
                             messages("site.remove"),
-                            routes.NactCodeRemoveController.displayPage(mode, itemId, code.nactCode),
+                            routes.NactCodeRemoveController.displayPage(itemId, code.nactCode),
                             textHidden = Some(messages("declaration.nationalAdditionalCode.remove.hint", code.nactCode))
                         )),
                         classes = "govuk-table__cell--numeric",
@@ -102,9 +97,9 @@
 
 @govukLayout(
     title = title,
-    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(NactCodeFirst, mode, ItemId(itemId))))) {
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(NactCodeFirst, ItemId(itemId))))) {
 
-    @formHelper(action = routes.NactCodeSummaryController.submitForm(mode, itemId), 'autoComplete -> "off") {
+    @formHelper(action = routes.NactCodeSummaryController.submitForm(itemId), 'autoComplete -> "off") {
 
         @errorSummary(yesNoErrors(form.errors))
 
@@ -119,7 +114,7 @@
             html = HtmlFormat.fill(immutable.Seq(
                 nactCodesTable,
                 addAnotherQuestion("declaration.nationalAdditionalCode.label", form),
-                saveButtons(mode)
+                saveButtons()
             ))
         ))
 

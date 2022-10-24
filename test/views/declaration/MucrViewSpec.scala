@@ -22,7 +22,6 @@ import config.AppConfig
 import controllers.declaration.routes
 import forms.declaration.Mucr
 import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
-import models.Mode
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import org.scalatest.Assertion
@@ -39,8 +38,8 @@ class MucrViewSpec extends UnitViewSpec with CommonMessages with Injector {
   private val page = instanceOf[mucr_code]
   private val form: Form[Mucr] = Mucr.form
 
-  private def createView(mode: Mode = Mode.Normal, form: Form[Mucr] = form)(implicit request: JourneyRequest[_]): Document =
-    page(mode, form)(request, messages)
+  private def createView(form: Form[Mucr] = form)(implicit request: JourneyRequest[_]): Document =
+    page(form)(request, messages)
 
   private val tooLongMucr = createRandomAlphanumericString(36)
 
@@ -52,7 +51,7 @@ class MucrViewSpec extends UnitViewSpec with CommonMessages with Injector {
       "display 'Back' button to 'Link DUCR to MUCR' page" in {
         val backButton = view.getElementById("back-link")
         backButton must containMessage(backToPreviousQuestionCaption)
-        backButton must haveHref(routes.LinkDucrToMucrController.displayPage(Mode.Normal))
+        backButton must haveHref(routes.LinkDucrToMucrController.displayPage())
       }
 
       "display header" in {

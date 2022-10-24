@@ -19,16 +19,15 @@ package controllers.declaration
 import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction, VerifiedEmailAction}
 import controllers.declaration.SummaryController.{continuePlaceholder, lrnDuplicateError}
+import controllers.helpers.ErrorFixModeHelper.inErrorFixMode
 import controllers.routes.{SavedDeclarationsController, SubmissionsController}
 import forms.declaration.LegalDeclaration
 import forms.{Lrn, LrnValidator}
 import handlers.ErrorHandler
-import models.Mode.{Amend, Draft, Normal}
 import models.declaration.submissions.EnhancedStatus.ERRORS
 import models.declaration.submissions.Submission
 import models.requests.ExportsSessionKeys._
 import models.requests.JourneyRequest
-import models.{ExportsDeclaration, Mode}
 import play.api.Logging
 import play.api.data.{Form, FormError}
 import play.api.i18n.I18nSupport
@@ -39,6 +38,7 @@ import services.cache.ExportsCacheService
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
+import views.helpers.ActionItemBuilder.lastUrlPlaceholder
 import views.html.declaration.summary._
 
 import javax.inject.Inject
@@ -61,18 +61,16 @@ class SummaryController @Inject() (
 
   val form: Form[LegalDeclaration] = LegalDeclaration.form()
 
-  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType).async { implicit request =>
+  def displayPage(): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType).async { implicit request =>
     updateDeclarationFromRequest(_.copy(summaryWasVisited = Some(true))).flatMap { _ =>
-      if (containsMandatoryData(request.cacheModel, mode)) displaySummaryPage(mode)
-      else Future.successful(Ok(summaryPageNoData()))
+      val hasMandatoryData = request.cacheModel.consignmentReferences.exists(references => references.lrn.nonEmpty)
+      if (hasMandatoryData) displaySummaryPage()
+      else Future.successful(Ok(summaryPageNoData()).removingFromSession(errorFixModeSessionKey))
     }
   }
 
-  def displayDeclarationPage(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType) { implicit request =>
-    mode match {
-      case Draft | Normal | Amend => Ok(legalDeclarationPage(form))
-      case _                      => handleError("Invalid mode on summary page")
-    }
+  def displayDeclarationPage(): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType) { implicit request =>
+    if (inErrorFixMode) handleError("Invalid mode on summary page") else Ok(legalDeclarationPage(form))
   }
 
   def submitDeclaration(): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType).async { implicit request =>
@@ -86,7 +84,7 @@ class SummaryController @Inject() (
     )
   }
 
-  private def displaySummaryPage(mode: Mode)(implicit request: JourneyRequest[_]): Future[Result] = {
+  private def displaySummaryPage()(implicit request: JourneyRequest[_]): Future[Result] = {
     val maybeLrn = request.cacheModel.lrn.map(Lrn(_))
     val backlink =
       if (request.cacheModel.parentDeclarationEnhancedStatus.contains(ERRORS)) SubmissionsController.displayListOfSubmissions()
@@ -94,24 +92,27 @@ class SummaryController @Inject() (
     val duplicateLrnError = Seq(lrnDuplicateError)
 
     isLrnADuplicate(maybeLrn).map { lrnIsDuplicate =>
-      if (lrnIsDuplicate) Ok(normalSummaryPage(mode, backlink, duplicateLrnError))
-      else Ok(amendDraftSummaryPage(mode, backlink))
+      val result =
+        if (lrnIsDuplicate) Ok(normalSummaryPage(backlink, duplicateLrnError))
+        else Ok(amendSummaryPage(backlink))
+
+      result.removingFromSession(errorFixModeSessionKey)
     }
   }
 
-  private val hrefSource = """href="/customs-declare-exports/declaration/.+\?mode="""
+  private val hrefSource = """href="/customs-declare-exports/declaration/.+\?"""
   private val hrefDest = s"""href="$continuePlaceholder""""
 
-  private def amendDraftSummaryPage(mode: Mode, backlink: Call)(implicit request: JourneyRequest[_]): Html = {
-    val page = normalSummaryPage(mode, backlink, Seq.empty, Some(continuePlaceholder)).toString
-    val hrefSourceRegex = s"""$hrefSource$mode"""".r
-    hrefSourceRegex.findAllIn(page).toList.lastOption.fold(Html(page)) { lastChangeLink =>
-      Html(page.replaceFirst(hrefDest, lastChangeLink))
+  private def amendSummaryPage(backlink: Call)(implicit request: JourneyRequest[_]): Html = {
+    val page = normalSummaryPage(backlink, Seq.empty, Some(continuePlaceholder)).toString
+    val hrefSourceRegex = s"""$hrefSource$lastUrlPlaceholder"""".r
+    val finalPage = hrefSourceRegex.findAllIn(page).toList.lastOption.fold(page) { lastChangeLink =>
+      page
+        .replace(s"?$lastUrlPlaceholder", "")
+        .replaceFirst(hrefDest, lastChangeLink.replace(s"?$lastUrlPlaceholder", ""))
     }
+    Html(finalPage)
   }
-
-  private def containsMandatoryData(declaration: ExportsDeclaration, mode: Mode): Boolean =
-    mode.equals(Draft) || declaration.consignmentReferences.exists(references => references.lrn.nonEmpty)
 
   private def isLrnADuplicate(lrn: Option[Lrn])(implicit hc: HeaderCarrier): Future[Boolean] =
     lrn.fold(Future.successful(false))(lrnValidator.hasBeenSubmittedInThePast48Hours)

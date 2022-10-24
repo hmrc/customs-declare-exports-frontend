@@ -42,7 +42,7 @@
     appConfig: AppConfig
 )
 
-@(mode: Mode, form: Form[YesNoAnswer], containerId: String, seals: Seq[Seal])(implicit request: JourneyRequest[_], messages: Messages)
+@(form: Form[YesNoAnswer], containerId: String, seals: Seq[Seal])(implicit request: JourneyRequest[_], messages: Messages)
 
 @sealsTable = {
     @if(seals.nonEmpty) {
@@ -56,7 +56,7 @@
                     TableRow(
                         content = HtmlContent(link(
                             messages("site.remove"),
-                            SealController.submitSealRemove(mode, containerId, seal.id),
+                            SealController.submitSealRemove(containerId, seal.id),
                             textHidden = Some(messages("declaration.seal.remove.hint", seal.id))
                         )),
                         attributes = Map("id" -> s"removable_elements-row$index-remove_button")
@@ -101,9 +101,9 @@
     title = if(seals.isEmpty) Title("declaration.seal.add.first", "declaration.section.6", containerId)
             else if(seals.size == 1) Title("declaration.seal.summary.title", "declaration.section.6", containerId)
             else Title("declaration.seal.summary.multiple.title", "declaration.section.6", "", Some(Seq(seals.size.toString, containerId))),
-    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), controllers.declaration.routes.TransportContainerController.displayContainerSummary(mode)))) {
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), controllers.declaration.routes.TransportContainerController.displayContainerSummary()))) {
 
-    @formHelper(action = SealController.submitSummaryAction(mode, containerId), 'autoComplete -> "off") {
+    @formHelper(action = SealController.submitSummaryAction(containerId), 'autoComplete -> "off") {
         @errorSummary(yesNoErrors(form.errors))
 
         @if(seals.isEmpty){
@@ -128,6 +128,6 @@
             ))
         }
 
-        @saveButtons(mode)
+        @saveButtons()
     }
 }

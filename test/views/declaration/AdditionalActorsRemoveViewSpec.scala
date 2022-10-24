@@ -17,9 +17,9 @@
 package views.declaration
 
 import base.Injector
+import controllers.declaration.routes.AdditionalActorsSummaryController
 import forms.common.{Eori, YesNoAnswer}
 import forms.declaration.DeclarationAdditionalActors
-import models.Mode
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
@@ -36,11 +36,9 @@ class AdditionalActorsRemoveViewSpec extends UnitViewSpec with ExportsTestHelper
   val additionalActor = DeclarationAdditionalActors(Some(Eori("GB123456789000")), Some("MF"))
   private val page = instanceOf[additional_actors_remove]
 
-  private def createView(
-    mode: Mode = Mode.Normal,
-    form: Form[YesNoAnswer] = YesNoAnswer.form(),
-    actor: DeclarationAdditionalActors = additionalActor
-  )(implicit request: JourneyRequest[_]): Document = page(mode, ListItem.createId(0, additionalActor), actor, form)
+  private def createView(form: Form[YesNoAnswer] = YesNoAnswer.form(), actor: DeclarationAdditionalActors = additionalActor)(
+    implicit request: JourneyRequest[_]
+  ): Document = page(ListItem.createId(0, additionalActor), actor, form)
 
   "have proper messages for labels" in {
     messages must haveTranslationFor("declaration.additionalActors.remove.title")
@@ -53,17 +51,14 @@ class AdditionalActorsRemoveViewSpec extends UnitViewSpec with ExportsTestHelper
       "display back link" in {
         val view = createView()
         view must containElementWithID("back-link")
-        view.getElementById("back-link") must
-          haveHref(controllers.declaration.routes.AdditionalActorsSummaryController.displayPage(Mode.Normal))
+        view.getElementById("back-link") must haveHref(AdditionalActorsSummaryController.displayPage())
       }
     }
   }
 
   "AdditionalActors Remove View when filled" should {
-
     onEveryDeclarationJourney() { implicit request =>
       "display data in table" in {
-
         val view = createView()
 
         view.select("dl>div:nth-child(1)>dt").text() mustBe messages("declaration.additionalActors.table.party")

@@ -47,7 +47,7 @@
     holderOfAuthorisationCodes: HolderOfAuthorisationCodes
 )
 
-@(mode: Mode, form: Form[_], holders: Seq[DeclarationHolder])(implicit request: JourneyRequest[_], messages: Messages)
+@(form: Form[_], holders: Seq[DeclarationHolder])(implicit request: JourneyRequest[_], messages: Messages)
 
 @title = @{
     if(holders.size == 1)
@@ -79,7 +79,7 @@
                     TableRow(
                         content = HtmlContent(link(
                             messages("site.change"),
-                            DeclarationHolderChangeController.displayPage(mode, holder.id),
+                            DeclarationHolderChangeController.displayPage(holder.id),
                             textHidden = Some(messages("declaration.declarationHolders.table.change.hint", holder.id))
                         )),
                         classes = "govuk-table__cell--numeric",
@@ -88,7 +88,7 @@
                     TableRow(
                         content = HtmlContent(link(
                             messages("site.remove"),
-                            DeclarationHolderRemoveController.displayPage(mode, holder.id),
+                            DeclarationHolderRemoveController.displayPage(holder.id),
                             textHidden = Some(messages("declaration.declarationHolders.table.remove.hint", holder.id))
                         )),
                         classes = "govuk-table__cell--numeric",
@@ -118,10 +118,10 @@
 
 @govukLayout(
     title = title,
-    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(DeclarationHolderSummary, mode)))
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(DeclarationHolderSummary)))
 ) {
 
-    @formHelper(action = DeclarationHolderSummaryController.submitForm(mode), 'autoComplete -> "off") {
+    @formHelper(action = DeclarationHolderSummaryController.submitForm(), 'autoComplete -> "off") {
         @errorSummary(yesNoErrors(form.errors))
 
         @sectionHeader(messages("declaration.section.2"))
@@ -133,7 +133,7 @@
         @govukFieldset(Fieldset(
             html = HtmlFormat.fill(immutable.Seq(
                 addAnotherQuestion("declaration.declarationHolders.add.another", form),
-                saveButtons(mode)
+                saveButtons()
             ))
         ))
     }

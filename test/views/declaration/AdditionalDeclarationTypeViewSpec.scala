@@ -22,7 +22,7 @@ import controllers.declaration.routes.DeclarationChoiceController
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypePage.{form, radioButtonGroupId}
 import models.DeclarationType._
-import models.{DeclarationType, Mode}
+import models.DeclarationType
 import play.twirl.api.Html
 import views.declaration.spec.UnitViewSpec
 import views.helpers.CommonMessages
@@ -36,7 +36,7 @@ class AdditionalDeclarationTypeViewSpec extends UnitViewSpec with CommonMessages
   private val additionalTypePage = instanceOf[additional_declaration_type]
 
   private def createView(declarationType: DeclarationType): Html =
-    additionalTypePage(Mode.Normal, form)(journeyRequest(declarationType), messages)
+    additionalTypePage(form)(journeyRequest(declarationType), messages)
 
   "Additional Declaration Type View" when {
 

@@ -17,12 +17,13 @@
 package controllers.declaration
 
 import base.ControllerSpec
+import controllers.declaration.routes.{ConsignmentReferencesController, DeclarantExporterController}
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.DeclarantEoriConfirmation
 import forms.declaration.DeclarantEoriConfirmation.isEoriKey
 import models.DeclarationType.{OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
 import models.requests.ExportsSessionKeys
-import models.{DeclarationType, Mode}
+import models.DeclarationType
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
@@ -50,7 +51,7 @@ class DeclarantDetailsControllerSpec extends ControllerSpec {
     super.beforeEach()
     authorizedUser()
     withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY)))
-    when(declarantDetailsPage.apply(any[Mode], any[Form[DeclarantEoriConfirmation]])(any(), any())).thenReturn(HtmlFormat.empty)
+    when(declarantDetailsPage.apply(any[Form[DeclarantEoriConfirmation]])(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -60,12 +61,12 @@ class DeclarantDetailsControllerSpec extends ControllerSpec {
 
   def theResponseForm: Form[DeclarantEoriConfirmation] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[DeclarantEoriConfirmation]])
-    verify(declarantDetailsPage).apply(any(), captor.capture())(any(), any())
+    verify(declarantDetailsPage).apply(captor.capture())(any(), any())
     captor.getValue
   }
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
-    await(controller.displayPage(Mode.Normal)(request))
+    await(controller.displayPage()(request))
     theResponseForm
   }
 
@@ -74,17 +75,15 @@ class DeclarantDetailsControllerSpec extends ControllerSpec {
     "return 200 (OK)" when {
 
       "display page method is invoked and cache is empty" in {
-
-        val result = controller.displayPage(Mode.Normal)(getRequest())
+        val result = controller.displayPage()(getRequest())
 
         status(result) must be(OK)
       }
 
       "display page method is invoked and cache is not empty" in {
-
         withNewCaching(aDeclaration(withDeclarantDetails()))
 
-        val result = controller.displayPage(Mode.Normal)(getRequest())
+        val result = controller.displayPage()(getRequest())
 
         status(result) must be(OK)
       }
@@ -94,12 +93,10 @@ class DeclarantDetailsControllerSpec extends ControllerSpec {
   "DeclarantDetailsController on submitForm" when {
 
     "form contains incorrect values" should {
-
       "return 400 (BAD_REQUEST)" in {
-
         val incorrectForm = Json.obj(isEoriKey -> "wrong")
 
-        val result = controller.submitForm(Mode.Normal)(postRequest(incorrectForm))
+        val result = controller.submitForm()(postRequest(incorrectForm))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -109,14 +106,13 @@ class DeclarantDetailsControllerSpec extends ControllerSpec {
 
       onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { request =>
         "return 303 (SEE_OTHER) and redirect to Consignment References details page" in {
-
           withNewCaching(request.cacheModel)
           val correctForm = Json.obj(isEoriKey -> YesNoAnswers.yes)
 
-          val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
+          val result = controller.submitForm()(postRequest(correctForm))
 
           status(result) mustBe SEE_OTHER
-          thePageNavigatedTo mustBe controllers.declaration.routes.ConsignmentReferencesController.displayPage()
+          thePageNavigatedTo mustBe ConsignmentReferencesController.displayPage()
         }
       }
 
@@ -126,23 +122,22 @@ class DeclarantDetailsControllerSpec extends ControllerSpec {
           withNewCaching(request.cacheModel)
           val correctForm = Json.obj(isEoriKey -> YesNoAnswers.yes)
 
-          val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
+          val result = controller.submitForm()(postRequest(correctForm))
 
           status(result) mustBe SEE_OTHER
-          thePageNavigatedTo mustBe controllers.declaration.routes.DeclarantExporterController.displayPage()
+          thePageNavigatedTo mustBe DeclarantExporterController.displayPage()
         }
       }
     }
 
     "answer is no" should {
-
       onEveryDeclarationJourney() { request =>
         "return 303 (SEE_OTHER) and redirect to Not Eligible page" in {
           withNewCaching(request.cacheModel)
 
           val correctForm = Json.obj(isEoriKey -> YesNoAnswers.no)
 
-          val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
+          val result = controller.submitForm()(postRequest(correctForm))
 
           session(result).get(ExportsSessionKeys.declarationId) must be(None)
         }

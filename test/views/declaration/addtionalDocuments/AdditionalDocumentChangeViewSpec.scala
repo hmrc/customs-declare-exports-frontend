@@ -19,7 +19,6 @@ package views.declaration.addtionalDocuments
 import base.Injector
 import controllers.declaration.routes.AdditionalDocumentsController
 import forms.declaration.additionaldocuments.AdditionalDocument.form
-import models.Mode.Normal
 import models.declaration.ExportDeclarationTestData.declaration
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
@@ -35,14 +34,14 @@ class AdditionalDocumentChangeViewSpec extends UnitViewSpec with Injector {
   val page = instanceOf[additional_document_change]
 
   def createView(implicit request: JourneyRequest[_]): Document =
-    page(Normal, itemId, documentId, form(declaration))(request, messages)
+    page(itemId, documentId, form(declaration))(request, messages)
 
   "additional_document_change view on empty page" should {
     onEveryDeclarationJourney() { implicit request =>
       "display 'Back' button that links to summary page" in {
         val backButton = createView.getElementById("back-link")
         backButton must containMessage(backToPreviousQuestionCaption)
-        backButton must haveHref(AdditionalDocumentsController.displayPage(Normal, itemId))
+        backButton must haveHref(AdditionalDocumentsController.displayPage(itemId))
       }
     }
   }

@@ -18,12 +18,9 @@
 @import forms.declaration.Document
 @import services.DocumentType
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import views.html.components.gds.link
-@import views.html.components.gds.linkContent
-@import views.html.components.gds.spanVisuallyHidden
-@import views.html.components.gds.summary_list
-@import views.components.gds.ActionItemBuilder._
 @import views.declaration.summary.TableCell
+@import views.helpers.ActionItemBuilder._
+@import views.html.components.gds.{link, linkContent, spanVisuallyHidden, summary_list}
 
 @this(
     govukTable: GovukTable,
@@ -33,27 +30,22 @@
     summaryList: summary_list
 )
 
-@(mode: Mode, documents: Seq[Document], actionsEnabled: Boolean = true)(implicit messages: Messages)
+@(documents: Seq[Document], actionsEnabled: Boolean = true)(implicit messages: Messages)
 
-  @change(document: Document) = {
-  @{
-    if(actionsEnabled)
+@change(document: Document) = { @{
+    if (actionsEnabled)
       link(
         messages("site.change"),
-        routes.PreviousDocumentsSummaryController.displayPage(mode),
+        callForSummaryChangeLink(routes.PreviousDocumentsSummaryController.displayPage()),
         textHidden = Some(messages("declaration.summary.transaction.previousDocuments.document.change", document.documentReference))
       )
     else
       ""
-  }
-  }
+}}
 
-  @actions(action: Actions) = @{
-    if(actionsEnabled) Some(action)
-    else None
-  }
+@actions(action: Actions) = @{ if (actionsEnabled) Some(action) else None }
 
-  @if(documents.isEmpty) {
+@if(documents.isEmpty) {
     @summaryList("previous-documents", None, Seq(
       Some(SummaryListRow(
         classes = "previous-documents-row",
@@ -61,8 +53,8 @@
         value = Value(Text(messages("site.no"))),
         actions = actions(Actions(
           items = Seq(
-            actionItem(
-              href = routes.PreviousDocumentsController.displayPage(mode).url,
+            actionSummaryItem(
+              href = routes.PreviousDocumentsController.displayPage().url,
               content = HtmlContent(linkContent(messages("site.change"))),
               visuallyHiddenText = Some(messages("declaration.summary.transaction.previousDocuments.change"))
             )
@@ -70,7 +62,7 @@
         ))
       ))
     ))
-  } else {
+} else {
     @govukTable(Table(
       rows = documents.map(document =>
         Seq(
@@ -97,4 +89,4 @@
       caption = Some(messages("declaration.summary.transaction.previousDocuments")),
       attributes = Map("id" -> "previous-documents")
     ))
-  }
+}

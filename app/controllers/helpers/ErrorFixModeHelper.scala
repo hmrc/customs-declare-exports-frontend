@@ -14,34 +14,18 @@
  * limitations under the License.
  */
 
-package models
+package controllers.helpers
 
-import base.UnitWithMocksSpec
-import models.Mode.{Amend, Draft, ErrorFix, Normal}
+import models.requests.ExportsSessionKeys.errorFixModeSessionKey
+import play.api.mvc.{Request, Result}
 
-class ModeSpec extends UnitWithMocksSpec {
+import scala.util.Try
 
-  "Normal mode" must {
-    "be same after submitting form" in {
-      Normal.next mustBe Normal
-    }
-  }
+object ErrorFixModeHelper {
 
-  "Amend mode" must {
-    "be same after submitting form" in {
-      Amend.next mustBe Amend
-    }
-  }
+  def inErrorFixMode(implicit request: Request[_]): Boolean =
+    request.session.get(errorFixModeSessionKey).fold(false)(v => Try(v.toBoolean).getOrElse(false))
 
-  "Draft" must {
-    "be same after submitting page" in {
-      Draft.next mustBe Normal
-    }
-  }
-
-  "Error-Fix" must {
-    "be same after submitting page" in {
-      ErrorFix.next mustBe ErrorFix
-    }
-  }
+  def setErrorFixMode(result: Result)(implicit request: Request[_]): Result =
+    result.addingToSession(errorFixModeSessionKey -> "true")
 }

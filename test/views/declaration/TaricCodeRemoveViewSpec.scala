@@ -20,8 +20,6 @@ import base.{Injector, MockAuthAction}
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.form
 import models.DeclarationType.STANDARD
-import models.Mode
-import models.Mode.Normal
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import views.declaration.spec.PageWithButtonsSpec
@@ -35,10 +33,10 @@ class TaricCodeRemoveViewSpec extends PageWithButtonsSpec with Injector with Moc
 
   val page = instanceOf[taric_code_remove]
 
-  override val typeAndViewInstance = (STANDARD, page(Normal, itemId, taricCode, form())(_, _))
+  override val typeAndViewInstance = (STANDARD, page(itemId, taricCode, form())(_, _))
 
-  def createView(frm: Form[YesNoAnswer] = form(), code: String = taricCode, mode: Mode = Normal): Document =
-    page(mode, itemId, code, frm)(getJourneyRequest(), messages)
+  def createView(frm: Form[YesNoAnswer] = form(), code: String = taricCode): Document =
+    page(itemId, code, frm)(getJourneyRequest(), messages)
 
   "Taric Code Remove View" should {
     val view = createView()
@@ -59,13 +57,10 @@ class TaricCodeRemoveViewSpec extends PageWithButtonsSpec with Injector with Moc
       val backLinkContainer = view.getElementById("back-link")
 
       backLinkContainer must containMessage(backToPreviousQuestionCaption)
-      backLinkContainer.getElementById("back-link") must haveHref(
-        controllers.declaration.routes.TaricCodeSummaryController.displayPage(Normal, itemId)
-      )
+      backLinkContainer.getElementById("back-link") must haveHref(controllers.declaration.routes.TaricCodeSummaryController.displayPage(itemId))
     }
 
-    val createViewWithMode: Mode => Document = mode => createView(mode = mode)
-    checkAllSaveButtonsAreDisplayed(createViewWithMode)
+    checkAllSaveButtonsAreDisplayed(createView())
   }
 
   "Taric Code Remove View for invalid input" should {

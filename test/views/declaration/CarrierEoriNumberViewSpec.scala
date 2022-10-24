@@ -23,8 +23,6 @@ import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.carrier.CarrierEoriNumber
 import forms.declaration.carrier.CarrierEoriNumber.form
 import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED, STANDARD}
-import models.Mode
-import models.Mode.Normal
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
@@ -40,13 +38,13 @@ class CarrierEoriNumberViewSpec extends UnitViewSpec with CommonMessages with Ex
 
   private val page: carrier_eori_number = instanceOf[carrier_eori_number]
 
-  private def createView(form: Form[CarrierEoriNumber], mode: Mode = Mode.Normal)(implicit request: JourneyRequest[_]): Document =
-    page(mode, form)(request, messages)
+  private def createView(frm: Form[CarrierEoriNumber] = form)(implicit request: JourneyRequest[_]): Document =
+    page(frm)(request, messages)
 
   "Carrier Eori Number View" should {
 
     onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, CLEARANCE) { implicit request =>
-      val view = createView(form)
+      val view = createView()
 
       "have proper messages for labels" in {
         messages must haveTranslationFor("declaration.carrierEori.hasEori.empty")
@@ -56,7 +54,7 @@ class CarrierEoriNumberViewSpec extends UnitViewSpec with CommonMessages with Ex
       "display 'Back' button that links to 'Exporter Details' page" in {
         val backButton = view.getElementById("back-link")
         backButton must containMessage("site.backToPreviousQuestion")
-        backButton.getElementById("back-link") must haveHref(RepresentativeStatusController.displayPage(Normal))
+        backButton.getElementById("back-link") must haveHref(RepresentativeStatusController.displayPage())
       }
 
       "display section header" in {
@@ -93,7 +91,7 @@ class CarrierEoriNumberViewSpec extends UnitViewSpec with CommonMessages with Ex
       "display answer input" in {
         val carrierEoriNumber = form.fill(CarrierEoriNumber(Some(Eori("GB123456789")), YesNoAnswers.yes))
 
-        createView(form = carrierEoriNumber)
+        createView(carrierEoriNumber)
           .getElementById("Yes")
           .getElementsByAttribute("checked")
           .attr("value") mustBe YesNoAnswers.yes
@@ -120,13 +118,12 @@ class CarrierEoriNumberViewSpec extends UnitViewSpec with CommonMessages with Ex
         actualText mustBe removeLineBreakIfAny(expectedText)
       }
 
-      val createViewWithMode: Mode => Document = mode => createView(form, mode)
-      checkAllSaveButtonsAreDisplayed(createViewWithMode)
+      checkAllSaveButtonsAreDisplayed(createView())
 
       "display errors when all inputs are incorrect" in {
         val data = CarrierEoriNumber(Some(Eori("123456789")), YesNoAnswers.yes)
         val form = CarrierEoriNumber.form.fillAndValidate(data)
-        val view = createView(form = form)
+        val view = createView(form)
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#eori")
@@ -136,7 +133,7 @@ class CarrierEoriNumberViewSpec extends UnitViewSpec with CommonMessages with Ex
       "display errors when eori contains special characters" in {
         val data = CarrierEoriNumber(eori = Some(Eori("12#$%^78")), hasEori = YesNoAnswers.yes)
         val form = CarrierEoriNumber.form.fillAndValidate(data)
-        val view = createView(form = form)
+        val view = createView(form)
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#eori")

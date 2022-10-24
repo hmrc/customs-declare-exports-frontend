@@ -24,8 +24,6 @@ import forms.declaration.consignor.ConsignorDetails
 import forms.declaration.exporter.ExporterEoriNumber
 import forms.declaration.exporter.ExporterEoriNumber.form
 import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
-import models.Mode
-import models.Mode.Normal
 import models.declaration.Parties
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
@@ -41,10 +39,10 @@ class ExporterEoriNumberViewSpec extends PageWithButtonsSpec with ExportsTestHel
 
   val page: exporter_eori_number = instanceOf[exporter_eori_number]
 
-  override val typeAndViewInstance = (STANDARD, page(Normal, form())(_, _))
+  override val typeAndViewInstance = (STANDARD, page(form())(_, _))
 
-  def createView(frm: Form[ExporterEoriNumber] = form(), mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document =
-    page(mode, frm)(request, messages)
+  def createView(frm: Form[ExporterEoriNumber] = form())(implicit request: JourneyRequest[_]): Document =
+    page(frm)(request, messages)
 
   onEveryDeclarationJourney() { implicit request =>
     "ExporterEoriNumber Eori Number View" should {
@@ -83,8 +81,7 @@ class ExporterEoriNumberViewSpec extends PageWithButtonsSpec with ExportsTestHel
         view.getElementById("eori").attr("value") mustBe empty
       }
 
-      val createViewWithMode: Mode => Document = mode => createView(mode = mode)
-      checkAllSaveButtonsAreDisplayed(createViewWithMode)
+      checkAllSaveButtonsAreDisplayed(createView())
 
       "handle invalid input" should {
         "display errors when all inputs are incorrect" in {
@@ -121,7 +118,7 @@ class ExporterEoriNumberViewSpec extends PageWithButtonsSpec with ExportsTestHel
       val backButton = view.getElementById("back-link")
 
       backButton must containMessage("site.backToPreviousQuestion")
-      backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.PersonPresentingGoodsDetailsController.displayPage(Normal))
+      backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.PersonPresentingGoodsDetailsController.displayPage())
     }
   }
 
@@ -130,7 +127,7 @@ class ExporterEoriNumberViewSpec extends PageWithButtonsSpec with ExportsTestHel
       val backButton = createView().getElementById("back-link")
 
       backButton must containMessage("site.backToPreviousQuestion")
-      backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.DeclarantExporterController.displayPage(Normal))
+      backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.DeclarantExporterController.displayPage())
     }
   }
 }

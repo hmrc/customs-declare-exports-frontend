@@ -42,7 +42,7 @@
     appConfig: AppConfig
 )
 
-@(mode: Mode, form: Form[CarrierDetails])(implicit request: JourneyRequest[_], messages: Messages)
+@(form: Form[CarrierDetails])(implicit request: JourneyRequest[_], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
@@ -55,9 +55,9 @@
 
 @govukLayout(
     title = Title("declaration.carrierAddress.title", "declaration.section.2", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(CarrierDetails, mode)))) {
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(CarrierDetails)))) {
 
-    @formHelper(action = CarrierDetailsController.saveAddress(mode), 'autoComplete -> "off") {
+    @formHelper(action = CarrierDetailsController.saveAddress(), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
         @sectionHeader(messages("declaration.section.2"))
@@ -82,6 +82,6 @@
 
         @tariffExpander(CarrierDetails, request.declarationType)(messages, appConfig)
 
-        @saveButtons(mode)
+        @saveButtons()
     }
 }

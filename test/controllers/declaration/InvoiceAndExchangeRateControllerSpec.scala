@@ -17,10 +17,11 @@
 package controllers.declaration
 
 import base.ControllerSpec
+import controllers.declaration.routes.TotalPackageQuantityController
+import controllers.routes.RootController
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.InvoiceAndExchangeRate
 import models.DeclarationType._
-import models.Mode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.mockito.{ArgumentCaptor, Mockito}
@@ -38,13 +39,13 @@ class InvoiceAndExchangeRateControllerSpec extends ControllerSpec with OptionVal
 
   def theResponseForm: Form[InvoiceAndExchangeRate] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[InvoiceAndExchangeRate]])
-    verify(mockInvoiceAndExchangeRatePage).apply(any(), captor.capture())(any(), any())
+    verify(mockInvoiceAndExchangeRatePage).apply(captor.capture())(any(), any())
     captor.getValue
   }
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
-    when(mockInvoiceAndExchangeRatePage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockInvoiceAndExchangeRatePage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
     authorizedUser()
   }
 
@@ -55,7 +56,7 @@ class InvoiceAndExchangeRateControllerSpec extends ControllerSpec with OptionVal
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration())
-    await(controller.displayPage(Mode.Normal)(request))
+    await(controller.displayPage()(request))
     theResponseForm
   }
 
@@ -83,16 +84,14 @@ class InvoiceAndExchangeRateControllerSpec extends ControllerSpec with OptionVal
   )
 
   def verifyPage(numberOfTimes: Int = 1): Html =
-    verify(mockInvoiceAndExchangeRatePage, times(numberOfTimes)).apply(any(), any())(any(), any())
+    verify(mockInvoiceAndExchangeRatePage, times(numberOfTimes)).apply(any())(any(), any())
 
   "Total Number of Items controller" should {
-
     implicit val format = Json.format[InvoiceAndExchangeRate]
-
     onJourney(STANDARD, SUPPLEMENTARY) { request =>
       "display page method is invoked and cache is empty" in {
         withNewCaching(request.cacheModel)
-        val result = controller.displayPage(Mode.Normal)(getRequest())
+        val result = controller.displayPage()(getRequest())
 
         status(result) mustBe OK
         verifyPage()
@@ -103,7 +102,7 @@ class InvoiceAndExchangeRateControllerSpec extends ControllerSpec with OptionVal
       "display page method is invoked and cache contains data" in {
         withNewCaching(aDeclaration(withType(request.declarationType), withTotalNumberOfItems(withoutExchange)))
 
-        val result = controller.displayPage(Mode.Normal)(getRequest())
+        val result = controller.displayPage()(getRequest())
 
         status(result) mustBe OK
         verifyPage()
@@ -114,7 +113,7 @@ class InvoiceAndExchangeRateControllerSpec extends ControllerSpec with OptionVal
       "return 400 (BAD_REQUEST) when form is incorrect" in {
         withNewCaching(request.cacheModel)
         val incorrectForm = Json.toJson(InvoiceAndExchangeRate("", None, "", Some("abc")))
-        val result = controller.saveNoOfItems(Mode.Normal)(postRequest(incorrectForm))
+        val result = controller.saveNoOfItems()(postRequest(incorrectForm))
 
         status(result) mustBe BAD_REQUEST
         verifyPage()
@@ -123,17 +122,17 @@ class InvoiceAndExchangeRateControllerSpec extends ControllerSpec with OptionVal
       "return 303 (SEE_OTHER) when information provided by user are correct" in {
         withNewCaching(request.cacheModel)
         val correctForm = Json.toJson(withoutExchange)
-        val result = controller.saveNoOfItems(Mode.Normal)(postRequest(correctForm))
+        val result = controller.saveNoOfItems()(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.TotalPackageQuantityController.displayPage()
+        thePageNavigatedTo mustBe TotalPackageQuantityController.displayPage()
         verifyPage(0)
       }
 
       "empty fixed rate of exchange value from cache when 'No' is submitted" in {
         withNewCaching(aDeclaration(withType(request.declarationType), withTotalNumberOfItems(withExchange)))
         val correctForm = Json.toJson(withoutExchange)
-        await(controller.saveNoOfItems(Mode.Normal)(postRequest(correctForm)))
+        await(controller.saveNoOfItems()(postRequest(correctForm)))
 
         theCacheModelUpdated.totalNumberOfItems.get.exchangeRate mustBe None
       }
@@ -143,10 +142,10 @@ class InvoiceAndExchangeRateControllerSpec extends ControllerSpec with OptionVal
       "redirect 303 (See Other) to start" in {
         withNewCaching(request.cacheModel)
 
-        val result = controller.displayPage(Mode.Normal).apply(getRequest(request.cacheModel))
+        val result = controller.displayPage().apply(getRequest(request.cacheModel))
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) must contain(controllers.routes.RootController.displayPage().url)
+        redirectLocation(result) must contain(RootController.displayPage().url)
       }
     }
   }

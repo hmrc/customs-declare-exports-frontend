@@ -23,7 +23,7 @@ import controllers.helpers.LocationOfGoodsHelper.skipLocationOfGoods
 import controllers.navigation.Navigator
 import controllers.routes.RootController
 import forms.declaration.LocationOfGoods
-import models.{ExportsDeclaration, Mode}
+import models.ExportsDeclaration
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Results}
 import services.cache.ExportsCacheService
@@ -45,26 +45,26 @@ class LocationOfGoodsController @Inject() (
 )(implicit ec: ExecutionContext, codeListConnector: CodeListConnector)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
-  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     if (skipLocationOfGoods(request.cacheModel)) Results.Redirect(RootController.displayPage)
     else {
       val form = LocationOfGoods.form.withSubmissionErrors
       request.cacheModel.locations.goodsLocation match {
-        case Some(data) => Ok(locationOfGoods(mode, form.fill(data.toForm)))
-        case _          => Ok(locationOfGoods(mode, form))
+        case Some(data) => Ok(locationOfGoods(form.fill(data.toForm)))
+        case _          => Ok(locationOfGoods(form))
       }
     }
   }
 
-  def saveLocation(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def saveLocation(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     if (skipLocationOfGoods(request.cacheModel)) Future.successful(Results.Redirect(RootController.displayPage))
     else
       LocationOfGoods.form.bindFromRequest
         .fold(
-          formWithErrors => Future.successful(BadRequest(locationOfGoods(mode, formWithErrors))),
+          formWithErrors => Future.successful(BadRequest(locationOfGoods(formWithErrors))),
           locationOfGoods =>
             updateDeclarationFromRequest(updateDeclaration(_, locationOfGoods)).map { _ =>
-              navigator.continueTo(mode, OfficeOfExitController.displayPage)
+              navigator.continueTo(OfficeOfExitController.displayPage)
             }
         )
   }

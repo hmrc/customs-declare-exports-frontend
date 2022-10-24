@@ -45,7 +45,7 @@
     appConfig: AppConfig
 )
 
-@(form: Form[TransportLeavingTheBorder], mode: Mode)(implicit request: JourneyRequest[_], messages: Messages)
+@(form: Form[TransportLeavingTheBorder])(implicit request: JourneyRequest[_], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
@@ -63,9 +63,9 @@
 
 @govukLayout(
     title = Title("declaration.transport.leavingTheBorder.title", "declaration.section.6", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(TransportLeavingTheBorder, mode)))
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(TransportLeavingTheBorder)))
 ) {
-    @formHelper(action = TransportLeavingTheBorderController.submitForm(mode), 'autoComplete -> "off") {
+    @formHelper(action = TransportLeavingTheBorderController.submitForm(), 'autoComplete -> "off") {
         @errorSummary(radioGroupErrors("transportLeavingTheBorder", "Border_Sea", form.errors))
 
         @sectionHeader(messages("declaration.section.6"))
@@ -149,6 +149,6 @@
 
         @tariffExpander(TransportLeavingTheBorder, request.declarationType)(messages, appConfig)
 
-        @saveButtons(mode)
+        @saveButtons()
     }
 }

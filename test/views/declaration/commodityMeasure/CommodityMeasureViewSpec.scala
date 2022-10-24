@@ -22,8 +22,6 @@ import forms.declaration.IsExs
 import forms.declaration.commodityMeasure.CommodityMeasure
 import forms.declaration.commodityMeasure.CommodityMeasure.form
 import models.DeclarationType._
-import models.Mode
-import models.Mode.Normal
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import org.scalatest.Assertion
@@ -38,10 +36,10 @@ class CommodityMeasureViewSpec extends PageWithButtonsSpec with Injector {
 
   val page = instanceOf[commodity_measure]
 
-  override val typeAndViewInstance = (STANDARD, page(Normal, itemId, form)(_, _))
+  override val typeAndViewInstance = (STANDARD, page(itemId, form)(_, _))
 
-  def createView(frm: Form[CommodityMeasure] = form, mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document =
-    page(mode, itemId, frm)(request, messages)
+  def createView(frm: Form[CommodityMeasure] = form)(implicit request: JourneyRequest[_]): Document =
+    page(itemId, frm)(request, messages)
 
   "Commodity Measure View on empty page" should {
     onJourney(STANDARD, SUPPLEMENTARY, CLEARANCE) { implicit request =>
@@ -77,8 +75,7 @@ class CommodityMeasureViewSpec extends PageWithButtonsSpec with Injector {
         view.getElementById("netMass").attr("value") mustBe empty
       }
 
-      val createViewWithMode: Mode => Document = mode => createView(mode = mode)
-      checkAllSaveButtonsAreDisplayed(createViewWithMode)
+      checkAllSaveButtonsAreDisplayed(createView())
     }
   }
 
@@ -163,7 +160,7 @@ class CommodityMeasureViewSpec extends PageWithButtonsSpec with Injector {
         val backButton = createView().getElementById("back-link")
 
         backButton must containMessage("site.backToPreviousQuestion")
-        backButton must haveHref(PackageInformationSummaryController.displayPage(Normal, itemId).url)
+        backButton must haveHref(PackageInformationSummaryController.displayPage(itemId).url)
       }
     }
 
@@ -180,19 +177,19 @@ class CommodityMeasureViewSpec extends PageWithButtonsSpec with Injector {
 
       "display 'Back' button that links to 'Commodity Details' " when {
         "procedure code was '0019' and is EXS was 'No" in {
-          viewHasBackLinkForProcedureCodeAndExsStatus("0019", "No", CommodityDetailsController.displayPage(Normal, itemId))
+          viewHasBackLinkForProcedureCodeAndExsStatus("0019", "No", CommodityDetailsController.displayPage(itemId))
         }
       }
 
       "display 'Back' button that links to 'UN Dangerous Goods Code' " when {
         "procedure code was '0019' and is EXS was 'Yes" in {
-          viewHasBackLinkForProcedureCodeAndExsStatus("0019", "Yes", UNDangerousGoodsCodeController.displayPage(Normal, itemId))
+          viewHasBackLinkForProcedureCodeAndExsStatus("0019", "Yes", UNDangerousGoodsCodeController.displayPage(itemId))
         }
       }
 
       "display 'Back' button that links to 'Package Information' " when {
         "procedure code was '1234'" in {
-          viewHasBackLinkForProcedureCodeAndExsStatus("1234", "ANY", PackageInformationSummaryController.displayPage(Normal, itemId))
+          viewHasBackLinkForProcedureCodeAndExsStatus("1234", "ANY", PackageInformationSummaryController.displayPage(itemId))
         }
       }
     }

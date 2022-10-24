@@ -17,8 +17,9 @@
 package controllers.declaration
 
 import base.ControllerSpec
+import controllers.declaration.routes.PreviousDocumentsSummaryController
 import forms.declaration.{Document, NatureOfTransaction}
-import models.{DeclarationType, Mode}
+import models.DeclarationType
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -47,7 +48,7 @@ class NatureOfTransactionControllerSpec extends ControllerSpec with OptionValues
     super.beforeEach()
     authorizedUser()
     withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY)))
-    when(mockNatureOfTransactionPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockNatureOfTransactionPage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -57,12 +58,12 @@ class NatureOfTransactionControllerSpec extends ControllerSpec with OptionValues
 
   def theResponseForm: Form[NatureOfTransaction] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[NatureOfTransaction]])
-    verify(mockNatureOfTransactionPage).apply(any(), captor.capture())(any(), any())
+    verify(mockNatureOfTransactionPage).apply(captor.capture())(any(), any())
     captor.getValue
   }
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
-    await(controller.displayPage(Mode.Normal)(request))
+    await(controller.displayPage()(request))
     theResponseForm
   }
 
@@ -71,56 +72,49 @@ class NatureOfTransactionControllerSpec extends ControllerSpec with OptionValues
     "return 200 (OK)" when {
 
       "display page method is invoked and cache is empty" in {
-
-        val result = controller.displayPage(Mode.Normal)(getRequest())
+        val result = controller.displayPage()(getRequest())
 
         status(result) mustBe OK
-        verify(mockNatureOfTransactionPage, times(1)).apply(any(), any())(any(), any())
+        verify(mockNatureOfTransactionPage, times(1)).apply(any())(any(), any())
 
         theResponseForm.value mustBe empty
       }
 
       "display page method is invoked and cache contains data" in {
-
         val natureType = "1"
         withNewCaching(aDeclaration(withNatureOfTransaction(natureType)))
 
-        val result = controller.displayPage(Mode.Normal)(getRequest())
+        val result = controller.displayPage()(getRequest())
 
         status(result) mustBe OK
-        verify(mockNatureOfTransactionPage, times(1)).apply(any(), any())(any(), any())
+        verify(mockNatureOfTransactionPage, times(1)).apply(any())(any(), any())
 
         theResponseForm.value.value.natureType mustBe natureType
       }
-
     }
 
     "return 400 (BAD_REQUEST)" when {
-
       "form is incorrect" in {
-
         val incorrectForm = Json.toJson(NatureOfTransaction("incorrect"))
 
-        val result = controller.saveTransactionType(Mode.Normal)(postRequest(incorrectForm))
+        val result = controller.saveTransactionType()(postRequest(incorrectForm))
 
         status(result) mustBe BAD_REQUEST
-        verify(mockNatureOfTransactionPage, times(1)).apply(any(), any())(any(), any())
+        verify(mockNatureOfTransactionPage, times(1)).apply(any())(any(), any())
       }
     }
 
     "return 303 (SEE_OTHER)" when {
-
       "user provided correct information" in {
-
         withNewCaching(aDeclaration(withPreviousDocuments(Document("MCR", "reference", None))))
         val correctForm = Json.toJson(NatureOfTransaction("1"))
 
-        val result = controller.saveTransactionType(Mode.Normal)(postRequest(correctForm))
+        val result = controller.saveTransactionType()(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.PreviousDocumentsSummaryController.displayPage()
+        thePageNavigatedTo mustBe PreviousDocumentsSummaryController.displayPage()
 
-        verify(mockNatureOfTransactionPage, times(0)).apply(any(), any())(any(), any())
+        verify(mockNatureOfTransactionPage, times(0)).apply(any())(any(), any())
       }
     }
   }

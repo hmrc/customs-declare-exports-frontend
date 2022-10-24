@@ -20,8 +20,9 @@ import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
+import models.DeclarationType._
+import models.ExportsDeclaration
 import models.requests.JourneyRequest
-import models.{DeclarationType, ExportsDeclaration, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
@@ -43,25 +44,25 @@ class NactCodeRemoveController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
-  val validTypes = Seq(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL)
+  val validTypes = Seq(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL)
 
-  def displayPage(mode: Mode, itemId: String, code: String): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
-    Ok(nactCodeRemove(mode, itemId, code, removeYesNoForm.withSubmissionErrors()))
+  def displayPage(itemId: String, code: String): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
+    Ok(nactCodeRemove(itemId, code, removeYesNoForm.withSubmissionErrors()))
   }
 
-  def submitForm(mode: Mode, itemId: String, code: String): Action[AnyContent] =
+  def submitForm(itemId: String, code: String): Action[AnyContent] =
     (authenticate andThen journeyType(validTypes)).async { implicit request =>
       removeYesNoForm
         .bindFromRequest()
         .fold(
-          (formWithErrors: Form[YesNoAnswer]) => Future.successful(BadRequest(nactCodeRemove(mode, itemId, code, formWithErrors))),
+          (formWithErrors: Form[YesNoAnswer]) => Future.successful(BadRequest(nactCodeRemove(itemId, code, formWithErrors))),
           formData =>
             formData.answer match {
               case YesNoAnswers.yes =>
                 updateExportsCache(itemId, code)
-                  .map(_ => navigator.continueTo(mode, routes.NactCodeSummaryController.displayPage(_, itemId)))
+                  .map(_ => navigator.continueTo(routes.NactCodeSummaryController.displayPage(itemId)))
               case YesNoAnswers.no =>
-                Future.successful(navigator.continueTo(mode, routes.NactCodeSummaryController.displayPage(_, itemId)))
+                Future.successful(navigator.continueTo(routes.NactCodeSummaryController.displayPage(itemId)))
             }
         )
     }

@@ -20,7 +20,7 @@ import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer.YesNoAnswers.yes
 import forms.declaration.RepresentativeAgent
-import models.{ExportsDeclaration, Mode}
+import models.ExportsDeclaration
 import models.declaration.RepresentativeDetails
 import models.requests.JourneyRequest
 import play.api.data.Form
@@ -44,26 +44,25 @@ class RepresentativeAgentController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
-  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     val frm = RepresentativeAgent.form().withSubmissionErrors()
     request.cacheModel.parties.representativeDetails.flatMap(_.representingOtherAgent) match {
-      case Some(data) => Ok(representativeAgentPage(mode, frm.fill(RepresentativeAgent(data))))
-      case _          => Ok(representativeAgentPage(mode, frm))
+      case Some(data) => Ok(representativeAgentPage(frm.fill(RepresentativeAgent(data))))
+      case _          => Ok(representativeAgentPage(frm))
     }
   }
 
-  def submitForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def submitForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     RepresentativeAgent
       .form()
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[RepresentativeAgent]) => Future.successful(BadRequest(representativeAgentPage(mode, formWithErrors))),
-        validRepresentativeDetails =>
-          updateCache(validRepresentativeDetails).map(_ => navigator.continueTo(mode, nextPage(validRepresentativeDetails)))
+        (formWithErrors: Form[RepresentativeAgent]) => Future.successful(BadRequest(representativeAgentPage(formWithErrors))),
+        validRepresentativeDetails => updateCache(validRepresentativeDetails).map(_ => navigator.continueTo(nextPage(validRepresentativeDetails)))
       )
   }
 
-  private def nextPage(formData: RepresentativeAgent): Mode => Call =
+  private def nextPage(formData: RepresentativeAgent): Call =
     if (formData.representingAgent == yes) controllers.declaration.routes.RepresentativeStatusController.displayPage
     else
       controllers.declaration.routes.RepresentativeEntityController.displayPage

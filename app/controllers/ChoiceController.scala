@@ -22,7 +22,7 @@ import controllers.actions.{AuthAction, VerifiedEmailAction}
 import forms.Choice
 import forms.Choice.AllowedChoiceValues._
 import forms.Choice._
-import models.requests.ExportsSessionKeys
+import models.requests.ExportsSessionKeys.{declarationId, errorFixModeSessionKey}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
@@ -55,7 +55,7 @@ class ChoiceController @Inject() (
       choicePage(previousChoice.fold(form)(form.fill), availableJourneys)
     }
 
-    Ok(pageForPreviousChoice(previousChoice)).removingFromSession(ExportsSessionKeys.declarationId)
+    Ok(pageForPreviousChoice(previousChoice)).removingFromSession(declarationId, errorFixModeSessionKey)
   }
 
   def submitChoice(): Action[AnyContent] = (authenticate andThen verifyEmail) { implicit request =>
@@ -70,7 +70,7 @@ class ChoiceController @Inject() (
             case CancelDec   => Redirect(routes.CancelDeclarationController.displayPage())
             case Submissions => Redirect(routes.SubmissionsController.displayListOfSubmissions())
             case Inbox       => Redirect(routes.SecureMessagingController.displayInbox)
-          }).removingFromSession(ExportsSessionKeys.declarationId)
+          }).removingFromSession(declarationId, errorFixModeSessionKey)
       )
   }
 }

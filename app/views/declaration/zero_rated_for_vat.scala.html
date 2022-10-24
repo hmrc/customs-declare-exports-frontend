@@ -45,7 +45,7 @@
 )
 
 
-@(mode: Mode, itemId: String, form: Form[NactCode], restrictedForZeroVat: Boolean)(implicit request: JourneyRequest[_], messages: Messages)
+@(itemId: String, form: Form[NactCode], restrictedForZeroVat: Boolean)(implicit request: JourneyRequest[_], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
@@ -88,9 +88,9 @@
 
 @govukLayout(
     title = Title("declaration.zeroRatedForVat.title",  "declaration.section.5", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(ZeroRatedForVat, mode, ItemId(itemId))))) {
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(ZeroRatedForVat, ItemId(itemId))))) {
 
-    @formHelper(action = ZeroRatedForVatController.submitForm(mode, itemId), 'autoComplete -> "off") {
+    @formHelper(action = ZeroRatedForVatController.submitForm(itemId), 'autoComplete -> "off") {
 
         @errorSummary(form.errors)
 
@@ -112,7 +112,7 @@
               },
               radios,
               tariffExpander(ZeroRatedForVat, request.declarationType)(messages, appConfig),
-              saveButtons(mode)
+              saveButtons()
             ))
         ))
     }

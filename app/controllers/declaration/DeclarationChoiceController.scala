@@ -22,7 +22,7 @@ import forms.declaration.DeclarationChoice
 import forms.declaration.DeclarationChoice._
 import models.DeclarationType.{CLEARANCE, DeclarationType, SIMPLIFIED}
 import models.requests.ExportsSessionKeys
-import models.{DeclarationStatus, ExportsDeclaration, Mode}
+import models.{DeclarationStatus, ExportsDeclaration}
 import play.api.Logging
 import play.api.i18n.I18nSupport
 import play.api.mvc._
@@ -45,26 +45,26 @@ class DeclarationChoiceController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with Logging with ModelCacheable with WithDefaultFormBinding {
 
-  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
+  def displayPage(): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
     request.declarationId match {
       case Some(id) =>
         exportsCacheService.get(id).map {
-          case Some(declaration) => Ok(choicePage(mode, form.fill(DeclarationChoice(declaration.`type`))))
-          case _                 => Ok(choicePage(mode, form))
+          case Some(declaration) => Ok(choicePage(form.fill(DeclarationChoice(declaration.`type`))))
+          case _                 => Ok(choicePage(form))
         }
 
-      case _ => Future.successful(Ok(choicePage(mode, form)))
+      case _ => Future.successful(Ok(choicePage(form)))
     }
   }
 
-  def submitChoice(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
+  def submitChoice(): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
     form.bindFromRequest
       .fold(
-        formWithErrors => Future.successful(BadRequest(choicePage(mode, formWithErrors))),
+        formWithErrors => Future.successful(BadRequest(choicePage(formWithErrors))),
         declarationType =>
           request.declarationId match {
-            case Some(id) => updateDeclarationType(id, declarationType.value).map(_ => nextPage(mode, id))
-            case _        => create(declarationType.value).map(created => nextPage(mode, created.id))
+            case Some(id) => updateDeclarationType(id, declarationType.value).map(_ => nextPage(id))
+            case _        => create(declarationType.value).map(created => nextPage(created.id))
           }
       )
   }
@@ -86,8 +86,8 @@ class DeclarationChoiceController @Inject() (
       )
     )
 
-  private def nextPage(mode: Mode, declarationId: String)(implicit request: RequestHeader): Result =
-    Redirect(AdditionalDeclarationTypeController.displayPage(mode))
+  private def nextPage(declarationId: String)(implicit request: RequestHeader): Result =
+    Redirect(AdditionalDeclarationTypeController.displayPage())
       .addingToSession(ExportsSessionKeys.declarationId -> declarationId)
 
   private def updateDeclarationType(id: String, `type`: DeclarationType)(implicit hc: HeaderCarrier): Future[Option[ExportsDeclaration]] = {

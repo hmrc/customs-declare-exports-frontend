@@ -21,9 +21,8 @@ import controllers.routes.RootController
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import models.DeclarationType._
-import models.Mode.Normal
 import models.requests.JourneyRequest
-import models.{DeclarationType, Mode}
+import models.DeclarationType
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
@@ -52,7 +51,7 @@ class InvoiceAndExchangeRateChoiceControllerSpec extends ControllerSpec {
     super.beforeEach()
     authorizedUser()
     withNewCaching(aDeclaration(withType(DeclarationType.STANDARD)))
-    when(invoiceAndExchangeRateChoicePage.apply(any[Mode], any[Form[YesNoAnswer]])(any(), any())).thenReturn(HtmlFormat.empty)
+    when(invoiceAndExchangeRateChoicePage.apply(any[Form[YesNoAnswer]])(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -62,12 +61,12 @@ class InvoiceAndExchangeRateChoiceControllerSpec extends ControllerSpec {
 
   def theResponseForm: Form[YesNoAnswer] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[YesNoAnswer]])
-    verify(invoiceAndExchangeRateChoicePage).apply(any(), captor.capture())(any(), any())
+    verify(invoiceAndExchangeRateChoicePage).apply(captor.capture())(any(), any())
     captor.getValue
   }
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
-    await(controller.displayPage(Normal)(request))
+    await(controller.displayPage()(request))
     theResponseForm
   }
 
@@ -76,7 +75,7 @@ class InvoiceAndExchangeRateChoiceControllerSpec extends ControllerSpec {
     "return 200 (OK)" when {
 
       "display page method is invoked and cache is empty" in {
-        val result = controller.displayPage(Normal)(getRequest())
+        val result = controller.displayPage()(getRequest())
         status(result) must be(OK)
         verifyPageInvoked
       }
@@ -84,7 +83,7 @@ class InvoiceAndExchangeRateChoiceControllerSpec extends ControllerSpec {
       "display page method is invoked and cache is not empty" in {
         withNewCaching(aDeclaration(withTotalNumberOfItems(Some("100000"))))
 
-        val result = controller.displayPage(Normal)(getRequest())
+        val result = controller.displayPage()(getRequest())
         status(result) must be(OK)
         verifyPageInvoked
       }
@@ -94,7 +93,7 @@ class InvoiceAndExchangeRateChoiceControllerSpec extends ControllerSpec {
       "redirect to the starting page" in {
         withNewCaching(request.cacheModel)
 
-        val result = controller.displayPage(Normal)(getRequest())
+        val result = controller.displayPage()(getRequest())
         redirectLocation(result) mustBe Some(RootController.displayPage.url)
       }
     }
@@ -120,7 +119,7 @@ class InvoiceAndExchangeRateChoiceControllerSpec extends ControllerSpec {
       "redirect to the starting page" in {
         withNewCaching(request.cacheModel)
 
-        val result = controller.submitForm(Normal)(postRequest(JsString("")))
+        val result = controller.submitForm()(postRequest(JsString("")))
         redirectLocation(result) mustBe Some(RootController.displayPage.url)
       }
     }
@@ -130,7 +129,7 @@ class InvoiceAndExchangeRateChoiceControllerSpec extends ControllerSpec {
       "form contains incorrect values" in {
         val incorrectForm = Json.obj("yesNo" -> "wrong")
 
-        val result = controller.submitForm(Normal)(postRequest(incorrectForm))
+        val result = controller.submitForm()(postRequest(incorrectForm))
         status(result) must be(BAD_REQUEST)
         verifyPageInvoked
       }
@@ -138,7 +137,7 @@ class InvoiceAndExchangeRateChoiceControllerSpec extends ControllerSpec {
       "neither Yes or No have been selected on the page" in {
         val incorrectForm = Json.obj("yesNo" -> "")
 
-        val result = controller.submitForm(Normal)(postRequest(incorrectForm))
+        val result = controller.submitForm()(postRequest(incorrectForm))
         status(result) must be(BAD_REQUEST)
         verifyPageInvoked
       }
@@ -146,13 +145,13 @@ class InvoiceAndExchangeRateChoiceControllerSpec extends ControllerSpec {
   }
 
   private def verifyPageInvoked: HtmlFormat.Appendable =
-    verify(invoiceAndExchangeRateChoicePage).apply(any[Mode], any[Form[YesNoAnswer]])(any(), any())
+    verify(invoiceAndExchangeRateChoicePage).apply(any[Form[YesNoAnswer]])(any(), any())
 
   private def verifyRedirect(yesOrNo: String, call: Call)(implicit request: JourneyRequest[_]): Assertion = {
     withNewCaching(request.cacheModel)
     val correctForm = Json.obj("yesNo" -> yesOrNo)
 
-    val result = controller.submitForm(Normal)(postRequest(correctForm))
+    val result = controller.submitForm()(postRequest(correctForm))
 
     status(result) mustBe SEE_OTHER
     thePageNavigatedTo mustBe call

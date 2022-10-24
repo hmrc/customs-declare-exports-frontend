@@ -14,17 +14,13 @@
  * limitations under the License.
  *@
 
-@import models.Mode
-
 @this(item_section: item_section)
 
-@(mode: Mode, declarationData: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages)
+@(declaration: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages)
 
-
-@if(declarationData.items.nonEmpty) {
-
+@if(declaration.items.nonEmpty) {
     <h2 class="govuk-heading-m">@messages("declaration.summary.items")</h2>
-    @declarationData.items.sortBy(_.sequenceId).map { item =>
-        @item_section(mode, item, declarationData.`type`, actionsEnabled)
+    @declaration.items.sortBy(_.sequenceId).map { item =>
+        @item_section(item, declaration.`type`, actionsEnabled)
     }
 }

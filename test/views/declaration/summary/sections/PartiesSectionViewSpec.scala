@@ -20,8 +20,6 @@ import base.Injector
 import controllers.declaration.routes._
 import forms.common.{Address, Eori}
 import forms.declaration.IsExs
-import models.Mode
-import models.Mode.Draft
 import models.declaration.{DeclarationAdditionalActorsData, RepresentativeDetails}
 import services.cache.ExportsTestHelper
 import views.declaration.spec.UnitViewSpec
@@ -51,54 +49,50 @@ class PartiesSectionViewSpec extends UnitViewSpec with ExportsTestHelper with In
   "Parties section" must {
 
     onEveryDeclarationJourney() { implicit request =>
-      val view = section(Draft, data)(messages)
+      val view = section(data)(messages)
 
       "contains 'are you exporter' with change button" in {
-
         val isExporterRow = view.getElementsByClass("declarantIsExporter-row")
 
         isExporterRow must haveSummaryKey(messages("declaration.summary.parties.declarantIsExporter"))
         isExporterRow must haveSummaryValue(messages("site.no"))
         isExporterRow must haveSummaryActionsTexts("site.change", "declaration.summary.parties.declarantIsExporter.change")
-        isExporterRow must haveSummaryActionsHref(DeclarantExporterController.displayPage(Draft))
+        isExporterRow must haveSummaryActionWithPlaceholder(DeclarantExporterController.displayPage)
       }
 
       "contains exporter details with change button" in {
-
         val eoriRow = view.getElementsByClass("exporter-eori-row")
 
         eoriRow must haveSummaryKey(messages("declaration.summary.parties.exporter.eori"))
         eoriRow must haveSummaryValue(exampleEori)
         eoriRow must haveSummaryActionsTexts("site.change", "declaration.summary.parties.exporter.eori.change")
-        eoriRow must haveSummaryActionsHref(ExporterEoriNumberController.displayPage(Draft))
+        eoriRow must haveSummaryActionWithPlaceholder(ExporterEoriNumberController.displayPage)
 
         val addressRow = view.getElementsByClass("exporter-address-row")
 
         addressRow must haveSummaryKey(messages("declaration.summary.parties.exporter.address"))
         addressRow must haveSummaryValue(exampleAddressContents)
         addressRow must haveSummaryActionsTexts("site.change", "declaration.summary.parties.exporter.address.change")
-        addressRow must haveSummaryActionsHref(ExporterEoriNumberController.displayPage(Draft))
+        addressRow must haveSummaryActionWithPlaceholder(ExporterEoriNumberController.displayPage)
       }
 
       "contains consignee details with change button" in {
-
         val eoriRow = view.getElementsByClass("consignee-eori-row")
 
         eoriRow must haveSummaryKey(messages("declaration.summary.parties.consignee.eori"))
         eoriRow must haveSummaryValue(exampleEori)
         eoriRow must haveSummaryActionsTexts("site.change", "declaration.summary.parties.consignee.eori.change")
-        eoriRow must haveSummaryActionsHref(ConsigneeDetailsController.displayPage(Draft))
+        eoriRow must haveSummaryActionWithPlaceholder(ConsigneeDetailsController.displayPage)
 
         val addressRow = view.getElementsByClass("consignee-address-row")
 
         addressRow must haveSummaryKey(messages("declaration.summary.parties.consignee.address"))
         addressRow must haveSummaryValue(exampleAddressContents)
         addressRow must haveSummaryActionsTexts("site.change", "declaration.summary.parties.consignee.address.change")
-        addressRow must haveSummaryActionsHref(ConsigneeDetailsController.displayPage(Draft))
+        addressRow must haveSummaryActionWithPlaceholder(ConsigneeDetailsController.displayPage)
       }
 
       "contains declarant eori" in {
-
         val eoriRow = view.getElementsByClass("declarant-eori-row")
 
         eoriRow must haveSummaryKey(messages("declaration.summary.parties.declarant.eori"))
@@ -106,49 +100,42 @@ class PartiesSectionViewSpec extends UnitViewSpec with ExportsTestHelper with In
       }
 
       "contains representing another agent with change button" in {
-
         val eoriRow = view.getElementsByClass("representingAnotherAgent-row")
 
         eoriRow must haveSummaryKey(messages("declaration.summary.parties.representative.agent"))
         eoriRow must haveSummaryValue(messages("site.yes"))
         eoriRow must haveSummaryActionsTexts("site.change", "declaration.summary.parties.representative.agent.change")
-        eoriRow must haveSummaryActionsHref(RepresentativeAgentController.displayPage(Draft))
+        eoriRow must haveSummaryActionWithPlaceholder(RepresentativeAgentController.displayPage)
       }
 
       "contains representative eori with change button" in {
-
         val eoriRow = view.getElementsByClass("representative-eori-row")
 
         eoriRow must haveSummaryKey(messages("declaration.summary.parties.representative.eori"))
         eoriRow must haveSummaryValue(exampleEori)
         eoriRow must haveSummaryActionsTexts("site.change", "declaration.summary.parties.representative.eori.change")
-        eoriRow must haveSummaryActionsHref(RepresentativeEntityController.displayPage(Draft))
+        eoriRow must haveSummaryActionWithPlaceholder(RepresentativeEntityController.displayPage)
       }
 
       "does not contains representative eori when not representing another agent" in {
-
-        val nonAgentView = section(
-          Draft,
-          data.copy(parties = data.parties.copy(representativeDetails = Some(RepresentativeDetails(None, Some("2"), Some("No")))))
-        )(messages)
+        val nonAgentView =
+          section(data.copy(parties = data.parties.copy(representativeDetails = Some(RepresentativeDetails(None, Some("2"), Some("No"))))))(messages)
         val eoriRow = nonAgentView.getElementsByClass("representative-eori-row")
 
         eoriRow.text() must be(empty)
       }
 
       "contains representative status code with change button" in {
-
         val row = view.getElementsByClass("representationType-row")
 
         row must haveSummaryKey(messages("declaration.summary.parties.representative.type"))
         row must haveSummaryValue(messages("declaration.summary.parties.representative.type.1"))
 
         row must haveSummaryActionsTexts("site.change", "declaration.summary.parties.representative.type.change")
-        row must haveSummaryActionsHref(RepresentativeStatusController.displayPage(Draft))
+        row must haveSummaryActionWithPlaceholder(RepresentativeStatusController.displayPage)
       }
 
       "contains additional actors section" in {
-
         val row = view.getElementsByClass("additionalActors-row")
 
         row must haveSummaryKey(messages("declaration.summary.parties.additional"))
@@ -156,7 +143,6 @@ class PartiesSectionViewSpec extends UnitViewSpec with ExportsTestHelper with In
       }
 
       "contains holders section" in {
-
         val row = view.getElementsByClass("holders-row")
 
         row must haveSummaryKey(messages("declaration.summary.parties.holders"))
@@ -164,66 +150,65 @@ class PartiesSectionViewSpec extends UnitViewSpec with ExportsTestHelper with In
       }
 
       "contains carrier details with change button" in {
-
         val eoriRow = view.getElementsByClass("carrier-eori-row")
 
         eoriRow must haveSummaryKey(messages("declaration.summary.parties.carrier.eori"))
         eoriRow must haveSummaryValue(exampleEori)
         eoriRow must haveSummaryActionsTexts("site.change", "declaration.summary.parties.carrier.eori.change")
-        eoriRow must haveSummaryActionsHref(CarrierEoriNumberController.displayPage(Draft))
+        eoriRow must haveSummaryActionWithPlaceholder(CarrierEoriNumberController.displayPage)
 
         val addressRow = view.getElementsByClass("carrier-address-row")
 
         addressRow must haveSummaryKey(messages("declaration.summary.parties.carrier.address"))
         addressRow must haveSummaryValue(exampleAddressContents)
         addressRow must haveSummaryActionsTexts("site.change", "declaration.summary.parties.carrier.address.change")
-        addressRow must haveSummaryActionsHref(CarrierEoriNumberController.displayPage(Draft))
+        addressRow must haveSummaryActionWithPlaceholder(CarrierEoriNumberController.displayPage)
       }
 
       "does not contain exporter when section not answered" in {
-        val view = section(Mode.Normal, aDeclarationAfter(data, withoutExporterDetails()))(messages)
+        val view = section(aDeclarationAfter(data, withoutExporterDetails()))(messages)
 
         view.getElementsByClass("exporter-eori-row") mustBe empty
         view.getElementsByClass("exporter-address-row") mustBe empty
       }
 
       "does not contain consignee when section not answered" in {
-        val view = section(Mode.Normal, aDeclarationAfter(data, withoutConsigneeDetails()))(messages)
+        val view = section(aDeclarationAfter(data, withoutConsigneeDetails()))(messages)
 
         view.getElementsByClass("consignee-eori-row") mustBe empty
         view.getElementsByClass("consignee-address-row") mustBe empty
       }
 
       "does not contain declarant when section not answered" in {
-        val view = section(Mode.Normal, aDeclarationAfter(data, withoutDeclarantDetails()))(messages)
+        val view = section(aDeclarationAfter(data, withoutDeclarantDetails()))(messages)
 
         view.getElementsByClass("declarant-eori-row") mustBe empty
         view.getElementsByClass("declarant-address-row") mustBe empty
       }
 
       "does not contain representative when section not answered" in {
-        val view = section(Mode.Normal, aDeclarationAfter(data, withoutRepresentativeDetails()))(messages)
+        val view = section(aDeclarationAfter(data, withoutRepresentativeDetails()))(messages)
 
         view.getElementsByClass("representative-eori-row") mustBe empty
         view.getElementsByClass("representative-address-row") mustBe empty
       }
 
       "does not contain carrier details when section not answered" in {
-        val view = section(Mode.Normal, aDeclarationAfter(data, withoutCarrierDetails()))(messages)
+        val view = section(aDeclarationAfter(data, withoutCarrierDetails()))(messages)
 
         view.getElementsByClass("carrier-eori-row") mustBe empty
         view.getElementsByClass("carrier-address-row") mustBe empty
       }
 
       "does not contain anything when there are no parties" in {
-        val view = section(Mode.Normal, aDeclaration())(messages)
+        val view = section(aDeclaration())(messages)
 
         view.getAllElements.text() must be(empty)
       }
     }
 
     onClearance { implicit request =>
-      val view = section(Draft, data)(messages)
+      val view = section(data)(messages)
       "contains 'Is Exs' section with change button" in {
 
         val isExsRow = view.getElementsByClass("isExs-row")
@@ -231,27 +216,25 @@ class PartiesSectionViewSpec extends UnitViewSpec with ExportsTestHelper with In
         isExsRow must haveSummaryKey(messages("declaration.summary.parties.exs"))
         isExsRow must haveSummaryValue(messages("site.no"))
         isExsRow must haveSummaryActionsTexts("site.change", "declaration.summary.parties.exs.change")
-        isExsRow must haveSummaryActionsHref(IsExsController.displayPage(Draft))
+        isExsRow must haveSummaryActionWithPlaceholder(IsExsController.displayPage)
       }
 
       "contains 'Is this EIDR' section with change button" in {
-
         val isEidrRow = view.getElementsByClass("is-entry-into-declarants-records-row")
 
         isEidrRow must haveSummaryKey(messages("declaration.summary.parties.eidr"))
         isEidrRow must haveSummaryValue(messages("site.yes"))
         isEidrRow must haveSummaryActionsTexts("site.change", "declaration.summary.parties.eidr.change")
-        isEidrRow must haveSummaryActionsHref(EntryIntoDeclarantsRecordsController.displayPage(Draft))
+        isEidrRow must haveSummaryActionWithPlaceholder(EntryIntoDeclarantsRecordsController.displayPage)
       }
 
       "contains 'Person Presenting the Goods' section with change button" in {
-
         val personPresentingGoodsRow = view.getElementsByClass("person-presenting-goods-row")
 
         personPresentingGoodsRow must haveSummaryKey(messages("declaration.summary.parties.personPresentingGoods"))
         personPresentingGoodsRow must haveSummaryValue(exampleEori)
         personPresentingGoodsRow must haveSummaryActionsTexts("site.change", "declaration.summary.parties.personPresentingGoods.change")
-        personPresentingGoodsRow must haveSummaryActionsHref(PersonPresentingGoodsDetailsController.displayPage(Draft))
+        personPresentingGoodsRow must haveSummaryActionWithPlaceholder(PersonPresentingGoodsDetailsController.displayPage)
       }
     }
   }

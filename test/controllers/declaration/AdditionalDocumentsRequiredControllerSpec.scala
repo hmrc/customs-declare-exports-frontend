@@ -19,7 +19,6 @@ package controllers.declaration
 import base.ControllerSpec
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
-import models.Mode
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
@@ -28,6 +27,7 @@ import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
+import play.twirl.api.HtmlFormat.Appendable
 import views.html.declaration.additionalDocuments.additional_documents_required
 
 class AdditionalDocumentsRequiredControllerSpec extends ControllerSpec {
@@ -46,7 +46,7 @@ class AdditionalDocumentsRequiredControllerSpec extends ControllerSpec {
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    when(page.apply(any[Mode], any[String], any[Form[YesNoAnswer]])(any(), any())).thenReturn(HtmlFormat.empty)
+    when(page.apply(any[String], any[Form[YesNoAnswer]])(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -58,13 +58,13 @@ class AdditionalDocumentsRequiredControllerSpec extends ControllerSpec {
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration(withItem(anItem(withItemId(itemId)))))
-    await(controller.displayPage(Mode.Normal, itemId)(request))
+    await(controller.displayPage(itemId)(request))
     theResponseForm
   }
 
   def theResponseForm: Form[YesNoAnswer] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[YesNoAnswer]])
-    verify(page).apply(any[Mode], any[String], captor.capture())(any(), any())
+    verify(page).apply(any[String], captor.capture())(any(), any())
     captor.getValue
   }
 
@@ -72,10 +72,9 @@ class AdditionalDocumentsRequiredControllerSpec extends ControllerSpec {
 
     onEveryDeclarationJourney() { implicit request =>
       "return 200 (OK)" when {
-
         "display page method is invoked" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withItem(anItem(withItemId(itemId)))))
-          val result = controller.displayPage(Mode.Normal, itemId)(getRequest())
+          val result = controller.displayPage(itemId)(getRequest())
           status(result) must be(OK)
           verifyPageInvoked
         }
@@ -85,10 +84,10 @@ class AdditionalDocumentsRequiredControllerSpec extends ControllerSpec {
         "answer is 'yes'" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withItem(anItem(withItemId(itemId)))))
 
-          val result = controller.submitForm(Mode.Normal, itemId)(postRequest(Json.obj("yesNo" -> YesNoAnswers.yes)))
+          val result = controller.submitForm(itemId)(postRequest(Json.obj("yesNo" -> YesNoAnswers.yes)))
 
           status(result) mustBe SEE_OTHER
-          thePageNavigatedTo mustBe routes.AdditionalDocumentAddController.displayPage(Mode.Normal, itemId)
+          thePageNavigatedTo mustBe routes.AdditionalDocumentAddController.displayPage(itemId)
         }
       }
 
@@ -96,7 +95,7 @@ class AdditionalDocumentsRequiredControllerSpec extends ControllerSpec {
         "answer is 'no'" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withItem(anItem(withItemId(itemId)))))
 
-          val result = controller.submitForm(Mode.Normal, itemId)(postRequest(Json.obj("yesNo" -> YesNoAnswers.no)))
+          val result = controller.submitForm(itemId)(postRequest(Json.obj("yesNo" -> YesNoAnswers.no)))
 
           status(result) mustBe SEE_OTHER
           thePageNavigatedTo mustBe routes.ItemsSummaryController.displayItemsSummaryPage()
@@ -109,7 +108,7 @@ class AdditionalDocumentsRequiredControllerSpec extends ControllerSpec {
           withNewCaching(aDeclarationAfter(request.cacheModel, withItem(anItem(withItemId(itemId)))))
           val incorrectForm = Json.obj("yesNo" -> "")
 
-          val result = controller.submitForm(Mode.Normal, itemId)(postRequest(incorrectForm))
+          val result = controller.submitForm(itemId)(postRequest(incorrectForm))
           status(result) must be(BAD_REQUEST)
           verifyPageInvoked
         }
@@ -117,6 +116,5 @@ class AdditionalDocumentsRequiredControllerSpec extends ControllerSpec {
     }
   }
 
-  private def verifyPageInvoked: HtmlFormat.Appendable =
-    verify(page).apply(any[Mode], any[String], any[Form[YesNoAnswer]])(any(), any())
+  private def verifyPageInvoked: Appendable = verify(page).apply(any[String], any[Form[YesNoAnswer]])(any(), any())
 }

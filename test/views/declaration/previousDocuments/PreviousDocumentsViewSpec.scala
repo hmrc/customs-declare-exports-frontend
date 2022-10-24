@@ -24,10 +24,7 @@ import forms.declaration.AuthorisationProcedureCodeChoice.{Choice1007, Choice104
 import forms.declaration.Document.form
 import forms.declaration.{Document, PreviousDocumentsData}
 import models.DeclarationType._
-import models.Mode
-import models.Mode.Normal
 import models.requests.JourneyRequest
-import org.jsoup.nodes.{Document => nodeDocument}
 import org.scalatest.Assertion
 import play.twirl.api.Html
 import views.declaration.spec.PageWithButtonsSpec
@@ -41,9 +38,9 @@ class PreviousDocumentsViewSpec extends PageWithButtonsSpec with Injector {
 
   val page = instanceOf[previous_documents]
 
-  override val typeAndViewInstance = (STANDARD, page(Normal, form)(_, _))
+  override val typeAndViewInstance = (STANDARD, page(form)(_, _))
 
-  def createView(mode: Mode = Normal)(implicit request: JourneyRequest[_]): Html = page(mode, form)(request, messages)
+  def createView()(implicit request: JourneyRequest[_]): Html = page(form)(request, messages)
 
   "Previous Documents View" should {
 
@@ -254,7 +251,7 @@ class PreviousDocumentsViewSpec extends PageWithButtonsSpec with Injector {
         val backButton = createView().getElementById("back-link")
 
         backButton must containMessage("site.backToPreviousQuestion")
-        backButton must haveHref(NatureOfTransactionController.displayPage(Normal))
+        backButton must haveHref(NatureOfTransactionController.displayPage())
       }
     }
 
@@ -262,7 +259,7 @@ class PreviousDocumentsViewSpec extends PageWithButtonsSpec with Injector {
       "display 'Back' button that links to 'Office of Exit' page" in {
         val backButton = createView().getElementById("back-link")
         backButton must containMessage("site.backToPreviousQuestion")
-        backButton must haveHref(OfficeOfExitController.displayPage(Normal))
+        backButton must haveHref(OfficeOfExitController.displayPage())
       }
     }
 
@@ -281,12 +278,11 @@ class PreviousDocumentsViewSpec extends PageWithButtonsSpec with Injector {
           val backButton = createView()(requestWithPreviousDocuments).getElementById("back-link")
 
           backButton must containMessage("site.backToPreviousQuestion")
-          backButton must haveHref(PreviousDocumentsSummaryController.displayPage(Normal))
+          backButton must haveHref(PreviousDocumentsSummaryController.displayPage())
         }
       }
 
-      val createViewWithMode: Mode => nodeDocument = mode => createView(mode = mode)
-      checkAllSaveButtonsAreDisplayed(createViewWithMode)
+      checkAllSaveButtonsAreDisplayed(createView())
     }
 
     def verifyBodyBulletList(view: Html): Assertion = {

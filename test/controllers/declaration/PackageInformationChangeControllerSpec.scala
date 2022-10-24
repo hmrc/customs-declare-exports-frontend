@@ -16,16 +16,14 @@
 
 package controllers.declaration
 
-import base.ControllerSpec
+import base.{ControllerSpec, Injector}
 import forms.declaration.PackageInformation
 import mock.ErrorHandlerMocks
-import models.Mode
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatest.OptionValues
 import play.api.data.Form
-import base.Injector
 import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
@@ -52,7 +50,7 @@ class PackageInformationChangeControllerSpec extends ControllerSpec with OptionV
     super.beforeEach()
     authorizedUser()
     setupErrorHandler()
-    when(mockChangePage.apply(any(), any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockChangePage.apply(any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -62,18 +60,18 @@ class PackageInformationChangeControllerSpec extends ControllerSpec with OptionV
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration(withItems(item)))
-    await(controller.displayPage(Mode.Normal, item.id, id)(request))
+    await(controller.displayPage(item.id, id)(request))
     thePackageInformation
   }
 
   def thePackageInformation: Form[PackageInformation] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[PackageInformation]])
-    verify(mockChangePage).apply(any(), any(), captor.capture(), any(), any())(any(), any())
+    verify(mockChangePage).apply(any(), captor.capture(), any(), any())(any(), any())
     captor.getValue
   }
 
-  private def verifyChangePageInvoked(numberOfTimes: Int = 1) =
-    verify(mockChangePage, times(numberOfTimes)).apply(any(), any(), any(), any(), any())(any(), any())
+  private def verifyChangePageInvoked(numberOfTimes: Int = 1): HtmlFormat.Appendable =
+    verify(mockChangePage, times(numberOfTimes)).apply(any(), any(), any(), any())(any(), any())
 
   val id = "pkgId"
   val packageInformation = PackageInformation(id, Some("AB"), Some(1), Some("SHIP"))
@@ -87,7 +85,7 @@ class PackageInformationChangeControllerSpec extends ControllerSpec with OptionV
           val item = anItem(withPackageInformation(packageInformation))
           withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
 
-          val result = controller.displayPage(Mode.Normal, item.id, id)(getRequest())
+          val result = controller.displayPage(item.id, id)(getRequest())
 
           status(result) mustBe OK
           verifyChangePageInvoked()
@@ -97,11 +95,12 @@ class PackageInformationChangeControllerSpec extends ControllerSpec with OptionV
       }
 
       "return 400 (BAD_REQUEST)" when {
+
         "user makes invalid changes to data" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
 
           val requestBody = Seq("typesOfPackages" -> "invalid", "numberOfPackages" -> "invalid", "shippingMarks" -> "inva!id")
-          val result = controller.submitForm(Mode.Normal, item.id, id)(postRequestAsFormUrlEncoded(requestBody: _*))
+          val result = controller.submitForm(item.id, id)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           status(result) mustBe BAD_REQUEST
           verifyChangePageInvoked()
@@ -117,7 +116,7 @@ class PackageInformationChangeControllerSpec extends ControllerSpec with OptionV
             "numberOfPackages" -> packageInformation.numberOfPackages.get.toString,
             "shippingMarks" -> packageInformation.shippingMarks.get
           )
-          val result = controller.submitForm(Mode.Normal, item.id, anotherId)(postRequestAsFormUrlEncoded(requestBody: _*))
+          val result = controller.submitForm(item.id, anotherId)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           status(result) mustBe BAD_REQUEST
           verifyChangePageInvoked()
@@ -126,7 +125,7 @@ class PackageInformationChangeControllerSpec extends ControllerSpec with OptionV
         "user tries to display page with non-existent package info" in {
           withNewCaching(aDeclarationAfter(request.cacheModel))
 
-          val result = controller.displayPage(Mode.Normal, item.id, id)(getRequest())
+          val result = controller.displayPage(item.id, id)(getRequest())
 
           status(result) mustBe BAD_REQUEST
           verifyNoInteractions(mockChangePage)
@@ -136,7 +135,7 @@ class PackageInformationChangeControllerSpec extends ControllerSpec with OptionV
         "user tries to remove non-existent package info" in {
           withNewCaching(aDeclarationAfter(request.cacheModel))
 
-          val result = controller.submitForm(Mode.Normal, item.id, id)(getRequest())
+          val result = controller.submitForm(item.id, id)(getRequest())
 
           status(result) mustBe BAD_REQUEST
           verify(mockErrorHandler).displayErrorPage()(any())
@@ -148,10 +147,10 @@ class PackageInformationChangeControllerSpec extends ControllerSpec with OptionV
           withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
 
           val requestBody = Seq("typesOfPackages" -> "AE", "numberOfPackages" -> "1", "shippingMarks" -> "1234")
-          val result = controller.submitForm(Mode.Normal, item.id, id)(postRequestAsFormUrlEncoded(requestBody: _*))
+          val result = controller.submitForm(item.id, id)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.PackageInformationSummaryController.displayPage(Mode.Normal, item.id)
+          thePageNavigatedTo mustBe routes.PackageInformationSummaryController.displayPage(item.id)
 
           val savedPackage = theCacheModelUpdated.itemBy(item.id).flatMap(_.packageInformation).map(_.head)
           savedPackage.flatMap(_.typesOfPackages) mustBe Some("AE")
@@ -160,6 +159,5 @@ class PackageInformationChangeControllerSpec extends ControllerSpec with OptionV
         }
       }
     }
-
   }
 }

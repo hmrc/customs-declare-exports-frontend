@@ -21,7 +21,7 @@ import controllers.declaration.routes
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.{No, Yes, YesNoAnswers}
 import forms.declaration.EntryIntoDeclarantsRecords
-import models.{DeclarationType, Mode}
+import models.DeclarationType
 import org.jsoup.nodes.Document
 import play.api.data.{Form, FormError}
 import views.declaration.spec.UnitViewSpec
@@ -32,7 +32,7 @@ class EntryIntoDeclarantsRecordsViewSpec extends UnitViewSpec with Injector with
 
   private val page = instanceOf[entry_into_declarants_records]
   private def createView(form: Form[YesNoAnswer] = EntryIntoDeclarantsRecords.form()): Document =
-    page(Mode.Normal, form)(journeyRequest(DeclarationType.CLEARANCE), messages)
+    page(form)(journeyRequest(DeclarationType.CLEARANCE), messages)
 
   "Entry Into Declarant Records view" when {
 

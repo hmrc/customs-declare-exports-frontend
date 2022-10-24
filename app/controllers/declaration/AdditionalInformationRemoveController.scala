@@ -17,6 +17,7 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
+import controllers.declaration.routes.{AdditionalInformationController, AdditionalInformationRequiredController}
 import controllers.navigation.Navigator
 import controllers.helpers.MultipleItemsHelper.remove
 import forms.common.YesNoAnswer
@@ -24,7 +25,7 @@ import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.AdditionalInformation
 import models.declaration.AdditionalInformationData
 import models.requests.JourneyRequest
-import models.{ExportsDeclaration, Mode}
+import models.ExportsDeclaration
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
@@ -47,38 +48,38 @@ class AdditionalInformationRemoveController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
-  def displayPage(mode: Mode, itemId: String, id: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayPage(itemId: String, id: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     findAdditionalInformation(itemId, id) match {
-      case Some(information) => Ok(removePage(mode, itemId, id, information, removeYesNoForm.withSubmissionErrors))
-      case _                 => returnToSummary(mode, itemId)
+      case Some(information) => Ok(removePage(itemId, id, information, removeYesNoForm.withSubmissionErrors))
+      case _                 => returnToSummary(itemId)
     }
   }
 
-  def submitForm(mode: Mode, itemId: String, id: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def submitForm(itemId: String, id: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     findAdditionalInformation(itemId, id) match {
       case Some(information) =>
         removeYesNoForm.bindFromRequest
           .fold(
-            formWithErrors => Future.successful(BadRequest(removePage(mode, itemId, id, information, formWithErrors))),
+            formWithErrors => Future.successful(BadRequest(removePage(itemId, id, information, formWithErrors))),
             _.answer match {
-              case YesNoAnswers.yes => removeAdditionalInformation(itemId, information).map(declaration => afterRemove(mode, itemId, declaration))
-              case YesNoAnswers.no  => Future.successful(returnToSummary(mode, itemId))
+              case YesNoAnswers.yes => removeAdditionalInformation(itemId, information).map(declaration => afterRemove(itemId, declaration))
+              case YesNoAnswers.no  => Future.successful(returnToSummary(itemId))
             }
           )
-      case _ => Future.successful(returnToSummary(mode, itemId))
+      case _ => Future.successful(returnToSummary(itemId))
     }
   }
 
   private def removeYesNoForm: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.additionalInformation.remove.empty")
 
-  private def afterRemove(mode: Mode, itemId: String, declaration: ExportsDeclaration)(implicit request: JourneyRequest[AnyContent]): Result =
+  private def afterRemove(itemId: String, declaration: ExportsDeclaration)(implicit request: JourneyRequest[AnyContent]): Result =
     declaration.itemBy(itemId).flatMap(_.additionalInformation).map(_.items) match {
-      case Some(items) if items.nonEmpty => returnToSummary(mode, itemId)
-      case _                             => navigator.continueTo(mode, routes.AdditionalInformationRequiredController.displayPage(_, itemId))
+      case Some(items) if items.nonEmpty => returnToSummary(itemId)
+      case _                             => navigator.continueTo(AdditionalInformationRequiredController.displayPage(itemId))
     }
 
-  private def returnToSummary(mode: Mode, itemId: String)(implicit request: JourneyRequest[AnyContent]): Result =
-    navigator.continueTo(mode, routes.AdditionalInformationController.displayPage(_, itemId))
+  private def returnToSummary(itemId: String)(implicit request: JourneyRequest[AnyContent]): Result =
+    navigator.continueTo(AdditionalInformationController.displayPage(itemId))
 
   private def findAdditionalInformation(itemId: String, id: String)(implicit request: JourneyRequest[AnyContent]): Option[AdditionalInformation] =
     ListItem.findById(id, request.cacheModel.itemBy(itemId).flatMap(_.additionalInformation).map(_.items).getOrElse(Seq.empty))

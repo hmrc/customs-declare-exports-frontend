@@ -18,8 +18,8 @@
 @import forms.declaration.DeclarationAdditionalActors
 @import forms.declaration.DeclarationAdditionalActors.additionalActorsFormGroupId
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import views.components.gds.ActionItemBuilder._
 @import views.declaration.summary.TableCell
+@import views.helpers.ActionItemBuilder._
 @import views.html.components.gds.{link, linkContent, spanVisuallyHidden, summary_list}
 
 @this(
@@ -30,14 +30,14 @@
     summaryList: summary_list
 )
 
-@(mode: Mode, additionalActors: Seq[DeclarationAdditionalActors], actionsEnabled: Boolean = true)(implicit messages: Messages)
+@(additionalActors: Seq[DeclarationAdditionalActors], actionsEnabled: Boolean = true)(implicit messages: Messages)
 
 @actions = @{
     if (actionsEnabled == false) None
     else Some(Actions(
         items = List(
-            actionItem(
-                href = routes.AdditionalActorsAddController.displayPage(mode).url,
+            actionSummaryItem(
+                href = routes.AdditionalActorsAddController.displayPage().url,
                 content = HtmlContent(linkContent(messages("site.change"))),
                 visuallyHiddenText = Some(messages("declaration.summary.parties.additional.empty.change"))
             )
@@ -53,22 +53,20 @@
     actor.eori.map(_.value).getOrElse("")
 }
 
-@change(actor: DeclarationAdditionalActors) = {
-    @{
-        if(actionsEnabled)
-            link(
-                messages("site.change"),
-                routes.AdditionalActorsSummaryController.displayPage(mode),
-                textHidden = Some(messages(
-                    "declaration.summary.parties.additional.change",
-                    actorPartyType(actor),
-                    actorEori(actor)
-                ))
-            )
-        else
-            ""
-    }
-}
+@change(actor: DeclarationAdditionalActors) = { @{
+    if (actionsEnabled)
+        link(
+            messages("site.change"),
+            callForSummaryChangeLink(routes.AdditionalActorsSummaryController.displayPage()),
+            textHidden = Some(messages(
+                "declaration.summary.parties.additional.change",
+                actorPartyType(actor),
+                actorEori(actor)
+            ))
+        )
+    else
+        ""
+}}
 
 @if(additionalActors.isEmpty) {
     @summaryList(additionalActorsFormGroupId, None, Seq(

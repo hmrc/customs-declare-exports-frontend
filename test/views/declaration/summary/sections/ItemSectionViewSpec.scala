@@ -22,7 +22,6 @@ import forms.common.YesNoAnswer
 import forms.declaration._
 import forms.declaration.additionaldocuments.AdditionalDocument
 import models.DeclarationType.STANDARD
-import models.Mode.Normal
 import models.declaration.CommodityMeasure
 import services.cache.ExportsTestHelper
 import views.declaration.spec.UnitViewSpec
@@ -60,7 +59,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
     "has item answers and" when {
 
       "actions are enabled" should {
-        val view = itemSection(Normal, itemWithAnswers, STANDARD)(messages)
+        val view = itemSection(itemWithAnswers, STANDARD)(messages)
 
         "have item header" in {
           view.getElementsByClass("govuk-heading-m").text mustBe messages("declaration.summary.items.item.sequenceId", "1")
@@ -73,7 +72,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
 
           row must haveSummaryActionsTexts("site.change", "declaration.summary.items.item.procedureCode.change", "1")
 
-          row must haveSummaryActionsHref(ProcedureCodesController.displayPage(Normal, itemWithAnswers.id))
+          row must haveSummaryActionWithPlaceholder(ProcedureCodesController.displayPage(itemWithAnswers.id))
         }
 
         "have additional procedure codes separated by space with change button" in {
@@ -83,7 +82,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
 
           row must haveSummaryActionsTexts("site.change", "declaration.summary.items.item.additionalProcedureCodes.change", "1")
 
-          row must haveSummaryActionsHref(AdditionalProcedureCodesController.displayPage(Normal, itemWithAnswers.id))
+          row must haveSummaryActionWithPlaceholder(AdditionalProcedureCodesController.displayPage(itemWithAnswers.id))
         }
 
         "have onward supply answer with change button" in {
@@ -93,7 +92,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
 
           row must haveSummaryActionsTexts("site.change", "declaration.summary.items.item.onwardSupplyRelief.change", "1")
 
-          row must haveSummaryActionsHref(FiscalInformationController.displayPage(Normal, itemWithAnswers.id))
+          row must haveSummaryActionWithPlaceholder(FiscalInformationController.displayPage(itemWithAnswers.id))
         }
 
         "have VAT answer with change button" in {
@@ -103,7 +102,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
 
           row must haveSummaryActionsTexts("site.change", "declaration.summary.items.item.VATdetails.change", "1")
 
-          row must haveSummaryActionsHref(AdditionalFiscalReferencesController.displayPage(Normal, itemWithAnswers.id))
+          row must haveSummaryActionWithPlaceholder(AdditionalFiscalReferencesController.displayPage(itemWithAnswers.id))
         }
 
         "have commodity code with change button" in {
@@ -113,7 +112,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
 
           row must haveSummaryActionsTexts("site.change", "declaration.summary.items.item.commodityCode.change", "1")
 
-          row must haveSummaryActionsHref(CommodityDetailsController.displayPage(Normal, itemWithAnswers.id))
+          row must haveSummaryActionWithPlaceholder(CommodityDetailsController.displayPage(itemWithAnswers.id))
         }
 
         "have goods description with change button" in {
@@ -123,7 +122,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
 
           row must haveSummaryActionsTexts("site.change", "declaration.summary.items.item.goodsDescription.change", "1")
 
-          row must haveSummaryActionsHref(CommodityDetailsController.displayPage(Normal, itemWithAnswers.id))
+          row must haveSummaryActionWithPlaceholder(CommodityDetailsController.displayPage(itemWithAnswers.id))
         }
 
         "have un dangerous goods code with change button" in {
@@ -133,7 +132,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
 
           row must haveSummaryActionsTexts("site.change", "declaration.summary.items.item.unDangerousGoodsCode.change", "1")
 
-          row must haveSummaryActionsHref(UNDangerousGoodsCodeController.displayPage(Normal, itemWithAnswers.id))
+          row must haveSummaryActionWithPlaceholder(UNDangerousGoodsCodeController.displayPage(itemWithAnswers.id))
         }
 
         "have cus code with change button" in {
@@ -143,7 +142,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
 
           row must haveSummaryActionsTexts("site.change", "declaration.summary.items.item.cusCode.change", "1")
 
-          row must haveSummaryActionsHref(CusCodeController.displayPage(Normal, itemWithAnswers.id))
+          row must haveSummaryActionWithPlaceholder(CusCodeController.displayPage(itemWithAnswers.id))
         }
 
         "have taric codes separated by comma with change button" in {
@@ -153,7 +152,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
 
           row must haveSummaryActionsTexts("site.change", "declaration.summary.items.item.taricAdditionalCodes.change", "1")
 
-          row must haveSummaryActionsHref(TaricCodeSummaryController.displayPage(Normal, itemWithAnswers.id))
+          row must haveSummaryActionWithPlaceholder(TaricCodeSummaryController.displayPage(itemWithAnswers.id))
         }
 
         "have nact codes separated by comma with change button" in {
@@ -163,7 +162,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
 
           row must haveSummaryActionsTexts("site.change", "declaration.summary.items.item.nationalAdditionalCodes.change", "1")
 
-          row must haveSummaryActionsHref(NactCodeSummaryController.displayPage(Normal, itemWithAnswers.id))
+          row must haveSummaryActionWithPlaceholder(NactCodeSummaryController.displayPage(itemWithAnswers.id))
         }
 
         "have zero rated for vat row with change button" in {
@@ -173,7 +172,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
 
           row must haveSummaryActionsTexts("site.change", "declaration.summary.items.item.zeroRatedForVat.change", "1")
 
-          row must haveSummaryActionsHref(ZeroRatedForVatController.displayPage(Normal, itemWithAnswers.id))
+          row must haveSummaryActionWithPlaceholder(ZeroRatedForVatController.displayPage(itemWithAnswers.id))
         }
 
         "have statistical item value with change button" in {
@@ -183,7 +182,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
 
           row must haveSummaryActionsTexts("site.change", "declaration.summary.items.item.itemValue.change", "1")
 
-          row must haveSummaryActionsHref(StatisticalValueController.displayPage(Normal, itemWithAnswers.id))
+          row must haveSummaryActionWithPlaceholder(StatisticalValueController.displayPage(itemWithAnswers.id))
         }
 
         "have package information section" in {
@@ -206,14 +205,14 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
 
           row must haveSummaryActionsTexts("site.change", "declaration.summary.items.item.supplementaryUnits.change", "1")
 
-          row must haveSummaryActionsHref(SupplementaryUnitsController.displayPage(Normal, itemWithAnswers.id))
+          row must haveSummaryActionWithPlaceholder(SupplementaryUnitsController.displayPage(itemWithAnswers.id))
         }
 
         // CEDS-3668
         "not have a 'Supplementary Units' row" when {
           "the declaration has a 'CommodityMeasure' instance with 'supplementaryUnits' undefined" in {
             val item = itemWithAnswers.copy(commodityMeasure = Some(commodityMeasure.copy(supplementaryUnits = None)))
-            val view = itemSection(Normal, item, STANDARD)(messages)
+            val view = itemSection(item, STANDARD)(messages)
             view.getElementsByClass("item-1-supplementaryUnits-row") mustBe empty
           }
         }
@@ -225,7 +224,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
 
           row must haveSummaryActionsTexts("site.change", "declaration.summary.items.item.grossWeight.change", "1")
 
-          row must haveSummaryActionsHref(CommodityMeasureController.displayPage(Normal, itemWithAnswers.id))
+          row must haveSummaryActionWithPlaceholder(CommodityMeasureController.displayPage(itemWithAnswers.id))
         }
 
         "have net weight with change button" in {
@@ -235,7 +234,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
 
           row must haveSummaryActionsTexts("site.change", "declaration.summary.items.item.netWeight.change", "1")
 
-          row must haveSummaryActionsHref(CommodityMeasureController.displayPage(Normal, itemWithAnswers.id))
+          row must haveSummaryActionWithPlaceholder(CommodityMeasureController.displayPage(itemWithAnswers.id))
         }
 
         "have union and national codes section" in {
@@ -251,7 +250,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
 
       "actions are disabled using actionsEnabled = false" should {
 
-        val view = itemSection(Normal, itemWithAnswers, STANDARD, actionsEnabled = false)(messages)
+        val view = itemSection(itemWithAnswers, STANDARD, actionsEnabled = false)(messages)
 
         "have item header" in {
           view.getElementsByClass("govuk-heading-m").text mustBe messages("declaration.summary.items.item.sequenceId", "1")
@@ -263,7 +262,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
           row must haveSummaryValue("1234")
 
           row mustNot haveSummaryActionsTexts("site.change", "declaration.summary.items.item.procedureCode.change")
-          row mustNot haveSummaryActionsHref(ProcedureCodesController.displayPage(Normal, itemWithAnswers.id))
+          row mustNot haveSummaryActionsHref(ProcedureCodesController.displayPage(itemWithAnswers.id))
         }
 
         "have additional procedure codes separated by space with change button" in {
@@ -272,7 +271,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
           row must haveSummaryValue("000 111")
 
           row mustNot haveSummaryActionsTexts("site.change", "declaration.summary.items.item.additionalProcedureCodes.change")
-          row mustNot haveSummaryActionsHref(AdditionalProcedureCodesController.displayPage(Normal, itemWithAnswers.id))
+          row mustNot haveSummaryActionsHref(AdditionalProcedureCodesController.displayPage(itemWithAnswers.id))
         }
 
         "have onward supply answer with change button" in {
@@ -281,7 +280,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
           row must haveSummaryValue("Yes")
 
           row mustNot haveSummaryActionsText("site.change declaration.summary.items.item.onwardSupplyRelief.change")
-          row mustNot haveSummaryActionsHref(FiscalInformationController.displayPage(Normal, itemWithAnswers.id))
+          row mustNot haveSummaryActionsHref(FiscalInformationController.displayPage(itemWithAnswers.id))
         }
 
         "have VAT answer with change button" in {
@@ -290,7 +289,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
           row must haveSummaryValue("GB1234")
 
           row mustNot haveSummaryActionsText("site.change declaration.summary.items.item.VATdetails.change")
-          row mustNot haveSummaryActionsHref(AdditionalFiscalReferencesController.displayPage(Normal, itemWithAnswers.id))
+          row mustNot haveSummaryActionsHref(AdditionalFiscalReferencesController.displayPage(itemWithAnswers.id))
         }
 
         "have commodity code with change button" in {
@@ -299,7 +298,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
           row must haveSummaryValue("1234567890")
 
           row mustNot haveSummaryActionsText("site.change declaration.summary.items.item.commodityCode.change")
-          row mustNot haveSummaryActionsHref(CommodityDetailsController.displayPage(Normal, itemWithAnswers.id))
+          row mustNot haveSummaryActionsHref(CommodityDetailsController.displayPage(itemWithAnswers.id))
         }
 
         "have goods description with change button" in {
@@ -308,7 +307,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
           row must haveSummaryValue("description")
 
           row mustNot haveSummaryActionsText("site.change declaration.summary.items.item.goodsDescription.change")
-          row mustNot haveSummaryActionsHref(CommodityDetailsController.displayPage(Normal, itemWithAnswers.id))
+          row mustNot haveSummaryActionsHref(CommodityDetailsController.displayPage(itemWithAnswers.id))
         }
 
         "have un dangerous goods code with change button" in {
@@ -317,7 +316,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
           row must haveSummaryValue("345")
 
           row mustNot haveSummaryActionsText("site.change declaration.summary.items.item.unDangerousGoodsCode.change")
-          row mustNot haveSummaryActionsHref(UNDangerousGoodsCodeController.displayPage(Normal, itemWithAnswers.id))
+          row mustNot haveSummaryActionsHref(UNDangerousGoodsCodeController.displayPage(itemWithAnswers.id))
         }
 
         "have cus code with change button" in {
@@ -326,7 +325,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
           row must haveSummaryValue("321")
 
           row mustNot haveSummaryActionsText("site.change declaration.summary.items.item.cusCode.change")
-          row mustNot haveSummaryActionsHref(CusCodeController.displayPage(Normal, itemWithAnswers.id))
+          row mustNot haveSummaryActionsHref(CusCodeController.displayPage(itemWithAnswers.id))
         }
 
         "have taric codes separated by comma with change button" in {
@@ -335,7 +334,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
           row must haveSummaryValue("999, 888")
 
           row mustNot haveSummaryActionsText("site.change declaration.summary.items.item.taricAdditionalCodes.change")
-          row mustNot haveSummaryActionsHref(TaricCodeSummaryController.displayPage(Normal, itemWithAnswers.id))
+          row mustNot haveSummaryActionsHref(TaricCodeSummaryController.displayPage(itemWithAnswers.id))
         }
 
         "have nact codes separated by comma with change button" in {
@@ -344,7 +343,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
           row must haveSummaryValue("111, 222")
 
           row mustNot haveSummaryActionsText("site.change declaration.summary.items.item.nationalAdditionalCodes.change")
-          row mustNot haveSummaryActionsHref(NactCodeSummaryController.displayPage(Normal, itemWithAnswers.id))
+          row mustNot haveSummaryActionsHref(NactCodeSummaryController.displayPage(itemWithAnswers.id))
         }
 
         "have zero rated for vat row with change button" in {
@@ -353,7 +352,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
           row must haveSummaryValue(messages("declaration.summary.items.item.zeroRatedForVat.VATE"))
 
           row mustNot haveSummaryActionsText("site.change declaration.summary.items.item.zeroRatedForVat.change")
-          row mustNot haveSummaryActionsHref(ZeroRatedForVatController.displayPage(Normal, itemWithAnswers.id))
+          row mustNot haveSummaryActionsHref(ZeroRatedForVatController.displayPage(itemWithAnswers.id))
         }
 
         "have statistical item value with change button" in {
@@ -362,7 +361,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
           row must haveSummaryValue("123")
 
           row mustNot haveSummaryActionsText("site.change declaration.summary.items.item.itemValue.change")
-          row mustNot haveSummaryActionsHref(StatisticalValueController.displayPage(Normal, itemWithAnswers.id))
+          row mustNot haveSummaryActionsHref(StatisticalValueController.displayPage(itemWithAnswers.id))
         }
 
         "have supplementary units with change button" in {
@@ -371,7 +370,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
           row must haveSummaryValue("12")
 
           row mustNot haveSummaryActionsText("site.change declaration.summary.items.item.supplementaryUnits.change")
-          row mustNot haveSummaryActionsHref(CommodityMeasureController.displayPage(Normal, itemWithAnswers.id))
+          row mustNot haveSummaryActionsHref(CommodityMeasureController.displayPage(itemWithAnswers.id))
         }
 
         "have gross weight with change button" in {
@@ -380,7 +379,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
           row must haveSummaryValue("666")
 
           row mustNot haveSummaryActionsText("site.change declaration.summary.items.item.grossWeight.change")
-          row mustNot haveSummaryActionsHref(CommodityMeasureController.displayPage(Normal, itemWithAnswers.id))
+          row mustNot haveSummaryActionsHref(CommodityMeasureController.displayPage(itemWithAnswers.id))
         }
 
         "have net weight with change button" in {
@@ -389,7 +388,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
           row must haveSummaryValue("555")
 
           row mustNot haveSummaryActionsText("site.change declaration.summary.items.item.netWeight.change")
-          row mustNot haveSummaryActionsHref(CommodityMeasureController.displayPage(Normal, itemWithAnswers.id))
+          row mustNot haveSummaryActionsHref(CommodityMeasureController.displayPage(itemWithAnswers.id))
         }
 
         "have package information section" in {
@@ -411,7 +410,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
 
       "actions are disabled using actionsEnabled flag" should {
 
-        val view = itemSection(Normal, itemWithAnswers, STANDARD, actionsEnabled = false)(messages)
+        val view = itemSection(itemWithAnswers, STANDARD, actionsEnabled = false)(messages)
 
         "have item header" in {
           view.getElementsByClass("govuk-heading-m").text mustBe messages("declaration.summary.items.item.sequenceId", "1")
@@ -423,7 +422,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
           row must haveSummaryValue("1234")
 
           row mustNot haveSummaryActionsTexts("site.change", "declaration.summary.items.item.procedureCode.change")
-          row mustNot haveSummaryActionsHref(ProcedureCodesController.displayPage(Normal, itemWithAnswers.id))
+          row mustNot haveSummaryActionsHref(ProcedureCodesController.displayPage(itemWithAnswers.id))
         }
 
         "have additional procedure codes separated by space with change button" in {
@@ -432,7 +431,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
           row must haveSummaryValue("000 111")
 
           row mustNot haveSummaryActionsTexts("site.change", "declaration.summary.items.item.additionalProcedureCodes.change")
-          row mustNot haveSummaryActionsHref(AdditionalProcedureCodesController.displayPage(Normal, itemWithAnswers.id))
+          row mustNot haveSummaryActionsHref(AdditionalProcedureCodesController.displayPage(itemWithAnswers.id))
         }
 
         "have onward supply answer with change button" in {
@@ -441,7 +440,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
           row must haveSummaryValue("Yes")
 
           row mustNot haveSummaryActionsText("site.change declaration.summary.items.item.onwardSupplyRelief.change")
-          row mustNot haveSummaryActionsHref(FiscalInformationController.displayPage(Normal, itemWithAnswers.id))
+          row mustNot haveSummaryActionsHref(FiscalInformationController.displayPage(itemWithAnswers.id))
         }
 
         "have VAT answer with change button" in {
@@ -450,7 +449,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
           row must haveSummaryValue("GB1234")
 
           row mustNot haveSummaryActionsText("site.change declaration.summary.items.item.VATdetails.change")
-          row mustNot haveSummaryActionsHref(AdditionalFiscalReferencesController.displayPage(Normal, itemWithAnswers.id))
+          row mustNot haveSummaryActionsHref(AdditionalFiscalReferencesController.displayPage(itemWithAnswers.id))
         }
 
         "have commodity code with change button" in {
@@ -459,7 +458,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
           row must haveSummaryValue("1234567890")
 
           row mustNot haveSummaryActionsText("site.change declaration.summary.items.item.commodityCode.change")
-          row mustNot haveSummaryActionsHref(CommodityDetailsController.displayPage(Normal, itemWithAnswers.id))
+          row mustNot haveSummaryActionsHref(CommodityDetailsController.displayPage(itemWithAnswers.id))
         }
 
         "have goods description with change button" in {
@@ -468,7 +467,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
           row must haveSummaryValue("description")
 
           row mustNot haveSummaryActionsText("site.change declaration.summary.items.item.goodsDescription.change")
-          row mustNot haveSummaryActionsHref(CommodityDetailsController.displayPage(Normal, itemWithAnswers.id))
+          row mustNot haveSummaryActionsHref(CommodityDetailsController.displayPage(itemWithAnswers.id))
         }
 
         "have un dangerous goods code with change button" in {
@@ -477,7 +476,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
           row must haveSummaryValue("345")
 
           row mustNot haveSummaryActionsText("site.change declaration.summary.items.item.unDangerousGoodsCode.change")
-          row mustNot haveSummaryActionsHref(UNDangerousGoodsCodeController.displayPage(Normal, itemWithAnswers.id))
+          row mustNot haveSummaryActionsHref(UNDangerousGoodsCodeController.displayPage(itemWithAnswers.id))
         }
 
         "have cus code with change button" in {
@@ -486,7 +485,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
           row must haveSummaryValue("321")
 
           row mustNot haveSummaryActionsText("site.change declaration.summary.items.item.cusCode.change")
-          row mustNot haveSummaryActionsHref(CusCodeController.displayPage(Normal, itemWithAnswers.id))
+          row mustNot haveSummaryActionsHref(CusCodeController.displayPage(itemWithAnswers.id))
         }
 
         "have taric codes separated by comma with change button" in {
@@ -495,7 +494,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
           row must haveSummaryValue("999, 888")
 
           row mustNot haveSummaryActionsText("site.change declaration.summary.items.item.taricAdditionalCodes.change")
-          row mustNot haveSummaryActionsHref(TaricCodeSummaryController.displayPage(Normal, itemWithAnswers.id))
+          row mustNot haveSummaryActionsHref(TaricCodeSummaryController.displayPage(itemWithAnswers.id))
         }
 
         "have nact codes separated by comma with change button" in {
@@ -504,7 +503,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
           row must haveSummaryValue("111, 222")
 
           row mustNot haveSummaryActionsText("site.change declaration.summary.items.item.nationalAdditionalCodes.change")
-          row mustNot haveSummaryActionsHref(NactCodeSummaryController.displayPage(Normal, itemWithAnswers.id))
+          row mustNot haveSummaryActionsHref(NactCodeSummaryController.displayPage(itemWithAnswers.id))
         }
 
         "have zero rated for vat row with change button" in {
@@ -513,7 +512,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
           row must haveSummaryValue(messages("declaration.summary.items.item.zeroRatedForVat.VATE"))
 
           row mustNot haveSummaryActionsText("site.change declaration.summary.items.item.zeroRatedForVat.change")
-          row mustNot haveSummaryActionsHref(ZeroRatedForVatController.displayPage(Normal, itemWithAnswers.id))
+          row mustNot haveSummaryActionsHref(ZeroRatedForVatController.displayPage(itemWithAnswers.id))
         }
 
         "have statistical item value with change button" in {
@@ -522,7 +521,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
           row must haveSummaryValue("123")
 
           row mustNot haveSummaryActionsText("site.change declaration.summary.items.item.itemValue.change")
-          row mustNot haveSummaryActionsHref(StatisticalValueController.displayPage(Normal, itemWithAnswers.id))
+          row mustNot haveSummaryActionsHref(StatisticalValueController.displayPage(itemWithAnswers.id))
         }
 
         "have supplementary units with change button" in {
@@ -531,7 +530,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
           row must haveSummaryValue("12")
 
           row mustNot haveSummaryActionsText("site.change declaration.summary.items.item.supplementaryUnits.change")
-          row mustNot haveSummaryActionsHref(CommodityMeasureController.displayPage(Normal, itemWithAnswers.id))
+          row mustNot haveSummaryActionsHref(CommodityMeasureController.displayPage(itemWithAnswers.id))
         }
 
         "have gross weight with change button" in {
@@ -540,7 +539,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
           row must haveSummaryValue("666")
 
           row mustNot haveSummaryActionsText("site.change declaration.summary.items.item.grossWeight.change")
-          row mustNot haveSummaryActionsHref(CommodityMeasureController.displayPage(Normal, itemWithAnswers.id))
+          row mustNot haveSummaryActionsHref(CommodityMeasureController.displayPage(itemWithAnswers.id))
         }
 
         "have net weight with change button" in {
@@ -549,7 +548,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
           row must haveSummaryValue("555")
 
           row mustNot haveSummaryActionsText("site.change declaration.summary.items.item.netWeight.change")
-          row mustNot haveSummaryActionsHref(CommodityMeasureController.displayPage(Normal, itemWithAnswers.id))
+          row mustNot haveSummaryActionsHref(CommodityMeasureController.displayPage(itemWithAnswers.id))
         }
 
         "have package information section" in {
@@ -572,7 +571,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
 
     "has no answers" should {
 
-      val view = itemSection(Normal, itemWithoutAnswers, STANDARD)(messages)
+      val view = itemSection(itemWithoutAnswers, STANDARD)(messages)
 
       "not display procedure code" in {
         view.getElementsByClass("item-1-procedureCode-row") mustBe empty

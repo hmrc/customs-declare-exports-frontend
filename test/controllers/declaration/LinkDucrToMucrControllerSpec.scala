@@ -21,7 +21,7 @@ import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import models.DeclarationType.{OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
 import models.requests.JourneyRequest
-import models.{DeclarationType, Mode}
+import models.DeclarationType
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
@@ -50,7 +50,7 @@ class LinkDucrToMucrControllerSpec extends ControllerSpec {
     super.beforeEach()
     authorizedUser()
     withNewCaching(aDeclaration(withType(DeclarationType.STANDARD)))
-    when(linkDucrToMucrPage.apply(any[Mode], any[Form[YesNoAnswer]])(any(), any())).thenReturn(HtmlFormat.empty)
+    when(linkDucrToMucrPage.apply(any[Form[YesNoAnswer]])(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -60,12 +60,12 @@ class LinkDucrToMucrControllerSpec extends ControllerSpec {
 
   def theResponseForm: Form[YesNoAnswer] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[YesNoAnswer]])
-    verify(linkDucrToMucrPage).apply(any(), captor.capture())(any(), any())
+    verify(linkDucrToMucrPage).apply(captor.capture())(any(), any())
     captor.getValue
   }
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
-    await(controller.displayPage(Mode.Normal)(request))
+    await(controller.displayPage()(request))
     theResponseForm
   }
 
@@ -74,7 +74,7 @@ class LinkDucrToMucrControllerSpec extends ControllerSpec {
     "return 200 (OK)" when {
 
       "display page method is invoked and cache is empty" in {
-        val result = controller.displayPage(Mode.Normal)(getRequest())
+        val result = controller.displayPage()(getRequest())
         status(result) must be(OK)
         verifyPageInvoked
       }
@@ -82,7 +82,7 @@ class LinkDucrToMucrControllerSpec extends ControllerSpec {
       "display page method is invoked and cache is not empty" in {
         withNewCaching(aDeclaration(withLinkDucrToMucr()))
 
-        val result = controller.displayPage(Mode.Normal)(getRequest())
+        val result = controller.displayPage()(getRequest())
         status(result) must be(OK)
         verifyPageInvoked
       }
@@ -120,7 +120,7 @@ class LinkDucrToMucrControllerSpec extends ControllerSpec {
       "form contains incorrect values" in {
         val incorrectForm = Json.obj("yesNo" -> "wrong")
 
-        val result = controller.submitForm(Mode.Normal)(postRequest(incorrectForm))
+        val result = controller.submitForm()(postRequest(incorrectForm))
         status(result) must be(BAD_REQUEST)
         verifyPageInvoked
       }
@@ -128,7 +128,7 @@ class LinkDucrToMucrControllerSpec extends ControllerSpec {
       "neither Yes or No have been selected on the page" in {
         val incorrectForm = Json.obj("yesNo" -> "")
 
-        val result = controller.submitForm(Mode.Normal)(postRequest(incorrectForm))
+        val result = controller.submitForm()(postRequest(incorrectForm))
         status(result) must be(BAD_REQUEST)
         verifyPageInvoked
       }
@@ -136,13 +136,13 @@ class LinkDucrToMucrControllerSpec extends ControllerSpec {
   }
 
   private def verifyPageInvoked: HtmlFormat.Appendable =
-    verify(linkDucrToMucrPage).apply(any[Mode], any[Form[YesNoAnswer]])(any(), any())
+    verify(linkDucrToMucrPage).apply(any[Form[YesNoAnswer]])(any(), any())
 
   private def verifyRedirect(yesOrNo: String, call: Call)(implicit request: JourneyRequest[_]): Assertion = {
     withNewCaching(request.cacheModel)
     val correctForm = Json.obj("yesNo" -> yesOrNo)
 
-    val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
+    val result = controller.submitForm()(postRequest(correctForm))
 
     status(result) mustBe SEE_OTHER
     thePageNavigatedTo mustBe call

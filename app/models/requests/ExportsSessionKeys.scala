@@ -20,6 +20,9 @@ object ExportsSessionKeys {
 
   val declarationId = "declarationId"
   val declarationType = "declarationType"
+
+  val errorFixModeSessionKey = "in-error-fix-mode"
+
   val submissionDucr = "submission.ducr"
   val submissionId = "submission.uuid"
   val submissionLrn = "submission.lrn"

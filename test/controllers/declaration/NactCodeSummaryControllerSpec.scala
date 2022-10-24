@@ -17,9 +17,11 @@
 package controllers.declaration
 
 import base.ControllerSpec
+import controllers.declaration.routes.{NactCodeAddController, StatisticalValueController}
+import controllers.routes.RootController
 import forms.common.YesNoAnswer
 import forms.declaration.{NactCode, NactCodeFirst}
-import models.{DeclarationType, Mode}
+import models.DeclarationType
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -40,7 +42,7 @@ class NactCodeSummaryControllerSpec extends ControllerSpec with OptionValues {
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    when(mockPage.apply(any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -50,23 +52,24 @@ class NactCodeSummaryControllerSpec extends ControllerSpec with OptionValues {
 
   private def theResponseForm: Form[YesNoAnswer] = {
     val formCaptor = ArgumentCaptor.forClass(classOf[Form[YesNoAnswer]])
-    verify(mockPage).apply(any(), any(), formCaptor.capture(), any())(any(), any())
+    verify(mockPage).apply(any(), formCaptor.capture(), any())(any(), any())
     formCaptor.getValue
   }
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     val item = anItem(withNactCodes(NactCode("VATE")))
     withNewCaching(aDeclaration(withItems(item)))
-    await(controller.displayPage(Mode.Normal, item.id)(request))
+    await(controller.displayPage(item.id)(request))
     theResponseForm
   }
   def theNactCodes: List[NactCode] = {
     val captor = ArgumentCaptor.forClass(classOf[List[NactCode]])
-    verify(mockPage).apply(any(), any(), any(), captor.capture())(any(), any())
+    verify(mockPage).apply(any(), any(), captor.capture())(any(), any())
     captor.getValue
   }
 
-  private def verifyPageInvoked(numberOfTimes: Int = 1) = verify(mockPage, times(numberOfTimes)).apply(any(), any(), any(), any())(any(), any())
+  private def verifyPageInvoked(numberOfTimes: Int = 1): HtmlFormat.Appendable =
+    verify(mockPage, times(numberOfTimes)).apply(any(), any(), any())(any(), any())
 
   "NACT Code Summary Controller" should {
 
@@ -77,7 +80,7 @@ class NactCodeSummaryControllerSpec extends ControllerSpec with OptionValues {
           val item = anItem(withNactCodes(nactCode))
           withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
 
-          val result = controller.displayPage(Mode.Normal, item.id)(getRequest())
+          val result = controller.displayPage(item.id)(getRequest())
 
           status(result) mustBe OK
           verifyPageInvoked()
@@ -87,19 +90,17 @@ class NactCodeSummaryControllerSpec extends ControllerSpec with OptionValues {
       }
 
       "return 400 (BAD_REQUEST)" when {
-
         "user submits invalid answer" in {
           val nactCode = NactCode("VATE")
           val item = anItem(withNactCodes(nactCode))
           withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
 
           val requestBody = Seq("yesNo" -> "invalid")
-          val result = controller.submitForm(Mode.Normal, item.id)(postRequestAsFormUrlEncoded(requestBody: _*))
+          val result = controller.submitForm(item.id)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           status(result) mustBe BAD_REQUEST
           verifyPageInvoked()
         }
-
       }
 
       "return 303 (SEE_OTHER)" when {
@@ -108,10 +109,10 @@ class NactCodeSummaryControllerSpec extends ControllerSpec with OptionValues {
           val item = anItem()
           withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
 
-          val result = controller.displayPage(Mode.Normal, item.id)(getRequest())
+          val result = controller.displayPage(item.id)(getRequest())
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.NactCodeAddController.displayPage(Mode.Normal, item.id)
+          thePageNavigatedTo mustBe NactCodeAddController.displayPage(item.id)
         }
 
         "user submits valid Yes answer" in {
@@ -120,61 +121,56 @@ class NactCodeSummaryControllerSpec extends ControllerSpec with OptionValues {
           withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
 
           val requestBody = Seq("yesNo" -> "Yes")
-          val result = controller.submitForm(Mode.Normal, item.id)(postRequestAsFormUrlEncoded(requestBody: _*))
+          val result = controller.submitForm(item.id)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.NactCodeAddController.displayPage(Mode.Normal, item.id)
+          thePageNavigatedTo mustBe NactCodeAddController.displayPage(item.id)
         }
-
       }
     }
 
     onJourney(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY) { request =>
       "re-direct to next question" when {
-
         "user submits valid No answer" in {
           val nactCode = NactCode("VATE")
           val item = anItem(withNactCodes(nactCode))
           withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
 
           val requestBody = Seq("yesNo" -> "No")
-          val result = controller.submitForm(Mode.Normal, item.id)(postRequestAsFormUrlEncoded(requestBody: _*))
+          val result = controller.submitForm(item.id)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.StatisticalValueController.displayPage(Mode.Normal, item.id)
+          thePageNavigatedTo mustBe StatisticalValueController.displayPage(item.id)
         }
-
       }
     }
 
     onJourney(DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL) { request =>
       "re-direct to next question" when {
-
         "user submits valid No answer" in {
           val nactCode = NactCode("VATE")
           val item = anItem(withNactCodes(nactCode))
           withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
 
           val requestBody = Seq("yesNo" -> "No")
-          val result = controller.submitForm(Mode.Normal, item.id)(postRequestAsFormUrlEncoded(requestBody: _*))
+          val result = controller.submitForm(item.id)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.PackageInformationSummaryController.displayPage(Mode.Normal, item.id)
+          thePageNavigatedTo mustBe routes.PackageInformationSummaryController.displayPage(item.id)
         }
-
       }
     }
 
     onJourney(DeclarationType.CLEARANCE) { request =>
       "return 303 (SEE_OTHER)" that {
-        "display page method is invoked" in {
 
+        "display page method is invoked" in {
           withNewCaching(request.cacheModel)
 
-          val result = controller.displayPage(Mode.Normal, "id")(getRequest())
+          val result = controller.displayPage("id")(getRequest())
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.routes.RootController.displayPage().url)
+          redirectLocation(result) mustBe Some(RootController.displayPage().url)
         }
 
         "user submits valid data" in {
@@ -182,13 +178,12 @@ class NactCodeSummaryControllerSpec extends ControllerSpec with OptionValues {
           withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
 
           val requestBody = Seq(NactCodeFirst.hasNactCodeKey -> "Yes", NactCode.nactCodeKey -> "VATR")
-          val result = controller.submitForm(Mode.Normal, item.id)(postRequestAsFormUrlEncoded(requestBody: _*))
+          val result = controller.submitForm(item.id)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.routes.RootController.displayPage().url)
+          redirectLocation(result) mustBe Some(RootController.displayPage().url)
         }
       }
     }
-
   }
 }

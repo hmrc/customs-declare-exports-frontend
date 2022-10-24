@@ -21,8 +21,6 @@ import controllers.declaration.routes.CommodityDetailsController
 import forms.declaration.UNDangerousGoodsCode
 import forms.declaration.UNDangerousGoodsCode.{form, AllowedUNDangerousGoodsCodeAnswers}
 import models.DeclarationType.STANDARD
-import models.Mode
-import models.Mode.Normal
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
@@ -35,10 +33,10 @@ class UNDangerousGoodsCodeViewSpec extends PageWithButtonsSpec with Injector {
 
   val page = instanceOf[un_dangerous_goods_code]
 
-  override val typeAndViewInstance = (STANDARD, page(Normal, itemId, form())(_, _))
+  override val typeAndViewInstance = (STANDARD, page(itemId, form())(_, _))
 
-  def createView(frm: Form[UNDangerousGoodsCode] = form(), mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document =
-    page(mode, itemId, frm)(request, messages)
+  def createView(frm: Form[UNDangerousGoodsCode] = form())(implicit request: JourneyRequest[_]): Document =
+    page(itemId, frm)(request, messages)
 
   "UNDangerousGoodsCode View on empty page" should {
 
@@ -83,11 +81,10 @@ class UNDangerousGoodsCodeViewSpec extends PageWithButtonsSpec with Injector {
         val backButton = view.getElementById("back-link")
 
         backButton must containMessage("site.backToPreviousQuestion")
-        backButton.getElementById("back-link") must haveHref(CommodityDetailsController.displayPage(Normal, itemId))
+        backButton.getElementById("back-link") must haveHref(CommodityDetailsController.displayPage(itemId))
       }
 
-      val createViewWithMode: Mode => Document = mode => createView(mode = mode)
-      checkAllSaveButtonsAreDisplayed(createViewWithMode)
+      checkAllSaveButtonsAreDisplayed(createView())
     }
   }
 

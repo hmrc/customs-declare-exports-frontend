@@ -20,7 +20,6 @@ import base.Injector
 import controllers.declaration.routes
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.{DeclarantIsExporter, IsExs}
-import models.Mode
 import models.declaration.Parties
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
@@ -34,8 +33,8 @@ import views.html.declaration.is_exs
 class IsExsViewSpec extends UnitViewSpec with ExportsTestHelper with CommonMessages with Stubs with Injector {
 
   private val page = instanceOf[is_exs]
-  private def createView(mode: Mode = Mode.Normal)(implicit request: JourneyRequest[_]): Document =
-    page(mode, IsExs.form)(request, messages)
+  private def createView()(implicit request: JourneyRequest[_]): Document =
+    page(IsExs.form)(request, messages)
 
   "Is Exs View" should {
 
@@ -99,8 +98,7 @@ class IsExsViewSpec extends UnitViewSpec with ExportsTestHelper with CommonMessa
         }
       }
 
-      val createViewWithMode: Mode => Document = mode => createView(mode = mode)
-      checkAllSaveButtonsAreDisplayed(createViewWithMode)
+      checkAllSaveButtonsAreDisplayed(createView())
     }
   }
 }

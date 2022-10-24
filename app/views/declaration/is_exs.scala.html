@@ -37,15 +37,15 @@
     formHelper: FormWithCSRF
 )
 
-@(mode: Mode, form: Form[IsExs])(implicit request: JourneyRequest[_], messages: Messages)
+@(form: Form[IsExs])(implicit request: JourneyRequest[_], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
 @govukLayout(
     title = Title("declaration.exs.title", "declaration.section.2", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(IsExs, mode)))) {
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(IsExs)))) {
 
-    @formHelper(action = controllers.declaration.routes.IsExsController.submit(mode), 'autoComplete -> "off") {
+    @formHelper(action = controllers.declaration.routes.IsExsController.submit(), 'autoComplete -> "off") {
         @errorSummary(radioGroupErrors(isExsKey, "code_yes", form.errors))
 
         @sectionHeader(messages("declaration.section.2"))
@@ -77,6 +77,6 @@
             errorMessage = form(isExsKey).error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
         ))
 
-        @saveButtons(mode)
+        @saveButtons()
     }
 }

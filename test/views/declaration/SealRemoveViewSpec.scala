@@ -21,8 +21,6 @@ import controllers.declaration.routes.SealController
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.form
 import models.DeclarationType.STANDARD
-import models.Mode
-import models.Mode.Normal
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import views.declaration.spec.PageWithButtonsSpec
@@ -37,9 +35,9 @@ class SealRemoveViewSpec extends PageWithButtonsSpec with Injector {
 
   val page = instanceOf[seal_remove]
 
-  override val typeAndViewInstance = (STANDARD, page(Normal, form(), containerId, sealId)(_, _))
+  override val typeAndViewInstance = (STANDARD, page(form(), containerId, sealId)(_, _))
 
-  def createView(frm: Form[YesNoAnswer] = form(), mode: Mode = Normal): Document = page(mode, frm, containerId, sealId)
+  def createView(frm: Form[YesNoAnswer] = form()): Document = page(frm, containerId, sealId)
 
   "Seal Remove View" should {
     val view = createView()
@@ -64,11 +62,10 @@ class SealRemoveViewSpec extends PageWithButtonsSpec with Injector {
       val backLinkContainer = view.getElementById("back-link")
 
       backLinkContainer.text() must be(messages(backToPreviousQuestionCaption))
-      backLinkContainer.getElementById("back-link") must haveHref(SealController.displaySealSummary(Mode.Normal, containerId))
+      backLinkContainer.getElementById("back-link") must haveHref(SealController.displaySealSummary(containerId))
     }
 
-    val createViewWithMode: Mode => Document = mode => createView(mode = mode)
-    checkAllSaveButtonsAreDisplayed(createViewWithMode)
+    checkAllSaveButtonsAreDisplayed(createView())
   }
 
   "Seal Remove View for invalid input" should {

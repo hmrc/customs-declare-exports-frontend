@@ -38,7 +38,7 @@
     formHelper: FormWithCSRF
 )
 
-@(mode: Mode, itemId: String, form: Form[YesNoAnswer], backLink: Call, maybeProcedureCode: Option[ProcedureCodesData])(implicit request: JourneyRequest[_], messages: Messages)
+@(itemId: String, form: Form[YesNoAnswer], backLink: Call, maybeProcedureCode: Option[ProcedureCodesData])(implicit request: JourneyRequest[_], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
@@ -46,7 +46,7 @@
     title = Title("declaration.additionalInformationRequired.title", "declaration.section.5", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), backLink))
 ) {
-    @formHelper(action = controllers.declaration.routes.AdditionalInformationRequiredController.submitForm(mode, (itemId)), 'autoComplete -> "off") {
+    @formHelper(action = controllers.declaration.routes.AdditionalInformationRequiredController.submitForm((itemId)), 'autoComplete -> "off") {
         @errorSummary(yesNoErrors(form.errors))
 
         @sectionHeader(messages("declaration.section.5"))
@@ -62,6 +62,6 @@
 
         @tariffExpander(AdditionalInformationRequired, request.declarationType)(messages, appConfig)
 
-        @saveButtons(mode)
+        @saveButtons()
     }
 }

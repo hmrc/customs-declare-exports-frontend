@@ -42,7 +42,7 @@
     appConfig: AppConfig
 )
 
-@(mode: Mode, form: Form[Document])(implicit request: JourneyRequest[_], messages: Messages)
+@(form: Form[Document])(implicit request: JourneyRequest[_], messages: Messages)
 
 @formFields = {
     @formGroupWrapper(field = form(PreviousDocumentsFormGroupId)) {
@@ -80,6 +80,6 @@
     html = HtmlFormat.fill(List(
         formFields,
         tariffExpander(Document, request.declarationType)(messages, appConfig),
-        saveButtons(mode)
+        saveButtons()
     ))
 ))

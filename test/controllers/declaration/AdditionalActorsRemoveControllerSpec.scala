@@ -19,7 +19,6 @@ package controllers.declaration
 import base.ControllerSpec
 import forms.common.{Eori, YesNoAnswer}
 import forms.declaration.DeclarationAdditionalActors
-import models.Mode
 import models.declaration.DeclarationAdditionalActorsData
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -49,7 +48,7 @@ class AdditionalActorsRemoveControllerSpec extends ControllerSpec with OptionVal
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    when(mockPage.apply(any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -59,24 +58,24 @@ class AdditionalActorsRemoveControllerSpec extends ControllerSpec with OptionVal
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration(withDeclarationAdditionalActors(DeclarationAdditionalActorsData(Seq(additionalActor)))))
-    await(controller.displayPage(Mode.Normal, id)(request))
+    await(controller.displayPage(id)(request))
     theResponseForm
   }
 
   def theResponseForm: Form[YesNoAnswer] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[YesNoAnswer]])
-    verify(mockPage).apply(any(), any(), any(), captor.capture())(any(), any())
+    verify(mockPage).apply(any(), any(), captor.capture())(any(), any())
     captor.getValue
   }
 
   def additionalActorCaptor: DeclarationAdditionalActors = {
     val captor = ArgumentCaptor.forClass(classOf[DeclarationAdditionalActors])
-    verify(mockPage).apply(any(), any(), captor.capture(), any())(any(), any())
+    verify(mockPage).apply(any(), captor.capture(), any())(any(), any())
     captor.getValue
   }
 
-  private def verifyRemovePageInvoked(numberOfTimes: Int = 1) =
-    verify(mockPage, times(numberOfTimes)).apply(any(), any(), any(), any())(any(), any())
+  private def verifyRemovePageInvoked(numberOfTimes: Int = 1): HtmlFormat.Appendable =
+    verify(mockPage, times(numberOfTimes)).apply(any(), any(), any())(any(), any())
 
   val additionalActor: DeclarationAdditionalActors = DeclarationAdditionalActors(Some(Eori("GB123456789000")), Some("MF"))
   val id = ListItem.createId(0, additionalActor)
@@ -89,7 +88,7 @@ class AdditionalActorsRemoveControllerSpec extends ControllerSpec with OptionVal
 
           withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationAdditionalActors(additionalActor)))
 
-          val result = controller.displayPage(Mode.Normal, id)(getRequest())
+          val result = controller.displayPage(id)(getRequest())
 
           status(result) mustBe OK
           verifyRemovePageInvoked()
@@ -104,7 +103,7 @@ class AdditionalActorsRemoveControllerSpec extends ControllerSpec with OptionVal
           withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationAdditionalActors(additionalActor)))
 
           val requestBody = Seq("yesNo" -> "invalid")
-          val result = controller.submitForm(Mode.Normal, id)(postRequestAsFormUrlEncoded(requestBody: _*))
+          val result = controller.submitForm(id)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           status(result) mustBe BAD_REQUEST
           verifyRemovePageInvoked()
@@ -116,10 +115,10 @@ class AdditionalActorsRemoveControllerSpec extends ControllerSpec with OptionVal
           withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationAdditionalActors(additionalActor)))
 
           val requestBody = Seq("yesNo" -> "Yes")
-          val result = controller.submitForm(Mode.Normal, id)(postRequestAsFormUrlEncoded(requestBody: _*))
+          val result = controller.submitForm(id)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalActorsSummaryController.displayPage(Mode.Normal)
+          thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalActorsSummaryController.displayPage()
 
           theCacheModelUpdated.parties.declarationHoldersData mustBe None
         }
@@ -128,15 +127,14 @@ class AdditionalActorsRemoveControllerSpec extends ControllerSpec with OptionVal
           withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationAdditionalActors(additionalActor)))
 
           val requestBody = Seq("yesNo" -> "No")
-          val result = controller.submitForm(Mode.Normal, id)(postRequestAsFormUrlEncoded(requestBody: _*))
+          val result = controller.submitForm(id)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalActorsSummaryController.displayPage(Mode.Normal)
+          thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalActorsSummaryController.displayPage()
 
           verifyTheCacheIsUnchanged()
         }
       }
     }
-
   }
 }

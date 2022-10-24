@@ -17,10 +17,10 @@
 package controllers.declaration
 
 import base.ControllerSpec
+import controllers.declaration.routes.{AdditionalInformationRequiredController, CommodityMeasureController}
 import forms.common.YesNoAnswer
 import forms.declaration.PackageInformation
 import models.DeclarationType._
-import models.Mode
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -49,7 +49,7 @@ class PackageInformationSummaryControllerSpec extends ControllerSpec with Option
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    when(mockPage.apply(any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -60,23 +60,24 @@ class PackageInformationSummaryControllerSpec extends ControllerSpec with Option
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     val item = anItem(withPackageInformation(packageInformation))
     withNewCaching(aDeclaration(withItems(item)))
-    await(controller.displayPage(Mode.Normal, item.id)(request))
+    await(controller.displayPage(item.id)(request))
     theResponseForm
   }
 
   def theResponseForm: Form[YesNoAnswer] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[YesNoAnswer]])
-    verify(mockPage).apply(any(), any(), captor.capture(), any())(any(), any())
+    verify(mockPage).apply(any(), captor.capture(), any())(any(), any())
     captor.getValue
   }
 
   def thePackageInformationList: Seq[PackageInformation] = {
     val captor = ArgumentCaptor.forClass(classOf[Seq[PackageInformation]])
-    verify(mockPage).apply(any(), any(), any(), captor.capture())(any(), any())
+    verify(mockPage).apply(any(), any(), captor.capture())(any(), any())
     captor.getValue
   }
 
-  private def verifyPageInvoked(numberOfTimes: Int = 1) = verify(mockPage, times(numberOfTimes)).apply(any(), any(), any(), any())(any(), any())
+  private def verifyPageInvoked(numberOfTimes: Int = 1): HtmlFormat.Appendable =
+    verify(mockPage, times(numberOfTimes)).apply(any(), any(), any())(any(), any())
 
   "PackageInformation Summary Controller" should {
 
@@ -86,7 +87,7 @@ class PackageInformationSummaryControllerSpec extends ControllerSpec with Option
           val item = anItem(withPackageInformation(packageInformation))
           withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
 
-          val result = controller.displayPage(Mode.Normal, item.id)(getRequest())
+          val result = controller.displayPage(item.id)(getRequest())
 
           status(result) mustBe OK
           verifyPageInvoked()
@@ -96,18 +97,16 @@ class PackageInformationSummaryControllerSpec extends ControllerSpec with Option
       }
 
       "return 400 (BAD_REQUEST)" when {
-
         "user submits invalid answer" in {
           val item = anItem(withPackageInformation(packageInformation))
           withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
 
           val requestBody = Json.obj("yesNo" -> "invalid")
-          val result = controller.submitForm(Mode.Normal, item.id)(postRequest(requestBody))
+          val result = controller.submitForm(item.id)(postRequest(requestBody))
 
           status(result) mustBe BAD_REQUEST
           verifyPageInvoked()
         }
-
       }
 
       "return 303 (SEE_OTHER)" when {
@@ -116,10 +115,10 @@ class PackageInformationSummaryControllerSpec extends ControllerSpec with Option
           val item = anItem()
           withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
 
-          val result = controller.displayPage(Mode.Normal, item.id)(getRequest())
+          val result = controller.displayPage(item.id)(getRequest())
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.PackageInformationAddController.displayPage(Mode.Normal, item.id)
+          thePageNavigatedTo mustBe routes.PackageInformationAddController.displayPage(item.id)
         }
 
         "user submits valid Yes answer" in {
@@ -127,10 +126,10 @@ class PackageInformationSummaryControllerSpec extends ControllerSpec with Option
           withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
 
           val requestBody = Json.obj("yesNo" -> "Yes")
-          val result = controller.submitForm(Mode.Normal, item.id)(postRequest(requestBody))
+          val result = controller.submitForm(item.id)(postRequest(requestBody))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.PackageInformationAddController.displayPage(Mode.Normal, item.id)
+          thePageNavigatedTo mustBe routes.PackageInformationAddController.displayPage(item.id)
         }
 
         "user submits valid Yes answer in error-fix mode" in {
@@ -138,10 +137,10 @@ class PackageInformationSummaryControllerSpec extends ControllerSpec with Option
           withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
 
           val requestBody = Json.obj("yesNo" -> "Yes")
-          val result = controller.submitForm(Mode.ErrorFix, item.id)(postRequest(requestBody))
+          val result = controller.submitForm(item.id)(postRequest(requestBody))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.PackageInformationAddController.displayPage(Mode.ErrorFix, item.id)
+          thePageNavigatedTo mustBe routes.PackageInformationAddController.displayPage(item.id)
         }
       }
     }
@@ -153,10 +152,10 @@ class PackageInformationSummaryControllerSpec extends ControllerSpec with Option
           withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
 
           val requestBody = Json.obj("yesNo" -> "No")
-          val result = controller.submitForm(Mode.Normal, item.id)(postRequest(requestBody))
+          val result = controller.submitForm(item.id)(postRequest(requestBody))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.CommodityMeasureController.displayPage(Mode.Normal, item.id)
+          thePageNavigatedTo mustBe CommodityMeasureController.displayPage(item.id)
         }
       }
 
@@ -166,13 +165,12 @@ class PackageInformationSummaryControllerSpec extends ControllerSpec with Option
           withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
 
           val requestBody = Json.obj("yesNo" -> "No")
-          val result = controller.submitForm(Mode.Normal, item.id)(postRequest(requestBody))
+          val result = controller.submitForm(item.id)(postRequest(requestBody))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalInformationRequiredController.displayPage(Mode.Normal, item.id)
+          thePageNavigatedTo mustBe AdditionalInformationRequiredController.displayPage(item.id)
         }
       }
     }
-
   }
 }

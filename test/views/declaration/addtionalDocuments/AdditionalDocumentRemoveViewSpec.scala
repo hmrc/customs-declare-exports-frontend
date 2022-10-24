@@ -21,7 +21,6 @@ import controllers.declaration.routes.AdditionalDocumentsController
 import forms.common.YesNoAnswer.form
 import forms.declaration.AdditionalDocumentSpec.correctAdditionalDocument
 import forms.declaration.additionaldocuments.{AdditionalDocument, DocumentWriteOff}
-import models.Mode.Normal
 import models.requests.JourneyRequest
 import org.jsoup.nodes.{Document, Element}
 import views.declaration.spec.UnitViewSpec
@@ -36,7 +35,7 @@ class AdditionalDocumentRemoveViewSpec extends UnitViewSpec with Injector {
   val page = instanceOf[additional_document_remove]
 
   def createView(documents: AdditionalDocument = correctAdditionalDocument)(implicit request: JourneyRequest[_]): Document =
-    page(Normal, itemId, documentId, documents, form())(request, messages)
+    page(itemId, documentId, documents, form())(request, messages)
 
   "additional_document_remove view" should {
     "have proper messages for labels" in {
@@ -58,7 +57,7 @@ class AdditionalDocumentRemoveViewSpec extends UnitViewSpec with Injector {
 
       "display back link" in {
         view must containElementWithID("back-link")
-        view.getElementById("back-link") must haveHref(AdditionalDocumentsController.displayPage(Normal, itemId))
+        view.getElementById("back-link") must haveHref(AdditionalDocumentsController.displayPage(itemId))
       }
 
       "display data in table" in {

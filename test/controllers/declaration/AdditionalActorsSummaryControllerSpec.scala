@@ -20,7 +20,6 @@ import base.ControllerSpec
 import forms.common.{Eori, YesNoAnswer}
 import forms.declaration.DeclarationAdditionalActors
 import models.DeclarationType._
-import models.Mode
 import models.declaration.DeclarationAdditionalActorsData
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -50,26 +49,26 @@ class AdditionalActorsSummaryControllerSpec extends ControllerSpec with OptionVa
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration(withDeclarationAdditionalActors(additionalActorsData)))
-    await(controller.displayPage(Mode.Normal)(request))
+    await(controller.displayPage()(request))
     theResponseForm
   }
 
   def theResponseForm: Form[YesNoAnswer] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[YesNoAnswer]])
-    verify(mockPage).apply(any(), captor.capture(), any())(any(), any())
+    verify(mockPage).apply(captor.capture(), any())(any(), any())
     captor.getValue
   }
 
   def additionalActorsList: Seq[DeclarationAdditionalActors] = {
     val captor = ArgumentCaptor.forClass(classOf[Seq[DeclarationAdditionalActors]])
-    verify(mockPage).apply(any(), any(), captor.capture())(any(), any())
+    verify(mockPage).apply(any(), captor.capture())(any(), any())
     captor.getValue
   }
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    when(mockPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -77,7 +76,8 @@ class AdditionalActorsSummaryControllerSpec extends ControllerSpec with OptionVa
     super.afterEach()
   }
 
-  private def verifyPageInvoked(numberOfTimes: Int = 1) = verify(mockPage, times(numberOfTimes)).apply(any(), any(), any())(any(), any())
+  private def verifyPageInvoked(numberOfTimes: Int = 1): HtmlFormat.Appendable =
+    verify(mockPage, times(numberOfTimes)).apply(any(), any())(any(), any())
 
   "AdditionalActors Summary Controller" should {
 
@@ -86,7 +86,7 @@ class AdditionalActorsSummaryControllerSpec extends ControllerSpec with OptionVa
         "display page method is invoked and cache contains data" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationAdditionalActors(additionalActorsData)))
 
-          val result = controller.displayPage(Mode.Normal)(getRequest())
+          val result = controller.displayPage()(getRequest())
 
           status(result) mustBe OK
           verifyPageInvoked()
@@ -96,17 +96,15 @@ class AdditionalActorsSummaryControllerSpec extends ControllerSpec with OptionVa
       }
 
       "return 400 (BAD_REQUEST)" when {
-
         "user submits invalid answer" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationAdditionalActors(additionalActorsData)))
 
           val requestBody = Json.obj("yesNo" -> "invalid")
-          val result = controller.submitForm(Mode.Normal)(postRequest(requestBody))
+          val result = controller.submitForm()(postRequest(requestBody))
 
           status(result) mustBe BAD_REQUEST
           verifyPageInvoked()
         }
-
       }
 
       "return 303 (SEE_OTHER)" when {
@@ -114,30 +112,30 @@ class AdditionalActorsSummaryControllerSpec extends ControllerSpec with OptionVa
         "there are no additional actors in the cache" in {
           withNewCaching(request.cacheModel)
 
-          val result = controller.displayPage(Mode.Normal)(getRequest())
+          val result = controller.displayPage()(getRequest())
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalActorsAddController.displayPage(Mode.Normal)
+          thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalActorsAddController.displayPage()
         }
 
         "user submits valid Yes answer" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationAdditionalActors(additionalActorsData)))
 
           val requestBody = Json.obj("yesNo" -> "Yes")
-          val result = controller.submitForm(Mode.Normal)(postRequest(requestBody))
+          val result = controller.submitForm()(postRequest(requestBody))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalActorsAddController.displayPage(Mode.Normal)
+          thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalActorsAddController.displayPage()
         }
 
         "user submits valid Yes answer with error-fix flag" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationAdditionalActors(additionalActorsData)))
 
           val requestBody = Json.obj("yesNo" -> "Yes")
-          val result = controller.submitForm(Mode.ErrorFix)(postRequest(requestBody))
+          val result = controller.submitForm()(postRequest(requestBody))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalActorsAddController.displayPage(Mode.ErrorFix)
+          thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalActorsAddController.displayPage()
         }
       }
     }
@@ -148,10 +146,10 @@ class AdditionalActorsSummaryControllerSpec extends ControllerSpec with OptionVa
           withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationAdditionalActors(additionalActorsData)))
 
           val requestBody = Json.obj("yesNo" -> "No")
-          val result = controller.submitForm(Mode.Normal)(postRequest(requestBody))
+          val result = controller.submitForm()(postRequest(requestBody))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.AuthorisationProcedureCodeChoiceController.displayPage(Mode.Normal)
+          thePageNavigatedTo mustBe controllers.declaration.routes.AuthorisationProcedureCodeChoiceController.displayPage()
         }
       }
     }

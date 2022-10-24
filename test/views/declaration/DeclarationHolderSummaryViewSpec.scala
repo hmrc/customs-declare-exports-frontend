@@ -24,8 +24,6 @@ import forms.declaration.AuthorisationProcedureCodeChoice.{Choice1040, ChoiceOth
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.STANDARD_PRE_LODGED
 import forms.declaration.declarationHolder.DeclarationHolder
 import models.DeclarationType._
-import models.Mode
-import models.Mode.Normal
 import models.declaration.{EoriSource, Parties}
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
@@ -41,10 +39,10 @@ class DeclarationHolderSummaryViewSpec extends PageWithButtonsSpec with Injector
 
   val page = instanceOf[declaration_holder_summary]
 
-  override val typeAndViewInstance = (STANDARD, page(Normal, form(), Seq.empty)(_, _))
+  override val typeAndViewInstance = (STANDARD, page(form(), Seq.empty)(_, _))
 
-  def createView(holders: Seq[DeclarationHolder] = Seq.empty, mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document =
-    page(mode, form(), holders)
+  def createView(holders: Seq[DeclarationHolder] = Seq.empty)(implicit request: JourneyRequest[_]): Document =
+    page(form(), holders)
 
   "have proper messages for labels" in {
     messages must haveTranslationFor("declaration.declarationHolders.add.another")
@@ -55,7 +53,7 @@ class DeclarationHolderSummaryViewSpec extends PageWithButtonsSpec with Injector
     onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED) { implicit request =>
       "display a back button linking to the /authorisation-choice page" in {
         val view = createView()
-        view.getElementById("back-link") must haveHref(AuthorisationProcedureCodeChoiceController.displayPage(Normal))
+        view.getElementById("back-link") must haveHref(AuthorisationProcedureCodeChoiceController.displayPage())
       }
     }
 
@@ -65,7 +63,7 @@ class DeclarationHolderSummaryViewSpec extends PageWithButtonsSpec with Injector
           s"AuthorisationProcedureCodeChoice is '${choice.value}'" in {
             val request = withRequest(STANDARD_PRE_LODGED, withAuthorisationProcedureCodeChoice(choice))
             val view = createView()(request)
-            view.getElementById("back-link") must haveHref(AuthorisationProcedureCodeChoiceController.displayPage(Normal))
+            view.getElementById("back-link") must haveHref(AuthorisationProcedureCodeChoiceController.displayPage())
           }
         }
       }
@@ -74,7 +72,7 @@ class DeclarationHolderSummaryViewSpec extends PageWithButtonsSpec with Injector
     onOccasional { implicit request =>
       "display a back button linking  to the /other-parties-involved page" in {
         val view = createView()
-        view.getElementById("back-link") must haveHref(AdditionalActorsSummaryController.displayPage(Normal))
+        view.getElementById("back-link") must haveHref(AdditionalActorsSummaryController.displayPage())
       }
     }
 
@@ -84,7 +82,7 @@ class DeclarationHolderSummaryViewSpec extends PageWithButtonsSpec with Injector
           val request = journeyRequest(req.cacheModel.copy(parties = Parties(isEntryIntoDeclarantsRecords = Yes)))
 
           val view = createView()(request)
-          view.getElementById("back-link") must haveHref(AuthorisationProcedureCodeChoiceController.displayPage(Normal))
+          view.getElementById("back-link") must haveHref(AuthorisationProcedureCodeChoiceController.displayPage())
         }
       }
 
@@ -93,7 +91,7 @@ class DeclarationHolderSummaryViewSpec extends PageWithButtonsSpec with Injector
           val request = journeyRequest(req.cacheModel.copy(parties = Parties(isEntryIntoDeclarantsRecords = No)))
 
           val view = createView()(request)
-          view.getElementById("back-link") must haveHref(ConsigneeDetailsController.displayPage(Normal))
+          view.getElementById("back-link") must haveHref(ConsigneeDetailsController.displayPage())
         }
       }
     }
@@ -115,8 +113,7 @@ class DeclarationHolderSummaryViewSpec extends PageWithButtonsSpec with Injector
         view.getElementById("section-header") must containMessage("declaration.section.2")
       }
 
-      val createViewWithMode: Mode => Document = mode => createView(mode = mode)
-      checkAllSaveButtonsAreDisplayed(createViewWithMode)
+      checkAllSaveButtonsAreDisplayed(createView())
     }
   }
 

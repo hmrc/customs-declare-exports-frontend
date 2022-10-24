@@ -17,9 +17,9 @@
 package controllers.declaration
 
 import base.ControllerSpec
+import controllers.routes.RootController
 import forms.declaration.commodityMeasure.CommodityMeasure
 import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
-import models.Mode
 import models.declaration.{CommodityMeasure => CM, ExportItem}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -49,7 +49,7 @@ class CommodityMeasureControllerSpec extends ControllerSpec {
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    when(commodityMeasurePage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(commodityMeasurePage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -59,13 +59,13 @@ class CommodityMeasureControllerSpec extends ControllerSpec {
 
   def theResponseForm: Form[CommodityMeasure] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[CommodityMeasure]])
-    verify(commodityMeasurePage).apply(any(), any(), captor.capture())(any(), any())
+    verify(commodityMeasurePage).apply(any(), captor.capture())(any(), any())
     captor.getValue
   }
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration())
-    await(controller.displayPage(Mode.Normal, "itemId")(request))
+    await(controller.displayPage("itemId")(request))
     theResponseForm
   }
 
@@ -76,7 +76,7 @@ class CommodityMeasureControllerSpec extends ControllerSpec {
         "display page method is invoked and commodity measure cache is empty" in {
           withNewCaching(request.cacheModel)
 
-          val result = controller.displayPage(Mode.Normal, "itemId")(getRequest())
+          val result = controller.displayPage("itemId")(getRequest())
 
           status(result) must be(OK)
           theResponseForm.value mustBe empty
@@ -86,7 +86,7 @@ class CommodityMeasureControllerSpec extends ControllerSpec {
           val item = ExportItem("itemId", commodityMeasure = Some(CM(None, None, Some("1000"), Some("500"))))
           withNewCaching(aDeclaration(withType(request.declarationType), withItem(item)))
 
-          val result = controller.displayPage(Mode.Normal, "itemId")(getRequest())
+          val result = controller.displayPage("itemId")(getRequest())
 
           status(result) must be(OK)
           theResponseForm.value mustBe Some(CommodityMeasure(Some("1000"), Some("500")))
@@ -101,10 +101,10 @@ class CommodityMeasureControllerSpec extends ControllerSpec {
 
           val incorrectForm = Json.toJson(CommodityMeasure(None, None))(format)
 
-          val result = controller.submitPage(Mode.Normal, "itemId")(postRequest(incorrectForm))
+          val result = controller.submitPage("itemId")(postRequest(incorrectForm))
 
           status(result) must be(BAD_REQUEST)
-          verify(commodityMeasurePage).apply(any(), any(), any())(any(), any())
+          verify(commodityMeasurePage).apply(any(), any())(any(), any())
         }
       }
     }
@@ -117,10 +117,10 @@ class CommodityMeasureControllerSpec extends ControllerSpec {
         "information provided by user are correct" in {
           withNewCaching(request.cacheModel)
 
-          val result = controller.submitPage(Mode.Normal, "itemId")(postRequest(correctForm))
+          val result = controller.submitPage("itemId")(postRequest(correctForm))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe routes.SupplementaryUnitsController.displayPage(Mode.Normal, "itemId")
+          thePageNavigatedTo mustBe routes.SupplementaryUnitsController.displayPage("itemId")
         }
       }
 
@@ -128,10 +128,10 @@ class CommodityMeasureControllerSpec extends ControllerSpec {
         "information provided by user are correct" in {
           withNewCaching(request.cacheModel)
 
-          val result = controller.submitPage(Mode.Normal, "itemId")(postRequest(correctForm))
+          val result = controller.submitPage("itemId")(postRequest(correctForm))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe routes.AdditionalInformationRequiredController.displayPage(Mode.Normal, "itemId")
+          thePageNavigatedTo mustBe routes.AdditionalInformationRequiredController.displayPage("itemId")
         }
       }
     }
@@ -141,19 +141,19 @@ class CommodityMeasureControllerSpec extends ControllerSpec {
         "the journey is not valid for displayPage" in {
           withNewCaching(request.cacheModel)
 
-          val response = controller.displayPage(Mode.Normal, "itemId").apply(getRequest())
+          val response = controller.displayPage("itemId").apply(getRequest())
 
           status(response) must be(SEE_OTHER)
-          redirectLocation(response) mustBe Some(controllers.routes.RootController.displayPage().url)
+          redirectLocation(response) mustBe Some(RootController.displayPage().url)
         }
 
         "the journey is not valid for submitPage" in {
           withNewCaching(request.cacheModel)
 
-          val response = controller.submitPage(Mode.Normal, "itemId").apply(getRequest())
+          val response = controller.submitPage("itemId").apply(getRequest())
 
           status(response) must be(SEE_OTHER)
-          redirectLocation(response) mustBe Some(controllers.routes.RootController.displayPage().url)
+          redirectLocation(response) mustBe Some(RootController.displayPage().url)
         }
       }
     }

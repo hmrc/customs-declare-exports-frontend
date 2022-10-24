@@ -39,15 +39,15 @@
     appConfig: AppConfig
 )
 
-@(mode: Mode, form: Form[RepresentativeAgent])(implicit request: JourneyRequest[_], messages: Messages)
+@(form: Form[RepresentativeAgent])(implicit request: JourneyRequest[_], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
 @govukLayout(
     title = Title("declaration.representative.agent.title", "declaration.section.2", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(RepresentativeAgent, mode)))) {
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(RepresentativeAgent)))) {
 
-    @formHelper(action = RepresentativeAgentController.submitForm(mode), 'autoComplete -> "off") {
+    @formHelper(action = RepresentativeAgentController.submitForm(), 'autoComplete -> "off") {
         @errorSummary(radioGroupErrors("representingAgent", "agent_yes", form.errors))
 
         @sectionHeader(messages("declaration.section.2"))
@@ -80,7 +80,7 @@
 
         @tariffExpander(RepresentativeAgent, request.declarationType)(messages, appConfig)
 
-        @saveButtons(mode)
+        @saveButtons()
     }
 }
 

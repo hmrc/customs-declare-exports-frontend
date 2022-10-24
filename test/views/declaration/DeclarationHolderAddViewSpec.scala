@@ -25,7 +25,6 @@ import forms.declaration.AuthorisationProcedureCodeChoice.{Choice1040, ChoiceOth
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.{STANDARD_FRONTIER, STANDARD_PRE_LODGED}
 import forms.declaration.declarationHolder.DeclarationHolder
 import models.DeclarationType._
-import models.Mode.Normal
 import models.declaration.EoriSource.{OtherEori, UserEori}
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
@@ -46,7 +45,7 @@ class DeclarationHolderAddViewSpec extends UnitViewSpec with CommonMessages with
     DeclarationHolder.form(eori, request.cacheModel.additionalDeclarationType)
 
   private def createView(form: Form[DeclarationHolder])(implicit request: JourneyRequest[_]): Document =
-    declarationHolderPage(Normal, form, eori)(request, messages)
+    declarationHolderPage(form, eori)(request, messages)
 
   "Declaration Holder View" should {
 
@@ -96,7 +95,7 @@ class DeclarationHolderAddViewSpec extends UnitViewSpec with CommonMessages with
 
     onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED) { implicit request =>
       "have a 'Back' link to the /authorisation-choice page" in {
-        verifyBackLink(routes.AuthorisationProcedureCodeChoiceController.displayPage(Normal))
+        verifyBackLink(routes.AuthorisationProcedureCodeChoiceController.displayPage())
       }
     }
 
@@ -131,7 +130,7 @@ class DeclarationHolderAddViewSpec extends UnitViewSpec with CommonMessages with
 
     onJourney(CLEARANCE, OCCASIONAL) { implicit request =>
       "have a 'Back' link to the /is-authorisation-required page" in {
-        verifyBackLink(routes.DeclarationHolderRequiredController.displayPage(Normal))
+        verifyBackLink(routes.DeclarationHolderRequiredController.displayPage())
       }
     }
   }
@@ -145,7 +144,7 @@ class DeclarationHolderAddViewSpec extends UnitViewSpec with CommonMessages with
         "the declaration already includes one or more declarationHolders" should {
           "have a 'Back' link to the /authorisations-required page" in {
             implicit val request = withRequestOfType(declarationType, withDeclarationHolders(declarationHolder))
-            verifyBackLink(routes.DeclarationHolderSummaryController.displayPage(Normal))
+            verifyBackLink(routes.DeclarationHolderSummaryController.displayPage())
           }
         }
       }
@@ -156,7 +155,7 @@ class DeclarationHolderAddViewSpec extends UnitViewSpec with CommonMessages with
         s"AuthorisationProcedureCodeChoice is '${choice.value}'" should {
           "have a 'Back' link to the /is-authorisation-required page" in {
             implicit val request = withRequest(STANDARD_PRE_LODGED, withAuthorisationProcedureCodeChoice(choice))
-            verifyBackLink(routes.DeclarationHolderRequiredController.displayPage(Normal))
+            verifyBackLink(routes.DeclarationHolderRequiredController.displayPage())
           }
         }
       }

@@ -36,15 +36,15 @@
         appConfig: AppConfig
 )
 
-@(mode: Mode, form: Form[Seal], containerId: String)(implicit request: JourneyRequest[_], messages: Messages)
+@(form: Form[Seal], containerId: String)(implicit request: JourneyRequest[_], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
 @govukLayout(
     title = Title("declaration.seal.title", "declaration.section.6", containerId, hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), controllers.declaration.routes.SealController.displaySealSummary(mode, containerId)))) {
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), controllers.declaration.routes.SealController.displaySealSummary(containerId)))) {
 
-    @formHelper(action = SealController.submitAddSeal(mode, containerId), 'autoComplete -> "off") {
+    @formHelper(action = SealController.submitAddSeal(containerId), 'autoComplete -> "off") {
 
         @errorSummary(form.errors)
 
@@ -58,6 +58,6 @@
 
         @tariffExpander(Seal, request.declarationType)(messages, appConfig)
 
-        @saveButtons(mode)
+        @saveButtons()
     }
 }

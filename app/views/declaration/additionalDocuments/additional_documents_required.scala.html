@@ -44,7 +44,7 @@
     appConfig: AppConfig
 )
 
-@(mode: Mode, itemId: String, form: Form[YesNoAnswer])(implicit request: JourneyRequest[_], messages: Messages)
+@(itemId: String, form: Form[YesNoAnswer])(implicit request: JourneyRequest[_], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
@@ -105,9 +105,9 @@
 
 @govukLayout(
     title = Title(title, "declaration.section.5", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(AdditionalDocumentsRequired, mode, ItemId(itemId))))) {
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(AdditionalDocumentsRequired, ItemId(itemId))))) {
 
-    @formHelper(action = routes.AdditionalDocumentsRequiredController.submitForm(mode, itemId), 'autoComplete -> "off") {
+    @formHelper(action = routes.AdditionalDocumentsRequiredController.submitForm(itemId), 'autoComplete -> "off") {
         @errorSummary(yesNoErrors(form.errors))
 
         @sectionHeader(messages("declaration.section.5"))
@@ -130,6 +130,6 @@
 
         @insetText(content = HtmlContent(insetSection))
 
-        @saveButtons(mode)
+        @saveButtons()
     }
 }

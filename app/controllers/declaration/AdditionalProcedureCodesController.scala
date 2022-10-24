@@ -27,7 +27,7 @@ import models.codes.{AdditionalProcedureCode => AdditionalProcedureCodeModel, Pr
 import models.declaration.ProcedureCodesData
 import models.declaration.ProcedureCodesData.limitOfCodes
 import models.requests.JourneyRequest
-import models.{ExportsDeclaration, Mode}
+import models.ExportsDeclaration
 import play.api.data.FormError
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -55,20 +55,20 @@ class AdditionalProcedureCodesController @Inject() (
 
   private val emptyProcedureCodesData = ProcedureCodesData(None, Seq())
 
-  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     val (maybeCachedProcedureCode, cachedData) = getCachedData(itemId)
     val availableAdditionalProcedureCodes = getAvailableAdditionalProcedureCodes(maybeCachedProcedureCode)
 
     (maybeCachedProcedureCode, availableAdditionalProcedureCodes) match {
       case (Some(procedureCode), Some(validAdditionalProcedureCodes)) if validAdditionalProcedureCodes.nonEmpty =>
         val frm = form().withSubmissionErrors()
-        Ok(additionalProcedureCodesPage(mode, itemId, frm, procedureCode, validAdditionalProcedureCodes, cachedData.additionalProcedureCodes))
+        Ok(additionalProcedureCodesPage(itemId, frm, procedureCode, validAdditionalProcedureCodes, cachedData.additionalProcedureCodes))
       case _ =>
-        Redirect(routes.ProcedureCodesController.displayPage(mode, itemId))
+        Redirect(routes.ProcedureCodesController.displayPage(itemId))
     }
   }
 
-  def submitAdditionalProcedureCodes(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def submitAdditionalProcedureCodes(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val boundForm = form().bindFromRequest()
     val formAction = FormAction.bindFromRequest()
 
@@ -77,20 +77,20 @@ class AdditionalProcedureCodesController @Inject() (
 
     def handleActionTypes(procedureCode: ProcedureCode, validAdditionalProcedureCodes: Seq[AdditionalProcedureCodeModel]): Future[Result] = {
       val errorHandler =
-        returnErrorPage(mode, itemId, boundForm.get, procedureCode, cachedData.additionalProcedureCodes, validAdditionalProcedureCodes)(_)
+        returnErrorPage(itemId, boundForm.get, procedureCode, cachedData.additionalProcedureCodes, validAdditionalProcedureCodes)(_)
       val actionsRequiringValidation = Seq(Add, SaveAndContinue, SaveAndReturnToSummary, SaveAndReturnToErrors)
 
       formAction match {
         case Remove(values) =>
-          removeCodeHandler(mode, itemId, retrieveAdditionalProcedureCode(values), cachedData)
+          removeCodeHandler(itemId, retrieveAdditionalProcedureCode(values), cachedData)
 
         case _ if !boundForm.hasErrors && actionsRequiringValidation.contains(formAction) =>
-          validateForm(formAction, mode, errorHandler, itemId, boundForm.get, cachedData)
+          validateForm(formAction, errorHandler, itemId, boundForm.get, cachedData)
 
         case _ =>
           Future.successful(
             BadRequest(
-              additionalProcedureCodesPage(mode, itemId, boundForm, procedureCode, validAdditionalProcedureCodes, cachedData.additionalProcedureCodes)
+              additionalProcedureCodesPage(itemId, boundForm, procedureCode, validAdditionalProcedureCodes, cachedData.additionalProcedureCodes)
             )
           )
       }
@@ -98,7 +98,7 @@ class AdditionalProcedureCodesController @Inject() (
 
     (maybeCachedProcedureCode, availableAdditionalProcedureCodes) match {
       case (_, None) | (None, _) =>
-        Future.successful(Redirect(routes.ProcedureCodesController.displayPage(mode, itemId)))
+        Future.successful(Redirect(routes.ProcedureCodesController.displayPage(itemId)))
 
       case (Some(procedureCode), Some(validAdditionalProcedureCodes)) =>
         handleActionTypes(procedureCode, validAdditionalProcedureCodes)
@@ -129,7 +129,6 @@ class AdditionalProcedureCodesController @Inject() (
 
   private def validateForm(
     action: FormAction,
-    mode: Mode,
     errorHandler: Seq[(String, String)] => Future[Result],
     itemId: String,
     userInput: AdditionalProcedureCode,
@@ -147,7 +146,7 @@ class AdditionalProcedureCodesController @Inject() (
 
       case (None, _) =>
         if (cachedAdditionalProcedureCodes.nonEmpty)
-          nextPage(action, mode, itemId, cachedData.procedureCode, request.cacheModel)
+          nextPage(action, itemId, cachedData.procedureCode, request.cacheModel)
         else
           errorHandler(Seq((additionalProcedureCodeKey, "declaration.additionalProcedureCodes.error.empty")))
 
@@ -162,15 +161,15 @@ class AdditionalProcedureCodesController @Inject() (
 
       case (Some(code), _) =>
         updateCache(itemId, ProcedureCodesData(None, cachedAdditionalProcedureCodes :+ code))
-          .flatMap(nextPage(action, mode, itemId, cachedData.procedureCode, _))
+          .flatMap(nextPage(action, itemId, cachedData.procedureCode, _))
     }
   }
 
-  private def removeCodeHandler(mode: Mode, itemId: String, code: String, cachedData: ProcedureCodesData)(
+  private def removeCodeHandler(itemId: String, code: String, cachedData: ProcedureCodesData)(
     implicit request: JourneyRequest[AnyContent]
   ): Future[Result] = {
     val updatedCache = cachedData.copy(additionalProcedureCodes = remove(cachedData.additionalProcedureCodes, (_: String) == code))
-    updateCache(itemId, updatedCache).map(_ => navigator.continueTo(mode, routes.AdditionalProcedureCodesController.displayPage(_, itemId)))
+    updateCache(itemId, updatedCache).map(_ => navigator.continueTo(routes.AdditionalProcedureCodesController.displayPage(itemId)))
   }
 
   private def updateCache(itemId: String, updatedProcedureCodes: ProcedureCodesData)(
@@ -190,18 +189,18 @@ class AdditionalProcedureCodesController @Inject() (
     updateDeclarationFromRequest(updatedModel(_))
   }
 
-  private def nextPage(action: FormAction, mode: Mode, itemId: String, maybeProcedureCode: Option[String], declaration: ExportsDeclaration)(
+  private def nextPage(action: FormAction, itemId: String, maybeProcedureCode: Option[String], declaration: ExportsDeclaration)(
     implicit request: JourneyRequest[AnyContent]
   ): Future[Result] =
     (action, maybeProcedureCode) match {
       case (Add, _) =>
-        Future.successful(navigator.continueTo(mode, routes.AdditionalProcedureCodesController.displayPage(_, itemId)))
+        Future.successful(navigator.continueTo(routes.AdditionalProcedureCodesController.displayPage(itemId)))
 
       case (_, Some(code)) if ProcedureCodesData.osrProcedureCodes.contains(code) =>
-        Future.successful(navigator.continueTo(mode, routes.FiscalInformationController.displayPage(_, itemId)))
+        Future.successful(navigator.continueTo(routes.FiscalInformationController.displayPage(itemId)))
 
       case _ =>
-        val continueToCommodityDetails = navigator.continueTo(mode, routes.CommodityDetailsController.displayPage(_, itemId))
+        val continueToCommodityDetails = navigator.continueTo(routes.CommodityDetailsController.displayPage(itemId))
 
         if (!supervisingCustomsOfficeHelper.isConditionForAllProcedureCodesVerified(declaration)) Future.successful(continueToCommodityDetails)
         else resetSupervisingCustomsOfficeInCache(declaration).map(_ => continueToCommodityDetails)
@@ -211,7 +210,6 @@ class AdditionalProcedureCodesController @Inject() (
     updateDeclaration(declaration.removeSupervisingCustomsOffice)
 
   private def returnErrorPage(
-    mode: Mode,
     itemId: String,
     userInput: AdditionalProcedureCode,
     procedureCode: ProcedureCode,
@@ -222,9 +220,7 @@ class AdditionalProcedureCodesController @Inject() (
     val formWithError = form().fill(userInput).copy(errors = updatedErrors)
 
     Future.successful(
-      BadRequest(
-        additionalProcedureCodesPage(mode, itemId, formWithError, procedureCode, validAdditionalProcedureCodes, cachedAdditionalProcedureCodes)
-      )
+      BadRequest(additionalProcedureCodesPage(itemId, formWithError, procedureCode, validAdditionalProcedureCodes, cachedAdditionalProcedureCodes))
     )
   }
 

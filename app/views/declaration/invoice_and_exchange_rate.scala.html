@@ -48,7 +48,7 @@
     appConfig: AppConfig
 )
 
-@(mode: Mode, form: Form[InvoiceAndExchangeRate])(implicit request: JourneyRequest[_], messages: Messages)
+@(form: Form[InvoiceAndExchangeRate])(implicit request: JourneyRequest[_], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
@@ -123,9 +123,9 @@
 
 @govukLayout(
     title = Title("declaration.invoice.details.title", "declaration.section.4", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(InvoiceAndExchangeRate, mode)))) {
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(InvoiceAndExchangeRate)))) {
 
-    @formHelper(action = InvoiceAndExchangeRateController.saveNoOfItems(mode), 'autoComplete -> "off") {
+    @formHelper(action = InvoiceAndExchangeRateController.saveNoOfItems(), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
         @sectionHeader(messages("declaration.section.4"))
@@ -158,6 +158,6 @@
 
         @tariffExpander(InvoiceAndExchangeRate, request.declarationType)(messages, appConfig)
 
-        @saveButtons(mode)
+        @saveButtons()
     }
 }

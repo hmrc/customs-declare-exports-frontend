@@ -36,15 +36,15 @@
     appConfig: AppConfig
 )
 
-@(mode: Mode, itemId: String, form: Form[CommodityMeasure])(implicit request: JourneyRequest[_], messages: Messages)
+@(itemId: String, form: Form[CommodityMeasure])(implicit request: JourneyRequest[_], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
 @govukLayout(
     title = Title("declaration.commodityMeasure.title", "declaration.section.5", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(CommodityMeasure, mode, ItemId(itemId))))) {
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(CommodityMeasure, ItemId(itemId))))) {
 
-    @formHelper(action = CommodityMeasureController.submitPage(mode, itemId), 'autoComplete -> "off") {
+    @formHelper(action = CommodityMeasureController.submitPage(itemId), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
         @sectionHeader(messages("declaration.section.5"))
@@ -69,6 +69,6 @@
 
         @tariffExpander(CommodityMeasure, request.declarationType)(messages, appConfig)
 
-        @saveButtons(mode)
+        @saveButtons()
     }
 }

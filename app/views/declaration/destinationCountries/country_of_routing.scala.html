@@ -45,7 +45,7 @@
     appConfig: AppConfig
 )(implicit countryHelper: CountryHelper)
 
-@(mode: Mode, form: Form[Country])(implicit request: JourneyRequest[_], messages: Messages)
+@(form: Form[Country])(implicit request: JourneyRequest[_], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
@@ -59,9 +59,9 @@
         headingArg = countryOfDestination,
         hasErrors = hasErrors
     ),
-    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(RoutingCountryPage, mode)))){
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(RoutingCountryPage)))){
 
-    @formHelper(action = controllers.declaration.routes.RoutingCountriesController.submitRoutingCountry(mode), 'autoComplete -> "off") {
+    @formHelper(action = controllers.declaration.routes.RoutingCountriesController.submitRoutingCountry(), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
         @sectionHeader(messages("declaration.section.3"))
@@ -87,6 +87,6 @@
 
         @tariffExpander(RoutingCountryPage, request.declarationType)(messages, appConfig)
 
-        @saveButtons(mode)
+        @saveButtons()
     }
 }

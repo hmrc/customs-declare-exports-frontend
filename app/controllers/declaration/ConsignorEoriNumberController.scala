@@ -22,7 +22,7 @@ import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.consignor.ConsignorEoriNumber.form
 import forms.declaration.consignor.{ConsignorDetails, ConsignorEoriNumber}
 import models.requests.JourneyRequest
-import models.{DeclarationType, ExportsDeclaration, Mode}
+import models.{DeclarationType, ExportsDeclaration}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
@@ -46,30 +46,30 @@ class ConsignorEoriNumberController @Inject() (
 
   val validJourneys = Seq(DeclarationType.CLEARANCE)
 
-  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validJourneys)) { implicit request =>
+  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType(validJourneys)) { implicit request =>
     val frm = form().withSubmissionErrors()
     request.cacheModel.parties.consignorDetails match {
-      case Some(data) => Ok(consignorEoriDetailsPage(mode, frm.fill(ConsignorEoriNumber(data))))
-      case _          => Ok(consignorEoriDetailsPage(mode, frm))
+      case Some(data) => Ok(consignorEoriDetailsPage(frm.fill(ConsignorEoriNumber(data))))
+      case _          => Ok(consignorEoriDetailsPage(frm))
     }
   }
 
-  def submit(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validJourneys)).async { implicit request =>
+  def submit(): Action[AnyContent] = (authenticate andThen journeyType(validJourneys)).async { implicit request =>
     form()
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[ConsignorEoriNumber]) => {
           val formWithAdjustedErrors = formWithErrors
 
-          Future.successful(BadRequest(consignorEoriDetailsPage(mode, formWithAdjustedErrors)))
+          Future.successful(BadRequest(consignorEoriDetailsPage(formWithAdjustedErrors)))
         },
         form =>
           updateCache(form, request.cacheModel.parties.consignorDetails)
-            .map(_ => navigator.continueTo(mode, nextPage(form.hasEori)))
+            .map(_ => navigator.continueTo(nextPage(form.hasEori)))
       )
   }
 
-  private def nextPage(hasEori: String)(implicit request: JourneyRequest[_]): Mode => Call =
+  private def nextPage(hasEori: String)(implicit request: JourneyRequest[_]): Call =
     if (hasEori == YesNoAnswers.yes && request.cacheModel.isDeclarantExporter) {
       controllers.declaration.routes.CarrierEoriNumberController.displayPage
     } else if (hasEori == YesNoAnswers.yes) {

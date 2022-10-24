@@ -24,7 +24,6 @@ import forms.declaration.AuthorisationProcedureCodeChoice.{allProcedureCodes, fo
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.{apply => _}
 import models.DeclarationType._
 import models.ExportsDeclaration
-import models.Mode.Normal
 import models.declaration.AuthorisationProcedureCode
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -53,7 +52,7 @@ class AuthorisationProcedureCodeChoiceControllerSpec extends ControllerSpec {
     super.beforeEach()
 
     authorizedUser()
-    when(authorisationProcedureCodeChoice.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(authorisationProcedureCodeChoice.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -63,18 +62,18 @@ class AuthorisationProcedureCodeChoiceControllerSpec extends ControllerSpec {
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration())
-    await(controller.displayPage(Normal)(request))
+    await(controller.displayPage()(request))
     theResponseForm
   }
 
   def theResponseForm: Form[AuthorisationProcedureCodeChoice] = {
     val captor: ArgumentCaptor[Form[AuthorisationProcedureCodeChoice]] = ArgumentCaptor.forClass(classOf[Form[AuthorisationProcedureCodeChoice]])
-    verify(authorisationProcedureCodeChoice).apply(captor.capture(), any())(any(), any())
+    verify(authorisationProcedureCodeChoice).apply(captor.capture())(any(), any())
     captor.getValue
   }
 
   private def verifyPageInvoked(numberOfTimes: Int = 1): HtmlFormat.Appendable =
-    verify(authorisationProcedureCodeChoice, times(numberOfTimes)).apply(any(), any())(any(), any())
+    verify(authorisationProcedureCodeChoice, times(numberOfTimes)).apply(any())(any(), any())
 
   "AuthorisationProcedureCodeChoiceController.displayPage" should {
 
@@ -116,7 +115,7 @@ class AuthorisationProcedureCodeChoiceControllerSpec extends ControllerSpec {
       def verify200(declaration: ExportsDeclaration, expectedValue: Option[AuthorisationProcedureCodeChoice]): Unit = {
         withNewCaching(declaration)
 
-        val result = controller.displayPage(Normal)(getRequest())
+        val result = controller.displayPage()(getRequest())
 
         status(result) must be(OK)
         theResponseForm.value mustBe expectedValue
@@ -128,20 +127,20 @@ class AuthorisationProcedureCodeChoiceControllerSpec extends ControllerSpec {
       "on Occasional journey" in {
         withNewCaching(withRequestOfType(OCCASIONAL).cacheModel)
 
-        val result = controller.displayPage(Normal)(getRequest())
+        val result = controller.displayPage()(getRequest())
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe routes.DeclarationHolderRequiredController.displayPage(Normal)
+        thePageNavigatedTo mustBe routes.DeclarationHolderRequiredController.displayPage()
       }
 
       "on Clearance journey and" when {
         "it is NOT EntryIntoDeclarantsRecords" in {
           withNewCaching(withRequestOfType(CLEARANCE).cacheModel)
 
-          val result = controller.displayPage(Normal)(getRequest())
+          val result = controller.displayPage()(getRequest())
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe routes.DeclarationHolderRequiredController.displayPage(Normal)
+          thePageNavigatedTo mustBe routes.DeclarationHolderRequiredController.displayPage()
         }
       }
     }
@@ -155,7 +154,7 @@ class AuthorisationProcedureCodeChoiceControllerSpec extends ControllerSpec {
           "redirect to the start page" in {
             withNewCaching(withRequestOfType(OCCASIONAL).cacheModel)
 
-            val result = controller.submitForm(Normal)(postRequest(Json.obj(formFieldName -> code.toString)))
+            val result = controller.submitForm()(postRequest(Json.obj(formFieldName -> code.toString)))
 
             status(result) mustBe SEE_OTHER
             redirectLocation(result) mustBe Some(RootController.displayPage().url)
@@ -172,10 +171,10 @@ class AuthorisationProcedureCodeChoiceControllerSpec extends ControllerSpec {
             "redirect to the /is-authorisation-required page" in {
               withNewCaching(withRequestOfType(declarationType).cacheModel)
 
-              val result = controller.submitForm(Normal)(postRequest(Json.obj(formFieldName -> choice.value.code.toString)))
+              val result = controller.submitForm()(postRequest(Json.obj(formFieldName -> choice.value.code.toString)))
 
               await(result) mustBe aRedirectToTheNextPage
-              thePageNavigatedTo mustBe routes.DeclarationHolderRequiredController.displayPage(Normal)
+              thePageNavigatedTo mustBe routes.DeclarationHolderRequiredController.displayPage()
 
               verifyPageInvoked(0)
               theCacheModelUpdated.parties.authorisationProcedureCodeChoice mustBe choice
@@ -187,7 +186,7 @@ class AuthorisationProcedureCodeChoiceControllerSpec extends ControllerSpec {
           "return 400 (BAD_REQUEST)" in {
             withNewCaching(withRequestOfType(declarationType).cacheModel)
 
-            val result = controller.submitForm(Normal)(postRequest(Json.obj()))
+            val result = controller.submitForm()(postRequest(Json.obj()))
 
             status(result) must be(BAD_REQUEST)
             verifyPageInvoked()

@@ -23,7 +23,7 @@ import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.Document
 import models.requests.JourneyRequest
-import models.{ExportsDeclaration, Mode}
+import models.ExportsDeclaration
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -46,30 +46,30 @@ class PreviousDocumentsRemoveController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with WithDefaultFormBinding {
 
-  def displayPage(mode: Mode, id: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayPage(id: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     findDocument(id) match {
-      case Some(document) => Ok(removePage(mode, id, document, removeYesNoForm))
-      case _              => returnToSummary(mode)
+      case Some(document) => Ok(removePage(id, document, removeYesNoForm))
+      case _              => returnToSummary()
     }
   }
 
-  def submit(mode: Mode, id: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def submit(id: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     findDocument(id) match {
       case Some(document) =>
         removeYesNoForm
           .bindFromRequest()
           .fold(
-            formWithErrors => Future.successful(BadRequest(removePage(mode, id, document, formWithErrors))),
+            formWithErrors => Future.successful(BadRequest(removePage(id, document, formWithErrors))),
             validAnswer =>
               validAnswer.answer match {
                 case YesNoAnswers.yes =>
                   removeDocument(document).map { _ =>
-                    returnToSummary(mode)
+                    returnToSummary()
                   }
-                case YesNoAnswers.no => Future.successful(returnToSummary(mode))
+                case YesNoAnswers.no => Future.successful(returnToSummary())
               }
           )
-      case _ => Future.successful(returnToSummary(mode))
+      case _ => Future.successful(returnToSummary())
     }
   }
 
@@ -78,8 +78,8 @@ class PreviousDocumentsRemoveController @Inject() (
   private def findDocument(id: String)(implicit request: JourneyRequest[AnyContent]): Option[Document] =
     ListItem.findById(id, request.cacheModel.previousDocuments.map(_.documents).getOrElse(Seq.empty))
 
-  private def returnToSummary(mode: Mode)(implicit request: JourneyRequest[AnyContent]) =
-    navigator.continueTo(mode, routes.PreviousDocumentsSummaryController.displayPage)
+  private def returnToSummary()(implicit request: JourneyRequest[AnyContent]) =
+    navigator.continueTo(routes.PreviousDocumentsSummaryController.displayPage)
 
   private def removeDocument(documentToRemove: Document)(implicit request: JourneyRequest[AnyContent]): Future[ExportsDeclaration] = {
     val cachedDocuments = request.cacheModel.previousDocuments.map(_.documents).getOrElse(Seq.empty)

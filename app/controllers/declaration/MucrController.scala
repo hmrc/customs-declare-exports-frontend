@@ -23,7 +23,7 @@ import controllers.navigation.Navigator
 import forms.declaration.Mucr
 import forms.declaration.Mucr._
 import models.requests.JourneyRequest
-import models.{DeclarationType, ExportsDeclaration, Mode}
+import models.{DeclarationType, ExportsDeclaration}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
@@ -42,24 +42,24 @@ class MucrController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
-  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     val frm = form.withSubmissionErrors()
     request.cacheModel.mucr match {
-      case Some(mucr) => Ok(mucrPage(mode, frm.fill(mucr)))
-      case _          => Ok(mucrPage(mode, frm))
+      case Some(mucr) => Ok(mucrPage(frm.fill(mucr)))
+      case _          => Ok(mucrPage(frm))
     }
   }
 
-  def submitForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def submitForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     form
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[Mucr]) => Future.successful(BadRequest(mucrPage(mode, formWithErrors))),
-        mucr => updateCache(mucr).map(_ => navigator.continueTo(mode, nextPage))
+        (formWithErrors: Form[Mucr]) => Future.successful(BadRequest(mucrPage(formWithErrors))),
+        mucr => updateCache(mucr).map(_ => navigator.continueTo(nextPage))
       )
   }
 
-  private def nextPage(implicit request: JourneyRequest[_]): Mode => Call =
+  private def nextPage(implicit request: JourneyRequest[_]): Call =
     request.declarationType match {
       case DeclarationType.CLEARANCE => routes.EntryIntoDeclarantsRecordsController.displayPage
       case _                         => routes.DeclarantExporterController.displayPage

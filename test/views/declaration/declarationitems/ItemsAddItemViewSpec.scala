@@ -18,7 +18,6 @@ package views.declaration.declarationitems
 
 import base.Injector
 import controllers.declaration.routes
-import models.Mode
 import org.jsoup.nodes.Document
 import services.cache.ExportsTestHelper
 import tools.Stubs
@@ -30,7 +29,7 @@ import views.tags.ViewTest
 class ItemsAddItemViewSpec extends UnitViewSpec with ExportsTestHelper with Stubs with Injector {
 
   private val page = instanceOf[items_add_item]
-  private def createView(mode: Mode = Mode.Normal): Document = page(mode)(journeyRequest(), messages)
+  private def createView(): Document = page()(journeyRequest(), messages)
 
   "ItemsAddItem View" should {
 

@@ -18,7 +18,7 @@ package controllers.declaration
 
 import base.ControllerSpec
 import forms.common.YesNoAnswer
-import models.{DeclarationType, Mode}
+import models.DeclarationType._
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -48,22 +48,22 @@ class AdditionalInformationRequiredControllerSpec extends ControllerSpec with Op
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration(withItem(anItem(withItemId(itemId)))))
-    await(controller.displayPage(Mode.Normal, itemId)(request))
+    await(controller.displayPage(itemId)(request))
     theResponseForm
   }
 
   def theResponseForm: Form[YesNoAnswer] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[YesNoAnswer]])
-    verify(mockPage).apply(any(), any(), captor.capture(), any(), any())(any(), any())
+    verify(mockPage).apply(any(), captor.capture(), any(), any())(any(), any())
     captor.getValue
   }
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    when(mockPage.apply(any(), any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
-    when(navigator.backLinkForAdditionalInformation(any(), any(), any())(any(), any()))
-      .thenReturn(Future.successful(routes.CommodityMeasureController.displayPage(Mode.Normal, itemId)))
+    when(mockPage.apply(any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(navigator.backLinkForAdditionalInformation(any(), any())(any(), any()))
+      .thenReturn(Future.successful(routes.CommodityMeasureController.displayPage(itemId)))
   }
 
   override protected def afterEach(): Unit = {
@@ -72,7 +72,7 @@ class AdditionalInformationRequiredControllerSpec extends ControllerSpec with Op
   }
 
   private def verifyPageInvoked(numberOfTimes: Int = 1): HtmlFormat.Appendable =
-    verify(mockPage, times(numberOfTimes)).apply(any(), any(), any(), any(), any())(any(), any())
+    verify(mockPage, times(numberOfTimes)).apply(any(), any(), any(), any())(any(), any())
 
   "AdditionalInformationRequired Controller" should {
 
@@ -82,7 +82,7 @@ class AdditionalInformationRequiredControllerSpec extends ControllerSpec with Op
         "display page method is invoked and cache is empty" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withItem(anItem(withItemId(itemId)))))
 
-          val result = controller.displayPage(Mode.Normal, itemId)(getRequest())
+          val result = controller.displayPage(itemId)(getRequest())
 
           status(result) mustBe OK
           verifyPageInvoked()
@@ -95,7 +95,7 @@ class AdditionalInformationRequiredControllerSpec extends ControllerSpec with Op
           withNewCaching(aDeclarationAfter(request.cacheModel, withItem(anItem(withItemId(itemId)))))
 
           val requestBody = Seq("yesNo" -> "invalid")
-          val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(requestBody: _*))
+          val result = controller.submitForm(itemId)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           status(result) mustBe BAD_REQUEST
           verifyPageInvoked()
@@ -110,20 +110,20 @@ class AdditionalInformationRequiredControllerSpec extends ControllerSpec with Op
             aDeclarationAfter(request.cacheModel, withItem(anItem(withItemId(itemId), withAdditionalInformation("code", "description"))))
           )
 
-          val result = controller.displayPage(Mode.Normal, itemId)(getRequest())
+          val result = controller.displayPage(itemId)(getRequest())
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe routes.AdditionalInformationController.displayPage(Mode.Normal, itemId)
+          thePageNavigatedTo mustBe routes.AdditionalInformationController.displayPage(itemId)
         }
 
         "user submits valid Yes answer" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withItem(anItem(withItemId(itemId)))))
 
           val requestBody = Seq("yesNo" -> "Yes")
-          val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(requestBody: _*))
+          val result = controller.submitForm(itemId)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe routes.AdditionalInformationController.displayPage(Mode.Normal, itemId)
+          thePageNavigatedTo mustBe routes.AdditionalInformationController.displayPage(itemId)
         }
 
       }
@@ -131,31 +131,27 @@ class AdditionalInformationRequiredControllerSpec extends ControllerSpec with Op
 
     onClearance { request =>
       "user submits valid No answer go to 'Additional Documents'" in {
-
         withNewCaching(aDeclarationAfter(request.cacheModel, withItem(anItem(withItemId(itemId)))))
 
         val requestBody = Seq("yesNo" -> "No")
-        val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(requestBody: _*))
+        val result = controller.submitForm(itemId)(postRequestAsFormUrlEncoded(requestBody: _*))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe routes.AdditionalDocumentsController.displayPage(Mode.Normal, itemId)
+        thePageNavigatedTo mustBe routes.AdditionalDocumentsController.displayPage(itemId)
       }
 
     }
 
-    onJourney(DeclarationType.STANDARD, DeclarationType.OCCASIONAL, DeclarationType.SUPPLEMENTARY, DeclarationType.SIMPLIFIED) { request =>
+    onJourney(STANDARD, OCCASIONAL, SUPPLEMENTARY, SIMPLIFIED) { request =>
       "user submits valid No answer go to 'Is License Required?'" in {
-
         withNewCaching(aDeclarationAfter(request.cacheModel, withItem(anItem(withItemId(itemId)))))
 
         val requestBody = Seq("yesNo" -> "No")
-        val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(requestBody: _*))
+        val result = controller.submitForm(itemId)(postRequestAsFormUrlEncoded(requestBody: _*))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe routes.IsLicenceRequiredController.displayPage(Mode.Normal, itemId)
+        thePageNavigatedTo mustBe routes.IsLicenceRequiredController.displayPage(itemId)
       }
-
     }
-
   }
 }

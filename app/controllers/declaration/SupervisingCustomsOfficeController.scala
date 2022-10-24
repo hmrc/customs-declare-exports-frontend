@@ -22,7 +22,7 @@ import controllers.navigation.Navigator
 import forms.declaration.SupervisingCustomsOffice
 import forms.declaration.SupervisingCustomsOffice.form
 import models.requests.JourneyRequest
-import models.{ExportsDeclaration, Mode}
+import models.ExportsDeclaration
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.cache.ExportsCacheService
@@ -45,19 +45,19 @@ class SupervisingCustomsOfficeController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
-  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     val frm = form.withSubmissionErrors
     request.cacheModel.locations.supervisingCustomsOffice match {
-      case Some(data) => Ok(supervisingCustomsOfficePage(mode, frm.fill(data)))
-      case _          => Ok(supervisingCustomsOfficePage(mode, frm))
+      case Some(data) => Ok(supervisingCustomsOfficePage(frm.fill(data)))
+      case _          => Ok(supervisingCustomsOfficePage(frm))
     }
   }
 
-  def submit(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def submit(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     form.bindFromRequest
       .fold(
-        formWithErrors => Future.successful(BadRequest(supervisingCustomsOfficePage(mode, formWithErrors))),
-        updateCache(_).map(declaration => navigator.continueTo(mode, supervisingCustomsOfficeHelper.nextPage(declaration)))
+        formWithErrors => Future.successful(BadRequest(supervisingCustomsOfficePage(formWithErrors))),
+        updateCache(_).map(declaration => navigator.continueTo(supervisingCustomsOfficeHelper.nextPage(declaration)))
       )
   }
 

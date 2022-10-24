@@ -17,8 +17,8 @@
 package views.declaration.summary
 
 import base.Injector
+import controllers.declaration.routes.TransportContainerController
 import forms.declaration.Seal
-import models.Mode.{Draft, Normal}
 import models.declaration.Container
 import services.cache.ExportsTestHelper
 import views.declaration.spec.UnitViewSpec
@@ -41,21 +41,19 @@ class ContainersViewSpec extends UnitViewSpec with ExportsTestHelper with Inject
     "display title only and change link" when {
 
       "Containers is empty" in {
-
-        val view = section(Normal, Seq.empty)(messages)
+        val view = section(Seq.empty)(messages)
         val row = view.getElementsByClass("containers-row")
 
         row must haveSummaryKey(messages("declaration.summary.transport.containers"))
         row must haveSummaryValue(messages("site.no"))
 
         row must haveSummaryActionsTexts("site.change", "declaration.summary.transport.containers.change")
-
-        row must haveSummaryActionsHref(controllers.declaration.routes.TransportContainerController.displayContainerSummary(Normal))
+        row must haveSummaryActionWithPlaceholder(TransportContainerController.displayContainerSummary())
       }
     }
 
     "display all containers and seals" in {
-      val view = section(Draft, containers)(messages)
+      val view = section(containers)(messages)
 
       val table = view.getElementById("containers-table")
       table.getElementsByTag("caption").text() mustBe messages("declaration.summary.container")
@@ -68,7 +66,7 @@ class ContainersViewSpec extends UnitViewSpec with ExportsTestHelper with Inject
       row1.getElementsByClass("govuk-table__cell").get(1).text() mustBe ""
 
       val row1ChangeLink = row1.getElementsByClass("govuk-table__cell").get(2).getElementsByTag("a").first()
-      row1ChangeLink must haveHref(controllers.declaration.routes.TransportContainerController.displayContainerSummary(Draft))
+      row1ChangeLink must haveHrefWithPlaceholder(TransportContainerController.displayContainerSummary)
       row1ChangeLink must containMessage("site.change")
       row1ChangeLink must containMessage("declaration.summary.container.change", firstContainerID)
 
@@ -77,7 +75,7 @@ class ContainersViewSpec extends UnitViewSpec with ExportsTestHelper with Inject
       row2.getElementsByClass("govuk-table__cell").get(1).text() mustBe s"$firstSeal, $secondSeal"
 
       val row2ChangeLink = row2.getElementsByClass("govuk-table__cell").get(2).getElementsByTag("a").first()
-      row2ChangeLink must haveHref(controllers.declaration.routes.TransportContainerController.displayContainerSummary(Draft))
+      row2ChangeLink must haveHrefWithPlaceholder(TransportContainerController.displayContainerSummary)
       row2ChangeLink must containMessage("site.change")
       row2ChangeLink must containMessage("declaration.summary.container.change", secondContainerID)
     }

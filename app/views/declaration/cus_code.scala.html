@@ -42,15 +42,15 @@
     formHelper: FormWithCSRF
 )
 
-@(mode: Mode, itemId: String, form: Form[CusCode])(implicit request: JourneyRequest[_], messages: Messages)
+@(itemId: String, form: Form[CusCode])(implicit request: JourneyRequest[_], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
 @govukLayout(
     title = Title("declaration.cusCode.header", "declaration.section.5", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(CusCode, mode, ItemId(itemId))))) {
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(CusCode, ItemId(itemId))))) {
 
-    @formHelper(action = routes.CusCodeController.submitForm(mode, itemId), 'autoComplete -> "off") {
+    @formHelper(action = routes.CusCodeController.submitForm(itemId), 'autoComplete -> "off") {
         @errorSummary(radioGroupErrors(hasCusCodeKey, "code_yes", form.errors))
 
         @sectionHeader(messages("declaration.section.5"))
@@ -96,6 +96,6 @@
 
         @tariffExpander(CusCode, request.declarationType)(messages, appConfig)
 
-        @saveButtons(mode)
+        @saveButtons()
     }
 }

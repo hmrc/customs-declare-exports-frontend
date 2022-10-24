@@ -23,8 +23,8 @@ import controllers.helpers.LocationOfGoodsHelper.skipLocationOfGoods
 import controllers.navigation.Navigator
 import forms.declaration.countries.Countries
 import forms.declaration.countries.Countries.DestinationCountryPage
+import models.DeclarationType._
 import models.requests.JourneyRequest
-import models.{DeclarationType, Mode}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.cache.ExportsCacheService
@@ -46,38 +46,31 @@ class DestinationCountryController @Inject() (
 )(implicit ec: ExecutionContext, codeListConnector: CodeListConnector)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
-  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     val form = (request.cacheModel.locations.destinationCountry match {
       case Some(destinationCountry) =>
         Countries.form(DestinationCountryPage).fill(destinationCountry)
       case None => Countries.form(DestinationCountryPage)
     }).withSubmissionErrors()
 
-    Ok(destinationCountryPage(mode, form))
+    Ok(destinationCountryPage(form))
   }
 
-  def submit(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def submit(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     Countries
       .form(DestinationCountryPage)
       .bindFromRequest()
       .fold(
-        formWithErrors => Future.successful(BadRequest(destinationCountryPage(mode, formWithErrors))),
-        validCountry =>
-          updateDeclarationFromRequest(_.updateDestinationCountry(validCountry)).map { _ =>
-            redirectToNextPage(mode)
-          }
+        formWithErrors => Future.successful(BadRequest(destinationCountryPage(formWithErrors))),
+        validCountry => updateDeclarationFromRequest(_.updateDestinationCountry(validCountry)).map(_ => redirectToNextPage())
       )
   }
 
-  private def redirectToNextPage(mode: Mode)(implicit request: JourneyRequest[AnyContent]): Result =
-    if (skipLocationOfGoods(request.cacheModel)) navigator.continueTo(mode, OfficeOfExitController.displayPage)
-    else {
+  private def redirectToNextPage()(implicit request: JourneyRequest[AnyContent]): Result =
+    if (skipLocationOfGoods(request.cacheModel)) navigator.continueTo(OfficeOfExitController.displayPage)
+    else
       request.declarationType match {
-        case DeclarationType.SUPPLEMENTARY | DeclarationType.CLEARANCE =>
-          navigator.continueTo(mode, LocationOfGoodsController.displayPage)
-
-        case DeclarationType.STANDARD | DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL =>
-          navigator.continueTo(mode, RoutingCountriesController.displayRoutingQuestion(_))
+        case SUPPLEMENTARY | CLEARANCE          => navigator.continueTo(LocationOfGoodsController.displayPage)
+        case STANDARD | SIMPLIFIED | OCCASIONAL => navigator.continueTo(RoutingCountriesController.displayRoutingQuestion)
       }
-    }
 }

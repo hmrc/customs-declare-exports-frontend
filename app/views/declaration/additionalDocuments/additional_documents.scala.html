@@ -49,7 +49,7 @@
     formHelper: FormWithCSRF
 )
 
-@(mode: Mode, itemId: String, form: Form[_], documents: Seq[AdditionalDocument])(implicit request: JourneyRequest[_], messages: Messages)
+@(itemId: String, form: Form[_], documents: Seq[AdditionalDocument])(implicit request: JourneyRequest[_], messages: Messages)
 
 @title = @{
     if(documents.size == 1)
@@ -93,7 +93,7 @@
                     TableRow(
                         content = HtmlContent(link(
                             messages("site.change"),
-                            AdditionalDocumentChangeController.displayPage(mode, itemId, createId(index, document)),
+                            AdditionalDocumentChangeController.displayPage(itemId, createId(index, document)),
                             textHidden = Some(messages("declaration.additionalDocument.summary.change.hint", document.documentIdentifier.getOrElse("")))
                         )),
                         classes = "govuk-table__cell--numeric",
@@ -102,7 +102,7 @@
                     TableRow(
                         content = HtmlContent(link(
                             messages("site.remove"),
-                            AdditionalDocumentRemoveController.displayPage(mode, itemId, createId(index, document)),
+                            AdditionalDocumentRemoveController.displayPage(itemId, createId(index, document)),
                             textHidden = Some(messages("declaration.additionalDocument.summary.remove.hint", document.documentIdentifier.getOrElse("")))
                         )),
                         classes = "govuk-table__cell--numeric",
@@ -138,9 +138,9 @@
 
 @govukLayout(
     title = title,
-    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(AdditionalDocumentsSummary, mode, ItemId(itemId))))) {
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(AdditionalDocumentsSummary, ItemId(itemId))))) {
 
-    @formHelper(action = AdditionalDocumentsController.submitForm(mode, itemId), 'autoComplete -> "off") {
+    @formHelper(action = AdditionalDocumentsController.submitForm(itemId), 'autoComplete -> "off") {
 
         @errorSummary(yesNoErrors(form.errors))
 
@@ -156,7 +156,7 @@
                 warning,
                 documentsTable,
                 addAnotherQuestion("declaration.additionalDocument.summary.add.another", form),
-                saveButtons(mode)
+                saveButtons()
             ))
         ))
 

@@ -16,15 +16,11 @@
 
 package controllers.declaration
 
-import scala.concurrent.{ExecutionContext, Future}
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.routes.AdditionalInformationRequiredController
 import controllers.navigation.Navigator
 import forms.declaration.commodityMeasure.SupplementaryUnits
-
-import javax.inject.Inject
 import models.DeclarationType.{STANDARD, SUPPLEMENTARY}
-import models.Mode
 import models.declaration.{CommodityMeasure, ExportItem}
 import models.requests.JourneyRequest
 import play.api.data.Form
@@ -37,6 +33,10 @@ import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.commodityMeasure.{supplementary_units, supplementary_units_yes_no}
 
+import javax.inject.{Inject, Singleton}
+import scala.concurrent.{ExecutionContext, Future}
+
+@Singleton
 class SupplementaryUnitsController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
@@ -51,7 +51,7 @@ class SupplementaryUnitsController @Inject() (
 
   private val validTypes = Seq(STANDARD, SUPPLEMENTARY)
 
-  def displayPage(mode: Mode, itemId: String): Action[AnyContent] =
+  def displayPage(itemId: String): Action[AnyContent] =
     (authenticate andThen journeyType(validTypes)).async { implicit request =>
       def formWithDataIfAny(yesNoPage: Boolean): Form[SupplementaryUnits] =
         request.cacheModel.commodityMeasure(itemId) match {
@@ -63,33 +63,33 @@ class SupplementaryUnitsController @Inject() (
 
       tariffApiService.retrieveCommodityInfoIfAny(request.cacheModel, itemId).flatMap {
         case Right(commodityInfo) =>
-          Future.successful(Ok(supplementaryUnitsPage(mode, itemId, formWithDataIfAny(false), commodityInfo)))
+          Future.successful(Ok(supplementaryUnitsPage(itemId, formWithDataIfAny(false), commodityInfo)))
 
         case Left(CommodityCodeNotFound) =>
-          Future.successful(Ok(supplementaryUnitsYesNoPage(mode, itemId, formWithDataIfAny(true))))
+          Future.successful(Ok(supplementaryUnitsYesNoPage(itemId, formWithDataIfAny(true))))
 
         case Left(SupplementaryUnitsNotRequired) =>
-          updateExportsCacheAndContinueToNextPage(mode, itemId, SupplementaryUnits(None))
+          updateExportsCacheAndContinueToNextPage(itemId, SupplementaryUnits(None))
       }
     }
 
-  def submitPage(mode: Mode, itemId: String): Action[AnyContent] =
+  def submitPage(itemId: String): Action[AnyContent] =
     (authenticate andThen journeyType(validTypes)).async { implicit request =>
       tariffApiService.retrieveCommodityInfoIfAny(request.cacheModel, itemId).flatMap {
         case Right(commodityInfo) =>
           form(false).bindFromRequest.fold(
-            formWithErrors => Future.successful(BadRequest(supplementaryUnitsPage(mode, itemId, formWithErrors, commodityInfo))),
-            updateExportsCacheAndContinueToNextPage(mode, itemId, _)
+            formWithErrors => Future.successful(BadRequest(supplementaryUnitsPage(itemId, formWithErrors, commodityInfo))),
+            updateExportsCacheAndContinueToNextPage(itemId, _)
           )
 
         case Left(CommodityCodeNotFound) =>
           form(true).bindFromRequest.fold(
-            formWithErrors => Future.successful(BadRequest(supplementaryUnitsYesNoPage(mode, itemId, formWithErrors))),
-            updateExportsCacheAndContinueToNextPage(mode, itemId, _)
+            formWithErrors => Future.successful(BadRequest(supplementaryUnitsYesNoPage(itemId, formWithErrors))),
+            updateExportsCacheAndContinueToNextPage(itemId, _)
           )
 
         case Left(SupplementaryUnitsNotRequired) =>
-          updateExportsCacheAndContinueToNextPage(mode, itemId, SupplementaryUnits(None))
+          updateExportsCacheAndContinueToNextPage(itemId, SupplementaryUnits(None))
       }
     }
 
@@ -99,13 +99,13 @@ class SupplementaryUnitsController @Inject() (
   private def hasSupplementaryUnits(commodityMeasure: CommodityMeasure): Boolean =
     commodityMeasure.supplementaryUnits.isDefined || commodityMeasure.supplementaryUnitsNotRequired.isDefined
 
-  private def updateExportsCacheAndContinueToNextPage(mode: Mode, itemId: String, newUnits: SupplementaryUnits)(
+  private def updateExportsCacheAndContinueToNextPage(itemId: String, newUnits: SupplementaryUnits)(
     implicit r: JourneyRequest[AnyContent]
   ): Future[Result] =
     updateDeclarationFromRequest {
       _.updatedItem(itemId, item => item.copy(commodityMeasure = updateCommodityMeasure(item, newUnits)))
     }.map { _ =>
-      navigator.continueTo(mode, AdditionalInformationRequiredController.displayPage(_, itemId))
+      navigator.continueTo(AdditionalInformationRequiredController.displayPage(itemId))
     }
 
   private def updateCommodityMeasure(item: ExportItem, newUnits: SupplementaryUnits): Option[CommodityMeasure] = {

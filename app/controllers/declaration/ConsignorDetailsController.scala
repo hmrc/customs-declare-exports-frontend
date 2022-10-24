@@ -21,7 +21,7 @@ import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.declaration.consignor.ConsignorDetails
 import models.requests.JourneyRequest
-import models.{DeclarationType, ExportsDeclaration, Mode}
+import models.{DeclarationType, ExportsDeclaration}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
@@ -45,27 +45,27 @@ class ConsignorDetailsController @Inject() (
 
   val validJourneys = Seq(DeclarationType.CLEARANCE)
 
-  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validJourneys)) { implicit request =>
+  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType(validJourneys)) { implicit request =>
     val frm = ConsignorDetails.form().withSubmissionErrors()
     request.cacheModel.parties.consignorDetails match {
-      case Some(data) => Ok(consignorDetailsPage(mode, frm.fill(data)))
-      case _          => Ok(consignorDetailsPage(mode, frm))
+      case Some(data) => Ok(consignorDetailsPage(frm.fill(data)))
+      case _          => Ok(consignorDetailsPage(frm))
     }
   }
 
-  def saveAddress(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validJourneys)).async { implicit request =>
+  def saveAddress(): Action[AnyContent] = (authenticate andThen journeyType(validJourneys)).async { implicit request =>
     ConsignorDetails
       .form()
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[ConsignorDetails]) => Future.successful(BadRequest(consignorDetailsPage(mode, formWithErrors))),
+        (formWithErrors: Form[ConsignorDetails]) => Future.successful(BadRequest(consignorDetailsPage(formWithErrors))),
         form =>
           updateCache(form)
-            .map(_ => navigator.continueTo(mode, nextPage()))
+            .map(_ => navigator.continueTo(nextPage()))
       )
   }
 
-  private def nextPage()(implicit request: JourneyRequest[_]): Mode => Call =
+  private def nextPage()(implicit request: JourneyRequest[_]): Call =
     if (request.cacheModel.isDeclarantExporter) {
       controllers.declaration.routes.CarrierEoriNumberController.displayPage
     } else {

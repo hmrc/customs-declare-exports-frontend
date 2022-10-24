@@ -22,8 +22,6 @@ import forms.common.Eori
 import forms.common.YesNoAnswer.form
 import forms.declaration.DeclarationAdditionalActors
 import models.DeclarationType.{OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
-import models.Mode
-import models.Mode.Normal
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import views.declaration.spec.PageWithButtonsSpec
@@ -38,10 +36,10 @@ class AdditionalActorsSummaryViewSpec extends PageWithButtonsSpec with Injector 
 
   val page = instanceOf[additional_actors_summary]
 
-  override val typeAndViewInstance = (STANDARD, page(Normal, form(), Seq.empty)(_, _))
+  override val typeAndViewInstance = (STANDARD, page(form(), Seq.empty)(_, _))
 
-  def createView(actors: Seq[DeclarationAdditionalActors] = Seq.empty, mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document =
-    page(mode, form(), actors)
+  def createView(actors: Seq[DeclarationAdditionalActors] = Seq.empty)(implicit request: JourneyRequest[_]): Document =
+    page(form(), actors)
 
   "AdditionalActors Summary View on empty page" should {
 
@@ -71,11 +69,10 @@ class AdditionalActorsSummaryViewSpec extends PageWithButtonsSpec with Injector 
       "display back link" in {
         val view = createView()
         view must containElementWithID("back-link")
-        view.getElementById("back-link") must haveHref(ConsigneeDetailsController.displayPage(Normal))
+        view.getElementById("back-link") must haveHref(ConsigneeDetailsController.displayPage())
       }
 
-      val createViewWithMode: Mode => Document = mode => createView(mode = mode)
-      checkAllSaveButtonsAreDisplayed(createViewWithMode)
+      checkAllSaveButtonsAreDisplayed(createView())
     }
   }
 

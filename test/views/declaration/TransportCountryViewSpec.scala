@@ -26,8 +26,6 @@ import forms.declaration.ModeOfTransportCode.{Maritime, RoRo}
 import forms.declaration.TransportCountry
 import forms.declaration.TransportCountry._
 import models.DeclarationType.{STANDARD, SUPPLEMENTARY}
-import models.Mode
-import models.Mode.Normal
 import models.codes.Country
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
@@ -63,11 +61,11 @@ class TransportCountryViewSpec extends PageWithButtonsSpec with Injector {
 
   override val typeAndViewInstance = {
     val maritime = ModeOfTransportCodeHelper.transportMode(Some(Maritime))
-    (STANDARD, page(Normal, maritime, form(maritime))(_, _))
+    (STANDARD, page(maritime, form(maritime))(_, _))
   }
 
-  def createView(form: Form[TransportCountry], transportMode: String, mode: Mode = Normal)(implicit request: JourneyRequest[_]): Document =
-    page(mode, transportMode, form)(request, messages)
+  def createView(form: Form[TransportCountry], transportMode: String)(implicit request: JourneyRequest[_]): Document =
+    page(transportMode, form)(request, messages)
 
   "TransportCountry View" when {
 
@@ -85,7 +83,7 @@ class TransportCountryViewSpec extends PageWithButtonsSpec with Injector {
               "display 'Back' button that links to the 'Border Transport' page" in {
                 val backButton = view.getElementById("back-link")
                 backButton must containMessage("site.backToPreviousQuestion")
-                backButton.getElementById("back-link") must haveHref(BorderTransportController.displayPage(Normal))
+                backButton.getElementById("back-link") must haveHref(BorderTransportController.displayPage())
               }
 
               "display 'Back' button that links to the 'Departure Transport' page" when {
@@ -94,7 +92,7 @@ class TransportCountryViewSpec extends PageWithButtonsSpec with Injector {
                   val view = createView(form(transportMode), transportMode)
                   val backButton = view.getElementById("back-link")
                   backButton must containMessage("site.backToPreviousQuestion")
-                  backButton.getElementById("back-link") must haveHref(DepartureTransportController.displayPage(Normal))
+                  backButton.getElementById("back-link") must haveHref(DepartureTransportController.displayPage())
                 }
               }
 
@@ -134,9 +132,7 @@ class TransportCountryViewSpec extends PageWithButtonsSpec with Injector {
                 label.id mustBe s"${transportCountry}-label"
               }
 
-              val createViewWithMode: Mode => Document =
-                mode => createView(form(transportMode), transportMode, mode = mode)(journeyRequest(declarationType))
-              checkAllSaveButtonsAreDisplayed(createViewWithMode)
+              checkAllSaveButtonsAreDisplayed(view)
             }
 
             "display an error" when {

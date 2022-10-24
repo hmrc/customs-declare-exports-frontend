@@ -29,7 +29,6 @@ import forms.declaration.additionaldocuments.AdditionalDocument.form
 import forms.declaration.declarationHolder.DeclarationHolder
 import models.DeclarationType._
 import models.ExportsDeclaration
-import models.Mode.Normal
 import models.declaration.EoriSource
 import models.declaration.ExportDeclarationTestData.declaration
 import models.requests.JourneyRequest
@@ -45,7 +44,7 @@ class AdditionalDocumentAddViewSpec extends UnitViewSpec with Injector {
 
   val page = instanceOf[additional_document_add]
 
-  def createView(implicit request: JourneyRequest[_]): Document = page(Normal, itemId, form(declaration))(request, messages)
+  def createView(implicit request: JourneyRequest[_]): Document = page(itemId, form(declaration))(request, messages)
 
   object TestDeclaration {
     private val withAdditionalInfo = withAdditionalInformation("code", "desc")
@@ -68,7 +67,7 @@ class AdditionalDocumentAddViewSpec extends UnitViewSpec with Injector {
       onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL)(TestDeclaration.licenseRequired) { implicit request =>
         "display a 'Back' button that links to the 'Is License Required' page" when {
           "license is required" in {
-            verifyBackButton(IsLicenceRequiredController.displayPage(Normal, itemId))
+            verifyBackButton(IsLicenceRequiredController.displayPage(itemId))
           }
         }
       }
@@ -77,7 +76,7 @@ class AdditionalDocumentAddViewSpec extends UnitViewSpec with Injector {
         "display a 'Back' button that links to the 'Is License Required' page" when {
           "license is not required" when {
             "the authorisation code requires additional documents" in {
-              verifyBackButton(IsLicenceRequiredController.displayPage(Normal, itemId))
+              verifyBackButton(IsLicenceRequiredController.displayPage(itemId))
             }
           }
         }
@@ -87,7 +86,7 @@ class AdditionalDocumentAddViewSpec extends UnitViewSpec with Injector {
         "display a 'Back' button that links to the 'Additional Documents Required' page" when {
           "license is not required" when {
             "the authorisation code does not require additional documents" in {
-              verifyBackButton(AdditionalDocumentsRequiredController.displayPage(Normal, itemId))
+              verifyBackButton(AdditionalDocumentsRequiredController.displayPage(itemId))
             }
           }
         }
@@ -97,7 +96,7 @@ class AdditionalDocumentAddViewSpec extends UnitViewSpec with Injector {
     "additional documents are present" should {
       onJourney(CLEARANCE)(TestDeclaration.withDocs) { implicit request =>
         "display a 'Back' button that links to the 'Additional Documents Required' page" in {
-          verifyBackButton(AdditionalDocumentsController.displayPage(Normal, itemId))
+          verifyBackButton(AdditionalDocumentsController.displayPage(itemId))
         }
       }
     }
@@ -107,7 +106,7 @@ class AdditionalDocumentAddViewSpec extends UnitViewSpec with Injector {
       "the authorisation code does not require additional documents" should {
         onJourney(CLEARANCE)(TestDeclaration.licenseNotRequired) { implicit request =>
           "display a 'Back' button that links to the 'Additional Documents Required' page" in {
-            verifyBackButton(AdditionalDocumentsRequiredController.displayPage(Normal, itemId))
+            verifyBackButton(AdditionalDocumentsRequiredController.displayPage(itemId))
           }
         }
       }
@@ -115,7 +114,7 @@ class AdditionalDocumentAddViewSpec extends UnitViewSpec with Injector {
       "the authorisation code requires additional documents" should {
         onJourney(CLEARANCE)(TestDeclaration.authCodeRequiresDocs) { implicit request =>
           "display a 'Back' button that links to the 'Additional Information List' page" in {
-            verifyBackButton(AdditionalInformationController.displayPage(Normal, itemId))
+            verifyBackButton(AdditionalInformationController.displayPage(itemId))
           }
         }
       }
