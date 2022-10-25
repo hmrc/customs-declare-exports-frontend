@@ -110,13 +110,11 @@
         )
 
         @if(showDeclarationSummaryLink){
-            @request.session.data.get(ExportsSessionKeys.declarationId).map{ declarationId =>
+            @request.session.get(ExportsSessionKeys.declarationId).map { declarationId =>
                 <p>@viewDeclarationSummaryLink(declarationId)</p>
             }
         }
-
     </div>
-
 }
 
 @content = {

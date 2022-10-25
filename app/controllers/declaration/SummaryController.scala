@@ -62,11 +62,8 @@ class SummaryController @Inject() (
   val form: Form[LegalDeclaration] = LegalDeclaration.form()
 
   def displayPage(): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType).async { implicit request =>
-    updateDeclarationFromRequest(_.copy(summaryWasVisited = Some(true))).flatMap { _ =>
-      val hasMandatoryData = request.cacheModel.consignmentReferences.exists(references => references.lrn.nonEmpty)
-      if (hasMandatoryData) displaySummaryPage()
-      else Future.successful(Ok(summaryPageNoData()).removingFromSession(errorFixModeSessionKey))
-    }
+    if (request.cacheModel.summaryWasVisited.contains(true)) continueToDisplayPage
+    else updateDeclarationFromRequest(_.copy(summaryWasVisited = Some(true))).flatMap(_ => continueToDisplayPage)
   }
 
   def displayDeclarationPage(): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType) { implicit request =>
@@ -82,6 +79,12 @@ class SummaryController @Inject() (
           case _                => handleError(s"Error from Customs Declarations API")
         }
     )
+  }
+
+  private def continueToDisplayPage(implicit request: JourneyRequest[_]): Future[Result] = {
+    val hasMandatoryData = request.cacheModel.consignmentReferences.exists(references => references.lrn.nonEmpty)
+    if (hasMandatoryData) displaySummaryPage()
+    else Future.successful(Ok(summaryPageNoData()).removingFromSession(errorFixModeSessionKey))
   }
 
   private def displaySummaryPage()(implicit request: JourneyRequest[_]): Future[Result] = {
