@@ -20,6 +20,7 @@ import base.Injector
 import forms.declaration.CommodityDetails
 import models.DeclarationType._
 import models.ExportsDeclaration
+import models.requests.ExportsSessionKeys
 import org.jsoup.nodes.{Document, Element}
 import org.jsoup.select.Elements
 import services.cache.ExportsTestHelper
@@ -34,7 +35,7 @@ class SubmittedDeclarationPageViewSpec extends UnitViewSpec with Stubs with Expo
 
   val declarationPage = instanceOf[submitted_declaration_page]
   def createView(declaration: ExportsDeclaration = aDeclaration()): Document =
-    declarationPage(Some(submission), declaration)(request, messages)
+    declarationPage(Some(submission), declaration)(journeyRequest(declaration, (ExportsSessionKeys.declarationId, "decId")), messages)
 
   def links(view: Document): Elements = {
     val allLinks = view.getElementsByClass("govuk-link")
@@ -42,7 +43,8 @@ class SubmittedDeclarationPageViewSpec extends UnitViewSpec with Stubs with Expo
     val filter = new Predicate[Element] {
       override def test(elm: Element): Boolean =
         elm.text.contains("Print") || elm.text.contains("feedback") ||
-          elm.text.contains("Sign out") || elm.text.contains("page not working")
+          elm.text.contains("Sign out") || elm.text.contains("page not working") ||
+          elm.text.contains("View declaration summary")
     }
     allLinks.removeIf(filter)
     allLinks
@@ -59,6 +61,10 @@ class SubmittedDeclarationPageViewSpec extends UnitViewSpec with Stubs with Expo
 
       backButton.text mustBe messages("site.back")
       backButton must haveHref(controllers.routes.DeclarationDetailsController.displayPage("declaration-id"))
+    }
+
+    "not have View declaration summary link" in {
+      Option(createView().getElementById("view_declaration_summary")) mustBe None
     }
 
     "have the expected 'Print page' buttons" in {

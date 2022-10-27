@@ -22,6 +22,7 @@ import controllers.routes
 import forms.Choice.AllowedChoiceValues.CancelDec
 import forms.cancellation.CancellationChangeReason.NoLongerRequired
 import forms.{CancelDeclarationDescription, Choice, Lrn}
+import models.requests.ExportsSessionKeys
 import org.jsoup.nodes.Document
 import play.api.data.{Form, FormError}
 import tools.Stubs
@@ -49,6 +50,10 @@ class CancelDeclarationViewSpec extends UnitViewSpec with CommonMessages with St
     "display page title" in {
 
       createView().getElementById("title").text() mustBe messages("cancellation.title")
+    }
+
+    "not have View declaration summary link" in {
+      Option(createView().getElementById("view_declaration_summary")) mustBe None
     }
 
     "display ducr and lrn" in {
@@ -174,5 +179,5 @@ class CancelDeclarationViewSpec extends UnitViewSpec with CommonMessages with St
   }
 
   private def createView(form: Form[CancelDeclarationDescription] = form): Document =
-    cancelDeclarationPage(form, lrn, ducr, mrn)(request, messages)
+    cancelDeclarationPage(form, lrn, ducr, mrn)(journeyRequest(aDeclaration(), (ExportsSessionKeys.declarationId, "decId")), messages)
 }
