@@ -44,7 +44,8 @@
 
 @govukLayout(
     title = Title("declaration.copy.title", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.back"), DeclarationDetailsController.displayPage(request.cacheModel.id)))
+    backButton = Some(BackButton(messages("site.back"), DeclarationDetailsController.displayPage(request.cacheModel.id))),
+    showDeclarationSummaryLink = false
 ) {
 
     @formHelper(action = CopyDeclarationController.submitPage, 'autoComplete -> "off") {

@@ -43,7 +43,8 @@
 
 @govukLayout(
     title = Title("cancellation.title", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.backToSelectionPage"), controllers.routes.ChoiceController.displayPage(Some(Choice(CancelDec)))))
+    backButton = Some(BackButton(messages("site.backToSelectionPage"), controllers.routes.ChoiceController.displayPage(Some(Choice(CancelDec))))),
+    showDeclarationSummaryLink = false
 ) {
 
     @formHelper(action = CancelDeclarationController.onSubmit(), 'autoComplete -> "off") {

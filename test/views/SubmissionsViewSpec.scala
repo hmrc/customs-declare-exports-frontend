@@ -24,6 +24,7 @@ import forms.Choice.AllowedChoiceValues.Submissions
 import models.declaration.submissions.EnhancedStatus._
 import models.declaration.submissions.RequestType.{CancellationRequest, SubmissionRequest}
 import models.declaration.submissions.{Action, Submission}
+import models.requests.ExportsSessionKeys
 import models.{Page, Paginated, SubmissionsPagesElements}
 import org.jsoup.nodes.Element
 import org.mockito.Mockito.when
@@ -49,7 +50,10 @@ class SubmissionsViewSpec extends UnitViewSpec with ExportsTestHelper {
     rejectedSubmissions: Paginated[Submission] = Paginated(Seq.empty, Page(), 0),
     cancelledSubmissions: Paginated[Submission] = Paginated(Seq.empty, Page(), 0)
   ): Html =
-    page(SubmissionsPagesElements(otherSubmissions, actionSubmissions, rejectedSubmissions, cancelledSubmissions))(request, messages)
+    page(SubmissionsPagesElements(otherSubmissions, actionSubmissions, rejectedSubmissions, cancelledSubmissions))(
+      journeyRequest(aDeclaration(), (ExportsSessionKeys.declarationId, "decId")),
+      messages
+    )
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -116,6 +120,10 @@ class SubmissionsViewSpec extends UnitViewSpec with ExportsTestHelper {
       "the Secure Messaging flag is set to 'false'" in {
         Option(createView().getElementById("navigation-banner")) mustBe None
       }
+    }
+
+    "not have View declaration summary link" in {
+      Option(createView().getElementById("view_declaration_summary")) mustBe None
     }
 
     "display same page title as header" in {
