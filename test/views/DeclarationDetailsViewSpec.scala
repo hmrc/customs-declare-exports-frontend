@@ -23,13 +23,14 @@ import controllers.routes
 import models.declaration.submissions.EnhancedStatus._
 import models.declaration.submissions.RequestType.SubmissionRequest
 import models.declaration.submissions.{Action, EnhancedStatus, NotificationSummary, Submission}
-import models.requests.VerifiedEmailRequest
+import models.requests.{ExportsSessionKeys, VerifiedEmailRequest}
 import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
 import org.mockito.Mockito.when
 import org.scalatest.{Assertion, GivenWhenThen}
 import play.api.inject.bind
 import play.api.mvc.Call
+import play.api.test.FakeRequest
 import views.declaration.spec.UnitViewSpec
 import views.helpers.{EnhancedStatusHelper, ViewDates}
 import views.html.declaration_details
@@ -277,6 +278,12 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
       val backButton = view.getElementById("back-link")
       backButton must containMessage("site.backToDeclarations")
       backButton must haveHref(routes.SubmissionsController.displayListOfSubmissions())
+    }
+
+    "not have View declaration summary link" in {
+      val request = RequestBuilder.buildVerifiedEmailRequest(FakeRequest("", "").withSession((ExportsSessionKeys.declarationId, "decId")), user)
+      val view = page(createSubmissionWith(notificationSummaries))(request, messages(request))
+      Option(view.getElementById("view_declaration_summary")) mustBe None
     }
 
     "display page title" in {
