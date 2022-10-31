@@ -43,7 +43,7 @@
     tabTable: tabTable
 )
 
-@(submissionsPagesElements: SubmissionsPagesElements)(implicit request: Request[_], messages: Messages)
+@(submissionsPagesElements: SubmissionsPagesElements, t0: Long)(implicit request: Request[_], messages: Messages)
 
 @navBanner = {
     @if(secureMessagingConfig.isSecureMessagingEnabled) {
@@ -66,6 +66,8 @@
     navigationBanner = navBanner,
     showDeclarationSummaryLink = false
 ) {
+
+    <p><label id="elapsed"></label></p>
 
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-full">
@@ -126,4 +128,10 @@
             @linkButton("supplementary.startNewDec", routes.ChoiceController.displayPage())
         </div>
     </div>
+
+    <script type="text/javascript">
+        window.addEventListener('load', (event) => {
+            document.getElementById('elapsed').innerHTML = (Date.now() - @t0);
+        })
+    </script>
 }

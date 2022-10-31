@@ -32,6 +32,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.summary.submitted_declaration_page
 import views.html.submissions
 
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -45,12 +46,14 @@ class SubmissionsController @Inject() (
 )(implicit ec: ExecutionContext, paginationConfig: PaginationConfig)
     extends FrontendController(mcc) with I18nSupport {
 
-  def amend(rejectedId: String): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
+  val actions = authenticate andThen verifyEmail
+
+  def amend(rejectedId: String): Action[AnyContent] = actions.async { implicit request =>
     findOrCreateDraftForRejected(rejectedId, Redirect(SummaryController.displayPage))
   }
 
   def amendErrors(rejectedId: String, redirectUrl: String, pattern: String, message: String): Action[AnyContent] =
-    (authenticate andThen verifyEmail).async { implicit request =>
+    actions.async { implicit request =>
       val flashData = FieldNamePointer.getFieldName(pattern) match {
         case Some(name) if message.nonEmpty => Map(FlashKeys.fieldName -> name, FlashKeys.errorMessage -> message)
         case Some(name)                     => Map(FlashKeys.fieldName -> name)
@@ -61,16 +64,16 @@ class SubmissionsController @Inject() (
       findOrCreateDraftForRejected(rejectedId, setErrorFixMode(Redirect(redirectUrl).flashing(Flash(flashData))))
     }
 
-  def displayListOfSubmissions(submissionsPages: SubmissionsPages = SubmissionsPages()): Action[AnyContent] =
-    (authenticate andThen verifyEmail).async { implicit request =>
-      for {
-        submissions <- customsDeclareExportsConnector.fetchSubmissions
-        submissionsInDescOrder = submissions.sorted(Submission.newestEarlierOrdering)
-      } yield Ok(submissionsPage(SubmissionsPagesElements(submissionsInDescOrder, submissionsPages)))
-        .removingFromSession(declarationId, errorFixModeSessionKey)
-    }
+  def displayListOfSubmissions(submissionsPages: SubmissionsPages = SubmissionsPages()): Action[AnyContent] = actions.async { implicit request =>
+    val t0 = System.currentTimeMillis()
+    for {
+      submissions <- customsDeclareExportsConnector.fetchSubmissions
+      submissionsInDescOrder = submissions.sorted(Submission.newestEarlierOrdering)
+    } yield Ok(submissionsPage(SubmissionsPagesElements(submissionsInDescOrder, submissionsPages), t0))
+      .removingFromSession(declarationId, errorFixModeSessionKey)
+  }
 
-  def viewDeclaration(id: String): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
+  def viewDeclaration(id: String): Action[AnyContent] = actions.async { implicit request =>
     customsDeclareExportsConnector.findDeclaration(id).flatMap {
       case Some(declaration) =>
         customsDeclareExportsConnector.findSubmission(id).map { maybeSubmission =>
