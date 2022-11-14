@@ -15,15 +15,22 @@
  *@
 
 @import models.dis.MrnStatus
+@import models.requests.ExportsSessionKeys
 @import views.ead.DeclarationType
-@import views.helpers.{ViewDates, Title}
+@import views.helpers.{ViewDates, Title, BackButton}
 @import views.html.components.gds._
 
 @this(govukLayout: gdsMainTemplate)
 
 @(mrn: String, mrnStatus: MrnStatus, base64Image: String)(implicit messages: Messages, request: Request[_])
 
-@govukLayout(title = Title("ead.template.title"), displaySignOut = false, useCustomContentWidth = true) {
+@govukLayout(
+  title = Title("ead.template.title"),
+  backButton = request.session.get(ExportsSessionKeys.submissionId).map{ id =>
+    BackButton(messages("site.back"), routes.DeclarationDetailsController.displayPage(id))
+  },
+  useCustomContentWidth = true
+) {
 
  <div class="govuk-grid-row ead-row">
 
