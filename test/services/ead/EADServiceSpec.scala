@@ -28,7 +28,6 @@ import play.api.test.Helpers
 import play.api.test.Helpers._
 import services.cache.SubmissionBuilder
 import uk.gov.hmrc.http.HeaderCarrier
-import views.helpers.ViewDates
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -37,13 +36,12 @@ class EADServiceSpec
     with SubmissionBuilder {
 
   private val connector = mock[CustomsDeclareExportsConnector]
-  private val barcodeService = instanceOf[BarcodeService]
 
   private implicit val hc: HeaderCarrier = mock[HeaderCarrier]
   private implicit val ec: ExecutionContext = ExecutionContext.global
   private implicit val messages: Messages = Helpers.stubMessages()
 
-  private val service = new EADService(barcodeService, connector)
+  private val service = new EADService(connector)
 
   override def beforeEach(): Unit = {
     super.beforeEach()

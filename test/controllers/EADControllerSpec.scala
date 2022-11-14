@@ -32,10 +32,10 @@ class EADControllerSpec extends ControllerWithoutFormSpec with Injector {
   val mcc = stubMessagesControllerComponents()
   val barcodeService = instanceOf[BarcodeService]
   val connector = mock[CustomsDeclareExportsConnector]
-  val eADService = new EADService(barcodeService, connector)
+  val eADService = new EADService(connector)
   val view = instanceOf[ead]
 
-  val controller = new EADController(mockAuthAction, mcc, eADService, view)
+  val controller = new EADController(mockAuthAction, mcc, eADService, barcodeService, view)
 
   override def beforeEach(): Unit = {
     when(connector.fetchMrnStatus(any())(any(), any())).thenReturn(Future.successful(Some(MrnStatusSpec.completeMrnStatus)))

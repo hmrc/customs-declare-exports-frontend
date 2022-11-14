@@ -19,20 +19,19 @@ package services.ead
 import connectors.CustomsDeclareExportsConnector
 import models.dis.MrnStatus
 import play.api.Logging
-import play.api.i18n.Messages
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class EADService @Inject() (barcodeService: BarcodeService, connector: CustomsDeclareExportsConnector) extends Logging {
+class EADService @Inject() (connector: CustomsDeclareExportsConnector) extends Logging {
 
-  def generateStatus(mrn: String)(implicit hc: HeaderCarrier, ec: ExecutionContext, messages: Messages): Future[MrnStatus] =
+  def generateStatus(mrn: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[MrnStatus] =
     connector
       .fetchMrnStatus(mrn)
       .map {
         case Some(mrnStatus) =>
-          mrnStatus // barcodeService.base64Image(mrn))
+          mrnStatus
         case _ => throw new IllegalArgumentException(s"No declaration information was found")
       }
       .recoverWith { case _: Throwable =>

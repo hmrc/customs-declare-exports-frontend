@@ -19,20 +19,25 @@ package controllers
 import controllers.actions.AuthAction
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.ead.EADService
+import services.ead.{BarcodeService, EADService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.ead
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class EADController @Inject() (authenticate: AuthAction, mcc: MessagesControllerComponents, eadService: EADService, ead_page: ead)(
-  implicit ec: ExecutionContext
-) extends FrontendController(mcc) with I18nSupport {
+class EADController @Inject() (
+  authenticate: AuthAction,
+  mcc: MessagesControllerComponents,
+  eadService: EADService,
+  barcodeService: BarcodeService,
+  ead_page: ead
+)(implicit ec: ExecutionContext)
+    extends FrontendController(mcc) with I18nSupport {
 
   def generateDocument(mrn: String): Action[AnyContent] = authenticate.async { implicit request =>
-    eadService.generateStatus(mrn).map { status =>
-      Ok(ead_page(mrn, status, ""))
+    eadService.generateStatus(mrn) map { status =>
+      Ok(ead_page(mrn, status, barcodeService.base64Image(mrn)))
     }
   }
 }
