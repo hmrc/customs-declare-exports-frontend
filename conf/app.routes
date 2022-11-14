@@ -41,6 +41,8 @@ GET         /submissions/:id                               controllers.Submissio
 
 GET         /submissions/:id/:url/:pattern/:messageKey     controllers.SubmissionsController.amendErrors(id: String, url: String, pattern: String, messageKey: String)
 
+GET         /ead/:mrn                                      controllers.EADController.generateDocument(mrn)
+
 # Cancel declaration
 
 GET         /cancel-declaration                            controllers.CancelDeclarationController.displayPage()

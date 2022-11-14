@@ -16,39 +16,27 @@
 
 package services.ead
 
-import scala.concurrent.{ExecutionContext, Future}
-
-import com.dmanchester.playfop.sapi.PlayFop
 import connectors.CustomsDeclareExportsConnector
-import javax.inject.Inject
-import org.apache.fop.apps.FOUserAgent
-import org.apache.xmlgraphics.util.MimeConstants
+import models.dis.MrnStatus
 import play.api.Logging
 import play.api.i18n.Messages
-import play.twirl.api.XmlFormat
 import uk.gov.hmrc.http.HeaderCarrier
-import views.xml.pdf.pdfTemplate
 
-class EADService @Inject() (barcodeService: BarcodeService, pdfTemplate: pdfTemplate, val playFop: PlayFop, connector: CustomsDeclareExportsConnector)
-    extends Logging {
+import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
-  def generatePdf(mrn: String)(implicit hc: HeaderCarrier, ec: ExecutionContext, messages: Messages): Future[Array[Byte]] = {
-    val myFOUserAgentBlock = { foUserAgent: FOUserAgent =>
-      foUserAgent.setAuthor("HMRC")
-    }
+class EADService @Inject() (barcodeService: BarcodeService, connector: CustomsDeclareExportsConnector) extends Logging {
 
+  def generateStatus(mrn: String)(implicit hc: HeaderCarrier, ec: ExecutionContext, messages: Messages): Future[MrnStatus] =
     connector
       .fetchMrnStatus(mrn)
       .map {
         case Some(mrnStatus) =>
-          val xml: XmlFormat.Appendable = pdfTemplate.render(mrn, mrnStatus, barcodeService.base64Image(mrn), messages)
-
-          playFop.processTwirlXml(xml, MimeConstants.MIME_PDF, autoDetectFontsForPDF = true, foUserAgentBlock = myFOUserAgentBlock)
+          mrnStatus // barcodeService.base64Image(mrn))
         case _ => throw new IllegalArgumentException(s"No declaration information was found")
       }
       .recoverWith { case _: Throwable =>
         logger.error("An error occurred whilst trying to retrieve mrn status")
         throw new IllegalArgumentException(s"No declaration information was found")
       }
-  }
 }

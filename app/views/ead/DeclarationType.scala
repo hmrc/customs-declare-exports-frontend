@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package views.pdf
+package views.ead
 
 import play.api.i18n.Messages
 
@@ -24,7 +24,7 @@ object DeclarationType extends Enumeration {
 
   def translate(declarationType: String)(implicit messages: Messages): String =
     if (DeclarationType.values.exists(_.toString == declarationType))
-      messages(s"pdf.template.declarationType.$declarationType")
+      messages(s"ead.template.declarationType.$declarationType")
     else
       declarationType
 }

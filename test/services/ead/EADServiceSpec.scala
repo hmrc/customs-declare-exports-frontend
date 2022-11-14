@@ -17,11 +17,8 @@
 package services.ead
 
 import base.{Injector, MockConnectors, MockExportCacheService, UnitWithMocksSpec}
-import com.dmanchester.playfop.sapi.PlayFop
 import connectors.CustomsDeclareExportsConnector
 import models.dis.MrnStatusSpec
-import org.apache.pdfbox.pdmodel.PDDocument
-import org.apache.pdfbox.text.PDFTextStripper
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.OptionValues
@@ -31,10 +28,9 @@ import play.api.test.Helpers
 import play.api.test.Helpers._
 import services.cache.SubmissionBuilder
 import uk.gov.hmrc.http.HeaderCarrier
-import views.xml.pdf.pdfTemplate
+import views.helpers.ViewDates
 
 import scala.concurrent.{ExecutionContext, Future}
-import views.helpers.ViewDates
 
 class EADServiceSpec
     extends UnitWithMocksSpec with MockExportCacheService with MockConnectors with ScalaFutures with OptionValues with Injector
@@ -42,12 +38,12 @@ class EADServiceSpec
 
   private val connector = mock[CustomsDeclareExportsConnector]
   private val barcodeService = instanceOf[BarcodeService]
-  private val pdfTemplate = instanceOf[pdfTemplate]
-  private val playFop = instanceOf[PlayFop]
+
   private implicit val hc: HeaderCarrier = mock[HeaderCarrier]
   private implicit val ec: ExecutionContext = ExecutionContext.global
   private implicit val messages: Messages = Helpers.stubMessages()
-  private val service = new EADService(barcodeService, pdfTemplate, playFop, connector)
+
+  private val service = new EADService(barcodeService, connector)
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -56,7 +52,7 @@ class EADServiceSpec
 
   "EADService" should {
 
-    "should return a PDF as an Array of bytes" when {
+    "should return a status" when {
       val mrn = "18GBAKZ81EQJ2FGVR"
 
       "mrn is valid" in {
@@ -64,43 +60,36 @@ class EADServiceSpec
         when(connector.fetchMrnStatus(any[String])(any(), any())).thenReturn(Future.successful(Some(MrnStatusSpec.completeMrnStatus)))
 
         // When
-        val rawPdf: Array[Byte] = await(service.generatePdf(mrn))
+        val status = await(service.generateStatus(mrn))
 
-        // Then
-        val pdfDocument = PDDocument.load(rawPdf)
-
-        try {
-          val pdfData = new PDFTextStripper().getText(pdfDocument)
-          pdfData must include(mrn)
-          pdfData must include(MrnStatusSpec.completeMrnStatus.eori)
-          pdfData must include(MrnStatusSpec.completeMrnStatus.declarationType)
-          pdfData must include(MrnStatusSpec.completeMrnStatus.ucr.get)
-          pdfData must include(MrnStatusSpec.completeMrnStatus.totalPackageQuantity)
-          pdfData must include(MrnStatusSpec.completeMrnStatus.goodsItemQuantity)
-          pdfData must include(ViewDates.formatDateAtTime(MrnStatusSpec.completeMrnStatus.releasedDateTime.get))
-          pdfData must include(ViewDates.formatDateAtTime(MrnStatusSpec.completeMrnStatus.acceptanceDateTime.get))
-          pdfData must include(ViewDates.formatDateAtTime(MrnStatusSpec.completeMrnStatus.receivedDateTime))
-          pdfData must include(MrnStatusSpec.completeMrnStatus.versionId)
-          pdfData must include(MrnStatusSpec.completeMrnStatus.previousDocuments.head.typeCode)
-          pdfData must include(MrnStatusSpec.completeMrnStatus.previousDocuments.head.id)
-        } finally
-          pdfDocument.close()
-      }
-    }
-
-    "should throw an exception" when {
-      val mrn = "18GBAKZ81EQJ2FGVR"
-
-      "mrn information is not available" in {
-        when(connector.fetchMrnStatus(any[String])(any(), any())).thenReturn(Future.successful(None))
-
-        intercept[IllegalArgumentException](await(service.generatePdf(mrn))).getMessage must be("No declaration information was found")
+        status.mrn must be(MrnStatusSpec.completeMrnStatus.mrn)
+        status.eori must be(MrnStatusSpec.completeMrnStatus.eori)
+        status.declarationType must be(MrnStatusSpec.completeMrnStatus.declarationType)
+        status.ucr.value must be(MrnStatusSpec.completeMrnStatus.ucr.get)
+        status.totalPackageQuantity must be(MrnStatusSpec.completeMrnStatus.totalPackageQuantity)
+        status.goodsItemQuantity must be(MrnStatusSpec.completeMrnStatus.goodsItemQuantity)
+        status.releasedDateTime.value must be(MrnStatusSpec.completeMrnStatus.releasedDateTime.get)
+        status.acceptanceDateTime.value must be(MrnStatusSpec.completeMrnStatus.acceptanceDateTime.get)
+        status.receivedDateTime must be(MrnStatusSpec.completeMrnStatus.receivedDateTime)
+        status.versionId must be(MrnStatusSpec.completeMrnStatus.versionId)
+        status.previousDocuments.head.typeCode must be(MrnStatusSpec.completeMrnStatus.previousDocuments.head.typeCode)
+        status.previousDocuments.head.id must be(MrnStatusSpec.completeMrnStatus.previousDocuments.head.id)
       }
 
-      "a Runtime exception is thrown" in {
-        when(connector.fetchMrnStatus(any[String])(any(), any())).thenReturn(Future.failed(new RuntimeException("some issue")))
+      "should throw an exception" when {
+        val mrn = "18GBAKZ81EQJ2FGVR"
 
-        intercept[IllegalArgumentException](await(service.generatePdf(mrn))).getMessage must be("No declaration information was found")
+        "mrn information is not available" in {
+          when(connector.fetchMrnStatus(any[String])(any(), any())).thenReturn(Future.successful(None))
+
+          intercept[IllegalArgumentException](await(service.generateStatus(mrn))).getMessage must be("No declaration information was found")
+        }
+
+        "a Runtime exception is thrown" in {
+          when(connector.fetchMrnStatus(any[String])(any(), any())).thenReturn(Future.failed(new RuntimeException("some issue")))
+
+          intercept[IllegalArgumentException](await(service.generateStatus(mrn))).getMessage must be("No declaration information was found")
+        }
       }
     }
   }

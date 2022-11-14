@@ -138,13 +138,13 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
     "the EAD feature flag is enabled" should {
       when(mockEadConfig.isEadEnabled).thenReturn(true)
 
-      "contain the PDF-for-EAD link for any accepted notification's status" in {
+      "contain the EAD link for any accepted notification's status" in {
         EnhancedStatus.values
           .filter(_ in eadAcceptableStatuses)
-          .foreach(status => verifyPdfForEadLink(status))
+          .foreach(status => verifyEadLink(status))
       }
 
-      "not contain the PDF-for-EAD link" when {
+      "not contain the EAD link" when {
         "the notification's status is not an accepted status" in {
           EnhancedStatus.values
             .filterNot(_ in eadAcceptableStatuses)
@@ -160,17 +160,17 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
         }
       }
 
-      def verifyPdfForEadLink(status: EnhancedStatus): Assertion = {
+      def verifyEadLink(status: EnhancedStatus): Assertion = {
         val view = page(createSubmissionWith(status))(verifiedEmailRequest(), messages)
 
         val declarationLink = view.getElementById("generate-ead")
         declarationLink must containMessage("submissions.generateEAD")
-        declarationLink must haveHref(controllers.pdf.routes.EADController.generatePdf(submission.mrn.get))
+        declarationLink must haveHref(controllers.routes.EADController.generateDocument(submission.mrn.get))
       }
     }
 
     "the EAD feature flag is disabled" should {
-      "not contain the PDF-for-EAD link" in {
+      "not contain the EAD link" in {
         when(mockEadConfig.isEadEnabled).thenReturn(false)
         val view = page(submission)(verifiedEmailRequest(), messages)
         Option(view.getElementById("generate-ead")) mustBe None

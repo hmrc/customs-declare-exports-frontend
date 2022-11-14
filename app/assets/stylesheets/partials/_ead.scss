@@ -1,0 +1,208 @@
+/* override styles when printing */
+.ead-header {
+  font-size: 40px;
+  font-weight: 100;
+  margin: 0px 0px 25px 0px;
+}
+
+.coleadimage {
+  float: right;
+}
+
+.ead-img {
+  float: right;
+  background-repeat: no-repeat;
+  background-size: inherit;
+  width: 323px;
+  height: 152px;
+}
+
+.ead-right-col {
+  text-align: right;
+}
+
+.margin-bottom-15 {
+  margin-bottom: 15px;
+}
+
+.margin-bottom-7 {
+  margin-bottom: 7px !important;
+}
+
+.margin-top-0 {
+  margin-top: 0px;
+}
+
+.ead-border {
+  border: 2px solid #000000;
+  min-height: 400px;
+  margin-top: 50px;
+  padding: 10px 10px;
+}
+
+.ead-body {
+  font-size: 17.3px;
+  margin: 0px;
+}
+
+.ead-heading {
+  font-size: 21px;
+  font-weight: bold;
+  margin: 20px 0px 20px 0px;
+}
+
+.ead-quantity-font {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 17.3px;
+}
+
+.eadborder-row {
+  margin: 0px 0px;
+  padding: 0px 0px;
+}
+
+.govuk-grid-column-one-third-ead {
+  width: 33.3333%;
+  float: left;
+  box-sizing: border-box;
+  padding: 0 15px;
+}
+
+.govuk-grid-column-two-thirds-ead {
+  width: 66.6666%;
+  float: left;
+  box-sizing: border-box;
+  padding: 0 15px;
+}
+
+/* override styles when printing */
+/* Movements reciept page panel Arrive/Depart */
+.movements-panel-h1 {
+  margin: 0px 72px 0px 72px;
+}
+
+/* Movements reciept page panel Arrive/Depart */
+/* mobile css */
+@media only screen and (max-width: 980px) {
+  .movements-panel-h1 {
+    margin: 0px 55px 0px 55px;
+  }
+}
+
+@media only screen and (max-width: 930px) {
+  .movements-panel-h1 {
+    margin: 0px 0px 0px 0px;
+  }
+}
+
+@media only screen and (max-width: 700px) {
+  .ead-right-col {
+    text-align: left;
+    border-bottom: 1px solid #b1b4b6;
+    margin: 0px 0px 15px 0px;
+  }
+  .ead-img {
+    float: left;
+  }
+  .govuk-grid-column-two-thirds-ead {
+    width: 100%;
+  }
+  .govuk-grid-column-one-third-ead {
+    width: 100%;
+  }
+}
+
+/* mobile css */
+/* override styles when printing */
+@media print {
+  .ead-row {
+    margin: 0 5px;
+  }
+  .ead-img {
+    width: 249px;
+    height: 119px;
+  }
+  .ead-label {
+    display: none;
+  }
+  .ead-right-col {
+    text-align: right;
+  }
+  .ead-header {
+    text-align: center;
+  }
+  .ead-heading {
+    margin-bottom: 15px;
+    font-size: 21px;
+    font-weight: bold;
+  }
+  .ead-body {
+    font-size: 17.3px;
+  }
+  .ead-quantity-font {
+    font-size: 16.3px;
+  }
+  .govuk-grid-column-one-half {
+    width: 50%;
+    float: left;
+  }
+  .govuk-summary-list__row {
+    border-bottom: none;
+  }
+  .govuk-header ead {
+    display: none;
+  }
+  .govuk-footer ead {
+    display: none;
+  }
+  .govuk-back-link ead {
+    display: none;
+  }
+  .govuk-phase-banner ead {
+    display: none;
+  }
+  .ead-border {
+    padding: 10px;
+    min-height: 45vh;
+  }
+  @-moz-document url-prefix() {
+    .ead-border {
+      min-height: 38vh;
+    }
+  }
+  .eadborder-row {
+    margin: 0px 20px;
+    padding: 0px 0px;
+  }
+  .consignment-information-print {
+    display: none;
+  }
+  .govuk-grid-column-one-third-ead {
+    width: 33.2%;
+  }
+  .govuk-grid-column-two-thirds-ead {
+    width: 66.5%;
+  }
+}
+
+@media print {
+  .consignment-heading-print {
+    margin-bottom: 25px;
+  }
+  .govuk-header__content, .govuk-header__navigation signoutLink, .govuk-phase-banner, .govuk-back-link, .govuk-footer, .ead-label, .consignment-information-print {
+    display: none;
+  }
+  .govuk-\!-margin-bottom-2 {
+    margin-bottom: 0px !important;
+  }
+  .govuk-header__container {
+    border-bottom: none;
+  }
+  .consignment-link-print {
+    text-decoration: none;
+  }
+  .consignment-link-print:visited {
+    text-decoration: none;
+    color: #000000;
+  }
+}
