@@ -26,9 +26,9 @@
 
 @govukLayout(
   title = Title("ead.template.title"),
-  backButton = request.session.get(ExportsSessionKeys.submissionId).map{ id =>
-    BackButton(messages("site.back"), routes.DeclarationDetailsController.displayPage(id))
-  },
+   backButton = request.session.get(ExportsSessionKeys.submissionId).map{ id =>
+     BackButton(messages("site.back"), routes.DeclarationDetailsController.displayPage(id))
+   },
   useCustomContentWidth = true
 ) {
 
@@ -71,12 +71,12 @@
   <div class="govuk-grid-column-one-half">
    <!-- DUCR -->
    <div class="govuk-summary-list__row">
-    <h3 class="ead-heading">DUCR: @mrnStatus.ucr</h3>
+    <h3 class="ead-heading">@messages("ead.template.ucr"): @mrnStatus.ucr</h3>
    </div>
 
    <!-- Total Package Quantity -->
    <div class="govuk-summary-list__row">
-    <p class="lead ead-quantity-font"><b>@messages("field.declaration.totalPackageQuantity"):</b> @mrnStatus.totalPackageQuantity</p>
+    <p class="lead ead-quantity-font"><b>@messages("ead.template.totalPackageQuantity"):</b> @mrnStatus.totalPackageQuantity</p>
    </div>
 
    <!-- Good Items Quantity -->
