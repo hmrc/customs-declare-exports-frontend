@@ -16,14 +16,13 @@
 
 package models.declaration.submissions
 
-import models.declaration.submissions.RequestType.CancellationRequest
-
 import models.declaration.submissions.EnhancedStatus._
-import models.declaration.submissions.RequestType.SubmissionRequest
+import models.declaration.submissions.EnhancedStatusGroup.EnhancedStatusGroup
+import models.declaration.submissions.RequestType.{CancellationRequest, SubmissionRequest}
+import play.api.libs.json.Json
 
 import java.time.ZonedDateTime
 import java.util.UUID
-import play.api.libs.json.Json
 
 case class Submission(
   uuid: String = UUID.randomUUID.toString,
@@ -33,9 +32,9 @@ case class Submission(
   ducr: Option[String] = None,
   latestEnhancedStatus: Option[EnhancedStatus] = None,
   enhancedStatusLastUpdated: Option[ZonedDateTime] = None,
+  enhancedStatusGroup: Option[EnhancedStatusGroup] = None,
   actions: Seq[Action]
 ) {
-
   val latestAction: Option[Action] =
     if (actions.isEmpty) None
     else Some(actions.minBy(_.requestTimestamp)(Submission.dateTimeOrdering))

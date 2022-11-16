@@ -45,24 +45,24 @@ class SubmissionsController @Inject() (
 )(implicit ec: ExecutionContext, paginationConfig: PaginationConfig)
     extends FrontendController(mcc) with I18nSupport {
 
-  def amend(rejectedId: String): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
+  private val actions = authenticate andThen verifyEmail
+
+  def amend(rejectedId: String): Action[AnyContent] = actions.async { implicit request =>
     findOrCreateDraftForRejected(rejectedId, Redirect(SummaryController.displayPage))
   }
 
-  def amendErrors(rejectedId: String, redirectUrl: String, pattern: String, message: String): Action[AnyContent] =
-    (authenticate andThen verifyEmail).async { implicit request =>
-      val flashData = FieldNamePointer.getFieldName(pattern) match {
-        case Some(name) if message.nonEmpty => Map(FlashKeys.fieldName -> name, FlashKeys.errorMessage -> message)
-        case Some(name)                     => Map(FlashKeys.fieldName -> name)
-        case None if message.nonEmpty       => Map(FlashKeys.errorMessage -> message)
-        case _                              => Map.empty[String, String]
-      }
-
-      findOrCreateDraftForRejected(rejectedId, setErrorFixMode(Redirect(redirectUrl).flashing(Flash(flashData))))
+  def amendErrors(rejectedId: String, redirectUrl: String, pattern: String, message: String): Action[AnyContent] = actions.async { implicit request =>
+    val flashData = FieldNamePointer.getFieldName(pattern) match {
+      case Some(name) if message.nonEmpty => Map(FlashKeys.fieldName -> name, FlashKeys.errorMessage -> message)
+      case Some(name)                     => Map(FlashKeys.fieldName -> name)
+      case None if message.nonEmpty       => Map(FlashKeys.errorMessage -> message)
+      case _                              => Map.empty[String, String]
     }
 
-  def displayListOfSubmissions(submissionsPages: SubmissionsPages = SubmissionsPages()): Action[AnyContent] =
-    (authenticate andThen verifyEmail).async { implicit request =>
+    findOrCreateDraftForRejected(rejectedId, setErrorFixMode(Redirect(redirectUrl).flashing(Flash(flashData))))
+  }
+
+  def displayListOfSubmissions(submissionsPages: SubmissionsPages = SubmissionsPages()): Action[AnyContent] = actions.async { implicit request =>
       for {
         submissions <- customsDeclareExportsConnector.fetchSubmissions
         submissionsInDescOrder = submissions.sorted(Submission.newestEarlierOrdering)
@@ -70,7 +70,7 @@ class SubmissionsController @Inject() (
         .removingFromSession(declarationId, errorFixModeSessionKey)
     }
 
-  def viewDeclaration(id: String): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
+  def viewDeclaration(id: String): Action[AnyContent] = actions.async { implicit request =>
     customsDeclareExportsConnector.findDeclaration(id).flatMap {
       case Some(declaration) =>
         customsDeclareExportsConnector.findSubmission(id).map { maybeSubmission =>

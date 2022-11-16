@@ -15,8 +15,7 @@
  *@
 
 @import config.featureFlags.SecureMessagingConfig
-
-@import java.time.ZoneId
+@import controllers.routes.SubmissionsController
 @import forms.Choice
 @import forms.Choice.AllowedChoiceValues.Submissions
 @import models.declaration.notifications.Notification
@@ -34,9 +33,7 @@
     govukLayout: gdsMainTemplate,
     pageTitle: pageTitle,
     govukTabs: GovukTabs,
-    govukTable: GovukTable,
     paragraphBody: paragraphBody,
-    link: link,
     linkButton: linkButton,
     navigationBanner: navigationBanner,
     secureMessagingConfig: SecureMessagingConfig,
@@ -66,7 +63,6 @@
     navigationBanner = navBanner,
     showDeclarationSummaryLink = false
 ) {
-
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-full">
 
@@ -81,7 +77,7 @@
                             tabTable(
                                 id = "submitted",
                                 submissionsPagesElements.otherSubmissions,
-                                page => controllers.routes.SubmissionsController.displayListOfSubmissions(
+                                page => SubmissionsController.displayListOfSubmissions(
                                     submissionsPages.changeOtherPageNumber(page)
                                 ).withFragment("other-submissions")
                             )
@@ -92,7 +88,7 @@
                             tabTable(
                                 id = "action",
                                 submissionsPagesElements.actionSubmissions,
-                                page => controllers.routes.SubmissionsController.displayListOfSubmissions(
+                                page => SubmissionsController.displayListOfSubmissions(
                                     submissionsPages.changeActionPageNumber(page)
                                 ).withFragment("action-submissions")
                             )
@@ -103,7 +99,7 @@
                             tabTable(
                                 id = "rejected",
                                 submissionsPagesElements.rejectedSubmissions,
-                                page => controllers.routes.SubmissionsController.displayListOfSubmissions(
+                                page => SubmissionsController.displayListOfSubmissions(
                                     submissionsPages.changeRejectedPageNumber(page)
                                 ).withFragment("rejected-submissions")
                             )
@@ -114,7 +110,7 @@
                             tabTable(
                                 id = "cancelled",
                                 submissionsPagesElements.cancelledSubmissions,
-                                page => controllers.routes.SubmissionsController.displayListOfSubmissions(
+                                page => SubmissionsController.displayListOfSubmissions(
                                     submissionsPages.changeCancelledPageNumber(page)
                                 ).withFragment("cancelled-submissions")
                             )

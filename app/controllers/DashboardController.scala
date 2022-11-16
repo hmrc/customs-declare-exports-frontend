@@ -1,0 +1,55 @@
+/*
+ * Copyright 2022 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package controllers
+
+import config.PaginationConfig
+import connectors.CustomsDeclareExportsConnector
+import controllers.actions.{AuthAction, VerifiedEmailAction}
+import models.PageOfSubmissions
+import play.api.i18n.I18nSupport
+import play.api.mvc._
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
+import views.dashboard.DashboardHelper.{Limit, Total}
+import views.html.dashboard.dashboard
+
+import javax.inject.Inject
+import scala.concurrent.ExecutionContext
+
+class DashboardController @Inject()(
+  authenticate: AuthAction,
+  verifyEmail: VerifiedEmailAction,
+  customsDeclareExportsConnector: CustomsDeclareExportsConnector,
+  paginationConfig: PaginationConfig,
+  mcc: MessagesControllerComponents,
+  dashboard: dashboard,
+)(implicit ec: ExecutionContext)
+    extends FrontendController(mcc) with I18nSupport {
+
+  val displayPage: Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
+    customsDeclareExportsConnector
+      .fetchSubmissions(queryString)
+      .map(pageOfSubmissions => Ok(dashboard(ensureTotalSubmissions(pageOfSubmissions))))
+  }
+
+  private def ensureTotalSubmissions(pageOfSubmissions: PageOfSubmissions)(implicit request: Request[_]): PageOfSubmissions =
+    if (pageOfSubmissions.totalSubmissionsInGroup > 0) pageOfSubmissions
+    else pageOfSubmissions.copy(totalSubmissionsInGroup = request.getQueryString(Total).map(_.toInt).getOrElse(1))
+
+  private def queryString(implicit request: Request[_]) =
+    if (request.getQueryString(Limit).isEmpty) s"${request.target.queryString}&$Limit=${paginationConfig.itemsPerPage}"
+    else request.target.queryString
+}

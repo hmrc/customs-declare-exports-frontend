@@ -21,14 +21,7 @@
 @import models.declaration.submissions.RequestType.SubmissionRequest
 @import views.helpers.{EnhancedStatusHelper, ViewDates}
 
-@this(
-    govukLayout: gdsMainTemplate,
-    govukWarningText: GovukWarningText,
-    govukTable: GovukTable,
-    paragraphBody: paragraphBody,
-    link: link,
-    linkButton: linkButton
-)
+@this(govukTable: GovukTable, link: link)
 
 @(id: String, tabSubmissions: Paginated[Submission], onPageChange: Int => Call)(implicit request: Request[_], messages: Messages)
 

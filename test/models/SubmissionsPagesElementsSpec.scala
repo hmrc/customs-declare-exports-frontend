@@ -31,7 +31,7 @@ class SubmissionsPagesElementsSpec extends UnitWithMocksSpec with BeforeAndAfter
     super.beforeEach()
 
     reset(paginationConfig)
-    when(paginationConfig.itemsPerPage).thenReturn(Page.DEFAULT_MAX_SIZE)
+    when(paginationConfig.itemsPerPage).thenReturn(Page.MAX_DOCUMENT_PER_PAGE)
   }
 
   "SubmissionsPagesElements on apply" should {

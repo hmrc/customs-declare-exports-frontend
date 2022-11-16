@@ -1,0 +1,88 @@
+@*
+ * Copyright 2022 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import config.featureFlags.SecureMessagingConfig
+@import controllers.routes.{ChoiceController, DashboardController}
+@import forms.Choice
+@import forms.Choice.AllowedChoiceValues.Submissions
+@import models.PageOfSubmissions
+@import models.declaration.submissions.EnhancedStatusGroup._
+@import play.twirl.api.HtmlFormat
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.dashboard.DashboardHelper.{Group, Page}
+@import views.helpers.{BackButton, EnhancedStatusHelper, Title}
+@import views.helpers.EnhancedStatusHelper.hasQueryNotificationMessageStatus
+@import views.html.components.gds.{gdsMainTemplate, linkButton, navigationBanner, pageTitle, paragraphBody}
+
+@this(
+    govukLayout: gdsMainTemplate,
+    govukTabs: GovukTabs,
+    linkButton: linkButton,
+    navigationBanner: navigationBanner,
+    pageTitle: pageTitle,
+    paragraph: paragraphBody,
+    table: table,
+    secureMessagingConfig: SecureMessagingConfig
+)
+
+@(pageOfSubmissions: PageOfSubmissions)(implicit request: Request[_], messages: Messages)
+
+@navBanner = {
+    @if(secureMessagingConfig.isSecureMessagingEnabled) {
+        @navigationBanner(withLinkToSubmissions = false)
+    }
+}
+
+
+@baseHref = @{ s"${DashboardController.displayPage}?${Group}=" }
+
+@tab(statusGroupOfItem: EnhancedStatusGroup) = @{
+  val html =
+    if (statusGroupOfItem != pageOfSubmissions.statusGroup) HtmlFormat.empty
+    else table(label = statusGroupOfItem.toString, pageOfSubmissions, s"${baseHref}${statusGroupOfItem}")
+
+  TabItem(
+    id = Some(s"${statusGroupOfItem}-submissions"),
+    label = messages(s"submissions.${statusGroupOfItem}.tab.title"),
+    panel = TabPanel(HtmlContent(html))
+  )
+}
+
+@statusGroup = @{ pageOfSubmissions.statusGroup.toString }
+
+@govukLayout(
+    title = Title("submissions.title"),
+    backButton = Some(BackButton(messages("site.backToSelectionPage"), ChoiceController.displayPage(Some(Choice(Submissions))))),
+    useCustomContentWidth = true,
+    navigationBanner = navBanner,
+    showDeclarationSummaryLink = false
+) {
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+
+            @pageTitle(messages("submissions.title"))
+
+            @paragraph(message = messages("submissions.hint.no.action.needed"), classes = "govuk-body govuk-warning-text")
+
+            @govukTabs(Tabs(items = List(tab(SubmittedStatuses), tab(ActionRequiredStatuses), tab(RejectedStatuses), tab(CancelledStatuses))))
+
+            @linkButton("supplementary.startNewDec", ChoiceController.displayPage())
+        </div>
+    </div>
+
+    <span id="statusGroups" data-status-group="@statusGroup" data-href="@baseHref"></span>
+    <script src="@routes.Assets.versioned("javascripts/dashboard.js")"></script>
+}

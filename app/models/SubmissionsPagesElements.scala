@@ -17,7 +17,7 @@
 package models
 
 import config.PaginationConfig
-import models.declaration.submissions.EnhancedStatus.EnhancedStatus
+import models.declaration.submissions.EnhancedStatus.{EnhancedStatus, actionRequiredStatuses, cancelledStatuses, otherStatuses, rejectedStatuses}
 import models.declaration.submissions.{EnhancedStatus, Submission}
 
 case class SubmissionsPagesElements(
@@ -33,22 +33,14 @@ object SubmissionsPagesElements {
     implicit paginationConfig: PaginationConfig
   ): SubmissionsPagesElements =
     SubmissionsPagesElements(
-      otherSubmissions = paginateSubmissions(
-        excludeSubmissions(submissions, EnhancedStatus.rejectedStatuses ++ EnhancedStatus.cancelledStatuses ++ EnhancedStatus.actionRequiredStatuses),
-        submissionsPages.otherPageNumber
-      ),
-      actionSubmissions =
-        paginateSubmissions(filterSubmissions(submissions, EnhancedStatus.actionRequiredStatuses), submissionsPages.actionPageNumber),
-      rejectedSubmissions = paginateSubmissions(filterSubmissions(submissions, EnhancedStatus.rejectedStatuses), submissionsPages.rejectedPageNumber),
-      cancelledSubmissions =
-        paginateSubmissions(filterSubmissions(submissions, EnhancedStatus.cancelledStatuses), submissionsPages.cancelledPageNumber)
+      otherSubmissions = paginateSubmissions(filterSubmissions(submissions, otherStatuses), submissionsPages.actionPageNumber),
+      actionSubmissions = paginateSubmissions(filterSubmissions(submissions, actionRequiredStatuses), submissionsPages.actionPageNumber),
+      rejectedSubmissions = paginateSubmissions(filterSubmissions(submissions, rejectedStatuses), submissionsPages.rejectedPageNumber),
+      cancelledSubmissions = paginateSubmissions(filterSubmissions(submissions, cancelledStatuses), submissionsPages.cancelledPageNumber)
     )
 
   private def filterSubmissions(submissions: Seq[Submission], enhancedStatuses: Set[EnhancedStatus]): Seq[Submission] =
     submissions.filter(_.latestEnhancedStatus.exists(_ in enhancedStatuses))
-
-  private def excludeSubmissions(submissions: Seq[Submission], enhancedStatuses: Set[EnhancedStatus]): Seq[Submission] =
-    submissions.filter(!_.latestEnhancedStatus.exists(_ in enhancedStatuses))
 
   private def paginateSubmissions(submissions: Seq[Submission], pageNumber: Int)(
     implicit paginationConfig: PaginationConfig

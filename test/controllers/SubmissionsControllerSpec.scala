@@ -74,7 +74,7 @@ class SubmissionsControllerSpec extends ControllerWithoutFormSpec with BeforeAnd
     authorizedUser()
     when(submittedDeclarationPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
     when(submissionsPage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
-    when(paginationConfig.itemsPerPage).thenReturn(Page.DEFAULT_MAX_SIZE)
+    when(paginationConfig.itemsPerPage).thenReturn(Page.MAX_DOCUMENT_PER_PAGE)
   }
 
   override protected def afterEach(): Unit =

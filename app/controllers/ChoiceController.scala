@@ -68,7 +68,7 @@ class ChoiceController @Inject() (
             case Movements   => Redirect(Call("GET", externalServicesConfig.customsMovementsFrontendUrl))
             case ContinueDec => Redirect(routes.SavedDeclarationsController.displayDeclarations())
             case CancelDec   => Redirect(routes.CancelDeclarationController.displayPage())
-            case Submissions => Redirect(routes.SubmissionsController.displayListOfSubmissions())
+            case Submissions => Redirect(Call("GET", s"${routes.DashboardController.displayPage}?page=1"))
             case Inbox       => Redirect(routes.SecureMessagingController.displayInbox)
           }).removingFromSession(declarationId, errorFixModeSessionKey)
       )

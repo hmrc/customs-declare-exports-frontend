@@ -45,3 +45,16 @@ object EnhancedStatus extends Enumeration {
 
   lazy val uploadFilesStatuses = Set(ADDITIONAL_DOCUMENTS_REQUIRED, UNDERGOING_PHYSICAL_CHECK)
 }
+
+object EnhancedStatusGroup extends Enumeration {
+  type EnhancedStatusGroup = Value
+  implicit val format: Format[EnhancedStatusGroup.Value] = EnumJson.format(EnhancedStatusGroup)
+
+  val ActionRequiredStatuses = Value("action")
+  val CancelledStatuses = Value("cancelled")
+  val RejectedStatuses = Value("rejected")
+  val SubmittedStatuses = Value("submitted")
+
+  // Order of the list's elements follows the Dashboard tabs' order
+  lazy val statusGroups = List(SubmittedStatuses, ActionRequiredStatuses, RejectedStatuses, CancelledStatuses)
+}
