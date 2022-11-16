@@ -14,27 +14,30 @@
  * limitations under the License.
  */
 
-package controllers.pdf
+package controllers
 
 import controllers.actions.AuthAction
-import org.apache.xmlgraphics.util.MimeConstants
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.ead.EADService
+import services.ead.{BarcodeService, EADService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
+import views.html.ead
 
-import java.time.LocalDate
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class EADController @Inject() (authenticate: AuthAction, mcc: MessagesControllerComponents, eadService: EADService)(implicit ec: ExecutionContext)
+class EADController @Inject() (
+  authenticate: AuthAction,
+  mcc: MessagesControllerComponents,
+  eadService: EADService,
+  barcodeService: BarcodeService,
+  ead_page: ead
+)(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
-  def generatePdf(mrn: String): Action[AnyContent] = authenticate.async { implicit request =>
-    val fileName = s"EAD-${mrn}-${LocalDate.now}.pdf"
-
-    eadService.generatePdf(mrn).map { pdf =>
-      Ok(pdf).as(MimeConstants.MIME_PDF).withHeaders(CONTENT_DISPOSITION -> s"attachment; filename=$fileName")
+  def generateDocument(mrn: String): Action[AnyContent] = authenticate.async { implicit request =>
+    eadService.generateStatus(mrn) map { status =>
+      Ok(ead_page(mrn, status, barcodeService.base64Image(mrn)))
     }
   }
 }

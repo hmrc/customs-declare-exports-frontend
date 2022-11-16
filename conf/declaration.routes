@@ -515,5 +515,3 @@ GET         /confirmation                        controllers.declaration.Confirm
 # Others
 
 GET         /draft-saved                         controllers.declaration.DraftDeclarationController.displayPage
-
-GET         /ead/:mrn                            controllers.pdf.EADController.generatePdf(mrn)

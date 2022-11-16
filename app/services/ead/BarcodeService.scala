@@ -30,7 +30,7 @@ import org.krysalis.barcode4j.tools.UnitConv
 class BarcodeService @Inject() (code128Bean: Code128Bean) {
   private val dpi = 200
 
-  def base64Image(mrn: String) = {
+  def base64Image(mrn: String): String = {
     code128Bean.setModuleWidth(UnitConv.in2mm(1.0f / dpi))
     code128Bean.setMsgPosition(HumanReadablePlacement.HRP_NONE)
     code128Bean.doQuietZone(false)

@@ -66,13 +66,13 @@
     }
 }
 
-@pdfForEadLink = {
+@eadLink = {
     @mrnIfEadStatus(submission, eadConfig).map { mrn =>
         <p>
             @link(
                 id = Some("generate-ead"),
                 text = messages("submissions.generateEAD"),
-                call = controllers.pdf.routes.EADController.generatePdf(mrn)
+                call = controllers.routes.EADController.generateDocument(mrn)
             )
         </p>
     }
@@ -249,7 +249,7 @@
 
         <div class="govuk-list">
             @uploadingDocumentsLink
-            @pdfForEadLink
+            @eadLink
             @viewDeclarationLink
             @copyDeclarationLink
             @cancelDeclarationLink

@@ -1,0 +1,157 @@
+@*
+ * Copyright 2022 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import models.dis.MrnStatus
+@import models.requests.ExportsSessionKeys
+@import views.ead.DeclarationType
+@import views.helpers.{ViewDates, Title, BackButton}
+@import views.html.components.gds._
+
+@this(govukLayout: gdsMainTemplate)
+
+@(mrn: String, mrnStatus: MrnStatus, base64Image: String)(implicit messages: Messages, request: Request[_])
+
+@govukLayout(
+  title = Title("ead.template.title"),
+   backButton = request.session.get(ExportsSessionKeys.submissionId).map{ id =>
+     BackButton(messages("site.back"), routes.DeclarationDetailsController.displayPage(id))
+   },
+  useCustomContentWidth = true
+) {
+
+ <div class="govuk-grid-row ead-row">
+
+  <div class="govuk-grid-column-full ead-heading">
+
+    <h1 class="ead-header">@messages("ead.template.title")</h1>
+
+    <div>
+     <p class="govuk-body-l govuk-!-margin-bottom-6 ead-label">@messages("ead.template.printable")</p>
+    </div>
+    <div class="gem-c-print-link govuk-!-display-none-print govuk-!-margin-top-3 govuk-!-margin-bottom-3">
+     <button onclick="window.print()" class="govuk-link govuk-body-s gem-c-print-link__button">@messages("site.print")</button>
+    </div>
+   </div>
+
+  <div class="govuk-grid-column-one-half">
+   <!-- Declarant details -->
+   <div class="govuk-summary-list__row">
+    <h3 class="govuk-!-margin-top-1 ead-body">@messages("ead.template.eori"):</h3>
+    <p class="lead govuk-!-margin-bottom-3 ead-body">@mrnStatus.eori</p>
+   </div>
+
+   <!-- Declaration type -->
+   <div class="govuk-summary-list__row">
+    <h3 class="govuk-!-margin-top-1 ead-body">@messages("ead.template.declarationType"):</h3>
+    <p class="lead ead-body">@DeclarationType.translate(mrnStatus.declarationType)</p>
+   </div>
+  </div>
+
+  <div class="govuk-grid-column-one-half coleadimage">
+   <!-- Declaration type -->
+   <img src="data:image/png;base64,@base64Image" class="ead-img">
+  </div>
+
+ </div>
+ <div class="govuk-grid-row ead-row">
+
+  <div class="govuk-grid-column-one-half">
+   <!-- DUCR -->
+   <div class="govuk-summary-list__row">
+    <h3 class="ead-heading">@messages("ead.template.ucr"): @mrnStatus.ucr</h3>
+   </div>
+
+   <!-- Total Package Quantity -->
+   <div class="govuk-summary-list__row">
+    <p class="lead ead-quantity-font"><b>@messages("ead.template.totalPackageQuantity"):</b> @mrnStatus.totalPackageQuantity</p>
+   </div>
+
+   <!-- Good Items Quantity -->
+   <div class="govuk-summary-list__row">
+    <p class="lead ead-quantity-font"><b>@messages("ead.template.goodsItemQuantity"):</b> @mrnStatus.goodsItemQuantity</p>
+   </div>
+
+  </div>
+
+  <div class="govuk-grid-column-one-half">
+   <!-- MRN -->
+   <div class="ead-right-col">
+    <h3 class="ead-heading">@messages("ead.template.mrn"): @mrn</h3>
+   </div>
+
+   <!-- Date and time goods released: -->
+   <div class="ead-right-col margin-bottom-15">
+    <h3 class="govuk-!-margin-top-1 ead-body">@messages("ead.template.releasedDateTime"):</h3>
+    <p class="lead ead-body">@mrnStatus.releasedDateTime.map(ViewDates.formatDateAtTime).getOrElse("")</p>
+   </div>
+
+   <!-- Date and time goods accepted: -->
+   <div class="ead-right-col margin-bottom-15">
+    <h3 class="govuk-!-margin-top-1 ead-body">@messages("ead.template.acceptanceDateTime"):</h3>
+    <p class="lead ead-body">@mrnStatus.acceptanceDateTime.map(ViewDates.formatDateAtTime).getOrElse("")</p>
+   </div>
+
+   <!-- Date and time declaration received: -->
+   <div class="ead-right-col margin-bottom-15">
+    <h3 class="govuk-!-margin-top-1 ead-body">@messages("ead.template.receivedDateTime"):</h3>
+    <p class="lead ead-body">@ViewDates.formatDateAtTime(mrnStatus.receivedDateTime)</p>
+   </div>
+  </div>
+
+  <div class="govuk-grid-column-full">
+  </div>
+ </div>
+
+ <div class="govuk-grid-row eadborder-row ead-row">
+  <div class="govuk-grid-column-full govuk-!-margin-bottom-5 ead-border">
+   <!-- Previous Documents: -->
+   <div>
+    <h3 class="margin-bottom-7 margin-top-0 ead-body">@messages("ead.template.previousDocuments"):</h3>
+   </div>
+   <div>
+    @for(document <-  mrnStatus.previousDocuments) {
+     <p class="lead ead-body">@document.typeCode - @document.id</p>
+    }
+   </div>
+  </div>
+
+
+ </div>
+ <div class="govuk-grid-row ead-row">
+  <div class="govuk-grid-column-two-thirds-ead">
+   <!-- DUCR -->
+   <div class="govuk-summary-list__row">
+    <p class="ead-body"><b>@messages("ead.template.createdDateTime"):</b> @ViewDates.formatDateAtTime(mrnStatus.createdDateTime)</p>
+   </div>
+  </div>
+  <div class="govuk-grid-column-one-third-ead">
+   <!-- DUCR -->
+   <div class="ead-right-col">
+    <p class="ead-body"><b>@messages("ead.template.versionId"):</b> @mrnStatus.versionId</p>
+   </div>
+  </div>
+ </div>
+
+ <div class="govuk-grid-row ead-row">
+  <div class="govuk-grid-column-full">
+   <!-- Print repeater: -->
+   <div class="gem-c-print-link govuk-!-display-none-print govuk-!-margin-top-3 govuk-!-margin-bottom-9">
+    <button onclick="window.print()" class="govuk-link govuk-body-s gem-c-print-link__button">@messages("site.print")</button>
+   </div>
+  </div>
+ </div>
+
+}

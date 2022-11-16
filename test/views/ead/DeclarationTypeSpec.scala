@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package views.pdf
+package views.ead
 
 import views.declaration.spec.UnitViewSpec
 
@@ -22,7 +22,7 @@ class DeclarationTypeSpec extends UnitViewSpec {
 
   val messagesValidated = messages(request)
 
-  private def messageKey(decType: String) = s"pdf.template.declarationType.$decType"
+  private def messageKey(decType: String) = s"ead.template.declarationType.$decType"
 
   "DeclarationType" should {
 
@@ -34,7 +34,7 @@ class DeclarationTypeSpec extends UnitViewSpec {
       DeclarationType.values.map(_.toString).foreach(decType => messagesValidated(messageKey(decType)))
     }
 
-    "return input value for un-known type" in {
+    "return input value for unknown type" in {
       DeclarationType.translate("ABC") mustBe "ABC"
     }
 
