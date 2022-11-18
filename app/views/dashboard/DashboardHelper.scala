@@ -16,18 +16,21 @@
 
 package views.dashboard
 
+import controllers.routes.DashboardController
 import models.PageOfSubmissions
+import play.api.mvc.Call
 
 import java.time.{ZoneId, ZonedDateTime}
 
 object DashboardHelper {
+
+  val toDashboard = Call("GET", s"${DashboardController.displayPage}?page=1")
 
   val DatetimeForNextPage = "datetimeForNextPage"
   val DatetimeForPreviousPage = "datetimeForPreviousPage"
   val Group = "group"
   val Limit = "limit"
   val Page = "page"
-  val Total = "total"
 
   def hrefForLastPage(itemsPerPage: Int, totalPagesInGroup: Int, pageOfSubmissions: PageOfSubmissions, baseHref: String): String = {
     val limit = pageOfSubmissions.totalSubmissionsInGroup - (totalPagesInGroup - 1) * itemsPerPage

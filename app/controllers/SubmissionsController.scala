@@ -16,21 +16,18 @@
 
 package controllers
 
-import config.PaginationConfig
 import connectors.CustomsDeclareExportsConnector
 import controllers.actions.{AuthAction, VerifiedEmailAction}
 import controllers.declaration.routes._
 import controllers.helpers.ErrorFixModeHelper.setErrorFixMode
-import models._
-import models.declaration.submissions.Submission
-import models.requests.ExportsSessionKeys.{declarationId, errorFixModeSessionKey}
+import models.requests.ExportsSessionKeys.declarationId
 import models.responses.FlashKeys
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.model.FieldNamePointer
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
+import views.dashboard.DashboardHelper.toDashboard
 import views.html.declaration.summary.submitted_declaration_page
-import views.html.submissions
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -40,9 +37,8 @@ class SubmissionsController @Inject() (
   verifyEmail: VerifiedEmailAction,
   customsDeclareExportsConnector: CustomsDeclareExportsConnector,
   mcc: MessagesControllerComponents,
-  submissionsPage: submissions,
   submittedDeclarationPage: submitted_declaration_page
-)(implicit ec: ExecutionContext, paginationConfig: PaginationConfig)
+)(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
   private val actions = authenticate andThen verifyEmail
@@ -62,14 +58,6 @@ class SubmissionsController @Inject() (
     findOrCreateDraftForRejected(rejectedId, setErrorFixMode(Redirect(redirectUrl).flashing(Flash(flashData))))
   }
 
-  def displayListOfSubmissions(submissionsPages: SubmissionsPages = SubmissionsPages()): Action[AnyContent] = actions.async { implicit request =>
-      for {
-        submissions <- customsDeclareExportsConnector.fetchSubmissions
-        submissionsInDescOrder = submissions.sorted(Submission.newestEarlierOrdering)
-      } yield Ok(submissionsPage(SubmissionsPagesElements(submissionsInDescOrder, submissionsPages)))
-        .removingFromSession(declarationId, errorFixModeSessionKey)
-    }
-
   def viewDeclaration(id: String): Action[AnyContent] = actions.async { implicit request =>
     customsDeclareExportsConnector.findDeclaration(id).flatMap {
       case Some(declaration) =>
@@ -77,7 +65,7 @@ class SubmissionsController @Inject() (
           Ok(submittedDeclarationPage(maybeSubmission, declaration))
         }
 
-      case None => Future.successful(Redirect(routes.SubmissionsController.displayListOfSubmissions()))
+      case None => Future.successful(Redirect(toDashboard))
     }
   }
 

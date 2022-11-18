@@ -29,6 +29,7 @@ import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
+import views.dashboard.DashboardHelper.toDashboard
 import views.html.choice_page
 
 import javax.inject.Inject
@@ -68,7 +69,7 @@ class ChoiceController @Inject() (
             case Movements   => Redirect(Call("GET", externalServicesConfig.customsMovementsFrontendUrl))
             case ContinueDec => Redirect(routes.SavedDeclarationsController.displayDeclarations())
             case CancelDec   => Redirect(routes.CancelDeclarationController.displayPage())
-            case Submissions => Redirect(Call("GET", s"${routes.DashboardController.displayPage}?page=1"))
+            case Dashboard   => Redirect(toDashboard)
             case Inbox       => Redirect(routes.SecureMessagingController.displayInbox)
           }).removingFromSession(declarationId, errorFixModeSessionKey)
       )

@@ -29,10 +29,11 @@ GET         /conversation/:client/:conversationId/result   controllers.SecureMes
 
 GET         /submissions/:id/rejected-notifications        controllers.RejectedNotificationsController.displayPage(id: String)
 
-# Submissions
+# Dashboard
 
 GET         /dashboard                                     controllers.DashboardController.displayPage
-GET         /submissions                                   controllers.SubmissionsController.displayListOfSubmissions(page: models.SubmissionsPages ?= models.SubmissionsPages())
+
+# Submissions
 
 GET         /submissions/:id/information                   controllers.DeclarationDetailsController.displayPage(id: String)
 

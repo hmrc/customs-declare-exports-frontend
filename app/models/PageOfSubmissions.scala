@@ -16,11 +16,11 @@
 
 package models
 
-import models.declaration.submissions.EnhancedStatusGroup.EnhancedStatusGroup
+import models.declaration.submissions.StatusGroup.StatusGroup
 import models.declaration.submissions.Submission
 import play.api.libs.json.Json
 
-case class PageOfSubmissions(statusGroup: EnhancedStatusGroup, totalSubmissionsInGroup: Int, submissions: Seq[Submission])
+case class PageOfSubmissions(statusGroup: StatusGroup, totalSubmissionsInGroup: Int, submissions: Seq[Submission])
 
 object PageOfSubmissions {
   implicit val format = Json.format[PageOfSubmissions]

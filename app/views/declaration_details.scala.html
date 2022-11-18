@@ -21,6 +21,7 @@
 @import models.requests.VerifiedEmailRequest
 @import play.api.mvc.Call
 @import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.dashboard.DashboardHelper.toDashboard
 @import views.helpers.DeclarationDetailsLinks._
 @import views.helpers.{BackButton, TimelineEvents, Title, ViewDates}
 @import views.html.components.gds._
@@ -208,7 +209,7 @@
 
 @govukLayout(
     title = Title("submissions.declarationDetails.title"),
-    backButton = Some(BackButton(messages("site.backToDeclarations"), routes.SubmissionsController.displayListOfSubmissions())),
+    backButton = Some(BackButton(messages("site.backToDeclarations"), toDashboard)),
     useCustomContentWidth = true,
     navigationBanner = navBanner,
     showDeclarationSummaryLink = false

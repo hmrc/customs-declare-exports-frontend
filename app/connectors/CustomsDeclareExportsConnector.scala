@@ -119,13 +119,7 @@ class CustomsDeclareExportsConnector @Inject()(
     httpClient.POSTEmpty[Submission](url(s"${appConfig.submissionPath}/$id"))
 
   def fetchSubmissions(queryString: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[PageOfSubmissions] =
-    httpClient.GET[PageOfSubmissions](url(s"${appConfig.submissionsPath}-page?$queryString"))
-
-  def fetchSubmissions(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[Submission]] =
-    httpClient.GET[Seq[Submission]](url(s"${appConfig.submissionsPath}")).map { response =>
-      logger.debug(s"CUSTOMS_DECLARE_EXPORTS fetch submission response is --> ${response.toString}")
-      response
-    }
+    httpClient.GET[PageOfSubmissions](url(s"${appConfig.submissionPagePath}?$queryString"))
 
   def findSubmission(uuid: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[Submission]] =
     httpClient

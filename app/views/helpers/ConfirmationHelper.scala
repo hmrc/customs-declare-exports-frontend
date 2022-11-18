@@ -17,7 +17,7 @@
 package views.helpers
 
 import config.AppConfig
-import controllers.routes.{DeclarationDetailsController, FileUploadController, SubmissionsController}
+import controllers.routes.{DeclarationDetailsController, FileUploadController}
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.from
 import models.declaration.submissions.EnhancedStatus._
@@ -29,6 +29,7 @@ import uk.gov.hmrc.govukfrontend.views.html.components.{GovukPanel, GovukWarning
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.panel.Panel
 import uk.gov.hmrc.govukfrontend.views.viewmodels.warningtext.WarningText
+import views.dashboard.DashboardHelper.toDashboard
 import views.helpers.ViewDates.formatTimeDate
 import views.html.components.exit_survey
 import views.html.components.gds._
@@ -93,7 +94,7 @@ class ConfirmationHelper @Inject() (
         s"declaration.confirmation.other.body.1",
         confirmation.submission.flatMap(_.ducr).fold("")(ducr => s" ${messages("declaration.confirmation.body.1.ducr", toBold(ducr))}"),
         confirmation.submission.map(_.lrn).fold("")(lrn => s" ${messages("declaration.confirmation.body.1.lrn", toBold(lrn))}"),
-        link(messages("declaration.confirmation.other.body.1.link"), SubmissionsController.displayListOfSubmissions())
+        link(messages("declaration.confirmation.other.body.1.link"), toDashboard)
       )
     )
     val body2 = paragraph(messages("declaration.confirmation.other.body.2"))

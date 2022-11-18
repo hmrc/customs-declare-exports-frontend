@@ -19,11 +19,10 @@ package controllers
 import config.PaginationConfig
 import connectors.CustomsDeclareExportsConnector
 import controllers.actions.{AuthAction, VerifiedEmailAction}
-import models.PageOfSubmissions
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import views.dashboard.DashboardHelper.{Limit, Total}
+import views.dashboard.DashboardHelper.Limit
 import views.html.dashboard.dashboard
 
 import javax.inject.Inject
@@ -42,12 +41,8 @@ class DashboardController @Inject()(
   val displayPage: Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
     customsDeclareExportsConnector
       .fetchSubmissions(queryString)
-      .map(pageOfSubmissions => Ok(dashboard(ensureTotalSubmissions(pageOfSubmissions))))
+      .map(pageOfSubmissions => Ok(dashboard(pageOfSubmissions)))
   }
-
-  private def ensureTotalSubmissions(pageOfSubmissions: PageOfSubmissions)(implicit request: Request[_]): PageOfSubmissions =
-    if (pageOfSubmissions.totalSubmissionsInGroup > 0) pageOfSubmissions
-    else pageOfSubmissions.copy(totalSubmissionsInGroup = request.getQueryString(Total).map(_.toInt).getOrElse(1))
 
   private def queryString(implicit request: Request[_]) =
     if (request.getQueryString(Limit).isEmpty) s"${request.target.queryString}&$Limit=${paginationConfig.itemsPerPage}"

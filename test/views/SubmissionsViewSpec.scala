@@ -20,7 +20,7 @@ import base.OverridableInjector
 import config.featureFlags.SecureMessagingConfig
 import controllers.routes
 import forms.Choice
-import forms.Choice.AllowedChoiceValues.Submissions
+import forms.Choice.AllowedChoiceValues.Dashboard
 import models.declaration.submissions.EnhancedStatus._
 import models.declaration.submissions.RequestType.{CancellationRequest, SubmissionRequest}
 import models.declaration.submissions.{Action, Submission}
@@ -386,7 +386,7 @@ class SubmissionsViewSpec extends UnitViewSpec with ExportsTestHelper {
       val backButton = createView().getElementById("back-link")
 
       backButton must containMessage("site.back")
-      backButton must haveHref(routes.ChoiceController.displayPage(Some(Choice(Submissions))))
+      backButton must haveHref(routes.ChoiceController.displayPage(Some(Choice(Dashboard))))
     }
 
     "display 'Start a new declaration' link on page" in {

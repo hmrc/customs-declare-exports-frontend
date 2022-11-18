@@ -17,9 +17,9 @@
 @import config.featureFlags.SecureMessagingConfig
 @import controllers.routes.{ChoiceController, DashboardController}
 @import forms.Choice
-@import forms.Choice.AllowedChoiceValues.Submissions
+@import forms.Choice.AllowedChoiceValues.Dashboard
 @import models.PageOfSubmissions
-@import models.declaration.submissions.EnhancedStatusGroup._
+@import models.declaration.submissions.StatusGroup._
 @import play.twirl.api.HtmlFormat
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.dashboard.DashboardHelper.{Group, Page}
@@ -49,14 +49,14 @@
 
 @baseHref = @{ s"${DashboardController.displayPage}?${Group}=" }
 
-@tab(statusGroupOfItem: EnhancedStatusGroup) = @{
+@tab(statusGroup: StatusGroup) = @{
   val html =
-    if (statusGroupOfItem != pageOfSubmissions.statusGroup) HtmlFormat.empty
-    else table(label = statusGroupOfItem.toString, pageOfSubmissions, s"${baseHref}${statusGroupOfItem}")
+    if (statusGroup != pageOfSubmissions.statusGroup) HtmlFormat.empty
+    else table(label = statusGroup.toString, pageOfSubmissions, s"${baseHref}${statusGroup}")
 
   TabItem(
-    id = Some(s"${statusGroupOfItem}-submissions"),
-    label = messages(s"submissions.${statusGroupOfItem}.tab.title"),
+    id = Some(s"${statusGroup}-submissions"),
+    label = messages(s"submissions.${statusGroup}.tab.title"),
     panel = TabPanel(HtmlContent(html))
   )
 }
@@ -65,7 +65,7 @@
 
 @govukLayout(
     title = Title("submissions.title"),
-    backButton = Some(BackButton(messages("site.backToSelectionPage"), ChoiceController.displayPage(Some(Choice(Submissions))))),
+    backButton = Some(BackButton(messages("site.backToSelectionPage"), ChoiceController.displayPage(Some(Choice(Dashboard))))),
     useCustomContentWidth = true,
     navigationBanner = navBanner,
     showDeclarationSummaryLink = false

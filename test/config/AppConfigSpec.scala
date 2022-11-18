@@ -236,7 +236,7 @@ class AppConfigSpec extends UnitWithMocksSpec {
 
       choices must contain(Choice.AllowedChoiceValues.CreateDec)
       choices must contain(Choice.AllowedChoiceValues.CancelDec)
-      choices must contain(Choice.AllowedChoiceValues.Submissions)
+      choices must contain(Choice.AllowedChoiceValues.Dashboard)
     }
 
     "load the Declaration options when list-of-available-declarations is defined" in {
@@ -322,7 +322,7 @@ class AppConfigSpec extends UnitWithMocksSpec {
 
     "have single Choice options when list-of-available-journeys is not defined" in {
       missingAppConfig.availableJourneys().size must be(1)
-      missingAppConfig.availableJourneys() must contain(Choice.AllowedChoiceValues.Submissions)
+      missingAppConfig.availableJourneys() must contain(Choice.AllowedChoiceValues.Dashboard)
     }
 
     "have single Declaration type options when list-of-available-declarations is not defined" in {

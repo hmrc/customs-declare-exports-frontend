@@ -153,9 +153,9 @@ class AppConfig @Inject() (
     throw new IllegalStateException("Missing configuration for Customs Declaration Exports single submission URI")
   )
 
-  lazy val submissionsPath = servicesConfig.getConfString(
-    "customs-declare-exports.submissions",
-    throw new IllegalStateException("Missing configuration for Customs Declaration Exports submissions URI")
+  lazy val submissionPagePath = servicesConfig.getConfString(
+    "customs-declare-exports.submission-page",
+    throw new IllegalStateException("Missing configuration for Customs Declaration Exports submission-page URI")
   )
 
   lazy val lrnAlreadyUsedPath = servicesConfig.getConfString(
@@ -203,7 +203,7 @@ class AppConfig @Inject() (
     runModeConfiguration
       .getOptional[String]("list-of-available-journeys")
       .map(_.split(","))
-      .getOrElse(Array(Choice.AllowedChoiceValues.Submissions))
+      .getOrElse(Array(Choice.AllowedChoiceValues.Dashboard))
       .toSeq
 
   def availableDeclarations(): Seq[String] =

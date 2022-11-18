@@ -16,22 +16,23 @@
 
 package controllers.declaration
 
-import scala.concurrent.{ExecutionContext, Future}
 import connectors.CustomsDeclareExportsConnector
 import controllers.actions.{AuthAction, VerifiedEmailAction}
 import controllers.declaration.ConfirmationController._
-import controllers.routes.{RejectedNotificationsController, SubmissionsController}
+import controllers.routes.RejectedNotificationsController
 import handlers.ErrorHandler
 import models.declaration.submissions.EnhancedStatus
-
-import javax.inject.Inject
 import models.requests.{AuthenticatedRequest, ExportsSessionKeys}
 import play.api.Logging
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
+import views.dashboard.DashboardHelper.toDashboard
 import views.helpers.Confirmation
 import views.html.declaration.confirmation.{confirmation_page, holding_page}
+
+import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
 class ConfirmationController @Inject() (
   authenticate: AuthAction,
@@ -75,7 +76,7 @@ class ConfirmationController @Inject() (
   val displayConfirmationPage: Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
     extractSubmissionId.fold {
       logger.warn("Session on /confirmation does not include the submission's uuid!?")
-      Future.successful(Redirect(SubmissionsController.displayListOfSubmissions()))
+      Future.successful(Redirect(toDashboard))
     } { submissionId =>
       customsDeclareExportsConnector.findSubmission(submissionId).flatMap {
         case Some(submission) if submission.latestEnhancedStatus == Some(EnhancedStatus.ERRORS) =>

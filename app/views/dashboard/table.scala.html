@@ -19,7 +19,7 @@
 @import models.declaration.submissions.RequestType.SubmissionRequest
 @import models.declaration.submissions.Submission
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import views.dashboard.DashboardHelper.{Page, Total}
+@import views.dashboard.DashboardHelper.Page
 @import views.helpers.{EnhancedStatusHelper, ViewDates}
 @import views.html.components.gds._
 
@@ -52,11 +52,10 @@
 }
 
 @paginationComponent = @{
-  val hrefWithTotalSubmissionsInGroup = s"${baseHref}&${Total}=${pageOfSubmissions.totalSubmissionsInGroup}"
   val totalPagesInGroup = Math.ceil(pageOfSubmissions.totalSubmissionsInGroup.toDouble / paginationConfig.itemsPerPage).toInt
   val currentPage = request.getQueryString(Page).fold(totalPagesInGroup)(_.toInt)
 
-  pagination(pageOfSubmissions, hrefWithTotalSubmissionsInGroup, totalPagesInGroup, currentPage)
+  pagination(pageOfSubmissions, baseHref, totalPagesInGroup, currentPage)
 }
 
 @if(pageOfSubmissions.submissions.nonEmpty) {

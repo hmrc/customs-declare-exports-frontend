@@ -23,6 +23,7 @@ import models.requests.ExportsSessionKeys
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
+import views.dashboard.DashboardHelper.toDashboard
 import views.html.declaration_details
 
 import javax.inject.Inject
@@ -40,7 +41,7 @@ class DeclarationDetailsController @Inject() (
   def displayPage(submissionId: String): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
     customsDeclareExportsConnector.findSubmission(submissionId).map {
       case Some(submission) => Ok(declarationDetailsPage(submission)).addingToSession(sessionKeys(submission): _*)
-      case _                => Redirect(routes.SubmissionsController.displayListOfSubmissions())
+      case _                => Redirect(toDashboard)
     }
   }
 
