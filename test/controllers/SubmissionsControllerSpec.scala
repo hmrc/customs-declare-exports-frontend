@@ -32,8 +32,8 @@ import org.scalatest.BeforeAndAfterEach
 import org.scalatest.matchers.{BeMatcher, MatchResult}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
+import views.dashboard.DashboardHelper.toDashboard
 import views.html.declaration.summary.submitted_declaration_page
-import views.html.submissions
 
 import java.time.{Instant, ZoneOffset, ZonedDateTime}
 import java.util.UUID
@@ -55,7 +55,6 @@ class SubmissionsControllerSpec extends ControllerWithoutFormSpec with BeforeAnd
     actions = Seq(action)
   )
 
-  private val submissionsPage = mock[submissions]
   private val submittedDeclarationPage = mock[submitted_declaration_page]
   private val paginationConfig = mock[PaginationConfig]
 
@@ -64,42 +63,19 @@ class SubmissionsControllerSpec extends ControllerWithoutFormSpec with BeforeAnd
     mockVerifiedEmailAction,
     mockCustomsDeclareExportsConnector,
     stubMessagesControllerComponents(),
-    submissionsPage,
     submittedDeclarationPage
-  )(ec, paginationConfig)
+  )(ec)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
 
     authorizedUser()
     when(submittedDeclarationPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
-    when(submissionsPage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
-    when(paginationConfig.itemsPerPage).thenReturn(Page.MAX_DOCUMENT_PER_PAGE)
+    when(paginationConfig.itemsPerPage).thenReturn(Page.DEFAULT_MAX_DOCUMENT_PER_PAGE)
   }
 
   override protected def afterEach(): Unit =
-    reset(submittedDeclarationPage, mockCustomsDeclareExportsConnector, submissionsPage, paginationConfig)
-
-  def submissionsPagesElementsCaptor: SubmissionsPagesElements = {
-    val captor = ArgumentCaptor.forClass(classOf[SubmissionsPagesElements])
-    verify(submissionsPage).apply(captor.capture())(any(), any())
-    captor.getValue
-  }
-
-  "Display Submissions" should {
-    "return 200 (OK)" when {
-      "display list of submissions method is invoked" in {
-        when(mockCustomsDeclareExportsConnector.fetchSubmissions(any(), any())).thenReturn(Future.successful(Seq(submission)))
-
-        val result = controller.displayListOfSubmissions()(getRequest())
-
-        val expectedOtherSubmissionsPassed = Paginated(List(submission), Page(), 1)
-
-        status(result) mustBe OK
-        submissionsPagesElementsCaptor.otherSubmissions mustBe expectedOtherSubmissionsPassed
-      }
-    }
-  }
+    reset(submittedDeclarationPage, mockCustomsDeclareExportsConnector, paginationConfig)
 
   "SubmissionsController on viewDeclaration" should {
 
@@ -140,7 +116,7 @@ class SubmissionsControllerSpec extends ControllerWithoutFormSpec with BeforeAnd
         val result = controller.viewDeclaration("some-id")(getRequest())
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result).get mustBe controllers.routes.SubmissionsController.displayListOfSubmissions().url
+        redirectLocation(result).get mustBe toDashboard.url
       }
     }
   }

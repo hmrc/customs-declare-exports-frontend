@@ -19,8 +19,7 @@ package base
 import connectors.CustomsDeclareExportsConnector
 import models._
 import models.declaration.notifications.Notification
-import models.declaration.submissions.RequestType.SubmissionRequest
-import models.declaration.submissions.{Action, Submission}
+import models.declaration.submissions.Submission
 import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito.when
 import org.mockito.invocation.InvocationOnMock
@@ -28,8 +27,6 @@ import org.mockito.stubbing.{Answer, OngoingStubbing}
 import org.scalatestplus.mockito.MockitoSugar
 import uk.gov.hmrc.http.HeaderCarrier
 
-import java.time.{ZoneOffset, ZonedDateTime}
-import java.util.UUID
 import scala.concurrent.{ExecutionContext, Future}
 
 // TODO This mock should extends BeforeAndAfterEach trait and has methods beforeEach and afterEach
@@ -47,30 +44,6 @@ trait MockConnectors extends MockitoSugar {
   def customsDeclaration400Response(): Unit =
     when(mockCustomsDeclareExportsConnector.createDeclaration(any())(any[HeaderCarrier], any[ExecutionContext]))
       .thenReturn(Future.failed(new IllegalArgumentException("Bad Request")))
-
-  def listOfSubmissions(): OngoingStubbing[Future[Seq[Submission]]] =
-    when(mockCustomsDeclareExportsConnector.fetchSubmissions(any(), any()))
-      .thenReturn(
-        Future.successful(
-          Seq(
-            Submission(
-              uuid = UUID.randomUUID().toString,
-              eori = "eori",
-              lrn = "lrn",
-              mrn = None,
-              ducr = None,
-              actions = Seq(
-                Action(
-                  requestType = SubmissionRequest,
-                  id = "conversationID",
-                  requestTimestamp = ZonedDateTime.now(ZoneOffset.UTC),
-                  notifications = None
-                )
-              )
-            )
-          )
-        )
-      )
 
   def listOfDraftDeclarations(): OngoingStubbing[Future[Paginated[ExportsDeclaration]]] =
     when(mockCustomsDeclareExportsConnector.findSavedDeclarations(any[Page])(any(), any()))

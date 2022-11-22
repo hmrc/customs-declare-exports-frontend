@@ -21,10 +21,11 @@ import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.WireMock._
 import forms.Lrn
 import models.CancellationStatus.CancellationStatusWrites
+import models.{CancelDeclaration, CancellationRequestSent, Page, PageOfSubmissions, Paginated}
 import models.declaration.notifications.Notification
 import models.declaration.submissions.RequestType.SubmissionRequest
+import models.declaration.submissions.StatusGroup.ActionRequiredStatuses
 import models.declaration.submissions.{Action, Submission, SubmissionStatus}
-import models.{CancelDeclaration, CancellationRequestSent, Page, Paginated}
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.time.{Millis, Seconds, Span}
 import play.api.http.Status
@@ -35,7 +36,7 @@ import services.cache.ExportsDeclarationBuilder
 import java.time.{ZoneOffset, ZonedDateTime}
 import java.util.UUID
 
-class CustomsDeclareExportsConnectorIntegrationISpec extends ConnectorISpec with ExportsDeclarationBuilder with ScalaFutures {
+class CustomsDeclareExportsConnectorISpec extends ConnectorISpec with ExportsDeclarationBuilder with ScalaFutures {
 
   private val id = "id"
   private val existingDeclaration = aDeclaration(withId(id))
@@ -151,6 +152,27 @@ class CustomsDeclareExportsConnectorIntegrationISpec extends ConnectorISpec with
 
       response mustBe ((): Unit)
       verify(deleteRequestedFor(urlEqualTo(s"/declarations/id")))
+    }
+  }
+
+  "Fetch Submission Page" should {
+    val queryString = "group=action&page=1"
+    val pageOfSubmissions = PageOfSubmissions(ActionRequiredStatuses, 1, List(submission))
+
+    "return Ok" in {
+      stubForExports(
+        get(s"/paginated-submissions?$queryString")
+          .willReturn(
+            aResponse()
+              .withStatus(Status.OK)
+              .withBody(json(pageOfSubmissions))
+          )
+      )
+
+      val response = await(connector.fetchSubmissionPage(queryString))
+
+      response mustBe pageOfSubmissions
+      verify(getRequestedFor(urlEqualTo(s"/paginated-submissions?$queryString")))
     }
   }
 

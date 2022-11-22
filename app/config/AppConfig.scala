@@ -153,9 +153,9 @@ class AppConfig @Inject() (
     throw new IllegalStateException("Missing configuration for Customs Declaration Exports single submission URI")
   )
 
-  lazy val submissionPagePath = servicesConfig.getConfString(
-    "customs-declare-exports.submission-page",
-    throw new IllegalStateException("Missing configuration for Customs Declaration Exports submission-page URI")
+  lazy val pageOfSubmissionsPath = servicesConfig.getConfString(
+    "customs-declare-exports.page-of-submissions",
+    throw new IllegalStateException("Missing configuration for Customs Declaration Exports page of submissions URI")
   )
 
   lazy val lrnAlreadyUsedPath = servicesConfig.getConfString(

@@ -23,7 +23,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import views.html.saved_declarations
+import views.html.declarations.saved_declarations
 
 class SavedDeclarationsControllerSpec extends ControllerWithoutFormSpec {
 
@@ -50,9 +50,7 @@ class SavedDeclarationsControllerSpec extends ControllerWithoutFormSpec {
   "Submissions controller" should {
 
     "return 200 (OK)" when {
-
       "display declarations method is invoked" in {
-
         listOfDraftDeclarations()
 
         val result = controller.displayDeclarations()(getRequest())
@@ -62,8 +60,8 @@ class SavedDeclarationsControllerSpec extends ControllerWithoutFormSpec {
     }
 
     "return 303 (SEE_OTHER)" when {
-      "continue declaration found" in {
 
+      "continue declaration found" in {
         getDeclaration("123")
 
         val result = controller.continueDeclaration("123")(getRequest())
@@ -73,7 +71,6 @@ class SavedDeclarationsControllerSpec extends ControllerWithoutFormSpec {
       }
 
       "continue declaration not found" in {
-
         declarationNotFound
         val result = controller.continueDeclaration("123")(getRequest())
 

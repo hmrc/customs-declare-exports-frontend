@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package views
+package views.declarations
 
 import base.{ExportsTestData, Injector}
 import controllers.routes
@@ -25,7 +25,7 @@ import org.jsoup.nodes.Element
 import play.twirl.api.Html
 import play.twirl.api.HtmlFormat.Appendable
 import views.declaration.spec.UnitViewSpec
-import views.html.saved_declarations
+import views.html.declarations.saved_declarations
 import views.tags.ViewTest
 
 import java.time.{LocalDateTime, ZoneOffset}

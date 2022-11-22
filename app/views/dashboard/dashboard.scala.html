@@ -46,17 +46,16 @@
     }
 }
 
-
 @baseHref = @{ s"${DashboardController.displayPage}?${Group}=" }
 
 @tab(statusGroup: StatusGroup) = @{
   val html =
     if (statusGroup != pageOfSubmissions.statusGroup) HtmlFormat.empty
-    else table(label = statusGroup.toString, pageOfSubmissions, s"${baseHref}${statusGroup}")
+    else table(statusGroup, pageOfSubmissions, s"${baseHref}${statusGroup}")
 
   TabItem(
     id = Some(s"${statusGroup}-submissions"),
-    label = messages(s"submissions.${statusGroup}.tab.title"),
+    label = messages(s"dashboard.${statusGroup}.tab.title"),
     panel = TabPanel(HtmlContent(html))
   )
 }
@@ -64,7 +63,7 @@
 @statusGroup = @{ pageOfSubmissions.statusGroup.toString }
 
 @govukLayout(
-    title = Title("submissions.title"),
+    title = Title("dashboard.title"),
     backButton = Some(BackButton(messages("site.backToSelectionPage"), ChoiceController.displayPage(Some(Choice(Dashboard))))),
     useCustomContentWidth = true,
     navigationBanner = navBanner,
@@ -73,13 +72,13 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-full">
 
-            @pageTitle(messages("submissions.title"))
+            @pageTitle(messages("dashboard.title"))
 
-            @paragraph(message = messages("submissions.hint.no.action.needed"), classes = "govuk-body govuk-warning-text")
+            @paragraph(message = messages("dashboard.hint.no.action.needed"), classes = "govuk-body govuk-warning-text")
 
             @govukTabs(Tabs(items = List(tab(SubmittedStatuses), tab(ActionRequiredStatuses), tab(RejectedStatuses), tab(CancelledStatuses))))
 
-            @linkButton("supplementary.startNewDec", ChoiceController.displayPage())
+            @linkButton("dashboard.start.new.declaration", ChoiceController.displayPage())
         </div>
     </div>
 

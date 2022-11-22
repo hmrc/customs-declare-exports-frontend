@@ -34,9 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}
 
 @Singleton
-class CustomsDeclareExportsConnector @Inject()(
-  appConfig: AppConfig, httpClient: HttpClient, metrics: Metrics
-) extends Logging {
+class CustomsDeclareExportsConnector @Inject() (appConfig: AppConfig, httpClient: HttpClient, metrics: Metrics) extends Logging {
 
   private def url(path: String): String =
     s"${appConfig.customsDeclareExportsBaseUrl}$path"
@@ -118,8 +116,8 @@ class CustomsDeclareExportsConnector @Inject()(
   def submitDeclaration(id: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Submission] =
     httpClient.POSTEmpty[Submission](url(s"${appConfig.submissionPath}/$id"))
 
-  def fetchSubmissions(queryString: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[PageOfSubmissions] =
-    httpClient.GET[PageOfSubmissions](url(s"${appConfig.submissionPagePath}?$queryString"))
+  def fetchSubmissionPage(queryString: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[PageOfSubmissions] =
+    httpClient.GET[PageOfSubmissions](url(s"${appConfig.pageOfSubmissionsPath}?$queryString"))
 
   def findSubmission(uuid: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[Submission]] =
     httpClient

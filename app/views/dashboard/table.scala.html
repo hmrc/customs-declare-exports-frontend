@@ -17,6 +17,7 @@
 @import config.PaginationConfig
 @import models.PageOfSubmissions
 @import models.declaration.submissions.RequestType.SubmissionRequest
+@import models.declaration.submissions.StatusGroup.StatusGroup
 @import models.declaration.submissions.Submission
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.dashboard.DashboardHelper.Page
@@ -27,14 +28,14 @@
 
 @this(govukTable: GovukTable, link: link, pagination: pagination, paginationConfig: PaginationConfig)
 
-@(label: String, pageOfSubmissions: PageOfSubmissions, baseHref: String)(implicit request: Request[_], messages: Messages)
+@(statusGroup: StatusGroup, pageOfSubmissions: PageOfSubmissions, baseHref: String)(implicit request: Request[_], messages: Messages)
 
 @mrnLink(submission: Submission) = @{
   HtmlContent(
       link(
-          text = submission.mrn.getOrElse(messages("submissions.declarationDetails.mrn.pending")),
+          text = submission.mrn.getOrElse(messages("dashboard.mrn.pending")),
           call = routes.DeclarationDetailsController.displayPage(submission.uuid),
-          textHidden = Some(messages("submissions.hidden.text", submission.ducr.getOrElse("")))
+          textHidden = Some(messages("dashboard.hidden.text", submission.ducr.getOrElse("")))
       )
   )
 }
@@ -42,14 +43,15 @@
 @timestamp(submission: Submission) = @{
   submission.actions
     .find(_.requestType == SubmissionRequest)
-    .map(_.requestTimestamp.withZoneSameInstant(ZoneId.of("Europe/London")))
-    .map(ViewDates.formatDateAtTime)
+    .map(action => ViewDates.formatDateAtTime(action.requestTimestamp))
     .getOrElse("")
 }
 
 @headCells = @{
-  Some(List("mrn","ducr","lrn","dateAndTime","status").map(key => HeadCell(content = Text(messages(s"submissions.$key.header")))))
+  Some(List("mrn","ducr","lrn","dateAndTime","status").map(key => HeadCell(content = Text(messages(s"dashboard.header.$key")))))
 }
+
+@attr(row: Int, rowId: String) = @{ Map("id" -> s"submission-tab-$statusGroup-row$row-$rowId") }
 
 @paginationComponent = @{
   val totalPagesInGroup = Math.ceil(pageOfSubmissions.totalSubmissionsInGroup.toDouble / paginationConfig.itemsPerPage).toInt
@@ -59,17 +61,17 @@
 }
 
 @if(pageOfSubmissions.submissions.nonEmpty) {
-    <p id="@{s"${label}-content-hint"}" class="govuk-body">@Html(messages(s"submissions.${label}.content.hint", <br/>))</p>
+    <p id="@{s"$statusGroup-content-hint"}" class="govuk-body">@Html(messages(s"dashboard.$statusGroup.content.hint", <br/>))</p>
 
     @govukTable(Table(
         head = headCells,
-        rows = pageOfSubmissions.submissions.map { submission =>
+        rows = pageOfSubmissions.submissions.zipWithIndex.map { case (submission, row) =>
             Seq(
-                TableRow(content = mrnLink(submission), classes = "govuk-table__cell_break-all"),
-                TableRow(content = Text(submission.ducr.getOrElse("")), classes = "govuk-table__cell_break-all"),
-                TableRow(content = Text(submission.lrn), classes = "govuk-table__cell_break-all"),
-                TableRow(content = Text(timestamp(submission))),
-                TableRow(content = Text(EnhancedStatusHelper.asText(submission)))
+              TableRow(attributes = attr(row, "mrn"),  content = mrnLink(submission), classes = "govuk-table__cell_break-all"),
+              TableRow(attributes = attr(row, "ducr"), content = Text(submission.ducr.getOrElse("")), classes = "govuk-table__cell_break-all"),
+              TableRow(attributes = attr(row, "lrn"),  content = Text(submission.lrn), classes = "govuk-table__cell_break-all"),
+              TableRow(attributes = attr(row, "dateAndTime"), content = Text(timestamp(submission))),
+              TableRow(attributes = attr(row, "status"), content = Text(EnhancedStatusHelper.asText(submission)))
             )
         }
     ))
@@ -80,7 +82,7 @@
         @paginationComponent
     } else {
         <div class="ceds-pagination__summary">
-            <p class="govuk-body">@{messages("submissions.empty.tab")}</p>
+            <p class="govuk-body">@{messages("dashboard.empty.tab")}</p>
         </div>
     }
 </div>

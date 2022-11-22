@@ -17,7 +17,7 @@
 @import config.PaginationConfig
 @import views.components.gds.PaginationUtil
 @import views.components.gds.PaginationUtil.PaginationItem._
-@import views.dashboard.DashboardHelper.{hrefForLastPage, hrefForLosePage, hrefForNextPage, hrefForPreviousPage}
+@import views.dashboard.DashboardHelper.{hrefForLastPage, hrefForLoosePage, hrefForNextPage, hrefForPreviousPage}
 
 @this(page_summary: page_summary, paginationConfig: PaginationConfig)
 
@@ -29,7 +29,7 @@
 )(implicit messages: Messages)
 
 @hrefForGoToPage(pageNumber: Int) = @{
-  if (pageNumber != totalPagesInGroup) hrefForLosePage(pageNumber, currentPage, pageOfSubmissions, baseHref)
+  if (pageNumber != totalPagesInGroup) hrefForLoosePage(pageNumber, currentPage, pageOfSubmissions, baseHref)
   else hrefForLastPage(paginationConfig.itemsPerPage, totalPagesInGroup, pageOfSubmissions, baseHref)
 }
 

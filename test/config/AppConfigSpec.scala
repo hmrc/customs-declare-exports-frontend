@@ -47,7 +47,7 @@ class AppConfigSpec extends UnitWithMocksSpec {
         |microservice.services.customs-declare-exports.cancel-declaration=/cancellations
         |microservice.services.customs-declare-exports.notifications=/notifications
         |microservice.services.customs-declare-exports.submission=/submission
-        |microservice.services.customs-declare-exports.submissions=/submissions
+        |microservice.services.customs-declare-exports.page-of-submissions=/paginated-submissions
         |microservice.services.customs-declare-exports.fetch-ead=/ead
         |microservice.services.customs-declare-exports-movements.host=localhost
         |microservice.services.customs-declare-exports-movements.port=9876
@@ -291,8 +291,8 @@ class AppConfigSpec extends UnitWithMocksSpec {
       validAppConfig.submissionPath must be("/submission")
     }
 
-    "have Submissions URL" in {
-      validAppConfig.submissionsPath must be("/submissions")
+    "have URL to fetch a page of Submissions" in {
+      validAppConfig.pageOfSubmissionsPath must be("/paginated-submissions")
     }
 
     "have selfBaseUrl" in {
@@ -368,9 +368,9 @@ class AppConfigSpec extends UnitWithMocksSpec {
         )
       }
 
-      "Submissions uri is missing" in {
-        intercept[Exception](missingAppConfig.submissionsPath).getMessage must be(
-          "Missing configuration for Customs Declaration Exports submissions URI"
+      "fetch page of Submissions uri is missing" in {
+        intercept[Exception](missingAppConfig.pageOfSubmissionsPath).getMessage must be(
+          "Missing configuration for Customs Declaration Exports page of submissions URI"
         )
       }
 

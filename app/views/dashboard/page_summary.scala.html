@@ -26,7 +26,7 @@
 @rangePart = {@firstDocumentOnPage – @lastDocumentOnPage}
 
 @singularOrPlural = @{
-    messages(s"""submissions.pagination.${if (totalSubmissionsInGroup == 1) "singular" else "plural"}""")
+    messages(s"""dashboard.pagination.${if (totalSubmissionsInGroup == 1) "singular" else "plural"}""")
 }
 
 <div class="ceds-pagination__summary">
@@ -41,6 +41,6 @@
     }
 
   } else {
-    <p class="govuk-body">@{messages("site.pagination.showing.no")} @{messages("submissions.pagination.plural")}</p>
+    <p class="govuk-body">@{messages("site.pagination.showing.no")} @{messages("dashboard.pagination.plural")}</p>
   }
 </div>

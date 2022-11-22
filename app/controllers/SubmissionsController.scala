@@ -41,24 +41,25 @@ class SubmissionsController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
-  private val actions = authenticate andThen verifyEmail
+  private val authAndEmailActions = authenticate andThen verifyEmail
 
-  def amend(rejectedId: String): Action[AnyContent] = actions.async { implicit request =>
+  def amend(rejectedId: String): Action[AnyContent] = authAndEmailActions.async { implicit request =>
     findOrCreateDraftForRejected(rejectedId, Redirect(SummaryController.displayPage))
   }
 
-  def amendErrors(rejectedId: String, redirectUrl: String, pattern: String, message: String): Action[AnyContent] = actions.async { implicit request =>
-    val flashData = FieldNamePointer.getFieldName(pattern) match {
-      case Some(name) if message.nonEmpty => Map(FlashKeys.fieldName -> name, FlashKeys.errorMessage -> message)
-      case Some(name)                     => Map(FlashKeys.fieldName -> name)
-      case None if message.nonEmpty       => Map(FlashKeys.errorMessage -> message)
-      case _                              => Map.empty[String, String]
+  def amendErrors(rejectedId: String, redirectUrl: String, pattern: String, message: String): Action[AnyContent] =
+    authAndEmailActions.async { implicit request =>
+      val flashData = FieldNamePointer.getFieldName(pattern) match {
+        case Some(name) if message.nonEmpty => Map(FlashKeys.fieldName -> name, FlashKeys.errorMessage -> message)
+        case Some(name)                     => Map(FlashKeys.fieldName -> name)
+        case None if message.nonEmpty       => Map(FlashKeys.errorMessage -> message)
+        case _                              => Map.empty[String, String]
+      }
+
+      findOrCreateDraftForRejected(rejectedId, setErrorFixMode(Redirect(redirectUrl).flashing(Flash(flashData))))
     }
 
-    findOrCreateDraftForRejected(rejectedId, setErrorFixMode(Redirect(redirectUrl).flashing(Flash(flashData))))
-  }
-
-  def viewDeclaration(id: String): Action[AnyContent] = actions.async { implicit request =>
+  def viewDeclaration(id: String): Action[AnyContent] = authAndEmailActions.async { implicit request =>
     customsDeclareExportsConnector.findDeclaration(id).flatMap {
       case Some(declaration) =>
         customsDeclareExportsConnector.findSubmission(id).map { maybeSubmission =>

@@ -24,14 +24,14 @@
 
 <div id="upload-files-section" class="section">
     @linkButton(
-        messageKey = "submissions.declarationDetails.upload.files.button",
+        messageKey = "declaration.details.upload.files.button",
         call = routes.FileUploadController.startFileUpload(mrn.getOrElse("")),
         classes = if (isPrimary) "govuk-button" else "govuk-button govuk-button--secondary"
     )
 
     @govukDetails(Details(
         id = Some("upload-files-hint"),
-        summary = Text(messages("submissions.declarationDetails.upload.files.title")),
-        content = Text(messages("submissions.declarationDetails.upload.files.hint"))
+        summary = Text(messages("declaration.details.upload.files.title")),
+        content = Text(messages("declaration.details.upload.files.hint"))
     ))
 </div>

@@ -28,19 +28,19 @@ import views.html.dashboard.dashboard
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class DashboardController @Inject()(
+class DashboardController @Inject() (
   authenticate: AuthAction,
   verifyEmail: VerifiedEmailAction,
   customsDeclareExportsConnector: CustomsDeclareExportsConnector,
   paginationConfig: PaginationConfig,
   mcc: MessagesControllerComponents,
-  dashboard: dashboard,
+  dashboard: dashboard
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
   val displayPage: Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
     customsDeclareExportsConnector
-      .fetchSubmissions(queryString)
+      .fetchSubmissionPage(queryString)
       .map(pageOfSubmissions => Ok(dashboard(pageOfSubmissions)))
   }
 

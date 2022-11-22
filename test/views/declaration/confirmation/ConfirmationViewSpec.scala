@@ -17,18 +17,19 @@
 package views.declaration.confirmation
 
 import base.{Injector, MockAuthAction}
-import controllers.routes.{DeclarationDetailsController, FileUploadController, SubmissionsController}
+import controllers.routes.{DeclarationDetailsController, FileUploadController}
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
-import models.declaration.submissions.Submission
 import models.declaration.submissions.EnhancedStatus._
+import models.declaration.submissions.Submission
 import org.jsoup.nodes.Document
 import org.scalatest.GivenWhenThen
+import testdata.SubmissionsTestData._
+import views.dashboard.DashboardHelper.toDashboard
 import views.declaration.spec.UnitViewSpec
 import views.helpers.Confirmation
 import views.helpers.ViewDates.formatTimeDate
 import views.html.declaration.confirmation.confirmation_page
 import views.tags.ViewTest
-import testdata.SubmissionsTestData._
 
 import java.time.{ZoneOffset, ZonedDateTime}
 
@@ -294,7 +295,7 @@ class ConfirmationViewSpec extends UnitViewSpec with GivenWhenThen with Injector
           s" ${messages("declaration.confirmation.body.1.lrn", lrn)}",
           messages("declaration.confirmation.other.body.1.link")
         )
-        paragraph.child(2) must haveHref(SubmissionsController.displayListOfSubmissions().url)
+        paragraph.child(2) must haveHref(toDashboard.url)
       }
 
       "display the expected first body paragraph when DUCR have NOT been defined" in {
@@ -306,7 +307,7 @@ class ConfirmationViewSpec extends UnitViewSpec with GivenWhenThen with Injector
           s" ${messages("declaration.confirmation.body.1.lrn", lrn)}",
           messages("declaration.confirmation.other.body.1.link")
         )
-        paragraph.child(1) must haveHref(SubmissionsController.displayListOfSubmissions().url)
+        paragraph.child(1) must haveHref(toDashboard.url)
       }
 
       "display the expected second body paragraph" in {

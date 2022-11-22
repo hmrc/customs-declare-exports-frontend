@@ -44,6 +44,17 @@ object EnhancedStatus extends Enumeration {
   lazy val eadAcceptableStatuses = values &~ Set(CANCELLED, ERRORS, PENDING, UNKNOWN, WITHDRAWN)
 
   lazy val uploadFilesStatuses = Set(ADDITIONAL_DOCUMENTS_REQUIRED, UNDERGOING_PHYSICAL_CHECK)
+
+  import models.declaration.submissions.StatusGroup._
+
+  def toStatusGroup(submission: Submission): StatusGroup =
+    toStatusGroup(submission.latestEnhancedStatus.getOrElse(PENDING))
+
+  def toStatusGroup(status: EnhancedStatus): StatusGroup =
+    if (actionRequiredStatuses.contains(status)) ActionRequiredStatuses
+    else if (cancelledStatuses.contains(status)) CancelledStatuses
+    else if (rejectedStatuses.contains(status)) RejectedStatuses
+    else SubmittedStatuses
 }
 
 object StatusGroup extends Enumeration {

@@ -37,25 +37,25 @@ object DashboardHelper {
     s"${baseHref}&${Limit}=${limit}"
   }
 
-  def hrefForLosePage(goToPage: Int, currentPage: Int, pageOfSubmissions: PageOfSubmissions, baseHref: String): String = {
+  def hrefForLoosePage(goToPage: Int, currentPage: Int, pageOfSubmissions: PageOfSubmissions, baseHref: String): String =
     if (goToPage - currentPage == 1) hrefForNextPage(goToPage, pageOfSubmissions, baseHref)
     else if (currentPage - goToPage == 1) hrefForPreviousPage(goToPage, pageOfSubmissions, baseHref)
     else s"${baseHref}&${Page}=${goToPage}"
-  }
 
   def hrefForNextPage(nextPage: Int, pageOfSubmissions: PageOfSubmissions, baseHref: String): String = {
     val hrefWithPage = s"${baseHref}&${Page}=${nextPage}"
-    pageOfSubmissions.submissions.lastOption.fold(hrefWithPage) {
-      submission => addDatetime(hrefWithPage, DatetimeForNextPage, submission.enhancedStatusLastUpdated)
+    pageOfSubmissions.submissions.lastOption.fold(hrefWithPage) { submission =>
+      addDatetime(hrefWithPage, DatetimeForNextPage, submission.enhancedStatusLastUpdated)
     }
   }
 
   def hrefForPreviousPage(previousPage: Int, pageOfSubmissions: PageOfSubmissions, baseHref: String): String = {
     val hrefWithPage = s"${baseHref}&${Page}=${previousPage}"
     if (previousPage == 1) hrefWithPage
-    else pageOfSubmissions.submissions.headOption.fold(hrefWithPage) {
-      submission => addDatetime(hrefWithPage, DatetimeForPreviousPage, submission.enhancedStatusLastUpdated)
-    }
+    else
+      pageOfSubmissions.submissions.headOption.fold(hrefWithPage) { submission =>
+        addDatetime(hrefWithPage, DatetimeForPreviousPage, submission.enhancedStatusLastUpdated)
+      }
   }
 
   def addDatetime(href: String, key: String, maybeDatetime: Option[ZonedDateTime]): String =
