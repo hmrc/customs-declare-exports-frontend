@@ -17,7 +17,7 @@
 package controllers.declaration
 
 import base.ControllerSpec
-import controllers.declaration.routes.{ConsignmentReferencesController, DeclarantExporterController}
+import controllers.declaration.routes.{DeclarantExporterController, DucrEntryController}
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.DeclarantEoriConfirmation
 import forms.declaration.DeclarantEoriConfirmation.isEoriKey
@@ -112,7 +112,7 @@ class DeclarantDetailsControllerSpec extends ControllerSpec {
           val result = controller.submitForm()(postRequest(correctForm))
 
           status(result) mustBe SEE_OTHER
-          thePageNavigatedTo mustBe ConsignmentReferencesController.displayPage()
+          thePageNavigatedTo mustBe DucrEntryController.displayPage
         }
       }
 

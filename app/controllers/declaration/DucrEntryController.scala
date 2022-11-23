@@ -33,7 +33,7 @@ import views.html.declaration.consignment_references
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class ConsignmentReferencesController @Inject() (
+class DucrEntryController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
@@ -44,7 +44,7 @@ class ConsignmentReferencesController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
-  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  val displayPage: Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     val frm = form(request.declarationType, request.cacheModel.additionalDeclarationType).withSubmissionErrors()
     request.cacheModel.consignmentReferences match {
       case Some(data) => Ok(consignmentReferencesPage(frm.fill(data)))
@@ -52,7 +52,7 @@ class ConsignmentReferencesController @Inject() (
     }
   }
 
-  def submitConsignmentReferences(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  val submitDucr: Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     form(request.declarationType, request.cacheModel.additionalDeclarationType)
       .bindFromRequest()
       .verifyLrnValidity(lrnValidator)

@@ -17,7 +17,7 @@
 package controllers.declaration
 
 import base.ControllerSpec
-import controllers.declaration.routes.{ConsignmentReferencesController, DeclarantDetailsController}
+import controllers.declaration.routes.{DeclarantDetailsController, DucrEntryController}
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypePage.radioButtonGroupId
@@ -133,7 +133,7 @@ class AdditionalDeclarationTypeControllerSpec extends ControllerSpec {
             status(result) mustBe SEE_OTHER
 
             val expectedPage =
-              if (declarationType == CLEARANCE) ConsignmentReferencesController.displayPage()
+              if (declarationType == CLEARANCE) DucrEntryController.displayPage
               else DeclarantDetailsController.displayPage()
 
             thePageNavigatedTo mustBe expectedPage

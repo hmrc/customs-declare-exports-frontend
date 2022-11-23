@@ -17,7 +17,7 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.declaration.routes.{ConsignmentReferencesController, DeclarantExporterController, NotEligibleController}
+import controllers.declaration.routes.{DeclarantExporterController, DucrEntryController, NotEligibleController}
 import controllers.navigation.Navigator
 import forms.common.Eori
 import forms.common.YesNoAnswer.YesNoAnswers
@@ -72,6 +72,6 @@ class DeclarantDetailsController @Inject() (
 
   private def nextPage(implicit request: JourneyRequest[_]): Call = request.declarationType match {
     case DeclarationType.CLEARANCE => DeclarantExporterController.displayPage
-    case _                         => ConsignmentReferencesController.displayPage
+    case _                         => DucrEntryController.displayPage
   }
 }

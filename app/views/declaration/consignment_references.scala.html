@@ -146,7 +146,7 @@
     title = Title("declaration.consignmentReferences.header", "declaration.section.1", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(ConsignmentReferences)))) {
 
-    @formHelper(action = ConsignmentReferencesController.submitConsignmentReferences(), 'autoComplete -> "off") {
+    @formHelper(action = DucrEntryController.submitDucr, 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
         @sectionHeader(messages("declaration.section.1"))

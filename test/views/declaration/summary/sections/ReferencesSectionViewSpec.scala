@@ -17,7 +17,7 @@
 package views.declaration.summary.sections
 
 import base.Injector
-import controllers.declaration.routes.{AdditionalDeclarationTypeController, ConsignmentReferencesController, LinkDucrToMucrController, MucrController}
+import controllers.declaration.routes.{AdditionalDeclarationTypeController, DucrEntryController, LinkDucrToMucrController, MucrController}
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
 import models.DeclarationStatus.DRAFT
@@ -101,7 +101,7 @@ class ReferencesSectionViewSpec extends UnitViewSpec with ExportsTestHelper with
       row must haveSummaryValue("DUCR")
 
       row must haveSummaryActionsTexts("site.change", "declaration.summary.references.ducr.change")
-      row must haveSummaryActionWithPlaceholder(ConsignmentReferencesController.displayPage)
+      row must haveSummaryActionWithPlaceholder(DucrEntryController.displayPage)
     }
 
     onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, CLEARANCE) { implicit request =>
@@ -113,7 +113,7 @@ class ReferencesSectionViewSpec extends UnitViewSpec with ExportsTestHelper with
         row must haveSummaryValue("LRN")
 
         row must haveSummaryActionsTexts("site.change", "declaration.summary.references.lrn.change")
-        row must haveSummaryActionWithPlaceholder(ConsignmentReferencesController.displayPage)
+        row must haveSummaryActionWithPlaceholder(DucrEntryController.displayPage)
       }
     }
 
@@ -126,7 +126,7 @@ class ReferencesSectionViewSpec extends UnitViewSpec with ExportsTestHelper with
         row must haveSummaryValue("LRN")
 
         row must haveSummaryActionsTexts("site.change", "declaration.summary.references.lrn.change")
-        row must haveSummaryActionWithPlaceholder(ConsignmentReferencesController.displayPage)
+        row must haveSummaryActionWithPlaceholder(DucrEntryController.displayPage)
       }
     }
 

@@ -64,7 +64,7 @@ class Navigator @Inject() (
 
   val common: PartialFunction[DeclarationPage, Call] = {
     case DeclarationChoice             => ChoiceController.displayPage(Some(Choice(AllowedChoiceValues.CreateDec)))
-    case LinkDucrToMucr                => routes.ConsignmentReferencesController.displayPage
+    case LinkDucrToMucr                => routes.DucrEntryController.displayPage
     case Mucr                          => routes.LinkDucrToMucrController.displayPage
     case RepresentativeEntity          => routes.RepresentativeAgentController.displayPage
     case RepresentativeStatus          => routes.RepresentativeEntityController.displayPage
@@ -364,7 +364,7 @@ class Navigator @Inject() (
 
   private def declarantIsExporterPreviousPage(cacheModel: ExportsDeclaration): Call =
     cacheModel.`type` match {
-      case SUPPLEMENTARY => routes.ConsignmentReferencesController.displayPage()
+      case SUPPLEMENTARY => routes.DucrEntryController.displayPage
       case _ =>
         if (cacheModel.mucr.isEmpty) routes.LinkDucrToMucrController.displayPage()
         else routes.MucrController.displayPage()

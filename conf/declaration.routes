@@ -25,9 +25,9 @@ GET         /not-declarant                      controllers.declaration.NotEligi
 
 # Consignment references
 
-GET         /consignment-references              controllers.declaration.ConsignmentReferencesController.displayPage()
+GET         /ducr-entry                         controllers.declaration.DucrEntryController.displayPage
 
-POST        /consignment-references              controllers.declaration.ConsignmentReferencesController.submitConsignmentReferences()
+POST        /ducr-entry                         controllers.declaration.DucrEntryController.submitDucr
 
 # MUCR
 
