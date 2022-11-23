@@ -43,8 +43,6 @@ case class ExportsDeclaration(
   updatedDateTime: Instant,
   `type`: DeclarationType,
   additionalDeclarationType: Option[AdditionalDeclarationType] = None,
-  traderReference: Option[TraderReference] = None,
-  ducrEntry: Option[Ducr] = None,
   consignmentReferences: Option[ConsignmentReferences] = None,
   linkDucrToMucr: Option[YesNoAnswer] = None,
   mucr: Option[Mucr] = None,
