@@ -16,23 +16,29 @@
 
 package forms
 
-import play.api.data.Forms
+import play.api.data.{Form, Forms, Mapping}
 import play.api.data.Forms.text
 import play.api.libs.json.Json
 import utils.validators.forms.FieldValidator._
 
 case class Ducr(ducr: String)
 
-object Ducr {
+object Ducr extends DeclarationPage {
   implicit val format = Json.format[Ducr]
 
   def form2Data(ducr: String): Ducr = new Ducr(ducr.toUpperCase)
 
-  val mapping =
+  def model2Form: Ducr => Option[String] =
+    model => Some(model.ducr)
+
+  val mapping: Mapping[Ducr] =
     Forms.mapping(
       "ducr" ->
         text()
           .verifying("declaration.consignmentReferences.ducr.error.empty", nonEmpty)
           .verifying("declaration.consignmentReferences.ducr.error.invalid", isEmpty or isValidDucr)
     )(form2Data)(Ducr.unapply)
+
+  val form: Form[Ducr] = Form(mapping)
+
 }

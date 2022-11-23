@@ -40,7 +40,7 @@ import forms.declaration.exporter.{ExporterDetails, ExporterEoriNumber}
 import forms.declaration.officeOfExit.OfficeOfExit
 import forms.declaration.procedurecodes.{AdditionalProcedureCode, ProcedureCode}
 import forms.declaration.removals.RemoveItem
-import forms.{Choice, DeclarationPage}
+import forms.{Choice, DeclarationPage, Ducr}
 import models.DeclarationType._
 import models.ExportsDeclaration
 import models.declaration.ExportItem
@@ -113,6 +113,7 @@ class Navigator @Inject() (
 
   val standard: PartialFunction[DeclarationPage, Call] = {
     case DeclarantDetails            => routes.AdditionalDeclarationTypeController.displayPage
+    case Ducr                        => routes.DeclarantDetailsController.displayPage
     case ConsignmentReferences       => routes.DeclarantDetailsController.displayPage
     case ExporterEoriNumber          => routes.DeclarantExporterController.displayPage
     case ExporterDetails             => routes.ExporterEoriNumberController.displayPage
@@ -161,6 +162,7 @@ class Navigator @Inject() (
   }
 
   val clearance: PartialFunction[DeclarationPage, Call] = {
+    case Ducr                         => routes.AdditionalDeclarationTypeController.displayPage
     case ConsignmentReferences        => routes.AdditionalDeclarationTypeController.displayPage
     case ExporterDetails              => routes.ExporterEoriNumberController.displayPage
     case DeclarantDetails             => routes.EntryIntoDeclarantsRecordsController.displayPage
@@ -207,6 +209,7 @@ class Navigator @Inject() (
 
   val supplementary: PartialFunction[DeclarationPage, Call] = {
     case DeclarantDetails            => routes.AdditionalDeclarationTypeController.displayPage
+    case Ducr                        => routes.DeclarantDetailsController.displayPage
     case ConsignmentReferences       => routes.DeclarantDetailsController.displayPage
     case ExporterEoriNumber          => routes.DeclarantExporterController.displayPage
     case ExporterDetails             => routes.ExporterEoriNumberController.displayPage
@@ -252,6 +255,7 @@ class Navigator @Inject() (
 
   val simplified: PartialFunction[DeclarationPage, Call] = {
     case DeclarantDetails            => routes.AdditionalDeclarationTypeController.displayPage
+    case Ducr                        => routes.DeclarantDetailsController.displayPage
     case ConsignmentReferences       => routes.DeclarantDetailsController.displayPage
     case ExporterEoriNumber          => routes.DeclarantExporterController.displayPage
     case ExporterDetails             => routes.ExporterEoriNumberController.displayPage
@@ -298,6 +302,7 @@ class Navigator @Inject() (
 
   val occasional: PartialFunction[DeclarationPage, Call] = {
     case DeclarantDetails            => routes.AdditionalDeclarationTypeController.displayPage
+    case Ducr                        => routes.DeclarantDetailsController.displayPage
     case ConsignmentReferences       => routes.DeclarantDetailsController.displayPage
     case ExporterEoriNumber          => routes.DeclarantExporterController.displayPage
     case ExporterDetails             => routes.ExporterEoriNumberController.displayPage

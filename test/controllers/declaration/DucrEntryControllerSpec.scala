@@ -33,12 +33,12 @@ import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import views.html.declaration.consignment_references
+import views.html.declaration.ducr_entry
 
 class DucrEntryControllerSpec extends ControllerSpec with GivenWhenThen {
 
   private val lrnValidator = mock[LrnValidator]
-  private val consignmentReferencesPage = mock[consignment_references]
+  private val ducrEntryPage = mock[ducr_entry]
 
   val controller = new DucrEntryController(
     mockAuthAction,
@@ -47,7 +47,7 @@ class DucrEntryControllerSpec extends ControllerSpec with GivenWhenThen {
     lrnValidator,
     navigator,
     stubMessagesControllerComponents(),
-    consignmentReferencesPage
+    ducrEntryPage
   )(ec)
 
   override protected def beforeEach(): Unit = {
@@ -55,13 +55,13 @@ class DucrEntryControllerSpec extends ControllerSpec with GivenWhenThen {
 
     authorizedUser()
     when(lrnValidator.hasBeenSubmittedInThePast48Hours(any[Lrn])(any(), any())).thenReturn(Future.successful(false))
-    when(consignmentReferencesPage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(ducrEntryPage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
     super.afterEach()
 
-    reset(lrnValidator, consignmentReferencesPage)
+    reset(lrnValidator, ducrEntryPage)
   }
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
@@ -70,13 +70,13 @@ class DucrEntryControllerSpec extends ControllerSpec with GivenWhenThen {
     theResponseForm
   }
 
-  def theResponseForm: Form[ConsignmentReferences] = {
-    val captor = ArgumentCaptor.forClass(classOf[Form[ConsignmentReferences]])
-    verify(consignmentReferencesPage).apply(captor.capture())(any(), any())
+  def theResponseForm: Form[Ducr] = {
+    val captor = ArgumentCaptor.forClass(classOf[Form[Ducr]])
+    verify(ducrEntryPage).apply(captor.capture())(any(), any())
     captor.getValue
   }
 
-  "ConsignmentReferencesController on displayPage" should {
+  "DucrEntryController on displayPage" should {
 
     onEveryDeclarationJourney() { request =>
       "return 200 (OK)" when {
@@ -105,39 +105,31 @@ class DucrEntryControllerSpec extends ControllerSpec with GivenWhenThen {
 
         "user enters incorrect data" in {
           withNewCaching(request.cacheModel)
-          val incorrectForm = Json.toJson(ConsignmentReferences(Ducr("1234"), Lrn("")))
+          val incorrectForm = Json.toJson(Ducr("1234"))
 
           val result = controller.submitDucr()(postRequest(incorrectForm))
           status(result) must be(BAD_REQUEST)
         }
 
-        "LrnValidator returns false" in {
-          when(lrnValidator.hasBeenSubmittedInThePast48Hours(any[Lrn])(any(), any())).thenReturn(Future.successful(true))
-          withNewCaching(request.cacheModel)
-          val correctForm = Json.toJson(ConsignmentReferences(Ducr(DUCR), LRN))
-
-          val result = controller.submitDucr()(postRequest(correctForm))
-          status(result) must be(BAD_REQUEST)
-        }
       }
 
       "change to uppercase any lowercase letter entered in the DUCR field" in {
         withNewCaching(request.cacheModel)
 
         val ducr = "9gb123456664559-1abc"
-        val correctForm = Json.toJson(ConsignmentReferences(Ducr(ducr), LRN))
+        val correctForm = Json.toJson(Ducr(ducr))
         val result = controller.submitDucr()(postRequest(correctForm))
 
         And("return 303 (SEE_OTHER)")
         await(result) mustBe aRedirectToTheNextPage
 
         val declaration = theCacheModelUpdated
-        declaration.consignmentReferences.head.ducr.ducr mustBe ducr.toUpperCase
+        declaration.ducrEntry.head.ducr mustBe ducr.toUpperCase
       }
     }
 
     onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, CLEARANCE) { request =>
-      val correctForm = Json.toJson(ConsignmentReferences(Ducr(DUCR), LRN))
+      val correctForm = Json.toJson(Ducr(DUCR))
 
       "return 303 (SEE_OTHER) and redirect to 'Link DUCR to MUCR' page" in {
         withNewCaching(request.cacheModel)
@@ -155,7 +147,7 @@ class DucrEntryControllerSpec extends ControllerSpec with GivenWhenThen {
         "for SUPPLEMENTARY_SIMPLIFIED" in {
           val request = journeyRequest(aDeclaration(withType(req.declarationType), withAdditionalDeclarationType(SUPPLEMENTARY_SIMPLIFIED)))
           withNewCaching(request.cacheModel)
-          val correctForm = Json.toJson(ConsignmentReferences(Ducr(DUCR), LRN, Some(MRN)))
+          val correctForm = Json.toJson(Ducr(DUCR))
 
           val result = controller.submitDucr()(postRequest(correctForm))
 
@@ -166,7 +158,7 @@ class DucrEntryControllerSpec extends ControllerSpec with GivenWhenThen {
         "return 303 (SEE_OTHER) and redirect to 'Link DUCR to MUCR' page for SUPPLEMENTARY_EIDR" in {
           val request = journeyRequest(aDeclaration(withType(req.declarationType), withAdditionalDeclarationType(SUPPLEMENTARY_EIDR)))
           withNewCaching(request.cacheModel)
-          val correctForm = Json.toJson(ConsignmentReferences(Ducr(DUCR), LRN, None, Some(eidrDateStamp)))
+          val correctForm = Json.toJson(Ducr(DUCR))
 
           val result = controller.submitDucr()(postRequest(correctForm))
 
