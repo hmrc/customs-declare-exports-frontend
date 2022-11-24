@@ -84,6 +84,10 @@ class DucrEntryViewSpec extends PageWithButtonsSpec with Injector {
       view.getElementById("ducr").attr("value") mustBe ExportsTestData.ducr
     }
 
+    "display inset text for DUCR" in {
+      createView().getElementsByClass("govuk-inset-text").get(0).text mustBe messages("declaration.ducrEntry.ducr.inset.1")
+    }
+
     "display error when DUCR is incorrect" in {
 
       val frm = form.fillAndValidate(Ducr(incorrectDUCR))

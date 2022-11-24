@@ -33,6 +33,7 @@
     sectionHeader: sectionHeader,
     saveButtons: saveButtons,
     tariffExpander: tariffExpander,
+    insetText: exportsInsetText,
     bulletList: bulletList,
     paragraphBody: paragraphBody,
     formHelper: FormWithCSRF,
@@ -56,10 +57,18 @@
         )
     )
 
+    @optionalDucrInsetText
+
 }
 
 @ducrHintSection = @{
     paragraphBody(messages("declaration.ducrEntry.ducr.hint"), "govuk-hint")
+}
+
+@optionalDucrInsetText = @{
+    insetText(content = HtmlContent(HtmlFormat.fill(List(
+        paragraphBody(messages("declaration.ducrEntry.ducr.inset.1"))
+    ))))
 }
 
 @govukLayout(

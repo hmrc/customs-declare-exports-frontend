@@ -16,6 +16,8 @@
 
 package controllers.declaration
 
+import scala.concurrent.Future
+
 import base.ControllerSpec
 import base.ExportsTestData.eidrDateStamp
 import forms.declaration.ConsignmentReferences
@@ -33,9 +35,10 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.declaration.consignment_references
 
-import scala.concurrent.Future
-
 class ConsignmentReferencesControllerSpec extends ControllerSpec with GivenWhenThen {
+
+  private val lrnValidator = mock[LrnValidator]
+  private val consignmentReferencesPage = mock[consignment_references]
 
   val controller = new ConsignmentReferencesController(
     mockAuthAction,
@@ -46,20 +49,6 @@ class ConsignmentReferencesControllerSpec extends ControllerSpec with GivenWhenT
     stubMessagesControllerComponents(),
     consignmentReferencesPage
   )(ec)
-  private val lrnValidator = mock[LrnValidator]
-  private val consignmentReferencesPage = mock[consignment_references]
-
-  override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
-    withNewCaching(aDeclaration(withType(SUPPLEMENTARY)))
-    await(controller.displayPage()(request))
-    theResponseForm
-  }
-
-  def theResponseForm: Form[ConsignmentReferences] = {
-    val captor = ArgumentCaptor.forClass(classOf[Form[ConsignmentReferences]])
-    verify(consignmentReferencesPage).apply(captor.capture())(any(), any())
-    captor.getValue
-  }
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -73,6 +62,18 @@ class ConsignmentReferencesControllerSpec extends ControllerSpec with GivenWhenT
     super.afterEach()
 
     reset(lrnValidator, consignmentReferencesPage)
+  }
+
+  override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
+    withNewCaching(aDeclaration(withType(SUPPLEMENTARY)))
+    await(controller.displayPage()(request))
+    theResponseForm
+  }
+
+  def theResponseForm: Form[ConsignmentReferences] = {
+    val captor = ArgumentCaptor.forClass(classOf[Form[ConsignmentReferences]])
+    verify(consignmentReferencesPage).apply(captor.capture())(any(), any())
+    captor.getValue
   }
 
   "ConsignmentReferencesController on submitConsignmentReferences" should {
