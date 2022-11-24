@@ -21,7 +21,6 @@ import controllers.declaration.routes
 import controllers.declaration.routes.DeclarantDetailsController
 import forms.Ducr
 import forms.Ducr.form
-import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.{SUPPLEMENTARY_EIDR, SUPPLEMENTARY_SIMPLIFIED}
 import models.DeclarationType._
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
@@ -44,15 +43,15 @@ class DucrEntryViewSpec extends PageWithButtonsSpec with Injector {
   "Ducr Entry" should {
 
     "have correct message keys" in {
-      messages must haveTranslationFor("declaration.consignmentReferences.header")
+      messages must haveTranslationFor("declaration.ducrEntry.header")
       messages must haveTranslationFor("declaration.consignmentReferences.ducr.info")
-      messages must haveTranslationFor("declaration.consignmentReferences.ducr.paragraph")
-      messages must haveTranslationFor("declaration.consignmentReferences.ducr.paragraph.bullet1")
-      messages must haveTranslationFor("declaration.consignmentReferences.ducr.paragraph.bullet2")
-      messages must haveTranslationFor("declaration.consignmentReferences.ducr.paragraph.bullet3")
-      messages must haveTranslationFor("declaration.consignmentReferences.ducr.paragraph.bullet4")
-      messages must haveTranslationFor("declaration.consignmentReferences.ducr.paragraph.bullet5")
-      messages must haveTranslationFor("declaration.consignmentReferences.ducr.hint")
+      messages must haveTranslationFor("declaration.ducrEntry.ducr.paragraph")
+      messages must haveTranslationFor("declaration.ducrEntry.ducr.paragraph.bullet1")
+      messages must haveTranslationFor("declaration.ducrEntry.ducr.paragraph.bullet2")
+      messages must haveTranslationFor("declaration.ducrEntry.ducr.paragraph.bullet3")
+      messages must haveTranslationFor("declaration.ducrEntry.ducr.paragraph.bullet4")
+      messages must haveTranslationFor("declaration.ducrEntry.ducr.paragraph.bullet5")
+      messages must haveTranslationFor("declaration.ducrEntry.ducr.hint")
       messages must haveTranslationFor("declaration.consignmentReferences.ducr.inset.1")
       messages must haveTranslationFor("declaration.consignmentReferences.ducr.error.empty")
       messages must haveTranslationFor("declaration.consignmentReferences.ducr.error.invalid")
@@ -66,128 +65,73 @@ class DucrEntryViewSpec extends PageWithButtonsSpec with Injector {
       messages must haveTranslationFor("declaration.consignmentReferences.supplementary.mrn.error.empty")
       messages must haveTranslationFor("declaration.consignmentReferences.supplementary.mrn.error.invalid")
     }
-  }
 
-  "Ducr Entry View" should {
-    onEveryDeclarationJourney() { implicit request =>
-      "display page title" in {
-        createView().getElementById("title").text() mustBe messages("declaration.consignmentReferences.header")
-      }
-
-      "display section header" in {
-        createView().getElementById("section-header").text() must include(messages("declaration.section.1"))
-      }
-
-      "not display 'Exit and return' button" in {
-        createView().getElementsContainingText("site.exit_and_complete_later") mustBe empty
-      }
-
-      "display data in DUCR input" in {
-        val frm = form.fill(Ducr(ExportsTestData.ducr))
-        val view = createView(frm)
-        view.getElementById("ducr_ducr").attr("value") mustBe ExportsTestData.ducr
-      }
-
-      "display error when DUCR is incorrect" in {
-
-        val frm = form.fillAndValidate(Ducr(incorrectDUCR))
-        val view = createView(frm)
-
-        view must haveGovukGlobalErrorSummary
-        view must containErrorElementWithTagAndHref("a", "#ducr_ducr")
-        view must containErrorElementWithMessageKey("declaration.consignmentReferences.ducr.error.invalid")
-
-      }
-
-      checkSaveAndContinueButtonIsDisplayed(createView())
+    "display page title" in {
+      createView().getElementById("title").text() mustBe messages("declaration.ducrEntry.header")
     }
+
+    "display section header" in {
+      createView().getElementById("section-header").text() must include(messages("declaration.section.1"))
+    }
+
+    "not display 'Exit and return' button" in {
+      createView().getElementsContainingText("site.exit_and_complete_later") mustBe empty
+    }
+
+    "display data in DUCR input" in {
+      val frm = form.fill(Ducr(ExportsTestData.ducr))
+      val view = createView(frm)
+      view.getElementById("ducr").attr("value") mustBe ExportsTestData.ducr
+    }
+
+    "display error when DUCR is incorrect" in {
+
+      val frm = form.fillAndValidate(Ducr(incorrectDUCR))
+      val view = createView(frm)
+
+      view must haveGovukGlobalErrorSummary
+      view must containErrorElementWithTagAndHref("a", "#ducr")
+      view must containErrorElementWithMessageKey("declaration.consignmentReferences.ducr.error.invalid")
+
+    }
+
+    checkSaveAndContinueButtonIsDisplayed(createView())
+
+    "display empty input with label for DUCR" in {
+
+      val expectedBodyTextListMessageKeys = Seq(
+        "declaration.ducrEntry.ducr.paragraph.bullet1",
+        "declaration.ducrEntry.ducr.paragraph.bullet2",
+        "declaration.ducrEntry.ducr.paragraph.bullet3",
+        "declaration.ducrEntry.ducr.paragraph.bullet4",
+        "declaration.ducrEntry.ducr.paragraph.bullet5"
+      )
+
+      createView().getElementsByClass("govuk-label").get(0).text mustBe messages("declaration.ducrEntry.ducr.paragraph")
+
+      expectedBodyTextListMessageKeys.foreach { messageKey =>
+        createView().getElementsByClass("govuk-list").get(0) must containMessage(messageKey)
+      }
+
+      createView().getElementById("ducr-hint").text mustBe messages("declaration.ducrEntry.ducr.hint")
+      createView().getElementById("ducr").attr("value") mustBe empty
+    }
+
+    "not display empty input with label for MRN" in {
+      createView().getElementsByAttributeValue("for", "mrn") mustBe empty
+    }
+
   }
 
   "Ducr Entry View" should {
-    onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, CLEARANCE) { implicit request =>
-      val view = createView()
 
-      "display empty input with label for DUCR" in {
-
-        val expectedBodyTextListMessageKeys = Seq(
-          "declaration.consignmentReferences.ducr.paragraph.bullet1",
-          "declaration.consignmentReferences.ducr.paragraph.bullet2",
-          "declaration.consignmentReferences.ducr.paragraph.bullet3",
-          "declaration.consignmentReferences.ducr.paragraph.bullet4",
-          "declaration.consignmentReferences.ducr.paragraph.bullet5"
-        )
-
-        view.getElementsByClass("govuk-body").get(0).text mustBe messages("declaration.consignmentReferences.ducr.paragraph")
-
-        expectedBodyTextListMessageKeys.foreach { messageKey =>
-          view.getElementsByClass("govuk-list").get(0) must containMessage(messageKey)
-        }
-
-        view.getElementById("ducr_ducr-hint").text mustBe messages("declaration.consignmentReferences.ducr.hint")
-        view.getElementById("ducr_ducr").attr("value") mustBe empty
-      }
-
-      "not display empty input with label for MRN" in {
-        view.getElementsByAttributeValue("for", "mrn") mustBe empty
-      }
-
-      "display inset text for DUCR" in {
-        val expectedInsetText =
-          Seq(messages("declaration.consignmentReferences.ducr.inset.1"), messages("declaration.consignmentReferences.ducr.inset.2")).mkString(" ")
-
-        view.getElementsByClass("govuk-inset-text").get(0).text mustBe expectedInsetText
-      }
-
+    onJourney(STANDARD, OCCASIONAL, SIMPLIFIED, SUPPLEMENTARY) { implicit request =>
       "display 'Back' button that links to 'Declarant Details' page" in {
         val backButton = createView().getElementById("back-link")
         backButton must containMessage(backToPreviousQuestionCaption)
         backButton must haveHref(DeclarantDetailsController.displayPage().url)
       }
-
     }
-  }
-
-  "Ducr Entry Vieww" when {
-
-    "AdditionalDeclarationType is SUPPLEMENTARY_SIMPLIFIED" should {
-      val view = createView()(withRequest(SUPPLEMENTARY_SIMPLIFIED))
-
-      "display empty input with label for DUCR" in {
-        val expectedHintText =
-          Seq(messages("declaration.consignmentReferences.supplementary.ducr.hint1"), messages("declaration.consignmentReferences.ducr.hint"))
-            .mkString(" ")
-
-        view.getElementsByAttributeValue("for", "ducr_ducr").text() mustBe messages("declaration.consignmentReferences.ducr.info")
-        view.getElementById("ducr_ducr-hint").text() mustBe expectedHintText
-        view.getElementById("ducr_ducr").attr("value") mustBe empty
-      }
-
-      "do not display inset text for DUCR or LRN" in {
-        view.getElementsByClass("govuk-inset-text").size() mustBe 0
-      }
-    }
-
-    "AdditionalDeclarationType is SUPPLEMENTARY_EIDR" should {
-      val view = createView()(withRequest(SUPPLEMENTARY_EIDR))
-
-      "display empty input with label for DUCR" in {
-        val expectedHintText =
-          Seq(messages("declaration.consignmentReferences.supplementary.ducr.hint1"), messages("declaration.consignmentReferences.ducr.hint"))
-            .mkString(" ")
-
-        view.getElementsByAttributeValue("for", "ducr_ducr").text() mustBe messages("declaration.consignmentReferences.ducr.info")
-        view.getElementById("ducr_ducr-hint").text() mustBe expectedHintText
-        view.getElementById("ducr_ducr").attr("value") mustBe empty
-      }
-
-      "do not display inset text for DUCR or LRN" in {
-        view.getElementsByClass("govuk-inset-text").size() mustBe 0
-      }
-    }
-  }
-
-  "Ducr Entry View" should {
-
     onClearance { implicit request =>
       "display 'Back' button that links to 'Declaration Type' page" in {
         val backButton = createView().getElementById("back-link")

@@ -48,30 +48,18 @@
 @ducrBodyText = {
     @bulletList(
         items = Seq(
-            Html(messages("declaration.consignmentReferences.ducr.paragraph.bullet1")),
-            Html(messages("declaration.consignmentReferences.ducr.paragraph.bullet2")),
-            Html(messages("declaration.consignmentReferences.ducr.paragraph.bullet3")),
-            Html(messages("declaration.consignmentReferences.ducr.paragraph.bullet4")),
-            Html(messages("declaration.consignmentReferences.ducr.paragraph.bullet5"))
+            Html(messages("declaration.ducrEntry.ducr.paragraph.bullet1")),
+            Html(messages("declaration.ducrEntry.ducr.paragraph.bullet2")),
+            Html(messages("declaration.ducrEntry.ducr.paragraph.bullet3")),
+            Html(messages("declaration.ducrEntry.ducr.paragraph.bullet4")),
+            Html(messages("declaration.ducrEntry.ducr.paragraph.bullet5"))
         )
     )
 
 }
 
 @ducrHintSection = @{
-    if (request.declarationType == DeclarationType.SUPPLEMENTARY)
-        ducrHintSectionSupplementary
-    else
-        ducrHintSectionOthers
-}
-
-@ducrHintSectionSupplementary = {
-    @paragraphBody(messages("declaration.consignmentReferences.supplementary.ducr.hint1"))
-    @paragraphBody(messages("declaration.consignmentReferences.ducr.hint"), "govuk-hint")
-}
-
-@ducrHintSectionOthers = {
-    @paragraphBody(messages("declaration.consignmentReferences.ducr.hint"), "govuk-hint")
+    paragraphBody(messages("declaration.ducrEntry.ducr.hint"), "govuk-hint")
 }
 
 @govukLayout(
@@ -85,7 +73,7 @@
         @pageTitle(messages("declaration.ducrEntry.header"))
 
         @exportsInputText(
-            labelKey = "declaration.consignmentReferences.ducr.paragraph",
+            labelKey = "declaration.ducrEntry.ducr.paragraph",
             labelClasses = "govuk-label",
             field = form("ducr"),
             inputClasses = Some("govuk-input"),
