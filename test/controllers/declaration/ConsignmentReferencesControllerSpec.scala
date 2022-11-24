@@ -17,9 +17,9 @@
 package controllers.declaration
 
 import scala.concurrent.Future
-
 import base.ControllerSpec
 import base.ExportsTestData.eidrDateStamp
+import controllers.routes.RootController
 import forms.declaration.ConsignmentReferences
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.{SUPPLEMENTARY_EIDR, SUPPLEMENTARY_SIMPLIFIED}
 import forms.{Ducr, Lrn, LrnValidator}
@@ -87,7 +87,7 @@ class ConsignmentReferencesControllerSpec extends ControllerSpec with GivenWhenT
         val result = controller.displayPage()(getRequest())
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some("/")
+        redirectLocation(result) mustBe Some(RootController.displayPage().url)
       }
       "return 303 (SEE_OTHER) and redirect on submit" in {
         withNewCaching(request.cacheModel)
@@ -95,7 +95,7 @@ class ConsignmentReferencesControllerSpec extends ControllerSpec with GivenWhenT
         val result = controller.submitConsignmentReferences()(postRequest(correctForm))
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some("/")
+        redirectLocation(result) mustBe Some(RootController.displayPage().url)
       }
     }
 

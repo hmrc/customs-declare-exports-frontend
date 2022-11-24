@@ -24,4 +24,5 @@ object DeclarationType extends Enumeration {
   implicit val format: Format[DeclarationType.Value] = EnumJson.format(DeclarationType)
   val STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL, CLEARANCE = Value
   val allDeclarationTypes = Seq(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL, CLEARANCE)
+  def allDeclarationTypesExcluding(types: DeclarationType*) = allDeclarationTypes diff types
 }

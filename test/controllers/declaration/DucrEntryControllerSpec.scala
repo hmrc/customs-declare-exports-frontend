@@ -19,10 +19,7 @@ package controllers.declaration
 import scala.concurrent.Future
 
 import base.ControllerSpec
-import base.ExportsTestData.eidrDateStamp
-import forms.declaration.ConsignmentReferences
-import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.{SUPPLEMENTARY_EIDR, SUPPLEMENTARY_SIMPLIFIED}
-import forms.{Ducr, Lrn, LrnValidator}
+import forms.Ducr
 import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -37,31 +34,24 @@ import views.html.declaration.ducr_entry
 
 class DucrEntryControllerSpec extends ControllerSpec with GivenWhenThen {
 
-  private val lrnValidator = mock[LrnValidator]
   private val ducrEntryPage = mock[ducr_entry]
 
-  val controller = new DucrEntryController(
-    mockAuthAction,
-    mockJourneyAction,
-    mockExportsCacheService,
-    lrnValidator,
-    navigator,
-    stubMessagesControllerComponents(),
-    ducrEntryPage
-  )(ec)
+  val controller =
+    new DucrEntryController(mockAuthAction, mockJourneyAction, mockExportsCacheService, navigator, stubMessagesControllerComponents(), ducrEntryPage)(
+      ec
+    )
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
 
     authorizedUser()
-    when(lrnValidator.hasBeenSubmittedInThePast48Hours(any[Lrn])(any(), any())).thenReturn(Future.successful(false))
     when(ducrEntryPage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
     super.afterEach()
 
-    reset(lrnValidator, ducrEntryPage)
+    reset(ducrEntryPage)
   }
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
@@ -78,7 +68,7 @@ class DucrEntryControllerSpec extends ControllerSpec with GivenWhenThen {
 
   "DucrEntryController on displayPage" should {
 
-    onEveryDeclarationJourney() { request =>
+    onJourney(STANDARD, OCCASIONAL, SIMPLIFIED, CLEARANCE) { request =>
       "return 200 (OK)" when {
 
         "display page method is invoked and cache is empty" in {
@@ -100,7 +90,7 @@ class DucrEntryControllerSpec extends ControllerSpec with GivenWhenThen {
 
   "ConsignmentReferencesController on submitConsignmentReferences" should {
 
-    onEveryDeclarationJourney() { request =>
+    onJourney(STANDARD, OCCASIONAL, SIMPLIFIED, CLEARANCE) { request =>
       "return 400 (BAD_REQUEST)" when {
 
         "user enters incorrect data" in {
@@ -126,12 +116,10 @@ class DucrEntryControllerSpec extends ControllerSpec with GivenWhenThen {
         val declaration = theCacheModelUpdated
         declaration.ducrEntry.head.ducr mustBe ducr.toUpperCase
       }
-    }
-
-    onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, CLEARANCE) { request =>
-      val correctForm = Json.toJson(Ducr(DUCR))
 
       "return 303 (SEE_OTHER) and redirect to 'Link DUCR to MUCR' page" in {
+
+        val correctForm = Json.toJson(Ducr(DUCR))
         withNewCaching(request.cacheModel)
 
         val result = controller.submitDucr()(postRequest(correctForm))
@@ -142,28 +130,27 @@ class DucrEntryControllerSpec extends ControllerSpec with GivenWhenThen {
     }
 
     onJourney(SUPPLEMENTARY) { req =>
-      "return 303 (SEE_OTHER) and redirect to 'Link DUCR to MUCR' page" when {
+      "return 303 (SEE_OTHER) and redirect on display" when {
 
         "for SUPPLEMENTARY_SIMPLIFIED" in {
-          val request = journeyRequest(aDeclaration(withType(req.declarationType), withAdditionalDeclarationType(SUPPLEMENTARY_SIMPLIFIED)))
+          val request = journeyRequest(aDeclaration(withType(req.declarationType)))
           withNewCaching(request.cacheModel)
-          val correctForm = Json.toJson(Ducr(DUCR))
 
-          val result = controller.submitDucr()(postRequest(correctForm))
+          val result = controller.displayPage()(getRequest())
 
-          await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe routes.DeclarantExporterController.displayPage()
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(controllers.routes.RootController.displayPage().url)
         }
 
-        "return 303 (SEE_OTHER) and redirect to 'Link DUCR to MUCR' page for SUPPLEMENTARY_EIDR" in {
-          val request = journeyRequest(aDeclaration(withType(req.declarationType), withAdditionalDeclarationType(SUPPLEMENTARY_EIDR)))
+        "return 303 (SEE_OTHER) and redirect on submit" in {
+          val request = journeyRequest(aDeclaration(withType(req.declarationType)))
           withNewCaching(request.cacheModel)
           val correctForm = Json.toJson(Ducr(DUCR))
 
           val result = controller.submitDucr()(postRequest(correctForm))
 
-          await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe routes.DeclarantExporterController.displayPage()
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(controllers.routes.RootController.displayPage().url)
         }
       }
     }

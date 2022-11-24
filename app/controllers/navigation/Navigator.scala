@@ -209,7 +209,6 @@ class Navigator @Inject() (
 
   val supplementary: PartialFunction[DeclarationPage, Call] = {
     case DeclarantDetails            => routes.AdditionalDeclarationTypeController.displayPage
-    case Ducr                        => routes.DeclarantDetailsController.displayPage
     case ConsignmentReferences       => routes.DeclarantDetailsController.displayPage
     case ExporterEoriNumber          => routes.DeclarantExporterController.displayPage
     case ExporterDetails             => routes.ExporterEoriNumberController.displayPage
@@ -369,7 +368,7 @@ class Navigator @Inject() (
 
   private def declarantIsExporterPreviousPage(cacheModel: ExportsDeclaration): Call =
     cacheModel.`type` match {
-      case SUPPLEMENTARY => routes.DucrEntryController.displayPage
+      case SUPPLEMENTARY => routes.ConsignmentReferencesController.displayPage
       case _ =>
         if (cacheModel.mucr.isEmpty) routes.LinkDucrToMucrController.displayPage()
         else routes.MucrController.displayPage()

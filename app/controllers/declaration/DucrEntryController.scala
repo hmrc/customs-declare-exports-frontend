@@ -18,10 +18,9 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
-import forms.{Ducr, LrnValidator}
 import forms.Ducr
 import forms.Ducr.form
-import models.DeclarationType.SUPPLEMENTARY
+import models.DeclarationType.{allDeclarationTypes, allDeclarationTypesExcluding, SUPPLEMENTARY}
 import models.requests.JourneyRequest
 import play.api.i18n.I18nSupport
 import play.api.mvc._
@@ -37,33 +36,28 @@ class DucrEntryController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
-  lrnValidator: LrnValidator,
   navigator: Navigator,
   mcc: MessagesControllerComponents,
   ducrEntryPage: ducr_entry
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
-  val displayPage: Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  val displayPage: Action[AnyContent] = (authenticate andThen journeyType(allDeclarationTypesExcluding(SUPPLEMENTARY))) { implicit request =>
     val frm = form.withSubmissionErrors()
-    request.cacheModel.ducrEntry match {
-      case Some(data) => Ok(ducrEntryPage(frm.fill(data)))
+    request.cacheModel.ducr match {
+      case Some(data) => Ok(ducrEntryPage(frm.fill(Ducr(data))))
       case _          => Ok(ducrEntryPage(frm))
     }
   }
 
-  val submitDucr: Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  val submitDucr: Action[AnyContent] = (authenticate andThen journeyType(allDeclarationTypesExcluding(SUPPLEMENTARY))).async { implicit request =>
     form
       .bindFromRequest()
       .fold(formWithErrors => Future.successful(BadRequest(ducrEntryPage(formWithErrors))), updateCacheAndContinue(_))
   }
 
-  private def nextPage(implicit request: JourneyRequest[AnyContent]): Call =
-    if (request.declarationType == SUPPLEMENTARY) routes.DeclarantExporterController.displayPage
-    else routes.LinkDucrToMucrController.displayPage
-
   private def updateCacheAndContinue(ducr: Ducr)(implicit request: JourneyRequest[AnyContent]): Future[Result] =
     updateDeclarationFromRequest(_.copy(ducrEntry = Some(ducr)))
-      .map(_ => navigator.continueTo(nextPage))
+      .map(_ => navigator.continueTo(routes.LinkDucrToMucrController.displayPage))
 
 }

@@ -16,8 +16,10 @@
 
 package forms
 
-import play.api.data.{Form, Forms, Mapping}
+import models.DeclarationType.DeclarationType
+import models.viewmodels.TariffContentKey
 import play.api.data.Forms.text
+import play.api.data.{Form, Forms, Mapping}
 import play.api.libs.json.Json
 import utils.validators.forms.FieldValidator._
 
@@ -25,12 +27,6 @@ case class Ducr(ducr: String)
 
 object Ducr extends DeclarationPage {
   implicit val format = Json.format[Ducr]
-
-  def form2Data(ducr: String): Ducr = new Ducr(ducr.toUpperCase)
-
-  def model2Form: Ducr => Option[String] =
-    model => Some(model.ducr)
-
   val mapping: Mapping[Ducr] =
     Forms.mapping(
       "ducr" ->
@@ -38,7 +34,14 @@ object Ducr extends DeclarationPage {
           .verifying("declaration.consignmentReferences.ducr.error.empty", nonEmpty)
           .verifying("declaration.consignmentReferences.ducr.error.invalid", isEmpty or isValidDucr)
     )(form2Data)(Ducr.unapply)
-
   val form: Form[Ducr] = Form(mapping)
+
+  def form2Data(ducr: String): Ducr = new Ducr(ducr.toUpperCase)
+
+  def model2Form: Ducr => Option[String] =
+    model => Some(model.ducr)
+
+  override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
+    Seq(TariffContentKey("tariff.declaration.ducrEntry.1.common"), TariffContentKey("tariff.declaration.ducrEntry.2.common"))
 
 }

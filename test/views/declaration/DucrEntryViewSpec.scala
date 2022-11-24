@@ -129,7 +129,7 @@ class DucrEntryViewSpec extends PageWithButtonsSpec with Injector {
 
   "Ducr Entry View" should {
 
-    onJourney(STANDARD, OCCASIONAL, SIMPLIFIED, SUPPLEMENTARY) { implicit request =>
+    onJourney(STANDARD, OCCASIONAL, SIMPLIFIED) { implicit request =>
       "display 'Back' button that links to 'Declarant Details' page" in {
         val backButton = createView().getElementById("back-link")
         backButton must containMessage(backToPreviousQuestionCaption)
