@@ -96,6 +96,8 @@ trait ExportsDeclarationBuilder {
 
   def withUpdateTime(updateDateTime: Instant): ExportsDeclarationModifier = _.copy(updatedDateTime = updateDateTime)
 
+  def withTraderReference(traderReference: String): ExportsDeclarationModifier = _.copy(traderReference = Some(TraderReference(traderReference)))
+
   def withoutTotalNumberOfItems(): ExportsDeclarationModifier = _.copy(totalNumberOfItems = None)
 
   def withTotalNumberOfItems(invoiceAndExchangeRate: InvoiceAndExchangeRate): ExportsDeclarationModifier = { declaration =>

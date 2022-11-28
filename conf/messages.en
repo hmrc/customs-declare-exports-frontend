@@ -594,6 +594,10 @@ declaration.consignmentReferences.supplementary.eidr.hint1 = Enter the date the 
 declaration.consignmentReferences.supplementary.eidr.error.empty = Enter the date of the EIDR
 declaration.consignmentReferences.supplementary.eidr.error.invalid = Enter the yyyymmdd code in the correct format
 
+declaration.traderReference.title =
+declaration.traderReference.error.invalid = Your reference must be in the correct format.
+declaration.traderReference.error.empty = Enter a trader reference.
+
 declaration.entryIntoDeclarantRecords.title = Is this an entry into declarant’s records (EIDR)?
 declaration.entryIntoDeclarantRecords.answer.yes = Yes
 declaration.entryIntoDeclarantRecords.answer.no = No

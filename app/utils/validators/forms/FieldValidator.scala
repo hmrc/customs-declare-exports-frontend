@@ -177,7 +177,4 @@ object FieldValidator {
 
   private val ducrPattern = Pattern.compile("[0-9]{1}[A-Za-z]{2}[0-9]{12}[-]{1}[/()A-Za-z0-9]{1,19}")
   val isValidDucr: String => Boolean = ducrPattern.matcher(_).matches()
-
-  private val traderReferencePattern = Pattern.compile("[/()A-Z0-9]{1,19}")
-  val isValidTraderReference: String => Boolean = traderReferencePattern.matcher(_).matches()
 }
