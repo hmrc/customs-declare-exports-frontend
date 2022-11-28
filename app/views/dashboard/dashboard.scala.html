@@ -22,7 +22,7 @@
 @import models.declaration.submissions.StatusGroup._
 @import play.twirl.api.HtmlFormat
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import views.dashboard.DashboardHelper.{Group, Page}
+@import views.dashboard.DashboardHelper.{Groups, Page}
 @import views.helpers.{BackButton, EnhancedStatusHelper, Title}
 @import views.helpers.EnhancedStatusHelper.hasQueryNotificationMessageStatus
 @import views.html.components.gds.{gdsMainTemplate, linkButton, navigationBanner, pageTitle, paragraphBody}
@@ -46,7 +46,7 @@
     }
 }
 
-@baseHref = @{ s"${DashboardController.displayPage}?${Group}=" }
+@baseHref = @{ s"${DashboardController.displayPage}?${Groups}=" }
 
 @tab(statusGroup: StatusGroup) = @{
   val html =

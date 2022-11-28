@@ -19,10 +19,11 @@ package controllers
 import config.PaginationConfig
 import connectors.CustomsDeclareExportsConnector
 import controllers.actions.{AuthAction, VerifiedEmailAction}
+import models.declaration.submissions.StatusGroup.statusGroups
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import views.dashboard.DashboardHelper.Limit
+import views.dashboard.DashboardHelper.{Groups, Limit}
 import views.html.dashboard.dashboard
 
 import javax.inject.Inject
@@ -44,7 +45,11 @@ class DashboardController @Inject() (
       .map(pageOfSubmissions => Ok(dashboard(pageOfSubmissions)))
   }
 
-  private def queryString(implicit request: Request[_]) =
-    if (request.getQueryString(Limit).isEmpty) s"${request.target.queryString}&$Limit=${paginationConfig.itemsPerPage}"
-    else request.target.queryString
+  private def queryString(implicit request: Request[_]) = {
+    val queryString = request.getQueryString(Groups).fold(s"${request.target.queryString}&$Groups=${statusGroups}") { _ =>
+      request.target.queryString
+    }
+
+    if (request.getQueryString(Limit).isEmpty) s"${queryString}&$Limit=${paginationConfig.itemsPerPage}" else queryString
+  }
 }

@@ -28,7 +28,7 @@ object DashboardHelper {
 
   val DatetimeForNextPage = "datetimeForNextPage"
   val DatetimeForPreviousPage = "datetimeForPreviousPage"
-  val Group = "group"
+  val Groups = "groups"
   val Limit = "limit"
   val Page = "page"
 

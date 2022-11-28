@@ -88,7 +88,7 @@ class DashboardViewSpec extends UnitViewSpec with ExportsTestHelper {
   private val page = injector.instanceOf[dashboard]
 
   private def request(statusGroup: StatusGroup, currentPage: Int): FakeRequest[AnyContentAsEmpty.type] =
-    FakeRequest("GET", s"/dashboard?${Group}=${statusGroup}&${Page}=${currentPage}")
+    FakeRequest("GET", s"/dashboard?${Groups}=${statusGroup}&${Page}=${currentPage}")
 
   private def createView(status: EnhancedStatus = RECEIVED, totalSubmissionsInPage: Int = 0, totalSubmissionsInGroup: Int = 0): Html = {
     val statusGroup = toStatusGroup(status)
@@ -305,9 +305,9 @@ class DashboardViewSpec extends UnitViewSpec with ExportsTestHelper {
               val statusGroup = toStatusGroup(status)
               val datetimeForNextPage = toUTC(submissions.last.enhancedStatusLastUpdated.get)
 
-              val expectedNextPageHref = Some(s"${path}?${Group}=${statusGroup}&${Page}=2&${DatetimeForNextPage}=${datetimeForNextPage}")
-              val expectedLoosePageHref = Some(s"${path}?${Group}=${statusGroup}&${Page}=3")
-              val expectedLastPageHref = Some(s"${path}?${Group}=${statusGroup}&${Limit}=${lastPage}")
+              val expectedNextPageHref = Some(s"${path}?${Groups}=${statusGroup}&${Page}=2&${DatetimeForNextPage}=${datetimeForNextPage}")
+              val expectedLoosePageHref = Some(s"${path}?${Groups}=${statusGroup}&${Page}=3")
+              val expectedLastPageHref = Some(s"${path}?${Groups}=${statusGroup}&${Limit}=${lastPage}")
 
               page(controls.get(0), "1")
               page(controls.get(1), "2", expectedNextPageHref)
@@ -327,11 +327,11 @@ class DashboardViewSpec extends UnitViewSpec with ExportsTestHelper {
               val datetimeForPreviousPage = toUTC(submissions.head.enhancedStatusLastUpdated.get)
               val datetimeForNextPage = toUTC(submissions.last.enhancedStatusLastUpdated.get)
 
-              val expectedPreviousPageHref = Some(s"${path}?${Group}=${statusGroup}&${Page}=2&${DatetimeForPreviousPage}=${datetimeForPreviousPage}")
-              val expectedFirstPageHref = Some(s"${path}?${Group}=${statusGroup}&${Page}=1")
-              val expectedNextPageHref = Some(s"${path}?${Group}=${statusGroup}&${Page}=4&${DatetimeForNextPage}=${datetimeForNextPage}")
-              val expectedLoosePageHref = Some(s"${path}?${Group}=${statusGroup}&${Page}=5")
-              val expectedLastPageHref = Some(s"${path}?${Group}=${statusGroup}&${Limit}=${lastPage}")
+              val expectedPreviousPageHref = Some(s"${path}?${Groups}=${statusGroup}&${Page}=2&${DatetimeForPreviousPage}=${datetimeForPreviousPage}")
+              val expectedFirstPageHref = Some(s"${path}?${Groups}=${statusGroup}&${Page}=1")
+              val expectedNextPageHref = Some(s"${path}?${Groups}=${statusGroup}&${Page}=4&${DatetimeForNextPage}=${datetimeForNextPage}")
+              val expectedLoosePageHref = Some(s"${path}?${Groups}=${statusGroup}&${Page}=5")
+              val expectedLastPageHref = Some(s"${path}?${Groups}=${statusGroup}&${Limit}=${lastPage}")
 
               page(controls.get(0), "Previous", expectedPreviousPageHref)
               page(controls.get(1), "1", expectedFirstPageHref)

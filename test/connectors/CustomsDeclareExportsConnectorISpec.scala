@@ -21,7 +21,7 @@ import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.WireMock._
 import forms.Lrn
 import models.CancellationStatus.CancellationStatusWrites
-import models.{CancelDeclaration, CancellationRequestSent, Page, PageOfSubmissions, Paginated}
+import models.{CancelDeclaration, CancellationRequestSent, PageOfSubmissions, Paginated}
 import models.declaration.notifications.Notification
 import models.declaration.submissions.RequestType.SubmissionRequest
 import models.declaration.submissions.StatusGroup.ActionRequiredStatuses
@@ -32,6 +32,7 @@ import play.api.http.Status
 import play.api.libs.json.{Json, Writes}
 import play.api.test.Helpers._
 import services.cache.ExportsDeclarationBuilder
+import views.dashboard.DashboardHelper.{Groups, Page}
 
 import java.time.{ZoneOffset, ZonedDateTime}
 import java.util.UUID
@@ -156,7 +157,7 @@ class CustomsDeclareExportsConnectorISpec extends ConnectorISpec with ExportsDec
   }
 
   "Fetch Submission Page" should {
-    val queryString = "group=action&page=1"
+    val queryString = s"${Groups}=action&${Page}=1"
     val pageOfSubmissions = PageOfSubmissions(ActionRequiredStatuses, 1, List(submission))
 
     "return Ok" in {
@@ -177,7 +178,7 @@ class CustomsDeclareExportsConnectorISpec extends ConnectorISpec with ExportsDec
   }
 
   "Find Declarations" should {
-    val pagination = Page(1, 10)
+    val pagination = models.Page(1, 10)
 
     "return Ok" in {
       stubForExports(
@@ -197,7 +198,7 @@ class CustomsDeclareExportsConnectorISpec extends ConnectorISpec with ExportsDec
   }
 
   "Find Saved Draft Declarations" should {
-    val pagination = Page(1, 10)
+    val pagination = models.Page(1, 10)
 
     "return Ok" in {
       stubForExports(
