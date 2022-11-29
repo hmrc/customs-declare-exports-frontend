@@ -17,10 +17,10 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.navigation.Navigator
 import controllers.declaration.routes.ConfirmDucrController
+import controllers.navigation.Navigator
 import forms.declaration.TraderReference
-import models.DeclarationType.{SUPPLEMENTARY, allDeclarationTypes}
+import models.DeclarationType.{allDeclarationTypesExcluding, SUPPLEMENTARY}
 import models.ExportsDeclaration
 import models.requests.JourneyRequest
 import play.api.i18n.I18nSupport
@@ -40,22 +40,24 @@ class TraderReferenceController @Inject() (
   mcc: MessagesControllerComponents,
   override val exportsCacheService: ExportsCacheService,
   traderReferencePage: trader_reference
-)(implicit ec: ExecutionContext) extends FrontendController(mcc) with I18nSupport with ModelCacheable with WithDefaultFormBinding with SubmissionErrors {
+)(implicit ec: ExecutionContext)
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with WithDefaultFormBinding with SubmissionErrors {
 
-  def displayPage(): Action[AnyContent] = (authorise andThen getJourney(allDeclarationTypes.filterNot(_ == SUPPLEMENTARY))) { implicit request =>
+  def displayPage(): Action[AnyContent] = (authorise andThen getJourney(allDeclarationTypesExcluding(SUPPLEMENTARY))) { implicit request =>
     val traderReference = request.cacheModel.traderReference
     val form = TraderReference.form.withSubmissionErrors
     Ok(traderReferencePage(traderReference.fold(form)(value => form.fill(value))))
   }
 
-  def submitForm(): Action[AnyContent] = (authorise andThen getJourney(allDeclarationTypes.filterNot(_ == SUPPLEMENTARY))).async { implicit request =>
-    TraderReference.form.bindFromRequest().fold(
-      formWithErrors => Future.successful(BadRequest(traderReferencePage(formWithErrors))),
-      updateCache(_).map(_ => navigator.continueTo(ConfirmDucrController.displayPage))
-    )
+  def submitForm(): Action[AnyContent] = (authorise andThen getJourney(allDeclarationTypesExcluding(SUPPLEMENTARY))).async { implicit request =>
+    TraderReference.form
+      .bindFromRequest()
+      .fold(
+        formWithErrors => Future.successful(BadRequest(traderReferencePage(formWithErrors))),
+        updateCache(_).map(_ => navigator.continueTo(ConfirmDucrController.displayPage))
+      )
   }
 
-  private def updateCache(value: TraderReference)(implicit request: JourneyRequest[_]): Future[ExportsDeclaration] = {
+  private def updateCache(value: TraderReference)(implicit request: JourneyRequest[_]): Future[ExportsDeclaration] =
     updateDeclarationFromRequest(_.copy(traderReference = Some(value)))
-  }
 }

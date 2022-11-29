@@ -1,7 +1,24 @@
+/*
+ * Copyright 2022 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package controllers.declaration
 
 import base.ControllerSpec
 import forms.declaration.TraderReference
+import forms.declaration.TraderReference.traderReferenceKey
 import models.DeclarationType.SUPPLEMENTARY
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{verify, when}
@@ -49,6 +66,8 @@ class TraderReferenceControllerSpec extends ControllerSpec {
     super.afterEach()
   }
 
+  private val dummyRef = TraderReference("INVOICE123/4")
+
   "TraderReferenceController" should {
 
     "return 200 OK" when {
@@ -62,9 +81,9 @@ class TraderReferenceControllerSpec extends ControllerSpec {
       }
 
       "display page method is invoked with data in cache" in {
-        withNewCaching(aDeclaration(withTraderReference("dummyRef")))
+        withNewCaching(aDeclaration())
 
-        val result = controller.displayPage()(getJourneyRequest())
+        val result = controller.displayPage()(getJourneyRequest(aDeclaration(withTraderReference(dummyRef))))
 
         status(result) mustBe OK
       }
@@ -75,7 +94,7 @@ class TraderReferenceControllerSpec extends ControllerSpec {
       "form was submitted with invalid data" in {
         withNewCaching(aDeclaration())
 
-        val body = Json.obj("traderReference" -> "!!!!!")
+        val body = Json.obj(traderReferenceKey -> "!!!!!")
         val result = controller.submitForm()(postRequest(body, aDeclaration()))
 
         status(result) mustBe BAD_REQUEST
@@ -85,7 +104,7 @@ class TraderReferenceControllerSpec extends ControllerSpec {
       "form was submitted with no data" in {
         withNewCaching(aDeclaration())
 
-        val body = Json.obj("traderReference" -> "")
+        val body = Json.obj(traderReferenceKey -> "")
         val result = controller.submitForm()(postRequest(body, aDeclaration()))
 
         status(result) mustBe BAD_REQUEST
@@ -98,12 +117,12 @@ class TraderReferenceControllerSpec extends ControllerSpec {
       "form was submitted with valid data" in {
         withNewCaching(aDeclaration())
 
-        val body = Json.obj("traderReference" -> "INVOICE123/4")
+        val body = Json.obj(traderReferenceKey -> dummyRef.value)
         val result = controller.submitForm()(postRequest(body, aDeclaration()))
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe routes.ConfirmDucrController.displayPage
-        theCacheModelUpdated()
+        theCacheModelUpdated().head.traderReference.get mustBe dummyRef
       }
 
       "display page method is invoked on supplementary journey" in {

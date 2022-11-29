@@ -14,20 +14,55 @@
  * limitations under the License.
  *@
 
-@import forms.common.YesNoAnswer
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import controllers.declaration.routes._
+@import views.helpers.{BackButton, Title}
 @import forms.declaration.TraderReference
 @import models.requests.JourneyRequest
+@import config.AppConfig
+@import controllers.navigation.Navigator
+@import views.html.components.gds._
 
-@this()
+@this(
+    govukLayout: gdsMainTemplate,
+    errorSummary: errorSummary,
+    heading: heading,
+    paragraphBody: paragraphBody,
+    tariffExpander: tariffExpander,
+    exportsInputText: exportsInputText,
+    saveButtons: saveButtons,
+    sectionHeader: sectionHeader,
+    formHelper: FormWithCSRF,
+    navigator: Navigator,
+    appConfig: AppConfig
+)
 
 @(form: Form[TraderReference])(implicit request: JourneyRequest[_], messages: Messages)
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-hello
-</body>
-</html>
+
+@hasErrors = @{form.hasErrors || form.hasGlobalErrors}
+
+@govukLayout(
+    title = Title("declaration.traderReference.title", "declaration.section.1", hasErrors = hasErrors),
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(TraderReference)))
+) {
+    @formHelper(action = TraderReferenceController.submitForm(), 'autoComplete -> "off") {
+        @errorSummary(form.errors)
+
+        @sectionHeader(messages("declaration.section.1"))
+        @heading(messages("declaration.traderReference.title"))
+
+        @paragraphBody(messages("declaration.traderReference.body"))
+
+        @exportsInputText(
+            labelKey = "declaration.traderReference.title",
+            field = form(TraderReference.traderReferenceKey),
+            labelClasses = "govuk-visually-hidden",
+            inputClasses = Some("govuk-input--width-10"),
+            hintKey = Some("declaration.traderReference.hintText")
+        )
+
+        @tariffExpander(TraderReference, request.declarationType)(messages, appConfig)
+
+        @saveButtons()
+    }
+}

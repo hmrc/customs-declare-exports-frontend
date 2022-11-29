@@ -19,30 +19,8 @@ package forms.declaration
 import forms.DeclarationPage
 import models.DeclarationType.DeclarationType
 import models.viewmodels.TariffContentKey
-import play.api.data.Form
-import play.api.data.Forms.{mapping, text}
-import play.api.libs.json.{Json, OFormat}
-import utils.validators.forms.FieldValidator._
 
-case class TraderReference(value: String)
-
-object TraderReference extends DeclarationPage {
-  implicit val format: OFormat[TraderReference] = Json.format[TraderReference]
-
-  val formId = "TraderReference"
-  val traderReferenceKey = "traderReferenceInput"
-
-  def form2data(traderReference: String): TraderReference = TraderReference(traderReference.trim)
-
-  def form: Form[TraderReference] =
-    Form(
-      mapping(
-        traderReferenceKey -> text()
-          .verifying("declaration.traderReference.error.empty", nonEmpty)
-          .verifying("declaration.traderReference.error.invalid", isEmpty or isValidTraderReference)
-      )(form2data)(TraderReference.unapply)
-    )
-
+object ConfirmDucr extends DeclarationPage {
   override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
     Seq(TariffContentKey("tariff.declaration.traderReference.common"))
 }
