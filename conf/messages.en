@@ -544,6 +544,17 @@ declaration.ducrEntry.ducr.paragraph.bullet4 = a hyphen (after the EORI number)
 declaration.ducrEntry.ducr.paragraph.bullet5 = a trader reference of up to 19 characters (excluding hyphens, with numbers and letters all in capitals)
 declaration.ducrEntry.ducr.hint = For example, 2GB986007773125-INVOICE123/4.
 declaration.ducrEntry.ducr.inset.1 = Do not use the same DUCR for different declarations. Only use the same DUCR if you are doing a fix and resubmit after getting errors, or if you have cancelled your declaration and are submitting the same one.
+declaration.ducrEntry.ducr.error.empty = Enter a Declaration Unique Consignment Reference (DUCR)
+declaration.ducrEntry.ducr.error.invalid = Declaration Unique Consignment Reference (DUCR) must be in the correct format
+
+declaration.lrn.header = Create a Local Reference Number (LRN)
+declaration.lrn.body = This can be up to 22 letters and numbers and can be anything you like. Its purpose is to make this declaration easy to recognize, for example by using the name of a consignee or client.
+declaration.lrn.hint = For example, SMITH 8TH JAN KEYRINGS.
+declaration.lrn.inset = Do not use the same LRN within 48 hours. Add a version number if you have used it in the past 48 hours.
+declaration.lrn.lrn.error.empty = Enter a local reference number (LRN)
+declaration.lrn.lrn.error.length = Local reference number (LRN) must be 22 characters or fewer
+declaration.lrn.lrn.error.specialCharacter = Local reference number (LRN) must contain only letters and numbers
+declaration.lrn.lrn.error.notExpiredYet = You already submitted a declaration with this LRN in the past 48 hours. If you are resubmitting after correcting an error or updating information, add a version number at the end.
 
 declaration.consignmentReferences.header =  Consignment references
 declaration.consignmentReferences.ducr.info = Declaration Unique Consignment Reference (DUCR)

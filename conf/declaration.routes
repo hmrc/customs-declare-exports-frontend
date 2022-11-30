@@ -29,9 +29,13 @@ GET         /consignment-references              controllers.declaration.Consign
 
 POST        /consignment-references              controllers.declaration.ConsignmentReferencesController.submitConsignmentReferences()
 
-GET         /ducr-entry                         controllers.declaration.DucrEntryController.displayPage
+GET         /ducr-entry                          controllers.declaration.DucrEntryController.displayPage
 
-POST        /ducr-entry                         controllers.declaration.DucrEntryController.submitDucr
+POST        /ducr-entry                          controllers.declaration.DucrEntryController.submitDucr
+
+GET         /local-reference-number              controllers.declaration.LocalReferenceNumberController.displayPage
+
+POST        /local-reference-number              controllers.declaration.LocalReferenceNumberController.submitLrn
 
 # MUCR
 

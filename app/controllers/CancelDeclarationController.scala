@@ -114,7 +114,7 @@ class CancelDeclarationController @Inject() (
   ): Map[String, String] =
     Map(
       EventData.eori.toString -> request.user.eori,
-      EventData.lrn.toString -> lrn.value,
+      EventData.lrn.toString -> lrn.lrn,
       EventData.mrn.toString -> mrn,
       EventData.changeReason.toString -> form.changeReason,
       EventData.changeDescription.toString -> form.statementDescription,

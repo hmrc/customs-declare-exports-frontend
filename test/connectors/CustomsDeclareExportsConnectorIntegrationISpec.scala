@@ -234,7 +234,7 @@ class CustomsDeclareExportsConnectorIntegrationISpec extends ConnectorISpec with
     "return Ok" in {
       val lrn = Lrn(submission.lrn)
       stubForExports(
-        get(s"/lrn-already-used/${lrn.value}")
+        get(s"/lrn-already-used/${lrn.lrn}")
           .willReturn(
             aResponse()
               .withStatus(Status.OK)
@@ -245,7 +245,7 @@ class CustomsDeclareExportsConnectorIntegrationISpec extends ConnectorISpec with
       val response = await(connector.isLrnAlreadyUsed(lrn))
 
       response mustBe true
-      verify(getRequestedFor(urlEqualTo(s"/lrn-already-used/${lrn.value}")))
+      verify(getRequestedFor(urlEqualTo(s"/lrn-already-used/${lrn.lrn}")))
     }
   }
 

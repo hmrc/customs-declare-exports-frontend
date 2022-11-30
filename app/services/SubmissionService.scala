@@ -51,7 +51,14 @@ class SubmissionService @Inject() (exportsConnector: CustomsDeclareExportsConnec
           logProgress(exportsDeclaration, "Submitted Successfully")
           auditService.audit(
             AuditTypes.Submission,
-            auditData(eori, exportsDeclaration.`type`, exportsDeclaration.lrn, exportsDeclaration.ducr, legalDeclaration, Success.toString)
+            auditData(
+              eori,
+              exportsDeclaration.`type`,
+              exportsDeclaration.lrn,
+              exportsDeclaration.ducr.map(_.ducr),
+              legalDeclaration,
+              Success.toString
+            )
           )
           exportsMetrics.incrementCounter(submissionMetric)
           timerContext.stop()
@@ -61,7 +68,14 @@ class SubmissionService @Inject() (exportsConnector: CustomsDeclareExportsConnec
           logger.error(s"Error response from backend $exception")
           auditService.audit(
             AuditTypes.Submission,
-            auditData(eori, exportsDeclaration.`type`, exportsDeclaration.lrn, exportsDeclaration.ducr, legalDeclaration, Failure.toString)
+            auditData(
+              eori,
+              exportsDeclaration.`type`,
+              exportsDeclaration.lrn,
+              exportsDeclaration.ducr.map(_.ducr),
+              legalDeclaration,
+              Failure.toString
+            )
           )
       }
       .map(Some(_))
