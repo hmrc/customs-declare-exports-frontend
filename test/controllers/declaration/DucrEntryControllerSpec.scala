@@ -114,7 +114,7 @@ class DucrEntryControllerSpec extends ControllerSpec with GivenWhenThen {
         await(result) mustBe aRedirectToTheNextPage
 
         val declaration = theCacheModelUpdated
-        declaration.ducrEntry.head.ducr mustBe ducr.toUpperCase
+        declaration.intermediaryConsignmentReferences.head.ducr.head.ducr mustBe ducr.toUpperCase
       }
 
       "return 303 (SEE_OTHER) and redirect to 'Link DUCR to MUCR' page" in {

@@ -20,6 +20,7 @@ import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.Ducr
 import forms.Ducr.form
+import forms.declaration.IntermediaryConsignmentReferences
 import models.DeclarationType.{allDeclarationTypes, allDeclarationTypesExcluding, SUPPLEMENTARY}
 import models.requests.JourneyRequest
 import play.api.i18n.I18nSupport
@@ -57,7 +58,7 @@ class DucrEntryController @Inject() (
   }
 
   private def updateCacheAndContinue(ducr: Ducr)(implicit request: JourneyRequest[AnyContent]): Future[Result] =
-    updateDeclarationFromRequest(_.copy(ducrEntry = Some(ducr)))
+    updateDeclarationFromRequest(_.copy(intermediaryConsignmentReferences = Some(IntermediaryConsignmentReferences(Some(ducr), None))))
       .map(_ => navigator.continueTo(routes.LinkDucrToMucrController.displayPage))
 
 }
