@@ -64,7 +64,8 @@ class Navigator @Inject() (
 
   val common: PartialFunction[DeclarationPage, Call] = {
     case DeclarationChoice             => ChoiceController.displayPage(Some(Choice(AllowedChoiceValues.CreateDec)))
-    case LinkDucrToMucr                => routes.DucrEntryController.displayPage
+    case Ducr                          => routes.DeclarantDetailsController.displayPage
+    case Lrn                           => routes.DucrEntryController.displayPage
     case Mucr                          => routes.LinkDucrToMucrController.displayPage
     case RepresentativeEntity          => routes.RepresentativeAgentController.displayPage
     case RepresentativeStatus          => routes.RepresentativeEntityController.displayPage
@@ -113,8 +114,7 @@ class Navigator @Inject() (
 
   val standard: PartialFunction[DeclarationPage, Call] = {
     case DeclarantDetails            => routes.AdditionalDeclarationTypeController.displayPage
-    case Lrn                         => routes.DeclarantDetailsController.displayPage
-    case Ducr                        => routes.DeclarantDetailsController.displayPage
+    case LinkDucrToMucr              => routes.LocalReferenceNumberController.displayPage
     case ConsignmentReferences       => routes.DeclarantDetailsController.displayPage
     case ExporterEoriNumber          => routes.DeclarantExporterController.displayPage
     case ExporterDetails             => routes.ExporterEoriNumberController.displayPage
@@ -163,9 +163,8 @@ class Navigator @Inject() (
   }
 
   val clearance: PartialFunction[DeclarationPage, Call] = {
-    case Lrn                          => routes.AdditionalDeclarationTypeController.displayPage
-    case Ducr                         => routes.AdditionalDeclarationTypeController.displayPage
     case ConsignmentReferences        => routes.AdditionalDeclarationTypeController.displayPage
+    case LinkDucrToMucr               => routes.LocalReferenceNumberController.displayPage
     case ExporterDetails              => routes.ExporterEoriNumberController.displayPage
     case DeclarantDetails             => routes.EntryIntoDeclarantsRecordsController.displayPage
     case PersonPresentingGoodsDetails => routes.EntryIntoDeclarantsRecordsController.displayPage
@@ -211,6 +210,7 @@ class Navigator @Inject() (
 
   val supplementary: PartialFunction[DeclarationPage, Call] = {
     case DeclarantDetails            => routes.AdditionalDeclarationTypeController.displayPage
+    case LinkDucrToMucr              => routes.ConsignmentReferencesController.displayPage
     case ConsignmentReferences       => routes.DeclarantDetailsController.displayPage
     case ExporterEoriNumber          => routes.DeclarantExporterController.displayPage
     case ExporterDetails             => routes.ExporterEoriNumberController.displayPage
@@ -256,8 +256,7 @@ class Navigator @Inject() (
 
   val simplified: PartialFunction[DeclarationPage, Call] = {
     case DeclarantDetails            => routes.AdditionalDeclarationTypeController.displayPage
-    case Lrn                         => routes.DeclarantDetailsController.displayPage
-    case Ducr                        => routes.DeclarantDetailsController.displayPage
+    case LinkDucrToMucr              => routes.LocalReferenceNumberController.displayPage
     case ConsignmentReferences       => routes.DeclarantDetailsController.displayPage
     case ExporterEoriNumber          => routes.DeclarantExporterController.displayPage
     case ExporterDetails             => routes.ExporterEoriNumberController.displayPage
@@ -304,8 +303,7 @@ class Navigator @Inject() (
 
   val occasional: PartialFunction[DeclarationPage, Call] = {
     case DeclarantDetails            => routes.AdditionalDeclarationTypeController.displayPage
-    case Lrn                         => routes.DeclarantDetailsController.displayPage
-    case Ducr                        => routes.DeclarantDetailsController.displayPage
+    case LinkDucrToMucr              => routes.LocalReferenceNumberController.displayPage
     case ConsignmentReferences       => routes.DeclarantDetailsController.displayPage
     case ExporterEoriNumber          => routes.DeclarantExporterController.displayPage
     case ExporterDetails             => routes.ExporterEoriNumberController.displayPage

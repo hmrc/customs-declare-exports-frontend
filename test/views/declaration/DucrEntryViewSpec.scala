@@ -52,18 +52,9 @@ class DucrEntryViewSpec extends PageWithButtonsSpec with Injector {
       messages must haveTranslationFor("declaration.ducrEntry.ducr.paragraph.bullet4")
       messages must haveTranslationFor("declaration.ducrEntry.ducr.paragraph.bullet5")
       messages must haveTranslationFor("declaration.ducrEntry.ducr.hint")
-      messages must haveTranslationFor("declaration.consignmentReferences.ducr.inset.1")
+      messages must haveTranslationFor("declaration.ducrEntry.ducr.inset.1")
       messages must haveTranslationFor("declaration.consignmentReferences.ducr.error.empty")
       messages must haveTranslationFor("declaration.consignmentReferences.ducr.error.invalid")
-      messages must haveTranslationFor("declaration.consignmentReferences.supplementary.ducr.hint1")
-      messages must haveTranslationFor("declaration.consignmentReferences.lrn.info")
-      messages must haveTranslationFor("declaration.consignmentReferences.supplementary.lrn.info")
-      messages must haveTranslationFor("declaration.consignmentReferences.supplementary.lrn.hint")
-      messages must haveTranslationFor("declaration.consignmentReferences.supplementary.mrn.info")
-      messages must haveTranslationFor("declaration.consignmentReferences.supplementary.mrn.hint1")
-      messages must haveTranslationFor("declaration.consignmentReferences.supplementary.mrn.hint2")
-      messages must haveTranslationFor("declaration.consignmentReferences.supplementary.mrn.error.empty")
-      messages must haveTranslationFor("declaration.consignmentReferences.supplementary.mrn.error.invalid")
     }
 
     "display page title" in {
@@ -125,23 +116,10 @@ class DucrEntryViewSpec extends PageWithButtonsSpec with Injector {
       createView().getElementsByAttributeValue("for", "mrn") mustBe empty
     }
 
-  }
-
-  "Ducr Entry View" should {
-
-    onJourney(STANDARD, OCCASIONAL, SIMPLIFIED) { implicit request =>
-      "display 'Back' button that links to 'Declarant Details' page" in {
-        val backButton = createView().getElementById("back-link")
-        backButton must containMessage(backToPreviousQuestionCaption)
-        backButton must haveHref(DeclarantDetailsController.displayPage().url)
-      }
-    }
-    onClearance { implicit request =>
-      "display 'Back' button that links to 'Declaration Type' page" in {
-        val backButton = createView().getElementById("back-link")
-        backButton must containMessage(backToPreviousQuestionCaption)
-        backButton must haveHref(routes.AdditionalDeclarationTypeController.displayPage().url)
-      }
+    "display 'Back' button that links to 'Declarant Details' page" in {
+      val backButton = createView().getElementById("back-link")
+      backButton must containMessage(backToPreviousQuestionCaption)
+      backButton must haveHref(DeclarantDetailsController.displayPage().url)
     }
 
   }

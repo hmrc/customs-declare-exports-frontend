@@ -62,6 +62,6 @@ class LocalReferenceNumberController @Inject() (
   private def updateCacheAndContinue(lrn: Lrn)(implicit request: JourneyRequest[AnyContent]): Future[Result] =
     updateDeclarationFromRequest { dec =>
       dec.copy(consignmentReferences = dec.ducr.map(ducr => ConsignmentReferences(ducr, lrn)))
-    }.map(_ => navigator.continueTo(routes.DeclarantExporterController.displayPage))
+    }.map(_ => navigator.continueTo(routes.LinkDucrToMucrController.displayPage))
 
 }

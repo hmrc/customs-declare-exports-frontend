@@ -117,7 +117,7 @@ class DucrEntryControllerSpec extends ControllerSpec with GivenWhenThen {
         declaration.intermediaryConsignmentReferences.head.ducr.head.ducr mustBe ducr.toUpperCase
       }
 
-      "return 303 (SEE_OTHER) and redirect to 'Link DUCR to MUCR' page" in {
+      "return 303 (SEE_OTHER) and redirect to 'Lrn' page" in {
 
         val correctForm = Json.toJson(Ducr(DUCR))
         withNewCaching(request.cacheModel)
@@ -125,7 +125,7 @@ class DucrEntryControllerSpec extends ControllerSpec with GivenWhenThen {
         val result = controller.submitDucr()(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe routes.LinkDucrToMucrController.displayPage()
+        thePageNavigatedTo mustBe routes.LocalReferenceNumberController.displayPage
       }
     }
 

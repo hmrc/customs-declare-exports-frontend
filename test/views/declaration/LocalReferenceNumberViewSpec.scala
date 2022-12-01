@@ -19,7 +19,7 @@ package views.declaration
 import base.ExportsTestData._
 import base.{Injector, TestHelper}
 import controllers.declaration.routes
-import controllers.declaration.routes.DeclarantDetailsController
+import controllers.declaration.routes.{DeclarantDetailsController, DucrEntryController}
 import forms.Lrn
 import forms.Lrn.form
 import models.DeclarationType._
@@ -56,32 +56,13 @@ class LocalReferenceNumberViewSpec extends PageWithButtonsSpec with Injector {
   "Local Reference Number" should {
 
     "have correct message keys" in {
-      messages must haveTranslationFor("declaration.consignmentReferences.header")
-      messages must haveTranslationFor("declaration.consignmentReferences.ducr.info")
-      messages must haveTranslationFor("declaration.consignmentReferences.ducr.paragraph")
-      messages must haveTranslationFor("declaration.consignmentReferences.ducr.paragraph.bullet1")
-      messages must haveTranslationFor("declaration.consignmentReferences.ducr.paragraph.bullet2")
-      messages must haveTranslationFor("declaration.consignmentReferences.ducr.paragraph.bullet3")
-      messages must haveTranslationFor("declaration.consignmentReferences.ducr.paragraph.bullet4")
-      messages must haveTranslationFor("declaration.consignmentReferences.ducr.paragraph.bullet5")
-      messages must haveTranslationFor("declaration.consignmentReferences.ducr.hint")
-      messages must haveTranslationFor("declaration.consignmentReferences.ducr.inset.1")
-      messages must haveTranslationFor("declaration.consignmentReferences.ducr.error.empty")
-      messages must haveTranslationFor("declaration.consignmentReferences.ducr.error.invalid")
-      messages must haveTranslationFor("declaration.consignmentReferences.supplementary.ducr.hint1")
-      messages must haveTranslationFor("declaration.consignmentReferences.lrn.info")
-      messages must haveTranslationFor("declaration.consignmentReferences.supplementary.lrn.info")
-      messages must haveTranslationFor("declaration.consignmentReferences.lrn.hint")
-      messages must haveTranslationFor("declaration.consignmentReferences.lrn.inset")
+      messages must haveTranslationFor("declaration.lrn.header")
+      messages must haveTranslationFor("declaration.lrn.body")
+      messages must haveTranslationFor("declaration.lrn.hint")
+      messages must haveTranslationFor("declaration.lrn.inset")
       messages must haveTranslationFor("declaration.consignmentReferences.lrn.error.empty")
       messages must haveTranslationFor("declaration.consignmentReferences.lrn.error.length")
       messages must haveTranslationFor("declaration.consignmentReferences.lrn.error.specialCharacter")
-      messages must haveTranslationFor("declaration.consignmentReferences.supplementary.lrn.hint")
-      messages must haveTranslationFor("declaration.consignmentReferences.supplementary.mrn.info")
-      messages must haveTranslationFor("declaration.consignmentReferences.supplementary.mrn.hint1")
-      messages must haveTranslationFor("declaration.consignmentReferences.supplementary.mrn.hint2")
-      messages must haveTranslationFor("declaration.consignmentReferences.supplementary.mrn.error.empty")
-      messages must haveTranslationFor("declaration.consignmentReferences.supplementary.mrn.error.invalid")
     }
   }
 
@@ -158,23 +139,10 @@ class LocalReferenceNumberViewSpec extends PageWithButtonsSpec with Injector {
     view.getElementById("lrn").attr("value") mustBe lrn
   }
 
-  "Lrn View" should {
-
-    onJourney(STANDARD, SIMPLIFIED, OCCASIONAL) { implicit request =>
-      "display 'Back' button that links to 'Declarant Details' page" in {
-        val backButton = createView().getElementById("back-link")
-        backButton must containMessage(backToPreviousQuestionCaption)
-        backButton must haveHref(DeclarantDetailsController.displayPage().url)
-      }
-    }
-
-    onClearance { implicit request =>
-      "display 'Back' button that links to 'Declaration Type' page" in {
-        val backButton = createView().getElementById("back-link")
-        backButton must containMessage(backToPreviousQuestionCaption)
-        backButton must haveHref(routes.AdditionalDeclarationTypeController.displayPage().url)
-      }
-    }
+  "display 'Back' button that links to 'Declarant Details' page" in {
+    val backButton = createView().getElementById("back-link")
+    backButton must containMessage(backToPreviousQuestionCaption)
+    backButton must haveHref(DucrEntryController.displayPage.url)
   }
 
 }
