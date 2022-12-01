@@ -79,7 +79,7 @@ class LocalReferenceNumberControllerSpec extends ControllerSpec with GivenWhenTh
   "ConsignmentReferencesController on submitConsignmentReferences" should {
 
     onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, CLEARANCE) { request =>
-      val correctForm = Json.toJson(ConsignmentReferences(Ducr(DUCR), LRN))
+      val correctForm = Json.toJson(ConsignmentReferences(Ducr(DUCR), Some(LRN)))
 
       "return 303 (SEE_OTHER) and redirect on displayPage" in {
         withNewCaching(request.cacheModel)
@@ -121,7 +121,7 @@ class LocalReferenceNumberControllerSpec extends ControllerSpec with GivenWhenTh
 
         "user enters incorrect data" in {
           withNewCaching(req.cacheModel)
-          val incorrectForm = Json.toJson(ConsignmentReferences(Ducr("1234"), Lrn("")))
+          val incorrectForm = Json.toJson(ConsignmentReferences(Ducr("1234"), Some(Lrn(""))))
 
           val result = controller.submitConsignmentReferences()(postRequest(incorrectForm))
           status(result) must be(BAD_REQUEST)
@@ -130,7 +130,7 @@ class LocalReferenceNumberControllerSpec extends ControllerSpec with GivenWhenTh
         "LrnValidator returns false" in {
           when(lrnValidator.hasBeenSubmittedInThePast48Hours(any[Lrn])(any(), any())).thenReturn(Future.successful(true))
           withNewCaching(req.cacheModel)
-          val correctForm = Json.toJson(ConsignmentReferences(Ducr(DUCR), LRN))
+          val correctForm = Json.toJson(ConsignmentReferences(Ducr(DUCR), Some(LRN)))
 
           val result = controller.submitConsignmentReferences()(postRequest(correctForm))
           status(result) must be(BAD_REQUEST)
@@ -141,7 +141,7 @@ class LocalReferenceNumberControllerSpec extends ControllerSpec with GivenWhenTh
         withNewCaching(req.cacheModel)
 
         val ducr = "9gb123456664559-1abc"
-        val correctForm = Json.toJson(ConsignmentReferences(Ducr(ducr), LRN))
+        val correctForm = Json.toJson(ConsignmentReferences(Ducr(ducr), Some(LRN)))
         val result = controller.submitConsignmentReferences()(postRequest(correctForm))
 
         And("return 303 (SEE_OTHER)")
@@ -156,7 +156,7 @@ class LocalReferenceNumberControllerSpec extends ControllerSpec with GivenWhenTh
         "for SUPPLEMENTARY_SIMPLIFIED" in {
           val request = journeyRequest(aDeclaration(withType(req.declarationType), withAdditionalDeclarationType(SUPPLEMENTARY_SIMPLIFIED)))
           withNewCaching(request.cacheModel)
-          val correctForm = Json.toJson(ConsignmentReferences(Ducr(DUCR), LRN, Some(MRN)))
+          val correctForm = Json.toJson(ConsignmentReferences(Ducr(DUCR), Some(LRN), Some(MRN)))
 
           val result = controller.submitConsignmentReferences()(postRequest(correctForm))
 
@@ -167,7 +167,7 @@ class LocalReferenceNumberControllerSpec extends ControllerSpec with GivenWhenTh
         "return 303 (SEE_OTHER) and redirect to 'Link DUCR to MUCR' page for SUPPLEMENTARY_EIDR" in {
           val request = journeyRequest(aDeclaration(withType(req.declarationType), withAdditionalDeclarationType(SUPPLEMENTARY_EIDR)))
           withNewCaching(request.cacheModel)
-          val correctForm = Json.toJson(ConsignmentReferences(Ducr(DUCR), LRN, None, Some(eidrDateStamp)))
+          val correctForm = Json.toJson(ConsignmentReferences(Ducr(DUCR), Some(LRN), None, Some(eidrDateStamp)))
 
           val result = controller.submitConsignmentReferences()(postRequest(correctForm))
 

@@ -20,8 +20,8 @@ import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.Ducr
 import forms.Ducr.form
-import forms.declaration.IntermediaryConsignmentReferences
-import models.DeclarationType.{allDeclarationTypes, allDeclarationTypesExcluding, SUPPLEMENTARY}
+import forms.declaration.ConsignmentReferences
+import models.DeclarationType.{allDeclarationTypesExcluding, SUPPLEMENTARY}
 import models.requests.JourneyRequest
 import play.api.i18n.I18nSupport
 import play.api.mvc._
@@ -46,7 +46,7 @@ class DucrEntryController @Inject() (
   val displayPage: Action[AnyContent] = (authenticate andThen journeyType(allDeclarationTypesExcluding(SUPPLEMENTARY))) { implicit request =>
     val frm = form.withSubmissionErrors()
     request.cacheModel.ducr match {
-      case Some(data) => Ok(ducrEntryPage(frm.fill(Ducr(data.ducr))))
+      case Some(data) => Ok(ducrEntryPage(frm.fill(data)))
       case _          => Ok(ducrEntryPage(frm))
     }
   }
@@ -58,11 +58,11 @@ class DucrEntryController @Inject() (
   }
 
   private def updateCacheAndContinue(ducr: Ducr)(implicit request: JourneyRequest[AnyContent]): Future[Result] =
-    updateDeclarationFromRequest(dec =>
-      dec
-        .copy(intermediaryConsignmentReferences = Some(IntermediaryConsignmentReferences(Some(ducr), None)))
-        .copy(consignmentReferences = dec.consignmentReferences.map(_.copy(ducr = ducr)))
-    )
-      .map(_ => navigator.continueTo(routes.LocalReferenceNumberController.displayPage))
+    updateDeclarationFromRequest { dec =>
+      dec.copy(consignmentReferences = dec.consignmentReferences match {
+        case Some(consignmentRefs) => Some(consignmentRefs.copy(ducr = ducr))
+        case _                     => Some(ConsignmentReferences(ducr, None))
+      })
+    } map (_ => navigator.continueTo(routes.LocalReferenceNumberController.displayPage))
 
 }

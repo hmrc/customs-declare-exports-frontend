@@ -46,7 +46,7 @@ class LocalReferenceNumberController @Inject() (
 
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType(allDeclarationTypesExcluding(SUPPLEMENTARY))) { implicit request =>
     val frm = form.withSubmissionErrors()
-    request.cacheModel.consignmentReferences.map(_.lrn) match {
+    request.cacheModel.consignmentReferences.flatMap(_.lrn) match {
       case Some(data) => Ok(LrnPage(frm.fill(data)))
       case _          => Ok(LrnPage(frm))
     }
@@ -61,7 +61,7 @@ class LocalReferenceNumberController @Inject() (
 
   private def updateCacheAndContinue(lrn: Lrn)(implicit request: JourneyRequest[AnyContent]): Future[Result] =
     updateDeclarationFromRequest { dec =>
-      dec.copy(consignmentReferences = dec.ducr.map(ducr => ConsignmentReferences(ducr, lrn)))
+      dec.copy(consignmentReferences = dec.ducr.map(ducr => ConsignmentReferences(ducr, Some(lrn))))
     }.map(_ => navigator.continueTo(routes.LinkDucrToMucrController.displayPage))
 
 }

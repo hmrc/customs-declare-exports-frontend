@@ -101,36 +101,19 @@ class DucrEntryControllerSpec extends ControllerSpec with GivenWhenThen {
 
       }
 
-      "change to uppercase any lowercase letter entered in the DUCR field" when {
-        "consignmentReferences exists" in {
-          withNewCaching(request.cacheModel)
+      "change to uppercase any lowercase letter entered in the DUCR field" in {
+        withNewCaching(request.cacheModel)
 
-          val ducr = "9gb123456664559-1abc"
-          val correctForm = Json.toJson(Ducr(ducr))
-          val result = controller.submitDucr()(postRequest(correctForm))
+        val ducr = "9gb123456664559-1abc"
+        val correctForm = Json.toJson(Ducr(ducr))
+        val result = controller.submitDucr()(postRequest(correctForm))
 
-          And("return 303 (SEE_OTHER)")
-          await(result) mustBe aRedirectToTheNextPage
+        And("return 303 (SEE_OTHER)")
+        await(result) mustBe aRedirectToTheNextPage
 
-          val declaration = theCacheModelUpdated
-          declaration.intermediaryConsignmentReferences.head.ducr.head.ducr mustBe ducr.toUpperCase
-          declaration.consignmentReferences mustBe None
-        }
-        "consignmentReferences is None" in {
+        val declaration = theCacheModelUpdated
+        declaration.consignmentReferences.head.ducr.ducr mustBe ducr.toUpperCase
 
-          withNewCaching(aDeclaration(withType(request.declarationType), withConsignmentReferences()))
-
-          val ducr = "9gb123456664559-1abc"
-          val correctForm = Json.toJson(Ducr(ducr))
-          val result = controller.submitDucr()(postRequest(correctForm))
-
-          And("return 303 (SEE_OTHER)")
-          await(result) mustBe aRedirectToTheNextPage
-
-          val declaration = theCacheModelUpdated
-          declaration.intermediaryConsignmentReferences.head.ducr.head.ducr mustBe ducr.toUpperCase
-          declaration.consignmentReferences.head.ducr.ducr mustBe ducr.toUpperCase
-        }
       }
 
       "return 303 (SEE_OTHER) and redirect to 'Lrn' page" in {

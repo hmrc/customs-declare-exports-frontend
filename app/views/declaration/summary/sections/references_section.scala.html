@@ -152,19 +152,19 @@
                 ))
             )
         ),
-        declaration.consignmentReferences.map(refs =>
+        declaration.consignmentReferences.flatMap(_.lrn).map(lrn =>
             SummaryListRow(
                 classes = "lrn-row",
                 key = Key(
                     content = Text(messages(lrnLabelText))
                 ),
                 value = Value(
-                    content = Text(refs.lrn.lrn)
+                    content = Text(lrn.lrn)
                 ),
                 actions = actions(Actions(
                     items = Seq(
                         actionSummaryItem(
-                            href = routes.DucrEntryController.displayPage.url,
+                            href = routes.LocalReferenceNumberController.displayPage.url,
                             content = HtmlContent(linkContent(messages("site.change"))),
                             visuallyHiddenText = Some(messages("declaration.summary.references.lrn.change"))
                         )
