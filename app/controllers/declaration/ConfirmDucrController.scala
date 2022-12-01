@@ -21,8 +21,9 @@ import controllers.navigation.Navigator
 import forms.Ducr
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
+import forms.declaration.IntermediaryConsignmentReferences
 import handlers.ErrorHandler
-import models.DeclarationType.{SUPPLEMENTARY, allDeclarationTypes, allDeclarationTypesExcluding}
+import models.DeclarationType.{allDeclarationTypesExcluding, SUPPLEMENTARY}
 import models.ExportsDeclaration
 import models.requests.JourneyRequest
 import play.api.data.Form
@@ -49,12 +50,11 @@ class ConfirmDucrController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with WithDefaultFormBinding with ModelCacheable with SubmissionErrors {
 
-  def displayPage(): Action[AnyContent] = (authorise andThen getJourney(allDeclarationTypesExcluding(SUPPLEMENTARY))).async {
-    implicit request =>
-      request.cacheModel.traderReference.fold {
-        logger.warn("No trader reference found in cache to generate DUCR!")
-        errorHandler.displayErrorPage()
-      }(_ => Future.successful(Ok(confirmDucrPage(form.withSubmissionErrors(), generatedDucr))))
+  def displayPage(): Action[AnyContent] = (authorise andThen getJourney(allDeclarationTypesExcluding(SUPPLEMENTARY))).async { implicit request =>
+    request.cacheModel.traderReference.fold {
+      logger.warn("No trader reference found in cache to generate DUCR!")
+      errorHandler.displayErrorPage()
+    }(_ => Future.successful(Ok(confirmDucrPage(form.withSubmissionErrors(), generatedDucr))))
   }
 
   def submitForm(): Action[AnyContent] = (authorise andThen getJourney(allDeclarationTypesExcluding(SUPPLEMENTARY))).async { implicit request =>
@@ -77,6 +77,10 @@ class ConfirmDucrController @Inject() (
     Ducr(lastDigitOfYear + "GB" + eori.takeRight(12) + "-" + tradeRef)
   }
 
-  private def updateCache(implicit request: JourneyRequest[_]): Future[ExportsDeclaration] =
-    updateDeclarationFromRequest(_.copy(ducrEntry = Some(generatedDucr)))
+  private def updateCache(implicit request: JourneyRequest[_]): Future[ExportsDeclaration] = {
+    val existingTraderReference = request.cacheModel.intermediaryConsignmentReferences.flatMap(_.traderReference)
+    updateDeclarationFromRequest(
+      _.copy(intermediaryConsignmentReferences = Some(IntermediaryConsignmentReferences(Some(generatedDucr), existingTraderReference)))
+    )
+  }
 }

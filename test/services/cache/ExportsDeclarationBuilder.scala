@@ -96,7 +96,10 @@ trait ExportsDeclarationBuilder {
 
   def withUpdateTime(updateDateTime: Instant): ExportsDeclarationModifier = _.copy(updatedDateTime = updateDateTime)
 
-  def withTraderReference(traderReference: TraderReference): ExportsDeclarationModifier = _.copy(traderReference = Some(traderReference))
+  def withTraderReference(traderReference: TraderReference): ExportsDeclarationModifier = model =>
+    model.copy(intermediaryConsignmentReferences =
+      Some(IntermediaryConsignmentReferences(model.intermediaryConsignmentReferences.flatMap(_.ducr), Some(traderReference)))
+    )
 
   def withoutTotalNumberOfItems(): ExportsDeclarationModifier = _.copy(totalNumberOfItems = None)
 

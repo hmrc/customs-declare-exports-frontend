@@ -20,7 +20,7 @@ import base.ControllerSpec
 import forms.Ducr
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
-import forms.declaration.TraderReference
+import forms.declaration.{IntermediaryConsignmentReferences, TraderReference}
 import mock.ErrorHandlerMocks
 import models.DeclarationType.SUPPLEMENTARY
 import org.mockito.ArgumentMatchers.{any, eq => meq}
@@ -118,6 +118,7 @@ class ConfirmDucrControllerSpec extends ControllerSpec with ErrorHandlerMocks {
 
     "return 303 redirect" when {
 
+      /* TODO: Implement correct route for Yes answer when /local-reference-number completed
       "form was submitted with Yes answer" in {
         val declaration = aDeclaration(withTraderReference(dummyTraderRef), withCreatedDate(LocalDateTime.now()))
         withNewCaching(declaration)
@@ -127,8 +128,11 @@ class ConfirmDucrControllerSpec extends ControllerSpec with ErrorHandlerMocks {
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe ???
-        theCacheModelCreated mustBe aDeclarationAfter(declaration, _.copy(ducrEntry = Some(dummyDucr)))
-      }
+
+        val cacheModifier: ExportsDeclarationModifier =
+          _.copy(intermediaryConsignmentReferences = Some(IntermediaryConsignmentReferences(Some(dummyDucr), Some(dummyTraderRef))))
+        theCacheModelCreated mustBe aDeclarationAfter(declaration, cacheModifier)
+      }*/
 
       "form was submitted with No answer" in {
         withNewCaching(aDeclaration(withTraderReference(dummyTraderRef), withCreatedDate(LocalDateTime.now())))

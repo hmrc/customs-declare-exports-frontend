@@ -19,7 +19,7 @@ package controllers.declaration
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.routes.ConfirmDucrController
 import controllers.navigation.Navigator
-import forms.declaration.TraderReference
+import forms.declaration.{IntermediaryConsignmentReferences, TraderReference}
 import models.DeclarationType.{allDeclarationTypesExcluding, SUPPLEMENTARY}
 import models.ExportsDeclaration
 import models.requests.JourneyRequest
@@ -58,6 +58,8 @@ class TraderReferenceController @Inject() (
       )
   }
 
-  private def updateCache(value: TraderReference)(implicit request: JourneyRequest[_]): Future[ExportsDeclaration] =
-    updateDeclarationFromRequest(_.copy(traderReference = Some(value)))
+  private def updateCache(value: TraderReference)(implicit request: JourneyRequest[_]): Future[ExportsDeclaration] = {
+    val existingDucr = request.cacheModel.intermediaryConsignmentReferences.flatMap(_.ducr)
+    updateDeclarationFromRequest(_.copy(intermediaryConsignmentReferences = Some(IntermediaryConsignmentReferences(existingDucr, Some(value)))))
+  }
 }
