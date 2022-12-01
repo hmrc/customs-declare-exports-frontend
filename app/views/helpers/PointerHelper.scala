@@ -99,7 +99,7 @@ object PointerHelper extends Logging {
 
   // mappings to pages that require only one parameter
   private val urlMapping1Param: Map[String, Call] = Map(
-    "declaration.consignmentReferences.lrn" -> DucrEntryController.displayPage,
+    "declaration.consignmentReferences.lrn" -> ConsignmentReferencesController.displayPage,
     "declaration.totalNumberOfItems.totalAmountInvoiced" -> InvoiceAndExchangeRateController.displayPage,
     "declaration.totalPackageQuantity" -> TotalPackageQuantityController.displayPage,
     "declaration.parties.representativeDetails.details.eori" -> RepresentativeEntityController.displayPage,
@@ -158,6 +158,6 @@ object PointerHelper extends Logging {
     "declaration.locations.warehouseIdentification.identificationNumber" -> WarehouseIdentificationController.displayPage,
     "declaration.locations.warehouseIdentification.identificationType" -> WarehouseIdentificationController.displayPage,
     "declaration.locations.warehouseIdentification.supervisingCustomsOffice" -> SupervisingCustomsOfficeController.displayPage,
-    "declaration.consignmentReferences.ucr" -> DucrEntryController.displayPage
+    "declaration.consignmentReferences.ucr" -> ConsignmentReferencesController.displayPage
   )
 }
