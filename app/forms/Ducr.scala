@@ -42,6 +42,6 @@ object Ducr extends DeclarationPage {
     model => Some(model.ducr)
 
   override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
-    Seq(TariffContentKey("tariff.declaration.ducrEntry.1.common"), TariffContentKey("tariff.declaration.ducrEntry.2.common"))
+    Seq(TariffContentKey("tariff.declaration.consignmentReferences.1.common"), TariffContentKey("tariff.declaration.consignmentReferences.3.common"))
 
 }

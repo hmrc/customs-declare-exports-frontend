@@ -17,6 +17,8 @@
 package forms
 
 import forms.declaration.ConsignmentReferences
+import models.DeclarationType.DeclarationType
+import models.viewmodels.TariffContentKey
 import play.api.data.Forms._
 import play.api.data.{Form, FormError, Forms, Mapping}
 import play.api.libs.json.{Format, JsString, Reads, Writes}
@@ -51,7 +53,6 @@ object Lrn extends DeclarationPage {
       .verifying(s"$prefix.error.specialCharacter", isEmpty or isAlphanumericWithSpace)
       .transform[Lrn](form2Data, _.lrn)
   implicit class LrnFormEnhanced(form: Form[Lrn]) {
-
     def verifyLrnValidity(lrnValidator: LrnValidator)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Form[Lrn]] =
       form.value.fold(Future.successful(form)) { lrn =>
         lrnValidator.hasBeenSubmittedInThePast48Hours(lrn).map {
@@ -59,6 +60,9 @@ object Lrn extends DeclarationPage {
           case false => form
         }
       }
-
   }
+
+  override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
+    Seq(TariffContentKey("tariff.declaration.consignmentReferences.2.common"), TariffContentKey("tariff.declaration.consignmentReferences.3.common"))
+
 }

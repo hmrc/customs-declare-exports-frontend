@@ -88,7 +88,7 @@ class DucrEntryControllerSpec extends ControllerSpec with GivenWhenThen {
     }
   }
 
-  "ConsignmentReferencesController on submitConsignmentReferences" should {
+  "DucrEntryController on submitConsignmentReferences" should {
 
     onJourney(STANDARD, OCCASIONAL, SIMPLIFIED, CLEARANCE) { request =>
       "return 400 (BAD_REQUEST)" when {
@@ -103,18 +103,36 @@ class DucrEntryControllerSpec extends ControllerSpec with GivenWhenThen {
 
       }
 
-      "change to uppercase any lowercase letter entered in the DUCR field" in {
-        withNewCaching(request.cacheModel)
+      "change to uppercase any lowercase letter entered in the DUCR field" when {
+        "consignmentReferences exists" in {
+          withNewCaching(request.cacheModel)
 
-        val ducr = "9gb123456664559-1abc"
-        val correctForm = Json.toJson(Ducr(ducr))
-        val result = controller.submitDucr()(postRequest(correctForm))
+          val ducr = "9gb123456664559-1abc"
+          val correctForm = Json.toJson(Ducr(ducr))
+          val result = controller.submitDucr()(postRequest(correctForm))
 
-        And("return 303 (SEE_OTHER)")
-        await(result) mustBe aRedirectToTheNextPage
+          And("return 303 (SEE_OTHER)")
+          await(result) mustBe aRedirectToTheNextPage
 
-        val declaration = theCacheModelUpdated
-        declaration.intermediaryConsignmentReferences.head.ducr.head.ducr mustBe ducr.toUpperCase
+          val declaration = theCacheModelUpdated
+          declaration.intermediaryConsignmentReferences.head.ducr.head.ducr mustBe ducr.toUpperCase
+          declaration.consignmentReferences mustBe None
+        }
+        "consignmentReferences is None" in {
+
+          withNewCaching(aDeclaration(withType(request.declarationType), withConsignmentReferences()))
+
+          val ducr = "9gb123456664559-1abc"
+          val correctForm = Json.toJson(Ducr(ducr))
+          val result = controller.submitDucr()(postRequest(correctForm))
+
+          And("return 303 (SEE_OTHER)")
+          await(result) mustBe aRedirectToTheNextPage
+
+          val declaration = theCacheModelUpdated
+          declaration.intermediaryConsignmentReferences.head.ducr.head.ducr mustBe ducr.toUpperCase
+          declaration.consignmentReferences.head.ducr.ducr mustBe ducr.toUpperCase
+        }
       }
 
       "return 303 (SEE_OTHER) and redirect to 'Lrn' page" in {
@@ -129,30 +147,32 @@ class DucrEntryControllerSpec extends ControllerSpec with GivenWhenThen {
       }
     }
 
-    onJourney(SUPPLEMENTARY) { req =>
-      "return 303 (SEE_OTHER) and redirect on display" when {
+  }
 
-        "for SUPPLEMENTARY_SIMPLIFIED" in {
-          val request = journeyRequest(aDeclaration(withType(req.declarationType)))
-          withNewCaching(request.cacheModel)
+  onJourney(SUPPLEMENTARY) { req =>
+    "return 303 (SEE_OTHER) and redirect" when {
 
-          val result = controller.displayPage()(getRequest())
+      ".onDisplay" in {
+        val request = journeyRequest(aDeclaration(withType(req.declarationType)))
+        withNewCaching(request.cacheModel)
 
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.routes.RootController.displayPage().url)
-        }
+        val result = controller.displayPage()(getRequest())
 
-        "return 303 (SEE_OTHER) and redirect on submit" in {
-          val request = journeyRequest(aDeclaration(withType(req.declarationType)))
-          withNewCaching(request.cacheModel)
-          val correctForm = Json.toJson(Ducr(DUCR))
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(controllers.routes.RootController.displayPage().url)
+      }
 
-          val result = controller.submitDucr()(postRequest(correctForm))
+      ".onSubmit" in {
+        val request = journeyRequest(aDeclaration(withType(req.declarationType)))
+        withNewCaching(request.cacheModel)
+        val correctForm = Json.toJson(Ducr(DUCR))
 
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.routes.RootController.displayPage().url)
-        }
+        val result = controller.submitDucr()(postRequest(correctForm))
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(controllers.routes.RootController.displayPage().url)
       }
     }
   }
+
 }
