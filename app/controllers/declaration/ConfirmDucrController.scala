@@ -61,7 +61,7 @@ class ConfirmDucrController @Inject() (
     form.bindFromRequest.fold(
       formWithErrors => Future.successful(BadRequest(confirmDucrPage(formWithErrors, generatedDucr))),
       {
-        case YesNoAnswer(YesNoAnswers.yes) => updateCache.map(_ => navigator.continueTo(???))
+        case YesNoAnswer(YesNoAnswers.yes) => updateCache.map(_ => navigator.continueTo(routes.LocalReferenceNumberController.displayPage))
         case _                             => Future.successful(navigator.continueTo(routes.DucrEntryController.displayPage))
       }
     )

@@ -118,7 +118,6 @@ class ConfirmDucrControllerSpec extends ControllerSpec with ErrorHandlerMocks {
 
     "return 303 redirect" when {
 
-      /* TODO: Implement correct route for Yes answer when /local-reference-number completed
       "form was submitted with Yes answer" in {
         val declaration = aDeclaration(withTraderReference(dummyTraderRef), withCreatedDate(LocalDateTime.now()))
         withNewCaching(declaration)
@@ -127,12 +126,12 @@ class ConfirmDucrControllerSpec extends ControllerSpec with ErrorHandlerMocks {
         val result = controller.submitForm()(postRequest(body, aDeclaration()))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe ???
+        thePageNavigatedTo mustBe routes.LocalReferenceNumberController.displayPage
 
         val cacheModifier: ExportsDeclarationModifier =
           _.copy(intermediaryConsignmentReferences = Some(IntermediaryConsignmentReferences(Some(dummyDucr), Some(dummyTraderRef))))
-        theCacheModelCreated mustBe aDeclarationAfter(declaration, cacheModifier)
-      }*/
+        theCacheModelUpdated mustBe aDeclarationAfter(declaration, cacheModifier)
+      }
 
       "form was submitted with No answer" in {
         withNewCaching(aDeclaration(withTraderReference(dummyTraderRef), withCreatedDate(LocalDateTime.now())))
