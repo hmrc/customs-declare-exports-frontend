@@ -17,10 +17,11 @@
 package controllers.declaration
 
 import base.ControllerSpec
-import forms.Ducr
+import base.ExportsTestData.lrn
+import forms.{Ducr, Lrn}
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
-import forms.declaration.{IntermediaryConsignmentReferences, TraderReference}
+import forms.declaration.{ConsignmentReferences, IntermediaryConsignmentReferences, TraderReference}
 import mock.ErrorHandlerMocks
 import models.DeclarationType.SUPPLEMENTARY
 import org.mockito.ArgumentMatchers.{any, eq => meq}
@@ -118,7 +119,7 @@ class ConfirmDucrControllerSpec extends ControllerSpec with ErrorHandlerMocks {
 
     "return 303 redirect" when {
 
-      "form was submitted with Yes answer" in {
+      "form was submitted with Yes answer with no existing ConsignmentReferences" in {
         val declaration = aDeclaration(withTraderReference(dummyTraderRef), withCreatedDate(LocalDateTime.now()))
         withNewCaching(declaration)
 
@@ -130,6 +131,21 @@ class ConfirmDucrControllerSpec extends ControllerSpec with ErrorHandlerMocks {
 
         val cacheModifier: ExportsDeclarationModifier =
           _.copy(intermediaryConsignmentReferences = Some(IntermediaryConsignmentReferences(Some(dummyDucr), Some(dummyTraderRef))))
+        theCacheModelUpdated mustBe aDeclarationAfter(declaration, cacheModifier)
+      }
+
+      "form was submitted with Yes answer with existing ConsignmentReferences" in {
+        val declaration = aDeclaration(withTraderReference(dummyTraderRef), withConsignmentReferences(), withCreatedDate(LocalDateTime.now()))
+        withNewCaching(declaration)
+
+        val body = Json.obj(YesNoAnswer.formId -> YesNoAnswers.yes)
+        val result = controller.submitForm()(postRequest(body, aDeclaration()))
+
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe routes.LocalReferenceNumberController.displayPage
+
+        val cacheModifier: ExportsDeclarationModifier =
+          _.copy(consignmentReferences = Some(ConsignmentReferences(dummyDucr, Lrn(lrn))))
         theCacheModelUpdated mustBe aDeclarationAfter(declaration, cacheModifier)
       }
 

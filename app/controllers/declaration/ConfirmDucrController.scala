@@ -79,8 +79,14 @@ class ConfirmDucrController @Inject() (
 
   private def updateCache(implicit request: JourneyRequest[_]): Future[ExportsDeclaration] = {
     val existingTraderReference = request.cacheModel.intermediaryConsignmentReferences.flatMap(_.traderReference)
-    updateDeclarationFromRequest(
-      _.copy(intermediaryConsignmentReferences = Some(IntermediaryConsignmentReferences(Some(generatedDucr), existingTraderReference)))
-    )
+    val maybeExistingConsignmentRefs = request.cacheModel.consignmentReferences
+
+    maybeExistingConsignmentRefs.fold {
+      updateDeclarationFromRequest(
+        _.copy(intermediaryConsignmentReferences = Some(IntermediaryConsignmentReferences(Some(generatedDucr), existingTraderReference)))
+      )
+    } { existingRefs =>
+      updateDeclarationFromRequest(_.copy(consignmentReferences = Some(existingRefs.copy(ducr = generatedDucr))))
+    }
   }
 }

@@ -17,7 +17,6 @@
 package views.declaration
 
 import base.{Injector, MockAuthAction}
-import controllers.declaration.routes
 import forms.declaration.TraderReference
 import forms.declaration.TraderReference.form
 import models.DeclarationType.STANDARD
