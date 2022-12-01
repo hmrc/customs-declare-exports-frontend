@@ -16,8 +16,6 @@
 
 package controllers.declaration
 
-import scala.concurrent.Future
-
 import base.ControllerSpec
 import forms.Ducr
 import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}

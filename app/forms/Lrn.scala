@@ -16,11 +16,10 @@
 
 package forms
 
-import forms.declaration.ConsignmentReferences
 import models.DeclarationType.DeclarationType
 import models.viewmodels.TariffContentKey
 import play.api.data.Forms._
-import play.api.data.{Form, FormError, Forms, Mapping}
+import play.api.data.{Form, FormError, Mapping}
 import play.api.libs.json.{Format, JsString, Reads, Writes}
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.validators.forms.FieldValidator._

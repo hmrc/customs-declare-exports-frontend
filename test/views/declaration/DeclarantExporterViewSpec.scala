@@ -17,7 +17,7 @@
 package views.declaration
 
 import base.Injector
-import controllers.declaration.routes.{ConsignmentReferencesController, DeclarantDetailsController, DucrEntryController, LinkDucrToMucrController}
+import controllers.declaration.routes.{ConsignmentReferencesController, DeclarantDetailsController, LinkDucrToMucrController}
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.DeclarantIsExporter
 import forms.declaration.DeclarantIsExporter.form

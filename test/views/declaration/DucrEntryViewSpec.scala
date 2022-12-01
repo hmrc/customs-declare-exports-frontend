@@ -116,10 +116,23 @@ class DucrEntryViewSpec extends PageWithButtonsSpec with Injector {
       createView().getElementsByAttributeValue("for", "mrn") mustBe empty
     }
 
-    "display 'Back' button that links to 'Declarant Details' page" in {
-      val backButton = createView().getElementById("back-link")
-      backButton must containMessage(backToPreviousQuestionCaption)
-      backButton must haveHref(DeclarantDetailsController.displayPage().url)
+  }
+
+  "Ducr Entry View" should {
+
+    onJourney(STANDARD, OCCASIONAL, SIMPLIFIED) { implicit request =>
+      "display 'Back' button that links to 'Declarant Details' page" in {
+        val backButton = createView().getElementById("back-link")
+        backButton must containMessage(backToPreviousQuestionCaption)
+        backButton must haveHref(DeclarantDetailsController.displayPage().url)
+      }
+    }
+    onClearance { implicit request =>
+      "display 'Back' button that links to 'Declaration Type' page" in {
+        val backButton = createView().getElementById("back-link")
+        backButton must containMessage(backToPreviousQuestionCaption)
+        backButton must haveHref(routes.AdditionalDeclarationTypeController.displayPage().url)
+      }
     }
 
   }

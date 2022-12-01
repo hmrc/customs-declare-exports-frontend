@@ -18,8 +18,7 @@ package views.declaration
 
 import base.ExportsTestData._
 import base.{Injector, TestHelper}
-import controllers.declaration.routes
-import controllers.declaration.routes.{DeclarantDetailsController, DucrEntryController}
+import controllers.declaration.routes.DucrEntryController
 import forms.Lrn
 import forms.Lrn.form
 import models.DeclarationType._
