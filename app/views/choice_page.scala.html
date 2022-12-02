@@ -18,6 +18,7 @@
 @import config.AppConfig
 @import forms.Choice.AllowedChoiceValues._
 @import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.dashboard.DashboardHelper.toDashboard
 @import views.helpers.Title
 @import views.helpers.ErrorMapper.radioGroupErrors
 @import views.html.components.gds._
@@ -75,10 +76,10 @@
                     checked = form("value").value.contains(ContinueDec)
                 ),
                 RadioItem(
-                    id = Some(Submissions),
-                    value = Some(Submissions),
-                    content = Text(messages(s"declaration.choice.$Submissions")),
-                    checked = form("value").value.contains(Submissions)
+                    id = Some(Dashboard),
+                    value = Some(Dashboard),
+                    content = Text(messages(s"declaration.choice.$Dashboard")),
+                    checked = form("value").value.contains(Dashboard)
                 ),
                 RadioItem(
                     id = Some(Movements),
@@ -116,7 +117,7 @@
             @paragraphBody(
                 messages(
                     "declaration.choice.link.exports.description.p",
-                    link(id = None, text = messages("declaration.choice.link.exports.description.p.linkText"), call = controllers.routes.SubmissionsController.displayListOfSubmissions())
+                    link(id = None, text = messages("declaration.choice.link.exports.description.p.linkText"), call = toDashboard)
                 )
             )
 

@@ -19,6 +19,7 @@ package controllers
 import base.{ControllerWithoutFormSpec, Injector}
 import base.ExportsTestData._
 import config.{AppConfig, ExternalServicesConfig}
+import controllers.declaration.routes.DeclarationChoiceController
 import forms.Choice
 import forms.Choice.AllowedChoiceValues._
 import models.DeclarationType
@@ -32,6 +33,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import utils.FakeRequestCSRFSupport._
+import views.dashboard.DashboardHelper.toDashboard
 import views.html.choice_page
 
 class ChoiceControllerSpec extends ControllerWithoutFormSpec with OptionValues with Injector {
@@ -109,8 +111,8 @@ class ChoiceControllerSpec extends ControllerWithoutFormSpec with OptionValues w
         withNewCaching(existingDeclaration())
 
         val request = getRequest()
-        val result = controller.displayPage(Some(Choice(Submissions)))(request)
-        val form = Choice.form().fill(Choice(Submissions))
+        val result = controller.displayPage(Some(Choice(Dashboard)))(request)
+        val form = Choice.form().fill(Choice(Dashboard))
 
         viewOf(result) must be(choicePage(form, allJourneys)(request, controller.messagesApi.preferred(request)))
       }
@@ -146,7 +148,7 @@ class ChoiceControllerSpec extends ControllerWithoutFormSpec with OptionValues w
         val result = controller.submitChoice()(postChoiceRequest(createChoice))
 
         status(result) must be(SEE_OTHER)
-        redirectLocation(result) must be(Some(controllers.declaration.routes.DeclarationChoiceController.displayPage().url))
+        redirectLocation(result) must be(Some(DeclarationChoiceController.displayPage().url))
         verifyTheCacheIsUnchanged()
       }
     }
@@ -166,17 +168,17 @@ class ChoiceControllerSpec extends ControllerWithoutFormSpec with OptionValues w
         val result = controller.submitChoice()(postChoiceRequest(cancelChoice))
 
         status(result) must be(SEE_OTHER)
-        redirectLocation(result) must be(Some(controllers.routes.CancelDeclarationController.displayPage().url))
+        redirectLocation(result) must be(Some(routes.CancelDeclarationController.displayPage().url))
         verifyTheCacheIsUnchanged()
       }
     }
 
-    "redirect to Submissions page" when {
-      "user chose submissions" in {
-        val result = controller.submitChoice()(postChoiceRequest(submissionsChoice))
+    "redirect to the Dashboard" when {
+      "user chooses to view the list of submissions" in {
+        val result = controller.submitChoice()(postChoiceRequest(dashboardChoice))
 
         status(result) must be(SEE_OTHER)
-        redirectLocation(result) must be(Some(controllers.routes.SubmissionsController.displayListOfSubmissions().url))
+        redirectLocation(result) must be(Some(toDashboard.url))
         verifyTheCacheIsUnchanged()
       }
     }
@@ -186,7 +188,7 @@ class ChoiceControllerSpec extends ControllerWithoutFormSpec with OptionValues w
         val result = controller.submitChoice()(postChoiceRequest(continueDeclarationChoice))
 
         status(result) must be(SEE_OTHER)
-        redirectLocation(result) must be(Some(controllers.routes.SavedDeclarationsController.displayDeclarations().url))
+        redirectLocation(result) must be(Some(routes.SavedDeclarationsController.displayDeclarations().url))
         verifyTheCacheIsUnchanged()
       }
     }
@@ -196,7 +198,7 @@ class ChoiceControllerSpec extends ControllerWithoutFormSpec with OptionValues w
         val result = controller.submitChoice()(postChoiceRequest(inboxChoice))
 
         status(result) must be(SEE_OTHER)
-        redirectLocation(result) must be(Some(controllers.routes.SecureMessagingController.displayInbox.url))
+        redirectLocation(result) must be(Some(routes.SecureMessagingController.displayInbox.url))
         verifyTheCacheIsUnchanged()
       }
     }
@@ -242,7 +244,7 @@ object ChoiceControllerSpec {
   val createChoice: JsValue = Json.toJson(Choice(CreateDec))
   val movementsChoice: JsValue = Json.toJson(Choice(Movements))
   val cancelChoice: JsValue = Json.toJson(Choice(CancelDec))
-  val submissionsChoice: JsValue = Json.toJson(Choice(Submissions))
+  val dashboardChoice: JsValue = Json.toJson(Choice(Dashboard))
   val continueDeclarationChoice: JsValue = Json.toJson(Choice(ContinueDec))
   val inboxChoice: JsValue = Json.toJson(Choice(Inbox))
 }

@@ -26,13 +26,12 @@ import tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.ead.DeclarationType
 import views.helpers.{CommonMessages, Title, ViewDates}
-import views.html.ead
 import views.tags.ViewTest
 
 @ViewTest
 class EadViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector {
 
-  private val page = instanceOf[ead]
+  private val page = instanceOf[views.html.ead]
 
   private val view: Document =
     page(MrnStatusSpec.completeMrnStatus.mrn, MrnStatusSpec.completeMrnStatus, "/img.jpg")(

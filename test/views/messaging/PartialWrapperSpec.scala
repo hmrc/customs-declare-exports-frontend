@@ -26,6 +26,7 @@ import org.scalatest.{Assertion, BeforeAndAfterEach}
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.twirl.api.HtmlFormat
+import views.dashboard.DashboardHelper.toDashboard
 import views.declaration.spec.UnitViewSpec
 import views.html.messaging.partial_wrapper
 
@@ -96,15 +97,12 @@ class PartialWrapperSpec extends UnitViewSpec with BeforeAndAfterEach {
   private def assertUploadFilesLink(view: Document): Assertion = {
     val elements: List[Element] = view.getElementsByClass("govuk-link").iterator.asScala.toList
     assert(elements.exists { element =>
-      element.text == messages("greyBox.uploadFiles") && element.attr("href") == routes.SubmissionsController.displayListOfSubmissions().url
+      element.text == messages("greyBox.uploadFiles") && element.attr("href") == toDashboard.url
     })
   }
 
   private def genView(titleKey: String, backLinkUrl: Option[Call]): Document = {
     when(mockSecureMessagingConfig.isSecureMessagingEnabled).thenReturn(true)
-    partialWrapperPage(HtmlFormat.raw(partialContent), titleKey, routes.SubmissionsController.displayListOfSubmissions().url, backLinkUrl)(
-      request,
-      messages
-    )
+    partialWrapperPage(HtmlFormat.raw(partialContent), titleKey, toDashboard.url, backLinkUrl)(request, messages)
   }
 }

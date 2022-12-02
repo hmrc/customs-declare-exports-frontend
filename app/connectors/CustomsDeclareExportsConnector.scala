@@ -81,13 +81,13 @@ class CustomsDeclareExportsConnector @Inject() (appConfig: AppConfig, httpClient
       }
   }
 
-  def findDeclarations(page: Page)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Paginated[ExportsDeclaration]] = {
-    val pagination = Page.bindable.unbind("page", page)
+  def findDeclarations(page: models.Page)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Paginated[ExportsDeclaration]] = {
+    val pagination = models.Page.bindable.unbind("page", page)
     httpClient.GET[Paginated[ExportsDeclaration]](url(s"${appConfig.declarationsPath}?$pagination"))
   }
 
-  def findSavedDeclarations(page: Page)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Paginated[ExportsDeclaration]] = {
-    val pagination = Page.bindable.unbind("page", page)
+  def findSavedDeclarations(page: models.Page)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Paginated[ExportsDeclaration]] = {
+    val pagination = models.Page.bindable.unbind("page", page)
     val sort = DeclarationSort.bindable.unbind("sort", DeclarationSort(SortBy.UPDATED, SortDirection.DES))
 
     httpClient.GET[Paginated[ExportsDeclaration]](url(s"${appConfig.declarationsPath}?status=DRAFT&$pagination&$sort"))
@@ -116,11 +116,8 @@ class CustomsDeclareExportsConnector @Inject() (appConfig: AppConfig, httpClient
   def submitDeclaration(id: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Submission] =
     httpClient.POSTEmpty[Submission](url(s"${appConfig.submissionPath}/$id"))
 
-  def fetchSubmissions(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[Submission]] =
-    httpClient.GET[Seq[Submission]](url(s"${appConfig.submissionsPath}")).map { response =>
-      logger.debug(s"CUSTOMS_DECLARE_EXPORTS fetch submission response is --> ${response.toString}")
-      response
-    }
+  def fetchSubmissionPage(queryString: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[PageOfSubmissions] =
+    httpClient.GET[PageOfSubmissions](url(s"${appConfig.pageOfSubmissionsPath}?$queryString"))
 
   def findSubmission(uuid: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[Submission]] =
     httpClient

@@ -21,6 +21,7 @@
 @import models.requests.VerifiedEmailRequest
 @import play.api.mvc.Call
 @import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.dashboard.DashboardHelper.toDashboard
 @import views.helpers.DeclarationDetailsLinks._
 @import views.helpers.{BackButton, TimelineEvents, Title, ViewDates}
 @import views.html.components.gds._
@@ -59,7 +60,7 @@
         <p>
             @externalLink(
                 id = Some("uploading-documents-link"),
-                text = messages("submissions.uploading.documents"),
+                text = messages("declaration.details.uploading.documents"),
                 url = controllers.routes.FileUploadController.startFileUpload(mrn).url
             )
         </p>
@@ -71,7 +72,7 @@
         <p>
             @link(
                 id = Some("generate-ead"),
-                text = messages("submissions.generateEAD"),
+                text = messages("declaration.details.generateEAD"),
                 call = controllers.routes.EADController.generateDocument(mrn)
             )
         </p>
@@ -83,7 +84,7 @@
     <div>
         @link(
             id = Some("view-declaration"),
-            text = messages("submissions.view.declaration"),
+            text = messages("declaration.details.view.declaration"),
             call = routes.SubmissionsController.viewDeclaration(submission.uuid)
         )
     </div>
@@ -95,7 +96,7 @@
     <p>
         @link(
             id = Some("copy-declaration"),
-            text = messages("submissions.copy.declaration"),
+            text = messages("declaration.details.copy.declaration"),
             call = routes.CopyDeclarationController.redirectToReceiveJourneyRequest(submission.uuid)
         )
     </p>
@@ -106,7 +107,7 @@
     <p>
         @link(
             id = Some("cancel-declaration"),
-            text = messages("submissions.cancel.declaration"),
+            text = messages("declaration.details.cancel.declaration"),
             call = routes.CancelDeclarationController.displayPage()
         )
     </p>
@@ -116,99 +117,99 @@
     <p>
         @link(
             id = Some("movements-redirection"),
-            text = messages("submissions.movements.redirection"),
+            text = messages("declaration.details.movements.redirection"),
             call = Call("GET", externalServicesConfig.customsMovementsFrontendUrl)
         )
     </p>
 }
 
 @documentsRequiredDetailsContent = {
-  @paragraph(messages("submissions.declarationDetails.readMoreAboutDecStatus.documentsRequired.paragraph.1"))
-  @paragraph(messages("submissions.declarationDetails.readMoreAboutDecStatus.documentsRequired.paragraph.2"))
+  @paragraph(messages("declaration.details.readMoreAboutDecStatus.documentsRequired.paragraph.1"))
+  @paragraph(messages("declaration.details.readMoreAboutDecStatus.documentsRequired.paragraph.2"))
 
   @bulletList(Seq(
-    Html(messages("submissions.declarationDetails.readMoreAboutDecStatus.documentsRequired.bullet.1")),
-    Html(messages("submissions.declarationDetails.readMoreAboutDecStatus.documentsRequired.bullet.2")),
-    Html(messages("submissions.declarationDetails.readMoreAboutDecStatus.documentsRequired.bullet.3"))
+    Html(messages("declaration.details.readMoreAboutDecStatus.documentsRequired.bullet.1")),
+    Html(messages("declaration.details.readMoreAboutDecStatus.documentsRequired.bullet.2")),
+    Html(messages("declaration.details.readMoreAboutDecStatus.documentsRequired.bullet.3"))
   ))
 
-  @paragraph(messages("submissions.declarationDetails.readMoreAboutDecStatus.documentsRequired.paragraph.3"))
-  @paragraph(messages("submissions.declarationDetails.readMoreAboutDecStatus.documentsRequired.paragraph.4"))
+  @paragraph(messages("declaration.details.readMoreAboutDecStatus.documentsRequired.paragraph.3"))
+  @paragraph(messages("declaration.details.readMoreAboutDecStatus.documentsRequired.paragraph.4"))
 }
 
 @queryRaisedDetailsContent = {
-  @paragraph(messages("submissions.declarationDetails.readMoreAboutDecStatus.queryRaised.paragraph.1"))
-  @paragraph(messages("submissions.declarationDetails.readMoreAboutDecStatus.queryRaised.paragraph.2", request.email))
+  @paragraph(messages("declaration.details.readMoreAboutDecStatus.queryRaised.paragraph.1"))
+  @paragraph(messages("declaration.details.readMoreAboutDecStatus.queryRaised.paragraph.2", request.email))
 }
 
 @goodsExaminedDetailsContent = {
-  @paragraph(messages("submissions.declarationDetails.readMoreAboutDecStatus.goodsExamined.paragraph.1"))
-  @paragraph(messages("submissions.declarationDetails.readMoreAboutDecStatus.goodsExamined.paragraph.2"))
+  @paragraph(messages("declaration.details.readMoreAboutDecStatus.goodsExamined.paragraph.1"))
+  @paragraph(messages("declaration.details.readMoreAboutDecStatus.goodsExamined.paragraph.2"))
 
   @bulletList(Seq(
-    Html(messages("submissions.declarationDetails.readMoreAboutDecStatus.goodsExamined.bullet.1")),
-    Html(messages("submissions.declarationDetails.readMoreAboutDecStatus.goodsExamined.bullet.2")),
-    Html(messages("submissions.declarationDetails.readMoreAboutDecStatus.goodsExamined.bullet.3"))
+    Html(messages("declaration.details.readMoreAboutDecStatus.goodsExamined.bullet.1")),
+    Html(messages("declaration.details.readMoreAboutDecStatus.goodsExamined.bullet.2")),
+    Html(messages("declaration.details.readMoreAboutDecStatus.goodsExamined.bullet.3"))
   ))
 
-  @paragraph(messages("submissions.declarationDetails.readMoreAboutDecStatus.goodsExamined.paragraph.3"))
-  @paragraph(messages("submissions.declarationDetails.readMoreAboutDecStatus.goodsExamined.paragraph.4"))
+  @paragraph(messages("declaration.details.readMoreAboutDecStatus.goodsExamined.paragraph.3"))
+  @paragraph(messages("declaration.details.readMoreAboutDecStatus.goodsExamined.paragraph.4"))
 }
 
 @uploadingDocumentsDetails = {
-  @paragraph(messages("submissions.declarationDetails.uploadDocuments.details.paragraph.1"))
+  @paragraph(messages("declaration.details.uploadDocuments.details.paragraph.1"))
 
   @bulletList(Seq(
-    Html(messages("submissions.declarationDetails.uploadDocuments.details.paragraph.1.bullet.1")),
-    Html(messages("submissions.declarationDetails.uploadDocuments.details.paragraph.1.bullet.2")),
-    Html(messages("submissions.declarationDetails.uploadDocuments.details.paragraph.1.bullet.3"))
+    Html(messages("declaration.details.uploadDocuments.details.paragraph.1.bullet.1")),
+    Html(messages("declaration.details.uploadDocuments.details.paragraph.1.bullet.2")),
+    Html(messages("declaration.details.uploadDocuments.details.paragraph.1.bullet.3"))
   ))
 
-  @paragraph(messages("submissions.declarationDetails.uploadDocuments.details.paragraph.2"))
-  @paragraph(messages("submissions.declarationDetails.uploadDocuments.details.paragraph.3"))
+  @paragraph(messages("declaration.details.uploadDocuments.details.paragraph.2"))
+  @paragraph(messages("declaration.details.uploadDocuments.details.paragraph.3"))
 }
 
 @declarationStatusReadMore = {
   @govukDetails(Details(
     id = Some("read-more-about-declaration-status-submitted"),
-    summary = Text(messages("submissions.declarationDetails.readMoreAboutDecStatus.submitted.header")),
-    content = Text(messages("submissions.declarationDetails.readMoreAboutDecStatus.submitted.paragraph"))
+    summary = Text(messages("declaration.details.readMoreAboutDecStatus.submitted.header")),
+    content = Text(messages("declaration.details.readMoreAboutDecStatus.submitted.paragraph"))
   ))
 
   @govukDetails(Details(
     id = Some("read-more-about-declaration-status-declaration-has-error"),
-    summary = Text(messages("submissions.declarationDetails.readMoreAboutDecStatus.decHasError.header")),
-    content = Text(messages("submissions.declarationDetails.readMoreAboutDecStatus.decHasError.paragraph"))
+    summary = Text(messages("declaration.details.readMoreAboutDecStatus.decHasError.header")),
+    content = Text(messages("declaration.details.readMoreAboutDecStatus.decHasError.paragraph"))
   ))
 
   @govukDetails(Details(
     id = Some("read-more-about-declaration-status-accepted"),
-    summary = Text(messages("submissions.declarationDetails.readMoreAboutDecStatus.accepted.header")),
-    content = Text(messages("submissions.declarationDetails.readMoreAboutDecStatus.accepted.paragraph"))
+    summary = Text(messages("declaration.details.readMoreAboutDecStatus.accepted.header")),
+    content = Text(messages("declaration.details.readMoreAboutDecStatus.accepted.paragraph"))
   ))
 
   @govukDetails(Details(
     id = Some("read-more-about-declaration-status-documents-required"),
-    summary = Text(messages("submissions.declarationDetails.readMoreAboutDecStatus.documentsRequired.header")),
+    summary = Text(messages("declaration.details.readMoreAboutDecStatus.documentsRequired.header")),
     content = HtmlContent(documentsRequiredDetailsContent)
   ))
 
   @govukDetails(Details(
     id = Some("read-more-about-declaration-status-query-raised"),
-    summary = Text(messages("submissions.declarationDetails.readMoreAboutDecStatus.queryRaised.header")),
+    summary = Text(messages("declaration.details.readMoreAboutDecStatus.queryRaised.header")),
     content = HtmlContent(queryRaisedDetailsContent)
   ))
 
   @govukDetails(Details(
     id = Some("read-more-about-declaration-status-goods-being-examined"),
-    summary = Text(messages("submissions.declarationDetails.readMoreAboutDecStatus.goodsExamined.header")),
+    summary = Text(messages("declaration.details.readMoreAboutDecStatus.goodsExamined.header")),
     content = HtmlContent(goodsExaminedDetailsContent)
   ))
 }
 
 @govukLayout(
-    title = Title("submissions.declarationDetails.title"),
-    backButton = Some(BackButton(messages("site.backToDeclarations"), routes.SubmissionsController.displayListOfSubmissions())),
+    title = Title("declaration.details.title"),
+    backButton = Some(BackButton(messages("site.backToDeclarations"), toDashboard)),
     useCustomContentWidth = true,
     navigationBanner = navBanner,
     showDeclarationSummaryLink = false
@@ -217,30 +218,30 @@
 
     <div class="govuk-grid-column-two-thirds">
         @headingContent(
-            pageHeading = messages("submissions.declarationDetails.title"),
+            pageHeading = messages("declaration.details.title"),
             sectionHeading = None,
             classes = "govuk-heading-l govuk-!-margin-bottom-2"
         )
 
         @submission.mrn.map { mrn =>
-            <span class="submission-mrn govuk-caption-l">@messages("submissions.declarationDetails.mrn") @mrn</span>
+            <span class="submission-mrn govuk-caption-l">@messages("declaration.details.mrn") @mrn</span>
         }
 
         @timeline(timelineEvents(submission), ViewDates.formatDateAtTime)
     </div>
 
     <div class="govuk-grid-column-one-third">
-        @sectionHeading(messages("submissions.declarationDetails.references"))
+        @sectionHeading(messages("declaration.details.references"))
 
         @govukSummaryList(SummaryList(
             rows = Seq(
                 SummaryListRow(
-                    key = Key(content = Text(messages("submissions.declarationDetails.ducr"))),
+                    key = Key(content = Text(messages("declaration.details.ducr"))),
                     value = Value(content = submission.ducr.map(HtmlContent(_)).getOrElse(Empty)),
                     classes = "submission-ducr"
                 ),
                 SummaryListRow(
-                    key = Key(content = Text(messages("submissions.declarationDetails.lrn"))),
+                    key = Key(content = Text(messages("declaration.details.lrn"))),
                     value = Value(content = HtmlContent(submission.lrn)),
                     classes = "submission-lrn"
                 )
@@ -257,17 +258,17 @@
         </div>
 
         <div>
-            @sectionHeading(messages("submissions.declarationDetails.uploadDocuments.header"))
+            @sectionHeading(messages("declaration.details.uploadDocuments.header"))
             @govukDetails(Details(
                 id = Some("uploading-documents-details"),
-                summary = Text(messages("submissions.declarationDetails.uploadDocuments.details")),
+                summary = Text(messages("declaration.details.uploadDocuments.details")),
                 content = HtmlContent(uploadingDocumentsDetails)
             ))
         </div>
 
         <div>
-            @sectionHeading(messages("submissions.declarationDetails.readMoreAboutDecStatus.header"))
-            @paragraph(messages("submissions.declarationDetails.readMoreAboutDecStatus.paragraph"))
+            @sectionHeading(messages("declaration.details.readMoreAboutDecStatus.header"))
+            @paragraph(messages("declaration.details.readMoreAboutDecStatus.paragraph"))
             @declarationStatusReadMore
         </div>
 

@@ -16,7 +16,6 @@
 
 @import views.components.gds.PaginationUtil
 @import views.components.gds.PaginationUtil.PaginationItem._
-@import views.html.components.gds.pagination_summary
 
 @(id: String = "pagination",
   singularName: String = "result",
@@ -32,9 +31,7 @@
 
   @if(pager.pagesAmount > 1) {
     <div id="@id-controls" class="ceds-pagination__controls">
-
       <ul class="ceds-pagination__items">
-
         @defining(pager.pagesAmount) { pageCount: Int =>
 
           @if(pager.page.index > 1) {
@@ -65,10 +62,7 @@
             </li>
           }
         }
-
       </ul>
-
     </div>
   }
-
 </nav>

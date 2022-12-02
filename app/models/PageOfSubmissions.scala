@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package models.viewmodels
+package models
 
-import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
-import uk.gov.hmrc.govukfrontend.views.viewmodels.tabs.{TabItem, TabPanel}
+import models.declaration.submissions.StatusGroup.StatusGroup
+import models.declaration.submissions.Submission
+import play.api.libs.json.Json
 
-case class SubmissionTabItem(tab: String) {
+case class PageOfSubmissions(statusGroup: StatusGroup, totalSubmissionsInGroup: Int, submissions: Seq[Submission])
 
-  def tabItem(content: HtmlContent)(implicit messages: Messages): TabItem =
-    TabItem(id = Some(s"$tab-submissions"), label = messages(s"submissions.$tab.tab.title"), panel = TabPanel(content = content))
+object PageOfSubmissions {
+  implicit val format = Json.format[PageOfSubmissions]
 }

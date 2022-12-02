@@ -29,7 +29,7 @@ import models.Page
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import views.html.saved_declarations
+import views.html.declarations.saved_declarations
 
 class SavedDeclarationsController @Inject() (
   authenticate: AuthAction,
