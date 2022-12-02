@@ -17,16 +17,15 @@
 package controllers.declaration
 
 import base.ControllerSpec
-import base.ExportsTestData.lrn
-import forms.{Ducr, Lrn}
+import forms.Ducr
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
-import forms.declaration.{ConsignmentReferences, TraderReference}
+import forms.declaration.ConsignmentReferences
 import mock.ErrorHandlerMocks
 import models.DeclarationType.SUPPLEMENTARY
 import org.mockito.ArgumentMatchers.{any, eq => meq}
-import org.mockito.{ArgumentCaptor, Mockito}
 import org.mockito.Mockito.{verify, when}
+import org.mockito.{ArgumentCaptor, Mockito}
 import play.api.data.Form
 import play.api.http.Status.{BAD_REQUEST, OK}
 import play.api.libs.json.Json
@@ -34,8 +33,6 @@ import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers.{await, redirectLocation, status}
 import play.twirl.api.HtmlFormat
 import views.html.declaration.confirm_ducr
-
-import java.time.{LocalDateTime, ZonedDateTime}
 
 class ConfirmDucrControllerSpec extends ControllerSpec with ErrorHandlerMocks {
 
@@ -52,7 +49,7 @@ class ConfirmDucrControllerSpec extends ControllerSpec with ErrorHandlerMocks {
   )
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
-    withNewCaching(aDeclaration(withTraderReference(dummyTraderRef)))
+    withNewCaching(aDeclaration(withConsignmentReferences(dummyConRefs)))
     await(controller.displayPage()(request))
     theResponseForm
   }
@@ -75,27 +72,25 @@ class ConfirmDucrControllerSpec extends ControllerSpec with ErrorHandlerMocks {
     super.afterEach()
   }
 
-  private val dummyTraderRef = TraderReference("dummyRef")
-  private val lastDigitOfYear = ZonedDateTime.now().getYear.toString.last
-  private val dummyDucr = Ducr(lastDigitOfYear + "GB" + authEori + "-" + dummyTraderRef.value)
+  private val dummyConRefs = ConsignmentReferences(Ducr("DUCR"))
 
   "ConfirmDucrController" should {
 
     "return 200 OK" when {
 
-      "display page method is invoked with trader reference in the cache" in {
-        withNewCaching(aDeclaration(withTraderReference(dummyTraderRef), withCreatedDate(LocalDateTime.now())))
+      "display page method is invoked with DUCR in the cache" in {
+        withNewCaching(aDeclaration(withConsignmentReferences(dummyConRefs)))
 
         val result = controller.displayPage()(getJourneyRequest())
 
         status(result) mustBe OK
-        verify(confirmDucrPage).apply(any(), meq(dummyDucr))(any(), any())
+        verify(confirmDucrPage).apply(any(), meq(dummyConRefs.ducr))(any(), any())
       }
     }
 
     "return 400 bad request" when {
 
-      "display page is invoked with no trader ref in cache" in {
+      "display page is invoked with no DUCR in cache" in {
         withNewCaching(aDeclaration())
 
         val result = controller.displayPage()(getJourneyRequest())
@@ -106,21 +101,21 @@ class ConfirmDucrControllerSpec extends ControllerSpec with ErrorHandlerMocks {
       }
 
       "form was submitted with no data" in {
-        withNewCaching(aDeclaration(withTraderReference(dummyTraderRef), withCreatedDate(LocalDateTime.now())))
+        withNewCaching(aDeclaration(withConsignmentReferences(dummyConRefs)))
 
         val body = Json.obj(YesNoAnswer.formId -> "")
         val result = controller.submitForm()(postRequest(body, aDeclaration()))
 
         status(result) mustBe BAD_REQUEST
-        verify(confirmDucrPage).apply(any(), meq(dummyDucr))(any(), any())
+        verify(confirmDucrPage).apply(any(), meq(dummyConRefs.ducr))(any(), any())
         verifyTheCacheIsUnchanged()
       }
     }
 
     "return 303 redirect" when {
 
-      "form was submitted with Yes answer with no existing ConsignmentReferences" in {
-        val declaration = aDeclaration(withTraderReference(dummyTraderRef), withCreatedDate(LocalDateTime.now()))
+      "form was submitted with Yes answer" in {
+        val declaration = aDeclaration(withConsignmentReferences(dummyConRefs))
         withNewCaching(declaration)
 
         val body = Json.obj(YesNoAnswer.formId -> YesNoAnswers.yes)
@@ -128,36 +123,18 @@ class ConfirmDucrControllerSpec extends ControllerSpec with ErrorHandlerMocks {
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe routes.LocalReferenceNumberController.displayPage
-
-        val cacheModifier: ExportsDeclarationModifier =
-          _.copy(intermediaryConsignmentReferences = Some(IntermediaryConsignmentReferences(Some(dummyDucr), Some(dummyTraderRef))))
-        theCacheModelUpdated mustBe aDeclarationAfter(declaration, cacheModifier)
-      }
-
-      "form was submitted with Yes answer with existing ConsignmentReferences" in {
-        val declaration = aDeclaration(withTraderReference(dummyTraderRef), withConsignmentReferences(), withCreatedDate(LocalDateTime.now()))
-        withNewCaching(declaration)
-
-        val body = Json.obj(YesNoAnswer.formId -> YesNoAnswers.yes)
-        val result = controller.submitForm()(postRequest(body, aDeclaration()))
-
-        await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe routes.LocalReferenceNumberController.displayPage
-
-        val cacheModifier: ExportsDeclarationModifier =
-          _.copy(consignmentReferences = Some(ConsignmentReferences(dummyDucr, Some(Lrn(lrn)))))
-        theCacheModelUpdated mustBe aDeclarationAfter(declaration, cacheModifier)
+        verifyTheCacheIsUnchanged()
       }
 
       "form was submitted with No answer" in {
-        withNewCaching(aDeclaration(withTraderReference(dummyTraderRef), withCreatedDate(LocalDateTime.now())))
+        withNewCaching(aDeclaration(withConsignmentReferences(dummyConRefs)))
 
         val body = Json.obj(YesNoAnswer.formId -> YesNoAnswers.no)
         val result = controller.submitForm()(postRequest(body, aDeclaration()))
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe routes.DucrEntryController.displayPage
-        verifyTheCacheIsUnchanged()
+        theCacheModelUpdated mustBe aDeclaration()
       }
 
       "display page method is invoked on supplementary journey" in {

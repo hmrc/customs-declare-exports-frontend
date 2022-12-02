@@ -29,7 +29,7 @@ import utils.validators.forms.FieldValidator._
 
 import scala.concurrent.{ExecutionContext, Future}
 
-case class ConsignmentReferences(ducr: Ducr, lrn: Option[Lrn], mrn: Option[Mrn] = None, eidrDateStamp: Option[String] = None)
+case class ConsignmentReferences(ducr: Ducr, lrn: Option[Lrn] = None, mrn: Option[Mrn] = None, eidrDateStamp: Option[String] = None)
 
 object ConsignmentReferences extends DeclarationPage {
 

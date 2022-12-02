@@ -17,7 +17,8 @@
 package controllers.declaration
 
 import base.ControllerSpec
-import forms.declaration.TraderReference
+import forms.Ducr
+import forms.declaration.{ConsignmentReferences, TraderReference}
 import forms.declaration.TraderReference.traderReferenceKey
 import models.DeclarationType.SUPPLEMENTARY
 import org.mockito.ArgumentMatchers.any
@@ -29,6 +30,8 @@ import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.declaration.trader_reference
+
+import java.time.{LocalDate, ZonedDateTime}
 
 class TraderReferenceControllerSpec extends ControllerSpec {
 
@@ -66,7 +69,10 @@ class TraderReferenceControllerSpec extends ControllerSpec {
     super.afterEach()
   }
 
-  private val dummyRef = TraderReference("INVOICE123/4")
+  private val dummyTraderRef = TraderReference("INVOICE123/4")
+  private val lastDigitOfYear = ZonedDateTime.now().getYear.toString.last
+  private val dummyDucr = Ducr(lastDigitOfYear + "GB" + authEori + "-" + dummyTraderRef.value)
+  private val dummyConRefs = ConsignmentReferences(dummyDucr)
 
   "TraderReferenceController" should {
 
@@ -83,7 +89,7 @@ class TraderReferenceControllerSpec extends ControllerSpec {
       "display page method is invoked with data in cache" in {
         withNewCaching(aDeclaration())
 
-        val result = controller.displayPage()(getJourneyRequest(aDeclaration(withTraderReference(dummyRef))))
+        val result = controller.displayPage()(getJourneyRequest(aDeclaration(withConsignmentReferences(dummyConRefs))))
 
         status(result) mustBe OK
       }
@@ -115,14 +121,15 @@ class TraderReferenceControllerSpec extends ControllerSpec {
     "return 303 redirect" when {
 
       "form was submitted with valid data" in {
-        withNewCaching(aDeclaration())
+        val declaration = aDeclaration(withCreatedDate(LocalDate.now()))
+        withNewCaching(declaration)
 
-        val body = Json.obj(traderReferenceKey -> dummyRef.value)
-        val result = controller.submitForm()(postRequest(body, aDeclaration()))
+        val body = Json.obj(traderReferenceKey -> dummyTraderRef.value)
+        val result = controller.submitForm()(postRequest(body, declaration))
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe routes.ConfirmDucrController.displayPage
-        theCacheModelUpdated().head.traderReference.get mustBe dummyRef
+        theCacheModelUpdated().head mustBe aDeclarationAfter(declaration, withConsignmentReferences(dummyConRefs))
       }
 
       "display page method is invoked on supplementary journey" in {

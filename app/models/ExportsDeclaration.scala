@@ -16,6 +16,7 @@
 
 package models
 
+import forms.Ducr
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration._
