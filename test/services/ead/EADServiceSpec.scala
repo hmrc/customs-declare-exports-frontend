@@ -23,8 +23,6 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.OptionValues
 import org.scalatest.concurrent.ScalaFutures
-import play.api.i18n.Messages
-import play.api.test.Helpers
 import play.api.test.Helpers._
 import services.cache.SubmissionBuilder
 import uk.gov.hmrc.http.HeaderCarrier
@@ -39,7 +37,6 @@ class EADServiceSpec
 
   private implicit val hc: HeaderCarrier = mock[HeaderCarrier]
   private implicit val ec: ExecutionContext = ExecutionContext.global
-  private implicit val messages: Messages = Helpers.stubMessages()
 
   private val service = new EADService(connector)
 

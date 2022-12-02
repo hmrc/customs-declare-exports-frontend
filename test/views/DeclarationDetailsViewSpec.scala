@@ -20,6 +20,7 @@ import base.{ExportsTestData, Injector, OverridableInjector, RequestBuilder}
 import config.ExternalServicesConfig
 import config.featureFlags._
 import controllers.routes
+import controllers.routes.EADController
 import models.declaration.submissions.EnhancedStatus._
 import models.declaration.submissions.RequestType.SubmissionRequest
 import models.declaration.submissions.{Action, EnhancedStatus, NotificationSummary, Submission}
@@ -31,6 +32,7 @@ import org.scalatest.{Assertion, GivenWhenThen}
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
+import views.dashboard.DashboardHelper.toDashboard
 import views.declaration.spec.UnitViewSpec
 import views.helpers.{EnhancedStatusHelper, ViewDates}
 import views.html.declaration_details
@@ -43,9 +45,8 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
 
   private val externalServicesConfig = instanceOf[ExternalServicesConfig]
 
-  private val keyPrefix = "submission"
-  private val msgKey = s"${keyPrefix}s.declarationDetails"
-  private val statusKey = s"$keyPrefix.enhancedStatus"
+  private val msgKey = "declaration.details"
+  private val statusKey = "submission.enhancedStatus"
 
   private val mrn = "mrn"
   private val now = ZonedDateTime.now
@@ -116,7 +117,7 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
 
         val elements = banner.children.iterator.asScala.toList
         assert(elements.forall(_.tagName.toLowerCase == "a"))
-        elements.head must haveHref(routes.SubmissionsController.displayListOfSubmissions())
+        elements.head must haveHref(toDashboard)
         elements.last must haveHref(routes.SecureMessagingController.displayInbox)
       }
     }
@@ -164,8 +165,8 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
         val view = page(createSubmissionWith(status))(verifiedEmailRequest(), messages)
 
         val declarationLink = view.getElementById("generate-ead")
-        declarationLink must containMessage("submissions.generateEAD")
-        declarationLink must haveHref(controllers.routes.EADController.generateDocument(submission.mrn.get))
+        declarationLink must containMessage("declaration.details.generateEAD")
+        declarationLink must haveHref(EADController.generateDocument(submission.mrn.get))
       }
     }
 
@@ -277,7 +278,7 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
     "display 'Back' button to the 'Submission list' page" in {
       val backButton = view.getElementById("back-link")
       backButton must containMessage("site.backToDeclarations")
-      backButton must haveHref(routes.SubmissionsController.displayListOfSubmissions())
+      backButton must haveHref(toDashboard)
     }
 
     "not have View declaration summary link" in {
@@ -314,7 +315,7 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
           val view = page(createSubmissionWith(status))(verifiedEmailRequest(), messages)
 
           val uploadingDocumentsLink = view.getElementById("uploading-documents-link")
-          uploadingDocumentsLink must containMessage("submissions.uploading.documents")
+          uploadingDocumentsLink must containMessage("declaration.details.uploading.documents")
           uploadingDocumentsLink must haveHref(routes.FileUploadController.startFileUpload(mrn))
         }
       }
@@ -334,7 +335,7 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
         val view = page(createSubmissionWith(status))(verifiedEmailRequest(), messages)
 
         val declarationLink = view.getElementById("view-declaration")
-        declarationLink must containMessage("submissions.view.declaration")
+        declarationLink must containMessage(s"${msgKey}.view.declaration")
         declarationLink must haveHref(routes.SubmissionsController.viewDeclaration(submission.uuid))
       }
     }
@@ -349,7 +350,7 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
         val view = page(createSubmissionWith(status))(verifiedEmailRequest(), messages)
 
         val copyDeclarationLink = view.getElementById("copy-declaration")
-        copyDeclarationLink must containMessage("submissions.copy.declaration")
+        copyDeclarationLink must containMessage("declaration.details.copy.declaration")
         copyDeclarationLink must haveHref(routes.CopyDeclarationController.redirectToReceiveJourneyRequest(submission.uuid))
       }
     }
@@ -365,13 +366,13 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
       val view = page(createSubmissionWith(Seq.empty))(verifiedEmailRequest(), messages)
 
       val cancelDeclarationLink = view.getElementById("cancel-declaration")
-      cancelDeclarationLink must containMessage("submissions.cancel.declaration")
+      cancelDeclarationLink must containMessage("declaration.details.cancel.declaration")
       cancelDeclarationLink must haveHref(routes.CancelDeclarationController.displayPage())
     }
 
     "display the link to redirect the user to the 'Movements' service" in {
       val redirectionLink = view.getElementById("movements-redirection")
-      redirectionLink.text mustBe messages("submissions.movements.redirection")
+      redirectionLink.text mustBe messages("declaration.details.movements.redirection")
       redirectionLink must haveHref(Call("GET", externalServicesConfig.customsMovementsFrontendUrl))
     }
 

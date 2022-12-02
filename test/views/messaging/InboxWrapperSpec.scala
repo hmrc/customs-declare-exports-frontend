@@ -25,6 +25,7 @@ import org.scalatest.BeforeAndAfterEach
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat
+import views.dashboard.DashboardHelper.toDashboard
 import views.declaration.spec.UnitViewSpec
 import views.html.messaging.inbox_wrapper
 
@@ -58,7 +59,7 @@ class InboxWrapperSpec extends UnitViewSpec with BeforeAndAfterEach {
         val elements = banner.children.iterator.asScala.toList
 
         assert(elements.head.tagName.toLowerCase == "a")
-        elements.head must haveHref(controllers.routes.SubmissionsController.displayListOfSubmissions())
+        elements.head must haveHref(toDashboard)
 
         assert(elements.last.tagName.toLowerCase == "span")
       }

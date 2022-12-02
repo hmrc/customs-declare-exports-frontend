@@ -16,41 +16,40 @@
 
 package controllers
 
+import config.PaginationConfig
 import connectors.CustomsDeclareExportsConnector
 import controllers.actions.{AuthAction, VerifiedEmailAction}
-import models.declaration.submissions.Submission
-import models.requests.ExportsSessionKeys
+import models.declaration.submissions.StatusGroup.statusGroups
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import views.dashboard.DashboardHelper.toDashboard
-import views.html.declaration_details
+import views.dashboard.DashboardHelper.{Groups, Limit}
+import views.html.dashboard.dashboard
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class DeclarationDetailsController @Inject() (
+class DashboardController @Inject() (
   authenticate: AuthAction,
   verifyEmail: VerifiedEmailAction,
   customsDeclareExportsConnector: CustomsDeclareExportsConnector,
+  paginationConfig: PaginationConfig,
   mcc: MessagesControllerComponents,
-  declarationDetailsPage: declaration_details
+  dashboard: dashboard
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
-  def displayPage(submissionId: String): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
-    customsDeclareExportsConnector.findSubmission(submissionId).map {
-      case Some(submission) => Ok(declarationDetailsPage(submission)).addingToSession(sessionKeys(submission): _*)
-      case _                => Redirect(toDashboard)
-    }
+  val displayPage: Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
+    customsDeclareExportsConnector
+      .fetchSubmissionPage(queryString)
+      .map(pageOfSubmissions => Ok(dashboard(pageOfSubmissions)))
   }
 
-  private def sessionKeys(submission: Submission): Seq[(String, String)] = {
-    val submissionId = Some(ExportsSessionKeys.submissionId -> submission.uuid)
-    val lrn = Some(ExportsSessionKeys.submissionLrn -> submission.lrn)
-    val mrn = submission.mrn.map(ExportsSessionKeys.submissionMrn -> _)
-    val ducr = submission.ducr.map(ExportsSessionKeys.submissionDucr -> _)
+  private def queryString(implicit request: Request[_]) = {
+    val queryString = request.getQueryString(Groups).fold(s"${request.target.queryString}&$Groups=${statusGroups}") { _ =>
+      request.target.queryString
+    }
 
-    Seq(submissionId, lrn, mrn, ducr).flatten
+    if (request.getQueryString(Limit).isEmpty) s"${queryString}&$Limit=${paginationConfig.itemsPerPage}" else queryString
   }
 }

@@ -87,7 +87,7 @@ class TimelineEvents @Inject() (
 
   private def fixAndResubmitContent(declarationID: String)(implicit messages: Messages): Html = {
     val call = controllers.routes.RejectedNotificationsController.displayPage(declarationID)
-    linkButton("submissions.declarationDetails.fix.resubmit.button", call)
+    linkButton("declaration.details.fix.resubmit.button", call)
   }
 
   private def uploadFilesContent(mrn: Option[String], isPrimary: Boolean)(implicit messages: Messages): Html =
@@ -95,7 +95,7 @@ class TimelineEvents @Inject() (
 
   private def viewQueriesContent(isPrimary: Boolean)(implicit messages: Messages): Html =
     linkButton(
-      "submissions.declarationDetails.view.queries.button",
+      "declaration.details.view.queries.button",
       Call("GET", secureMessagingInboxConfig.sfusInboxLink),
       if (isPrimary) "govuk-button" else "govuk-button govuk-button--secondary"
     )

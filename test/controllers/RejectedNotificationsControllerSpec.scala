@@ -22,6 +22,7 @@ import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.OptionValues
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
+import views.dashboard.DashboardHelper.toDashboard
 import views.html.rejected_notification_errors
 
 import scala.concurrent.ExecutionContext.global
@@ -56,9 +57,7 @@ class RejectedNotificationsControllerSpec extends ControllerWithoutFormSpec with
   "Rejected Notification Controller" should {
 
     "return 200 (OK)" when {
-
       "display page method is invoked with submission and notifications" in {
-
         getDeclaration(declarationId)
         findNotifications(declarationId)
 
@@ -70,15 +69,13 @@ class RejectedNotificationsControllerSpec extends ControllerWithoutFormSpec with
     }
 
     "return 303 (SEE_OTHER) and redirect to Submission Controller" when {
-
       "display page method is invoked without submission" in {
-
         declarationNotFound
 
         val result = controller.displayPage(declarationId)(getRequest())
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result).value mustBe routes.SubmissionsController.displayListOfSubmissions().url
+        redirectLocation(result).value mustBe toDashboard.url
       }
     }
   }

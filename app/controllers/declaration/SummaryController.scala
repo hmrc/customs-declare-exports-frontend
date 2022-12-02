@@ -20,7 +20,7 @@ import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction, VerifiedEmailAction}
 import controllers.declaration.SummaryController.{continuePlaceholder, lrnDuplicateError}
 import controllers.helpers.ErrorFixModeHelper.inErrorFixMode
-import controllers.routes.{SavedDeclarationsController, SubmissionsController}
+import controllers.routes.SavedDeclarationsController
 import forms.declaration.LegalDeclaration
 import forms.{Lrn, LrnValidator}
 import handlers.ErrorHandler
@@ -38,6 +38,7 @@ import services.cache.ExportsCacheService
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
+import views.dashboard.DashboardHelper.toDashboard
 import views.helpers.ActionItemBuilder.lastUrlPlaceholder
 import views.html.declaration.summary._
 
@@ -90,7 +91,7 @@ class SummaryController @Inject() (
   private def displaySummaryPage()(implicit request: JourneyRequest[_]): Future[Result] = {
     val maybeLrn = request.cacheModel.lrn.map(Lrn(_))
     val backlink =
-      if (request.cacheModel.parentDeclarationEnhancedStatus.contains(ERRORS)) SubmissionsController.displayListOfSubmissions()
+      if (request.cacheModel.parentDeclarationEnhancedStatus.contains(ERRORS)) toDashboard
       else SavedDeclarationsController.displayDeclarations()
     val duplicateLrnError = Seq(lrnDuplicateError)
 

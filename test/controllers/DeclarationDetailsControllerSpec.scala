@@ -26,6 +26,7 @@ import org.mockito.Mockito._
 import org.scalatest.{BeforeAndAfterEach, OptionValues}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
+import views.dashboard.DashboardHelper.toDashboard
 import views.html.declaration_details
 
 import java.time.ZonedDateTime
@@ -93,7 +94,7 @@ class DeclarationDetailsControllerSpec extends ControllerWithoutFormSpec with Be
         val result = controller.displayPage(actionId)(getRequest())
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result).get mustBe routes.SubmissionsController.displayListOfSubmissions().url
+        redirectLocation(result).get mustBe toDashboard.url
 
         verifyNoInteractions(declarationDetailsPage)
       }

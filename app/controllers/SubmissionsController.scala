@@ -16,21 +16,18 @@
 
 package controllers
 
-import config.PaginationConfig
 import connectors.CustomsDeclareExportsConnector
 import controllers.actions.{AuthAction, VerifiedEmailAction}
 import controllers.declaration.routes._
 import controllers.helpers.ErrorFixModeHelper.setErrorFixMode
-import models._
-import models.declaration.submissions.Submission
-import models.requests.ExportsSessionKeys.{declarationId, errorFixModeSessionKey}
+import models.requests.ExportsSessionKeys.declarationId
 import models.responses.FlashKeys
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.model.FieldNamePointer
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
+import views.dashboard.DashboardHelper.toDashboard
 import views.html.declaration.summary.submitted_declaration_page
-import views.html.submissions
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -40,17 +37,18 @@ class SubmissionsController @Inject() (
   verifyEmail: VerifiedEmailAction,
   customsDeclareExportsConnector: CustomsDeclareExportsConnector,
   mcc: MessagesControllerComponents,
-  submissionsPage: submissions,
   submittedDeclarationPage: submitted_declaration_page
-)(implicit ec: ExecutionContext, paginationConfig: PaginationConfig)
+)(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
-  def amend(rejectedId: String): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
+  private val authAndEmailActions = authenticate andThen verifyEmail
+
+  def amend(rejectedId: String): Action[AnyContent] = authAndEmailActions.async { implicit request =>
     findOrCreateDraftForRejected(rejectedId, Redirect(SummaryController.displayPage))
   }
 
   def amendErrors(rejectedId: String, redirectUrl: String, pattern: String, message: String): Action[AnyContent] =
-    (authenticate andThen verifyEmail).async { implicit request =>
+    authAndEmailActions.async { implicit request =>
       val flashData = FieldNamePointer.getFieldName(pattern) match {
         case Some(name) if message.nonEmpty => Map(FlashKeys.fieldName -> name, FlashKeys.errorMessage -> message)
         case Some(name)                     => Map(FlashKeys.fieldName -> name)
@@ -61,23 +59,14 @@ class SubmissionsController @Inject() (
       findOrCreateDraftForRejected(rejectedId, setErrorFixMode(Redirect(redirectUrl).flashing(Flash(flashData))))
     }
 
-  def displayListOfSubmissions(submissionsPages: SubmissionsPages = SubmissionsPages()): Action[AnyContent] =
-    (authenticate andThen verifyEmail).async { implicit request =>
-      for {
-        submissions <- customsDeclareExportsConnector.fetchSubmissions
-        submissionsInDescOrder = submissions.sorted(Submission.newestEarlierOrdering)
-      } yield Ok(submissionsPage(SubmissionsPagesElements(submissionsInDescOrder, submissionsPages)))
-        .removingFromSession(declarationId, errorFixModeSessionKey)
-    }
-
-  def viewDeclaration(id: String): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
+  def viewDeclaration(id: String): Action[AnyContent] = authAndEmailActions.async { implicit request =>
     customsDeclareExportsConnector.findDeclaration(id).flatMap {
       case Some(declaration) =>
         customsDeclareExportsConnector.findSubmission(id).map { maybeSubmission =>
           Ok(submittedDeclarationPage(maybeSubmission, declaration))
         }
 
-      case None => Future.successful(Redirect(routes.SubmissionsController.displayListOfSubmissions()))
+      case None => Future.successful(Redirect(toDashboard))
     }
   }
 

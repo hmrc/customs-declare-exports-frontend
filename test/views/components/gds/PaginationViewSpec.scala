@@ -19,7 +19,7 @@ package views.components.gds
 import base.ExportsTestData
 import models.{ExportsDeclaration, Page, Paginated}
 import views.declaration.spec.UnitViewSpec
-import views.html.components.gds.pagination
+import views.html.declarations.pagination
 
 class PaginationViewSpec extends UnitViewSpec {
 
@@ -43,7 +43,6 @@ class PaginationViewSpec extends UnitViewSpec {
     "contain pagination summary" when {
 
       "there are no elements" in {
-
         val summary = paginationComponent().getElementsByClass("ceds-pagination__summary")
 
         summary.first() must containMessage("site.pagination.showing.no")
@@ -51,7 +50,6 @@ class PaginationViewSpec extends UnitViewSpec {
       }
 
       "there is single element" in {
-
         val summary = paginationComponent(declarations = Seq(declaration), elementsTotal = 1).getElementsByClass("ceds-pagination__summary")
 
         summary.first() must containMessage("site.pagination.showing")
@@ -60,7 +58,6 @@ class PaginationViewSpec extends UnitViewSpec {
       }
 
       "there are multiple elements" in {
-
         val summary = paginationComponent(declarations = Seq.fill(10)(declaration), elementsTotal = 30).getElementsByClass("ceds-pagination__summary")
 
         summary.first() must containMessage("site.pagination.showing")
@@ -74,14 +71,12 @@ class PaginationViewSpec extends UnitViewSpec {
     "contain pagination controls" when {
 
       "there is single page" in {
-
         val controls = paginationComponent(declarations = Seq.fill(3)(declaration), elementsTotal = 3)
 
         controls.getElementsByClass("ceds-pagination__item").size() mustBe 0
       }
 
       "there are two pages and the current one is 1" in {
-
         val controls = paginationComponent(declarations = Seq.fill(10)(declaration), currentPage = 1, elementsTotal = 20)
 
         controls.getElementsByClass("ceds-pagination__item").size() mustBe 3
@@ -94,7 +89,6 @@ class PaginationViewSpec extends UnitViewSpec {
       }
 
       "there are two pages and the current one is 2" in {
-
         val controls = paginationComponent(declarations = Seq.fill(10)(declaration), currentPage = 2, elementsTotal = 20)
 
         controls.getElementsByClass("ceds-pagination__item").size() mustBe 3
@@ -107,7 +101,6 @@ class PaginationViewSpec extends UnitViewSpec {
       }
 
       "there are seven pages and the current one is 4" in {
-
         val controls = paginationComponent(declarations = Seq.fill(10)(declaration), currentPage = 4, elementsTotal = 70)
 
         controls.getElementsByClass("ceds-pagination__item").size() mustBe 9
@@ -130,5 +123,4 @@ class PaginationViewSpec extends UnitViewSpec {
       }
     }
   }
-
 }

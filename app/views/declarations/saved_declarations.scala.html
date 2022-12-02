@@ -14,13 +14,14 @@
  * limitations under the License.
  *@
 
-@import java.time.ZoneId
 @import forms.Choice
 @import forms.Choice.AllowedChoiceValues.ContinueDec
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.helpers.{BackButton, Title}
 @import views.helpers.ViewDates.formatDateAtTime
-@import views.html.components.gds.{gdsMainTemplate, link, pageTitle, pagination, spanVisuallyHidden}
+@import views.html.components.gds.{gdsMainTemplate, link, pageTitle, spanVisuallyHidden}
+
+@import java.time.ZoneId
 
 @this(
   govukLayout: gdsMainTemplate,
@@ -69,7 +70,6 @@
 
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
-
       @pageTitle(text = messages("saved.declarations.title"), classes = "govuk-heading-xl")
 
       @govukTable(Table(
@@ -80,14 +80,10 @@
         )),
         rows = savedDeclarations
       ))
-
-
-
     </div>
   </div>
 
   <div class="govuk-grid-row">
-
     @pagination(
       singularName = messages("saved.declarations.pagination.singular"),
       pluralName = messages("saved.declarations.pagination.plural"),
@@ -95,7 +91,5 @@
       onChange = page => controllers.routes.SavedDeclarationsController.displayDeclarations(page),
       neighbourPagesAmount = 2
     )
-
   </div>
-
 }

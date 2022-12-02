@@ -29,9 +29,11 @@ GET         /conversation/:client/:conversationId/result   controllers.SecureMes
 
 GET         /submissions/:id/rejected-notifications        controllers.RejectedNotificationsController.displayPage(id: String)
 
-# Submissions
+# Dashboard
 
-GET         /submissions                                   controllers.SubmissionsController.displayListOfSubmissions(page: models.SubmissionsPages ?= models.SubmissionsPages())
+GET         /dashboard                                     controllers.DashboardController.displayPage
+
+# Submissions
 
 GET         /submissions/:id/information                   controllers.DeclarationDetailsController.displayPage(id: String)
 
@@ -46,7 +48,6 @@ GET         /ead-print-view/:mrn                           controllers.EADContro
 # Cancel declaration
 
 GET         /cancel-declaration                            controllers.CancelDeclarationController.displayPage()
-
 POST        /cancel-declaration                            controllers.CancelDeclarationController.onSubmit()
 
 # Copy declaration
@@ -58,7 +59,6 @@ POST        /copy-declaration                              controllers.CopyDecla
 # Cancellation Result
 
 GET         /cancellation-holding                          controllers.CancellationResultController.displayHoldingPage()
-
 GET         /cancellation-result                           controllers.CancellationResultController.displayResultPage()
 
 # Saved declaration
@@ -68,7 +68,6 @@ GET         /saved-declarations                            controllers.SavedDecl
 GET         /saved-declarations/:id                        controllers.SavedDeclarationsController.continueDeclaration(id: String)
 
 GET         /saved-declarations/:id/remove                 controllers.RemoveSavedDeclarationsController.displayPage(id: String)
-
 POST        /saved-declarations/:id/remove                 controllers.RemoveSavedDeclarationsController.removeDeclaration(id: String)
 
 # Root Url
@@ -78,7 +77,6 @@ GET         /                                              controllers.RootContr
 # Choice Page
 
 GET         /choice                                        controllers.ChoiceController.displayPage(previousChoice: Option[forms.Choice] ?= None)
-
 POST        /choice                                        controllers.ChoiceController.submitChoice()
 
 # Sign out

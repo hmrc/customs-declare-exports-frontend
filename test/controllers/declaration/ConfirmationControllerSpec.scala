@@ -16,17 +16,14 @@
 
 package controllers.declaration
 
-import java.time.ZonedDateTime
-import java.util.UUID
-import scala.concurrent.Future
 import base.{ControllerWithoutFormSpec, Injector}
 import config.AppConfig
-import controllers.routes.{RejectedNotificationsController, SubmissionsController}
+import controllers.routes.RejectedNotificationsController
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.STANDARD_FRONTIER
 import handlers.ErrorHandler
 import mock.ErrorHandlerMocks
-import models.declaration.submissions.{Action, Submission}
 import models.declaration.submissions.EnhancedStatus.{ERRORS, RECEIVED}
+import models.declaration.submissions.{Action, Submission}
 import models.requests.{ExportsSessionKeys, VerifiedEmailRequest}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
@@ -36,9 +33,14 @@ import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import testdata.SubmissionsTestData.submission
+import views.dashboard.DashboardHelper.toDashboard
 import views.helpers.Confirmation
 import views.html.declaration.confirmation._
 import views.html.error_template
+
+import java.time.ZonedDateTime
+import java.util.UUID
+import scala.concurrent.Future
 
 class ConfirmationControllerSpec extends ControllerWithoutFormSpec with BeforeAndAfterEach with ErrorHandlerMocks with GivenWhenThen with Injector {
   private val mcc = stubMessagesControllerComponents()
@@ -177,7 +179,7 @@ class ConfirmationControllerSpec extends ControllerWithoutFormSpec with BeforeAn
         val result = controller.displayConfirmationPage(request)
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(SubmissionsController.displayListOfSubmissions().url)
+        redirectLocation(result) mustBe Some(toDashboard.url)
       }
 
       "at least one notification has been received yet" in new SetUp {

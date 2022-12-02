@@ -24,13 +24,7 @@
 @lastElementOnPageIndex = @{(pager.page.index - 1) * pager.page.size + pager.currentPageSize}
 @rangePart = {@firstElementOnPageIndex – @lastElementOnPageIndex}
 
-@singularOrPlural = @{
-  if(pager.elementsTotal == 1){
-    singularName
-  } else {
-    pluralName
-  }
-}
+@singularOrPlural = @{ if (pager.elementsTotal == 1) singularName else pluralName }
 
 <div class="ceds-pagination__summary">
   @if(pager.nonEmpty) {

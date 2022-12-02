@@ -17,7 +17,8 @@
 package views.components.gds
 
 import base.Injector
-import controllers.routes.{SecureMessagingController, SubmissionsController}
+import controllers.routes.SecureMessagingController
+import views.dashboard.DashboardHelper.toDashboard
 import views.declaration.spec.UnitViewSpec
 import views.html.components.gds.navigationBanner
 
@@ -33,7 +34,7 @@ class NavigationBannerSpec extends UnitViewSpec with Injector {
         elements.size mustBe 2
 
         elements.first must containMessage("navigation.link.declarations")
-        elements.first must haveHref(SubmissionsController.displayListOfSubmissions())
+        elements.first must haveHref(toDashboard)
 
         elements.last must containMessage("navigation.link.messages")
         elements.last must haveHref(SecureMessagingController.displayInbox)
@@ -63,7 +64,7 @@ class NavigationBannerSpec extends UnitViewSpec with Injector {
         val link = view.getElementsByTag("a")
         link.size mustBe 1
         link.first must containMessage("navigation.link.declarations")
-        link.first must haveHref(SubmissionsController.displayListOfSubmissions())
+        link.first must haveHref(toDashboard)
 
         val span = view.getElementsByTag("span")
         span.size mustBe 1

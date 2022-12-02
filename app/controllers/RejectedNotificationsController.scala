@@ -16,16 +16,17 @@
 
 package controllers
 
-import scala.concurrent.{ExecutionContext, Future}
-
 import connectors.CustomsDeclareExportsConnector
 import controllers.actions.{AuthAction, VerifiedEmailAction}
-import javax.inject.{Inject, Singleton}
 import models.declaration.notifications.{Notification, NotificationError}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
+import views.dashboard.DashboardHelper.toDashboard
 import views.html.rejected_notification_errors
+
+import javax.inject.{Inject, Singleton}
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class RejectedNotificationsController @Inject() (
@@ -45,7 +46,7 @@ class RejectedNotificationsController @Inject() (
           Ok(rejectedNotificationPage(declaration, maybeMrn, getRejectedNotificationErrors(notifications)))
         }
 
-      case None => Future.successful(Redirect(routes.SubmissionsController.displayListOfSubmissions()))
+      case None => Future.successful(Redirect(toDashboard))
     }
   }
 
