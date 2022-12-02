@@ -124,14 +124,6 @@ class ReferencesSectionViewSpec extends UnitViewSpec with ExportsTestHelper with
     }
 
     onJourney(SUPPLEMENTARY) { implicit request =>
-      "have DUCR with change button" in {
-        val row = view.getElementsByClass("ducr-row")
-        row must haveSummaryKey(messages("declaration.summary.references.ducr"))
-        row must haveSummaryValue("DUCR")
-
-        row must haveSummaryActionsTexts("site.change", "declaration.summary.references.ducr.change")
-        row must haveSummaryActionWithPlaceholder(ConsignmentReferencesController.displayPage)
-      }
       "have LRN with change button" in {
         val view = section(data.copy(`type` = request.declarationType))(messages)
 
@@ -140,6 +132,16 @@ class ReferencesSectionViewSpec extends UnitViewSpec with ExportsTestHelper with
         row must haveSummaryValue("LRN")
 
         row must haveSummaryActionsTexts("site.change", "declaration.summary.references.lrn.change")
+        row must haveSummaryActionWithPlaceholder(ConsignmentReferencesController.displayPage)
+      }
+      "have Ducr with change button" in {
+        val view = section(data.copy(`type` = request.declarationType))(messages)
+
+        val row = view.getElementsByClass("ducr-row")
+        row must haveSummaryKey(messages("declaration.summary.references.ducr"))
+        row must haveSummaryValue("DUCR")
+
+        row must haveSummaryActionsTexts("site.change", "declaration.summary.references.ducr.change")
         row must haveSummaryActionWithPlaceholder(ConsignmentReferencesController.displayPage)
       }
     }

@@ -35,14 +35,14 @@
     else "declaration.summary.references.lrn"
 }
 
-@ducrChangeLink = @{
-    if (declaration.isType(SUPPLEMENTARY)) routes.ConsignmentReferencesController.displayPage.url
-    else routes.DucrEntryController.displayPage.url
-}
-
 @lrnChangeLink = @{
     if (declaration.isType(SUPPLEMENTARY)) routes.ConsignmentReferencesController.displayPage.url
     else routes.LocalReferenceNumberController.displayPage.url
+}
+
+@ducrChangeLink = @{
+    if (declaration.isType(SUPPLEMENTARY)) routes.ConsignmentReferencesController.displayPage.url
+    else routes.DucrEntryController.displayPage.url
 }
 
 @if(declaration.status == DRAFT && declaration.parentDeclarationId.isDefined){
