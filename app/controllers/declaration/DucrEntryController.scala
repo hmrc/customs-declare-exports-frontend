@@ -43,19 +43,21 @@ class DucrEntryController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
-  val displayPage: Action[AnyContent] = (authenticate andThen journeyType(allDeclarationTypesExcluding(SUPPLEMENTARY))) { implicit request =>
-    val frm = form.withSubmissionErrors()
-    request.cacheModel.ducr match {
-      case Some(data) => Ok(ducrEntryPage(frm.fill(data)))
-      case _          => Ok(ducrEntryPage(frm))
+  val displayPage: Action[AnyContent] =
+    (authenticate andThen journeyType(allDeclarationTypesExcluding(SUPPLEMENTARY))) { implicit request =>
+      val frm = form.withSubmissionErrors()
+      request.cacheModel.ducr match {
+        case Some(data) => Ok(ducrEntryPage(frm.fill(data)))
+        case _          => Ok(ducrEntryPage(frm))
+      }
     }
-  }
 
-  val submitDucr: Action[AnyContent] = (authenticate andThen journeyType(allDeclarationTypesExcluding(SUPPLEMENTARY))).async { implicit request =>
-    form
-      .bindFromRequest()
-      .fold(formWithErrors => Future.successful(BadRequest(ducrEntryPage(formWithErrors))), updateCacheAndContinue(_))
-  }
+  val submitDucr: Action[AnyContent] =
+    (authenticate andThen journeyType(allDeclarationTypesExcluding(SUPPLEMENTARY))).async { implicit request =>
+      form
+        .bindFromRequest()
+        .fold(formWithErrors => Future.successful(BadRequest(ducrEntryPage(formWithErrors))), updateCacheAndContinue(_))
+    }
 
   private def updateCacheAndContinue(ducr: Ducr)(implicit request: JourneyRequest[AnyContent]): Future[Result] =
     updateDeclarationFromRequest { dec =>

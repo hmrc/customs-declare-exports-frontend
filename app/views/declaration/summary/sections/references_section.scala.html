@@ -35,6 +35,16 @@
     else "declaration.summary.references.lrn"
 }
 
+@ducrChangeLink = @{
+    if (declaration.isType(SUPPLEMENTARY)) routes.ConsignmentReferencesController.displayPage.url
+    else routes.DucrEntryController.displayPage.url
+}
+
+@lrnChangeLink = @{
+    if (declaration.isType(SUPPLEMENTARY)) routes.ConsignmentReferencesController.displayPage.url
+    else routes.LocalReferenceNumberController.displayPage.url
+}
+
 @if(declaration.status == DRAFT && declaration.parentDeclarationId.isDefined){
     @insetText(HtmlContent(body(link(
         text = messages("declaration.summary.goto.additional.type"),
@@ -104,7 +114,7 @@
                 actions = actions(Actions(
                     items = Seq(
                         actionSummaryItem(
-                            href = routes.DucrEntryController.displayPage.url,
+                            href = ducrChangeLink,
                             content = HtmlContent(linkContent(messages("site.change"))),
                             visuallyHiddenText = Some(messages("declaration.summary.references.ducr.change"))
                         )
@@ -124,7 +134,7 @@
                 actions = actions(Actions(
                     items = Seq(
                         actionSummaryItem(
-                            href = routes.DucrEntryController.displayPage.url,
+                            href = routes.ConsignmentReferencesController.displayPage.url,
                             content = HtmlContent(linkContent(messages("site.change"))),
                             visuallyHiddenText = Some(messages("declaration.summary.references.mrn.change"))
                         )
@@ -144,7 +154,7 @@
                 actions = actions(Actions(
                     items = Seq(
                         actionSummaryItem(
-                            href = routes.DucrEntryController.displayPage.url,
+                            href = routes.ConsignmentReferencesController.displayPage.url,
                             content = HtmlContent(linkContent(messages("site.change"))),
                             visuallyHiddenText = Some(messages("declaration.summary.references.eidr.change"))
                         )
@@ -164,7 +174,7 @@
                 actions = actions(Actions(
                     items = Seq(
                         actionSummaryItem(
-                            href = routes.LocalReferenceNumberController.displayPage.url,
+                            href = lrnChangeLink,
                             content = HtmlContent(linkContent(messages("site.change"))),
                             visuallyHiddenText = Some(messages("declaration.summary.references.lrn.change"))
                         )

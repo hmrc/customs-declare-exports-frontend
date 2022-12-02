@@ -21,6 +21,7 @@ import controllers.navigation.Navigator
 import forms.{Ducr, LrnValidator}
 import forms.declaration.ConsignmentReferences
 import forms.declaration.ConsignmentReferences.form
+import models.DeclarationType
 import models.DeclarationType.SUPPLEMENTARY
 import models.requests.JourneyRequest
 import play.api.i18n.I18nSupport
@@ -65,4 +66,5 @@ class ConsignmentReferencesController @Inject() (
 
   private def capitaliseDucr(consignmentReferences: ConsignmentReferences): ConsignmentReferences =
     consignmentReferences.copy(ducr = Ducr(consignmentReferences.ducr.ducr.toUpperCase))
+
 }

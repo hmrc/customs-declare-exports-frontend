@@ -44,20 +44,22 @@ class LocalReferenceNumberController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
-  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType(allDeclarationTypesExcluding(SUPPLEMENTARY))) { implicit request =>
-    val frm = form.withSubmissionErrors()
-    request.cacheModel.consignmentReferences.flatMap(_.lrn) match {
-      case Some(data) => Ok(LrnPage(frm.fill(data)))
-      case _          => Ok(LrnPage(frm))
+  def displayPage(): Action[AnyContent] =
+    (authenticate andThen journeyType(allDeclarationTypesExcluding(SUPPLEMENTARY))) { implicit request =>
+      val frm = form.withSubmissionErrors()
+      request.cacheModel.consignmentReferences.flatMap(_.lrn) match {
+        case Some(data) => Ok(LrnPage(frm.fill(data)))
+        case _          => Ok(LrnPage(frm))
+      }
     }
-  }
 
-  def submitLrn(): Action[AnyContent] = (authenticate andThen journeyType(allDeclarationTypesExcluding(SUPPLEMENTARY))).async { implicit request =>
-    form
-      .bindFromRequest()
-      .verifyLrnValidity(lrnValidator)
-      .flatMap(_.fold(formWithErrors => Future.successful(BadRequest(LrnPage(formWithErrors))), updateCacheAndContinue(_)))
-  }
+  def submitLrn(): Action[AnyContent] =
+    (authenticate andThen journeyType(allDeclarationTypesExcluding(SUPPLEMENTARY))).async { implicit request =>
+      form
+        .bindFromRequest()
+        .verifyLrnValidity(lrnValidator)
+        .flatMap(_.fold(formWithErrors => Future.successful(BadRequest(LrnPage(formWithErrors))), updateCacheAndContinue(_)))
+    }
 
   private def updateCacheAndContinue(lrn: Lrn)(implicit request: JourneyRequest[AnyContent]): Future[Result] =
     updateDeclarationFromRequest { dec =>
