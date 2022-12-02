@@ -21,7 +21,7 @@ import base.ExportsTestData.lrn
 import forms.{Ducr, Lrn}
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
-import forms.declaration.{ConsignmentReferences, IntermediaryConsignmentReferences, TraderReference}
+import forms.declaration.{ConsignmentReferences, TraderReference}
 import mock.ErrorHandlerMocks
 import models.DeclarationType.SUPPLEMENTARY
 import org.mockito.ArgumentMatchers.{any, eq => meq}
@@ -145,7 +145,7 @@ class ConfirmDucrControllerSpec extends ControllerSpec with ErrorHandlerMocks {
         thePageNavigatedTo mustBe routes.LocalReferenceNumberController.displayPage
 
         val cacheModifier: ExportsDeclarationModifier =
-          _.copy(consignmentReferences = Some(ConsignmentReferences(dummyDucr, Lrn(lrn))))
+          _.copy(consignmentReferences = Some(ConsignmentReferences(dummyDucr, Some(Lrn(lrn)))))
         theCacheModelUpdated mustBe aDeclarationAfter(declaration, cacheModifier)
       }
 

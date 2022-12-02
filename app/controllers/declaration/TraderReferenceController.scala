@@ -19,7 +19,8 @@ package controllers.declaration
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.routes.ConfirmDucrController
 import controllers.navigation.Navigator
-import forms.declaration.{IntermediaryConsignmentReferences, TraderReference}
+import forms.Ducr
+import forms.declaration.{ConsignmentReferences, TraderReference}
 import models.DeclarationType.{allDeclarationTypesExcluding, SUPPLEMENTARY}
 import models.ExportsDeclaration
 import models.requests.JourneyRequest
@@ -30,6 +31,7 @@ import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.trader_reference
 
+import java.time.ZoneId
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -44,8 +46,10 @@ class TraderReferenceController @Inject() (
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with WithDefaultFormBinding with SubmissionErrors {
 
   def displayPage(): Action[AnyContent] = (authorise andThen getJourney(allDeclarationTypesExcluding(SUPPLEMENTARY))) { implicit request =>
-    val traderReference = request.cacheModel.traderReference
+    val ducr = request.cacheModel.ducr
+    val traderReference = ducr.map(ducr => TraderReference(ducr.ducr.drop(16)))
     val form = TraderReference.form.withSubmissionErrors
+
     Ok(traderReferencePage(traderReference.fold(form)(value => form.fill(value))))
   }
 
@@ -54,12 +58,24 @@ class TraderReferenceController @Inject() (
       .bindFromRequest()
       .fold(
         formWithErrors => Future.successful(BadRequest(traderReferencePage(formWithErrors))),
-        updateCache(_).map(_ => navigator.continueTo(ConfirmDucrController.displayPage))
+        traderReference => updateCache(generateDucr(traderReference)).map(_ => navigator.continueTo(ConfirmDucrController.displayPage))
       )
   }
 
-  private def updateCache(value: TraderReference)(implicit request: JourneyRequest[_]): Future[ExportsDeclaration] = {
-    val existingDucr = request.cacheModel.intermediaryConsignmentReferences.flatMap(_.ducr)
-    updateDeclarationFromRequest(_.copy(intermediaryConsignmentReferences = Some(IntermediaryConsignmentReferences(existingDucr, Some(value)))))
+  private def generateDucr(traderReference: TraderReference)(implicit request: JourneyRequest[_]): Ducr = {
+    val lastDigitOfYear = request.cacheModel.createdDateTime.atZone(ZoneId.of("Europe/London")).getYear.toString.last
+    val eori = request.eori.toUpperCase
+
+    Ducr(lastDigitOfYear + "GB" + eori.takeRight(12) + "-" + traderReference.value)
+  }
+
+  private def updateCache(generatedDucr: Ducr)(implicit request: JourneyRequest[_]): Future[ExportsDeclaration] = {
+    val existingConsignmentRefs = request.cacheModel.consignmentReferences
+
+    existingConsignmentRefs.fold {
+      updateDeclarationFromRequest(_.copy(consignmentReferences = Some(ConsignmentReferences(generatedDucr))))
+    } { existingRefs =>
+      updateDeclarationFromRequest(_.copy(consignmentReferences = Some(existingRefs.copy(ducr = generatedDucr))))
+    }
   }
 }

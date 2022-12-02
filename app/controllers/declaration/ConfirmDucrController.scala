@@ -18,10 +18,8 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
-import forms.Ducr
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
-import forms.declaration.IntermediaryConsignmentReferences
 import handlers.ErrorHandler
 import models.DeclarationType.{allDeclarationTypesExcluding, SUPPLEMENTARY}
 import models.ExportsDeclaration
@@ -35,7 +33,6 @@ import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.confirm_ducr
 
-import java.time.ZoneId
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -51,42 +48,31 @@ class ConfirmDucrController @Inject() (
     extends FrontendController(mcc) with I18nSupport with WithDefaultFormBinding with ModelCacheable with SubmissionErrors {
 
   def displayPage(): Action[AnyContent] = (authorise andThen getJourney(allDeclarationTypesExcluding(SUPPLEMENTARY))).async { implicit request =>
-    request.cacheModel.traderReference.fold {
-      logger.warn("No trader reference found in cache to generate DUCR!")
+    request.cacheModel.ducr.fold {
+      logger.warn("No generated DUCR found in cache!")
       errorHandler.displayErrorPage()
-    }(_ => Future.successful(Ok(confirmDucrPage(form.withSubmissionErrors(), generatedDucr))))
+    } { ducr =>
+      Future.successful(Ok(confirmDucrPage(form.withSubmissionErrors(), ducr)))
+    }
   }
 
   def submitForm(): Action[AnyContent] = (authorise andThen getJourney(allDeclarationTypesExcluding(SUPPLEMENTARY))).async { implicit request =>
-    form.bindFromRequest.fold(
-      formWithErrors => Future.successful(BadRequest(confirmDucrPage(formWithErrors, generatedDucr))),
-      {
-        case YesNoAnswer(YesNoAnswers.yes) => updateCache.map(_ => navigator.continueTo(routes.LocalReferenceNumberController.displayPage))
-        case _                             => Future.successful(navigator.continueTo(routes.DucrEntryController.displayPage))
-      }
-    )
+    request.cacheModel.ducr.fold {
+      logger.warn("No generated DUCR found in cache!")
+      errorHandler.displayErrorPage()
+    } { ducr =>
+      form.bindFromRequest.fold(
+        formWithErrors => Future.successful(BadRequest(confirmDucrPage(formWithErrors, ducr))),
+        {
+          case YesNoAnswer(YesNoAnswers.yes) => Future.successful(navigator.continueTo(routes.LocalReferenceNumberController.displayPage))
+          case _                             => updateCache.map(_ => navigator.continueTo(routes.DucrEntryController.displayPage))
+        }
+      )
+    }
   }
 
   private def form: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.confirmDucr.error.empty")
 
-  private def generatedDucr(implicit request: JourneyRequest[_]): Ducr = {
-    val lastDigitOfYear = request.cacheModel.createdDateTime.atZone(ZoneId.of("Europe/London")).getYear.toString.last
-    val eori = request.eori.toUpperCase
-    val tradeRef = request.cacheModel.traderReference.get.value
-
-    Ducr(lastDigitOfYear + "GB" + eori.takeRight(12) + "-" + tradeRef)
-  }
-
-  private def updateCache(implicit request: JourneyRequest[_]): Future[ExportsDeclaration] = {
-    val existingTraderReference = request.cacheModel.intermediaryConsignmentReferences.flatMap(_.traderReference)
-    val maybeExistingConsignmentRefs = request.cacheModel.consignmentReferences
-
-    maybeExistingConsignmentRefs.fold {
-      updateDeclarationFromRequest(
-        _.copy(intermediaryConsignmentReferences = Some(IntermediaryConsignmentReferences(Some(generatedDucr), existingTraderReference)))
-      )
-    } { existingRefs =>
-      updateDeclarationFromRequest(_.copy(consignmentReferences = Some(existingRefs.copy(ducr = generatedDucr))))
-    }
-  }
+  private def updateCache(implicit request: JourneyRequest[_]): Future[ExportsDeclaration] =
+    updateDeclarationFromRequest(_.copy(consignmentReferences = None))
 }
