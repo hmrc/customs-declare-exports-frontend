@@ -20,7 +20,7 @@ import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.declaration.ConsignmentReferences
 import forms.Lrn.form
-import forms.{Ducr, Lrn, LrnValidator}
+import forms.{Lrn, LrnValidator}
 import models.DeclarationType.{allDeclarationTypesExcluding, SUPPLEMENTARY}
 import models.requests.JourneyRequest
 import play.api.i18n.I18nSupport
@@ -64,6 +64,6 @@ class LocalReferenceNumberController @Inject() (
   private def updateCacheAndContinue(lrn: Lrn)(implicit request: JourneyRequest[AnyContent]): Future[Result] =
     updateDeclarationFromRequest { dec =>
       dec.copy(consignmentReferences = dec.ducr.map(ducr => ConsignmentReferences(ducr, Some(lrn))))
-    }.map(_ => navigator.continueTo(routes.LinkDucrToMucrController.displayPage))
+    } map (_ => navigator.continueTo(routes.LinkDucrToMucrController.displayPage))
 
 }

@@ -17,9 +17,9 @@
 package controllers.declaration
 
 import scala.concurrent.Future
+
 import base.ControllerSpec
 import base.ExportsTestData.eidrDateStamp
-import controllers.routes.RootController
 import forms.declaration.ConsignmentReferences
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.{SUPPLEMENTARY_EIDR, SUPPLEMENTARY_SIMPLIFIED}
 import forms.{Ducr, Lrn, LrnValidator}
@@ -65,7 +65,7 @@ class ConsignmentReferencesControllerSpec extends ControllerSpec with GivenWhenT
   }
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
-    withNewCaching(aDeclaration(withType(SUPPLEMENTARY)))
+    withNewCaching(aDeclaration())
     await(controller.displayPage()(request))
     theResponseForm
   }
@@ -76,51 +76,35 @@ class ConsignmentReferencesControllerSpec extends ControllerSpec with GivenWhenT
     captor.getValue
   }
 
-  "ConsignmentReferencesController on submitConsignmentReferences" should {
+  "ConsignmentReferencesController on displayPage" should {
 
-    onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, CLEARANCE) { request =>
-      val correctForm = Json.toJson(ConsignmentReferences(Ducr(DUCR), Some(LRN)))
-
-      "return 303 (SEE_OTHER) and redirect on displayPage" in {
-        withNewCaching(request.cacheModel)
-
-        val result = controller.displayPage()(getRequest())
-
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(RootController.displayPage().url)
-      }
-      "return 303 (SEE_OTHER) and redirect on submit" in {
-        withNewCaching(request.cacheModel)
-
-        val result = controller.submitConsignmentReferences()(postRequest(correctForm))
-
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(RootController.displayPage().url)
-      }
-    }
-
-    onJourney(SUPPLEMENTARY) { req =>
+    onEveryDeclarationJourney() { request =>
       "return 200 (OK)" when {
 
         "display page method is invoked and cache is empty" in {
-          withNewCaching(req.cacheModel)
+          withNewCaching(request.cacheModel)
 
           val result = controller.displayPage()(getRequest())
           status(result) must be(OK)
         }
 
         "display page method is invoked and cache contains data" in {
-          withNewCaching(aDeclaration(withType(SUPPLEMENTARY), withConsignmentReferences()))
+          withNewCaching(aDeclaration(withConsignmentReferences()))
 
           val result = controller.displayPage()(getRequest())
           status(result) must be(OK)
         }
       }
+    }
+  }
 
+  "ConsignmentReferencesController on submitConsignmentReferences" should {
+
+    onEveryDeclarationJourney() { request =>
       "return 400 (BAD_REQUEST)" when {
 
         "user enters incorrect data" in {
-          withNewCaching(req.cacheModel)
+          withNewCaching(request.cacheModel)
           val incorrectForm = Json.toJson(ConsignmentReferences(Ducr("1234"), Some(Lrn(""))))
 
           val result = controller.submitConsignmentReferences()(postRequest(incorrectForm))
@@ -129,7 +113,7 @@ class ConsignmentReferencesControllerSpec extends ControllerSpec with GivenWhenT
 
         "LrnValidator returns false" in {
           when(lrnValidator.hasBeenSubmittedInThePast48Hours(any[Lrn])(any(), any())).thenReturn(Future.successful(true))
-          withNewCaching(req.cacheModel)
+          withNewCaching(request.cacheModel)
           val correctForm = Json.toJson(ConsignmentReferences(Ducr(DUCR), Some(LRN)))
 
           val result = controller.submitConsignmentReferences()(postRequest(correctForm))
@@ -138,7 +122,7 @@ class ConsignmentReferencesControllerSpec extends ControllerSpec with GivenWhenT
       }
 
       "change to uppercase any lowercase letter entered in the DUCR field" in {
-        withNewCaching(req.cacheModel)
+        withNewCaching(request.cacheModel)
 
         val ducr = "9gb123456664559-1abc"
         val correctForm = Json.toJson(ConsignmentReferences(Ducr(ducr), Some(LRN)))
@@ -150,7 +134,22 @@ class ConsignmentReferencesControllerSpec extends ControllerSpec with GivenWhenT
         val declaration = theCacheModelUpdated
         declaration.consignmentReferences.head.ducr.ducr mustBe ducr.toUpperCase
       }
+    }
 
+    onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, CLEARANCE) { request =>
+      val correctForm = Json.toJson(ConsignmentReferences(Ducr(DUCR), Some(LRN)))
+
+      "return 303 (SEE_OTHER) and redirect to 'Link DUCR to MUCR' page" in {
+        withNewCaching(request.cacheModel)
+
+        val result = controller.submitConsignmentReferences()(postRequest(correctForm))
+
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe routes.LinkDucrToMucrController.displayPage()
+      }
+    }
+
+    onJourney(SUPPLEMENTARY) { req =>
       "return 303 (SEE_OTHER) and redirect to 'Link DUCR to MUCR' page" when {
 
         "for SUPPLEMENTARY_SIMPLIFIED" in {
