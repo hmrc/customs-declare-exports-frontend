@@ -16,20 +16,21 @@
 
 package controllers
 
-import base.{ControllerWithoutFormSpec, Injector}
+import base.ControllerWithoutFormSpec
 import mock.ErrorHandlerMocks
-import models.declaration.submissions.EnhancedStatus.{CUSTOMS_POSITION_DENIED, CUSTOMS_POSITION_GRANTED, EnhancedStatus, QUERY_NOTIFICATION_MESSAGE}
+import models.declaration.submissions.EnhancedStatus._
 import models.declaration.submissions.RequestType.CancellationRequest
 import models.declaration.submissions.{Action, NotificationSummary, Submission}
 import models.requests.{ExportsSessionKeys, VerifiedEmailRequest}
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, when}
+import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.GivenWhenThen
 import play.api.http.Status.{BAD_REQUEST, NOT_FOUND, SEE_OTHER}
-import play.api.i18n.Lang
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{redirectLocation, session, status, OK}
+import play.twirl.api.HtmlFormat
 import testdata.SubmissionsTestData.{eori, lrn, mrn, uuid}
 import views.html.{cancellation_holding, cancellation_result}
 
@@ -37,19 +38,16 @@ import java.time.ZonedDateTime
 import java.util.UUID
 import scala.concurrent.Future
 
-class CancellationResultControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerMocks with Injector with GivenWhenThen {
+class CancellationResultControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerMocks with GivenWhenThen {
 
-  private val mcc = stubMessagesControllerComponents()
-  private val messages = mcc.messagesApi.preferred(List(Lang("en")))
-
-  val holdingPage = instanceOf[cancellation_holding]
-  val resultPage = instanceOf[cancellation_result]
+  val holdingPage = mock[cancellation_holding]
+  val resultPage = mock[cancellation_result]
 
   val controller = new CancellationResultController(
     mockAuthAction,
     mockVerifiedEmailAction,
     mockCustomsDeclareExportsConnector,
-    mcc,
+    stubMessagesControllerComponents(),
     mockErrorHandler,
     holdingPage,
     resultPage
@@ -59,14 +57,23 @@ class CancellationResultControllerSpec extends ControllerWithoutFormSpec with Er
     super.beforeEach()
     authorizedUser()
     setupErrorHandler()
+    when(holdingPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(resultPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit =
-    reset(mockCustomsDeclareExportsConnector)
+    reset(holdingPage, mockCustomsDeclareExportsConnector, resultPage)
 
-  def buildRequest(queryParam: String = "", submissionId: Option[String] = None): VerifiedEmailRequest[AnyContentAsEmpty.type] = {
-    val session = if (submissionId.isDefined) ExportsSessionKeys.submissionId -> submissionId.get else ("", "")
-    val request = FakeRequest("GET", queryParam).withSession(session)
+  def buildRequest(
+    queryParam: String = "",
+    submissionId: Option[String] = Some(uuid),
+    submissionMrn: Option[String] = Some(mrn)
+  ): VerifiedEmailRequest[AnyContentAsEmpty.type] = {
+    val session = List(
+      submissionId.fold("dummyKey1" -> "dummyVal")(uuid => ExportsSessionKeys.submissionId -> uuid),
+      submissionMrn.fold("dummyKey2" -> "dummyVal")(mrn => ExportsSessionKeys.submissionMrn -> mrn)
+    )
+    val request = FakeRequest("GET", queryParam).withSession(session: _*)
     buildVerifiedEmailRequest(request, exampleUser)
   }
 
@@ -84,21 +91,27 @@ class CancellationResultControllerSpec extends ControllerWithoutFormSpec with Er
   private val actionWithoutNotificationSummary =
     Action(id = "id", requestType = CancellationRequest, notifications = None)
 
-  "CancellationResultController on displayHoldingPage" should {
+  "CancellationResultController.displayHoldingPage" should {
 
     "return the expected page" when {
 
       "the request does not include a 'js' query parameter" in {
-        val request = buildRequest(submissionId = Some(uuid))
+        implicit val request = buildRequest()
         val result = controller.displayHoldingPage(request)
 
         status(result) mustBe OK
 
-        val holdingUrl = routes.CancellationResultController.displayHoldingPage.url
-        val expectedView = holdingPage(s"$holdingUrl?js=disabled", s"$holdingUrl?js=enabled", mrn)(request, messages)
+        val jsDisabledCaptor = ArgumentCaptor.forClass(classOf[String])
+        val jsEnabledCaptor = ArgumentCaptor.forClass(classOf[String])
+        val mrnCaptor = ArgumentCaptor.forClass(classOf[String])
 
-        val actualView = viewOf(result)
-        actualView mustBe expectedView
+        verify(holdingPage).apply(jsDisabledCaptor.capture(), jsEnabledCaptor.capture(), mrnCaptor.capture())(any(), any())
+
+        val holdingUrl = routes.CancellationResultController.displayHoldingPage.url
+
+        jsDisabledCaptor.getValue.asInstanceOf[String] mustBe s"$holdingUrl?js=disabled"
+        jsEnabledCaptor.getValue.asInstanceOf[String] mustBe s"$holdingUrl?js=enabled"
+        mrnCaptor.getValue.asInstanceOf[String] mustBe mrn
       }
 
       "the request's query parameter 'js' is equal to 'disabled'" in {
@@ -106,16 +119,20 @@ class CancellationResultControllerSpec extends ControllerWithoutFormSpec with Er
         when(mockCustomsDeclareExportsConnector.findSubmission(any())(any(), any()))
           .thenReturn(Future.successful(submissionWithStatus(None)))
 
-        val request = buildRequest("/?js=disabled", Some(uuid))
+        implicit val request = buildRequest("/?js=disabled")
         val result = controller.displayHoldingPage(request)
 
         status(result) mustBe OK
 
-        val confirmationUrl = routes.CancellationResultController.displayResultPage.url
-        val expectedView = holdingPage(confirmationUrl, "", mrn)(request, messages)
+        val jsDisabledCaptor = ArgumentCaptor.forClass(classOf[String])
+        val jsEnabledCaptor = ArgumentCaptor.forClass(classOf[String])
+        val mrnCaptor = ArgumentCaptor.forClass(classOf[String])
 
-        val actualView = viewOf(result)
-        actualView mustBe expectedView
+        verify(holdingPage).apply(jsDisabledCaptor.capture(), jsEnabledCaptor.capture(), mrnCaptor.capture())(any(), any())
+
+        jsDisabledCaptor.getValue.asInstanceOf[String] mustBe routes.CancellationResultController.displayResultPage.url
+        jsEnabledCaptor.getValue.asInstanceOf[String] mustBe ""
+        mrnCaptor.getValue.asInstanceOf[String] mustBe mrn
       }
     }
 
@@ -125,7 +142,7 @@ class CancellationResultControllerSpec extends ControllerWithoutFormSpec with Er
         when(mockCustomsDeclareExportsConnector.findSubmission(any())(any(), any()))
           .thenReturn(Future.successful(submissionWithStatus(Some(CUSTOMS_POSITION_GRANTED))))
 
-        val request = buildRequest("/?js=disabled", Some(uuid))
+        val request = buildRequest("/?js=disabled")
         val result = controller.displayHoldingPage(request)
 
         status(result) mustBe SEE_OTHER
@@ -139,7 +156,7 @@ class CancellationResultControllerSpec extends ControllerWithoutFormSpec with Er
         when(mockCustomsDeclareExportsConnector.findSubmission(any())(any(), any()))
           .thenReturn(Future.successful(submissionWithStatus(Some(CUSTOMS_POSITION_GRANTED))))
 
-        val request = buildRequest("/?js=enabled", Some(uuid))
+        val request = buildRequest("/?js=enabled")
         val result = controller.displayHoldingPage(request)
 
         status(result) mustBe OK
@@ -148,7 +165,7 @@ class CancellationResultControllerSpec extends ControllerWithoutFormSpec with Er
 
     "return 400(BAD_REQUEST) status code" when {
       "the request's query parameter 'js' is not equal to 'disabled' or 'enabled'" in {
-        val request = buildRequest("/?js=blabla", Some(uuid))
+        val request = buildRequest("/?js=blabla")
         val result = controller.displayHoldingPage(request)
 
         status(result) mustBe BAD_REQUEST
@@ -161,7 +178,7 @@ class CancellationResultControllerSpec extends ControllerWithoutFormSpec with Er
         when(mockCustomsDeclareExportsConnector.findSubmission(any())(any(), any()))
           .thenReturn(Future.successful(submissionWithStatus(None)))
 
-        val request = buildRequest("/?js=enabled", Some(uuid))
+        val request = buildRequest("/?js=enabled")
         val result = controller.displayHoldingPage(request)
 
         status(result) mustBe NOT_FOUND
@@ -171,24 +188,41 @@ class CancellationResultControllerSpec extends ControllerWithoutFormSpec with Er
     "return 400 status code" when {
 
       "the request's session does not include the submissionId" in {
-        val request = buildRequest()
+        val request = buildRequest(submissionId = None)
         val result = controller.displayHoldingPage(request)
 
         status(result) mustBe BAD_REQUEST
+        session(result).data.keys mustNot contain(ExportsSessionKeys.submissionId)
+      }
+
+      "the request's session does not include the submission's mrn" in {
+        val request = buildRequest(submissionMrn = None)
+        val result = controller.displayHoldingPage(request)
+
+        status(result) mustBe BAD_REQUEST
+        session(result).data.keys mustNot contain(ExportsSessionKeys.submissionMrn)
       }
     }
   }
 
-  "CancellationResultController on displayResultPage" should {
+  "CancellationResultController.displayResultPage" should {
 
     "return 400 status code" when {
 
       "the request's session does not include the submissionId" in {
-        val request = buildRequest()
+        val request = buildRequest(submissionId = None)
         val result = controller.displayResultPage(request)
 
         status(result) mustBe BAD_REQUEST
         session(result).data.keys mustNot contain(ExportsSessionKeys.submissionId)
+      }
+
+      "the request's session does not include the submission's mrn" in {
+        val request = buildRequest(submissionMrn = None)
+        val result = controller.displayResultPage(request)
+
+        status(result) mustBe BAD_REQUEST
+        session(result).data.keys mustNot contain(ExportsSessionKeys.submissionMrn)
       }
     }
 
@@ -199,16 +233,23 @@ class CancellationResultControllerSpec extends ControllerWithoutFormSpec with Er
           when(mockCustomsDeclareExportsConnector.findSubmission(any())(any(), any()))
             .thenReturn(Future.successful(submissionWithStatus(notificationStatus)))
 
-          val request = buildRequest(submissionId = Some(uuid))
+          implicit val request = buildRequest()
           val result = controller.displayResultPage(request)
 
           status(result) mustBe OK
           session(result).data.keys mustNot contain(ExportsSessionKeys.submissionId)
 
-          val expectedView = resultPage(notificationStatus, mrn)(request, messages)
+          val statusCaptor = ArgumentCaptor.forClass(classOf[Option[EnhancedStatus]])
+          val mrnCaptor = ArgumentCaptor.forClass(classOf[String])
 
-          val actualView = viewOf(result)
-          actualView mustBe expectedView
+          verify(resultPage).apply(statusCaptor.capture(), mrnCaptor.capture())(any(), any())
+
+          val expectedStatus = notificationStatus match {
+            case Some(CUSTOMS_POSITION_DENIED) | Some(CUSTOMS_POSITION_GRANTED) => notificationStatus
+            case _                                                              => None
+          }
+          statusCaptor.getValue.asInstanceOf[Option[EnhancedStatus]] mustBe expectedStatus
+          mrnCaptor.getValue.asInstanceOf[String] mustBe mrn
         }
     }
   }
