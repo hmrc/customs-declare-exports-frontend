@@ -44,7 +44,7 @@ class DucrEntryController @Inject() (
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
   val displayPage: Action[AnyContent] =
-    (authenticate andThen journeyType(allDeclarationTypesExcluding(SUPPLEMENTARY))) { implicit request =>
+    (authenticate andThen journeyType) { implicit request =>
       val frm = form.withSubmissionErrors()
       request.cacheModel.ducr match {
         case Some(data) => Ok(ducrEntryPage(frm.fill(data)))
@@ -53,7 +53,7 @@ class DucrEntryController @Inject() (
     }
 
   val submitDucr: Action[AnyContent] =
-    (authenticate andThen journeyType(allDeclarationTypesExcluding(SUPPLEMENTARY))).async { implicit request =>
+    (authenticate andThen journeyType).async { implicit request =>
       form
         .bindFromRequest()
         .fold(formWithErrors => Future.successful(BadRequest(ducrEntryPage(formWithErrors))), updateCacheAndContinue(_))

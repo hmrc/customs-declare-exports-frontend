@@ -21,7 +21,6 @@ import controllers.navigation.Navigator
 import forms.declaration.ConsignmentReferences
 import forms.Lrn.form
 import forms.{Lrn, LrnValidator}
-import models.DeclarationType.{allDeclarationTypesExcluding, SUPPLEMENTARY}
 import models.requests.JourneyRequest
 import play.api.i18n.I18nSupport
 import play.api.mvc._
@@ -45,7 +44,7 @@ class LocalReferenceNumberController @Inject() (
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
   def displayPage(): Action[AnyContent] =
-    (authenticate andThen journeyType(allDeclarationTypesExcluding(SUPPLEMENTARY))) { implicit request =>
+    (authenticate andThen journeyType) { implicit request =>
       val frm = form.withSubmissionErrors()
       request.cacheModel.consignmentReferences.flatMap(_.lrn) match {
         case Some(data) => Ok(LrnPage(frm.fill(data)))
@@ -54,7 +53,7 @@ class LocalReferenceNumberController @Inject() (
     }
 
   def submitLrn(): Action[AnyContent] =
-    (authenticate andThen journeyType(allDeclarationTypesExcluding(SUPPLEMENTARY))).async { implicit request =>
+    (authenticate andThen journeyType).async { implicit request =>
       form
         .bindFromRequest()
         .verifyLrnValidity(lrnValidator)

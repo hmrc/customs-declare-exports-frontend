@@ -18,7 +18,7 @@ package controllers.declaration
 
 import base.ControllerSpec
 import forms.Ducr
-import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
+import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED, STANDARD}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
@@ -128,32 +128,6 @@ class DucrEntryControllerSpec extends ControllerSpec with GivenWhenThen {
       }
     }
 
-  }
-
-  onJourney(SUPPLEMENTARY) { req =>
-    "return 303 (SEE_OTHER) and redirect" when {
-
-      ".onDisplay" in {
-        val request = journeyRequest(aDeclaration(withType(req.declarationType)))
-        withNewCaching(request.cacheModel)
-
-        val result = controller.displayPage()(getRequest())
-
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.routes.RootController.displayPage().url)
-      }
-
-      ".onSubmit" in {
-        val request = journeyRequest(aDeclaration(withType(req.declarationType)))
-        withNewCaching(request.cacheModel)
-        val correctForm = Json.toJson(Ducr(DUCR))
-
-        val result = controller.submitDucr()(postRequest(correctForm))
-
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.routes.RootController.displayPage().url)
-      }
-    }
   }
 
 }
