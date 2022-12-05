@@ -52,8 +52,8 @@ class CancelDeclarationController @Inject() (
 
   def displayPage(): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
     getSessionData() match {
-      case Some((submissionId, mrn, lrn, ducr)) => Future.successful(Ok(cancelDeclarationPage(CancelDeclarationDescription.form, lrn, ducr, mrn)))
-      case _                                    => errorHandler.displayErrorPage()
+      case Some((_, mrn, lrn, ducr)) => Future.successful(Ok(cancelDeclarationPage(CancelDeclarationDescription.form, lrn, ducr, mrn)))
+      case _                         => errorHandler.displayErrorPage()
     }
   }
 
@@ -130,5 +130,4 @@ class CancelDeclarationController @Inject() (
     } yield (submissionId, mrn, lrn, ducr)
 
   private def getSessionValue(str: String)(implicit request: AuthenticatedRequest[_]): Option[String] = request.session.get(str)
-
 }
