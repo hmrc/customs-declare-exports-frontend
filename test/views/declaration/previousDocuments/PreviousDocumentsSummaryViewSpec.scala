@@ -72,6 +72,10 @@ class PreviousDocumentsSummaryViewSpec extends PageWithButtonsSpec with Injector
         createView().getElementsByTag("h1").text mustBe messages("declaration.previousDocuments.summary.header.plural", "2")
       }
 
+      "display body text" in {
+        createView().getElementsByClass("govuk-body").first.text mustBe messages("declaration.previousDocuments.summary.body")
+      }
+
       "display the warning" in {
         val warningText = s"! ${messages("site.warning")} ${messages("declaration.previousDocuments.summary.warning.text")}"
         createView().getElementsByClass("govuk-warning-text").text mustBe warningText
@@ -84,12 +88,8 @@ class PreviousDocumentsSummaryViewSpec extends PageWithButtonsSpec with Injector
         tableHeader.get(2) must containMessage("declaration.previousDocuments.summary.goodsItemIdentifier.label")
       }
 
-      "have visually hidden header for Change links" in {
-        createView().getElementsByClass("govuk-table__header").get(3) must containMessage("site.change.header")
-      }
-
       "have visually hidden header for Remove links" in {
-        createView().getElementsByClass("govuk-table__header").get(4) must containMessage("site.remove.header")
+        createView().getElementsByClass("govuk-table__header").get(3) must containMessage("site.remove.header")
       }
 
       "display documents in table" in {
