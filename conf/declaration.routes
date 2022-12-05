@@ -37,6 +37,8 @@ POST        /confirm-ducr                       controllers.declaration.ConfirmD
 
 # Consignment references
 
+GET         /do-you-have-ducr                    controllers.declaration.DucrChoiceController.displayPage
+
 GET         /consignment-references              controllers.declaration.ConsignmentReferencesController.displayPage()
 
 POST        /consignment-references              controllers.declaration.ConsignmentReferencesController.submitConsignmentReferences()

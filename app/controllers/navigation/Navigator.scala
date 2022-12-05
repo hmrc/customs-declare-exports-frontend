@@ -79,7 +79,7 @@ class Navigator @Inject() (
     case CarrierDetails                => routes.CarrierEoriNumberController.displayPage
     case InvoiceAndExchangeRateChoice  => routes.OfficeOfExitController.displayPage
     case InvoiceAndExchangeRate        => routes.InvoiceAndExchangeRateChoiceController.displayPage
-    case TraderReference               => routes.DeclarantDetailsController.displayPage // TODO: Amend to DO you have a DUCR? page
+    case TraderReference               => routes.DucrChoiceController.displayPage
     case ConfirmDucr                   => routes.TraderReferenceController.displayPage
   }
 
