@@ -929,6 +929,7 @@ declaration.declarationHolder.eori.error.radio = Select who holds the authorisat
 
 declaration.declarationHolders.table.heading = You have added 1 authorisation
 declaration.declarationHolders.table.multiple.heading= You have added {0} authorisations
+declaration.declarationHolders.bodyParagraph = To change your authorisation, select remove and add a new authorisation.
 declaration.declarationHolders.table.type = Type
 declaration.declarationHolders.table.eori = EORI number
 declaration.declarationHolders.table.remove.hint = Remove authorisation {0}.
