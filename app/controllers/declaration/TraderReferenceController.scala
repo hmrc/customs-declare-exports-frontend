@@ -66,7 +66,7 @@ class TraderReferenceController @Inject() (
     val lastDigitOfYear = request.cacheModel.createdDateTime.atZone(ZoneId.of("Europe/London")).getYear.toString.last
     val eori = request.eori.toUpperCase
 
-    Ducr(lastDigitOfYear + "GB" + eori.takeRight(12) + "-" + traderReference.value)
+    Ducr(lastDigitOfYear + "GB" + eori.dropWhile(_.isLetter) + "-" + traderReference.value)
   }
 
   private def updateCache(generatedDucr: Ducr)(implicit request: JourneyRequest[_]): Future[ExportsDeclaration] = {
