@@ -20,10 +20,10 @@ import connectors.CustomsDeclareExportsConnector
 import controllers.CancellationResultController.{js, Disabled, Enabled}
 import controllers.actions.{AuthAction, VerifiedEmailAction}
 import handlers.ErrorHandler
-import models.declaration.submissions.EnhancedStatus.{CUSTOMS_POSITION_DENIED, CUSTOMS_POSITION_GRANTED}
+import models.declaration.submissions.EnhancedStatus.{CUSTOMS_POSITION_DENIED, CUSTOMS_POSITION_GRANTED, EnhancedStatus}
 import models.declaration.submissions.NotificationSummary
 import models.requests.AuthenticatedRequest
-import models.requests.ExportsSessionKeys.submissionId
+import models.requests.ExportsSessionKeys.{submissionId, submissionMrn}
 import play.api.Logging
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result, Session}
@@ -45,19 +45,18 @@ class CancellationResultController @Inject() (
     extends FrontendController(mcc) with I18nSupport with Logging {
 
   val displayHoldingPage: Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
-    extractSubmissionIdFromSession { submissionId =>
+    extractDataFromSession { (submissionId, mrn) =>
       request.getQueryString(js) match {
         // Show page at /holding and wait a few secs.
         case None =>
           val holdingUrl = routes.CancellationResultController.displayHoldingPage.url
-          Future.successful(Ok(cancelHoldingPage(s"$holdingUrl?$js=$Disabled", s"$holdingUrl?$js=$Enabled", submissionId)))
+          Future.successful(Ok(cancelHoldingPage(s"$holdingUrl?$js=$Disabled", s"$holdingUrl?$js=$Enabled", mrn)))
 
         // Javascript disabled. 1st check if at least 1 notification was sent in response of the submission.
         case Some(Disabled) =>
           hasCancellationNotificationSummary(submissionId).map {
-            case true =>
-              Redirect(routes.CancellationResultController.displayResultPage())
-            case false => Ok(cancelHoldingPage(routes.CancellationResultController.displayResultPage.url, "", submissionId))
+            case true  => Redirect(routes.CancellationResultController.displayResultPage)
+            case false => Ok(cancelHoldingPage(routes.CancellationResultController.displayResultPage.url, "", mrn))
           }
 
         // Javascript enabled. 1st check if at least 1 notification was sent in response of the submission.
@@ -75,30 +74,32 @@ class CancellationResultController @Inject() (
   }
 
   val displayResultPage: Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
-    extractSubmissionIdFromSession(getResultPage)
+    extractDataFromSession { (submissionId, mrn) =>
+      def result(status: Option[EnhancedStatus]) = Ok(cancellationResultPage(status, mrn)).withSession(removedSubmissionId)
+
+      getLatestCancellationNotificationSummary(submissionId)
+        .map(_.fold {
+          logger.debug("No notifications found for SubmissionId")
+          result(None)
+        } { notification =>
+          notification.enhancedStatus match {
+            case CUSTOMS_POSITION_DENIED | CUSTOMS_POSITION_GRANTED => result(Some(notification.enhancedStatus))
+            case _                                                  => result(None)
+          }
+        })
+    }
   }
 
-  private def getResultPage(submissionId: String)(implicit request: AuthenticatedRequest[_]): Future[Result] =
-    getLatestCancellationNotificationSummary(submissionId)
-      .map(_.fold {
-        logger.debug("No notifications found for SubmissionId")
-        Ok(cancellationResultPage(None, submissionId)).withSession(removedSubmissionId)
-      } { notification =>
-        notification.enhancedStatus match {
-          case CUSTOMS_POSITION_DENIED => Ok(cancellationResultPage(Some(notification.enhancedStatus), submissionId)).withSession(removedSubmissionId)
-          case CUSTOMS_POSITION_GRANTED =>
-            Ok(cancellationResultPage(Some(notification.enhancedStatus), submissionId)).withSession(removedSubmissionId)
-          case _ => Ok(cancellationResultPage(None, submissionId)).withSession(removedSubmissionId)
-        }
-      })
-
-  private def extractSubmissionIdFromSession(f: String => Future[Result])(implicit request: AuthenticatedRequest[_]): Future[Result] =
-    request.session
-      .get(submissionId)
-      .fold {
-        logger.warn("No SubmissionId found in session")
-        errorHandler.displayErrorPage
-      }(f)
+  private def extractDataFromSession(f: (String, String) => Future[Result])(implicit request: AuthenticatedRequest[_]): Future[Result] =
+    (for {
+      submissionId <- request.session.get(submissionId)
+      mrn <- request.session.get(submissionMrn)
+    } yield (submissionId, mrn)).fold {
+      logger.warn("No submissionId and/or mrn found in session")
+      errorHandler.displayErrorPage
+    } { case (submissionId, mrn) =>
+      f(submissionId, mrn)
+    }
 
   private def removedSubmissionId(implicit request: AuthenticatedRequest[_]): Session =
     request.session - submissionId
