@@ -65,7 +65,8 @@
 @govukLayout(
     title = Title("saved.declarations.title"),
     backButton = Some(BackButton(messages("site.backToSelectionPage"), routes.ChoiceController.displayPage(Some(Choice(ContinueDec))))),
-    useCustomContentWidth = true
+    useCustomContentWidth = true,
+    showDeclarationSummaryLink = false
 ) {
 
   <div class="govuk-grid-row">

@@ -69,7 +69,8 @@
 
 @govukLayout(
     title = Title("declaration.ducrEntry.header", "declaration.section.1", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(Ducr)))) {
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(Ducr))),
+    showDeclarationSummaryLink = false) {
 
     @formHelper(action = DucrEntryController.submitDucr, 'autoComplete -> "off") {
         @errorSummary(form.errors)

@@ -49,7 +49,8 @@
 
 @govukLayout(
     title = Title("declaration.lrn.header", "declaration.section.1", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(Lrn)))) {
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(Lrn))),
+    showDeclarationSummaryLink = false) {
 
     @formHelper(action = LocalReferenceNumberController.submitLrn, 'autoComplete -> "off") {
         @errorSummary(form.errors)
