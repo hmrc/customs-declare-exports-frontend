@@ -40,6 +40,7 @@
     spanVisuallyHidden: spanVisuallyHidden,
     addAnotherQuestion: addAnotherQuestion,
     link: link,
+    paragraphBody: paragraphBody,
     saveButtons: saveButtons,
     formHelper: FormWithCSRF,
     navigator: Navigator,
@@ -54,6 +55,10 @@
   val documentsSize = documents.size
   if(documentsSize == 1) Text(messages("declaration.previousDocuments.summary.header.singular"))
   else Text(messages("declaration.previousDocuments.summary.header.plural", documentsSize))
+}
+
+@body = {
+    @paragraphBody(messages("declaration.previousDocuments.summary.body"))
 }
 
 @warning = {
@@ -74,20 +79,6 @@
 
                     TableRow(content = Text(document.goodsItemIdentifier.getOrElse(""))),
 
-                    TableRow(
-                        content = HtmlContent(link(
-                            messages("site.change"),
-                            routes.PreviousDocumentsChangeController.displayPage(createId(index, document)),
-                            textHidden = Some(messages(
-                                "declaration.previousDocuments.change.hint",
-                                index + 1,
-                                DocumentType.documentCodesMap(document.documentType).asTextWithBrackets,
-                                document.documentReference
-                            )),
-                        )),
-                        classes = "govuk-table__cell--numeric",
-                        attributes = Map("id" -> s"previous-document-$index-change_button")
-                    ),
                     TableRow(
                         content = HtmlContent(link(
                             messages("site.remove"),
@@ -113,7 +104,6 @@
                     if (templateHelper.versionSelection == 1) Empty
                     else Text(messages("declaration.previousDocuments.summary.goodsItemIdentifier.label"))
                 ),
-                HeadCell(content = HtmlContent(spanVisuallyHidden(messages("site.change.header")))),
 
                 HeadCell(content = HtmlContent(spanVisuallyHidden(messages("site.remove.header"))))
             ))
@@ -138,6 +128,7 @@
                 isPageHeading = true
             )),
             html = HtmlFormat.fill(List(
+                body,
                 warning,
                 documentsTable,
                 addAnotherQuestion("declaration.previousDocuments.addAnotherDocument", form),

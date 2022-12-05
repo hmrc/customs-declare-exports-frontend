@@ -1678,6 +1678,7 @@ declaration.previousDocuments.remove.hint = Remove document {0} type {1} referen
 declaration.previousDocuments.summary.title = What documents are you using to make this declaration?
 declaration.previousDocuments.summary.header.singular = You’ve added details for 1 document
 declaration.previousDocuments.summary.header.plural = You’ve added details for {0} documents
+declaration.previousDocuments.summary.body = To change your document code, select remove and add another document.
 declaration.previousDocuments.summary.documentCode.label = Code
 declaration.previousDocuments.summary.documentReference.label = Reference
 declaration.previousDocuments.summary.goodsItemIdentifier.label = Relates to
