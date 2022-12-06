@@ -65,9 +65,6 @@ object Lrn extends DeclarationPage {
     decType match {
       case CLEARANCE => Seq(TariffContentKey("tariff.declaration.lrn.1.clearance"))
       case _ =>
-        Seq(
-          TariffContentKey("tariff.declaration.consignmentReferences.2.common"),
-          TariffContentKey("tariff.declaration.consignmentReferences.3.common")
-        )
+        Seq(TariffContentKey("tariff.declaration.lrn.1.common"))
     }
 }

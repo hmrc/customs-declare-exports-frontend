@@ -21,7 +21,6 @@ import controllers.navigation.Navigator
 import forms.Ducr
 import forms.Ducr.form
 import forms.declaration.ConsignmentReferences
-import models.DeclarationType.{allDeclarationTypesExcluding, SUPPLEMENTARY}
 import models.requests.JourneyRequest
 import play.api.i18n.I18nSupport
 import play.api.mvc._
