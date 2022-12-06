@@ -49,15 +49,10 @@ class LocationOfGoodsHelper @Inject() (
   def bodyUnderHeading(version: Int)(implicit messages: Messages): Html = {
     val sections = version match {
       case 2 =>
-        val linkText2 = messages(s"$prefix.body.v2.2.link")
-        val email = messages(s"$prefix.body.v2.3.email")
-        val subject = messages(s"$prefix.body.v2.3.subject")
+        val email = messages(s"$prefix.body.v2.2.email")
+        val subject = messages(s"$prefix.body.v2.2.subject")
 
-        List(
-          messages(s"$prefix.body.v2.1"),
-          messages(s"$prefix.body.v2.2", externalLink(linkText2, appConfig.locationCodesForCsePremises)),
-          messages(s"$prefix.body.v2.3", link(email, Call("GET", s"mailto:$email?subject=$subject")))
-        ).map(body(_))
+        List(messages(s"$prefix.body.v2.1"), messages(s"$prefix.body.v2.2", link(email, Call("GET", s"mailto:$email?subject=$subject")))).map(body(_))
 
       case 3 | 5 =>
         List(
@@ -86,7 +81,7 @@ class LocationOfGoodsHelper @Inject() (
         )
 
       // version 1
-      case _ => List(s"$prefix.body.v1.1", s"$prefix.body.v1.1.1", s"$prefix.body.v1.2", s"$prefix.body.v1.3").map(key => body(messages(key)))
+      case _ => List(s"$prefix.body.v1.1", s"$prefix.body.v1.2", s"$prefix.body.v1.3").map(key => body(messages(key)))
     }
 
     HtmlFormat.fill(sections)

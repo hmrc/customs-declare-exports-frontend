@@ -90,12 +90,11 @@ class LocationOfGoodsViewSpec extends PageWithButtonsSpec with Injector {
 
         "display the expected body" in {
           val paragraphs = view.getElementsByClass("govuk-body")
-          paragraphs.size mustBe 6
+          paragraphs.size mustBe 5
 
           paragraphs.get(0).text mustBe messages(s"$prefix.body.v1.1")
-          paragraphs.get(1).text mustBe messages(s"$prefix.body.v1.1.1")
-          paragraphs.get(2).text mustBe messages(s"$prefix.body.v1.2")
-          paragraphs.get(3).text mustBe messages(s"$prefix.body.v1.3")
+          paragraphs.get(1).text mustBe messages(s"$prefix.body.v1.2")
+          paragraphs.get(2).text mustBe messages(s"$prefix.body.v1.3")
         }
 
         "display the 'Find the goods location code' expander " in {
@@ -138,20 +137,16 @@ class LocationOfGoodsViewSpec extends PageWithButtonsSpec with Injector {
 
         "display the expected body" in {
           val paragraphs = view.getElementsByClass("govuk-body")
-          paragraphs.size mustBe 4
+          paragraphs.size mustBe 3
 
           paragraphs.get(0).text mustBe messages(s"$prefix.body.v2.1")
 
-          val paragraph1 = paragraphs.get(1)
-          paragraph1.text mustBe messages(s"$prefix.body.v2.2", messages(s"$prefix.body.v2.2.link"))
-          paragraph1.child(0) must haveHref(appConfig.locationCodesForCsePremises)
+          val paragraph2 = paragraphs.get(1)
 
-          val paragraph2 = paragraphs.get(2)
+          val email = messages(s"$prefix.body.v2.2.email")
+          val subject = messages(s"$prefix.body.v2.2.subject")
 
-          val email = messages(s"$prefix.body.v2.3.email")
-          val subject = messages(s"$prefix.body.v2.3.subject")
-
-          paragraph2.text mustBe messages(s"$prefix.body.v2.3", email)
+          paragraph2.text mustBe messages(s"$prefix.body.v2.2", email)
           paragraph2.child(0) must haveHref(s"mailto:$email?subject=$subject")
         }
 
@@ -161,12 +156,6 @@ class LocationOfGoodsViewSpec extends PageWithButtonsSpec with Injector {
           hint.text mustBe messages(s"$prefix.hint.v2")
         }
 
-        "NOT display the 'Find the goods location code' expander " in {
-          val expander = view.getElementsByClass("govuk-details").first.children
-          expander.size mustBe 2
-          val key = if (request.isType(CLEARANCE)) "clearance" else "common"
-          expander.first.text mustBe messages(s"tariff.expander.title.$key")
-        }
       }
     }
 
@@ -225,12 +214,6 @@ class LocationOfGoodsViewSpec extends PageWithButtonsSpec with Injector {
             hint.text mustBe messages(s"$prefix.hint.v$version")
           }
 
-          "NOT display the 'Find the goods location code' expander " in {
-            val expander = view.getElementsByClass("govuk-details").first.children
-            expander.size mustBe 2
-            val key = if (request.isType(CLEARANCE)) "clearance" else "common"
-            expander.first.text mustBe messages(s"tariff.expander.title.$key")
-          }
         }
       }
     }

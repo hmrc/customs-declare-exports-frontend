@@ -28,6 +28,7 @@
     locationOfGoodsHelper: LocationOfGoodsHelper,
     govukLayout: gdsMainTemplate,
     govukInput: GovukInput,
+    govukDetails : GovukDetails,
     errorSummary: errorSummary,
     sectionHeader: sectionHeader,
     pageTitle: pageTitle,
@@ -93,6 +94,12 @@
         @goodsLocationInput(form("code"))
 
         @if(version == 4) { @locationOfGoodsHelper.expander(version) }
+
+        @govukDetails(Details(
+            attributes = Map("id" -> "tariffReference"),
+            summary = Text(messages("declaration.locationOfGoods.details.title")),
+            content = HtmlContent(messages("declaration.locationOfGoods.details.body"))
+        ))
 
         @tariffExpander(LocationOfGoods, request.declarationType)(messages, appConfig)
 
