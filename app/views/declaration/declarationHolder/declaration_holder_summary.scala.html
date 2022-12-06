@@ -31,6 +31,7 @@
 @this(
     govukLayout: gdsMainTemplate,
     govukFieldset: GovukFieldset,
+    paragraphBody: paragraphBody,
     govukButton: GovukButton,
     govukTable : GovukTable,
     govukRadios: GovukRadios,
@@ -78,15 +79,6 @@
                     ),
                     TableRow(
                         content = HtmlContent(link(
-                            messages("site.change"),
-                            DeclarationHolderChangeController.displayPage(holder.id),
-                            textHidden = Some(messages("declaration.declarationHolders.table.change.hint", holder.id))
-                        )),
-                        classes = "govuk-table__cell--numeric",
-                        attributes = Map("id" -> s"holder-table-row$index-change_button")
-                    ),
-                    TableRow(
-                        content = HtmlContent(link(
                             messages("site.remove"),
                             DeclarationHolderRemoveController.displayPage(holder.id),
                             textHidden = Some(messages("declaration.declarationHolders.table.remove.hint", holder.id))
@@ -102,9 +94,6 @@
                 ),
                 HeadCell(
                     content = Text(messages("declaration.declarationHolders.table.eori"))
-                ),
-                HeadCell(
-                    content = HtmlContent(spanVisuallyHidden(messages("site.change.header")))
                 ),
                 HeadCell(
                     content = HtmlContent(spanVisuallyHidden(messages("site.remove.header")))
@@ -127,6 +116,8 @@
         @sectionHeader(messages("declaration.section.2"))
 
         @heading(header, tier = "h1")
+
+        @paragraphBody(messages("declaration.declarationHolders.bodyParagraph"))
 
         @holdersTable
 
