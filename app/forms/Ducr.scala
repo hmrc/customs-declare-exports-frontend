@@ -16,7 +16,7 @@
 
 package forms
 
-import models.DeclarationType.DeclarationType
+import models.DeclarationType.{CLEARANCE, DeclarationType}
 import models.viewmodels.TariffContentKey
 import play.api.data.Forms.text
 import play.api.data.{Form, Forms, Mapping}
@@ -42,6 +42,12 @@ object Ducr extends DeclarationPage {
     model => Some(model.ducr)
 
   override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
-    Seq(TariffContentKey("tariff.declaration.consignmentReferences.1.common"), TariffContentKey("tariff.declaration.consignmentReferences.3.common"))
-
+    decType match {
+      case CLEARANCE => Seq(TariffContentKey("tariff.declaration.ducr.1.clearance"))
+      case _ =>
+        Seq(
+          TariffContentKey("tariff.declaration.consignmentReferences.1.common"),
+          TariffContentKey("tariff.declaration.consignmentReferences.3.common")
+        )
+    }
 }
