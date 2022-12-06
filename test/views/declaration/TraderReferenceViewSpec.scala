@@ -37,6 +37,10 @@ class TraderReferenceViewSpec extends PageWithButtonsSpec with Injector with Moc
 
   "Trader Reference view" should {
 
+    "not have View declaration summary link" in {
+      Option(view.getElementById("view_declaration_summary")) mustBe None
+    }
+
     "display title" in {
       view.getElementsByTag("h1").first().text() mustBe messages("declaration.traderReference.title")
     }

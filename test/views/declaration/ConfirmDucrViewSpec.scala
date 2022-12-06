@@ -37,6 +37,10 @@ class ConfirmDucrViewSpec extends PageWithButtonsSpec with Injector with MockAut
 
   "Confirm DUCR view" should {
 
+    "not have View declaration summary link" in {
+      Option(view.getElementById("view_declaration_summary")) mustBe None
+    }
+
     "display title" in {
       view.getElementsByTag("h1").first().text() mustBe messages("declaration.confirmDucr.title")
     }

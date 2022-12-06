@@ -61,7 +61,8 @@
 
 @govukLayout(
     title = Title("declaration.confirmDucr.title", "declaration.section.1", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(ConfirmDucr)))
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(ConfirmDucr))),
+    showDeclarationSummaryLink = false
 ) {
     @formHelper(action = ConfirmDucrController.submitForm(), 'autoComplete -> "off") {
         @errorSummary(form.errors)

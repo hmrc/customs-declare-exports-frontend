@@ -43,7 +43,8 @@
 
 @govukLayout(
     title = Title("declaration.traderReference.title", "declaration.section.1", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(TraderReference)))
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(TraderReference))),
+    showDeclarationSummaryLink = false
 ) {
     @formHelper(action = TraderReferenceController.submitForm(), 'autoComplete -> "off") {
         @errorSummary(form.errors)

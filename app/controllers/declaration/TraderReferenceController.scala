@@ -47,7 +47,7 @@ class TraderReferenceController @Inject() (
 
   def displayPage(): Action[AnyContent] = (authorise andThen getJourney(allDeclarationTypesExcluding(SUPPLEMENTARY))) { implicit request =>
     val ducr = request.cacheModel.ducr
-    val traderReference = ducr.map(ducr => TraderReference(ducr.ducr.drop(16)))
+    val traderReference = ducr.map(ducr => TraderReference(ducr.ducr.split('-')(1)))
     val form = TraderReference.form.withSubmissionErrors
 
     Ok(traderReferencePage(traderReference.fold(form)(value => form.fill(value))))

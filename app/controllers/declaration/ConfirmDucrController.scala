@@ -20,7 +20,6 @@ import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
-import handlers.ErrorHandler
 import models.DeclarationType.{allDeclarationTypesExcluding, SUPPLEMENTARY}
 import models.ExportsDeclaration
 import models.requests.JourneyRequest
@@ -40,26 +39,25 @@ class ConfirmDucrController @Inject() (
   authorise: AuthAction,
   getJourney: JourneyAction,
   navigator: Navigator,
-  errorHandler: ErrorHandler,
   mcc: MessagesControllerComponents,
   override val exportsCacheService: ExportsCacheService,
   confirmDucrPage: confirm_ducr
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with WithDefaultFormBinding with ModelCacheable with SubmissionErrors {
 
-  def displayPage(): Action[AnyContent] = (authorise andThen getJourney(allDeclarationTypesExcluding(SUPPLEMENTARY))).async { implicit request =>
+  def displayPage(): Action[AnyContent] = (authorise andThen getJourney(allDeclarationTypesExcluding(SUPPLEMENTARY))) { implicit request =>
     request.cacheModel.ducr.fold {
       logger.warn("No generated DUCR found in cache!")
-      errorHandler.displayErrorPage()
+      Redirect(routes.DucrEntryController.displayPage)
     } { ducr =>
-      Future.successful(Ok(confirmDucrPage(form.withSubmissionErrors(), ducr)))
+      Ok(confirmDucrPage(form.withSubmissionErrors(), ducr))
     }
   }
 
   def submitForm(): Action[AnyContent] = (authorise andThen getJourney(allDeclarationTypesExcluding(SUPPLEMENTARY))).async { implicit request =>
     request.cacheModel.ducr.fold {
       logger.warn("No generated DUCR found in cache!")
-      errorHandler.displayErrorPage()
+      Future.successful(Redirect(routes.DucrEntryController.displayPage))
     } { ducr =>
       form.bindFromRequest.fold(
         formWithErrors => Future.successful(BadRequest(confirmDucrPage(formWithErrors, ducr))),

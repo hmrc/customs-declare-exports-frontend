@@ -42,7 +42,6 @@ class ConfirmDucrControllerSpec extends ControllerSpec with ErrorHandlerMocks {
     mockAuthAction,
     mockJourneyAction,
     navigator,
-    mockErrorHandler,
     stubMessagesControllerComponents(),
     mockExportsCacheService,
     confirmDucrPage
@@ -90,16 +89,6 @@ class ConfirmDucrControllerSpec extends ControllerSpec with ErrorHandlerMocks {
 
     "return 400 bad request" when {
 
-      "display page is invoked with no DUCR in cache" in {
-        withNewCaching(aDeclaration())
-
-        val result = controller.displayPage()(getJourneyRequest())
-
-        status(result) mustBe BAD_REQUEST
-        verify(mockErrorHandler).displayErrorPage()(any())
-        verifyTheCacheIsUnchanged()
-      }
-
       "form was submitted with no data" in {
         withNewCaching(aDeclaration(withConsignmentReferences(dummyConRefs)))
 
@@ -135,6 +124,16 @@ class ConfirmDucrControllerSpec extends ControllerSpec with ErrorHandlerMocks {
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe routes.DucrEntryController.displayPage
         theCacheModelUpdated mustBe aDeclaration()
+      }
+
+      "display page is invoked with no DUCR in cache" in {
+        withNewCaching(aDeclaration())
+
+        val result = controller.displayPage()(getJourneyRequest())
+
+        status(result) mustBe 303
+        redirectLocation(result) mustBe Some(routes.DucrEntryController.displayPage.url)
+        verifyTheCacheIsUnchanged()
       }
 
       "display page method is invoked on supplementary journey" in {
