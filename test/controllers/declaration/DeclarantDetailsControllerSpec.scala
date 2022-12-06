@@ -17,7 +17,7 @@
 package controllers.declaration
 
 import base.ControllerSpec
-import controllers.declaration.routes.{ConsignmentReferencesController, DeclarantExporterController}
+import controllers.declaration.routes.{ConsignmentReferencesController, DeclarantExporterController, DucrEntryController}
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.DeclarantEoriConfirmation
 import forms.declaration.DeclarantEoriConfirmation.isEoriKey
@@ -104,7 +104,18 @@ class DeclarantDetailsControllerSpec extends ControllerSpec {
 
     "answer is yes" should {
 
-      onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { request =>
+      onJourney(STANDARD, SIMPLIFIED, OCCASIONAL) { request =>
+        "return 303 (SEE_OTHER) and redirect to DucrEntryController details page" in {
+          withNewCaching(request.cacheModel)
+          val correctForm = Json.obj(isEoriKey -> YesNoAnswers.yes)
+
+          val result = controller.submitForm()(postRequest(correctForm))
+
+          status(result) mustBe SEE_OTHER
+          thePageNavigatedTo mustBe DucrEntryController.displayPage
+        }
+      }
+      onJourney(SUPPLEMENTARY) { request =>
         "return 303 (SEE_OTHER) and redirect to Consignment References details page" in {
           withNewCaching(request.cacheModel)
           val correctForm = Json.obj(isEoriKey -> YesNoAnswers.yes)
@@ -112,7 +123,7 @@ class DeclarantDetailsControllerSpec extends ControllerSpec {
           val result = controller.submitForm()(postRequest(correctForm))
 
           status(result) mustBe SEE_OTHER
-          thePageNavigatedTo mustBe ConsignmentReferencesController.displayPage()
+          thePageNavigatedTo mustBe ConsignmentReferencesController.displayPage
         }
       }
 

@@ -40,7 +40,7 @@ class RemoveSavedDeclarationsViewSpec extends UnitViewSpec with Injector {
 
   def decWithDucr(index: Int = 1): ExportsDeclaration = ExportsTestData.aDeclaration(
     withStatus(DeclarationStatus.DRAFT),
-    withConsignmentReferences(ConsignmentReferences(Ducr(s"DUCR-XXXX-$index"), Lrn("LRN-1234"))),
+    withConsignmentReferences(ConsignmentReferences(Ducr(s"DUCR-XXXX-$index"), Some(Lrn("LRN-1234")))),
     withUpdateTime(LocalDateTime.of(2019, 1, 1, 10, 0, 0).toInstant(ZoneOffset.UTC))
   )
 

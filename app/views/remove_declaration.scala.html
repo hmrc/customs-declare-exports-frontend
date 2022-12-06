@@ -43,7 +43,7 @@
         rows = Seq(
             Seq(
                 TableRow(
-                    content = Text(declaration.ducr.getOrElse(messages("saved.declarations.noDucr")))
+                    content = Text(declaration.ducr.map(_.ducr).getOrElse(messages("saved.declarations.noDucr")))
                 ),
                 TableRow(
                     content = Text(ViewDates.formatDateAtTime(declaration.updatedDateTime))

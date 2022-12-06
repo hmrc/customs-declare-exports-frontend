@@ -17,7 +17,7 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.declaration.routes.{ConsignmentReferencesController, DeclarantExporterController, NotEligibleController}
+import controllers.declaration.routes.{ConsignmentReferencesController, DeclarantExporterController, DucrEntryController, NotEligibleController}
 import controllers.navigation.Navigator
 import forms.common.Eori
 import forms.common.YesNoAnswer.YesNoAnswers
@@ -71,7 +71,8 @@ class DeclarantDetailsController @Inject() (
     updateDeclarationFromRequest(model => model.copy(parties = model.parties.copy(declarantDetails = Some(declarant))))
 
   private def nextPage(implicit request: JourneyRequest[_]): Call = request.declarationType match {
-    case DeclarationType.CLEARANCE => DeclarantExporterController.displayPage
-    case _                         => ConsignmentReferencesController.displayPage
+    case DeclarationType.CLEARANCE     => DeclarantExporterController.displayPage
+    case DeclarationType.SUPPLEMENTARY => ConsignmentReferencesController.displayPage
+    case _                             => DucrEntryController.displayPage
   }
 }

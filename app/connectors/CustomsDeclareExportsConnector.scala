@@ -124,7 +124,7 @@ class CustomsDeclareExportsConnector @Inject() (appConfig: AppConfig, httpClient
       .GET[Option[Submission]](url(s"${appConfig.submissionPath}/$uuid"))
 
   def isLrnAlreadyUsed(lrn: Lrn)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean] =
-    httpClient.GET[Boolean](url(s"${appConfig.lrnAlreadyUsedPath}/${lrn.value}"))
+    httpClient.GET[Boolean](url(s"${appConfig.lrnAlreadyUsedPath}/${lrn.lrn}"))
 
   def findNotifications(id: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[Notification]] =
     httpClient.GET[Seq[Notification]](url(s"${appConfig.submissionPath}${appConfig.notificationsPath}/$id"))
