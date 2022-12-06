@@ -105,7 +105,7 @@ class DeclarantDetailsControllerSpec extends ControllerSpec {
     "answer is yes" should {
 
       onJourney(STANDARD, SIMPLIFIED, OCCASIONAL) { request =>
-        "return 303 (SEE_OTHER) and redirect to Consignment References details page" in {
+        "return 303 (SEE_OTHER) and redirect to DucrEntryController details page" in {
           withNewCaching(request.cacheModel)
           val correctForm = Json.obj(isEoriKey -> YesNoAnswers.yes)
 

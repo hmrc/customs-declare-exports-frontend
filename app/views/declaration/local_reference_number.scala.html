@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import controllers.declaration.routes._
+@import controllers.declaration.routes.LocalReferenceNumberController
 @import controllers.navigation.Navigator
 @import forms.Lrn
 @import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
@@ -27,7 +27,6 @@
 
 @this(
     govukLayout: gdsMainTemplate,
-    govukFieldset: GovukFieldset,
     pageTitle: pageTitle,
     exportsInputText: exportsInputText,
     errorSummary: errorSummary,
@@ -35,7 +34,6 @@
     saveButtons: saveButtons,
     tariffExpander: tariffExpander,
     insetText: exportsInsetText,
-    bulletList: bulletList,
     paragraphBody: paragraphBody,
     formHelper: FormWithCSRF,
     navigator: Navigator,

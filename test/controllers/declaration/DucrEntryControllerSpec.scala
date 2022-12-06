@@ -86,7 +86,7 @@ class DucrEntryControllerSpec extends ControllerSpec with GivenWhenThen {
     }
   }
 
-  "DucrEntryController on submitConsignmentReferences" should {
+  "DucrEntryController on submitDucr" should {
 
     onJourney(STANDARD, OCCASIONAL, SIMPLIFIED, CLEARANCE) { request =>
       "return 400 (BAD_REQUEST)" when {
