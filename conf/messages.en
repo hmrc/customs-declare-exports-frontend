@@ -618,7 +618,7 @@ declaration.confirmDucr.expander.content.list.3 = your EORI number
 declaration.confirmDucr.expander.content.list.4 = a hyphen (16th character)
 declaration.confirmDucr.expander.content.list.5 = the trader reference you chose
 declaration.confirmDucr.expander.content.p2 = For example, 9GB000000000000-12345
-declaration.confirmDucr.error.empty = Select yes to confirm DUCR
+declaration.confirmDucr.error.empty = Select yes to confirm your DUCR
 
 declaration.entryIntoDeclarantRecords.title = Is this an entry into declarant’s records (EIDR)?
 declaration.entryIntoDeclarantRecords.answer.yes = Yes
