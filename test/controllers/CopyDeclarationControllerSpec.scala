@@ -172,7 +172,7 @@ class CopyDeclarationControllerSpec extends ControllerSpec with GivenWhenThen {
         status(result) must be(SEE_OTHER)
 
         val declaration = theCacheModelCreated
-        declaration.consignmentReferences.head.ducr.ducr mustBe ducr.toUpperCase
+        declaration.consignmentReferences.head.ducr.get.ducr mustBe ducr.toUpperCase
         declaration.consignmentReferences.head.lrn mustBe Some(LRN)
         declaration.consignmentReferences.head.mrn mustBe None
         declaration.consignmentReferences.head.eidrDateStamp mustBe None

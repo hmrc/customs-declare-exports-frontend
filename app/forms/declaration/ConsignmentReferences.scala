@@ -29,7 +29,7 @@ import utils.validators.forms.FieldValidator._
 
 import scala.concurrent.{ExecutionContext, Future}
 
-case class ConsignmentReferences(ducr: Ducr, lrn: Option[Lrn], mrn: Option[Mrn] = None, eidrDateStamp: Option[String] = None)
+case class ConsignmentReferences(ducr: Option[Ducr], lrn: Option[Lrn] = None, mrn: Option[Mrn] = None, eidrDateStamp: Option[String] = None)
 
 object ConsignmentReferences extends DeclarationPage {
 
@@ -40,11 +40,14 @@ object ConsignmentReferences extends DeclarationPage {
   def form(decType: DeclarationType, additionalDecType: Option[AdditionalDeclarationType]): Form[ConsignmentReferences] = {
 
     def form2Model: (Ducr, Lrn, Option[Mrn], Option[String]) => ConsignmentReferences = { case (ducr, lrn, mrn, eidrDateStamp) =>
-      ConsignmentReferences(ducr, Some(lrn), mrn, eidrDateStamp)
+      ConsignmentReferences(Some(ducr), Some(lrn), mrn, eidrDateStamp)
     }
 
     def model2Form: ConsignmentReferences => Option[(Ducr, Lrn, Option[Mrn], Option[String])] = model =>
-      model.lrn.map(lrn => (model.ducr, lrn, model.mrn, model.eidrDateStamp))
+      for {
+        ducr <- model.ducr
+        lrn <- model.lrn
+      } yield (ducr, lrn, model.mrn, model.eidrDateStamp)
 
     val mrnMapping = (decType, additionalDecType) match {
       case (SUPPLEMENTARY, Some(AdditionalDeclarationType.SUPPLEMENTARY_SIMPLIFIED)) =>

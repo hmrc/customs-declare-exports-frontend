@@ -23,7 +23,21 @@ GET         /not-eligible                       controllers.declaration.NotEligi
 
 GET         /not-declarant                      controllers.declaration.NotEligibleController.displayNotDeclarant()
 
+# Trader reference
+
+GET         /trader-reference                   controllers.declaration.TraderReferenceController.displayPage()
+
+POST        /trader-reference                   controllers.declaration.TraderReferenceController.submitForm()
+
+# Confirm DUCR
+
+GET         /confirm-ducr                       controllers.declaration.ConfirmDucrController.displayPage()
+
+POST        /confirm-ducr                       controllers.declaration.ConfirmDucrController.submitForm()
+
 # Consignment references
+
+GET         /do-you-have-ducr                    controllers.declaration.DucrChoiceController.displayPage
 
 GET         /consignment-references              controllers.declaration.ConsignmentReferencesController.displayPage()
 
