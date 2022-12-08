@@ -86,12 +86,12 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Stubs with Be
 
   "Choice View on empty page" should {
 
-    "display on banner the expected 'service hint' (common to all pages)" in {
+    "display on banner the expected 'service name' (common to all pages)" in {
       withSecureMessagingFeatureStatus(EXPORTS)
       val view = createView()
       val element = view.getElementsByClass("hmrc-header__service-name").first
       element.tagName mustBe "a"
-      element.text mustBe messages("service.hint.on.banner")
+      element.text mustBe messages("service.name")
     }
 
     "display same page title as header" in {
