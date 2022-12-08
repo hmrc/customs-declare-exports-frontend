@@ -139,5 +139,6 @@ class LocationOfGoodsSpec extends DeclarationPageBaseSpec with MockitoSugar with
     testTariffContentKeys(LocationOfGoods, "tariff.declaration.locationOfGoods")
   }
 
-  private def getBoundedForm(code: String) = LocationOfGoods.form().bind(JsObject(Map("code" -> JsString(code))), Form.FromJsonMaxChars)
+  private def getBoundedForm(code: String) =
+    LocationOfGoods.form().bind(JsObject(Map("yesNo" -> JsString("Yes"), "code" -> JsString(code))), Form.FromJsonMaxChars)
 }

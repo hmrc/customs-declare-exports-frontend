@@ -30,7 +30,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.OptionValues
 import play.api.data.Form
-import play.api.libs.json.Json
+import play.api.libs.json.{JsObject, JsString, JsValue, Json}
 import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
@@ -120,8 +120,7 @@ class LocationOfGoodsControllerSpec extends ControllerSpec with OptionValues {
     "return 303 (SEE_OTHER)" when {
 
       "information provided by user are correct" in {
-        val correctForm = Json.toJson(LocationOfGoods("PLAUEMAEMAEMA"))
-
+        val correctForm: JsValue = JsObject(Map("yesNo" -> JsString("Yes"), "code" -> JsString("PLAUEMAEMAEMA")))
         val result = controller.saveLocation()(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage

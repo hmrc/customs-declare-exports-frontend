@@ -23,17 +23,21 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.html.components.gds._
 @import views.helpers.{BackButton, LocationOfGoodsHelper, Title}
+@import play.api.data.Forms.boolean
+@import play.api.data.{Form, Forms}
 
 @this(
     locationOfGoodsHelper: LocationOfGoodsHelper,
     govukLayout: gdsMainTemplate,
     govukInput: GovukInput,
+    govukDetails :GovukDetails,
     errorSummary: errorSummary,
     sectionHeader: sectionHeader,
     pageTitle: pageTitle,
     paragraphBody: paragraphBody,
     insetText: exportsInsetText,
     externalLink: externalLink,
+    yesNoRadios: yesNoRadios,
     saveButtons: saveButtons,
     tariffExpander: tariffExpander,
     formHelper: FormWithCSRF,
@@ -46,12 +50,23 @@
 @hasErrors = @{ form.hasErrors || form.hasGlobalErrors }
 @version = @{ locationOfGoodsHelper.versionSelection }
 
-@goodsLocationInput(field: Field) = {
+@goodsLocationInputYes(field: Field) = {
     @govukInput(Input(
         id = field.id,
         name = field.name,
         value = field.value,
-        hint = Some(Hint(content = Text(messages(s"declaration.locationOfGoods.hint.v$version")))),
+        hint = Some(Hint(content = Text(messages("declaration.locationOfGoods.yesNo.yes.hint")))),
+        classes = s"govuk-!-width-two-thirds ${if(field.hasErrors) "govuk-input--error"}",
+        errorMessage = field.error.map(err => ErrorMessage(content = Text(messages(err.message))))
+    ))
+}
+
+@goodsLocationInputNo(field: Field) = {
+    @govukInput(Input(
+        id = field.id,
+        name = field.name,
+        value = field.value,
+        hint = Some(Hint(content = Text(messages("declaration.locationOfGoods.yesNo.no.hint")))),
         classes = s"govuk-!-width-two-thirds ${if(field.hasErrors) "govuk-input--error"}",
         errorMessage = field.error.map(err => ErrorMessage(content = Text(messages(err.message))))
     ))
@@ -77,6 +92,12 @@
 
         @if(version == 1) { @locationOfGoodsHelper.expander(version) }
 
+        @govukDetails(Details(
+            attributes = Map("id" -> "tariffReference"),
+            summary = Text(messages("declaration.locationOfGoods.expander.title")),
+            content = HtmlContent(messages("declaration.locationOfGoods.details.body"))
+        ))
+
         @if(version == 3 || version == 5) {
           @insetText(content = HtmlContent(HtmlFormat.fill(List(
               paragraphBody(messages("declaration.locationOfGoods.inset.v3.body1", externalLink(
@@ -90,7 +111,21 @@
           ))))
         }
 
-        @goodsLocationInput(form("code"))
+        @yesNoRadios(
+            form,
+            heading = Some(Fieldset(
+            legend = Some(Legend(
+                content = Text(messages("declaration.locationOfGoods.yesNo.header")),
+                classes = "govuk-fieldset__legend--s"
+                ))
+            )),
+            yesKey = Some("declaration.locationOfGoods.yesNo.yesKey"),
+            noKey = Some("declaration.locationOfGoods.yesNo.noKey"),
+            yesHint = Some("declaration.locationOfGoods.yesNo.yesHint"),
+            noHint = Some("declaration.locationOfGoods.yesNo.noHint"),
+            yesConditionalHtml = Some(goodsLocationInputYes(form("code"))),
+            noConditionalHtml = Some(goodsLocationInputNo(form("code")))
+        )
 
         @if(version == 4) { @locationOfGoodsHelper.expander(version) }
 
