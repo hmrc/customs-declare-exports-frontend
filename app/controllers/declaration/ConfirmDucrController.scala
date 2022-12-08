@@ -20,7 +20,7 @@ import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
-import models.DeclarationType.{SUPPLEMENTARY, allDeclarationTypesExcluding}
+import models.DeclarationType.{allDeclarationTypesExcluding, SUPPLEMENTARY}
 import models.ExportsDeclaration
 import models.requests.JourneyRequest
 import play.api.data.Form
@@ -71,9 +71,8 @@ class ConfirmDucrController @Inject() (
 
   private def form: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.confirmDucr.error.empty")
 
-  private def updateCache(implicit request: JourneyRequest[_]): Future[ExportsDeclaration] = {
+  private def updateCache(implicit request: JourneyRequest[_]): Future[ExportsDeclaration] =
     request.cacheModel.consignmentReferences.fold(Future.successful(request.cacheModel))(consignmentRefs =>
       updateDeclarationFromRequest(_.copy(consignmentReferences = Some(consignmentRefs.copy(ducr = None))))
     )
-  }
 }

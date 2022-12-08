@@ -71,7 +71,7 @@ class ConfirmDucrControllerSpec extends ControllerSpec with ErrorHandlerMocks {
     super.afterEach()
   }
 
-  private val dummyConRefs = ConsignmentReferences(Ducr("DUCR"))
+  private val dummyConRefs = ConsignmentReferences(Some(Ducr("DUCR")))
 
   "ConfirmDucrController" should {
 
@@ -83,7 +83,7 @@ class ConfirmDucrControllerSpec extends ControllerSpec with ErrorHandlerMocks {
         val result = controller.displayPage()(getJourneyRequest())
 
         status(result) mustBe OK
-        verify(confirmDucrPage).apply(any(), meq(dummyConRefs.ducr))(any(), any())
+        verify(confirmDucrPage).apply(any(), meq(dummyConRefs.ducr.get))(any(), any())
       }
     }
 
@@ -96,7 +96,7 @@ class ConfirmDucrControllerSpec extends ControllerSpec with ErrorHandlerMocks {
         val result = controller.submitForm()(postRequest(body, aDeclaration()))
 
         status(result) mustBe BAD_REQUEST
-        verify(confirmDucrPage).apply(any(), meq(dummyConRefs.ducr))(any(), any())
+        verify(confirmDucrPage).apply(any(), meq(dummyConRefs.ducr.get))(any(), any())
         verifyTheCacheIsUnchanged()
       }
     }
@@ -123,7 +123,7 @@ class ConfirmDucrControllerSpec extends ControllerSpec with ErrorHandlerMocks {
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe routes.DucrEntryController.displayPage
-        theCacheModelUpdated mustBe aDeclaration()
+        theCacheModelUpdated mustBe aDeclaration(withConsignmentReferences(ConsignmentReferences(None, None, None, None)))
       }
 
       "display page is invoked with no DUCR in cache" in {

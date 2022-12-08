@@ -112,7 +112,7 @@ class DucrEntryControllerSpec extends ControllerSpec with GivenWhenThen {
         await(result) mustBe aRedirectToTheNextPage
 
         val declaration = theCacheModelUpdated
-        declaration.consignmentReferences.head.ducr.ducr mustBe ducr.toUpperCase
+        declaration.consignmentReferences.head.ducr.get.ducr mustBe ducr.toUpperCase
 
       }
 

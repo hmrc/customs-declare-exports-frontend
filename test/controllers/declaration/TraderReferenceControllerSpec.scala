@@ -72,7 +72,7 @@ class TraderReferenceControllerSpec extends ControllerSpec {
   private val dummyTraderRef = TraderReference("INVOICE123/4")
   private val lastDigitOfYear = ZonedDateTime.now().getYear.toString.last
   private val dummyDucr = Ducr(lastDigitOfYear + "GB" + authEori.dropWhile(_.isLetter) + "-" + dummyTraderRef.value)
-  private val dummyConRefs = ConsignmentReferences(dummyDucr)
+  private val dummyConRefs = ConsignmentReferences(Some(dummyDucr))
 
   "TraderReferenceController" should {
 
