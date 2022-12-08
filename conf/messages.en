@@ -3,6 +3,7 @@ date.month = Month
 date.year = Year
 
 service.name=CDS Export Declaration Service
+service.hint.on.banner=Make an export declaration online
 
 feedback=This is a new service - your {0} will help us to improve it.
 feedback.link=feedback
