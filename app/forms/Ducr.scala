@@ -34,6 +34,7 @@ object Ducr extends DeclarationPage {
           .verifying("declaration.consignmentReferences.ducr.error.empty", nonEmpty)
           .verifying("declaration.consignmentReferences.ducr.error.invalid", isEmpty or isValidDucr)
     )(form2Data)(Ducr.unapply)
+
   val form: Form[Ducr] = Form(mapping)
 
   def form2Data(ducr: String): Ducr = new Ducr(ducr.toUpperCase)

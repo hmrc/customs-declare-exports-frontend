@@ -73,9 +73,9 @@ class TraderReferenceController @Inject() (
     val existingConsignmentRefs = request.cacheModel.consignmentReferences
 
     existingConsignmentRefs.fold {
-      updateDeclarationFromRequest(_.copy(consignmentReferences = Some(ConsignmentReferences(generatedDucr))))
+      updateDeclarationFromRequest(_.copy(consignmentReferences = Some(ConsignmentReferences(Some(generatedDucr)))))
     } { existingRefs =>
-      updateDeclarationFromRequest(_.copy(consignmentReferences = Some(existingRefs.copy(ducr = generatedDucr))))
+      updateDeclarationFromRequest(_.copy(consignmentReferences = Some(existingRefs.copy(ducr = Some(generatedDucr)))))
     }
   }
 }
