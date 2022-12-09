@@ -221,7 +221,42 @@ function additionalDeclarationType(){
     }
 }
 
-function consignmentReferences(){
+function doYouHaveDucr() {
+    if (currentPageIs('/customs-declare-exports/declaration/do-you-have-ducr')) {
+        document.getElementById('code_yes').checked = 'checked'
+        submit()
+    }
+}
+
+function ducrEntry() {
+    if (currentPageIs('/customs-declare-exports/declaration/ducr-entry')) {
+        document.getElementById('ducr').value = '8GB123456' + Math.floor(Math.random() * 899999 + 100000) + '-101SHIP1'
+        submit()
+    }
+}
+
+function localReferenceNumber() {
+    if (currentPageIs('/customs-declare-exports/declaration/local-reference-number')) {
+        document.getElementById('lrn').value = 'QSLRN' + Math.floor(Math.random() * 8999) + 100
+        submit()
+    }
+}
+
+function traderReference() {
+    if (currentPageIs('/customs-declare-exports/declaration/trader-reference')) {
+        document.getElementById('traderReferenceInput').value = 'INV' + Math.floor(Math.random() * 899999 + 100000) + '/101SHIP1'
+        submit()
+    }
+}
+
+function confirmDucr() {
+    if (currentPageIs('/customs-declare-exports/declaration/confirm-ducr')) {
+        document.getElementById('code_yes').checked = 'checked'
+        submit()
+    }
+}
+
+function consignmentReferences() {
     if (currentPageIs('/customs-declare-exports/declaration/consignment-references')) {
         document.getElementById('lrn').value = 'QSLRN' + Math.floor(Math.random() * 8999) + 100
         document.getElementById('ducr_ducr').value = '8GB123456' + Math.floor(Math.random() * 899999 + 100000) + '-101SHIP1'
@@ -1225,6 +1260,11 @@ function completeJourney() {
     declarationChoice()
     dispatchLocation()
     additionalDeclarationType()
+    doYouHaveDucr()
+    ducrEntry()
+    localReferenceNumber()
+    traderReference()
+    confirmDucr()
     consignmentReferences()
     linkDucrToMucr()
     enterMucr()

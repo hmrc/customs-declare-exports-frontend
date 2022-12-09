@@ -17,7 +17,7 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.declaration.routes.{ConsignmentReferencesController, DeclarantExporterController, DucrEntryController, NotEligibleController}
+import controllers.declaration.routes.{ConsignmentReferencesController, DeclarantExporterController, DucrChoiceController, NotEligibleController}
 import controllers.navigation.Navigator
 import forms.common.Eori
 import forms.common.YesNoAnswer.YesNoAnswers
@@ -29,7 +29,6 @@ import models.{DeclarationType, ExportsDeclaration}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import services.cache.ExportsCacheService
-import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.declarant_details
 
@@ -44,7 +43,7 @@ class DeclarantDetailsController @Inject() (
   mcc: MessagesControllerComponents,
   declarantDetailsPage: declarant_details
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     val frm = form().withSubmissionErrors()
@@ -73,6 +72,6 @@ class DeclarantDetailsController @Inject() (
   private def nextPage(implicit request: JourneyRequest[_]): Call = request.declarationType match {
     case DeclarationType.CLEARANCE     => DeclarantExporterController.displayPage
     case DeclarationType.SUPPLEMENTARY => ConsignmentReferencesController.displayPage
-    case _                             => DucrEntryController.displayPage
+    case _                             => DucrChoiceController.displayPage
   }
 }
