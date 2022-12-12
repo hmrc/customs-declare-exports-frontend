@@ -1,0 +1,332 @@
+[
+  {
+    "en": "Belfast, Carne House, 20 Corry Place, Belfast, BT3 9HY",
+    "cy": "Belfast, Carne House, 20 Corry Place, Belfast, BT3 9HY",
+    "codes": "GBBUBELLCACSE"
+  },
+  {
+    "en": "Nottingham, Bowman House, Talbot Street, Nottingham, NG1 5NF",
+    "cy": "Nottingham, Bowman House, Talbot Street, Nottingham, NG1 5NF",
+    "codes": "GBBUNTGLDACSE"
+  },
+  {
+    "en": "Birmingham",
+    "cy": "Birmingham",
+    "codes": "GBBUBHMLDJCSE"
+  },
+  {
+    "en": "Wolverhampton",
+    "cy": "Wolverhampton",
+    "codes": "GBBUWOVLDKCSE"
+  },
+  {
+    "en": "Derby",
+    "cy": "Derby",
+    "codes": "GBBUDXYLDNCSE"
+  },
+  {
+    "en": "Aberdeen, 28 Guild Street, Aberdeen, AB11 6GY",
+    "cy": "Aberdeen, 28 Guild Street, Aberdeen, AB11 6GY",
+    "codes": "GBBUABDLEACSE"
+  },
+  {
+    "en": "Heathrow, Wayfarer House, Great South West Road, Feltham, Middlesex, TW14 8NP",
+    "cy": "Heathrow, Wayfarer House, Great South West Road, Feltham, Middlesex, TW14 8NP",
+    "codes": "GBBUFEMLHRCSE"
+  },
+  {
+    "en": "East London Business (E & IT, Jubilee House, Stratford)",
+    "cy": "East London Business (E & IT, Jubilee House, Stratford)",
+    "codes": "GBBUSTFLHBCSE"
+  },
+  {
+    "en": "Inner Excise (LBG, Dorset House)",
+    "cy": "Inner Excise (LBG, Dorset House)",
+    "codes": "GBBUSWRLHCCSE"
+  },
+  {
+    "en": "EICS District B (E & IT, Dorset House)",
+    "cy": "EICS District B (E & IT, Dorset House)",
+    "codes": "GBBUSWRLHECSE"
+  },
+  {
+    "en": "Uxbridge (E & IT)",
+    "cy": "Uxbridge (E & IT)",
+    "codes": "GBBUUXBLHFCSE"
+  },
+  {
+    "en": "Willesden",
+    "cy": "Willesden",
+    "codes": "GBBUESDLHHCSE"
+  },
+  {
+    "en": "Waterloo",
+    "cy": "Waterloo",
+    "codes": "GBBUSWRLHGCSE"
+  },
+  {
+    "en": "Leeds, Peter Bennett House, Redvers Close, Leeds, LS16 6RQ",
+    "cy": "Leeds, Peter Bennett House, Redvers Close, Leeds, LS16 6RQ",
+    "codes": "GBBULBALAACSE"
+  },
+  {
+    "en": "York",
+    "cy": "York",
+    "codes": "GBBUYRKLDCCSE"
+  },
+  {
+    "en": "Carlisle",
+    "cy": "Carlisle",
+    "codes": "GBBUCAXLAECSE"
+  },
+  {
+    "en": "Middlesbrough",
+    "cy": "Middlesbrough",
+    "codes": "GBBUMIDLAFCSE"
+  },
+  {
+    "en": "Immingham",
+    "cy": "Immingham",
+    "codes": "GBBUIMMLAGCSE"
+  },
+  {
+    "en": "Grimsby",
+    "cy": "Grimsby",
+    "codes": "GBBUGSYLAICSE"
+  },
+  {
+    "en": "Sheffield",
+    "cy": "Sheffield",
+    "codes": "GBBUSHELAJCSE"
+  },
+  {
+    "en": "Newcastle",
+    "cy": "Newcastle",
+    "codes": "GBBUNCLLAOCSE"
+  },
+  {
+    "en": "Liverpool",
+    "cy": "Liverpool",
+    "codes": "GBBULIVLANCSE"
+  },
+  {
+    "en": "Blackburn Lancashire",
+    "cy": "Blackburn Lancashire",
+    "codes": "GBBUBLBLAQ1CSE"
+  },
+  {
+    "en": "Elgin Excise",
+    "cy": "Elgin Excise",
+    "codes": "GBBUELGLEBCSE"
+  },
+  {
+    "en": "Ayr",
+    "cy": "Ayr",
+    "codes": "GBBUAYRLECCSE"
+  },
+  {
+    "en": "Grangemouth",
+    "cy": "Grangemouth",
+    "codes": "GBBUGRGLEDCSE"
+  },
+  {
+    "en": "Coatbridge",
+    "cy": "Coatbridge",
+    "codes": "GBBUCOTLEECSE"
+  },
+  {
+    "en": "Glasgow Excise",
+    "cy": "Glasgow Excise",
+    "codes": "GBBUGLWLEFCSE"
+  },
+  {
+    "en": "Dundee",
+    "cy": "Dundee",
+    "codes": "GBBUDUNLEGCSE"
+  },
+  {
+    "en": "LBG Scotland East (Edinburgh)",
+    "cy": "LBG Scotland East (Edinburgh)",
+    "codes": "GBBUEDILEHCSE"
+  },
+  {
+    "en": "LBG Scotland West (Glasgow)",
+    "cy": "LBG Scotland West (Glasgow)",
+    "codes": "GBBUGLWLEJCSE"
+  },
+  {
+    "en": "Southampton, Compass House, Romsey Road, Maybush, Southampton, SO14 4HP",
+    "cy": "Southampton, Compass House, Romsey Road, Maybush, Southampton, SO14 4HP",
+    "codes": "GBBUSOULFGCSE"
+  },
+  {
+    "en": "Bristol",
+    "cy": "Bristol",
+    "codes": "GBBUBRSLFECSE"
+  },
+  {
+    "en": "Gloucester",
+    "cy": "Gloucester",
+    "codes": "GBBUGLOLFFCSE"
+  },
+  {
+    "en": "Oxford",
+    "cy": "Oxford",
+    "codes": "GBBUOXFLFHCSE"
+  },
+  {
+    "en": "Plymouth EIC",
+    "cy": "Plymouth EIC",
+    "codes": "GBBUPLYLFJCSE"
+  },
+  {
+    "en": "Taunton",
+    "cy": "Taunton",
+    "codes": "GBBUTAULFICSE"
+  },
+  {
+    "en": "Reading, Eldon Court, 75 London Road, Berkshire, RG1 5BS",
+    "cy": "Reading, Eldon Court, 75 London Road, Berkshire, RG1 5BS",
+    "codes": "GBBURDNLGCCSE"
+  },
+  {
+    "en": "Redhill",
+    "cy": "Redhill",
+    "codes": "GBBUREHLGBCSE"
+  },
+  {
+    "en": "Shepperton (LBG)",
+    "cy": "Shepperton (LBG)",
+    "codes": "GBBUSPPLGDCSE"
+  },
+  {
+    "en": "Staines",
+    "cy": "Staines",
+    "codes": "GBBUSTSLGECSE"
+  },
+  {
+    "en": "Reading LBG",
+    "cy": "Reading LBG",
+    "codes": "GBBURDNLGFCSE"
+  },
+  {
+    "en": "Swindon",
+    "cy": "Swindon",
+    "codes": "GBBUSNNLGGCSE"
+  },
+  {
+    "en": "Maidenhead",
+    "cy": "Maidenhead",
+    "codes": "GBBUMAHLGKCSE"
+  },
+  {
+    "en": "Canterbury",
+    "cy": "Canterbury",
+    "codes": "GBBUCNBLGMCSE"
+  },
+  {
+    "en": "Washington Tyne & Wear",
+    "cy": "Washington Tyne & Wear",
+    "codes": "GBBUWNNLAB1CSE"
+  },
+  {
+    "en": "Hull",
+    "cy": "Hull",
+    "codes": "GBBUHULLADCSE"
+  },
+  {
+    "en": "Salford",
+    "cy": "Salford",
+    "codes": "GBBUSFYLAHCSE"
+  },
+  {
+    "en": "Halifax",
+    "cy": "Halifax",
+    "codes": "GBBUHFXLALCSE"
+  },
+  {
+    "en": "Cheadle Stockport",
+    "cy": "Cheadle Stockport",
+    "codes": "GBBUCHALAM1CSE"
+  },
+  {
+    "en": "Wigan",
+    "cy": "Wigan",
+    "codes": "GBBUWGNLARCSE"
+  },
+  {
+    "en": "Felixstowe, Custom House, Viewpoint Road, Felixstowe, Suffolk, IP11 3RF",
+    "cy": "Felixstowe, Custom House, Viewpoint Road, Felixstowe, Suffolk, IP11 3RF",
+    "codes": "GBBUFXTFXTCSE"
+  },
+  {
+    "en": "Ipswich",
+    "cy": "Ipswich",
+    "codes": "GBBUIPSLDBCSE"
+  },
+  {
+    "en": "Norwich",
+    "cy": "Norwich",
+    "codes": "GBBUNRWLDDCSE"
+  },
+  {
+    "en": "Cambridge",
+    "cy": "Cambridge",
+    "codes": "GBBUCMGLDECSE"
+  },
+  {
+    "en": "Peterborough",
+    "cy": "Peterborough",
+    "codes": "GBBUPETLDHCSE"
+  },
+  {
+    "en": "Luton",
+    "cy": "Luton",
+    "codes": "GBBULUTLDICSE"
+  },
+  {
+    "en": "Leicester",
+    "cy": "Leicester",
+    "codes": "GBBULCSLDLCSE"
+  },
+  {
+    "en": "Kettering",
+    "cy": "Kettering",
+    "codes": "GBBUKTRLDMCSE"
+  },
+  {
+    "en": "Northampton",
+    "cy": "Northampton",
+    "codes": "GBBUNHPLDOCSE"
+  },
+  {
+    "en": "Tilbury, Custom House, Tilbury Dock, Tilbury, Essex, RM18 7EJ",
+    "cy": "Tilbury, Custom House, Tilbury Dock, Tilbury, Essex, RM18 7EJ",
+    "codes": "GBBUTILTILCSE"
+  },
+  {
+    "en": "Basildon Central",
+    "cy": "Basildon Central",
+    "codes": "GBBUBASLDFCSE"
+  },
+  {
+    "en": "Harlow Central",
+    "cy": "Harlow Central",
+    "codes": "GBBUHRLLDGCSE"
+  },
+  {
+    "en": "Cardiff, Portcullis House, Cowbridge Road East, Cardiff, CF11 9SS",
+    "cy": "Cardiff, Portcullis House, Cowbridge Road East, Cardiff, CF11 9SS",
+    "codes": "GBBUCDFLAPCSE"
+  },
+  {
+    "en": "Chester Cheshire West & Chester",
+    "cy": "Chester Cheshire West & Chester",
+    "codes": "GBBUCEGLBB2CSE"
+  },
+  {
+    "en": "Swansea",
+    "cy": "Swansea",
+    "codes": "GBBUSWALBCCSE"
+  }
+]

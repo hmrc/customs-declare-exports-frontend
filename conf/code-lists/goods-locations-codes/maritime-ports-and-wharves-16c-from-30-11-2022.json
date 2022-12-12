@@ -1,0 +1,1427 @@
+[
+  {
+    "en": "Aberdeen Docks",
+    "cy": "Aberdeen Docks",
+    "codes": "GBAUABDABDABD"
+  },
+  {
+    "en": "Aultbea - Loch Ewe Pier, NATO POL Depot",
+    "cy": "Aultbea - Loch Ewe Pier, NATO POL Depot",
+    "codes": "GBAUAULINVEWE"
+  },
+  {
+    "en": "Avonmouth - Royal Edward Dock X Berth",
+    "cy": "Avonmouth - Royal Edward Dock X Berth",
+    "codes": "GBAUAVOAVOCSX"
+  },
+  {
+    "en": "Avonmouth Docks",
+    "cy": "Avonmouth Docks",
+    "codes": "GBAUAVOAVOAVO"
+  },
+  {
+    "en": "Ayr Harbour",
+    "cy": "Ayr Harbour",
+    "codes": "GBAUAYRAYRAYR"
+  },
+  {
+    "en": "Barking [London] - Docklands Wharf",
+    "cy": "Barking [London] - Docklands Wharf",
+    "codes": "GBAUBKGLONBDW"
+  },
+  {
+    "en": "Barking [London] - Pinns Wharf",
+    "cy": "Barking [London] - Pinns Wharf",
+    "codes": "GBAUBKGLONPIN"
+  },
+  {
+    "en": "Barking [London] - Sivyer Wharf",
+    "cy": "Barking [London] - Sivyer Wharf",
+    "codes": "GBAUBKGLONSVW"
+  },
+  {
+    "en": "Barrow Haven - Old Ferry Wharf",
+    "cy": "Barrow Haven - Old Ferry Wharf",
+    "codes": "GBAUBRVHULBRV"
+  },
+  {
+    "en": "Barrow in Furness",
+    "cy": "Barrow in Furness",
+    "codes": "GBAUBIFBARBIF"
+  },
+  {
+    "en": "Barrow in Furness - Buccleuch & Devonshire Dock",
+    "cy": "Barrow in Furness - Buccleuch & Devonshire Dock",
+    "codes": "GBAUBIFBARBDD"
+  },
+  {
+    "en": "Barry Dock",
+    "cy": "Barry Dock",
+    "codes": "GBAUBADCDFBAD"
+  },
+  {
+    "en": "Barry Dock - Vopak Wharf, Berths 8 & 9",
+    "cy": "Barry Dock - Vopak Wharf, Berths 8 & 9",
+    "codes": "GBAUBADCDFVPK"
+  },
+  {
+    "en": "Belfast",
+    "cy": "Belfast",
+    "codes": "GBAUOYTBELVLA1"
+  },
+  {
+    "en": "Belfast",
+    "cy": "Belfast",
+    "codes": "GBAUOYTBELVLJ1"
+  },
+  {
+    "en": "Belfast - Oil Berth 4",
+    "cy": "Belfast - Oil Berth 4",
+    "codes": "GBAUBELBELOB4"
+  },
+  {
+    "en": "Belfast Harbour Port",
+    "cy": "Belfast Harbour Port",
+    "codes": "GBAUBELBELBCB1"
+  },
+  {
+    "en": "Belfast Port",
+    "cy": "Belfast Port",
+    "codes": "GBAUBELBELBEL"
+  },
+  {
+    "en": "Berwick-upon-Tweed",
+    "cy": "Berwick-upon-Tweed",
+    "codes": "GBAUBWKBLYBWK"
+  },
+  {
+    "en": "Bideford - The Town Quay",
+    "cy": "Bideford - The Town Quay",
+    "codes": "GBAUBIDWATBID"
+  },
+  {
+    "en": "Billingham - Portrack Seafreight Ltd, Bamletts Wharf",
+    "cy": "Billingham - Portrack Seafreight Ltd, Bamletts Wharf",
+    "codes": "GBAUBHWMIDBIP"
+  },
+  {
+    "en": "Billingham Reach & Oil Jetties",
+    "cy": "Billingham Reach & Oil Jetties",
+    "codes": "GBAUBHWMIDBRO"
+  },
+  {
+    "en": "Birkenhead - Base Harbour Port Facility",
+    "cy": "Birkenhead - Base Harbour Port Facility",
+    "codes": "GBAUBRKLIVBRK"
+  },
+  {
+    "en": "Blyth - Rio Tinto Alan Shipping Unloading Facility",
+    "cy": "Blyth - Rio Tinto Alan Shipping Unloading Facility",
+    "codes": "GBAUBLYBLYRIO"
+  },
+  {
+    "en": "Blyth Harbour",
+    "cy": "Blyth Harbour",
+    "codes": "GBAUBLYBLYBLY"
+  },
+  {
+    "en": "Boston",
+    "cy": "Boston",
+    "codes": "GBAUBOSBOSBOS"
+  },
+  {
+    "en": "Braefoot Bay - Exxon Ethylene Jetty (P40)",
+    "cy": "Braefoot Bay - Exxon Ethylene Jetty (P40)",
+    "codes": "GBAUBFBGRGP40"
+  },
+  {
+    "en": "Braefoot Bay - Shell Jetty",
+    "cy": "Braefoot Bay - Shell Jetty",
+    "codes": "GBAUBFBGRGSHL"
+  },
+  {
+    "en": "Brightlingsea - Olivers Wharf",
+    "cy": "Brightlingsea - Olivers Wharf",
+    "codes": "GBAUBLSCOLBOW"
+  },
+  {
+    "en": "Briton Ferry - Giants Wharf",
+    "cy": "Briton Ferry - Giants Wharf",
+    "codes": "GBAUBFYSWABFY"
+  },
+  {
+    "en": "Bromborough - Mersey Wharf",
+    "cy": "Bromborough - Mersey Wharf",
+    "codes": "GBAUBHKBHKBHK"
+  },
+  {
+    "en": "Buckhaven - Wellesley Yard Quay",
+    "cy": "Buckhaven - Wellesley Yard Quay",
+    "codes": "GBAUBHVGRGWYQ"
+  },
+  {
+    "en": "Buckie [Cluny] Harbour",
+    "cy": "Buckie [Cluny] Harbour",
+    "codes": "GBAUBUCFRBBUC"
+  },
+  {
+    "en": "Burntisland Docks",
+    "cy": "Burntisland Docks",
+    "codes": "GBAUBTLGRGBTL"
+  },
+  {
+    "en": "Campbeltown - NATO POL Jetty",
+    "cy": "Campbeltown - NATO POL Jetty",
+    "codes": "GBAUCBTARGNPJ"
+  },
+  {
+    "en": "Campbeltown - Old & New Quay",
+    "cy": "Campbeltown - Old & New Quay",
+    "codes": "GBAUCBTARGONQ"
+  },
+  {
+    "en": "Canvey Island - Calor Gas Jetty",
+    "cy": "Canvey Island - Calor Gas Jetty",
+    "codes": "GBAUCANLONCAL"
+  },
+  {
+    "en": "Canvey Island - Hole Haven Wharf",
+    "cy": "Canvey Island - Hole Haven Wharf",
+    "codes": "GBAUCANLONHHW"
+  },
+  {
+    "en": "Cardiff Docks",
+    "cy": "Cardiff Docks",
+    "codes": "GBAUCDFCDFCDF"
+  },
+  {
+    "en": "Castletown",
+    "cy": "Castletown",
+    "codes": "IMAUCSWDGSCSW"
+  },
+  {
+    "en": "Chatham Dock - Berths 3, 4, 6 & 7 [Total Ship Services]",
+    "cy": "Chatham Dock - Berths 3, 4, 6 & 7 [Total Ship Services]",
+    "codes": "GBAUCTMMEDTSS"
+  },
+  {
+    "en": "Chatham Dock - No.1 Berth",
+    "cy": "Chatham Dock - No.1 Berth",
+    "codes": "GBAUCTMMEDNO1"
+  },
+  {
+    "en": "Chatham Dock - No.2 Berth",
+    "cy": "Chatham Dock - No.2 Berth",
+    "codes": "GBAUCTMMEDNO2"
+  },
+  {
+    "en": "Cloghan Point Oil Jetty",
+    "cy": "Cloghan Point Oil Jetty",
+    "codes": "GBAUCGPBELCGP"
+  },
+  {
+    "en": "Coleraine",
+    "cy": "Coleraine",
+    "codes": "GBAUCLRCLRCLR"
+  },
+  {
+    "en": "Colwyn Bay (Bae Colwyn)",
+    "cy": "Colwyn Bay (Bae Colwyn)",
+    "codes": "GBAUCYYHLDCYY"
+  },
+  {
+    "en": "Corpach - Annat Point",
+    "cy": "Corpach - Annat Point",
+    "codes": "GBAUCORINVCOR"
+  },
+  {
+    "en": "Coulport - RNAD Jetties",
+    "cy": "Coulport - RNAD Jetties",
+    "codes": "GBAUCOUGRKCOU"
+  },
+  {
+    "en": "Cowes - Medina Wharf",
+    "cy": "Cowes - Medina Wharf",
+    "codes": "GBAUCOWCOWCOW"
+  },
+  {
+    "en": "Craignure [Isle of Mull]",
+    "cy": "Craignure [Isle of Mull]",
+    "codes": "GBAUCNUARGCNU"
+  },
+  {
+    "en": "Dagenham - ARC Jetty [Hanson]",
+    "cy": "Dagenham - ARC Jetty [Hanson]",
+    "codes": "GBAUDAGLONARC"
+  },
+  {
+    "en": "Dagenham - East Jetty No. 9",
+    "cy": "Dagenham - East Jetty No. 9",
+    "codes": "GBAUDAGLONEJ9"
+  },
+  {
+    "en": "Dagenham - Fords Jetty & Estate",
+    "cy": "Dagenham - Fords Jetty & Estate",
+    "codes": "GBAUDAGLONFRD"
+  },
+  {
+    "en": "Dagenham - Jetty No. 8, CEMEX",
+    "cy": "Dagenham - Jetty No. 8, CEMEX",
+    "codes": "GBAUDAGLONCMX"
+  },
+  {
+    "en": "Dagenham - Thunderer Jetty",
+    "cy": "Dagenham - Thunderer Jetty",
+    "codes": "GBAUDAGLONDTJ"
+  },
+  {
+    "en": "Dartford Freight Terminal",
+    "cy": "Dartford Freight Terminal",
+    "codes": "GBAUDFDLONDFD"
+  },
+  {
+    "en": "Douglas (IOM)",
+    "cy": "Douglas (IOM)",
+    "codes": "IMAUDGSDGSDGS"
+  },
+  {
+    "en": "Dover - Admiralty Pier & Cruise Terminal",
+    "cy": "Dover - Admiralty Pier & Cruise Terminal",
+    "codes": "GBAUDVRDOVAPC"
+  },
+  {
+    "en": "Dover Eastern Docks",
+    "cy": "Dover Eastern Docks",
+    "codes": "GBAUDVRDOVDVR"
+  },
+  {
+    "en": "Dundee",
+    "cy": "Dundee",
+    "codes": "GBAUDUNDUNDUN"
+  },
+  {
+    "en": "Ellesmere Port - Innospec Wharf",
+    "cy": "Ellesmere Port - Innospec Wharf",
+    "codes": "GBAUELLELLELL"
+  },
+  {
+    "en": "Erith Oil Works - Jetties 1, 2 & 3; Albion Wharf",
+    "cy": "Erith Oil Works - Jetties 1, 2 & 3; Albion Wharf",
+    "codes": "GBAUERIMEDEOW"
+  },
+  {
+    "en": "Evanton Wharf - Highland Deephaven",
+    "cy": "Evanton Wharf - Highland Deephaven",
+    "codes": "GBAUEVTINVEVT"
+  },
+  {
+    "en": "Falmouth",
+    "cy": "Falmouth",
+    "codes": "GBAUFALFALFAL"
+  },
+  {
+    "en": "Faslane HM Naval Base",
+    "cy": "Faslane HM Naval Base",
+    "codes": "GBAUFASGRKFAS"
+  },
+  {
+    "en": "Fawley Wharf [Esso Refinary]",
+    "cy": "Fawley Wharf [Esso Refinary]",
+    "codes": "GBAUFAWSTNFAW"
+  },
+  {
+    "en": "Felixstowe",
+    "cy": "Felixstowe",
+    "codes": "GBAUFXTFXTFXT"
+  },
+  {
+    "en": "Fishguard",
+    "cy": "Fishguard",
+    "codes": "GBAUFISFISFIS"
+  },
+  {
+    "en": "Fleetwood",
+    "cy": "Fleetwood",
+    "codes": "GBAUFLEFLEFLE"
+  },
+  {
+    "en": "Flixborough Wharf",
+    "cy": "Flixborough Wharf",
+    "codes": "GBAUFLWTRTFLW"
+  },
+  {
+    "en": "Flotta Oil Terminal",
+    "cy": "Flotta Oil Terminal",
+    "codes": "GBAUFLHKWLFLH"
+  },
+  {
+    "en": "Fowey Harbour",
+    "cy": "Fowey Harbour",
+    "codes": "GBAUFOYFOYFOY"
+  },
+  {
+    "en": "Fraserburgh Harbour",
+    "cy": "Fraserburgh Harbour",
+    "codes": "GBAUFRBFRBFRB"
+  },
+  {
+    "en": "Gairloch Wharf",
+    "cy": "Gairloch Wharf",
+    "codes": "GBAUGARINVGAR"
+  },
+  {
+    "en": "Garelochhead - Finnart Ocean Terminal",
+    "cy": "Garelochhead - Finnart Ocean Terminal",
+    "codes": "GBAUGADGRGFOT"
+  },
+  {
+    "en": "Garelochhead - Oil Fuel Depot",
+    "cy": "Garelochhead - Oil Fuel Depot",
+    "codes": "GBAUGADGRGOFD"
+  },
+  {
+    "en": "Garston Docks",
+    "cy": "Garston Docks",
+    "codes": "GBAUGTNLIVGTN"
+  },
+  {
+    "en": "Glasgow - Barclay Curle Engine Wharf",
+    "cy": "Glasgow - Barclay Curle Engine Wharf",
+    "codes": "GBAUGLWGLWBCW"
+  },
+  {
+    "en": "Glasgow - Inchgreen Dock",
+    "cy": "Glasgow - Inchgreen Dock",
+    "codes": "GBAUGLWGLWIGD"
+  },
+  {
+    "en": "Glasgow King George V Dock",
+    "cy": "Glasgow King George V Dock",
+    "codes": "GBAUGLWGLWGLW"
+  },
+  {
+    "en": "Glasgow King George V Dock - Riverside Berth",
+    "cy": "Glasgow King George V Dock - Riverside Berth",
+    "codes": "GBAUGLWGLWGRB"
+  },
+  {
+    "en": "Glasson Dock",
+    "cy": "Glasson Dock",
+    "codes": "GBAUGLDGLDGLD"
+  },
+  {
+    "en": "Glensanda Jetty",
+    "cy": "Glensanda Jetty",
+    "codes": "GBAUGSAOBAGSA"
+  },
+  {
+    "en": "Goole",
+    "cy": "Goole",
+    "codes": "GBAUGOOGOOGOO"
+  },
+  {
+    "en": "Gosport - Oil Fuel Depot",
+    "cy": "Gosport - Oil Fuel Depot",
+    "codes": "GBAUGOSPTMOFD"
+  },
+  {
+    "en": "Grangemouth - D M Crombie New Jetty",
+    "cy": "Grangemouth - D M Crombie New Jetty",
+    "codes": "GBAUGRGGRGDMC"
+  },
+  {
+    "en": "Grangemouth - Hound Point Tanker Berths 1 & 2",
+    "cy": "Grangemouth - Hound Point Tanker Berths 1 & 2",
+    "codes": "GBAUGRGHPTHPT"
+  },
+  {
+    "en": "Grangemouth - Ineos Refinery, Jetties J1 J2 & J3",
+    "cy": "Grangemouth - Ineos Refinery, Jetties J1 J2 & J3",
+    "codes": "GBAUGRGGRGINR"
+  },
+  {
+    "en": "Grangemouth - Petroineos Jetty Heads E1 & E2",
+    "cy": "Grangemouth - Petroineos Jetty Heads E1 & E2",
+    "codes": "GBAUGRGGRGE12"
+  },
+  {
+    "en": "Grangemouth - RLPG (BP) Jetty",
+    "cy": "Grangemouth - RLPG (BP) Jetty",
+    "codes": "GBAUGRGGRGLPG"
+  },
+  {
+    "en": "Grangemouth Docks",
+    "cy": "Grangemouth Docks",
+    "codes": "GBAUGRGGRGGRG"
+  },
+  {
+    "en": "Gravesend - Clubbs Maritime Terminal",
+    "cy": "Gravesend - Clubbs Maritime Terminal",
+    "codes": "GBAUGVSMEDCMT"
+  },
+  {
+    "en": "Grays - Lafarge Wharf",
+    "cy": "Grays - Lafarge Wharf",
+    "codes": "GBAUGYSLONWLA"
+  },
+  {
+    "en": "Grays - NuStar Terminal Jetties 1 & 2",
+    "cy": "Grays - NuStar Terminal Jetties 1 & 2",
+    "codes": "GBAUGYSLONNST"
+  },
+  {
+    "en": "Grays - Oil Jetty, West Thurrock",
+    "cy": "Grays - Oil Jetty, West Thurrock",
+    "codes": "GBAUGYSLONGOJ"
+  },
+  {
+    "en": "Grays - Titan Works, West Thurrock Jetty",
+    "cy": "Grays - Titan Works, West Thurrock Jetty",
+    "codes": "GBAUGYSLONGTW"
+  },
+  {
+    "en": "Great Oakley Works - Bramble Island",
+    "cy": "Great Oakley Works - Bramble Island",
+    "codes": "GBAUGOAHRHGOA"
+  },
+  {
+    "en": "Great Yarmouth",
+    "cy": "Great Yarmouth",
+    "codes": "GBAUGTYGTYGTY"
+  },
+  {
+    "en": "Great Yarmouth - Kings Wharf",
+    "cy": "Great Yarmouth - Kings Wharf",
+    "codes": "GBAUGTYGTYKGF"
+  },
+  {
+    "en": "Greenock - Ocean Terminal",
+    "cy": "Greenock - Ocean Terminal",
+    "codes": "GBAUGRKGRKGRK"
+  },
+  {
+    "en": "Greenwich - Floating Cruise Terminal",
+    "cy": "Greenwich - Floating Cruise Terminal",
+    "codes": "GBAUGNWLONFCT"
+  },
+  {
+    "en": "Greenwich - Victoria Deep Water Terminal",
+    "cy": "Greenwich - Victoria Deep Water Terminal",
+    "codes": "GBAUGNWLONVIC"
+  },
+  {
+    "en": "Grimsby",
+    "cy": "Grimsby",
+    "codes": "GBAUGSYGRIGSY"
+  },
+  {
+    "en": "Gunness - Grove Wharf",
+    "cy": "Gunness - Grove Wharf",
+    "codes": "GBAUGUSTRTGRO"
+  },
+  {
+    "en": "Gunness - Neap House Wharf",
+    "cy": "Gunness - Neap House Wharf",
+    "codes": "GBAUGUSTRTNHW"
+  },
+  {
+    "en": "Gunness Wharf",
+    "cy": "Gunness Wharf",
+    "codes": "GBAUGUWTRTGUW"
+  },
+  {
+    "en": "Hamble Jetty [BP]",
+    "cy": "Hamble Jetty [BP]",
+    "codes": "GBAUHAMSTNHAM"
+  },
+  {
+    "en": "Hartlepool",
+    "cy": "Hartlepool",
+    "codes": "GBAUHTPHTPHTP"
+  },
+  {
+    "en": "Hartlepool - Seaton Port Quays 1, 10 & 11 (TERRC)",
+    "cy": "Hartlepool - Seaton Port Quays 1, 10 & 11 (TERRC)",
+    "codes": "GBAUHTPHTPSPQ"
+  },
+  {
+    "en": "Harwich - Navyard Wharf",
+    "cy": "Harwich - Navyard Wharf",
+    "codes": "GBAUHRWHRHNYW"
+  },
+  {
+    "en": "Harwich - Parkeston Quay",
+    "cy": "Harwich - Parkeston Quay",
+    "codes": "GBAUHRWHRHHRW"
+  },
+  {
+    "en": "Heysham",
+    "cy": "Heysham",
+    "codes": "GBAUHYMHEYHYM"
+  },
+  {
+    "en": "Holy Loch Marina - Dunoon",
+    "cy": "Holy Loch Marina - Dunoon",
+    "codes": "GBAUDNUARGHLM"
+  },
+  {
+    "en": "Holyhead",
+    "cy": "Holyhead",
+    "codes": "GBAUHLYHLDHLY"
+  },
+  {
+    "en": "Howden Dyke - Wharves 1, 2, 3 & 4",
+    "cy": "Howden Dyke - Wharves 1, 2, 3 & 4",
+    "codes": "GBAUHDDGOOHDD"
+  },
+  {
+    "en": "Hull",
+    "cy": "Hull",
+    "codes": "GBAUHULHULHUL"
+  },
+  {
+    "en": "Immingham Docks",
+    "cy": "Immingham Docks",
+    "codes": "GBAUIMMIMMIMM"
+  },
+  {
+    "en": "Immingham Docks - DFDS Seaways",
+    "cy": "Immingham Docks - DFDS Seaways",
+    "codes": "GBAUIMMIMMDDI"
+  },
+  {
+    "en": "Invergordon - Admiralty Pier",
+    "cy": "Invergordon - Admiralty Pier",
+    "codes": "GBAUIVGIVGAMP"
+  },
+  {
+    "en": "Invergordon - Saltburn Pier & Service Base",
+    "cy": "Invergordon - Saltburn Pier & Service Base",
+    "codes": "GBAUIVGIVGIVG"
+  },
+  {
+    "en": "Inverkeithing - East Ness Terminal",
+    "cy": "Inverkeithing - East Ness Terminal",
+    "codes": "GBAUINKGRGENT"
+  },
+  {
+    "en": "Inverkeithing Harbour",
+    "cy": "Inverkeithing Harbour",
+    "codes": "GBAUINKGRGINK"
+  },
+  {
+    "en": "Inverness",
+    "cy": "Inverness",
+    "codes": "GBAUINVINVINV"
+  },
+  {
+    "en": "Ipswich - Orwell Terminal, Eagle Wharf",
+    "cy": "Ipswich - Orwell Terminal, Eagle Wharf",
+    "codes": "GBAUIPSIPSOTE"
+  },
+  {
+    "en": "Ipswich Dock",
+    "cy": "Ipswich Dock",
+    "codes": "GBAUIPSIPSIPS"
+  },
+  {
+    "en": "Isle of Grain - BP Oils Wharf",
+    "cy": "Isle of Grain - BP Oils Wharf",
+    "codes": "GBAUIOGMEDBPO"
+  },
+  {
+    "en": "Isle of Grain - GRAIN LNG",
+    "cy": "Isle of Grain - GRAIN LNG",
+    "codes": "GBAUIOGMEDLNG"
+  },
+  {
+    "en": "Isle of Grain - No. 6 Jetty",
+    "cy": "Isle of Grain - No. 6 Jetty",
+    "codes": "GBAUIOGMEDNSJ"
+  },
+  {
+    "en": "Keadby Wharf",
+    "cy": "Keadby Wharf",
+    "codes": "GBAUKEATRTKEA"
+  },
+  {
+    "en": "Kilroot Power Station Jetty",
+    "cy": "Kilroot Power Station Jetty",
+    "codes": "GBAUKPSBELKPS"
+  },
+  {
+    "en": "King's Lynn",
+    "cy": "King's Lynn",
+    "codes": "GBAUKLNKLNKLN"
+  },
+  {
+    "en": "Kinlochbervie",
+    "cy": "Kinlochbervie",
+    "codes": "GBAUKBEKLBKBE"
+  },
+  {
+    "en": "Kirkcaldy Dock - East Quay",
+    "cy": "Kirkcaldy Dock - East Quay",
+    "codes": "GBAUKKDGRGKKD"
+  },
+  {
+    "en": "Kirkwall",
+    "cy": "Kirkwall",
+    "codes": "GBAUKWLKWLKWL"
+  },
+  {
+    "en": "Largs - Hunterstown Terminal",
+    "cy": "Largs - Hunterstown Terminal",
+    "codes": "GBAULGSGRKLGS"
+  },
+  {
+    "en": "Larne Harbour",
+    "cy": "Larne Harbour",
+    "codes": "GBAULARBELLAR"
+  },
+  {
+    "en": "Leith",
+    "cy": "Leith",
+    "codes": "GBAULEILEILEI"
+  },
+  {
+    "en": "Lerwick",
+    "cy": "Lerwick",
+    "codes": "GBAULERLERLER"
+  },
+  {
+    "en": "Littlehampton Quayside",
+    "cy": "Littlehampton Quayside",
+    "codes": "GBAULITSHOLIT"
+  },
+  {
+    "en": "Liverpool - Cruise Terminal, Princess Dock",
+    "cy": "Liverpool - Cruise Terminal, Princess Dock",
+    "codes": "GBAULIVLIVCRU"
+  },
+  {
+    "en": "Liverpool Docks",
+    "cy": "Liverpool Docks",
+    "codes": "GBAULIVLIVLIV"
+  },
+  {
+    "en": "Location and facility name",
+    "cy": "Location and facility name",
+    "codes": "Code for the location to be declared in Data Element 5/23"
+  },
+  {
+    "en": "Loch Long - Glen Mallen Jetty MOD DSDA",
+    "cy": "Loch Long - Glen Mallen Jetty MOD DSDA",
+    "codes": "GBAULCGARGLCG"
+  },
+  {
+    "en": "Loch Striven - NATO POL Jetty",
+    "cy": "Loch Striven - NATO POL Jetty",
+    "codes": "GBAULHSGRKLHS"
+  },
+  {
+    "en": "Lochinver",
+    "cy": "Lochinver",
+    "codes": "GBAULOVLCVLOV"
+  },
+  {
+    "en": "London - Tower Millenium Pier Cruise Terminal",
+    "cy": "London - Tower Millenium Pier Cruise Terminal",
+    "codes": "GBAULONLONTMP"
+  },
+  {
+    "en": "London Gateway Port",
+    "cy": "London Gateway Port",
+    "codes": "GBAULGPLGPLGP"
+  },
+  {
+    "en": "London Thamesport - Isle of Grain",
+    "cy": "London Thamesport - Isle of Grain",
+    "codes": "GBAULTPTHPLTP"
+  },
+  {
+    "en": "Londonderry",
+    "cy": "Londonderry",
+    "codes": "GBAULDYLDYLDY"
+  },
+  {
+    "en": "Lowestoft",
+    "cy": "Lowestoft",
+    "codes": "GBAULOWLOWLOW"
+  },
+  {
+    "en": "Lowestoft - North Quay, Grain Silo",
+    "cy": "Lowestoft - North Quay, Grain Silo",
+    "codes": "GBAULOWLOWLNQ"
+  },
+  {
+    "en": "Manchester Ship Canal",
+    "cy": "Manchester Ship Canal",
+    "codes": "GBAUMSCMNCMSC"
+  },
+  {
+    "en": "Marchwood Military Port",
+    "cy": "Marchwood Military Port",
+    "codes": "GBAUMAWSTNMMP1"
+  },
+  {
+    "en": "Marchwood Port - Sea Mounting Centre",
+    "cy": "Marchwood Port - Sea Mounting Centre",
+    "codes": "GBAUMAWSTNSMC"
+  },
+  {
+    "en": "Maydown - Oil Terminal, Coolkeeragh",
+    "cy": "Maydown - Oil Terminal, Coolkeeragh",
+    "codes": "GBAUMYNLDYMYN"
+  },
+  {
+    "en": "Methil",
+    "cy": "Methil",
+    "codes": "GBAUMTHGRGMTH"
+  },
+  {
+    "en": "Middlesbrough - Cochranes Wharf",
+    "cy": "Middlesbrough - Cochranes Wharf",
+    "codes": "GBAUMIDMIDCCW"
+  },
+  {
+    "en": "Middlesbrough - Dawsons Wharf & North Sea Supply Base (NSSB)",
+    "cy": "Middlesbrough - Dawsons Wharf & North Sea Supply Base (NSSB)",
+    "codes": "GBAUMIDMIDDWW"
+  },
+  {
+    "en": "Middlesbrough - Normanby Wharf",
+    "cy": "Middlesbrough - Normanby Wharf",
+    "codes": "GBAUMIDMIDNMB"
+  },
+  {
+    "en": "Milford Haven - Dragon LNG Wharf",
+    "cy": "Milford Haven - Dragon LNG Wharf",
+    "codes": "GBAUMLFMILDRA"
+  },
+  {
+    "en": "Milford Haven - Pembroke Refinery",
+    "cy": "Milford Haven - Pembroke Refinery",
+    "codes": "GBAUMLFMILPEM"
+  },
+  {
+    "en": "Milford Haven - Refinery Terminal Berths 1 - 3",
+    "cy": "Milford Haven - Refinery Terminal Berths 1 - 3",
+    "codes": "GBAUMLFMILRTB"
+  },
+  {
+    "en": "Milford Haven - Semlogistics Berths 2 & 3",
+    "cy": "Milford Haven - Semlogistics Berths 2 & 3",
+    "codes": "GBAUMLFMILSEM"
+  },
+  {
+    "en": "Milford Haven - South Hook LNG Berths 1 & 2",
+    "cy": "Milford Haven - South Hook LNG Berths 1 & 2",
+    "codes": "GBAUMLFMILSOH"
+  },
+  {
+    "en": "Mistley Wharf",
+    "cy": "Mistley Wharf",
+    "codes": "GBAUMISHRHMIS"
+  },
+  {
+    "en": "Montrose",
+    "cy": "Montrose",
+    "codes": "GBAUMONMONMON"
+  },
+  {
+    "en": "Mostyn",
+    "cy": "Mostyn",
+    "codes": "GBAUCHEMOSCHE"
+  },
+  {
+    "en": "New Holland Dock",
+    "cy": "New Holland Dock",
+    "codes": "GBAUNHOIMMNHD"
+  },
+  {
+    "en": "New Holland Pier",
+    "cy": "New Holland Pier",
+    "codes": "GBAUNHOIMMNHP"
+  },
+  {
+    "en": "Newhaven",
+    "cy": "Newhaven",
+    "codes": "GBAUNHVNHVNHV"
+  },
+  {
+    "en": "Newlyn - North, South & Mary Williams Piers; Fish Market & Old Quays",
+    "cy": "Newlyn - North, South & Mary Williams Piers; Fish Market & Old Quays",
+    "codes": "GBAUNYLPENNYL"
+  },
+  {
+    "en": "Newport - Alexander Dock",
+    "cy": "Newport - Alexander Dock",
+    "codes": "GBAUNPTNPTNPT"
+  },
+  {
+    "en": "Newport - Alexandra Dock",
+    "cy": "Newport - Alexandra Dock",
+    "codes": "GBAUNPTNPTALX"
+  },
+  {
+    "en": "Newport - Alexandra Dock - Sims Group",
+    "cy": "Newport - Alexandra Dock - Sims Group",
+    "codes": "GBAUNPTNPTSIN"
+  },
+  {
+    "en": "Newport - Bird Port Wharf",
+    "cy": "Newport - Bird Port Wharf",
+    "codes": "GBAUNPTNPTBPW"
+  },
+  {
+    "en": "Newport - Liberty Steel Wharf",
+    "cy": "Newport - Liberty Steel Wharf",
+    "codes": "GBAUNPTNPTLSW"
+  },
+  {
+    "en": "Newport - South Dock, Newport Cement Terminal - Cemex",
+    "cy": "Newport - South Dock, Newport Cement Terminal - Cemex",
+    "codes": "GBAUNPTNPTCXW"
+  },
+  {
+    "en": "Nigg Oil Terminal [Jacky Oil Platform]",
+    "cy": "Nigg Oil Terminal [Jacky Oil Platform]",
+    "codes": "GBAUNGGABDNGG"
+  },
+  {
+    "en": "North Killingholme - Humber Sea Terminal",
+    "cy": "North Killingholme - Humber Sea Terminal",
+    "codes": "GBAUNKHIMMNKH"
+  },
+  {
+    "en": "North Shields",
+    "cy": "North Shields",
+    "codes": "GBAUNSHTYNNSH"
+  },
+  {
+    "en": "Northfleet - 42 Wharf [Cement Works]",
+    "cy": "Northfleet - 42 Wharf [Cement Works]",
+    "codes": "GBAUNFTMED42W"
+  },
+  {
+    "en": "Northfleet - Red Lion Wharf",
+    "cy": "Northfleet - Red Lion Wharf",
+    "codes": "GBAUNFTMEDRLW"
+  },
+  {
+    "en": "Northfleet - Terminal Wharf",
+    "cy": "Northfleet - Terminal Wharf",
+    "codes": "GBAUNFTLONTER"
+  },
+  {
+    "en": "Northfleet - Tower Wharf",
+    "cy": "Northfleet - Tower Wharf",
+    "codes": "GBAUNFTLONTOW"
+  },
+  {
+    "en": "Peel (Isle of Man)",
+    "cy": "Peel (Isle of Man)",
+    "codes": "IMAUPELPELPEL"
+  },
+  {
+    "en": "Pembroke Dock",
+    "cy": "Pembroke Dock",
+    "codes": "GBAUPEDMILPED"
+  },
+  {
+    "en": "Pembroke Dock",
+    "cy": "Pembroke Dock",
+    "codes": "GBAUPEMCDFMHP"
+  },
+  {
+    "en": "Pembroke Dock",
+    "cy": "Pembroke Dock",
+    "codes": "GBAUPEMCDFMFP"
+  },
+  {
+    "en": "Perth Harbour",
+    "cy": "Perth Harbour",
+    "codes": "GBAUPERDUNPER"
+  },
+  {
+    "en": "Peterhead",
+    "cy": "Peterhead",
+    "codes": "GBAUPHDPHDPHD"
+  },
+  {
+    "en": "Plymouth - Cattledown Wharf",
+    "cy": "Plymouth - Cattledown Wharf",
+    "codes": "GBAUPLYPLYCDW"
+  },
+  {
+    "en": "Plymouth - Corporation Wharf",
+    "cy": "Plymouth - Corporation Wharf",
+    "codes": "GBAUPLYPLYCOR"
+  },
+  {
+    "en": "Plymouth - Millbay Docks",
+    "cy": "Plymouth - Millbay Docks",
+    "codes": "GBAUPLYPLYPLY"
+  },
+  {
+    "en": "Plymouth - Pomphlett Jetty",
+    "cy": "Plymouth - Pomphlett Jetty",
+    "codes": "GBAUPLYPLYPPJ"
+  },
+  {
+    "en": "Plymouth - Victoria Wharf",
+    "cy": "Plymouth - Victoria Wharf",
+    "codes": "GBAUPLYPLYVCW"
+  },
+  {
+    "en": "Poole",
+    "cy": "Poole",
+    "codes": "GBAUPOOPOOPOO"
+  },
+  {
+    "en": "Poole - Hamworthy Wharf",
+    "cy": "Poole - Hamworthy Wharf",
+    "codes": "GBAUPOOPOOHWW"
+  },
+  {
+    "en": "Port Clarence - North Tees Site No. 4 Jetty",
+    "cy": "Port Clarence - North Tees Site No. 4 Jetty",
+    "codes": "GBAUPOCMIDNAV"
+  },
+  {
+    "en": "Port Clarence - North Tees Site, Jetties 1A, 2 & 3",
+    "cy": "Port Clarence - North Tees Site, Jetties 1A, 2 & 3",
+    "codes": "GBAUPOCMIDNTS"
+  },
+  {
+    "en": "Port Talbot",
+    "cy": "Port Talbot",
+    "codes": "GBAUPTBPTBPTB"
+  },
+  {
+    "en": "Portland",
+    "cy": "Portland",
+    "codes": "GBAUPTLPTLPTL"
+  },
+  {
+    "en": "Portland Harbour",
+    "cy": "Portland Harbour",
+    "codes": "GBAUPRHWEYPRH"
+  },
+  {
+    "en": "Portland Harbour - Inner Breakwater Berth",
+    "cy": "Portland Harbour - Inner Breakwater Berth",
+    "codes": "GBAUPRHWEYIBB"
+  },
+  {
+    "en": "Portree, Isle of Skye",
+    "cy": "Portree, Isle of Skye",
+    "codes": "GBAUPRTABDPRT"
+  },
+  {
+    "en": "Portslade - Texaco Wharf",
+    "cy": "Portslade - Texaco Wharf",
+    "codes": "GBAUPTSSHOPTS"
+  },
+  {
+    "en": "Portsmouth - Albert Johnson Quay",
+    "cy": "Portsmouth - Albert Johnson Quay",
+    "codes": "GBAUPMEPTMAJQ"
+  },
+  {
+    "en": "Portsmouth - Flathouse Quay",
+    "cy": "Portsmouth - Flathouse Quay",
+    "codes": "GBAUPMEPTMFHQ"
+  },
+  {
+    "en": "Portsmouth - HM Naval Base, Oil Fuel Jetty & Bedenham Pier/UHAF",
+    "cy": "Portsmouth - HM Naval Base, Oil Fuel Jetty & Bedenham Pier/UHAF",
+    "codes": "GBAUPMEPTMHMN"
+  },
+  {
+    "en": "Portsmouth Continental Ferry Port",
+    "cy": "Portsmouth Continental Ferry Port",
+    "codes": "GBAUPMEPTMPME"
+  },
+  {
+    "en": "Purfleet - Civil & Marine Jetty",
+    "cy": "Purfleet - Civil & Marine Jetty",
+    "codes": "GBAUPFTLONCMJ"
+  },
+  {
+    "en": "Purfleet - C-Ro",
+    "cy": "Purfleet - C-Ro",
+    "codes": "GBAUPFTLONPFT"
+  },
+  {
+    "en": "Purfleet - Esso No 1 Jetty",
+    "cy": "Purfleet - Esso No 1 Jetty",
+    "codes": "GBAUPFTLONESS"
+  },
+  {
+    "en": "Purfleet - Jurgens Jetty",
+    "cy": "Purfleet - Jurgens Jetty",
+    "codes": "GBAUPFTLONJUJ"
+  },
+  {
+    "en": "Ramsey (Isle of Man)",
+    "cy": "Ramsey (Isle of Man)",
+    "codes": "IMAURAMRSYRAM"
+  },
+  {
+    "en": "Ramsgate",
+    "cy": "Ramsgate",
+    "codes": "GBAURMGRMGRMG"
+  },
+  {
+    "en": "Redcar",
+    "cy": "Redcar",
+    "codes": "GBAURERMIDRED"
+  },
+  {
+    "en": "Renfrew - Lobnitz Dock",
+    "cy": "Renfrew - Lobnitz Dock",
+    "codes": "GBAURENGLWREN"
+  },
+  {
+    "en": "Ridham Dock - East Side [Robert Brett & Sons]",
+    "cy": "Ridham Dock - East Side [Robert Brett & Sons]",
+    "codes": "GBAURIDMEDRBS"
+  },
+  {
+    "en": "Ridham Dock - Grovehurst Jetty, Iwade",
+    "cy": "Ridham Dock - Grovehurst Jetty, Iwade",
+    "codes": "GBAURIDMEDGHJ"
+  },
+  {
+    "en": "Ridham Dock - West Side [Ridham Sea Terminals]",
+    "cy": "Ridham Dock - West Side [Ridham Sea Terminals]",
+    "codes": "GBAURIDMEDRST"
+  },
+  {
+    "en": "Rochester - Crown Wharf",
+    "cy": "Rochester - Crown Wharf",
+    "codes": "GBAURCSMEDRCW"
+  },
+  {
+    "en": "Rosyth - North Wall",
+    "cy": "Rosyth - North Wall",
+    "codes": "GBAUROYROSROY"
+  },
+  {
+    "en": "Rosyth Dockyard",
+    "cy": "Rosyth Dockyard",
+    "codes": "GBAUROYROSRND"
+  },
+  {
+    "en": "Rothesay Dock - Clydebank",
+    "cy": "Rothesay Dock - Clydebank",
+    "codes": "GBAUCLYGLWRTH"
+  },
+  {
+    "en": "Runcorn",
+    "cy": "Runcorn",
+    "codes": "GBAURUNRUNRUN"
+  },
+  {
+    "en": "Rye Wharf",
+    "cy": "Rye Wharf",
+    "codes": "GBAURYEDOGRYE"
+  },
+  {
+    "en": "Scalloway Harbour",
+    "cy": "Scalloway Harbour",
+    "codes": "GBAUSWYLERSWY"
+  },
+  {
+    "en": "Scapa",
+    "cy": "Scapa",
+    "codes": "GBAUSCFKWLSCF"
+  },
+  {
+    "en": "Scrabster",
+    "cy": "Scrabster",
+    "codes": "GBAUSCRINVSCR"
+  },
+  {
+    "en": "Seaham Harbour",
+    "cy": "Seaham Harbour",
+    "codes": "GBAUSEASUNSEA"
+  },
+  {
+    "en": "Seal Sands - 1, 2, & 3 Jetties, Navigator Terminals",
+    "cy": "Seal Sands - 1, 2, & 3 Jetties, Navigator Terminals",
+    "codes": "GBAUXSSMIDNAV"
+  },
+  {
+    "en": "Seal Sands - Ekofisk Nos 1-6 & 8 Jetties",
+    "cy": "Seal Sands - Ekofisk Nos 1-6 & 8 Jetties",
+    "codes": "GBAUXSSMIDEKO"
+  },
+  {
+    "en": "Seal Sands - No 1 and 2 Jetties, Seal Sands - [INEOS]",
+    "cy": "Seal Sands - No 1 and 2 Jetties, Seal Sands - [INEOS]",
+    "codes": "GBAUTEEMIDINE"
+  },
+  {
+    "en": "Seal Sands - No 1 and 2 Jetties, Seal Sands - [Inter Terminals]",
+    "cy": "Seal Sands - No 1 and 2 Jetties, Seal Sands - [Inter Terminals]",
+    "codes": "GBAUXSSMIDITT"
+  },
+  {
+    "en": "Sharpness Docks",
+    "cy": "Sharpness Docks",
+    "codes": "GBAUSSSSSSSSS"
+  },
+  {
+    "en": "Sheerness Docks",
+    "cy": "Sheerness Docks",
+    "codes": "GBAUSHSMEDSHS"
+  },
+  {
+    "en": "Shoreham-by-Sea",
+    "cy": "Shoreham-by-Sea",
+    "codes": "GBAUESHSHOESH"
+  },
+  {
+    "en": "Shoreham-by-Sea - Egypt Wharf",
+    "cy": "Shoreham-by-Sea - Egypt Wharf",
+    "codes": "GBAUESHSHOEGY"
+  },
+  {
+    "en": "Shoreham-by-Sea - Kingston Wharf West",
+    "cy": "Shoreham-by-Sea - Kingston Wharf West",
+    "codes": "GBAUESHSHOKWW"
+  },
+  {
+    "en": "Silloth Dock",
+    "cy": "Silloth Dock",
+    "codes": "GBAUSILSILSIL"
+  },
+  {
+    "en": "Silvertown - Thames Refinery [Silvertown & Cairns Mill Wharf]",
+    "cy": "Silvertown - Thames Refinery [Silvertown & Cairns Mill Wharf]",
+    "codes": "GBAUSVTLONTLS"
+  },
+  {
+    "en": "Skewen - Neath Abbey Wharf",
+    "cy": "Skewen - Neath Abbey Wharf",
+    "codes": "GBAUSKWCDFMCD"
+  },
+  {
+    "en": "Solent Gateway - Marchwood",
+    "cy": "Solent Gateway - Marchwood",
+    "codes": "GBAUMAWSTNSGL1"
+  },
+  {
+    "en": "South Killingholme - APT Jetty",
+    "cy": "South Killingholme - APT Jetty",
+    "codes": "GBAUKSUIMMAPT"
+  },
+  {
+    "en": "South Shields [Tyne Dock]",
+    "cy": "South Shields [Tyne Dock]",
+    "codes": "GBAUSSHTYNSSH"
+  },
+  {
+    "en": "Southampton - Princes Wharf",
+    "cy": "Southampton - Princes Wharf",
+    "codes": "GBAUSOUSTNPWS"
+  },
+  {
+    "en": "Southampton Docks",
+    "cy": "Southampton Docks",
+    "codes": "GBAUSOUSTNSOU"
+  },
+  {
+    "en": "Southampton Docks - Eastern Docks",
+    "cy": "Southampton Docks - Eastern Docks",
+    "codes": "GBAUSOUSTNFRO1"
+  },
+  {
+    "en": "Southampton Docks - Western Docks",
+    "cy": "Southampton Docks - Western Docks",
+    "codes": "GBAUSOUSTNABP1"
+  },
+  {
+    "en": "Southwick - Penney's & Turberville Wharves",
+    "cy": "Southwick - Penney's & Turberville Wharves",
+    "codes": "GBAUSHKSHOSHK"
+  },
+  {
+    "en": "Soutkampton Docks - Western Docks",
+    "cy": "Soutkampton Docks - Western Docks",
+    "codes": "GBAUSOUSTNSGS1"
+  },
+  {
+    "en": "Stanford-le-Hope - Coryton Jetty",
+    "cy": "Stanford-le-Hope - Coryton Jetty",
+    "codes": "GBAUSLHLONCRT"
+  },
+  {
+    "en": "Stanford-le-Hope - Shell Haven Jetty",
+    "cy": "Stanford-le-Hope - Shell Haven Jetty",
+    "codes": "GBAUSLHLONSHJ"
+  },
+  {
+    "en": "Stornoway",
+    "cy": "Stornoway",
+    "codes": "GBAUSTOSTOSTO"
+  },
+  {
+    "en": "Stornoway - Arnish Quay",
+    "cy": "Stornoway - Arnish Quay",
+    "codes": "GBAUSTOSTOARN"
+  },
+  {
+    "en": "Stretford - Cerestar Wharf, MSC",
+    "cy": "Stretford - Cerestar Wharf, MSC",
+    "codes": "GBAUSFDMNCCSR"
+  },
+  {
+    "en": "Stretford - Dry Dock 1, MSC",
+    "cy": "Stretford - Dry Dock 1, MSC",
+    "codes": "GBAUSFDMNCDD1"
+  },
+  {
+    "en": "Stromness (including North and South Piers and Coplands Dock)",
+    "cy": "Stromness (including North and South Piers and Coplands Dock)",
+    "codes": "GBAUSNSKWLSNS"
+  },
+  {
+    "en": "Strood - Scotline Terminal",
+    "cy": "Strood - Scotline Terminal",
+    "codes": "GBAUSTDMEDSLT"
+  },
+  {
+    "en": "Sullom Voe",
+    "cy": "Sullom Voe",
+    "codes": "GBAUSULLERSUL"
+  },
+  {
+    "en": "Sunderland",
+    "cy": "Sunderland",
+    "codes": "GBAUSUNSUNSUN"
+  },
+  {
+    "en": "Sutton Bridge Port",
+    "cy": "Sutton Bridge Port",
+    "codes": "GBAUPSBKLNPSB"
+  },
+  {
+    "en": "Swansea",
+    "cy": "Swansea",
+    "codes": "GBAUSWASWASWA"
+  },
+  {
+    "en": "Swansea - E Berth, Kings Dock",
+    "cy": "Swansea - E Berth, Kings Dock",
+    "codes": "GBAUSWASWAKDE"
+  },
+  {
+    "en": "Teesport",
+    "cy": "Teesport",
+    "codes": "GBAUTEEMIDTEE"
+  },
+  {
+    "en": "Teesport - Quay 1, Potash Terminal",
+    "cy": "Teesport - Quay 1, Potash Terminal",
+    "codes": "GBAUTEEMIDQPT"
+  },
+  {
+    "en": "Teignmouth - Old, Eastern & Western Quays",
+    "cy": "Teignmouth - Old, Eastern & Western Quays",
+    "codes": "GBAUTNMTNMTNM"
+  },
+  {
+    "en": "Tetney Terminal - Mono Mooring Buoy",
+    "cy": "Tetney Terminal - Mono Mooring Buoy",
+    "codes": "GBAUTTLHULTTL"
+  },
+  {
+    "en": "Thames Europort",
+    "cy": "Thames Europort",
+    "codes": "GBAUDFDTEPDFD"
+  },
+  {
+    "en": "Tilbury Docks",
+    "cy": "Tilbury Docks",
+    "codes": "GBAUTILLONTIL"
+  },
+  {
+    "en": "Tilbury Freeport",
+    "cy": "Tilbury Freeport",
+    "codes": "GBAUTIMLONJWQ1"
+  },
+  {
+    "en": "Tobermory - Ledaig Pontoons, Isle of Mull",
+    "cy": "Tobermory - Ledaig Pontoons, Isle of Mull",
+    "codes": "GBAUTOBARGTOB"
+  },
+  {
+    "en": "Torquay - Haldon Pier, South Pier & Beacon Quay",
+    "cy": "Torquay - Haldon Pier, South Pier & Beacon Quay",
+    "codes": "GBAUTORTNMTOR"
+  },
+  {
+    "en": "Troon",
+    "cy": "Troon",
+    "codes": "GBAUTRNGLWTRN"
+  },
+  {
+    "en": "Truro - Lighterage Quay",
+    "cy": "Truro - Lighterage Quay",
+    "codes": "GBAUTRUFALTRU"
+  },
+  {
+    "en": "Ullapool",
+    "cy": "Ullapool",
+    "codes": "GBAUULLINVULL"
+  },
+  {
+    "en": "Walker - Neptune Energy Park",
+    "cy": "Walker - Neptune Energy Park",
+    "codes": "GBAUWLKTYNNEP"
+  },
+  {
+    "en": "Walker - Offshore Technology Park",
+    "cy": "Walker - Offshore Technology Park",
+    "codes": "GBAUWLKTYNOTP"
+  },
+  {
+    "en": "Wallasea Island - Baltic Wharf",
+    "cy": "Wallasea Island - Baltic Wharf",
+    "codes": "GBAUWLALONBTW"
+  },
+  {
+    "en": "Warrenpoint Harbour",
+    "cy": "Warrenpoint Harbour",
+    "codes": "GBAUWPTWPTWPT"
+  },
+  {
+    "en": "Weymouth",
+    "cy": "Weymouth",
+    "codes": "GBAUWEYWEYWEY"
+  },
+  {
+    "en": "Whitstable",
+    "cy": "Whitstable",
+    "codes": "GBAUWTSWTSWTS"
+  },
+  {
+    "en": "Wick",
+    "cy": "Wick",
+    "codes": "GBAUWICINVWIC"
+  },
+  {
+    "en": "Wisbech [Port of]",
+    "cy": "Wisbech [Port of]",
+    "codes": "GBAUWISKLNWIS"
+  },
+  {
+    "en": "Workington",
+    "cy": "Workington",
+    "codes": "GBAUWORWORWOR"
+  }
+]

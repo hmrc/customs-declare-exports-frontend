@@ -1,0 +1,82 @@
+[
+  {
+    "en": "Ashford / Eurostar / Ashford International",
+    "cy": "Ashford / Eurostar / Ashford International",
+    "codes": "GBAUASDASDASD"
+  },
+  {
+    "en": "Barking / DB Cargo (UK) Limited / Box Lane, Barking IG11 0SQ",
+    "cy": "Barking / DB Cargo (UK) Limited / Box Lane, Barking IG11 0SQ",
+    "codes": "GBAULBKLBKLBK"
+  },
+  {
+    "en": "Dagenham  / Ford Motor Company / Ford Motor Company Ltd, Transport Operations, Dagenham, Essex, RM9 6SA",
+    "cy": "Dagenham  / Ford Motor Company / Ford Motor Company Ltd, Transport Operations, Dagenham, Essex, RM9 6SA",
+    "codes": "GBAUDAGDAGFRD"
+  },
+  {
+    "en": "Daventry / Eddie Stobart Limited / DIRFT 1, Unit B, Railport Approach, Crick, Northamptonshire, NN6 7ES",
+    "cy": "Daventry / Eddie Stobart Limited / DIRFT 1, Unit B, Railport Approach, Crick, Northamptonshire, NN6 7ES",
+    "codes": "GBAUDVYDVYES1"
+  },
+  {
+    "en": "Daventry / Eddie Stobart Limited / DIRFT 2, DC420, Rugby Road, Warwickshire, CV23 8YH",
+    "cy": "Daventry / Eddie Stobart Limited / DIRFT 2, DC420, Rugby Road, Warwickshire, CV23 8YH",
+    "codes": "GBAUDVYDVYES2"
+  },
+  {
+    "en": "Daventry / WHM Daventry / WH Malcom Ltd Railport, Daventry International Railport, Railport Approach, Crick, Kilsby, Northampton NN6 7JZ",
+    "cy": "Daventry / WHM Daventry / WH Malcom Ltd Railport, Daventry International Railport, Railport Approach, Crick, Kilsby, Northampton NN6 7JZ",
+    "codes": "GBAUKLSDVYWHM"
+  },
+  {
+    "en": "Doncaster / Modus Operations Limited / Railport Terminal, Railport Way, New Rossington, Doncaster DN11 0BQ",
+    "cy": "Doncaster / Modus Operations Limited / Railport Terminal, Railport Way, New Rossington, Doncaster DN11 0BQ",
+    "codes": "GBAURSDDONMUE"
+  },
+  {
+    "en": "Eastleigh  / Network Rail Infrastructure Limited / Eastleigh Long Welded Rail Depot, Dutton Lane, Eastleigh, Hampshire, SO50 6AA",
+    "cy": "Eastleigh  / Network Rail Infrastructure Limited / Eastleigh Long Welded Rail Depot, Dutton Lane, Eastleigh, Hampshire, SO50 6AA",
+    "codes": "GBAUEATELWELW"
+  },
+  {
+    "en": "Ebbsfleet / Eurostar / Ebbsfleet International",
+    "cy": "Ebbsfleet / Eurostar / Ebbsfleet International",
+    "codes": "GBAUEBSEBSEURO"
+  },
+  {
+    "en": "Folkestone / Eurostar / Dollands Moor",
+    "cy": "Folkestone / Eurostar / Dollands Moor",
+    "codes": "GBAUNGONGONGO"
+  },
+  {
+    "en": "Irvine / UPM / Meadowhead Rd, Irvine KA11 5AT",
+    "cy": "Irvine / UPM / Meadowhead Rd, Irvine KA11 5AT",
+    "codes": "GBAUKMKKMKUPM"
+  },
+  {
+    "en": "Nottingham / STVA UK Ltd / Toton Traction Maintenance Depot Station Road, Stapleford, Nottingham NG10 1HA ",
+    "cy": "Nottingham / STVA UK Ltd / Toton Traction Maintenance Depot Station Road, Stapleford, Nottingham NG10 1HA ",
+    "codes": "GBAUNTGEMASTV"
+  },
+  {
+    "en": "Port Talbot / Tata Steel / Tata Steel UK Limited Llanwern Works, Newport, NP19 4QZ",
+    "cy": "Port Talbot / Tata Steel / Tata Steel UK Limited Llanwern Works, Newport, NP19 4QZ",
+    "codes": "GBAUXLWLLNTSU"
+  },
+  {
+    "en": "Scunthorpe / British Steel / The Rail Terminal, Brigg Road, Scunthorpe, DN16 1BP",
+    "cy": "Scunthorpe / British Steel / The Rail Terminal, Brigg Road, Scunthorpe, DN16 1BP",
+    "codes": "GBAUSCPSCPBRS"
+  },
+  {
+    "en": "St Pancras International  / Eurostar / St Pancras International ",
+    "cy": "St Pancras International  / Eurostar / St Pancras International ",
+    "codes": "GBAUSPCSPCEURO"
+  },
+  {
+    "en": "Widnes / Eddie Stobart Limited / Widnes Railhead, Mathieson Road, Widnes, WA8 0NX",
+    "cy": "Widnes / Eddie Stobart Limited / Widnes Railhead, Mathieson Road, Widnes, WA8 0NX",
+    "codes": "GBAUWDNWDNEST"
+  }
+]

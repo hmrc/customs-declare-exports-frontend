@@ -1,0 +1,552 @@
+[
+  {
+    "en": "West Wales Airport - Aberporth ",
+    "cy": "West Wales Airport - Aberporth ",
+    "codes": "GBCUABPCWLABP "
+  },
+  {
+    "en": "Brimpton Airfield - Aldermaston  ",
+    "cy": "Brimpton Airfield - Aldermaston  ",
+    "codes": "GBCUALRLHRSTO "
+  },
+  {
+    "en": "Mona Aerodrome - Anglesey ",
+    "cy": "Mona Aerodrome - Anglesey ",
+    "codes": "GBCUVLYHLDVLY "
+  },
+  {
+    "en": "Lashenden / Headcorn Aerodrome - Ashford ",
+    "cy": "Lashenden / Headcorn Aerodrome - Ashford ",
+    "codes": "GBCUASDDOVASD "
+  },
+  {
+    "en": "Old Buckenham Airfield - Attleborough ",
+    "cy": "Old Buckenham Airfield - Attleborough ",
+    "codes": "GBCUAWLFXTBAC "
+  },
+  {
+    "en": "Old Buckenham Airfield - Attleborough ",
+    "cy": "Old Buckenham Airfield - Attleborough ",
+    "codes": "GBCUAWLFXTTAC "
+  },
+  {
+    "en": "Perth Airport - Balbeggie ",
+    "cy": "Perth Airport - Balbeggie ",
+    "codes": "GBCULPREDILPR "
+  },
+  {
+    "en": "Walney Aerodrome - Barrow in Furness ",
+    "cy": "Walney Aerodrome - Barrow in Furness ",
+    "codes": "GBCUBIFLIVBWF "
+  },
+  {
+    "en": "Tatenhill Airfield - Barton-under-Needwood ",
+    "cy": "Tatenhill Airfield - Barton-under-Needwood ",
+    "codes": "GBCUBNOBHXBNO "
+  },
+  {
+    "en": "Nottingham City Airport - Bassingfield ",
+    "cy": "Nottingham City Airport - Bassingfield ",
+    "codes": "GBCUBSFEMABSF "
+  },
+  {
+    "en": "London Heliport - Battersea  ",
+    "cy": "London Heliport - Battersea  ",
+    "codes": "GBCUBTTLHRBTT "
+  },
+  {
+    "en": "Beccles Airfield ",
+    "cy": "Beccles Airfield ",
+    "codes": "GBCUBCCBCCBCC "
+  },
+  {
+    "en": "Thurleigh Airfield - Bedford  ",
+    "cy": "Thurleigh Airfield - Bedford  ",
+    "codes": "GBCUBEFLTNBEF "
+  },
+  {
+    "en": "Bembridge Airfield [IoW] ",
+    "cy": "Bembridge Airfield [IoW] ",
+    "codes": "GBCUBBPPTMBBP "
+  },
+  {
+    "en": "Bideford - Portledge Helipad ",
+    "cy": "Bideford - Portledge Helipad ",
+    "codes": "GBCUBIDPLHBID "
+  },
+  {
+    "en": "Blackbushe Airport ",
+    "cy": "Blackbushe Airport ",
+    "codes": "GBCUBBSLHRBBS "
+  },
+  {
+    "en": "Blackpool Airport ",
+    "cy": "Blackpool Airport ",
+    "codes": "GBCUBLKLIVBLK "
+  },
+  {
+    "en": "Wolverhampton Halfpenny Green Airport - Bobbington ",
+    "cy": "Wolverhampton Halfpenny Green Airport - Bobbington ",
+    "codes": "GBCUBB2BHXBB2 "
+  },
+  {
+    "en": "Bodmin Airfield ",
+    "cy": "Bodmin Airfield ",
+    "codes": "GBCUBDMPLYBDM "
+  },
+  {
+    "en": "Bolt Head Airfield ",
+    "cy": "Bolt Head Airfield ",
+    "codes": "GBCULTDPLYLTD "
+  },
+  {
+    "en": "Turweston Aerodrome - Brackley  ",
+    "cy": "Turweston Aerodrome - Brackley  ",
+    "codes": "GBCUBCKLTNBCK "
+  },
+  {
+    "en": "Caernarfon Airport ",
+    "cy": "Caernarfon Airport ",
+    "codes": "GBCUCNVHLDCNV "
+  },
+  {
+    "en": "Maypole Airfield - Canterbury ",
+    "cy": "Maypole Airfield - Canterbury ",
+    "codes": "GBCUCNBDOVCNB "
+  },
+  {
+    "en": "Carlisle Airport ",
+    "cy": "Carlisle Airport ",
+    "codes": "GBCUCAXLIVCAX "
+  },
+  {
+    "en": "Chalgrove Airfield ",
+    "cy": "Chalgrove Airfield ",
+    "codes": "GBCUCGVLHRCGV "
+  },
+  {
+    "en": "Garstom Farm Airfield - Chippenham ",
+    "cy": "Garstom Farm Airfield - Chippenham ",
+    "codes": "GBCUCPNBRSCPN "
+  },
+  {
+    "en": "Fairoaks Airport - Chobham  ",
+    "cy": "Fairoaks Airport - Chobham  ",
+    "codes": "GBCUCHBLHRCHB "
+  },
+  {
+    "en": "Clacton-on-Sea Airfield ",
+    "cy": "Clacton-on-Sea Airfield ",
+    "codes": "GBCUCLSHRHCLS "
+  },
+  {
+    "en": "Cranfield Airport ",
+    "cy": "Cranfield Airport ",
+    "codes": "GBCUCRFLTNCRF "
+  },
+  {
+    "en": "Cumbernauld Airport ",
+    "cy": "Cumbernauld Airport ",
+    "codes": "GBCUCLDGLACLD "
+  },
+  {
+    "en": "Denham Aerodrome ",
+    "cy": "Denham Aerodrome ",
+    "codes": "GBCUDHMLHRDHM "
+  },
+  {
+    "en": "North Moreton Airstrip - Didcot  ",
+    "cy": "North Moreton Airstrip - Didcot  ",
+    "codes": "GBCUDIDLHRDID "
+  },
+  {
+    "en": "Robin Hood Doncaster Sheffield Airport - Doncaster ",
+    "cy": "Robin Hood Doncaster Sheffield Airport - Doncaster ",
+    "codes": "GBCUDONDSADON "
+  },
+  {
+    "en": "Dundee Airport ",
+    "cy": "Dundee Airport ",
+    "codes": "GBCUDUNDUNDUN "
+  },
+  {
+    "en": "Dunkeswell Airfield [Honiton] ",
+    "cy": "Dunkeswell Airfield [Honiton] ",
+    "codes": "GBCUDKWPLHDKW "
+  },
+  {
+    "en": "Duxford Airfield ",
+    "cy": "Duxford Airfield ",
+    "codes": "GBCUDXFLSADXF "
+  },
+  {
+    "en": "Earls Colne Airfield ",
+    "cy": "Earls Colne Airfield ",
+    "codes": "GBCUECOHRHECO "
+  },
+  {
+    "en": "Manchester Barton City Airport - Eccles ",
+    "cy": "Manchester Barton City Airport - Eccles ",
+    "codes": "GBCUECSMANECS "
+  },
+  {
+    "en": "London Elstree Aerodrome - Elstree ",
+    "cy": "London Elstree Aerodrome - Elstree ",
+    "codes": "GBCUETRLHRETR "
+  },
+  {
+    "en": "St Angelo Airport - Enniskillen ",
+    "cy": "St Angelo Airport - Enniskillen ",
+    "codes": "GBCUENKBFSENK "
+  },
+  {
+    "en": "Brands Hatch Helipads - Fawkham Green  ",
+    "cy": "Brands Hatch Helipads - Fawkham Green  ",
+    "codes": "GBCUFGNTHPFGN "
+  },
+  {
+    "en": "Old Sarum Airfield - Ford ",
+    "cy": "Old Sarum Airfield - Ford ",
+    "codes": "GBCUFODLHRFOD "
+  },
+  {
+    "en": "Fowlmere Aerodrome ",
+    "cy": "Fowlmere Aerodrome ",
+    "codes": "GBCUFRELSAFRE "
+  },
+  {
+    "en": "Full Sutton Airfield ",
+    "cy": "Full Sutton Airfield ",
+    "codes": "GBCUFSTLBAFST "
+  },
+  {
+    "en": "Frensham – Wishanger Park ",
+    "cy": "Frensham – Wishanger Park ",
+    "codes": "GBCUFR4LHRFR4 "
+  },
+  {
+    "en": "Sturgate Aerodrome - Gainsborough ",
+    "cy": "Sturgate Aerodrome - Gainsborough ",
+    "codes": "GBCUGAIDSAGAI "
+  },
+  {
+    "en": "Retford (Gamston) Airport - Gamston ",
+    "cy": "Retford (Gamston) Airport - Gamston ",
+    "codes": "GBCUGMTDSAGMT "
+  },
+  {
+    "en": "George Best Belfast City Apt / Belfast  ",
+    "cy": "George Best Belfast City Apt / Belfast  ",
+    "codes": "GBCUBHDBHDBHD "
+  },
+  {
+    "en": "Gloucester (Staverton) Airport ",
+    "cy": "Gloucester (Staverton) Airport ",
+    "codes": "GBCUGLOGLOGLO "
+  },
+  {
+    "en": "Goodwood Aerodrome ",
+    "cy": "Goodwood Aerodrome ",
+    "codes": "GBCUQUGPTMQUG "
+  },
+  {
+    "en": "Saling Airfield - Great Saling ",
+    "cy": "Saling Airfield - Great Saling ",
+    "codes": "GBCUGSLLSAGSL "
+  },
+  {
+    "en": "Elmsett Airfield - Hadleigh ",
+    "cy": "Elmsett Airfield - Hadleigh ",
+    "codes": "GBCUHDLFXTHDL "
+  },
+  {
+    "en": "Haverfordwest Airport ",
+    "cy": "Haverfordwest Airport ",
+    "codes": "GBCUHVRCWLHVR "
+  },
+  {
+    "en": "Chester Airport - Hawarden ",
+    "cy": "Chester Airport - Hawarden ",
+    "codes": "GBCUHWNHLDHWN "
+  },
+  {
+    "en": "Henstridge Airfield ",
+    "cy": "Henstridge Airfield ",
+    "codes": "GBCURRSBRSRRS "
+  },
+  {
+    "en": "Peterborough (Conington) Business Airfield - Holme ",
+    "cy": "Peterborough (Conington) Business Airfield - Holme ",
+    "codes": "GBCUHMELSAHME "
+  },
+  {
+    "en": "Inverness Airport ",
+    "cy": "Inverness Airport ",
+    "codes": "GBCUINVINVINV "
+  },
+  {
+    "en": "St Mary's Airport - Isles of Scilly ",
+    "cy": "St Mary's Airport - Isles of Scilly ",
+    "codes": "GBCUISCPLYISC "
+  },
+  {
+    "en": "Kemble Airfield ",
+    "cy": "Kemble Airfield ",
+    "codes": "GBCUKEMKEMKEM "
+  },
+  {
+    "en": "Oxford Airport - Kidlington  ",
+    "cy": "Oxford Airport - Kidlington  ",
+    "codes": "GBCUKZOLHRKZO "
+  },
+  {
+    "en": "Thruxton Aerodrome - Kimpton  ",
+    "cy": "Thruxton Aerodrome - Kimpton  ",
+    "codes": "GBCUKMTLHRKMT "
+  },
+  {
+    "en": "Kirkwall Airport ",
+    "cy": "Kirkwall Airport ",
+    "codes": "GBCUKWLKWLKWL "
+  },
+  {
+    "en": "Curry Rivel Airstrip - Langport ",
+    "cy": "Curry Rivel Airstrip - Langport ",
+    "codes": "GBCULATBRSLAT "
+  },
+  {
+    "en": "Wickenby Aerodome - Langworth ",
+    "cy": "Wickenby Aerodome - Langworth ",
+    "codes": "GBCULORDSALOR "
+  },
+  {
+    "en": "Lasham Airfield ",
+    "cy": "Lasham Airfield ",
+    "codes": "GBCUQLALASATC "
+  },
+  {
+    "en": "Lasham Airfield ",
+    "cy": "Lasham Airfield ",
+    "codes": "GBCUQLALASLGS "
+  },
+  {
+    "en": "Berrow Airfield - Ledbury ",
+    "cy": "Berrow Airfield - Ledbury ",
+    "codes": "GBCULEDBRSLED "
+  },
+  {
+    "en": " Daedalus [Solent] Airfield - Lee-on-Solent  ",
+    "cy": " Daedalus [Solent] Airfield - Lee-on-Solent  ",
+    "codes": "GBCULESPTMLES "
+  },
+  {
+    "en": "Leicester Airport ",
+    "cy": "Leicester Airport ",
+    "codes": "GBCULCSEMALCS "
+  },
+  {
+    "en": "Deanland Airfield - Lewes  ",
+    "cy": "Deanland Airfield - Lewes  ",
+    "codes": "GBCULWENHVLWE "
+  },
+  {
+    "en": "City of Derry Airport - Londonderry ",
+    "cy": "City of Derry Airport - Londonderry ",
+    "codes": "GBCULDYLDYLDY "
+  },
+  {
+    "en": "Manor Farm - Malmesbury ",
+    "cy": "Manor Farm - Malmesbury ",
+    "codes": "GBCUMMBLHRMMB "
+  },
+  {
+    "en": "Wycombe Air Park - Marlow ",
+    "cy": "Wycombe Air Park - Marlow ",
+    "codes": "GBCUMLWLHRMLW "
+  },
+  {
+    "en": "Popham Airfield - Micheldever ",
+    "cy": "Popham Airfield - Micheldever ",
+    "codes": "GBCUMDSLHRMDS "
+  },
+  {
+    "en": "Newport City Aerodrome ",
+    "cy": "Newport City Aerodrome ",
+    "codes": "GBCUNPTCWLNPT "
+  },
+  {
+    "en": "North Weald [Bassett] Airfield  ",
+    "cy": "North Weald [Bassett] Airfield  ",
+    "codes": "GBCUNWLLSANWL "
+  },
+  {
+    "en": "Wales West Airport - Pembrey ",
+    "cy": "Wales West Airport - Pembrey ",
+    "codes": "GBCUPMYCWLPMY "
+  },
+  {
+    "en": "Perranporth Airfield ",
+    "cy": "Perranporth Airfield ",
+    "codes": "GBCUPNPPLYPNP "
+  },
+  {
+    "en": "Redhill Aerodrome ",
+    "cy": "Redhill Aerodrome ",
+    "codes": "GBCUREHLGWREH "
+  },
+  {
+    "en": "Rochester Airport ",
+    "cy": "Rochester Airport ",
+    "codes": "GBCURCSTHPRCS "
+  },
+  {
+    "en": "Audley End Airfield – Saffron Walden ",
+    "cy": "Audley End Airfield – Saffron Walden ",
+    "codes": "GBCUSAWLSASAW "
+  },
+  {
+    "en": "Saint Athan - RAF MOD Base ",
+    "cy": "Saint Athan - RAF MOD Base ",
+    "codes": "GBCUSIHLHRSIH "
+  },
+  {
+    "en": "Lands End Aerodrome - Saint Just  ",
+    "cy": "Lands End Aerodrome - Saint Just  ",
+    "codes": "GBCUSJUPLHSJU "
+  },
+  {
+    "en": "Sandtoft Airfield ",
+    "cy": "Sandtoft Airfield ",
+    "codes": "GBCUSD5DSASD5 "
+  },
+  {
+    "en": "Sandown – IoW Airport ",
+    "cy": "Sandown – IoW Airport ",
+    "codes": "GBCUSDOPTMSDO "
+  },
+  {
+    "en": "Scatsta Heliport ",
+    "cy": "Scatsta Heliport ",
+    "codes": "GBCUSCSABZSCS "
+  },
+  {
+    "en": "Seething Airfield ",
+    "cy": "Seething Airfield ",
+    "codes": "GBCUSTGFXTSTG "
+  },
+  {
+    "en": "Compton Abbas Airfield - Shaftesbury ",
+    "cy": "Compton Abbas Airfield - Shaftesbury ",
+    "codes": "GBCUSHBSOUSHB "
+  },
+  {
+    "en": "Sherburn Airfield - Sherburn in Elmet  ",
+    "cy": "Sherburn Airfield - Sherburn in Elmet  ",
+    "codes": "GBCUSBLLBASBL "
+  },
+  {
+    "en": "Shipdham Airfield ",
+    "cy": "Shipdham Airfield ",
+    "codes": "GBCUSHHFXTSHH "
+  },
+  {
+    "en": "Woods Farm, Shirley  ",
+    "cy": "Woods Farm, Shirley  ",
+    "codes": "GBCUSIYBHXSIY "
+  },
+  {
+    "en": "Shobdon Airfield ",
+    "cy": "Shobdon Airfield ",
+    "codes": "GBCUEENBHXEEN "
+  },
+  {
+    "en": "Speke -  Liverpool John Lennon Airport ",
+    "cy": "Speke -  Liverpool John Lennon Airport ",
+    "codes": "GBCUSPKLPLSPK "
+  },
+  {
+    "en": "Stapleford Airfield - Stapleford Abbots  ",
+    "cy": "Stapleford Airfield - Stapleford Abbots  ",
+    "codes": "GBCUSBALONSBA "
+  },
+  {
+    "en": "Gamston Airfield - Stokeham ",
+    "cy": "Gamston Airfield - Stokeham ",
+    "codes": "GBCUOKEDSAOKE "
+  },
+  {
+    "en": "Stornoway Airport ",
+    "cy": "Stornoway Airport ",
+    "codes": "GBCUSTOSTOSTO "
+  },
+  {
+    "en": "Knoll House - Studland ",
+    "cy": "Knoll House - Studland ",
+    "codes": "GBCUSJYPOOSJY "
+  },
+  {
+    "en": "Fenland Airfield - Sutton Saint James ",
+    "cy": "Fenland Airfield - Sutton Saint James ",
+    "codes": "GBCUSSJFXTSSJ "
+  },
+  {
+    "en": "Swansea Airport ",
+    "cy": "Swansea Airport ",
+    "codes": "GBCUSWACWLSWA "
+  },
+  {
+    "en": "Sywell [Northampton] Aerodrome  ",
+    "cy": "Sywell [Northampton] Aerodrome  ",
+    "codes": "GBCUSYWSYWSYW "
+  },
+  {
+    "en": "Eaglescott Airfield - Umberleigh  ",
+    "cy": "Eaglescott Airfield - Umberleigh  ",
+    "codes": "GBCUUMBPLHUMB "
+  },
+  {
+    "en": "Warton Aerodrome ",
+    "cy": "Warton Aerodrome ",
+    "codes": "GBCUWRTWARBAE "
+  },
+  {
+    "en": "Wellesbourne Mountford Airfield ",
+    "cy": "Wellesbourne Mountford Airfield ",
+    "codes": "GBCUWSUBHXWSU "
+  },
+  {
+    "en": "Welshpool Aerodrome ",
+    "cy": "Welshpool Aerodrome ",
+    "codes": "GBCUWPSHLDWPS "
+  },
+  {
+    "en": "Panshanger Aerodrome - Welwyn Garden City  ",
+    "cy": "Panshanger Aerodrome - Welwyn Garden City  ",
+    "codes": "GBCUWGCLTNWGC "
+  },
+  {
+    "en": "Sleap Airfield - Wem [Shrewsbury] ",
+    "cy": "Sleap Airfield - Wem [Shrewsbury] ",
+    "codes": "GBCUWNRBHXWNR "
+  },
+  {
+    "en": "White Waltham Airfield ",
+    "cy": "White Waltham Airfield ",
+    "codes": "GBCUWWMLHRWWM "
+  },
+  {
+    "en": "Wick Airport ",
+    "cy": "Wick Airport ",
+    "codes": "GBCUWICWIKWIC "
+  },
+  {
+    "en": "Netherthorpe Airfield - Worksop ",
+    "cy": "Netherthorpe Airfield - Worksop ",
+    "codes": "GBCUWRKDSAWRK "
+  },
+  {
+    "en": "Yeovil Aerodrome ",
+    "cy": "Yeovil Aerodrome ",
+    "codes": "GBCUYEOYVLYEO "
+  }
+]

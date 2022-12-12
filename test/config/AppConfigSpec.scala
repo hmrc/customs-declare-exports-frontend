@@ -223,7 +223,7 @@ class AppConfigSpec extends UnitWithMocksSpec {
     }
 
     "have goodsLocationCode file path" in {
-      validAppConfig.goodsLocationCodeFile must be("goodsLocationCode")
+      validAppConfig.goodsLocationCodeFile must be("/code-lists/goods-locations-codes/dep-16k-from-30-11-2022.json")
     }
 
     "have goodsLocationCodeToLocationType file path" in {
@@ -494,7 +494,7 @@ object AppConfigSpec {
       |files.codelists.countryCodes="/code-lists/countryCodes.json"
       |files.codelists.countryCodeToAliasesLink="countryCodeToAliasesLink"
       |files.codelists.countryCodeToShortNameLink="countryCodeToShortNameLink"
-      |files.codelists.goodsLocationCode="goodsLocationCode"
+      |files.codelists.goodsLocationCode="/code-lists/goods-locations-codes/dep-16k-from-30-11-2022.json"
       |files.codelists.goodsLocationCodeToLocationTypeLink="goodsLocationCodeToLocationTypeLink"
       |files.codelists.packageTypeCode="packageTypeCode"
       |files.codelists.officeOfExits="officeOfExit"

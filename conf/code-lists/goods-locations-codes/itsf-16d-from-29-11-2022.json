@@ -1,0 +1,592 @@
+[
+  {
+    "en": "Aberdeen - Matthews Quay / Sea Cargo Aberdeen Limited / Matthews Quay Aberdeen Harbour Aberdeen AB11 5PG",
+    "cy": "Aberdeen - Matthews Quay / Sea Cargo Aberdeen Limited / Matthews Quay Aberdeen Harbour Aberdeen AB11 5PG",
+    "codes": "GBAUABDABDABM"
+  },
+  {
+    "en": "Aberdeen Harbour / Sea Cargo Aberdeen Limited / Matthews Quay, Aberdeen Harbour, Aberdeen, AB11 5PG",
+    "cy": "Aberdeen Harbour / Sea Cargo Aberdeen Limited / Matthews Quay, Aberdeen Harbour, Aberdeen, AB11 5PG",
+    "codes": "GBAUABDABDSEI"
+  },
+  {
+    "en": "Aberdeen Harbour / Sea Cargo Aberdeen Limited / Shed 5, Pacific Quay, Aberdeen Harbour, Aberdeen AB11 5PG",
+    "cy": "Aberdeen Harbour / Sea Cargo Aberdeen Limited / Shed 5, Pacific Quay, Aberdeen Harbour, Aberdeen AB11 5PG",
+    "codes": "GBAUABDABDSCA"
+  },
+  {
+    "en": "Belfast / Lissan Coal Company / Belfast ",
+    "cy": "Belfast / Lissan Coal Company / Belfast ",
+    "codes": "GBAUBELBELLCC"
+  },
+  {
+    "en": "Belfast / TCB (NI) Limited / BT29 4AA. ",
+    "cy": "Belfast / TCB (NI) Limited / BT29 4AA. ",
+    "codes": "GBAUBELBELVLQ1"
+  },
+  {
+    "en": "Belfast / Coastal Container Line Ltd / Victoria Terminal 3, Westbank Road, Belfast, BT3 9JL",
+    "cy": "Belfast / Coastal Container Line Ltd / Victoria Terminal 3, Westbank Road, Belfast, BT3 9JL",
+    "codes": "GBAUBELBELBTM2"
+  },
+  {
+    "en": "Belfast / Belfast Container Terminal (BCT) Limited / The Belfast Container Terminal, Herdman Channel Road, Belfast Harbour, Belfast, BT3 9AP",
+    "cy": "Belfast / Belfast Container Terminal (BCT) Limited / The Belfast Container Terminal, Herdman Channel Road, Belfast Harbour, Belfast, BT3 9AP",
+    "codes": "GBAUBELBELBTC1"
+  },
+  {
+    "en": "Belfast / United Molasses (Ireland) Limited / Storage Tanks 1-6, Duncrue Street, Belfast Harbour Estate, Belfast, BT3 9AQ",
+    "cy": "Belfast / United Molasses (Ireland) Limited / Storage Tanks 1-6, Duncrue Street, Belfast Harbour Estate, Belfast, BT3 9AQ",
+    "codes": "GBAUBELBELUML"
+  },
+  {
+    "en": "Belfast Airport / Federal Express Europe Inc / The Cargo Village, Belfast International Airport, Belfast, BT29 4GB",
+    "cy": "Belfast Airport / Federal Express Europe Inc / The Cargo Village, Belfast International Airport, Belfast, BT29 4GB",
+    "codes": "GBAUBELBFSFDS"
+  },
+  {
+    "en": "Belfast Airport / Heavyweight Air Express Ltd / Hamilton House, The Cargo Village, Belfast International Airport, Northern Ireland BT29 4GB",
+    "cy": "Belfast Airport / Heavyweight Air Express Ltd / Hamilton House, The Cargo Village, Belfast International Airport, Northern Ireland BT29 4GB",
+    "codes": "GBAUBELBFSHWS"
+  },
+  {
+    "en": "Belfast Airport / PING Handing Ltd / Transit Shed 4, Cargo Terminal, Belfast International Airport, Belfast, BT29 4AB",
+    "cy": "Belfast Airport / PING Handing Ltd / Transit Shed 4, Cargo Terminal, Belfast International Airport, Belfast, BT29 4AB",
+    "codes": "GBAUBELBFSHYS"
+  },
+  {
+    "en": "Belfast Airport / Swissport GB Limited / The Cargo Village, Belfast International Airport, Belfast, BT29 4GB",
+    "cy": "Belfast Airport / Swissport GB Limited / The Cargo Village, Belfast International Airport, Belfast, BT29 4GB",
+    "codes": "GBAUBELBFSSLS"
+  },
+  {
+    "en": "Belfast Airport / FedEx Express UK Transportation Limited  / Swissport (SPBFS) / Belfast International Airport, Belfast, BT29 4AA.",
+    "cy": "Belfast Airport / FedEx Express UK Transportation Limited  / Swissport (SPBFS) / Belfast International Airport, Belfast, BT29 4AA.",
+    "codes": "GBAUBELBFSFXT "
+  },
+  {
+    "en": "Birmingham Airport / Dnata Limited / The Argosy Building, Birmingham Airport B26 3QN",
+    "cy": "Birmingham Airport / Dnata Limited / The Argosy Building, Birmingham Airport B26 3QN",
+    "codes": "GBAUBHMBHXPLS"
+  },
+  {
+    "en": "Birmingham Airport / Federal Express Europe Inc / Unit 1 Gateway Trading Estate, Birmingham Airport, Birmingham, Airport, B26 3QD",
+    "cy": "Birmingham Airport / Federal Express Europe Inc / Unit 1 Gateway Trading Estate, Birmingham Airport, Birmingham, Airport, B26 3QD",
+    "codes": "GBAUBHMBHXFDS"
+  },
+  {
+    "en": "Birmingham Airport / Swissport GB Limited / Eastern Warehouse, Cargo Centre, Birmingham International Airport, Birmingham B26 3QN",
+    "cy": "Birmingham Airport / Swissport GB Limited / Eastern Warehouse, Cargo Centre, Birmingham International Airport, Birmingham B26 3QN",
+    "codes": "GBAUBHMBHXSLS"
+  },
+  {
+    "en": "Birmingham Airport / Carousel Logistics Limited / Unit 2 West Midlands Freeport, Cargo Centre, Birmingham Airport, Birmingham, B26 3QD.",
+    "cy": "Birmingham Airport / Carousel Logistics Limited / Unit 2 West Midlands Freeport, Cargo Centre, Birmingham Airport, Birmingham, B26 3QD.",
+    "codes": "GBAUBHMBHXLES "
+  },
+  {
+    "en": "Bournemouth / DHL Global Match UK Ltd / Hanger 401, Target Road, Bournemouth BH23 6NW",
+    "cy": "Bournemouth / DHL Global Match UK Ltd / Hanger 401, Target Road, Bournemouth BH23 6NW",
+    "codes": "GBAUBOHBOHLMS"
+  },
+  {
+    "en": "Bournemouth / DHL Global Match UK Ltd / Building 268, Bournemouth Airport, Christchurch, Dorset Bh23 6SE",
+    "cy": "Bournemouth / DHL Global Match UK Ltd / Building 268, Bournemouth Airport, Christchurch, Dorset Bh23 6SE",
+    "codes": "GBAUBOHBOHPMS"
+  },
+  {
+    "en": "Bournemouth Airport / Bournemouth International Airport Ltd / Hangar 268, Airport South, Bournemouth Airport, Christchurch, Dorset BH23 6SE",
+    "cy": "Bournemouth Airport / Bournemouth International Airport Ltd / Hangar 268, Airport South, Bournemouth Airport, Christchurch, Dorset BH23 6SE",
+    "codes": "GBAUCCHBOHJYS"
+  },
+  {
+    "en": "Bournemouth Airport / Bournemouth Airport / Hangar 401, Bournemouth Airport, Christchurch Dorset BH23 6SE",
+    "cy": "Bournemouth Airport / Bournemouth Airport / Hangar 401, Bournemouth Airport, Christchurch Dorset BH23 6SE",
+    "codes": "GBAUCCHBOHJWS"
+  },
+  {
+    "en": "Cambridge Airport / Marshalls of Cambridge Aerospace Limited / Cambridge Airport, Newmarket Road, Cambridge, CB5 8RX",
+    "cy": "Cambridge Airport / Marshalls of Cambridge Aerospace Limited / Cambridge Airport, Newmarket Road, Cambridge, CB5 8RX",
+    "codes": "GBAUCMGCBGCMG"
+  },
+  {
+    "en": "Cardiff International Airport - Rhoose / John Stevenson t/a Raven Express Logistics / Cargo Bays 1-7, Cargo Terminal, Cardiff Airport, Rhoose, Vale of Glamorgan, CF62 3BD",
+    "cy": "Cardiff International Airport - Rhoose / John Stevenson t/a Raven Express Logistics / Cargo Bays 1-7, Cargo Terminal, Cardiff Airport, Rhoose, Vale of Glamorgan, CF62 3BD",
+    "codes": "GBAURS8CWLRVS"
+  },
+  {
+    "en": "Castle Donington / North West Leicestershire District Council / Border Inspection Post, Building 20, East Midlands Airport, Castle Donington DE74 2SA",
+    "cy": "Castle Donington / North West Leicestershire District Council / Border Inspection Post, Building 20, East Midlands Airport, Castle Donington DE74 2SA",
+    "codes": "GBAUCADEMABPI"
+  },
+  {
+    "en": "Coventry / Priority Freight (Midlands) Limited / Seven Stars Industrial Estate, Wheler Road, Coventry, CV3 4LB",
+    "cy": "Coventry / Priority Freight (Midlands) Limited / Seven Stars Industrial Estate, Wheler Road, Coventry, CV3 4LB",
+    "codes": "GBAUCVTBHXPME"
+  },
+  {
+    "en": "Dover / Port of Dover / Terminal Limited Dover CT17 9FJ",
+    "cy": "Dover / Port of Dover / Terminal Limited Dover CT17 9FJ",
+    "codes": "GBAUDVRDOVDCT1 "
+  },
+  {
+    "en": "Dover Western Docks / Motis Ireland Limited / Freight Clearance Centre, Lord Warden House, Western Docks, Dover, CT17 9DN",
+    "cy": "Dover Western Docks / Motis Ireland Limited / Freight Clearance Centre, Lord Warden House, Western Docks, Dover, CT17 9DN",
+    "codes": "GBAUDVRDOGFSA"
+  },
+  {
+    "en": "Dyce - Aberdeen Airport / Swissport GB Limited / Unit 1, Cargo Handling Facility, Dunlin Road, Aberdeen Airport, Dyce, AB21 0PB",
+    "cy": "Dyce - Aberdeen Airport / Swissport GB Limited / Unit 1, Cargo Handling Facility, Dunlin Road, Aberdeen Airport, Dyce, AB21 0PB",
+    "codes": "GBAUDYCABZSLS"
+  },
+  {
+    "en": "East Midlands Airport / Swissport GB Limited / Unit 2, Cargo Terminal 4, Nottingham East Midlands Airport, Castle Donington, Derbyshire, DE74 2SA",
+    "cy": "East Midlands Airport / Swissport GB Limited / Unit 2, Cargo Terminal 4, Nottingham East Midlands Airport, Castle Donington, Derbyshire, DE74 2SA",
+    "codes": "GBAUEMAEMASLS"
+  },
+  {
+    "en": "East Midlands Airport / DHL Aviation UK Limited / Building 121, Cargo West, East Midlands Airport, Castle Donington, Derby, DE74 2TR",
+    "cy": "East Midlands Airport / DHL Aviation UK Limited / Building 121, Cargo West, East Midlands Airport, Castle Donington, Derby, DE74 2TR",
+    "codes": "GBAUEMAEMADHS"
+  },
+  {
+    "en": "East Midlands Airport / TNT UK Limited / Building 69 Cargo Terminal 4, East Midlands Airport, Castle Donnington, Derby, DE74 2SA",
+    "cy": "East Midlands Airport / TNT UK Limited / Building 69 Cargo Terminal 4, East Midlands Airport, Castle Donnington, Derby, DE74 2SA",
+    "codes": "GBAUEMAEMATNT"
+  },
+  {
+    "en": "East Midlands Airport / UPS Limited / Building 68, Winter Storage Shed, East Midlands Airport, Castle Donington, DE74 2SA",
+    "cy": "East Midlands Airport / UPS Limited / Building 68, Winter Storage Shed, East Midlands Airport, Castle Donington, DE74 2SA",
+    "codes": "GBAUEMAEMAUZS"
+  },
+  {
+    "en": "East Midlands Airport  / Heavyweight Air Express Ltd / Building 96, East Midlands Airport, Castle Donington, Derby, DE74 2SA",
+    "cy": "East Midlands Airport  / Heavyweight Air Express Ltd / Building 96, East Midlands Airport, Castle Donington, Derby, DE74 2SA",
+    "codes": "GBAUEMAEMAHWS"
+  },
+  {
+    "en": "Edinburgh Airport / Dunwoody Airline Services Limited T/A Worldwide Flight Services / Turnhouse Centre, Edinburgh Airport Cargo Village, Turnhouse Road, Edinburgh, EH12 0AL",
+    "cy": "Edinburgh Airport / Dunwoody Airline Services Limited T/A Worldwide Flight Services / Turnhouse Centre, Edinburgh Airport Cargo Village, Turnhouse Road, Edinburgh, EH12 0AL",
+    "codes": "GBAUEDIEDIBAC"
+  },
+  {
+    "en": "Edinburgh Airport / Dunwoody Airline Services Limited T/A Worldwide Flight Services / ITSF Annex, Turnhouse Centre, Edinburgh Airport Cargo Village, Turnhouse Road, Edinburgh, EH12 0AL",
+    "cy": "Edinburgh Airport / Dunwoody Airline Services Limited T/A Worldwide Flight Services / ITSF Annex, Turnhouse Centre, Edinburgh Airport Cargo Village, Turnhouse Road, Edinburgh, EH12 0AL",
+    "codes": "GBAUEDIEDIBWS"
+  },
+  {
+    "en": "Edinburgh Airport / TNT UK Limited / 171 Turnhouse Road, Edinburgh Airport, Edinburgh, EH12 0AL",
+    "cy": "Edinburgh Airport / TNT UK Limited / 171 Turnhouse Road, Edinburgh Airport, Edinburgh, EH12 0AL",
+    "codes": "GBAUEDIEDITNT"
+  },
+  {
+    "en": "Edinburgh Airport / FedEx Express UK Limited / 171 Turnhouse Road Edinburgh Airport (cargo) Edinburgh EH12 0AL",
+    "cy": "Edinburgh Airport / FedEx Express UK Limited / 171 Turnhouse Road Edinburgh Airport (cargo) Edinburgh EH12 0AL",
+    "codes": "GBAUEDIEDIFXE1"
+  },
+  {
+    "en": "Ellesmere Port / Quality Freight (UK) Limited / Transit Shed 1, Ellesmere Port Terminal, Merseyton Road, Ellesmere Port, Wirral, Cheshire, CH65 1AF",
+    "cy": "Ellesmere Port / Quality Freight (UK) Limited / Transit Shed 1, Ellesmere Port Terminal, Merseyton Road, Ellesmere Port, Wirral, Cheshire, CH65 1AF",
+    "codes": "GBAUELLELLEPT"
+  },
+  {
+    "en": "Felixstowe / Hemisphere Freight Services Limited / 91 Shed Dock, Gate 2, The Dock, Felixstowe, Suffolk IP11 3SW",
+    "cy": "Felixstowe / Hemisphere Freight Services Limited / 91 Shed Dock, Gate 2, The Dock, Felixstowe, Suffolk IP11 3SW",
+    "codes": "GBAUFXTFXTHEE"
+  },
+  {
+    "en": "Gatwick Apt/London / Dnata Limited / Units 3 - 5, Gatwick Cargo Centre, Cargo Road, London Gatwick Airport, West Sussex, RH6 0SQ",
+    "cy": "Gatwick Apt/London / Dnata Limited / Units 3 - 5, Gatwick Cargo Centre, Cargo Road, London Gatwick Airport, West Sussex, RH6 0SQ",
+    "codes": "GBAULGWLGWPZS"
+  },
+  {
+    "en": "Gatwick Apt/London / Worldwide Flight Services Limited / Cargo Warehouses E & F, Cargo Terminal 1, London Gatwick Airport, West Sussex, RH6 0SQ",
+    "cy": "Gatwick Apt/London / Worldwide Flight Services Limited / Cargo Warehouses E & F, Cargo Terminal 1, London Gatwick Airport, West Sussex, RH6 0SQ",
+    "codes": "GBAULGWLGWGWK1"
+  },
+  {
+    "en": "Gatwick Apt/London / Worldwide Flight Services Limited / Cargo Warehouses E & F, Cargo Terminal 1, London Gatwick Airport, West Sussex, RH6 0SQ",
+    "cy": "Gatwick Apt/London / Worldwide Flight Services Limited / Cargo Warehouses E & F, Cargo Terminal 1, London Gatwick Airport, West Sussex, RH6 0SQ",
+    "codes": "GBAULGWLGWVWS"
+  },
+  {
+    "en": "Gatwick Apt/London / Gatwick Airport Limited / Cargo Sheds D1 and D2A, Cargo Forecourt Road, Gatwick Airport, West Sussex, RH6 0SQ",
+    "cy": "Gatwick Apt/London / Gatwick Airport Limited / Cargo Sheds D1 and D2A, Cargo Forecourt Road, Gatwick Airport, West Sussex, RH6 0SQ",
+    "codes": "GBAULGWLGWBIP"
+  },
+  {
+    "en": "George Best Belfast City Apt/Belfast / World Flight Services t/a Dunwoody Airline Services Ltd / George Best Belfast City Airport, Sydenham Bypass, Belfast, BT3 9JH",
+    "cy": "George Best Belfast City Apt/Belfast / World Flight Services t/a Dunwoody Airline Services Ltd / George Best Belfast City Airport, Sydenham Bypass, Belfast, BT3 9JH",
+    "codes": "GBAUBHDBHDBWS"
+  },
+  {
+    "en": "Glasgow / Dnata Limited / Building 39, Unit 7 & 8 Nevis Way, Glasgow Airport, PA3 2SS",
+    "cy": "Glasgow / Dnata Limited / Building 39, Unit 7 & 8 Nevis Way, Glasgow Airport, PA3 2SS",
+    "codes": "GBAUGLWGLAPZS"
+  },
+  {
+    "en": "Glasgow / Swissport GB Limited / Cargo Terminal, Nevis Way, Glasgow Airport, Paisley, PA3 2SS",
+    "cy": "Glasgow / Swissport GB Limited / Cargo Terminal, Nevis Way, Glasgow Airport, Paisley, PA3 2SS",
+    "codes": "GBAUGLWGLASLS"
+  },
+  {
+    "en": "Glasgow / Dunwoody Airline Services Limited t/a Worldwide Flight Services / No 2 Transit Shed Glasgow Airport Paisley, PA3 2SD",
+    "cy": "Glasgow / Dunwoody Airline Services Limited t/a Worldwide Flight Services / No 2 Transit Shed Glasgow Airport Paisley, PA3 2SD",
+    "codes": "GBAUGLWGLABWS"
+  },
+  {
+    "en": "Glasgow / Glasgow Prestwick Airport Limited / Buildings 1a, 2a & 1c, The Bravo Freight Centre, Monkton Road, Glasgow Prestwick Airport, Prestwick, KA9 2PH",
+    "cy": "Glasgow / Glasgow Prestwick Airport Limited / Buildings 1a, 2a & 1c, The Bravo Freight Centre, Monkton Road, Glasgow Prestwick Airport, Prestwick, KA9 2PH",
+    "codes": "GBAUGLWGLAGPS"
+  },
+  {
+    "en": "Glasgow / Glasgow Prestwick Airport Limited / Building 373 (BIP), Alpha Freight Centre, Monkton Road, Glasgow Prestwick Airport, KA9 2PL",
+    "cy": "Glasgow / Glasgow Prestwick Airport Limited / Building 373 (BIP), Alpha Freight Centre, Monkton Road, Glasgow Prestwick Airport, KA9 2PL",
+    "codes": "GBAUGLWGLABIP"
+  },
+  {
+    "en": "Glasgow / Greenock Ocean Terminal / Patrick Street, Greenock, PA16 8UU",
+    "cy": "Glasgow / Greenock Ocean Terminal / Patrick Street, Greenock, PA16 8UU",
+    "codes": "GBAUGRKGRKSFG"
+  },
+  {
+    "en": "Great Yarmouth / Gleadell Agriculture Limited / Gleadell Grain Terminal, Outer Harbour, South Beach Parade, Great Yarmouth, Norfolk, NR30 3QA",
+    "cy": "Great Yarmouth / Gleadell Agriculture Limited / Gleadell Grain Terminal, Outer Harbour, South Beach Parade, Great Yarmouth, Norfolk, NR30 3QA",
+    "codes": "GBAUGTYGTYGGT"
+  },
+  {
+    "en": "Hoegh Northern Terminal - South Shields / NSA UK Limited / Hoegh Northern Terminal, West Side, Tyne Dock, South Shields, NE34 9PL",
+    "cy": "Hoegh Northern Terminal - South Shields / NSA UK Limited / Hoegh Northern Terminal, West Side, Tyne Dock, South Shields, NE34 9PL",
+    "codes": "GBAUSSHTYNNSA"
+  },
+  {
+    "en": "Hounslow / Worldwide Flight Services Ltd. / 578 Sandringham Road, London Heathrow Airport, Hounslow, Middlesex. TW6 3SL",
+    "cy": "Hounslow / Worldwide Flight Services Ltd. / 578 Sandringham Road, London Heathrow Airport, Hounslow, Middlesex. TW6 3SL",
+    "codes": "GBAUTMRLHRLFS"
+  },
+  {
+    "en": "Humberside Airport - Kirmington / Anglia Cargo International Ltd / Humberside International Airport, Kirmington, N Lincolnshire, DN39 6YH",
+    "cy": "Humberside Airport - Kirmington / Anglia Cargo International Ltd / Humberside International Airport, Kirmington, N Lincolnshire, DN39 6YH",
+    "codes": "GBAUKMGHUYNGS"
+  },
+  {
+    "en": "King's Lynn / Agrilynk Ltd / Bentinck Dock, Port of Kings Lynn, Kings Lynn, PE20 2HA",
+    "cy": "King's Lynn / Agrilynk Ltd / Bentinck Dock, Port of Kings Lynn, Kings Lynn, PE20 2HA",
+    "codes": "GBAUKLNKLNBNT"
+  },
+  {
+    "en": "Leeds Bradford Airport Northside - Yeadon / Dunwoody Airline Services Limited T/A Worldwide Flight Services / Cargo Shed 1, Leeds Bradford Airport, Yeadon Leeds, LS19 7TU",
+    "cy": "Leeds Bradford Airport Northside - Yeadon / Dunwoody Airline Services Limited T/A Worldwide Flight Services / Cargo Shed 1, Leeds Bradford Airport, Yeadon Leeds, LS19 7TU",
+    "codes": "GBAUYDNLBABWS"
+  },
+  {
+    "en": "Liverpool / Jenkins Shipping Company Limited / Unit 3 Langton Park, Port of Liverpool, Regent Road, Bootle, L20 1HA",
+    "cy": "Liverpool / Jenkins Shipping Company Limited / Unit 3 Langton Park, Port of Liverpool, Regent Road, Bootle, L20 1HA",
+    "codes": "GBAULIVLIVJKE"
+  },
+  {
+    "en": "Liverpool - Alexandra Dock / Freight Logistics Warehousing Limited / South 3, Alexandra Dock, Port of Liverpool, Bootle, Merseyside, L20 1BA",
+    "cy": "Liverpool - Alexandra Dock / Freight Logistics Warehousing Limited / South 3, Alexandra Dock, Port of Liverpool, Bootle, Merseyside, L20 1BA",
+    "codes": "GBAULIVLIVLWF"
+  },
+  {
+    "en": "Liverpool John Lennon Airport - Speke / Wynne Aviation Services Limited / Transit Shed 1, Liverpool John Lennon Airport, Speke, Liverpool, L24 1YD",
+    "cy": "Liverpool John Lennon Airport - Speke / Wynne Aviation Services Limited / Transit Shed 1, Liverpool John Lennon Airport, Speke, Liverpool, L24 1YD",
+    "codes": "GBAUSPKLPLWNS"
+  },
+  {
+    "en": "Liverpool John Lennon Airport - Speke / TNT UK Limited / Liverpool John Lennon Airport, 100 Hale Road, Speke, Liverpool, L24 1WG",
+    "cy": "Liverpool John Lennon Airport - Speke / TNT UK Limited / Liverpool John Lennon Airport, 100 Hale Road, Speke, Liverpool, L24 1WG",
+    "codes": "GBAUSPKLPLTNT"
+  },
+  {
+    "en": "Location and facility name / Internal temporary storage facility name / Address",
+    "cy": "Location and facility name / Internal temporary storage facility name / Address",
+    "codes": "Code for the location to be declared in Data Element 5/23"
+  },
+  {
+    "en": "London / Crown Fine Art / Art Central 20-22 Union Road, London, SW4 6JP",
+    "cy": "London / Crown Fine Art / Art Central 20-22 Union Road, London, SW4 6JP",
+    "codes": "GBAULONLONCTE"
+  },
+  {
+    "en": "London City Airport / Execair Cargo Services Limited / The Transit Shed (Airside) London City Airport, London, E16 2PX",
+    "cy": "London City Airport / Execair Cargo Services Limited / The Transit Shed (Airside) London City Airport, London, E16 2PX",
+    "codes": "GBAULCTLCYEAS"
+  },
+  {
+    "en": "London Gatwick / Animal Aircare Company Limited / Unit 6, Cargo Forecourt Road, Gatwick Airport, West Sussex, RH6 0SQ",
+    "cy": "London Gatwick / Animal Aircare Company Limited / Unit 6, Cargo Forecourt Road, Gatwick Airport, West Sussex, RH6 0SQ",
+    "codes": "GBAULGWLGWBCP "
+  },
+  {
+    "en": "London Heathrow Airport / Aviation Servicing Company Limited T/A ASC Cargo Handling / Building 582, Sandringham Road, Heathrow Airport, Hounslow, Middlesex, TW6 3SN",
+    "cy": "London Heathrow Airport / Aviation Servicing Company Limited T/A ASC Cargo Handling / Building 582, Sandringham Road, Heathrow Airport, Hounslow, Middlesex, TW6 3SN",
+    "codes": "GBAULHRLHRJZS"
+  },
+  {
+    "en": "London Heathrow Airport / British Airways PLC / Ascentis, Building 1233, Sealand Road, Heathrow Airport, Hounslow, Middlesex, TW6 2JS",
+    "cy": "London Heathrow Airport / British Airways PLC / Ascentis, Building 1233, Sealand Road, Heathrow Airport, Hounslow, Middlesex, TW6 2JS",
+    "codes": "GBAULHRLHRBAS"
+  },
+  {
+    "en": "London Heathrow Airport / Courier Facilities Limited / Buildlings 577a & 578 Sandringham Road, London Heathrow Airport, Middlesex, TW6 3SL",
+    "cy": "London Heathrow Airport / Courier Facilities Limited / Buildlings 577a & 578 Sandringham Road, London Heathrow Airport, Middlesex, TW6 3SL",
+    "codes": "GBAULHRLHRCFL1"
+  },
+  {
+    "en": "London Heathrow Airport / DHL Aviation (UK) Limited / Buildings 559-560, Shoreham Road West, Cargo Terminal, Heathrow Airport, Hounslow, Middlesex, TW6 3SJ",
+    "cy": "London Heathrow Airport / DHL Aviation (UK) Limited / Buildings 559-560, Shoreham Road West, Cargo Terminal, Heathrow Airport, Hounslow, Middlesex, TW6 3SJ",
+    "codes": "GBAULHRLHRDHS"
+  },
+  {
+    "en": "London Heathrow Airport / Dnata Limited / Unit 521a, Stirling Road, London Heathrow Airport, Middlesex, TW6 3JJ",
+    "cy": "London Heathrow Airport / Dnata Limited / Unit 521a, Stirling Road, London Heathrow Airport, Middlesex, TW6 3JJ",
+    "codes": "GBAULHRLHRNDS"
+  },
+  {
+    "en": "London Heathrow Airport / EUROBIP Limited / Building 550 Shoreham Road East, London Heathrow Airport, Hounslow, Middlesex, TW6 3UA",
+    "cy": "London Heathrow Airport / EUROBIP Limited / Building 550 Shoreham Road East, London Heathrow Airport, Hounslow, Middlesex, TW6 3UA",
+    "codes": "GBAULHRLHREUB"
+  },
+  {
+    "en": "London Heathrow Airport / Heathrow Cargo Handling Limited / Building 558 Shoreham Road West, London Heathrow Airport, Hounslow, Middlesex, TW6 3RN",
+    "cy": "London Heathrow Airport / Heathrow Cargo Handling Limited / Building 558 Shoreham Road West, London Heathrow Airport, Hounslow, Middlesex, TW6 3RN",
+    "codes": "GBAULHRLHRAFS"
+  },
+  {
+    "en": "London Heathrow Airport / Royal Mail Group Limited / London Air Mails Unit (LAMU), Building 585 Short Road, London Heathrow Airport, Hounslow, Middlesex, TW6 3PR",
+    "cy": "London Heathrow Airport / Royal Mail Group Limited / London Air Mails Unit (LAMU), Building 585 Short Road, London Heathrow Airport, Hounslow, Middlesex, TW6 3PR",
+    "codes": "GBAULHRLHRRMG"
+  },
+  {
+    "en": "London Heathrow Airport / Swissport GB Limited / Building 521B, Stansted Road, London Heathrow Airport, Hounslow, Middlesex, TW6 3LW",
+    "cy": "London Heathrow Airport / Swissport GB Limited / Building 521B, Stansted Road, London Heathrow Airport, Hounslow, Middlesex, TW6 3LW",
+    "codes": "GBAULHRLHRSLS"
+  },
+  {
+    "en": "London Heathrow Airport / United Airlines Inc. / Building 521B, Stansted Road, London Heathrow Airport, Hounslow, Middlesex, TW6 3LW",
+    "cy": "London Heathrow Airport / United Airlines Inc. / Building 521B, Stansted Road, London Heathrow Airport, Hounslow, Middlesex, TW6 3LW",
+    "codes": "GBAULHRLHRUAS"
+  },
+  {
+    "en": "London Heathrow Airport / Worldwide Flight Services Limited / Building 549/550/551 Shoreham Road East, London Heathrow Airport, Hounslow, Middlesex, TW6 3UA",
+    "cy": "London Heathrow Airport / Worldwide Flight Services Limited / Building 549/550/551 Shoreham Road East, London Heathrow Airport, Hounslow, Middlesex, TW6 3UA",
+    "codes": "GBAULHRLHRWXS"
+  },
+  {
+    "en": "London Heathrow Airport / Worldwide Flight Services Limited / Building 552 Shoreham Road East, London Heathrow Airport, Hounslow, Middlesex, TW6 3UA",
+    "cy": "London Heathrow Airport / Worldwide Flight Services Limited / Building 552 Shoreham Road East, London Heathrow Airport, Hounslow, Middlesex, TW6 3UA",
+    "codes": "GBAULHRLHRWAS"
+  },
+  {
+    "en": "London Heathrow Airport / Menzies World Cargo Limited / MW1 Building 557 Shoreham Road West, London Heathrow Airport, Hounslow, Middlesex, TW6 3RJ",
+    "cy": "London Heathrow Airport / Menzies World Cargo Limited / MW1 Building 557 Shoreham Road West, London Heathrow Airport, Hounslow, Middlesex, TW6 3RJ",
+    "codes": "GBAULHRLHRCIS"
+  },
+  {
+    "en": "London Heathrow Airport / American Airlines Inc / Building 552 Shoreham Road East, London Heathrow Airport, Middlesex, TW6 3UA",
+    "cy": "London Heathrow Airport / American Airlines Inc / Building 552 Shoreham Road East, London Heathrow Airport, Middlesex, TW6 3UA",
+    "codes": "GBAULHRLHRNHS"
+  },
+  {
+    "en": "London Heathrow Airport / American Airlines Inc / Building 552 Shoreham Road East, London Heathrow Airport, Middlesex, TW6 3UA",
+    "cy": "London Heathrow Airport / American Airlines Inc / Building 552 Shoreham Road East, London Heathrow Airport, Middlesex, TW6 3UA",
+    "codes": "GBAULHRLHRAAS"
+  },
+  {
+    "en": "London Heathrow Airport / British Airways PLC / Ascentis, Building 1233, Sealand Road, Heathrow Airport, Hounslow, Middlesex, TW6 2JS",
+    "cy": "London Heathrow Airport / British Airways PLC / Ascentis, Building 1233, Sealand Road, Heathrow Airport, Hounslow, Middlesex, TW6 2JS",
+    "codes": "GBAULHRLHRBAC"
+  },
+  {
+    "en": "London Heathrow Airport / Airport Perishable Handling Limited / B588 Sandringham Road, Heathrow Cargo Terminal, Hounslow, TW6 3SL",
+    "cy": "London Heathrow Airport / Airport Perishable Handling Limited / B588 Sandringham Road, Heathrow Cargo Terminal, Hounslow, TW6 3SL",
+    "codes": "GBAULHRLHRAHL"
+  },
+  {
+    "en": "London Heathrow Airport / Swissport GB Limited / Unit 1, The Portal, Scylla Road, Heathrow Airport, Middlesex, TW6 3FE",
+    "cy": "London Heathrow Airport / Swissport GB Limited / Unit 1, The Portal, Scylla Road, Heathrow Airport, Middlesex, TW6 3FE",
+    "codes": "GBAUHOULHRPOS"
+  },
+  {
+    "en": "London Heathrow Airport / Air Canada / Building 553, Shoreham Road East, Heathrow Airport, Hounslow, Middlesex, TW6 3RG",
+    "cy": "London Heathrow Airport / Air Canada / Building 553, Shoreham Road East, Heathrow Airport, Hounslow, Middlesex, TW6 3RG",
+    "codes": "GBAULHRLHRACS"
+  },
+  {
+    "en": "London Heathrow Airport / Airport Perishable Handling Ltd / Building 588 Sandringham Road, Heathrow Cargo Terminal, TW6 3SF",
+    "cy": "London Heathrow Airport / Airport Perishable Handling Ltd / Building 588 Sandringham Road, Heathrow Cargo Terminal, TW6 3SF",
+    "codes": "GBAULHRLHRAPH"
+  },
+  {
+    "en": "London Heathrow Airport / Dnata Ltd (Dnata City East) / Dnata City East, Bedfont Road, Staines, TW19 7NL",
+    "cy": "London Heathrow Airport / Dnata Ltd (Dnata City East) / Dnata City East, Bedfont Road, Staines, TW19 7NL",
+    "codes": "GBAUSWLLHRPHS"
+  },
+  {
+    "en": "London Heathrow Airport / Heathrow Animal Reception Centre / Heathrow Animal Reception Centre, Beacon Road, Hounslow, Middlesex, TW6 3JF",
+    "cy": "London Heathrow Airport / Heathrow Animal Reception Centre / Heathrow Animal Reception Centre, Beacon Road, Hounslow, Middlesex, TW6 3JF",
+    "codes": "GBAULHRLHRARC"
+  },
+  {
+    "en": "London Stansted Airport / Federal Express Europe Inc / Cargo Terminal, Pincey Road, London Stansted Airport, Stansted, Essex, CM24 1QJ",
+    "cy": "London Stansted Airport / Federal Express Europe Inc / Cargo Terminal, Pincey Road, London Stansted Airport, Stansted, Essex, CM24 1QJ",
+    "codes": "GBAUSTNLSAFHS"
+  },
+  {
+    "en": "London Stansted Airport / Swissport GB Limited / Unit B/C2, The Cargo Terminal, Pincey Road, Stansted Airport, Essex CM24 1QJ",
+    "cy": "London Stansted Airport / Swissport GB Limited / Unit B/C2, The Cargo Terminal, Pincey Road, Stansted Airport, Essex CM24 1QJ",
+    "codes": "GBAUSTNLSASLS"
+  },
+  {
+    "en": "London Stansted Airport / TNT UK Limited / Unit E, Cargo Terminal, Pincey Road, Stansted Airport Essex CM24 1QJ",
+    "cy": "London Stansted Airport / TNT UK Limited / Unit E, Cargo Terminal, Pincey Road, Stansted Airport Essex CM24 1QJ",
+    "codes": "GBAUSTNLSATNT"
+  },
+  {
+    "en": "London Stansted Airport / UPS Limited / UPS Stansted Hub, Unit A, New Cargo Area, Pincey Road, Stansted Airport, Essex, CM24 1QJ",
+    "cy": "London Stansted Airport / UPS Limited / UPS Stansted Hub, Unit A, New Cargo Area, Pincey Road, Stansted Airport, Essex, CM24 1QJ",
+    "codes": "GBAUSTNLSAUPS"
+  },
+  {
+    "en": "London Stansted Airport / Federal Express Europe Inc / Cargo Area South, Pincey Road, London Stansted Airport, Stansted, CM24 1FE",
+    "cy": "London Stansted Airport / Federal Express Europe Inc / Cargo Area South, Pincey Road, London Stansted Airport, Stansted, CM24 1FE",
+    "codes": "GBAUSTNLSAFDS"
+  },
+  {
+    "en": "London Stansted Airport / British Airways PLC / C/O Servisair, Unit B Cargo Terminal, Stansted Airport, Essex, CM24 1QJ (SSO)",
+    "cy": "London Stansted Airport / British Airways PLC / C/O Servisair, Unit B Cargo Terminal, Stansted Airport, Essex, CM24 1QJ (SSO)",
+    "codes": "GBAUSTNLSABAC"
+  },
+  {
+    "en": "Luton Airport / DHL Aviation UK Limited / President Way, Luton Airport, Bedfordshire, LU2 9NL",
+    "cy": "Luton Airport / DHL Aviation UK Limited / President Way, Luton Airport, Bedfordshire, LU2 9NL",
+    "codes": "GBAULUTLTNDHS"
+  },
+  {
+    "en": "Luton Airport / London Luton Airport Operations Limited / Cargo Terminal, President Way, London Luton Airport, Luton, LU2 9LY",
+    "cy": "Luton Airport / London Luton Airport Operations Limited / Cargo Terminal, President Way, London Luton Airport, Luton, LU2 9LY",
+    "codes": "GBAULUTLTNLCS"
+  },
+  {
+    "en": "Manchester Airport / Dnata Limited / Units 1 and 1A, Building 300, World Freight Terminal, Manchester Airport, Manchester, M90 5UY",
+    "cy": "Manchester Airport / Dnata Limited / Units 1 and 1A, Building 300, World Freight Terminal, Manchester Airport, Manchester, M90 5UY",
+    "codes": "GBAUMNCMANPHS"
+  },
+  {
+    "en": "Manchester Airport / Dnata Limited / Unit 3, Building 307, World Freight Terminal, Manchester Airport, Manchester, M90 5QL",
+    "cy": "Manchester Airport / Dnata Limited / Unit 3, Building 307, World Freight Terminal, Manchester Airport, Manchester, M90 5QL",
+    "codes": "GBAUMNCMANNAS"
+  },
+  {
+    "en": "Manchester Airport / Federal Express Europe Inc / Part B, Unit 3 Building 307, World Freight Terminal, Manchester Airport, Manchester, M90 5QL",
+    "cy": "Manchester Airport / Federal Express Europe Inc / Part B, Unit 3 Building 307, World Freight Terminal, Manchester Airport, Manchester, M90 5QL",
+    "codes": "GBAUMNCMANFDS"
+  },
+  {
+    "en": "Manchester Airport / Swissport GB Limited / Building 300, World Freight Terminal, Manchester International Airport, Manchester, M90 5SA",
+    "cy": "Manchester Airport / Swissport GB Limited / Building 300, World Freight Terminal, Manchester International Airport, Manchester, M90 5SA",
+    "codes": "GBAUMNCMANSLS"
+  },
+  {
+    "en": "Manchester Airport / Dunwoody Airline Services Limited t/a Worldwide Flight Services / Building 300 World Freight Terminal Manchester Airport, M90 5UY",
+    "cy": "Manchester Airport / Dunwoody Airline Services Limited t/a Worldwide Flight Services / Building 300 World Freight Terminal Manchester Airport, M90 5UY",
+    "codes": "GBAUMNCMANBWS"
+  },
+  {
+    "en": "Manchester Airport / Dnata Limited / Pinfold Ln, Manchester M90 5XR",
+    "cy": "Manchester Airport / Dnata Limited / Pinfold Ln, Manchester M90 5XR",
+    "codes": "GBAUMNCMANNCS "
+  },
+  {
+    "en": "Manchester Airport / Swissport GB Ltd (BIP) / Manchester BCP 1,2 & 3 Facility, Building 307 World Freight Terminal, Manchester Airport, Manchester, M90 5QL",
+    "cy": "Manchester Airport / Swissport GB Ltd (BIP) / Manchester BCP 1,2 & 3 Facility, Building 307 World Freight Terminal, Manchester Airport, Manchester, M90 5QL",
+    "codes": "GBAUMNCMANBIP"
+  },
+  {
+    "en": "Manchester Airport / Dnata Ltd (3rd shed) / Unit 3, Building 300 World Freight Terminal, Manchester Airport, M90 5UY",
+    "cy": "Manchester Airport / Dnata Ltd (3rd shed) / Unit 3, Building 300 World Freight Terminal, Manchester Airport, M90 5UY",
+    "codes": "GBAUMNCMANNBS"
+  },
+  {
+    "en": "Newcastle International Airport - Ponteland / Dnata Limited / Unit 3, Transit Building 1, Freight Village, Newcastle International Airport, Woolsington, Newcastle upon Tyne, NE13 8BH",
+    "cy": "Newcastle International Airport - Ponteland / Dnata Limited / Unit 3, Transit Building 1, Freight Village, Newcastle International Airport, Woolsington, Newcastle upon Tyne, NE13 8BH",
+    "codes": "GBAUPNLNCLPZS"
+  },
+  {
+    "en": "Newcastle International Airport - Ponteland / Dunwoody Airline Services Limited T/A Worldwide Flight Services / Airport Freightway, Freight Village, Newcastle International Airport, Woolsington, Newcastle Upon Tyne, NE13 8BH",
+    "cy": "Newcastle International Airport - Ponteland / Dunwoody Airline Services Limited T/A Worldwide Flight Services / Airport Freightway, Freight Village, Newcastle International Airport, Woolsington, Newcastle Upon Tyne, NE13 8BH",
+    "codes": "GBAUPNLNCLBAC"
+  },
+  {
+    "en": "Newcastle International Airport - Ponteland / Federal Express Europe Inc / Airport Freightway, Freight Village, Newcastle International Airport, Woolsington, Newcastle Upon Tyne, NE13 8BH",
+    "cy": "Newcastle International Airport - Ponteland / Federal Express Europe Inc / Airport Freightway, Freight Village, Newcastle International Airport, Woolsington, Newcastle Upon Tyne, NE13 8BH",
+    "codes": "GBAUPNLNCLFDS"
+  },
+  {
+    "en": "Newcastle International Airport - Ponteland / FedEx Express UK Limited / World Freight Services, Freight Village, Newcastle International Airport, Woolsington, Newcastle Upon Tyne, NE13 8BH",
+    "cy": "Newcastle International Airport - Ponteland / FedEx Express UK Limited / World Freight Services, Freight Village, Newcastle International Airport, Woolsington, Newcastle Upon Tyne, NE13 8BH",
+    "codes": "GBAUNCLNCLFXN1"
+  },
+  {
+    "en": "Norwich Airport / Regional Freight Services Limited / Regional House, Norwich Airport, Cargo Terminal, Liberator Road, Norwich, NR6 6EU",
+    "cy": "Norwich Airport / Regional Freight Services Limited / Regional House, Norwich Airport, Cargo Terminal, Liberator Road, Norwich, NR6 6EU",
+    "codes": "GBAUNRWNWIRFS"
+  },
+  {
+    "en": "Portsmouth Continental Ferry Port - Condor Ferries / Condor Ferries Limited / Portsmouth Commercial Ferry Port, Portsmouth, Hants",
+    "cy": "Portsmouth Continental Ferry Port - Condor Ferries / Condor Ferries Limited / Portsmouth Commercial Ferry Port, Portsmouth, Hants",
+    "codes": "GBAUPMEPTMPOR3"
+  },
+  {
+    "en": "Portsmouth Continental Ferry Port - Flathouse Quay & Albert Johnson Quay / Geest Line Limited / Flathouse & Albert Johnson Quay, Portsmouth, Hants",
+    "cy": "Portsmouth Continental Ferry Port - Flathouse Quay & Albert Johnson Quay / Geest Line Limited / Flathouse & Albert Johnson Quay, Portsmouth, Hants",
+    "codes": "GBAUPMEPTMPOR2"
+  },
+  {
+    "en": "Robin Hood Doncaster Sheffield Airport - Doncaster / Anglo World Cargo Limited / Cargo Terminal, Hangar 1, 4th Avenue, Robin Hood Doncaster Sheffield Airport, Doncaster, South Yorkshire, DN9 3EG",
+    "cy": "Robin Hood Doncaster Sheffield Airport - Doncaster / Anglo World Cargo Limited / Cargo Terminal, Hangar 1, 4th Avenue, Robin Hood Doncaster Sheffield Airport, Doncaster, South Yorkshire, DN9 3EG",
+    "codes": "GBAUDONDSARQS"
+  },
+  {
+    "en": "Southampton Airport / Oceanair Handling / Unit2 Cargo Center, Southampton Airport, Southampton SO18 2HG",
+    "cy": "Southampton Airport / Oceanair Handling / Unit2 Cargo Center, Southampton Airport, Southampton SO18 2HG",
+    "codes": "GBAUSOUSTNSVIB"
+  },
+  {
+    "en": "Southampton Airport / Oceanair Handling / 209 Berth, Western Docks, Southampton, Hampshire, SO15 0AL",
+    "cy": "Southampton Airport / Oceanair Handling / 209 Berth, Western Docks, Southampton, Hampshire, SO15 0AL",
+    "codes": "GBAUSOUSTNOCE1"
+  },
+  {
+    "en": "Southampton Docks - 20 Berth / Soton Cargo Handling / 20 Berth, Eastern Docks, Southampton SO14 3AH",
+    "cy": "Southampton Docks - 20 Berth / Soton Cargo Handling / 20 Berth, Eastern Docks, Southampton SO14 3AH",
+    "codes": "GBAUSOUSTNSCH1"
+  },
+  {
+    "en": "Southampton Docks - 204 - 207 Berth / Southampton Container Terminals Limited T/A DP World Southampton / 204-207 Berth, Western Docks, Southampton, SO15 1DA",
+    "cy": "Southampton Docks - 204 - 207 Berth / Southampton Container Terminals Limited T/A DP World Southampton / 204-207 Berth, Western Docks, Southampton, SO15 1DA",
+    "codes": "GBAUSOUSTNSCT1"
+  },
+  {
+    "en": "Southampton Docks - 209 Berth / J&A Marshall Limited / 209 Berth, Western Docks, Southampton, Hampshire, SO15 0AL",
+    "cy": "Southampton Docks - 209 Berth / J&A Marshall Limited / 209 Berth, Western Docks, Southampton, Hampshire, SO15 0AL",
+    "codes": "GBAUSOUSTNJAM1"
+  },
+  {
+    "en": "Southampton Docks - Dock Gate 10 Compound / Pentalver Transport Limited / Dock Gate 10 Compound, Wes Bay Road, Western Docks, Port of Southampton, Southampton, SO15 1AW",
+    "cy": "Southampton Docks - Dock Gate 10 Compound / Pentalver Transport Limited / Dock Gate 10 Compound, Wes Bay Road, Western Docks, Port of Southampton, Southampton, SO15 1AW",
+    "codes": "GBAUSOUSTNPNT1"
+  },
+  {
+    "en": "Southampton Docks - Dock Gate 4 / YA Autotrade / Dock Gate 4, Eastern Docks, Southampton SO14 3AH",
+    "cy": "Southampton Docks - Dock Gate 4 / YA Autotrade / Dock Gate 4, Eastern Docks, Southampton SO14 3AH",
+    "codes": "GBAUSOUSTNYUW1"
+  },
+  {
+    "en": "Warton Aerodrome / BAE Systems (Operations) Limited / Building 312 (South Side) and WP159 (North Side), Warton Aerodrome, Preston, Lancashire, PR4 1AX",
+    "cy": "Warton Aerodrome / BAE Systems (Operations) Limited / Building 312 (South Side) and WP159 (North Side), Warton Aerodrome, Preston, Lancashire, PR4 1AX",
+    "codes": "GBAUWRTWARBAE"
+  }
+]
