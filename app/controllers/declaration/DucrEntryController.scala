@@ -61,8 +61,8 @@ class DucrEntryController @Inject() (
   private def updateCacheAndContinue(ducr: Ducr)(implicit request: JourneyRequest[AnyContent]): Future[Result] =
     updateDeclarationFromRequest { dec =>
       dec.copy(consignmentReferences = dec.consignmentReferences match {
-        case Some(consignmentRefs) => Some(consignmentRefs.copy(ducr = ducr))
-        case _                     => Some(ConsignmentReferences(ducr, None))
+        case Some(consignmentRefs) => Some(consignmentRefs.copy(ducr = Some(ducr)))
+        case _                     => Some(ConsignmentReferences(Some(ducr), None))
       })
     } map (_ => navigator.continueTo(routes.LocalReferenceNumberController.displayPage))
 

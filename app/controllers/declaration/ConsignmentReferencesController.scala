@@ -68,5 +68,5 @@ class ConsignmentReferencesController @Inject() (
       .map(_ => navigator.continueTo(nextPage))
 
   private def capitaliseDucr(consignmentReferences: ConsignmentReferences): ConsignmentReferences =
-    consignmentReferences.copy(ducr = Ducr(consignmentReferences.ducr.ducr.toUpperCase))
+    consignmentReferences.ducr.fold(consignmentReferences)(ducr => consignmentReferences.copy(ducr = Some(Ducr(ducr.ducr.toUpperCase))))
 }

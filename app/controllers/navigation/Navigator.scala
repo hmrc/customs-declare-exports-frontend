@@ -79,6 +79,8 @@ class Navigator @Inject() (
     case CarrierDetails                => routes.CarrierEoriNumberController.displayPage
     case InvoiceAndExchangeRateChoice  => routes.OfficeOfExitController.displayPage
     case InvoiceAndExchangeRate        => routes.InvoiceAndExchangeRateChoiceController.displayPage
+    case TraderReference               => routes.DucrChoiceController.displayPage
+    case ConfirmDucr                   => routes.TraderReferenceController.displayPage
   }
 
   val commonItem: PartialFunction[DeclarationPage, String => Call] = {
