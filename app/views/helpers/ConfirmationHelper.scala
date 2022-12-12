@@ -74,11 +74,14 @@ class ConfirmationHelper @Inject() (
       case _                                                                     => "declaration.confirmation.other.title"
     }
 
+  private def received(implicit confirmation: Confirmation, messages: Messages): Html =
+    new Html(List(topSection, whatHappensNext, whatYouCanDoNow, bottomSection).flatten)
+
   private def accepted(implicit confirmation: Confirmation, messages: Messages): Html =
-    new Html(List(List(panel), body, whatHappensNext, List(print_page_button(8, 4)), List(sectionBreak), List(exitSurvey())).flatten)
+    new Html(List(topSection, List(body2), whatHappensNext, whatYouCanDoNow, bottomSection).flatten)
 
   private def cleared(implicit confirmation: Confirmation, messages: Messages): Html =
-    new Html(List(List(panel), bodyForCleared, List(print_page_button(8, 4)), List(sectionBreak), List(exitSurvey())).flatten)
+    new Html(List(topSection, whatYouCanDoNow, bottomSection).flatten)
 
   private def isArrived(confirmation: Confirmation): Boolean =
     AdditionalDeclarationType.isArrived(from(confirmation.declarationType))
@@ -107,47 +110,40 @@ class ConfirmationHelper @Inject() (
     new Html(List(title, body1, body2))
   }
 
-  private def received(implicit confirmation: Confirmation, messages: Messages): Html =
-    new Html(List(List(panel), List(table), whatHappensNext, whatYouCanDoNow, List(print_page_button(8, 4)), List(sectionBreak), List(exitSurvey())).flatten)
-
-  private def body(implicit confirmation: Confirmation, messages: Messages): List[Html] =
-    List(table, body2)
+  private def topSection(implicit confirmation: Confirmation, messages: Messages): List[Html] = List(panel, table)
+  private def bottomSection(implicit messages: Messages) = List(print_page_button(8, 4), sectionBreak, exitSurvey())
 
   private def table(implicit confirmation: Confirmation, messages: Messages): Html =
-    govukTable(Table(
-      rows = Seq(
-        confirmation.submission.flatMap(_.ducr).map(ducr =>
-          Seq(
-            TableRow(
-              content = Text(messages(s"declaration.confirmation.ducr")), classes = "govuk-!-font-weight-bold"
+    govukTable(
+      Table(rows =
+        Seq(
+          confirmation.submission
+            .flatMap(_.ducr)
+            .map(ducr =>
+              Seq(
+                TableRow(content = Text(messages(s"declaration.confirmation.ducr")), classes = "govuk-!-font-weight-bold"),
+                TableRow(content = Text(ducr))
+              )
             ),
-            TableRow(
-              content = Text(ducr)
-            )
-          )
-        ),
-        confirmation.submission.map(_.lrn).map(lrn =>
-          Seq(
-            TableRow(
-              content = Text(messages(s"declaration.confirmation.lrn")), classes = "govuk-!-font-weight-bold"
+          confirmation.submission
+            .map(_.lrn)
+            .map(lrn =>
+              Seq(
+                TableRow(content = Text(messages(s"declaration.confirmation.lrn")), classes = "govuk-!-font-weight-bold"),
+                TableRow(content = Text(lrn))
+              )
             ),
-            TableRow(
-              content = Text(lrn)
+          confirmation.submission
+            .flatMap(_.mrn)
+            .map(mrn =>
+              Seq(
+                TableRow(content = Text(messages(s"declaration.confirmation.mrn")), classes = "govuk-!-font-weight-bold"),
+                TableRow(content = Text(mrn))
+              )
             )
-          )
-        ),
-        confirmation.submission.flatMap(_.mrn).map(mrn =>
-          Seq(
-            TableRow(
-              content = Text(messages(s"declaration.confirmation.mrn")), classes = "govuk-!-font-weight-bold"
-            ),
-            TableRow(
-              content = Text(mrn)
-            )
-          )
-        )
-      ).flatten
-    ))
+        ).flatten
+      )
+    )
 
   private def body1(implicit confirmation: Confirmation, messages: Messages): Html =
     paragraph(
@@ -167,25 +163,8 @@ class ConfirmationHelper @Inject() (
       )
     )
 
-  private def bodyForCleared(implicit confirmation: Confirmation, messages: Messages): List[Html] = {
-
-    val body1 = paragraph(
-      messages(
-        "declaration.confirmation.cleared.body.1",
-        link(messages("declaration.confirmation.declaration.details.link"), declarationDetailsRoute)
-      )
-    )
-
-    val body2 = paragraph(messages(s"declaration.confirmation.cleared.body.2"))
-
-    List(table, heading(messages("declaration.confirmation.cleared.heading"), "govuk-heading-m", "h2"), body1, body2)
-  }
-
-  private def panel(implicit confirmation: Confirmation, messages: Messages): Html = {
-    govukPanel(
-      Panel(title = Text(messages(s"declaration.confirmation.$status.title")))
-    )
-  }
+  private def panel(implicit confirmation: Confirmation, messages: Messages): Html =
+    govukPanel(Panel(title = Text(messages(s"declaration.confirmation.$status.title"))))
 
   private def whatHappensNext(implicit confirmation: Confirmation, messages: Messages): List[Html] = {
     val next1 = paragraph(
@@ -210,23 +189,50 @@ class ConfirmationHelper @Inject() (
   }
 
   private def whatYouCanDoNow(implicit confirmation: Confirmation, messages: Messages): List[Html] = {
-    val mrn = confirmation.submission.flatMap(_.mrn).getOrElse("")
-    val locationCode = confirmation.locationCode
     val title = heading(messages("declaration.confirmation.whatYouCanDoNow.heading"), "govuk-heading-m", "h2")
-    val paragraph1 = locationCode.filterNot(_.endsWith("GVM")).map(_ => paragraph(messages(
-      "declaration.confirmation.whatYouCanDoNow.nonGvms.paragraph",
-      link(messages("declaration.confirmation.whatYouCanDoNow.nonGvms.paragraph.link.1"), Call("GET", externalServicesConfig.customsMovementsFrontendUrl)),
-      link(messages("declaration.confirmation.whatYouCanDoNow.nonGvms.paragraph.link.2"), Call("GET", externalServicesConfig.customsMovementsFrontendUrl))
-    )))
-    val paragraph2 = body2
-    val paragraph3 = paragraph(
-      messages(
-        "declaration.confirmation.whatYouCanDoNow.paragraph.2",
-        externalLink(messages("declaration.confirmation.whatYouCanDoNow.paragraph.2.link"), FileUploadController.startFileUpload(mrn).url)
+    val nonGvmsParagraph = confirmation.locationCode
+      .filterNot(_.endsWith("GVM"))
+      .map(_ =>
+        paragraph(
+          message = messages(
+            "declaration.confirmation.whatYouCanDoNow.nonGvms.paragraph",
+            link(
+              messages("declaration.confirmation.whatYouCanDoNow.nonGvms.paragraph.link.1"),
+              Call("GET", externalServicesConfig.customsMovementsFrontendUrl)
+            ),
+            link(
+              messages("declaration.confirmation.whatYouCanDoNow.nonGvms.paragraph.link.2"),
+              Call("GET", externalServicesConfig.customsMovementsFrontendUrl)
+            )
+          ),
+          id = Some("non-gvms-paragraph")
+        )
       )
-    )
 
-    List(Some(title), paragraph1, Some(paragraph2), Some(paragraph3)).flatten
+    confirmation.submission.flatMap(_.latestEnhancedStatus) match {
+      case Some(RECEIVED) =>
+        val mrn = confirmation.submission.flatMap(_.mrn).getOrElse("")
+        val paragraph1 = body2
+        val paragraph2 = paragraph(
+          messages(
+            "declaration.confirmation.whatYouCanDoNow.paragraph.2",
+            externalLink(messages("declaration.confirmation.whatYouCanDoNow.paragraph.2.link"), FileUploadController.startFileUpload(mrn).url)
+          )
+        )
+
+        List(Some(title), nonGvmsParagraph, Some(paragraph1), Some(paragraph2)).flatten
+      case Some(GOODS_ARRIVED) | Some(GOODS_ARRIVED_MESSAGE) if nonGvmsParagraph.isDefined => List(Some(title), nonGvmsParagraph).flatten
+      case Some(CLEARED) if isArrived(confirmation) =>
+        val body1 = paragraph(
+          messages(
+            "declaration.confirmation.cleared.body.1",
+            link(messages("declaration.confirmation.declaration.details.link"), declarationDetailsRoute)
+          )
+        )
+        val body2 = paragraph(messages(s"declaration.confirmation.cleared.body.2"))
+
+        List(Some(title), nonGvmsParagraph, Some(body1), Some(body2)).flatten
+    }
   }
 
   private def accOrRcv(implicit confirmation: Confirmation): String =
