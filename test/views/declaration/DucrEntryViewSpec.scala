@@ -17,8 +17,7 @@
 package views.declaration
 
 import base.{ExportsTestData, Injector}
-import controllers.declaration.routes
-import controllers.declaration.routes.DeclarantDetailsController
+import controllers.declaration.routes.DucrChoiceController
 import forms.Ducr
 import forms.Ducr.form
 import models.DeclarationType._
@@ -119,22 +118,12 @@ class DucrEntryViewSpec extends PageWithButtonsSpec with Injector {
   }
 
   "Ducr Entry View" should {
-
-    onJourney(STANDARD, OCCASIONAL, SIMPLIFIED) { implicit request =>
-      "display 'Back' button that links to 'Declarant Details' page" in {
+    onJourney(STANDARD, CLEARANCE, OCCASIONAL, SIMPLIFIED) { implicit request =>
+      "display 'Back' button that links to 'Ducr Choice' page" in {
         val backButton = createView().getElementById("back-link")
         backButton must containMessage(backToPreviousQuestionCaption)
-        backButton must haveHref(DeclarantDetailsController.displayPage().url)
+        backButton must haveHref(DucrChoiceController.displayPage.url)
       }
     }
-    onClearance { implicit request =>
-      "display 'Back' button that links to 'Declaration Type' page" in {
-        val backButton = createView().getElementById("back-link")
-        backButton must containMessage(backToPreviousQuestionCaption)
-        backButton must haveHref(routes.AdditionalDeclarationTypeController.displayPage().url)
-      }
-    }
-
   }
-
 }

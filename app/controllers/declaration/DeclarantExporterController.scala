@@ -63,11 +63,12 @@ class DeclarantExporterController @Inject() (
 
   def nextPage(answer: DeclarantIsExporter)(implicit request: JourneyRequest[AnyContent]): Call =
     if (!answer.isExporter) routes.ExporterEoriNumberController.displayPage
-    else request.declarationType match {
-      case DeclarationType.SUPPLEMENTARY => routes.ConsigneeDetailsController.displayPage
-      case DeclarationType.CLEARANCE     => routes.IsExsController.displayPage
-      case _                             => routes.CarrierEoriNumberController.displayPage
-    }
+    else
+      request.declarationType match {
+        case DeclarationType.SUPPLEMENTARY => routes.ConsigneeDetailsController.displayPage
+        case DeclarationType.CLEARANCE     => routes.IsExsController.displayPage
+        case _                             => routes.CarrierEoriNumberController.displayPage
+      }
 
   private def updateCache(answer: DeclarantIsExporter)(implicit r: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
     updateDeclarationFromRequest { model =>

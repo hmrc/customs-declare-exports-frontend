@@ -21,33 +21,40 @@ import controllers.declaration.routes.{DucrEntryController, TraderReferenceContr
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers.no
+import models.DeclarationType._
 import models.ExportsDeclaration
 import models.requests.JourneyRequest
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.cache.ExportsCacheService
+import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.ducr_choice
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class DucrChoiceController @Inject()(
+class DucrChoiceController @Inject() (
   authenticate: AuthAction,
-  journeyType: JourneyAction,
+  journeyAction: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
   mcc: MessagesControllerComponents,
   ducrChoicePage: ducr_choice
-)(implicit ec: ExecutionContext) extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
+)(implicit ec: ExecutionContext)
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
-  val displayPage: Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  private val authAndAcceptedTypes = authenticate andThen journeyAction(List(STANDARD, CLEARANCE, SIMPLIFIED, OCCASIONAL))
+
+  val displayPage: Action[AnyContent] = authAndAcceptedTypes { implicit request =>
     val form = YesNoAnswer.form(errorKey = "declaration.ducr.choice.answer.empty").withSubmissionErrors
     Ok(ducrChoicePage(form))
   }
 
-  val submitForm: Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    YesNoAnswer.form(errorKey = "declaration.ducr.choice.answer.empty").bindFromRequest
+  val submitForm: Action[AnyContent] = authAndAcceptedTypes.async { implicit request =>
+    YesNoAnswer
+      .form(errorKey = "declaration.ducr.choice.answer.empty")
+      .bindFromRequest
       .fold(
         formWithErrors => Future.successful(BadRequest(ducrChoicePage(formWithErrors))),
         yesNoAnswer =>

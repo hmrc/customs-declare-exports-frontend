@@ -29,6 +29,7 @@ import models.{DeclarationType, ExportsDeclaration}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import services.cache.ExportsCacheService
+import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.declarant_details
 
@@ -37,15 +38,15 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class DeclarantDetailsController @Inject() (
   authenticate: AuthAction,
-  journeyType: JourneyAction,
+  journeyAction: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
   mcc: MessagesControllerComponents,
   declarantDetailsPage: declarant_details
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
-  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayPage(): Action[AnyContent] = (authenticate andThen journeyAction) { implicit request =>
     val frm = form().withSubmissionErrors()
     request.cacheModel.parties.declarantDetails match {
       case Some(_) => Ok(declarantDetailsPage(frm.fill(DeclarantEoriConfirmation(YesNoAnswers.yes))))
@@ -53,7 +54,7 @@ class DeclarantDetailsController @Inject() (
     }
   }
 
-  def submitForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def submitForm(): Action[AnyContent] = (authenticate andThen journeyAction).async { implicit request =>
     form()
       .bindFromRequest()
       .fold(
