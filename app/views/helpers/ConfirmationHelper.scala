@@ -222,6 +222,7 @@ class ConfirmationHelper @Inject() (
 
         List(Some(title), nonGvmsParagraph, Some(paragraph1), Some(paragraph2)).flatten
       case Some(GOODS_ARRIVED) | Some(GOODS_ARRIVED_MESSAGE) if nonGvmsParagraph.isDefined => List(Some(title), nonGvmsParagraph).flatten
+      case Some(GOODS_ARRIVED) | Some(GOODS_ARRIVED_MESSAGE) => List.empty
       case Some(CLEARED) if isArrived(confirmation) =>
         val body1 = paragraph(
           messages(
