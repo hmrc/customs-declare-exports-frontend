@@ -52,7 +52,14 @@ class CodeListConnectorSpec extends UnitWithMocksSpec with BeforeAndAfterEach {
     when(appConfig.glcRemoteItsf16e).thenReturn("/code-lists/manyCodes.json")
     when(appConfig.glcExternalItsf16f).thenReturn("/code-lists/manyCodes.json")
     when(appConfig.glcBorderInspectionPosts16g).thenReturn("/code-lists/manyCodes.json")
+    when(appConfig.glcApprovedDipositories16h).thenReturn("/code-lists/manyCodes.json")
+    when(appConfig.glcPlaceNamesGB16i).thenReturn("/code-lists/manyCodes.json")
+    when(appConfig.glcOtherLocationCodes16j).thenReturn("/code-lists/manyCodes.json")
     when(appConfig.glcDep16k).thenReturn("/code-lists/manyCodes.json")
+    when(appConfig.glcCse16l).thenReturn("/code-lists/manyCodes.json")
+    when(appConfig.glcRail16m).thenReturn("/code-lists/manyCodes.json")
+    when(appConfig.glcActs16n).thenReturn("/code-lists/manyCodes.json")
+    when(appConfig.glcRoro16r).thenReturn("/code-lists/manyCodes.json")
   }
 
   private lazy val glc = new GoodsLocationCodesConnector(appConfig)

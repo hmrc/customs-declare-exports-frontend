@@ -22,8 +22,8 @@ import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.EntryIntoDeclarantsRecords.form
 import models.DeclarationType.CLEARANCE
-import models.requests.JourneyRequest
 import models.ExportsDeclaration
+import models.requests.JourneyRequest
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import services.cache.ExportsCacheService
@@ -74,8 +74,6 @@ class EntryIntoDeclarantsRecordsController @Inject() (
     }
 
   private def nextPage(answer: YesNoAnswer): Call =
-    if (answer.answer == YesNoAnswers.yes)
-      controllers.declaration.routes.PersonPresentingGoodsDetailsController.displayPage
-    else
-      controllers.declaration.routes.DeclarantDetailsController.displayPage
+    if (answer.answer == YesNoAnswers.yes) routes.PersonPresentingGoodsDetailsController.displayPage
+    else routes.DeclarantDetailsController.displayPage
 }

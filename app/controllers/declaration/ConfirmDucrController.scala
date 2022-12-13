@@ -20,7 +20,7 @@ import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
-import models.DeclarationType.{allDeclarationTypesExcluding, SUPPLEMENTARY}
+import models.DeclarationType._
 import models.ExportsDeclaration
 import models.requests.JourneyRequest
 import play.api.data.Form
@@ -36,8 +36,8 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class ConfirmDucrController @Inject() (
-  authorise: AuthAction,
-  getJourney: JourneyAction,
+  authenticate: AuthAction,
+  journeyAction: JourneyAction,
   navigator: Navigator,
   mcc: MessagesControllerComponents,
   override val exportsCacheService: ExportsCacheService,
@@ -45,7 +45,9 @@ class ConfirmDucrController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with WithDefaultFormBinding with ModelCacheable with SubmissionErrors {
 
-  def displayPage(): Action[AnyContent] = (authorise andThen getJourney(allDeclarationTypesExcluding(SUPPLEMENTARY))) { implicit request =>
+  private val authAndAcceptedTypes = authenticate andThen journeyAction(List(STANDARD, CLEARANCE, SIMPLIFIED, OCCASIONAL))
+
+  def displayPage(): Action[AnyContent] = authAndAcceptedTypes { implicit request =>
     request.cacheModel.ducr.fold {
       logger.warn("No generated DUCR found in cache!")
       Redirect(routes.DucrEntryController.displayPage)
@@ -54,7 +56,7 @@ class ConfirmDucrController @Inject() (
     }
   }
 
-  def submitForm(): Action[AnyContent] = (authorise andThen getJourney(allDeclarationTypesExcluding(SUPPLEMENTARY))).async { implicit request =>
+  def submitForm(): Action[AnyContent] = authAndAcceptedTypes.async { implicit request =>
     request.cacheModel.ducr.fold {
       logger.warn("No generated DUCR found in cache!")
       Future.successful(Redirect(routes.DucrEntryController.displayPage))

@@ -23,9 +23,9 @@ import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.ConsignmentReferences
 import mock.ErrorHandlerMocks
 import models.DeclarationType.SUPPLEMENTARY
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.{any, eq => meq}
-import org.mockito.Mockito.{verify, when}
-import org.mockito.{ArgumentCaptor, Mockito}
+import org.mockito.Mockito.{reset, verify, when}
 import play.api.data.Form
 import play.api.http.Status.{BAD_REQUEST, OK}
 import play.api.libs.json.Json
@@ -67,7 +67,7 @@ class ConfirmDucrControllerSpec extends ControllerSpec with ErrorHandlerMocks {
   }
 
   override protected def afterEach(): Unit = {
-    Mockito.reset(confirmDucrPage)
+    reset(confirmDucrPage)
     super.afterEach()
   }
 
@@ -76,7 +76,6 @@ class ConfirmDucrControllerSpec extends ControllerSpec with ErrorHandlerMocks {
   "ConfirmDucrController" should {
 
     "return 200 OK" when {
-
       "display page method is invoked with DUCR in the cache" in {
         withNewCaching(aDeclaration(withConsignmentReferences(dummyConRefs)))
 
@@ -88,7 +87,6 @@ class ConfirmDucrControllerSpec extends ControllerSpec with ErrorHandlerMocks {
     }
 
     "return 400 bad request" when {
-
       "form was submitted with no data" in {
         withNewCaching(aDeclaration(withConsignmentReferences(dummyConRefs)))
 

@@ -506,7 +506,14 @@ object AppConfigSpec {
       |files.codelists.glc.remote-itsf="/code-lists/goods-locations-codes/remote-itsf"
       |files.codelists.glc.external-itsf="/code-lists/goods-locations-codes/external-itsf"
       |files.codelists.glc.border-inspection-posts="/code-lists/goods-locations-codes/border-inspection-posts"
+      |files.codelists.glc.approved-dipositories="/code-lists/goods-locations-codes/approved-dipositories"
+      |files.codelists.glc.gb-place-names="/code-lists/goods-locations-codes/gb-place-names"
+      |files.codelists.glc.other-location-codes="/code-lists/goods-locations-codes/other-location-codes"
       |files.codelists.glc.dep="/code-lists/goods-locations-codes/dep"
+      |files.codelists.glc.cse="/code-lists/goods-locations-codes/cse"
+      |files.codelists.glc.rail="/code-lists/goods-locations-codes/rail"
+      |files.codelists.glc.acts="/code-lists/goods-locations-codes/acts"
+      |files.codelists.glc.roro="/code-lists/goods-locations-codes/roro"
       |
       |draft.timeToLive=30d
       |microservice.services.nrs.host=localhostnrs

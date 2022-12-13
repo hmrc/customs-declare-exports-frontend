@@ -263,5 +263,12 @@ class AppConfig @Inject() (
   val glcRemoteItsf16e = loadConfig("files.codelists.glc.remote-itsf")
   val glcExternalItsf16f = loadConfig("files.codelists.glc.external-itsf")
   val glcBorderInspectionPosts16g = loadConfig("files.codelists.glc.border-inspection-posts")
+  val glcApprovedDipositories16h = loadConfig("files.codelists.glc.approved-dipositories")
+  val glcPlaceNamesGB16i = loadConfig("files.codelists.glc.gb-place-names")
+  val glcOtherLocationCodes16j = loadConfig("files.codelists.glc.other-location-codes")
   val glcDep16k = loadConfig("files.codelists.glc.dep")
+  val glcCse16l = loadConfig("files.codelists.glc.cse")
+  val glcRail16m = loadConfig("files.codelists.glc.rail")
+  val glcActs16n = loadConfig("files.codelists.glc.acts")
+  val glcRoro16r = loadConfig("files.codelists.glc.roro")
 }

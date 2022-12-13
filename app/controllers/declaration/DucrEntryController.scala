@@ -65,5 +65,4 @@ class DucrEntryController @Inject() (
         case _                     => Some(ConsignmentReferences(Some(ducr), None))
       })
     } map (_ => navigator.continueTo(routes.LocalReferenceNumberController.displayPage))
-
 }
