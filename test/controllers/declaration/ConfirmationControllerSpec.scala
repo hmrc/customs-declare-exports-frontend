@@ -19,6 +19,7 @@ package controllers.declaration
 import base.{ControllerWithoutFormSpec, Injector}
 import config.AppConfig
 import controllers.routes.RejectedNotificationsController
+import forms.declaration.LocationOfGoods
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.STANDARD_FRONTIER
 import handlers.ErrorHandler
 import mock.ErrorHandlerMocks
@@ -186,6 +187,8 @@ class ConfirmationControllerSpec extends ControllerWithoutFormSpec with BeforeAn
         And("the declaration has been rejected")
         when(mockCustomsDeclareExportsConnector.findSubmission(any())(any(), any()))
           .thenReturn(Future.successful(Some(submissionWithErrors)))
+        when(mockCustomsDeclareExportsConnector.findDeclaration(any())(any(), any()))
+          .thenReturn(Future.successful(None))
 
         val request = buildRequest()
         val result = controller.displayConfirmationPage(request)
@@ -200,6 +203,8 @@ class ConfirmationControllerSpec extends ControllerWithoutFormSpec with BeforeAn
       "no notifications have been received yet" in new SetUp {
         when(mockCustomsDeclareExportsConnector.findSubmission(any())(any(), any()))
           .thenReturn(Future.successful(None))
+        when(mockCustomsDeclareExportsConnector.findDeclaration(any())(any(), any()))
+          .thenReturn(Future.successful(None))
 
         val request = buildRequest()
         val result = controller.displayConfirmationPage(request)
@@ -207,7 +212,7 @@ class ConfirmationControllerSpec extends ControllerWithoutFormSpec with BeforeAn
         status(result) mustBe OK
 
         val submission = Submission(submissionId, "eori", lrn, None, Some(ducr), None, None, Seq.empty[Action])
-        val confirmation = Confirmation(request.email, STANDARD_FRONTIER.toString, Some(submission))
+        val confirmation = Confirmation(request.email, STANDARD_FRONTIER.toString, Some(submission), Some(""))
         val expectedView = confirmationPage(confirmation)(request, messages)
 
         val actualView = viewOf(result)
@@ -217,13 +222,51 @@ class ConfirmationControllerSpec extends ControllerWithoutFormSpec with BeforeAn
       "at least one notification has been received yet" in new SetUp {
         when(mockCustomsDeclareExportsConnector.findSubmission(any())(any(), any()))
           .thenReturn(Future.successful(Some(submissionRecieved)))
+        when(mockCustomsDeclareExportsConnector.findDeclaration(any())(any(), any()))
+          .thenReturn(Future.successful(None))
 
         val request = buildRequest()
         val result = controller.displayConfirmationPage(request)
 
         status(result) mustBe OK
 
-        val confirmation = Confirmation(request.email, STANDARD_FRONTIER.toString, Some(submissionRecieved))
+        val confirmation = Confirmation(request.email, STANDARD_FRONTIER.toString, Some(submissionRecieved), None)
+        val expectedView = confirmationPage(confirmation)(request, messages)
+
+        val actualView = viewOf(result)
+        actualView mustBe expectedView
+      }
+
+      "a submission is found but declaration lookup fails" in new SetUp {
+        when(mockCustomsDeclareExportsConnector.findSubmission(any())(any(), any()))
+          .thenReturn(Future.successful(Some(submissionRecieved)))
+        when(mockCustomsDeclareExportsConnector.findDeclaration(any())(any(), any()))
+          .thenReturn(Future.failed(new Exception()))
+
+        val request = buildRequest()
+        val result = controller.displayConfirmationPage(request)
+
+        status(result) mustBe OK
+
+        val confirmation = Confirmation(request.email, STANDARD_FRONTIER.toString, Some(submissionRecieved), None)
+        val expectedView = confirmationPage(confirmation)(request, messages)
+
+        val actualView = viewOf(result)
+        actualView mustBe expectedView
+      }
+
+      "a submission and declaration are found" in new SetUp {
+        when(mockCustomsDeclareExportsConnector.findSubmission(any())(any(), any()))
+          .thenReturn(Future.successful(Some(submissionRecieved)))
+        when(mockCustomsDeclareExportsConnector.findDeclaration(any())(any(), any()))
+          .thenReturn(Future.successful(Some(aDeclaration(withGoodsLocation(LocationOfGoods(""))))))
+
+        val request = buildRequest()
+        val result = controller.displayConfirmationPage(request)
+
+        status(result) mustBe OK
+
+        val confirmation = Confirmation(request.email, STANDARD_FRONTIER.toString, Some(submissionRecieved), Some(""))
         val expectedView = confirmationPage(confirmation)(request, messages)
 
         val actualView = viewOf(result)
