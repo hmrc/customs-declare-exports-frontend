@@ -187,18 +187,23 @@ tariff.declaration.type.common.text = This answer will complete<br>{0}.
 tariff.declaration.type.common.linkText.0 = data element 1/2 - Additional Declaration Type (opens in new tab)
 tariff.declaration.type.clearance.text = Go to data element 1/2 Additional Declaration Type in the<br>{0}.
 tariff.declaration.type.clearance.linkText.0 = C21 Customs Clearance Request Completion Guide - Inventory Exports (opens in new tab)
+
+tariff.declaration.ducrChoice.1.clearance.text = Go to the {0}. For details about:
+tariff.declaration.ducrChoice.1.clearance.linkText.0 = C21 Customs Clearance Request Completion Guide - Inventory Exports (opens in new tab)
+tariff.declaration.ducrChoice.2.clearance.text = UCR, go to data element 2/1 Simplified Declaration/Previous Documents
+tariff.declaration.ducrChoice.3.clearance.text = LRN, go to data element 2/5 LRN (no previous reference)
 tariff.declaration.traderReference.common.text = For details about the DUCR number, go to {0}.
 tariff.declaration.traderReference.common.linkText.0 = data element 2/4 - Reference Number / UCR (opens in a new tab)
 tariff.declaration.confirmDucr.common.text = For details about the DUCR number, go to {0}.
 tariff.declaration.confirmDucr.common.linkText.0 = data element 2/4 - Reference Number / UCR (opens in a new tab)
+tariff.declaration.ducr.1.common.text = For details about the DUCR number, go to {0}.
+tariff.declaration.ducr.1.common.linkText.0 = data element 2/4 - Reference Number / UCR (opens in a new tab)
 tariff.declaration.ducr.1.clearance.text = Go to the C21 Customs Clearance Request Completion Guide - Inventory Exports. For details about the DUCR, see {0}
 tariff.declaration.ducr.1.clearance.linkText.0 = data element 2/1 Simplified Declaration/Previous Documents (opens in new tab).
 tariff.declaration.lrn.1.clearance.text = Go to the C21 Customs Clearance Request Completion Guide - Inventory Exports. For details about the LRN, see {0}
 tariff.declaration.lrn.1.clearance.linkText.0 = data element 2/5 LRN (no previous reference) (opens in new tab).
 tariff.declaration.lrn.1.common.text = For details about the LRN, go to<br>{0}.
 tariff.declaration.lrn.1.common.linkText.0 = data element 2/5 - LRN (no previous reference) (This link opens in a new tab)
-tariff.declaration.ducr.1.common.text = For details about the DUCR, go to<br>{0}
-tariff.declaration.ducr.1.common.linkText.0 = data element 2/4 - Reference Number / UCR (This link opens in a new tab)
 tariff.declaration.consignmentReferences.1.common.text = For details about the DUCR, go to<br>{0}.
 tariff.declaration.consignmentReferences.1.common.linkText.0 = data element 2/4 - Reference Number / UCR
 tariff.declaration.consignmentReferences.2.common.text = For details about the LRN, go to<br>{0}.
@@ -209,6 +214,7 @@ tariff.declaration.consignmentReferences.1.clearance.linkText.0 = C21 Customs Cl
 tariff.declaration.consignmentReferences.2.clearance.text = UCR, go to data element 2/1 Simplified Declaration/Previous Documents
 tariff.declaration.consignmentReferences.3.clearance.text = LRN, go to data element 2/5 LRN (no previous reference)
 tariff.declaration.consignmentReferences.1.supplementary.text = The entries on this page complete all the specific requirements for data element 2/1 for supplementary declarations - both the Y-references required are now entered.
+
 tariff.declaration.mucr.common.text = The entry on this page automatically enters declaration category ‘Z’ and document code ‘MCR’ and completes the required components for {0}.
 tariff.declaration.mucr.common.linkText.0 = data element 2/1 Simplified Declaration/Previous Documents (opens in new tab)
 tariff.declaration.mucr.clearance.text = The entry on this page automatically enters category ‘Z’ and document code ‘MCR’ and completes the required components for {0}.
@@ -543,6 +549,10 @@ notDeclarent.paragraph2Link = contact the EORI contact team
 notDeclarent.referenceTitle = Help and support
 notDeclarent.reference.support = If you are having problems making a declaration, phone: {0}
 notDeclarent.reference.openingHours = Open 8am to 6pm, Monday to Friday (closed bank holidays).
+
+declaration.ducr.choice.title = Do you have a Declaration Unique Consignment Reference Number (DUCR)?
+declaration.ducr.choice.answer.no = No, I would like to create a DUCR
+declaration.ducr.choice.answer.empty = Select if you would like to create a DUCR
 
 declaration.ducrEntry.header =  Enter your Declaration Unique Consignment Reference (DUCR)
 declaration.ducrEntry.ducr.paragraph = Complete your DUCR by using the following format:

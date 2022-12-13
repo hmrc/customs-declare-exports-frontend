@@ -45,7 +45,6 @@ class DeclarantDetailsViewSpec extends UnitViewSpec with ExportsTestHelper with 
       val view = createView(form())
 
       "display page title" in {
-
         view.getElementsByTag("h1") must containMessageForElements("declaration.declarant.title", request.eori)
       }
 
@@ -53,6 +52,7 @@ class DeclarantDetailsViewSpec extends UnitViewSpec with ExportsTestHelper with 
         view.getElementById("code_yes").attr("value") mustBe YesNoAnswers.yes
         view.getElementsByAttributeValue("for", "code_yes") must containMessageForElements("site.yes")
       }
+
       "display radio button with No option" in {
         view.getElementById("code_no").attr("value") mustBe YesNoAnswers.no
         view.getElementsByAttributeValue("for", "code_no") must containMessageForElements("site.no")
@@ -63,7 +63,6 @@ class DeclarantDetailsViewSpec extends UnitViewSpec with ExportsTestHelper with 
 
     onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { implicit request =>
       "display section header" in {
-
         createView(form()).getElementById("section-header") must containMessage("declaration.section.1")
       }
 
@@ -83,12 +82,10 @@ class DeclarantDetailsViewSpec extends UnitViewSpec with ExportsTestHelper with 
 
     onClearance { implicit request =>
       "display section header" in {
-
         createView(form()).getElementById("section-header") must containMessage("declaration.section.2")
       }
 
       "display 'Back' button that links to 'Entry into Declarant's Records' page" in {
-
         val view = declarantDetailsPage(form())(request, messages)
         val backButton = view.getElementById("back-link")
 
@@ -104,7 +101,6 @@ class DeclarantDetailsViewSpec extends UnitViewSpec with ExportsTestHelper with 
 
     onEveryDeclarationJourney() { implicit request =>
       "display error when answer is empty" in {
-
         val view = createView(form().fillAndValidate(DeclarantEoriConfirmation("")))
 
         view must haveGovukGlobalErrorSummary
@@ -114,7 +110,6 @@ class DeclarantDetailsViewSpec extends UnitViewSpec with ExportsTestHelper with 
       }
 
       "display error when EORI is provided, but is incorrect" in {
-
         val view = createView(
           form()
             .fillAndValidate(DeclarantEoriConfirmation("wrong"))
@@ -130,10 +125,8 @@ class DeclarantDetailsViewSpec extends UnitViewSpec with ExportsTestHelper with 
   }
 
   "Declarant Details View when filled" should {
-
     onEveryDeclarationJourney() { implicit request =>
       "display answer input" in {
-
         val form = DeclarantEoriConfirmation.form().fill(DeclarantEoriConfirmation(YesNoAnswers.yes))
         val view = createView(form)
 
