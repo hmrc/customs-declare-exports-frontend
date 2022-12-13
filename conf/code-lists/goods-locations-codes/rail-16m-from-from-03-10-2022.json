@@ -2,81 +2,81 @@
   {
     "en": "Ashford / Eurostar / Ashford International",
     "cy": "Ashford / Eurostar / Ashford International",
-    "codes": "GBAUASDASDASD"
+    "code": "GBAUASDASDASD"
   },
   {
     "en": "Barking / DB Cargo (UK) Limited / Box Lane, Barking IG11 0SQ",
     "cy": "Barking / DB Cargo (UK) Limited / Box Lane, Barking IG11 0SQ",
-    "codes": "GBAULBKLBKLBK"
+    "code": "GBAULBKLBKLBK"
   },
   {
     "en": "Dagenham  / Ford Motor Company / Ford Motor Company Ltd, Transport Operations, Dagenham, Essex, RM9 6SA",
     "cy": "Dagenham  / Ford Motor Company / Ford Motor Company Ltd, Transport Operations, Dagenham, Essex, RM9 6SA",
-    "codes": "GBAUDAGDAGFRD"
+    "code": "GBAUDAGDAGFRD"
   },
   {
     "en": "Daventry / Eddie Stobart Limited / DIRFT 1, Unit B, Railport Approach, Crick, Northamptonshire, NN6 7ES",
     "cy": "Daventry / Eddie Stobart Limited / DIRFT 1, Unit B, Railport Approach, Crick, Northamptonshire, NN6 7ES",
-    "codes": "GBAUDVYDVYES1"
+    "code": "GBAUDVYDVYES1"
   },
   {
     "en": "Daventry / Eddie Stobart Limited / DIRFT 2, DC420, Rugby Road, Warwickshire, CV23 8YH",
     "cy": "Daventry / Eddie Stobart Limited / DIRFT 2, DC420, Rugby Road, Warwickshire, CV23 8YH",
-    "codes": "GBAUDVYDVYES2"
+    "code": "GBAUDVYDVYES2"
   },
   {
     "en": "Daventry / WHM Daventry / WH Malcom Ltd Railport, Daventry International Railport, Railport Approach, Crick, Kilsby, Northampton NN6 7JZ",
     "cy": "Daventry / WHM Daventry / WH Malcom Ltd Railport, Daventry International Railport, Railport Approach, Crick, Kilsby, Northampton NN6 7JZ",
-    "codes": "GBAUKLSDVYWHM"
+    "code": "GBAUKLSDVYWHM"
   },
   {
     "en": "Doncaster / Modus Operations Limited / Railport Terminal, Railport Way, New Rossington, Doncaster DN11 0BQ",
     "cy": "Doncaster / Modus Operations Limited / Railport Terminal, Railport Way, New Rossington, Doncaster DN11 0BQ",
-    "codes": "GBAURSDDONMUE"
+    "code": "GBAURSDDONMUE"
   },
   {
     "en": "Eastleigh  / Network Rail Infrastructure Limited / Eastleigh Long Welded Rail Depot, Dutton Lane, Eastleigh, Hampshire, SO50 6AA",
     "cy": "Eastleigh  / Network Rail Infrastructure Limited / Eastleigh Long Welded Rail Depot, Dutton Lane, Eastleigh, Hampshire, SO50 6AA",
-    "codes": "GBAUEATELWELW"
+    "code": "GBAUEATELWELW"
   },
   {
     "en": "Ebbsfleet / Eurostar / Ebbsfleet International",
     "cy": "Ebbsfleet / Eurostar / Ebbsfleet International",
-    "codes": "GBAUEBSEBSEURO"
+    "code": "GBAUEBSEBSEURO"
   },
   {
     "en": "Folkestone / Eurostar / Dollands Moor",
     "cy": "Folkestone / Eurostar / Dollands Moor",
-    "codes": "GBAUNGONGONGO"
+    "code": "GBAUNGONGONGO"
   },
   {
     "en": "Irvine / UPM / Meadowhead Rd, Irvine KA11 5AT",
     "cy": "Irvine / UPM / Meadowhead Rd, Irvine KA11 5AT",
-    "codes": "GBAUKMKKMKUPM"
+    "code": "GBAUKMKKMKUPM"
   },
   {
     "en": "Nottingham / STVA UK Ltd / Toton Traction Maintenance Depot Station Road, Stapleford, Nottingham NG10 1HA ",
     "cy": "Nottingham / STVA UK Ltd / Toton Traction Maintenance Depot Station Road, Stapleford, Nottingham NG10 1HA ",
-    "codes": "GBAUNTGEMASTV"
+    "code": "GBAUNTGEMASTV"
   },
   {
     "en": "Port Talbot / Tata Steel / Tata Steel UK Limited Llanwern Works, Newport, NP19 4QZ",
     "cy": "Port Talbot / Tata Steel / Tata Steel UK Limited Llanwern Works, Newport, NP19 4QZ",
-    "codes": "GBAUXLWLLNTSU"
+    "code": "GBAUXLWLLNTSU"
   },
   {
     "en": "Scunthorpe / British Steel / The Rail Terminal, Brigg Road, Scunthorpe, DN16 1BP",
     "cy": "Scunthorpe / British Steel / The Rail Terminal, Brigg Road, Scunthorpe, DN16 1BP",
-    "codes": "GBAUSCPSCPBRS"
+    "code": "GBAUSCPSCPBRS"
   },
   {
     "en": "St Pancras International  / Eurostar / St Pancras International ",
     "cy": "St Pancras International  / Eurostar / St Pancras International ",
-    "codes": "GBAUSPCSPCEURO"
+    "code": "GBAUSPCSPCEURO"
   },
   {
     "en": "Widnes / Eddie Stobart Limited / Widnes Railhead, Mathieson Road, Widnes, WA8 0NX",
     "cy": "Widnes / Eddie Stobart Limited / Widnes Railhead, Mathieson Road, Widnes, WA8 0NX",
-    "codes": "GBAUWDNWDNEST"
+    "code": "GBAUWDNWDNEST"
   }
 ]

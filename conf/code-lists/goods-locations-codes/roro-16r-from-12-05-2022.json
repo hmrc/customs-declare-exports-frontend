@@ -2,121 +2,121 @@
   {
     "en": "Cairnryan",
     "cy": "Cairnryan",
-    "codes": "GBAUCYNAYRCYN"
+    "code": "GBAUCYNAYRCYN"
   },
   {
     "en": "Dover/Eurotunnel",
     "cy": "Dover/Eurotunnel",
-    "codes": "GBAUDEUDEUDEU"
+    "code": "GBAUDEUDEUDEU"
   },
   {
     "en": "Dover / Eastern Docks excluding Dover Cargo Terminal & Eastern Arm",
     "cy": "Dover / Eastern Docks excluding Dover Cargo Terminal & Eastern Arm",
-    "codes": "GBAUDVRDOVDVR"
+    "code": "GBAUDVRDOVDVR"
   },
   {
     "en": "Eurotunnel (Folkestone)",
     "cy": "Eurotunnel (Folkestone)",
-    "codes": "GBAUEUTEUTEUT"
+    "code": "GBAUEUTEUTEUT"
   },
   {
     "en": "Felixstowe / RORO Berths 3; RoRo Berth 4",
     "cy": "Felixstowe / RORO Berths 3; RoRo Berth 4",
-    "codes": "GBAUFXTFXTFXT"
+    "code": "GBAUFXTFXTFXT"
   },
   {
     "en": "Fishguard",
     "cy": "Fishguard",
-    "codes": "GBAUFISFISFIS"
+    "code": "GBAUFISFISFIS"
   },
   {
     "en": "Harwich / RORO Berth 2; RoRo Berth 4",
     "cy": "Harwich / RORO Berth 2; RoRo Berth 4",
-    "codes": "GBAUHRHHRHHRH"
+    "code": "GBAUHRHHRHHRH"
   },
   {
     "en": "Heysham",
     "cy": "Heysham",
-    "codes": "GBAUHYMHEYHYM"
+    "code": "GBAUHYMHEYHYM"
   },
   {
     "en": "Holyhead",
     "cy": "Holyhead",
-    "codes": "GBAUHLYHLDHLY"
+    "code": "GBAUHLYHLDHLY"
   },
   {
     "en": "Hull / River Terminal 1; 5 Quay Middle; 5 Quay West",
     "cy": "Hull / River Terminal 1; 5 Quay Middle; 5 Quay West",
-    "codes": "GBAUHULHULHUL"
+    "code": "GBAUHULHULHUL"
   },
   {
     "en": "Immingham / Outer Harbour 1, 2 and 3;  Berth 11,1; Berth 11,2; Berth 12, 1 ramp; Berth 12, 2",
     "cy": "Immingham / Outer Harbour 1, 2 and 3;  Berth 11,1; Berth 11,2; Berth 12, 1 ramp; Berth 12, 2",
-    "codes": "GBAUIMMIMMIMM"
+    "code": "GBAUIMMIMMIMM"
   },
   {
     "en": "Killingholme",
     "cy": "Killingholme",
-    "codes": "GBAUKLHKILKLH"
+    "code": "GBAUKLHKILKLH"
   },
   {
     "en": "Liverpool / Langton Berth;  Gladstone Berth; 12 Quays Terminal Birkenhead",
     "cy": "Liverpool / Langton Berth;  Gladstone Berth; 12 Quays Terminal Birkenhead",
-    "codes": "GBAULIVLIVLIV"
+    "code": "GBAULIVLIVLIV"
   },
   {
     "en": "Loch Ryan / Stena Line Loch Ryan Port; Cairnryan; DG9 8RG",
     "cy": "Loch Ryan / Stena Line Loch Ryan Port; Cairnryan; DG9 8RG",
-    "codes": "GBAULRPAYRLRP"
+    "code": "GBAULRPAYRLRP"
   },
   {
     "en": "Newhaven / Newhaven Ferry Terminal",
     "cy": "Newhaven / Newhaven Ferry Terminal",
-    "codes": "GBAUNHVNHVNHV"
+    "code": "GBAUNHVNHVNHV"
   },
   {
     "en": "Pembroke / Pembroke Dock Ferry Terminal",
     "cy": "Pembroke / Pembroke Dock Ferry Terminal",
-    "codes": "GBAUMILMILMIL"
+    "code": "GBAUMILMILMIL"
   },
   {
     "en": "Plymouth / Plymouth RORO Berth West Wharf",
     "cy": "Plymouth / Plymouth RORO Berth West Wharf",
-    "codes": "GBAUPLYPLYPLY"
+    "code": "GBAUPLYPLYPLY"
   },
   {
     "en": "Poole / Poole Continental Freight & Ferry Terminal, excluding South Quay",
     "cy": "Poole / Poole Continental Freight & Ferry Terminal, excluding South Quay",
-    "codes": "GBAUPOOPOOPOO"
+    "code": "GBAUPOOPOOPOO"
   },
   {
     "en": "Port of Tyne / Port of Tyne International Passenger Terminal, North Shields",
     "cy": "Port of Tyne / Port of Tyne International Passenger Terminal, North Shields",
-    "codes": "GBAUNCLTYNNCL"
+    "code": "GBAUNCLTYNNCL"
   },
   {
     "en": "Portsmouth / Portsmouth International Port: RORO Berth 1; RORO Berth 2; RORO Berth 3; RORO Berth 4; RORO Berth 5",
     "cy": "Portsmouth / Portsmouth International Port: RORO Berth 1; RORO Berth 2; RORO Berth 3; RORO Berth 4; RORO Berth 5",
-    "codes": "GBAUPMEPTMPME"
+    "code": "GBAUPMEPTMPME"
   },
   {
     "en": "Purfleet /  The entire port, including Dartford International Ferry Terminal and Purfleet Thames Terminal",
     "cy": "Purfleet /  The entire port, including Dartford International Ferry Terminal and Purfleet Thames Terminal",
-    "codes": "GBAUPUFPUFPUF"
+    "code": "GBAUPUFPUFPUF"
   },
   {
     "en": "Sheerness / Berth 1; Berth 2; Berth 10",
     "cy": "Sheerness / Berth 1; Berth 2; Berth 10",
-    "codes": "GBAUMEDMEDMED"
+    "code": "GBAUMEDMEDMED"
   },
   {
     "en": "Teesport / No 1 (Riverside) Berth; No 2 (Riverside) Berth; No 3 (Riverside) Berth",
     "cy": "Teesport / No 1 (Riverside) Berth; No 2 (Riverside) Berth; No 3 (Riverside) Berth",
-    "codes": "GBAUTEEMIDTEE"
+    "code": "GBAUTEEMIDTEE"
   },
   {
     "en": "Tilbury / 34 Berth",
     "cy": "Tilbury / 34 Berth",
-    "codes": "GBAUTILLONTIL"
+    "code": "GBAUTILLONTIL"
   }
 ]

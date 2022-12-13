@@ -42,13 +42,21 @@ class CodeListConnectorSpec extends UnitWithMocksSpec with BeforeAndAfterEach {
     when(appConfig.additionalProcedureCodesForC21).thenReturn("/code-lists/manyCodes.json")
     when(appConfig.dmsErrorCodes).thenReturn("/code-lists/manyCodes.json")
     when(appConfig.countryCodes).thenReturn("/code-lists/manyCodes.json")
-    when(appConfig.goodsLocationCodeFile).thenReturn("/code-lists/manyCodes.json")
     when(appConfig.packageTypeCodeFile).thenReturn("/code-lists/manyCodes.json")
     when(appConfig.officeOfExitsCodeFile).thenReturn("/code-lists/manyCodes.json")
     when(appConfig.customsOfficesCodeFile).thenReturn("/code-lists/manyCodes.json")
+    when(appConfig.glcAirports16a).thenReturn("/code-lists/manyCodes.json")
+    when(appConfig.glcCoaAirports16b).thenReturn("/code-lists/manyCodes.json")
+    when(appConfig.glcMaritimeAndWharves16c).thenReturn("/code-lists/manyCodes.json")
+    when(appConfig.glcItsf16d).thenReturn("/code-lists/manyCodes.json")
+    when(appConfig.glcRemoteItsf16e).thenReturn("/code-lists/manyCodes.json")
+    when(appConfig.glcExternalItsf16f).thenReturn("/code-lists/manyCodes.json")
+    when(appConfig.glcBorderInspectionPosts16g).thenReturn("/code-lists/manyCodes.json")
+    when(appConfig.glcDep16k).thenReturn("/code-lists/manyCodes.json")
   }
 
-  private lazy val codeListConnector = new FileBasedCodeListConnector(appConfig)
+  private lazy val glc = new GoodsLocationCodesConnector(appConfig)
+  private lazy val codeListConnector = new FileBasedCodeListConnector(appConfig, glc)
 
   "FileBasedCodeListConnector" should {
     "throw exception on initialisation" when {
@@ -56,19 +64,19 @@ class CodeListConnectorSpec extends UnitWithMocksSpec with BeforeAndAfterEach {
       "code list file is missing" in {
         when(appConfig.procedureCodesListFile).thenReturn("")
 
-        intercept[IllegalArgumentException](new FileBasedCodeListConnector(appConfig).getProcedureCodes(ENGLISH))
+        intercept[IllegalArgumentException](new FileBasedCodeListConnector(appConfig, glc).getProcedureCodes(ENGLISH))
       }
 
       "code list file is malformed" in {
         when(appConfig.procedureCodesListFile).thenReturn("/code-lists/malformedCodes.json")
 
-        intercept[IllegalArgumentException](new FileBasedCodeListConnector(appConfig).getProcedureCodes(ENGLISH))
+        intercept[IllegalArgumentException](new FileBasedCodeListConnector(appConfig, glc).getProcedureCodes(ENGLISH))
       }
 
       "code list file is empty" in {
         when(appConfig.procedureCodesListFile).thenReturn("/code-lists/empty.json")
 
-        intercept[IllegalArgumentException](new FileBasedCodeListConnector(appConfig).getProcedureCodes(ENGLISH))
+        intercept[IllegalArgumentException](new FileBasedCodeListConnector(appConfig, glc).getProcedureCodes(ENGLISH))
       }
     }
 
@@ -147,7 +155,7 @@ class CodeListConnectorSpec extends UnitWithMocksSpec with BeforeAndAfterEach {
     "return a map of 'Holder of Authorisation' codes ordered as expected" when {
       "receives a supported language as input, or default to English for unsupported languages" in {
         when(appConfig.holderOfAuthorisationCodes).thenReturn("/code-lists/holderOfAuthorisationCodes.json")
-        val codeListConnector = new FileBasedCodeListConnector(appConfig)
+        val codeListConnector = new FileBasedCodeListConnector(appConfig, glc)
         (codeListConnector.supportedLanguages :+ JAPANESE).foreach { locale =>
           val codes = codeListConnector.getHolderOfAuthorisationCodes(locale).keys.toList
           codes.size mustBe 53
@@ -197,20 +205,6 @@ class CodeListConnectorSpec extends UnitWithMocksSpec with BeforeAndAfterEach {
       }
     }
 
-    "return a map of Goods Location Codes" when {
-      "'ENGLISH' locale passed return codes with English descriptions" in {
-        codeListConnector.getGoodsLocationCodes(ENGLISH) must be(sampleGlcsEnglish)
-      }
-
-      "'WELSH' local passed return codes with Welsh descriptions" in {
-        codeListConnector.getGoodsLocationCodes(codeListConnector.WELSH) must be(sampleGlcsWelsh)
-      }
-
-      "unsupported 'JAPANESE' locale is passed return codes with English descriptions" in {
-        codeListConnector.getGoodsLocationCodes(JAPANESE) must be(sampleGlcsEnglish)
-      }
-    }
-
     "return a map of Package Type Codes" when {
       "'ENGLISH' locale passed return codes with English descriptions" in {
         codeListConnector.getPackageTypes(ENGLISH) must be(samplePtcsEnglish)
@@ -250,6 +244,20 @@ class CodeListConnectorSpec extends UnitWithMocksSpec with BeforeAndAfterEach {
 
       "unsupported 'JAPANESE' locale is passed return codes with English descriptions" in {
         codeListConnector.getCustomsOffices(JAPANESE) must be(sampleCocsEnglish)
+      }
+    }
+
+    "return a map of Goods Location Codes" when {
+      "'ENGLISH' locale passed return codes with English descriptions" in {
+        codeListConnector.getGoodsLocationCodes(ENGLISH) must be(sampleGlcsEnglish)
+      }
+
+      "'WELSH' local passed return codes with Welsh descriptions" in {
+        codeListConnector.getGoodsLocationCodes(codeListConnector.WELSH) must be(sampleGlcsWelsh)
+      }
+
+      "unsupported 'JAPANESE' locale is passed return codes with English descriptions" in {
+        codeListConnector.getGoodsLocationCodes(JAPANESE) must be(sampleGlcsEnglish)
       }
     }
   }

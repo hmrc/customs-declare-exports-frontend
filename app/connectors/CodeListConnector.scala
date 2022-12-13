@@ -44,8 +44,6 @@ object CodeItem {
 @ImplementedBy(classOf[FileBasedCodeListConnector])
 trait CodeListConnector {
 
-  type CodeMap[T <: CommonCode] = Map[String, ListMap[String, T]]
-
   def getAdditionalProcedureCodesMap(locale: Locale): ListMap[String, AdditionalProcedureCode]
   def getAdditionalProcedureCodesMapForC21(locale: Locale): ListMap[String, AdditionalProcedureCode]
   def getCountryCodes(locale: Locale): ListMap[String, Country]
@@ -55,17 +53,14 @@ trait CodeListConnector {
   def getProcedureCodesForC21(locale: Locale): ListMap[String, ProcedureCode]
   def getGoodsLocationCodes(locale: Locale): ListMap[String, GoodsLocationCode]
   def getPackageTypes(locale: Locale): ListMap[String, PackageType]
-
   def getOfficeOfExits(locale: Locale): ListMap[String, OfficeOfExit]
-
   def getCustomsOffices(locale: Locale): ListMap[String, CustomsOffice]
 
-  val WELSH = new Locale("cy", "GB", "");
-  val supportedLanguages = Seq(ENGLISH, WELSH)
 }
 
 @Singleton
-class FileBasedCodeListConnector @Inject() (appConfig: AppConfig) extends CodeListConnector {
+class FileBasedCodeListConnector @Inject() (appConfig: AppConfig, goodsLocationCodes: GoodsLocationCodesConnector)
+    extends CodeListConnector with FileBasedCodeListFunctions {
 
   def getAdditionalProcedureCodesMap(locale: Locale): ListMap[String, AdditionalProcedureCode] =
     additionalProcedureCodeMapsByLang.getOrElse(locale.getLanguage, additionalProcedureCodeMapsByLang.value.head._2)
@@ -89,7 +84,7 @@ class FileBasedCodeListConnector @Inject() (appConfig: AppConfig) extends CodeLi
     procedureCodeForC21ListsByLang.getOrElse(locale.getLanguage, procedureCodeForC21ListsByLang.value.head._2)
 
   def getGoodsLocationCodes(locale: Locale): ListMap[String, GoodsLocationCode] =
-    goodsLocationCodeByLang.getOrElse(locale.getLanguage, goodsLocationCodeByLang.value.head._2)
+    goodsLocationCodes.glcDep16kByLang.getOrElse(locale.getLanguage, goodsLocationCodes.glcDep16kByLang.value.head._2)
 
   def getPackageTypes(locale: Locale): ListMap[String, PackageType] =
     packageTypeCodeByLang.getOrElse(locale.getLanguage, packageTypeCodeByLang.value.head._2)
@@ -135,11 +130,6 @@ class FileBasedCodeListConnector @Inject() (appConfig: AppConfig) extends CodeLi
     (codeItem: CodeItem, locale: Locale) => ProcedureCode(codeItem.code, codeItem.getDescriptionByLocale(locale))
   )
 
-  private val goodsLocationCodeByLang = loadCommonCodesAsOrderedMap(
-    appConfig.goodsLocationCodeFile,
-    (codeItem: CodeItem, locale: Locale) => GoodsLocationCode(codeItem.code, codeItem.getDescriptionByLocale(locale))
-  )
-
   private val packageTypeCodeByLang = loadCommonCodesAsOrderedMap(
     appConfig.packageTypeCodeFile,
     (codeItem: CodeItem, locale: Locale) => PackageType(codeItem.code, codeItem.getDescriptionByLocale(locale))
@@ -155,7 +145,72 @@ class FileBasedCodeListConnector @Inject() (appConfig: AppConfig) extends CodeLi
     (codeItem: CodeItem, locale: Locale) => CustomsOffice(codeItem.code, codeItem.getDescriptionByLocale(locale))
   )
 
-  private def loadCommonCodesAsOrderedMap[T <: CommonCode](srcFile: String, factory: (CodeItem, Locale) => T): CodeMap[T] = {
+  private lazy val standardOrCustomErrorDefinitionFile =
+    if (appConfig.isUsingImprovedErrorMessages) {
+      val pathParts = appConfig.dmsErrorCodes.split('.')
+
+      val customFilePath = for {
+        start <- pathParts.headOption
+        end <- pathParts.lastOption
+      } yield s"${start}-customised.${end}"
+
+      customFilePath.getOrElse(appConfig.dmsErrorCodes)
+    } else appConfig.dmsErrorCodes
+}
+
+class GoodsLocationCodesConnector @Inject() (appConfig: AppConfig) extends FileBasedCodeListFunctions {
+
+  val glcAirportsByLang = loadCommonCodesAsOrderedMap(
+    appConfig.glcAirports16a,
+    (codeItem: CodeItem, locale: Locale) => GoodsLocationCode(codeItem.code, codeItem.getDescriptionByLocale(locale))
+  )
+
+  val glcCoaAirportsByLang = loadCommonCodesAsOrderedMap(
+    appConfig.glcCoaAirports16b,
+    (codeItem: CodeItem, locale: Locale) => GoodsLocationCode(codeItem.code, codeItem.getDescriptionByLocale(locale))
+  )
+
+  val glcMaritimeAndWharvesByLang = loadCommonCodesAsOrderedMap(
+    appConfig.glcMaritimeAndWharves16c,
+    (codeItem: CodeItem, locale: Locale) => GoodsLocationCode(codeItem.code, codeItem.getDescriptionByLocale(locale))
+  )
+
+  val glcItsfByLang = loadCommonCodesAsOrderedMap(
+    appConfig.glcItsf16d,
+    (codeItem: CodeItem, locale: Locale) => GoodsLocationCode(codeItem.code, codeItem.getDescriptionByLocale(locale))
+  )
+
+  val glcRemoteItsfByLang = loadCommonCodesAsOrderedMap(
+    appConfig.glcRemoteItsf16e,
+    (codeItem: CodeItem, locale: Locale) => GoodsLocationCode(codeItem.code, codeItem.getDescriptionByLocale(locale))
+  )
+
+  val glcBorderInspectionPostsByLang = loadCommonCodesAsOrderedMap(
+    appConfig.glcBorderInspectionPosts16g,
+    (codeItem: CodeItem, locale: Locale) => GoodsLocationCode(codeItem.code, codeItem.getDescriptionByLocale(locale))
+  )
+
+  val glcExternalItsfByLang = loadCommonCodesAsOrderedMap(
+    appConfig.glcRemoteItsf16e,
+    (codeItem: CodeItem, locale: Locale) => GoodsLocationCode(codeItem.code, codeItem.getDescriptionByLocale(locale))
+  )
+
+  val glcDep16kByLang = loadCommonCodesAsOrderedMap(
+    appConfig.glcDep16k,
+    (codeItem: CodeItem, locale: Locale) => GoodsLocationCode(codeItem.code, codeItem.getDescriptionByLocale(locale))
+  )
+
+}
+
+sealed trait FileBasedCodeListFunctions {
+
+  type CodeMap[T <: CommonCode] = Map[String, ListMap[String, T]]
+
+  val WELSH = new Locale("cy", "GB", "");
+  val supportedLanguages = Seq(ENGLISH, WELSH)
+
+  protected def loadCommonCodesAsOrderedMap[T <: CommonCode](srcFile: String, factory: (CodeItem, Locale) => T): CodeMap[T] = {
+
     val codeList = JsonFile.getJsonArrayFromFile(srcFile, CodeItem.formats)
 
     val langCodes = supportedLanguages.map { locale =>
@@ -169,15 +224,4 @@ class FileBasedCodeListConnector @Inject() (appConfig: AppConfig) extends CodeLi
     ListMap(langCodes: _*)
   }
 
-  private lazy val standardOrCustomErrorDefinitionFile =
-    if (appConfig.isUsingImprovedErrorMessages) {
-      val pathParts = appConfig.dmsErrorCodes.split('.')
-
-      val customFilePath = for {
-        start <- pathParts.headOption
-        end <- pathParts.lastOption
-      } yield s"${start}-customised.${end}"
-
-      customFilePath.getOrElse(appConfig.dmsErrorCodes)
-    } else appConfig.dmsErrorCodes
 }

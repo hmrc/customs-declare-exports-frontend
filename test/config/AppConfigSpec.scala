@@ -223,7 +223,7 @@ class AppConfigSpec extends UnitWithMocksSpec {
     }
 
     "have goodsLocationCode file path" in {
-      validAppConfig.goodsLocationCodeFile must be("/code-lists/goods-locations-codes/dep-16k-from-30-11-2022.json")
+      validAppConfig.glcDep16k must be("/code-lists/goods-locations-codes/dep")
     }
 
     "have goodsLocationCodeToLocationType file path" in {
@@ -494,11 +494,19 @@ object AppConfigSpec {
       |files.codelists.countryCodes="/code-lists/countryCodes.json"
       |files.codelists.countryCodeToAliasesLink="countryCodeToAliasesLink"
       |files.codelists.countryCodeToShortNameLink="countryCodeToShortNameLink"
-      |files.codelists.goodsLocationCode="/code-lists/goods-locations-codes/dep-16k-from-30-11-2022.json"
       |files.codelists.goodsLocationCodeToLocationTypeLink="goodsLocationCodeToLocationTypeLink"
       |files.codelists.packageTypeCode="packageTypeCode"
       |files.codelists.officeOfExits="officeOfExit"
       |files.codelists.customsOffices="customsOffice"
+      |
+      |files.codelists.glc.airports="/code-lists/goods-locations-codes/airports"
+      |files.codelists.glc.coa-airports="/code-lists/goods-locations-codes/coa-airports"
+      |files.codelists.glc.maritime-ports-and-wharves="/code-lists/goods-locations-codes/maritime-ports-and-wharves"
+      |files.codelists.glc.itsf="/code-lists/goods-locations-codes/itsf"
+      |files.codelists.glc.remote-itsf="/code-lists/goods-locations-codes/remote-itsf"
+      |files.codelists.glc.external-itsf="/code-lists/goods-locations-codes/external-itsf"
+      |files.codelists.glc.border-inspection-posts="/code-lists/goods-locations-codes/border-inspection-posts"
+      |files.codelists.glc.dep="/code-lists/goods-locations-codes/dep"
       |
       |draft.timeToLive=30d
       |microservice.services.nrs.host=localhostnrs

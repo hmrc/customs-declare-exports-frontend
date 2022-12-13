@@ -18,7 +18,7 @@ package services.view
 
 import base.UnitWithMocksSpec
 import config.AppConfig
-import connectors.FileBasedCodeListConnector
+import connectors.{FileBasedCodeListConnector, GoodsLocationCodesConnector}
 import forms.declaration.declarationHolder.AuthorizationTypeCodes.{EXRR, MIB}
 import forms.declaration.declarationHolder.DeclarationHolder
 import mock.FeatureFlagMocks
@@ -31,8 +31,8 @@ class HolderOfAuthorisationCodesSpec extends UnitWithMocksSpec with BeforeAndAft
 
   private val appConfig = mock[AppConfig]
 
-  private lazy val codeListConnector = new FileBasedCodeListConnector(appConfig)
-
+  private lazy val glc = new GoodsLocationCodesConnector(appConfig)
+  private lazy val codeListConnector = new FileBasedCodeListConnector(appConfig, glc)
   private lazy val holderOfAuthorisationCodes = new HolderOfAuthorisationCodes(codeListConnector, mockMerchandiseInBagConfig)
 
   override def beforeEach(): Unit = {
@@ -46,10 +46,17 @@ class HolderOfAuthorisationCodesSpec extends UnitWithMocksSpec with BeforeAndAft
     when(appConfig.additionalProcedureCodesForC21).thenReturn("/code-lists/manyCodes.json")
     when(appConfig.dmsErrorCodes).thenReturn("/code-lists/manyCodes.json")
     when(appConfig.countryCodes).thenReturn("/code-lists/manyCodes.json")
-    when(appConfig.goodsLocationCodeFile).thenReturn("/code-lists/manyCodes.json")
     when(appConfig.packageTypeCodeFile).thenReturn("/code-lists/manyCodes.json")
     when(appConfig.officeOfExitsCodeFile).thenReturn("/code-lists/manyCodes.json")
     when(appConfig.customsOfficesCodeFile).thenReturn("/code-lists/manyCodes.json")
+    when(appConfig.glcAirports16a).thenReturn("/code-lists/manyCodes.json")
+    when(appConfig.glcCoaAirports16b).thenReturn("/code-lists/manyCodes.json")
+    when(appConfig.glcMaritimeAndWharves16c).thenReturn("/code-lists/manyCodes.json")
+    when(appConfig.glcItsf16d).thenReturn("/code-lists/manyCodes.json")
+    when(appConfig.glcRemoteItsf16e).thenReturn("/code-lists/manyCodes.json")
+    when(appConfig.glcExternalItsf16f).thenReturn("/code-lists/manyCodes.json")
+    when(appConfig.glcBorderInspectionPosts16g).thenReturn("/code-lists/manyCodes.json")
+    when(appConfig.glcDep16k).thenReturn("/code-lists/manyCodes.json")
   }
 
   "HolderOfAuthorisationCodes.asListOfAutoCompleteItems" should {

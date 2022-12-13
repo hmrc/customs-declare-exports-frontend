@@ -2,86 +2,86 @@
   {
     "en": "Barrow Gas Terminal - Barrow in Furness",
     "cy": "Barrow Gas Terminal - Barrow in Furness",
-    "codes": "GBDUBIFBIFBGTGAS"
+    "code": "GBDUBIFBIFBGTGAS"
   },
   {
     "en": "BBLC - Bacton",
     "cy": "BBLC - Bacton",
-    "codes": "GBDUNRMFXTBLC"
+    "code": "GBDUNRMFXTBLC"
   },
   {
     "en": "Easington Gas Terminal - Hull",
     "cy": "Easington Gas Terminal - Hull",
-    "codes": "GBDUHULHULEGTGAS"
+    "code": "GBDUHULHULEGTGAS"
   },
   {
     "en": "EIRGRID UK Holdings Ltd – Connah’s Quay",
     "cy": "EIRGRID UK Holdings Ltd – Connah’s Quay",
-    "codes": "GBDUCOQMOSEIR"
+    "code": "GBDUCOQMOSEIR"
   },
   {
     "en": "GNI (UK) Limited - Kirkcudbright",
     "cy": "GNI (UK) Limited - Kirkcudbright",
-    "codes": "GBDUKBTABDGNI"
+    "code": "GBDUKBTABDGNI"
   },
   {
     "en": "Interconnector (UK) Ltd (IUK)",
     "cy": "Interconnector (UK) Ltd (IUK)",
-    "codes": "GBDUNRMGTYITC"
+    "code": "GBDUNRMGTYITC"
   },
   {
     "en": "Moyle Interconnector - Larne",
     "cy": "Moyle Interconnector - Larne",
-    "codes": "GBDUBLRBELMYL "
+    "code": "GBDUBLRBELMYL "
   },
   {
     "en": "National Grid BritNed Developments Ltd - Rochester",
     "cy": "National Grid BritNed Developments Ltd - Rochester",
-    "codes": "GBDURCSMEDBND"
+    "code": "GBDURCSMEDBND"
   },
   {
     "en": "National Grid Interconnecor Holdings (IFA1) - Ashford",
     "cy": "National Grid Interconnecor Holdings (IFA1) - Ashford",
-    "codes": "GBDUASFDOVIFA"
+    "code": "GBDUASFDOVIFA"
   },
   {
     "en": "National Grid Interconnecor Holdings (IFA2) - Warsash",
     "cy": "National Grid Interconnecor Holdings (IFA2) - Warsash",
-    "codes": "GBDUWSSPTMIFA"
+    "code": "GBDUWSSPTMIFA"
   },
   {
     "en": "National Grid Nemo Link Ltd - Sandwich",
     "cy": "National Grid Nemo Link Ltd - Sandwich",
-    "codes": "GBDUSDWRMGNMO"
+    "code": "GBDUSDWRMGNMO"
   },
   {
     "en": "Perenco Gas Terminal - Great Yarmouth",
     "cy": "Perenco Gas Terminal - Great Yarmouth",
-    "codes": "GBDUGTYGTYPGTGAS"
+    "code": "GBDUGTYGTYPGTGAS"
   },
   {
     "en": "Point of Ayr Gas Terminal - Holywell",
     "cy": "Point of Ayr Gas Terminal - Holywell",
-    "codes": "GBDUHWLHWLPGTGAS"
+    "code": "GBDUHWLHWLPGTGAS"
   },
   {
     "en": "Shetland Gas Terminal - Sullom Voe",
     "cy": "Shetland Gas Terminal - Sullom Voe",
-    "codes": "GBDUSULSULSGTGAS"
+    "code": "GBDUSULSULSGTGAS"
   },
   {
     "en": "St. Fergus Gas Terminal - Peterhead",
     "cy": "St. Fergus Gas Terminal - Peterhead",
-    "codes": "GBDUPHDPHDSGTGAS"
+    "code": "GBDUPHDPHDSGTGAS"
   },
   {
     "en": "Teeside Gas Terminal - Seal Sands",
     "cy": "Teeside Gas Terminal - Seal Sands",
-    "codes": "GBDUXSSXSSTGTGAS"
+    "code": "GBDUXSSXSSTGTGAS"
   },
   {
     "en": "Theddlethorpe Gas Terminal - Mablethorpe",
     "cy": "Theddlethorpe Gas Terminal - Mablethorpe",
-    "codes": "GBDUMTPMTPTGTGAS"
+    "code": "GBDUMTPMTPTGTGAS"
   }
 ]
