@@ -55,7 +55,6 @@ trait CodeListConnector {
   def getOfficeOfExits(locale: Locale): ListMap[String, OfficeOfExit]
   def getCustomsOffices(locale: Locale): ListMap[String, CustomsOffice]
 
-  def getGoodsLocationCodes(locale: Locale): ListMap[String, GoodsLocationCode]
   def getDepCodes(locale: Locale): ListMap[String, GoodsLocationCode]
   def getAirportsCodes(locale: Locale): ListMap[String, GoodsLocationCode]
   def getCoaAirportsCodes(locale: Locale): ListMap[String, GoodsLocationCode]
@@ -71,6 +70,7 @@ trait CodeListConnector {
   def getRailCodes(locale: Locale): ListMap[String, GoodsLocationCode]
   def getActsCodes(locale: Locale): ListMap[String, GoodsLocationCode]
   def getRoroCodes(locale: Locale): ListMap[String, GoodsLocationCode]
+  def getGvmsCodes(locale: Locale): ListMap[String, GoodsLocationCode]
 
 }
 
@@ -160,8 +160,6 @@ class FileBasedCodeListConnector @Inject() (appConfig: AppConfig, goodsLocationC
   def getCustomsOffices(locale: Locale): ListMap[String, CustomsOffice] =
     customsOfficesCodesByLang.getOrElse(locale.getLanguage, customsOfficesCodesByLang.value.head._2)
 
-  def getGoodsLocationCodes(locale: Locale): ListMap[String, GoodsLocationCode] =
-    getDepCodes(locale)
   def getDepCodes(locale: Locale): ListMap[String, GoodsLocationCode] =
     goodsLocationCodesConnector.getDepCodes(locale)
   override def getAirportsCodes(locale: Locale): ListMap[String, GoodsLocationCode] =
@@ -192,6 +190,8 @@ class FileBasedCodeListConnector @Inject() (appConfig: AppConfig, goodsLocationC
     goodsLocationCodesConnector.getActsCodes(locale)
   override def getRoroCodes(locale: Locale): ListMap[String, GoodsLocationCode] =
     goodsLocationCodesConnector.getRoroCodes(locale)
+  override def getGvmsCodes(locale: Locale): ListMap[String, GoodsLocationCode] =
+    goodsLocationCodesConnector.getGvmsCodes(locale)
 }
 
 trait FileBasedCodeListFunctions {

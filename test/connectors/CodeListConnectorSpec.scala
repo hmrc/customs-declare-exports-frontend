@@ -45,24 +45,9 @@ class CodeListConnectorSpec extends UnitWithMocksSpec with BeforeAndAfterEach {
     when(appConfig.packageTypeCodeFile).thenReturn("/code-lists/manyCodes.json")
     when(appConfig.officeOfExitsCodeFile).thenReturn("/code-lists/manyCodes.json")
     when(appConfig.customsOfficesCodeFile).thenReturn("/code-lists/manyCodes.json")
-    when(appConfig.glcAirports16a).thenReturn("/code-lists/manyCodes.json")
-    when(appConfig.glcCoaAirports16b).thenReturn("/code-lists/manyCodes.json")
-    when(appConfig.glcMaritimeAndWharves16c).thenReturn("/code-lists/manyCodes.json")
-    when(appConfig.glcItsf16d).thenReturn("/code-lists/manyCodes.json")
-    when(appConfig.glcRemoteItsf16e).thenReturn("/code-lists/manyCodes.json")
-    when(appConfig.glcExternalItsf16f).thenReturn("/code-lists/manyCodes.json")
-    when(appConfig.glcBorderInspectionPosts16g).thenReturn("/code-lists/manyCodes.json")
-    when(appConfig.glcApprovedDipositories16h).thenReturn("/code-lists/manyCodes.json")
-    when(appConfig.glcPlaceNamesGB16i).thenReturn("/code-lists/manyCodes.json")
-    when(appConfig.glcOtherLocationCodes16j).thenReturn("/code-lists/manyCodes.json")
-    when(appConfig.glcDep16k).thenReturn("/code-lists/manyCodes.json")
-    when(appConfig.glcCse16l).thenReturn("/code-lists/manyCodes.json")
-    when(appConfig.glcRail16m).thenReturn("/code-lists/manyCodes.json")
-    when(appConfig.glcActs16n).thenReturn("/code-lists/manyCodes.json")
-    when(appConfig.glcRoro16r).thenReturn("/code-lists/manyCodes.json")
   }
 
-  private lazy val glc = new GoodsLocationCodesConnector(appConfig)
+  private lazy val glc = mock[GoodsLocationCodesConnector]
   private lazy val codeListConnector = new FileBasedCodeListConnector(appConfig, glc)
 
   "FileBasedCodeListConnector" should {
@@ -254,19 +239,6 @@ class CodeListConnectorSpec extends UnitWithMocksSpec with BeforeAndAfterEach {
       }
     }
 
-    "return a map of Goods Location Codes" when {
-      "'ENGLISH' locale passed return codes with English descriptions" in {
-        codeListConnector.getGoodsLocationCodes(ENGLISH) must be(sampleGlcsEnglish)
-      }
-
-      "'WELSH' local passed return codes with Welsh descriptions" in {
-        codeListConnector.getGoodsLocationCodes(codeListConnector.WELSH) must be(sampleGlcsWelsh)
-      }
-
-      "unsupported 'JAPANESE' locale is passed return codes with English descriptions" in {
-        codeListConnector.getGoodsLocationCodes(JAPANESE) must be(sampleGlcsEnglish)
-      }
-    }
   }
 
   private val samplePCsEnglish =
@@ -310,12 +282,6 @@ class CodeListConnectorSpec extends UnitWithMocksSpec with BeforeAndAfterEach {
 
   private val sampleCountriesWelsh =
     ListMap("001" -> Country("Welsh", "001"), "002" -> Country("Welsh", "002"), "003" -> Country("Welsh", "003"))
-
-  private val sampleGlcsEnglish =
-    ListMap("001" -> GoodsLocationCode("001", "English"), "002" -> GoodsLocationCode("002", "English"), "003" -> GoodsLocationCode("003", "English"))
-
-  private val sampleGlcsWelsh =
-    ListMap("001" -> GoodsLocationCode("001", "Welsh"), "002" -> GoodsLocationCode("002", "Welsh"), "003" -> GoodsLocationCode("003", "Welsh"))
 
   private val samplePtcsEnglish =
     ListMap("001" -> PackageType("001", "English"), "002" -> PackageType("002", "English"), "003" -> PackageType("003", "English"))

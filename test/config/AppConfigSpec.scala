@@ -514,6 +514,7 @@ object AppConfigSpec {
       |files.codelists.glc.rail="/code-lists/goods-locations-codes/rail"
       |files.codelists.glc.acts="/code-lists/goods-locations-codes/acts"
       |files.codelists.glc.roro="/code-lists/goods-locations-codes/roro"
+      |files.codelists.glc.gvms="/code-lists/goods-locations-codes/gvms"
       |
       |draft.timeToLive=30d
       |microservice.services.nrs.host=localhostnrs

@@ -271,4 +271,5 @@ class AppConfig @Inject() (
   val glcRail16m = loadConfig("files.codelists.glc.rail")
   val glcActs16n = loadConfig("files.codelists.glc.acts")
   val glcRoro16r = loadConfig("files.codelists.glc.roro")
+  val glcGvms16s = loadConfig("files.codelists.glc.gvms")
 }

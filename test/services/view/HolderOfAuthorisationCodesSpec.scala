@@ -31,10 +31,6 @@ class HolderOfAuthorisationCodesSpec extends UnitWithMocksSpec with BeforeAndAft
 
   private val appConfig = mock[AppConfig]
 
-  private lazy val glc = new GoodsLocationCodesConnector(appConfig)
-  private lazy val codeListConnector = new FileBasedCodeListConnector(appConfig, glc)
-  private lazy val holderOfAuthorisationCodes = new HolderOfAuthorisationCodes(codeListConnector, mockMerchandiseInBagConfig)
-
   override def beforeEach(): Unit = {
     super.beforeEach()
 
@@ -49,22 +45,11 @@ class HolderOfAuthorisationCodesSpec extends UnitWithMocksSpec with BeforeAndAft
     when(appConfig.packageTypeCodeFile).thenReturn("/code-lists/manyCodes.json")
     when(appConfig.officeOfExitsCodeFile).thenReturn("/code-lists/manyCodes.json")
     when(appConfig.customsOfficesCodeFile).thenReturn("/code-lists/manyCodes.json")
-    when(appConfig.glcAirports16a).thenReturn("/code-lists/manyCodes.json")
-    when(appConfig.glcCoaAirports16b).thenReturn("/code-lists/manyCodes.json")
-    when(appConfig.glcMaritimeAndWharves16c).thenReturn("/code-lists/manyCodes.json")
-    when(appConfig.glcItsf16d).thenReturn("/code-lists/manyCodes.json")
-    when(appConfig.glcRemoteItsf16e).thenReturn("/code-lists/manyCodes.json")
-    when(appConfig.glcExternalItsf16f).thenReturn("/code-lists/manyCodes.json")
-    when(appConfig.glcBorderInspectionPosts16g).thenReturn("/code-lists/manyCodes.json")
-    when(appConfig.glcApprovedDipositories16h).thenReturn("/code-lists/manyCodes.json")
-    when(appConfig.glcPlaceNamesGB16i).thenReturn("/code-lists/manyCodes.json")
-    when(appConfig.glcOtherLocationCodes16j).thenReturn("/code-lists/manyCodes.json")
-    when(appConfig.glcDep16k).thenReturn("/code-lists/manyCodes.json")
-    when(appConfig.glcCse16l).thenReturn("/code-lists/manyCodes.json")
-    when(appConfig.glcRail16m).thenReturn("/code-lists/manyCodes.json")
-    when(appConfig.glcActs16n).thenReturn("/code-lists/manyCodes.json")
-    when(appConfig.glcRoro16r).thenReturn("/code-lists/manyCodes.json")
   }
+  
+  private lazy val glc = mock[GoodsLocationCodesConnector]
+  private lazy val codeListConnector = new FileBasedCodeListConnector(appConfig, glc)
+  private lazy val holderOfAuthorisationCodes = new HolderOfAuthorisationCodes(codeListConnector, mockMerchandiseInBagConfig)
 
   "HolderOfAuthorisationCodes.asListOfAutoCompleteItems" should {
     "return 'Holder of Authorisation' codes as AutoCompleteItems" when {

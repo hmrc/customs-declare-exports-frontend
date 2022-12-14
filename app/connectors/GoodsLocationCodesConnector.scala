@@ -52,7 +52,7 @@ class GoodsLocationCodesConnector @Inject() (appConfig: AppConfig) extends FileB
   )
 
   private val glcExternalItsfByLang = loadCommonCodesAsOrderedMap(
-    appConfig.glcRemoteItsf16e,
+    appConfig.glcExternalItsf16f,
     (codeItem: CodeItem, locale: Locale) => GoodsLocationCode(codeItem.code, codeItem.getDescriptionByLocale(locale))
   )
 
@@ -101,7 +101,10 @@ class GoodsLocationCodesConnector @Inject() (appConfig: AppConfig) extends FileB
     (codeItem: CodeItem, locale: Locale) => GoodsLocationCode(codeItem.code, codeItem.getDescriptionByLocale(locale))
   )
 
-  def all(locale: Locale) = getDepCodes(locale) ++ getActsCodes(locale)
+  private val glcGvmsByLang = loadCommonCodesAsOrderedMap(
+    appConfig.glcGvms16s,
+    (codeItem: CodeItem, locale: Locale) => GoodsLocationCode(codeItem.code, codeItem.getDescriptionByLocale(locale))
+  )
 
   def getDepCodes(locale: Locale): ListMap[String, GoodsLocationCode] =
     glcDepByLang.getOrElse(locale.getLanguage, glcDepByLang.value.head._2)
@@ -147,5 +150,8 @@ class GoodsLocationCodesConnector @Inject() (appConfig: AppConfig) extends FileB
 
   def getRoroCodes(locale: Locale): ListMap[String, GoodsLocationCode] =
     glcRoroByLang.getOrElse(locale.getLanguage, glcRoroByLang.value.head._2)
+
+  def getGvmsCodes(locale: Locale): ListMap[String, GoodsLocationCode] =
+    glcGvmsByLang.getOrElse(locale.getLanguage, glcGvmsByLang.value.head._2)
 
 }

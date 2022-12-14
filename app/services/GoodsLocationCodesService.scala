@@ -25,6 +25,69 @@ import javax.inject.Inject
 class GoodsLocationCodesService @Inject() (codeListConnector: CodeListConnector) {
 
   def all(implicit messages: Messages): List[GoodsLocationCode] =
-    codeListConnector.getGoodsLocationCodes(messages.lang.toLocale).values.toList.sortBy(_.description)
+    depCodes ++
+      airportsCodes ++
+      coaAirportsCodes ++
+      maritimeAndWharvesCodes ++
+      itsfCodes ++
+      remoteItsfCodes ++
+      externalItsfCodes ++
+      borderInspectionPostsCodes ++
+      approvedDipositoriesCodes ++
+      placeNamesGBCodes ++
+      otherLocationCodes ++
+      cseCodes ++
+      railCodes ++
+      actsCodes ++
+      roroCodes ++
+      gvmsCodes
+
+  def depCodes(implicit messages: Messages): List[GoodsLocationCode] =
+    codeListConnector.getDepCodes(messages.lang.toLocale).values.toList.sortBy(_.description)
+
+  def airportsCodes(implicit messages: Messages): List[GoodsLocationCode] =
+    codeListConnector.getAirportsCodes(messages.lang.toLocale).values.toList.sortBy(_.description)
+
+  def coaAirportsCodes(implicit messages: Messages): List[GoodsLocationCode] =
+    codeListConnector.getCoaAirportsCodes(messages.lang.toLocale).values.toList.sortBy(_.description)
+
+  def maritimeAndWharvesCodes(implicit messages: Messages): List[GoodsLocationCode] =
+    codeListConnector.getMaritimeAndWharvesCodes(messages.lang.toLocale).values.toList.sortBy(_.description)
+
+  def itsfCodes(implicit messages: Messages): List[GoodsLocationCode] =
+    codeListConnector.getItsfCodes(messages.lang.toLocale).values.toList.sortBy(_.description)
+
+  def remoteItsfCodes(implicit messages: Messages): List[GoodsLocationCode] =
+    codeListConnector.getRemoteItsfCodes(messages.lang.toLocale).values.toList.sortBy(_.description)
+
+  def externalItsfCodes(implicit messages: Messages): List[GoodsLocationCode] =
+    codeListConnector.getExternalItsfCodes(messages.lang.toLocale).values.toList.sortBy(_.description)
+
+  def borderInspectionPostsCodes(implicit messages: Messages): List[GoodsLocationCode] =
+    codeListConnector.getBorderInspectionPostsCodes(messages.lang.toLocale).values.toList.sortBy(_.description)
+
+  def approvedDipositoriesCodes(implicit messages: Messages): List[GoodsLocationCode] =
+    codeListConnector.getApprovedDipositoriesCodes(messages.lang.toLocale).values.toList.sortBy(_.description)
+
+  def placeNamesGBCodes(implicit messages: Messages): List[GoodsLocationCode] =
+    codeListConnector.getPlaceNamesGBCodes(messages.lang.toLocale).values.toList.sortBy(_.description)
+
+  def otherLocationCodes(implicit messages: Messages): List[GoodsLocationCode] =
+    codeListConnector.getOtherLocationCodes(messages.lang.toLocale).values.toList.sortBy(_.description)
+
+  def cseCodes(implicit messages: Messages): List[GoodsLocationCode] =
+    codeListConnector.getCseCodes(messages.lang.toLocale).values.toList.sortBy(_.description)
+
+  def railCodes(implicit messages: Messages): List[GoodsLocationCode] =
+    codeListConnector.getRailCodes(messages.lang.toLocale).values.toList.sortBy(_.description)
+
+  def actsCodes(implicit messages: Messages): List[GoodsLocationCode] =
+    codeListConnector.getActsCodes(messages.lang.toLocale).values.toList.sortBy(_.description)
+
+  def roroCodes(implicit messages: Messages): List[GoodsLocationCode] =
+    codeListConnector.getRoroCodes(messages.lang.toLocale).values.toList.sortBy(_.description)
+
+  def gvmsCodes(implicit messages: Messages): List[GoodsLocationCode] =
+    codeListConnector.getGvmsCodes(messages.lang.toLocale).values.toList.sortBy(_.description)
 
 }
