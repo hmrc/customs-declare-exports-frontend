@@ -16,87 +16,136 @@
 
 package connectors
 
+import akka.util.Helpers.Requiring
 import config.AppConfig
 import models.codes.GoodsLocationCode
 
 import java.util.Locale
 import javax.inject.Inject
+import scala.collection.immutable.ListMap
 
 class GoodsLocationCodesConnector @Inject() (appConfig: AppConfig) extends FileBasedCodeListFunctions {
 
-  val glcAirportsByLang = loadCommonCodesAsOrderedMap(
+  private val glcAirportsByLang = loadCommonCodesAsOrderedMap(
     appConfig.glcAirports16a,
     (codeItem: CodeItem, locale: Locale) => GoodsLocationCode(codeItem.code, codeItem.getDescriptionByLocale(locale))
   )
 
-  val glcCoaAirportsByLang = loadCommonCodesAsOrderedMap(
+  private val glcCoaAirportsByLang = loadCommonCodesAsOrderedMap(
     appConfig.glcCoaAirports16b,
     (codeItem: CodeItem, locale: Locale) => GoodsLocationCode(codeItem.code, codeItem.getDescriptionByLocale(locale))
   )
 
-  val glcMaritimeAndWharvesByLang = loadCommonCodesAsOrderedMap(
+  private val glcMaritimeAndWharvesByLang = loadCommonCodesAsOrderedMap(
     appConfig.glcMaritimeAndWharves16c,
     (codeItem: CodeItem, locale: Locale) => GoodsLocationCode(codeItem.code, codeItem.getDescriptionByLocale(locale))
   )
 
-  val glcItsfByLang = loadCommonCodesAsOrderedMap(
+  private val glcItsfByLang = loadCommonCodesAsOrderedMap(
     appConfig.glcItsf16d,
     (codeItem: CodeItem, locale: Locale) => GoodsLocationCode(codeItem.code, codeItem.getDescriptionByLocale(locale))
   )
 
-  val glcRemoteItsfByLang = loadCommonCodesAsOrderedMap(
+  private val glcRemoteItsfByLang = loadCommonCodesAsOrderedMap(
     appConfig.glcRemoteItsf16e,
     (codeItem: CodeItem, locale: Locale) => GoodsLocationCode(codeItem.code, codeItem.getDescriptionByLocale(locale))
   )
 
-  val glcExternalItsfByLang = loadCommonCodesAsOrderedMap(
+  private val glcExternalItsfByLang = loadCommonCodesAsOrderedMap(
     appConfig.glcRemoteItsf16e,
     (codeItem: CodeItem, locale: Locale) => GoodsLocationCode(codeItem.code, codeItem.getDescriptionByLocale(locale))
   )
 
-  val glcBorderInspectionPostsByLang = loadCommonCodesAsOrderedMap(
+  private val glcBorderInspectionPostsByLang = loadCommonCodesAsOrderedMap(
     appConfig.glcBorderInspectionPosts16g,
     (codeItem: CodeItem, locale: Locale) => GoodsLocationCode(codeItem.code, codeItem.getDescriptionByLocale(locale))
   )
 
-  val glcApprovedDipositoriesByLang = loadCommonCodesAsOrderedMap(
+  private val glcApprovedDipositoriesByLang = loadCommonCodesAsOrderedMap(
     appConfig.glcApprovedDipositories16h,
     (codeItem: CodeItem, locale: Locale) => GoodsLocationCode(codeItem.code, codeItem.getDescriptionByLocale(locale))
   )
 
-  val glcPlaceNamesGBByLang = loadCommonCodesAsOrderedMap(
+  private val glcPlaceNamesGBByLang = loadCommonCodesAsOrderedMap(
     appConfig.glcPlaceNamesGB16i,
     (codeItem: CodeItem, locale: Locale) => GoodsLocationCode(codeItem.code, codeItem.getDescriptionByLocale(locale))
   )
 
-  val glcOtherLocationCodesByLang = loadCommonCodesAsOrderedMap(
+  private val glcOtherLocationCodesByLang = loadCommonCodesAsOrderedMap(
     appConfig.glcOtherLocationCodes16j,
     (codeItem: CodeItem, locale: Locale) => GoodsLocationCode(codeItem.code, codeItem.getDescriptionByLocale(locale))
   )
 
-  val glcDepByLang = loadCommonCodesAsOrderedMap(
+  private val glcDepByLang = loadCommonCodesAsOrderedMap(
     appConfig.glcDep16k,
     (codeItem: CodeItem, locale: Locale) => GoodsLocationCode(codeItem.code, codeItem.getDescriptionByLocale(locale))
   )
 
-  val glcCseByLang = loadCommonCodesAsOrderedMap(
+  private val glcCseByLang = loadCommonCodesAsOrderedMap(
     appConfig.glcCse16l,
     (codeItem: CodeItem, locale: Locale) => GoodsLocationCode(codeItem.code, codeItem.getDescriptionByLocale(locale))
   )
 
-  val glcRailByLang = loadCommonCodesAsOrderedMap(
+  private val glcRailByLang = loadCommonCodesAsOrderedMap(
     appConfig.glcRail16m,
     (codeItem: CodeItem, locale: Locale) => GoodsLocationCode(codeItem.code, codeItem.getDescriptionByLocale(locale))
   )
 
-  val glcActsByLang = loadCommonCodesAsOrderedMap(
+  private val glcActsByLang = loadCommonCodesAsOrderedMap(
     appConfig.glcActs16n,
     (codeItem: CodeItem, locale: Locale) => GoodsLocationCode(codeItem.code, codeItem.getDescriptionByLocale(locale))
   )
 
-  val glcRoroByLang = loadCommonCodesAsOrderedMap(
+  private val glcRoroByLang = loadCommonCodesAsOrderedMap(
     appConfig.glcRoro16r,
     (codeItem: CodeItem, locale: Locale) => GoodsLocationCode(codeItem.code, codeItem.getDescriptionByLocale(locale))
   )
+
+  def all(locale: Locale) = getDepCodes(locale) ++ getActsCodes(locale)
+
+  def getDepCodes(locale: Locale): ListMap[String, GoodsLocationCode] =
+    glcDepByLang.getOrElse(locale.getLanguage, glcDepByLang.value.head._2)
+
+  def getAirportsCodes(locale: Locale): ListMap[String, GoodsLocationCode] =
+    glcAirportsByLang.getOrElse(locale.getLanguage, glcAirportsByLang.value.head._2)
+
+  def getCoaAirportsCodes(locale: Locale): ListMap[String, GoodsLocationCode] =
+    glcCoaAirportsByLang.getOrElse(locale.getLanguage, glcCoaAirportsByLang.value.head._2)
+
+  def getMaritimeAndWharvesCodes(locale: Locale): ListMap[String, GoodsLocationCode] =
+    glcMaritimeAndWharvesByLang.getOrElse(locale.getLanguage, glcMaritimeAndWharvesByLang.value.head._2)
+
+  def getItsfCodes(locale: Locale): ListMap[String, GoodsLocationCode] =
+    glcItsfByLang.getOrElse(locale.getLanguage, glcItsfByLang.value.head._2)
+
+  def getRemoteItsfCodes(locale: Locale): ListMap[String, GoodsLocationCode] =
+    glcRemoteItsfByLang.getOrElse(locale.getLanguage, glcRemoteItsfByLang.value.head._2)
+
+  def getExternalItsfCodes(locale: Locale): ListMap[String, GoodsLocationCode] =
+    glcExternalItsfByLang.getOrElse(locale.getLanguage, glcExternalItsfByLang.value.head._2)
+
+  def getBorderInspectionPostsCodes(locale: Locale): ListMap[String, GoodsLocationCode] =
+    glcBorderInspectionPostsByLang.getOrElse(locale.getLanguage, glcBorderInspectionPostsByLang.value.head._2)
+
+  def getApprovedDipositoriesCodes(locale: Locale): ListMap[String, GoodsLocationCode] =
+    glcApprovedDipositoriesByLang.getOrElse(locale.getLanguage, glcApprovedDipositoriesByLang.value.head._2)
+
+  def getPlaceNamesGBCodes(locale: Locale): ListMap[String, GoodsLocationCode] =
+    glcPlaceNamesGBByLang.getOrElse(locale.getLanguage, glcPlaceNamesGBByLang.value.head._2)
+
+  def getOtherLocationCodes(locale: Locale): ListMap[String, GoodsLocationCode] =
+    glcOtherLocationCodesByLang.getOrElse(locale.getLanguage, glcOtherLocationCodesByLang.value.head._2)
+
+  def getCseCodes(locale: Locale): ListMap[String, GoodsLocationCode] =
+    glcCseByLang.getOrElse(locale.getLanguage, glcCseByLang.value.head._2)
+
+  def getRailCodes(locale: Locale): ListMap[String, GoodsLocationCode] =
+    glcRailByLang.getOrElse(locale.getLanguage, glcRailByLang.value.head._2)
+
+  def getActsCodes(locale: Locale): ListMap[String, GoodsLocationCode] =
+    glcActsByLang.getOrElse(locale.getLanguage, glcActsByLang.value.head._2)
+
+  def getRoroCodes(locale: Locale): ListMap[String, GoodsLocationCode] =
+    glcRoroByLang.getOrElse(locale.getLanguage, glcRoroByLang.value.head._2)
 
 }

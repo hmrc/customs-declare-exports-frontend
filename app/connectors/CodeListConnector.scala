@@ -51,15 +51,31 @@ trait CodeListConnector {
   def getHolderOfAuthorisationCodes(locale: Locale): ListMap[String, HolderOfAuthorisationCode]
   def getProcedureCodes(locale: Locale): ListMap[String, ProcedureCode]
   def getProcedureCodesForC21(locale: Locale): ListMap[String, ProcedureCode]
-  def getGoodsLocationCodes(locale: Locale): ListMap[String, GoodsLocationCode]
   def getPackageTypes(locale: Locale): ListMap[String, PackageType]
   def getOfficeOfExits(locale: Locale): ListMap[String, OfficeOfExit]
   def getCustomsOffices(locale: Locale): ListMap[String, CustomsOffice]
 
+  def getGoodsLocationCodes(locale: Locale): ListMap[String, GoodsLocationCode]
+  def getDepCodes(locale: Locale): ListMap[String, GoodsLocationCode]
+  def getAirportsCodes(locale: Locale): ListMap[String, GoodsLocationCode]
+  def getCoaAirportsCodes(locale: Locale): ListMap[String, GoodsLocationCode]
+  def getMaritimeAndWharvesCodes(locale: Locale): ListMap[String, GoodsLocationCode]
+  def getItsfCodes(locale: Locale): ListMap[String, GoodsLocationCode]
+  def getRemoteItsfCodes(locale: Locale): ListMap[String, GoodsLocationCode]
+  def getExternalItsfCodes(locale: Locale): ListMap[String, GoodsLocationCode]
+  def getBorderInspectionPostsCodes(locale: Locale): ListMap[String, GoodsLocationCode]
+  def getApprovedDipositoriesCodes(locale: Locale): ListMap[String, GoodsLocationCode]
+  def getPlaceNamesGBCodes(locale: Locale): ListMap[String, GoodsLocationCode]
+  def getOtherLocationCodes(locale: Locale): ListMap[String, GoodsLocationCode]
+  def getCseCodes(locale: Locale): ListMap[String, GoodsLocationCode]
+  def getRailCodes(locale: Locale): ListMap[String, GoodsLocationCode]
+  def getActsCodes(locale: Locale): ListMap[String, GoodsLocationCode]
+  def getRoroCodes(locale: Locale): ListMap[String, GoodsLocationCode]
+
 }
 
 @Singleton
-class FileBasedCodeListConnector @Inject() (appConfig: AppConfig, goodsLocationCodes: GoodsLocationCodesConnector)
+class FileBasedCodeListConnector @Inject() (appConfig: AppConfig, goodsLocationCodesConnector: GoodsLocationCodesConnector)
     extends CodeListConnector with FileBasedCodeListFunctions {
 
   private lazy val standardOrCustomErrorDefinitionFile =
@@ -135,9 +151,6 @@ class FileBasedCodeListConnector @Inject() (appConfig: AppConfig, goodsLocationC
   def getProcedureCodesForC21(locale: Locale): ListMap[String, ProcedureCode] =
     procedureCodeForC21ListsByLang.getOrElse(locale.getLanguage, procedureCodeForC21ListsByLang.value.head._2)
 
-  def getGoodsLocationCodes(locale: Locale): ListMap[String, GoodsLocationCode] =
-    goodsLocationCodes.glcDepByLang.getOrElse(locale.getLanguage, goodsLocationCodes.glcDepByLang.value.head._2)
-
   def getPackageTypes(locale: Locale): ListMap[String, PackageType] =
     packageTypeCodeByLang.getOrElse(locale.getLanguage, packageTypeCodeByLang.value.head._2)
 
@@ -146,6 +159,39 @@ class FileBasedCodeListConnector @Inject() (appConfig: AppConfig, goodsLocationC
 
   def getCustomsOffices(locale: Locale): ListMap[String, CustomsOffice] =
     customsOfficesCodesByLang.getOrElse(locale.getLanguage, customsOfficesCodesByLang.value.head._2)
+
+  def getGoodsLocationCodes(locale: Locale): ListMap[String, GoodsLocationCode] =
+    getDepCodes(locale)
+  def getDepCodes(locale: Locale): ListMap[String, GoodsLocationCode] =
+    goodsLocationCodesConnector.getDepCodes(locale)
+  override def getAirportsCodes(locale: Locale): ListMap[String, GoodsLocationCode] =
+    goodsLocationCodesConnector.getAirportsCodes(locale)
+  override def getCoaAirportsCodes(locale: Locale): ListMap[String, GoodsLocationCode] =
+    goodsLocationCodesConnector.getCoaAirportsCodes(locale)
+  override def getMaritimeAndWharvesCodes(locale: Locale): ListMap[String, GoodsLocationCode] =
+    goodsLocationCodesConnector.getMaritimeAndWharvesCodes(locale)
+  override def getItsfCodes(locale: Locale): ListMap[String, GoodsLocationCode] =
+    goodsLocationCodesConnector.getItsfCodes(locale)
+  override def getRemoteItsfCodes(locale: Locale): ListMap[String, GoodsLocationCode] =
+    goodsLocationCodesConnector.getRemoteItsfCodes(locale)
+  override def getExternalItsfCodes(locale: Locale): ListMap[String, GoodsLocationCode] =
+    goodsLocationCodesConnector.getExternalItsfCodes(locale)
+  override def getBorderInspectionPostsCodes(locale: Locale): ListMap[String, GoodsLocationCode] =
+    goodsLocationCodesConnector.getBorderInspectionPostsCodes(locale)
+  override def getApprovedDipositoriesCodes(locale: Locale): ListMap[String, GoodsLocationCode] =
+    goodsLocationCodesConnector.getApprovedDipositoriesCodes(locale)
+  override def getPlaceNamesGBCodes(locale: Locale): ListMap[String, GoodsLocationCode] =
+    goodsLocationCodesConnector.getPlaceNamesGBCodes(locale)
+  override def getOtherLocationCodes(locale: Locale): ListMap[String, GoodsLocationCode] =
+    goodsLocationCodesConnector.getOtherLocationCodes(locale)
+  override def getCseCodes(locale: Locale): ListMap[String, GoodsLocationCode] =
+    goodsLocationCodesConnector.getCseCodes(locale)
+  override def getRailCodes(locale: Locale): ListMap[String, GoodsLocationCode] =
+    goodsLocationCodesConnector.getRailCodes(locale)
+  override def getActsCodes(locale: Locale): ListMap[String, GoodsLocationCode] =
+    goodsLocationCodesConnector.getActsCodes(locale)
+  override def getRoroCodes(locale: Locale): ListMap[String, GoodsLocationCode] =
+    goodsLocationCodesConnector.getRoroCodes(locale)
 }
 
 trait FileBasedCodeListFunctions {

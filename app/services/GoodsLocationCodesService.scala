@@ -26,4 +26,5 @@ class GoodsLocationCodesService @Inject() (codeListConnector: CodeListConnector)
 
   def all(implicit messages: Messages): List[GoodsLocationCode] =
     codeListConnector.getGoodsLocationCodes(messages.lang.toLocale).values.toList.sortBy(_.description)
+
 }
