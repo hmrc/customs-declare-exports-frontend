@@ -46,7 +46,7 @@ class HolderOfAuthorisationCodesSpec extends UnitWithMocksSpec with BeforeAndAft
     when(appConfig.officeOfExitsCodeFile).thenReturn("/code-lists/manyCodes.json")
     when(appConfig.customsOfficesCodeFile).thenReturn("/code-lists/manyCodes.json")
   }
-  
+
   private lazy val glc = mock[GoodsLocationCodesConnector]
   private lazy val codeListConnector = new FileBasedCodeListConnector(appConfig, glc)
   private lazy val holderOfAuthorisationCodes = new HolderOfAuthorisationCodes(codeListConnector, mockMerchandiseInBagConfig)
