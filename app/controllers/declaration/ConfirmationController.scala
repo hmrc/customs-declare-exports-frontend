@@ -78,17 +78,22 @@ class ConfirmationController @Inject() (
       logger.warn("Session on /confirmation does not include the submission's uuid!?")
       Future.successful(Redirect(toDashboard))
     } { submissionId =>
-      customsDeclareExportsConnector.findSubmission(submissionId).flatMap {
+      for {
+        submission <- customsDeclareExportsConnector.findSubmission(submissionId)
+        // To avoid failing entire Future for sake of getting a location code, recover to None
+        declaration <- customsDeclareExportsConnector.findDeclaration(submissionId) recover { case _ => None }
+        locationCode = declaration.flatMap(_.locations.goodsLocation).map(_.code)
+      } yield submission match {
         case Some(submission) if submission.latestEnhancedStatus == Some(EnhancedStatus.ERRORS) =>
-          Future.successful(Redirect(RejectedNotificationsController.displayPage(submissionId)))
+          Redirect(RejectedNotificationsController.displayPage(submissionId))
 
         case Some(submission) =>
-          val confirmation = Confirmation(request.email, extractDeclarationType, Some(submission))
-          Future.successful(Ok(confirmationPage(confirmation)))
+          val confirmation = Confirmation(request.email, extractDeclarationType, Some(submission), locationCode)
+          Ok(confirmationPage(confirmation))
 
         case _ =>
-          val confirmation = Confirmation(request.email, extractDeclarationType, None)
-          Future.successful(Ok(confirmationPage(confirmation)))
+          val confirmation = Confirmation(request.email, extractDeclarationType, None, locationCode)
+          Ok(confirmationPage(confirmation))
       }
     }
   }

@@ -61,7 +61,7 @@ class AdditionalDeclarationTypeController @Inject() (
   }
 
   private def nextPage(implicit request: JourneyRequest[_]): Call =
-    if (request.declarationType == CLEARANCE) routes.ConsignmentReferencesController.displayPage
+    if (request.declarationType == CLEARANCE) routes.DucrChoiceController.displayPage
     else routes.DeclarantDetailsController.displayPage
 
   private def updateCache(adt: AdditionalDeclarationType)(implicit request: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =

@@ -338,9 +338,9 @@ object ConsignmentReferencesSpec {
 
   val emptyJSON: JsValue = Json.obj("" -> "")
 
-  val correctConsignmentReferences = ConsignmentReferences(ducr = Ducr(ducr = ducr), lrn = Lrn(lrn))
-  val correctConsignmentReferencesNoDucr = ConsignmentReferences(ducr = Ducr(""), lrn = Lrn(lrn))
-  val emptyConsignmentReferences = ConsignmentReferences(ducr = Ducr(""), lrn = Lrn(""))
+  val correctConsignmentReferences = ConsignmentReferences(ducr = Some(Ducr(ducr = ducr)), lrn = Some(Lrn(lrn)))
+  val correctConsignmentReferencesNoDucr = ConsignmentReferences(ducr = Some(Ducr("")), lrn = Some(Lrn(lrn)))
+  val emptyConsignmentReferences = ConsignmentReferences(ducr = Some(Ducr("")), lrn = Some(Lrn("")))
 
   def addMrnToJSON(data: JsValue, mrn: String): JsValue =
     data.asInstanceOf[JsObject].deepMerge(Json.obj("mrn" -> mrn))

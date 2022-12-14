@@ -29,23 +29,25 @@ import utils.validators.forms.FieldValidator._
 
 import scala.concurrent.{ExecutionContext, Future}
 
-case class ConsignmentReferences(ducr: Ducr, lrn: Lrn, mrn: Option[Mrn] = None, eidrDateStamp: Option[String] = None)
+case class ConsignmentReferences(ducr: Option[Ducr], lrn: Option[Lrn] = None, mrn: Option[Mrn] = None, eidrDateStamp: Option[String] = None)
 
 object ConsignmentReferences extends DeclarationPage {
 
   implicit val format = Json.format[ConsignmentReferences]
 
   val ducrId = "ducr.ducr"
-  val duplicatedDucr = Seq(FormError(ducrId, "declaration.consignmentReferences.ducr.error.duplicate"))
 
   def form(decType: DeclarationType, additionalDecType: Option[AdditionalDeclarationType]): Form[ConsignmentReferences] = {
 
     def form2Model: (Ducr, Lrn, Option[Mrn], Option[String]) => ConsignmentReferences = { case (ducr, lrn, mrn, eidrDateStamp) =>
-      ConsignmentReferences(ducr, lrn, mrn, eidrDateStamp)
+      ConsignmentReferences(Some(ducr), Some(lrn), mrn, eidrDateStamp)
     }
 
-    def model2Form: ConsignmentReferences => Option[(Ducr, Lrn, Option[Mrn], Option[String])] =
-      model => Some((model.ducr, model.lrn, model.mrn, model.eidrDateStamp))
+    def model2Form: ConsignmentReferences => Option[(Ducr, Lrn, Option[Mrn], Option[String])] = model =>
+      for {
+        ducr <- model.ducr
+        lrn <- model.lrn
+      } yield (ducr, lrn, model.mrn, model.eidrDateStamp)
 
     val mrnMapping = (decType, additionalDecType) match {
       case (SUPPLEMENTARY, Some(AdditionalDeclarationType.SUPPLEMENTARY_SIMPLIFIED)) =>
@@ -82,8 +84,8 @@ object ConsignmentReferences extends DeclarationPage {
   implicit class ConsignmentReferencesFormEnhanced(form: Form[ConsignmentReferences]) {
 
     def verifyLrnValidity(lrnValidator: LrnValidator)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Form[ConsignmentReferences]] =
-      form.value.fold(Future.successful(form)) { consignmentReferences =>
-        lrnValidator.hasBeenSubmittedInThePast48Hours(consignmentReferences.lrn).map {
+      form.value.flatMap(_.lrn).fold(Future.successful(form)) { lrn =>
+        lrnValidator.hasBeenSubmittedInThePast48Hours(lrn).map {
           case true  => form.copy(errors = Seq(FormError("lrn", "declaration.consignmentReferences.lrn.error.notExpiredYet")))
           case false => form
         }

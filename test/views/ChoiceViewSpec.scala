@@ -19,6 +19,7 @@ package views
 import base.ExportsTestData._
 import base.OverridableInjector
 import config.featureFlags.{SecureMessagingInboxConfig, SfusConfig}
+import controllers.routes.FileUploadController
 import features.SecureMessagingFeatureStatus
 import features.SecureMessagingFeatureStatus.SecureMessagingFeatureStatus
 import forms.Choice
@@ -40,9 +41,11 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Stubs with Be
 
   private val injector =
     new OverridableInjector(bind[SfusConfig].toInstance(mockSfusConfig), bind[SecureMessagingInboxConfig].toInstance(mockSecureMessagingInboxConfig))
+
   private val choicePage = injector.instanceOf[choice_page]
 
-  private def createView(form: Form[Choice] = form, journeys: Seq[String] = allJourneys): Document = choicePage(form, journeys)(request, messages)
+  private def createView(form: Form[Choice] = form, journeys: Seq[String] = allJourneys): Document =
+    choicePage(form, journeys)(request, messages)
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -55,7 +58,7 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Stubs with Be
   }
 
   private val dummyCdsUploadLink = "https://www.gov.uk/guidance/send-documents-to-support-declarations-for-the-customs-declaration-service"
-  private val dummyUploadLink = controllers.routes.FileUploadController.startFileUpload("").url
+  private val dummyUploadLink = FileUploadController.startFileUpload("").url
   private val dummyInboxLink = "dummyInboxLink"
 
   private val SFUS = SecureMessagingFeatureStatus.sfus
@@ -67,9 +70,11 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Stubs with Be
       case SFUS =>
         when(mockSecureMessagingInboxConfig.isSfusSecureMessagingEnabled).thenReturn(true)
         when(mockSecureMessagingInboxConfig.isExportsSecureMessagingEnabled).thenReturn(false)
+
       case EXPORTS =>
         when(mockSecureMessagingInboxConfig.isSfusSecureMessagingEnabled).thenReturn(false)
         when(mockSecureMessagingInboxConfig.isExportsSecureMessagingEnabled).thenReturn(true)
+
       case _ =>
         when(mockSecureMessagingInboxConfig.isSfusSecureMessagingEnabled).thenReturn(false)
         when(mockSecureMessagingInboxConfig.isExportsSecureMessagingEnabled).thenReturn(false)
@@ -81,10 +86,18 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Stubs with Be
 
   "Choice View on empty page" should {
 
+    "display on banner the expected 'service name' (common to all pages)" in {
+      withSecureMessagingFeatureStatus(EXPORTS)
+      val view = createView()
+      val element = view.getElementsByClass("hmrc-header__service-name").first
+      element.tagName mustBe "a"
+      element.text mustBe messages("service.name")
+    }
+
     "display same page title as header" in {
       withSecureMessagingFeatureStatus(EXPORTS)
-      val viewWithMessage = createView()
-      viewWithMessage.title() must include(viewWithMessage.getElementsByTag("h1").text())
+      val view = createView()
+      view.title() must include(view.getElementsByTag("h1").text())
     }
 
     "display radio buttons with description (not selected)" in {
@@ -103,7 +116,7 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Stubs with Be
       withSecureMessagingFeatureStatus(EXPORTS)
       val backButton = createView().getElementById("back-link")
 
-      backButton mustBe null
+      Option(backButton) mustBe None
     }
 
     "display 'Continue' button on page" in {
@@ -124,10 +137,10 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Stubs with Be
           val view = createView(journeys = filteredJourneyKeys)
 
           filteredJourneyKeys.foreach { journeyKey =>
-            view.getElementById(journeyKey) mustNot be(null)
+            assert(Option(view.getElementById(journeyKey)).isDefined)
           }
 
-          view.getElementById(excludedJourneyKey) mustBe null
+          Option(view.getElementById(excludedJourneyKey)) mustBe None
         }
       }
     }
@@ -185,12 +198,12 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Stubs with Be
 
       "not display SFUS upload documents link" in {
         withSecureMessagingFeatureStatus(DISABLED)
-        createView().getElementById("sfusUploadLink") mustBe null
+        Option(createView().getElementById("sfusUploadLink")) mustBe None
       }
 
       "not display SFUS inbox link" in {
         withSecureMessagingFeatureStatus(DISABLED)
-        createView().getElementById("sfusInboxLink") mustBe null
+        Option(createView().getElementById("sfusInboxLink")) mustBe None
       }
     }
   }

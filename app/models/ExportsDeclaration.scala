@@ -16,6 +16,7 @@
 
 package models
 
+import forms.Ducr
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration._
@@ -56,8 +57,8 @@ case class ExportsDeclaration(
   readyForSubmission: Option[Boolean] = None
 ) {
 
-  def lrn: Option[String] = consignmentReferences.map(_.lrn.value)
-  def ducr: Option[String] = consignmentReferences.map(_.ducr.ducr)
+  def lrn: Option[String] = consignmentReferences.flatMap(_.lrn.map(_.lrn))
+  def ducr: Option[Ducr] = consignmentReferences.flatMap(_.ducr)
   def inlandModeOfTransportCode: Option[ModeOfTransportCode] = locations.inlandModeOfTransportCode.flatMap(_.inlandModeOfTransportCode)
   def transportLeavingBorderCode: Option[ModeOfTransportCode] = transport.borderModeOfTransportCode.flatMap(_.code)
 

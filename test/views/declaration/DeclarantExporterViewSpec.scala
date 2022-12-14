@@ -98,7 +98,7 @@ class DeclarantExporterViewSpec extends PageWithButtonsSpec with Injector {
         val backButton = createView().getElementById("back-link")
 
         backButton must containMessage(backToPreviousQuestionCaption)
-        backButton must haveHref(ConsignmentReferencesController.displayPage().url)
+        backButton must haveHref(ConsignmentReferencesController.displayPage.url)
       }
     }
 

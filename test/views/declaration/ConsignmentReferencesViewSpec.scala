@@ -236,25 +236,25 @@ class ConsignmentReferencesViewSpec extends PageWithButtonsSpec with Injector {
 
     onEveryDeclarationJourney() { implicit request =>
       "display error for empty LRN" in {
-        val view = viewOnInvalidInput(ConsignmentReferences(Ducr(ducr), Lrn("")))
+        val view = viewOnInvalidInput(ConsignmentReferences(Some(Ducr(ducr)), Some(Lrn(""))))
         view must containErrorElementWithTagAndHref("a", "#lrn")
         view must containErrorElementWithMessageKey("declaration.consignmentReferences.lrn.error.empty")
       }
 
       "display error when LRN is longer then 22 characters" in {
-        val view = viewOnInvalidInput(ConsignmentReferences(Ducr(ducr), Lrn(TestHelper.createRandomAlphanumericString(23))))
+        val view = viewOnInvalidInput(ConsignmentReferences(Some(Ducr(ducr)), Some(Lrn(TestHelper.createRandomAlphanumericString(23)))))
         view must containErrorElementWithTagAndHref("a", "#lrn")
         view must containErrorElementWithMessageKey("declaration.consignmentReferences.lrn.error.length")
       }
 
       "display error when LRN contains special character" in {
-        val view = viewOnInvalidInput(ConsignmentReferences(Ducr(ducr), Lrn("#@#$")))
+        val view = viewOnInvalidInput(ConsignmentReferences(Some(Ducr(ducr)), Some(Lrn("#@#$"))))
         view must containErrorElementWithTagAndHref("a", "#lrn")
         view must containErrorElementWithMessageKey("declaration.consignmentReferences.lrn.error.specialCharacter")
       }
 
       "display error when DUCR is incorrect and LRN empty" in {
-        val view = viewOnInvalidInput(ConsignmentReferences(Ducr(incorrectDUCR), Lrn("")))
+        val view = viewOnInvalidInput(ConsignmentReferences(Some(Ducr(incorrectDUCR)), Some(Lrn(""))))
         view must containErrorElementWithTagAndHref("a", "#ducr_ducr")
         view must containErrorElementWithTagAndHref("a", "#lrn")
         view must containErrorElementWithMessageKey("declaration.consignmentReferences.ducr.error.invalid")
@@ -262,7 +262,7 @@ class ConsignmentReferencesViewSpec extends PageWithButtonsSpec with Injector {
       }
 
       "display error when DUCR is incorrect and LRN is longer then 22 characters" in {
-        val view = viewOnInvalidInput(ConsignmentReferences(Ducr(incorrectDUCR), Lrn(TestHelper.createRandomAlphanumericString(23))))
+        val view = viewOnInvalidInput(ConsignmentReferences(Some(Ducr(incorrectDUCR)), Some(Lrn(TestHelper.createRandomAlphanumericString(23)))))
         view must containErrorElementWithTagAndHref("a", "#ducr_ducr")
         view must containErrorElementWithTagAndHref("a", "#lrn")
         view must containErrorElementWithMessageKey("declaration.consignmentReferences.ducr.error.invalid")
@@ -270,7 +270,7 @@ class ConsignmentReferencesViewSpec extends PageWithButtonsSpec with Injector {
       }
 
       "display error when DUCR is incorrect and LRN contains special character" in {
-        val view = viewOnInvalidInput(ConsignmentReferences(Ducr(incorrectDUCR), Lrn("$$%")))
+        val view = viewOnInvalidInput(ConsignmentReferences(Some(Ducr(incorrectDUCR)), Some(Lrn("$$%"))))
         view must containErrorElementWithTagAndHref("a", "#ducr_ducr")
         view must containErrorElementWithTagAndHref("a", "#lrn")
         view must containErrorElementWithMessageKey("declaration.consignmentReferences.ducr.error.invalid")
@@ -285,13 +285,15 @@ class ConsignmentReferencesViewSpec extends PageWithButtonsSpec with Injector {
       implicit val request = withRequest(SUPPLEMENTARY_SIMPLIFIED)
 
       "display error for empty MRN" in {
-        val view = viewOnInvalidInput(ConsignmentReferences(Ducr(ducr), Lrn(TestHelper.createRandomAlphanumericString(22)), Some(Mrn(""))))
+        val view =
+          viewOnInvalidInput(ConsignmentReferences(Some(Ducr(ducr)), Some(Lrn(TestHelper.createRandomAlphanumericString(22))), Some(Mrn(""))))
         view must containErrorElementWithTagAndHref("a", "#mrn")
         view must containErrorElementWithMessageKey("declaration.consignmentReferences.supplementary.mrn.error.empty")
       }
 
       "display error for invalid MRN" in {
-        val view = viewOnInvalidInput(ConsignmentReferences(Ducr(ducr), Lrn(TestHelper.createRandomAlphanumericString(22)), Some(Mrn("wsfsdf£"))))
+        val view =
+          viewOnInvalidInput(ConsignmentReferences(Some(Ducr(ducr)), Some(Lrn(TestHelper.createRandomAlphanumericString(22))), Some(Mrn("wsfsdf£"))))
         view must containErrorElementWithTagAndHref("a", "#mrn")
         view must containErrorElementWithMessageKey("declaration.consignmentReferences.supplementary.mrn.error.invalid")
       }
@@ -304,13 +306,17 @@ class ConsignmentReferencesViewSpec extends PageWithButtonsSpec with Injector {
       implicit val request = withRequest(SUPPLEMENTARY_EIDR)
 
       "display error for empty EIDR Date Stamp" in {
-        val view = viewOnInvalidInput(ConsignmentReferences(Ducr(ducr), Lrn(TestHelper.createRandomAlphanumericString(22)), None, Some("")))
+        val view =
+          viewOnInvalidInput(ConsignmentReferences(Some(Ducr(ducr)), Some(Lrn(TestHelper.createRandomAlphanumericString(22))), None, Some("")))
         view must containErrorElementWithTagAndHref("a", "#eidrDateStamp")
         view must containErrorElementWithMessageKey("declaration.consignmentReferences.supplementary.eidr.error.empty")
       }
 
       "display error for invalid EIDR Date Stamp" in {
-        val view = viewOnInvalidInput(ConsignmentReferences(Ducr(ducr), Lrn(TestHelper.createRandomAlphanumericString(22)), None, Some("123456789")))
+        val view =
+          viewOnInvalidInput(
+            ConsignmentReferences(Some(Ducr(ducr)), Some(Lrn(TestHelper.createRandomAlphanumericString(22))), None, Some("123456789"))
+          )
         view must containErrorElementWithTagAndHref("a", "#eidrDateStamp")
         view must containErrorElementWithMessageKey("declaration.consignmentReferences.supplementary.eidr.error.invalid")
       }
@@ -320,14 +326,14 @@ class ConsignmentReferencesViewSpec extends PageWithButtonsSpec with Injector {
   "Consignment References View when filled" should {
     onEveryDeclarationJourney() { implicit request =>
       "display data in DUCR input" in {
-        val consignmentReferences = ConsignmentReferences(Ducr(ducr), Lrn(""))
+        val consignmentReferences = ConsignmentReferences(Some(Ducr(ducr)), Some(Lrn("")))
         val frm = form(request.declarationType, request.cacheModel.additionalDeclarationType).fill(consignmentReferences)
         val view = createView(frm)
         view.getElementById("ducr_ducr").attr("value") mustBe ducr
       }
 
       "display data in LRN input" in {
-        val consignmentReferences = ConsignmentReferences(Ducr(""), Lrn(lrn))
+        val consignmentReferences = ConsignmentReferences(Some(Ducr("")), Some(Lrn(lrn)))
         val frm = form(request.declarationType, request.cacheModel.additionalDeclarationType).fill(consignmentReferences)
         val view = createView(frm)
         view.getElementById("lrn").attr("value") mustBe lrn
@@ -340,7 +346,7 @@ class ConsignmentReferencesViewSpec extends PageWithButtonsSpec with Injector {
     "display data in MRN input" when {
       "AdditionalDeclarationType is SUPPLEMENTARY_SIMPLIFIED" in {
         implicit val request = withRequest(SUPPLEMENTARY_SIMPLIFIED)
-        val consignmentReferences = ConsignmentReferences(Ducr(ducr), Lrn(lrn), Some(Mrn(mrn)))
+        val consignmentReferences = ConsignmentReferences(Some(Ducr(ducr)), Some(Lrn(lrn)), Some(Mrn(mrn)))
         val frm = form(SUPPLEMENTARY, Some(SUPPLEMENTARY_SIMPLIFIED)).fill(consignmentReferences)
         val view = createView(frm)
         view.getElementById("mrn").attr("value") mustBe mrn
@@ -350,7 +356,7 @@ class ConsignmentReferencesViewSpec extends PageWithButtonsSpec with Injector {
     "display data in EIDR Date Stamp input" when {
       "AdditionalDeclarationType is SUPPLEMENTARY_EIDR" in {
         implicit val request = withRequest(SUPPLEMENTARY_EIDR)
-        val consignmentReferences = ConsignmentReferences(Ducr(ducr), Lrn(lrn), None, Some(eidrDateStamp))
+        val consignmentReferences = ConsignmentReferences(Some(Ducr(ducr)), Some(Lrn(lrn)), None, Some(eidrDateStamp))
         val frm = form(SUPPLEMENTARY, Some(SUPPLEMENTARY_EIDR)).fill(consignmentReferences)
         val view = createView(frm)
         view.getElementById("eidrDateStamp").attr("value") mustBe eidrDateStamp

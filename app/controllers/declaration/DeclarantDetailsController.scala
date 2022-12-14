@@ -17,7 +17,7 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.declaration.routes.{ConsignmentReferencesController, DeclarantExporterController, NotEligibleController}
+import controllers.declaration.routes.{ConsignmentReferencesController, DeclarantExporterController, DucrChoiceController, NotEligibleController}
 import controllers.navigation.Navigator
 import forms.common.Eori
 import forms.common.YesNoAnswer.YesNoAnswers
@@ -38,7 +38,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class DeclarantDetailsController @Inject() (
   authenticate: AuthAction,
-  journeyType: JourneyAction,
+  journeyAction: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
   mcc: MessagesControllerComponents,
@@ -46,7 +46,7 @@ class DeclarantDetailsController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
-  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayPage(): Action[AnyContent] = (authenticate andThen journeyAction) { implicit request =>
     val frm = form().withSubmissionErrors()
     request.cacheModel.parties.declarantDetails match {
       case Some(_) => Ok(declarantDetailsPage(frm.fill(DeclarantEoriConfirmation(YesNoAnswers.yes))))
@@ -54,7 +54,7 @@ class DeclarantDetailsController @Inject() (
     }
   }
 
-  def submitForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def submitForm(): Action[AnyContent] = (authenticate andThen journeyAction).async { implicit request =>
     form()
       .bindFromRequest()
       .fold(
@@ -71,7 +71,8 @@ class DeclarantDetailsController @Inject() (
     updateDeclarationFromRequest(model => model.copy(parties = model.parties.copy(declarantDetails = Some(declarant))))
 
   private def nextPage(implicit request: JourneyRequest[_]): Call = request.declarationType match {
-    case DeclarationType.CLEARANCE => DeclarantExporterController.displayPage
-    case _                         => ConsignmentReferencesController.displayPage
+    case DeclarationType.CLEARANCE     => DeclarantExporterController.displayPage
+    case DeclarationType.SUPPLEMENTARY => ConsignmentReferencesController.displayPage
+    case _                             => DucrChoiceController.displayPage
   }
 }

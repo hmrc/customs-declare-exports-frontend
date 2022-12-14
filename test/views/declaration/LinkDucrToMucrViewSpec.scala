@@ -20,6 +20,7 @@ import base.Injector
 import config.AppConfig
 import controllers.declaration.routes
 import forms.common.YesNoAnswer
+import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
@@ -42,12 +43,6 @@ class LinkDucrToMucrViewSpec extends UnitViewSpec with CommonMessages with Injec
 
     onEveryDeclarationJourney() { implicit request =>
       val view = createView()
-
-      "display 'Back' button to 'Consignment Reference' page" in {
-        val backButton = view.getElementById("back-link")
-        backButton must containMessage(backToPreviousQuestionCaption)
-        backButton must haveHref(routes.ConsignmentReferencesController.displayPage())
-      }
 
       "display header" in {
         view.getElementById("section-header") must containMessage("declaration.section.1")
@@ -101,5 +96,26 @@ class LinkDucrToMucrViewSpec extends UnitViewSpec with CommonMessages with Injec
         view.getElementById("link-ducr-to-mucr-hint2").text mustBe messages("declaration.linkDucrToMucr.details.hint2")
       }
     }
+
+    onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, CLEARANCE) { implicit request =>
+      val view = createView()
+
+      "display 'Back' button to 'Consignment Reference' page" in {
+        val backButton = view.getElementById("back-link")
+        backButton must containMessage(backToPreviousQuestionCaption)
+        backButton must haveHref(routes.LocalReferenceNumberController.displayPage)
+      }
+    }
+
+    onJourney(SUPPLEMENTARY) { implicit request =>
+      val view = createView()
+
+      "display 'Back' button to 'Consignment Reference' page" in {
+        val backButton = view.getElementById("back-link")
+        backButton must containMessage(backToPreviousQuestionCaption)
+        backButton must haveHref(routes.ConsignmentReferencesController.displayPage)
+      }
+    }
+
   }
 }

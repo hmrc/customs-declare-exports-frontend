@@ -44,7 +44,7 @@
 @{ bodyHtml
     .map { body =>
         HtmlContent(HtmlFormat.fill(List(
-            label(labelKey = labelKey, forFieldName = field.id, labelArg = labelArg),
+            label(labelKey = labelKey, forFieldName = field.id, labelArg = labelArg, labelClasses = labelClasses),
             body,
             govukInput(Input(
                 id = field.id,

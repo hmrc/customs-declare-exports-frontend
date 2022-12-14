@@ -58,7 +58,7 @@ class CancelDeclarationViewSpec extends UnitViewSpec with CommonMessages with St
 
     "display ducr and lrn" in {
       createView().getElementsByClass("govuk-body").first.text mustBe messages("cancellation.ducr", ducr)
-      createView().getElementsByClass("govuk-body").last.text mustBe messages("cancellation.lrn", lrn.value)
+      createView().getElementsByClass("govuk-body").last.text mustBe messages("cancellation.lrn", lrn.lrn)
     }
 
     "display empty input with label for 'statement Description'" in {
