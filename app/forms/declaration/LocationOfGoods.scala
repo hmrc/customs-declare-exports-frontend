@@ -18,6 +18,8 @@ package forms.declaration
 
 import connectors.CodeListConnector
 import forms.DeclarationPage
+import forms.MappingHelper.requiredRadio
+import forms.common.YesNoAnswer
 import models.declaration.GoodsLocation
 import models.DeclarationType.DeclarationType
 import models.viewmodels.TariffContentKey
@@ -26,7 +28,10 @@ import play.api.data.Forms.text
 import play.api.i18n.Messages
 import play.api.libs.json.{Json, OFormat}
 import services.Countries.isValidCountryCode
+import services.GoodsLocationCodes
 import utils.validators.forms.FieldValidator._
+
+import scala.concurrent.Future
 
 case class LocationOfGoods(code: String) {
 
@@ -36,6 +41,7 @@ case class LocationOfGoods(code: String) {
     qualifierOfIdentification = code.slice(3, 4),
     identificationOfLocation = code.drop(4)
   )
+
 }
 
 object LocationOfGoods extends DeclarationPage {
@@ -73,12 +79,13 @@ object LocationOfGoods extends DeclarationPage {
 
   private def mapping(implicit messages: Messages, codeListConnector: CodeListConnector): Mapping[LocationOfGoods] =
     Forms.mapping(
+      "yesNo" -> requiredRadio("error.yesNo.required", YesNoAnswer.allowedValues),
       "code" -> text()
         .transform(_.trim, (s: String) => s)
         .verifying("declaration.locationOfGoods.code.empty", nonEmpty)
         .verifying("declaration.locationOfGoods.code.error", isEmpty or isValidFormat)
         .verifying("declaration.locationOfGoods.code.error.length", isEmpty or (noShorterThan(10) and noLongerThan(39)))
-    )(form2Data)(LocationOfGoods.unapply)
+    )(form2Data)(model2Form)
 
   private def isValidFormat(implicit messages: Messages, codeListConnector: CodeListConnector): String => Boolean =
     value =>
@@ -87,7 +94,12 @@ object LocationOfGoods extends DeclarationPage {
         validateQualifierCode(value) and
         isAlphanumeric(value)
 
-  private def form2Data(code: String): LocationOfGoods = LocationOfGoods(code.toUpperCase)
+  private def form2Data(yesNo: String, code: String): LocationOfGoods = LocationOfGoods(code.toUpperCase)
+
+  private def model2Form(
+    locationOfGoods: LocationOfGoods
+  )(implicit messages: Messages, codeListConnector: CodeListConnector): Option[(String, String)] =
+    GoodsLocationCodes.findByCode(locationOfGoods.code) map (_ => ("Yes", locationOfGoods.code)) orElse Some(("No", locationOfGoods.code))
 
   def form()(implicit messages: Messages, codeListConnector: CodeListConnector): Form[LocationOfGoods] = Form(mapping)
 
