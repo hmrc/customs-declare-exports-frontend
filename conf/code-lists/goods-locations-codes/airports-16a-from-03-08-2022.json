@@ -1,0 +1,257 @@
+[
+  {
+    "en": "Aberdeen Airport - Dyce",
+    "cy": "Aberdeen Airport - Dyce",
+    "code": "GBAUDYCABZDYC"
+  },
+  {
+    "en": "Aberdeen Airport - Dyce [Bond Offshore Helicopters]",
+    "cy": "Aberdeen Airport - Dyce [Bond Offshore Helicopters]",
+    "code": "GBAUDYCABZBOND"
+  },
+  {
+    "en": "Aberdeen Airport - Dyce [Bristow Helicopters]",
+    "cy": "Aberdeen Airport - Dyce [Bristow Helicopters]",
+    "code": "GBAUDYCABZBSTW"
+  },
+  {
+    "en": "Aberdeen Airport - Dyce [CHC Scotia]",
+    "cy": "Aberdeen Airport - Dyce [CHC Scotia]",
+    "code": "GBAUDYCABZCHC"
+  },
+  {
+    "en": "Belfast Airport",
+    "cy": "Belfast Airport",
+    "code": "GBAUBELBFSBEL"
+  },
+  {
+    "en": "Biggin Hill (London) Airport",
+    "cy": "Biggin Hill (London) Airport",
+    "code": "GBAUBQHBQHBQH"
+  },
+  {
+    "en": "Birmingham Airport",
+    "cy": "Birmingham Airport",
+    "code": "GBAUBHMBHXBHM"
+  },
+  {
+    "en": "Blackpool Airport",
+    "cy": "Blackpool Airport",
+    "code": "GBAUBLKBLKBLK"
+  },
+  {
+    "en": "Boscombe Down – Ministry of Defence",
+    "cy": "Boscombe Down – Ministry of Defence",
+    "code": "GBAUAMSBDNMOD"
+  },
+  {
+    "en": "Bournemouth International Airport - Hurn",
+    "cy": "Bournemouth International Airport - Hurn",
+    "code": "GBAUUURBOHUUR"
+  },
+  {
+    "en": "Brighton City Airport - Shoreham-by-Sea",
+    "cy": "Brighton City Airport - Shoreham-by-Sea",
+    "code": "GBAUESHESHESH"
+  },
+  {
+    "en": "Bristol Airport",
+    "cy": "Bristol Airport",
+    "code": "GBAUBRSBRSBRS"
+  },
+  {
+    "en": "Brize Norton RAF Base",
+    "cy": "Brize Norton RAF Base",
+    "code": "GBAUBZZBZNRAF"
+  },
+  {
+    "en": "Cambridge Airport",
+    "cy": "Cambridge Airport",
+    "code": "GBAUCMGCBGCMG"
+  },
+  {
+    "en": "Cardiff International Airport - Rhoose",
+    "cy": "Cardiff International Airport - Rhoose",
+    "code": "GBAURS8CWLRS8"
+  },
+  {
+    "en": "Coventry Airport",
+    "cy": "Coventry Airport",
+    "code": "GBAUCVTCVTCVT"
+  },
+  {
+    "en": "Durham Tees Valley Airport - Teesside",
+    "cy": "Durham Tees Valley Airport - Teesside",
+    "code": "GBAUDRLMMEDRL"
+  },
+  {
+    "en": "East Midlands Apt",
+    "cy": "East Midlands Apt",
+    "code": "GBAUEMAEMAEMA"
+  },
+  {
+    "en": "Edinburgh Airport",
+    "cy": "Edinburgh Airport",
+    "code": "GBAUEDIEDIEDI"
+  },
+  {
+    "en": "Exeter Airport",
+    "cy": "Exeter Airport",
+    "code": "GBAUEXEEXTEXE"
+  },
+  {
+    "en": "Fairford RAF Base",
+    "cy": "Fairford RAF Base",
+    "code": "GBAUFFOFFDFFO"
+  },
+  {
+    "en": "Farnborough Airport",
+    "cy": "Farnborough Airport",
+    "code": "GBAUFBOFABFBO"
+  },
+  {
+    "en": "Feltwell RAF Base",
+    "cy": "Feltwell RAF Base",
+    "code": "GBAUFELFLTFEL"
+  },
+  {
+    "en": "Gatwick Apt/London",
+    "cy": "Gatwick Apt/London",
+    "code": "GBAULGWLGWLGW"
+  },
+  {
+    "en": "Glasgow Airport",
+    "cy": "Glasgow Airport",
+    "code": "GBAUGLWGLAGLW"
+  },
+  {
+    "en": "Humberside Airport - Kirmington",
+    "cy": "Humberside Airport - Kirmington",
+    "code": "GBAUKMGHUYKMG"
+  },
+  {
+    "en": "Lakenheath RAF Base",
+    "cy": "Lakenheath RAF Base",
+    "code": "GBAULAKLKHLAK"
+  },
+  {
+    "en": "Leeds Bradford Airport - Yeadon",
+    "cy": "Leeds Bradford Airport - Yeadon",
+    "code": "GBAUYDNLBAYDN"
+  },
+  {
+    "en": "Leeds Bradford Airport - Yeadon [Multiflight Ltd]",
+    "cy": "Leeds Bradford Airport - Yeadon [Multiflight Ltd]",
+    "code": "GBAUYDNLBAMFL"
+  },
+  {
+    "en": "Liverpool John Lennon Airport - Speke",
+    "cy": "Liverpool John Lennon Airport - Speke",
+    "code": "GBAUSPKLPLSPK"
+  },
+  {
+    "en": "London Ashford Airport - Lydd",
+    "cy": "London Ashford Airport - Lydd",
+    "code": "GBAULYXLYDLYX"
+  },
+  {
+    "en": "London City Airport",
+    "cy": "London City Airport",
+    "code": "GBAULCTLCYLCT"
+  },
+  {
+    "en": "London Heathrow Airport",
+    "cy": "London Heathrow Airport",
+    "code": "GBAULHRLHRLHR"
+  },
+  {
+    "en": "London Southend Airport",
+    "cy": "London Southend Airport",
+    "code": "GBAUSENSENSEN"
+  },
+  {
+    "en": "London Stansted Airport",
+    "cy": "London Stansted Airport",
+    "code": "GBAUSTNLSASTN"
+  },
+  {
+    "en": "Lossiemouth RAF Base",
+    "cy": "Lossiemouth RAF Base",
+    "code": "GBAULSSLOSLSS"
+  },
+  {
+    "en": "Luton Airport",
+    "cy": "Luton Airport",
+    "code": "GBAULUTLTNLUT"
+  },
+  {
+    "en": "Lyneham RAF Base",
+    "cy": "Lyneham RAF Base",
+    "code": "GBAULYELYHLYE"
+  },
+  {
+    "en": "Manchester Airport",
+    "cy": "Manchester Airport",
+    "code": "GBAUMNCMANMNC"
+  },
+  {
+    "en": "Menwith Hill RAF Base",
+    "cy": "Menwith Hill RAF Base",
+    "code": "GBAUHRTMWHHRT"
+  },
+  {
+    "en": "Mildenhall RAF Base",
+    "cy": "Mildenhall RAF Base",
+    "code": "GBAUMLLMDHMLL"
+  },
+  {
+    "en": "Newcastle International Airport - Ponteland",
+    "cy": "Newcastle International Airport - Ponteland",
+    "code": "GBAUPNLNCLPNL"
+  },
+  {
+    "en": "Newquay Airport",
+    "cy": "Newquay Airport",
+    "code": "GBAUNQYNQYNQY"
+  },
+  {
+    "en": "Northolt RAF Base",
+    "cy": "Northolt RAF Base",
+    "code": "GBAUNHTNHTRAF"
+  },
+  {
+    "en": "Norwich Airport",
+    "cy": "Norwich Airport",
+    "code": "GBAUNRWNWINRW"
+  },
+  {
+    "en": "Odiham RAF Base",
+    "cy": "Odiham RAF Base",
+    "code": "GBAUODMODIRAF"
+  },
+  {
+    "en": "Prestwick Airport",
+    "cy": "Prestwick Airport",
+    "code": "GBAUPIKPIKPIK"
+  },
+  {
+    "en": "Ronaldsway Airport (IOM)",
+    "cy": "Ronaldsway Airport (IOM)",
+    "code": "IMAUIOMRWYIOM"
+  },
+  {
+    "en": "Southampton Airport - Eastleigh",
+    "cy": "Southampton Airport - Eastleigh",
+    "code": "GBAUEATSOUEAT"
+  },
+  {
+    "en": "Sumburgh Airport",
+    "cy": "Sumburgh Airport",
+    "code": "GBAULSILSILSI"
+  },
+  {
+    "en": "Waddington RAF Base",
+    "cy": "Waddington RAF Base",
+    "code": "GBAUWDDWADWDD"
+  }
+]

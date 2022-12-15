@@ -1,0 +1,402 @@
+[
+  {
+    "en": "Aberdeen 410 /  Grampian Continental Ltd, Birchwood Works, Kinellar, Aberdeen, AB21 0SH",
+    "cy": "Aberdeen 410 /  Grampian Continental Ltd, Birchwood Works, Kinellar, Aberdeen, AB21 0SH",
+    "code": "GBAUBA5ABDCGD"
+  },
+  {
+    "en": "Aberdeen 410 / Panalpina World Transport Ltd, Mugiemoss Road, Bucksburn, Aberdeen, AB21 9NP",
+    "cy": "Aberdeen 410 / Panalpina World Transport Ltd, Mugiemoss Road, Bucksburn, Aberdeen, AB21 9NP",
+    "code": "GBAUZAHABZXCQ"
+  },
+  {
+    "en": "Belfast 516,  / DHL International (UK) Ltd, Unit 3B, Edgewater Road, Belfast, BT3 9JQ",
+    "cy": "Belfast 516,  / DHL International (UK) Ltd, Unit 3B, Edgewater Road, Belfast, BT3 9JQ",
+    "code": "GBAUBELBFSXXX"
+  },
+  {
+    "en": "Belfast 516,  / EORI (NI) Limited, 65 Cormeen Road, Armagh BT60 4ND",
+    "cy": "Belfast 516,  / EORI (NI) Limited, 65 Cormeen Road, Armagh BT60 4ND",
+    "code": "GBAUARMBELTSA"
+  },
+  {
+    "en": "Belfast 516,  / EORI (NI) Limited, 35 Main Street, Rosscolban, Kesh, Enniskillen BT93 1TF",
+    "cy": "Belfast 516,  / EORI (NI) Limited, 35 Main Street, Rosscolban, Kesh, Enniskillen BT93 1TF",
+    "code": "GBAUENKBELTSB"
+  },
+  {
+    "en": "Belfast 516,  / EORI (NI) Limited, 179 Gosford Road, Newry, County Down BT35 6NQ",
+    "cy": "Belfast 516,  / EORI (NI) Limited, 179 Gosford Road, Newry, County Down BT35 6NQ",
+    "code": "GBAUNRYBELTSC"
+  },
+  {
+    "en": "Belfast 516,  / DHL International (UK) Ltd, 6 Grange Road, Cookstown, Londonderry BT80 8SB",
+    "cy": "Belfast 516,  / DHL International (UK) Ltd, 6 Grange Road, Cookstown, Londonderry BT80 8SB",
+    "code": "GBAUCOOBFSXXD"
+  },
+  {
+    "en": "Birmingham 011 / Davies Turner & Co Ltd, West Midlands Freight Terminal, Station Road, Birmingham, B46 1DT",
+    "cy": "Birmingham 011 / Davies Turner & Co Ltd, West Midlands Freight Terminal, Station Road, Birmingham, B46 1DT",
+    "code": "GBAUCLLBHXXAD"
+  },
+  {
+    "en": "Birmingham 011 / DHL Global Forwarding (UK) Ltd, Unit 1, Starley Way, Bickenhill Road, Elmdon, Birmingham, B37 7BH",
+    "cy": "Birmingham 011 / DHL Global Forwarding (UK) Ltd, Unit 1, Starley Way, Bickenhill Road, Elmdon, Birmingham, B37 7BH",
+    "code": "GBAUSOLBHXXBW"
+  },
+  {
+    "en": "Birmingham 011 / Hellman Worldwide Logistics Ltd, Kuhlmann House, Lancaster Way, Fradley Park, Lichfield, WS13 8SX",
+    "cy": "Birmingham 011 / Hellman Worldwide Logistics Ltd, Kuhlmann House, Lancaster Way, Fradley Park, Lichfield, WS13 8SX",
+    "code": "GBAULHFBHXXCR"
+  },
+  {
+    "en": "Bristol 033 / Davies Turner & Co Ltd, Western Freight Terminal, Fifth Way, Avonmouth, BS11 8DT",
+    "cy": "Bristol 033 / Davies Turner & Co Ltd, Western Freight Terminal, Fifth Way, Avonmouth, BS11 8DT",
+    "code": "GBAUAVOBRSXAD"
+  },
+  {
+    "en": "Dover 060 / Channel Ports Ltd, Stop 24, Folkestone Services, Junction 11, M20, Stanford Intersection, Stanford, CT21 4BL",
+    "cy": "Dover 060 / Channel Ports Ltd, Stop 24, Folkestone Services, Junction 11, M20, Stanford Intersection, Stanford, CT21 4BL",
+    "code": "GBAUANFDOGWSP"
+  },
+  {
+    "en": "Dover 060 / Motis Ireland Ltd, Freight Clearance Centre, Western Docks, Dover, Kent, CT17 9DN",
+    "cy": "Dover 060 / Motis Ireland Ltd, Freight Clearance Centre, Western Docks, Dover, Kent, CT17 9DN",
+    "code": "GBAUDVRDOGWDG"
+  },
+  {
+    "en": "Dover 060 / Stef Langdons Ltd, 1 Palmerston Road, Port Zone, Dover, Kent, CT16 3NF",
+    "cy": "Dover 060 / Stef Langdons Ltd, 1 Palmerston Road, Port Zone, Dover, Kent, CT16 3NF",
+    "code": "GBAUDVRDOGWNL"
+  },
+  {
+    "en": "Dover 060 / Sealane Freight Ltd, The Freight Terminal, Lydden Hill, Dover, Kent, CT15 7JW",
+    "cy": "Dover 060 / Sealane Freight Ltd, The Freight Terminal, Lydden Hill, Dover, Kent, CT15 7JW",
+    "code": "GBAULY9DOGWSE"
+  },
+  {
+    "en": "Edinburgh 436 / DHL International (UK) Ltd, Unit 2 Chariot Drive, Newbridge, Edinburgh, EH28 8PA",
+    "cy": "Edinburgh 436 / DHL International (UK) Ltd, Unit 2 Chariot Drive, Newbridge, Edinburgh, EH28 8PA",
+    "code": "GBAUNWBEDIXXX"
+  },
+  {
+    "en": "Gatwick 120 / Allport Cargo Services Ltd, Unit 2, The Faraday Centre, Faraday Road, Crawley, West Sussex, RH10 2PX",
+    "cy": "Gatwick 120 / Allport Cargo Services Ltd, Unit 2, The Faraday Centre, Faraday Road, Crawley, West Sussex, RH10 2PX",
+    "code": "GBAUCWYLGWXBB"
+  },
+  {
+    "en": "Glasgow 444 / Airsea Scotland, Eagle House, 159 Wright Street, Renfrew, PA4 8AN",
+    "cy": "Glasgow 444 / Airsea Scotland, Eagle House, 159 Wright Street, Renfrew, PA4 8AN",
+    "code": "GBAURENGLAXBS"
+  },
+  {
+    "en": "Glasgow 444 / Bullet Express Ltd, 99 Baillieston Road, Glasgow. G32 0TF",
+    "cy": "Glasgow 444 / Bullet Express Ltd, 99 Baillieston Road, Glasgow. G32 0TF",
+    "code": "GBAUBTIGRKBXD"
+  },
+  {
+    "en": "Glasgow 444 / Bullet Express Ltd, Bullet House, 5 Ashley Drive, Bothwell. G71 8BS",
+    "cy": "Glasgow 444 / Bullet Express Ltd, Bullet House, 5 Ashley Drive, Bothwell. G71 8BS",
+    "code": "GBAUBWLGRKBLD"
+  },
+  {
+    "en": "Glasgow 444 / Davies Turner & Co Ltd, 7 Grayshill Road, Westfield North, Cumbernauld, Glasgow, G68 9HQ",
+    "cy": "Glasgow 444 / Davies Turner & Co Ltd, 7 Grayshill Road, Westfield North, Cumbernauld, Glasgow, G68 9HQ",
+    "code": "GBAUCLDGLAXAD"
+  },
+  {
+    "en": "Glasgow 444 / DHL Global Forwarding (UK) Ltd, 2 Campsie Drive, Glasgow Airport, Paisley, PA3 2SE",
+    "cy": "Glasgow 444 / DHL Global Forwarding (UK) Ltd, 2 Campsie Drive, Glasgow Airport, Paisley, PA3 2SE",
+    "code": "GBAUPASGLAXCN"
+  },
+  {
+    "en": "Glasgow 444 /  DHL International (UK) Ltd, Phoenix Industrial Estate, West Avenue, Paisley, PA1 2FB",
+    "cy": "Glasgow 444 /  DHL International (UK) Ltd, Phoenix Industrial Estate, West Avenue, Paisley, PA1 2FB",
+    "code": "GBAUPASGLAXXX"
+  },
+  {
+    "en": "Glasgow 444 / Glasgow Prestwick Bond Ltd, Glasgow Prestwick Freight Centre, Prestwick Airport, Ayrshire, KA9 2PL",
+    "cy": "Glasgow 444 / Glasgow Prestwick Bond Ltd, Glasgow Prestwick Freight Centre, Prestwick Airport, Ayrshire, KA9 2PL",
+    "code": "GBAUPIKPIKGPS"
+  },
+  {
+    "en": "Heathrow 120 / Air Menzies International Ltd, Unit 2B, Polar Park, Bath Road, Heathrow, UB7 0DA",
+    "cy": "Heathrow 120 / Air Menzies International Ltd, Unit 2B, Polar Park, Bath Road, Heathrow, UB7 0DA",
+    "code": "GBAULHRLHRXBN"
+  },
+  {
+    "en": "Heathrow 120 / Allport Ltd, Hayes Road, Southall, Middlesex, UB2 5NJ",
+    "cy": "Heathrow 120 / Allport Ltd, Hayes Road, Southall, Middlesex, UB2 5NJ",
+    "code": "GBAUSLLLHRXBB"
+  },
+  {
+    "en": "Heathrow 120  / Azerbaijan Airlines UK Ltd, T/A ASC Cargo Handling, Unit 8 Radius Park, St Theresa's Road, Hatton Cross, Feltham, Middlesex, TW14 0NG",
+    "cy": "Heathrow 120  / Azerbaijan Airlines UK Ltd, T/A ASC Cargo Handling, Unit 8 Radius Park, St Theresa's Road, Hatton Cross, Feltham, Middlesex, TW14 0NG",
+    "code": "GBAUFEMLHRXCY"
+  },
+  {
+    "en": "Heathrow 120  / Bollore' Logistics UK Ltd, 673 Spur Road, North Feltham Trading Estate, Feltham, Middlesex, TW14 0SL",
+    "cy": "Heathrow 120  / Bollore' Logistics UK Ltd, 673 Spur Road, North Feltham Trading Estate, Feltham, Middlesex, TW14 0SL",
+    "code": "GBAUFEMLHRXCB"
+  },
+  {
+    "en": "Heathrow 120  / Brinks Ltd, Unit 1, Radius Park, Faggs Road, Hatton Cross, Feltham, TW14 0NG",
+    "cy": "Heathrow 120  / Brinks Ltd, Unit 1, Radius Park, Faggs Road, Hatton Cross, Feltham, TW14 0NG",
+    "code": "GBAUFEMLHRXBF"
+  },
+  {
+    "en": "Heathrow 120 / Ceva Freight Ltd, Heathrow Gateway, Godfrey Way, Hounslow, Middlesex, TW4 5WY",
+    "cy": "Heathrow 120 / Ceva Freight Ltd, Heathrow Gateway, Godfrey Way, Hounslow, Middlesex, TW4 5WY",
+    "code": "GBAUHOULHRXCU"
+  },
+  {
+    "en": "Heathrow 120 / Cosmotrans International Ltd, 9 Felthambrook Industrial Estate, Felthambrook Way, Feltham, Middlesex, TW13 7DU",
+    "cy": "Heathrow 120 / Cosmotrans International Ltd, 9 Felthambrook Industrial Estate, Felthambrook Way, Feltham, Middlesex, TW13 7DU",
+    "code": "GBAUFEMLHRXBK"
+  },
+  {
+    "en": "Heathrow 120 / Davies Turner Air Cargo Ltd, Unit A1, Calder Way, Horton Road, Colnbrook, Slough, SL3 0BQ",
+    "cy": "Heathrow 120 / Davies Turner Air Cargo Ltd, Unit A1, Calder Way, Horton Road, Colnbrook, Slough, SL3 0BQ",
+    "code": "GBAUCBRLHRXAD"
+  },
+  {
+    "en": "Heathrow 120 / DHL Global Forwarding (UK) Ltd, Danzas House, Kestrel Way, Dawley Road, Hayes, UB3 1HJ",
+    "cy": "Heathrow 120 / DHL Global Forwarding (UK) Ltd, Danzas House, Kestrel Way, Dawley Road, Hayes, UB3 1HJ",
+    "code": "GBAUHMILHRXBW"
+  },
+  {
+    "en": "Heathrow 120 / DHL International (UK) Ltd, Southern Hub Facility, Horton Road, Colnbrook, Slough, SL3 0BB",
+    "cy": "Heathrow 120 / DHL International (UK) Ltd, Southern Hub Facility, Horton Road, Colnbrook, Slough, SL3 0BB",
+    "code": "GBAUCBRLHRXXD"
+  },
+  {
+    "en": "Heathrow 120 /  DHL International (UK) Ltd, Unit 14, Island Road, Reading, RG2 0RP",
+    "cy": "Heathrow 120 /  DHL International (UK) Ltd, Unit 14, Island Road, Reading, RG2 0RP",
+    "code": "GBAURDNLHRXXX"
+  },
+  {
+    "en": "Heathrow 120 /  Dunwoody Airline Services, Building 875 & 1081, Scylla Road, Heathrow Airport, Hounslow, Middlesex, TW4 6BG",
+    "cy": "Heathrow 120 /  Dunwoody Airline Services, Building 875 & 1081, Scylla Road, Heathrow Airport, Hounslow, Middlesex, TW4 6BG",
+    "code": "GBAUHOULHRXBQ"
+  },
+  {
+    "en": "Heathrow 120 / ECMS Express (UK) Ltd, 241 Gresham Road, Slough Trading Estate, Slough, SL1 4RN",
+    "cy": "Heathrow 120 / ECMS Express (UK) Ltd, 241 Gresham Road, Slough Trading Estate, Slough, SL1 4RN",
+    "code": "GBAUSLOLHRXBA"
+  },
+  {
+    "en": "Heathrow 120  / Geodis FF United Kingdom Ltd, Action Court, Ashford Road, Ashford, Middlesex, TW15 1XS",
+    "cy": "Heathrow 120  / Geodis FF United Kingdom Ltd, Action Court, Ashford Road, Ashford, Middlesex, TW15 1XS",
+    "code": "GBAUASFLHRXCZ"
+  },
+  {
+    "en": "Heathrow 120 / Geodis FF United Kingdom Ltd, LHR1, 145 Faggs Road, Feltham, Middlesex, TW14 0LZ",
+    "cy": "Heathrow 120 / Geodis FF United Kingdom Ltd, LHR1, 145 Faggs Road, Feltham, Middlesex, TW14 0LZ",
+    "code": "GBAUFEMLHRXDA"
+  },
+  {
+    "en": "Heathrow 120  / Heathrow Cargo Handling Ltd, HCH House, Horton Road, Colnbrook, Slough, SL3 0AT",
+    "cy": "Heathrow 120  / Heathrow Cargo Handling Ltd, HCH House, Horton Road, Colnbrook, Slough, SL3 0AT",
+    "code": "GBAUCBRLHRXBU"
+  },
+  {
+    "en": "Heathrow 120  / Hellman Worldwide Logistics Ltd, Unit 6, Hurricane Way, Axis Park, Langley, Slough, SL3 8AG",
+    "cy": "Heathrow 120  / Hellman Worldwide Logistics Ltd, Unit 6, Hurricane Way, Axis Park, Langley, Slough, SL3 8AG",
+    "code": "GBAUCBRLHRXCR"
+  },
+  {
+    "en": "Heathrow 120  / Heavyweight Air Express Ltd, Unit 1, Pier Road Industrial Estate, North Feltham Trading Estate, Feltham, TW14 0TW",
+    "cy": "Heathrow 120  / Heavyweight Air Express Ltd, Unit 1, Pier Road Industrial Estate, North Feltham Trading Estate, Feltham, TW14 0TW",
+    "code": "GBAUFEMLHRXCK"
+  },
+  {
+    "en": "Heathrow 120  / Hemisphere Freight Services Ltd, Unit 4, Trident Industrial Estate, Blackthorne Road, Colnbrook, Slough, Berkshire, SL3 0AX",
+    "cy": "Heathrow 120  / Hemisphere Freight Services Ltd, Unit 4, Trident Industrial Estate, Blackthorne Road, Colnbrook, Slough, Berkshire, SL3 0AX",
+    "code": "GBAUCBRLHRXCA"
+  },
+  {
+    "en": "Heathrow 120  / JAS Forwarding (UK) Ltd, Unit 1 Heathrow Logistics Park, Bedfont Road, Heathrow, TW14 8EE",
+    "cy": "Heathrow 120  / JAS Forwarding (UK) Ltd, Unit 1 Heathrow Logistics Park, Bedfont Road, Heathrow, TW14 8EE",
+    "code": "GBAUSWLLHRXAG"
+  },
+  {
+    "en": "Heathrow 120 / Jalsa (UK) Ltd, Building 875, Scylla Road, Hounslow, TW6 3YH",
+    "cy": "Heathrow 120 / Jalsa (UK) Ltd, Building 875, Scylla Road, Hounslow, TW6 3YH",
+    "code": "GBAUHOULHRXBV"
+  },
+  {
+    "en": "Heathrow 120  / James Cargo Services Ltd, Unit 4 Heathrow Logistics Park, Bedfont Road, Heathrow, TW14 8EE",
+    "cy": "Heathrow 120  / James Cargo Services Ltd, Unit 4 Heathrow Logistics Park, Bedfont Road, Heathrow, TW14 8EE",
+    "code": "GBAUCBRLHRXAF"
+  },
+  {
+    "en": "Heathrow 120  / Martinspeed Ltd, 163 Clayton Road, Middlesex, UB3 1AX",
+    "cy": "Heathrow 120  / Martinspeed Ltd, 163 Clayton Road, Middlesex, UB3 1AX",
+    "code": "GBAUHMILHRXDB"
+  },
+  {
+    "en": "Heathrow 120  / Nippon Express, Unit A1/A2 Parkway West, Cranford Lane, Heston, Hounslow, Middlesex, TW5 9NE",
+    "cy": "Heathrow 120  / Nippon Express, Unit A1/A2 Parkway West, Cranford Lane, Heston, Hounslow, Middlesex, TW5 9NE",
+    "code": "GBAUHOULHRXAA"
+  },
+  {
+    "en": "Heathrow 120  / Ontour Logistic Service UK Ltd, Unit 3 McKay, Blackthorne Road, Colnbrook, SL3 0AH",
+    "cy": "Heathrow 120  / Ontour Logistic Service UK Ltd, Unit 3 McKay, Blackthorne Road, Colnbrook, SL3 0AH",
+    "code": "GBAUCBRLHROND"
+  },
+  {
+    "en": "Heathrow 120  / PBS International Ltd, 9 Meadow Brook Industrial Centre, Maxwell Way, Crawley, RH10 9SA",
+    "cy": "Heathrow 120  / PBS International Ltd, 9 Meadow Brook Industrial Centre, Maxwell Way, Crawley, RH10 9SA",
+    "code": "GBAUCWYLGWXCS"
+  },
+  {
+    "en": "Heathrow 120  / Plane Handling Limited, Unit 8, Radius Park, Faggs Road, Feltham, Middlesex, TW14 0NG",
+    "cy": "Heathrow 120  / Plane Handling Limited, Unit 8, Radius Park, Faggs Road, Feltham, Middlesex, TW14 0NG",
+    "code": "GBAUFEMLHRXBC"
+  },
+  {
+    "en": "Heathrow 120  / PRS Distribution Ltd, Valerie House, Unit 6, Horton Road, Colnbrook, Slough, SL3 0BB",
+    "cy": "Heathrow 120  / PRS Distribution Ltd, Valerie House, Unit 6, Horton Road, Colnbrook, Slough, SL3 0BB",
+    "code": "GBAUCBRLHRXBD"
+  },
+  {
+    "en": "Heathrow 120 / Regency Shipping Ltd, Unit 15, Trident Industrial Estate, Blackthorne Road, Colnbrook, SL3 0AX",
+    "cy": "Heathrow 120 / Regency Shipping Ltd, Unit 15, Trident Industrial Estate, Blackthorne Road, Colnbrook, SL3 0AX",
+    "code": "GBAUCBRLHRXBR"
+  },
+  {
+    "en": "Heathrow 120 / Panalpina World Transport Ltd, Panalpina House, Great South West Road, Feltham, TW14 8NU",
+    "cy": "Heathrow 120 / Panalpina World Transport Ltd, Panalpina House, Great South West Road, Feltham, TW14 8NU",
+    "code": "GBAUFEMLHRXCQ"
+  },
+  {
+    "en": "Heathrow 120 / Schenker Limited, Unit 7, Radius Park, Faggs Road, Feltham, Middlesex TW14, 0NG",
+    "cy": "Heathrow 120 / Schenker Limited, Unit 7, Radius Park, Faggs Road, Feltham, Middlesex TW14, 0NG",
+    "code": "GBAUFEMLHRXAL"
+  },
+  {
+    "en": "Heathrow 120 / Sovereign Speed (UK) Ltd, Unit B2X, Skyway 14, Calder Way, Colnbrook, SL3 0BQ",
+    "cy": "Heathrow 120 / Sovereign Speed (UK) Ltd, Unit B2X, Skyway 14, Calder Way, Colnbrook, SL3 0BQ",
+    "code": "GBAUCBRLHRXAI"
+  },
+  {
+    "en": "Heathrow 120 /  Shuttlebridge Logistics Ltd, Unit 6C, Beaver Ind Park, Southall, Middlesex, UB2 5FB",
+    "cy": "Heathrow 120 /  Shuttlebridge Logistics Ltd, Unit 6C, Beaver Ind Park, Southall, Middlesex, UB2 5FB",
+    "code": "GBAUSLLLHRXZY"
+  },
+  {
+    "en": "Heathrow 120 / Strategic Shipping Co Ltd, Unit 6, McKay Trading Estate, Blackthorne Road, Colnbrook, Slough SL3 0AH",
+    "cy": "Heathrow 120 / Strategic Shipping Co Ltd, Unit 6, McKay Trading Estate, Blackthorne Road, Colnbrook, Slough SL3 0AH",
+    "code": "GBAUCBRLHRXAJ"
+  },
+  {
+    "en": "Heathrow 120 / Transglobal Freight Management, International House, Girling Way, Great South West Road, Feltham, Middlesex, TW14 0PH",
+    "cy": "Heathrow 120 / Transglobal Freight Management, International House, Girling Way, Great South West Road, Feltham, Middlesex, TW14 0PH",
+    "code": "GBAUFEMLHRXAC"
+  },
+  {
+    "en": "Heathrow 120 / UPS SCS (UK) Ltd, Unit 1, Blackthorne Road, Poyle, Berkshire, SL3 0DA",
+    "cy": "Heathrow 120 / UPS SCS (UK) Ltd, Unit 1, Blackthorne Road, Poyle, Berkshire, SL3 0DA",
+    "code": "GBAUPLELHRXDC"
+  },
+  {
+    "en": "Heathrow 120 / Westgate Handling Services Ltd, Unit 7, X2 Centre, Hatton Cross, Hounslow, TW6 2GE",
+    "cy": "Heathrow 120 / Westgate Handling Services Ltd, Unit 7, X2 Centre, Hatton Cross, Hounslow, TW6 2GE",
+    "code": "GBAUHOULHRXBT"
+  },
+  {
+    "en": "Heathrow / X One Wholesale Ltd, Unit 9 Ashford Industrial Estate, Shield Road, Ashford, TW15 1AU",
+    "cy": "Heathrow / X One Wholesale Ltd, Unit 9 Ashford Industrial Estate, Shield Road, Ashford, TW15 1AU",
+    "code": "GBAUASFLHROWD"
+  },
+  {
+    "en": "Heathrow / Mark 3 International Limited, Unit 1b, Coln Industrial Estate, Old Bath Road, Colnbrook, Berks SL3 0NJ",
+    "cy": "Heathrow / Mark 3 International Limited, Unit 1b, Coln Industrial Estate, Old Bath Road, Colnbrook, Berks SL3 0NJ",
+    "code": "GBAUCBRLHRXYZ"
+  },
+  {
+    "en": "Luton 223 / Aircargo & Container Service, Unit H, Airport Executive Park, President Way, Luton Airport, Luton, LU2 9NL",
+    "cy": "Luton 223 / Aircargo & Container Service, Unit H, Airport Executive Park, President Way, Luton Airport, Luton, LU2 9NL",
+    "code": "GBAULUTLTNXBG"
+  },
+  {
+    "en": "Manchester 191 / Air Menzies International Ltd, Building 314, World Freight Terminal, Manchester Airport, M90 5EX",
+    "cy": "Manchester 191 / Air Menzies International Ltd, Building 314, World Freight Terminal, Manchester Airport, M90 5EX",
+    "code": "GBAUMANMANXBM "
+  },
+  {
+    "en": "Manchester 191 / Allport Cargo Services Ltd, Unit 704, Kingspark, Kingsmead Place, Trafford Park, Manchester, M17 1PH",
+    "cy": "Manchester 191 / Allport Cargo Services Ltd, Unit 704, Kingspark, Kingsmead Place, Trafford Park, Manchester, M17 1PH",
+    "code": "GBAUMANMANXBB"
+  },
+  {
+    "en": "Manchester 191 / Charles Kendall Freight Ltd, Units 10 & 11 The Furrows, Off Barton Dock Road, Stretford, Manchester, M32 0SZ",
+    "cy": "Manchester 191 / Charles Kendall Freight Ltd, Units 10 & 11 The Furrows, Off Barton Dock Road, Stretford, Manchester, M32 0SZ",
+    "code": "GBAUSFDMANXDH"
+  },
+  {
+    "en": "Manchester 191 / Davies Turner Air Cargo Ltd, Unit 10, Building 301, World Freight Terminal, Manchester Airport, Manchester, M90 5UX",
+    "cy": "Manchester 191 / Davies Turner Air Cargo Ltd, Unit 10, Building 301, World Freight Terminal, Manchester Airport, Manchester, M90 5UX",
+    "code": "GBAUMANMANXAD"
+  },
+  {
+    "en": "Manchester 191 / Davies Turner Air Cargo Ltd, Manchester International Freight Terminal, Westing House Road, Trafford Park, Manchester, MZ17 1DP",
+    "cy": "Manchester 191 / Davies Turner Air Cargo Ltd, Manchester International Freight Terminal, Westing House Road, Trafford Park, Manchester, MZ17 1DP",
+    "code": "GBAUTFKMANXCL"
+  },
+  {
+    "en": "Manchester 191 / DHL International (UK) Ltd, 2 Sunbank Lane, Airport City, Manchester, Altrincham, WA15 0AF",
+    "cy": "Manchester 191 / DHL International (UK) Ltd, 2 Sunbank Lane, Airport City, Manchester, Altrincham, WA15 0AF",
+    "code": "GBAUACMMANXXX"
+  },
+  {
+    "en": "Manchester 191 / Redhead Freight Ltd, Dealburn Road, Low Moor, Bradford, BD12 0RG",
+    "cy": "Manchester 191 / Redhead Freight Ltd, Dealburn Road, Low Moor, Bradford, BD12 0RG",
+    "code": "GBAUBRFMANXCJ"
+  },
+  {
+    "en": "Manchester 191 / Sandalwest Ltd TA/A TQ Express, Unit 7, Building 301, World Freight Terminal, Manchester Airport, M90 5TQ",
+    "cy": "Manchester 191 / Sandalwest Ltd TA/A TQ Express, Unit 7, Building 301, World Freight Terminal, Manchester Airport, M90 5TQ",
+    "code": "GBAUMANMANXBJ"
+  },
+  {
+    "en": "Medway 065 / Charles Kendall Freight Ltd, Liberty House, London Thamesport, Isle of Grain, Rochester, Kent, ME3 0EP",
+    "cy": "Medway 065 / Charles Kendall Freight Ltd, Liberty House, London Thamesport, Isle of Grain, Rochester, Kent, ME3 0EP",
+    "code": "GBAURCSRCSXDI"
+  },
+  {
+    "en": "Medway 065 / Davies Turner & Co Ltd, Dartford Freight Terminal, Edison’s Park, Crossways, Dartford, Kent DA2 6QJ",
+    "cy": "Medway 065 / Davies Turner & Co Ltd, Dartford Freight Terminal, Edison’s Park, Crossways, Dartford, Kent DA2 6QJ",
+    "code": "GBAUDFDLGPXAD"
+  },
+  {
+    "en": "Medway 065  / Europa Road Ltd, Littlebrook DCI, Shield Road, Kent, DA1 5RU",
+    "cy": "Medway 065  / Europa Road Ltd, Littlebrook DCI, Shield Road, Kent, DA1 5RU",
+    "code": "GBAUDFDTHPEUD"
+  },
+  {
+    "en": "Medway 065  / TTS Logistics Limited, Unit 2 Invicta Riverside, New Hythe Lane, Larkfield, Kent, ME20 7FG",
+    "cy": "Medway 065  / TTS Logistics Limited, Unit 2 Invicta Riverside, New Hythe Lane, Larkfield, Kent, ME20 7FG",
+    "code": "GBAULRKMEDWSG"
+  },
+  {
+    "en": "Stansted 121  / DHL International UK Ltd, Unit 5 Vision Stansted Ind Est, Mead Way, off Dunmow Road, Great Hallingbury, Bishops Stortford, CM22 7FD",
+    "cy": "Stansted 121  / DHL International UK Ltd, Unit 5 Vision Stansted Ind Est, Mead Way, off Dunmow Road, Great Hallingbury, Bishops Stortford, CM22 7FD",
+    "code": "GBAUBSTLSAXXX"
+  },
+  {
+    "en": "Tilbury 150  / Crown Fine Art Ltd, Union Court, 20-22 Union Road, London, SW4 6JP",
+    "cy": "Tilbury 150  / Crown Fine Art Ltd, Union Court, 20-22 Union Road, London, SW4 6JP",
+    "code": "GBAUCLPTILCTD"
+  },
+  {
+    "en": "Tilbury 150  / Redhead Freight Limited, Unit 3, Juniper Park, Fenton Way, Southfields Industrial Estate, Laindon, Essex, SS15 6RZ",
+    "cy": "Tilbury 150  / Redhead Freight Limited, Unit 3, Juniper Park, Fenton Way, Southfields Industrial Estate, Laindon, Essex, SS15 6RZ",
+    "code": "GBAULAILONXAM"
+  },
+  {
+    "en": "Tilbury 150  / Temis Luxury (UK) Limited, 2nd Floor, 11-12 Old Bond Street, London WIS 4PW",
+    "cy": "Tilbury 150  / Temis Luxury (UK) Limited, 2nd Floor, 11-12 Old Bond Street, London WIS 4PW",
+    "code": "GBAUMYFLONXDE"
+  }
+]
