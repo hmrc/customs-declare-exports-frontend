@@ -23,6 +23,6 @@ import play.api.i18n.Messages
 object GoodsLocationCodes {
 
   def findByCode(code: String)(implicit messages: Messages, codeListConnector: CodeListConnector): Option[GoodsLocationCode] =
-    codeListConnector.getGoodsLocationCodes(messages.lang.toLocale).get(code)
+    codeListConnector.getDepCodes(messages.lang.toLocale).get(code)
 
 }

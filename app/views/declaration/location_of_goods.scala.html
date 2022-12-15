@@ -21,10 +21,12 @@
 @import models.requests.JourneyRequest
 @import play.twirl.api.HtmlFormat
 @import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.html.components.fields.field_accessible_autocomplete
 @import views.html.components.gds._
 @import views.helpers.{BackButton, LocationOfGoodsHelper, Title}
 @import play.api.data.Forms.boolean
 @import play.api.data.{Form, Forms}
+@import services.view.HolderOfAuthorisationCodes
 
 @this(
     locationOfGoodsHelper: LocationOfGoodsHelper,
@@ -42,7 +44,8 @@
     tariffExpander: tariffExpander,
     formHelper: FormWithCSRF,
     navigator: Navigator,
-    appConfig: AppConfig
+    appConfig: AppConfig,
+    holderOfAuthorisationCodes: HolderOfAuthorisationCodes
 )
 
 @(form: Form[LocationOfGoods])(implicit request: JourneyRequest[_], messages: Messages)
@@ -51,14 +54,14 @@
 @version = @{ locationOfGoodsHelper.versionSelection }
 
 @goodsLocationInputYes(field: Field) = {
-    @govukInput(Input(
-        id = field.id,
-        name = field.name,
-        value = field.value,
-        hint = Some(Hint(content = Text(messages("declaration.locationOfGoods.yesNo.yes.hint")))),
-        classes = s"govuk-!-width-two-thirds ${if(field.hasErrors) "govuk-input--error"}",
-        errorMessage = field.error.map(err => ErrorMessage(content = Text(messages(err.message))))
-    ))
+    @field_accessible_autocomplete(
+        field = form("glc"),
+        label = messages("declaration.locationOfGoods.yesNo.yesHint"),
+        labelClass = Some("govuk-label--s"),
+        hintParagraphs = List(messages("declaration.locationOfGoods.yesNo.yes.hint")),
+        emptySelectValue = "",
+        items = holderOfAuthorisationCodes.asListOfAutoCompleteItems(messages.lang.toLocale)
+    )
 }
 
 @goodsLocationInputNo(field: Field) = {
@@ -121,7 +124,7 @@
             )),
             yesKey = Some("declaration.locationOfGoods.yesNo.yesKey"),
             noKey = Some("declaration.locationOfGoods.yesNo.noKey"),
-            yesHint = Some("declaration.locationOfGoods.yesNo.yesHint"),
+            yesHint = None,
             noHint = Some("declaration.locationOfGoods.yesNo.noHint"),
             yesConditionalHtml = Some(goodsLocationInputYes(form("code"))),
             noConditionalHtml = Some(goodsLocationInputNo(form("code")))
