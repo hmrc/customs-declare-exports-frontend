@@ -102,14 +102,14 @@
                 )
             )
         ),
-        declaration.consignmentReferences.map(refs =>
+        declaration.consignmentReferences.flatMap(_.ducr).map(ducr =>
             SummaryListRow(
                 classes = "ducr-row",
                 key = Key(
                     content = Text(messages("declaration.summary.references.ducr"))
                 ),
                 value = Value(
-                    content = Text(refs.ducr.ducr)
+                    content = Text(ducr.ducr)
                 ),
                 actions = actions(Actions(
                     items = Seq(

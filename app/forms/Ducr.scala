@@ -34,6 +34,7 @@ object Ducr extends DeclarationPage {
           .verifying("declaration.consignmentReferences.ducr.error.empty", nonEmpty)
           .verifying("declaration.consignmentReferences.ducr.error.invalid", isEmpty or isValidDucr)
     )(form2Data)(Ducr.unapply)
+
   val form: Form[Ducr] = Form(mapping)
 
   def form2Data(ducr: String): Ducr = new Ducr(ducr.toUpperCase)
@@ -44,7 +45,6 @@ object Ducr extends DeclarationPage {
   override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
     decType match {
       case CLEARANCE => Seq(TariffContentKey("tariff.declaration.ducr.1.clearance"))
-      case _ =>
-        Seq(TariffContentKey("tariff.declaration.ducr.1.common"))
+      case _         => Seq(TariffContentKey("tariff.declaration.ducr.1.common"))
     }
 }

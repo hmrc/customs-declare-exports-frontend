@@ -39,7 +39,7 @@
       TableRow(
           content = HtmlContent(
               link(
-                  text = declaration.ducr.map(_.ducr).getOrElse(messages("saved.declarations.noDucr")),
+                  text = declaration.ducr.map(_.ducr).getOrElse("saved.declarations.noDucr"),
                   textHidden = Some(messages("saved.declarations.continue.hidden", declaration.ducr.getOrElse(messages("saved.declarations.noDucr")))),
                   call = routes.SavedDeclarationsController.continueDeclaration(declaration.id)
               )

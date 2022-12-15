@@ -17,6 +17,7 @@
 package views.declaration.confirmation
 
 import base.{Injector, MockAuthAction}
+import config.ExternalServicesConfig
 import controllers.routes.{DeclarationDetailsController, FileUploadController}
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
 import models.declaration.submissions.EnhancedStatus._
@@ -37,14 +38,19 @@ import java.time.{ZoneOffset, ZonedDateTime}
 class ConfirmationViewSpec extends UnitViewSpec with GivenWhenThen with Injector with MockAuthAction {
 
   private val page = instanceOf[confirmation_page]
+  private val externalServicesConfig = instanceOf[ExternalServicesConfig]
   private val submissionId = uuid
 
   private val declarationDetailsRoute = DeclarationDetailsController.displayPage(submissionId).url
   private def filedUploadRoute(mrn: String) = FileUploadController.startFileUpload(mrn).url
 
-  private def createView(submission: Option[Submission], declarationType: AdditionalDeclarationType = STANDARD_FRONTIER): Document = {
+  private def createView(
+    submission: Option[Submission],
+    declarationType: AdditionalDeclarationType = STANDARD_FRONTIER,
+    goodsLocationCode: Option[String] = Some("goodsLocationCode")
+  ): Document = {
     val req = buildVerifiedEmailRequest(request, exampleUser)
-    val confirmation = Confirmation(req.email, declarationType.toString, submission)
+    val confirmation = Confirmation(req.email, declarationType.toString, submission, goodsLocationCode)
     page(confirmation)(req, messages)
   }
 
@@ -63,44 +69,35 @@ class ConfirmationViewSpec extends UnitViewSpec with GivenWhenThen with Injector
         And("which should include the expected title")
         children.get(0).tagName mustBe "h1"
         children.get(0).text mustBe messages("declaration.confirmation.received.title")
-
-        And("the provided MRN")
-        children.get(1).tagName mustBe "div"
-        children.get(1).text mustBe messages("declaration.confirmation.mrn", mrn)
       }
 
-      "display the expected first body paragraph when DUCR and LRN have been defined" in {
-        val text = view.getElementsByClass("govuk-body").get(0).text
-        text mustBe messages(
-          "declaration.confirmation.body.1",
-          s" ${messages("declaration.confirmation.body.1.ducr", ducr)}",
-          s" ${messages("declaration.confirmation.body.1.lrn", lrn)}",
-          mrn
-        )
-      }
-
-      "display the expected first body paragraph when DUCR have NOT been defined" in {
-
-        val view = createView(Some(submission.copy(ducr = None)))
-        val text = view.getElementsByClass("govuk-body").get(0).text
-        text mustBe messages("declaration.confirmation.body.1", "", s" ${messages("declaration.confirmation.body.1.lrn", lrn)}", mrn)
-      }
+      displayExpectedTableWithDucrLrnAndMrn(view)
 
       "display the expected 'What happens next' section" in {
         view.getElementsByTag("h2").get(0).text mustBe messages("declaration.confirmation.what.happens.next")
 
-        val paragraph1 = view.getElementsByClass("govuk-body").get(1)
+        val paragraph1 = view.getElementsByClass("govuk-body").get(0)
         paragraph1.text must include("example@example.com")
         paragraph1.text must include(messages("declaration.confirmation.declaration.details.link"))
         paragraph1.child(1) must haveHref(declarationDetailsRoute)
 
-        val paragraph2 = view.getElementsByClass("govuk-body").get(2)
+        val paragraph2 = view.getElementsByClass("govuk-body").get(1)
         paragraph2.text mustBe messages("declaration.confirmation.received.next.2", messages("declaration.confirmation.next.2.link"))
         paragraph2.child(0) must haveHref(appConfig.nationalClearanceHub)
       }
 
       "display the expected 'What can you do now' section" in {
         view.getElementsByTag("h2").get(1).text mustBe messages("declaration.confirmation.whatYouCanDoNow.heading")
+
+        And("display paragraph with link to movements on non-GVMS declarations")
+        val paragraph = view.getElementById("non-gvms-paragraph")
+        paragraph must containMessage(
+          "declaration.confirmation.whatYouCanDoNow.nonGvms.paragraph",
+          messages("declaration.confirmation.whatYouCanDoNow.nonGvms.paragraph.link.1"),
+          messages("declaration.confirmation.whatYouCanDoNow.nonGvms.paragraph.link.2")
+        )
+        paragraph.child(0) must haveHref(externalServicesConfig.customsMovementsFrontendUrl)
+        paragraph.child(1) must haveHref(externalServicesConfig.customsMovementsFrontendUrl)
 
         val paragraph1 = view.getElementsByClass("govuk-body").get(3)
         paragraph1.text mustBe messages("declaration.confirmation.body.2", messages("declaration.confirmation.declaration.details.link"))
@@ -113,6 +110,8 @@ class ConfirmationViewSpec extends UnitViewSpec with GivenWhenThen with Injector
         )
         paragraph2.child(0) must haveHref(filedUploadRoute(notification.mrn))
       }
+
+      displayPrintButton(view)
 
       "display the expected 'Tell us what you think' section" in {
         view.getElementsByTag("h2").get(2).text mustBe messages("declaration.exitSurvey.header")
@@ -134,30 +133,12 @@ class ConfirmationViewSpec extends UnitViewSpec with GivenWhenThen with Injector
           And("which should include the expected title")
           children.get(0).tagName mustBe "h1"
           children.get(0).text mustBe messages("declaration.confirmation.accepted.title")
-
-          And("the provided MRN")
-          children.get(1).tagName mustBe "div"
-          children.get(1).text mustBe messages("declaration.confirmation.mrn", mrn)
         }
 
-        "display the expected first body paragraph when DUCR and LRN have been defined" in {
-          val text = view.getElementsByClass("govuk-body").get(0).text
-          text mustBe messages(
-            "declaration.confirmation.body.1",
-            s" ${messages("declaration.confirmation.body.1.ducr", ducr)}",
-            s" ${messages("declaration.confirmation.body.1.lrn", lrn)}",
-            mrn
-          )
-        }
+        displayExpectedTableWithDucrLrnAndMrn(view)
 
-        "display the expected first body paragraph when DUCR have NOT been defined" in {
-          val view = createView(Some(submission.copy(ducr = None)))
-          val text = view.getElementsByClass("govuk-body").get(0).text
-          text mustBe messages("declaration.confirmation.body.1", "", s" ${messages("declaration.confirmation.body.1.lrn", lrn)}", mrn)
-        }
-
-        "display the expected second body paragraph" in {
-          val paragraph = view.getElementsByClass("govuk-body").get(1)
+        "display the expected paragraph" in {
+          val paragraph = view.getElementsByClass("govuk-body").get(0)
           paragraph.text mustBe messages("declaration.confirmation.body.2", messages("declaration.confirmation.declaration.details.link"))
           paragraph.child(0) must haveHref(declarationDetailsRoute)
         }
@@ -165,12 +146,12 @@ class ConfirmationViewSpec extends UnitViewSpec with GivenWhenThen with Injector
         "display the expected 'What happens next' section" in {
           view.getElementsByTag("h2").get(0).text mustBe messages("declaration.confirmation.what.happens.next")
 
-          val paragraph1 = view.getElementsByClass("govuk-body").get(2)
+          val paragraph1 = view.getElementsByClass("govuk-body").get(1)
           paragraph1.text must include("example@example.com")
           paragraph1.text must include(messages("declaration.confirmation.declaration.details.link"))
           paragraph1.child(1) must haveHref(declarationDetailsRoute)
 
-          val paragraph2 = view.getElementsByClass("govuk-body").get(3)
+          val paragraph2 = view.getElementsByClass("govuk-body").get(2)
           paragraph2.text mustBe messages(
             "declaration.confirmation.accepted.next.2",
             formatTimeDate(submission.enhancedStatusLastUpdated.getOrElse(ZonedDateTime.now(ZoneOffset.UTC))),
@@ -179,8 +160,24 @@ class ConfirmationViewSpec extends UnitViewSpec with GivenWhenThen with Injector
           paragraph2.child(0) must haveHref(appConfig.nationalClearanceHub)
         }
 
+        "display the expected 'What can you do now' section" in {
+          view.getElementsByTag("h2").get(1).text mustBe messages("declaration.confirmation.whatYouCanDoNow.heading")
+
+          And("display paragraph with link to movements on non-GVMS declarations")
+          val paragraph = view.getElementById("non-gvms-paragraph")
+          paragraph must containMessage(
+            "declaration.confirmation.whatYouCanDoNow.nonGvms.paragraph",
+            messages("declaration.confirmation.whatYouCanDoNow.nonGvms.paragraph.link.1"),
+            messages("declaration.confirmation.whatYouCanDoNow.nonGvms.paragraph.link.2")
+          )
+          paragraph.child(0) must haveHref(externalServicesConfig.customsMovementsFrontendUrl)
+          paragraph.child(1) must haveHref(externalServicesConfig.customsMovementsFrontendUrl)
+        }
+
+        displayPrintButton(view)
+
         "display the expected 'Tell us what you think' section" in {
-          view.getElementsByTag("h2").get(1).text mustBe messages("declaration.exitSurvey.header")
+          view.getElementsByTag("h2").get(2).text mustBe messages("declaration.exitSurvey.header")
         }
       }
     }
@@ -241,37 +238,32 @@ class ConfirmationViewSpec extends UnitViewSpec with GivenWhenThen with Injector
             And("which should include the expected title")
             children.get(0).tagName mustBe "h1"
             children.get(0).text mustBe messages("declaration.confirmation.cleared.title")
-
-            And("the provided MRN")
-            children.get(1).tagName mustBe "div"
-            children.get(1).text mustBe messages("declaration.confirmation.mrn", mrn)
           }
 
-          "display the expected first body paragraph when DUCR and LRN have been defined" in {
-            val text = view.getElementsByClass("govuk-body").get(0).text
-            text mustBe messages(
-              "declaration.confirmation.cleared.body.1",
-              s" ${messages("declaration.confirmation.body.1.ducr", ducr)}",
-              s" ${messages("declaration.confirmation.body.1.lrn", lrn)}"
-            )
-          }
-
-          "display the expected first body paragraph when DUCR have NOT been defined" in {
-            val view = createView(Some(submission.copy(ducr = None)), declarationType)
-            val text = view.getElementsByClass("govuk-body").get(0).text
-            text mustBe messages("declaration.confirmation.cleared.body.1", "", s" ${messages("declaration.confirmation.body.1.lrn", lrn)}")
-          }
+          displayExpectedTableWithDucrLrnAndMrn(view)
 
           "display the expected 'What you can do now' section" in {
-            view.getElementsByTag("h2").get(0).text mustBe messages("declaration.confirmation.cleared.heading")
+            view.getElementsByTag("h2").get(0).text mustBe messages("declaration.confirmation.whatYouCanDoNow.heading")
+
+            And("display paragraph with link to movements on non-GVMS declarations")
+            val paragraph = view.getElementById("non-gvms-paragraph")
+            paragraph must containMessage(
+              "declaration.confirmation.whatYouCanDoNow.nonGvms.paragraph",
+              messages("declaration.confirmation.whatYouCanDoNow.nonGvms.paragraph.link.1"),
+              messages("declaration.confirmation.whatYouCanDoNow.nonGvms.paragraph.link.2")
+            )
+            paragraph.child(0) must haveHref(externalServicesConfig.customsMovementsFrontendUrl)
+            paragraph.child(1) must haveHref(externalServicesConfig.customsMovementsFrontendUrl)
 
             val paragraph1 = view.getElementsByClass("govuk-body").get(1)
-            paragraph1.text must include(messages("declaration.confirmation.declaration.details.link"))
+            paragraph1 must containMessage("declaration.confirmation.cleared.body.1", messages("declaration.confirmation.declaration.details.link"))
             paragraph1.child(0) must haveHref(declarationDetailsRoute)
 
             val paragraph2 = view.getElementsByClass("govuk-body").get(2)
-            paragraph2.text mustBe messages("declaration.confirmation.cleared.body.3")
+            paragraph2.text mustBe messages("declaration.confirmation.cleared.body.2")
           }
+
+          displayPrintButton(view)
 
           "display the expected 'Tell us what you think' section" in {
             view.getElementsByTag("h2").get(1).text mustBe messages("declaration.exitSurvey.header")
@@ -315,5 +307,39 @@ class ConfirmationViewSpec extends UnitViewSpec with GivenWhenThen with Injector
         text mustBe messages("declaration.confirmation.other.body.2")
       }
     }
+
+    "Goods location code indicates a GVMS declaration" should {
+      Seq(GOODS_ARRIVED, GOODS_ARRIVED_MESSAGE, RECEIVED, CLEARED).foreach { status =>
+        val submission = createSubmission(statuses = Seq(status))
+        val view = createView(submission = Some(submission), goodsLocationCode = Some("goodsLocationCodeGVM"))
+
+        s"not display the non GVMS paragraph on status $status" in {
+          Option(view.getElementById("non-gvms-paragraph")) mustBe empty
+        }
+      }
+    }
   }
+
+  private def displayExpectedTableWithDucrLrnAndMrn(view: Document): Unit =
+    "display expected table when MRN, LRN and DUCR are defined" in {
+      val table = view.getElementsByClass("govuk-table").first()
+
+      val rows = table.getElementsByClass("govuk-table__row")
+      rows.size mustBe 3
+
+      rows.get(0).children().get(0) must containMessage("declaration.confirmation.ducr")
+      rows.get(0).children().get(1) must containText(ducr)
+
+      rows.get(1).children().get(0) must containMessage("declaration.confirmation.lrn")
+      rows.get(1).children().get(1) must containText(lrn)
+
+      rows.get(2).children().get(0) must containMessage("declaration.confirmation.mrn")
+      rows.get(2).children().get(1) must containText(mrn)
+    }
+
+  private def displayPrintButton(view: Document): Unit =
+    "display print button" in {
+      val button = view.getElementsByClass("gem-c-print-link")
+      button.size mustBe 1
+    }
 }

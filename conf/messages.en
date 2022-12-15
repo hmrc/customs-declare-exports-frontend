@@ -2,8 +2,7 @@ date.day = Day
 date.month = Month
 date.year = Year
 
-service.name=CDS Export Declaration Service
-service.hint.on.banner=Make an export declaration online
+service.name=Make an export declaration online
 
 feedback=This is a new service - your {0} will help us to improve it.
 feedback.link=feedback
@@ -188,14 +187,23 @@ tariff.declaration.type.common.text = This answer will complete<br>{0}.
 tariff.declaration.type.common.linkText.0 = data element 1/2 - Additional Declaration Type (opens in new tab)
 tariff.declaration.type.clearance.text = Go to data element 1/2 Additional Declaration Type in the<br>{0}.
 tariff.declaration.type.clearance.linkText.0 = C21 Customs Clearance Request Completion Guide - Inventory Exports (opens in new tab)
+
+tariff.declaration.ducrChoice.1.clearance.text = Go to the {0}. For details about:
+tariff.declaration.ducrChoice.1.clearance.linkText.0 = C21 Customs Clearance Request Completion Guide - Inventory Exports (opens in new tab)
+tariff.declaration.ducrChoice.2.clearance.text = UCR, go to data element 2/1 Simplified Declaration/Previous Documents
+tariff.declaration.ducrChoice.3.clearance.text = LRN, go to data element 2/5 LRN (no previous reference)
+tariff.declaration.traderReference.common.text = For details about the DUCR number, go to {0}.
+tariff.declaration.traderReference.common.linkText.0 = data element 2/4 - Reference Number / UCR (opens in a new tab)
+tariff.declaration.confirmDucr.common.text = For details about the DUCR number, go to {0}.
+tariff.declaration.confirmDucr.common.linkText.0 = data element 2/4 - Reference Number / UCR (opens in a new tab)
+tariff.declaration.ducr.1.common.text = For details about the DUCR number, go to {0}.
+tariff.declaration.ducr.1.common.linkText.0 = data element 2/4 - Reference Number / UCR (opens in a new tab)
 tariff.declaration.ducr.1.clearance.text = Go to the C21 Customs Clearance Request Completion Guide - Inventory Exports. For details about the DUCR, see {0}
 tariff.declaration.ducr.1.clearance.linkText.0 = data element 2/1 Simplified Declaration/Previous Documents (opens in new tab).
 tariff.declaration.lrn.1.clearance.text = Go to the C21 Customs Clearance Request Completion Guide - Inventory Exports. For details about the LRN, see {0}
 tariff.declaration.lrn.1.clearance.linkText.0 = data element 2/5 LRN (no previous reference) (opens in new tab).
 tariff.declaration.lrn.1.common.text = For details about the LRN, go to<br>{0}.
 tariff.declaration.lrn.1.common.linkText.0 = data element 2/5 - LRN (no previous reference) (This link opens in a new tab)
-tariff.declaration.ducr.1.common.text = For details about the DUCR, go to<br>{0}
-tariff.declaration.ducr.1.common.linkText.0 = data element 2/4 - Reference Number / UCR (This link opens in a new tab)
 tariff.declaration.consignmentReferences.1.common.text = For details about the DUCR, go to<br>{0}.
 tariff.declaration.consignmentReferences.1.common.linkText.0 = data element 2/4 - Reference Number / UCR
 tariff.declaration.consignmentReferences.2.common.text = For details about the LRN, go to<br>{0}.
@@ -206,6 +214,7 @@ tariff.declaration.consignmentReferences.1.clearance.linkText.0 = C21 Customs Cl
 tariff.declaration.consignmentReferences.2.clearance.text = UCR, go to data element 2/1 Simplified Declaration/Previous Documents
 tariff.declaration.consignmentReferences.3.clearance.text = LRN, go to data element 2/5 LRN (no previous reference)
 tariff.declaration.consignmentReferences.1.supplementary.text = The entries on this page complete all the specific requirements for data element 2/1 for supplementary declarations - both the Y-references required are now entered.
+
 tariff.declaration.mucr.common.text = The entry on this page automatically enters declaration category ‘Z’ and document code ‘MCR’ and completes the required components for {0}.
 tariff.declaration.mucr.common.linkText.0 = data element 2/1 Simplified Declaration/Previous Documents (opens in new tab)
 tariff.declaration.mucr.clearance.text = The entry on this page automatically enters category ‘Z’ and document code ‘MCR’ and completes the required components for {0}.
@@ -541,6 +550,10 @@ notDeclarent.referenceTitle = Help and support
 notDeclarent.reference.support = If you are having problems making a declaration, phone: {0}
 notDeclarent.reference.openingHours = Open 8am to 6pm, Monday to Friday (closed bank holidays).
 
+declaration.ducr.choice.title = Do you have a Declaration Unique Consignment Reference Number (DUCR)?
+declaration.ducr.choice.answer.no = No, I would like to create a DUCR
+declaration.ducr.choice.answer.empty = Select if you would like to create a DUCR
+
 declaration.ducrEntry.header =  Enter your Declaration Unique Consignment Reference (DUCR)
 declaration.ducrEntry.ducr.paragraph = Complete your DUCR by using the following format:
 declaration.ducrEntry.ducr.paragraph.bullet1 = last number of the current year
@@ -580,7 +593,7 @@ declaration.consignmentReferences.lrn.inset = Your reference is called the local
 declaration.consignmentReferences.lrn.hint = This can be up to 22 capital letters and numbers, but no special characters. For example, SMITH 8TH JAN KEYRINGS.
 declaration.consignmentReferences.lrn.error.empty = Enter a local reference number (LRN)
 declaration.consignmentReferences.lrn.error.length = Local reference number (LRN) must be 22 characters or fewer
-declaration.consignmentReferences.lrn.error.specialCharacter = Your Local Reference Number (LRN) must be in the correct format. 
+declaration.consignmentReferences.lrn.error.specialCharacter = Your Local Reference Number (LRN) must be in the correct format.
 declaration.consignmentReferences.lrn.error.notExpiredYet = You already submitted a declaration with this LRN in the past 48 hours. If you are resubmitting after correcting an error or updating information, add a version number at the end.
 declaration.consignmentReferences.supplementary.lrn.info = Local reference number (LRN)
 declaration.consignmentReferences.supplementary.ducr.hint1 = Enter the DUCR for the simplified declaration that was the ‘part 1’ of this declaration.
@@ -594,6 +607,28 @@ declaration.consignmentReferences.supplementary.eidr.info = Date of EIDR
 declaration.consignmentReferences.supplementary.eidr.hint1 = Enter the date the goods were released to the customs procedure (the date the EIDR record was created) in the following format: yyyymmdd, for example 20200401.
 declaration.consignmentReferences.supplementary.eidr.error.empty = Enter the date of the EIDR
 declaration.consignmentReferences.supplementary.eidr.error.invalid = Enter the yyyymmdd code in the correct format
+
+declaration.traderReference.title = Enter a trader reference
+declaration.traderReference.body = This component of the DUCR is restricted to up to 19 numbers, upper case letters, brackets and forward slashes. Your reference can be anything you like and will provide an audit trail within your commercial records.
+declaration.traderReference.hintText = For example, INVOICE123/4
+declaration.traderReference.expander.content = For details about the DUCR number, go to {0} (opens in a new tab).
+declaration.traderReference.expander.content.link = data element 2/4 - Reference Number / UCR
+declaration.traderReference.error.invalid = Your reference must be in the correct format.
+declaration.traderReference.error.empty = Enter a trader reference.
+
+declaration.confirmDucr.title = Do you want to use this DUCR?
+declaration.confirmDucr.row.ducr = DUCR
+declaration.confirmDucr.body.p1 = This DUCR has been created using your EORI number and the reference you provided.
+declaration.confirmDucr.body.p2 = Select ‘Yes’ to confirm you would like to use this DUCR and ‘No’ if you want to enter a new one. For example, if you would like to use a different EORI number.
+declaration.confirmDucr.expander.title = More information on how this DUCR was created
+declaration.confirmDucr.expander.content.p1 = This DUCR was created by using:
+declaration.confirmDucr.expander.content.list.1 = last number of the current year
+declaration.confirmDucr.expander.content.list.2 = GB
+declaration.confirmDucr.expander.content.list.3 = your EORI number
+declaration.confirmDucr.expander.content.list.4 = a hyphen (16th character)
+declaration.confirmDucr.expander.content.list.5 = the trader reference you chose
+declaration.confirmDucr.expander.content.p2 = For example, 9GB000000000000-12345
+declaration.confirmDucr.error.empty = Select yes to confirm your DUCR
 
 declaration.entryIntoDeclarantRecords.title = Is this an entry into declarant’s records (EIDR)?
 declaration.entryIntoDeclarantRecords.answer.yes = Yes
@@ -2179,10 +2214,8 @@ declaration.confirmation.accepted.next.1 = Further customs checks may be carried
 declaration.confirmation.accepted.next.2 = If the status of your declaration has not changed within 2 hours from the time of this acceptance, {0}, you should {1}.
 
 declaration.confirmation.cleared.title = Declaration accepted, goods have permission to progress
-declaration.confirmation.cleared.body.1 = Your declaration{0}{1} has been cleared and given permission to progress.
-declaration.confirmation.cleared.heading = What you can do now
-declaration.confirmation.cleared.body.2 = You can check the status of your declaration and print out the export accompanying document (EAD) on {0}.
-declaration.confirmation.cleared.body.3 = If your haulier is using the Goods Vehicle Movement Service (GVMS), ensure they have the Declaration Unique Consignment Reference (DUCR) so they can create a goods movement reference (GMR). If you already gave them the DUCR, the GMR can now be completed.
+declaration.confirmation.cleared.body.1 = You can check the status of your declaration and print out the export accompanying document (EAD) on {0}.
+declaration.confirmation.cleared.body.2 = If your haulier is using the Goods Vehicle Movement Service (GVMS), ensure they have the Declaration Unique Consignment Reference (DUCR) so they can create a goods movement reference (GMR). If you already gave them the DUCR, the GMR can now be completed.
 
 declaration.confirmation.needsDocument.title = Your declaration needs documents attached
 declaration.confirmation.needsDocument.warning = You need to upload documents ready for checking at customs.
@@ -2193,11 +2226,13 @@ declaration.confirmation.other.body.1 = Your declaration{0}{1} will be given a m
 declaration.confirmation.other.body.1.link = Your declarations
 declaration.confirmation.other.body.2 = The result should be available immediately or within a few minutes.
 
-declaration.confirmation.received.title = Declaration is pre-lodged with HMRC
+declaration.confirmation.received.title = Your declaration has been pre-lodged with HMRC
 declaration.confirmation.received.next.1 = Further customs checks will be carried out when the goods are arrived. You will be notified about any action required on {0}, which is your registered CDS email address, and on {1}.
 declaration.confirmation.received.next.2 = If the status of your declaration has not changed within 2 hours from when the goods are arrived, you should {0}.
 
-declaration.confirmation.mrn = Movement reference number {0}
+declaration.confirmation.ducr = DUCR
+declaration.confirmation.lrn = LRN
+declaration.confirmation.mrn = MRN
 declaration.confirmation.body.1 = Your declaration{0}{1} has been validated and given a CDS movement reference number (MRN): {2}.
 declaration.confirmation.body.1.ducr = with DUCR {0}
 declaration.confirmation.body.1.lrn = (your reference {0})
@@ -2207,6 +2242,9 @@ declaration.confirmation.next.2.link = contact the National Clearance Hub
 declaration.confirmation.what.happens.next = What happens next
 
 declaration.confirmation.whatYouCanDoNow.heading = What you can do now
+declaration.confirmation.whatYouCanDoNow.nonGvms.paragraph = You are also able to {0} by associating it, and other consignments, to a master consignment. You will also be able to {1} this declaration if you are a registered loader.
+declaration.confirmation.whatYouCanDoNow.nonGvms.paragraph.link.1 = consolidate this declaration
+declaration.confirmation.whatYouCanDoNow.nonGvms.paragraph.link.2 = arrive or depart
 declaration.confirmation.whatYouCanDoNow.paragraph.2 = If you wish, you can {0}, but you do not have to do this unless you get the notification of ‘Documents required’ when your goods are arrived.
 declaration.confirmation.whatYouCanDoNow.paragraph.2.link = upload the documents you named on your declaration (opens in new tab)
 

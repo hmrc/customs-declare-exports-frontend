@@ -79,6 +79,8 @@ class Navigator @Inject() (
     case CarrierDetails                => routes.CarrierEoriNumberController.displayPage
     case InvoiceAndExchangeRateChoice  => routes.OfficeOfExitController.displayPage
     case InvoiceAndExchangeRate        => routes.InvoiceAndExchangeRateChoiceController.displayPage
+    case TraderReference               => routes.DucrChoiceController.displayPage
+    case ConfirmDucr                   => routes.TraderReferenceController.displayPage
   }
 
   val commonItem: PartialFunction[DeclarationPage, String => Call] = {
@@ -114,7 +116,8 @@ class Navigator @Inject() (
   val standard: PartialFunction[DeclarationPage, Call] = {
     case DeclarantDetails            => routes.AdditionalDeclarationTypeController.displayPage
     case LinkDucrToMucr              => routes.LocalReferenceNumberController.displayPage
-    case Ducr                        => routes.DeclarantDetailsController.displayPage
+    case DucrChoice                  => routes.DeclarantDetailsController.displayPage
+    case Ducr                        => routes.DucrChoiceController.displayPage
     case ConsignmentReferences       => routes.DeclarantDetailsController.displayPage
     case ExporterEoriNumber          => routes.DeclarantExporterController.displayPage
     case ExporterDetails             => routes.ExporterEoriNumberController.displayPage
@@ -163,7 +166,8 @@ class Navigator @Inject() (
   }
 
   val clearance: PartialFunction[DeclarationPage, Call] = {
-    case Ducr                         => routes.AdditionalDeclarationTypeController.displayPage
+    case DucrChoice                   => routes.AdditionalDeclarationTypeController.displayPage
+    case Ducr                         => routes.DucrChoiceController.displayPage
     case ConsignmentReferences        => routes.AdditionalDeclarationTypeController.displayPage
     case LinkDucrToMucr               => routes.LocalReferenceNumberController.displayPage
     case ExporterDetails              => routes.ExporterEoriNumberController.displayPage
@@ -257,9 +261,10 @@ class Navigator @Inject() (
 
   val simplified: PartialFunction[DeclarationPage, Call] = {
     case DeclarantDetails            => routes.AdditionalDeclarationTypeController.displayPage
-    case LinkDucrToMucr              => routes.LocalReferenceNumberController.displayPage
-    case Ducr                        => routes.DeclarantDetailsController.displayPage
+    case DucrChoice                  => routes.DeclarantDetailsController.displayPage
+    case Ducr                        => routes.DucrChoiceController.displayPage
     case ConsignmentReferences       => routes.DeclarantDetailsController.displayPage
+    case LinkDucrToMucr              => routes.LocalReferenceNumberController.displayPage
     case ExporterEoriNumber          => routes.DeclarantExporterController.displayPage
     case ExporterDetails             => routes.ExporterEoriNumberController.displayPage
     case DeclarationAdditionalActors => routes.ConsigneeDetailsController.displayPage
@@ -305,8 +310,9 @@ class Navigator @Inject() (
 
   val occasional: PartialFunction[DeclarationPage, Call] = {
     case DeclarantDetails            => routes.AdditionalDeclarationTypeController.displayPage
+    case DucrChoice                  => routes.DeclarantDetailsController.displayPage
+    case Ducr                        => routes.DucrChoiceController.displayPage
     case LinkDucrToMucr              => routes.LocalReferenceNumberController.displayPage
-    case Ducr                        => routes.DeclarantDetailsController.displayPage
     case ConsignmentReferences       => routes.DeclarantDetailsController.displayPage
     case ExporterEoriNumber          => routes.DeclarantExporterController.displayPage
     case ExporterDetails             => routes.ExporterEoriNumberController.displayPage
