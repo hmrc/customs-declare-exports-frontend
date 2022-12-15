@@ -1,0 +1,122 @@
+[
+  {
+    "en": "Cairnryan",
+    "cy": "Cairnryan",
+    "code": "GBAUCYNAYRCYN"
+  },
+  {
+    "en": "Dover/Eurotunnel",
+    "cy": "Dover/Eurotunnel",
+    "code": "GBAUDEUDEUDEU"
+  },
+  {
+    "en": "Dover / Eastern Docks excluding Dover Cargo Terminal & Eastern Arm",
+    "cy": "Dover / Eastern Docks excluding Dover Cargo Terminal & Eastern Arm",
+    "code": "GBAUDVRDOVDVR"
+  },
+  {
+    "en": "Eurotunnel (Folkestone)",
+    "cy": "Eurotunnel (Folkestone)",
+    "code": "GBAUEUTEUTEUT"
+  },
+  {
+    "en": "Felixstowe / RORO Berths 3; RoRo Berth 4",
+    "cy": "Felixstowe / RORO Berths 3; RoRo Berth 4",
+    "code": "GBAUFXTFXTFXT"
+  },
+  {
+    "en": "Fishguard",
+    "cy": "Fishguard",
+    "code": "GBAUFISFISFIS"
+  },
+  {
+    "en": "Harwich / RORO Berth 2; RoRo Berth 4",
+    "cy": "Harwich / RORO Berth 2; RoRo Berth 4",
+    "code": "GBAUHRHHRHHRH"
+  },
+  {
+    "en": "Heysham",
+    "cy": "Heysham",
+    "code": "GBAUHYMHEYHYM"
+  },
+  {
+    "en": "Holyhead",
+    "cy": "Holyhead",
+    "code": "GBAUHLYHLDHLY"
+  },
+  {
+    "en": "Hull / River Terminal 1; 5 Quay Middle; 5 Quay West",
+    "cy": "Hull / River Terminal 1; 5 Quay Middle; 5 Quay West",
+    "code": "GBAUHULHULHUL"
+  },
+  {
+    "en": "Immingham / Outer Harbour 1, 2 and 3;  Berth 11,1; Berth 11,2; Berth 12, 1 ramp; Berth 12, 2",
+    "cy": "Immingham / Outer Harbour 1, 2 and 3;  Berth 11,1; Berth 11,2; Berth 12, 1 ramp; Berth 12, 2",
+    "code": "GBAUIMMIMMIMM"
+  },
+  {
+    "en": "Killingholme",
+    "cy": "Killingholme",
+    "code": "GBAUKLHKILKLH"
+  },
+  {
+    "en": "Liverpool / Langton Berth;  Gladstone Berth; 12 Quays Terminal Birkenhead",
+    "cy": "Liverpool / Langton Berth;  Gladstone Berth; 12 Quays Terminal Birkenhead",
+    "code": "GBAULIVLIVLIV"
+  },
+  {
+    "en": "Loch Ryan / Stena Line Loch Ryan Port; Cairnryan; DG9 8RG",
+    "cy": "Loch Ryan / Stena Line Loch Ryan Port; Cairnryan; DG9 8RG",
+    "code": "GBAULRPAYRLRP"
+  },
+  {
+    "en": "Newhaven / Newhaven Ferry Terminal",
+    "cy": "Newhaven / Newhaven Ferry Terminal",
+    "code": "GBAUNHVNHVNHV"
+  },
+  {
+    "en": "Pembroke / Pembroke Dock Ferry Terminal",
+    "cy": "Pembroke / Pembroke Dock Ferry Terminal",
+    "code": "GBAUMILMILMIL"
+  },
+  {
+    "en": "Plymouth / Plymouth RORO Berth West Wharf",
+    "cy": "Plymouth / Plymouth RORO Berth West Wharf",
+    "code": "GBAUPLYPLYPLY"
+  },
+  {
+    "en": "Poole / Poole Continental Freight & Ferry Terminal, excluding South Quay",
+    "cy": "Poole / Poole Continental Freight & Ferry Terminal, excluding South Quay",
+    "code": "GBAUPOOPOOPOO"
+  },
+  {
+    "en": "Port of Tyne / Port of Tyne International Passenger Terminal, North Shields",
+    "cy": "Port of Tyne / Port of Tyne International Passenger Terminal, North Shields",
+    "code": "GBAUNCLTYNNCL"
+  },
+  {
+    "en": "Portsmouth / Portsmouth International Port: RORO Berth 1; RORO Berth 2; RORO Berth 3; RORO Berth 4; RORO Berth 5",
+    "cy": "Portsmouth / Portsmouth International Port: RORO Berth 1; RORO Berth 2; RORO Berth 3; RORO Berth 4; RORO Berth 5",
+    "code": "GBAUPMEPTMPME"
+  },
+  {
+    "en": "Purfleet /  The entire port, including Dartford International Ferry Terminal and Purfleet Thames Terminal",
+    "cy": "Purfleet /  The entire port, including Dartford International Ferry Terminal and Purfleet Thames Terminal",
+    "code": "GBAUPUFPUFPUF"
+  },
+  {
+    "en": "Sheerness / Berth 1; Berth 2; Berth 10",
+    "cy": "Sheerness / Berth 1; Berth 2; Berth 10",
+    "code": "GBAUMEDMEDMED"
+  },
+  {
+    "en": "Teesport / No 1 (Riverside) Berth; No 2 (Riverside) Berth; No 3 (Riverside) Berth",
+    "cy": "Teesport / No 1 (Riverside) Berth; No 2 (Riverside) Berth; No 3 (Riverside) Berth",
+    "code": "GBAUTEEMIDTEE"
+  },
+  {
+    "en": "Tilbury / 34 Berth",
+    "cy": "Tilbury / 34 Berth",
+    "code": "GBAUTILLONTIL"
+  }
+]

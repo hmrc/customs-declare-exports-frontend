@@ -223,7 +223,7 @@ class AppConfigSpec extends UnitWithMocksSpec {
     }
 
     "have goodsLocationCode file path" in {
-      validAppConfig.goodsLocationCodeFile must be("goodsLocationCode")
+      validAppConfig.glcDep16k must be("/code-lists/goods-locations-codes/dep")
     }
 
     "have goodsLocationCodeToLocationType file path" in {
@@ -494,11 +494,27 @@ object AppConfigSpec {
       |files.codelists.countryCodes="/code-lists/countryCodes.json"
       |files.codelists.countryCodeToAliasesLink="countryCodeToAliasesLink"
       |files.codelists.countryCodeToShortNameLink="countryCodeToShortNameLink"
-      |files.codelists.goodsLocationCode="goodsLocationCode"
       |files.codelists.goodsLocationCodeToLocationTypeLink="goodsLocationCodeToLocationTypeLink"
       |files.codelists.packageTypeCode="packageTypeCode"
       |files.codelists.officeOfExits="officeOfExit"
       |files.codelists.customsOffices="customsOffice"
+      |
+      |files.codelists.glc.airports="/code-lists/goods-locations-codes/airports"
+      |files.codelists.glc.coa-airports="/code-lists/goods-locations-codes/coa-airports"
+      |files.codelists.glc.maritime-ports-and-wharves="/code-lists/goods-locations-codes/maritime-ports-and-wharves"
+      |files.codelists.glc.itsf="/code-lists/goods-locations-codes/itsf"
+      |files.codelists.glc.remote-itsf="/code-lists/goods-locations-codes/remote-itsf"
+      |files.codelists.glc.external-itsf="/code-lists/goods-locations-codes/external-itsf"
+      |files.codelists.glc.border-inspection-posts="/code-lists/goods-locations-codes/border-inspection-posts"
+      |files.codelists.glc.approved-dipositories="/code-lists/goods-locations-codes/approved-dipositories"
+      |files.codelists.glc.gb-place-names="/code-lists/goods-locations-codes/gb-place-names"
+      |files.codelists.glc.other-location-codes="/code-lists/goods-locations-codes/other-location-codes"
+      |files.codelists.glc.dep="/code-lists/goods-locations-codes/dep"
+      |files.codelists.glc.cse="/code-lists/goods-locations-codes/cse"
+      |files.codelists.glc.rail="/code-lists/goods-locations-codes/rail"
+      |files.codelists.glc.acts="/code-lists/goods-locations-codes/acts"
+      |files.codelists.glc.roro="/code-lists/goods-locations-codes/roro"
+      |files.codelists.glc.gvms="/code-lists/goods-locations-codes/gvms"
       |
       |draft.timeToLive=30d
       |microservice.services.nrs.host=localhostnrs

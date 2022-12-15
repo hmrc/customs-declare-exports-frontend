@@ -18,7 +18,7 @@ package views.declaration.addtionalDocuments
 
 import base.{Injector, TestHelper}
 import config.AppConfig
-import connectors.FileBasedCodeListConnector
+import connectors.{FileBasedCodeListConnector, GoodsLocationCodesConnector}
 import forms.common.Date.{dayKey, monthKey, yearKey}
 import forms.common.Eori
 import forms.declaration.AdditionalDocumentSpec._
@@ -48,6 +48,7 @@ import java.util.Locale.ENGLISH
 class AdditionalDocumentEditViewSpec extends UnitViewSpec with Injector {
 
   val appConfig = instanceOf[AppConfig]
+  val glc = new GoodsLocationCodesConnector(appConfig)
 
   val page = instanceOf[additional_document_edit]
 
@@ -152,7 +153,7 @@ class AdditionalDocumentEditViewSpec extends UnitViewSpec with Injector {
     val clearanceJourneys = List(CLEARANCE_FRONTIER, CLEARANCE_PRE_LODGED)
     val holders = List(DeclarationHolder(Some("OPO"), None, None), DeclarationHolder(Some("FZ"), None, None))
 
-    val authCodeHelper = new HolderOfAuthorisationCodes(new FileBasedCodeListConnector(appConfig), mockMerchandiseInBagConfig)
+    val authCodeHelper = new HolderOfAuthorisationCodes(new FileBasedCodeListConnector(appConfig, glc), mockMerchandiseInBagConfig)
 
     allAdditionalDeclarationTypes.foreach { declarationType =>
       val item = anItem(withItemId(itemId))

@@ -1,0 +1,147 @@
+[
+  {
+    "en": "Aberdeen  / Aberdeen GVMS Port",
+    "cy": "Aberdeen  / Aberdeen GVMS Port",
+    "code": "GBAUABDABDABDGVM"
+  },
+  {
+    "en": "Belfast / Belfast GVMS Port",
+    "cy": "Belfast / Belfast GVMS Port",
+    "code": "GBAUBELBELGVM"
+  },
+  {
+    "en": "Cairnryan / Cairnryan GVMS Port",
+    "cy": "Cairnryan / Cairnryan GVMS Port",
+    "code": "GBAUCYNAYRCYNGVM"
+  },
+  {
+    "en": "Dover/Eurotunnel / Dover/Eurotunnel GVMS Port",
+    "cy": "Dover/Eurotunnel / Dover/Eurotunnel GVMS Port",
+    "code": "GBAUDEUDEUDEUGVM"
+  },
+  {
+    "en": "Dover / Dover GVMS Port",
+    "cy": "Dover / Dover GVMS Port",
+    "code": "GBAUDVRDOVDVRGVM"
+  },
+  {
+    "en": "Eurotunnel (Folkestone) / Eurotunnel (Folkestone) GVMS Port",
+    "cy": "Eurotunnel (Folkestone) / Eurotunnel (Folkestone) GVMS Port",
+    "code": "GBAUEUTEUTEUTGVM"
+  },
+  {
+    "en": "Felixstowe / Felixstowe GVMS Port",
+    "cy": "Felixstowe / Felixstowe GVMS Port",
+    "code": "GBAUFXTFXTFXTGVM"
+  },
+  {
+    "en": "Fishguard / Fishguard GVMS Port",
+    "cy": "Fishguard / Fishguard GVMS Port",
+    "code": "GBAUFISFISFISGVM"
+  },
+  {
+    "en": "Harwich / Harwich GVMS Port",
+    "cy": "Harwich / Harwich GVMS Port",
+    "code": "GBAUHRHHRHHRHGVM"
+  },
+  {
+    "en": "Heysham / Heysham GVMS Port",
+    "cy": "Heysham / Heysham GVMS Port",
+    "code": "GBAUHYMHEYHYMGVM"
+  },
+  {
+    "en": "Holyhead / Holyhead GVMS Port",
+    "cy": "Holyhead / Holyhead GVMS Port",
+    "code": "GBAUHLYHLDHLYGVM"
+  },
+  {
+    "en": "Hull / Hull GVMS Port",
+    "cy": "Hull / Hull GVMS Port",
+    "code": "GBAUHULHULHULGVM"
+  },
+  {
+    "en": "Immingham / Immingham GVMS Port",
+    "cy": "Immingham / Immingham GVMS Port",
+    "code": "GBAUIMMIMMIMMGVM"
+  },
+  {
+    "en": "Killingholme / Killingholme GVMS Port",
+    "cy": "Killingholme / Killingholme GVMS Port",
+    "code": "GBAUKLHKILKLHGVM"
+  },
+  {
+    "en": "Larne / Larne GVMS Port",
+    "cy": "Larne / Larne GVMS Port",
+    "code": "GBAULARBELGVM"
+  },
+  {
+    "en": "Liverpool / Liverpool GVMS Port",
+    "cy": "Liverpool / Liverpool GVMS Port",
+    "code": "GBAULIVLIVLIVGVM"
+  },
+  {
+    "en": "Loch Ryan  / Loch Ryan GVMS Port",
+    "cy": "Loch Ryan  / Loch Ryan GVMS Port",
+    "code": "GBAULRPAYRLRPGVM"
+  },
+  {
+    "en": "Newhaven / Newhaven GVMS Port",
+    "cy": "Newhaven / Newhaven GVMS Port",
+    "code": "GBAUNHVNHVNHVGVM"
+  },
+  {
+    "en": "Pembroke / Pembroke GVMS Port",
+    "cy": "Pembroke / Pembroke GVMS Port",
+    "code": "GBAUPEDMILPEDGVM"
+  },
+  {
+    "en": "Plymouth / Plymouth GVMS Port",
+    "cy": "Plymouth / Plymouth GVMS Port",
+    "code": "GBAUPLYPLYPLYGVM"
+  },
+  {
+    "en": "Poole / Poole GVMS Port",
+    "cy": "Poole / Poole GVMS Port",
+    "code": "GBAUPOOPOOPOOGVM"
+  },
+  {
+    "en": "Port of Tyne / Port of Tyne GVMS Port",
+    "cy": "Port of Tyne / Port of Tyne GVMS Port",
+    "code": "GBAUNCLTYNNCLGVM"
+  },
+  {
+    "en": "Portsmouth / Portsmouth GVMS Port",
+    "cy": "Portsmouth / Portsmouth GVMS Port",
+    "code": "GBAUPMEPTMPMEGVM"
+  },
+  {
+    "en": "Purfleet / Purfleet GVMS Port",
+    "cy": "Purfleet / Purfleet GVMS Port",
+    "code": "GBAUPUFPUFPUFGVM"
+  },
+  {
+    "en": "Port of Ramsgate  / Port of Ramsgate  GVMS Port",
+    "cy": "Port of Ramsgate  / Port of Ramsgate  GVMS Port",
+    "code": "GBAURMGRMGRMGGVM"
+  },
+  {
+    "en": "Sheerness / Sheerness GVMS Port",
+    "cy": "Sheerness / Sheerness GVMS Port",
+    "code": "GBAUMEDMEDMEDGVM"
+  },
+  {
+    "en": "Teesport / Teesport GVMS Port",
+    "cy": "Teesport / Teesport GVMS Port",
+    "code": "GBAUTEEMIDTEEGVM"
+  },
+  {
+    "en": "Tilbury / Tilbury GVMS Port",
+    "cy": "Tilbury / Tilbury GVMS Port",
+    "code": "GBAUTILLONTILGVM"
+  },
+  {
+    "en": "Warrenpoint / Warrenpoint GVMS Port",
+    "cy": "Warrenpoint / Warrenpoint GVMS Port",
+    "code": "GBAUWPTWPTGVM"
+  }
+]

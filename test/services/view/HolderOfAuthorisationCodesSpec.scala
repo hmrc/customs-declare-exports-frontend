@@ -18,7 +18,7 @@ package services.view
 
 import base.UnitWithMocksSpec
 import config.AppConfig
-import connectors.FileBasedCodeListConnector
+import connectors.{FileBasedCodeListConnector, GoodsLocationCodesConnector}
 import forms.declaration.declarationHolder.AuthorizationTypeCodes.{EXRR, MIB}
 import forms.declaration.declarationHolder.DeclarationHolder
 import mock.FeatureFlagMocks
@@ -31,10 +31,6 @@ class HolderOfAuthorisationCodesSpec extends UnitWithMocksSpec with BeforeAndAft
 
   private val appConfig = mock[AppConfig]
 
-  private lazy val codeListConnector = new FileBasedCodeListConnector(appConfig)
-
-  private lazy val holderOfAuthorisationCodes = new HolderOfAuthorisationCodes(codeListConnector, mockMerchandiseInBagConfig)
-
   override def beforeEach(): Unit = {
     super.beforeEach()
 
@@ -46,11 +42,14 @@ class HolderOfAuthorisationCodesSpec extends UnitWithMocksSpec with BeforeAndAft
     when(appConfig.additionalProcedureCodesForC21).thenReturn("/code-lists/manyCodes.json")
     when(appConfig.dmsErrorCodes).thenReturn("/code-lists/manyCodes.json")
     when(appConfig.countryCodes).thenReturn("/code-lists/manyCodes.json")
-    when(appConfig.goodsLocationCodeFile).thenReturn("/code-lists/manyCodes.json")
     when(appConfig.packageTypeCodeFile).thenReturn("/code-lists/manyCodes.json")
     when(appConfig.officeOfExitsCodeFile).thenReturn("/code-lists/manyCodes.json")
     when(appConfig.customsOfficesCodeFile).thenReturn("/code-lists/manyCodes.json")
   }
+
+  private lazy val glc = mock[GoodsLocationCodesConnector]
+  private lazy val codeListConnector = new FileBasedCodeListConnector(appConfig, glc)
+  private lazy val holderOfAuthorisationCodes = new HolderOfAuthorisationCodes(codeListConnector, mockMerchandiseInBagConfig)
 
   "HolderOfAuthorisationCodes.asListOfAutoCompleteItems" should {
     "return 'Holder of Authorisation' codes as AutoCompleteItems" when {

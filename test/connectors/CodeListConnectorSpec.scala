@@ -42,13 +42,13 @@ class CodeListConnectorSpec extends UnitWithMocksSpec with BeforeAndAfterEach {
     when(appConfig.additionalProcedureCodesForC21).thenReturn("/code-lists/manyCodes.json")
     when(appConfig.dmsErrorCodes).thenReturn("/code-lists/manyCodes.json")
     when(appConfig.countryCodes).thenReturn("/code-lists/manyCodes.json")
-    when(appConfig.goodsLocationCodeFile).thenReturn("/code-lists/manyCodes.json")
     when(appConfig.packageTypeCodeFile).thenReturn("/code-lists/manyCodes.json")
     when(appConfig.officeOfExitsCodeFile).thenReturn("/code-lists/manyCodes.json")
     when(appConfig.customsOfficesCodeFile).thenReturn("/code-lists/manyCodes.json")
   }
 
-  private lazy val codeListConnector = new FileBasedCodeListConnector(appConfig)
+  private lazy val glc = mock[GoodsLocationCodesConnector]
+  private lazy val codeListConnector = new FileBasedCodeListConnector(appConfig, glc)
 
   "FileBasedCodeListConnector" should {
     "throw exception on initialisation" when {
@@ -56,19 +56,19 @@ class CodeListConnectorSpec extends UnitWithMocksSpec with BeforeAndAfterEach {
       "code list file is missing" in {
         when(appConfig.procedureCodesListFile).thenReturn("")
 
-        intercept[IllegalArgumentException](new FileBasedCodeListConnector(appConfig).getProcedureCodes(ENGLISH))
+        intercept[IllegalArgumentException](new FileBasedCodeListConnector(appConfig, glc).getProcedureCodes(ENGLISH))
       }
 
       "code list file is malformed" in {
         when(appConfig.procedureCodesListFile).thenReturn("/code-lists/malformedCodes.json")
 
-        intercept[IllegalArgumentException](new FileBasedCodeListConnector(appConfig).getProcedureCodes(ENGLISH))
+        intercept[IllegalArgumentException](new FileBasedCodeListConnector(appConfig, glc).getProcedureCodes(ENGLISH))
       }
 
       "code list file is empty" in {
         when(appConfig.procedureCodesListFile).thenReturn("/code-lists/empty.json")
 
-        intercept[IllegalArgumentException](new FileBasedCodeListConnector(appConfig).getProcedureCodes(ENGLISH))
+        intercept[IllegalArgumentException](new FileBasedCodeListConnector(appConfig, glc).getProcedureCodes(ENGLISH))
       }
     }
 
@@ -147,7 +147,7 @@ class CodeListConnectorSpec extends UnitWithMocksSpec with BeforeAndAfterEach {
     "return a map of 'Holder of Authorisation' codes ordered as expected" when {
       "receives a supported language as input, or default to English for unsupported languages" in {
         when(appConfig.holderOfAuthorisationCodes).thenReturn("/code-lists/holderOfAuthorisationCodes.json")
-        val codeListConnector = new FileBasedCodeListConnector(appConfig)
+        val codeListConnector = new FileBasedCodeListConnector(appConfig, glc)
         (codeListConnector.supportedLanguages :+ JAPANESE).foreach { locale =>
           val codes = codeListConnector.getHolderOfAuthorisationCodes(locale).keys.toList
           codes.size mustBe 53
@@ -197,20 +197,6 @@ class CodeListConnectorSpec extends UnitWithMocksSpec with BeforeAndAfterEach {
       }
     }
 
-    "return a map of Goods Location Codes" when {
-      "'ENGLISH' locale passed return codes with English descriptions" in {
-        codeListConnector.getGoodsLocationCodes(ENGLISH) must be(sampleGlcsEnglish)
-      }
-
-      "'WELSH' local passed return codes with Welsh descriptions" in {
-        codeListConnector.getGoodsLocationCodes(codeListConnector.WELSH) must be(sampleGlcsWelsh)
-      }
-
-      "unsupported 'JAPANESE' locale is passed return codes with English descriptions" in {
-        codeListConnector.getGoodsLocationCodes(JAPANESE) must be(sampleGlcsEnglish)
-      }
-    }
-
     "return a map of Package Type Codes" when {
       "'ENGLISH' locale passed return codes with English descriptions" in {
         codeListConnector.getPackageTypes(ENGLISH) must be(samplePtcsEnglish)
@@ -252,6 +238,7 @@ class CodeListConnectorSpec extends UnitWithMocksSpec with BeforeAndAfterEach {
         codeListConnector.getCustomsOffices(JAPANESE) must be(sampleCocsEnglish)
       }
     }
+
   }
 
   private val samplePCsEnglish =
@@ -295,12 +282,6 @@ class CodeListConnectorSpec extends UnitWithMocksSpec with BeforeAndAfterEach {
 
   private val sampleCountriesWelsh =
     ListMap("001" -> Country("Welsh", "001"), "002" -> Country("Welsh", "002"), "003" -> Country("Welsh", "003"))
-
-  private val sampleGlcsEnglish =
-    ListMap("001" -> GoodsLocationCode("001", "English"), "002" -> GoodsLocationCode("002", "English"), "003" -> GoodsLocationCode("003", "English"))
-
-  private val sampleGlcsWelsh =
-    ListMap("001" -> GoodsLocationCode("001", "Welsh"), "002" -> GoodsLocationCode("002", "Welsh"), "003" -> GoodsLocationCode("003", "Welsh"))
 
   private val samplePtcsEnglish =
     ListMap("001" -> PackageType("001", "English"), "002" -> PackageType("002", "English"), "003" -> PackageType("003", "English"))
