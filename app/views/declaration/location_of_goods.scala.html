@@ -26,7 +26,7 @@
 @import views.helpers.{BackButton, LocationOfGoodsHelper, Title}
 @import play.api.data.Forms.boolean
 @import play.api.data.{Form, Forms}
-@import services.view.HolderOfAuthorisationCodes
+@import services.view.GoodsLocationCodes
 
 @this(
     locationOfGoodsHelper: LocationOfGoodsHelper,
@@ -45,7 +45,7 @@
     formHelper: FormWithCSRF,
     navigator: Navigator,
     appConfig: AppConfig,
-    holderOfAuthorisationCodes: HolderOfAuthorisationCodes
+    goodsLocationCodes: GoodsLocationCodes
 )
 
 @(form: Form[LocationOfGoods])(implicit request: JourneyRequest[_], messages: Messages)
@@ -60,7 +60,7 @@
         labelClass = Some("govuk-label--s"),
         hintParagraphs = List(messages("declaration.locationOfGoods.yesNo.yes.hint")),
         emptySelectValue = "",
-        items = holderOfAuthorisationCodes.asListOfAutoCompleteItems(messages.lang.toLocale)
+        items = goodsLocationCodes.asListOfAutoCompleteItems(messages.lang.toLocale)
     )
 }
 
