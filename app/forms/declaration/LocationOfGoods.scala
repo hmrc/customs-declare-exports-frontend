@@ -17,7 +17,7 @@
 package forms.declaration
 
 import connectors.CodeListConnector
-import forms.DeclarationPage
+import forms.{AdditionalConstraintsMapping, ConditionalConstraint, DeclarationPage}
 import forms.MappingHelper.requiredRadio
 import forms.common.YesNoAnswer
 import models.declaration.GoodsLocation
@@ -80,11 +80,32 @@ object LocationOfGoods extends DeclarationPage {
   private def mapping(implicit messages: Messages, codeListConnector: CodeListConnector): Mapping[LocationOfGoods] =
     Forms.mapping(
       "yesNo" -> requiredRadio("error.yesNo.required", YesNoAnswer.allowedValues),
-      "code" -> text()
-        .transform(_.trim, (s: String) => s)
-        .verifying("declaration.locationOfGoods.code.empty", nonEmpty)
-        .verifying("declaration.locationOfGoods.code.error", isEmpty or isValidFormat)
-        .verifying("declaration.locationOfGoods.code.error.length", isEmpty or (noShorterThan(10) and noLongerThan(39)))
+      "glc" ->
+        AdditionalConstraintsMapping(
+          text().transform(_.trim, (s: String) => s),
+          Seq(
+            ConditionalConstraint(_.get("yesNo").exists(_.nonEmpty), "declaration.locationOfGoods.code.empty", nonEmpty),
+            ConditionalConstraint(_.get("yesNo").exists(_.nonEmpty), "declaration.locationOfGoods.code.error", isEmpty or isValidFormat),
+            ConditionalConstraint(
+              _.get("yesNo").exists(_.nonEmpty),
+              "declaration.locationOfGoods.code.error.length",
+              isEmpty or (noShorterThan(10) and noLongerThan(39))
+            )
+          )
+        ),
+      "code" ->
+        AdditionalConstraintsMapping(
+          text().transform(_.trim, (s: String) => s),
+          Seq(
+            ConditionalConstraint(_.get("yesNo").exists(_.nonEmpty), "declaration.locationOfGoods.code.empty", nonEmpty),
+            ConditionalConstraint(_.get("yesNo").exists(_.nonEmpty), "declaration.locationOfGoods.code.error", isEmpty or isValidFormat),
+            ConditionalConstraint(
+              _.get("yesNo").exists(_.nonEmpty),
+              "declaration.locationOfGoods.code.error.length",
+              isEmpty or (noShorterThan(10) and noLongerThan(39))
+            )
+          )
+        )
     )(form2Data)(model2Form)
 
   private def isValidFormat(implicit messages: Messages, codeListConnector: CodeListConnector): String => Boolean =
@@ -94,12 +115,12 @@ object LocationOfGoods extends DeclarationPage {
         validateQualifierCode(value) and
         isAlphanumeric(value)
 
-  private def form2Data(yesNo: String, code: String): LocationOfGoods = LocationOfGoods(code.toUpperCase)
+  private def form2Data(yesNo: String, search: String, code: String): LocationOfGoods = LocationOfGoods(code.toUpperCase)
 
   private def model2Form(
     locationOfGoods: LocationOfGoods
-  )(implicit messages: Messages, codeListConnector: CodeListConnector): Option[(String, String)] =
-    GoodsLocationCodes.findByCode(locationOfGoods.code) map (_ => ("Yes", locationOfGoods.code)) orElse Some(("No", locationOfGoods.code))
+  )(implicit messages: Messages, codeListConnector: CodeListConnector): Option[(String, String, String)] =
+    GoodsLocationCodes.findByCode(locationOfGoods.code) map (_ => ("Yes", "", locationOfGoods.code)) orElse Some(("No", "", locationOfGoods.code))
 
   def form()(implicit messages: Messages, codeListConnector: CodeListConnector): Form[LocationOfGoods] = Form(mapping)
 
