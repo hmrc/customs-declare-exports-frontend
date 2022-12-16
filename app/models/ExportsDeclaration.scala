@@ -19,6 +19,7 @@ package models
 import forms.Ducr
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
+import forms.declaration.LocationOfGoods.suffixForGVMS
 import forms.declaration._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
 import forms.declaration.additionaldocuments.AdditionalDocument
@@ -95,7 +96,16 @@ case class ExportsDeclaration(
 
   def declarationHolders: Seq[DeclarationHolder] = parties.declarationHoldersData.map(_.holders).getOrElse(Seq.empty)
 
+  def hasAuthCodeRequiringAdditionalDocs: Boolean =
+    parties.declarationHoldersData.exists(_.holders.exists(_.isAdditionalDocumentationRequired))
+
   def hasContainers: Boolean = containers.nonEmpty
+
+  def hasGVMSLocations: Boolean =
+    locations.goodsLocation.exists(_.identificationOfLocation.takeRight(3).toUpperCase == suffixForGVMS)
+
+  def hasInlandModeOfTransportCode(code: ModeOfTransportCode): Boolean =
+    locations.inlandModeOfTransportCode.fold(false)(_.inlandModeOfTransportCode.contains(code))
 
   def hasPreviousDocuments: Boolean = previousDocuments.map(_.documents).exists(_.nonEmpty)
 
@@ -110,9 +120,6 @@ case class ExportsDeclaration(
     totalNumberOfItems.exists(_.totalAmountInvoiced.fold(false)(_.trim.nonEmpty))
 
   def isInvoiceAmountLessThan100000: Boolean = !isInvoiceAmountGreaterThan100000
-
-  def hasAuthCodeRequiringAdditionalDocs: Boolean =
-    parties.declarationHoldersData.exists(_.holders.exists(_.isAdditionalDocumentationRequired))
 
   def isCommodityCodeOfItemPrefixedWith(itemId: String, prefixes: Seq[Int]): Boolean =
     isCodePrefixedWith(commodityCodeOfItem(itemId), prefixes)
@@ -129,9 +136,6 @@ case class ExportsDeclaration(
 
   def isInlandOrBorder(inlandOrBorder: InlandOrBorder): Boolean = locations.inlandOrBorder.exists(_ == inlandOrBorder)
 
-  def hasInlandModeOfTransportCode(code: ModeOfTransportCode): Boolean =
-    locations.inlandModeOfTransportCode.fold(false)(_.inlandModeOfTransportCode.contains(code))
-
   def isLicenseRequired(itemId: String): Boolean = itemBy(itemId).exists(_.isLicenceRequired.contains(true))
 
   def isType(declarationType: DeclarationType): Boolean = `type` == declarationType
@@ -139,6 +143,12 @@ case class ExportsDeclaration(
   def itemBy(itemId: String): Option[ExportItem] = items.find(_.id.equalsIgnoreCase(itemId))
 
   def itemBySequenceNo(seqNo: String): Option[ExportItem] = items.find(_.sequenceId.toString == seqNo)
+
+  def listOfAdditionalInformationOfItem(itemId: String): Seq[AdditionalInformation] =
+    itemBy(itemId).flatMap(_.additionalInformation).getOrElse(AdditionalInformationData.default).items
+
+  def procedureCodeOfItem(itemId: String): Option[ProcedureCodesData] =
+    itemBy(itemId).flatMap(_.procedureCodes)
 
   def requiresWarehouseId: Boolean = items.exists(_.requiresWarehouseId)
 
@@ -168,12 +178,6 @@ case class ExportsDeclaration(
       )
     )
   }
-
-  def listOfAdditionalInformationOfItem(itemId: String): Seq[AdditionalInformation] =
-    itemBy(itemId).flatMap(_.additionalInformation).getOrElse(AdditionalInformationData.default).items
-
-  def procedureCodeOfItem(itemId: String): Option[ProcedureCodesData] =
-    itemBy(itemId).flatMap(_.procedureCodes)
 
   def removeAuthorisationProcedureCodeChoice: ExportsDeclaration =
     copy(parties = parties.copy(authorisationProcedureCodeChoice = None))
@@ -206,7 +210,7 @@ case class ExportsDeclaration(
 
   def transform(function: ExportsDeclaration => ExportsDeclaration): ExportsDeclaration = function(this)
 
-  private def additionalDocumentsInformationIfAny(itemId: String) =
+  private def additionalDocumentsInformationIfAny(itemId: String): Option[AdditionalDocuments] =
     itemBy(itemId).flatMap(_.additionalDocuments)
 }
 

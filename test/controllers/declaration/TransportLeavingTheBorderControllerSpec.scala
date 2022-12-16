@@ -28,8 +28,8 @@ import controllers.helpers.{InlandOrBorderHelper, SupervisingCustomsOfficeHelper
 import controllers.helpers.TransportSectionHelper._
 import controllers.routes.RootController
 import forms.declaration.InlandOrBorder.{Border, Inland}
+import forms.declaration.LocationOfGoods.suffixForGVMS
 import forms.declaration.ModeOfTransportCode.{meaningfulModeOfTransportCodes, Maritime, RoRo}
-import forms.declaration.TransportLeavingTheBorder.suffixForLocationOfGoods
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
 import forms.declaration.{LocationOfGoods, ModeOfTransportCode, TransportLeavingTheBorder}
 import models.DeclarationType
@@ -133,8 +133,8 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec with Option
         }
       }
 
-      s"LocationOfGood's value is present and ends with '$suffixForLocationOfGoods'" should {
-        val goodsLocation = withGoodsLocation(LocationOfGoods(s"GBAUFEMLHR$suffixForLocationOfGoods"))
+      s"LocationOfGood's value is present and ends with '$suffixForGVMS'" should {
+        val goodsLocation = withGoodsLocation(LocationOfGoods(s"GBAUFEMLHR$suffixForGVMS"))
 
         "update successfully the cache" when {
           s"ModeOfTransportCode selected is 'RoRo'" in {
