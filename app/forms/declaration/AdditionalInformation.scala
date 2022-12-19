@@ -29,7 +29,10 @@ case class AdditionalInformation(code: String, description: String) {
 }
 
 object AdditionalInformation extends DeclarationPage {
+
   implicit val format = Json.format[AdditionalInformation]
+
+  val codeForGVMS = "RRS01"
 
   val codeKey = "code"
   val descriptionKey = "description"
@@ -40,7 +43,6 @@ object AdditionalInformation extends DeclarationPage {
       text
         .verifying("declaration.additionalInformation.code.empty", nonEmpty)
         .verifying("declaration.additionalInformation.code.error", isEmpty or (isAlphanumeric and hasSpecificLength(5)))
-        .verifying("declaration.additionalInformation.code.error.rrs01", code => isEmpty(code) or code != "RRS01")
         .verifying("declaration.additionalInformation.code.error.lic99", code => isEmpty(code) or code != "LIC99"),
     descriptionKey ->
       text

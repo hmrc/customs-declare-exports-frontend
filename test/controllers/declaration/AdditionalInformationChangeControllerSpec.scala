@@ -98,14 +98,6 @@ class AdditionalInformationChangeControllerSpec extends ControllerSpec with Erro
         verifyPageInvoked()
       }
 
-      "user enters 'RRS01' as code" in {
-        val formData = Json.toJson(AdditionalInformation("RRS01", "description"))
-        val result = controller.submitForm(itemId, additionalInformationId)(postRequest(formData))
-
-        status(result) mustBe BAD_REQUEST
-        verifyPageInvoked()
-      }
-
       "user enters 'LIC99' as code" in {
         val formData = Json.toJson(AdditionalInformation("LIC99", "description"))
         val result = controller.submitForm(itemId, additionalInformationId)(postRequest(formData))

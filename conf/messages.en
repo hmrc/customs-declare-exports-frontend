@@ -1777,7 +1777,6 @@ declaration.additionalInformation.code.hint.header.2 = For example, for code REJ
 declaration.additionalInformation.code.hint.para.2 = For example, for code REJIM, you would enter the reason for the rejected import.
 declaration.additionalInformation.item.code = 2/2 union or national code
 declaration.additionalInformation.code.error = Enter a valid union or national AI code
-declaration.additionalInformation.code.error.rrs01 = You cannot enter the code RRS01 on this page. RRS01 is sent automatically for you when you enter a goods location code that shows your goods will be departed using the Goods Vehicle Movement Service (GVMS).
 declaration.additionalInformation.code.error.lic99 = LIC99 cannot be used on the Customs Declaration Service (CDS). You will be able to enter the CDS waiver on the next page, if the goods in this declaration item are not subject to specific licensing measures.
 declaration.additionalInformation.code.empty = Enter the union or national AI code
 declaration.additionalInformation.description = Statement or request

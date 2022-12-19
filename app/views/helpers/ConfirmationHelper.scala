@@ -18,6 +18,7 @@ package views.helpers
 
 import config.{AppConfig, ExternalServicesConfig}
 import controllers.routes.{DeclarationDetailsController, FileUploadController}
+import forms.declaration.LocationOfGoods.suffixForGVMS
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.from
 import models.declaration.submissions.EnhancedStatus._
@@ -191,7 +192,7 @@ class ConfirmationHelper @Inject() (
   private def whatYouCanDoNow(implicit confirmation: Confirmation, messages: Messages): List[Html] = {
     val title = heading(messages("declaration.confirmation.whatYouCanDoNow.heading"), "govuk-heading-m", "h2")
     val nonGvmsParagraph = confirmation.locationCode
-      .filterNot(_.endsWith("GVM"))
+      .filterNot(_.endsWith(suffixForGVMS))
       .map(_ =>
         paragraph(
           message = messages(

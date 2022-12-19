@@ -19,7 +19,9 @@ package controllers.declaration
 import base.ControllerSpec
 import controllers.declaration.routes.AdditionalInformationController
 import forms.common.YesNoAnswer.{No, Yes}
-import forms.declaration.AdditionalInformation
+import forms.declaration.{AdditionalInformation, LocationOfGoods}
+import forms.declaration.AdditionalInformation.codeForGVMS
+import forms.declaration.LocationOfGoods.suffixForGVMS
 import mock.ErrorHandlerMocks
 import models.declaration.AdditionalInformationData
 import models.declaration.AdditionalInformationData.maxNumberOfItems
@@ -87,18 +89,22 @@ class AdditionalInformationAddControllerSpec extends ControllerSpec with ErrorHa
       }
     }
 
+    "add 'RRS01' as code on GVMS declarations" in {
+      val location = LocationOfGoods(s"GBAUFEMLHR$suffixForGVMS")
+      withNewCaching(aDeclaration(withGoodsLocation(location), withItems(anItem(withItemId("itemId")))))
+
+      val correctForm = Json.toJson(additionalInformation)
+      val result = controller.submitForm(itemId)(postRequest(correctForm))
+
+      await(result) mustBe aRedirectToTheNextPage
+      val declaration = theCacheModelUpdated
+      assert(declaration.listOfAdditionalInformationOfItem(itemId).exists(_.code == codeForGVMS))
+    }
+
     "return 400 (BAD_REQUEST) during adding" when {
 
       "user does not enter any data" in {
         val formData = Json.toJson(AdditionalInformation("", ""))
-        val result = controller.submitForm(itemId)(postRequest(formData))
-
-        status(result) mustBe BAD_REQUEST
-        verifyPageInvoked()
-      }
-
-      "user enters 'RRS01' as code" in {
-        val formData = Json.toJson(AdditionalInformation("RRS01", "description"))
         val result = controller.submitForm(itemId)(postRequest(formData))
 
         status(result) mustBe BAD_REQUEST
