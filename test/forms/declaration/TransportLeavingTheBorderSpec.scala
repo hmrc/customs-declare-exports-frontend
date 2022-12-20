@@ -18,8 +18,9 @@ package forms.declaration
 
 import base.JourneyTypeTestRunner
 import forms.common.DeclarationPageBaseSpec
+import forms.declaration.LocationOfGoods.suffixForGVMS
 import forms.declaration.ModeOfTransportCode.{meaningfulModeOfTransportCodes, Empty, RoRo}
-import forms.declaration.TransportLeavingTheBorder.{errorKey, suffixForLocationOfGoods}
+import forms.declaration.TransportLeavingTheBorder.errorKey
 import org.scalatest.EitherValues
 
 class TransportLeavingTheBorderSpec extends DeclarationPageBaseSpec with JourneyTypeTestRunner with EitherValues {
@@ -39,7 +40,7 @@ class TransportLeavingTheBorderSpec extends DeclarationPageBaseSpec with Journey
             result.value mustBe TransportLeavingTheBorder(Some(modeOfTransportCode))
           }
 
-          s"LocationOfGood's value is present but does not end with '$suffixForLocationOfGoods'" in {
+          s"LocationOfGood's value is present but does not end with '$suffixForGVMS'" in {
             val result = TransportLeavingTheBorder.mapping(false, Some(LocationOfGoods("GBAUFEMLHRGGG"))).bind(input)
 
             result.isRight mustBe true
@@ -49,9 +50,9 @@ class TransportLeavingTheBorderSpec extends DeclarationPageBaseSpec with Journey
       }
 
       "ModeOfTransportCode is RoRo and" when {
-        s"LocationOfGood's value is present and does end with '$suffixForLocationOfGoods'" in {
+        s"LocationOfGood's value is present and does end with '$suffixForGVMS'" in {
           val input = Map("transportLeavingTheBorder" -> RoRo.value)
-          val locationOfGoods = Some(LocationOfGoods(s"GBAUFEMLHR$suffixForLocationOfGoods"))
+          val locationOfGoods = Some(LocationOfGoods(s"GBAUFEMLHR$suffixForGVMS"))
 
           val result = TransportLeavingTheBorder.mapping(false, locationOfGoods).bind(input)
 
@@ -93,8 +94,8 @@ class TransportLeavingTheBorderSpec extends DeclarationPageBaseSpec with Journey
         result.left.get.head.message mustBe s"$errorKey.incorrect"
       }
 
-      s"LocationOfGood's value is present and does end with '$suffixForLocationOfGoods' and" when {
-        val locationOfGoods = Some(LocationOfGoods(s"GBAUFEMLHR$suffixForLocationOfGoods"))
+      s"LocationOfGood's value is present and does end with '$suffixForGVMS' and" when {
+        val locationOfGoods = Some(LocationOfGoods(s"GBAUFEMLHR$suffixForGVMS"))
 
         meaningfulModeOfTransportCodes.filter(_ != RoRo).foreach { modeOfTransportCode =>
           s"ModeOfTransportCode is $modeOfTransportCode" in {
@@ -123,7 +124,7 @@ class TransportLeavingTheBorderSpec extends DeclarationPageBaseSpec with Journey
             result.value mustBe TransportLeavingTheBorder(Some(modeOfTransportCode))
           }
 
-          s"LocationOfGood's value is present but does not end with '$suffixForLocationOfGoods'" in {
+          s"LocationOfGood's value is present but does not end with '$suffixForGVMS'" in {
             val result = TransportLeavingTheBorder.mapping(true, Some(LocationOfGoods("GBAUFEMLHRGGG"))).bind(input)
 
             result.isRight mustBe true
@@ -133,9 +134,9 @@ class TransportLeavingTheBorderSpec extends DeclarationPageBaseSpec with Journey
       }
 
       "ModeOfTransportCode is RoRo and" when {
-        s"LocationOfGood's value is present and does end with '$suffixForLocationOfGoods'" in {
+        s"LocationOfGood's value is present and does end with '$suffixForGVMS'" in {
           val input = Map("transportLeavingTheBorder" -> RoRo.value)
-          val locationOfGoods = Some(LocationOfGoods(s"GBAUFEMLHR$suffixForLocationOfGoods"))
+          val locationOfGoods = Some(LocationOfGoods(s"GBAUFEMLHR$suffixForGVMS"))
 
           val result = TransportLeavingTheBorder.mapping(true, locationOfGoods).bind(input)
 
@@ -165,8 +166,8 @@ class TransportLeavingTheBorderSpec extends DeclarationPageBaseSpec with Journey
         result.left.get.head.message mustBe s"$errorKey.incorrect"
       }
 
-      s"LocationOfGood's value is present and does end with '$suffixForLocationOfGoods' and" when {
-        val locationOfGoods = Some(LocationOfGoods(s"GBAUFEMLHR$suffixForLocationOfGoods"))
+      s"LocationOfGood's value is present and does end with '$suffixForGVMS' and" when {
+        val locationOfGoods = Some(LocationOfGoods(s"GBAUFEMLHR$suffixForGVMS"))
 
         (meaningfulModeOfTransportCodes + Empty).filter(_ != RoRo).foreach { modeOfTransportCode =>
           s"ModeOfTransportCode is $modeOfTransportCode" in {

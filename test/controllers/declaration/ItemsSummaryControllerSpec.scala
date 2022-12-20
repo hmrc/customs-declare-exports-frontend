@@ -21,8 +21,10 @@ import base.ExportsTestData.pc1040
 import controllers.helpers.SupervisingCustomsOfficeHelper
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
+import forms.declaration.AdditionalInformation.codeForGVMS
 import forms.declaration.FiscalInformation.AllowedFiscalInformationAnswers
-import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData, FiscalInformation, WarehouseIdentification}
+import forms.declaration.LocationOfGoods.suffixForGVMS
+import forms.declaration._
 import models.DeclarationType._
 import models.declaration.{CommodityMeasure, ExportItem, ProcedureCodesData}
 import models.{DeclarationType, ExportsDeclaration}
@@ -150,6 +152,18 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
   "addFirstItem" should {
 
     onEveryDeclarationJourney() { request =>
+      "add to the new item a 'RRS01 Additional Information' instance on GVMS declarations" in {
+        val location = LocationOfGoods(s"GBAUFEMLHR$suffixForGVMS")
+        withNewCaching(aDeclaration(withGoodsLocation(location)))
+
+        val result = controller.addFirstItem()(postRequest(Json.obj()))
+
+        await(result) mustBe aRedirectToTheNextPage
+        val declaration = theCacheModelUpdated
+        val item = declaration.items.head
+        assert(declaration.listOfAdditionalInformationOfItem(item).exists(_.code == codeForGVMS))
+      }
+
       "call Navigator" in {
         withNewCaching(aDeclaration(withType(request.declarationType)))
 
@@ -227,6 +241,19 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
 
     onEveryDeclarationJourney() { request =>
       "user wants to add another item" should {
+
+        "add to the new item a 'RRS01 Additional Information' instance on GVMS declarations" in {
+          val location = LocationOfGoods(s"GBAUFEMLHR$suffixForGVMS")
+          withNewCaching(aDeclaration(withType(request.declarationType), withGoodsLocation(location), withItem(exportItem)))
+          val answerForm = Json.obj("yesNo" -> YesNoAnswers.yes)
+
+          val result = controller.submit()(postRequest(answerForm))
+
+          await(result) mustBe aRedirectToTheNextPage
+          val declaration = theCacheModelUpdated
+          val item = declaration.items(1)
+          assert(declaration.listOfAdditionalInformationOfItem(item).exists(_.code == codeForGVMS))
+        }
 
         "call Navigator" in {
           val cachedData = aDeclaration(withType(request.declarationType), withItem(exportItem))

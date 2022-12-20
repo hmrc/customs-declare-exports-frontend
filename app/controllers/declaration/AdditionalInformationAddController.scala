@@ -18,15 +18,15 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.AdditionalInformationAddController.AdditionalInformationFormGroupId
-import controllers.navigation.Navigator
 import controllers.helpers.MultipleItemsHelper
+import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.declaration.AdditionalInformation
 import forms.declaration.AdditionalInformation.form
+import models.ExportsDeclaration
 import models.declaration.AdditionalInformationData
 import models.declaration.AdditionalInformationData.maxNumberOfItems
 import models.requests.JourneyRequest
-import models.ExportsDeclaration
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -61,7 +61,7 @@ class AdditionalInformationAddController @Inject() (
     )
   }
 
-  private def cachedData(itemId: String)(implicit request: JourneyRequest[AnyContent]) =
+  private def cachedData(itemId: String)(implicit request: JourneyRequest[AnyContent]): AdditionalInformationData =
     request.cacheModel.itemBy(itemId).flatMap(_.additionalInformation).getOrElse(AdditionalInformationData.default)
 
   private def saveInformation(itemId: String, boundForm: Form[AdditionalInformation], cachedData: AdditionalInformationData)(
@@ -77,9 +77,9 @@ class AdditionalInformationAddController @Inject() (
       )
 
   private def updateCache(itemId: String, updatedData: AdditionalInformationData)(
-    implicit req: JourneyRequest[AnyContent]
+    implicit request: JourneyRequest[AnyContent]
   ): Future[ExportsDeclaration] =
-    updateDeclarationFromRequest(model => model.updatedItem(itemId, item => item.copy(additionalInformation = Some(updatedData))))
+    updateDeclarationFromRequest(_.updatedItem(itemId, _.copy(additionalInformation = Some(updatedData))))
 }
 
 object AdditionalInformationAddController {

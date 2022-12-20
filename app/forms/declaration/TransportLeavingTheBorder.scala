@@ -17,6 +17,7 @@
 package forms.declaration
 
 import forms.DeclarationPage
+import forms.declaration.LocationOfGoods.suffixForGVMS
 import forms.declaration.ModeOfTransportCode.RoRo
 import models.DeclarationType.{CLEARANCE, DeclarationType}
 import models.requests.JourneyRequest
@@ -39,8 +40,6 @@ object TransportLeavingTheBorder extends DeclarationPage {
   def form(implicit request: JourneyRequest[_]): Form[TransportLeavingTheBorder] =
     Form(mapping(request.isType(CLEARANCE), request.cacheModel.locations.goodsLocation.map(_.toForm)))
 
-  val suffixForLocationOfGoods = "GVM"
-
   val errorKey = "declaration.transport.leavingTheBorder.error"
 
   private def maybeRoRoRequired(isClearance: Boolean, maybeLocationOfGoods: Option[LocationOfGoods]): Constraint[Option[ModeOfTransportCode]] =
@@ -51,7 +50,7 @@ object TransportLeavingTheBorder extends DeclarationPage {
       }
 
       maybeLocationOfGoods.fold(validateWhenNotGVM) { locationOfGoods =>
-        if (!locationOfGoods.code.endsWith(suffixForLocationOfGoods)) validateWhenNotGVM
+        if (!locationOfGoods.code.endsWith(suffixForGVMS)) validateWhenNotGVM
         else if (code.exists(_ == RoRo)) Valid
         else Invalid(ValidationError(s"$errorKey.roro.required", locationOfGoods.code))
       }

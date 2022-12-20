@@ -51,11 +51,6 @@ class AdditionalInformationSpec extends FormSpec with DeclarationPageBaseSpec {
         result.errors must contain("declaration.additionalInformation.code.error")
       }
 
-      "an invalid code is entered (RRS01)" in {
-        val result = form.fillAndValidate(AdditionalInformation("RRS01", "description"))
-        result.errors must contain("declaration.additionalInformation.code.error.rrs01")
-      }
-
       "an invalid code is entered (LIC99)" in {
         val result = form.fillAndValidate(AdditionalInformation("LIC99", "description"))
         result.errors must contain("declaration.additionalInformation.code.error.lic99")

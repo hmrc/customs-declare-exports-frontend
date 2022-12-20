@@ -48,6 +48,8 @@ object LocationOfGoods extends DeclarationPage {
 
   implicit val format: OFormat[LocationOfGoods] = Json.format[LocationOfGoods]
 
+  val suffixForGVMS = "GVM"
+
   val formId = "Location"
 
   /**
