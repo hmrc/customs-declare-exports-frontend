@@ -49,10 +49,15 @@ class LocationOfGoodsHelper @Inject() (
   def bodyUnderHeading(version: Int)(implicit messages: Messages): Html = {
     val sections = version match {
       case 2 =>
-        val email = messages(s"$prefix.body.v2.2.email")
-        val subject = messages(s"$prefix.body.v2.2.subject")
+        val linkText2 = messages(s"$prefix.body.v2.2.link")
+        val email = messages(s"$prefix.body.v2.3.email")
+        val subject = messages(s"$prefix.body.v2.3.subject")
 
-        List(messages(s"$prefix.body.v2.1"), messages(s"$prefix.body.v2.2", link(email, Call("GET", s"mailto:$email?subject=$subject")))).map(body(_))
+        List(
+          messages(s"$prefix.body.v2.1"),
+          messages(s"$prefix.body.v2.2", externalLink(linkText2, appConfig.locationCodesForCsePremises)),
+          messages(s"$prefix.body.v2.3", link(email, Call("GET", s"mailto:$email?subject=$subject")))
+        ).map(body(_))
 
       case 3 | 5 =>
         List(
@@ -80,8 +85,17 @@ class LocationOfGoodsHelper @Inject() (
           body(messages(s"$prefix.body.v4.3", externalLink(linkText3, appConfig.locationCodesForPortsUsingGVMS)))
         )
 
+      case 6 =>
+        List(s"$prefix.body.v6.1", s"$prefix.body.v6.2", s"$prefix.body.v6.3").map(key => body(messages(key)))
+
+      case 7 =>
+        val email = messages(s"$prefix.body.v7.2.email")
+        val subject = messages(s"$prefix.body.v7.2.subject")
+
+        List(messages(s"$prefix.body.v7.1"), messages(s"$prefix.body.v7.2", link(email, Call("GET", s"mailto:$email?subject=$subject")))).map(body(_))
+
       // version 1
-      case _ => List(s"$prefix.body.v1.1", s"$prefix.body.v1.2", s"$prefix.body.v1.3").map(key => body(messages(key)))
+      case _ => List(s"$prefix.body.v1.1", s"$prefix.body.v1.1.1", s"$prefix.body.v1.2", s"$prefix.body.v1.3").map(key => body(messages(key)))
     }
 
     HtmlFormat.fill(sections)
@@ -99,6 +113,8 @@ class LocationOfGoodsHelper @Inject() (
 
   def versionSelection(implicit request: JourneyRequest[_]): Int =
     request.cacheModel.additionalDeclarationType.fold(1) {
+      case decType if (preLodgedTypes ++ Seq(SUPPLEMENTARY_EIDR, SUPPLEMENTARY_SIMPLIFIED)).contains(decType)                     => 6
+      case STANDARD_FRONTIER | SIMPLIFIED_FRONTIER if isAuthCode(CSE)                                                             => 7
       case STANDARD_PRE_LODGED | SIMPLIFIED_PRE_LODGED | OCCASIONAL_PRE_LODGED | CLEARANCE_PRE_LODGED if isAuthProcedureCodeForV4 => 4
 
       case STANDARD_FRONTIER | SIMPLIFIED_FRONTIER | OCCASIONAL_FRONTIER | CLEARANCE_FRONTIER =>

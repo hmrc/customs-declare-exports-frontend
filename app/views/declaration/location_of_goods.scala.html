@@ -95,12 +95,6 @@
 
         @if(version == 1) { @locationOfGoodsHelper.expander(version) }
 
-        @govukDetails(Details(
-            attributes = Map("id" -> "tariffReference"),
-            summary = Text(messages("declaration.locationOfGoods.expander.title")),
-            content = HtmlContent(messages("declaration.locationOfGoods.details.body"))
-        ))
-
         @if(version == 3 || version == 5) {
           @insetText(content = HtmlContent(HtmlFormat.fill(List(
               paragraphBody(messages("declaration.locationOfGoods.inset.v3.body1", externalLink(
@@ -135,7 +129,12 @@
         @govukDetails(Details(
             attributes = Map("id" -> "tariffReference"),
             summary = Text(messages("declaration.locationOfGoods.details.title")),
-            content = HtmlContent(messages("declaration.locationOfGoods.details.body"))
+            content = HtmlContent(messages(
+                "declaration.locationOfGoods.details.body",
+                externalLink(
+                    messages("declaration.locationOfGoods.details.body.linkText"),
+                    "https://www.gov.uk/government/publications/location-codes-to-declare-goods-for-export-at-cse-premises-for-data-element-523-of-the-customs-declaration-service"
+                )))
         ))
 
         @tariffExpander(LocationOfGoods, request.declarationType)(messages, appConfig)

@@ -24,7 +24,7 @@ import forms.declaration.LocationOfGoods
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.SUPPLEMENTARY_EIDR
 import forms.declaration.declarationHolder.AuthorizationTypeCodes.codeThatSkipLocationOfGoods
 import models.DeclarationType
-import models.codes.Country
+import models.codes.{Country, GoodsLocationCode}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -91,17 +91,41 @@ class LocationOfGoodsControllerSpec extends ControllerSpec with OptionValues {
         theResponseForm.value mustBe empty
       }
 
-      "display page method is invoked and cache contains data" in {
-        val locationOfGoods = LocationOfGoods("GBAUEMAEMAEMA")
-        withNewCaching(aDeclaration(withGoodsLocation(locationOfGoods)))
+      "display page method is invoked and cache contains data" when {
+        "code is found in cse list" in {
 
-        val result = controller.displayPage()(getRequest())
+          when {
+            mockCodeListConnector.getCseCodes(any())
+          } thenReturn ListMap[String, GoodsLocationCode]("GBAUEMAEMAEMA" -> GoodsLocationCode("GBAUEMAEMAEMA", "Somwhere"))
 
-        status(result) mustBe OK
-        verify(mockLocationOfGoods).apply(any())(any(), any())
+          val locationOfGoods = LocationOfGoods("GBAUEMAEMAEMA")
+          withNewCaching(aDeclaration(withGoodsLocation(locationOfGoods)))
 
-        theResponseForm.value mustNot be(empty)
-        theResponseForm.value.value.code mustBe "GBAUEMAEMAEMA"
+          val result = controller.displayPage()(getRequest())
+
+          status(result) mustBe OK
+          verify(mockLocationOfGoods).apply(any())(any(), any())
+
+          theResponseForm.value mustNot be(empty)
+          theResponseForm.value.value.code mustBe "GBAUEMAEMAEMA"
+        }
+        "code does not exist in cse list" in {
+
+          when {
+            mockCodeListConnector.getCseCodes(any())
+          } thenReturn ListMap[String, GoodsLocationCode]()
+
+          val locationOfGoods = LocationOfGoods("GBAUEMAEMAEMA")
+          withNewCaching(aDeclaration(withGoodsLocation(locationOfGoods)))
+
+          val result = controller.displayPage()(getRequest())
+
+          status(result) mustBe OK
+          verify(mockLocationOfGoods).apply(any())(any(), any())
+
+          theResponseForm.value mustNot be(empty)
+          theResponseForm.value.value.code mustBe "GBAUEMAEMAEMA"
+        }
       }
     }
 
@@ -120,7 +144,7 @@ class LocationOfGoodsControllerSpec extends ControllerSpec with OptionValues {
     "return 303 (SEE_OTHER)" when {
 
       "information provided by user are correct" in {
-        val correctForm: JsValue = JsObject(Map("yesNo" -> JsString("Yes"), "code" -> JsString("PLAUEMAEMAEMA")))
+        val correctForm: JsValue = JsObject(Map("yesNo" -> JsString("Yes"), "glc" -> JsString("PLAUEMAEMAEMA"), "code" -> JsString("")))
         val result = controller.saveLocation()(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage

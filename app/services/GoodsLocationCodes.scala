@@ -17,12 +17,12 @@
 package services
 
 import connectors.CodeListConnector
-import models.codes.{Country, GoodsLocationCode}
+import models.codes.GoodsLocationCode
 import play.api.i18n.Messages
 
 object GoodsLocationCodes {
 
-  def findByCode(code: String)(implicit messages: Messages, codeListConnector: CodeListConnector): Option[GoodsLocationCode] =
-    codeListConnector.getDepCodes(messages.lang.toLocale).get(code)
+  def findByCseCode(code: String)(implicit messages: Messages, codeListConnector: CodeListConnector): Option[GoodsLocationCode] =
+    codeListConnector.getCseCodes(messages.lang.toLocale).get(code)
 
 }

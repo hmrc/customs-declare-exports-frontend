@@ -27,7 +27,7 @@ import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
 import forms.declaration.declarationHolder.AuthorizationTypeCodes.{CSE, EXRR, MIB}
 import models.DeclarationType._
-import models.codes.Country
+import models.codes.{Country, GoodsLocationCode}
 import models.requests.JourneyRequest
 import org.jsoup.nodes.{Document, Element}
 import org.mockito.ArgumentMatchers.any
@@ -51,6 +51,7 @@ class LocationOfGoodsViewSpec extends PageWithButtonsSpec with Injector {
   override def beforeEach(): Unit = {
     super.beforeEach()
     when(mockCodeListConnector.getCountryCodes(any())).thenReturn(ListMap("GB" -> Country("United Kingdom", "GB")))
+    when(mockCodeListConnector.getCseCodes(any())).thenReturn(ListMap[String, GoodsLocationCode]())
   }
 
   override protected def afterEach(): Unit = {
@@ -71,7 +72,7 @@ class LocationOfGoodsViewSpec extends PageWithButtonsSpec with Injector {
     // V1 Content (Arrived,MIB)
     AdditionalDeclarationType.values.toList.foreach { additionalType =>
       s"AdditionalDeclarationType is $additionalType" should {
-        val modifier = if (isArrived(additionalType)) withDeclarationHolders(Some(MIB)) else withoutDeclarationHolders
+        val modifier = if (isArrived(additionalType)) withDeclarationHolders(Some(MIB)) else withoutDeclarationHolders()
         implicit val request = withRequest(additionalType, modifier)
         val view = createView()
 
@@ -102,9 +103,9 @@ class LocationOfGoodsViewSpec extends PageWithButtonsSpec with Injector {
         }
 
         "display the expected hint" in {
-          val hint = view.getElementById("code-hint")
-          assert(hint.hasClass("govuk-hint"))
-          hint.text mustBe messages(s"$prefix.hint.v1")
+          val hint = view.getElementsByClass("govuk-hint")
+          hint.get(2).text mustBe messages(s"$prefix.yesNo.yes.hint")
+          hint.last().text mustBe messages(s"$prefix.yesNo.no.hint")
         }
 
         "display the expected tariff details" in {
@@ -151,9 +152,9 @@ class LocationOfGoodsViewSpec extends PageWithButtonsSpec with Injector {
         }
 
         "display the expected hint" in {
-          val hint = view.getElementById("code-hint")
-          assert(hint.hasClass("govuk-hint"))
-          hint.text mustBe messages(s"$prefix.hint.v2")
+          val hint = view.getElementsByClass("govuk-hint")
+          hint.first().text mustBe messages(s"$prefix.yesNo.yes.hint")
+          hint.last().text mustBe messages(s"$prefix.yesNo.no.hint")
         }
 
       }
@@ -209,9 +210,8 @@ class LocationOfGoodsViewSpec extends PageWithButtonsSpec with Injector {
           }
 
           "display the expected hint" in {
-            val hint = view.getElementById("code-hint")
-            assert(hint.hasClass("govuk-hint"))
-            hint.text mustBe messages(s"$prefix.hint.v$version")
+            val hint = view.getElementsByClass("govuk-hint")
+            hint.get(1).text mustBe messages(s"$prefix.hint.v$version")
           }
 
         }
