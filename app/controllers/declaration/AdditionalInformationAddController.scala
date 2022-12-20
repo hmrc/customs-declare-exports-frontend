@@ -18,12 +18,11 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.AdditionalInformationAddController.AdditionalInformationFormGroupId
-import controllers.declaration.routes.AdditionalInformationController
 import controllers.helpers.MultipleItemsHelper
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.declaration.AdditionalInformation
-import forms.declaration.AdditionalInformation.{codeForGVMS, form}
+import forms.declaration.AdditionalInformation.form
 import models.ExportsDeclaration
 import models.declaration.AdditionalInformationData
 import models.declaration.AdditionalInformationData.maxNumberOfItems
@@ -72,19 +71,10 @@ class AdditionalInformationAddController @Inject() (
       .add(boundForm, cachedData.items, maxNumberOfItems, AdditionalInformationFormGroupId, "declaration.additionalInformation")
       .fold(
         formWithErrors => Future.successful(BadRequest(additionalInformationPage(itemId, formWithErrors))),
-        items =>
-          updateCache(itemId, cachedData.copy(isRequired = YesNoAnswer.Yes, items = addRRS01OnGVMSLocations(itemId, items)))
-            .map(_ => navigator.continueTo(AdditionalInformationController.displayPage(itemId)))
+        updatedItems =>
+          updateCache(itemId, cachedData.copy(isRequired = YesNoAnswer.Yes, items = updatedItems))
+            .map(_ => navigator.continueTo(routes.AdditionalInformationController.displayPage(itemId)))
       )
-
-  private def addRRS01OnGVMSLocations(itemId: String, items: Seq[AdditionalInformation])(
-    implicit request: JourneyRequest[AnyContent]
-  ): Seq[AdditionalInformation] =
-    if (
-      !request.cacheModel.hasGVMSLocations ||
-      request.cacheModel.listOfAdditionalInformationOfItem(itemId).exists(_.code == codeForGVMS)
-    ) items
-    else items :+ AdditionalInformation(codeForGVMS, "")
 
   private def updateCache(itemId: String, updatedData: AdditionalInformationData)(
     implicit request: JourneyRequest[AnyContent]

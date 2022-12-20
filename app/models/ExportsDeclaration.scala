@@ -147,6 +147,9 @@ case class ExportsDeclaration(
   def listOfAdditionalInformationOfItem(itemId: String): Seq[AdditionalInformation] =
     itemBy(itemId).flatMap(_.additionalInformation).getOrElse(AdditionalInformationData.default).items
 
+  def listOfAdditionalInformationOfItem(item: ExportItem): Seq[AdditionalInformation] =
+    item.additionalInformation.getOrElse(AdditionalInformationData.default).items
+
   def procedureCodeOfItem(itemId: String): Option[ProcedureCodesData] =
     itemBy(itemId).flatMap(_.procedureCodes)
 
