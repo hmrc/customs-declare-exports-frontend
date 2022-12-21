@@ -18,6 +18,7 @@ package forms.declaration
 
 import base.FormSpec
 import forms.common.DeclarationPageBaseSpec
+import forms.declaration.AdditionalInformation.codeForGVMS
 
 class AdditionalInformationSpec extends FormSpec with DeclarationPageBaseSpec {
 
@@ -49,6 +50,11 @@ class AdditionalInformationSpec extends FormSpec with DeclarationPageBaseSpec {
       "an invalid code is entered" in {
         val result = form.fillAndValidate(AdditionalInformation("123456", "description"))
         result.errors must contain("declaration.additionalInformation.code.error")
+      }
+
+      "an invalid code is entered (RRS01)" in {
+        val result = form.fillAndValidate(AdditionalInformation(codeForGVMS, "description"))
+        result.errors must contain("declaration.additionalInformation.code.error.rrs01")
       }
 
       "an invalid code is entered (LIC99)" in {
