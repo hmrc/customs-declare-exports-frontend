@@ -45,8 +45,10 @@ class DashboardController @Inject() (
       .map(pageOfSubmissions => Ok(dashboard(pageOfSubmissions)))
   }
 
+  lazy val groups = statusGroups.mkString(",")
+
   private def queryString(implicit request: Request[_]) = {
-    val queryString = request.getQueryString(Groups).fold(s"${request.target.queryString}&$Groups=${statusGroups}") { _ =>
+    val queryString = request.getQueryString(Groups).fold(s"${request.target.queryString}&$Groups=$groups") { _ =>
       request.target.queryString
     }
 

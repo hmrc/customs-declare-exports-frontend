@@ -15,21 +15,16 @@
  *@
 
 @import config.featureFlags.SecureMessagingConfig
-@import controllers.routes.{ChoiceController, DashboardController}
+@import controllers.routes.ChoiceController
 @import forms.Choice
 @import forms.Choice.AllowedChoiceValues.Dashboard
 @import models.PageOfSubmissions
-@import models.declaration.submissions.StatusGroup._
-@import play.twirl.api.HtmlFormat
-@import uk.gov.hmrc.govukfrontend.views.html.components._
-@import views.dashboard.DashboardHelper.{Groups, Page}
-@import views.helpers.{BackButton, EnhancedStatusHelper, Title}
-@import views.helpers.EnhancedStatusHelper.hasQueryNotificationMessageStatus
+@import views.dashboard.DashboardHelper.{Groups, Page, panels, tabs}
+@import views.helpers.{BackButton, Title}
 @import views.html.components.gds.{gdsMainTemplate, linkButton, navigationBanner, pageTitle, paragraphBody}
 
 @this(
     govukLayout: gdsMainTemplate,
-    govukTabs: GovukTabs,
     linkButton: linkButton,
     navigationBanner: navigationBanner,
     pageTitle: pageTitle,
@@ -46,22 +41,6 @@
     }
 }
 
-@baseHref = @{ s"${DashboardController.displayPage}?${Groups}=" }
-
-@tab(statusGroup: StatusGroup) = @{
-  val html =
-    if (statusGroup != pageOfSubmissions.statusGroup) HtmlFormat.empty
-    else table(statusGroup, pageOfSubmissions, s"${baseHref}${statusGroup}")
-
-  TabItem(
-    id = Some(s"${statusGroup}-submissions"),
-    label = messages(s"dashboard.${statusGroup}.tab.title"),
-    panel = TabPanel(HtmlContent(html))
-  )
-}
-
-@statusGroup = @{ pageOfSubmissions.statusGroup.toString }
-
 @govukLayout(
     title = Title("dashboard.title"),
     backButton = Some(BackButton(messages("site.backToSelectionPage"), ChoiceController.displayPage(Some(Choice(Dashboard))))),
@@ -76,12 +55,13 @@
 
             @paragraph(message = messages("dashboard.hint.no.action.needed"), classes = "govuk-body govuk-warning-text")
 
-            @govukTabs(Tabs(items = List(tab(SubmittedStatuses), tab(ActionRequiredStatuses), tab(RejectedStatuses), tab(CancelledStatuses))))
+            <div class="cds-exports-tabs">
+                <h2 class="cds-exports-tabs__title">Contents</h2>
+                @tabs(pageOfSubmissions.statusGroup)
+                @panels(pageOfSubmissions, table)
+            </div>
 
             @linkButton("dashboard.start.new.declaration", ChoiceController.displayPage())
         </div>
     </div>
-
-    <span id="statusGroups" data-status-group="@statusGroup" data-href="@baseHref"></span>
-    <script src="@routes.Assets.versioned("javascripts/dashboard.js")"></script>
 }
