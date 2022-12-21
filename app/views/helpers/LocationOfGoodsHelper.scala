@@ -113,7 +113,7 @@ class LocationOfGoodsHelper @Inject() (
 
   def versionSelection(implicit request: JourneyRequest[_]): Int =
     request.cacheModel.additionalDeclarationType.fold(1) {
-      case decType if (preLodgedTypes ++ Seq(SUPPLEMENTARY_EIDR, SUPPLEMENTARY_SIMPLIFIED)).contains(decType)                     => 6
+      case decType if (preLodgedTypes ++ Seq(SUPPLEMENTARY_EIDR, SUPPLEMENTARY_SIMPLIFIED)) contains decType                      => 6
       case STANDARD_FRONTIER | SIMPLIFIED_FRONTIER if isAuthCode(CSE)                                                             => 7
       case STANDARD_PRE_LODGED | SIMPLIFIED_PRE_LODGED | OCCASIONAL_PRE_LODGED | CLEARANCE_PRE_LODGED if isAuthProcedureCodeForV4 => 4
 
