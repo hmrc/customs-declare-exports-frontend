@@ -20,6 +20,7 @@ import base.ControllerSpec
 import controllers.declaration.routes.AdditionalInformationController
 import forms.common.YesNoAnswer.{No, Yes}
 import forms.declaration.AdditionalInformation
+import forms.declaration.AdditionalInformation.codeForGVMS
 import mock.ErrorHandlerMocks
 import models.declaration.AdditionalInformationData
 import models.declaration.AdditionalInformationData.maxNumberOfItems
@@ -91,6 +92,14 @@ class AdditionalInformationAddControllerSpec extends ControllerSpec with ErrorHa
 
       "user does not enter any data" in {
         val formData = Json.toJson(AdditionalInformation("", ""))
+        val result = controller.submitForm(itemId)(postRequest(formData))
+
+        status(result) mustBe BAD_REQUEST
+        verifyPageInvoked()
+      }
+
+      "user enters 'RRS01' as code" in {
+        val formData = Json.toJson(AdditionalInformation(codeForGVMS, "description"))
         val result = controller.submitForm(itemId)(postRequest(formData))
 
         status(result) mustBe BAD_REQUEST

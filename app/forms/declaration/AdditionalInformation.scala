@@ -43,6 +43,7 @@ object AdditionalInformation extends DeclarationPage {
       text
         .verifying("declaration.additionalInformation.code.empty", nonEmpty)
         .verifying("declaration.additionalInformation.code.error", isEmpty or (isAlphanumeric and hasSpecificLength(5)))
+        .verifying("declaration.additionalInformation.code.error.rrs01", code => isEmpty(code) or code != codeForGVMS)
         .verifying("declaration.additionalInformation.code.error.lic99", code => isEmpty(code) or code != "LIC99"),
     descriptionKey ->
       text
