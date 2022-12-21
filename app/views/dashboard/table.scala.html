@@ -60,22 +60,20 @@
   pagination(pageOfSubmissions, baseHref, totalPagesInGroup, currentPage)
 }
 
-@if(pageOfSubmissions.submissions.nonEmpty) {
-    <p id="@{s"$statusGroup-content-hint"}" class="govuk-body">@Html(messages(s"dashboard.$statusGroup.content.hint", <br/>))</p>
+<p id="@{s"$statusGroup-content-hint"}" class="govuk-body">@Html(messages(s"dashboard.$statusGroup.content.hint", <br/>))</p>
 
-    @govukTable(Table(
-        head = headCells,
-        rows = pageOfSubmissions.submissions.zipWithIndex.map { case (submission, row) =>
-            Seq(
-              TableRow(attributes = attr(row, "mrn"),  content = mrnLink(submission), classes = "govuk-table__cell_break-all"),
-              TableRow(attributes = attr(row, "ducr"), content = Text(submission.ducr.getOrElse("")), classes = "govuk-table__cell_break-all"),
-              TableRow(attributes = attr(row, "lrn"),  content = Text(submission.lrn), classes = "govuk-table__cell_break-all"),
-              TableRow(attributes = attr(row, "dateAndTime"), content = Text(timestamp(submission))),
-              TableRow(attributes = attr(row, "status"), content = Text(EnhancedStatusHelper.asText(submission)))
-            )
-        }
-    ))
-}
+@govukTable(Table(
+    head = headCells,
+    rows = pageOfSubmissions.submissions.zipWithIndex.map { case (submission, row) =>
+        Seq(
+          TableRow(attributes = attr(row, "mrn"),  content = mrnLink(submission), classes = "govuk-table__cell_break-all"),
+          TableRow(attributes = attr(row, "ducr"), content = Text(submission.ducr.getOrElse("")), classes = "govuk-table__cell_break-all"),
+          TableRow(attributes = attr(row, "lrn"),  content = Text(submission.lrn), classes = "govuk-table__cell_break-all"),
+          TableRow(attributes = attr(row, "dateAndTime"), content = Text(timestamp(submission))),
+          TableRow(attributes = attr(row, "status"), content = Text(EnhancedStatusHelper.asText(submission)))
+        )
+    }
+))
 
 <div class="govuk-grid-row">
     @if(pageOfSubmissions.submissions.nonEmpty) {

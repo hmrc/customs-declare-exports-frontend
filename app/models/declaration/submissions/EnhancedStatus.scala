@@ -66,5 +66,5 @@ object StatusGroup extends Enumeration {
   val RejectedStatuses = Value("rejected")
   val SubmittedStatuses = Value("submitted")
 
-  lazy val statusGroups = List(SubmittedStatuses, ActionRequiredStatuses, RejectedStatuses, CancelledStatuses).mkString(",")
+  lazy val statusGroups = List(SubmittedStatuses, ActionRequiredStatuses, RejectedStatuses, CancelledStatuses)
 }

@@ -18,7 +18,11 @@ package views.dashboard
 
 import controllers.routes.DashboardController
 import models.PageOfSubmissions
-import play.api.mvc.Call
+import models.declaration.submissions.StatusGroup.{statusGroups, StatusGroup}
+import play.api.i18n.Messages
+import play.api.mvc.{Call, Request}
+import play.twirl.api.Html
+import views.html.dashboard.table
 
 import java.time.{ZoneId, ZonedDateTime}
 
@@ -62,4 +66,36 @@ object DashboardHelper {
     maybeDatetime.fold(href)(datetime => s"${href}&${key}=${toUTC(datetime)}")
 
   def toUTC(datetime: ZonedDateTime) = datetime.withZoneSameInstant(ZoneId.of("UTC")).toInstant
+
+  def panels(pageOfSubmissions: PageOfSubmissions, table: table)(implicit request: Request[_], messages: Messages): Html =
+    Html(statusGroups.map { statusGroup =>
+      if (statusGroup != pageOfSubmissions.statusGroup)
+        s"""<div id="$statusGroup-submissions" class="cds-exports-tabs__panel cds-exports-tabs__panel--hidden"></div>"""
+      else s"""
+          |<div id="$statusGroup-submissions" class="cds-exports-tabs__panel">
+          |  ${table(statusGroup, pageOfSubmissions, s"${DashboardController.displayPage}?${Groups}=${statusGroup}").toString}
+          |</div>
+          |""".stripMargin
+    }.mkString)
+
+  def tabs(selectedStatusGroup: StatusGroup)(implicit messages: Messages): Html =
+    Html(
+      """<ul class="cds-exports-tabs__list">""" +
+        statusGroups.map { statusGroup =>
+          val (current, tabIndex) =
+            if (statusGroup != selectedStatusGroup) ("", "-1")
+            else (" cds-exports-tabs__list-item--selected", "0")
+
+          s"""
+             |<li class="cds-exports-tabs__list-item$current" role="presentation">
+             |  <a id="tab_$statusGroup-submissions" class="cds-exports-tabs__tab"
+             |     href="/customs-declare-exports/dashboard?groups=$statusGroup&amp;page=1"
+             |     role="tab" aria-controls="$statusGroup-submissions" aria-selected="true" tabindex="$tabIndex">
+             |    ${messages(s"dashboard.$statusGroup.tab.title")}
+             |  </a>
+             |</li>
+             |""".stripMargin
+        }.mkString +
+        "</ul>"
+    )
 }
