@@ -20,6 +20,7 @@ import base.ControllerSpec
 import controllers.declaration.routes.AdditionalInformationController
 import forms.common.YesNoAnswer.Yes
 import forms.declaration.AdditionalInformation
+import forms.declaration.AdditionalInformation.codeForGVMS
 import mock.ErrorHandlerMocks
 import models.declaration.AdditionalInformationData
 import org.mockito.ArgumentCaptor
@@ -92,6 +93,14 @@ class AdditionalInformationChangeControllerSpec extends ControllerSpec with Erro
 
       "user does not enter any data" in {
         val formData = Json.toJson(AdditionalInformation("", ""))
+        val result = controller.submitForm(itemId, additionalInformationId)(postRequest(formData))
+
+        status(result) mustBe BAD_REQUEST
+        verifyPageInvoked()
+      }
+
+      "user enters 'RRS01' as code" in {
+        val formData = Json.toJson(AdditionalInformation(codeForGVMS, "description"))
         val result = controller.submitForm(itemId, additionalInformationId)(postRequest(formData))
 
         status(result) mustBe BAD_REQUEST

@@ -27,11 +27,9 @@ import controllers.helpers.SupervisingCustomsOfficeHelper
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
-import forms.declaration.AdditionalInformation
-import forms.declaration.AdditionalInformation.codeForGVMS
 import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
 import models.ExportsDeclaration
-import models.declaration.{AdditionalInformationData, ExportItem}
+import models.declaration.ExportItem
 import models.requests.JourneyRequest
 import play.api.data.{Form, FormError}
 import play.api.i18n.I18nSupport
@@ -114,14 +112,8 @@ class ItemsSummaryController @Inject() (
       FormError("item_" + index, "declaration.itemsSummary.item.incorrect", Seq(item.sequenceId.toString))
     }
 
-  private lazy val additionalInformationForGVMS = Some(AdditionalInformationData(List(AdditionalInformation(codeForGVMS, ""))))
-
   private def createNewItemInCache(implicit request: JourneyRequest[AnyContent]): Future[String] = {
-    val newItem = ExportItem(
-      id = exportItemIdGeneratorService.generateItemId(),
-      sequenceId = request.cacheModel.items.size + 1,
-      additionalInformation = if (request.cacheModel.hasGVMSLocations) additionalInformationForGVMS else None
-    )
+    val newItem = ExportItem(id = exportItemIdGeneratorService.generateItemId(), sequenceId = request.cacheModel.items.size + 1)
     val items = request.cacheModel.items :+ newItem
     exportsCacheService.update(request.cacheModel.copy(items = items)).map(_ => newItem.id)
   }
