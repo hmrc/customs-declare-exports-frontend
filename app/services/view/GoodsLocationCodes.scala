@@ -16,21 +16,24 @@
 
 package services.view
 
-import connectors.CodeListConnector
 import models.codes.GoodsLocationCode
+import play.api.i18n.Messages
+import services.GoodsLocationCodesService
 
-import java.util.Locale
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class GoodsLocationCodes @Inject() (codeListConnector: CodeListConnector) {
+class GoodsLocationCodes @Inject() (goodsLocationCodesService: GoodsLocationCodesService) {
 
-  def asListOfAutoCompleteItems(locale: Locale): List[AutoCompleteItem] =
-    codeListConnector
-      .getCseCodes(locale)
-      .values
+  def asListOfAutoCompleteItems(contentVersion: Int)(implicit messages: Messages): List[AutoCompleteItem] = {
+    val codeList =
+      if (contentVersion equals 7) goodsLocationCodesService.cseCodes
+      else goodsLocationCodesService.all
+
+    codeList
       .map(h => AutoCompleteItem(description(h), h.code))
-      .toList
+
+  }
 
   private def description(h: GoodsLocationCode): String = s"${h.code} - ${h.description}"
 }

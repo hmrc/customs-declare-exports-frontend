@@ -60,7 +60,7 @@
         labelClass = Some("govuk-label--s"),
         hintParagraphs = List(messages("declaration.locationOfGoods.yesNo.yes.hint")),
         emptySelectValue = "",
-        items = goodsLocationCodes.asListOfAutoCompleteItems(messages.lang.toLocale)
+        items = goodsLocationCodes.asListOfAutoCompleteItems(version)
     )
 }
 

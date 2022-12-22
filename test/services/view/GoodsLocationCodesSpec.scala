@@ -16,45 +16,45 @@
 
 package services.view
 
-import base.UnitWithMocksSpec
-import config.AppConfig
-import connectors.{FileBasedCodeListConnector, GoodsLocationCodesConnector}
-import forms.declaration.declarationHolder.AuthorizationTypeCodes.{EXRR, MIB}
-import forms.declaration.declarationHolder.DeclarationHolder
 import mock.FeatureFlagMocks
-import org.mockito.Mockito.{reset, when}
+import models.codes.GoodsLocationCode
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 import org.scalatest.BeforeAndAfterEach
+import services.GoodsLocationCodesService
+import views.declaration.spec.UnitViewSpec
 
-import java.util.Locale.ENGLISH
+class GoodsLocationCodesSpec extends UnitViewSpec with BeforeAndAfterEach with FeatureFlagMocks {
 
-class GoodsLocationCodesSpec extends UnitWithMocksSpec with BeforeAndAfterEach with FeatureFlagMocks {
-
-  private val appConfig = mock[AppConfig]
+  private lazy val glc = mock[GoodsLocationCodesService]
+  private lazy val goodsLocationCodes = new GoodsLocationCodes(glc)
 
   override def beforeEach(): Unit = {
     super.beforeEach()
 
-    reset(appConfig)
-    when(appConfig.glcCse16l)
-      .thenReturn("/code-lists/goods-locations-codes/cse-16l-from-04-05-2022.json")
+    when(glc.all(any())).thenReturn(List(GoodsLocationCode("GBCUADLMNCPDP", "Adlington")))
+    when(glc.cseCodes(any())).thenReturn(List(GoodsLocationCode("GBBUABDLEACSE", "Aberdeen")))
+
   }
 
-  private lazy val glc = new GoodsLocationCodesConnector(appConfig)
-  private lazy val codeListConnector = new FileBasedCodeListConnector(appConfig, glc)
-  private lazy val goodsLocationCodes = new GoodsLocationCodes(codeListConnector)
+  "GoodsLocationCodes.asListOfAutoCompleteItems" when {
+    "content version is 7 for cse items" should {
+      "return 'Goods Location Codes' from 'CSE' as AutoCompleteItems" in {
 
-  "GoodsLocationCodes.asListOfAutoCompleteItems" should {
-    "return 'Goods Location Codes' from 'CSE' as AutoCompleteItems" in {
+        val autoCompleteItems = goodsLocationCodes.asListOfAutoCompleteItems(7)
 
-      val autoCompleteItems = goodsLocationCodes.asListOfAutoCompleteItems(ENGLISH)
-      autoCompleteItems.size mustBe 66
+        autoCompleteItems.head mustBe AutoCompleteItem("GBBUABDLEACSE - Aberdeen", "GBBUABDLEACSE")
 
-      val item0 = "GBBUBELLCACSE - Belfast, Carne House, 20 Corry Place, Belfast, BT3 9HY"
-      autoCompleteItems.head mustBe AutoCompleteItem(item0, "GBBUBELLCACSE")
+      }
+    }
+    "content version is not 7" should {
+      "return 'Goods Location Codes' from 'CSE' as AutoCompleteItems" in {
 
-      val lastItem = "GBBUSWALBCCSE - Swansea"
-      autoCompleteItems.last mustBe AutoCompleteItem(lastItem, "GBBUSWALBCCSE")
+        val autoCompleteItems = goodsLocationCodes.asListOfAutoCompleteItems(1)
 
+        autoCompleteItems.head mustBe AutoCompleteItem("GBCUADLMNCPDP - Adlington", "GBCUADLMNCPDP")
+
+      }
     }
   }
 
