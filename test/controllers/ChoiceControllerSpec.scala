@@ -16,8 +16,8 @@
 
 package controllers
 
-import base.{ControllerWithoutFormSpec, Injector}
 import base.ExportsTestData._
+import base.{ControllerWithoutFormSpec, Injector}
 import config.{AppConfig, ExternalServicesConfig}
 import controllers.declaration.routes.DeclarationChoiceController
 import forms.Choice
@@ -102,7 +102,7 @@ class ChoiceControllerSpec extends ControllerWithoutFormSpec with OptionValues w
 
         val request = getRequest()
         val result = controller.displayPage(Some(Choice(CancelDec)))(request)
-        val form = Choice.form().fill(Choice(CancelDec))
+        val form = Choice.form.fill(Choice(CancelDec))
 
         viewOf(result) must be(choicePage(form, allJourneys)(request, controller.messagesApi.preferred(request)))
       }
@@ -112,7 +112,7 @@ class ChoiceControllerSpec extends ControllerWithoutFormSpec with OptionValues w
 
         val request = getRequest()
         val result = controller.displayPage(Some(Choice(Dashboard)))(request)
-        val form = Choice.form().fill(Choice(Dashboard))
+        val form = Choice.form.fill(Choice(Dashboard))
 
         viewOf(result) must be(choicePage(form, allJourneys)(request, controller.messagesApi.preferred(request)))
       }
@@ -125,7 +125,7 @@ class ChoiceControllerSpec extends ControllerWithoutFormSpec with OptionValues w
 
         val request = getRequest()
         val result = controller.displayPage(None)(request)
-        val form = Choice.form()
+        val form = Choice.form
 
         viewOf(result) must be(choicePage(form, allJourneys)(request, controller.messagesApi.preferred(request)))
       }
@@ -148,7 +148,7 @@ class ChoiceControllerSpec extends ControllerWithoutFormSpec with OptionValues w
         val result = controller.submitChoice()(postChoiceRequest(createChoice))
 
         status(result) must be(SEE_OTHER)
-        redirectLocation(result) must be(Some(DeclarationChoiceController.displayPage().url))
+        redirectLocation(result) must be(Some(DeclarationChoiceController.displayPage.url))
         verifyTheCacheIsUnchanged()
       }
     }
@@ -168,7 +168,7 @@ class ChoiceControllerSpec extends ControllerWithoutFormSpec with OptionValues w
         val result = controller.submitChoice()(postChoiceRequest(cancelChoice))
 
         status(result) must be(SEE_OTHER)
-        redirectLocation(result) must be(Some(routes.CancelDeclarationController.displayPage().url))
+        redirectLocation(result) must be(Some(routes.CancelDeclarationController.displayPage.url))
         verifyTheCacheIsUnchanged()
       }
     }

@@ -55,7 +55,7 @@ class CommodityMeasureController @Inject() (
   }
 
   def submitPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async { implicit request =>
-    val test = form.bindFromRequest
+    val test = form.bindFromRequest()
     test.fold(
       formWithErrors => Future.successful(BadRequest(commodityMeasurePage(itemId, formWithErrors))),
       updateExportsCache(itemId, _).map(_ => navigator.continueTo(nextPage(itemId)))

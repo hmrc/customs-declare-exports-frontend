@@ -40,7 +40,7 @@ class PreviousDocumentsSummaryController @Inject() (
   previousDocumentsSummary: previous_documents_summary
 ) extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
-  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayPage: Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     val form = yesNoForm.withSubmissionErrors
     request.cacheModel.previousDocuments.map(_.documents) match {
       case Some(documents) if documents.nonEmpty => Ok(previousDocumentsSummary(form, documents))
@@ -50,7 +50,8 @@ class PreviousDocumentsSummaryController @Inject() (
   }
 
   def submit(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    yesNoForm.bindFromRequest
+    yesNoForm
+      .bindFromRequest()
       .fold(
         formWithErrors => {
           val previousDocuments = request.cacheModel.previousDocuments.map(_.documents).getOrElse(Seq.empty)

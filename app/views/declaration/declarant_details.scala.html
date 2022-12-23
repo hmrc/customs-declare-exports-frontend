@@ -65,7 +65,7 @@
     showDeclarationSummaryLink = false
     ) {
 
-    @formHelper(action = routes.DeclarantDetailsController.submitForm(), 'autoComplete -> "off") {
+    @formHelper(action = routes.DeclarantDetailsController.submitForm, 'autoComplete -> "off") {
         @errorSummary(radioGroupErrors(isEoriKey, "code_yes", form.errors))
 
         @sectionHeader(messages(sectionMessagesKey))

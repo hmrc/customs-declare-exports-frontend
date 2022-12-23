@@ -75,7 +75,7 @@ object DocumentWriteOff {
       )
     )(form2Model)(model2Form)
 
-  def form(): Form[DocumentWriteOff] = Form(mapping)
+  def form: Form[DocumentWriteOff] = Form(mapping)
 
   def globalErrors(writeOff: DocumentWriteOff): Seq[FormError] = {
 

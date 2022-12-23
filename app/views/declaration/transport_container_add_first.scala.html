@@ -50,7 +50,7 @@
     title = Title("declaration.transportInformation.containers.first.title", "declaration.section.6", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(ContainerFirst)))) {
 
-    @formHelper(action = TransportContainerController.submitAddContainer(), 'autoComplete -> "off") {
+    @formHelper(action = TransportContainerController.submitAddContainer, 'autoComplete -> "off") {
         @errorSummary(radioGroupErrors(hasContainerKey, "code_yes", form.errors))
 
         @sectionHeader(messages("declaration.section.6"))

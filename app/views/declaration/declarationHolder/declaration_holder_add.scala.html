@@ -37,7 +37,7 @@
     title = Title("declaration.declarationHolder.title", "declaration.section.2", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(DeclarationHolder)))
 ) {
-    @formHelper(action = DeclarationHolderAddController.submitForm(), 'autoComplete -> "off") {
+    @formHelper(action = DeclarationHolderAddController.submitForm, 'autoComplete -> "off") {
         @editContent(form, userEori)
     }
 }

@@ -58,7 +58,8 @@ class AdditionalInformationRemoveController @Inject() (
   def submitForm(itemId: String, id: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     findAdditionalInformation(itemId, id) match {
       case Some(information) =>
-        removeYesNoForm.bindFromRequest
+        removeYesNoForm
+          .bindFromRequest()
           .fold(
             formWithErrors => Future.successful(BadRequest(removePage(itemId, id, information, formWithErrors))),
             _.answer match {

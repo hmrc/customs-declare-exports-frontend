@@ -46,7 +46,7 @@ class UNDangerousGoodsCodeController @Inject() (
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
   def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    val frm = form().withSubmissionErrors()
+    val frm = form.withSubmissionErrors
     request.cacheModel.itemBy(itemId).flatMap(_.dangerousGoodsCode) match {
       case Some(dangerousGoodsCode) => Ok(unDangerousGoodsCodePage(itemId, frm.fill(dangerousGoodsCode)))
       case _                        => Ok(unDangerousGoodsCodePage(itemId, frm))

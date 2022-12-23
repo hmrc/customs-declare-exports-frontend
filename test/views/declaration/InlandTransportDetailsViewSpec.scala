@@ -42,9 +42,9 @@ class InlandTransportDetailsViewSpec extends PageWithButtonsSpec with ExportsTes
 
   val page = instanceOf[inland_transport_details]
 
-  override val typeAndViewInstance = (STANDARD, page(form())(_, _))
+  override val typeAndViewInstance = (STANDARD, page(form)(_, _))
 
-  def createView(frm: Form[InlandModeOfTransportCode] = form())(implicit request: JourneyRequest[_]): Document =
+  def createView(frm: Form[InlandModeOfTransportCode] = form)(implicit request: JourneyRequest[_]): Document =
     page(frm)(request, messages)
 
   "Inland Transport Details View" should {
@@ -129,7 +129,7 @@ class InlandTransportDetailsViewSpec extends PageWithButtonsSpec with ExportsTes
           val view = createView()(withRequest(additionalType))
           val backButton = view.getElementById("back-link")
           backButton must containMessage("site.backToPreviousQuestion")
-          backButton.getElementById("back-link") must haveHref(InlandOrBorderController.displayPage())
+          backButton.getElementById("back-link") must haveHref(InlandOrBorderController.displayPage)
         }
       }
     }
@@ -143,7 +143,7 @@ class InlandTransportDetailsViewSpec extends PageWithButtonsSpec with ExportsTes
               val view = createView()(withRequest(additionalType, modifier))
               val backButton = view.getElementById("back-link")
               backButton must containMessage("site.backToPreviousQuestion")
-              backButton.getElementById("back-link") must haveHref(SupervisingCustomsOfficeController.displayPage())
+              backButton.getElementById("back-link") must haveHref(SupervisingCustomsOfficeController.displayPage)
             }
           }
         }
@@ -154,7 +154,7 @@ class InlandTransportDetailsViewSpec extends PageWithButtonsSpec with ExportsTes
           val view = createView()(withRequest(additionalType))
           val backButton = view.getElementById("back-link")
           backButton must containMessage("site.backToPreviousQuestion")
-          backButton.getElementById("back-link") must haveHref(SupervisingCustomsOfficeController.displayPage())
+          backButton.getElementById("back-link") must haveHref(SupervisingCustomsOfficeController.displayPage)
         }
       }
     }
@@ -169,7 +169,7 @@ class InlandTransportDetailsViewSpec extends PageWithButtonsSpec with ExportsTes
                 val view = createView()(withRequest(additionalType, modifier, withItem(itemWithPC("1040"))))
                 val backButton = view.getElementById("back-link")
                 backButton must containMessage("site.backToPreviousQuestion")
-                backButton.getElementById("back-link") must haveHref(TransportLeavingTheBorderController.displayPage())
+                backButton.getElementById("back-link") must haveHref(TransportLeavingTheBorderController.displayPage)
               }
             }
           }
@@ -180,7 +180,7 @@ class InlandTransportDetailsViewSpec extends PageWithButtonsSpec with ExportsTes
             val view = createView()(withRequest(additionalType, withItem(itemWithPC("1040"))))
             val backButton = view.getElementById("back-link")
             backButton must containMessage("site.backToPreviousQuestion")
-            backButton.getElementById("back-link") must haveHref(TransportLeavingTheBorderController.displayPage())
+            backButton.getElementById("back-link") must haveHref(TransportLeavingTheBorderController.displayPage)
           }
         }
       }
@@ -193,7 +193,7 @@ class InlandTransportDetailsViewSpec extends PageWithButtonsSpec with ExportsTes
             val view = createView()(withRequest(additionalType, withItem(itemWithPC("1040"))))
             val backButton = view.getElementById("back-link")
             backButton must containMessage("site.backToPreviousQuestion")
-            backButton.getElementById("back-link") must haveHref(ItemsSummaryController.displayItemsSummaryPage())
+            backButton.getElementById("back-link") must haveHref(ItemsSummaryController.displayItemsSummaryPage)
           }
         }
       }

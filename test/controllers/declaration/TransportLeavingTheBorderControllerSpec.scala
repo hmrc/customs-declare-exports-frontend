@@ -78,7 +78,7 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec with Option
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration())
-    await(controller.displayPage()(request))
+    await(controller.displayPage(request))
     theResponseForm
   }
 
@@ -94,7 +94,7 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec with Option
       "return 200 (OK)" when {
 
         "display page method is invoked and cache is empty" in {
-          val result = controller.displayPage()(getRequest())
+          val result = controller.displayPage(getRequest())
 
           status(result) must be(OK)
           theResponseForm.value mustBe empty
@@ -103,7 +103,7 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec with Option
         "display page method is invoked and cache is not empty" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withDepartureTransport(ModeOfTransportCode.Rail)))
 
-          val result = controller.displayPage()(getRequest())
+          val result = controller.displayPage(getRequest())
 
           status(result) must be(OK)
           theResponseForm.value mustBe Some(TransportLeavingTheBorder(Some(ModeOfTransportCode.Rail)))
@@ -115,7 +115,7 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec with Option
       "redirect to the starting page on displayPage" in {
         withNewCaching(request.cacheModel)
 
-        val result = controller.displayPage()(getRequest())
+        val result = controller.displayPage(getRequest())
         redirectLocation(result) mustBe Some(RootController.displayPage.url)
       }
     }
@@ -202,7 +202,7 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec with Option
                 val result = controller.submitForm()(postRequest(body))
 
                 await(result) mustBe aRedirectToTheNextPage
-                thePageNavigatedTo mustBe WarehouseIdentificationController.displayPage()
+                thePageNavigatedTo mustBe WarehouseIdentificationController.displayPage
               }
             }
           }
@@ -213,7 +213,7 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec with Option
             val result = controller.submitForm()(postRequest(body))
 
             await(result) mustBe aRedirectToTheNextPage
-            thePageNavigatedTo mustBe SupervisingCustomsOfficeController.displayPage()
+            thePageNavigatedTo mustBe SupervisingCustomsOfficeController.displayPage
           }
         }
 
@@ -230,8 +230,8 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec with Option
                 await(result) mustBe aRedirectToTheNextPage
 
                 val expectedPage =
-                  if (modeOfTransportCode == RoRo) InlandTransportDetailsController.displayPage()
-                  else InlandOrBorderController.displayPage()
+                  if (modeOfTransportCode == RoRo) InlandTransportDetailsController.displayPage
+                  else InlandOrBorderController.displayPage
 
                 thePageNavigatedTo mustBe expectedPage
               }
@@ -250,7 +250,7 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec with Option
                 val result = controller.submitForm()(postRequest(body))
 
                 await(result) mustBe aRedirectToTheNextPage
-                thePageNavigatedTo mustBe InlandTransportDetailsController.displayPage()
+                thePageNavigatedTo mustBe InlandTransportDetailsController.displayPage
               }
             }
 
@@ -258,7 +258,7 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec with Option
               s"AdditionalDeclarationType is $additionalType and" when {
                 "the user has previously entered a value which requires to skip the /inland-or-border page" in {
                   valuesRequiringToSkipInlandOrBorder.foreach { modifier =>
-                    initMockNavigatorForMultipleCallsInTheSameTest
+                    initMockNavigatorForMultipleCallsInTheSameTest()
                     val declaration = withRequest(additionalType, modifier, item).cacheModel
 
                     // This is a special case for this test that as specified would
@@ -267,8 +267,8 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec with Option
                       modeOfTransportCode != RoRo && declaration.transportLeavingBorderCode == Some(RoRo)
 
                     val expectedPage =
-                      if (landOnInlandOrBorder) InlandOrBorderController.displayPage()
-                      else InlandTransportDetailsController.displayPage()
+                      if (landOnInlandOrBorder) InlandOrBorderController.displayPage
+                      else InlandTransportDetailsController.displayPage
 
                     withNewCaching(declaration)
 
@@ -290,7 +290,7 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec with Option
             val result = controller.submitForm()(postRequest(body))
 
             await(result) mustBe aRedirectToTheNextPage
-            thePageNavigatedTo mustBe WarehouseIdentificationController.displayPage()
+            thePageNavigatedTo mustBe WarehouseIdentificationController.displayPage
           }
         }
       }

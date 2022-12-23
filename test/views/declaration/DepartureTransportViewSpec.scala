@@ -40,7 +40,7 @@ import views.helpers.ModeOfTransportCodeHelper
 import views.html.declaration.departure_transport
 import views.tags.ViewTest
 
-import scala.collection.JavaConverters.asScalaIteratorConverter
+import scala.jdk.CollectionConverters.IteratorHasAsScala
 
 @ViewTest
 class DepartureTransportViewSpec extends PageWithButtonsSpec with Injector {
@@ -195,38 +195,38 @@ class DepartureTransportViewSpec extends PageWithButtonsSpec with Injector {
     additionalDeclTypesAllowedOnInlandOrBorder.foreach { additionalType =>
       "'Border' was selected on /inland-or border and" when {
         implicit val request = withRequest(additionalType, withInlandOrBorder(Some(Border)))
-        verifyBackButton(InlandOrBorderController.displayPage())
+        verifyBackButton(InlandOrBorderController.displayPage)
       }
 
       "'Border' was NOT selected on /inland-or border and" when {
-        verifyBackButton(InlandTransportDetailsController.displayPage())(withRequest(additionalType))
+        verifyBackButton(InlandTransportDetailsController.displayPage)(withRequest(additionalType))
       }
     }
 
     "the declarationType is SUPPLEMENTARY and" when {
-      verifyBackButton(InlandTransportDetailsController.displayPage())(withRequest(SUPPLEMENTARY_EIDR))
+      verifyBackButton(InlandTransportDetailsController.displayPage)(withRequest(SUPPLEMENTARY_EIDR))
     }
 
     List(CLEARANCE_FRONTIER, CLEARANCE_PRE_LODGED).foreach { additionalType =>
       "the declaration is CLEARANCE and" when {
-        verifyBackButton(SupervisingCustomsOfficeController.displayPage())(withRequest(additionalType))
+        verifyBackButton(SupervisingCustomsOfficeController.displayPage)(withRequest(additionalType))
       }
 
       "the declaration is EIDR and" when {
         implicit val request = withRequest(additionalType, withEntryIntoDeclarantsRecords())
-        verifyBackButton(SupervisingCustomsOfficeController.displayPage())
+        verifyBackButton(SupervisingCustomsOfficeController.displayPage)
       }
 
       "the declaration is EIDR and" when {
         "all declaration's items have '1040' as PC and '000' as APC and" when {
           implicit val request = withRequest(additionalType, withEntryIntoDeclarantsRecords(), withItem(itemWithPC("1040")))
-          verifyBackButton(WarehouseIdentificationController.displayPage())
+          verifyBackButton(WarehouseIdentificationController.displayPage)
         }
       }
     }
 
     List(OCCASIONAL_FRONTIER, OCCASIONAL_PRE_LODGED, SIMPLIFIED_FRONTIER, SIMPLIFIED_PRE_LODGED).foreach { additionalType =>
-      verifyBackButton(InlandTransportDetailsController.displayPage())(withRequest(additionalType))
+      verifyBackButton(InlandTransportDetailsController.displayPage)(withRequest(additionalType))
     }
   }
 

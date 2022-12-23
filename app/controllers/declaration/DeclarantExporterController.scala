@@ -42,8 +42,8 @@ class DeclarantExporterController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
-  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    val frm = form().withSubmissionErrors()
+  def displayPage: Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    val frm = form.withSubmissionErrors
     request.cacheModel.parties.declarantIsExporter match {
       case Some(data) => Ok(declarantExporterPage(frm.fill(data)))
       case _          => Ok(declarantExporterPage(frm))
@@ -51,7 +51,7 @@ class DeclarantExporterController @Inject() (
   }
 
   def submitForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    form()
+    form
       .bindFromRequest()
       .fold(
         formWithErrors => Future.successful(BadRequest(declarantExporterPage(formWithErrors))),

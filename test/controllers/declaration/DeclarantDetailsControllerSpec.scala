@@ -21,9 +21,9 @@ import controllers.declaration.routes.{ConsignmentReferencesController, Declaran
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.DeclarantEoriConfirmation
 import forms.declaration.DeclarantEoriConfirmation.isEoriKey
+import models.DeclarationType
 import models.DeclarationType.{OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
 import models.requests.ExportsSessionKeys
-import models.DeclarationType
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
@@ -66,7 +66,7 @@ class DeclarantDetailsControllerSpec extends ControllerSpec {
   }
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
-    await(controller.displayPage()(request))
+    await(controller.displayPage(request))
     theResponseForm
   }
 
@@ -75,14 +75,14 @@ class DeclarantDetailsControllerSpec extends ControllerSpec {
     "return 200 (OK)" when {
 
       "display page method is invoked and cache is empty" in {
-        val result = controller.displayPage()(getRequest())
+        val result = controller.displayPage(getRequest())
         status(result) must be(OK)
       }
 
       "display page method is invoked and cache is not empty" in {
         withNewCaching(aDeclaration(withDeclarantDetails()))
 
-        val result = controller.displayPage()(getRequest())
+        val result = controller.displayPage(getRequest())
         status(result) must be(OK)
       }
     }
@@ -133,7 +133,7 @@ class DeclarantDetailsControllerSpec extends ControllerSpec {
           val result = controller.submitForm()(postRequest(correctForm))
 
           status(result) mustBe SEE_OTHER
-          thePageNavigatedTo mustBe DeclarantExporterController.displayPage()
+          thePageNavigatedTo mustBe DeclarantExporterController.displayPage
         }
       }
     }

@@ -25,7 +25,7 @@ import models.declaration.submissions.StatusGroup.SubmittedStatuses
 import models.declaration.submissions.{Action, Submission}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers._
-import org.mockito.Mockito._
+import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.BeforeAndAfterEach
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat

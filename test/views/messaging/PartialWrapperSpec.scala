@@ -16,7 +16,6 @@
 
 package views.messaging
 
-import scala.collection.JavaConverters._
 import base.OverridableInjector
 import config.featureFlags.SecureMessagingConfig
 import controllers.routes
@@ -29,6 +28,8 @@ import play.twirl.api.HtmlFormat
 import views.dashboard.DashboardHelper.toDashboard
 import views.declaration.spec.UnitViewSpec
 import views.html.messaging.partial_wrapper
+
+import scala.jdk.CollectionConverters.IteratorHasAsScala
 
 class PartialWrapperSpec extends UnitViewSpec with BeforeAndAfterEach {
 

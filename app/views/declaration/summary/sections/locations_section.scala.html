@@ -44,7 +44,7 @@
                 actions = actions(Actions(
                     items = Seq(
                         actionSummaryItem(
-                            href = controllers.declaration.routes.LocationOfGoodsController.displayPage().url,
+                            href = controllers.declaration.routes.LocationOfGoodsController.displayPage.url,
                             content = HtmlContent(linkContent(messages("site.change"))),
                             visuallyHiddenText = Some(messages("declaration.summary.locations.goodsLocationCode.change"))
                         )
@@ -63,7 +63,7 @@
                 actions = actions(Actions(
                     items = Seq(
                         actionSummaryItem(
-                            href = controllers.declaration.routes.OfficeOfExitController.displayPage().url,
+                            href = controllers.declaration.routes.OfficeOfExitController.displayPage.url,
                             content = HtmlContent(linkContent(messages("site.change"))),
                             visuallyHiddenText = Some(messages("declaration.summary.locations.officeOfExit.change"))
                         )

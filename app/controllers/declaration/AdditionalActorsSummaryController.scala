@@ -43,17 +43,18 @@ class AdditionalActorsSummaryController @Inject() (
 
   private val validTypes = Seq(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL)
 
-  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
+  def displayPage: Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
     request.cacheModel.parties.declarationAdditionalActorsData match {
-      case Some(data) if data.actors.nonEmpty => Ok(additionalActorsPage(form.withSubmissionErrors(), data.actors))
+      case Some(data) if data.actors.nonEmpty => Ok(additionalActorsPage(form.withSubmissionErrors, data.actors))
 
       case _ => navigator.continueTo(AdditionalActorsAddController.displayPage)
     }
   }
 
-  def submitForm(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def submitForm: Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     val actors = request.cacheModel.parties.declarationAdditionalActorsData.map(_.actors).getOrElse(Seq.empty)
-    form.bindFromRequest
+    form
+      .bindFromRequest()
       .fold(
         formWithErrors => BadRequest(additionalActorsPage(formWithErrors, actors)),
         _.answer match {

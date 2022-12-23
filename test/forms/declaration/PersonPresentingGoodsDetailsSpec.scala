@@ -28,7 +28,7 @@ class PersonPresentingGoodsDetailsSpec extends DeclarationPageBaseSpec {
 
           val inputData = Map("eori" -> "GB123456789000")
 
-          val form = PersonPresentingGoodsDetails.form().bind(inputData)
+          val form = PersonPresentingGoodsDetails.form.bind(inputData)
 
           form.hasErrors mustBe false
         }
@@ -40,7 +40,7 @@ class PersonPresentingGoodsDetailsSpec extends DeclarationPageBaseSpec {
 
           val inputData = Map.empty[String, String]
 
-          val form = PersonPresentingGoodsDetails.form().bind(inputData)
+          val form = PersonPresentingGoodsDetails.form.bind(inputData)
 
           form.hasErrors mustBe true
           form.errors.length mustBe 1
@@ -51,7 +51,7 @@ class PersonPresentingGoodsDetailsSpec extends DeclarationPageBaseSpec {
 
           val inputData = Map("eori" -> "")
 
-          val form = PersonPresentingGoodsDetails.form().bind(inputData)
+          val form = PersonPresentingGoodsDetails.form.bind(inputData)
 
           form.hasErrors mustBe true
           form.errors.length mustBe 1
@@ -62,7 +62,7 @@ class PersonPresentingGoodsDetailsSpec extends DeclarationPageBaseSpec {
 
           val inputData = Map("eori" -> "GB123!@#$%^")
 
-          val form = PersonPresentingGoodsDetails.form().bind(inputData)
+          val form = PersonPresentingGoodsDetails.form.bind(inputData)
 
           form.hasErrors mustBe true
           form.errors.length mustBe 1

@@ -47,7 +47,7 @@
     if (actionsEnabled)
         link(
             messages("site.change"),
-            callForSummaryChangeLink(routes.AuthorisationProcedureCodeChoiceController.displayPage()),
+            callForSummaryChangeLink(routes.AuthorisationProcedureCodeChoiceController.displayPage),
             textHidden = Some(messages(
                 "declaration.summary.parties.holders.change",
                 holder.authorisationTypeCode.getOrElse(""),
@@ -75,7 +75,7 @@
             actions = actions(Actions(
                 items = Seq(
                     actionSummaryItem(
-                        href = routes.AuthorisationProcedureCodeChoiceController.displayPage().url,
+                        href = routes.AuthorisationProcedureCodeChoiceController.displayPage.url,
                         content = HtmlContent(linkContent(messages("site.change"))),
                         visuallyHiddenText = Some(messages("declaration.summary.parties.holders.empty.change"))
                     )

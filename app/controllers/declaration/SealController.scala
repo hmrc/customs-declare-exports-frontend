@@ -57,7 +57,8 @@ class SealController @Inject() (
   }
 
   def submitAddSeal(containerId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    Seal.form.bindFromRequest
+    Seal.form
+      .bindFromRequest()
       .fold(
         formWithErrors => Future.successful(BadRequest(addPage(formWithErrors, containerId))),
         validSeal =>
@@ -73,7 +74,7 @@ class SealController @Inject() (
   }
 
   def submitSummaryAction(containerId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    FormAction.bindFromRequest match {
+    FormAction.bindFromRequest() match {
       case Remove(values) => confirmRemoveSeal(containerId, sealId(values))
       case _              => addSealAnswer(containerId)
     }
@@ -100,7 +101,8 @@ class SealController @Inject() (
     request.cacheModel.containerBy(containerId).map(_.seals).getOrElse(Seq.empty)
 
   private def addSealAnswer(containerId: String)(implicit request: JourneyRequest[AnyContent]): Future[Result] =
-    addSealYesNoForm(containerId).bindFromRequest
+    addSealYesNoForm(containerId)
+      .bindFromRequest()
       .fold(
         formWithErrors => Future.successful(BadRequest(summaryPage(formWithErrors, containerId, seals(containerId)))),
         _.answer match {
@@ -110,7 +112,8 @@ class SealController @Inject() (
       )
 
   private def removeSealAnswer(containerId: String, sealId: String)(implicit request: JourneyRequest[AnyContent]): Future[Result] =
-    removeSealYesNoForm.bindFromRequest
+    removeSealYesNoForm
+      .bindFromRequest()
       .fold(
         formWithErrors => Future.successful(BadRequest(removePage(formWithErrors, containerId, sealId))),
         _.answer match {

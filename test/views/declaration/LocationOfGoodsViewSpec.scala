@@ -38,8 +38,8 @@ import views.declaration.spec.PageWithButtonsSpec
 import views.html.declaration.location_of_goods
 import views.tags.ViewTest
 
-import scala.collection.JavaConverters.asScalaIteratorConverter
 import scala.collection.immutable.ListMap
+import scala.jdk.CollectionConverters.IteratorHasAsScala
 
 @ViewTest
 class LocationOfGoodsViewSpec extends PageWithButtonsSpec with Injector {
@@ -60,10 +60,10 @@ class LocationOfGoodsViewSpec extends PageWithButtonsSpec with Injector {
 
   val page = instanceOf[location_of_goods]
 
-  override val typeAndViewInstance = (STANDARD, page(form())(_, _))
+  override val typeAndViewInstance = (STANDARD, page(form)(_, _))
 
   "Goods Location View" when {
-    def createView()(implicit request: JourneyRequest[_]): Document = page(form())
+    def createView()(implicit request: JourneyRequest[_]): Document = page(form)
 
     val prefix = "declaration.locationOfGoods"
 
@@ -300,20 +300,20 @@ class LocationOfGoodsViewSpec extends PageWithButtonsSpec with Injector {
       val iterator: Iterator[Element] = sections.iterator.asScala.drop(1)
 
       for (ix <- 1 to 9) {
-        val title = iterator.next
+        val title = iterator.next()
         title.tagName mustBe "h2"
         title.text mustBe messages(s"$prefix.expander.paragraph$ix.title")
         assert(title.hasClass("govuk-heading-s"))
 
         if (ix < 9) {
-          val link1 = iterator.next.children.get(0)
+          val link1 = iterator.next().children.get(0)
           assert(link1.hasClass("govuk-link"))
           link1.text mustBe messages(s"$prefix.expander.paragraph$ix.link1")
         }
       }
 
       for (ix <- 9 to 10) {
-        val hint = iterator.next
+        val hint = iterator.next()
         assert(hint.hasClass("govuk-hint"))
         val expectedText = removeLineBreakIfAny(
           messages(
@@ -361,17 +361,17 @@ class LocationOfGoodsViewSpec extends PageWithButtonsSpec with Injector {
   "Goods Location view" should {
 
     onJourney(STANDARD, SIMPLIFIED, OCCASIONAL) { request =>
-      behave like viewWithCorrectBackButton(request.declarationType, RoutingCountriesController.displayRoutingCountry())
+      behave like viewWithCorrectBackButton(request.declarationType, RoutingCountriesController.displayRoutingCountry)
     }
 
     onJourney(SUPPLEMENTARY, CLEARANCE) { request =>
-      behave like viewWithCorrectBackButton(request.declarationType, DestinationCountryController.displayPage())
+      behave like viewWithCorrectBackButton(request.declarationType, DestinationCountryController.displayPage)
     }
 
     def viewWithCorrectBackButton(declarationType: DeclarationType, redirect: Call): Unit =
       "have correct back-link" when {
         "display 'Back' button that links to correct page" in {
-          val view = page(form())(journeyRequest(declarationType), messages)
+          val view = page(form)(journeyRequest(declarationType), messages)
 
           val backButton = view.getElementById("back-link")
 
@@ -382,7 +382,7 @@ class LocationOfGoodsViewSpec extends PageWithButtonsSpec with Injector {
   }
 
   private def verifyError(code: String, errorKey: String = "error"): Assertion = {
-    val view: Document = page(form().fillAndValidate(LocationOfGoods(code)))(journeyRequest(STANDARD), messages)
+    val view: Document = page(form.fillAndValidate(LocationOfGoods(code)))(journeyRequest(STANDARD), messages)
 
     view must haveGovukGlobalErrorSummary
     view must containErrorElementWithTagAndHref("a", "#code")

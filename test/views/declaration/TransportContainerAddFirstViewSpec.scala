@@ -33,7 +33,7 @@ import views.tags.ViewTest
 @ViewTest
 class TransportContainerAddFirstViewSpec extends UnitViewSpec with ExportsTestHelper with Stubs with CommonMessages with Injector {
 
-  private val form: Form[ContainerFirst] = ContainerFirst.form()
+  private val form: Form[ContainerFirst] = ContainerFirst.form
   private val page = instanceOf[transport_container_add_first]
 
   private def createView(form: Form[ContainerFirst] = form): Document =
@@ -80,7 +80,7 @@ class TransportContainerAddFirstViewSpec extends UnitViewSpec with ExportsTestHe
       "declaration's type is STANDARD" in {
         val backLinkContainer = view.getElementById("back-link")
         backLinkContainer must containMessage(backToPreviousQuestionCaption)
-        backLinkContainer must haveHref(routes.ExpressConsignmentController.displayPage())
+        backLinkContainer must haveHref(routes.ExpressConsignmentController.displayPage)
       }
     }
 
@@ -89,7 +89,7 @@ class TransportContainerAddFirstViewSpec extends UnitViewSpec with ExportsTestHe
         val view = page(form)(journeyRequest(SUPPLEMENTARY), messages)
         val backLinkContainer = view.getElementById("back-link")
         backLinkContainer must containMessage(backToPreviousQuestionCaption)
-        backLinkContainer must haveHref(routes.TransportCountryController.displayPage())
+        backLinkContainer must haveHref(routes.TransportCountryController.displayPage)
       }
     }
 
@@ -98,7 +98,7 @@ class TransportContainerAddFirstViewSpec extends UnitViewSpec with ExportsTestHe
 
   "Transport Containers Add View" should {
     "display errors for invalid input" in {
-      val view = createView(ContainerFirst.form().fillAndValidate(ContainerFirst(Some("abc123@#"))))
+      val view = createView(ContainerFirst.form.fillAndValidate(ContainerFirst(Some("abc123@#"))))
 
       view must haveGovukGlobalErrorSummary
       view must containErrorElementWithTagAndHref("a", "#id")
@@ -106,7 +106,7 @@ class TransportContainerAddFirstViewSpec extends UnitViewSpec with ExportsTestHe
     }
 
     "display errors for invalid length" in {
-      val view = createView(ContainerFirst.form().fillAndValidate(ContainerFirst(Some("123456789012345678"))))
+      val view = createView(ContainerFirst.form.fillAndValidate(ContainerFirst(Some("123456789012345678"))))
 
       view must haveGovukGlobalErrorSummary
       view must containErrorElementWithTagAndHref("a", "#id")
@@ -116,7 +116,7 @@ class TransportContainerAddFirstViewSpec extends UnitViewSpec with ExportsTestHe
 
   "Transport Containers Add View when filled" should {
     "display data in Container ID input" in {
-      val view = createView(ContainerFirst.form().fill(ContainerFirst(Some("Test"))))
+      val view = createView(ContainerFirst.form.fill(ContainerFirst(Some("Test"))))
 
       view.getElementsByAttributeValue("for", "id").get(0) must containMessage("declaration.transportInformation.containerId")
       view.getElementById("id").attr("value") must be("Test")

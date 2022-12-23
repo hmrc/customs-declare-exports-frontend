@@ -47,7 +47,7 @@ class CusCodeController @Inject() (
   val validTypes = Seq(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL)
 
   def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
-    val frm = form().withSubmissionErrors()
+    val frm = form.withSubmissionErrors
     request.cacheModel.itemBy(itemId).flatMap(_.cusCode) match {
       case Some(cusCode) => Ok(cusCodePage(itemId, frm.fill(cusCode)))
       case _             => Ok(cusCodePage(itemId, frm))

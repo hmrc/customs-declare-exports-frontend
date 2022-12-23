@@ -22,7 +22,7 @@ import services.cache.ExportsTestHelper
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.summary.sections.transaction_section
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters.CollectionHasAsScala
 
 class TransactionSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injector {
 
@@ -53,7 +53,7 @@ class TransactionSectionViewSpec extends UnitViewSpec with ExportsTestHelper wit
       row must haveSummaryValue("GBP 123")
 
       row must haveSummaryActionsTexts("site.change", "declaration.summary.transaction.itemAmount.change")
-      row must haveSummaryActionWithPlaceholder(InvoiceAndExchangeRateController.displayPage())
+      row must haveSummaryActionWithPlaceholder(InvoiceAndExchangeRateController.displayPage)
     }
 
     "have exchange rate with change button" in {
@@ -63,7 +63,7 @@ class TransactionSectionViewSpec extends UnitViewSpec with ExportsTestHelper wit
       row must haveSummaryValue("1.23")
 
       row must haveSummaryActionsTexts("site.change", "declaration.summary.transaction.exchangeRate.change")
-      row must haveSummaryActionWithPlaceholder(InvoiceAndExchangeRateController.displayPage())
+      row must haveSummaryActionWithPlaceholder(InvoiceAndExchangeRateController.displayPage)
     }
 
     "have total package with change button" in {
@@ -73,7 +73,7 @@ class TransactionSectionViewSpec extends UnitViewSpec with ExportsTestHelper wit
       row must haveSummaryValue("12")
 
       row must haveSummaryActionsTexts("site.change", "declaration.summary.transaction.totalNoOfPackages.change")
-      row must haveSummaryActionWithPlaceholder(TotalPackageQuantityController.displayPage())
+      row must haveSummaryActionWithPlaceholder(TotalPackageQuantityController.displayPage)
     }
 
     "have nature of transaction with change button" in {
@@ -83,7 +83,7 @@ class TransactionSectionViewSpec extends UnitViewSpec with ExportsTestHelper wit
       row must haveSummaryValue(messages("declaration.summary.transaction.natureOfTransaction.2"))
 
       row must haveSummaryActionsTexts("site.change", "declaration.summary.transaction.natureOfTransaction.change")
-      row must haveSummaryActionWithPlaceholder(NatureOfTransactionController.displayPage())
+      row must haveSummaryActionWithPlaceholder(NatureOfTransactionController.displayPage)
     }
 
     "have related documents section" in {
@@ -122,7 +122,7 @@ class TransactionSectionViewSpec extends UnitViewSpec with ExportsTestHelper wit
 
     "have link to exchange rate choice page when Yes answered on exchange rate choice page" in {
       val view = section(aDeclaration(withTotalNumberOfItems()))(messages)
-      view.getElementsByClass("item-amount-row") must haveSummaryActionWithPlaceholder(InvoiceAndExchangeRateChoiceController.displayPage())
+      view.getElementsByClass("item-amount-row") must haveSummaryActionWithPlaceholder(InvoiceAndExchangeRateChoiceController.displayPage)
     }
 
     "have the correct order of rows when all displayed" in {

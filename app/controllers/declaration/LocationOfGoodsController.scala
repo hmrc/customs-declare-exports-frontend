@@ -45,7 +45,7 @@ class LocationOfGoodsController @Inject() (
 )(implicit ec: ExecutionContext, codeListConnector: CodeListConnector)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
-  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayPage: Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     if (skipLocationOfGoods(request.cacheModel)) Results.Redirect(RootController.displayPage)
     else {
       val form = LocationOfGoods.form.withSubmissionErrors
@@ -59,7 +59,8 @@ class LocationOfGoodsController @Inject() (
   def saveLocation(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     if (skipLocationOfGoods(request.cacheModel)) Future.successful(Results.Redirect(RootController.displayPage))
     else
-      LocationOfGoods.form.bindFromRequest
+      LocationOfGoods.form
+        .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(locationOfGoods(formWithErrors))),
           locationOfGoods =>

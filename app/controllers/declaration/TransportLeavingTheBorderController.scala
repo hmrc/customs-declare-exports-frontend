@@ -52,7 +52,7 @@ class TransportLeavingTheBorderController @Inject() (
 
   private val validTypes = Seq(STANDARD, SUPPLEMENTARY, CLEARANCE)
 
-  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
+  def displayPage: Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
     request.cacheModel.transport.borderModeOfTransportCode match {
       case Some(data) => Ok(transportAtBorder(form.withSubmissionErrors.fill(data)))
       case _          => Ok(transportAtBorder(form.withSubmissionErrors))
@@ -60,7 +60,8 @@ class TransportLeavingTheBorderController @Inject() (
   }
 
   def submitForm(): Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async { implicit request =>
-    form.withSubmissionErrors.bindFromRequest
+    form.withSubmissionErrors
+      .bindFromRequest()
       .fold(
         formWithErrors => Future.successful(BadRequest(transportAtBorder(formWithErrors))),
         updateCache(_).map(declaration => navigator.continueTo(nextPage(declaration)))

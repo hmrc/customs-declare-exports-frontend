@@ -51,7 +51,7 @@ object NatureOfTransaction extends DeclarationPage {
       .verifying("declaration.natureOfTransaction.error", isContainedIn(allowedTypes))
   )(NatureOfTransaction.apply)(NatureOfTransaction.unapply)
 
-  def form(): Form[NatureOfTransaction] = Form(mapping)
+  def form: Form[NatureOfTransaction] = Form(mapping)
 
   override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
     Seq(TariffContentKey("tariff.declaration.natureOfTransaction.common"))

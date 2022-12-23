@@ -64,7 +64,8 @@ class IsLicenceRequiredController @Inject() (
 
   def submitForm(itemId: String): Action[AnyContent] =
     (authenticate andThen journeyType).async { implicit request =>
-      form.bindFromRequest
+      form
+        .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(is_licence_required(itemId, formWithErrors))),
           yesNo => {

@@ -25,5 +25,5 @@ object EntryIntoDeclarantsRecords extends DeclarationPage {
   val fieldName = "is-entry-into-declarant-records"
   private val errorKey = "declaration.entryIntoDeclarantRecords.error"
 
-  def form(): Form[YesNoAnswer] = YesNoAnswer.form(fieldName, errorKey)
+  def form: Form[YesNoAnswer] = YesNoAnswer.form(fieldName, errorKey)
 }

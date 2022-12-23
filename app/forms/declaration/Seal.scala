@@ -37,7 +37,7 @@ object Seal extends DeclarationPage {
         .verifying("declaration.transport.sealId.error.invalid", isEmpty or (isAlphanumeric and noLongerThan(20)))
   )(Seal.apply)(Seal.unapply)
 
-  def form(): Form[Seal] = Form(formMapping)
+  def form: Form[Seal] = Form(formMapping)
   val sealsAllowed = 9999
 
   override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =

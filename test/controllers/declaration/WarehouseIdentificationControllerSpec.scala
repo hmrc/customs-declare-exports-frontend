@@ -81,7 +81,7 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec {
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration())
-    await(controller.displayPage()(request))
+    await(controller.displayPage(request))
     theResponseForm
   }
 
@@ -93,14 +93,14 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec {
       "return 200 (OK)" when {
 
         "display page method is invoked and cache is empty" in {
-          val result = controller.displayPage()(getRequest())
+          val result = controller.displayPage(getRequest())
           status(result) must be(OK)
         }
 
         "display page method is invoked and cache is not empty" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withWarehouseIdentification(Some(identification))))
 
-          val result = controller.displayPage()(getRequest())
+          val result = controller.displayPage(getRequest())
 
           status(result) must be(OK)
           theResponseForm.value mustBe Some(identification)
@@ -126,7 +126,7 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec {
           val result = controller.saveIdentificationNumber()(postRequest(correctForm))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe SupervisingCustomsOfficeController.displayPage()
+          thePageNavigatedTo mustBe SupervisingCustomsOfficeController.displayPage
         }
       }
     }
@@ -141,7 +141,7 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec {
 
           status(result) mustBe SEE_OTHER
 
-          thePageNavigatedTo mustBe InlandTransportDetailsController.displayPage()
+          thePageNavigatedTo mustBe InlandTransportDetailsController.displayPage
         }
       }
     }
@@ -156,7 +156,7 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec {
             val result = controller.saveIdentificationNumber()(postRequest(correctForm))
 
             status(result) mustBe SEE_OTHER
-            thePageNavigatedTo mustBe InlandOrBorderController.displayPage()
+            thePageNavigatedTo mustBe InlandOrBorderController.displayPage
           }
         }
       }
@@ -171,7 +171,7 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec {
           val result = controller.saveIdentificationNumber()(postRequest(correctForm))
 
           status(result) mustBe SEE_OTHER
-          thePageNavigatedTo mustBe ExpressConsignmentController.displayPage()
+          thePageNavigatedTo mustBe ExpressConsignmentController.displayPage
         }
       }
     }
@@ -180,14 +180,14 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec {
       "return 200 (OK)" when {
 
         "display page method is invoked and cache is empty" in {
-          val result = controller.displayPage()(getRequest())
+          val result = controller.displayPage(getRequest())
           status(result) must be(OK)
         }
 
         "display page method is invoked and cache is not empty" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withWarehouseIdentification(Some(identification))))
 
-          val result = controller.displayPage()(getRequest())
+          val result = controller.displayPage(getRequest())
 
           status(result) must be(OK)
           theResponseFormYesNo.value mustBe Some(identification)
@@ -215,7 +215,7 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec {
           val result = controller.saveIdentificationNumber()(postRequest(correctForm))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe SupervisingCustomsOfficeController.displayPage()
+          thePageNavigatedTo mustBe SupervisingCustomsOfficeController.displayPage
         }
       }
 
@@ -228,7 +228,7 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec {
           val result = controller.saveIdentificationNumber()(postRequest(correctForm))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe DepartureTransportController.displayPage()
+          thePageNavigatedTo mustBe DepartureTransportController.displayPage
         }
       }
     }

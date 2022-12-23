@@ -30,14 +30,14 @@ class TariffApiConnectorISpec extends ConnectorISpec with OptionValues with Scal
     PatienceConfig(timeout = Span(5, Seconds), interval = Span(500, Millis))
 
   override def beforeAll(): Unit = {
-    super.beforeAll
+    super.beforeAll()
     tariffCommoditiesWireMockServer.start()
     WireMock.configureFor(wireHost, tariffCommoditiesWirePort)
   }
 
   override def afterAll(): Unit = {
     tariffCommoditiesWireMockServer.stop()
-    super.afterAll
+    super.afterAll()
   }
 
   private val testConnector: TariffApiConnector = app.injector.instanceOf[TariffApiConnector]

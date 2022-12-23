@@ -96,7 +96,7 @@ class TimeSpec extends UnitSpec {
       }
 
       def testFailedValidationErrors(input: Map[String, String], expectedErrors: Seq[FormError]): Unit = {
-        val form = Time.form().bind(input)
+        val form = Time.form.bind(input)
         expectedErrors.foreach(form.errors must contain(_))
       }
     }
@@ -106,7 +106,7 @@ class TimeSpec extends UnitSpec {
       "provided with correct data" in {
 
         val input = Map("hour" -> "15", "minute" -> "17")
-        val form = Time.form().bind(input)
+        val form = Time.form.bind(input)
 
         form.hasErrors must be(false)
       }
@@ -114,7 +114,7 @@ class TimeSpec extends UnitSpec {
       "provided with empty data" in {
 
         val input = Map.empty[String, String]
-        val form = Time.form().bind(input)
+        val form = Time.form.bind(input)
 
         form.hasErrors must be(false)
       }

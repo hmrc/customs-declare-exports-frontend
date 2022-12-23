@@ -50,7 +50,7 @@ class ItemsRemoveItemViewSpec extends UnitViewSpec with ExportsTestHelper with S
 
     "display 'Back' button" in {
 
-      view.getElementById("back-link") must haveHref(routes.ItemsSummaryController.displayItemsSummaryPage())
+      view.getElementById("back-link") must haveHref(routes.ItemsSummaryController.displayItemsSummaryPage)
     }
 
     "display error section" in {

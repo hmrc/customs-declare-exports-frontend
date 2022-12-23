@@ -31,7 +31,7 @@ import views.tags.ViewTest
 class SupervisingCustomsOfficeViewSpec extends UnitViewSpec with ExportsTestHelper with Stubs with Injector {
 
   private val page = instanceOf[supervising_customs_office]
-  private val form: Form[SupervisingCustomsOffice] = SupervisingCustomsOffice.form()
+  private val form: Form[SupervisingCustomsOffice] = SupervisingCustomsOffice.form
 
   private def createView(form: Form[SupervisingCustomsOffice] = form)(implicit request: JourneyRequest[_]) =
     page(form)(request, messages)
@@ -70,7 +70,7 @@ class SupervisingCustomsOfficeViewSpec extends UnitViewSpec with ExportsTestHelp
         val backButton = createView().getElementById("back-link")
 
         backButton must containMessage("site.backToPreviousQuestion")
-        backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.WarehouseIdentificationController.displayPage())
+        backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.WarehouseIdentificationController.displayPage)
       }
     }
 
@@ -82,7 +82,7 @@ class SupervisingCustomsOfficeViewSpec extends UnitViewSpec with ExportsTestHelp
         val backButton = createView()(journeyRequest(modelWithProcedureCode)).getElementById("back-link")
 
         backButton must containMessage("site.backToPreviousQuestion")
-        backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.WarehouseIdentificationController.displayPage())
+        backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.WarehouseIdentificationController.displayPage)
       }
     }
 
@@ -94,7 +94,7 @@ class SupervisingCustomsOfficeViewSpec extends UnitViewSpec with ExportsTestHelp
         val backButton = createView()(journeyRequest(modelWithProcedureCode)).getElementById("back-link")
 
         backButton must containMessage("site.backToPreviousQuestion")
-        backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.TransportLeavingTheBorderController.displayPage())
+        backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.TransportLeavingTheBorderController.displayPage)
       }
     }
 
@@ -106,7 +106,7 @@ class SupervisingCustomsOfficeViewSpec extends UnitViewSpec with ExportsTestHelp
         val backButton = createView()(journeyRequest(modelWithProcedureCode)).getElementById("back-link")
 
         backButton must containMessage("site.backToPreviousQuestion")
-        backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.ItemsSummaryController.displayItemsSummaryPage())
+        backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.ItemsSummaryController.displayItemsSummaryPage)
       }
     }
   }

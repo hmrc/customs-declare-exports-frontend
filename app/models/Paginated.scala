@@ -36,7 +36,7 @@ object Paginated {
       Try {
         new Paginated[T](
           (json \ "currentPageElements") match {
-            case JsDefined(JsArray(results)) => results.map(_.as[T])
+            case JsDefined(JsArray(results)) => results.map(_.as[T]).toSeq
             case _                           => throw new IllegalArgumentException("Invalid result set")
           },
           (json \ "page").as[Page],

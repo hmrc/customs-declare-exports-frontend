@@ -50,14 +50,14 @@ class CancelDeclarationController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with Logging with WithDefaultFormBinding {
 
-  def displayPage(): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
+  def displayPage: Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
     getSessionData() match {
       case Some((_, mrn, lrn, ducr)) => Future.successful(Ok(cancelDeclarationPage(CancelDeclarationDescription.form, lrn, ducr, mrn)))
-      case _                         => errorHandler.displayErrorPage()
+      case _                         => errorHandler.displayErrorPage
     }
   }
 
-  def onSubmit(): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
+  def onSubmit: Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
     getSessionData() match {
       case Some((submissionId, mrn, lrn, ducr)) =>
         form
@@ -67,14 +67,14 @@ class CancelDeclarationController @Inject() (
               Future.successful(BadRequest(cancelDeclarationPage(formWithErrors, lrn, ducr, mrn))),
             userInput =>
               sendAuditedCancellationRequest(userInput, submissionId, lrn, mrn).map {
-                case models.CancellationRequestSent => Redirect(routes.CancellationResultController.displayHoldingPage())
+                case models.CancellationRequestSent => Redirect(routes.CancellationResultController.displayHoldingPage)
                 case models.CancellationAlreadyRequested =>
                   Ok(cancelDeclarationPage(createFormWithErrors(userInput, "cancellation.duplicateRequest.error"), lrn, ducr, mrn))
               } recoverWith { case _ =>
-                errorHandler.displayErrorPage()
+                errorHandler.displayErrorPage
               }
           )
-      case _ => errorHandler.displayErrorPage()
+      case _ => errorHandler.displayErrorPage
     }
   }
 

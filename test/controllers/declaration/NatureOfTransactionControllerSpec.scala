@@ -63,7 +63,7 @@ class NatureOfTransactionControllerSpec extends ControllerSpec with OptionValues
   }
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
-    await(controller.displayPage()(request))
+    await(controller.displayPage(request))
     theResponseForm
   }
 
@@ -72,7 +72,7 @@ class NatureOfTransactionControllerSpec extends ControllerSpec with OptionValues
     "return 200 (OK)" when {
 
       "display page method is invoked and cache is empty" in {
-        val result = controller.displayPage()(getRequest())
+        val result = controller.displayPage(getRequest())
 
         status(result) mustBe OK
         verify(mockNatureOfTransactionPage, times(1)).apply(any())(any(), any())
@@ -84,7 +84,7 @@ class NatureOfTransactionControllerSpec extends ControllerSpec with OptionValues
         val natureType = "1"
         withNewCaching(aDeclaration(withNatureOfTransaction(natureType)))
 
-        val result = controller.displayPage()(getRequest())
+        val result = controller.displayPage(getRequest())
 
         status(result) mustBe OK
         verify(mockNatureOfTransactionPage, times(1)).apply(any())(any(), any())
@@ -112,7 +112,7 @@ class NatureOfTransactionControllerSpec extends ControllerSpec with OptionValues
         val result = controller.saveTransactionType()(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe PreviousDocumentsSummaryController.displayPage()
+        thePageNavigatedTo mustBe PreviousDocumentsSummaryController.displayPage
 
         verify(mockNatureOfTransactionPage, times(0)).apply(any())(any(), any())
       }

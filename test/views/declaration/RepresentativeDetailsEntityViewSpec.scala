@@ -30,7 +30,7 @@ import views.tags.ViewTest
 class RepresentativeDetailsEntityViewSpec extends UnitViewSpec with ExportsTestHelper with Stubs with Injector {
 
   private val page = instanceOf[representative_details_entity]
-  private val form: Form[RepresentativeEntity] = RepresentativeEntity.form()
+  private val form: Form[RepresentativeEntity] = RepresentativeEntity.form
   private def createView(form: Form[RepresentativeEntity] = form): Document =
     page(form)(journeyRequest(), messages)
 
@@ -50,7 +50,7 @@ class RepresentativeDetailsEntityViewSpec extends UnitViewSpec with ExportsTestH
       val backButton = view.getElementById("back-link")
 
       backButton must containMessage("site.backToPreviousQuestion")
-      backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.RepresentativeAgentController.displayPage())
+      backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.RepresentativeAgentController.displayPage)
     }
 
     checkAllSaveButtonsAreDisplayed(createView())
@@ -61,8 +61,7 @@ class RepresentativeDetailsEntityViewSpec extends UnitViewSpec with ExportsTestH
     "display errors when EORI is incorrect" in {
 
       val view = createView(form =
-        RepresentativeEntity
-          .form()
+        RepresentativeEntity.form
           .bind(Map("details.eori" -> TestHelper.createRandomAlphanumericString(50)))
       )
 
@@ -75,8 +74,7 @@ class RepresentativeDetailsEntityViewSpec extends UnitViewSpec with ExportsTestH
     "display errors when EORI is missing" in {
 
       val view = createView(form =
-        RepresentativeEntity
-          .form()
+        RepresentativeEntity.form
           .bind(Map("details.eori" -> ""))
       )
 
@@ -92,8 +90,7 @@ class RepresentativeDetailsEntityViewSpec extends UnitViewSpec with ExportsTestH
 
     "display data in EORI input" in {
 
-      val form = RepresentativeEntity
-        .form()
+      val form = RepresentativeEntity.form
         .bind(Map("details.eori" -> "1234"))
       val view = createView(form = form)
 

@@ -31,7 +31,7 @@ class TaricCodeAddViewSpec extends UnitViewSpec with Injector {
 
   val page = instanceOf[taric_code_add]
 
-  def createView(frm: Form[TaricCode] = form()): Document =
+  def createView(frm: Form[TaricCode] = form): Document =
     page(itemId, frm)(journeyRequest(), messages)
 
   "Taric Code Add View" should {
@@ -52,14 +52,14 @@ class TaricCodeAddViewSpec extends UnitViewSpec with Injector {
   "Taric Code Add View for invalid input" should {
 
     "display error if nothing is entered" in {
-      val view = createView(form().fillAndValidate(TaricCode("")))
+      val view = createView(form.fillAndValidate(TaricCode("")))
       view must haveGovukGlobalErrorSummary
       view must containErrorElementWithTagAndHref("a", "#taricCode")
       view must containErrorElementWithMessageKey("declaration.taricAdditionalCodes.error.empty")
     }
 
     "display error if incorrect tric code is entered" in {
-      val view = createView(form().fillAndValidate(TaricCode("12345678901234567890")))
+      val view = createView(form.fillAndValidate(TaricCode("12345678901234567890")))
       view must haveGovukGlobalErrorSummary
       view must containErrorElementWithTagAndHref("a", "#taricCode")
       view must containErrorElementWithMessageKey("declaration.taricAdditionalCodes.error.invalid")
@@ -68,7 +68,7 @@ class TaricCodeAddViewSpec extends UnitViewSpec with Injector {
 
   "Taric Code Add View when filled" should {
     "display data in taric code input" in {
-      val view = createView(form().fill(TaricCode("4321")))
+      val view = createView(form.fill(TaricCode("4321")))
       view.getElementById("taricCode").attr("value") must be("4321")
     }
   }

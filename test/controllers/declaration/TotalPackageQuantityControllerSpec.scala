@@ -63,7 +63,7 @@ class TotalPackageQuantityControllerSpec extends ControllerSpec {
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration())
-    await(controller.displayPage()(request))
+    await(controller.displayPage(request))
     theResponseForm
   }
 
@@ -75,14 +75,14 @@ class TotalPackageQuantityControllerSpec extends ControllerSpec {
         "cache is empty" in {
           withNewCaching(request.cacheModel)
 
-          val result = controller.displayPage().apply(getRequest(request.cacheModel))
+          val result = controller.displayPage.apply(getRequest(request.cacheModel))
           status(result) mustBe OK
         }
 
         "cache is non empty" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withTotalPackageQuantity("1")))
 
-          val result = controller.displayPage().apply(getRequest(request.cacheModel))
+          val result = controller.displayPage.apply(getRequest(request.cacheModel))
           status(result) mustBe OK
         }
       }
@@ -104,7 +104,7 @@ class TotalPackageQuantityControllerSpec extends ControllerSpec {
         val result = controller.saveTotalPackageQuantity()(postRequest(correctForm, request.cacheModel))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe NatureOfTransactionController.displayPage()
+        thePageNavigatedTo mustBe NatureOfTransactionController.displayPage
       }
     }
 
@@ -112,10 +112,10 @@ class TotalPackageQuantityControllerSpec extends ControllerSpec {
       "redirect 303 (See Other) to start" in {
         withNewCaching(request.cacheModel)
 
-        val result = controller.displayPage().apply(getRequest(request.cacheModel))
+        val result = controller.displayPage.apply(getRequest(request.cacheModel))
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) must contain(RootController.displayPage().url)
+        redirectLocation(result) must contain(RootController.displayPage.url)
       }
     }
   }

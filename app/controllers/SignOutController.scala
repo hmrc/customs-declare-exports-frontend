@@ -29,8 +29,8 @@ class SignOutController @Inject() (mcc: MessagesControllerComponents, sessionTim
 
   def signOut(signOutReason: SignOutReason): Action[AnyContent] = Action { _ =>
     val redirectionTarget: Call = signOutReason match {
-      case SignOutReason.SessionTimeout => routes.SignOutController.sessionTimeoutSignedOut()
-      case SignOutReason.UserAction     => routes.SignOutController.userSignedOut()
+      case SignOutReason.SessionTimeout => routes.SignOutController.sessionTimeoutSignedOut
+      case SignOutReason.UserAction     => routes.SignOutController.userSignedOut
     }
     Redirect(redirectionTarget).withNewSession
   }

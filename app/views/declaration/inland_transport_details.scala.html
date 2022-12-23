@@ -50,7 +50,7 @@
     title = Title("declaration.warehouse.inlandTransportDetails.title", "declaration.section.6", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(InlandModeOfTransportCode)))) {
 
-    @formHelper(routes.InlandTransportDetailsController.submit(), 'autoComplete -> "off") {
+    @formHelper(routes.InlandTransportDetailsController.submit, 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
         @sectionHeader(messages("declaration.section.6"))

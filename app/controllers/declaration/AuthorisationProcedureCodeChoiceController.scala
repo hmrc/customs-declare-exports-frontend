@@ -45,7 +45,7 @@ class AuthorisationProcedureCodeChoiceController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
-  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayPage: Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.declarationType match {
       case CLEARANCE if request.cacheModel.isNotEntryIntoDeclarantsRecords =>
         navigator.continueTo(DeclarationHolderRequiredController.displayPage)
@@ -64,8 +64,9 @@ class AuthorisationProcedureCodeChoiceController @Inject() (
 
   private val validTypes = Seq(STANDARD, SUPPLEMENTARY, SIMPLIFIED, CLEARANCE)
 
-  def submitForm(): Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async { implicit request =>
-    AuthorisationProcedureCodeChoice.form.bindFromRequest
+  def submitForm: Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async { implicit request =>
+    AuthorisationProcedureCodeChoice.form
+      .bindFromRequest()
       .fold(
         formWithErrors => Future.successful(BadRequest(authorisationProcedureCodeChoice(formWithErrors))),
         updateCache(_).map(_ => navigator.continueTo(DeclarationHolderRequiredController.displayPage))

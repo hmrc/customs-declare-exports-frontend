@@ -52,7 +52,7 @@ class DeclarantExporterControllerSpec extends ControllerSpec with OptionValues {
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration())
-    await(controller.displayPage()(request))
+    await(controller.displayPage(request))
     theResponseForm
   }
 
@@ -78,7 +78,7 @@ class DeclarantExporterControllerSpec extends ControllerSpec with OptionValues {
         "display page method is invoked with empty cache" in {
           withNewCaching(request.cacheModel)
 
-          val result = controller.displayPage()(getRequest())
+          val result = controller.displayPage(getRequest())
 
           status(result) mustBe OK
           verifyPage(1)
@@ -89,7 +89,7 @@ class DeclarantExporterControllerSpec extends ControllerSpec with OptionValues {
         "display page method is invoked with data in cache" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarantIsExporter()))
 
-          val result = controller.displayPage()(getRequest())
+          val result = controller.displayPage(getRequest())
 
           status(result) mustBe OK
           verifyPage(1)
@@ -122,7 +122,7 @@ class DeclarantExporterControllerSpec extends ControllerSpec with OptionValues {
         val result = controller.submitForm()(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe ExporterEoriNumberController.displayPage()
+        thePageNavigatedTo mustBe ExporterEoriNumberController.displayPage
 
         verifyPage(0)
       }
@@ -137,7 +137,7 @@ class DeclarantExporterControllerSpec extends ControllerSpec with OptionValues {
         val result = controller.submitForm()(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe CarrierEoriNumberController.displayPage()
+        thePageNavigatedTo mustBe CarrierEoriNumberController.displayPage
 
         verifyPage(0)
       }
@@ -152,7 +152,7 @@ class DeclarantExporterControllerSpec extends ControllerSpec with OptionValues {
         val result = controller.submitForm()(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe IsExsController.displayPage()
+        thePageNavigatedTo mustBe IsExsController.displayPage
 
         verifyPage(0)
       }
@@ -167,7 +167,7 @@ class DeclarantExporterControllerSpec extends ControllerSpec with OptionValues {
         val result = controller.submitForm()(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe ConsigneeDetailsController.displayPage()
+        thePageNavigatedTo mustBe ConsigneeDetailsController.displayPage
 
         verifyPage(0)
       }

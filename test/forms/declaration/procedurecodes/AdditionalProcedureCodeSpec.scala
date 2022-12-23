@@ -28,7 +28,7 @@ class AdditionalProcedureCodeSpec extends DeclarationPageBaseSpec {
     "return form with errors" when {
 
       "additional code has incorrect length" in {
-        val form = AdditionalProcedureCode.form().bind(Map(additionalProcedureCodeKey -> "123456"))
+        val form = AdditionalProcedureCode.form.bind(Map(additionalProcedureCodeKey -> "123456"))
 
         form.errors.length mustBe 1
         form.errors.head mustBe FormError(additionalProcedureCodeKey, "declaration.additionalProcedureCodes.error.invalid")
@@ -36,14 +36,14 @@ class AdditionalProcedureCodeSpec extends DeclarationPageBaseSpec {
 
       "additional code contains special characters" in {
 
-        val form = AdditionalProcedureCode.form().bind(Map(additionalProcedureCodeKey -> "#$%"))
+        val form = AdditionalProcedureCode.form.bind(Map(additionalProcedureCodeKey -> "#$%"))
 
         form.errors.length mustBe 1
         form.errors.head mustBe FormError(additionalProcedureCodeKey, "declaration.additionalProcedureCodes.error.invalid")
       }
 
       "additional code has incorrect length and contains special characters" in {
-        val form = AdditionalProcedureCode.form().bind(Map(additionalProcedureCodeKey -> "123456#$"))
+        val form = AdditionalProcedureCode.form.bind(Map(additionalProcedureCodeKey -> "123456#$"))
 
         form.errors.length mustBe 1
         form.errors.head mustBe FormError(additionalProcedureCodeKey, "declaration.additionalProcedureCodes.error.invalid")

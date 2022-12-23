@@ -30,7 +30,15 @@ object ErrorListContaining extends Containing[Seq[FormError]] {
       case messageKey: String => container.exists(_.message == messageKey)
     }
 
-  override def containsOneOf(container: Seq[FormError], elements: Seq[Any]): Boolean = ???
+  override def containsOneOf(container: Seq[FormError], elements: collection.Seq[Any]): Boolean =
+    elements.exists {
+      case error: FormError   => container.contains(error)
+      case messageKey: String => container.exists(_.message == messageKey)
+    }
 
-  override def containsNoneOf(container: Seq[FormError], elements: Seq[Any]): Boolean = ???
+  override def containsNoneOf(container: Seq[FormError], elements: collection.Seq[Any]): Boolean =
+    elements.forall {
+      case error: FormError   => !container.contains(error)
+      case messageKey: String => !container.exists(_.message == messageKey)
+    }
 }

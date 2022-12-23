@@ -57,7 +57,7 @@
     title = Title("declaration.carrierAddress.title", "declaration.section.2", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(CarrierDetails)))) {
 
-    @formHelper(action = CarrierDetailsController.saveAddress(), 'autoComplete -> "off") {
+    @formHelper(action = CarrierDetailsController.saveAddress, 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
         @sectionHeader(messages("declaration.section.2"))

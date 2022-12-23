@@ -50,7 +50,7 @@
     title = borderTransportHelper.titleInHeadTag(form.hasErrors || form.hasGlobalErrors),
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(BorderTransport)))) {
 
-    @formHelper(action = BorderTransportController.submitForm(), 'autoComplete -> "off") {
+    @formHelper(action = BorderTransportController.submitForm, 'autoComplete -> "off") {
 
         @errorSummary(radioGroupErrors(radioButtonGroupId, transportCodesOnBorderTransport.head.id, form.errors))
 

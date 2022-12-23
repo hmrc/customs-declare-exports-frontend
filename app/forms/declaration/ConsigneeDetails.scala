@@ -30,10 +30,10 @@ object ConsigneeDetails extends DeclarationPage {
 
   val id = "ConsigneeDetails"
 
-  def mapping()(implicit messages: Messages, codeListConnector: CodeListConnector) =
-    Forms.mapping("details" -> EntityDetails.addressMapping())(ConsigneeDetails.apply)(ConsigneeDetails.unapply)
+  def mapping(implicit messages: Messages, codeListConnector: CodeListConnector) =
+    Forms.mapping("details" -> EntityDetails.addressMapping)(ConsigneeDetails.apply)(ConsigneeDetails.unapply)
 
-  def form()(implicit messages: Messages, codeListConnector: CodeListConnector): Form[ConsigneeDetails] = Form(mapping)
+  def form(implicit messages: Messages, codeListConnector: CodeListConnector): Form[ConsigneeDetails] = Form(mapping)
 
   override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
     Seq(TariffContentKey(s"tariff.declaration.consigneeDetails.${DeclarationPage.getJourneyTypeSpecialisation(decType)}"))

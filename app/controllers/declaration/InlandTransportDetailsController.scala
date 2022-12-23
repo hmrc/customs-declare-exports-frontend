@@ -50,7 +50,7 @@ class InlandTransportDetailsController @Inject() (
 
   private val validJourneys = List(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY)
 
-  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType(validJourneys)) { implicit request =>
+  def displayPage: Action[AnyContent] = (authenticate andThen journeyType(validJourneys)) { implicit request =>
     val frm = form.withSubmissionErrors
     request.cacheModel.locations.inlandModeOfTransportCode match {
       case Some(code) => Ok(inlandTransportDetailsPage(frm.fill(code)))
@@ -59,7 +59,8 @@ class InlandTransportDetailsController @Inject() (
   }
 
   def submit(): Action[AnyContent] = (authenticate andThen journeyType(validJourneys)).async { implicit request =>
-    form.bindFromRequest
+    form
+      .bindFromRequest()
       .fold(formWithErrors => Future.successful(BadRequest(inlandTransportDetailsPage(formWithErrors))), validateAndUpdateCache(_))
   }
 

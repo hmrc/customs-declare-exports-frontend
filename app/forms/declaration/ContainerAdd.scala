@@ -40,7 +40,7 @@ object ContainerAdd extends DeclarationPage {
     ).verifying("declaration.transportInformation.containerId.empty", isPresent(_))
   )(ContainerAdd.apply)(ContainerAdd.unapply)
 
-  def form(): Form[ContainerAdd] = Form(mapping)
+  def form: Form[ContainerAdd] = Form(mapping)
 
   override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
     Seq(TariffContentKey(s"tariff.declaration.container.change.${DeclarationPage.getJourneyTypeSpecialisation(decType)}"))

@@ -32,9 +32,9 @@ class NactCodeAddViewSpec extends PageWithButtonsSpec with ExportsTestHelper wit
 
   val page = instanceOf[nact_code_add]
 
-  override val typeAndViewInstance = (STANDARD, page(itemId, form())(_, _))
+  override val typeAndViewInstance = (STANDARD, page(itemId, form)(_, _))
 
-  private def createView(frm: Form[NactCode] = form()): Document =
+  private def createView(frm: Form[NactCode] = form): Document =
     page(itemId, frm)(journeyRequest(), messages)
 
   "Nact Code Add View" should {
@@ -56,7 +56,7 @@ class NactCodeAddViewSpec extends PageWithButtonsSpec with ExportsTestHelper wit
   "Nact Code Add View for invalid input" should {
 
     "display error if nothing is entered" in {
-      val view = createView(form().fillAndValidate(NactCode("")))
+      val view = createView(form.fillAndValidate(NactCode("")))
 
       view must haveGovukGlobalErrorSummary
       view must containErrorElementWithTagAndHref("a", "#nactCode")
@@ -65,7 +65,7 @@ class NactCodeAddViewSpec extends PageWithButtonsSpec with ExportsTestHelper wit
     }
 
     "display error if incorrect nact code is entered" in {
-      val view = createView(form().fillAndValidate(NactCode("12345678901234567890")))
+      val view = createView(form.fillAndValidate(NactCode("12345678901234567890")))
 
       view must haveGovukGlobalErrorSummary
       view must containErrorElementWithTagAndHref("a", "#nactCode")
@@ -77,7 +77,7 @@ class NactCodeAddViewSpec extends PageWithButtonsSpec with ExportsTestHelper wit
 
   "Nact Code Add View when filled" should {
     "display data in Nact code input" in {
-      val view = createView(form().fill(NactCode("VATR")))
+      val view = createView(form.fill(NactCode("VATR")))
       view.getElementById("nactCode").attr("value") must be("VATR")
     }
   }

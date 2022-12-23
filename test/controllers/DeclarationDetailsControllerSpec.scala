@@ -22,7 +22,7 @@ import models.declaration.submissions.{Action, Submission}
 import models.requests.ExportsSessionKeys
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers._
-import org.mockito.Mockito._
+import org.mockito.Mockito.{reset, verify, verifyNoInteractions, when}
 import org.scalatest.{BeforeAndAfterEach, OptionValues}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat

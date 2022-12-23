@@ -20,26 +20,24 @@ import connectors.CustomsDeclareExportsConnector
 import models._
 import models.declaration.notifications.Notification
 import models.declaration.submissions.Submission
-import org.mockito.ArgumentMatchers._
+import org.mockito.ArgumentMatchers.{any, anyString, refEq}
 import org.mockito.Mockito.when
 import org.mockito.invocation.InvocationOnMock
 import org.mockito.stubbing.{Answer, OngoingStubbing}
-import org.scalatestplus.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar.mock
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
 
 // TODO This mock should extends BeforeAndAfterEach trait and has methods beforeEach and afterEach
-trait MockConnectors extends MockitoSugar {
+trait MockConnectors {
   lazy val mockCustomsDeclareExportsConnector: CustomsDeclareExportsConnector = mock[CustomsDeclareExportsConnector]
 
   def successfulCustomsDeclareExportsResponse(): Unit =
     when(mockCustomsDeclareExportsConnector.createDeclaration(any[ExportsDeclaration])(any(), any()))
       .thenAnswer(withTheFirstArgument)
 
-  private def withTheFirstArgument[T]: Answer[Future[T]] = new Answer[Future[T]] {
-    override def answer(invocation: InvocationOnMock): Future[T] = Future.successful(invocation.getArgument(0))
-  }
+  private def withTheFirstArgument[T]: Answer[Future[T]] = (invocation: InvocationOnMock) => Future.successful(invocation.getArgument(0))
 
   def customsDeclaration400Response(): Unit =
     when(mockCustomsDeclareExportsConnector.createDeclaration(any())(any[HeaderCarrier], any[ExecutionContext]))

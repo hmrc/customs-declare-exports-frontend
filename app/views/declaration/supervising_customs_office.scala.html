@@ -47,7 +47,7 @@
     title = Title("declaration.warehouse.supervisingCustomsOffice.title", "declaration.section.6", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(SupervisingCustomsOffice)))){
 
-    @formHelper(action = controllers.declaration.routes.SupervisingCustomsOfficeController.submit(), 'autoComplete -> "off") {
+    @formHelper(action = controllers.declaration.routes.SupervisingCustomsOfficeController.submit, 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
         @sectionHeader(messages("declaration.section.6"))

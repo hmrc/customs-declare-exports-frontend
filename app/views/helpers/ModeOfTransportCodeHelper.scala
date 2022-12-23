@@ -40,7 +40,7 @@ object ModeOfTransportCodeHelper {
     if (code == Some(RoRo) || !decapitalize) messages(key)
     else {
       val s = messages(key)
-      s.head.toLower + s.tail
+      s"${s.head.toLower}${s.tail}"
     }
   }
 }

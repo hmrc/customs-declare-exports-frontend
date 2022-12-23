@@ -66,7 +66,7 @@ class RepresentativeStatusControllerSpec extends ControllerSpec with OptionValue
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration())
-    await(controller.displayPage()(request))
+    await(controller.displayPage(request))
     theResponseForm
   }
 
@@ -81,7 +81,7 @@ class RepresentativeStatusControllerSpec extends ControllerSpec with OptionValue
         "display page method is invoked with empty cache" in {
           withNewCaching(request.cacheModel)
 
-          val result = controller.displayPage()(getRequest())
+          val result = controller.displayPage(getRequest())
 
           status(result) mustBe OK
           verifyPage(1)
@@ -92,7 +92,7 @@ class RepresentativeStatusControllerSpec extends ControllerSpec with OptionValue
         "display page method is invoked with data in cache" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withRepresentativeDetails(None, Some(statusCode), None)))
 
-          val result = controller.displayPage()(getRequest())
+          val result = controller.displayPage(getRequest())
 
           status(result) mustBe OK
           verifyPage(1)
@@ -124,7 +124,7 @@ class RepresentativeStatusControllerSpec extends ControllerSpec with OptionValue
         val result = controller.submitForm()(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe ConsigneeDetailsController.displayPage()
+        thePageNavigatedTo mustBe ConsigneeDetailsController.displayPage
 
         verifyPage(0)
       }
@@ -139,7 +139,7 @@ class RepresentativeStatusControllerSpec extends ControllerSpec with OptionValue
         val result = controller.submitForm()(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe CarrierEoriNumberController.displayPage()
+        thePageNavigatedTo mustBe CarrierEoriNumberController.displayPage
 
         verifyPage(0)
       }
@@ -156,7 +156,7 @@ class RepresentativeStatusControllerSpec extends ControllerSpec with OptionValue
           val result = controller.submitForm()(postRequest(correctForm))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe CarrierEoriNumberController.displayPage()
+          thePageNavigatedTo mustBe CarrierEoriNumberController.displayPage
 
           verifyPage(0)
         }
@@ -172,7 +172,7 @@ class RepresentativeStatusControllerSpec extends ControllerSpec with OptionValue
           val result = controller.submitForm()(postRequest(correctForm))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe ConsigneeDetailsController.displayPage()
+          thePageNavigatedTo mustBe ConsigneeDetailsController.displayPage
 
           verifyPage(0)
         }

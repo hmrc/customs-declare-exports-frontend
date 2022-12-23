@@ -47,7 +47,7 @@
     showDeclarationSummaryLink = false
 ) {
 
-    @formHelper(action = CancelDeclarationController.onSubmit(), 'autoComplete -> "off") {
+    @formHelper(action = CancelDeclarationController.onSubmit, 'autoComplete -> "off") {
         @errorSummary(radioGroupErrors("changeReason", "noLongerRequired", form.errors))
 
         @sectionHeader(messages("cancellation.mrn", {mrn}))

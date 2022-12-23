@@ -36,9 +36,9 @@ class StatisticalValueViewSpec extends PageWithButtonsSpec with Injector {
 
   val page = instanceOf[statistical_value]
 
-  override val typeAndViewInstance = (STANDARD, page(itemId, form())(_, _))
+  override val typeAndViewInstance = (STANDARD, page(itemId, form)(_, _))
 
-  def createView(frm: Form[StatisticalValue] = form()): Document =
+  def createView(frm: Form[StatisticalValue] = form): Document =
     page(itemId, frm)(journeyRequest(), messages)
 
   "Item Type View on empty page" should {
@@ -105,7 +105,7 @@ class StatisticalValueViewSpec extends PageWithButtonsSpec with Injector {
   "Item Type View with entered data" should {
     "display data in Statistical Value input" in {
       val itemType = StatisticalValue("12345")
-      val view = createView(form().fill(itemType))
+      val view = createView(form.fill(itemType))
 
       assertViewDataEntered(view, itemType)
     }

@@ -68,7 +68,7 @@ class OfficeOfExitViewSpec extends UnitViewSpec with ExportsTestHelper with Stub
         val backButton = view.getElementById("back-link")
 
         backButton must containMessage("site.backToPreviousQuestion")
-        backButton.getElementById("back-link") must haveHref(LocationOfGoodsController.displayPage())
+        backButton.getElementById("back-link") must haveHref(LocationOfGoodsController.displayPage)
       }
 
       checkAllSaveButtonsAreDisplayed(createView())
@@ -115,7 +115,7 @@ class OfficeOfExitViewSpec extends UnitViewSpec with ExportsTestHelper with Stub
       val backButton = skipLocationOfGoodsView.getElementById("back-link")
 
       backButton must containMessage("site.backToPreviousQuestion")
-      backButton.getElementById("back-link") must haveHref(DestinationCountryController.displayPage())
+      backButton.getElementById("back-link") must haveHref(DestinationCountryController.displayPage)
     }
   }
 }

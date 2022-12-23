@@ -69,7 +69,7 @@ class AdditionalActorsSummaryViewSpec extends PageWithButtonsSpec with Injector 
       "display back link" in {
         val view = createView()
         view must containElementWithID("back-link")
-        view.getElementById("back-link") must haveHref(ConsigneeDetailsController.displayPage())
+        view.getElementById("back-link") must haveHref(ConsigneeDetailsController.displayPage)
       }
 
       checkAllSaveButtonsAreDisplayed(createView())

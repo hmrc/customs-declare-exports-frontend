@@ -115,7 +115,7 @@
     title = Title("declaration.previousDocuments.summary.title", "declaration.section.4", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(DocumentSummary)))
 ) {
-    @formHelper(action = routes.PreviousDocumentsSummaryController.submit(), 'autoComplete -> "off") {
+    @formHelper(action = routes.PreviousDocumentsSummaryController.submit, 'autoComplete -> "off") {
 
         @errorSummary(yesNoErrors(form.errors))
 

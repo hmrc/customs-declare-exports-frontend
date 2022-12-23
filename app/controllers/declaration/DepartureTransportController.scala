@@ -55,7 +55,7 @@ class DepartureTransportController @Inject() (
 
   private val validTypes = Seq(STANDARD, SUPPLEMENTARY, CLEARANCE)
 
-  def displayPage(): Action[AnyContent] =
+  def displayPage: Action[AnyContent] =
     (authenticate andThen journeyType(validTypes)) { implicit request =>
       if (!isPostalOrFTIModeOfTransport(request.cacheModel.transportLeavingBorderCode)) {
         val frm = form.withSubmissionErrors
@@ -69,7 +69,8 @@ class DepartureTransportController @Inject() (
   def submitForm(): Action[AnyContent] =
     (authenticate andThen journeyType(validTypes)).async { implicit request =>
       if (!isPostalOrFTIModeOfTransport(request.cacheModel.transportLeavingBorderCode))
-        form.bindFromRequest
+        form
+          .bindFromRequest()
           .fold(
             formWithErrors => Future.successful(BadRequest(departureTransportPage(formWithErrors))),
             updateCache(_).map(_ => navigator.continueTo(nextPage))

@@ -30,7 +30,7 @@ import views.html.declaration.person_presenting_goods_details
 class PersonPresentingGoodsDetailsViewSpec extends UnitViewSpec with Injector with CommonMessages {
 
   private val page = instanceOf[person_presenting_goods_details]
-  private def createView(form: Form[PersonPresentingGoodsDetails] = PersonPresentingGoodsDetails.form()): Document =
+  private def createView(form: Form[PersonPresentingGoodsDetails] = PersonPresentingGoodsDetails.form): Document =
     page(form)(journeyRequest(DeclarationType.CLEARANCE), messages)
 
   "Person Presenting Goods Details view" when {
@@ -64,7 +64,7 @@ class PersonPresentingGoodsDetailsViewSpec extends UnitViewSpec with Injector wi
         val backButton = createView().getElementById("back-link")
 
         backButton must containMessage(backToPreviousQuestionCaption)
-        backButton must haveHref(routes.EntryIntoDeclarantsRecordsController.displayPage().url)
+        backButton must haveHref(routes.EntryIntoDeclarantsRecordsController.displayPage.url)
       }
 
     }
@@ -72,7 +72,7 @@ class PersonPresentingGoodsDetailsViewSpec extends UnitViewSpec with Injector wi
     "on page filled" should {
       "have the text input element pre-populated with value from cache" in {
 
-        val form = PersonPresentingGoodsDetails.form().fill(PersonPresentingGoodsDetails(Eori("GB1234567890000")))
+        val form = PersonPresentingGoodsDetails.form.fill(PersonPresentingGoodsDetails(Eori("GB1234567890000")))
 
         createView(form).getElementById("eori").attr("value") mustBe "GB1234567890000"
       }
@@ -82,14 +82,14 @@ class PersonPresentingGoodsDetailsViewSpec extends UnitViewSpec with Injector wi
 
       "display error summary" in {
 
-        val form = PersonPresentingGoodsDetails.form().withError(FormError("eori", "declaration.eori.error.format"))
+        val form = PersonPresentingGoodsDetails.form.withError(FormError("eori", "declaration.eori.error.format"))
 
         createView(form) must haveGovukGlobalErrorSummary
       }
 
       "display error next to the text input element" in {
 
-        val form = PersonPresentingGoodsDetails.form().withError(FormError("eori", "declaration.eori.error.format"))
+        val form = PersonPresentingGoodsDetails.form.withError(FormError("eori", "declaration.eori.error.format"))
 
         createView(form) must haveGovukFieldError("eori", messages("declaration.eori.error.format"))
       }

@@ -41,7 +41,7 @@ object ExporterEoriNumber extends DeclarationPage {
     hasEori -> requiredRadio("declaration.exporterEori.hasEori.empty", YesNoAnswer.allowedValues)
   )(ExporterEoriNumber.apply)(ExporterEoriNumber.unapply)
 
-  def form(): Form[ExporterEoriNumber] = Form(ExporterEoriNumber.mapping)
+  def form: Form[ExporterEoriNumber] = Form(ExporterEoriNumber.mapping)
 
   def apply(exporterDetails: ExporterDetails): ExporterEoriNumber =
     exporterDetails.details.eori match {

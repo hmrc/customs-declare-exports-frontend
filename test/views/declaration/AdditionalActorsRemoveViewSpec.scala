@@ -51,7 +51,7 @@ class AdditionalActorsRemoveViewSpec extends UnitViewSpec with ExportsTestHelper
       "display back link" in {
         val view = createView()
         view must containElementWithID("back-link")
-        view.getElementById("back-link") must haveHref(AdditionalActorsSummaryController.displayPage())
+        view.getElementById("back-link") must haveHref(AdditionalActorsSummaryController.displayPage)
       }
     }
   }

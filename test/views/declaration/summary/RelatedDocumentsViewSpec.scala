@@ -39,7 +39,7 @@ class RelatedDocumentsViewSpec extends UnitViewSpec with ExportsTestHelper with 
 
         row must haveSummaryActionsTexts("site.change", "declaration.summary.transaction.previousDocuments.change")
 
-        row must haveSummaryActionWithPlaceholder(PreviousDocumentsController.displayPage())
+        row must haveSummaryActionWithPlaceholder(PreviousDocumentsController.displayPage)
       }
     }
 

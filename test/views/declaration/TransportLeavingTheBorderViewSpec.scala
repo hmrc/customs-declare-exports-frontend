@@ -61,7 +61,7 @@ class TransportLeavingTheBorderViewSpec extends PageWithButtonsSpec with Injecto
       "display 'Back' button that links to 'Items Summary' page" in {
         val backButton = view.getElementById("back-link")
         backButton must containMessage("site.backToPreviousQuestion")
-        backButton must haveHref(routes.ItemsSummaryController.displayItemsSummaryPage())
+        backButton must haveHref(routes.ItemsSummaryController.displayItemsSummaryPage)
       }
 
       checkAllSaveButtonsAreDisplayed(createView())

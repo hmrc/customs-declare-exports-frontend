@@ -43,7 +43,7 @@ object NactCode extends DeclarationPage {
           .verifying("declaration.nationalAdditionalCode.error.invalid", isEmpty or (hasSpecificLength(nactCodeLength) and isAlphanumeric))
     )(NactCode.apply)(NactCode.unapply)
 
-  def form(): Form[NactCode] = Form(mapping)
+  def form: Form[NactCode] = Form(mapping)
 
   override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
     Seq(TariffContentKey("tariff.declaration.item.nationalAdditionalCode.common"))
@@ -65,7 +65,7 @@ object ZeroRatedForVat extends DeclarationPage {
       .verifying("declaration.zeroRatedForVat.error", isContainedIn(allowedValues))
   )(NactCode.apply)(NactCode.unapply)
 
-  def form(): Form[NactCode] = Form(mapping)
+  def form: Form[NactCode] = Form(mapping)
 
   override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
     Seq(TariffContentKey("tariff.declaration.item.zeroRatedForVat.common"))

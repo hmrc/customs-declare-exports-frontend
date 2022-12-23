@@ -47,7 +47,7 @@ class AdditionalDeclarationTypeViewSpec extends UnitViewSpec with CommonMessages
         "display the expected 'Back' button" in {
           val backButton = view.getElementById("back-link")
           backButton.text mustBe messages(backToPreviousQuestionCaption)
-          backButton must haveHref(DeclarationChoiceController.displayPage())
+          backButton must haveHref(DeclarationChoiceController.displayPage)
         }
 
         "display the expected section header" in {

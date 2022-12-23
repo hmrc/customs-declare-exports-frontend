@@ -77,16 +77,20 @@ class SupplementaryUnitsController @Inject() (
     (authenticate andThen journeyType(validTypes)).async { implicit request =>
       tariffApiService.retrieveCommodityInfoIfAny(request.cacheModel, itemId).flatMap {
         case Right(commodityInfo) =>
-          form(false).bindFromRequest.fold(
-            formWithErrors => Future.successful(BadRequest(supplementaryUnitsPage(itemId, formWithErrors, commodityInfo))),
-            updateExportsCacheAndContinueToNextPage(itemId, _)
-          )
+          form(false)
+            .bindFromRequest()
+            .fold(
+              formWithErrors => Future.successful(BadRequest(supplementaryUnitsPage(itemId, formWithErrors, commodityInfo))),
+              updateExportsCacheAndContinueToNextPage(itemId, _)
+            )
 
         case Left(CommodityCodeNotFound) =>
-          form(true).bindFromRequest.fold(
-            formWithErrors => Future.successful(BadRequest(supplementaryUnitsYesNoPage(itemId, formWithErrors))),
-            updateExportsCacheAndContinueToNextPage(itemId, _)
-          )
+          form(true)
+            .bindFromRequest()
+            .fold(
+              formWithErrors => Future.successful(BadRequest(supplementaryUnitsYesNoPage(itemId, formWithErrors))),
+              updateExportsCacheAndContinueToNextPage(itemId, _)
+            )
 
         case Left(SupplementaryUnitsNotRequired) =>
           updateExportsCacheAndContinueToNextPage(itemId, SupplementaryUnits(None))

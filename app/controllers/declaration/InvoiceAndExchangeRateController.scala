@@ -46,7 +46,7 @@ class InvoiceAndExchangeRateController @Inject() (
 
   private val validTypes = Seq(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY)
 
-  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
+  def displayPage: Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
     request.cacheModel.totalNumberOfItems match {
       case Some(data) => Ok(invoiceAndExchangeRatePage(form.withSubmissionErrors.fill(InvoiceAndExchangeRate(data))))
       case _          => Ok(invoiceAndExchangeRatePage(form.withSubmissionErrors))
@@ -54,10 +54,12 @@ class InvoiceAndExchangeRateController @Inject() (
   }
 
   def saveNoOfItems(): Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async { implicit request =>
-    form.bindFromRequest.fold(
-      formWithErrors => Future.successful(BadRequest(invoiceAndExchangeRatePage(formWithErrors))),
-      updateCache(_).map(_ => navigator.continueTo(TotalPackageQuantityController.displayPage))
-    )
+    form
+      .bindFromRequest()
+      .fold(
+        formWithErrors => Future.successful(BadRequest(invoiceAndExchangeRatePage(formWithErrors))),
+        updateCache(_).map(_ => navigator.continueTo(TotalPackageQuantityController.displayPage))
+      )
   }
 
   private def updateCache(invoiceAndExchangeRate: InvoiceAndExchangeRate)(implicit r: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =

@@ -74,7 +74,7 @@ class DocumentWriteOffSpec extends UnitSpec {
       }
 
       def testFailedValidationErrors(input: JsValue, expectedErrors: Seq[FormError]): Unit = {
-        val form = DocumentWriteOff.form().bind(input, JsonBindMaxChars)
+        val form = DocumentWriteOff.form.bind(input, JsonBindMaxChars)
         expectedErrors.foreach(form.errors must contain(_))
       }
     }

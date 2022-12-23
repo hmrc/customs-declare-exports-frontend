@@ -21,8 +21,8 @@ import controllers.declaration.routes.{DeclarantDetailsController, DucrChoiceCon
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypePage.radioButtonGroupId
-import models.DeclarationType._
 import models.DeclarationType
+import models.DeclarationType._
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
@@ -65,7 +65,7 @@ class AdditionalDeclarationTypeControllerSpec extends ControllerSpec {
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration())
-    await(controller.displayPage()(request))
+    await(controller.displayPage(request))
     theResponseForm
   }
 
@@ -77,7 +77,7 @@ class AdditionalDeclarationTypeControllerSpec extends ControllerSpec {
         DeclarationType.values.foreach { declarationType =>
           s"the journey selected was $declarationType" in {
             withNewCaching(aDeclaration(withType(declarationType)))
-            val result = controller.displayPage()(getRequest())
+            val result = controller.displayPage(getRequest())
             status(result) must be(OK)
           }
         }
@@ -89,7 +89,7 @@ class AdditionalDeclarationTypeControllerSpec extends ControllerSpec {
           s"the journey selected was $declarationType and" when {
             s"the AdditionalDeclarationType selected was $additionalType" in {
               withNewCaching(aDeclaration(withType(declarationType), withAdditionalDeclarationType(additionalType)))
-              val result = controller.displayPage()(getRequest())
+              val result = controller.displayPage(getRequest())
               status(result) must be(OK)
             }
           }
@@ -134,7 +134,7 @@ class AdditionalDeclarationTypeControllerSpec extends ControllerSpec {
 
             val expectedPage =
               if (declarationType == CLEARANCE) DucrChoiceController.displayPage
-              else DeclarantDetailsController.displayPage()
+              else DeclarantDetailsController.displayPage
 
             thePageNavigatedTo mustBe expectedPage
           }

@@ -23,11 +23,11 @@ import forms.common.YesNoAnswer.Yes
 import forms.declaration.CommodityDetails
 import forms.declaration.additionaldocuments.AdditionalDocument
 import forms.declaration.declarationHolder.AuthorizationTypeCodes
-import models.declaration.AdditionalDocuments
 import models.DeclarationType
+import models.declaration.AdditionalDocuments
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito._
+import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.OptionValues
 import play.api.data.Form
 import play.api.mvc.{AnyContentAsEmpty, Request}

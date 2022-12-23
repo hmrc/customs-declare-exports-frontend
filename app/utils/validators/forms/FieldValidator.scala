@@ -130,8 +130,8 @@ object FieldValidator {
 
   val isTailNumeric: String => Boolean = (input: String) =>
     Try(input.tail) match {
-      case Success(value) => isNumeric(value)
-      case _              => false
+      case Success(value) if value.nonEmpty => isNumeric(value)
+      case _                                => false
     }
 
   def isDecimalWithNoMoreDecimalPlacesThan(decimalPlaces: Int): String => Boolean = {

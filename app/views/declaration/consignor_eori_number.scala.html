@@ -53,7 +53,7 @@
     title = Title("declaration.consignorEori.title", "declaration.section.2", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(ConsignorEoriNumber)))){
 
-    @formHelper(action = controllers.declaration.routes.ConsignorEoriNumberController.submit(), 'autoComplete -> "off") {
+    @formHelper(action = controllers.declaration.routes.ConsignorEoriNumberController.submit, 'autoComplete -> "off") {
         @errorSummary(radioGroupErrors("hasEori", "Yes", form.errors))
 
         @sectionHeader(messages("declaration.section.2"))

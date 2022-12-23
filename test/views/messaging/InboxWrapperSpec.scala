@@ -16,7 +16,6 @@
 
 package views.messaging
 
-import scala.collection.JavaConverters.asScalaIteratorConverter
 import base.OverridableInjector
 import config.featureFlags.SecureMessagingConfig
 import org.jsoup.nodes.Document
@@ -28,6 +27,8 @@ import play.twirl.api.HtmlFormat
 import views.dashboard.DashboardHelper.toDashboard
 import views.declaration.spec.UnitViewSpec
 import views.html.messaging.inbox_wrapper
+
+import scala.jdk.CollectionConverters.IteratorHasAsScala
 
 class InboxWrapperSpec extends UnitViewSpec with BeforeAndAfterEach {
 

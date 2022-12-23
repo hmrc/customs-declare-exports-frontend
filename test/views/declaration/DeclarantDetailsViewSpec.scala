@@ -42,7 +42,7 @@ class DeclarantDetailsViewSpec extends UnitViewSpec with ExportsTestHelper with 
   "Declarant Details View on empty page" should {
 
     onEveryDeclarationJourney() { implicit request =>
-      val view = createView(form())
+      val view = createView(form)
 
       "display page title" in {
         view.getElementsByTag("h1") must containMessageForElements("declaration.declarant.title", request.eori)
@@ -63,37 +63,37 @@ class DeclarantDetailsViewSpec extends UnitViewSpec with ExportsTestHelper with 
 
     onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { implicit request =>
       "display section header" in {
-        createView(form()).getElementById("section-header") must containMessage("declaration.section.1")
+        createView(form).getElementById("section-header") must containMessage("declaration.section.1")
       }
 
       "display 'Back' button that links to 'Additional Declaration Type' page" in {
 
-        val view = declarantDetailsPage(form())(request, messages)
+        val view = declarantDetailsPage(form)(request, messages)
         val backButton = view.getElementById("back-link")
 
         backButton must containMessage(backCaption)
-        backButton must haveHref(routes.AdditionalDeclarationTypeController.displayPage().url)
+        backButton must haveHref(routes.AdditionalDeclarationTypeController.displayPage.url)
       }
 
       "not display 'Save and return' button on page" in {
-        Option(createView(form()).getElementById("submit_and_return")).isEmpty
+        Option(createView(form).getElementById("submit_and_return")).isEmpty
       }
     }
 
     onClearance { implicit request =>
       "display section header" in {
-        createView(form()).getElementById("section-header") must containMessage("declaration.section.2")
+        createView(form).getElementById("section-header") must containMessage("declaration.section.2")
       }
 
       "display 'Back' button that links to 'Entry into Declarant's Records' page" in {
-        val view = declarantDetailsPage(form())(request, messages)
+        val view = declarantDetailsPage(form)(request, messages)
         val backButton = view.getElementById("back-link")
 
         backButton must containMessage(backCaption)
-        backButton must haveHref(routes.EntryIntoDeclarantsRecordsController.displayPage().url)
+        backButton must haveHref(routes.EntryIntoDeclarantsRecordsController.displayPage.url)
       }
 
-      checkExitAndReturnLinkIsDisplayed(createView(form()))
+      checkExitAndReturnLinkIsDisplayed(createView(form))
     }
   }
 
@@ -101,7 +101,7 @@ class DeclarantDetailsViewSpec extends UnitViewSpec with ExportsTestHelper with 
 
     onEveryDeclarationJourney() { implicit request =>
       "display error when answer is empty" in {
-        val view = createView(form().fillAndValidate(DeclarantEoriConfirmation("")))
+        val view = createView(form.fillAndValidate(DeclarantEoriConfirmation("")))
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#code_yes")
@@ -111,7 +111,7 @@ class DeclarantDetailsViewSpec extends UnitViewSpec with ExportsTestHelper with 
 
       "display error when EORI is provided, but is incorrect" in {
         val view = createView(
-          form()
+          form
             .fillAndValidate(DeclarantEoriConfirmation("wrong"))
         )
 
@@ -127,7 +127,7 @@ class DeclarantDetailsViewSpec extends UnitViewSpec with ExportsTestHelper with 
   "Declarant Details View when filled" should {
     onEveryDeclarationJourney() { implicit request =>
       "display answer input" in {
-        val form = DeclarantEoriConfirmation.form().fill(DeclarantEoriConfirmation(YesNoAnswers.yes))
+        val form = DeclarantEoriConfirmation.form.fill(DeclarantEoriConfirmation(YesNoAnswers.yes))
         val view = createView(form)
 
         view.getElementById("code_yes").attr("value") mustBe YesNoAnswers.yes

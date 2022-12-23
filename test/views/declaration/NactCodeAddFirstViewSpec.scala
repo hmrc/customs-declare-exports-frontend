@@ -40,9 +40,9 @@ class NactCodeAddFirstViewSpec extends PageWithButtonsSpec with Injector {
 
   val page = instanceOf[nact_code_add_first]
 
-  override val typeAndViewInstance = (STANDARD, page(itemId, form())(_, _))
+  override val typeAndViewInstance = (STANDARD, page(itemId, form)(_, _))
 
-  def createView(frm: Form[NactCodeFirst] = form())(implicit request: JourneyRequest[_]): Document =
+  def createView(frm: Form[NactCodeFirst] = form)(implicit request: JourneyRequest[_]): Document =
     page(itemId, frm)(request, messages)
 
   "Nact Code Add First View" should {
@@ -111,7 +111,7 @@ class NactCodeAddFirstViewSpec extends PageWithButtonsSpec with Injector {
   "Nact Code Add First View for invalid input" should {
 
     "display errors when invalid" in {
-      val view = createView(form().fillAndValidate(NactCodeFirst(Some("12345678901234567890"))))
+      val view = createView(form.fillAndValidate(NactCodeFirst(Some("12345678901234567890"))))
 
       view must haveGovukGlobalErrorSummary
       view must containErrorElementWithTagAndHref("a", "#nactCode")
@@ -119,7 +119,7 @@ class NactCodeAddFirstViewSpec extends PageWithButtonsSpec with Injector {
     }
 
     "display errors when empty" in {
-      val view = createView(form().fillAndValidate(NactCodeFirst(Some(""))))
+      val view = createView(form.fillAndValidate(NactCodeFirst(Some(""))))
 
       view must haveGovukGlobalErrorSummary
       view must containErrorElementWithTagAndHref("a", "#nactCode")
@@ -129,7 +129,7 @@ class NactCodeAddFirstViewSpec extends PageWithButtonsSpec with Injector {
 
   "Nact Code Add First View when filled" should {
     "display data in nact code input" in {
-      val view = createView(form().fill(NactCodeFirst(Some("VATR"))))(journeyRequest())
+      val view = createView(form.fill(NactCodeFirst(Some("VATR"))))(journeyRequest())
       view.getElementById("nactCode").attr("value") must be("VATR")
     }
   }

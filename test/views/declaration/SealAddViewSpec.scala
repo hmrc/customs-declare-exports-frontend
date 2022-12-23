@@ -34,9 +34,9 @@ class SealAddViewSpec extends PageWithButtonsSpec with Injector {
 
   val page = instanceOf[seal_add]
 
-  override val typeAndViewInstance = (STANDARD, page(form(), containerId)(_, _))
+  override val typeAndViewInstance = (STANDARD, page(form, containerId)(_, _))
 
-  def createView(frm: Form[Seal] = form()): Document = page(frm, containerId)
+  def createView(frm: Form[Seal] = form): Document = page(frm, containerId)
 
   "Seal Add View" should {
     val view = createView()
@@ -62,7 +62,7 @@ class SealAddViewSpec extends PageWithButtonsSpec with Injector {
   "Seal Add View for invalid input" should {
 
     "display error if nothing is entered" in {
-      val view = createView(form().bind(Map[String, String]()))
+      val view = createView(form.bind(Map[String, String]()))
 
       view must haveGovukGlobalErrorSummary
       view must containErrorElementWithTagAndHref("a", "#id")
@@ -71,7 +71,7 @@ class SealAddViewSpec extends PageWithButtonsSpec with Injector {
     }
 
     "display error if incorrect seal is entered" in {
-      val view = createView(form().fillAndValidate(Seal("Invalid!!!")))
+      val view = createView(form.fillAndValidate(Seal("Invalid!!!")))
 
       view must haveGovukGlobalErrorSummary
       view must containErrorElementWithTagAndHref("a", "#id")

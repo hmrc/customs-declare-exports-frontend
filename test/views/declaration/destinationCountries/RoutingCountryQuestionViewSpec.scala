@@ -91,7 +91,7 @@ class RoutingCountryQuestionViewSpec extends PageWithButtonsSpec with Injector {
       val backButton = view.getElementById("back-link")
 
       backButton.text mustBe messages("site.backToPreviousQuestion")
-      backButton must haveHref(routes.DestinationCountryController.displayPage())
+      backButton must haveHref(routes.DestinationCountryController.displayPage)
     }
 
     checkAllSaveButtonsAreDisplayed(createView())

@@ -27,7 +27,7 @@ class StatisticalValueFormSpec extends DeclarationPageBaseSpec {
 
     "return form without errors" when {
       "provided with valid values" in {
-        val form = StatisticalValue.form().bind(correctStatisticalValueMap)
+        val form = StatisticalValue.form.bind(correctStatisticalValueMap)
 
         form.hasErrors must be(false)
       }
@@ -36,7 +36,7 @@ class StatisticalValueFormSpec extends DeclarationPageBaseSpec {
     "return form with errors" when {
 
       "statisticalValue is missing" in {
-        val form = StatisticalValue.form().bind(correctStatisticalValueMap - "statisticalValue")
+        val form = StatisticalValue.form.bind(correctStatisticalValueMap - "statisticalValue")
 
         form.errors mustBe Seq(FormError("statisticalValue", "error.required"))
       }

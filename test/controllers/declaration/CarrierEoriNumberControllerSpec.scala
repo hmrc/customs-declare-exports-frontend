@@ -21,8 +21,8 @@ import forms.common.YesNoAnswer.YesNoAnswers
 import forms.common.{Address, Eori}
 import forms.declaration.EntityDetails
 import forms.declaration.carrier.{CarrierDetails, CarrierEoriNumber}
-import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
 import models.DeclarationType
+import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -58,7 +58,7 @@ class CarrierEoriNumberControllerSpec extends ControllerSpec with OptionValues {
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration(withType(DeclarationType.CLEARANCE)))
-    await(controller.displayPage()(request))
+    await(controller.displayPage(request))
     theResponseForm
   }
 
@@ -79,7 +79,7 @@ class CarrierEoriNumberControllerSpec extends ControllerSpec with OptionValues {
 
         withNewCaching(request.cacheModel)
 
-        val result = controller.displayPage()(getRequest())
+        val result = controller.displayPage(getRequest())
 
         status(result) mustBe OK
         checkViewInteractions()
@@ -96,7 +96,7 @@ class CarrierEoriNumberControllerSpec extends ControllerSpec with OptionValues {
           )
         )
 
-        val result = controller.displayPage()(getRequest())
+        val result = controller.displayPage(getRequest())
 
         status(result) mustBe OK
         checkViewInteractions()
@@ -111,7 +111,7 @@ class CarrierEoriNumberControllerSpec extends ControllerSpec with OptionValues {
         val hasEori = YesNoAnswers.yes
         withNewCaching(aDeclarationAfter(request.cacheModel, withCarrierDetails(Some(Eori(eori)), None)))
 
-        val result = controller.displayPage()(getRequest())
+        val result = controller.displayPage(getRequest())
 
         status(result) mustBe OK
         checkViewInteractions()
@@ -124,7 +124,7 @@ class CarrierEoriNumberControllerSpec extends ControllerSpec with OptionValues {
 
         withNewCaching(aDeclarationAfter(request.cacheModel))
 
-        val result = controller.displayPage()(getRequest())
+        val result = controller.displayPage(getRequest())
 
         status(result) mustBe OK
         checkViewInteractions()
@@ -138,10 +138,10 @@ class CarrierEoriNumberControllerSpec extends ControllerSpec with OptionValues {
       "redirect to start" in {
         withNewCaching(request.cacheModel)
 
-        val result = controller.displayPage()(getRequest())
+        val result = controller.displayPage(getRequest())
 
         status(result) must be(SEE_OTHER)
-        redirectLocation(result) mustBe Some(controllers.routes.RootController.displayPage().url)
+        redirectLocation(result) mustBe Some(controllers.routes.RootController.displayPage.url)
       }
     }
   }
@@ -197,7 +197,7 @@ class CarrierEoriNumberControllerSpec extends ControllerSpec with OptionValues {
         val result = controller.submit()(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.CarrierDetailsController.displayPage()
+        thePageNavigatedTo mustBe controllers.declaration.routes.CarrierDetailsController.displayPage
         checkViewInteractions(0)
         theCacheModelUpdated.parties.carrierDetails must be(Some(CarrierDetails(EntityDetails(None, None))))
       }
@@ -212,7 +212,7 @@ class CarrierEoriNumberControllerSpec extends ControllerSpec with OptionValues {
         val result = controller.submit()(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.ConsigneeDetailsController.displayPage()
+        thePageNavigatedTo mustBe controllers.declaration.routes.ConsigneeDetailsController.displayPage
         checkViewInteractions(0)
         theCacheModelUpdated.parties.carrierDetails must be(Some(CarrierDetails(EntityDetails(eoriInput, None))))
       }
@@ -230,7 +230,7 @@ class CarrierEoriNumberControllerSpec extends ControllerSpec with OptionValues {
         val result = controller.submit()(postRequest(correctForm))
 
         status(result) must be(SEE_OTHER)
-        redirectLocation(result) mustBe Some(controllers.routes.RootController.displayPage().url)
+        redirectLocation(result) mustBe Some(controllers.routes.RootController.displayPage.url)
       }
     }
   }

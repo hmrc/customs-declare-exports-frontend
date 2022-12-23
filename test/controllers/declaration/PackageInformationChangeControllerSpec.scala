@@ -21,7 +21,7 @@ import forms.declaration.PackageInformation
 import mock.ErrorHandlerMocks
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito._
+import org.mockito.Mockito.{reset, times, verify, verifyNoInteractions, when}
 import org.scalatest.OptionValues
 import play.api.data.Form
 import play.api.mvc.{AnyContentAsEmpty, Request}
@@ -129,7 +129,7 @@ class PackageInformationChangeControllerSpec extends ControllerSpec with OptionV
 
           status(result) mustBe BAD_REQUEST
           verifyNoInteractions(mockChangePage)
-          verify(mockErrorHandler).displayErrorPage()(any())
+          verify(mockErrorHandler).displayErrorPage(any())
         }
 
         "user tries to remove non-existent package info" in {
@@ -138,7 +138,7 @@ class PackageInformationChangeControllerSpec extends ControllerSpec with OptionV
           val result = controller.submitForm(item.id, id)(getRequest())
 
           status(result) mustBe BAD_REQUEST
-          verify(mockErrorHandler).displayErrorPage()(any())
+          verify(mockErrorHandler).displayErrorPage(any())
         }
       }
 

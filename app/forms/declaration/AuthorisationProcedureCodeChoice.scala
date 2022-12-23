@@ -45,5 +45,5 @@ object AuthorisationProcedureCodeChoice extends DeclarationPage {
       .transform((x: String) => lookupByValue.getOrElse(x, CodeOther), (x: AuthorisationProcedureCode) => x.toString)
   )(AuthorisationProcedureCodeChoice.apply)(AuthorisationProcedureCodeChoice.unapply)
 
-  def form(): Form[AuthorisationProcedureCodeChoice] = Form(mapping)
+  def form: Form[AuthorisationProcedureCodeChoice] = Form(mapping)
 }

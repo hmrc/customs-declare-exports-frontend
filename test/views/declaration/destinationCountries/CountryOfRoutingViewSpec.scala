@@ -90,7 +90,7 @@ class CountryOfRoutingViewSpec extends PageWithButtonsSpec with ExportsTestHelpe
         val backButton = view.getElementById("back-link")
 
         backButton.text() mustBe messages("site.backToPreviousQuestion")
-        backButton must haveHref(routes.RoutingCountriesController.displayRoutingQuestion())
+        backButton must haveHref(routes.RoutingCountriesController.displayRoutingQuestion)
       }
 
       checkAllSaveButtonsAreDisplayed(createView())

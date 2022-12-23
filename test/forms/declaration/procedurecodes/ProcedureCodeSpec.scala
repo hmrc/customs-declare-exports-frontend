@@ -28,25 +28,25 @@ class ProcedureCodeSpec extends DeclarationPageBaseSpec {
     "return form with errors" when {
 
       "procedure code is empty" in {
-        val form = ProcedureCode.form().bind(Map(procedureCodeKey -> ""))
+        val form = ProcedureCode.form.bind(Map(procedureCodeKey -> ""))
 
         form.errors mustBe Seq(FormError(procedureCodeKey, "declaration.procedureCodes.error.empty"))
       }
 
       "procedure code is incorrect" in {
-        val form = ProcedureCode.form().bind(Map(procedureCodeKey -> "21"))
+        val form = ProcedureCode.form.bind(Map(procedureCodeKey -> "21"))
 
         form.errors mustBe Seq(FormError(procedureCodeKey, "declaration.procedureCodes.error.invalid"))
       }
 
       "procedure code has special chars" in {
-        val form = ProcedureCode.form().bind(Map(procedureCodeKey -> "21##"))
+        val form = ProcedureCode.form.bind(Map(procedureCodeKey -> "21##"))
 
         form.errors mustBe Seq(FormError(procedureCodeKey, "declaration.procedureCodes.error.invalid"))
       }
 
       "procedure code is incorrect with special chars" in {
-        val form = ProcedureCode.form().bind(Map(procedureCodeKey -> "12321##"))
+        val form = ProcedureCode.form.bind(Map(procedureCodeKey -> "12321##"))
 
         form.errors mustBe Seq(FormError(procedureCodeKey, "declaration.procedureCodes.error.invalid"))
       }

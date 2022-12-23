@@ -16,9 +16,6 @@
 
 package forms.declaration
 
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
-
 import base.ExportsTestData._
 import base.{JourneyTypeTestRunner, TestHelper}
 import forms.common.DeclarationPageBaseSpec
@@ -34,6 +31,9 @@ import org.scalatestplus.mockito.MockitoSugar.mock
 import play.api.data.Form
 import play.api.libs.json.{JsObject, JsValue, Json}
 import uk.gov.hmrc.http.HeaderCarrier
+
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 class ConsignmentReferencesSpec extends DeclarationPageBaseSpec with JourneyTypeTestRunner with ScalaFutures {
 

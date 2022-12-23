@@ -119,7 +119,7 @@
             else Title("declaration.transportInformation.containers.multiple.title", "declaration.section.6", containers.size.toString),
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(ContainerFirst)))) {
 
-    @formHelper(action = TransportContainerController.submitSummaryAction(), 'autoComplete -> "off") {
+    @formHelper(action = TransportContainerController.submitSummaryAction, 'autoComplete -> "off") {
         @errorSummary(yesNoErrors(form.errors))
 
         @sectionHeader(messages("declaration.section.6"))

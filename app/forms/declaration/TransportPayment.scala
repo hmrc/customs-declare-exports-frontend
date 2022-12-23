@@ -48,7 +48,7 @@ object TransportPayment extends DeclarationPage {
         .verifying("declaration.transportInformation.transportPayment.paymentMethod.error.empty", isContainedIn(validPaymentMethods))
   )(TransportPayment.apply)(TransportPayment.unapply)
 
-  def form(): Form[TransportPayment] = Form(formMapping)
+  def form: Form[TransportPayment] = Form(formMapping)
 
   override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
     Seq(TariffContentKey(s"tariff.declaration.transportPayment.${DeclarationPage.getJourneyTypeSpecialisation(decType)}"))

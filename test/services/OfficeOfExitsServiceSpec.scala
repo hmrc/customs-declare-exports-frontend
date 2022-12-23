@@ -35,7 +35,7 @@ class OfficeOfExitsServiceSpec extends UnitSpec with Injector {
     }
 
     "read values from CSV and order by description, alphabetically ascending" in {
-      officeOfExitsService.all must contain inOrder (
+      officeOfExitsService.all must contain.inOrder(
         OfficeOfExit("GB000411", "Aberdeen Airport"),
         OfficeOfExit("GB000060", "Dover/ Folkestone Eurotunnel Freight"),
         OfficeOfExit("GB003280", "Workington")

@@ -58,7 +58,7 @@ class ExporterEoriNumberControllerSpec extends ControllerSpec with OptionValues 
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration(withType(CLEARANCE)))
-    await(controller.displayPage()(request))
+    await(controller.displayPage(request))
     theResponseForm
   }
 
@@ -79,7 +79,7 @@ class ExporterEoriNumberControllerSpec extends ControllerSpec with OptionValues 
       "display page method is invoked and cache is empty" in {
         withNewCaching(request.cacheModel)
 
-        val result = controller.displayPage()(getRequest())
+        val result = controller.displayPage(getRequest())
 
         status(result) mustBe OK
         checkViewInteractions()
@@ -95,7 +95,7 @@ class ExporterEoriNumberControllerSpec extends ControllerSpec with OptionValues 
           )
         )
 
-        val result = controller.displayPage()(getRequest())
+        val result = controller.displayPage(getRequest())
 
         status(result) mustBe OK
         checkViewInteractions()
@@ -109,7 +109,7 @@ class ExporterEoriNumberControllerSpec extends ControllerSpec with OptionValues 
         val hasEori = YesNoAnswers.yes
         withNewCaching(aDeclarationAfter(request.cacheModel, withExporterDetails(Some(Eori(eori)), None)))
 
-        val result = controller.displayPage()(getRequest())
+        val result = controller.displayPage(getRequest())
 
         status(result) mustBe OK
         checkViewInteractions()
@@ -121,7 +121,7 @@ class ExporterEoriNumberControllerSpec extends ControllerSpec with OptionValues 
       "display page method is invoked and cache contains no Exporter data" in {
         withNewCaching(aDeclarationAfter(request.cacheModel))
 
-        val result = controller.displayPage()(getRequest())
+        val result = controller.displayPage(getRequest())
 
         status(result) mustBe OK
         checkViewInteractions()
@@ -175,7 +175,7 @@ class ExporterEoriNumberControllerSpec extends ControllerSpec with OptionValues 
         val result = controller.submit()(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe ExporterDetailsController.displayPage()
+        thePageNavigatedTo mustBe ExporterDetailsController.displayPage
         checkViewInteractions(0)
         theCacheModelUpdated.parties.exporterDetails must be(Some(ExporterDetails(EntityDetails(None, None))))
       }
@@ -193,7 +193,7 @@ class ExporterEoriNumberControllerSpec extends ControllerSpec with OptionValues 
         val result = controller.submit()(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe RepresentativeAgentController.displayPage()
+        thePageNavigatedTo mustBe RepresentativeAgentController.displayPage
         checkViewInteractions(0)
         theCacheModelUpdated.parties.exporterDetails must be(Some(ExporterDetails(EntityDetails(eoriInput, None))))
       }
@@ -211,7 +211,7 @@ class ExporterEoriNumberControllerSpec extends ControllerSpec with OptionValues 
         val result = controller.submit()(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe IsExsController.displayPage()
+        thePageNavigatedTo mustBe IsExsController.displayPage
         checkViewInteractions(0)
         theCacheModelUpdated.parties.exporterDetails must be(Some(ExporterDetails(EntityDetails(eoriInput, None))))
       }

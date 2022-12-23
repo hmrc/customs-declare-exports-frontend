@@ -30,7 +30,7 @@ import utils.validators.forms.FieldValidator._
 
 case class LocationOfGoods(code: String) {
 
-  def toModel(): GoodsLocation = GoodsLocation(
+  def toModel: GoodsLocation = GoodsLocation(
     country = code.slice(0, 2),
     typeOfLocation = code.slice(2, 3),
     qualifierOfIdentification = code.slice(3, 4),
@@ -91,7 +91,7 @@ object LocationOfGoods extends DeclarationPage {
 
   private def form2Data(code: String): LocationOfGoods = LocationOfGoods(code.toUpperCase)
 
-  def form()(implicit messages: Messages, codeListConnector: CodeListConnector): Form[LocationOfGoods] = Form(mapping)
+  def form(implicit messages: Messages, codeListConnector: CodeListConnector): Form[LocationOfGoods] = Form(mapping)
 
   override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
     Seq(TariffContentKey(s"tariff.declaration.locationOfGoods.${DeclarationPage.getJourneyTypeSpecialisation(decType)}"))

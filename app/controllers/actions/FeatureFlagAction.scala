@@ -48,7 +48,7 @@ class FeatureFlagAction @Inject() (featureSwitchConfig: FeatureSwitchConfig)(imp
       if (featureSwitchConfig.isFeatureOn(feature)) Right(request)
       else {
         logger.warn(s"Redirection to start for eori ${request.user.eori}, as feature flag $feature is disabled")
-        Left(Results.Redirect(RootController.displayPage()))
+        Left(Results.Redirect(RootController.displayPage))
       }
     }
 }

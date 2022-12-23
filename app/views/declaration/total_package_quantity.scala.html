@@ -48,7 +48,7 @@
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(TotalPackageQuantity)))
 ) {
 
-    @formHelper(action = TotalPackageQuantityController.saveTotalPackageQuantity(), 'autoComplete -> "off") {
+    @formHelper(action = TotalPackageQuantityController.saveTotalPackageQuantity, 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
         @sectionHeader(messages("declaration.section.4"))

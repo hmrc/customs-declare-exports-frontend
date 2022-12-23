@@ -59,7 +59,8 @@ class AdditionalInformationRequiredController @Inject() (
   }
 
   def submitForm(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    form.bindFromRequest
+    form
+      .bindFromRequest()
       .fold(showFormWithErrors(itemId, _), yesNo => updateCache(yesNo, itemId).map(_ => navigator.continueTo(nextPage(yesNo, itemId))))
   }
 

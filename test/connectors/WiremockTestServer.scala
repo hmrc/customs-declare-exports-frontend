@@ -61,7 +61,7 @@ trait WiremockTestServer extends UnitWithMocksSpec with BeforeAndAfterAll with E
     tariffCommoditiesWireMockServer.stubFor(mappingBuilder)
 
   protected def verifyForAuditing(count: Int = 1): Unit =
-    eventually(timeout(1 seconds), interval(50 millis)) {
+    eventually(timeout(1.seconds), interval(50.millis)) {
       auditingWireMockServer.verify(count, postRequestedFor(urlEqualTo("/write/audit")))
     }
 }

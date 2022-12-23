@@ -118,7 +118,7 @@ class PackageInformationRemoveControllerSpec extends ControllerSpec with OptionV
 
           status(result) mustBe BAD_REQUEST
           verifyNoInteractions(mockRemovePage)
-          verify(mockErrorHandler).displayErrorPage()(any())
+          verify(mockErrorHandler).displayErrorPage(any())
         }
 
         "user tries to remove non-existent package info" in {
@@ -128,7 +128,7 @@ class PackageInformationRemoveControllerSpec extends ControllerSpec with OptionV
 
           status(result) mustBe BAD_REQUEST
           verifyNoInteractions(mockRemovePage)
-          verify(mockErrorHandler).displayErrorPage()(any())
+          verify(mockErrorHandler).displayErrorPage(any())
         }
       }
 

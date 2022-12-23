@@ -44,10 +44,10 @@
 
 @govukLayout(
     title = Title(headerMsgKey),
-    backButton = Some(BackButton(messages("site.back"), SummaryController.displayPage())),
+    backButton = Some(BackButton(messages("site.back"), SummaryController.displayPage)),
     useCustomContentWidth = true
 ) {
-    @formHelper(action = SummaryController.submitDeclaration(), 'autoComplete -> "off") {
+    @formHelper(action = SummaryController.submitDeclaration, 'autoComplete -> "off") {
         @errorSummary(legalDeclarationForm.errors)
 
         @pageTitle(messages(headerMsgKey))

@@ -17,11 +17,12 @@
 package views.guidance
 
 import base.Injector
-import collection.JavaConverters._
 import tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.html.guidance.send_by_roro
 import views.tags.ViewTest
+
+import scala.jdk.CollectionConverters.CollectionHasAsScala
 
 @ViewTest
 class SendByRoroViewSpec extends UnitViewSpec with Stubs with Injector {

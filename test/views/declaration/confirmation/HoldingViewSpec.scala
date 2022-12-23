@@ -16,14 +16,14 @@
 
 package views.declaration.confirmation
 
-import scala.collection.JavaConverters.asScalaIteratorConverter
-
 import base.Injector
 import controllers.declaration.routes.ConfirmationController
 import org.scalatest.GivenWhenThen
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.confirmation.holding_page
 import views.tags.ViewTest
+
+import scala.jdk.CollectionConverters.IteratorHasAsScala
 
 @ViewTest
 class HoldingViewSpec extends UnitViewSpec with GivenWhenThen with Injector {

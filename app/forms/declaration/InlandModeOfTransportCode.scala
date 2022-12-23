@@ -37,7 +37,7 @@ object InlandModeOfTransportCode extends DeclarationPage {
         optional(of(ModeOfTransportCode.formatter("declaration.warehouse.inlandTransportDetails.error.incorrect")))
     )(InlandModeOfTransportCode.apply)(InlandModeOfTransportCode.unapply)
 
-  def form(): Form[InlandModeOfTransportCode] = Form(mapping)
+  def form: Form[InlandModeOfTransportCode] = Form(mapping)
 
   override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
     Seq(TariffContentKey("tariff.declaration.inlandTransportDetails.common"))

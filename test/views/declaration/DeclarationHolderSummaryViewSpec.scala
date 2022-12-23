@@ -53,7 +53,7 @@ class DeclarationHolderSummaryViewSpec extends PageWithButtonsSpec with Injector
     onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED) { implicit request =>
       "display a back button linking to the /authorisation-choice page" in {
         val view = createView()
-        view.getElementById("back-link") must haveHref(AuthorisationProcedureCodeChoiceController.displayPage())
+        view.getElementById("back-link") must haveHref(AuthorisationProcedureCodeChoiceController.displayPage)
       }
     }
 
@@ -63,7 +63,7 @@ class DeclarationHolderSummaryViewSpec extends PageWithButtonsSpec with Injector
           s"AuthorisationProcedureCodeChoice is '${choice.value}'" in {
             val request = withRequest(STANDARD_PRE_LODGED, withAuthorisationProcedureCodeChoice(choice))
             val view = createView()(request)
-            view.getElementById("back-link") must haveHref(AuthorisationProcedureCodeChoiceController.displayPage())
+            view.getElementById("back-link") must haveHref(AuthorisationProcedureCodeChoiceController.displayPage)
           }
         }
       }
@@ -72,7 +72,7 @@ class DeclarationHolderSummaryViewSpec extends PageWithButtonsSpec with Injector
     onOccasional { implicit request =>
       "display a back button linking  to the /other-parties-involved page" in {
         val view = createView()
-        view.getElementById("back-link") must haveHref(AdditionalActorsSummaryController.displayPage())
+        view.getElementById("back-link") must haveHref(AdditionalActorsSummaryController.displayPage)
       }
     }
 
@@ -82,7 +82,7 @@ class DeclarationHolderSummaryViewSpec extends PageWithButtonsSpec with Injector
           val request = journeyRequest(req.cacheModel.copy(parties = Parties(isEntryIntoDeclarantsRecords = Yes)))
 
           val view = createView()(request)
-          view.getElementById("back-link") must haveHref(AuthorisationProcedureCodeChoiceController.displayPage())
+          view.getElementById("back-link") must haveHref(AuthorisationProcedureCodeChoiceController.displayPage)
         }
       }
 
@@ -91,7 +91,7 @@ class DeclarationHolderSummaryViewSpec extends PageWithButtonsSpec with Injector
           val request = journeyRequest(req.cacheModel.copy(parties = Parties(isEntryIntoDeclarantsRecords = No)))
 
           val view = createView()(request)
-          view.getElementById("back-link") must haveHref(ConsigneeDetailsController.displayPage())
+          view.getElementById("back-link") must haveHref(ConsigneeDetailsController.displayPage)
         }
       }
     }

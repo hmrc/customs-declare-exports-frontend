@@ -44,7 +44,7 @@ class ConsignmentReferencesViewSpec extends PageWithButtonsSpec with Injector {
   def createView(maybeForm: Option[Form[ConsignmentReferences]])(implicit request: JourneyRequest[_]): Document =
     page(maybeForm.getOrElse(form(request.declarationType, request.cacheModel.additionalDeclarationType)))(request, messages)
 
-  def createView()(implicit request: JourneyRequest[_]): Document =
+  def createView(implicit request: JourneyRequest[_]): Document =
     createView(Some(form(request.declarationType, request.cacheModel.additionalDeclarationType)))(request)
 
   private def createView(form: Form[ConsignmentReferences])(implicit request: JourneyRequest[_]): Document =
@@ -85,11 +85,11 @@ class ConsignmentReferencesViewSpec extends PageWithButtonsSpec with Injector {
   "Consignment References View" should {
     onEveryDeclarationJourney() { implicit request =>
       "display page title" in {
-        createView().getElementById("title").text() mustBe messages("declaration.consignmentReferences.header")
+        createView.getElementById("title").text() mustBe messages("declaration.consignmentReferences.header")
       }
 
       "display section header" in {
-        createView().getElementById("section-header").text() must include(messages("declaration.section.1"))
+        createView.getElementById("section-header").text() must include(messages("declaration.section.1"))
       }
 
       "not display 'Exit and return' button" in {
@@ -102,7 +102,7 @@ class ConsignmentReferencesViewSpec extends PageWithButtonsSpec with Injector {
 
   "Consignment References View" should {
     onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, CLEARANCE) { implicit request =>
-      val view = createView()
+      val view = createView
 
       "display empty input with label for DUCR" in {
         val expectedBodyTextListMessageKeys = Seq(
@@ -148,7 +148,7 @@ class ConsignmentReferencesViewSpec extends PageWithButtonsSpec with Injector {
   "Consignment References View" when {
 
     "AdditionalDeclarationType is SUPPLEMENTARY_SIMPLIFIED" should {
-      val view = createView()(withRequest(SUPPLEMENTARY_SIMPLIFIED))
+      val view = createView(withRequest(SUPPLEMENTARY_SIMPLIFIED))
 
       "display empty input with label for DUCR" in {
         val expectedHintText =
@@ -183,7 +183,7 @@ class ConsignmentReferencesViewSpec extends PageWithButtonsSpec with Injector {
     }
 
     "AdditionalDeclarationType is SUPPLEMENTARY_EIDR" should {
-      val view = createView()(withRequest(SUPPLEMENTARY_EIDR))
+      val view = createView(withRequest(SUPPLEMENTARY_EIDR))
 
       "display empty input with label for DUCR" in {
         val expectedHintText =
@@ -217,17 +217,17 @@ class ConsignmentReferencesViewSpec extends PageWithButtonsSpec with Injector {
 
     onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { implicit request =>
       "display 'Back' button that links to 'Declarant Details' page" in {
-        val backButton = createView().getElementById("back-link")
+        val backButton = createView.getElementById("back-link")
         backButton must containMessage(backToPreviousQuestionCaption)
-        backButton must haveHref(DeclarantDetailsController.displayPage().url)
+        backButton must haveHref(DeclarantDetailsController.displayPage.url)
       }
     }
 
     onClearance { implicit request =>
       "display 'Back' button that links to 'Declaration Type' page" in {
-        val backButton = createView().getElementById("back-link")
+        val backButton = createView.getElementById("back-link")
         backButton must containMessage(backToPreviousQuestionCaption)
-        backButton must haveHref(routes.AdditionalDeclarationTypeController.displayPage().url)
+        backButton must haveHref(routes.AdditionalDeclarationTypeController.displayPage.url)
       }
     }
   }

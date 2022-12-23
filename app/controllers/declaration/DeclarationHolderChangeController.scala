@@ -59,7 +59,7 @@ class DeclarationHolderChangeController @Inject() (
   }
 
   def submitForm(id: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    val boundForm = form.bindFromRequest
+    val boundForm = form.bindFromRequest()
     val maybeExistingHolder = declarationHolders.find(_.id.equals(id))
 
     boundForm.fold(

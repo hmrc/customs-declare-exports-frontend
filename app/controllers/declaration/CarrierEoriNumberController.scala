@@ -47,7 +47,7 @@ class CarrierEoriNumberController @Inject() (
 
   val validJourneys = Seq(STANDARD, SIMPLIFIED, OCCASIONAL, CLEARANCE)
 
-  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType(validJourneys)) { implicit request =>
+  def displayPage: Action[AnyContent] = (authenticate andThen journeyType(validJourneys)) { implicit request =>
     carrierDetails match {
       case Some(data) => Ok(carrierEoriDetailsPage(form.fill(CarrierEoriNumber(data))))
       case _          => Ok(carrierEoriDetailsPage(form))
@@ -55,7 +55,8 @@ class CarrierEoriNumberController @Inject() (
   }
 
   def submit(): Action[AnyContent] = (authenticate andThen journeyType(validJourneys)).async { implicit request =>
-    form.bindFromRequest
+    form
+      .bindFromRequest()
       .fold(
         formWithErrors => Future.successful(BadRequest(carrierEoriDetailsPage(formWithErrors))),
         formData => updateCache(formData, carrierDetails).map(_ => navigator.continueTo(nextPage(formData.hasEori)))

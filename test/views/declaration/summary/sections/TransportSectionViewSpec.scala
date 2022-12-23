@@ -52,7 +52,7 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestHelper with 
 
       row must haveSummaryActionsTexts("site.change", "declaration.summary.transport.departure.transportCode.header.change")
 
-      row must haveSummaryActionWithPlaceholder(routes.TransportLeavingTheBorderController.displayPage())
+      row must haveSummaryActionWithPlaceholder(routes.TransportLeavingTheBorderController.displayPage)
     }
 
     "display transport reference with change button" in {
@@ -63,7 +63,7 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestHelper with 
 
       row must haveSummaryActionsTexts("site.change", "declaration.summary.transport.departure.meansOfTransport.header.change")
 
-      row must haveSummaryActionWithPlaceholder(routes.DepartureTransportController.displayPage())
+      row must haveSummaryActionWithPlaceholder(routes.DepartureTransportController.displayPage)
     }
 
     "display transport reference if question skipped" in {
@@ -74,7 +74,7 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestHelper with 
 
       row must haveSummaryKey(messages("declaration.summary.transport.departure.meansOfTransport.header"))
       row must haveSummaryValue("")
-      row must haveSummaryActionWithPlaceholder(routes.DepartureTransportController.displayPage())
+      row must haveSummaryActionWithPlaceholder(routes.DepartureTransportController.displayPage)
     }
 
     "display transport reference if option none selected" in {
@@ -88,7 +88,7 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestHelper with 
 
       row must haveSummaryKey(messages("declaration.summary.transport.departure.meansOfTransport.header"))
       row must haveSummaryValue(messages("declaration.summary.transport.departure.meansOfTransport.option_none"))
-      row must haveSummaryActionWithPlaceholder(routes.DepartureTransportController.displayPage())
+      row must haveSummaryActionWithPlaceholder(routes.DepartureTransportController.displayPage)
     }
 
     "display active transport type with change button" in {
@@ -99,7 +99,7 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestHelper with 
 
       row must haveSummaryActionsTexts("site.change", "declaration.summary.transport.border.meansOfTransport.header.change")
 
-      row must haveSummaryActionWithPlaceholder(routes.BorderTransportController.displayPage())
+      row must haveSummaryActionWithPlaceholder(routes.BorderTransportController.displayPage)
     }
 
     "display active transport country with change button" when {
@@ -115,7 +115,7 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestHelper with 
 
           row must haveSummaryActionsTexts("site.change", "declaration.summary.transport.registrationCountry.change")
 
-          row must haveSummaryActionWithPlaceholder(routes.TransportCountryController.displayPage())
+          row must haveSummaryActionWithPlaceholder(routes.TransportCountryController.displayPage)
         }
       }
     }
@@ -127,7 +127,7 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestHelper with 
 
       row must haveSummaryActionsTexts("site.change", "declaration.summary.transport.expressConsignment.change")
 
-      row must haveSummaryActionWithPlaceholder(routes.ExpressConsignmentController.displayPage())
+      row must haveSummaryActionWithPlaceholder(routes.ExpressConsignmentController.displayPage)
     }
 
     "display transport payment with change button" in {
@@ -138,7 +138,7 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestHelper with 
 
       row must haveSummaryActionsTexts("site.change", "declaration.summary.transport.payment.change")
 
-      row must haveSummaryActionWithPlaceholder(routes.TransportPaymentController.displayPage())
+      row must haveSummaryActionWithPlaceholder(routes.TransportPaymentController.displayPage)
     }
 
     "display information about containers when user said 'No' with change button" in {
@@ -149,7 +149,7 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestHelper with 
 
       row must haveSummaryActionsTexts("site.change", "declaration.summary.transport.containers.change")
 
-      row must haveSummaryActionWithPlaceholder(routes.TransportContainerController.displayContainerSummary())
+      row must haveSummaryActionWithPlaceholder(routes.TransportContainerController.displayContainerSummary)
     }
 
     "not display border transport if question not answered" in {
@@ -193,7 +193,7 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestHelper with 
 
       row must haveSummaryActionsTexts("site.change", "declaration.summary.transport.warehouse.id.change")
 
-      row must haveSummaryActionWithPlaceholder(routes.WarehouseIdentificationController.displayPage())
+      row must haveSummaryActionWithPlaceholder(routes.WarehouseIdentificationController.displayPage)
     }
 
     "display supervising office with change button" in {
@@ -203,7 +203,7 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestHelper with 
 
       row must haveSummaryActionsTexts("site.change", "declaration.summary.transport.supervisingOffice.change")
 
-      row must haveSummaryActionWithPlaceholder(routes.SupervisingCustomsOfficeController.displayPage())
+      row must haveSummaryActionWithPlaceholder(routes.SupervisingCustomsOfficeController.displayPage)
     }
 
     "display inland or border with change button" in {
@@ -213,7 +213,7 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestHelper with 
 
       row must haveSummaryActionsTexts("site.change", "declaration.summary.transport.inlandOrBorder.change")
 
-      row must haveSummaryActionWithPlaceholder(routes.InlandOrBorderController.displayPage())
+      row must haveSummaryActionWithPlaceholder(routes.InlandOrBorderController.displayPage)
     }
 
     "display mode of transport with change button" in {
@@ -223,7 +223,7 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestHelper with 
 
       row must haveSummaryActionsTexts("site.change", "declaration.summary.transport.inlandModeOfTransport.change")
 
-      row must haveSummaryActionWithPlaceholder(routes.InlandTransportDetailsController.displayPage())
+      row must haveSummaryActionWithPlaceholder(routes.InlandTransportDetailsController.displayPage)
     }
 
     "display warehouse label when user said 'no'" in {

@@ -59,7 +59,8 @@ class RoutingCountriesController @Inject() (
   def submitRoutingAnswer(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val cachedCountries = request.cacheModel.locations.routingCountries
 
-    formFirst(cachedCountries).bindFromRequest
+    formFirst(cachedCountries)
+      .bindFromRequest()
       .fold(
         formWithErrors => Future.successful(BadRequest(routingQuestionPage(formWithErrors))),
         answer =>
@@ -113,7 +114,7 @@ class RoutingCountriesController @Inject() (
   private def validateAndRedirect(redirect: Result)(implicit request: JourneyRequest[AnyContent]): Future[Result] =
     Countries
       .form(RoutingCountryPage, request.cacheModel.locations.routingCountries)
-      .bindFromRequest
+      .bindFromRequest()
       .fold(
         formWithErrors => Future.successful(BadRequest(countryOfRoutingPage(formWithErrors))),
         validCountry => {

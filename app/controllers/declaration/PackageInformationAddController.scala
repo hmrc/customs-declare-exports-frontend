@@ -48,11 +48,11 @@ class PackageInformationAddController @Inject() (
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
   def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    Ok(packageInformationPage(itemId, form().withSubmissionErrors(), allCachedPackageInformation(itemId)))
+    Ok(packageInformationPage(itemId, form.withSubmissionErrors, allCachedPackageInformation(itemId)))
   }
 
   def submitForm(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    val boundForm = form().bindFromRequest()
+    val boundForm = form.bindFromRequest()
     saveInformation(itemId, boundForm, allCachedPackageInformation(itemId))
   }
 

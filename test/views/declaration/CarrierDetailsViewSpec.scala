@@ -90,7 +90,7 @@ class CarrierDetailsViewSpec extends AddressViewSpec with PageWithButtonsSpec wi
       "display 'Back' button that links to 'Carrier Eori Number' page" in {
         val backButton = createView(form).getElementById("back-link")
         backButton.text mustBe messages(backToPreviousQuestionCaption)
-        backButton.attr("href") mustBe CarrierEoriNumberController.displayPage().url
+        backButton.attr("href") mustBe CarrierEoriNumberController.displayPage.url
       }
 
       "display section header" in {

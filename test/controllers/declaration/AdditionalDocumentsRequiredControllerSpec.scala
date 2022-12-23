@@ -98,7 +98,7 @@ class AdditionalDocumentsRequiredControllerSpec extends ControllerSpec {
           val result = controller.submitForm(itemId)(postRequest(Json.obj("yesNo" -> YesNoAnswers.no)))
 
           status(result) mustBe SEE_OTHER
-          thePageNavigatedTo mustBe routes.ItemsSummaryController.displayItemsSummaryPage()
+          thePageNavigatedTo mustBe routes.ItemsSummaryController.displayItemsSummaryPage
         }
       }
 

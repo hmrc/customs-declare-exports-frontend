@@ -47,7 +47,7 @@ class InvoiceAndExchangeRateChoiceController @Inject() (
 
   private val validTypes = Seq(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY)
 
-  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
+  def displayPage: Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
     val frm = form(errorKey = "declaration.invoice.amount.choice.answer.empty").withSubmissionErrors
 
     val declaration = request.cacheModel
@@ -58,7 +58,8 @@ class InvoiceAndExchangeRateChoiceController @Inject() (
   }
 
   def submitForm(): Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async { implicit request =>
-    form(errorKey = "declaration.invoice.amount.choice.answer.empty").bindFromRequest
+    form(errorKey = "declaration.invoice.amount.choice.answer.empty")
+      .bindFromRequest()
       .fold(
         formWithErrors => Future.successful(BadRequest(invoiceAndExchangeRateChoicePage(formWithErrors))),
         yesNoAnswer =>

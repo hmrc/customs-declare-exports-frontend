@@ -60,7 +60,7 @@
     title = Title("declaration.routingCountryQuestion.title", "declaration.section.3", countryOfDestination, hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(RoutingCountryQuestionPage)))){
 
-    @formHelper(action = controllers.declaration.routes.RoutingCountriesController.submitRoutingAnswer(), 'autoComplete -> "off") {
+    @formHelper(action = controllers.declaration.routes.RoutingCountriesController.submitRoutingAnswer, 'autoComplete -> "off") {
         @errorSummary(radioGroupErrors("answer", "Yes", form.errors))
 
         @sectionHeader(messages("declaration.section.3"))

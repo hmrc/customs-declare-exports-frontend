@@ -54,7 +54,7 @@ class DucrEntryControllerSpec extends ControllerSpec with GivenWhenThen {
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration())
-    await(controller.displayPage()(request))
+    await(controller.displayPage(request))
     theResponseForm
   }
 
@@ -72,14 +72,14 @@ class DucrEntryControllerSpec extends ControllerSpec with GivenWhenThen {
         "display page method is invoked and cache is empty" in {
           withNewCaching(request.cacheModel)
 
-          val result = controller.displayPage()(getRequest())
+          val result = controller.displayPage(getRequest())
           status(result) must be(OK)
         }
 
         "display page method is invoked and cache contains data" in {
           withNewCaching(aDeclaration(withConsignmentReferences()))
 
-          val result = controller.displayPage()(getRequest())
+          val result = controller.displayPage(getRequest())
           status(result) must be(OK)
         }
       }

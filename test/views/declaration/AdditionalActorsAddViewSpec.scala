@@ -94,7 +94,7 @@ class AdditionalActorsAddViewSpec extends PageWithButtonsSpec with Injector {
         val backButton = view.getElementById("back-link")
 
         backButton must containMessage(backToPreviousQuestionCaption)
-        backButton.attr("href") mustBe routes.ConsigneeDetailsController.displayPage().url
+        backButton.attr("href") mustBe routes.ConsigneeDetailsController.displayPage.url
       }
     }
 

@@ -55,7 +55,7 @@ class FiscalInformationController @Inject() (
         .exists(code => !ProcedureCodesData.osrProcedureCodes.contains(code))
 
     def displayFiscalInformationPage(): Result = {
-      val frm = form().withSubmissionErrors()
+      val frm = form.withSubmissionErrors
       request.cacheModel.itemBy(itemId).flatMap(_.fiscalInformation) match {
         case Some(fiscalInformation) => Ok(fiscalInformationPage(itemId, frm.fill(fiscalInformation)))
         case _                       => Ok(fiscalInformationPage(itemId, frm))
@@ -70,7 +70,7 @@ class FiscalInformationController @Inject() (
   }
 
   def saveFiscalInformation(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    form()
+    form
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[FiscalInformation]) => Future.successful(BadRequest(fiscalInformationPage(itemId, formWithErrors))),

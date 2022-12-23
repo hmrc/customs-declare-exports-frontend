@@ -57,7 +57,7 @@
     title = Title(s"$prefix.title", "declaration.section.6", transportMode, hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(TransportCountry)))
 ) {
-    @formHelper(action = TransportCountryController.submitForm(), 'autoComplete -> "off") {
+    @formHelper(action = TransportCountryController.submitForm, 'autoComplete -> "off") {
         @errorSummary(radioGroupErrors(hasTransportCountry, "code_yes", form.errors))
 
         @sectionHeader(messages("declaration.section.6"))

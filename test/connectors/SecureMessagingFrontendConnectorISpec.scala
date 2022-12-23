@@ -18,7 +18,7 @@ package connectors
 
 import base.{ExportsTestData, Injector}
 import com.github.tomakehurst.wiremock.client.WireMock
-import com.github.tomakehurst.wiremock.client.WireMock.{verify, _}
+import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, get, getRequestedFor, post, urlEqualTo, verify => verifyReq}
 import config.featureFlags.SecureMessagingConfig
 import models.AuthKey.enrolment
 import models.messaging._
@@ -40,21 +40,21 @@ class SecureMessagingFrontendConnectorISpec extends ConnectorISpec with Injector
   val resultUrl = s"/secure-message-frontend/customs-declare-exports/conversation/$clientId/$conversationId/result"
 
   override def beforeAll(): Unit = {
-    super.beforeAll
-    auditingWireMockServer.start
-    secureMessagingWireMockServer.start
+    super.beforeAll()
+    auditingWireMockServer.start()
+    secureMessagingWireMockServer.start()
     WireMock.configureFor(wireHost, secureMessagingWirePort)
   }
 
   override def beforeEach(): Unit = {
-    super.beforeEach
-    auditingWireMockServer.resetRequests
+    super.beforeEach()
+    auditingWireMockServer.resetRequests()
   }
 
   override def afterAll(): Unit = {
-    auditingWireMockServer.stop
-    secureMessagingWireMockServer.stop
-    super.afterAll
+    auditingWireMockServer.stop()
+    secureMessagingWireMockServer.stop()
+    super.afterAll()
   }
 
   private def constructQueryParams(eori: String): String =
@@ -96,7 +96,7 @@ class SecureMessagingFrontendConnectorISpec extends ConnectorISpec with Injector
 
           connector.retrieveInboxPartial(ExportsTestData.eori).futureValue
 
-          verify(getRequestedFor(urlEqualTo(url)))
+          verifyReq(getRequestedFor(urlEqualTo(url)))
           verifyForAuditing()
         }
 
@@ -106,7 +106,7 @@ class SecureMessagingFrontendConnectorISpec extends ConnectorISpec with Injector
 
           connector.retrieveInboxPartial(ExportsTestData.eori).futureValue
 
-          verify(getRequestedFor(urlEqualTo(url)))
+          verifyReq(getRequestedFor(urlEqualTo(url)))
           verifyForAuditing()
         }
       }

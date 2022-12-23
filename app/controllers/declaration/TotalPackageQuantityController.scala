@@ -45,7 +45,7 @@ class TotalPackageQuantityController @Inject() (
 
   private val validTypes = Seq(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY)
 
-  def displayPage(): Action[AnyContent] = (authorize andThen journey(validTypes)) { implicit request =>
+  def displayPage: Action[AnyContent] = (authorize andThen journey(validTypes)) { implicit request =>
     val totalPackage = request.cacheModel.totalNumberOfItems.flatMap(_.totalPackage)
     val form = TotalPackageQuantity.form(request.declarationType).withSubmissionErrors
     Ok(totalPackageQuantity(totalPackage.fold(form)(value => form.fill(TotalPackageQuantity(Some(value))))))
@@ -54,7 +54,7 @@ class TotalPackageQuantityController @Inject() (
   def saveTotalPackageQuantity(): Action[AnyContent] = (authorize andThen journey(validTypes)).async { implicit request =>
     TotalPackageQuantity
       .form(request.declarationType)
-      .bindFromRequest
+      .bindFromRequest()
       .fold(
         formWithErrors => Future.successful(BadRequest(totalPackageQuantity(formWithErrors))),
         updateCache(_).map(_ => navigator.continueTo(NatureOfTransactionController.displayPage))

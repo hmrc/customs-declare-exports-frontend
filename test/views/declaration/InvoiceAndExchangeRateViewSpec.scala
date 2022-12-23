@@ -106,7 +106,7 @@ class InvoiceAndExchangeRateViewSpec extends PageWithButtonsSpec with Injector {
         val backButton = createView()(requestWithOfficeOfExitInsideUK).getElementById("back-link")
 
         backButton must containMessage("site.backToPreviousQuestion")
-        backButton.getElementById("back-link") must haveHref(InvoiceAndExchangeRateChoiceController.displayPage())
+        backButton.getElementById("back-link") must haveHref(InvoiceAndExchangeRateChoiceController.displayPage)
       }
 
       checkAllSaveButtonsAreDisplayed(createView())

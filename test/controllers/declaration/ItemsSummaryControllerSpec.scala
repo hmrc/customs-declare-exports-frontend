@@ -141,7 +141,7 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
           val result = controller.displayAddItemPage()(getRequest())
 
           status(result) mustBe SEE_OTHER
-          thePageNavigatedTo mustBe routes.ItemsSummaryController.displayItemsSummaryPage()
+          thePageNavigatedTo mustBe routes.ItemsSummaryController.displayItemsSummaryPage
         }
       }
     }
@@ -202,7 +202,7 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
           val result = controller.displayItemsSummaryPage()(getRequest())
 
           status(result) mustBe SEE_OTHER
-          thePageNavigatedTo mustBe routes.ItemsSummaryController.displayAddItemPage()
+          thePageNavigatedTo mustBe routes.ItemsSummaryController.displayAddItemPage
         }
       }
 
@@ -263,8 +263,8 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
           status(result) mustBe SEE_OTHER
           request.declarationType match {
             case DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL =>
-              thePageNavigatedTo mustBe routes.SupervisingCustomsOfficeController.displayPage()
-            case _ => thePageNavigatedTo mustBe routes.TransportLeavingTheBorderController.displayPage()
+              thePageNavigatedTo mustBe routes.SupervisingCustomsOfficeController.displayPage
+            case _ => thePageNavigatedTo mustBe routes.TransportLeavingTheBorderController.displayPage
           }
 
           verify(navigator).continueTo(any())(any())
@@ -306,7 +306,7 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
           val result = controller.submit()(postRequest(answerForm))
 
           status(result) mustBe SEE_OTHER
-          thePageNavigatedTo mustBe routes.TransportLeavingTheBorderController.displayPage()
+          thePageNavigatedTo mustBe routes.TransportLeavingTheBorderController.displayPage
         }
       }
     }
@@ -320,7 +320,7 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
         val result = controller.submit()(postRequest(answerForm))
 
         status(result) mustBe SEE_OTHER
-        thePageNavigatedTo mustBe routes.SupervisingCustomsOfficeController.displayPage()
+        thePageNavigatedTo mustBe routes.SupervisingCustomsOfficeController.displayPage
       }
 
       "return 303 (SEE_OTHER) and redirect to Warehouse Identification page when procedure code requires warehouse id" in {
@@ -334,7 +334,7 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
         val result = controller.submit()(postRequest(answerForm))
 
         status(result) mustBe SEE_OTHER
-        thePageNavigatedTo mustBe routes.WarehouseIdentificationController.displayPage()
+        thePageNavigatedTo mustBe routes.WarehouseIdentificationController.displayPage
       }
 
       "return 303 (SEE_OTHER) and redirect to Express Consignment page" when {
@@ -346,7 +346,7 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
           val result = controller.submit()(postRequest(answerForm))
 
           status(result) mustBe SEE_OTHER
-          thePageNavigatedTo mustBe routes.ExpressConsignmentController.displayPage()
+          thePageNavigatedTo mustBe routes.ExpressConsignmentController.displayPage
         }
       }
     }
@@ -373,7 +373,7 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
           val result = controller.displayRemoveItemConfirmationPage("someItemId")(getRequest())
 
           status(result) mustBe SEE_OTHER
-          thePageNavigatedTo mustBe routes.ItemsSummaryController.displayItemsSummaryPage()
+          thePageNavigatedTo mustBe routes.ItemsSummaryController.displayItemsSummaryPage
         }
       }
     }
@@ -410,7 +410,7 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
             val result = controller.removeItem("someId123")(postRequest(removeItemForm))
 
             status(result) mustBe SEE_OTHER
-            thePageNavigatedTo mustBe routes.ItemsSummaryController.displayItemsSummaryPage()
+            thePageNavigatedTo mustBe routes.ItemsSummaryController.displayItemsSummaryPage
           }
         }
 
@@ -433,7 +433,7 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
             val result = controller.removeItem(itemId)(postRequest(removeItemForm))
 
             status(result) mustBe SEE_OTHER
-            thePageNavigatedTo mustBe routes.ItemsSummaryController.displayItemsSummaryPage()
+            thePageNavigatedTo mustBe routes.ItemsSummaryController.displayItemsSummaryPage
 
             val items = declarationPassedToUpdateCache.items
             items.size mustBe 1
@@ -451,7 +451,7 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
           val result = controller.removeItem(itemId)(postRequest(removeItemForm))
 
           status(result) mustBe SEE_OTHER
-          thePageNavigatedTo mustBe routes.ItemsSummaryController.displayItemsSummaryPage()
+          thePageNavigatedTo mustBe routes.ItemsSummaryController.displayItemsSummaryPage
 
           verifyTheCacheIsUnchanged()
         }

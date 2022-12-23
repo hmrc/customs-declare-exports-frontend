@@ -17,8 +17,8 @@
 package controllers
 
 import base.ControllerSpec
-import controllers.routes.{CopyDeclarationController, DeclarationDetailsController}
 import controllers.declaration.routes.SummaryController
+import controllers.routes.{CopyDeclarationController, DeclarationDetailsController}
 import forms.{CopyDeclaration, Ducr, Lrn, LrnValidator}
 import models.DeclarationStatus.DRAFT
 import models.declaration.submissions.EnhancedStatus
@@ -185,7 +185,7 @@ class CopyDeclarationControllerSpec extends ControllerSpec with GivenWhenThen {
         val result = controller.submitPage(postRequest(correctForm))
 
         status(result) must be(SEE_OTHER)
-        redirectLocation(result) mustBe Some(SummaryController.displayPage().url)
+        redirectLocation(result) mustBe Some(SummaryController.displayPage.url)
       }
     }
 
@@ -201,7 +201,7 @@ class CopyDeclarationControllerSpec extends ControllerSpec with GivenWhenThen {
           val result = controller.submitPage(postRequest(correctForm))
 
           status(result) must be(SEE_OTHER)
-          redirectLocation(result) mustBe Some(SummaryController.displayPage().url)
+          redirectLocation(result) mustBe Some(SummaryController.displayPage.url)
 
           verify(mockCustomsDeclareExportsConnector).findSubmission(refEq(request.cacheModel.id))(any(), any())
 
@@ -225,7 +225,7 @@ class CopyDeclarationControllerSpec extends ControllerSpec with GivenWhenThen {
           val result = controller.submitPage(postRequest(correctForm))
 
           status(result) must be(SEE_OTHER)
-          redirectLocation(result) mustBe Some(SummaryController.displayPage().url)
+          redirectLocation(result) mustBe Some(SummaryController.displayPage.url)
 
           verify(mockCustomsDeclareExportsConnector).findSubmission(refEq(sessionDecId))(any(), any())
 

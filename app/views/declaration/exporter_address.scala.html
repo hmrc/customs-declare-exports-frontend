@@ -55,7 +55,7 @@
     title = Title("declaration.exporter-address.title", "declaration.section.2", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(ExporterDetails)))){
 
-    @formHelper(action = ExporterDetailsController.saveAddress(), 'autoComplete -> "off") {
+    @formHelper(action = ExporterDetailsController.saveAddress, 'autoComplete -> "off") {
 
         @errorSummary(eoriOrAddressErrors("details", form.errors))
 

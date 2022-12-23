@@ -41,7 +41,7 @@ object ConsignorEoriNumber extends DeclarationPage {
     hasEori -> requiredRadio("declaration.consignorEori.hasEori.empty", YesNoAnswer.allowedValues)
   )(ConsignorEoriNumber.apply)(ConsignorEoriNumber.unapply)
 
-  def form(): Form[ConsignorEoriNumber] = Form(ConsignorEoriNumber.mapping)
+  def form: Form[ConsignorEoriNumber] = Form(ConsignorEoriNumber.mapping)
 
   def apply(consignorDetails: ConsignorDetails): ConsignorEoriNumber =
     consignorDetails.details.eori match {

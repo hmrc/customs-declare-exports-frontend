@@ -24,7 +24,7 @@ import javax.inject.Inject
 
 class RootController @Inject() (mcc: MessagesControllerComponents) extends FrontendController(mcc) with I18nSupport {
 
-  def displayPage(): Action[AnyContent] = Action { _ =>
+  def displayPage: Action[AnyContent] = Action { _ =>
     Redirect(controllers.routes.ChoiceController.displayPage())
   }
 }

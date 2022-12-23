@@ -38,7 +38,7 @@ object RepresentativeEntity extends DeclarationPage {
   val mapping = Forms
     .mapping("details" -> eoriOnlyMapping)(RepresentativeEntity.apply)(RepresentativeEntity.unapply)
 
-  def form(): Form[RepresentativeEntity] = Form(mapping)
+  def form: Form[RepresentativeEntity] = Form(mapping)
 
   override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
     Seq(TariffContentKey(s"tariff.declaration.representativesEoriNumber.${DeclarationPage.getJourneyTypeSpecialisation(decType)}"))

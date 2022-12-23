@@ -159,7 +159,7 @@ class RoutingCountriesControllerSpec extends ControllerSpec {
           val result = controller.submitRoutingAnswer()(postRequest(correctForm))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe RoutingCountriesController.displayRoutingCountry()
+          thePageNavigatedTo mustBe RoutingCountriesController.displayRoutingCountry
         }
 
         "No" in {
@@ -170,7 +170,7 @@ class RoutingCountriesControllerSpec extends ControllerSpec {
           val result = controller.submitRoutingAnswer()(postRequest(correctForm))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe LocationOfGoodsController.displayPage()
+          thePageNavigatedTo mustBe LocationOfGoodsController.displayPage
         }
 
         "error fixing and the answer is yes" in {
@@ -193,7 +193,7 @@ class RoutingCountriesControllerSpec extends ControllerSpec {
           val result = controller.displayRoutingCountry()(getRequest())
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe RoutingCountriesController.displayRoutingQuestion()
+          thePageNavigatedTo mustBe RoutingCountriesController.displayRoutingQuestion
         }
 
         "No for Routing Question" in {
@@ -202,7 +202,7 @@ class RoutingCountriesControllerSpec extends ControllerSpec {
           val result = controller.displayRoutingCountry()(getRequest())
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe RoutingCountriesController.displayRoutingQuestion()
+          thePageNavigatedTo mustBe RoutingCountriesController.displayRoutingQuestion
         }
       }
 
@@ -217,7 +217,7 @@ class RoutingCountriesControllerSpec extends ControllerSpec {
             val result = controller.submitRoutingCountry()(postRequestAsFormUrlEncoded(correctForm: _*))
 
             await(result) mustBe aRedirectToTheNextPage
-            thePageNavigatedTo mustBe RoutingCountriesController.displayRoutingCountry()
+            thePageNavigatedTo mustBe RoutingCountriesController.displayRoutingCountry
 
             val updatedCountries = theCacheModelUpdated.locations.routingCountries
             theCacheModelUpdated.containRoutingCountries mustBe true
@@ -232,7 +232,7 @@ class RoutingCountriesControllerSpec extends ControllerSpec {
             val result = controller.submitRoutingCountry()(postRequestAsFormUrlEncoded(correctForm: _*))
 
             await(result) mustBe aRedirectToTheNextPage
-            thePageNavigatedTo mustBe RoutingCountriesController.displayRoutingCountry()
+            thePageNavigatedTo mustBe RoutingCountriesController.displayRoutingCountry
 
             val updatedCountries = theCacheModelUpdated.locations.routingCountries
             theCacheModelUpdated.containRoutingCountries mustBe true
@@ -252,7 +252,7 @@ class RoutingCountriesControllerSpec extends ControllerSpec {
           val result = controller.submitRoutingCountry()(postRequestAsFormUrlEncoded(Seq(removeAction): _*))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe RoutingCountriesController.displayRoutingCountry()
+          thePageNavigatedTo mustBe RoutingCountriesController.displayRoutingCountry
 
           val updatedCountries = theCacheModelUpdated.locations.routingCountries
           theCacheModelUpdated.containRoutingCountries mustBe true
@@ -266,7 +266,7 @@ class RoutingCountriesControllerSpec extends ControllerSpec {
           val result = controller.submitRoutingCountry()(postRequestAsFormUrlEncoded(removeAction))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe RoutingCountriesController.displayRoutingCountry()
+          thePageNavigatedTo mustBe RoutingCountriesController.displayRoutingCountry
 
           val updatedCountries = theCacheModelUpdated.locations.routingCountries
           theCacheModelUpdated.containRoutingCountries mustBe true
@@ -286,7 +286,7 @@ class RoutingCountriesControllerSpec extends ControllerSpec {
             val result = controller.submitRoutingCountry()(postRequestAsFormUrlEncoded(correctForm: _*))
 
             await(result) mustBe aRedirectToTheNextPage
-            thePageNavigatedTo mustBe LocationOfGoodsController.displayPage()
+            thePageNavigatedTo mustBe LocationOfGoodsController.displayPage
 
             val updatedCountries = theCacheModelUpdated.locations.routingCountries
             theCacheModelUpdated.containRoutingCountries mustBe true
@@ -302,7 +302,7 @@ class RoutingCountriesControllerSpec extends ControllerSpec {
             val result = controller.submitRoutingCountry()(postRequestAsFormUrlEncoded(correctForm: _*))
 
             await(result) mustBe aRedirectToTheNextPage
-            thePageNavigatedTo mustBe LocationOfGoodsController.displayPage()
+            thePageNavigatedTo mustBe LocationOfGoodsController.displayPage
 
             val updatedCountries = theCacheModelUpdated.locations.routingCountries
             theCacheModelUpdated.containRoutingCountries mustBe true
@@ -320,7 +320,7 @@ class RoutingCountriesControllerSpec extends ControllerSpec {
           verifyTheCacheIsUnchanged()
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe LocationOfGoodsController.displayPage()
+          thePageNavigatedTo mustBe LocationOfGoodsController.displayPage
         }
       }
     }

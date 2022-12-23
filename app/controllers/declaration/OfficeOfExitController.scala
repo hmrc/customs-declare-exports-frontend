@@ -44,7 +44,7 @@ class OfficeOfExitController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
-  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayPage: Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.locations.officeOfExit match {
       case Some(data) => Ok(officeOfExitPage(form.withSubmissionErrors.fill(data)))
       case _          => Ok(officeOfExitPage(form.withSubmissionErrors))
@@ -52,7 +52,8 @@ class OfficeOfExitController @Inject() (
   }
 
   def saveOffice(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    form.bindFromRequest
+    form
+      .bindFromRequest()
       .fold(
         formWithErrors => Future.successful(BadRequest(officeOfExitPage(formWithErrors))),
         updateCache(_).map(_ => navigator.continueTo(nextPage(request.declarationType)))

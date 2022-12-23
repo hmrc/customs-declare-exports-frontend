@@ -89,7 +89,7 @@ class DucrChoiceControllerSpec extends ControllerSpec {
         val result = controller.displayPage(getRequest())
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(RootController.displayPage().url)
+        redirectLocation(result) mustBe Some(RootController.displayPage.url)
       }
     }
   }
@@ -119,7 +119,7 @@ class DucrChoiceControllerSpec extends ControllerSpec {
         val result = controller.submitForm(postRequest(body))
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(RootController.displayPage().url)
+        redirectLocation(result) mustBe Some(RootController.displayPage.url)
       }
     }
   }

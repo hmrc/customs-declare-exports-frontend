@@ -65,7 +65,7 @@
     title = Title("declaration.transport.leavingTheBorder.title", "declaration.section.6", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(TransportLeavingTheBorder)))
 ) {
-    @formHelper(action = TransportLeavingTheBorderController.submitForm(), 'autoComplete -> "off") {
+    @formHelper(action = TransportLeavingTheBorderController.submitForm, 'autoComplete -> "off") {
         @errorSummary(radioGroupErrors("transportLeavingTheBorder", "Border_Sea", form.errors))
 
         @sectionHeader(messages("declaration.section.6"))

@@ -77,7 +77,7 @@ class WarehouseIdentificationViewSpec extends PageWithButtonsSpec with Injector 
       "display 'Back' button that links to 'Transport Leaving the Border' page" in {
         val backButton = createView().getElementById("back-link")
         backButton.text() mustBe messages("site.backToPreviousQuestion")
-        backButton.getElementById("back-link") must haveHref(TransportLeavingTheBorderController.displayPage())
+        backButton.getElementById("back-link") must haveHref(TransportLeavingTheBorderController.displayPage)
       }
     }
 
@@ -85,7 +85,7 @@ class WarehouseIdentificationViewSpec extends PageWithButtonsSpec with Injector 
       "display 'Back' button that links to 'Items Summary' page" in {
         val backButton = createView().getElementById("back-link")
         backButton.text() mustBe messages("site.backToPreviousQuestion")
-        backButton.getElementById("back-link") must haveHref(ItemsSummaryController.displayItemsSummaryPage())
+        backButton.getElementById("back-link") must haveHref(ItemsSummaryController.displayItemsSummaryPage)
       }
     }
   }

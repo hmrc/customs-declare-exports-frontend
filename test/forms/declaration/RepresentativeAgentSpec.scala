@@ -29,7 +29,7 @@ class RepresentativeAgentSpec extends DeclarationPageBaseSpec {
     "return form with errors" when {
 
       "provided with unrecognized response" in {
-        val form = RepresentativeAgent.form().bind(representativeAgentJSON("invalid"), JsonBindMaxChars)
+        val form = RepresentativeAgent.form.bind(representativeAgentJSON("invalid"), JsonBindMaxChars)
 
         form.hasErrors must be(true)
         form.errors.length must equal(1)
@@ -37,7 +37,7 @@ class RepresentativeAgentSpec extends DeclarationPageBaseSpec {
       }
 
       "provided with missing response" in {
-        val form = RepresentativeAgent.form().bind(representativeAgentJSON(""), JsonBindMaxChars)
+        val form = RepresentativeAgent.form.bind(representativeAgentJSON(""), JsonBindMaxChars)
 
         form.hasErrors must be(true)
         form.errors.length must equal(1)
@@ -47,7 +47,7 @@ class RepresentativeAgentSpec extends DeclarationPageBaseSpec {
 
     "return form without errors" when {
       "provided with valid response" in {
-        val form = RepresentativeAgent.form().bind(representativeAgentJSON(yes), JsonBindMaxChars)
+        val form = RepresentativeAgent.form.bind(representativeAgentJSON(yes), JsonBindMaxChars)
 
         form.hasErrors must be(false)
       }

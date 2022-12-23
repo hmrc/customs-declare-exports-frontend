@@ -52,7 +52,7 @@ class AdditionalDocumentAddController @Inject() (
   }
 
   def submitForm(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    val boundForm = globalErrors(form(request.cacheModel).bindFromRequest)
+    val boundForm = globalErrors(form(request.cacheModel).bindFromRequest())
 
     boundForm.fold(
       formWithErrors => Future.successful(BadRequest(additionalDocumentAddPage(itemId, formWithErrors))),
