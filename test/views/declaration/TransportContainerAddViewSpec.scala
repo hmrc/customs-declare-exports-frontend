@@ -32,9 +32,9 @@ class TransportContainerAddViewSpec extends PageWithButtonsSpec with Injector {
 
   val page = instanceOf[transport_container_add]
 
-  override val typeAndViewInstance = (STANDARD, page(form())(_, _))
+  override val typeAndViewInstance = (STANDARD, page(form)(_, _))
 
-  def createView(frm: Form[ContainerAdd] = form()): Document = page(frm)(journeyRequest(), messages)
+  def createView(frm: Form[ContainerAdd] = form): Document = page(frm)(journeyRequest(), messages)
 
   "Transport Containers Add View" should {
     val view = createView()
@@ -49,7 +49,7 @@ class TransportContainerAddViewSpec extends PageWithButtonsSpec with Injector {
 
     "display 'Back' button that links to 'containers summary' page" in {
       val backLinkContainer = view.getElementById("back-link")
-      backLinkContainer.getElementById("back-link") must haveHref(TransportContainerController.displayContainerSummary())
+      backLinkContainer.getElementById("back-link") must haveHref(TransportContainerController.displayContainerSummary)
     }
 
     checkAllSaveButtonsAreDisplayed(createView())
@@ -58,7 +58,7 @@ class TransportContainerAddViewSpec extends PageWithButtonsSpec with Injector {
   "Transport Containers Add View for invalid input" should {
 
     "display error if nothing is entered" in {
-      val view = createView(form().bind(Map[String, String]()))
+      val view = createView(form.bind(Map[String, String]()))
 
       view must haveGovukGlobalErrorSummary
       view must containErrorElementWithTagAndHref("a", "#id")
@@ -67,7 +67,7 @@ class TransportContainerAddViewSpec extends PageWithButtonsSpec with Injector {
     }
 
     "display error if incorrect containerId is entered" in {
-      val view = createView(form().fillAndValidate(ContainerAdd(Some("abc123@#"))))
+      val view = createView(form.fillAndValidate(ContainerAdd(Some("abc123@#"))))
 
       view must haveGovukGlobalErrorSummary
       view must containErrorElementWithTagAndHref("a", "#id")
@@ -76,7 +76,7 @@ class TransportContainerAddViewSpec extends PageWithButtonsSpec with Injector {
     }
 
     "display error if containerId is too long" in {
-      val view = createView(form().fillAndValidate(ContainerAdd(Some("12345678901234567890"))))
+      val view = createView(form.fillAndValidate(ContainerAdd(Some("12345678901234567890"))))
 
       view must haveGovukGlobalErrorSummary
       view must containErrorElementWithTagAndHref("a", "#id")
@@ -87,7 +87,7 @@ class TransportContainerAddViewSpec extends PageWithButtonsSpec with Injector {
 
   "Transport Containers Add View when filled" should {
     "display data in Container ID input" in {
-      val view = createView(form().fill(ContainerAdd(Some("Test"))))
+      val view = createView(form.fill(ContainerAdd(Some("Test"))))
 
       view.getElementById("id").attr("value") must be("Test")
     }

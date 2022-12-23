@@ -62,7 +62,8 @@ class AdditionalInformationController @Inject() (
   }
 
   def submitForm(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    yesNoForm.bindFromRequest
+    yesNoForm
+      .bindFromRequest()
       .fold(showFormWithErrors(itemId, _), yesNoAnswer => Future.successful(nextPage(yesNoAnswer, itemId)))
   }
 

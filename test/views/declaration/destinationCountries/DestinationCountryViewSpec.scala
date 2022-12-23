@@ -77,7 +77,7 @@ class DestinationCountryViewSpec extends PageWithButtonsSpec with Injector {
 
     onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED) { implicit request =>
       "display a back button linking to the /authorisation-choice page" in {
-        verifyBackLink(AuthorisationProcedureCodeChoiceController.displayPage())
+        verifyBackLink(AuthorisationProcedureCodeChoiceController.displayPage)
       }
     }
 
@@ -86,7 +86,7 @@ class DestinationCountryViewSpec extends PageWithButtonsSpec with Injector {
         List(Choice1040, ChoiceOthers).foreach { choice =>
           s"AuthorisationProcedureCodeChoice is '${choice.value}'" in {
             implicit val request = withRequest(STANDARD_PRE_LODGED, withAuthorisationProcedureCodeChoice(choice))
-            verifyBackLink(DeclarationHolderRequiredController.displayPage())
+            verifyBackLink(DeclarationHolderRequiredController.displayPage)
           }
         }
       }
@@ -96,7 +96,7 @@ class DestinationCountryViewSpec extends PageWithButtonsSpec with Injector {
       "AdditionalDeclarationType is 'STANDARD_FRONTIER' and" when {
         s"AuthorisationProcedureCodeChoice is 'Code1040'" in {
           implicit val request = withRequest(STANDARD_FRONTIER, withAuthorisationProcedureCodeChoice(Choice1040))
-          verifyBackLink(DeclarationHolderRequiredController.displayPage())
+          verifyBackLink(DeclarationHolderRequiredController.displayPage)
         }
       }
     }
@@ -106,14 +106,14 @@ class DestinationCountryViewSpec extends PageWithButtonsSpec with Injector {
         s"AuthorisationProcedureCodeChoice is 'CodeOthers'" in {
           // However this should not be possible, since the user should always be forced to enter at least one auth.
           implicit val request = withRequest(STANDARD_FRONTIER, withAuthorisationProcedureCodeChoice(ChoiceOthers))
-          verifyBackLink(AuthorisationProcedureCodeChoiceController.displayPage())
+          verifyBackLink(AuthorisationProcedureCodeChoiceController.displayPage)
         }
       }
     }
 
     onJourney(CLEARANCE, OCCASIONAL) { implicit request =>
       "display a back button linking to the /is-authorisation-required  page" in {
-        verifyBackLink(DeclarationHolderRequiredController.displayPage())
+        verifyBackLink(DeclarationHolderRequiredController.displayPage)
       }
     }
 
@@ -124,7 +124,7 @@ class DestinationCountryViewSpec extends PageWithButtonsSpec with Injector {
         s"on $declarationType journey and" when {
           "the declaration contains at least one authorisation" in {
             implicit val request = withRequestOfType(declarationType, withDeclarationHolders(holder))
-            verifyBackLink(DeclarationHolderSummaryController.displayPage())
+            verifyBackLink(DeclarationHolderSummaryController.displayPage)
           }
         }
       }

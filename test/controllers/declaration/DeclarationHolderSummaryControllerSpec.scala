@@ -61,7 +61,7 @@ class DeclarationHolderSummaryControllerSpec extends ControllerSpec with OptionV
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration(withDeclarationHolders(declarationHolder)))
-    await(controller.displayPage()(request))
+    await(controller.displayPage(request))
     theResponseForm
   }
 
@@ -91,7 +91,7 @@ class DeclarationHolderSummaryControllerSpec extends ControllerSpec with OptionV
         "the cache contains one or more holders" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationHolders(declarationHolder)))
 
-          val result = controller.displayPage()(getRequest())
+          val result = controller.displayPage(getRequest())
 
           status(result) mustBe OK
           verifyPageInvoked()
@@ -102,10 +102,10 @@ class DeclarationHolderSummaryControllerSpec extends ControllerSpec with OptionV
         "there are no holders in the cache" in {
           withNewCaching(aDeclarationAfter(request.cacheModel))
 
-          val result = controller.displayPage()(getRequest())
+          val result = controller.displayPage(getRequest())
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe routes.DeclarationHolderAddController.displayPage()
+          thePageNavigatedTo mustBe routes.DeclarationHolderAddController.displayPage
         }
       }
     }
@@ -135,7 +135,7 @@ class DeclarationHolderSummaryControllerSpec extends ControllerSpec with OptionV
           val result = controller.submitForm()(postRequest(requestBody))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe routes.DeclarationHolderAddController.displayPage()
+          thePageNavigatedTo mustBe routes.DeclarationHolderAddController.displayPage
         }
 
         "the user submits the page answering Yes in error-fix mode" in {
@@ -145,7 +145,7 @@ class DeclarationHolderSummaryControllerSpec extends ControllerSpec with OptionV
           val result = controller.submitForm()(postRequest(requestBody))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe routes.DeclarationHolderAddController.displayPage()
+          thePageNavigatedTo mustBe routes.DeclarationHolderAddController.displayPage
         }
       }
     }
@@ -159,7 +159,7 @@ class DeclarationHolderSummaryControllerSpec extends ControllerSpec with OptionV
           val result = controller.submitForm()(postRequest(requestBody))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe routes.DestinationCountryController.displayPage()
+          thePageNavigatedTo mustBe routes.DestinationCountryController.displayPage
         }
       }
 
@@ -172,7 +172,7 @@ class DeclarationHolderSummaryControllerSpec extends ControllerSpec with OptionV
           val result = controller.submitForm()(postRequest(requestBody))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe routes.DestinationCountryController.displayPage()
+          thePageNavigatedTo mustBe routes.DestinationCountryController.displayPage
         }
       }
     }

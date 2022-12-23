@@ -65,7 +65,7 @@
     ),
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(LocationOfGoods)))) {
 
-    @formHelper(action = LocationOfGoodsController.saveLocation(), 'autoComplete -> "off") {
+    @formHelper(action = LocationOfGoodsController.saveLocation, 'autoComplete -> "off") {
 
         @errorSummary(form.errors)
 

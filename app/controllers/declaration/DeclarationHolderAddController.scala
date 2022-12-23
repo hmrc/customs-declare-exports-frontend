@@ -47,12 +47,12 @@ class DeclarationHolderAddController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
-  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayPage: Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     Ok(declarationHolderPage(form.withSubmissionErrors, request.eori))
   }
 
   def submitForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    val boundForm = form.bindFromRequest
+    val boundForm = form.bindFromRequest()
 
     boundForm.fold(formWithErrors => Future.successful(BadRequest(declarationHolderPage(formWithErrors, request.eori))), _ => saveHolder(boundForm))
   }

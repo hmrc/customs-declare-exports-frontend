@@ -47,9 +47,9 @@ class DeclarationHolderSpec extends DeclarationPageBaseSpec with JourneyTypeTest
         val boundForm = mapping.bind(input)
 
         boundForm.isRight mustBe true
-        boundForm.right.get.authorisationTypeCode mustBe Some(authorisationTypeCode)
-        boundForm.right.get.eori mustBe Some(Eori(eori))
-        boundForm.right.get.eoriSource mustBe Some(EoriSource.UserEori)
+        boundForm.toOption.get.authorisationTypeCode mustBe Some(authorisationTypeCode)
+        boundForm.toOption.get.eori mustBe Some(Eori(eori))
+        boundForm.toOption.get.eoriSource mustBe Some(EoriSource.UserEori)
       }
     }
 
@@ -60,7 +60,7 @@ class DeclarationHolderSpec extends DeclarationPageBaseSpec with JourneyTypeTest
         val result = mapping.bind(input)
 
         result.isLeft mustBe true
-        val errors = result.left.get
+        val errors = result.left.toOption.get
         errors.size mustBe 2
         errors.map(_.message) must contain("declaration.declarationHolder.authorisationCode.empty")
         errors.map(_.message) must contain("declaration.declarationHolder.eori.error.radio")
@@ -71,7 +71,7 @@ class DeclarationHolderSpec extends DeclarationPageBaseSpec with JourneyTypeTest
         val result = mapping.bind(input)
 
         result.isLeft mustBe true
-        val errors = result.left.get
+        val errors = result.left.toOption.get
         errors.size mustBe 2
         errors.map(_.message) must contain("declaration.declarationHolder.authorisationCode.empty")
         errors.map(_.message) must contain("declaration.declarationHolder.eori.error.radio")
@@ -82,7 +82,7 @@ class DeclarationHolderSpec extends DeclarationPageBaseSpec with JourneyTypeTest
         val result = mapping.bind(input)
 
         result.isLeft mustBe true
-        val errors = result.left.get
+        val errors = result.left.toOption.get
         errors.size mustBe 1
         errors.head.message mustBe "declaration.declarationHolder.eori.error.radio"
       }
@@ -92,7 +92,7 @@ class DeclarationHolderSpec extends DeclarationPageBaseSpec with JourneyTypeTest
         val result = mapping.bind(input)
 
         result.isLeft mustBe true
-        val errors = result.left.get
+        val errors = result.left.toOption.get
         errors.size mustBe 2
         errors.head.message mustBe "declaration.declarationHolder.authorisationCode.empty"
         errors.last.message mustBe "declaration.declarationHolder.eori.error.radio"
@@ -103,7 +103,7 @@ class DeclarationHolderSpec extends DeclarationPageBaseSpec with JourneyTypeTest
         val result = mapping.bind(input)
 
         result.isLeft mustBe true
-        val errors = result.left.get
+        val errors = result.left.toOption.get
         errors.size mustBe 2
         errors.head.message mustBe "declaration.declarationHolder.authorisationCode.empty"
         errors.last.message mustBe "error.required"
@@ -114,7 +114,7 @@ class DeclarationHolderSpec extends DeclarationPageBaseSpec with JourneyTypeTest
         val result = mapping.bind(input)
 
         result.isLeft mustBe true
-        val errors = result.left.get
+        val errors = result.left.toOption.get
         errors.size mustBe 1
         errors.head.message mustBe "declaration.declarationHolder.authorisationCode.empty"
       }
@@ -124,7 +124,7 @@ class DeclarationHolderSpec extends DeclarationPageBaseSpec with JourneyTypeTest
         val result = mapping.bind(input)
 
         result.isLeft mustBe true
-        val errors = result.left.get
+        val errors = result.left.toOption.get
         errors.size mustBe 1
         errors.head.message mustBe "error.required"
       }
@@ -134,7 +134,7 @@ class DeclarationHolderSpec extends DeclarationPageBaseSpec with JourneyTypeTest
         val result = mapping.bind(input)
 
         result.isLeft mustBe true
-        val errors = result.left.get
+        val errors = result.left.toOption.get
         errors.size mustBe 1
         errors.head.message mustBe "declaration.declarationHolder.eori.error.radio"
       }
@@ -144,7 +144,7 @@ class DeclarationHolderSpec extends DeclarationPageBaseSpec with JourneyTypeTest
         val result = mapping.bind(input)
 
         result.isLeft mustBe true
-        val errors = result.left.get
+        val errors = result.left.toOption.get
         errors.size mustBe 1
         errors.head.message mustBe "declaration.eori.error.format"
       }
@@ -155,7 +155,7 @@ class DeclarationHolderSpec extends DeclarationPageBaseSpec with JourneyTypeTest
           val result = DeclarationHolder.mapping(eori, Some(additionalDeclarationType)).bind(input)
 
           result.isLeft mustBe true
-          val errors = result.left.get
+          val errors = result.left.toOption.get
           errors.size mustBe 1
           errors.head.message mustBe "declaration.declarationHolder.EXRR.error.prelodged"
         }

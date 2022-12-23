@@ -62,7 +62,7 @@ class PersonPresentingGoodsDetailsControllerSpec extends ControllerSpec with Sca
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration(withType(DeclarationType.CLEARANCE)))
-    await(controller.displayPage()(request))
+    await(controller.displayPage(request))
     theFormPassedToView
   }
 
@@ -86,7 +86,7 @@ class PersonPresentingGoodsDetailsControllerSpec extends ControllerSpec with Sca
         "return 200 (OK)" in {
           withNewCaching(request.cacheModel)
 
-          val result = controller.displayPage()(getRequest())
+          val result = controller.displayPage(getRequest())
 
           status(result) mustBe OK
         }
@@ -94,7 +94,7 @@ class PersonPresentingGoodsDetailsControllerSpec extends ControllerSpec with Sca
         "call ExportsCacheService" in {
           withNewCaching(request.cacheModel)
 
-          controller.displayPage()(getRequest()).futureValue
+          controller.displayPage(getRequest()).futureValue
 
           verify(mockExportsCacheService).get(meq(existingDeclarationId))(any())
         }
@@ -102,7 +102,7 @@ class PersonPresentingGoodsDetailsControllerSpec extends ControllerSpec with Sca
         "call page view, passing form with data from cache" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withPersonPresentingGoodsDetails(Some(Eori(testEori)))))
 
-          controller.displayPage()(getRequest()).futureValue
+          controller.displayPage(getRequest()).futureValue
 
           theFormPassedToView.value mustBe defined
           theFormPassedToView.value.map(_.eori) mustBe Some(Eori(testEori))
@@ -114,7 +114,7 @@ class PersonPresentingGoodsDetailsControllerSpec extends ControllerSpec with Sca
       "return 303 (SEE_OTHER)" in {
         withNewCaching(request.cacheModel)
 
-        val result = controller.displayPage()(getRequest())
+        val result = controller.displayPage(getRequest())
 
         status(result) mustBe SEE_OTHER
       }
@@ -122,9 +122,9 @@ class PersonPresentingGoodsDetailsControllerSpec extends ControllerSpec with Sca
       "redirect to start page" in {
         withNewCaching(request.cacheModel)
 
-        val result = controller.displayPage()(getRequest())
+        val result = controller.displayPage(getRequest())
 
-        redirectLocation(result) mustBe Some(RootController.displayPage().url)
+        redirectLocation(result) mustBe Some(RootController.displayPage.url)
       }
     }
   }
@@ -149,7 +149,7 @@ class PersonPresentingGoodsDetailsControllerSpec extends ControllerSpec with Sca
 
           controller.submitForm()(postRequest(correctForm)).futureValue
 
-          thePageNavigatedTo mustBe ExporterEoriNumberController.displayPage()
+          thePageNavigatedTo mustBe ExporterEoriNumberController.displayPage
         }
 
         "call Cache to update it" in {
@@ -199,7 +199,7 @@ class PersonPresentingGoodsDetailsControllerSpec extends ControllerSpec with Sca
 
         val result = controller.submitForm()(postRequest(correctForm))
 
-        redirectLocation(result) mustBe Some(RootController.displayPage().url)
+        redirectLocation(result) mustBe Some(RootController.displayPage.url)
       }
     }
   }

@@ -26,7 +26,8 @@ object JsonFile {
 
     Json.parse(jsonInputStream) match {
       case JsArray(cs) =>
-        cs.toList.collect { case JsArray(Seq(label: JsString, code: JsString)) =>
+        // Using collection.Seq instead of Seq due to Json.parse return type
+        cs.toList.collect { case JsArray(collection.Seq(label: JsString, code: JsString)) =>
           deserializer(label.value, code.value)
         }
       case _ => throwError(file)

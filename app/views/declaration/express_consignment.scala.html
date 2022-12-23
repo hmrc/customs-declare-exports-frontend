@@ -49,7 +49,7 @@
     title = Title("declaration.transportInformation.expressConsignment.title", "declaration.section.6", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(ExpressConsignment)))) {
 
-    @formHelper(action = routes.ExpressConsignmentController.submitForm(), 'autoComplete -> "off") {
+    @formHelper(action = routes.ExpressConsignmentController.submitForm, 'autoComplete -> "off") {
         @errorSummary(yesNoErrors(form.errors))
 
         @sectionHeader(messages("declaration.section.6"))

@@ -37,7 +37,7 @@
     else Some(Actions(
         items = List(
             actionSummaryItem(
-                href = routes.AdditionalActorsAddController.displayPage().url,
+                href = routes.AdditionalActorsAddController.displayPage.url,
                 content = HtmlContent(linkContent(messages("site.change"))),
                 visuallyHiddenText = Some(messages("declaration.summary.parties.additional.empty.change"))
             )
@@ -57,7 +57,7 @@
     if (actionsEnabled)
         link(
             messages("site.change"),
-            callForSummaryChangeLink(routes.AdditionalActorsSummaryController.displayPage()),
+            callForSummaryChangeLink(routes.AdditionalActorsSummaryController.displayPage),
             textHidden = Some(messages(
                 "declaration.summary.parties.additional.change",
                 actorPartyType(actor),

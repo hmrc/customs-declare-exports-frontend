@@ -22,9 +22,9 @@ import config.featureFlags.FeatureSwitchConfig
 import features.Feature
 import models.requests.JourneyRequest
 import models.{IdentityData, SignedInUser}
-import org.mockito.ArgumentMatchers._
-import org.mockito.BDDMockito._
-import org.mockito.Mockito._
+import org.mockito.ArgumentMatchers.any
+import org.mockito.BDDMockito.`given`
+import org.mockito.Mockito.reset
 import org.scalatest.BeforeAndAfterEach
 import play.api.Configuration
 import play.api.mvc.{Result, Results}
@@ -70,7 +70,7 @@ class FeatureFlagActionSpec extends UnitWithMocksSpec with BeforeAndAfterEach wi
         val refiner =
           new FeatureFlagAction(new FeatureSwitchConfig(Configuration(ConfigFactory.parseString("microservice.services.features.default=disabled"))))
 
-        await(refiner(Feature.default).invokeBlock(journey, block)) mustBe Results.Redirect(controllers.routes.RootController.displayPage())
+        await(refiner(Feature.default).invokeBlock(journey, block)) mustBe Results.Redirect(controllers.routes.RootController.displayPage)
       }
 
     }

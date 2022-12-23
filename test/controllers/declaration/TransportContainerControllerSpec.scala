@@ -119,7 +119,7 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
         val result = controller.displayContainerSummary()(getRequest())
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe TransportContainerController.displayAddContainer()
+        thePageNavigatedTo mustBe TransportContainerController.displayAddContainer
       }
     }
   }
@@ -140,7 +140,7 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
         val result = controller.displayContainerRemove(containerId)(getRequest())
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe TransportContainerController.displayContainerSummary()
+        thePageNavigatedTo mustBe TransportContainerController.displayContainerSummary
       }
     }
   }
@@ -244,7 +244,7 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
         val result = controller.submitSummaryAction()(postRequest(body))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe TransportContainerController.displayAddContainer()
+        thePageNavigatedTo mustBe TransportContainerController.displayAddContainer
       }
 
       "user indicates they want to add another container in error-fix mode" in {
@@ -289,7 +289,7 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
         val result = controller.submitContainerRemove(containerId)(postRequest(body))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe TransportContainerController.displayContainerSummary()
+        thePageNavigatedTo mustBe TransportContainerController.displayContainerSummary
 
         theCacheModelUpdated.containers mustBe Seq.empty
       }
@@ -303,9 +303,9 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
         val result = controller.submitContainerRemove(containerId)(postRequest(body))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe TransportContainerController.displayContainerSummary()
+        thePageNavigatedTo mustBe TransportContainerController.displayContainerSummary
 
-        verifyTheCacheIsUnchanged
+        verifyTheCacheIsUnchanged()
       }
     }
   }

@@ -45,8 +45,8 @@ class RepresentativeEntityController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
-  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    val frm = form().withSubmissionErrors()
+  def displayPage: Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    val frm = form.withSubmissionErrors
     request.cacheModel.parties.representativeDetails.flatMap(_.details) match {
       case Some(data) => Ok(representativeEntityPage(frm.fill(RepresentativeEntity(data))))
       case _          => Ok(representativeEntityPage(frm))
@@ -54,7 +54,7 @@ class RepresentativeEntityController @Inject() (
   }
 
   def submitForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    form()
+    form
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[RepresentativeEntity]) => Future.successful(BadRequest(representativeEntityPage(formWithErrors))),

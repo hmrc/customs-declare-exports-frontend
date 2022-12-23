@@ -19,9 +19,9 @@ package controllers.declaration
 import base.ControllerSpec
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
+import models.DeclarationType
 import models.DeclarationType.{OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
 import models.requests.JourneyRequest
-import models.DeclarationType
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
@@ -65,7 +65,7 @@ class LinkDucrToMucrControllerSpec extends ControllerSpec {
   }
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
-    await(controller.displayPage()(request))
+    await(controller.displayPage(request))
     theResponseForm
   }
 
@@ -74,7 +74,7 @@ class LinkDucrToMucrControllerSpec extends ControllerSpec {
     "return 200 (OK)" when {
 
       "display page method is invoked and cache is empty" in {
-        val result = controller.displayPage()(getRequest())
+        val result = controller.displayPage(getRequest())
         status(result) must be(OK)
         verifyPageInvoked
       }
@@ -82,7 +82,7 @@ class LinkDucrToMucrControllerSpec extends ControllerSpec {
       "display page method is invoked and cache is not empty" in {
         withNewCaching(aDeclaration(withLinkDucrToMucr()))
 
-        val result = controller.displayPage()(getRequest())
+        val result = controller.displayPage(getRequest())
         status(result) must be(OK)
         verifyPageInvoked
       }
@@ -94,7 +94,7 @@ class LinkDucrToMucrControllerSpec extends ControllerSpec {
     "return 303 (SEE_OTHER) and redirect to 'Enter a MUCR' page" when {
       onEveryDeclarationJourney() { implicit request =>
         "answer is 'yes'" in {
-          verifyRedirect(YesNoAnswers.yes, routes.MucrController.displayPage())
+          verifyRedirect(YesNoAnswers.yes, routes.MucrController.displayPage)
         }
       }
     }
@@ -102,7 +102,7 @@ class LinkDucrToMucrControllerSpec extends ControllerSpec {
     "return 303 (SEE_OTHER) and redirect to 'Are you the exporter?' page" when {
       onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { implicit request =>
         "answer is 'no'" in {
-          verifyRedirect(YesNoAnswers.no, routes.DeclarantExporterController.displayPage())
+          verifyRedirect(YesNoAnswers.no, routes.DeclarantExporterController.displayPage)
         }
       }
     }
@@ -110,7 +110,7 @@ class LinkDucrToMucrControllerSpec extends ControllerSpec {
     "return 303 (SEE_OTHER) and redirect to 'Is this an entry into declarant's records?' page" when {
       onClearance { implicit request =>
         "answer is 'no'" in {
-          verifyRedirect(YesNoAnswers.no, routes.EntryIntoDeclarantsRecordsController.displayPage())
+          verifyRedirect(YesNoAnswers.no, routes.EntryIntoDeclarantsRecordsController.displayPage)
         }
       }
     }

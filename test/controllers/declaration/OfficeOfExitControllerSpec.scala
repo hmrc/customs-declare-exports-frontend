@@ -65,7 +65,7 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration())
-    await(controller.displayPage()(request))
+    await(controller.displayPage(request))
     theResponseForm
   }
 
@@ -74,7 +74,7 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
       "display page method is invoked and cache is empty" in {
         withNewCaching(request.cacheModel)
 
-        val result = controller.displayPage()(getRequest())
+        val result = controller.displayPage(getRequest())
 
         status(result) mustBe OK
         checkViewInteractions()
@@ -86,7 +86,7 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
         val officeId = "GB123456"
         withNewCaching(aDeclarationAfter(request.cacheModel, withOfficeOfExit(officeId)))
 
-        val result = controller.displayPage()(getRequest())
+        val result = controller.displayPage(getRequest())
 
         status(result) mustBe OK
         checkViewInteractions()
@@ -124,7 +124,7 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
         val result = controller.saveOffice()(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe routes.InvoiceAndExchangeRateChoiceController.displayPage()
+        thePageNavigatedTo mustBe routes.InvoiceAndExchangeRateChoiceController.displayPage
         checkViewInteractions(0)
         theCacheModelUpdated.locations.officeOfExit must be(Some(OfficeOfExit(officeOfExitInput)))
       }
@@ -141,7 +141,7 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
         val result = controller.saveOffice()(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe routes.PreviousDocumentsSummaryController.displayPage()
+        thePageNavigatedTo mustBe routes.PreviousDocumentsSummaryController.displayPage
         checkViewInteractions(0)
         theCacheModelUpdated.locations.officeOfExit must be(Some(OfficeOfExit(officeOfExitInput)))
       }

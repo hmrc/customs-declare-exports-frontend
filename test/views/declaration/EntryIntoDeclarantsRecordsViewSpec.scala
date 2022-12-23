@@ -31,7 +31,7 @@ import views.html.declaration.entry_into_declarants_records
 class EntryIntoDeclarantsRecordsViewSpec extends UnitViewSpec with Injector with CommonMessages {
 
   private val page = instanceOf[entry_into_declarants_records]
-  private def createView(form: Form[YesNoAnswer] = EntryIntoDeclarantsRecords.form()): Document =
+  private def createView(form: Form[YesNoAnswer] = EntryIntoDeclarantsRecords.form): Document =
     page(form)(journeyRequest(DeclarationType.CLEARANCE), messages)
 
   "Entry Into Declarant Records view" when {
@@ -62,7 +62,7 @@ class EntryIntoDeclarantsRecordsViewSpec extends UnitViewSpec with Injector with
         val backButton = createView().getElementById("back-link")
 
         backButton must containMessage(backToPreviousQuestionCaption)
-        backButton must haveHref(routes.LinkDucrToMucrController.displayPage().url)
+        backButton must haveHref(routes.LinkDucrToMucrController.displayPage.url)
       }
 
     }
@@ -73,7 +73,7 @@ class EntryIntoDeclarantsRecordsViewSpec extends UnitViewSpec with Injector with
 
         "the answer is Yes" in {
 
-          val form = EntryIntoDeclarantsRecords.form().fill(Yes.value)
+          val form = EntryIntoDeclarantsRecords.form.fill(Yes.value)
           val view = createView(form)
 
           view.getElementById("answer_yes") must beSelected
@@ -82,7 +82,7 @@ class EntryIntoDeclarantsRecordsViewSpec extends UnitViewSpec with Injector with
 
         "the answer is No" in {
 
-          val form = EntryIntoDeclarantsRecords.form().fill(No.value)
+          val form = EntryIntoDeclarantsRecords.form.fill(No.value)
           val view = createView(form)
 
           view.getElementById("answer_yes") mustNot beSelected
@@ -96,14 +96,14 @@ class EntryIntoDeclarantsRecordsViewSpec extends UnitViewSpec with Injector with
       "display error summary" in {
 
         val form =
-          EntryIntoDeclarantsRecords.form().withError(FormError("is-entry-into-declarant-records", "declaration.entryIntoDeclarantRecords.error"))
+          EntryIntoDeclarantsRecords.form.withError(FormError("is-entry-into-declarant-records", "declaration.entryIntoDeclarantRecords.error"))
         createView(form) must haveGovukGlobalErrorSummary
       }
 
       "display error next to the radio button element" in {
 
         val form =
-          EntryIntoDeclarantsRecords.form().withError(FormError("is-entry-into-declarant-records", "declaration.entryIntoDeclarantRecords.error"))
+          EntryIntoDeclarantsRecords.form.withError(FormError("is-entry-into-declarant-records", "declaration.entryIntoDeclarantRecords.error"))
         createView(form) must haveGovukFieldError("is-entry-into-declarant-records", messages("declaration.entryIntoDeclarantRecords.error"))
       }
     }

@@ -28,7 +28,7 @@ import models.DeclarationType._
 import models.declaration.{DeclarationHoldersData, EoriSource}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito._
+import org.mockito.Mockito.{reset, times, verify, verifyNoInteractions, when}
 import org.scalatest.{GivenWhenThen, OptionValues}
 import play.api.data.Form
 import play.api.libs.json.Json
@@ -162,7 +162,7 @@ class DeclarationHolderRemoveControllerSpec extends ControllerSpec with ErrorHan
             val result = controller.submitForm(id)(postRequest(body))
 
             await(result) mustBe aRedirectToTheNextPage
-            thePageNavigatedTo mustBe DeclarationHolderSummaryController.displayPage()
+            thePageNavigatedTo mustBe DeclarationHolderSummaryController.displayPage
 
             And("'isRequired' should be set to None when the journey requires to skip /is-authorisation-required")
             val expectedHoldersData = request.declarationType match {
@@ -180,7 +180,7 @@ class DeclarationHolderRemoveControllerSpec extends ControllerSpec with ErrorHan
           val result = controller.submitForm(id)(postRequest(body))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe DeclarationHolderSummaryController.displayPage()
+          thePageNavigatedTo mustBe DeclarationHolderSummaryController.displayPage
 
           verifyTheCacheIsUnchanged()
         }
@@ -205,7 +205,7 @@ class DeclarationHolderRemoveControllerSpec extends ControllerSpec with ErrorHan
               val result = controller.submitForm(id)(postRequest(body))
 
               await(result) mustBe aRedirectToTheNextPage
-              thePageNavigatedTo mustBe DeclarationHolderAddController.displayPage()
+              thePageNavigatedTo mustBe DeclarationHolderAddController.displayPage
               theCacheModelUpdated.parties.declarationHoldersData mustBe None
             }
           }
@@ -221,7 +221,7 @@ class DeclarationHolderRemoveControllerSpec extends ControllerSpec with ErrorHan
               val result = controller.submitForm(id)(postRequest(body))
 
               await(result) mustBe aRedirectToTheNextPage
-              thePageNavigatedTo mustBe DeclarationHolderRequiredController.displayPage()
+              thePageNavigatedTo mustBe DeclarationHolderRequiredController.displayPage
 
               theCacheModelUpdated.parties.declarationHoldersData mustBe None
             }
@@ -239,7 +239,7 @@ class DeclarationHolderRemoveControllerSpec extends ControllerSpec with ErrorHan
                 val result = controller.submitForm(id)(postRequest(body))
 
                 await(result) mustBe aRedirectToTheNextPage
-                thePageNavigatedTo mustBe DeclarationHolderRequiredController.displayPage()
+                thePageNavigatedTo mustBe DeclarationHolderRequiredController.displayPage
 
                 theCacheModelUpdated.parties.declarationHoldersData mustBe None
               }

@@ -55,7 +55,7 @@ class CommodityDetailsController @Inject() (
   def submitForm(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     CommodityDetails
       .form(request.declarationType)
-      .bindFromRequest
+      .bindFromRequest()
       .fold(
         formWithErrors => Future.successful(BadRequest(commodityDetailsPage(itemId, formWithErrors))),
         commodityDetails => {

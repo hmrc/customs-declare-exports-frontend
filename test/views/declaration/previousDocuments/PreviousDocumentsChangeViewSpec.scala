@@ -46,7 +46,7 @@ class PreviousDocumentsChangeViewSpec extends UnitViewSpec with Injector {
       "display 'Back' button that links to 'Previous Documents Summary' page" in {
         val backButton = view.getElementById("back-link")
         backButton must containMessage("site.backToPreviousQuestion")
-        backButton must haveHref(PreviousDocumentsSummaryController.displayPage())
+        backButton must haveHref(PreviousDocumentsSummaryController.displayPage)
       }
     }
   }

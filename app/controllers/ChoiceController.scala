@@ -60,15 +60,16 @@ class ChoiceController @Inject() (
   }
 
   def submitChoice(): Action[AnyContent] = (authenticate andThen verifyEmail) { implicit request =>
-    form.bindFromRequest
+    form
+      .bindFromRequest()
       .fold(
         (formWithErrors: Form[Choice]) => BadRequest(choicePage(formWithErrors, availableJourneys)),
         choice =>
           (choice.value match {
-            case CreateDec   => Redirect(declaration.routes.DeclarationChoiceController.displayPage())
+            case CreateDec   => Redirect(declaration.routes.DeclarationChoiceController.displayPage)
             case Movements   => Redirect(Call("GET", externalServicesConfig.customsMovementsFrontendUrl))
             case ContinueDec => Redirect(routes.SavedDeclarationsController.displayDeclarations())
-            case CancelDec   => Redirect(routes.CancelDeclarationController.displayPage())
+            case CancelDec   => Redirect(routes.CancelDeclarationController.displayPage)
             case Dashboard   => Redirect(toDashboard)
             case Inbox       => Redirect(routes.SecureMessagingController.displayInbox)
           }).removingFromSession(declarationId, errorFixModeSessionKey)

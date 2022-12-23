@@ -17,11 +17,12 @@
 package views.guidance
 
 import base.Injector
-import collection.JavaConverters._
 import config.AppConfig
 import views.declaration.spec.UnitViewSpec
 import views.html.guidance.complete_declaration
 import views.tags.ViewTest
+
+import scala.jdk.CollectionConverters.CollectionHasAsScala
 
 @ViewTest
 class CompleteDeclarationViewSpec extends UnitViewSpec with Injector {

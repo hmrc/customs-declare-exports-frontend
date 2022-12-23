@@ -44,8 +44,8 @@ class ConsignmentReferencesController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
-  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    val frm = form(request.declarationType, request.cacheModel.additionalDeclarationType).withSubmissionErrors()
+  def displayPage: Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    val frm = form(request.declarationType, request.cacheModel.additionalDeclarationType).withSubmissionErrors
     request.cacheModel.consignmentReferences match {
       case Some(data) => Ok(consignmentReferencesPage(frm.fill(data)))
       case _          => Ok(consignmentReferencesPage(frm))

@@ -47,7 +47,7 @@ class TaricCodeSummaryController @Inject() (
 
   def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.itemBy(itemId).flatMap(_.taricCodes) match {
-      case Some(taricCodes) if taricCodes.nonEmpty => Ok(taricCodesPage(itemId, addYesNoForm.withSubmissionErrors(), taricCodes))
+      case Some(taricCodes) if taricCodes.nonEmpty => Ok(taricCodesPage(itemId, addYesNoForm.withSubmissionErrors, taricCodes))
       case _                                       => navigator.continueTo(TaricCodeAddController.displayPage(itemId))
     }
   }

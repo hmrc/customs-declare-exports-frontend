@@ -97,7 +97,7 @@
 @govukLayout(
     title = Title("declaration.authorisations.procedureCodeChoice.title", "declaration.section.2", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(AuthorisationProcedureCodeChoice)))) {
-    @formHelper(action = AuthorisationProcedureCodeChoiceController.submitForm(), 'autoComplete -> "off") {
+    @formHelper(action = AuthorisationProcedureCodeChoiceController.submitForm, 'autoComplete -> "off") {
         @errorSummary(radioGroupErrors(formFieldName, Code1040.toString, form.errors))
 
         @sectionHeader(messages("declaration.section.2"))

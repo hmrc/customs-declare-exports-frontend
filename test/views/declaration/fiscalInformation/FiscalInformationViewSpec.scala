@@ -35,9 +35,9 @@ class FiscalInformationViewSpec extends PageWithButtonsSpec with Injector {
 
   val page = instanceOf[fiscal_information]
 
-  override val typeAndViewInstance = (STANDARD, page(itemId, form())(_, _))
+  override val typeAndViewInstance = (STANDARD, page(itemId, form)(_, _))
 
-  def createView(frm: Form[FiscalInformation] = form())(implicit request: JourneyRequest[_]): Document =
+  def createView(frm: Form[FiscalInformation] = form)(implicit request: JourneyRequest[_]): Document =
     page(itemId, frm)(request, messages)
 
   "Fiscal Information View on empty page" should {
@@ -74,7 +74,7 @@ class FiscalInformationViewSpec extends PageWithButtonsSpec with Injector {
       }
 
       "display two radio buttons with description (not selected)" in {
-        val view = createView(form().fill(FiscalInformation("")))
+        val view = createView(form.fill(FiscalInformation("")))
 
         view.getElementById("Yes") must not(beSelected)
 
@@ -101,7 +101,7 @@ class FiscalInformationViewSpec extends PageWithButtonsSpec with Injector {
   "Fiscal Information View for invalid input" should {
     onEveryDeclarationJourney() { implicit request =>
       "display error if nothing is selected" in {
-        val view = createView(form().bind(Map[String, String]()))
+        val view = createView(form.bind(Map[String, String]()))
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#Yes")
@@ -110,7 +110,7 @@ class FiscalInformationViewSpec extends PageWithButtonsSpec with Injector {
       }
 
       "display error if incorrect fiscal information is selected" in {
-        val view = createView(form().fillAndValidate(FiscalInformation("Incorrect")))
+        val view = createView(form.fillAndValidate(FiscalInformation("Incorrect")))
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#Yes")
@@ -123,14 +123,14 @@ class FiscalInformationViewSpec extends PageWithButtonsSpec with Injector {
   "Dispatch Border Transport View when filled" should {
     onEveryDeclarationJourney() { implicit request =>
       "display selected first radio button - Yes" in {
-        val view = createView(form().fill(FiscalInformation("Yes")))
+        val view = createView(form.fill(FiscalInformation("Yes")))
 
         view.getElementById("Yes") must beSelected
         view.getElementById("No") must not(beSelected)
       }
 
       "display selected second radio button - No" in {
-        val view = createView(form().fill(FiscalInformation("No")))
+        val view = createView(form.fill(FiscalInformation("No")))
 
         view.getElementById("Yes") must not(beSelected)
         view.getElementById("No") must beSelected

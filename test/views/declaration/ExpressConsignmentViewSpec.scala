@@ -63,8 +63,8 @@ class ExpressConsignmentViewSpec extends UnitViewSpec with CommonMessages with I
       "display two Yes/No radio buttons" in {
         val radios = view.getElementsByClass("govuk-radios").first.children
         radios.size mustBe 2
-        Option(radios.first.getElementById("code_yes")) must be('defined)
-        Option(radios.last.getElementById("code_no")) must be('defined)
+        Option(radios.first.getElementById("code_yes")) mustBe defined
+        Option(radios.last.getElementById("code_no")) mustBe defined
       }
 
       "select the 'Yes' radio when clicked" in {
@@ -85,7 +85,7 @@ class ExpressConsignmentViewSpec extends UnitViewSpec with CommonMessages with I
       val view: Document = createView()
 
       "display 'Back' button to the 'Border Transport' page" in {
-        verifyBackButton(view, routes.TransportCountryController.displayPage())
+        verifyBackButton(view, routes.TransportCountryController.displayPage)
       }
 
       "display the expected tariff details" in {
@@ -97,7 +97,7 @@ class ExpressConsignmentViewSpec extends UnitViewSpec with CommonMessages with I
       val view: Document = createView()
 
       "display 'Back' button to the 'Supervising Customs Office' page" in {
-        verifyBackButton(view, routes.SupervisingCustomsOfficeController.displayPage())
+        verifyBackButton(view, routes.SupervisingCustomsOfficeController.displayPage)
       }
 
       "display the expected tariff details" in {
@@ -110,7 +110,7 @@ class ExpressConsignmentViewSpec extends UnitViewSpec with CommonMessages with I
 
       "display 'Back' button to the 'Items Summary' page" when {
         "all declaration's items have '1040' as Procedure code and '000' as unique Additional Procedure code" in {
-          verifyBackButton(view, routes.ItemsSummaryController.displayItemsSummaryPage())
+          verifyBackButton(view, routes.ItemsSummaryController.displayItemsSummaryPage)
         }
       }
     }
@@ -125,7 +125,7 @@ class ExpressConsignmentViewSpec extends UnitViewSpec with CommonMessages with I
             val view: Document = createView()(requestWithUpdatedDec)
 
             s"transportLeavingBoarderCode is ${modeOfTransportCode}" in {
-              verifyBackButton(view, routes.WarehouseIdentificationController.displayPage())
+              verifyBackButton(view, routes.WarehouseIdentificationController.displayPage)
             }
           }
         }
@@ -140,7 +140,7 @@ class ExpressConsignmentViewSpec extends UnitViewSpec with CommonMessages with I
           val view: Document = createView()(requestWithUpdatedDec)
 
           s"transportLeavingBoarderCode is ${modeOfTransportCode}" in {
-            verifyBackButton(view, routes.SupervisingCustomsOfficeController.displayPage())
+            verifyBackButton(view, routes.SupervisingCustomsOfficeController.displayPage)
           }
         }
       }
@@ -154,7 +154,7 @@ class ExpressConsignmentViewSpec extends UnitViewSpec with CommonMessages with I
             val view: Document = createView()(requestWithUpdatedDec)
 
             s"transportLeavingBoarderCode is ${modeOfTransportCode}" in {
-              verifyBackButton(view, routes.DepartureTransportController.displayPage())
+              verifyBackButton(view, routes.DepartureTransportController.displayPage)
             }
           }
       }

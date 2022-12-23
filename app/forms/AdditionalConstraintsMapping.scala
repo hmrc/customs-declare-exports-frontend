@@ -56,7 +56,7 @@ case class AdditionalConstraintsMapping[T](
     val data = unbind(value)
     val validateResults = bind(data)
 
-    (data, validateResults.left.getOrElse(Seq.empty))
+    (data, validateResults.left.toOption.getOrElse(Seq.empty))
   }
 
   def withPrefix(prefix: String): Mapping[T] = copy(baseMappings = baseMappings.withPrefix(prefix))

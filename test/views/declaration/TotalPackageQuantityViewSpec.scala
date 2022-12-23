@@ -102,7 +102,7 @@ class TotalPackageQuantityViewSpec extends UnitViewSpec with ExportsTestHelper w
           "the invoice's total amount is NOT defined" in {
             val backButton = createView().getElementById("back-link")
             backButton must containMessage("site.backToPreviousQuestion")
-            backButton.getElementById("back-link") must haveHref(InvoiceAndExchangeRateChoiceController.displayPage())
+            backButton.getElementById("back-link") must haveHref(InvoiceAndExchangeRateChoiceController.displayPage)
           }
         }
       }
@@ -114,7 +114,7 @@ class TotalPackageQuantityViewSpec extends UnitViewSpec with ExportsTestHelper w
           "the invoice's total amount entered is defined (it should always be equal or greater than 100,000)" in {
             val backButton = createView().getElementById("back-link")
             backButton must containMessage("site.backToPreviousQuestion")
-            backButton.getElementById("back-link") must haveHref(InvoiceAndExchangeRateController.displayPage())
+            backButton.getElementById("back-link") must haveHref(InvoiceAndExchangeRateController.displayPage)
           }
         }
       }

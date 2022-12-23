@@ -41,7 +41,7 @@ object RepresentativeStatus extends DeclarationPage {
         .verifying("declaration.representative-status.error", isContainedIn(representativeStatusCodeAllowedValues))
     )(status => RepresentativeStatus(Some(status)))(model => model.statusCode)
 
-  def form(): Form[RepresentativeStatus] = Form(mapping)
+  def form: Form[RepresentativeStatus] = Form(mapping)
 
   object StatusCodes {
     val Declarant = "1"

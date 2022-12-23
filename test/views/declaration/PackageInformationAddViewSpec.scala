@@ -39,11 +39,9 @@ class PackageInformationAddViewSpec extends PageWithButtonsSpec with ExportsTest
 
   val page = instanceOf[package_information_add]
 
-  override val typeAndViewInstance = (STANDARD, page(itemId, form(), Seq.empty)(_, _))
+  override val typeAndViewInstance = (STANDARD, page(itemId, form, Seq.empty)(_, _))
 
-  def createView(frm: Form[PackageInformation] = form(), packages: Seq[PackageInformation] = Seq.empty)(
-    implicit request: JourneyRequest[_]
-  ): Document =
+  def createView(frm: Form[PackageInformation] = form, packages: Seq[PackageInformation] = Seq.empty)(implicit request: JourneyRequest[_]): Document =
     page(itemId, frm, packages)(request, messages)
 
   "PackageInformation Add View" should {
@@ -130,7 +128,7 @@ class PackageInformationAddViewSpec extends PageWithButtonsSpec with ExportsTest
   "PackageInformation Add View for invalid input" should {
     onEveryDeclarationJourney() { implicit request =>
       "display error if nothing is entered" in {
-        val view = createView(form().fillAndValidate(PackageInformation("id", None, None, None)))
+        val view = createView(form.fillAndValidate(PackageInformation("id", None, None, None)))
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#typesOfPackages")
@@ -143,7 +141,7 @@ class PackageInformationAddViewSpec extends PageWithButtonsSpec with ExportsTest
       }
 
       "display error if incorrect PackageInformation is entered" in {
-        val view = createView(form().fillAndValidate(PackageInformation("id", Some("invalid"), Some(1), Some("wrong!"))))
+        val view = createView(form.fillAndValidate(PackageInformation("id", Some("invalid"), Some(1), Some("wrong!"))))
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#typesOfPackages")
@@ -158,7 +156,7 @@ class PackageInformationAddViewSpec extends PageWithButtonsSpec with ExportsTest
   "PackageInformation Add View when filled" should {
     onEveryDeclarationJourney() { implicit request =>
       "display data in PackageInformation code input" in {
-        val view = createView(form().fill(packageInformation))
+        val view = createView(form.fill(packageInformation))
 
         view.getElementById("typesOfPackages").attr("value") must be(packageInformation.typesOfPackages.get)
         view.getElementById("numberOfPackages").attr("value") must be(packageInformation.numberOfPackages.get.toString)

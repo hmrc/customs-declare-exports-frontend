@@ -30,7 +30,7 @@ class PackageInformationSpec extends UnitWithMocksSpec with JourneyTypeTestRunne
   private implicit val messages: Messages = stubMessagesApi().preferred(Seq(Lang(Locale.ENGLISH)))
   private implicit val packageTypesService = instanceOf[PackageTypesService]
 
-  private def formAllFieldsMandatory = PackageInformation.form()
+  private def formAllFieldsMandatory = PackageInformation.form
 
   "Package Information" should {
 

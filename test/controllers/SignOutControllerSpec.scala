@@ -58,7 +58,7 @@ class SignOutControllerSpec extends ControllerWithoutFormSpec with ScalaFutures 
 
       "redirect to /we-signed-you-out" in {
         val result = controller.signOut(SignOutReason.SessionTimeout)(getRequest())
-        redirectLocation(result) mustBe Some(controllers.routes.SignOutController.sessionTimeoutSignedOut().url)
+        redirectLocation(result) mustBe Some(controllers.routes.SignOutController.sessionTimeoutSignedOut.url)
       }
     }
 
@@ -71,7 +71,7 @@ class SignOutControllerSpec extends ControllerWithoutFormSpec with ScalaFutures 
 
       "redirect to /you-have-signed-out" in {
         val result = controller.signOut(SignOutReason.UserAction)(getRequest())
-        redirectLocation(result) mustBe Some(controllers.routes.SignOutController.userSignedOut().url)
+        redirectLocation(result) mustBe Some(controllers.routes.SignOutController.userSignedOut.url)
       }
     }
   }

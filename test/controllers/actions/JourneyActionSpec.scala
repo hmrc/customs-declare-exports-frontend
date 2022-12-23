@@ -16,16 +16,13 @@
 
 package controllers.actions
 
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
-
 import base.{RequestBuilder, UnitWithMocksSpec}
 import models.requests.JourneyRequest
 import models.{IdentityData, SignedInUser}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers._
 import org.mockito.BDDMockito._
-import org.mockito.Mockito._
+import org.mockito.Mockito.{reset, verify}
 import org.scalatest.BeforeAndAfterEach
 import play.api.mvc.{AnyContentAsEmpty, Result, Results}
 import play.api.test.FakeRequest
@@ -33,6 +30,9 @@ import play.api.test.Helpers._
 import services.cache.{ExportsCacheService, ExportsDeclarationBuilder}
 import uk.gov.hmrc.auth.core.Enrolments
 import uk.gov.hmrc.http.HeaderCarrier
+
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 class JourneyActionSpec extends UnitWithMocksSpec with BeforeAndAfterEach with ExportsDeclarationBuilder with RequestBuilder {
 
@@ -79,13 +79,13 @@ class JourneyActionSpec extends UnitWithMocksSpec with BeforeAndAfterEach with E
         given(cache.get(refEq("id"))(any[HeaderCarrier])).willReturn(Future.successful(None))
 
         await(refiner.invokeBlock(buildVerifiedEmailRequest(request(Some("id")), user), block)) mustBe Results.Redirect(
-          controllers.routes.RootController.displayPage()
+          controllers.routes.RootController.displayPage
         )
       }
 
       "id not found" in {
         await(refiner.invokeBlock(buildVerifiedEmailRequest(request(None), user), block)) mustBe Results.Redirect(
-          controllers.routes.RootController.displayPage()
+          controllers.routes.RootController.displayPage
         )
       }
     }

@@ -44,8 +44,8 @@ class TransportPaymentController @Inject() (
 
   private val validTypes = Seq(DeclarationType.STANDARD, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL, DeclarationType.CLEARANCE)
 
-  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
-    val frm = form().withSubmissionErrors()
+  def displayPage: Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
+    val frm = form.withSubmissionErrors
     request.cacheModel.transport.transportPayment match {
       case Some(data) => Ok(transportPayment(frm.fill(data)))
       case _          => Ok(transportPayment(frm))
@@ -54,7 +54,7 @@ class TransportPaymentController @Inject() (
 
   def submitForm(): Action[AnyContent] =
     (authenticate andThen journeyType(validTypes)).async { implicit request =>
-      form()
+      form
         .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(transportPayment(formWithErrors))),

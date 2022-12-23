@@ -48,7 +48,7 @@ class AdditionalFiscalReferencesRemoveController @Inject() (
 
   def displayPage(itemId: String, id: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     findAdditionalFiscalReference(itemId, id) match {
-      case Some(reference) => Ok(removePage(itemId, id, reference, removalYesNoForm.withSubmissionErrors()))
+      case Some(reference) => Ok(removePage(itemId, id, reference, removalYesNoForm.withSubmissionErrors))
       case _               => returnToSummary(itemId)
     }
   }

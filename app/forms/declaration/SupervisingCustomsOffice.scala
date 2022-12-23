@@ -39,7 +39,7 @@ object SupervisingCustomsOffice extends DeclarationPage {
       )
     )(SupervisingCustomsOffice.apply)(SupervisingCustomsOffice.unapply)
 
-  def form(): Form[SupervisingCustomsOffice] = Form(mapping)
+  def form: Form[SupervisingCustomsOffice] = Form(mapping)
 
   override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
     Seq(TariffContentKey(s"tariff.declaration.supervisingCustomsOffice.${DeclarationPage.getJourneyTypeSpecialisation(decType)}"))

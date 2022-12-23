@@ -61,7 +61,7 @@ class AdditionalProcedureCodesController @Inject() (
 
     (maybeCachedProcedureCode, availableAdditionalProcedureCodes) match {
       case (Some(procedureCode), Some(validAdditionalProcedureCodes)) if validAdditionalProcedureCodes.nonEmpty =>
-        val frm = form().withSubmissionErrors()
+        val frm = form.withSubmissionErrors
         Ok(additionalProcedureCodesPage(itemId, frm, procedureCode, validAdditionalProcedureCodes, cachedData.additionalProcedureCodes))
       case _ =>
         Redirect(routes.ProcedureCodesController.displayPage(itemId))
@@ -69,7 +69,7 @@ class AdditionalProcedureCodesController @Inject() (
   }
 
   def submitAdditionalProcedureCodes(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    val boundForm = form().bindFromRequest()
+    val boundForm = form.bindFromRequest()
     val formAction = FormAction.bindFromRequest()
 
     val (maybeCachedProcedureCode, cachedData) = getCachedData(itemId)
@@ -217,7 +217,7 @@ class AdditionalProcedureCodesController @Inject() (
     validAdditionalProcedureCodes: Seq[AdditionalProcedureCodeModel]
   )(fieldWithError: Seq[(String, String)])(implicit request: JourneyRequest[_]): Future[Result] = {
     val updatedErrors = fieldWithError.map((FormError.apply(_: String, _: String)).tupled)
-    val formWithError = form().fill(userInput).copy(errors = updatedErrors)
+    val formWithError = form.fill(userInput).copy(errors = updatedErrors)
 
     Future.successful(
       BadRequest(additionalProcedureCodesPage(itemId, formWithError, procedureCode, validAdditionalProcedureCodes, cachedAdditionalProcedureCodes))

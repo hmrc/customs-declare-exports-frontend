@@ -61,10 +61,11 @@ class TransportContainerController @Inject() (
   def submitAddContainer(): Action[AnyContent] =
     (authenticate andThen journeyType).async { implicit request =>
       if (request.cacheModel.hasContainers) {
-        val boundForm = form.bindFromRequest
+        val boundForm = form.bindFromRequest()
         saveAdditionalContainer(boundForm, maxNumberOfItems, request.cacheModel.containers)
       } else
-        ContainerFirst.form.bindFromRequest
+        ContainerFirst.form
+          .bindFromRequest()
           .fold(formWithErrors => Future.successful(BadRequest(addFirstPage(formWithErrors))), containerId => saveFirstContainer(containerId.id))
     }
 
@@ -78,7 +79,7 @@ class TransportContainerController @Inject() (
 
   def submitSummaryAction(): Action[AnyContent] =
     (authenticate andThen journeyType).async { implicit request =>
-      FormAction.bindFromRequest match {
+      FormAction.bindFromRequest() match {
         case Remove(values) =>
           val result = navigator.continueTo(TransportContainerController.displayContainerRemove(containerId(values)))
           Future.successful(result)
@@ -110,7 +111,7 @@ class TransportContainerController @Inject() (
   private def saveAdditionalContainer(boundForm: Form[ContainerAdd], elementLimit: Int, cache: Seq[Container])(
     implicit request: JourneyRequest[AnyContent]
   ): Future[Result] =
-    prepare(boundForm, elementLimit, cache) fold (
+    prepare(boundForm, elementLimit, cache).fold(
       formWithErrors => Future.successful(BadRequest(addPage(formWithErrors))),
       updatedCache =>
         if (updatedCache != cache) updateCache(updatedCache).map(_ => redirectAfterAdd(updatedCache.last.id))
@@ -142,7 +143,8 @@ class TransportContainerController @Inject() (
     if (cachedData.length >= limit) Seq(FormError("", "supplementary.limit")) else Seq.empty
 
   private def addContainerAnswer()(implicit request: JourneyRequest[AnyContent]): Future[Result] =
-    addAnotherContainerYesNoForm.bindFromRequest
+    addAnotherContainerYesNoForm
+      .bindFromRequest()
       .fold(
         formWithErrors => Future.successful(BadRequest(summaryPage(formWithErrors, request.cacheModel.containers))),
         _.answer match {
@@ -157,7 +159,8 @@ class TransportContainerController @Inject() (
       )
 
   private def removeContainerAnswer(containerId: String)(implicit request: JourneyRequest[AnyContent]): Future[Result] =
-    removeContainerYesNoForm.bindFromRequest
+    removeContainerYesNoForm
+      .bindFromRequest()
       .fold(
         formWithErrors => Future.successful(BadRequest(removePage(formWithErrors, request.cacheModel.containers.filter(_.id == containerId).head))),
         _.answer match {

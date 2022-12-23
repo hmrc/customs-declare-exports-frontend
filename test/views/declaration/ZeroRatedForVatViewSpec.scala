@@ -31,10 +31,10 @@ class ZeroRatedForVatViewSpec extends PageWithButtonsSpec with Injector {
 
   val page = instanceOf[zero_rated_for_vat]
 
-  override val typeAndViewInstance = (STANDARD, page(itemId, form(), false)(_, _))
+  override val typeAndViewInstance = (STANDARD, page(itemId, form, false)(_, _))
 
   def createView(restrictedForZeroVat: Boolean = false)(implicit request: JourneyRequest[_]): Document =
-    page(itemId, form(), restrictedForZeroVat)
+    page(itemId, form, restrictedForZeroVat)
 
   "Which export procedure are you using Page" must {
 

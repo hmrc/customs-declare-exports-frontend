@@ -46,7 +46,7 @@ class ProcedureCodesController @Inject() (
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
   def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    val frm = form().withSubmissionErrors()
+    val frm = form.withSubmissionErrors
     val filledForm = request.cacheModel.itemBy(itemId) match {
       case Some(exportItem) => exportItem.procedureCodes.fold(frm)(cachedData => frm.fill(cachedData.toProcedureCode()))
       case None             => frm
@@ -56,7 +56,7 @@ class ProcedureCodesController @Inject() (
   }
 
   def submitProcedureCodes(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    form()
+    form
       .bindFromRequest()
       .fold(
         formWithErrors => Future.successful(BadRequest(procedureCodesPage(itemId, formWithErrors))),

@@ -62,8 +62,8 @@
 
 @continueLink = @{
     request.cacheModel.readyForSubmission match {
-        case Some(true) if errors.isEmpty => linkButton("site.confirm_and_continue", SummaryController.displayDeclarationPage())
-        case Some(true) => linkButton("site.confirm_and_continue", SummaryController.displayPage())
+        case Some(true) if errors.isEmpty => linkButton("site.confirm_and_continue", SummaryController.displayDeclarationPage)
+        case Some(true) => linkButton("site.confirm_and_continue", SummaryController.displayPage)
         case _ =>
     }
 }

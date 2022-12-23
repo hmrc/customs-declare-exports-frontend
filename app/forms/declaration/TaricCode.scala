@@ -41,7 +41,7 @@ object TaricCode extends DeclarationPage {
           .verifying("declaration.taricAdditionalCodes.error.invalid", isEmpty or (hasSpecificLength(taricCodeLength) and isAlphanumeric))
     )(TaricCode.apply)(TaricCode.unapply)
 
-  def form(): Form[TaricCode] = Form(mapping)
+  def form: Form[TaricCode] = Form(mapping)
 
   override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
     Seq(TariffContentKey("tariff.declaration.item.additionalTaricCode.common"))

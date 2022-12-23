@@ -105,7 +105,7 @@ class PreviousDocumentsRemoveViewSpec extends PageWithButtonsSpec with Injector 
       "display 'Back' link to 'Previous Documents Summary' page" in {
         val backButton = createView().getElementById("back-link")
         backButton must containMessage("site.backToPreviousQuestion")
-        backButton must haveHref(PreviousDocumentsSummaryController.displayPage())
+        backButton must haveHref(PreviousDocumentsSummaryController.displayPage)
       }
 
       checkAllSaveButtonsAreDisplayed(createView())

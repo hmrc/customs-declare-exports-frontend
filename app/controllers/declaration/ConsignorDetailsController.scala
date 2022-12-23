@@ -45,8 +45,8 @@ class ConsignorDetailsController @Inject() (
 
   val validJourneys = Seq(DeclarationType.CLEARANCE)
 
-  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType(validJourneys)) { implicit request =>
-    val frm = ConsignorDetails.form().withSubmissionErrors()
+  def displayPage: Action[AnyContent] = (authenticate andThen journeyType(validJourneys)) { implicit request =>
+    val frm = ConsignorDetails.form.withSubmissionErrors
     request.cacheModel.parties.consignorDetails match {
       case Some(data) => Ok(consignorDetailsPage(frm.fill(data)))
       case _          => Ok(consignorDetailsPage(frm))
@@ -54,8 +54,7 @@ class ConsignorDetailsController @Inject() (
   }
 
   def saveAddress(): Action[AnyContent] = (authenticate andThen journeyType(validJourneys)).async { implicit request =>
-    ConsignorDetails
-      .form()
+    ConsignorDetails.form
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[ConsignorDetails]) => Future.successful(BadRequest(consignorDetailsPage(formWithErrors))),

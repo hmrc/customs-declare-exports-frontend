@@ -48,7 +48,7 @@ class AdditionalDocumentRemoveController @Inject() (
 
   def displayPage(itemId: String, documentId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     findAdditionalDocument(itemId, documentId) match {
-      case Some(document) => Ok(additionalDocumentRemovePage(itemId, documentId, document, removeYesNoForm.withSubmissionErrors()))
+      case Some(document) => Ok(additionalDocumentRemovePage(itemId, documentId, document, removeYesNoForm.withSubmissionErrors))
       case _              => returnToSummary(itemId)
     }
   }

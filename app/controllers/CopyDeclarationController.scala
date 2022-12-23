@@ -65,7 +65,8 @@ class CopyDeclarationController @Inject() (
   }
 
   val submitPage: Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    form.bindFromRequest
+    form
+      .bindFromRequest()
       .verifyLrnValidity(lrnValidator)
       .flatMap {
         _.fold(formWithErrors => Future.successful(BadRequest(copyDeclarationPage(formWithErrors))), copyDeclaration)
@@ -90,7 +91,7 @@ class CopyDeclarationController @Inject() (
         mucr = None
       )
       exportsCacheService.create(declaration).map { declaration =>
-        Redirect(SummaryController.displayPage()).addingToSession(ExportsSessionKeys.declarationId -> declaration.id)
+        Redirect(SummaryController.displayPage).addingToSession(ExportsSessionKeys.declarationId -> declaration.id)
       }
 
     }

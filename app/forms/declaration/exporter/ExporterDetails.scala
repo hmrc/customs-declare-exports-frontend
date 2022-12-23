@@ -31,10 +31,10 @@ case class ExporterDetails(details: EntityDetails)
 object ExporterDetails extends DeclarationPage {
   implicit val format = Json.format[ExporterDetails]
 
-  def defaultMapping()(implicit messages: Messages, codeListConnector: CodeListConnector) =
+  def defaultMapping(implicit messages: Messages, codeListConnector: CodeListConnector) =
     Forms.mapping("details" -> EntityDetails.addressMapping)(ExporterDetails.apply)(ExporterDetails.unapply)
 
-  def optionalMapping()(implicit messages: Messages, codeListConnector: CodeListConnector) =
+  def optionalMapping(implicit messages: Messages, codeListConnector: CodeListConnector) =
     Forms.mapping("details" -> EntityDetails.optionalAddressMapping)(ExporterDetails.apply)(ExporterDetails.unapply)
 
   def form(

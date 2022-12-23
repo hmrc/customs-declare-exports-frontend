@@ -47,7 +47,7 @@ class TransportCountryController @Inject() (
 
   private val validTypes = Seq(STANDARD, SUPPLEMENTARY)
 
-  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
+  def displayPage: Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
     val transportMode = ModeOfTransportCodeHelper.transportMode(request.cacheModel.transportLeavingBorderCode)
     val form = TransportCountry.form(transportMode).withSubmissionErrors
     request.cacheModel.transport.transportCrossingTheBorderNationality match {
@@ -62,7 +62,7 @@ class TransportCountryController @Inject() (
     val transportMode = ModeOfTransportCodeHelper.transportMode(request.cacheModel.transportLeavingBorderCode)
     TransportCountry
       .form(transportMode)
-      .bindFromRequest
+      .bindFromRequest()
       .fold(
         formWithErrors => Future.successful(BadRequest(transportCountry(transportMode, formWithErrors))),
         updateCache(_).map(_ => navigator.continueTo(nextPage))

@@ -29,7 +29,7 @@ class InlandModeOfTransportCodeSpec extends DeclarationPageBaseSpec with LightFo
       val incorrectTransportCode: JsValue =
         JsObject(Map("inlandModeOfTransportCode" -> JsString("Incorrect more")))
 
-      form().bind(incorrectTransportCode, JsonBindMaxChars).errors.map(_.message) must contain(
+      form.bind(incorrectTransportCode, JsonBindMaxChars).errors.map(_.message) must contain(
         "declaration.warehouse.inlandTransportDetails.error.incorrect"
       )
     }
@@ -38,7 +38,7 @@ class InlandModeOfTransportCodeSpec extends DeclarationPageBaseSpec with LightFo
       val incorrectTransportCode: JsValue =
         JsObject(Map("inlandModeOfTransportCode" -> JsString(InlandModeOfTransportCodeSpec.inlandModeOfTransportCode)))
 
-      form().bind(incorrectTransportCode, JsonBindMaxChars) mustBe errorless
+      form.bind(incorrectTransportCode, JsonBindMaxChars) mustBe errorless
     }
   }
 

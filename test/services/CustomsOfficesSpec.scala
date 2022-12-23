@@ -35,7 +35,7 @@ class CustomsOfficesSpec extends UnitSpec with Injector {
     }
 
     "read values from CSV and order by description, alphabetically ascending" in {
-      customsOfficesService.all must contain inOrder (
+      customsOfficesService.all must contain.inOrder(
         CustomsOffice("GBABD001", "Aberdeen, Ruby House"),
         CustomsOffice("GBLBA001", "Leeds, Peter Bennett House"),
         CustomsOffice("GBWXH001", "Wrexham, Plas Gororau")

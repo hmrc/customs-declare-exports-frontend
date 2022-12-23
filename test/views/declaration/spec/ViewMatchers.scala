@@ -16,7 +16,6 @@
 
 package views.declaration.spec
 
-import scala.collection.JavaConverters._
 import scala.concurrent.Future
 import scala.util.Try
 import org.jsoup.Jsoup
@@ -29,6 +28,9 @@ import play.api.mvc.{Call, Result}
 import play.api.test.Helpers.{contentAsString, _}
 import play.twirl.api.Html
 import views.helpers.ActionItemBuilder.callForSummaryChangeLink
+
+import scala.jdk.CollectionConverters.IteratorHasAsScala
+import scala.language.implicitConversions
 
 //noinspection ScalaStyle
 trait ViewMatchers {

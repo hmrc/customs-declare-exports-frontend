@@ -60,7 +60,7 @@ class DeclarationHolderAddControllerSpec extends ControllerSpec with GivenWhenTh
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration())
-    await(controller.displayPage()(request))
+    await(controller.displayPage(request))
     theDeclarationHolder
   }
 
@@ -82,7 +82,7 @@ class DeclarationHolderAddControllerSpec extends ControllerSpec with GivenWhenTh
         "display page method is invoked" in {
           withNewCaching(request.cacheModel)
 
-          val result = controller.displayPage()(getRequest())
+          val result = controller.displayPage(getRequest())
 
           status(result) mustBe OK
           verifyAddPageInvoked()
@@ -174,7 +174,7 @@ class DeclarationHolderAddControllerSpec extends ControllerSpec with GivenWhenTh
           val result = controller.submitForm()(postRequestAsFormUrlEncoded(requestBody: _*))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe DeclarationHolderSummaryController.displayPage()
+          thePageNavigatedTo mustBe DeclarationHolderSummaryController.displayPage
 
           val savedHolder = theCacheModelUpdated.parties.declarationHoldersData
           savedHolder mustBe Some(DeclarationHoldersData(List(declarationHolder)))

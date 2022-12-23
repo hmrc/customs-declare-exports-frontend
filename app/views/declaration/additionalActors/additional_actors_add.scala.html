@@ -118,7 +118,7 @@
     title = Title("declaration.additionalActors.title",  "declaration.section.2", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(DeclarationAdditionalActors)))) {
 
-    @formHelper(action = AdditionalActorsAddController.saveForm(), 'autoComplete -> "off") {
+    @formHelper(action = AdditionalActorsAddController.saveForm, 'autoComplete -> "off") {
 
         @errorSummary(form.errors)
 

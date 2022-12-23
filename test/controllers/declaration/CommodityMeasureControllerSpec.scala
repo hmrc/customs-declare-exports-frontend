@@ -144,7 +144,7 @@ class CommodityMeasureControllerSpec extends ControllerSpec {
           val response = controller.displayPage("itemId").apply(getRequest())
 
           status(response) must be(SEE_OTHER)
-          redirectLocation(response) mustBe Some(RootController.displayPage().url)
+          redirectLocation(response) mustBe Some(RootController.displayPage.url)
         }
 
         "the journey is not valid for submitPage" in {
@@ -153,7 +153,7 @@ class CommodityMeasureControllerSpec extends ControllerSpec {
           val response = controller.submitPage("itemId").apply(getRequest())
 
           status(response) must be(SEE_OTHER)
-          redirectLocation(response) mustBe Some(RootController.displayPage().url)
+          redirectLocation(response) mustBe Some(RootController.displayPage.url)
         }
       }
     }

@@ -37,7 +37,7 @@ import views.tags.ViewTest
 @ViewTest
 class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Stubs with BeforeAndAfterEach {
 
-  private val form: Form[Choice] = Choice.form()
+  private val form: Form[Choice] = Choice.form
 
   private val injector =
     new OverridableInjector(bind[SfusConfig].toInstance(mockSfusConfig), bind[SecureMessagingInboxConfig].toInstance(mockSecureMessagingInboxConfig))
@@ -102,7 +102,7 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Stubs with Be
 
     "display radio buttons with description (not selected)" in {
       withSecureMessagingFeatureStatus(EXPORTS)
-      val view = createView(Choice.form().fill(Choice("")))
+      val view = createView(Choice.form.fill(Choice("")))
       ensureAllLabelTextIsCorrect(view)
 
       ensureRadioIsUnChecked(view, "CRT")
@@ -212,7 +212,7 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Stubs with Be
 
     "display error when no choice is made" in {
       withSecureMessagingFeatureStatus(EXPORTS)
-      val view = createView(Choice.form().bind(Map[String, String]()))
+      val view = createView(Choice.form.bind(Map[String, String]()))
 
       view must haveGovukGlobalErrorSummary
       view must containErrorElementWithTagAndHref("a", "#CRT")
@@ -222,7 +222,7 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Stubs with Be
 
     "display error when choice is incorrect" in {
       withSecureMessagingFeatureStatus(EXPORTS)
-      val view = createView(Choice.form().bind(Map("value" -> "incorrect")))
+      val view = createView(Choice.form.bind(Map("value" -> "incorrect")))
 
       view must haveGovukGlobalErrorSummary
       view must containErrorElementWithTagAndHref("a", "#CRT")
@@ -235,7 +235,7 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Stubs with Be
 
     "display selected radio button - Create (CRT)" in {
       withSecureMessagingFeatureStatus(EXPORTS)
-      val view = createView(Choice.form().fill(Choice("CRT")))
+      val view = createView(Choice.form.fill(Choice("CRT")))
       ensureAllLabelTextIsCorrect(view)
 
       ensureRadioIsChecked(view, "CRT")
@@ -247,7 +247,7 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Stubs with Be
 
     "display selected radio button - View recent declarations (SUB)" in {
       withSecureMessagingFeatureStatus(EXPORTS)
-      val view = createView(Choice.form().fill(Choice("SUB")))
+      val view = createView(Choice.form.fill(Choice("SUB")))
 
       ensureAllLabelTextIsCorrect(view)
 
@@ -260,7 +260,7 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Stubs with Be
 
     "display selected radio button - Continue saved declaration (Con)" in {
       withSecureMessagingFeatureStatus(EXPORTS)
-      val view = createView(Choice.form().fill(Choice("CON")))
+      val view = createView(Choice.form.fill(Choice("CON")))
 
       ensureAllLabelTextIsCorrect(view)
 
@@ -273,7 +273,7 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Stubs with Be
 
     "display selected radio button - View Messages (Msg)" in {
       withSecureMessagingFeatureStatus(EXPORTS)
-      val view = createView(Choice.form().fill(Choice("MSG")))
+      val view = createView(Choice.form.fill(Choice("MSG")))
 
       ensureAllLabelTextIsCorrect(view)
 

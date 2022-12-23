@@ -167,7 +167,7 @@ class AdditionalDocumentsControllerSpec extends ControllerSpec with ErrorHandler
         val result = controller.submitForm(itemId)(postRequest(requestBody))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe routes.ItemsSummaryController.displayItemsSummaryPage()
+        thePageNavigatedTo mustBe routes.ItemsSummaryController.displayItemsSummaryPage
       }
     }
   }

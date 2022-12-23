@@ -39,7 +39,7 @@ import views.html.declaration_details
 
 import java.time.ZonedDateTime
 import java.util.UUID
-import scala.collection.JavaConverters.asScalaIteratorConverter
+import scala.jdk.CollectionConverters.IteratorHasAsScala
 
 class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with Injector {
 
@@ -367,7 +367,7 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
 
       val cancelDeclarationLink = view.getElementById("cancel-declaration")
       cancelDeclarationLink must containMessage("declaration.details.cancel.declaration")
-      cancelDeclarationLink must haveHref(routes.CancelDeclarationController.displayPage())
+      cancelDeclarationLink must haveHref(routes.CancelDeclarationController.displayPage)
     }
 
     "display the link to redirect the user to the 'Movements' service" in {

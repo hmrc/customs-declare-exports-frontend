@@ -47,8 +47,8 @@ class ExpressConsignmentController @Inject() (
 
   private val validTypes = Seq(STANDARD, SIMPLIFIED, OCCASIONAL, CLEARANCE)
 
-  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
-    val frm = form(errorKey = emptyKey).withSubmissionErrors()
+  def displayPage: Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
+    val frm = form(errorKey = emptyKey).withSubmissionErrors
     request.cacheModel.transport.expressConsignment match {
       case Some(yesNoAnswer) => Ok(expressConsignmentPage(frm.fill(yesNoAnswer)))
       case _                 => Ok(expressConsignmentPage(frm))

@@ -40,7 +40,7 @@ object ProcedureCode extends DeclarationPage {
           .verifying("declaration.procedureCodes.error.invalid", isEmpty or (hasSpecificLength(procedureCodeLength) and isAlphanumeric))
     )(ProcedureCode.apply)(ProcedureCode.unapply)
 
-  def form(): Form[ProcedureCode] = Form(mapping)
+  def form: Form[ProcedureCode] = Form(mapping)
 
   override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
     decType match {

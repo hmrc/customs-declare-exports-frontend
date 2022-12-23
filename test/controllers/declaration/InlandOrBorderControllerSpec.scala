@@ -78,7 +78,7 @@ class InlandOrBorderControllerSpec extends ControllerSpec with OptionValues {
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration(withAdditionalDeclarationType(STANDARD_FRONTIER)))
-    await(controller.displayPage()(request))
+    await(controller.displayPage(request))
     theResponseForm
   }
 
@@ -93,14 +93,14 @@ class InlandOrBorderControllerSpec extends ControllerSpec with OptionValues {
 
           "location.inlandOrBorder is not cached yet" in {
             cacheRequest(additionalType)
-            val result = controller.displayPage()(getRequest())
+            val result = controller.displayPage(getRequest())
             status(result) must be(OK)
             theResponseForm.value mustBe empty
           }
 
           "location.inlandOrBorder have been already cached" in {
             cacheRequest(additionalType, withInlandOrBorder(Some(Border)))
-            val result = controller.displayPage()(getRequest())
+            val result = controller.displayPage(getRequest())
             status(result) must be(OK)
             theResponseForm.value mustBe Some(Border)
           }
@@ -112,7 +112,7 @@ class InlandOrBorderControllerSpec extends ControllerSpec with OptionValues {
       "redirect to the starting page" in {
         withNewCaching(request.cacheModel)
 
-        val result = controller.displayPage()(getRequest())
+        val result = controller.displayPage(getRequest())
         redirectLocation(result) mustBe Some(RootController.displayPage.url)
       }
     }
@@ -121,7 +121,7 @@ class InlandOrBorderControllerSpec extends ControllerSpec with OptionValues {
 
       "AdditionalDeclarationType is SUPPLEMENTARY_EIDR" in {
         cacheRequest(SUPPLEMENTARY_EIDR)
-        val result = controller.displayPage()(getRequest())
+        val result = controller.displayPage(getRequest())
         redirectLocation(result) mustBe Some(RootController.displayPage.url)
       }
 
@@ -130,7 +130,7 @@ class InlandOrBorderControllerSpec extends ControllerSpec with OptionValues {
           "the user has previously entered a value which requires to skip the /inland-or-border page" in {
             allValuesRequiringToSkipInlandOrBorder.foreach { modifier =>
               cacheRequest(additionalType, modifier)
-              val result = controller.displayPage()(getRequest())
+              val result = controller.displayPage(getRequest())
               redirectLocation(result) mustBe Some(RootController.displayPage.url)
             }
           }
@@ -146,7 +146,7 @@ class InlandOrBorderControllerSpec extends ControllerSpec with OptionValues {
 
         "the user selects 'Customs controlled location'" should {
           val body = Json.obj(fieldId -> JsString(Inland.location))
-          val expectedNextPage = InlandTransportDetailsController.displayPage()
+          val expectedNextPage = InlandTransportDetailsController.displayPage
 
           "update the cache after a successful bind" in {
             cacheRequest(additionalType)
@@ -168,7 +168,7 @@ class InlandOrBorderControllerSpec extends ControllerSpec with OptionValues {
 
         "the user selects 'UK Border'" should {
           val body = Json.obj(fieldId -> JsString(Border.location))
-          val expectedNextPage = DepartureTransportController.displayPage()
+          val expectedNextPage = DepartureTransportController.displayPage
 
           "update the cache after a successful bind" in {
             cacheRequest(additionalType)
@@ -219,7 +219,7 @@ class InlandOrBorderControllerSpec extends ControllerSpec with OptionValues {
 
           List(STANDARD_FRONTIER, STANDARD_PRE_LODGED).foreach { additionalType =>
             s"AdditionalDeclarationType is $additionalType" should {
-              val expectedNextPage = ExpressConsignmentController.displayPage()
+              val expectedNextPage = ExpressConsignmentController.displayPage
 
               s"redirect to ${expectedNextPage.url}" in {
                 cacheRequest(additionalType, withBorderModeOfTransportCode(modeOfTransportCode))
@@ -233,7 +233,7 @@ class InlandOrBorderControllerSpec extends ControllerSpec with OptionValues {
           }
 
           s"AdditionalDeclarationType is SUPPLEMENTARY_SIMPLIFIED" should {
-            val expectedNextPage = TransportContainerController.displayContainerSummary()
+            val expectedNextPage = TransportContainerController.displayContainerSummary
 
             s"redirect to ${expectedNextPage.url}" in {
               cacheRequest(SUPPLEMENTARY_SIMPLIFIED, withBorderModeOfTransportCode(modeOfTransportCode))

@@ -43,9 +43,9 @@ class LocalReferenceNumberController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
-  def displayPage(): Action[AnyContent] =
+  def displayPage: Action[AnyContent] =
     (authenticate andThen journeyType) { implicit request =>
-      val frm = form.withSubmissionErrors()
+      val frm = form.withSubmissionErrors
       request.cacheModel.consignmentReferences.flatMap(_.lrn) match {
         case Some(data) => Ok(LrnPage(frm.fill(data)))
         case _          => Ok(LrnPage(frm))

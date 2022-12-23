@@ -60,7 +60,7 @@
 
 @govukLayout(
     title = Title("declaration.additionalActors.remove.title", "declaration.section.2", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), AdditionalActorsSummaryController.displayPage()))) {
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), AdditionalActorsSummaryController.displayPage))) {
 
     @formHelper(action = AdditionalActorsRemoveController.submitForm(id), 'autoComplete -> "off") {
         @errorSummary(yesNoErrors(form.errors))

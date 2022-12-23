@@ -28,7 +28,7 @@ class RepresentativeStatusSpec extends DeclarationPageBaseSpec {
     "return form with errors" when {
 
       "provided with unrecognized status code" in {
-        val form = RepresentativeStatus.form().bind(representativeStatusJSON("invalid"), JsonBindMaxChars)
+        val form = RepresentativeStatus.form.bind(representativeStatusJSON("invalid"), JsonBindMaxChars)
 
         form.hasErrors must be(true)
         form.errors.length must equal(1)
@@ -36,7 +36,7 @@ class RepresentativeStatusSpec extends DeclarationPageBaseSpec {
       }
 
       "provided with missing status code when its required" in {
-        val form = RepresentativeStatus.form().bind(representativeStatusJSON(""), JsonBindMaxChars)
+        val form = RepresentativeStatus.form.bind(representativeStatusJSON(""), JsonBindMaxChars)
 
         form.hasErrors must be(true)
         form.errors.length must equal(1)
@@ -46,7 +46,7 @@ class RepresentativeStatusSpec extends DeclarationPageBaseSpec {
 
     "return form without errors" when {
       "provided with valid value for status code" in {
-        val form = RepresentativeStatus.form().bind(representativeStatusJSON(DirectRepresentative), JsonBindMaxChars)
+        val form = RepresentativeStatus.form.bind(representativeStatusJSON(DirectRepresentative), JsonBindMaxChars)
 
         form.hasErrors must be(false)
       }

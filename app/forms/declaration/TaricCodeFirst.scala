@@ -62,7 +62,7 @@ object TaricCodeFirst extends DeclarationPage {
     )
   )(form2Model)(model2Form)
 
-  def form(): Form[TaricCodeFirst] = Form(mapping)
+  def form: Form[TaricCodeFirst] = Form(mapping)
 
   override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
     Seq(TariffContentKey("tariff.declaration.item.additionalTaricCode.common"))

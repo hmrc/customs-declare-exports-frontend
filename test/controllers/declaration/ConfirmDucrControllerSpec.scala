@@ -49,7 +49,7 @@ class ConfirmDucrControllerSpec extends ControllerSpec with ErrorHandlerMocks {
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration(withConsignmentReferences(dummyConRefs)))
-    await(controller.displayPage()(request))
+    await(controller.displayPage(request))
     theResponseForm
   }
 
@@ -79,7 +79,7 @@ class ConfirmDucrControllerSpec extends ControllerSpec with ErrorHandlerMocks {
       "display page method is invoked with DUCR in the cache" in {
         withNewCaching(aDeclaration(withConsignmentReferences(dummyConRefs)))
 
-        val result = controller.displayPage()(getJourneyRequest())
+        val result = controller.displayPage(getJourneyRequest())
 
         status(result) mustBe OK
         verify(confirmDucrPage).apply(any(), meq(dummyConRefs.ducr.get))(any(), any())
@@ -127,7 +127,7 @@ class ConfirmDucrControllerSpec extends ControllerSpec with ErrorHandlerMocks {
       "display page is invoked with no DUCR in cache" in {
         withNewCaching(aDeclaration())
 
-        val result = controller.displayPage()(getJourneyRequest())
+        val result = controller.displayPage(getJourneyRequest())
 
         status(result) mustBe 303
         redirectLocation(result) mustBe Some(routes.DucrEntryController.displayPage.url)
@@ -137,7 +137,7 @@ class ConfirmDucrControllerSpec extends ControllerSpec with ErrorHandlerMocks {
       "display page method is invoked on supplementary journey" in {
         withNewCaching(aDeclaration(withType(SUPPLEMENTARY)))
 
-        val result = controller.displayPage()(getJourneyRequest())
+        val result = controller.displayPage(getJourneyRequest())
 
         status(result) mustBe 303
         redirectLocation(result) mustBe Some(controllers.routes.RootController.displayPage.url)

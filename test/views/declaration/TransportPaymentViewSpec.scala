@@ -34,7 +34,7 @@ class TransportPaymentViewSpec extends PageWithButtonsSpec with Injector {
 
   override val typeAndViewInstance = (STANDARD, page(form)(_, _))
 
-  def createView()(implicit request: JourneyRequest[_]): Document = page(form())(request, messages)
+  def createView()(implicit request: JourneyRequest[_]): Document = page(form)(request, messages)
 
   "Transport Payment View" must {
     onJourney(DeclarationType.SIMPLIFIED, DeclarationType.STANDARD) { implicit request =>
@@ -66,7 +66,7 @@ class TransportPaymentViewSpec extends PageWithButtonsSpec with Injector {
         val backLinkContainer = view.getElementById("back-link")
 
         backLinkContainer must containMessage(backToPreviousQuestionCaption)
-        backLinkContainer.getElementById("back-link") must haveHref(ExpressConsignmentController.displayPage())
+        backLinkContainer.getElementById("back-link") must haveHref(ExpressConsignmentController.displayPage)
       }
     }
   }

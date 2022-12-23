@@ -77,7 +77,7 @@ object PackageInformation extends DeclarationPage {
       ).verifying("declaration.packageInformation.shippingMark.empty", isPresent)
     )(form2Data)(data2Form)
 
-  def form()(implicit messages: Messages, packageTypesService: PackageTypesService): Form[PackageInformation] = Form(mapping)
+  def form(implicit messages: Messages, packageTypesService: PackageTypesService): Form[PackageInformation] = Form(mapping)
 
   override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
     decType match {

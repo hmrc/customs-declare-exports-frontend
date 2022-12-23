@@ -55,9 +55,9 @@ class ConsignorDetailsViewSpec extends AddressViewSpec with Injector with PageWi
 
   val page = instanceOf[consignor_details]
 
-  override val typeAndViewInstance = (CLEARANCE, page(form())(_, _))
+  override val typeAndViewInstance = (CLEARANCE, page(form)(_, _))
 
-  def createView(frm: Form[ConsignorDetails] = form())(implicit request: JourneyRequest[_]): Document =
+  def createView(frm: Form[ConsignorDetails] = form)(implicit request: JourneyRequest[_]): Document =
     page(frm)(request, messages)
 
   "Consignor Details View on empty page" should {
@@ -217,8 +217,7 @@ class ConsignorDetailsViewSpec extends AddressViewSpec with Injector with PageWi
     onClearance { implicit request =>
       "display data in Business address inputs" in {
 
-        val form = ConsignorDetails
-          .form()
+        val form = ConsignorDetails.form
           .fill(ConsignorDetails(EntityDetails(None, Some(Address("test", "test1", "test2", "test3", "Ukraine")))))
         val view = createView(form)
 
@@ -237,7 +236,7 @@ class ConsignorDetailsViewSpec extends AddressViewSpec with Injector with PageWi
         val backButton = createView().getElementById("back-link")
 
         backButton.text() mustBe messages(backToPreviousQuestionCaption)
-        backButton.attr("href") mustBe routes.ConsignorEoriNumberController.displayPage().url
+        backButton.attr("href") mustBe routes.ConsignorEoriNumberController.displayPage.url
       }
     }
   }

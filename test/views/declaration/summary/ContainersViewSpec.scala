@@ -48,7 +48,7 @@ class ContainersViewSpec extends UnitViewSpec with ExportsTestHelper with Inject
         row must haveSummaryValue(messages("site.no"))
 
         row must haveSummaryActionsTexts("site.change", "declaration.summary.transport.containers.change")
-        row must haveSummaryActionWithPlaceholder(TransportContainerController.displayContainerSummary())
+        row must haveSummaryActionWithPlaceholder(TransportContainerController.displayContainerSummary)
       }
     }
 

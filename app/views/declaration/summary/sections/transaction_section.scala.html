@@ -41,8 +41,8 @@
 }
 
 @totalAmountInvoicedActionItemUrl = @{
-    if (declaration.isInvoiceAmountLessThan100000) InvoiceAndExchangeRateChoiceController.displayPage().url
-    else InvoiceAndExchangeRateController.displayPage().url
+    if (declaration.isInvoiceAmountLessThan100000) InvoiceAndExchangeRateChoiceController.displayPage.url
+    else InvoiceAndExchangeRateController.displayPage.url
 }
 
 @totalAmountInvoicedRow = @{
@@ -87,7 +87,7 @@
                 actions = actions(Actions(
                     items = List(
                         actionSummaryItem(
-                            href = InvoiceAndExchangeRateController.displayPage().url,
+                            href = InvoiceAndExchangeRateController.displayPage.url,
                             content = HtmlContent(linkContent(messages("site.change"))),
                             visuallyHiddenText = Some(messages("declaration.summary.transaction.exchangeRate.change"))
                         )
@@ -107,7 +107,7 @@
                 actions = actions(Actions(
                     items = List(
                         actionSummaryItem(
-                            href = TotalPackageQuantityController.displayPage().url,
+                            href = TotalPackageQuantityController.displayPage.url,
                             content = HtmlContent(linkContent(messages("site.change"))),
                             visuallyHiddenText = Some(messages("declaration.summary.transaction.totalNoOfPackages.change"))
                         )
@@ -127,7 +127,7 @@
                 actions = actions(Actions(
                     items = List(
                         actionSummaryItem(
-                            href = NatureOfTransactionController.displayPage().url,
+                            href = NatureOfTransactionController.displayPage.url,
                             content = HtmlContent(linkContent(messages("site.change"))),
                             visuallyHiddenText = Some(messages("declaration.summary.transaction.natureOfTransaction.change"))
                         )

@@ -40,11 +40,9 @@ class PackageInformationChangeViewSpec extends PageWithButtonsSpec with ExportsT
 
   val page = instanceOf[package_information_change]
 
-  override val typeAndViewInstance = (STANDARD, page(itemId, form(), packageInfoId, Seq.empty)(_, _))
+  override val typeAndViewInstance = (STANDARD, page(itemId, form, packageInfoId, Seq.empty)(_, _))
 
-  def createView(frm: Form[PackageInformation] = form(), packages: Seq[PackageInformation] = Seq.empty)(
-    implicit request: JourneyRequest[_]
-  ): Document =
+  def createView(frm: Form[PackageInformation] = form, packages: Seq[PackageInformation] = Seq.empty)(implicit request: JourneyRequest[_]): Document =
     page(itemId, frm, packageInfoId, packages)(request, messages)
 
   "PackageInformation Change View" should {
@@ -105,7 +103,7 @@ class PackageInformationChangeViewSpec extends PageWithButtonsSpec with ExportsT
   "PackageInformation Change View for invalid input" should {
     onEveryDeclarationJourney() { implicit request =>
       "display error if nothing is entered" in {
-        val view = createView(form().fillAndValidate(PackageInformation("id", None, None, None)))
+        val view = createView(form.fillAndValidate(PackageInformation("id", None, None, None)))
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#typesOfPackages")
@@ -118,7 +116,7 @@ class PackageInformationChangeViewSpec extends PageWithButtonsSpec with ExportsT
       }
 
       "display error if incorrect PackageInformation is entered" in {
-        val view = createView(form().fillAndValidate(PackageInformation("id", Some("invalid"), Some(1), Some("wrong!"))))
+        val view = createView(form.fillAndValidate(PackageInformation("id", Some("invalid"), Some(1), Some("wrong!"))))
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#typesOfPackages")
@@ -133,7 +131,7 @@ class PackageInformationChangeViewSpec extends PageWithButtonsSpec with ExportsT
   "PackageInformation Change View when filled" should {
     onEveryDeclarationJourney() { implicit request =>
       "display data in PackageInformation code input" in {
-        val view = createView(form().fill(packageInformation))
+        val view = createView(form.fill(packageInformation))
         view.getElementById("typesOfPackages").attr("value") must be(packageInformation.typesOfPackages.get)
         view.getElementById("numberOfPackages").attr("value") must be(packageInformation.numberOfPackages.get.toString)
         view.getElementById("shippingMarks").attr("value") must be(packageInformation.shippingMarks.get)

@@ -69,7 +69,7 @@ class PreviousDocumentsControllerSpec extends ControllerWithoutFormSpec {
 
     "return 200 (OK)" when {
       "display page method " in {
-        val result = controller.displayPage()(getRequest())
+        val result = controller.displayPage(getRequest())
 
         status(result) mustBe OK
         verifyPage()
@@ -142,7 +142,7 @@ class PreviousDocumentsControllerSpec extends ControllerWithoutFormSpec {
         val result = controller.submit()(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe PreviousDocumentsSummaryController.displayPage()
+        thePageNavigatedTo mustBe PreviousDocumentsSummaryController.displayPage
 
         verifyPage(0)
       }
@@ -153,7 +153,7 @@ class PreviousDocumentsControllerSpec extends ControllerWithoutFormSpec {
         val result = controller.submit()(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe PreviousDocumentsSummaryController.displayPage()
+        thePageNavigatedTo mustBe PreviousDocumentsSummaryController.displayPage
 
         verifyPage(0)
       }

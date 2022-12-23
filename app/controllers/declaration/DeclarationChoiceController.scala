@@ -45,7 +45,7 @@ class DeclarationChoiceController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with Logging with ModelCacheable with WithDefaultFormBinding {
 
-  def displayPage(): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
+  def displayPage: Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
     request.declarationId match {
       case Some(id) =>
         exportsCacheService.get(id).map {
@@ -58,7 +58,8 @@ class DeclarationChoiceController @Inject() (
   }
 
   def submitChoice(): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
-    form.bindFromRequest
+    form
+      .bindFromRequest()
       .fold(
         formWithErrors => Future.successful(BadRequest(choicePage(formWithErrors))),
         declarationType =>
@@ -87,7 +88,7 @@ class DeclarationChoiceController @Inject() (
     )
 
   private def nextPage(declarationId: String)(implicit request: RequestHeader): Result =
-    Redirect(AdditionalDeclarationTypeController.displayPage())
+    Redirect(AdditionalDeclarationTypeController.displayPage)
       .addingToSession(ExportsSessionKeys.declarationId -> declarationId)
 
   private def updateDeclarationType(id: String, `type`: DeclarationType)(implicit hc: HeaderCarrier): Future[Option[ExportsDeclaration]] = {

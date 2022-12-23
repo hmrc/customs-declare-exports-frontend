@@ -83,7 +83,7 @@ class TransportCountryViewSpec extends PageWithButtonsSpec with Injector {
               "display 'Back' button that links to the 'Border Transport' page" in {
                 val backButton = view.getElementById("back-link")
                 backButton must containMessage("site.backToPreviousQuestion")
-                backButton.getElementById("back-link") must haveHref(BorderTransportController.displayPage())
+                backButton.getElementById("back-link") must haveHref(BorderTransportController.displayPage)
               }
 
               "display 'Back' button that links to the 'Departure Transport' page" when {
@@ -92,7 +92,7 @@ class TransportCountryViewSpec extends PageWithButtonsSpec with Injector {
                   val view = createView(form(transportMode), transportMode)
                   val backButton = view.getElementById("back-link")
                   backButton must containMessage("site.backToPreviousQuestion")
-                  backButton.getElementById("back-link") must haveHref(DepartureTransportController.displayPage())
+                  backButton.getElementById("back-link") must haveHref(DepartureTransportController.displayPage)
                 }
               }
 

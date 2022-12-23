@@ -55,7 +55,8 @@ class AdditionalDocumentsController @Inject() (
     def showFormWithErrors(formWithErrors: Form[YesNoAnswer]): Result =
       BadRequest(additionalDocumentsPage(itemId, formWithErrors, cachedAdditionalDocuments(itemId)))
 
-    yesNoForm.bindFromRequest
+    yesNoForm
+      .bindFromRequest()
       .fold(showFormWithErrors, yesNoAnswer => nextPage(yesNoAnswer, itemId))
   }
 

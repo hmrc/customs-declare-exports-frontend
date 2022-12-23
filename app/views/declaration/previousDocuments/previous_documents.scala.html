@@ -38,7 +38,7 @@
     title = Title(templateHelper.title, "declaration.section.4", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(Document)))
 ) {
-    @formHelper(action = PreviousDocumentsController.submit(), 'autoComplete -> "off") {
+    @formHelper(action = PreviousDocumentsController.submit, 'autoComplete -> "off") {
 
         @editContent(form)
     }

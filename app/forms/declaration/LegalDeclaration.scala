@@ -43,5 +43,5 @@ object LegalDeclaration {
     "confirmation" -> boolean.verifying("legal.declaration.confirmation.missing", isTrue)
   )(LegalDeclaration.apply)(LegalDeclaration.unapply)
 
-  def form(): Form[LegalDeclaration] = Form(mapping)
+  def form: Form[LegalDeclaration] = Form(mapping)
 }

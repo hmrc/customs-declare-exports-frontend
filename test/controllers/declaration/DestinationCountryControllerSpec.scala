@@ -22,8 +22,8 @@ import controllers.declaration.routes.{LocationOfGoodsController, OfficeOfExitCo
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.SUPPLEMENTARY_EIDR
 import forms.declaration.countries.Country
 import forms.declaration.declarationHolder.AuthorizationTypeCodes.codeThatSkipLocationOfGoods
-import models.codes.{Country => ModelCountry}
 import models.DeclarationType._
+import models.codes.{Country => ModelCountry}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
@@ -73,7 +73,7 @@ class DestinationCountryControllerSpec extends ControllerSpec {
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration())
-    await(controller.displayPage()(request))
+    await(controller.displayPage(request))
     theResponseForm
   }
 
@@ -83,7 +83,7 @@ class DestinationCountryControllerSpec extends ControllerSpec {
       "display page method is invoked and cache is empty" in {
         withNewCaching(aDeclaration())
 
-        val result = controller.displayPage()(getRequest())
+        val result = controller.displayPage(getRequest())
 
         status(result) mustBe OK
         verify(destinationCountryPage).apply(any())(any(), any())
@@ -92,7 +92,7 @@ class DestinationCountryControllerSpec extends ControllerSpec {
       "display page method is invoked and cache contains data" in {
         withNewCaching(aDeclaration(withDestinationCountries()))
 
-        val result = controller.displayPage()(getRequest())
+        val result = controller.displayPage(getRequest())
 
         status(result) mustBe OK
         verify(destinationCountryPage).apply(any())(any(), any())
@@ -142,27 +142,27 @@ class DestinationCountryControllerSpec extends ControllerSpec {
           val result = controller.submit()(postRequest(correctForm))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe OfficeOfExitController.displayPage()
+          thePageNavigatedTo mustBe OfficeOfExitController.displayPage
         }
 
       "submit for Standard declaration" should {
-        behave like redirectForDeclarationType(STANDARD, RoutingCountriesController.displayRoutingQuestion())
+        behave like redirectForDeclarationType(STANDARD, RoutingCountriesController.displayRoutingQuestion)
       }
 
       "submit for Simplified declaration" should {
-        behave like redirectForDeclarationType(SIMPLIFIED, RoutingCountriesController.displayRoutingQuestion())
+        behave like redirectForDeclarationType(SIMPLIFIED, RoutingCountriesController.displayRoutingQuestion)
       }
 
       "submit for Occasional declaration" should {
-        behave like redirectForDeclarationType(OCCASIONAL, RoutingCountriesController.displayRoutingQuestion())
+        behave like redirectForDeclarationType(OCCASIONAL, RoutingCountriesController.displayRoutingQuestion)
       }
 
       "submit for Supplementary declaration" should {
-        behave like redirectForDeclarationType(SUPPLEMENTARY, LocationOfGoodsController.displayPage())
+        behave like redirectForDeclarationType(SUPPLEMENTARY, LocationOfGoodsController.displayPage)
       }
 
       "submit for Customs Clearance request" should {
-        behave like redirectForDeclarationType(CLEARANCE, LocationOfGoodsController.displayPage())
+        behave like redirectForDeclarationType(CLEARANCE, LocationOfGoodsController.displayPage)
       }
 
       "conditions for skipping location of goods pass" should {

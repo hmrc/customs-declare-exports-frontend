@@ -24,7 +24,7 @@ import play.twirl.api.{Html, HtmlFormat}
 import views.declaration.spec.UnitViewSpec
 import views.html.components.gds.formGroupWrapper
 
-import scala.collection.JavaConverters.{asScalaIterator, asScalaSet}
+import scala.jdk.CollectionConverters.{CollectionHasAsScala, IteratorHasAsScala}
 
 class FormGroupWrapperSpec extends UnitViewSpec with Injector {
 
@@ -49,14 +49,14 @@ class FormGroupWrapperSpec extends UnitViewSpec with Injector {
 
         val expectedClassNames = Seq("govuk-form-group")
 
-        val actualClassNames = asScalaSet(formGroupWrapperView.getElementById(testFieldKey).classNames()).toSeq
+        val actualClassNames = formGroupWrapperView.getElementById(testFieldKey).classNames().asScala.toSeq
 
         actualClassNames mustBe expectedClassNames
       }
 
       "contain no span element with error message" in {
 
-        asScalaIterator(formGroupWrapperView.getElementsByTag("span").iterator()).toSeq mustBe empty
+        formGroupWrapperView.getElementsByTag("span").iterator().asScala.toSeq mustBe empty
       }
 
       "contain provided content" in {
@@ -73,7 +73,7 @@ class FormGroupWrapperSpec extends UnitViewSpec with Injector {
 
         val expectedClassNames = Seq("govuk-form-group", "govuk-form-group--error")
 
-        val actualClassNames = asScalaSet(formGroupWrapperViewWithError.getElementById(testFieldKey).classNames()).toSeq
+        val actualClassNames = formGroupWrapperViewWithError.getElementById(testFieldKey).classNames().asScala.toSeq
 
         actualClassNames mustBe expectedClassNames
       }
@@ -82,7 +82,7 @@ class FormGroupWrapperSpec extends UnitViewSpec with Injector {
 
         val paragraphElement = formGroupWrapperViewWithError.getElementById(s"$testFieldKey-error")
 
-        asScalaSet(paragraphElement.classNames()).toSeq mustBe Seq("govuk-error-message")
+        paragraphElement.classNames().asScala.toSeq mustBe Seq("govuk-error-message")
         paragraphElement must containMessage(testErrorMessageKey)
       }
 

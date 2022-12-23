@@ -32,25 +32,25 @@ class ContainerFirstSpec extends DeclarationPageBaseSpec {
     "return form with errors" when {
 
       "provided with non-alphanumeric id" in {
-        val form = ContainerFirst.form().bind(formData("Yes", Some("!2345678")), JsonBindMaxChars)
+        val form = ContainerFirst.form.bind(formData("Yes", Some("!2345678")), JsonBindMaxChars)
 
         form.errors mustBe Seq(FormError(containerIdKey, "declaration.transportInformation.containerId.error.invalid"))
       }
 
       "provided with id too long" in {
-        val form = ContainerFirst.form().bind(formData("Yes", Some("123456789012345678")), JsonBindMaxChars)
+        val form = ContainerFirst.form.bind(formData("Yes", Some("123456789012345678")), JsonBindMaxChars)
 
         form.errors mustBe Seq(FormError(containerIdKey, "declaration.transportInformation.containerId.error.length"))
       }
 
       "provided with no id when user said yes" in {
-        val form = ContainerFirst.form().bind(formData("Yes", None), JsonBindMaxChars)
+        val form = ContainerFirst.form.bind(formData("Yes", None), JsonBindMaxChars)
 
         form.errors mustBe Seq(FormError(containerIdKey, "declaration.transportInformation.containerId.empty"))
       }
 
       "no answer for yes/no" in {
-        val form = ContainerFirst.form().bind(formData("", None), JsonBindMaxChars)
+        val form = ContainerFirst.form.bind(formData("", None), JsonBindMaxChars)
 
         form.errors mustBe Seq(FormError(hasContainerKey, "declaration.transportInformation.container.answer.empty"))
       }
@@ -58,13 +58,13 @@ class ContainerFirstSpec extends DeclarationPageBaseSpec {
 
     "return form without errors" when {
       "provided with valid input when user said Yes" in {
-        val form = ContainerFirst.form().bind(formData("Yes", Some("1234ABCD")), JsonBindMaxChars)
+        val form = ContainerFirst.form.bind(formData("Yes", Some("1234ABCD")), JsonBindMaxChars)
 
         form.hasErrors must be(false)
       }
 
       "provided with no input when user said No" in {
-        val form = ContainerFirst.form().bind(formData("No", None), JsonBindMaxChars)
+        val form = ContainerFirst.form.bind(formData("No", None), JsonBindMaxChars)
 
         form.hasErrors must be(false)
       }

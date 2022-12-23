@@ -51,9 +51,9 @@ class AdditionalFiscalReferencesAddViewSpec extends PageWithButtonsSpec with Inj
 
   val page = instanceOf[additional_fiscal_references_add]
 
-  override val typeAndViewInstance = (STANDARD, page(itemId, form(), Seq.empty)(_, _))
+  override val typeAndViewInstance = (STANDARD, page(itemId, form, Seq.empty)(_, _))
 
-  def createView(frm: Form[AdditionalFiscalReference] = form())(implicit request: JourneyRequest[_]): Document =
+  def createView(frm: Form[AdditionalFiscalReference] = form)(implicit request: JourneyRequest[_]): Document =
     page(itemId, frm, Seq.empty)
 
   "Additional Fiscal References View on empty page" should {
@@ -105,7 +105,7 @@ class AdditionalFiscalReferencesAddViewSpec extends PageWithButtonsSpec with Inj
       "display error" when {
 
         "country is empty" in {
-          val view = createView(form().bind(emptyCountry))
+          val view = createView(form.bind(emptyCountry))
 
           view must haveGovukGlobalErrorSummary
           view must containErrorElementWithTagAndHref("a", "#country")
@@ -114,7 +114,7 @@ class AdditionalFiscalReferencesAddViewSpec extends PageWithButtonsSpec with Inj
         }
 
         "country is incorrect" in {
-          val view = createView(form().bind(incorrectCountry))
+          val view = createView(form.bind(incorrectCountry))
 
           view must haveGovukGlobalErrorSummary
           view must containErrorElementWithTagAndHref("a", "#country")
@@ -123,7 +123,7 @@ class AdditionalFiscalReferencesAddViewSpec extends PageWithButtonsSpec with Inj
         }
 
         "reference is empty" in {
-          val view = createView(form().bind(emptyReference))
+          val view = createView(form.bind(emptyReference))
 
           view must haveGovukGlobalErrorSummary
           view must containErrorElementWithTagAndHref("a", "#reference")
@@ -132,7 +132,7 @@ class AdditionalFiscalReferencesAddViewSpec extends PageWithButtonsSpec with Inj
         }
 
         "reference is incorrect" in {
-          val view = createView(form().bind(incorrectReference))
+          val view = createView(form.bind(incorrectReference))
 
           view must haveGovukGlobalErrorSummary
           view must containErrorElementWithTagAndHref("a", "#reference")
@@ -141,7 +141,7 @@ class AdditionalFiscalReferencesAddViewSpec extends PageWithButtonsSpec with Inj
         }
 
         "both country and reference are empty" in {
-          val view = createView(form().bind(emptyCountryAndRef))
+          val view = createView(form.bind(emptyCountryAndRef))
 
           view must haveGovukGlobalErrorSummary
           view must containErrorElementWithTagAndHref("a", "#country")
@@ -152,7 +152,7 @@ class AdditionalFiscalReferencesAddViewSpec extends PageWithButtonsSpec with Inj
         }
 
         "both country and reference are incorrect" in {
-          val view = createView(form().bind(incorrectCountryAndRef))
+          val view = createView(form.bind(incorrectCountryAndRef))
 
           view must haveGovukGlobalErrorSummary
           view must containErrorElementWithTagAndHref("a", "#country")

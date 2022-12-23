@@ -19,17 +19,17 @@ package base
 import models.ExportsDeclaration
 import org.mockito.ArgumentMatchers.{any, anyString}
 import org.mockito.Mockito.{never, times, verify, when}
+import org.scalatestplus.mockito.MockitoSugar.mock
 import org.mockito.invocation.InvocationOnMock
 import org.mockito.stubbing.Answer
 import org.mockito.{ArgumentCaptor, Mockito}
 import org.scalatest.{BeforeAndAfterEach, Suite}
-import org.scalatestplus.mockito.MockitoSugar
 import services.cache.{ExportsCacheService, ExportsDeclarationBuilder}
 
-import scala.collection.JavaConverters.asScalaIteratorConverter
 import scala.concurrent.Future
+import scala.jdk.CollectionConverters.IteratorHasAsScala
 
-trait MockExportCacheService extends MockitoSugar with ExportsDeclarationBuilder with BeforeAndAfterEach {
+trait MockExportCacheService extends ExportsDeclarationBuilder with BeforeAndAfterEach {
   self: Suite =>
 
   val mockExportsCacheService: ExportsCacheService = mock[ExportsCacheService]
@@ -75,8 +75,8 @@ trait MockExportCacheService extends MockitoSugar with ExportsDeclarationBuilder
   }
 
   protected def verifyTheCacheIsUnchanged(): Unit = {
-    verify(mockExportsCacheService, never()).update(any[ExportsDeclaration])(any())
-    verify(mockExportsCacheService, never()).create(any[ExportsDeclaration])(any())
+    verify(mockExportsCacheService, never).update(any[ExportsDeclaration])(any())
+    verify(mockExportsCacheService, never).create(any[ExportsDeclaration])(any())
   }
 
   override protected def afterEach(): Unit = {

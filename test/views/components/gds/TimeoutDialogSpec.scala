@@ -16,7 +16,6 @@
 
 package views.components.gds
 
-import scala.collection.JavaConverters.asScalaIteratorConverter
 import base.{MockAuthAction, OverridableInjector}
 import com.typesafe.config.ConfigFactory
 import config.TimeoutDialogConfig
@@ -31,12 +30,14 @@ import views.declaration.spec.UnitViewSpec
 import views.helpers.CommonMessages
 import views.html.choice_page
 
+import scala.jdk.CollectionConverters.IteratorHasAsScala
+
 class TimeoutDialogSpec extends UnitViewSpec with CommonMessages with MockAuthAction {
 
   "Timeout Dialog" should {
 
     "display the timeout dialog when user is signed in" in {
-      val form: Form[Choice] = Choice.form()
+      val form: Form[Choice] = Choice.form
 
       val serviceConfig = new ServicesConfig(Configuration(ConfigFactory.parseString(s"""
           timeoutDialog.timeout="100 millis"

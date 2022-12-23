@@ -40,10 +40,10 @@ class AdditionalProcedureCodesViewSpec extends PageWithButtonsSpec with ExportsT
   val page = instanceOf[additional_procedure_codes]
 
   override val typeAndViewInstance =
-    (STANDARD, page(itemId, form(), sampleProcedureCode, defaultAdditionalProcedureCodes, Seq.empty)(_, _))
+    (STANDARD, page(itemId, form, sampleProcedureCode, defaultAdditionalProcedureCodes, Seq.empty)(_, _))
 
   def createView(
-    frm: Form[AdditionalProcedureCode] = form(),
+    frm: Form[AdditionalProcedureCode] = form,
     validCodes: Seq[AdditionalProcedureCodeModel] = defaultAdditionalProcedureCodes,
     codes: Seq[String] = Seq.empty
   )(implicit request: JourneyRequest[_]): Document =
@@ -96,7 +96,7 @@ class AdditionalProcedureCodesViewSpec extends PageWithButtonsSpec with ExportsT
 
       "provided with filled form" should {
         "display data in Additional Procedure Code input" in {
-          val view = createView(form().fill(AdditionalProcedureCode(Some("123"))))
+          val view = createView(form.fill(AdditionalProcedureCode(Some("123"))))
 
           view.getElementById("additionalProcedureCode").attr("value") mustBe "123"
         }

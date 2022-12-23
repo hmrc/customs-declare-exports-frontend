@@ -27,7 +27,7 @@ import models.declaration.submissions.{Action, Submission}
 import models.requests.ExportsSessionKeys
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers._
-import org.mockito.Mockito._
+import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.matchers.{BeMatcher, MatchResult}
 import play.api.test.Helpers._
@@ -148,7 +148,7 @@ class SubmissionsControllerSpec extends ControllerWithoutFormSpec with BeforeAnd
       val result = controller.amend(rejectedId)(getRequest(None))
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(SummaryController.displayPage().url)
+      redirectLocation(result) mustBe Some(SummaryController.displayPage.url)
       session(result).get(ExportsSessionKeys.declarationId) mustBe Some("new-id")
     }
   }

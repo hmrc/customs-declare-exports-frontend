@@ -129,7 +129,7 @@ class NavigatorSpec
       val result = navigator.continueTo(call)(decoratedRequest(requestWithFormAction(Some(SaveAndReturnToSummary))))
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(SummaryController.displayPage().url)
+      redirectLocation(result) mustBe Some(SummaryController.displayPage.url)
     }
   }
 

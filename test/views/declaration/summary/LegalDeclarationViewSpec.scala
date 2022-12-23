@@ -24,7 +24,7 @@ import views.html.declaration.summary.legal_declaration
 
 class LegalDeclarationViewSpec extends UnitViewSpec with Injector {
 
-  private val emptyForm = LegalDeclaration.form()
+  private val emptyForm = LegalDeclaration.form
   private val component = instanceOf[legal_declaration]
 
   private val legendClass = "govuk-fieldset__legend"

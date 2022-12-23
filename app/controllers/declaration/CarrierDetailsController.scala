@@ -47,7 +47,7 @@ class CarrierDetailsController @Inject() (
 
   private val validTypes = Seq(STANDARD, SIMPLIFIED, OCCASIONAL, CLEARANCE)
 
-  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
+  def displayPage: Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
     request.cacheModel.parties.carrierDetails match {
       case Some(data) => Ok(carrierDetailsPage(form.fill(data)))
       case _          => Ok(carrierDetailsPage(form))
@@ -58,7 +58,8 @@ class CarrierDetailsController @Inject() (
     CarrierDetails.form(request.declarationType).withSubmissionErrors
 
   def saveAddress(): Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async { implicit request =>
-    form.bindFromRequest
+    form
+      .bindFromRequest()
       .fold(
         formWithErrors => Future.successful(BadRequest(carrierDetailsPage(formWithErrors))),
         updateCache(_).map(_ => navigator.continueTo(ConsigneeDetailsController.displayPage))

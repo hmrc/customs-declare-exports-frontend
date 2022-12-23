@@ -69,7 +69,7 @@ object UNDangerousGoodsCode extends DeclarationPage {
       )
     )(form2Model)(model2Form)
 
-  def form(): Form[UNDangerousGoodsCode] = Form(mapping)
+  def form: Form[UNDangerousGoodsCode] = Form(mapping)
 
   override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
     Seq(TariffContentKey(s"tariff.declaration.item.unDangerousGoodsCode.${DeclarationPage.getJourneyTypeSpecialisation(decType)}"))

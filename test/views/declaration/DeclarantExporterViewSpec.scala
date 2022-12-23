@@ -37,7 +37,7 @@ class DeclarantExporterViewSpec extends PageWithButtonsSpec with Injector {
 
   override val typeAndViewInstance = (STANDARD, page(form)(_, _))
 
-  def createView(frm: Form[DeclarantIsExporter] = form())(implicit request: JourneyRequest[_]): Document =
+  def createView(frm: Form[DeclarantIsExporter] = form)(implicit request: JourneyRequest[_]): Document =
     page(frm)(request, messages)
 
   "Declarant Exporter View on empty page" should {
@@ -89,7 +89,7 @@ class DeclarantExporterViewSpec extends PageWithButtonsSpec with Injector {
         val backButton = createView().getElementById("back-link")
 
         backButton must containMessage(backToPreviousQuestionCaption)
-        backButton must haveHref(LinkDucrToMucrController.displayPage().url)
+        backButton must haveHref(LinkDucrToMucrController.displayPage.url)
       }
     }
 
@@ -107,7 +107,7 @@ class DeclarantExporterViewSpec extends PageWithButtonsSpec with Injector {
         val backButton = createView().getElementById("back-link")
 
         backButton must containMessage(backToPreviousQuestionCaption)
-        backButton must haveHref(DeclarantDetailsController.displayPage().url)
+        backButton must haveHref(DeclarantDetailsController.displayPage.url)
       }
     }
   }
@@ -115,7 +115,7 @@ class DeclarantExporterViewSpec extends PageWithButtonsSpec with Injector {
   "Declarant Exporter View with invalid input" should {
     onEveryDeclarationJourney() { implicit request =>
       "display error when answer is empty" in {
-        val view = createView(DeclarantIsExporter.form().fillAndValidate(DeclarantIsExporter("")))
+        val view = createView(DeclarantIsExporter.form.fillAndValidate(DeclarantIsExporter("")))
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#code_yes")
@@ -124,7 +124,7 @@ class DeclarantExporterViewSpec extends PageWithButtonsSpec with Injector {
       }
 
       "display error when EORI is provided, but is incorrect" in {
-        val view = createView(form().fillAndValidate(DeclarantIsExporter("wrong")))
+        val view = createView(form.fillAndValidate(DeclarantIsExporter("wrong")))
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#code_yes")
@@ -137,7 +137,7 @@ class DeclarantExporterViewSpec extends PageWithButtonsSpec with Injector {
   "Declarant Exporter View when filled" should {
     onEveryDeclarationJourney() { implicit request =>
       "display answer input" in {
-        val form = DeclarantIsExporter.form().fill(DeclarantIsExporter(YesNoAnswers.yes))
+        val form = DeclarantIsExporter.form.fill(DeclarantIsExporter(YesNoAnswers.yes))
         val view = createView(form)
 
         view.getElementById("code_yes") must beSelected

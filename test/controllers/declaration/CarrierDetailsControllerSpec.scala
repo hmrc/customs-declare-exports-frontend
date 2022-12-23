@@ -74,7 +74,7 @@ class CarrierDetailsControllerSpec extends ControllerSpec {
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration())
-    await(controller.displayPage()(request))
+    await(controller.displayPage(request))
     theResponseForm
   }
 
@@ -87,7 +87,7 @@ class CarrierDetailsControllerSpec extends ControllerSpec {
 
           withNewCaching(request.cacheModel)
 
-          val result = controller.displayPage()(getRequest())
+          val result = controller.displayPage(getRequest())
 
           status(result) must be(OK)
         }
@@ -101,7 +101,7 @@ class CarrierDetailsControllerSpec extends ControllerSpec {
             )
           )
 
-          val result = controller.displayPage()(getRequest())
+          val result = controller.displayPage(getRequest())
 
           status(result) must be(OK)
         }
@@ -140,10 +140,10 @@ class CarrierDetailsControllerSpec extends ControllerSpec {
       onJourney(STANDARD, SIMPLIFIED, OCCASIONAL) { request =>
         "method is invoked and cache is empty" in {
           withNoDeclaration()
-          val result = controller.displayPage()(getRequest())
+          val result = controller.displayPage(getRequest())
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.routes.RootController.displayPage().url)
+          redirectLocation(result) mustBe Some(controllers.routes.RootController.displayPage.url)
 
           verifyPageInvocations(0)
         }
@@ -154,10 +154,10 @@ class CarrierDetailsControllerSpec extends ControllerSpec {
 
           withNewCaching(request.cacheModel)
 
-          val result = controller.displayPage()(getRequest())
+          val result = controller.displayPage(getRequest())
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.routes.RootController.displayPage().url)
+          redirectLocation(result) mustBe Some(controllers.routes.RootController.displayPage.url)
 
           verifyPageInvocations(0)
         }
@@ -200,7 +200,7 @@ class CarrierDetailsControllerSpec extends ControllerSpec {
           val result = controller.saveAddress()(postRequest(correctForm))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.ConsigneeDetailsController.displayPage()
+          thePageNavigatedTo mustBe controllers.declaration.routes.ConsigneeDetailsController.displayPage
         }
       }
 
@@ -221,7 +221,7 @@ class CarrierDetailsControllerSpec extends ControllerSpec {
           val result = controller.saveAddress()(postRequest(correctForm))
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.routes.RootController.displayPage().url)
+          redirectLocation(result) mustBe Some(controllers.routes.RootController.displayPage.url)
         }
       }
 

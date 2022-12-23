@@ -46,7 +46,7 @@ class AdditionalDocumentsRequiredController @Inject() (
   private val emptyKey = "declaration.additionalDocumentsRequired.empty"
 
   def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    val frm = form(errorKey = emptyKey).withSubmissionErrors()
+    val frm = form(errorKey = emptyKey).withSubmissionErrors
     request.cacheModel.additionalDocumentsRequired(itemId) match {
       case Some(yesNoAnswer) => Ok(additionalDocumentsRequired(itemId, frm.fill(yesNoAnswer)))
       case _                 => Ok(additionalDocumentsRequired(itemId, frm))

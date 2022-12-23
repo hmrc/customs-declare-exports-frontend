@@ -51,7 +51,7 @@ class MucrViewSpec extends UnitViewSpec with CommonMessages with Injector {
       "display 'Back' button to 'Link DUCR to MUCR' page" in {
         val backButton = view.getElementById("back-link")
         backButton must containMessage(backToPreviousQuestionCaption)
-        backButton must haveHref(routes.LinkDucrToMucrController.displayPage())
+        backButton must haveHref(routes.LinkDucrToMucrController.displayPage)
       }
 
       "display header" in {

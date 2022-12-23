@@ -25,7 +25,8 @@ import views.tags.ViewTest
 import org.jsoup.nodes.Document
 import org.scalatest.GivenWhenThen
 
-import scala.collection.JavaConverters.asScalaIteratorConverter
+import scala.jdk.CollectionConverters.IteratorHasAsScala
+
 @ViewTest
 class CancellationHoldingViewSpec extends UnitViewSpec with Injector with GivenWhenThen {
 

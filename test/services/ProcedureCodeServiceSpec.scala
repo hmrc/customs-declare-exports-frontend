@@ -18,14 +18,13 @@ package services
 
 import base.UnitWithMocksSpec
 import connectors.{CodeLinkConnector, CodeListConnector}
-import models.codes.{AdditionalProcedureCode, ProcedureCode}
+import mock.FeatureFlagMocks
 import models.DeclarationType
-import org.mockito.ArgumentMatchers.any
+import models.codes.{AdditionalProcedureCode, ProcedureCode}
+import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito._
-import org.mockito.ArgumentMatchers.{eq => meq, _}
 import org.scalatest.BeforeAndAfterEach
-import ProcedureCodeServiceSpec._
-import _root_.mock.FeatureFlagMocks
+import services.ProcedureCodeServiceSpec._
 
 import java.util.Locale
 import java.util.Locale.ENGLISH

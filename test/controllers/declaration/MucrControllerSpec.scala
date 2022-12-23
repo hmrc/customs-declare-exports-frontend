@@ -16,12 +16,12 @@
 
 package controllers.declaration
 
-import base.TestHelper._
 import base.ControllerSpec
+import base.TestHelper._
 import forms.declaration.Mucr
+import models.DeclarationType
 import models.DeclarationType.{OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
 import models.requests.JourneyRequest
-import models.DeclarationType
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
@@ -59,7 +59,7 @@ class MucrControllerSpec extends ControllerSpec {
   }
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
-    await(controller.displayPage()(request))
+    await(controller.displayPage(request))
     theResponseForm
   }
 
@@ -68,7 +68,7 @@ class MucrControllerSpec extends ControllerSpec {
     "return 200 (OK)" when {
 
       "display page method is invoked and cache is empty" in {
-        val result = controller.displayPage()(getRequest())
+        val result = controller.displayPage(getRequest())
         status(result) must be(OK)
         verifyPageInvoked
       }
@@ -76,7 +76,7 @@ class MucrControllerSpec extends ControllerSpec {
       "display page method is invoked and cache is not empty" in {
         withNewCaching(aDeclaration(withMucr()))
 
-        val result = controller.displayPage()(getRequest())
+        val result = controller.displayPage(getRequest())
         status(result) must be(OK)
         verifyPageInvoked
       }
@@ -88,7 +88,7 @@ class MucrControllerSpec extends ControllerSpec {
     "return 303 (SEE_OTHER) and redirect to 'Are you the exporter?' page" when {
       onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { implicit request =>
         "a valid MUCR is entered" in {
-          verifyRedirect(routes.DeclarantExporterController.displayPage())
+          verifyRedirect(routes.DeclarantExporterController.displayPage)
         }
       }
     }
@@ -96,7 +96,7 @@ class MucrControllerSpec extends ControllerSpec {
     "return 303 (SEE_OTHER) and redirect to 'Is this an entry into declarant's records?' page" when {
       onClearance { implicit request =>
         "a valid MUCR is entered" in {
-          verifyRedirect(routes.EntryIntoDeclarantsRecordsController.displayPage())
+          verifyRedirect(routes.EntryIntoDeclarantsRecordsController.displayPage)
         }
       }
     }

@@ -23,16 +23,15 @@ import forms.declaration.SupervisingCustomsOffice
 import forms.declaration.procedurecodes.AdditionalProcedureCode
 import forms.declaration.procedurecodes.AdditionalProcedureCode.additionalProcedureCodeKey
 import mock.ErrorHandlerMocks
+import models.DeclarationType
 import models.codes.AdditionalProcedureCode.NO_APC_APPLIES_CODE
 import models.codes.{AdditionalProcedureCode => AdditionalProcedureCodeModel, ProcedureCode}
 import models.declaration.ProcedureCodesData.limitOfCodes
 import models.declaration.{ExportItem, ProcedureCodesData}
 import models.requests.JourneyRequest
-import models.DeclarationType
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.{reset, verify, when}
-import org.mockito.stubbing.OngoingStubbing
 import org.scalatest.OptionValues
 import org.scalatest.concurrent.ScalaFutures
 import play.api.data.{Form, FormError}
@@ -601,7 +600,7 @@ class AdditionalProcedureCodesControllerSpec extends ControllerSpec with ErrorHa
     }
   }
 
-  private def prepareMocks(item: ExportItem): Option[OngoingStubbing[Option[ProcedureCode]]] =
+  private def prepareMocks(item: ExportItem) =
     for {
       procedureCodeData <- item.procedureCodes
       procedureCode <- procedureCodeData.procedureCode

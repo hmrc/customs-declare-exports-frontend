@@ -36,9 +36,9 @@ class ConsignorEoriNumberViewSpec extends PageWithButtonsSpec with ExportsTestHe
 
   private val page: consignor_eori_number = instanceOf[consignor_eori_number]
 
-  override val typeAndViewInstance = (CLEARANCE, page(form())(_, _))
+  override val typeAndViewInstance = (CLEARANCE, page(form)(_, _))
 
-  private def createView(frm: Form[ConsignorEoriNumber] = form())(implicit request: JourneyRequest[_]): Document =
+  private def createView(frm: Form[ConsignorEoriNumber] = form)(implicit request: JourneyRequest[_]): Document =
     page(frm)(request, messages)
 
   "Consignor Eori Number View" should {
@@ -47,7 +47,7 @@ class ConsignorEoriNumberViewSpec extends PageWithButtonsSpec with ExportsTestHe
       val view = createView()
 
       "display answer input" in {
-        val view = createView(form().fill(ConsignorEoriNumber(Some(Eori("GB123456789")), YesNoAnswers.yes)))
+        val view = createView(form.fill(ConsignorEoriNumber(Some(Eori("GB123456789")), YesNoAnswers.yes)))
 
         view
           .getElementById("Yes")
@@ -79,7 +79,7 @@ class ConsignorEoriNumberViewSpec extends PageWithButtonsSpec with ExportsTestHe
         val backButton = view.getElementById("back-link")
 
         backButton must containMessage("site.backToPreviousQuestion")
-        backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.IsExsController.displayPage())
+        backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.IsExsController.displayPage)
       }
 
       checkAllSaveButtonsAreDisplayed(createView())
@@ -88,7 +88,7 @@ class ConsignorEoriNumberViewSpec extends PageWithButtonsSpec with ExportsTestHe
 
         "display errors when all inputs are incorrect" in {
           val data = ConsignorEoriNumber(Some(Eori("123456789")), YesNoAnswers.yes)
-          val view = createView(form().fillAndValidate(data))
+          val view = createView(form.fillAndValidate(data))
 
           view must haveGovukGlobalErrorSummary
           view must containErrorElementWithTagAndHref("a", "#eori")
@@ -97,7 +97,7 @@ class ConsignorEoriNumberViewSpec extends PageWithButtonsSpec with ExportsTestHe
 
         "display errors when eori contains special characters" in {
           val data = ConsignorEoriNumber(eori = Some(Eori("12#$%^78")), hasEori = YesNoAnswers.yes)
-          val view = createView(form().fillAndValidate(data))
+          val view = createView(form.fillAndValidate(data))
 
           view must haveGovukGlobalErrorSummary
           view must containErrorElementWithTagAndHref("a", "#eori")

@@ -83,7 +83,7 @@ class SupervisingCustomsOfficeControllerSpec extends ControllerSpec with BeforeA
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration())
-    await(controller.displayPage()(request))
+    await(controller.displayPage(request))
     theResponseForm
   }
 
@@ -98,7 +98,7 @@ class SupervisingCustomsOfficeControllerSpec extends ControllerSpec with BeforeA
     "return 200 OK" in {
       withNewCaching(supplementaryCacheModel)
 
-      val response = controller.displayPage().apply(getRequest())
+      val response = controller.displayPage.apply(getRequest())
 
       status(response) must be(OK)
     }
@@ -106,7 +106,7 @@ class SupervisingCustomsOfficeControllerSpec extends ControllerSpec with BeforeA
     "read item from cache and display it" in {
       withNewCaching(supplementaryCacheModel)
 
-      await(controller.displayPage()(getRequest()))
+      await(controller.displayPage(getRequest()))
 
       verify(mockExportsCacheService).get(any())(any())
       verify(supervisingCustomsOfficeTemplate).apply(any())(any(), any())
@@ -125,7 +125,7 @@ class SupervisingCustomsOfficeControllerSpec extends ControllerSpec with BeforeA
         val result = await(controller.submit()(postRequest(body)))
 
         result mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe InlandOrBorderController.displayPage()
+        thePageNavigatedTo mustBe InlandOrBorderController.displayPage
       }
 
       "update cache after successful bind" in {
@@ -155,7 +155,7 @@ class SupervisingCustomsOfficeControllerSpec extends ControllerSpec with BeforeA
         val result = await(controller.submit()(postRequest(body)))
 
         result mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe InlandOrBorderController.displayPage()
+        thePageNavigatedTo mustBe InlandOrBorderController.displayPage
       }
 
       "redirect to /inland-transport-details after a successful bind" in {
@@ -164,7 +164,7 @@ class SupervisingCustomsOfficeControllerSpec extends ControllerSpec with BeforeA
         val result = await(controller.submit()(postRequest(body)))
 
         result mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe InlandTransportDetailsController.displayPage()
+        thePageNavigatedTo mustBe InlandTransportDetailsController.displayPage
       }
 
       "update cache after successful bind" in {
@@ -191,13 +191,13 @@ class SupervisingCustomsOfficeControllerSpec extends ControllerSpec with BeforeA
         "redirect to /inland-transport-details after a successful bind" when {
           "the user has previously entered a value which requires to skip the /inland-or-border page" in {
             allValuesRequiringToSkipInlandOrBorder.foreach { modifier =>
-              initMockNavigatorForMultipleCallsInTheSameTest
+              initMockNavigatorForMultipleCallsInTheSameTest()
               withNewCaching(withRequest(additionalType, modifier).cacheModel)
 
               val result = controller.submit()(postRequest(body))
 
               await(result) mustBe aRedirectToTheNextPage
-              thePageNavigatedTo mustBe InlandTransportDetailsController.displayPage()
+              thePageNavigatedTo mustBe InlandTransportDetailsController.displayPage
             }
           }
         }
@@ -212,7 +212,7 @@ class SupervisingCustomsOfficeControllerSpec extends ControllerSpec with BeforeA
         val result = await(controller.submit().apply(postRequest(body)))
 
         result mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe ExpressConsignmentController.displayPage()
+        thePageNavigatedTo mustBe ExpressConsignmentController.displayPage
       }
 
       "update cache after successful bind" in {
@@ -242,7 +242,7 @@ class SupervisingCustomsOfficeControllerSpec extends ControllerSpec with BeforeA
         val result = await(controller.submit()(postRequest(body)))
 
         result mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe DepartureTransportController.displayPage()
+        thePageNavigatedTo mustBe DepartureTransportController.displayPage
       }
 
       "redirect to /express-consignment after a successful bind" when {
@@ -254,7 +254,7 @@ class SupervisingCustomsOfficeControllerSpec extends ControllerSpec with BeforeA
             val result = await(controller.submit()(postRequest(body)))
 
             result mustBe aRedirectToTheNextPage
-            thePageNavigatedTo mustBe ExpressConsignmentController.displayPage()
+            thePageNavigatedTo mustBe ExpressConsignmentController.displayPage
           }
         }
       }

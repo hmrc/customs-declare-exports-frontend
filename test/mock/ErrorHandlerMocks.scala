@@ -34,9 +34,9 @@ trait ErrorHandlerMocks extends BeforeAndAfterEach { self: MockitoSugar with Sui
   def setupErrorHandler(): Unit = {
     when(mockErrorHandler.standardErrorTemplate(anyString, anyString, anyString)(any())).thenReturn(HtmlFormat.empty)
 
-    when(mockErrorHandler.displayErrorPage()(any())).thenReturn(Future.successful(BadRequest(HtmlFormat.empty)))
+    when(mockErrorHandler.displayErrorPage(any())).thenReturn(Future.successful(BadRequest(HtmlFormat.empty)))
 
-    when(mockErrorHandler.globalErrorPage()(any())).thenReturn(HtmlFormat.empty)
+    when(mockErrorHandler.globalErrorPage(any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {

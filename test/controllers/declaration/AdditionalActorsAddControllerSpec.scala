@@ -20,8 +20,8 @@ import base.{ControllerSpec, Injector, TestHelper}
 import forms.common.Eori
 import forms.declaration.DeclarationAdditionalActors
 import mock.ErrorHandlerMocks
-import models.declaration.DeclarationAdditionalActorsData
 import models.DeclarationType
+import models.declaration.DeclarationAdditionalActorsData
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
@@ -66,7 +66,7 @@ class AdditionalActorsAddControllerSpec extends ControllerSpec with ErrorHandler
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration())
-    await(controller.displayPage()(request))
+    await(controller.displayPage(request))
     theResponseForm
   }
 
@@ -84,7 +84,7 @@ class AdditionalActorsAddControllerSpec extends ControllerSpec with ErrorHandler
     "return 200 (OK)" when {
 
       "display page method is invoked with empty cache" in {
-        val result = controller.displayPage()(getRequest())
+        val result = controller.displayPage(getRequest())
 
         status(result) must be(OK)
       }
@@ -92,7 +92,7 @@ class AdditionalActorsAddControllerSpec extends ControllerSpec with ErrorHandler
       "display page method is invoked with data in cache" in {
         withNewCaching(declarationWithActor)
 
-        val result = controller.displayPage()(getRequest())
+        val result = controller.displayPage(getRequest())
 
         status(result) must be(OK)
       }
@@ -148,7 +148,7 @@ class AdditionalActorsAddControllerSpec extends ControllerSpec with ErrorHandler
         val result = controller.saveForm()(postRequestAsFormUrlEncoded(correctForm: _*))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalActorsSummaryController.displayPage()
+        thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalActorsSummaryController.displayPage
       }
 
       "user add correct manufacturer" in {
@@ -157,7 +157,7 @@ class AdditionalActorsAddControllerSpec extends ControllerSpec with ErrorHandler
         val result = controller.saveForm()(postRequestAsFormUrlEncoded(correctForm: _*))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalActorsSummaryController.displayPage()
+        thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalActorsSummaryController.displayPage
       }
 
       "user add correct freight forwarder" in {
@@ -166,7 +166,7 @@ class AdditionalActorsAddControllerSpec extends ControllerSpec with ErrorHandler
         val result = controller.saveForm()(postRequestAsFormUrlEncoded(correctForm: _*))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalActorsSummaryController.displayPage()
+        thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalActorsSummaryController.displayPage
       }
 
       "user add correct warehouse keeper" in {
@@ -175,7 +175,7 @@ class AdditionalActorsAddControllerSpec extends ControllerSpec with ErrorHandler
         val result = controller.saveForm()(postRequestAsFormUrlEncoded(correctForm: _*))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalActorsSummaryController.displayPage()
+        thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalActorsSummaryController.displayPage
       }
     }
   }

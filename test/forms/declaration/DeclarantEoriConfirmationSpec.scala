@@ -31,7 +31,7 @@ class DeclarantEoriConfirmationSpec extends DeclarationPageBaseSpec {
 
       "provided with empty input" in {
 
-        val form = DeclarantEoriConfirmation.form().bind(emptyJSON, JsonBindMaxChars)
+        val form = DeclarantEoriConfirmation.form.bind(emptyJSON, JsonBindMaxChars)
 
         form.hasErrors mustBe true
         form.errors.length must equal(1)
@@ -40,7 +40,7 @@ class DeclarantEoriConfirmationSpec extends DeclarationPageBaseSpec {
 
       "provided with invalid input" in {
 
-        val form = DeclarantEoriConfirmation.form().bind(invalidJSON, JsonBindMaxChars)
+        val form = DeclarantEoriConfirmation.form.bind(invalidJSON, JsonBindMaxChars)
 
         form.hasErrors mustBe true
         form.errors.length must equal(1)
@@ -49,7 +49,7 @@ class DeclarantEoriConfirmationSpec extends DeclarationPageBaseSpec {
 
       "provided with valid input" in {
 
-        val form = DeclarantEoriConfirmation.form().bind(validJSON, JsonBindMaxChars)
+        val form = DeclarantEoriConfirmation.form.bind(validJSON, JsonBindMaxChars)
 
         form.hasErrors mustBe false
       }

@@ -46,7 +46,7 @@
     title = Title("declaration.personPresentingGoodsDetails.title", "declaration.section.2", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(PersonPresentingGoodsDetails)))) {
 
-    @formHelper(action = controllers.declaration.routes.PersonPresentingGoodsDetailsController.submitForm(), 'autocomplete -> "off") {
+    @formHelper(action = controllers.declaration.routes.PersonPresentingGoodsDetailsController.submitForm, 'autocomplete -> "off") {
         @errorSummary(form.errors)
 
         @sectionHeader(messages("declaration.section.2"))

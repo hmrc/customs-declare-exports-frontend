@@ -46,7 +46,7 @@ object StatisticalValue extends DeclarationPage {
   private val mapping: Mapping[StatisticalValue] =
     Forms.mapping(statisticalValueKey -> mappingStatisticalValue)(StatisticalValue.apply)(StatisticalValue.unapply)
 
-  def form(): Form[StatisticalValue] = Form(mapping)
+  def form: Form[StatisticalValue] = Form(mapping)
 
   override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
     Seq(TariffContentKey("tariff.declaration.item.statisticalValue.common"))

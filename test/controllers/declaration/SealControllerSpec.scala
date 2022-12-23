@@ -245,7 +245,7 @@ class SealControllerSpec extends ControllerSpec with ErrorHandlerMocks {
           val result = controller.submitSummaryAction(containerId)(postRequest(body))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe TransportContainerController.displayContainerSummary()
+          thePageNavigatedTo mustBe TransportContainerController.displayContainerSummary
         }
       }
 
@@ -272,7 +272,7 @@ class SealControllerSpec extends ControllerSpec with ErrorHandlerMocks {
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe SealController.displaySealSummary(containerId)
 
-          verifyTheCacheIsUnchanged
+          verifyTheCacheIsUnchanged()
         }
       }
     }

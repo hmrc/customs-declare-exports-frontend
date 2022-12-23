@@ -68,9 +68,9 @@ class TaricCodeAddController @Inject() (
 
     val exportItem = request.cacheModel.itemBy(itemId)
     exportItem.flatMap(_.taricCodes) match {
-      case Some(taricCodes) if taricCodes.nonEmpty => saveAdditionalTaricCode(itemId, TaricCode.form.bindFromRequest, taricCodes)
+      case Some(taricCodes) if taricCodes.nonEmpty => saveAdditionalTaricCode(itemId, TaricCode.form.bindFromRequest(), taricCodes)
 
-      case _ => TaricCodeFirst.form.bindFromRequest.fold(showFormWithErrors, validForm => saveFirstTaricCode(itemId, validForm.code))
+      case _ => TaricCodeFirst.form.bindFromRequest().fold(showFormWithErrors, validForm => saveFirstTaricCode(itemId, validForm.code))
     }
   }
 

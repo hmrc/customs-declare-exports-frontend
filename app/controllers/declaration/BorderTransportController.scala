@@ -45,7 +45,7 @@ class BorderTransportController @Inject() (
 
   private val validTypes = Seq(STANDARD, SUPPLEMENTARY)
 
-  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
+  def displayPage: Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
     val transport = request.cacheModel.transport
     val form = (transport.meansOfTransportCrossingTheBorderType, transport.meansOfTransportCrossingTheBorderIDNumber) match {
       case (Some(meansType), Some(meansId)) =>
@@ -60,8 +60,9 @@ class BorderTransportController @Inject() (
     Ok(borderTransport(form))
   }
 
-  def submitForm(): Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async { implicit request =>
-    BorderTransport.form.bindFromRequest
+  def submitForm: Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async { implicit request =>
+    BorderTransport.form
+      .bindFromRequest()
       .fold(
         formWithErrors => Future.successful(BadRequest(borderTransport(formWithErrors))),
         updateCache(_).map(_ => navigator.continueTo(TransportCountryController.displayPage))

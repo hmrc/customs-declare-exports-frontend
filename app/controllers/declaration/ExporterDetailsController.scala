@@ -43,8 +43,8 @@ class ExporterDetailsController @Inject() (
 )(implicit ec: ExecutionContext, codeListConnector: CodeListConnector)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
-  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    val frm = form().withSubmissionErrors()
+  def displayPage: Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    val frm = form.withSubmissionErrors
     request.cacheModel.parties.exporterDetails match {
       case Some(data) => Ok(exporterDetailsPage(frm.fill(data)))
       case _          => Ok(exporterDetailsPage(frm))
@@ -52,7 +52,7 @@ class ExporterDetailsController @Inject() (
   }
 
   def saveAddress(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    form()
+    form
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[ExporterDetails]) => Future.successful(BadRequest(exporterDetailsPage(formWithErrors))),
@@ -74,6 +74,6 @@ class ExporterDetailsController @Inject() (
       model.copy(parties = updatedParties)
     }
 
-  private def form()(implicit request: JourneyRequest[AnyContent]): Form[ExporterDetails] =
+  private def form(implicit request: JourneyRequest[AnyContent]): Form[ExporterDetails] =
     ExporterDetails.form(request.declarationType, Some(request.cacheModel))
 }

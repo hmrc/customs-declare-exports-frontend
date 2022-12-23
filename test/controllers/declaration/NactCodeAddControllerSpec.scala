@@ -235,7 +235,7 @@ class NactCodeAddControllerSpec extends ControllerSpec with OptionValues {
           val result = controller.displayPage(item.id)(getRequest())
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(RootController.displayPage().url)
+          redirectLocation(result) mustBe Some(RootController.displayPage.url)
         }
 
         "user submits valid data" in {
@@ -246,7 +246,7 @@ class NactCodeAddControllerSpec extends ControllerSpec with OptionValues {
           val result = controller.submitForm(item.id)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(RootController.displayPage().url)
+          redirectLocation(result) mustBe Some(RootController.displayPage.url)
         }
       }
     }

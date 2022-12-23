@@ -22,9 +22,9 @@ import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.TransportPayment
 import forms.declaration.TransportPayment.cash
+import models.DeclarationType
 import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
 import models.requests.JourneyRequest
-import models.DeclarationType
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
@@ -68,7 +68,7 @@ class ExpressConsignmentControllerSpec extends ControllerSpec {
   }
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
-    await(controller.displayPage()(request))
+    await(controller.displayPage(request))
     theResponseForm
   }
 
@@ -78,7 +78,7 @@ class ExpressConsignmentControllerSpec extends ControllerSpec {
       "return 200 (OK)" when {
 
         "display page method is invoked and cache is empty" in {
-          val result = controller.displayPage()(getRequest())
+          val result = controller.displayPage(getRequest())
           status(result) must be(OK)
           verifyPageInvoked
         }
@@ -87,7 +87,7 @@ class ExpressConsignmentControllerSpec extends ControllerSpec {
           val payment = Some(TransportPayment(cash))
           withNewCaching(aDeclaration(withTransportPayment(payment)))
 
-          val result = controller.displayPage()(getRequest())
+          val result = controller.displayPage(getRequest())
           status(result) must be(OK)
           verifyPageInvoked
         }
@@ -95,13 +95,13 @@ class ExpressConsignmentControllerSpec extends ControllerSpec {
 
       "return 303 (SEE_OTHER) and redirect to the 'Transport payment method' page" when {
         "answer is 'yes'" in {
-          verifyRedirect(Some(YesNoAnswers.yes), Some(routes.TransportPaymentController.displayPage()))
+          verifyRedirect(Some(YesNoAnswers.yes), Some(routes.TransportPaymentController.displayPage))
         }
       }
 
       "return 303 (SEE_OTHER) and redirect to 'Transport container' page" when {
         "answer is 'no'" in {
-          verifyRedirect(Some(YesNoAnswers.no), Some(routes.TransportContainerController.displayContainerSummary()))
+          verifyRedirect(Some(YesNoAnswers.no), Some(routes.TransportContainerController.displayContainerSummary))
         }
       }
 
@@ -137,7 +137,7 @@ class ExpressConsignmentControllerSpec extends ControllerSpec {
     withNewCaching(request.cacheModel)
 
     val result = yesOrNo.fold {
-      controller.displayPage()(getRequest())
+      controller.displayPage(getRequest())
     } { yn =>
       controller.submitForm()(postRequest(Json.obj("yesNo" -> yn)))
     }

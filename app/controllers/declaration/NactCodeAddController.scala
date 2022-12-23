@@ -65,10 +65,11 @@ class NactCodeAddController @Inject() (
   def submitForm(itemId: String): Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async { implicit request =>
     val maybeItem = request.cacheModel.itemBy(itemId)
     maybeItem.flatMap(_.nactCodes) match {
-      case Some(nactCodes) if nactCodes.nonEmpty => saveAdditionalNactCode(itemId, NactCode.form.bindFromRequest, nactCodes)
+      case Some(nactCodes) if nactCodes.nonEmpty => saveAdditionalNactCode(itemId, NactCode.form.bindFromRequest(), nactCodes)
 
       case _ =>
-        NactCodeFirst.form.bindFromRequest
+        NactCodeFirst.form
+          .bindFromRequest()
           .fold(
             (formWithErrors: Form[NactCodeFirst]) => Future.successful(BadRequest(nactCodeAddFirstPage(itemId, formWithErrors))),
             validForm => saveFirstNactCode(itemId, validForm.code)

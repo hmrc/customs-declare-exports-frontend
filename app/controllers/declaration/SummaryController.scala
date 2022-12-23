@@ -60,9 +60,9 @@ class SummaryController @Inject() (
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends FrontendController(mcc) with I18nSupport with Logging with ModelCacheable with WithDefaultFormBinding {
 
-  val form: Form[LegalDeclaration] = LegalDeclaration.form()
+  val form: Form[LegalDeclaration] = LegalDeclaration.form
 
-  def displayPage(): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType).async { implicit request =>
+  def displayPage: Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType).async { implicit request =>
     if (request.cacheModel.summaryWasVisited.contains(true)) continueToDisplayPage
     else updateDeclarationFromRequest(_.copy(summaryWasVisited = Some(true))).flatMap(_ => continueToDisplayPage)
   }
@@ -72,14 +72,16 @@ class SummaryController @Inject() (
   }
 
   def submitDeclaration(): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType).async { implicit request =>
-    form.bindFromRequest.fold(
-      (formWithErrors: Form[LegalDeclaration]) => Future.successful(BadRequest(legalDeclarationPage(formWithErrors))),
-      legalDeclaration =>
-        submissionService.submit(request.eori, request.cacheModel, legalDeclaration).map {
-          case Some(submission) => Redirect(routes.ConfirmationController.displayHoldingPage).withSession(session(submission))
-          case _                => handleError(s"Error from Customs Declarations API")
-        }
-    )
+    form
+      .bindFromRequest()
+      .fold(
+        (formWithErrors: Form[LegalDeclaration]) => Future.successful(BadRequest(legalDeclarationPage(formWithErrors))),
+        legalDeclaration =>
+          submissionService.submit(request.eori, request.cacheModel, legalDeclaration).map {
+            case Some(submission) => Redirect(routes.ConfirmationController.displayHoldingPage).withSession(session(submission))
+            case _                => handleError(s"Error from Customs Declarations API")
+          }
+      )
   }
 
   private def continueToDisplayPage(implicit request: JourneyRequest[_]): Future[Result] = {
@@ -123,7 +125,7 @@ class SummaryController @Inject() (
 
   private def handleError(logMessage: String)(implicit request: Request[_]): Result = {
     logger.error(logMessage)
-    InternalServerError(errorHandler.globalErrorPage())
+    InternalServerError(errorHandler.globalErrorPage)
   }
 
   private def session(submission: Submission)(implicit request: JourneyRequest[_]): Session =

@@ -45,7 +45,7 @@ class TraderReferenceController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with WithDefaultFormBinding with SubmissionErrors {
 
-  def displayPage(): Action[AnyContent] = (authorise andThen getJourney(allDeclarationTypesExcluding(SUPPLEMENTARY))) { implicit request =>
+  def displayPage: Action[AnyContent] = (authorise andThen getJourney(allDeclarationTypesExcluding(SUPPLEMENTARY))) { implicit request =>
     val ducr = request.cacheModel.ducr
     val traderReference = ducr.map(ducr => TraderReference(ducr.ducr.split('-')(1)))
     val form = TraderReference.form.withSubmissionErrors
@@ -66,7 +66,7 @@ class TraderReferenceController @Inject() (
     val lastDigitOfYear = request.cacheModel.createdDateTime.atZone(ZoneId.of("Europe/London")).getYear.toString.last
     val eori = request.eori.toUpperCase
 
-    Ducr(lastDigitOfYear + "GB" + eori.dropWhile(_.isLetter) + "-" + traderReference.value)
+    Ducr(s"${lastDigitOfYear}GB${eori.dropWhile(_.isLetter)}-${traderReference.value}")
   }
 
   private def updateCache(generatedDucr: Ducr)(implicit request: JourneyRequest[_]): Future[ExportsDeclaration] = {

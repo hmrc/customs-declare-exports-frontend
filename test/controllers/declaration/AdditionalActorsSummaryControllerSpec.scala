@@ -49,7 +49,7 @@ class AdditionalActorsSummaryControllerSpec extends ControllerSpec with OptionVa
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration(withDeclarationAdditionalActors(additionalActorsData)))
-    await(controller.displayPage()(request))
+    await(controller.displayPage(request))
     theResponseForm
   }
 
@@ -86,7 +86,7 @@ class AdditionalActorsSummaryControllerSpec extends ControllerSpec with OptionVa
         "display page method is invoked and cache contains data" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationAdditionalActors(additionalActorsData)))
 
-          val result = controller.displayPage()(getRequest())
+          val result = controller.displayPage(getRequest())
 
           status(result) mustBe OK
           verifyPageInvoked()
@@ -112,10 +112,10 @@ class AdditionalActorsSummaryControllerSpec extends ControllerSpec with OptionVa
         "there are no additional actors in the cache" in {
           withNewCaching(request.cacheModel)
 
-          val result = controller.displayPage()(getRequest())
+          val result = controller.displayPage(getRequest())
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalActorsAddController.displayPage()
+          thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalActorsAddController.displayPage
         }
 
         "user submits valid Yes answer" in {
@@ -125,7 +125,7 @@ class AdditionalActorsSummaryControllerSpec extends ControllerSpec with OptionVa
           val result = controller.submitForm()(postRequest(requestBody))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalActorsAddController.displayPage()
+          thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalActorsAddController.displayPage
         }
 
         "user submits valid Yes answer with error-fix flag" in {
@@ -135,7 +135,7 @@ class AdditionalActorsSummaryControllerSpec extends ControllerSpec with OptionVa
           val result = controller.submitForm()(postRequest(requestBody))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalActorsAddController.displayPage()
+          thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalActorsAddController.displayPage
         }
       }
     }
@@ -149,7 +149,7 @@ class AdditionalActorsSummaryControllerSpec extends ControllerSpec with OptionVa
           val result = controller.submitForm()(postRequest(requestBody))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.AuthorisationProcedureCodeChoiceController.displayPage()
+          thePageNavigatedTo mustBe controllers.declaration.routes.AuthorisationProcedureCodeChoiceController.displayPage
         }
       }
     }

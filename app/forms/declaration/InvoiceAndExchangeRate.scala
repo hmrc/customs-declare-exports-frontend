@@ -119,7 +119,7 @@ object InvoiceAndExchangeRate extends DeclarationPage {
     exchangeRate -> validateExchangeRate
   )(InvoiceAndExchangeRate.apply)(InvoiceAndExchangeRate.unapply)
 
-  def form(): Form[InvoiceAndExchangeRate] = Form(mapping)
+  def form: Form[InvoiceAndExchangeRate] = Form(mapping)
 
   override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
     Seq(TariffContentKey("tariff.declaration.totalNumbersOfItems.1.common"), TariffContentKey("tariff.declaration.totalNumbersOfItems.2.common"))
@@ -145,7 +145,7 @@ object InvoiceAndExchangeRate extends DeclarationPage {
     )
   )
 
-  private def validateTotalAmountInvoiced() =
+  private def validateTotalAmountInvoiced =
     text()
       .verifying(invoiceFieldErrorEmptyKey, nonEmpty)
       .verifying(invoiceFieldErrorKey, isEmpty or (isNotOnlyCommas and validateWithoutCommas(ofPattern(totalAmountInvoicedPattern))))

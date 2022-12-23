@@ -33,7 +33,7 @@ class UnverifiedEmailControllerSpec extends ControllerWithoutFormSpec {
     new UnverifiedEmailController(mockAuthAction, stubMessagesControllerComponents(), unverifiedPage, undeliverablePage, mock[AppConfig])
 
   override protected def beforeEach(): Unit = {
-    super.beforeEach
+    super.beforeEach()
 
     authorizedUser()
   }
