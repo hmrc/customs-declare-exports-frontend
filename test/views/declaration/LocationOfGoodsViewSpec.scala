@@ -21,7 +21,7 @@ import config.AppConfig
 import connectors.CodeListConnector
 import controllers.declaration.routes.{DestinationCountryController, RoutingCountriesController}
 import forms.declaration.AuthorisationProcedureCodeChoice.{Choice1007, ChoiceOthers}
-import forms.declaration.LocationOfGoods
+import forms.declaration.{AuthorisationProcedureCodeChoice, LocationOfGoods}
 import forms.declaration.LocationOfGoods.form
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
@@ -94,10 +94,6 @@ class LocationOfGoodsViewSpec extends PageWithButtonsSpec with Injector {
           paragraphs.size mustBe 3
 
           paragraphs.first().text mustBe messages(s"$prefix.body.v7.1")
-        }
-
-        "display the 'Find the goods location code' expander " in {
-          verifyExpander(view, 1)
         }
 
         "display the expected hint" in {
@@ -312,16 +308,34 @@ class LocationOfGoodsViewSpec extends PageWithButtonsSpec with Injector {
           hint.first().text mustBe messages(s"$prefix.yesNo.yes.hint")
         }
 
-        "display the 'Find the goods location code' expander " in {
-          verifyExpander(view, 4)
+      }
+    }
+
+    preLodgedTypes.foreach { additionalType =>
+      s"AdditionalDeclarationType is $additionalType" should {
+
+        "display the 'Find the goods location code' expander" when {
+          "CHOICE1007" in {
+
+            implicit val request = withRequest(additionalType, withAuthorisationProcedureCodeChoice(Choice1007))
+            val view = createView()
+
+            verifyExpander(view, 6)
+          }
+          "CHOICEOTHERS" in {
+
+            implicit val request = withRequest(additionalType, withAuthorisationProcedureCodeChoice(ChoiceOthers))
+            val view = createView()
+
+            verifyExpander(view, 6)
+          }
         }
+
       }
     }
 
     def verifyExpander(view: Document, version: Int): Unit = {
       val expander = view.getElementsByClass("govuk-details").first
-      val expectedTextOfPreviousSibling = messages(s"$prefix.${if (version == 1) "body.v1.3" else "hint.v4"}")
-      expander.previousElementSibling.text mustBe expectedTextOfPreviousSibling
 
       val children = expander.children
       children.size mustBe 2
@@ -361,6 +375,7 @@ class LocationOfGoodsViewSpec extends PageWithButtonsSpec with Injector {
         hint.text mustBe expectedText
       }
     }
+
   }
 
   "Goods Location View for invalid input" should {
