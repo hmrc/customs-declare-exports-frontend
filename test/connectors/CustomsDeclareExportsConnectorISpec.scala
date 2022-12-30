@@ -21,11 +21,11 @@ import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.WireMock._
 import forms.Lrn
 import models.CancellationStatus.CancellationStatusWrites
-import models.{CancelDeclaration, CancellationRequestSent, PageOfSubmissions, Paginated}
 import models.declaration.notifications.Notification
 import models.declaration.submissions.RequestType.SubmissionRequest
 import models.declaration.submissions.StatusGroup.ActionRequiredStatuses
 import models.declaration.submissions.{Action, Submission, SubmissionStatus}
+import models.{CancelDeclaration, CancellationRequestSent, PageOfSubmissions, Paginated}
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.time.{Millis, Seconds, Span}
 import play.api.http.Status
@@ -76,7 +76,7 @@ class CustomsDeclareExportsConnectorISpec extends ConnectorISpec with ExportsDec
       val response = await(connector.createDeclaration(newDeclaration))
 
       response mustBe existingDeclaration
-      verify(
+      WireMock.verify(
         postRequestedFor(urlEqualTo("/declarations"))
           .withRequestBody(containing(json(newDeclaration)))
       )
@@ -97,7 +97,7 @@ class CustomsDeclareExportsConnectorISpec extends ConnectorISpec with ExportsDec
       val response = await(connector.updateDeclaration(existingDeclaration))
 
       response mustBe existingDeclaration
-      verify(
+      WireMock.verify(
         putRequestedFor(urlEqualTo(s"/declarations/id"))
           .withRequestBody(containing(json(existingDeclaration)))
       )
@@ -132,7 +132,7 @@ class CustomsDeclareExportsConnectorISpec extends ConnectorISpec with ExportsDec
       response.uuid mustBe id
       response.actions must not be empty
 
-      verify(
+      WireMock.verify(
         postRequestedFor(urlEqualTo(s"/submission/$id"))
           .withRequestBody(absent())
       )
@@ -152,7 +152,7 @@ class CustomsDeclareExportsConnectorISpec extends ConnectorISpec with ExportsDec
       val response = await(connector.deleteDraftDeclaration(id))
 
       response mustBe ((): Unit)
-      verify(deleteRequestedFor(urlEqualTo(s"/declarations/id")))
+      WireMock.verify(deleteRequestedFor(urlEqualTo(s"/declarations/id")))
     }
   }
 
@@ -173,7 +173,7 @@ class CustomsDeclareExportsConnectorISpec extends ConnectorISpec with ExportsDec
       val response = await(connector.fetchSubmissionPage(queryString))
 
       response mustBe pageOfSubmissions
-      verify(getRequestedFor(urlEqualTo(s"/paginated-submissions?$queryString")))
+      WireMock.verify(getRequestedFor(urlEqualTo(s"/paginated-submissions?$queryString")))
     }
   }
 
@@ -193,7 +193,7 @@ class CustomsDeclareExportsConnectorISpec extends ConnectorISpec with ExportsDec
       val response = await(connector.findDeclarations(pagination))
 
       response mustBe Paginated(Seq(existingDeclaration), pagination, 1)
-      verify(getRequestedFor(urlEqualTo("/declarations?page-index=1&page-size=10")))
+      WireMock.verify(getRequestedFor(urlEqualTo("/declarations?page-index=1&page-size=10")))
     }
   }
 
@@ -213,7 +213,7 @@ class CustomsDeclareExportsConnectorISpec extends ConnectorISpec with ExportsDec
       val response = await(connector.findSavedDeclarations(pagination))
 
       response mustBe Paginated(Seq(existingDeclaration), pagination, 1)
-      verify(getRequestedFor(urlEqualTo("/declarations?status=DRAFT&page-index=1&page-size=10&sort-by=updatedDateTime&sort-direction=des")))
+      WireMock.verify(getRequestedFor(urlEqualTo("/declarations?status=DRAFT&page-index=1&page-size=10&sort-by=updatedDateTime&sort-direction=des")))
     }
   }
 
@@ -231,7 +231,7 @@ class CustomsDeclareExportsConnectorISpec extends ConnectorISpec with ExportsDec
       val response = await(connector.findDeclaration(id))
 
       response mustBe Some(existingDeclaration)
-      verify(getRequestedFor(urlEqualTo(s"/declarations/$id")))
+      WireMock.verify(getRequestedFor(urlEqualTo(s"/declarations/$id")))
     }
   }
 
@@ -249,7 +249,7 @@ class CustomsDeclareExportsConnectorISpec extends ConnectorISpec with ExportsDec
       val response = await(connector.findSubmission(id))
 
       response mustBe Some(submission)
-      verify(getRequestedFor(urlEqualTo(s"/submission/${submission.uuid}")))
+      WireMock.verify(getRequestedFor(urlEqualTo(s"/submission/${submission.uuid}")))
     }
   }
 
@@ -268,7 +268,7 @@ class CustomsDeclareExportsConnectorISpec extends ConnectorISpec with ExportsDec
       val response = await(connector.isLrnAlreadyUsed(lrn))
 
       response mustBe true
-      verify(getRequestedFor(urlEqualTo(s"/lrn-already-used/${lrn.lrn}")))
+      WireMock.verify(getRequestedFor(urlEqualTo(s"/lrn-already-used/${lrn.lrn}")))
     }
   }
 
@@ -286,7 +286,7 @@ class CustomsDeclareExportsConnectorISpec extends ConnectorISpec with ExportsDec
       val response = await(connector.findNotifications(id))
 
       response mustBe Seq(notification)
-      verify(getRequestedFor(urlEqualTo(s"/submission/notifications/$id")))
+      WireMock.verify(getRequestedFor(urlEqualTo(s"/submission/notifications/$id")))
     }
   }
 
@@ -299,7 +299,7 @@ class CustomsDeclareExportsConnectorISpec extends ConnectorISpec with ExportsDec
       val response = await(connector.findLatestNotification(id))
 
       response.head mustBe notification
-      verify(getRequestedFor(urlEqualTo(s"/submission/latest-notification/$id")))
+      WireMock.verify(getRequestedFor(urlEqualTo(s"/submission/latest-notification/$id")))
     }
 
     "return None when a notification is not found" in {
@@ -309,7 +309,7 @@ class CustomsDeclareExportsConnectorISpec extends ConnectorISpec with ExportsDec
       val response = await(connector.findLatestNotification(id))
 
       response mustBe None
-      verify(getRequestedFor(urlEqualTo(s"/submission/latest-notification/$id")))
+      WireMock.verify(getRequestedFor(urlEqualTo(s"/submission/latest-notification/$id")))
     }
   }
 
@@ -322,13 +322,13 @@ class CustomsDeclareExportsConnectorISpec extends ConnectorISpec with ExportsDec
           .willReturn(
             aResponse()
               .withStatus(Status.OK)
-              .withBody(Json.toJson(CancellationRequestSent)(CancellationStatusWrites.writes).toString())
+              .withBody(Json.toJson(CancellationRequestSent)(CancellationStatusWrites.writes _).toString())
           )
       )
 
       await(connector.createCancellation(cancellation))
 
-      verify(
+      WireMock.verify(
         postRequestedFor(urlEqualTo("/cancellations"))
           .withRequestBody(containing(json(cancellation)))
       )

@@ -68,7 +68,7 @@ class InlandTransportDetailsControllerSpec extends ControllerSpec with GivenWhen
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration())
-    await(controller.displayPage()(request))
+    await(controller.displayPage(request))
     theResponseForm
   }
 
@@ -78,7 +78,7 @@ class InlandTransportDetailsControllerSpec extends ControllerSpec with GivenWhen
       "return 200 OK" in {
         withNewCaching(request.cacheModel)
 
-        val response = controller.displayPage().apply(getRequest())
+        val response = controller.displayPage.apply(getRequest())
 
         status(response) must be(OK)
       }
@@ -86,7 +86,7 @@ class InlandTransportDetailsControllerSpec extends ControllerSpec with GivenWhen
       "read item from cache and display it" in {
         withNewCaching(request.cacheModel)
 
-        await(controller.displayPage()(getRequest()))
+        await(controller.displayPage(getRequest()))
 
         verify(mockExportsCacheService).get(any())(any())
         verify(inlandTransportDetails).apply(any())(any(), any())
@@ -97,10 +97,10 @@ class InlandTransportDetailsControllerSpec extends ControllerSpec with GivenWhen
       "redirect to start" in {
         withNewCaching(request.cacheModel)
 
-        val response = controller.displayPage().apply(getRequest())
+        val response = controller.displayPage.apply(getRequest())
 
         status(response) must be(SEE_OTHER)
-        redirectLocation(response) mustBe Some(RootController.displayPage().url)
+        redirectLocation(response) mustBe Some(RootController.displayPage.url)
       }
     }
   }
@@ -128,7 +128,7 @@ class InlandTransportDetailsControllerSpec extends ControllerSpec with GivenWhen
       }
 
       nonPostalOrFTIModeOfTransportCodes.foreach { transportMode =>
-        val expectedRedirect = DepartureTransportController.displayPage()
+        val expectedRedirect = DepartureTransportController.displayPage
 
         s"redirect to ${expectedRedirect.url}" when {
           s"transportMode '$transportMode' is selected" in {
@@ -145,8 +145,8 @@ class InlandTransportDetailsControllerSpec extends ControllerSpec with GivenWhen
 
       postalOrFTIModeOfTransportCodes.foreach { transportMode =>
         val expectedRedirect =
-          if (request.declarationType == SUPPLEMENTARY) TransportContainerController.displayContainerSummary()
-          else ExpressConsignmentController.displayPage()
+          if (request.declarationType == SUPPLEMENTARY) TransportContainerController.displayContainerSummary
+          else ExpressConsignmentController.displayPage
 
         s"redirect to ${expectedRedirect.url}" when {
           s"transportMode '$transportMode' is selected" in {
@@ -196,7 +196,7 @@ class InlandTransportDetailsControllerSpec extends ControllerSpec with GivenWhen
         val result = controller.submit()(postRequest(body))
 
         status(result) must be(SEE_OTHER)
-        redirectLocation(result) mustBe Some(RootController.displayPage().url)
+        redirectLocation(result) mustBe Some(RootController.displayPage.url)
       }
     }
   }

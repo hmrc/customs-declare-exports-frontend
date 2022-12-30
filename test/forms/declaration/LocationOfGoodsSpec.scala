@@ -60,7 +60,7 @@ class LocationOfGoodsSpec extends DeclarationPageBaseSpec with MockitoSugar with
         def boundedForm(code: String) = getBoundedForm(YesNoAnswers.no, "", code)
 
         "is missing" in {
-          val form = LocationOfGoods.form().bind(JsObject(Map("unexpected" -> JsString(""))), Form.FromJsonMaxChars)
+          val form = LocationOfGoods.form.bind(JsObject(Map("unexpected" -> JsString(""))), Form.FromJsonMaxChars)
 
           form.hasErrors must be(true)
           form.errors.length must equal(1)
@@ -144,6 +144,6 @@ class LocationOfGoodsSpec extends DeclarationPageBaseSpec with MockitoSugar with
 
   private def getBoundedForm(yesNo: String, search: String, code: String) =
     LocationOfGoods
-      .form()
+      .form
       .bind(JsObject(Map("yesNo" -> JsString(yesNo), "glc" -> JsString(search), "code" -> JsString(code))), Form.FromJsonMaxChars)
 }

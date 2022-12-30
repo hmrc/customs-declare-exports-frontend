@@ -65,7 +65,7 @@ class TransportCountryControllerSpec extends ControllerSpec with OptionValues {
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration())
-    await(controller.displayPage()(request))
+    await(controller.displayPage(request))
     theResponseForm
   }
 
@@ -85,7 +85,7 @@ class TransportCountryControllerSpec extends ControllerSpec with OptionValues {
         "display page method is invoked and cache is empty" in {
           withNewCaching(request.cacheModel)
 
-          val result = controller.displayPage()(getRequest())
+          val result = controller.displayPage(getRequest())
 
           status(result) mustBe OK
           verify(page, times(1)).apply(any(), any())(any(), any())
@@ -95,7 +95,7 @@ class TransportCountryControllerSpec extends ControllerSpec with OptionValues {
         "display page method is invoked and cache contains data" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withTransportCountry(Some(countryName))))
 
-          val result = controller.displayPage()(getRequest())
+          val result = controller.displayPage(getRequest())
 
           status(result) mustBe OK
           verify(page, times(1)).apply(any(), any())(any(), any())
@@ -109,7 +109,7 @@ class TransportCountryControllerSpec extends ControllerSpec with OptionValues {
       "redirect to the starting page" in {
         withNewCaching(request.cacheModel)
 
-        val result = controller.displayPage()(getRequest())
+        val result = controller.displayPage(getRequest())
         redirectLocation(result) mustBe Some(RootController.displayPage.url)
       }
     }
@@ -119,8 +119,8 @@ class TransportCountryControllerSpec extends ControllerSpec with OptionValues {
 
     onJourney(STANDARD, SUPPLEMENTARY) { request =>
       def nextPage(declarationType: DeclarationType): Call = declarationType match {
-        case STANDARD      => ExpressConsignmentController.displayPage()
-        case SUPPLEMENTARY => TransportContainerController.displayContainerSummary()
+        case STANDARD      => ExpressConsignmentController.displayPage
+        case SUPPLEMENTARY => TransportContainerController.displayContainerSummary
       }
 
       "return 303 (SEE_OTHER)" when {

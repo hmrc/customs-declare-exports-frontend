@@ -90,7 +90,7 @@ class SupervisingCustomsOfficeHelperSpec
       s"AdditionalDeclarationType is ${additionalType}" should {
         "goto to InlandOrBorderController" in {
           val declaration = withRequest(additionalType).cacheModel
-          supervisingCustomsOfficeHelper.nextPage(declaration) mustBe InlandOrBorderController.displayPage()
+          supervisingCustomsOfficeHelper.nextPage(declaration) mustBe InlandOrBorderController.displayPage
         }
       }
     }
@@ -99,14 +99,14 @@ class SupervisingCustomsOfficeHelperSpec
       "AdditionalDeclarationType is SUPPLEMENTARY_EIDR" should {
         "goto to InlandTransportDetailsController" in {
           val declaration = withRequest(additionalType).cacheModel
-          supervisingCustomsOfficeHelper.nextPage(declaration) mustBe InlandTransportDetailsController.displayPage()
+          supervisingCustomsOfficeHelper.nextPage(declaration) mustBe InlandTransportDetailsController.displayPage
         }
       }
     }
 
     onJourney(DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL) { request =>
       "goto ExpressConsignmentController for SIMPLIFIED & OCCASIONAL journeys" in {
-        supervisingCustomsOfficeHelper.nextPage(request.cacheModel) mustBe ExpressConsignmentController.displayPage()
+        supervisingCustomsOfficeHelper.nextPage(request.cacheModel) mustBe ExpressConsignmentController.displayPage
       }
     }
 
@@ -115,7 +115,7 @@ class SupervisingCustomsOfficeHelperSpec
         s"transportLeavingBoarderCode is ${modeOfTransportCode}" should {
           "goto ExpressConsignmentController" in {
             val declaration = aDeclaration(withType(request.declarationType), withBorderModeOfTransportCode(Some(modeOfTransportCode)))
-            supervisingCustomsOfficeHelper.nextPage(declaration) mustBe ExpressConsignmentController.displayPage()
+            supervisingCustomsOfficeHelper.nextPage(declaration) mustBe ExpressConsignmentController.displayPage
           }
         }
       }
@@ -126,7 +126,7 @@ class SupervisingCustomsOfficeHelperSpec
           s"transportLeavingBoarderCode is ${modeOfTransportCode}" should {
             "goto DepartureTransportController" in {
               val declaration = aDeclaration(withType(request.declarationType), withBorderModeOfTransportCode(Some(modeOfTransportCode)))
-              supervisingCustomsOfficeHelper.nextPage(declaration) mustBe DepartureTransportController.displayPage()
+              supervisingCustomsOfficeHelper.nextPage(declaration) mustBe DepartureTransportController.displayPage
             }
           }
         }

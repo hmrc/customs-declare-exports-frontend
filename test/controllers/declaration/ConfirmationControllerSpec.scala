@@ -81,9 +81,9 @@ class ConfirmationControllerSpec extends ControllerWithoutFormSpec with BeforeAn
     buildVerifiedEmailRequest(request, exampleUser)
   }
 
-  override def afterEach: Unit = {
+  override def afterEach(): Unit = {
     reset(mockCustomsDeclareExportsConnector)
-    super.afterEach
+    super.afterEach()
   }
 
   "ConfirmationController on displayHoldingPage" should {

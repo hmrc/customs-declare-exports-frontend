@@ -64,7 +64,7 @@ class TransportPaymentControllerSpec extends ControllerSpec {
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration())
-    await(controller.displayPage()(request))
+    await(controller.displayPage(request))
     theResponseForm
   }
 
@@ -76,7 +76,7 @@ class TransportPaymentControllerSpec extends ControllerSpec {
       "return 200 (OK)" when {
 
         "display page method is invoked and cache is empty" in {
-          val result = controller.displayPage()(getRequest())
+          val result = controller.displayPage(getRequest())
 
           status(result) must be(OK)
           theResponseForm.value mustBe empty
@@ -86,7 +86,7 @@ class TransportPaymentControllerSpec extends ControllerSpec {
           val payment = TransportPayment(TransportPayment.cash)
           withNewCaching(aDeclarationAfter(request.cacheModel, withTransportPayment(Some(payment))))
 
-          val result = controller.displayPage()(getRequest())
+          val result = controller.displayPage(getRequest())
 
           status(result) must be(OK)
           theResponseForm.value mustBe Some(payment)
@@ -112,7 +112,7 @@ class TransportPaymentControllerSpec extends ControllerSpec {
           val result = controller.submitForm()(postRequest(correctForm))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe TransportContainerController.displayContainerSummary()
+          thePageNavigatedTo mustBe TransportContainerController.displayContainerSummary
           verify(transportPaymentPage, times(0)).apply(any())(any(), any())
         }
       }
@@ -123,10 +123,10 @@ class TransportPaymentControllerSpec extends ControllerSpec {
         "display page method is invoked" in {
           withNewCaching(request.cacheModel)
 
-          val result = controller.displayPage()(getRequest())
+          val result = controller.displayPage(getRequest())
 
           status(result) must be(SEE_OTHER)
-          redirectLocation(result) must contain(RootController.displayPage().url)
+          redirectLocation(result) must contain(RootController.displayPage.url)
         }
       }
     }

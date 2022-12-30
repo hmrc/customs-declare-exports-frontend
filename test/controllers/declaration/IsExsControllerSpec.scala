@@ -62,7 +62,7 @@ class IsExsControllerSpec extends ControllerSpec with ScalaFutures {
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration(withType(DeclarationType.CLEARANCE)))
-    await(controller.displayPage()(request))
+    await(controller.displayPage(request))
     theResponseForm
   }
 
@@ -73,7 +73,7 @@ class IsExsControllerSpec extends ControllerSpec with ScalaFutures {
       "display page method is invoked without data in cache" in {
         withNewCaching(aDeclaration(withType(DeclarationType.CLEARANCE), withoutIsExs()))
 
-        val result = controller.displayPage()(getRequest())
+        val result = controller.displayPage(getRequest())
 
         status(result) mustBe OK
       }
@@ -81,7 +81,7 @@ class IsExsControllerSpec extends ControllerSpec with ScalaFutures {
       "display page method is invoked with data in cache" in {
         withNewCaching(aDeclaration(withType(DeclarationType.CLEARANCE), withIsExs()))
 
-        val result = controller.displayPage()(getRequest())
+        val result = controller.displayPage(getRequest())
 
         status(result) mustBe OK
       }
@@ -112,7 +112,7 @@ class IsExsControllerSpec extends ControllerSpec with ScalaFutures {
         val result = controller.submit()(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe ConsignorEoriNumberController.displayPage()
+        thePageNavigatedTo mustBe ConsignorEoriNumberController.displayPage
       }
 
       "correctly update UNDangerous goods codes for items" in {
@@ -183,7 +183,7 @@ class IsExsControllerSpec extends ControllerSpec with ScalaFutures {
         val result = controller.submit()(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe RepresentativeAgentController.displayPage()
+        thePageNavigatedTo mustBe RepresentativeAgentController.displayPage
       }
     }
 
@@ -196,7 +196,7 @@ class IsExsControllerSpec extends ControllerSpec with ScalaFutures {
         val result = controller.submit()(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe ConsigneeDetailsController.displayPage()
+        thePageNavigatedTo mustBe ConsigneeDetailsController.displayPage
       }
     }
   }

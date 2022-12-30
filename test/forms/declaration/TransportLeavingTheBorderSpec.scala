@@ -73,7 +73,7 @@ class TransportLeavingTheBorderSpec extends DeclarationPageBaseSpec with Journey
         val result = TransportLeavingTheBorder.mapping(false, None).bind(input)
 
         result.isLeft mustBe true
-        result.left.get.head.message mustBe s"$errorKey.empty"
+        result.left.toOption.get.head.message mustBe s"$errorKey.empty"
       }
 
       "provided with the 'Empty' ModeOfTransportCode value" in {
@@ -82,7 +82,7 @@ class TransportLeavingTheBorderSpec extends DeclarationPageBaseSpec with Journey
         val result = TransportLeavingTheBorder.mapping(false, None).bind(input)
 
         result.isLeft mustBe true
-        result.left.get.head.message mustBe s"$errorKey.incorrect"
+        result.left.toOption.get.head.message mustBe s"$errorKey.incorrect"
       }
 
       "provided with an invalid ModeOfTransportCode value" in {
@@ -91,7 +91,7 @@ class TransportLeavingTheBorderSpec extends DeclarationPageBaseSpec with Journey
         val result = TransportLeavingTheBorder.mapping(false, None).bind(input)
 
         result.isLeft mustBe true
-        result.left.get.head.message mustBe s"$errorKey.incorrect"
+        result.left.toOption.get.head.message mustBe s"$errorKey.incorrect"
       }
 
       s"LocationOfGood's value is present and does end with '$suffixForGVMS' and" when {
@@ -102,7 +102,7 @@ class TransportLeavingTheBorderSpec extends DeclarationPageBaseSpec with Journey
             val input = Map("transportLeavingTheBorder" -> modeOfTransportCode.value)
 
             val result = TransportLeavingTheBorder.mapping(false, locationOfGoods).bind(input)
-            result.left.get.head.message mustBe s"$errorKey.roro.required"
+            result.left.toOption.get.head.message mustBe s"$errorKey.roro.required"
           }
         }
       }
@@ -154,7 +154,7 @@ class TransportLeavingTheBorderSpec extends DeclarationPageBaseSpec with Journey
         val result = TransportLeavingTheBorder.mapping(true, None).bind(input)
 
         result.isLeft mustBe true
-        result.left.get.head.message mustBe s"$errorKey.empty.optional"
+        result.left.toOption.get.head.message mustBe s"$errorKey.empty.optional"
       }
 
       "provided with an invalid ModeOfTransportCode value" in {
@@ -163,7 +163,7 @@ class TransportLeavingTheBorderSpec extends DeclarationPageBaseSpec with Journey
         val result = TransportLeavingTheBorder.mapping(true, None).bind(input)
 
         result.isLeft mustBe true
-        result.left.get.head.message mustBe s"$errorKey.incorrect"
+        result.left.toOption.get.head.message mustBe s"$errorKey.incorrect"
       }
 
       s"LocationOfGood's value is present and does end with '$suffixForGVMS' and" when {
@@ -174,7 +174,7 @@ class TransportLeavingTheBorderSpec extends DeclarationPageBaseSpec with Journey
             val input = Map("transportLeavingTheBorder" -> modeOfTransportCode.value)
 
             val result = TransportLeavingTheBorder.mapping(true, locationOfGoods).bind(input)
-            result.left.get.head.message mustBe s"$errorKey.roro.required"
+            result.left.toOption.get.head.message mustBe s"$errorKey.roro.required"
           }
         }
       }

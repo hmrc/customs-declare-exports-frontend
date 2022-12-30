@@ -57,7 +57,7 @@ class ConsigneeDetailsViewSpec extends AddressViewSpec with PageWithButtonsSpec 
 
   override val typeAndViewInstance = (STANDARD, page(form)(_, _))
 
-  def createView(frm: Form[ConsigneeDetails] = form())(implicit request: JourneyRequest[_]): Document =
+  def createView(frm: Form[ConsigneeDetails] = form)(implicit request: JourneyRequest[_]): Document =
     page(frm)(request, messages)
 
   "Consignee Details View on empty page" should {
@@ -206,7 +206,7 @@ class ConsigneeDetailsViewSpec extends AddressViewSpec with PageWithButtonsSpec 
   "Consignee Details View when filled" should {
     onEveryDeclarationJourney() { implicit request =>
       "display data in Business address inputs" in {
-        val view = createView(form().fill(ConsigneeDetails(EntityDetails(None, Some(Address("test", "test1", "test2", "test3", "Ukraine"))))))
+        val view = createView(form.fill(ConsigneeDetails(EntityDetails(None, Some(Address("test", "test1", "test2", "test3", "Ukraine"))))))
 
         view.getElementById("details_address_fullName").attr("value") mustBe "test"
         view.getElementById("details_address_addressLine").attr("value") mustBe "test1"
@@ -223,7 +223,7 @@ class ConsigneeDetailsViewSpec extends AddressViewSpec with PageWithButtonsSpec 
         val backButton = createView().getElementById("back-link")
 
         backButton.text() mustBe messages(backToPreviousQuestionCaption)
-        backButton.attr("href") mustBe CarrierDetailsController.displayPage().url
+        backButton.attr("href") mustBe CarrierDetailsController.displayPage.url
       }
     }
 
@@ -235,7 +235,7 @@ class ConsigneeDetailsViewSpec extends AddressViewSpec with PageWithButtonsSpec 
         val backButton = createView()(requestWithCachedParties).getElementById("back-link")
 
         backButton.text() mustBe messages(backToPreviousQuestionCaption)
-        backButton.attr("href") mustBe CarrierDetailsController.displayPage().url
+        backButton.attr("href") mustBe CarrierDetailsController.displayPage.url
       }
 
       "display 'Back' button that links to 'Is Exs?' page" in {
@@ -245,7 +245,7 @@ class ConsigneeDetailsViewSpec extends AddressViewSpec with PageWithButtonsSpec 
         val backButton = createView()(requestWithCachedParties).getElementById("back-link")
 
         backButton.text() mustBe messages(backToPreviousQuestionCaption)
-        backButton.attr("href") mustBe IsExsController.displayPage().url
+        backButton.attr("href") mustBe IsExsController.displayPage.url
       }
 
       "display 'Back' button that links to 'Representative Status' page" in {
@@ -255,7 +255,7 @@ class ConsigneeDetailsViewSpec extends AddressViewSpec with PageWithButtonsSpec 
         val backButton = createView()(requestWithCachedParties).getElementById("back-link")
 
         backButton.text() mustBe messages(backToPreviousQuestionCaption)
-        backButton.attr("href") mustBe RepresentativeStatusController.displayPage().url
+        backButton.attr("href") mustBe RepresentativeStatusController.displayPage.url
       }
     }
 
@@ -267,7 +267,7 @@ class ConsigneeDetailsViewSpec extends AddressViewSpec with PageWithButtonsSpec 
         val backButton = createView()(requestWithCachedParties).getElementById("back-link")
 
         backButton.text() mustBe messages(backToPreviousQuestionCaption)
-        backButton.attr("href") mustBe RepresentativeStatusController.displayPage().url
+        backButton.attr("href") mustBe RepresentativeStatusController.displayPage.url
       }
 
       "display 'Back' button that links to 'Declarant is exporter?' page" in {
@@ -277,18 +277,18 @@ class ConsigneeDetailsViewSpec extends AddressViewSpec with PageWithButtonsSpec 
         val backButton = createView()(requestWithCachedParties).getElementById("back-link")
 
         backButton.text() mustBe messages(backToPreviousQuestionCaption)
-        backButton.attr("href") mustBe DeclarantExporterController.displayPage().url
+        backButton.attr("href") mustBe DeclarantExporterController.displayPage.url
       }
     }
   }
 
   private def assertIncorrectView(address: Address, field: String, errorKey: String)(implicit request: JourneyRequest[_]): Assertion = {
-    val view = createView(form().fillAndValidate(ConsigneeDetails(EntityDetails(None, Some(address)))))
+    val view = createView(form.fillAndValidate(ConsigneeDetails(EntityDetails(None, Some(address)))))
     assertIncorrectElement(view, field, errorKey)
   }
 
   private def assertIncorrectElements(address: Address, fields: List[String], errorKey: String)(implicit request: JourneyRequest[_]): Assertion = {
-    val view = createView(form().fillAndValidate(ConsigneeDetails(EntityDetails(None, Some(address)))))
+    val view = createView(form.fillAndValidate(ConsigneeDetails(EntityDetails(None, Some(address)))))
     assertIncorrectElements(view, fields, errorKey)
   }
 }

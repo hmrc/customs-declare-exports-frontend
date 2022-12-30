@@ -28,7 +28,7 @@ class RepresentativeEntitySpec extends DeclarationPageBaseSpec {
     "return form with errors" when {
 
       "provided with missing eori" in {
-        val form = RepresentativeEntity.form().bind(invalidRepresentativeEntityAddressOnlyJSON, JsonBindMaxChars)
+        val form = RepresentativeEntity.form.bind(invalidRepresentativeEntityAddressOnlyJSON, JsonBindMaxChars)
 
         form.hasErrors must be(true)
         form.errors.length must equal(1)
@@ -36,7 +36,7 @@ class RepresentativeEntitySpec extends DeclarationPageBaseSpec {
       }
 
       "provided with invalid eori" in {
-        val form = RepresentativeEntity.form().bind(invalidRepresentativeEntityInvalidEORIJSON, JsonBindMaxChars)
+        val form = RepresentativeEntity.form.bind(invalidRepresentativeEntityInvalidEORIJSON, JsonBindMaxChars)
 
         form.hasErrors must be(true)
         form.errors.length must equal(1)
@@ -46,7 +46,7 @@ class RepresentativeEntitySpec extends DeclarationPageBaseSpec {
 
     "return form without errors" when {
       "provided with valid value for status code" in {
-        val form = RepresentativeEntity.form().bind(correctRepresentativeEntityEORIOnlyJSON, JsonBindMaxChars)
+        val form = RepresentativeEntity.form.bind(correctRepresentativeEntityEORIOnlyJSON, JsonBindMaxChars)
 
         form.hasErrors must be(false)
       }

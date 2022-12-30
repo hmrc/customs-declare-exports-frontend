@@ -35,13 +35,12 @@ import utils.validators.forms.FieldValidator._
 
 case class LocationOfGoods(code: String) {
 
-  def toModel(): GoodsLocation = GoodsLocation(
+  def toModel: GoodsLocation = GoodsLocation(
     country = code.slice(0, 2),
     typeOfLocation = code.slice(2, 3),
     qualifierOfIdentification = code.slice(3, 4),
     identificationOfLocation = code.drop(4)
   )
-
 }
 
 object LocationOfGoods extends DeclarationPage {

@@ -118,7 +118,7 @@ class AdditionalActorsRemoveControllerSpec extends ControllerSpec with OptionVal
           val result = controller.submitForm(id)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalActorsSummaryController.displayPage()
+          thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalActorsSummaryController.displayPage
 
           theCacheModelUpdated.parties.declarationHoldersData mustBe None
         }
@@ -130,7 +130,7 @@ class AdditionalActorsRemoveControllerSpec extends ControllerSpec with OptionVal
           val result = controller.submitForm(id)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalActorsSummaryController.displayPage()
+          thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalActorsSummaryController.displayPage
 
           verifyTheCacheIsUnchanged()
         }

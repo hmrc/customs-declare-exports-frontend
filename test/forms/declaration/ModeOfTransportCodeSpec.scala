@@ -40,7 +40,7 @@ class ModeOfTransportCodeSpec extends UnitWithMocksSpec {
         val result = formatter.bind("clientKey", input)
 
         result.isLeft mustBe true
-        result.left.get.head.message mustBe errorMessageKey
+        result.left.toOption.get.head.message mustBe errorMessageKey
       }
 
       "provided with a code other than allowed" in {
@@ -49,7 +49,7 @@ class ModeOfTransportCodeSpec extends UnitWithMocksSpec {
         val result = formatter.bind("clientKey", input)
 
         result.isLeft mustBe true
-        result.left.get.head.message mustBe errorMessageKey
+        result.left.toOption.get.head.message mustBe errorMessageKey
       }
 
       "provided with no-code value" in {
@@ -58,7 +58,7 @@ class ModeOfTransportCodeSpec extends UnitWithMocksSpec {
         val result = formatter.bind("clientKey", input)
 
         result.isLeft mustBe true
-        result.left.get.head.message mustBe errorMessageKey
+        result.left.toOption.get.head.message mustBe errorMessageKey
       }
     }
   }
@@ -88,7 +88,7 @@ class ModeOfTransportCodeSpec extends UnitWithMocksSpec {
         val result = formatter.bind("clientKey", input)
 
         result.isLeft mustBe true
-        result.left.get.head.message mustBe errorMessageKey
+        result.left.toOption.get.head.message mustBe errorMessageKey
       }
 
       "provided with a code other than allowed" in {
@@ -97,7 +97,7 @@ class ModeOfTransportCodeSpec extends UnitWithMocksSpec {
         val result = formatter.bind("clientKey", input)
 
         result.isLeft mustBe true
-        result.left.get.head.message mustBe errorMessageKey
+        result.left.toOption.get.head.message mustBe errorMessageKey
       }
     }
   }

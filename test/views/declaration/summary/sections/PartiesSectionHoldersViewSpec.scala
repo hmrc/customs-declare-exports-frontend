@@ -50,7 +50,7 @@ class PartiesSectionHoldersViewSpec extends UnitViewSpec with ExportsTestHelper 
       row must haveSummaryValue(messages("site.no"))
 
       row must haveSummaryActionsTexts("site.change", "declaration.summary.parties.holders.empty.change")
-      row must haveSummaryActionWithPlaceholder(AuthorisationProcedureCodeChoiceController.displayPage())
+      row must haveSummaryActionWithPlaceholder(AuthorisationProcedureCodeChoiceController.displayPage)
     }
 
     "display holders if exists" in {
@@ -67,7 +67,7 @@ class PartiesSectionHoldersViewSpec extends UnitViewSpec with ExportsTestHelper 
       row1.getElementsByClass("govuk-table__cell").get(0).text() must include(authorisationTypeCode1)
       row1.getElementsByClass("govuk-table__cell").get(1).text() mustBe eori1
       val row1ChangeLink = row1.getElementsByClass("govuk-table__cell").get(2).getElementsByTag("a").first()
-      row1ChangeLink must haveHrefWithPlaceholder(AuthorisationProcedureCodeChoiceController.displayPage())
+      row1ChangeLink must haveHrefWithPlaceholder(AuthorisationProcedureCodeChoiceController.displayPage)
       row1ChangeLink must containMessage("site.change")
       row1ChangeLink must containMessage("declaration.summary.parties.holders.change", authorisationTypeCode1, eori1)
 
@@ -75,7 +75,7 @@ class PartiesSectionHoldersViewSpec extends UnitViewSpec with ExportsTestHelper 
       row2.getElementsByClass("govuk-table__cell").get(0).text() must include(authorisationTypeCode2)
       row2.getElementsByClass("govuk-table__cell").get(1).text() mustBe eori2
       val row2ChangeLink = row2.getElementsByClass("govuk-table__cell").get(2).getElementsByTag("a").first()
-      row2ChangeLink must haveHrefWithPlaceholder(AuthorisationProcedureCodeChoiceController.displayPage())
+      row2ChangeLink must haveHrefWithPlaceholder(AuthorisationProcedureCodeChoiceController.displayPage)
       row2ChangeLink must containMessage("site.change")
       row2ChangeLink must containMessage("declaration.summary.parties.holders.change", authorisationTypeCode2, eori2)
     }

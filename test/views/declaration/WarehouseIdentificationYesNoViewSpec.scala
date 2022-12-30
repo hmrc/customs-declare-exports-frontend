@@ -85,7 +85,7 @@ class WarehouseIdentificationYesNoViewSpec extends PageWithButtonsSpec with Inje
         val backButton = createView().getElementById("back-link")
 
         backButton must containMessage("site.backToPreviousQuestion")
-        backButton.getElementById("back-link") must haveHref(TransportLeavingTheBorderController.displayPage())
+        backButton.getElementById("back-link") must haveHref(TransportLeavingTheBorderController.displayPage)
       }
     }
     onJourney(SIMPLIFIED, OCCASIONAL) { implicit request =>
@@ -93,7 +93,7 @@ class WarehouseIdentificationYesNoViewSpec extends PageWithButtonsSpec with Inje
         val backButton = createView().getElementById("back-link")
 
         backButton must containMessage("site.backToPreviousQuestion")
-        backButton.getElementById("back-link") must haveHref(ItemsSummaryController.displayItemsSummaryPage())
+        backButton.getElementById("back-link") must haveHref(ItemsSummaryController.displayItemsSummaryPage)
       }
     }
   }

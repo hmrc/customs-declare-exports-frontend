@@ -51,7 +51,7 @@
     title = Title("declaration.declarationHolderRequired.title", "declaration.section.2", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(DeclarationHolderRequired)))) {
 
-    @formHelper(action = routes.DeclarationHolderRequiredController.submitForm(), 'autoComplete -> "off") {
+    @formHelper(action = routes.DeclarationHolderRequiredController.submitForm, 'autoComplete -> "off") {
         @errorSummary(yesNoErrors(form.errors))
 
         @sectionHeader(messages("declaration.section.2"))

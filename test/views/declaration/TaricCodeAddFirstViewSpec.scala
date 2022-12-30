@@ -42,9 +42,9 @@ class TaricCodeAddFirstViewSpec extends PageWithButtonsSpec with Injector {
 
   val page = instanceOf[taric_code_add_first]
 
-  override val typeAndViewInstance = (STANDARD, page(itemId, form())(_, _))
+  override val typeAndViewInstance = (STANDARD, page(itemId, form)(_, _))
 
-  def createView(frm: Form[TaricCodeFirst] = form())(implicit request: JourneyRequest[_]): Document =
+  def createView(frm: Form[TaricCodeFirst] = form)(implicit request: JourneyRequest[_]): Document =
     page(itemId, frm)(request, messages(request))
 
   "Taric Code Add First View" should {
@@ -110,7 +110,7 @@ class TaricCodeAddFirstViewSpec extends PageWithButtonsSpec with Injector {
   "Taric Code Add First View for invalid input" should {
 
     "display errors when invalid" in {
-      val view = createView(form().fillAndValidate(TaricCodeFirst(Some("12345678901234567890"))))
+      val view = createView(form.fillAndValidate(TaricCodeFirst(Some("12345678901234567890"))))
 
       view must haveGovukGlobalErrorSummary
       view must containErrorElementWithTagAndHref("a", "#taricCode")
@@ -118,7 +118,7 @@ class TaricCodeAddFirstViewSpec extends PageWithButtonsSpec with Injector {
     }
 
     "display errors when empty" in {
-      val view = createView(form().fillAndValidate(TaricCodeFirst(Some(""))))
+      val view = createView(form.fillAndValidate(TaricCodeFirst(Some(""))))
 
       view must haveGovukGlobalErrorSummary
       view must containErrorElementWithTagAndHref("a", "#taricCode")
@@ -129,7 +129,7 @@ class TaricCodeAddFirstViewSpec extends PageWithButtonsSpec with Injector {
 
   "Taric Code Add First View when filled" should {
     "display data in taric code input" in {
-      val view = createView(form().fill(TaricCodeFirst(Some("ABCD"))))
+      val view = createView(form.fill(TaricCodeFirst(Some("ABCD"))))
       view.getElementById("taricCode").attr("value") must be("ABCD")
     }
   }

@@ -124,7 +124,7 @@ class StatisticalValueControllerSpec extends ControllerSpec with ErrorHandlerMoc
           val result = controller.displayPage(itemId).apply(getRequest(request.cacheModel))
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.routes.RootController.displayPage().url)
+          redirectLocation(result) mustBe Some(controllers.routes.RootController.displayPage.url)
         }
       }
 

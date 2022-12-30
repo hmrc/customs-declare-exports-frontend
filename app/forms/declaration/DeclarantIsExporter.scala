@@ -42,7 +42,7 @@ object DeclarantIsExporter extends DeclarationPage {
         .verifying("declaration.declarant.exporter.error", isContainedIn(YesNoAnswer.allowedValues))
     )(DeclarantIsExporter.apply)(DeclarantIsExporter.unapply)
 
-  def form(): Form[DeclarantIsExporter] = Form(mapping)
+  def form: Form[DeclarantIsExporter] = Form(mapping)
 
   override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] = {
 

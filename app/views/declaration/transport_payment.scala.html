@@ -46,7 +46,7 @@
     title = Title("declaration.transportInformation.transportPayment.paymentMethod", "declaration.section.6", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(TransportPayment)))) {
 
-    @formHelper(action = TransportPaymentController.submitForm(), 'autoComplete -> "off") {
+    @formHelper(action = TransportPaymentController.submitForm, 'autoComplete -> "off") {
         @errorSummary(radioGroupErrors("paymentMethod", "cash", form.errors))
 
         @sectionHeader(messages("declaration.section.6"))

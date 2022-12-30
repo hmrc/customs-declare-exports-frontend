@@ -23,13 +23,13 @@ import forms.declaration.countries.Countries._
 import models.DeclarationType._
 import models.viewmodels.TariffContentKey
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.data.FormError
 import play.api.i18n.Lang
 import play.api.test.Helpers.stubMessagesApi
 import models.codes.{Country => ModelCountry}
+import org.mockito.Mockito.{reset, when}
 
 import java.util.Locale
 import scala.collection.immutable.ListMap

@@ -48,7 +48,7 @@ class AdditionalActorsRemoveController @Inject() (
 
   def displayPage(id: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     findActor(id) match {
-      case Some(actor) => Ok(removePage(id, actor, removeYesNoForm.withSubmissionErrors()))
+      case Some(actor) => Ok(removePage(id, actor, removeYesNoForm.withSubmissionErrors))
       case _           => navigator.continueTo(routes.AdditionalActorsSummaryController.displayPage)
     }
   }

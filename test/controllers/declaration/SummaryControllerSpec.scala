@@ -90,7 +90,7 @@ class SummaryControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerM
         "ready for submission" in {
           withNewCaching(aDeclaration(withConsignmentReferences()).copy(readyForSubmission = Some(true)))
 
-          val result = controller.displayPage()(getRequest())
+          val result = controller.displayPage(getRequest())
 
           status(result) mustBe OK
           verify(normalSummaryPage, times(1)).apply(eqTo(normalModeBackLink), any(), any())(any(), any(), any())
@@ -102,7 +102,7 @@ class SummaryControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerM
           "readyForSubmission exists" in {
             withNewCaching(aDeclaration(withConsignmentReferences()).copy(readyForSubmission = Some(false)))
 
-            val result = controller.displayPage()(getRequest())
+            val result = controller.displayPage(getRequest())
 
             status(result) mustBe OK
             verify(normalSummaryPage, times(1)).apply(eqTo(normalModeBackLink), any(), any())(any(), any(), any())
@@ -112,7 +112,7 @@ class SummaryControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerM
           "readyForSubmission does not exist" in {
             withNewCaching(aDeclaration(withConsignmentReferences()).copy(readyForSubmission = None))
 
-            val result = controller.displayPage()(getRequest())
+            val result = controller.displayPage(getRequest())
 
             status(result) mustBe OK
             verify(normalSummaryPage, times(1)).apply(eqTo(normalModeBackLink), any(), any())(any(), any(), any())
@@ -124,7 +124,7 @@ class SummaryControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerM
       "declaration doesn't contain mandatory data" in {
         withNewCaching(aDeclaration())
 
-        val result = controller.displayPage()(getRequest())
+        val result = controller.displayPage(getRequest())
 
         status(result) mustBe OK
         verify(normalSummaryPage, times(0)).apply(any(), any(), any())(any(), any(), any())
@@ -139,7 +139,7 @@ class SummaryControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerM
 
       val captor = ArgumentCaptor.forClass(classOf[Seq[FormError]])
 
-      await(controller.displayPage()(getRequest()))
+      await(controller.displayPage(getRequest()))
 
       verify(normalSummaryPage, times(1)).apply(any(), captor.capture(), any())(any(), any(), any())
       captor.getValue mustBe List(lrnDuplicateError)
@@ -151,7 +151,7 @@ class SummaryControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerM
 
         withNewCaching(aDeclaration(withConsignmentReferences()))
 
-        val result = controller.displayPage()(getRequest())
+        val result = controller.displayPage(getRequest())
 
         status(result) mustBe OK
         val view = Jsoup.parse(contentAsString(result))

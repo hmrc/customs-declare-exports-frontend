@@ -40,7 +40,7 @@ object OfficeOfExit extends DeclarationPage {
       .verifying("declaration.officeOfExit.specialCharacters", isEmpty or isAlphanumeric)
   )(OfficeOfExit.apply)(OfficeOfExit.unapply)
 
-  def form(): Form[OfficeOfExit] = Form(OfficeOfExit.mapping)
+  def form: Form[OfficeOfExit] = Form(OfficeOfExit.mapping)
 
   override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
     Seq(TariffContentKey(s"tariff.declaration.officeOfExit.${DeclarationPage.getJourneyTypeSpecialisation(decType)}"))

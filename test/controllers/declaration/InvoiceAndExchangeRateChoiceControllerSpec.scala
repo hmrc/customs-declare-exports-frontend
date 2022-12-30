@@ -20,9 +20,9 @@ import base.ControllerSpec
 import controllers.routes.RootController
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
+import models.DeclarationType
 import models.DeclarationType._
 import models.requests.JourneyRequest
-import models.DeclarationType
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
@@ -66,7 +66,7 @@ class InvoiceAndExchangeRateChoiceControllerSpec extends ControllerSpec {
   }
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
-    await(controller.displayPage()(request))
+    await(controller.displayPage(request))
     theResponseForm
   }
 
@@ -75,7 +75,7 @@ class InvoiceAndExchangeRateChoiceControllerSpec extends ControllerSpec {
     "return 200 (OK)" when {
 
       "display page method is invoked and cache is empty" in {
-        val result = controller.displayPage()(getRequest())
+        val result = controller.displayPage(getRequest())
         status(result) must be(OK)
         verifyPageInvoked
       }
@@ -83,7 +83,7 @@ class InvoiceAndExchangeRateChoiceControllerSpec extends ControllerSpec {
       "display page method is invoked and cache is not empty" in {
         withNewCaching(aDeclaration(withTotalNumberOfItems(Some("100000"))))
 
-        val result = controller.displayPage()(getRequest())
+        val result = controller.displayPage(getRequest())
         status(result) must be(OK)
         verifyPageInvoked
       }
@@ -93,7 +93,7 @@ class InvoiceAndExchangeRateChoiceControllerSpec extends ControllerSpec {
       "redirect to the starting page" in {
         withNewCaching(request.cacheModel)
 
-        val result = controller.displayPage()(getRequest())
+        val result = controller.displayPage(getRequest())
         redirectLocation(result) mustBe Some(RootController.displayPage.url)
       }
     }
@@ -104,13 +104,13 @@ class InvoiceAndExchangeRateChoiceControllerSpec extends ControllerSpec {
     onJourney(STANDARD, SUPPLEMENTARY) { implicit request =>
       "return 303 (SEE_OTHER) and redirect to the /total-package-quantity page" when {
         "the answer is 'yes'" in {
-          verifyRedirect(YesNoAnswers.yes, routes.TotalPackageQuantityController.displayPage())
+          verifyRedirect(YesNoAnswers.yes, routes.TotalPackageQuantityController.displayPage)
         }
       }
 
       "return 303 (SEE_OTHER) and redirect to the /invoices-and-exchange-rate page" when {
         "the answer is 'no'" in {
-          verifyRedirect(YesNoAnswers.no, routes.InvoiceAndExchangeRateController.displayPage())
+          verifyRedirect(YesNoAnswers.no, routes.InvoiceAndExchangeRateController.displayPage)
         }
       }
     }

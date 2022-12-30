@@ -60,5 +60,5 @@ object Date {
       .verifying(formatError, isDateFormatValid)
       .verifying(rangeError, date => !isDateFormatValid(date) || isDateInRange(date))
 
-  def form(): Form[Date] = Form(mapping())
+  def form: Form[Date] = Form(mapping())
 }

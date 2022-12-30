@@ -32,10 +32,10 @@ object ConsignorDetails extends DeclarationPage {
 
   val id = "ConsignorDetails"
 
-  def mapping()(implicit messages: Messages, codeListConnector: CodeListConnector) =
-    Forms.mapping("details" -> EntityDetails.addressMapping())(ConsignorDetails.apply)(ConsignorDetails.unapply)
+  def mapping(implicit messages: Messages, codeListConnector: CodeListConnector) =
+    Forms.mapping("details" -> EntityDetails.addressMapping)(ConsignorDetails.apply)(ConsignorDetails.unapply)
 
-  def form()(implicit messages: Messages, codeListConnector: CodeListConnector): Form[ConsignorDetails] = Form(mapping)
+  def form(implicit messages: Messages, codeListConnector: CodeListConnector): Form[ConsignorDetails] = Form(mapping)
 
   def from(consignorEoriDetails: ConsignorEoriNumber, savedConsignorDetails: Option[ConsignorDetails]): ConsignorDetails =
     consignorEoriDetails.eori match {

@@ -48,12 +48,12 @@ class AdditionalFiscalReferencesAddController @Inject() (
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
   def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    val frm = form().withSubmissionErrors()
+    val frm = form.withSubmissionErrors
     Ok(additionalFiscalReferencesPage(itemId, frm))
   }
 
   def submitForm(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    val boundForm = form().bindFromRequest()
+    val boundForm = form.bindFromRequest()
 
     boundForm.fold(
       formWithErrors => Future.successful(BadRequest(additionalFiscalReferencesPage(itemId, formWithErrors))),

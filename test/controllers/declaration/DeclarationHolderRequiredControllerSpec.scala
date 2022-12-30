@@ -23,8 +23,8 @@ import forms.declaration.AuthorisationProcedureCodeChoice.{Choice1007, Choice104
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
 import forms.declaration.declarationHolder.DeclarationHolder
 import models.DeclarationType.{CLEARANCE, OCCASIONAL}
-import models.declaration.EoriSource
 import models.ExportsDeclaration
+import models.declaration.EoriSource
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -62,7 +62,7 @@ class DeclarationHolderRequiredControllerSpec extends ControllerSpec with Option
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration(withType(OCCASIONAL), withDeclarationHolders()))
-    await(controller.displayPage()(request))
+    await(controller.displayPage(request))
     theResponseForm
   }
 
@@ -100,9 +100,9 @@ class DeclarationHolderRequiredControllerSpec extends ControllerSpec with Option
             } else
               "redirect to the /add-authorisations-required page" in {
                 withNewCaching(declaration)
-                val result = controller.displayPage()(getRequest())
+                val result = controller.displayPage(getRequest())
                 await(result) mustBe aRedirectToTheNextPage
-                thePageNavigatedTo mustBe DeclarationHolderAddController.displayPage()
+                thePageNavigatedTo mustBe DeclarationHolderAddController.displayPage
               }
           }
         }
@@ -122,10 +122,10 @@ class DeclarationHolderRequiredControllerSpec extends ControllerSpec with Option
         "redirect to the /add-authorisations-required page" in {
           withNewCaching(withRequest(additionalType).cacheModel)
 
-          val result = controller.displayPage()(getRequest())
+          val result = controller.displayPage(getRequest())
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe DeclarationHolderAddController.displayPage()
+          thePageNavigatedTo mustBe DeclarationHolderAddController.displayPage
         }
       }
     }
@@ -134,7 +134,7 @@ class DeclarationHolderRequiredControllerSpec extends ControllerSpec with Option
       "return 200 (OK)" in {
         withNewCaching(declaration)
 
-        val result = controller.displayPage()(getRequest())
+        val result = controller.displayPage(getRequest())
 
         status(result) mustBe OK
         verifyPageInvoked()
@@ -146,10 +146,10 @@ class DeclarationHolderRequiredControllerSpec extends ControllerSpec with Option
           val declarationHolder = DeclarationHolder(Some("ACE"), Some(Eori("GB56523343784324")), Some(EoriSource.OtherEori))
           withNewCaching(aDeclarationAfter(declaration, withDeclarationHolders(declarationHolder)))
 
-          val result = controller.displayPage()(getRequest())
+          val result = controller.displayPage(getRequest())
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe DeclarationHolderSummaryController.displayPage()
+          thePageNavigatedTo mustBe DeclarationHolderSummaryController.displayPage
         }
       }
 
@@ -189,7 +189,7 @@ class DeclarationHolderRequiredControllerSpec extends ControllerSpec with Option
           val result = controller.submitForm()(postRequest(body))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe DeclarationHolderAddController.displayPage()
+          thePageNavigatedTo mustBe DeclarationHolderAddController.displayPage
         }
       }
 
@@ -202,7 +202,7 @@ class DeclarationHolderRequiredControllerSpec extends ControllerSpec with Option
           val result = controller.submitForm()(postRequest(body))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe DestinationCountryController.displayPage()
+          thePageNavigatedTo mustBe DestinationCountryController.displayPage
         }
       }
 

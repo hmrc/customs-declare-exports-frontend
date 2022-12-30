@@ -46,7 +46,7 @@ object FiscalInformation extends DeclarationPage {
 
   val formId = "FiscalInformation"
 
-  def form(): Form[FiscalInformation] = Form(mapping)
+  def form: Form[FiscalInformation] = Form(mapping)
 
   override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
     Seq(TariffContentKey(s"tariff.declaration.item.fiscalInformation.${DeclarationPage.getJourneyTypeSpecialisation(decType)}"))

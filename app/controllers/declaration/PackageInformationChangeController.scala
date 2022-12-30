@@ -52,16 +52,16 @@ class PackageInformationChangeController @Inject() (
   def displayPage(itemId: String, code: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val maybePackageInformation = singleCachedPackageInformation(code, itemId)
 
-    maybePackageInformation.fold(errorHandler.displayErrorPage()) { packageInfo =>
-      Future.successful(Ok(packageChangePage(itemId, PackageInformation.form().fill(packageInfo).withSubmissionErrors(), code, Seq.empty)))
+    maybePackageInformation.fold(errorHandler.displayErrorPage) { packageInfo =>
+      Future.successful(Ok(packageChangePage(itemId, PackageInformation.form.fill(packageInfo).withSubmissionErrors, code, Seq.empty)))
     }
   }
 
   def submitForm(itemId: String, code: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val maybePackageInfoToRemove = singleCachedPackageInformation(code, itemId)
-    val boundForm = form().bindFromRequest()
+    val boundForm = form.bindFromRequest()
 
-    maybePackageInfoToRemove.fold(errorHandler.displayErrorPage()) { packageInfoToRemove =>
+    maybePackageInfoToRemove.fold(errorHandler.displayErrorPage) { packageInfoToRemove =>
       saveInformation(itemId, boundForm, allCachedPackageInformation(itemId), packageInfoToRemove)
     }
   }

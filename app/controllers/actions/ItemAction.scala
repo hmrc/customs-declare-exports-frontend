@@ -33,7 +33,7 @@ case class ItemAction(itemId: String)(implicit val executionContext: ExecutionCo
       request.cacheModel
         .itemBy(itemId)
         .map(item => Right(new ItemRequest[A](item, request)))
-        .getOrElse(Left(Redirect(itemsController.displayItemsSummaryPage())))
+        .getOrElse(Left(Redirect(itemsController.displayItemsSummaryPage)))
     }
 }
 

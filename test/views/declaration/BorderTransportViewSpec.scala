@@ -50,7 +50,7 @@ class BorderTransportViewSpec extends PageWithButtonsSpec with Injector {
         "display a 'Back' button that links to the /departure-transport page" in {
           val backButton = view.getElementById("back-link")
           backButton must containMessage(backToPreviousQuestionCaption)
-          backButton must haveHref(DepartureTransportController.displayPage())
+          backButton must haveHref(DepartureTransportController.displayPage)
         }
 
         "display the expected section header" in {

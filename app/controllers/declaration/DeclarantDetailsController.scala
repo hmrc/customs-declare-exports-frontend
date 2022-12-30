@@ -46,8 +46,8 @@ class DeclarantDetailsController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
-  def displayPage(): Action[AnyContent] = (authenticate andThen journeyAction) { implicit request =>
-    val frm = form().withSubmissionErrors()
+  def displayPage: Action[AnyContent] = (authenticate andThen journeyAction) { implicit request =>
+    val frm = form.withSubmissionErrors
     request.cacheModel.parties.declarantDetails match {
       case Some(_) => Ok(declarantDetailsPage(frm.fill(DeclarantEoriConfirmation(YesNoAnswers.yes))))
       case _       => Ok(declarantDetailsPage(frm))
@@ -55,7 +55,7 @@ class DeclarantDetailsController @Inject() (
   }
 
   def submitForm(): Action[AnyContent] = (authenticate andThen journeyAction).async { implicit request =>
-    form()
+    form
       .bindFromRequest()
       .fold(
         formWithErrors => Future.successful(BadRequest(declarantDetailsPage(formWithErrors))),

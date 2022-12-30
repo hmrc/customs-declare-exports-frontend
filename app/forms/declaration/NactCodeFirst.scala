@@ -60,7 +60,7 @@ object NactCodeFirst extends DeclarationPage {
     )
   )(form2Model)(model2Form)
 
-  def form(): Form[NactCodeFirst] = Form(mapping)
+  def form: Form[NactCodeFirst] = Form(mapping)
 
   override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
     Seq(TariffContentKey("tariff.declaration.item.nationalAdditionalCode.common"))

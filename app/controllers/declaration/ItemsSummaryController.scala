@@ -79,7 +79,8 @@ class ItemsSummaryController @Inject() (
   def submit(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val incorrectItems: Seq[FormError] = buildIncorrectItemsErrors(request)
 
-    itemSummaryForm.bindFromRequest
+    itemSummaryForm
+      .bindFromRequest()
       .fold(
         formWithErrors => Future.successful(BadRequest(itemsSummaryPage(formWithErrors, request.cacheModel.items.toList, incorrectItems))),
         validYesNo =>
@@ -131,7 +132,8 @@ class ItemsSummaryController @Inject() (
   }
 
   def removeItem(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    removeItemForm.bindFromRequest
+    removeItemForm
+      .bindFromRequest()
       .fold(
         formWithErrors =>
           Future.successful(request.cacheModel.itemBy(itemId) match {

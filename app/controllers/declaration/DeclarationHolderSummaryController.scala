@@ -41,13 +41,14 @@ class DeclarationHolderSummaryController @Inject() (
   declarationHolderPage: declaration_holder_summary
 ) extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
-  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayPage: Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     if (declarationHolders.isEmpty) navigator.continueTo(DeclarationHolderAddController.displayPage)
     else Ok(declarationHolderPage(yesNoForm.withSubmissionErrors, declarationHolders))
   }
 
   def submitForm(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    yesNoForm.bindFromRequest
+    yesNoForm
+      .bindFromRequest()
       .fold(
         formWithErrors => BadRequest(declarationHolderPage(formWithErrors, declarationHolders)),
         _.answer match {

@@ -138,7 +138,7 @@
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(ExportItem))),
     useCustomContentWidth = true) {
 
-    @formHelper(action = routes.ItemsSummaryController.submit(), 'autoComplete -> "off") {
+    @formHelper(action = routes.ItemsSummaryController.submit, 'autoComplete -> "off") {
 
         @errorSummary(yesNoErrors(itemsErrors ++ form.errors))
 

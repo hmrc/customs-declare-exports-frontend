@@ -63,7 +63,7 @@ class ExporterDetailsControllerSpec extends ControllerSpec with OptionValues {
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration())
-    await(controller.displayPage()(request))
+    await(controller.displayPage(request))
     theResponseForm
   }
 
@@ -85,13 +85,13 @@ class ExporterDetailsControllerSpec extends ControllerSpec with OptionValues {
 
         "details are empty" in {
           withNewCaching(request.cacheModel)
-          val response = controller.displayPage()(getRequest())
+          val response = controller.displayPage(getRequest())
           status(response) mustBe OK
         }
 
         "details are filled" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withExporterDetails(eori = eori, address = address)))
-          val response = controller.displayPage()(getRequest())
+          val response = controller.displayPage(getRequest())
           status(response) mustBe OK
           val details = theResponseForm.value.value.details
           details.eori mustBe defined
@@ -117,7 +117,7 @@ class ExporterDetailsControllerSpec extends ControllerSpec with OptionValues {
           val response = await(controller.saveAddress()(postRequest(body)))
 
           response mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe RepresentativeAgentController.displayPage()
+          thePageNavigatedTo mustBe RepresentativeAgentController.displayPage
         }
       }
     }
@@ -130,7 +130,7 @@ class ExporterDetailsControllerSpec extends ControllerSpec with OptionValues {
           val response = await(controller.saveAddress()(postRequest(body)))
 
           response mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe IsExsController.displayPage()
+          thePageNavigatedTo mustBe IsExsController.displayPage
         }
       }
     }

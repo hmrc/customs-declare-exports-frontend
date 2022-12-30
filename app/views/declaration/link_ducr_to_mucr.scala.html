@@ -66,7 +66,7 @@
     title = Title("declaration.linkDucrToMucr.title", "declaration.section.1", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(LinkDucrToMucr)))) {
 
-    @formHelper(action = routes.LinkDucrToMucrController.submitForm(), 'autoComplete -> "off") {
+    @formHelper(action = routes.LinkDucrToMucrController.submitForm, 'autoComplete -> "off") {
         @errorSummary(yesNoErrors(form.errors))
 
         @sectionHeader(messages("declaration.section.1"))

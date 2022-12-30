@@ -91,7 +91,7 @@ class TransportContainerSummaryViewSpec extends PageWithButtonsSpec with Injecto
       "declaration's type is STANDARD" in {
         val backLinkContainer = view.getElementById("back-link")
         backLinkContainer must containMessage(backToPreviousQuestionCaption)
-        backLinkContainer must haveHref(routes.ExpressConsignmentController.displayPage())
+        backLinkContainer must haveHref(routes.ExpressConsignmentController.displayPage)
       }
     }
 
@@ -100,7 +100,7 @@ class TransportContainerSummaryViewSpec extends PageWithButtonsSpec with Injecto
         val view = page(form(), List(container))(journeyRequest(SUPPLEMENTARY), messages)
         val backLinkContainer = view.getElementById("back-link")
         backLinkContainer must containMessage(backToPreviousQuestionCaption)
-        backLinkContainer must haveHref(routes.TransportCountryController.displayPage())
+        backLinkContainer must haveHref(routes.TransportCountryController.displayPage)
       }
     }
 

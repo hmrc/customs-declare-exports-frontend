@@ -33,9 +33,9 @@ class RepresentativeDetailsStatusViewSpec extends PageWithButtonsSpec with Injec
 
   val page = instanceOf[representative_details_status]
 
-  override val typeAndViewInstance = (STANDARD, page(RepresentativeStatus, form())(_, _))
+  override val typeAndViewInstance = (STANDARD, page(RepresentativeStatus, form)(_, _))
 
-  def createView(frm: Form[RepresentativeStatus] = form()): Document =
+  def createView(frm: Form[RepresentativeStatus] = form): Document =
     page(RepresentativeStatus, frm)(journeyRequest(), messages)
 
   "Representative Details Status View on empty page" should {
@@ -46,7 +46,7 @@ class RepresentativeDetailsStatusViewSpec extends PageWithButtonsSpec with Injec
     }
 
     "display two radio buttons with description (not selected)" in {
-      val view = createView(form().fill(RepresentativeStatus(None)))
+      val view = createView(form.fill(RepresentativeStatus(None)))
 
       view.getElementsByClass("govuk-radios__item").size mustBe 2
 
@@ -62,7 +62,7 @@ class RepresentativeDetailsStatusViewSpec extends PageWithButtonsSpec with Injec
       val backButton = view.getElementById("back-link")
 
       backButton must containMessage("site.backToPreviousQuestion")
-      backButton.getElementById("back-link") must haveHref(RepresentativeEntityController.displayPage())
+      backButton.getElementById("back-link") must haveHref(RepresentativeEntityController.displayPage)
     }
 
     checkAllSaveButtonsAreDisplayed(createView())
@@ -70,7 +70,7 @@ class RepresentativeDetailsStatusViewSpec extends PageWithButtonsSpec with Injec
 
   "Representative Details Status View for invalid input" should {
     "display errors when status is incorrect" in {
-      val view = createView(form().bind(Map("statusCode" -> "invalid")))
+      val view = createView(form.bind(Map("statusCode" -> "invalid")))
 
       view must haveGovukGlobalErrorSummary
       view must containErrorElementWithTagAndHref("a", s"#${StatusCodes.DirectRepresentative}")
@@ -81,7 +81,7 @@ class RepresentativeDetailsStatusViewSpec extends PageWithButtonsSpec with Injec
 
   "Representative Details Status View when filled" should {
     "display data" in {
-      val view = createView(form().bind(Map("statusCode" -> "2")))
+      val view = createView(form.bind(Map("statusCode" -> "2")))
       view.getElementById("2").getElementsByAttribute("checked").size() mustBe 1
     }
   }

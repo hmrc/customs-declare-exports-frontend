@@ -49,7 +49,7 @@
     title = Title("declaration.officeOfExit.title", "declaration.section.3", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(OfficeOfExit)))){
 
-    @formHelper(action = controllers.declaration.routes.OfficeOfExitController.saveOffice(), 'autoComplete -> "off") {
+    @formHelper(action = controllers.declaration.routes.OfficeOfExitController.saveOffice, 'autoComplete -> "off") {
         @errorSummary(radioGroupErrors("isUkOfficeOfExit", "Yes", form.errors))
 
         @sectionHeader(messages("declaration.section.3"))

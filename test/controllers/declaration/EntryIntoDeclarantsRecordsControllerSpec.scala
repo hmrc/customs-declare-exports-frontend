@@ -62,7 +62,7 @@ class EntryIntoDeclarantsRecordsControllerSpec extends ControllerSpec with Scala
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration(withType(DeclarationType.CLEARANCE)))
-    await(controller.displayPage()(request))
+    await(controller.displayPage(request))
     theFormPassedToView
   }
 
@@ -86,7 +86,7 @@ class EntryIntoDeclarantsRecordsControllerSpec extends ControllerSpec with Scala
         "return 200 (OK)" in {
           withNewCaching(request.cacheModel)
 
-          val result = controller.displayPage()(getRequest())
+          val result = controller.displayPage(getRequest())
 
           status(result) mustBe OK
         }
@@ -94,7 +94,7 @@ class EntryIntoDeclarantsRecordsControllerSpec extends ControllerSpec with Scala
         "call ExportsCacheService" in {
           withNewCaching(request.cacheModel)
 
-          controller.displayPage()(getRequest()).futureValue
+          controller.displayPage(getRequest()).futureValue
 
           verify(mockExportsCacheService).get(meq(existingDeclarationId))(any())
         }
@@ -102,7 +102,7 @@ class EntryIntoDeclarantsRecordsControllerSpec extends ControllerSpec with Scala
         "call page view, passing form with data from cache" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withEntryIntoDeclarantsRecords()))
 
-          controller.displayPage()(getRequest()).futureValue
+          controller.displayPage(getRequest()).futureValue
 
           theFormPassedToView.value mustBe defined
           theFormPassedToView.value.map(_.answer) mustBe Some(YesNoAnswers.yes)
@@ -114,7 +114,7 @@ class EntryIntoDeclarantsRecordsControllerSpec extends ControllerSpec with Scala
       "return 303 (SEE_OTHER)" in {
         withNewCaching(request.cacheModel)
 
-        val result = controller.displayPage()(getRequest())
+        val result = controller.displayPage(getRequest())
 
         status(result) mustBe SEE_OTHER
       }
@@ -122,9 +122,9 @@ class EntryIntoDeclarantsRecordsControllerSpec extends ControllerSpec with Scala
       "redirect to start page" in {
         withNewCaching(request.cacheModel)
 
-        val result = controller.displayPage()(getRequest())
+        val result = controller.displayPage(getRequest())
 
-        redirectLocation(result) mustBe Some(RootController.displayPage().url)
+        redirectLocation(result) mustBe Some(RootController.displayPage.url)
       }
     }
   }
@@ -193,7 +193,7 @@ class EntryIntoDeclarantsRecordsControllerSpec extends ControllerSpec with Scala
 
           controller.submitForm()(postRequest(correctForm)).futureValue
 
-          thePageNavigatedTo mustBe PersonPresentingGoodsDetailsController.displayPage()
+          thePageNavigatedTo mustBe PersonPresentingGoodsDetailsController.displayPage
         }
       }
 
@@ -228,7 +228,7 @@ class EntryIntoDeclarantsRecordsControllerSpec extends ControllerSpec with Scala
 
           controller.submitForm()(postRequest(correctForm)).futureValue
 
-          thePageNavigatedTo mustBe DeclarantDetailsController.displayPage()
+          thePageNavigatedTo mustBe DeclarantDetailsController.displayPage
         }
       }
 
@@ -260,7 +260,7 @@ class EntryIntoDeclarantsRecordsControllerSpec extends ControllerSpec with Scala
 
         val result = controller.submitForm()(postRequest(correctForm))
 
-        redirectLocation(result) mustBe Some(RootController.displayPage().url)
+        redirectLocation(result) mustBe Some(RootController.displayPage.url)
       }
     }
   }

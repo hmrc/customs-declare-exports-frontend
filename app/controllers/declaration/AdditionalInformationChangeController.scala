@@ -50,7 +50,7 @@ class AdditionalInformationChangeController @Inject() (
 
   def displayPage(itemId: String, id: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     findAdditionalInformation(itemId, id) match {
-      case Some(document) => Ok(changePage(itemId, id, form.fill(document).withSubmissionErrors()))
+      case Some(document) => Ok(changePage(itemId, id, form.fill(document).withSubmissionErrors))
       case _              => returnToSummary(itemId)
     }
   }

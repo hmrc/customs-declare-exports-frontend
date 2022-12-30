@@ -30,13 +30,13 @@ class NactCodeSpec extends DeclarationPageBaseSpec {
 
     "return form with errors" when {
       "provided with invalid code" in {
-        val form = NactCode.form().bind(formData(Some("invalid")), JsonBindMaxChars)
+        val form = NactCode.form.bind(formData(Some("invalid")), JsonBindMaxChars)
 
         form.errors mustBe Seq(FormError(nactCodeKey, "declaration.nationalAdditionalCode.error.invalid"))
       }
 
       "provided with missing code" in {
-        val form = NactCode.form().bind(formData(None), JsonBindMaxChars)
+        val form = NactCode.form.bind(formData(None), JsonBindMaxChars)
 
         form.errors mustBe Seq(FormError(nactCodeKey, "declaration.nationalAdditionalCode.error.empty"))
       }
@@ -44,7 +44,7 @@ class NactCodeSpec extends DeclarationPageBaseSpec {
 
     "return form without errors" when {
       "provided with valid input" in {
-        val form = NactCode.form().bind(formData(Some("VATR")), JsonBindMaxChars)
+        val form = NactCode.form.bind(formData(Some("VATR")), JsonBindMaxChars)
 
         form.errors mustBe empty
       }

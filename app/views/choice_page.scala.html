@@ -50,7 +50,7 @@
     showDeclarationSummaryLink = false
 ) {
 
-    @formHelper(action = routes.ChoiceController.submitChoice(), 'autoComplete -> "off") {
+    @formHelper(action = routes.ChoiceController.submitChoice, 'autoComplete -> "off") {
         @errorSummary(radioGroupErrors("value", CreateDec, form.errors))
 
         @govukRadios(Radios(

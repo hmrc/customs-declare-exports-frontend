@@ -54,7 +54,7 @@ class DucrChoiceController @Inject() (
   val submitForm: Action[AnyContent] = authAndAcceptedTypes.async { implicit request =>
     YesNoAnswer
       .form(errorKey = "declaration.ducr.choice.answer.empty")
-      .bindFromRequest
+      .bindFromRequest()
       .fold(
         formWithErrors => Future.successful(BadRequest(ducrChoicePage(formWithErrors))),
         yesNoAnswer =>

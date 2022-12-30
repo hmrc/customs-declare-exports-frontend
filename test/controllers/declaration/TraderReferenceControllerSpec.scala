@@ -48,7 +48,7 @@ class TraderReferenceControllerSpec extends ControllerSpec {
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration())
-    await(controller.displayPage()(request))
+    await(controller.displayPage(request))
     theResponseForm
   }
 
@@ -71,7 +71,7 @@ class TraderReferenceControllerSpec extends ControllerSpec {
 
   private val dummyTraderRef = TraderReference("INVOICE123/4")
   private val lastDigitOfYear = ZonedDateTime.now().getYear.toString.last
-  private val dummyDucr = Ducr(lastDigitOfYear + "GB" + authEori.dropWhile(_.isLetter) + "-" + dummyTraderRef.value)
+  private val dummyDucr = Ducr(s"${lastDigitOfYear}GB${authEori.dropWhile(_.isLetter)}-${dummyTraderRef.value}")
   private val dummyConRefs = ConsignmentReferences(Some(dummyDucr))
 
   "TraderReferenceController" should {
@@ -81,7 +81,7 @@ class TraderReferenceControllerSpec extends ControllerSpec {
       "display page method is invoked with nothing in cache" in {
         withNewCaching(aDeclaration())
 
-        val result = controller.displayPage()(getJourneyRequest())
+        val result = controller.displayPage(getJourneyRequest())
 
         status(result) mustBe OK
       }
@@ -89,7 +89,7 @@ class TraderReferenceControllerSpec extends ControllerSpec {
       "display page method is invoked with data in cache" in {
         withNewCaching(aDeclaration())
 
-        val result = controller.displayPage()(getJourneyRequest(aDeclaration(withConsignmentReferences(dummyConRefs))))
+        val result = controller.displayPage(getJourneyRequest(aDeclaration(withConsignmentReferences(dummyConRefs))))
 
         status(result) mustBe OK
       }
@@ -135,7 +135,7 @@ class TraderReferenceControllerSpec extends ControllerSpec {
       "display page method is invoked on supplementary journey" in {
         withNewCaching(aDeclaration(withType(SUPPLEMENTARY)))
 
-        val result = controller.displayPage()(getJourneyRequest())
+        val result = controller.displayPage(getJourneyRequest())
 
         status(result) mustBe 303
         redirectLocation(result) mustBe Some(controllers.routes.RootController.displayPage.url)

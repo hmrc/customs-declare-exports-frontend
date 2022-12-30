@@ -44,7 +44,7 @@ class DucrEntryController @Inject() (
 
   val displayPage: Action[AnyContent] =
     (authenticate andThen journeyType) { implicit request =>
-      val frm = form.withSubmissionErrors()
+      val frm = form.withSubmissionErrors
       request.cacheModel.ducr match {
         case Some(data) => Ok(ducrEntryPage(frm.fill(data)))
         case _          => Ok(ducrEntryPage(frm))

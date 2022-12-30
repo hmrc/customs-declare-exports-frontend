@@ -48,7 +48,7 @@
 @if(declaration.status == DRAFT && declaration.parentDeclarationId.isDefined){
     @insetText(HtmlContent(body(link(
         text = messages("declaration.summary.goto.additional.type"),
-        call = routes.AdditionalDeclarationTypeController.displayPage()
+        call = routes.AdditionalDeclarationTypeController.displayPage
     ).toString)))
 }
 
@@ -194,7 +194,7 @@
                 actions = actions(Actions(
                     items = Seq(
                         actionSummaryItem(
-                            href = routes.LinkDucrToMucrController.displayPage().url,
+                            href = routes.LinkDucrToMucrController.displayPage.url,
                             content = HtmlContent(linkContent(messages("site.change"))),
                             visuallyHiddenText = Some(messages("declaration.summary.references.linkDucrToMucr.change"))
                         )
@@ -214,7 +214,7 @@
                 actions = actions(Actions(
                     items = Seq(
                         actionSummaryItem(
-                            href = routes.MucrController.displayPage().url,
+                            href = routes.MucrController.displayPage.url,
                             content = HtmlContent(linkContent(messages("site.change"))),
                             visuallyHiddenText = Some(messages("declaration.summary.references.mucr.change"))
                         )

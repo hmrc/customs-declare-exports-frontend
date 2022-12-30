@@ -38,7 +38,7 @@ object RepresentativeAgent extends DeclarationPage {
         .verifying("declaration.representative.agent.error", isContainedIn(YesNoAnswer.allowedValues))
     )(RepresentativeAgent.apply)(RepresentativeAgent.unapply)
 
-  def form(): Form[RepresentativeAgent] = Form(mapping)
+  def form: Form[RepresentativeAgent] = Form(mapping)
 
   override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
     Seq(

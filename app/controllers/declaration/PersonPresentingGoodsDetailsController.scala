@@ -43,8 +43,8 @@ class PersonPresentingGoodsDetailsController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
-  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType(CLEARANCE)) { implicit request =>
-    val frm = form().withSubmissionErrors()
+  def displayPage: Action[AnyContent] = (authenticate andThen journeyType(CLEARANCE)) { implicit request =>
+    val frm = form.withSubmissionErrors
     request.cacheModel.parties.personPresentingGoodsDetails match {
       case Some(data) => Ok(personPresentingGoodsDetailsPage(frm.fill(data)))
       case _          => Ok(personPresentingGoodsDetailsPage(frm))
@@ -52,7 +52,7 @@ class PersonPresentingGoodsDetailsController @Inject() (
   }
 
   def submitForm(): Action[AnyContent] = (authenticate andThen journeyType(CLEARANCE)).async { implicit request =>
-    form()
+    form
       .bindFromRequest()
       .fold(
         formWithErrors => Future.successful(BadRequest(personPresentingGoodsDetailsPage(formWithErrors))),

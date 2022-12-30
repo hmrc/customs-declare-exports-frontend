@@ -180,7 +180,7 @@ class SupplementaryUnitsControllerSpec extends ControllerSpec {
         val response = controller.displayPage("itemId").apply(getRequest())
 
         status(response) must be(SEE_OTHER)
-        redirectLocation(response) mustBe Some(RootController.displayPage().url)
+        redirectLocation(response) mustBe Some(RootController.displayPage.url)
       }
     }
   }
@@ -258,7 +258,7 @@ class SupplementaryUnitsControllerSpec extends ControllerSpec {
         val response = controller.submitPage("itemId").apply(getRequest())
 
         status(response) must be(SEE_OTHER)
-        redirectLocation(response) mustBe Some(RootController.displayPage().url)
+        redirectLocation(response) mustBe Some(RootController.displayPage.url)
       }
     }
   }

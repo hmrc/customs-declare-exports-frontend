@@ -46,8 +46,8 @@ class ConsignorEoriNumberController @Inject() (
 
   val validJourneys = Seq(DeclarationType.CLEARANCE)
 
-  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType(validJourneys)) { implicit request =>
-    val frm = form().withSubmissionErrors()
+  def displayPage: Action[AnyContent] = (authenticate andThen journeyType(validJourneys)) { implicit request =>
+    val frm = form.withSubmissionErrors
     request.cacheModel.parties.consignorDetails match {
       case Some(data) => Ok(consignorEoriDetailsPage(frm.fill(ConsignorEoriNumber(data))))
       case _          => Ok(consignorEoriDetailsPage(frm))
@@ -55,7 +55,7 @@ class ConsignorEoriNumberController @Inject() (
   }
 
   def submit(): Action[AnyContent] = (authenticate andThen journeyType(validJourneys)).async { implicit request =>
-    form()
+    form
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[ConsignorEoriNumber]) => {

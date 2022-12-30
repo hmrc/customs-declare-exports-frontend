@@ -33,9 +33,9 @@ class UNDangerousGoodsCodeViewSpec extends PageWithButtonsSpec with Injector {
 
   val page = instanceOf[un_dangerous_goods_code]
 
-  override val typeAndViewInstance = (STANDARD, page(itemId, form())(_, _))
+  override val typeAndViewInstance = (STANDARD, page(itemId, form)(_, _))
 
-  def createView(frm: Form[UNDangerousGoodsCode] = form())(implicit request: JourneyRequest[_]): Document =
+  def createView(frm: Form[UNDangerousGoodsCode] = form)(implicit request: JourneyRequest[_]): Document =
     page(itemId, frm)(request, messages)
 
   "UNDangerousGoodsCode View on empty page" should {
@@ -91,7 +91,7 @@ class UNDangerousGoodsCodeViewSpec extends PageWithButtonsSpec with Injector {
   "UNDangerousGoodsCode View for invalid input" should {
     onEveryDeclarationJourney() { implicit request =>
       "display error when code is empty" in {
-        val view = createView(form().fillAndValidate(UNDangerousGoodsCode(Some(""))))
+        val view = createView(form.fillAndValidate(UNDangerousGoodsCode(Some(""))))
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#dangerousGoodsCode")
@@ -100,7 +100,7 @@ class UNDangerousGoodsCodeViewSpec extends PageWithButtonsSpec with Injector {
       }
 
       "display error when code is incorrect" in {
-        val view = createView(form().fillAndValidate(UNDangerousGoodsCode(Some("ABC"))))
+        val view = createView(form.fillAndValidate(UNDangerousGoodsCode(Some("ABC"))))
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#dangerousGoodsCode")

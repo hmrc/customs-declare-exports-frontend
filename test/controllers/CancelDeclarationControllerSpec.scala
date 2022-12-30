@@ -64,7 +64,7 @@ class CancelDeclarationControllerSpec extends ControllerWithoutFormSpec with Err
     "return 200 (OK)" when {
 
       "display page method is invoked" in new SetUp {
-        val result = controller.displayPage()(getRequestWithSession(sessionData.toSeq: _*))
+        val result = controller.displayPage(getRequestWithSession(sessionData.toSeq: _*))
         status(result) must be(OK)
       }
 
@@ -80,7 +80,7 @@ class CancelDeclarationControllerSpec extends ControllerWithoutFormSpec with Err
         cancelDeclarationResponse()
         val result = controller.onSubmit()(postRequestWithSession(correctCancelDeclarationJSON, sessionData.toSeq))
         status(result) must be(SEE_OTHER)
-        redirectLocation(result) mustBe Some(routes.CancellationResultController.displayHoldingPage().url)
+        redirectLocation(result) mustBe Some(routes.CancellationResultController.displayHoldingPage.url)
       }
     }
 
@@ -90,7 +90,7 @@ class CancelDeclarationControllerSpec extends ControllerWithoutFormSpec with Err
         "submissionId" in new SetUp {
           val session = (sessionData - submissionId).toSeq
 
-          val getResult = controller.displayPage()(getRequestWithSession(session: _*))
+          val getResult = controller.displayPage(getRequestWithSession(session: _*))
           val postResult = controller.onSubmit()(postRequestWithSession(correctCancelDeclarationJSON, session))
 
           status(getResult) must be(BAD_REQUEST)
@@ -103,7 +103,7 @@ class CancelDeclarationControllerSpec extends ControllerWithoutFormSpec with Err
         "lrn" in new SetUp {
           val session = (sessionData - submissionLrn).toSeq
 
-          val getResult = controller.displayPage()(getRequestWithSession(session: _*))
+          val getResult = controller.displayPage(getRequestWithSession(session: _*))
           val postResult = controller.onSubmit()(postRequestWithSession(correctCancelDeclarationJSON, session))
 
           status(postResult) must be(BAD_REQUEST)
@@ -116,7 +116,7 @@ class CancelDeclarationControllerSpec extends ControllerWithoutFormSpec with Err
         "mrn" in new SetUp {
           val session = (sessionData - submissionMrn).toSeq
 
-          val getResult = controller.displayPage()(getRequestWithSession(session: _*))
+          val getResult = controller.displayPage(getRequestWithSession(session: _*))
           val postResult = controller.onSubmit()(postRequestWithSession(correctCancelDeclarationJSON, session))
 
           status(postResult) must be(BAD_REQUEST)
@@ -129,7 +129,7 @@ class CancelDeclarationControllerSpec extends ControllerWithoutFormSpec with Err
         "ducr" in new SetUp {
           val session = (sessionData - submissionDucr).toSeq
 
-          val getResult = controller.displayPage()(getRequestWithSession(session: _*))
+          val getResult = controller.displayPage(getRequestWithSession(session: _*))
           val postResult = controller.onSubmit()(postRequestWithSession(correctCancelDeclarationJSON, session))
 
           status(postResult) must be(BAD_REQUEST)

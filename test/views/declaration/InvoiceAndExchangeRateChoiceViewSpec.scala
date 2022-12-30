@@ -46,7 +46,7 @@ class InvoiceAndExchangeRateChoiceViewSpec extends PageWithButtonsSpec with Inje
       "display 'Back' button to the /office-of-exit page" in {
         val backButton = view.getElementById("back-link")
         backButton must containMessage(backToPreviousQuestionCaption)
-        backButton must haveHref(OfficeOfExitController.displayPage())
+        backButton must haveHref(OfficeOfExitController.displayPage)
       }
 
       "display header" in {
@@ -60,8 +60,8 @@ class InvoiceAndExchangeRateChoiceViewSpec extends PageWithButtonsSpec with Inje
       "display two Yes/No radio buttons" in {
         val radios = view.getElementsByClass("govuk-radios").first.children
         radios.size mustBe 2
-        Option(radios.first.getElementById("code_yes")) must be('defined)
-        Option(radios.last.getElementById("code_no")) must be('defined)
+        Option(radios.first.getElementById("code_yes")) mustBe defined
+        Option(radios.last.getElementById("code_no")) mustBe defined
 
         radios.last.text mustBe messages("declaration.invoice.amount.choice.answer.no")
       }

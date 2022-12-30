@@ -42,7 +42,7 @@ object CarrierEoriNumber extends DeclarationPage {
     hasEori -> requiredRadio("declaration.carrierEori.hasEori.empty", YesNoAnswer.allowedValues)
   )(CarrierEoriNumber.apply)(CarrierEoriNumber.unapply)
 
-  def form(): Form[CarrierEoriNumber] = Form(mapping)
+  def form: Form[CarrierEoriNumber] = Form(mapping)
 
   def apply(carrierDetails: CarrierDetails): CarrierEoriNumber =
     carrierDetails.details.eori match {

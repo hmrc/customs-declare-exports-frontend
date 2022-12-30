@@ -16,8 +16,6 @@
 
 package services.audit
 
-import scala.concurrent.ExecutionContext.global
-import scala.concurrent.{ExecutionContext, Future}
 import base.{ExportsTestData, Injector, TestHelper, UnitWithMocksSpec}
 import config.AppConfig
 import config.featureFlags.SecureMessagingConfig
@@ -36,6 +34,9 @@ import uk.gov.hmrc.play.audit.AuditExtensions
 import uk.gov.hmrc.play.audit.http.connector.AuditResult.{Disabled, Failure, Success}
 import uk.gov.hmrc.play.audit.http.connector.{AuditConnector, AuditResult}
 import uk.gov.hmrc.play.audit.model.{DataEvent, ExtendedDataEvent}
+
+import scala.concurrent.ExecutionContext.global
+import scala.concurrent.{ExecutionContext, Future}
 
 class AuditServiceSpec extends AuditTestSupport with BeforeAndAfterEach {
 

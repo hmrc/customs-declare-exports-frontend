@@ -61,7 +61,7 @@
     showDeclarationSummaryLink = false
     ){
 
-    @formHelper(action = AdditionalDeclarationTypeController.submitForm(), 'autoComplete -> "off") {
+    @formHelper(action = AdditionalDeclarationTypeController.submitForm, 'autoComplete -> "off") {
         @errorSummary(declarationTypeHelper.radioGroupErrors(form))
 
         @if(!request.isType(SUPPLEMENTARY)) {

@@ -65,7 +65,7 @@ class RepresentativeEntityControllerSpec extends ControllerSpec with OptionValue
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration())
-    await(controller.displayPage()(request))
+    await(controller.displayPage(request))
     theResponseForm
   }
 
@@ -80,7 +80,7 @@ class RepresentativeEntityControllerSpec extends ControllerSpec with OptionValue
         "display page method is invoked with empty cache" in {
           withNewCaching(request.cacheModel)
 
-          val result = controller.displayPage()(getRequest())
+          val result = controller.displayPage(getRequest())
 
           status(result) mustBe OK
           verifyPage(1)
@@ -91,7 +91,7 @@ class RepresentativeEntityControllerSpec extends ControllerSpec with OptionValue
         "display page method is invoked with data in cache" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withRepresentativeDetails(Some(Eori(eori)), None, None)))
 
-          val result = controller.displayPage()(getRequest())
+          val result = controller.displayPage(getRequest())
 
           status(result) mustBe OK
           verifyPage(1)
@@ -124,7 +124,7 @@ class RepresentativeEntityControllerSpec extends ControllerSpec with OptionValue
         val result = controller.submitForm()(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe RepresentativeStatusController.displayPage()
+        thePageNavigatedTo mustBe RepresentativeStatusController.displayPage
 
         verifyPage(0)
       }

@@ -23,8 +23,8 @@ import forms.common.YesNoAnswer.YesNoAnswers
 import forms.common.{Address, Eori}
 import forms.declaration.EntityDetails
 import forms.declaration.consignor.{ConsignorDetails, ConsignorEoriNumber}
-import models.DeclarationType.{OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
 import models.DeclarationType
+import models.DeclarationType.{OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -60,7 +60,7 @@ class ConsignorEoriNumberControllerSpec extends ControllerSpec with OptionValues
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration(withType(DeclarationType.CLEARANCE)))
-    await(controller.displayPage()(request))
+    await(controller.displayPage(request))
     theResponseForm
   }
 
@@ -80,7 +80,7 @@ class ConsignorEoriNumberControllerSpec extends ControllerSpec with OptionValues
       "display page method is invoked and cache is empty" in {
         withNewCaching(request.cacheModel)
 
-        val result = controller.displayPage()(getRequest())
+        val result = controller.displayPage(getRequest())
 
         status(result) mustBe OK
         checkViewInteractions()
@@ -96,7 +96,7 @@ class ConsignorEoriNumberControllerSpec extends ControllerSpec with OptionValues
           )
         )
 
-        val result = controller.displayPage()(getRequest())
+        val result = controller.displayPage(getRequest())
 
         status(result) mustBe OK
         checkViewInteractions()
@@ -110,7 +110,7 @@ class ConsignorEoriNumberControllerSpec extends ControllerSpec with OptionValues
         val hasEori = YesNoAnswers.yes
         withNewCaching(aDeclarationAfter(request.cacheModel, withConsignorDetails(Some(Eori(eori)), None)))
 
-        val result = controller.displayPage()(getRequest())
+        val result = controller.displayPage(getRequest())
 
         status(result) mustBe OK
         checkViewInteractions()
@@ -122,7 +122,7 @@ class ConsignorEoriNumberControllerSpec extends ControllerSpec with OptionValues
       "display page method is invoked and cache contains no Consignor data" in {
         withNewCaching(aDeclarationAfter(request.cacheModel))
 
-        val result = controller.displayPage()(getRequest())
+        val result = controller.displayPage(getRequest())
 
         status(result) mustBe OK
         checkViewInteractions()
@@ -136,10 +136,10 @@ class ConsignorEoriNumberControllerSpec extends ControllerSpec with OptionValues
       "redirect to start" in {
         withNewCaching(request.cacheModel)
 
-        val result = controller.displayPage()(getRequest())
+        val result = controller.displayPage(getRequest())
 
         status(result) must be(SEE_OTHER)
-        redirectLocation(result) mustBe Some(RootController.displayPage().url)
+        redirectLocation(result) mustBe Some(RootController.displayPage.url)
       }
     }
   }
@@ -191,7 +191,7 @@ class ConsignorEoriNumberControllerSpec extends ControllerSpec with OptionValues
         val result = controller.submit()(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe ConsignorDetailsController.displayPage()
+        thePageNavigatedTo mustBe ConsignorDetailsController.displayPage
         checkViewInteractions(0)
         theCacheModelUpdated.parties.consignorDetails must be(Some(ConsignorDetails(EntityDetails(None, None))))
       }
@@ -205,7 +205,7 @@ class ConsignorEoriNumberControllerSpec extends ControllerSpec with OptionValues
         val result = controller.submit()(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe RepresentativeAgentController.displayPage()
+        thePageNavigatedTo mustBe RepresentativeAgentController.displayPage
         checkViewInteractions(0)
         theCacheModelUpdated.parties.consignorDetails must be(Some(ConsignorDetails(EntityDetails(eoriInput, None))))
       }
@@ -223,7 +223,7 @@ class ConsignorEoriNumberControllerSpec extends ControllerSpec with OptionValues
         val result = controller.submit()(postRequest(correctForm))
 
         status(result) must be(SEE_OTHER)
-        redirectLocation(result) mustBe Some(RootController.displayPage().url)
+        redirectLocation(result) mustBe Some(RootController.displayPage.url)
       }
     }
   }

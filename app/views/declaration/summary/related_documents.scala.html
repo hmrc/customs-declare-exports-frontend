@@ -36,7 +36,7 @@
     if (actionsEnabled)
       link(
         messages("site.change"),
-        callForSummaryChangeLink(routes.PreviousDocumentsSummaryController.displayPage()),
+        callForSummaryChangeLink(routes.PreviousDocumentsSummaryController.displayPage),
         textHidden = Some(messages("declaration.summary.transaction.previousDocuments.document.change", document.documentReference))
       )
     else
@@ -54,7 +54,7 @@
         actions = actions(Actions(
           items = Seq(
             actionSummaryItem(
-              href = routes.PreviousDocumentsController.displayPage().url,
+              href = routes.PreviousDocumentsController.displayPage.url,
               content = HtmlContent(linkContent(messages("site.change"))),
               visuallyHiddenText = Some(messages("declaration.summary.transaction.previousDocuments.change"))
             )

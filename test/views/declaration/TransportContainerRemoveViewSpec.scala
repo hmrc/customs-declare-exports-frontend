@@ -67,7 +67,7 @@ class TransportContainerRemoveViewSpec extends PageWithButtonsSpec with Injector
       val backLinkContainer = view.getElementById("back-link")
 
       backLinkContainer must containMessage(backToPreviousQuestionCaption)
-      backLinkContainer.getElementById("back-link") must haveHref(TransportContainerController.displayContainerSummary())
+      backLinkContainer.getElementById("back-link") must haveHref(TransportContainerController.displayContainerSummary)
     }
 
     checkAllSaveButtonsAreDisplayed(createView())

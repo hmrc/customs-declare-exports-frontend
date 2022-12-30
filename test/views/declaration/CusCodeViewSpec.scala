@@ -35,7 +35,7 @@ class CusCodeViewSpec extends PageWithButtonsSpec with Injector {
 
   override val typeAndViewInstance = (STANDARD, page(itemId, form)(_, _))
 
-  def createView(frm: Form[CusCode] = form())(implicit request: JourneyRequest[_]): Document =
+  def createView(frm: Form[CusCode] = form)(implicit request: JourneyRequest[_]): Document =
     page(itemId, frm)(request, messages)
 
   "CusCode View on empty page" should {
@@ -91,7 +91,7 @@ class CusCodeViewSpec extends PageWithButtonsSpec with Injector {
   "CusCode View for invalid input" should {
     onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { implicit request =>
       "display error when code is empty" in {
-        val view = createView(form().fillAndValidate(CusCode(Some(""))))
+        val view = createView(form.fillAndValidate(CusCode(Some(""))))
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#cusCode")
@@ -100,7 +100,7 @@ class CusCodeViewSpec extends PageWithButtonsSpec with Injector {
       }
 
       "display error when code is incorrect" in {
-        val view = createView(form().fillAndValidate(CusCode(Some("ABC!!!"))))
+        val view = createView(form.fillAndValidate(CusCode(Some("ABC!!!"))))
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#cusCode")

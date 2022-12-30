@@ -20,7 +20,7 @@ import base.Injector
 import views.declaration.spec.UnitViewSpec
 import views.html.unverified_email
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters.CollectionHasAsScala
 
 class UnverifiedEmailSpec extends UnitViewSpec with Injector {
 

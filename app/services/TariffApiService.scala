@@ -55,7 +55,7 @@ class TariffApiService @Inject() (tariffApiConfig: TariffApiConfig, tariffApiCon
     }
 
   private def extractCommodityInfoFromIncludedObjIfAny(commodityCode: String, included: JsArray): TariffApiResult = {
-    val objs: Seq[JsValue] = included.value
+    val objs: Seq[JsValue] = included.value.toSeq
 
     val maybeCommodityInfo = (
       for {

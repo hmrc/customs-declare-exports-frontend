@@ -47,7 +47,7 @@ class NactCodeRemoveController @Inject() (
   val validTypes = Seq(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL)
 
   def displayPage(itemId: String, code: String): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
-    Ok(nactCodeRemove(itemId, code, removeYesNoForm.withSubmissionErrors()))
+    Ok(nactCodeRemove(itemId, code, removeYesNoForm.withSubmissionErrors))
   }
 
   def submitForm(itemId: String, code: String): Action[AnyContent] =

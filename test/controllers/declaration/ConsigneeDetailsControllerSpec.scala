@@ -72,7 +72,7 @@ class ConsigneeDetailsControllerSpec extends ControllerSpec {
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration())
-    await(controller.displayPage()(request))
+    await(controller.displayPage(request))
     theResponseForm
   }
 
@@ -86,7 +86,7 @@ class ConsigneeDetailsControllerSpec extends ControllerSpec {
         "display page method is invoked and cache is empty" in {
           withNewCaching(request.cacheModel)
 
-          val result = controller.displayPage()(getRequest())
+          val result = controller.displayPage(getRequest())
 
           status(result) must be(OK)
         }
@@ -94,7 +94,7 @@ class ConsigneeDetailsControllerSpec extends ControllerSpec {
         "display page method is invoked and cache contains data" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withConsigneeDetails(None, Some(correctAddress))))
 
-          val result = controller.displayPage()(getRequest())
+          val result = controller.displayPage(getRequest())
 
           status(result) must be(OK)
         }
@@ -117,7 +117,7 @@ class ConsigneeDetailsControllerSpec extends ControllerSpec {
       "return 303 (SEE_OTHER) and redirect to other parties summary page" when {
         "form is correct" in {
           withNewCaching(request.cacheModel)
-          testFormSubmitRedirectsTo(AdditionalActorsSummaryController.displayPage())
+          testFormSubmitRedirectsTo(AdditionalActorsSummaryController.displayPage)
         }
       }
     }
@@ -127,12 +127,12 @@ class ConsigneeDetailsControllerSpec extends ControllerSpec {
 
         "form is correct and EIDR is false" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withEntryIntoDeclarantsRecords(YesNoAnswers.no)))
-          testFormSubmitRedirectsTo(AuthorisationProcedureCodeChoiceController.displayPage())
+          testFormSubmitRedirectsTo(AuthorisationProcedureCodeChoiceController.displayPage)
         }
 
         "form is correct and EIDR is true" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withEntryIntoDeclarantsRecords(YesNoAnswers.yes)))
-          testFormSubmitRedirectsTo(AuthorisationProcedureCodeChoiceController.displayPage())
+          testFormSubmitRedirectsTo(AuthorisationProcedureCodeChoiceController.displayPage)
         }
       }
     }

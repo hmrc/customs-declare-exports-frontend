@@ -43,7 +43,7 @@
   title = Title("declaration.itemsAdd.title", "declaration.section.5"),
   backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(ExportItem)))) {
 
-  @formHelper(action = routes.ItemsSummaryController.addFirstItem(), 'autoComplete -> "off") {
+  @formHelper(action = routes.ItemsSummaryController.addFirstItem, 'autoComplete -> "off") {
 
     @sectionHeader(messages("declaration.section.5"))
     @pageTitle(messages("declaration.itemsAdd.title"))

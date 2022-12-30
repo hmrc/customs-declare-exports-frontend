@@ -45,17 +45,16 @@ class ZeroRatedForVatController @Inject() (
 
   def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
     val form = request.cacheModel.itemBy(itemId).flatMap(_.nactExemptionCode) match {
-      case Some(code) => ZeroRatedForVat.form().fill(code).withSubmissionErrors
-      case _          => ZeroRatedForVat.form().withSubmissionErrors()
+      case Some(code) => ZeroRatedForVat.form.fill(code).withSubmissionErrors
+      case _          => ZeroRatedForVat.form.withSubmissionErrors
     }
 
     Ok(zero_rated_for_vat(itemId, form, eligibleForZeroVat(itemId)))
   }
 
   def submitForm(itemId: String): Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async { implicit request =>
-    ZeroRatedForVat
-      .form()
-      .bindFromRequest
+    ZeroRatedForVat.form
+      .bindFromRequest()
       .fold(
         formWithErrors => Future.successful(BadRequest(zero_rated_for_vat(itemId, formWithErrors, eligibleForZeroVat(itemId)))),
         updatedCache => updateExportsCache(itemId, updatedCache).map(_ => navigator.continueTo(routes.NactCodeSummaryController.displayPage(itemId)))

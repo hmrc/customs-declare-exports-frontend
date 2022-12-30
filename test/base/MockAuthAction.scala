@@ -19,8 +19,8 @@ package base
 import base.ExportsTestData._
 import config.AppConfig
 import controllers.actions.{AuthActionImpl, EoriAllowList}
-import models.{ExportsDeclaration, SignedInUser}
 import models.requests.{ExportsSessionKeys, JourneyRequest, VerifiedEmailRequest}
+import models.{ExportsDeclaration, SignedInUser}
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when

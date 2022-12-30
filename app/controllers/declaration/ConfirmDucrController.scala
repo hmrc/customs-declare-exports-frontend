@@ -47,12 +47,12 @@ class ConfirmDucrController @Inject() (
 
   private val authAndAcceptedTypes = authenticate andThen journeyAction(List(STANDARD, CLEARANCE, SIMPLIFIED, OCCASIONAL))
 
-  def displayPage(): Action[AnyContent] = authAndAcceptedTypes { implicit request =>
+  def displayPage: Action[AnyContent] = authAndAcceptedTypes { implicit request =>
     request.cacheModel.ducr.fold {
       logger.warn("No generated DUCR found in cache!")
       Redirect(routes.DucrEntryController.displayPage)
     } { ducr =>
-      Ok(confirmDucrPage(form.withSubmissionErrors(), ducr))
+      Ok(confirmDucrPage(form.withSubmissionErrors, ducr))
     }
   }
 
@@ -61,13 +61,15 @@ class ConfirmDucrController @Inject() (
       logger.warn("No generated DUCR found in cache!")
       Future.successful(Redirect(routes.DucrEntryController.displayPage))
     } { ducr =>
-      form.bindFromRequest.fold(
-        formWithErrors => Future.successful(BadRequest(confirmDucrPage(formWithErrors, ducr))),
-        {
-          case YesNoAnswer(YesNoAnswers.yes) => Future.successful(navigator.continueTo(routes.LocalReferenceNumberController.displayPage))
-          case _                             => updateCache.map(_ => navigator.continueTo(routes.DucrEntryController.displayPage))
-        }
-      )
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors => Future.successful(BadRequest(confirmDucrPage(formWithErrors, ducr))),
+          {
+            case YesNoAnswer(YesNoAnswers.yes) => Future.successful(navigator.continueTo(routes.LocalReferenceNumberController.displayPage))
+            case _                             => updateCache.map(_ => navigator.continueTo(routes.DucrEntryController.displayPage))
+          }
+        )
     }
   }
 

@@ -53,7 +53,7 @@ class AdditionalInformationAddController @Inject() (
   }
 
   def submitForm(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    val boundForm = form.bindFromRequest
+    val boundForm = form.bindFromRequest()
 
     boundForm.fold(
       formWithErrors => Future.successful(BadRequest(additionalInformationPage(itemId, formWithErrors))),

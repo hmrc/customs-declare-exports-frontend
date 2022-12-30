@@ -63,7 +63,7 @@ class RepresentativeAgentControllerSpec extends ControllerSpec with OptionValues
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration())
-    await(controller.displayPage()(request))
+    await(controller.displayPage(request))
     theResponseForm
   }
 
@@ -77,7 +77,7 @@ class RepresentativeAgentControllerSpec extends ControllerSpec with OptionValues
         "display page method is invoked with empty cache" in {
           withNewCaching(request.cacheModel)
 
-          val result = controller.displayPage()(getRequest())
+          val result = controller.displayPage(getRequest())
 
           status(result) mustBe OK
           verifyPage(1)
@@ -88,7 +88,7 @@ class RepresentativeAgentControllerSpec extends ControllerSpec with OptionValues
         "display page method is invoked with data in cache" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withRepresentativeDetails(None, None, Some("Yes"))))
 
-          val result = controller.displayPage()(getRequest())
+          val result = controller.displayPage(getRequest())
 
           status(result) mustBe OK
           verifyPage(1)
@@ -121,7 +121,7 @@ class RepresentativeAgentControllerSpec extends ControllerSpec with OptionValues
           val result = controller.submitForm()(postRequest(correctForm))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe RepresentativeStatusController.displayPage()
+          thePageNavigatedTo mustBe RepresentativeStatusController.displayPage
 
           verifyPage(0)
         }
@@ -149,7 +149,7 @@ class RepresentativeAgentControllerSpec extends ControllerSpec with OptionValues
           val result = controller.submitForm()(postRequest(correctForm))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe RepresentativeEntityController.displayPage()
+          thePageNavigatedTo mustBe RepresentativeEntityController.displayPage
 
           verifyPage(0)
         }

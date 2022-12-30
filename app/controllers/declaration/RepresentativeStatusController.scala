@@ -46,7 +46,7 @@ class RepresentativeStatusController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
-  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayPage: Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     val frm = form.withSubmissionErrors
     request.cacheModel.parties.representativeDetails.map(_.statusCode) match {
       case Some(data) => Ok(representativeStatusPage(navigationForm, frm.fill(RepresentativeStatus(data))))
@@ -55,7 +55,8 @@ class RepresentativeStatusController @Inject() (
   }
 
   def submitForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    form.bindFromRequest
+    form
+      .bindFromRequest()
       .fold(
         formWithErrors => Future.successful(BadRequest(representativeStatusPage(navigationForm, formWithErrors))),
         validRepresentativeDetails =>

@@ -153,7 +153,7 @@ trait ExportsDeclarationBuilder {
     _.copy(additionalDeclarationType = Some(decType))
 
   def withGoodsLocation(locationOfGoods: LocationOfGoods): ExportsDeclarationModifier = { model =>
-    model.copy(locations = model.locations.copy(goodsLocation = Some(locationOfGoods.toModel())))
+    model.copy(locations = model.locations.copy(goodsLocation = Some(locationOfGoods.toModel)))
   }
 
   def withoutGoodsLocation(): ExportsDeclarationModifier = { model =>
@@ -210,7 +210,7 @@ trait ExportsDeclarationBuilder {
   def withDeclarantIsExporter(isExporter: String = "Yes"): ExportsDeclarationModifier =
     cache => cache.copy(parties = cache.parties.copy(declarantIsExporter = Some(DeclarantIsExporter(isExporter))))
 
-  def withoutDeclarationHolders(): ExportsDeclarationModifier =
+  def withoutDeclarationHolders: ExportsDeclarationModifier =
     cache => cache.copy(parties = cache.parties.copy(declarationHoldersData = None))
 
   def withDeclarationHolders(

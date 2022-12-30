@@ -40,7 +40,7 @@ object Choice {
       .transform[Choice](choice => Choice(choice.getOrElse("")), choice => Some(choice.value))
   )
 
-  def form(): Form[Choice] = Form(choiceMapping)
+  def form: Form[Choice] = Form(choiceMapping)
 
   object AllowedChoiceValues {
     val CreateDec = "CRT"

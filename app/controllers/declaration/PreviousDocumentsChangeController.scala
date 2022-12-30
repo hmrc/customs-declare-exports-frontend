@@ -54,7 +54,7 @@ class PreviousDocumentsChangeController @Inject() (
   def submit(id: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     findDocument(id) match {
       case Some(existingDocument) =>
-        val boundForm = Document.form.bindFromRequest
+        val boundForm = Document.form.bindFromRequest()
         val documentsWithoutExisting = request.cacheModel.previousDocuments.map(_.documents).getOrElse(Seq.empty).filterNot(_ == existingDocument)
 
         MultipleItemsHelper

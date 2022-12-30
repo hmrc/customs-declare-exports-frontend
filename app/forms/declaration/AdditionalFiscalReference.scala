@@ -35,7 +35,7 @@ object AdditionalFiscalReference extends DeclarationPage {
   def build(country: String, reference: String): AdditionalFiscalReference = new AdditionalFiscalReference(country, reference.toUpperCase)
   implicit val format = Json.format[AdditionalFiscalReference]
 
-  def mapping()(implicit messages: Messages, codeListConnector: CodeListConnector) =
+  def mapping(implicit messages: Messages, codeListConnector: CodeListConnector) =
     Forms.mapping(
       "country" -> text()
         .verifying("declaration.additionalFiscalReferences.country.empty", _.trim.nonEmpty)
@@ -45,7 +45,7 @@ object AdditionalFiscalReference extends DeclarationPage {
         .verifying("declaration.additionalFiscalReferences.reference.error", isEmpty or (isAlphanumeric and noLongerThan(15)))
     )(AdditionalFiscalReference.build)(AdditionalFiscalReference.unapply)
 
-  def form()(implicit messages: Messages, codeListConnector: CodeListConnector): Form[AdditionalFiscalReference] = Form(mapping)
+  def form(implicit messages: Messages, codeListConnector: CodeListConnector): Form[AdditionalFiscalReference] = Form(mapping)
 
   override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
     Seq(TariffContentKey(s"tariff.declaration.item.additionalFiscalReferences.${DeclarationPage.getJourneyTypeSpecialisation(decType)}"))

@@ -34,9 +34,9 @@ class NatureOfTransactionViewSpec extends PageWithButtonsSpec with Injector {
 
   val page = instanceOf[nature_of_transaction]
 
-  override val typeAndViewInstance = (STANDARD, page(form())(_, _))
+  override val typeAndViewInstance = (STANDARD, page(form)(_, _))
 
-  def createView(frm: Form[NatureOfTransaction] = form())(implicit request: JourneyRequest[_]): Document =
+  def createView(frm: Form[NatureOfTransaction] = form)(implicit request: JourneyRequest[_]): Document =
     page(frm)(request, messages)
 
   "Nature Of Transaction View on empty page" should {
@@ -122,7 +122,7 @@ class NatureOfTransactionViewSpec extends PageWithButtonsSpec with Injector {
         val backButton = view.getElementById("back-link")
 
         backButton must containMessage("site.backToPreviousQuestion")
-        backButton.getElementById("back-link") must haveHref(TotalPackageQuantityController.displayPage())
+        backButton.getElementById("back-link") must haveHref(TotalPackageQuantityController.displayPage)
       }
 
       checkAllSaveButtonsAreDisplayed(createView())
@@ -132,7 +132,7 @@ class NatureOfTransactionViewSpec extends PageWithButtonsSpec with Injector {
   "Nature Of Transaction View for invalid input" should {
     onJourney(STANDARD, SUPPLEMENTARY) { implicit request =>
       "display error when nature of transaction is empty" in {
-        val view = createView(form().fillAndValidate(NatureOfTransaction("")))
+        val view = createView(form.fillAndValidate(NatureOfTransaction("")))
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#Sale")
@@ -141,7 +141,7 @@ class NatureOfTransactionViewSpec extends PageWithButtonsSpec with Injector {
       }
 
       "display error when nature of transaction is incorrect" in {
-        val view = createView(form().fillAndValidate(NatureOfTransaction("ABC")))
+        val view = createView(form.fillAndValidate(NatureOfTransaction("ABC")))
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#Sale")

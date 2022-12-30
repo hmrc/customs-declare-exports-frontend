@@ -22,8 +22,8 @@ import controllers.routes.RootController
 import forms.common.{Address, Eori}
 import forms.declaration.EntityDetails
 import forms.declaration.consignor.ConsignorDetails
-import models.DeclarationType._
 import models.DeclarationType
+import models.DeclarationType._
 import models.codes.Country
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -73,7 +73,7 @@ class ConsignorDetailsControllerSpec extends ControllerSpec {
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration(withType(DeclarationType.CLEARANCE)))
-    await(controller.displayPage()(request))
+    await(controller.displayPage(request))
     theResponseForm
   }
 
@@ -85,7 +85,7 @@ class ConsignorDetailsControllerSpec extends ControllerSpec {
         "display page method is invoked and cache is empty" in {
           withNewCaching(request.cacheModel)
 
-          val result = controller.displayPage()(getRequest())
+          val result = controller.displayPage(getRequest())
           status(result) must be(OK)
         }
 
@@ -100,7 +100,7 @@ class ConsignorDetailsControllerSpec extends ControllerSpec {
             )
           )
 
-          val result = controller.displayPage()(getRequest())
+          val result = controller.displayPage(getRequest())
           status(result) must be(OK)
         }
       }
@@ -136,7 +136,7 @@ class ConsignorDetailsControllerSpec extends ControllerSpec {
           val result = controller.saveAddress()(postRequest(correctForm))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.RepresentativeAgentController.displayPage()
+          thePageNavigatedTo mustBe controllers.declaration.routes.RepresentativeAgentController.displayPage
         }
       }
 
@@ -164,7 +164,7 @@ class ConsignorDetailsControllerSpec extends ControllerSpec {
           val result = controller.saveAddress()(postRequest(correctForm))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.CarrierEoriNumberController.displayPage()
+          thePageNavigatedTo mustBe controllers.declaration.routes.CarrierEoriNumberController.displayPage
         }
       }
     }
@@ -186,7 +186,7 @@ class ConsignorDetailsControllerSpec extends ControllerSpec {
         val result = controller.saveAddress()(postRequest(correctForm))
 
         status(result) must be(SEE_OTHER)
-        redirectLocation(result) mustBe Some(RootController.displayPage().url)
+        redirectLocation(result) mustBe Some(RootController.displayPage.url)
       }
     }
 
@@ -195,10 +195,10 @@ class ConsignorDetailsControllerSpec extends ControllerSpec {
         "display page method is invoked and cache is empty" in {
           withNewCaching(request.cacheModel)
 
-          val result = controller.displayPage()(getRequest())
+          val result = controller.displayPage(getRequest())
 
           status(result) must be(SEE_OTHER)
-          redirectLocation(result) mustBe Some(RootController.displayPage().url)
+          redirectLocation(result) mustBe Some(RootController.displayPage.url)
         }
       }
     }

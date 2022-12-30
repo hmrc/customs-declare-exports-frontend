@@ -65,8 +65,8 @@ class LinkDucrToMucrViewSpec extends UnitViewSpec with CommonMessages with Injec
       "display two Yes/No radio buttons" in {
         val radios = view.getElementsByClass("govuk-radios").first.children
         radios.size mustBe 2
-        Option(radios.first.getElementById("code_yes")) must be('defined)
-        Option(radios.last.getElementById("code_no")) must be('defined)
+        Option(radios.first.getElementById("code_yes")) mustBe defined
+        Option(radios.last.getElementById("code_no")) mustBe defined
       }
 
       "select the 'Yes' radio when clicked" in {

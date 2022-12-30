@@ -16,7 +16,6 @@
 
 package controllers.declaration
 
-import scala.concurrent.Future
 import base.ControllerSpec
 import forms.{Lrn, LrnValidator}
 import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED, STANDARD}
@@ -30,6 +29,8 @@ import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.declaration.local_reference_number
+
+import scala.concurrent.Future
 
 class LocalReferenceNumberControllerSpec extends ControllerSpec with GivenWhenThen {
 
@@ -62,7 +63,7 @@ class LocalReferenceNumberControllerSpec extends ControllerSpec with GivenWhenTh
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration(withType(STANDARD)))
-    await(controller.displayPage()(request))
+    await(controller.displayPage(request))
     theResponseForm
   }
 
@@ -80,14 +81,14 @@ class LocalReferenceNumberControllerSpec extends ControllerSpec with GivenWhenTh
         "display page method is invoked and cache is empty" in {
           withNewCaching(req.cacheModel)
 
-          val result = controller.displayPage()(getRequest())
+          val result = controller.displayPage(getRequest())
           status(result) must be(OK)
         }
 
         "display page method is invoked and cache contains data" in {
           withNewCaching(aDeclaration(withType(req.declarationType), withConsignmentReferences()))
 
-          val result = controller.displayPage()(getRequest())
+          val result = controller.displayPage(getRequest())
           status(result) must be(OK)
         }
       }
@@ -120,7 +121,7 @@ class LocalReferenceNumberControllerSpec extends ControllerSpec with GivenWhenTh
         val result = controller.submitLrn()(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe routes.LinkDucrToMucrController.displayPage()
+        thePageNavigatedTo mustBe routes.LinkDucrToMucrController.displayPage
       }
     }
   }

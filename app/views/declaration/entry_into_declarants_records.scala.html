@@ -44,7 +44,7 @@
     title = Title("declaration.entryIntoDeclarantRecords.title", "declaration.section.2", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(EntryIntoDeclarantsRecords)))) {
 
-    @formHelper(action = controllers.declaration.routes.EntryIntoDeclarantsRecordsController.submitForm(), 'autocomplete -> "off") {
+    @formHelper(action = controllers.declaration.routes.EntryIntoDeclarantsRecordsController.submitForm, 'autocomplete -> "off") {
       @errorSummary(radioGroupErrors(fieldName, "answer_yes", form.errors))
 
       @sectionHeader(messages("declaration.section.2"))

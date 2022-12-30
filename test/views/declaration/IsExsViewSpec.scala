@@ -79,7 +79,7 @@ class IsExsViewSpec extends UnitViewSpec with ExportsTestHelper with CommonMessa
           val backButton = view.getElementById("back-link")
 
           backButton must containMessage(backToPreviousQuestionCaption)
-          backButton.attr("href") mustBe routes.ExporterDetailsController.displayPage().url
+          backButton.attr("href") mustBe routes.ExporterDetailsController.displayPage.url
         }
       }
 
@@ -94,7 +94,7 @@ class IsExsViewSpec extends UnitViewSpec with ExportsTestHelper with CommonMessa
           val backButton = view.getElementById("back-link")
 
           backButton must containMessage(backToPreviousQuestionCaption)
-          backButton.attr("href") mustBe routes.DeclarantExporterController.displayPage().url
+          backButton.attr("href") mustBe routes.DeclarantExporterController.displayPage.url
         }
       }
 

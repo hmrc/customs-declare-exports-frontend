@@ -49,7 +49,7 @@ class AdditionalActorsAddController @Inject() (
 
   val validTypes = List(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL)
 
-  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
+  def displayPage: Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
     val frm = form.withSubmissionErrors
     request.cacheModel.parties.declarationAdditionalActorsData match {
       case Some(_) => Ok(declarationAdditionalActorsPage(frm.fill(DeclarationAdditionalActors(None, Some(NoneOfTheAbove.value)))))
@@ -57,8 +57,8 @@ class AdditionalActorsAddController @Inject() (
     }
   }
 
-  def saveForm(): Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async { implicit request =>
-    val boundForm = form.bindFromRequest
+  def saveForm: Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async { implicit request =>
+    val boundForm = form.bindFromRequest()
     boundForm.fold(
       formWithErrors => Future.successful(BadRequest(declarationAdditionalActorsPage(formWithErrors))),
       actor => {

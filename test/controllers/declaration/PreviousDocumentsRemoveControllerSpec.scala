@@ -89,7 +89,7 @@ class PreviousDocumentsRemoveControllerSpec extends ControllerWithoutFormSpec {
         val result = controller.displayPage(documentId)(getRequest())
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe PreviousDocumentsSummaryController.displayPage()
+        thePageNavigatedTo mustBe PreviousDocumentsSummaryController.displayPage
       }
 
       "user answer Yes and there are some documents in cache" in {
@@ -100,7 +100,7 @@ class PreviousDocumentsRemoveControllerSpec extends ControllerWithoutFormSpec {
         val result = controller.submit(documentId)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe PreviousDocumentsSummaryController.displayPage()
+        thePageNavigatedTo mustBe PreviousDocumentsSummaryController.displayPage
       }
 
       "user answer No" in {
@@ -111,7 +111,7 @@ class PreviousDocumentsRemoveControllerSpec extends ControllerWithoutFormSpec {
         val result = controller.submit(documentId)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe PreviousDocumentsSummaryController.displayPage()
+        thePageNavigatedTo mustBe PreviousDocumentsSummaryController.displayPage
       }
 
       "submit method is invoked for incorrect document" in {
@@ -122,7 +122,7 @@ class PreviousDocumentsRemoveControllerSpec extends ControllerWithoutFormSpec {
         val result = controller.submit("incorrectId")(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe PreviousDocumentsSummaryController.displayPage()
+        thePageNavigatedTo mustBe PreviousDocumentsSummaryController.displayPage
       }
     }
 
@@ -135,7 +135,7 @@ class PreviousDocumentsRemoveControllerSpec extends ControllerWithoutFormSpec {
         val result = controller.submit(documentId)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe PreviousDocumentsSummaryController.displayPage()
+        thePageNavigatedTo mustBe PreviousDocumentsSummaryController.displayPage
       }
     }
   }

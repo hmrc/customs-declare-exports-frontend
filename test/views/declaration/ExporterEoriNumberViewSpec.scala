@@ -39,16 +39,16 @@ class ExporterEoriNumberViewSpec extends PageWithButtonsSpec with ExportsTestHel
 
   val page: exporter_eori_number = instanceOf[exporter_eori_number]
 
-  override val typeAndViewInstance = (STANDARD, page(form())(_, _))
+  override val typeAndViewInstance = (STANDARD, page(form)(_, _))
 
-  def createView(frm: Form[ExporterEoriNumber] = form())(implicit request: JourneyRequest[_]): Document =
+  def createView(frm: Form[ExporterEoriNumber] = form)(implicit request: JourneyRequest[_]): Document =
     page(frm)(request, messages)
 
   onEveryDeclarationJourney() { implicit request =>
     "ExporterEoriNumber Eori Number View" should {
       val view = createView()
       "display answer input" in {
-        val view = createView(form().fill(ExporterEoriNumber(Some(Eori("GB123456789")), YesNoAnswers.yes)))
+        val view = createView(form.fill(ExporterEoriNumber(Some(Eori("GB123456789")), YesNoAnswers.yes)))
 
         view
           .getElementById("Yes")
@@ -86,7 +86,7 @@ class ExporterEoriNumberViewSpec extends PageWithButtonsSpec with ExportsTestHel
       "handle invalid input" should {
         "display errors when all inputs are incorrect" in {
           val data = ExporterEoriNumber(Some(Eori("123456789")), YesNoAnswers.yes)
-          val view = createView(form().fillAndValidate(data))
+          val view = createView(form.fillAndValidate(data))
 
           view must haveGovukGlobalErrorSummary
           view must containErrorElementWithTagAndHref("a", "#eori")
@@ -95,7 +95,7 @@ class ExporterEoriNumberViewSpec extends PageWithButtonsSpec with ExportsTestHel
 
         "display errors when eori contains special characters" in {
           val data = ExporterEoriNumber(eori = Some(Eori("12#$%^78")), hasEori = YesNoAnswers.yes)
-          val view = createView(form().fillAndValidate(data))
+          val view = createView(form.fillAndValidate(data))
 
           view must haveGovukGlobalErrorSummary
           view must containErrorElementWithTagAndHref("a", "#eori")
@@ -118,7 +118,7 @@ class ExporterEoriNumberViewSpec extends PageWithButtonsSpec with ExportsTestHel
       val backButton = view.getElementById("back-link")
 
       backButton must containMessage("site.backToPreviousQuestion")
-      backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.PersonPresentingGoodsDetailsController.displayPage())
+      backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.PersonPresentingGoodsDetailsController.displayPage)
     }
   }
 
@@ -127,7 +127,7 @@ class ExporterEoriNumberViewSpec extends PageWithButtonsSpec with ExportsTestHel
       val backButton = createView().getElementById("back-link")
 
       backButton must containMessage("site.backToPreviousQuestion")
-      backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.DeclarantExporterController.displayPage())
+      backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.DeclarantExporterController.displayPage)
     }
   }
 }

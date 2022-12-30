@@ -31,7 +31,7 @@ class ZeroRatedForVatSpec extends DeclarationPageBaseSpec with JourneyTypeTestRu
         val result = ZeroRatedForVat.mapping.bind(input)
 
         result.isRight mustBe true
-        result.right.get mustBe NactCode("VATR")
+        result.toOption.get mustBe NactCode("VATR")
       }
     }
 
@@ -42,7 +42,7 @@ class ZeroRatedForVatSpec extends DeclarationPageBaseSpec with JourneyTypeTestRu
         val result = ZeroRatedForVat.mapping.bind(input)
 
         result.isLeft mustBe true
-        result.left.get.head.message mustBe "declaration.zeroRatedForVat.error"
+        result.left.toOption.get.head.message mustBe "declaration.zeroRatedForVat.error"
       }
 
       "provided with an invalid String value" in {
@@ -51,7 +51,7 @@ class ZeroRatedForVatSpec extends DeclarationPageBaseSpec with JourneyTypeTestRu
         val result = ZeroRatedForVat.mapping.bind(input)
 
         result.isLeft mustBe true
-        result.left.get.head.message mustBe "declaration.zeroRatedForVat.error"
+        result.left.toOption.get.head.message mustBe "declaration.zeroRatedForVat.error"
       }
     }
   }

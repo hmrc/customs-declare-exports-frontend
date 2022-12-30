@@ -120,7 +120,7 @@ class PreviousDocumentsSummaryViewSpec extends PageWithButtonsSpec with Injector
       "display 'Back' link to 'Nature of Transaction' page" in {
         val backButton = createView().getElementById("back-link")
         backButton must containMessage("site.backToPreviousQuestion")
-        backButton must haveHref(NatureOfTransactionController.displayPage())
+        backButton must haveHref(NatureOfTransactionController.displayPage)
       }
     }
 
@@ -130,7 +130,7 @@ class PreviousDocumentsSummaryViewSpec extends PageWithButtonsSpec with Injector
 
         val backButton = createView()(specificRequest).getElementById("back-link")
         backButton must containMessage("site.backToPreviousQuestion")
-        backButton must haveHref(OfficeOfExitController.displayPage())
+        backButton must haveHref(OfficeOfExitController.displayPage)
       }
     }
   }

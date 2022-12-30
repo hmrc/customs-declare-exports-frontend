@@ -30,25 +30,25 @@ class CusCodeSpec extends DeclarationPageBaseSpec {
 
     "return form with errors" when {
       "provided with code too long" in {
-        val form = CusCode.form().bind(formData("Yes", Some("ABCD12345")), JsonBindMaxChars)
+        val form = CusCode.form.bind(formData("Yes", Some("ABCD12345")), JsonBindMaxChars)
 
         form.errors mustBe Seq(FormError(cusCodeKey, "declaration.cusCode.error.length"))
       }
 
       "provided with code too short" in {
-        val form = CusCode.form().bind(formData("Yes", Some("ABCD123")), JsonBindMaxChars)
+        val form = CusCode.form.bind(formData("Yes", Some("ABCD123")), JsonBindMaxChars)
 
         form.errors mustBe Seq(FormError(cusCodeKey, "declaration.cusCode.error.length"))
       }
 
       "provided with non-alphanumeric code" in {
-        val form = CusCode.form().bind(formData("Yes", Some("!2345678")), JsonBindMaxChars)
+        val form = CusCode.form.bind(formData("Yes", Some("!2345678")), JsonBindMaxChars)
 
         form.errors mustBe Seq(FormError(cusCodeKey, "declaration.cusCode.error.specialCharacters"))
       }
 
       "provided with no code when user said yes" in {
-        val form = CusCode.form().bind(formData("Yes", None), JsonBindMaxChars)
+        val form = CusCode.form.bind(formData("Yes", None), JsonBindMaxChars)
 
         form.errors mustBe Seq(FormError(cusCodeKey, "declaration.cusCode.error.empty"))
       }
@@ -56,13 +56,13 @@ class CusCodeSpec extends DeclarationPageBaseSpec {
 
     "return form without errors" when {
       "provided with valid input when user said Yes" in {
-        val form = CusCode.form().bind(formData("Yes", Some("1234ABCD")), JsonBindMaxChars)
+        val form = CusCode.form.bind(formData("Yes", Some("1234ABCD")), JsonBindMaxChars)
 
         form.hasErrors must be(false)
       }
 
       "provided with no input when user said No" in {
-        val form = CusCode.form().bind(formData("No", None), JsonBindMaxChars)
+        val form = CusCode.form.bind(formData("No", None), JsonBindMaxChars)
 
         form.hasErrors must be(false)
       }

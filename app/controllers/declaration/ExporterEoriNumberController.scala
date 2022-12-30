@@ -43,8 +43,8 @@ class ExporterEoriNumberController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
-  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    val frm = ExporterEoriNumber.form().withSubmissionErrors()
+  def displayPage: Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    val frm = ExporterEoriNumber.form.withSubmissionErrors
     request.cacheModel.parties.exporterDetails match {
       case Some(data) => Ok(exporterEoriDetailsPage(frm.fill(ExporterEoriNumber(data))))
       case _          => Ok(exporterEoriDetailsPage(frm))
@@ -52,8 +52,7 @@ class ExporterEoriNumberController @Inject() (
   }
 
   def submit(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    ExporterEoriNumber
-      .form()
+    ExporterEoriNumber.form
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[ExporterEoriNumber]) => {

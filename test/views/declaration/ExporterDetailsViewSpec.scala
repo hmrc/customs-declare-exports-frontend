@@ -51,7 +51,7 @@ class ExporterDetailsViewSpec extends AddressViewSpec with PageWithButtonsSpec w
     super.afterEach()
   }
 
-  def form()(implicit request: JourneyRequest[_]): Form[ExporterDetails] = ExporterDetails.form(request.declarationType)
+  def form(implicit request: JourneyRequest[_]): Form[ExporterDetails] = ExporterDetails.form(request.declarationType)
 
   val page = instanceOf[exporter_address]
 
@@ -63,7 +63,7 @@ class ExporterDetailsViewSpec extends AddressViewSpec with PageWithButtonsSpec w
   "Exporter Details View on empty page" should {
 
     onEveryDeclarationJourney() { implicit request =>
-      val view = createView(form())
+      val view = createView(form)
 
       "display same page title as header" in {
         view.title() must include(view.getElementsByTag("h1").text())
@@ -102,7 +102,7 @@ class ExporterDetailsViewSpec extends AddressViewSpec with PageWithButtonsSpec w
         val backButton = view.getElementById("back-link")
 
         backButton.text() mustBe messages(backToPreviousQuestionCaption)
-        backButton.attr("href") mustBe ExporterEoriNumberController.displayPage().url
+        backButton.attr("href") mustBe ExporterEoriNumberController.displayPage.url
       }
 
       checkAllSaveButtonsAreDisplayed(createView(form))
@@ -191,7 +191,7 @@ class ExporterDetailsViewSpec extends AddressViewSpec with PageWithButtonsSpec w
   "Exporter Details View when filled" should {
     onEveryDeclarationJourney() { implicit request =>
       "display data in Business address inputs" in {
-        val view = createView(form().fill(ExporterDetails(EntityDetails(None, Some(Address("test", "test1", "test2", "test3", "test4"))))))
+        val view = createView(form.fill(ExporterDetails(EntityDetails(None, Some(Address("test", "test1", "test2", "test3", "test4"))))))
         view.getElementById("details_address_fullName").attr("value") mustBe "test"
         view.getElementById("details_address_addressLine").attr("value") mustBe "test1"
         view.getElementById("details_address_townOrCity").attr("value") mustBe "test2"
@@ -202,12 +202,12 @@ class ExporterDetailsViewSpec extends AddressViewSpec with PageWithButtonsSpec w
   }
 
   private def assertIncorrectView(address: Address, field: String, errorKey: String)(implicit request: JourneyRequest[_]): Assertion = {
-    val view = createView(form().fillAndValidate(ExporterDetails(EntityDetails(None, Some(address)))))
+    val view = createView(form.fillAndValidate(ExporterDetails(EntityDetails(None, Some(address)))))
     assertIncorrectElement(view, field, errorKey)
   }
 
   private def assertIncorrectElements(address: Address, fields: List[String], errorKey: String)(implicit request: JourneyRequest[_]): Assertion = {
-    val view = createView(form().fillAndValidate(ExporterDetails(EntityDetails(None, Some(address)))))
+    val view = createView(form.fillAndValidate(ExporterDetails(EntityDetails(None, Some(address)))))
     assertIncorrectElements(view, fields, errorKey)
   }
 }

@@ -46,8 +46,8 @@ class IsExsController @Inject() (
 
   private val allowedJourney: DeclarationType = CLEARANCE
 
-  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType(allowedJourney)) { implicit request =>
-    val frm = IsExs.form.withSubmissionErrors()
+  def displayPage: Action[AnyContent] = (authenticate andThen journeyType(allowedJourney)) { implicit request =>
+    val frm = IsExs.form.withSubmissionErrors
     request.cacheModel.parties.isExs match {
       case Some(data) => Ok(isExsPage(frm.fill(data)))
       case _          => Ok(isExsPage(frm))

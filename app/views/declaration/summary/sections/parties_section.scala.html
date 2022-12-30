@@ -99,7 +99,7 @@
                 actions = Some(Actions(
                     items = actionItems(
                         actionSummaryItem(
-                            href = routes.DeclarantExporterController.displayPage().url,
+                            href = routes.DeclarantExporterController.displayPage.url,
                             content = HtmlContent(linkContent(messages("site.change"))),
                             visuallyHiddenText = Some(messages("declaration.summary.parties.declarantIsExporter.change"))
                         )
@@ -116,7 +116,7 @@
                 actions = Some(Actions(
                     items = actionItems(
                         actionSummaryItem(
-                            href = routes.EntryIntoDeclarantsRecordsController.displayPage().url,
+                            href = routes.EntryIntoDeclarantsRecordsController.displayPage.url,
                             content = HtmlContent(linkContent(messages("site.change"))),
                             visuallyHiddenText = Some(messages("declaration.summary.parties.eidr.change"))
                         )
@@ -133,7 +133,7 @@
                 actions = Some(Actions(
                     items = actionItems(
                         actionSummaryItem(
-                            href = routes.PersonPresentingGoodsDetailsController.displayPage().url,
+                            href = routes.PersonPresentingGoodsDetailsController.displayPage.url,
                             content = HtmlContent(linkContent(messages("site.change"))),
                             visuallyHiddenText = Some(messages("declaration.summary.parties.personPresentingGoods.change"))
                         )
@@ -146,7 +146,7 @@
             "exporter",
             export.details.eori,
             export.details.address,
-            routes.ExporterEoriNumberController.displayPage()
+            routes.ExporterEoriNumberController.displayPage
         )).getOrElse(Seq.empty)
 
                 ++ (Seq.empty :+ declarationData.parties.isExs.map { exs =>
@@ -161,7 +161,7 @@
                 actions = Some(Actions(
                     items = actionItems(
                         actionSummaryItem(
-                            href = routes.IsExsController.displayPage().url,
+                            href = routes.IsExsController.displayPage.url,
                             content = HtmlContent(linkContent(messages("site.change"))),
                             visuallyHiddenText = Some(messages("declaration.summary.parties.exs.change"))
                         )
@@ -182,7 +182,7 @@
                 actions = Some(Actions(
                     items = actionItems(
                         actionSummaryItem(
-                            href = routes.RepresentativeAgentController.displayPage().url,
+                            href = routes.RepresentativeAgentController.displayPage.url,
                             content = HtmlContent(linkContent(messages("site.change"))),
                             visuallyHiddenText = Some(messages("declaration.summary.parties.representative.agent.change"))
                         )
@@ -195,7 +195,7 @@
             "representative",
             details.eori,
             details.address,
-            routes.RepresentativeEntityController.displayPage()
+            routes.RepresentativeEntityController.displayPage
         )).getOrElse(Seq.empty)
 
                 ++ (Seq.empty :+ declarationData.parties.representativeDetails.flatMap(_.statusCode.map(code =>
@@ -210,7 +210,7 @@
                 actions = Some(Actions(
                     items = actionItems(
                         actionSummaryItem(
-                            href = routes.RepresentativeStatusController.displayPage().url,
+                            href = routes.RepresentativeStatusController.displayPage.url,
                             content = HtmlContent(linkContent(messages("site.change"))),
                             visuallyHiddenText = Some(messages("declaration.summary.parties.representative.type.change"))
                         )
@@ -223,7 +223,7 @@
             "carrier",
             carrier.details.eori,
             carrier.details.address,
-            routes.CarrierEoriNumberController.displayPage(),
+            routes.CarrierEoriNumberController.displayPage,
             isEoriDefault = false
         )).getOrElse(Seq.empty)
 
@@ -231,7 +231,7 @@
             "consignee",
             consignee.details.eori,
             consignee.details.address,
-            routes.ConsigneeDetailsController.displayPage(),
+            routes.ConsigneeDetailsController.displayPage,
             isEoriDefault = false
         )).getOrElse(Seq.empty)
 
@@ -239,7 +239,7 @@
             "consignor",
             consignor.details.eori,
             consignor.details.address,
-            routes.ConsignorEoriNumberController.displayPage(),
+            routes.ConsignorEoriNumberController.displayPage,
             isEoriDefault = false
         )).getOrElse(Seq.empty),
 

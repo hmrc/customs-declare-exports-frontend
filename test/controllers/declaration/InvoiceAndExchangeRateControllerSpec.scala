@@ -56,7 +56,7 @@ class InvoiceAndExchangeRateControllerSpec extends ControllerSpec with OptionVal
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration())
-    await(controller.displayPage()(request))
+    await(controller.displayPage(request))
     theResponseForm
   }
 
@@ -91,7 +91,7 @@ class InvoiceAndExchangeRateControllerSpec extends ControllerSpec with OptionVal
     onJourney(STANDARD, SUPPLEMENTARY) { request =>
       "display page method is invoked and cache is empty" in {
         withNewCaching(request.cacheModel)
-        val result = controller.displayPage()(getRequest())
+        val result = controller.displayPage(getRequest())
 
         status(result) mustBe OK
         verifyPage()
@@ -102,7 +102,7 @@ class InvoiceAndExchangeRateControllerSpec extends ControllerSpec with OptionVal
       "display page method is invoked and cache contains data" in {
         withNewCaching(aDeclaration(withType(request.declarationType), withTotalNumberOfItems(withoutExchange)))
 
-        val result = controller.displayPage()(getRequest())
+        val result = controller.displayPage(getRequest())
 
         status(result) mustBe OK
         verifyPage()
@@ -125,7 +125,7 @@ class InvoiceAndExchangeRateControllerSpec extends ControllerSpec with OptionVal
         val result = controller.saveNoOfItems()(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe TotalPackageQuantityController.displayPage()
+        thePageNavigatedTo mustBe TotalPackageQuantityController.displayPage
         verifyPage(0)
       }
 
@@ -142,10 +142,10 @@ class InvoiceAndExchangeRateControllerSpec extends ControllerSpec with OptionVal
       "redirect 303 (See Other) to start" in {
         withNewCaching(request.cacheModel)
 
-        val result = controller.displayPage().apply(getRequest(request.cacheModel))
+        val result = controller.displayPage.apply(getRequest(request.cacheModel))
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) must contain(RootController.displayPage().url)
+        redirectLocation(result) must contain(RootController.displayPage.url)
       }
     }
   }

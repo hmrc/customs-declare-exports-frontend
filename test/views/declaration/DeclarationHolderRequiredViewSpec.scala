@@ -175,7 +175,7 @@ class DeclarationHolderRequiredViewSpec extends UnitViewSpec with ExportsTestHel
         "display 'Back' button that links to the 'Authorisation Choice' page" in {
           val backButton = view.getElementById("back-link")
           backButton must containMessage(backToPreviousQuestionCaption)
-          backButton must haveHref(routes.AuthorisationProcedureCodeChoiceController.displayPage())
+          backButton must haveHref(routes.AuthorisationProcedureCodeChoiceController.displayPage)
         }
       }
 
@@ -183,7 +183,7 @@ class DeclarationHolderRequiredViewSpec extends UnitViewSpec with ExportsTestHel
         "display 'Back' button that links to the 'Other Parties' page" in {
           val backButton = view.getElementById("back-link")
           backButton must containMessage(backToPreviousQuestionCaption)
-          backButton must haveHref(routes.AdditionalActorsSummaryController.displayPage())
+          backButton must haveHref(routes.AdditionalActorsSummaryController.displayPage)
         }
       }
 
@@ -192,7 +192,7 @@ class DeclarationHolderRequiredViewSpec extends UnitViewSpec with ExportsTestHel
           "display 'Back' button that links to the 'Consignee Details' page" in {
             val backButton = view.getElementById("back-link")
             backButton must containMessage(backToPreviousQuestionCaption)
-            backButton must haveHref(routes.ConsigneeDetailsController.displayPage())
+            backButton must haveHref(routes.ConsigneeDetailsController.displayPage)
           }
         }
       }
@@ -202,7 +202,7 @@ class DeclarationHolderRequiredViewSpec extends UnitViewSpec with ExportsTestHel
           "display 'Back' button that links to the 'Authorisation Choice' page" in {
             val backButton = view.getElementById("back-link")
             backButton must containMessage(backToPreviousQuestionCaption)
-            backButton must haveHref(routes.AuthorisationProcedureCodeChoiceController.displayPage())
+            backButton must haveHref(routes.AuthorisationProcedureCodeChoiceController.displayPage)
           }
         }
       }

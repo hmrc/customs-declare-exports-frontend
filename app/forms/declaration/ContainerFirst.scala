@@ -67,7 +67,7 @@ object ContainerFirst extends DeclarationPage {
     )
   )(form2Model)(model2Form)
 
-  def form(): Form[ContainerFirst] = Form(mapping)
+  def form: Form[ContainerFirst] = Form(mapping)
 
   override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
     decType match {

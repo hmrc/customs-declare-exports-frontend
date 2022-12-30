@@ -66,7 +66,7 @@ class PreviousDocumentsSummaryControllerSpec extends ControllerSpec {
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration(withPreviousDocuments(document)))
-    await(controller.displayPage()(request))
+    await(controller.displayPage(request))
     theResponseForm
   }
 
@@ -76,7 +76,7 @@ class PreviousDocumentsSummaryControllerSpec extends ControllerSpec {
       "display page is invoked with documents in cache" in {
         withNewCaching(aDeclaration(withPreviousDocuments(document)))
 
-        val result = controller.displayPage()(getRequest())
+        val result = controller.displayPage(getRequest())
 
         status(result) mustBe OK
       }
@@ -99,10 +99,10 @@ class PreviousDocumentsSummaryControllerSpec extends ControllerSpec {
       "display page method is invoked without documents in cache" in {
         withNewCaching(aDeclaration(withoutPreviousDocuments()))
 
-        val result = controller.displayPage()(getRequest())
+        val result = controller.displayPage(getRequest())
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe routes.PreviousDocumentsController.displayPage()
+        thePageNavigatedTo mustBe routes.PreviousDocumentsController.displayPage
       }
 
       "user answer Yes to add additional document" in {
@@ -113,7 +113,7 @@ class PreviousDocumentsSummaryControllerSpec extends ControllerSpec {
         val result = controller.submit()(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe routes.PreviousDocumentsController.displayPage()
+        thePageNavigatedTo mustBe routes.PreviousDocumentsController.displayPage
       }
 
       "user answer Yes to add additional document in error-fix ode" in {
@@ -124,7 +124,7 @@ class PreviousDocumentsSummaryControllerSpec extends ControllerSpec {
         val result = controller.submit()(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe routes.PreviousDocumentsController.displayPage()
+        thePageNavigatedTo mustBe routes.PreviousDocumentsController.displayPage
       }
     }
 
@@ -138,7 +138,7 @@ class PreviousDocumentsSummaryControllerSpec extends ControllerSpec {
         val result = controller.submit()(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe ItemsSummaryController.displayAddItemPage()
+        thePageNavigatedTo mustBe ItemsSummaryController.displayAddItemPage
       }
     }
   }

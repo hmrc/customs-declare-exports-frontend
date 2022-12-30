@@ -44,8 +44,8 @@ class ConsigneeDetailsController @Inject() (
 )(implicit ec: ExecutionContext, codeListConnector: CodeListConnector)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
-  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    val frm = ConsigneeDetails.form().withSubmissionErrors()
+  def displayPage: Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    val frm = ConsigneeDetails.form.withSubmissionErrors
     request.cacheModel.parties.consigneeDetails match {
       case Some(data) => Ok(consigneeDetailsPage(frm.fill(data)))
       case _          => Ok(consigneeDetailsPage(frm))
@@ -53,8 +53,7 @@ class ConsigneeDetailsController @Inject() (
   }
 
   def saveAddress(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    ConsigneeDetails
-      .form()
+    ConsigneeDetails.form
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[ConsigneeDetails]) => Future.successful(BadRequest(consigneeDetailsPage(formWithErrors))),

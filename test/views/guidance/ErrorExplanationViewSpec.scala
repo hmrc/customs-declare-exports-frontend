@@ -16,13 +16,13 @@
 
 package views.guidance
 
-import scala.collection.JavaConverters.asScalaIteratorConverter
-
 import base.Injector
 import tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.html.guidance.error_explanation
 import views.tags.ViewTest
+
+import scala.jdk.CollectionConverters.IteratorHasAsScala
 
 @ViewTest
 class ErrorExplanationViewSpec extends UnitViewSpec with Stubs with Injector {

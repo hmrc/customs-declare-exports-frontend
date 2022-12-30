@@ -50,7 +50,7 @@ class AdditionalDocumentChangeController @Inject() (
   def displayPage(itemId: String, documentId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     findAdditionalDocument(itemId, documentId) match {
       case Some(document) =>
-        val changeForm = form(request.cacheModel).fill(document).withSubmissionErrors()
+        val changeForm = form(request.cacheModel).fill(document).withSubmissionErrors
         Ok(additionalDocumentChangePage(itemId, documentId, changeForm))
 
       case _ => returnToSummary(itemId)

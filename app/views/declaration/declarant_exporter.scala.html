@@ -47,7 +47,7 @@
     title = Title("declaration.declarant.exporter.title", "declaration.section.2", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(DeclarantIsExporter)))) {
 
-    @formHelper(action = controllers.declaration.routes.DeclarantExporterController.submitForm(), 'autoComplete -> "off") {
+    @formHelper(action = controllers.declaration.routes.DeclarantExporterController.submitForm, 'autoComplete -> "off") {
         @errorSummary(yesNoErrors(form.errors, DeclarantIsExporter.answerKey))
 
         @sectionHeader(messages("declaration.section.2"))

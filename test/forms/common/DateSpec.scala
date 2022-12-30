@@ -200,7 +200,7 @@ class DateSpec extends UnitSpec {
       }
 
       def testFailedValidationErrors(input: Map[String, String], expectedErrors: Seq[FormError]): Unit = {
-        val form = Date.form().bind(input)
+        val form = Date.form.bind(input)
         expectedErrors.foreach(form.errors must contain(_))
       }
     }
@@ -210,7 +210,7 @@ class DateSpec extends UnitSpec {
       "provided with correct data" in {
 
         val input = correctDateJSON
-        val form = Date.form().bind(input, JsonBindMaxChars)
+        val form = Date.form.bind(input, JsonBindMaxChars)
 
         form.errors must equal(Seq.empty)
       }
@@ -218,7 +218,7 @@ class DateSpec extends UnitSpec {
       "provided with date on the lower limit" in {
 
         val input = JsObject(Map(yearKey -> JsString("2000"), monthKey -> JsString("1"), dayKey -> JsString("1")))
-        val form = Date.form().bind(input, JsonBindMaxChars)
+        val form = Date.form.bind(input, JsonBindMaxChars)
 
         form.errors must equal(Seq.empty)
       }
@@ -226,7 +226,7 @@ class DateSpec extends UnitSpec {
       "provided with date on the upper limit" in {
 
         val input = JsObject(Map(yearKey -> JsString("2099"), monthKey -> JsString("12"), dayKey -> JsString("31")))
-        val form = Date.form().bind(input, JsonBindMaxChars)
+        val form = Date.form.bind(input, JsonBindMaxChars)
 
         form.errors must equal(Seq.empty)
       }
@@ -235,7 +235,7 @@ class DateSpec extends UnitSpec {
 
         val input: JsValue =
           JsObject(Map(yearKey -> JsString("2003"), monthKey -> JsString("01"), dayKey -> JsString("02")))
-        val form = Date.form().bind(input, JsonBindMaxChars)
+        val form = Date.form.bind(input, JsonBindMaxChars)
 
         form.errors must equal(Seq.empty)
       }

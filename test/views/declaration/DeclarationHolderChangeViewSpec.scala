@@ -62,7 +62,7 @@ class DeclarationHolderChangeViewSpec extends UnitViewSpec with CommonMessages w
         val backButton = view.getElementById("back-link")
 
         backButton.text mustBe messages(backToPreviousQuestionCaption)
-        backButton.attr("href") mustBe routes.DeclarationHolderSummaryController.displayPage().url
+        backButton.attr("href") mustBe routes.DeclarationHolderSummaryController.displayPage.url
       }
 
       "display data in authorisationTypeCode" in {

@@ -46,14 +46,15 @@ class DeclarationHolderRequiredController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
-  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayPage: Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     if (declarationHolders.nonEmpty) navigator.continueTo(DeclarationHolderSummaryController.displayPage)
     else if (userCanLandOnIsAuthRequiredPage(request.cacheModel)) Ok(declarationHolderRequired(formWithPreviousAnswer.withSubmissionErrors))
     else navigator.continueTo(DeclarationHolderAddController.displayPage)
   }
 
   def submitForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    form.bindFromRequest
+    form
+      .bindFromRequest()
       .fold(
         formWithErrors => Future.successful(BadRequest(declarationHolderRequired(formWithErrors))),
         validYesNo => updateCache(Some(validYesNo)).map(_ => navigator.continueTo(nextPage(validYesNo)))

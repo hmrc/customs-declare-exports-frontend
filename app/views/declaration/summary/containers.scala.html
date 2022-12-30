@@ -35,7 +35,7 @@
     if (actionsEnabled)
         link(
             messages("site.change"),
-            callForSummaryChangeLink(routes.TransportContainerController.displayContainerSummary()),
+            callForSummaryChangeLink(routes.TransportContainerController.displayContainerSummary),
             textHidden = Some(messages("declaration.summary.container.change", container.id))
         )
     else
@@ -86,7 +86,7 @@
             actions = actions(Actions(
                 items = Seq(
                     actionSummaryItem(
-                        href = routes.TransportContainerController.displayContainerSummary().url,
+                        href = routes.TransportContainerController.displayContainerSummary.url,
                         content = HtmlContent(linkContent(messages("site.change"))),
                         visuallyHiddenText = Some(messages("declaration.summary.transport.containers.change"))
                     )

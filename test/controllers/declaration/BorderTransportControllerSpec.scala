@@ -53,7 +53,7 @@ class BorderTransportControllerSpec extends ControllerSpec {
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration())
-    await(controller.displayPage()(request))
+    await(controller.displayPage(request))
     theResponseForm
   }
 
@@ -89,14 +89,14 @@ class BorderTransportControllerSpec extends ControllerSpec {
         "display page method is invoked and cache is empty" in {
           withNewCaching(request.cacheModel)
 
-          val result = controller.displayPage()(getRequest())
+          val result = controller.displayPage(getRequest())
           status(result) must be(OK)
         }
 
         "display page method is invoked and cache is not empty" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withBorderTransport()))
 
-          val result = controller.displayPage()(getRequest())
+          val result = controller.displayPage(getRequest())
           status(result) must be(OK)
         }
       }
@@ -121,7 +121,7 @@ class BorderTransportControllerSpec extends ControllerSpec {
           val result = controller.submitForm()(postRequest(correctForm))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe routes.TransportCountryController.displayPage()
+          thePageNavigatedTo mustBe routes.TransportCountryController.displayPage
         }
       }
     }
@@ -132,10 +132,10 @@ class BorderTransportControllerSpec extends ControllerSpec {
         "the 'displayPage' method is invoked" in {
           withNewCaching(request.cacheModel)
 
-          val result = controller.displayPage()(getRequest())
+          val result = controller.displayPage(getRequest())
 
           status(result) must be(SEE_OTHER)
-          redirectLocation(result) mustBe Some(RootController.displayPage().url)
+          redirectLocation(result) mustBe Some(RootController.displayPage.url)
         }
 
         "the 'submitForm' method is invoked" in {
@@ -146,7 +146,7 @@ class BorderTransportControllerSpec extends ControllerSpec {
           val result = controller.submitForm()(postRequest(correctForm))
 
           status(result) must be(SEE_OTHER)
-          redirectLocation(result) mustBe Some(RootController.displayPage().url)
+          redirectLocation(result) mustBe Some(RootController.displayPage.url)
         }
       }
     }

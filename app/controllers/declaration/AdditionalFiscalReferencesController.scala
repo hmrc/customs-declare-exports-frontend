@@ -53,7 +53,8 @@ class AdditionalFiscalReferencesController @Inject() (
   }
 
   def submitForm(itemId: String): Action[AnyContent] = itemAction(itemId) { implicit request =>
-    yesNoForm.bindFromRequest
+    yesNoForm
+      .bindFromRequest()
       .fold(
         formWithErrors => {
           val data = cachedAdditionalReferencesData(itemId, request).map(_.references).getOrElse(Seq.empty)

@@ -32,7 +32,7 @@ object PersonPresentingGoodsDetails extends DeclarationPage {
 
   private val mapping = Forms.mapping(fieldName -> Eori.mapping())(PersonPresentingGoodsDetails.apply)(PersonPresentingGoodsDetails.unapply)
 
-  def form() = Form(mapping)
+  def form = Form(mapping)
 
   override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
     Seq(TariffContentKey("tariff.declaration.personPresentingGoods.clearance"))

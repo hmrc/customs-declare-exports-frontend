@@ -31,9 +31,9 @@ class AuthorisationProcedureCodeChoiceViewSpec extends PageWithButtonsSpec with 
 
   val page = instanceOf[authorisation_procedure_code_choice]
 
-  override val typeAndViewInstance = (STANDARD, page(form())(_, _))
+  override val typeAndViewInstance = (STANDARD, page(form)(_, _))
 
-  def createView()(implicit request: JourneyRequest[_]): Document = page(form())
+  def createView()(implicit request: JourneyRequest[_]): Document = page(form)
 
   "Which export procedure are you using Page" must {
 
@@ -117,7 +117,7 @@ class AuthorisationProcedureCodeChoiceViewSpec extends PageWithButtonsSpec with 
       "display 'Back' button that links to 'Authorisations Required' page" in {
         val backButton = createView().getElementById("back-link")
         backButton must containMessage("site.backToPreviousQuestion")
-        backButton must haveHref(AdditionalActorsSummaryController.displayPage())
+        backButton must haveHref(AdditionalActorsSummaryController.displayPage)
       }
 
     }
@@ -127,7 +127,7 @@ class AuthorisationProcedureCodeChoiceViewSpec extends PageWithButtonsSpec with 
         "display 'Back' button that links to 'Consignee Details' page" in {
           val backButton = createView().getElementById("back-link")
           backButton must containMessage("site.backToPreviousQuestion")
-          backButton must haveHref(ConsigneeDetailsController.displayPage())
+          backButton must haveHref(ConsigneeDetailsController.displayPage)
         }
       }
     }
@@ -137,7 +137,7 @@ class AuthorisationProcedureCodeChoiceViewSpec extends PageWithButtonsSpec with 
         "display 'Back' button that links to 'Other parties' page" in {
           val backButton = createView().getElementById("back-link")
           backButton must containMessage("site.backToPreviousQuestion")
-          backButton must haveHref(AdditionalActorsSummaryController.displayPage())
+          backButton must haveHref(AdditionalActorsSummaryController.displayPage)
         }
       }
     }

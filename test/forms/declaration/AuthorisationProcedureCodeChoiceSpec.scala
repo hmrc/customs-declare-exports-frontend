@@ -31,7 +31,7 @@ class AuthorisationProcedureCodeChoiceSpec extends DeclarationPageBaseSpec with 
         val result = AuthorisationProcedureCodeChoice.mapping.bind(input)
 
         result.isRight mustBe true
-        result.right.get mustBe AuthorisationProcedureCodeChoice(Code1040)
+        result.toOption.get mustBe AuthorisationProcedureCodeChoice(Code1040)
       }
     }
 
@@ -42,7 +42,7 @@ class AuthorisationProcedureCodeChoiceSpec extends DeclarationPageBaseSpec with 
         val result = AuthorisationProcedureCodeChoice.mapping.bind(input)
 
         result.isLeft mustBe true
-        result.left.get.head.message mustBe "declaration.authorisations.procedureCodeChoice.error.empty"
+        result.left.toOption.get.head.message mustBe "declaration.authorisations.procedureCodeChoice.error.empty"
       }
 
       "provided with an invalid String value" in {
@@ -51,7 +51,7 @@ class AuthorisationProcedureCodeChoiceSpec extends DeclarationPageBaseSpec with 
         val result = AuthorisationProcedureCodeChoice.mapping.bind(input)
 
         result.isLeft mustBe true
-        result.left.get.head.message mustBe "declaration.authorisations.procedureCodeChoice.error.empty"
+        result.left.toOption.get.head.message mustBe "declaration.authorisations.procedureCodeChoice.error.empty"
       }
     }
   }

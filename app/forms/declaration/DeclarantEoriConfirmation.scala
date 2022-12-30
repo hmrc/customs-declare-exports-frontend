@@ -39,7 +39,7 @@ object DeclarantEoriConfirmation extends DeclarationPage {
         .verifying("declaration.declarant.error", isContainedIn(YesNoAnswer.allowedValues))
     )(DeclarantEoriConfirmation.apply)(DeclarantEoriConfirmation.unapply)
 
-  def form(): Form[DeclarantEoriConfirmation] = Form(mapping)
+  def form: Form[DeclarantEoriConfirmation] = Form(mapping)
 
   override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
     Seq(TariffContentKey(s"tariff.declaration.declarantDetails.${DeclarationPage.getJourneyTypeSpecialisation(decType)}"))

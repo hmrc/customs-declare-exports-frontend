@@ -42,7 +42,7 @@ object AdditionalProcedureCode extends DeclarationPage {
     )
   )(AdditionalProcedureCode.apply)(AdditionalProcedureCode.unapply)
 
-  def form(): Form[AdditionalProcedureCode] = Form(mapping)
+  def form: Form[AdditionalProcedureCode] = Form(mapping)
 
   override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
     decType match {

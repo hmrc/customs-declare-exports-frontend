@@ -31,7 +31,7 @@ class RootControllerSpec extends ControllerWithoutFormSpec {
 
       "display page method is invoked" in {
 
-        val result = controller.displayPage()(getRequest())
+        val result = controller.displayPage(getRequest())
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.routes.ChoiceController.displayPage().url)

@@ -42,5 +42,5 @@ object Time {
 
   private def validateTime(time: Time): Boolean = time.nonEmpty || time.isEmpty
 
-  def form(): Form[Time] = Form(mapping)
+  def form: Form[Time] = Form(mapping)
 }

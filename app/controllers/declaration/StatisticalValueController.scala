@@ -47,7 +47,7 @@ class StatisticalValueController @Inject() (
   val validTypes = Seq(SUPPLEMENTARY, STANDARD)
 
   def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
-    val frm = StatisticalValue.form().withSubmissionErrors()
+    val frm = StatisticalValue.form.withSubmissionErrors
     request.cacheModel.itemBy(itemId).flatMap(_.statisticalValue) match {
       case Some(itemType) => Ok(itemTypePage(itemId, frm.fill(itemType)))
       case _              => Ok(itemTypePage(itemId, frm))

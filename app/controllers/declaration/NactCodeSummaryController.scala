@@ -48,7 +48,7 @@ class NactCodeSummaryController @Inject() (
 
   def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
     request.cacheModel.itemBy(itemId).flatMap(_.nactCodes) match {
-      case Some(nactCodes) if nactCodes.nonEmpty => Ok(nactCodesPage(itemId, anotherYesNoForm.withSubmissionErrors(), nactCodes))
+      case Some(nactCodes) if nactCodes.nonEmpty => Ok(nactCodesPage(itemId, anotherYesNoForm.withSubmissionErrors, nactCodes))
       case _                                     => navigator.continueTo(NactCodeAddController.displayPage(itemId))
     }
   }

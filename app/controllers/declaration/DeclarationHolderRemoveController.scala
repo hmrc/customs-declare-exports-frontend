@@ -61,7 +61,8 @@ class DeclarationHolderRemoveController @Inject() (
     val maybeExistingHolder = declarationHolders.find(_.id.equals(id))
 
     maybeExistingHolder.fold(errorHandler.displayErrorPage) { holderToRemove =>
-      removeYesNoForm.bindFromRequest
+      removeYesNoForm
+        .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(holderRemovePage(holderToRemove, formWithErrors))),
           _.answer match {

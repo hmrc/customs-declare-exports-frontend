@@ -69,7 +69,7 @@ object CusCode extends DeclarationPage {
       )
     )(form2Model)(model2Form)
 
-  def form(): Form[CusCode] = Form(mapping)
+  def form: Form[CusCode] = Form(mapping)
 
   override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
     Seq(TariffContentKey("tariff.declaration.item.cusCode.common"))

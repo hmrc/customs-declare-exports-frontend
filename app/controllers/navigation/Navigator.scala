@@ -50,6 +50,7 @@ import services.TariffApiService
 import services.TariffApiService.SupplementaryUnitsNotRequired
 
 import javax.inject.{Inject, Singleton}
+import scala.annotation.nowarn
 import scala.concurrent.{ExecutionContext, Future}
 
 case class ItemId(id: String)
@@ -358,7 +359,7 @@ class Navigator @Inject() (
   }
 
   def continueTo(factory: Call)(implicit request: JourneyRequest[AnyContent]): Result = {
-    val formAction = FormAction.bindFromRequest
+    val formAction = FormAction.bindFromRequest()
     if (inErrorFixMode) handleErrorFixMode(factory, formAction)
     else if (formAction == SaveAndReturnToSummary) Results.Redirect(routes.SummaryController.displayPage)
     else Results.Redirect(factory)
@@ -381,27 +382,27 @@ class Navigator @Inject() (
     cacheModel.`type` match {
       case SUPPLEMENTARY => routes.ConsignmentReferencesController.displayPage
       case _ =>
-        if (cacheModel.mucr.isEmpty) routes.LinkDucrToMucrController.displayPage()
-        else routes.MucrController.displayPage()
+        if (cacheModel.mucr.isEmpty) routes.LinkDucrToMucrController.displayPage
+        else routes.MucrController.displayPage
     }
 
   private def officeOfExitPreviousPage(cacheModel: ExportsDeclaration): Call =
-    if (skipLocationOfGoods(cacheModel)) routes.DestinationCountryController.displayPage()
-    else routes.LocationOfGoodsController.displayPage()
+    if (skipLocationOfGoods(cacheModel)) routes.DestinationCountryController.displayPage
+    else routes.LocationOfGoodsController.displayPage
 
   private def entryIntoDeclarantsPreviousPage(cacheModel: ExportsDeclaration): Call =
-    if (cacheModel.mucr.isEmpty) routes.LinkDucrToMucrController.displayPage()
-    else routes.MucrController.displayPage()
+    if (cacheModel.mucr.isEmpty) routes.LinkDucrToMucrController.displayPage
+    else routes.MucrController.displayPage
 
   private def previousDocumentsPreviousPageDefault(cacheModel: ExportsDeclaration): Call =
-    if (cacheModel.hasPreviousDocuments) routes.PreviousDocumentsSummaryController.displayPage()
-    else routes.NatureOfTransactionController.displayPage()
+    if (cacheModel.hasPreviousDocuments) routes.PreviousDocumentsSummaryController.displayPage
+    else routes.NatureOfTransactionController.displayPage
 
   private def consigneeDetailsSupplementaryPreviousPage(cacheModel: ExportsDeclaration): Call =
     if (cacheModel.isDeclarantExporter)
-      routes.DeclarantExporterController.displayPage()
+      routes.DeclarantExporterController.displayPage
     else
-      routes.RepresentativeStatusController.displayPage()
+      routes.RepresentativeStatusController.displayPage
 
   private def commodityMeasureClearancePreviousPage(cacheModel: ExportsDeclaration, itemId: String): Call =
     if (cacheModel.itemBy(itemId).exists(_.isExportInventoryCleansingRecord))
@@ -458,74 +459,74 @@ class Navigator @Inject() (
       routes.FiscalInformationController.displayPage(itemId)
 
   private def previousDocumentsPreviousPage(cacheModel: ExportsDeclaration): Call =
-    if (cacheModel.hasPreviousDocuments) routes.PreviousDocumentsSummaryController.displayPage()
-    else routes.OfficeOfExitController.displayPage()
+    if (cacheModel.hasPreviousDocuments) routes.PreviousDocumentsSummaryController.displayPage
+    else routes.OfficeOfExitController.displayPage
 
   private def exporterEoriNumberClearancePreviousPage(cacheModel: ExportsDeclaration): Call =
     if (cacheModel.isEntryIntoDeclarantsRecords)
-      routes.PersonPresentingGoodsDetailsController.displayPage()
+      routes.PersonPresentingGoodsDetailsController.displayPage
     else
-      routes.DeclarantExporterController.displayPage()
+      routes.DeclarantExporterController.displayPage
 
   private def carrierEoriNumberPreviousPage(cacheModel: ExportsDeclaration): Call =
     if (cacheModel.parties.declarantIsExporter.exists(_.isExporter))
-      routes.DeclarantExporterController.displayPage()
+      routes.DeclarantExporterController.displayPage
     else
-      routes.RepresentativeStatusController.displayPage()
+      routes.RepresentativeStatusController.displayPage
 
   private def carrierEoriNumberClearancePreviousPage(cacheModel: ExportsDeclaration): Call =
     if (!cacheModel.parties.declarantIsExporter.exists(_.isExporter))
-      routes.RepresentativeStatusController.displayPage()
+      routes.RepresentativeStatusController.displayPage
     else {
       if (cacheModel.parties.consignorDetails.flatMap(_.details.address).isDefined)
-        routes.ConsignorDetailsController.displayPage()
+        routes.ConsignorDetailsController.displayPage
       else
-        routes.ConsignorEoriNumberController.displayPage()
+        routes.ConsignorEoriNumberController.displayPage
     }
 
   private def consigneeDetailsPreviousPage(cacheModel: ExportsDeclaration): Call =
     if (cacheModel.parties.carrierDetails.flatMap(_.details.eori).isEmpty)
-      routes.CarrierDetailsController.displayPage()
+      routes.CarrierDetailsController.displayPage
     else
-      routes.CarrierEoriNumberController.displayPage()
+      routes.CarrierEoriNumberController.displayPage
 
   private def consigneeDetailsClearancePreviousPage(cacheModel: ExportsDeclaration): Call =
     if (cacheModel.isExs)
       consigneeDetailsPreviousPage(cacheModel)
     else {
       if (cacheModel.isDeclarantExporter)
-        routes.IsExsController.displayPage()
+        routes.IsExsController.displayPage
       else
-        routes.RepresentativeStatusController.displayPage()
+        routes.RepresentativeStatusController.displayPage
     }
 
   private def representativeAgentClearancePreviousPage(cacheModel: ExportsDeclaration): Call =
     if (cacheModel.isExs) {
       if (cacheModel.parties.consignorDetails.flatMap(_.details.address).isDefined)
-        routes.ConsignorDetailsController.displayPage()
+        routes.ConsignorDetailsController.displayPage
       else
-        routes.ConsignorEoriNumberController.displayPage()
+        routes.ConsignorEoriNumberController.displayPage
     } else {
-      routes.IsExsController.displayPage()
+      routes.IsExsController.displayPage
     }
 
   private def isExsClearancePreviousPage(cacheModel: ExportsDeclaration): Call =
     if (cacheModel.isDeclarantExporter)
       exporterEoriNumberClearancePreviousPage(cacheModel)
     else if (cacheModel.parties.exporterDetails.flatMap(_.details.eori).isDefined)
-      routes.ExporterEoriNumberController.displayPage()
-    else routes.ExporterDetailsController.displayPage()
+      routes.ExporterEoriNumberController.displayPage
+    else routes.ExporterDetailsController.displayPage
 
   private def declarationHolderRequiredPreviousPage(cacheModel: ExportsDeclaration): Call =
     cacheModel.`type` match {
-      case CLEARANCE if !cacheModel.isEntryIntoDeclarantsRecords => routes.ConsigneeDetailsController.displayPage()
-      case OCCASIONAL                                            => routes.AdditionalActorsSummaryController.displayPage()
-      case _                                                     => routes.AuthorisationProcedureCodeChoiceController.displayPage()
+      case CLEARANCE if !cacheModel.isEntryIntoDeclarantsRecords => routes.ConsigneeDetailsController.displayPage
+      case OCCASIONAL                                            => routes.AdditionalActorsSummaryController.displayPage
+      case _                                                     => routes.AuthorisationProcedureCodeChoiceController.displayPage
     }
 
   private def declarationHolderAddPreviousPage(cacheModel: ExportsDeclaration): Call =
-    if (cacheModel.declarationHolders.nonEmpty) routes.DeclarationHolderSummaryController.displayPage()
-    else if (userCanLandOnIsAuthRequiredPage(cacheModel)) routes.DeclarationHolderRequiredController.displayPage()
+    if (cacheModel.declarationHolders.nonEmpty) routes.DeclarationHolderSummaryController.displayPage
+    else if (userCanLandOnIsAuthRequiredPage(cacheModel)) routes.DeclarationHolderRequiredController.displayPage
     else declarationHolderRequiredPreviousPage(cacheModel)
 
   private def declarationHolderSummaryPreviousPage(cacheModel: ExportsDeclaration): Call =
@@ -536,68 +537,68 @@ class Navigator @Inject() (
 
   private def warehouseIdentificationPreviousPage(cacheModel: ExportsDeclaration): Call =
     cacheModel.`type` match {
-      case OCCASIONAL | SIMPLIFIED => routes.ItemsSummaryController.displayItemsSummaryPage()
-      case _                       => routes.TransportLeavingTheBorderController.displayPage()
+      case OCCASIONAL | SIMPLIFIED => routes.ItemsSummaryController.displayItemsSummaryPage
+      case _                       => routes.TransportLeavingTheBorderController.displayPage
     }
 
   private def representativeAgentPreviousPage(cacheModel: ExportsDeclaration): Call =
     if (cacheModel.parties.exporterDetails.flatMap(_.details.eori).isDefined)
-      routes.ExporterEoriNumberController.displayPage()
-    else routes.ExporterDetailsController.displayPage()
+      routes.ExporterEoriNumberController.displayPage
+    else routes.ExporterDetailsController.displayPage
 
   private def departureTransportClearancePreviousPage(cacheModel: ExportsDeclaration): Call =
     if (cacheModel.isEntryIntoDeclarantsRecords) supervisingCustomsOfficePageOnCondition(cacheModel)
-    else routes.SupervisingCustomsOfficeController.displayPage()
+    else routes.SupervisingCustomsOfficeController.displayPage
 
   private def supervisingCustomsOfficePreviousPage(cacheModel: ExportsDeclaration): Call =
-    if (cacheModel.requiresWarehouseId || cacheModel.isType(CLEARANCE)) routes.WarehouseIdentificationController.displayPage()
+    if (cacheModel.requiresWarehouseId || cacheModel.isType(CLEARANCE)) routes.WarehouseIdentificationController.displayPage
     else warehouseIdentificationPreviousPage(cacheModel)
 
   private def inlandOrBorderPreviousPage(cacheModel: ExportsDeclaration): Call =
     cacheModel.additionalDeclarationType match {
       case Some(STANDARD_FRONTIER) | Some(STANDARD_PRE_LODGED) | Some(SUPPLEMENTARY_SIMPLIFIED)
           if supervisingCustomsOfficeHelper.isConditionForAllProcedureCodesVerified(cacheModel) =>
-        routes.TransportLeavingTheBorderController.displayPage()
+        routes.TransportLeavingTheBorderController.displayPage
 
-      case _ => routes.SupervisingCustomsOfficeController.displayPage()
+      case _ => routes.SupervisingCustomsOfficeController.displayPage
     }
 
   private def inlandTransportDetailsPreviousPage(cacheModel: ExportsDeclaration): Call =
     if (inlandOrBorderHelper.skipInlandOrBorder(cacheModel)) supervisingCustomsOfficePageOnCondition(cacheModel)
-    else routes.InlandOrBorderController.displayPage()
+    else routes.InlandOrBorderController.displayPage
 
   private def supervisingCustomsOfficePageOnCondition(cacheModel: ExportsDeclaration): Call =
     if (supervisingCustomsOfficeHelper.isConditionForAllProcedureCodesVerified(cacheModel)) supervisingCustomsOfficePreviousPage(cacheModel)
-    else routes.SupervisingCustomsOfficeController.displayPage()
+    else routes.SupervisingCustomsOfficeController.displayPage
 
   private def departureTransportPreviousPageOnStandardOrSuppl(cacheModel: ExportsDeclaration): Call = {
     val inAllowedFlow = cacheModel.additionalDeclarationType.exists(additionalDeclTypesAllowedOnInlandOrBorder.contains)
-    if (inAllowedFlow && cacheModel.isInlandOrBorder(Border)) routes.InlandOrBorderController.displayPage()
-    else routes.InlandTransportDetailsController.displayPage()
+    if (inAllowedFlow && cacheModel.isInlandOrBorder(Border)) routes.InlandOrBorderController.displayPage
+    else routes.InlandTransportDetailsController.displayPage
   }
 
   private def transportCountryPreviousPage(cacheModel: ExportsDeclaration): Call =
-    if (cacheModel.isInlandOrBorder(Border)) routes.DepartureTransportController.displayPage()
-    else routes.BorderTransportController.displayPage()
+    if (cacheModel.isInlandOrBorder(Border)) routes.DepartureTransportController.displayPage
+    else routes.BorderTransportController.displayPage
 
   private def expressConsignmentPreviousPageOnStandard(cacheModel: ExportsDeclaration): Call =
-    if (isPostalOrFTIModeOfTransport(cacheModel.inlandModeOfTransportCode)) routes.InlandTransportDetailsController.displayPage()
+    if (isPostalOrFTIModeOfTransport(cacheModel.inlandModeOfTransportCode)) routes.InlandTransportDetailsController.displayPage
     else {
       val postalOrFTI = isPostalOrFTIModeOfTransport(cacheModel.transportLeavingBorderCode)
-      if (postalOrFTI && cacheModel.isInlandOrBorder(Border)) routes.InlandOrBorderController.displayPage()
-      else routes.TransportCountryController.displayPage()
+      if (postalOrFTI && cacheModel.isInlandOrBorder(Border)) routes.InlandOrBorderController.displayPage
+      else routes.TransportCountryController.displayPage
     }
 
   private def expressConsignmentPreviousPageOnClearance(cacheModel: ExportsDeclaration): Call = {
     val postalOrFTI = isPostalOrFTIModeOfTransport(cacheModel.transportLeavingBorderCode)
-    if (postalOrFTI && supervisingCustomsOfficeHelper.checkProcedureCodes(cacheModel)) routes.WarehouseIdentificationController.displayPage()
-    else if (postalOrFTI) routes.SupervisingCustomsOfficeController.displayPage()
-    else routes.DepartureTransportController.displayPage()
+    if (postalOrFTI && supervisingCustomsOfficeHelper.checkProcedureCodes(cacheModel)) routes.WarehouseIdentificationController.displayPage
+    else if (postalOrFTI) routes.SupervisingCustomsOfficeController.displayPage
+    else routes.DepartureTransportController.displayPage
   }
 
   private def containerFirstPreviousPage(cacheModel: ExportsDeclaration): Call =
-    if (cacheModel.transport.transportPayment.nonEmpty) routes.TransportPaymentController.displayPage()
-    else routes.ExpressConsignmentController.displayPage()
+    if (cacheModel.transport.transportPayment.nonEmpty) routes.TransportPaymentController.displayPage
+    else routes.ExpressConsignmentController.displayPage
 
   private def containerFirstPreviousPageOnSupplementary(cacheModel: ExportsDeclaration): Call =
     expressConsignmentPreviousPageOnStandard(cacheModel)
@@ -610,16 +611,16 @@ class Navigator @Inject() (
 
   private def authorisationProcedureCodeChoicePreviousPage(cacheModel: ExportsDeclaration): Call =
     if (cacheModel.isType(CLEARANCE) && cacheModel.isEntryIntoDeclarantsRecords)
-      routes.ConsigneeDetailsController.displayPage()
+      routes.ConsigneeDetailsController.displayPage
     else
-      routes.AdditionalActorsSummaryController.displayPage()
+      routes.AdditionalActorsSummaryController.displayPage
 
   private def totalPackageQuantityPreviousPage(cacheModel: ExportsDeclaration): Call =
-    if (cacheModel.isInvoiceAmountGreaterThan100000) routes.InvoiceAndExchangeRateController.displayPage()
-    else routes.InvoiceAndExchangeRateChoiceController.displayPage()
+    if (cacheModel.isInvoiceAmountGreaterThan100000) routes.InvoiceAndExchangeRateController.displayPage
+    else routes.InvoiceAndExchangeRateChoiceController.displayPage
 
-  def backLink(page: DeclarationPage)(implicit request: JourneyRequest[_]): Call = {
-    val specific = request.declarationType match {
+  def backLink[A, B](page: DeclarationPage)(implicit request: JourneyRequest[_]): Call = {
+    val specific: PartialFunction[DeclarationPage, Object] = request.declarationType match {
       case STANDARD      => standardCacheDependent.orElse(standard)
       case SUPPLEMENTARY => supplementaryCacheDependent.orElse(supplementary)
       case SIMPLIFIED    => simplifiedCacheDependent.orElse(simplified)
@@ -628,13 +629,13 @@ class Navigator @Inject() (
     }
 
     commonCacheDependent.orElse(common).orElse(specific)(page) match {
-      case mapping: Call                         => mapping
-      case mapping: (ExportsDeclaration => Call) => mapping(request.cacheModel)
+      case mapping: Call                                 => mapping
+      case mapping: (ExportsDeclaration => Call) @nowarn => mapping(request.cacheModel)
     }
   }
 
   def backLink(page: DeclarationPage, itemId: ItemId)(implicit request: JourneyRequest[_]): Call = {
-    val specific = request.declarationType match {
+    val specific: PartialFunction[DeclarationPage, Object] = request.declarationType match {
       case STANDARD      => standardCacheItemDependent.orElse(standardItemPage)
       case SUPPLEMENTARY => supplementaryCacheItemDependent.orElse(supplementaryItemPage)
       case SIMPLIFIED    => simplifiedCacheItemDependent.orElse(simplifiedItemPage)
@@ -642,8 +643,8 @@ class Navigator @Inject() (
       case CLEARANCE     => clearanceCacheItemDependent.orElse(clearanceItemPage)
     }
     commonCacheItemDependent.orElse(commonItem).orElse(specific)(page) match {
-      case mapping: (String => Call)                       => mapping(itemId.id)
-      case mapping: ((ExportsDeclaration, String) => Call) => mapping(request.cacheModel, itemId.id)
+      case mapping: (String => Call) @nowarn                       => mapping(itemId.id)
+      case mapping: ((ExportsDeclaration, String) => Call) @nowarn => mapping(request.cacheModel, itemId.id)
     }
   }
 

@@ -74,7 +74,7 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration())
-    await(controller.displayPage()(request))
+    await(controller.displayPage(request))
     theResponseForm
   }
 
@@ -88,7 +88,7 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
         "display page method is invoked and cache is empty" in {
           withNewCaching(request.cacheModel)
 
-          val result = controller.displayPage()(getRequest())
+          val result = controller.displayPage(getRequest())
           status(result) must be(OK)
         }
 
@@ -96,7 +96,7 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
           val departureTransport = withDepartureTransport(Maritime, WagonNumber.value, "FAA")
           withNewCaching(aDeclarationAfter(request.cacheModel, departureTransport))
 
-          val result = controller.displayPage()(getRequest())
+          val result = controller.displayPage(getRequest())
           status(result) must be(OK)
         }
       }
@@ -106,10 +106,10 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
           "redirect to the starting page on displayPage" in {
             withNewCaching(aDeclarationAfter(request.cacheModel, withBorderModeOfTransportCode(modeOfTransportCode)))
 
-            val result = controller.displayPage()(getRequest())
+            val result = controller.displayPage(getRequest())
 
             status(result) must be(SEE_OTHER)
-            redirectLocation(result) mustBe Some(RootController.displayPage().url)
+            redirectLocation(result) mustBe Some(RootController.displayPage.url)
           }
         }
       }
@@ -159,7 +159,7 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
           val result = controller.submitForm()(postRequest(correctForm))
 
           status(result) must be(SEE_OTHER)
-          thePageNavigatedTo mustBe BorderTransportController.displayPage()
+          thePageNavigatedTo mustBe BorderTransportController.displayPage
         }
       }
 
@@ -172,7 +172,7 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
           val result = controller.submitForm()(postRequest(correctForm))
 
           status(result) must be(SEE_OTHER)
-          thePageNavigatedTo mustBe TransportCountryController.displayPage()
+          thePageNavigatedTo mustBe TransportCountryController.displayPage
         }
       }
     }
@@ -188,7 +188,7 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
           val result = controller.submitForm()(postRequest(correctForm))
 
           status(result) must be(SEE_OTHER)
-          thePageNavigatedTo mustBe ExpressConsignmentController.displayPage()
+          thePageNavigatedTo mustBe ExpressConsignmentController.displayPage
         }
 
         "'0019' has been entered as Procedure Code and" when {
@@ -201,7 +201,7 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
             val result = controller.submitForm()(postRequest(correctForm))
 
             await(result) mustBe aRedirectToTheNextPage
-            thePageNavigatedTo mustBe ExpressConsignmentController.displayPage()
+            thePageNavigatedTo mustBe ExpressConsignmentController.displayPage
           }
         }
       }
@@ -213,7 +213,7 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
         "displayPage is invoked" in {
           withNewCaching(request.cacheModel)
 
-          val result = controller.displayPage()(getRequest())
+          val result = controller.displayPage(getRequest())
           redirectLocation(result) mustBe Some(RootController.displayPage.url)
         }
 

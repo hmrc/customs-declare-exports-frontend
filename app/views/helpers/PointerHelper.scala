@@ -24,8 +24,8 @@ import play.api.mvc.Call
 
 object PointerHelper extends Logging {
 
-  val defaultItemsCall = ItemsSummaryController.displayItemsSummaryPage()
-  val clearanceDecDetailsCall = PersonPresentingGoodsDetailsController.displayPage()
+  val defaultItemsCall = ItemsSummaryController.displayItemsSummaryPage
+  val clearanceDecDetailsCall = PersonPresentingGoodsDetailsController.displayPage
 
   private val containsItemsSeqRegEx = """.*items\.\$.*""".r
   private val containsDecDetailsEoriRegEx = """^declaration.declarantDetails.details.eori$""".r

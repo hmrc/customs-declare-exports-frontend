@@ -50,7 +50,7 @@ class AdditionalFiscalReferenceSpec extends DeclarationPageBaseSpec with Mockito
 
     "not contain errors" when {
       "form is correct" in {
-        val form = AdditionalFiscalReference.form().bind(correctForm)
+        val form = AdditionalFiscalReference.form.bind(correctForm)
 
         form.errors must be(empty)
       }
@@ -58,21 +58,21 @@ class AdditionalFiscalReferenceSpec extends DeclarationPageBaseSpec with Mockito
 
     "contain errors" when {
       "country is incorrect" in {
-        val form = AdditionalFiscalReference.form().bind(incorrectCountry)
+        val form = AdditionalFiscalReference.form.bind(incorrectCountry)
 
         form.errors.length must be(1)
         form.errors.head.message must be("declaration.additionalFiscalReferences.country.error")
       }
 
       "reference is incorrect" in {
-        val form = AdditionalFiscalReference.form().bind(incorrectReference)
+        val form = AdditionalFiscalReference.form.bind(incorrectReference)
 
         form.errors.length must be(1)
         form.errors.head.message must be("declaration.additionalFiscalReferences.reference.error")
       }
 
       "both country and reference are incorrect" in {
-        val form = AdditionalFiscalReference.form().bind(incorrectCountryAndRef)
+        val form = AdditionalFiscalReference.form.bind(incorrectCountryAndRef)
 
         form.errors.length must be(2)
         form.errors(0).message must be("declaration.additionalFiscalReferences.country.error")
@@ -80,21 +80,21 @@ class AdditionalFiscalReferenceSpec extends DeclarationPageBaseSpec with Mockito
       }
 
       "country is empty" in {
-        val form = AdditionalFiscalReference.form().bind(emptyCountry)
+        val form = AdditionalFiscalReference.form.bind(emptyCountry)
 
         form.errors.length must be(1)
         form.errors.head.message must be("declaration.additionalFiscalReferences.country.empty")
       }
 
       "reference is empty" in {
-        val form = AdditionalFiscalReference.form().bind(emptyReference)
+        val form = AdditionalFiscalReference.form.bind(emptyReference)
 
         form.errors.length must be(1)
         form.errors.head.message must be("declaration.additionalFiscalReferences.reference.empty")
       }
 
       "both country and reference are empty" in {
-        val form = AdditionalFiscalReference.form().bind(emptyCountryAndRef)
+        val form = AdditionalFiscalReference.form.bind(emptyCountryAndRef)
 
         form.errors.map(_.message) must be(
           Seq("declaration.additionalFiscalReferences.country.empty", "declaration.additionalFiscalReferences.reference.empty")

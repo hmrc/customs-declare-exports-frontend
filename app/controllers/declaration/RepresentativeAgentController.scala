@@ -44,8 +44,8 @@ class RepresentativeAgentController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
-  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    val frm = RepresentativeAgent.form().withSubmissionErrors()
+  def displayPage: Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    val frm = RepresentativeAgent.form.withSubmissionErrors
     request.cacheModel.parties.representativeDetails.flatMap(_.representingOtherAgent) match {
       case Some(data) => Ok(representativeAgentPage(frm.fill(RepresentativeAgent(data))))
       case _          => Ok(representativeAgentPage(frm))
@@ -53,8 +53,7 @@ class RepresentativeAgentController @Inject() (
   }
 
   def submitForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    RepresentativeAgent
-      .form()
+    RepresentativeAgent.form
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[RepresentativeAgent]) => Future.successful(BadRequest(representativeAgentPage(formWithErrors))),

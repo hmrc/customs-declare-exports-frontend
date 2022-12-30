@@ -26,66 +26,64 @@ class LegalDeclarationSpec extends UnitWithMocksSpec {
   "Legal Declaration Form" should {
     "not return errors" when {
       "all form data is provided and valid" in {
-        form().bind(validFormData, JsonBindMaxChars).errors mustBe empty
+        form.bind(validFormData, JsonBindMaxChars).errors mustBe empty
       }
     }
 
     "return errors for full name" when {
       "name missing" in {
-        form().bind(formDataWith(name = ""), JsonBindMaxChars).errors.map(_.message) must contain("legal.declaration.fullName.empty")
+        form.bind(formDataWith(name = ""), JsonBindMaxChars).errors.map(_.message) must contain("legal.declaration.fullName.empty")
       }
       "name too short" in {
-        form().bind(formDataWith(name = "Al"), JsonBindMaxChars).errors.map(_.message) must contain("legal.declaration.fullName.short")
+        form.bind(formDataWith(name = "Al"), JsonBindMaxChars).errors.map(_.message) must contain("legal.declaration.fullName.short")
       }
       "name too long" in {
-        form()
+        form
           .bind(formDataWith(name = TestHelper.createRandomAlphanumericString(65)), JsonBindMaxChars)
           .errors
           .map(_.message) must contain("legal.declaration.fullName.long")
       }
       "name invalid" in {
-        form().bind(formDataWith(name = "Prince!"), JsonBindMaxChars).errors.map(_.message) must contain("legal.declaration.fullName.error")
+        form.bind(formDataWith(name = "Prince!"), JsonBindMaxChars).errors.map(_.message) must contain("legal.declaration.fullName.error")
       }
     }
 
     "return errors for job role" when {
       "job role missing" in {
-        form().bind(formDataWith(role = ""), JsonBindMaxChars).errors.map(_.message) must contain("legal.declaration.jobRole.empty")
+        form.bind(formDataWith(role = ""), JsonBindMaxChars).errors.map(_.message) must contain("legal.declaration.jobRole.empty")
       }
       "job role too short" in {
-        form().bind(formDataWith(role = "CEO"), JsonBindMaxChars).errors.map(_.message) must contain("legal.declaration.jobRole.short")
+        form.bind(formDataWith(role = "CEO"), JsonBindMaxChars).errors.map(_.message) must contain("legal.declaration.jobRole.short")
       }
       "job role too long" in {
-        form()
+        form
           .bind(formDataWith(role = TestHelper.createRandomAlphanumericString(65)), JsonBindMaxChars)
           .errors
           .map(_.message) must contain("legal.declaration.jobRole.long")
       }
       "job role invalid" in {
-        form().bind(formDataWith(role = "Prince!"), JsonBindMaxChars).errors.map(_.message) must contain("legal.declaration.jobRole.error")
+        form.bind(formDataWith(role = "Prince!"), JsonBindMaxChars).errors.map(_.message) must contain("legal.declaration.jobRole.error")
       }
     }
 
     "return errors for email" when {
       "email missing" in {
-        form().bind(formDataWith(email = ""), JsonBindMaxChars).errors.map(_.message) must contain("legal.declaration.email.empty")
+        form.bind(formDataWith(email = ""), JsonBindMaxChars).errors.map(_.message) must contain("legal.declaration.email.empty")
       }
       "email too long" in {
-        form()
+        form
           .bind(formDataWith(email = TestHelper.createRandomAlphanumericString(65)), JsonBindMaxChars)
           .errors
           .map(_.message) must contain("legal.declaration.email.long")
       }
       "email invalid" in {
-        form().bind(formDataWith(email = "not.an.email.address"), JsonBindMaxChars).errors.map(_.message) must contain(
-          "legal.declaration.email.error"
-        )
+        form.bind(formDataWith(email = "not.an.email.address"), JsonBindMaxChars).errors.map(_.message) must contain("legal.declaration.email.error")
       }
     }
 
     "return errors for confirmation" when {
       "not selected" in {
-        form().bind(formDataWith(checked = false), JsonBindMaxChars).errors.map(_.message) must contain("legal.declaration.confirmation.missing")
+        form.bind(formDataWith(checked = false), JsonBindMaxChars).errors.map(_.message) must contain("legal.declaration.confirmation.missing")
       }
     }
 
