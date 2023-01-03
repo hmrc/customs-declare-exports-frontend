@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -101,15 +101,20 @@ class LocationOfGoodsHelper @Inject() (
     HtmlFormat.fill(sections)
   }
 
-  // Currently only displayed for version 1 and 4
-  def expander(version: Int)(implicit messages: Messages): Html =
+  def expander(version: Int)(implicit messages: Messages): Html = {
+
+    val titleKey =
+      if (version == 1) s"declaration.locationOfGoods.expander.v1.intro"
+      else "declaration.locationOfGoods.expander.intro"
+
     govukDetails(
       Details(
         id = Some("location-of-goods-expander"),
         summary = Text(messages("declaration.locationOfGoods.expander.title")),
-        content = HtmlContent(HtmlFormat.fill(body(messages(s"declaration.locationOfGoods.expander.v$version.intro")) :: expanderContent))
+        content = HtmlContent(HtmlFormat.fill(body(messages(titleKey)) :: expanderContent))
       )
     )
+  }
 
   def versionSelection(implicit request: JourneyRequest[_]): Int =
     request.cacheModel.additionalDeclarationType.fold(1) {
@@ -124,11 +129,6 @@ class LocationOfGoodsHelper @Inject() (
 
       case _ => 1
     }
-
-  def showExpander(implicit request: JourneyRequest[_]): Boolean = request.cacheModel.additionalDeclarationType match {
-    case Some(STANDARD_PRE_LODGED | SIMPLIFIED_PRE_LODGED | OCCASIONAL_PRE_LODGED | CLEARANCE_PRE_LODGED) if isAuthProcedureCodeForV4 => true
-    case _                                                                                                                            => false
-  }
 
   private def isAuthProcedureCodeForV4(implicit request: JourneyRequest[_]): Boolean = {
     val authProcedureCode = request.cacheModel.parties.authorisationProcedureCodeChoice

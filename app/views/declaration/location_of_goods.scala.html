@@ -1,5 +1,5 @@
 @*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -124,8 +124,6 @@
             noConditionalHtml = Some(goodsLocationInputNo(form("code")))
         )
 
-        @if(locationOfGoodsHelper.showExpander) { @locationOfGoodsHelper.expander(version) }
-
         @if(version == 7) {
             @govukDetails(Details(
                 attributes = Map("id" -> "tariffReference"),
@@ -137,7 +135,7 @@
                         "https://www.gov.uk/government/publications/location-codes-to-declare-goods-for-export-at-cse-premises-for-data-element-523-of-the-customs-declaration-service"
                     )))
             ))
-        }
+        } else { @locationOfGoodsHelper.expander(version) }
 
         @tariffExpander(LocationOfGoods, request.declarationType)(messages, appConfig)
 

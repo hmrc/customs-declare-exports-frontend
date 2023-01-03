@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package views.declaration
 
 import base.{Injector, TestHelper}
 import config.AppConfig
+import controllers.declaration.routes.{DestinationCountryController, RoutingCountriesController}
 import connectors.CodeListConnector
 import forms.declaration.AuthorisationProcedureCodeChoice.{Choice1007, ChoiceOthers}
 import forms.declaration.LocationOfGoods
@@ -140,7 +141,7 @@ class LocationOfGoodsViewSpec extends PageWithButtonsSpec with Injector {
 
         "display the expected body" in {
           val paragraphs = view.getElementsByClass("govuk-body")
-          paragraphs.size mustBe 6
+          paragraphs.size mustBe 7
 
           paragraphs.get(0).text mustBe messages(s"$prefix.body.v1.1")
           paragraphs.get(1).text mustBe messages(s"$prefix.body.v1.1.1")
@@ -187,7 +188,7 @@ class LocationOfGoodsViewSpec extends PageWithButtonsSpec with Injector {
 
         "display the expected body" in {
           val paragraphs = view.getElementsByClass("govuk-body")
-          paragraphs.size mustBe 4
+          paragraphs.size mustBe 5
 
           paragraphs.get(0).text mustBe messages(s"$prefix.body.v2.1")
 
@@ -209,12 +210,6 @@ class LocationOfGoodsViewSpec extends PageWithButtonsSpec with Injector {
           hint.first().text mustBe messages(s"$prefix.yesNo.yes.hint")
         }
 
-        "NOT display the 'Find the goods location code' expander " in {
-          val expander = view.getElementsByClass("govuk-details").first.children
-          expander.size mustBe 2
-          val key = if (request.isType(CLEARANCE)) "clearance" else "common"
-          expander.first.text mustBe messages(s"tariff.expander.title.$key")
-        }
       }
     }
 
@@ -234,7 +229,7 @@ class LocationOfGoodsViewSpec extends PageWithButtonsSpec with Injector {
 
           "display the expected body" in {
             val paragraphs = view.getElementsByClass("govuk-body")
-            paragraphs.size mustBe 4
+            paragraphs.size mustBe 5
 
             paragraphs.get(0).text mustBe messages(s"$prefix.body.v$version.1")
 
@@ -272,12 +267,6 @@ class LocationOfGoodsViewSpec extends PageWithButtonsSpec with Injector {
             hint.get(1).text mustBe messages(s"$prefix.yesNo.yes.hint")
           }
 
-          "NOT display the 'Find the goods location code' expander " in {
-            val expander = view.getElementsByClass("govuk-details").first.children
-            expander.size mustBe 2
-            val key = if (request.isType(CLEARANCE)) "clearance" else "common"
-            expander.first.text mustBe messages(s"tariff.expander.title.$key")
-          }
         }
       }
     }
@@ -295,7 +284,7 @@ class LocationOfGoodsViewSpec extends PageWithButtonsSpec with Injector {
 
         "display the expected body" in {
           val paragraphs = view.getElementsByClass("govuk-body")
-          paragraphs.size mustBe 4
+          paragraphs.size mustBe 5
 
           paragraphs.get(0).text mustBe messages(s"$prefix.body.v6.1")
 
@@ -343,7 +332,9 @@ class LocationOfGoodsViewSpec extends PageWithButtonsSpec with Injector {
 
       val sections = details.children
       sections.size mustBe 20
-      sections.first.text mustBe messages(s"$prefix.expander.v$version.intro")
+
+      if (version == 1) sections.first.text mustBe messages(s"$prefix.expander.v1.intro")
+      else sections.first.text mustBe messages(s"$prefix.expander.intro")
 
       val iterator: Iterator[Element] = sections.iterator.asScala.drop(1)
 
@@ -420,7 +411,7 @@ class LocationOfGoodsViewSpec extends PageWithButtonsSpec with Injector {
     def viewWithCorrectBackButton(declarationType: DeclarationType, redirect: Call): Unit =
       "have correct back-link" when {
         "display 'Back' button that links to correct page" in {
-          val view = page(form)(journeyRequest(declarationType), messages)
+          val view = page(form())(journeyRequest(declarationType), messages)
 
           val backButton = view.getElementById("back-link")
 
@@ -431,7 +422,7 @@ class LocationOfGoodsViewSpec extends PageWithButtonsSpec with Injector {
   }
 
   private def verifyError(code: String, errorKey: String = "error"): Assertion = {
-    val view: Document = page(form.fillAndValidate(LocationOfGoods(code)))(journeyRequest(STANDARD), messages)
+    val view: Document = page(form().fillAndValidate(LocationOfGoods(code)))(journeyRequest(STANDARD), messages)
 
     view must haveGovukGlobalErrorSummary
     view must containErrorElementWithTagAndHref("a", "#code")
