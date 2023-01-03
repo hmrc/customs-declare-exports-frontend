@@ -1,5 +1,5 @@
 @*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,6 +47,11 @@
     else None
 }
 
+@sealsText(container: Container) = @{
+    if(container.seals.isEmpty) messages("declaration.summary.container.securitySeals.none")
+    else container.seals.map(_.id).mkString(", ")
+}
+
 @if(containers.nonEmpty){
     @govukTable(Table(
         rows = containers.map(container =>
@@ -55,7 +60,7 @@
                     content = Text(container.id)
                 ),
                 TableRow(
-                    content = Text(container.seals.map(_.id).mkString(", "))
+                    content = Text(sealsText(container))
                 ),
                 TableCell.changeLink(change(container))
             )

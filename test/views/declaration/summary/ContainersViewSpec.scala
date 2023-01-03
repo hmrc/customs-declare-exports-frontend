@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -63,7 +63,7 @@ class ContainersViewSpec extends UnitViewSpec with ExportsTestHelper with Inject
 
       val row1 = table.getElementsByClass("govuk-table__body").first().getElementsByClass("govuk-table__row").get(0)
       row1.getElementsByClass("govuk-table__cell").get(0).text() mustBe firstContainerID
-      row1.getElementsByClass("govuk-table__cell").get(1).text() mustBe ""
+      row1.getElementsByClass("govuk-table__cell").get(1).text() mustBe messages("declaration.summary.container.securitySeals.none")
 
       val row1ChangeLink = row1.getElementsByClass("govuk-table__cell").get(2).getElementsByTag("a").first()
       row1ChangeLink must haveHrefWithPlaceholder(TransportContainerController.displayContainerSummary)

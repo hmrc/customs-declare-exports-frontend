@@ -2157,6 +2157,7 @@ declaration.summary.transport.containers.change = Change goods in a container
 declaration.summary.container = Container information
 declaration.summary.container.id = Container ID
 declaration.summary.container.securitySeals = Security seals
+declaration.summary.container.securitySeals.none = No seals
 declaration.summary.container.change = Change container {0}
 
 declaration.summary.goto.additional.type = Start here to go through the questions from the beginning
