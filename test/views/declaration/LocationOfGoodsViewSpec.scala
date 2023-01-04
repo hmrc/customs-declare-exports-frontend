@@ -67,9 +67,8 @@ class LocationOfGoodsViewSpec extends PageWithButtonsSpec with Injector {
 
     val prefix = "declaration.locationOfGoods"
 
-    // v7
-    Seq(STANDARD_FRONTIER, SIMPLIFIED_FRONTIER).foreach { additionalType =>
-      s"AdditionalDeclarationType is $additionalType" should {
+    arrivedTypes.foreach { additionalType =>
+      s"AdditionalDeclarationType is $additionalType with CSE" should {
 
         implicit val request = withRequest(additionalType, withDeclarationHolders(Some(CSE)))
 
@@ -117,9 +116,7 @@ class LocationOfGoodsViewSpec extends PageWithButtonsSpec with Injector {
       }
     }
 
-    // V1 Content (non-'Arrived' declarations)
-    // V1 Content (Arrived,MIB)
-    (arrivedTypes diff Seq(STANDARD_FRONTIER, SIMPLIFIED_FRONTIER)).foreach { additionalType =>
+    arrivedTypes.foreach { additionalType =>
       s"AdditionalDeclarationType is $additionalType" should {
 
         implicit val request = withRequest(additionalType, withDeclarationHolders(Some(MIB)))
@@ -175,46 +172,6 @@ class LocationOfGoodsViewSpec extends PageWithButtonsSpec with Injector {
       }
     }
 
-    // V2 Content (Arrived,CSE)
-    Seq(OCCASIONAL_FRONTIER, CLEARANCE_FRONTIER).foreach { additionalType =>
-      s"AdditionalDeclarationType is $additionalType and the authorisation code is 'CSE'" should {
-        implicit val request = withRequest(additionalType, withDeclarationHolders(Some(CSE)))
-        val view = createView()
-
-        "display the expected page title" in {
-          val title = view.getElementsByTag("h1").text
-          title mustBe messages(s"$prefix.title.v2")
-        }
-
-        "display the expected body" in {
-          val paragraphs = view.getElementsByClass("govuk-body")
-          paragraphs.size mustBe 5
-
-          paragraphs.get(0).text mustBe messages(s"$prefix.body.v2.1")
-
-          val paragraph1 = paragraphs.get(1)
-          paragraph1.text mustBe messages(s"$prefix.body.v2.2", messages(s"$prefix.body.v2.2.link"))
-          paragraph1.child(0) must haveHref(appConfig.locationCodesForCsePremises)
-
-          val paragraph2 = paragraphs.get(2)
-
-          val email = messages(s"$prefix.body.v2.3.email")
-          val subject = messages(s"$prefix.body.v2.3.subject")
-
-          paragraph2.text mustBe messages(s"$prefix.body.v2.3", email)
-          paragraph2.child(0) must haveHref(s"mailto:$email?subject=$subject")
-        }
-
-        "display the expected hint" in {
-          val hint = view.getElementsByClass("govuk-hint")
-          hint.first().text mustBe messages(s"$prefix.yesNo.yes.hint")
-        }
-
-      }
-    }
-
-    // V3 Content (Arrived,EXRR)
-    // V5 Content (Arrived,non-{EXRR|CSE|MIB})
     arrivedTypes.foreach { additionalType =>
       List("AEOC", EXRR).foreach { authCode =>
         s"AdditionalDeclarationType is $additionalType and the authorisation code is '$authCode'" should {
@@ -271,7 +228,6 @@ class LocationOfGoodsViewSpec extends PageWithButtonsSpec with Injector {
       }
     }
 
-    // V6  Content
     (preLodgedTypes ++ Seq(SUPPLEMENTARY_EIDR, SUPPLEMENTARY_SIMPLIFIED)).foreach { additionalType =>
       s"AdditionalDeclarationType is $additionalType" should {
         implicit val request = withRequest(additionalType)
