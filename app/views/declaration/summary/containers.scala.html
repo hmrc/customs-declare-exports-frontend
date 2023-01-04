@@ -47,6 +47,11 @@
     else None
 }
 
+@sealsText(container: Container) = @{
+    if(container.seals.isEmpty) messages("declaration.summary.container.securitySeals.none")
+    else container.seals.map(_.id).mkString(", ")
+}
+
 @if(containers.nonEmpty){
     @govukTable(Table(
         rows = containers.map(container =>
@@ -55,7 +60,7 @@
                     content = Text(container.id)
                 ),
                 TableRow(
-                    content = Text(container.seals.map(_.id).mkString(", "))
+                    content = Text(sealsText(container))
                 ),
                 TableCell.changeLink(change(container))
             )
