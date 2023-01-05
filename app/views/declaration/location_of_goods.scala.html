@@ -21,24 +21,31 @@
 @import models.requests.JourneyRequest
 @import play.twirl.api.HtmlFormat
 @import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.html.components.fields.field_accessible_autocomplete
 @import views.html.components.gds._
 @import views.helpers.{BackButton, LocationOfGoodsHelper, Title}
+@import play.api.data.Forms.boolean
+@import play.api.data.{Form, Forms}
+@import services.view.GoodsLocationCodes
 
 @this(
     locationOfGoodsHelper: LocationOfGoodsHelper,
     govukLayout: gdsMainTemplate,
     govukInput: GovukInput,
+    govukDetails : GovukDetails,
     errorSummary: errorSummary,
     sectionHeader: sectionHeader,
     pageTitle: pageTitle,
     paragraphBody: paragraphBody,
     insetText: exportsInsetText,
     externalLink: externalLink,
+    yesNoRadios: yesNoRadios,
     saveButtons: saveButtons,
     tariffExpander: tariffExpander,
     formHelper: FormWithCSRF,
     navigator: Navigator,
-    appConfig: AppConfig
+    appConfig: AppConfig,
+    goodsLocationCodes: GoodsLocationCodes
 )
 
 @(form: Form[LocationOfGoods])(implicit request: JourneyRequest[_], messages: Messages)
@@ -46,12 +53,23 @@
 @hasErrors = @{ form.hasErrors || form.hasGlobalErrors }
 @version = @{ locationOfGoodsHelper.versionSelection }
 
-@goodsLocationInput(field: Field) = {
+@goodsLocationInputYes(field: Field) = {
+    @field_accessible_autocomplete(
+        field = form("glc"),
+        label = messages("declaration.locationOfGoods.yesNo.yesHint"),
+        labelClass = Some("govuk-label--s"),
+        hintParagraphs = List(messages("declaration.locationOfGoods.yesNo.yes.hint")),
+        emptySelectValue = "",
+        items = goodsLocationCodes.asListOfAutoCompleteItems(version)
+    )
+}
+
+@goodsLocationInputNo(field: Field) = {
     @govukInput(Input(
         id = field.id,
         name = field.name,
         value = field.value,
-        hint = Some(Hint(content = Text(messages(s"declaration.locationOfGoods.hint.v$version")))),
+        hint = Some(Hint(content = Text(messages("declaration.locationOfGoods.yesNo.no.hint")))),
         classes = s"govuk-!-width-two-thirds ${if(field.hasErrors) "govuk-input--error"}",
         errorMessage = field.error.map(err => ErrorMessage(content = Text(messages(err.message))))
     ))
@@ -90,9 +108,34 @@
           ))))
         }
 
-        @goodsLocationInput(form("code"))
+        @yesNoRadios(
+            form,
+            heading = Some(Fieldset(
+            legend = Some(Legend(
+                content = Text(messages("declaration.locationOfGoods.yesNo.header")),
+                classes = "govuk-fieldset__legend--s"
+                ))
+            )),
+            yesKey = Some("declaration.locationOfGoods.yesNo.yesKey"),
+            noKey = Some("declaration.locationOfGoods.yesNo.noKey"),
+            yesHint = None,
+            noHint = Some("declaration.locationOfGoods.yesNo.noHint"),
+            yesConditionalHtml = Some(goodsLocationInputYes(form("code"))),
+            noConditionalHtml = Some(goodsLocationInputNo(form("code")))
+        )
 
-        @if(version == 4) { @locationOfGoodsHelper.expander(version) }
+        @if(version == 7) {
+            @govukDetails(Details(
+                attributes = Map("id" -> "tariffReference"),
+                summary = Text(messages("declaration.locationOfGoods.details.title")),
+                content = HtmlContent(messages(
+                    "declaration.locationOfGoods.details.body",
+                    externalLink(
+                        messages("declaration.locationOfGoods.details.body.linkText"),
+                        "https://www.gov.uk/government/publications/location-codes-to-declare-goods-for-export-at-cse-premises-for-data-element-523-of-the-customs-declaration-service"
+                    )))
+            ))
+        } else { @locationOfGoodsHelper.expander(version) }
 
         @tariffExpander(LocationOfGoods, request.declarationType)(messages, appConfig)
 

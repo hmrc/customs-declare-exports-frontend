@@ -19,6 +19,7 @@ package forms.declaration
 import base.TestHelper
 import connectors.CodeListConnector
 import forms.common.DeclarationPageBaseSpec
+import forms.common.YesNoAnswer.YesNoAnswers
 import models.codes.Country
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
@@ -56,16 +57,18 @@ class LocationOfGoodsSpec extends DeclarationPageBaseSpec with MockitoSugar with
 
       "provided with a Code" which {
 
+        def boundedForm(code: String) = getBoundedForm(YesNoAnswers.no, "", code)
+
         "is missing" in {
-          val form = LocationOfGoods.form.bind(JsObject(Map("unexpected" -> JsString(""))), Form.FromJsonMaxChars)
+          val form = LocationOfGoods.form().bind(JsObject(Map("unexpected" -> JsString(""))), Form.FromJsonMaxChars)
 
           form.hasErrors must be(true)
           form.errors.length must equal(1)
-          form.errors.head.message must equal("error.required")
+          form.errors.head.message must equal("error.yesNo.required")
         }
 
         "is empty" in {
-          val form = getBoundedForm("")
+          val form = boundedForm("")
 
           form.hasErrors must be(true)
           form.errors.length must equal(1)
@@ -73,7 +76,7 @@ class LocationOfGoodsSpec extends DeclarationPageBaseSpec with MockitoSugar with
         }
 
         "is longer than 39 characters" in {
-          val form = getBoundedForm(s"GBAU${TestHelper.createRandomAlphanumericString(40)}")
+          val form = boundedForm(s"GBAU${TestHelper.createRandomAlphanumericString(40)}")
 
           form.hasErrors must be(true)
           form.errors.length must equal(1)
@@ -81,7 +84,7 @@ class LocationOfGoodsSpec extends DeclarationPageBaseSpec with MockitoSugar with
         }
 
         "is shorter than 10 characters" in {
-          val form = getBoundedForm(s"GBAU")
+          val form = boundedForm(s"GBAU")
 
           form.hasErrors must be(true)
           form.errors.length must equal(1)
@@ -89,7 +92,7 @@ class LocationOfGoodsSpec extends DeclarationPageBaseSpec with MockitoSugar with
         }
 
         "is alphanumeric" in {
-          val form = getBoundedForm(s"${validCode}*")
+          val form = boundedForm(s"${validCode}*")
 
           form.hasErrors must be(true)
           form.errors.length must equal(1)
@@ -97,7 +100,7 @@ class LocationOfGoodsSpec extends DeclarationPageBaseSpec with MockitoSugar with
         }
 
         "does not contain a valid country" in {
-          val form = getBoundedForm(s"XX${validCode}")
+          val form = boundedForm(s"XX${validCode}")
 
           form.hasErrors must be(true)
           form.errors.length must equal(1)
@@ -105,7 +108,7 @@ class LocationOfGoodsSpec extends DeclarationPageBaseSpec with MockitoSugar with
         }
 
         "does not contain a valid location type" in {
-          val form = getBoundedForm(s"GBX${validCode}")
+          val form = boundedForm(s"GBX${validCode}")
 
           form.hasErrors must be(true)
           form.errors.length must equal(1)
@@ -113,7 +116,7 @@ class LocationOfGoodsSpec extends DeclarationPageBaseSpec with MockitoSugar with
         }
 
         "does not contain a valid qualifier code" in {
-          val form = getBoundedForm(s"GBAX${validCode}")
+          val form = boundedForm(s"GBAX${validCode}")
 
           form.hasErrors must be(true)
           form.errors.length must equal(1)
@@ -123,13 +126,13 @@ class LocationOfGoodsSpec extends DeclarationPageBaseSpec with MockitoSugar with
     }
 
     "convert to upper case" in {
-      val form = getBoundedForm(validCode.toLowerCase)
+      val form = getBoundedForm(YesNoAnswers.no, "", validCode.toLowerCase)
 
       form.value.map(_.code) must be(Some(validCode))
     }
 
     "trim white spaces" in {
-      val form = getBoundedForm(s"\n \t${validCode}\t \n")
+      val form = getBoundedForm(YesNoAnswers.no, "", s"\n \t${validCode}\t \n")
 
       form.value.map(_.code) must be(Some(validCode))
     }
@@ -139,5 +142,8 @@ class LocationOfGoodsSpec extends DeclarationPageBaseSpec with MockitoSugar with
     testTariffContentKeys(LocationOfGoods, "tariff.declaration.locationOfGoods")
   }
 
-  private def getBoundedForm(code: String) = LocationOfGoods.form.bind(JsObject(Map("code" -> JsString(code))), Form.FromJsonMaxChars)
+  private def getBoundedForm(yesNo: String, search: String, code: String) =
+    LocationOfGoods
+      .form()
+      .bind(JsObject(Map("yesNo" -> JsString(yesNo), "glc" -> JsString(search), "code" -> JsString(code))), Form.FromJsonMaxChars)
 }

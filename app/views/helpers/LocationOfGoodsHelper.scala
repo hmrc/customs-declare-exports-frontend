@@ -85,6 +85,15 @@ class LocationOfGoodsHelper @Inject() (
           body(messages(s"$prefix.body.v4.3", externalLink(linkText3, appConfig.locationCodesForPortsUsingGVMS)))
         )
 
+      case 6 =>
+        List(s"$prefix.body.v6.1", s"$prefix.body.v6.2", s"$prefix.body.v6.3").map(key => body(messages(key)))
+
+      case 7 =>
+        val email = messages(s"$prefix.body.v7.2.email")
+        val subject = messages(s"$prefix.body.v7.2.subject")
+
+        List(messages(s"$prefix.body.v7.1"), messages(s"$prefix.body.v7.2", link(email, Call("GET", s"mailto:$email?subject=$subject")))).map(body(_))
+
       // version 1
       case _ => List(s"$prefix.body.v1.1", s"$prefix.body.v1.1.1", s"$prefix.body.v1.2", s"$prefix.body.v1.3").map(key => body(messages(key)))
     }
@@ -92,19 +101,25 @@ class LocationOfGoodsHelper @Inject() (
     HtmlFormat.fill(sections)
   }
 
-  // Currently only displayed for version 1 and 4
-  def expander(version: Int)(implicit messages: Messages): Html =
+  def expander(version: Int)(implicit messages: Messages): Html = {
+
+    val titleKey =
+      if (version == 1) s"declaration.locationOfGoods.expander.v1.intro"
+      else "declaration.locationOfGoods.expander.intro"
+
     govukDetails(
       Details(
         id = Some("location-of-goods-expander"),
         summary = Text(messages("declaration.locationOfGoods.expander.title")),
-        content = HtmlContent(HtmlFormat.fill(body(messages(s"declaration.locationOfGoods.expander.v$version.intro")) :: expanderContent))
+        content = HtmlContent(HtmlFormat.fill(body(messages(titleKey)) :: expanderContent))
       )
     )
+  }
 
   def versionSelection(implicit request: JourneyRequest[_]): Int =
     request.cacheModel.additionalDeclarationType.fold(1) {
-      case STANDARD_PRE_LODGED | SIMPLIFIED_PRE_LODGED | OCCASIONAL_PRE_LODGED | CLEARANCE_PRE_LODGED if isAuthProcedureCodeForV4 => 4
+      case decType if ((arrivedTypes ++ Seq(SUPPLEMENTARY_EIDR, SUPPLEMENTARY_SIMPLIFIED)) contains decType) && isAuthCode(CSE) => 7
+      case decType if (preLodgedTypes ++ Seq(SUPPLEMENTARY_EIDR, SUPPLEMENTARY_SIMPLIFIED)) contains decType                    => 6
 
       case STANDARD_FRONTIER | SIMPLIFIED_FRONTIER | OCCASIONAL_FRONTIER | CLEARANCE_FRONTIER =>
         if (isAuthCode(CSE)) 2

@@ -17,7 +17,7 @@
   {
     "en": "Aberdeen / DSV Air & Sea Limited / Muggiemoss Road, Bucksburn, Aberdeen AB21 9NP",
     "cy": "Aberdeen / DSV Air & Sea Limited / Muggiemoss Road, Bucksburn, Aberdeen AB21 9NP",
-    "code": "GBAUABDABZVCX "
+    "code": "GBAUABDABZVCX"
   },
   {
     "en": "Aldridge / NTG EBREX UK Limited / Unit 91 Empire Business Park, Brickyard Road, Aldridge, Walsall. WS9 8UY",
@@ -122,7 +122,7 @@
   {
     "en": "Avonmouth / Skybound Services Limited / Bristol Airport Freight Centre, Unit 8, Jubilee Way, Avonmouth, Bristol BS11 9HU",
     "cy": "Avonmouth / Skybound Services Limited / Bristol Airport Freight Centre, Unit 8, Jubilee Way, Avonmouth, Bristol BS11 9HU",
-    "code": "GBAUAVOBRSBMX "
+    "code": "GBAUAVOBRSBMX"
   },
   {
     "en": "Aylesbury / Global Moving Services Limited / Smeaton Close, Aylesbury, Buckinghamshire. HP19 8UN",
@@ -212,17 +212,17 @@
   {
     "en": "Basildon / Magnum Logistics Limited / Unit 1A, Wharf Lane, Basildon, Essex, SS16 4SP",
     "cy": "Basildon / Magnum Logistics Limited / Unit 1A, Wharf Lane, Basildon, Essex, SS16 4SP",
-    "code": "GBAUBASLONMAG1 "
+    "code": "GBAUBASLONMAG1"
   },
   {
     "en": "Basildon / Schenker Limited / Mayne House, Juniper Park, Fenton Way, Basildon SS15 6TD",
     "cy": "Basildon / Schenker Limited / Mayne House, Juniper Park, Fenton Way, Basildon SS15 6TD",
-    "code": "GBAUBASTILRXX "
+    "code": "GBAUBASTILRXX"
   },
   {
     "en": "Basildon / Vanguard Logistics Services Limited / Unit 2 Juniper Fenton Way Southfields Business Park, Basildon SS15 6TD",
     "cy": "Basildon / Vanguard Logistics Services Limited / Unit 2 Juniper Fenton Way Southfields Business Park, Basildon SS15 6TD",
-    "code": "GBAUBASTILPXQ1 "
+    "code": "GBAUBASTILPXQ1"
   },
   {
     "en": "Basildon / Heinloth UK Limited / Unit 6 Crane close Basildon SS14 3JB",
@@ -357,7 +357,7 @@
   {
     "en": "Belfast / CEVA Freight (UK) Limited / 1 Westbank Road, Belfast, BT3 9JL.",
     "cy": "Belfast / CEVA Freight (UK) Limited / 1 Westbank Road, Belfast, BT3 9JL.",
-    "code": "GBAUBELBFSCIX "
+    "code": "GBAUBELBFSCIX"
   },
   {
     "en": "Belfast International Airport / Fedex Express UK Ltd / Belfast Swiss Port, Cargo Village, Belfast International Airport, Belfast, BT29 4GB                                                                                                                                                                                    ",
@@ -457,7 +457,7 @@
   {
     "en": "Botley / White and Company PLC / Hillsons Road, Botley, Southampton, Hants, SO30 2DY",
     "cy": "Botley / White and Company PLC / Hillsons Road, Botley, Southampton, Hants, SO30 2DY",
-    "code": "GBAUBOLSTNWCS1 "
+    "code": "GBAUBOLSTNWCS1"
   },
   {
     "en": "Bradford / Surefreight International Limited / 41 Hilam Road, Off Canal Road, Bradford, West Yorkshire, BD2 1QN",
@@ -497,7 +497,7 @@
   {
     "en": "Camberley / Trans Universal Logistics Limited / Unit 16, Admiralty Way, Camberley, Surrey, GU15 3DT",
     "cy": "Camberley / Trans Universal Logistics Limited / Unit 16, Admiralty Way, Camberley, Surrey, GU15 3DT",
-    "code": "GBAUCAYLHRTUN1 "
+    "code": "GBAUCAYLHRTUN1"
   },
   {
     "en": "Cannock / Pentalver Cannock Limited / Pentalver Way, Cannock, Staffordshire, WS11 8XY",
@@ -580,9 +580,9 @@
     "code": "GBAUBHIEMAKZX"
   },
   {
-    "en": "Coalville   / Oakland International ltd  / Bardon Hill, Coalville LE67 1TB",
-    "cy": "Coalville   / Oakland International ltd  / Bardon Hill, Coalville LE67 1TB",
-    "code": "GBAUCOAEMAOIE "
+    "en": "Coalville / Oakland International ltd / Bardon Hill, Coalville LE67 1TB",
+    "cy": "Coalville / Oakland International ltd / Bardon Hill, Coalville LE67 1TB",
+    "code": "GBAUCOAEMAOIE"
   },
   {
     "en": "Coatbridge / Fraser Limited / 8-10 Hornock Road, Gartsherrie Industrial Estate, Coatbridge, ML5 2DX",
@@ -612,12 +612,12 @@
   {
     "en": "Coleshill / International Forwarding Limited / Station Road Industrial Estate, Station Road, Coleshill, Birmingham, B46 1HT",
     "cy": "Coleshill / International Forwarding Limited / Station Road Industrial Estate, Station Road, Coleshill, Birmingham, B46 1HT",
-    "code": "GBAUCLLBHXIFE "
+    "code": "GBAUCLLBHXIFE"
   },
   {
     "en": "Coleshill / Goldstar Heathrow Limited / Unit 28, Roman Way, Coleshill, B46 1HQ",
     "cy": "Coleshill / Goldstar Heathrow Limited / Unit 28, Roman Way, Coleshill, B46 1HQ",
-    "code": "GBAUCLLBHXHSX "
+    "code": "GBAUCLLBHXHSX"
   },
   {
     "en": "Colnbrook / Aramex (UK) Limited / Unit 4, Galleymesd Road, Colnbrook, Slough, Berkshire SL3 0EN",
@@ -795,9 +795,9 @@
     "code": "GBAUCBRLHRKBX"
   },
   {
-    "en": "Colnbrook / Worldnet International Ltd  / Unit 14 Coln Industrial Estate, Old Bath Road, Colnbrook. SL3 0NJ ",
-    "cy": "Colnbrook / Worldnet International Ltd  / Unit 14 Coln Industrial Estate, Old Bath Road, Colnbrook. SL3 0NJ ",
-    "code": "GBAUCBRLHRWVX "
+    "en": "Colnbrook / Worldnet International Ltd / Unit 14 Coln Industrial Estate, Old Bath Road, Colnbrook. SL3 0NJ ",
+    "cy": "Colnbrook / Worldnet International Ltd / Unit 14 Coln Industrial Estate, Old Bath Road, Colnbrook. SL3 0NJ ",
+    "code": "GBAUCBRLHRWVX"
   },
   {
     "en": "Colnbrook / Mark 3 International Ltd / Unit 1b, Coln Industrial Estate, Old Bath Road, Colnbrook. SL3 0NL",
@@ -822,7 +822,7 @@
   {
     "en": "Colnbrook / Bridges CBS Ltd / Unit 17 Britannia Industrial Estate, Colnbrook, Poyle Road, Slough, SL3 0BH",
     "cy": "Colnbrook / Bridges CBS Ltd / Unit 17 Britannia Industrial Estate, Colnbrook, Poyle Road, Slough, SL3 0BH",
-    "code": "GBAUCBRLHRBDX "
+    "code": "GBAUCBRLHRBDX"
   },
   {
     "en": "Colnbrook / Norsk European Wholesale Ltd  / 2 Willow Road; Colnbrook; Berkshire;  SL3 0BS",
@@ -877,7 +877,7 @@
   {
     "en": "Coventry / Priority Freight (Midlands) Limited / Seven Stars Industrial Estate, Wheler Road, Coventry, CV3 4LB",
     "cy": "Coventry / Priority Freight (Midlands) Limited / Seven Stars Industrial Estate, Wheler Road, Coventry, CV3 4LB",
-    "code": "GBAUCVTBHXPME "
+    "code": "GBAUCVTBHXPME"
   },
   {
     "en": "Coventry / Seven Seas Worldwide Limited / Unit G, Grovelands Industrial Estate, Longford Rd, Exhall, Coventry CV7 9ND",
@@ -907,7 +907,7 @@
   {
     "en": "Crawley / Eezehaul Limited / Unit 3, the Drive, Gatwick Road, Crawley, West Sussex, RH10 9AN",
     "cy": "Crawley / Eezehaul Limited / Unit 3, the Drive, Gatwick Road, Crawley, West Sussex, RH10 9AN",
-    "code": "GBAUCWYLGWEEZ1 "
+    "code": "GBAUCWYLGWEEZ1"
   },
   {
     "en": "Crumlin / Fedex Express UK Transportation Limited / 14 Belfast Road, Nutts Corner, Crumlin, Co. Antrim BT29 4TQ",
@@ -962,7 +962,7 @@
   {
     "en": "Dartford / FedEx  Express UK Limited / Unit 1 Northern Gateway Distribution Centre, Central Road North, Dartford, Kent, DA1 5XA",
     "cy": "Dartford / FedEx  Express UK Limited / Unit 1 Northern Gateway Distribution Centre, Central Road North, Dartford, Kent, DA1 5XA",
-    "code": "GBAUDFDDOVFDD1 "
+    "code": "GBAUDFDDOVFDD1"
   },
   {
     "en": "Dartford / KELERBAY LTD T/A DOREE BONNER INTERNATIONAL / International House, 19 Kennet Road, Dartford, Kent DA1 4QN",
@@ -997,12 +997,12 @@
   {
     "en": "Dover / Clear Fr8 Limited / Hammon House, Limekiln Street, Dover CT17 9EF  ",
     "cy": "Dover / Clear Fr8 Limited / Hammon House, Limekiln Street, Dover CT17 9EF  ",
-    "code": "GBAUDOVDOVCLF "
+    "code": "GBAUDOVDOVCLF"
   },
   {
     "en": "Dover / Priority Freight Limited / 6-7 Menzies Road, Whitfield, Dover, Kent, CT16 2HQ",
     "cy": "Dover / Priority Freight Limited / 6-7 Menzies Road, Whitfield, Dover, Kent, CT16 2HQ",
-    "code": "GBAUDVRDOGPLE "
+    "code": "GBAUDVRDOGPLE"
   },
   {
     "en": "Dover / Sealane Freight Ltd / The Freight Terminal, Lydden Hill Dover Kent CT15 7JW",
@@ -1102,7 +1102,7 @@
   {
     "en": "Eastleigh / Ecommerce Supply Chain Ltd / 8 Brickfield Lane, Chandlers Ford, Eastleigh SO534DP",
     "cy": "Eastleigh / Ecommerce Supply Chain Ltd / 8 Brickfield Lane, Chandlers Ford, Eastleigh SO534DP",
-    "code": "GBAUEALSTNFPL1 "
+    "code": "GBAUEALSTNFPL1"
   },
   {
     "en": "Eastleigh / RIVA SOUTH / Unit 10, Tower Industrial Park, Tower Lane, Eastleigh SO50 6NZ",
@@ -1432,12 +1432,12 @@
   {
     "en": "Feltham / DSV Air & Sea Limited / Great South West Road, Feltham, Middlesex, TW14 8NU",
     "cy": "Feltham / DSV Air & Sea Limited / Great South West Road, Feltham, Middlesex, TW14 8NU",
-    "code": "GBAUFEMLHRVCX "
+    "code": "GBAUFEMLHRVCX"
   },
   {
     "en": "Feltham / Interken Freighters (UK) Ltd / Unit 14, Marlin Park Central Way, Feltham TW14 0AN",
     "cy": "Feltham / Interken Freighters (UK) Ltd / Unit 14, Marlin Park Central Way, Feltham TW14 0AN",
-    "code": "GBAUFEMLHRIRX "
+    "code": "GBAUFEMLHRIRX"
   },
   {
     "en": "Fradley / Hellman Worldwide Logistics Limited / Kuhlmann House, Lancaster Way, Fradley Park, Lichfield, WS13 8SX",
@@ -1477,7 +1477,7 @@
   {
     "en": "Glasgow / DHL International (UK) Limited / 41 Colliery Rd, Glasgow G32 8SL",
     "cy": "Glasgow / DHL International (UK) Limited / 41 Colliery Rd, Glasgow G32 8SL",
-    "code": "GBAUGLWGLADHX "
+    "code": "GBAUGLWGLADHX"
   },
   {
     "en": "Glasgow / Pets On The Move Ltd / 1-2 Animal Reception Centre, Cargo Building No1, Campsie Drive, Glasgow, PA3 2SW",
@@ -1485,9 +1485,9 @@
     "code": "GBAUGLWGLAPET"
   },
   {
-    "en": "Gloucester / P L Transport Ltd T/A We Move Bikes (WMB Logistics)  / Unit 4a Gateway 12 Business Park \n\nDavy Way \n\nGloucester \n\nGL2 2BY ",
-    "cy": "Gloucester / P L Transport Ltd T/A We Move Bikes (WMB Logistics)  / Unit 4a Gateway 12 Business Park \n\nDavy Way \n\nGloucester \n\nGL2 2BY ",
-    "code": "GBAUQDLBRSPTE "
+    "en": "Gloucester / P L Transport Ltd T/A We Move Bikes (WMB Logistics) / Unit 4a Gateway 12 Business Park \n\nDavy Way \n\nGloucester \n\nGL2 2BY ",
+    "cy": "Gloucester / P L Transport Ltd T/A We Move Bikes (WMB Logistics) / Unit 4a Gateway 12 Business Park \n\nDavy Way \n\nGloucester \n\nGL2 2BY ",
+    "code": "GBAUQDLBRSPTE"
   },
   {
     "en": "Gravesend / CCT Worldwide Limited / Unit 6, Denton Wharf, Wharf Road, Gravesend, Kent, DA12 2QD",
@@ -1702,7 +1702,7 @@
   {
     "en": "Heston / Mapcargo International Ltd / Unit 1A, Westgate Estate, Staines Road, Bedfont, Middlesex, TW14 8RS",
     "cy": "Heston / Mapcargo International Ltd / Unit 1A, Westgate Estate, Staines Road, Bedfont, Middlesex, TW14 8RS",
-    "code": "GBAUHESLHRMGX "
+    "code": "GBAUHESLHRMGX"
   },
   {
     "en": "Heston / Manca Amit (UK) Ltd. / Arena Building,  Parkway Estate, Cranford, Heston, TW5 9QA",
@@ -1942,7 +1942,7 @@
   {
     "en": "Knowsley / Lombard Shipping PLC / Lombard Distribution Centre, Caddick Road, Knowsley Business Park, Prescot, Merseyside, L34 9HP",
     "cy": "Knowsley / Lombard Shipping PLC / Lombard Distribution Centre, Caddick Road, Knowsley Business Park, Prescot, Merseyside, L34 9HP",
-    "code": "GBAUKNWLPLLSK "
+    "code": "GBAUKNWLPLLSK"
   },
   {
     "en": "Laindon / Redhead Freight Limited / Unit 3b, Juniper Park, Fenton Way, Southfields Industrial Estate, Laindon, Essex, SS15 6RZ",
@@ -1997,7 +1997,7 @@
   {
     "en": "Linton / Berry Gardens Ltd / Unit 20, Wares Farm, Redwall Lane, Linton, Maidstone, ME17 4BA",
     "cy": "Linton / Berry Gardens Ltd / Unit 20, Wares Farm, Redwall Lane, Linton, Maidstone, ME17 4BA",
-    "code": "GBAULTNDOGBGE "
+    "code": "GBAULTNDOGBGE"
   },
   {
     "en": "Linwood / Agility Logistics Limited / Burnbrae Drive, Linwood Industrial Estate, Linwood, Renfrewshire, PA3 3BW",
@@ -2037,7 +2037,7 @@
   {
     "en": "London Gateway Park / Ziegler UK LTD / London Gateway Logistics Park North 2, North Sea Crossing Stanford-Le-Hope SS17 9ER",
     "cy": "London Gateway Park / Ziegler UK LTD / London Gateway Logistics Park North 2, North Sea Crossing Stanford-Le-Hope SS17 9ER",
-    "code": "GBAULGXLGPZIE1 "
+    "code": "GBAULGXLGPZIE1"
   },
   {
     "en": "London Gateway Port / UPS Limited / West 1, Ocean Boulevard, Stanford le Hope, Essex, SS17 9FD",
@@ -2047,7 +2047,7 @@
   {
     "en": "London Gateway Port / P&O Ferrymasters Ltd / Unit West, 7 North Sea Crossing, Corringham, Stanford- Le- Hope SS17 9LD",
     "cy": "London Gateway Port / P&O Ferrymasters Ltd / Unit West, 7 North Sea Crossing, Corringham, Stanford- Le- Hope SS17 9LD",
-    "code": "GBAULGPLGPPFS1 "
+    "code": "GBAULGPLGPPFS1"
   },
   {
     "en": "London Heathrow Airport / PRS Distributions Ltd / Unit 6, Airport Gate, Bath Road, Heathrow. UB7 0NA",
@@ -2082,7 +2082,7 @@
   {
     "en": "Low Moor / Schenker Limited / Dealburn Road, Low Moor, Bradford, BD12 0RG",
     "cy": "Low Moor / Schenker Limited / Dealburn Road, Low Moor, Bradford, BD12 0RG",
-    "code": "GBAULWMLBARXX "
+    "code": "GBAULWMLBARXX"
   },
   {
     "en": "Luton / Graysons Freight Services Ltd / Unit B Porten Way Commerce Park Laporte Way Luton LU4 8RJ",
@@ -2197,7 +2197,7 @@
   {
     "en": "Marden / FD - Platinum Limited T/A Go Group / Unit 8-13 The Cedars, Willows Business Park, Marden, TN12 9QJ",
     "cy": "Marden / FD - Platinum Limited T/A Go Group / Unit 8-13 The Cedars, Willows Business Park, Marden, TN12 9QJ",
-    "code": "GBAUMRDDOVFDP1 "
+    "code": "GBAUMRDDOVFDP1"
   },
   {
     "en": "Martlesham Heath / EWB Logistics Limited / Unit 31 Anson Road, Martlesham Heath, Ipswich, Suffolk. IP11 3RG",
@@ -2277,7 +2277,7 @@
   {
     "en": "Newtonabbey  / Schenker Limited / 5 Mallusk Drive, Newtonabbey, BT36 4GX",
     "cy": "Newtonabbey  / Schenker Limited / 5 Mallusk Drive, Newtonabbey, BT36 4GX",
-    "code": "GBAUNTABFSRXX "
+    "code": "GBAUNTABFSRXX"
   },
   {
     "en": "North Cave / JZ Flowers International Ltd / Dianthus Business Park Common Lane Newport North Humberside HU15 2FT",
@@ -2307,7 +2307,7 @@
   {
     "en": "Northampton / E.M. Rogers Transport Ltd / Ryehill Close, Lodge Farm Industrial Estate, NN57UA",
     "cy": "Northampton / E.M. Rogers Transport Ltd / Ryehill Close, Lodge Farm Industrial Estate, NN57UA",
-    "code": "GBAUNHPLTNERE "
+    "code": "GBAUNHPLTNERE"
   },
   {
     "en": "Northolt / Air-Sea Packing Group Ltd. / Unit 1 Northolt Trading Estate, Belvue Road, Northolt, UB5 5QS",
@@ -2332,7 +2332,7 @@
   {
     "en": "Nursling / Youngs Transportation & Logistics Limited / Unit 10, Nursling Industrial Estate, Oriana Way, Nursling, Southampton, SO16 0YU",
     "cy": "Nursling / Youngs Transportation & Logistics Limited / Unit 10, Nursling Industrial Estate, Oriana Way, Nursling, Southampton, SO16 0YU",
-    "code": "GBAUNURSTNYOU1 "
+    "code": "GBAUNURSTNYOU1"
   },
   {
     "en": "Oldbury / DPD Group UK Limited / 1 Broadwell Works, Birmingham Road, Oldbury, West Midlands, B69 4DA",
@@ -2367,7 +2367,7 @@
   {
     "en": "Pevensey / Relo-Worldwide Limited / Unit 1, Lapwing Business Park, Wartling Road, Pevensey, East Sussex, BN24 5BW",
     "cy": "Pevensey / Relo-Worldwide Limited / Unit 1, Lapwing Business Park, Wartling Road, Pevensey, East Sussex, BN24 5BW",
-    "code": "GBAUPESLGWRLW1 "
+    "code": "GBAUPESLGWRLW1"
   },
   {
     "en": "Poole / Schenker Limited / Unit 2, Vantage Way, Fulcrum Business Park, Poole, Dorset, BH12 4NU",
@@ -2447,7 +2447,7 @@
   {
     "en": "Purfleet / Youngs Transportation & Logistics Limited / Site 2, Beacon Hill Industrial Estate, Botany Way, Purfleet, Essex, RM19 1SR",
     "cy": "Purfleet / Youngs Transportation & Logistics Limited / Site 2, Beacon Hill Industrial Estate, Botany Way, Purfleet, Essex, RM19 1SR",
-    "code": "GBAUPFTTILFPY2 "
+    "code": "GBAUPFTTILFPY2"
   },
   {
     "en": "Purfleet / Youngs Transport / 3 Beacon Hill Industrial Estate, Botany Way, Purfleet, Essex, RM19 1SR",
@@ -2482,7 +2482,7 @@
   {
     "en": "Rochester / R Swain and Sons Limited / Medway Freight Centre, Priory Road, Strood, Kent, ME2 2BD",
     "cy": "Rochester / R Swain and Sons Limited / Medway Freight Centre, Priory Road, Strood, Kent, ME2 2BD",
-    "code": "GBAURCSMEDRSW1 "
+    "code": "GBAURCSMEDRSW1"
   },
   {
     "en": "Romford / GEO Copsey & Co. Limited / 178 Crow Lane, Romford, Essex, RM7 0ES",
@@ -2512,7 +2512,7 @@
   {
     "en": "Salisbury / 3TC Logistics Limited / Unit 1 The Ferns, Common Road, Whiteparish, Wiltshire, SP5 2RD",
     "cy": "Salisbury / 3TC Logistics Limited / Unit 1 The Ferns, Common Road, Whiteparish, Wiltshire, SP5 2RD",
-    "code": "GBAUSLSSTNTCL1 "
+    "code": "GBAUSLSSTNTCL1"
   },
   {
     "en": "Salt End (Hull) / RIX Shipping Company Limited / Tower House Lane, Salt End, Hull, HU12 8EE",
@@ -2560,9 +2560,9 @@
     "code": "GBAUSLOLHRKAX"
   },
   {
-    "en": "Slough / Global Trade Point Ltd  / Unit D, Hitchcock House, 5-6 Horton Road, SloughSL3 0DF",
-    "cy": "Slough / Global Trade Point Ltd  / Unit D, Hitchcock House, 5-6 Horton Road, SloughSL3 0DF",
-    "code": "GBAUPLELHRTGX "
+    "en": "Slough / Global Trade Point Ltd / Unit D, Hitchcock House, 5-6 Horton Road, SloughSL3 0DF",
+    "cy": "Slough / Global Trade Point Ltd / Unit D, Hitchcock House, 5-6 Horton Road, SloughSL3 0DF",
+    "code": "GBAUPLELHRTGX"
   },
   {
     "en": "Slough / Fast Track Express & Cargo Services Ltd / 21B Buckingham Avenue Slough SL1 4QA",
@@ -2577,7 +2577,7 @@
   {
     "en": "Slough / Fedex Cross Border (uk) Ltd / 720 Weston Road, Slough, SL1 4HL",
     "cy": "Slough / Fedex Cross Border (uk) Ltd / 720 Weston Road, Slough, SL1 4HL",
-    "code": "GBAUSLOLHRTPX "
+    "code": "GBAUSLOLHRTPX"
   },
   {
     "en": "Smethwick / ICS Distribution Limited / ICS House, Halfords Lane, Smethwick, Birmingham, B66 1BU",
@@ -2702,7 +2702,7 @@
   {
     "en": "St Helens / TCB (NI) Ltd / Unit C, Roundwood Place, Roundwood Point, St Helens WA9 5JD",
     "cy": "St Helens / TCB (NI) Ltd / Unit C, Roundwood Place, Roundwood Point, St Helens WA9 5JD",
-    "code": "GBAUTLELIVETC "
+    "code": "GBAUTLELIVETC"
   },
   {
     "en": "St Ives / Eurogroup International Movers Limited / Unit 26, Burrell Road, St Ives, Cambridgeshire. PE27 3LE",
@@ -2842,7 +2842,7 @@
   {
     "en": "Tamworth / FedEx Express UK Limited / Kingsbury PDC, Kingsbury Link Industrial Estate, Trinity Road, Tamworth, Staffordshire B78 2EX",
     "cy": "Tamworth / FedEx Express UK Limited / Kingsbury PDC, Kingsbury Link Industrial Estate, Trinity Road, Tamworth, Staffordshire B78 2EX",
-    "code": "GBAUTAWBHXFXK1 "
+    "code": "GBAUTAWBHXFXK1"
   },
   {
     "en": "Thetford / Arrowdene Limited / Unit 32 Howlett Way, Thetford, Norfolk IP24 1HZ",
@@ -2977,7 +2977,7 @@
   {
     "en": "Warrington / Network International Cargo UK Limited / Unit B, Appleton Park, Barleycastle Lane, Warrington, WA4 4RG",
     "cy": "Warrington / Network International Cargo UK Limited / Unit B, Appleton Park, Barleycastle Lane, Warrington, WA4 4RG",
-    "code": "GBAUWRNMANNIE "
+    "code": "GBAUWRNMANNIE"
   },
   {
     "en": "Warwick / Maxi Haulage Ltd / Rothwell Raod, Warwick CV34 5PY",
