@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -118,8 +118,8 @@ class LocationOfGoodsHelper @Inject() (
 
   def versionSelection(implicit request: JourneyRequest[_]): Int =
     request.cacheModel.additionalDeclarationType.fold(1) {
-      case decType if (preLodgedTypes ++ Seq(SUPPLEMENTARY_EIDR, SUPPLEMENTARY_SIMPLIFIED)) contains decType => 6
-      case decType if (arrivedTypes contains decType) && isAuthCode(CSE)                                     => 7
+      case decType if ((arrivedTypes ++ Seq(SUPPLEMENTARY_EIDR, SUPPLEMENTARY_SIMPLIFIED)) contains decType) && isAuthCode(CSE) => 7
+      case decType if (preLodgedTypes ++ Seq(SUPPLEMENTARY_EIDR, SUPPLEMENTARY_SIMPLIFIED)) contains decType                    => 6
 
       case STANDARD_FRONTIER | SIMPLIFIED_FRONTIER | OCCASIONAL_FRONTIER | CLEARANCE_FRONTIER =>
         if (isAuthCode(CSE)) 2
