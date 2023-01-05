@@ -115,7 +115,7 @@ object LocationOfGoods extends DeclarationPage {
   private def model2Form(
     locationOfGoods: LocationOfGoods
   )(implicit messages: Messages, codeListConnector: CodeListConnector): Option[(String, Option[String], Option[String])] =
-    GoodsLocationCodes.findByCseCode(locationOfGoods.code) map (_ => ("Yes", Some(locationOfGoods.code), None)) orElse Some(
+    GoodsLocationCodes.findByCode(locationOfGoods.code) map (_ => ("Yes", Some(locationOfGoods.code), None)) orElse Some(
       ("No", None, Some(locationOfGoods.code))
     )
 

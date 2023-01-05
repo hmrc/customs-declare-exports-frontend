@@ -154,4 +154,22 @@ class GoodsLocationCodesConnector @Inject() (appConfig: AppConfig) extends FileB
   def getGvmsCodes(locale: Locale): ListMap[String, GoodsLocationCode] =
     glcGvmsByLang.getOrElse(locale.getLanguage, glcGvmsByLang.value.head._2)
 
+  def getAllCodes(locale: Locale): ListMap[String, GoodsLocationCode] =
+    getDepCodes(locale) ++
+      getAirportsCodes(locale) ++
+      getCoaAirportsCodes(locale) ++
+      getMaritimeAndWharvesCodes(locale) ++
+      getItsfCodes(locale) ++
+      getRemoteItsfCodes(locale) ++
+      getExternalItsfCodes(locale) ++
+      getBorderInspectionPostsCodes(locale) ++
+      getApprovedDipositoriesCodes(locale) ++
+      getPlaceNamesGBCodes(locale) ++
+      getOtherLocationCodes(locale) ++
+      getCseCodes(locale) ++
+      getRailCodes(locale) ++
+      getActsCodes(locale) ++
+      getRoroCodes(locale) ++
+      getGvmsCodes(locale)
+
 }

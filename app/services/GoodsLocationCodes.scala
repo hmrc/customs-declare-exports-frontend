@@ -25,4 +25,7 @@ object GoodsLocationCodes {
   def findByCseCode(code: String)(implicit messages: Messages, codeListConnector: CodeListConnector): Option[GoodsLocationCode] =
     codeListConnector.getCseCodes(messages.lang.toLocale).get(code)
 
+  def findByCode(code: String)(implicit messages: Messages, codeListConnector: CodeListConnector): Option[GoodsLocationCode] =
+    codeListConnector.allGoodsLocationCodes(messages.lang.toLocale).get(code)
+
 }

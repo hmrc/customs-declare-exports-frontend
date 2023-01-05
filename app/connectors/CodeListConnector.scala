@@ -71,6 +71,7 @@ trait CodeListConnector {
   def getActsCodes(locale: Locale): ListMap[String, GoodsLocationCode]
   def getRoroCodes(locale: Locale): ListMap[String, GoodsLocationCode]
   def getGvmsCodes(locale: Locale): ListMap[String, GoodsLocationCode]
+  def allGoodsLocationCodes(locale: Locale): ListMap[String, GoodsLocationCode]
 
 }
 
@@ -160,7 +161,7 @@ class FileBasedCodeListConnector @Inject() (appConfig: AppConfig, goodsLocationC
   def getCustomsOffices(locale: Locale): ListMap[String, CustomsOffice] =
     customsOfficesCodesByLang.getOrElse(locale.getLanguage, customsOfficesCodesByLang.value.head._2)
 
-  def getDepCodes(locale: Locale): ListMap[String, GoodsLocationCode] =
+  override def getDepCodes(locale: Locale): ListMap[String, GoodsLocationCode] =
     goodsLocationCodesConnector.getDepCodes(locale)
   override def getAirportsCodes(locale: Locale): ListMap[String, GoodsLocationCode] =
     goodsLocationCodesConnector.getAirportsCodes(locale)
@@ -192,13 +193,15 @@ class FileBasedCodeListConnector @Inject() (appConfig: AppConfig, goodsLocationC
     goodsLocationCodesConnector.getRoroCodes(locale)
   override def getGvmsCodes(locale: Locale): ListMap[String, GoodsLocationCode] =
     goodsLocationCodesConnector.getGvmsCodes(locale)
+  override def allGoodsLocationCodes(locale: Locale): ListMap[String, GoodsLocationCode] =
+    goodsLocationCodesConnector.getAllCodes(locale)
 }
 
 trait FileBasedCodeListFunctions {
 
   type CodeMap[T <: CommonCode] = Map[String, ListMap[String, T]]
 
-  val WELSH = new Locale("cy", "GB", "");
+  val WELSH = new Locale("cy", "GB", "")
   val supportedLanguages = Seq(ENGLISH, WELSH)
 
   protected def loadCommonCodesAsOrderedMap[T <: CommonCode](srcFile: String, factory: (CodeItem, Locale) => T): CodeMap[T] = {

@@ -92,10 +92,10 @@ class LocationOfGoodsControllerSpec extends ControllerSpec with OptionValues {
       }
 
       "display page method is invoked and cache contains data" when {
-        "code is found in cse list" in {
+        "code is found in list" in {
 
           when {
-            mockCodeListConnector.getCseCodes(any())
+            mockCodeListConnector.allGoodsLocationCodes(any())
           } thenReturn ListMap[String, GoodsLocationCode]("GBAUEMAEMAEMA" -> GoodsLocationCode("GBAUEMAEMAEMA", "Somwhere"))
 
           val locationOfGoods = LocationOfGoods("GBAUEMAEMAEMA")
@@ -109,10 +109,10 @@ class LocationOfGoodsControllerSpec extends ControllerSpec with OptionValues {
           theResponseForm.value mustNot be(empty)
           theResponseForm.value.value.code mustBe "GBAUEMAEMAEMA"
         }
-        "code does not exist in cse list" in {
+        "code does not exist in list" in {
 
           when {
-            mockCodeListConnector.getCseCodes(any())
+            mockCodeListConnector.allGoodsLocationCodes(any())
           } thenReturn ListMap[String, GoodsLocationCode]()
 
           val locationOfGoods = LocationOfGoods("GBAUEMAEMAEMA")

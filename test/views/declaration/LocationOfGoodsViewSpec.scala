@@ -50,7 +50,7 @@ class LocationOfGoodsViewSpec extends PageWithButtonsSpec with Injector {
   override def beforeEach(): Unit = {
     super.beforeEach()
     when(mockCodeListConnector.getCountryCodes(any())).thenReturn(ListMap("GB" -> Country("United Kingdom", "GB")))
-    when(mockCodeListConnector.getCseCodes(any())).thenReturn(ListMap[String, GoodsLocationCode]())
+    when(mockCodeListConnector.allGoodsLocationCodes(any())).thenReturn(ListMap[String, GoodsLocationCode]())
   }
 
   override protected def afterEach(): Unit = {

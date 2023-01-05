@@ -25,22 +25,7 @@ import javax.inject.Inject
 class GoodsLocationCodesService @Inject() (codeListConnector: CodeListConnector) {
 
   def all(implicit messages: Messages): List[GoodsLocationCode] =
-    depCodes ++
-      airportsCodes ++
-      coaAirportsCodes ++
-      maritimeAndWharvesCodes ++
-      itsfCodes ++
-      remoteItsfCodes ++
-      externalItsfCodes ++
-      borderInspectionPostsCodes ++
-      approvedDipositoriesCodes ++
-      placeNamesGBCodes ++
-      otherLocationCodes ++
-      cseCodes ++
-      railCodes ++
-      actsCodes ++
-      roroCodes ++
-      gvmsCodes
+    codeListConnector.allGoodsLocationCodes(messages.lang.toLocale).values.toList.sortBy(_.description)
 
   def depCodes(implicit messages: Messages): List[GoodsLocationCode] =
     codeListConnector.getDepCodes(messages.lang.toLocale).values.toList.sortBy(_.description)
