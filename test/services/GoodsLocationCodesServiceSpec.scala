@@ -31,8 +31,7 @@ class GoodsLocationCodesServiceSpec extends UnitSpec with Injector {
   "GoodsLocationCodes" should {
 
     "have all entries" in {
-      goodsLocationCodesService.all.length mustBe 1492
-
+      goodsLocationCodesService.all.length mustBe 1491
       goodsLocationCodesService.all.head mustBe GoodsLocationCode("GBAUABDABDABDGVM", "Aberdeen  / Aberdeen GVMS Port")
     }
 
