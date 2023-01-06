@@ -69,7 +69,7 @@ object LocationOfGoods extends DeclarationPage {
     input.drop(3).toUpperCase.headOption.map(_.toString).exists(predicate)
   }
 
-  def form()(implicit messages: Messages, codeListConnector: CodeListConnector): Form[LocationOfGoods] = Form(mapping)
+  def form(implicit messages: Messages, codeListConnector: CodeListConnector): Form[LocationOfGoods] = Form(mapping)
 
   private def mapping(implicit messages: Messages, codeListConnector: CodeListConnector): Mapping[LocationOfGoods] =
     Forms.mapping(

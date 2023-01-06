@@ -17,7 +17,6 @@
 package views.helpers
 
 import config.AppConfig
-import forms.declaration.AuthorisationProcedureCodeChoice.{Choice1007, ChoiceOthers}
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
 import forms.declaration.declarationHolder.AuthorizationTypeCodes.{isAuthCode, CSE, EXRR, MIB}
 import models.requests.JourneyRequest
@@ -28,7 +27,7 @@ import uk.gov.hmrc.govukfrontend.views.html.components.{GovukDetails, GovukHint}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.details.Details
 import uk.gov.hmrc.govukfrontend.views.viewmodels.hint.Hint
-import views.html.components.gds.{bulletList, externalLink, heading, link, paragraphBody, row}
+import views.html.components.gds._
 
 import javax.inject.{Inject, Singleton}
 

@@ -15,7 +15,7 @@
  *@
 
 @import config.ExternalServicesConfig
-@import config.featureFlags.{EadConfig, SecureMessagingConfig}
+@import config.featureFlags.SecureMessagingConfig
 @import models.declaration.notifications.Notification
 @import models.declaration.submissions.Submission
 @import models.requests.VerifiedEmailRequest
@@ -38,7 +38,6 @@
   paragraph: paragraphBody,
   bulletList: bulletList,
   govukDetails : GovukDetails,
-  eadConfig: EadConfig,
   secureMessagingConfig: SecureMessagingConfig,
   externalServicesConfig: ExternalServicesConfig
 )
@@ -68,7 +67,7 @@
 }
 
 @eadLink = {
-    @mrnIfEadStatus(submission, eadConfig).map { mrn =>
+    @mrnIfEadStatus(submission).map { mrn =>
         <p>
             @link(
                 id = Some("generate-ead"),
