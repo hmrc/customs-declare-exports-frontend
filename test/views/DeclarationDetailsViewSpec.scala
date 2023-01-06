@@ -133,49 +133,36 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
 
   "Declaration details page" when {
 
-    val injector = new OverridableInjector(bind[EadConfig].toInstance(mockEadConfig))
-    val page = injector.instanceOf[declaration_details]
+    val page = instanceOf[declaration_details]
 
-    "the EAD feature flag is enabled" should {
-      when(mockEadConfig.isEadEnabled).thenReturn(true)
+    "contain the EAD link for any accepted notification's status" in {
+      EnhancedStatus.values
+        .filter(_ in eadAcceptableStatuses)
+        .foreach(status => verifyEadLink(status))
+    }
 
-      "contain the EAD link for any accepted notification's status" in {
+    "not contain the EAD link" when {
+      "the notification's status is not an accepted status" in {
         EnhancedStatus.values
-          .filter(_ in eadAcceptableStatuses)
-          .foreach(status => verifyEadLink(status))
+          .filterNot(_ in eadAcceptableStatuses)
+          .foreach { status =>
+            val view = page(createSubmissionWith(status))(verifiedEmailRequest(), messages)
+            Option(view.getElementById("generate-ead")) mustBe None
+          }
       }
 
-      "not contain the EAD link" when {
-        "the notification's status is not an accepted status" in {
-          EnhancedStatus.values
-            .filterNot(_ in eadAcceptableStatuses)
-            .foreach { status =>
-              val view = page(createSubmissionWith(status))(verifiedEmailRequest(), messages)
-              Option(view.getElementById("generate-ead")) mustBe None
-            }
-        }
-
-        "there is no mrn" in {
-          val view = page(submission.copy(mrn = None))(verifiedEmailRequest(), messages)
-          Option(view.getElementById("generate-ead")) mustBe None
-        }
-      }
-
-      def verifyEadLink(status: EnhancedStatus): Assertion = {
-        val view = page(createSubmissionWith(status))(verifiedEmailRequest(), messages)
-
-        val declarationLink = view.getElementById("generate-ead")
-        declarationLink must containMessage("declaration.details.generateEAD")
-        declarationLink must haveHref(EADController.generateDocument(submission.mrn.get))
+      "there is no mrn" in {
+        val view = page(submission.copy(mrn = None))(verifiedEmailRequest(), messages)
+        Option(view.getElementById("generate-ead")) mustBe None
       }
     }
 
-    "the EAD feature flag is disabled" should {
-      "not contain the EAD link" in {
-        when(mockEadConfig.isEadEnabled).thenReturn(false)
-        val view = page(submission)(verifiedEmailRequest(), messages)
-        Option(view.getElementById("generate-ead")) mustBe None
-      }
+    def verifyEadLink(status: EnhancedStatus): Assertion = {
+      val view = page(createSubmissionWith(status))(verifiedEmailRequest(), messages)
+
+      val declarationLink = view.getElementById("generate-ead")
+      declarationLink must containMessage("declaration.details.generateEAD")
+      declarationLink must haveHref(EADController.generateDocument(submission.mrn.get))
     }
   }
 

@@ -16,9 +16,8 @@
 
 package views.helpers
 
-import config.featureFlags.EadConfig
-import models.declaration.submissions.Submission
 import models.declaration.submissions.EnhancedStatus._
+import models.declaration.submissions.Submission
 
 object DeclarationDetailsLinks {
 
@@ -30,9 +29,8 @@ object DeclarationDetailsLinks {
   def mrnIfAccepted(submission: Submission): Option[String] =
     if (submission.isStatusAcceptedOrReceived) submission.mrn else None
 
-  def mrnIfEadStatus(submission: Submission, eadConfig: EadConfig): Option[String] =
-    if (eadConfig.isEadEnabled) {
-      val hasEadAcceptableStatus = submission.allSubmissionRequestStatuses.exists(_ in eadAcceptableStatuses)
-      if (hasEadAcceptableStatus) submission.mrn else None
-    } else None
+  def mrnIfEadStatus(submission: Submission): Option[String] = {
+    val hasEadAcceptableStatus = submission.allSubmissionRequestStatuses.exists(_ in eadAcceptableStatuses)
+    if (hasEadAcceptableStatus) submission.mrn else None
+  }
 }
