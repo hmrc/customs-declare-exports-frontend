@@ -300,11 +300,6 @@
     "code": "GBAUSPKLPLTNT"
   },
   {
-    "en": "Location and facility name / Internal temporary storage facility name / Address",
-    "cy": "Location and facility name / Internal temporary storage facility name / Address",
-    "code": "Code for the location to be declared in Data Element 5/23"
-  },
-  {
     "en": "London / Crown Fine Art / Art Central 20-22 Union Road, London, SW4 6JP",
     "cy": "London / Crown Fine Art / Art Central 20-22 Union Road, London, SW4 6JP",
     "code": "GBAULONLONCTE"
