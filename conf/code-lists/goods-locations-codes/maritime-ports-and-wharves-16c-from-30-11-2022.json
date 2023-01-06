@@ -705,11 +705,6 @@
     "code": "GBAULIVLIVLIV"
   },
   {
-    "en": "Location and facility name",
-    "cy": "Location and facility name",
-    "code": "Code for the location to be declared in Data Element 5/23"
-  },
-  {
     "en": "Loch Long - Glen Mallen Jetty MOD DSDA",
     "cy": "Loch Long - Glen Mallen Jetty MOD DSDA",
     "code": "GBAULCGARGLCG"
