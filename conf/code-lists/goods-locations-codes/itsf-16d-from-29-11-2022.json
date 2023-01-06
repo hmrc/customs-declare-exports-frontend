@@ -300,11 +300,6 @@
     "code": "GBAUSPKLPLTNT"
   },
   {
-    "en": "Location and facility name / Internal temporary storage facility name / Address",
-    "cy": "Location and facility name / Internal temporary storage facility name / Address",
-    "code": "Code for the location to be declared in Data Element 5/23"
-  },
-  {
     "en": "London / Crown Fine Art / Art Central 20-22 Union Road, London, SW4 6JP",
     "cy": "London / Crown Fine Art / Art Central 20-22 Union Road, London, SW4 6JP",
     "code": "GBAULONLONCTE"
@@ -317,7 +312,7 @@
   {
     "en": "London Gatwick / Animal Aircare Company Limited / Unit 6, Cargo Forecourt Road, Gatwick Airport, West Sussex, RH6 0SQ",
     "cy": "London Gatwick / Animal Aircare Company Limited / Unit 6, Cargo Forecourt Road, Gatwick Airport, West Sussex, RH6 0SQ",
-    "code": "GBAULGWLGWBCP "
+    "code": "GBAULGWLGWBCP"
   },
   {
     "en": "London Heathrow Airport / Aviation Servicing Company Limited T/A ASC Cargo Handling / Building 582, Sandringham Road, Heathrow Airport, Hounslow, Middlesex, TW6 3SN",

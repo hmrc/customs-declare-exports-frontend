@@ -31,7 +31,7 @@ class GoodsLocationCodesServiceSpec extends UnitSpec with Injector {
   "GoodsLocationCodes" should {
 
     "have all entries" in {
-      goodsLocationCodesService.all.length mustBe 1491
+      goodsLocationCodesService.all.length mustBe 1490
       goodsLocationCodesService.all.head mustBe GoodsLocationCode("GBAUABDABDABDGVM", "Aberdeen  / Aberdeen GVMS Port")
     }
 
@@ -52,11 +52,11 @@ class GoodsLocationCodesServiceSpec extends UnitSpec with Injector {
         goodsLocationCodesService.coaAirportsCodes.head mustBe GoodsLocationCode("GBCUSAWLSASAW", "Audley End Airfield – Saffron Walden")
       }
       "maritime" in {
-        goodsLocationCodesService.maritimeAndWharvesCodes.length mustBe 285
+        goodsLocationCodesService.maritimeAndWharvesCodes.length mustBe 284
         goodsLocationCodesService.maritimeAndWharvesCodes.head mustBe GoodsLocationCode("GBAUABDABDABD", "Aberdeen Docks")
       }
       "itsf" in {
-        goodsLocationCodesService.itsfCodes.length mustBe 118
+        goodsLocationCodesService.itsfCodes.length mustBe 117
         goodsLocationCodesService.itsfCodes.head mustBe GoodsLocationCode(
           "GBAUABDABDABM",
           "Aberdeen - Matthews Quay / Sea Cargo Aberdeen Limited / Matthews Quay Aberdeen Harbour Aberdeen AB11 5PG"

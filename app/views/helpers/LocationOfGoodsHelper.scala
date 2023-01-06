@@ -130,11 +130,6 @@ class LocationOfGoodsHelper @Inject() (
       case _ => 1
     }
 
-  private def isAuthProcedureCodeForV4(implicit request: JourneyRequest[_]): Boolean = {
-    val authProcedureCode = request.cacheModel.parties.authorisationProcedureCodeChoice
-    authProcedureCode == Choice1007 || authProcedureCode == ChoiceOthers
-  }
-
   private val expanderLinks = Array(
     ("", ""),
     /*  1 */ (appConfig.locationCodesForPortsUsingGVMS, ""),
