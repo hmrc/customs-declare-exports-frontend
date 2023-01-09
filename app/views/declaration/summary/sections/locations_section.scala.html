@@ -15,6 +15,7 @@
  *@
 
 @import models.declaration.Locations
+@import forms.declaration.LocationOfGoods
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.html.components.gds.linkContent
 @import views.html.components.gds.summary_list
@@ -33,7 +34,7 @@
 @if(hasLocations(declarationData.locations)) {
     @summaryList("declaration-locations-summary", Some(messages("declaration.summary.locations")), Seq(
         declarationData.locations.goodsLocation.map(goodsLocation =>
-            SummaryListRow(
+            Some(SummaryListRow(
                 classes = "goodsLocationCode-row",
                 key = Key(
                     content = Text(messages("declaration.summary.locations.goodsLocationCode"))
@@ -50,9 +51,23 @@
                         )
                     )
                 ))
-            )),
+            ))
+        ),
+        declarationData.locations.goodsLocation.map{
+            case goodsLocation if goodsLocation.code.endsWith(LocationOfGoods.suffixForGVMS) =>
+                Some(SummaryListRow(
+                    classes = "rrs01AdditionalInformation-row",
+                    key = Key(
+                        content = Text(messages("declaration.summary.locations.rrs01AdditionalInformation"))
+                    ),
+                    value = Value(
+                        content = Text(messages("declaration.summary.locations.rrs01AdditionalInformation.text"))
+                    )
+                ))
+            case _ => None
+        },
         declarationData.locations.officeOfExit.map(officeOfExit =>
-            SummaryListRow(
+            Some(SummaryListRow(
                 classes = "location-officeOfExit-row",
                 key = Key(
                     content = Text(messages("declaration.summary.locations.officeOfExit"))
@@ -70,5 +85,6 @@
                     )
                 ))
             ))
-    ))
+        )
+    ).flatten)
 }
