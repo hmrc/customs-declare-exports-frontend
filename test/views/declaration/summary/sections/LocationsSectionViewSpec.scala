@@ -26,6 +26,7 @@ import views.html.declaration.summary.sections.locations_section
 class LocationsSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injector {
 
   val data = aDeclaration(withGoodsLocation(LocationOfGoods("GBAUEMAEMAEMA")), withOfficeOfExit("123"))
+  val gvmsData = aDeclaration(withGoodsLocation(LocationOfGoods("GBAUABDABDABDGVM")), withOfficeOfExit("123"))
 
   val section = instanceOf[locations_section]
 
@@ -40,6 +41,21 @@ class LocationsSectionViewSpec extends UnitViewSpec with ExportsTestHelper with 
       row must haveSummaryActionsTexts("site.change", "declaration.summary.locations.goodsLocationCode.change")
 
       row must haveSummaryActionWithPlaceholder(LocationOfGoodsController.displayPage)
+    }
+
+    "have a row showing the RRS01 Additional Information code with no change link when location code is GVMS" in {
+      val view = section(gvmsData)(messages)
+
+      val row = view.getElementsByClass("rrs01AdditionalInformation-row")
+      row must haveSummaryKey(messages("declaration.summary.locations.rrs01AdditionalInformation"))
+      row must haveSummaryValue(messages("declaration.summary.locations.rrs01AdditionalInformation.text"))
+
+      row.first().getElementsByClass("govuk-summary-list__actions") mustBe empty
+    }
+
+    "not have a row showing the RRS01 Additional Information code when location code is non-GVMS" in {
+      val row = view.getElementsByClass("rrs01AdditionalInformation-row")
+      row mustBe empty
     }
 
     "have office of exit id with change button" in {
