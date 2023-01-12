@@ -37,12 +37,11 @@
 
 @expiresMessage = {
     <div id="draft_confirmation-expiry">
-        @messages("declaration.draft.info")
-        @ViewDates.formatDate(Instant.ofEpochMilli(expiry.toLong).atOffset(ZoneOffset.UTC))
+        @paragraph(
+            Html(messages("declaration.draft.info", ViewDates.formatDate(Instant.ofEpochMilli(expiry.toLong).atOffset(ZoneOffset.UTC))))
+        )
     </div>
 }
-
-
 
 @whatNext = {
     @heading(messages("declaration.draft.nextHeading"), "govuk-heading-m", "h2")
@@ -64,11 +63,9 @@
 
 @govukLayout(title = Title("declaration.draft.title"), showDeclarationSummaryLink = false) {
 
-
     @heading(messages("declaration.draft.title"))
 
-
-    @paragraph(html = expiresMessage)
+    @expiresMessage
 
     @declarationId.map { id =>
         @paragraph(

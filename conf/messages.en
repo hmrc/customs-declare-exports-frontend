@@ -2270,7 +2270,7 @@ declaration.exitSurvey.link = Send us your feedback
 declaration.country.dropdown.hint = Type in 2 letters to search.
 
 declaration.draft.title = Your declaration has been saved
-declaration.draft.info = Your information is held until
+declaration.draft.info = Your information is held until {0}
 declaration.draft.saved = Your declaration has been saved up to the point at which you exited.
 declaration.draft.nextHeading = What you can do next
 declaration.draft.nextText = You can {0} or you can {1}.
