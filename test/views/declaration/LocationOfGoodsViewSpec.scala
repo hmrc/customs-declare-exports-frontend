@@ -23,6 +23,7 @@ import connectors.CodeListConnector
 import forms.declaration.AuthorisationProcedureCodeChoice.{Choice1007, ChoiceOthers}
 import forms.declaration.LocationOfGoods
 import forms.declaration.LocationOfGoods.form
+import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
 import forms.declaration.declarationHolder.AuthorizationTypeCodes.{CSE, EXRR, MIB}
 import models.DeclarationType._
@@ -235,7 +236,7 @@ class LocationOfGoodsViewSpec extends PageWithButtonsSpec with Injector {
 
         "display the expected page title" in {
           val title = view.getElementsByTag("h1").text
-          title mustBe messages(s"$prefix.title.v4")
+          title mustBe messages(s"$prefix.title.v6")
         }
 
         "display the expected body" in {
