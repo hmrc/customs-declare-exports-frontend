@@ -36,11 +36,13 @@
 @(declarationId: Option[String], expiry: String)(implicit request: Request[_], messages: Messages)
 
 @expiresMessage = {
-    <div id="draft_confirmation-expiry" class="govuk-panel__body">
-        @messages("declaration.draft.info")<br>
+    <div id="draft_confirmation-expiry">
+        @messages("declaration.draft.info")
         @ViewDates.formatDate(Instant.ofEpochMilli(expiry.toLong).atOffset(ZoneOffset.UTC))
     </div>
 }
+
+
 
 @whatNext = {
     @heading(messages("declaration.draft.nextHeading"), "govuk-heading-m", "h2")
@@ -62,12 +64,11 @@
 
 @govukLayout(title = Title("declaration.draft.title"), showDeclarationSummaryLink = false) {
 
-    @govukPanel(Panel(
-        title = Text(messages("declaration.draft.title")),
-        content = HtmlContent(expiresMessage)
-    ))
 
-    @paragraph(Html(messages("declaration.draft.saved")))
+    @heading(messages("declaration.draft.title"))
+
+
+    @paragraph(html = expiresMessage)
 
     @declarationId.map { id =>
         @paragraph(
