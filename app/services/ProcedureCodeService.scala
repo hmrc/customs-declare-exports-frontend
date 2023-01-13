@@ -18,8 +18,8 @@ package services
 
 import config.featureFlags.MerchandiseInBagConfig
 import connectors.{CodeLinkConnector, CodeListConnector}
-import models.codes.{AdditionalProcedureCode, ProcedureCode}
 import models.DeclarationType.{CLEARANCE, DeclarationType}
+import models.codes.{AdditionalProcedureCode, ProcedureCode}
 import play.api.Logging
 
 import java.util.Locale

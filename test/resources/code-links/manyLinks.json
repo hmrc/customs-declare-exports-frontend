@@ -10,5 +10,13 @@
   {
     "parentCode": "GLC",
     "childCodes": ["DEP"]
+  },
+  {
+    "parentCode": "3171",
+    "childCodes": ["codesRestrictingZeroVat"]
+  },
+  {
+    "parentCode": "2100",
+    "childCodes": ["codesRestrictingZeroVat"]
   }
 ]
