@@ -44,61 +44,51 @@ class LocationOfGoodsHelper @Inject() (
   appConfig: AppConfig
 ) {
   private val prefix = "declaration.locationOfGoods"
+  private val expanderLinks = Array(
+    ("", ""),
+    /*  1 */ (appConfig.locationCodesForPortsUsingGVMS, ""),
+    /*  2 */ (appConfig.rollOnRollOffPorts, ""),
+    /*  3 */ (appConfig.railLocationCodes, ""),
+    /*  4 */ (appConfig.locationCodeForAirports, ""),
+    /*  5 */ (appConfig.certificateOfAgreementAirports, ""),
+    /*  6 */ (appConfig.locationCodeForMaritimePorts, ""),
+    /*  7 */ (appConfig.locationCodeForTempStorage, ""),
+    /*  8 */ (appConfig.designatedExportPlaceCodes, ""),
+    /*  9 */ (appConfig.locationCodesForCsePremises, appConfig.previousProcedureCodes),
+    /* 10 */ (appConfig.goodsLocationCodesForDataElement, appConfig.tariffCdsChiefSupplement)
+  )
 
-  def bodyUnderHeading(version: Int)(implicit messages: Messages): Html = {
-    val sections = version match {
-      case 2 =>
-        val linkText2 = messages(s"$prefix.body.v2.2.link")
-        val email = messages(s"$prefix.body.v2.3.email")
-        val subject = messages(s"$prefix.body.v2.3.subject")
+  def bodyUnderHeading(version: Int)(implicit messages: Messages): Html =
+    HtmlFormat.fill {
+      version match {
+        case 3 | 5 =>
+          List(
+            body(messages(s"$prefix.body.v$version.1")),
+            bulletList {
+              val (front, back) = (1 to 7)
+                .map(ix => Html(messages(s"$prefix.body.v3.bullet$ix")))
+                .splitAt(2)
 
-        List(
-          messages(s"$prefix.body.v2.1"),
-          messages(s"$prefix.body.v2.2", externalLink(linkText2, appConfig.locationCodesForCsePremises)),
-          messages(s"$prefix.body.v2.3", link(email, Call("GET", s"mailto:$email?subject=$subject")))
-        ).map(body(_))
+              front ++ List(
+                Html(messages(s"$prefix.body.v3.bullet8", govukHint(Hint(content = HtmlContent(messages(s"$prefix.body.v3.bullet8.hint"))))))
+              ) ++ back
+            }
+          )
 
-      case 3 | 5 =>
-        List(
-          body(messages(s"$prefix.body.v$version.1")),
-          bulletList {
-            val (front, back) = (1 to 7)
-              .map(ix => Html(messages(s"$prefix.body.v3.bullet$ix")))
-              .splitAt(2)
+        case 6 =>
+          List(s"$prefix.body.v6.1", s"$prefix.body.v6.2", s"$prefix.body.v6.3").map(key => body(messages(key)))
 
-            front ++ List(
-              Html(messages(s"$prefix.body.v3.bullet8", govukHint(Hint(content = HtmlContent(messages(s"$prefix.body.v3.bullet8.hint"))))))
-            ) ++ back
-          }
-        )
+        case 7 =>
+          val email = messages(s"$prefix.body.v7.2.email")
+          val subject = messages(s"$prefix.body.v7.2.subject")
 
-      case 4 =>
-        val linkText2 = messages(s"$prefix.body.v4.2.link")
-        val linkText3 = messages(s"$prefix.body.v4.3.link")
+          List(messages(s"$prefix.body.v7.1"), messages(s"$prefix.body.v7.2", link(email, Call("GET", s"mailto:$email?subject=$subject"))))
+            .map(body(_))
 
-        List(
-          body(messages(s"$prefix.body.v4.1")),
-          body(messages(s"$prefix.body.v4.1.1")),
-          body(messages(s"$prefix.body.v4.2", externalLink(linkText2, appConfig.previousProcedureCodes))),
-          body(messages(s"$prefix.body.v4.3.label"), "govuk-heading-s"),
-          body(messages(s"$prefix.body.v4.3", externalLink(linkText3, appConfig.locationCodesForPortsUsingGVMS)))
-        )
-
-      case 6 =>
-        List(s"$prefix.body.v6.1", s"$prefix.body.v6.2", s"$prefix.body.v6.3").map(key => body(messages(key)))
-
-      case 7 =>
-        val email = messages(s"$prefix.body.v7.2.email")
-        val subject = messages(s"$prefix.body.v7.2.subject")
-
-        List(messages(s"$prefix.body.v7.1"), messages(s"$prefix.body.v7.2", link(email, Call("GET", s"mailto:$email?subject=$subject")))).map(body(_))
-
-      // version 1
-      case _ => List(s"$prefix.body.v1.1", s"$prefix.body.v1.1.1", s"$prefix.body.v1.2", s"$prefix.body.v1.3").map(key => body(messages(key)))
+        // version 1
+        case _ => List(s"$prefix.body.v1.1", s"$prefix.body.v1.1.1", s"$prefix.body.v1.2", s"$prefix.body.v1.3").map(key => body(messages(key)))
+      }
     }
-
-    HtmlFormat.fill(sections)
-  }
 
   def expander(version: Int)(implicit messages: Messages): Html = {
 
@@ -114,34 +104,6 @@ class LocationOfGoodsHelper @Inject() (
       )
     )
   }
-
-  def versionSelection(implicit request: JourneyRequest[_]): Int =
-    request.cacheModel.additionalDeclarationType.fold(1) {
-      case decType if ((arrivedTypes ++ Seq(SUPPLEMENTARY_EIDR, SUPPLEMENTARY_SIMPLIFIED)) contains decType) && isAuthCode(CSE) => 7
-      case decType if (preLodgedTypes ++ Seq(SUPPLEMENTARY_EIDR, SUPPLEMENTARY_SIMPLIFIED)) contains decType                    => 6
-
-      case STANDARD_FRONTIER | SIMPLIFIED_FRONTIER | OCCASIONAL_FRONTIER | CLEARANCE_FRONTIER =>
-        if (isAuthCode(CSE)) 2
-        else if (isAuthCode(EXRR)) 3
-        else if (isAuthCode(MIB)) 1
-        else 5 // contents of versions 3 and 5 are pretty much equal. They only differ in the body under the page title.
-
-      case _ => 1
-    }
-
-  private val expanderLinks = Array(
-    ("", ""),
-    /*  1 */ (appConfig.locationCodesForPortsUsingGVMS, ""),
-    /*  2 */ (appConfig.rollOnRollOffPorts, ""),
-    /*  3 */ (appConfig.railLocationCodes, ""),
-    /*  4 */ (appConfig.locationCodeForAirports, ""),
-    /*  5 */ (appConfig.certificateOfAgreementAirports, ""),
-    /*  6 */ (appConfig.locationCodeForMaritimePorts, ""),
-    /*  7 */ (appConfig.locationCodeForTempStorage, ""),
-    /*  8 */ (appConfig.designatedExportPlaceCodes, ""),
-    /*  9 */ (appConfig.locationCodesForCsePremises, appConfig.previousProcedureCodes),
-    /* 10 */ (appConfig.goodsLocationCodesForDataElement, appConfig.tariffCdsChiefSupplement)
-  )
 
   private def expanderContent(implicit messages: Messages): List[Html] = {
     val titleClasses = "govuk-heading-s govuk-!-margin-top-4 govuk-!-margin-bottom-1"
@@ -161,4 +123,17 @@ class LocationOfGoodsHelper @Inject() (
 
   private def text(suffix: String, args: Any*)(implicit messages: Messages) =
     messages(s"declaration.locationOfGoods.expander.paragraph$suffix", args: _*)
+
+  def versionSelection(implicit request: JourneyRequest[_]): Int =
+    request.cacheModel.additionalDeclarationType.fold(1) {
+      case decType if ((arrivedTypes ++ Seq(SUPPLEMENTARY_EIDR, SUPPLEMENTARY_SIMPLIFIED)) contains decType) && isAuthCode(CSE) => 7
+      case decType if (preLodgedTypes ++ Seq(SUPPLEMENTARY_EIDR, SUPPLEMENTARY_SIMPLIFIED)) contains decType                    => 6
+
+      case STANDARD_FRONTIER | SIMPLIFIED_FRONTIER | OCCASIONAL_FRONTIER | CLEARANCE_FRONTIER =>
+        if (isAuthCode(EXRR)) 3
+        else if (isAuthCode(MIB)) 1
+        else 5 // contents of versions 3 and 5 are pretty much equal. They only differ in the body under the page title.
+
+      case _ => 1
+    }
 }
