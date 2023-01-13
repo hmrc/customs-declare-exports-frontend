@@ -80,7 +80,7 @@ class OfficeOfExitViewSpec extends UnitViewSpec with ExportsTestHelper with Stub
           val form = OfficeOfExit.form.fillAndValidate(data)
           val view = createView(form)
 
-          view.getElementById("error-summary-title") must containMessage("error.summary.title")
+          view.getElementsByClass("govuk-error-summary__title").first() must containMessage("error.summary.title")
 
           view
             .getElementsByClass("govuk-list govuk-error-summary__list")
@@ -95,7 +95,7 @@ class OfficeOfExitViewSpec extends UnitViewSpec with ExportsTestHelper with Stub
           val form = OfficeOfExit.form.fillAndValidate(data)
           val view = createView(form)
 
-          view.getElementById("error-summary-title") must containMessage("error.summary.title")
+          view.getElementsByClass("govuk-error-summary__title").first() must containMessage("error.summary.title")
 
           view
             .getElementsByClass("govuk-list govuk-error-summary__list")

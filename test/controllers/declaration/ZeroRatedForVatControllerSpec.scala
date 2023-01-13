@@ -17,6 +17,7 @@
 package controllers.declaration
 
 import base.{ControllerSpec, Injector}
+import connectors.CodeLinkConnector
 import forms.declaration.NactCode
 import forms.declaration.NactCode.nactCodeKey
 import forms.declaration.ZeroRatedForVat._
@@ -34,6 +35,7 @@ import views.html.declaration.zero_rated_for_vat
 class ZeroRatedForVatControllerSpec extends ControllerSpec with ErrorHandlerMocks with Injector {
 
   val zeroRatedForVatPage = mock[zero_rated_for_vat]
+  val codeLinkConnector = mock[CodeLinkConnector]
 
   val id = "id"
   val item = anItem(withItemId(id))
@@ -47,6 +49,7 @@ class ZeroRatedForVatControllerSpec extends ControllerSpec with ErrorHandlerMock
       mockExportsCacheService,
       navigator,
       stubMessagesControllerComponents(),
+      codeLinkConnector,
       zeroRatedForVatPage
     )(ec)
 

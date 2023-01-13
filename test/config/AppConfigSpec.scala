@@ -490,6 +490,7 @@ object AppConfigSpec {
       |files.codelists.additionalProcedureCodesC21="additionalProcedureCodesC21"
       |files.codelists.procedureCodeToAdditionalProcedureCodesLink="procedureCodeToAdditionalProcedureCodesLink"
       |files.codelists.procedureCodeToAdditionalProcedureCodesC21Link="procedureCodeToAdditionalProcedureCodesC21Link"
+      |files.codelists.procedureCodesLink="procedureCodesLink"
       |files.codelists.dmsErrorCodes="/code-lists/dmsErrorCodes.json"
       |files.codelists.countryCodes="/code-lists/countryCodes.json"
       |files.codelists.countryCodeToAliasesLink="countryCodeToAliasesLink"

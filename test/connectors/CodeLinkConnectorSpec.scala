@@ -32,6 +32,7 @@ class CodeLinkConnectorSpec extends UnitWithMocksSpec with BeforeAndAfterEach {
     when(appConfig.procedureCodeToAdditionalProcedureCodesLinkFile).thenReturn("/code-links/manyLinks.json")
     when(appConfig.procedureCodeToAdditionalProcedureCodesC21LinkFile).thenReturn("/code-links/manyLinks.json")
     when(appConfig.countryCodeToAliasesLinkFile).thenReturn("/code-links/manyLinks.json")
+    when(appConfig.procedureCodesLinkFile) thenReturn "/code-links/manyLinks.json"
     when(appConfig.countryCodeToShortNameLinkFile).thenReturn("/code-links/manyLinks.json")
     when(appConfig.goodsLocationCodeToLocationTypeFile).thenReturn("/code-links/manyLinks.json")
   }
@@ -98,6 +99,12 @@ class CodeLinkConnectorSpec extends UnitWithMocksSpec with BeforeAndAfterEach {
 
       "the country code does not have any aliases" in {
         connector.getAliasesForCountryCode("0000") must be(Some(List.empty[String]))
+      }
+    }
+
+    "return a list of procedure codes for a given tag" when {
+      "the tag is associated with procedure codes" in {
+        connector.getValidProcedureCodesForTag(CodesRestrictingZeroVat) must be(Seq("3171", "2100"))
       }
     }
 

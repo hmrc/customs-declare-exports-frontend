@@ -30,10 +30,18 @@ object CodeLink {
   implicit val formats: OFormat[CodeLink] = Json.format[CodeLink]
 }
 
+sealed trait ProcedureCodeTag {
+  val name: String
+}
+case object CodesRestrictingZeroVat extends ProcedureCodeTag {
+  val name = "codesRestrictingZeroVat"
+}
+
 @ImplementedBy(classOf[FileBasedCodeLinkConnector])
 trait CodeLinkConnector {
   def getValidAdditionalProcedureCodesForProcedureCode(procedureCode: String): Option[Seq[String]]
   def getValidAdditionalProcedureCodesForProcedureCodeC21(procedureCode: String): Option[Seq[String]]
+  def getValidProcedureCodesForTag(procedureCodeTag: ProcedureCodeTag): Seq[String]
 
   def getAliasesForCountryCode(countryCode: String): Option[Seq[String]]
   def getShortNamesForCountryCode(countryCode: String): Option[Seq[String]]
@@ -59,6 +67,9 @@ class FileBasedCodeLinkConnector @Inject() (appConfig: AppConfig) extends CodeLi
   private val procedureCodeToAdditionalProcedureCodesC21: Map[String, Seq[String]] =
     readCodeLinksFromFile(appConfig.procedureCodeToAdditionalProcedureCodesC21LinkFile)
 
+  private val procedureCodeLink: Map[String, Seq[String]] =
+    readCodeLinksFromFile(appConfig.procedureCodesLinkFile)
+
   private val countryCodeToCountryAliases: Map[String, Seq[String]] =
     readCodeLinksFromFile(appConfig.countryCodeToAliasesLinkFile)
 
@@ -73,6 +84,9 @@ class FileBasedCodeLinkConnector @Inject() (appConfig: AppConfig) extends CodeLi
 
   def getValidAdditionalProcedureCodesForProcedureCodeC21(procedureCode: String): Option[Seq[String]] =
     procedureCodeToAdditionalProcedureCodesC21.get(procedureCode)
+
+  def getValidProcedureCodesForTag(procedureCodeTag: ProcedureCodeTag): Seq[String] =
+    procedureCodeLink.filter(_._2.contains(procedureCodeTag.name)).keys.toSeq
 
   def getAliasesForCountryCode(countryCode: String): Option[Seq[String]] =
     countryCodeToCountryAliases.get(countryCode)
