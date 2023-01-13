@@ -35,7 +35,7 @@ class HolderOfAuthorisationCodesSpec extends UnitWithMocksSpec with BeforeAndAft
     super.beforeEach()
 
     reset(appConfig)
-    when(appConfig.holderOfAuthorisationCodes).thenReturn("/code-lists/holderOfAuthorisationCodes.json")
+    when(appConfig.holderOfAuthorisationCodeFile).thenReturn("/code-lists/holder-of-authorisation-codes/holder-of-authorisation-codes.json")
     when(appConfig.procedureCodesListFile).thenReturn("/code-lists/manyCodes.json")
     when(appConfig.procedureCodesForC21ListFile).thenReturn("/code-lists/manyCodes.json")
     when(appConfig.additionalProcedureCodes).thenReturn("/code-lists/manyCodes.json")

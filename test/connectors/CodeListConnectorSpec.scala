@@ -35,7 +35,7 @@ class CodeListConnectorSpec extends UnitWithMocksSpec with BeforeAndAfterEach {
     super.beforeEach()
 
     reset(appConfig)
-    when(appConfig.holderOfAuthorisationCodes).thenReturn("/code-lists/manyCodes.json")
+    when(appConfig.holderOfAuthorisationCodeFile).thenReturn("/code-lists/manyCodes.json")
     when(appConfig.procedureCodesListFile).thenReturn("/code-lists/manyCodes.json")
     when(appConfig.procedureCodesForC21ListFile).thenReturn("/code-lists/manyCodes.json")
     when(appConfig.additionalProcedureCodes).thenReturn("/code-lists/manyCodes.json")
@@ -146,7 +146,7 @@ class CodeListConnectorSpec extends UnitWithMocksSpec with BeforeAndAfterEach {
 
     "return a map of 'Holder of Authorisation' codes ordered as expected" when {
       "receives a supported language as input, or default to English for unsupported languages" in {
-        when(appConfig.holderOfAuthorisationCodes).thenReturn("/code-lists/holderOfAuthorisationCodes.json")
+        when(appConfig.holderOfAuthorisationCodeFile).thenReturn("/code-lists/holder-of-authorisation-codes/holder-of-authorisation-codes.json")
         val codeListConnector = new FileBasedCodeListConnector(appConfig, glc)
         (codeListConnector.supportedLanguages :+ JAPANESE).foreach { locale =>
           val codes = codeListConnector.getHolderOfAuthorisationCodes(locale).keys.toList

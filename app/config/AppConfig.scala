@@ -246,7 +246,6 @@ class AppConfig @Inject() (
   val countryCodeToAliasesLinkFile = loadConfig("files.codelists.countryCodeToAliasesLink")
   val countryCodeToShortNameLinkFile = loadConfig("files.codelists.countryCodeToShortNameLink")
   val dmsErrorCodes = loadConfig("files.codelists.dmsErrorCodes")
-  val holderOfAuthorisationCodes = loadConfig("files.codelists.holderOfAuthorisationCodes")
   val procedureCodesListFile = loadConfig("files.codelists.procedureCodes")
   val procedureCodesForC21ListFile = loadConfig("files.codelists.procedureCodesC21")
   val procedureCodeToAdditionalProcedureCodesLinkFile = loadConfig("files.codelists.procedureCodeToAdditionalProcedureCodesLink")
@@ -273,4 +272,7 @@ class AppConfig @Inject() (
   val glcActs16n = loadConfig("files.codelists.glc.acts")
   val glcRoro16r = loadConfig("files.codelists.glc.roro")
   val glcGvms16s = loadConfig("files.codelists.glc.gvms")
+
+  val holderOfAuthorisationCodeFile = loadConfig("files.codelists.hoa.hoa-codes")
+  val taggedHolderOfAuthorisationCodeFile = loadConfig("files.codelists.hoa.tagged-hoa-codes")
 }

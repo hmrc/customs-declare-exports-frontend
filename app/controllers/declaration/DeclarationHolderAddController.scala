@@ -16,26 +16,27 @@
 
 package controllers.declaration
 
-import scala.concurrent.{ExecutionContext, Future}
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.helpers.DeclarationHolderHelper._
 import controllers.helpers.MultipleItemsHelper
 import controllers.navigation.Navigator
 import forms.declaration.declarationHolder.DeclarationHolder
-import forms.declaration.declarationHolder.DeclarationHolder.{validateMutuallyExclusiveAuthCodes, DeclarationHolderFormGroupId}
-
-import javax.inject.Inject
+import forms.declaration.declarationHolder.DeclarationHolder.{AuthorisationTypeCodeId, DeclarationHolderFormGroupId}
+import models.ExportsDeclaration
 import models.declaration.DeclarationHoldersData
 import models.declaration.DeclarationHoldersData.limitOfHolders
 import models.requests.JourneyRequest
-import models.ExportsDeclaration
-import play.api.data.Form
+import play.api.data.{Form, FormError}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import services.TaggedAuthCodes
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.declarationHolder.declaration_holder_add
+
+import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
 class DeclarationHolderAddController @Inject() (
   authenticate: AuthAction,
@@ -43,6 +44,7 @@ class DeclarationHolderAddController @Inject() (
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
   mcc: MessagesControllerComponents,
+  taggedAuthCodes: TaggedAuthCodes,
   declarationHolderPage: declaration_holder_add
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
@@ -79,5 +81,17 @@ class DeclarationHolderAddController @Inject() (
       val isRequired = model.parties.declarationHoldersData.flatMap(_.isRequired)
       val updatedParties = model.parties.copy(declarationHoldersData = Some(DeclarationHoldersData(holders, isRequired)))
       model.copy(parties = updatedParties)
+    }
+
+  // Note that this validation takes places only when adding a new authorisation, not when changing one.
+  def validateMutuallyExclusiveAuthCodes(maybeHolder: Option[DeclarationHolder], holders: Seq[DeclarationHolder]): Option[FormError] =
+    maybeHolder match {
+      case Some(DeclarationHolder(Some(code), _, _)) if taggedAuthCodes.codesMutuallyExclusive.contains(code) =>
+        val mustNotAlreadyContainCodes = taggedAuthCodes.codesMutuallyExclusive.filter(_ != code)
+
+        if (!holders.map(_.authorisationTypeCode.getOrElse("")).containsSlice(mustNotAlreadyContainCodes)) None
+        else Some(FormError(AuthorisationTypeCodeId, s"declaration.declarationHolder.${code}.error.exclusive"))
+
+      case _ => None
     }
 }

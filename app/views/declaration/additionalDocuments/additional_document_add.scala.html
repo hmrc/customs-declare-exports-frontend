@@ -26,6 +26,7 @@
     govukLayout: gdsMainTemplate,
     editContent: additional_document_edit,
     navigator: Navigator,
+    additionalDocumentHelper: AdditionalDocumentHelper,
     formHelper: FormWithCSRF
 )
 
@@ -34,7 +35,7 @@
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
 @govukLayout(
-    title = Title(AdditionalDocumentHelper.title(itemId), "declaration.section.5", hasErrors = hasErrors),
+    title = Title(additionalDocumentHelper.title(itemId), "declaration.section.5", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(AdditionalDocument, ItemId(itemId))))
 ) {
     @formHelper(action = AdditionalDocumentAddController.submitForm(itemId), 'autoComplete -> "off") {

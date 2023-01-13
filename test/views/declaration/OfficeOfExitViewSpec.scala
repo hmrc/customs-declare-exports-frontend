@@ -19,7 +19,7 @@ package views.declaration
 import base.Injector
 import controllers.declaration.routes.{DestinationCountryController, LocationOfGoodsController}
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.SUPPLEMENTARY_EIDR
-import forms.declaration.declarationHolder.AuthorizationTypeCodes.codeThatSkipLocationOfGoods
+import forms.declaration.declarationHolder.AuthorizationTypeCodes.codesSkippingLocationOfGoods
 import forms.declaration.officeOfExit.OfficeOfExit
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
@@ -108,7 +108,7 @@ class OfficeOfExitViewSpec extends UnitViewSpec with ExportsTestHelper with Stub
     }
 
     "display 'Back' button that links to 'Destination Country' page" in {
-      val modifier = withDeclarationHolders(Some(codeThatSkipLocationOfGoods))
+      val modifier = withDeclarationHolders(Some(codesSkippingLocationOfGoods))
       implicit val request: JourneyRequest[AnyContent] = withRequest(SUPPLEMENTARY_EIDR, modifier)
       val skipLocationOfGoodsView = page(OfficeOfExit.form)
 

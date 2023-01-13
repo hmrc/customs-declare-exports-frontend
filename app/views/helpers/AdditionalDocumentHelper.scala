@@ -18,17 +18,16 @@ package views.helpers
 
 import config.AppConfig
 import forms.declaration.CommodityDetails
-import forms.declaration.declarationHolder.AuthorizationTypeCodes.CSE
 import models.DeclarationType.CLEARANCE
 import models.requests.JourneyRequest
 import play.api.i18n.Messages
 import play.twirl.api.{Html, HtmlFormat}
+import services.TaggedAuthCodes
 import services.view.HolderOfAuthorisationCodes
 import uk.gov.hmrc.govukfrontend.views.html.components.{GovukDetails, GovukInsetText}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.details.Details
 import uk.gov.hmrc.govukfrontend.views.viewmodels.insettext.InsetText
-import views.helpers.AdditionalDocumentHelper.{authCodesNeedingSpecificHintText, prefix, versionSelection}
 import views.helpers.CommodityCodeHelper.commodityCodeOfItem
 import views.html.components.gds.{bulletList, externalLink, paragraphBody}
 
@@ -36,6 +35,7 @@ import javax.inject.{Inject, Singleton}
 
 @Singleton
 class AdditionalDocumentHelper @Inject() (
+  taggedAuthCodes: TaggedAuthCodes,
   appConfig: AppConfig,
   authCodeHelper: HolderOfAuthorisationCodes,
   govukDetails: GovukDetails,
@@ -93,14 +93,14 @@ class AdditionalDocumentHelper @Inject() (
       case _ => paragraph(messages(s"$prefix.identifier.body"))
     }
 
-  def documentIdentifierHint(itemId: String)(implicit messages: Messages, request: JourneyRequest[_]): Option[String] = {
+  def documentIdentifierHint(implicit messages: Messages, request: JourneyRequest[_]): Option[String] = {
     val authorisationTypeCodes =
       request.cacheModel.parties.declarationHoldersData.fold(Seq.empty[String])(_.holders.flatMap(_.authorisationTypeCode))
     constructHintText(authorisationTypeCodes)
   }
 
   private def constructHintText(authorisationTypeCodes: Seq[String])(implicit messages: Messages): Option[String] = {
-    val authCodesNeedingHintText = authorisationTypeCodes.filter(authCodesNeedingSpecificHintText.contains(_))
+    val authCodesNeedingHintText = taggedAuthCodes.filterAuthCodesNeedingHintText(authorisationTypeCodes)
 
     authCodesNeedingHintText.headOption.map { _ =>
       val firstMatchingCodes = authCodesNeedingHintText
@@ -123,8 +123,11 @@ class AdditionalDocumentHelper @Inject() (
     }
   }
 
+  def title(itemId: String)(implicit request: JourneyRequest[_]): String =
+    s"$prefix.v${versionSelection(itemId)}.title"
+
   private def bodyV1(implicit messages: Messages, request: JourneyRequest[_]): Html = {
-    val authCodes = request.cacheModel.authCodesRequiringAdditionalDocs
+    val authCodes = taggedAuthCodes.authCodesRequiringAdditionalDocs(request.cacheModel)
     new Html(
       List(
         paragraph(messages(s"$prefix.v1.body.1")),
@@ -135,7 +138,7 @@ class AdditionalDocumentHelper @Inject() (
   }
 
   private def bodyV3(implicit messages: Messages, request: JourneyRequest[_]): Html = {
-    val authCodes = request.cacheModel.authCodesRequiringAdditionalDocs
+    val authCodes = taggedAuthCodes.authCodesRequiringAdditionalDocs(request.cacheModel)
     new Html(
       List(
         paragraph(messages(s"$prefix.v3.body.1")),
@@ -181,18 +184,12 @@ class AdditionalDocumentHelper @Inject() (
     paragraph(
       messages(s"$prefix.expander.body.4", externalLink(messages(s"$prefix.expander.body.4.link"), appConfig.guidance.commodityCode0306310010))
     )
-}
 
-object AdditionalDocumentHelper {
+  private val prefix = "declaration.additionalDocument"
 
-  val prefix = "declaration.additionalDocument"
-
-  def title(itemId: String)(implicit request: JourneyRequest[_]): String =
-    s"$prefix.v${versionSelection(itemId)}.title"
-
-  def versionSelection(itemId: String)(implicit request: JourneyRequest[_]): Int = {
+  private def versionSelection(itemId: String)(implicit request: JourneyRequest[_]): Int = {
     val model = request.cacheModel
-    val hasAuthCodeRequiringAdditionalDocs = request.cacheModel.hasAuthCodeRequiringAdditionalDocs
+    val hasAuthCodeRequiringAdditionalDocs = taggedAuthCodes.hasAuthCodeRequiringAdditionalDocs(request.cacheModel)
 
     (model.`type`, hasAuthCodeRequiringAdditionalDocs, model.isLicenseRequired(itemId)) match {
       case (CLEARANCE, true, _)  => 5
@@ -203,6 +200,4 @@ object AdditionalDocumentHelper {
       case (_, false, false)     => 4
     }
   }
-
-  val authCodesNeedingSpecificHintText = Seq("AEOF", "CGU", CSE, "EIR", "EPSS", "EUS", "IPO", "OPO", "SDE", "SIVA", "TEA", "CWP", "DPO", "MOU")
 }

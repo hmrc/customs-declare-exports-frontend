@@ -66,11 +66,6 @@ case class ExportsDeclaration(
   def additionalDocumentsInformation(itemId: String): AdditionalDocuments =
     additionalDocumentsInformationIfAny(itemId).getOrElse(AdditionalDocuments(None, Seq.empty))
 
-  def authCodesRequiringAdditionalDocs: Seq[DeclarationHolder] =
-    parties.declarationHoldersData
-      .map(_.holders.filter(_.isAdditionalDocumentationRequired))
-      .getOrElse(List.empty)
-
   def listOfAdditionalDocuments(itemId: String): Seq[AdditionalDocument] =
     additionalDocumentsInformationIfAny(itemId).map(_.documents).getOrElse(Seq.empty)
 
@@ -95,9 +90,6 @@ case class ExportsDeclaration(
   def containRoutingCountries: Boolean = locations.routingCountries.nonEmpty
 
   def declarationHolders: Seq[DeclarationHolder] = parties.declarationHoldersData.map(_.holders).getOrElse(Seq.empty)
-
-  def hasAuthCodeRequiringAdditionalDocs: Boolean =
-    parties.declarationHoldersData.exists(_.holders.exists(_.isAdditionalDocumentationRequired))
 
   def hasContainers: Boolean = containers.nonEmpty
 

@@ -21,7 +21,7 @@ import connectors.CodeListConnector
 import controllers.declaration.routes.{LocationOfGoodsController, OfficeOfExitController, RoutingCountriesController}
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.SUPPLEMENTARY_EIDR
 import forms.declaration.countries.Country
-import forms.declaration.declarationHolder.AuthorizationTypeCodes.codeThatSkipLocationOfGoods
+import forms.declaration.declarationHolder.AuthorizationTypeCodes.codesSkippingLocationOfGoods
 import models.DeclarationType._
 import models.codes.{Country => ModelCountry}
 import org.mockito.ArgumentCaptor
@@ -116,7 +116,7 @@ class DestinationCountryControllerSpec extends ControllerSpec {
       def redirectForDeclarationType(declarationType: DeclarationType, redirect: Call): Unit =
         "redirect" in {
           withNewCaching(
-            aDeclaration(withType(declarationType), withDeclarationHolders(Some(codeThatSkipLocationOfGoods)), withDestinationCountries())
+            aDeclaration(withType(declarationType), withDeclarationHolders(Some(codesSkippingLocationOfGoods)), withDestinationCountries())
           )
 
           val correctForm = JsObject(Map("countryCode" -> JsString("PL")))
@@ -132,7 +132,7 @@ class DestinationCountryControllerSpec extends ControllerSpec {
           withNewCaching(
             aDeclaration(
               withAdditionalDeclarationType(SUPPLEMENTARY_EIDR),
-              withDeclarationHolders(Some(codeThatSkipLocationOfGoods)),
+              withDeclarationHolders(Some(codesSkippingLocationOfGoods)),
               withDestinationCountries()
             )
           )

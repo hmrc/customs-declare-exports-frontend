@@ -26,7 +26,7 @@ import models.declaration.EoriSource
 import models.declaration.EoriSource.UserEori
 import models.viewmodels.TariffContentKey
 import play.api.data.Forms.{optional, text}
-import play.api.data.{Form, FormError, Forms, Mapping}
+import play.api.data.{Form, Forms, Mapping}
 import play.api.libs.json.Json
 import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfEqual
 
@@ -35,10 +35,6 @@ case class DeclarationHolder(authorisationTypeCode: Option[String], eori: Option
   def id: String = s"${authorisationTypeCode.getOrElse("")}-${eori.getOrElse("")}"
   def isEmpty: Boolean = authorisationTypeCode.isEmpty && eori.isEmpty
   def isComplete: Boolean = authorisationTypeCode.isDefined && eori.isDefined
-
-  def isAdditionalDocumentationRequired: Boolean = authorisationTypeCode.exists(codesRequiringDocumentation.contains)
-
-  def skipInlandOrBorder: Boolean = authorisationTypeCode.exists(authCodesThatSkipInlandOrBorder.contains)
 }
 
 object DeclarationHolder extends DeclarationPage {
@@ -90,18 +86,6 @@ object DeclarationHolder extends DeclarationPage {
 
   override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
     Seq(TariffContentKey(s"tariff.declaration.addAuthorisationRequired.${DeclarationPage.getJourneyTypeSpecialisation(decType)}"))
-
-  // Note that this validation takes places only when adding a new authorisation, not when changing one.
-  def validateMutuallyExclusiveAuthCodes(maybeHolder: Option[DeclarationHolder], holders: Seq[DeclarationHolder]): Option[FormError] =
-    maybeHolder match {
-      case Some(DeclarationHolder(Some(code), _, _)) if mutuallyExclusiveAuthCodes.contains(code) =>
-        val mustNotAlreadyContainCodes: List[String] = mutuallyExclusiveAuthCodes.filter(_ != code)
-
-        if (!holders.map(_.authorisationTypeCode.getOrElse("")).containsSlice(mustNotAlreadyContainCodes)) None
-        else Some(FormError(AuthorisationTypeCodeId, s"declaration.declarationHolder.${code}.error.exclusive"))
-
-      case _ => None
-    }
 }
 
 object DeclarationHolderRequired extends DeclarationPage {

@@ -483,7 +483,6 @@ object AppConfigSpec {
       |urls.declareGoodsExported = "https://www.gov.uk/guidance/declare-commercial-goods-youre-taking-out-of-great-britain-in-your-accompanied-baggage-or-small-vehicles"
       |urls.simplifiedDeclarationOccasionalUse = "https://www.gov.uk/government/publications/appendix-2-de-111-additional-procedure-codes/additional-procedure-code-3-series"
       |
-      |files.codelists.holderOfAuthorisationCodes="holderOfAuthorisationCodes"
       |files.codelists.procedureCodes="procedureCodes"
       |files.codelists.procedureCodesC21="procedureCodesC21"
       |files.codelists.additionalProcedureCodes="additionalProcedureCodes"
@@ -516,6 +515,9 @@ object AppConfigSpec {
       |files.codelists.glc.acts="/code-lists/goods-locations-codes/acts"
       |files.codelists.glc.roro="/code-lists/goods-locations-codes/roro"
       |files.codelists.glc.gvms="/code-lists/goods-locations-codes/gvms"
+      |
+      |files.codelists.hoa.hoa-codes="/code-lists/holder-of-authorisation-codes/holder-of-authorisation-codes"
+      |files.codelists.hoa.tagged-hoa-codes="/code-lists/holder-of-authorisation-codes/tagged-holder-of-authorisation-codes"
       |
       |draft.timeToLive=30d
       |microservice.services.nrs.host=localhostnrs

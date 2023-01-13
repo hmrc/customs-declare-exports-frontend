@@ -18,17 +18,18 @@ package controllers.helpers
 
 import controllers.declaration.routes._
 import controllers.helpers.TransportSectionHelper.isPostalOrFTIModeOfTransport
-import forms.declaration.declarationHolder.AuthorizationTypeCodes.{codeThatOverrideInlandOrBorderSkip, isAuthCode}
+import forms.declaration.declarationHolder.AuthorizationTypeCodes.isAuthCode
 import models.DeclarationType._
 import models.codes.AdditionalProcedureCode.NO_APC_APPLIES_CODE
 import models.declaration.ProcedureCodesData
 import models.ExportsDeclaration
 import play.api.mvc.Call
+import services.TaggedAuthCodes
 
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class SupervisingCustomsOfficeHelper @Inject() (inlandOrBorderHelper: InlandOrBorderHelper) {
+class SupervisingCustomsOfficeHelper @Inject()(inlandOrBorderHelper: InlandOrBorderHelper, taggedAuthCodes: TaggedAuthCodes) {
 
   private def isConditionForProcedureCodesDataVerified(data: ProcedureCodesData): Boolean =
     data.procedureCode.contains("1040") && data.additionalProcedureCodes.contains(NO_APC_APPLIES_CODE)
@@ -42,7 +43,7 @@ class SupervisingCustomsOfficeHelper @Inject() (inlandOrBorderHelper: InlandOrBo
      If this condition is NOT verified the user can land on the Supervising-Customs-Office page.
    */
   def isConditionForAllProcedureCodesVerified(cachedModel: ExportsDeclaration): Boolean =
-    checkProcedureCodes(cachedModel) && !isAuthCode(cachedModel, codeThatOverrideInlandOrBorderSkip)
+    checkProcedureCodes(cachedModel) && !isAuthCode(cachedModel, taggedAuthCodes.codesOverridingInlandOrBorderSkip)
 
   def checkProcedureCodes(cachedModel: ExportsDeclaration): Boolean =
     cachedModel.items.nonEmpty &&

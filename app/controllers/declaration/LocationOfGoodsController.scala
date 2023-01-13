@@ -19,13 +19,13 @@ package controllers.declaration
 import connectors.CodeListConnector
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.routes.OfficeOfExitController
-import controllers.helpers.LocationOfGoodsHelper.skipLocationOfGoods
 import controllers.navigation.Navigator
 import controllers.routes.RootController
 import forms.declaration.LocationOfGoods
 import models.ExportsDeclaration
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Results}
+import services.TaggedAuthCodes
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
@@ -41,12 +41,13 @@ class LocationOfGoodsController @Inject() (
   mcc: MessagesControllerComponents,
   locationOfGoods: location_of_goods,
   override val exportsCacheService: ExportsCacheService,
-  navigator: Navigator
+  navigator: Navigator,
+  taggedAuthCodes: TaggedAuthCodes,
 )(implicit ec: ExecutionContext, codeListConnector: CodeListConnector)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
   def displayPage: Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    if (skipLocationOfGoods(request.cacheModel)) Results.Redirect(RootController.displayPage)
+    if (taggedAuthCodes.skipLocationOfGoods(request.cacheModel)) Results.Redirect(RootController.displayPage)
     else {
       val form = LocationOfGoods.form.withSubmissionErrors
       request.cacheModel.locations.goodsLocation match {
@@ -57,7 +58,7 @@ class LocationOfGoodsController @Inject() (
   }
 
   def saveLocation(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    if (skipLocationOfGoods(request.cacheModel)) Future.successful(Results.Redirect(RootController.displayPage))
+    if (taggedAuthCodes.skipLocationOfGoods(request.cacheModel)) Future.successful(Results.Redirect(RootController.displayPage))
     else
       LocationOfGoods.form
         .bindFromRequest()

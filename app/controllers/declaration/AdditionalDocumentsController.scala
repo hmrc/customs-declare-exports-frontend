@@ -27,6 +27,7 @@ import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
+import services.TaggedAuthCodes
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
@@ -40,6 +41,7 @@ class AdditionalDocumentsController @Inject() (
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
   mcc: MessagesControllerComponents,
+  taggedAuthCodes: TaggedAuthCodes,
   additionalDocumentsPage: additional_documents
 ) extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
@@ -73,7 +75,9 @@ class AdditionalDocumentsController @Inject() (
     }
 
   private def redirectIfNoDocuments(itemId: String)(implicit request: JourneyRequest[_]): Call =
-    if (inErrorFixMode || request.cacheModel.hasAuthCodeRequiringAdditionalDocs || request.cacheModel.isLicenseRequired(itemId))
-      AdditionalDocumentAddController.displayPage(itemId)
+    if (inErrorFixMode
+      || taggedAuthCodes.hasAuthCodeRequiringAdditionalDocs(request.cacheModel)
+      || request.cacheModel.isLicenseRequired(itemId)
+    ) AdditionalDocumentAddController.displayPage(itemId)
     else AdditionalDocumentsRequiredController.displayPage(itemId)
 }
