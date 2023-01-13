@@ -36,14 +36,13 @@ class DraftDeclarationViewSpec extends UnitViewSpec with CommonMessages with Stu
 
   "View" should {
 
-
     "display page title" in {
       createView().getElementsByTag("h1").first().text() mustBe messages("declaration.draft.title")
     }
 
     "render expiry date" in {
       val view = createView()
-      view.getElementById("draft_confirmation-expiry") must containText(messages("declaration.draft.info", "1 January 2019" ))
+      view.getElementById("draft_confirmation-expiry") must containText(messages("declaration.draft.info", "1 January 2019"))
     }
 
     "render view declaration summary link" in {
