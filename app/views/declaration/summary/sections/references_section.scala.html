@@ -54,7 +54,9 @@
 
 <h2 class="govuk-heading-m">@messages("declaration.summary.references")</h2>
 
-@body(messages("declaration.summary.amend.body"), classes = "govuk-body govuk-!-display-none-print")
+@if(declaration.status != DeclarationStatus.COMPLETE){
+    @body(messages("declaration.summary.amend.body"), classes = "govuk-body govuk-!-display-none-print")
+}
 
 @summaryList("declaration-references-summary", None, Seq(
         Some(SummaryListRow(
