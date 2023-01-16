@@ -54,6 +54,7 @@ site.accessibility.error = Error:
 site.warning = Warning
 
 site.print = Print this page
+site.printable = Printable version
 
 site.pagination.showing = Showing
 site.pagination.showing.no = Showing no

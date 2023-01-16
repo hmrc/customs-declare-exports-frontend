@@ -24,6 +24,7 @@
 @this(
     govukLayout: gdsMainTemplate,
     pageTitle: pageTitle,
+    paragraphBody: paragraphBody,
     notificationsSection: notifications_section,
     references_section: references_section,
     countries_section: countries_section,
@@ -47,9 +48,11 @@
 
     @pageTitle(messages("declaration.summary.submitted-header"))
 
-    @notificationsSection(maybeSubmission)
+    @paragraphBody(messages("site.printable"))
 
     @print_page_button(marginBottom = 2)
+
+    @notificationsSection(maybeSubmission)
 
     <div class="govuk-section-break">@references_section(declarationData, false)</div>
 
