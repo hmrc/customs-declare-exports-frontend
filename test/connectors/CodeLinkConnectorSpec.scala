@@ -111,7 +111,7 @@ class CodeLinkConnectorSpec extends UnitWithMocksSpec with BeforeAndAfterEach {
 
     "return a list of procedure codes for a given tag" when {
       "the tag is associated with procedure codes" in {
-        connector.getValidProcedureCodesForTag(CodesRestrictingZeroVat) must be(Seq("3171", "2100"))
+        connector.getValidProcedureCodesForTag(CodesRestrictingZeroVat) mustBe List("3171", "2100")
       }
     }
 

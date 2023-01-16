@@ -1,54 +1,54 @@
 [
   {
     "parentCode": "1007",
-    "childCodes": ["codesRestrictingZeroVat"]
+    "childCodes": ["CodesRestrictingZeroVat"]
   },
   {
     "parentCode": "1042",
-    "childCodes": ["codesRestrictingZeroVat"]
+    "childCodes": ["CodesRestrictingZeroVat"]
   },
   {
     "parentCode": "2151",
-    "childCodes": ["codesRestrictingZeroVat"]
+    "childCodes": ["CodesRestrictingZeroVat"]
   },
   {
     "parentCode": "2154",
-    "childCodes": ["codesRestrictingZeroVat"]
+    "childCodes": ["CodesRestrictingZeroVat"]
   },
   {
     "parentCode": "2200",
-    "childCodes": ["codesRestrictingZeroVat"]
+    "childCodes": ["CodesRestrictingZeroVat"]
   },
   {
     "parentCode": "3151",
-    "childCodes": ["codesRestrictingZeroVat"]
+    "childCodes": ["CodesRestrictingZeroVat"]
   },
   {
     "parentCode": "3154",
-    "childCodes": ["codesRestrictingZeroVat"]
+    "childCodes": ["CodesRestrictingZeroVat"]
   },
   {
     "parentCode": "3171",
-    "childCodes": ["codesRestrictingZeroVat"]
+    "childCodes": ["CodesRestrictingZeroVat"]
   },
   {
     "parentCode": "2100",
-    "childCodes": ["codesRestrictingZeroVat"]
+    "childCodes": ["CodesRestrictingZeroVat"]
   },
   {
     "parentCode": "2144",
-    "childCodes": ["codesRestrictingZeroVat"]
+    "childCodes": ["CodesRestrictingZeroVat"]
   },
   {
     "parentCode": "2244",
-    "childCodes": ["codesRestrictingZeroVat"]
+    "childCodes": ["CodesRestrictingZeroVat"]
   },
   {
     "parentCode": "2300",
-    "childCodes": ["codesRestrictingZeroVat"]
+    "childCodes": ["CodesRestrictingZeroVat"]
   },
   {
     "parentCode": "3153",
-    "childCodes": ["codesRestrictingZeroVat"]
+    "childCodes": ["CodesRestrictingZeroVat"]
   }
 ]

@@ -13,11 +13,11 @@
   },
   {
     "parentCode": "3171",
-    "childCodes": ["codesRestrictingZeroVat"]
+    "childCodes": ["CodesRestrictingZeroVat"]
   },
   {
     "parentCode": "2100",
-    "childCodes": ["codesRestrictingZeroVat"]
+    "childCodes": ["CodesRestrictingZeroVat"]
   },
   {
     "parentCode": "CGU",
