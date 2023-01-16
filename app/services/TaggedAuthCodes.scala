@@ -26,19 +26,19 @@ import models.ExportsDeclaration
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class TaggedAuthCodes @Inject()(codeLinkConnector: CodeLinkConnector) {
+class TaggedAuthCodes @Inject() (codeLinkConnector: CodeLinkConnector) {
 
   lazy val codesMutuallyExclusive = codeLinkConnector.getHolderOfAuthorisationCodesForTag(CodesMutuallyExclusive)
 
   lazy val codesOverridingInlandOrBorderSkip = codeLinkConnector.getHolderOfAuthorisationCodesForTag(CodesOverridingInlandOrBorderSkip)
 
-  private lazy val codesNeedingSpecificHintText = codeLinkConnector.getHolderOfAuthorisationCodesForTag(CodesNeedingSpecificHintText)
+  lazy val codesNeedingSpecificHintText = codeLinkConnector.getHolderOfAuthorisationCodesForTag(CodesNeedingSpecificHintText)
 
-  private lazy val codesRequiringDocumentation = codeLinkConnector.getHolderOfAuthorisationCodesForTag(CodesRequiringDocumentation)
+  lazy val codesRequiringDocumentation = codeLinkConnector.getHolderOfAuthorisationCodesForTag(CodesRequiringDocumentation)
 
-  private lazy val codesSkippingInlandOrBorder = codeLinkConnector.getHolderOfAuthorisationCodesForTag(CodesSkippingInlandOrBorder)
+  lazy val codesSkippingInlandOrBorder = codeLinkConnector.getHolderOfAuthorisationCodesForTag(CodesSkippingInlandOrBorder)
 
-  private lazy val codesSkippingLocationOfGoods = codeLinkConnector.getHolderOfAuthorisationCodesForTag(CodesSkippingLocationOfGoods)
+  lazy val codesSkippingLocationOfGoods = codeLinkConnector.getHolderOfAuthorisationCodesForTag(CodesSkippingLocationOfGoods)
 
   def authCodesRequiringAdditionalDocs(declaration: ExportsDeclaration): Seq[DeclarationHolder] =
     declaration.parties.declarationHoldersData
@@ -51,12 +51,12 @@ class TaggedAuthCodes @Inject()(codeLinkConnector: CodeLinkConnector) {
   def hasAuthCodeRequiringAdditionalDocs(declaration: ExportsDeclaration): Boolean =
     declaration.parties.declarationHoldersData.exists(_.holders.exists(isAdditionalDocumentationRequired))
 
+  def isAdditionalDocumentationRequired(declarationHolder: DeclarationHolder): Boolean =
+    declarationHolder.authorisationTypeCode.exists(codesRequiringDocumentation.contains)
+
   def skipInlandOrBorder(declarationHolder: DeclarationHolder): Boolean =
     declarationHolder.authorisationTypeCode.exists(codesSkippingInlandOrBorder.contains)
 
   def skipLocationOfGoods(declaration: ExportsDeclaration): Boolean =
     declaration.isAdditionalDeclarationType(SUPPLEMENTARY_EIDR) && isAuthCode(declaration, codesSkippingLocationOfGoods)
-
-  private def isAdditionalDocumentationRequired(declarationHolder: DeclarationHolder): Boolean =
-    declarationHolder.authorisationTypeCode.exists(codesRequiringDocumentation.contains)
 }

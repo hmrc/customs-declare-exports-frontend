@@ -29,7 +29,7 @@ import services.TaggedAuthCodes
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class SupervisingCustomsOfficeHelper @Inject()(inlandOrBorderHelper: InlandOrBorderHelper, taggedAuthCodes: TaggedAuthCodes) {
+class SupervisingCustomsOfficeHelper @Inject() (inlandOrBorderHelper: InlandOrBorderHelper, taggedAuthCodes: TaggedAuthCodes) {
 
   private def isConditionForProcedureCodesDataVerified(data: ProcedureCodesData): Boolean =
     data.procedureCode.contains("1040") && data.additionalProcedureCodes.contains(NO_APC_APPLIES_CODE)

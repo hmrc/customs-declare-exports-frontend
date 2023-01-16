@@ -26,7 +26,7 @@ import services.TaggedAuthCodes
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class InlandOrBorderHelper @Inject()(depCodes: DepCodesHelper, taggedAuthCodes: TaggedAuthCodes) {
+class InlandOrBorderHelper @Inject() (depCodes: DepCodesHelper, taggedAuthCodes: TaggedAuthCodes) {
 
   val notAllowedOnInlandOrBorder = List(CLEARANCE, OCCASIONAL, SIMPLIFIED)
 

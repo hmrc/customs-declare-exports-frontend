@@ -16,7 +16,7 @@
 
 package controllers.navigation
 
-import base.{JourneyTypeTestRunner, MockExportCacheService, RequestBuilder, UnitWithMocksSpec}
+import base.{JourneyTypeTestRunner, MockExportCacheService, MockTaggedAuthCodes, RequestBuilder, UnitWithMocksSpec}
 import controllers.declaration.routes._
 import controllers.helpers._
 import controllers.routes.RejectedNotificationsController
@@ -40,8 +40,8 @@ import java.time.LocalDate
 import scala.concurrent.{ExecutionContext, Future}
 
 class NavigatorSpec
-    extends UnitWithMocksSpec with ExportsDeclarationBuilder with JourneyTypeTestRunner with MockExportCacheService with RequestBuilder
-    with ScalaFutures with FeatureFlagMocks {
+    extends UnitWithMocksSpec with ExportsDeclarationBuilder with FeatureFlagMocks with JourneyTypeTestRunner with MockExportCacheService
+    with MockTaggedAuthCodes with RequestBuilder with ScalaFutures {
 
   private val url = "url"
   private val call: Call = Call("GET", url)
@@ -49,7 +49,7 @@ class NavigatorSpec
   private val inlandOrBorderHelper = mock[InlandOrBorderHelper]
   private val supervisingCustomsOfficeHelper = mock[SupervisingCustomsOfficeHelper]
 
-  private val navigator = new Navigator(tariffApiService, inlandOrBorderHelper, supervisingCustomsOfficeHelper)
+  private val navigator = new Navigator(taggedAuthCodes, tariffApiService, inlandOrBorderHelper, supervisingCustomsOfficeHelper)
 
   override def afterEach(): Unit = {
     reset(inlandOrBorderHelper, supervisingCustomsOfficeHelper, tariffApiService)

@@ -16,12 +16,11 @@
 
 package controllers.declaration
 
-import base.ControllerSpec
+import base.{ControllerSpec, MockTaggedAuthCodes}
 import connectors.CodeListConnector
 import controllers.declaration.routes.{LocationOfGoodsController, OfficeOfExitController, RoutingCountriesController}
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.SUPPLEMENTARY_EIDR
 import forms.declaration.countries.Country
-import forms.declaration.declarationHolder.AuthorizationTypeCodes.codesSkippingLocationOfGoods
 import models.DeclarationType._
 import models.codes.{Country => ModelCountry}
 import org.mockito.ArgumentCaptor
@@ -37,7 +36,7 @@ import views.html.declaration.destinationCountries.destination_country
 import scala.collection.immutable.ListMap
 import scala.concurrent.ExecutionContext.global
 
-class DestinationCountryControllerSpec extends ControllerSpec {
+class DestinationCountryControllerSpec extends ControllerSpec with MockTaggedAuthCodes {
 
   val destinationCountryPage = mock[destination_country]
   val mockCodeListConnector = mock[CodeListConnector]
@@ -48,6 +47,7 @@ class DestinationCountryControllerSpec extends ControllerSpec {
     mockExportsCacheService,
     navigator,
     stubMessagesControllerComponents(),
+    taggedAuthCodes,
     destinationCountryPage
   )(global, mockCodeListConnector)
 
@@ -115,9 +115,8 @@ class DestinationCountryControllerSpec extends ControllerSpec {
 
       def redirectForDeclarationType(declarationType: DeclarationType, redirect: Call): Unit =
         "redirect" in {
-          withNewCaching(
-            aDeclaration(withType(declarationType), withDeclarationHolders(Some(codesSkippingLocationOfGoods)), withDestinationCountries())
-          )
+          val holders = withDeclarationHolders(Some(taggedAuthCodes.codesSkippingLocationOfGoods.head))
+          withNewCaching(aDeclaration(withType(declarationType), holders, withDestinationCountries()))
 
           val correctForm = JsObject(Map("countryCode" -> JsString("PL")))
 
@@ -129,13 +128,8 @@ class DestinationCountryControllerSpec extends ControllerSpec {
 
       val redirectToOfficeOfExit: Unit =
         "redirect" in {
-          withNewCaching(
-            aDeclaration(
-              withAdditionalDeclarationType(SUPPLEMENTARY_EIDR),
-              withDeclarationHolders(Some(codesSkippingLocationOfGoods)),
-              withDestinationCountries()
-            )
-          )
+          val holders = withDeclarationHolders(Some(taggedAuthCodes.codesSkippingLocationOfGoods.head))
+          withNewCaching(aDeclaration(withAdditionalDeclarationType(SUPPLEMENTARY_EIDR), holders, withDestinationCountries()))
 
           val correctForm = JsObject(Map("countryCode" -> JsString("PL")))
 

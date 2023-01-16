@@ -16,21 +16,19 @@
 
 package models
 
-import base.UnitSpec
+import base.{MockTaggedAuthCodes, UnitSpec}
 import forms.declaration.CommodityDetails
 import forms.declaration.countries.Country
-import forms.declaration.declarationHolder.DeclarationHolder
-import models.declaration.{DeclarationHoldersData, ProcedureCodesData}
-import org.mockito.Mockito.when
+import models.declaration.ProcedureCodesData
 import org.scalatest.OptionValues
 import org.scalatestplus.mockito.MockitoSugar
 import services.cache.{ExportsDeclarationBuilder, ExportsItemBuilder}
 
-class ExportsDeclarationSpec extends UnitSpec with ExportsDeclarationBuilder with ExportsItemBuilder with OptionValues with MockitoSugar {
+class ExportsDeclarationSpec
+    extends UnitSpec with ExportsDeclarationBuilder with ExportsItemBuilder with MockitoSugar with MockTaggedAuthCodes with OptionValues {
 
   "Update Item" should {
     "preserve item sequence" in {
-
       val declaration = aDeclaration(withItems(2))
 
       declaration.items.map(_.sequenceId) must be(Seq(1, 2))
@@ -48,21 +46,18 @@ class ExportsDeclarationSpec extends UnitSpec with ExportsDeclarationBuilder wit
     "return correct value for isDeclarantExports" when {
 
       "declarant is an exporter" in {
-
         val declaration = aDeclaration(withType(DeclarationType.OCCASIONAL), withDeclarantIsExporter())
 
         declaration.isDeclarantExporter mustBe true
       }
 
       "declarant is not an exporter" in {
-
         val declaration = aDeclaration(withType(DeclarationType.OCCASIONAL), withDeclarantIsExporter("No"))
 
         declaration.isDeclarantExporter mustBe false
       }
 
       "user didn't answer on this question" in {
-
         val declaration = aDeclaration(withType(DeclarationType.OCCASIONAL))
 
         declaration.isDeclarantExporter mustBe false
@@ -71,52 +66,6 @@ class ExportsDeclarationSpec extends UnitSpec with ExportsDeclarationBuilder wit
       "have originationCountry hard-coded to 'GB'" in {
         val declaration = aDeclaration()
         declaration.locations.originationCountry.value mustBe Country.GB
-      }
-    }
-  }
-
-  "ExportsDeclaration on isAdditionalDocumentationRequired" should {
-
-    "return true" when {
-
-      "only a single DeclarationHolder returns true when called with isAdditionalDocumentationRequired method" in {
-        val declarationHolder = mock[DeclarationHolder]
-        when(declarationHolder.isAdditionalDocumentationRequired).thenReturn(false)
-        val declarationHolderRequiringAdditionalDocumentation = mock[DeclarationHolder]
-        when(declarationHolderRequiringAdditionalDocumentation.isAdditionalDocumentationRequired).thenReturn(true)
-
-        val declarationsHoldersData = DeclarationHoldersData(declarationHolderRequiringAdditionalDocumentation +: Seq.fill(13)(declarationHolder))
-
-        val declaration = aDeclaration(withDeclarationHolders(declarationsHoldersData))
-
-        declaration.hasAuthCodeRequiringAdditionalDocs mustBe true
-      }
-
-      "more than one DeclarationHolder returns true when called with isAdditionalDocumentationRequired method" in {
-        val declarationHolder = mock[DeclarationHolder]
-        when(declarationHolder.isAdditionalDocumentationRequired).thenReturn(false)
-        val declarationHolderRequiringAdditionalDocumentation = mock[DeclarationHolder]
-        when(declarationHolderRequiringAdditionalDocumentation.isAdditionalDocumentationRequired).thenReturn(true)
-
-        val declarationsHoldersData =
-          DeclarationHoldersData(Seq.fill(3)(declarationHolderRequiringAdditionalDocumentation) ++ Seq.fill(13)(declarationHolder))
-
-        val declaration = aDeclaration(withDeclarationHolders(declarationsHoldersData))
-
-        declaration.hasAuthCodeRequiringAdditionalDocs mustBe true
-      }
-    }
-
-    "return false" when {
-
-      "all DeclarationHolders return false when called with isAdditionalDocumentationRequired method" in {
-        val declarationHolder = mock[DeclarationHolder]
-        when(declarationHolder.isAdditionalDocumentationRequired).thenReturn(false)
-        val declarationsHoldersData = DeclarationHoldersData(Seq.fill(13)(declarationHolder))
-
-        val declaration = aDeclaration(withDeclarationHolders(declarationsHoldersData))
-
-        declaration.hasAuthCodeRequiringAdditionalDocs mustBe false
       }
     }
   }

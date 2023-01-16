@@ -25,7 +25,9 @@ object AuthorizationTypeCodes {
 
   val CSE = "CSE"
   val EXRR = "EXRR"
+  val FP = "FP"
   val MIB = "MIB"
+  val MOU = "MOU"
 
   def codesFilteredFromView(merchandiseInBagConfig: MerchandiseInBagConfig): List[String] =
     if (merchandiseInBagConfig.isMerchandiseInBagEnabled) List("EORI")

@@ -17,17 +17,15 @@
 package forms.declaration.declarationHolder
 
 import base.ExportsTestData._
-import base.JourneyTypeTestRunner
+import base.{JourneyTypeTestRunner, MockTaggedAuthCodes}
 import forms.common.{DeclarationPageBaseSpec, Eori}
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.{preLodgedTypes, STANDARD_PRE_LODGED}
-import forms.declaration.declarationHolder.AuthorizationTypeCodes.{CSE, EXRR}
-import forms.declaration.declarationHolder.DeclarationHolder._
+import forms.declaration.declarationHolder.AuthorizationTypeCodes.EXRR
 import models.declaration.EoriSource
 import models.declaration.ExportDeclarationTestData.correctDeclarationHolder
 import org.scalatest.Inspectors.forAll
-import play.api.data.FormError
 
-class DeclarationHolderSpec extends DeclarationPageBaseSpec with JourneyTypeTestRunner {
+class DeclarationHolderSpec extends DeclarationPageBaseSpec with JourneyTypeTestRunner with MockTaggedAuthCodes {
 
   private val eoriSource = EoriSource.OtherEori.toString
   private val authorisationTypeCode = correctDeclarationHolder.authorisationTypeCode.get
@@ -198,9 +196,9 @@ class DeclarationHolderSpec extends DeclarationPageBaseSpec with JourneyTypeTest
   "DeclarationHolder on requireAdditionalDocumentation" should {
 
     "return true" when {
-      AuthorizationTypeCodes.codesRequiringDocumentation.foreach { code =>
-        s"authorisationTypeCode contains $code code" in {
-          DeclarationHolder(Some(code), None, None).isAdditionalDocumentationRequired mustBe true
+      "authorisationTypeCode is equal to one of the expected Authorisation codes" in {
+        taggedAuthCodes.codesRequiringDocumentation.foreach { code =>
+          taggedAuthCodes.isAdditionalDocumentationRequired(DeclarationHolder(Some(code), None, None)) mustBe true
         }
       }
     }
@@ -208,7 +206,7 @@ class DeclarationHolderSpec extends DeclarationPageBaseSpec with JourneyTypeTest
     "return false" when {
       "authorisationTypeCode contains code that is NOT present in AuthorizationTypeCodes.CodesRequiringDocumentation" in {
         val code = "AWR"
-        DeclarationHolder(Some(code), None, None).isAdditionalDocumentationRequired mustBe false
+        taggedAuthCodes.isAdditionalDocumentationRequired(DeclarationHolder(Some(code), None, None)) mustBe false
       }
     }
   }
@@ -219,31 +217,5 @@ class DeclarationHolderSpec extends DeclarationPageBaseSpec with JourneyTypeTest
 
   "DeclarationHolderRequired" when {
     testTariffContentKeys(DeclarationHolderRequired, "tariff.declaration.isAuthorisationRequired")
-  }
-
-  "DeclarationHolder.validateMutuallyExclusiveAuthCodes" when {
-    def holder(code: String) = DeclarationHolder(Some(code), None, None)
-    def error(code: String) = FormError(AuthorisationTypeCodeId, s"declaration.declarationHolder.${code}.error.exclusive")
-
-    "the user enters a new 'CSE' authorisation and the cache already includes an 'EXRR' one" should {
-      "return a FormError" in {
-        val result = validateMutuallyExclusiveAuthCodes(Some(holder(CSE)), List(holder(EXRR)))
-        result.get mustBe error(CSE)
-      }
-    }
-
-    "the user enters a new 'EXRR' authorisation and the cache already includes a 'CSE' one" should {
-      "return a FormError" in {
-        val result = validateMutuallyExclusiveAuthCodes(Some(holder(EXRR)), List(holder(CSE)))
-        result.get mustBe error(EXRR)
-      }
-    }
-
-    "the user does not enter an authorisation code" should {
-      "return None" in {
-        validateMutuallyExclusiveAuthCodes(None, List(holder(CSE))) mustBe None
-        validateMutuallyExclusiveAuthCodes(None, List(holder(EXRR))) mustBe None
-      }
-    }
   }
 }

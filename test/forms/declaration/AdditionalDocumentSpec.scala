@@ -16,7 +16,7 @@
 
 package forms.declaration
 
-import base.{TestHelper, UnitSpec}
+import base.{MockTaggedAuthCodes, TestHelper, UnitSpec}
 import forms.common.Date._
 import forms.common.DateSpec.{correctDate, incorrectDate}
 import forms.declaration.additionaldocuments.AdditionalDocument
@@ -26,7 +26,7 @@ import forms.declaration.additionaldocuments.DocumentWriteOffSpec._
 import models.declaration.ExportDeclarationTestData.{allRecords, declaration}
 import play.api.data.FormError
 
-class AdditionalDocumentSpec extends UnitSpec {
+class AdditionalDocumentSpec extends UnitSpec with MockTaggedAuthCodes {
 
   import AdditionalDocumentSpec._
 
@@ -47,7 +47,7 @@ class AdditionalDocumentSpec extends UnitSpec {
           val input = emptyAdditionalDocumentMap
           val expectedError = FormError(documentTypeCodeKey, "declaration.additionalDocument.code.empty.fromAuthCode")
 
-          val form = AdditionalDocument.form(allRecords).bind(input)
+          val form = AdditionalDocument.form(allRecords)(taggedAuthCodes).bind(input)
           form.errors must contain(expectedError)
         }
 
@@ -205,7 +205,7 @@ class AdditionalDocumentSpec extends UnitSpec {
       }
 
       def testFailedValidationErrors(input: Map[String, String], expectedErrors: Seq[FormError]): Unit = {
-        val form = AdditionalDocument.form(declaration).bind(input)
+        val form = AdditionalDocument.form(declaration)(taggedAuthCodes).bind(input)
 
         expectedErrors.foreach(form.errors must contain(_))
       }
@@ -214,18 +214,18 @@ class AdditionalDocumentSpec extends UnitSpec {
     "not contain errors" when {
 
       "the user enters correct data" in {
-        val form = AdditionalDocument.form(declaration).bind(correctAdditionalDocumentMap)
+        val form = AdditionalDocument.form(declaration)(taggedAuthCodes).bind(correctAdditionalDocumentMap)
         form.errors mustBe empty
       }
 
       "the user enters only required form fields" in {
-        val form = AdditionalDocument.form(declaration).bind(bareMinimumAdditionalDocument)
+        val form = AdditionalDocument.form(declaration)(taggedAuthCodes).bind(bareMinimumAdditionalDocument)
         form.errors mustBe empty
       }
 
       "the user enters an Issuing Authority Name containing special characters" in {
         val input = Map(documentTypeCodeKey -> "AB12", issuingAuthorityNameKey -> "Issuing Authority Name with ''' added")
-        val form = AdditionalDocument.form(declaration).bind(input)
+        val form = AdditionalDocument.form(declaration)(taggedAuthCodes).bind(input)
 
         form.errors mustBe empty
       }
@@ -235,7 +235,7 @@ class AdditionalDocumentSpec extends UnitSpec {
 
       "the user enters a document type code in lower case" in {
         val input = Map(documentTypeCodeKey -> "ab12")
-        val form = AdditionalDocument.form(declaration).bind(input)
+        val form = AdditionalDocument.form(declaration)(taggedAuthCodes).bind(input)
 
         form.errors mustBe empty
         form.value.flatMap(_.documentTypeCode) must be(Some("AB12"))
@@ -243,7 +243,7 @@ class AdditionalDocumentSpec extends UnitSpec {
 
       "the user enters a document status in lower case" in {
         val input = Map(documentTypeCodeKey -> "AB12", documentStatusKey -> "Ab")
-        val form = AdditionalDocument.form(declaration).bind(input)
+        val form = AdditionalDocument.form(declaration)(taggedAuthCodes).bind(input)
 
         form.errors mustBe empty
         form.value.flatMap(_.documentStatus) must be(Some("AB"))
@@ -254,7 +254,7 @@ class AdditionalDocumentSpec extends UnitSpec {
       "provided with document identifier with white spaces at beginning and end of string" in {
         val trimmedValue = TestHelper.createRandomAlphanumericString(20)
         val input = Map(documentTypeCodeKey -> "AB12", documentIdentifierKey -> s"\n \t${trimmedValue}\t \n")
-        val form = AdditionalDocument.form(declaration).bind(input)
+        val form = AdditionalDocument.form(declaration)(taggedAuthCodes).bind(input)
 
         form.errors mustBe empty
         form.value.flatMap(_.documentIdentifier) must be(Some(trimmedValue))

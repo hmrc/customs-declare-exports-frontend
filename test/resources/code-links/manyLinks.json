@@ -18,5 +18,21 @@
   {
     "parentCode": "2100",
     "childCodes": ["codesRestrictingZeroVat"]
+  },
+  {
+    "parentCode": "CGU",
+    "childCodes": ["CodesNeedingSpecificHintText","CodesRequiringDocumentation"]
+  },
+  {
+    "parentCode": "CSE",
+    "childCodes": ["CodesMutuallyExclusive","CodesNeedingSpecificHintText","CodesRequiringDocumentation","CodesSkippingInlandOrBorder"]
+  },
+  {
+    "parentCode": "FP",
+    "childCodes": ["CodesOverridingInlandOrBorderSkip"]
+  },
+  {
+    "parentCode": "MOU",
+    "childCodes": ["CodesNeedingSpecificHintText","CodesRequiringDocumentation","CodesSkippingLocationOfGoods"]
   }
 ]

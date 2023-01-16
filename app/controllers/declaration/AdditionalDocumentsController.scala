@@ -75,7 +75,8 @@ class AdditionalDocumentsController @Inject() (
     }
 
   private def redirectIfNoDocuments(itemId: String)(implicit request: JourneyRequest[_]): Call =
-    if (inErrorFixMode
+    if (
+      inErrorFixMode
       || taggedAuthCodes.hasAuthCodeRequiringAdditionalDocs(request.cacheModel)
       || request.cacheModel.isLicenseRequired(itemId)
     ) AdditionalDocumentAddController.displayPage(itemId)

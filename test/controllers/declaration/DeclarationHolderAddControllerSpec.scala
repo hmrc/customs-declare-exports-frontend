@@ -16,25 +16,26 @@
 
 package controllers.declaration
 
-import base.{ControllerSpec, ExportsTestData}
+import base.{ControllerSpec, ExportsTestData, MockTaggedAuthCodes}
 import controllers.declaration.routes.DeclarationHolderSummaryController
 import forms.common.Eori
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
 import forms.declaration.declarationHolder.AuthorizationTypeCodes.{CSE, EXRR}
 import forms.declaration.declarationHolder.DeclarationHolder
+import forms.declaration.declarationHolder.DeclarationHolder.AuthorisationTypeCodeId
 import models.DeclarationType._
 import models.declaration.{DeclarationHoldersData, EoriSource}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.{GivenWhenThen, OptionValues}
-import play.api.data.Form
+import play.api.data.{Form, FormError}
 import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.{Html, HtmlFormat}
 import views.html.declaration.declarationHolder.declaration_holder_add
 
-class DeclarationHolderAddControllerSpec extends ControllerSpec with GivenWhenThen with OptionValues {
+class DeclarationHolderAddControllerSpec extends ControllerSpec with GivenWhenThen with MockTaggedAuthCodes with OptionValues {
 
   val mockAddPage = mock[declaration_holder_add]
 
@@ -44,6 +45,7 @@ class DeclarationHolderAddControllerSpec extends ControllerSpec with GivenWhenTh
     mockExportsCacheService,
     navigator,
     stubMessagesControllerComponents(),
+    taggedAuthCodes,
     mockAddPage
   )(ec)
 
@@ -200,6 +202,33 @@ class DeclarationHolderAddControllerSpec extends ControllerSpec with GivenWhenTh
 
           status(result) mustBe BAD_REQUEST
           verifyAddPageInvoked()
+        }
+      }
+    }
+
+    "validateMutuallyExclusiveAuthCodes" when {
+      def holder(code: String) = DeclarationHolder(Some(code), None, None)
+
+      def error(code: String) = FormError(AuthorisationTypeCodeId, s"declaration.declarationHolder.${code}.error.exclusive")
+
+      "the user enters a new 'CSE' authorisation and the cache already includes an 'EXRR' one" should {
+        "return a FormError" in {
+          val result = controller.validateMutuallyExclusiveAuthCodes(Some(holder(CSE)), List(holder(EXRR)))
+          result.get mustBe error(CSE)
+        }
+      }
+
+      "the user enters a new 'EXRR' authorisation and the cache already includes a 'CSE' one" should {
+        "return a FormError" in {
+          val result = controller.validateMutuallyExclusiveAuthCodes(Some(holder(EXRR)), List(holder(CSE)))
+          result.get mustBe error(EXRR)
+        }
+      }
+
+      "the user does not enter an authorisation code" should {
+        "return None" in {
+          controller.validateMutuallyExclusiveAuthCodes(None, List(holder(CSE))) mustBe None
+          controller.validateMutuallyExclusiveAuthCodes(None, List(holder(EXRR))) mustBe None
         }
       }
     }

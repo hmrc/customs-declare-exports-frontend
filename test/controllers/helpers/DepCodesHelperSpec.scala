@@ -24,14 +24,15 @@ import org.mockito.Mockito.{reset, when}
 
 class DepCodesHelperSpec extends UnitWithMocksSpec with MockExportCacheService {
 
-  private lazy val depCodesHelper = new DepCodesHelper(codeLinkConnector)
   private val appConfig = mock[AppConfig]
   private lazy val codeLinkConnector = new FileBasedCodeLinkConnector(appConfig)
+  private lazy val depCodesHelper = new DepCodesHelper(codeLinkConnector)
 
   override def beforeEach(): Unit = {
     super.beforeEach()
 
     reset(appConfig)
+    when(appConfig.taggedHolderOfAuthorisationCodeFile).thenReturn("/code-links/manyLinks.json")
     when(appConfig.procedureCodeToAdditionalProcedureCodesLinkFile).thenReturn("/code-links/manyLinks.json")
     when(appConfig.procedureCodeToAdditionalProcedureCodesC21LinkFile).thenReturn("/code-links/manyLinks.json")
     when(appConfig.procedureCodesLinkFile).thenReturn("/code-links/manyLinks.json")

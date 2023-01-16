@@ -42,7 +42,7 @@ class LocationOfGoodsController @Inject() (
   locationOfGoods: location_of_goods,
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
-  taggedAuthCodes: TaggedAuthCodes,
+  taggedAuthCodes: TaggedAuthCodes
 )(implicit ec: ExecutionContext, codeListConnector: CodeListConnector)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 

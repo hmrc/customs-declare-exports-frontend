@@ -41,14 +41,8 @@ case object CodesRestrictingZeroVat extends ProcedureCodeTag {
 object Tag extends Enumeration {
   type Tag = Value
 
-  val
-    CodesMutuallyExclusive,
-    CodesNeedingSpecificHintText,
-    CodesOverridingInlandOrBorderSkip,
-    CodesRequiringDocumentation,
-    CodesSkippingInlandOrBorder,
-    CodesSkippingLocationOfGoods
-  = Value
+  val CodesMutuallyExclusive, CodesNeedingSpecificHintText, CodesOverridingInlandOrBorderSkip, CodesRequiringDocumentation,
+    CodesSkippingInlandOrBorder, CodesSkippingLocationOfGoods = Value
 }
 
 @ImplementedBy(classOf[FileBasedCodeLinkConnector])
