@@ -19,7 +19,6 @@ package controllers.declaration
 import connectors.CodeListConnector
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.routes.{LocationOfGoodsController, OfficeOfExitController, RoutingCountriesController}
-import controllers.helpers.LocationOfGoodsHelper.skipLocationOfGoods
 import controllers.navigation.Navigator
 import forms.declaration.countries.Countries
 import forms.declaration.countries.Countries.DestinationCountryPage
@@ -27,6 +26,7 @@ import models.DeclarationType._
 import models.requests.JourneyRequest
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import services.TaggedAuthCodes
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
@@ -42,6 +42,7 @@ class DestinationCountryController @Inject() (
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
   mcc: MessagesControllerComponents,
+  taggedAuthCodes: TaggedAuthCodes,
   destinationCountryPage: destination_country
 )(implicit ec: ExecutionContext, codeListConnector: CodeListConnector)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
@@ -67,7 +68,7 @@ class DestinationCountryController @Inject() (
   }
 
   private def redirectToNextPage()(implicit request: JourneyRequest[AnyContent]): Result =
-    if (skipLocationOfGoods(request.cacheModel)) navigator.continueTo(OfficeOfExitController.displayPage)
+    if (taggedAuthCodes.skipLocationOfGoods(request.cacheModel)) navigator.continueTo(OfficeOfExitController.displayPage)
     else
       request.declarationType match {
         case SUPPLEMENTARY | CLEARANCE          => navigator.continueTo(LocationOfGoodsController.displayPage)

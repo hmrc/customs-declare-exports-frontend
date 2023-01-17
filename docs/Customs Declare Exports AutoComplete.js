@@ -634,25 +634,8 @@ function countriesOfRoutingSummary(){
 
 function locationOfGoods(){
     if (currentPageIs('/customs-declare-exports/declaration/location-of-goods')) {
-        switch(getDeclaration()){
-            case 'B':
-            case 'E':
-            case 'F':
-            case 'K':
-            case 'Y':
-                document.getElementById('code').value = 'GBAUBELBFSBEL'
-                break
-            case 'J':
-            case 'C':
-                document.getElementById('code').value = 'GBAUFXTFXTFXT'
-                break
-            case 'Z':
-                document.getElementById('code').value = 'GBAUABDABDABD'
-                break
-            default:
-                document.getElementById('code').value = 'GBAUFXTFXTFXT'
-        }
-
+        document.getElementById('code_yes').checked = 'checked'
+        document.getElementById('glc').value = 'GBAUABDABDABDGVM - Aberdeen  / Aberdeen GVMS Port'
         submit()
     }
 }
@@ -1110,7 +1093,7 @@ function exportItems(){
 
 function transportLeavingBorder(){
     if (currentPageIs('/customs-declare-exports/declaration/transport-leaving-the-border')) {
-        selectRadioOptionFromInputs(document.getElementsByName('transportLeavingTheBorder'), 0)
+        selectRadioOptionFromInputs(document.getElementsByName('transportLeavingTheBorder'), 1)
         submit()
     }
 }

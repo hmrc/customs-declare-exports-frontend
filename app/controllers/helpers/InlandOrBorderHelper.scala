@@ -21,11 +21,12 @@ import forms.declaration.ModeOfTransportCode.RoRo
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.SUPPLEMENTARY_EIDR
 import models.DeclarationType._
 import models.ExportsDeclaration
+import services.TaggedAuthCodes
 
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class InlandOrBorderHelper @Inject() (depCodes: DepCodesHelper) {
+class InlandOrBorderHelper @Inject() (depCodes: DepCodesHelper, taggedAuthCodes: TaggedAuthCodes) {
 
   val notAllowedOnInlandOrBorder = List(CLEARANCE, OCCASIONAL, SIMPLIFIED)
 
@@ -36,7 +37,7 @@ class InlandOrBorderHelper @Inject() (depCodes: DepCodesHelper) {
 
   def skipInlandOrBorder(declaration: ExportsDeclaration): Boolean =
     declaration.isAdditionalDeclarationType(SUPPLEMENTARY_EIDR) ||
-      declaration.declarationHolders.exists(_.skipInlandOrBorder) ||
+      declaration.declarationHolders.exists(taggedAuthCodes.skipInlandOrBorder) ||
       declaration.requiresWarehouseId ||
       declaration.transportLeavingBorderCode == Some(RoRo) ||
       depCodes.isDesignatedExportPlaceCode(declaration)

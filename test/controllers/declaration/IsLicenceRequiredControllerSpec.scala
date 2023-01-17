@@ -16,13 +16,12 @@
 
 package controllers.declaration
 
-import base.ControllerSpec
+import base.{ControllerSpec, MockTaggedAuthCodes}
 import controllers.declaration.routes.{AdditionalDocumentAddController, AdditionalDocumentsController, AdditionalDocumentsRequiredController}
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.Yes
 import forms.declaration.CommodityDetails
 import forms.declaration.additionaldocuments.AdditionalDocument
-import forms.declaration.declarationHolder.AuthorizationTypeCodes
 import models.DeclarationType
 import models.declaration.AdditionalDocuments
 import org.mockito.ArgumentCaptor
@@ -35,7 +34,7 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.declaration.is_licence_required
 
-class IsLicenceRequiredControllerSpec extends ControllerSpec with OptionValues {
+class IsLicenceRequiredControllerSpec extends ControllerSpec with MockTaggedAuthCodes with OptionValues {
 
   private val itemId = "itemId"
   private val commodityDetails = CommodityDetails(Some("1234567890"), Some("description"))
@@ -43,15 +42,15 @@ class IsLicenceRequiredControllerSpec extends ControllerSpec with OptionValues {
 
   private val mockPage = mock[is_licence_required]
 
-  private val controller =
-    new IsLicenceRequiredController(
-      mockAuthAction,
-      mockJourneyAction,
-      mockExportsCacheService,
-      navigator,
-      stubMessagesControllerComponents(),
-      mockPage
-    )(ec)
+  private val controller = new IsLicenceRequiredController(
+    mockAuthAction,
+    mockJourneyAction,
+    mockExportsCacheService,
+    navigator,
+    stubMessagesControllerComponents(),
+    taggedAuthCodes,
+    mockPage
+  )(ec)
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(declaration)
@@ -146,7 +145,7 @@ class IsLicenceRequiredControllerSpec extends ControllerSpec with OptionValues {
             "authorisation from List" in {
               val declaration = aDeclaration(
                 withItem(anItem(withItemId(itemId), withCommodityDetails(commodityDetails))),
-                withDeclarationHolders(authorisationTypeCode = Some(AuthorizationTypeCodes.codesRequiringDocumentation.head))
+                withDeclarationHolders(authorisationTypeCode = Some(taggedAuthCodes.codesRequiringDocumentation.head))
               )
 
               withNewCaching(declaration)

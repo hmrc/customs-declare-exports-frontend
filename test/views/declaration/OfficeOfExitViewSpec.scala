@@ -16,23 +16,21 @@
 
 package views.declaration
 
-import base.Injector
+import base.{Injector, MockTaggedAuthCodes}
 import controllers.declaration.routes.{DestinationCountryController, LocationOfGoodsController}
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.SUPPLEMENTARY_EIDR
-import forms.declaration.declarationHolder.AuthorizationTypeCodes.codeThatSkipLocationOfGoods
 import forms.declaration.officeOfExit.OfficeOfExit
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import play.api.mvc.AnyContent
 import services.cache.ExportsTestHelper
-import tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.office_of_exit
 import views.tags.ViewTest
 
 @ViewTest
-class OfficeOfExitViewSpec extends UnitViewSpec with ExportsTestHelper with Stubs with Injector {
+class OfficeOfExitViewSpec extends UnitViewSpec with ExportsTestHelper with Injector with MockTaggedAuthCodes {
 
   private val page: office_of_exit = instanceOf[office_of_exit]
 
@@ -108,7 +106,7 @@ class OfficeOfExitViewSpec extends UnitViewSpec with ExportsTestHelper with Stub
     }
 
     "display 'Back' button that links to 'Destination Country' page" in {
-      val modifier = withDeclarationHolders(Some(codeThatSkipLocationOfGoods))
+      val modifier = withDeclarationHolders(Some(taggedAuthCodes.codesSkippingLocationOfGoods.head))
       implicit val request: JourneyRequest[AnyContent] = withRequest(SUPPLEMENTARY_EIDR, modifier)
       val skipLocationOfGoodsView = page(OfficeOfExit.form)
 

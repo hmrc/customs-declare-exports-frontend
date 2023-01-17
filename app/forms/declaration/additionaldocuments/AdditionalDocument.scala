@@ -25,6 +25,7 @@ import models.viewmodels.TariffContentKey
 import play.api.data.{Form, FormError, Forms, Mapping}
 import play.api.data.Forms._
 import play.api.libs.json.{JsValue, Json}
+import services.TaggedAuthCodes
 import uk.gov.voa.play.form.ConditionalMappings.isAnyOf
 import utils.validators.forms.FieldValidator.{nonEmpty, _}
 
@@ -65,9 +66,9 @@ object AdditionalDocument extends DeclarationPage {
   val dateOfValidityKey = "dateOfValidity"
 
   // scalastyle:off
-  private def mapping(cacheModel: ExportsDeclaration): Mapping[AdditionalDocument] = {
+  private def mapping(declaration: ExportsDeclaration)(implicit T: TaggedAuthCodes): Mapping[AdditionalDocument] = {
     val keyWhenDocumentTypeCodeEmpty =
-      if (cacheModel.hasAuthCodeRequiringAdditionalDocs) "declaration.additionalDocument.code.empty.fromAuthCode"
+      if (T.hasAuthCodeRequiringAdditionalDocs(declaration)) "declaration.additionalDocument.code.empty.fromAuthCode"
       else "declaration.additionalDocument.code.empty"
 
     val documentTypeCodeRequired = optional(
@@ -139,8 +140,8 @@ object AdditionalDocument extends DeclarationPage {
       documentWriteOff
     )
 
-  def form(cacheModel: ExportsDeclaration): Form[AdditionalDocument] =
-    Form(mapping(cacheModel))
+  def form(declaration: ExportsDeclaration)(implicit T: TaggedAuthCodes): Form[AdditionalDocument] =
+    Form(mapping(declaration))
 
   def globalErrors(form: Form[AdditionalDocument]): Form[AdditionalDocument] = {
 

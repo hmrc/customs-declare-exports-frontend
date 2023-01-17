@@ -19,7 +19,6 @@ package controllers.navigation
 import controllers.declaration.routes
 import controllers.helpers.DeclarationHolderHelper.userCanLandOnIsAuthRequiredPage
 import controllers.helpers.ErrorFixModeHelper.{inErrorFixMode, setErrorFixMode}
-import controllers.helpers.LocationOfGoodsHelper.skipLocationOfGoods
 import controllers.helpers.TransportSectionHelper.{additionalDeclTypesAllowedOnInlandOrBorder, isPostalOrFTIModeOfTransport}
 import controllers.helpers._
 import controllers.routes.{ChoiceController, RejectedNotificationsController}
@@ -46,7 +45,7 @@ import models.ExportsDeclaration
 import models.declaration.ExportItem
 import models.requests.JourneyRequest
 import play.api.mvc.{AnyContent, Call, Result, Results}
-import services.TariffApiService
+import services.{TaggedAuthCodes, TariffApiService}
 import services.TariffApiService.SupplementaryUnitsNotRequired
 
 import javax.inject.{Inject, Singleton}
@@ -58,6 +57,7 @@ case class ItemId(id: String)
 // scalastyle:off number.of.methods
 @Singleton
 class Navigator @Inject() (
+  taggedAuthCodes: TaggedAuthCodes,
   tariffApiService: TariffApiService,
   inlandOrBorderHelper: InlandOrBorderHelper,
   supervisingCustomsOfficeHelper: SupervisingCustomsOfficeHelper
@@ -386,8 +386,8 @@ class Navigator @Inject() (
         else routes.MucrController.displayPage
     }
 
-  private def officeOfExitPreviousPage(cacheModel: ExportsDeclaration): Call =
-    if (skipLocationOfGoods(cacheModel)) routes.DestinationCountryController.displayPage
+  private def officeOfExitPreviousPage(declaration: ExportsDeclaration): Call =
+    if (taggedAuthCodes.skipLocationOfGoods(declaration)) routes.DestinationCountryController.displayPage
     else routes.LocationOfGoodsController.displayPage
 
   private def entryIntoDeclarantsPreviousPage(cacheModel: ExportsDeclaration): Call =
@@ -419,8 +419,8 @@ class Navigator @Inject() (
     else
       routes.CommodityDetailsController.displayPage(itemId)
 
-  private def additionalDocumentsPreviousPage(cacheModel: ExportsDeclaration, itemId: String): Call = {
-    val isLicenseRequired = cacheModel.hasAuthCodeRequiringAdditionalDocs || cacheModel.isLicenseRequired(itemId)
+  private def additionalDocumentsPreviousPage(declaration: ExportsDeclaration, itemId: String): Call = {
+    val isLicenseRequired = taggedAuthCodes.hasAuthCodeRequiringAdditionalDocs(declaration) || declaration.isLicenseRequired(itemId)
     if (isLicenseRequired) routes.IsLicenceRequiredController.displayPage(itemId)
     else routes.AdditionalDocumentsRequiredController.displayPage(itemId)
   }
@@ -440,10 +440,10 @@ class Navigator @Inject() (
     else
       routes.AdditionalInformationRequiredController.displayPage(itemId)
 
-  private def additionalDocumentsClearancePreviousPage(cacheModel: ExportsDeclaration, itemId: String): Call =
-    if (cacheModel.listOfAdditionalDocuments(itemId).nonEmpty)
+  private def additionalDocumentsClearancePreviousPage(declaration: ExportsDeclaration, itemId: String): Call =
+    if (declaration.listOfAdditionalDocuments(itemId).nonEmpty)
       routes.AdditionalDocumentsController.displayPage(itemId)
-    else if (cacheModel.hasAuthCodeRequiringAdditionalDocs) additionalDocumentsSummaryClearancePreviousPage(cacheModel, itemId)
+    else if (taggedAuthCodes.hasAuthCodeRequiringAdditionalDocs(declaration)) additionalDocumentsSummaryClearancePreviousPage(declaration, itemId)
     else routes.AdditionalDocumentsRequiredController.displayPage(itemId)
 
   private def additionalInformationAddPreviousPage(cacheModel: ExportsDeclaration, itemId: String): Call =

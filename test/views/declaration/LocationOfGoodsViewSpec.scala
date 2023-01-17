@@ -18,12 +18,11 @@ package views.declaration
 
 import base.{Injector, TestHelper}
 import config.AppConfig
-import controllers.declaration.routes.{DestinationCountryController, RoutingCountriesController}
 import connectors.CodeListConnector
+import controllers.declaration.routes.{DestinationCountryController, RoutingCountriesController}
 import forms.declaration.AuthorisationProcedureCodeChoice.{Choice1007, ChoiceOthers}
 import forms.declaration.LocationOfGoods
 import forms.declaration.LocationOfGoods.form
-import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
 import forms.declaration.declarationHolder.AuthorizationTypeCodes.{CSE, EXRR, MIB}
 import models.DeclarationType._

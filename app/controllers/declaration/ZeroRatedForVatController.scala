@@ -16,7 +16,8 @@
 
 package controllers.declaration
 
-import connectors.{CodeLinkConnector, CodesRestrictingZeroVat}
+import connectors.CodeLinkConnector
+import connectors.Tag.CodesRestrictingZeroVat
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.declaration.{NactCode, ZeroRatedForVat}
@@ -66,7 +67,7 @@ class ZeroRatedForVatController @Inject() (
   private def updateExportsCache(itemId: String, updatedCache: NactCode)(implicit r: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
     updateDeclarationFromRequest(model => model.updatedItem(itemId, _.copy(nactExemptionCode = Some(updatedCache))))
 
-  val procedureCodesRestrictingZeroVat = codeLinkConnector.getValidProcedureCodesForTag(CodesRestrictingZeroVat)
+  private val procedureCodesRestrictingZeroVat = codeLinkConnector.getValidProcedureCodesForTag(CodesRestrictingZeroVat)
 
   private def eligibleForZeroVat(itemId: String)(implicit request: JourneyRequest[_]): Boolean =
     request.cacheModel.procedureCodeOfItem(itemId).flatMap(_.procedureCode).fold(false)(procedureCodesRestrictingZeroVat.contains)

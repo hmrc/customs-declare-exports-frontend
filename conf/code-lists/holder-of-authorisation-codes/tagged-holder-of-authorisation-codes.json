@@ -1,0 +1,178 @@
+[
+  {
+    "parentCode": "ACE",
+    "childCodes": ["CodesRequiringDocumentation"]
+  },
+  {
+    "parentCode": "ACP",
+    "childCodes": ["CodesRequiringDocumentation"]
+  },
+  {
+    "parentCode": "ACR",
+    "childCodes": ["CodesRequiringDocumentation"]
+  },
+  {
+    "parentCode": "ACT",
+    "childCodes": ["CodesRequiringDocumentation"]
+  },
+  {
+    "parentCode": "AEOC",
+    "childCodes": ["CodesRequiringDocumentation"]
+  },
+  {
+    "parentCode": "AEOF",
+    "childCodes": ["CodesNeedingSpecificHintText","CodesRequiringDocumentation"]
+  },
+  {
+    "parentCode": "AEOS",
+    "childCodes": ["CodesRequiringDocumentation"]
+  },
+  {
+    "parentCode": "BOI",
+    "childCodes": ["CodesRequiringDocumentation"]
+  },
+  {
+    "parentCode": "BTI",
+    "childCodes": ["CodesRequiringDocumentation"]
+  },
+  {
+    "parentCode": "CCL",
+    "childCodes": ["CodesRequiringDocumentation"]
+  },
+  {
+    "parentCode": "CGU",
+    "childCodes": ["CodesNeedingSpecificHintText","CodesRequiringDocumentation"]
+  },
+  {
+    "parentCode": "CSE",
+    "childCodes": ["CodesMutuallyExclusive","CodesNeedingSpecificHintText","CodesRequiringDocumentation","CodesSkippingInlandOrBorder"]
+  },
+  {
+    "parentCode": "CVA",
+    "childCodes": ["CodesRequiringDocumentation"]
+  },
+  {
+    "parentCode": "CW1",
+    "childCodes": ["CodesRequiringDocumentation"]
+  },
+  {
+    "parentCode": "CW2",
+    "childCodes": ["CodesRequiringDocumentation"]
+  },
+  {
+    "parentCode": "CWP",
+    "childCodes": ["CodesNeedingSpecificHintText","CodesRequiringDocumentation"]
+  },
+  {
+    "parentCode": "DEP",
+    "childCodes": ["CodesRequiringDocumentation"]
+  },
+  {
+    "parentCode": "DPO",
+    "childCodes": ["CodesNeedingSpecificHintText","CodesRequiringDocumentation"]
+  },
+  {
+    "parentCode": "EIR",
+    "childCodes": ["CodesNeedingSpecificHintText","CodesRequiringDocumentation"]
+  },
+  {
+    "parentCode": "EPSS",
+    "childCodes": ["CodesNeedingSpecificHintText","CodesRequiringDocumentation"]
+  },
+  {
+    "parentCode": "ETD",
+    "childCodes": ["CodesRequiringDocumentation"]
+  },
+  {
+    "parentCode": "EUS",
+    "childCodes": ["CodesNeedingSpecificHintText","CodesRequiringDocumentation"]
+  },
+  {
+    "parentCode": "EXRR",
+    "childCodes": ["CodesMutuallyExclusive","CodesSkippingInlandOrBorder"]
+  },
+  {
+    "parentCode": "EXW",
+    "childCodes": ["CodesRequiringDocumentation"]
+  },
+  {
+    "parentCode": "EXWH",
+    "childCodes": ["CodesRequiringDocumentation"]
+  },
+  {
+    "parentCode": "FAS",
+    "childCodes": ["CodesRequiringDocumentation"]
+  },
+  {
+    "parentCode": "FP",
+    "childCodes": ["CodesOverridingInlandOrBorderSkip"]
+  },
+  {
+    "parentCode": "FZ",
+    "childCodes": ["CodesRequiringDocumentation"]
+  },
+  {
+    "parentCode": "GGA",
+    "childCodes": ["CodesRequiringDocumentation"]
+  },
+  {
+    "parentCode": "IPO",
+    "childCodes": ["CodesNeedingSpecificHintText","CodesRequiringDocumentation"]
+  },
+  {
+    "parentCode": "MIB",
+    "childCodes": ["CodesRequiringDocumentation"]
+  },
+  {
+    "parentCode": "MOU",
+    "childCodes": ["CodesNeedingSpecificHintText","CodesRequiringDocumentation","CodesSkippingLocationOfGoods"]
+  },
+  {
+    "parentCode": "OPO",
+    "childCodes": ["CodesNeedingSpecificHintText","CodesRequiringDocumentation"]
+  },
+  {
+    "parentCode": "REP",
+    "childCodes": ["CodesRequiringDocumentation"]
+  },
+  {
+    "parentCode": "REX",
+    "childCodes": ["CodesRequiringDocumentation"]
+  },
+  {
+    "parentCode": "RSS",
+    "childCodes": ["CodesRequiringDocumentation"]
+  },
+  {
+    "parentCode": "SDE",
+    "childCodes": ["CodesNeedingSpecificHintText","CodesRequiringDocumentation"]
+  },
+  {
+    "parentCode": "SIVA",
+    "childCodes": ["CodesNeedingSpecificHintText","CodesRequiringDocumentation"]
+  },
+  {
+    "parentCode": "SSE",
+    "childCodes": ["CodesRequiringDocumentation"]
+  },
+  {
+    "parentCode": "TEA",
+    "childCodes": ["CodesNeedingSpecificHintText","CodesRequiringDocumentation"]
+  },
+  {
+    "parentCode": "TEAH",
+    "childCodes": ["CodesRequiringDocumentation"]
+  },
+  {
+    "parentCode": "TRD",
+    "childCodes": ["CodesRequiringDocumentation"]
+  },
+  {
+    "parentCode": "TST",
+    "childCodes": ["CodesRequiringDocumentation"]
+  },
+  {
+    "parentCode": "UKCS",
+    "childCodes": ["CodesRequiringDocumentation"]
+  }
+]

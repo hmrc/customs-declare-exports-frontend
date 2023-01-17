@@ -24,11 +24,12 @@ import forms.common.YesNoAnswer.YesNoAnswers
 import forms.common.YesNoAnswer.YesNoAnswers.{no, yes}
 import forms.declaration.IsLicenceRequired
 import models.DeclarationType._
-import models.requests.JourneyRequest
 import models.ExportsDeclaration
+import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
+import services.TaggedAuthCodes
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
@@ -43,6 +44,7 @@ class IsLicenceRequiredController @Inject() (
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
   mcc: MessagesControllerComponents,
+  taggedAuthCodes: TaggedAuthCodes,
   is_licence_required: is_licence_required
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
@@ -87,7 +89,7 @@ class IsLicenceRequiredController @Inject() (
       case YesNoAnswers.yes =>
         AdditionalDocumentAddController.displayPage(itemId)
 
-      case YesNoAnswers.no if request.cacheModel.hasAuthCodeRequiringAdditionalDocs =>
+      case YesNoAnswers.no if taggedAuthCodes.hasAuthCodeRequiringAdditionalDocs(request.cacheModel) =>
         AdditionalDocumentAddController.displayPage(itemId)
 
       case YesNoAnswers.no =>

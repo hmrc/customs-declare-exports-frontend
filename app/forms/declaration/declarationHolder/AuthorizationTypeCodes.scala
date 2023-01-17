@@ -25,14 +25,9 @@ object AuthorizationTypeCodes {
 
   val CSE = "CSE"
   val EXRR = "EXRR"
+  val FP = "FP"
   val MIB = "MIB"
-
-  val codeThatOverrideInlandOrBorderSkip = "FP"
-  val codeThatSkipLocationOfGoods = "MOU"
-
-  val mutuallyExclusiveAuthCodes = List(CSE, EXRR)
-
-  val authCodesThatSkipInlandOrBorder = mutuallyExclusiveAuthCodes
+  val MOU = "MOU"
 
   def codesFilteredFromView(merchandiseInBagConfig: MerchandiseInBagConfig): List[String] =
     if (merchandiseInBagConfig.isMerchandiseInBagEnabled) List("EORI")
@@ -46,49 +41,4 @@ object AuthorizationTypeCodes {
 
   def isAuthCode(declaration: ExportsDeclaration, codes: Seq[String]): Boolean =
     declaration.declarationHolders.exists(_.authorisationTypeCode.exists(codes.contains))
-
-  val codesRequiringDocumentation = Set(
-    "ACE",
-    "ACP",
-    "ACR",
-    "ACT",
-    "AEOC",
-    "AEOF",
-    "AEOS",
-    MIB,
-    "BOI",
-    "BTI",
-    "CCL",
-    "CGU",
-    CSE,
-    "CVA",
-    "CW1",
-    "CW2",
-    "CWP",
-    "DEP",
-    "DPO",
-    "EIR",
-    "EPSS",
-    "ETD",
-    "EUS",
-    "EXW",
-    "EXWH",
-    "FAS",
-    "FZ",
-    "GGA",
-    "IPO",
-    "MOU",
-    "OPO",
-    "REP",
-    "REX",
-    "RSS",
-    "SDE",
-    "SIVA",
-    "SSE",
-    "TEA",
-    "TEAH",
-    "TRD",
-    "TST",
-    "UKCS"
-  )
 }

@@ -16,7 +16,7 @@
 
 package views.declaration.addtionalDocuments
 
-import base.Injector
+import base.{Injector, MockTaggedAuthCodes}
 import controllers.declaration.routes.{
   AdditionalDocumentsController,
   AdditionalDocumentsRequiredController,
@@ -40,11 +40,12 @@ import views.html.declaration.additionalDocuments.additional_document_add
 import views.tags.ViewTest
 
 @ViewTest
-class AdditionalDocumentAddViewSpec extends UnitViewSpec with Injector {
+class AdditionalDocumentAddViewSpec extends UnitViewSpec with Injector with MockTaggedAuthCodes {
 
   val page = instanceOf[additional_document_add]
 
-  def createView(implicit request: JourneyRequest[_]): Document = page(itemId, form(declaration))(request, messages)
+  def createView(implicit request: JourneyRequest[_]): Document =
+    page(itemId, form(declaration)(taggedAuthCodes))(request, messages)
 
   object TestDeclaration {
     private val withAdditionalInfo = withAdditionalInformation("code", "desc")

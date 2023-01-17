@@ -107,7 +107,7 @@ class FileBasedCodeListConnector @Inject() (appConfig: AppConfig, goodsLocationC
     (codeItem: CodeItem, locale: Locale) => DmsErrorCode(codeItem.code, codeItem.getDescriptionByLocale(locale))
   )
   private lazy val holderOfAuthorisationCodeListsByLang = loadCommonCodesAsOrderedMap(
-    appConfig.holderOfAuthorisationCodes,
+    appConfig.holderOfAuthorisationCodeFile,
     (codeItem: CodeItem, locale: Locale) => HolderOfAuthorisationCode(codeItem.code, codeItem.getDescriptionByLocale(locale))
   )
   private lazy val procedureCodeListsByLang = loadCommonCodesAsOrderedMap(

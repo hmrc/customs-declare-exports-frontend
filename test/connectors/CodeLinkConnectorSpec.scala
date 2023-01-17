@@ -18,6 +18,7 @@ package connectors
 
 import base.UnitWithMocksSpec
 import config.AppConfig
+import connectors.Tag._
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 
@@ -29,6 +30,7 @@ class CodeLinkConnectorSpec extends UnitWithMocksSpec with BeforeAndAfterEach {
     super.beforeEach()
 
     reset(appConfig)
+    when(appConfig.taggedHolderOfAuthorisationCodeFile).thenReturn("/code-links/manyLinks.json")
     when(appConfig.procedureCodeToAdditionalProcedureCodesLinkFile).thenReturn("/code-links/manyLinks.json")
     when(appConfig.procedureCodeToAdditionalProcedureCodesC21LinkFile).thenReturn("/code-links/manyLinks.json")
     when(appConfig.countryCodeToAliasesLinkFile).thenReturn("/code-links/manyLinks.json")
@@ -40,7 +42,9 @@ class CodeLinkConnectorSpec extends UnitWithMocksSpec with BeforeAndAfterEach {
   private lazy val connector = new FileBasedCodeLinkConnector(appConfig)
 
   "FileBasedCodeListConnector" should {
+
     "throw exception on initialisation" when {
+
       "code link file is missing" in {
         when(appConfig.procedureCodeToAdditionalProcedureCodesLinkFile).thenReturn("")
 
@@ -61,6 +65,7 @@ class CodeLinkConnectorSpec extends UnitWithMocksSpec with BeforeAndAfterEach {
     }
 
     "return a list of valid additional procedure codes for non-C21 journeys" when {
+
       "the procedure code exists in the list" in {
         connector.getValidAdditionalProcedureCodesForProcedureCode("1040") must be(Some(List("C12", "F75")))
       }
@@ -75,6 +80,7 @@ class CodeLinkConnectorSpec extends UnitWithMocksSpec with BeforeAndAfterEach {
     }
 
     "return a list of valid additional procedure codes for C21 journeys" when {
+
       "the procedure code exists in the list" in {
         connector.getValidAdditionalProcedureCodesForProcedureCodeC21("1040") must be(Some(List("C12", "F75")))
       }
@@ -89,6 +95,7 @@ class CodeLinkConnectorSpec extends UnitWithMocksSpec with BeforeAndAfterEach {
     }
 
     "return a list of aliases for a country" when {
+
       "the country code exists in the list" in {
         connector.getAliasesForCountryCode("1040") must be(Some(List("C12", "F75")))
       }
@@ -104,11 +111,12 @@ class CodeLinkConnectorSpec extends UnitWithMocksSpec with BeforeAndAfterEach {
 
     "return a list of procedure codes for a given tag" when {
       "the tag is associated with procedure codes" in {
-        connector.getValidProcedureCodesForTag(CodesRestrictingZeroVat) must be(Seq("3171", "2100"))
+        connector.getValidProcedureCodesForTag(CodesRestrictingZeroVat) mustBe List("3171", "2100")
       }
     }
 
     "return a list of short names for a country" when {
+
       "the country code exists in the list" in {
         connector.getShortNamesForCountryCode("1040") must be(Some(List("C12", "F75")))
       }
@@ -123,6 +131,7 @@ class CodeLinkConnectorSpec extends UnitWithMocksSpec with BeforeAndAfterEach {
     }
 
     "return a list of location types for a Goods Location Code" when {
+
       "the GLC exists in the list" in {
         connector.getLocationTypesForGoodsLocationCode("1040") must be(Some(List("C12", "F75")))
       }
@@ -133,6 +142,33 @@ class CodeLinkConnectorSpec extends UnitWithMocksSpec with BeforeAndAfterEach {
 
       "the GLC does not have any Location Types" in {
         connector.getLocationTypesForGoodsLocationCode("0000") must be(Some(List.empty[String]))
+      }
+    }
+
+    "return the expected authorisation codes" when {
+
+      "the tag provided is 'CodesMutuallyExclusive'" in {
+        connector.getHolderOfAuthorisationCodesForTag(CodesMutuallyExclusive) mustBe List("CSE")
+      }
+
+      "the tag provided is 'CodesNeedingSpecificHintText'" in {
+        connector.getHolderOfAuthorisationCodesForTag(CodesNeedingSpecificHintText) mustBe List("CGU", "CSE", "MOU")
+      }
+
+      "the tag provided is 'CodesOverridingInlandOrBorderSkip'" in {
+        connector.getHolderOfAuthorisationCodesForTag(CodesOverridingInlandOrBorderSkip) mustBe List("FP")
+      }
+
+      "the tag provided is 'CodesRequiringDocumentation'" in {
+        connector.getHolderOfAuthorisationCodesForTag(CodesRequiringDocumentation) mustBe List("CGU", "CSE", "MOU")
+      }
+
+      "the tag provided is 'CodesSkippingInlandOrBorder'" in {
+        connector.getHolderOfAuthorisationCodesForTag(CodesSkippingInlandOrBorder) mustBe List("CSE")
+      }
+
+      "the tag provided is 'CodesSkippingLocationOfGoods'" in {
+        connector.getHolderOfAuthorisationCodesForTag(CodesSkippingLocationOfGoods) mustBe List("MOU")
       }
     }
   }

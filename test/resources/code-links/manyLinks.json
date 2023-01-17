@@ -13,10 +13,26 @@
   },
   {
     "parentCode": "3171",
-    "childCodes": ["codesRestrictingZeroVat"]
+    "childCodes": ["CodesRestrictingZeroVat"]
   },
   {
     "parentCode": "2100",
-    "childCodes": ["codesRestrictingZeroVat"]
+    "childCodes": ["CodesRestrictingZeroVat"]
+  },
+  {
+    "parentCode": "CGU",
+    "childCodes": ["CodesNeedingSpecificHintText","CodesRequiringDocumentation"]
+  },
+  {
+    "parentCode": "CSE",
+    "childCodes": ["CodesMutuallyExclusive","CodesNeedingSpecificHintText","CodesRequiringDocumentation","CodesSkippingInlandOrBorder"]
+  },
+  {
+    "parentCode": "FP",
+    "childCodes": ["CodesOverridingInlandOrBorderSkip"]
+  },
+  {
+    "parentCode": "MOU",
+    "childCodes": ["CodesNeedingSpecificHintText","CodesRequiringDocumentation","CodesSkippingLocationOfGoods"]
   }
 ]
