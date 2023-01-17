@@ -39,6 +39,8 @@ class DepCodesHelperSpec extends UnitWithMocksSpec with MockExportCacheService {
     when(appConfig.countryCodeToAliasesLinkFile).thenReturn("/code-links/manyLinks.json")
     when(appConfig.countryCodeToShortNameLinkFile).thenReturn("/code-links/manyLinks.json")
     when(appConfig.goodsLocationCodeToLocationTypeFile).thenReturn("/code-links/manyLinks.json")
+    when(appConfig.additionalDocumentCodeLinkFile).thenReturn("/code-links/manyLinks.json")
+    when(appConfig.additionalDocumentStatusCodeLinkFile).thenReturn("/code-links/manyLinks.json")
   }
 
   "DepCodesHelper on isDesignatedExportPlaceCode" should {

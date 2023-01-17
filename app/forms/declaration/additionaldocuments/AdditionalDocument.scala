@@ -25,7 +25,7 @@ import models.viewmodels.TariffContentKey
 import play.api.data.{Form, FormError, Forms, Mapping}
 import play.api.data.Forms._
 import play.api.libs.json.{JsValue, Json}
-import services.TaggedAuthCodes
+import services.{TaggedAdditionalDocumentCodes, TaggedAuthCodes}
 import uk.gov.voa.play.form.ConditionalMappings.isAnyOf
 import utils.validators.forms.FieldValidator.{nonEmpty, _}
 
@@ -66,9 +66,11 @@ object AdditionalDocument extends DeclarationPage {
   val dateOfValidityKey = "dateOfValidity"
 
   // scalastyle:off
-  private def mapping(declaration: ExportsDeclaration)(implicit T: TaggedAuthCodes): Mapping[AdditionalDocument] = {
+  private def mapping(
+    declaration: ExportsDeclaration
+  )(implicit taggedAuthCodes: TaggedAuthCodes, taggedAdditionalDocumentCodes: TaggedAdditionalDocumentCodes): Mapping[AdditionalDocument] = {
     val keyWhenDocumentTypeCodeEmpty =
-      if (T.hasAuthCodeRequiringAdditionalDocs(declaration)) "declaration.additionalDocument.code.empty.fromAuthCode"
+      if (taggedAuthCodes.hasAuthCodeRequiringAdditionalDocs(declaration)) "declaration.additionalDocument.code.empty.fromAuthCode"
       else "declaration.additionalDocument.code.empty"
 
     val documentTypeCodeRequired = optional(
@@ -98,12 +100,12 @@ object AdditionalDocument extends DeclarationPage {
           ),
           Seq(
             ConditionalConstraint(
-              isAnyOf(documentTypeCodeKey, documentCodesRequiringAReason),
+              isAnyOf(documentTypeCodeKey, taggedAdditionalDocumentCodes.documentCodesRequiringAReason),
               "declaration.additionalDocument.statusReason.required.forDocumentCode",
               nonEmptyOptionString
             ),
             ConditionalConstraint(
-              isAnyOf(documentStatusKey, statusCodesRequiringAReason),
+              isAnyOf(documentStatusKey, taggedAdditionalDocumentCodes.statusCodesRequiringAReason),
               "declaration.additionalDocument.statusReason.required.forStatusCode",
               nonEmptyOptionString
             )
@@ -140,7 +142,9 @@ object AdditionalDocument extends DeclarationPage {
       documentWriteOff
     )
 
-  def form(declaration: ExportsDeclaration)(implicit T: TaggedAuthCodes): Form[AdditionalDocument] =
+  def form(
+    declaration: ExportsDeclaration
+  )(implicit taggedAuthCodes: TaggedAuthCodes, taggedAdditionalDocumentCodes: TaggedAdditionalDocumentCodes): Form[AdditionalDocument] =
     Form(mapping(declaration))
 
   def globalErrors(form: Form[AdditionalDocument]): Form[AdditionalDocument] = {
@@ -161,79 +165,4 @@ object AdditionalDocument extends DeclarationPage {
         )
       case _ => Seq(TariffContentKey("tariff.declaration.item.additionalDocuments.common"))
     }
-
-  val statusCodesRequiringAReason = Seq("UA", "UE", "UP", "US", "XX", "XW")
-
-  val documentCodesRequiringAReason = Seq(
-    "Y036",
-    "Y037",
-    "Y082",
-    "Y083",
-    "Y105",
-    "Y107",
-    "Y108",
-    "Y109",
-    "Y115",
-    "Y200",
-    "Y201",
-    "Y202",
-    "Y203",
-    "Y204",
-    "Y205",
-    "Y206",
-    "Y207",
-    "Y208",
-    "Y209",
-    "Y210",
-    "Y211",
-    "Y212",
-    "Y213",
-    "Y214",
-    "Y215",
-    "Y216",
-    "Y217",
-    "Y218",
-    "Y219",
-    "Y220",
-    "Y221",
-    "Y222",
-    "Y300",
-    "Y301",
-    "Y900",
-    "Y901",
-    "Y902",
-    "Y903",
-    "Y904",
-    "Y906",
-    "Y907",
-    "Y909",
-    "Y916",
-    "Y917",
-    "Y918",
-    "Y920",
-    "Y921",
-    "Y922",
-    "Y923",
-    "Y924",
-    "Y927",
-    "Y932",
-    "Y934",
-    "Y935",
-    "Y939",
-    "Y945",
-    "Y946",
-    "Y947",
-    "Y948",
-    "Y949",
-    "Y952",
-    "Y953",
-    "Y957",
-    "Y961",
-    "Y966",
-    "Y967",
-    "Y968",
-    "Y969",
-    "Y970",
-    "Y971"
-  )
 }

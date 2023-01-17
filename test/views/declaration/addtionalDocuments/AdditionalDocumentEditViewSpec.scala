@@ -16,7 +16,7 @@
 
 package views.declaration.addtionalDocuments
 
-import base.{Injector, MockTaggedAuthCodes, TestHelper}
+import base.{Injector, MockTaggedCodes, TestHelper}
 import config.AppConfig
 import connectors.{FileBasedCodeListConnector, GoodsLocationCodesConnector}
 import forms.common.Date.{dayKey, monthKey, yearKey}
@@ -45,7 +45,7 @@ import views.tags.ViewTest
 import java.util.Locale.ENGLISH
 
 @ViewTest
-class AdditionalDocumentEditViewSpec extends UnitViewSpec with Injector with MockTaggedAuthCodes {
+class AdditionalDocumentEditViewSpec extends UnitViewSpec with Injector with MockTaggedCodes {
 
   val appConfig = instanceOf[AppConfig]
   val glc = new GoodsLocationCodesConnector(appConfig)
@@ -53,15 +53,15 @@ class AdditionalDocumentEditViewSpec extends UnitViewSpec with Injector with Moc
   val page = instanceOf[additional_document_edit]
 
   def createView(implicit request: JourneyRequest[_]): Document =
-    page(itemId, form(request.cacheModel)(taggedAuthCodes))(request, messages)
+    page(itemId, form(request.cacheModel))(request, messages)
 
   def createView(input: Map[String, String])(implicit request: JourneyRequest[_]): Document =
-    page(itemId, form(declaration)(taggedAuthCodes).bind(input))(request, messages)
+    page(itemId, form(declaration).bind(input))(request, messages)
 
   def createView(input: Option[AdditionalDocument] = None, declaration: ExportsDeclaration = declaration)(
     implicit request: JourneyRequest[_]
   ): Document = {
-    val frm: Form[AdditionalDocument] = form(declaration)(taggedAuthCodes)
+    val frm: Form[AdditionalDocument] = form(declaration)
     page(itemId, input.fold(frm)(frm.fillAndValidate))(request, messages)
   }
 
@@ -739,7 +739,7 @@ class AdditionalDocumentEditViewSpec extends UnitViewSpec with Injector with Moc
     onEveryDeclarationJourney() { implicit request =>
       "display data in all inputs" in {
         val data = correctAdditionalDocument
-        val view = page(itemId, form(declaration)(taggedAuthCodes).fill(data))(request, messages)
+        val view = page(itemId, form(declaration).fill(data))(request, messages)
 
         def assert[T](elementId: String, value: Option[T]): Assertion =
           view.getElementById(elementId).attr("value") mustBe value.value.toString

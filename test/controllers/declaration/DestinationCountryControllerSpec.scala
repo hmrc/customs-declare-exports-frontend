@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import base.{ControllerSpec, MockTaggedAuthCodes}
+import base.{ControllerSpec, MockTaggedCodes}
 import connectors.CodeListConnector
 import controllers.declaration.routes.{LocationOfGoodsController, OfficeOfExitController, RoutingCountriesController}
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.SUPPLEMENTARY_EIDR
@@ -36,7 +36,7 @@ import views.html.declaration.destinationCountries.destination_country
 import scala.collection.immutable.ListMap
 import scala.concurrent.ExecutionContext.global
 
-class DestinationCountryControllerSpec extends ControllerSpec with MockTaggedAuthCodes {
+class DestinationCountryControllerSpec extends ControllerSpec with MockTaggedCodes {
 
   val destinationCountryPage = mock[destination_country]
   val mockCodeListConnector = mock[CodeListConnector]

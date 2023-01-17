@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import base.{ControllerSpec, MockTaggedAuthCodes}
+import base.{ControllerSpec, MockTaggedCodes}
 import connectors.CodeListConnector
 import controllers.declaration.routes.OfficeOfExitController
 import controllers.routes.RootController
@@ -37,7 +37,7 @@ import views.html.declaration.location_of_goods
 
 import scala.collection.immutable.ListMap
 
-class LocationOfGoodsControllerSpec extends ControllerSpec with MockTaggedAuthCodes with OptionValues {
+class LocationOfGoodsControllerSpec extends ControllerSpec with MockTaggedCodes with OptionValues {
 
   val mockLocationOfGoods = mock[location_of_goods]
   val mockCodeListConnector = mock[CodeListConnector]

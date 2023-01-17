@@ -16,7 +16,7 @@
 
 package models
 
-import base.{MockTaggedAuthCodes, UnitSpec}
+import base.{MockTaggedCodes, UnitSpec}
 import forms.declaration.CommodityDetails
 import forms.declaration.countries.Country
 import models.declaration.ProcedureCodesData
@@ -25,7 +25,7 @@ import org.scalatestplus.mockito.MockitoSugar
 import services.cache.{ExportsDeclarationBuilder, ExportsItemBuilder}
 
 class ExportsDeclarationSpec
-    extends UnitSpec with ExportsDeclarationBuilder with ExportsItemBuilder with MockitoSugar with MockTaggedAuthCodes with OptionValues {
+    extends UnitSpec with ExportsDeclarationBuilder with ExportsItemBuilder with MockitoSugar with MockTaggedCodes with OptionValues {
 
   "Update Item" should {
     "preserve item sequence" in {

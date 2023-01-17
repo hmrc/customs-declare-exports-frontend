@@ -35,7 +35,7 @@ object Tag extends Enumeration {
   type Tag = Value
 
   val CodesMutuallyExclusive, CodesNeedingSpecificHintText, CodesOverridingInlandOrBorderSkip, CodesRequiringDocumentation, CodesRestrictingZeroVat,
-    CodesSkippingInlandOrBorder, CodesSkippingLocationOfGoods = Value
+    CodesSkippingInlandOrBorder, CodesSkippingLocationOfGoods, DocumentCodesRequiringAReason, StatusCodesRequiringAReason = Value
 }
 
 @ImplementedBy(classOf[FileBasedCodeLinkConnector])
@@ -45,7 +45,8 @@ trait CodeLinkConnector {
   def getValidAdditionalProcedureCodesForProcedureCode(procedureCode: String): Option[Seq[String]]
   def getValidAdditionalProcedureCodesForProcedureCodeC21(procedureCode: String): Option[Seq[String]]
   def getValidProcedureCodesForTag(tag: Tag): Seq[String]
-
+  def getAdditionalDocumentStatusCodeForTag(tag: Tag): Seq[String]
+  def getAdditionalDocumentCodesForTag(tag: Tag): Seq[String]
   def getAliasesForCountryCode(countryCode: String): Option[Seq[String]]
   def getShortNamesForCountryCode(countryCode: String): Option[Seq[String]]
 
@@ -77,6 +78,12 @@ class FileBasedCodeLinkConnector @Inject() (appConfig: AppConfig) extends CodeLi
   private val procedureCodeLink: Seq[(String, Seq[String])] =
     readCodeLinksFromFile(appConfig.procedureCodesLinkFile)
 
+  private val additionalDocumentCodeLink: Seq[(String, Seq[String])] =
+    readCodeLinksFromFile(appConfig.additionalDocumentCodeLinkFile)
+
+  private val additionalDocumentStatusCodeLink: Seq[(String, Seq[String])] =
+    readCodeLinksFromFile(appConfig.additionalDocumentStatusCodeLinkFile)
+
   private val countryCodeToCountryAliases: Map[String, Seq[String]] =
     readCodeLinksFromFileAsMap(appConfig.countryCodeToAliasesLinkFile)
 
@@ -88,6 +95,12 @@ class FileBasedCodeLinkConnector @Inject() (appConfig: AppConfig) extends CodeLi
 
   def getHolderOfAuthorisationCodesForTag(tag: Tag): Seq[String] =
     taggedHolderOfAuthorisationCodes.filter(_._2.contains(tag.toString)).map(_._1)
+
+  def getAdditionalDocumentStatusCodeForTag(tag: Tag): Seq[String] =
+    additionalDocumentStatusCodeLink.filter(_._2.contains(tag.toString)).map(_._1)
+
+  def getAdditionalDocumentCodesForTag(tag: Tag): Seq[String] =
+    additionalDocumentCodeLink.filter(_._2.contains(tag.toString)).map(_._1)
 
   def getValidAdditionalProcedureCodesForProcedureCode(procedureCode: String): Option[Seq[String]] =
     procedureCodeToAdditionalProcedureCodes.get(procedureCode)

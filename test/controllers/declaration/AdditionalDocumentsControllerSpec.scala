@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import base.{ControllerSpec, MockTaggedAuthCodes}
+import base.{ControllerSpec, MockTaggedCodes}
 import forms.common.YesNoAnswer.Yes
 import forms.common.{Eori, YesNoAnswer}
 import forms.declaration.additionaldocuments.AdditionalDocument
@@ -35,7 +35,7 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.declaration.additionalDocuments.additional_documents
 
-class AdditionalDocumentsControllerSpec extends ControllerSpec with ErrorHandlerMocks with MockTaggedAuthCodes {
+class AdditionalDocumentsControllerSpec extends ControllerSpec with ErrorHandlerMocks with MockTaggedCodes {
 
   val additionalDocumentsPage = mock[additional_documents]
 

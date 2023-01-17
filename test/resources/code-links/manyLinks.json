@@ -34,5 +34,13 @@
   {
     "parentCode": "MOU",
     "childCodes": ["CodesNeedingSpecificHintText","CodesRequiringDocumentation","CodesSkippingLocationOfGoods"]
+  },
+  {
+    "parentCode": "Y219",
+    "childCodes": ["DocumentCodesRequiringAReason"]
+  },
+  {
+    "parentCode": "UP",
+    "childCodes": ["StatusCodesRequiringAReason"]
   }
 ]

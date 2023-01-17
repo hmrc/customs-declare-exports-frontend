@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import base.{ControllerSpec, MockTaggedAuthCodes}
+import base.{ControllerSpec, MockTaggedCodes}
 import controllers.declaration.routes.{AdditionalDocumentAddController, AdditionalDocumentsController, AdditionalDocumentsRequiredController}
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.Yes
@@ -34,7 +34,7 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.declaration.is_licence_required
 
-class IsLicenceRequiredControllerSpec extends ControllerSpec with MockTaggedAuthCodes with OptionValues {
+class IsLicenceRequiredControllerSpec extends ControllerSpec with MockTaggedCodes with OptionValues {
 
   private val itemId = "itemId"
   private val commodityDetails = CommodityDetails(Some("1234567890"), Some("description"))
