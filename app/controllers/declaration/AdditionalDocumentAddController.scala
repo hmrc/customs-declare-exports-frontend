@@ -29,7 +29,7 @@ import models.ExportsDeclaration
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
-import services.TaggedAuthCodes
+import services.{TaggedAdditionalDocumentCodes, TaggedAuthCodes}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
@@ -45,11 +45,13 @@ class AdditionalDocumentAddController @Inject() (
   navigator: Navigator,
   mcc: MessagesControllerComponents,
   taggedAuthCodes: TaggedAuthCodes,
+  taggedAdditionalDocumentCodes: TaggedAdditionalDocumentCodes,
   additionalDocumentAddPage: additional_document_add
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
 
   implicit val taggedAuthCodes2form = taggedAuthCodes
+  implicit val taggedAdditionalDocCodes2form = taggedAdditionalDocumentCodes
 
   def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     Ok(additionalDocumentAddPage(itemId, form(request.cacheModel).withSubmissionErrors))

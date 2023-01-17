@@ -1,0 +1,26 @@
+[
+  {
+    "parentCode": "UA",
+    "childCodes": ["StatusCodesRequiringAReason"]
+  },
+  {
+  "parentCode": "UE",
+  "childCodes": ["StatusCodesRequiringAReason"]
+  },
+  {
+    "parentCode": "UP",
+    "childCodes": ["StatusCodesRequiringAReason"]
+  },
+  {
+    "parentCode": "US",
+    "childCodes": ["StatusCodesRequiringAReason"]
+  },
+  {
+    "parentCode": "XX",
+    "childCodes": ["StatusCodesRequiringAReason"]
+  },
+  {
+    "parentCode": "XW",
+    "childCodes": ["StatusCodesRequiringAReason"]
+  }
+]

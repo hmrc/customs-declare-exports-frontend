@@ -1,0 +1,282 @@
+[
+  {
+    "parentCode": "Y036",
+    "childCodes": ["DocumentCodesRequiringAReason"]
+  },
+  {
+    "parentCode": "Y037",
+    "childCodes": ["DocumentCodesRequiringAReason"]
+  },
+  {
+    "parentCode": "Y082",
+    "childCodes": ["DocumentCodesRequiringAReason"]
+  },
+  {
+    "parentCode": "Y083",
+    "childCodes": ["DocumentCodesRequiringAReason"]
+  },
+  {
+    "parentCode": "Y105",
+    "childCodes": ["DocumentCodesRequiringAReason"]
+  },
+  {
+    "parentCode": "Y107",
+    "childCodes": ["DocumentCodesRequiringAReason"]
+  },
+  {
+    "parentCode": "Y108",
+    "childCodes": ["DocumentCodesRequiringAReason"]
+  },
+  {
+    "parentCode": "Y109",
+    "childCodes": ["DocumentCodesRequiringAReason"]
+  },
+  {
+    "parentCode": "Y115",
+    "childCodes": ["DocumentCodesRequiringAReason"]
+  },
+  {
+    "parentCode": "Y200",
+    "childCodes": ["DocumentCodesRequiringAReason"]
+  },
+  {
+    "parentCode": "Y201",
+    "childCodes": ["DocumentCodesRequiringAReason"]
+  },
+  {
+    "parentCode": "Y202",
+    "childCodes": ["DocumentCodesRequiringAReason"]
+  },
+  {
+    "parentCode": "Y203",
+    "childCodes": ["DocumentCodesRequiringAReason"]
+  },
+  {
+    "parentCode": "Y204",
+    "childCodes": ["DocumentCodesRequiringAReason"]
+  },
+  {
+    "parentCode": "Y205",
+    "childCodes": ["DocumentCodesRequiringAReason"]
+  },
+  {
+    "parentCode": "Y206",
+    "childCodes": ["DocumentCodesRequiringAReason"]
+  },
+  {
+    "parentCode": "Y207",
+    "childCodes": ["DocumentCodesRequiringAReason"]
+  },
+  {
+    "parentCode": "Y208",
+    "childCodes": ["DocumentCodesRequiringAReason"]
+  },
+  {
+    "parentCode": "Y209",
+    "childCodes": ["DocumentCodesRequiringAReason"]
+  },
+  {
+    "parentCode": "Y210",
+    "childCodes": ["DocumentCodesRequiringAReason"]
+  },
+  {
+    "parentCode": "Y211",
+    "childCodes": ["DocumentCodesRequiringAReason"]
+  },
+  {
+    "parentCode": "Y212",
+    "childCodes": ["DocumentCodesRequiringAReason"]
+  },
+  {
+    "parentCode": "Y213",
+    "childCodes": ["DocumentCodesRequiringAReason"]
+  },
+  {
+    "parentCode": "Y214",
+    "childCodes": ["DocumentCodesRequiringAReason"]
+  },
+  {
+    "parentCode": "Y215",
+    "childCodes": ["DocumentCodesRequiringAReason"]
+  },
+  {
+    "parentCode": "Y216",
+    "childCodes": ["DocumentCodesRequiringAReason"]
+  },
+  {
+    "parentCode": "Y217",
+    "childCodes": ["DocumentCodesRequiringAReason"]
+  },
+  {
+    "parentCode": "Y218",
+    "childCodes": ["DocumentCodesRequiringAReason"]
+  },
+  {
+    "parentCode": "Y219",
+    "childCodes": ["DocumentCodesRequiringAReason"]
+  },
+  {
+    "parentCode": "Y220",
+    "childCodes": ["DocumentCodesRequiringAReason"]
+  },
+  {
+    "parentCode": "Y221",
+    "childCodes": ["DocumentCodesRequiringAReason"]
+  },
+  {
+    "parentCode": "Y222",
+    "childCodes": ["DocumentCodesRequiringAReason"]
+  },
+  {
+    "parentCode": "Y300",
+    "childCodes": ["DocumentCodesRequiringAReason"]
+  },
+  {
+    "parentCode": "Y301",
+    "childCodes": ["DocumentCodesRequiringAReason"]
+  },
+  {
+    "parentCode": "Y900",
+    "childCodes": ["DocumentCodesRequiringAReason"]
+  },
+  {
+    "parentCode": "Y901",
+    "childCodes": ["DocumentCodesRequiringAReason"]
+  },
+  {
+    "parentCode": "Y902",
+    "childCodes": ["DocumentCodesRequiringAReason"]
+  },
+  {
+    "parentCode": "Y903",
+    "childCodes": ["DocumentCodesRequiringAReason"]
+  },
+  {
+    "parentCode": "Y904",
+    "childCodes": ["DocumentCodesRequiringAReason"]
+  },
+  {
+    "parentCode": "Y906",
+    "childCodes": ["DocumentCodesRequiringAReason"]
+  },
+  {
+    "parentCode": "Y907",
+    "childCodes": ["DocumentCodesRequiringAReason"]
+  },
+  {
+    "parentCode": "Y909",
+    "childCodes": ["DocumentCodesRequiringAReason"]
+  },
+  {
+    "parentCode": "Y916",
+    "childCodes": ["DocumentCodesRequiringAReason"]
+  },
+  {
+    "parentCode": "Y917",
+    "childCodes": ["DocumentCodesRequiringAReason"]
+  },
+  {
+    "parentCode": "Y918",
+    "childCodes": ["DocumentCodesRequiringAReason"]
+  },
+  {
+    "parentCode": "Y920",
+    "childCodes": ["DocumentCodesRequiringAReason"]
+  },
+  {
+    "parentCode": "Y921",
+    "childCodes": ["DocumentCodesRequiringAReason"]
+  },
+  {
+    "parentCode": "Y922",
+    "childCodes": ["DocumentCodesRequiringAReason"]
+  },
+  {
+    "parentCode": "Y923",
+    "childCodes": ["DocumentCodesRequiringAReason"]
+  },
+  {
+    "parentCode": "Y924",
+    "childCodes": ["DocumentCodesRequiringAReason"]
+  },
+  {
+    "parentCode": "Y927",
+    "childCodes": ["DocumentCodesRequiringAReason"]
+  },
+  {
+    "parentCode": "Y932",
+    "childCodes": ["DocumentCodesRequiringAReason"]
+  },
+  {
+    "parentCode": "Y934",
+    "childCodes": ["DocumentCodesRequiringAReason"]
+  },
+  {
+    "parentCode": "Y935",
+    "childCodes": ["DocumentCodesRequiringAReason"]
+  },
+  {
+    "parentCode": "Y939",
+    "childCodes": ["DocumentCodesRequiringAReason"]
+  },
+  {
+    "parentCode": "Y945",
+    "childCodes": ["DocumentCodesRequiringAReason"]
+  },
+  {
+    "parentCode": "Y946",
+    "childCodes": ["DocumentCodesRequiringAReason"]
+  },
+  {
+    "parentCode": "Y947",
+    "childCodes": ["DocumentCodesRequiringAReason"]
+  },
+  {
+    "parentCode": "Y948",
+    "childCodes": ["DocumentCodesRequiringAReason"]
+  },
+  {
+    "parentCode": "Y949",
+    "childCodes": ["DocumentCodesRequiringAReason"]
+  },
+  {
+    "parentCode": "Y952",
+    "childCodes": ["DocumentCodesRequiringAReason"]
+  },
+  {
+    "parentCode": "Y953",
+    "childCodes": ["DocumentCodesRequiringAReason"]
+  },
+  {
+    "parentCode": "Y957",
+    "childCodes": ["DocumentCodesRequiringAReason"]
+  },
+  {
+    "parentCode": "Y961",
+    "childCodes": ["DocumentCodesRequiringAReason"]
+  },
+  {
+    "parentCode": "Y966",
+    "childCodes": ["DocumentCodesRequiringAReason"]
+  },
+  {
+    "parentCode": "Y967",
+    "childCodes": ["DocumentCodesRequiringAReason"]
+  },
+  {
+    "parentCode": "Y968",
+    "childCodes": ["DocumentCodesRequiringAReason"]
+  },
+  {
+    "parentCode": "Y969",
+    "childCodes": ["DocumentCodesRequiringAReason"]
+  },
+  {
+    "parentCode": "Y970",
+    "childCodes": ["DocumentCodesRequiringAReason"]
+  },
+  {
+    "parentCode": "Y971",
+    "childCodes": ["DocumentCodesRequiringAReason"]
+  }
+]

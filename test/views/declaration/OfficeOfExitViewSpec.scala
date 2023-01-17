@@ -16,7 +16,7 @@
 
 package views.declaration
 
-import base.{Injector, MockTaggedAuthCodes}
+import base.{Injector, MockTaggedCodes}
 import controllers.declaration.routes.{DestinationCountryController, LocationOfGoodsController}
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.SUPPLEMENTARY_EIDR
 import forms.declaration.officeOfExit.OfficeOfExit
@@ -30,7 +30,7 @@ import views.html.declaration.office_of_exit
 import views.tags.ViewTest
 
 @ViewTest
-class OfficeOfExitViewSpec extends UnitViewSpec with ExportsTestHelper with Injector with MockTaggedAuthCodes {
+class OfficeOfExitViewSpec extends UnitViewSpec with ExportsTestHelper with Injector with MockTaggedCodes {
 
   private val page: office_of_exit = instanceOf[office_of_exit]
 

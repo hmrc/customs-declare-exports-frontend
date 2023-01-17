@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import base.{ControllerSpec, ExportsTestData, MockTaggedAuthCodes}
+import base.{ControllerSpec, ExportsTestData, MockTaggedCodes}
 import controllers.declaration.routes.DeclarationHolderSummaryController
 import forms.common.Eori
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
@@ -35,7 +35,7 @@ import play.api.test.Helpers._
 import play.twirl.api.{Html, HtmlFormat}
 import views.html.declaration.declarationHolder.declaration_holder_add
 
-class DeclarationHolderAddControllerSpec extends ControllerSpec with GivenWhenThen with MockTaggedAuthCodes with OptionValues {
+class DeclarationHolderAddControllerSpec extends ControllerSpec with GivenWhenThen with MockTaggedCodes with OptionValues {
 
   val mockAddPage = mock[declaration_holder_add]
 

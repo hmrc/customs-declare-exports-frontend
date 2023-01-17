@@ -37,6 +37,8 @@ class CodeLinkConnectorSpec extends UnitWithMocksSpec with BeforeAndAfterEach {
     when(appConfig.procedureCodesLinkFile) thenReturn "/code-links/manyLinks.json"
     when(appConfig.countryCodeToShortNameLinkFile).thenReturn("/code-links/manyLinks.json")
     when(appConfig.goodsLocationCodeToLocationTypeFile).thenReturn("/code-links/manyLinks.json")
+    when(appConfig.additionalDocumentCodeLinkFile).thenReturn("/code-links/manyLinks.json")
+    when(appConfig.additionalDocumentStatusCodeLinkFile).thenReturn("/code-links/manyLinks.json")
   }
 
   private lazy val connector = new FileBasedCodeLinkConnector(appConfig)
@@ -169,6 +171,18 @@ class CodeLinkConnectorSpec extends UnitWithMocksSpec with BeforeAndAfterEach {
 
       "the tag provided is 'CodesSkippingLocationOfGoods'" in {
         connector.getHolderOfAuthorisationCodesForTag(CodesSkippingLocationOfGoods) mustBe List("MOU")
+      }
+    }
+
+    "return the expected additional document codes" when {
+      "the tag provided is 'DocumentCodesRequiringAReason'" in {
+        connector.getAdditionalDocumentCodesForTag(DocumentCodesRequiringAReason) mustBe List("Y219")
+      }
+    }
+
+    "return the expected additional document status codes" when {
+      "the tag provided is 'StatusCodesRequiringAReason'" in {
+        connector.getAdditionalDocumentStatusCodeForTag(StatusCodesRequiringAReason) mustBe List("UP")
       }
     }
   }

@@ -24,12 +24,13 @@ import org.mockito.Mockito
 import org.mockito.Mockito.when
 import org.scalatest.{BeforeAndAfterEach, Suite}
 import org.scalatestplus.mockito.MockitoSugar
-import services.TaggedAuthCodes
+import services.{TaggedAdditionalDocumentCodes, TaggedAuthCodes}
 
-trait MockTaggedAuthCodes extends MockitoSugar with BeforeAndAfterEach { this: Suite =>
+trait MockTaggedCodes extends MockitoSugar with BeforeAndAfterEach { this: Suite =>
 
   protected val codeLinkConnector = mock[CodeLinkConnector]
-  protected lazy val taggedAuthCodes: TaggedAuthCodes = new TaggedAuthCodes(codeLinkConnector)
+  protected implicit lazy val taggedAuthCodes: TaggedAuthCodes = new TaggedAuthCodes(codeLinkConnector)
+  protected implicit lazy val taggedAdditionalDocumentCodes: TaggedAdditionalDocumentCodes = new TaggedAdditionalDocumentCodes(codeLinkConnector)
 
   override protected def beforeEach(): Unit = {
     when(codeLinkConnector.getHolderOfAuthorisationCodesForTag(refEq(CodesMutuallyExclusive))).thenReturn(List(CSE, EXRR))
@@ -38,6 +39,8 @@ trait MockTaggedAuthCodes extends MockitoSugar with BeforeAndAfterEach { this: S
     when(codeLinkConnector.getHolderOfAuthorisationCodesForTag(refEq(CodesRequiringDocumentation))).thenReturn(codesRequiringDocumentation)
     when(codeLinkConnector.getHolderOfAuthorisationCodesForTag(refEq(CodesSkippingInlandOrBorder))).thenReturn(List(CSE, EXRR))
     when(codeLinkConnector.getHolderOfAuthorisationCodesForTag(refEq(CodesSkippingLocationOfGoods))).thenReturn(List(MOU))
+    when(codeLinkConnector.getAdditionalDocumentCodesForTag(refEq(DocumentCodesRequiringAReason))).thenReturn(documentCodesRequiringAReason)
+    when(codeLinkConnector.getAdditionalDocumentStatusCodeForTag(refEq(StatusCodesRequiringAReason))).thenReturn(statusCodesRequiringAReason)
     super.beforeEach()
   }
 
@@ -89,5 +92,80 @@ trait MockTaggedAuthCodes extends MockitoSugar with BeforeAndAfterEach { this: S
     "TRD",
     "TST",
     "UKCS"
+  )
+
+  val statusCodesRequiringAReason = List("UA", "UE", "UP", "US", "XX", "XW")
+
+  val documentCodesRequiringAReason = List(
+    "Y036",
+    "Y037",
+    "Y082",
+    "Y083",
+    "Y105",
+    "Y107",
+    "Y108",
+    "Y109",
+    "Y115",
+    "Y200",
+    "Y201",
+    "Y202",
+    "Y203",
+    "Y204",
+    "Y205",
+    "Y206",
+    "Y207",
+    "Y208",
+    "Y209",
+    "Y210",
+    "Y211",
+    "Y212",
+    "Y213",
+    "Y214",
+    "Y215",
+    "Y216",
+    "Y217",
+    "Y218",
+    "Y219",
+    "Y220",
+    "Y221",
+    "Y222",
+    "Y300",
+    "Y301",
+    "Y900",
+    "Y901",
+    "Y902",
+    "Y903",
+    "Y904",
+    "Y906",
+    "Y907",
+    "Y909",
+    "Y916",
+    "Y917",
+    "Y918",
+    "Y920",
+    "Y921",
+    "Y922",
+    "Y923",
+    "Y924",
+    "Y927",
+    "Y932",
+    "Y934",
+    "Y935",
+    "Y939",
+    "Y945",
+    "Y946",
+    "Y947",
+    "Y948",
+    "Y949",
+    "Y952",
+    "Y953",
+    "Y957",
+    "Y961",
+    "Y966",
+    "Y967",
+    "Y968",
+    "Y969",
+    "Y970",
+    "Y971"
   )
 }

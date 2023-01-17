@@ -17,7 +17,7 @@
 package forms.declaration.declarationHolder
 
 import base.ExportsTestData._
-import base.{JourneyTypeTestRunner, MockTaggedAuthCodes}
+import base.{JourneyTypeTestRunner, MockTaggedCodes}
 import forms.common.{DeclarationPageBaseSpec, Eori}
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.{preLodgedTypes, STANDARD_PRE_LODGED}
 import forms.declaration.declarationHolder.AuthorizationTypeCodes.EXRR
@@ -25,7 +25,7 @@ import models.declaration.EoriSource
 import models.declaration.ExportDeclarationTestData.correctDeclarationHolder
 import org.scalatest.Inspectors.forAll
 
-class DeclarationHolderSpec extends DeclarationPageBaseSpec with JourneyTypeTestRunner with MockTaggedAuthCodes {
+class DeclarationHolderSpec extends DeclarationPageBaseSpec with JourneyTypeTestRunner with MockTaggedCodes {
 
   private val eoriSource = EoriSource.OtherEori.toString
   private val authorisationTypeCode = correctDeclarationHolder.authorisationTypeCode.get

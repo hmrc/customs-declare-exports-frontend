@@ -16,7 +16,7 @@
 
 package views.declaration.addtionalDocuments
 
-import base.{Injector, MockTaggedAuthCodes}
+import base.{Injector, MockTaggedCodes}
 import controllers.declaration.routes.AdditionalDocumentsController
 import forms.declaration.additionaldocuments.AdditionalDocument.form
 import models.declaration.ExportDeclarationTestData.declaration
@@ -27,14 +27,14 @@ import views.html.declaration.additionalDocuments.additional_document_change
 import views.tags.ViewTest
 
 @ViewTest
-class AdditionalDocumentChangeViewSpec extends UnitViewSpec with Injector with MockTaggedAuthCodes {
+class AdditionalDocumentChangeViewSpec extends UnitViewSpec with Injector with MockTaggedCodes {
 
   val documentId = "1.2131231"
 
   val page = instanceOf[additional_document_change]
 
   def createView(implicit request: JourneyRequest[_]): Document =
-    page(itemId, documentId, form(declaration)(taggedAuthCodes))(request, messages)
+    page(itemId, documentId, form(declaration))(request, messages)
 
   "additional_document_change view on empty page" should {
     onEveryDeclarationJourney() { implicit request =>

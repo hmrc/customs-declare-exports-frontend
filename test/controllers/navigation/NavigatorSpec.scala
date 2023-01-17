@@ -16,7 +16,7 @@
 
 package controllers.navigation
 
-import base.{JourneyTypeTestRunner, MockExportCacheService, MockTaggedAuthCodes, RequestBuilder, UnitWithMocksSpec}
+import base.{JourneyTypeTestRunner, MockExportCacheService, MockTaggedCodes, RequestBuilder, UnitWithMocksSpec}
 import controllers.declaration.routes._
 import controllers.helpers._
 import controllers.routes.RejectedNotificationsController
@@ -41,7 +41,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class NavigatorSpec
     extends UnitWithMocksSpec with ExportsDeclarationBuilder with FeatureFlagMocks with JourneyTypeTestRunner with MockExportCacheService
-    with MockTaggedAuthCodes with RequestBuilder with ScalaFutures {
+    with MockTaggedCodes with RequestBuilder with ScalaFutures {
 
   private val url = "url"
   private val call: Call = Call("GET", url)
