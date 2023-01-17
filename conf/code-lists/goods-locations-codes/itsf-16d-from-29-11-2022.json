@@ -15,13 +15,13 @@
     "code": "GBAUABDABDSCA"
   },
   {
-    "en": "Belfast / Lissan Coal Company / Belfast ",
-    "cy": "Belfast / Lissan Coal Company / Belfast ",
+    "en": "Belfast / Lissan Coal Company / Belfast",
+    "cy": "Belfast / Lissan Coal Company / Belfast",
     "code": "GBAUBELBELLCC"
   },
   {
-    "en": "Belfast / TCB (NI) Limited / BT29 4AA. ",
-    "cy": "Belfast / TCB (NI) Limited / BT29 4AA. ",
+    "en": "Belfast / TCB (NI) Limited / BT29 4AA.",
+    "cy": "Belfast / TCB (NI) Limited / BT29 4AA.",
     "code": "GBAUBELBELVLQ1"
   },
   {
@@ -60,9 +60,9 @@
     "code": "GBAUBELBFSSLS"
   },
   {
-    "en": "Belfast Airport / FedEx Express UK Transportation Limited  / Swissport (SPBFS) / Belfast International Airport, Belfast, BT29 4AA.",
-    "cy": "Belfast Airport / FedEx Express UK Transportation Limited  / Swissport (SPBFS) / Belfast International Airport, Belfast, BT29 4AA.",
-    "code": "GBAUBELBFSFXT "
+    "en": "Belfast Airport / FedEx Express UK Transportation Limited / Swissport (SPBFS) / Belfast International Airport, Belfast, BT29 4AA.",
+    "cy": "Belfast Airport / FedEx Express UK Transportation Limited / Swissport (SPBFS) / Belfast International Airport, Belfast, BT29 4AA.",
+    "code": "GBAUBELBFSFXT"
   },
   {
     "en": "Birmingham Airport / Dnata Limited / The Argosy Building, Birmingham Airport B26 3QN",
@@ -82,7 +82,7 @@
   {
     "en": "Birmingham Airport / Carousel Logistics Limited / Unit 2 West Midlands Freeport, Cargo Centre, Birmingham Airport, Birmingham, B26 3QD.",
     "cy": "Birmingham Airport / Carousel Logistics Limited / Unit 2 West Midlands Freeport, Cargo Centre, Birmingham Airport, Birmingham, B26 3QD.",
-    "code": "GBAUBHMBHXLES "
+    "code": "GBAUBHMBHXLES"
   },
   {
     "en": "Bournemouth / DHL Global Match UK Ltd / Hanger 401, Target Road, Bournemouth BH23 6NW",
@@ -127,7 +127,7 @@
   {
     "en": "Dover / Port of Dover / Terminal Limited Dover CT17 9FJ",
     "cy": "Dover / Port of Dover / Terminal Limited Dover CT17 9FJ",
-    "code": "GBAUDVRDOVDCT1 "
+    "code": "GBAUDVRDOVDCT1"
   },
   {
     "en": "Dover Western Docks / Motis Ireland Limited / Freight Clearance Centre, Lord Warden House, Western Docks, Dover, CT17 9DN",
@@ -160,8 +160,8 @@
     "code": "GBAUEMAEMAUZS"
   },
   {
-    "en": "East Midlands Airport  / Heavyweight Air Express Ltd / Building 96, East Midlands Airport, Castle Donington, Derby, DE74 2SA",
-    "cy": "East Midlands Airport  / Heavyweight Air Express Ltd / Building 96, East Midlands Airport, Castle Donington, Derby, DE74 2SA",
+    "en": "East Midlands Airport / Heavyweight Air Express Ltd / Building 96, East Midlands Airport, Castle Donington, Derby, DE74 2SA",
+    "cy": "East Midlands Airport / Heavyweight Air Express Ltd / Building 96, East Midlands Airport, Castle Donington, Derby, DE74 2SA",
     "code": "GBAUEMAEMAHWS"
   },
   {
@@ -492,16 +492,16 @@
   {
     "en": "Manchester Airport / Dnata Limited / Pinfold Ln, Manchester M90 5XR",
     "cy": "Manchester Airport / Dnata Limited / Pinfold Ln, Manchester M90 5XR",
-    "code": "GBAUMNCMANNCS "
+    "code": "GBAUMNCMANNCS"
   },
   {
-    "en": "Manchester Airport / Swissport GB Ltd (BIP) / Manchester BCP 1,2 & 3 Facility, Building 307 World Freight Terminal, Manchester Airport, Manchester, M90 5QL",
-    "cy": "Manchester Airport / Swissport GB Ltd (BIP) / Manchester BCP 1,2 & 3 Facility, Building 307 World Freight Terminal, Manchester Airport, Manchester, M90 5QL",
+    "en": "Manchester Airport / Swissport GB Ltd (BIP) / Manchester BCP 1,2 & 3 Facility, Building 307 World Freight Terminal, Manchester Airport, Manchester, M90 5QL",
+    "cy": "Manchester Airport / Swissport GB Ltd (BIP) / Manchester BCP 1,2 & 3 Facility, Building 307 World Freight Terminal, Manchester Airport, Manchester, M90 5QL",
     "code": "GBAUMNCMANBIP"
   },
   {
-    "en": "Manchester Airport / Dnata Ltd (3rd shed) / Unit 3, Building 300 World Freight Terminal, Manchester Airport, M90 5UY",
-    "cy": "Manchester Airport / Dnata Ltd (3rd shed) / Unit 3, Building 300 World Freight Terminal, Manchester Airport, M90 5UY",
+    "en": "Manchester Airport / Dnata Ltd (3rd shed) / Unit 3, Building 300 World Freight Terminal, Manchester Airport, M90 5UY",
+    "cy": "Manchester Airport / Dnata Ltd (3rd shed) / Unit 3, Building 300 World Freight Terminal, Manchester Airport, M90 5UY",
     "code": "GBAUMNCMANNBS"
   },
   {
