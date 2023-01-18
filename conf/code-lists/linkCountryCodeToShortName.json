@@ -9,7 +9,7 @@
   },
   {
     "parentCode":"BS",
-    "childCodes":["the Bahamas"]
+    "childCodes":["The Bahamas"]
   },
   {
     "parentCode":"BY",
@@ -21,7 +21,7 @@
   },
   {
     "parentCode":"IO",
-    "childCodes":["the British Indian Ocean Territory"]
+    "childCodes":["The British Indian Ocean Territory"]
   },
   {
     "parentCode":"BN",
@@ -29,15 +29,15 @@
   },
   {
     "parentCode":"KY",
-    "childCodes":["the Cayman Islands"]
+    "childCodes":["The Cayman Islands"]
   },
   {
     "parentCode":"CF",
-    "childCodes":["the Central African Republic"]
+    "childCodes":["The Central African Republic"]
   },
   {
     "parentCode":"CC",
-    "childCodes":["the Cocos Islands"]
+    "childCodes":["The Cocos Islands"]
   },
   {
     "parentCode":"KM",
@@ -53,7 +53,7 @@
   },
   {
     "parentCode":"CK",
-    "childCodes":["the Cook Islands"]
+    "childCodes":["The Cook Islands"]
   },
   {
     "parentCode":"CI",
@@ -61,15 +61,15 @@
   },
   {
     "parentCode":"DO",
-    "childCodes":["the Dominican Republic"]
+    "childCodes":["The Dominican Republic"]
   },
   {
     "parentCode":"FK",
-    "childCodes":["the Falkland Islande"]
+    "childCodes":["The Falkland Islande"]
   },
   {
     "parentCode":"FO",
-    "childCodes":["the Faroe Islands"]
+    "childCodes":["The Faroe Islands"]
   },
   {
     "parentCode":"FR",
@@ -81,11 +81,11 @@
   },
   {
     "parentCode": "TF",
-    "childCodes": ["the French Southern Territories"]
+    "childCodes": ["The French Southern Territories"]
   },
   {
     "parentCode":"GM",
-    "childCodes":["the Gambia"]
+    "childCodes":["The Gambia"]
   },
   {
     "parentCode":"DE",
@@ -133,7 +133,7 @@
   },
   {
     "parentCode":"MH",
-    "childCodes":["the Marshall Islands"]
+    "childCodes":["The Marshall Islands"]
   },
   {
     "parentCode":"MU",
@@ -177,7 +177,7 @@
   },
   {
     "parentCode":"PH",
-    "childCodes":["the Philippines"]
+    "childCodes":["The Philippines"]
   },
   {
     "parentCode":"PN",
@@ -197,7 +197,7 @@
   },
   {
     "parentCode":"SC",
-    "childCodes":["the Seychelles"]
+    "childCodes":["The Seychelles"]
   },
   {
     "parentCode":"SX",
@@ -209,7 +209,7 @@
   },
   {
     "parentCode":"SD",
-    "childCodes":["the Sudan"]
+    "childCodes":["The Sudan"]
   },
   {
     "parentCode": "CH",
@@ -233,15 +233,15 @@
   },
   {
     "parentCode":"AE",
-    "childCodes":["the United Arab Emirates"]
+    "childCodes":["The United Arab Emirates"]
   },
   {
     "parentCode":"UM",
-    "childCodes":["the United States Minor Outlying Islands"]
+    "childCodes":["The United States Minor Outlying Islands"]
   },
   {
     "parentCode":"US",
-    "childCodes":["the United States of America"]
+    "childCodes":["The United States of America"]
   },
   {
     "parentCode":"VE",
