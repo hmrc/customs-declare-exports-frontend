@@ -36,7 +36,6 @@ class CodeLinkConnectorSpec extends UnitWithMocksSpec with BeforeAndAfterEach {
     when(appConfig.countryCodeToAliasesLinkFile).thenReturn("/code-links/manyLinks.json")
     when(appConfig.procedureCodesLinkFile) thenReturn "/code-links/manyLinks.json"
     when(appConfig.countryCodeToShortNameLinkFile).thenReturn("/code-links/manyLinks.json")
-    when(appConfig.goodsLocationCodeToLocationTypeFile).thenReturn("/code-links/manyLinks.json")
     when(appConfig.additionalDocumentCodeLinkFile).thenReturn("/code-links/manyLinks.json")
     when(appConfig.additionalDocumentStatusCodeLinkFile).thenReturn("/code-links/manyLinks.json")
   }
@@ -129,21 +128,6 @@ class CodeLinkConnectorSpec extends UnitWithMocksSpec with BeforeAndAfterEach {
 
       "the country code does not have any short names" in {
         connector.getShortNamesForCountryCode("0000") must be(Some(List.empty[String]))
-      }
-    }
-
-    "return a list of location types for a Goods Location Code" when {
-
-      "the GLC exists in the list" in {
-        connector.getLocationTypesForGoodsLocationCode("1040") must be(Some(List("C12", "F75")))
-      }
-
-      "the GLC does not exist in the list" in {
-        connector.getLocationTypesForGoodsLocationCode("859") must be(None)
-      }
-
-      "the GLC does not have any Location Types" in {
-        connector.getLocationTypesForGoodsLocationCode("0000") must be(Some(List.empty[String]))
       }
     }
 
