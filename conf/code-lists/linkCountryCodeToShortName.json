@@ -40,6 +40,18 @@
     "childCodes":["the Cocos Islands"]
   },
   {
+    "parentCode":"KM",
+    "childCodes":["Comoros"]
+  },
+  {
+    "parentCode":"CD",
+    "childCodes":["The Democratic Republic of Congo"]
+  },
+  {
+    "parentCode":"CG",
+    "childCodes":["The Republic of Congo"]
+  },
+  {
     "parentCode":"CK",
     "childCodes":["the Cook Islands"]
   },
@@ -80,12 +92,20 @@
     "childCodes":["Germany"]
   },
   {
+    "parentCode":"VA",
+    "childCodes":["The Vatican"]
+  },
+  {
     "parentCode":"HK",
     "childCodes":["Hong Kong"]
   },
   {
     "parentCode":"IT",
     "childCodes":["Italy"]
+  },
+  {
+    "parentCode":"KP",
+    "childCodes":["North Korea"]
   },
   {
     "parentCode":"KR",
@@ -98,6 +118,10 @@
   {
     "parentCode":"LA",
     "childCodes":["Laos"]
+  },
+  {
+    "parentCode":"MO",
+    "childCodes":["Macao"]
   },
   {
     "parentCode":"MY",
@@ -125,7 +149,7 @@
   },
   {
     "parentCode":"MD",
-    "childCodes":["the Republic of Moldova"]
+    "childCodes":["Moldova"]
   },
   {
     "parentCode":"MM",
@@ -133,11 +157,23 @@
   },
   {
     "parentCode":"NL",
-    "childCodes":["the Netherlands"]
+    "childCodes":["The Netherlands"]
+  },
+  {
+    "parentCode":"MP",
+    "childCodes":["The Northern Mariana Islands"]
   },
   {
     "parentCode":"NO",
     "childCodes":["Norway"]
+  },
+  {
+    "parentCode":"PS",
+    "childCodes":["Palenstine"]
+  },
+  {
+    "parentCode":"PG",
+    "childCodes":["Papua New Guinea"]
   },
   {
     "parentCode":"PH",
@@ -145,7 +181,7 @@
   },
   {
     "parentCode":"PN",
-    "childCodes":["Pitcairn"]
+    "childCodes":["The Pitcairn Islands"]
   },
   {
     "parentCode":"PT",
@@ -153,7 +189,11 @@
   },
   {
     "parentCode":"RU",
-    "childCodes":["the Russian Federation"]
+    "childCodes":["Russia"]
+  },
+  {
+    "parentCode":"WS",
+    "childCodes":["Samoa"]
   },
   {
     "parentCode":"SC",
@@ -176,8 +216,20 @@
     "childCodes": ["Switzerland"]
   },
   {
+    "parentCode": "SY",
+    "childCodes": ["Syria"]
+  },
+  {
+    "parentCode": "TW",
+    "childCodes": ["Taiwan"]
+  },
+  {
     "parentCode":"TZ",
     "childCodes":["Tanzania"]
+  },
+  {
+    "parentCode":"TC",
+    "childCodes":["The Turks and Caicos Islands"]
   },
   {
     "parentCode":"AE",
@@ -190,6 +242,10 @@
   {
     "parentCode":"US",
     "childCodes":["the United States of America"]
+  },
+  {
+    "parentCode":"VE",
+    "childCodes":["Venezuela"]
   },
   {
     "parentCode":"YE",
