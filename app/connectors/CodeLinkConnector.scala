@@ -49,8 +49,6 @@ trait CodeLinkConnector {
   def getAdditionalDocumentCodesForTag(tag: Tag): Seq[String]
   def getAliasesForCountryCode(countryCode: String): Option[Seq[String]]
   def getShortNamesForCountryCode(countryCode: String): Option[Seq[String]]
-
-  def getLocationTypesForGoodsLocationCode(goodsLocationCode: String): Option[Seq[String]]
 }
 
 @Singleton
@@ -90,9 +88,6 @@ class FileBasedCodeLinkConnector @Inject() (appConfig: AppConfig) extends CodeLi
   private val countryCodeToShortName: Map[String, Seq[String]] =
     readCodeLinksFromFileAsMap(appConfig.countryCodeToShortNameLinkFile)
 
-  private val goodsLocationCodeToLocationTypes: Map[String, Seq[String]] =
-    readCodeLinksFromFileAsMap(appConfig.goodsLocationCodeToLocationTypeFile)
-
   def getHolderOfAuthorisationCodesForTag(tag: Tag): Seq[String] =
     taggedHolderOfAuthorisationCodes.filter(_._2.contains(tag.toString)).map(_._1)
 
@@ -116,7 +111,4 @@ class FileBasedCodeLinkConnector @Inject() (appConfig: AppConfig) extends CodeLi
 
   def getShortNamesForCountryCode(countryCode: String): Option[Seq[String]] =
     countryCodeToShortName.get(countryCode)
-
-  def getLocationTypesForGoodsLocationCode(goodsLocationCode: String): Option[Seq[String]] =
-    goodsLocationCodeToLocationTypes.get(goodsLocationCode)
 }

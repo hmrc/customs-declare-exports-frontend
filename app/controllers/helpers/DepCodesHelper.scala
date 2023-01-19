@@ -16,17 +16,18 @@
 
 package controllers.helpers
 
-import connectors.CodeLinkConnector
+import connectors.CodeListConnector
 import models.ExportsDeclaration
 
+import java.util.Locale
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class DepCodesHelper @Inject() (codeLinkConnector: CodeLinkConnector) {
+class DepCodesHelper @Inject() (codeListConnector: CodeListConnector) {
 
   def isDesignatedExportPlaceCode(declaration: ExportsDeclaration): Boolean =
     declaration.locations.goodsLocation.exists(location => checkDesignatedExportPlaceCodes(location.code))
 
   private def checkDesignatedExportPlaceCodes(goodsLocationCode: String): Boolean =
-    codeLinkConnector.getLocationTypesForGoodsLocationCode(goodsLocationCode).getOrElse(Seq()).contains("DEP")
+    codeListConnector.getDepCodes(Locale.ENGLISH).values.map(_.code).toSeq.contains(goodsLocationCode)
 }

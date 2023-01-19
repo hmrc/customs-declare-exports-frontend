@@ -27,13 +27,13 @@ class CountryHelperSpec extends UnitSpec with Injector {
     "get the short name for a country when it is available" in {
       countryHelper.getShortNameForCountry(
         Country("United States of America (the), Including Puerto Rico", "US")
-      ) mustBe "the United States of America"
+      ) mustBe "The United States of America"
     }
 
     "get the full name for a country when a short name is not available" in {
       countryHelper.getShortNameForCountry(
-        Country("Taiwan - Separate customs territory of Taiwan, Penghu, Kinmen and Matsu", "TW")
-      ) mustBe "Taiwan - Separate customs territory of Taiwan, Penghu, Kinmen and Matsu"
+        Country("New Caledonia, Including Loyalty Islands (Lifou, Mare and Ouvea)", "NC")
+      ) mustBe "New Caledonia, Including Loyalty Islands (Lifou, Mare and Ouvea)"
     }
   }
 }
