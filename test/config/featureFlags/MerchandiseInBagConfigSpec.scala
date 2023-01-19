@@ -24,8 +24,10 @@ class MerchandiseInBagConfigSpec extends UnitWithMocksSpec {
 
   private val configWithWaiverEnabled: Configuration =
     Configuration(ConfigFactory.parseString("microservice.services.features.merchandiseInBag=enabled"))
+
   private val configWithWaiverDisabled: Configuration =
     Configuration(ConfigFactory.parseString("microservice.services.features.merchandiseInBag=disabled"))
+
   private val emptyConfig: Configuration =
     Configuration(ConfigFactory.parseString("microservice.services.features.default=disabled"))
 
@@ -34,9 +36,7 @@ class MerchandiseInBagConfigSpec extends UnitWithMocksSpec {
   "MerchandiseInBagConfig on enabled" should {
 
     "return true" when {
-
       "the feature is enabled" in {
-
         merchandiseInBagConfig(configWithWaiverEnabled).isMerchandiseInBagEnabled mustBe true
       }
     }
@@ -44,12 +44,10 @@ class MerchandiseInBagConfigSpec extends UnitWithMocksSpec {
     "return false" when {
 
       "the feature is disabled" in {
-
         merchandiseInBagConfig(configWithWaiverDisabled).isMerchandiseInBagEnabled mustBe false
       }
 
       "there is no config for the feature" in {
-
         merchandiseInBagConfig(emptyConfig).isMerchandiseInBagEnabled mustBe false
       }
     }

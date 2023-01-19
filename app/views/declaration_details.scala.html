@@ -15,7 +15,7 @@
  *@
 
 @import config.ExternalServicesConfig
-@import config.featureFlags.SecureMessagingConfig
+@import config.featureFlags.{DeclarationAmendmentsConfig, SecureMessagingConfig}
 @import models.declaration.notifications.Notification
 @import models.declaration.submissions.Submission
 @import models.requests.VerifiedEmailRequest
@@ -38,6 +38,7 @@
   paragraph: paragraphBody,
   bulletList: bulletList,
   govukDetails : GovukDetails,
+  declarationAmendmentsConfig: DeclarationAmendmentsConfig,
   secureMessagingConfig: SecureMessagingConfig,
   externalServicesConfig: ExternalServicesConfig
 )
@@ -97,6 +98,18 @@
             id = Some("copy-declaration"),
             text = messages("declaration.details.copy.declaration"),
             call = routes.CopyDeclarationController.redirectToReceiveJourneyRequest(submission.uuid)
+        )
+    </p>
+  }
+}
+
+@amendDeclarationLink = {
+  @if(declarationAmendmentsConfig.isEnabled){
+    <p>
+        @link(
+            id = Some("amend-declaration"),
+            text = messages("declaration.details.amend.declaration"),
+            call = routes.AmendDeclarationController.displayPage
         )
     </p>
   }
@@ -252,6 +265,7 @@
             @eadLink
             @viewDeclarationLink
             @copyDeclarationLink
+            @amendDeclarationLink
             @cancelDeclarationLink
             @movementsRedirectionLink
         </div>

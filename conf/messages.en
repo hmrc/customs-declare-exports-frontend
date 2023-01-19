@@ -868,6 +868,7 @@ declaration.details.ducr = DUCR
 declaration.details.lrn = LRN
 declaration.details.mrn = MRN:
 
+declaration.details.amend.declaration = Amend declaration
 declaration.details.cancel.declaration = Cancel declaration
 declaration.details.copy.declaration = Copy declaration
 declaration.details.fix.resubmit.button = Fix and resubmit
