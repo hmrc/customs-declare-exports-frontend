@@ -16,9 +16,9 @@
 
 package forms.declaration
 
+import base.MockTransportCodeService
 import forms.common.DeclarationPageBaseSpec
 import forms.declaration.BorderTransport.{form, radioButtonGroupId}
-import forms.declaration.TransportCodes._
 import models.viewmodels.TariffContentKey
 import play.api.i18n.Lang
 import play.api.test.Helpers._
@@ -31,50 +31,55 @@ class BorderTransportSpec extends DeclarationPageBaseSpec {
 
   implicit val messages = stubMessagesApi().preferred(Seq(Lang(Locale.ENGLISH)))
 
+  implicit val transportCodeService = MockTransportCodeService.transportCodeService
+
   "Transport Details form" when {
 
-    transportCodesOnBorderTransport.foreach { transportCode =>
-      s"the transportCode is ${transportCode.id}" should {
+    "have no errors" when {
+      "all BorderTransport's fields contain the expected data" in {
+        transportCodeService.transportCodesOnBorderTransport.foreach { transportCode =>
+          val correctForm = BorderTransport(transportCode.value, "Id.Number")
 
-        "have no errors" when {
-          "all BorderTransport's fields contain the expected data" in {
-            val correctForm = BorderTransport(transportCode.value, "Id.Number")
-
-            val result = form.fillAndValidate(correctForm)
-            result.hasErrors must be(false)
-          }
+          val result = form.fillAndValidate(correctForm)
+          result.hasErrors must be(false)
         }
+      }
+    }
 
-        "have errors" when {
-          "sending no information about transport type" in {
-            val errors = form.bind(Map(radioButtonGroupId -> "")).errors
-            errors.map(_.key) must be(List(radioButtonGroupId))
-            errors.map(_.message) must be(List(s"$prefix.error.empty"))
-          }
+    "have errors" when {
+      "sending no information about transport type" in {
+        val errors = form.bind(Map(radioButtonGroupId -> "")).errors
+        errors.map(_.key) must be(List(radioButtonGroupId))
+        errors.map(_.message) must be(List(s"$prefix.error.empty"))
+      }
 
-          "sending non existing transport type" in {
-            val errors = form.bind(Map(radioButtonGroupId -> "abcd123")).errors
-            errors.map(_.key) must be(List(radioButtonGroupId))
-            errors.map(_.message) must be(List(s"$prefix.error.incorrect"))
-          }
+      "sending non existing transport type" in {
+        val errors = form.bind(Map(radioButtonGroupId -> "abcd123")).errors
+        errors.map(_.key) must be(List(radioButtonGroupId))
+        errors.map(_.message) must be(List(s"$prefix.error.incorrect"))
+      }
 
-          "sending empty transport type reference" in {
-            val errors = form.bind(Map(radioButtonGroupId -> transportCode.value, transportCode.id -> "")).errors
-            errors.map(_.key) must be(List(transportCode.id))
-            errors.map(_.message) must be(List(s"$prefix.IDNumber.error.empty"))
-          }
+      "sending empty transport type reference" in {
+        transportCodeService.transportCodesOnBorderTransport.foreach { transportCode =>
+          val errors = form.bind(Map(radioButtonGroupId -> transportCode.value, transportCode.id -> "")).errors
+          errors.map(_.key) must be(List(transportCode.id))
+          errors.map(_.message) must be(List(s"$prefix.IDNumber.error.empty"))
+        }
+      }
 
-          "sending very long transport type reference" in {
-            val errors = form.bind(Map(radioButtonGroupId -> transportCode.value, transportCode.id -> "a" * 128)).errors
-            errors.map(_.key) must be(List(transportCode.id))
-            errors.map(_.message) must be(List(s"$prefix.IDNumber.error.length"))
-          }
+      "sending very long transport type reference" in {
+        transportCodeService.transportCodesOnBorderTransport.foreach { transportCode =>
+          val errors = form.bind(Map(radioButtonGroupId -> transportCode.value, transportCode.id -> "a" * 128)).errors
+          errors.map(_.key) must be(List(transportCode.id))
+          errors.map(_.message) must be(List(s"$prefix.IDNumber.error.length"))
+        }
+      }
 
-          "sending reference with special characters" in {
-            val errors = form.bind(Map(radioButtonGroupId -> transportCode.value, transportCode.id -> "$#@!")).errors
-            errors.map(_.key) must be(List(transportCode.id))
-            errors.map(_.message) must be(List(s"$prefix.IDNumber.error.invalid"))
-          }
+      "sending reference with special characters" in {
+        transportCodeService.transportCodesOnBorderTransport.foreach { transportCode =>
+          val errors = form.bind(Map(radioButtonGroupId -> transportCode.value, transportCode.id -> "$#@!")).errors
+          errors.map(_.key) must be(List(transportCode.id))
+          errors.map(_.message) must be(List(s"$prefix.IDNumber.error.invalid"))
         }
       }
     }

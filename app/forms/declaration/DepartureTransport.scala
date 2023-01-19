@@ -17,12 +17,12 @@
 package forms.declaration
 
 import forms.DeclarationPage
-import forms.declaration.TransportCodes.transportCodesForV3WhenPC0019
 import models.DeclarationType.DeclarationType
 import models.viewmodels.TariffContentKey
 import play.api.data.Forms.{mapping, optional, text}
 import play.api.data.{Form, Mapping}
 import play.api.libs.json.Json
+import services.TransportCodeService
 import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfEqual
 import utils.validators.forms.FieldValidator.{isContainedIn, noLongerThan, _}
 
@@ -36,20 +36,27 @@ object DepartureTransport extends DeclarationPage {
 
   val prefix = "declaration.transportInformation.meansOfTransport.departure"
 
-  def form(transportCodes: TransportCodes): Form[DepartureTransport] = Form(mappingFor(transportCodes))
+  def form(transportCodes: TransportCodes)(implicit transportCodeService: TransportCodeService): Form[DepartureTransport] = {
+    val isV3WhenPC0019 = transportCodes == transportCodeService.transportCodesForV3WhenPC0019
 
-  private def mappingFor(transportCodes: TransportCodes): Mapping[DepartureTransport] =
-    mapping(
-      radioButtonGroupId -> mappingForRadioDepartureType(transportCodes),
-      mappingForInputDepartureNumber(transportCodes.code1),
-      mappingForInputDepartureNumber(transportCodes.code2),
-      mappingForInputDepartureNumber(transportCodes.code3),
-      mappingForInputDepartureNumber(transportCodes.code4),
-      mappingForInputDepartureNumber(transportCodes.code5),
-      mappingForInputDepartureNumber(transportCodes.code6),
-      mappingForInputDepartureNumber(transportCodes.code7),
-      mappingForInputDepartureNumber(transportCodes.code8)
-    )(form2Model)(model2Form(transportCodes))
+    def mappingForRadioDepartureType(transportCodes: TransportCodes): Mapping[Option[String]] =
+      optional(text.verifying(s"$prefix.error.incorrect", isContainedIn(transportCodes.asList.map(_.value))))
+        .verifying(s"$prefix.error.empty${if (isV3WhenPC0019) ".v3" else ""}", isPresent)
+
+    Form(
+      mapping(
+        radioButtonGroupId -> mappingForRadioDepartureType(transportCodes),
+        mappingForInputDepartureNumber(transportCodes.code1),
+        mappingForInputDepartureNumber(transportCodes.code2),
+        mappingForInputDepartureNumber(transportCodes.code3),
+        mappingForInputDepartureNumber(transportCodes.code4),
+        mappingForInputDepartureNumber(transportCodes.code5),
+        mappingForInputDepartureNumber(transportCodes.code6),
+        mappingForInputDepartureNumber(transportCodes.code7),
+        mappingForInputDepartureNumber(transportCodes.code8)
+      )(form2Model)(model2Form(transportCodes))
+    )
+  }
 
   private def form2Model: (
     Option[String],
@@ -65,6 +72,7 @@ object DepartureTransport extends DeclarationPage {
     DepartureTransport(departureType, List(v1, v2, v3, v4, v5, v6, v7, v8).flatten.headOption.orElse(Some("")))
   }
 
+  // scalastyle:off
   private def model2Form(transportCodes: TransportCodes): DepartureTransport => Option[
     (Option[String], Option[String], Option[String], Option[String], Option[String], Option[String], Option[String], Option[String], Option[String])
   ] =
@@ -82,17 +90,11 @@ object DepartureTransport extends DeclarationPage {
           model2Ref(transportCodes.code8)
         )
       )
+  // scalastyle:on
 
   private def model2Ref(transportCode: TransportCode)(implicit departureTransport: DepartureTransport): Option[String] =
     if (!departureTransport.meansOfTransportOnDepartureType.contains(transportCode.value)) None
     else departureTransport.meansOfTransportOnDepartureIDNumber
-
-  private def mappingForRadioDepartureType(transportCodes: TransportCodes): Mapping[Option[String]] = {
-    val isV3WhenPC0019 = transportCodes == transportCodesForV3WhenPC0019
-
-    optional(text.verifying(s"$prefix.error.incorrect", isContainedIn(transportCodes.asList.map(_.value))))
-      .verifying(s"$prefix.error.empty${if (isV3WhenPC0019) ".v3" else ""}", isPresent)
-  }
 
   private def mappingForInputDepartureNumber(transportCode: TransportCode): (String, Mapping[Option[String]]) =
     transportCode.id -> mandatoryIfEqual(

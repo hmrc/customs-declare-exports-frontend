@@ -31,6 +31,7 @@ class CodeLinkConnectorSpec extends UnitWithMocksSpec with BeforeAndAfterEach {
 
     reset(appConfig)
     when(appConfig.taggedHolderOfAuthorisationCodeFile).thenReturn("/code-links/manyLinks.json")
+    when(appConfig.taggedTransportCodeFile).thenReturn("/code-links/manyLinks.json")
     when(appConfig.procedureCodeToAdditionalProcedureCodesLinkFile).thenReturn("/code-links/manyLinks.json")
     when(appConfig.procedureCodeToAdditionalProcedureCodesC21LinkFile).thenReturn("/code-links/manyLinks.json")
     when(appConfig.countryCodeToAliasesLinkFile).thenReturn("/code-links/manyLinks.json")
@@ -167,6 +168,45 @@ class CodeLinkConnectorSpec extends UnitWithMocksSpec with BeforeAndAfterEach {
     "return the expected additional document status codes" when {
       "the tag provided is 'StatusCodesRequiringAReason'" in {
         connector.getAdditionalDocumentStatusCodeForTag(StatusCodesRequiringAReason) mustBe List("UP")
+      }
+    }
+
+    "return the expected transport codes" when {
+
+      "the tag provided is 'AircraftRegistrationNumber'" in {
+        connector.getTransportCodeForTag(AircraftRegistrationNumber) mustBe ("AircraftRegistrationNumber", "41")
+      }
+
+      "the tag provided is 'EuropeanVesselIDNumber'" in {
+        connector.getTransportCodeForTag(EuropeanVesselIDNumber) mustBe ("EuropeanVesselIDNumber", "80")
+      }
+
+      "the tag provided is 'FlightNumber'" in {
+        connector.getTransportCodeForTag(FlightNumber) mustBe ("FlightNumber", "40")
+      }
+
+      "the tag provided is 'NameOfInlandWaterwayVessel'" in {
+        connector.getTransportCodeForTag(NameOfInlandWaterwayVessel) mustBe ("NameOfInlandWaterwayVessel", "81")
+      }
+
+      "the tag provided is 'NameOfVessel'" in {
+        connector.getTransportCodeForTag(NameOfVessel) mustBe ("NameOfVessel", "11")
+      }
+
+      "the tag provided is 'NotApplicable'" in {
+        connector.getTransportCodeForTag(NotApplicable) mustBe ("NotApplicable", "option_none")
+      }
+
+      "the tag provided is 'ShipOrRoroImoNumber'" in {
+        connector.getTransportCodeForTag(ShipOrRoroImoNumber) mustBe ("ShipOrRoroImoNumber", "10")
+      }
+
+      "the tag provided is 'VehicleRegistrationNumber'" in {
+        connector.getTransportCodeForTag(VehicleRegistrationNumber) mustBe ("VehicleRegistrationNumber", "30")
+      }
+
+      "the tag provided is 'WagonNumber'" in {
+        connector.getTransportCodeForTag(WagonNumber) mustBe ("WagonNumber", "20")
       }
     }
   }

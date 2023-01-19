@@ -114,6 +114,7 @@ trait Stubs {
   val pBanner = new phaseBanner(new GovukPhaseBanner(new GovukTag()), minimalAppConfig)
   val sHeader = new siteHeader(new HmrcHeader(new HmrcBanner(), new HmrcUserResearchBanner(), new GovukPhaseBanner(new GovukTag())))
   val hmrcTimeoutDialogHelper = new HmrcTimeoutDialogHelper(new HmrcTimeoutDialog, new TimeoutDialogConfig(minimalConfiguration))
+
   val gdsMainTemplate = new gdsMainTemplate(
     govukHeader = govukHeader,
     govukLayout = gdsGovukLayout,

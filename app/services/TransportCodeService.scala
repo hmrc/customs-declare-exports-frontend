@@ -14,42 +14,25 @@
  * limitations under the License.
  */
 
-package forms.declaration
+package services
 
-sealed abstract class TransportCode(
-  val id: String,
-  val value: String,
-  val useAltRadioTextForV2: Boolean = false,
-  val useAltRadioTextForBorderTransport: Boolean = false
-)
+import connectors.{CodeLinkConnector, Tag}
+import forms.declaration.{TransportCode, TransportCodes}
 
-case class TransportCodes(
-  code1: TransportCode,
-  code2: TransportCode,
-  code3: TransportCode,
-  code4: TransportCode,
-  code5: TransportCode,
-  code6: TransportCode,
-  code7: TransportCode,
-  code8: TransportCode,
-  maybeNotAvailable: Option[TransportCode] = None
-) {
-  lazy val asList =
-    List(Some(code1), Some(code2), Some(code3), Some(code4), Some(code5), Some(code6), Some(code7), Some(code8), maybeNotAvailable).flatten
-      .map(identity)
-}
+import javax.inject.{Inject, Singleton}
 
-object TransportCodes {
+@Singleton
+class TransportCodeService @Inject() (implicit codeLinkConnector: CodeLinkConnector) {
 
-  case object AircraftRegistrationNumber extends TransportCode("aircraftRegistrationNumber", "41", true)
-  case object EuropeanVesselIDNumber extends TransportCode("europeanVesselIDNumber", "80")
-  case object FlightNumber extends TransportCode("flightNumber", "40", true)
-  case object NameOfInlandWaterwayVessel extends TransportCode("nameOfInlandWaterwayVessel", "81")
-  case object NameOfVessel extends TransportCode("nameOfVessel", "11", false, true)
-  case object NotApplicable extends TransportCode("notApplicable", "option_none", false, true)
-  case object ShipOrRoroImoNumber extends TransportCode("shipOrRoroImoNumber", "10", false, true)
-  case object VehicleRegistrationNumber extends TransportCode("vehicleRegistrationNumber", "30", false, true)
-  case object WagonNumber extends TransportCode("wagonNumber", "20", true, true)
+  val AircraftRegistrationNumber = TransportCode(Tag.AircraftRegistrationNumber, true)
+  val EuropeanVesselIDNumber = TransportCode(Tag.EuropeanVesselIDNumber)
+  val FlightNumber = TransportCode(Tag.FlightNumber, true)
+  val NameOfInlandWaterwayVessel = TransportCode(Tag.NameOfInlandWaterwayVessel)
+  val NameOfVessel = TransportCode(Tag.NameOfVessel, false, true)
+  val NotApplicable = TransportCode(Tag.NotApplicable, false, true)
+  val ShipOrRoroImoNumber = TransportCode(Tag.ShipOrRoroImoNumber, false, true)
+  val VehicleRegistrationNumber = TransportCode(Tag.VehicleRegistrationNumber, false, true)
+  val WagonNumber = TransportCode(Tag.WagonNumber, true, true)
 
   // As used on /departure-transport when journey is Standard or Supplementary_Simplified and /inland-or-border is 'Border'
   val transportCodesForV1 = TransportCodes(

@@ -18,12 +18,12 @@ package forms.declaration
 
 import forms.DeclarationPage
 import forms.MappingHelper.requiredRadio
-import forms.declaration.TransportCodes._
 import models.DeclarationType.DeclarationType
 import models.viewmodels.TariffContentKey
-import play.api.data.Forms.text
-import play.api.data.{Form, Forms, Mapping}
+import play.api.data.Forms.{mapping, text}
+import play.api.data.{Form, Mapping}
 import play.api.libs.json.{Json, OFormat}
+import services.TransportCodeService
 import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfEqual
 import utils.validators.forms.FieldValidator._
 
@@ -37,9 +37,23 @@ object BorderTransport extends DeclarationPage {
 
   val prefix = "declaration.transportInformation.meansOfTransport.crossingTheBorder"
 
-  def form: Form[BorderTransport] = Form(mapping)
+  def form(implicit tcs: TransportCodeService): Form[BorderTransport] =
+    Form(
+      mapping(
+        radioButtonGroupId -> requiredRadio(s"$prefix.error.empty")
+          .verifying(s"$prefix.error.incorrect", isContainedIn(tcs.transportCodesOnBorderTransport.map(_.value))),
+        transportReferenceMapping(tcs.ShipOrRoroImoNumber),
+        transportReferenceMapping(tcs.NameOfVessel),
+        transportReferenceMapping(tcs.WagonNumber),
+        transportReferenceMapping(tcs.VehicleRegistrationNumber),
+        transportReferenceMapping(tcs.FlightNumber),
+        transportReferenceMapping(tcs.AircraftRegistrationNumber),
+        transportReferenceMapping(tcs.EuropeanVesselIDNumber),
+        transportReferenceMapping(tcs.NameOfInlandWaterwayVessel)
+      )(form2Model)(model2Form(tcs))
+    )
 
-  def transportReferenceMapping(transportCode: TransportCode): (String, Mapping[Option[String]]) =
+  private def transportReferenceMapping(transportCode: TransportCode): (String, Mapping[Option[String]]) =
     transportCode.id -> mandatoryIfEqual(
       radioButtonGroupId,
       transportCode.value,
@@ -48,20 +62,6 @@ object BorderTransport extends DeclarationPage {
         .verifying(s"$prefix.IDNumber.error.length", isEmpty or noLongerThan(35))
         .verifying(s"$prefix.IDNumber.error.invalid", isAlphanumericWithAllowedSpecialCharacters)
     )
-
-  private def mapping: Mapping[BorderTransport] =
-    Forms.mapping(
-      radioButtonGroupId -> requiredRadio(s"$prefix.error.empty")
-        .verifying(s"$prefix.error.incorrect", isContainedIn(transportCodesOnBorderTransport.map(_.value))),
-      transportReferenceMapping(ShipOrRoroImoNumber),
-      transportReferenceMapping(NameOfVessel),
-      transportReferenceMapping(WagonNumber),
-      transportReferenceMapping(VehicleRegistrationNumber),
-      transportReferenceMapping(FlightNumber),
-      transportReferenceMapping(AircraftRegistrationNumber),
-      transportReferenceMapping(EuropeanVesselIDNumber),
-      transportReferenceMapping(NameOfInlandWaterwayVessel)
-    )(form2Model)(model2Form)
 
   private def form2Model: (
     String,
@@ -100,23 +100,25 @@ object BorderTransport extends DeclarationPage {
       )
   }
 
-  private def model2Form: BorderTransport => Option[
+  // scalastyle:off
+  private def model2Form(tcs: TransportCodeService): BorderTransport => Option[
     (String, Option[String], Option[String], Option[String], Option[String], Option[String], Option[String], Option[String], Option[String])
   ] =
     implicit borderTransport =>
       Some(
         (
           borderTransport.meansOfTransportCrossingTheBorderType,
-          model2Ref(ShipOrRoroImoNumber),
-          model2Ref(NameOfVessel),
-          model2Ref(WagonNumber),
-          model2Ref(VehicleRegistrationNumber),
-          model2Ref(FlightNumber),
-          model2Ref(AircraftRegistrationNumber),
-          model2Ref(EuropeanVesselIDNumber),
-          model2Ref(NameOfInlandWaterwayVessel)
+          model2Ref(tcs.ShipOrRoroImoNumber),
+          model2Ref(tcs.NameOfVessel),
+          model2Ref(tcs.WagonNumber),
+          model2Ref(tcs.VehicleRegistrationNumber),
+          model2Ref(tcs.FlightNumber),
+          model2Ref(tcs.AircraftRegistrationNumber),
+          model2Ref(tcs.EuropeanVesselIDNumber),
+          model2Ref(tcs.NameOfInlandWaterwayVessel)
         )
       )
+  // scalastyle:on
 
   private def form2Ref(refs: Option[String]*): String = refs.map(_.getOrElse("")).mkString
 
