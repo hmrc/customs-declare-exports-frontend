@@ -16,11 +16,10 @@
 
 package controllers.declaration
 
-import base.ControllerSpec
+import base.{ControllerSpec, MockTransportCodeService}
 import controllers.routes.RootController
 import forms.declaration.BorderTransport
 import forms.declaration.BorderTransport.radioButtonGroupId
-import forms.declaration.TransportCodes._
 import models.DeclarationType._
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -34,6 +33,8 @@ import views.html.declaration.border_transport
 
 class BorderTransportControllerSpec extends ControllerSpec {
 
+  implicit val transportCodeService = MockTransportCodeService.transportCodeService
+
   val borderTransportPage = mock[border_transport]
 
   val controller = new BorderTransportController(
@@ -42,6 +43,7 @@ class BorderTransportControllerSpec extends ControllerSpec {
     navigator,
     mockExportsCacheService,
     stubMessagesControllerComponents(),
+    transportCodeService,
     borderTransportPage
   )(ec)
 
@@ -71,14 +73,14 @@ class BorderTransportControllerSpec extends ControllerSpec {
   private def formData(transportType: String, reference: String): JsObject =
     Json.obj(
       radioButtonGroupId -> transportType,
-      ShipOrRoroImoNumber.id -> reference,
-      NameOfVessel.id -> reference,
-      WagonNumber.id -> reference,
-      VehicleRegistrationNumber.id -> reference,
-      FlightNumber.id -> reference,
-      AircraftRegistrationNumber.id -> reference,
-      EuropeanVesselIDNumber.id -> reference,
-      NameOfInlandWaterwayVessel.id -> reference
+      transportCodeService.ShipOrRoroImoNumber.id -> reference,
+      transportCodeService.NameOfVessel.id -> reference,
+      transportCodeService.WagonNumber.id -> reference,
+      transportCodeService.VehicleRegistrationNumber.id -> reference,
+      transportCodeService.FlightNumber.id -> reference,
+      transportCodeService.AircraftRegistrationNumber.id -> reference,
+      transportCodeService.EuropeanVesselIDNumber.id -> reference,
+      transportCodeService.NameOfInlandWaterwayVessel.id -> reference
     )
 
   "Transport Details Controller" should {
@@ -116,7 +118,7 @@ class BorderTransportControllerSpec extends ControllerSpec {
         "valid options are selected" in {
           withNewCaching(request.cacheModel)
 
-          val correctForm = formData(ShipOrRoroImoNumber.value, "SHIP001")
+          val correctForm = formData(transportCodeService.ShipOrRoroImoNumber.value, "SHIP001")
 
           val result = controller.submitForm()(postRequest(correctForm))
 
@@ -141,7 +143,7 @@ class BorderTransportControllerSpec extends ControllerSpec {
         "the 'submitForm' method is invoked" in {
           withNewCaching(request.cacheModel)
 
-          val correctForm = formData(ShipOrRoroImoNumber.value, "SHIP001")
+          val correctForm = formData(transportCodeService.ShipOrRoroImoNumber.value, "SHIP001")
 
           val result = controller.submitForm()(postRequest(correctForm))
 

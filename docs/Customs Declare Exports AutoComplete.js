@@ -635,7 +635,7 @@ function countriesOfRoutingSummary(){
 function locationOfGoods(){
     if (currentPageIs('/customs-declare-exports/declaration/location-of-goods')) {
         document.getElementById('code_yes').checked = 'checked'
-        document.getElementById('glc').value = 'GBAUABDABDABDGVM - Aberdeen  / Aberdeen GVMS Port'
+        selectFromAutoPredict(document.getElementById('glc-container'), "GBAUABDABDABDGVM")
         submit()
     }
 }
@@ -1148,17 +1148,17 @@ function inlandTransportDetails(){
 
 function departureTransport(){
     if (currentPageIs('/customs-declare-exports/declaration/departure-transport')) {
-        document.getElementById('radio_shipOrRoroImoNumber').checked = 'checked'
-        document.getElementById('shipOrRoroImoNumber').value = '8888'
+        document.getElementById('radio_ShipOrRoroImoNumber').checked = 'checked'
+        document.getElementById('ShipOrRoroImoNumber').value = '8888'
         submit()
     }
 }
 
 function borderTransport(){
     if (currentPageIs('/customs-declare-exports/declaration/border-transport')) {
-        if (document.getElementById('nameOfVessel') !== null) {
+        if (document.getElementById('NameOfVessel') !== null) {
             selectRadioOptionFromInputs(document.getElementsByName('borderTransportType'), 1)
-            document.getElementById('nameOfVessel').value = 'Superfast Hawk Millenium'
+            document.getElementById('NameOfVessel').value = 'Superfast Hawk Millenium'
         }
 
         submit()

@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import base.ControllerSpec
+import base.{ControllerSpec, MockTransportCodeService}
 import controllers.declaration.routes.{BorderTransportController, ExpressConsignmentController, TransportCountryController}
 import controllers.helpers.TransportSectionHelper.postalOrFTIModeOfTransportCodes
 import controllers.routes.RootController
@@ -24,7 +24,6 @@ import forms.declaration.DepartureTransport
 import forms.declaration.DepartureTransport.radioButtonGroupId
 import forms.declaration.InlandOrBorder.Border
 import forms.declaration.ModeOfTransportCode.Maritime
-import forms.declaration.TransportCodes.{transportCodesForV1, transportCodesForV3WhenPC0019, NotApplicable, WagonNumber}
 import mock.ErrorHandlerMocks
 import models.DeclarationType._
 import org.mockito.ArgumentCaptor
@@ -40,6 +39,8 @@ import views.html.declaration.departure_transport
 
 class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerMocks {
 
+  val transportCodeService = MockTransportCodeService.transportCodeService
+
   val departureTransportPage = mock[departure_transport]
   val departureTransportHelper = mock[DepartureTransportHelper]
 
@@ -49,6 +50,7 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
     mockExportsCacheService,
     navigator,
     stubMessagesControllerComponents(),
+    transportCodeService,
     departureTransportHelper,
     departureTransportPage
   )(ec)
@@ -57,7 +59,7 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
     super.beforeEach()
     setupErrorHandler()
     authorizedUser()
-    when(departureTransportHelper.transportCodes(any())).thenReturn(transportCodesForV1)
+    when(departureTransportHelper.transportCodes(any())).thenReturn(transportCodeService.transportCodesForV1)
     when(departureTransportPage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
@@ -93,7 +95,7 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
         }
 
         "display page method is invoked and cache contains data" in {
-          val departureTransport = withDepartureTransport(Maritime, WagonNumber.value, "FAA")
+          val departureTransport = withDepartureTransport(Maritime, transportCodeService.WagonNumber.value, "FAA")
           withNewCaching(aDeclarationAfter(request.cacheModel, departureTransport))
 
           val result = controller.displayPage(getRequest())
@@ -128,7 +130,7 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
         "form is incorrect" in {
           withNewCaching(request.cacheModel)
 
-          val incorrectForm = formData("wrongValue", WagonNumber.id, "FAA")
+          val incorrectForm = formData("wrongValue", transportCodeService.WagonNumber.id, "FAA")
 
           val result = controller.submitForm()(postRequest(incorrectForm))
           status(result) must be(BAD_REQUEST)
@@ -140,7 +142,7 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
           "redirect to the starting page on submitForm" in {
             withNewCaching(aDeclarationAfter(request.cacheModel, withBorderModeOfTransportCode(modeOfTransportCode)))
 
-            val correctForm = formData(WagonNumber.value, WagonNumber.id, "FAA")
+            val correctForm = formData(transportCodeService.WagonNumber.value, transportCodeService.WagonNumber.id, "FAA")
 
             val result = controller.submitForm()(postRequest(correctForm))
             redirectLocation(result) mustBe Some(RootController.displayPage.url)
@@ -154,7 +156,7 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
         "information provided by user are correct" in {
           withNewCaching(request.cacheModel)
 
-          val correctForm = formData(WagonNumber.value, WagonNumber.id, "FAA")
+          val correctForm = formData(transportCodeService.WagonNumber.value, transportCodeService.WagonNumber.id, "FAA")
 
           val result = controller.submitForm()(postRequest(correctForm))
 
@@ -167,7 +169,7 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
         "the user select 'Border' on /inland-or-border" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withInlandOrBorder(Some(Border))))
 
-          val correctForm = formData(WagonNumber.value, WagonNumber.id, "FAA")
+          val correctForm = formData(transportCodeService.WagonNumber.value, transportCodeService.WagonNumber.id, "FAA")
 
           val result = controller.submitForm()(postRequest(correctForm))
 
@@ -183,7 +185,7 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
         "information provided by user are correct" in {
           withNewCaching(request.cacheModel)
 
-          val correctForm = formData(WagonNumber.value, WagonNumber.id, "FAA")
+          val correctForm = formData(transportCodeService.WagonNumber.value, transportCodeService.WagonNumber.id, "FAA")
 
           val result = controller.submitForm()(postRequest(correctForm))
 
@@ -193,10 +195,10 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
 
         "'0019' has been entered as Procedure Code and" when {
           "the 'NotApplicable' radio element is selected" in {
-            when(departureTransportHelper.transportCodes(any())).thenReturn(transportCodesForV3WhenPC0019)
+            when(departureTransportHelper.transportCodes(any())).thenReturn(transportCodeService.transportCodesForV3WhenPC0019)
             withNewCaching(request.cacheModel)
 
-            val correctForm = formData(NotApplicable.value, "", "")
+            val correctForm = formData(transportCodeService.NotApplicable.value, "", "")
 
             val result = controller.submitForm()(postRequest(correctForm))
 
@@ -220,7 +222,7 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
         "submitForm is invoked" in {
           withNewCaching(request.cacheModel)
 
-          val correctForm = formData(WagonNumber.value, WagonNumber.id, "FAA")
+          val correctForm = formData(transportCodeService.WagonNumber.value, transportCodeService.WagonNumber.id, "FAA")
 
           val result = controller.submitForm()(postRequest(correctForm))
           redirectLocation(result) mustBe Some(RootController.displayPage.url)

@@ -29,6 +29,7 @@ import views.helpers.CommonMessages
 
 trait UnitViewSpec
     extends UnitWithMocksSpec with CommonMessages with FeatureFlagMocks with JourneyTypeTestRunner with OptionValues with Stubs with ViewMatchers {
+
   val itemId = "item1"
 
   implicit val request = journeyRequest()

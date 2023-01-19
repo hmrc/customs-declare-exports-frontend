@@ -17,12 +17,12 @@
 package views.helpers
 
 import forms.declaration.BorderTransport.radioButtonGroupId
-import forms.declaration.TransportCodes.{transportCodesOnBorderTransport, NotApplicable}
 import forms.declaration.{BorderTransport, TransportCode}
 import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.Messages
 import play.twirl.api.Html
+import services.TransportCodeService
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 import views.html.components.gds.exportsInputText
@@ -30,12 +30,12 @@ import views.html.components.gds.exportsInputText
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class BorderTransportHelper @Inject() (exportsInputText: exportsInputText) {
+class BorderTransportHelper @Inject() (exportsInputText: exportsInputText, transportCodeService: TransportCodeService) {
 
   private val prefix = "declaration.transportInformation.meansOfTransport"
 
   def radioButtons(form: Form[BorderTransport])(implicit messages: Messages): List[RadioItem] =
-    transportCodesOnBorderTransport.map(radioButton(form, _))
+    transportCodeService.transportCodesOnBorderTransport.map(radioButton(form, _))
 
   def titleInHeadTag(hasErrors: Boolean)(implicit messages: Messages, request: JourneyRequest[_]): Title = {
     val transportMode = ModeOfTransportCodeHelper.transportMode(request.cacheModel.transportLeavingBorderCode)
@@ -57,7 +57,7 @@ class BorderTransportHelper @Inject() (exportsInputText: exportsInputText) {
       id = Some(s"radio_${transportCode.id}"),
       value = Some(transportCode.value),
       content = Text(messages(s"$prefix.${transportCode.id}${if (transportCode.useAltRadioTextForBorderTransport) ".vBT" else ""}")),
-      conditionalHtml = if (transportCode != NotApplicable) inputField(transportCode, form) else None,
+      conditionalHtml = if (transportCode != transportCodeService.NotApplicable) inputField(transportCode, form) else None,
       checked = form(radioButtonGroupId).value.contains(transportCode.value)
     )
 }

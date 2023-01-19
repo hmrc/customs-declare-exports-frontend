@@ -21,10 +21,11 @@ import controllers.declaration.routes.TransportCountryController
 import controllers.navigation.Navigator
 import forms.declaration.BorderTransport
 import models.DeclarationType.{STANDARD, SUPPLEMENTARY}
-import models.requests.JourneyRequest
 import models.ExportsDeclaration
+import models.requests.JourneyRequest
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.TransportCodeService
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
@@ -39,6 +40,7 @@ class BorderTransportController @Inject() (
   navigator: Navigator,
   override val exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents,
+  implicit val transportCodeService: TransportCodeService,
   borderTransport: border_transport
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {

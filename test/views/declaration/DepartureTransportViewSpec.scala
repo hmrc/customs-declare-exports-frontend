@@ -17,7 +17,7 @@
 package views.declaration
 
 import base.ExportsTestData.itemWithPC
-import base.Injector
+import base.{Injector, MockTransportCodeService}
 import controllers.declaration.routes.{
   InlandOrBorderController,
   InlandTransportDetailsController,
@@ -28,7 +28,6 @@ import controllers.helpers.TransportSectionHelper._
 import forms.declaration.DepartureTransport.form
 import forms.declaration.InlandOrBorder.Border
 import forms.declaration.ModeOfTransportCode.{RoRo, Road}
-import forms.declaration.TransportCodes._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
 import forms.declaration.{ModeOfTransportCode, TransportCodes}
 import models.DeclarationType.{CLEARANCE, STANDARD}
@@ -49,9 +48,11 @@ class DepartureTransportViewSpec extends PageWithButtonsSpec with Injector {
 
   val page = instanceOf[departure_transport]
 
-  override val typeAndViewInstance = (STANDARD, page(form(transportCodesForV1))(_, _))
+  implicit val transportCodeService = MockTransportCodeService.transportCodeService
 
-  def createView(transportCodes: TransportCodes = transportCodesForV1)(implicit request: JourneyRequest[_]): Document =
+  override val typeAndViewInstance = (STANDARD, page(form(transportCodeService.transportCodesForV1))(_, _))
+
+  def createView(transportCodes: TransportCodes = transportCodeService.transportCodesForV1)(implicit request: JourneyRequest[_]): Document =
     page(form(transportCodes))(request, messages)
 
   "Departure Transport View" should {
@@ -139,8 +140,8 @@ class DepartureTransportViewSpec extends PageWithButtonsSpec with Injector {
           val view = createView(dataOnTest.transportCodes)(dataOnTest.request)
 
           val transportCodes = dataOnTest.transportCodes
-          val isV2 = transportCodes == transportCodesForV2
-          val notAvailableRadioIsNotIncluded = transportCodes != transportCodesForV3WhenPC0019
+          val isV2 = transportCodes == transportCodeService.transportCodesForV2
+          val notAvailableRadioIsNotIncluded = transportCodes != transportCodeService.transportCodesForV3WhenPC0019
 
           val radios = view.getElementsByClass("govuk-radios__input")
           radios.size mustBe transportCodes.asList.size
@@ -170,7 +171,8 @@ class DepartureTransportViewSpec extends PageWithButtonsSpec with Injector {
               element.id mustBe transportCodes.asList(index).id
             }
 
-            val inputLabels = view.getElementsByClass("govuk-label").iterator.asScala.filterNot(_.hasClass("govuk-radios__label")).toList
+            val radios = view.getElementsByClass("govuk-label").iterator.asScala
+            val inputLabels = radios.filterNot(_.hasClass("govuk-radios__label")).toList
 
             inputLabels.size mustBe transportCodes.asList.size
             inputLabels.zipWithIndex.foreach { elementAndIndex =>
@@ -247,7 +249,7 @@ class DepartureTransportViewSpec extends PageWithButtonsSpec with Injector {
     additionalDeclTypesAllowedOnInlandOrBorder.flatMap { additionalType =>
       nonRoRoOrPostalOrFTIModeOfTransportCodes.map { transportCode: ModeOfTransportCode =>
         DataOnTest(
-          transportCodesForV1,
+          transportCodeService.transportCodesForV1,
           transportCode,
           withRequest(additionalType, withBorderModeOfTransportCode(Some(transportCode)), withInlandOrBorder(Some(Border)))
         )
@@ -257,9 +259,10 @@ class DepartureTransportViewSpec extends PageWithButtonsSpec with Injector {
   val dataForVersion2 =
     additionalDeclTypesAllowedOnInlandOrBorder.flatMap { additionalType =>
       nonPostalOrFTIModeOfTransportCodes.flatMap { transportCode =>
+        val tcsForV2 = transportCodeService.transportCodesForV2
         List(
-          DataOnTest(transportCodesForV2, transportCode, withRequest(additionalType, withInlandModeOfTransportCode(transportCode))),
-          DataOnTest(transportCodesForV2, transportCode, withRequest(SUPPLEMENTARY_EIDR, withInlandModeOfTransportCode(transportCode)))
+          DataOnTest(tcsForV2, transportCode, withRequest(additionalType, withInlandModeOfTransportCode(transportCode))),
+          DataOnTest(tcsForV2, transportCode, withRequest(SUPPLEMENTARY_EIDR, withInlandModeOfTransportCode(transportCode)))
         )
       }
     }
@@ -268,9 +271,13 @@ class DepartureTransportViewSpec extends PageWithButtonsSpec with Injector {
     List(CLEARANCE_FRONTIER, CLEARANCE_PRE_LODGED).flatMap { additionalType =>
       nonRoRoOrPostalOrFTIModeOfTransportCodes.flatMap { transportCode =>
         List(
-          DataOnTest(transportCodesForV3, transportCode, withRequest(additionalType, withBorderModeOfTransportCode(Some(transportCode)))),
           DataOnTest(
-            transportCodesForV3WhenPC0019,
+            transportCodeService.transportCodesForV3,
+            transportCode,
+            withRequest(additionalType, withBorderModeOfTransportCode(Some(transportCode)))
+          ),
+          DataOnTest(
+            transportCodeService.transportCodesForV3WhenPC0019,
             transportCode,
             withRequest(additionalType, withBorderModeOfTransportCode(Some(transportCode)), withItem(itemWithPC("0019")))
           )

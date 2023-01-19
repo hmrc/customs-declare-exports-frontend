@@ -1,0 +1,38 @@
+[
+  {
+    "parentCode": "41",
+    "childCodes": ["AircraftRegistrationNumber"]
+  },
+  {
+    "parentCode": "80",
+    "childCodes": ["EuropeanVesselIDNumber"]
+  },
+  {
+    "parentCode": "40",
+    "childCodes": ["FlightNumber"]
+  },
+  {
+    "parentCode": "81",
+    "childCodes": ["NameOfInlandWaterwayVessel"]
+  },
+  {
+    "parentCode": "11",
+    "childCodes": ["NameOfVessel"]
+  },
+  {
+    "parentCode": "option_none",
+    "childCodes": ["NotApplicable"]
+  },
+  {
+    "parentCode": "10",
+    "childCodes": ["ShipOrRoroImoNumber"]
+  },
+  {
+    "parentCode": "30",
+    "childCodes": ["VehicleRegistrationNumber"]
+  },
+  {
+    "parentCode": "20",
+    "childCodes": ["WagonNumber"]
+  }
+]
