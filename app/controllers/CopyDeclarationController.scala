@@ -87,7 +87,7 @@ class CopyDeclarationController @Inject() (
           parentDeclarationEnhancedStatus = maybeEnhancedStatus,
           status = DRAFT,
           createdDateTime = Instant.now,
-          updatedDateTime = Instant.now,
+          updatedDateTime = Instant.now
         ),
         consignmentReferences = Some(ConsignmentReferences(Some(Ducr(data.ducr.ducr.toUpperCase)), Some(data.lrn))),
         linkDucrToMucr = None,

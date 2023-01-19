@@ -48,7 +48,7 @@
   maybeContinuePlaceholder: Option[String] = None
 )(implicit request: JourneyRequest[_], messages: Messages, appConfig: AppConfig)
 
-@draftContinueLink = { @if(request.cacheModel.readyForSubmission != Some(true)) {
+@draftContinueLink = { @if(request.cacheModel.declarationMeta.readyForSubmission != Some(true)) {
     @maybeContinuePlaceholder.map { continuePlaceholder =>
         @govukButton(Button(
             content = Text(messages("site.continue")),
@@ -61,7 +61,7 @@
 }
 
 @continueLink = @{
-    request.cacheModel.readyForSubmission match {
+    request.cacheModel.declarationMeta.readyForSubmission match {
         case Some(true) if errors.isEmpty => linkButton("site.confirm_and_continue", SummaryController.displayDeclarationPage)
         case Some(true) => linkButton("site.confirm_and_continue", SummaryController.displayPage)
         case _ =>
@@ -70,8 +70,8 @@
 
 @viewDeclarationErrors = @{
     val declaration = request.cacheModel
-    if(declaration.parentDeclarationEnhancedStatus == Some(ERRORS)) {
-        declaration.parentDeclarationId.map { parentId =>
+    if(declaration.declarationMeta.parentDeclarationEnhancedStatus == Some(ERRORS)) {
+        declaration.declarationMeta.parentDeclarationId.map { parentId =>
           linkButton(
             "site.view.declaration.errors",
             RejectedNotificationsController.displayPage(parentId),
@@ -82,15 +82,15 @@
 }
 
 @titleKey = @{
-    if(request.cacheModel.parentDeclarationEnhancedStatus == Some(ERRORS))
+    if(request.cacheModel.declarationMeta.parentDeclarationEnhancedStatus == Some(ERRORS))
         "declaration.summary.amend-header"
-    else if(request.cacheModel.readyForSubmission == Some(true))
+    else if(request.cacheModel.declarationMeta.readyForSubmission == Some(true))
         "declaration.summary.normal-header"
     else "declaration.summary.saved-header"
 }
 
 @draftBodyText = @{
-    if(request.cacheModel.readyForSubmission != Some(true))
+    if(request.cacheModel.declarationMeta.readyForSubmission != Some(true))
         paragraphBody(messages("declaration.summary.draft.body"))
 }
 

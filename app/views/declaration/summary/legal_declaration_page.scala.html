@@ -36,7 +36,7 @@
 @(legalDeclarationForm: Form[LegalDeclaration])(implicit request: JourneyRequest[_], messages: Messages, appConfig: AppConfig)
 
 @headerMsgKey = @{
-    request.cacheModel.parentDeclarationEnhancedStatus match {
+    request.cacheModel.declarationMeta.parentDeclarationEnhancedStatus match {
         case Some(ERRORS) => "declaration.summary.amend.legal-header"
         case _ => "declaration.summary.legal-header"
     }

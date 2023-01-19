@@ -47,7 +47,7 @@
           classes = "govuk-table__cell_break-all"
       ),
       TableRow(
-          content = HtmlContent(formatDateAtTime(declaration.updatedDateTime.atZone(ZoneId.of("Europe/London"))))
+          content = HtmlContent(formatDateAtTime(declaration.declarationMeta.updatedDateTime.atZone(ZoneId.of("Europe/London"))))
       ),
       TableRow(
           content = HtmlContent(

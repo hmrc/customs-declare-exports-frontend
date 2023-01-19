@@ -36,5 +36,3 @@ case class DeclarationMeta(
 object DeclarationMeta {
   implicit val format: OFormat[DeclarationMeta] = Json.format[DeclarationMeta]
 }
-
-

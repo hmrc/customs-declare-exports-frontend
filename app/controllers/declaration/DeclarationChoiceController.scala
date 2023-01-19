@@ -80,11 +80,7 @@ class DeclarationChoiceController @Inject() (
     exportsCacheService.create(
       ExportsDeclaration(
         id = "",
-        declarationMeta = DeclarationMeta(
-          status = DeclarationStatus.INITIAL,
-          createdDateTime = Instant.now,
-          updatedDateTime = Instant.now
-        ),
+        declarationMeta = DeclarationMeta(status = DeclarationStatus.INITIAL, createdDateTime = Instant.now, updatedDateTime = Instant.now),
         `type` = declarationType
       )
     )
