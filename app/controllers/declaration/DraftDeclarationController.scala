@@ -35,7 +35,7 @@ class DraftDeclarationController @Inject() (
 ) extends FrontendController(mcc) with I18nSupport {
 
   def displayPage: Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    val updatedDateTime = request.cacheModel.updatedDateTime
+    val updatedDateTime = request.cacheModel.declarationMeta.updatedDateTime
     val expiry = updatedDateTime.plusSeconds(appConfig.draftTimeToLive.toSeconds).toEpochMilli.toString
 
     Ok(draftDeclarationPage(request.declarationId, expiry)).removingFromSession(declarationId, errorFixModeSessionKey)

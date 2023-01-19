@@ -22,7 +22,7 @@ import forms.declaration.DeclarationChoice
 import forms.declaration.DeclarationChoice._
 import models.DeclarationType.{CLEARANCE, DeclarationType, SIMPLIFIED}
 import models.requests.ExportsSessionKeys
-import models.{DeclarationStatus, ExportsDeclaration}
+import models.{DeclarationMeta, DeclarationStatus, ExportsDeclaration}
 import play.api.Logging
 import play.api.i18n.I18nSupport
 import play.api.mvc._
@@ -80,9 +80,11 @@ class DeclarationChoiceController @Inject() (
     exportsCacheService.create(
       ExportsDeclaration(
         id = "",
-        status = DeclarationStatus.INITIAL,
-        createdDateTime = Instant.now,
-        updatedDateTime = Instant.now,
+        declarationMeta = DeclarationMeta(
+          status = DeclarationStatus.INITIAL,
+          createdDateTime = Instant.now,
+          updatedDateTime = Instant.now
+        ),
         `type` = declarationType
       )
     )

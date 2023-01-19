@@ -25,23 +25,15 @@ import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.Add
 import forms.declaration.additionaldocuments.AdditionalDocument
 import forms.declaration.countries.Country
 import forms.declaration.declarationHolder.DeclarationHolder
-import models.DeclarationStatus.DeclarationStatus
 import models.DeclarationType.DeclarationType
 import models.ExportsDeclaration.isCodePrefixedWith
 import models.declaration._
-import models.declaration.submissions.EnhancedStatus.EnhancedStatus
 import play.api.libs.json._
-
-import java.time.Instant
 
 // scalastyle:off
 case class ExportsDeclaration(
   id: String,
-  parentDeclarationId: Option[String] = None,
-  parentDeclarationEnhancedStatus: Option[EnhancedStatus] = None,
-  status: DeclarationStatus,
-  createdDateTime: Instant,
-  updatedDateTime: Instant,
+  declarationMeta: DeclarationMeta,
   `type`: DeclarationType,
   additionalDeclarationType: Option[AdditionalDeclarationType] = None,
   consignmentReferences: Option[ConsignmentReferences] = None,
@@ -53,9 +45,7 @@ case class ExportsDeclaration(
   items: Seq[ExportItem] = Seq.empty,
   totalNumberOfItems: Option[InvoiceAndPackageTotals] = None,
   previousDocuments: Option[PreviousDocumentsData] = None,
-  natureOfTransaction: Option[NatureOfTransaction] = None,
-  summaryWasVisited: Option[Boolean] = None,
-  readyForSubmission: Option[Boolean] = None
+  natureOfTransaction: Option[NatureOfTransaction] = None
 ) {
 
   def lrn: Option[String] = consignmentReferences.flatMap(_.lrn.map(_.lrn))
@@ -116,7 +106,7 @@ case class ExportsDeclaration(
   def isCommodityCodeOfItemPrefixedWith(itemId: String, prefixes: Seq[Int]): Boolean =
     isCodePrefixedWith(commodityCodeOfItem(itemId), prefixes)
 
-  def isComplete: Boolean = status == DeclarationStatus.COMPLETE
+  def isComplete: Boolean = declarationMeta.status == DeclarationStatus.COMPLETE
 
   def isDeclarantExporter: Boolean = parties.declarantIsExporter.exists(_.isExporter)
 
@@ -201,7 +191,7 @@ case class ExportsDeclaration(
     copy(previousDocuments = Some(PreviousDocumentsData(previousDocuments)))
 
   def updateReadyForSubmission(ready: Boolean): ExportsDeclaration =
-    copy(readyForSubmission = Some(ready))
+    copy(declarationMeta = declarationMeta.copy(readyForSubmission = Some(ready)))
 
   def transform(function: ExportsDeclaration => ExportsDeclaration): ExportsDeclaration = function(this)
 
