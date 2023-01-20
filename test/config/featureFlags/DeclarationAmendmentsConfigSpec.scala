@@ -20,35 +20,36 @@ import base.UnitWithMocksSpec
 import com.typesafe.config.ConfigFactory
 import play.api.Configuration
 
-class BetaBannerConfigSpec extends UnitWithMocksSpec {
+class DeclarationAmendmentsConfigSpec extends UnitWithMocksSpec {
 
-  private val configWithBetaBannerEnabled: Configuration =
-    Configuration(ConfigFactory.parseString("microservice.services.features.betaBanner=enabled"))
+  private val configWithDeclAmendEnabled: Configuration =
+    Configuration(ConfigFactory.parseString("microservice.services.features.declarationAmendments=enabled"))
 
-  private val configWithBetaBannerDisabled: Configuration =
-    Configuration(ConfigFactory.parseString("microservice.services.features.betaBanner=disabled"))
+  private val configWithDeclAmendDisabled: Configuration =
+    Configuration(ConfigFactory.parseString("microservice.services.features.declarationAmendments=disabled"))
 
   private val emptyConfig: Configuration =
-    Configuration(ConfigFactory.parseString("microservice.services.features.default=disabled"))
+    Configuration(ConfigFactory.parseString("microservice.services.features.declarationAmendments=disabled"))
 
-  private def betaBannerConfig(configuration: Configuration) = new BetaBannerConfig(new FeatureSwitchConfig(configuration))
+  private def declarationAmendmentsConfig(configuration: Configuration) =
+    new DeclarationAmendmentsConfig(new FeatureSwitchConfig(configuration))
 
-  "BetaBannerConfig on isBetaBannerEnabled" should {
+  "DeclarationAmendmentsConfigSpec on isEnabled" should {
 
     "return true" when {
       "the feature is enabled" in {
-        betaBannerConfig(configWithBetaBannerEnabled).isBetaBannerEnabled mustBe true
+        declarationAmendmentsConfig(configWithDeclAmendEnabled).isEnabled mustBe true
       }
     }
 
     "return false" when {
 
       "the feature is disabled" in {
-        betaBannerConfig(configWithBetaBannerDisabled).isBetaBannerEnabled mustBe false
+        declarationAmendmentsConfig(configWithDeclAmendDisabled).isEnabled mustBe false
       }
 
       "there is no config for the feature" in {
-        betaBannerConfig(emptyConfig).isBetaBannerEnabled mustBe false
+        declarationAmendmentsConfig(emptyConfig).isEnabled mustBe false
       }
     }
   }

@@ -45,6 +45,10 @@ GET         /submissions/:id/:url/:pattern/:messageKey     controllers.Submissio
 
 GET         /ead-print-view/:mrn                           controllers.EADController.generateDocument(mrn)
 
+# Amend declaration
+
+GET         /amend-declaration                             controllers.AmendDeclarationController.displayPage
+
 # Cancel declaration
 
 GET         /cancel-declaration                            controllers.CancelDeclarationController.displayPage

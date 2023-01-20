@@ -29,7 +29,7 @@ class TdrUnauthorisedMsgConfigSpec extends UnitWithMocksSpec {
         |microservice.services.features.${key}=${asConfigVal(enabled)}
       """.stripMargin))
 
-    new TdrUnauthorisedMsgConfig(new FeatureSwitchConfig(config), config)
+    new TdrUnauthorisedMsgConfig(new FeatureSwitchConfig(config))
   }
 
   private def asConfigVal(bool: Boolean): String = if (bool) "enabled" else "disabled"
