@@ -24,7 +24,6 @@ import controllers.routes.{CopyDeclarationController, DeclarationDetailsControll
 import forms.CopyDeclaration.form
 import forms.declaration.ConsignmentReferences
 import forms.{CopyDeclaration, Ducr, LrnValidator}
-import models.DeclarationMeta
 import models.DeclarationStatus.DRAFT
 import models.requests.{ExportsSessionKeys, JourneyRequest}
 import play.api.i18n.I18nSupport
@@ -82,7 +81,7 @@ class CopyDeclarationController @Inject() (
       }
 
       val declaration = request.cacheModel.copy(
-        declarationMeta = DeclarationMeta(
+        declarationMeta = request.cacheModel.declarationMeta.copy(
           parentDeclarationId = Some(request.cacheModel.id),
           parentDeclarationEnhancedStatus = maybeEnhancedStatus,
           status = DRAFT,
