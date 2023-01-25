@@ -45,7 +45,7 @@
     else routes.DucrEntryController.displayPage.url
 }
 
-@if(declaration.status == DRAFT && declaration.parentDeclarationId.isDefined){
+@if(declaration.declarationMeta.status == DRAFT && declaration.declarationMeta.parentDeclarationId.isDefined){
     @insetText(HtmlContent(body(link(
         text = messages("declaration.summary.goto.additional.type"),
         call = routes.AdditionalDeclarationTypeController.displayPage
@@ -54,7 +54,7 @@
 
 <h2 class="govuk-heading-m">@messages("declaration.summary.references")</h2>
 
-@if(declaration.status != DeclarationStatus.COMPLETE){
+@if(declaration.declarationMeta.status != DeclarationStatus.COMPLETE){
     @body(messages("declaration.summary.amend.body"), classes = "govuk-body govuk-!-display-none-print")
 }
 
@@ -65,7 +65,7 @@
                 content = Text(messages("declaration.summary.references.createdDate"))
             ),
             value = Value(
-                content = Text(ViewDates.formatDateAtTime(declaration.createdDateTime))
+                content = Text(ViewDates.formatDateAtTime(declaration.declarationMeta.createdDateTime))
             ),
             actions = Some(Actions(
 
@@ -78,7 +78,7 @@
                 content = Text(messages("declaration.summary.references.expireDate"))
             ),
             value = Value(
-                content = Text(ViewDates.formatDateAtTime(declaration.updatedDateTime.plusSeconds(appConfig.draftTimeToLive.toSeconds)))
+                content = Text(ViewDates.formatDateAtTime(declaration.declarationMeta.updatedDateTime.plusSeconds(appConfig.draftTimeToLive.toSeconds)))
             ),
             actions = Some(Actions(
 

@@ -88,7 +88,8 @@ class SummaryControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerM
       "declaration contains mandatory data" when {
 
         "ready for submission" in {
-          withNewCaching(aDeclaration(withConsignmentReferences()).copy(readyForSubmission = Some(true)))
+          val declaration = aDeclaration(withConsignmentReferences())
+          withNewCaching(declaration.copy(declarationMeta = declaration.declarationMeta.copy(readyForSubmission = Some(true))))
 
           val result = controller.displayPage(getRequest())
 
@@ -100,7 +101,8 @@ class SummaryControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerM
         "saved declaration" when {
 
           "readyForSubmission exists" in {
-            withNewCaching(aDeclaration(withConsignmentReferences()).copy(readyForSubmission = Some(false)))
+            val declaration = aDeclaration(withConsignmentReferences())
+            withNewCaching(declaration.copy(declarationMeta = declaration.declarationMeta.copy(readyForSubmission = Some(false))))
 
             val result = controller.displayPage(getRequest())
 
@@ -110,7 +112,8 @@ class SummaryControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerM
           }
 
           "readyForSubmission does not exist" in {
-            withNewCaching(aDeclaration(withConsignmentReferences()).copy(readyForSubmission = None))
+            val declaration = aDeclaration(withConsignmentReferences())
+            withNewCaching(declaration.copy(declarationMeta = declaration.declarationMeta.copy(readyForSubmission = None)))
 
             val result = controller.displayPage(getRequest())
 
@@ -135,7 +138,8 @@ class SummaryControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerM
     "pass an error to page if LRN is a duplicate" in {
       when(mockLrnValidator.hasBeenSubmittedInThePast48Hours(any[Lrn])(any[HeaderCarrier], any[ExecutionContext]))
         .thenReturn(Future.successful(true))
-      withNewCaching(aDeclaration(withConsignmentReferences()).copy(readyForSubmission = Some(true)))
+      val declaration = aDeclaration(withConsignmentReferences())
+      withNewCaching(declaration.copy(declarationMeta = declaration.declarationMeta.copy(readyForSubmission = Some(true))))
 
       val captor = ArgumentCaptor.forClass(classOf[Seq[FormError]])
 

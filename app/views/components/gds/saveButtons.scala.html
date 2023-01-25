@@ -27,9 +27,9 @@
 
 @(showExitButton: Boolean = true)(implicit request: JourneyRequest[_], messages: Messages)
 
-@onErrorStatus = @{ request.cacheModel.parentDeclarationEnhancedStatus.contains(ERRORS) }
+@onErrorStatus = @{ request.cacheModel.declarationMeta.parentDeclarationEnhancedStatus.contains(ERRORS) }
 
-@onSummaryVisited = @{ request.cacheModel.summaryWasVisited.contains(true) }
+@onSummaryVisited = @{ request.cacheModel.declarationMeta.summaryWasVisited.contains(true) }
 
 <div class="govuk-button-group">
     @saveAndContinue()

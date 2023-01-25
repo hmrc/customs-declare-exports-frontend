@@ -63,7 +63,7 @@ class TraderReferenceController @Inject() (
   }
 
   private def generateDucr(traderReference: TraderReference)(implicit request: JourneyRequest[_]): Ducr = {
-    val lastDigitOfYear = request.cacheModel.createdDateTime.atZone(ZoneId.of("Europe/London")).getYear.toString.last
+    val lastDigitOfYear = request.cacheModel.declarationMeta.createdDateTime.atZone(ZoneId.of("Europe/London")).getYear.toString.last
     val eori = request.eori.toUpperCase
 
     Ducr(s"${lastDigitOfYear}GB${eori.dropWhile(_.isLetter)}-${traderReference.value}")
