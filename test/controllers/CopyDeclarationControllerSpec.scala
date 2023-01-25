@@ -206,9 +206,9 @@ class CopyDeclarationControllerSpec extends ControllerSpec with GivenWhenThen {
           verify(mockCustomsDeclareExportsConnector).findSubmission(refEq(request.cacheModel.id))(any(), any())
 
           val declaration = theCacheModelCreated
-          declaration.parentDeclarationId mustBe Some(request.cacheModel.id)
-          declaration.parentDeclarationEnhancedStatus mustBe Some(EnhancedStatus.UNKNOWN)
-          declaration.status mustBe DRAFT
+          declaration.declarationMeta.parentDeclarationId mustBe Some(request.cacheModel.id)
+          declaration.declarationMeta.parentDeclarationEnhancedStatus mustBe Some(EnhancedStatus.UNKNOWN)
+          declaration.declarationMeta.status mustBe DRAFT
           declaration.linkDucrToMucr mustBe None
           declaration.mucr mustBe None
         }
@@ -230,9 +230,9 @@ class CopyDeclarationControllerSpec extends ControllerSpec with GivenWhenThen {
           verify(mockCustomsDeclareExportsConnector).findSubmission(refEq(sessionDecId))(any(), any())
 
           val declaration = theCacheModelCreated
-          declaration.parentDeclarationId mustBe Some(sessionDecId)
-          declaration.parentDeclarationEnhancedStatus mustBe None
-          declaration.status mustBe DRAFT
+          declaration.declarationMeta.parentDeclarationId mustBe Some(sessionDecId)
+          declaration.declarationMeta.parentDeclarationEnhancedStatus mustBe None
+          declaration.declarationMeta.status mustBe DRAFT
           declaration.linkDucrToMucr mustBe None
           declaration.mucr mustBe None
         }

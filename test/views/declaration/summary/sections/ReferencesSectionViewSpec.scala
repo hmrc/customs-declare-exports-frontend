@@ -62,7 +62,7 @@ class ReferencesSectionViewSpec extends UnitViewSpec with ExportsTestHelper with
 
     "have, inside an Inset Text, a link to /type" when {
       "a declaration has DRAFT status and 'parentDeclarationId' is defined" in {
-        val declaration = data.copy(status = DRAFT, parentDeclarationId = Some("some id"))
+        val declaration = data.copy(declarationMeta = data.declarationMeta.copy(status = DRAFT, parentDeclarationId = Some("some id")))
         val insetText = section(declaration)(messages).getElementsByClass("govuk-inset-text")
         insetText.size mustBe 1
 

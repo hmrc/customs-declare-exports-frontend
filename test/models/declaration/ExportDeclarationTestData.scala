@@ -34,7 +34,7 @@ import forms.declaration.officeOfExit.OfficeOfExit
 import models.declaration.DeclarationAdditionalActorsDataSpec._
 import models.declaration.governmentagencygoodsitem.Formats._
 import models.declaration.governmentagencygoodsitem.{Amount, GovernmentAgencyGoodsItem}
-import models.{CancelDeclaration, DeclarationStatus, DeclarationType, ExportsDeclaration}
+import models.{CancelDeclaration, DeclarationMeta, DeclarationStatus, DeclarationType, ExportsDeclaration}
 import play.api.libs.json._
 
 import java.time.Instant
@@ -168,7 +168,11 @@ object ExportDeclarationTestData {
     Map("sequenceNumeric" -> JsString("0"), "marksNumbersId" -> JsString("wefdsf"), "typeCode" -> JsString("22"))
   )
   val declaration =
-    ExportsDeclaration(UUID.randomUUID.toString, None, None, DeclarationStatus.DRAFT, Instant.now, Instant.now, DeclarationType.SUPPLEMENTARY)
+    ExportsDeclaration(
+      UUID.randomUUID.toString,
+      DeclarationMeta(None, None, DeclarationStatus.DRAFT, Instant.now, Instant.now),
+      DeclarationType.SUPPLEMENTARY
+    )
 
   def createGovernmentAgencyGoodsItem(): GovernmentAgencyGoodsItem =
     GovernmentAgencyGoodsItem(

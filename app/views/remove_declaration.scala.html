@@ -46,7 +46,7 @@
                     content = Text(declaration.ducr.map(_.ducr).getOrElse(messages("saved.declarations.noDucr")))
                 ),
                 TableRow(
-                    content = Text(ViewDates.formatDateAtTime(declaration.updatedDateTime))
+                    content = Text(ViewDates.formatDateAtTime(declaration.declarationMeta.updatedDateTime))
                 )
             )
         ),

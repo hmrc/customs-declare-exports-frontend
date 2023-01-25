@@ -36,7 +36,7 @@ import models.DeclarationStatus.DeclarationStatus
 import models.DeclarationType.DeclarationType
 import models.declaration._
 import models.declaration.submissions.EnhancedStatus.EnhancedStatus
-import models.{DeclarationStatus, DeclarationType, ExportsDeclaration}
+import models.{DeclarationMeta, DeclarationStatus, DeclarationType, ExportsDeclaration}
 
 //noinspection ScalaStyle
 trait ExportsDeclarationBuilder {
@@ -48,9 +48,11 @@ trait ExportsDeclarationBuilder {
   protected val MRN = Mrn(mrn)
   private val modelWithDefaults: ExportsDeclaration = ExportsDeclaration(
     uuid,
-    status = DeclarationStatus.COMPLETE,
-    createdDateTime = LocalDateTime.of(2019, 1, 1, 0, 0, 0).toInstant(ZoneOffset.UTC),
-    updatedDateTime = LocalDateTime.of(2019, 2, 2, 0, 0, 0).toInstant(ZoneOffset.UTC),
+    declarationMeta = DeclarationMeta(
+      status = DeclarationStatus.COMPLETE,
+      createdDateTime = LocalDateTime.of(2019, 1, 1, 0, 0, 0).toInstant(ZoneOffset.UTC),
+      updatedDateTime = LocalDateTime.of(2019, 2, 2, 0, 0, 0).toInstant(ZoneOffset.UTC)
+    ),
     `type` = DeclarationType.STANDARD
   )
 
@@ -67,34 +69,41 @@ trait ExportsDeclarationBuilder {
   // ************************************************* Builders ********************************************************
 
   def withReadyForSubmission(readyForSubmission: Boolean = true): ExportsDeclarationModifier =
-    _.copy(readyForSubmission = Some(readyForSubmission))
+    declaration => declaration.copy(declarationMeta = declaration.declarationMeta.copy(readyForSubmission = Some(readyForSubmission)))
 
   def withSummaryWasVisited(summaryWasVisited: Boolean = true): ExportsDeclarationModifier =
-    _.copy(summaryWasVisited = Some(summaryWasVisited))
+    declaration => declaration.copy(declarationMeta = declaration.declarationMeta.copy(summaryWasVisited = Some(summaryWasVisited)))
 
-  def withParentDeclarationId(parentId: String): ExportsDeclarationModifier = _.copy(parentDeclarationId = Some(parentId))
+  def withParentDeclarationId(parentId: String): ExportsDeclarationModifier =
+    declaration => declaration.copy(declarationMeta = declaration.declarationMeta.copy(parentDeclarationId = Some(parentId)))
 
-  def withParentDeclarationEnhancedStatus(status: EnhancedStatus): ExportsDeclarationModifier = _.copy(parentDeclarationEnhancedStatus = Some(status))
+  def withParentDeclarationEnhancedStatus(status: EnhancedStatus): ExportsDeclarationModifier =
+    declaration => declaration.copy(declarationMeta = declaration.declarationMeta.copy(parentDeclarationEnhancedStatus = Some(status)))
 
-  def withStatus(status: DeclarationStatus): ExportsDeclarationModifier = _.copy(status = status)
+  def withStatus(status: DeclarationStatus): ExportsDeclarationModifier =
+    declaration => declaration.copy(declarationMeta = declaration.declarationMeta.copy(status = status))
 
   def withType(`type`: DeclarationType): ExportsDeclarationModifier = _.copy(`type` = `type`)
 
   def withCreatedDate(date: LocalDateTime): ExportsDeclarationModifier =
-    _.copy(createdDateTime = date.toInstant(ZoneOffset.UTC))
+    declaration => declaration.copy(declarationMeta = declaration.declarationMeta.copy(createdDateTime = date.toInstant(ZoneOffset.UTC)))
 
   def withCreatedDate(date: LocalDate): ExportsDeclarationModifier =
-    _.copy(createdDateTime = date.atStartOfDay().toInstant(ZoneOffset.UTC))
+    declaration =>
+      declaration.copy(declarationMeta = declaration.declarationMeta.copy(createdDateTime = date.atStartOfDay().toInstant(ZoneOffset.UTC)))
 
-  def withCreatedTime(createdDateTime: Instant): ExportsDeclarationModifier = _.copy(createdDateTime = createdDateTime)
+  def withCreatedTime(createdDateTime: Instant): ExportsDeclarationModifier =
+    declaration => declaration.copy(declarationMeta = declaration.declarationMeta.copy(createdDateTime = createdDateTime))
 
   def withUpdateDate(date: LocalDateTime): ExportsDeclarationModifier =
-    _.copy(updatedDateTime = date.toInstant(ZoneOffset.UTC))
+    declaration => declaration.copy(declarationMeta = declaration.declarationMeta.copy(updatedDateTime = date.toInstant(ZoneOffset.UTC)))
 
   def withUpdateDate(date: LocalDate): ExportsDeclarationModifier =
-    _.copy(updatedDateTime = date.atStartOfDay().toInstant(ZoneOffset.UTC))
+    declaration =>
+      declaration.copy(declarationMeta = declaration.declarationMeta.copy(updatedDateTime = date.atStartOfDay().toInstant(ZoneOffset.UTC)))
 
-  def withUpdateTime(updateDateTime: Instant): ExportsDeclarationModifier = _.copy(updatedDateTime = updateDateTime)
+  def withUpdateTime(updateDateTime: Instant): ExportsDeclarationModifier =
+    declaration => declaration.copy(declarationMeta = declaration.declarationMeta.copy(updatedDateTime = updateDateTime))
 
   def withoutTotalNumberOfItems(): ExportsDeclarationModifier = _.copy(totalNumberOfItems = None)
 
