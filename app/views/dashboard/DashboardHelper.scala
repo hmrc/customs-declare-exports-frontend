@@ -90,7 +90,7 @@ object DashboardHelper {
              |<li class="cds-exports-tabs__list-item$current">
              |  <a id="tab_$statusGroup-submissions" class="cds-exports-tabs__tab"
              |     href="/customs-declare-exports/dashboard?groups=$statusGroup&amp;page=1"
-             |     role="tab" aria-controls="$statusGroup-submissions" aria-selected="true" tabindex="$tabIndex">
+             |     tabindex="$tabIndex">
              |    ${messages(s"dashboard.$statusGroup.tab.title")}
              |  </a>
              |</li>
