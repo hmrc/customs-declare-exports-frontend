@@ -5,7 +5,6 @@ import net.ground5hark.sbt.concat.Import._
 import sbt.Keys.{scalacOptions, _}
 import sbt._
 import uk.gov.hmrc.DefaultBuildSettings._
-import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin.publishingSettings
 import uk.gov.hmrc.SbtAutoBuildPlugin
 
 val appName = "customs-declare-exports-frontend"
@@ -22,7 +21,6 @@ lazy val microservice = Project(appName, file("."))
   .configs(IntegrationTest)
   .settings(inConfig(IntegrationTest)(Defaults.itSettings): _*)
   .settings(integrationTestSettings())
-  .settings(publishingSettings: _*)
   .settings(
     // prevent removal of unused code which generates warning errors due to use of third-party libs
     uglifyCompressOptions := Seq("unused=false", "dead_code=false"),
@@ -62,8 +60,9 @@ lazy val scalacFlags = Seq(
   "-encoding", "UTF-8",      // source files are in UTF-8
   "-feature",                // warn about misused language features
   "-unchecked",              // warn about unchecked type parameters
-  "-Wconf:src=target/.*:s",      // silence warnings from compiled files
+  "-Xfatal-warnings",        // warnings are fatal!!
+  "-Wunused:-nowarn",        // enable @no-warn annotation
+  "-Wconf:src=target/.*:s",  // silence warnings from compiled files
   "-Wconf:msg=match may not be exhaustive:s", // silence warnings about non-exhaustive pattern matching
   "-Wconf:src=test/.*&msg=a type was inferred to be `Object`:s", // silence warnings from mockito reset
-  "-Wunused:-nowarn" //enable @no-warn annotation
 )
