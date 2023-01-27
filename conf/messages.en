@@ -150,12 +150,12 @@ declaration.choice.CON = Continue a declaration you saved
 declaration.choice.SUB = View and manage your submitted declarations
 declaration.choice.MSG = View messages from HMRC
 
-declaration.section.1 = Section 1 of 6
-declaration.section.2 = Section 2 of 6
-declaration.section.3 = Section 3 of 6
-declaration.section.4 = Section 4 of 6
-declaration.section.5 = Section 5 of 6
-declaration.section.6 = Section 6 of 6
+declaration.section.1 = Section 1 of 6: Declaration details
+declaration.section.2 = Section 2 of 6: Parties involved
+declaration.section.3 = Section 3 of 6: Routes and locations
+declaration.section.4 = Section 4 of 6: Transactions
+declaration.section.5 = Section 5 of 6: Items
+declaration.section.6 = Section 6 of 6: Transport
 
 declaration.type.description = Which type of declaration do you want to create?
 declaration.type.standard = Standard declaration

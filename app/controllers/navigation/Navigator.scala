@@ -628,7 +628,7 @@ class Navigator @Inject() (
       case CLEARANCE     => clearanceCacheDependent.orElse(clearance)
     }
 
-    commonCacheDependent.orElse(common).orElse(specific)(page) match {
+    (commonCacheDependent.orElse(common).orElse(specific)(page): @nowarn) match {
       case mapping: Call                                 => mapping
       case mapping: (ExportsDeclaration => Call) @nowarn => mapping(request.cacheModel)
     }
@@ -642,7 +642,7 @@ class Navigator @Inject() (
       case OCCASIONAL    => occasionalCacheItemDependent.orElse(occasionalItemPage)
       case CLEARANCE     => clearanceCacheItemDependent.orElse(clearanceItemPage)
     }
-    commonCacheItemDependent.orElse(commonItem).orElse(specific)(page) match {
+    (commonCacheItemDependent.orElse(commonItem).orElse(specific)(page): @nowarn) match {
       case mapping: (String => Call) @nowarn                       => mapping(itemId.id)
       case mapping: ((ExportsDeclaration, String) => Call) @nowarn => mapping(request.cacheModel, itemId.id)
     }
