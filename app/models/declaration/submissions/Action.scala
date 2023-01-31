@@ -16,28 +16,86 @@
 
 package models.declaration.submissions
 
-import models.declaration.submissions.Action.defaultDateTimeZone
+import models.declaration.submissions.RequestType._
+import play.api.libs.functional.syntax._
+import play.api.libs.json._
 
-import java.time.{ZoneId, ZonedDateTime}
-import play.api.libs.json.Json
+import java.time.{LocalDateTime, ZoneId, ZonedDateTime}
 
-case class Action(
-  id: String,
-  requestType: RequestType,
-  requestTimestamp: ZonedDateTime = ZonedDateTime.now(defaultDateTimeZone),
-  notifications: Option[Seq[NotificationSummary]]
-) {
+sealed trait Action {
+
+  val id: String
+  val notifications: Option[Seq[NotificationSummary]]
+  val requestTimestamp: ZonedDateTime
+  val versionNo: Int
+
   val latestNotificationSummary: Option[NotificationSummary] =
-    notifications.flatMap {
-      case seq if seq.isEmpty => None
-      case seq                => Some(seq.minBy(_.dateTimeIssued)(Action.dateTimeOrdering))
-    }
+    notifications.flatMap(_.lastOption)
+
 }
 
-object Action {
-  implicit val format = Json.format[Action]
+case class SubmissionAction(
+  id: String,
+  requestTimestamp: ZonedDateTime = ZonedDateTime.now(ZoneId.of("UTC")),
+  notifications: Option[Seq[NotificationSummary]] = None,
+  decId: String
+) extends Action {
+  val versionNo = 1
+}
 
-  val dateTimeOrdering: Ordering[ZonedDateTime] = Ordering.fromLessThan[ZonedDateTime]((a, b) => b.isBefore(a))
+case class CancellationAction(
+  id: String,
+  requestTimestamp: ZonedDateTime = ZonedDateTime.now(ZoneId.of("UTC")),
+  notifications: Option[Seq[NotificationSummary]] = None,
+  versionNo: Int,
+  decId: String
+) extends Action
+
+case class AmendmentAction(
+  id: String,
+  requestTimestamp: ZonedDateTime = ZonedDateTime.now(ZoneId.of("UTC")),
+  notifications: Option[Seq[NotificationSummary]] = None,
+  versionNo: Int,
+  decId: String
+) extends Action
+
+case class ExternalAmendmentAction(
+  id: String,
+  requestTimestamp: ZonedDateTime = ZonedDateTime.now(ZoneId.of("UTC")),
+  notifications: Option[Seq[NotificationSummary]] = None,
+  versionNo: Int
+) extends Action
+
+object Action {
 
   val defaultDateTimeZone: ZoneId = ZoneId.of("UTC")
+
+  implicit val readLocalDateTimeFromString: Reads[ZonedDateTime] = implicitly[Reads[LocalDateTime]]
+    .map(ZonedDateTime.of(_, ZoneId.of("UTC")))
+
+  implicit val submissionActionWrites: Writes[SubmissionAction] = Json.writes[SubmissionAction]
+  implicit val cancellationActionWrites: Writes[CancellationAction] = Json.writes[CancellationAction]
+
+  implicit val writes: Writes[Action] = Writes[Action] {
+    case submission: SubmissionAction     => submissionActionWrites.writes(submission)
+    case cancellation: CancellationAction => cancellationActionWrites.writes(cancellation)
+    case _                                => ???
+  }
+
+  private val allActionReads = (__ \ "id").read[String] and
+    ((__ \ "requestTimestamp").read[ZonedDateTime] or (__ \ "requestTimestamp").read[ZonedDateTime](readLocalDateTimeFromString)) and
+    (__ \ "notifications").readNullable[Seq[NotificationSummary]]
+
+  implicit val reads: Reads[Action] =
+    (__ \ "requestType").read[RequestType].flatMap {
+      case SubmissionRequest =>
+        (allActionReads and (__ \ "decId").read[String])(SubmissionAction.apply _)
+      case CancellationRequest =>
+        (allActionReads and (__ \ "versionNo").read[Int] and (__ \ "decId").read[String])(CancellationAction.apply _)
+      case AmendmentRequest =>
+        (allActionReads and (__ \ "versionNo").read[Int] and (__ \ "decId").read[String])(AmendmentAction.apply _)
+      case ExternalAmendmentRequest =>
+        (allActionReads and (__ \ "versionNo").read[Int])(ExternalAmendmentAction.apply _)
+    }
+
 }

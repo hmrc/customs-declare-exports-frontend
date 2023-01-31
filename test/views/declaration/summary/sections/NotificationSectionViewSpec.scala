@@ -18,8 +18,7 @@ package views.declaration.summary.sections
 
 import base.Injector
 import models.declaration.submissions.EnhancedStatus.{CLEARED, GOODS_ARRIVED, GOODS_HAVE_EXITED}
-import models.declaration.submissions.RequestType.SubmissionRequest
-import models.declaration.submissions.Submission
+import models.declaration.submissions.{Submission, SubmissionAction}
 import play.api.libs.json.Json
 import services.cache.ExportsTestHelper
 import views.declaration.spec.UnitViewSpec
@@ -46,7 +45,10 @@ class NotificationSectionViewSpec extends UnitViewSpec with ExportsTestHelper wi
       row0 must haveSummaryValue(mrn)
 
       val expectedListOfDateTime: Seq[ZonedDateTime] =
-        submission.actions.filter(_.requestType == SubmissionRequest).flatMap(_.notifications.map(_.map(_.dateTimeIssued))).head
+        submission.actions.filter {
+          case _: SubmissionAction => true
+          case _                   => false
+        }.flatMap(_.notifications.map(_.map(_.dateTimeIssued))).head
 
       val row1 = view.getElementsByClass("goods_arrived-row")
       row1 must haveSummaryKey(asText(GOODS_ARRIVED))
@@ -86,7 +88,9 @@ object NotificationSectionViewSpec {
       |        {
       |            "id" : "abdf6423-b7fd-4f40-b325-c34bdcdfb203",
       |            "requestType" : "CancellationRequest",
-      |            "requestTimestamp" : "2022-07-06T08:05:20.477Z[UTC]"
+      |            "requestTimestamp" : "2022-07-06T08:05:20.477Z[UTC]",
+      |            "versionNo" : 2,
+      |            "decId" : "id"
       |        },
       |        {
       |            "id" : "dddf6423-b7fd-4f40-b325-c34bdcdfb204",
@@ -108,7 +112,8 @@ object NotificationSectionViewSpec {
       |                    "dateTimeIssued" : "2022-06-04T08:05:22Z[UTC]",
       |                    "enhancedStatus" : "GOODS_HAVE_EXITED"
       |                }
-      |            ]
+      |            ],
+      |            "decId" : "id"
       |        }
       |    ],
       |    "enhancedStatusLastUpdated" : "2022-07-06T08:15:22Z[UTC]",
@@ -128,13 +133,16 @@ object NotificationSectionViewSpec {
       |        {
       |            "id" : "abdf6423-b7fd-4f40-b325-c34bdcdfb203",
       |            "requestType" : "CancellationRequest",
-      |            "requestTimestamp" : "2022-07-06T08:05:20.477Z[UTC]"
+      |            "requestTimestamp" : "2022-07-06T08:05:20.477Z[UTC]",
+      |            "decId" : "id",
+      |            "versionNo" : 2
       |        },
       |        {
       |            "id" : "dddf6423-b7fd-4f40-b325-c34bdcdfb204",
       |            "requestType" : "SubmissionRequest",
       |            "requestTimestamp" : "2022-07-06T08:05:20.477Z[UTC]",
-      |            "notifications" : []
+      |            "notifications" : [],
+      |            "decId" : "id"
       |        }
       |    ],
       |    "enhancedStatusLastUpdated" : "2022-07-06T08:15:22Z[UTC]",

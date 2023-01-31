@@ -17,7 +17,6 @@
 package models.declaration.submissions
 
 import models.declaration.submissions.EnhancedStatus._
-import models.declaration.submissions.RequestType.{CancellationRequest, SubmissionRequest}
 import play.api.libs.json.Json
 
 import java.time.ZonedDateTime
@@ -33,26 +32,29 @@ case class Submission(
   enhancedStatusLastUpdated: Option[ZonedDateTime] = None,
   actions: Seq[Action]
 ) {
+  lazy val allSubmissionRequestStatuses: Seq[EnhancedStatus] = (
+    for {
+      subRequestAction <- actions.find {
+        case _: SubmissionAction => true
+        case _                   => false
+      }
+      notificationSummaries <- subRequestAction.notifications
+    } yield notificationSummaries.map(_.enhancedStatus)
+  ).getOrElse(Seq.empty[EnhancedStatus])
+  lazy val isStatusAcceptedOrReceived: Boolean =
+    allSubmissionRequestStatuses.intersect(Seq(GOODS_ARRIVED_MESSAGE, GOODS_ARRIVED, RECEIVED)).nonEmpty
   val latestAction: Option[Action] =
     if (actions.isEmpty) None
     else Some(actions.minBy(_.requestTimestamp)(Submission.dateTimeOrdering))
-
   val latestCancellationAction: Option[Action] = {
-    val cancelActions = actions.filter(_.requestType == CancellationRequest)
+    val cancelActions = actions.filter {
+      case _: CancellationAction => true
+      case _                     => false
+    }
     if (cancelActions.nonEmpty) {
       Some(cancelActions.minBy(_.requestTimestamp)(Submission.dateTimeOrdering))
     } else None
   }
-
-  lazy val allSubmissionRequestStatuses: Seq[EnhancedStatus] = (
-    for {
-      subRequestAction <- actions.find(_.requestType == SubmissionRequest)
-      notificationSummaries <- subRequestAction.notifications
-    } yield notificationSummaries.map(_.enhancedStatus)
-  ).getOrElse(Seq.empty[EnhancedStatus])
-
-  lazy val isStatusAcceptedOrReceived: Boolean =
-    allSubmissionRequestStatuses.intersect(Seq(GOODS_ARRIVED_MESSAGE, GOODS_ARRIVED, RECEIVED)).nonEmpty
 }
 
 object Submission {

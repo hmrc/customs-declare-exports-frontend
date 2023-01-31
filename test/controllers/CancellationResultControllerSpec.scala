@@ -19,8 +19,7 @@ package controllers
 import base.ControllerWithoutFormSpec
 import mock.ErrorHandlerMocks
 import models.declaration.submissions.EnhancedStatus._
-import models.declaration.submissions.RequestType.CancellationRequest
-import models.declaration.submissions.{Action, NotificationSummary, Submission}
+import models.declaration.submissions.{CancellationAction, NotificationSummary, Submission, SubmissionAction}
 import models.requests.{ExportsSessionKeys, VerifiedEmailRequest}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -86,10 +85,10 @@ class CancellationResultControllerSpec extends ControllerWithoutFormSpec with Er
     NotificationSummary(UUID.randomUUID(), ZonedDateTime.now(), status)
 
   private def actionWithNotificationSummary(status: EnhancedStatus) =
-    Action(id = "id", requestType = CancellationRequest, notifications = Some(Seq(notificationSummary(status))))
+    CancellationAction(id = "id", notifications = Some(Seq(notificationSummary(status))), versionNo = 2, decId = uuid)
 
   private val actionWithoutNotificationSummary =
-    Action(id = "id", requestType = CancellationRequest, notifications = None)
+    CancellationAction(id = "id", notifications = None, versionNo = 2, decId = uuid)
 
   "CancellationResultController.displayHoldingPage" should {
 

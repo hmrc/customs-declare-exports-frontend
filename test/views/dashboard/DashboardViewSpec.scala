@@ -25,9 +25,8 @@ import forms.Choice
 import forms.Choice.AllowedChoiceValues.Dashboard
 import models.PageOfSubmissions
 import models.declaration.submissions.EnhancedStatus._
-import models.declaration.submissions.RequestType.SubmissionRequest
 import models.declaration.submissions.StatusGroup._
-import models.declaration.submissions.{Action, EnhancedStatus, Submission}
+import models.declaration.submissions.{EnhancedStatus, Submission, SubmissionAction}
 import org.jsoup.nodes.{Document, Element}
 import org.jsoup.select.Elements
 import org.mockito.Mockito.when
@@ -79,7 +78,7 @@ class DashboardViewSpec extends UnitViewSpec with ExportsTestHelper {
       ducr = Some(ducr),
       latestEnhancedStatus = Some(status),
       enhancedStatusLastUpdated = Some(lastStatusUpdate),
-      actions = List(Action("actionId", SubmissionRequest, lastStatusUpdate, None))
+      actions = List(SubmissionAction("actionId", lastStatusUpdate, None, uuid))
     )
 
   def listOfSubmissions(status: EnhancedStatus = RECEIVED, size: Int = 1): Seq[Submission] =

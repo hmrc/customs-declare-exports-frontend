@@ -22,8 +22,7 @@ import config.featureFlags._
 import controllers.routes
 import controllers.routes.EADController
 import models.declaration.submissions.EnhancedStatus._
-import models.declaration.submissions.RequestType.SubmissionRequest
-import models.declaration.submissions.{Action, EnhancedStatus, NotificationSummary, Submission}
+import models.declaration.submissions.{EnhancedStatus, NotificationSummary, Submission, SubmissionAction}
 import models.requests.{ExportsSessionKeys, VerifiedEmailRequest}
 import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
@@ -84,12 +83,12 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
     VerifiedEmailRequest(RequestBuilder.buildAuthenticatedRequest(request, user), email)
 
   private def createSubmissionWith(status: EnhancedStatus) = {
-    val action = Action("id", SubmissionRequest, now, Some(Seq(NotificationSummary(UUID.randomUUID, now, status))))
+    val action = SubmissionAction("id", now, Some(Seq(NotificationSummary(UUID.randomUUID, now, status))), uuid)
     Submission(uuid, "eori", "lrn", Some(mrn), Some("ducr"), Some(status), Some(now), Seq(action))
   }
 
   private def createSubmissionWith(notificationSummaries: Seq[NotificationSummary]) = {
-    val action = Action("id", SubmissionRequest, now, Some(notificationSummaries))
+    val action = SubmissionAction("id", now, Some(notificationSummaries), uuid)
     Submission(
       uuid,
       "eori",

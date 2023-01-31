@@ -16,7 +16,7 @@
 
 @import config.PaginationConfig
 @import models.PageOfSubmissions
-@import models.declaration.submissions.RequestType.SubmissionRequest
+@import models.declaration.submissions.SubmissionAction
 @import models.declaration.submissions.StatusGroup.StatusGroup
 @import models.declaration.submissions.Submission
 @import uk.gov.hmrc.govukfrontend.views.html.components._
@@ -42,7 +42,10 @@
 
 @timestamp(submission: Submission) = @{
   submission.actions
-    .find(_.requestType == SubmissionRequest)
+    .find{
+        case _: SubmissionAction => true
+        case _ => false
+    }
     .map(action => ViewDates.formatDateAtTime(action.requestTimestamp))
     .getOrElse("")
 }

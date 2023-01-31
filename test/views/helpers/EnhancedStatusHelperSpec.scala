@@ -85,7 +85,9 @@ object EnhancedStatusHelperSpec {
       |        {
       |            "id" : "abdf6423-b7fd-4f40-b325-c34bdcdfb203",
       |            "requestType" : "CancellationRequest",
-      |            "requestTimestamp" : "2022-07-06T08:05:20.477Z[UTC]"
+      |            "requestTimestamp" : "2022-07-06T08:05:20.477Z[UTC]",
+      |            "versionNo" : 2,
+      |            "decId" : "id"
       |        },
       |        {
       |            "id" : "dddf6423-b7fd-4f40-b325-c34bdcdfb204",
@@ -107,7 +109,8 @@ object EnhancedStatusHelperSpec {
       |                    "dateTimeIssued" : "2022-06-04T08:05:22Z[UTC]",
       |                    "enhancedStatus" : "GOODS_HAVE_EXITED"
       |                }
-      |            ]
+      |            ],
+      |            "decId" : "id"
       |        }
       |    ],
       |    "enhancedStatusLastUpdated" : "2022-07-06T08:15:22Z[UTC]",
@@ -127,13 +130,16 @@ object EnhancedStatusHelperSpec {
       |        {
       |            "id" : "abdf6423-b7fd-4f40-b325-c34bdcdfb203",
       |            "requestType" : "CancellationRequest",
-      |            "requestTimestamp" : "2022-07-06T08:05:20.477Z[UTC]"
+      |            "requestTimestamp" : "2022-07-06T08:05:20.477Z[UTC]",
+      |            "decId" : "id",
+      |            "versionNo" : 2
       |        },
       |        {
       |            "id" : "dddf6423-b7fd-4f40-b325-c34bdcdfb204",
       |            "requestType" : "SubmissionRequest",
       |            "requestTimestamp" : "2022-07-06T08:05:20.477Z[UTC]",
-      |            "notifications" : []
+      |            "notifications" : [],
+      |            "decId" : "id"
       |        }
       |    ],
       |    "enhancedStatusLastUpdated" : "2022-07-06T08:15:22Z[UTC]",
@@ -160,7 +166,8 @@ object EnhancedStatusHelperSpec {
       |                    "dateTimeIssued" : "2022-06-04T08:15:22Z[UTC]",
       |                    "enhancedStatus" : "QUERY_NOTIFICATION_MESSAGE"
       |                }
-      |            ]
+      |            ],
+      |            "decId" : "id"
       |        }
       |    ],
       |    "enhancedStatusLastUpdated" : "2022-07-06T08:15:22Z[UTC]",

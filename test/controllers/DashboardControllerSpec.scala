@@ -20,9 +20,8 @@ import base.ControllerWithoutFormSpec
 import config.PaginationConfig
 import models._
 import models.declaration.submissions.EnhancedStatus.GOODS_ARRIVED
-import models.declaration.submissions.RequestType.SubmissionRequest
 import models.declaration.submissions.StatusGroup.SubmittedStatuses
-import models.declaration.submissions.{Action, Submission}
+import models.declaration.submissions.{Submission, SubmissionAction}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito.{reset, verify, when}
@@ -38,14 +37,16 @@ class DashboardControllerSpec extends ControllerWithoutFormSpec with BeforeAndAf
 
   val dateTime = ZonedDateTime.now(ZoneOffset.UTC)
 
-  private val action = Action(requestType = SubmissionRequest, id = "conversationID", requestTimestamp = dateTime, notifications = None)
+  val uuid = UUID.randomUUID.toString
+
+  private val action = SubmissionAction(id = "conversationID", requestTimestamp = dateTime, notifications = None, uuid)
 
   private val pageOfSubmissions = PageOfSubmissions(
     SubmittedStatuses,
     1,
     Seq(
       Submission(
-        uuid = UUID.randomUUID.toString,
+        uuid = uuid,
         eori = "eori",
         lrn = "lrn",
         mrn = None,

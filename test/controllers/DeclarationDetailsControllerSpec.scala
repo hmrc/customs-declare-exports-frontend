@@ -17,8 +17,7 @@
 package controllers
 
 import base.ControllerWithoutFormSpec
-import models.declaration.submissions.RequestType.SubmissionRequest
-import models.declaration.submissions.{Action, Submission}
+import models.declaration.submissions.{Submission, SubmissionAction}
 import models.requests.ExportsSessionKeys
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers._
@@ -37,13 +36,15 @@ class DeclarationDetailsControllerSpec extends ControllerWithoutFormSpec with Be
 
   private val actionId = "actionId"
 
+  private val uuid = UUID.randomUUID().toString
+
   private val submission = Submission(
-    uuid = UUID.randomUUID().toString,
+    uuid = uuid,
     eori = "eori",
     lrn = "lrn",
     mrn = Some("mrn"),
     ducr = Some("ducr"),
-    actions = Seq(Action(id = actionId, requestType = SubmissionRequest, requestTimestamp = ZonedDateTime.now, notifications = None))
+    actions = Seq(SubmissionAction(id = actionId, requestTimestamp = ZonedDateTime.now, notifications = None, uuid))
   )
 
   private val declarationDetailsPage = mock[declaration_details]
