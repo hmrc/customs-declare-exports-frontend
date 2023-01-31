@@ -521,6 +521,8 @@ object AppConfigSpec {
       |files.codelists.hoa.hoa-codes="/code-lists/holder-of-authorisation-codes/holder-of-authorisation-codes"
       |files.codelists.hoa.tagged-hoa-codes="/code-lists/holder-of-authorisation-codes/tagged-holder-of-authorisation-codes"
       |
+      |files.codelists.tagged-transport-codes="/code-lists/tagged-transport-codes"
+      |
       |draft.timeToLive=30d
       |microservice.services.nrs.host=localhostnrs
       |microservice.services.nrs.port=7654

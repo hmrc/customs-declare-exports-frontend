@@ -277,4 +277,6 @@ class AppConfig @Inject() (
 
   val holderOfAuthorisationCodeFile = loadConfig("files.codelists.hoa.hoa-codes")
   val taggedHolderOfAuthorisationCodeFile = loadConfig("files.codelists.hoa.tagged-hoa-codes")
+
+  val taggedTransportCodeFile = loadConfig("files.codelists.tagged-transport-codes")
 }

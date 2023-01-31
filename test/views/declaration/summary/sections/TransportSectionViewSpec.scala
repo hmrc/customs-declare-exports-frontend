@@ -16,7 +16,7 @@
 
 package views.declaration.summary.sections
 
-import base.Injector
+import base.{Injector, MockTransportCodeService}
 import controllers.declaration.routes
 import forms.declaration.InlandOrBorder.Border
 import forms.declaration._
@@ -80,8 +80,10 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestHelper with 
     "display transport reference if option none selected" in {
       val view = section(
         data.copy(transport =
-          data.transport
-            .copy(meansOfTransportOnDepartureType = Some(TransportCodes.NotApplicable.value), meansOfTransportOnDepartureIDNumber = Some(""))
+          data.transport.copy(
+            meansOfTransportOnDepartureType = Some(MockTransportCodeService.transportCodeService.NotApplicable.value),
+            meansOfTransportOnDepartureIDNumber = Some("")
+          )
         )
       )(messages)
       val row = view.getElementsByClass("transport-reference-row")

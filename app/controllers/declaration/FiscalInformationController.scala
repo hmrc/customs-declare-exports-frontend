@@ -62,7 +62,7 @@ class FiscalInformationController @Inject() (
       }
     }
 
-    if (request.cacheModel.summaryWasVisited.contains(true)) displayFiscalInformationPage()
+    if (request.cacheModel.declarationMeta.summaryWasVisited.contains(true)) displayFiscalInformationPage()
     else if (fastForward && cacheContainsFiscalReferenceData) navigator.continueTo(AdditionalFiscalReferencesController.displayPage(itemId))
     else if (fastForward && cacheItemIneligibleForOSR) navigator.continueTo(AdditionalProcedureCodesController.displayPage(itemId))
     else if (cacheContainsFiscalReferenceData) navigator.continueTo(AdditionalFiscalReferencesController.displayPage(itemId))

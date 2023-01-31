@@ -18,29 +18,22 @@ package controllers.helpers
 
 import base.{MockExportCacheService, UnitWithMocksSpec}
 import config.AppConfig
-import connectors.FileBasedCodeLinkConnector
+import connectors.{FileBasedCodeListConnector, GoodsLocationCodesConnector}
 import forms.declaration.LocationOfGoods
 import org.mockito.Mockito.{reset, when}
 
 class DepCodesHelperSpec extends UnitWithMocksSpec with MockExportCacheService {
 
   private val appConfig = mock[AppConfig]
-  private lazy val codeLinkConnector = new FileBasedCodeLinkConnector(appConfig)
-  private lazy val depCodesHelper = new DepCodesHelper(codeLinkConnector)
+  private lazy val glcConnector = new GoodsLocationCodesConnector(appConfig)
+  private lazy val codeListConnector = new FileBasedCodeListConnector(appConfig, glcConnector)
+  private lazy val depCodesHelper = new DepCodesHelper(codeListConnector)
 
   override def beforeEach(): Unit = {
     super.beforeEach()
 
     reset(appConfig)
-    when(appConfig.taggedHolderOfAuthorisationCodeFile).thenReturn("/code-links/manyLinks.json")
-    when(appConfig.procedureCodeToAdditionalProcedureCodesLinkFile).thenReturn("/code-links/manyLinks.json")
-    when(appConfig.procedureCodeToAdditionalProcedureCodesC21LinkFile).thenReturn("/code-links/manyLinks.json")
-    when(appConfig.procedureCodesLinkFile).thenReturn("/code-links/manyLinks.json")
-    when(appConfig.countryCodeToAliasesLinkFile).thenReturn("/code-links/manyLinks.json")
-    when(appConfig.countryCodeToShortNameLinkFile).thenReturn("/code-links/manyLinks.json")
-    when(appConfig.goodsLocationCodeToLocationTypeFile).thenReturn("/code-links/manyLinks.json")
-    when(appConfig.additionalDocumentCodeLinkFile).thenReturn("/code-links/manyLinks.json")
-    when(appConfig.additionalDocumentStatusCodeLinkFile).thenReturn("/code-links/manyLinks.json")
+    when(appConfig.glcDep16k).thenReturn("/code-lists/manyCodes.json")
   }
 
   "DepCodesHelper on isDesignatedExportPlaceCode" should {
@@ -48,7 +41,7 @@ class DepCodesHelperSpec extends UnitWithMocksSpec with MockExportCacheService {
     "return true" when {
 
       "Goods location code on declaration is a valid DEP code" in {
-        val declaration = aDeclaration(withGoodsLocation(LocationOfGoods("GLC")))
+        val declaration = aDeclaration(withGoodsLocation(LocationOfGoods("001")))
 
         depCodesHelper.isDesignatedExportPlaceCode(declaration) must be(true)
       }
@@ -57,7 +50,7 @@ class DepCodesHelperSpec extends UnitWithMocksSpec with MockExportCacheService {
     "return false" when {
 
       "Goods location code on declaration is not a valid DEP code" in {
-        val declaration = aDeclaration(withGoodsLocation(LocationOfGoods("1040")))
+        val declaration = aDeclaration(withGoodsLocation(LocationOfGoods("aaa")))
 
         depCodesHelper.isDesignatedExportPlaceCode(declaration) must be(false)
       }

@@ -27,12 +27,13 @@ import scala.concurrent.ExecutionContext
 trait FeatureFlagMocks extends MockExportCacheService with BeforeAndAfterEach {
   self: MockitoSugar with Suite =>
 
+  val mockDeclarationAmendmentsConfig: DeclarationAmendmentsConfig = mock[DeclarationAmendmentsConfig]
+  val mockMerchandiseInBagConfig: MerchandiseInBagConfig = mock[MerchandiseInBagConfig]
   val mockSecureMessagingConfig: SecureMessagingConfig = mock[SecureMessagingConfig]
   val mockSecureMessagingInboxConfig: SecureMessagingInboxConfig = mock[SecureMessagingInboxConfig]
   val mockSfusConfig: SfusConfig = mock[SfusConfig]
   val mockTariffApiConfig: TariffApiConfig = mock[TariffApiConfig]
   val mockTdrUnauthorisedMsgConfig: TdrUnauthorisedMsgConfig = mock[TdrUnauthorisedMsgConfig]
-  val mockMerchandiseInBagConfig: MerchandiseInBagConfig = mock[MerchandiseInBagConfig]
 
   val mockFeatureSwitchConfig: FeatureSwitchConfig = mock[FeatureSwitchConfig]
 

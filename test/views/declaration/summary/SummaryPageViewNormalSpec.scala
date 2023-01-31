@@ -50,7 +50,7 @@ class SummaryPageViewNormalSpec extends SummaryPageViewSpec {
     allDeclarationStates.foreach { declaration =>
       val document = view(declaration)
 
-      (declaration.readyForSubmission, declaration.parentDeclarationEnhancedStatus) match {
+      (declaration.declarationMeta.readyForSubmission, declaration.declarationMeta.parentDeclarationEnhancedStatus) match {
         case (_, Some(ERRORS)) => behave like commonBehaviour("errors", document)
         case (Some(true), _)   => behave like commonBehaviour("ready", document)
         case _                 => behave like commonBehaviour("draft", document)

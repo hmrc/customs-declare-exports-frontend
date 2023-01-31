@@ -24,11 +24,12 @@ import controllers.routes.RootController
 import forms.declaration.DepartureTransport
 import forms.declaration.InlandOrBorder.Border
 import models.DeclarationType.{CLEARANCE, STANDARD, SUPPLEMENTARY}
-import models.requests.JourneyRequest
 import models.ExportsDeclaration
+import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
+import services.TransportCodeService
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
@@ -45,6 +46,7 @@ class DepartureTransportController @Inject() (
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
   mcc: MessagesControllerComponents,
+  implicit val transportCodeService: TransportCodeService,
   departureTransportHelper: DepartureTransportHelper,
   departureTransportPage: departure_transport
 )(implicit ec: ExecutionContext)

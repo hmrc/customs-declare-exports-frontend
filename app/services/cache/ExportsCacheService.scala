@@ -33,5 +33,5 @@ class ExportsCacheService @Inject() (connector: CustomsDeclareExportsConnector)(
   def get(id: String)(implicit hc: HeaderCarrier): Future[Option[ExportsDeclaration]] = connector.findDeclaration(id)
 
   def update(declaration: ExportsDeclaration)(implicit hc: HeaderCarrier): Future[ExportsDeclaration] =
-    connector.updateDeclaration(declaration.copy(updatedDateTime = Instant.now))
+    connector.updateDeclaration(declaration.copy(declarationMeta = declaration.declarationMeta.copy(updatedDateTime = Instant.now)))
 }

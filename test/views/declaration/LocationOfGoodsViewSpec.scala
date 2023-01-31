@@ -88,10 +88,7 @@ class LocationOfGoodsViewSpec extends PageWithButtonsSpec with Injector {
         }
 
         "display the expected body" in {
-          val paragraphs = view.getElementsByClass("govuk-body")
-          paragraphs.size mustBe 3
-
-          paragraphs.first().text mustBe messages(s"$prefix.body.v7.1")
+          view.getElementsByClass("govuk-body").get(1).text mustBe messages(s"$prefix.body.v7.1")
         }
 
         "display the expected hint" in {
@@ -138,12 +135,11 @@ class LocationOfGoodsViewSpec extends PageWithButtonsSpec with Injector {
 
         "display the expected body" in {
           val paragraphs = view.getElementsByClass("govuk-body")
-          paragraphs.size mustBe 7
 
-          paragraphs.get(0).text mustBe messages(s"$prefix.body.v1.1")
-          paragraphs.get(1).text mustBe messages(s"$prefix.body.v1.1.1")
-          paragraphs.get(2).text mustBe messages(s"$prefix.body.v1.2")
-          paragraphs.get(3).text mustBe messages(s"$prefix.body.v1.3")
+          paragraphs.get(1).text mustBe messages(s"$prefix.body.v1.1")
+          paragraphs.get(2).text mustBe messages(s"$prefix.body.v1.1.1")
+          paragraphs.get(3).text mustBe messages(s"$prefix.body.v1.2")
+          paragraphs.get(4).text mustBe messages(s"$prefix.body.v1.3")
         }
 
         "display the 'Find the goods location code' expander " in {
@@ -185,10 +181,7 @@ class LocationOfGoodsViewSpec extends PageWithButtonsSpec with Injector {
           }
 
           "display the expected body" in {
-            val paragraphs = view.getElementsByClass("govuk-body")
-            paragraphs.size mustBe 5
-
-            paragraphs.get(0).text mustBe messages(s"$prefix.body.v$version.1")
+            view.getElementsByClass("govuk-body").get(1).text mustBe messages(s"$prefix.body.v$version.1")
 
             val bulletPoints = view.getElementsByClass("govuk-list--bullet").first.children
             bulletPoints.size mustBe 8
@@ -239,11 +232,7 @@ class LocationOfGoodsViewSpec extends PageWithButtonsSpec with Injector {
         }
 
         "display the expected body" in {
-          val paragraphs = view.getElementsByClass("govuk-body")
-          paragraphs.size mustBe 5
-
-          paragraphs.get(0).text mustBe messages(s"$prefix.body.v6.1")
-
+          view.getElementsByClass("govuk-body").get(1).text mustBe messages(s"$prefix.body.v6.1")
         }
 
         "display the expected hint" in {
@@ -362,6 +351,23 @@ class LocationOfGoodsViewSpec extends PageWithButtonsSpec with Injector {
 
     onJourney(SUPPLEMENTARY, CLEARANCE) { request =>
       behave like viewWithCorrectBackButton(request.declarationType, DestinationCountryController.displayPage)
+    }
+
+    onEveryDeclarationJourney() { implicit request =>
+      "display the expected notification banner" in {
+
+        val view = page(form)
+
+        val banner = view.getElementsByClass("govuk-notification-banner").get(0)
+
+        val title = banner.getElementsByClass("govuk-notification-banner__title").text
+        title mustBe messages("declaration.locationOfGoods.notification.title")
+
+        val content = banner.getElementsByClass("govuk-notification-banner__content").get(0)
+        content.text mustBe messages("declaration.locationOfGoods.notification.content")
+
+      }
+
     }
 
     def viewWithCorrectBackButton(declarationType: DeclarationType, redirect: Call): Unit =

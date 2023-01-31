@@ -14,20 +14,14 @@
  * limitations under the License.
  */
 
-package controllers.helpers
+package config.featureFlags
 
-import connectors.CodeListConnector
-import models.ExportsDeclaration
+import features.Feature
 
-import java.util.Locale
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class DepCodesHelper @Inject() (codeListConnector: CodeListConnector) {
+class DeclarationAmendmentsConfig @Inject() (featureSwitchConfig: FeatureSwitchConfig) {
 
-  def isDesignatedExportPlaceCode(declaration: ExportsDeclaration): Boolean =
-    declaration.locations.goodsLocation.exists(location => checkDesignatedExportPlaceCodes(location.code))
-
-  private def checkDesignatedExportPlaceCodes(goodsLocationCode: String): Boolean =
-    codeListConnector.getDepCodes(Locale.ENGLISH).values.map(_.code).toSeq.contains(goodsLocationCode)
+  val isEnabled: Boolean = featureSwitchConfig.isFeatureOn(Feature.declarationAmendments)
 }

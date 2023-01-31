@@ -19,15 +19,16 @@
 @import controllers.navigation.Navigator
 @import forms.declaration.BorderTransport
 @import forms.declaration.BorderTransport.radioButtonGroupId
-@import forms.declaration.TransportCodes.transportCodesOnBorderTransport
 @import models.requests.JourneyRequest
 @import play.twirl.api.HtmlFormat
+@import services.TransportCodeService
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.helpers.{BackButton, BorderTransportHelper, ModeOfTransportCodeHelper}
 @import views.helpers.ErrorMapper.radioGroupErrors
 @import views.html.components.gds._
 
 @this(
+    tcs: TransportCodeService,
     borderTransportHelper: BorderTransportHelper,
     govukLayout: gdsMainTemplate,
     govukRadios: GovukRadios,
@@ -52,7 +53,7 @@
 
     @formHelper(action = BorderTransportController.submitForm, 'autoComplete -> "off") {
 
-        @errorSummary(radioGroupErrors(radioButtonGroupId, transportCodesOnBorderTransport.head.id, form.errors))
+        @errorSummary(radioGroupErrors(radioButtonGroupId, tcs.transportCodesOnBorderTransport.head.id, form.errors))
 
         @sectionHeader(messages("declaration.section.6"))
 

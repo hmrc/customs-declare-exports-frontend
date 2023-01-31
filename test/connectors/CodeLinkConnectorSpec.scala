@@ -31,12 +31,12 @@ class CodeLinkConnectorSpec extends UnitWithMocksSpec with BeforeAndAfterEach {
 
     reset(appConfig)
     when(appConfig.taggedHolderOfAuthorisationCodeFile).thenReturn("/code-links/manyLinks.json")
+    when(appConfig.taggedTransportCodeFile).thenReturn("/code-links/manyLinks.json")
     when(appConfig.procedureCodeToAdditionalProcedureCodesLinkFile).thenReturn("/code-links/manyLinks.json")
     when(appConfig.procedureCodeToAdditionalProcedureCodesC21LinkFile).thenReturn("/code-links/manyLinks.json")
     when(appConfig.countryCodeToAliasesLinkFile).thenReturn("/code-links/manyLinks.json")
     when(appConfig.procedureCodesLinkFile) thenReturn "/code-links/manyLinks.json"
     when(appConfig.countryCodeToShortNameLinkFile).thenReturn("/code-links/manyLinks.json")
-    when(appConfig.goodsLocationCodeToLocationTypeFile).thenReturn("/code-links/manyLinks.json")
     when(appConfig.additionalDocumentCodeLinkFile).thenReturn("/code-links/manyLinks.json")
     when(appConfig.additionalDocumentStatusCodeLinkFile).thenReturn("/code-links/manyLinks.json")
   }
@@ -132,21 +132,6 @@ class CodeLinkConnectorSpec extends UnitWithMocksSpec with BeforeAndAfterEach {
       }
     }
 
-    "return a list of location types for a Goods Location Code" when {
-
-      "the GLC exists in the list" in {
-        connector.getLocationTypesForGoodsLocationCode("1040") must be(Some(List("C12", "F75")))
-      }
-
-      "the GLC does not exist in the list" in {
-        connector.getLocationTypesForGoodsLocationCode("859") must be(None)
-      }
-
-      "the GLC does not have any Location Types" in {
-        connector.getLocationTypesForGoodsLocationCode("0000") must be(Some(List.empty[String]))
-      }
-    }
-
     "return the expected authorisation codes" when {
 
       "the tag provided is 'CodesMutuallyExclusive'" in {
@@ -183,6 +168,45 @@ class CodeLinkConnectorSpec extends UnitWithMocksSpec with BeforeAndAfterEach {
     "return the expected additional document status codes" when {
       "the tag provided is 'StatusCodesRequiringAReason'" in {
         connector.getAdditionalDocumentStatusCodeForTag(StatusCodesRequiringAReason) mustBe List("UP")
+      }
+    }
+
+    "return the expected transport codes" when {
+
+      "the tag provided is 'AircraftRegistrationNumber'" in {
+        connector.getTransportCodeForTag(AircraftRegistrationNumber) mustBe ("AircraftRegistrationNumber", "41")
+      }
+
+      "the tag provided is 'EuropeanVesselIDNumber'" in {
+        connector.getTransportCodeForTag(EuropeanVesselIDNumber) mustBe ("EuropeanVesselIDNumber", "80")
+      }
+
+      "the tag provided is 'FlightNumber'" in {
+        connector.getTransportCodeForTag(FlightNumber) mustBe ("FlightNumber", "40")
+      }
+
+      "the tag provided is 'NameOfInlandWaterwayVessel'" in {
+        connector.getTransportCodeForTag(NameOfInlandWaterwayVessel) mustBe ("NameOfInlandWaterwayVessel", "81")
+      }
+
+      "the tag provided is 'NameOfVessel'" in {
+        connector.getTransportCodeForTag(NameOfVessel) mustBe ("NameOfVessel", "11")
+      }
+
+      "the tag provided is 'NotApplicable'" in {
+        connector.getTransportCodeForTag(NotApplicable) mustBe ("NotApplicable", "option_none")
+      }
+
+      "the tag provided is 'ShipOrRoroImoNumber'" in {
+        connector.getTransportCodeForTag(ShipOrRoroImoNumber) mustBe ("ShipOrRoroImoNumber", "10")
+      }
+
+      "the tag provided is 'VehicleRegistrationNumber'" in {
+        connector.getTransportCodeForTag(VehicleRegistrationNumber) mustBe ("VehicleRegistrationNumber", "30")
+      }
+
+      "the tag provided is 'WagonNumber'" in {
+        connector.getTransportCodeForTag(WagonNumber) mustBe ("WagonNumber", "20")
       }
     }
   }

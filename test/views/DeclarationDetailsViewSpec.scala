@@ -103,7 +103,10 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
 
   "Declaration details page" should {
 
-    val injector = new OverridableInjector(bind[SecureMessagingConfig].toInstance(mockSecureMessagingConfig))
+    val injector = new OverridableInjector(
+      bind[DeclarationAmendmentsConfig].toInstance(mockDeclarationAmendmentsConfig),
+      bind[SecureMessagingConfig].toInstance(mockSecureMessagingConfig)
+    )
     val page = injector.instanceOf[declaration_details]
 
     "contain the navigation banner" when {
@@ -124,6 +127,25 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
     "not contain the navigation banner" when {
       "the Secure Messaging feature flag is disabled" in {
         when(mockSecureMessagingConfig.isSecureMessagingEnabled).thenReturn(false)
+        val view = page(createSubmissionWith(Seq.empty))(verifiedEmailRequest(), messages)
+        Option(view.getElementById("amend-declaration")) mustBe None
+      }
+    }
+
+    "contain the 'Amend declaration' link" when {
+      "the 'declarationAmendments' feature flag is enabled" in {
+        when(mockDeclarationAmendmentsConfig.isEnabled).thenReturn(true)
+        val view = page(createSubmissionWith(Seq.empty))(verifiedEmailRequest(), messages)
+
+        val cancelDeclarationLink = view.getElementById("amend-declaration")
+        cancelDeclarationLink must containMessage("declaration.details.amend.declaration")
+        cancelDeclarationLink must haveHref(routes.AmendDeclarationController.displayPage)
+      }
+    }
+
+    "NOT contain the 'Amend declaration' link" when {
+      "the 'declarationAmendments' feature flag is disabled" in {
+        when(mockDeclarationAmendmentsConfig.isEnabled).thenReturn(false)
         val view = page(submission)(verifiedEmailRequest(), messages)
         Option(view.getElementById("navigation-banner")) mustBe None
       }

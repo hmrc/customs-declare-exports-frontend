@@ -81,11 +81,13 @@ class CopyDeclarationController @Inject() (
       }
 
       val declaration = request.cacheModel.copy(
-        parentDeclarationId = Some(request.cacheModel.id),
-        parentDeclarationEnhancedStatus = maybeEnhancedStatus,
-        status = DRAFT,
-        createdDateTime = Instant.now,
-        updatedDateTime = Instant.now,
+        declarationMeta = request.cacheModel.declarationMeta.copy(
+          parentDeclarationId = Some(request.cacheModel.id),
+          parentDeclarationEnhancedStatus = maybeEnhancedStatus,
+          status = DRAFT,
+          createdDateTime = Instant.now,
+          updatedDateTime = Instant.now
+        ),
         consignmentReferences = Some(ConsignmentReferences(Some(Ducr(data.ducr.ducr.toUpperCase)), Some(data.lrn))),
         linkDucrToMucr = None,
         mucr = None

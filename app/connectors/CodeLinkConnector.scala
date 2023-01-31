@@ -34,23 +34,36 @@ object CodeLink {
 object Tag extends Enumeration {
   type Tag = Value
 
-  val CodesMutuallyExclusive, CodesNeedingSpecificHintText, CodesOverridingInlandOrBorderSkip, CodesRequiringDocumentation, CodesRestrictingZeroVat,
-    CodesSkippingInlandOrBorder, CodesSkippingLocationOfGoods, DocumentCodesRequiringAReason, StatusCodesRequiringAReason = Value
+  val
+  // Tags for Additional Document codes
+  DocumentCodesRequiringAReason, StatusCodesRequiringAReason,
+
+  // Tags for Authorisation codes
+  CodesMutuallyExclusive, CodesNeedingSpecificHintText, CodesOverridingInlandOrBorderSkip, CodesRequiringDocumentation, CodesSkippingInlandOrBorder,
+    CodesSkippingLocationOfGoods,
+
+  // Tags for Procedure codes
+  CodesRestrictingZeroVat,
+
+  // Tags for Transport codes
+  AircraftRegistrationNumber, EuropeanVesselIDNumber, FlightNumber, NameOfInlandWaterwayVessel, NameOfVessel, NotApplicable, ShipOrRoroImoNumber,
+    VehicleRegistrationNumber, WagonNumber = Value
 }
 
 @ImplementedBy(classOf[FileBasedCodeLinkConnector])
 trait CodeLinkConnector {
   def getHolderOfAuthorisationCodesForTag(tag: Tag): Seq[String]
+  def getTransportCodeForTag(tag: Tag): (String, String)
 
-  def getValidAdditionalProcedureCodesForProcedureCode(procedureCode: String): Option[Seq[String]]
-  def getValidAdditionalProcedureCodesForProcedureCodeC21(procedureCode: String): Option[Seq[String]]
-  def getValidProcedureCodesForTag(tag: Tag): Seq[String]
   def getAdditionalDocumentStatusCodeForTag(tag: Tag): Seq[String]
   def getAdditionalDocumentCodesForTag(tag: Tag): Seq[String]
+
+  def getValidProcedureCodesForTag(tag: Tag): Seq[String]
+  def getValidAdditionalProcedureCodesForProcedureCode(procedureCode: String): Option[Seq[String]]
+  def getValidAdditionalProcedureCodesForProcedureCodeC21(procedureCode: String): Option[Seq[String]]
+
   def getAliasesForCountryCode(countryCode: String): Option[Seq[String]]
   def getShortNamesForCountryCode(countryCode: String): Option[Seq[String]]
-
-  def getLocationTypesForGoodsLocationCode(goodsLocationCode: String): Option[Seq[String]]
 }
 
 @Singleton
@@ -68,6 +81,9 @@ class FileBasedCodeLinkConnector @Inject() (appConfig: AppConfig) extends CodeLi
 
   private val taggedHolderOfAuthorisationCodes: Seq[(String, Seq[String])] =
     readCodeLinksFromFile(appConfig.taggedHolderOfAuthorisationCodeFile)
+
+  private val taggedTransportCodes: Seq[(String, Seq[String])] =
+    readCodeLinksFromFile(appConfig.taggedTransportCodeFile)
 
   private val procedureCodeToAdditionalProcedureCodes: Map[String, Seq[String]] =
     readCodeLinksFromFileAsMap(appConfig.procedureCodeToAdditionalProcedureCodesLinkFile)
@@ -90,17 +106,25 @@ class FileBasedCodeLinkConnector @Inject() (appConfig: AppConfig) extends CodeLi
   private val countryCodeToShortName: Map[String, Seq[String]] =
     readCodeLinksFromFileAsMap(appConfig.countryCodeToShortNameLinkFile)
 
-  private val goodsLocationCodeToLocationTypes: Map[String, Seq[String]] =
-    readCodeLinksFromFileAsMap(appConfig.goodsLocationCodeToLocationTypeFile)
-
-  def getHolderOfAuthorisationCodesForTag(tag: Tag): Seq[String] =
-    taggedHolderOfAuthorisationCodes.filter(_._2.contains(tag.toString)).map(_._1)
-
   def getAdditionalDocumentStatusCodeForTag(tag: Tag): Seq[String] =
     additionalDocumentStatusCodeLink.filter(_._2.contains(tag.toString)).map(_._1)
 
   def getAdditionalDocumentCodesForTag(tag: Tag): Seq[String] =
     additionalDocumentCodeLink.filter(_._2.contains(tag.toString)).map(_._1)
+
+  def getHolderOfAuthorisationCodesForTag(tag: Tag): Seq[String] =
+    taggedHolderOfAuthorisationCodes.filter(_._2.contains(tag.toString)).map(_._1)
+
+  def getTransportCodeForTag(tag: Tag): (String, String) =
+    taggedTransportCodes
+      .filter(_._2.contains(tag.toString))
+      .map { case (value, tags) =>
+        tags.head -> value
+      }
+      .head
+
+  def getValidProcedureCodesForTag(tag: Tag): Seq[String] =
+    procedureCodeLink.filter(_._2.contains(tag.toString)).map(_._1)
 
   def getValidAdditionalProcedureCodesForProcedureCode(procedureCode: String): Option[Seq[String]] =
     procedureCodeToAdditionalProcedureCodes.get(procedureCode)
@@ -108,15 +132,9 @@ class FileBasedCodeLinkConnector @Inject() (appConfig: AppConfig) extends CodeLi
   def getValidAdditionalProcedureCodesForProcedureCodeC21(procedureCode: String): Option[Seq[String]] =
     procedureCodeToAdditionalProcedureCodesC21.get(procedureCode)
 
-  def getValidProcedureCodesForTag(tag: Tag): Seq[String] =
-    procedureCodeLink.filter(_._2.contains(tag.toString)).map(_._1)
-
   def getAliasesForCountryCode(countryCode: String): Option[Seq[String]] =
     countryCodeToCountryAliases.get(countryCode)
 
   def getShortNamesForCountryCode(countryCode: String): Option[Seq[String]] =
     countryCodeToShortName.get(countryCode)
-
-  def getLocationTypesForGoodsLocationCode(goodsLocationCode: String): Option[Seq[String]] =
-    goodsLocationCodeToLocationTypes.get(goodsLocationCode)
 }
