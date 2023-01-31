@@ -19,21 +19,28 @@ package views.declaration.declarationitems
 import base.Injector
 import controllers.declaration.routes
 import forms.common.YesNoAnswer
+import models.DeclarationType.{DeclarationType, STANDARD}
 import models.declaration.ExportItem
+import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.{Form, FormError}
+import play.api.i18n.Messages
+import play.twirl.api.HtmlFormat
 import services.cache.ExportsTestHelper
 import tools.Stubs
 import views.components.gds.Styles
-import views.declaration.spec.UnitViewSpec
+import views.declaration.spec.{PageWithButtonsSpec, UnitViewSpec}
 import views.html.declaration.declarationitems.items_remove_item
 import views.tags.ViewTest
 
 @ViewTest
-class ItemsRemoveItemViewSpec extends UnitViewSpec with ExportsTestHelper with Stubs with Injector {
+class ItemsRemoveItemViewSpec extends UnitViewSpec with ExportsTestHelper with Stubs with Injector with PageWithButtonsSpec {
 
   private val page = instanceOf[items_remove_item]
   private val form = YesNoAnswer.form()
+  override val typeAndViewInstance: (DeclarationType, (JourneyRequest[_], Messages) => HtmlFormat.Appendable) =
+    (STANDARD, page(form, exportItem, false)(_, _))
+
   private def createView(form: Form[YesNoAnswer] = form, item: ExportItem, fromSummary: Boolean = false): Document =
     page(form, item, fromSummary)(journeyRequest(), messages)
 
@@ -86,6 +93,11 @@ class ItemsRemoveItemViewSpec extends UnitViewSpec with ExportsTestHelper with S
       view must containElementWithID("code_no")
     }
 
-  }
+    checkSaveAndContinueButtonIsDisplayed(view)
 
+    "display confirm and continue button when editing from summary" in {
+      val button = createView(form, exportItem, true).getElementById("save_and_return_to_summary")
+      button must containMessage("site.confirm_and_continue")
+    }
+  }
 }
