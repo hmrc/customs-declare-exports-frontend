@@ -79,7 +79,7 @@
             attributes = Map("id" -> s"additional-information-$itemNo-table")
         ))
     } else {
-        @summaryList(s"additional-information-$itemNo", None, Seq(
+        @summaryList(id = s"additional-information-$itemNo", heading = None, summaryListRows = Seq(
             Some(SummaryListRow(
                 classes = s"additional-information-$itemNo-row",
                 key = Key(

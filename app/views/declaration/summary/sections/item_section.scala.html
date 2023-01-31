@@ -22,6 +22,7 @@
 @import views.html.components.elements_in_separate_lines
 @import views.html.components.gds.{linkContent, summary_list}
 @import views.html.declaration.summary._
+@import views.helpers.Link
 
 @this(
     summaryList: summary_list,
@@ -35,246 +36,255 @@
 
 @actions(action: => Actions) = @{ if(actionsEnabled) Some(action) else None }
 
-@summaryList(s"declaration-items-summary-${item.sequenceId}", Some(messages("declaration.summary.items.item.sequenceId", item.sequenceId)), Seq(
-    item.procedureCodes.flatMap(_.procedureCode).map(data =>
-        SummaryListRow(
-            classes = s"item-${item.sequenceId}-procedureCode-row",
-            key = Key(
-                content = Text(messages("declaration.summary.items.item.procedureCode"))
-            ),
-            value = Value(
-                content = Text(data)
-            ),
-            actions = actions(Actions(
-                items = Seq(
-                    actionSummaryItem(
-                        href = routes.ProcedureCodesController.displayPage(item.id).url,
-                        content = HtmlContent(linkContent(messages("site.change"))),
-                        visuallyHiddenText = Some(messages("declaration.summary.items.item.procedureCode.change", item.sequenceId))
+@headerAction = @{
+    if(actionsEnabled) Some(Link(messages("declaration.summary.items.item.headerAction"), routes.ItemsSummaryController.displayRemoveItemConfirmationPage(item.id, true)))
+    else None
+}
+
+@summaryList(
+    id = s"declaration-items-summary-${item.sequenceId}",
+    heading = Some(messages("declaration.summary.items.item.sequenceId", item.sequenceId)),
+    headerAction = headerAction,
+    summaryListRows = Seq(
+        item.procedureCodes.flatMap(_.procedureCode).map(data =>
+            SummaryListRow(
+                classes = s"item-${item.sequenceId}-procedureCode-row",
+                key = Key(
+                    content = Text(messages("declaration.summary.items.item.procedureCode"))
+                ),
+                value = Value(
+                    content = Text(data)
+                ),
+                actions = actions(Actions(
+                    items = Seq(
+                        actionSummaryItem(
+                            href = routes.ProcedureCodesController.displayPage(item.id).url,
+                            content = HtmlContent(linkContent(messages("site.change"))),
+                            visuallyHiddenText = Some(messages("declaration.summary.items.item.procedureCode.change", item.sequenceId))
+                        )
                     )
-                )
-            ))
+                ))
+            )
+        ),
+        item.procedureCodes.map(data =>
+            SummaryListRow(
+                classes = s"item-${item.sequenceId}-additionalProcedureCodes-row",
+                key = Key(
+                    content = Text(messages("declaration.summary.items.item.additionalProcedureCodes"))
+                ),
+                value = Value(
+                    content = Text(data.additionalProcedureCodes.mkString(" "))
+                ),
+                actions = actions(Actions(
+                    items = Seq(
+                        actionSummaryItem(
+                            href = routes.AdditionalProcedureCodesController.displayPage(item.id).url,
+                            content = HtmlContent(linkContent(messages("site.change"))),
+                            visuallyHiddenText = Some(messages("declaration.summary.items.item.additionalProcedureCodes.change", item.sequenceId))
+                        )
+                    )
+                ))
+            )
+        ),
+        item.fiscalInformation.map(fiscalInformation =>
+            SummaryListRow(
+                classes = s"item-${item.sequenceId}-onwardSupplyRelief-row",
+                key = Key(
+                    content = Text(messages("declaration.summary.items.item.onwardSupplyRelief"))
+                ),
+                value = Value(
+                    content = Text(fiscalInformation.onwardSupplyRelief)
+                ),
+                actions = actions(Actions(
+                    items = Seq(
+                        actionSummaryItem(
+                            href = routes.FiscalInformationController.displayPage(item.id).url,
+                            content = HtmlContent(linkContent(messages("site.change"))),
+                            visuallyHiddenText = Some(messages("declaration.summary.items.item.onwardSupplyRelief.change", item.sequenceId))
+                        )
+                    )
+                ))
+            )
+        ),
+        item.additionalFiscalReferencesData.map(additionalFiscalReferences =>
+            SummaryListRow(
+                classes = s"item-${item.sequenceId}-VATdetails-row",
+                key = Key(
+                    content = Text(messages("declaration.summary.items.item.VATdetails"))
+                ),
+                value = Value(HtmlContent(elements_in_separate_lines(additionalFiscalReferences.references.map(_.asString)))),
+                actions = actions(Actions(
+                    items = Seq(
+                        actionSummaryItem(
+                            href = routes.AdditionalFiscalReferencesController.displayPage(item.id).url,
+                            content = HtmlContent(linkContent(messages("site.change"))),
+                            visuallyHiddenText = Some(messages("declaration.summary.items.item.VATdetails.change", item.sequenceId))
+                        )
+                    )
+                ))
+            )
+        ),
+        item.commodityDetails.map(commodityDetails =>
+            SummaryListRow(
+                classes = s"item-${item.sequenceId}-commodityCode-row",
+                key = Key(
+                    content = Text(messages("declaration.summary.items.item.commodityCode"))
+                ),
+                value = Value(
+                    content = Text(commodityDetails.combinedNomenclatureCode.getOrElse(""))
+                ),
+                actions = actions(Actions(
+                    items = Seq(
+                        actionSummaryItem(
+                            href = routes.CommodityDetailsController.displayPage(item.id).url,
+                            content = HtmlContent(linkContent(messages("site.change"))),
+                            visuallyHiddenText = Some(messages("declaration.summary.items.item.commodityCode.change", item.sequenceId))
+                        )
+                    )
+                ))
+            )
+        ),
+        item.commodityDetails.map(commodityDetails =>
+            SummaryListRow(
+                classes = s"item-${item.sequenceId}-goodsDescription-row",
+                key = Key(
+                    content = Text(messages("declaration.summary.items.item.goodsDescription"))
+                ),
+                value = Value(
+                    content = Text(commodityDetails.descriptionOfGoods.getOrElse(""))
+                ),
+                actions = actions(Actions(
+                    items = Seq(
+                        actionSummaryItem(
+                            href = routes.CommodityDetailsController.displayPage(item.id).url,
+                            content = HtmlContent(linkContent(messages("site.change"))),
+                            visuallyHiddenText = Some(messages("declaration.summary.items.item.goodsDescription.change", item.sequenceId))
+                        )
+                    )
+                ))
+            )
+        ),
+        item.dangerousGoodsCode.map(dangerousGoodsCode =>
+            SummaryListRow(
+                classes = s"item-${item.sequenceId}-unDangerousGoodsCode-row",
+                key = Key(
+                    content = Text(messages("declaration.summary.items.item.unDangerousGoodsCode"))
+                ),
+                value = Value(
+                    content = Text(dangerousGoodsCode.dangerousGoodsCode.getOrElse(messages("site.no")))
+                ),
+                actions = actions(Actions(
+                    items = Seq(
+                        actionSummaryItem(
+                            href = routes.UNDangerousGoodsCodeController.displayPage(item.id).url,
+                            content = HtmlContent(linkContent(messages("site.change"))),
+                            visuallyHiddenText = Some(messages("declaration.summary.items.item.unDangerousGoodsCode.change", item.sequenceId))
+                        )
+                    )
+                ))
+            )
+        ),
+        item.cusCode.map(cusCode =>
+            SummaryListRow(
+                classes = s"item-${item.sequenceId}-cusCode-row",
+                key = Key(
+                    content = Text(messages("declaration.summary.items.item.cusCode"))
+                ),
+                value = Value(
+                    content = Text(cusCode.cusCode.getOrElse(messages("site.no")))
+                ),
+                actions = actions(Actions(
+                    items = Seq(
+                        actionSummaryItem(
+                            href = routes.CusCodeController.displayPage(item.id).url,
+                            content = HtmlContent(linkContent(messages("site.change"))),
+                            visuallyHiddenText = Some(messages("declaration.summary.items.item.cusCode.change", item.sequenceId))
+                        )
+                    )
+                ))
+            )
+        ),
+        item.taricCodes.map(taricCodes =>
+            SummaryListRow(
+                classes = s"item-${item.sequenceId}-taricAdditionalCodes-row",
+                key = Key(
+                    content = Text(messages("declaration.summary.items.item.taricAdditionalCodes"))
+                ),
+                value = Value(
+                    content = Text(if(taricCodes.isEmpty) messages("site.no") else taricCodes.map(_.taricCode).mkString(", "))
+                ),
+                actions = actions(Actions(
+                    items = Seq(
+                        actionSummaryItem(
+                            href = routes.TaricCodeSummaryController.displayPage(item.id).url,
+                            content = HtmlContent(linkContent(messages("site.change"))),
+                            visuallyHiddenText = Some(messages("declaration.summary.items.item.taricAdditionalCodes.change", item.sequenceId))
+                        )
+                    )
+                ))
+            )
+        ),
+        item.nactCodes.map(nactCodes =>
+            SummaryListRow(
+                classes = s"item-${item.sequenceId}-nationalAdditionalCodes-row",
+                key = Key(
+                    content = Text(messages("declaration.summary.items.item.nationalAdditionalCodes"))
+                ),
+                value = Value(
+                    content = Text(if(nactCodes.isEmpty) messages("site.no") else nactCodes.map(_.nactCode).mkString(", "))
+                ),
+                actions = actions(Actions(
+                    items = Seq(
+                        actionSummaryItem(
+                            href = routes.NactCodeSummaryController.displayPage(item.id).url,
+                            content = HtmlContent(linkContent(messages("site.change"))),
+                            visuallyHiddenText = Some(messages("declaration.summary.items.item.nationalAdditionalCodes.change", item.sequenceId))
+                        )
+                    )
+                ))
+            )
+        ),
+        item.nactExemptionCode.map( nactCode =>
+            SummaryListRow(
+                classes = s"item-${item.sequenceId}-zeroRatedForVat-row",
+                key = Key(
+                    content = Text(messages("declaration.summary.items.item.zeroRatedForVat"))
+                ),
+                value = Value(
+                    content = Text(messages(s"declaration.summary.items.item.zeroRatedForVat.${nactCode.nactCode}"))
+                ),
+                actions = actions(Actions(
+                    items = Seq(
+                        actionSummaryItem(
+                            href = routes.ZeroRatedForVatController.displayPage(item.id).url,
+                            content = HtmlContent(linkContent(messages("site.change"))),
+                            visuallyHiddenText = Some(messages("declaration.summary.items.item.zeroRatedForVat.change", item.sequenceId))
+                        )
+                    )
+                ))
+            )
+        ),
+        item.statisticalValue.map(statisticalValue =>
+            SummaryListRow(
+                classes = s"item-${item.sequenceId}-itemValue-row",
+                key = Key(
+                    content = Text(messages("declaration.summary.items.item.itemValue"))
+                ),
+                value = Value(
+                    content = Text(statisticalValue.statisticalValue)
+                ),
+                actions = actions(Actions(
+                    items = Seq(
+                        actionSummaryItem(
+                            href = routes.StatisticalValueController.displayPage(item.id).url,
+                            content = HtmlContent(linkContent(messages("site.change"))),
+                            visuallyHiddenText = Some(messages("declaration.summary.items.item.itemValue.change", item.sequenceId))
+                        )
+                    )
+                ))
+            )
         )
     ),
-    item.procedureCodes.map(data =>
-        SummaryListRow(
-            classes = s"item-${item.sequenceId}-additionalProcedureCodes-row",
-            key = Key(
-                content = Text(messages("declaration.summary.items.item.additionalProcedureCodes"))
-            ),
-            value = Value(
-                content = Text(data.additionalProcedureCodes.mkString(" "))
-            ),
-            actions = actions(Actions(
-                items = Seq(
-                    actionSummaryItem(
-                        href = routes.AdditionalProcedureCodesController.displayPage(item.id).url,
-                        content = HtmlContent(linkContent(messages("site.change"))),
-                        visuallyHiddenText = Some(messages("declaration.summary.items.item.additionalProcedureCodes.change", item.sequenceId))
-                    )
-                )
-            ))
-        )
-    ),
-    item.fiscalInformation.map(fiscalInformation =>
-        SummaryListRow(
-            classes = s"item-${item.sequenceId}-onwardSupplyRelief-row",
-            key = Key(
-                content = Text(messages("declaration.summary.items.item.onwardSupplyRelief"))
-            ),
-            value = Value(
-                content = Text(fiscalInformation.onwardSupplyRelief)
-            ),
-            actions = actions(Actions(
-                items = Seq(
-                    actionSummaryItem(
-                        href = routes.FiscalInformationController.displayPage(item.id).url,
-                        content = HtmlContent(linkContent(messages("site.change"))),
-                        visuallyHiddenText = Some(messages("declaration.summary.items.item.onwardSupplyRelief.change", item.sequenceId))
-                    )
-                )
-            ))
-        )
-    ),
-    item.additionalFiscalReferencesData.map(additionalFiscalReferences =>
-        SummaryListRow(
-            classes = s"item-${item.sequenceId}-VATdetails-row",
-            key = Key(
-                content = Text(messages("declaration.summary.items.item.VATdetails"))
-            ),
-            value = Value(HtmlContent(elements_in_separate_lines(additionalFiscalReferences.references.map(_.asString)))),
-            actions = actions(Actions(
-                items = Seq(
-                    actionSummaryItem(
-                        href = routes.AdditionalFiscalReferencesController.displayPage(item.id).url,
-                        content = HtmlContent(linkContent(messages("site.change"))),
-                        visuallyHiddenText = Some(messages("declaration.summary.items.item.VATdetails.change", item.sequenceId))
-                    )
-                )
-            ))
-        )
-    ),
-    item.commodityDetails.map(commodityDetails =>
-        SummaryListRow(
-            classes = s"item-${item.sequenceId}-commodityCode-row",
-            key = Key(
-                content = Text(messages("declaration.summary.items.item.commodityCode"))
-            ),
-            value = Value(
-                content = Text(commodityDetails.combinedNomenclatureCode.getOrElse(""))
-            ),
-            actions = actions(Actions(
-                items = Seq(
-                    actionSummaryItem(
-                        href = routes.CommodityDetailsController.displayPage(item.id).url,
-                        content = HtmlContent(linkContent(messages("site.change"))),
-                        visuallyHiddenText = Some(messages("declaration.summary.items.item.commodityCode.change", item.sequenceId))
-                    )
-                )
-            ))
-        )
-    ),
-    item.commodityDetails.map(commodityDetails =>
-        SummaryListRow(
-            classes = s"item-${item.sequenceId}-goodsDescription-row",
-            key = Key(
-                content = Text(messages("declaration.summary.items.item.goodsDescription"))
-            ),
-            value = Value(
-                content = Text(commodityDetails.descriptionOfGoods.getOrElse(""))
-            ),
-            actions = actions(Actions(
-                items = Seq(
-                    actionSummaryItem(
-                        href = routes.CommodityDetailsController.displayPage(item.id).url,
-                        content = HtmlContent(linkContent(messages("site.change"))),
-                        visuallyHiddenText = Some(messages("declaration.summary.items.item.goodsDescription.change", item.sequenceId))
-                    )
-                )
-            ))
-        )
-    ),
-    item.dangerousGoodsCode.map(dangerousGoodsCode =>
-        SummaryListRow(
-            classes = s"item-${item.sequenceId}-unDangerousGoodsCode-row",
-            key = Key(
-                content = Text(messages("declaration.summary.items.item.unDangerousGoodsCode"))
-            ),
-            value = Value(
-                content = Text(dangerousGoodsCode.dangerousGoodsCode.getOrElse(messages("site.no")))
-            ),
-            actions = actions(Actions(
-                items = Seq(
-                    actionSummaryItem(
-                        href = routes.UNDangerousGoodsCodeController.displayPage(item.id).url,
-                        content = HtmlContent(linkContent(messages("site.change"))),
-                        visuallyHiddenText = Some(messages("declaration.summary.items.item.unDangerousGoodsCode.change", item.sequenceId))
-                    )
-                )
-            ))
-        )
-    ),
-    item.cusCode.map(cusCode =>
-        SummaryListRow(
-            classes = s"item-${item.sequenceId}-cusCode-row",
-            key = Key(
-                content = Text(messages("declaration.summary.items.item.cusCode"))
-            ),
-            value = Value(
-                content = Text(cusCode.cusCode.getOrElse(messages("site.no")))
-            ),
-            actions = actions(Actions(
-                items = Seq(
-                    actionSummaryItem(
-                        href = routes.CusCodeController.displayPage(item.id).url,
-                        content = HtmlContent(linkContent(messages("site.change"))),
-                        visuallyHiddenText = Some(messages("declaration.summary.items.item.cusCode.change", item.sequenceId))
-                    )
-                )
-            ))
-        )
-    ),
-    item.taricCodes.map(taricCodes =>
-        SummaryListRow(
-            classes = s"item-${item.sequenceId}-taricAdditionalCodes-row",
-            key = Key(
-                content = Text(messages("declaration.summary.items.item.taricAdditionalCodes"))
-            ),
-            value = Value(
-                content = Text(if(taricCodes.isEmpty) messages("site.no") else taricCodes.map(_.taricCode).mkString(", "))
-            ),
-            actions = actions(Actions(
-                items = Seq(
-                    actionSummaryItem(
-                        href = routes.TaricCodeSummaryController.displayPage(item.id).url,
-                        content = HtmlContent(linkContent(messages("site.change"))),
-                        visuallyHiddenText = Some(messages("declaration.summary.items.item.taricAdditionalCodes.change", item.sequenceId))
-                    )
-                )
-            ))
-        )
-    ),
-    item.nactCodes.map(nactCodes =>
-        SummaryListRow(
-            classes = s"item-${item.sequenceId}-nationalAdditionalCodes-row",
-            key = Key(
-                content = Text(messages("declaration.summary.items.item.nationalAdditionalCodes"))
-            ),
-            value = Value(
-                content = Text(if(nactCodes.isEmpty) messages("site.no") else nactCodes.map(_.nactCode).mkString(", "))
-            ),
-            actions = actions(Actions(
-                items = Seq(
-                    actionSummaryItem(
-                        href = routes.NactCodeSummaryController.displayPage(item.id).url,
-                        content = HtmlContent(linkContent(messages("site.change"))),
-                        visuallyHiddenText = Some(messages("declaration.summary.items.item.nationalAdditionalCodes.change", item.sequenceId))
-                    )
-                )
-            ))
-        )
-    ),
-    item.nactExemptionCode.map( nactCode =>
-        SummaryListRow(
-            classes = s"item-${item.sequenceId}-zeroRatedForVat-row",
-            key = Key(
-                content = Text(messages("declaration.summary.items.item.zeroRatedForVat"))
-            ),
-            value = Value(
-                content = Text(messages(s"declaration.summary.items.item.zeroRatedForVat.${nactCode.nactCode}"))
-            ),
-            actions = actions(Actions(
-                items = Seq(
-                    actionSummaryItem(
-                        href = routes.ZeroRatedForVatController.displayPage(item.id).url,
-                        content = HtmlContent(linkContent(messages("site.change"))),
-                        visuallyHiddenText = Some(messages("declaration.summary.items.item.zeroRatedForVat.change", item.sequenceId))
-                    )
-                )
-            ))
-        )
-    ),
-    item.statisticalValue.map(statisticalValue =>
-        SummaryListRow(
-            classes = s"item-${item.sequenceId}-itemValue-row",
-            key = Key(
-                content = Text(messages("declaration.summary.items.item.itemValue"))
-            ),
-            value = Value(
-                content = Text(statisticalValue.statisticalValue)
-            ),
-            actions = actions(Actions(
-                items = Seq(
-                    actionSummaryItem(
-                        href = routes.StatisticalValueController.displayPage(item.id).url,
-                        content = HtmlContent(linkContent(messages("site.change"))),
-                        visuallyHiddenText = Some(messages("declaration.summary.items.item.itemValue.change", item.sequenceId))
-                    )
-                )
-            ))
-        )
-    )
-),
     classes = "govuk-!-margin-bottom-2"
 )
 
@@ -282,7 +292,7 @@
     package_information(item.id, item.sequenceId, packageInformation, actionsEnabled)
 )
 
-@summaryList("", None, Seq(
+@summaryList("", None, None, Seq(
     item.commodityMeasure.map(commodityMeasure =>
         SummaryListRow(
             classes = s"item-${item.sequenceId}-grossWeight-row",

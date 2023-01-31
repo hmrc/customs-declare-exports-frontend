@@ -65,6 +65,10 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
           view.getElementsByClass("govuk-heading-m").text mustBe messages("declaration.summary.items.item.sequenceId", "1")
         }
 
+        "have header action" in {
+          view
+        }
+
         "have procedure code with change button" in {
           val row = view.getElementsByClass("item-1-procedureCode-row")
           row must haveSummaryKey(messages("declaration.summary.items.item.procedureCode"))

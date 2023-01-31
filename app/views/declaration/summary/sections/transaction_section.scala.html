@@ -73,7 +73,7 @@
 @actions(action: Actions) = @{ if (actionsEnabled) Some(action) else None }
 
 @if(hasTransactionData) {
-    @summaryList("declaration-transaction-summary", Some(messages("declaration.summary.transaction")), List(
+    @summaryList(id = "declaration-transaction-summary", heading = Some(messages("declaration.summary.transaction")), summaryListRows = List(
         totalAmountInvoicedRow,
         declaration.totalNumberOfItems.flatMap { _.exchangeRate.map { exchangeRate =>
             SummaryListRow(

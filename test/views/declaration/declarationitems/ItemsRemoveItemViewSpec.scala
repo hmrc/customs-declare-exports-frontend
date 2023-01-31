@@ -34,8 +34,8 @@ class ItemsRemoveItemViewSpec extends UnitViewSpec with ExportsTestHelper with S
 
   private val page = instanceOf[items_remove_item]
   private val form = YesNoAnswer.form()
-  private def createView(form: Form[YesNoAnswer] = form, item: ExportItem): Document =
-    page(form, item)(journeyRequest(), messages)
+  private def createView(form: Form[YesNoAnswer] = form, item: ExportItem, fromSummary: Boolean = false): Document =
+    page(form, item, fromSummary)(journeyRequest(), messages)
 
   private val exportItem = anItem()
 
