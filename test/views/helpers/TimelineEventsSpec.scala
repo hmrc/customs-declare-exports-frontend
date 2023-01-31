@@ -32,7 +32,7 @@ import java.util.UUID
 
 class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injector {
 
-  private val submission = Submission("id", "eori", "lrn", Some("mrn"), Some("ducr"), None, None, Seq.empty)
+  private val submission = Submission("id", "eori", "lrn", Some("mrn"), Some("ducr"), None, None, Seq.empty, latestDecId = "id")
   private val uploadFilesPartialForTimeline = instanceOf[upload_files_partial_for_timeline]
   private val timelineEvents =
     new TimelineEvents(new linkButton, new paragraphBody, mockSecureMessagingInboxConfig, mockSfusConfig, uploadFilesPartialForTimeline)
@@ -89,7 +89,7 @@ class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injec
     }
 
     "generate a sequence of TimelineEvent instances from both cancellation requests and submission requests" in {
-      val action1 = CancellationAction("cancellation", issued(2), None, ???, "id")
+      val action1 = CancellationAction("cancellation", issued(2), None, 2, "id")
 
       val notification2 = NotificationSummary(UUID.randomUUID, issued(1), RECEIVED)
       val action2 = SubmissionAction("submission", issued(0), Some(List(notification2)), "id")

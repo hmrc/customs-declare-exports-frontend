@@ -41,22 +41,25 @@ class DashboardControllerSpec extends ControllerWithoutFormSpec with BeforeAndAf
 
   private val action = SubmissionAction(id = "conversationID", requestTimestamp = dateTime, notifications = None, uuid)
 
-  private val pageOfSubmissions = PageOfSubmissions(
-    SubmittedStatuses,
-    1,
-    Seq(
-      Submission(
-        uuid = uuid,
-        eori = "eori",
-        lrn = "lrn",
-        mrn = None,
-        ducr = None,
-        latestEnhancedStatus = Some(GOODS_ARRIVED),
-        enhancedStatusLastUpdated = Some(dateTime),
-        actions = Seq(action)
+  private val pageOfSubmissions = {
+    PageOfSubmissions(
+      SubmittedStatuses,
+      1,
+      Seq(
+        Submission(
+          uuid = uuid,
+          eori = "eori",
+          lrn = "lrn",
+          mrn = None,
+          ducr = None,
+          latestEnhancedStatus = Some(GOODS_ARRIVED),
+          enhancedStatusLastUpdated = Some(dateTime),
+          actions = Seq(action),
+          latestDecId = uuid
+        )
       )
     )
-  )
+  }
 
   private val dashboard = mock[dashboard]
   private val paginationConfig = mock[PaginationConfig]

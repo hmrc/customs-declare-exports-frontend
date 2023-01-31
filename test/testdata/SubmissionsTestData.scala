@@ -22,7 +22,6 @@ import models.declaration.notifications.{Notification, NotificationError}
 import models.declaration.submissions.EnhancedStatus._
 import models.declaration.submissions._
 import models.declaration.submissions.Action.defaultDateTimeZone
-
 import java.time.temporal.ChronoUnit.{DAYS, HOURS, MINUTES}
 import java.time.{ZoneOffset, ZonedDateTime}
 import java.util.UUID
@@ -59,7 +58,17 @@ object SubmissionsTestData {
       NotificationSummary(UUID.randomUUID(), now, enhancedStatus = status)
     }
     val action = SubmissionAction(id = conversationId, notifications = summaries.headOption.map(_ => summaries), decId = uuid)
-    Submission(uuid = uuid, eori, lrn, specifiedMrn, specifiedDucr, statuses.lastOption, statuses.lastOption.map(_ => now), actions = Seq(action))
+    Submission(
+      uuid,
+      eori,
+      lrn,
+      specifiedMrn,
+      specifiedDucr,
+      statuses.lastOption,
+      statuses.lastOption.map(_ => now),
+      actions = Seq(action),
+      latestDecId = uuid
+    )
   }
 
   lazy val action = SubmissionAction(id = conversationId, notifications = None, decId = uuid)
@@ -72,24 +81,24 @@ object SubmissionsTestData {
     SubmissionAction(id = conversationId_4, requestTimestamp = action.requestTimestamp.minus(2, DAYS), notifications = None, uuid)
 
   lazy val actionCancellation =
-    CancellationAction(id = conversationId, requestTimestamp = action.requestTimestamp.plus(3, HOURS), notifications = None, ???, uuid)
+    CancellationAction(id = conversationId, requestTimestamp = action.requestTimestamp.plus(3, HOURS), notifications = None, 2, uuid)
   lazy val actionCancellation_2 =
-    CancellationAction(id = conversationId, requestTimestamp = action.requestTimestamp.plus(6, HOURS), notifications = None, ???, uuid)
+    CancellationAction(id = conversationId, requestTimestamp = action.requestTimestamp.plus(6, HOURS), notifications = None, 2, uuid)
 
   lazy val submission: Submission =
-    Submission(uuid = uuid, eori = eori, lrn = lrn, mrn = Some(mrn), ducr = Some(ducr), actions = Seq(action))
+    Submission(uuid, eori = eori, lrn = lrn, mrn = Some(mrn), ducr = Some(ducr), actions = Seq(action), latestDecId = uuid)
 
   lazy val submission_2: Submission =
-    Submission(uuid = uuid_2, eori = eori, lrn = lrn, mrn = Some(mrn_2), ducr = Some(ducr), actions = Seq(action_2))
+    Submission(uuid_2, eori = eori, lrn = lrn, mrn = Some(mrn_2), ducr = Some(ducr), actions = Seq(action_2), latestDecId = uuid_2)
 
   lazy val submission_3: Submission =
-    Submission(uuid = uuid_3, eori = eori, lrn = lrn, mrn = Some(mrn_3), ducr = Some(ducr), actions = Seq(action_3))
+    Submission(uuid_3, eori = eori, lrn = lrn, mrn = Some(mrn_3), ducr = Some(ducr), actions = Seq(action_3), latestDecId = uuid_3)
 
   lazy val submission_4: Submission =
-    Submission(uuid = uuid_4, eori = eori, lrn = lrn, mrn = Some(mrn_4), ducr = Some(ducr), actions = Seq(action_4))
+    Submission(uuid_4, eori = eori, lrn = lrn, mrn = Some(mrn_4), ducr = Some(ducr), actions = Seq(action_4), latestDecId = uuid_4)
 
   lazy val cancelledSubmission: Submission =
-    Submission(uuid = uuid, eori = eori, lrn = lrn, mrn = Some(mrn), ducr = Some(ducr), actions = Seq(action, actionCancellation))
+    Submission(uuid, eori = eori, lrn = lrn, mrn = Some(mrn), ducr = Some(ducr), actions = Seq(action, actionCancellation), latestDecId = uuid)
 
   private lazy val functionCodes: Seq[String] =
     Seq("01", "02", "03", "05", "06", "07", "08", "09", "10", "11", "16", "17", "18")

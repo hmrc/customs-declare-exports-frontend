@@ -19,7 +19,7 @@ package controllers
 import base.ControllerWithoutFormSpec
 import mock.ErrorHandlerMocks
 import models.declaration.submissions.EnhancedStatus._
-import models.declaration.submissions.{CancellationAction, NotificationSummary, Submission, SubmissionAction}
+import models.declaration.submissions.{CancellationAction, NotificationSummary, Submission}
 import models.requests.{ExportsSessionKeys, VerifiedEmailRequest}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -78,7 +78,8 @@ class CancellationResultControllerSpec extends ControllerWithoutFormSpec with Er
 
   def submissionWithStatus(status: Option[EnhancedStatus]): Option[Submission] = {
     val action = Seq(if (status.isDefined) actionWithNotificationSummary(status.get) else actionWithoutNotificationSummary)
-    Some(Submission(eori = eori, lrn = lrn, actions = action))
+    val uuid = UUID.randomUUID().toString
+    Some(Submission(uuid, eori = eori, lrn = lrn, actions = action, latestDecId = uuid))
   }
 
   private def notificationSummary(status: EnhancedStatus) =

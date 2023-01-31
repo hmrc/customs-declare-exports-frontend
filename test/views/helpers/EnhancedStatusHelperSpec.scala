@@ -115,7 +115,10 @@ object EnhancedStatusHelperSpec {
       |    ],
       |    "enhancedStatusLastUpdated" : "2022-07-06T08:15:22Z[UTC]",
       |    "latestEnhancedStatus" : "GOODS_ARRIVED",
-      |    "mrn" : "18GBJ4L5DKXCVUUNZZ"
+      |    "mrn" : "18GBJ4L5DKXCVUUNZZ",
+      |    "latestDecId" : "TEST-N3fwz-PAwaKfh4",
+      |    "latestVersionNo" : 1,
+      |    "blockAmendments" : false
       |}
       |""".stripMargin)
     .as[Submission]
@@ -144,7 +147,10 @@ object EnhancedStatusHelperSpec {
       |    ],
       |    "enhancedStatusLastUpdated" : "2022-07-06T08:15:22Z[UTC]",
       |    "latestEnhancedStatus" : "GOODS_ARRIVED",
-      |    "mrn" : "18GBJ4L5DKXCVUUNZZ"
+      |    "mrn" : "18GBJ4L5DKXCVUUNZZ",
+      |    "latestDecId" : "TEST-N3fwz-PAwaKfh4",
+      |    "latestVersionNo" : 1,
+      |    "blockAmendments" : false
       |}
       |""".stripMargin)
     .as[Submission]
@@ -172,7 +178,10 @@ object EnhancedStatusHelperSpec {
       |    ],
       |    "enhancedStatusLastUpdated" : "2022-07-06T08:15:22Z[UTC]",
       |    "latestEnhancedStatus" : "QUERY_NOTIFICATION_MESSAGE",
-      |    "mrn" : "18GBJ4L5DKXCVUUNZZ"
+      |    "mrn" : "18GBJ4L5DKXCVUUNZZ",
+      |    "latestDecId" : "TEST-N3fwz-PAwaKfh4",
+      |    "latestVersionNo" : 1,
+      |    "blockAmendments" : false
       |}
       |""".stripMargin)
     .as[Submission]
