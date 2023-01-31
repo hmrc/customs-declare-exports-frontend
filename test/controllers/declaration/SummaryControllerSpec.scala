@@ -23,9 +23,9 @@ import controllers.routes.SavedDeclarationsController
 import forms.declaration.LegalDeclaration
 import forms.{Lrn, LrnValidator}
 import mock.ErrorHandlerMocks
+import models.ExportsDeclaration
 import models.declaration.submissions.Submission
 import models.requests.ExportsSessionKeys
-import models.ExportsDeclaration
 import org.jsoup.Jsoup
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
@@ -40,6 +40,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import views.helpers.ActionItemBuilder.lastUrlPlaceholder
 import views.html.declaration.summary._
 
+import java.util.UUID
 import scala.concurrent.{ExecutionContext, Future}
 
 class SummaryControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerMocks with OptionValues {
@@ -138,6 +139,7 @@ class SummaryControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerM
     "pass an error to page if LRN is a duplicate" in {
       when(mockLrnValidator.hasBeenSubmittedInThePast48Hours(any[Lrn])(any[HeaderCarrier], any[ExecutionContext]))
         .thenReturn(Future.successful(true))
+
       val declaration = aDeclaration(withConsignmentReferences())
       withNewCaching(declaration.copy(declarationMeta = declaration.declarationMeta.copy(readyForSubmission = Some(true))))
 
@@ -171,7 +173,8 @@ class SummaryControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerM
         val declaration = aDeclaration()
         withNewCaching(declaration)
 
-        val expectedSubmission: Submission = Submission(eori = "GB123456", lrn = "123LRN", ducr = Some("ducr"), actions = List.empty)
+        val uuid = UUID.randomUUID().toString
+        val expectedSubmission = Submission(uuid, eori = "GB123456", lrn = "123LRN", ducr = Some("ducr"), actions = List.empty, latestDecId = uuid)
         when(mockSubmissionService.submit(any(), any[ExportsDeclaration], any[LegalDeclaration])(any[HeaderCarrier], any[ExecutionContext]))
           .thenReturn(Future.successful(Some(expectedSubmission)))
 

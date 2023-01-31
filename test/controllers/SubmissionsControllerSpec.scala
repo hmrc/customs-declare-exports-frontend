@@ -45,15 +45,19 @@ class SubmissionsControllerSpec extends ControllerWithoutFormSpec with BeforeAnd
 
   private val action = Action(requestType = SubmissionRequest, id = "conversationID", requestTimestamp = dateTime, notifications = None)
 
-  private val submission = Submission(
-    uuid = UUID.randomUUID.toString,
-    eori = "eori",
-    lrn = "lrn",
-    mrn = None,
-    ducr = None,
-    latestEnhancedStatus = Some(GOODS_ARRIVED),
-    actions = Seq(action)
-  )
+  private val submission = {
+    val uuid = UUID.randomUUID().toString
+    Submission(
+      uuid = uuid,
+      eori = "eori",
+      lrn = "lrn",
+      mrn = None,
+      ducr = None,
+      latestEnhancedStatus = Some(GOODS_ARRIVED),
+      actions = Seq(action),
+      latestDecId = uuid
+    )
+  }
 
   private val submittedDeclarationPage = mock[submitted_declaration_page]
   private val paginationConfig = mock[PaginationConfig]

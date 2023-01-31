@@ -43,7 +43,7 @@ class CustomsDeclareExportsConnectorISpec extends ConnectorISpec with ExportsDec
   private val existingDeclaration = aDeclaration(withId(id))
 
   private val action = Action(id = UUID.randomUUID().toString, requestType = SubmissionRequest, notifications = None)
-  private val submission = Submission(id, "eori", "lrn", Some("mrn"), None, None, None, Seq(action))
+  private val submission = Submission(id, "eori", "lrn", Some("mrn"), None, None, None, Seq(action), latestDecId = id)
   private val notification = Notification("action-id", "mrn", ZonedDateTime.now(ZoneOffset.UTC), SubmissionStatus.UNKNOWN, Seq.empty)
   private val connector = app.injector.instanceOf[CustomsDeclareExportsConnector]
 
@@ -116,7 +116,10 @@ class CustomsDeclareExportsConnectorISpec extends ConnectorISpec with ExportsDec
            |      "id" : "${UUID.randomUUID().toString}",
            |      "requestType" : "SubmissionRequest",
            |      "requestTimestamp" : "${ZonedDateTime.now(ZoneOffset.UTC).toString}"
-           |   }]
+           |   }],
+           |  "latestDecId" : "$id",
+           |  "latestVersionNo" : 1,
+           |  "blockAmendments" : false
           |}
         """.stripMargin
       stubForExports(

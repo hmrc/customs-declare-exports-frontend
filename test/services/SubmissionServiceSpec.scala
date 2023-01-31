@@ -16,14 +16,11 @@
 
 package services
 
-import scala.concurrent.ExecutionContext.global
-import scala.concurrent.Future
-
 import base.{Injector, MockConnectors, MockExportCacheService, UnitWithMocksSpec}
 import com.kenshoo.play.metrics.Metrics
 import connectors.CustomsDeclareExportsConnector
-import forms.declaration.countries.Country
 import forms.declaration.LegalDeclaration
+import forms.declaration.countries.Country
 import metrics.{ExportsMetrics, MetricIdentifiers}
 import models.declaration.submissions.{Action, Submission}
 import models.{DeclarationStatus, DeclarationType}
@@ -34,6 +31,9 @@ import org.scalatest.concurrent.ScalaFutures
 import services.audit.{AuditService, AuditTypes, EventData}
 import services.cache.SubmissionBuilder
 import uk.gov.hmrc.http.HeaderCarrier
+
+import scala.concurrent.ExecutionContext.global
+import scala.concurrent.Future
 
 class SubmissionServiceSpec
     extends UnitWithMocksSpec with Injector with MockExportCacheService with MockConnectors with OptionValues with ScalaFutures
@@ -83,7 +83,7 @@ class SubmissionServiceSpec
 
         declaration.locations.originationCountry.value mustBe Country.GB
 
-        val expectedSubmission = Submission(uuid = "id", eori = eori, lrn = lrn, actions = Seq.empty[Action])
+        val expectedSubmission = Submission(uuid = "id", eori = eori, lrn = lrn, actions = Seq.empty[Action], latestDecId = "id")
         when(connector.submitDeclaration(any[String])(any(), any())).thenReturn(Future.successful(expectedSubmission))
 
         // When

@@ -51,8 +51,28 @@ class ConfirmationControllerSpec extends ControllerWithoutFormSpec with BeforeAn
   val ducr = "1GB12121212121212-TRADER-REF-XYZ"
   val submissionId = UUID.randomUUID.toString
 
-  val submissionRecieved = Submission(submissionId, "eori", lrn, Some("mrn"), Some(ducr), Some(RECEIVED), Some(ZonedDateTime.now), Seq.empty[Action])
-  val submissionWithErrors = Submission(submissionId, "eori", lrn, Some("mrn"), Some(ducr), Some(ERRORS), Some(ZonedDateTime.now), Seq.empty[Action])
+  val submissionRecieved = Submission(
+    submissionId,
+    "eori",
+    lrn,
+    Some("mrn"),
+    Some(ducr),
+    Some(RECEIVED),
+    Some(ZonedDateTime.now),
+    Seq.empty[Action],
+    latestDecId = submissionId
+  )
+  val submissionWithErrors = Submission(
+    submissionId,
+    "eori",
+    lrn,
+    Some("mrn"),
+    Some(ducr),
+    Some(ERRORS),
+    Some(ZonedDateTime.now),
+    Seq.empty[Action],
+    latestDecId = submissionId
+  )
 
   trait SetUp {
     val holdingPage = instanceOf[holding_page]
@@ -211,7 +231,7 @@ class ConfirmationControllerSpec extends ControllerWithoutFormSpec with BeforeAn
 
         status(result) mustBe OK
 
-        val submission = Submission(submissionId, "eori", lrn, None, Some(ducr), None, None, Seq.empty[Action])
+        val submission = Submission(submissionId, "eori", lrn, None, Some(ducr), None, None, Seq.empty[Action], latestDecId = submissionId)
         val confirmation = Confirmation(request.email, STANDARD_FRONTIER.toString, Some(submission), Some(""))
         val expectedView = confirmationPage(confirmation)(request, messages)
 
