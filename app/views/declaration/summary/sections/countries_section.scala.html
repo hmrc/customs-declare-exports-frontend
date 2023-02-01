@@ -35,7 +35,7 @@
 
 @if(sectionRequired(declarationData.locations)) {
 
-    @summaryList("declaration-countries-summary", Some(messages("declaration.summary.countries")), Seq(
+    @summaryList(id = "declaration-countries-summary", heading = Some(messages("declaration.summary.countries")), summaryListRows = Seq(
 
         declarationData.locations.hasRoutingCountries.map(_ =>
             SummaryListRow(

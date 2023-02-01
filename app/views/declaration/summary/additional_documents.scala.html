@@ -126,9 +126,9 @@
     @heading(messages("declaration.summary.items.item.additionalDocuments"), "govuk-heading-s govuk-!-margin-bottom-0", "h3")
 
     @summaryList(
-        s"additional-docs-summary-list-${item.sequenceId}",
-        None,
-        Seq(licenceRow, documentsHeader),
+        id = s"additional-docs-summary-list-${item.sequenceId}",
+        heading = None,
+        summaryListRows = Seq(licenceRow, documentsHeader),
         classes = s"govuk-!-margin-bottom-${if (hasDocuments) "0" else "6"}"
     )
 

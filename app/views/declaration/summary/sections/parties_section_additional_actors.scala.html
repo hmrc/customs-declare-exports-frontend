@@ -69,7 +69,7 @@
 }}
 
 @if(additionalActors.isEmpty) {
-    @summaryList(additionalActorsFormGroupId, None, Seq(
+    @summaryList(id = additionalActorsFormGroupId, heading = None, summaryListRows = Seq(
         Some(SummaryListRow(
             classes = "additionalActors-row",
             key = Key(

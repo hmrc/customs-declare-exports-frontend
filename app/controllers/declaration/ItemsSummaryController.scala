@@ -124,20 +124,21 @@ class ItemsSummaryController @Inject() (
     exportsCacheService.update(request.cacheModel.copy(items = itemsWithAnswers))
   }
 
-  def displayRemoveItemConfirmationPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    request.cacheModel.itemBy(itemId) match {
-      case Some(item) => Ok(removeItemPage(removeItemForm, item))
-      case None       => navigator.continueTo(ItemsSummaryController.displayItemsSummaryPage)
-    }
+  def displayRemoveItemConfirmationPage(itemId: String, fromSummary: Boolean = false): Action[AnyContent] = (authenticate andThen journeyType) {
+    implicit request =>
+      request.cacheModel.itemBy(itemId) match {
+        case Some(item) => Ok(removeItemPage(removeItemForm, item, fromSummary))
+        case None       => navigator.continueTo(ItemsSummaryController.displayItemsSummaryPage)
+      }
   }
 
-  def removeItem(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def removeItem(itemId: String, fromSummary: Boolean = false): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     removeItemForm
       .bindFromRequest()
       .fold(
         formWithErrors =>
           Future.successful(request.cacheModel.itemBy(itemId) match {
-            case Some(item) => BadRequest(removeItemPage(formWithErrors, item))
+            case Some(item) => BadRequest(removeItemPage(formWithErrors, item, fromSummary))
             case None       => throw new IllegalStateException(s"Could not find ExportItem with id = [$itemId] to remove")
           }),
         _.answer match {

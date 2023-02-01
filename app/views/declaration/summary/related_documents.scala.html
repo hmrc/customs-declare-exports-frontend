@@ -46,7 +46,7 @@
 @actions(action: Actions) = @{ if (actionsEnabled) Some(action) else None }
 
 @if(documents.isEmpty) {
-    @summaryList("previous-documents", None, Seq(
+    @summaryList(id = "previous-documents", heading = None, summaryListRows = Seq(
       Some(SummaryListRow(
         classes = "previous-documents-row",
         key = Key(Text(messages("declaration.summary.transaction.previousDocuments"))),

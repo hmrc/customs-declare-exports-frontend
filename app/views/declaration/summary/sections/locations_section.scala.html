@@ -32,7 +32,7 @@
 @actions(action: Actions) = @{ if (actionsEnabled) Some(action) else None }
 
 @if(hasLocations(declarationData.locations)) {
-    @summaryList("declaration-locations-summary", Some(messages("declaration.summary.locations")), Seq(
+    @summaryList(id = "declaration-locations-summary", heading = Some(messages("declaration.summary.locations")), summaryListRows = Seq(
         declarationData.locations.goodsLocation.map(goodsLocation =>
             Some(SummaryListRow(
                 classes = "goodsLocationCode-row",

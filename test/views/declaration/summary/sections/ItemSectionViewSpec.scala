@@ -32,7 +32,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
   val commodityMeasure = CommodityMeasure(Some("12"), Some(false), Some("666"), Some("555"))
 
   private val itemWithAnswers = anItem(
-    withItemId("itemId"),
+    withItemId(itemId),
     withSequenceId(1),
     withProcedureCodes(Some("1234"), Seq("000", "111")),
     withFiscalInformation(FiscalInformation("Yes")),
@@ -50,7 +50,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
     withAdditionalDocuments(YesNoAnswer.Yes, AdditionalDocument(Some("C501"), Some("GBAEOC1342"), None, None, None, None, None))
   )
 
-  private val itemWithoutAnswers = anItem(withItemId("itemId"), withSequenceId(1))
+  private val itemWithoutAnswers = anItem(withItemId(itemId), withSequenceId(1))
 
   "Item section" when {
 
@@ -63,6 +63,12 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
 
         "have item header" in {
           view.getElementsByClass("govuk-heading-m").text mustBe messages("declaration.summary.items.item.sequenceId", "1")
+        }
+
+        "have header action" in {
+          val action = view.getElementById("item-header-action")
+          action.text mustBe messages("declaration.summary.items.item.headerAction")
+          action must haveHref(controllers.declaration.routes.ItemsSummaryController.displayRemoveItemConfirmationPage(itemId, true))
         }
 
         "have procedure code with change button" in {
@@ -256,164 +262,8 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
           view.getElementsByClass("govuk-heading-m").text mustBe messages("declaration.summary.items.item.sequenceId", "1")
         }
 
-        "have procedure code with change button" in {
-          val row = view.getElementsByClass("item-1-procedureCode-row")
-          row must haveSummaryKey(messages("declaration.summary.items.item.procedureCode"))
-          row must haveSummaryValue("1234")
-
-          row mustNot haveSummaryActionsTexts("site.change", "declaration.summary.items.item.procedureCode.change")
-          row mustNot haveSummaryActionsHref(ProcedureCodesController.displayPage(itemWithAnswers.id))
-        }
-
-        "have additional procedure codes separated by space with change button" in {
-          val row = view.getElementsByClass("item-1-additionalProcedureCodes-row")
-          row must haveSummaryKey(messages("declaration.summary.items.item.additionalProcedureCodes"))
-          row must haveSummaryValue("000 111")
-
-          row mustNot haveSummaryActionsTexts("site.change", "declaration.summary.items.item.additionalProcedureCodes.change")
-          row mustNot haveSummaryActionsHref(AdditionalProcedureCodesController.displayPage(itemWithAnswers.id))
-        }
-
-        "have onward supply answer with change button" in {
-          val row = view.getElementsByClass("item-1-onwardSupplyRelief-row")
-          row must haveSummaryKey(messages("declaration.summary.items.item.onwardSupplyRelief"))
-          row must haveSummaryValue("Yes")
-
-          row mustNot haveSummaryActionsText("site.change declaration.summary.items.item.onwardSupplyRelief.change")
-          row mustNot haveSummaryActionsHref(FiscalInformationController.displayPage(itemWithAnswers.id))
-        }
-
-        "have VAT answer with change button" in {
-          val row = view.getElementsByClass("item-1-VATdetails-row")
-          row must haveSummaryKey(messages("declaration.summary.items.item.VATdetails"))
-          row must haveSummaryValue("GB1234")
-
-          row mustNot haveSummaryActionsText("site.change declaration.summary.items.item.VATdetails.change")
-          row mustNot haveSummaryActionsHref(AdditionalFiscalReferencesController.displayPage(itemWithAnswers.id))
-        }
-
-        "have commodity code with change button" in {
-          val row = view.getElementsByClass("item-1-commodityCode-row")
-          row must haveSummaryKey(messages("declaration.summary.items.item.commodityCode"))
-          row must haveSummaryValue("1234567890")
-
-          row mustNot haveSummaryActionsText("site.change declaration.summary.items.item.commodityCode.change")
-          row mustNot haveSummaryActionsHref(CommodityDetailsController.displayPage(itemWithAnswers.id))
-        }
-
-        "have goods description with change button" in {
-          val row = view.getElementsByClass("item-1-goodsDescription-row")
-          row must haveSummaryKey(messages("declaration.summary.items.item.goodsDescription"))
-          row must haveSummaryValue("description")
-
-          row mustNot haveSummaryActionsText("site.change declaration.summary.items.item.goodsDescription.change")
-          row mustNot haveSummaryActionsHref(CommodityDetailsController.displayPage(itemWithAnswers.id))
-        }
-
-        "have un dangerous goods code with change button" in {
-          val row = view.getElementsByClass("item-1-unDangerousGoodsCode-row")
-          row must haveSummaryKey(messages("declaration.summary.items.item.unDangerousGoodsCode"))
-          row must haveSummaryValue("345")
-
-          row mustNot haveSummaryActionsText("site.change declaration.summary.items.item.unDangerousGoodsCode.change")
-          row mustNot haveSummaryActionsHref(UNDangerousGoodsCodeController.displayPage(itemWithAnswers.id))
-        }
-
-        "have cus code with change button" in {
-          val row = view.getElementsByClass("item-1-cusCode-row")
-          row must haveSummaryKey(messages("declaration.summary.items.item.cusCode"))
-          row must haveSummaryValue("321")
-
-          row mustNot haveSummaryActionsText("site.change declaration.summary.items.item.cusCode.change")
-          row mustNot haveSummaryActionsHref(CusCodeController.displayPage(itemWithAnswers.id))
-        }
-
-        "have taric codes separated by comma with change button" in {
-          val row = view.getElementsByClass("item-1-taricAdditionalCodes-row")
-          row must haveSummaryKey(messages("declaration.summary.items.item.taricAdditionalCodes"))
-          row must haveSummaryValue("999, 888")
-
-          row mustNot haveSummaryActionsText("site.change declaration.summary.items.item.taricAdditionalCodes.change")
-          row mustNot haveSummaryActionsHref(TaricCodeSummaryController.displayPage(itemWithAnswers.id))
-        }
-
-        "have nact codes separated by comma with change button" in {
-          val row = view.getElementsByClass("item-1-nationalAdditionalCodes-row")
-          row must haveSummaryKey(messages("declaration.summary.items.item.nationalAdditionalCodes"))
-          row must haveSummaryValue("111, 222")
-
-          row mustNot haveSummaryActionsText("site.change declaration.summary.items.item.nationalAdditionalCodes.change")
-          row mustNot haveSummaryActionsHref(NactCodeSummaryController.displayPage(itemWithAnswers.id))
-        }
-
-        "have zero rated for vat row with change button" in {
-          val row = view.getElementsByClass("item-1-zeroRatedForVat-row")
-          row must haveSummaryKey(messages("declaration.summary.items.item.zeroRatedForVat"))
-          row must haveSummaryValue(messages("declaration.summary.items.item.zeroRatedForVat.VATE"))
-
-          row mustNot haveSummaryActionsText("site.change declaration.summary.items.item.zeroRatedForVat.change")
-          row mustNot haveSummaryActionsHref(ZeroRatedForVatController.displayPage(itemWithAnswers.id))
-        }
-
-        "have statistical item value with change button" in {
-          val row = view.getElementsByClass("item-1-itemValue-row")
-          row must haveSummaryKey(messages("declaration.summary.items.item.itemValue"))
-          row must haveSummaryValue("123")
-
-          row mustNot haveSummaryActionsText("site.change declaration.summary.items.item.itemValue.change")
-          row mustNot haveSummaryActionsHref(StatisticalValueController.displayPage(itemWithAnswers.id))
-        }
-
-        "have supplementary units with change button" in {
-          val row = view.getElementsByClass("item-1-supplementaryUnits-row")
-          row must haveSummaryKey(messages("declaration.summary.items.item.supplementaryUnits"))
-          row must haveSummaryValue("12")
-
-          row mustNot haveSummaryActionsText("site.change declaration.summary.items.item.supplementaryUnits.change")
-          row mustNot haveSummaryActionsHref(CommodityMeasureController.displayPage(itemWithAnswers.id))
-        }
-
-        "have gross weight with change button" in {
-          val row = view.getElementsByClass("item-1-grossWeight-row")
-          row must haveSummaryKey(messages("declaration.summary.items.item.grossWeight"))
-          row must haveSummaryValue("666")
-
-          row mustNot haveSummaryActionsText("site.change declaration.summary.items.item.grossWeight.change")
-          row mustNot haveSummaryActionsHref(CommodityMeasureController.displayPage(itemWithAnswers.id))
-        }
-
-        "have net weight with change button" in {
-          val row = view.getElementsByClass("item-1-netWeight-row")
-          row must haveSummaryKey(messages("declaration.summary.items.item.netWeight"))
-          row must haveSummaryValue("555")
-
-          row mustNot haveSummaryActionsText("site.change declaration.summary.items.item.netWeight.change")
-          row mustNot haveSummaryActionsHref(CommodityMeasureController.displayPage(itemWithAnswers.id))
-        }
-
-        "have package information section" in {
-          view.getElementById("package-information-1-table").getElementsByClass("govuk-table__caption").text mustBe messages(
-            "declaration.summary.items.item.packageInformation"
-          )
-        }
-
-        "have union and national codes section" in {
-          view.getElementById("additional-information-1-table").getElementsByClass("govuk-table__caption").text mustBe messages(
-            "declaration.summary.items.item.additionalInformation"
-          )
-        }
-
-        "have additional documents section" in {
-          view.getElementById("additional-docs-section-item-1").child(0).text mustBe messages("declaration.summary.items.item.additionalDocuments")
-        }
-      }
-
-      "actions are disabled using actionsEnabled flag" should {
-
-        val view = itemSection(itemWithAnswers, STANDARD, actionsEnabled = false)(messages)
-
-        "have item header" in {
-          view.getElementsByClass("govuk-heading-m").text mustBe messages("declaration.summary.items.item.sequenceId", "1")
+        "not have header action" in {
+          assert(Option(view.getElementById("item-header-action")).isEmpty)
         }
 
         "have procedure code with change button" in {

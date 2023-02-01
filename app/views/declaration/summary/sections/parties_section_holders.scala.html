@@ -63,7 +63,7 @@
 }
 
 @if(holders.isEmpty) {
-    @summaryList("holders", None, Seq(
+    @summaryList(id = "holders", heading = None, summaryListRows = Seq(
         Some(SummaryListRow(
             classes = "holders-row",
             key = Key(

@@ -37,19 +37,27 @@
   item_section: item_section,
   yesNoRadios: yesNoRadios,
   saveButtons: saveButtons,
+  saveAndReturnToSummary: saveAndReturnToSummary,
   navigator: Navigator,
-  formHelper: FormWithCSRF
+  formHelper: FormWithCSRF,
+  linkButton: linkButton
 )
 
-@(form: Form[YesNoAnswer], item: ExportItem)(implicit request: JourneyRequest[_], messages: Messages)
+@(form: Form[YesNoAnswer], item: ExportItem, fromSummary: Boolean)(implicit request: JourneyRequest[_], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
+
+@buttons = @{
+    if (fromSummary)
+        saveAndReturnToSummary("site.confirm_and_continue", "govuk-button--primary")
+    else saveButtons()
+}
 
 @govukLayout(
     title = Title("declaration.itemsRemove.title", "declaration.section.5", item.sequenceId.toString, hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(RemoveItem)))) {
 
-    @formHelper(action = routes.ItemsSummaryController.removeItem(item.id), 'autoComplete -> "off") {
+    @formHelper(action = routes.ItemsSummaryController.removeItem(item.id, fromSummary), 'autoComplete -> "off") {
 
       @errorSummary(yesNoErrors(form.errors))
 
@@ -64,7 +72,7 @@
         html = HtmlFormat.fill(immutable.Seq(
           item_section(item, request.declarationType, actionsEnabled = false),
           yesNoRadios(form, inline = true),
-          saveButtons()
+          buttons
         ))
       ))
     }
