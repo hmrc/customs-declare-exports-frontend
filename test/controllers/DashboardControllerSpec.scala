@@ -39,9 +39,9 @@ class DashboardControllerSpec extends ControllerWithoutFormSpec with BeforeAndAf
 
   val uuid = UUID.randomUUID.toString
 
-  private val action = SubmissionAction(id = "conversationID", requestTimestamp = dateTime, notifications = None, uuid)
+  private val action = SubmissionAction(id = "conversationID", requestTimestamp = dateTime, notifications = None)
 
-  private val pageOfSubmissions = {
+  private val pageOfSubmissions =
     PageOfSubmissions(
       SubmittedStatuses,
       1,
@@ -59,7 +59,6 @@ class DashboardControllerSpec extends ControllerWithoutFormSpec with BeforeAndAf
         )
       )
     )
-  }
 
   private val dashboard = mock[dashboard]
   private val paginationConfig = mock[PaginationConfig]

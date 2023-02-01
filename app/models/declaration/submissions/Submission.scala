@@ -17,7 +17,7 @@
 package models.declaration.submissions
 
 import models.declaration.submissions.EnhancedStatus._
-import play.api.libs.json.Json
+import play.api.libs.json.{Format, Json}
 
 import java.time.ZonedDateTime
 
@@ -34,6 +34,7 @@ case class Submission(
   latestVersionNo: Int = 1,
   blockAmendments: Boolean = false
 ) {
+
   lazy val allSubmissionRequestStatuses: Seq[EnhancedStatus] = (
     for {
       subRequestAction <- actions.find {
@@ -43,11 +44,14 @@ case class Submission(
       notificationSummaries <- subRequestAction.notifications
     } yield notificationSummaries.map(_.enhancedStatus)
   ).getOrElse(Seq.empty[EnhancedStatus])
+
   lazy val isStatusAcceptedOrReceived: Boolean =
     allSubmissionRequestStatuses.intersect(Seq(GOODS_ARRIVED_MESSAGE, GOODS_ARRIVED, RECEIVED)).nonEmpty
+
   val latestAction: Option[Action] =
     if (actions.isEmpty) None
     else Some(actions.minBy(_.requestTimestamp)(Submission.dateTimeOrdering))
+
   val latestCancellationAction: Option[Action] = {
     val cancelActions = actions.filter {
       case _: CancellationAction => true
@@ -61,7 +65,7 @@ case class Submission(
 
 object Submission {
 
-  implicit val formats = Json.format[Submission]
+  implicit val format: Format[Submission] = Json.format[Submission]
 
   val dateTimeOrdering: Ordering[ZonedDateTime] = Ordering.fromLessThan[ZonedDateTime]((a, b) => b.isBefore(a))
 
