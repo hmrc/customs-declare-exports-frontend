@@ -45,7 +45,8 @@ case class ExportsDeclaration(
   items: Seq[ExportItem] = Seq.empty,
   totalNumberOfItems: Option[InvoiceAndPackageTotals] = None,
   previousDocuments: Option[PreviousDocumentsData] = None,
-  natureOfTransaction: Option[NatureOfTransaction] = None
+  natureOfTransaction: Option[NatureOfTransaction] = None,
+  statementDescription: Option[String] = None
 ) {
 
   def lrn: Option[String] = consignmentReferences.flatMap(_.lrn.map(_.lrn))
