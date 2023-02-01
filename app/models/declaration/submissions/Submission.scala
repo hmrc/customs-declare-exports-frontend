@@ -52,10 +52,10 @@ case class Submission(
     if (actions.isEmpty) None
     else Some(actions.minBy(_.requestTimestamp)(Submission.dateTimeOrdering))
 
-  val latestCancellationAction: Option[Action] = {
-    val cancelActions = actions.filter {
-      case _: CancellationAction => true
-      case _                     => false
+  val latestCancellationAction: Option[CancellationAction] = {
+    val cancelActions = actions.flatMap {
+      case c: CancellationAction => Some(c)
+      case _                     => None
     }
     if (cancelActions.nonEmpty) {
       Some(cancelActions.minBy(_.requestTimestamp)(Submission.dateTimeOrdering))
