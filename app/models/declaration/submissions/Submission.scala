@@ -21,17 +21,19 @@ import models.declaration.submissions.RequestType.{CancellationRequest, Submissi
 import play.api.libs.json.Json
 
 import java.time.ZonedDateTime
-import java.util.UUID
 
 case class Submission(
-  uuid: String = UUID.randomUUID.toString,
+  uuid: String,
   eori: String,
   lrn: String,
   mrn: Option[String] = None,
   ducr: Option[String] = None,
   latestEnhancedStatus: Option[EnhancedStatus] = None,
   enhancedStatusLastUpdated: Option[ZonedDateTime] = None,
-  actions: Seq[Action]
+  actions: Seq[Action],
+  latestDecId: String,
+  latestVersionNo: Int = 1,
+  blockAmendments: Boolean = false
 ) {
   val latestAction: Option[Action] =
     if (actions.isEmpty) None

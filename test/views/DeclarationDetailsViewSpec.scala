@@ -55,7 +55,7 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
   private val testEmail = "testEmail@mail.org"
 
   private val uuid = "uuid"
-  private val submission = Submission(uuid, "eori", "lrn", Some(mrn), Some("ducr"), None, None, Seq.empty)
+  private val submission = Submission(uuid, "eori", "lrn", Some(mrn), Some("ducr"), None, None, Seq.empty, latestDecId = uuid)
 
   private val dmsqry1Notification = NotificationSummary(UUID.randomUUID, now, QUERY_NOTIFICATION_MESSAGE)
   private val dmsqry2Notification = NotificationSummary(UUID.randomUUID, now.plusMinutes(1), QUERY_NOTIFICATION_MESSAGE)
@@ -85,7 +85,7 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
 
   private def createSubmissionWith(status: EnhancedStatus) = {
     val action = Action("id", SubmissionRequest, now, Some(Seq(NotificationSummary(UUID.randomUUID, now, status))))
-    Submission(uuid, "eori", "lrn", Some(mrn), Some("ducr"), Some(status), Some(now), Seq(action))
+    Submission(uuid, "eori", "lrn", Some(mrn), Some("ducr"), Some(status), Some(now), Seq(action), latestDecId = uuid)
   }
 
   private def createSubmissionWith(notificationSummaries: Seq[NotificationSummary]) = {
@@ -98,7 +98,8 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
       Some("ducr"),
       notificationSummaries.reverse.headOption.map(_.enhancedStatus),
       notificationSummaries.headOption.map(_ => now),
-      Seq(action)
+      Seq(action),
+      latestDecId = uuid
     )
   }
 

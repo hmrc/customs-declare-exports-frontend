@@ -37,14 +37,18 @@ class DeclarationDetailsControllerSpec extends ControllerWithoutFormSpec with Be
 
   private val actionId = "actionId"
 
-  private val submission = Submission(
-    uuid = UUID.randomUUID().toString,
-    eori = "eori",
-    lrn = "lrn",
-    mrn = Some("mrn"),
-    ducr = Some("ducr"),
-    actions = Seq(Action(id = actionId, requestType = SubmissionRequest, requestTimestamp = ZonedDateTime.now, notifications = None))
-  )
+  private val submission = {
+    val uuid = UUID.randomUUID().toString
+    Submission(
+      uuid = uuid,
+      eori = "eori",
+      lrn = "lrn",
+      mrn = Some("mrn"),
+      ducr = Some("ducr"),
+      actions = Seq(Action(id = actionId, requestType = SubmissionRequest, requestTimestamp = ZonedDateTime.now, notifications = None)),
+      latestDecId = uuid
+    )
+  }
 
   private val declarationDetailsPage = mock[declaration_details]
 

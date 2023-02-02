@@ -11,6 +11,9 @@ val appName = "customs-declare-exports-frontend"
 
 PlayKeys.devSettings := Seq("play.server.http.port" -> "6791")
 
+Test / testOptions += Tests.Argument(TestFrameworks.ScalaTest, "-h", "target/test-reports/html-report")
+Test / testOptions += Tests.Argument(TestFrameworks.ScalaTest, "-oD")
+
 lazy val microservice = Project(appName, file("."))
   .enablePlugins(PlayScala, SbtAutoBuildPlugin, SbtDistributablesPlugin, SbtWeb)
   .settings(commonSettings: _*)

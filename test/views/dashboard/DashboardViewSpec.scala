@@ -79,7 +79,8 @@ class DashboardViewSpec extends UnitViewSpec with ExportsTestHelper {
       ducr = Some(ducr),
       latestEnhancedStatus = Some(status),
       enhancedStatusLastUpdated = Some(lastStatusUpdate),
-      actions = List(Action("actionId", SubmissionRequest, lastStatusUpdate, None))
+      actions = List(Action("actionId", SubmissionRequest, lastStatusUpdate, None)),
+      latestDecId = uuid
     )
 
   def listOfSubmissions(status: EnhancedStatus = RECEIVED, size: Int = 1): Seq[Submission] =
