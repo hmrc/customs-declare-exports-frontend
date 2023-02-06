@@ -58,7 +58,7 @@
     @body(messages("declaration.summary.amend.body"), classes = "govuk-body govuk-!-display-none-print")
 }
 
-@summaryList("declaration-references-summary", None, Seq(
+@summaryList(id = "declaration-references-summary", heading = None, summaryListRows = Seq(
         Some(SummaryListRow(
             classes = "createdDate-row",
             key = Key(

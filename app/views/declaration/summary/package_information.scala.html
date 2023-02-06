@@ -86,7 +86,7 @@
             attributes = Map("id" -> s"package-information-$itemNo-table")
         ))
     } else {
-        @summaryList(s"package-information-$itemNo", None, Seq(
+        @summaryList(id = s"package-information-$itemNo", heading = None, summaryListRows = Seq(
             Some(SummaryListRow(
                 classes = s"package-information-$itemNo-row",
                 key = Key(

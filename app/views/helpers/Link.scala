@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,17 +12,10 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import controllers.helpers.SaveAndReturnToSummary
-@import uk.gov.hmrc.govukfrontend.views.html.components._
+package views.helpers
 
-@this(govukButton : GovukButton)
+import play.api.mvc.Call
 
-@(text: String = "site.saveAndReturnToSummary", classes: String = "govuk-button--secondary")(implicit messages: Messages)
-
-@govukButton(Button(
-  attributes = Map("id" -> "save_and_return_to_summary", "name" -> SaveAndReturnToSummary.toString),
-  classes = classes,
-  content = Text(messages(text))
-))
+case class Link(text: String, call: Call)

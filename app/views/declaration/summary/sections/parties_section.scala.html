@@ -85,9 +85,9 @@
     @declarationData.parties.declarantDetails.map(declarant =>
         declarantEori(declarant)
     )
-    @summaryList("declaration-parties-summary", None,
+    @summaryList(id = "declaration-parties-summary", heading = None,
 
-        (Seq.empty :+ declarationData.parties.declarantIsExporter.map(isExporter =>
+        summaryListRows = (Seq.empty :+ declarationData.parties.declarantIsExporter.map(isExporter =>
             SummaryListRow(
                 classes = "declarantIsExporter-row",
                 key = Key(

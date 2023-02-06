@@ -17,17 +17,30 @@
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukSummaryList
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
+@import views.html.components.gds.link
+@import views.helpers.Link
 
-@this(govukSummaryList: GovukSummaryList)
+@this(govukSummaryList: GovukSummaryList, link: link)
 
-@(id: String, heading: Option[String] = None, summaryListRows: Seq[Option[SummaryListRow]], classes: String = "govuk-!-margin-bottom-9")
+@(id: String, heading: Option[String] = None, headerAction: Option[Link] = None, summaryListRows: Seq[Option[SummaryListRow]], classes: String = "govuk-!-margin-bottom-9")
 
-@heading.map { header =>
- <h2 class="govuk-heading-m">@header</h2>
+@if(heading.isDefined || headerAction.isDefined) {
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-three-quarters">
+        @heading.map { header =>
+            <h2 class="govuk-heading-m">@header</h2>
+        }
+    </div>
+    <div class="govuk-grid-column-one-quarter govuk-!-text-align-right govuk-!-font-size-19">
+        @headerAction.map { action =>
+            @link(text = action.text, call = action.call, id = Some("item-header-action"))
+        }
+    </div>
+</div>
 }
 
 @govukSummaryList(SummaryList(
- rows = summaryListRows.flatten,
- classes = classes,
- attributes = Map("id" -> id)
+    rows = summaryListRows.flatten,
+    classes = classes,
+    attributes = Map("id" -> id)
 ))

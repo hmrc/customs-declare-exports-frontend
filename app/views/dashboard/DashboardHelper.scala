@@ -80,7 +80,7 @@ object DashboardHelper {
 
   def tabs(selectedStatusGroup: StatusGroup)(implicit messages: Messages): Html =
     Html(
-      """<ul role="tablist" class="cds-exports-tabs__list">""" +
+      """<ul class="cds-exports-tabs__list">""" +
         statusGroups.map { statusGroup =>
           val (current, tabIndex) =
             if (statusGroup != selectedStatusGroup) ("", "-1")
