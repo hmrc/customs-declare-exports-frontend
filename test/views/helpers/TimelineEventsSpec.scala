@@ -44,7 +44,7 @@ class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injec
   }
 
   private def genTimelineEvents(notificationSummaries: Seq[NotificationSummary]): Seq[TimelineEvent] = {
-    val action = SubmissionAction("id", issued(0), Some(notificationSummaries))
+    val action = SubmissionAction("id", issued(0), Some(notificationSummaries), submission.uuid)
     timelineEvents.apply(submission.copy(actions = Seq(action)))
   }
 
@@ -89,10 +89,10 @@ class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injec
     }
 
     "generate a sequence of TimelineEvent instances from both cancellation requests and submission requests" in {
-      val action1 = CancellationAction("cancellation", issued(2), None)
+      val action1 = CancellationAction("cancellation", issued(2), None, submission.latestDecId, submission.latestVersionNo + 1)
 
       val notification2 = NotificationSummary(UUID.randomUUID, issued(1), RECEIVED)
-      val action2 = SubmissionAction("submission", issued(0), Some(List(notification2)))
+      val action2 = SubmissionAction("submission", issued(0), Some(List(notification2)), submission.uuid)
 
       val timelineEvents = createTimelineFromActions(List(action1, action2))
 
@@ -256,7 +256,7 @@ object TimelineEventsSpec {
       |        }
       |      ],
       |      "decId" : "id"
-      |        },
+      |    },
       |    {
       |      "id": "202bcfdb-60e0-4710-949a-ecd2db0487b3",
       |      "requestType": "CancellationRequest",
@@ -325,7 +325,8 @@ object TimelineEventsSpec {
       |          "dateTimeIssued" : "2022-05-12T17:32:31Z[UTC]",
       |          "enhancedStatus" : "RECEIVED"
       |        }
-      |      ]
+      |      ],
+      |      "decId" : "id"
       |    },
       |    {
       |      "id": "202bcfdb-60e0-4710-949a-ecd2db0487b3",
@@ -337,7 +338,9 @@ object TimelineEventsSpec {
       |          "dateTimeIssued": "2022-05-14T12:31:06Z[UTC]",
       |          "enhancedStatus": "CUSTOMS_POSITION_GRANTED"
       |        }
-      |      ]
+      |      ],
+      |      "decId" : "id",
+      |      "versionNo": 2
       |    }
       |]
       |""".stripMargin)
@@ -360,7 +363,8 @@ object TimelineEventsSpec {
       |              "dateTimeIssued" : "2022-10-01T08:08:08Z[UTC]",
       |              "enhancedStatus" : "CANCELLED"
       |          }
-      |      ]
+      |      ],
+      |      "decId" : "id"
       |  },
       |  {
       |      "id" : "9fdfd197-04ee-488e-910c-786cbfa63eda",
@@ -372,7 +376,9 @@ object TimelineEventsSpec {
       |              "dateTimeIssued" : "2022-09-01T07:59:36.406Z[UTC]",
       |              "enhancedStatus" : "RECEIVED"
       |          }
-      |      ]
+      |      ],
+      |      "decId" : "id",
+      |      "versionNo" : 2
       |  }
       |]""".stripMargin)
     .as[Seq[Action]]

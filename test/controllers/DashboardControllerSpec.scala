@@ -39,7 +39,7 @@ class DashboardControllerSpec extends ControllerWithoutFormSpec with BeforeAndAf
 
   val uuid = UUID.randomUUID.toString
 
-  private val action = SubmissionAction(id = "conversationID", requestTimestamp = dateTime, notifications = None)
+  private val action = SubmissionAction(id = "conversationID", requestTimestamp = dateTime, notifications = None, uuid)
 
   private val pageOfSubmissions =
     PageOfSubmissions(

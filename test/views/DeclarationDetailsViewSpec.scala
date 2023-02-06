@@ -83,12 +83,12 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
     VerifiedEmailRequest(RequestBuilder.buildAuthenticatedRequest(request, user), email)
 
   private def createSubmissionWith(status: EnhancedStatus) = {
-    val action = SubmissionAction("id", now, Some(Seq(NotificationSummary(UUID.randomUUID, now, status))))
+    val action = SubmissionAction("id", now, Some(Seq(NotificationSummary(UUID.randomUUID, now, status))), submission.uuid)
     Submission(uuid, "eori", "lrn", Some(mrn), Some("ducr"), Some(status), Some(now), Seq(action), latestDecId = uuid)
   }
 
   private def createSubmissionWith(notificationSummaries: Seq[NotificationSummary]) = {
-    val action = SubmissionAction("id", now, Some(notificationSummaries))
+    val action = SubmissionAction("id", now, Some(notificationSummaries), submission.uuid)
     Submission(
       uuid,
       "eori",

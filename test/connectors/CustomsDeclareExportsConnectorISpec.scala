@@ -41,7 +41,9 @@ class CustomsDeclareExportsConnectorISpec extends ConnectorISpec with ExportsDec
   private val id = "id"
   private val existingDeclaration = aDeclaration(withId(id))
 
-  private val action = SubmissionAction(id = UUID.randomUUID().toString, notifications = None)
+  private val uuid = UUID.randomUUID().toString
+
+  private val action = SubmissionAction(id = uuid, notifications = None, decId = uuid)
   private val submission = Submission(id, "eori", "lrn", Some("mrn"), None, None, None, Seq(action), latestDecId = id)
   private val notification = Notification("action-id", "mrn", ZonedDateTime.now(ZoneOffset.UTC), SubmissionStatus.UNKNOWN, Seq.empty)
   private val connector = app.injector.instanceOf[CustomsDeclareExportsConnector]

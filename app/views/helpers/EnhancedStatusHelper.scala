@@ -54,7 +54,7 @@ object EnhancedStatusHelper {
 
   def hasQueryNotificationMessageStatus(submission: Submission): Boolean =
     submission.actions.exists {
-      case SubmissionAction(_, _, notifications) =>
+      case SubmissionAction(_, _, notifications, _) =>
         notifications.exists(_.exists(_.enhancedStatus == QUERY_NOTIFICATION_MESSAGE))
       case _ => false
     }

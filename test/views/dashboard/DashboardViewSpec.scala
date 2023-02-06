@@ -78,7 +78,7 @@ class DashboardViewSpec extends UnitViewSpec with ExportsTestHelper {
       ducr = Some(ducr),
       latestEnhancedStatus = Some(status),
       enhancedStatusLastUpdated = Some(lastStatusUpdate),
-      actions = List(SubmissionAction("actionId", lastStatusUpdate, None)),
+      actions = List(SubmissionAction("actionId", lastStatusUpdate, None, uuid)),
       latestDecId = uuid
     )
 

@@ -32,49 +32,55 @@ sealed trait Action {
   val latestNotificationSummary: Option[NotificationSummary] =
     notifications.flatMap(_.lastOption)
 
+  val versionNo: Int
+
 }
 
 case class SubmissionAction(
   id: String,
   requestTimestamp: ZonedDateTime = ZonedDateTime.now(ZoneId.of("UTC")),
-  notifications: Option[Seq[NotificationSummary]] = None
+  notifications: Option[Seq[NotificationSummary]] = None,
+  decId: String
 ) extends Action {
-
-  val versionNo = 1
-
-  def decId(submission: Submission): String = submission.uuid
-
+  val versionNo: Int = 1
 }
 
 case class CancellationAction(
   id: String,
   requestTimestamp: ZonedDateTime = ZonedDateTime.now(ZoneId.of("UTC")),
-  notifications: Option[Seq[NotificationSummary]] = None
-) extends Action {
-  def decId(submission: Submission): String = submission.latestDecId
+  notifications: Option[Seq[NotificationSummary]] = None,
+  decId: String,
+  versionNo: Int
+) extends Action
 
-  def versionNo(submission: Submission): Int = submission.latestVersionNo + 1
-
+object CancellationAction {
+  def apply(id: String, submission: Submission) =
+    new CancellationAction(id, decId = submission.latestDecId, versionNo = submission.latestVersionNo + 1)
 }
 
 case class AmendmentAction(
   id: String,
   requestTimestamp: ZonedDateTime = ZonedDateTime.now(ZoneId.of("UTC")),
-  notifications: Option[Seq[NotificationSummary]] = None
-) extends Action {
-  def decId(declaration: ExportsDeclaration): String = declaration.id
+  notifications: Option[Seq[NotificationSummary]] = None,
+  decId: String,
+  versionNo: Int
+) extends Action
 
-  def versionNo(submission: Submission): Int = submission.latestVersionNo + 1
-
+object AmendmentAction {
+  def apply(id: String, declaration: ExportsDeclaration, submission: Submission) =
+    new AmendmentAction(id, decId = declaration.id, versionNo = submission.latestVersionNo + 1)
 }
 
 case class ExternalAmendmentAction private (
   id: String,
   requestTimestamp: ZonedDateTime = ZonedDateTime.now(ZoneId.of("UTC")),
-  notifications: Option[Seq[NotificationSummary]] = None
-) extends Action {
-  def versionNo(submission: Submission): Int = submission.latestVersionNo + 1
+  notifications: Option[Seq[NotificationSummary]] = None,
+  versionNo: Int
+) extends Action
 
+object ExternalAmendmentAction {
+  def apply(id: String, submission: Submission) =
+    new ExternalAmendmentAction(id, versionNo = submission.latestVersionNo + 1)
 }
 
 object Action {
@@ -84,22 +90,27 @@ object Action {
   implicit val readLocalDateTimeFromString: Reads[ZonedDateTime] = implicitly[Reads[LocalDateTime]]
     .map(ZonedDateTime.of(_, ZoneId.of("UTC")))
 
-  implicit val writes: Writes[Action] =
-    Writes[Action] { action =>
-      Json.obj(
-        "id" -> action.id,
-        "notifications" -> action.notifications,
-        "requestTimestamp" -> action.requestTimestamp,
-        "requestType" -> RequestTypeFormat.writes {
-          action match {
-            case _: SubmissionAction        => SubmissionRequest
-            case _: CancellationAction      => CancellationRequest
-            case _: AmendmentAction         => AmendmentRequest
-            case _: ExternalAmendmentAction => ExternalAmendmentRequest
-          }
-        }
+  private val allWrites = (JsPath \ "id").write[String] and
+    (JsPath \ "requestTimestamp").write[ZonedDateTime] and
+    (JsPath \ "notifications").writeNullable[Seq[NotificationSummary]]
+
+  implicit val writes = Writes[Action] {
+    case s: SubmissionAction =>
+      (allWrites and (JsPath \ "decId").write[String])(unlift(SubmissionAction.unapply)).writes(s) ++ Json.obj(
+        "requestType" -> RequestTypeFormat.writes(SubmissionRequest)
       )
-    }
+    case c: CancellationAction =>
+      (allWrites and (JsPath \ "decId").write[String] and (JsPath \ "versionNo").write[Int])(unlift(CancellationAction.unapply)).writes(c) ++ Json
+        .obj("requestType" -> RequestTypeFormat.writes(CancellationRequest))
+    case a: AmendmentAction =>
+      (allWrites and (JsPath \ "decId").write[String] and (JsPath \ "versionNo").write[Int])(unlift(AmendmentAction.unapply)).writes(a) ++ Json.obj(
+        "requestType" -> RequestTypeFormat.writes(AmendmentRequest)
+      )
+    case e: ExternalAmendmentAction =>
+      (allWrites and (JsPath \ "versionNo").write[Int])(unlift(ExternalAmendmentAction.unapply)).writes(e) ++ Json.obj(
+        "requestType" -> RequestTypeFormat.writes(ExternalAmendmentRequest)
+      )
+  }
 
   private val allActionReads = (__ \ "id").read[String] and
     ((__ \ "requestTimestamp").read[ZonedDateTime] or (__ \ "requestTimestamp").read[ZonedDateTime](readLocalDateTimeFromString)) and
@@ -108,13 +119,21 @@ object Action {
   implicit val reads: Reads[Action] =
     (__ \ "requestType").read[RequestType].flatMap {
       case SubmissionRequest =>
-        allActionReads(SubmissionAction.apply _)
+        (allActionReads and (__ \ "decId").read[String]) { (id, requestTimestamp, notifications, decId) =>
+          SubmissionAction(id, requestTimestamp, notifications, decId)
+        }
       case CancellationRequest =>
-        allActionReads(CancellationAction.apply _)
+        (allActionReads and (__ \ "decId").read[String] and (__ \ "versionNo").read[Int]) { (id, requestTimestamp, notifications, decId, versionNo) =>
+          CancellationAction(id, requestTimestamp, notifications, decId, versionNo)
+        }
       case AmendmentRequest =>
-        allActionReads(AmendmentAction.apply _)
+        (allActionReads and (__ \ "decId").read[String] and (__ \ "versionNo").read[Int]) { (id, requestTimestamp, notifications, decId, versionNo) =>
+          AmendmentAction(id, requestTimestamp, notifications, decId, versionNo)
+        }
       case ExternalAmendmentRequest =>
-        allActionReads(ExternalAmendmentAction.apply _)
+        (allActionReads and (__ \ "versionNo").read[Int]) { (id, requestTimestamp, notifications, versionNo) =>
+          ExternalAmendmentAction(id, requestTimestamp, notifications, versionNo)
+        }
     }
 
 }
