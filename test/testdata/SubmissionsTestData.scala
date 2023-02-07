@@ -86,7 +86,7 @@ object SubmissionsTestData {
       requestTimestamp = action.requestTimestamp.plus(3, HOURS),
       notifications = None,
       decId = uuid,
-      versionNo = 2
+      versionNo = 1
     )
   lazy val actionCancellation_2 =
     CancellationAction(
@@ -94,7 +94,7 @@ object SubmissionsTestData {
       requestTimestamp = action.requestTimestamp.plus(6, HOURS),
       notifications = None,
       decId = uuid,
-      versionNo = 2
+      versionNo = 1
     )
 
   lazy val submission: Submission =

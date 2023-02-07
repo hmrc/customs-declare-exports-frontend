@@ -89,7 +89,7 @@ class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injec
     }
 
     "generate a sequence of TimelineEvent instances from both cancellation requests and submission requests" in {
-      val action1 = CancellationAction("cancellation", issued(2), None, submission.latestDecId, submission.latestVersionNo + 1)
+      val action1 = CancellationAction("cancellation", issued(2), None, submission.latestDecId, submission.latestVersionNo)
 
       val notification2 = NotificationSummary(UUID.randomUUID, issued(1), RECEIVED)
       val action2 = SubmissionAction("submission", issued(0), Some(List(notification2)), submission.uuid)

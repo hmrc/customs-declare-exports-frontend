@@ -53,11 +53,6 @@ case class CancellationAction(
   versionNo: Int
 ) extends Action
 
-object CancellationAction {
-  def apply(id: String, submission: Submission) =
-    new CancellationAction(id, decId = submission.latestDecId, versionNo = submission.latestVersionNo + 1)
-}
-
 case class AmendmentAction(
   id: String,
   requestTimestamp: ZonedDateTime = ZonedDateTime.now(ZoneId.of("UTC")),
@@ -71,7 +66,7 @@ object AmendmentAction {
     new AmendmentAction(id, decId = declaration.id, versionNo = submission.latestVersionNo + 1)
 }
 
-case class ExternalAmendmentAction private (
+case class ExternalAmendmentAction(
   id: String,
   requestTimestamp: ZonedDateTime = ZonedDateTime.now(ZoneId.of("UTC")),
   notifications: Option[Seq[NotificationSummary]] = None,
