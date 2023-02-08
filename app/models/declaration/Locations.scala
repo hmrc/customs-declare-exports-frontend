@@ -22,11 +22,18 @@ import forms.declaration.{InlandModeOfTransportCode, InlandOrBorder, Supervising
 import models.ExportsDeclaration
 import play.api.libs.json.Json
 
+case class RoutingCountry(sequenceId: Int, country: Country)
+
+object RoutingCountry {
+
+  implicit val format = Json.format[RoutingCountry]
+}
+
 case class Locations(
   originationCountry: Option[Country] = Some(Country.GB),
   destinationCountry: Option[Country] = None,
   hasRoutingCountries: Option[Boolean] = None,
-  routingCountries: Seq[Country] = Seq.empty,
+  routingCountries: Seq[RoutingCountry] = Seq.empty,
   goodsLocation: Option[GoodsLocation] = None,
   officeOfExit: Option[OfficeOfExit] = None,
   supervisingCustomsOffice: Option[SupervisingCustomsOffice] = None,

@@ -25,9 +25,10 @@ import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.Seal
 import handlers.ErrorHandler
+import models.DeclarationMeta.SealKey
+import models.ExportsDeclaration
 import models.declaration.Container
 import models.requests.JourneyRequest
-import models.ExportsDeclaration
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
@@ -97,8 +98,8 @@ class SealController @Inject() (
 
   private def sealId(values: Seq[String]): String = values.headOption.getOrElse("")
 
-  private def seals(containerId: String)(implicit request: JourneyRequest[AnyContent]) =
-    request.cacheModel.containerBy(containerId).map(_.seals).getOrElse(Seq.empty)
+  private def seals(containerId: String)(implicit request: JourneyRequest[AnyContent]): Seq[forms.declaration.Seal] =
+    request.cacheModel.containerBy(containerId).map(container => mapModelToForm(container.seals)).getOrElse(Seq.empty)
 
   private def addSealAnswer(containerId: String)(implicit request: JourneyRequest[AnyContent]): Future[Result] =
     addSealYesNoForm(containerId)
@@ -126,6 +127,10 @@ class SealController @Inject() (
     Future.successful(navigator.continueTo(SealController.displaySealRemove(containerId, sealId)))
 
   private def removeSeal(containerId: String, sealId: String)(implicit request: JourneyRequest[AnyContent]): Future[Result] = {
+
+    def updateCache(updatedContainer: Container): Future[ExportsDeclaration] =
+      updateDeclarationFromRequest(model => model.addOrUpdateContainer(updatedContainer))
+
     val result = request.cacheModel
       .containerBy(containerId)
       .map(c => c.copy(seals = c.seals.filterNot(_.id == sealId))) match {
@@ -136,20 +141,42 @@ class SealController @Inject() (
     result.map(_ => navigator.continueTo(SealController.displaySealSummary(containerId)))
   }
 
-  private def saveSeal(boundForm: Form[Seal], cachedContainer: Container)(implicit request: JourneyRequest[AnyContent]): Future[Result] =
-    saveAndContinue(boundForm, cachedContainer.seals, isMandatory = true, Seal.sealsAllowed, "id", "declaration.seal")
+  private def saveSeal(boundForm: Form[Seal], container: Container)(implicit request: JourneyRequest[AnyContent]): Future[Result] =
+    saveAndContinue(boundForm, mapModelToForm(container.seals), isMandatory = true, Seal.sealsAllowed, "id", "declaration.seal")
       .fold(
-        formWithErrors => Future.successful(BadRequest(addPage(formWithErrors, cachedContainer.id))),
+        formWithErrors => Future.successful(BadRequest(addPage(formWithErrors, container.id))),
         seals =>
-          if (seals == cachedContainer.seals) {
-            val result = navigator.continueTo(SealController.displaySealSummary(cachedContainer.id))
-            Future.successful(result)
-          } else
-            updateCache(cachedContainer.copy(seals = seals)).map { _ =>
-              navigator.continueTo(SealController.displaySealSummary(cachedContainer.id))
+          if (seals == mapModelToForm(container.seals))
+            Future.successful(navigator.continueTo(SealController.displaySealSummary(container.id)))
+          else
+            updateCache(container, seals).map { _ =>
+              navigator.continueTo(SealController.displaySealSummary(container.id))
             }
       )
 
-  private def updateCache(updatedContainer: Container)(implicit req: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
-    updateDeclarationFromRequest(model => model.addOrUpdateContainer(updatedContainer))
+  type SealF = forms.declaration.Seal
+  type SealM = models.declaration.Seal
+
+  private def mapModelToForm(seals: Seq[SealM]): Seq[SealF] = seals.map(seal => Seal(seal.id))
+
+  private def updateCache(container: Container, seals: Seq[SealF])(implicit request: JourneyRequest[AnyContent]): Future[ExportsDeclaration] = {
+    val declarationMeta = request.cacheModel.declarationMeta
+    val maxSequenceIds = declarationMeta.maxSequenceIds
+    val maxSequenceId = maxSequenceIds.get(SealKey).getOrElse(0)
+
+    val (newMaxSequenceId, newSealMs) = seals.foldLeft((maxSequenceId, List.empty[SealM])) {
+      (tuple: (Int, List[SealM]), seal: SealF) =>
+        val sequenceId = tuple._1
+        val sealMs = tuple._2
+        container.seals.find(_.id == seal.id).fold {
+          (sequenceId + 1, sealMs :+ new SealM(sequenceId + 1, seal.id))
+        } {
+          sealM => (sequenceId, sealMs :+ sealM)
+        }
+    }
+    updateDeclarationFromRequest(
+      _.addOrUpdateContainer(container.copy(seals = newSealMs))
+        .copy(declarationMeta = declarationMeta.copy(maxSequenceIds = maxSequenceIds + (SealKey -> newMaxSequenceId)))
+    )
+  }
 }

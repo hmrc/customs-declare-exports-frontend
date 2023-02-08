@@ -24,10 +24,11 @@ import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.ContainerAdd.form
 import forms.declaration.{ContainerAdd, ContainerFirst}
+import models.DeclarationMeta.{ContainerKey, sequenceIdPlaceholder}
+import models.ExportsDeclaration
 import models.declaration.Container
 import models.declaration.Container.maxNumberOfItems
 import models.requests.JourneyRequest
-import models.ExportsDeclaration
 import play.api.data.{Form, FormError}
 import play.api.i18n.I18nSupport
 import play.api.mvc._
@@ -66,7 +67,10 @@ class TransportContainerController @Inject() (
       } else
         ContainerFirst.form
           .bindFromRequest()
-          .fold(formWithErrors => Future.successful(BadRequest(addFirstPage(formWithErrors))), containerId => saveFirstContainer(containerId.id))
+          .fold(
+            formWithErrors => Future.successful(BadRequest(addFirstPage(formWithErrors))),
+            containerId => saveFirstContainer(containerId.id)
+          )
     }
 
   def displayContainerSummary(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
@@ -101,29 +105,33 @@ class TransportContainerController @Inject() (
 
   private def saveFirstContainer(containerId: Option[String])(implicit request: JourneyRequest[AnyContent]): Future[Result] =
     containerId match {
-      case Some(id) => updateCache(Seq(Container(id, Seq.empty))).map(_ => redirectAfterAdd(id))
+      case Some(id) => updateCache(Seq(Container(sequenceIdPlaceholder, id, Seq.empty))).map(_ => redirectAfterAdd(id))
       case None =>
         updateDeclarationFromRequest(_.updateContainers(Seq.empty).updateReadyForSubmission(true)) map { _ =>
           navigator.continueTo(routes.SummaryController.displayPage)
         }
     }
 
-  private def saveAdditionalContainer(boundForm: Form[ContainerAdd], elementLimit: Int, cache: Seq[Container])(
+  private def saveAdditionalContainer(boundForm: Form[ContainerAdd], elementLimit: Int, containersInCache: Seq[Container])(
     implicit request: JourneyRequest[AnyContent]
   ): Future[Result] =
-    prepare(boundForm, elementLimit, cache).fold(
+    prepare(boundForm, elementLimit, containersInCache).fold(
       formWithErrors => Future.successful(BadRequest(addPage(formWithErrors))),
-      updatedCache =>
-        if (updatedCache != cache) updateCache(updatedCache).map(_ => redirectAfterAdd(updatedCache.last.id))
+      containers =>
+        if (containers != containersInCache) updateCache(containers).map(_ => redirectAfterAdd(containers.last.id))
         else Future.successful(navigator.continueTo(TransportContainerController.displayContainerSummary))
     )
 
-  private def prepare(boundForm: Form[ContainerAdd], elementLimit: Int, cache: Seq[Container]): Either[Form[ContainerAdd], Seq[Container]] = {
-    val newContainer = boundForm.value.flatMap(_.id).map(Container(_, Seq.empty))
+  private def prepare(
+    boundForm: Form[ContainerAdd],
+    elementLimit: Int,
+    containersInCache: Seq[Container]
+  ): Either[Form[ContainerAdd], Seq[Container]] = {
+    val newContainer = boundForm.value.flatMap(_.id).map(Container(sequenceIdPlaceholder, _, Seq.empty))
     newContainer match {
       case Some(container) =>
-        duplication(container.id, cache) ++ limitOfElems(elementLimit, cache) match {
-          case Seq()  => Right(cache :+ container)
+        duplication(container.id, containersInCache) ++ limitOfElems(elementLimit, containersInCache) match {
+          case Seq()  => Right(containersInCache :+ container)
           case errors => Left(boundForm.copy(errors = errors))
         }
       case _ => Left(boundForm)
@@ -136,8 +144,8 @@ class TransportContainerController @Inject() (
   private def removeContainerYesNoForm: Form[YesNoAnswer] =
     YesNoAnswer.form(errorKey = "declaration.transportInformation.container.remove.empty")
 
-  private def duplication(id: String, cachedData: Seq[Container]): Seq[FormError] =
-    if (cachedData.exists(_.id == id)) Seq(FormError("id", "declaration.transportInformation.error.duplicate")) else Seq.empty
+  private def duplication(id: String, containersInCache: Seq[Container]): Seq[FormError] =
+    if (containersInCache.exists(_.id == id)) Seq(FormError("id", "declaration.transportInformation.error.duplicate")) else Seq.empty
 
   private def limitOfElems[A](limit: Int, cachedData: Seq[Container]): Seq[FormError] =
     if (cachedData.length >= limit) Seq(FormError("", "supplementary.limit")) else Seq.empty
@@ -175,8 +183,23 @@ class TransportContainerController @Inject() (
 
   private def containerId(values: Seq[String]): String = values.headOption.getOrElse("")
 
-  private def updateCache(updatedContainers: Seq[Container])(implicit r: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
-    updateDeclarationFromRequest(_.updateContainers(updatedContainers))
+  private def updateCache(containers: Seq[Container])(implicit request: JourneyRequest[AnyContent]): Future[ExportsDeclaration] = {
+    val declarationMeta = request.cacheModel.declarationMeta
+    val maxSequenceIds = declarationMeta.maxSequenceIds
+    val maxSequenceId = maxSequenceIds.get(ContainerKey).getOrElse(0)
+
+    val (newMaxSequenceId, newContainers) = containers.foldLeft((maxSequenceId, List.empty[Container])) {
+      (tuple: (Int, List[Container]), container: Container) =>
+        val sequenceId = tuple._1
+        val containers = tuple._2
+        if (container.sequenceId == sequenceIdPlaceholder) (sequenceId + 1, containers :+ container.copy(sequenceId + 1))
+        else (sequenceId, containers :+ container)
+    }
+    updateDeclarationFromRequest(
+      _.updateContainers(newContainers)
+        .copy(declarationMeta = declarationMeta.copy(maxSequenceIds = maxSequenceIds + (ContainerKey -> newMaxSequenceId)))
+    )
+  }
 
   private def redirectAfterAdd(containerId: String)(implicit request: JourneyRequest[AnyContent]): Result =
     navigator.continueTo(SealController.displaySealSummary(containerId))
