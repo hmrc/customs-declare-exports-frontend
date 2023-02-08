@@ -70,12 +70,13 @@ case class ExternalAmendmentAction(
   id: String,
   requestTimestamp: ZonedDateTime = ZonedDateTime.now(ZoneId.of("UTC")),
   notifications: Option[Seq[NotificationSummary]] = None,
+  decId: Option[String],
   versionNo: Int
 ) extends Action
 
 object ExternalAmendmentAction {
-  def apply(id: String, submission: Submission) =
-    new ExternalAmendmentAction(id, versionNo = submission.latestVersionNo + 1)
+  def apply(id: String, decId: String, submission: Submission) =
+    new ExternalAmendmentAction(id, decId = Some(decId), versionNo = submission.latestVersionNo + 1)
 }
 
 object Action {
@@ -102,9 +103,8 @@ object Action {
         "requestType" -> RequestTypeFormat.writes(AmendmentRequest)
       )
     case e: ExternalAmendmentAction =>
-      (allWrites and (JsPath \ "versionNo").write[Int])(unlift(ExternalAmendmentAction.unapply)).writes(e) ++ Json.obj(
-        "requestType" -> RequestTypeFormat.writes(ExternalAmendmentRequest)
-      )
+      (allWrites and (JsPath \ "decId").writeNullable[String] and (JsPath \ "versionNo").write[Int])(unlift(ExternalAmendmentAction.unapply))
+        .writes(e) ++ Json.obj("requestType" -> RequestTypeFormat.writes(ExternalAmendmentRequest))
   }
 
   private val allActionReads = (__ \ "id").read[String] and
@@ -126,8 +126,9 @@ object Action {
           AmendmentAction(id, requestTimestamp, notifications, decId, versionNo)
         }
       case ExternalAmendmentRequest =>
-        (allActionReads and (__ \ "versionNo").read[Int]) { (id, requestTimestamp, notifications, versionNo) =>
-          ExternalAmendmentAction(id, requestTimestamp, notifications, versionNo)
+        (allActionReads and (__ \ "decId").readNullable[String] and (__ \ "versionNo").read[Int]) {
+          (id, requestTimestamp, notifications, decId, versionNo) =>
+            ExternalAmendmentAction(id, requestTimestamp, notifications, decId, versionNo)
         }
     }
 
