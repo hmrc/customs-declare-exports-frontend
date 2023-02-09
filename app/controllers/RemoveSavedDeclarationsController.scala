@@ -21,7 +21,7 @@ import controllers.actions.{AuthAction, VerifiedEmailAction}
 import forms.RemoveDraftDeclaration.form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
+import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.remove_declaration
 
@@ -35,7 +35,7 @@ class RemoveSavedDeclarationsController @Inject() (
   mcc: MessagesControllerComponents,
   removeDeclarationPage: remove_declaration
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with WithDefaultFormBinding {
+    extends FrontendController(mcc) with I18nSupport with WithUnsafeDefaultFormBinding {
 
   def displayPage(id: String): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
     customsDeclareExportsConnector.findDeclaration(id) flatMap {

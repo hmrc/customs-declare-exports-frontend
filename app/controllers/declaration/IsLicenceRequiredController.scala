@@ -31,7 +31,7 @@ import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.TaggedAuthCodes
 import services.cache.ExportsCacheService
-import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
+import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.is_licence_required
 
@@ -47,7 +47,7 @@ class IsLicenceRequiredController @Inject() (
   taggedAuthCodes: TaggedAuthCodes,
   is_licence_required: is_licence_required
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
 
   private val validTypes = Seq(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL)
 

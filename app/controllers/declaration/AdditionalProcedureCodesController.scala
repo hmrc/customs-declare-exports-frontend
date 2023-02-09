@@ -34,7 +34,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.ProcedureCodeService
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
+import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.procedureCodes.additional_procedure_codes
 
@@ -51,7 +51,7 @@ class AdditionalProcedureCodesController @Inject() (
   additionalProcedureCodesPage: additional_procedure_codes,
   supervisingCustomsOfficeHelper: SupervisingCustomsOfficeHelper
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
 
   private val emptyProcedureCodesData = ProcedureCodesData(None, Seq())
 

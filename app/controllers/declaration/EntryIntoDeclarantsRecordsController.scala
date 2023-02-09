@@ -27,7 +27,7 @@ import models.requests.JourneyRequest
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import services.cache.ExportsCacheService
-import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
+import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.entry_into_declarants_records
 
@@ -42,7 +42,7 @@ class EntryIntoDeclarantsRecordsController @Inject() (
   mcc: MessagesControllerComponents,
   entryIntoDeclarantsRecordsPage: entry_into_declarants_records
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
 
   def displayPage: Action[AnyContent] = (authenticate andThen journeyType(CLEARANCE)) { implicit request =>
     val frm = form.withSubmissionErrors

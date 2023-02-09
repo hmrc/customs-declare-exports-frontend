@@ -30,7 +30,7 @@ import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.{TaggedAdditionalDocumentCodes, TaggedAuthCodes}
 import services.cache.ExportsCacheService
-import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
+import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.ListItem
 import views.html.declaration.additionalDocuments.additional_document_change
@@ -48,7 +48,7 @@ class AdditionalDocumentChangeController @Inject() (
   taggedAdditionalDocumentCodes: TaggedAdditionalDocumentCodes,
   additionalDocumentChangePage: additional_document_change
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
 
   implicit val taggedAuthCodes2form = taggedAuthCodes
   implicit val taggedAdditionalDocCodes2form = taggedAdditionalDocumentCodes
