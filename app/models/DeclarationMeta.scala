@@ -31,17 +31,16 @@ case class DeclarationMeta(
   updatedDateTime: Instant,
   summaryWasVisited: Option[Boolean] = None,
   readyForSubmission: Option[Boolean] = None,
-  maxSequenceIds: Map[String, Int] = Map("dummy" -> sequenceIdPlaceholder),
+  maxSequenceIds: Map[String, Int] = Map("dummy" -> sequenceIdPlaceholder)
 )
 
 object DeclarationMeta {
 
   val readsForMaxSequenceIds: Reads[Map[String, Int]] =
-    (value: JsValue) => JsSuccess(
-      value.as[Map[String, JsValue]].map {
-        case (key, value) => key -> Integer.parseInt(value.toString())
-      }
-    )
+    (value: JsValue) =>
+      JsSuccess(value.as[Map[String, JsValue]].map { case (key, value) =>
+        key -> Integer.parseInt(value.toString())
+      })
 
   val writesForMaxSequenceIds: Writes[Map[String, Int]] =
     (map: Map[String, Int]) => JsObject(map.map { case (key, value) => key -> Json.toJson(value) })

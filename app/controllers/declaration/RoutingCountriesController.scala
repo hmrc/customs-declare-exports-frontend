@@ -120,9 +120,7 @@ class RoutingCountriesController @Inject() (
       .bindFromRequest()
       .fold(
         formWithErrors => Future.successful(BadRequest(countryOfRoutingPage(formWithErrors))),
-        routingCountry => {
-          updateCache(routingCountry).map(_ => redirect)
-        }
+        routingCountry => updateCache(routingCountry).map(_ => redirect)
       )
 
   private def updateCache(newRoutingCountry: Country)(implicit request: JourneyRequest[AnyContent]): Future[ExportsDeclaration] = {

@@ -20,9 +20,8 @@ import base.Injector
 import controllers.declaration.routes
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.form
-import forms.declaration.Seal
 import models.DeclarationType.{STANDARD, SUPPLEMENTARY}
-import models.declaration.Container
+import models.declaration.{Container, Seal}
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import views.declaration.spec.PageWithButtonsSpec
@@ -34,7 +33,7 @@ class TransportContainerSummaryViewSpec extends PageWithButtonsSpec with Injecto
 
   val containerId = "212374"
   val sealId = "76434574"
-  val container = Container(containerId, List(Seal(sealId)))
+  val container = Container(1, containerId, List(Seal(1, sealId)))
 
   val page = instanceOf[transport_container_summary]
 
@@ -81,7 +80,7 @@ class TransportContainerSummaryViewSpec extends PageWithButtonsSpec with Injecto
     }
 
     "display summary of container with no seals" in {
-      val view = createView(containers = List(Container(containerId, Seq.empty)))
+      val view = createView(containers = List(Container(1, containerId, Seq.empty)))
 
       view.getElementById("containers-row0-container").text() must be(containerId)
       view.getElementById("containers-row0-seals") must containMessage("declaration.seal.summary.noSeals")

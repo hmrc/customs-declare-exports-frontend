@@ -24,7 +24,7 @@ import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.ContainerAdd.form
 import forms.declaration.{ContainerAdd, ContainerFirst}
-import models.DeclarationMeta.{ContainerKey, sequenceIdPlaceholder}
+import models.DeclarationMeta.{sequenceIdPlaceholder, ContainerKey}
 import models.ExportsDeclaration
 import models.declaration.Container
 import models.declaration.Container.maxNumberOfItems
@@ -67,10 +67,7 @@ class TransportContainerController @Inject() (
       } else
         ContainerFirst.form
           .bindFromRequest()
-          .fold(
-            formWithErrors => Future.successful(BadRequest(addFirstPage(formWithErrors))),
-            containerId => saveFirstContainer(containerId.id)
-          )
+          .fold(formWithErrors => Future.successful(BadRequest(addFirstPage(formWithErrors))), containerId => saveFirstContainer(containerId.id))
     }
 
   def displayContainerSummary(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>

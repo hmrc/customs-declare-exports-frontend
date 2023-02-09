@@ -164,14 +164,15 @@ class SealController @Inject() (
     val maxSequenceIds = declarationMeta.maxSequenceIds
     val maxSequenceId = maxSequenceIds.get(SealKey).getOrElse(0)
 
-    val (newMaxSequenceId, newSealMs) = seals.foldLeft((maxSequenceId, List.empty[SealM])) {
-      (tuple: (Int, List[SealM]), seal: SealF) =>
-        val sequenceId = tuple._1
-        val sealMs = tuple._2
-        container.seals.find(_.id == seal.id).fold {
+    val (newMaxSequenceId, newSealMs) = seals.foldLeft((maxSequenceId, List.empty[SealM])) { (tuple: (Int, List[SealM]), seal: SealF) =>
+      val sequenceId = tuple._1
+      val sealMs = tuple._2
+      container.seals
+        .find(_.id == seal.id)
+        .fold {
           (sequenceId + 1, sealMs :+ new SealM(sequenceId + 1, seal.id))
-        } {
-          sealM => (sequenceId, sealMs :+ sealM)
+        } { sealM =>
+          (sequenceId, sealMs :+ sealM)
         }
     }
     updateDeclarationFromRequest(

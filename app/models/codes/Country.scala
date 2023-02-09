@@ -19,7 +19,7 @@ package models.codes
 import play.api.libs.json.Json
 
 case class Country(countryName: String, countryCode: String) extends CommonCode {
-  def code = countryCode
+  def code: String = countryCode
   def description = countryName
 
   def asString(): String = s"$countryName - $countryCode"
