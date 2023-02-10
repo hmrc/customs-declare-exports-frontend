@@ -38,6 +38,7 @@
     timeoutDialogConfig: TimeoutDialogConfig,
     betaBannerConfig: BetaBannerConfig,
     hmrcHead: HmrcHead,
+    hmrcLanguageSelectHelper: HmrcLanguageSelectHelper,
     hmrcTimeoutDialogHelper: HmrcTimeoutDialogHelper,
     hmrcTrackingConsentSnippet: HmrcTrackingConsentSnippet,
     hmrcReportTechnicalIssue: HmrcReportTechnicalIssue,
@@ -53,7 +54,8 @@
     navigationBanner: Html = HtmlFormat.empty,
     headContentOnJavaScriptDisabled: Option[Html] = None,
     displaySignOut: Boolean = false,
-    showDeclarationSummaryLink: Boolean = true
+    showDeclarationSummaryLink: Boolean = true,
+    showLanguageSwitch: Boolean = true
 )(contentBlock: Html)(implicit request: Request[_], messages: Messages)
 
 @userIsSignedIn = @{ request.isInstanceOf[AuthenticatedRequest[_]]}
@@ -96,6 +98,10 @@
 @beforeContentBlock = {
     @if(betaBannerConfig.isBetaBannerEnabled) {
       @phaseBanner("beta")
+    }
+
+    @if(showLanguageSwitch && appConfig.languages.contains("cy")) {
+        @hmrcLanguageSelectHelper()
     }
 
     @navigationBanner

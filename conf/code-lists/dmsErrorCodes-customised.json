@@ -2,182 +2,182 @@
   {
     "code": "CDS10001",
     "en": "Check the declaration to ensure that all the required data elements have been completed in full. For example, if declaring a party name and address, then name, street and number, country and postcode must be completed",
-    "cy": "Check the declaration to ensure that all the required data elements have been completed in full. For example, if declaring a party name and address, then name, street and number, country and postcode must be completed."
+    "cy": "Gwiriwch y datganiad i sicrhau bod yr holl elfennau data gofynnol wedi\u00e2\u0080\u0099u cwblhau\u00e2\u0080\u0099n llawn. Er enghraifft, os ydych yn datgan enw\u00e2\u0080\u0099r parti a\u00e2\u0080\u0099i gyfeiriad, yna rhaid cwblhau enw, stryd a rhif, gwlad a chod post"
   },
   {
     "code": "CDS10002",
     "en": "Go through the declaration from the beginning to find where you have entered details that are not permitted. Some details are not permitted at item level, only at header level - this is specified by an X or Y at the start of the value sent",
-    "cy": "Go through the declaration from the beginning to find where you have entered details that are not permitted. Some details are not permitted at item level, only at header level - this is specified by an X or Y at the start of the value sent."
+    "cy": "Ewch drwy\u00e2\u0080\u0099r datganiad o\u00e2\u0080\u0099r dechrau i ddod o hyd i ble rydych wedi nodi manylion nad ydynt yn cael eu caniat\u00c3\u00a1u. Ni chaniateir rhai manylion ar lefel yr eitem, dim ond ar lefel y pennyn - nodir hyn gan X neu Y ar ddechrau\u00e2\u0080\u0099r gwerth a anfonwyd"
   },
   {
     "code": "CDS10003",
     "en": "You have exceeded the limit for one of the fields on the declaration. For example, only 1 preference code can be declared against an item",
-    "cy": "You have exceeded the limit for one of the fields on the declaration. For example, only 1 preference code can be declared against an item."
+    "cy": "Rydych wedi mynd y tu hwnt i\u00e2\u0080\u0099r terfyn ar gyfer un o\u00e2\u0080\u0099r meysydd ar y datganiad. Er enghraifft, dim ond 1 cod ffafriaeth y gellir ei ddatgan yn erbyn eitem"
   },
   {
     "code": "CDS10004",
     "en": "A commodity code error is likely to be caused by missing or incorrect additional codes to the commodity code - these are the national additional codes or TARIC additional codes",
-    "cy": "A commodity code error is likely to be caused by missing or incorrect additional codes to the commodity code - these are the national additional codes or TARIC additional codes."
+    "cy": "Mae\u00e2\u0080\u0099n debygol y bydd gwall cod nwyddau yn cael ei hachosi gan godau ychwanegol sydd ar goll neu sy\u00e2\u0080\u0099n anghywir i\u00e2\u0080\u0099r cod nwyddau - dyma\u00e2\u0080\u0099r codau ychwanegol cenedlaethol neu\u00e2\u0080\u0099r codau TARIC ychwanegol"
   },
   {
     "code": "CDS10010",
     "en": "One of the data elements does not comply with the minimum/maximum number of characters or uses characters not permitted. For example, the country code field with the address must only use alphabetic characters",
-    "cy": "One of the data elements does not comply with the minimum/maximum number of characters or uses characters not permitted. For example, the country code field with the address must only use alphabetic characters."
+    "cy": "Nid yw un o\u00e2\u0080\u0099r elfennau data yn cydymffurfio \u00c3\u00a2\u00e2\u0080\u0099r isafswm/uchafswm o gymeriadau neu\u00e2\u0080\u0099n defnyddio cymeriadau na chaniateir. Er enghraifft, mae\u00e2\u0080\u0099n rhaid i faes cod y wlad gyda\u00e2\u0080\u0099r cyfeiriad ddefnyddio cymeriadau\u00e2\u0080\u0099r wyddor yn unig"
   },
   {
     "code": "CDS10020",
     "en": "A code used in the declaration is either not a recognised code or is not a code permitted on the particular declaration. For example, a document code which is only permitted on export declarations has been declared on an import declaration",
-    "cy": "A code used in the declaration is either not a recognised code or is not a code permitted on the particular declaration. For example, a document code which is only permitted on export declarations has been declared on an import declaration."
+    "cy": "Mae cod a ddefnyddir yn y datganiad naill ai\u00e2\u0080\u0099n god nad yw\u00e2\u0080\u0099n gydnabyddedig neu nid yw\u00e2\u0080\u0099n god a ganiateir ar y datganiad penodol. Er enghraifft, mae cod dogfen sy\u00e2\u0080\u0099n cael ei ganiat\u00c3\u00a1u ar ddatganiadau allforio\u00e2\u0080\u0099n unig wedi\u00e2\u0080\u0099i ddatgan ar ddatganiad mewnforio"
   },
   {
     "code": "CDS10021",
     "en": "A negative amount has been declared for writing off a licence. The quantity being written off for a licence must be equal to or greater than zero",
-    "cy": "A negative amount has been declared for writing off a licence. The quantity being written off for a licence must be equal to or greater than zero."
+    "cy": "Mae swm negyddol wedi\u00e2\u0080\u0099i ddatgan ar gyfer dileu trwydded. Mae\u00e2\u0080\u0099n rhaid i\u00e2\u0080\u0099r swm sy\u00e2\u0080\u0099n cael ei ddileu ar gyfer trwydded fod yn hafal i neu\u00e2\u0080\u0099n fwy na sero"
   },
   {
     "code": "CDS10045",
     "en": "The deductions you declared may exceed the value of the items. See CDS Tariff completion notes for data element 4/9. Apportioning a deduction across mutiple items must not reduce the value of any single item to zero or a negative amount",
-    "cy": "The deductions you declared may exceed the value of the items. See CDS Tariff completion notes for data element 4/9. Apportioning a deduction across mutiple items must not reduce the value of any single item to zero or a negative amount."
+    "cy": "Mae\u00e2\u0080\u0099n bosibl bod y didyniadau a ddatganwyd gennych yn fwy na gwerth yr eitemau. Gweler nodiadau cwblhau Tariff CDS ar gyfer elfen ddata 4/9. Mae\u00e2\u0080\u0099n rhaid i ddosraniad didyniad ar draws nifer o eitemau beidio \u00c3\u00a2 gostwng gwerth unrhyw eitem unigol i sero neu swm negyddol"
   },
   {
     "code": "CDS11003",
     "en": "Amend data element 1/9 to match the number of declared goods items on the declaration",
-    "cy": "Amend data element 1/9 to match the number of declared goods items on the declaration."
+    "cy": "Diwygiwch elfen ddata 1/9 i gyd-fynd \u00c3\u00a2 nifer yr eitemau o nwyddau a ddatganwyd ar y datganiad"
   },
   {
     "code": "CDS11004",
     "en": "The combination of procedure code and additional procedure code is either invalid or is not permitted on this type of declaration",
-    "cy": "The combination of procedure code and additional procedure code is either invalid or is not permitted on this type of declaration."
+    "cy": "Mae cyfuniad y cod gweithdrefn a\u00e2\u0080\u0099r cod gweithdrefn ychwanegol naill ai\u00e2\u0080\u0099n annilys neu heb ei ganiat\u00c3\u00a1u ar y math hwn o ddatganiad"
   },
   {
     "code": "CDS11005",
     "en": "All items on the declaration must derive from the same procedure category. For example if one item has requested procedure 40, then another item must not have a requested procedure of 71 because this would require a different declaration type",
-    "cy": "All items on the declaration must derive from the same procedure category. For example if one item has requested procedure 40, then another item must not have a requested procedure of 71 because this would require a different declaration type."
+    "cy": "Mae\u00e2\u0080\u0099n rhaid i bob eitem ar y datganiad ddeillio o\u00e2\u0080\u0099r un categori gweithdrefn. Er enghraifft, os yw un eitem wedi gofyn am weithdrefn 40, yna mae\u00e2\u0080\u0099n rhaid i eitem arall beidio \u00c3\u00a2 chael gweithdrefn y gofynnwyd amdani o 71 oherwydd byddai angen math o ddatganiad gwahanol ar gyfer hyn"
   },
   {
     "code": "CDS11006",
     "en": "Net mass declared is greater than the gross mass declared.",
-    "cy": "Net mass declared is greater than the gross mass declared."
+    "cy": "Mae\u00e2\u0080\u0099r m\u00c3\u00a0s net a ddatganwyd yn fwy na\u00e2\u0080\u0099r m\u00c3\u00a0s gros a ddatganwyd."
   },
   {
     "code": "CDS11007",
     "en": "A person linked to a different EORI number or different identification details cannot send a request to HMRC about the declaration, such as requesting a cancellation. Only the original declarant can send requests",
-    "cy": "A person linked to a different EORI number or different identification details cannot send a request to HMRC about the declaration, such as requesting a cancellation. Only the original declarant can send requests."
+    "cy": "Ni all person sy\u00e2\u0080\u0099n gysylltiedig \u00c3\u00a2 rhif EORI gwahanol neu fanylion adnabod gwahanol anfon cais at CThEF am y datganiad, megis gofyn am ganslo. Dim ond y datganydd gwreiddiol all anfon ceisiadau"
   },
   {
     "code": "CDS11012",
     "en": "Check your amendment request. For example, you cannot change a declaration from prelodged (D) to arrived (A) through amendment, only through goods arrival",
-    "cy": "Check your amendment request. For example, you cannot change a declaration from prelodged (D) to arrived (A) through amendment, only through goods arrival."
+    "cy": "Gwiriwch eich cais am ddiwygiad. Er enghraifft, ni allwch newid datganiad o wedi\u00e2\u0080\u0099i gyflwyno ymlaen llaw (D) i wedi cyrraedd (A) trwy ei ddiwygio, dim ond wrth i nwyddau cyrraedd"
   },
   {
     "code": "CDS12003",
     "en": "You used the same local reference number (LRN) within 48 hours. Change the LRN or add a version number at the end using letters and numbers only.",
-    "cy": "You used the same local reference number (LRN) within 48 hours. Change the LRN or add a version number at the end using letters and numbers only."
+    "cy": "Defnyddioch yr un cyfeirnod lleol (LRN) o fewn 48 awr. Newidiwch yr LRN neu ychwanegwch rif y fersiwn ar y diwedd gan ddefnyddio llythrennau a rhifau yn unig."
   },
   {
     "code": "CDS12005",
     "en": "An EORI or VAT number included on the declaration is not recognised",
-    "cy": "An EORI or VAT number included on the declaration is not recognised."
+    "cy": "Nid yw rhif EORI neu rif TAW sydd wedi\u00e2\u0080\u0099i gynnwys ar y datganiad yn cael ei adnabod"
   },
   {
     "code": "CDS12006",
     "en": "You declared a licence number that is failing validation for one of these reasons:\n\nExpiry date is in the past\nLicence ID not recognised\nLicence DUCR not matching declaration DUCR\nLicence ID does not match EORI declared\nLicence declared has insufficient balance remaining\nLicence does not match country of origin specified\nLicence does not permit quantity declared.",
-    "cy": "You declared a licence number that is failing validation for one of these reasons:\n\nExpiry date is in the past\nLicence ID not recognised\nLicence DUCR not matching declaration DUCR\nLicence ID does not match EORI declared\nLicence declared has insufficient balance remaining\nLicence does not match country of origin specified\nLicence does not permit quantity declared."
+    "cy": "Gwnaethoch ddatgan rhif trwydded sy\u00e2\u0080\u0099n methu cael ei dilysu am un o\u00e2\u0080\u0099r rhesymau hyn:\n\nMae\u00e2\u0080\u0099r dyddiad dod i ben yn y gorffennol\nNid yw Dynodydd y drwydded yn cael ei adnabod\nNid yw trwydded DUCR yn cyd-fynd \u00c3\u00a2 datganiad DUCR\nNid yw Dynodydd y drwydded yn cyd-fynd \u00c3\u00a2 ddatgan EORI\nNid oes gan y drwydded sydd wedi\u00e2\u0080\u0099i datgan ddigon o falans yn weddill\nNid yw\u00e2\u0080\u0099r drwydded yn cyd-fynd \u00c3\u00a2\u00e2\u0080\u0099r wlad tarddiad a bennir\nNid yw\u00e2\u0080\u0099r drwydded yn caniat\u00c3\u00a1u\u00e2\u0080\u0099r swm sydd wedi\u00e2\u0080\u0099i ddatgan."
   },
   {
     "code": "CDS12007",
     "en": "You declared an authorisation that has expired; or the reference number does not belong to the party on the declaration; or the reference number provided is not recognised",
-    "cy": "You declared an authorisation that has expired; or the reference number does not belong to the party on the declaration; or the reference number provided is not recognised."
+    "cy": "Gwnaethoch ddatgan awdurdodiad sydd wedi dod i ben; neu nid yw\u00e2\u0080\u0099r cyfeirnod yn perthyn i\u00e2\u0080\u0099r parti ar y datganiad; neu nid yw\u00e2\u0080\u0099r cyfeirnod a roddir yn cael ei adnabod"
   },
   {
     "code": "CDS12013",
     "en": "VAT number is not a valid destination for VAT transfer",
-    "cy": "VAT number is not a valid destination for VAT transfer."
+    "cy": "Nid yw rhif TAW yn gyrchfan ddilys ar gyfer trosglwyddo TAW"
   },
   {
     "code": "CDS12014",
     "en": "A goods arrival notification must follow a pre-lodged declaration",
-    "cy": "A goods arrival notification must follow a pre-lodged declaration."
+    "cy": "Mae\u00e2\u0080\u0099n rhaid i hysbysiad o nwyddau sy\u00e2\u0080\u0099n cyrraedd ddilyn datganiad a gyflwynwyd ymlaen llaw"
   },
   {
     "code": "CDS12015",
     "en": "The request to arrive, amend or cancel declaration is invalid because the declaration cannot be found or is in a state that will not allow the requested action",
-    "cy": "The request to arrive, amend or cancel declaration is invalid because the declaration cannot be found or is in a state that will not allow the requested action."
+    "cy": "Mae\u00e2\u0080\u0099r cais i gyrraedd, diwygio neu ganslo datganiad yn annilys oherwydd ni ellir dod o hyd i\u00e2\u0080\u0099r datganiad neu nad yw mewn cyflwr sy\u00e2\u0080\u0099n caniat\u00c3\u00a1u\u00e2\u0080\u0099r camau y gofynnwyd amdanynt"
   },
   {
     "code": "CDS12016",
     "en": "The date when goods were accepted for the simplified declaration or EIDR must not be more than 365 days in the past (or 200 days for a type Q declaration) and also cannot be in the future (cannot be before the goods are accepted)",
-    "cy": "The date when goods were accepted for the simplified declaration or EIDR must not be more than 365 days in the past (or 200 days for a type Q declaration) and also cannot be in the future (cannot be before the goods are accepted)."
+    "cy": "Ni all y dyddiad pan dderbyniwyd y nwyddau ar gyfer y datganiad symlach neu EIDR fod yn fwy na 365 diwrnod yn y gorffennol (neu 200 diwrnod ar gyfer datganiad math Q) ac ni all ychwaith fod yn y dyfodol (ni all fod cyn i\u00e2\u0080\u0099r nwyddau gael eu derbyn)"
   },
   {
     "code": "CDS12022",
     "en": "The goods item number declared is larger than the total number of goods items on the declaration.",
-    "cy": "The goods item number declared is larger than the total number of goods items on the declaration."
+    "cy": "Mae rhif yr eitem o nwyddau a ddatganwyd yn fwy na chyfanswm yr eitemau o nwyddau ar y datganiad."
   },
   {
     "code": "CDS12024",
     "en": "You have declared a value and repeated it, when that is not allowed.\n\nCheck the entries for these data elements:\n1/11 - additional procedure code can only be used once on each item\n1/6 - item number cannot be repeated on the declaration\n2/3 -ARC number declared with document code C651 can only be used on one declaration\n4/9 - addition or deduction code can only be used once at header level or once with each item\n2/3 - licence ID cannot be repeated on the same item.",
-    "cy": "You have declared a value and repeated it, when that is not allowed.\n\nCheck the entries for these data elements:\n1/11 - additional procedure code can only be used once on each item\n1/6 - item number cannot be repeated on the declaration\n2/3 -ARC number declared with document code C651 can only be used on one declaration\n4/9 - addition or deduction code can only be used once at header level or once with each item\n2/3 - licence ID cannot be repeated on the same item."
+    "cy": "Rydych wedi datgan gwerth a\u00e2\u0080\u0099i ailadrodd, pan na chaniateir hynny.\n\nGwiriwch y cofnodion am yr elfennau data hyn:\n1/11 - dim ond unwaith y gellir defnyddio cod gweithdrefn ychwanegol ar bob eitem\n1/6 - ni ellir ailadrodd rhif yr eitem ar y datganiad\n2/3 -gellir defnyddio\u00e2\u0080\u0099r rhif ARC a ddatganwyd gyda chod dogfen C651 ar un datganiad yn unig\n4/9 - dim ond unwaith y gellir defnyddio cod ychwanegu neu ddidynnu ar lefel y pennyn neu unwaith gyda phob eitem\n2/3 - ni ellir ailadrodd Dynodydd y drwydded ar yr un eitem."
   },
   {
     "code": "CDS12026",
     "en": "On amendments the same data element can only be amended once per amendment submission",
-    "cy": "On amendments the same data element can only be amended once per amendment submission."
+    "cy": "O ran diwygiadau, dim ond unwaith y gellir diwygio\u00e2\u0080\u0099r un elfen ddata fesul pob cyflwyniad diwygio"
   },
   {
     "code": "CDS12031",
     "en": "Goods arrival notification has been submitted 30 or more days after the date the declaration was originally submitted and received",
-    "cy": "Goods arrival notification has been submitted 30 or more days after the date the declaration was originally submitted and received."
+    "cy": "Mae hysbysiad o nwyddau sy\u00e2\u0080\u0099n cyrraedd wedi\u00e2\u0080\u0099i gyflwyno 30 diwrnod neu\u00e2\u0080\u0099n fwy ar \u00c3\u00b4l y dyddiad y cyflwynwyd y datganiad yn wreiddiol ac y daeth hwnnw i law"
   },
   {
     "code": "CDS12034",
     "en": "The amendment must be submitted using the same submission channel as the original declaration",
-    "cy": "The amendment must be submitted using the same submission channel as the original declaration."
+    "cy": "Mae\u00e2\u0080\u0099n rhaid cyflwyno\u00e2\u0080\u0099r diwygiad gan ddefnyddio\u00e2\u0080\u0099r un sianel gyflwyno \u00c3\u00a2\u00e2\u0080\u0099r datganiad gwreiddiol"
   },
   {
     "code": "CDS12036",
     "en": "There is an outstanding cancellation or amendment request. A new request cannot be submitted until a response is received to your previous request",
-    "cy": "There is an outstanding cancellation or amendment request. A new request cannot be submitted until a response is received to your previous request."
+    "cy": "Mae cais i ganslo neu ddiwygio sydd heb ei glirio. Ni ellir cyflwyno cais newydd hyd nes y derbynnir ymateb i\u00e2\u0080\u0099ch cais blaenorol"
   },
   {
     "code": "CDS12042",
     "en": "Different quota order numbers cannot be declared on the same item. Note that declaration will be rejected if there is more than one quota order number in data element 8/1 for an item",
-    "cy": "Different quota order numbers cannot be declared on the same item. Note that declaration will be rejected if there is more than one quota order number in data element 8/1 for an item."
+    "cy": "Ni ellir datgan rhifau archebion y cwota gwahanol ar yr un eitem. Sylwer y bydd y datganiad yn cael ei wrthod os oes mwy nag un rhif archeb y cwota yn elfen ddata 8/1 am eitem"
   },
   {
     "code": "CDS12044",
     "en": "A MUCR is only for the consolidation of several declarations. Do not add a MUCR unless you are consolidating.\n\nOn a single declaration (with no MUCR) you may add different items with different commodity codes, as long as all of them are being exported to the same consignee (party buying and receiving the goods).\n\nYou will find more information in the Notes section for data element 2/1 in the completion guide",
-    "cy": "A MUCR is only for the consolidation of several declarations. Do not add a MUCR unless you are consolidating.\n\nOn a single declaration (with no MUCR) you may add different items with different commodity codes, as long as all of them are being exported to the same consignee (party buying and receiving the goods).\n\nYou will find more information in the Notes section for data element 2/1 in the completion guide."
+    "cy": "Dim ond ar gyfer cyfuno sawl datganiad y mae MUCR. Peidiwch ag ychwanegu MUCR oni bai eich bod yn cyfuno.\n\nAr ddatganiad unigol (heb MUCR), mae\u00e2\u0080\u0099n bosibl i chi ychwanegu gwahanol eitemau gyda gwahanol godau nwyddau, cyn belled \u00c3\u00a2 bod pob un ohonynt yn cael eu hallforio i\u00e2\u0080\u0099r un derbynnydd (y parti sy\u00e2\u0080\u0099n prynu a chael y nwyddau).\n\nFe welwch ragor o wybodaeth yn yr adran Nodiadau ar gyfer elfen ddata 2/1 yn y canllaw ar gyfer cwblhau"
   },
   {
     "code": "CDS12046",
     "en": "Goods arrival notification has been submitted after 30 days from the date the declaration was originally submitted and received. You will find your declaration in the 'Rejected' tab and you can resubmit it and send a new arrival message",
-    "cy": "Goods arrival notification has been submitted after 30 days from the date the declaration was originally submitted and received. You will find your declaration in the 'Rejected' tab and you can resubmit it and send a new arrival message."
+    "cy": "Mae hysbysiad o nwyddau sy\u00e2\u0080\u0099n cyrraedd wedi\u00e2\u0080\u0099i gyflwyno ar \u00c3\u00b4l 30 diwrnod i\u00e2\u0080\u0099r dyddiad y cyflwynwyd y datganiad yn wreiddiol ac ydaeth hwnnw i law. Fe welwch eich datganiad yn y tab \u00e2\u0080\u0098Wedi\u00e2\u0080\u0099i wrthod\u00e2\u0080\u0099 a gallwch ei ailgyflwyno ac anfon neges cyrhaeddiad newydd"
   },
   {
     "code": "CDS12050",
     "en": "Declaration must include at least one item and every item must include a valid procedure code",
-    "cy": "Declaration must include at least one item and every item must include a valid procedure code."
+    "cy": "Mae\u00e2\u0080\u0099n rhaid i\u00e2\u0080\u0099r datganiad gynnwys o leiaf un eitem ac mae\u00e2\u0080\u0099n rhaid i bob eitem gynnwys cod gweithdrefn dilys"
   },
   {
     "code": "CDS12052",
     "en": "Enter the declaration type - standard, simplified (regular use), simplified (occasional use), supplementary or clearance, and prelodged or arrived. See data element 1/2 for the correct codes",
-    "cy": "Enter the declaration type - standard, simplified (regular use), simplified (occasional use), supplementary or clearance, and prelodged or arrived. See data element 1/2 for the correct codes."
+    "cy": "Nodwch y math o ddatganiad - safonol, symlach (defnydd rheolaidd), symlach (defnydd achlysurol), atodol neu glirio, ac wedi cyflwyno ymlaen llaw neu wedi cyrraedd. Gweler elfen ddata 1/2 ar gyfer y codau cywir"
   },
   {
     "code": "CDS12056",
     "en": "For example, a document code has an incompatible document status",
-    "cy": "For example, a document code has an incompatible document status."
+    "cy": "Er enghraifft, mae gan god dogfen statws dogfen anghydnaws"
   },
   {
     "code": "CDS12057",
     "en": "See data element 4/14 for the requirement",
-    "cy": "See data element 4/14 for the requirement."
+    "cy": "Gweler elfen ddata 4/14 ar gyfer y gofyniad"
   },
   {
     "code": "CDS12058",
     "en": "Packaging quantity cannot be zero for all packages for combined packaging",
-    "cy": "Packaging quantity cannot be zero for all packages for combined packaging."
+    "cy": "Ni all swm y deunydd pacio fod yn sero ar gyfer pob pecyn ar gyfer deunydd pacio cyfunol"
   },
   {
     "code": "CDS12062",
@@ -187,47 +187,47 @@
   {
     "code": "CDS12070",
     "en": "For example, you have entered a value that requires another field to be completed, or makes another field invalid",
-    "cy": "For example, you have entered a value that requires another field to be completed, or makes another field invalid."
+    "cy": "Er enghraifft, rydych wedi nodi gwerth sy\u00e2\u0080\u0099n gofyn am gwblhau maes arall, neu\u00e2\u0080\u0099n gwneud maes arall yn annilys"
   },
   {
     "code": "CDS12071",
     "en": "Check the data element completion guide for exports from the CDS Tariff. This tells you the exact requirements for each field. In particular see the data element completion guide for data elements 3/9, 5/8, 5/14, 7/10 and 8/5.",
-    "cy": "Check the data element completion guide for exports from the CDS Tariff. This tells you the exact requirements for each field. In particular see the data element completion guide for data elements 3/9, 5/8, 5/14, 7/10 and 8/5."
+    "cy": "Gwiriwch y canllaw ar gyfer cwblhau elfennau data ar gyfer allforion o\u00e2\u0080\u0099r Tariff CDS. Mae hyn yn rhoi gwybod i chi yr union ofynion ar gyfer pob maes. Yn benodol, gweler y canllaw ar gyfer cwblhau elfennau data am elfen ddata 3/9, 5/8, 5/14, 7/10 ac 8/5."
   },
   {
     "code": "CDS12072",
     "en": "This could be an unacceptable combination of values at header and item level, for example gross weight has been declared at both header and item level.\n\nOr EORI as well as name and address has been declared for consignee, consignor or buyer",
-    "cy": "This could be an unacceptable combination of values at header and item level, for example gross weight has been declared at both header and item level.\n\nOr EORI as well as name and address has been declared for consignee, consignor or buyer."
+    "cy": "Gallai hyn fod yn gyfuniad annerbyniol o werthoedd ar lefel y pennyn a\u00e2\u0080\u0099r eitem, er enghraifft mae pwysau gros wedi\u00e2\u0080\u0099u datgan ar lefel y pennyn a\u00e2\u0080\u0099r eitem.\n\nNeu fod yr EORI yn ogystal \u00c3\u00a2\u00e2\u0080\u0099r enw a\u00e2\u0080\u0099r cyfeiriad wedi\u00e2\u0080\u0099u datgan ar gyfer y derbynnydd, yr anfonydd neu\u00e2\u0080\u0099r prynwr"
   },
   {
     "code": "CDS12073",
     "en": "A value is missing or has been entered at the wrong level.\n\nCheck these data elements:\n\n2/1, (31 or 3/2), and 8/5 must be declared at least once at either header or item level.\n7/10 must be declared at least once at header or item level if\n7/2 is coded 1. 3/15 or 3/16 must be declared at header level",
-    "cy": "A value is missing or has been entered at the wrong level.\n\nCheck these data elements:\n\n2/1, (31 or 3/2), and 8/5 must be declared at least once at either header or item level.\n7/10 must be declared at least once at header or item level if\n7/2 is coded 1. 3/15 or 3/16 must be declared at header level."
+    "cy": "Mae gwerth ar goll neu wedi\u00e2\u0080\u0099i nodi ar y lefel anghywir.\n\nGwiriwch yr elfennau data hyn:\n\nMae\u00e2\u0080\u0099n rhaid datgan 2/1, (31 neu 3/2), ac 8/5 o leiaf unwaith ar naill ai lefel y pennyn neu\u00e2\u0080\u0099r eitem.\nMae\u00e2\u0080\u0099n rhaid datgan 7/10 o leiaf unwaith ar lefel y pennyn neu\u00e2\u0080\u0099r eitem os yw \n7/2 yn cael ei chodio\u00e2\u0080\u0099n 1. Mae\u00e2\u0080\u0099n rhaid datgan 3/15 neu 3/16 ar lefel y pennyn"
   },
   {
     "code": "CDS12074",
     "en": "Check the data element completion guide for the CDS Tariff, and declare one or the other but not both. For example, exporter, consignor and carrier, complete either an EORI or name and address. See Tariff for specific requirements",
-    "cy": "Check the data element completion guide for the CDS Tariff, and declare one or the other but not both. For example, exporter, consignor and carrier, complete either an EORI or name and address. See Tariff for specific requirements."
+    "cy": "Gwiriwch y canllaw ar gyfer cwblhau elfennau data ar gyfer y Tariff CDS, a datgan yr un neu\u00e2\u0080\u0099r llall ond nid y ddau. Er enghraifft, mae allforiwr, anfonydd a chludwr yn cwblhau naill ai EORI neu enw a chyfeiriad. Gweler y Tariff ar gyfer gofynion penodol"
   },
   {
     "code": "CDS12075",
     "en": "If one of the fields is completed the other should not have a value and should therefore be removed. For example, a document code and document status have been entered but the status is not required for this code. This can also indicate that a data element has been declared but is not permitted on this type of declaration",
-    "cy": "If one of the fields is completed the other should not have a value and should therefore be removed. For example, a document code and document status have been entered but the status is not required for this code. This can also indicate that a data element has been declared but is not permitted on this type of declaration."
+    "cy": "Os bydd un o\u00e2\u0080\u0099r meysydd yn cael eu cwblhau ni ddylai\u00e2\u0080\u0099r llall fod \u00c3\u00a2 gwerth ac felly dylid ei ddileu. Er enghraifft, mae cod dogfen a statws dogfen wedi\u00e2\u0080\u0099u nodi ond nid oes angen y statws ar gyfer y cod hwn. Gall hyn hefyd nodi bod elfen ddata wedi\u00e2\u0080\u0099i datgan ond ni chaniateir honno ar y math hwn o ddatganiad"
   },
   {
     "code": "CDS12077",
     "en": "For example, if a party name is declared then all fields of the address must be declared, when completing an ID in data element 7/14, a type code must also be provided with it. When manually completing tax line data elements, all the appropriate data elements must be declared",
-    "cy": "For example, if a party name is declared then all fields of the address must be declared, when completing an ID in data element 7/14, a type code must also be provided with it. When manually completing tax line data elements, all the appropriate data elements must be declared."
+    "cy": "Er enghraifft, os yw enw parti yn cael ei ddatgan, yna mae\u00e2\u0080\u0099n rhaid datgan holl feysydd y cyfeiriad, wrth gwblhau Dynodydd yn elfen ddata 7/14, mae\u00e2\u0080\u0099n rhaid rhoi cod math hefyd gydag ef. Wrth gwblhau elfennau data llinell dreth \u00c3\u00a2 llaw, mae\u00e2\u0080\u0099n rhaid datgan yr holl elfennau data priodol"
   },
   {
     "code": "CDS12079",
     "en": "Two values you declared are incompatible. For example, a data element is declared at both header and item levels but only one level is permissible",
-    "cy": "Two values you declared are incompatible. For example, a data element is declared at both header and item levels but only one level is permissible."
+    "cy": "Mae dau werth a ddatganwyd gennych yn anghydnaws. Er enghraifft, datganir elfen ddata ar lefel y pennyn a\u00e2\u0080\u0099r eitem ond dim ond un lefel sy\u00e2\u0080\u0099n cael ei chaniat\u00c3\u00a1u"
   },
   {
     "code": "CDS12080",
     "en": "You have used a mix of addition or deduction codes for an item that is not permitted. Certain addition/deduction codes cannot be declared together.\n\nAdditions and deductions should only be declared at header level where they apply to all good items on the customs declaration.\n\nEach addition or deduction code can only be declared once at header level. The same addition or deduction code cannot then be declared at item level as well.\n\nIf a specific addition or deduction is being declared at item level, that addition or deduction may only be declared once per item",
-    "cy": "You have used a mix of addition or deduction codes for an item that is not permitted. Certain addition/deduction codes cannot be declared together.\n\nAdditions and deductions should only be declared at header level where they apply to all good items on the customs declaration.\n\nEach addition or deduction code can only be declared once at header level. The same addition or deduction code cannot then be declared at item level as well.\n\nIf a specific addition or deduction is being declared at item level, that addition or deduction may only be declared once per item."
+    "cy": "Rydych wedi defnyddio cymysgedd o godau ychwanegu neu ddidynnu ar gyfer eitem lle na chaniateir hynny. Ni ellir datgan rhai codau ychwanegu/didynnu gyda\u00e2\u0080\u0099i gilydd.\n\nDylai ychwanegiadau a didyniadau gael eu datgan ar lefel y pennyn yn unig lle maent yn berthnasol i bob eitem o nwyddau ar y datganiad tollau.\n\nDim ond unwaith y gellir datgan pob cod ychwanegu neu ddidynnu. Ni ellir, wedyn, ddatgan yr un cod ychwanegu neu ddidynnu ar lefel yr eitem yn ogystal.\n\nOs yw ychwanegiad neu ddidyniad penodol yn cael ei ddatgan ar lefel yr eitem, dim ond unwaith yr eitem y gellir datgan yr ychwanegiad neu ddidyniad hwnnw"
   },
   {
     "code": "CDS12081",
@@ -242,97 +242,97 @@
   {
     "code": "CDS12083",
     "en": "You have provided both a country and country group for mandatory data element Preferential Origin.\n\nWhere the proof of origin document refers to a group of countries, enter the group of countries by using the relevant Union codes in accordance with the codes listed in Appendix 13: Country Codes\n\nWhere data element 5/16 is completed using a preference group code, data element 5/15 must be completed with the specific country of origin for the goods",
-    "cy": "You have provided both a country and country group for mandatory data element Preferential Origin.\n\nWhere the proof of origin document refers to a group of countries, enter the group of countries by using the relevant Union codes in accordance with the codes listed in Appendix 13: Country Codes.\n\nWhere data element 5/16 is completed using a preference group code, data element 5/15 must be completed with the specific country of origin for the goods."
+    "cy": "Rydych wedi rhoi gwlad a gr\u00c5\u00b5p gwlad ar gyfer yr elfen ddata orfodol, Tarddiad Ffafriol.\n\nLle mae\u00e2\u0080\u0099r ddogfen dystiolaeth o darddiad yn cyfeirio at gr\u00c5\u00b5p o wledydd, nodwch y gr\u00c5\u00b5p o wledydd drwy ddefnyddio\u00e2\u0080\u0099r codau Undeb perthnasol yn unol \u00c3\u00a2\u00e2\u0080\u0099r codau a restrir yn Atodiad 13: Codau Gwledydd\n\nLle cwblheir elfen ddata 5/16 gan ddefnyddio cod gr\u00c5\u00b5p ffafriol, mae\u00e2\u0080\u0099n rhaid cwblhau elfen ddata 5/15 gyda gwlad tarddiad benodol y nwyddau"
   },
   {
     "code": "CDS12084",
     "en": "You have provided both consignee name and consignee EORI. Only declare either the EORI or the full name and address of consignee not both. EORI should be declared when known",
-    "cy": "You have provided both consignee name and consignee EORI. Only declare either the EORI or the full name and address of consignee not both. EORI should be declared when known."
+    "cy": "Rydych wedi darparu enw\u00e2\u0080\u0099r derbynnydd ac EORI\u00e2\u0080\u0099r derbynnydd. Datgenwch naill ai\u00e2\u0080\u0099r EORI neu enw llawn a chyfeiriad y derbynnydd yn unig, nid y ddau. Dylid datgan yr EORI pan fydd yn hysbys"
   },
   {
     "code": "CDS12086",
     "en": "You have provided both Carrier name and Carrier EORI. Only declare either the EORI or the full name and address of carrier not both. EORI should be declared when known",
-    "cy": "You have provided both Carrier name and Carrier EORI. Only declare either the EORI or the full name and address of carrier not both. EORI should be declared when known."
+    "cy": "Rydych wedi rhoi enw\u00e2\u0080\u0099r Cludwr ac EORI\u00e2\u0080\u0099r Cludwr. Datgenwch naill ai\u00e2\u0080\u0099r EORI neu enw llawn a chyfeiriad y cludwr yn unig, nid y ddau. Dylid datgan yr EORI pan fydd yn hysbys"
   },
   {
     "code": "CDS12087",
     "en": "You have declared your additional fiscal party VAT number at both header and item level. It should only be declared at either item or header level. Or you have declared procedure code 1042 and not declared an additional fiscal references ID",
-    "cy": "You have declared your additional fiscal party VAT number at both header and item level. It should only be declared at either item or header level. Or you have declared procedure code 1042 and not declared an additional fiscal references ID."
+    "cy": "Rydych wedi datgan eich rhif TAW cyllidol ychwanegol ar lefel y pennyn a\u00e2\u0080\u0099r eitem. Dylid ei ddatgan ar naill ai lefel y pennyn neu lefel yr eitem yn unig. Neu rydych wedi datgan cod gweithdrefn 1042 a heb ddatgan Dynodydd cyfeirnodau cyllidol ychwanegol"
   },
   {
     "code": "CDS12088",
     "en": "To correct this error, complete the EORI in data element 3/19, or the name and address in 3/20, even if they are your own details as the declarant and you are the direct representative",
-    "cy": "To correct this error, complete the EORI in data element 3/19, or the name and address in 3/20, even if they are your own details as the declarant and you are the direct representative."
+    "cy": "I gywiro\u00e2\u0080\u0099r gwall hwn, cwblhewch yr EORI yn elfen ddata 3/19, neu\u00e2\u0080\u0099r enw a\u00e2\u0080\u0099r cyfeiriad yn 3/20, hyd yn oed os mai\u00e2\u0080\u0099ch manylion chi ydyn nhw fel y datganydd a chi yw\u00e2\u0080\u0099r cynrychiolydd uniongyrchol"
   },
   {
     "code": "CDS12089",
     "en": "Consigneee party name and address must be declared at either header or item level on a C21e unless the procedure code is 0019",
-    "cy": "Consigneee party name and address must be declared at either header or item level on a C21e unless the procedure code is 0019."
+    "cy": "Mae\u00e2\u0080\u0099n rhaid datgan enw a chyfeiriad y parti derbynnydd ar naill ai lefel y pennyn neu\u00e2\u0080\u0099r eitem ar C21e oni bai mai\u00e2\u0080\u0099r cod gweithdrefn yw 0019"
   },
   {
     "code": "CDS12090",
     "en": "When declaring additional procedure Code 17X on a C21e clearance request, the carrier anme and address or the carrier EORI must be declared at header level",
-    "cy": "When declaring additional procedure Code 17X on a C21e clearance request, the carrier anme and address or the carrier EORI must be declared at header level."
+    "cy": "Wrth ddatgan cod gweithdrefn ychwanegol 17X ar gais clirio C21e, mae\u00e2\u0080\u0099n rhaid datgan enw a chyfeiriad y cludwr neu EORI\u00e2\u0080\u0099r cludwr ar lefel pennyn"
   },
   {
     "code": "CDS12091",
     "en": "Consignee (receiver of goods) and exporter cannot have the same EORI number",
-    "cy": "Consignee (receiver of goods) and exporter cannot have the same EORI number."
+    "cy": "PLEASE MANUALLY REPLACE WITH WELSH"
   },
   {
     "code": "CDS12092",
-    "en": "You have declared the same party for seller (data element 3/25) and exporter (data element 3/1).\n\nThe seller details are only required where the seller is a different party to the exporter.\n\nWhere the seller is a different party to the exporter and holds a recognised EORI number, enter the seller’s EORI number in data element 3/25",
-    "cy": "You have declared the same party for seller (data element 3/25) and exporter (data element 3/1).\n\nThe seller details are only required where the seller is a different party to the exporter.\n\nWhere the seller is a different party to the exporter and holds a recognised EORI number, enter the seller’s EORI number in data element 3/25."
+    "en": "You have declared the same party for seller (data element 3/25) and exporter (data element 3/1).\n\nThe seller details are only required where the seller is a different party to the exporter.\n\nWhere the seller is a different party to the exporter and holds a recognised EORI number, enter the seller\u2019s EORI number in data element 3/25",
+    "cy": "You have declared the same party for seller (data element 3/25) and exporter (data element 3/1).\n\nThe seller details are only required where the seller is a different party to the exporter.\n\nWhere the seller is a different party to the exporter and holds a recognised EORI number, enter the seller\u2019s EORI number in data element 3/25."
   },
   {
     "code": "CDS12095",
     "en": "You have used an additional procedure combination (data element 1/11) incorrectly. Additional procedure codes 1IL and 1LV can only be used for goods dispatched/exported from a third country",
-    "cy": "You have used an additional procedure combination (data element 1/11) incorrectly. Additional procedure codes 1IL and 1LV can only be used for goods dispatched/exported from a third country."
+    "cy": "Rydych wedi defnyddio cyfuniad gweithdrefn ychwanegol (elfen ddata 1/11) yn anghywir. Dim ond ar gyfer nwyddau sy\u00e2\u0080\u0099n cael eu hanfon / allforio o drydedd wlad y gellir defnyddio codau gweithdrefn ychwanegol 1IL a 1LV"
   },
   {
     "code": "CDS12096",
     "en": "When declaring any of the authorisation types CGU, EUS, IPO or TEA in data element 3/39, it is necessary to declare document code C505 (Customs Comprehensive Guarantee) in DE 2/3. It may be necessary to declare C505 together with a waiver status code such as XW",
-    "cy": "When declaring any of the authorisation types CGU, EUS, IPO or TEA in data element 3/39, it is necessary to declare document code C505 (Customs Comprehensive Guarantee) in DE 2/3. It may be necessary to declare C505 together with a waiver status code such as XW."
+    "cy": "Wrth ddatgan unrhyw fath o awdurdod CGU, EUS, IPO neu TEA yn elfen ddata 3/39, mae angen datgan cod dogfen C505 (Gwarant Tollau Cynhwysfawr) yn DE 2/3. Efallai y bydd angen datgan C505 ynghyd \u00c3\u00a2 chod statws ildiad megis XW"
   },
   {
     "code": "CDS12097",
     "en": "When declaring Additional Procedure Code F75, the destination country must be a Special Fiscal Territory or other territory with which the EU has formed a Customs Union",
-    "cy": "When declaring Additional Procedure Code F75, the destination country must be a Special Fiscal Territory or other territory with which the EU has formed a Customs Union."
+    "cy": "Wrth ddatgan Cod Gweithdrefn Ychwanegol F75, mae\u00e2\u0080\u0099n rhaid i\u00e2\u0080\u0099r wlad pen y daith fod yn Diriogaeth Gyllidol Arbennig neu diriogaeth arall y mae\u00e2\u0080\u0099r UE wedi ffurfio Undeb Tollau \u00c3\u00a2 hi"
   },
   {
     "code": "CDS12098",
     "en": "You have declared a means of transport code (data element 7/4) that is not compatible with the delivery terms (data element 4/1)",
-    "cy": "You have declared a means of transport code (data element 7/4) that is not compatible with the delivery terms (data element 4/1)."
+    "cy": "Rydych wedi datgan cod dull o gludo (elfen ddata 7/4) nad yw\u00e2\u0080\u0099n cydweddu \u00c3\u00a2\u00e2\u0080\u0099r telerau cyflawni (elfen ddata 4/1)"
   },
   {
     "code": "CDS12099",
     "en": "Check the codes listed in Appendix 16 and in the supplements to Tariff, where new goods location codes may be listed",
-    "cy": "Check the codes listed in Appendix 16 and in the supplements to Tariff, where new goods location codes may be listed."
+    "cy": "Gwiriwch y codau a restrir yn Atodiad 16 ac yn yr atodiadau i\u00e2\u0080\u0099r Tariff, lle mae\u00e2\u0080\u0099n bosibl y bydd codau lleoliad y nwyddau newydd wedi\u00e2\u0080\u0099u rhestru"
   },
   {
     "code": "CDS12100",
     "en": "You have declared Delivery Terms (data element 4/1) that are not compatible with the Addition/Deduction code (data element 4/9).\n\nThe combination of Delivery Terms and Addition/Deduction Code must be compatible",
-    "cy": "You have declared Delivery Terms (data element 4/1) that are not compatible with the Addition/Deduction code (data element 4/9).\n\nThe combination of Delivery Terms and Addition/Deduction Code must be compatible."
+    "cy": "Rydych wedi datgan Telerau Cyflawni (elfen ddata 4/1) nad ydynt yn cydweddu \u00c3\u00a2\u00e2\u0080\u0099r cod Ychwanegu/Didynnu (elfen ddata 4/9).\n\nMae\u00e2\u0080\u0099n rhaid i\u00e2\u0080\u0099r cyfuniad o Delerau Cyflawni a chod Ychwanegu/Didynnu gydweddu"
   },
   {
     "code": "CDS12101",
     "en": "You have declared an additional procedure code that is not permitted to be combined with the declared tax type (data element 4/3). For example, additional procedure codes 32D, 31D, 1IL and 1LV cannot be used with an excise tax type",
-    "cy": "You have declared an additional procedure code that is not permitted to be combined with the declared tax type (data element 4/3). For example, additional procedure codes 32D, 31D, 1IL and 1LV cannot be used with an excise tax type."
+    "cy": "Rydych wedi datgan cod gweithdrefn ychwanegol na chaniateir ei gyfuno \u00c3\u00a2\u00e2\u0080\u0099r math o dreth a ddatganwyd (elfen ddata 4/3). Er enghraifft, ni ellir defnyddio codau gweithdrefn ychwanegol 32D, 31D, 1IL a 1LV gyda math o dreth ecs\u00c3\u00a9is"
   },
   {
     "code": "CDS12102",
     "en": "You have not declared the deferred payment method which is required for the duty deferment account number declared",
-    "cy": "You have not declared the deferred payment method which is required for the duty deferment account number declared."
+    "cy": "Nid ydych wedi datgan y dull talu gohiriedig sy\u00e2\u0080\u0099n ofynnol ar gyfer y rhif cyfrif gohirio tollau a ddatganwyd"
   },
   {
     "code": "CDS12103",
     "en": "When declaring Declaration Type code CO in data element 1/1, the destination country must be a Special Fiscal Territory or other territory with which the EU has formed a Customs Union",
-    "cy": "When declaring Declaration Type code CO in data element 1/1, the destination country must be a Special Fiscal Territory or other territory with which the EU has formed a Customs Union."
+    "cy": "Wrth ddatgan cod Math o Ddatganiad CO yn elfen ddata 1/1, mae\u00e2\u0080\u0099n rhaid i\u00e2\u0080\u0099r wlad pen y daith fod yn Diriogaeth Gyllidol Arbennig neu diriogaeth arall y mae\u00e2\u0080\u0099r UE wedi ffurfio Undeb Tollau \u00c3\u00a2 hi"
   },
   {
     "code": "CDS12104",
     "en": "For declaration type code IM, the procedure code must be a permitted import procedure code. Check Appendix 1 of the Import Tariff and the Inventory Import Tariff",
-    "cy": "For declaration type code IM, the procedure code must be a permitted import procedure code. Check Appendix 1 of the Import Tariff and the Inventory Import Tariff."
+    "cy": "PLEASE MANUALLY REPLACE WITH WELSH"
   },
   {
     "code": "CDS12105",
@@ -342,42 +342,42 @@
   {
     "code": "CDS12106",
     "en": "An appropriate Additional Information (AI) code is required with the additional procedure code 1CL",
-    "cy": "An appropriate Additional Information (AI) code is required with the additional procedure code 1CL."
+    "cy": "Mae angen cod Gwybodaeth Ychwanegol (AI) priodol gyda\u00e2\u0080\u0099r cod gweithdrefn ychwanegol 1CL"
   },
   {
     "code": "CDS12107",
     "en": "When using Additional Information code 00600, data element 2/3 must not include any licence document codes, even if claiming a waiver/exemption",
-    "cy": "When using Additional Information code 00600, data element 2/3 must not include any licence document codes, even if claiming a waiver/exemption."
+    "cy": "Wrth ddefnyddio cod Gwybodaeth Ychwanegol 00600, mae\u00e2\u0080\u0099n rhaid i elfen ddata 2/3 beidio \u00c3\u00a2 chynnwys unrhyw godau dogfen trwydded, hyd yn oed pe hawlier ildiad/eithriad"
   },
   {
     "code": "CDS12108",
     "en": "Declaration Unique Consignment Reference (DUCR) is mandatory at header level on an export declaration",
-    "cy": "Declaration Unique Consignment Reference (DUCR) is mandatory at header level on an export declaration."
+    "cy": "Mae Datganiad o Gyfeirnod Unigryw y Llwyth (DUCR) yn orfodol ar lefel y pennyn ar ddatganiad allforio"
   },
   {
     "code": "CDS12109",
     "en": "You declared a fixed rate of exchange meaning a contractually agreed rate of exchange was used. The invoice value (data element 4/14) on an import declaration or the total amount invoiced (data element 4/11) on an export declaration, needs to be declared in GBP, converted using the agreed rate",
-    "cy": "You declared a fixed rate of exchange meaning a contractually agreed rate of exchange was used. The invoice value (data element 4/14) on an import declaration or the total amount invoiced (data element 4/11) on an export declaration, needs to be declared in GBP, converted using the agreed rate."
+    "cy": "Gwnaethoch ddatgan cyfradd gyfnewid sefydlog sy\u00e2\u0080\u0099n golygu y cafodd cyfradd gyfnewid a gytunwyd arni\u00e2\u0080\u0099n gontractiol ei defnyddio. Mae angen datgan gwerth anfoneb (elfen ddata 4/14) ar ddatganiad mewnforio neu\u00e2\u0080\u0099r cyfanswm a anfonebwyd (elfen ddata 4/11) ar ddatganiad allforio, yn GBP, a throswyd gan ddefnyddio\u00e2\u0080\u0099r gyfradd y cytunwyd arni"
   },
   {
     "code": "CDS12110",
     "en": "The Preference Code declared (data element 4/17) is incompatible with claiming Quota (data element 8/1)",
-    "cy": "The Preference Code declared (data element 4/17) is incompatible with claiming Quota (data element 8/1)."
+    "cy": "Mae\u00e2\u0080\u0099r Cod Ffafriol a ddatganwyd (elfen ddata 4/17) yn anghydnaws \u00c3\u00a2 hawlio Cwota (elfen ddata 8/1)"
   },
   {
     "code": "CDS12111",
     "en": "You have declared the tax amount (data element 4/6 or 4/7) in the incorrect currency. Tax amounts should always be declared with the sterling GBP currency code",
-    "cy": "You have declared the tax amount (data element 4/6 or 4/7) in the incorrect currency. Tax amounts should always be declared with the sterling GBP currency code."
+    "cy": "Rydych wedi datgan swm y dreth (elfen ddata 4/6 neu 4/7) yn yr arian cyfred anghywir. Dylid datgan symiau treth bob amser gyda\u00e2\u0080\u0099r cod arian cyfred sterling GBP"
   },
   {
     "code": "CDS12112",
     "en": "You have not provided the mandatory airfreight related addition/deduction code (data element 4/9) for the declared airport place of loading (data element 5/21)",
-    "cy": "You have not provided the mandatory airfreight related addition/deduction code (data element 4/9) for the declared airport place of loading (data element 5/21)."
+    "cy": "Nid ydych wedi rhoi\u00e2\u0080\u0099r cod ychwanegu/didynnu awyrgludiant gorfodol (elfen ddata 4/9) ar gyfer y man llwytho mewn maes awyr datganedig (elfen ddata 5/21)"
   },
   {
     "code": "CDS12113",
     "en": "Holder of authorisation type CGU has been declared and so guarantee type in data element 8/2 must be 0 (Guarantee Waiver) or 1 (Comprehensive Guarantee)",
-    "cy": "Holder of authorisation type CGU has been declared and so guarantee type in data element 8/2 must be 0 (Guarantee Waiver) or 1 (Comprehensive Guarantee)."
+    "cy": "Mae deiliad y math o awdurdod CGU wedi\u00e2\u0080\u0099i ddatgan, ac felly, mae\u00e2\u0080\u0099n rhaid i fath y warant yn elfen ddata 8/2 fod yn 0 (Ildiad Gwarant) neu 1 (Gwarant Gynhwysfawr)"
   },
   {
     "code": "CDS12114",
@@ -387,42 +387,42 @@
   {
     "code": "CDS12115",
     "en": "You have not have declared document code 185C (Claim to Visiting Forces Relief for goods removed from a customs warehouse), required for the additional procedure code entered",
-    "cy": "You have not have declared document code 185C (Claim to Visiting Forces Relief for goods removed from a customs warehouse), required for the additional procedure code entered."
+    "cy": "Nid ydych wedi datgan cod dogfen 185C (Hawl i\u00e2\u0080\u0099r Rhyddhad i Luoedd ar Ymweliad am nwyddau wedi\u00e2\u0080\u0099u tynnu o warws tollau), sy\u00e2\u0080\u0099n ofynnol ar gyfer y cod gweithdrefn ychwanegol a gofnodwyd"
   },
   {
     "code": "CDS12117",
     "en": "You have declared the same EORI for the Importer and Buyer on an import declaration",
-    "cy": "You have declared the same EORI for the Importer and Buyer on an import declaration."
+    "cy": "Rydych wedi datgan yr un EORI ar gyfer y Mewnforiwr a\u00e2\u0080\u0099r Prynwr ar ddatganiad mewnforio"
   },
   {
     "code": "CDS12118",
     "en": "You have declared consignor details for the additional procedure code 17X at both header and item level. It should only be declared at either item or header level",
-    "cy": "You have declared consignor details for the additional procedure code 17X at both header and item level. It should only be declared at either item or header level."
+    "cy": "Rydych wedi datgan manylion yr anfonydd ar gyfer y cod gweithdrefn ychwanegol 17X ar lefel y pennyn a\u00e2\u0080\u0099r eitem. Dim ond ar naill ai lefel yr eitem neu lefel y pennyn y dylid eu datgan"
   },
   {
     "code": "CDS12119",
     "en": "Additional document code, for example licence, exemption or authorisation number, is not allowed or must not be declared with other data in the declaration.\n\nExamples include C512 and C514 (SDP and EIDR authorisations) not permitted with certain procedure codes; licence document code restrictions with certain additional procedure codes, Special Procedure authorisations required with certain procedure combinations",
-    "cy": "Additional document code, for example licence, exemption or authorisation number, is not allowed or must not be declared with other data in the declaration.\n\nExamples include C512 and C514 (SDP and EIDR authorisations) not permitted with certain procedure codes; licence document code restrictions with certain additional procedure codes, Special Procedure authorisations required with certain procedure combinations."
+    "cy": "Nid yw cod y dogfen ychwanegol, er enghraifft trwydded, eithriad neu rif awdurdodi, yn cael ei ganiat\u00c3\u00a1u neu mae\u00e2\u0080\u0099n rhaid peidio \u00c3\u00a2\u00e2\u0080\u0099i ddatgan gyda data eraill yn y datganiad.\n\nMae enghreifftiau\u00e2\u0080\u0099n cynnwys C512 a C514 (awdurdodiadau SDP ac EIDR) na chaniateir gyda chodau gweithdrefn penodol; cyfyngiadau ar god dogfen y drwydded gyda rhai codau gweithdrefn ychwanegol, awdurdodiadau Gweithdrefn Arbennig sy\u00e2\u0080\u0099n ofynnol gyda chyfuniadau gweithdrefnau penodol"
   },
   {
     "code": "CDS12120",
     "en": "You may not have declared an authorisation required for this declaration type. If you have declared the correct authorisation, check the authorisation number declared on the 'Additional documentation' page.\n\nFor SDP declarations, you need document code C512 For EIDR declarations, you need document code C514 For submitting an arrived export declaration, data element 3/39 must include one of the authorisation type codes CSE or EXRR.\n\nYou may have declared an authorisation that has expired; or the reference number does not belong to the party on the declaration; or the reference number provided is not recognised",
-    "cy": "You may not have declared an authorisation required for this declaration type. If you have declared the correct authorisation, check the authorisation number declared on the 'Additional documentation' page.\n\nFor SDP declarations, you need document code C512 For EIDR declarations, you need document code C514 For submitting an arrived export declaration, data element 3/39 must include one of the authorisation type codes CSE or EXRR.\n\nYou may have declared an authorisation that has expired; or the reference number does not belong to the party on the declaration; or the reference number provided is not recognised."
+    "cy": "Efallai nad ydych wedi datgan awdurdodiad sy\u00e2\u0080\u0099n ofynnol ar gyfer y math hwn o ddatganiad. Os ydych wedi datgan yr awdurdodiad cywir, gwiriwch y rhif awdurdodi a ddatganwyd ar y dudalen \u00e2\u0080\u0098Dogfennau ychwanegol\u00e2\u0080\u0099.\n\nAr gyfer datganiadau SDP, mae angen cod dogfen C512 arnoch Ar gyfer datganiadau EIDR, mae angen cod dogfen C514 arnoch Ar gyfer cyflwyno datganiad allforion sydd wedi cyrraedd, mae\u00e2\u0080\u0099n rhaid i elfen ddata 3/39 gynnwys un o\u00e2\u0080\u0099r codau math o awdurdod CSE neu EXRR.\n\nEfallai eich bod wedi datgan awdurdodiad sydd wedi dod i ben; neu nid yw\u00e2\u0080\u0099r cyfeirnod yn perthyn i\u00e2\u0080\u0099r parti ar y datganiad; neu nid yw\u00e2\u0080\u0099r cyfeirnod a roddir yn cael ei adnabod"
   },
   {
     "code": "CDS12121",
     "en": "Additional Information codes declared together for one item are not compatible",
-    "cy": "Additional Information codes declared together for one item are not compatible."
+    "cy": "Nid yw\u00e2\u0080\u0099r codau Gwybodaeth ychwanegol a ddatganwyd gyda\u00e2\u0080\u0099i gilydd ar gyfer un eitem yn cydweddu"
   },
   {
     "code": "CDS12123",
     "en": "Invoice value declared in data element 4/14 must be greater than 0",
-    "cy": "Invoice value declared in data element 4/14 must be greater than 0."
+    "cy": "Mae\u00e2\u0080\u0099n rhaid i werth anfoneb a ddatganwyd yn elfen ddata 4/14 fod yn fwy na 0"
   },
   {
     "code": "CDS12125",
     "en": "The deferment account number you have provided is not recognised or the account may be suspended/revoked or Parties declared on the declaration do not have authority to use account number provided.\n\nCheck the CDS financial dashboard/contact HMRC deferment department",
-    "cy": "The deferment account number you have provided is not recognised or the account may be suspended/revoked or Parties declared on the declaration do not have authority to use account number provided.\n\nCheck the CDS financial dashboard/contact HMRC deferment department."
+    "cy": "Nid yw rhif y cyfrif gohirio yr ydych wedi\u00e2\u0080\u0099i roi yn cael ei adnabod neu mae\u00e2\u0080\u0099n bosibl bod y cyfrif wedi\u00e2\u0080\u0099i atal/wedi\u00e2\u0080\u0099i ddirymu neu nid oes gan y Part\u00c3\u00afon a ddatganwyd ar y datganiad yr awdurdod i ddefnyddio rhif y cyfrif a roddir.\n\nGwiriwch ddangosfwrdd ariannol CDS/cysylltwch ag adran ohirio CThEF"
   },
   {
     "code": "CDS12132",
@@ -432,87 +432,87 @@
   {
     "code": "CDS12133",
     "en": "If the MUCR was given to you, check it is in a valid format. If you created it yourself, check the guidance on the correct format, given in the completion guide",
-    "cy": "If the MUCR was given to you, check it is in a valid format. If you created it yourself, check the guidance on the correct format, given in the completion guide."
+    "cy": "Os rhoddwyd yr MUCR i chi, gwiriwch ei fod mewn fformat dilys. Os gwnaethoch ei greu eich hun, gwiriwch yr arweiniad ar y fformat cywir, a roddir yn y canllaw ar gyfer cwblhau"
   },
   {
     "code": "CDS12134",
     "en": "If the MUCR was given to you, check it is in a valid format. If you created it yourself, check the guidance on the correct format given in data element 2/1 in the completion guide.\n\nIf you have declared a previous declaration reference such as for an import, check the DUCR on the previous declaration",
-    "cy": "If the MUCR was given to you, check it is in a valid format. If you created it yourself, check the guidance on the correct format given in data element 2/1 in the completion guide.\n\nIf you have declared a previous declaration reference such as for an import, check the DUCR on the previous declaration."
+    "cy": "Os rhoddwyd yr MUCR i chi, gwiriwch ei fod mewn fformat dilys. Os byddwch wedi\u00e2\u0080\u0099i greu eich hun, gwiriwch yr arweiniad ar y fformat cywir a roddir yn elfen ddata 2/1 yn y canllaw ar gyfer cwblhau.\n\nOs ydych wedi datgan cyfeirnod datganiad blaenorol megis ar gyfer mewnforio, gwiriwch y DUCR ar y datganiad blaenorol"
   },
   {
     "code": "CDS12135",
     "en": "Country of export is mandatory at header or item level when declaring additional procedure code 1CD, 1CG, 2CG or 2CD. On a C21I with procedure code 0002, 0003, 0004, 0005, 0006 or 0007",
-    "cy": "Country of export is mandatory at header or item level when declaring additional procedure code 1CD, 1CG, 2CG or 2CD. On a C21I with procedure code 0002, 0003, 0004, 0005, 0006 or 0007."
+    "cy": "PLEASE MANUALLY REPLACE WITH WELSH"
   },
   {
     "code": "CDS12136",
-    "en": "The additional procedure code declared requires this declaration to have indirect representation (data element 3/21).\n\nThe representative status declared in data element 3/21 would show Indirect, code ‘3’. The representative status declared in data element 3/21 indicates the relationship between the representative and the importer, not the sub-agent and any other party",
-    "cy": "The additional procedure code declared requires this declaration to have indirect representation (data element 3/21).\n\nThe representative status declared in data element 3/21 would show Indirect, code ‘3’. The representative status declared in data element 3/21 indicates the relationship between the representative and the importer, not the sub-agent and any other party."
+    "en": "The additional procedure code declared requires this declaration to have indirect representation (data element 3/21).\n\nThe representative status declared in data element 3/21 would show Indirect, code \u20183\u2019. The representative status declared in data element 3/21 indicates the relationship between the representative and the importer, not the sub-agent and any other party",
+    "cy": "The additional procedure code declared requires this declaration to have indirect representation (data element 3/21).\n\nThe representative status declared in data element 3/21 would show Indirect, code \u20183\u2019. The representative status declared in data element 3/21 indicates the relationship between the representative and the importer, not the sub-agent and any other party."
   },
   {
     "code": "CDS12137",
     "en": "You have declared more than one MUCR at header level on your import declaration.",
-    "cy": "You have declared more than one MUCR at header level on your import declaration."
+    "cy": "Rydych wedi datgan mwy nag un MUCR ar lefel y pennyn ar eich datganiad mewnforio."
   },
   {
     "code": "CDS12138",
     "en": "These additional procedure codes cannot be used with an EIDR C21 declaration.\n\n1CD - Controlled drugs using Simplified Procedures\n1CG - Controlled Goods using Simplified Procedures.",
-    "cy": "These additional procedure codes cannot be used with an EIDR C21 declaration.\n\n1CD - Controlled drugs using Simplified Procedures\n1CG - Controlled Goods using Simplified Procedures."
+    "cy": "Ni ellir defnyddio\u00e2\u0080\u0099r codau gweithdrefn ychwanegol hyn gyda datganiad EIDR C21.\n\n1CD - Cyffuriau rheoledig gan ddefnyddio Gweithdrefnau Symlach\n1CG - Nwyddau Rheoledig gan ddefnyddio Gweithdrefnau Symlach."
   },
   {
     "code": "CDS12139",
     "en": "You have not provided the Additional Information (AI) Code OVR01 required for the declared manual tax amount in data element 4/6 or 4/7",
-    "cy": "You have not provided the Additional Information (AI) Code OVR01 required for the declared manual tax amount in data element 4/6 or 4/7."
+    "cy": "Nid ydych wedi rhoi\u00e2\u0080\u0099r Cod Gwybodaeth Ychwanegol (AI) OVR01 sy\u00e2\u0080\u0099n ofynnol ar gyfer swm y dreth law a ddatganwyd yn elfen ddata 4/6 neu 4/7"
   },
   {
     "code": "CDS12141",
     "en": "You have declared a combination of Additional Information Codes 'NIDOM' and 'NIIMP' that are not permitted to be declared together on the same declaration",
-    "cy": "You have declared a combination of Additional Information Codes 'NIDOM' and 'NIIMP' that are not permitted to be declared together on the same declaration."
+    "cy": "Rydych wedi datgan cyfuniad o Godau Gwybodaeth Ychwanegol \u00e2\u0080\u0098NIDOM\u00e2\u0080\u0099 a \u00e2\u0080\u0098NIIMP\u00e2\u0080\u0099 na chaniateir eu datgan gyda\u00e2\u0080\u0099i gilydd ar yr un datganiad"
   },
   {
     "code": "CDS12143",
     "en": "You have declared a combination of Additional Information Codes 'NIREM' and 'NIAID' that are not permitted to be declared together on the same declaration",
-    "cy": "You have declared a combination of Additional Information Codes 'NIREM' and 'NIAID' that are not permitted to be declared together on the same declaration."
+    "cy": "Rydych wedi datgan cyfuniad o Godau Gwybodaeth Ychwanegol \u00e2\u0080\u0098NIREM\u00e2\u0080\u0099 a \u00e2\u0080\u0098NIAID\u00e2\u0080\u0099 na chaniateir eu datgan gyda\u00e2\u0080\u0099i gilydd ar yr un datganiad"
   },
   {
     "code": "CDS12144",
     "en": "You have entered the incorrect EU Quota order number beginning with '09' which is not permitted for imports into the UK",
-    "cy": "You have entered the incorrect EU Quota order number beginning with '09' which is not permitted for imports into the UK."
+    "cy": "Rydych wedi nodi rhif archeb cwota\u00e2\u0080\u0099r UE anghywir, sy\u00e2\u0080\u0099n dechrau gyda \u00e2\u0080\u009809\u00e2\u0080\u0099, na chaniateir ar gyfer mewnforion i\u00e2\u0080\u0099r DU"
   },
   {
     "code": "CDS12145",
     "en": "For the Requested Procedure code 42 in data element 1/10 the Additional Information code, NIIMP, must be declared in data element 2/2",
-    "cy": "For the Requested Procedure code 42 in data element 1/10 the Additional Information code, NIIMP, must be declared in data element 2/2."
+    "cy": "Ar gyfer y cod Gweithdrefn y gofynnwyd amdano 42 yn elfen ddata 1/10, mae\u00e2\u0080\u0099n rhaid datgan y cod Gwybodaeth Ychwanegol, NIIMP, yn elfen ddata 2/2"
   },
   {
     "code": "CDS12146",
     "en": "You have not entered either the Requested Procedure code 42 (DE 1/10) or Additional Information code OSR42 (DE 2/2) on the same goods item",
-    "cy": "You have not entered either the Requested Procedure code 42 (DE 1/10) or Additional Information code OSR42 (DE 2/2) on the same goods item."
+    "cy": "Nid ydych wedi nodi naill ai\u00e2\u0080\u0099r cod Gweithdrefn y gofynnwyd amdano 42 (DE 1/10) neu god Gwybodaeth Ychwanegol OSR42 (DE 2/2) ar yr un eitem o nwyddau"
   },
   {
     "code": "CDS12147",
     "en": "AI code UVC01 may only be used on an amendment",
-    "cy": "AI code UVC01 may only be used on an amendment."
+    "cy": "Gellir defnyddio cod AI UVC01 ar ddiwygiad yn unig"
   },
   {
     "code": "CDS12148",
     "en": "You have not provided a deferred payment method for the declared Additional Document C506",
-    "cy": "You have not provided a deferred payment method for the declared Additional Document C506."
+    "cy": "Nid ydych wedi rhoi dull talu gohiriedig ar gyfer y Ddogfen Ychwanegol ddatganedig C506"
   },
   {
     "code": "CDS12149",
     "en": "Additional procedure code 000 can not be declared with any other additional procedure code",
-    "cy": "Additional procedure code 000 can not be declared with any other additional procedure code."
+    "cy": "Ni ellir datgan cod gweithdrefn ychwanegol 000 gydag unrhyw god gweithdrefn ychwanegol arall"
   },
   {
     "code": "CDS12150",
     "en": "An authorisation number, such as for a Special Procedure, SDP, EIDR, CCG, national authorisation, is either not valid or is not authorised for use by the party given on the declaration",
-    "cy": "An authorisation number, such as for a Special Procedure, SDP, EIDR, CCG, national authorisation, is either not valid or is not authorised for use by the party given on the declaration."
+    "cy": "Mae rhif awdurdodi, megis ar gyfer Gweithdrefn Arbennig, SDP, EIDR, CCG, awdurdodiad cenedlaethol, naill ai\u00e2\u0080\u0099n annilys neu nid yw wedi\u00e2\u0080\u0099i awdurdodi i\u00e2\u0080\u0099w ddefnyddio gan y parti a roddwyd ar y datganiad"
   },
   {
     "code": "CDS12151",
     "en": "Licence ID cannot be declared more than once on the same item.\nAdditional procedure codes cannot be repeated on the same item.\nThe same origin sub-role code cannot be repeated on the same item.\nARC number cannot be used on multiple export declarations.\nAddition and Deduction codes cannot be repeated at header level or within a single item.\nGoods item number cannot be repeated on the declaration",
-    "cy": "Licence ID cannot be declared more than once on the same item.\nAdditional procedure codes cannot be repeated on the same item.\nThe same origin sub-role code cannot be repeated on the same item.\nARC number cannot be used on multiple export declarations.\nAddition and Deduction codes cannot be repeated at header level or within a single item.\nGoods item number cannot be repeated on the declaration."
+    "cy": "Ni ellir datgan Dynodydd y drwydded fwy nag unwaith ar yr un eitem.\nNi ellir ailadrodd codau gweithdrefnau ychwanegol ar yr un eitem.\nNi ellir ailadrodd yr un cod is-r\u00c3\u00b4l tarddiad ar yr un eitem.\nNi all ddefnyddio rhif ARC ar fwy nag un datganiad allforio.\nNi ellir ailadrodd codau Ychwanegu a Didynnu ar lefel y pennyn neu o fewn eitem unigol.\nNi ellir ailadrodd y rhif eitem o nwyddau ar y datganiad"
   },
   {
     "code": "CDS13000",
@@ -547,17 +547,17 @@
   {
     "code": "CDS40007",
     "en": "For example, the same Additional TARIC or National additional code has been declared twice for one item",
-    "cy": "For example, the same Additional TARIC or National additional code has been declared twice for one item."
+    "cy": "Er enghraifft, mae\u00e2\u0080\u0099r un cod TARIC ychwanegol neu god Cenedlaethol ychwanegol wedi\u00e2\u0080\u0099i ddatgan ddwywaith ar gyfer un eitem"
   },
   {
     "code": "CDS40010",
     "en": "This could be a formatting error or a code incorrectly completed",
-    "cy": "This could be a formatting error or a code incorrectly completed."
+    "cy": "Gallai hyn fod yn wall fformatio neu god wedi\u00e2\u0080\u0099i gwblhau\u00e2\u0080\u0099n anghywir"
   },
   {
     "code": "CDS40011",
     "en": "A value that is required by the commodity code has not been completed. For example, supplementary unit. You need to check the 'Measures' column for the commodity code on the Trade Tariff",
-    "cy": "A value that is required by the commodity code has not been completed. For example, supplementary unit. You need to check the 'Measures' column for the commodity code on the Trade Tariff."
+    "cy": "Nid yw gwerth sy\u00e2\u0080\u0099n ofynnol gan y cod nwyddau wedi\u00e2\u0080\u0099i gwblhau. Er enghraifft, uned atodol. Mae angen i chi wirio\u00e2\u0080\u0099r golofn \u00e2\u0080\u0098Mesurau\u00e2\u0080\u0099 ar gyfer y cod nwyddau ar y Tariff Masnach"
   },
   {
     "code": "CDS40013",
@@ -572,7 +572,7 @@
   {
     "code": "CDS40045",
     "en": "The licence or exemption required for these goods is missing. You need to check the 'Conditions' box for the commodity code on the Trade Tariff. If you do not hold any licence, you must decide if you can declare a waiver (usually a Y-code). Instructions for how to use the code are given in Appendix 5A",
-    "cy": "The licence or exemption required for these goods is missing. You need to check the 'Conditions' box for the commodity code on the Trade Tariff. If you do not hold any licence, you must decide if you can declare a waiver (usually a Y-code). Instructions for how to use the code are given in Appendix 5A."
+    "cy": "Mae\u00e2\u0080\u0099r drwydded neu\u00e2\u0080\u0099r eithriad sydd ei angen ar gyfer y nwyddau hyn ar goll. Mae angen i chi wirio\u00e2\u0080\u0099r blwch \u00e2\u0080\u0098Amodau\u00e2\u0080\u0099 ar gyfer y cod nwyddau ar y Tariff Masnach. Os nad oes gennych unrhyw drwydded, mae\u00e2\u0080\u0099n rhaid i chi benderfynu a allwch ddatgan ildiad (cod \u00e2\u0080\u0098Y\u00e2\u0080\u0099, fel arfer). Rhoddir cyfarwyddiadau ar sut i ddefnyddio\u00e2\u0080\u0099r cod yn Atodiad 5A"
   },
   {
     "code": "CDS40047",
@@ -597,7 +597,7 @@
   {
     "code": "CDS40066",
     "en": "Value is not allowed to be used for the given commodity code. You need to check the 'Measures' box for the commodity code on the Trade Tariff. If you do not hold any licence, you must decide if you can declare a waiver (usually a Y-code). Instructions for how to use the code are given in Appendix 5A",
-    "cy": "Value is not allowed to be used for the given commodity code. You need to check the 'Measures' box for the commodity code on the Trade Tariff. If you do not hold any licence, you must decide if you can declare a waiver (usually a Y-code). Instructions for how to use the code are given in Appendix 5A."
+    "cy": "Ni chaniateir defnyddio\u00e2\u0080\u0099r gwerth ar gyfer y cod nwyddau penodol. Mae angen i chi wirio\u00e2\u0080\u0099r blwch \u00e2\u0080\u0098Mesurau\u00e2\u0080\u0099 ar gyfer y cod nwyddau ar y Tariff Masnach. Os nad oes gennych unrhyw drwydded, mae\u00e2\u0080\u0099n rhaid i chi benderfynu a allwch ddatgan ildiad (cod \u00e2\u0080\u0098Y\u00e2\u0080\u0099, fel arfer). Rhoddir cyfarwyddiadau ar sut i ddefnyddio\u00e2\u0080\u0099r cod yn Atodiad 5A"
   },
   {
     "code": "CDS40068",
@@ -607,32 +607,32 @@
   {
     "code": "CDS40069",
     "en": "The Quota claimed is no longer available",
-    "cy": "The Quota claimed is no longer available"
+    "cy": "Nid yw\u00e2\u0080\u0099r Cwota a hawliwyd bellach ar gael"
   },
   {
     "code": "CDS40070",
     "en": "Additional information code NIIMP when used on one item must be entered on all items",
-    "cy": "Additional information code NIIMP when used on one item must be entered on all items."
+    "cy": "Mae\u00e2\u0080\u0099n rhaid nodi cod gwybodaeth ychwanegol NIIMP ar bob eitem pan gaiff ei ddefnyddio ar un eitem"
   },
   {
     "code": "CDS40071",
     "en": "Additional information code NIDOM when used on one item must be entered on all items",
-    "cy": "Additional information code NIDOM when used on one item must be entered on all items."
+    "cy": "Mae\u00e2\u0080\u0099n rhaid nodi cod gwybodaeth ychwanegol NIDOM ar bob eitem pan gaiff ei ddefnyddio ar un eitem"
   },
   {
     "code": "CDS40072",
     "en": "Additional information code NIEXP when used on one item must be entered on all items",
-    "cy": "Additional information code NIEXP when used on one item must be entered on all items."
+    "cy": "Mae\u00e2\u0080\u0099n rhaid nodi cod gwybodaeth ychwanegol NIEXP ar bob eitem pan gaiff ei ddefnyddio ar un eitem"
   },
   {
     "code": "CDS40073",
     "en": "NIREM additional information (AI) code may not be declared in isolation; NIDOM or NIIMP must also be declared on the same item",
-    "cy": "NIREM additional information (AI) code may not be declared in isolation; NIDOM or NIIMP must also be declared on the same item."
+    "cy": "Ni chaniateir datgan cod gwybodaeth ychwanegol NIREM (AI) ar ei ben ei hun; mae\u00e2\u0080\u0099n rhaid datgan NIDOM neu NIIMP ar yr un eitem hefyd"
   },
   {
     "code": "CDS40074",
     "en": "You have not entered either 'NIIMP' or 'NIDOM' AI codes when you declared subsidy AI code 'NIAID'. Either of these codes are required to be entered at item level on the same good item",
-    "cy": "You have not entered either 'NIIMP' or 'NIDOM' AI codes when you declared subsidy AI code 'NIAID'. Either of these codes are required to be entered at item level on the same good item."
+    "cy": "Nid ydych wedi nodi naill ai codau AI \u00e2\u0080\u0098NIIMP\u00e2\u0080\u0099 neu \u00e2\u0080\u0098NIDOM\u00e2\u0080\u0099 pan wnaethoch ddatgan cod cymhorthdal AI \u00e2\u0080\u0098NIAID\u00e2\u0080\u0099. Mae\u00e2\u0080\u0099n ofynnol nodi\u00e2\u0080\u0099r naill neu\u00e2\u0080\u0099r llall o\u00e2\u0080\u0099r codau hyn ar lefel yr eitem ar yr un eitem o nwydd"
   },
   {
     "code": "CDS49999",
@@ -662,7 +662,7 @@
   {
     "code": "CDS50015",
     "en": "Declaration is cancelled/terminated/invalidated/handled externally/rejected (upon arrival)",
-    "cy": "Declaration is cancelled/terminated/invalidated/handled externally/rejected (upon arrival)."
+    "cy": "Mae datganiad yn cael ei ganslo/terfynu/annilysu/trin yn allanol/gwrthod (wrth gyrraedd)"
   },
   {
     "code": "CDS50027",
@@ -672,7 +672,7 @@
   {
     "code": "CDS50028",
     "en": "The codes declared in the goods location code field must be selected from the code lists shown in Appendix 16",
-    "cy": "The codes declared in the goods location code field must be selected from the code lists shown in Appendix 16."
+    "cy": "Mae\u00e2\u0080\u0099n rhaid dewis y codau a ddatganwyd yn y maes cod lleoliad y nwyddau o\u00e2\u0080\u0099r rhestrau codau a ddangosir yn Atodiad 16"
   },
   {
     "code": "CDS50031",
@@ -682,67 +682,67 @@
   {
     "code": "CDS70711",
     "en": "Electronic licence does not exist",
-    "cy": "Electronic licence does not exist."
+    "cy": "Nid yw trwydded electronig yn bodoli"
   },
   {
     "code": "CDS70719",
     "en": "Electronic licence quoted but document status code indicates paper licence. Check the document status code",
-    "cy": "Electronic licence quoted but document status code indicates paper licence. Check the document status code."
+    "cy": "Nodir trwydded electronig, ond mae cod statws y ddogfen yn nodi trwydded bapur. Gwirio cod statws y ddogfen"
   },
   {
     "code": "CDS70724",
     "en": "This could be because:\n\nlicence does not match the commodity code\nlicensing authority declared is incorrect\nlicence is out of date licence allows insufficient quantity\nlicence reference number declared is incorrect\nlicence does not belong to the importer/ exporter declared\nlicence is not valid for the country of origin/ dispatch/ destination\nlicence does not match the DUCR declared in DE 2/1\n\nIf still stuck, contact the licensing authority",
-    "cy": "This could be because:\n\nlicence does not match the commodity code\nlicensing authority declared is incorrect\nlicence is out of date licence allows insufficient quantity\nlicence reference number declared is incorrect\nlicence does not belong to the importer/ exporter declared\nlicence is not valid for the country of origin/ dispatch/ destination\nlicence does not match the DUCR declared in DE 2/1\n\nIf still stuck, contact the licensing authority."
+    "cy": "Gallai hyn fod oherwydd y rhesymau canlynol:\n\nnid yw\u00e2\u0080\u0099r drwydded yn cyd-fynd \u00c3\u00a2\u00e2\u0080\u0099r cod nwyddau\nmae\u00e2\u0080\u0099r awdurdod trwyddedu a ddatganwyd yn anghywir\nmae\u00e2\u0080\u0099r drwydded yn hen nid yw\u00e2\u0080\u0099r drwydded yn caniat\u00c3\u00a1u swm digonol\nmae cyfeirnod y drwydded a ddatganwyd yn anghywir\nnid yw\u00e2\u0080\u0099r drwydded yn perthyn i\u00e2\u0080\u0099r mewnforiwr / allforiwr a ddatganwyd\nnid yw\u00e2\u0080\u0099r drwydded yn ddilys ar gyfer y wlad tarddiad/ anfon/ pen y daith\nnid yw\u00e2\u0080\u0099r drwydded yn cyd-fynd \u00c3\u00a2\u00e2\u0080\u0099r DUCR a ddatganwyd yn DE 2/1\n\nOs ydych yn sownd o hyd, cysylltwch \u00c3\u00a2\u00e2\u0080\u0099r awdurdod trwyddedu"
   },
   {
     "code": "CDS70739",
     "en": "Import licence cannot be used on an export declaration",
-    "cy": "Import licence cannot be used on an export declaration."
+    "cy": "Ni ellir defnyddio trwydded fewnforio ar ddatganiad allforio"
   },
   {
     "code": "CDS70740",
     "en": "Importer/Exporter is not the owner of the licence and/or licence is not valid",
-    "cy": "Importer/Exporter is not the owner of the licence and/or licence is not valid."
+    "cy": "Nid Mewnforiwr/Allforiwr yw perchennog y drwydded ac/neu nad yw\u00e2\u0080\u0099r drwydded yn ddilys"
   },
   {
     "code": "CDS70758",
     "en": "Licence is not valid for declared country of destination",
-    "cy": "Licence is not valid for declared country of destination."
+    "cy": "Nid yw\u00e2\u0080\u0099r drwydded yn ddilys ar gyfer y wlad pen y daith ddatganedig"
   },
   {
     "code": "CDS70760",
     "en": "This could be because:\n\nlicence does not match the commodity code licensing authority declared is incorrect\nlicence is out of date licence allows insufficient quantity\nlicence reference number declared is incorrect\nlicence does not belong to the importer/ exporter declared\nlicence is not valid for the country of origin/ dispatch/ destination\nlicence does not match the DUCR declared in DE 2/1\n\nIf still stuck, contact the issuing authority",
-    "cy": "This could be because:\n\nlicence does not match the commodity code licensing authority declared is incorrect\nlicence is out of date licence allows insufficient quantity\nlicence reference number declared is incorrect\nlicence does not belong to the importer/ exporter declared\nlicence is not valid for the country of origin/ dispatch/ destination\nlicence does not match the DUCR declared in DE 2/1\n\nIf still stuck, contact the issuing authority."
+    "cy": "Gallai hyn fod oherwydd y rhesymau canlynol:\n\nid yw\u00e2\u0080\u0099r drwydded yn cyd-fynd \u00c3\u00a2\u00e2\u0080\u0099r cod nwyddau\nmae\u00e2\u0080\u0099r awdurdod trwyddedu a ddatganwyd yn anghywir\nmae\u00e2\u0080\u0099r drwydded yn hen\nnid yw\u00e2\u0080\u0099r drwydded yn caniat\u00c3\u00a1u swm digonol\nmae cyfeirnod y drwydded a ddatganwyd yn anghywir\nnid yw\u00e2\u0080\u0099r drwydded yn perthyn i\u00e2\u0080\u0099r mewnforiwr / allforiwr a ddatganwyd\nnid yw\u00e2\u0080\u0099r drwydded yn ddilys ar gyfer y wlad tarddiad/ anfon/ pen y daith\nnid yw\u00e2\u0080\u0099r drwydded yn cyd-fynd \u00c3\u00a2\u00e2\u0080\u0099r DUCR a ddatganwyd yn DE 2/1\n\nOs ydych yn sownd o hyd, cysylltwch \u00c3\u00a2\u00e2\u0080\u0099r awdurdod trwyddedu"
   },
   {
     "code": "CDS70761",
     "en": "Licence does not cover the quantity declared",
-    "cy": "Licence does not cover the quantity declared."
+    "cy": "Nid yw\u00e2\u0080\u0099r drwydded yn cwmpasu\u00e2\u0080\u0099r swm a ddatganwyd"
   },
   {
     "code": "CDS70791",
     "en": "Line number given on licence is not valid",
-    "cy": "Line number given on licence is not valid."
+    "cy": "Nid yw rhif y llinell ar y drwydded yn ddilys"
   },
   {
     "code": "CDS71115",
     "en": "Export licence cannot be used on an import declaration",
-    "cy": "Export licence cannot be used on an import declaration."
+    "cy": "Ni ellir defnyddio trwydded allforio ar ddatganiad mewnforio"
   },
   {
     "code": "CDS71200",
     "en": "You cannot use the same reference on a single goods item",
-    "cy": "You cannot use the same reference on a single goods item."
+    "cy": "Ni allwch ddefnyddio\u00e2\u0080\u0099r un cyfeirnod ar eitem o nwyddau unigol"
   },
   {
     "code": "CDS71201",
     "en": "All instances of a licence for a declaration must use a consistent Document Status Code",
-    "cy": "All instances of a licence for a declaration must use a consistent Document Status Code."
+    "cy": "Mae\u00e2\u0080\u0099n rhaid i bob achos o drwydded ar gyfer datganiad ddefnyddio Cod Statws y Ddogfen cyson"
   },
   {
     "code": "CDS71203",
     "en": "Document status code \"EL\" or \"EP\" is not allowed on a single use licence.\nThe licence can only be used once so cannot be part used",
-    "cy": "Document status code \"EL\" or \"EP\" is not allowed on a single use licence.\nThe licence can only be used once so cannot be part used."
+    "cy": "Nid yw cod statws y ddogfen \"EL\" neu \"EP\" yn cael ei ganiat\u00c3\u00a1u ar drwydded ddefnydd untro.\nDim ond unwaith y gellir defnyddio\u00e2\u0080\u0099r drwydded, felly ni ellir ei defnyddio\u00e2\u0080\u0099n rhannol"
   },
   {
     "code": "CDS71204",
@@ -757,47 +757,47 @@
   {
     "code": "CDS71216",
     "en": "Licence declared has been made inactive, check correct licence is declared or contact issuing authority",
-    "cy": "Licence declared has been made inactive, check correct licence is declared or contact issuing authority."
+    "cy": "Mae\u00e2\u0080\u0099r drwydded a ddatganwyd wedi\u00e2\u0080\u0099i gwneud yn segur, gwiriwch fod y drwydded gywir wedi\u00e2\u0080\u0099i ddatgan neu cysylltwch \u00c3\u00a2\u00e2\u0080\u0099r awdurdod dosbarthu"
   },
   {
     "code": "CDS71236",
     "en": "You have declared an invalid Licence for the declared Country of Origin",
-    "cy": "You have declared an invalid Licence for the declared Country of Origin."
+    "cy": "Rydych wedi datgan Trwydded annilys ar gyfer y Wlad Darddiad ddatganedig"
   },
   {
     "code": "CDS71252",
     "en": "Licence not valid for declared country of dispatch",
-    "cy": "Licence not valid for declared country of dispatch."
+    "cy": "Nid yw\u00e2\u0080\u0099r drwydded yn ddilys ar gyfer datgan gwlad anfon"
   },
   {
     "code": "CDS71262",
     "en": "Document Status Code \"EA\" can only be used on a supplementary declaration",
-    "cy": "Document Status Code \"EA\" can only be used on a supplementary declaration."
+    "cy": "Dim ond ar ddatganiad atodol y gellir defnyddio Cod Statws y Ddogfen \"EA\""
   },
   {
     "code": "CDS73329",
     "en": "A licence document code (for example X002, 9106) cannot be declared on this type of declaration, even if using a waiver/exemption document status code. If the goods are entitled to a waiver/exemption and there is a waiver document code which can be used in place of the licence document code (for example Y903, Y927), then this can be used instead. If there is no waiver document code that can be used then it may be necssary to use a standard declaration",
-    "cy": "A licence document code (for example X002, 9106) cannot be declared on this type of declaration, even if using a waiver/exemption document status code. If the goods are entitled to a waiver/exemption and there is a waiver document code which can be used in place of the licence document code (for example Y903, Y927), then this can be used instead. If there is no waiver document code that can be used then it may be necssary to use a standard declaration."
+    "cy": "Ni ellir datgan cod dogfen y drwydded (er enghraifft X002, 9106) ar y math hwn o ddatganiad, hyd yn oed os ydych yn defnyddio cod statws ildiad / eithriad y ddogfen. Os oes gan y nwyddau hawl i ildiad/eithriad a bod cod dogfen ildiad y gellir ei ddefnyddio yn lle cod dogfen y drwydded (er enghraifft Y903, Y927), yna gellir defnyddio hwn yn lle. Os nad oes cod dogfen ildiad y gellir ei ddefnyddio yna efallai y bydd angen defnyddio datganiad safonol"
   },
   {
     "code": "CDS77000",
     "en": "Instructions for how to declare document codes are given in Appendix 5A",
-    "cy": "Instructions for how to declare document codes are given in Appendix 5A."
+    "cy": "Rhoddir cyfarwyddiadau ar sut i ddatgan codau dogfen yn Atodiad 5A"
   },
   {
     "code": "CDS77001",
     "en": "In some cases, when you declare a document status code to indicate a waiver for a licence, you are still required to enter a '0' as the the quantity attributed to the licence. This will also require a measurement unit such as GBP",
-    "cy": "In some cases, when you declare a document status code to indicate a waiver for a licence, you are still required to enter a '0' as the the quantity attributed to the licence. This will also require a measurement unit such as GBP."
+    "cy": "Mewn rhai achosion, pan fyddwch yn datgan cod statws y ddogfen i ddangos ildiad ar gyfer trwydded, mae o hyd yn ofynnol i chi roi \u00e2\u0080\u00980\u00e2\u0080\u0099 fel y swm a briodolir i\u00e2\u0080\u0099r drwydded. Bydd hyn hefyd yn gofyn am uned fesur fel GBP"
   },
   {
     "code": "CDS77002",
     "en": "Check appendix 5A for more information",
-    "cy": "Check appendix 5A for more information."
+    "cy": "Gwiriwch atodiad 5A am ragor o wybodaeth"
   },
   {
     "code": "CDS77003",
     "en": "You have not provided a DUCR - this is required at header level for an import declaration with a licence.",
-    "cy": "You have not provided a DUCR - this is required at header level for an import declaration with a licence."
+    "cy": "Nid ydych wedi rhoi DUCR - mae angen hyn ar lefel y pennyn ar gyfer datganiad mewnforio gyda thrwydded."
   },
   {
     "code": "CDS77004",
@@ -807,6 +807,6 @@
   {
     "code": "CDS77005",
     "en": "The Y series document code used requires a document reason. Check appendix 5A for the information required",
-    "cy": "The Y series document code used requires a document reason. Check appendix 5A for the information required."
+    "cy": "Mae cod dogfen cyfres Y a ddefnyddiwyd yn gofyn am reswm dros y ddogfen. Gwiriwch atodiad 5A am yr wybodaeth sydd ei hangen"
   }
 ]
