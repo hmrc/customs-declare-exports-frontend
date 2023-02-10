@@ -1496,7 +1496,7 @@ declaration.details.readMoreAboutDecStatus.decHasError.paragraph = Mae gwiriadau
 
 declaration.details.readMoreAboutDecStatus.accepted.header = Statws ‘Wedi cyrraedd a’i dderbyn’
 
-declaration.details.readMoreAboutDecStatus.accepted.paragraph = Bydd datganiad wedi cyrraedd sy'n cael ei ddilysu yn cael ei dderbyn gan y tollau yn barod i’w adolygu a’i wirio wrth i’ch nwyddau fynd trwy’r tollau. Bydd datganiad a gyflwynwyd ymlaen llaw yn cael ei nodi fel ‘wedi cyrraedd ac wedi’i dderbyn’ ar ôl i nwyddau gyrraedd.
+declaration.details.readMoreAboutDecStatus.accepted.paragraph = Bydd datganiad wedi cyrraedd sy’n cael ei ddilysu yn cael ei dderbyn gan y tollau yn barod i’w adolygu a’i wirio wrth i’ch nwyddau fynd trwy’r tollau. Bydd datganiad a gyflwynwyd ymlaen llaw yn cael ei nodi fel ‘wedi cyrraedd ac wedi’i dderbyn’ ar ôl i nwyddau gyrraedd.
 
 declaration.details.readMoreAboutDecStatus.documentsRequired.header = Statws ‘Angen dogfennau’
 
@@ -1536,7 +1536,7 @@ declaration.details.readMoreAboutDecStatus.queryRaised.paragraph.1 = Efallai y b
 
 declaration.details.readMoreAboutDecStatus.queryRaised.paragraph.2 = Byddwch hefyd yn cael gwybod am unrhyw ymholiadau ar eich e-bost CDS: {0}.
 
-declaration.details.uploadDocuments.header = Wrthi'n uwchlwytho dogfennau
+declaration.details.uploadDocuments.header = Wrthi’n uwchlwytho dogfennau
 
 declaration.details.uploadDocuments.details = Beth i uwchlwytho, a phryd
 
@@ -2212,7 +2212,7 @@ declaration.additionalDocument.issuingAuthorityName.error.length = Mae’n rhaid
 
 declaration.additionalDocument.dateOfValidity = Dyddiad dilysrwydd (os oes angen)
 
-declaration.additionalDocument.dateOfValidity.hint = Er enghraifft, dyddiad y daw'r drwydded i ben neu ddyddiad anfon y dystiolaeth o darddiad yn y fformat, 20 3 2021.
+declaration.additionalDocument.dateOfValidity.hint = Er enghraifft, dyddiad y daw’r drwydded i ben neu ddyddiad anfon y dystiolaeth o darddiad yn y fformat, 20 3 2021.
 
 declaration.additionalDocument.dateOfValidity.error.format = Mae’n rhaid i’r dyddiad dilysrwydd fod yn ddyddiad go iawn
 
@@ -2510,7 +2510,7 @@ declaration.transportInformation.transportPayment.paymentMethod.accHolder = Deil
 
 declaration.transportInformation.transportPayment.paymentMethod.notPrePaid = Heb dalu ymlaen llaw
 
-declaration.transportInformation.transportPayment.paymentMethod.notAvailable = Nid yw'r wybodaeth dalu ar gael
+declaration.transportInformation.transportPayment.paymentMethod.notAvailable = Nid yw’r wybodaeth dalu ar gael
 
 declaration.transportInformation.transportPayment.paymentMethod.error.empty = Dewiswch sut y gwnaethoch dalu am y cludiant brys
 
@@ -2790,7 +2790,7 @@ declaration.unDangerousGoodsCode.error.invalid = Mae’n rhaid i god nwyddau per
 
 declaration.cusCode.header = A oes cod CUS ar gyfer yr eitem hon?
 
-declaration.cusCode.paragraph = Mae angen rhif undeb ac ystadegau'r tollau (cod CUS) ar gyfer cemegion sy’n cael eu dynodi ym mhenodau 28, 29 a rhai ym mhennod 38 o Dariff Masnach y DU. Gallwch wirio hyn trwy nodi enw’r nwydd neu rif y Cenhedloedd Unedig i’r {0}.
+declaration.cusCode.paragraph = Mae angen rhif undeb ac ystadegau’r tollau (cod CUS) ar gyfer cemegion sy’n cael eu dynodi ym mhenodau 28, 29 a rhai ym mhennod 38 o Dariff Masnach y DU. Gallwch wirio hyn trwy nodi enw’r nwydd neu rif y Cenhedloedd Unedig i’r {0}.
 
 declaration.cusCode.paragraph.link = Offeryn gwybodaeth am sylweddau cemegol ECICS (yn agor tab newydd)
 
@@ -2842,7 +2842,7 @@ declaration.taricAdditionalCodes.error.empty = Nodwch god TARIC
 
 declaration.taricAdditionalCodes.error.invalid = Mae’n rhaid i’r cod TARIC ychwanegol gynnwys rhifau a llythrennau’n unig
 
-declaration.taricAdditionalCodes.error.duplicate = Mae'r cod ychwanegol eisoes wedi’i ychwanegu
+declaration.taricAdditionalCodes.error.duplicate = Mae’r cod ychwanegol eisoes wedi’i ychwanegu
 
 declaration.taricAdditionalCodes.table.header = Cod ychwanegol
 
@@ -3100,7 +3100,7 @@ declaration.additionalInformation.title = Gwybodaeth Ychwanegol (AI)
 
 declaration.additionalInformation.code = Cod AI cenedlaethol neu god AI yr Undeb
 
-declaration.additionalInformation.code.paragraph = Ychwanegwch bob cod a’r datganiad gofynnol sy'n cyd-fynd ag ef, sydd wedi’i restru yn {0}.
+declaration.additionalInformation.code.paragraph = Ychwanegwch bob cod a’r datganiad gofynnol sy’n cyd-fynd ag ef, sydd wedi’i restru yn {0}.
 
 declaration.additionalInformation.code.paragraph.link = atodiad 4 (yn agor tab newydd)
 
@@ -3838,7 +3838,7 @@ declaration.summary.transport.payment.Y = Deiliad y cyfrif gyda chludwr
 
 declaration.summary.transport.payment.Z = Heb dalu ymlaen llaw
 
-declaration.summary.transport.payment._ = Nid yw'r wybodaeth dalu ar gael
+declaration.summary.transport.payment._ = Nid yw’r wybodaeth dalu ar gael
 
 declaration.summary.transport.containers = Nwyddau mewn cynhwysydd
 
@@ -3860,7 +3860,7 @@ declaration.summary.warning = Os byddwch yn newid yr awdurdodiadau, codau nwydda
 
 declaration.summary.saved.label = I ailgydio yn eich datganiad
 
-declaration.summary.saved.body = I ailgydio ynddi o ble'r oeddech y tro diwethaf, cliciwch ar y cysylltiad ‘Newid’ diweddaraf. Pan fyddwch wedi cwblhau’r holl gwestiynau, gallwch gyflwyno’ch datganiad.
+declaration.summary.saved.body = I ailgydio ynddi o ble’r oeddech y tro diwethaf, cliciwch ar y cysylltiad ‘Newid’ diweddaraf. Pan fyddwch wedi cwblhau’r holl gwestiynau, gallwch gyflwyno’ch datganiad.
 
 declaration.summary.amend.body = Defnyddiwch y cysylltiadau ‘Newid’ i wneud rhagor o ddiwygiadau os oes angen.
 
@@ -3882,7 +3882,7 @@ declaration.itemsAdd.paragraph.1 = Gall datganiad gael un eitem neu fwy, ac mae 
 
 declaration.itemsAdd.paragraph.2 = Gellir cludo eitem o nwyddau mewn un pecyn neu mewn sawl pecyn. Cyn belled â bod gan yr holl nwyddau yr un cod nwyddau, mae hon yn dal i fod yn un eitem.
 
-declaration.itemsAdd.paragraph.3 = I’r gwrthwyneb, gallai dwy eitem wahanol gyda chodau nwyddau gwahanol rannu’r un paled neu gynhwysydd. Mae'n rhaid i chi ddatgan y ddwy eitem hyn ar wahân o hyd.
+declaration.itemsAdd.paragraph.3 = I’r gwrthwyneb, gallai dwy eitem wahanol gyda chodau nwyddau gwahanol rannu’r un paled neu gynhwysydd. Mae’n rhaid i chi ddatgan y ddwy eitem hyn ar wahân o hyd.
 
 declaration.itemsAdd.change.hint = Newidiwch eitem {0}.
 
@@ -4244,7 +4244,7 @@ field.declaration.items.$.additionalFiscalReferences.$.id = Rhyddhad anfon cyfle
 
 field.declaration.items.$.additionalFiscalReferences.$.roleCode = Rhyddhad anfon cyflenwad ymlaen {1} o Eitem {0}
 
-field.declaration.items.$.procedureCodes.procedureCode.current = Cod gweithdrefn, Eitem {0}, sydd wedi'i ofyn amdano
+field.declaration.items.$.procedureCodes.procedureCode.current = Cod gweithdrefn, Eitem {0}, sydd wedi’i ofyn amdano
 
 field.declaration.items.$.procedureCodes.procedureCode.previous = Cod gweithdrefn blaenorol Eitem {0}
 
@@ -4712,7 +4712,7 @@ guidance.entry.section.1.paragraph.2 = Gallwch {0}, fel trefnydd anfon nwyddau, 
 
 guidance.entry.section.1.paragraph.2.link.1 = cael rhywun i ddelio â datganiadau tollau ar eich rhan
 
-guidance.entry.section.1.paragraph.3 = Mae rheolau gwahanol os yw'r canlynol yn wir:
+guidance.entry.section.1.paragraph.3 = Mae rheolau gwahanol os yw’r canlynol yn wir:
 
 guidance.entry.section.1.paragraph.4 = Rhagor o wybodaeth am {0}.
 
@@ -4730,7 +4730,7 @@ guidance.entry.section.2.header.1 = Gwneud y datganiad eich hun
 
 guidance.entry.section.2.paragraph.1 = Gwneud datganiad ar y system Gwasanaeth Datganiadau Tollau (CDS) newydd
 
-guidance.entry.section.2.paragraph.2 = Os nad ydych wedi gwneud datganiadau allforio o'r blaen neu os ydych yn symud o’r platfform NESWEB, mae angen i chi gael mynediad at CDS yn gyntaf. Yna, gallwch wneud un (neu’r ddau) o’r canlynol:
+guidance.entry.section.2.paragraph.2 = Os nad ydych wedi gwneud datganiadau allforio o’r blaen neu os ydych yn symud o’r platfform NESWEB, mae angen i chi gael mynediad at CDS yn gyntaf. Yna, gallwch wneud un (neu’r ddau) o’r canlynol:
 
 guidance.entry.section.2.paragraph.3 = Os oes angen i chi gael mynediad at y gwasanaeth datganiadau allforio ar gyfer pobl eraill yn eich busnes, gallwch {0}.
 

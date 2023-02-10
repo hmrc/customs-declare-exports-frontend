@@ -33,69 +33,40 @@ class LanguageSwitchControllerSpec extends ConnectorISpec with OptionValues {
   private def switchLanguageRoute(lang: String): String = controllers.routes.LanguageSwitchController.switchToLanguage(lang).url
 
   "LanguageSwitch Controller" when {
-
     "English selected" must {
       "switch to English" in {
-
         val request = FakeRequest(GET, switchLanguageRoute(english)).withHeaders(requestHeaders)
-
         val result = route(fakeApplication(), request).value
-
         status(result) mustEqual SEE_OTHER
-
         redirectLocation(result).value mustEqual fakeUrl
-
         cookies(result).find(_.name == "PLAY_LANG").get.value mustEqual "en"
-
       }
     }
-
     "Welsh selected" must {
       "switch to Welsh" in {
-
         val request = FakeRequest(GET, switchLanguageRoute(welsh)).withHeaders(requestHeaders)
-
         val result = route(fakeApplication(), request).value
-
         status(result) mustEqual SEE_OTHER
-
         redirectLocation(result).value mustEqual fakeUrl
-
         cookies(result).find(_.name == "PLAY_LANG").get.value mustEqual "cy"
-
       }
     }
-
     "Other selected" must {
       "default to English" in {
-
         val request = FakeRequest(GET, switchLanguageRoute(other)).withHeaders(requestHeaders)
-
         val result = route(fakeApplication(), request).value
-
         status(result) mustEqual SEE_OTHER
-
         redirectLocation(result).value mustEqual fakeUrl
-
         cookies(result).find(_.name == "PLAY_LANG").get.value mustEqual "en"
-
       }
     }
-
     "no referer in header" must {
-
       "redirect to login continue url" in {
-
         val request = FakeRequest(GET, switchLanguageRoute(welsh))
-
         val result = route(fakeApplication(), request).value
-
         status(result) mustEqual SEE_OTHER
-
         redirectLocation(result).value mustEqual fakeApplication().injector.instanceOf[AppConfig].loginContinueUrl
-
       }
     }
-
   }
 }
