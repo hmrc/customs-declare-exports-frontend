@@ -191,6 +191,8 @@ class AppConfig @Inject() (
   lazy val isUsingImprovedErrorMessages =
     runModeConfiguration.getOptional[Boolean]("microservice.services.features.use-improved-error-messages").getOrElse(false)
 
+  lazy val languages: Seq[String] = runModeConfiguration.get[Seq[String]]("play.i18n.langs")
+
   def languageMap: Map[String, Lang] = Map("english" -> Lang("en"), "cymraeg" -> Lang("cy"))
 
   lazy val cacheTimeToLive: FiniteDuration =

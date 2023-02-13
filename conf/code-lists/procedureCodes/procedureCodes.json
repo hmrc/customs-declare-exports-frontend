@@ -2,81 +2,81 @@
   {
     "code": "1040",
     "en": "Permanent Export of UK goods or goods in Free Circulation and Home Use",
-    "cy": "Permanent Export of UK goods or goods in Free Circulation and Home Use"
+    "cy": "Allforio\u00e2\u0080\u0099n barhaol nwyddau\u00e2\u0080\u0099r DU neu nwyddau mewn Cylchrediad Rhydd ac at Ddefnydd yn y Cartref"
   },
   {
     "code": "1007",
     "en": "Permanent Export of goods from an Excise Warehouse",
-    "cy": "Permanent Export of goods from an Excise Warehouse"
+    "cy": "Allforio nwyddau o Warws Ecs\u00c3\u00a9is yn barhaol"
   },
   {
     "code": "1042",
     "en": "Permanent export of goods previously placed under Onward Supply Relief (OSR)",
-    "cy": "Permanent export of goods previously placed under Onward Supply Relief (OSR)"
+    "cy": "Allforio\u00e2\u0080\u0099n barhaol nwyddau a osodwyd yn flaenorol o dan Ryddhad Anfon Cyflenwad Ymlaen (OSR)"
   },
   {
     "code": "1044",
     "en": "Permanent Export of goods previously entered to End Use",
-    "cy": "Permanent Export of goods previously entered to End Use"
+    "cy": "Allforio nwyddau\u00e2\u0080\u0099n barhaol, a nodwyd yn flaenorol at Ddefnydd Terfynol "
   },
   {
     "code": "1100",
     "en": "Inward Processing (IP) Prior Export Equivalence (PEE)",
-    "cy": "Inward Processing (IP) Prior Export Equivalence (PEE)"
+    "cy": "Prosesu mewnol (IP) Cywerthedd Allforion Blaenorol (PEE)"
   },
   {
     "code": "2100",
     "en": "Temporary Export under Outward Processing (OP)",
-    "cy": "Temporary Export under Outward Processing (OP)"
+    "cy": "Allforio Dros Dro o dan Brosesu Allanol (OP)"
   },
   {
     "code": "2144",
     "en": "Temporary Export under Outward Processing (OP) of goods previously entered to End Use",
-    "cy": "Temporary Export under Outward Processing (OP) of goods previously entered to End Use"
+    "cy": "Allforio Dros Dro o dan Brosesu Allanol (OP) o nwyddau a nodwyd yn flaenorol at Ddefnydd Terfynol"
   },
   {
     "code": "2151",
     "en": "Temporary Export under Outward Processing (OP) for goods previously entered to Inward Processing (IP)",
-    "cy": "Temporary Export under Outward Processing (OP) for goods previously entered to Inward Processing (IP)"
+    "cy": "Allforio dros dro o dan Brosesu Allanol (OP) ar gyfer nwyddau a nodwyd yn flaenorol at Brosesu Mewnol (IP)"
   },
   {
     "code": "2154",
     "en": "Temporary Export under Outward Processing (OP) for goods previously entered to Inward Processing (IP) in another Member State",
-    "cy": "Temporary Export under Outward Processing (OP) for goods previously entered to Inward Processing (IP) in another Member State"
+    "cy": "Allforio Dros Dro o dan Brosesu Allanol (OP) ar gyfer nwyddau a nodwyd yn flaenorol at Brosesu Mewnol (IP) mewn Aelod-wladwriaeth arall"
   },
   {
     "code": "2200",
     "en": "Temporary Export under Outward Processing (OP) for goods not covered under Requested Procedure Code 21",
-    "cy": "Temporary Export under Outward Processing (OP) for goods not covered under Requested Procedure Code 21"
+    "cy": "Allforio Dros Dro o dan Brosesu Allanol (OP) ar gyfer nwyddau nad ydynt wedi\u00e2\u0080\u0099u cynnwys o dan God Gweithdrefn 21 y gofynnwyd amdano"
   },
   {
     "code": "2244",
     "en": "Temporary Export under Outward Processing (OP) for goods not covered under Requested Procedure Code 21, previously entered to End Use",
-    "cy": "Temporary Export under Outward Processing (OP) for goods not covered under Requested Procedure Code 21, previously entered to End Use"
+    "cy": "Allforio Dros Dro o dan Brosesu Allanol (OP) ar gyfer nwyddau nad ydynt wedi\u00e2\u0080\u0099u cynnwys o dan God Gweithdrefn 21 y gofynnwyd amdano, a nodwyd yn flaenorol at Ddefnydd Terfynol"
   },
   {
     "code": "2300",
     "en": "Temporary Export of UK goods or goods in Free Circulation and/ or Home Use which are intended to be returned under Returned Goods Relief (RGR)",
-    "cy": "Temporary Export of UK goods or goods in Free Circulation and/ or Home Use which are intended to be returned under Returned Goods Relief (RGR)"
+    "cy": "Allforio Dros Dro nwyddau\u00e2\u0080\u0099r DU neu nwyddau mewn Cylchrediad Rhydd a/neu at Ddefnydd yn y Cartref y bwriedir eu dychwelyd o dan Ryddhad Nwyddau a Ddychwelwyd (RGR)"
   },
   {
     "code": "3151",
     "en": "Re-export of non-UK goods previously entered to Inward Processing (IP)",
-    "cy": "Re-export of non-UK goods previously entered to Inward Processing (IP)"
+    "cy": "Ail-allforio nwyddau o\u00e2\u0080\u0099r tu allan i\u00e2\u0080\u0099r DU a nodwyd yn flaenorol at Brosesu Mewnol (IP)"
   },
   {
     "code": "3153",
     "en": "Re-export of non-UK goods previously entered to Temporary Admission (TA)",
-    "cy": "Re-export of non-UK goods previously entered to Temporary Admission (TA)"
+    "cy": "Ail-allforio nwyddau o\u00e2\u0080\u0099r tu allan i\u00e2\u0080\u0099r DU a nodwyd yn flaenorol at Fynediad Dros Dro (IP)"
   },
   {
     "code": "3154",
     "en": "Re-export of non-Union goods previously entered to IP in another Member State",
-    "cy": "Re-export of non-Union goods previously entered to IP in another Member State"
+    "cy": "Ail-allforio nwyddau o\u00e2\u0080\u0099r tu allan i\u00e2\u0080\u0099r Undeb a nodwyd yn flaenorol at IP mewn Aelod-wladwriaeth arall"
   },
   {
     "code": "3171",
     "en": "Re-export of non-UK goods previously entered to Customs Warehousing",
-    "cy": "Re-export of non-UK goods previously entered to Customs Warehousing"
+    "cy": "Ail-allforio nwyddau o\u00e2\u0080\u0099r tu allan i\u00e2\u0080\u0099r DU a nodwyd at gael eu cadw mewn Warws Tollau"
   }
 ]

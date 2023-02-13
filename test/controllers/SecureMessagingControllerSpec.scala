@@ -29,6 +29,7 @@ import play.api.test.CSRFTokenHelper.CSRFRequest
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.play.partials.HeaderCarrierForPartialsConverterImpl
 import views.html.messaging.{inbox_wrapper, partial_wrapper}
 
 import scala.concurrent.Future
@@ -50,7 +51,8 @@ class SecureMessagingControllerSpec extends ControllerWithoutFormSpec {
       secureMessagingFrontendConnector,
       stubMessagesControllerComponents(),
       inboxWrapperPage,
-      partialWrapperPage
+      partialWrapperPage,
+      new HeaderCarrierForPartialsConverterImpl
     )
 
   override def beforeEach(): Unit = {
