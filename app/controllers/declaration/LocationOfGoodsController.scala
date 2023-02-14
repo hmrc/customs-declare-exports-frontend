@@ -27,7 +27,7 @@ import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Results}
 import services.TaggedAuthCodes
 import services.cache.ExportsCacheService
-import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
+import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.location_of_goods
 
@@ -44,7 +44,7 @@ class LocationOfGoodsController @Inject() (
   navigator: Navigator,
   taggedAuthCodes: TaggedAuthCodes
 )(implicit ec: ExecutionContext, codeListConnector: CodeListConnector)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
 
   def displayPage: Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     if (taggedAuthCodes.skipLocationOfGoods(request.cacheModel)) Results.Redirect(RootController.displayPage)

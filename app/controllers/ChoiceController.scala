@@ -27,7 +27,7 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import play.twirl.api.HtmlFormat
-import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
+import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.dashboard.DashboardHelper.toDashboard
 import views.html.choice_page
@@ -42,7 +42,7 @@ class ChoiceController @Inject() (
   choicePage: choice_page,
   appConfig: AppConfig,
   externalServicesConfig: ExternalServicesConfig
-) extends FrontendController(mcc) with I18nSupport with WithDefaultFormBinding {
+) extends FrontendController(mcc) with I18nSupport with WithUnsafeDefaultFormBinding {
 
   lazy val availableJourneys =
     if (secureMessagingInboxConfig.isExportsSecureMessagingEnabled)

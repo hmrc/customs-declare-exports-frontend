@@ -36,7 +36,7 @@ import play.twirl.api.Html
 import services.SubmissionService
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
+import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.dashboard.DashboardHelper.toDashboard
 import views.helpers.ActionItemBuilder.lastUrlPlaceholder
@@ -58,7 +58,7 @@ class SummaryController @Inject() (
   legalDeclarationPage: legal_declaration_page,
   lrnValidator: LrnValidator
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
-    extends FrontendController(mcc) with I18nSupport with Logging with ModelCacheable with WithDefaultFormBinding {
+    extends FrontendController(mcc) with I18nSupport with Logging with ModelCacheable with WithUnsafeDefaultFormBinding {
 
   val form: Form[LegalDeclaration] = LegalDeclaration.form
 

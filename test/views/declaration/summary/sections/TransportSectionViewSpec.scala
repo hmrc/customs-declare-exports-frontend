@@ -30,7 +30,7 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestHelper with 
   val data = aDeclaration(
     withDepartureTransport(ModeOfTransportCode.Maritime, "10", "identifier"),
     withBorderTransport("11", "borderId"),
-    withContainerData(Seq.empty),
+    withContainerData(Seq.empty: _*),
     withTransportPayment(Some(TransportPayment("A"))),
     withWarehouseIdentification(Some(WarehouseIdentification(Some("12345")))),
     withSupervisingCustomsOffice(Some(SupervisingCustomsOffice(Some("23456")))),
@@ -184,7 +184,7 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestHelper with 
     }
 
     "display containers section (but not yes/no answer) if containers are not empty" in {
-      val view = section(aDeclaration(withContainerData(Container("123", Seq.empty))))(messages)
+      val view = section(aDeclaration(withContainerData(Container(1, "123", Seq.empty))))(messages)
       view.getElementById("containers-table").text() mustNot be(empty)
     }
 

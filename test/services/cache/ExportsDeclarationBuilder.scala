@@ -32,6 +32,7 @@ import forms.declaration.declarationHolder.DeclarationHolder
 import forms.declaration.exporter.ExporterDetails
 import forms.declaration.officeOfExit.OfficeOfExit
 import forms.{Ducr, Lrn, Mrn}
+import models.DeclarationMeta.{ContainerKey, RoutingCountryKey, SealKey}
 import models.DeclarationStatus.DeclarationStatus
 import models.DeclarationType.DeclarationType
 import models.declaration._
@@ -181,11 +182,26 @@ trait ExportsDeclarationBuilder {
   def withoutRoutingQuestion(): ExportsDeclarationModifier =
     model => model.copy(locations = model.locations.copy(hasRoutingCountries = None))
 
-  def withRoutingCountries(routingCountries: Seq[Country] = Seq(Country(Some("FR")), Country(Some("GB")))): ExportsDeclarationModifier =
-    model => model.copy(locations = model.locations.copy(routingCountries = routingCountries))
+  def withRoutingCountries(countries: Seq[Country] = Seq(Country(Some("FR")), Country(Some("GB")))): ExportsDeclarationModifier = {
+    require(countries.nonEmpty)
+    model => {
+      val meta = model.declarationMeta
+      val routingCountries = countries.zipWithIndex.map { case (country, ix) => RoutingCountry(ix + 1, country) }
+      model.copy(
+        declarationMeta = meta.copy(maxSequenceIds = meta.maxSequenceIds + (RoutingCountryKey -> routingCountries.last.sequenceId)),
+        locations = model.locations.copy(routingCountries = routingCountries, hasRoutingCountries = Some(true))
+      )
+    }
+  }
 
   def withoutRoutingCountries(): ExportsDeclarationModifier =
-    model => model.copy(locations = model.locations.copy(routingCountries = Seq.empty))
+    model => {
+      val meta = model.declarationMeta
+      model.copy(
+        declarationMeta = meta.copy(maxSequenceIds = meta.maxSequenceIds + (RoutingCountryKey -> 0)),
+        locations = model.locations.copy(routingCountries = Seq.empty)
+      )
+    }
 
   def withoutItems(): ExportsDeclarationModifier = _.copy(items = Seq.empty)
 
@@ -375,13 +391,8 @@ trait ExportsDeclarationBuilder {
     declaration =>
       declaration.copy(transport = declaration.transport.copy(transportCrossingTheBorderNationality = Some(TransportCountry(countryName))))
 
-  def withDestinationCountries(
-    countriesOfRouting: Seq[Country] = Seq.empty,
-    countryOfDestination: Country = Country(Some("US"))
-  ): ExportsDeclarationModifier = {
+  def withDestinationCountries(countryOfDestination: Country = Country(Some("US"))): ExportsDeclarationModifier =
     withDestinationCountry(countryOfDestination)
-    withRoutingCountries(countriesOfRouting)
-  }
 
   def withoutCarrierDetails(): ExportsDeclarationModifier =
     cache => cache.copy(parties = cache.parties.copy(carrierDetails = None))
@@ -428,13 +439,26 @@ trait ExportsDeclarationBuilder {
         )
       )
 
-  def withContainerData(data: Container): ExportsDeclarationModifier = withContainerData(Seq(data))
-
-  def withContainerData(data: Seq[Container]): ExportsDeclarationModifier =
-    cache => cache.copy(transport = cache.transport.copy(containers = Some(data)))
+  def withContainerData(containers: Container*): ExportsDeclarationModifier = { cache =>
+    val meta = cache.declarationMeta
+    val lastContainerId = containers.foldLeft(0) { case (max, container) => Math.max(max, container.sequenceId) }
+    val lastSealId = containers.foldLeft(0) { case (max, container) =>
+      container.seals.foldLeft(max) { case (max, seal) => Math.max(max, seal.sequenceId) }
+    }
+    cache.copy(
+      declarationMeta = meta.copy(maxSequenceIds = meta.maxSequenceIds ++ List(ContainerKey -> lastContainerId, SealKey -> lastSealId)),
+      transport = cache.transport.copy(containers = Some(containers))
+    )
+  }
 
   def withoutContainerData(): ExportsDeclarationModifier =
-    cache => cache.copy(transport = cache.transport.copy(containers = None))
+    model => {
+      val meta = model.declarationMeta
+      model.copy(
+        declarationMeta = meta.copy(maxSequenceIds = meta.maxSequenceIds ++ List(ContainerKey -> 0, SealKey -> 0)),
+        transport = model.transport.copy(containers = None)
+      )
+    }
 
   def withIsExs(data: IsExs = IsExs("Yes")): ExportsDeclarationModifier = cache => cache.copy(parties = cache.parties.copy(isExs = Some(data)))
 

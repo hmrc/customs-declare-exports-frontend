@@ -30,7 +30,7 @@ import play.api.data.{Form, FormError}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.audit.{AuditService, AuditTypes, EventData}
-import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
+import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.cancel_declaration
 
@@ -48,7 +48,7 @@ class CancelDeclarationController @Inject() (
   auditService: AuditService,
   cancelDeclarationPage: cancel_declaration
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with Logging with WithDefaultFormBinding {
+    extends FrontendController(mcc) with I18nSupport with Logging with WithUnsafeDefaultFormBinding {
 
   def displayPage: Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
     getSessionData() match {

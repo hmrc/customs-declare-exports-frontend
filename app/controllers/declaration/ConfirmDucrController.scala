@@ -28,7 +28,7 @@ import play.api.i18n.I18nSupport
 import play.api.i18n.Lang.logger
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.cache.ExportsCacheService
-import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
+import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.confirm_ducr
 
@@ -43,7 +43,7 @@ class ConfirmDucrController @Inject() (
   override val exportsCacheService: ExportsCacheService,
   confirmDucrPage: confirm_ducr
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with WithDefaultFormBinding with ModelCacheable with SubmissionErrors {
+    extends FrontendController(mcc) with I18nSupport with WithUnsafeDefaultFormBinding with ModelCacheable with SubmissionErrors {
 
   private val authAndAcceptedTypes = authenticate andThen journeyAction(List(STANDARD, CLEARANCE, SIMPLIFIED, OCCASIONAL))
 

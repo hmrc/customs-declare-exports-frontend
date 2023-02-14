@@ -139,7 +139,7 @@ case class ExportsDeclaration(
   def requiresWarehouseId: Boolean = items.exists(_.requiresWarehouseId)
 
   def removeCountryOfRouting(country: Country): ExportsDeclaration =
-    copy(locations = locations.copy(routingCountries = locations.routingCountries.filterNot(_ == country)))
+    copy(locations = locations.copy(routingCountries = locations.routingCountries.filterNot(_.country == country)))
 
   def removeSupervisingCustomsOffice: ExportsDeclaration =
     copy(locations = locations.copy(supervisingCustomsOffice = None))
@@ -173,7 +173,7 @@ case class ExportsDeclaration(
 
   def updateType(`type`: DeclarationType): ExportsDeclaration = copy(`type` = `type`)
 
-  def updateCountriesOfRouting(routingCountries: Seq[Country]): ExportsDeclaration =
+  def updateCountriesOfRouting(routingCountries: Seq[RoutingCountry]): ExportsDeclaration =
     copy(locations = locations.copy(routingCountries = routingCountries))
 
   def updateDestinationCountry(destinationCountry: Country): ExportsDeclaration =

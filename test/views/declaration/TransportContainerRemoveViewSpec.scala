@@ -20,9 +20,8 @@ import base.Injector
 import controllers.declaration.routes.TransportContainerController
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.form
-import forms.declaration.Seal
 import models.DeclarationType.STANDARD
-import models.declaration.Container
+import models.declaration.{Container, Seal}
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import views.declaration.spec.PageWithButtonsSpec
@@ -34,7 +33,7 @@ class TransportContainerRemoveViewSpec extends PageWithButtonsSpec with Injector
 
   val containerId = "434732435324"
   val sealId = "934545754"
-  val container = Container(containerId, Seq(Seal(sealId)))
+  val container = Container(1, containerId, Seq(Seal(1, sealId)))
 
   val page = instanceOf[transport_container_remove]
 

@@ -29,7 +29,7 @@ import models.requests.{ExportsSessionKeys, JourneyRequest}
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.cache.ExportsCacheService
-import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
+import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.helpers.DeclarationDetailsLinks.isDeclarationRejected
 import views.html.copy_declaration
@@ -48,7 +48,7 @@ class CopyDeclarationController @Inject() (
   mcc: MessagesControllerComponents,
   copyDeclarationPage: copy_declaration
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
 
   def redirectToReceiveJourneyRequest(submissionId: String): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
     customsDeclareExportsConnector.findSubmission(submissionId).map {

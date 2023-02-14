@@ -27,7 +27,7 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.cache.ExportsCacheService
-import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
+import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.taric_code_remove
 
@@ -42,7 +42,7 @@ class TaricCodeRemoveController @Inject() (
   mcc: MessagesControllerComponents,
   taricCodeRemove: taric_code_remove
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
 
   def displayPage(itemId: String, code: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     Ok(taricCodeRemove(itemId, code, removeYesNoForm.withSubmissionErrors))

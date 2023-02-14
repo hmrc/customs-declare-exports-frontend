@@ -56,6 +56,6 @@ class CountryHelper @Inject() (codeLinkConnector: CodeLinkConnector)(implicit co
 
   def listOfRoutingCountries(implicit messages: Messages, request: JourneyRequest[_]): Seq[models.codes.Country] =
     request.cacheModel.locations.routingCountries
-      .flatMap(_.code)
+      .flatMap(_.country.code)
       .map(Countries.findByCode(_))
 }

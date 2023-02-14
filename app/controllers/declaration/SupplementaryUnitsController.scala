@@ -29,7 +29,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.TariffApiService
 import services.TariffApiService.{CommodityCodeNotFound, SupplementaryUnitsNotRequired}
 import services.cache.ExportsCacheService
-import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
+import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.commodityMeasure.{supplementary_units, supplementary_units_yes_no}
 
@@ -47,7 +47,7 @@ class SupplementaryUnitsController @Inject() (
   supplementaryUnitsPage: supplementary_units,
   supplementaryUnitsYesNoPage: supplementary_units_yes_no
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
 
   private val validTypes = Seq(STANDARD, SUPPLEMENTARY)
 
