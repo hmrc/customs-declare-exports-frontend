@@ -20,8 +20,9 @@ import base.ControllerWithoutFormSpec
 import config.PaginationConfig
 import models._
 import models.declaration.submissions.EnhancedStatus.GOODS_ARRIVED
+import models.declaration.submissions.RequestType.SubmissionRequest
 import models.declaration.submissions.StatusGroup.SubmittedStatuses
-import models.declaration.submissions.{Submission, SubmissionAction}
+import models.declaration.submissions.{Action, Submission}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito.{reset, verify, when}
@@ -39,9 +40,11 @@ class DashboardControllerSpec extends ControllerWithoutFormSpec with BeforeAndAf
 
   val uuid = UUID.randomUUID.toString
 
-  private val action = SubmissionAction(id = "conversationID", requestTimestamp = dateTime, notifications = None, uuid)
+  private val action =
+    Action(requestType = SubmissionRequest, id = "conversationID", requestTimestamp = dateTime, notifications = None, decId = None, versionNo = 1)
 
-  private val pageOfSubmissions =
+  private val pageOfSubmissions = {
+    val uuid = UUID.randomUUID.toString
     PageOfSubmissions(
       SubmittedStatuses,
       1,
@@ -59,6 +62,7 @@ class DashboardControllerSpec extends ControllerWithoutFormSpec with BeforeAndAf
         )
       )
     )
+  }
 
   private val dashboard = mock[dashboard]
   private val paginationConfig = mock[PaginationConfig]

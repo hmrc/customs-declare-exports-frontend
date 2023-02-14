@@ -17,17 +17,18 @@
 package views.helpers
 
 import models.declaration.submissions.EnhancedStatus.{CUSTOMS_POSITION_DENIED, EnhancedStatus, PENDING, QUERY_NOTIFICATION_MESSAGE}
-import models.declaration.submissions.{NotificationSummary, Submission, SubmissionAction}
+import models.declaration.submissions.RequestType.SubmissionRequest
+import models.declaration.submissions.{NotificationSummary, Submission}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.html.components.{Key, SummaryListRow, Text, Value}
 
 object EnhancedStatusHelper {
 
-  def asText(submission: Submission)(implicit messages: Messages): String =
-    asText(submission.latestEnhancedStatus.fold(PENDING)(identity))
-
   def asText(status: EnhancedStatus)(implicit messages: Messages): String =
     messages(s"submission.enhancedStatus.${status.toString}")
+
+  def asText(submission: Submission)(implicit messages: Messages): String =
+    asText(submission.latestEnhancedStatus.fold(PENDING)(identity))
 
   def asTimelineTitle(notification: NotificationSummary)(implicit messages: Messages): String =
     if (notification.enhancedStatus != CUSTOMS_POSITION_DENIED) asText(notification.enhancedStatus)
@@ -35,10 +36,7 @@ object EnhancedStatusHelper {
 
   def extractNotificationRows(maybeSubmission: Option[Submission])(implicit messages: Messages): Seq[SummaryListRow] =
     maybeSubmission.map { submission =>
-      val actions = submission.actions.filter {
-        case _: SubmissionAction => true
-        case _                   => false
-      }
+      val actions = submission.actions.filter(_.requestType == SubmissionRequest)
       actions flatMap {
         _.notifications.map {
           _.map { notification =>
@@ -53,9 +51,7 @@ object EnhancedStatusHelper {
     }.getOrElse(List.empty)
 
   def hasQueryNotificationMessageStatus(submission: Submission): Boolean =
-    submission.actions.exists {
-      case SubmissionAction(_, _, notifications, _) =>
-        notifications.exists(_.exists(_.enhancedStatus == QUERY_NOTIFICATION_MESSAGE))
-      case _ => false
+    submission.actions.exists { action =>
+      action.requestType == SubmissionRequest && action.notifications.exists(_.exists(_.enhancedStatus == QUERY_NOTIFICATION_MESSAGE))
     }
 }

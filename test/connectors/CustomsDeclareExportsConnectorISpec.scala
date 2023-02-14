@@ -22,8 +22,9 @@ import com.github.tomakehurst.wiremock.client.WireMock._
 import forms.Lrn
 import models.CancellationStatus.CancellationStatusWrites
 import models.declaration.notifications.Notification
+import models.declaration.submissions.RequestType.SubmissionRequest
 import models.declaration.submissions.StatusGroup.ActionRequiredStatuses
-import models.declaration.submissions.{Submission, SubmissionAction, SubmissionStatus}
+import models.declaration.submissions.{Action, Submission, SubmissionStatus}
 import models.{CancelDeclaration, CancellationRequestSent, PageOfSubmissions, Paginated}
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.time.{Millis, Seconds, Span}
@@ -41,9 +42,7 @@ class CustomsDeclareExportsConnectorISpec extends ConnectorISpec with ExportsDec
   private val id = "id"
   private val existingDeclaration = aDeclaration(withId(id))
 
-  private val uuid = UUID.randomUUID().toString
-
-  private val action = SubmissionAction(id = uuid, notifications = None, decId = uuid)
+  private val action = Action(id = UUID.randomUUID().toString, requestType = SubmissionRequest, notifications = None, decId = None, versionNo = 1)
   private val submission = Submission(id, "eori", "lrn", Some("mrn"), None, None, None, Seq(action), latestDecId = id)
   private val notification = Notification("action-id", "mrn", ZonedDateTime.now(ZoneOffset.UTC), SubmissionStatus.UNKNOWN, Seq.empty)
   private val connector = app.injector.instanceOf[CustomsDeclareExportsConnector]
@@ -117,7 +116,8 @@ class CustomsDeclareExportsConnectorISpec extends ConnectorISpec with ExportsDec
            |      "id" : "${UUID.randomUUID().toString}",
            |      "requestType" : "SubmissionRequest",
            |      "requestTimestamp" : "${ZonedDateTime.now(ZoneOffset.UTC).toString}",
-           |      "decId" : "$id"
+           |      "decId" : "$id",
+           |      "versionNo" : 1
            |   }],
            |  "latestDecId" : "$id",
            |  "latestVersionNo" : 1,

@@ -18,7 +18,8 @@ package views.helpers
 
 import base.Injector
 import models.declaration.submissions.EnhancedStatus._
-import models.declaration.submissions.{EnhancedStatus, _}
+import models.declaration.submissions.RequestType.{CancellationRequest, SubmissionRequest}
+import models.declaration.submissions.{Action, EnhancedStatus, NotificationSummary, Submission}
 import org.mockito.Mockito.when
 import org.scalatest.BeforeAndAfterEach
 import play.api.libs.json.Json
@@ -34,8 +35,6 @@ class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injec
 
   private val submission = Submission("id", "eori", "lrn", Some("mrn"), Some("ducr"), None, None, Seq.empty, latestDecId = "id")
   private val uploadFilesPartialForTimeline = instanceOf[upload_files_partial_for_timeline]
-  private val timelineEvents =
-    new TimelineEvents(new linkButton, new paragraphBody, mockSecureMessagingInboxConfig, mockSfusConfig, uploadFilesPartialForTimeline)
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -43,12 +42,15 @@ class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injec
     when(mockSecureMessagingInboxConfig.sfusInboxLink).thenReturn("dummyInboxLink")
   }
 
+  private def issued(days: Long): ZonedDateTime = ZonedDateTime.now.plusDays(days)
+
+  private val timelineEvents =
+    new TimelineEvents(new linkButton, new paragraphBody, mockSecureMessagingInboxConfig, mockSfusConfig, uploadFilesPartialForTimeline)
+
   private def genTimelineEvents(notificationSummaries: Seq[NotificationSummary]): Seq[TimelineEvent] = {
-    val action = SubmissionAction("id", issued(0), Some(notificationSummaries), submission.uuid)
+    val action = Action("id", SubmissionRequest, issued(0), Some(notificationSummaries), decId = None, versionNo = 1)
     timelineEvents.apply(submission.copy(actions = Seq(action)))
   }
-
-  private def issued(days: Long): ZonedDateTime = ZonedDateTime.now.plusDays(days)
 
   private def createTimelineFromActions(actions: Seq[Action]): Seq[TimelineEvent] =
     timelineEvents.apply(submission.copy(actions = actions))
@@ -89,10 +91,10 @@ class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injec
     }
 
     "generate a sequence of TimelineEvent instances from both cancellation requests and submission requests" in {
-      val action1 = CancellationAction("cancellation", issued(2), None, submission.latestDecId, submission.latestVersionNo)
+      val action1 = Action("cancellation", CancellationRequest, issued(2), None, decId = None, 1)
 
       val notification2 = NotificationSummary(UUID.randomUUID, issued(1), RECEIVED)
-      val action2 = SubmissionAction("submission", issued(0), Some(List(notification2)), submission.uuid)
+      val action2 = Action("submission", SubmissionRequest, issued(0), Some(List(notification2)), None, 1)
 
       val timelineEvents = createTimelineFromActions(List(action1, action2))
 
@@ -255,7 +257,8 @@ object TimelineEventsSpec {
       |          "enhancedStatus" : "RECEIVED"
       |        }
       |      ],
-      |      "decId" : "id"
+      |      "decId" : "id",
+      |      "versionNo" : 1
       |    },
       |    {
       |      "id": "202bcfdb-60e0-4710-949a-ecd2db0487b3",
@@ -269,7 +272,7 @@ object TimelineEventsSpec {
       |        }
       |      ],
       |      "decId" : "id",
-      |      "versionNo" : 2
+      |      "versionNo" : 1
       |    }
       |]
       |""".stripMargin)
@@ -293,7 +296,8 @@ object TimelineEventsSpec {
       |          "enhancedStatus" : "RECEIVED"
       |        }
       |      ],
-      |      "decId" : "id"
+      |      "decId" : "id",
+      |      "versionNo" : 1
       |    },
       |    {
       |      "id": "202bcfdb-60e0-4710-949a-ecd2db0487b3",
@@ -307,7 +311,7 @@ object TimelineEventsSpec {
       |        }
       |      ],
       |      "decId" : "id",
-      |      "versionNo" : 2
+      |      "versionNo" : 1
       |    }
       |]
       |""".stripMargin)
@@ -326,7 +330,8 @@ object TimelineEventsSpec {
       |          "enhancedStatus" : "RECEIVED"
       |        }
       |      ],
-      |      "decId" : "id"
+      |      "decId" : "id",
+      |      "versionNo" : 1
       |    },
       |    {
       |      "id": "202bcfdb-60e0-4710-949a-ecd2db0487b3",
@@ -340,7 +345,7 @@ object TimelineEventsSpec {
       |        }
       |      ],
       |      "decId" : "id",
-      |      "versionNo": 2
+      |      "versionNo": 1
       |    }
       |]
       |""".stripMargin)
@@ -364,7 +369,8 @@ object TimelineEventsSpec {
       |              "enhancedStatus" : "CANCELLED"
       |          }
       |      ],
-      |      "decId" : "id"
+      |      "decId" : "id",
+      |      "versionNo" : 1
       |  },
       |  {
       |      "id" : "9fdfd197-04ee-488e-910c-786cbfa63eda",
@@ -378,7 +384,7 @@ object TimelineEventsSpec {
       |          }
       |      ],
       |      "decId" : "id",
-      |      "versionNo" : 2
+      |      "versionNo" : 1
       |  }
       |]""".stripMargin)
     .as[Seq[Action]]

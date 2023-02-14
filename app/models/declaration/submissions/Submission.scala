@@ -17,7 +17,8 @@
 package models.declaration.submissions
 
 import models.declaration.submissions.EnhancedStatus._
-import play.api.libs.json.{Format, Json}
+import models.declaration.submissions.RequestType.{CancellationRequest, SubmissionRequest}
+import play.api.libs.json.Json
 
 import java.time.ZonedDateTime
 
@@ -34,38 +35,31 @@ case class Submission(
   latestVersionNo: Int = 1,
   blockAmendments: Boolean = false
 ) {
+  val latestAction: Option[Action] =
+    if (actions.isEmpty) None
+    else Some(actions.minBy(_.requestTimestamp)(Submission.dateTimeOrdering))
+
+  val latestCancellationAction: Option[Action] = {
+    val cancelActions = actions.filter(_.requestType == CancellationRequest)
+    if (cancelActions.nonEmpty) {
+      Some(cancelActions.minBy(_.requestTimestamp)(Submission.dateTimeOrdering))
+    } else None
+  }
 
   lazy val allSubmissionRequestStatuses: Seq[EnhancedStatus] = (
     for {
-      subRequestAction <- actions.find {
-        case _: SubmissionAction => true
-        case _                   => false
-      }
+      subRequestAction <- actions.find(_.requestType == SubmissionRequest)
       notificationSummaries <- subRequestAction.notifications
     } yield notificationSummaries.map(_.enhancedStatus)
   ).getOrElse(Seq.empty[EnhancedStatus])
 
   lazy val isStatusAcceptedOrReceived: Boolean =
     allSubmissionRequestStatuses.intersect(Seq(GOODS_ARRIVED_MESSAGE, GOODS_ARRIVED, RECEIVED)).nonEmpty
-
-  val latestAction: Option[Action] =
-    if (actions.isEmpty) None
-    else Some(actions.minBy(_.requestTimestamp)(Submission.dateTimeOrdering))
-
-  val latestCancellationAction: Option[CancellationAction] = {
-    val cancelActions = actions.flatMap {
-      case c: CancellationAction => Some(c)
-      case _                     => None
-    }
-    if (cancelActions.nonEmpty) {
-      Some(cancelActions.minBy(_.requestTimestamp)(Submission.dateTimeOrdering))
-    } else None
-  }
 }
 
 object Submission {
 
-  implicit val format: Format[Submission] = Json.format[Submission]
+  implicit val formats = Json.format[Submission]
 
   val dateTimeOrdering: Ordering[ZonedDateTime] = Ordering.fromLessThan[ZonedDateTime]((a, b) => b.isBefore(a))
 

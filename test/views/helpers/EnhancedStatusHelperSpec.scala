@@ -86,7 +86,7 @@ object EnhancedStatusHelperSpec {
       |            "id" : "abdf6423-b7fd-4f40-b325-c34bdcdfb203",
       |            "requestType" : "CancellationRequest",
       |            "requestTimestamp" : "2022-07-06T08:05:20.477Z[UTC]",
-      |            "versionNo" : 2,
+      |            "versionNo" : 1,
       |            "decId" : "id"
       |        },
       |        {
@@ -110,7 +110,8 @@ object EnhancedStatusHelperSpec {
       |                    "enhancedStatus" : "GOODS_HAVE_EXITED"
       |                }
       |            ],
-      |            "decId" : "id"
+      |            "decId" : "id",
+      |            "versionNo" : 1
       |        }
       |    ],
       |    "enhancedStatusLastUpdated" : "2022-07-06T08:15:22Z[UTC]",
@@ -135,14 +136,15 @@ object EnhancedStatusHelperSpec {
       |            "requestType" : "CancellationRequest",
       |            "requestTimestamp" : "2022-07-06T08:05:20.477Z[UTC]",
       |            "decId" : "id",
-      |            "versionNo" : 2
+      |            "versionNo" : 1
       |        },
       |        {
       |            "id" : "dddf6423-b7fd-4f40-b325-c34bdcdfb204",
       |            "requestType" : "SubmissionRequest",
       |            "requestTimestamp" : "2022-07-06T08:05:20.477Z[UTC]",
       |            "notifications" : [],
-      |            "decId" : "id"
+      |            "decId" : "id",
+      |            "versionNo" : 1
       |        }
       |    ],
       |    "enhancedStatusLastUpdated" : "2022-07-06T08:15:22Z[UTC]",
@@ -173,7 +175,8 @@ object EnhancedStatusHelperSpec {
       |                    "enhancedStatus" : "QUERY_NOTIFICATION_MESSAGE"
       |                }
       |            ],
-      |            "decId" : "id"
+      |            "decId" : "id",
+      |            "versionNo" : 1
       |        }
       |    ],
       |    "enhancedStatusLastUpdated" : "2022-07-06T08:15:22Z[UTC]",

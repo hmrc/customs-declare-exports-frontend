@@ -22,7 +22,8 @@ import config.PaginationConfig
 import controllers.declaration.routes._
 import models._
 import models.declaration.submissions.EnhancedStatus.GOODS_ARRIVED
-import models.declaration.submissions.{Submission, SubmissionAction}
+import models.declaration.submissions.RequestType.SubmissionRequest
+import models.declaration.submissions.{Action, Submission}
 import models.requests.ExportsSessionKeys
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers._
@@ -42,9 +43,10 @@ class SubmissionsControllerSpec extends ControllerWithoutFormSpec with BeforeAnd
 
   val dateTime = ZonedDateTime.now(ZoneOffset.UTC)
 
-  val uuid = UUID.randomUUID.toString
+  val uuid = UUID.randomUUID().toString
 
-  private val action = SubmissionAction(id = "conversationID", requestTimestamp = dateTime, notifications = None, decId = uuid)
+  private val action =
+    Action(requestType = SubmissionRequest, id = "conversationID", requestTimestamp = dateTime, notifications = None, decId = None, versionNo = 1)
 
   private val submission =
     Submission(

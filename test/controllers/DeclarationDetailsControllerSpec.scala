@@ -17,7 +17,8 @@
 package controllers
 
 import base.ControllerWithoutFormSpec
-import models.declaration.submissions.{Submission, SubmissionAction}
+import models.declaration.submissions.RequestType.SubmissionRequest
+import models.declaration.submissions.{Action, Submission}
 import models.requests.ExportsSessionKeys
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers._
@@ -44,7 +45,7 @@ class DeclarationDetailsControllerSpec extends ControllerWithoutFormSpec with Be
       lrn = "lrn",
       mrn = Some("mrn"),
       ducr = Some("ducr"),
-      actions = Seq(SubmissionAction(id = actionId, requestTimestamp = ZonedDateTime.now, notifications = None, uuid)),
+      actions = Seq(Action(id = actionId, requestType = SubmissionRequest, requestTimestamp = ZonedDateTime.now, notifications = None, None, 1)),
       latestDecId = uuid
     )
   }

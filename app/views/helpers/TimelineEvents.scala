@@ -18,7 +18,8 @@ package views.helpers
 
 import config.featureFlags.{SecureMessagingInboxConfig, SfusConfig}
 import models.declaration.submissions.EnhancedStatus.{uploadFilesStatuses, _}
-import models.declaration.submissions.{CancellationAction, NotificationSummary, Submission}
+import models.declaration.submissions.RequestType.CancellationRequest
+import models.declaration.submissions.{NotificationSummary, Submission}
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import play.twirl.api.{Html, HtmlFormat}
@@ -43,14 +44,11 @@ class TimelineEvents @Inject() (
 
     val notificationSummaries = submission.actions.flatMap { action =>
       val summaries = action.notifications.fold(Seq.empty[NotificationSummary])(identity)
-
-      action match {
-        case _: CancellationAction =>
-          val cancellationRequest = Seq(NotificationSummary(UUID.randomUUID, action.requestTimestamp, REQUESTED_CANCELLATION))
-          summaries.filter(_.enhancedStatus == CUSTOMS_POSITION_DENIED) ++ cancellationRequest
-        case _ => summaries
+      if (action.requestType != CancellationRequest) summaries
+      else {
+        val cancellationRequest = Seq(NotificationSummary(UUID.randomUUID, action.requestTimestamp, REQUESTED_CANCELLATION))
+        summaries.filter(_.enhancedStatus == CUSTOMS_POSITION_DENIED) ++ cancellationRequest
       }
-
     }.sorted
 
     val IndexToMatchForUploadFilesContent = notificationSummaries.indexWhere(_.enhancedStatus in uploadFilesStatuses)
