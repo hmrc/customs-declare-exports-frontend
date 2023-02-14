@@ -8,6 +8,7 @@ object AppDependencies {
     "uk.gov.hmrc" %% "play-allowlist-filter" % "1.1.0",
     "uk.gov.hmrc" %% "play-conditional-form-mapping" % "1.12.0-play-28",
     "uk.gov.hmrc" %% "play-frontend-hmrc" % "6.2.0-play-28",
+    "uk.gov.hmrc"               %% "play-partials"              % "8.3.0-play-28",
     "ai.x" %% "play-json-extensions" % "0.42.0",
     "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.13.3",
     "com.github.tototoshi" %% "scala-csv" % "1.3.10",

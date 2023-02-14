@@ -1,317 +1,317 @@
 [
   {
-    "code":"000",
+    "code": "000",
     "en": "No other Additional Procedure Code applies",
-    "cy": "No other Additional Procedure Code applies"
+    "cy": "Nid oes Cod Gweithdrefn Ychwanegol arall yn berthnasol"
   },
   {
-    "code":"1CS",
-	"en": "Goods are presented at approved Customs Supervised Export (CSE) location premises, awaiting clearance for export",
-	"cy": "Goods are presented at approved Customs Supervised Export (CSE) location premises, awaiting clearance for export"
+    "code": "1CS",
+    "en": "Goods are presented at approved Customs Supervised Export (CSE) location premises, awaiting clearance for export",
+    "cy": "Cyflwynir nwyddau mewn safleoedd cymeradwy i Allforion Dan Oruchwyliaeth Tollau (CSE), sy’n aros sy’n aros i gael eu clirio er mwyn eu hallforio"
   },
   {
-    "code":"3LV",
-	"en": "Low Value Export or Dispatch to a Single Recipient",
-	"cy": "Low Value Export or Dispatch to a Single Recipient"
+    "code": "3LV",
+    "en": "Low Value Export or Dispatch to a Single Recipient",
+    "cy": "Allforyn neu Anfoniad Gwerth Isel at Dderbynnydd Unigol"
   },
   {
-    "code":"3NS",
-	"en": "Home Use goods that are excluded from external trade statistics being exported or dispatched",
-	"cy": "Home Use goods that are excluded from external trade statistics being exported or dispatched"
+    "code": "3NS",
+    "en": "Home Use goods that are excluded from external trade statistics being exported or dispatched",
+    "cy": "Nwyddau i'w Defnyddio yn y Cartref yn y Cartref sydd wedi’u heithrio rhag ystadegau masnachu allanol yn cael eu hallforio neu eu hanfon"
   },
   {
-    "code":"3PE",
-	"en": "Export or Dispatch of Personal Effects",
-	"cy": "Export or Dispatch of Personal Effects"
+    "code": "3PE",
+    "en": "Export or Dispatch of Personal Effects",
+    "cy": "Allforio neu Anfon Eiddo Personol"
   },
   {
-    "code":"3PM",
-	"en": "Export or Dispatch of Private Means of Transport",
-	"cy": "Export or Dispatch of Private Means of Transport"
+    "code": "3PM",
+    "en": "Export or Dispatch of Private Means of Transport",
+    "cy": "Allforio neu Anfon Dulliau Trafnidiaeth Preifat"
   },
   {
-    "code":"3RI",
-	"en": "Rejected Imports",
-	"cy": "Rejected Imports"
+    "code": "3RI",
+    "en": "Rejected Imports",
+    "cy": "Mewnforion sydd wedi’u gwrthod"
   },
   {
-    "code":"F75",
-	"en": "Goods dispatched in the context of trade with UK Special Fiscal Territories - Jersey or Guernsey",
-	"cy": "Goods dispatched in the context of trade with UK Special Fiscal Territories - Jersey or Guernsey"
+    "code": "F75",
+    "en": "Goods dispatched in the context of trade with UK Special Fiscal Territories - Jersey or Guernsey",
+    "cy": "Nwyddau sydd wedi’u hanfon yng nghyd-destun masnach â Thiriogaethau Cyllidol Arbennig y DU - Jersey neu Guernsey"
   },
   {
-    "code":"2CD",
-	"en": "Controlled drugs, re-exported or dispatched from a special procedure using Simplified Procedures",
-	"cy": "Controlled drugs, re-exported or dispatched from a special procedure using Simplified Procedures"
+    "code": "2CD",
+    "en": "Controlled drugs, re-exported or dispatched from a special procedure using Simplified Procedures",
+    "cy": "Cyffuriau o dan reolaeth, wedi’u hail-allforio neu eu hanfon o weithdrefn arbennig gan ddefnyddio Gweithdrefnau Symlach"
   },
   {
-    "code":"2CG",
-	"en": "Controlled goods, re-exported or dispatched from a special procedure using Simplified Procedures",
-	"cy": "Controlled goods, re-exported or dispatched from a special procedure using Simplified Procedures"
+    "code": "2CG",
+    "en": "Controlled goods, re-exported or dispatched from a special procedure using Simplified Procedures",
+    "cy": "Nwyddau o dan reolaeth, wedi’u hail-allforio neu eu hanfon o weithdrefn arbennig gan ddefnyddio Gweithdrefnau Symlach"
   },
   {
-    "code":"2DP",
-	"en": "Goods exported or dispatched under Diplomatic Privilege (personal use)",
-	"cy": "Goods exported or dispatched under Diplomatic Privilege (personal use)"
+    "code": "2DP",
+    "en": "Goods exported or dispatched under Diplomatic Privilege (personal use)",
+    "cy": "Nwyddau sydd wedi’u hallforio neu eu hanfon o dan Fraint Ddiplomyddol (defnydd personol)"
   },
   {
-    "code":"2ES",
-	"en": "Excise goods being exported or dispatched from onward supply relief, moving under an excise duty suspension, for movements not originating in UK",
-	"cy": "Excise goods being exported or dispatched from onward supply relief, moving under an excise duty suspension, for movements not originating in UK"
+    "code": "2ES",
+    "en": "Excise goods being exported or dispatched from onward supply relief, moving under an excise duty suspension, for movements not originating in UK",
+    "cy": "Nwyddau ecséis yn cael eu hallforio neu eu hanfon o ryddhad anfon cyflenwad ymlaen, gan symud o dan ohiriad tollau ecséis, ar gyfer symudiadau nad ydynt yn tarddu o’r DU"
   },
   {
-    "code":"2IE",
-	"en": "Indirect Export: Goods exiting the UK where an export declaration has not been made in the other Member State and the goods cannot be declared by an oral act or act by other means",
-	"cy": "Indirect Export: Goods exiting the UK where an export declaration has not been made in the other Member State and the goods cannot be declared by an oral act or act by other means"
+    "code": "2IE",
+    "en": "Indirect Export: Goods exiting the UK where an export declaration has not been made in the other Member State and the goods cannot be declared by an oral act or act by other means",
+    "cy": "Allforion anuniongyrchol: Nwyddau sy’n gadael y DU lle nad yw datganiad allforio wedi’i wneud yn yr Aelod-wladwriaeth arall ac ni ellir datgan y nwyddau drwy weithred lafar na gweithred trwy ddull arall"
   },
   {
-    "code":"0GD",
-	"en": "Certain goods consigned by other Government Departments and agencies",
-	"cy": "Certain goods consigned by other Government Departments and agencies"
+    "code": "0GD",
+    "en": "Certain goods consigned by other Government Departments and agencies",
+    "cy": "Rhai nwyddau sydd wedi’u derbyn gan asiantaethau ac Adrannau eraill o’r Llywodraeth"
   },
   {
-    "code":"0MG",
-	"en": "Goods for Military Use Abroad",
-	"cy": "Goods for Military Use Abroad"
+    "code": "0MG",
+    "en": "Goods for Military Use Abroad",
+    "cy": "Nwyddau at Ddefnydd Milwrol Dramor"
   },
   {
-    "code":"1CD",
-	"en": "Controlled Drugs using Simplified Procedures",
-	"cy": "Controlled Drugs using Simplified Procedures"
+    "code": "1CD",
+    "en": "Controlled Drugs using Simplified Procedures",
+    "cy": "Cyffuriau o dan reolaeth gan ddefnyddio Gweithdrefnau Symlach"
   },
   {
-    "code":"1CG",
-	"en": "Controlled Goods using Simplified Procedures",
-	"cy": "Controlled Goods using Simplified Procedures"
+    "code": "1CG",
+    "en": "Controlled Goods using Simplified Procedures",
+    "cy": "Nwyddau o dan reolaeth gan ddefnyddio Gweithdrefnau Symlach"
   },
   {
-    "code":"1DP",
-	"en": "Goods exported or dispatched under diplomatic privilege (official use)",
-	"cy": "Goods exported or dispatched under diplomatic privilege (official use)"
+    "code": "1DP",
+    "en": "Goods exported or dispatched under diplomatic privilege (official use)",
+    "cy": "Nwyddau sydd wedi’u hallforio neu eu hanfon o dan fraint ddiplomyddol (defnydd swyddogol)"
   },
   {
-    "code":"1MB",
+    "code": "1MB",
     "en": "Merchandise in Baggage",
-    "cy": "Merchandise in Baggage"
+    "cy": "Nwyddau mewn Bagiau"
   },
   {
-    "code":"1MP",
-	"en": "Prior export of equivalent milk and milk products (EX/IM)",
-	"cy": "Prior export of equivalent milk and milk products (EX/IM)"
+    "code": "1MP",
+    "en": "Prior export of equivalent milk and milk products (EX/IM)",
+    "cy": "Allforion blaenorol o gynhyrchion llaeth a chynhyrchion cyfatebol i laeth (EX/IM)"
   },
   {
-    "code":"1NO",
-	"en": "Goods exported or dispatched for US and other NATO visiting forces (official use)",
-	"cy": "Goods exported or dispatched for US and other NATO visiting forces (official use)"
+    "code": "1NO",
+    "en": "Goods exported or dispatched for US and other NATO visiting forces (official use)",
+    "cy": "Nwyddau sydd wedi’u hallforio neu eu hanfon ar gyfer lluoedd arfog yr UDA a lluoedd arfog eraill NATO sy’n ymweld (defnydd swyddogol)"
   },
   {
-    "code":"1NP",
-	"en": "Goods exported or dispatched by US and other NATO visiting forces personnel (goods for personal use)",
-	"cy": "Goods exported or dispatched by US and other NATO visiting forces personnel (goods for personal use)"
+    "code": "1NP",
+    "en": "Goods exported or dispatched by US and other NATO visiting forces personnel (goods for personal use)",
+    "cy": "Nwyddau sydd wedi’u hallforio neu eu hanfon gan bersonél lluoedd arfog yr UDA a phersonél lluoedd arfog eraill NATO sy’n ymweld (defnydd swyddogol)"
   },
   {
-    "code":"1SW",
-	"en": "Export of goods to discharge the shipwork or platform end-use procedure",
-	"cy": "Export of goods to discharge the shipwork or platform end-use procedure"
+    "code": "1SW",
+    "en": "Export of goods to discharge the shipwork or platform end-use procedure",
+    "cy": "Allforio nwyddau i ryddhau’r gwaith llong neu’r weithdrefn platfform defnydd terfynol"
   },
   {
-    "code":"1VW",
-	"en": "Goods liable to VAT only being exported or dispatched from customs warehousing",
-	"cy": "Goods liable to VAT only being exported or dispatched from customs warehousing"
+    "code": "1VW",
+    "en": "Goods liable to VAT only being exported or dispatched from customs warehousing",
+    "cy": "Nwyddau sy’n agored i TAW yn cael eu hallforio neu eu hanfon o warysau tollau’n unig."
   },
   {
-    "code":"46P",
-	"en": "The exportation of replacement goods following the prior import of processed products obtained from equivalent goods under Outward Processing (Prior Import Equivalence)",
-	"cy": "The exportation of replacement goods following the prior import of processed products obtained from equivalent goods under Outward Processing (Prior Import Equivalence)"
+    "code": "46P",
+    "en": "The exportation of replacement goods following the prior import of processed products obtained from equivalent goods under Outward Processing (Prior Import Equivalence)",
+    "cy": "Allforio nwyddau newydd yn dilyn mewnforio cynhyrchion wedi’u prosesu ymlaen llaw a gafwyd o nwyddau cyfatebol o dan Brosesu Allanol (Cywerthedd Mewnforion Blaenorol)"
   },
   {
-    "code":"48P",
-	"en": "Export of defective goods under Outward Processing following the prior import of replacement products",
-	"cy": "Export of defective goods under Outward Processing following the prior import of replacement products"
+    "code": "48P",
+    "en": "Export of defective goods under Outward Processing following the prior import of replacement products",
+    "cy": "Allforio nwyddau sy’n ddiffygiol o dan Brosesu Allanol yn dilyn mewnforio cynhyrchion newydd blaenorol"
   },
   {
-    "code":"A04",
-	"en": "Re-export or dispatch of goods to discharge an Inward Processing Procedure (VAT only)",
-	"cy": "Re-export or dispatch of goods to discharge an Inward Processing Procedure (VAT only)"
+    "code": "A04",
+    "en": "Re-export or dispatch of goods to discharge an Inward Processing Procedure (VAT only)",
+    "cy": "Ail-allforio neu anfon nwyddau i ryddhau Gweithdrefn Brosesu Mewnol (TAW yn unig)"
   },
   {
-    "code":"F44",
-	"en": "Inward Processing; customs debt under Article 86(3) of the Code",
-	"cy": "Inward Processing; customs debt under Article 86(3) of the Code"
+    "code": "F44",
+    "en": "Inward Processing; customs debt under Article 86(3) of the Code",
+    "cy": "Prosesu Mewnol; dyled tollau o dan Erthygl 86(3) y Cod"
   },
   {
-    "code":"B51",
-	"en": "Goods temporarily (re)exported for repair under guarantee using Outward Processing",
-	"cy": "Goods temporarily (re)exported for repair under guarantee using Outward Processing"
+    "code": "B51",
+    "en": "Goods temporarily (re)exported for repair under guarantee using Outward Processing",
+    "cy": "Nwyddau sydd wedi’u hallforio/hailallforio dros dro i’w hatgyweirio dan warant gan ddefnyddio Prosesu Allanol"
   },
   {
-    "code":"B52",
-	"en": "Defective goods temporarily (re)exported for replacement under guarantee using Outward Processing",
-	"cy": "Defective goods temporarily (re)exported for replacement under guarantee using Outward Processing"
+    "code": "B52",
+    "en": "Defective goods temporarily (re)exported for replacement under guarantee using Outward Processing",
+    "cy": "Nwyddau diffygiol sydd wedi’u hallforio/hailallforio dros dro i’w disodli o dan warant gan ddefnyddio Prosesu Allanol"
   },
   {
-    "code":"B53",
-	"en": "Outward Processing under agreements with third countries, possibly combined with VAT only Outward Processing",
-	"cy": "Outward Processing under agreements with third countries, possibly combined with VAT only Outward Processing"
+    "code": "B53",
+    "en": "Outward Processing under agreements with third countries, possibly combined with VAT only Outward Processing",
+    "cy": "Prosesu allanol o dan gytundebau gyda thrydedd gwlad, o bosibl ynghyd â Phrosesu Allanol ar gyfer TAW yn unig"
   },
   {
-    "code":"B54",
-	"en": "Goods temporarily dispatched under VAT only Outward Processing",
-	"cy": "Goods temporarily dispatched under VAT only Outward Processing"
+    "code": "B54",
+    "en": "Goods temporarily dispatched under VAT only Outward Processing",
+    "cy": "Nwyddau sydd wedi’u hanfon dros dro o dan Brosesu Allanol ar gyfer TAW yn unig"
   },
   {
-    "code":"C12",
-	"en": "Re-export of educational, scientific and cultural materials; scientific instruments and apparatus as listed in Annex II to Council Regulation (EC) No 1186/2009",
-	"cy": "Re-export of educational, scientific and cultural materials; scientific instruments and apparatus as listed in Annex II to Council Regulation (EC) No 1186/2009"
+    "code": "C12",
+    "en": "Re-export of educational, scientific and cultural materials; scientific instruments and apparatus as listed in Annex II to Council Regulation (EC) No 1186/2009",
+    "cy": "Ail-allforio deunyddiau addysgol, gwyddonol a diwylliannol; offerynnau gwyddonol a chyfarpar fel y’u rhestrir yn Atodiad II i Reoliadau’r Cyngor (EC) Rhif 1186/2009"
   },
   {
-    "code":"D01",
-	"en": "Pallets (including pallet accessories and equipment)",
-	"cy": "Pallets (including pallet accessories and equipment)"
+    "code": "D01",
+    "en": "Pallets (including pallet accessories and equipment)",
+    "cy": "Paledi (gan gynnwys ategolion a chyfarpar paled)"
   },
   {
-    "code":"D02",
-	"en": "Containers (including container accessories and equipment)",
-	"cy": "Containers (including container accessories and equipment)"
+    "code": "D02",
+    "en": "Containers (including container accessories and equipment)",
+    "cy": "Cynwysyddion (gan gynnwys ategolion ac offer cynhwysydd)"
   },
   {
-    "code":"D03",
-	"en": "Means of road, rail, air, sea and inland waterway transport",
-	"cy": "Means of road, rail, air, sea and inland waterway transport"
+    "code": "D03",
+    "en": "Means of road, rail, air, sea and inland waterway transport",
+    "cy": "Dull o gludiant ffyrdd, rheilffordd, awyr, môr a dyfrffordd mewndirol"
   },
   {
-    "code":"D04",
-	"en": "Personal effects and goods for sports purposes previously imported by travellers",
-	"cy": "Personal effects and goods for sports purposes previously imported by travellers"
+    "code": "D04",
+    "en": "Personal effects and goods for sports purposes previously imported by travellers",
+    "cy": "Eiddo personol a nwyddau at ddibenion chwaraeon a fewnforiwyd yn flaenorol gan deithwyr"
   },
   {
-    "code":"D05",
-	"en": "Welfare material for seafarers",
-	"cy": "Welfare material for seafarers"
+    "code": "D05",
+    "en": "Welfare material for seafarers",
+    "cy": "Deunydd lles i forwyr"
   },
   {
-    "code":"D06",
-	"en": "Disaster relief material",
-	"cy": "Disaster relief material"
+    "code": "D06",
+    "en": "Disaster relief material",
+    "cy": "Deunydd lleddfu effaith trychineb"
   },
   {
-    "code":"D07",
-	"en": "Medical, surgical and laboratory equipment",
-	"cy": "Medical, surgical and laboratory equipment"
+    "code": "D07",
+    "en": "Medical, surgical and laboratory equipment",
+    "cy": "Offer meddygol, llawfeddygol a labordy"
   },
   {
-    "code":"D08",
-	"en": "Animals (twelve months or more)",
-	"cy": "Animals (twelve months or more)"
+    "code": "D08",
+    "en": "Animals (twelve months or more)",
+    "cy": "Anifeiliaid (deuddeg mis neu fwy)"
   },
   {
-    "code":"D09",
-	"en": "Goods for use in frontier zone",
-	"cy": "Goods for use in frontier zone"
+    "code": "D09",
+    "en": "Goods for use in frontier zone",
+    "cy": "Nwyddau i’w defnyddio mewn parth ffiniau"
   },
   {
-    "code":"D10",
-	"en": "Sound, image or data carrying media",
-	"cy": "Sound, image or data carrying media"
+    "code": "D10",
+    "en": "Sound, image or data carrying media",
+    "cy": "Cyfryngau sy’n cario sain, delwedd neu ddata"
   },
   {
-    "code":"D11",
-	"en": "Publicity material",
-	"cy": "Publicity material"
+    "code": "D11",
+    "en": "Publicity material",
+    "cy": "Deunydd cyhoeddusrwydd"
   },
   {
-    "code":"D12",
-	"en": "Professional equipment",
-	"cy": "Professional equipment"
+    "code": "D12",
+    "en": "Professional equipment",
+    "cy": "Offer proffesiynol"
   },
   {
-    "code":"D13",
-	"en": "Pedagogic material and scientific equipment",
-	"cy": "Pedagogic material and scientific equipment"
+    "code": "D13",
+    "en": "Pedagogic material and scientific equipment",
+    "cy": "Deunydd addysgegol ac offer gwyddonol"
   },
   {
-    "code":"D15",
-	"en": "Packings, empty",
-	"cy": "Packings, empty"
+    "code": "D15",
+    "en": "Packings, empty",
+    "cy": "Pecynnau, gwag"
   },
   {
-    "code":"D16",
-	"en": "Moulds, dies, blocks, drawings, sketches, measuring, checking and testing instruments and other similar articles",
-	"cy": "Moulds, dies, blocks, drawings, sketches, measuring, checking and testing instruments and other similar articles"
+    "code": "D16",
+    "en": "Moulds, dies, blocks, drawings, sketches, measuring, checking and testing instruments and other similar articles",
+    "cy": "Mowldiau, llifion, blociau, lluniau, brasluniau, offer mesur, gwirio a phrofi a eitemau tebyg eraill"
   },
   {
-    "code":"D17",
-	"en": "Special tools and instruments (six months)",
-	"cy": "Special tools and instruments (six months)"
+    "code": "D17",
+    "en": "Special tools and instruments (six months)",
+    "cy": "Offer ac offerynnau arbennig (chwe mis)"
   },
   {
-    "code":"D18",
-	"en": "Goods, subject to tests, experiments or demonstrations",
-	"cy": "Goods, subject to tests, experiments or demonstrations"
+    "code": "D18",
+    "en": "Goods, subject to tests, experiments or demonstrations",
+    "cy": "Nwyddau, yn amodol ar brofion, arbrofion neu arddangosiadau"
   },
   {
-    "code":"D19",
-	"en": "Goods imported subject to satisfactory acceptance tests, in connection with a sales contract",
-	"cy": "Goods imported subject to satisfactory acceptance tests, in connection with a sales contract"
+    "code": "D19",
+    "en": "Goods imported subject to satisfactory acceptance tests, in connection with a sales contract",
+    "cy": "Nwyddau a fewnforiwyd yn amodol ar brofion derbyniad boddhaol, mewn cysylltiad â chontract gwerthu"
   },
   {
-    "code":"D20",
-	"en": "Goods used to carry out tests, experiments or demonstrations without financial gain (six months)",
-	"cy": "Goods used to carry out tests, experiments or demonstrations without financial gain (six months)"
+    "code": "D20",
+    "en": "Goods used to carry out tests, experiments or demonstrations without financial gain (six months)",
+    "cy": "Nwyddau sydd i’w defnyddio ar gyfer cynnal profion, arbrofion neu\narddangosiadau heb elw ariannol (chwe mis)"
   },
   {
-    "code":"D21",
-	"en": "Samples",
-	"cy": "Samples"
+    "code": "D21",
+    "en": "Samples",
+    "cy": "Samplau"
   },
   {
-    "code":"D22",
-	"en": "Replacement means of production (six months)",
-	"cy": "Replacement means of production (six months)"
+    "code": "D22",
+    "en": "Replacement means of production (six months)",
+    "cy": "Dulliau eraill o gynhyrchu (chwe mis)"
   },
   {
-    "code":"D23",
-	"en": "Goods for events or for sale",
-	"cy": "Goods for events or for sale"
+    "code": "D23",
+    "en": "Goods for events or for sale",
+    "cy": "Nwyddau ar gyfer digwyddiadau neu ar werth"
   },
   {
-    "code":"D24",
-	"en": "Goods for approval (six months)",
-	"cy": "Goods for approval (six months)"
+    "code": "D24",
+    "en": "Goods for approval (six months)",
+    "cy": "Nwyddau i’w cymeradwyo (chwe mis)"
   },
   {
-    "code":"D25",
-	"en": "Works of art, collectors’ items and antiques",
-	"cy": "Works of art, collectors’ items and antiques"
+    "code": "D25",
+    "en": "Works of art, collectors’ items and antiques",
+    "cy": "Gweithiau celf, eitemau prin a hynafolion"
   },
   {
-    "code":"D26",
-	"en": "Goods imported with a view to their sale by auction",
-	"cy": "Goods imported with a view to their sale by auction"
+    "code": "D26",
+    "en": "Goods imported with a view to their sale by auction",
+    "cy": "Nwyddau a fewnforiwyd gyda’r bwriad o’u gwerthu drwy ocsiwn"
   },
   {
-    "code":"D27",
-	"en": "Spare parts, accessories and equipment",
-	"cy": "Spare parts, accessories and equipment"
+    "code": "D27",
+    "en": "Spare parts, accessories and equipment",
+    "cy": "Rhannau, ategolion ac offer sbâr"
   },
   {
-    "code":"D28",
-	"en": "Goods imported in particular situations having no economic effect",
-	"cy": "Goods imported in particular situations having no economic effect"
+    "code": "D28",
+    "en": "Goods imported in particular situations having no economic effect",
+    "cy": "Nwyddau sydd wedi’u mewnforio mewn sefyllfaoedd penodol heb unrhyw effaith economaidd"
   },
   {
-    "code":"D29",
-	"en": "Goods imported for a period not exceeding three months",
-	"cy": "Goods imported for a period not exceeding three months"
+    "code": "D29",
+    "en": "Goods imported for a period not exceeding three months",
+    "cy": "Nwyddau sydd wedi’u mewnforio am gyfnod heb fod yn hwy na thri mis"
   },
   {
-    "code":"D30",
-	"en": "Means of Transport, for persons established outside the customs Territory of the Union, or for persons preparing for the transfer of their normal place of residence outside that Territory",
-	"cy": "Means of Transport, for persons established outside the customs Territory of the Union, or for persons preparing for the transfer of their normal place of residence outside that Territory"
+    "code": "D30",
+    "en": "Means of Transport, for persons established outside the customs Territory of the Union, or for persons preparing for the transfer of their normal place of residence outside that Territory",
+    "cy": "Dull Cludo, ar gyfer pobl a sefydlwyd y tu allan i Diriogaeth dollau’r Undeb, neu ar gyfer pobl sy’n paratoi ar gyfer trosglwyddo eu man preswylio arferol y tu allan i’r Diriogaeth honno"
   },
   {
-    "code":"D51",
-	"en": "Temporary Admission with partial relief from duties",
-	"cy": "Temporary Admission with partial relief from duties"
+    "code": "D51",
+    "en": "Temporary Admission with partial relief from duties",
+    "cy": "Mynediad Dros Dro gyda rhyddhad rhannol o dollau"
   }
 ]

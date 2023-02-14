@@ -1,252 +1,252 @@
 [
   {
-    "code":"000",
+    "code": "000",
     "en": "No Additional Conditions",
-    "cy": "No Additional Conditions"
+    "cy": "Dim Amodau Ychwanegol"
   },
   {
-    "code":"10C",
+    "code": "10C",
     "en": "Items of correspondence",
-    "cy": "Items of correspondence"
+    "cy": "Eitemau o ohebiaeth"
   },
   {
-    "code":"11A",
+    "code": "11A",
     "en": "ATA Carnets (Non-Licensable Goods)",
-    "cy": "ATA Carnets (Non-Licensable Goods)"
+    "cy": "Carnets ATA (Nwyddau nad ydynt yn Drwyddedadwy)"
   },
   {
-    "code":"12A",
+    "code": "12A",
     "en": "ATA Carnets (Licensable Goods)",
-    "cy": "ATA Carnets (Licensable Goods)"
+    "cy": "Carnets ATA (Nwyddau Trwyddedadwy)"
   },
   {
-    "code":"13C",
+    "code": "13C",
     "en": "CPD Carnets",
-    "cy": "CPD Carnets"
+    "cy": "Carnets CPD"
   },
   {
-    "code":"14C",
+    "code": "14C",
     "en": "Continental Shelf",
-    "cy": "Continental Shelf"
+    "cy": "Sgafell Gyfandirol"
   },
   {
-    "code":"15F",
+    "code": "15F",
     "en": "Trade with Special Fiscal Territories or territories with which the EU has formed a Customs Union",
-    "cy": "Trade with Special Fiscal Territories or territories with which the EU has formed a Customs Union"
+    "cy": "Masnach gyda Thiriogaethau Cyllidol Arbennig neu diriogaethau y mae\u2019r UE wedi ffurfio Undeb Tollau"
   },
   {
-    "code":"17X",
+    "code": "17X",
     "en": "Exit Safety and Security Summary Declaration (EXS)",
-    "cy": "Exit Safety and Security Summary Declaration (EXS)"
+    "cy": "Datganiad Diogelwch Cryno wrth Ymadael (EXS)"
   },
   {
-    "code":"18I",
+    "code": "18I",
     "en": "Indirect Exports",
-    "cy": "Indirect Exports"
+    "cy": "Allforion Anuniongyrchol"
   },
   {
-    "code":"19Z",
+    "code": "19Z",
     "en": "Removal from a Free zone",
-    "cy": "Removal from a Free zone"
+    "cy": "Tynnu o barth rhydd"
   },
   {
-    "code":"21G",
+    "code": "21G",
     "en": "Private Exportations: Goods of a Non-Commercial Nature (Unaccompanied Baggage)",
-    "cy": "Private Exportations: Goods of a Non-Commercial Nature (Unaccompanied Baggage)"
+    "cy": "Allforion Preifat: Nwyddau o Natur Anfasnachol (bagiau ar eu pen eu hunain)"
   },
   {
-    "code":"22C",
+    "code": "22C",
     "en": "Coffins, Human Remains, Funerary Urns and Ornamental Funerary",
-    "cy": "Coffins, Human Remains, Funerary Urns and Ornamental Funerary"
+    "cy": "Eirch, Gweddillion Dynol, Wrnau Angladdol ac Addurniadau Angladdol"
   },
   {
-    "code":"23A",
+    "code": "23A",
     "en": "Agricultural Products",
-    "cy": "Agricultural Products"
+    "cy": "Cynhyrchion Amaethyddol"
   },
   {
-    "code":"24S",
+    "code": "24S",
     "en": "Seeds, Fertilisers and Products for Treatment of Soil and Crops intended for use on Property Located in a Third Country Territory Adjoining the Customs Union",
-    "cy": "Seeds, Fertilisers and Products for Treatment of Soil and Crops intended for use on Property Located in a Third Country Territory Adjoining the Customs Union"
+    "cy": "Hadau, Gwrteithiau a Chynhyrchion ar gyfer Trin Pridd a Chnydau y bwriedir eu defnyddio ar Eiddo Wedi\u2019i Leoli mewn Tiriogaeth Trydedd Wlad sy\u2019n ffinio \u00e2\u2019r Undeb Tollau"
   },
   {
-    "code":"25D",
+    "code": "25D",
     "en": "Diplomatic Privilege (Official Use)",
-    "cy": "Diplomatic Privilege (Official Use)"
+    "cy": "Braint Ddiplomyddol (Defnydd Swyddogol)"
   },
   {
-    "code":"26D",
+    "code": "26D",
     "en": "Diplomatic Privilege (Personal Use)",
-    "cy": "Diplomatic Privilege (Personal Use)"
+    "cy": "Braint Ddiplomyddol (Defnydd Personol)"
   },
   {
-    "code":"27M",
+    "code": "27M",
     "en": "UK Government Mail/ Diplomatic Bags",
-    "cy": "UK Government Mail/ Diplomatic Bags"
+    "cy": "Post Llywodraeth y DU/ Bagiau Diplomyddol"
   },
   {
-    "code":"40A",
+    "code": "40A",
     "en": "Animals (twelve months)",
-    "cy": "Animals (twelve months)"
+    "cy": "Anifeiliaid (deuddeg mis)"
   },
   {
-    "code":"40D",
+    "code": "40D",
     "en": "Disaster Relief Material",
-    "cy": "Disaster Relief Material"
+    "cy": "Deunydd Lleddfu Effaith Trychineb"
   },
   {
-    "code":"40F",
+    "code": "40F",
     "en": "Goods for use in Frontier Zone",
-    "cy": "Goods for use in Frontier Zone"
+    "cy": "Nwyddau i\u2019w defnyddio yn y Parth Ffiniau"
   },
   {
-    "code":"40G",
+    "code": "40G",
     "en": "Re-export of Goods Temporarily Admitted in Particular Situations Having No Economic Effect",
-    "cy": "Re-export of Goods Temporarily Admitted in Particular Situations Having No Economic Effect"
+    "cy": "Ail-allforio nwyddau sydd wedi\u2019u derbyn dros dro mewn sefyllfaoedd penodol heb unrhyw effaith economaidd"
   },
   {
-    "code":"41G",
+    "code": "41G",
     "en": "Re-export of Goods Temporarily Admitted for a Period Not Exceeding Three Months",
-    "cy": "Re-export of Goods Temporarily Admitted for a Period Not Exceeding Three Months"
+    "cy": "Ail-allforio nwyddau sydd wedi\u2019u derbyn dros dro am gyfnod heb fod yn fwy na thri mis"
   },
   {
-    "code":"40M",
+    "code": "40M",
     "en": "Medical, Surgical and Laboratory Equipment",
-    "cy": "Medical, Surgical and Laboratory Equipment"
+    "cy": "Offer Meddygol, Llawfeddygol a Labordy"
   },
   {
-    "code":"40P",
+    "code": "40P",
     "en": "Re-export of Personal Effects Temporarily Admitted by Travellers",
-    "cy": "Re-export of Personal Effects Temporarily Admitted by Travellers"
+    "cy": "Ail-allforio Eiddo Personol sydd wedi\u2019u derbyn dros dro gan Deithwyr"
   },
   {
-    "code":"41P",
+    "code": "41P",
     "en": "Professional Equipment",
-    "cy": "Professional Equipment"
+    "cy": "Offer proffesiynol"
   },
   {
-    "code":"42P",
+    "code": "42P",
     "en": "Non-EU Packings being Re-exported",
-    "cy": "Non-EU Packings being Re-exported"
+    "cy": "Pecynnau nad ydynt yn rhai o\u2019r UE yn cael eu hail-allforio"
   },
   {
-    "code":"40T",
+    "code": "40T",
     "en": "Means of Transport",
-    "cy": "Means of Transport"
+    "cy": "Dulliau Cludo"
   },
   {
-    "code":"40W",
+    "code": "40W",
     "en": "Welfare Material for Seafarers",
-    "cy": "Welfare Material for Seafarers"
+    "cy": "Deunydd Lles i Forwyr"
   },
   {
-    "code":"50A",
+    "code": "50A",
     "en": "Animals",
-    "cy": "Animals"
+    "cy": "Anifeiliaid"
   },
   {
-    "code":"50D",
+    "code": "50D",
     "en": "Disaster Relief Material",
     "cy": "Disaster Relief Material"
   },
   {
-    "code":"50F",
+    "code": "50F",
     "en": "Goods for use in Frontier Zone",
     "cy": "Goods for use in Frontier Zone"
   },
   {
-    "code":"50G",
+    "code": "50G",
     "en": "Goods Temporarily Exported in Particular Situations Having No Economic Effect",
-    "cy": "Goods Temporarily Exported in Particular Situations Having No Economic Effect"
+    "cy": "Nwyddau sydd wedi\u2019u hallforio dros dro mewn sefyllfaoedd penodol heb unrhyw effaith economaidd"
   },
   {
-    "code":"50M",
+    "code": "50M",
     "en": "Medical, Surgical and Laboratory Equipment",
     "cy": "Medical, Surgical and Laboratory Equipment"
   },
   {
-    "code":"50P",
+    "code": "50P",
     "en": "Personal Effects Temporarily Exported by Travellers",
-    "cy": "Personal Effects Temporarily Exported by Travellers"
+    "cy": "Eiddo personol sydd wedi\u2019u hallforio dros dro gan deithwyr"
   },
   {
-    "code":"51P",
+    "code": "51P",
     "en": "Professional Equipment",
     "cy": "Professional Equipment"
   },
   {
-    "code":"52P",
+    "code": "52P",
     "en": "EU Pallets or Containers Temporarily Exported",
-    "cy": "EU Pallets or Containers Temporarily Exported"
+    "cy": "Paledi neu Gynwysyddion yr UE sydd wedi\u2019u hallforio dros dro"
   },
   {
-    "code":"50T",
+    "code": "50T",
     "en": "Means of Transport",
     "cy": "Means of Transport"
   },
   {
-    "code":"50W",
+    "code": "50W",
     "en": "Welfare Material for Seafarers",
     "cy": "Welfare Material for Seafarers"
   },
   {
-    "code":"61T",
+    "code": "61T",
     "en": "TIR Carnets",
-    "cy": "TIR Carnets"
+    "cy": "Carnets TIR"
   },
   {
-    "code":"62T",
+    "code": "62T",
     "en": "New Computerised Transit (NCTS) Movements",
-    "cy": "New Computerised Transit (NCTS) Movements"
+    "cy": "Symudiadau'r System Gludo Gyfrifiadurol Newydd (NCTS)"
   },
   {
-    "code":"63T",
+    "code": "63T",
     "en": "Transit Simplifications",
-    "cy": "Transit Simplifications"
+    "cy": "Symleiddiadau cludo"
   },
   {
-    "code":"72M",
+    "code": "72M",
     "en": "Movements in Records: Special Procedures",
-    "cy": "Movements in Records: Special Procedures"
+    "cy": "Symudiadau mewn Cofnodion: Gweithdrefnau Arbennig"
   },
   {
-    "code":"73N",
+    "code": "73N",
     "en": "Notification of Presentation (NoP) under EIDR",
-    "cy": "Notification of Presentation (NoP) under EIDR"
+    "cy": "Hysbysiad o Gyflwyniad (NoP) o dan EIDR"
   },
   {
-    "code":"90V",
+    "code": "90V",
     "en": "Over-Shipments: Inventory Record Cleansing",
-    "cy": "Over-Shipments: Inventory Record Cleansing"
+    "cy": "Gor-lwytho: Glanhau Cofnod Stocrestr"
   },
   {
-    "code":"91U",
+    "code": "91U",
     "en": "Under-shipments: Inventory Record Cleansing",
-    "cy": "Under-shipments: Inventory Record Cleansing"
+    "cy": "Tan-lwytho: Glanhau Cofnod Stocrestr"
   },
   {
-    "code":"92A",
+    "code": "92A",
     "en": "Abandoned Goods: Inventory Record Cleansing",
-    "cy": "Abandoned Goods: Inventory Record Cleansing"
+    "cy": "Nwyddau wedi\u2019u gadael: Glanhau Cofnod Stocrestr"
   },
   {
-    "code":"93D",
+    "code": "93D",
     "en": "Destroyed Goods: Inventory Record Cleansing",
-    "cy": "Destroyed Goods: Inventory Record Cleansing"
+    "cy": "Nwyddau wedi\u2019u dinistrio: Glanhau Cofnod Stocrestr"
   },
   {
-    "code":"94R",
+    "code": "94R",
     "en": "Re-Routed/ Diverted Goods: Inventory Record Cleansing",
-    "cy": "Re-Routed/ Diverted Goods: Inventory Record Cleansing"
+    "cy": "Ail-bennu llwybr nwyddau/ Nwyddau wedi\u2019u hailgyfeirio: Glanhau Cofnod Stocrestr"
   },
   {
-    "code":"95S",
+    "code": "95S",
     "en": "Seized Goods: Inventory Record Cleansing",
-    "cy": "Seized Goods: Inventory Record Cleansing"
+    "cy": "Nwyddau wedi\u2019u hatafaelu: Glanhau Cofnod Stocrestr"
   },
   {
-    "code":"96M",
+    "code": "96M",
     "en": "Missing Inventory Reference for Cleared Goods: Inventory Release Only",
-    "cy": "Missing Inventory Reference for Cleared Goods: Inventory Release Only"
+    "cy": "Cyfeirnod stocrestr ar goll ar gyfer nwyddau sydd wedi\u2019u clirio: Rhyddhau stocrestr yn unig"
   }
 ]

@@ -2,742 +2,742 @@
   {
     "code": "CDS10001",
     "en": "Obligation Error: Mandatory Data Element has not been provided",
-    "cy": "Obligation Error: Mandatory Data Element has not been provided"
+    "cy": "Gwall Ymrwymiad: Nid yw Elfen Ddata Orfodol wedi\u2019i rhoi"
   },
   {
     "code": "CDS10002",
     "en": "Obligation Error: Data Element is not allowed",
-    "cy": "Obligation Error: Data Element is not allowed"
+    "cy": "Gwall Ymrwymiad: Ni chaniateir yr Elfen Ddata"
   },
   {
     "code": "CDS10003",
     "en": "Obligation Error: Number of Occurrences exceeds what is allowed for the Data Element",
-    "cy": "Obligation Error: Number of Occurrences exceeds what is allowed for the Data Element"
+    "cy": "Gwall Ymrwymiad: Mae nifer yr achosion yn fwy na\u2019r hyn a ganiateir ar gyfer yr Elfen Ddata"
   },
   {
     "code": "CDS10004",
     "en": "Commodity code Error: Mandatory data element not provided or format error or number of occurrences exceeds what is allowed for the data element",
-    "cy": "Commodity code Error: Mandatory data element not provided or format error or number of occurrences exceeds what is allowed for the data element"
+    "cy": "Gwall cod nwyddau: Elfen ddata orfodol heb ei rhoi neu wall i\u2019r fformat neu fod nifer yr achosion yn fwy na\u2019r hyn a ganiateir ar gyfer yr elfen ddata"
   },
   {
     "code": "CDS10010",
     "en": "Format Error: Invalid format",
-    "cy": "Format Error: Invalid format"
+    "cy": "Gwall i\u2019r fformat: Fformat annilys"
   },
   {
     "code": "CDS10020",
     "en": "Data Error: Data Element contains invalid value",
-    "cy": "Data Error: Data Element contains invalid value"
+    "cy": "Gwall i\u2019r Data: Mae\u2019r Elfen Ddata yn cynnwys gwerth annilys"
   },
   {
     "code": "CDS10021",
     "en": "Data Error: Value must be positive",
-    "cy": "Data Error: Value must be positive"
+    "cy": "Gwall i\u2019r Data: Mae\u2019n rhaid i\u2019r gwerth fod yn bositif"
   },
   {
     "code": "CDS10045",
     "en": "Calculated item Customs value is negative. Check Declaration valuation data",
-    "cy": "Calculated item Customs value is negative. Check Declaration valuation data"
+    "cy": "Mae gwerth tollau\u2019r eitem wedi\u2019i chyfrifo\u2019n negyddol. Gwirio data prisio\u2019r Datganiad"
   },
   {
     "code": "CDS11003",
     "en": "Relation Error: The value declared in Total Number of Items (D.E. 1/9) does not correspond with the number of Goods Items on the Declaration.",
-    "cy": "Relation Error: The value declared in Total Number of Items (D.E. 1/9) does not correspond with the number of Goods Items on the Declaration."
+    "cy": "Gwall Perthynas: Nid yw\u2019r gwerth a ddatganwyd yn \u2018Cyfanswm yr Eitemau\u2019 (D.E. 1/9) yn cyfateb \u00e2 nifer yr Eitemau o Nwyddau ar y Datganiad."
   },
   {
     "code": "CDS11004",
     "en": "Relation error: The combination of Trade Movement Type, Declaration Type followed by requested procedure and /or previous procedure code is invalid.",
-    "cy": "Relation error: The combination of Trade Movement Type, Declaration Type followed by requested procedure and /or previous procedure code is invalid."
+    "cy": "Gwall Perthynas: Mae\u2019r cyfuniad o \u2018Math o Symudiadau Masnachol\u2019, \u2018Math o Ddatganiad\u2019 wedi\u2019u dilyn gan weithdrefn y gofynnir amdani a / neu god gweithdrefn flaenorol yn annilys."
   },
   {
     "code": "CDS11005",
     "en": "Relation Error: The Requested Procedure (D.E. 1/10) for each Goods Item must derive the same Declaration Category (e.g. H1) or acceptance date is not valid. No further validation has been carried out.",
-    "cy": "Relation Error: The Requested Procedure (D.E. 1/10) for each Goods Item must derive the same Declaration Category (e.g. H1) or acceptance date is not valid. No further validation has been carried out."
+    "cy": "Gwall Perthynas: Mae\u2019n rhaid i\u2019r Weithdrefn y gofynnir amdani (D.E. 1/10) ar gyfer pob Eitem o Nwyddau ddeillio o\u2019r un Categori Datganiad (e.e. H1) neu nid yw\u2019r dyddiad derbyn yn ddilys. Does dim dilysiad pellach wedi\u2019i wneud."
   },
   {
     "code": "CDS11006",
     "en": "Relation Error: Net Mass must be lower than Gross Mass",
-    "cy": "Relation Error: Net Mass must be lower than Gross Mass"
+    "cy": "Gwall Perthynas: Mae\u2019n rhaid i\u2019r M\u00e0s Net fod yn is na\u2019r M\u00e0s Gros"
   },
   {
     "code": "CDS11007",
     "en": "Relation Error: The submitter of the Additional Message differs from the original Declaration",
-    "cy": "Relation Error: The submitter of the Additional Message differs from the original Declaration"
+    "cy": "Gwall Perthynas: Mae cyflwynydd y Neges Ychwanegol yn wahanol i\u2019r Datganiad gwreiddiol"
   },
   {
     "code": "CDS11012",
     "en": "Element is not allowed to be amended on this Declaration Type",
-    "cy": "Element is not allowed to be amended on this Declaration Type"
+    "cy": "Ni chaniateir diwygio\u2019r elfen ar y Math o Ddatganiad hwn"
   },
   {
     "code": "CDS12003",
     "en": "Uniqueness Error: Reuse of LRN (D.E. 2/5) is not allowed within 48 hours",
-    "cy": "Uniqueness Error: Reuse of LRN (D.E. 2/5) is not allowed within 48 hours"
+    "cy": "Gwall Unigryw: Ni chaniateir ailddefnyddio LRN (D.E. 2/5) o fewn 48 awr"
   },
   {
     "code": "CDS12005",
     "en": "Authorisation Error: Invalid Party ID",
-    "cy": "Authorisation Error: Invalid Party ID"
+    "cy": "Gwall Awdurdodi: Dynodydd y Parti\u2019n Annilys"
   },
   {
     "code": "CDS12006",
     "en": "License Error: License has expired; or License ID cannot be recognised; or License ID does not belong to the party on the declaration; or License declared has insufficient balance remaining; or License does not apply to the goods or country declared",
-    "cy": "License Error: License has expired; or License ID cannot be recognised; or License ID does not belong to the party on the declaration; or License declared has insufficient balance remaining; or License does not apply to the goods or country declared"
+    "cy": "Gwall i\u2019r Drwydded: Mae\u2019r drwydded wedi dod i ben; neu ni ellir adnabod Dynodydd y drwydded; neu nid yw Dynodydd y drwydded yn perthyn i\u2019r parti ar y datganiad; neu nad oes gan y drwydded sydd wedi\u2019i datgan ddigon o falans yn weddill; neu nid yw\u2019r drwydded yn berthnasol i\u2019r nwyddau neu\u2019r wlad sydd wedi\u2019u datgan"
   },
   {
     "code": "CDS12007",
     "en": "Authorisation Error: Authorisation has expired or Authorisation reference number provided is not recognised",
-    "cy": "Authorisation Error: Authorisation has expired or Authorisation reference number provided is not recognised"
+    "cy": "Gwall Awdurdodi: Mae awdurdodiad wedi dod i ben neu ni adwaenir y cyfeirnod awdurdodi sydd wedi\u2019i roi"
   },
   {
     "code": "CDS12013",
     "en": "Authorisation Error: Invalid VAT number",
-    "cy": "Authorisation Error: Invalid VAT number"
+    "cy": "Gwall Awdurdodi: Rhif TAW annilys"
   },
   {
     "code": "CDS12014",
     "en": "Sequence Error: A Goods Arrival Notification must follow a pre-lodged Declaration",
-    "cy": "Sequence Error: A Goods Arrival Notification must follow a pre-lodged Declaration"
+    "cy": "Gwall Dilyniant: Mae\u2019n rhaid i Hysbysiad o Nwyddau sy\u2019n cyrraedd ddilyn datganiad a gyflwynwyd ymlaen llaw"
   },
   {
     "code": "CDS12015",
     "en": "Sequence Error: AdditionalMessage.declarationReference does not refer to an existing declaration or the existing declaration is not in a permissable state to process the request",
-    "cy": "Sequence Error: AdditionalMessage.declarationReference does not refer to an existing declaration or the existing declaration is not in a permissable state to process the request"
+    "cy": "Gwall Dilyniant: Nid yw AdditionalMessage.declarationReferenceyn cyfeirio at ddatganiad presennol neu nid yw\u2019r datganiad perthnasol mewn cyflwr caniataol i brosesu\u2019r cais"
   },
   {
     "code": "CDS12016",
     "en": "Date Error: The acceptance date must not be in the future and must not be more than 180 days in the past",
-    "cy": "Date Error: The acceptance date must not be in the future and must not be more than 180 days in the past"
+    "cy": "Gwall i\u2019r Dyddiad: Ni all y dyddiad derbyn fod yn y dyfodol ac mae\u2019n rhaid peidio \u00e2 bod yn fwy na 180 diwrnod yn y gorffennol"
   },
   {
     "code": "CDS12022",
     "en": "Relation Error: The Goods Item Number (D.E. 1/6) is larger than the total number of Goods Items on the Declaration",
-    "cy": "Relation Error: The Goods Item Number (D.E. 1/6) is larger than the total number of Goods Items on the Declaration"
+    "cy": "Gwall Perthynas: Mae Rhif yr Eitem o Nwyddau (D.E. 1/6) yn fwy na chyfanswm yr Eitemau o Nwyddau ar y Datganiad"
   },
   {
     "code": "CDS12024",
     "en": "Uniqueness Error: The value declared should be unique",
-    "cy": "Uniqueness Error: The value declared should be unique"
+    "cy": "Gwall Unigryw: Dylai\u2019r gwerth a ddatgenir fod yn unigryw"
   },
   {
     "code": "CDS12026",
     "en": "Uniqueness Error: The same Data Element cannot be amended more than once in the same request",
-    "cy": "Uniqueness Error: The same Data Element cannot be amended more than once in the same request"
+    "cy": "Gwall Unigryw: Ni ellir diwygio\u2019r un Elfen Ddata fwy nag unwaith yn yr un cais"
   },
   {
     "code": "CDS12031",
     "en": "Sequence Error: Goods Arrival Notification must be submitted within 30 days",
-    "cy": "Sequence Error: Goods Arrival Notification must be submitted within 30 days"
+    "cy": "Gwall Dilyniant: Mae\u2019n rhaid cyflwyno Hysbysiad o Nwyddau sy\u2019n cyrraedd cyn pen 30 diwrnod"
   },
   {
     "code": "CDS12034",
     "en": "Relation Error: Submission channel of the amendment must be the same as the original Declaration",
-    "cy": "Relation Error: Submission channel of the amendment must be the same as the original Declaration"
+    "cy": "Gwall Perthynas: Mae\u2019n rhaid i sianel gyflwyno\u2019r diwygiad fod yr un fath \u00e2\u2019r Datganiad gwreiddiol"
   },
   {
     "code": "CDS12036",
     "en": "Sequence Error: A new request cannot be submitted until a response is received to your previous request",
-    "cy": "Sequence Error: A new request cannot be submitted until a response is received to your previous request"
+    "cy": "Gwall Dilyniant: Ni ellir cyflwyno cais newydd hyd nes y ceir ymateb i\u2019ch cais blaenorol"
   },
   {
     "code": "CDS12042",
     "en": "Relation Error: Elements must be identical within the GoodsItem",
-    "cy": "Relation Error: Elements must be identical within the GoodsItem"
+    "cy": "Gwall Perthynas: Mae\u2019n rhaid i elfennau fod yn union yr un fath o fewn GoodsItem"
   },
   {
     "code": "CDS12044",
     "en": "MUCR exists and has previously been shut",
-    "cy": "MUCR exists and has previously been shut"
+    "cy": "Mae\u2019r MUCR yn bodoli ac wedi ei gau yn flaenorol"
   },
   {
     "code": "CDS12046",
     "en": "Process Error: Goods Arrival Notification was not received within 30 days of the pre-lodged Declaration",
-    "cy": "Process Error: Goods Arrival Notification was not received within 30 days of the pre-lodged Declaration"
+    "cy": "Gwall i\u2019r broses: Ni ddaeth Hysbysiad o Nwyddau sy\u2019n Cyrraedd i law cyn pen 30 diwrnod i\u2019r datganiad a gyflwynwyd ymlaen llaw"
   },
   {
     "code": "CDS12050",
     "en": "A valid Requested Procedure (D.E. 1/10) has not been provided or acceptance date is not valid. No further validation has been carried out.",
-    "cy": "A valid Requested Procedure (D.E. 1/10) has not been provided or acceptance date is not valid. No further validation has been carried out."
+    "cy": "Nid yw gweithdrefn y gofynnir amdani ddilys (D.E. 1/10) wedi\u2019i rhoi neu nid yw\u2019r dyddiad derbyn yn ddilys. Does dim dilysiad pellach wedi\u2019i wneud."
   },
   {
     "code": "CDS12052",
     "en": "A valid Declaration Type (D.E. 1/2) has not been provided or acceptance date is not valid. No further validation has been carried out",
-    "cy": "A valid Declaration Type (D.E. 1/2) has not been provided or acceptance date is not valid. No further validation has been carried out"
+    "cy": "Nid yw Math o Ddatganiad dilys (D.E. 1/2) wedi\u2019i roi neu nid yw\u2019r dyddiad derbyn yn ddilys. Does dim dilysiad pellach wedi\u2019i wneud"
   },
   {
     "code": "CDS12056",
     "en": "Relation Error: The combination of elements is not allowed",
-    "cy": "Relation Error: The combination of elements is not allowed"
+    "cy": "Gwall Perthynas: Ni chaniateir cyfuniad o elfennau"
   },
   {
     "code": "CDS12057",
     "en": "Relation Error: The invoice currency must be the same for every Goods Item on the Declaration",
-    "cy": "Relation Error: The invoice currency must be the same for every Goods Item on the Declaration"
+    "cy": "Gwall Perthynas: Mae\u2019n rhaid i arian cyfred yr anfoneb fod yr un fath ar gyfer pob Eitem o Nwyddau ar y Datganiad"
   },
   {
     "code": "CDS12058",
     "en": "Relation Error: At least one packaging quantity must be greater than zero",
-    "cy": "Relation Error: At least one packaging quantity must be greater than zero"
+    "cy": "Gwall Perthynas: Mae\u2019n rhaid i o leiaf un swm o ddeunydd pacio fod yn fwy na sero"
   },
   {
     "code": "CDS12062",
     "en": "DUCR previously used within the last 12 months",
-    "cy": "DUCR previously used within the last 12 months"
+    "cy": "DUCR a ddefnyddiwyd yn flaenorol yn y 12 mis diwethaf"
   },
   {
     "code": "CDS12070",
     "en": "Relation Error: The value supplied in Data Element 1 mandates the completion of Data Element 2",
-    "cy": "Relation Error: The value supplied in Data Element 1 mandates the completion of Data Element 2"
+    "cy": "Gwall Perthynas: Mae\u2019r gwerth a roddwyd yn Elfen Ddata 1 yn mynnu bod Elfen Ddata 2 yn cael ei chwblhau"
   },
   {
     "code": "CDS12071",
     "en": "Relation Error: Data Element must be supplied at either header or item level and cannot be declared at both levels",
-    "cy": "Relation Error: Data Element must be supplied at either header or item level and cannot be declared at both levels"
+    "cy": "Gwall Perthynas: Mae\u2019n rhaid rhoi\u2019r Elfen Ddata ar naill ai lefel y pennyn neu lefel yr eitem ac ni ellir ei datgan ar y ddwy lefel"
   },
   {
     "code": "CDS12072",
     "en": "Relation Error: Either Data Element 1 or Data Element 2 must be supplied, but not both",
-    "cy": "Relation Error: Either Data Element 1 or Data Element 2 must be supplied, but not both"
+    "cy": "Gwall Perthynas: Mae\u2019n rhaid rhoi naill ai Elfen Ddata 1 neu Elfen Ddata 2, ond nid y ddau ohonynt"
   },
   {
     "code": "CDS12073",
     "en": "Relation Error: Data Element must be supplied at header or item level",
-    "cy": "Relation Error: Data Element must be supplied at header or item level"
+    "cy": "Gwall Perthynas: Mae\u2019n rhaid rhoi\u2019r Elfen Ddata ar lefel y pennyn neu lefel yr eitem"
   },
   {
     "code": "CDS12074",
     "en": "Relation Error: Because Data Element 1 is not supplied, Data Element 2 is mandatory",
-    "cy": "Relation Error: Because Data Element 1 is not supplied, Data Element 2 is mandatory"
+    "cy": "Gwall Perthynas: Gan nad yw Elfen Ddata 1 yn cael ei rhoi, mae Elfen Ddata 2 yn orfodol"
   },
   {
     "code": "CDS12075",
     "en": "Relation Error: Data Element 2 must not be supplied with this value in Data Element 1",
-    "cy": "Relation Error: Data Element 2 must not be supplied with this value in Data Element 1"
+    "cy": "Gwall Perthynas: Mae\u2019n rhaid peidio \u00e2 rhoi Elfen Ddata 2 gyda\u2019r gwerth hwn yn Elfen Ddata 1"
   },
   {
     "code": "CDS12077",
     "en": "Relation Error: A valid value must be supplied in Data Element 2 as Data Element 1 is present",
-    "cy": "Relation Error: A valid value must be supplied in Data Element 2 as Data Element 1 is present"
+    "cy": "Gwall Perthynas: Mae\u2019n rhaid rhoi gwerth dilys yn Elfen Ddata 2 gan fod Elfen Ddata 1 yn bresennol"
   },
   {
     "code": "CDS12078",
     "en": "Relation Error: As no Deferment Account Number is provided in D.E. 2/6, an immediate Method of Payment must be offered in D.E. 4/8",
-    "cy": "Relation Error: As no Deferment Account Number is provided in D.E. 2/6, an immediate Method of Payment must be offered in D.E. 4/8"
+    "cy": "Gwall Perthynas: Gan nad oes Rhif Cyfrif Gohirio yn cael ei roi yn D.E. 2/6, mae\u2019n rhaid cynnig Dull Talu yn D.E. 4/8 ar unwaith"
   },
   {
     "code": "CDS12079",
     "en": "Relation Error: Data Element 2 must not be supplied with Data Element 1",
-    "cy": "Relation Error: Data Element 2 must not be supplied with Data Element 1"
+    "cy": "Gwall Perthynas: Mae\u2019n rhaid peidio \u00e2 rhoi Elfen Ddata 2 gydag Elfen Ddata 1"
   },
   {
     "code": "CDS12080",
     "en": "Relation Error: Combination of Addition / Deduction codes (D.E. 4/9) is not allowed",
-    "cy": "Relation Error: Combination of Addition / Deduction codes (D.E. 4/9) is not allowed"
+    "cy": "Gwall Perthynas: Ni chaniateir cyfuniad o godau ychwanegu / didynnu (D.E. 4/9)"
   },
   {
     "code": "CDS12081",
     "en": "Relation Error: Importer (D.E. 3/16) & Exporter (D.E. 3/2) must not be the same party",
-    "cy": "Relation Error: Importer (D.E. 3/16) & Exporter (D.E. 3/2) must not be the same party"
+    "cy": "Gwall Perthynas: Ni all y Mewnforiwr (D.E. 3/16) a\u2019r Allforiwr (D.E. 3/2) fod yr un parti"
   },
   {
     "code": "CDS12082",
     "en": "Relation Error: The currency declared in D.E. 4/11 must be the same as the currency declared in D.E. 4/14",
-    "cy": "Relation Error: The currency declared in D.E. 4/11 must be the same as the currency declared in D.E. 4/14"
+    "cy": "Gwall Perthynas: Mae\u2019n rhaid i\u2019r arian a ddatganwyd yn D.E. 4/11 fod yr un fath \u00e2\u2019r arian a ddatganwyd yn D.E. 4/14"
   },
   {
     "code": "CDS12083",
     "en": "Relation Error: For Country of Preferential Origin D.E. 5/16 where mandated, only provide one country or country group, not both",
-    "cy": "Relation Error: For Country of Preferential Origin D.E. 5/16 where mandated, only provide one country or country group, not both"
+    "cy": "Gwall Perthynas: Ar gyfer Gwlad o Darddiad Ffafriol D.E. 5/16, dim ond un gr\u0175p gwlad neu un wlad sydd angen ei rhoi, nid y ddau, lle bo hynny\u2019n orfodol"
   },
   {
     "code": "CDS12084",
     "en": "Relation Error: Either Consignee Name (D.E. 3/9) or Consignee Identification Number (D.E. 3/10) must be supplied, but not both",
-    "cy": "Relation Error: Either Consignee Name (D.E. 3/9) or Consignee Identification Number (D.E. 3/10) must be supplied, but not both"
+    "cy": "Gwall Perthynas: Mae\u2019n rhaid rhoi naill ai Enw\u2019r Derbynnydd (D.E. 3/9) neu Rif Adnabod y Derbynnydd (D.E. 3/10), ond nid y ddau"
   },
   {
     "code": "CDS12086",
     "en": "Relation Error: Either Carrier Name (D.E. 3/31) or Carrier Identification Number (D.E. 3/32) must be supplied, but not both",
-    "cy": "Relation Error: Either Carrier Name (D.E. 3/31) or Carrier Identification Number (D.E. 3/32) must be supplied, but not both"
+    "cy": "Gwall Perthynas: Mae\u2019n rhaid rhoi naill ai Enw\u2019r Cludwr (D.E.3/31) neu Rif Adnabod y Cludwr (D.E. 3/32), ond nid y ddau"
   },
   {
     "code": "CDS12087",
     "en": "Relation Error: VAT Declaring Party Identification (D.E. 3/40), where mandated, must be supplied at either header or item",
-    "cy": "Relation Error: VAT Declaring Party Identification (D.E. 3/40), where mandated, must be supplied at either header or item"
+    "cy": "Gwall Perthynas: Mae\u2019n rhaid rhoi Dynodydd y Parti sy\u2019n Datgan TAW (D.E. 3/40), lle bo hynny\u2019n orfodol, naill ai yn y pennyn neu yn yr eitem"
   },
   {
     "code": "CDS12088",
     "en": "Relation Error: Either Agent Name (D.E. 3/19) or Agent Identification Number (D.E. 3/20) must be supplied",
-    "cy": "Relation Error: Either Agent Name (D.E. 3/19) or Agent Identification Number (D.E. 3/20) must be supplied"
+    "cy": "Gwall Perthynas: Mae\u2019n rhaid rhoi naill ai Enw\u2019r Asiant (D.E. 3/19) neu Rif Adnabod yr Asiant (D.E. 3/20)"
   },
   {
     "code": "CDS12089",
     "en": "Relation Error: Consignee Party Name (D.E.3/9) must be supplied at either header or item level",
-    "cy": "Relation Error: Consignee Party Name (D.E.3/9) must be supplied at either header or item level"
+    "cy": "Gwall Perthynas: Mae\u2019n rhaid rhoi Enw Parti\u2019r Derbynnydd (D.E.3/9) ar naill ai lefel y pennyn neu lefel yr eitem"
   },
   {
     "code": "CDS12090",
     "en": "Relation Error: Carrier Name (D.E. 3/31) or Carrier Identification Number (D.E. 3/32) must be supplied for the 17X Additional Procedure Code at either header or item level",
-    "cy": "Relation Error: Carrier Name (D.E. 3/31) or Carrier Identification Number (D.E. 3/32) must be supplied for the 17X Additional Procedure Code at either header or item level"
+    "cy": "Gwall Perthynas: Mae\u2019n rhaid rhoi Enw\u2019r Cludwr (D.E. 3/31) neu Rif Adnabod y Cludwr (D.E. 3/32) ar gyfer y Cod Gweithdrefn Ychwanegol 17X ar naill ai lefel y pennyn neu lefel yr eitem"
   },
   {
     "code": "CDS12091",
     "en": "Relation Error: Consignee (D.E. 3/10) & Exporter (D.E. 3/1) must not be the same Party",
-    "cy": "Relation Error: Consignee (D.E. 3/10) & Exporter (D.E. 3/1) must not be the same Party"
+    "cy": "Gwall Perthynas: Ni all y Derbynnydd (D.E. 3/10) a\u2019r Allforiwr (D.E. fod yr un Parti"
   },
   {
     "code": "CDS12092",
     "en": "Relation Error: Seller (D.E. 3/25) & Exporter (D.E. 3/1) must not be the same Party",
-    "cy": "Relation Error: Seller (D.E. 3/25) & Exporter (D.E. 3/1) must not be the same Party"
+    "cy": "Gwall Perthynas: Ni all y Gwerthwr (D.E. 3/25) a\u2019r Allforiwr (D.E. fod yr un Parti"
   },
   {
     "code": "CDS12095",
     "en": "Relation Error: Additional Procedure Combination (D.E. 1/11) can only be used when Country of Dispatch/Export (D.E. 5/14) Exportation Country is a Third Country",
-    "cy": "Relation Error: Additional Procedure Combination (D.E. 1/11) can only be used when Country of Dispatch/Export (D.E. 5/14) Exportation Country is a Third Country"
+    "cy": "Gwall Perthynas: Dim ond pan fydd y Wlad Anfon/Allforio (D.E. 5/14), y Wlad Allforio yn Drydedd Wlad, y gellir defnyddio Cyfuniad Gweithdrefn Ychwanegol (D.E. 1/11)"
   },
   {
     "code": "CDS12096",
     "en": "Relation Error: Provided Authorisation Type (D.E. 3/39) requires specific document in Additional Documents",
-    "cy": "Relation Error: Provided Authorisation Type (D.E. 3/39) requires specific document in Additional Documents"
+    "cy": "Gwall Perthynas: Mae\u2019r Math o Awdurdodiad a roddir (D.E. 3/39) yn gofyn am ddogfen benodol yn \u2018Dogfennau Ychwanegol\u2019"
   },
   {
     "code": "CDS12097",
     "en": "Relation Error: Combination Additional Procedure Code (D.E. 1/11) and Country of Destination in D.E. 5/8 is not allowed",
-    "cy": "Relation Error: Combination Additional Procedure Code (D.E. 1/11) and Country of Destination in D.E. 5/8 is not allowed"
+    "cy": "Gwall Perthynas: Ni chaniateir cyfuno Cod Gweithdrefn Ychwanegol (D.E. 1/11) \u00e2 Gwlad Pen y Daith yn D.E. 5/8"
   },
   {
     "code": "CDS12098",
     "en": "Relation Error: Combination of Means of Transport (D.E. 7/14) and Delivery Terms in D.E. 4/1 is not allowed",
-    "cy": "Relation Error: Combination of Means of Transport (D.E. 7/14) and Delivery Terms in D.E. 4/1 is not allowed"
+    "cy": "Gwall Perthynas: Ni chaniateir cyfuno Dulliau Cludo (D.E. 7/14) \u00e2 Thelerau Danfon yn D.E. 4/1"
   },
   {
     "code": "CDS12099",
     "en": "Relation Error: Combination of elements that make up the Goods Location Code (D.E. 5/23) is invalid",
-    "cy": "Relation Error: Combination of elements that make up the Goods Location Code (D.E. 5/23) is invalid"
+    "cy": "Gwall Perthynas: Mae cyfuniad yr elfennau sy\u2019n ffurfio\u2019r Cod Lleoliad y Nwyddau (D.E. 5/23) yn annilys"
   },
   {
     "code": "CDS12100",
     "en": "Relation Error: Combination of Delivery terms (D.E. 4/1) and Addition/Deduction code (D.E. 4/9) is not allowed",
-    "cy": "Relation Error: Combination of Delivery terms (D.E. 4/1) and Addition/Deduction code (D.E. 4/9) is not allowed"
+    "cy": "Gwall Perthynas: Ni chaniateir cyfuno telerau Danfon (D.E. 4/1) \u00e2 chod Ychwanegu/Didynnu (D.E. 4/9)"
   },
   {
     "code": "CDS12101",
     "en": "Relation Error: Declared Tax Type (D.E. 4/3) is not allowed in combination with the Additional Procedure",
-    "cy": "Relation Error: Declared Tax Type (D.E. 4/3) is not allowed in combination with the Additional Procedure"
+    "cy": "Gwall Perthynas: Ni chaniateir cyfuno\u2019r Math o Dreth Datganedig (D.E. 4/3) \u00e2\u2019r Weithdrefn Ychwanegol"
   },
   {
     "code": "CDS12102",
     "en": "Relation Error: Deferred Payment Method in D.E. 4/8 is Required with the duty deferment account number provided in D.E. 2/6",
-    "cy": "Relation Error: Deferred Payment Method in D.E. 4/8 is Required with the duty deferment account number provided in D.E. 2/6"
+    "cy": "Gwall Perthynas: Mae angen Dull Talu Gohiriedig yn D.E. 4/8 gyda rhif y cyfrif gohirio tollau a roddwyd yn D.E. 2/6"
   },
   {
     "code": "CDS12103",
     "en": "Relation Error: Valid delivery destination is required in D.E. 5/8 for a CO declaration",
-    "cy": "Relation Error: Valid delivery destination is required in D.E. 5/8 for a CO declaration"
+    "cy": "Gwall Perthynas: Mae angen cyrchfan cyflenwi ddilys yn D.E. 5/8 ar gyfer datganiad CO"
   },
   {
     "code": "CDS12104",
     "en": "Relation Error: Valid Import Procedure code (D.E. 1/10) is required",
-    "cy": "Relation Error: Valid Import Procedure code (D.E. 1/10) is required"
+    "cy": "Gwall Perthynas: Mae angen cod Gweithdrefn Mewnforio dilys (D.E. 1/10)"
   },
   {
     "code": "CDS12105",
     "en": "Relation Error: Addition/Deduction code (D.E. 4/9) not allowed with the declared Additional Procedure Code (D.E.1/11)",
-    "cy": "Relation Error: Addition/Deduction code (D.E. 4/9) not allowed with the declared Additional Procedure Code (D.E.1/11)"
+    "cy": "Gwall Perthynas: Ni chaniateir y cod Ychwanegu/Didynnu (D.E. 4/9) \u00e2\u2019r Cod Gweithdrefn Ychwanegol a ddatganwyd (D.E.1/11)"
   },
   {
     "code": "CDS12106",
     "en": "Relation Error: Appropriate Additional Information Code must be provided in D.E. 2/2 with Additional Procedure Code 1CL",
-    "cy": "Relation Error: Appropriate Additional Information Code must be provided in D.E. 2/2 with Additional Procedure Code 1CL"
+    "cy": "Gwall Perthynas: Mae\u2019n rhaid rhoi Cod Gwybodaeth Ychwanegol priodol yn D.E. 2/2 gyda Chod Gweithdrefn Ychwanegol 1CL"
   },
   {
     "code": "CDS12107",
     "en": "Relation Error: Conditions not met for the requested simplification. Please see CDS Trade Tariff Vol.3 Appendix 4",
-    "cy": "Relation Error: Conditions not met for the requested simplification. Please see CDS Trade Tariff Vol.3 Appendix 4"
+    "cy": "Gwall Perthynas: Nid oedd yr amodau wedi\u2019u bodloni ar gyfer y gwaith symleiddio y gofynnwyd amdano. Gweler Tariff Masnach CDS Cyfrol 3 Atodiad 4"
   },
   {
     "code": "CDS12108",
     "en": "Obligation Error: DUCR is mandatory on an Export Declaration",
-    "cy": "Obligation Error: DUCR is mandatory on an Export Declaration"
+    "cy": "Gwall Ymrwymiad: Mae DUCR yn orfodol ar Ddatganiad Allforio"
   },
   {
     "code": "CDS12109",
     "en": "Obligation Error: When providing fixed rate of exchange rate in D.E. 4/15, a currency code of GBP must be supplied",
-    "cy": "Obligation Error: When providing fixed rate of exchange rate in D.E. 4/15, a currency code of GBP must be supplied"
+    "cy": "Gwall Ymrwymiad: Wrth ddarparu cyfradd sefydlog o gyfradd gyfnewid yn D.E. 4/15, mae\u2019n rhaid cyflenwi cod arian cyfred o GBP"
   },
   {
     "code": "CDS12110",
     "en": "Relation Error: A Quota Order number (D.E. 8/1) cannot be provided in combination with this Preference Code (D.E. 4/17)",
-    "cy": "Relation Error: A Quota Order number (D.E. 8/1) cannot be provided in combination with this Preference Code (D.E. 4/17)"
+    "cy": "Gwall Perthynas: Ni ellir rhoi rhif Archeb y Cwota (D.E. 8/1) ar y cyd \u00e2\u2019r Cod Ffafriaeth hwn (D.E. 4/17)"
   },
   {
     "code": "CDS12111",
     "en": "Relation Error: The provided tax amount (D.E. 4/6 or D.E. 4/7) must always be declared with currency code GBP",
-    "cy": "Relation Error: The provided tax amount (D.E. 4/6 or D.E. 4/7) must always be declared with currency code GBP"
+    "cy": "Gwall Perthynas: Mae\u2019n rhaid i\u2019r swm o dreth a roddir (D.E. 4/6 neu D.E. 4/7) cael ei ddatgan gyda chod arian cyfred GBP bob tro"
   },
   {
     "code": "CDS12112",
     "en": "Relation Error: Airfreight related additions/deduction code must be provided in DE 4/9 when an airport place of loading is provided in DE 5/21",
-    "cy": "Relation Error: Airfreight related additions/deduction code must be provided in DE 4/9 when an airport place of loading is provided in DE 5/21"
+    "cy": "Gwall Perthynas: Mae\u2019n rhaid rhoi cod ychwanegiadau/didyniadau sy\u2019n gysylltiedig ag awyrgludiant yn D.E. 4/9 pan roddir maes awyr fel man llwytho yn D.E. 5/21"
   },
   {
     "code": "CDS12113",
     "en": "Relation Error: Authorisation holder CGU requires a guarantee type of 0 or 1 to be provided in D.E.8/2",
-    "cy": "Relation Error: Authorisation holder CGU requires a guarantee type of 0 or 1 to be provided in D.E.8/2"
+    "cy": "Gwall Perthynas: Mae deiliad yr awdurdod CGU yn gofyn bod y math o warant sy\u2019n cael ei roi yn 0 neu 1 yn D.E. 8/2"
   },
   {
     "code": "CDS12114",
     "en": "Relation Error: Value declared must be less than 100 as D.E. 4/9 Additions/Deductions code is a percentage",
-    "cy": "Relation Error: Value declared must be less than 100 as D.E. 4/9 Additions/Deductions code is a percentage"
+    "cy": "Gwall Perthynas: Mae\u2019n rhaid i\u2019r gwerth a ddatganwyd fod yn llai na 100 gan fod cod D.E. 4/9 Ychwanegiadau/Didyniadau yn ganran"
   },
   {
     "code": "CDS12115",
     "en": "Relation Error: Declared Procedure Code (D.E. 1/10 and / or 1/11) mandates the use of Additional Document (D.E. 2/3) 185C",
-    "cy": "Relation Error: Declared Procedure Code (D.E. 1/10 and / or 1/11) mandates the use of Additional Document (D.E. 2/3) 185C"
+    "cy": "Gwall Perthynas: Mae\u2019r Cod Gweithdrefn Datganedig (D.E. 1/10 a / neu 1/11) yn mynnu bod Dogfen Ychwanegol (D.E. 2/3) 185C yn cael ei defnyddio"
   },
   {
     "code": "CDS12117",
     "en": "Relation Error: Importer (D.E. 3/16) & Buyer (D.E. 3/27) must not be the same party",
-    "cy": "Relation Error: Importer (D.E. 3/16) & Buyer (D.E. 3/27) must not be the same party"
+    "cy": "Gwall Perthynas: Ni all y Mewnforiwr (D.E. 3/16) a\u2019r Prynwr (D.E 3/27) fod yr un parti"
   },
   {
     "code": "CDS12118",
     "en": "Relation Error: Consignor (D.E.3/1) information must be supplied for the 17X Additional Procedure Code at either header or item level and cannot be declared at both levels",
-    "cy": "Relation Error: Consignor (D.E.3/1) information must be supplied for the 17X Additional Procedure Code at either header or item level and cannot be declared at both levels"
+    "cy": "Gwall Perthynas: Mae\u2019n rhaid rhoi gwybodaeth gan yr anfonydd (D.E.3/1) ar gyfer y Cod Gweithdrefn Ychwanegol 17X ar naill ai lefel y pennyn neu lefel yr eitem, ac ni ellir ei datgan ar y ddwy lefel"
   },
   {
     "code": "CDS12119",
     "en": "Relation Error: Declared Additional Document (D.E. 2/3) is not allowed with this Procedure Code (D.E. 1/10 or D.E. 1/11)",
-    "cy": "Relation Error: Declared Additional Document (D.E. 2/3) is not allowed with this Procedure Code (D.E. 1/10 or D.E. 1/11)"
+    "cy": "Gwall Perthynas: Ni chaniateir Dogfen Ychwanegol Ddatganedig (D.E. 2/3) gyda\u2019r Cod Gweithdrefn hwn (D.E. 1/10 neu D.E. 1/11)"
   },
   {
     "code": "CDS12120",
     "en": "Relation Error: The appropriate authorisation has not been declared for this Declaration Type (D.E. 1/2)",
-    "cy": "Relation Error: The appropriate authorisation has not been declared for this Declaration Type (D.E. 1/2)"
+    "cy": "Gwall Perthynas: Nid yw\u2019r awdurdodiad priodol wedi\u2019i ddatgan ar gyfer y Math o Ddatganiad hwn (D.E. 1/2)"
   },
   {
     "code": "CDS12121",
     "en": "Relation Error: This combination of Additional Information codes (D.E. 2/2) is not allowed",
-    "cy": "Relation Error: This combination of Additional Information codes (D.E. 2/2) is not allowed"
+    "cy": "Gwall Perthynas: Ni chaniateir y cyfuniad hwn o godau Gwybodaeth Ychwanegol (D.E. 2/2)"
   },
   {
     "code": "CDS12123",
     "en": "Data Error: Value must be greater than 0",
-    "cy": "Data Error: Value must be greater than 0"
+    "cy": "Gwall i\u2019r Data: Mae\u2019n rhaid i\u2019r gwerth fod yn fwy na 0"
   },
   {
     "code": "CDS12125",
     "en": "DAN Error: Account number is not recognised; or Account is suspended or revoked; or Parties declared on the declaration do not have authority to use account number provided",
-    "cy": "DAN Error: Account number is not recognised; or Account is suspended or revoked; or Parties declared on the declaration do not have authority to use account number provided"
+    "cy": "Gwall DAN: Nid yw rhif y cyfrif yn cael ei adnabod; neu Mae\u2019r cyfrif wedi\u2019i atal neu wedi\u2019i ddirymu; neu Nid oes gan y part\u00efon a ddatganwyd ar y datganiad awdurdod i ddefnyddio rhif y cyfrif a roddwyd"
   },
   {
     "code": "CDS12132",
     "en": "DUCR format not valid",
-    "cy": "DUCR format not valid"
+    "cy": "Nid yw fformat y DUCR yn ddilys"
   },
   {
     "code": "CDS12133",
     "en": "MUCR format not valid",
-    "cy": "MUCR format not valid"
+    "cy": "Nid yw fformat yr MUCR yn ddilys"
   },
   {
     "code": "CDS12134",
     "en": "DUCR and MUCR formats not valid",
-    "cy": "DUCR and MUCR formats not valid"
+    "cy": "Nid yw fformatau\u2019r DUCR a\u2019r MUCR yn ddilys"
   },
   {
     "code": "CDS12135",
     "en": "Relation Error: Country of Export (DE 5/14) must be supplied at either header or item level",
-    "cy": "Relation Error: Country of Export (DE 5/14) must be supplied at either header or item level"
+    "cy": "Gwall Perthynas: Mae\u2019n rhaid rhoi\u2019r Wlad Allforio (DE 5/14) ar naill ai lefel y pennyn neu lefel yr eitem"
   },
   {
     "code": "CDS12136",
     "en": "Relation Error: Provided Additional Procedure Code (D.E. 1/11) necessitates indirect representation (D.E. 3/21) for the following declaration types: C F Y J K Z",
-    "cy": "Relation Error: Provided Additional Procedure Code (D.E. 1/11) necessitates indirect representation (D.E. 3/21) for the following declaration types: C F Y J K Z"
+    "cy": "Gwall Perthynas: Mae\u2019r Cod Gweithdrefn Ychwanegol sydd wedi\u2019i roi (D.E. 1/11) yn golygu bod angen cynrychiolaeth anuniongyrchol (D.E. 3/21) ar gyfer y mathau o ddatganiadau canlynol: C F Y J K Z"
   },
   {
     "code": "CDS12137",
     "en": "Uniqueness Error: Only a single MUCR can be declared in D.E. 2/1 at Header level on an imports declaration",
-    "cy": "Uniqueness Error: Only a single MUCR can be declared in D.E. 2/1 at Header level on an imports declaration"
+    "cy": "Gwall Unigryw: Dim ond un MUCR y gellir ei ddatgan yn D.E. 2/1 ar lefel y Pennyn ar ddatganiad mewnforion"
   },
   {
     "code": "CDS12138",
     "en": "Relation Error: Provided Additional Procedure Code (D.E. 1/11) cannot be used on a Type J/K (EIDR) declaration",
-    "cy": "Relation Error: Provided Additional Procedure Code (D.E. 1/11) cannot be used on a Type J/K (EIDR) declaration"
+    "cy": "Gwall Perthynas: Ni ellir defnyddio Cod Gweithdrefn Ychwanegol (D.E. 1/11) ar fathau o ddatganiadau J/K (EIDR)"
   },
   {
     "code": "CDS12139",
     "en": "Relation Error: Additional Information Code OVR01 must be provided in D.E. 2/2 when entering a manual tax amount in D.E. 4/6 or D.E. 4/7",
-    "cy": "Relation Error: Additional Information Code OVR01 must be provided in D.E. 2/2 when entering a manual tax amount in D.E. 4/6 or D.E. 4/7"
+    "cy": "Gwall Perthynas: Mae\u2019n rhaid rhoi Cod Gwybodaeth Ychwanegol OVR01 yn D.E. 2/2 wrth nodi swm y dreth law yn D.E. 4/6 neu D.E. 4/7"
   },
   {
     "code": "CDS12141",
     "en": "Relation Error: Incompatible goods movements declared. AI codes 'NIDOM' and 'NIIMP' must not be entered together on the same declaration",
-    "cy": "Relation Error: Incompatible goods movements declared. AI codes 'NIDOM' and 'NIIMP' must not be entered together on the same declaration"
+    "cy": "Gwall Perthynas: Symudiadau nwyddau anghydnaws wedi\u2019u datgan. Mae\u2019n rhaid peidio \u00e2 nodi codau AI \u2018NIDOM\u2019 a \u2018NIIMP\u2019 gyda\u2019i gilydd ar yr un datganiad"
   },
   {
     "code": "CDS12143",
     "en": "Incompatible goods movements declared. AI codes 'NIREM' and 'NIAID' must not be entered together on the same goods item on a declaration",
-    "cy": "Incompatible goods movements declared. AI codes 'NIREM' and 'NIAID' must not be entered together on the same goods item on a declaration"
+    "cy": "Symudiadau nwyddau anghydnaws wedi\u2019u datgan. Mae\u2019n rhaid peidio \u00e2 nodi codau AI \u2018NIREM\u2019 a \u2018NIAID\u2019 gyda\u2019i gilydd ar yr un eitem o nwyddau ar ddatganiad"
   },
   {
     "code": "CDS12144",
     "en": "Relation Error: EU Quota order number beginning '09' must not be entered in D.E. 8/1 for any imports into the UK",
-    "cy": "Relation Error: EU Quota order number beginning '09' must not be entered in D.E. 8/1 for any imports into the UK"
+    "cy": "Gwall Perthynas: Mae\u2019n rhaid peidio \u00e2 nodi rhif archeb Cwota\u2019r UE sy\u2019n dechrau \u201809\u2019 yn D.E. 8/1 ar gyfer unrhyw fewnforion i\u2019r DU"
   },
   {
     "code": "CDS12145",
     "en": "Relation Error: When declaring the Requested Procedure code 42 in D.E. 1/10, the Additional Information code NIIMP must be declared in D.E. 2/2",
-    "cy": "Relation Error: When declaring the Requested Procedure code 42 in D.E. 1/10, the Additional Information code NIIMP must be declared in D.E. 2/2"
+    "cy": "Gwall Perthynas: Wrth ddatgan cod 42 y Weithdrefn y gofynnwyd amdani yn D.E. 1/10, mae\u2019n rhaid datgan y cod Gwybodaeth Ychwanegol NIIMP yn D.E. 2/2"
   },
   {
     "code": "CDS12146",
     "en": "The Requested Procedure code 42 (D.E. 1/10) and Additional Information code OSR42 (D.E. 2/2) must be entered together on the same goods item",
-    "cy": "The Requested Procedure code 42 (D.E. 1/10) and Additional Information code OSR42 (D.E. 2/2) must be entered together on the same goods item"
+    "cy": "Mae\u2019n rhaid nodi\u2019r cod Gweithdrefn y gofynnwyd amdani 42 (D.E. 1/10) a chod Gwybodaeth Ychwanegol OSR42 (D.E. 2/2) gyda\u2019i gilydd ar yr un eitem o nwyddau"
   },
   {
     "code": "CDS12147",
     "en": "Relation Error: UVC01 declared on an original declaration. UVC01 can only be declared on an amendment request for a declaration",
-    "cy": "Relation Error: UVC01 declared on an original declaration. UVC01 can only be declared on an amendment request for a declaration"
+    "cy": "Gwall Perthynas: Datganwyd UVC01 ar ddatganiad gwreiddiol. Dim ond ar gais i ddiwygio datganiad y gellir datgan UVC01"
   },
   {
     "code": "CDS12148",
     "en": "Relation Error: Additional Document C506 requires deferred payment method",
-    "cy": "Relation Error: Additional Document C506 requires deferred payment method"
+    "cy": "Gwall Perthynas: Mae angen dull talu gohiriedig ar Ddogfen Ychwanegol C506"
   },
   {
     "code": "CDS12149",
     "en": "Relation Error: Additional Procedure code 000 can not be declared with any other Additional Procedure Code",
-    "cy": "Relation Error: Additional Procedure code 000 can not be declared with any other Additional Procedure Code"
+    "cy": "Gwall Perthynas: Ni ellir datgan cod Gweithdrefn Ychwanegol 000 gydag unrhyw God Gweithdrefn Ychwanegol arall"
   },
   {
     "code": "CDS12150",
     "en": "Authorisation Error: Authorisation reference number does not belong to the party on the declaration",
-    "cy": "Authorisation Error: Authorisation reference number does not belong to the party on the declaration"
+    "cy": "Gwall Awdurdodi: Nid yw\u2019r cyfeirnod awdurdodi yn perthyn i\u2019r parti ar y datganiad"
   },
   {
     "code": "CDS12151",
     "en": "Relation Error: When a licence is declared, ID must be unique from all other additional documents (DE 2/3) in the same goods item",
-    "cy": "Relation Error: When a licence is declared, ID must be unique from all other additional documents (DE 2/3) in the same goods item"
+    "cy": "Gwall Perthynas: Pan ddatganir trwydded, mae\u2019n rhaid i\u2019r Dynodydd fod yn unigryw i bob dogfen ychwanegol arall (DE 2/3) yn yr un eitem o nwyddau"
   },
   {
     "code": "CDS13000",
     "en": "Credibility check: incredible value found",
-    "cy": "Credibility check: incredible value found"
+    "cy": "Gwiriad hygrededd: wedi dod o hyd i werth sy\u2019n anodd i\u2019w gredu"
   },
   {
     "code": "CDS19999",
     "en": "Additional errors found",
-    "cy": "Additional errors found"
+    "cy": "Wedi dod o hyd i wallau ychwanegol"
   },
   {
     "code": "CDS20001",
     "en": "Related movement not (yet) found",
-    "cy": "Related movement not (yet) found"
+    "cy": "Heb ddod o hyd i symudiad cysylltiedig (eto)"
   },
   {
     "code": "CDS20002",
     "en": "Related movement does not match declaration",
-    "cy": "Related movement does not match declaration"
+    "cy": "Nid yw\u2019r symudiad cysylltiedig yn cyfateb i\u2019r datganiad"
   },
   {
     "code": "CDS20003",
     "en": "Related movement not found",
-    "cy": "Related movement not found"
+    "cy": "Heb ddod o hyd i\u2019r symudiad cysylltiedig"
   },
   {
     "code": "CDS40007",
     "en": "Duplicate value",
-    "cy": "Duplicate value"
+    "cy": "Gwerth dyblyg"
   },
   {
     "code": "CDS40010",
     "en": "Data element value does not apply",
-    "cy": "Data element value does not apply"
+    "cy": "Nid yw\u2019r gwerth elfen ddata\u2019n berthnasol"
   },
   {
     "code": "CDS40011",
     "en": "Missing data element value",
-    "cy": "Missing data element value"
+    "cy": "Gwerth elfen ddata ar goll"
   },
   {
     "code": "CDS40013",
     "en": "Data element contains invalid value",
-    "cy": "Data element contains invalid value"
+    "cy": "Mae\u2019r elfen ddata\u2019n cynnwys gwerth annilys"
   },
   {
     "code": "CDS40044",
     "en": "Unused Document",
-    "cy": "Unused Document"
+    "cy": "Dogfen heb ei defnyddio"
   },
   {
     "code": "CDS40045",
     "en": "Missing document",
-    "cy": "Missing document"
+    "cy": "Dogfen ar goll"
   },
   {
     "code": "CDS40047",
     "en": "Prohibition",
-    "cy": "Prohibition"
+    "cy": "Gwaharddiad"
   },
   {
     "code": "CDS40049",
     "en": "Quota exhausted",
-    "cy": "Quota exhausted"
+    "cy": "Cwota wedi\u2019i lenwi"
   },
   {
     "code": "CDS40053",
     "en": "Quota suspended",
-    "cy": "Quota suspended"
+    "cy": "Cwota wedi\u2019i atal"
   },
   {
     "code": "CDS40059",
     "en": "Incomplete measure or commodity code",
-    "cy": "Incomplete measure or commodity code"
+    "cy": "Mesur neu god nwyddau anghyflawn"
   },
   {
     "code": "CDS40066",
     "en": "Tariff condition not fulfilled",
-    "cy": "Tariff condition not fulfilled"
+    "cy": "Amod y tariff heb ei gyflawni"
   },
   {
     "code": "CDS40068",
     "en": "Additional Excise code is missing",
-    "cy": "Additional Excise code is missing"
+    "cy": "Cod Ecs\u00e9is ychwanegol ar goll"
   },
   {
     "code": "CDS40069",
     "en": "Quota closed",
-    "cy": "Quota closed"
+    "cy": "Cwota wedi\u2019i gau"
   },
   {
     "code": "CDS40070",
     "en": "When AI code 'NIIMP' is entered at item level in D.E. 2/2, it must be declared on all goods items in the declaration",
-    "cy": "When AI code 'NIIMP' is entered at item level in D.E. 2/2, it must be declared on all goods items in the declaration"
+    "cy": "Pan fydd cod AI \u2018NIIMP\u2019 yn cael ei nodi ar lefel yr eitem yn D.E. 2/2, mae\u2019n rhaid ei ddatgan ar yr holl eitemau o nwyddau yn y datganiad"
   },
   {
     "code": "CDS40071",
     "en": "When AI code 'NIDOM' is entered at item level in D.E. 2/2, it must be declared on all goods items in the declaration",
-    "cy": "When AI code 'NIDOM' is entered at item level in D.E. 2/2, it must be declared on all goods items in the declaration"
+    "cy": "Pan fydd cod AI \u2018NIDOM\u2019 yn cael ei nodi ar lefel yr eitem yn D.E. 2/2, mae\u2019n rhaid ei ddatgan ar yr holl eitemau o nwyddau yn y datganiad"
   },
   {
     "code": "CDS40072",
     "en": "When AI code 'NIEXP' is entered at item level in D.E. 2/2, it must be declared on all goods items in the declaration",
-    "cy": "When AI code 'NIEXP' is entered at item level in D.E. 2/2, it must be declared on all goods items in the declaration"
+    "cy": "Pan fydd cod AI \u2018NIEXP\u2019 yn cael ei nodi ar lefel yr eitem yn D.E. 2/2, mae\u2019n rhaid ei ddatgan ar yr holl eitemau o nwyddau yn y datganiad"
   },
   {
     "code": "CDS40073",
     "en": "When de-risking AI code 'NIREM' is entered at item level in D.E. 2/2, either 'NIIMP' or 'NIDOM' AI codes must also be entered at item level on the same goods item",
-    "cy": "When de-risking AI code 'NIREM' is entered at item level in D.E. 2/2, either 'NIIMP' or 'NIDOM' AI codes must also be entered at item level on the same goods item"
+    "cy": "Pan fydd cod AI \u2018NIREM\u2019 dad-risgio\u2019n cael ei nodi ar lefel yr eitem yn D.E. 2/2, mae\u2019n rhaid hefyd nodi naill ai cod AI \u2018NIIMP\u2019 neu \u2018NIDOM\u2019 ar lefel yr eitem ar yr un eitem o nwyddau"
   },
   {
     "code": "CDS40074",
     "en": "When subsidy AI code 'NIAID' is entered at item level in D.E. 2/2, either 'NIIMP' or 'NIDOM' AI codes must also be entered at item level on the same goods item",
-    "cy": "When subsidy AI code 'NIAID' is entered at item level in D.E. 2/2, either 'NIIMP' or 'NIDOM' AI codes must also be entered at item level on the same goods item"
+    "cy": "Pan fydd cod cymhorthdal AI \u2018NIAID\u2019 yn cael ei nodi ar lefel yr eitem yn D.E. 2/2, mae\u2019n rhaid hefyd nodi naill ai cod AI \u2018NIIMP\u2019 neu \u2018NIDOM\u2019 ar lefel yr eitem ar yr un eitem o nwyddau"
   },
   {
     "code": "CDS49999",
     "en": "Unknown error result",
-    "cy": "Unknown error result"
+    "cy": "Canlyniad gwall anhysbys"
   },
   {
     "code": "CDS50000",
     "en": "Response from ALVS is not release",
-    "cy": "Response from ALVS is not release"
+    "cy": "Nid yw ymateb gan ALVS wedi\u2019i ryddhau"
   },
   {
     "code": "CDS50001",
     "en": "Invalid UCR Format, DUCR or MUCR",
-    "cy": "Invalid UCR Format, DUCR or MUCR"
+    "cy": "DUCR, MUCR neu fformat UCR annilys"
   },
   {
     "code": "CDS50003",
     "en": "UCR is not at the top of its' consolidation",
-    "cy": "UCR is not at the top of its' consolidation"
+    "cy": "Nid yw\u2019r UCR ar frig ei lwyth cyfunol"
   },
   {
     "code": "CDS50008",
     "en": "UCR Type does not match UCR Format",
-    "cy": "UCR Type does not match UCR Format"
+    "cy": "Nid yw\u2019r math o UCR yn cyd-fynd \u00e2 fformat yr UCR"
   },
   {
     "code": "CDS50015",
     "en": "Declaration is cancelled/terminated/invalidated/handled externally/rejected (upon arrival)",
-    "cy": "Declaration is cancelled/terminated/invalidated/handled externally/rejected (upon arrival)"
+    "cy": "Mae datganiad yn cael ei ganslo/terfynu/annilysu/trin yn allanol/gwrthod (wrth gyrraedd)"
   },
   {
     "code": "CDS50027",
     "en": "Role/Location-Based Authorisation failed (PDS)",
-    "cy": "Role/Location-Based Authorisation failed (PDS)"
+    "cy": "Awdurdodiad swydd/safle penodol wedi methu"
   },
   {
     "code": "CDS50028",
     "en": "Goods Location is invalid",
-    "cy": "Goods Location is invalid"
+    "cy": "Mae lleoliad y nwyddau\u2019n annilys"
   },
   {
     "code": "CDS50031",
     "en": "Request has been received after a successful RET",
-    "cy": "Request has been received after a successful RET"
+    "cy": "Mae cais wedi dod i law ar \u00f4l RET llwyddiannus"
   },
   {
     "code": "CDS70711",
     "en": "Licence Error: Electronic licence does not exist",
-    "cy": "Licence Error: Electronic licence does not exist"
+    "cy": "Gwall trwydded: Nid yw trwydded electronig yn bodoli"
   },
   {
     "code": "CDS70719",
     "en": "Licence Error: Electronic licence quoted although Document Status Code indicated paper licence",
-    "cy": "Licence Error: Electronic licence quoted although Document Status Code indicated paper licence"
+    "cy": "Gwall trwydded: Trwydded electronig wedi\u2019i nodi er bod Cod Statws y Ddogfen yn nodi trwydded bapur"
   },
   {
     "code": "CDS70724",
     "en": "Licence Error: Licence is not valid",
-    "cy": "Licence Error: Licence is not valid"
+    "cy": "Gwall trwydded: Nid yw\u2019r drwydded yn ddilys"
   },
   {
     "code": "CDS70739",
     "en": "Licence Error: An Import licence cannot be used on an Export declaration",
-    "cy": "Licence Error: An Import licence cannot be used on an Export declaration"
+    "cy": "Gwall trwydded: Ni ellir defnyddio trwydded Fewnforio ar ddatganiad Allforio"
   },
   {
     "code": "CDS70740",
     "en": "Licence Error: Importer/Exporter is not the owner of the licence",
-    "cy": "Licence Error: Importer/Exporter is not the owner of the licence"
+    "cy": "Gwall trwydded: Nid y Mewnforiwr/Allforiwr yw perchennog y drwydded"
   },
   {
     "code": "CDS70758",
     "en": "Licence is not valid for declared Country of Destination",
-    "cy": "Licence is not valid for declared Country of Destination"
+    "cy": "Nid yw\u2019r drwydded yn ddilys ar gyfer y Wlad Pen y Daith ddatganedig"
   },
   {
     "code": "CDS70760",
     "en": "Licence Error: Licence is not valid for the declared goods item",
-    "cy": "Licence Error: Licence is not valid for the declared goods item"
+    "cy": "Gwall trwydded: Nid yw\u2019r drwydded yn ddilys ar gyfer yr eitem o nwyddau a ddatganwyd"
   },
   {
     "code": "CDS70761",
     "en": "Licence has insufficient quantity remaining to meet claim",
-    "cy": "Licence has insufficient quantity remaining to meet claim"
+    "cy": "Nid oes gan y drwydded ddigon ar \u00f4l i fodloni\u2019r hawliad"
   },
   {
     "code": "CDS70791",
     "en": "Licence Error: Licence line number does not exist on the licence",
-    "cy": "Licence Error: Licence line number does not exist on the licence"
+    "cy": "Gwall trwydded: Nid yw rhif llinell y drwydded yn bodoli ar y drwydded"
   },
   {
     "code": "CDS71115",
     "en": "Licence Error: An Export licence cannot be used on an Import declaration",
-    "cy": "Licence Error: An Export licence cannot be used on an Import declaration"
+    "cy": "Gwall trwydded: Ni ellir defnyddio trwydded Allforio ar ddatganiad Mewnforio"
   },
   {
     "code": "CDS71200",
     "en": "Uniqueness Error: Document Codes with identical IDs are not permitted on a single goods item",
-    "cy": "Uniqueness Error: Document Codes with identical IDs are not permitted on a single goods item"
+    "cy": "Gwall Unigryw: Ni chaniateir Codau Dogfen gyda Dynodydd unfath ar un eitem o nwyddau"
   },
   {
     "code": "CDS71201",
     "en": "Licence Error: All instances of a licence for a declaration must use a consistent Document Status Code",
-    "cy": "Licence Error: All instances of a licence for a declaration must use a consistent Document Status Code"
+    "cy": "Gwall trwydded: Mae’n rhaid i bob achos o drwydded ar gyfer datganiad ddefnyddio Cod Statws y Ddogfen cyson"
   },
   {
     "code": "CDS71203",
@@ -747,27 +747,27 @@
   {
     "code": "CDS71204",
     "en": "Licence is already surrendered",
-    "cy": "Licence is already surrendered"
+    "cy": "Trwydded eisoes wedi\u2019i hildio"
   },
   {
     "code": "CDS71206",
     "en": "Licence is already exhausted",
-    "cy": "Licence is already exhausted"
+    "cy": "Trwydded eisoes wedi dod i ben"
   },
   {
     "code": "CDS71216",
     "en": "Transaction not permitted; Licence is inactive and is no longer available for use",
-    "cy": "Transaction not permitted; Licence is inactive and is no longer available for use"
+    "cy": "Ni chaniateir y trafodyn; Mae\u2019r drwydded yn anweithredol ac nid yw bellach ar gael i\u2019w defnyddio"
   },
   {
     "code": "CDS71236",
     "en": "Licence not valid for declared Country of Origin",
-    "cy": "Licence not valid for declared Country of Origin"
+    "cy": "Nid yw\u2019r drwydded yn ddilys ar gyfer y Wlad Tarddiad sydd wedi\u2019i datgan"
   },
   {
     "code": "CDS71252",
     "en": "Licence not valid for declared Country of Dispatch",
-    "cy": "Licence not valid for declared Country of Dispatch"
+    "cy": "Nid yw’r drwydded yn ddilys ar gyfer datgan gwlad anfon"
   },
   {
     "code": "CDS71262",
@@ -777,36 +777,36 @@
   {
     "code": "CDS73329",
     "en": "Licence Error: Licence cannot be declared on declaration category/declaration type combination",
-    "cy": "Licence Error: Licence cannot be declared on declaration category/declaration type combination"
+    "cy": "Gwall trwydded: Ni ellir datgan trwydded ar gyfuniad o gategori\u2019r datganiad/math o ddatganiad"
   },
   {
     "code": "CDS77000",
     "en": "Obligation Error: ID must be provided for declared Document Code",
-    "cy": "Obligation Error: ID must be provided for declared Document Code"
+    "cy": "Gwall Ymrwymiad: Mae\u2019n rhaid rhoi Dynodydd ar gyfer Cod y Ddogfen sydd wedi\u2019i ddatgan"
   },
   {
     "code": "CDS77001",
     "en": "Quantity must be provided for Document Category",
-    "cy": "Quantity must be provided for Document Category"
+    "cy": "Mae\u2019n rhaid rhoi swm ar gyfer Categori\u2019r Ddogfen"
   },
   {
     "code": "CDS77002",
     "en": "Obligation Error: Document Status Code must be provided for declared Document Code",
-    "cy": "Obligation Error: Document Status Code must be provided for declared Document Code"
+    "cy": "Gwall Ymrwymiad: Mae\u2019n rhaid rhoi Cod Statws y Ddogfen ar gyfer Cod y Dogfen sydd wedi\u2019i ddatgan"
   },
   {
     "code": "CDS77003",
     "en": "Licence Error: DUCR must be provided for an Import declaration with a Licence",
-    "cy": "Licence Error: DUCR must be provided for an Import declaration with a Licence"
+    "cy": "Gwall trwydded: Mae\u2019n rhaid i DUCR gael ei roi ar gyfer datganiad Mewnforio gyda Thrwydded"
   },
   {
     "code": "CDS77004",
     "en": "Reservation could not be made",
-    "cy": "Reservation could not be made"
+    "cy": "Doedd dim modd neilltuo"
   },
   {
     "code": "CDS77005",
     "en": "Reason for waiver must be declared for Document Category",
-    "cy": "Reason for waiver must be declared for Document Category"
+    "cy": "Mae\u2019n rhaid datgan rheswm dros yr ildiad ar gyfer Categori\u2019r Ddogfen"
   }
 ]

@@ -74,6 +74,8 @@ trait Stubs {
       |urls.ecicsTool=ecicsTool
       |urls.notDeclarant.eoriContactTeam=eoriContactTeamUrl
       |urls.generalEnquiriesHelp=generalEnquiriesHelpUrl
+      |play.i18n.langs = ["en", "cy"]
+      |language.fallback.url=""
     """.stripMargin)
 
   val minimalConfiguration = Configuration(minimalConfig)
@@ -114,6 +116,7 @@ trait Stubs {
   val pBanner = new phaseBanner(new GovukPhaseBanner(new GovukTag()), minimalAppConfig)
   val sHeader = new siteHeader(new HmrcHeader(new HmrcBanner(), new HmrcUserResearchBanner(), new GovukPhaseBanner(new GovukTag())))
   val hmrcTimeoutDialogHelper = new HmrcTimeoutDialogHelper(new HmrcTimeoutDialog, new TimeoutDialogConfig(minimalConfiguration))
+  val hmrcLanguageSelectHelper = new HmrcLanguageSelectHelper(new HmrcLanguageSelect, new LanguageConfig(minimalConfiguration))
 
   val gdsMainTemplate = new gdsMainTemplate(
     govukHeader = govukHeader,
@@ -125,6 +128,7 @@ trait Stubs {
     timeoutDialogConfig = timeoutDialogConfig,
     betaBannerConfig = betaBannerConfig,
     hmrcHead = new HmrcHead(hmrcTrackingConsentSnippet, new AssetsConfig),
+    hmrcLanguageSelectHelper = hmrcLanguageSelectHelper,
     hmrcTimeoutDialogHelper = hmrcTimeoutDialogHelper,
     hmrcTrackingConsentSnippet = hmrcTrackingConsentSnippet,
     hmrcReportTechnicalIssue = hmrcReportTechnicalIssue,

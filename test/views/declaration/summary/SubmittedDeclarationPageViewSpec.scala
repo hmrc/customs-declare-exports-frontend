@@ -44,7 +44,7 @@ class SubmittedDeclarationPageViewSpec extends UnitViewSpec with Stubs with Expo
       override def test(elm: Element): Boolean =
         elm.text.contains("Print") || elm.text.contains("feedback") ||
           elm.text.contains("Sign out") || elm.text.contains("page not working") ||
-          elm.text.contains("View declaration summary")
+          elm.text.contains("View declaration summary") || elm.attr("href").contains("/language/")
     }
     allLinks.removeIf(filter)
     allLinks
