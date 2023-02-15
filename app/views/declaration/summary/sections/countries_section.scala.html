@@ -49,7 +49,7 @@
                             messages("declaration.summary.countries.routingCountries.none")
                         } else {
                             Countries
-                                .findByCodes(declarationData.locations.routingCountries.flatMap(_.code))
+                                .findByCodes(declarationData.locations.routingCountries.flatMap(_.country.code))
                                 .map(countryHelper.getShortNameForCountry(_))
                                 .mkString(", ")
                         }

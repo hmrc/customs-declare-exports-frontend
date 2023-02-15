@@ -21,10 +21,12 @@ import connectors.CodeListConnector
 import controllers.declaration.routes.{LocationOfGoodsController, RoutingCountriesController}
 import controllers.helpers.Remove
 import forms.declaration.countries.{Country => FormCountry}
+import models.DeclarationMeta.RoutingCountryKey
 import models.codes.Country
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
+import org.scalatest.Assertion
 import play.api.data.Form
 import play.api.libs.json.{JsObject, JsString}
 import play.api.mvc.{AnyContentAsEmpty, Request}
@@ -219,9 +221,7 @@ class RoutingCountriesControllerSpec extends ControllerSpec {
             await(result) mustBe aRedirectToTheNextPage
             thePageNavigatedTo mustBe RoutingCountriesController.displayRoutingCountry
 
-            val updatedCountries = theCacheModelUpdated.locations.routingCountries
-            theCacheModelUpdated.containRoutingCountries mustBe true
-            updatedCountries.contains(FormCountry(Some("GB"))) mustBe true
+            verifyCachedRoutingCountries(1 -> "GB")
           }
 
           "there are existing countries" in {
@@ -234,11 +234,7 @@ class RoutingCountriesControllerSpec extends ControllerSpec {
             await(result) mustBe aRedirectToTheNextPage
             thePageNavigatedTo mustBe RoutingCountriesController.displayRoutingCountry
 
-            val updatedCountries = theCacheModelUpdated.locations.routingCountries
-            theCacheModelUpdated.containRoutingCountries mustBe true
-            updatedCountries.contains(FormCountry(Some("IE"))) mustBe true
-            updatedCountries.contains(FormCountry(Some("GB"))) mustBe true
-            updatedCountries.contains(FormCountry(Some("FR"))) mustBe true
+            verifyCachedRoutingCountries(1 -> "FR", 2 -> "GB", 3 -> "IE")
           }
         }
       }
@@ -254,24 +250,18 @@ class RoutingCountriesControllerSpec extends ControllerSpec {
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe RoutingCountriesController.displayRoutingCountry
 
-          val updatedCountries = theCacheModelUpdated.locations.routingCountries
-          theCacheModelUpdated.containRoutingCountries mustBe true
-          updatedCountries.contains(FormCountry(Some("PL"))) mustBe true
-          updatedCountries.contains(FormCountry(Some("GB"))) mustBe true
+          verifyCachedRoutingCountries(1 -> "PL", 2 -> "GB")
         }
 
         "removing country that exists in cache" in {
-          withNewCaching(aDeclaration(withRoutingQuestion(), withRoutingCountries(Seq(FormCountry(Some("GB")), FormCountry(Some("FR"))))))
+          withNewCaching(aDeclaration(withRoutingQuestion(), withRoutingCountries(Seq(FormCountry(Some("FR")), FormCountry(Some("GB"))))))
 
           val result = controller.submitRoutingCountry()(postRequestAsFormUrlEncoded(removeAction))
 
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe RoutingCountriesController.displayRoutingCountry
 
-          val updatedCountries = theCacheModelUpdated.locations.routingCountries
-          theCacheModelUpdated.containRoutingCountries mustBe true
-          updatedCountries.contains(FormCountry(Some("FR"))) mustBe false
-          updatedCountries.contains(FormCountry(Some("GB"))) mustBe true
+          verifyCachedRoutingCountries(2 -> "GB")
         }
       }
 
@@ -288,14 +278,11 @@ class RoutingCountriesControllerSpec extends ControllerSpec {
             await(result) mustBe aRedirectToTheNextPage
             thePageNavigatedTo mustBe LocationOfGoodsController.displayPage
 
-            val updatedCountries = theCacheModelUpdated.locations.routingCountries
-            theCacheModelUpdated.containRoutingCountries mustBe true
-            updatedCountries.contains(FormCountry(Some("IE"))) mustBe true
-            updatedCountries.contains(FormCountry(Some("GB"))) mustBe true
+            verifyCachedRoutingCountries(1 -> "FR", 2 -> "GB", 3 -> "IE")
           }
 
           "there are no countries in list" in {
-            withNewCaching(aDeclaration(withRoutingQuestion()))
+            withNewCaching(aDeclaration(withoutRoutingQuestion()))
 
             val correctForm = Seq("countryCode" -> "IE", saveAndContinueActionUrlEncoded)
 
@@ -304,9 +291,7 @@ class RoutingCountriesControllerSpec extends ControllerSpec {
             await(result) mustBe aRedirectToTheNextPage
             thePageNavigatedTo mustBe LocationOfGoodsController.displayPage
 
-            val updatedCountries = theCacheModelUpdated.locations.routingCountries
-            theCacheModelUpdated.containRoutingCountries mustBe true
-            updatedCountries.contains(FormCountry(Some("IE"))) mustBe true
+            verifyCachedRoutingCountries(1 -> "IE")
           }
         }
 
@@ -322,6 +307,20 @@ class RoutingCountriesControllerSpec extends ControllerSpec {
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe LocationOfGoodsController.displayPage
         }
+      }
+
+      def verifyCachedRoutingCountries(expected: (Int, String)*): Assertion = {
+        val declaration = theCacheModelUpdated
+        declaration.containRoutingCountries mustBe true
+
+        val routingCountries = declaration.locations.routingCountries
+        routingCountries.size mustBe expected.size
+
+        routingCountries.zip(expected).foreach { case (routingCountry, (expectedSequenceId, expectedCountry)) =>
+          (routingCountry.sequenceId == expectedSequenceId && routingCountry.country == FormCountry(Some(expectedCountry))) mustBe true
+        }
+
+        declaration.declarationMeta.maxSequenceIds.get(RoutingCountryKey) mustBe Some(expected.last._1)
       }
     }
   }

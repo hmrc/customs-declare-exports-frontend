@@ -23,7 +23,7 @@ import models.requests.{AuthenticatedRequest, ExportsSessionKeys}
 import play.api.Logging
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
+import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
 import javax.inject.Inject
@@ -34,7 +34,7 @@ class AmendDeclarationController @Inject() (
   verifyEmail: VerifiedEmailAction,
   errorHandler: ErrorHandler,
   mcc: MessagesControllerComponents
-) extends FrontendController(mcc) with I18nSupport with Logging with WithDefaultFormBinding {
+) extends FrontendController(mcc) with I18nSupport with Logging with WithUnsafeDefaultFormBinding {
 
   def displayPage: Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
     getSessionData() match {

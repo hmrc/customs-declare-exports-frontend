@@ -18,10 +18,8 @@ package models.declaration
 
 import play.api.libs.json.{Json, OFormat}
 
-case class Container(sequenceId: Int, id: String, seals: Seq[models.declaration.Seal])
+case class Seal(sequenceId: Int, id: String)
 
-object Container {
-  implicit val format: OFormat[Container] = Json.format[Container]
-
-  val maxNumberOfItems = 9999
+object Seal {
+  implicit val format: OFormat[Seal] = Json.format[Seal]
 }

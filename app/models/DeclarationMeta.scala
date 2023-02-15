@@ -16,13 +16,13 @@
 
 package models
 
+import models.DeclarationMeta.sequenceIdPlaceholder
 import models.DeclarationStatus.DeclarationStatus
 import models.declaration.submissions.EnhancedStatus.EnhancedStatus
-import play.api.libs.json.{Json, OFormat}
+import play.api.libs.json._
 
 import java.time.Instant
 
-// scalastyle:off
 case class DeclarationMeta(
   parentDeclarationId: Option[String] = None,
   parentDeclarationEnhancedStatus: Option[EnhancedStatus] = None,
@@ -30,9 +30,28 @@ case class DeclarationMeta(
   createdDateTime: Instant,
   updatedDateTime: Instant,
   summaryWasVisited: Option[Boolean] = None,
-  readyForSubmission: Option[Boolean] = None
+  readyForSubmission: Option[Boolean] = None,
+  maxSequenceIds: Map[String, Int] = Map("dummy" -> sequenceIdPlaceholder)
 )
 
 object DeclarationMeta {
+
+  val readsForMaxSequenceIds: Reads[Map[String, Int]] =
+    (value: JsValue) =>
+      JsSuccess(value.as[Map[String, JsValue]].map { case (key, value) =>
+        key -> Integer.parseInt(value.toString())
+      })
+
+  val writesForMaxSequenceIds: Writes[Map[String, Int]] =
+    (map: Map[String, Int]) => JsObject(map.map { case (key, value) => key -> Json.toJson(value) })
+
+  implicit val formatMap: Format[Map[String, Int]] = Format(readsForMaxSequenceIds, writesForMaxSequenceIds)
+
   implicit val format: OFormat[DeclarationMeta] = Json.format[DeclarationMeta]
+
+  val sequenceIdPlaceholder = -1
+
+  val RoutingCountryKey = "RoutingCountries"
+  val ContainerKey = "Containers"
+  val SealKey = "Seals"
 }

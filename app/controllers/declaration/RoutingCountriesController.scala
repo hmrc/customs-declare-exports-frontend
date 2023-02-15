@@ -24,13 +24,14 @@ import controllers.navigation.Navigator
 import forms.declaration.RoutingCountryQuestionYesNo._
 import forms.declaration.countries.Countries.RoutingCountryPage
 import forms.declaration.countries.{Countries, Country}
-import models.requests.JourneyRequest
+import models.DeclarationMeta.RoutingCountryKey
 import models.ExportsDeclaration
+import models.declaration.RoutingCountry
+import models.requests.JourneyRequest
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.cache.ExportsCacheService
-import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
+import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.destinationCountries.{country_of_routing, routing_country_question}
 
@@ -46,7 +47,7 @@ class RoutingCountriesController @Inject() (
   routingQuestionPage: routing_country_question,
   countryOfRoutingPage: country_of_routing
 )(implicit ec: ExecutionContext, codeListConnector: CodeListConnector)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithDefaultFormBinding {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
 
   def displayRoutingQuestion(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     val form = formFirst().withSubmissionErrors
@@ -57,8 +58,6 @@ class RoutingCountriesController @Inject() (
   }
 
   def submitRoutingAnswer(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    val cachedCountries = request.cacheModel.locations.routingCountries
-
     formFirst(cachedCountries)
       .bindFromRequest()
       .fold(
@@ -84,7 +83,7 @@ class RoutingCountriesController @Inject() (
 
   def submitRoutingCountry(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val isFormEmpty = Countries
-      .form(RoutingCountryPage, request.cacheModel.locations.routingCountries)
+      .form(RoutingCountryPage, cachedCountries)
       .bindFromRequest()
       .apply("countryCode")
       .value
@@ -101,31 +100,39 @@ class RoutingCountriesController @Inject() (
         validateAndRedirect(navigator.continueTo(LocationOfGoodsController.displayPage))
 
       case Remove(values) =>
-        val continueTo = navigator.continueTo(RoutingCountriesController.displayRoutingCountry)
+        val redirect = navigator.continueTo(RoutingCountriesController.displayRoutingCountry)
 
         values.headOption
           .map(services.Countries.findByCode)
-          .fold(Future.successful(continueTo)) { country =>
-            updateAndRedirect(_.removeCountryOfRouting(Country(Some(country.countryCode))), continueTo)
+          .fold(Future.successful(redirect)) { country =>
+            val countryToRemove = Country(Some(country.countryCode))
+            updateDeclarationFromRequest(_.removeCountryOfRouting(countryToRemove)).map(_ => redirect)
           }
     }
   }
 
+  private def cachedCountries(implicit request: JourneyRequest[AnyContent]): Seq[Country] =
+    request.cacheModel.locations.routingCountries.map(_.country)
+
   private def validateAndRedirect(redirect: Result)(implicit request: JourneyRequest[AnyContent]): Future[Result] =
     Countries
-      .form(RoutingCountryPage, request.cacheModel.locations.routingCountries)
+      .form(RoutingCountryPage, cachedCountries)
       .bindFromRequest()
       .fold(
         formWithErrors => Future.successful(BadRequest(countryOfRoutingPage(formWithErrors))),
-        validCountry => {
-          val newRoutingCountries = request.cacheModel.locations.routingCountries :+ validCountry
-          updateAndRedirect(_.updateCountriesOfRouting(newRoutingCountries), redirect)
-        }
+        routingCountry => updateCache(routingCountry).map(_ => redirect)
       )
 
-  private def updateAndRedirect(update: ExportsDeclaration => ExportsDeclaration, redirect: Result)(
-    implicit request: JourneyRequest[AnyContent],
-    hc: HeaderCarrier
-  ): Future[Result] =
-    updateDeclarationFromRequest(update).map(_ => redirect)
+  private def updateCache(newRoutingCountry: Country)(implicit request: JourneyRequest[AnyContent]): Future[ExportsDeclaration] = {
+    val declarationMeta = request.cacheModel.declarationMeta
+    val maxSequenceIds = declarationMeta.maxSequenceIds
+    val maxSequenceId = maxSequenceIds.get(RoutingCountryKey).getOrElse(0) + 1
+
+    val newRoutingCountries = request.cacheModel.locations.routingCountries :+ RoutingCountry(maxSequenceId, newRoutingCountry)
+
+    updateDeclarationFromRequest(
+      _.updateCountriesOfRouting(newRoutingCountries)
+        .copy(declarationMeta = declarationMeta.copy(maxSequenceIds = maxSequenceIds + (RoutingCountryKey -> maxSequenceId)))
+    )
+  }
 }

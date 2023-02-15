@@ -18,8 +18,7 @@ package views.declaration.summary
 
 import base.Injector
 import controllers.declaration.routes.TransportContainerController
-import forms.declaration.Seal
-import models.declaration.Container
+import models.declaration.{Container, Seal}
 import services.cache.ExportsTestHelper
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.summary.containers
@@ -30,8 +29,8 @@ class ContainersViewSpec extends UnitViewSpec with ExportsTestHelper with Inject
   val secondContainerID = "456789"
   val firstSeal = "1254"
   val secondSeal = "98745"
-  val containerWithoutSeals = Container(firstContainerID, Seq.empty)
-  val containerWithSeals = Container(secondContainerID, Seq(Seal(firstSeal), Seal(secondSeal)))
+  val containerWithoutSeals = Container(1, firstContainerID, Seq.empty)
+  val containerWithSeals = Container(2, secondContainerID, Seq(Seal(1, firstSeal), Seal(2, secondSeal)))
   val containers = Seq(containerWithoutSeals, containerWithSeals)
 
   val section = instanceOf[containers]

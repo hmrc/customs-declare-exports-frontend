@@ -34,7 +34,7 @@ import forms.declaration.officeOfExit.OfficeOfExit
 import models.declaration.DeclarationAdditionalActorsDataSpec._
 import models.declaration.governmentagencygoodsitem.Formats._
 import models.declaration.governmentagencygoodsitem.{Amount, GovernmentAgencyGoodsItem}
-import models.{CancelDeclaration, DeclarationMeta, DeclarationStatus, DeclarationType, ExportsDeclaration}
+import models._
 import play.api.libs.json._
 
 import java.time.Instant
@@ -44,7 +44,7 @@ object ExportDeclarationTestData {
 
   private val containerId = "id"
 
-  val correctTransportInformationContainerData = Some(Seq(Container(id = "M1l3s", Seq.empty)))
+  val correctTransportInformationContainerData = Some(Seq(Container(1, id = "M1l3s", Seq.empty)))
   val emptyTransportInformationContainerData = ContainerAdd(None)
   val correctTransportInformationContainerJSON: JsValue = JsObject(Map(containerId -> JsString("container-M1l3s")))
   val incorrectTransportInformationContainerJSON: JsValue = JsObject(Map(containerId -> JsString("123456789012345678")))
@@ -87,7 +87,7 @@ object ExportDeclarationTestData {
     locations = Locations(
       destinationCountry = Some(Country(Some("PL"))),
       hasRoutingCountries = Some(true),
-      routingCountries = Seq(Country(Some("FR"))),
+      routingCountries = Seq(RoutingCountry(1, Country(Some("FR")))),
       goodsLocation = Some(LocationOfGoods("GBAUEMAEMAEMA").toModel),
       officeOfExit = Some(OfficeOfExit("officeId")),
       warehouseIdentification = Some(WarehouseIdentificationYesNoSpec.correctWarehouseDetails),
@@ -149,7 +149,7 @@ object ExportDeclarationTestData {
     locations = Locations(
       destinationCountry = Some(Country(Some("PL"))),
       hasRoutingCountries = Some(true),
-      routingCountries = Seq(Country(Some("FR"))),
+      routingCountries = Seq(RoutingCountry(1, Country(Some("FR")))),
       goodsLocation = Some(LocationOfGoods("GBAUEMAEMAEMA").toModel),
       officeOfExit = Some(OfficeOfExit("officeId")),
       warehouseIdentification = Some(WarehouseIdentificationYesNoSpec.correctWarehouseDetails),

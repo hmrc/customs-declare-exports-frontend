@@ -38,7 +38,7 @@ trait ExportsTestHelper extends ExportsDeclarationBuilder with ExportsItemBuilde
     withSupervisingCustomsOffice(Some(SupervisingCustomsOffice(Some("b")))),
     withInlandModeOfTransportCode(ModeOfTransportCode.Rail),
     withOfficeOfExit("id"),
-    withContainerData(Container("id", Seq.empty)),
+    withContainerData(Container(1, "id", Seq.empty)),
     withTotalNumberOfItems(Some("123"), Some("123"), Some("GBP")),
     withNatureOfTransaction("nature"),
     withItem(anItem())
