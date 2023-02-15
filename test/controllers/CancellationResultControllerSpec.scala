@@ -87,10 +87,10 @@ class CancellationResultControllerSpec extends ControllerWithoutFormSpec with Er
     NotificationSummary(UUID.randomUUID(), ZonedDateTime.now(), status)
 
   private def actionWithNotificationSummary(status: EnhancedStatus) =
-    Action(id = "id", requestType = CancellationRequest, notifications = Some(Seq(notificationSummary(status))))
+    Action(id = "id", requestType = CancellationRequest, notifications = Some(Seq(notificationSummary(status))), decId = Some(uuid), versionNo = 1)
 
   private val actionWithoutNotificationSummary =
-    Action(id = "id", requestType = CancellationRequest, notifications = None)
+    Action(id = "id", requestType = CancellationRequest, notifications = None, decId = Some(uuid), versionNo = 1)
 
   "CancellationResultController.displayHoldingPage" should {
 

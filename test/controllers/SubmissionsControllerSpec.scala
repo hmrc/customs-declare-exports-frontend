@@ -43,10 +43,19 @@ class SubmissionsControllerSpec extends ControllerWithoutFormSpec with BeforeAnd
 
   val dateTime = ZonedDateTime.now(ZoneOffset.UTC)
 
-  private val action = Action(requestType = SubmissionRequest, id = "conversationID", requestTimestamp = dateTime, notifications = None)
+  val uuid = UUID.randomUUID().toString
 
-  private val submission = {
-    val uuid = UUID.randomUUID().toString
+  private val action =
+    Action(
+      requestType = SubmissionRequest,
+      id = "conversationID",
+      requestTimestamp = dateTime,
+      notifications = None,
+      decId = Some(uuid),
+      versionNo = 1
+    )
+
+  private val submission =
     Submission(
       uuid = uuid,
       eori = "eori",
@@ -57,7 +66,6 @@ class SubmissionsControllerSpec extends ControllerWithoutFormSpec with BeforeAnd
       actions = Seq(action),
       latestDecId = uuid
     )
-  }
 
   private val submittedDeclarationPage = mock[submitted_declaration_page]
   private val paginationConfig = mock[PaginationConfig]
