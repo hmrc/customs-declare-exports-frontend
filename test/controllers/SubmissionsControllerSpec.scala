@@ -46,7 +46,7 @@ class SubmissionsControllerSpec extends ControllerWithoutFormSpec with BeforeAnd
   val uuid = UUID.randomUUID().toString
 
   private val action =
-    Action(requestType = SubmissionRequest, id = "conversationID", requestTimestamp = dateTime, notifications = None, decId = None, versionNo = 1)
+    Action(requestType = SubmissionRequest, id = "conversationID", requestTimestamp = dateTime, notifications = None, decId = Some(uuid), versionNo = 1)
 
   private val submission =
     Submission(

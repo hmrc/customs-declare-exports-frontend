@@ -63,7 +63,7 @@ object SubmissionsTestData {
       requestType = SubmissionRequest,
       id = conversationId,
       notifications = summaries.headOption.map(_ => summaries),
-      decId = None,
+      decId = Some(uuid),
       versionNo = 1
     )
     Submission(
@@ -79,14 +79,14 @@ object SubmissionsTestData {
     )
   }
 
-  lazy val action = Action(requestType = SubmissionRequest, id = conversationId, notifications = None, decId = None, versionNo = 1)
+  lazy val action = Action(requestType = SubmissionRequest, id = conversationId, notifications = None, decId = Some(uuid), versionNo = 1)
   lazy val action_2 =
     Action(
       requestType = SubmissionRequest,
       id = conversationId_2,
       requestTimestamp = action.requestTimestamp.plus(2, DAYS),
       notifications = None,
-      decId = None,
+      decId = Some(uuid),
       versionNo = 1
     )
   lazy val action_3 =
@@ -95,7 +95,7 @@ object SubmissionsTestData {
       id = conversationId_2,
       requestTimestamp = action.requestTimestamp.minus(2, DAYS),
       notifications = None,
-      decId = None,
+      decId = Some(uuid),
       versionNo = 1
     )
   lazy val action_4 =
@@ -104,7 +104,7 @@ object SubmissionsTestData {
       id = conversationId_4,
       requestTimestamp = action.requestTimestamp.minus(2, DAYS),
       notifications = None,
-      decId = None,
+      decId = Some(uuid),
       versionNo = 1
     )
 
@@ -114,7 +114,7 @@ object SubmissionsTestData {
       id = conversationId,
       requestTimestamp = action.requestTimestamp.plus(3, HOURS),
       notifications = None,
-      decId = None,
+      decId = Some(uuid),
       versionNo = 1
     )
   lazy val actionCancellation_2 =
@@ -123,7 +123,7 @@ object SubmissionsTestData {
       id = conversationId,
       requestTimestamp = action.requestTimestamp.plus(6, HOURS),
       notifications = None,
-      decId = None,
+      decId = Some(uuid),
       versionNo = 1
     )
 

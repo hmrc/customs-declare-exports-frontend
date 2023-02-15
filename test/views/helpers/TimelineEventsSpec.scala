@@ -48,7 +48,7 @@ class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injec
     new TimelineEvents(new linkButton, new paragraphBody, mockSecureMessagingInboxConfig, mockSfusConfig, uploadFilesPartialForTimeline)
 
   private def genTimelineEvents(notificationSummaries: Seq[NotificationSummary]): Seq[TimelineEvent] = {
-    val action = Action("id", SubmissionRequest, issued(0), Some(notificationSummaries), decId = None, versionNo = 1)
+    val action = Action("id", SubmissionRequest, issued(0), Some(notificationSummaries), decId = Some("id"), versionNo = 1)
     timelineEvents.apply(submission.copy(actions = Seq(action)))
   }
 
