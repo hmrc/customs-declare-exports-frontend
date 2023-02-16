@@ -20,7 +20,7 @@ import base.ControllerSpec
 import controllers.declaration.routes.SummaryController
 import controllers.routes.{CopyDeclarationController, DeclarationDetailsController}
 import forms.{CopyDeclaration, Ducr, Lrn, LrnValidator}
-import models.DeclarationStatus.DRAFT
+import models.declaration.DeclarationStatus.DRAFT
 import models.declaration.submissions.EnhancedStatus
 import models.declaration.submissions.EnhancedStatus.rejectedStatuses
 import models.requests.ExportsSessionKeys

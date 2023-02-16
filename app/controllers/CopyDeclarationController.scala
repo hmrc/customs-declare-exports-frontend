@@ -24,7 +24,7 @@ import controllers.routes.{CopyDeclarationController, DeclarationDetailsControll
 import forms.CopyDeclaration.form
 import forms.declaration.ConsignmentReferences
 import forms.{CopyDeclaration, Ducr, LrnValidator}
-import models.DeclarationStatus.DRAFT
+import models.declaration.DeclarationStatus.DRAFT
 import models.requests.{ExportsSessionKeys, JourneyRequest}
 import play.api.i18n.I18nSupport
 import play.api.mvc._
@@ -95,6 +95,5 @@ class CopyDeclarationController @Inject() (
       exportsCacheService.create(declaration).map { declaration =>
         Redirect(SummaryController.displayPage).addingToSession(ExportsSessionKeys.declarationId -> declaration.id)
       }
-
     }
 }

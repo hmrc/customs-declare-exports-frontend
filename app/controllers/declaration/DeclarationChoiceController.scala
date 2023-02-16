@@ -21,8 +21,9 @@ import controllers.declaration.routes.AdditionalDeclarationTypeController
 import forms.declaration.DeclarationChoice
 import forms.declaration.DeclarationChoice._
 import models.DeclarationType.{CLEARANCE, DeclarationType, SIMPLIFIED}
+import models.declaration.DeclarationStatus
 import models.requests.ExportsSessionKeys
-import models.{DeclarationMeta, DeclarationStatus, ExportsDeclaration}
+import models.{DeclarationMeta, ExportsDeclaration}
 import play.api.Logging
 import play.api.i18n.I18nSupport
 import play.api.mvc._

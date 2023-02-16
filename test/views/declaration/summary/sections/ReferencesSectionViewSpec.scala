@@ -27,7 +27,7 @@ import controllers.declaration.routes.{
 }
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
-import models.DeclarationStatus.DRAFT
+import models.declaration.DeclarationStatus.DRAFT
 import models.DeclarationType
 import models.DeclarationType._
 import services.cache.ExportsTestHelper

@@ -20,7 +20,8 @@ import base.{ExportsTestData, Injector}
 import controllers.routes
 import forms.Choice
 import forms.Choice.AllowedChoiceValues.ContinueDec
-import models.{DeclarationStatus, ExportsDeclaration, Page, Paginated}
+import models.declaration.DeclarationStatus
+import models.{ExportsDeclaration, Page, Paginated}
 import org.jsoup.nodes.Element
 import play.twirl.api.Html
 import play.twirl.api.HtmlFormat.Appendable

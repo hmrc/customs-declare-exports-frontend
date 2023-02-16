@@ -23,7 +23,8 @@ import forms.declaration.LegalDeclaration
 import forms.declaration.countries.Country
 import metrics.{ExportsMetrics, MetricIdentifiers}
 import models.declaration.submissions.{Action, Submission}
-import models.{DeclarationStatus, DeclarationType}
+import models.DeclarationType
+import models.declaration.DeclarationStatus
 import org.mockito.ArgumentMatchers.{any, eq => equalTo}
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.OptionValues

@@ -17,7 +17,7 @@
 package models
 
 import models.DeclarationMeta.sequenceIdPlaceholder
-import models.DeclarationStatus.DeclarationStatus
+import models.declaration.DeclarationStatus.DeclarationStatus
 import models.declaration.submissions.EnhancedStatus.EnhancedStatus
 import play.api.libs.json._
 

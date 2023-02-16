@@ -42,9 +42,6 @@ class CustomsDeclareExportsConnector @Inject() (appConfig: AppConfig, httpClient
   private def logPayload[T](prefix: String, payload: T)(implicit wts: Writes[T]): Unit =
     logger.debug(s"$prefix: ${Json.toJson(payload)}")
 
-  def deleteDraftDeclaration(id: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit] =
-    httpClient.DELETE[Unit](url(s"${appConfig.declarationsPath}/$id"))
-
   private val createTimer: Timer = metrics.defaultRegistry.timer("declaration.create.timer")
 
   def createDeclaration(declaration: ExportsDeclaration)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[ExportsDeclaration] = {
@@ -63,6 +60,54 @@ class CustomsDeclareExportsConnector @Inject() (appConfig: AppConfig, httpClient
       }
   }
 
+  def deleteDraftDeclaration(id: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit] =
+    httpClient.DELETE[Unit](url(s"${appConfig.declarationsPath}/$id"))
+
+  private val fetchTimer: Timer = metrics.defaultRegistry.timer("declaration.fetch.timer")
+
+  def findDeclaration(id: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[ExportsDeclaration]] = {
+    val fetchStopwatch = fetchTimer.time
+
+    httpClient
+      .GET[Option[ExportsDeclaration]](url(s"${appConfig.declarationsPath}/$id"))
+      .andThen { case _ =>
+        fetchStopwatch.stop
+      }
+  }
+
+  def findDeclarations(page: models.Page)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Paginated[ExportsDeclaration]] = {
+    val pagination = models.Page.bindable.unbind("page", page)
+    httpClient.GET[Paginated[ExportsDeclaration]](url(s"${appConfig.declarationsPath}?$pagination"))
+  }
+
+  def findSavedDeclarations(page: models.Page)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Paginated[ExportsDeclaration]] = {
+    val pagination = models.Page.bindable.unbind("page", page)
+    val sort = DeclarationSort.bindable.unbind("sort", DeclarationSort(SortBy.UPDATED, SortDirection.DES))
+
+    httpClient.GET[Paginated[ExportsDeclaration]](url(s"${appConfig.declarationsPath}?status=DRAFT&$pagination&$sort"))
+  }
+
+  def findOrCreateDraftForRejected(rejectedId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[String] = {
+    val fetchStopwatch = fetchTimer.time
+
+    httpClient.GET[String](url(s"${appConfig.draftDeclarationPath}/$rejectedId")).andThen { case _ =>
+      fetchStopwatch.stop
+    }
+  }
+
+  def findOrCreateDraftForAmend(submissionId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[String] = {
+    val fetchStopwatch = fetchTimer.time
+
+    httpClient
+      .GET[String](url(s"${appConfig.amendDeclarationPath}/$submissionId"))
+      .andThen { case _ =>
+        fetchStopwatch.stop
+      }
+  }
+
+  def submitDeclaration(id: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Submission] =
+    httpClient.POSTEmpty[Submission](url(s"${appConfig.submissionPath}/$id"))
+
   private val updateTimer: Timer = metrics.defaultRegistry.timer("declaration.update.timer")
 
   def updateDeclaration(declaration: ExportsDeclaration)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[ExportsDeclaration] = {
@@ -80,41 +125,6 @@ class CustomsDeclareExportsConnector @Inject() (appConfig: AppConfig, httpClient
           updateStopwatch.stop()
       }
   }
-
-  def findDeclarations(page: models.Page)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Paginated[ExportsDeclaration]] = {
-    val pagination = models.Page.bindable.unbind("page", page)
-    httpClient.GET[Paginated[ExportsDeclaration]](url(s"${appConfig.declarationsPath}?$pagination"))
-  }
-
-  def findSavedDeclarations(page: models.Page)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Paginated[ExportsDeclaration]] = {
-    val pagination = models.Page.bindable.unbind("page", page)
-    val sort = DeclarationSort.bindable.unbind("sort", DeclarationSort(SortBy.UPDATED, SortDirection.DES))
-
-    httpClient.GET[Paginated[ExportsDeclaration]](url(s"${appConfig.declarationsPath}?status=DRAFT&$pagination&$sort"))
-  }
-
-  private val fetchTimer: Timer = metrics.defaultRegistry.timer("declaration.fetch.timer")
-
-  def findDeclaration(id: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[ExportsDeclaration]] = {
-    val fetchStopwatch = fetchTimer.time
-
-    httpClient
-      .GET[Option[ExportsDeclaration]](url(s"${appConfig.declarationsPath}/$id"))
-      .andThen { case _ =>
-        fetchStopwatch.stop
-      }
-  }
-
-  def findOrCreateDraftForRejected(rejectedId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[String] = {
-    val fetchStopwatch = fetchTimer.time
-
-    httpClient.GET[String](url(s"${appConfig.draftDeclarationPath}/$rejectedId")).andThen { case _ =>
-      fetchStopwatch.stop
-    }
-  }
-
-  def submitDeclaration(id: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Submission] =
-    httpClient.POSTEmpty[Submission](url(s"${appConfig.submissionPath}/$id"))
 
   def fetchSubmissionPage(queryString: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[PageOfSubmissions] =
     httpClient.GET[PageOfSubmissions](url(s"${appConfig.pageOfSubmissionsPath}?$queryString"))

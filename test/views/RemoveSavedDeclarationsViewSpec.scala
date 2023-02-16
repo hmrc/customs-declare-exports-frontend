@@ -20,7 +20,8 @@ import base.{ExportsTestData, Injector}
 import forms.RemoveDraftDeclaration.form
 import forms.declaration.ConsignmentReferences
 import forms.{Ducr, Lrn, RemoveDraftDeclaration}
-import models.{DeclarationStatus, ExportsDeclaration}
+import models.ExportsDeclaration
+import models.declaration.DeclarationStatus
 import org.jsoup.nodes.{Document, Element}
 import play.api.data.Form
 import views.declaration.spec.UnitViewSpec

@@ -34,7 +34,7 @@ import forms.declaration.officeOfExit.OfficeOfExit
 import models.declaration.DeclarationAdditionalActorsDataSpec._
 import models.declaration.governmentagencygoodsitem.Formats._
 import models.declaration.governmentagencygoodsitem.{Amount, GovernmentAgencyGoodsItem}
-import models._
+import models.{CancelDeclaration, DeclarationMeta, DeclarationType, ExportsDeclaration}
 import play.api.libs.json._
 
 import java.time.Instant

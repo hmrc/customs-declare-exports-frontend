@@ -18,6 +18,7 @@ package base
 
 import connectors.CustomsDeclareExportsConnector
 import models._
+import models.declaration.DeclarationStatus
 import models.declaration.notifications.Notification
 import models.declaration.submissions.Submission
 import org.mockito.ArgumentMatchers.{any, anyString, refEq}
