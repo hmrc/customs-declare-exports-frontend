@@ -25,6 +25,7 @@ import forms.CopyDeclaration.form
 import forms.declaration.ConsignmentReferences
 import forms.{CopyDeclaration, Ducr, LrnValidator}
 import models.declaration.DeclarationStatus.DRAFT
+import models.requests.ExportsSessionKeys.{submissionDucr, submissionLrn, submissionMrn}
 import models.requests.{ExportsSessionKeys, JourneyRequest}
 import play.api.i18n.I18nSupport
 import play.api.mvc._
@@ -55,6 +56,7 @@ class CopyDeclarationController @Inject() (
       case Some(submission) if !isDeclarationRejected(submission) =>
         Redirect(CopyDeclarationController.displayPage)
           .addingToSession(ExportsSessionKeys.declarationId -> submissionId)
+          .removingFromSession(submissionDucr, ExportsSessionKeys.submissionId, submissionLrn, submissionMrn)
 
       case _ => Redirect(DeclarationDetailsController.displayPage(submissionId))
     }

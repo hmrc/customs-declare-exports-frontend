@@ -24,6 +24,7 @@ import models.declaration.DeclarationStatus.DRAFT
 import models.declaration.submissions.EnhancedStatus
 import models.declaration.submissions.EnhancedStatus.rejectedStatuses
 import models.requests.ExportsSessionKeys
+import models.requests.ExportsSessionKeys.{submissionDucr, submissionId, submissionLrn, submissionMrn}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.{any, refEq}
 import org.mockito.Mockito.{clearInvocations, reset, verify, when}
@@ -120,7 +121,9 @@ class CopyDeclarationControllerSpec extends ControllerSpec with GivenWhenThen {
 
             status(result) must be(SEE_OTHER)
             redirectLocation(result) mustBe Some(CopyDeclarationController.displayPage.url)
-            session(result).get(ExportsSessionKeys.declarationId) mustBe Some(nonRejectedSubmission.uuid)
+            val ss = session(result)
+            ss.get(ExportsSessionKeys.declarationId) mustBe Some(nonRejectedSubmission.uuid)
+            assert(List(submissionDucr, submissionId, submissionLrn, submissionMrn).forall(ss.get(_) == None))
           }
         }
       }
