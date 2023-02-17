@@ -36,18 +36,20 @@ class AmendDeclarationController @Inject() (
   mcc: MessagesControllerComponents,
   declarationAmendmentsConfig: DeclarationAmendmentsConfig,
   connector: CustomsDeclareExportsConnector
-)(implicit ec: ExecutionContext) extends FrontendController(mcc) {
+)(implicit ec: ExecutionContext)
+    extends FrontendController(mcc) {
 
   val submit: Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
     if (!declarationAmendmentsConfig.isEnabled) Future.successful(Redirect(RootController.displayPage))
-    else request.session.get(ExportsSessionKeys.submissionId) match {
-      case Some(submissionId) =>
-        connector.findOrCreateDraftForAmend(submissionId).map { declarationId =>
-          Redirect(SummaryController.displayPage)
-            .addingToSession(ExportsSessionKeys.declarationId -> declarationId)
-        }
+    else
+      request.session.get(ExportsSessionKeys.submissionId) match {
+        case Some(submissionId) =>
+          connector.findOrCreateDraftForAmend(submissionId).map { declarationId =>
+            Redirect(SummaryController.displayPage)
+              .addingToSession(ExportsSessionKeys.declarationId -> declarationId)
+          }
 
-      case _ => errorHandler.displayErrorPage
-    }
+        case _ => errorHandler.displayErrorPage
+      }
   }
 }

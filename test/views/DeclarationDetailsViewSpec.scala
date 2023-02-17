@@ -141,7 +141,7 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
 
         val cancelDeclarationLink = view.getElementById("amend-declaration")
         cancelDeclarationLink must containMessage("declaration.details.amend.declaration")
-        cancelDeclarationLink must haveHref(routes.AmendDeclarationController.displayPage)
+        cancelDeclarationLink must haveHref(routes.AmendDeclarationController.submit)
       }
     }
 
