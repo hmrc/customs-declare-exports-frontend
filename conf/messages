@@ -193,18 +193,23 @@ tariff.declaration.ducrChoice.1.clearance.text = Go to the {0}. For details abou
 tariff.declaration.ducrChoice.1.clearance.linkText.0 = C21 Customs Clearance Request Completion Guide - Inventory Exports (opens in new tab)
 tariff.declaration.ducrChoice.2.clearance.text = UCR, go to data element 2/1 Simplified Declaration/Previous Documents
 tariff.declaration.ducrChoice.3.clearance.text = LRN, go to data element 2/5 LRN (no previous reference)
+
 tariff.declaration.traderReference.common.text = For details about the DUCR number, go to {0}.
 tariff.declaration.traderReference.common.linkText.0 = data element 2/4 - Reference Number / UCR (opens in a new tab)
+
 tariff.declaration.confirmDucr.common.text = For details about the DUCR number, go to {0}.
 tariff.declaration.confirmDucr.common.linkText.0 = data element 2/4 - Reference Number / UCR (opens in a new tab)
-tariff.declaration.ducr.1.common.text = For details about the DUCR number, go to {0}.
-tariff.declaration.ducr.1.common.linkText.0 = data element 2/4 - Reference Number / UCR (opens in a new tab)
-tariff.declaration.ducr.1.clearance.text = Go to the C21 Customs Clearance Request Completion Guide - Inventory Exports. For details about the DUCR, see {0}
-tariff.declaration.ducr.1.clearance.linkText.0 = data element 2/1 Simplified Declaration/Previous Documents (opens in new tab).
+
+tariff.declaration.ducr.common.text = For details about the DUCR number, go to {0}.
+tariff.declaration.ducr.common.linkText.0 = data element 2/1 - Simplified Declaration/ Previous Documents (opens in a new tab)
+tariff.declaration.ducr.clearance.text = Go to the C21 Customs Clearance Request Completion Guide - Inventory Exports. For details about the DUCR, see {0}
+tariff.declaration.ducr.clearance.linkText.0 = data element 2/1 Simplified Declaration/Previous Documents (opens in new tab).
+
 tariff.declaration.lrn.1.clearance.text = Go to the C21 Customs Clearance Request Completion Guide - Inventory Exports. For details about the LRN, see {0}
 tariff.declaration.lrn.1.clearance.linkText.0 = data element 2/5 LRN (no previous reference) (opens in new tab).
 tariff.declaration.lrn.1.common.text = For details about the LRN, go to<br>{0}.
 tariff.declaration.lrn.1.common.linkText.0 = data element 2/5 - LRN (no previous reference) (This link opens in a new tab)
+
 tariff.declaration.consignmentReferences.1.common.text = For details about the DUCR, go to<br>{0}.
 tariff.declaration.consignmentReferences.1.common.linkText.0 = data element 2/4 - Reference Number / UCR
 tariff.declaration.consignmentReferences.2.common.text = For details about the LRN, go to<br>{0}.
