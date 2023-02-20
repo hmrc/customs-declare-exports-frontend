@@ -14,14 +14,14 @@
  * limitations under the License.
  *@
 
+@import config.AppConfig
 @import controllers.declaration.routes
-@import models.DeclarationStatus.DRAFT
+@import models.declaration.DeclarationStatus.{COMPLETE, DRAFT}
 @import models.DeclarationType.SUPPLEMENTARY
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
-@import views.helpers.ActionItemBuilder.actionSummaryItem
 @import views.helpers.ViewDates
-@import config.AppConfig
+@import views.helpers.ActionItemBuilder.actionSummaryItem
 @import views.html.components.gds.{exportsInsetText, link, linkContent, paragraphBody, summary_list}
 
 @this(summaryList: summary_list, insetText: exportsInsetText, link: link, linkContent: linkContent, body: paragraphBody, appConfig: AppConfig)
@@ -54,7 +54,7 @@
 
 <h2 class="govuk-heading-m">@messages("declaration.summary.references")</h2>
 
-@if(declaration.declarationMeta.status != DeclarationStatus.COMPLETE){
+@if(declaration.declarationMeta.status != COMPLETE){
     @body(messages("declaration.summary.amend.body"), classes = "govuk-body govuk-!-display-none-print")
 }
 

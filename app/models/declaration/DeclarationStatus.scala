@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package models
+package models.declaration
 
 import play.api.libs.json.Format
 import utils.EnumJson
@@ -22,5 +22,5 @@ import utils.EnumJson
 object DeclarationStatus extends Enumeration {
   type DeclarationStatus = Value
   implicit val format: Format[DeclarationStatus.Value] = EnumJson.format(DeclarationStatus)
-  val INITIAL, DRAFT, COMPLETE = Value
+  val INITIAL, DRAFT, COMPLETE, AMENDMENT_DRAFT = Value
 }

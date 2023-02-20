@@ -32,12 +32,12 @@ import forms.declaration.declarationHolder.DeclarationHolder
 import forms.declaration.exporter.ExporterDetails
 import forms.declaration.officeOfExit.OfficeOfExit
 import forms.{Ducr, Lrn, Mrn}
+import models.declaration.DeclarationStatus.DeclarationStatus
 import models.DeclarationMeta.{ContainerKey, RoutingCountryKey, SealKey}
-import models.DeclarationStatus.DeclarationStatus
 import models.DeclarationType.DeclarationType
 import models.declaration._
 import models.declaration.submissions.EnhancedStatus.EnhancedStatus
-import models.{DeclarationMeta, DeclarationStatus, DeclarationType, ExportsDeclaration}
+import models.{DeclarationMeta, DeclarationType, ExportsDeclaration}
 
 //noinspection ScalaStyle
 trait ExportsDeclarationBuilder {

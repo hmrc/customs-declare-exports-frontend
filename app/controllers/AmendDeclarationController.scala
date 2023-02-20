@@ -16,40 +16,40 @@
 
 package controllers
 
+import config.featureFlags.DeclarationAmendmentsConfig
+import connectors.CustomsDeclareExportsConnector
 import controllers.actions.{AuthAction, VerifiedEmailAction}
-import forms.Lrn
+import controllers.declaration.routes.SummaryController
+import controllers.routes.RootController
 import handlers.ErrorHandler
-import models.requests.{AuthenticatedRequest, ExportsSessionKeys}
-import play.api.Logging
-import play.api.i18n.I18nSupport
+import models.requests.ExportsSessionKeys
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
 import javax.inject.Inject
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 class AmendDeclarationController @Inject() (
   authenticate: AuthAction,
   verifyEmail: VerifiedEmailAction,
   errorHandler: ErrorHandler,
-  mcc: MessagesControllerComponents
-) extends FrontendController(mcc) with I18nSupport with Logging with WithUnsafeDefaultFormBinding {
+  mcc: MessagesControllerComponents,
+  declarationAmendmentsConfig: DeclarationAmendmentsConfig,
+  connector: CustomsDeclareExportsConnector
+)(implicit ec: ExecutionContext)
+    extends FrontendController(mcc) {
 
-  def displayPage: Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
-    getSessionData() match {
-      case Some((_, mrn, lrn, ducr)) => Future.successful(Ok(""))
-      case _                         => errorHandler.displayErrorPage
-    }
+  val submit: Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
+    if (!declarationAmendmentsConfig.isEnabled) Future.successful(Redirect(RootController.displayPage))
+    else
+      request.session.get(ExportsSessionKeys.submissionId) match {
+        case Some(submissionId) =>
+          connector.findOrCreateDraftForAmend(submissionId).map { declarationId =>
+            Redirect(SummaryController.displayPage)
+              .addingToSession(ExportsSessionKeys.declarationId -> declarationId)
+          }
+
+        case _ => errorHandler.displayErrorPage
+      }
   }
-
-  private def getSessionData()(implicit request: AuthenticatedRequest[_]): Option[(String, String, Lrn, String)] =
-    for {
-      submissionId <- getSessionValue(ExportsSessionKeys.submissionId)
-      mrn <- getSessionValue(ExportsSessionKeys.submissionMrn)
-      lrn <- getSessionValue(ExportsSessionKeys.submissionLrn).map(Lrn(_))
-      ducr <- getSessionValue(ExportsSessionKeys.submissionDucr)
-    } yield (submissionId, mrn, lrn, ducr)
-
-  private def getSessionValue(str: String)(implicit request: AuthenticatedRequest[_]): Option[String] = request.session.get(str)
 }
