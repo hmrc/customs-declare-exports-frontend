@@ -17,6 +17,7 @@
 package views.declaration
 
 import base.Injector
+import controllers.declaration.routes.PackageInformationSummaryController
 import forms.declaration.PackageInformation
 import forms.declaration.PackageInformation.form
 import models.DeclarationType.STANDARD
@@ -40,10 +41,10 @@ class PackageInformationChangeViewSpec extends PageWithButtonsSpec with ExportsT
 
   val page = instanceOf[package_information_change]
 
-  override val typeAndViewInstance = (STANDARD, page(itemId, form, packageInfoId, Seq.empty)(_, _))
+  override val typeAndViewInstance = (STANDARD, page(itemId, form, packageInfoId)(_, _))
 
-  def createView(frm: Form[PackageInformation] = form, packages: Seq[PackageInformation] = Seq.empty)(implicit request: JourneyRequest[_]): Document =
-    page(itemId, frm, packageInfoId, packages)(request, messages)
+  def createView(frm: Form[PackageInformation] = form)(implicit request: JourneyRequest[_]): Document =
+    page(itemId, frm, packageInfoId)(request, messages)
 
   "PackageInformation Change View" should {
 
@@ -65,11 +66,8 @@ class PackageInformationChangeViewSpec extends PageWithButtonsSpec with ExportsT
       }
 
       "display 'Back' button that links to 'PackageInformation summary' page when changing subsequent value" in {
-        val backLinkContainer = createView(packages = Seq(packageInformation)).getElementById("back-link")
-
-        backLinkContainer.getElementById("back-link") must haveHref(
-          controllers.declaration.routes.PackageInformationSummaryController.displayPage(itemId)
-        )
+        val backLinkContainer = createView().getElementById("back-link")
+        backLinkContainer.getElementById("back-link") must haveHref(PackageInformationSummaryController.displayPage(itemId))
       }
 
       "display the expected hint paragraphs" in {
@@ -103,7 +101,7 @@ class PackageInformationChangeViewSpec extends PageWithButtonsSpec with ExportsT
   "PackageInformation Change View for invalid input" should {
     onEveryDeclarationJourney() { implicit request =>
       "display error if nothing is entered" in {
-        val view = createView(form.fillAndValidate(PackageInformation("id", None, None, None)))
+        val view = createView(form.fillAndValidate(PackageInformation(1, "id", None, None, None)))
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#typesOfPackages")
@@ -116,7 +114,7 @@ class PackageInformationChangeViewSpec extends PageWithButtonsSpec with ExportsT
       }
 
       "display error if incorrect PackageInformation is entered" in {
-        val view = createView(form.fillAndValidate(PackageInformation("id", Some("invalid"), Some(1), Some("wrong!"))))
+        val view = createView(form.fillAndValidate(PackageInformation(1, "id", Some("invalid"), Some(1), Some("wrong!"))))
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#typesOfPackages")

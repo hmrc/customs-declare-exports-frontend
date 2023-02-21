@@ -53,5 +53,6 @@ object DeclarationMeta {
 
   val RoutingCountryKey = "RoutingCountries"
   val ContainerKey = "Containers"
+  val PackageInformationKey = "PackageInformation"
   val SealKey = "Seals"
 }

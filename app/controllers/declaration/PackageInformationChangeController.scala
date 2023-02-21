@@ -24,6 +24,7 @@ import controllers.navigation.Navigator
 import forms.declaration.PackageInformation
 import forms.declaration.PackageInformation.form
 import handlers.ErrorHandler
+import models.DeclarationMeta.sequenceIdPlaceholder
 import models.ExportsDeclaration
 import models.requests.JourneyRequest
 import play.api.data.Form
@@ -53,7 +54,7 @@ class PackageInformationChangeController @Inject() (
     val maybePackageInformation = singleCachedPackageInformation(code, itemId)
 
     maybePackageInformation.fold(errorHandler.displayErrorPage) { packageInfo =>
-      Future.successful(Ok(packageChangePage(itemId, PackageInformation.form.fill(packageInfo).withSubmissionErrors, code, Seq.empty)))
+      Future.successful(Ok(packageChangePage(itemId, PackageInformation.form.fill(packageInfo).withSubmissionErrors, code)))
     }
   }
 
@@ -76,16 +77,18 @@ class PackageInformationChangeController @Inject() (
     MultipleItemsHelper
       .add(boundForm, listWithRemovedPackageInfo, PackageInformation.limit, fieldId = PackageInformationFormGroupId, "declaration.packageInformation")
       .fold(
-        formWithErrors => Future.successful(BadRequest(packageChangePage(itemId, formWithErrors, packageInfoToRemove.id, cachedData))),
-        updatedCache =>
-          updateExportsCache(itemId, updatedCache)
+        formWithErrors => Future.successful(BadRequest(packageChangePage(itemId, formWithErrors, packageInfoToRemove.id))),
+        newPackageInfos =>
+          updateExportsCache(itemId, updateReplacedPackageInfo(newPackageInfos, packageInfoToRemove.sequenceId))
             .map(_ => navigator.continueTo(routes.PackageInformationSummaryController.displayPage(itemId)))
       )
   }
 
-  private def updateExportsCache(itemId: String, updatedPackageInformation: Seq[PackageInformation])(
+  private def updateReplacedPackageInfo(packageInfos: Seq[PackageInformation], sequenceId: Int): Seq[PackageInformation] =
+    packageInfos.map(packageInfo => if (packageInfo.sequenceId == sequenceIdPlaceholder) packageInfo.copy(sequenceId) else packageInfo)
+
+  private def updateExportsCache(itemId: String, packageInfos: Seq[PackageInformation])(
     implicit request: JourneyRequest[AnyContent]
   ): Future[ExportsDeclaration] =
-    updateDeclarationFromRequest(model => model.updatedItem(itemId, _.copy(packageInformation = Some(updatedPackageInformation.toList))))
-
+    updateDeclarationFromRequest(_.updatedItem(itemId, _.copy(packageInformation = Some(packageInfos.toList))))
 }

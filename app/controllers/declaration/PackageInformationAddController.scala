@@ -23,6 +23,7 @@ import controllers.helpers.PackageInformationHelper.allCachedPackageInformation
 import controllers.navigation.Navigator
 import forms.declaration.PackageInformation
 import forms.declaration.PackageInformation.form
+import models.DeclarationMeta.{sequenceIdPlaceholder, PackageInformationKey}
 import models.ExportsDeclaration
 import models.requests.JourneyRequest
 import play.api.data.Form
@@ -48,7 +49,7 @@ class PackageInformationAddController @Inject() (
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
 
   def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    Ok(packageInformationPage(itemId, form.withSubmissionErrors, allCachedPackageInformation(itemId)))
+    Ok(packageInformationPage(itemId, form.withSubmissionErrors))
   }
 
   def submitForm(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
@@ -62,16 +63,31 @@ class PackageInformationAddController @Inject() (
     MultipleItemsHelper
       .add(boundForm, cachedData, PackageInformation.limit, fieldId = PackageInformationFormGroupId, "declaration.packageInformation")
       .fold(
-        formWithErrors => Future.successful(BadRequest(packageInformationPage(itemId, formWithErrors, cachedData))),
+        formWithErrors => Future.successful(BadRequest(packageInformationPage(itemId, formWithErrors))),
         updatedCache =>
-          updateExportsCache(itemId, updatedCache)
+          updateCache(itemId, updatedCache)
             .map(_ => navigator.continueTo(routes.PackageInformationSummaryController.displayPage(itemId)))
       )
 
-  private def updateExportsCache(itemId: String, updatedPackageInformation: Seq[PackageInformation])(
+  private def updateCache(itemId: String, packageInformation: Seq[PackageInformation])(
     implicit request: JourneyRequest[AnyContent]
-  ): Future[ExportsDeclaration] =
-    updateDeclarationFromRequest(model => model.updatedItem(itemId, _.copy(packageInformation = Some(updatedPackageInformation.toList))))
+  ): Future[ExportsDeclaration] = {
+    val declarationMeta = request.cacheModel.declarationMeta
+    val maxSequenceIds = declarationMeta.maxSequenceIds
+    val maxSequenceId = maxSequenceIds.get(PackageInformationKey).getOrElse(0)
+
+    val (newMaxSequenceId, newPackageInformation) = packageInformation.foldLeft((maxSequenceId, List.empty[PackageInformation])) {
+      (tuple: (Int, List[PackageInformation]), packageInfo: PackageInformation) =>
+        val sequenceId = tuple._1
+        val packageInfos = tuple._2
+        if (packageInfo.sequenceId == sequenceIdPlaceholder) (sequenceId + 1, packageInfos :+ packageInfo.copy(sequenceId + 1))
+        else (sequenceId, packageInfos :+ packageInfo)
+    }
+    updateDeclarationFromRequest(
+      _.updatedItem(itemId, _.copy(packageInformation = Some(newPackageInformation)))
+        .copy(declarationMeta = declarationMeta.copy(maxSequenceIds = maxSequenceIds + (PackageInformationKey -> newMaxSequenceId)))
+    )
+  }
 }
 
 object PackageInformationAddController {

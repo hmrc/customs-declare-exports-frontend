@@ -17,21 +17,27 @@
 package forms.declaration
 
 import forms.DeclarationPage
+import models.DeclarationMeta.sequenceIdPlaceholder
 import models.DeclarationType.{CLEARANCE, DeclarationType}
 import models.viewmodels.TariffContentKey
 import play.api.data.Forms.{number, optional, text}
-import play.api.data.{Form, Forms}
+import play.api.data.{Form, Forms, Mapping}
 import play.api.i18n.Messages
 import play.api.libs.json.Json
 import services.PackageTypesService
 import utils.validators.forms.FieldValidator._
 
-case class PackageInformation(id: String, typesOfPackages: Option[String], numberOfPackages: Option[Int], shippingMarks: Option[String]) {
-
+case class PackageInformation(
+  sequenceId: Int,
+  id: String,
+  typesOfPackages: Option[String],
+  numberOfPackages: Option[Int],
+  shippingMarks: Option[String]
+) {
   // overriding equals and hashcode so that we can test for duplicate entries while ignoring the id
   override def equals(obj: Any): Boolean = obj match {
-    case PackageInformation(_, `typesOfPackages`, `numberOfPackages`, `shippingMarks`) => true
-    case _                                                                             => false
+    case PackageInformation(_, _, `typesOfPackages`, `numberOfPackages`, `shippingMarks`) => true
+    case _                                                                                => false
   }
   override def hashCode(): Int = (typesOfPackages, numberOfPackages, shippingMarks).##
 
@@ -55,12 +61,12 @@ object PackageInformation extends DeclarationPage {
   private def generateId: String = Random.alphanumeric.take(8).mkString.toLowerCase
 
   def form2Data(typesOfPackages: Option[String], numberOfPackages: Option[Int], shippingMarks: Option[String]): PackageInformation =
-    new PackageInformation(generateId, typesOfPackages, numberOfPackages, shippingMarks)
+    new PackageInformation(sequenceIdPlaceholder, generateId, typesOfPackages, numberOfPackages, shippingMarks)
 
   def data2Form(data: PackageInformation): Option[(Option[String], Option[Int], Option[String])] =
     Some((data.typesOfPackages, data.numberOfPackages, data.shippingMarks))
 
-  def mapping(implicit messages: Messages, packageTypesService: PackageTypesService) = Forms
+  def mapping(implicit messages: Messages, packageTypesService: PackageTypesService): Mapping[PackageInformation] = Forms
     .mapping(
       "typesOfPackages" -> optional(
         text()

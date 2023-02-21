@@ -18,6 +18,8 @@ package controllers.declaration
 
 import base.{ControllerSpec, Injector}
 import forms.declaration.PackageInformation
+import models.DeclarationMeta.PackageInformationKey
+import models.declaration.ExportDeclarationTestData.declarationMeta
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -48,7 +50,7 @@ class PackageInformationAddControllerSpec extends ControllerSpec with OptionValu
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    when(mockAddPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockAddPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -64,12 +66,12 @@ class PackageInformationAddControllerSpec extends ControllerSpec with OptionValu
 
   def thePackageInformation: Form[PackageInformation] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[PackageInformation]])
-    verify(mockAddPage).apply(any(), captor.capture(), any())(any(), any())
+    verify(mockAddPage).apply(any(), captor.capture())(any(), any())
     captor.getValue
   }
 
   private def verifyAddPageInvoked(numberOfTimes: Int = 1): HtmlFormat.Appendable =
-    verify(mockAddPage, times(numberOfTimes)).apply(any(), any(), any())(any(), any())
+    verify(mockAddPage, times(numberOfTimes)).apply(any(), any())(any(), any())
 
   val item = anItem()
 
@@ -129,10 +131,12 @@ class PackageInformationAddControllerSpec extends ControllerSpec with OptionValu
           verifyAddPageInvoked()
         }
       }
+
       "return 303 (SEE_OTHER)" when {
         "user submits valid data" in {
-          val item = anItem()
-          withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
+          val meta = declarationMeta.copy(maxSequenceIds = declarationMeta.maxSequenceIds + (PackageInformationKey -> 1))
+          val item1 = anItem(withPackageInformation(List(packageInformation)))
+          withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item1)).copy(declarationMeta = meta))
 
           val requestBody = Seq("typesOfPackages" -> "AE", "numberOfPackages" -> "1", "shippingMarks" -> "1234")
           val result = controller.submitForm(item.id)(postRequestAsFormUrlEncoded(requestBody: _*))
@@ -140,7 +144,11 @@ class PackageInformationAddControllerSpec extends ControllerSpec with OptionValu
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe routes.PackageInformationSummaryController.displayPage(item.id)
 
-          val savedPackage = theCacheModelUpdated.itemBy(item.id).flatMap(_.packageInformation).map(_.head)
+          val declaration = theCacheModelUpdated
+          declaration.declarationMeta.maxSequenceIds.get(PackageInformationKey).value mustBe 2
+
+          val savedPackage = declaration.itemBy(item.id).flatMap(_.packageInformation).map(_.last)
+          savedPackage.value.sequenceId mustBe 2
           savedPackage.flatMap(_.typesOfPackages) mustBe Some("AE")
           savedPackage.flatMap(_.numberOfPackages) mustBe Some(1)
           savedPackage.flatMap(_.shippingMarks) mustBe Some("1234")

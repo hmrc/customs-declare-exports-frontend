@@ -50,7 +50,7 @@ class PackageInformationChangeControllerSpec extends ControllerSpec with OptionV
     super.beforeEach()
     authorizedUser()
     setupErrorHandler()
-    when(mockChangePage.apply(any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockChangePage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -66,15 +66,15 @@ class PackageInformationChangeControllerSpec extends ControllerSpec with OptionV
 
   def thePackageInformation: Form[PackageInformation] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[PackageInformation]])
-    verify(mockChangePage).apply(any(), captor.capture(), any(), any())(any(), any())
+    verify(mockChangePage).apply(any(), captor.capture(), any())(any(), any())
     captor.getValue
   }
 
   private def verifyChangePageInvoked(numberOfTimes: Int = 1): HtmlFormat.Appendable =
-    verify(mockChangePage, times(numberOfTimes)).apply(any(), any(), any(), any())(any(), any())
+    verify(mockChangePage, times(numberOfTimes)).apply(any(), any(), any())(any(), any())
 
   val id = "pkgId"
-  val packageInformation = PackageInformation(id, Some("AB"), Some(1), Some("SHIP"))
+  val packageInformation = PackageInformation(3, id, Some("AB"), Some(1), Some("SHIP"))
   val item = anItem(withPackageInformation(packageInformation))
   val anotherId = "differentId"
 
@@ -107,7 +107,7 @@ class PackageInformationChangeControllerSpec extends ControllerSpec with OptionV
         }
 
         "user makes changes resulting in duplicate data" in {
-          val morePackageInformation = PackageInformation(anotherId, None, None, None)
+          val morePackageInformation = PackageInformation(1, anotherId, None, None, None)
           val item = anItem(withPackageInformation(packageInformation, morePackageInformation))
           withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
 
@@ -152,10 +152,11 @@ class PackageInformationChangeControllerSpec extends ControllerSpec with OptionV
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe routes.PackageInformationSummaryController.displayPage(item.id)
 
-          val savedPackage = theCacheModelUpdated.itemBy(item.id).flatMap(_.packageInformation).map(_.head)
-          savedPackage.flatMap(_.typesOfPackages) mustBe Some("AE")
-          savedPackage.flatMap(_.numberOfPackages) mustBe Some(1)
-          savedPackage.flatMap(_.shippingMarks) mustBe Some("1234")
+          val savedPackage = theCacheModelUpdated.itemBy(item.id).flatMap(_.packageInformation).value.head
+          savedPackage.sequenceId mustBe 3
+          savedPackage.typesOfPackages mustBe Some("AE")
+          savedPackage.numberOfPackages mustBe Some(1)
+          savedPackage.shippingMarks mustBe Some("1234")
         }
       }
     }

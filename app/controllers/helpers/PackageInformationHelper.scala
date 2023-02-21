@@ -24,10 +24,12 @@ object PackageInformationHelper {
   def allCachedPackageInformation(itemId: String)(implicit request: JourneyRequest[_]): Seq[PackageInformation] =
     maybePackageInformation(itemId).getOrElse(List.empty)
 
+  def hasCachedPackageInformation(itemId: String)(implicit request: JourneyRequest[_]): Boolean =
+    allCachedPackageInformation(itemId).nonEmpty
+
   def singleCachedPackageInformation(id: String, itemId: String)(implicit request: JourneyRequest[_]): Option[PackageInformation] =
     maybePackageInformation(itemId).flatMap(_.find(_.id == id))
 
-  private def maybePackageInformation(itemId: String)(implicit request: JourneyRequest[_]) =
+  private def maybePackageInformation(itemId: String)(implicit request: JourneyRequest[_]): Option[List[PackageInformation]] =
     request.cacheModel.itemBy(itemId).flatMap(_.packageInformation)
-
 }

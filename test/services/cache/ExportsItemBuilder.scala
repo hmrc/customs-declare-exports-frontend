@@ -23,6 +23,7 @@ import models.declaration.{CommodityMeasure => CommodityMeasureModel, _}
 
 import java.util.UUID
 
+// scalastyle:off
 trait ExportsItemBuilder {
 
   private def uuid: String = UUID.randomUUID.toString
@@ -106,17 +107,18 @@ trait ExportsItemBuilder {
     _.copy(packageInformation = Some(informations))
 
   def withPackageInformation(typesOfPackages: String = "", numberOfPackages: Int = 0, shippingMarks: String = ""): ItemModifier =
-    cache =>
-      cache.copy(packageInformation =
-        Some(
-          cache.packageInformation.getOrElse(List.empty) :+ PackageInformation(
-            UUID.randomUUID().toString,
-            Some(typesOfPackages),
-            Some(numberOfPackages),
-            Some(shippingMarks)
-          )
-        )
+    exportItem => {
+      val packageInfos = exportItem.packageInformation.getOrElse(List.empty)
+      val packageInformation = PackageInformation(
+        if (packageInfos.isEmpty) 1 else packageInfos.last.sequenceId + 1,
+        UUID.randomUUID().toString,
+        Some(typesOfPackages),
+        Some(numberOfPackages),
+        Some(shippingMarks)
       )
+
+      exportItem.copy(packageInformation = Some(packageInfos :+ packageInformation))
+    }
 
   def withAdditionalDocuments(isRequired: Option[YesNoAnswer], first: AdditionalDocument, documents: AdditionalDocument*): ItemModifier =
     cache => {
