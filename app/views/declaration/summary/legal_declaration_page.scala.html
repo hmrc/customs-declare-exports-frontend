@@ -15,7 +15,7 @@
  *@
 
 @import config.AppConfig
-@import controllers.declaration.routes.SummaryController
+@import controllers.declaration.routes.{SummaryController, AmendmentSummaryController}
 @import forms.declaration.LegalDeclaration
 @import models.declaration.submissions.EnhancedStatus.ERRORS
 @import models.requests.JourneyRequest
@@ -33,27 +33,44 @@
     saveAndContinue: saveAndContinue
 )
 
-@(legalDeclarationForm: Form[LegalDeclaration])(implicit request: JourneyRequest[_], messages: Messages, appConfig: AppConfig)
+@(legalDeclarationForm: Form[LegalDeclaration], amend: Boolean = false)(implicit request: JourneyRequest[_], messages: Messages, appConfig: AppConfig)
 
 @headerMsgKey = @{
-    request.cacheModel.declarationMeta.parentDeclarationEnhancedStatus match {
+    if (amend) "legal.declaration.amend.heading"
+    else request.cacheModel.declarationMeta.parentDeclarationEnhancedStatus match {
         case Some(ERRORS) => "declaration.summary.amend.legal-header"
         case _ => "declaration.summary.legal-header"
     }
 }
 
+@buttonKey = @{
+    if (amend) "legal.declaration.amend.button"
+    else "site.acceptAndSubmitDeclaration"
+}
+
+@formAction = @{
+    if(amend) AmendmentSummaryController.submitAmendment
+    else SummaryController.submitDeclaration
+}
+
+@backAction = @{
+    if(amend) AmendmentSummaryController.displayPage
+    else SummaryController.displayPage
+}
+
 @govukLayout(
     title = Title(headerMsgKey),
-    backButton = Some(BackButton(messages("site.back"), SummaryController.displayPage)),
-    useCustomContentWidth = true
+    backButton = Some(BackButton(messages("site.back"), backAction)),
+    useCustomContentWidth = true,
+    showDeclarationSummaryLink = false
 ) {
-    @formHelper(action = SummaryController.submitDeclaration, 'autoComplete -> "off") {
+    @formHelper(action = formAction, 'autoComplete -> "off") {
         @errorSummary(legalDeclarationForm.errors)
 
         @pageTitle(messages(headerMsgKey))
 
-        @legal_declaration(legalDeclarationForm)
+        @legal_declaration(form = legalDeclarationForm, amend = amend)
 
-        @saveAndContinue("site.acceptAndSubmitDeclaration")
+        @saveAndContinue(buttonKey)
     }
 }

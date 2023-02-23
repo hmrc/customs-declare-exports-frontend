@@ -2280,6 +2280,7 @@ declaration.draft.nextStartFreshLink = start a new one
 declaration.draft.viewSummary = View declaration summary
 
 legal.declaration.heading=Now submit your declaration
+
 legal.declaration.info=Before you proceed, ensure that you have fully reviewed the information you have provided above and ensure that it is correct.
 legal.declaration.warning=You could be prosecuted if you deliberately give untrue or misleading information.
 legal.declaration.fullName=Full name
@@ -2298,6 +2299,14 @@ legal.declaration.email.long=Your email address must not be more than 64 charact
 legal.declaration.email.error=Enter a valid email address
 legal.declaration.confirmation=I confirm the information given is correct to the best of my knowledge
 legal.declaration.confirmation.missing=You must confirm the information is correct to the best of your knowledge
+
+legal.declaration.amend.heading=Submit amendment request
+legal.declaration.amend.reason=Reason for your amendment
+legal.declaration.amend.reason.hint =You can enter up to 512 characters
+legal.declaration.amendReason.empty=Enter a reason for this amendment
+legal.declaration.amendReason.long=Your amendment reason must not be more than 512 characters
+legal.declaration.amendReason.error=Only letters, numbers, and certain special characters can be used in an amendment reason
+legal.declaration.amend.button=Submit Amendment
 
 rejected.notification.mrn = MRN: {0}
 rejected.notification.mrn.missing = No MRN

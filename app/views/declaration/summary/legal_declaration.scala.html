@@ -23,10 +23,11 @@
         govukWarningText: GovukWarningText,
         paragraphBody: paragraphBody,
         exportsInputCheckbox: exportsInputCheckbox,
-        exportsInputText: exportsInputText
+        exportsInputText: exportsInputText,
+        exportsInputCharacterCount: exportsInputCharacterCount
 )
 
-@(form: Form[LegalDeclaration], legend: Option[Legend] = None, legalInfo: Seq[String] = Seq.empty)(implicit messages: Messages)
+@(form: Form[LegalDeclaration], legend: Option[Legend] = None, legalInfo: Seq[String] = Seq.empty, amend: Boolean)(implicit messages: Messages)
 
 @govukFieldset(Fieldset(
     legend = legend,
@@ -47,20 +48,30 @@
 @exportsInputText(
     field = form("fullName"),
     labelKey = "legal.declaration.fullName",
-    inputClasses = Some("govuk-input govuk-input--width-20")
+    inputClasses = Some("govuk-input govuk-!-width-one-half")
 )
 
 @exportsInputText(
     field = form("jobRole"),
     labelKey = "legal.declaration.jobRole",
-    inputClasses = Some("govuk-input govuk-input--width-20")
+    inputClasses = Some("govuk-input govuk-!-width-one-half")
 )
 
 @exportsInputText(
     field = form("email"),
     labelKey = "legal.declaration.email",
-    inputClasses = Some("govuk-input govuk-input--width-20")
+    inputClasses = Some("govuk-input govuk-!-width-one-half")
 )
+
+@if(amend) @{
+    exportsInputCharacterCount(
+        field = form("amendReason"),
+        labelKey = Some("legal.declaration.amend.reason"),
+        labelClasses = "govuk-!-font-weight-bold govuk-!-font-size-24",
+        maxLength = Some(LegalDeclaration.amendReasonMaxLength),
+        inputClasses = "govuk-!-width-one-half"
+    )
+}
 
 @exportsInputCheckbox(
     field = form("confirmation"),

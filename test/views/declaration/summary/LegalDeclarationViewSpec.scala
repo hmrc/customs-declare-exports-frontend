@@ -37,60 +37,94 @@ class LegalDeclarationViewSpec extends UnitViewSpec with Injector {
 
   "Legal Declaration View" should {
 
-    "have legal declaration warning" in {
+    "for both amendments and submissions" in {
 
-      view.getElementsByClass("govuk-warning-text__text") must containMessageForElements("site.warning")
-      view.getElementsByClass("govuk-warning-text__text") must containMessageForElements("legal.declaration.warning")
-      messages must haveTranslationFor("site.warning")
-      messages must haveTranslationFor("legal.declaration.warning")
+      "have legal declaration warning" in {
+
+        view.getElementsByClass("govuk-warning-text__text") must containMessageForElements("site.warning")
+        view.getElementsByClass("govuk-warning-text__text") must containMessageForElements("legal.declaration.warning")
+        messages must haveTranslationFor("site.warning")
+        messages must haveTranslationFor("legal.declaration.warning")
+      }
+
+      "have full name input" in {
+
+        view.getElementsByAttributeValue("for", "fullName") must containMessageForElements("legal.declaration.fullName")
+        messages must haveTranslationFor("legal.declaration.fullName")
+        messages must haveTranslationFor("legal.declaration.fullName.empty")
+        messages must haveTranslationFor("legal.declaration.fullName.short")
+        messages must haveTranslationFor("legal.declaration.fullName.long")
+        messages must haveTranslationFor("legal.declaration.fullName.error")
+      }
+
+      "have job role input" in {
+
+        view.getElementsByAttributeValue("for", "jobRole") must containMessageForElements("legal.declaration.jobRole")
+        messages must haveTranslationFor("legal.declaration.jobRole")
+        messages must haveTranslationFor("legal.declaration.jobRole.empty")
+        messages must haveTranslationFor("legal.declaration.jobRole.short")
+        messages must haveTranslationFor("legal.declaration.jobRole.long")
+        messages must haveTranslationFor("legal.declaration.jobRole.error")
+      }
+
+      "have email input" in {
+
+        view.getElementsByAttributeValue("for", "email") must containMessageForElements("legal.declaration.email")
+        messages must haveTranslationFor("legal.declaration.email")
+        messages must haveTranslationFor("legal.declaration.email.empty")
+        messages must haveTranslationFor("legal.declaration.email.long")
+        messages must haveTranslationFor("legal.declaration.email.error")
+      }
+
+      "have confirmation box" in {
+
+        view.getElementsByAttributeValue("for", "confirmation") must containMessageForElements("legal.declaration.confirmation")
+        messages must haveTranslationFor("legal.declaration.confirmation")
+        messages must haveTranslationFor("legal.declaration.confirmation.missing")
+      }
+
+      "have header and translation for it" in {
+
+        nonEmptyView.getElementsByClass(legendClass).first() must containMessage(legendContent)
+        messages must haveTranslationFor(legendContent)
+      }
+
+      "have information about declaration" in {
+
+        nonEmptyView.body must include(messages(legalInfo))
+        messages must haveTranslationFor(legalInfo)
+      }
     }
 
-    "have full name input" in {
+    "for submissions only" in {
+      "go back to normal summary page" in {
 
-      view.getElementsByAttributeValue("for", "fullName") must containMessageForElements("legal.declaration.fullName")
-      messages must haveTranslationFor("legal.declaration.fullName")
-      messages must haveTranslationFor("legal.declaration.fullName.empty")
-      messages must haveTranslationFor("legal.declaration.fullName.short")
-      messages must haveTranslationFor("legal.declaration.fullName.long")
-      messages must haveTranslationFor("legal.declaration.fullName.error")
+      }
+      "have header and translation for it" in {
+        nonEmptyView.getElementsByClass(legendClass).first() must containMessage(legendContent)
+        messages must haveTranslationFor(legendContent)
+      }
+
+      "have correct button" in {
+
+      }
     }
 
-    "have job role input" in {
+    "for amendments only" in {
+      "go back to amendment summary page" in {
 
-      view.getElementsByAttributeValue("for", "jobRole") must containMessageForElements("legal.declaration.jobRole")
-      messages must haveTranslationFor("legal.declaration.jobRole")
-      messages must haveTranslationFor("legal.declaration.jobRole.empty")
-      messages must haveTranslationFor("legal.declaration.jobRole.short")
-      messages must haveTranslationFor("legal.declaration.jobRole.long")
-      messages must haveTranslationFor("legal.declaration.jobRole.error")
-    }
+      }
+      "have header and translation for it" in {
 
-    "have email input" in {
+      }
 
-      view.getElementsByAttributeValue("for", "email") must containMessageForElements("legal.declaration.email")
-      messages must haveTranslationFor("legal.declaration.email")
-      messages must haveTranslationFor("legal.declaration.email.empty")
-      messages must haveTranslationFor("legal.declaration.email.long")
-      messages must haveTranslationFor("legal.declaration.email.error")
-    }
+      "have correct button" in {
 
-    "have confirmation box" in {
+      }
 
-      view.getElementsByAttributeValue("for", "confirmation") must containMessageForElements("legal.declaration.confirmation")
-      messages must haveTranslationFor("legal.declaration.confirmation")
-      messages must haveTranslationFor("legal.declaration.confirmation.missing")
-    }
+      "have free text 'Reason for Amend' input" in {
 
-    "have header and translation for it" in {
-
-      nonEmptyView.getElementsByClass(legendClass).first() must containMessage(legendContent)
-      messages must haveTranslationFor(legendContent)
-    }
-
-    "have information about declaration" in {
-
-      nonEmptyView.body must include(messages(legalInfo))
-      messages must haveTranslationFor(legalInfo)
+      }
     }
   }
 }

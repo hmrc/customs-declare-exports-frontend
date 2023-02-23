@@ -15,12 +15,12 @@
  */
 
 package forms.declaration
-import play.api.data.Forms.{boolean, text}
+import play.api.data.Forms.{boolean, optional, text}
 import play.api.data.{Form, Forms, Mapping}
 import play.api.libs.json.{Json, OFormat}
 import utils.validators.forms.FieldValidator._
 
-case class LegalDeclaration(fullName: String, jobRole: String, email: String, confirmation: Boolean)
+case class LegalDeclaration(fullName: String, jobRole: String, email: String, amendReason: Option[String], confirmation: Boolean)
 
 object LegalDeclaration {
   implicit val format: OFormat[LegalDeclaration] = Json.format[LegalDeclaration]
@@ -40,8 +40,14 @@ object LegalDeclaration {
       .verifying("legal.declaration.email.empty", nonEmpty)
       .verifying("legal.declaration.email.long", isEmpty or noLongerThan(64))
       .verifying("legal.declaration.email.error", isEmpty or isValidEmail),
+    "amendReason" -> optional(text()
+      .verifying("legal.declaration.amendReason.long", isEmpty or noLongerThan(512))
+      .verifying("legal.declaration.amendReason.error", isEmpty or isValidAmendmentReason)
+    ).verifying("legal.declaration.amendReason.empty", isPresent),
     "confirmation" -> boolean.verifying("legal.declaration.confirmation.missing", isTrue)
   )(LegalDeclaration.apply)(LegalDeclaration.unapply)
 
   def form: Form[LegalDeclaration] = Form(mapping)
+
+  val amendReasonMaxLength = 512
 }

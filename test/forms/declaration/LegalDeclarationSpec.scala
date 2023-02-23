@@ -87,6 +87,18 @@ class LegalDeclarationSpec extends UnitWithMocksSpec {
       }
     }
 
+    "return errors for 'Reason for Amend'" when {
+      "amendReason field is empty" in {
+        form.bind(formDataWith(amendReason = ""), JsonBindMaxChars).errors.map(_.message) must contain("legal.declaration.amendReason.empty")
+      }
+      "input contains certain special characters" in {
+        form.bind(formDataWith(amendReason = "[^<>\"&]*$"), JsonBindMaxChars).errors.map(_.message) must contain("legal.declaration.amendReason.error")
+      }
+      "input is too long" in {
+        form.bind(formDataWith(amendReason = "a" * 513), JsonBindMaxChars).errors.map(_.message) must contain("legal.declaration.amendReason.long")
+      }
+    }
+
   }
 
   private def validFormData = formDataWith()
@@ -95,9 +107,10 @@ class LegalDeclarationSpec extends UnitWithMocksSpec {
     name: String = "O'Neil Some-Name, Jr.",
     role: String = "Traveling-Secretary for the N.Y. Yankees' Chairman",
     email: String = "some@email.com",
+    amendReason: String = "amendReason",
     checked: Boolean = true
   ) = {
     def isChecked = if (checked) JsTrue else JsFalse
-    JsObject(Map("fullName" -> JsString(name), "jobRole" -> JsString(role), "email" -> JsString(email), "confirmation" -> isChecked))
+    JsObject(Map("fullName" -> JsString(name), "jobRole" -> JsString(role), "email" -> JsString(email), "amendReason" -> JsString(amendReason), "confirmation" -> isChecked))
   }
 }
