@@ -116,7 +116,7 @@ class DucrChoiceViewSpec extends PageWithButtonsSpec with Injector {
               messages(s"$prefix.ducrChoice.2.clearance.text"),
               messages(s"$prefix.ducrChoice.3.clearance.text")
             ).mkString(" ")
-          else messages(s"$prefix.ducr.1.common.text", messages(s"$prefix.ducr.1.common.linkText.0"))
+          else messages(s"$prefix.ducr.common.text", messages(s"$prefix.ducr.common.linkText.0"))
 
         val actualText = removeBlanksIfAnyBeforeDot(tariffDetails.text)
         actualText mustBe removeLineBreakIfAny(expectedText)

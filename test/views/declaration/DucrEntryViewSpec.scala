@@ -118,11 +118,29 @@ class DucrEntryViewSpec extends PageWithButtonsSpec with Injector {
   }
 
   "Ducr Entry View" should {
+
     onJourney(STANDARD, CLEARANCE, OCCASIONAL, SIMPLIFIED) { implicit request =>
       "display 'Back' button that links to 'Ducr Choice' page" in {
         val backButton = createView().getElementById("back-link")
         backButton must containMessage(backToPreviousQuestionCaption)
         backButton must haveHref(DucrChoiceController.displayPage.url)
+      }
+    }
+
+    onJourney(STANDARD, CLEARANCE, OCCASIONAL, SIMPLIFIED) { implicit request =>
+      "display the expected tariff details" in {
+        val key = if (request.isType(CLEARANCE)) "clearance" else "common"
+
+        val view = createView()
+        val tariffTitle = view.getElementsByClass("govuk-details__summary-text")
+        tariffTitle.text mustBe messages(s"tariff.expander.title.$key")
+
+        val tariffDetails = view.getElementsByClass("govuk-details__text").first
+
+        val prefix = "tariff.declaration.ducr"
+        val expectedText = messages(s"$prefix.$key.text", messages(s"$prefix.$key.linkText.0"))
+        val actualText = removeBlanksIfAnyBeforeDot(tariffDetails.text)
+        actualText mustBe removeLineBreakIfAny(expectedText)
       }
     }
   }

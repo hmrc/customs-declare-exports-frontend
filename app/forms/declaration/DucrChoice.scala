@@ -30,6 +30,6 @@ object DucrChoice extends DeclarationPage {
           TariffContentKey("tariff.declaration.ducrChoice.2.clearance"),
           TariffContentKey("tariff.declaration.ducrChoice.3.clearance")
         )
-      case _ => List(TariffContentKey("tariff.declaration.ducr.1.common"))
+      case _ => List(TariffContentKey("tariff.declaration.ducr.common"))
     }
 }
