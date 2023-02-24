@@ -174,7 +174,8 @@ class SummaryControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerM
         withNewCaching(declaration)
 
         val uuid = UUID.randomUUID().toString
-        val expectedSubmission = Submission(uuid, eori = "GB123456", lrn = "123LRN", ducr = Some("ducr"), actions = List.empty, latestDecId = uuid)
+        val expectedSubmission =
+          Submission(uuid, eori = "GB123456", lrn = "123LRN", ducr = Some("ducr"), actions = List.empty, latestDecId = Some(uuid))
         when(mockSubmissionService.submit(any(), any[ExportsDeclaration], any[LegalDeclaration])(any[HeaderCarrier], any[ExecutionContext]))
           .thenReturn(Future.successful(Some(expectedSubmission)))
 

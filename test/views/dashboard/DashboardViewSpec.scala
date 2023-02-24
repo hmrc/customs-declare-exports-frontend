@@ -80,7 +80,7 @@ class DashboardViewSpec extends UnitViewSpec with ExportsTestHelper {
       latestEnhancedStatus = Some(status),
       enhancedStatusLastUpdated = Some(lastStatusUpdate),
       actions = List(Action("actionId", SubmissionRequest, lastStatusUpdate, None, Some(uuid), 1)),
-      latestDecId = uuid
+      latestDecId = Some(uuid)
     )
 
   def listOfSubmissions(status: EnhancedStatus = RECEIVED, size: Int = 1): Seq[Submission] =

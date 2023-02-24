@@ -31,9 +31,8 @@ case class Submission(
   latestEnhancedStatus: Option[EnhancedStatus] = None,
   enhancedStatusLastUpdated: Option[ZonedDateTime] = None,
   actions: Seq[Action],
-  latestDecId: String,
-  latestVersionNo: Int = 1,
-  blockAmendments: Boolean = false
+  latestDecId: Option[String],
+  latestVersionNo: Int = 1
 ) {
   val latestAction: Option[Action] =
     if (actions.isEmpty) None
@@ -55,6 +54,8 @@ case class Submission(
 
   lazy val isStatusAcceptedOrReceived: Boolean =
     allSubmissionRequestStatuses.intersect(Seq(GOODS_ARRIVED_MESSAGE, GOODS_ARRIVED, RECEIVED)).nonEmpty
+
+  val blockAmendments: Boolean = latestDecId.isEmpty
 }
 
 object Submission {

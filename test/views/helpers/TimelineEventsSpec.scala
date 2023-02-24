@@ -33,7 +33,7 @@ import java.util.UUID
 
 class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injector {
 
-  private val submission = Submission("id", "eori", "lrn", Some("mrn"), Some("ducr"), None, None, Seq.empty, latestDecId = "id")
+  private val submission = Submission("id", "eori", "lrn", Some("mrn"), Some("ducr"), None, None, Seq.empty, latestDecId = Some("id"))
   private val uploadFilesPartialForTimeline = instanceOf[upload_files_partial_for_timeline]
 
   override def beforeEach(): Unit = {
