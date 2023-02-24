@@ -15,7 +15,8 @@
  */
 
 package forms.declaration
-import play.api.data.Forms.{boolean, optional, text}
+import forms.mappings.OptionalSomeMapping
+import play.api.data.Forms.{boolean, text}
 import play.api.data.{Form, Forms, Mapping}
 import play.api.libs.json.{Json, OFormat}
 import utils.validators.forms.FieldValidator._
@@ -40,10 +41,12 @@ object LegalDeclaration {
       .verifying("legal.declaration.email.empty", nonEmpty)
       .verifying("legal.declaration.email.long", isEmpty or noLongerThan(64))
       .verifying("legal.declaration.email.error", isEmpty or isValidEmail),
-    "amendReason" -> optional(text()
-      .verifying("legal.declaration.amendReason.long", isEmpty or noLongerThan(512))
-      .verifying("legal.declaration.amendReason.error", isEmpty or isValidAmendmentReason)
-    ).verifying("legal.declaration.amendReason.empty", isPresent),
+    "amendReason" -> OptionalSomeMapping(
+      text()
+        .verifying("legal.declaration.amendReason.empty", nonEmpty)
+        .verifying("legal.declaration.amendReason.long", isEmpty or noLongerThan(512))
+        .verifying("legal.declaration.amendReason.error", isEmpty or isValidAmendmentReason)
+    ),
     "confirmation" -> boolean.verifying("legal.declaration.confirmation.missing", isTrue)
   )(LegalDeclaration.apply)(LegalDeclaration.unapply)
 

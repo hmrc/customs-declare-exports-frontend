@@ -21,9 +21,6 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
 import javax.inject.Inject
 
-class AmendmentConfirmationController @Inject()(
-                                              mcc: MessagesControllerComponents
-                                            ) extends FrontendController(mcc)
-{
+class AmendmentConfirmationController @Inject() (mcc: MessagesControllerComponents) extends FrontendController(mcc) {
   val displayHoldingPage: Action[AnyContent] = Action(Ok)
 }

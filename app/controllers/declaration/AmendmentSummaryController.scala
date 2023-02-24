@@ -45,7 +45,8 @@ class AmendmentSummaryController @Inject() (
   submissionService: SubmissionService,
   legalDeclarationPage: legal_declaration_page,
   declarationAmendmentsConfig: DeclarationAmendmentsConfig
-)(implicit ec: ExecutionContext, appConfig: AppConfig) extends FrontendController(mcc) with I18nSupport with Logging with ModelCacheable with WithUnsafeDefaultFormBinding {
+)(implicit ec: ExecutionContext, appConfig: AppConfig)
+    extends FrontendController(mcc) with I18nSupport with Logging with ModelCacheable with WithUnsafeDefaultFormBinding {
 
   val form: Form[LegalDeclaration] = LegalDeclaration.form
 
@@ -58,21 +59,22 @@ class AmendmentSummaryController @Inject() (
 
   val submitAmendment: Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType).async { implicit request =>
     if (!declarationAmendmentsConfig.isEnabled) Future.successful(Redirect(RootController.displayPage))
-    else form
-      .bindFromRequest()
-      .fold(
-        (formWithErrors: Form[LegalDeclaration]) => Future.successful(BadRequest(legalDeclarationPage(formWithErrors, amend = true))),
-        legalDeclaration =>
-          legalDeclaration.amendReason match {
-            case Some(amendReason) =>
-              val declaration = exportsCacheService.update(request.cacheModel.copy(statementDescription = Some(amendReason)))
-              declaration.flatMap(declaration => {
-                submissionService.amend(request.eori, declaration, legalDeclaration).map {
-                  _ => Redirect(routes.AmendmentConfirmationController.displayHoldingPage)
+    else
+      form
+        .bindFromRequest()
+        .fold(
+          (formWithErrors: Form[LegalDeclaration]) => Future.successful(BadRequest(legalDeclarationPage(formWithErrors, amend = true))),
+          legalDeclaration =>
+            legalDeclaration.amendReason match {
+              case Some(amendReason) =>
+                val declaration = exportsCacheService.update(request.cacheModel.copy(statementDescription = Some(amendReason)))
+                declaration.flatMap { declaration =>
+                  submissionService.amend(request.eori, declaration, legalDeclaration).map { _ =>
+                    Redirect(routes.AmendmentConfirmationController.displayHoldingPage)
+                  }
                 }
-              })
-            case _ => errorHandler.displayErrorPage
-          }
-      )
+              case _ => errorHandler.displayErrorPage
+            }
+        )
   }
 }

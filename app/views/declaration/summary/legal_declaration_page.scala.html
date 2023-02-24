@@ -19,7 +19,7 @@
 @import forms.declaration.LegalDeclaration
 @import models.declaration.submissions.EnhancedStatus.ERRORS
 @import models.requests.JourneyRequest
-@import uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF
+@import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.helpers.{BackButton, Title}
 @import views.html.components.gds._
 @import views.html.declaration.summary._
@@ -28,12 +28,17 @@
     govukLayout: gdsMainTemplate,
     pageTitle: pageTitle,
     errorSummary: errorSummary,
-    legal_declaration: legal_declaration,
     formHelper: FormWithCSRF,
-    saveAndContinue: saveAndContinue
+    saveAndContinue: saveAndContinue,
+    govukFieldset: GovukFieldset,
+    govukWarningText: GovukWarningText,
+    paragraphBody: paragraphBody,
+    exportsInputCheckbox: exportsInputCheckbox,
+    exportsInputText: exportsInputText,
+    exportsInputCharacterCount: exportsInputCharacterCount
 )
 
-@(legalDeclarationForm: Form[LegalDeclaration], amend: Boolean = false)(implicit request: JourneyRequest[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[LegalDeclaration], amend: Boolean = false)(implicit request: JourneyRequest[_], messages: Messages, appConfig: AppConfig)
 
 @headerMsgKey = @{
     if (amend) "legal.declaration.amend.heading"
@@ -58,6 +63,46 @@
     else SummaryController.displayPage
 }
 
+@html = {
+    @govukWarningText(WarningText(
+        iconFallbackText = messages("site.warning"),
+        content = Text(messages("legal.declaration.warning"))
+    ))
+
+    @exportsInputText(
+        field = form("fullName"),
+        labelKey = "legal.declaration.fullName",
+        inputClasses = Some("govuk-input govuk-!-width-one-half")
+    )
+
+    @exportsInputText(
+        field = form("jobRole"),
+        labelKey = "legal.declaration.jobRole",
+        inputClasses = Some("govuk-input govuk-!-width-one-half")
+    )
+
+    @exportsInputText(
+        field = form("email"),
+        labelKey = "legal.declaration.email",
+        inputClasses = Some("govuk-input govuk-!-width-one-half")
+    )
+
+    @if(amend) @{
+        exportsInputCharacterCount(
+            field = form("amendReason"),
+            labelKey = Some("legal.declaration.amend.reason"),
+            labelClasses = "govuk-!-font-weight-bold govuk-!-font-size-24",
+            maxLength = Some(LegalDeclaration.amendReasonMaxLength),
+            inputClasses = "govuk-!-width-one-half"
+        )
+    }
+
+    @exportsInputCheckbox(
+        field = form("confirmation"),
+        labelKey = "legal.declaration.confirmation"
+    )
+}
+
 @govukLayout(
     title = Title(headerMsgKey),
     backButton = Some(BackButton(messages("site.back"), backAction)),
@@ -65,11 +110,13 @@
     showDeclarationSummaryLink = false
 ) {
     @formHelper(action = formAction, 'autoComplete -> "off") {
-        @errorSummary(legalDeclarationForm.errors)
+        @errorSummary(form.errors)
 
         @pageTitle(messages(headerMsgKey))
 
-        @legal_declaration(form = legalDeclarationForm, amend = amend)
+        @govukFieldset(Fieldset(
+            html = html
+        ))
 
         @saveAndContinue(buttonKey)
     }
