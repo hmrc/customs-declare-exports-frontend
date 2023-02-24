@@ -81,7 +81,7 @@ class SubmissionService @Inject() (exportsConnector: CustomsDeclareExportsConnec
       .map(Some(_))
   }
 
-  def amend(eori: String, exportsDeclaration: ExportsDeclaration, legalDeclaration: LegalDeclaration): Future[Option[Submission]] =
+  def amend: Future[Option[Submission]] =
     Future.successful(None)
 
   private def logProgress(declaration: ExportsDeclaration, message: String): Unit =

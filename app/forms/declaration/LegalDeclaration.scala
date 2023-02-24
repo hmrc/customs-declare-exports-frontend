@@ -26,28 +26,34 @@ case class LegalDeclaration(fullName: String, jobRole: String, email: String, am
 object LegalDeclaration {
   implicit val format: OFormat[LegalDeclaration] = Json.format[LegalDeclaration]
 
+  val nameKey = "fullName"
+  val jobRoleKey = "jobRole"
+  val emailKey = "email"
+  val amendReasonKey = "amendReason"
+  val confirmationKey = "confirmation"
+
   val mapping: Mapping[LegalDeclaration] = Forms.mapping(
-    "fullName" -> text()
+    nameKey -> text()
       .verifying("legal.declaration.fullName.empty", nonEmpty)
       .verifying("legal.declaration.fullName.short", isEmpty or noShorterThan(4))
       .verifying("legal.declaration.fullName.long", isEmpty or noLongerThan(64))
       .verifying("legal.declaration.fullName.error", isEmpty or isValidName),
-    "jobRole" -> text()
+    jobRoleKey -> text()
       .verifying("legal.declaration.jobRole.empty", nonEmpty)
       .verifying("legal.declaration.jobRole.short", isEmpty or noShorterThan(4))
       .verifying("legal.declaration.jobRole.long", isEmpty or noLongerThan(64))
       .verifying("legal.declaration.jobRole.error", isEmpty or isValidName),
-    "email" -> text()
+    emailKey -> text()
       .verifying("legal.declaration.email.empty", nonEmpty)
       .verifying("legal.declaration.email.long", isEmpty or noLongerThan(64))
       .verifying("legal.declaration.email.error", isEmpty or isValidEmail),
-    "amendReason" -> OptionalSomeMapping(
+    amendReasonKey -> OptionalSomeMapping(
       text()
         .verifying("legal.declaration.amendReason.empty", nonEmpty)
         .verifying("legal.declaration.amendReason.long", isEmpty or noLongerThan(512))
         .verifying("legal.declaration.amendReason.error", isEmpty or isValidAmendmentReason)
     ),
-    "confirmation" -> boolean.verifying("legal.declaration.confirmation.missing", isTrue)
+    confirmationKey -> boolean.verifying("legal.declaration.confirmation.missing", isTrue)
   )(LegalDeclaration.apply)(LegalDeclaration.unapply)
 
   def form: Form[LegalDeclaration] = Form(mapping)

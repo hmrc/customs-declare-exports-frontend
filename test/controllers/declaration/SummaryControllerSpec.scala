@@ -72,7 +72,7 @@ class SummaryControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerM
     authorizedUser()
     setupErrorHandler()
     when(normalSummaryPage.apply(any(), any(), any())(any(), any(), any())).thenReturn(HtmlFormat.empty)
-    when(legalDeclarationPage.apply(any())(any(), any(), any())).thenReturn(HtmlFormat.empty)
+    when(legalDeclarationPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
     when(mockSummaryPageNoData.apply()(any(), any())).thenReturn(HtmlFormat.empty)
     when(mockLrnValidator.hasBeenSubmittedInThePast48Hours(any[Lrn])(any[HeaderCarrier], any[ExecutionContext])).thenReturn(Future.successful(false))
   }

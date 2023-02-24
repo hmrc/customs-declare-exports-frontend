@@ -92,7 +92,9 @@ class LegalDeclarationSpec extends UnitWithMocksSpec {
         form.bind(formDataWith(amendReason = ""), JsonBindMaxChars).errors.map(_.message) must contain("legal.declaration.amendReason.empty")
       }
       "input contains certain special characters" in {
-        form.bind(formDataWith(amendReason = "[^<>\"&]*$"), JsonBindMaxChars).errors.map(_.message) must contain("legal.declaration.amendReason.error")
+        form.bind(formDataWith(amendReason = "[^<>\"&]*$"), JsonBindMaxChars).errors.map(_.message) must contain(
+          "legal.declaration.amendReason.error"
+        )
       }
       "input is too long" in {
         form.bind(formDataWith(amendReason = "a" * 513), JsonBindMaxChars).errors.map(_.message) must contain("legal.declaration.amendReason.long")
@@ -111,6 +113,14 @@ class LegalDeclarationSpec extends UnitWithMocksSpec {
     checked: Boolean = true
   ) = {
     def isChecked = if (checked) JsTrue else JsFalse
-    JsObject(Map("fullName" -> JsString(name), "jobRole" -> JsString(role), "email" -> JsString(email), "amendReason" -> JsString(amendReason), "confirmation" -> isChecked))
+    JsObject(
+      Map(
+        nameKey -> JsString(name),
+        jobRoleKey -> JsString(role),
+        emailKey -> JsString(email),
+        amendReasonKey -> JsString(amendReason),
+        confirmationKey -> isChecked
+      )
+    )
   }
 }

@@ -17,9 +17,10 @@
 package controllers.declaration
 
 import base.ControllerWithoutFormSpec
-import forms.declaration.LegalDeclaration
+import config.featureFlags.DeclarationAmendmentsConfig
+import forms.declaration.LegalDeclaration._
 import mock.ErrorHandlerMocks
-import models.ExportsDeclaration
+import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
 import play.api.http.Status.{BAD_REQUEST, OK, SEE_OTHER}
@@ -27,14 +28,16 @@ import play.api.libs.json.Json
 import play.api.test.Helpers.{await, redirectLocation, status}
 import play.twirl.api.HtmlFormat
 import services.SubmissionService
+import views.declaration.spec.UnitViewSpec
 import views.html.declaration.summary.legal_declaration_page
 
 import scala.concurrent.Future
 
-class AmendmentSummaryControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerMocks {
+class AmendmentSummaryControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerMocks with UnitViewSpec {
 
   private val legalDeclarationPage = mock[legal_declaration_page]
   private val mockSubmissionService = mock[SubmissionService]
+  private val declarationAmendmentsConfig = mock[DeclarationAmendmentsConfig]
 
   private val controller = new AmendmentSummaryController(
     mockAuthAction,
@@ -44,16 +47,17 @@ class AmendmentSummaryControllerSpec extends ControllerWithoutFormSpec with Erro
     stubMessagesControllerComponents(),
     mockExportsCacheService,
     mockSubmissionService,
-    legalDeclarationPage
-  )(ec, appConfig)
+    legalDeclarationPage,
+    declarationAmendmentsConfig
+  )(ec)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
     setupErrorHandler()
-    when(legalDeclarationPage.apply(any())(any(), any(), any())).thenReturn(HtmlFormat.empty)
-    when(mockSubmissionService.amend(any[String], any[ExportsDeclaration], any[LegalDeclaration]))
-      .thenReturn(Future.successful(None))
+    when(legalDeclarationPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockSubmissionService.amend).thenReturn(Future.successful(None))
+    when(declarationAmendmentsConfig.isEnabled).thenReturn(true)
   }
 
   override protected def afterEach(): Unit = {
@@ -62,45 +66,72 @@ class AmendmentSummaryControllerSpec extends ControllerWithoutFormSpec with Erro
   }
 
   "AmendmentSummaryController.displayDeclarationPage" should {
-     "return 200" in {
-       withNewCaching(aDeclaration())
-       val result = controller.displayDeclarationPage.apply(getJourneyRequest())
-       status(result) mustBe OK
-     }
+    "return 200 and invoke page with correct amend parameter" in {
+      val req = getJourneyRequest()
+      withNewCaching(aDeclaration())
+      val result = controller.displayDeclarationPage.apply(req)
+      status(result) mustBe OK
+      verify(legalDeclarationPage).apply(any(), ArgumentMatchers.eq(true))(any(), any())
+    }
+
+    "return 303 when amend feature flag is off" in {
+      when(declarationAmendmentsConfig.isEnabled).thenReturn(false)
+      withNewCaching(aDeclaration())
+      val result = controller.displayDeclarationPage.apply(getJourneyRequest())
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(controllers.routes.RootController.displayPage.url)
+    }
   }
 
   "AmendmentSummaryController.submit" should {
-
     val declaration = aDeclaration()
-    val amendReason = "amendReason"
-    val body = Json.obj("fullName" -> "Test Tester", "jobRole" -> "Tester", "email" -> "test@tester.com", amendReason -> amendReason, "confirmation" -> "true")
+    val body =
+      Json.obj(
+        nameKey -> "Test Tester",
+        jobRoleKey -> "Tester",
+        emailKey -> "test@tester.com",
+        amendReasonKey -> "amendReason",
+        confirmationKey -> "true"
+      )
 
-    "update the statementDescription field in the cache model" in {
-      withNewCaching(declaration)
-      await(controller.submitAmendment()(postRequest(body)))
-      theCacheModelUpdated mustBe declaration.copy(statementDescription = Some(amendReason))
+    "when feature flag is on" when {
+      "update the statementDescription field in the cache model" in {
+        withNewCaching(declaration)
+        await(controller.submitAmendment()(postRequest(body)))
+        theCacheModelUpdated mustBe declaration.copy(statementDescription = Some("amendReason"))
+      }
+
+      "invoke the submission service amend method" in {
+        withNewCaching(declaration)
+        await(controller.submitAmendment()(postRequest(body)))
+        verify(mockSubmissionService).amend
+      }
+
+      "redirect the user if submission is successful" in {
+        withNewCaching(declaration)
+        val result = controller.submitAmendment()(postRequest(body))
+        status(result) must be(SEE_OTHER)
+        redirectLocation(result) mustBe Some(routes.AmendmentConfirmationController.displayHoldingPage.url)
+      }
+
+      "display an error if the submission fails due to incorrect form" in {
+        val bodyWithoutField = Json.obj(nameKey -> "Test Tester", jobRoleKey -> "Tester", emailKey -> "test@tester.com", confirmationKey -> "true")
+
+        withNewCaching(declaration)
+        val result = controller.submitAmendment()(postRequest(bodyWithoutField))
+        status(result) must be(BAD_REQUEST)
+        verify(mockErrorHandler).displayErrorPage(any())
+      }
     }
 
-    "invoke the submission service amend method" in {
-      withNewCaching(declaration)
-      await(controller.submitAmendment()(postRequest(body)))
-      verify(mockSubmissionService).amend(any(), any[ExportsDeclaration], any[LegalDeclaration])
-    }
-
-    "redirect the user if submission is successful"in {
-      withNewCaching(declaration)
-      val result = controller.submitAmendment()(postRequest(body))
-      status(result) must be(SEE_OTHER)
-      redirectLocation(result) mustBe Some(routes.AmendConfirmationController.displayHoldingPage.url)
-    }
-
-    "display an error if the submission fails" in {
-      val bodyWithoutField = Json.obj("fullName" -> "Test Tester", "jobRole" -> "Tester", "email" -> "test@tester.com", "confirmation" -> "true")
-
-      withNewCaching(declaration)
-      val result = controller.submitAmendment()(postRequest(bodyWithoutField))
-      status(result) must be(BAD_REQUEST)
-      verify(mockErrorHandler).displayErrorPage(any())
+    "when feature flag is off" when {
+      "Redirect to root controller" in {
+        when(declarationAmendmentsConfig.isEnabled).thenReturn(false)
+        withNewCaching(declaration)
+        val result = controller.submitAmendment()(postRequest(body))
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(controllers.routes.RootController.displayPage.url)
+      }
     }
   }
 }

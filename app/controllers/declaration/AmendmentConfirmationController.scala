@@ -16,11 +16,18 @@
 
 package controllers.declaration
 
+import config.featureFlags.DeclarationAmendmentsConfig
+import controllers.routes.RootController
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
 import javax.inject.Inject
 
-class AmendmentConfirmationController @Inject() (mcc: MessagesControllerComponents) extends FrontendController(mcc) {
-  val displayHoldingPage: Action[AnyContent] = Action(Ok)
+class AmendmentConfirmationController @Inject() (mcc: MessagesControllerComponents, declarationAmendmentsConfig: DeclarationAmendmentsConfig)
+    extends FrontendController(mcc) {
+
+  val displayHoldingPage: Action[AnyContent] = Action {
+    if (!declarationAmendmentsConfig.isEnabled) Redirect(RootController.displayPage)
+    else NotImplemented
+  }
 }

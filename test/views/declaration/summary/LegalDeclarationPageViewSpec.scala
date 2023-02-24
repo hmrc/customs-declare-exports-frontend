@@ -17,30 +17,24 @@
 package views.declaration.summary
 
 import base.Injector
+import controllers.declaration.routes
 import forms.declaration.LegalDeclaration
+import forms.declaration.LegalDeclaration.{amendReasonKey, confirmationKey, emailKey, jobRoleKey, nameKey}
 import views.declaration.spec.UnitViewSpec
-import uk.gov.hmrc.govukfrontend.views.html.components.{Legend, Text}
-import views.html.declaration.summary.legal_declaration
+import views.html.declaration.summary.legal_declaration_page
 
-class LegalDeclarationViewSpec extends UnitViewSpec with Injector {
+class LegalDeclarationPageViewSpec extends UnitViewSpec with Injector {
 
   private val emptyForm = LegalDeclaration.form
-  private val component = instanceOf[legal_declaration]
+  private val legalDeclarationPage = instanceOf[legal_declaration_page]
+  private val view = legalDeclarationPage(emptyForm, amend = false)
+  private val amendView = legalDeclarationPage(emptyForm, amend = true)
 
-  private val legendClass = "govuk-fieldset__legend"
-  private val legendContent = "legal.declaration.heading"
-  private val legend = Some(Legend(Text(messages(legendContent)), legendClass))
-  private val legalInfo = "legal.declaration.info"
+  "Legal Declaration View" when {
 
-  private val nonEmptyView = component(emptyForm, legend, Seq(messages(legalInfo)))
-  private val view = component(emptyForm)
-
-  "Legal Declaration View" should {
-
-    "for both amendments and submissions" in {
+    "for both amendments and submissions" should {
 
       "have legal declaration warning" in {
-
         view.getElementsByClass("govuk-warning-text__text") must containMessageForElements("site.warning")
         view.getElementsByClass("govuk-warning-text__text") must containMessageForElements("legal.declaration.warning")
         messages must haveTranslationFor("site.warning")
@@ -48,8 +42,7 @@ class LegalDeclarationViewSpec extends UnitViewSpec with Injector {
       }
 
       "have full name input" in {
-
-        view.getElementsByAttributeValue("for", "fullName") must containMessageForElements("legal.declaration.fullName")
+        view.getElementsByAttributeValue("for", nameKey) must containMessageForElements("legal.declaration.fullName")
         messages must haveTranslationFor("legal.declaration.fullName")
         messages must haveTranslationFor("legal.declaration.fullName.empty")
         messages must haveTranslationFor("legal.declaration.fullName.short")
@@ -58,8 +51,7 @@ class LegalDeclarationViewSpec extends UnitViewSpec with Injector {
       }
 
       "have job role input" in {
-
-        view.getElementsByAttributeValue("for", "jobRole") must containMessageForElements("legal.declaration.jobRole")
+        view.getElementsByAttributeValue("for", jobRoleKey) must containMessageForElements("legal.declaration.jobRole")
         messages must haveTranslationFor("legal.declaration.jobRole")
         messages must haveTranslationFor("legal.declaration.jobRole.empty")
         messages must haveTranslationFor("legal.declaration.jobRole.short")
@@ -68,8 +60,7 @@ class LegalDeclarationViewSpec extends UnitViewSpec with Injector {
       }
 
       "have email input" in {
-
-        view.getElementsByAttributeValue("for", "email") must containMessageForElements("legal.declaration.email")
+        view.getElementsByAttributeValue("for", emailKey) must containMessageForElements("legal.declaration.email")
         messages must haveTranslationFor("legal.declaration.email")
         messages must haveTranslationFor("legal.declaration.email.empty")
         messages must haveTranslationFor("legal.declaration.email.long")
@@ -77,53 +68,39 @@ class LegalDeclarationViewSpec extends UnitViewSpec with Injector {
       }
 
       "have confirmation box" in {
-
-        view.getElementsByAttributeValue("for", "confirmation") must containMessageForElements("legal.declaration.confirmation")
+        view.getElementsByAttributeValue("for", confirmationKey) must containMessageForElements("legal.declaration.confirmation")
         messages must haveTranslationFor("legal.declaration.confirmation")
         messages must haveTranslationFor("legal.declaration.confirmation.missing")
       }
-
-      "have header and translation for it" in {
-
-        nonEmptyView.getElementsByClass(legendClass).first() must containMessage(legendContent)
-        messages must haveTranslationFor(legendContent)
-      }
-
-      "have information about declaration" in {
-
-        nonEmptyView.body must include(messages(legalInfo))
-        messages must haveTranslationFor(legalInfo)
-      }
     }
 
-    "for submissions only" in {
+    "for submissions only" should {
       "go back to normal summary page" in {
-
+        view.getElementById("back-link") must haveHref(routes.SummaryController.displayPage.url)
       }
-      "have header and translation for it" in {
-        nonEmptyView.getElementsByClass(legendClass).first() must containMessage(legendContent)
-        messages must haveTranslationFor(legendContent)
+      "have correct header" in {
+        view.getElementById("title") must containMessage("declaration.summary.legal-header")
       }
-
       "have correct button" in {
-
+        view.getElementById("submit") must containMessage("site.acceptAndSubmitDeclaration")
+      }
+      "NOT have free text 'Reason for Amend' input" in {
+        view.getElementsByAttributeValue("for", amendReasonKey) mustBe empty
       }
     }
 
-    "for amendments only" in {
-      "go back to amendment summary page" in {
-
+    "for amendments only" should {
+      "go back to normal summary page" in {
+        amendView.getElementById("back-link") must haveHref(routes.AmendmentSummaryController.displayPage.url)
       }
-      "have header and translation for it" in {
-
+      "have correct header" in {
+        amendView.getElementById("title") must containMessage("legal.declaration.amend.heading")
       }
-
       "have correct button" in {
-
+        amendView.getElementById("submit") must containMessage("legal.declaration.amend.button")
       }
-
       "have free text 'Reason for Amend' input" in {
-
+        amendView.getElementsByAttributeValue("for", amendReasonKey) must containMessageForElements("legal.declaration.amend.reason")
       }
     }
   }

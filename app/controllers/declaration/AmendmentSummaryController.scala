@@ -17,7 +17,6 @@
 package controllers.declaration
 
 import com.google.inject.Inject
-import config.AppConfig
 import config.featureFlags.DeclarationAmendmentsConfig
 import controllers.actions.{AuthAction, JourneyAction, VerifiedEmailAction}
 import controllers.routes.RootController
@@ -45,12 +44,15 @@ class AmendmentSummaryController @Inject() (
   submissionService: SubmissionService,
   legalDeclarationPage: legal_declaration_page,
   declarationAmendmentsConfig: DeclarationAmendmentsConfig
-)(implicit ec: ExecutionContext, appConfig: AppConfig)
+)(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with Logging with ModelCacheable with WithUnsafeDefaultFormBinding {
 
   val form: Form[LegalDeclaration] = LegalDeclaration.form
 
-  val displayPage: Action[AnyContent] = Action(Ok)
+  val displayPage: Action[AnyContent] = (authenticate andThen verifyEmail) {
+    if (!declarationAmendmentsConfig.isEnabled) Redirect(RootController.displayPage)
+    else NotImplemented
+  }
 
   val displayDeclarationPage: Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType) { implicit request =>
     if (!declarationAmendmentsConfig.isEnabled) Redirect(RootController.displayPage)
@@ -68,8 +70,8 @@ class AmendmentSummaryController @Inject() (
             legalDeclaration.amendReason match {
               case Some(amendReason) =>
                 val declaration = exportsCacheService.update(request.cacheModel.copy(statementDescription = Some(amendReason)))
-                declaration.flatMap { declaration =>
-                  submissionService.amend(request.eori, declaration, legalDeclaration).map { _ =>
+                declaration.flatMap { _ =>
+                  submissionService.amend.map { _ =>
                     Redirect(routes.AmendmentConfirmationController.displayHoldingPage)
                   }
                 }
