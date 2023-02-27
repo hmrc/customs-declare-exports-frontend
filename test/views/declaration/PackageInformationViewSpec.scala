@@ -119,7 +119,7 @@ class PackageInformationViewSpec extends PageWithButtonsSpec with Injector {
   "Package Information View when filled" should {
     onEveryDeclarationJourney() { implicit request =>
       "display one row with data in table" in {
-        val view = createView(packages = Seq(PackageInformation("ID", Some("PA"), Some(100), Some("Shipping Mark"))))
+        val view = createView(packages = Seq(PackageInformation(1, "ID", Some("PA"), Some(100), Some("Shipping Mark"))))
 
         // check table header
         view.select("table>thead>tr>th:nth-child(1)") must containMessageForElements("declaration.packageInformation.table.heading.typesOfPackages")
@@ -138,8 +138,8 @@ class PackageInformationViewSpec extends PageWithButtonsSpec with Injector {
       "display two rows with data in table" in {
         val view = createView(packages =
           Seq(
-            PackageInformation("ID1", Some("PA"), Some(100), Some("Shipping Mark")),
-            PackageInformation("ID2", Some("PB"), Some(101), Some("Shipping Mark"))
+            PackageInformation(1, "ID1", Some("PA"), Some(100), Some("Shipping Mark")),
+            PackageInformation(2, "ID2", Some("PB"), Some(101), Some("Shipping Mark"))
           )
         )
 
@@ -166,5 +166,5 @@ class PackageInformationViewSpec extends PageWithButtonsSpec with Injector {
 
 object PackageInformationViewSpec {
 
-  val packageInformation: PackageInformation = PackageInformation("pkgId", Some("1A"), Some(1), Some("Marks"))
+  val packageInformation: PackageInformation = PackageInformation(1, "pkgId", Some("1A"), Some(1), Some("Marks"))
 }

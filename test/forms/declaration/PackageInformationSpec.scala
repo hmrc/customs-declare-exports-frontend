@@ -18,6 +18,7 @@ package forms.declaration
 
 import base.{Injector, JourneyTypeTestRunner, TestHelper, UnitWithMocksSpec}
 import forms.common.DeclarationPageBaseSpec
+import forms.declaration.PackageInformation.form
 import models.viewmodels.TariffContentKey
 import play.api.i18n.{Lang, Messages}
 import play.api.test.Helpers.stubMessagesApi
@@ -30,23 +31,18 @@ class PackageInformationSpec extends UnitWithMocksSpec with JourneyTypeTestRunne
   private implicit val messages: Messages = stubMessagesApi().preferred(Seq(Lang(Locale.ENGLISH)))
   private implicit val packageTypesService = instanceOf[PackageTypesService]
 
-  private def formAllFieldsMandatory = PackageInformation.form
-
   "Package Information" should {
 
     "has correct form id" in {
-
       PackageInformation.formId must be("PackageInformation")
     }
 
     "has limit equal to 99" in {
-
       PackageInformation.limit must be(99)
     }
 
     "has correct type of package text" in {
-      val model = PackageInformation("id", Some("PK"), Some(10), Some("marks"))
-
+      val model = PackageInformation(1, "id", Some("PK"), Some(10), Some("marks"))
       packageTypesService.typesOfPackagesText(model.typesOfPackages) mustBe Some("Package (PK)")
     }
   }
@@ -56,28 +52,25 @@ class PackageInformationSpec extends UnitWithMocksSpec with JourneyTypeTestRunne
     "have no errors" when {
 
       "correct data is provided" in {
-
         val correctForm = Map("typesOfPackages" -> "ID", "numberOfPackages" -> "123", "shippingMarks" -> "correct")
 
-        val result = formAllFieldsMandatory.bind(correctForm)
+        val result = form.bind(correctForm)
 
         result.errors must be(empty)
       }
 
       "number of packages is 0" in {
-
         val correctForm = Map("typesOfPackages" -> "ID", "numberOfPackages" -> "0", "shippingMarks" -> "correct")
 
-        val result = formAllFieldsMandatory.bind(correctForm)
+        val result = form.bind(correctForm)
 
         result.errors must be(empty)
       }
 
       "number of packages is 99999" in {
-
         val correctForm = Map("typesOfPackages" -> "ID", "numberOfPackages" -> "99999", "shippingMarks" -> "correct")
 
-        val result = formAllFieldsMandatory.bind(correctForm)
+        val result = form.bind(correctForm)
 
         result.errors must be(empty)
       }
@@ -86,10 +79,9 @@ class PackageInformationSpec extends UnitWithMocksSpec with JourneyTypeTestRunne
     "have errors" when {
 
       "all inputs are empty" in {
-
         val incorrectForm = Map("typesOfPackages" -> "", "numberOfPackages" -> "", "shippingMarks" -> "")
 
-        val result = formAllFieldsMandatory.bind(incorrectForm)
+        val result = form.bind(incorrectForm)
         val errorMessages = result.errors.map(_.message)
 
         errorMessages must be(
@@ -102,14 +94,13 @@ class PackageInformationSpec extends UnitWithMocksSpec with JourneyTypeTestRunne
       }
 
       "inputs are incorrect" in {
-
         val incorrectForm = Map(
           "typesOfPackages" -> "incorrect Type",
           "numberOfPackages" -> "1000000",
           "shippingMarks" -> TestHelper.createRandomAlphanumericString(43)
         )
 
-        val result = formAllFieldsMandatory.bind(incorrectForm)
+        val result = form.bind(incorrectForm)
         val errorKeys = result.errors.map(_.key)
         val errorMessages = result.errors.map(_.message)
 
@@ -124,20 +115,18 @@ class PackageInformationSpec extends UnitWithMocksSpec with JourneyTypeTestRunne
       }
 
       "number of packages is -1" in {
-
         val incorrectForm = Map("typesOfPackages" -> "ID", "numberOfPackages" -> "-1", "shippingMarks" -> "correct")
 
-        val result = formAllFieldsMandatory.bind(incorrectForm)
+        val result = form.bind(incorrectForm)
 
         val errorMessages = result.errors.map(_.message)
         errorMessages mustBe List("declaration.packageInformation.numberOfPackages.error")
       }
 
       "number of packages is 100000" in {
-
         val incorrectForm = Map("typesOfPackages" -> "ID", "numberOfPackages" -> "100000", "shippingMarks" -> "correct")
 
-        val result = formAllFieldsMandatory.bind(incorrectForm)
+        val result = form.bind(incorrectForm)
 
         val errorMessages = result.errors.map(_.message)
         errorMessages mustBe List("declaration.packageInformation.numberOfPackages.error")

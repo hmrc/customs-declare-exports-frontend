@@ -41,7 +41,6 @@ class ItemsSummaryViewSpec extends UnitViewSpec with ExportsTestHelper with Stub
   "Items Summary Page View" should {
 
     "have proper messages for labels" in {
-
       messages must haveTranslationFor("declaration.itemsAdd.titleWithItems")
       messages must haveTranslationFor("declaration.itemsSummary.addAnotherItem.question")
       messages must haveTranslationFor("declaration.itemsSummary.addAnotherItem.error.empty")
@@ -51,19 +50,16 @@ class ItemsSummaryViewSpec extends UnitViewSpec with ExportsTestHelper with Stub
     val view = createView()
 
     "render back button" in {
-
       view.getElementById("back-link") must haveAttribute("href", routes.PreviousDocumentsSummaryController.displayPage.url)
     }
 
     "render title" in {
-
       val view = createView(items = List(ExportItem("id1"), ExportItem("id2")))
       view.getElementsByClass(Styles.gdsPageLegend) must containMessageForElements("declaration.itemsAdd.titleWithItems", "2")
     }
 
     "not render item table" when {
       "no items" in {
-
         view must not(containElementWithID("item_table"))
       }
     }
@@ -71,7 +67,6 @@ class ItemsSummaryViewSpec extends UnitViewSpec with ExportsTestHelper with Stub
     "render item table as supplied to view" when {
 
       "some items" in {
-
         val view = createView(items =
           List(
             ExportItem(
@@ -80,7 +75,7 @@ class ItemsSummaryViewSpec extends UnitViewSpec with ExportsTestHelper with Stub
               procedureCodes = Some(ProcedureCodesData(Some("procedure-code1"), Seq.empty)),
               statisticalValue = Some(StatisticalValue("")),
               commodityDetails = Some(CommodityDetails(Some("1234567890"), Some(""))),
-              packageInformation = Some(List(PackageInformation("pk1", None, Some(1), None)))
+              packageInformation = Some(List(PackageInformation(1, "pk1", None, Some(1), None)))
             ),
             ExportItem(
               "id2",
@@ -88,7 +83,7 @@ class ItemsSummaryViewSpec extends UnitViewSpec with ExportsTestHelper with Stub
               procedureCodes = Some(ProcedureCodesData(Some("procedure-code2"), Seq.empty)),
               statisticalValue = Some(StatisticalValue("")),
               commodityDetails = Some(CommodityDetails(Some("1234567890"), Some(""))),
-              packageInformation = Some(List(PackageInformation("pk2", None, Some(2), None)))
+              packageInformation = Some(List(PackageInformation(2, "pk2", None, Some(2), None)))
             )
           )
         )
@@ -123,7 +118,6 @@ class ItemsSummaryViewSpec extends UnitViewSpec with ExportsTestHelper with Stub
       }
 
       "item has two package information elements with one having empty number of packages" in {
-
         val view = createView(items =
           List(
             ExportItem(
@@ -133,7 +127,7 @@ class ItemsSummaryViewSpec extends UnitViewSpec with ExportsTestHelper with Stub
               statisticalValue = Some(StatisticalValue("")),
               commodityDetails = Some(CommodityDetails(Some("1234567890"), Some(""))),
               packageInformation =
-                Some(List(PackageInformation("pk1", None, Some(1), None), PackageInformation("pk2", None, None, Some("shipping-marks"))))
+                Some(List(PackageInformation(1, "pk1", None, Some(1), None), PackageInformation(2, "pk2", None, None, Some("shipping-marks"))))
             )
           )
         )
@@ -163,7 +157,6 @@ class ItemsSummaryViewSpec extends UnitViewSpec with ExportsTestHelper with Stub
     }
 
     "render Yes - No form" in {
-
       val view = createView(items = List(ExportItem("id")))
 
       view.getElementsByClass("govuk-fieldset__legend").get(1) must containMessage("declaration.itemsSummary.addAnotherItem.question")
@@ -173,9 +166,7 @@ class ItemsSummaryViewSpec extends UnitViewSpec with ExportsTestHelper with Stub
     }
 
     "render error section" when {
-
       "there are some errors in items" in {
-
         val itemSequenceId = "1"
         val items = List(ExportItem(itemSequenceId))
         val errors = Seq(FormError("item_0", Seq("declaration.itemsSummary.item.incorrect"), itemSequenceId))

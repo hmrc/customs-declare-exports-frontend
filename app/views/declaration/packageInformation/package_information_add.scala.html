@@ -15,6 +15,7 @@
  *@
 
 @import controllers.declaration.routes
+@import controllers.helpers.PackageInformationHelper.hasCachedPackageInformation
 @import controllers.navigation.{ItemId, Navigator}
 @import forms.declaration.PackageInformation
 @import models.requests.JourneyRequest
@@ -34,12 +35,12 @@
     editContent: package_information_edit_content
 )
 
-@(itemId: String, form: Form[_], packages: Seq[PackageInformation])(implicit request: JourneyRequest[_], messages: Messages)
+@(itemId: String, form: Form[_])(implicit request: JourneyRequest[_], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
 @backLink = @{
-  if(packages.nonEmpty)
+  if (hasCachedPackageInformation(itemId))
       routes.PackageInformationSummaryController.displayPage(itemId)
   else
       navigator.backLink(PackageInformation, ItemId(itemId))

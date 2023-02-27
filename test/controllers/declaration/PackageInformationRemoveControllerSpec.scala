@@ -20,6 +20,8 @@ import base.ControllerSpec
 import forms.common.YesNoAnswer
 import forms.declaration.PackageInformation
 import mock.ErrorHandlerMocks
+import models.DeclarationMeta.PackageInformationKey
+import models.declaration.ExportDeclarationTestData.declarationMeta
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
@@ -59,7 +61,7 @@ class PackageInformationRemoveControllerSpec extends ControllerSpec with OptionV
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration(withItems(item)))
-    await(controller.displayPage(item.id, id)(request))
+    await(controller.displayPage(item.id, id1)(request))
     theResponseForm
   }
 
@@ -78,9 +80,9 @@ class PackageInformationRemoveControllerSpec extends ControllerSpec with OptionV
   private def verifyRemovePageInvoked(numberOfTimes: Int = 1): HtmlFormat.Appendable =
     verify(mockRemovePage, times(numberOfTimes)).apply(any(), any(), any())(any(), any())
 
-  val id = "pkgId"
-  val packageInformation = PackageInformation(id, Some("AB"), Some(1), Some("SHIP"))
-  val item = anItem(withPackageInformation(packageInformation))
+  private val id1 = "pkgId1"
+  private val packageInformation1 = PackageInformation(1, id1, Some("AB"), Some(1), Some("SHIP"))
+  private val item = anItem(withPackageInformation(packageInformation1))
 
   "PackageInformation Remove Controller" must {
 
@@ -89,12 +91,12 @@ class PackageInformationRemoveControllerSpec extends ControllerSpec with OptionV
         "display page method is invoked with existing package info id" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
 
-          val result = controller.displayPage(item.id, id)(getRequest())
+          val result = controller.displayPage(item.id, id1)(getRequest())
 
           status(result) mustBe OK
           verifyRemovePageInvoked()
 
-          thePackageInformation mustBe packageInformation
+          thePackageInformation mustBe packageInformation1
         }
 
       }
@@ -105,7 +107,7 @@ class PackageInformationRemoveControllerSpec extends ControllerSpec with OptionV
           withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
 
           val requestBody = Seq("yesNo" -> "invalid")
-          val result = controller.submitForm(item.id, id)(postRequestAsFormUrlEncoded(requestBody: _*))
+          val result = controller.submitForm(item.id, id1)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           status(result) mustBe BAD_REQUEST
           verifyRemovePageInvoked()
@@ -114,7 +116,7 @@ class PackageInformationRemoveControllerSpec extends ControllerSpec with OptionV
         "user tries to display page with non-existent package info" in {
           withNewCaching(aDeclarationAfter(request.cacheModel))
 
-          val result = controller.displayPage(item.id, id)(getRequest())
+          val result = controller.displayPage(item.id, id1)(getRequest())
 
           status(result) mustBe BAD_REQUEST
           verifyNoInteractions(mockRemovePage)
@@ -124,7 +126,7 @@ class PackageInformationRemoveControllerSpec extends ControllerSpec with OptionV
         "user tries to remove non-existent package info" in {
           withNewCaching(aDeclarationAfter(request.cacheModel))
 
-          val result = controller.submitForm(item.id, id)(getRequest())
+          val result = controller.submitForm(item.id, id1)(getRequest())
 
           status(result) mustBe BAD_REQUEST
           verifyNoInteractions(mockRemovePage)
@@ -135,22 +137,32 @@ class PackageInformationRemoveControllerSpec extends ControllerSpec with OptionV
       "return 303 (SEE_OTHER)" when {
 
         "user submits 'Yes' answer" in {
-          withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
+          val id2 = "pkgId2"
+          val packageInformation2 = PackageInformation(2, id2, Some("AE"), Some(1), Some("SHIP"))
+          val item = anItem(withPackageInformation(packageInformation1, packageInformation2))
+          val meta = declarationMeta.copy(maxSequenceIds = declarationMeta.maxSequenceIds + (PackageInformationKey -> 2))
+          withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)).copy(declarationMeta = meta))
 
           val requestBody = Seq("yesNo" -> "Yes")
-          val result = controller.submitForm(item.id, id)(postRequestAsFormUrlEncoded(requestBody: _*))
+          val result = controller.submitForm(item.id, id1)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe routes.PackageInformationSummaryController.displayPage(item.id)
 
-          theCacheModelUpdated.itemBy(item.id).flatMap(_.packageInformation) mustBe Some(Seq.empty)
+          val declaration = theCacheModelUpdated
+          declaration.declarationMeta.maxSequenceIds.get(PackageInformationKey).value mustBe 2
+
+          val packageInfos = declaration.itemBy(item.id).flatMap(_.packageInformation).value
+          packageInfos.size mustBe 1
+          packageInfos.head.sequenceId mustBe 2
+          packageInfos.head.id mustBe id2
         }
 
         "user submits 'No' answer" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
 
           val requestBody = Seq("yesNo" -> "No")
-          val result = controller.submitForm(item.id, id)(postRequestAsFormUrlEncoded(requestBody: _*))
+          val result = controller.submitForm(item.id, id1)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe routes.PackageInformationSummaryController.displayPage(item.id)

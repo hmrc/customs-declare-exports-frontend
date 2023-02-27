@@ -44,6 +44,8 @@ object ExportDeclarationTestData {
 
   private val containerId = "id"
 
+  val declarationMeta = DeclarationMeta(None, None, DeclarationStatus.DRAFT, Instant.now, Instant.now)
+
   val correctTransportInformationContainerData = Some(Seq(Container(1, id = "M1l3s", Seq.empty)))
   val emptyTransportInformationContainerData = ContainerAdd(None)
   val correctTransportInformationContainerJSON: JsValue = JsObject(Map(containerId -> JsString("container-M1l3s")))
@@ -125,8 +127,9 @@ object ExportDeclarationTestData {
         additionalFiscalReferencesData =
           Some(AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("PL", "12345"), AdditionalFiscalReference("FR", "54321")))),
         procedureCodes = Some(ProcedureCodesData(Some("CUPR"), Seq("CC", "PR"))),
-        packageInformation =
-          Some(List(PackageInformation("pkgAA", Some("AA"), Some(2), Some("mark1")), PackageInformation("pkgBB", Some("AB"), Some(4), Some("mark2"))))
+        packageInformation = Some(
+          List(PackageInformation(1, "pkgAA", Some("AA"), Some(2), Some("mark1")), PackageInformation(2, "pkgBB", Some("AB"), Some(4), Some("mark2")))
+        )
       )
     ),
     totalNumberOfItems = Some(InvoiceAndPackageTotals(Some("1212312.12"), Some("1212121.12345"), Some("GBP"), Some("Yes"), Some("123"))),
@@ -167,12 +170,7 @@ object ExportDeclarationTestData {
   val correctPackingJSON: JsValue = JsObject(
     Map("sequenceNumeric" -> JsString("0"), "marksNumbersId" -> JsString("wefdsf"), "typeCode" -> JsString("22"))
   )
-  val declaration =
-    ExportsDeclaration(
-      UUID.randomUUID.toString,
-      DeclarationMeta(None, None, DeclarationStatus.DRAFT, Instant.now, Instant.now),
-      DeclarationType.SUPPLEMENTARY
-    )
+  val declaration = ExportsDeclaration(UUID.randomUUID.toString, declarationMeta, DeclarationType.SUPPLEMENTARY)
 
   def createGovernmentAgencyGoodsItem(): GovernmentAgencyGoodsItem =
     GovernmentAgencyGoodsItem(

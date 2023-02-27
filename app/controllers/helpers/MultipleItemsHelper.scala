@@ -35,10 +35,11 @@ object MultipleItemsHelper {
    * @tparam A - type of case class represents form
    * @return Either which can contain Form with errors or Sequence ready to insert to db
    */
-  def add[A](form: Form[A], cachedData: Seq[A], limit: Int, fieldId: String = "", messageKey: String): Either[Form[A], Seq[A]] = form.value match {
-    case Some(document) => prepareData(form, document, cachedData, limit, fieldId, messageKey)
-    case _              => Left(form)
-  }
+  def add[A](form: Form[A], cachedData: Seq[A], limit: Int, fieldId: String = "", messageKey: String): Either[Form[A], Seq[A]] =
+    form.value match {
+      case Some(document) => prepareData(form, document, cachedData, limit, fieldId, messageKey)
+      case _              => Left(form)
+    }
 
   private def prepareData[A](
     form: Form[A],
@@ -54,14 +55,15 @@ object MultipleItemsHelper {
     }
 
   private def duplication[A](document: A, cachedData: Seq[A], fieldId: String, messageKey: String): Seq[FormError] =
-    if (cachedData.contains(document))
-      Seq(FormError(fieldId, s"${messageKey}.error.duplicate"))
+    if (cachedData.contains(document)) Seq(FormError(fieldId, s"${messageKey}.error.duplicate"))
     else Seq.empty
 
   private def limitOfElems[A](limit: Int, cachedData: Seq[A], fieldId: String): Seq[FormError] =
-    if (cachedData.length >= limit) Seq(FormError(fieldId, "supplementary.limit")) else Seq.empty
+    if (cachedData.length >= limit) Seq(FormError(fieldId, "supplementary.limit"))
+    else Seq.empty
 
-  private def addElement[A](document: A, cachedData: Seq[A]): Seq[A] = cachedData :+ document
+  private def addElement[A](document: A, cachedData: Seq[A]): Seq[A] =
+    cachedData :+ document
 
   def remove[A](cachedData: Seq[A], filterNot: A => Boolean): Seq[A] =
     cachedData.filterNot(filterNot)

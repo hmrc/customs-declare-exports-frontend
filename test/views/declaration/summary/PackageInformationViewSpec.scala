@@ -30,8 +30,8 @@ class PackageInformationViewSpec extends UnitViewSpec with ExportsTestHelper wit
     val packageSection = instanceOf[package_information]
 
     val data = Seq(
-      PackageInformation("ID1", Some("PB"), Some(123), Some("first-marks")),
-      PackageInformation("ID2", Some("QF"), Some(321), Some("second-marks"))
+      PackageInformation(1, "ID1", Some("PB"), Some(123), Some("first-marks")),
+      PackageInformation(2, "ID2", Some("QF"), Some(321), Some("second-marks"))
     )
 
     "display title only and change link if Sequence is empty" in {

@@ -17,6 +17,12 @@
 package views.declaration
 
 import base.Injector
+import controllers.declaration.routes.{
+  CommodityDetailsController,
+  NactCodeSummaryController,
+  PackageInformationSummaryController,
+  StatisticalValueController
+}
 import forms.declaration.PackageInformation
 import forms.declaration.PackageInformation.form
 import models.DeclarationType._
@@ -39,10 +45,12 @@ class PackageInformationAddViewSpec extends PageWithButtonsSpec with ExportsTest
 
   val page = instanceOf[package_information_add]
 
-  override val typeAndViewInstance = (STANDARD, page(itemId, form, Seq.empty)(_, _))
+  override val typeAndViewInstance = (STANDARD, page(itemId, form)(_, _))
 
-  def createView(frm: Form[PackageInformation] = form, packages: Seq[PackageInformation] = Seq.empty)(implicit request: JourneyRequest[_]): Document =
-    page(itemId, frm, packages)(request, messages)
+  def createView(frm: Form[PackageInformation] = form)(implicit request: JourneyRequest[_]): Document =
+    page(itemId, frm)(request, messages)
+
+  val itemWithPackageInfo = anItem(withPackageInformation(packageInformation))
 
   "PackageInformation Add View" should {
 
@@ -56,7 +64,7 @@ class PackageInformationAddViewSpec extends PageWithButtonsSpec with ExportsTest
       messages must haveTranslationFor("declaration.packageInformation.shippingMark.paragraph")
     }
 
-    onEveryDeclarationJourney() { implicit request =>
+    onEveryDeclarationJourney(withItems(itemWithPackageInfo)) { implicit request =>
       val view = createView()
 
       "display page title" in {
@@ -64,11 +72,10 @@ class PackageInformationAddViewSpec extends PageWithButtonsSpec with ExportsTest
       }
 
       "display 'Back' button that links to 'PackageInformation summary' page when adding subsequent value" in {
-        val backLinkContainer = createView(packages = Seq(packageInformation)).getElementById("back-link")
-
-        backLinkContainer.getElementById("back-link") must haveHref(
-          controllers.declaration.routes.PackageInformationSummaryController.displayPage(itemId)
-        )
+        val view = page(itemWithPackageInfo.id, form)(request, messages)
+        val backLinkContainer = view.getElementById("back-link")
+        val href = PackageInformationSummaryController.displayPage(itemWithPackageInfo.id)
+        backLinkContainer.getElementById("back-link") must haveHref(href)
       }
 
       "display the expected hint paragraphs" in {
@@ -95,32 +102,32 @@ class PackageInformationAddViewSpec extends PageWithButtonsSpec with ExportsTest
         forAll(indexedListOfParagraphs)(t => paragraphs.get(t._2) mustBe (t._1))
       }
 
-      checkAllSaveButtonsAreDisplayed(createView())
+      checkAllSaveButtonsAreDisplayed(view)
     }
   }
 
   "PackageInformation Add View when adding first value" should {
     onJourney(STANDARD, SUPPLEMENTARY) { implicit request =>
       "display 'Back' button that links to 'statistical value' page when adding first value" in {
-        val backLinkContainer = createView(packages = Seq.empty).getElementById("back-link")
+        val backLinkContainer = createView().getElementById("back-link")
 
-        backLinkContainer.getElementById("back-link") must haveHref(controllers.declaration.routes.StatisticalValueController.displayPage(itemId))
+        backLinkContainer.getElementById("back-link") must haveHref(StatisticalValueController.displayPage(itemId))
       }
     }
 
     onJourney(OCCASIONAL, SIMPLIFIED) { implicit request =>
       "display 'Back' button that links to 'NACT code' page when adding first value" in {
-        val backLinkContainer = createView(packages = Seq.empty).getElementById("back-link")
+        val backLinkContainer = createView().getElementById("back-link")
 
-        backLinkContainer.getElementById("back-link") must haveHref(controllers.declaration.routes.NactCodeSummaryController.displayPage(itemId))
+        backLinkContainer.getElementById("back-link") must haveHref(NactCodeSummaryController.displayPage(itemId))
       }
     }
 
     onJourney(CLEARANCE) { implicit request =>
       "display 'Back' button that links to 'commodity details' page when adding first value" in {
-        val backLinkContainer = createView(packages = Seq.empty).getElementById("back-link")
+        val backLinkContainer = createView().getElementById("back-link")
 
-        backLinkContainer.getElementById("back-link") must haveHref(controllers.declaration.routes.CommodityDetailsController.displayPage(itemId))
+        backLinkContainer.getElementById("back-link") must haveHref(CommodityDetailsController.displayPage(itemId))
       }
     }
   }
@@ -128,7 +135,7 @@ class PackageInformationAddViewSpec extends PageWithButtonsSpec with ExportsTest
   "PackageInformation Add View for invalid input" should {
     onEveryDeclarationJourney() { implicit request =>
       "display error if nothing is entered" in {
-        val view = createView(form.fillAndValidate(PackageInformation("id", None, None, None)))
+        val view = createView(form.fillAndValidate(PackageInformation(1, "id", None, None, None)))
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#typesOfPackages")
@@ -141,7 +148,7 @@ class PackageInformationAddViewSpec extends PageWithButtonsSpec with ExportsTest
       }
 
       "display error if incorrect PackageInformation is entered" in {
-        val view = createView(form.fillAndValidate(PackageInformation("id", Some("invalid"), Some(1), Some("wrong!"))))
+        val view = createView(form.fillAndValidate(PackageInformation(1, "id", Some("invalid"), Some(1), Some("wrong!"))))
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#typesOfPackages")

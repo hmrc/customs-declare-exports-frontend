@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import controllers.declaration.routes
+@import controllers.declaration.routes.{PackageInformationChangeController, PackageInformationSummaryController}
 @import controllers.navigation.{ItemId, Navigator}
 @import forms.declaration.PackageInformation
 @import models.requests.JourneyRequest
@@ -34,17 +34,15 @@
     editContent: package_information_edit_content
 )
 
-@(itemId: String, form: Form[_], code: String, packages: Seq[PackageInformation])(implicit request: JourneyRequest[_], messages: Messages)
+@(itemId: String, form: Form[_], code: String)(implicit request: JourneyRequest[_], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
-
 @govukLayout(
     title = Title("declaration.packageInformation.title", "declaration.section.5", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), controllers.declaration.routes.PackageInformationSummaryController.displayPage(itemId)))
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), PackageInformationSummaryController.displayPage(itemId)))
 ) {
-
-    @formHelper(action = routes.PackageInformationChangeController.submitForm(itemId, code), 'autoComplete -> "off") {
+    @formHelper(action = PackageInformationChangeController.submitForm(itemId, code), 'autoComplete -> "off") {
         @editContent(form)
 
         @tariffExpander(PackageInformation, request.declarationType)(messages, appConfig)
