@@ -20,13 +20,15 @@ import base.ExportsTestData.newUser
 import base.{ControllerWithoutFormSpec, Injector}
 import config.{AppConfig, ExternalServicesConfig}
 import controllers.{routes, ChoiceController}
-import models.UnauthorisedReason.{UserEoriNotAllowed, UserIsAgent, UserIsNotEnrolled}
+import models.UnauthorisedReason.{UrlDirect, UserEoriNotAllowed, UserIsAgent, UserIsNotEnrolled}
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import play.api.test.Helpers._
-import uk.gov.hmrc.auth.core.{BearerTokenExpired, FailedRelationship, UnsupportedAffinityGroup}
+import uk.gov.hmrc.auth.core.{BearerTokenExpired, InternalError, UnsupportedAffinityGroup}
 import views.html.choice_page
 
 import java.net.URLEncoder
+import scala.concurrent.Future
 
 class AuthActionSpec extends ControllerWithoutFormSpec with Injector {
 
@@ -67,7 +69,7 @@ class AuthActionSpec extends ControllerWithoutFormSpec with Injector {
       redirectLocation(result) mustBe loginPageUrl
     }
 
-    "redirect to /Unauthorised when EORI number is missing" in {
+    "redirect to /unauthorised when EORI number is missing" in {
       userWithoutEori()
 
       val result = controller.displayPage(None)(getRequest())
@@ -76,13 +78,22 @@ class AuthActionSpec extends ControllerWithoutFormSpec with Injector {
       redirectLocation(result) mustBe Some(routes.UnauthorisedController.onPageLoad(UserIsNotEnrolled).url)
     }
 
-    "redirect to /Unauthorised when EORI is not on allow list" in {
+    "redirect to /unauthorised when EORI is not on allow list" in {
       authorizedUser(newUser("11111", "external1"))
 
       val result = controller.displayPage(None)(getRequest())
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(routes.UnauthorisedController.onPageLoad(UserEoriNotAllowed).url)
+    }
+
+    "redirect to /unauthorised on other 'AuthorisationException' errors" in {
+      unauthorizedUser(InternalError("MissingResponseHeader"))
+
+      val result = controller.displayPage(None)(getRequest())
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(routes.UnauthorisedController.onPageLoad(UrlDirect).url)
     }
 
     "redirect to /you-cannot-use-this-service when user is an Agent" in {
@@ -104,12 +115,12 @@ class AuthActionSpec extends ControllerWithoutFormSpec with Injector {
       redirectLocation(result) mustBe loginPageUrl
     }
 
-    "propagate the error if exception thrown is not InsufficientEnrolments or NoActiveSession type exception" in {
-      unauthorizedUser(FailedRelationship())
+    "propagate the error if exception thrown is not an 'AuthorisationException' instance" in {
+      when(mockAuthConnector.authorise(any(), any())(any(), any())).thenReturn(Future.failed(new RuntimeException("error")))
 
       val result = controller.displayPage(None)(getRequest())
 
-      intercept[FailedRelationship](status(result))
+      intercept[RuntimeException](status(result))
     }
   }
 }
