@@ -44,7 +44,7 @@ class SubmissionServiceSpec
   private val connector = mock[CustomsDeclareExportsConnector]
   private val exportMetrics = instanceOf[ExportsMetrics]
   private val hc: HeaderCarrier = mock[HeaderCarrier]
-  private val legal = LegalDeclaration("Name", "Role", "email@test.com", confirmation = true)
+  private val legal = LegalDeclaration("Name", "Role", "email@test.com", None, confirmation = true)
   private val auditData = Map(
     EventData.eori.toString -> "eori",
     EventData.lrn.toString -> "123LRN",

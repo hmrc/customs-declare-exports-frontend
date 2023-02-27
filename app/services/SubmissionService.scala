@@ -81,6 +81,9 @@ class SubmissionService @Inject() (exportsConnector: CustomsDeclareExportsConnec
       .map(Some(_))
   }
 
+  def amend: Future[Option[Submission]] =
+    Future.successful(None)
+
   private def logProgress(declaration: ExportsDeclaration, message: String): Unit =
     logger.info(s"Declaration [${declaration.id}]: $message")
 

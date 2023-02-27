@@ -180,4 +180,7 @@ object FieldValidator {
 
   private val traderReferencePattern = Pattern.compile("[/()A-Z0-9]{1,19}")
   val isValidTraderReference: String => Boolean = traderReferencePattern.matcher(_).matches()
+
+  private val amendmentReasonPattern = Pattern.compile("^[^\\[\\]^<>\"&*$]+$")
+  val isValidAmendmentReason: String => Boolean = amendmentReasonPattern.matcher(_).matches()
 }

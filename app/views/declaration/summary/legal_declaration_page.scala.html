@@ -15,11 +15,12 @@
  *@
 
 @import config.AppConfig
-@import controllers.declaration.routes.SummaryController
+@import controllers.declaration.routes.{SummaryController, AmendmentSummaryController}
+@import forms.declaration.LegalDeclaration._
 @import forms.declaration.LegalDeclaration
 @import models.declaration.submissions.EnhancedStatus.ERRORS
 @import models.requests.JourneyRequest
-@import uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF
+@import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.helpers.{BackButton, Title}
 @import views.html.components.gds._
 @import views.html.declaration.summary._
@@ -28,32 +29,94 @@
     govukLayout: gdsMainTemplate,
     pageTitle: pageTitle,
     errorSummary: errorSummary,
-    legal_declaration: legal_declaration,
     formHelper: FormWithCSRF,
-    saveAndContinue: saveAndContinue
+    saveAndContinue: saveAndContinue,
+    govukFieldset: GovukFieldset,
+    govukWarningText: GovukWarningText,
+    paragraphBody: paragraphBody,
+    exportsInputCheckbox: exportsInputCheckbox,
+    exportsInputText: exportsInputText,
+    exportsInputCharacterCount: exportsInputCharacterCount
 )
 
-@(legalDeclarationForm: Form[LegalDeclaration])(implicit request: JourneyRequest[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[LegalDeclaration], amend: Boolean = false)(implicit request: JourneyRequest[_], messages: Messages)
 
 @headerMsgKey = @{
-    request.cacheModel.declarationMeta.parentDeclarationEnhancedStatus match {
+    if (amend) "legal.declaration.amend.heading"
+    else request.cacheModel.declarationMeta.parentDeclarationEnhancedStatus match {
         case Some(ERRORS) => "declaration.summary.amend.legal-header"
         case _ => "declaration.summary.legal-header"
     }
 }
 
+@buttonKey = @{
+    if (amend) "legal.declaration.amend.button"
+    else "site.acceptAndSubmitDeclaration"
+}
+
+@formAction = @{
+    if(amend) AmendmentSummaryController.submitAmendment
+    else SummaryController.submitDeclaration
+}
+
+@backAction = @{
+    if(amend) AmendmentSummaryController.displayPage
+    else SummaryController.displayPage
+}
+
+@html = {
+    @govukWarningText(WarningText(
+        iconFallbackText = messages("site.warning"),
+        content = Text(messages("legal.declaration.warning"))
+    ))
+
+    @exportsInputText(
+        field = form(nameKey),
+        labelKey = "legal.declaration.fullName",
+        inputClasses = Some("govuk-input govuk-!-width-one-half")
+    )
+
+    @exportsInputText(
+        field = form(jobRoleKey),
+        labelKey = "legal.declaration.jobRole",
+        inputClasses = Some("govuk-input govuk-!-width-one-half")
+    )
+
+    @exportsInputText(
+        field = form(emailKey),
+        labelKey = "legal.declaration.email",
+        inputClasses = Some("govuk-input govuk-!-width-one-half")
+    )
+
+    @if(amend) @{
+        exportsInputCharacterCount(
+            field = form(amendReasonKey),
+            labelKey = Some("legal.declaration.amend.reason"),
+            labelClasses = "govuk-!-font-weight-bold govuk-!-font-size-24",
+            maxLength = Some(amendReasonMaxLength),
+            inputClasses = "govuk-!-width-one-half"
+        )
+    }
+
+    @exportsInputCheckbox(
+        field = form(confirmationKey),
+        labelKey = "legal.declaration.confirmation"
+    )
+}
+
 @govukLayout(
     title = Title(headerMsgKey),
-    backButton = Some(BackButton(messages("site.back"), SummaryController.displayPage)),
-    useCustomContentWidth = true
+    backButton = Some(BackButton(messages("site.back"), backAction)),
+    useCustomContentWidth = true,
+    showDeclarationSummaryLink = false
 ) {
-    @formHelper(action = SummaryController.submitDeclaration, 'autoComplete -> "off") {
-        @errorSummary(legalDeclarationForm.errors)
+    @formHelper(action = formAction, 'autoComplete -> "off") {
+        @errorSummary(form.errors)
 
         @pageTitle(messages(headerMsgKey))
 
-        @legal_declaration(legalDeclarationForm)
+        @govukFieldset(Fieldset(html = html))
 
-        @saveAndContinue("site.acceptAndSubmitDeclaration")
+        @saveAndContinue(buttonKey)
     }
 }
