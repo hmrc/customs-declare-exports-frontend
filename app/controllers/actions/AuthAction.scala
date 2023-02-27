@@ -21,7 +21,7 @@ import com.kenshoo.play.metrics.Metrics
 import config.AppConfig
 import controllers.routes
 import models.AuthKey.{enrolment, identifierKey}
-import models.UnauthorisedReason.{UserEoriNotAllowed, UserIsAgent, UserIsNotEnrolled}
+import models.UnauthorisedReason.{UrlDirect, UserEoriNotAllowed, UserIsAgent, UserIsNotEnrolled}
 import models.requests.AuthenticatedRequest
 import models.{IdentityData, SignedInUser}
 import play.api.mvc._
@@ -104,12 +104,19 @@ class AuthActionImpl @Inject() (
       case _: UnsupportedAffinityGroup =>
         logger.warn("User is an agent")
         Future.successful(Results.Redirect(routes.UnauthorisedController.onAgentKickOut(UserIsAgent)))
+
       case _: NoActiveSession =>
         logger.warn("User is not currently logged in.")
         Future.successful(Results.Redirect(appConfig.loginUrl, Map("continue" -> Seq(appConfig.loginContinueUrl))))
+
       case _: InsufficientEnrolments =>
         logger.warn("User does not have sufficient enrolments.")
         Future.successful(Results.Redirect(routes.UnauthorisedController.onPageLoad(UserIsNotEnrolled)))
+
+      case e: AuthorisationException =>
+        logger.warn(s"AuthorisationException raised. Reason is: ${e.reason}")
+        Future.successful(Results.Redirect(routes.UnauthorisedController.onPageLoad(UrlDirect)))
+
       case e: Throwable =>
         logger.warn("User failed auth-check.")
         Future.failed(e)
