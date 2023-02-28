@@ -29,6 +29,6 @@ trait SubmissionBuilder {
       mrn = None,
       ducr = None,
       actions = Seq.empty,
-      latestDecId = declaration.id
+      latestDecId = Some(declaration.id)
     )
 }

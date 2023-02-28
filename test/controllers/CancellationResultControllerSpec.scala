@@ -80,7 +80,7 @@ class CancellationResultControllerSpec extends ControllerWithoutFormSpec with Er
   def submissionWithStatus(status: Option[EnhancedStatus]): Option[Submission] = {
     val action = Seq(if (status.isDefined) actionWithNotificationSummary(status.get) else actionWithoutNotificationSummary)
     val uuid = UUID.randomUUID().toString
-    Some(Submission(uuid, eori = eori, lrn = lrn, actions = action, latestDecId = uuid))
+    Some(Submission(uuid, eori = eori, lrn = lrn, actions = action, latestDecId = Some(uuid)))
   }
 
   private def notificationSummary(status: EnhancedStatus) =

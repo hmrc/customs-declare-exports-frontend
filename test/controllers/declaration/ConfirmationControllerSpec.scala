@@ -60,7 +60,7 @@ class ConfirmationControllerSpec extends ControllerWithoutFormSpec with BeforeAn
     Some(RECEIVED),
     Some(ZonedDateTime.now),
     Seq.empty[Action],
-    latestDecId = submissionId
+    latestDecId = Some(submissionId)
   )
   val submissionWithErrors = Submission(
     submissionId,
@@ -71,7 +71,7 @@ class ConfirmationControllerSpec extends ControllerWithoutFormSpec with BeforeAn
     Some(ERRORS),
     Some(ZonedDateTime.now),
     Seq.empty[Action],
-    latestDecId = submissionId
+    latestDecId = Some(submissionId)
   )
 
   trait SetUp {
@@ -231,7 +231,7 @@ class ConfirmationControllerSpec extends ControllerWithoutFormSpec with BeforeAn
 
         status(result) mustBe OK
 
-        val submission = Submission(submissionId, "eori", lrn, None, Some(ducr), None, None, Seq.empty[Action], latestDecId = submissionId)
+        val submission = Submission(submissionId, "eori", lrn, None, Some(ducr), None, None, Seq.empty[Action], latestDecId = Some(submissionId))
         val confirmation = Confirmation(request.email, STANDARD_FRONTIER.toString, Some(submission), Some(""))
         val expectedView = confirmationPage(confirmation)(request, messages)
 

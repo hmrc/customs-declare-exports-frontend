@@ -64,7 +64,7 @@ class SubmissionsControllerSpec extends ControllerWithoutFormSpec with BeforeAnd
       ducr = None,
       latestEnhancedStatus = Some(GOODS_ARRIVED),
       actions = Seq(action),
-      latestDecId = uuid
+      latestDecId = Some(uuid)
     )
 
   private val submittedDeclarationPage = mock[submitted_declaration_page]

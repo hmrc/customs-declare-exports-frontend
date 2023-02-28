@@ -65,7 +65,7 @@ class DashboardControllerSpec extends ControllerWithoutFormSpec with BeforeAndAf
           latestEnhancedStatus = Some(GOODS_ARRIVED),
           enhancedStatusLastUpdated = Some(dateTime),
           actions = Seq(action),
-          latestDecId = uuid
+          latestDecId = Some(uuid)
         )
       )
     )

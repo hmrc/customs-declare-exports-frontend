@@ -84,7 +84,7 @@ class SubmissionServiceSpec
 
         declaration.locations.originationCountry.value mustBe Country.GB
 
-        val expectedSubmission = Submission(uuid = "id", eori = eori, lrn = lrn, actions = Seq.empty[Action], latestDecId = "id")
+        val expectedSubmission = Submission(uuid = "id", eori = eori, lrn = lrn, actions = Seq.empty[Action], latestDecId = Some("id"))
         when(connector.submitDeclaration(any[String])(any(), any())).thenReturn(Future.successful(expectedSubmission))
 
         // When

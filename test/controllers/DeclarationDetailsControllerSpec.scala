@@ -47,7 +47,7 @@ class DeclarationDetailsControllerSpec extends ControllerWithoutFormSpec with Be
       ducr = Some("ducr"),
       actions =
         Seq(Action(id = actionId, requestType = SubmissionRequest, requestTimestamp = ZonedDateTime.now, notifications = None, Some(uuid), 1)),
-      latestDecId = uuid
+      latestDecId = Some(uuid)
     )
   }
 

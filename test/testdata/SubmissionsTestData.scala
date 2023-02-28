@@ -75,7 +75,7 @@ object SubmissionsTestData {
       statuses.lastOption,
       statuses.lastOption.map(_ => now),
       actions = Seq(action),
-      latestDecId = uuid
+      latestDecId = Some(uuid)
     )
   }
 
@@ -128,19 +128,19 @@ object SubmissionsTestData {
     )
 
   lazy val submission: Submission =
-    Submission(uuid, eori = eori, lrn = lrn, mrn = Some(mrn), ducr = Some(ducr), actions = Seq(action), latestDecId = uuid)
+    Submission(uuid, eori = eori, lrn = lrn, mrn = Some(mrn), ducr = Some(ducr), actions = Seq(action), latestDecId = Some(uuid))
 
   lazy val submission_2: Submission =
-    Submission(uuid_2, eori = eori, lrn = lrn, mrn = Some(mrn_2), ducr = Some(ducr), actions = Seq(action_2), latestDecId = uuid_2)
+    Submission(uuid_2, eori = eori, lrn = lrn, mrn = Some(mrn_2), ducr = Some(ducr), actions = Seq(action_2), latestDecId = Some(uuid_2))
 
   lazy val submission_3: Submission =
-    Submission(uuid_3, eori = eori, lrn = lrn, mrn = Some(mrn_3), ducr = Some(ducr), actions = Seq(action_3), latestDecId = uuid_3)
+    Submission(uuid_3, eori = eori, lrn = lrn, mrn = Some(mrn_3), ducr = Some(ducr), actions = Seq(action_3), latestDecId = Some(uuid_3))
 
   lazy val submission_4: Submission =
-    Submission(uuid_4, eori = eori, lrn = lrn, mrn = Some(mrn_4), ducr = Some(ducr), actions = Seq(action_4), latestDecId = uuid_4)
+    Submission(uuid_4, eori = eori, lrn = lrn, mrn = Some(mrn_4), ducr = Some(ducr), actions = Seq(action_4), latestDecId = Some(uuid_4))
 
   lazy val cancelledSubmission: Submission =
-    Submission(uuid, eori = eori, lrn = lrn, mrn = Some(mrn), ducr = Some(ducr), actions = Seq(action, actionCancellation), latestDecId = uuid)
+    Submission(uuid, eori = eori, lrn = lrn, mrn = Some(mrn), ducr = Some(ducr), actions = Seq(action, actionCancellation), latestDecId = Some(uuid))
 
   private lazy val functionCodes: Seq[String] =
     Seq("01", "02", "03", "05", "06", "07", "08", "09", "10", "11", "16", "17", "18")
