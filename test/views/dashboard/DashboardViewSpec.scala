@@ -18,7 +18,7 @@ package views.dashboard
 
 import base.OverridableInjector
 import config.PaginationConfig
-import config.featureFlags.SecureMessagingConfig
+import config.featureFlags.{DeclarationAmendmentsConfig, SecureMessagingConfig}
 import controllers.routes
 import controllers.routes.{ChoiceController, DashboardController, DeclarationDetailsController}
 import forms.Choice
@@ -27,7 +27,7 @@ import models.PageOfSubmissions
 import models.declaration.submissions.EnhancedStatus._
 import models.declaration.submissions.RequestType.SubmissionRequest
 import models.declaration.submissions.StatusGroup._
-import models.declaration.submissions.{Action, EnhancedStatus, Submission}
+import models.declaration.submissions.{Action, EnhancedStatus, StatusGroup, Submission}
 import org.jsoup.nodes.{Document, Element}
 import org.jsoup.select.Elements
 import org.mockito.Mockito.when
@@ -52,7 +52,8 @@ class DashboardViewSpec extends UnitViewSpec with ExportsTestHelper {
 
   private val injector = new OverridableInjector(
     bind[PaginationConfig].toInstance(mockPaginationConfig),
-    bind[SecureMessagingConfig].toInstance(mockSecureMessagingConfig)
+    bind[SecureMessagingConfig].toInstance(mockSecureMessagingConfig),
+    bind[DeclarationAmendmentsConfig].toInstance(mockDeclarationAmendmentsConfig)
   )
 
   private val itemsPerPage = 4
@@ -61,6 +62,7 @@ class DashboardViewSpec extends UnitViewSpec with ExportsTestHelper {
     super.beforeEach()
     when(mockPaginationConfig.itemsPerPage).thenReturn(itemsPerPage)
     when(mockSecureMessagingConfig.isSecureMessagingEnabled).thenReturn(false)
+    when(mockDeclarationAmendmentsConfig.isEnabled).thenReturn(false)
   }
 
   private val uuid = "id"
@@ -94,12 +96,16 @@ class DashboardViewSpec extends UnitViewSpec with ExportsTestHelper {
   private def createView(status: EnhancedStatus = RECEIVED, totalSubmissionsInPage: Int = 0, totalSubmissionsInGroup: Int = 0): Html = {
     val statusGroup = toStatusGroup(status)
     val pageOfSubmissions = PageOfSubmissions(statusGroup, totalSubmissionsInGroup, listOfSubmissions(status, totalSubmissionsInPage))
-    page(pageOfSubmissions)(request(statusGroup, 1), messages)
+    page(pageOfSubmissions)(request(statusGroup, 1), messages, mockDeclarationAmendmentsConfig)
   }
 
   private def createView(submissionsInPage: Seq[Submission], totalSubmissionsInGroup: Int, currentPage: Int): Html = {
     val statusGroup = toStatusGroup(submissionsInPage.head)
-    page(PageOfSubmissions(statusGroup, totalSubmissionsInGroup, submissionsInPage))(request(statusGroup, currentPage), messages)
+    page(PageOfSubmissions(statusGroup, totalSubmissionsInGroup, submissionsInPage))(
+      request(statusGroup, currentPage),
+      messages,
+      mockDeclarationAmendmentsConfig
+    )
   }
 
   private val statuses = EnhancedStatus.values.toList
@@ -162,9 +168,6 @@ class DashboardViewSpec extends UnitViewSpec with ExportsTestHelper {
       startButton must containMessage("dashboard.start.new.declaration")
       startButton.attr("href") mustBe ChoiceController.displayPage().url
     }
-  }
-
-  "Dashboard View" should {
 
     "have NO table for a tab when not the current one" in {
       statuses.foreach { currentStatus =>
@@ -396,6 +399,19 @@ class DashboardViewSpec extends UnitViewSpec with ExportsTestHelper {
           tableCell(view, 1, 3).text mustBe ViewDates.formatDateAtTime(lastStatusUpdate)
           tableCell(view, 1, 4).text mustBe messages("submission.enhancedStatus.PENDING")
         }
+      }
+    }
+
+    "amendments are enabled" should {
+      "display correct panel text for submitted" in {
+
+        when(mockDeclarationAmendmentsConfig.isEnabled).thenReturn(true)
+
+        val view = createView()
+
+        val expectedMessage = messages(s"dashboard.${StatusGroup.SubmittedStatuses}.amendment.content.hint").replace("{0}", "")
+        view.getElementById(s"${StatusGroup.SubmittedStatuses}-content-hint").text mustBe expectedMessage
+
       }
     }
   }
