@@ -15,9 +15,10 @@
  *@
 
 @import config.PaginationConfig
+@import config.featureFlags.DeclarationAmendmentsConfig
 @import models.PageOfSubmissions
 @import models.declaration.submissions.RequestType.SubmissionRequest
-@import models.declaration.submissions.StatusGroup.StatusGroup
+@import models.declaration.submissions.StatusGroup.{StatusGroup, SubmittedStatuses}
 @import models.declaration.submissions.Submission
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.dashboard.DashboardHelper.Page
@@ -26,7 +27,7 @@
 
 @import java.time.ZoneId
 
-@this(govukTable: GovukTable, link: link, pagination: pagination, paginationConfig: PaginationConfig)
+@this(govukTable: GovukTable, link: link, pagination: pagination, paginationConfig: PaginationConfig, amendmentsConfig: DeclarationAmendmentsConfig)
 
 @(statusGroup: StatusGroup, pageOfSubmissions: PageOfSubmissions, baseHref: String)(implicit request: Request[_], messages: Messages)
 
@@ -60,7 +61,15 @@
   pagination(pageOfSubmissions, baseHref, totalPagesInGroup, currentPage)
 }
 
-<p id="@{s"$statusGroup-content-hint"}" class="govuk-body">@Html(messages(s"dashboard.$statusGroup.content.hint", <br/>))</p>
+@msgKey = @{
+    if(amendmentsConfig.isEnabled && statusGroup == SubmittedStatuses) {
+        s"dashboard.$statusGroup.amendment.content.hint"
+    } else {
+        s"dashboard.$statusGroup.content.hint"
+    }
+}
+
+<p id="@{s"$statusGroup-content-hint"}" class="govuk-body">@Html(messages(msgKey, <br/>))</p>
 
 @govukTable(Table(
     head = headCells,
