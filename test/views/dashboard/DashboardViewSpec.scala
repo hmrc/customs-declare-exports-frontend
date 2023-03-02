@@ -96,16 +96,12 @@ class DashboardViewSpec extends UnitViewSpec with ExportsTestHelper {
   private def createView(status: EnhancedStatus = RECEIVED, totalSubmissionsInPage: Int = 0, totalSubmissionsInGroup: Int = 0): Html = {
     val statusGroup = toStatusGroup(status)
     val pageOfSubmissions = PageOfSubmissions(statusGroup, totalSubmissionsInGroup, listOfSubmissions(status, totalSubmissionsInPage))
-    page(pageOfSubmissions)(request(statusGroup, 1), messages, mockDeclarationAmendmentsConfig)
+    page(pageOfSubmissions)(request(statusGroup, 1), messages)
   }
 
   private def createView(submissionsInPage: Seq[Submission], totalSubmissionsInGroup: Int, currentPage: Int): Html = {
     val statusGroup = toStatusGroup(submissionsInPage.head)
-    page(PageOfSubmissions(statusGroup, totalSubmissionsInGroup, submissionsInPage))(
-      request(statusGroup, currentPage),
-      messages,
-      mockDeclarationAmendmentsConfig
-    )
+    page(PageOfSubmissions(statusGroup, totalSubmissionsInGroup, submissionsInPage))(request(statusGroup, currentPage), messages)
   }
 
   private val statuses = EnhancedStatus.values.toList

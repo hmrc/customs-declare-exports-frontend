@@ -27,9 +27,9 @@
 
 @import java.time.ZoneId
 
-@this(govukTable: GovukTable, link: link, pagination: pagination, paginationConfig: PaginationConfig)
+@this(govukTable: GovukTable, link: link, pagination: pagination, paginationConfig: PaginationConfig, amendmentsConfig: DeclarationAmendmentsConfig)
 
-@(statusGroup: StatusGroup, pageOfSubmissions: PageOfSubmissions, baseHref: String)(implicit request: Request[_], messages: Messages, amendmentsConfig: DeclarationAmendmentsConfig)
+@(statusGroup: StatusGroup, pageOfSubmissions: PageOfSubmissions, baseHref: String)(implicit request: Request[_], messages: Messages)
 
 @mrnLink(submission: Submission) = @{
   HtmlContent(

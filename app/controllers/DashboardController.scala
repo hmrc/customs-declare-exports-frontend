@@ -17,7 +17,6 @@
 package controllers
 
 import config.PaginationConfig
-import config.featureFlags.DeclarationAmendmentsConfig
 import connectors.CustomsDeclareExportsConnector
 import controllers.actions.{AuthAction, VerifiedEmailAction}
 import models.declaration.submissions.StatusGroup.statusGroups
@@ -37,7 +36,7 @@ class DashboardController @Inject() (
   paginationConfig: PaginationConfig,
   mcc: MessagesControllerComponents,
   dashboard: dashboard
-)(implicit ec: ExecutionContext, amendmentsConfig: DeclarationAmendmentsConfig)
+)(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
   val displayPage: Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>

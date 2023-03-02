@@ -16,7 +16,6 @@
 
 package views.dashboard
 
-import config.featureFlags.DeclarationAmendmentsConfig
 import controllers.routes.DashboardController
 import models.PageOfSubmissions
 import models.declaration.submissions.StatusGroup.{statusGroups, StatusGroup}
@@ -68,10 +67,7 @@ object DashboardHelper {
 
   def toUTC(datetime: ZonedDateTime) = datetime.withZoneSameInstant(ZoneId.of("UTC")).toInstant
 
-  def panels(
-    pageOfSubmissions: PageOfSubmissions,
-    table: table
-  )(implicit request: Request[_], messages: Messages, amendmentsConfig: DeclarationAmendmentsConfig): Html =
+  def panels(pageOfSubmissions: PageOfSubmissions, table: table)(implicit request: Request[_], messages: Messages): Html =
     Html(statusGroups.map { statusGroup =>
       if (statusGroup != pageOfSubmissions.statusGroup)
         s"""<div id="$statusGroup-submissions" class="cds-exports-tabs__panel cds-exports-tabs__panel--hidden"></div>"""

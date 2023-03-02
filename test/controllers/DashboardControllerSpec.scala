@@ -81,22 +81,21 @@ class DashboardControllerSpec extends ControllerWithoutFormSpec with BeforeAndAf
     paginationConfig,
     stubMessagesControllerComponents(),
     dashboard
-  )(ec, mockDeclarationAmendmentsConfig)
+  )(ec)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
 
     authorizedUser()
-    when(dashboard.apply(any())(any(), any(), any())).thenReturn(HtmlFormat.empty)
+    when(dashboard.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
     when(paginationConfig.itemsPerPage).thenReturn(Page.DEFAULT_MAX_DOCUMENT_PER_PAGE)
-    when(mockDeclarationAmendmentsConfig.isEnabled).thenReturn(true)
   }
 
   override protected def afterEach(): Unit = reset(mockCustomsDeclareExportsConnector, dashboard, paginationConfig)
 
   def pageOfSubmissionsCaptor: PageOfSubmissions = {
     val captor = ArgumentCaptor.forClass(classOf[PageOfSubmissions])
-    verify(dashboard).apply(captor.capture())(any(), any(), any())
+    verify(dashboard).apply(captor.capture())(any(), any())
     captor.getValue
   }
 

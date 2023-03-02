@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import config.featureFlags.{SecureMessagingConfig, DeclarationAmendmentsConfig}
+@import config.featureFlags.SecureMessagingConfig
 @import controllers.routes.ChoiceController
 @import forms.Choice
 @import forms.Choice.AllowedChoiceValues.Dashboard
@@ -33,7 +33,7 @@
     secureMessagingConfig: SecureMessagingConfig
 )
 
-@(pageOfSubmissions: PageOfSubmissions)(implicit request: Request[_], messages: Messages, amendmentsConfig: DeclarationAmendmentsConfig)
+@(pageOfSubmissions: PageOfSubmissions)(implicit request: Request[_], messages: Messages)
 
 @navBanner = {
     @if(secureMessagingConfig.isSecureMessagingEnabled) {
