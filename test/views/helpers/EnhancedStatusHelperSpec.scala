@@ -30,6 +30,7 @@ class EnhancedStatusHelperSpec extends UnitViewSpec {
     "correctly convert the EnhancedStatus id to the expected text" in {
       asText(ADDITIONAL_DOCUMENTS_REQUIRED) mustBe "Documents required"
       asText(AMENDED) mustBe "Amended"
+      asText(ON_HOLD) mustBe "On hold"
       asText(AWAITING_EXIT_RESULTS) mustBe "Awaiting exit results"
       asText(CANCELLED) mustBe "Cancelled"
       asText(CLEARED) mustBe "Declaration cleared"

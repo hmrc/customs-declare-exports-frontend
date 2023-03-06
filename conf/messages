@@ -827,6 +827,7 @@ submission.enhancedStatus.GOODS_ARRIVED                 = Arrived and accepted
 submission.enhancedStatus.GOODS_ARRIVED_MESSAGE         = Arrived and accepted
 submission.enhancedStatus.GOODS_HAVE_EXITED             = Goods have exited the UK
 submission.enhancedStatus.QUERY_NOTIFICATION_MESSAGE    = Query raised
+submission.enhancedStatus.ON_HOLD                       = On hold
 submission.enhancedStatus.RECEIVED                      = Declaration submitted
 submission.enhancedStatus.RELEASED                      = Released
 submission.enhancedStatus.UNDERGOING_PHYSICAL_CHECK     = Goods being examined
