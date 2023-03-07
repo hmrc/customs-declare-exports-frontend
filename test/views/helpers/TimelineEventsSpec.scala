@@ -25,7 +25,7 @@ import org.scalatest.BeforeAndAfterEach
 import play.api.libs.json.Json
 import views.declaration.spec.UnitViewSpec
 import views.helpers.TimelineEventsSpec.{cancellationDenied, cancellationGranted, cancellationRequestNotConfirmedYet, declarationCancelled}
-import views.html.components.gds.{linkButton, paragraphBody}
+import views.html.components.gds.{link, linkButton, paragraphBody}
 import views.html.components.upload_files_partial_for_timeline
 
 import java.time.ZonedDateTime
@@ -45,7 +45,7 @@ class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injec
   private def issued(days: Long): ZonedDateTime = ZonedDateTime.now.plusDays(days)
 
   private val timelineEvents =
-    new TimelineEvents(new linkButton, new paragraphBody, mockSecureMessagingInboxConfig, mockSfusConfig, uploadFilesPartialForTimeline)
+    new TimelineEvents(new link, new linkButton, new paragraphBody, mockSecureMessagingInboxConfig, mockSfusConfig, uploadFilesPartialForTimeline)
 
   private def genTimelineEvents(notificationSummaries: Seq[NotificationSummary]): Seq[TimelineEvent] = {
     val action = Action("id", SubmissionRequest, issued(0), Some(notificationSummaries), decId = Some("id"), versionNo = 1)

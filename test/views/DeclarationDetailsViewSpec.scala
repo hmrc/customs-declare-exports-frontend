@@ -34,7 +34,7 @@ import play.api.mvc.Call
 import play.api.test.FakeRequest
 import views.dashboard.DashboardHelper.toDashboard
 import views.declaration.spec.UnitViewSpec
-import views.helpers.{EnhancedStatusHelper, ViewDates}
+import views.helpers.{EnhancedStatusHelper, NotificationEvent, ViewDates}
 import views.html.declaration_details
 
 import java.time.ZonedDateTime
@@ -141,7 +141,7 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
 
         val cancelDeclarationLink = view.getElementById("amend-declaration")
         cancelDeclarationLink must containMessage("declaration.details.amend.declaration")
-        cancelDeclarationLink must haveHref(routes.AmendDeclarationController.submit)
+        cancelDeclarationLink must haveHref(routes.AmendDeclarationController.initAmendment)
       }
     }
 
@@ -400,7 +400,7 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
         And("each Timeline event should always include a title")
         val title = events.get(ix).getElementsByTag("h2")
         assert(title.hasClass("hmrc-timeline__event-title"))
-        title.text mustBe EnhancedStatusHelper.asTimelineTitle(notification)
+        title.text mustBe EnhancedStatusHelper.asTimelineTitle(NotificationEvent(uuid, SubmissionRequest, notification))
 
         And("a date and time")
         val datetime = events.get(ix).getElementsByTag("time")
