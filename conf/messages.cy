@@ -1368,11 +1368,11 @@ submission.enhancedStatus.CUSTOMS_POSITION_GRANTED      = Sefyllfa’r tollau we
 
 submission.enhancedStatus.DECLARATION_HANDLED_EXTERNALLY= Datganiad wedi’i drin yn allanol
 
-submission.enhancedStatus.ERRORS                        = Mae gan y datganiad wallau
+submission.enhancedStatus.ERRORS                        = Datganiad wedi’i wrthod
 
-submission.enhancedStatus.EXPIRED_NO_ARRIVAL            = Mae’r datganiad wedi dod i ben
+submission.enhancedStatus.EXPIRED_NO_ARRIVAL            = Mae’r datganiad wedi dod i ben (dim cyrraedd)
 
-submission.enhancedStatus.EXPIRED_NO_DEPARTURE          = Mae’r datganiad wedi dod i ben
+submission.enhancedStatus.EXPIRED_NO_DEPARTURE          = Mae’r datganiad wedi dod i ben (dim ymadawiad)
 
 submission.enhancedStatus.GOODS_ARRIVED                 = Wedi cyrraedd a’i dderbyn
 
@@ -1452,7 +1452,7 @@ dashboard.empty.tab = Dim datganiadau
 
 dashboard.start.new.declaration = Dechreuwch ddatganiad newydd
 
-declaration.details.title = Manylion y datganiad
+declaration.details.title = Statws datganiad: {0}
 
 declaration.details.references = Cyfeirnodau’r datganiad
 
