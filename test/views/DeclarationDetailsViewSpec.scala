@@ -298,7 +298,11 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
     }
 
     "display page title" in {
-      view.getElementsByTag("h1").first must containMessage(s"$msgKey.title")
+      EnhancedStatus.values.foreach { status =>
+        val view = page(createSubmissionWith(status))(verifiedEmailRequest(), messages)
+        val expected = messages(s"$statusKey.$status")
+        view.getElementsByTag("h1").first.text mustBe messages(s"$msgKey.title", expected)
+      }
     }
 
     "display the 'MRN' hint" in {

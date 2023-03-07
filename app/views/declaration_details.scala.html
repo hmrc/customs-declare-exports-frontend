@@ -22,8 +22,8 @@
 @import play.api.mvc.Call
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.dashboard.DashboardHelper.toDashboard
+@import views.helpers.{BackButton, EnhancedStatusHelper, TimelineEvents, Title, ViewDates}
 @import views.helpers.DeclarationDetailsLinks._
-@import views.helpers.{BackButton, TimelineEvents, Title, ViewDates}
 @import views.html.components.gds._
 
 @this(
@@ -230,7 +230,7 @@
 
     <div class="govuk-grid-column-two-thirds">
         @headingContent(
-            pageHeading = messages("declaration.details.title"),
+            pageHeading = messages("declaration.details.title", EnhancedStatusHelper.asText(submission)),
             sectionHeading = None,
             classes = "govuk-heading-l govuk-!-margin-bottom-2"
         )
