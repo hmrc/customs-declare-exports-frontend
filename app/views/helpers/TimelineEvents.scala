@@ -38,8 +38,8 @@ case class NotificationEvent(actionId: String, requestType: RequestType, notific
 object NotificationEvent {
 
   implicit val ordering: Ordering[NotificationEvent] =
-    Ordering.fromLessThan[NotificationEvent] {
-      (a, b) => b.notificationSummary.dateTimeIssued.isBefore(a.notificationSummary.dateTimeIssued)
+    Ordering.fromLessThan[NotificationEvent] { (a, b) =>
+      b.notificationSummary.dateTimeIssued.isBefore(a.notificationSummary.dateTimeIssued)
     }
 }
 
@@ -106,11 +106,9 @@ class TimelineEvents @Inject() (
       }
       if (action.requestType != CancellationRequest) events
       else {
-        val cancellationRequest = List(NotificationEvent(
-          action.id,
-          CancellationRequest,
-          NotificationSummary(UUID.randomUUID, action.requestTimestamp, REQUESTED_CANCELLATION)
-        ))
+        val cancellationRequest = List(
+          NotificationEvent(action.id, CancellationRequest, NotificationSummary(UUID.randomUUID, action.requestTimestamp, REQUESTED_CANCELLATION))
+        )
         events.filter(_.notificationSummary.enhancedStatus == CUSTOMS_POSITION_DENIED) ++ cancellationRequest
       }
     }.sorted
@@ -125,8 +123,7 @@ class TimelineEvents @Inject() (
       val cancelUrl = AmendDeclarationController.submit("cancel")
       val cancelLink = link(messages("declaration.details.cancel.amendment"), cancelUrl, id = Some("cancel-amendment"))
       Html(s"""<div class="govuk-button-group">${button.toString()}${cancelLink.toString()}</div>""")
-    }
-    else button
+    } else button
   }
 
   private def uploadFilesContent(mrn: Option[String], isPrimary: Boolean)(implicit messages: Messages): Html =

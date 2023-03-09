@@ -22,7 +22,7 @@ import config.featureFlags._
 import controllers.routes
 import controllers.routes.EADController
 import models.declaration.submissions.EnhancedStatus._
-import models.declaration.submissions.RequestType.SubmissionRequest
+import models.declaration.submissions.RequestType.{AmendmentRequest, SubmissionRequest}
 import models.declaration.submissions.{Action, EnhancedStatus, NotificationSummary, Submission}
 import models.requests.{ExportsSessionKeys, VerifiedEmailRequest}
 import org.jsoup.nodes.Element
@@ -555,6 +555,30 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
         button.text mustBe messages(s"$msgKey.$msgId.button")
         button.attr("href") mustBe href
       }
+    }
+
+    def createSubmissionWithRejectedAmendment(notificationSummaries: Seq[NotificationSummary]) = {
+      val action = Action("id", AmendmentRequest, now, Some(notificationSummaries), Some(uuid), 1)
+      Submission(
+        uuid,
+        "eori",
+        "lrn",
+        Some(mrn),
+        Some("ducr"),
+        notificationSummaries.reverse.headOption.map(_.enhancedStatus),
+        notificationSummaries.headOption.map(_ => now),
+        Seq(action),
+        latestDecId = Some(uuid)
+      )
+    }
+
+    "display 'Fix and resubmit' button and 'Cancel' link when latest notification is rejected Amendment" in {
+      val notificationSummariesAmendmentRejected = List(dmsrejNotification, dmsdocNotification, dmsctlNotification, acceptedNotification)
+      val view = page(createSubmissionWithRejectedAmendment(notificationSummariesAmendmentRejected))(verifiedEmailRequest(), messages)
+      val button = view.getElementsByClass("govuk-button-group")
+      button.get(0).child(0).text() mustBe messages("declaration.details.fix.resubmit.button")
+      button.get(0).child(1).text() mustBe messages("declaration.details.cancel.amendment")
+
     }
 
     "display the expected section headers" in {

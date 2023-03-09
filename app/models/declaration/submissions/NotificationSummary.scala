@@ -31,7 +31,7 @@ object NotificationSummary {
   implicit val formats = Json.format[NotificationSummary]
 
   implicit val ordering: Ordering[NotificationSummary] =
-    Ordering.fromLessThan[NotificationSummary] {
-      (a, b) => b.dateTimeIssued.isBefore(a.dateTimeIssued)
+    Ordering.fromLessThan[NotificationSummary] { (a, b) =>
+      b.dateTimeIssued.isBefore(a.dateTimeIssued)
     }
 }
