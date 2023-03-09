@@ -82,7 +82,10 @@
       if(seals.isEmpty)
         Some(Fieldset(
             legend = Some(Legend(
-                content = Text(messages("declaration.seal.add.first", containerId)),
+                content = HtmlContent(Html(
+                    sectionHeader(messages("declaration.section.6")) +
+                    messages("declaration.seal.add.first", containerId)
+                )),
                 classes = gdsPageLegend
             ))
         ))
