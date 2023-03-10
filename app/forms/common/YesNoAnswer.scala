@@ -21,7 +21,9 @@ import play.api.data.{Form, Forms, Mapping}
 import play.api.libs.json.Json
 import utils.validators.forms.FieldValidator.isContainedIn
 
-case class YesNoAnswer(answer: String)
+case class YesNoAnswer(answer: String) extends Ordered[YesNoAnswer] {
+  override def compare(that: YesNoAnswer): Int = answer.compare(that.answer)
+}
 
 object YesNoAnswer {
 

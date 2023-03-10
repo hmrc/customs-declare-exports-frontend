@@ -16,17 +16,23 @@
 
 package forms.common
 
+import models.ExportsFieldPointer.ExportsFieldPointer
+import models.FieldMapping
 import play.api.data.Forms.text
 import play.api.data.Mapping
 import play.api.libs.json._
 import utils.validators.forms.FieldValidator._
 
-case class Eori(value: String) {
+case class Eori(value: String) extends Ordered[Eori] {
+  override def compare(y: Eori): Int = value.compareTo(y.value)
+
   override def toString() = value
 }
 
-object Eori {
+object Eori extends FieldMapping {
   def build(value: String): Eori = new Eori(value.toUpperCase)
+
+  override val pointer: ExportsFieldPointer = "eori"
 
   implicit val format: Format[Eori] = new Format[Eori] {
     override def writes(o: Eori): JsValue = JsString(o.value)

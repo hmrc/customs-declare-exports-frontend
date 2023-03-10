@@ -20,11 +20,14 @@ import forms.DeclarationPage
 import models.DeclarationMeta.sequenceIdPlaceholder
 import models.DeclarationType.{CLEARANCE, DeclarationType}
 import models.viewmodels.TariffContentKey
+import models.ExportsFieldPointer.ExportsFieldPointer
+import models.FieldMapping
 import play.api.data.Forms.{number, optional, text}
 import play.api.data.{Form, Forms, Mapping}
 import play.api.i18n.Messages
 import play.api.libs.json.Json
-import services.PackageTypesService
+import services.DiffTools.{combinePointers, compareIntDifference, compareStringDifference, ExportsDeclarationDiff}
+import services.{DiffTools, PackageTypesService}
 import utils.validators.forms.FieldValidator._
 
 case class PackageInformation(
@@ -33,7 +36,28 @@ case class PackageInformation(
   typesOfPackages: Option[String],
   numberOfPackages: Option[Int],
   shippingMarks: Option[String]
-) {
+) extends DiffTools[PackageInformation] {
+
+  def createDiff(original: PackageInformation, pointerString: ExportsFieldPointer, sequenceId: Option[Int] = None): ExportsDeclarationDiff =
+    Seq(
+      compareStringDifference(original.id, id, combinePointers(pointerString, PackageInformation.idPointer, sequenceId)),
+      compareStringDifference(
+        original.typesOfPackages,
+        typesOfPackages,
+        combinePointers(pointerString, PackageInformation.typesOfPackagesPointer, sequenceId)
+      ),
+      compareIntDifference(
+        original.numberOfPackages,
+        numberOfPackages,
+        combinePointers(pointerString, PackageInformation.numberOfPackagesPointer, sequenceId)
+      ),
+      compareStringDifference(
+        original.shippingMarks,
+        shippingMarks,
+        combinePointers(pointerString, PackageInformation.shippingMarksPointer, sequenceId)
+      )
+    ).flatten
+
   // overriding equals and hashcode so that we can test for duplicate entries while ignoring the id
   override def equals(obj: Any): Boolean = obj match {
     case PackageInformation(_, _, `typesOfPackages`, `numberOfPackages`, `shippingMarks`) => true
@@ -46,11 +70,16 @@ case class PackageInformation(
   def nonEmpty: Boolean = !isEmpty
 }
 
-object PackageInformation extends DeclarationPage {
-
+object PackageInformation extends DeclarationPage with FieldMapping {
   import scala.util.Random
 
   implicit val format = Json.format[PackageInformation]
+
+  val pointer: ExportsFieldPointer = "packageInformation"
+  val idPointer: ExportsFieldPointer = "id"
+  val shippingMarksPointer: ExportsFieldPointer = "shippingMarks"
+  val numberOfPackagesPointer: ExportsFieldPointer = "numberOfPackages"
+  val typesOfPackagesPointer: ExportsFieldPointer = "typesOfPackages"
 
   val formId = "PackageInformation"
   val limit = 99

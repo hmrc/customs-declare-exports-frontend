@@ -18,14 +18,23 @@ package models.declaration
 
 import forms.common.YesNoAnswer
 import forms.declaration.declarationHolder.DeclarationHolder
+import models.ExportsFieldPointer.ExportsFieldPointer
+import models.FieldMapping
 import play.api.libs.json.Json
+import services.DiffTools
+import services.DiffTools.{combinePointers, ExportsDeclarationDiff}
 
-case class DeclarationHoldersData(holders: Seq[DeclarationHolder], isRequired: Option[YesNoAnswer]) {
+case class DeclarationHoldersData(holders: Seq[DeclarationHolder], isRequired: Option[YesNoAnswer]) extends DiffTools[DeclarationHoldersData] {
+  // isRequired field is not used to generate the WCO XML
+  def createDiff(original: DeclarationHoldersData, pointerString: ExportsFieldPointer, sequenceId: Option[Int] = None): ExportsDeclarationDiff =
+    createDiff(original.holders, holders, combinePointers(pointerString, DeclarationHolder.pointer, None))
   def containsHolder(holder: DeclarationHolder): Boolean = holders.contains(holder)
 }
 
-object DeclarationHoldersData {
+object DeclarationHoldersData extends FieldMapping {
   implicit val format = Json.format[DeclarationHoldersData]
+
+  val pointer: ExportsFieldPointer = "declarationHoldersData"
 
   def apply(holders: Seq[DeclarationHolder]): DeclarationHoldersData =
     new DeclarationHoldersData(holders, None)

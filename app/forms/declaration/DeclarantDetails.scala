@@ -17,10 +17,19 @@
 package forms.declaration
 
 import forms.DeclarationPage
+import models.ExportsFieldPointer.ExportsFieldPointer
+import models.FieldMapping
 import play.api.libs.json.{Json, OFormat}
+import services.DiffTools
+import services.DiffTools.{combinePointers, ExportsDeclarationDiff}
 
-case class DeclarantDetails(details: EntityDetails)
+case class DeclarantDetails(details: EntityDetails) extends DiffTools[DeclarantDetails] {
+  override def createDiff(original: DeclarantDetails, pointerString: ExportsFieldPointer, sequenceId: Option[Int] = None): ExportsDeclarationDiff =
+    Seq(details.createDiff(original.details, combinePointers(pointerString, DeclarantDetails.pointer, sequenceId))).flatten
+}
 
-object DeclarantDetails extends DeclarationPage {
+object DeclarantDetails extends DeclarationPage with FieldMapping {
   implicit val format: OFormat[DeclarantDetails] = Json.format[DeclarantDetails]
+
+  val pointer: ExportsFieldPointer = "declarantDetails"
 }

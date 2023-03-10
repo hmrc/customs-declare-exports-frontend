@@ -17,16 +17,45 @@
 package models.declaration
 
 import forms.declaration.LocationOfGoods
+import models.ExportsFieldPointer.ExportsFieldPointer
+import models.FieldMapping
 import play.api.libs.json.{Json, OFormat}
+import services.DiffTools
+import services.DiffTools.{combinePointers, compareStringDifference, ExportsDeclarationDiff}
 
-case class GoodsLocation(country: String, typeOfLocation: String, qualifierOfIdentification: String, identificationOfLocation: String) {
+case class GoodsLocation(country: String, typeOfLocation: String, qualifierOfIdentification: String, identificationOfLocation: String)
+    extends DiffTools[GoodsLocation] {
+  def createDiff(original: GoodsLocation, pointerString: ExportsFieldPointer, sequenceId: Option[Int] = None): ExportsDeclarationDiff =
+    Seq(
+      compareStringDifference(original.country, country, combinePointers(pointerString, GoodsLocation.countryPointer, sequenceId)),
+      compareStringDifference(
+        original.typeOfLocation,
+        typeOfLocation,
+        combinePointers(pointerString, GoodsLocation.typeOfLocationPointer, sequenceId)
+      ),
+      compareStringDifference(
+        original.qualifierOfIdentification,
+        qualifierOfIdentification,
+        combinePointers(pointerString, GoodsLocation.qualifierOfIdentificationPointer, sequenceId)
+      ),
+      compareStringDifference(
+        original.identificationOfLocation,
+        identificationOfLocation,
+        combinePointers(pointerString, GoodsLocation.identificationOfLocationPointer, sequenceId)
+      )
+    ).flatten
 
   lazy val code = country + typeOfLocation + qualifierOfIdentification + identificationOfLocation
 
   def toForm: LocationOfGoods = LocationOfGoods(code)
 }
 
-object GoodsLocation {
-
+object GoodsLocation extends FieldMapping {
   implicit val format: OFormat[GoodsLocation] = Json.format[GoodsLocation]
+
+  val pointer: ExportsFieldPointer = "goodsLocation"
+  val countryPointer: ExportsFieldPointer = "country"
+  val typeOfLocationPointer: ExportsFieldPointer = "typeOfLocation"
+  val qualifierOfIdentificationPointer: ExportsFieldPointer = "qualifierOfIdentification"
+  val identificationOfLocationPointer: ExportsFieldPointer = "identificationOfLocation"
 }

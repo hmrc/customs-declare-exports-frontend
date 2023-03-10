@@ -17,11 +17,15 @@
 package forms.common
 
 import connectors.CodeListConnector
+import models.ExportsFieldPointer.ExportsFieldPointer
+import models.FieldMapping
 import play.api.data.Forms.text
 import play.api.data.{Form, Forms, Mapping}
 import play.api.i18n.Messages
 import play.api.libs.json.Json
 import services.Countries._
+import services.DiffTools
+import services.DiffTools.{combinePointers, compareStringDifference, ExportsDeclarationDiff}
 import utils.validators.forms.FieldValidator._
 
 case class Address(
@@ -30,10 +34,26 @@ case class Address(
   townOrCity: String, // alphanumeric length 1 - 35
   postCode: String, // alphanumeric length 1 - 9
   country: String // full country name, convert to 2 upper case alphabetic characters for backend
-)
+) extends DiffTools[Address] {
+  override def createDiff(original: Address, pointerString: ExportsFieldPointer, sequenceId: Option[Int] = None): ExportsDeclarationDiff =
+    Seq(
+      compareStringDifference(original.fullName, fullName, combinePointers(pointerString, Address.fullNamePointer, sequenceId)),
+      compareStringDifference(original.addressLine, addressLine, combinePointers(pointerString, Address.addressLinePointer, sequenceId)),
+      compareStringDifference(original.townOrCity, townOrCity, combinePointers(pointerString, Address.townOrCityPointer, sequenceId)),
+      compareStringDifference(original.postCode, postCode, combinePointers(pointerString, Address.postCodePointer, sequenceId)),
+      compareStringDifference(original.country, country, combinePointers(pointerString, Address.countryPointer, sequenceId))
+    ).flatten
+}
 
-object Address {
+object Address extends FieldMapping {
   implicit val format = Json.format[Address]
+
+  val pointer: ExportsFieldPointer = "address"
+  val fullNamePointer: ExportsFieldPointer = "fullName"
+  val addressLinePointer: ExportsFieldPointer = "addressLine"
+  val townOrCityPointer: ExportsFieldPointer = "townOrCity"
+  val postCodePointer: ExportsFieldPointer = "postCode"
+  val countryPointer: ExportsFieldPointer = "country"
 
   def mapping(implicit messages: Messages, codeListConnector: CodeListConnector): Mapping[Address] =
     Forms.mapping(

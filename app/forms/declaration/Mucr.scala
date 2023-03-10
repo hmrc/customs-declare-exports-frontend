@@ -19,16 +19,21 @@ package forms.declaration
 import forms.DeclarationPage
 import models.DeclarationType.DeclarationType
 import models.viewmodels.TariffContentKey
+import models.ExportsFieldPointer.ExportsFieldPointer
+import models.FieldMapping
 import play.api.data.Forms.text
 import play.api.data.{Form, Forms}
 import play.api.libs.json.{Json, OFormat}
 import utils.validators.forms.FieldValidator._
 
-case class Mucr(mucr: String)
+case class Mucr(mucr: String) extends Ordered[Mucr] {
+  override def compare(y: Mucr): Int = mucr.compareTo(y.mucr)
+}
 
-object Mucr extends DeclarationPage {
-
+object Mucr extends DeclarationPage with FieldMapping {
   implicit val format: OFormat[Mucr] = Json.format[Mucr]
+
+  override val pointer: ExportsFieldPointer = "mucr"
 
   val MUCR = "MUCR"
 

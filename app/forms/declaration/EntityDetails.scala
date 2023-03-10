@@ -18,18 +18,31 @@ package forms.declaration
 
 import connectors.CodeListConnector
 import forms.common.{Address, Eori}
-import play.api.data.Forms.optional
+import models.ExportsFieldPointer.ExportsFieldPointer
+import models.FieldMapping
 import play.api.data.{Forms, Mapping}
+import play.api.data.Forms.optional
 import play.api.i18n.Messages
 import play.api.libs.json.Json
+import services.DiffTools
+import services.DiffTools.{combinePointers, compareDifference, ExportsDeclarationDiff}
 
 case class EntityDetails(
   eori: Option[Eori], // alphanumeric, max length 17 characters
   address: Option[Address]
-)
+) extends DiffTools[EntityDetails] {
+  override def createDiff(original: EntityDetails, pointerString: ExportsFieldPointer, sequenceId: Option[Int] = None): ExportsDeclarationDiff =
+    Seq(
+      compareDifference(original.eori, eori, combinePointers(pointerString, EntityDetails.eoriPointer, sequenceId)),
+      createDiffOfOptions(original.address, address, combinePointers(pointerString, Address.pointer, sequenceId))
+    ).flatten
+}
 
-object EntityDetails {
+object EntityDetails extends FieldMapping {
   implicit val format = Json.format[EntityDetails]
+
+  val pointer: ExportsFieldPointer = "details"
+  val eoriPointer: ExportsFieldPointer = "eori"
 
   def addressMapping(implicit messages: Messages, codeListConnector: CodeListConnector): Mapping[EntityDetails] =
     Forms

@@ -16,10 +16,20 @@
 
 package models.declaration
 
+import models.ExportsFieldPointer.ExportsFieldPointer
+import models.FieldMapping
 import play.api.libs.json.{Json, OFormat}
+import services.DiffTools
+import services.DiffTools.{combinePointers, compareStringDifference, ExportsDeclarationDiff}
 
-case class Seal(sequenceId: Int, id: String)
+case class Seal(sequenceId: Int, id: String) extends DiffTools[Seal] {
+  override def createDiff(original: Seal, pointerString: ExportsFieldPointer, sequenceId: Option[Int]): ExportsDeclarationDiff =
+    Seq(compareStringDifference(original.id, id, combinePointers(pointerString, Seal.idPointer, sequenceId))).flatten
+}
 
-object Seal {
+object Seal extends FieldMapping {
   implicit val format: OFormat[Seal] = Json.format[Seal]
+
+  override val pointer: ExportsFieldPointer = "seals"
+  val idPointer: ExportsFieldPointer = "id"
 }

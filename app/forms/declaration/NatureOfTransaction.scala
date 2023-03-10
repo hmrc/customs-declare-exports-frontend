@@ -20,14 +20,20 @@ import forms.DeclarationPage
 import forms.MappingHelper.requiredRadio
 import models.DeclarationType.DeclarationType
 import models.viewmodels.TariffContentKey
+import models.ExportsFieldPointer.ExportsFieldPointer
+import models.FieldMapping
 import play.api.data.{Form, Forms, Mapping}
 import play.api.libs.json.{Json, OFormat}
 import utils.validators.forms.FieldValidator._
 
-case class NatureOfTransaction(natureType: String)
+case class NatureOfTransaction(natureType: String) extends Ordered[NatureOfTransaction] {
+  override def compare(y: NatureOfTransaction): Int = natureType.compareTo(y.natureType)
+}
 
-object NatureOfTransaction extends DeclarationPage {
+object NatureOfTransaction extends DeclarationPage with FieldMapping {
   implicit val format: OFormat[NatureOfTransaction] = Json.format[NatureOfTransaction]
+
+  override val pointer: ExportsFieldPointer = "natureOfTransaction.natureType"
 
   val formId = "TransactionType"
 

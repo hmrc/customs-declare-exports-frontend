@@ -18,16 +18,22 @@ package forms.declaration.officeOfExit
 import forms.DeclarationPage
 import models.viewmodels.TariffContentKey
 import models.DeclarationType.DeclarationType
+import models.ExportsFieldPointer.ExportsFieldPointer
+import models.FieldMapping
 import play.api.data.{Form, Forms, Mapping}
 import play.api.data.Forms.text
 import play.api.libs.json.Json
-import utils.validators.forms.FieldValidator._
-import utils.validators.forms.FieldValidator.{hasSpecificLength, isEmpty, nonEmpty}
+import utils.validators.forms.FieldValidator.{hasSpecificLength, isEmpty, nonEmpty, _}
 
-case class OfficeOfExit(officeId: String)
+case class OfficeOfExit(officeId: String) extends Ordered[OfficeOfExit] {
+  override def compare(that: OfficeOfExit): Int =
+    officeId.compareTo(that.officeId)
+}
 
-object OfficeOfExit extends DeclarationPage {
+object OfficeOfExit extends DeclarationPage with FieldMapping {
   implicit val format = Json.format[OfficeOfExit]
+
+  val pointer: ExportsFieldPointer = "officeOfExit.officeId"
 
   private val officeId = "officeId"
 

@@ -16,13 +16,18 @@
 
 package forms.declaration
 
+import models.FieldMapping
 import play.api.data.FormError
 import play.api.data.format.Formatter
 import play.api.libs.json.{JsString, JsonValidationError, Reads, Writes}
 
-sealed abstract class ModeOfTransportCode(val value: String)
+sealed abstract class ModeOfTransportCode(val value: String) extends Ordered[ModeOfTransportCode] {
+  override def compare(y: ModeOfTransportCode): Int = value.compareTo(y.value)
+}
 
-object ModeOfTransportCode {
+object ModeOfTransportCode extends FieldMapping {
+
+  val pointer: String = "code"
 
   case object Maritime extends ModeOfTransportCode("1")
   case object Rail extends ModeOfTransportCode("2")

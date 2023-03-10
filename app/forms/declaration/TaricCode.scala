@@ -18,16 +18,21 @@ package forms.declaration
 import forms.DeclarationPage
 import models.viewmodels.TariffContentKey
 import models.DeclarationType.DeclarationType
+import models.ExportsFieldPointer.ExportsFieldPointer
+import models.FieldMapping
 import play.api.data.Forms.text
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
 import utils.validators.forms.FieldValidator._
 
-case class TaricCode(taricCode: String)
+case class TaricCode(taricCode: String) extends Ordered[TaricCode] {
+  override def compare(y: TaricCode): Int = taricCode.compareTo(y.taricCode)
+}
 
-object TaricCode extends DeclarationPage {
-
+object TaricCode extends DeclarationPage with FieldMapping {
   implicit val format = Json.format[TaricCode]
+
+  val pointer: ExportsFieldPointer = CommodityDetails.combinedNomenclatureCodePointer
 
   val taricCodeKey = "taricCode"
   val taricCodeLength = 4

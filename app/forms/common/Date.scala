@@ -16,16 +16,26 @@
 
 package forms.common
 
+import models.ExportsFieldPointer.ExportsFieldPointer
+import models.FieldMapping
+
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-
 import play.api.data.Forms.{number, optional}
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
+import services.DiffTools
+import services.DiffTools.{combinePointers, compareIntDifference, ExportsDeclarationDiff}
 
 import scala.util.Try
 
-case class Date(day: Option[Int], month: Option[Int], year: Option[Int]) {
+case class Date(day: Option[Int], month: Option[Int], year: Option[Int]) extends DiffTools[Date] {
+  def createDiff(original: Date, pointerString: ExportsFieldPointer, sequenceId: Option[Int] = None): ExportsDeclarationDiff =
+    Seq(
+      compareIntDifference(original.day, day, combinePointers(pointerString, Date.dayPointer, sequenceId)),
+      compareIntDifference(original.month, month, combinePointers(pointerString, Date.monthPointer, sequenceId)),
+      compareIntDifference(original.year, year, combinePointers(pointerString, Date.yearPointer, sequenceId))
+    ).flatten
 
   private val formatDisplay = DateTimeFormatter.ofPattern("dd/MM/yyyy")
 
@@ -34,8 +44,13 @@ case class Date(day: Option[Int], month: Option[Int], year: Option[Int]) {
   override def toString: String = LocalDate.of(year.getOrElse(0), month.getOrElse(0), day.getOrElse(0)).toString
 }
 
-object Date {
+object Date extends FieldMapping {
   implicit val format = Json.format[Date]
+
+  val pointer: ExportsFieldPointer = "dateOfValidity"
+  val dayPointer: ExportsFieldPointer = "day"
+  val monthPointer: ExportsFieldPointer = "month"
+  val yearPointer: ExportsFieldPointer = "year"
 
   val yearKey = "year"
   val monthKey = "month"

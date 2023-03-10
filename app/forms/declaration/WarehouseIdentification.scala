@@ -21,16 +21,24 @@ import forms.MappingHelper.requiredRadio
 import forms.common.YesNoAnswer.YesNoAnswers
 import models.viewmodels.TariffContentKey
 import models.DeclarationType.DeclarationType
+import models.ExportsFieldPointer.ExportsFieldPointer
+import models.FieldMapping
 import play.api.data.{Form, Forms}
 import play.api.data.Forms.text
 import play.api.libs.json.Json
+import services.DiffTools.compareOptionalString
 import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfEqual
 import utils.validators.forms.FieldValidator._
 
-case class WarehouseIdentification(identificationNumber: Option[String] = None)
+case class WarehouseIdentification(identificationNumber: Option[String] = None) extends Ordered[WarehouseIdentification] {
+  override def compare(that: WarehouseIdentification): Int =
+    compareOptionalString(identificationNumber, that.identificationNumber)
+}
 
-object WarehouseIdentification extends DeclarationPage {
+object WarehouseIdentification extends DeclarationPage with FieldMapping {
   implicit val format = Json.format[WarehouseIdentification]
+
+  val pointer: ExportsFieldPointer = "warehouseIdentification.identificationNumber"
 
   val formId = "WarehouseIdentification"
 

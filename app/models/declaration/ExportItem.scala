@@ -19,10 +19,13 @@ package models.declaration
 import forms.DeclarationPage
 import forms.declaration.FiscalInformation.AllowedFiscalInformationAnswers.yes
 import forms.declaration._
-import models.DeclarationType
+import models.{DeclarationType, FieldMapping}
 import models.DeclarationType.DeclarationType
 import models.viewmodels.TariffContentKey
+import models.ExportsFieldPointer.ExportsFieldPointer
 import play.api.libs.json.{Json, OFormat}
+import services.DiffTools
+import services.DiffTools.{combinePointers, compareBooleanDifference, compareDifference, compareIntDifference, ExportsDeclarationDiff}
 
 case class ExportItem(
   id: String,
@@ -42,7 +45,48 @@ case class ExportItem(
   additionalInformation: Option[AdditionalInformationData] = None,
   additionalDocuments: Option[AdditionalDocuments] = None,
   isLicenceRequired: Option[Boolean] = None
-) {
+) extends DiffTools[ExportItem] {
+
+  // id and fiscalInformation fields are not used to create WCO XML
+  override def createDiff(original: ExportItem, pointerString: ExportsFieldPointer, maybeSequenceId: Option[Int] = None): ExportsDeclarationDiff =
+    Seq(
+      compareIntDifference(original.sequenceId, sequenceId, combinePointers(pointerString, ExportItem.sequenceIdPointer, maybeSequenceId)),
+      createDiffOfOptions(original.procedureCodes, procedureCodes, combinePointers(pointerString, ProcedureCodesData.pointer, maybeSequenceId)),
+      createDiffOfOptions(
+        original.additionalFiscalReferencesData,
+        additionalFiscalReferencesData,
+        combinePointers(pointerString, AdditionalFiscalReferencesData.pointer, maybeSequenceId)
+      ),
+      compareDifference(original.statisticalValue, statisticalValue, combinePointers(pointerString, StatisticalValue.pointer, maybeSequenceId)),
+      createDiffOfOptions(original.commodityDetails, commodityDetails, combinePointers(pointerString, CommodityDetails.pointer, maybeSequenceId)),
+      compareDifference(
+        original.dangerousGoodsCode,
+        dangerousGoodsCode,
+        combinePointers(pointerString, UNDangerousGoodsCode.pointer, maybeSequenceId)
+      ),
+      compareDifference(original.cusCode, cusCode, combinePointers(pointerString, CusCode.pointer, maybeSequenceId)),
+      compareDifference(original.taricCodes, taricCodes, combinePointers(pointerString, TaricCode.pointer, maybeSequenceId)),
+      compareDifference(original.nactCodes, nactCodes, combinePointers(pointerString, NactCode.pointer, maybeSequenceId)),
+      compareDifference(original.nactExemptionCode, nactExemptionCode, combinePointers(pointerString, NactCode.pointer, maybeSequenceId)),
+      createDiff(original.packageInformation, packageInformation, combinePointers(pointerString, PackageInformation.pointer, maybeSequenceId)),
+      createDiffOfOptions(original.commodityMeasure, commodityMeasure, combinePointers(pointerString, CommodityMeasure.pointer, maybeSequenceId)),
+      createDiffOfOptions(
+        original.additionalInformation,
+        additionalInformation,
+        combinePointers(pointerString, AdditionalInformationData.pointer, maybeSequenceId)
+      ),
+      createDiffOfOptions(
+        original.additionalDocuments,
+        additionalDocuments,
+        combinePointers(pointerString, AdditionalDocuments.pointer, maybeSequenceId)
+      ),
+      compareBooleanDifference(
+        original.isLicenceRequired,
+        isLicenceRequired,
+        combinePointers(pointerString, s"${AdditionalDocuments.pointer}.${AdditionalDocuments.documentsPointer}", maybeSequenceId)
+      )
+    ).flatten
+
   def hasFiscalReferences: Boolean =
     fiscalInformation.exists(_.onwardSupplyRelief == yes)
 
@@ -81,9 +125,11 @@ case class ExportItem(
     procedureCodes.flatMap(_.procedureCode).exists(ProcedureCodesData.isWarehouseRequiredCode)
 }
 
-object ExportItem extends DeclarationPage {
-
+object ExportItem extends DeclarationPage with FieldMapping {
   implicit val format: OFormat[ExportItem] = Json.format[ExportItem]
+
+  val pointer: ExportsFieldPointer = "items"
+  val sequenceIdPointer: ExportsFieldPointer = "sequenceId"
 
   def containsAnswers(item: ExportItem): Boolean = item != ExportItem(id = item.id, sequenceId = item.sequenceId)
 

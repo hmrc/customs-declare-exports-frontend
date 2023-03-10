@@ -19,16 +19,30 @@ package forms.declaration
 import forms.DeclarationPage
 import models.viewmodels.TariffContentKey
 import models.DeclarationType.DeclarationType
+import models.ExportsFieldPointer.ExportsFieldPointer
+import models.FieldMapping
 import play.api.data.{Form, Forms}
 import play.api.data.Forms._
 import play.api.libs.json.Json
+import services.DiffTools
+import services.DiffTools.{combinePointers, compareStringDifference, ExportsDeclarationDiff}
 import utils.validators.forms.FieldValidator._
 
-case class AdditionalInformation(code: String, description: String) {
+case class AdditionalInformation(code: String, description: String) extends DiffTools[AdditionalInformation] {
+  def createDiff(original: AdditionalInformation, pointerString: ExportsFieldPointer, sequenceId: Option[Int] = None): ExportsDeclarationDiff =
+    Seq(
+      compareStringDifference(original.code, code, combinePointers(pointerString, AdditionalInformation.codePointer, sequenceId)),
+      compareStringDifference(original.description, description, combinePointers(pointerString, AdditionalInformation.descriptionPointer, sequenceId))
+    ).flatten
+
   override def toString: String = s"${code}-${description}"
 }
 
-object AdditionalInformation extends DeclarationPage {
+object AdditionalInformation extends DeclarationPage with FieldMapping {
+
+  val pointer: ExportsFieldPointer = "info"
+  val codePointer: ExportsFieldPointer = "code"
+  val descriptionPointer: ExportsFieldPointer = "description"
 
   implicit val format = Json.format[AdditionalInformation]
 

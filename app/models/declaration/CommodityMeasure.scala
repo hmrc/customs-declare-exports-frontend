@@ -16,16 +16,37 @@
 
 package models.declaration
 
+import models.ExportsFieldPointer.ExportsFieldPointer
+import models.FieldMapping
 import play.api.libs.json.Json
+import services.DiffTools.{combinePointers, compareStringDifference, ExportsDeclarationDiff}
+import services.DiffTools
 
 case class CommodityMeasure(
   supplementaryUnits: Option[String],
   supplementaryUnitsNotRequired: Option[Boolean],
   grossMass: Option[String],
   netMass: Option[String]
-)
+) extends DiffTools[CommodityMeasure] {
 
-object CommodityMeasure {
+  // supplementaryUnitsNotRequired is not used to build WCO XML payload
+  def createDiff(original: CommodityMeasure, pointerString: ExportsFieldPointer, sequenceId: Option[Int] = None): ExportsDeclarationDiff =
+    Seq(
+      compareStringDifference(
+        original.supplementaryUnits,
+        supplementaryUnits,
+        combinePointers(pointerString, CommodityMeasure.supplementaryUnitsPointer, sequenceId)
+      ),
+      compareStringDifference(original.netMass, netMass, combinePointers(pointerString, CommodityMeasure.netMassPointer, sequenceId)),
+      compareStringDifference(original.grossMass, grossMass, combinePointers(pointerString, CommodityMeasure.grossMassPointer, sequenceId))
+    ).flatten
+}
 
+object CommodityMeasure extends FieldMapping {
   implicit val format = Json.format[CommodityMeasure]
+
+  val pointer: ExportsFieldPointer = "commodityMeasure"
+  val supplementaryUnitsPointer: ExportsFieldPointer = "supplementaryUnits"
+  val netMassPointer: ExportsFieldPointer = "netMass"
+  val grossMassPointer: ExportsFieldPointer = "grossMass"
 }

@@ -20,17 +20,24 @@ import forms.DeclarationPage
 import forms.MappingHelper.requiredRadio
 import models.DeclarationType.DeclarationType
 import models.viewmodels.TariffContentKey
+import models.ExportsFieldPointer.ExportsFieldPointer
+import models.FieldMapping
 import play.api.data.Forms.text
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
+import services.DiffTools.compareOptionalString
 import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfEqual
 import utils.validators.forms.FieldValidator._
 
-case class UNDangerousGoodsCode(dangerousGoodsCode: Option[String])
+case class UNDangerousGoodsCode(dangerousGoodsCode: Option[String]) extends Ordered[UNDangerousGoodsCode] {
+  override def compare(that: UNDangerousGoodsCode): Int =
+    compareOptionalString(dangerousGoodsCode, that.dangerousGoodsCode)
+}
 
-object UNDangerousGoodsCode extends DeclarationPage {
-
+object UNDangerousGoodsCode extends DeclarationPage with FieldMapping {
   implicit val format = Json.format[UNDangerousGoodsCode]
+
+  val pointer: ExportsFieldPointer = "dangerousGoodsCode.dangerousGoodsCode"
 
   val hasDangerousGoodsCodeKey = "hasDangerousGoodsCode"
   val dangerousGoodsCodeKey = "dangerousGoodsCode"

@@ -19,15 +19,23 @@ package forms.declaration
 import forms.DeclarationPage
 import models.DeclarationType.DeclarationType
 import models.viewmodels.TariffContentKey
+import models.ExportsFieldPointer.ExportsFieldPointer
+import models.FieldMapping
 import play.api.data.{Form, Forms}
 import play.api.data.Forms.{optional, text}
 import play.api.libs.json.Json
+import services.DiffTools.compareOptionalString
 import utils.validators.forms.FieldValidator._
 
-case class SupervisingCustomsOffice(supervisingCustomsOffice: Option[String] = None)
+case class SupervisingCustomsOffice(supervisingCustomsOffice: Option[String] = None) extends Ordered[SupervisingCustomsOffice] {
+  override def compare(that: SupervisingCustomsOffice): Int =
+    compareOptionalString(supervisingCustomsOffice, that.supervisingCustomsOffice)
+}
 
-object SupervisingCustomsOffice extends DeclarationPage {
+object SupervisingCustomsOffice extends DeclarationPage with FieldMapping {
   implicit val format = Json.format[SupervisingCustomsOffice]
+
+  val pointer: ExportsFieldPointer = "supervisingCustomsOffice"
 
   val formId = "SupervisingCustomsOffice"
 

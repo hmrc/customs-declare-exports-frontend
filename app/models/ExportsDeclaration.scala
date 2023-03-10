@@ -28,7 +28,10 @@ import forms.declaration.declarationHolder.DeclarationHolder
 import models.DeclarationType.DeclarationType
 import models.ExportsDeclaration.isCodePrefixedWith
 import models.declaration._
+import models.ExportsFieldPointer.ExportsFieldPointer
 import play.api.libs.json._
+import services.DiffTools
+import services.DiffTools.{combinePointers, compareDifference, ExportsDeclarationDiff}
 
 // scalastyle:off
 case class ExportsDeclaration(
@@ -47,7 +50,31 @@ case class ExportsDeclaration(
   previousDocuments: Option[PreviousDocumentsData] = None,
   natureOfTransaction: Option[NatureOfTransaction] = None,
   statementDescription: Option[String] = None
-) {
+) extends DiffTools[ExportsDeclaration] {
+
+  /*
+   This diff only compares the fields that are used when generating a WCO XML declaration.
+   It does not include those fields that are purely for our own UI's operation e.g. linkDucrToMucr & DeclarationMeta
+   */
+  def createDiff(
+    original: ExportsDeclaration,
+    pointerString: ExportsFieldPointer = ExportsDeclaration.pointer,
+    sequenceId: Option[Int] = None
+  ): ExportsDeclarationDiff =
+    Seq(
+      compareDifference(original.mucr, mucr, combinePointers(pointerString, Mucr.pointer, sequenceId)),
+      compareDifference(original.natureOfTransaction, natureOfTransaction, combinePointers(pointerString, NatureOfTransaction.pointer, sequenceId)),
+      createDiff(original.items, items, combinePointers(pointerString, ExportItem.pointer, sequenceId))
+    ).flatten ++
+      transport.createDiff(original.transport, combinePointers(pointerString, Transport.pointer, sequenceId)) ++
+      parties.createDiff(original.parties, combinePointers(pointerString, Parties.pointer, sequenceId)) ++
+      locations.createDiff(original.locations, combinePointers(pointerString, Locations.pointer, sequenceId)) ++
+      createDiffOfOptions(
+        original.totalNumberOfItems,
+        totalNumberOfItems,
+        combinePointers(pointerString, InvoiceAndPackageTotals.pointer, sequenceId)
+      ) ++
+      createDiffOfOptions(original.previousDocuments, previousDocuments, combinePointers(pointerString, PreviousDocumentsData.pointer, sequenceId))
 
   def lrn: Option[String] = consignmentReferences.flatMap(_.lrn.map(_.lrn))
   def ducr: Option[Ducr] = consignmentReferences.flatMap(_.ducr)
@@ -200,8 +227,10 @@ case class ExportsDeclaration(
     itemBy(itemId).flatMap(_.additionalDocuments)
 }
 
-object ExportsDeclaration {
+object ExportsDeclaration extends FieldMapping {
   implicit val format: OFormat[ExportsDeclaration] = Json.format[ExportsDeclaration]
+
+  val pointer: ExportsFieldPointer = "declaration"
 
   def isCodePrefixedWith(maybeCode: Option[String], prefixes: Seq[Int]): Boolean = maybeCode match {
     case Some(code) if code.trim.nonEmpty =>

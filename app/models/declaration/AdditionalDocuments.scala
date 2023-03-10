@@ -18,12 +18,23 @@ package models.declaration
 
 import forms.common.YesNoAnswer
 import forms.declaration.additionaldocuments.AdditionalDocument
+import models.ExportsFieldPointer.ExportsFieldPointer
+import models.FieldMapping
 import play.api.libs.json.Json
+import services.DiffTools
+import services.DiffTools.{combinePointers, ExportsDeclarationDiff}
 
-case class AdditionalDocuments(isRequired: Option[YesNoAnswer], documents: Seq[AdditionalDocument])
+case class AdditionalDocuments(isRequired: Option[YesNoAnswer], documents: Seq[AdditionalDocument]) extends DiffTools[AdditionalDocuments] {
+  // isRequired field is not used to produce the WCO XML payload
+  def createDiff(original: AdditionalDocuments, pointerString: ExportsFieldPointer, sequenceId: Option[Int] = None): ExportsDeclarationDiff =
+    Seq(createDiff(original.documents, documents, combinePointers(pointerString, AdditionalDocuments.documentsPointer, sequenceId))).flatten
+}
 
-object AdditionalDocuments {
+object AdditionalDocuments extends FieldMapping {
   implicit val format = Json.format[AdditionalDocuments]
 
   val maxNumberOfItems = 99
+
+  val pointer: ExportsFieldPointer = "additionalDocuments"
+  val documentsPointer: ExportsFieldPointer = "documents"
 }

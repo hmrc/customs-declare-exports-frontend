@@ -18,7 +18,11 @@ package models.declaration
 
 import forms.common.YesNoAnswer
 import forms.declaration.{TransportCountry, TransportLeavingTheBorder, TransportPayment}
+import models.ExportsFieldPointer.ExportsFieldPointer
+import models.FieldMapping
 import play.api.libs.json.{Format, Json}
+import services.DiffTools
+import services.DiffTools.{combinePointers, compareDifference, compareStringDifference, ExportsDeclarationDiff}
 
 case class Transport(
   expressConsignment: Option[YesNoAnswer] = None,
@@ -30,7 +34,48 @@ case class Transport(
   transportCrossingTheBorderNationality: Option[TransportCountry] = None,
   meansOfTransportCrossingTheBorderType: Option[String] = None,
   meansOfTransportCrossingTheBorderIDNumber: Option[String] = None
-) {
+) extends DiffTools[Transport] {
+
+  def createDiff(original: Transport, pointerString: ExportsFieldPointer, sequenceId: Option[Int] = None): ExportsDeclarationDiff =
+    Seq(
+      compareDifference(
+        original.expressConsignment,
+        expressConsignment,
+        combinePointers(pointerString, Transport.expressConsignmentPointer, sequenceId)
+      ),
+      compareDifference(original.transportPayment, transportPayment, combinePointers(pointerString, TransportPayment.pointer, sequenceId)),
+      compareDifference(
+        original.borderModeOfTransportCode,
+        borderModeOfTransportCode,
+        combinePointers(pointerString, TransportLeavingTheBorder.pointer, sequenceId)
+      ),
+      compareStringDifference(
+        original.meansOfTransportOnDepartureType,
+        meansOfTransportOnDepartureType,
+        combinePointers(pointerString, Transport.transportOnDeparturePointer, sequenceId)
+      ),
+      compareStringDifference(
+        original.meansOfTransportOnDepartureIDNumber,
+        meansOfTransportOnDepartureIDNumber,
+        combinePointers(pointerString, Transport.transportOnDepartureIdPointer, sequenceId)
+      ),
+      compareDifference(
+        original.transportCrossingTheBorderNationality,
+        transportCrossingTheBorderNationality,
+        combinePointers(pointerString, TransportCountry.pointer, sequenceId)
+      ),
+      compareStringDifference(
+        original.meansOfTransportCrossingTheBorderType,
+        meansOfTransportCrossingTheBorderType,
+        combinePointers(pointerString, Transport.transportCrossingTheBorderPointer, sequenceId)
+      ),
+      compareStringDifference(
+        original.meansOfTransportCrossingTheBorderIDNumber,
+        meansOfTransportCrossingTheBorderIDNumber,
+        combinePointers(pointerString, Transport.transportCrossingTheBorderIdPointer, sequenceId)
+      )
+    ).flatten ++
+      createDiff(original.containers, containers, combinePointers(pointerString, Container.pointer, sequenceId))
 
   def addOrUpdateContainer(updatedContainer: Container): Transport = {
 
@@ -51,6 +96,13 @@ case class Transport(
   }
 }
 
-object Transport {
+object Transport extends FieldMapping {
   implicit val format: Format[Transport] = Json.format[Transport]
+
+  val pointer: ExportsFieldPointer = "transport"
+  val expressConsignmentPointer: ExportsFieldPointer = "expressConsignment"
+  val transportOnDeparturePointer: ExportsFieldPointer = "meansOfTransportOnDepartureType"
+  val transportOnDepartureIdPointer: ExportsFieldPointer = "meansOfTransportOnDepartureIDNumber"
+  val transportCrossingTheBorderPointer: ExportsFieldPointer = "meansOfTransportCrossingTheBorderType"
+  val transportCrossingTheBorderIdPointer: ExportsFieldPointer = "meansOfTransportCrossingTheBorderIDNumber"
 }

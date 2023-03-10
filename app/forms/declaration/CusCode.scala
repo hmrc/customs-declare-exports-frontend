@@ -19,17 +19,24 @@ import forms.DeclarationPage
 import forms.MappingHelper.requiredRadio
 import models.DeclarationType.DeclarationType
 import models.viewmodels.TariffContentKey
+import models.ExportsFieldPointer.ExportsFieldPointer
+import models.FieldMapping
 import play.api.data.Forms.text
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
+import services.DiffTools.compareOptionalString
 import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfEqual
 import utils.validators.forms.FieldValidator._
 
-case class CusCode(cusCode: Option[String])
+case class CusCode(cusCode: Option[String]) extends Ordered[CusCode] {
+  override def compare(that: CusCode): Int =
+    compareOptionalString(cusCode, that.cusCode)
+}
 
-object CusCode extends DeclarationPage {
-
+object CusCode extends DeclarationPage with FieldMapping {
   implicit val format = Json.format[CusCode]
+
+  val pointer: ExportsFieldPointer = "cusCode"
 
   val hasCusCodeKey = "hasCusCode"
   val cusCodeKey = "cusCode"

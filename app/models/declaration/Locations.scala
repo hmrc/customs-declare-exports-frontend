@@ -19,10 +19,16 @@ package models.declaration
 import forms.declaration.countries.Country
 import forms.declaration.officeOfExit.OfficeOfExit
 import forms.declaration.{InlandModeOfTransportCode, InlandOrBorder, SupervisingCustomsOffice, WarehouseIdentification}
-import models.ExportsDeclaration
+import models.{ExportsDeclaration, FieldMapping}
+import models.ExportsFieldPointer.ExportsFieldPointer
 import play.api.libs.json.Json
+import services.DiffTools.{combinePointers, compareDifference, compareStringDifference, ExportsDeclarationDiff}
+import services.DiffTools
 
-case class RoutingCountry(sequenceId: Int, country: Country)
+case class RoutingCountry(sequenceId: Int, country: Country) extends DiffTools[RoutingCountry] {
+  override def createDiff(original: RoutingCountry, pointerString: ExportsFieldPointer, sequenceId: Option[Int] = None): ExportsDeclarationDiff =
+    Seq(compareStringDifference(original.country.code, country.code, combinePointers(pointerString, Country.pointer, sequenceId))).flatten
+}
 
 object RoutingCountry {
 
@@ -40,12 +46,55 @@ case class Locations(
   warehouseIdentification: Option[WarehouseIdentification] = None,
   inlandOrBorder: Option[InlandOrBorder] = None,
   inlandModeOfTransportCode: Option[InlandModeOfTransportCode] = None
-)
+) extends DiffTools[Locations] {
 
-object Locations {
+  // hasRoutingCountries and inlandOrBorder fields are not used to create WCO XML
+  def createDiff(
+    original: Locations,
+    pointerString: ExportsFieldPointer = ExportsDeclaration.pointer,
+    sequenceId: Option[Int] = None
+  ): ExportsDeclarationDiff =
+    Seq(
+      compareDifference(original.officeOfExit, officeOfExit, combinePointers(pointerString, OfficeOfExit.pointer, sequenceId)),
+      compareDifference(
+        original.supervisingCustomsOffice,
+        supervisingCustomsOffice,
+        combinePointers(pointerString, SupervisingCustomsOffice.pointer, sequenceId)
+      ),
+      compareDifference(
+        original.warehouseIdentification,
+        warehouseIdentification,
+        combinePointers(pointerString, WarehouseIdentification.pointer, sequenceId)
+      )
+    ).flatten ++
+      createDiffOfOptions(
+        original.originationCountry,
+        originationCountry,
+        combinePointers(pointerString, Locations.originationCountryPointer, sequenceId)
+      ) ++
+      createDiffOfOptions(
+        original.destinationCountry,
+        destinationCountry,
+        combinePointers(pointerString, Locations.destinationCountryPointer, sequenceId)
+      ) ++
+      createDiff(original.routingCountries, routingCountries, combinePointers(pointerString, Locations.routingCountriesPointer)) ++
+      createDiffOfOptions(original.goodsLocation, goodsLocation, combinePointers(pointerString, GoodsLocation.pointer, sequenceId)) ++
+      createDiffOfOptions(
+        original.inlandModeOfTransportCode,
+        inlandModeOfTransportCode,
+        combinePointers(pointerString, InlandModeOfTransportCode.pointer, sequenceId)
+      )
+}
+
+object Locations extends FieldMapping {
   val id = "Locations"
 
   implicit val format = Json.format[Locations]
+
+  val pointer: ExportsFieldPointer = "locations"
+  val originationCountryPointer: ExportsFieldPointer = "originationCountry"
+  val destinationCountryPointer: ExportsFieldPointer = "destinationCountry"
+  val routingCountriesPointer: ExportsFieldPointer = "routingCountries"
 
   def apply(cacheData: ExportsDeclaration): Locations = Locations(
     destinationCountry = cacheData.locations.destinationCountry,

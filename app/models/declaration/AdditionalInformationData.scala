@@ -19,11 +19,21 @@ package models.declaration
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.{No, Yes}
 import forms.declaration.AdditionalInformation
+import models.ExportsFieldPointer.ExportsFieldPointer
+import models.FieldMapping
 import play.api.libs.json.Json
+import services.DiffTools
+import services.DiffTools.{combinePointers, ExportsDeclarationDiff}
 
 case class AdditionalInformationData(isRequired: Option[YesNoAnswer], items: Seq[AdditionalInformation])
+    extends DiffTools[AdditionalInformationData] {
 
-object AdditionalInformationData {
+  // isRequired field is not used to produce the WCO XML payload
+  def createDiff(original: AdditionalInformationData, pointerString: ExportsFieldPointer, sequenceId: Option[Int] = None): ExportsDeclarationDiff =
+    Seq(createDiff(original.items, items, combinePointers(pointerString, AdditionalInformationData.itemsPointer, sequenceId))).flatten
+}
+
+object AdditionalInformationData extends FieldMapping {
   implicit val format = Json.format[AdditionalInformationData]
 
   def apply(items: Seq[AdditionalInformation]): AdditionalInformationData =
@@ -34,4 +44,7 @@ object AdditionalInformationData {
   val formId = "AdditionalInformationData"
 
   val maxNumberOfItems = 99
+
+  val pointer: ExportsFieldPointer = "additionalInformation"
+  val itemsPointer: ExportsFieldPointer = "items"
 }

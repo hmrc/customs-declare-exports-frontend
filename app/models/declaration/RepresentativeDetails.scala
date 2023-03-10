@@ -17,12 +17,34 @@
 package models.declaration
 
 import forms.declaration.EntityDetails
+import models.ExportsFieldPointer.ExportsFieldPointer
+import models.FieldMapping
 import play.api.libs.json.Json
+import services.DiffTools
+import services.DiffTools.{combinePointers, compareStringDifference, ExportsDeclarationDiff}
 
 case class RepresentativeDetails(details: Option[EntityDetails], statusCode: Option[String], representingOtherAgent: Option[String])
+    extends DiffTools[RepresentativeDetails] {
+  def isRepresentingOtherAgent = representingOtherAgent.contains("Yes")
 
-object RepresentativeDetails {
+  // representingOtherAgent field is not used to generate WCO XML
+  override def createDiff(
+    original: RepresentativeDetails,
+    pointerString: ExportsFieldPointer,
+    sequenceId: Option[Int] = None
+  ): ExportsDeclarationDiff =
+    Seq(
+      createDiffOfOptions(original.details, details, combinePointers(pointerString, RepresentativeDetails.detailsPointer, sequenceId)),
+      compareStringDifference(original.statusCode, statusCode, combinePointers(pointerString, RepresentativeDetails.statusCodePointer, sequenceId))
+    ).flatten
+}
+
+object RepresentativeDetails extends FieldMapping {
   implicit val format = Json.format[RepresentativeDetails]
+
+  val pointer: ExportsFieldPointer = "representativeDetails"
+  val detailsPointer: ExportsFieldPointer = "details"
+  val statusCodePointer: ExportsFieldPointer = "statusCode"
 
   def apply(): RepresentativeDetails = new RepresentativeDetails(None, None, None)
 }
