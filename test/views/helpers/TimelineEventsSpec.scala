@@ -152,29 +152,32 @@ class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injec
       timelineEvents(2).title mustBe messages(s"submission.enhancedStatus.$RECEIVED")
     }
 
-    "generate the expected sequence of TimelineEvent instances when the latest action is amendment is rejected" in {
+    "generate the expected sequence of TimelineEvent instances when the latest action is amendment rejected" in {
       val timelineEvents = createTimelineFromSubmission(amendmentRejectedLatest)
 
       timelineEvents.size mustBe 4
       timelineEvents(0).title mustBe messages("submission.enhancedStatus.timeline.title.amendment.rejected")
+      timelineEvents(0).dateTime mustBe amendmentRejectedLatest.actions(1).notifications.get(0).dateTimeIssued
       timelineEvents(1).title mustBe messages(s"submission.enhancedStatus.$ERRORS")
+      timelineEvents(1).dateTime mustBe amendmentRejectedLatest.actions(0).notifications.get(0).dateTimeIssued
       timelineEvents(2).title mustBe messages(s"submission.enhancedStatus.$GOODS_ARRIVED_MESSAGE")
+      timelineEvents(2).dateTime mustBe amendmentRejectedLatest.actions(0).notifications.get(1).dateTimeIssued
       timelineEvents(3).title mustBe messages(s"submission.enhancedStatus.$RECEIVED")
-
-      timelineEvents(0).content.isEmpty
+      timelineEvents(3).dateTime mustBe amendmentRejectedLatest.actions(0).notifications.get(2).dateTimeIssued
     }
 
     "generate the expected sequence of TimelineEvent instances when the amendment is rejected" in {
       val timelineEvents = createTimelineFromSubmission(amendmentRejected)
 
       timelineEvents.size mustBe 4
-
       timelineEvents(0).title mustBe messages(s"submission.enhancedStatus.$ERRORS")
+      timelineEvents(0).dateTime mustBe amendmentRejected.actions(0).notifications.get(0).dateTimeIssued
       timelineEvents(1).title mustBe messages(s"submission.enhancedStatus.$GOODS_ARRIVED_MESSAGE")
+      timelineEvents(1).dateTime mustBe amendmentRejected.actions(0).notifications.get(1).dateTimeIssued
       timelineEvents(2).title mustBe messages(s"submission.enhancedStatus.$RECEIVED")
+      timelineEvents(2).dateTime mustBe amendmentRejected.actions(0).notifications.get(2).dateTimeIssued
       timelineEvents(3).title mustBe messages("submission.enhancedStatus.timeline.title.amendment.rejected")
-
-      timelineEvents(0).content.isDefined
+      timelineEvents(3).dateTime mustBe amendmentRejected.actions(1).notifications.get(0).dateTimeIssued
     }
 
     "generate a sequence of TimelineEvent instances" which {
@@ -318,7 +321,7 @@ object TimelineEventsSpec {
          |            "notifications" : [
          |                {
          |                    "notificationId" : "76e6e74f-d76e-426e-b8de-d3a615af3168",
-         |                    "dateTimeIssued" : "2023-03-07T13:36:58Z[UTC]",
+         |                    "dateTimeIssued" : "2023-03-07T13:36:59Z[UTC]",
          |                    "enhancedStatus" : "ERRORS"
          |                }
          |            ],

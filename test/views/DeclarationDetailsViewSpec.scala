@@ -23,7 +23,7 @@ import controllers.routes
 import controllers.routes.EADController
 import models.declaration.submissions.EnhancedStatus._
 import models.declaration.submissions.RequestType.{AmendmentRequest, SubmissionRequest}
-import models.declaration.submissions.{Action, EnhancedStatus, NotificationSummary, Submission}
+import models.declaration.submissions.{Action, EnhancedStatus, NotificationSummary, RequestType, Submission}
 import models.requests.{ExportsSessionKeys, VerifiedEmailRequest}
 import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
@@ -88,8 +88,8 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
     Submission(uuid, "eori", "lrn", Some(mrn), Some("ducr"), Some(status), Some(now), Seq(action), latestDecId = Some(uuid))
   }
 
-  private def createSubmissionWith(notificationSummaries: Seq[NotificationSummary]) = {
-    val action = Action("id", SubmissionRequest, now, Some(notificationSummaries), Some(uuid), 1)
+  private def createSubmissionWith(notificationSummaries: Seq[NotificationSummary], requestType: RequestType = SubmissionRequest) = {
+    val action = Action("id", requestType, now, Some(notificationSummaries), Some(uuid), 1)
     Submission(
       uuid,
       "eori",
@@ -557,28 +557,18 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
       }
     }
 
-    def createSubmissionWithRejectedAmendment(notificationSummaries: Seq[NotificationSummary]) = {
-      val action = Action("id", AmendmentRequest, now, Some(notificationSummaries), Some(uuid), 1)
-      Submission(
-        uuid,
-        "eori",
-        "lrn",
-        Some(mrn),
-        Some("ducr"),
-        notificationSummaries.reverse.headOption.map(_.enhancedStatus),
-        notificationSummaries.headOption.map(_ => now),
-        Seq(action),
-        latestDecId = Some(uuid)
-      )
-    }
-
     "display 'Fix and resubmit' button and 'Cancel' link when latest notification is rejected Amendment" in {
       val notificationSummariesAmendmentRejected = List(dmsrejNotification, dmsdocNotification, dmsctlNotification, acceptedNotification)
-      val view = page(createSubmissionWithRejectedAmendment(notificationSummariesAmendmentRejected))(verifiedEmailRequest(), messages)
-      val button = view.getElementsByClass("govuk-button-group")
-      button.get(0).child(0).text() mustBe messages("declaration.details.fix.resubmit.button")
-      button.get(0).child(1).text() mustBe messages("declaration.details.cancel.amendment")
+      val view = page(createSubmissionWith(notificationSummariesAmendmentRejected, AmendmentRequest))(verifiedEmailRequest(), messages)
+      val buttonGroup = view.getElementsByClass("govuk-button-group")
+      val button = buttonGroup.get(0).child(0)
+      val link = buttonGroup.get(0).child(1)
 
+      button.text() mustBe messages("declaration.details.fix.resubmit.button")
+      button.hasClass("govuk-button")
+
+      link.text() mustBe messages("declaration.details.cancel.amendment")
+      link.hasClass("gov-link")
     }
 
     "display the expected section headers" in {
