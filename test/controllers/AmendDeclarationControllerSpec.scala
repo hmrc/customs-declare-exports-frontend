@@ -63,7 +63,7 @@ class AmendDeclarationControllerSpec extends ControllerWithoutFormSpec {
       "the amend flag is disabled" in {
         when(declarationAmendmentsConfig.isEnabled).thenReturn(false)
 
-        val result = controller.submit(FakeRequest("GET", ""))
+        val result = controller.initAmendment(FakeRequest("GET", ""))
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(RootController.displayPage.url)
@@ -72,7 +72,7 @@ class AmendDeclarationControllerSpec extends ControllerWithoutFormSpec {
 
     "return 400(BAD_REQUEST)" when {
       "there is no 'submissionId' key in Session" in {
-        val result = controller.submit(FakeRequest("GET", ""))
+        val result = controller.initAmendment(FakeRequest("GET", ""))
         status(result) mustBe BAD_REQUEST
       }
     }
@@ -84,7 +84,7 @@ class AmendDeclarationControllerSpec extends ControllerWithoutFormSpec {
           .thenReturn(Future.successful(expectedDeclarationId))
 
         val request = FakeRequest("GET", "").withSession(ExportsSessionKeys.submissionId -> "submissionId")
-        val result = controller.submit(request)
+        val result = controller.initAmendment(request)
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(SummaryController.displayPage.url)

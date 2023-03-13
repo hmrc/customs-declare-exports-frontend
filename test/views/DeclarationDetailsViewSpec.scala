@@ -22,8 +22,8 @@ import config.featureFlags._
 import controllers.routes
 import controllers.routes.EADController
 import models.declaration.submissions.EnhancedStatus._
-import models.declaration.submissions.RequestType.SubmissionRequest
-import models.declaration.submissions.{Action, EnhancedStatus, NotificationSummary, Submission}
+import models.declaration.submissions.RequestType.{AmendmentRequest, SubmissionRequest}
+import models.declaration.submissions.{Action, EnhancedStatus, NotificationSummary, RequestType, Submission}
 import models.requests.{ExportsSessionKeys, VerifiedEmailRequest}
 import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
@@ -34,7 +34,7 @@ import play.api.mvc.Call
 import play.api.test.FakeRequest
 import views.dashboard.DashboardHelper.toDashboard
 import views.declaration.spec.UnitViewSpec
-import views.helpers.{EnhancedStatusHelper, ViewDates}
+import views.helpers.{EnhancedStatusHelper, NotificationEvent, ViewDates}
 import views.html.declaration_details
 
 import java.time.ZonedDateTime
@@ -88,8 +88,8 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
     Submission(uuid, "eori", "lrn", Some(mrn), Some("ducr"), Some(status), Some(now), Seq(action), latestDecId = Some(uuid))
   }
 
-  private def createSubmissionWith(notificationSummaries: Seq[NotificationSummary]) = {
-    val action = Action("id", SubmissionRequest, now, Some(notificationSummaries), Some(uuid), 1)
+  private def createSubmissionWith(notificationSummaries: Seq[NotificationSummary], requestType: RequestType = SubmissionRequest) = {
+    val action = Action("id", requestType, now, Some(notificationSummaries), Some(uuid), 1)
     Submission(
       uuid,
       "eori",
@@ -141,7 +141,7 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
 
         val cancelDeclarationLink = view.getElementById("amend-declaration")
         cancelDeclarationLink must containMessage("declaration.details.amend.declaration")
-        cancelDeclarationLink must haveHref(routes.AmendDeclarationController.submit)
+        cancelDeclarationLink must haveHref(routes.AmendDeclarationController.initAmendment)
       }
     }
 
@@ -404,7 +404,7 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
         And("each Timeline event should always include a title")
         val title = events.get(ix).getElementsByTag("h2")
         assert(title.hasClass("hmrc-timeline__event-title"))
-        title.text mustBe EnhancedStatusHelper.asTimelineTitle(notification)
+        title.text mustBe EnhancedStatusHelper.asTimelineTitle(NotificationEvent(uuid, SubmissionRequest, notification))
 
         And("a date and time")
         val datetime = events.get(ix).getElementsByTag("time")
@@ -559,6 +559,20 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
         button.text mustBe messages(s"$msgKey.$msgId.button")
         button.attr("href") mustBe href
       }
+    }
+
+    "display 'Fix and resubmit' button and 'Cancel' link when latest notification is rejected Amendment" in {
+      val notificationSummariesAmendmentRejected = List(dmsrejNotification, dmsdocNotification, dmsctlNotification, acceptedNotification)
+      val view = page(createSubmissionWith(notificationSummariesAmendmentRejected, AmendmentRequest))(verifiedEmailRequest(), messages)
+      val buttonGroup = view.getElementsByClass("govuk-button-group")
+      val button = buttonGroup.get(0).child(0)
+      val link = buttonGroup.get(0).child(1)
+
+      button.text() mustBe messages("declaration.details.fix.resubmit.button")
+      button.hasClass("govuk-button")
+
+      link.text() mustBe messages("declaration.details.cancel.amendment")
+      link.hasClass("gov-link")
     }
 
     "display the expected section headers" in {

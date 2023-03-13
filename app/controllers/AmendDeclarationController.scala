@@ -39,7 +39,7 @@ class AmendDeclarationController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) {
 
-  val submit: Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
+  val initAmendment: Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
     if (!declarationAmendmentsConfig.isEnabled) Future.successful(Redirect(RootController.displayPage))
     else
       request.session.get(ExportsSessionKeys.submissionId) match {
@@ -51,5 +51,10 @@ class AmendDeclarationController @Inject() (
 
         case _ => errorHandler.displayErrorPage
       }
+  }
+
+  def submit(action: String): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
+    request.session.get(ExportsSessionKeys.submissionId)
+    Future.successful(Redirect(RootController.displayPage))
   }
 }

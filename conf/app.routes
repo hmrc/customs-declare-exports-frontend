@@ -47,7 +47,9 @@ GET         /ead-print-view/:mrn                           controllers.EADContro
 
 # Amend declaration
 
-GET         /amend-declaration                             controllers.AmendDeclarationController.submit
+GET         /amend-declaration                             controllers.AmendDeclarationController.initAmendment
+
+GET         /submit-amendment                              controllers.AmendDeclarationController.submit(action: String ?= "cancel")
 
 # Cancel declaration
 

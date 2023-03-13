@@ -16,9 +16,9 @@
 
 package views.helpers
 
-import models.declaration.submissions.EnhancedStatus.{CUSTOMS_POSITION_DENIED, EnhancedStatus, PENDING, QUERY_NOTIFICATION_MESSAGE}
-import models.declaration.submissions.RequestType.SubmissionRequest
-import models.declaration.submissions.{NotificationSummary, Submission}
+import models.declaration.submissions.EnhancedStatus._
+import models.declaration.submissions.RequestType.{AmendmentRequest, SubmissionRequest}
+import models.declaration.submissions.Submission
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.html.components.{Key, SummaryListRow, Text, Value}
 
@@ -30,9 +30,16 @@ object EnhancedStatusHelper {
   def asText(submission: Submission)(implicit messages: Messages): String =
     asText(submission.latestEnhancedStatus.fold(PENDING)(identity))
 
-  def asTimelineTitle(notification: NotificationSummary)(implicit messages: Messages): String =
-    if (notification.enhancedStatus != CUSTOMS_POSITION_DENIED) asText(notification.enhancedStatus)
-    else messages("submission.enhancedStatus.timeline.title.CUSTOMS_POSITION_DENIED")
+  def asTimelineTitle(event: NotificationEvent)(implicit messages: Messages): String =
+    event.requestType match {
+      case AmendmentRequest if event.notificationSummary.enhancedStatus == ERRORS =>
+        messages("submission.enhancedStatus.timeline.title.amendment.rejected")
+
+      case _ =>
+        val status = event.notificationSummary.enhancedStatus
+        if (status != CUSTOMS_POSITION_DENIED) asText(status)
+        else messages("submission.enhancedStatus.timeline.title.CUSTOMS_POSITION_DENIED")
+    }
 
   def extractNotificationRows(maybeSubmission: Option[Submission])(implicit messages: Messages): Seq[SummaryListRow] =
     maybeSubmission.map { submission =>
