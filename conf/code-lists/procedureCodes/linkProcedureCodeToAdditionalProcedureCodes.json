@@ -45,7 +45,7 @@
   },
   {
     "parentCode": "2300",
-    "childCodes": ["000", "F75", "2DP", "0GD", "0MG", "1CD", "1CG", "1DP", "1NO", "1NP", "1MB"]
+    "childCodes": ["000", "F75", "2DP", "0GD", "0MG", "1CD", "1CG", "1CS", "1DP", "1MB", "1NO", "1NP"]
   },
   {
     "parentCode": "3151",
