@@ -21,14 +21,23 @@ import forms.DeclarationPage
 import forms.declaration.EntityDetails
 import models.DeclarationType.{CLEARANCE, DeclarationType}
 import models.viewmodels.TariffContentKey
+import models.ExportsFieldPointer.ExportsFieldPointer
+import models.FieldMapping
 import play.api.data.{Form, Forms}
 import play.api.i18n.Messages
 import play.api.libs.json.Json
+import services.DiffTools
+import services.DiffTools.{combinePointers, ExportsDeclarationDiff}
 
-case class CarrierDetails(details: EntityDetails)
+case class CarrierDetails(details: EntityDetails) extends DiffTools[CarrierDetails] {
+  override def createDiff(original: CarrierDetails, pointerString: ExportsFieldPointer, sequenceId: Option[Int] = None): ExportsDeclarationDiff =
+    Seq(details.createDiff(original.details, combinePointers(pointerString, CarrierDetails.pointer, sequenceId))).flatten
+}
 
-object CarrierDetails extends DeclarationPage {
+object CarrierDetails extends DeclarationPage with FieldMapping {
   implicit val format = Json.format[CarrierDetails]
+
+  val pointer: ExportsFieldPointer = "carrierDetails"
 
   val id = "CarrierDetails"
 

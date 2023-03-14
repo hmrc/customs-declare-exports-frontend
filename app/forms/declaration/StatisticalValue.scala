@@ -19,16 +19,21 @@ package forms.declaration
 import forms.DeclarationPage
 import models.DeclarationType.DeclarationType
 import models.viewmodels.TariffContentKey
+import models.ExportsFieldPointer.ExportsFieldPointer
+import models.FieldMapping
 import play.api.data.Forms.text
 import play.api.data.{Form, Forms, Mapping}
 import play.api.libs.json.Json
 import utils.validators.forms.FieldValidator._
 
-case class StatisticalValue(statisticalValue: String)
+case class StatisticalValue(statisticalValue: String) extends Ordered[StatisticalValue] {
+  override def compare(y: StatisticalValue): Int = statisticalValue.compareTo(y.statisticalValue)
+}
 
-object StatisticalValue extends DeclarationPage {
-
+object StatisticalValue extends DeclarationPage with FieldMapping {
   implicit val format = Json.format[StatisticalValue]
+
+  val pointer: ExportsFieldPointer = "statisticalValue.statisticalValue"
 
   val statisticalValueKey = "statisticalValue"
 

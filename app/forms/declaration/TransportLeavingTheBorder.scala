@@ -22,6 +22,7 @@ import forms.declaration.ModeOfTransportCode.RoRo
 import models.DeclarationType.{CLEARANCE, DeclarationType}
 import models.requests.JourneyRequest
 import models.viewmodels.TariffContentKey
+import models.FieldMapping
 import play.api.data.{Form, Forms, Mapping}
 import play.api.data.Forms.{of, optional}
 import play.api.data.format.Formatter
@@ -29,13 +30,22 @@ import play.api.data.validation.{Constraint, Invalid, Valid, ValidationError, Va
 import play.api.libs.json._
 import utils.validators.forms.FieldValidator._
 
-case class TransportLeavingTheBorder(code: Option[ModeOfTransportCode] = None) {
+case class TransportLeavingTheBorder(code: Option[ModeOfTransportCode] = None) extends Ordered[TransportLeavingTheBorder] {
+  override def compare(that: TransportLeavingTheBorder): Int =
+    (code, that.code) match {
+      case (None, None)                    => 0
+      case (_, None)                       => 1
+      case (None, _)                       => -1
+      case (Some(current), Some(original)) => current.compare(original)
+    }
+
   def getCodeValue: String = code.getOrElse(ModeOfTransportCode.Empty).value
 }
 
-object TransportLeavingTheBorder extends DeclarationPage {
-
+object TransportLeavingTheBorder extends DeclarationPage with FieldMapping {
   implicit val format = Json.format[TransportLeavingTheBorder]
+
+  val pointer: String = "borderModeOfTransportCode.code"
 
   def form(implicit request: JourneyRequest[_]): Form[TransportLeavingTheBorder] =
     Form(mapping(request.isType(CLEARANCE), request.cacheModel.locations.goodsLocation.map(_.toForm)))

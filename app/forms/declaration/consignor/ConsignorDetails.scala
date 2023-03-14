@@ -21,14 +21,23 @@ import forms.DeclarationPage
 import forms.declaration.EntityDetails
 import models.viewmodels.TariffContentKey
 import models.DeclarationType.DeclarationType
+import models.ExportsFieldPointer.ExportsFieldPointer
+import models.FieldMapping
 import play.api.data.{Form, Forms}
 import play.api.i18n.Messages
 import play.api.libs.json.Json
+import services.DiffTools
+import services.DiffTools.{combinePointers, ExportsDeclarationDiff}
 
-case class ConsignorDetails(details: EntityDetails)
+case class ConsignorDetails(details: EntityDetails) extends DiffTools[ConsignorDetails] {
+  override def createDiff(original: ConsignorDetails, pointerString: ExportsFieldPointer, sequenceId: Option[Int] = None): ExportsDeclarationDiff =
+    Seq(details.createDiff(original.details, combinePointers(pointerString, ConsignorDetails.pointer, sequenceId))).flatten
+}
 
-object ConsignorDetails extends DeclarationPage {
+object ConsignorDetails extends DeclarationPage with FieldMapping {
   implicit val format = Json.format[ConsignorDetails]
+
+  val pointer: ExportsFieldPointer = "consignorDetails"
 
   val id = "ConsignorDetails"
 

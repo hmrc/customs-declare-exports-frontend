@@ -22,6 +22,7 @@ import forms.MappingHelper.requiredRadioWithArgs
 import forms.common.YesNoAnswer.YesNoAnswers.{no, yes}
 import models.DeclarationType.DeclarationType
 import models.viewmodels.TariffContentKey
+import models.FieldMapping
 import play.api.data.{Form, Forms, Mapping}
 import play.api.data.Forms.text
 import play.api.data.validation.{Constraint, Invalid, Valid, ValidationError}
@@ -31,11 +32,20 @@ import services.Countries.isValidCountryName
 import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfEqual
 import utils.validators.forms.FieldValidator._
 
-case class TransportCountry(countryName: Option[String])
+case class TransportCountry(countryName: Option[String]) extends Ordered[TransportCountry] {
+  override def compare(that: TransportCountry): Int =
+    (countryName, that.countryName) match {
+      case (None, None)                    => 0
+      case (_, None)                       => 1
+      case (None, _)                       => -1
+      case (Some(current), Some(original)) => current.compare(original)
+    }
+}
 
-object TransportCountry extends DeclarationPage {
-
+object TransportCountry extends DeclarationPage with FieldMapping {
   implicit val format: OFormat[TransportCountry] = Json.format[TransportCountry]
+
+  val pointer: String = "meansOfTransportCrossingTheBorderNationality"
 
   val transportCountry = "transportCountry"
   val hasTransportCountry = "hasTransportCountry"

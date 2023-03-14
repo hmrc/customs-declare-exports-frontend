@@ -19,14 +19,23 @@ import connectors.CodeListConnector
 import forms.DeclarationPage
 import models.DeclarationType.DeclarationType
 import models.viewmodels.TariffContentKey
+import models.ExportsFieldPointer.ExportsFieldPointer
+import models.FieldMapping
 import play.api.data.{Form, Forms}
 import play.api.i18n.Messages
 import play.api.libs.json.Json
+import services.DiffTools
+import services.DiffTools.{combinePointers, ExportsDeclarationDiff}
 
-case class ConsigneeDetails(details: EntityDetails)
+case class ConsigneeDetails(details: EntityDetails) extends DiffTools[ConsigneeDetails] {
+  override def createDiff(original: ConsigneeDetails, pointerString: ExportsFieldPointer, sequenceId: Option[Int] = None): ExportsDeclarationDiff =
+    Seq(details.createDiff(original.details, combinePointers(pointerString, ConsigneeDetails.pointer, sequenceId))).flatten
+}
 
-object ConsigneeDetails extends DeclarationPage {
+object ConsigneeDetails extends DeclarationPage with FieldMapping {
   implicit val format = Json.format[ConsigneeDetails]
+
+  val pointer: ExportsFieldPointer = "consigneeDetails"
 
   val id = "ConsigneeDetails"
 

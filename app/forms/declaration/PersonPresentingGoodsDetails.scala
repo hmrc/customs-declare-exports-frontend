@@ -20,13 +20,26 @@ import forms.DeclarationPage
 import forms.common.Eori
 import models.viewmodels.TariffContentKey
 import models.DeclarationType.DeclarationType
+import models.ExportsFieldPointer.ExportsFieldPointer
+import models.FieldMapping
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
+import services.DiffTools
+import services.DiffTools.{combinePointers, compareDifference, ExportsDeclarationDiff}
 
-case class PersonPresentingGoodsDetails(eori: Eori)
+case class PersonPresentingGoodsDetails(eori: Eori) extends DiffTools[PersonPresentingGoodsDetails] {
+  override def createDiff(
+    original: PersonPresentingGoodsDetails,
+    pointerString: ExportsFieldPointer,
+    sequenceId: Option[Int] = None
+  ): ExportsDeclarationDiff =
+    Seq(compareDifference(original.eori, eori, combinePointers(pointerString, Eori.pointer, sequenceId))).flatten
+}
 
-object PersonPresentingGoodsDetails extends DeclarationPage {
+object PersonPresentingGoodsDetails extends DeclarationPage with FieldMapping {
   implicit val format = Json.format[PersonPresentingGoodsDetails]
+
+  val pointer: ExportsFieldPointer = "personPresentingGoodsDetails"
 
   val fieldName = "eori"
 

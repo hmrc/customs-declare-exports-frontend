@@ -21,11 +21,20 @@ import forms.MappingHelper._
 import forms.common.Eori
 import models.DeclarationType.DeclarationType
 import models.viewmodels.TariffContentKey
+import models.ExportsFieldPointer.ExportsFieldPointer
+import models.FieldMapping
 import play.api.data.{Form, Forms, Mapping}
 import play.api.libs.json.{Format, JsValue, Json}
+import services.DiffTools
+import services.DiffTools.{combinePointers, compareDifference, compareStringDifference, ExportsDeclarationDiff}
 import uk.gov.voa.play.form.ConditionalMappings._
 
-case class DeclarationAdditionalActors(eori: Option[Eori], partyType: Option[String]) {
+case class DeclarationAdditionalActors(eori: Option[Eori], partyType: Option[String]) extends DiffTools[DeclarationAdditionalActors] {
+  def createDiff(original: DeclarationAdditionalActors, pointerString: ExportsFieldPointer, sequenceId: Option[Int] = None): ExportsDeclarationDiff =
+    Seq(
+      compareDifference(original.eori, eori, combinePointers(pointerString, DeclarationAdditionalActors.eoriPointer, None)),
+      compareStringDifference(original.partyType, partyType, combinePointers(pointerString, DeclarationAdditionalActors.partyTypePointer, None))
+    ).flatten
 
   import DeclarationAdditionalActors._
 
@@ -38,7 +47,11 @@ case class DeclarationAdditionalActors(eori: Option[Eori], partyType: Option[Str
   def toJson: JsValue = Json.toJson(this)(format)
 }
 
-object DeclarationAdditionalActors extends DeclarationPage {
+object DeclarationAdditionalActors extends DeclarationPage with FieldMapping {
+
+  val pointer: ExportsFieldPointer = "actors"
+  val eoriPointer: ExportsFieldPointer = "eori"
+  val partyTypePointer: ExportsFieldPointer = "partyType"
 
   def fromJsonString(value: String): Option[DeclarationAdditionalActors] = Json.fromJson(Json.parse(value)).asOpt
 

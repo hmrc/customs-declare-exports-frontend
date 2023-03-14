@@ -16,19 +16,41 @@
 
 package forms.declaration
 import forms.DeclarationPage
-import models.DeclarationType
+import models.{DeclarationType, FieldMapping}
 import models.DeclarationType.{CLEARANCE, DeclarationType}
 import models.viewmodels.TariffContentKey
+import models.ExportsFieldPointer.ExportsFieldPointer
 import play.api.data.{Form, Mapping}
 import play.api.data.Forms.{mapping, optional, text}
 import play.api.libs.json.Json
+import services.DiffTools
+import services.DiffTools.{combinePointers, compareStringDifference, ExportsDeclarationDiff}
 import utils.validators.forms.FieldValidator._
 
-case class CommodityDetails(combinedNomenclatureCode: Option[String], descriptionOfGoods: Option[String])
+case class CommodityDetails(combinedNomenclatureCode: Option[String], descriptionOfGoods: Option[String]) extends DiffTools[CommodityDetails] {
 
-object CommodityDetails extends DeclarationPage {
+  def createDiff(original: CommodityDetails, pointerString: ExportsFieldPointer, sequenceId: Option[Int] = None): ExportsDeclarationDiff =
+    Seq(
+      compareStringDifference(
+        original.combinedNomenclatureCode,
+        combinedNomenclatureCode,
+        combinePointers(pointerString, CommodityDetails.combinedNomenclatureCodePointer, sequenceId)
+      ),
+      compareStringDifference(
+        original.descriptionOfGoods,
+        descriptionOfGoods,
+        combinePointers(pointerString, CommodityDetails.descriptionOfGoodsPointer, sequenceId)
+      )
+    ).flatten
+}
+
+object CommodityDetails extends DeclarationPage with FieldMapping {
 
   implicit val format = Json.format[CommodityDetails]
+
+  val pointer: ExportsFieldPointer = "commodityDetails"
+  val combinedNomenclatureCodePointer: ExportsFieldPointer = "combinedNomenclatureCode"
+  val descriptionOfGoodsPointer: ExportsFieldPointer = "descriptionOfGoods"
 
   val placeholder = "NNNNNNNNNN"
 

@@ -20,18 +20,37 @@ import connectors.CodeListConnector
 import forms.DeclarationPage
 import models.DeclarationType.DeclarationType
 import models.viewmodels.TariffContentKey
+import models.ExportsFieldPointer.ExportsFieldPointer
+import models.FieldMapping
 import play.api.data.{Form, Forms}
 import play.api.data.Forms.text
 import play.api.i18n.Messages
 import play.api.libs.json.Json
 import services.Countries._
+import services.DiffTools
+import services.DiffTools.{combinePointers, compareStringDifference, ExportsDeclarationDiff}
 import utils.validators.forms.FieldValidator._
 
-case class AdditionalFiscalReference(country: String, reference: String) {
+case class AdditionalFiscalReference(country: String, reference: String) extends DiffTools[AdditionalFiscalReference] {
+  override def createDiff(
+    original: AdditionalFiscalReference,
+    pointerString: ExportsFieldPointer,
+    sequenceId: Option[Int] = None
+  ): ExportsDeclarationDiff =
+    Seq(
+      compareStringDifference(original.country, country, combinePointers(pointerString, AdditionalFiscalReference.countryPointer, sequenceId)),
+      compareStringDifference(original.reference, reference, combinePointers(pointerString, AdditionalFiscalReference.referencePointer, sequenceId))
+    ).flatten
+
   val asString: String = country + reference
 }
 
-object AdditionalFiscalReference extends DeclarationPage {
+object AdditionalFiscalReference extends DeclarationPage with FieldMapping {
+
+  val pointer: ExportsFieldPointer = "references"
+  val countryPointer: ExportsFieldPointer = "country"
+  val referencePointer: ExportsFieldPointer = "reference"
+
   def build(country: String, reference: String): AdditionalFiscalReference = new AdditionalFiscalReference(country, reference.toUpperCase)
   implicit val format = Json.format[AdditionalFiscalReference]
 
@@ -51,7 +70,14 @@ object AdditionalFiscalReference extends DeclarationPage {
     Seq(TariffContentKey(s"tariff.declaration.item.additionalFiscalReferences.${DeclarationPage.getJourneyTypeSpecialisation(decType)}"))
 }
 
-case class AdditionalFiscalReferencesData(references: Seq[AdditionalFiscalReference]) {
+case class AdditionalFiscalReferencesData(references: Seq[AdditionalFiscalReference]) extends DiffTools[AdditionalFiscalReferencesData] {
+  override def createDiff(
+    original: AdditionalFiscalReferencesData,
+    pointerString: ExportsFieldPointer,
+    sequenceId: Option[Int] = None
+  ): ExportsDeclarationDiff =
+    Seq(createDiff(original.references, references, combinePointers(pointerString, AdditionalFiscalReferencesData.pointer, sequenceId))).flatten
+
   def removeReferences(values: Seq[String]): AdditionalFiscalReferencesData = {
     val patterns = values.toSet
     copy(references = references.filterNot(reference => patterns.contains(reference.asString)))
@@ -61,7 +87,9 @@ case class AdditionalFiscalReferencesData(references: Seq[AdditionalFiscalRefere
     removeReferences(Seq(value))
 }
 
-object AdditionalFiscalReferencesData {
+object AdditionalFiscalReferencesData extends FieldMapping {
+  val pointer: ExportsFieldPointer = "additionalFiscalReferencesData"
+
   implicit val format = Json.format[AdditionalFiscalReferencesData]
 
   def apply(references: Seq[AdditionalFiscalReference]): AdditionalFiscalReferencesData =

@@ -17,17 +17,38 @@
 package models.declaration
 
 import forms.declaration.procedurecodes.ProcedureCode
+import models.ExportsFieldPointer.ExportsFieldPointer
+import models.FieldMapping
 import play.api.libs.json.Json
+import services.DiffTools
+import services.DiffTools.{combinePointers, compareStringDifference, ExportsDeclarationDiff}
 
-case class ProcedureCodesData(procedureCode: Option[String], additionalProcedureCodes: Seq[String]) {
+case class ProcedureCodesData(procedureCode: Option[String], additionalProcedureCodes: Seq[String]) extends DiffTools[ProcedureCodesData] {
+  override def createDiff(original: ProcedureCodesData, pointerString: ExportsFieldPointer, sequenceId: Option[Int] = None): ExportsDeclarationDiff =
+    Seq(
+      compareStringDifference(
+        original.procedureCode,
+        procedureCode,
+        combinePointers(pointerString, ProcedureCodesData.procedureCodesPointer, sequenceId)
+      ),
+      compareStringDifference(
+        original.additionalProcedureCodes,
+        additionalProcedureCodes,
+        combinePointers(pointerString, ProcedureCodesData.additionalProcedureCodesPointer, sequenceId)
+      )
+    ).flatten
 
   def toProcedureCode(): ProcedureCode = ProcedureCode(procedureCode.getOrElse(""))
 
   def containsAdditionalCode(code: String): Boolean = additionalProcedureCodes.contains(code)
 }
 
-object ProcedureCodesData {
+object ProcedureCodesData extends FieldMapping {
   implicit val format = Json.format[ProcedureCodesData]
+
+  val pointer: ExportsFieldPointer = "procedureCodes"
+  val procedureCodesPointer: ExportsFieldPointer = "procedure.code"
+  val additionalProcedureCodesPointer: ExportsFieldPointer = "additionalProcedureCodes"
 
   val formId = "ProcedureCodesData"
 

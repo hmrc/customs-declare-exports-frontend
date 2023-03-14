@@ -20,16 +20,21 @@ import forms.DeclarationPage
 import forms.MappingHelper.requiredRadio
 import models.DeclarationType.DeclarationType
 import models.viewmodels.TariffContentKey
+import models.ExportsFieldPointer.ExportsFieldPointer
+import models.FieldMapping
 import play.api.data.{Form, Mapping}
 import play.api.data.Forms.mapping
 import play.api.libs.json.{Json, OFormat}
 import utils.validators.forms.FieldValidator.isContainedIn
 
-case class TransportPayment(paymentMethod: String)
+case class TransportPayment(paymentMethod: String) extends Ordered[TransportPayment] {
+  override def compare(that: TransportPayment): Int = paymentMethod.compare(that.paymentMethod)
+}
 
-object TransportPayment extends DeclarationPage {
-
+object TransportPayment extends DeclarationPage with FieldMapping {
   implicit val formats: OFormat[TransportPayment] = Json.format[TransportPayment]
+
+  override val pointer: ExportsFieldPointer = "transportPayment.paymentMethod"
 
   val cash = "A"
   val creditCard = "B"

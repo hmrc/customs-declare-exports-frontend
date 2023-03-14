@@ -19,16 +19,21 @@ import forms.DeclarationPage
 import forms.MappingHelper.requiredRadio
 import models.DeclarationType.DeclarationType
 import models.viewmodels.TariffContentKey
+import models.ExportsFieldPointer.ExportsFieldPointer
+import models.FieldMapping
 import play.api.data.Forms.text
 import play.api.data.{Form, Forms, Mapping}
 import play.api.libs.json.Json
 import utils.validators.forms.FieldValidator._
 
-case class NactCode(nactCode: String)
+case class NactCode(nactCode: String) extends Ordered[NactCode] {
+  override def compare(y: NactCode): Int = nactCode.compareTo(y.nactCode)
+}
 
-object NactCode extends DeclarationPage {
-
+object NactCode extends DeclarationPage with FieldMapping {
   implicit val format = Json.format[NactCode]
+
+  val pointer: ExportsFieldPointer = CommodityDetails.combinedNomenclatureCodePointer
 
   val nactCodeKey = "nactCode"
 

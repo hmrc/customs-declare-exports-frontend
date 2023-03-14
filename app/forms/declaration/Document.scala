@@ -19,17 +19,39 @@ package forms.declaration
 import forms.DeclarationPage
 import models.DeclarationType.DeclarationType
 import models.viewmodels.TariffContentKey
+import models.ExportsFieldPointer.ExportsFieldPointer
+import models.FieldMapping
 import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, Forms, Mapping}
 import play.api.libs.json.Json
-import services.DocumentType
+import services.{DiffTools, DocumentType}
+import services.DiffTools.{combinePointers, compareStringDifference, ExportsDeclarationDiff}
 import utils.validators.forms.FieldValidator._
 
-case class Document(documentType: String, documentReference: String, goodsItemIdentifier: Option[String])
+case class Document(documentType: String, documentReference: String, goodsItemIdentifier: Option[String]) extends DiffTools[Document] {
+  def createDiff(original: Document, pointerString: ExportsFieldPointer, sequenceId: Option[Int] = None): ExportsDeclarationDiff =
+    Seq(
+      compareStringDifference(original.documentType, documentType, combinePointers(pointerString, Document.documentTypePointer, sequenceId)),
+      compareStringDifference(
+        original.documentReference,
+        documentReference,
+        combinePointers(pointerString, Document.documentReferencePointer, sequenceId)
+      ),
+      compareStringDifference(
+        original.goodsItemIdentifier,
+        goodsItemIdentifier,
+        combinePointers(pointerString, Document.goodsItemIdentifierPointer, sequenceId)
+      )
+    ).flatten
+}
 
-object Document extends DeclarationPage {
-
+object Document extends DeclarationPage with FieldMapping {
   implicit val format = Json.format[Document]
+
+  val pointer: ExportsFieldPointer = "documents"
+  val documentTypePointer: ExportsFieldPointer = "documentType"
+  val documentReferencePointer: ExportsFieldPointer = "documentReference"
+  val goodsItemIdentifierPointer: ExportsFieldPointer = "goodsItemIdentifier"
 
   val formId = "PreviousDocuments"
 
@@ -58,10 +80,15 @@ object Document extends DeclarationPage {
     Seq(TariffContentKey(s"tariff.declaration.addPreviousDocument.${DeclarationPage.getJourneyTypeSpecialisation(decType)}"))
 }
 
-case class PreviousDocumentsData(documents: Seq[Document])
+case class PreviousDocumentsData(documents: Seq[Document]) extends DiffTools[PreviousDocumentsData] {
+  def createDiff(original: PreviousDocumentsData, pointerString: ExportsFieldPointer, sequenceId: Option[Int] = None): ExportsDeclarationDiff =
+    createDiff(original.documents, documents, combinePointers(pointerString, PreviousDocumentsData.pointer, sequenceId))
+}
 
-object PreviousDocumentsData {
+object PreviousDocumentsData extends FieldMapping {
   implicit val format = Json.format[PreviousDocumentsData]
+
+  val pointer: ExportsFieldPointer = "previousDocuments"
 
   val maxAmountOfItems = 99
 

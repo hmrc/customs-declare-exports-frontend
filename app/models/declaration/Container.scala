@@ -16,12 +16,27 @@
 
 package models.declaration
 
+import models.ExportsFieldPointer.ExportsFieldPointer
+import models.FieldMapping
 import play.api.libs.json.{Json, OFormat}
+import services.DiffTools
+import services.DiffTools.{combinePointers, compareStringDifference, ExportsDeclarationDiff}
 
-case class Container(sequenceId: Int, id: String, seals: Seq[models.declaration.Seal])
+case class Container(sequenceId: Int, id: String, seals: Seq[models.declaration.Seal]) extends DiffTools[Container] {
 
-object Container {
+  override def createDiff(original: Container, pointerString: ExportsFieldPointer, sequenceId: Option[Int]): ExportsDeclarationDiff =
+    Seq(compareStringDifference(original.id, id, combinePointers(pointerString, Container.idPointer, sequenceId))).flatten ++ createDiff(
+      original.seals,
+      seals,
+      combinePointers(pointerString, Seal.pointer, sequenceId)
+    )
+}
+
+object Container extends FieldMapping {
   implicit val format: OFormat[Container] = Json.format[Container]
+
+  override val pointer: ExportsFieldPointer = "containers"
+  val idPointer: ExportsFieldPointer = "id"
 
   val maxNumberOfItems = 9999
 }
