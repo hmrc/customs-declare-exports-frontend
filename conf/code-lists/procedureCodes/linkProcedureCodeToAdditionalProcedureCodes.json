@@ -1,7 +1,7 @@
 [
   {
     "parentCode": "1040",
-    "childCodes": ["000", "1CS", "3LV", "3NS", "3PE", "3PM", "3RI", "F75", "2DP", "2IE", "0GD", "0MG", "1CD", "1CG", "1DP", "1NO", "1NP", "C12", "1MB"]
+    "childCodes": ["000", "1CS", "3LV", "3NS", "3PE", "3PM", "3RI", "F75", "2DP", "2IE", "0GD", "0MG", "1CD", "1CG", "1DP", "1NO", "1NP", "C12", "1MB", "1MU"]
   },
   {
     "parentCode": "1007",
