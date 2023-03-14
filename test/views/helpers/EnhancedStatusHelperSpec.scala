@@ -17,11 +17,15 @@
 package views.helpers
 
 import models.declaration.submissions.EnhancedStatus._
-import models.declaration.submissions.Submission
+import models.declaration.submissions.RequestType.{AmendmentRequest, SubmissionRequest}
+import models.declaration.submissions.{NotificationSummary, RequestType, Submission}
 import play.api.libs.json.Json
 import views.declaration.spec.UnitViewSpec
-import views.helpers.EnhancedStatusHelper.{asText, extractNotificationRows, hasQueryNotificationMessageStatus}
+import views.helpers.EnhancedStatusHelper._
 import views.helpers.EnhancedStatusHelperSpec.{submission, submissionWithDMSQRY, submissionWithoutNotificationSummaries}
+
+import java.time.ZonedDateTime
+import java.util.UUID
 
 class EnhancedStatusHelperSpec extends UnitViewSpec {
 
@@ -51,6 +55,14 @@ class EnhancedStatusHelperSpec extends UnitViewSpec {
       asText(PENDING) mustBe "Pending"
       asText(REQUESTED_CANCELLATION) mustBe "Cancellation request submitted"
       asText(UNKNOWN) mustBe "Unknown"
+
+      val event = (requestType: RequestType, status: EnhancedStatus) =>
+        NotificationEvent("someId", requestType, NotificationSummary(UUID.randomUUID(), ZonedDateTime.now(), status))
+
+      asTimelineTitle(event(AmendmentRequest, CUSTOMS_POSITION_DENIED)) mustBe "Amendment failed"
+      asTimelineTitle(event(AmendmentRequest, ERRORS)) mustBe "Amendment rejected"
+      asTimelineTitle(event(SubmissionRequest, CUSTOMS_POSITION_DENIED)) mustBe "Cancellation request denied"
+      asTimelineTitle(event(SubmissionRequest, CUSTOMS_POSITION_GRANTED)) mustBe "Customs position granted"
     }
 
     "return the expected list of SummaryListRow" when {

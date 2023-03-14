@@ -32,6 +32,9 @@ object EnhancedStatusHelper {
 
   def asTimelineTitle(event: NotificationEvent)(implicit messages: Messages): String =
     event.requestType match {
+      case AmendmentRequest if event.notificationSummary.enhancedStatus == CUSTOMS_POSITION_DENIED =>
+        messages("submission.enhancedStatus.timeline.title.amendment.failed")
+
       case AmendmentRequest if event.notificationSummary.enhancedStatus == ERRORS =>
         messages("submission.enhancedStatus.timeline.title.amendment.rejected")
 
