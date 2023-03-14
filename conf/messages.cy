@@ -1370,9 +1370,9 @@ submission.enhancedStatus.DECLARATION_HANDLED_EXTERNALLY= Datganiad wedi’i dri
 
 submission.enhancedStatus.ERRORS                        = Datganiad wedi’i wrthod
 
-submission.enhancedStatus.EXPIRED_NO_ARRIVAL            = Mae’r datganiad wedi dod i ben (dim cyrraedd)
+submission.enhancedStatus.EXPIRED_NO_ARRIVAL            = Datganiad wedi dod i ben (heb gyrraedd)
 
-submission.enhancedStatus.EXPIRED_NO_DEPARTURE          = Mae’r datganiad wedi dod i ben (dim ymadawiad)
+submission.enhancedStatus.EXPIRED_NO_DEPARTURE          = Datganiad wedi dod i ben (heb ymadael)
 
 submission.enhancedStatus.GOODS_ARRIVED                 = Wedi cyrraedd a’i dderbyn
 
