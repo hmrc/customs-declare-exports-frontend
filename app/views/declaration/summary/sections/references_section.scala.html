@@ -113,7 +113,9 @@
                 value = Value(
                     content = Text(ducr.ducr)
                 ),
-                actions = actions(Actions(
+                actions =
+                    if (declaration.isAmendmentDraft) None
+                    else actions(Actions(
                     items = Seq(
                         actionSummaryItem(
                             href = ducrChangeLink,
@@ -173,7 +175,9 @@
                 value = Value(
                     content = Text(lrn.lrn)
                 ),
-                actions = actions(Actions(
+                actions =
+                    if (declaration.isAmendmentDraft) None
+                    else actions(Actions(
                     items = Seq(
                         actionSummaryItem(
                             href = lrnChangeLink,

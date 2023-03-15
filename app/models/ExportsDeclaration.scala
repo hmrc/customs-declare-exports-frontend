@@ -136,6 +136,8 @@ case class ExportsDeclaration(
 
   def isComplete: Boolean = declarationMeta.status == DeclarationStatus.COMPLETE
 
+  def isAmendmentDraft: Boolean = declarationMeta.status == DeclarationStatus.AMENDMENT_DRAFT
+
   def isDeclarantExporter: Boolean = parties.declarantIsExporter.exists(_.isExporter)
 
   def isExs: Boolean = parties.isExs.exists(_.isExs == YesNoAnswers.yes)
