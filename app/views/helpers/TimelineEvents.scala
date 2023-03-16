@@ -68,8 +68,8 @@ class TimelineEvents @Inject() (
 
       val actionContent = index match {
         case IndexToMatchForFixResubmitContent if notificationEvent.requestType != AmendmentRequest || hasAmendmentRejectedAsLatest =>
-          val id = if (hasAmendmentRejectedAsLatest) notificationEvent.actionId else submission.uuid
-          fixAndResubmitContent(id, hasAmendmentRejectedAsLatest)
+          val actionId = if (hasAmendmentRejectedAsLatest) Some(notificationEvent.actionId) else None
+          fixAndResubmitContent(submission.uuid, actionId)
 
         case IndexToMatchForUploadFilesContent if sfusConfig.isSfusUploadEnabled && IndexToMatchForFixResubmitContent < 0 =>
           uploadFilesContent(submission.mrn, isIndex1Primary(IndexToMatchForUploadFilesContent, IndexToMatchForViewQueriesContent))
@@ -115,16 +115,17 @@ class TimelineEvents @Inject() (
 
   private def isIndex1Primary(index1: Int, index2: Int): Boolean = index2 < 0 || index1 < index2
 
-  private def fixAndResubmitContent(id: String, isAmendmentRequest: Boolean)(implicit messages: Messages): Html = {
-    val fixAndResubmit = RejectedNotificationsController.displayPage(id)
-    val button = linkButton("declaration.details.fix.resubmit.button", fixAndResubmit)
-
-    if (isAmendmentRequest) {
+  private def fixAndResubmitContent(id: String, actionIdWhenRejectedAmend: Option[String])(implicit messages: Messages): Html =
+    actionIdWhenRejectedAmend.fold {
+      val fixAndResubmit = RejectedNotificationsController.displayPage(id)
+      linkButton("declaration.details.fix.resubmit.button", fixAndResubmit)
+    } { actionId =>
+      val fixAndResubmit = RejectedNotificationsController.amendmentRejected(id, actionId)
+      val button = linkButton("declaration.details.fix.resubmit.button", fixAndResubmit)
       val cancelUrl = AmendDeclarationController.submit("cancel")
       val cancelLink = link(messages("declaration.details.cancel.amendment"), cancelUrl, id = Some("cancel-amendment"))
       Html(s"""<div class="govuk-button-group">${button.toString()}${cancelLink.toString()}</div>""")
-    } else button
-  }
+    }
 
   private def uploadFilesContent(mrn: Option[String], isPrimary: Boolean)(implicit messages: Messages): Html =
     uploadFilesPartialForTimeline(mrn, isPrimary)

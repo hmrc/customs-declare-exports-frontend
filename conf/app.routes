@@ -27,7 +27,8 @@ GET         /conversation/:client/:conversationId/result   controllers.SecureMes
 
 # Notifications
 
-GET         /submissions/:id/rejected-notifications        controllers.RejectedNotificationsController.displayPage(id: String)
+GET         /submissions/:id/rejected-notifications            controllers.RejectedNotificationsController.displayPage(id)
+GET         /submissions/:id/rejected-notifications/:actionId  controllers.RejectedNotificationsController.amendmentRejected(id, actionId)
 
 # Dashboard
 
