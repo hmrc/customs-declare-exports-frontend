@@ -50,6 +50,10 @@ class RejectedNotificationsController @Inject() (
     }
   }
 
+  def amendmentRejected(id: String, actionId: String): Action[AnyContent] = (authenticate andThen verifyEmail).async { _ =>
+    throw new NotImplementedError()
+  }
+
   private def getRejectedNotificationErrors(notifications: Seq[Notification]): Seq[NotificationError] =
     notifications.find(_.isStatusDMSRej).map(_.errors).getOrElse(Seq.empty)
 }
