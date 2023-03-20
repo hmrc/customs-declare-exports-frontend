@@ -19,7 +19,7 @@ package controllers
 import config.featureFlags.DeclarationAmendmentsConfig
 import connectors.CustomsDeclareExportsConnector
 import controllers.actions.{AuthAction, VerifiedEmailAction}
-import controllers.declaration.routes.SummaryController
+import controllers.declaration.routes.AmendmentSummaryController
 import controllers.routes.RootController
 import handlers.ErrorHandler
 import models.requests.ExportsSessionKeys
@@ -45,7 +45,7 @@ class AmendDeclarationController @Inject() (
       request.session.get(ExportsSessionKeys.submissionId) match {
         case Some(submissionId) =>
           connector.findOrCreateDraftForAmend(submissionId).map { declarationId =>
-            Redirect(SummaryController.displayPage)
+            Redirect(AmendmentSummaryController.displayPage)
               .addingToSession(ExportsSessionKeys.declarationId -> declarationId)
           }
 
