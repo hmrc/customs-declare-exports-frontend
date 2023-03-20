@@ -146,6 +146,14 @@ class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injec
       timelineEvents(2).title mustBe messages(s"submission.enhancedStatus.$RECEIVED")
     }
 
+    "generate the expected sequence of TimelineEvent instances when an amendment request is granted" in {
+      val timelineEvents = createTimelineFromActions(amendmentGranted)
+
+      timelineEvents.size mustBe 2
+      timelineEvents(0).title mustBe messages("submission.enhancedStatus.timeline.title.amendment.accepted")
+      timelineEvents(1).title mustBe messages(s"submission.enhancedStatus.$RECEIVED")
+    }
+
     "generate the expected sequence of TimelineEvent instances when the latest action is amendment rejected" in {
       val submission = amendmentUnsuccessfulLatest(ERRORS)
       val timelineEvents = createTimelineFromSubmission(submission)
@@ -428,6 +436,40 @@ object TimelineEventsSpec {
          |    "mrn" : "23GB1875WY31505411"
          |}""".stripMargin)
       .as[Submission]
+
+  val amendmentGranted = Json
+    .parse(s"""[
+         |    {
+         |      "id": "49cadcf1-167f-4c03-b4a4-5433cdea894e",
+         |      "requestType" : "SubmissionRequest",
+         |      "requestTimestamp" : "2022-05-11T09:42:41.138Z[UTC]",
+         |      "notifications" : [
+         |        {
+         |          "notificationId" : "f0245e51-2be3-440c-9cf7-da09f3a0874b",
+         |          "dateTimeIssued" : "2022-05-12T17:32:31Z[UTC]",
+         |          "enhancedStatus" : "RECEIVED"
+         |        }
+         |      ],
+         |      "decId" : "id",
+         |      "versionNo" : 1
+         |    },
+         |    {
+         |      "id": "202bcfdb-60e0-4710-949a-ecd2db0487b3",
+         |      "requestType": "AmendmentRequest",
+         |      "requestTimestamp": "2022-05-13T12:31:03.937Z[UTC]",
+         |      "notifications": [
+         |        {
+         |          "notificationId": "855e4c4a-2889-417b-9338-d2f487dd19c4",
+         |          "dateTimeIssued": "2022-05-14T12:31:06Z[UTC]",
+         |          "enhancedStatus": "CUSTOMS_POSITION_GRANTED"
+         |        }
+         |      ],
+         |      "decId" : "id",
+         |      "versionNo" : 1
+         |    }
+         |]
+         |""".stripMargin)
+    .as[Seq[Action]]
 
   val cancellationDenied = Json
     .parse(s"""[
