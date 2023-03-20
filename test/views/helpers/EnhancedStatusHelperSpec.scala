@@ -59,10 +59,11 @@ class EnhancedStatusHelperSpec extends UnitViewSpec {
       val event = (requestType: RequestType, status: EnhancedStatus) =>
         NotificationEvent("someId", requestType, NotificationSummary(UUID.randomUUID(), ZonedDateTime.now(), status))
 
-      asTimelineTitle(event(AmendmentRequest, CUSTOMS_POSITION_DENIED)) mustBe "Amendment failed"
-      asTimelineTitle(event(AmendmentRequest, ERRORS)) mustBe "Amendment rejected"
-      asTimelineTitle(event(SubmissionRequest, CUSTOMS_POSITION_DENIED)) mustBe "Cancellation request denied"
-      asTimelineTitle(event(SubmissionRequest, CUSTOMS_POSITION_GRANTED)) mustBe "Customs position granted"
+      asTimelineEvent(event(AmendmentRequest, CUSTOMS_POSITION_GRANTED)) mustBe "Amendment accepted"
+      asTimelineEvent(event(AmendmentRequest, CUSTOMS_POSITION_DENIED)) mustBe "Amendment failed"
+      asTimelineEvent(event(AmendmentRequest, ERRORS)) mustBe "Amendment rejected"
+      asTimelineEvent(event(SubmissionRequest, CUSTOMS_POSITION_DENIED)) mustBe "Cancellation request denied"
+      asTimelineEvent(event(SubmissionRequest, CUSTOMS_POSITION_GRANTED)) mustBe "Customs position granted"
     }
 
     "return the expected list of SummaryListRow" when {
