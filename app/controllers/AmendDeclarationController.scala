@@ -53,7 +53,7 @@ class AmendDeclarationController @Inject() (
       }
   }
 
-  def submit(action: String): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
+  def submit(action: Option[String]): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
     request.session.get(ExportsSessionKeys.submissionId)
     Future.successful(Redirect(RootController.displayPage))
   }

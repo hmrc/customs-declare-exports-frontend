@@ -836,6 +836,7 @@ submission.enhancedStatus.PENDING                       = Pending
 submission.enhancedStatus.REQUESTED_CANCELLATION        = Cancellation request submitted
 submission.enhancedStatus.UNKNOWN                       = Unknown
 
+submission.enhancedStatus.timeline.title.amendment.failed = Amendment failed
 submission.enhancedStatus.timeline.title.amendment.rejected = Amendment rejected
 submission.enhancedStatus.timeline.title.CUSTOMS_POSITION_DENIED = Cancellation request denied
 
@@ -881,6 +882,7 @@ declaration.details.cancel.amendment = Cancel
 declaration.details.cancel.declaration = Cancel declaration
 declaration.details.copy.declaration = Copy declaration
 declaration.details.fix.resubmit.button = Fix errors
+declaration.details.resubmit.button = Resubmit
 declaration.details.generateEAD = View an Export Accompanying Document (EAD)
 declaration.details.movements.redirection = Arrive, depart or consolidate a declaration
 declaration.details.upload.files.button = Upload files

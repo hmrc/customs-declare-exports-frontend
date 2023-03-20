@@ -17,6 +17,7 @@
 package views.helpers
 
 import base.Injector
+import controllers.routes.{AmendDeclarationController, RejectedNotificationsController}
 import models.declaration.submissions.EnhancedStatus._
 import models.declaration.submissions.RequestType.{CancellationRequest, SubmissionRequest}
 import models.declaration.submissions.{Action, EnhancedStatus, NotificationSummary, Submission}
@@ -24,14 +25,7 @@ import org.mockito.Mockito.when
 import org.scalatest.BeforeAndAfterEach
 import play.api.libs.json.Json
 import views.declaration.spec.UnitViewSpec
-import views.helpers.TimelineEventsSpec.{
-  amendmentRejected,
-  amendmentRejectedLatest,
-  cancellationDenied,
-  cancellationGranted,
-  cancellationRequestNotConfirmedYet,
-  declarationCancelled
-}
+import views.helpers.TimelineEventsSpec._
 import views.html.components.gds.{link, linkButton, paragraphBody}
 import views.html.components.upload_files_partial_for_timeline
 
@@ -153,31 +147,74 @@ class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injec
     }
 
     "generate the expected sequence of TimelineEvent instances when the latest action is amendment rejected" in {
-      val timelineEvents = createTimelineFromSubmission(amendmentRejectedLatest)
+      val submission = amendmentUnsuccessfulLatest(ERRORS)
+      val timelineEvents = createTimelineFromSubmission(submission)
 
       timelineEvents.size mustBe 4
+
       timelineEvents(0).title mustBe messages("submission.enhancedStatus.timeline.title.amendment.rejected")
-      timelineEvents(0).dateTime mustBe amendmentRejectedLatest.actions(1).notifications.get(0).dateTimeIssued
+      timelineEvents(0).dateTime mustBe submission.actions(1).notifications.get(0).dateTimeIssued
+
+      val content = timelineEvents(0).content.get.body
+      val expectedButtonUrl = RejectedNotificationsController.amendmentRejected(submission.uuid, submission.actions(1).id).url
+      val expectedLinkUrl = AmendDeclarationController.submit(Some("cancel")).url
+      content must include(expectedButtonUrl)
+      content must include(expectedLinkUrl)
+
       timelineEvents(1).title mustBe messages(s"submission.enhancedStatus.$ERRORS")
-      timelineEvents(1).dateTime mustBe amendmentRejectedLatest.actions(0).notifications.get(0).dateTimeIssued
+      timelineEvents(1).dateTime mustBe submission.actions(0).notifications.get(0).dateTimeIssued
+
       timelineEvents(2).title mustBe messages(s"submission.enhancedStatus.$GOODS_ARRIVED_MESSAGE")
-      timelineEvents(2).dateTime mustBe amendmentRejectedLatest.actions(0).notifications.get(1).dateTimeIssued
+      timelineEvents(2).dateTime mustBe submission.actions(0).notifications.get(1).dateTimeIssued
+
       timelineEvents(3).title mustBe messages(s"submission.enhancedStatus.$RECEIVED")
-      timelineEvents(3).dateTime mustBe amendmentRejectedLatest.actions(0).notifications.get(2).dateTimeIssued
+      timelineEvents(3).dateTime mustBe submission.actions(0).notifications.get(2).dateTimeIssued
     }
 
     "generate the expected sequence of TimelineEvent instances when the amendment is rejected" in {
-      val timelineEvents = createTimelineFromSubmission(amendmentRejected)
+      val submission = amendmentUnsuccessful(ERRORS)
+      val timelineEvents = createTimelineFromSubmission(submission)
 
       timelineEvents.size mustBe 4
+
       timelineEvents(0).title mustBe messages(s"submission.enhancedStatus.$ERRORS")
-      timelineEvents(0).dateTime mustBe amendmentRejected.actions(0).notifications.get(0).dateTimeIssued
+      timelineEvents(0).dateTime mustBe submission.actions(0).notifications.get(0).dateTimeIssued
+
       timelineEvents(1).title mustBe messages(s"submission.enhancedStatus.$GOODS_ARRIVED_MESSAGE")
-      timelineEvents(1).dateTime mustBe amendmentRejected.actions(0).notifications.get(1).dateTimeIssued
+      timelineEvents(1).dateTime mustBe submission.actions(0).notifications.get(1).dateTimeIssued
+
       timelineEvents(2).title mustBe messages(s"submission.enhancedStatus.$RECEIVED")
-      timelineEvents(2).dateTime mustBe amendmentRejected.actions(0).notifications.get(2).dateTimeIssued
+      timelineEvents(2).dateTime mustBe submission.actions(0).notifications.get(2).dateTimeIssued
+
       timelineEvents(3).title mustBe messages("submission.enhancedStatus.timeline.title.amendment.rejected")
-      timelineEvents(3).dateTime mustBe amendmentRejected.actions(1).notifications.get(0).dateTimeIssued
+      timelineEvents(3).dateTime mustBe submission.actions(1).notifications.get(0).dateTimeIssued
+      timelineEvents(3).content mustBe None
+    }
+
+    "generate the expected sequence of TimelineEvent instances when the latest action is amendment failed" in {
+      val submission = amendmentUnsuccessfulLatest(CUSTOMS_POSITION_DENIED)
+      val timelineEvents = createTimelineFromSubmission(submission)
+
+      timelineEvents.size mustBe 4
+
+      timelineEvents(0).title mustBe messages("submission.enhancedStatus.timeline.title.amendment.failed")
+      timelineEvents(0).dateTime mustBe submission.actions(1).notifications.get(0).dateTimeIssued
+
+      val content = timelineEvents(0).content.get.body
+      val expectedButtonUrl = RejectedNotificationsController.amendmentRejected(submission.uuid, submission.actions(1).id).url
+      val expectedLinkUrl = AmendDeclarationController.submit(Some("cancel")).url
+      content must include(expectedButtonUrl)
+      content must include(expectedLinkUrl)
+    }
+
+    "generate the expected sequence of TimelineEvent instances when the amendment is failed" in {
+      val submission = amendmentUnsuccessful(CUSTOMS_POSITION_DENIED)
+      val timelineEvents = createTimelineFromSubmission(submission)
+
+      timelineEvents.size mustBe 4
+      timelineEvents(3).title mustBe messages("submission.enhancedStatus.timeline.title.amendment.failed")
+      timelineEvents(3).dateTime mustBe submission.actions(1).notifications.get(0).dateTimeIssued
+      timelineEvents(3).content mustBe None
     }
 
     "generate a sequence of TimelineEvent instances" which {
@@ -282,8 +319,9 @@ class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injec
 
 object TimelineEventsSpec {
 
-  val amendmentRejectedLatest = Json
-    .parse(s"""{
+  val amendmentUnsuccessfulLatest = (status: EnhancedStatus) =>
+    Json
+      .parse(s"""{
          |    "uuid" : "9fe6c5a6-179a-4527-b81e-a01f4a02281d",
          |    "eori" : "GB7172755067703",
          |    "lrn" : "QSLRN2512100",
@@ -322,7 +360,7 @@ object TimelineEventsSpec {
          |                {
          |                    "notificationId" : "76e6e74f-d76e-426e-b8de-d3a615af3168",
          |                    "dateTimeIssued" : "2023-03-07T13:36:59Z[UTC]",
-         |                    "enhancedStatus" : "ERRORS"
+         |                    "enhancedStatus" : "${status.toString}"
          |                }
          |            ],
          |            "requestTimestamp" : "2023-03-07T13:36:59Z[UTC]"
@@ -331,36 +369,37 @@ object TimelineEventsSpec {
          |    "latestDecId" : "9fe6c5a6-179a-4527-b81e-a01f4a02281d",
          |    "latestVersionNo" : 1,
          |    "enhancedStatusLastUpdated" : "2023-03-07T13:36:59Z[UTC]",
-         |    "latestEnhancedStatus" : "ERRORS",
+         |    "latestEnhancedStatus" : "${status.toString}",
          |    "mrn" : "23GB1875WY31505410"
          |}""".stripMargin)
-    .as[Submission]
+      .as[Submission]
 
-  val amendmentRejected = Json
-    .parse(s"""{
-         |    "uuid" : "9fe6c5a6-179a-4527-b81e-a01f4a02281d",
+  val amendmentUnsuccessful = (status: EnhancedStatus) =>
+    Json
+      .parse(s"""{
+         |    "uuid" : "9fe6c5a6-179a-4527-b81e-a01f4a02281e",
          |    "eori" : "GB7172755067703",
-         |    "lrn" : "QSLRN2512100",
-         |    "ducr" : "8GB123456391947-101SHIP1",
+         |    "lrn" : "QSLRN2512101",
+         |    "ducr" : "8GB123456391947-101SHIP2",
          |    "actions" : [
          |        {
-         |            "id" : "9161aa02-66a0-4ae5-bf06-f33e81b410fa",
+         |            "id" : "9161aa02-66a0-4ae5-bf06-f33e81b410fb",
          |            "requestType" : "SubmissionRequest",
-         |            "decId" : "9fe6c5a6-179a-4527-b81e-a01f4a02281d",
+         |            "decId" : "9fe6c5a6-179a-4527-b81e-a01f4a02281e",
          |            "versionNo" : 1,
          |            "notifications" : [
          |                {
-         |                    "notificationId" : "76e6e74f-d76e-426e-b8de-d3a615af3168",
+         |                    "notificationId" : "76e6e74f-d76e-426e-b8de-d3a615af3169",
          |                    "dateTimeIssued" : "2023-03-06T13:36:58Z[UTC]",
          |                    "enhancedStatus" : "ERRORS"
          |                },
          |                {
-         |                    "notificationId" : "76e6e74f-d76e-426e-b8de-d3a615af3168",
+         |                    "notificationId" : "76e6e74f-d76e-426e-b8de-d3a615af3170",
          |                    "dateTimeIssued" : "2023-03-06T13:36:57Z[UTC]",
          |                    "enhancedStatus" : "GOODS_ARRIVED_MESSAGE"
          |                },
          |                {
-         |                    "notificationId" : "76e6e74f-d76e-426e-b8de-d3a615af3168",
+         |                    "notificationId" : "76e6e74f-d76e-426e-b8de-d3a615af3171",
          |                    "dateTimeIssued" : "2023-03-06T13:36:56Z[UTC]",
          |                    "enhancedStatus" : "RECEIVED"
          |                }
@@ -368,27 +407,27 @@ object TimelineEventsSpec {
          |            "requestTimestamp" : "2023-03-06T13:36:54.252302Z[UTC]"
          |        },
          |        {
-         |            "id" : "9161aa02-66a0-4ae5-bf06-f33e81b410f9",
+         |            "id" : "9161aa02-66a0-4ae5-bf06-f33e81b410fa",
          |            "requestType" : "AmendmentRequest",
-         |            "decId" : "9fe6c5a6-179a-4527-b81e-a01f4a02281d",
+         |            "decId" : "9fe6c5a6-179a-4527-b81e-a01f4a02281e",
          |            "versionNo" : 1,
          |            "notifications" : [
          |                {
          |                    "notificationId" : "76e6e74f-d76e-426e-b8de-d3a615af3168",
          |                    "dateTimeIssued" : "2023-03-05T13:36:58Z[UTC]",
-         |                    "enhancedStatus" : "ERRORS"
+         |                    "enhancedStatus" : "${status.toString}"
          |                }
          |            ],
          |            "requestTimestamp" : "2023-03-05T13:36:59Z[UTC]"
          |        }
          |    ],
-         |    "latestDecId" : "9fe6c5a6-179a-4527-b81e-a01f4a02281d",
+         |    "latestDecId" : "9fe6c5a6-179a-4527-b81e-a01f4a02281e",
          |    "latestVersionNo" : 1,
          |    "enhancedStatusLastUpdated" : "2023-03-06T13:36:59Z[UTC]",
          |    "latestEnhancedStatus" : "ERRORS",
-         |    "mrn" : "23GB1875WY31505410"
+         |    "mrn" : "23GB1875WY31505411"
          |}""".stripMargin)
-    .as[Submission]
+      .as[Submission]
 
   val cancellationDenied = Json
     .parse(s"""[
