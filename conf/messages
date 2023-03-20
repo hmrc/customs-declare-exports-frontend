@@ -836,6 +836,11 @@ submission.enhancedStatus.PENDING                       = Pending
 submission.enhancedStatus.REQUESTED_CANCELLATION        = Cancellation request submitted
 submission.enhancedStatus.UNKNOWN                       = Unknown
 
+submission.timeline.title.amendment.accepted = accepted
+submission.timeline.title.amendment.failed = on hold
+submission.timeline.title.amendment.rejected = on hold
+
+submission.enhancedStatus.timeline.title.amendment.accepted = Amendment accepted
 submission.enhancedStatus.timeline.title.amendment.failed = Amendment failed
 submission.enhancedStatus.timeline.title.amendment.rejected = Amendment rejected
 submission.enhancedStatus.timeline.title.CUSTOMS_POSITION_DENIED = Cancellation request denied
@@ -871,6 +876,7 @@ dashboard.pagination.plural = declarations
 dashboard.empty.tab = No declarations
 dashboard.start.new.declaration = Start a new declaration
 
+declaration.details.head.title = Declaration status
 declaration.details.title = Declaration status: {0}
 declaration.details.references =  Declaration references
 declaration.details.ducr = DUCR
@@ -1900,6 +1906,7 @@ declaration.supplementaryUnits.quantity.empty = Enter a quantity of supplementar
 declaration.supplementaryUnits.quantity.error = Supplementary units must be entered as numbers only
 declaration.supplementaryUnits.quantity.length = Number of characters must be 16 or fewer
 
+declaration.summary.amendment-draft-header = Amend your declaration
 declaration.summary.normal-header = Check your answers
 declaration.summary.amend-header = Check your answers before resubmitting
 declaration.summary.saved-header = Continue saved declaration
@@ -2186,6 +2193,7 @@ declaration.summary.saved.label = To continue with your declaration
 declaration.summary.saved.body = To continue where you left off, click the most recent ‘Change’ link. When you have completed all the questions you will be able to submit your declaration.
 declaration.summary.amend.body = Use the ‘Change’ links to make further amendments if you need to.
 declaration.summary.draft.body = When you have completed all the questions you will be able to submit your declaration.
+declaration.summary.amendment-draft.body = Use the `Change` links to make amendments.
 
 supplementary.limit = You cannot add more items
 supplementary.continue.error = Use the Add button to add an item

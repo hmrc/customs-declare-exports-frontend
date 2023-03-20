@@ -85,7 +85,7 @@ class TimelineEvents @Inject() (
       val content = new Html(List(bodyContent, actionContent))
 
       TimelineEvent(
-        title = EnhancedStatusHelper.asTimelineTitle(notificationEvent),
+        title = EnhancedStatusHelper.asTimelineEvent(notificationEvent),
         dateTime = notificationEvent.notificationSummary.dateTimeIssued,
         content = if (content.body.isEmpty) None else Some(content)
       )
