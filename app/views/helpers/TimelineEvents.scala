@@ -103,11 +103,10 @@ class TimelineEvents @Inject() (
     submission.actions.flatMap { action =>
       val events = action.notifications.fold(Seq.empty[NotificationEvent]) { notificationSummarySeq =>
         val notificationSumm: Seq[NotificationEvent] = notificationSummarySeq.map(NotificationEvent(action.id, action.requestType, _))
-        if(action.requestType == AmendmentRequest){
+        if (action.requestType == AmendmentRequest) {
           val amendmentNotficationSummary = NotificationSummary(UUID.randomUUID, action.requestTimestamp, AMENDED)
           notificationSumm :+ NotificationEvent(action.id, action.requestType, amendmentNotficationSummary)
-        }
-        else
+        } else
           notificationSumm
       }
       if (action.requestType != CancellationRequest) events
@@ -141,6 +140,5 @@ class TimelineEvents @Inject() (
       Call("GET", secureMessagingInboxConfig.sfusInboxLink),
       if (isPrimary) "govuk-button" else "govuk-button govuk-button--secondary"
     )
-
 
 }
