@@ -170,7 +170,7 @@ class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injec
 
     "generate the expected sequence of TimelineEvent instances when the amendment is rejected" in {
       val timelineEvents = createTimelineFromSubmission(amendmentRejected)
-      timelineEvents.size mustBe 5
+      timelineEvents.size mustBe 7
       timelineEvents(0).title mustBe messages(s"submission.enhancedStatus.$ERRORS")
       timelineEvents(0).dateTime mustBe amendmentRejected.actions(0).notifications.get(0).dateTimeIssued
       timelineEvents(1).title mustBe messages(s"submission.enhancedStatus.$GOODS_ARRIVED_MESSAGE")
@@ -181,6 +181,10 @@ class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injec
       timelineEvents(3).dateTime mustBe amendmentRejected.actions(1).notifications.get(0).dateTimeIssued
       timelineEvents(4).title mustBe messages("submission.enhancedStatus.timeline.title.AMENDED")
       timelineEvents(4).dateTime mustBe amendmentRejected.actions(1).requestTimestamp
+      timelineEvents(5).title mustBe messages("submission.enhancedStatus.timeline.title.amendment.rejected")
+      timelineEvents(5).dateTime mustBe amendmentRejected.actions(2).notifications.get(0).dateTimeIssued
+      timelineEvents(6).title mustBe messages("submission.enhancedStatus.timeline.title.AMENDED")
+      timelineEvents(6).dateTime mustBe amendmentRejected.actions(2).requestTimestamp
     }
 
     "generate a sequence of TimelineEvent instances" which {
@@ -354,21 +358,35 @@ object TimelineEventsSpec {
               |            "notifications" : [
               |                {
               |                    "notificationId" : "76e6e74f-d76e-426e-b8de-d3a615af3168",
-              |                    "dateTimeIssued" : "2023-03-06T13:36:58Z[UTC]",
+              |                    "dateTimeIssued" : "2023-05-06T13:36:58Z[UTC]",
               |                    "enhancedStatus" : "ERRORS"
               |                },
               |                {
               |                    "notificationId" : "76e6e74f-d76e-426e-b8de-d3a615af3168",
-              |                    "dateTimeIssued" : "2023-03-06T13:36:57Z[UTC]",
+              |                    "dateTimeIssued" : "2023-05-06T13:36:57Z[UTC]",
               |                    "enhancedStatus" : "GOODS_ARRIVED_MESSAGE"
               |                },
               |                {
               |                    "notificationId" : "76e6e74f-d76e-426e-b8de-d3a615af3168",
-              |                    "dateTimeIssued" : "2023-03-06T13:36:56Z[UTC]",
+              |                    "dateTimeIssued" : "2023-05-06T13:36:56Z[UTC]",
               |                    "enhancedStatus" : "RECEIVED"
               |                }
               |            ],
-              |            "requestTimestamp" : "2023-03-06T13:36:54.252302Z[UTC]"
+              |            "requestTimestamp" : "2023-05-06T13:36:54.252302Z[UTC]"
+              |        },
+              |        {
+              |            "id" : "9161aa02-66a0-4ae5-bf06-f33e81b410f81",
+              |            "requestType" : "AmendmentRequest",
+              |            "decId" : "9fe6c5a6-179a-4527-b81e-a01f4a02281d",
+              |            "versionNo" : 1,
+              |            "notifications" : [
+              |                {
+              |                    "notificationId" : "76e6e74f-d76e-426e-b8de-d3a615af3168",
+              |                    "dateTimeIssued" : "2023-04-05T13:36:59Z[UTC]",
+              |                    "enhancedStatus" : "ERRORS"
+              |                }
+              |            ],
+              |            "requestTimestamp" : "2023-04-05T13:36:58Z[UTC]"
               |        },
               |        {
               |            "id" : "9161aa02-66a0-4ae5-bf06-f33e81b410f9",
