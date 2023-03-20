@@ -835,9 +835,11 @@ submission.enhancedStatus.WITHDRAWN                     = Withdrawn
 submission.enhancedStatus.PENDING                       = Pending
 submission.enhancedStatus.REQUESTED_CANCELLATION        = Cancellation request submitted
 submission.enhancedStatus.UNKNOWN                       = Unknown
+submission.enhancedStatus.AMENDMENT_REQUESTED           = Amendment requested
 
 submission.enhancedStatus.timeline.title.amendment.rejected = Amendment rejected
 submission.enhancedStatus.timeline.title.CUSTOMS_POSITION_DENIED = Cancellation request denied
+submission.enhancedStatus.timeline.title.AMENDED = Amendment requested
 
 submission.enhancedStatus.timeline.content.CANCELLED = You cancelled this declaration.
 submission.enhancedStatus.timeline.content.WITHDRAWN = You cancelled this declaration.

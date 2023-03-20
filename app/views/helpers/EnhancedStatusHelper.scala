@@ -34,6 +34,8 @@ object EnhancedStatusHelper {
     event.requestType match {
       case AmendmentRequest if event.notificationSummary.enhancedStatus == ERRORS =>
         messages("submission.enhancedStatus.timeline.title.amendment.rejected")
+      case AmendmentRequest if event.notificationSummary.enhancedStatus == AMENDED =>
+        messages("submission.enhancedStatus.timeline.title.AMENDED")
 
       case _ =>
         val status = event.notificationSummary.enhancedStatus
