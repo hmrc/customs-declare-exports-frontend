@@ -155,21 +155,22 @@ class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injec
     "generate the expected sequence of TimelineEvent instances when the latest action is amendment rejected" in {
       val timelineEvents = createTimelineFromSubmission(amendmentRejectedLatest)
 
-      timelineEvents.size mustBe 4
+      timelineEvents.size mustBe 5
       timelineEvents(0).title mustBe messages("submission.enhancedStatus.timeline.title.amendment.rejected")
       timelineEvents(0).dateTime mustBe amendmentRejectedLatest.actions(1).notifications.get(0).dateTimeIssued
-      timelineEvents(1).title mustBe messages(s"submission.enhancedStatus.$ERRORS")
-      timelineEvents(1).dateTime mustBe amendmentRejectedLatest.actions(0).notifications.get(0).dateTimeIssued
-      timelineEvents(2).title mustBe messages(s"submission.enhancedStatus.$GOODS_ARRIVED_MESSAGE")
-      timelineEvents(2).dateTime mustBe amendmentRejectedLatest.actions(0).notifications.get(1).dateTimeIssued
-      timelineEvents(3).title mustBe messages(s"submission.enhancedStatus.$RECEIVED")
-      timelineEvents(3).dateTime mustBe amendmentRejectedLatest.actions(0).notifications.get(2).dateTimeIssued
+      timelineEvents(1).title mustBe messages("submission.enhancedStatus.timeline.title.AMENDED")
+      timelineEvents(1).dateTime mustBe amendmentRejectedLatest.actions(1).requestTimestamp
+      timelineEvents(2).title mustBe messages(s"submission.enhancedStatus.$ERRORS")
+      timelineEvents(2).dateTime mustBe amendmentRejectedLatest.actions(0).notifications.get(0).dateTimeIssued
+      timelineEvents(3).title mustBe messages(s"submission.enhancedStatus.$GOODS_ARRIVED_MESSAGE")
+      timelineEvents(3).dateTime mustBe amendmentRejectedLatest.actions(0).notifications.get(1).dateTimeIssued
+      timelineEvents(4).title mustBe messages(s"submission.enhancedStatus.$RECEIVED")
+      timelineEvents(4).dateTime mustBe amendmentRejectedLatest.actions(0).notifications.get(2).dateTimeIssued
     }
 
     "generate the expected sequence of TimelineEvent instances when the amendment is rejected" in {
       val timelineEvents = createTimelineFromSubmission(amendmentRejected)
-
-      timelineEvents.size mustBe 4
+      timelineEvents.size mustBe 5
       timelineEvents(0).title mustBe messages(s"submission.enhancedStatus.$ERRORS")
       timelineEvents(0).dateTime mustBe amendmentRejected.actions(0).notifications.get(0).dateTimeIssued
       timelineEvents(1).title mustBe messages(s"submission.enhancedStatus.$GOODS_ARRIVED_MESSAGE")
@@ -178,6 +179,8 @@ class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injec
       timelineEvents(2).dateTime mustBe amendmentRejected.actions(0).notifications.get(2).dateTimeIssued
       timelineEvents(3).title mustBe messages("submission.enhancedStatus.timeline.title.amendment.rejected")
       timelineEvents(3).dateTime mustBe amendmentRejected.actions(1).notifications.get(0).dateTimeIssued
+      timelineEvents(4).title mustBe messages("submission.enhancedStatus.timeline.title.AMENDED")
+      timelineEvents(4).dateTime mustBe amendmentRejected.actions(1).requestTimestamp
     }
 
     "generate a sequence of TimelineEvent instances" which {
@@ -284,254 +287,254 @@ object TimelineEventsSpec {
 
   val amendmentRejectedLatest = Json
     .parse(s"""{
-         |    "uuid" : "9fe6c5a6-179a-4527-b81e-a01f4a02281d",
-         |    "eori" : "GB7172755067703",
-         |    "lrn" : "QSLRN2512100",
-         |    "ducr" : "8GB123456391947-101SHIP1",
-         |    "actions" : [
-         |        {
-         |            "id" : "9161aa02-66a0-4ae5-bf06-f33e81b410fa",
-         |            "requestType" : "SubmissionRequest",
-         |            "decId" : "9fe6c5a6-179a-4527-b81e-a01f4a02281d",
-         |            "versionNo" : 1,
-         |            "notifications" : [
-         |                {
-         |                    "notificationId" : "76e6e74f-d76e-426e-b8de-d3a615af3168",
-         |                    "dateTimeIssued" : "2023-03-06T13:36:58Z[UTC]",
-         |                    "enhancedStatus" : "ERRORS"
-         |                },
-         |                {
-         |                    "notificationId" : "76e6e74f-d76e-426e-b8de-d3a615af3168",
-         |                    "dateTimeIssued" : "2023-03-06T13:36:57Z[UTC]",
-         |                    "enhancedStatus" : "GOODS_ARRIVED_MESSAGE"
-         |                },
-         |                {
-         |                    "notificationId" : "76e6e74f-d76e-426e-b8de-d3a615af3168",
-         |                    "dateTimeIssued" : "2023-03-06T13:36:56Z[UTC]",
-         |                    "enhancedStatus" : "RECEIVED"
-         |                }
-         |            ],
-         |            "requestTimestamp" : "2023-03-06T13:36:54.252302Z[UTC]"
-         |        },
-         |        {
-         |            "id" : "9161aa02-66a0-4ae5-bf06-f33e81b410f9",
-         |            "requestType" : "AmendmentRequest",
-         |            "decId" : "9fe6c5a6-179a-4527-b81e-a01f4a02281d",
-         |            "versionNo" : 1,
-         |            "notifications" : [
-         |                {
-         |                    "notificationId" : "76e6e74f-d76e-426e-b8de-d3a615af3168",
-         |                    "dateTimeIssued" : "2023-03-07T13:36:59Z[UTC]",
-         |                    "enhancedStatus" : "ERRORS"
-         |                }
-         |            ],
-         |            "requestTimestamp" : "2023-03-07T13:36:59Z[UTC]"
-         |        }
-         |    ],
-         |    "latestDecId" : "9fe6c5a6-179a-4527-b81e-a01f4a02281d",
-         |    "latestVersionNo" : 1,
-         |    "enhancedStatusLastUpdated" : "2023-03-07T13:36:59Z[UTC]",
-         |    "latestEnhancedStatus" : "ERRORS",
-         |    "mrn" : "23GB1875WY31505410"
-         |}""".stripMargin)
+              |    "uuid" : "9fe6c5a6-179a-4527-b81e-a01f4a02281d",
+              |    "eori" : "GB7172755067703",
+              |    "lrn" : "QSLRN2512100",
+              |    "ducr" : "8GB123456391947-101SHIP1",
+              |    "actions" : [
+              |        {
+              |            "id" : "9161aa02-66a0-4ae5-bf06-f33e81b410fa",
+              |            "requestType" : "SubmissionRequest",
+              |            "decId" : "9fe6c5a6-179a-4527-b81e-a01f4a02281d",
+              |            "versionNo" : 1,
+              |            "notifications" : [
+              |                {
+              |                    "notificationId" : "76e6e74f-d76e-426e-b8de-d3a615af3168",
+              |                    "dateTimeIssued" : "2023-03-06T13:36:58Z[UTC]",
+              |                    "enhancedStatus" : "ERRORS"
+              |                },
+              |                {
+              |                    "notificationId" : "76e6e74f-d76e-426e-b8de-d3a615af3168",
+              |                    "dateTimeIssued" : "2023-03-06T13:36:57Z[UTC]",
+              |                    "enhancedStatus" : "GOODS_ARRIVED_MESSAGE"
+              |                },
+              |                {
+              |                    "notificationId" : "76e6e74f-d76e-426e-b8de-d3a615af3168",
+              |                    "dateTimeIssued" : "2023-03-06T13:36:56Z[UTC]",
+              |                    "enhancedStatus" : "RECEIVED"
+              |                }
+              |            ],
+              |            "requestTimestamp" : "2023-03-06T13:36:54.252302Z[UTC]"
+              |        },
+              |        {
+              |            "id" : "9161aa02-66a0-4ae5-bf06-f33e81b410f9",
+              |            "requestType" : "AmendmentRequest",
+              |            "decId" : "9fe6c5a6-179a-4527-b81e-a01f4a02281d",
+              |            "versionNo" : 1,
+              |            "notifications" : [
+              |                {
+              |                    "notificationId" : "76e6e74f-d76e-426e-b8de-d3a615af3168",
+              |                    "dateTimeIssued" : "2023-03-08T13:36:59Z[UTC]",
+              |                    "enhancedStatus" : "ERRORS"
+              |                }
+              |            ],
+              |            "requestTimestamp" : "2023-03-08T13:36:59Z[UTC]"
+              |        }
+              |    ],
+              |    "latestDecId" : "9fe6c5a6-179a-4527-b81e-a01f4a02281d",
+              |    "latestVersionNo" : 1,
+              |    "enhancedStatusLastUpdated" : "2023-03-07T13:36:59Z[UTC]",
+              |    "latestEnhancedStatus" : "ERRORS",
+              |    "mrn" : "23GB1875WY31505410"
+              |}""".stripMargin)
     .as[Submission]
 
   val amendmentRejected = Json
     .parse(s"""{
-         |    "uuid" : "9fe6c5a6-179a-4527-b81e-a01f4a02281d",
-         |    "eori" : "GB7172755067703",
-         |    "lrn" : "QSLRN2512100",
-         |    "ducr" : "8GB123456391947-101SHIP1",
-         |    "actions" : [
-         |        {
-         |            "id" : "9161aa02-66a0-4ae5-bf06-f33e81b410fa",
-         |            "requestType" : "SubmissionRequest",
-         |            "decId" : "9fe6c5a6-179a-4527-b81e-a01f4a02281d",
-         |            "versionNo" : 1,
-         |            "notifications" : [
-         |                {
-         |                    "notificationId" : "76e6e74f-d76e-426e-b8de-d3a615af3168",
-         |                    "dateTimeIssued" : "2023-03-06T13:36:58Z[UTC]",
-         |                    "enhancedStatus" : "ERRORS"
-         |                },
-         |                {
-         |                    "notificationId" : "76e6e74f-d76e-426e-b8de-d3a615af3168",
-         |                    "dateTimeIssued" : "2023-03-06T13:36:57Z[UTC]",
-         |                    "enhancedStatus" : "GOODS_ARRIVED_MESSAGE"
-         |                },
-         |                {
-         |                    "notificationId" : "76e6e74f-d76e-426e-b8de-d3a615af3168",
-         |                    "dateTimeIssued" : "2023-03-06T13:36:56Z[UTC]",
-         |                    "enhancedStatus" : "RECEIVED"
-         |                }
-         |            ],
-         |            "requestTimestamp" : "2023-03-06T13:36:54.252302Z[UTC]"
-         |        },
-         |        {
-         |            "id" : "9161aa02-66a0-4ae5-bf06-f33e81b410f9",
-         |            "requestType" : "AmendmentRequest",
-         |            "decId" : "9fe6c5a6-179a-4527-b81e-a01f4a02281d",
-         |            "versionNo" : 1,
-         |            "notifications" : [
-         |                {
-         |                    "notificationId" : "76e6e74f-d76e-426e-b8de-d3a615af3168",
-         |                    "dateTimeIssued" : "2023-03-05T13:36:58Z[UTC]",
-         |                    "enhancedStatus" : "ERRORS"
-         |                }
-         |            ],
-         |            "requestTimestamp" : "2023-03-05T13:36:59Z[UTC]"
-         |        }
-         |    ],
-         |    "latestDecId" : "9fe6c5a6-179a-4527-b81e-a01f4a02281d",
-         |    "latestVersionNo" : 1,
-         |    "enhancedStatusLastUpdated" : "2023-03-06T13:36:59Z[UTC]",
-         |    "latestEnhancedStatus" : "ERRORS",
-         |    "mrn" : "23GB1875WY31505410"
-         |}""".stripMargin)
+              |    "uuid" : "9fe6c5a6-179a-4527-b81e-a01f4a02281d",
+              |    "eori" : "GB7172755067703",
+              |    "lrn" : "QSLRN2512100",
+              |    "ducr" : "8GB123456391947-101SHIP1",
+              |    "actions" : [
+              |        {
+              |            "id" : "9161aa02-66a0-4ae5-bf06-f33e81b410fa",
+              |            "requestType" : "SubmissionRequest",
+              |            "decId" : "9fe6c5a6-179a-4527-b81e-a01f4a02281d",
+              |            "versionNo" : 1,
+              |            "notifications" : [
+              |                {
+              |                    "notificationId" : "76e6e74f-d76e-426e-b8de-d3a615af3168",
+              |                    "dateTimeIssued" : "2023-03-06T13:36:58Z[UTC]",
+              |                    "enhancedStatus" : "ERRORS"
+              |                },
+              |                {
+              |                    "notificationId" : "76e6e74f-d76e-426e-b8de-d3a615af3168",
+              |                    "dateTimeIssued" : "2023-03-06T13:36:57Z[UTC]",
+              |                    "enhancedStatus" : "GOODS_ARRIVED_MESSAGE"
+              |                },
+              |                {
+              |                    "notificationId" : "76e6e74f-d76e-426e-b8de-d3a615af3168",
+              |                    "dateTimeIssued" : "2023-03-06T13:36:56Z[UTC]",
+              |                    "enhancedStatus" : "RECEIVED"
+              |                }
+              |            ],
+              |            "requestTimestamp" : "2023-03-06T13:36:54.252302Z[UTC]"
+              |        },
+              |        {
+              |            "id" : "9161aa02-66a0-4ae5-bf06-f33e81b410f9",
+              |            "requestType" : "AmendmentRequest",
+              |            "decId" : "9fe6c5a6-179a-4527-b81e-a01f4a02281d",
+              |            "versionNo" : 1,
+              |            "notifications" : [
+              |                {
+              |                    "notificationId" : "76e6e74f-d76e-426e-b8de-d3a615af3168",
+              |                    "dateTimeIssued" : "2023-03-05T13:36:59Z[UTC]",
+              |                    "enhancedStatus" : "ERRORS"
+              |                }
+              |            ],
+              |            "requestTimestamp" : "2023-03-05T13:36:58Z[UTC]"
+              |        }
+              |    ],
+              |    "latestDecId" : "9fe6c5a6-179a-4527-b81e-a01f4a02281d",
+              |    "latestVersionNo" : 1,
+              |    "enhancedStatusLastUpdated" : "2023-03-06T13:36:59Z[UTC]",
+              |    "latestEnhancedStatus" : "ERRORS",
+              |    "mrn" : "23GB1875WY31505410"
+              |}""".stripMargin)
     .as[Submission]
 
   val cancellationDenied = Json
     .parse(s"""[
-      |    {
-      |      "id": "49cadcf1-167f-4c03-b4a4-5433cdea894e",
-      |      "requestType" : "SubmissionRequest",
-      |      "requestTimestamp" : "2022-05-11T09:42:41.138Z[UTC]",
-      |      "notifications" : [
-      |        {
-      |          "notificationId" : "f0245e51-2be3-440c-9cf7-da09f3a0874b",
-      |          "dateTimeIssued" : "2022-05-12T17:32:31Z[UTC]",
-      |          "enhancedStatus" : "RECEIVED"
-      |        }
-      |      ],
-      |      "decId" : "id",
-      |      "versionNo" : 1
-      |    },
-      |    {
-      |      "id": "202bcfdb-60e0-4710-949a-ecd2db0487b3",
-      |      "requestType": "CancellationRequest",
-      |      "requestTimestamp": "2022-05-13T12:31:03.937Z[UTC]",
-      |      "notifications": [
-      |        {
-      |          "notificationId": "855e4c4a-2889-417b-9338-d2f487dd19c4",
-      |          "dateTimeIssued": "2022-05-14T12:31:06Z[UTC]",
-      |          "enhancedStatus": "CUSTOMS_POSITION_DENIED"
-      |        }
-      |      ],
-      |      "decId" : "id",
-      |      "versionNo" : 1
-      |    }
-      |]
-      |""".stripMargin)
+              |    {
+              |      "id": "49cadcf1-167f-4c03-b4a4-5433cdea894e",
+              |      "requestType" : "SubmissionRequest",
+              |      "requestTimestamp" : "2022-05-11T09:42:41.138Z[UTC]",
+              |      "notifications" : [
+              |        {
+              |          "notificationId" : "f0245e51-2be3-440c-9cf7-da09f3a0874b",
+              |          "dateTimeIssued" : "2022-05-12T17:32:31Z[UTC]",
+              |          "enhancedStatus" : "RECEIVED"
+              |        }
+              |      ],
+              |      "decId" : "id",
+              |      "versionNo" : 1
+              |    },
+              |    {
+              |      "id": "202bcfdb-60e0-4710-949a-ecd2db0487b3",
+              |      "requestType": "CancellationRequest",
+              |      "requestTimestamp": "2022-05-13T12:31:03.937Z[UTC]",
+              |      "notifications": [
+              |        {
+              |          "notificationId": "855e4c4a-2889-417b-9338-d2f487dd19c4",
+              |          "dateTimeIssued": "2022-05-14T12:31:06Z[UTC]",
+              |          "enhancedStatus": "CUSTOMS_POSITION_DENIED"
+              |        }
+              |      ],
+              |      "decId" : "id",
+              |      "versionNo" : 1
+              |    }
+              |]
+              |""".stripMargin)
     .as[Seq[Action]]
 
   val cancellationGranted = Json
     .parse(s"""[
-      |    {
-      |      "id": "49cadcf1-167f-4c03-b4a4-5433cdea894e",
-      |      "requestType" : "SubmissionRequest",
-      |      "requestTimestamp" : "2022-05-11T09:42:41.138Z[UTC]",
-      |      "notifications" : [
-      |        {
-      |          "notificationId" : "8ce6ea97-cd82-41e7-90b3-e016c29e8768",
-      |          "dateTimeIssued" : "2022-05-15T17:33:31Z[UTC]",
-      |          "enhancedStatus" : "CANCELLED"
-      |        },
-      |        {
-      |          "notificationId" : "f0245e51-2be3-440c-9cf7-da09f3a0874b",
-      |          "dateTimeIssued" : "2022-05-12T17:32:31Z[UTC]",
-      |          "enhancedStatus" : "RECEIVED"
-      |        }
-      |      ],
-      |      "decId" : "id",
-      |      "versionNo" : 1
-      |    },
-      |    {
-      |      "id": "202bcfdb-60e0-4710-949a-ecd2db0487b3",
-      |      "requestType": "CancellationRequest",
-      |      "requestTimestamp": "2022-05-13T12:31:03.937Z[UTC]",
-      |      "notifications": [
-      |        {
-      |          "notificationId": "855e4c4a-2889-417b-9338-d2f487dd19c4",
-      |          "dateTimeIssued": "2022-05-14T12:31:06Z[UTC]",
-      |          "enhancedStatus": "CUSTOMS_POSITION_GRANTED"
-      |        }
-      |      ],
-      |      "decId" : "id",
-      |      "versionNo" : 1
-      |    }
-      |]
-      |""".stripMargin)
+              |    {
+              |      "id": "49cadcf1-167f-4c03-b4a4-5433cdea894e",
+              |      "requestType" : "SubmissionRequest",
+              |      "requestTimestamp" : "2022-05-11T09:42:41.138Z[UTC]",
+              |      "notifications" : [
+              |        {
+              |          "notificationId" : "8ce6ea97-cd82-41e7-90b3-e016c29e8768",
+              |          "dateTimeIssued" : "2022-05-15T17:33:31Z[UTC]",
+              |          "enhancedStatus" : "CANCELLED"
+              |        },
+              |        {
+              |          "notificationId" : "f0245e51-2be3-440c-9cf7-da09f3a0874b",
+              |          "dateTimeIssued" : "2022-05-12T17:32:31Z[UTC]",
+              |          "enhancedStatus" : "RECEIVED"
+              |        }
+              |      ],
+              |      "decId" : "id",
+              |      "versionNo" : 1
+              |    },
+              |    {
+              |      "id": "202bcfdb-60e0-4710-949a-ecd2db0487b3",
+              |      "requestType": "CancellationRequest",
+              |      "requestTimestamp": "2022-05-13T12:31:03.937Z[UTC]",
+              |      "notifications": [
+              |        {
+              |          "notificationId": "855e4c4a-2889-417b-9338-d2f487dd19c4",
+              |          "dateTimeIssued": "2022-05-14T12:31:06Z[UTC]",
+              |          "enhancedStatus": "CUSTOMS_POSITION_GRANTED"
+              |        }
+              |      ],
+              |      "decId" : "id",
+              |      "versionNo" : 1
+              |    }
+              |]
+              |""".stripMargin)
     .as[Seq[Action]]
 
   val cancellationRequestNotConfirmedYet = Json
     .parse(s"""[
-      |    {
-      |      "id": "49cadcf1-167f-4c03-b4a4-5433cdea894e",
-      |      "requestType" : "SubmissionRequest",
-      |      "requestTimestamp" : "2022-05-11T09:42:41.138Z[UTC]",
-      |      "notifications" : [
-      |        {
-      |          "notificationId" : "f0245e51-2be3-440c-9cf7-da09f3a0874b",
-      |          "dateTimeIssued" : "2022-05-12T17:32:31Z[UTC]",
-      |          "enhancedStatus" : "RECEIVED"
-      |        }
-      |      ],
-      |      "decId" : "id",
-      |      "versionNo" : 1
-      |    },
-      |    {
-      |      "id": "202bcfdb-60e0-4710-949a-ecd2db0487b3",
-      |      "requestType": "CancellationRequest",
-      |      "requestTimestamp": "2022-05-13T12:31:03.937Z[UTC]",
-      |      "notifications": [
-      |        {
-      |          "notificationId": "855e4c4a-2889-417b-9338-d2f487dd19c4",
-      |          "dateTimeIssued": "2022-05-14T12:31:06Z[UTC]",
-      |          "enhancedStatus": "CUSTOMS_POSITION_GRANTED"
-      |        }
-      |      ],
-      |      "decId" : "id",
-      |      "versionNo": 1
-      |    }
-      |]
-      |""".stripMargin)
+              |    {
+              |      "id": "49cadcf1-167f-4c03-b4a4-5433cdea894e",
+              |      "requestType" : "SubmissionRequest",
+              |      "requestTimestamp" : "2022-05-11T09:42:41.138Z[UTC]",
+              |      "notifications" : [
+              |        {
+              |          "notificationId" : "f0245e51-2be3-440c-9cf7-da09f3a0874b",
+              |          "dateTimeIssued" : "2022-05-12T17:32:31Z[UTC]",
+              |          "enhancedStatus" : "RECEIVED"
+              |        }
+              |      ],
+              |      "decId" : "id",
+              |      "versionNo" : 1
+              |    },
+              |    {
+              |      "id": "202bcfdb-60e0-4710-949a-ecd2db0487b3",
+              |      "requestType": "CancellationRequest",
+              |      "requestTimestamp": "2022-05-13T12:31:03.937Z[UTC]",
+              |      "notifications": [
+              |        {
+              |          "notificationId": "855e4c4a-2889-417b-9338-d2f487dd19c4",
+              |          "dateTimeIssued": "2022-05-14T12:31:06Z[UTC]",
+              |          "enhancedStatus": "CUSTOMS_POSITION_GRANTED"
+              |        }
+              |      ],
+              |      "decId" : "id",
+              |      "versionNo": 1
+              |    }
+              |]
+              |""".stripMargin)
     .as[Seq[Action]]
 
   val declarationCancelled = Json
     .parse(s"""[
-      |  {
-      |      "id" : "8fdfd197-04ee-488e-910c-786cbfa63edf",
-      |      "requestType" : "SubmissionRequest",
-      |      "requestTimestamp" : "2022-08-01T07:59:36.406Z[UTC]",
-      |      "notifications" : [
-      |          {
-      |              "notificationId" : "b843f297-1092-41bb-83f6-dcc49e181594",
-      |              "dateTimeIssued" : "2022-08-01T08:08:08Z[UTC]",
-      |              "enhancedStatus" : "RECEIVED"
-      |          },
-      |          {
-      |              "notificationId" : "d843f297-1092-41bb-83f6-dcc49e181599",
-      |              "dateTimeIssued" : "2022-10-01T08:08:08Z[UTC]",
-      |              "enhancedStatus" : "CANCELLED"
-      |          }
-      |      ],
-      |      "decId" : "id",
-      |      "versionNo" : 1
-      |  },
-      |  {
-      |      "id" : "9fdfd197-04ee-488e-910c-786cbfa63eda",
-      |      "requestType" : "CancellationRequest",
-      |      "requestTimestamp" : "2022-09-01T07:59:36.406Z[UTC]",
-      |      "notifications" : [
-      |          {
-      |              "notificationId" : "c843f297-1092-41bb-83f6-dcc49e181596",
-      |              "dateTimeIssued" : "2022-09-01T07:59:36.406Z[UTC]",
-      |              "enhancedStatus" : "RECEIVED"
-      |          }
-      |      ],
-      |      "decId" : "id",
-      |      "versionNo" : 1
-      |  }
-      |]""".stripMargin)
+              |  {
+              |      "id" : "8fdfd197-04ee-488e-910c-786cbfa63edf",
+              |      "requestType" : "SubmissionRequest",
+              |      "requestTimestamp" : "2022-08-01T07:59:36.406Z[UTC]",
+              |      "notifications" : [
+              |          {
+              |              "notificationId" : "b843f297-1092-41bb-83f6-dcc49e181594",
+              |              "dateTimeIssued" : "2022-08-01T08:08:08Z[UTC]",
+              |              "enhancedStatus" : "RECEIVED"
+              |          },
+              |          {
+              |              "notificationId" : "d843f297-1092-41bb-83f6-dcc49e181599",
+              |              "dateTimeIssued" : "2022-10-01T08:08:08Z[UTC]",
+              |              "enhancedStatus" : "CANCELLED"
+              |          }
+              |      ],
+              |      "decId" : "id",
+              |      "versionNo" : 1
+              |  },
+              |  {
+              |      "id" : "9fdfd197-04ee-488e-910c-786cbfa63eda",
+              |      "requestType" : "CancellationRequest",
+              |      "requestTimestamp" : "2022-09-01T07:59:36.406Z[UTC]",
+              |      "notifications" : [
+              |          {
+              |              "notificationId" : "c843f297-1092-41bb-83f6-dcc49e181596",
+              |              "dateTimeIssued" : "2022-09-01T07:59:36.406Z[UTC]",
+              |              "enhancedStatus" : "RECEIVED"
+              |          }
+              |      ],
+              |      "decId" : "id",
+              |      "versionNo" : 1
+              |  }
+              |]""".stripMargin)
     .as[Seq[Action]]
 }
