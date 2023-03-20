@@ -2230,6 +2230,10 @@ declaration.transport.sealId.error.invalid = Seal ID must contain only letters a
 declaration.confirmation.holding.title = Submit your declaration
 declaration.confirmation.holding.paragraph = We are checking your declaration, please wait
 
+declaration.confirmation.accepted.amendment.title = Amendment request accepted
+declaration.confirmation.accepted.amendment.next.1 = Your amendment request was successful and the changes have been applied to your declaration.
+declaration.confirmation.accepted.amendment.next.2 = You will be notified about the progress of your declaration and any action required on {0}, and on the {1} page.
+
 declaration.confirmation.accepted.title = Declaration accepted
 declaration.confirmation.accepted.next.1 = Further customs checks may be carried out. You will be notified about any action required on {0}, which is your registered CDS email address, and on {1}.
 declaration.confirmation.accepted.next.2 = If the status of your declaration has not changed within 2 hours from the time of this acceptance, {0}, you should {1}.
