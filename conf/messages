@@ -2263,6 +2263,7 @@ declaration.confirmation.received.title = Your declaration has been pre-lodged w
 declaration.confirmation.received.next.1 = Further customs checks will be carried out when the goods are arrived. You will be notified about any action required on {0}, which is your registered CDS email address, and on {1}.
 declaration.confirmation.received.next.2 = If the status of your declaration has not changed within 2 hours from when the goods are arrived, you should {0}.
 
+declaration.confirmation.additionalType = Type of declaration
 declaration.confirmation.ducr = DUCR
 declaration.confirmation.lrn = LRN
 declaration.confirmation.mrn = MRN
