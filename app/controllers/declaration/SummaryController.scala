@@ -94,16 +94,17 @@ class SummaryController @Inject() (
     else Future.successful(Ok(summaryPageNoData()).removingFromSession(errorFixModeSessionKey))
   }
 
-  private def displaySummaryPage()(implicit request: JourneyRequest[_]): Future[Result] = {
-    val maybeLrn = request.cacheModel.lrn.map(Lrn(_))
-
-    val backlink =
-      if (request.cacheModel.declarationMeta.parentDeclarationEnhancedStatus.contains(ERRORS)) toDashboard
-      else SavedDeclarationsController.displayDeclarations()
-    val duplicateLrnError = Seq(lrnDuplicateError)
-
+  private def displaySummaryPage()(implicit request: JourneyRequest[_]): Future[Result] =
     if (request.cacheModel.isAmendmentDraft) Future.successful(Ok(amendmentDraftPage(submissionId)))
-    else
+    else {
+
+      val maybeLrn = request.cacheModel.lrn.map(Lrn(_))
+
+      val backlink =
+        if (request.cacheModel.declarationMeta.parentDeclarationEnhancedStatus.contains(ERRORS)) toDashboard
+        else SavedDeclarationsController.displayDeclarations()
+      val duplicateLrnError = Seq(lrnDuplicateError)
+
       isLrnADuplicate(maybeLrn) map { lrnIsDuplicate =>
         val result =
           if (lrnIsDuplicate) Ok(normalSummaryPage(backlink, duplicateLrnError))
@@ -111,7 +112,7 @@ class SummaryController @Inject() (
 
         result.removingFromSession(errorFixModeSessionKey)
       }
-  }
+    }
 
   private val hrefSource = """href="/customs-declare-exports/declaration/.+\?"""
   private val hrefDest = s"""href="$continuePlaceholder""""
