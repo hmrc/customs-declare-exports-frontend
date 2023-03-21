@@ -95,12 +95,12 @@ class TimelineEvents @Inject() (
   private def createNotificationEvents(submission: Submission): Seq[NotificationEvent] =
     submission.actions.flatMap { action =>
       val events = action.notifications.fold(Seq.empty[NotificationEvent]) { notificationSummarySeq =>
-        val notificationSumm: Seq[NotificationEvent] = notificationSummarySeq.map(NotificationEvent(action.id, action.requestType, _))
+        val notificationEvents: Seq[NotificationEvent] = notificationSummarySeq.map(NotificationEvent(action.id, action.requestType, _))
         if (action.requestType == AmendmentRequest) {
-          val amendmentNotficationSummary = NotificationSummary(UUID.randomUUID, action.requestTimestamp, AMENDED)
-          notificationSumm :+ NotificationEvent(action.id, action.requestType, amendmentNotficationSummary)
+          val notificationSummary = NotificationSummary(UUID.randomUUID, action.requestTimestamp, AMENDED)
+          notificationEvents :+ NotificationEvent(action.id, action.requestType, notificationSummary)
         } else
-          notificationSumm
+          notificationEvents
       }
       if (action.requestType != CancellationRequest) events
       else {
