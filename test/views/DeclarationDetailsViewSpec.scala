@@ -20,7 +20,7 @@ import base.{ExportsTestData, Injector, OverridableInjector, RequestBuilder}
 import config.ExternalServicesConfig
 import config.featureFlags._
 import controllers.routes
-import controllers.routes.EADController
+import controllers.routes.{AmendDeclarationController, EADController, RejectedNotificationsController}
 import models.declaration.submissions.EnhancedStatus._
 import models.declaration.submissions.RequestType.{AmendmentRequest, SubmissionRequest}
 import models.declaration.submissions.{Action, EnhancedStatus, NotificationSummary, RequestType, Submission}
@@ -63,6 +63,7 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
   private val dmsctlNotification = NotificationSummary(UUID.randomUUID, now.plusMinutes(3), UNDERGOING_PHYSICAL_CHECK)
   private val acceptedNotification = NotificationSummary(UUID.randomUUID, now.plusMinutes(4), RECEIVED)
 
+  private val dmsrecNotification = NotificationSummary(UUID.randomUUID, now.plusMinutes(5), CUSTOMS_POSITION_DENIED)
   private val dmsrejNotification = NotificationSummary(UUID.randomUUID, now.plusMinutes(5), ERRORS)
 
   // Since the notification list is reverse-ordered (most to least recent) in TimelineEvents...
@@ -404,7 +405,7 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
         And("each Timeline event should always include a title")
         val title = events.get(ix).getElementsByTag("h2")
         assert(title.hasClass("hmrc-timeline__event-title"))
-        title.text mustBe EnhancedStatusHelper.asTimelineTitle(NotificationEvent(uuid, SubmissionRequest, notification))
+        title.text mustBe EnhancedStatusHelper.asTimelineEvent(NotificationEvent(uuid, SubmissionRequest, notification))
 
         And("a date and time")
         val datetime = events.get(ix).getElementsByTag("time")
@@ -465,12 +466,14 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
 
       "must only include one primary button and no secondary buttons" when {
 
-        "one notification at least is a ERRORS notification in addition to only UNDERGOING_PHYSICAL_CHECK and/or ADDITIONAL_DOCUMENTS_REQUIRED notifications" in {
-          val notifications = List(dmsdocNotification, dmsctlNotification, dmsrejNotification)
-          val events = eventsOnTimeline(notifications)
-          verifyRejectedContent(content(events.get(0)))
-          content(events.get(1)).size mustBe 0
-          content(events.get(2)).size mustBe 0
+        "in addition to only UNDERGOING_PHYSICAL_CHECK and/or ADDITIONAL_DOCUMENTS_REQUIRED notifications" when {
+          "one notification at least is a ERRORS notification" in {
+            val notifications = List(dmsdocNotification, dmsctlNotification, dmsrejNotification)
+            val events = eventsOnTimeline(notifications)
+            verifyRejectedContent(content(events.get(0)))
+            content(events.get(1)).size mustBe 0
+            content(events.get(2)).size mustBe 0
+          }
         }
 
         "there is one only ERRORS notification" in {
@@ -527,7 +530,7 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
         rejectedElements.size mustBe 1
 
         And("the 'Fix and resubmit' content, should include a primary link-button to the RejectedNotificationsController")
-        val call = controllers.routes.RejectedNotificationsController.displayPage(uuid).url
+        val call = RejectedNotificationsController.displayPage(uuid).url
         verifyButton(rejectedElements.get(0), false, "fix.resubmit", call)
       }
 
@@ -561,18 +564,38 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
       }
     }
 
-    "display 'Fix and resubmit' button and 'Cancel' link when latest notification is rejected Amendment" in {
-      val notificationSummariesAmendmentRejected = List(dmsrejNotification, dmsdocNotification, dmsctlNotification, acceptedNotification)
-      val view = page(createSubmissionWith(notificationSummariesAmendmentRejected, AmendmentRequest))(verifiedEmailRequest(), messages)
+    "display 'Fix and resubmit' button and 'Cancel' link when latest notification is a rejected Amendment" in {
+      val notificationsWithAmendmentRejected = List(dmsrejNotification, dmsdocNotification, dmsctlNotification, acceptedNotification)
+      val submission = createSubmissionWith(notificationsWithAmendmentRejected, AmendmentRequest)
+      val view = page(submission)(verifiedEmailRequest(), messages)
       val buttonGroup = view.getElementsByClass("govuk-button-group")
       val button = buttonGroup.get(0).child(0)
       val link = buttonGroup.get(0).child(1)
 
       button.text() mustBe messages("declaration.details.fix.resubmit.button")
       button.hasClass("govuk-button")
+      button must haveHref(RejectedNotificationsController.amendmentRejected(submission.uuid, submission.actions(0).id))
 
       link.text() mustBe messages("declaration.details.cancel.amendment")
       link.hasClass("gov-link")
+      link must haveHref(AmendDeclarationController.submit(Some("cancel")))
+    }
+
+    "display 'Resubmit' button and 'Cancel' link when latest notification is a failed Amendment" in {
+      val notificationsWithAmendmentFailed = List(dmsrecNotification, dmsdocNotification, dmsctlNotification, acceptedNotification)
+      val submission = createSubmissionWith(notificationsWithAmendmentFailed, AmendmentRequest)
+      val view = page(submission)(verifiedEmailRequest(), messages)
+      val buttonGroup = view.getElementsByClass("govuk-button-group")
+      val button = buttonGroup.get(0).child(0)
+      val link = buttonGroup.get(0).child(1)
+
+      button.text() mustBe messages("declaration.details.resubmit.button")
+      button.hasClass("govuk-button")
+      button must haveHref(RejectedNotificationsController.amendmentRejected(submission.uuid, submission.actions(0).id))
+
+      link.text() mustBe messages("declaration.details.cancel.amendment")
+      link.hasClass("gov-link")
+      link must haveHref(AmendDeclarationController.submit(Some("cancel")))
     }
 
     "display the expected section headers" in {

@@ -30,8 +30,14 @@ object EnhancedStatusHelper {
   def asText(submission: Submission)(implicit messages: Messages): String =
     asText(submission.latestEnhancedStatus.fold(PENDING)(identity))
 
-  def asTimelineTitle(event: NotificationEvent)(implicit messages: Messages): String =
+  def asTimelineEvent(event: NotificationEvent)(implicit messages: Messages): String =
     event.requestType match {
+      case AmendmentRequest if event.notificationSummary.enhancedStatus == CUSTOMS_POSITION_DENIED =>
+        messages("submission.enhancedStatus.timeline.title.amendment.failed")
+
+      case AmendmentRequest if event.notificationSummary.enhancedStatus == CUSTOMS_POSITION_GRANTED =>
+        messages("submission.enhancedStatus.timeline.title.amendment.accepted")
+
       case AmendmentRequest if event.notificationSummary.enhancedStatus == ERRORS =>
         messages("submission.enhancedStatus.timeline.title.amendment.rejected")
       case AmendmentRequest if event.notificationSummary.enhancedStatus == AMENDED =>

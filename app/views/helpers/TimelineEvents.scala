@@ -18,7 +18,7 @@ package views.helpers
 
 import config.featureFlags.{SecureMessagingInboxConfig, SfusConfig}
 import controllers.routes.{AmendDeclarationController, RejectedNotificationsController}
-import models.declaration.submissions.EnhancedStatus.{uploadFilesStatuses, _}
+import models.declaration.submissions.EnhancedStatus._
 import models.declaration.submissions.RequestType.{AmendmentRequest, CancellationRequest}
 import models.declaration.submissions.{NotificationSummary, RequestType, Submission}
 import play.api.i18n.Messages
@@ -56,20 +56,20 @@ class TimelineEvents @Inject() (
 
     val notificationEvents = createNotificationEvents(submission)
 
-    val hasAmendmentRejectedAsLatest = amendmentRejectedAsLatest(submission)
+    val amendmentEventIfLatest = getAmendmentEventIfLatest(submission)
 
     val IndexToMatchForUploadFilesContent = notificationEvents.indexWhere(_.notificationSummary.enhancedStatus in uploadFilesStatuses)
     val IndexToMatchForViewQueriesContent = notificationEvents.indexWhere(_.notificationSummary.enhancedStatus == QUERY_NOTIFICATION_MESSAGE)
-    val IndexToMatchForFixResubmitContent = notificationEvents.indexWhere(_.notificationSummary.enhancedStatus == ERRORS)
+    val IndexToMatchForFixResubmitContent =
+      amendmentEventIfLatest.fold(notificationEvents.indexWhere(_.notificationSummary.enhancedStatus == ERRORS))(_ => 0)
 
     notificationEvents.zipWithIndex.map { case (notificationEvent, index) =>
       val messageKey = s"submission.enhancedStatus.timeline.content.${notificationEvent.notificationSummary.enhancedStatus}"
       val bodyContent = if (messages.isDefinedAt(messageKey)) paragraphBody(messages(messageKey)) else HtmlFormat.empty
 
       val actionContent = index match {
-        case IndexToMatchForFixResubmitContent if notificationEvent.requestType != AmendmentRequest || hasAmendmentRejectedAsLatest =>
-          val id = if (hasAmendmentRejectedAsLatest) notificationEvent.actionId else submission.uuid
-          fixAndResubmitContent(id, hasAmendmentRejectedAsLatest)
+        case IndexToMatchForFixResubmitContent if notificationEvent.requestType != AmendmentRequest || amendmentEventIfLatest.isDefined =>
+          fixAndResubmitContent(submission.uuid, amendmentEventIfLatest)
 
         case IndexToMatchForUploadFilesContent if sfusConfig.isSfusUploadEnabled && IndexToMatchForFixResubmitContent < 0 =>
           uploadFilesContent(submission.mrn, isIndex1Primary(IndexToMatchForUploadFilesContent, IndexToMatchForViewQueriesContent))
@@ -85,19 +85,12 @@ class TimelineEvents @Inject() (
       val content = new Html(List(bodyContent, actionContent))
 
       TimelineEvent(
-        title = EnhancedStatusHelper.asTimelineTitle(notificationEvent),
+        title = EnhancedStatusHelper.asTimelineEvent(notificationEvent),
         dateTime = notificationEvent.notificationSummary.dateTimeIssued,
         content = if (content.body.isEmpty) None else Some(content)
       )
     }
   }
-
-  private def amendmentRejectedAsLatest(submission: Submission): Boolean =
-    submission.latestAction.exists { action =>
-      val isAmendmentRejected = action.requestType == AmendmentRequest
-      val hasLatestErrorNotification = action.notifications.headOption.exists(_.headOption.exists(_.enhancedStatus == ERRORS))
-      submission.blockAmendments == false && isAmendmentRejected && hasLatestErrorNotification
-    }
 
   private def createNotificationEvents(submission: Submission): Seq[NotificationEvent] =
     submission.actions.flatMap { action =>
@@ -111,25 +104,49 @@ class TimelineEvents @Inject() (
       }
       if (action.requestType != CancellationRequest) events
       else {
-        val cancellationRequest = List(
-          NotificationEvent(action.id, CancellationRequest, NotificationSummary(UUID.randomUUID, action.requestTimestamp, REQUESTED_CANCELLATION))
-        )
+        val notificationSummary = NotificationSummary(UUID.randomUUID(), action.requestTimestamp, REQUESTED_CANCELLATION)
+        val cancellationRequest = List(NotificationEvent(action.id, CancellationRequest, notificationSummary))
         events.filter(_.notificationSummary.enhancedStatus == CUSTOMS_POSITION_DENIED) ++ cancellationRequest
       }
     }.sorted
 
-  private def isIndex1Primary(index1: Int, index2: Int): Boolean = index2 < 0 || index1 < index2
+  sealed abstract class AmendmentEventIfLatest { val actionId: String }
+  case class AmendmentFailed(actionId: String) extends AmendmentEventIfLatest
+  case class AmendmentRejected(actionId: String) extends AmendmentEventIfLatest
 
-  private def fixAndResubmitContent(id: String, isAmendmentRequest: Boolean)(implicit messages: Messages): Html = {
-    val fixAndResubmit = RejectedNotificationsController.displayPage(id)
-    val button = linkButton("declaration.details.fix.resubmit.button", fixAndResubmit)
+  private def getAmendmentEventIfLatest(submission: Submission): Option[AmendmentEventIfLatest] =
+    if (submission.blockAmendments) None
+    else
+      submission.latestAction.flatMap { latestAction =>
+        if (latestAction.requestType != AmendmentRequest) None
+        else
+          latestAction.notifications.flatMap { notifications =>
+            notifications.headOption.flatMap {
+              _.enhancedStatus match {
+                case CUSTOMS_POSITION_DENIED => Some(AmendmentFailed(latestAction.id))
+                case ERRORS                  => Some(AmendmentRejected(latestAction.id))
+                case _                       => None
+              }
+            }
+          }
+      }
 
-    if (isAmendmentRequest) {
-      val cancelUrl = AmendDeclarationController.submit("cancel")
+  private def fixAndResubmitContent(uuid: String, amendmentEventIfLatest: Option[AmendmentEventIfLatest])(implicit messages: Messages): Html =
+    amendmentEventIfLatest.fold {
+      val fixAndResubmit = RejectedNotificationsController.displayPage(uuid)
+      linkButton("declaration.details.fix.resubmit.button", fixAndResubmit)
+    } { amendmentEventAsLatest =>
+      val fixAndResubmit = RejectedNotificationsController.amendmentRejected(uuid, amendmentEventAsLatest.actionId)
+      val button = amendmentEventAsLatest match {
+        case _: AmendmentFailed       => linkButton("declaration.details.resubmit.button", fixAndResubmit)
+        case _: AmendmentRejected | _ => linkButton("declaration.details.fix.resubmit.button", fixAndResubmit)
+      }
+      val cancelUrl = AmendDeclarationController.submit(Some("cancel"))
       val cancelLink = link(messages("declaration.details.cancel.amendment"), cancelUrl, id = Some("cancel-amendment"))
       Html(s"""<div class="govuk-button-group">${button.toString()}${cancelLink.toString()}</div>""")
-    } else button
-  }
+    }
+
+  private def isIndex1Primary(index1: Int, index2: Int): Boolean = index2 < 0 || index1 < index2
 
   private def uploadFilesContent(mrn: Option[String], isPrimary: Boolean)(implicit messages: Messages): Html =
     uploadFilesPartialForTimeline(mrn, isPrimary)

@@ -27,7 +27,8 @@ GET         /conversation/:client/:conversationId/result   controllers.SecureMes
 
 # Notifications
 
-GET         /submissions/:id/rejected-notifications        controllers.RejectedNotificationsController.displayPage(id: String)
+GET         /submissions/:id/rejected-notifications            controllers.RejectedNotificationsController.displayPage(id)
+GET         /submissions/:id/rejected-notifications/:actionId  controllers.RejectedNotificationsController.amendmentRejected(id, actionId)
 
 # Dashboard
 
@@ -49,7 +50,7 @@ GET         /ead-print-view/:mrn                           controllers.EADContro
 
 GET         /amend-declaration                             controllers.AmendDeclarationController.initAmendment
 
-GET         /submit-amendment                              controllers.AmendDeclarationController.submit(action: String ?= "cancel")
+GET         /submit-amendment                              controllers.AmendDeclarationController.submit(action: Option[String])
 
 # Cancel declaration
 
