@@ -53,6 +53,7 @@ class SummaryController @Inject() (
   override val exportsCacheService: ExportsCacheService,
   submissionService: SubmissionService,
   mcc: MessagesControllerComponents,
+  amendmentDraftPage: amendment_summary_page,
   normalSummaryPage: normal_summary_page,
   summaryPageNoData: summary_page_no_data,
   legalDeclarationPage: legal_declaration_page,
@@ -95,18 +96,21 @@ class SummaryController @Inject() (
 
   private def displaySummaryPage()(implicit request: JourneyRequest[_]): Future[Result] = {
     val maybeLrn = request.cacheModel.lrn.map(Lrn(_))
+
     val backlink =
       if (request.cacheModel.declarationMeta.parentDeclarationEnhancedStatus.contains(ERRORS)) toDashboard
       else SavedDeclarationsController.displayDeclarations()
     val duplicateLrnError = Seq(lrnDuplicateError)
 
-    isLrnADuplicate(maybeLrn).map { lrnIsDuplicate =>
-      val result =
-        if (lrnIsDuplicate) Ok(normalSummaryPage(backlink, duplicateLrnError))
-        else Ok(amendSummaryPage(backlink))
+    if (request.cacheModel.isAmendmentDraft) Future.successful(Ok(amendmentDraftPage(submissionId)))
+    else
+      isLrnADuplicate(maybeLrn) map { lrnIsDuplicate =>
+        val result =
+          if (lrnIsDuplicate) Ok(normalSummaryPage(backlink, duplicateLrnError))
+          else Ok(amendSummaryPage(backlink))
 
-      result.removingFromSession(errorFixModeSessionKey)
-    }
+        result.removingFromSession(errorFixModeSessionKey)
+      }
   }
 
   private val hrefSource = """href="/customs-declare-exports/declaration/.+\?"""
