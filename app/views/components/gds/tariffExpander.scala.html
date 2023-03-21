@@ -39,17 +39,17 @@
     }.mkString("</br></br>")
 }
 
-@specialisation = @{ journey match {
+@specialisation = @{
+  journey match {
     case CLEARANCE => "clearance"
     case _ => "common"
-}}
+  }
+}
 
 @expanderTitle = @{
-    expanderTitleKey.map{ key =>
-        Text(messages(key))
-    }.getOrElse{
-        Text(messages(s"tariff.expander.title.$specialisation"))
-    }
+  expanderTitleKey
+    .map(key => Text(messages(key)))
+    .getOrElse(Text(messages(s"tariff.expander.title.$specialisation")))
 }
 
 @govukDetails(Details(

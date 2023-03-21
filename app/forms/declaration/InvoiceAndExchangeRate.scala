@@ -109,8 +109,9 @@ object InvoiceAndExchangeRate extends DeclarationPage {
     }
   def isNumber(field: String): Condition = _.get(field).exists(isNumeric)
 
-  // We allow the user to enter commas when specifying these optional numerical values but we strip out the commas with `validateWithoutCommas` before validating
-  // the number of digits. To prevent the validation from allowing an invalid value like ",,,," we also must use the `isNotOnlyCommas`
+  // We allow the user to enter commas when specifying these optional numerical values but we strip out the commas
+  // with `validateWithoutCommas` before validating the number of digits.
+  // To prevent the validation from allowing an invalid value like ",,,," we also must use the `isNotOnlyCommas`
   // function to specifically guard against this.
   val mapping: Mapping[InvoiceAndExchangeRate] = Forms.mapping(
     totalAmountInvoiced -> validateTotalAmountInvoiced,
@@ -122,7 +123,7 @@ object InvoiceAndExchangeRate extends DeclarationPage {
   def form: Form[InvoiceAndExchangeRate] = Form(mapping)
 
   override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
-    Seq(TariffContentKey("tariff.declaration.totalNumbersOfItems.1.common"), TariffContentKey("tariff.declaration.totalNumbersOfItems.2.common"))
+    List(TariffContentKey("tariff.declaration.totalNumbersOfItems.1.common"), TariffContentKey("tariff.declaration.totalNumbersOfItems.2.common"))
 
   private def validateExchangeRate = AdditionalConstraintsMapping(
     optional(text()).transform(_.map(_.toUpperCase), (o: Option[String]) => o),

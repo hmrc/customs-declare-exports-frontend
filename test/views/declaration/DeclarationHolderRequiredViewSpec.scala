@@ -70,7 +70,6 @@ class DeclarationHolderRequiredViewSpec extends UnitViewSpec with ExportsTestHel
     }
 
     "on empty page" should {
-
       onEveryDeclarationJourney() { implicit request =>
         "display page title" in {
           view.getElementsByClass(Styles.gdsPageLegend) must containMessageForElements(s"$prefix.title")
@@ -93,6 +92,27 @@ class DeclarationHolderRequiredViewSpec extends UnitViewSpec with ExportsTestHel
         "display 'Save and continue' button on page" in {
           val saveButton = view.getElementById("submit")
           saveButton must containMessage(saveAndContinueCaption)
+        }
+
+        "display the expected tariff details" in {
+          val tariffTitle = view.getElementsByClass("govuk-details__summary-text")
+          tariffTitle.text mustBe messages(s"tariff.expander.title.common")
+
+          val tariffDetails = view.getElementsByClass("govuk-details__text").first
+          val actualText = removeBlanksIfAnyBeforeDot(tariffDetails.text)
+
+          val prefix = "tariff.declaration.isAuthorisationRequired"
+          val expectedText = request.declarationType match {
+            case CLEARANCE => messages(s"$prefix.clearance.text", messages(s"$prefix.clearance.linkText.0"))
+            case _ =>
+              s"""
+                ${messages(s"$prefix.1.common.text", messages(s"$prefix.1.common.linkText.0"))}
+                ${messages(s"$prefix.2.common.text", messages(s"$prefix.2.common.linkText.0"))}
+              """
+          }
+
+          val expectedTextWithNoMargin = removeLineBreakIfAny(removeNewLinesIfAny(expectedText).trim)
+          actualText mustBe expectedTextWithNoMargin
         }
       }
 
@@ -209,21 +229,16 @@ class DeclarationHolderRequiredViewSpec extends UnitViewSpec with ExportsTestHel
     }
 
     "have body text" when {
+
       "pre-lodged" in {
-
         implicit val request = withRequest(STANDARD_PRE_LODGED)
-
         view.getElementsByClass(Styles.gdsPageBody) must containMessageForElements(s"$prefix.body.default")
-
       }
+
       "arrived" in {
-
         implicit val request = withRequest(STANDARD_FRONTIER)
-
         view.getElementsByClass(Styles.gdsPageBody) must containMessageForElements(s"$prefix.body.standard.arrived")
-
       }
     }
   }
-
 }

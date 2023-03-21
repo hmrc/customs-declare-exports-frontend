@@ -23,9 +23,14 @@ import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.{pr
 import forms.declaration.declarationHolder.AuthorizationTypeCodes.EXRR
 import models.declaration.EoriSource
 import models.declaration.ExportDeclarationTestData.correctDeclarationHolder
+import models.viewmodels.TariffContentKey
 import org.scalatest.Inspectors.forAll
 
 class DeclarationHolderSpec extends DeclarationPageBaseSpec with JourneyTypeTestRunner with MockTaggedCodes {
+
+  override def getCommonTariffKeys(messageKey: String): Seq[TariffContentKey] =
+    if (messageKey.endsWith("addAuthorisationRequired")) List(TariffContentKey(s"${messageKey}.common"))
+    else List(TariffContentKey(s"${messageKey}.1.common"), TariffContentKey(s"${messageKey}.2.common"))
 
   private val eoriSource = EoriSource.OtherEori.toString
   private val authorisationTypeCode = correctDeclarationHolder.authorisationTypeCode.get
