@@ -53,7 +53,7 @@ class SummaryController @Inject() (
   override val exportsCacheService: ExportsCacheService,
   submissionService: SubmissionService,
   mcc: MessagesControllerComponents,
-  amendmentDraftPage: amendment_summary_page,
+  amendment_summary_page: amendment_summary_page,
   normalSummaryPage: normal_summary_page,
   summaryPageNoData: summary_page_no_data,
   legalDeclarationPage: legal_declaration_page,
@@ -64,7 +64,7 @@ class SummaryController @Inject() (
   val form: Form[LegalDeclaration] = LegalDeclaration.form
 
   def displayPage: Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType).async { implicit request =>
-    if (request.cacheModel.isAmendmentDraft) Future.successful(Ok(amendmentDraftPage(submissionId)))
+    if (request.cacheModel.isAmendmentDraft) Future.successful(Ok(amendmentDraftPage))
     else if (request.cacheModel.declarationMeta.summaryWasVisited.contains(true)) continueToDisplayPage
     else
       updateDeclarationFromRequest(declaration =>
@@ -125,6 +125,13 @@ class SummaryController @Inject() (
     }
     Html(finalPage)
   }
+
+  private def amendmentDraftPage(implicit request: JourneyRequest[_]) =
+    Html(
+      amendment_summary_page(submissionId)
+        .toString()
+        .replace(s"?$lastUrlPlaceholder", "")
+    )
 
   private def isLrnADuplicate(lrn: Option[Lrn])(implicit hc: HeaderCarrier): Future[Boolean] =
     lrn.fold(Future.successful(false))(lrnValidator.hasBeenSubmittedInThePast48Hours)
