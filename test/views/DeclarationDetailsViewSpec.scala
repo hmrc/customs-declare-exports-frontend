@@ -56,6 +56,9 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
 
   private val uuid = "uuid"
   private val submission = Submission(uuid, "eori", "lrn", Some(mrn), Some("ducr"), None, None, Seq.empty, latestDecId = Some(uuid))
+  private val subWithoutLatestDecId = Submission(uuid, "eori", "lrn", Some(mrn), Some("ducr"), None, None, Seq.empty, latestDecId = None)
+  private def subWithStatus(status: EnhancedStatus) =
+    Submission(uuid, "eori", "lrn", Some(mrn), Some("ducr"), latestEnhancedStatus = Some(status), None, Seq.empty, latestDecId = Some(uuid))
 
   private val dmsqry1Notification = NotificationSummary(UUID.randomUUID, now, QUERY_NOTIFICATION_MESSAGE)
   private val dmsqry2Notification = NotificationSummary(UUID.randomUUID, now.plusMinutes(1), QUERY_NOTIFICATION_MESSAGE)
@@ -150,7 +153,19 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
       "the 'declarationAmendments' feature flag is disabled" in {
         when(mockDeclarationAmendmentsConfig.isEnabled).thenReturn(false)
         val view = page(submission)(verifiedEmailRequest(), messages)
-        Option(view.getElementById("navigation-banner")) mustBe None
+        Option(view.getElementById("amend-declaration")) mustBe None
+      }
+      "submission has no latestDecId" in {
+        when(mockDeclarationAmendmentsConfig.isEnabled).thenReturn(true)
+        val view = page(subWithoutLatestDecId)(verifiedEmailRequest(), messages)
+        Option(view.getElementById("amend-declaration")) mustBe None
+      }
+      amendmentBlockingStatuses.foreach { status =>
+        s"submission has one of the enhanced status of $status" in {
+          when(mockDeclarationAmendmentsConfig.isEnabled).thenReturn(true)
+          val view = page(subWithStatus(status))(verifiedEmailRequest(), messages)
+          Option(view.getElementById("amend-declaration")) mustBe None
+        }
       }
     }
   }
