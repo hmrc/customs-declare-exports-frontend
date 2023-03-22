@@ -17,16 +17,16 @@
 package views.declaration.summary
 
 import base.Injector
-import controllers.declaration.routes
+import controllers.declaration.routes.SummaryController
 import forms.declaration.LegalDeclaration
 import forms.declaration.LegalDeclaration.{amendReasonKey, confirmationKey, emailKey, jobRoleKey, nameKey}
 import views.declaration.spec.UnitViewSpec
-import views.html.declaration.summary.legal_declaration_page
+import views.html.declaration.summary.legal_declaration
 
 class LegalDeclarationPageViewSpec extends UnitViewSpec with Injector {
 
   private val emptyForm = LegalDeclaration.form
-  private val legalDeclarationPage = instanceOf[legal_declaration_page]
+  private val legalDeclarationPage = instanceOf[legal_declaration]
   private val view = legalDeclarationPage(emptyForm, amend = false)
   private val amendView = legalDeclarationPage(emptyForm, amend = true)
 
@@ -74,9 +74,9 @@ class LegalDeclarationPageViewSpec extends UnitViewSpec with Injector {
       }
     }
 
-    "for submissions only" should {
+    "for submissions" should {
       "go back to normal summary page" in {
-        view.getElementById("back-link") must haveHref(routes.SummaryController.displayPage.url)
+        view.getElementById("back-link") must haveHref(SummaryController.displayPage.url)
       }
       "have correct header" in {
         view.getElementById("title") must containMessage("declaration.summary.legal-header")
@@ -89,9 +89,9 @@ class LegalDeclarationPageViewSpec extends UnitViewSpec with Injector {
       }
     }
 
-    "for amendments only" should {
+    "for amendments" should {
       "go back to normal summary page" in {
-        amendView.getElementById("back-link") must haveHref(routes.SummaryController.displayPage.url)
+        amendView.getElementById("back-link") must haveHref(SummaryController.displayPage.url)
       }
       "have correct header" in {
         amendView.getElementById("title") must containMessage("legal.declaration.amend.heading")

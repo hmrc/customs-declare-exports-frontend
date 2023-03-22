@@ -19,27 +19,22 @@ package controllers.declaration
 import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction, VerifiedEmailAction}
 import controllers.declaration.SummaryController.{continuePlaceholder, lrnDuplicateError}
-import controllers.helpers.ErrorFixModeHelper.inErrorFixMode
 import controllers.routes.SavedDeclarationsController
-import forms.declaration.LegalDeclaration
 import forms.{Lrn, LrnValidator}
-import handlers.ErrorHandler
 import models.declaration.submissions.EnhancedStatus.ERRORS
-import models.declaration.submissions.Submission
 import models.requests.ExportsSessionKeys._
 import models.requests.JourneyRequest
 import play.api.Logging
-import play.api.data.{Form, FormError}
+import play.api.data.FormError
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import play.twirl.api.Html
-import services.SubmissionService
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.dashboard.DashboardHelper.toDashboard
 import views.helpers.ActionItemBuilder.lastUrlPlaceholder
+import views.html.declaration.amendments.amendment_summary
 import views.html.declaration.summary._
 
 import javax.inject.Inject
@@ -49,22 +44,17 @@ class SummaryController @Inject() (
   authenticate: AuthAction,
   verifyEmail: VerifiedEmailAction,
   journeyType: JourneyAction,
-  errorHandler: ErrorHandler,
   override val exportsCacheService: ExportsCacheService,
-  submissionService: SubmissionService,
   mcc: MessagesControllerComponents,
-  amendment_summary_page: amendment_summary_page,
+  amendment_summary: amendment_summary,
   normalSummaryPage: normal_summary_page,
   summaryPageNoData: summary_page_no_data,
-  legalDeclarationPage: legal_declaration_page,
   lrnValidator: LrnValidator
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
-    extends FrontendController(mcc) with I18nSupport with Logging with ModelCacheable with WithUnsafeDefaultFormBinding {
+    extends FrontendController(mcc) with I18nSupport with Logging with ModelCacheable {
 
-  val form: Form[LegalDeclaration] = LegalDeclaration.form
-
-  def displayPage: Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType).async { implicit request =>
-    if (request.cacheModel.isAmendmentDraft) Future.successful(Ok(amendmentDraftPage))
+  val displayPage: Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType).async { implicit request =>
+    if (request.cacheModel.isAmendmentDraft) Future.successful(Ok(amendmentSummaryPage))
     else if (request.cacheModel.declarationMeta.summaryWasVisited.contains(true)) continueToDisplayPage
     else
       updateDeclarationFromRequest(declaration =>
@@ -72,22 +62,12 @@ class SummaryController @Inject() (
       ).flatMap(_ => continueToDisplayPage)
   }
 
-  def displayDeclarationPage(): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType) { implicit request =>
-    if (inErrorFixMode) handleError("Invalid mode on summary page") else Ok(legalDeclarationPage(form))
-  }
-
-  def submitDeclaration(): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType).async { implicit request =>
-    form
-      .bindFromRequest()
-      .fold(
-        (formWithErrors: Form[LegalDeclaration]) => Future.successful(BadRequest(legalDeclarationPage(formWithErrors))),
-        legalDeclaration =>
-          submissionService.submit(request.eori, request.cacheModel, legalDeclaration).map {
-            case Some(submission) => Redirect(routes.ConfirmationController.displayHoldingPage).withSession(session(submission))
-            case _                => handleError(s"Error from Customs Declarations API")
-          }
-      )
-  }
+  private def amendmentSummaryPage(implicit request: JourneyRequest[_]): Html =
+    Html(
+      amendment_summary(submissionId)
+        .toString()
+        .replace(s"?$lastUrlPlaceholder", "")
+    )
 
   private def continueToDisplayPage(implicit request: JourneyRequest[_]): Future[Result] = {
     val hasMandatoryData = request.cacheModel.consignmentReferences.exists(references => references.lrn.nonEmpty)
@@ -97,25 +77,22 @@ class SummaryController @Inject() (
 
   private def displaySummaryPage()(implicit request: JourneyRequest[_]): Future[Result] = {
     val maybeLrn = request.cacheModel.lrn.map(Lrn(_))
+    isLrnADuplicate(maybeLrn) map { isDuplicate =>
+      val isDeclarationWithErrors = request.cacheModel.declarationMeta.parentDeclarationEnhancedStatus.contains(ERRORS)
+      val backlink = if (isDeclarationWithErrors) toDashboard else SavedDeclarationsController.displayDeclarations()
 
-    val backlink =
-      if (request.cacheModel.declarationMeta.parentDeclarationEnhancedStatus.contains(ERRORS)) toDashboard
-      else SavedDeclarationsController.displayDeclarations()
-    val duplicateLrnError = Seq(lrnDuplicateError)
-
-    isLrnADuplicate(maybeLrn) map { lrnIsDuplicate =>
-      val result =
-        if (lrnIsDuplicate) Ok(normalSummaryPage(backlink, duplicateLrnError))
-        else Ok(amendSummaryPage(backlink))
-
-      result.removingFromSession(errorFixModeSessionKey)
+      val result = if (isDuplicate) normalSummaryPage(backlink, Seq(lrnDuplicateError)) else summaryPageWithPlaceholdersReplaced(backlink)
+      Ok(result).removingFromSession(errorFixModeSessionKey)
     }
   }
+
+  private def isLrnADuplicate(lrn: Option[Lrn])(implicit hc: HeaderCarrier): Future[Boolean] =
+    lrn.fold(Future.successful(false))(lrnValidator.hasBeenSubmittedInThePast48Hours)
 
   private val hrefSource = """href="/customs-declare-exports/declaration/.+\?"""
   private val hrefDest = s"""href="$continuePlaceholder""""
 
-  private def amendSummaryPage(backlink: Call)(implicit request: JourneyRequest[_]): Html = {
+  private def summaryPageWithPlaceholdersReplaced(backlink: Call)(implicit request: JourneyRequest[_]): Html = {
     val page = normalSummaryPage(backlink, Seq.empty, Some(continuePlaceholder)).toString
     val hrefSourceRegex = s"""$hrefSource$lastUrlPlaceholder"""".r
     val finalPage = hrefSourceRegex.findAllIn(page).toList.lastOption.fold(page) { lastChangeLink =>
@@ -125,28 +102,6 @@ class SummaryController @Inject() (
     }
     Html(finalPage)
   }
-
-  private def amendmentDraftPage(implicit request: JourneyRequest[_]) =
-    Html(
-      amendment_summary_page(submissionId)
-        .toString()
-        .replace(s"?$lastUrlPlaceholder", "")
-    )
-
-  private def isLrnADuplicate(lrn: Option[Lrn])(implicit hc: HeaderCarrier): Future[Boolean] =
-    lrn.fold(Future.successful(false))(lrnValidator.hasBeenSubmittedInThePast48Hours)
-
-  private def handleError(logMessage: String)(implicit request: Request[_]): Result = {
-    logger.error(logMessage)
-    InternalServerError(errorHandler.globalErrorPage)
-  }
-
-  private def session(submission: Submission)(implicit request: JourneyRequest[_]): Session =
-    request.session - declarationId +
-      (declarationType -> request.cacheModel.additionalDeclarationType.fold("")(_.toString)) +
-      (submissionId -> submission.uuid) +
-      (submissionDucr -> submission.ducr.fold("")(identity)) +
-      (submissionLrn -> submission.lrn)
 }
 
 object SummaryController {

@@ -20,7 +20,9 @@ import base.{ExportsTestData, Injector, OverridableInjector, RequestBuilder}
 import config.ExternalServicesConfig
 import config.featureFlags._
 import controllers.routes
-import controllers.routes.{AmendDeclarationController, EADController, RejectedNotificationsController}
+import controllers.declaration.amendments.routes.AmendDeclarationController
+import controllers.declaration.routes.SubmissionController
+import controllers.routes.{EADController, RejectedNotificationsController}
 import models.declaration.submissions.EnhancedStatus._
 import models.declaration.submissions.RequestType.{AmendmentRequest, SubmissionRequest}
 import models.declaration.submissions.{Action, EnhancedStatus, NotificationSummary, RequestType, Submission}
@@ -145,7 +147,7 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
 
         val cancelDeclarationLink = view.getElementById("amend-declaration")
         cancelDeclarationLink must containMessage("declaration.details.amend.declaration")
-        cancelDeclarationLink must haveHref(routes.AmendDeclarationController.initAmendment)
+        cancelDeclarationLink must haveHref(AmendDeclarationController.initAmendment)
       }
     }
 
@@ -593,7 +595,7 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
 
       link.text() mustBe messages("declaration.details.cancel.amendment")
       link.hasClass("gov-link")
-      link must haveHref(AmendDeclarationController.submit(Some("cancel")))
+      link must haveHref(SubmissionController.submitAmendment(Some("cancel")))
     }
 
     "display 'Resubmit' button and 'Cancel' link when latest notification is a failed Amendment" in {
@@ -610,7 +612,7 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
 
       link.text() mustBe messages("declaration.details.cancel.amendment")
       link.hasClass("gov-link")
-      link must haveHref(AmendDeclarationController.submit(Some("cancel")))
+      link must haveHref(SubmissionController.submitAmendment(Some("cancel")))
     }
 
     "display the expected section headers" in {

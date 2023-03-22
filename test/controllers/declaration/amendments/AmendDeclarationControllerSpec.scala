@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.declaration.amendments
 
 import base.ControllerWithoutFormSpec
 import config.AppConfig
 import config.featureFlags.DeclarationAmendmentsConfig
+import controllers.declaration.amendments.AmendDeclarationController
 import controllers.declaration.routes.SummaryController
 import controllers.routes.RootController
 import handlers.ErrorHandler
@@ -41,8 +42,8 @@ class AmendDeclarationControllerSpec extends ControllerWithoutFormSpec {
     mockVerifiedEmailAction,
     new ErrorHandler(mcc.messagesApi, instanceOf[error_template])(instanceOf[AppConfig]),
     mcc,
-    declarationAmendmentsConfig,
-    mockCustomsDeclareExportsConnector
+    mockCustomsDeclareExportsConnector,
+    declarationAmendmentsConfig
   )(ec)
 
   override protected def beforeEach(): Unit = {
@@ -57,7 +58,7 @@ class AmendDeclarationControllerSpec extends ControllerWithoutFormSpec {
     reset(declarationAmendmentsConfig, mockCustomsDeclareExportsConnector)
   }
 
-  "AmendDeclarationController.submit" should {
+  "AmendDeclarationController.initAmendment" should {
 
     "redirect to /" when {
       "the amend flag is disabled" in {
@@ -77,7 +78,7 @@ class AmendDeclarationControllerSpec extends ControllerWithoutFormSpec {
       }
     }
 
-    "redirect to /amend-summary" when {
+    "redirect to /saved-summary" when {
       "a declaration-id is returned by the connector" in {
         val expectedDeclarationId = "newDeclarationId"
         when(mockCustomsDeclareExportsConnector.findOrCreateDraftForAmend(any())(any(), any()))

@@ -33,7 +33,7 @@
 
 @(confirmation: Confirmation)(implicit request: Request[_], messages: Messages)
 
-@govukLayout(title = Title(confirmationHelper.title(confirmation)), showDeclarationSummaryLink = false) {
+@govukLayout(title = Title("declaration.confirmation.accepted.amendment.title"), showDeclarationSummaryLink = false) {
 
     @govukPanel(Panel(title = Text(messages(s"declaration.confirmation.accepted.amendment.title"))))
 
@@ -93,5 +93,4 @@
     <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
 
     @exitSurvey()
-
 }

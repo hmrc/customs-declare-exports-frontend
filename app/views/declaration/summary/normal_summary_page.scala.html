@@ -15,7 +15,7 @@
  *@
 
 @import config.AppConfig
-@import controllers.declaration.routes.{SummaryController, TransportContainerController}
+@import controllers.declaration.routes.{SubmissionController, SummaryController}
 @import controllers.routes.RejectedNotificationsController
 @import models.declaration.submissions.EnhancedStatus.ERRORS
 @import models.requests.JourneyRequest
@@ -61,9 +61,11 @@
 
 @continueLink = @{
     request.cacheModel.declarationMeta.readyForSubmission match {
-        case Some(true) if errors.isEmpty => linkButton("site.confirm_and_continue", SummaryController.displayDeclarationPage)
+        case Some(true) if errors.isEmpty =>
+            linkButton("site.confirm_and_continue", SubmissionController.displayLegalDeclarationPage(false))
+
         case Some(true) => linkButton("site.confirm_and_continue", SummaryController.displayPage)
-        case _ =>
+        case _          =>
     }
 }
 

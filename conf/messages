@@ -2241,6 +2241,12 @@ declaration.transport.sealId.error.invalid = Seal ID must contain only letters a
 declaration.confirmation.holding.title = Submit your declaration
 declaration.confirmation.holding.paragraph = We are checking your declaration, please wait
 
+declaration.confirmation.failed.amendment.title = Amendment request failed
+declaration.confirmation.failed.amendment.next.1 = The amendment information you provided is correct, but it could not be accepted at this time.
+declaration.confirmation.failed.amendment.next.2 = This is because your declaration is still being processed.
+declaration.confirmation.failed.amendment.next.3 = Your declaration cannot progress unless you resubmit the amendment request and it is accepted or you cancel this amendment.
+declaration.confirmation.failed.amendment.next.4 = You can find these options on the {0} page.
+
 declaration.confirmation.accepted.amendment.title = Amendment request accepted
 declaration.confirmation.accepted.amendment.next.1 = Your amendment request was successful and the changes have been applied to your declaration.
 declaration.confirmation.accepted.amendment.next.2 = You will be notified about the progress of your declaration and any action required on {0}, and on the {1} page.
@@ -2274,7 +2280,7 @@ declaration.confirmation.body.1 = Your declaration{0}{1} has been validated and 
 declaration.confirmation.body.1.ducr = with DUCR {0}
 declaration.confirmation.body.1.lrn = (your reference {0})
 declaration.confirmation.body.2 = You can check the status of your declaration and print out the export accompanying document (EAD) on {0}.
-declaration.confirmation.declaration.details.link = Declaration details
+declaration.confirmation.declaration.details.link = Declaration status
 declaration.confirmation.next.2.link = contact the National Clearance Hub
 declaration.confirmation.what.happens.next = What happens next
 

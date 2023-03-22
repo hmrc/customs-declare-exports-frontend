@@ -14,18 +14,19 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.declaration.amendments
 
+import com.google.inject.Inject
 import config.featureFlags.DeclarationAmendmentsConfig
 import connectors.CustomsDeclareExportsConnector
 import controllers.actions.{AuthAction, VerifiedEmailAction}
+import controllers.declaration.routes.SummaryController
 import controllers.routes.RootController
 import handlers.ErrorHandler
 import models.requests.ExportsSessionKeys
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
-import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class AmendDeclarationController @Inject() (
@@ -33,8 +34,8 @@ class AmendDeclarationController @Inject() (
   verifyEmail: VerifiedEmailAction,
   errorHandler: ErrorHandler,
   mcc: MessagesControllerComponents,
-  declarationAmendmentsConfig: DeclarationAmendmentsConfig,
-  connector: CustomsDeclareExportsConnector
+  connector: CustomsDeclareExportsConnector,
+  declarationAmendmentsConfig: DeclarationAmendmentsConfig
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) {
 
@@ -44,16 +45,11 @@ class AmendDeclarationController @Inject() (
       request.session.get(ExportsSessionKeys.submissionId) match {
         case Some(submissionId) =>
           connector.findOrCreateDraftForAmend(submissionId).map { declarationId =>
-            Redirect(controllers.declaration.routes.SummaryController.displayPage)
+            Redirect(SummaryController.displayPage)
               .addingToSession(ExportsSessionKeys.declarationId -> declarationId)
           }
 
         case _ => errorHandler.displayErrorPage
       }
-  }
-
-  def submit(action: Option[String]): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
-    request.session.get(ExportsSessionKeys.submissionId)
-    Future.successful(Redirect(RootController.displayPage))
   }
 }
