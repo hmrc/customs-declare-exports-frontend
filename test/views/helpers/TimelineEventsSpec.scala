@@ -149,16 +149,17 @@ class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injec
     "generate the expected sequence of TimelineEvent instances when an amendment request is granted" in {
       val timelineEvents = createTimelineFromActions(amendmentGranted)
 
-      timelineEvents.size mustBe 2
+      timelineEvents.size mustBe 3
       timelineEvents(0).title mustBe messages("submission.enhancedStatus.timeline.title.amendment.accepted")
-      timelineEvents(1).title mustBe messages(s"submission.enhancedStatus.$RECEIVED")
+      timelineEvents(1).title mustBe messages("submission.enhancedStatus.timeline.title.AMENDED")
+      timelineEvents(2).title mustBe messages(s"submission.enhancedStatus.$RECEIVED")
     }
 
     "generate the expected sequence of TimelineEvent instances when the latest action is amendment rejected" in {
       val submission = amendmentUnsuccessfulLatest(ERRORS)
       val timelineEvents = createTimelineFromSubmission(submission)
 
-      timelineEvents.size mustBe 4
+      timelineEvents.size mustBe 5
 
       timelineEvents(0).title mustBe messages("submission.enhancedStatus.timeline.title.amendment.rejected")
       timelineEvents(0).dateTime mustBe submission.actions(1).notifications.get(0).dateTimeIssued
@@ -169,21 +170,24 @@ class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injec
       content must include(expectedButtonUrl)
       content must include(expectedLinkUrl)
 
-      timelineEvents(1).title mustBe messages(s"submission.enhancedStatus.$ERRORS")
-      timelineEvents(1).dateTime mustBe submission.actions(0).notifications.get(0).dateTimeIssued
+      timelineEvents(1).title mustBe messages("submission.enhancedStatus.timeline.title.AMENDED")
+      timelineEvents(1).dateTime mustBe submission.actions(1).requestTimestamp
 
-      timelineEvents(2).title mustBe messages(s"submission.enhancedStatus.$GOODS_ARRIVED_MESSAGE")
-      timelineEvents(2).dateTime mustBe submission.actions(0).notifications.get(1).dateTimeIssued
+      timelineEvents(2).title mustBe messages(s"submission.enhancedStatus.$ERRORS")
+      timelineEvents(2).dateTime mustBe submission.actions(0).notifications.get(0).dateTimeIssued
 
-      timelineEvents(3).title mustBe messages(s"submission.enhancedStatus.$RECEIVED")
-      timelineEvents(3).dateTime mustBe submission.actions(0).notifications.get(2).dateTimeIssued
+      timelineEvents(3).title mustBe messages(s"submission.enhancedStatus.$GOODS_ARRIVED_MESSAGE")
+      timelineEvents(3).dateTime mustBe submission.actions(0).notifications.get(1).dateTimeIssued
+
+      timelineEvents(4).title mustBe messages(s"submission.enhancedStatus.$RECEIVED")
+      timelineEvents(4).dateTime mustBe submission.actions(0).notifications.get(2).dateTimeIssued
     }
 
     "generate the expected sequence of TimelineEvent instances when the amendment is rejected" in {
       val submission = amendmentUnsuccessful(ERRORS)
       val timelineEvents = createTimelineFromSubmission(submission)
 
-      timelineEvents.size mustBe 4
+      timelineEvents.size mustBe 5
 
       timelineEvents(0).title mustBe messages(s"submission.enhancedStatus.$ERRORS")
       timelineEvents(0).dateTime mustBe submission.actions(0).notifications.get(0).dateTimeIssued
@@ -197,13 +201,16 @@ class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injec
       timelineEvents(3).title mustBe messages("submission.enhancedStatus.timeline.title.amendment.rejected")
       timelineEvents(3).dateTime mustBe submission.actions(1).notifications.get(0).dateTimeIssued
       timelineEvents(3).content mustBe None
+
+      timelineEvents(4).title mustBe messages("submission.enhancedStatus.timeline.title.AMENDED")
+      timelineEvents(4).dateTime mustBe submission.actions(1).requestTimestamp
     }
 
     "generate the expected sequence of TimelineEvent instances when the latest action is amendment failed" in {
       val submission = amendmentUnsuccessfulLatest(CUSTOMS_POSITION_DENIED)
       val timelineEvents = createTimelineFromSubmission(submission)
 
-      timelineEvents.size mustBe 4
+      timelineEvents.size mustBe 5
 
       timelineEvents(0).title mustBe messages("submission.enhancedStatus.timeline.title.amendment.failed")
       timelineEvents(0).dateTime mustBe submission.actions(1).notifications.get(0).dateTimeIssued
@@ -219,7 +226,7 @@ class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injec
       val submission = amendmentUnsuccessful(CUSTOMS_POSITION_DENIED)
       val timelineEvents = createTimelineFromSubmission(submission)
 
-      timelineEvents.size mustBe 4
+      timelineEvents.size mustBe 5
       timelineEvents(3).title mustBe messages("submission.enhancedStatus.timeline.title.amendment.failed")
       timelineEvents(3).dateTime mustBe submission.actions(1).notifications.get(0).dateTimeIssued
       timelineEvents(3).content mustBe None
@@ -422,11 +429,11 @@ object TimelineEventsSpec {
          |            "notifications" : [
          |                {
          |                    "notificationId" : "76e6e74f-d76e-426e-b8de-d3a615af3168",
-         |                    "dateTimeIssued" : "2023-03-05T13:36:58Z[UTC]",
+         |                    "dateTimeIssued" : "2023-03-05T13:36:59Z[UTC]",
          |                    "enhancedStatus" : "${status.toString}"
          |                }
          |            ],
-         |            "requestTimestamp" : "2023-03-05T13:36:59Z[UTC]"
+         |            "requestTimestamp" : "2023-03-05T13:36:58Z[UTC]"
          |        }
          |    ],
          |    "latestDecId" : "9fe6c5a6-179a-4527-b81e-a01f4a02281e",

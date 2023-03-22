@@ -273,8 +273,10 @@ tariff.declaration.consigneeDetails.clearance.text = Go to data element 3/9 Cons
 tariff.declaration.consigneeDetails.clearance.linkText.0 = C21 Customs Clearance Request Completion Guide - Inventory Exports (opens in new tab)
 tariff.declaration.otherPartiesInvolved.common.text = For details, go to<br>{0}.
 tariff.declaration.otherPartiesInvolved.common.linkText.0 = data element 3/37 - Additional Supply Chain Actor(s) Identification Number (opens in new tab)
-tariff.declaration.isAuthorisationRequired.common.text = To check what authorisations are needed, go to<br>{0} which contains the specific completion rules.
-tariff.declaration.isAuthorisationRequired.common.linkText.0 = Appendix 1: DE 1/10: Requested and Previous Procedure Codes (opens in new tab)
+tariff.declaration.isAuthorisationRequired.1.common.text = This field relates to {0}.
+tariff.declaration.isAuthorisationRequired.1.common.linkText.0 = DE 2/3 Documents produced, certificates and authorisations, additional references
+tariff.declaration.isAuthorisationRequired.2.common.text = For specific information on what authorisation are needed see {0}.
+tariff.declaration.isAuthorisationRequired.2.common.linkText.0 = Appendix 1: DE 1/10: Requested and Previous Procedure Codes (opens in new tab)
 tariff.declaration.isAuthorisationRequired.clearance.text = Go to data element 3/39 Holder of the Authorisation Identification Number in the<br>{0}.
 tariff.declaration.isAuthorisationRequired.clearance.linkText.0 = UK Trade Tariff (opens in new tab)
 tariff.declaration.addAuthorisationRequired.common.text = These entries will complete<br>{0}.
@@ -283,7 +285,6 @@ tariff.declaration.addAuthorisationRequired.clearance.text = Go to data element 
 tariff.declaration.addAuthorisationRequired.clearance.linkText.0 = C21 Customs Clearance Request Completion Guide - Inventory Exports (opens in new tab)
 tariff.declaration.originationCountry.common.text = This entry will complete<br>{0}.
 tariff.declaration.originationCountry.common.linkText.0 = data element 5/14 - Country of Dispatch/Export (opens in new tab)
-
 tariff.declaration.destinationCountry.1.common.text = This entry will complete<br>{0}.
 tariff.declaration.destinationCountry.1.common.linkText.0 = data element 5/8 - Country of Destination (opens in new tab)
 tariff.declaration.destinationCountry.2.common.text = If you select ‘Jersey’ or ‘Guernsey’, your declaration will be updated to {0}.
@@ -835,6 +836,7 @@ submission.enhancedStatus.WITHDRAWN                     = Withdrawn
 submission.enhancedStatus.PENDING                       = Pending
 submission.enhancedStatus.REQUESTED_CANCELLATION        = Cancellation request submitted
 submission.enhancedStatus.UNKNOWN                       = Unknown
+submission.enhancedStatus.AMENDMENT_REQUESTED           = Amendment requested
 
 submission.timeline.title.amendment.accepted = accepted
 submission.timeline.title.amendment.failed = on hold
@@ -844,6 +846,7 @@ submission.enhancedStatus.timeline.title.amendment.accepted = Amendment accepted
 submission.enhancedStatus.timeline.title.amendment.failed = Amendment failed
 submission.enhancedStatus.timeline.title.amendment.rejected = Amendment rejected
 submission.enhancedStatus.timeline.title.CUSTOMS_POSITION_DENIED = Cancellation request denied
+submission.enhancedStatus.timeline.title.AMENDED = Amendment requested
 
 submission.enhancedStatus.timeline.content.CANCELLED = You cancelled this declaration.
 submission.enhancedStatus.timeline.content.WITHDRAWN = You cancelled this declaration.
@@ -2238,6 +2241,10 @@ declaration.transport.sealId.error.invalid = Seal ID must contain only letters a
 declaration.confirmation.holding.title = Submit your declaration
 declaration.confirmation.holding.paragraph = We are checking your declaration, please wait
 
+declaration.confirmation.accepted.amendment.title = Amendment request accepted
+declaration.confirmation.accepted.amendment.next.1 = Your amendment request was successful and the changes have been applied to your declaration.
+declaration.confirmation.accepted.amendment.next.2 = You will be notified about the progress of your declaration and any action required on {0}, and on the {1} page.
+
 declaration.confirmation.accepted.title = Declaration accepted
 declaration.confirmation.accepted.next.1 = Further customs checks may be carried out. You will be notified about any action required on {0}, which is your registered CDS email address, and on {1}.
 declaration.confirmation.accepted.next.2 = If the status of your declaration has not changed within 2 hours from the time of this acceptance, {0}, you should {1}.
@@ -2259,6 +2266,7 @@ declaration.confirmation.received.title = Your declaration has been pre-lodged w
 declaration.confirmation.received.next.1 = Further customs checks will be carried out when the goods are arrived. You will be notified about any action required on {0}, which is your registered CDS email address, and on {1}.
 declaration.confirmation.received.next.2 = If the status of your declaration has not changed within 2 hours from when the goods are arrived, you should {0}.
 
+declaration.confirmation.additionalType = Type of declaration
 declaration.confirmation.ducr = DUCR
 declaration.confirmation.lrn = LRN
 declaration.confirmation.mrn = MRN

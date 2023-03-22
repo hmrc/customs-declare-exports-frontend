@@ -19,6 +19,7 @@
 @import models.declaration.notifications.Notification
 @import models.declaration.submissions.Submission
 @import models.requests.VerifiedEmailRequest
+@import models.declaration.submissions.EnhancedStatus.amendmentBlockingStatuses
 @import play.api.mvc.Call
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.dashboard.DashboardHelper.toDashboard
@@ -105,13 +106,15 @@
 
 @amendDeclarationLink = {
   @if(declarationAmendmentsConfig.isEnabled){
-    <p>
-        @link(
-            id = Some("amend-declaration"),
-            text = messages("declaration.details.amend.declaration"),
-            call = routes.AmendDeclarationController.initAmendment
-        )
-    </p>
+    @if(!submission.blockAmendments && !submission.latestEnhancedStatus.exists(amendmentBlockingStatuses.contains)) {
+        <p>
+            @link(
+                id = Some("amend-declaration"),
+                text = messages("declaration.details.amend.declaration"),
+                call = routes.AmendDeclarationController.initAmendment
+            )
+        </p>
+    }
   }
 }
 

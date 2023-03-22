@@ -17,17 +17,52 @@
 package controllers.declaration
 
 import config.featureFlags.DeclarationAmendmentsConfig
+import connectors.CustomsDeclareExportsConnector
+import controllers.actions.{AuthAction, VerifiedEmailAction}
 import controllers.routes.RootController
+import models.requests.ExportsSessionKeys
+import play.api.Logging
+import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
+import views.dashboard.DashboardHelper.toDashboard
+import views.helpers.Confirmation
+import views.html.declaration.confirmation.amendment_confirmation_page
 
 import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
-class AmendmentConfirmationController @Inject() (mcc: MessagesControllerComponents, declarationAmendmentsConfig: DeclarationAmendmentsConfig)
-    extends FrontendController(mcc) {
+class AmendmentConfirmationController @Inject() (
+  mcc: MessagesControllerComponents,
+  declarationAmendmentsConfig: DeclarationAmendmentsConfig,
+  authenticate: AuthAction,
+  verifyEmail: VerifiedEmailAction,
+  customsDeclareExportsConnector: CustomsDeclareExportsConnector,
+  amendment_confirmation_page: amendment_confirmation_page
+)(implicit ec: ExecutionContext)
+    extends FrontendController(mcc) with I18nSupport with Logging {
 
   val displayHoldingPage: Action[AnyContent] = Action {
     if (!declarationAmendmentsConfig.isEnabled) Redirect(RootController.displayPage)
     else NotImplemented
+  }
+
+  val displayConfirmationPage: Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
+    request.session.data
+      .get(ExportsSessionKeys.submissionId)
+      .fold {
+        logger.warn("Session on /amendment-confirmation does not include the submission's uuid!?")
+        Future.successful(Redirect(toDashboard))
+      } { submissionId =>
+        for {
+          submission <- customsDeclareExportsConnector.findSubmission(submissionId)
+          declaration <- customsDeclareExportsConnector.findDeclaration(submissionId) recover { case _ => None }
+        } yield submission match {
+          case submission =>
+            val confirmation =
+              Confirmation(request.email, declaration.flatMap(_.additionalDeclarationType).fold("")(_.toString), submission, None)
+            Ok(amendment_confirmation_page(confirmation))
+        }
+      }
   }
 }

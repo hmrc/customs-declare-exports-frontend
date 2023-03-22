@@ -21,7 +21,7 @@ import forms.MappingHelper.requiredRadio
 import forms.common.Eori
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
 import forms.declaration.declarationHolder.AuthorizationTypeCodes._
-import models.DeclarationType.DeclarationType
+import models.DeclarationType.{CLEARANCE, DeclarationType}
 import models.declaration.EoriSource
 import models.declaration.EoriSource.UserEori
 import models.viewmodels.TariffContentKey
@@ -109,8 +109,16 @@ object DeclarationHolder extends DeclarationPage with FieldMapping {
 }
 
 object DeclarationHolderRequired extends DeclarationPage {
+
   override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
-    Seq(TariffContentKey(s"tariff.declaration.isAuthorisationRequired.${DeclarationPage.getJourneyTypeSpecialisation(decType)}"))
+    decType match {
+      case CLEARANCE => List(TariffContentKey("tariff.declaration.isAuthorisationRequired.clearance"))
+      case _ =>
+        List(
+          TariffContentKey("tariff.declaration.isAuthorisationRequired.1.common"),
+          TariffContentKey("tariff.declaration.isAuthorisationRequired.2.common")
+        )
+    }
 }
 
 object DeclarationHolderSummary extends DeclarationPage

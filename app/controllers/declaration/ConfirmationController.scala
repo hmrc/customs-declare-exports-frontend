@@ -84,15 +84,11 @@ class ConfirmationController @Inject() (
         declaration <- customsDeclareExportsConnector.findDeclaration(submissionId) recover { case _ => None }
         locationCode = declaration.flatMap(_.locations.goodsLocation).map(_.code)
       } yield submission match {
-        case Some(submission) if submission.latestEnhancedStatus == Some(EnhancedStatus.ERRORS) =>
+        case Some(submission) if submission.latestEnhancedStatus contains EnhancedStatus.ERRORS =>
           Redirect(RejectedNotificationsController.displayPage(submissionId))
 
-        case Some(submission) =>
-          val confirmation = Confirmation(request.email, extractDeclarationType, Some(submission), locationCode)
-          Ok(confirmationPage(confirmation))
-
         case _ =>
-          val confirmation = Confirmation(request.email, extractDeclarationType, None, locationCode)
+          val confirmation = Confirmation(request.email, extractDeclarationType, submission, locationCode)
           Ok(confirmationPage(confirmation))
       }
     }
