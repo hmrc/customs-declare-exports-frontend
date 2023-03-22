@@ -64,7 +64,8 @@ class SummaryController @Inject() (
   val form: Form[LegalDeclaration] = LegalDeclaration.form
 
   def displayPage: Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType).async { implicit request =>
-    if (request.cacheModel.declarationMeta.summaryWasVisited.contains(true)) continueToDisplayPage
+    if (request.cacheModel.isAmendmentDraft) Future.successful(Ok(amendmentDraftPage(submissionId)))
+    else if (request.cacheModel.declarationMeta.summaryWasVisited.contains(true)) continueToDisplayPage
     else
       updateDeclarationFromRequest(declaration =>
         declaration.copy(declarationMeta = declaration.declarationMeta.copy(summaryWasVisited = Some(true)))
@@ -94,25 +95,22 @@ class SummaryController @Inject() (
     else Future.successful(Ok(summaryPageNoData()).removingFromSession(errorFixModeSessionKey))
   }
 
-  private def displaySummaryPage()(implicit request: JourneyRequest[_]): Future[Result] =
-    if (request.cacheModel.isAmendmentDraft) Future.successful(Ok(amendmentDraftPage(submissionId)))
-    else {
+  private def displaySummaryPage()(implicit request: JourneyRequest[_]): Future[Result] = {
+    val maybeLrn = request.cacheModel.lrn.map(Lrn(_))
 
-      val maybeLrn = request.cacheModel.lrn.map(Lrn(_))
+    val backlink =
+      if (request.cacheModel.declarationMeta.parentDeclarationEnhancedStatus.contains(ERRORS)) toDashboard
+      else SavedDeclarationsController.displayDeclarations()
+    val duplicateLrnError = Seq(lrnDuplicateError)
 
-      val backlink =
-        if (request.cacheModel.declarationMeta.parentDeclarationEnhancedStatus.contains(ERRORS)) toDashboard
-        else SavedDeclarationsController.displayDeclarations()
-      val duplicateLrnError = Seq(lrnDuplicateError)
+    isLrnADuplicate(maybeLrn) map { lrnIsDuplicate =>
+      val result =
+        if (lrnIsDuplicate) Ok(normalSummaryPage(backlink, duplicateLrnError))
+        else Ok(amendSummaryPage(backlink))
 
-      isLrnADuplicate(maybeLrn) map { lrnIsDuplicate =>
-        val result =
-          if (lrnIsDuplicate) Ok(normalSummaryPage(backlink, duplicateLrnError))
-          else Ok(amendSummaryPage(backlink))
-
-        result.removingFromSession(errorFixModeSessionKey)
-      }
+      result.removingFromSession(errorFixModeSessionKey)
     }
+  }
 
   private val hrefSource = """href="/customs-declare-exports/declaration/.+\?"""
   private val hrefDest = s"""href="$continuePlaceholder""""

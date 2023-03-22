@@ -91,7 +91,7 @@ class LegalDeclarationPageViewSpec extends UnitViewSpec with Injector {
 
     "for amendments only" should {
       "go back to normal summary page" in {
-        amendView.getElementById("back-link") must haveHref(routes.AmendmentSummaryController.displayPage.url)
+        amendView.getElementById("back-link") must haveHref(routes.SummaryController.displayPage.url)
       }
       "have correct header" in {
         amendView.getElementById("title") must containMessage("legal.declaration.amend.heading")

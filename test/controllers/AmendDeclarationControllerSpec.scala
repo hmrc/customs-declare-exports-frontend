@@ -19,7 +19,7 @@ package controllers
 import base.ControllerWithoutFormSpec
 import config.AppConfig
 import config.featureFlags.DeclarationAmendmentsConfig
-import controllers.declaration.routes.AmendmentSummaryController
+import controllers.declaration.routes.SummaryController
 import controllers.routes.RootController
 import handlers.ErrorHandler
 import models.requests.ExportsSessionKeys
@@ -87,7 +87,7 @@ class AmendDeclarationControllerSpec extends ControllerWithoutFormSpec {
         val result = controller.initAmendment(request)
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(AmendmentSummaryController.displayPage.url)
+        redirectLocation(result) mustBe Some(SummaryController.displayPage.url)
         session(result).get(ExportsSessionKeys.declarationId) mustBe Some(expectedDeclarationId)
       }
     }

@@ -49,11 +49,6 @@ class AmendmentSummaryController @Inject() (
 
   val form: Form[LegalDeclaration] = LegalDeclaration.form
 
-  val displayPage: Action[AnyContent] = (authenticate andThen verifyEmail) {
-    if (!declarationAmendmentsConfig.isEnabled) Redirect(RootController.displayPage)
-    else Redirect(routes.SummaryController.displayPage)
-  }
-
   val displayDeclarationPage: Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType) { implicit request =>
     if (!declarationAmendmentsConfig.isEnabled) Redirect(RootController.displayPage)
     else Ok(legalDeclarationPage(form, amend = true))
