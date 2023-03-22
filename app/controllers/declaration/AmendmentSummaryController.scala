@@ -17,13 +17,11 @@
 package controllers.declaration
 
 import com.google.inject.Inject
-import config.AppConfig
 import config.featureFlags.DeclarationAmendmentsConfig
 import controllers.actions.{AuthAction, JourneyAction, VerifiedEmailAction}
 import controllers.routes.RootController
 import forms.declaration.LegalDeclaration
 import handlers.ErrorHandler
-import models.requests.ExportsSessionKeys.submissionId
 import play.api.Logging
 import play.api.data.Form
 import play.api.i18n.I18nSupport
@@ -32,7 +30,7 @@ import services.SubmissionService
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import views.html.declaration.summary.{amendment_summary_page, legal_declaration_page}
+import views.html.declaration.summary.legal_declaration_page
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -45,17 +43,11 @@ class AmendmentSummaryController @Inject() (
   override val exportsCacheService: ExportsCacheService,
   submissionService: SubmissionService,
   legalDeclarationPage: legal_declaration_page,
-  amendmentDraftSummaryPage: amendment_summary_page,
   declarationAmendmentsConfig: DeclarationAmendmentsConfig
-)(implicit ec: ExecutionContext, appConfig: AppConfig)
+)(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with Logging with ModelCacheable with WithUnsafeDefaultFormBinding {
 
   val form: Form[LegalDeclaration] = LegalDeclaration.form
-
-  val displayPage: Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType) { implicit request =>
-    if (!declarationAmendmentsConfig.isEnabled) Redirect(RootController.displayPage)
-    else Ok(amendmentDraftSummaryPage(submissionId))
-  }
 
   val displayDeclarationPage: Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType) { implicit request =>
     if (!declarationAmendmentsConfig.isEnabled) Redirect(RootController.displayPage)

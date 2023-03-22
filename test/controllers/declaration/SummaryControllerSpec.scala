@@ -46,6 +46,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class SummaryControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerMocks with OptionValues {
 
   private val normalSummaryPage = mock[normal_summary_page]
+  private val amendmentDraftPage = mock[amendment_summary_page]
   private val legalDeclarationPage = mock[legal_declaration_page]
   private val mockSummaryPageNoData = mock[summary_page_no_data]
   private val mockSubmissionService = mock[SubmissionService]
@@ -61,6 +62,7 @@ class SummaryControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerM
     mockExportsCacheService,
     mockSubmissionService,
     stubMessagesControllerComponents(),
+    amendmentDraftPage,
     normalSummaryPage,
     mockSummaryPageNoData,
     legalDeclarationPage,

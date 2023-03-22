@@ -29,13 +29,12 @@ import play.api.test.Helpers.{await, redirectLocation, status}
 import play.twirl.api.HtmlFormat
 import services.SubmissionService
 import views.declaration.spec.UnitViewSpec
-import views.html.declaration.summary.{amendment_summary_page, legal_declaration_page}
+import views.html.declaration.summary.legal_declaration_page
 
 import scala.concurrent.Future
 
 class AmendmentSummaryControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerMocks with UnitViewSpec {
 
-  private val amendmentSummaryPage = mock[amendment_summary_page]
   private val legalDeclarationPage = mock[legal_declaration_page]
   private val mockSubmissionService = mock[SubmissionService]
   private val declarationAmendmentsConfig = mock[DeclarationAmendmentsConfig]
@@ -49,9 +48,8 @@ class AmendmentSummaryControllerSpec extends ControllerWithoutFormSpec with Erro
     mockExportsCacheService,
     mockSubmissionService,
     legalDeclarationPage,
-    amendmentSummaryPage,
     declarationAmendmentsConfig
-  )(ec, appConfig)
+  )(ec)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()

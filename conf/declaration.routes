@@ -532,8 +532,6 @@ POST        /containers/:containerId/seals/:sealId/remove    controllers.declara
 
 GET         /saved-summary                       controllers.declaration.SummaryController.displayPage
 
-GET         /amend-summary                       controllers.declaration.AmendmentSummaryController.displayPage
-
 GET         /submit-your-declaration             controllers.declaration.SummaryController.displayDeclarationPage
 
 POST        /submit-your-declaration             controllers.declaration.SummaryController.submitDeclaration

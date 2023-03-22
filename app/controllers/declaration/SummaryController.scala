@@ -53,6 +53,7 @@ class SummaryController @Inject() (
   override val exportsCacheService: ExportsCacheService,
   submissionService: SubmissionService,
   mcc: MessagesControllerComponents,
+  amendment_summary_page: amendment_summary_page,
   normalSummaryPage: normal_summary_page,
   summaryPageNoData: summary_page_no_data,
   legalDeclarationPage: legal_declaration_page,
@@ -63,7 +64,8 @@ class SummaryController @Inject() (
   val form: Form[LegalDeclaration] = LegalDeclaration.form
 
   def displayPage: Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType).async { implicit request =>
-    if (request.cacheModel.declarationMeta.summaryWasVisited.contains(true)) continueToDisplayPage
+    if (request.cacheModel.isAmendmentDraft) Future.successful(Ok(amendmentDraftPage))
+    else if (request.cacheModel.declarationMeta.summaryWasVisited.contains(true)) continueToDisplayPage
     else
       updateDeclarationFromRequest(declaration =>
         declaration.copy(declarationMeta = declaration.declarationMeta.copy(summaryWasVisited = Some(true)))
@@ -95,12 +97,13 @@ class SummaryController @Inject() (
 
   private def displaySummaryPage()(implicit request: JourneyRequest[_]): Future[Result] = {
     val maybeLrn = request.cacheModel.lrn.map(Lrn(_))
+
     val backlink =
       if (request.cacheModel.declarationMeta.parentDeclarationEnhancedStatus.contains(ERRORS)) toDashboard
       else SavedDeclarationsController.displayDeclarations()
     val duplicateLrnError = Seq(lrnDuplicateError)
 
-    isLrnADuplicate(maybeLrn).map { lrnIsDuplicate =>
+    isLrnADuplicate(maybeLrn) map { lrnIsDuplicate =>
       val result =
         if (lrnIsDuplicate) Ok(normalSummaryPage(backlink, duplicateLrnError))
         else Ok(amendSummaryPage(backlink))
@@ -122,6 +125,13 @@ class SummaryController @Inject() (
     }
     Html(finalPage)
   }
+
+  private def amendmentDraftPage(implicit request: JourneyRequest[_]) =
+    Html(
+      amendment_summary_page(submissionId)
+        .toString()
+        .replace(s"?$lastUrlPlaceholder", "")
+    )
 
   private def isLrnADuplicate(lrn: Option[Lrn])(implicit hc: HeaderCarrier): Future[Boolean] =
     lrn.fold(Future.successful(false))(lrnValidator.hasBeenSubmittedInThePast48Hours)
