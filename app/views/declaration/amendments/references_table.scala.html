@@ -1,0 +1,60 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import views.html.components.gds._
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.helpers.Confirmation
+
+@this(govukTable: GovukTable)
+
+@(confirmation: Confirmation)(implicit messages: Messages)
+
+@govukTable(
+    Table(rows =
+        Seq(
+            Some(
+                Seq(
+                    TableRow(content = Text(messages(s"declaration.summary.references.additionalType")), classes = "govuk-!-font-weight-bold"),
+                    TableRow(content = Text(messages(s"declaration.summary.references.additionalType.${confirmation.declarationType}")))
+                    )
+                ),
+                confirmation.submission
+                    .flatMap(_.ducr)
+                    .map(ducr =>
+                        Seq(
+                            TableRow(content = Text(messages(s"declaration.confirmation.ducr")), classes = "govuk-!-font-weight-bold"),
+                            TableRow(content = Text(ducr))
+                        )
+                    ),
+                confirmation.submission
+                    .map(_.lrn)
+                    .map(lrn =>
+                        Seq(
+                                TableRow(content = Text(messages(s"declaration.confirmation.lrn")), classes = "govuk-!-font-weight-bold"),
+                                TableRow(content = Text(lrn))
+                            )
+                    ),
+                confirmation.submission
+                    .flatMap(_.mrn)
+                    .map(mrn =>
+                    Seq(
+                        TableRow(content = Text(messages(s"declaration.confirmation.mrn")), classes = "govuk-!-font-weight-bold"),
+                        TableRow(content = Text(mrn))
+                    )
+            )
+        ).flatten
+    )
+)

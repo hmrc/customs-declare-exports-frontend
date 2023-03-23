@@ -28,51 +28,17 @@
     paragraph: paragraphBody,
     link: link,
     exitSurvey: exit_survey,
+    references_table: references_table,
     confirmationHelper: ConfirmationHelper
 )
 
 @(confirmation: Confirmation)(implicit request: Request[_], messages: Messages)
 
-@govukLayout(title = Title("declaration.confirmation.accepted.amendment.title"), showDeclarationSummaryLink = false) {
+    @govukLayout(title = Title("declaration.confirmation.accepted.amendment.title"), showDeclarationSummaryLink = false) {
 
     @govukPanel(Panel(title = Text(messages(s"declaration.confirmation.accepted.amendment.title"))))
 
-    @govukTable(
-      Table(rows =
-        Seq(
-            Some(
-              Seq(
-                TableRow(content = Text(messages(s"declaration.summary.references.additionalType")), classes = "govuk-!-font-weight-bold"),
-                TableRow(content = Text(messages(s"declaration.summary.references.additionalType.${confirmation.declarationType}")))
-              )
-            ),
-            confirmation.submission
-                .flatMap(_.ducr)
-                .map(ducr =>
-                    Seq(
-                        TableRow(content = Text(messages(s"declaration.confirmation.ducr")), classes = "govuk-!-font-weight-bold"),
-                        TableRow(content = Text(ducr))
-                    )
-                ),
-            confirmation.submission
-                .map(_.lrn)
-                .map(lrn =>
-                    Seq(
-                        TableRow(content = Text(messages(s"declaration.confirmation.lrn")), classes = "govuk-!-font-weight-bold"),
-                        TableRow(content = Text(lrn))
-                    )
-                ),
-            confirmation.submission
-                .flatMap(_.mrn)
-                .map(mrn =>
-                    Seq(
-                        TableRow(content = Text(messages(s"declaration.confirmation.mrn")), classes = "govuk-!-font-weight-bold"),
-                        TableRow(content = Text(mrn))
-                    )
-                )
-            ).flatten
-        )
-    )
+    @references_table(confirmation)
 
     @heading(messages("declaration.confirmation.what.happens.next"), "govuk-heading-m", "h2")
 
