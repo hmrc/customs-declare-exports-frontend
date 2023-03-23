@@ -17,7 +17,8 @@
 package views.helpers
 
 import config.featureFlags.{SecureMessagingInboxConfig, SfusConfig}
-import controllers.routes.{AmendDeclarationController, RejectedNotificationsController}
+import controllers.declaration.routes.SubmissionController
+import controllers.routes.RejectedNotificationsController
 import models.declaration.submissions.EnhancedStatus._
 import models.declaration.submissions.RequestType.{AmendmentRequest, CancellationRequest}
 import models.declaration.submissions.{NotificationSummary, RequestType, Submission}
@@ -141,7 +142,7 @@ class TimelineEvents @Inject() (
         case _: AmendmentFailed       => linkButton("declaration.details.resubmit.button", fixAndResubmit)
         case _: AmendmentRejected | _ => linkButton("declaration.details.fix.resubmit.button", fixAndResubmit)
       }
-      val cancelUrl = AmendDeclarationController.submit(Some("cancel"))
+      val cancelUrl = SubmissionController.submitAmendment(Some("cancel"))
       val cancelLink = link(messages("declaration.details.cancel.amendment"), cancelUrl, id = Some("cancel-amendment"))
       Html(s"""<div class="govuk-button-group">${button.toString()}${cancelLink.toString()}</div>""")
     }

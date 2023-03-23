@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-package controllers.declaration
+package controllers.declaration.amendments
 
 import config.featureFlags.DeclarationAmendmentsConfig
 import connectors.CustomsDeclareExportsConnector
 import controllers.actions.{AuthAction, VerifiedEmailAction}
+import controllers.declaration.amendments.AmendmentResult.AmendmentResult
 import controllers.routes.RootController
 import models.requests.{ExportsSessionKeys, VerifiedEmailRequest}
 import play.api.Logging
@@ -27,7 +28,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.dashboard.DashboardHelper.toDashboard
 import views.helpers.Confirmation
-import views.html.declaration.confirmation.{amendment_confirmation_page, amendment_rejection_page}
+import views.html.declaration.amendments._
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -38,8 +39,9 @@ class AmendmentConfirmationController @Inject() (
   authenticate: AuthAction,
   verifyEmail: VerifiedEmailAction,
   customsDeclareExportsConnector: CustomsDeclareExportsConnector,
-  amendment_confirmation_page: amendment_confirmation_page,
-  amendment_rejection_page: amendment_rejection_page
+  amendment_accepted: amendment_accepted,
+  amendment_rejection: amendment_rejection,
+  amendment_failed: amendment_failed
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with Logging {
 
@@ -48,19 +50,23 @@ class AmendmentConfirmationController @Inject() (
     else NotImplemented
   }
 
-  val displayConfirmationPage: Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
-    getSubmissionDeclaration(confirmation => Ok(amendment_confirmation_page(confirmation)))
+  val displayAcceptedPage: Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
+    displayPage(AmendmentResult.Accepted, "/amendment-accepted")
   }
 
-  val displayConfirmationRejectionPage: Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
-    getSubmissionDeclaration(confirmation => Ok(amendment_rejection_page(confirmation)))
+  val displayFailedPage: Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
+    displayPage(AmendmentResult.Failed, "/amendment-failed")
   }
 
-  private def getSubmissionDeclaration(view: Confirmation => Result)(implicit request: VerifiedEmailRequest[_]): Future[Result] =
+  val displayRejectedPage: Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
+    displayPage(AmendmentResult.Rejected, "/amendment-rejected")
+  }
+
+  private def displayPage(result: AmendmentResult, url: String)(implicit request: VerifiedEmailRequest[AnyContent]): Future[Result] =
     request.session.data
       .get(ExportsSessionKeys.submissionId)
       .fold {
-        logger.warn("Session on /amendment-confirmation does not include the submission's uuid!?")
+        logger.warn(s"Session on $url does not include the submission's uuid!?")
         Future.successful(Redirect(toDashboard))
       } { submissionId =>
         for {
@@ -68,9 +74,18 @@ class AmendmentConfirmationController @Inject() (
           declaration <- customsDeclareExportsConnector.findDeclaration(submissionId) recover { case _ => None }
         } yield submission match {
           case submission =>
-            val confirmation =
-              Confirmation(request.email, declaration.flatMap(_.additionalDeclarationType).fold("")(_.toString), submission, None)
-            view(confirmation)
+            val declarationType = declaration.flatMap(_.additionalDeclarationType).fold("")(_.toString)
+            val confirmation = Confirmation(request.email, declarationType, submission, None)
+            result match {
+              case AmendmentResult.Accepted => Ok(amendment_accepted(confirmation))
+              case AmendmentResult.Failed   => Ok(amendment_failed(confirmation))
+              case AmendmentResult.Rejected => Ok(amendment_rejection(confirmation))
+            }
         }
       }
+}
+
+object AmendmentResult extends Enumeration {
+  type AmendmentResult = Value
+  val Accepted, Failed, Rejected = Value
 }

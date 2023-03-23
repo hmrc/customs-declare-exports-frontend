@@ -15,7 +15,7 @@
  *@
 
 @import config.AppConfig
-@import controllers.declaration.routes.{SummaryController, AmendmentSummaryController}
+@import controllers.declaration.routes.{SubmissionController, SummaryController}
 @import forms.declaration.LegalDeclaration._
 @import forms.declaration.LegalDeclaration
 @import models.declaration.submissions.EnhancedStatus.ERRORS
@@ -33,7 +33,6 @@
     saveAndContinue: saveAndContinue,
     govukFieldset: GovukFieldset,
     govukWarningText: GovukWarningText,
-    paragraphBody: paragraphBody,
     exportsInputCheckbox: exportsInputCheckbox,
     exportsInputText: exportsInputText,
     exportsInputCharacterCount: exportsInputCharacterCount
@@ -55,12 +54,8 @@
 }
 
 @formAction = @{
-    if(amend) AmendmentSummaryController.submitAmendment
-    else SummaryController.submitDeclaration
-}
-
-@backAction = @{
-    SummaryController.displayPage
+    if (amend) SubmissionController.submitAmendment(None)
+    else SubmissionController.submitDeclaration
 }
 
 @html = {
@@ -105,7 +100,7 @@
 
 @govukLayout(
     title = Title(headerMsgKey),
-    backButton = Some(BackButton(messages("site.back"), backAction)),
+    backButton = Some(BackButton(messages("site.back"), SummaryController.displayPage)),
     useCustomContentWidth = true,
     showDeclarationSummaryLink = false
 ) {

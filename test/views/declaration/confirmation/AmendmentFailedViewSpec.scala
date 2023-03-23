@@ -26,13 +26,13 @@ import org.scalatest.GivenWhenThen
 import testdata.SubmissionsTestData._
 import views.declaration.spec.UnitViewSpec
 import views.helpers.Confirmation
-import views.html.declaration.confirmation.amendment_rejection_page
+import views.html.declaration.amendments.amendment_failed
 import views.tags.ViewTest
 
 @ViewTest
-class AmendmentRejectionViewSpec extends UnitViewSpec with GivenWhenThen with Injector with MockAuthAction {
+class AmendmentFailedViewSpec extends UnitViewSpec with GivenWhenThen with Injector with MockAuthAction {
 
-  private val page = instanceOf[amendment_rejection_page]
+  private val page = instanceOf[amendment_failed]
   private val submissionId = uuid
 
   private val declarationDetailsRoute = DeclarationDetailsController.displayPage(submissionId).url
@@ -43,47 +43,14 @@ class AmendmentRejectionViewSpec extends UnitViewSpec with GivenWhenThen with In
     page(confirmation)(req, messages)
   }
 
-  "Confirmation View" when {
+  "Amendment Failed View" should {
+    val submission = createSubmission(statuses = Seq(RECEIVED))
+    val view = createView(Some(submission))
 
-    "status of last received notification is 'RECEIVED'" should {
-      val submission = createSubmission(statuses = Seq(RECEIVED))
-      val view = createView(Some(submission))
-
-      "display the h1" in {
-
-        val h1 = view.getElementsByTag("h1").first()
-
-        h1.tagName mustBe "h1"
-        h1.text mustBe messages("declaration.confirmation.rejected.amendment.title")
-      }
-
-      displayExpectedTableWithDucrLrnAndMrn(view)
-
-      "display the expected 'What happens next' section" in {
-        view.getElementsByTag("h2").get(0).text mustBe messages("declaration.confirmation.what.happens.next")
-
-        val paragraph1 = view.getElementsByClass("govuk-body").get(0)
-        val paragraph2 = view.getElementsByClass("govuk-body").get(1)
-
-        paragraph1.text mustBe messages("declaration.confirmation.rejected.amendment.next.1")
-        paragraph2.text mustBe messages("declaration.confirmation.rejected.amendment.next.2")
-
-        val paragraph3 = view.getElementsByClass("govuk-body").get(2)
-        paragraph3.text must include(messages("declaration.confirmation.declaration.details.link"))
-        paragraph3.child(0) must haveHref(declarationDetailsRoute)
-
-      }
-
-      displayPrintButton(view)
-
-      "display the expected 'Tell us what you think' section" in {
-        view.getElementsByTag("h2").get(1).text mustBe messages("declaration.exitSurvey.header")
-      }
+    "display the expected heading" in {
+      view.getElementsByTag("h1").get(0).text() mustBe messages("declaration.confirmation.failed.amendment.title")
     }
 
-  }
-
-  private def displayExpectedTableWithDucrLrnAndMrn(view: Document): Unit =
     "display expected table when MRN, LRN and DUCR are defined" in {
       val table = view.getElementsByClass("govuk-table").first()
 
@@ -103,9 +70,28 @@ class AmendmentRejectionViewSpec extends UnitViewSpec with GivenWhenThen with In
       rows.get(3).children().get(1) must containText(mrn)
     }
 
-  private def displayPrintButton(view: Document): Unit =
+    "display the expected 'What you can do now' section" in {
+      view.getElementsByTag("h2").get(0).text mustBe messages("declaration.confirmation.whatYouCanDoNow.heading")
+
+      val paragraphs = view.getElementsByClass("govuk-body")
+      paragraphs.get(0).text mustBe messages("declaration.confirmation.failed.amendment.next.1")
+      paragraphs.get(1).text mustBe messages("declaration.confirmation.failed.amendment.next.2")
+      paragraphs.get(2).text mustBe messages("declaration.confirmation.failed.amendment.next.3")
+
+      val textWithLink = messages("declaration.confirmation.failed.amendment.next.4", messages("declaration.confirmation.declaration.details.link"))
+      val paragraph4 = paragraphs.get(3)
+      paragraph4.text mustBe textWithLink
+      paragraph4.child(0) must haveHref(declarationDetailsRoute)
+
+    }
+
     "display print button" in {
       val button = view.getElementsByClass("gem-c-print-link")
       button.size mustBe 1
     }
+
+    "display the expected 'Tell us what you think' section" in {
+      view.getElementsByTag("h2").get(1).text mustBe messages("declaration.exitSurvey.header")
+    }
+  }
 }

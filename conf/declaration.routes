@@ -532,13 +532,19 @@ POST        /containers/:containerId/seals/:sealId/remove    controllers.declara
 
 GET         /saved-summary                       controllers.declaration.SummaryController.displayPage
 
-GET         /submit-your-declaration             controllers.declaration.SummaryController.displayDeclarationPage
+# Submission
 
-POST        /submit-your-declaration             controllers.declaration.SummaryController.submitDeclaration
+GET         /submit-your-declaration             controllers.declaration.SubmissionController.displayLegalDeclarationPage(isAmendment: Boolean = false)
 
-GET         /submit-your-amendment               controllers.declaration.AmendmentSummaryController.displayDeclarationPage
+POST        /submit-your-declaration             controllers.declaration.SubmissionController.submitDeclaration
 
-POST        /submit-your-amendment              controllers.declaration.AmendmentSummaryController.submitAmendment
+GET         /submit-your-amendment               controllers.declaration.SubmissionController.displayLegalDeclarationPage(isAmendment: Boolean = true)
+
+POST        /submit-your-amendment               controllers.declaration.SubmissionController.submitAmendment(action: Option[String])
+
+# Amendment declaration
+
+GET         /amend-declaration                   controllers.declaration.amendments.AmendDeclarationController.initAmendment
 
 # Confirmation
 
@@ -546,11 +552,13 @@ GET         /holding                             controllers.declaration.Confirm
 
 GET         /confirmation                        controllers.declaration.ConfirmationController.displayConfirmationPage
 
-GET         /amendment-confirmation              controllers.declaration.AmendmentConfirmationController.displayConfirmationPage
+GET         /amendment-accepted                  controllers.declaration.amendments.AmendmentConfirmationController.displayAcceptedPage
 
-GET         /amendment-confirmation-rejected     controllers.declaration.AmendmentConfirmationController.displayConfirmationRejectionPage
+GET         /amendment-failed                    controllers.declaration.amendments.AmendmentConfirmationController.displayFailedPage
 
-GET         /amend-holding                       controllers.declaration.AmendmentConfirmationController.displayHoldingPage
+GET         /amendment-rejected                  controllers.declaration.amendments.AmendmentConfirmationController.displayRejectedPage
+
+GET         /amendment-holding                   controllers.declaration.amendments.AmendmentConfirmationController.displayHoldingPage
 
 # Others
 

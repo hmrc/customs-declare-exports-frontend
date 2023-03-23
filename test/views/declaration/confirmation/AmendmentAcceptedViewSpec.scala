@@ -26,13 +26,13 @@ import org.scalatest.GivenWhenThen
 import testdata.SubmissionsTestData._
 import views.declaration.spec.UnitViewSpec
 import views.helpers.Confirmation
-import views.html.declaration.confirmation.amendment_confirmation_page
+import views.html.declaration.amendments.amendment_accepted
 import views.tags.ViewTest
 
 @ViewTest
-class AmendmentConfirmationViewSpec extends UnitViewSpec with GivenWhenThen with Injector with MockAuthAction {
+class AmendmentAcceptedViewSpec extends UnitViewSpec with GivenWhenThen with Injector with MockAuthAction {
 
-  private val page = instanceOf[amendment_confirmation_page]
+  private val page = instanceOf[amendment_accepted]
   private val submissionId = uuid
 
   private val declarationDetailsRoute = DeclarationDetailsController.displayPage(submissionId).url
@@ -43,45 +43,41 @@ class AmendmentConfirmationViewSpec extends UnitViewSpec with GivenWhenThen with
     page(confirmation)(req, messages)
   }
 
-  "Confirmation View" when {
+  "Amendment Accepted View" when {
+    val submission = createSubmission(statuses = Seq(RECEIVED))
+    val view = createView(Some(submission))
 
-    "status of last received notification is 'RECEIVED'" should {
-      val submission = createSubmission(statuses = Seq(RECEIVED))
-      val view = createView(Some(submission))
+    "display the expected panel" in {
+      val panels = view.getElementsByClass("govuk-panel")
+      panels.size mustBe 1
 
-      "display the expected panel" in {
-        val panels = view.getElementsByClass("govuk-panel")
-        panels.size mustBe 1
+      val children = panels.get(0).children
 
-        val children = panels.get(0).children
-
-        And("which should include the expected title")
-        children.get(0).tagName mustBe "h1"
-        children.get(0).text mustBe messages("declaration.confirmation.accepted.amendment.title")
-      }
-
-      displayExpectedTableWithDucrLrnAndMrn(view)
-
-      "display the expected 'What happens next' section" in {
-        view.getElementsByTag("h2").get(0).text mustBe messages("declaration.confirmation.what.happens.next")
-
-        val paragraph1 = view.getElementsByClass("govuk-body").get(0)
-        paragraph1.text mustBe messages("declaration.confirmation.accepted.amendment.next.1")
-
-        val paragraph2 = view.getElementsByClass("govuk-body").get(1)
-        paragraph2.text must include("example@example.com")
-        paragraph2.text must include(messages("declaration.confirmation.declaration.details.link"))
-        paragraph2.child(1) must haveHref(declarationDetailsRoute)
-
-      }
-
-      displayPrintButton(view)
-
-      "display the expected 'Tell us what you think' section" in {
-        view.getElementsByTag("h2").get(1).text mustBe messages("declaration.exitSurvey.header")
-      }
+      And("which should include the expected title")
+      children.get(0).tagName mustBe "h1"
+      children.get(0).text mustBe messages("declaration.confirmation.accepted.amendment.title")
     }
 
+    displayExpectedTableWithDucrLrnAndMrn(view)
+
+    "display the expected 'What happens next' section" in {
+      view.getElementsByTag("h2").get(0).text mustBe messages("declaration.confirmation.what.happens.next")
+
+      val paragraph1 = view.getElementsByClass("govuk-body").get(0)
+      paragraph1.text mustBe messages("declaration.confirmation.accepted.amendment.next.1")
+
+      val paragraph2 = view.getElementsByClass("govuk-body").get(1)
+      paragraph2.text must include("example@example.com")
+      paragraph2.text must include(messages("declaration.confirmation.declaration.details.link"))
+      paragraph2.child(1) must haveHref(declarationDetailsRoute)
+
+    }
+
+    displayPrintButton(view)
+
+    "display the expected 'Tell us what you think' section" in {
+      view.getElementsByTag("h2").get(1).text mustBe messages("declaration.exitSurvey.header")
+    }
   }
 
   private def displayExpectedTableWithDucrLrnAndMrn(view: Document): Unit =
