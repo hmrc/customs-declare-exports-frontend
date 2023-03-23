@@ -19,11 +19,11 @@ package views.declaration.summary
 import models.ExportsDeclaration
 import models.declaration.DeclarationStatus.AMENDMENT_DRAFT
 import org.jsoup.nodes.Document
-import views.html.declaration.summary.amendment_summary_page
+import views.html.declaration.amendments.amendment_summary
 
 class AmendmentSummaryPageViewSpec extends SummaryPageViewSpec {
 
-  private val amendmentSummaryPage = instanceOf[amendment_summary_page]
+  private val amendmentSummaryPage = instanceOf[amendment_summary]
 
   private val dec = aDeclaration(withStatus(AMENDMENT_DRAFT), withConsignmentReferences("ducr", "lrn"))
 

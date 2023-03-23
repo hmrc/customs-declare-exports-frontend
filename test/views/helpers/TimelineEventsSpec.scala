@@ -17,7 +17,8 @@
 package views.helpers
 
 import base.Injector
-import controllers.routes.{AmendDeclarationController, RejectedNotificationsController}
+import controllers.declaration.routes.SubmissionController
+import controllers.routes.RejectedNotificationsController
 import models.declaration.submissions.EnhancedStatus._
 import models.declaration.submissions.RequestType.{CancellationRequest, SubmissionRequest}
 import models.declaration.submissions.{Action, EnhancedStatus, NotificationSummary, Submission}
@@ -166,7 +167,7 @@ class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injec
 
       val content = timelineEvents(0).content.get.body
       val expectedButtonUrl = RejectedNotificationsController.amendmentRejected(submission.uuid, submission.actions(1).id).url
-      val expectedLinkUrl = AmendDeclarationController.submit(Some("cancel")).url
+      val expectedLinkUrl = SubmissionController.submitAmendment(Some("cancel")).url
       content must include(expectedButtonUrl)
       content must include(expectedLinkUrl)
 
@@ -217,7 +218,7 @@ class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injec
 
       val content = timelineEvents(0).content.get.body
       val expectedButtonUrl = RejectedNotificationsController.amendmentRejected(submission.uuid, submission.actions(1).id).url
-      val expectedLinkUrl = AmendDeclarationController.submit(Some("cancel")).url
+      val expectedLinkUrl = SubmissionController.submitAmendment(Some("cancel")).url
       content must include(expectedButtonUrl)
       content must include(expectedLinkUrl)
     }

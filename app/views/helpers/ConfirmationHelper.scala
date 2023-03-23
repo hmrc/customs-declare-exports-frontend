@@ -112,7 +112,7 @@ class ConfirmationHelper @Inject() (
   }
 
   private def topSection(implicit confirmation: Confirmation, messages: Messages): List[Html] = List(panel, table)
-  private def bottomSection(implicit messages: Messages) = List(print_page_button(8, 4), sectionBreak, exitSurvey())
+  private def bottomSection(implicit messages: Messages): Seq[Html] = List(print_page_button(8, 4), sectionBreak, exitSurvey())
 
   private def table(implicit confirmation: Confirmation, messages: Messages): Html =
     govukTable(
