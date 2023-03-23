@@ -20,14 +20,14 @@ import config.featureFlags.DeclarationAmendmentsConfig
 import connectors.CustomsDeclareExportsConnector
 import controllers.actions.{AuthAction, VerifiedEmailAction}
 import controllers.routes.RootController
-import models.requests.ExportsSessionKeys
+import models.requests.{ExportsSessionKeys, VerifiedEmailRequest}
 import play.api.Logging
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.dashboard.DashboardHelper.toDashboard
 import views.helpers.Confirmation
-import views.html.declaration.confirmation.amendment_confirmation_page
+import views.html.declaration.confirmation.{amendment_confirmation_page, amendment_rejection_page}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -38,7 +38,8 @@ class AmendmentConfirmationController @Inject() (
   authenticate: AuthAction,
   verifyEmail: VerifiedEmailAction,
   customsDeclareExportsConnector: CustomsDeclareExportsConnector,
-  amendment_confirmation_page: amendment_confirmation_page
+  amendment_confirmation_page: amendment_confirmation_page,
+  amendment_rejection_page: amendment_rejection_page
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with Logging {
 
@@ -48,6 +49,14 @@ class AmendmentConfirmationController @Inject() (
   }
 
   val displayConfirmationPage: Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
+    getSubmissionDeclaration(confirmation => Ok(amendment_confirmation_page(confirmation)))
+  }
+
+  val displayConfirmationRejectionPage: Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
+    getSubmissionDeclaration(confirmation => Ok(amendment_rejection_page(confirmation)))
+  }
+
+  private def getSubmissionDeclaration(view: Confirmation => Result)(implicit request: VerifiedEmailRequest[_]): Future[Result] =
     request.session.data
       .get(ExportsSessionKeys.submissionId)
       .fold {
@@ -61,8 +70,7 @@ class AmendmentConfirmationController @Inject() (
           case submission =>
             val confirmation =
               Confirmation(request.email, declaration.flatMap(_.additionalDeclarationType).fold("")(_.toString), submission, None)
-            Ok(amendment_confirmation_page(confirmation))
+            view(confirmation)
         }
       }
-  }
 }

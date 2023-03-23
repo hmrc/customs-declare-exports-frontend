@@ -548,6 +548,8 @@ GET         /confirmation                        controllers.declaration.Confirm
 
 GET         /amendment-confirmation              controllers.declaration.AmendmentConfirmationController.displayConfirmationPage
 
+GET         /amendment-confirmation-rejected     controllers.declaration.AmendmentConfirmationController.displayConfirmationRejectionPage
+
 GET         /amend-holding                       controllers.declaration.AmendmentConfirmationController.displayHoldingPage
 
 # Others
