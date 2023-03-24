@@ -28,7 +28,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.dashboard.DashboardHelper.toDashboard
 import views.helpers.Confirmation
-import views.html.declaration.amendments.{amendment_accepted, amendment_failed}
+import views.html.declaration.amendments._
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -40,6 +40,7 @@ class AmendmentConfirmationController @Inject() (
   verifyEmail: VerifiedEmailAction,
   customsDeclareExportsConnector: CustomsDeclareExportsConnector,
   amendment_accepted: amendment_accepted,
+  amendment_rejection: amendment_rejection,
   amendment_failed: amendment_failed
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with Logging {
@@ -55,6 +56,10 @@ class AmendmentConfirmationController @Inject() (
 
   val displayFailedPage: Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
     displayPage(AmendmentResult.Failed, "/amendment-failed")
+  }
+
+  val displayRejectedPage: Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
+    displayPage(AmendmentResult.Rejected, "/amendment-rejected")
   }
 
   private def displayPage(result: AmendmentResult, url: String)(implicit request: VerifiedEmailRequest[AnyContent]): Future[Result] =
@@ -74,6 +79,7 @@ class AmendmentConfirmationController @Inject() (
             result match {
               case AmendmentResult.Accepted => Ok(amendment_accepted(confirmation))
               case AmendmentResult.Failed   => Ok(amendment_failed(confirmation))
+              case AmendmentResult.Rejected => Ok(amendment_rejection(confirmation))
             }
         }
       }
@@ -81,5 +87,5 @@ class AmendmentConfirmationController @Inject() (
 
 object AmendmentResult extends Enumeration {
   type AmendmentResult = Value
-  val Accepted, Failed = Value
+  val Accepted, Failed, Rejected = Value
 }

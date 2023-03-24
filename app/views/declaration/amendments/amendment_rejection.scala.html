@@ -14,15 +14,15 @@
  * limitations under the License.
  *@
 
-@import controllers.routes.DeclarationDetailsController
-@import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.helpers.{Confirmation, ConfirmationHelper, Title}
 @import views.html.components.buttons.print_page_button
+@import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.html.components.gds._
 @import views.html.components.exit_survey
 
 @this(
     govukLayout: gdsMainTemplate,
+    govukPanel: GovukPanel,
     govukTable: GovukTable,
     heading: heading,
     paragraph: paragraphBody,
@@ -34,26 +34,30 @@
 
 @(confirmation: Confirmation)(implicit request: Request[_], messages: Messages)
 
-@govukLayout(title = Title("declaration.confirmation.failed.amendment.title"), showDeclarationSummaryLink = false) {
+@govukLayout(title = Title(confirmationHelper.title(confirmation)), showDeclarationSummaryLink = false) {
 
-    @heading(messages("declaration.confirmation.failed.amendment.title"))
+    @heading(messages(s"declaration.confirmation.rejected.amendment.title"))
+
+    @heading(messages("declaration.confirmation.what.happens.next"), "govuk-heading-m", "h2")
 
     @references_table(confirmation)
 
-    @heading(messages("declaration.confirmation.whatYouCanDoNow.heading"), "govuk-heading-m", "h2")
+    @paragraph(messages("declaration.confirmation.rejected.amendment.next.1"))
+    @paragraph(messages("declaration.confirmation.rejected.amendment.next.2"))
 
-    @paragraph(messages("declaration.confirmation.failed.amendment.next.1"))
-    @paragraph(messages("declaration.confirmation.failed.amendment.next.2"))
-    @paragraph(messages("declaration.confirmation.failed.amendment.next.3"))
-
-    @paragraph(messages("declaration.confirmation.failed.amendment.next.4", link(
-        messages("declaration.confirmation.declaration.details.link"),
-        DeclarationDetailsController.displayPage(confirmation.submission.fold("")(_.uuid))
-    )))
+    @paragraph(
+        messages(
+            "declaration.confirmation.rejected.amendment.next.3",
+            link(messages("declaration.confirmation.declaration.details.link"),
+                controllers.routes.DeclarationDetailsController.displayPage(confirmation.submission.map(_.uuid).getOrElse(""))
+            )
+        )
+    )
 
     @print_page_button(8, 4)
 
     <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
 
     @exitSurvey()
+
 }

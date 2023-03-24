@@ -2247,6 +2247,11 @@ declaration.confirmation.failed.amendment.next.2 = This is because your declarat
 declaration.confirmation.failed.amendment.next.3 = Your declaration cannot progress unless you resubmit the amendment request and it is accepted or you cancel this amendment.
 declaration.confirmation.failed.amendment.next.4 = You can find these options on the {0} page.
 
+declaration.confirmation.rejected.amendment.title = Amendment request rejected
+declaration.confirmation.rejected.amendment.next.1 = Your amendment request was unsuccessful because it has introduced errors to your declaration.
+declaration.confirmation.rejected.amendment.next.2 = Your declaration cannot progress until the errors are fixed and the amendment request is resubmitted or the amendment request is cancelled.
+declaration.confirmation.rejected.amendment.next.3 = You can find these options on the {0} page.
+
 declaration.confirmation.accepted.amendment.title = Amendment request accepted
 declaration.confirmation.accepted.amendment.next.1 = Your amendment request was successful and the changes have been applied to your declaration.
 declaration.confirmation.accepted.amendment.next.2 = You will be notified about the progress of your declaration and any action required on {0}, and on the {1} page.

@@ -556,6 +556,8 @@ GET         /amendment-accepted                  controllers.declaration.amendme
 
 GET         /amendment-failed                    controllers.declaration.amendments.AmendmentConfirmationController.displayFailedPage
 
+GET         /amendment-rejected                  controllers.declaration.amendments.AmendmentConfirmationController.displayRejectedPage
+
 GET         /amendment-holding                   controllers.declaration.amendments.AmendmentConfirmationController.displayHoldingPage
 
 # Others
