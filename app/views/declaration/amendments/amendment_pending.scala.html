@@ -33,7 +33,7 @@
 
 @(confirmation: Confirmation)(implicit request: Request[_], messages: Messages)
 
-@govukLayout(title = Title(messages("declaration.confirmation.pending.amendment.title")), showDeclarationSummaryLink = false) {
+@govukLayout(title = Title("declaration.confirmation.pending.amendment.title"), showDeclarationSummaryLink = false) {
 
 @heading(messages("declaration.confirmation.pending.amendment.title"))
 
