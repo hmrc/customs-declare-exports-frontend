@@ -17,7 +17,7 @@
 package views.helpers
 
 import models.declaration.submissions.EnhancedStatus._
-import models.declaration.submissions.RequestType.{AmendmentRequest, SubmissionRequest}
+import models.declaration.submissions.RequestType._
 import models.declaration.submissions.Submission
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.html.components.{Key, SummaryListRow, Text, Value}
@@ -40,8 +40,12 @@ object EnhancedStatusHelper {
 
       case AmendmentRequest if event.notificationSummary.enhancedStatus == ERRORS =>
         messages("submission.enhancedStatus.timeline.title.amendment.rejected")
+
       case AmendmentRequest if event.notificationSummary.enhancedStatus == AMENDED =>
-        messages("submission.enhancedStatus.timeline.title.AMENDED")
+        messages("submission.enhancedStatus.timeline.title.amendment.requested")
+
+      case ExternalAmendmentRequest if event.notificationSummary.enhancedStatus == AMENDED =>
+        messages("submission.enhancedStatus.timeline.title.amendment.external")
 
       case _ =>
         val status = event.notificationSummary.enhancedStatus
