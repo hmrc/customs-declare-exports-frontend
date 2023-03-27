@@ -942,9 +942,11 @@ declaration.details.uploadDocuments.details.paragraph.2 = You do not have to upl
 declaration.details.uploadDocuments.details.paragraph.3 = You can upload documents before your goods are arrived if you wish, and if they are not needed by customs they will be deleted within six months.
 
 saved.declarations.title = Your saved declarations
+saved.declarations.title.amendments = Your saved declarations and amendments
 saved.declarations.ducr = DUCR
 saved.declarations.noDucr = No DUCR added
 saved.declarations.dateSaved = Date and time saved
+saved.declarations.amendment = Amendment
 saved.declarations.continue.hidden = Continue declaration {0}
 saved.declarations.remove.hidden = Remove declaration {0}
 saved.declarations.summary.continue = Continue declaration

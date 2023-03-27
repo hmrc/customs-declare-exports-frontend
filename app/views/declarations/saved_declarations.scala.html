@@ -20,6 +20,7 @@
 @import views.helpers.{BackButton, Title}
 @import views.helpers.ViewDates.formatDateAtTime
 @import views.html.components.gds.{gdsMainTemplate, link, pageTitle, spanVisuallyHidden}
+@import models.declaration.DeclarationStatus.{DeclarationStatus, AMENDMENT_DRAFT}
 
 @import java.time.ZoneId
 
@@ -33,6 +34,17 @@
 
 @(declarations: Paginated[ExportsDeclaration])(implicit request: Request[_], messages: Messages)
 
+@amendmentRowContent(declarationStatus: DeclarationStatus) = @{
+    if(declarationStatus == AMENDMENT_DRAFT) HtmlContent(messages("saved.declarations.amendment"))
+    else HtmlContent("")
+}
+
+@titleAmendment(declarationStatus: DeclarationStatus) = @{
+    declarations.currentPageElements.map{
+
+    }
+}
+
 @savedDeclarations = @{
   declarations.currentPageElements.map { declaration =>
     Seq(
@@ -45,6 +57,9 @@
               )
           ),
           classes = "govuk-table__cell_break-all"
+      ),
+      TableRow(
+          content = amendmentRowContent(declaration.declarationMeta.status)
       ),
       TableRow(
           content = HtmlContent(formatDateAtTime(declaration.declarationMeta.updatedDateTime.atZone(ZoneId.of("Europe/London"))))
@@ -76,6 +91,7 @@
       @govukTable(Table(
         head = Some(Seq(
           HeadCell(content = Text(messages("saved.declarations.ducr"))),
+          HeadCell(content = Text(messages(""))),
           HeadCell(content = Text(messages("saved.declarations.dateSaved"))),
           HeadCell(content = HtmlContent(spanVisuallyHidden(messages("site.remove.header"))))
         )),
