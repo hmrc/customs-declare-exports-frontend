@@ -534,11 +534,11 @@ GET         /saved-summary                       controllers.declaration.Summary
 
 # Submission
 
-GET         /submit-your-declaration             controllers.declaration.SubmissionController.displayLegalDeclarationPage(isAmendment: Boolean = false)
+GET         /submit-your-declaration             controllers.declaration.SubmissionController.displayLegalDeclarationPage(isAmendment: Boolean = false, action: Option[String] = None)
 
 POST        /submit-your-declaration             controllers.declaration.SubmissionController.submitDeclaration
 
-GET         /submit-your-amendment               controllers.declaration.SubmissionController.displayLegalDeclarationPage(isAmendment: Boolean = true)
+GET         /submit-your-amendment               controllers.declaration.SubmissionController.displayLegalDeclarationPage(isAmendment: Boolean = true, action: Option[String])
 
 POST        /submit-your-amendment               controllers.declaration.SubmissionController.submitAmendment(action: Option[String])
 

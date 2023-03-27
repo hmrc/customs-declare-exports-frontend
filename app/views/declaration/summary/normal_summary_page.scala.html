@@ -62,7 +62,7 @@
 @continueLink = @{
     request.cacheModel.declarationMeta.readyForSubmission match {
         case Some(true) if errors.isEmpty =>
-            linkButton("site.confirm_and_continue", SubmissionController.displayLegalDeclarationPage(false))
+            linkButton("site.confirm_and_continue", SubmissionController.displayLegalDeclarationPage(false, None))
 
         case Some(true) => linkButton("site.confirm_and_continue", SummaryController.displayPage)
         case _          =>

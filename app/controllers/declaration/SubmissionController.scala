@@ -56,10 +56,10 @@ class SubmissionController @Inject() (
 
   val actions = authenticate andThen verifyEmail andThen journeyType
 
-  def displayLegalDeclarationPage(isAmendment: Boolean): Action[AnyContent] = actions { implicit request =>
+  def displayLegalDeclarationPage(isAmendment: Boolean, action: Option[String]): Action[AnyContent] = actions { implicit request =>
     if (isAmendment) {
       if (!declarationAmendmentsConfig.isEnabled) Redirect(RootController.displayPage)
-      else Ok(legal_declaration(form, amend = true))
+      else Ok(legal_declaration(form, amend = true, action))
     } else if (inErrorFixMode) handleError("Invalid mode while redirected to the 'Legal declaration' page")
     else Ok(legal_declaration(form))
   }
@@ -70,7 +70,7 @@ class SubmissionController @Inject() (
       form
         .bindFromRequest()
         .fold(
-          (formWithErrors: Form[LegalDeclaration]) => Future.successful(BadRequest(legal_declaration(formWithErrors, amend = true))),
+          (formWithErrors: Form[LegalDeclaration]) => Future.successful(BadRequest(legal_declaration(formWithErrors, amend = true, action))),
           _.amendReason match {
             case Some(amendReason) =>
               val declaration = exportsCacheService.update(request.cacheModel.copy(statementDescription = Some(amendReason)))

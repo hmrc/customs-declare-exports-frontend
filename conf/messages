@@ -2334,6 +2334,7 @@ legal.declaration.confirmation=I confirm the information given is correct to the
 legal.declaration.confirmation.missing=You must confirm the information is correct to the best of your knowledge
 
 legal.declaration.amend.heading=Submit amendment request
+legal.declaration.amend.cancel.info=To cancel you need to submit an amendment which makes no changes to your declaration. This is called a 'Nil amendment'. To do this complete the form on this page. After this request is complete an 'Amendment request' will be displayed on the Declaration status page.
 legal.declaration.amend.reason=Reason for your amendment
 legal.declaration.amend.reason.hint =You can enter up to 512 characters
 legal.declaration.amendReason.empty=Enter a reason for this amendment
