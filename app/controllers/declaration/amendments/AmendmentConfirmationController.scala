@@ -41,7 +41,8 @@ class AmendmentConfirmationController @Inject() (
   customsDeclareExportsConnector: CustomsDeclareExportsConnector,
   amendment_accepted: amendment_accepted,
   amendment_rejection: amendment_rejection,
-  amendment_failed: amendment_failed
+  amendment_failed: amendment_failed,
+  amendment_pending: amendment_pending
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with Logging {
 
@@ -62,6 +63,10 @@ class AmendmentConfirmationController @Inject() (
     displayPage(AmendmentResult.Rejected, "/amendment-rejected")
   }
 
+  val displayPendingPage: Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
+    displayPage(AmendmentResult.Pending, "/amendment-pending")
+  }
+
   private def displayPage(result: AmendmentResult, url: String)(implicit request: VerifiedEmailRequest[AnyContent]): Future[Result] =
     request.session.data
       .get(ExportsSessionKeys.submissionId)
@@ -80,6 +85,7 @@ class AmendmentConfirmationController @Inject() (
               case AmendmentResult.Accepted => Ok(amendment_accepted(confirmation))
               case AmendmentResult.Failed   => Ok(amendment_failed(confirmation))
               case AmendmentResult.Rejected => Ok(amendment_rejection(confirmation))
+              case AmendmentResult.Pending  => Ok(amendment_pending(confirmation))
             }
         }
       }
@@ -87,5 +93,5 @@ class AmendmentConfirmationController @Inject() (
 
 object AmendmentResult extends Enumeration {
   type AmendmentResult = Value
-  val Accepted, Failed, Rejected = Value
+  val Accepted, Failed, Rejected, Pending = Value
 }
