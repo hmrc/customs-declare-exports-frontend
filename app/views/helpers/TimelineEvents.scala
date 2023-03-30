@@ -16,12 +16,12 @@
 
 package views.helpers
 
-import config.featureFlags.{SecureMessagingInboxConfig, SfusConfig}
+import config.featureFlags.{DeclarationAmendmentsConfig, SecureMessagingInboxConfig, SfusConfig}
 import controllers.declaration.routes.SubmissionController
 import controllers.routes.RejectedNotificationsController
 import models.declaration.submissions.EnhancedStatus._
-import models.declaration.submissions.RequestType.{AmendmentRequest, CancellationRequest}
-import models.declaration.submissions.{NotificationSummary, RequestType, Submission}
+import models.declaration.submissions.RequestType._
+import models.declaration.submissions.{Action, NotificationSummary, RequestType, Submission}
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import play.twirl.api.{Html, HtmlFormat}
@@ -49,18 +49,22 @@ class TimelineEvents @Inject() (
   link: link,
   linkButton: linkButton,
   paragraphBody: paragraphBody,
-  secureMessagingInboxConfig: SecureMessagingInboxConfig,
   sfusConfig: SfusConfig,
+  secureMessagingInboxConfig: SecureMessagingInboxConfig,
+  declarationAmendmentsConfig: DeclarationAmendmentsConfig,
   uploadFilesPartialForTimeline: upload_files_partial_for_timeline
 ) {
   def apply(submission: Submission)(implicit messages: Messages): Seq[TimelineEvent] = {
-
     val notificationEvents = createNotificationEvents(submission)
 
     val amendmentEventIfLatest = getAmendmentEventIfLatest(submission)
 
     val IndexToMatchForUploadFilesContent = notificationEvents.indexWhere(_.notificationSummary.enhancedStatus in uploadFilesStatuses)
     val IndexToMatchForViewQueriesContent = notificationEvents.indexWhere(_.notificationSummary.enhancedStatus == QUERY_NOTIFICATION_MESSAGE)
+
+    val IndexToMatchForExternAmendContent = notificationEvents.indexWhere { event =>
+      event.requestType == ExternalAmendmentRequest && event.notificationSummary.enhancedStatus == AMENDED
+    }
     val IndexToMatchForFixResubmitContent =
       amendmentEventIfLatest.fold(notificationEvents.indexWhere(_.notificationSummary.enhancedStatus == ERRORS))(_ => 0)
 
@@ -71,6 +75,9 @@ class TimelineEvents @Inject() (
       val actionContent = index match {
         case IndexToMatchForFixResubmitContent if notificationEvent.requestType != AmendmentRequest || amendmentEventIfLatest.isDefined =>
           fixAndResubmitContent(submission.uuid, amendmentEventIfLatest)
+
+        case IndexToMatchForExternAmendContent =>
+          paragraphBody(messages("submission.enhancedStatus.timeline.content.external.amendment"))
 
         case IndexToMatchForUploadFilesContent if sfusConfig.isSfusUploadEnabled && IndexToMatchForFixResubmitContent < 0 =>
           uploadFilesContent(submission.mrn, isIndex1Primary(IndexToMatchForUploadFilesContent, IndexToMatchForViewQueriesContent))
@@ -93,16 +100,15 @@ class TimelineEvents @Inject() (
     }
   }
 
-  private def createNotificationEvents(submission: Submission): Seq[NotificationEvent] =
-    submission.actions.flatMap { action =>
-      val events = action.notifications.fold(Seq.empty[NotificationEvent]) { notificationSummarySeq =>
-        val notificationEvents: Seq[NotificationEvent] = notificationSummarySeq.map(NotificationEvent(action.id, action.requestType, _))
-        if (action.requestType == AmendmentRequest) {
-          val notificationSummary = NotificationSummary(UUID.randomUUID, action.requestTimestamp, AMENDED)
-          notificationEvents :+ NotificationEvent(action.id, action.requestType, notificationSummary)
-        } else
-          notificationEvents
+  private val amendmentRequests = List(AmendmentRequest, ExternalAmendmentRequest)
+
+  private def createNotificationEvents(submission: Submission): Seq[NotificationEvent] = {
+    val allEvents = submission.actions.flatMap { action =>
+      val events = action.notifications.fold(amendmentEventIfEmpty(action)) { notificationSummaries =>
+        val events = notificationSummaries.map(NotificationEvent(action.id, action.requestType, _))
+        if (amendmentRequests.contains(action.requestType)) events :+ amendmentEvent(action) else events
       }
+
       if (action.requestType != CancellationRequest) events
       else {
         val notificationSummary = NotificationSummary(UUID.randomUUID(), action.requestTimestamp, REQUESTED_CANCELLATION)
@@ -111,9 +117,26 @@ class TimelineEvents @Inject() (
       }
     }.sorted
 
-  sealed abstract class AmendmentEventIfLatest { val actionId: String }
-  case class AmendmentFailed(actionId: String) extends AmendmentEventIfLatest
-  case class AmendmentRejected(actionId: String) extends AmendmentEventIfLatest
+    if (declarationAmendmentsConfig.isEnabled) {
+      // Filtering out "AMENDED" notifications generated after "external amendments" (not "user amendments"!).
+      allEvents.filterNot { event =>
+        event.requestType == SubmissionRequest && event.notificationSummary.enhancedStatus == AMENDED
+      }
+    } else allEvents.filterNot(_.requestType == ExternalAmendmentRequest)
+  }
+
+  private def amendmentEvent(action: Action): NotificationEvent = {
+    val notificationSummary = NotificationSummary(UUID.randomUUID, action.requestTimestamp, AMENDED)
+    NotificationEvent(action.id, action.requestType, notificationSummary)
+  }
+
+  private def amendmentEventIfEmpty(action: Action): Seq[NotificationEvent] =
+    if (amendmentRequests.contains(action.requestType)) List(amendmentEvent(action))
+    else List.empty[NotificationEvent]
+
+  private abstract class AmendmentEventIfLatest { val actionId: String }
+  private case class AmendmentFailed(actionId: String) extends AmendmentEventIfLatest
+  private case class AmendmentRejected(actionId: String) extends AmendmentEventIfLatest
 
   private def getAmendmentEventIfLatest(submission: Submission): Option[AmendmentEventIfLatest] =
     if (submission.blockAmendments) None

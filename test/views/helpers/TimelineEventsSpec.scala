@@ -47,7 +47,15 @@ class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injec
   private def issued(days: Long): ZonedDateTime = ZonedDateTime.now.plusDays(days)
 
   private val timelineEvents =
-    new TimelineEvents(new link, new linkButton, new paragraphBody, mockSecureMessagingInboxConfig, mockSfusConfig, uploadFilesPartialForTimeline)
+    new TimelineEvents(
+      new link,
+      new linkButton,
+      new paragraphBody,
+      mockSfusConfig,
+      mockSecureMessagingInboxConfig,
+      mockDeclarationAmendmentsConfig,
+      uploadFilesPartialForTimeline
+    )
 
   private def genTimelineEvents(notificationSummaries: Seq[NotificationSummary]): Seq[TimelineEvent] = {
     val action = Action("id", SubmissionRequest, issued(0), Some(notificationSummaries), decId = Some("id"), versionNo = 1)
@@ -139,7 +147,7 @@ class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injec
     }
 
     "generate the expected sequence of TimelineEvent instances when the declaration is cancelled" in {
-      val timelineEvents = createTimelineFromActions(declarationCancelled)
+      val timelineEvents = createTimelineFromActions(cancellationRequest)
 
       timelineEvents.size mustBe 3
       timelineEvents(0).title mustBe messages(s"submission.enhancedStatus.$CANCELLED")
@@ -147,12 +155,20 @@ class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injec
       timelineEvents(2).title mustBe messages(s"submission.enhancedStatus.$RECEIVED")
     }
 
+    "generate the expected sequence of TimelineEvent instances on a user amendment" in {
+      val timelineEvents = createTimelineFromActions(amendmentRequest)
+
+      timelineEvents.size mustBe 2
+      timelineEvents(0).title mustBe messages("submission.enhancedStatus.timeline.title.amendment.requested")
+      timelineEvents(1).title mustBe messages(s"submission.enhancedStatus.$RECEIVED")
+    }
+
     "generate the expected sequence of TimelineEvent instances when an amendment request is granted" in {
       val timelineEvents = createTimelineFromActions(amendmentGranted)
 
       timelineEvents.size mustBe 3
       timelineEvents(0).title mustBe messages("submission.enhancedStatus.timeline.title.amendment.accepted")
-      timelineEvents(1).title mustBe messages("submission.enhancedStatus.timeline.title.AMENDED")
+      timelineEvents(1).title mustBe messages("submission.enhancedStatus.timeline.title.amendment.requested")
       timelineEvents(2).title mustBe messages(s"submission.enhancedStatus.$RECEIVED")
     }
 
@@ -171,7 +187,7 @@ class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injec
       content must include(expectedButtonUrl)
       content must include(expectedLinkUrl)
 
-      timelineEvents(1).title mustBe messages("submission.enhancedStatus.timeline.title.AMENDED")
+      timelineEvents(1).title mustBe messages("submission.enhancedStatus.timeline.title.amendment.requested")
       timelineEvents(1).dateTime mustBe submission.actions(1).requestTimestamp
 
       timelineEvents(2).title mustBe messages(s"submission.enhancedStatus.$ERRORS")
@@ -203,8 +219,42 @@ class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injec
       timelineEvents(3).dateTime mustBe submission.actions(1).notifications.get(0).dateTimeIssued
       timelineEvents(3).content mustBe None
 
-      timelineEvents(4).title mustBe messages("submission.enhancedStatus.timeline.title.AMENDED")
+      timelineEvents(4).title mustBe messages("submission.enhancedStatus.timeline.title.amendment.requested")
       timelineEvents(4).dateTime mustBe submission.actions(1).requestTimestamp
+    }
+
+    "generate the expected sequence of TimelineEvent instances" when {
+      "the amendment is external and" when {
+
+        "the mockDeclarationAmendmentsConfig flag is enabled" in {
+          when(mockDeclarationAmendmentsConfig.isEnabled).thenReturn(true)
+          val timelineEvents = createTimelineFromActions(externalAmendment)
+
+          timelineEvents.size mustBe 2
+
+          timelineEvents(0).title mustBe messages(s"submission.enhancedStatus.timeline.title.amendment.external")
+          timelineEvents(0).dateTime mustBe externalAmendment(1).requestTimestamp
+          val expectedContent = messages("submission.enhancedStatus.timeline.content.external.amendment")
+          timelineEvents(0).content.value.body must include(expectedContent)
+
+          timelineEvents(1).title mustBe messages(s"submission.enhancedStatus.$RECEIVED")
+          timelineEvents(1).dateTime mustBe externalAmendment(0).notifications.get(1).dateTimeIssued
+        }
+
+        "the mockDeclarationAmendmentsConfig flag is disabled" in {
+          when(mockDeclarationAmendmentsConfig.isEnabled).thenReturn(false)
+          val timelineEvents = createTimelineFromActions(externalAmendment)
+
+          timelineEvents.size mustBe 2
+
+          timelineEvents(0).title mustBe messages(s"submission.enhancedStatus.$AMENDED")
+          timelineEvents(0).dateTime mustBe externalAmendment(0).notifications.get(0).dateTimeIssued
+          timelineEvents(0).content mustBe None
+
+          timelineEvents(1).title mustBe messages(s"submission.enhancedStatus.$RECEIVED")
+          timelineEvents(1).dateTime mustBe externalAmendment(0).notifications.get(1).dateTimeIssued
+        }
+      }
     }
 
     "generate the expected sequence of TimelineEvent instances when the latest action is amendment failed" in {
@@ -334,6 +384,32 @@ class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injec
 }
 
 object TimelineEventsSpec {
+
+  val amendmentRequest = Json
+    .parse(s"""[
+         | {
+         |   "id" : "7f73dc47-6aaa-4122-b0ef-547e500c81e7",
+         |   "requestType" : "SubmissionRequest",
+         |   "decId" : "3dd4bb59-6174-429e-8386-b876b558b35d",
+         |   "versionNo" : 1,
+         |   "notifications" : [
+         |     {
+         |       "notificationId" : "6aa59a55-cefa-4745-bdd5-4da19fa68bf8",
+         |       "dateTimeIssued" : "2023-03-27T12:46:15.125Z[UTC]",
+         |       "enhancedStatus" : "RECEIVED"
+         |     }
+         |   ],
+         |   "requestTimestamp" : "2023-03-27T12:46:13.936Z[UTC]"
+         | },
+         | {
+         |   "id" : "29e6c2e5-8589-42f6-8903-abe5205b6c1b",
+         |   "requestType" : "AmendmentRequest",
+         |   "versionNo" : 2,
+         |   "requestTimestamp" : "2023-03-28T12:46:20.993Z[UTC]"
+         | }
+         |]
+         |""".stripMargin)
+    .as[Seq[Action]]
 
   val amendmentUnsuccessfulLatest = (status: EnhancedStatus) =>
     Json
@@ -586,7 +662,7 @@ object TimelineEventsSpec {
       |""".stripMargin)
     .as[Seq[Action]]
 
-  val declarationCancelled = Json
+  val cancellationRequest = Json
     .parse(s"""[
       |  {
       |      "id" : "8fdfd197-04ee-488e-910c-786cbfa63edf",
@@ -620,6 +696,36 @@ object TimelineEventsSpec {
       |      ],
       |      "decId" : "id",
       |      "versionNo" : 1
+      |  }
+      |]""".stripMargin)
+    .as[Seq[Action]]
+
+  val externalAmendment = Json
+    .parse(s"""[
+      |  {
+      |     "id" : "7f73dc47-6aaa-4122-b0ef-547e500c81e7",
+      |      "requestType" : "SubmissionRequest",
+      |      "decId" : "3dd4bb59-6174-429e-8386-b876b558b35d",
+      |      "versionNo" : 1,
+      |      "notifications" : [
+      |          {
+      |              "notificationId" : "6629e651-8352-4454-a8c2-76b6ea200ab3",
+      |              "dateTimeIssued" : "2023-03-28T12:51:15Z[UTC]",
+      |              "enhancedStatus" : "AMENDED"
+      |          },
+      |          {
+      |              "notificationId" : "6aa59a55-cefa-4745-bdd5-4da19fa68bf8",
+      |              "dateTimeIssued" : "2023-03-27T12:46:15Z[UTC]",
+      |              "enhancedStatus" : "RECEIVED"
+      |          }
+      |      ],
+      |      "requestTimestamp" : "2023-03-27T12:46:13.936473Z[UTC]"
+      |  },
+      |  {
+      |      "id" : "29e6c2e5-8589-42f6-8903-abe5205b6c1b",
+      |      "requestType" : "ExternalAmendmentRequest",
+      |      "versionNo" : 2,
+      |      "requestTimestamp" : "2023-03-27T12:46:20.993842Z[UTC]"
       |  }
       |]""".stripMargin)
     .as[Seq[Action]]
