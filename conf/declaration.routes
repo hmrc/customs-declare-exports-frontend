@@ -562,6 +562,8 @@ GET         /amendment-rejected                  controllers.declaration.amendme
 
 GET         /amendment-holding                   controllers.declaration.amendments.AmendmentConfirmationController.displayHoldingPage
 
+GET         /amendment-pending                   controllers.declaration.amendments.AmendmentConfirmationController.displayPendingPage
+
 # Others
 
 GET         /draft-saved                         controllers.declaration.DraftDeclarationController.displayPage
