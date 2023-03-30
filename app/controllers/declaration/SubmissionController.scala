@@ -18,6 +18,7 @@ package controllers.declaration
 
 import com.google.inject.Inject
 import config.featureFlags.DeclarationAmendmentsConfig
+import connectors.CustomsDeclareExportsConnector
 import controllers.actions.{AuthAction, JourneyAction, VerifiedEmailAction}
 import controllers.declaration.amendments.routes.AmendmentConfirmationController
 import controllers.declaration.routes.ConfirmationController
@@ -28,7 +29,7 @@ import forms.declaration.LegalDeclaration.form
 import handlers.ErrorHandler
 import models.declaration.submissions.Submission
 import models.requests.ExportsSessionKeys._
-import models.requests.JourneyRequest
+import models.requests.{ExportsSessionKeys, JourneyRequest}
 import play.api.Logging
 import play.api.data.Form
 import play.api.i18n.I18nSupport
@@ -48,6 +49,7 @@ class SubmissionController @Inject() (
   errorHandler: ErrorHandler,
   mcc: MessagesControllerComponents,
   override val exportsCacheService: ExportsCacheService,
+  customsDeclareExportsConnector: CustomsDeclareExportsConnector,
   submissionService: SubmissionService,
   legal_declaration: legal_declaration,
   declarationAmendmentsConfig: DeclarationAmendmentsConfig
@@ -57,9 +59,10 @@ class SubmissionController @Inject() (
   val actions = authenticate andThen verifyEmail andThen journeyType
 
   def displayLegalDeclarationPage(isAmendment: Boolean, action: Option[String]): Action[AnyContent] = actions { implicit request =>
-    if (isAmendment) {
-      if (!declarationAmendmentsConfig.isEnabled) Redirect(RootController.displayPage)
-      else Ok(legal_declaration(form, amend = true, action))
+    if (isAmendment || action.contains("cancel")) {
+      if (declarationAmendmentsConfig.isEnabled) {
+        Ok(legal_declaration(form, amend = true, action))
+      } else Redirect(RootController.displayPage)
     } else if (inErrorFixMode) handleError("Invalid mode while redirected to the 'Legal declaration' page")
     else Ok(legal_declaration(form))
   }
@@ -82,6 +85,15 @@ class SubmissionController @Inject() (
             case _ => errorHandler.displayErrorPage
           }
         )
+  }
+
+  def cancelAmendment(decId: Option[String]): Action[AnyContent] = (authenticate andThen verifyEmail) { implicit request =>
+    decId match {
+      case Some(id) if declarationAmendmentsConfig.isEnabled =>
+        Redirect(routes.SubmissionController.submitAmendment(Some("cancel"))).addingToSession((ExportsSessionKeys.declarationId, id))
+      case _ =>
+        Redirect(controllers.routes.SignOutController.userSignedOut)
+    }
   }
 
   val submitDeclaration: Action[AnyContent] = actions.async { implicit request =>

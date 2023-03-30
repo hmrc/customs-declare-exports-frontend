@@ -21,7 +21,7 @@ import controllers.declaration.routes.SubmissionController
 import controllers.routes.RejectedNotificationsController
 import models.declaration.submissions.EnhancedStatus._
 import models.declaration.submissions.RequestType.{AmendmentRequest, CancellationRequest}
-import models.declaration.submissions.{NotificationSummary, RequestType, Submission}
+import models.declaration.submissions.{Action, NotificationSummary, RequestType, Submission}
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import play.twirl.api.{Html, HtmlFormat}
@@ -70,7 +70,7 @@ class TimelineEvents @Inject() (
 
       val actionContent = index match {
         case IndexToMatchForFixResubmitContent if notificationEvent.requestType != AmendmentRequest || amendmentEventIfLatest.isDefined =>
-          fixAndResubmitContent(submission.uuid, amendmentEventIfLatest)
+          fixAndResubmitContent(submission, amendmentEventIfLatest)
 
         case IndexToMatchForUploadFilesContent if sfusConfig.isSfusUploadEnabled && IndexToMatchForFixResubmitContent < 0 =>
           uploadFilesContent(submission.mrn, isIndex1Primary(IndexToMatchForUploadFilesContent, IndexToMatchForViewQueriesContent))
@@ -111,9 +111,9 @@ class TimelineEvents @Inject() (
       }
     }.sorted
 
-  sealed abstract class AmendmentEventIfLatest { val actionId: String }
-  case class AmendmentFailed(actionId: String) extends AmendmentEventIfLatest
-  case class AmendmentRejected(actionId: String) extends AmendmentEventIfLatest
+  sealed abstract class AmendmentEventIfLatest { val action: Action }
+  case class AmendmentFailed(action: Action) extends AmendmentEventIfLatest
+  case class AmendmentRejected(action: Action) extends AmendmentEventIfLatest
 
   private def getAmendmentEventIfLatest(submission: Submission): Option[AmendmentEventIfLatest] =
     if (submission.blockAmendments) None
@@ -124,25 +124,28 @@ class TimelineEvents @Inject() (
           latestAction.notifications.flatMap { notifications =>
             notifications.headOption.flatMap {
               _.enhancedStatus match {
-                case CUSTOMS_POSITION_DENIED => Some(AmendmentFailed(latestAction.id))
-                case ERRORS                  => Some(AmendmentRejected(latestAction.id))
+                case CUSTOMS_POSITION_DENIED => Some(AmendmentFailed(latestAction))
+                case ERRORS                  => Some(AmendmentRejected(latestAction))
                 case _                       => None
               }
             }
           }
       }
 
-  private def fixAndResubmitContent(uuid: String, amendmentEventIfLatest: Option[AmendmentEventIfLatest])(implicit messages: Messages): Html =
+  private def fixAndResubmitContent(submission: Submission, amendmentEventIfLatest: Option[AmendmentEventIfLatest])(
+    implicit messages: Messages
+  ): Html =
     amendmentEventIfLatest.fold {
-      val fixAndResubmit = RejectedNotificationsController.displayPage(uuid)
+      val fixAndResubmit = RejectedNotificationsController.displayPage(submission.uuid)
       linkButton("declaration.details.fix.resubmit.button", fixAndResubmit)
     } { amendmentEventAsLatest =>
-      val fixAndResubmit = RejectedNotificationsController.amendmentRejected(uuid, amendmentEventAsLatest.actionId)
+      val fixAndResubmit = RejectedNotificationsController.amendmentRejected(submission.uuid, amendmentEventAsLatest.action.id)
       val button = amendmentEventAsLatest match {
         case _: AmendmentFailed       => linkButton("declaration.details.resubmit.button", fixAndResubmit)
         case _: AmendmentRejected | _ => linkButton("declaration.details.fix.resubmit.button", fixAndResubmit)
       }
-      val cancelUrl = SubmissionController.submitAmendment(Some("cancel"))
+
+      val cancelUrl = SubmissionController.cancelAmendment(amendmentEventAsLatest.action.decId)
       val cancelLink = link(messages("declaration.details.cancel.amendment"), cancelUrl, id = Some("cancel-amendment"))
       Html(s"""<div class="govuk-button-group">${button.toString()}${cancelLink.toString()}</div>""")
     }

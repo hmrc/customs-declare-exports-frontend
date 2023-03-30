@@ -591,11 +591,11 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
 
       button.text() mustBe messages("declaration.details.fix.resubmit.button")
       button.hasClass("govuk-button")
-      button must haveHref(RejectedNotificationsController.amendmentRejected(submission.uuid, submission.actions(0).id))
+      button must haveHref(RejectedNotificationsController.amendmentRejected(submission.uuid, submission.actions.head.id))
 
       link.text() mustBe messages("declaration.details.cancel.amendment")
       link.hasClass("gov-link")
-      link must haveHref(SubmissionController.submitAmendment(Some("cancel")))
+      link must haveHref(SubmissionController.cancelAmendment(submission.actions.head.decId))
     }
 
     "display 'Resubmit' button and 'Cancel' link when latest notification is a failed Amendment" in {
@@ -608,11 +608,11 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
 
       button.text() mustBe messages("declaration.details.resubmit.button")
       button.hasClass("govuk-button")
-      button must haveHref(RejectedNotificationsController.amendmentRejected(submission.uuid, submission.actions(0).id))
+      button must haveHref(RejectedNotificationsController.amendmentRejected(submission.uuid, submission.actions.head.id))
 
       link.text() mustBe messages("declaration.details.cancel.amendment")
       link.hasClass("gov-link")
-      link must haveHref(SubmissionController.submitAmendment(Some("cancel")))
+      link must haveHref(SubmissionController.cancelAmendment(submission.actions.head.decId))
     }
 
     "display the expected section headers" in {
