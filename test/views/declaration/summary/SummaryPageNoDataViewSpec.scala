@@ -31,7 +31,7 @@ class SummaryPageNoDataViewSpec extends UnitViewSpec with Stubs with ExportsTest
 
     "display correct page title" in {
 
-      view.getElementById("title").text() mustBe messages("declaration.summary.noData.header")
+      view.getElementById("title").text() mustBe messages("declaration.summary.noData.header", "Standard")
     }
 
     "display correct hint" in {
