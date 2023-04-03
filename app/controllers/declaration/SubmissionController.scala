@@ -90,7 +90,7 @@ class SubmissionController @Inject() (
       case Some(id) if declarationAmendmentsConfig.isEnabled =>
         Redirect(routes.SubmissionController.submitAmendment(Some("cancel"))).addingToSession((ExportsSessionKeys.declarationId, id))
       case _ =>
-        Redirect(controllers.routes.SignOutController.userSignedOut)
+        Redirect(controllers.routes.RootController.displayPage)
     }
   }
 
