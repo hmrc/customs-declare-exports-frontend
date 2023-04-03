@@ -18,7 +18,6 @@ package controllers.declaration
 
 import com.google.inject.Inject
 import config.featureFlags.DeclarationAmendmentsConfig
-import connectors.CustomsDeclareExportsConnector
 import controllers.actions.{AuthAction, JourneyAction, VerifiedEmailAction}
 import controllers.declaration.amendments.routes.AmendmentConfirmationController
 import controllers.declaration.routes.ConfirmationController
@@ -49,7 +48,6 @@ class SubmissionController @Inject() (
   errorHandler: ErrorHandler,
   mcc: MessagesControllerComponents,
   override val exportsCacheService: ExportsCacheService,
-  customsDeclareExportsConnector: CustomsDeclareExportsConnector,
   submissionService: SubmissionService,
   legal_declaration: legal_declaration,
   declarationAmendmentsConfig: DeclarationAmendmentsConfig

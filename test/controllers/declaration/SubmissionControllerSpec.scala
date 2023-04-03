@@ -55,7 +55,6 @@ class SubmissionControllerSpec extends ControllerWithoutFormSpec with ErrorHandl
     mockErrorHandler,
     stubMessagesControllerComponents(),
     mockExportsCacheService,
-    mockCustomsDeclareExportsConnector,
     mockSubmissionService,
     legalDeclarationPage,
     declarationAmendmentsConfig
