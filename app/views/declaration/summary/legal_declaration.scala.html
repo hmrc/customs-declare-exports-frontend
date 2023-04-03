@@ -35,10 +35,11 @@
     govukWarningText: GovukWarningText,
     exportsInputCheckbox: exportsInputCheckbox,
     exportsInputText: exportsInputText,
+    paragraph: paragraphBody,
     exportsInputCharacterCount: exportsInputCharacterCount
 )
 
-@(form: Form[LegalDeclaration], amend: Boolean = false)(implicit request: JourneyRequest[_], messages: Messages)
+@(form: Form[LegalDeclaration], amend: Boolean = false, action: Option[String] = None)(implicit request: JourneyRequest[_], messages: Messages)
 
 @headerMsgKey = @{
     if (amend) "legal.declaration.amend.heading"
@@ -104,10 +105,15 @@
     useCustomContentWidth = true,
     showDeclarationSummaryLink = false
 ) {
+
     @formHelper(action = formAction, 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
         @pageTitle(messages(headerMsgKey))
+
+        @if(action.contains("cancel")) @{
+            paragraph(messages("legal.declaration.amend.cancel.info"))
+        }
 
         @govukFieldset(Fieldset(html = html))
 
