@@ -84,7 +84,7 @@ class CustomsDeclareExportsConnector @Inject() (appConfig: AppConfig, httpClient
     val pagination = models.Page.bindable.unbind("page", page)
     val sort = DeclarationSort.bindable.unbind("sort", DeclarationSort(SortBy.UPDATED, SortDirection.DES))
 
-    httpClient.GET[Paginated[ExportsDeclaration]](url(s"${appConfig.declarationsPath}?status=DRAFT&$pagination&$sort"))
+    httpClient.GET[Paginated[ExportsDeclaration]](url(s"${appConfig.declarationsPath}?status=DRAFT&status=AMENDMENT_DRAFT&$pagination&$sort"))
   }
 
   def findOrCreateDraftForRejected(rejectedId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[String] = {
