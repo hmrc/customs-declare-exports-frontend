@@ -57,7 +57,7 @@ class SubmissionController @Inject() (
   val actions = authenticate andThen verifyEmail andThen journeyType
 
   def displayLegalDeclarationPage(isAmendment: Boolean, action: Option[String]): Action[AnyContent] = actions { implicit request =>
-    if (isAmendment || action.contains("cancel")) {
+    if (isAmendment) {
       if (declarationAmendmentsConfig.isEnabled) {
         Ok(legal_declaration(form, amend = true, action))
       } else Redirect(RootController.displayPage)
