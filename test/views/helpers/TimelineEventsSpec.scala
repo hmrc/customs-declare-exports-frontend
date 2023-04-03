@@ -183,7 +183,7 @@ class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injec
 
       val content = timelineEvents(0).content.get.body
       val expectedButtonUrl = RejectedNotificationsController.amendmentRejected(submission.uuid, submission.actions(1).id).url
-      val expectedLinkUrl = SubmissionController.submitAmendment(Some("cancel")).url
+      val expectedLinkUrl = SubmissionController.cancelAmendment(submission.actions(1).decId).url
       content must include(expectedButtonUrl)
       content must include(expectedLinkUrl)
 
@@ -268,7 +268,7 @@ class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injec
 
       val content = timelineEvents(0).content.get.body
       val expectedButtonUrl = RejectedNotificationsController.amendmentRejected(submission.uuid, submission.actions(1).id).url
-      val expectedLinkUrl = SubmissionController.submitAmendment(Some("cancel")).url
+      val expectedLinkUrl = SubmissionController.cancelAmendment(submission.actions(1).decId).url
       content must include(expectedButtonUrl)
       content must include(expectedLinkUrl)
     }

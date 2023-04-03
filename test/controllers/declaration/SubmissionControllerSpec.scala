@@ -64,7 +64,7 @@ class SubmissionControllerSpec extends ControllerWithoutFormSpec with ErrorHandl
     super.beforeEach()
     authorizedUser()
     setupErrorHandler()
-    when(legalDeclarationPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(legalDeclarationPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
     when(mockSubmissionService.amend).thenReturn(Future.successful(None))
     when(declarationAmendmentsConfig.isEnabled).thenReturn(true)
   }
@@ -80,15 +80,15 @@ class SubmissionControllerSpec extends ControllerWithoutFormSpec with ErrorHandl
 
       "return 200 and invoke page with the amend parameter to 'true'" in {
         withNewCaching(aDeclaration())
-        val result = controller.displayLegalDeclarationPage(true).apply(getJourneyRequest())
+        val result = controller.displayLegalDeclarationPage(true, None).apply(getJourneyRequest())
         status(result) mustBe OK
-        verify(legalDeclarationPage).apply(any(), ArgumentMatchers.eq(true))(any(), any())
+        verify(legalDeclarationPage).apply(any(), ArgumentMatchers.eq(true), any())(any(), any())
       }
 
       "return 303 when amend feature flag is off" in {
         when(declarationAmendmentsConfig.isEnabled).thenReturn(false)
         withNewCaching(aDeclaration())
-        val result = controller.displayLegalDeclarationPage(true).apply(getJourneyRequest())
+        val result = controller.displayLegalDeclarationPage(true, None).apply(getJourneyRequest())
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(RootController.displayPage.url)
       }
@@ -98,9 +98,9 @@ class SubmissionControllerSpec extends ControllerWithoutFormSpec with ErrorHandl
 
       "return 200 and invoke page with with the amend parameter to 'false'" in {
         withNewCaching(aDeclaration())
-        val result = controller.displayLegalDeclarationPage(false).apply(getJourneyRequest())
+        val result = controller.displayLegalDeclarationPage(false, None).apply(getJourneyRequest())
         status(result) mustBe OK
-        verify(legalDeclarationPage).apply(any(), ArgumentMatchers.eq(false))(any(), any())
+        verify(legalDeclarationPage).apply(any(), ArgumentMatchers.eq(false), any())(any(), any())
       }
     }
   }
