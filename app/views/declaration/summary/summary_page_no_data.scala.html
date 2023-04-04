@@ -16,6 +16,7 @@
 
 @import views.helpers.Title
 @import views.html.components.gds._
+@import models.requests.JourneyRequest
 
 @this(
         govukLayout: gdsMainTemplate,
@@ -24,18 +25,24 @@
         linkButton: linkButton
 )
 
-@()(implicit request: Request[_], messages: Messages)
+@()(implicit request: JourneyRequest[_], messages: Messages)
+
+@decType = @{request.declarationType.toString.toLowerCase.capitalize}
 
 @govukLayout(
-    title = Title("declaration.summary.noData.header"),
+    title = Title("declaration.summary.noData.header", headingArg = decType),
     useCustomContentWidth = true,
     showDeclarationSummaryLink = false
 ) {
 
-    @pageTitle(messages("declaration.summary.noData.header"))
+    <div>
+
+    @pageTitle(messages("declaration.summary.noData.header", decType))
 
     @paragraphBody(messages("declaration.summary.noData.header.secondary"))
 
     @linkButton("declaration.summary.noData.button", routes.RootController.displayPage)
+
+    </div>
 
 }
