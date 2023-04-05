@@ -218,7 +218,11 @@ class CustomsDeclareExportsConnectorISpec extends ConnectorISpec with ExportsDec
       val response = await(connector.findSavedDeclarations(pagination))
 
       response mustBe Paginated(Seq(existingDeclaration), pagination, 1)
-      WireMock.verify(getRequestedFor(urlEqualTo("/declarations?status=DRAFT&status=AMENDMENT_DRAFT&page-index=1&page-size=10&sort-by=updatedDateTime&sort-direction=des")))
+      WireMock.verify(
+        getRequestedFor(
+          urlEqualTo("/declarations?status=DRAFT&status=AMENDMENT_DRAFT&page-index=1&page-size=10&sort-by=updatedDateTime&sort-direction=des")
+        )
+      )
     }
   }
 
