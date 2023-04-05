@@ -17,12 +17,14 @@
 package views.declarations
 
 import base.{ExportsTestData, Injector}
+import config.featureFlags.DeclarationAmendmentsConfig
 import controllers.routes
 import forms.Choice
 import forms.Choice.AllowedChoiceValues.ContinueDec
 import models.declaration.DeclarationStatus
 import models.{ExportsDeclaration, Page, Paginated}
 import org.jsoup.nodes.Element
+import org.mockito.Mockito.when
 import play.twirl.api.Html
 import play.twirl.api.HtmlFormat.Appendable
 import views.declaration.spec.UnitViewSpec
@@ -43,8 +45,15 @@ class SavedDeclarationsViewSpec extends UnitViewSpec with Injector {
 
   val page = instanceOf[saved_declarations]
 
+  val mockAmendmentFlag = mock[DeclarationAmendmentsConfig]
+
   private val decWithoutDucr = ExportsTestData.aDeclaration(
     withStatus(DeclarationStatus.DRAFT),
+    withUpdateTime(LocalDateTime.of(2019, 1, 1, 9, 45, 0).toInstant(ZoneOffset.UTC))
+  )
+
+  private val decWithAmendment = ExportsTestData.aDeclaration(
+    withStatus(DeclarationStatus.AMENDMENT_DRAFT),
     withUpdateTime(LocalDateTime.of(2019, 1, 1, 9, 45, 0).toInstant(ZoneOffset.UTC))
   )
 
@@ -58,11 +67,14 @@ class SavedDeclarationsViewSpec extends UnitViewSpec with Injector {
     "display empty declaration list " in {
       val view = createView()
 
+      view.getElementsByClass("govuk-heading-xl").get(0) must containMessage("saved.declarations.title")
+
       view.title() must include(view.getElementsByTag("h1").text())
 
       tableHead(view)(0).text() mustBe messages(ducr)
-      tableHead(view)(1).text() mustBe messages(dateSaved)
-      tableHead(view)(2).text() mustBe messages("site.remove.header")
+      tableHead(view)(1).text() mustBe messages("saved.declarations.status")
+      tableHead(view)(2).text() mustBe messages(dateSaved)
+      tableHead(view)(3).text() mustBe messages("site.remove.header")
 
       numberOfTableRows(view) mustBe 0
 
@@ -72,13 +84,16 @@ class SavedDeclarationsViewSpec extends UnitViewSpec with Injector {
     "display created declarations before BST" in {
       val view = createView(declarations = Seq(decWithoutDucr), total = 1)
 
+      view.getElementsByClass("govuk-heading-xl").get(0) must containMessage("saved.declarations.title")
+
       numberOfTableRows(view) mustBe 1
 
       tableCell(view)(1, 0) must containMessage("saved.declarations.noDucr")
       tableCell(view)(1, 0) must containMessage("saved.declarations.continue.hidden", noDucrLabel)
-      tableCell(view)(1, 1).text() mustBe "1 January 2019 at 9:45am"
-      tableCell(view)(1, 2) must containMessage("site.remove")
-      tableCell(view)(1, 2) must containMessage("saved.declarations.remove.hidden", noDucrLabel)
+      tableCell(view)(1, 1) must containMessage("saved.declarations.draft")
+      tableCell(view)(1, 2).text() mustBe "1 January 2019 at 9:45am"
+      tableCell(view)(1, 3) must containMessage("site.remove")
+      tableCell(view)(1, 3) must containMessage("saved.declarations.remove.hidden", noDucrLabel)
 
       view.getElementsByClass("ceds-pagination") mustNot be(empty)
     }
@@ -91,15 +106,37 @@ class SavedDeclarationsViewSpec extends UnitViewSpec with Injector {
 
       val view = createView(declarations = Seq(decWithoutDucrAfterBST), total = 1)
 
+      view.getElementsByClass("govuk-heading-xl").get(0) must containMessage("saved.declarations.title")
+
       numberOfTableRows(view) mustBe 1
 
       tableCell(view)(1, 0) must containMessage("saved.declarations.noDucr")
       tableCell(view)(1, 0) must containMessage("saved.declarations.continue.hidden", noDucrLabel)
-      tableCell(view)(1, 1).text() mustBe "1 May 2019 at 10:45am"
-      tableCell(view)(1, 2) must containMessage("site.remove")
-      tableCell(view)(1, 2) must containMessage("saved.declarations.remove.hidden", noDucrLabel)
+      tableCell(view)(1, 1) must containMessage("saved.declarations.draft")
+      tableCell(view)(1, 2).text() mustBe "1 May 2019 at 10:45am"
+      tableCell(view)(1, 3) must containMessage("site.remove")
+      tableCell(view)(1, 3) must containMessage("saved.declarations.remove.hidden", noDucrLabel)
 
       view.getElementsByClass("ceds-pagination") mustNot be(empty)
+    }
+
+    "display created with Amendment and feature flag on" in {
+      when(mockAmendmentFlag.isEnabled).thenReturn(true)
+      val view = createView(declarations = Seq(decWithAmendment), total = 1)
+
+      numberOfTableRows(view) mustBe 1
+
+      view.getElementsByClass("govuk-heading-xl").get(0) must containMessage("saved.declarations.title.amendments")
+
+      tableCell(view)(1, 0) must containMessage("saved.declarations.noDucr")
+      tableCell(view)(1, 0) must containMessage("saved.declarations.continue.hidden", noDucrLabel)
+      tableCell(view)(1, 1) must containMessage("saved.declarations.amendment")
+      tableCell(view)(1, 2).text() mustBe "1 January 2019 at 9:45am"
+      tableCell(view)(1, 3) must containMessage("site.remove")
+      tableCell(view)(1, 3) must containMessage("saved.declarations.remove.hidden", noDucrLabel)
+
+      view.getElementsByClass("ceds-pagination") mustNot be(empty)
+
     }
 
     "display 'Back' button that links to 'Choice' page with 'Continue saved declarations' selected" in {

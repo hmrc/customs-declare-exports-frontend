@@ -21,10 +21,12 @@
 @import views.helpers.ViewDates.formatDateAtTime
 @import views.html.components.gds.{gdsMainTemplate, link, pageTitle, spanVisuallyHidden}
 @import models.declaration.DeclarationStatus.{DeclarationStatus, AMENDMENT_DRAFT}
+@import config.featureFlags.DeclarationAmendmentsConfig
 
 @import java.time.ZoneId
 
 @this(
+  amendmentFlag: DeclarationAmendmentsConfig,
   govukLayout: gdsMainTemplate,
   pageTitle: pageTitle,
   link: link,
@@ -35,13 +37,13 @@
 @(declarations: Paginated[ExportsDeclaration])(implicit request: Request[_], messages: Messages)
 
 @amendmentRowContent(declarationStatus: DeclarationStatus) = @{
-    if(declarationStatus == AMENDMENT_DRAFT) HtmlContent(messages("saved.declarations.amendment"))
-    else HtmlContent("")
+    if(declarationStatus == AMENDMENT_DRAFT && amendmentFlag.isEnabled) HtmlContent(messages("saved.declarations.amendment"))
+    else HtmlContent(messages("saved.declarations.draft"))
 }
 
 @titleCheck(declarations: Paginated[ExportsDeclaration]) = @{
-    if(declarations.currentPageElements.exists(_.declarationMeta.status == AMENDMENT_DRAFT)) Title("saved.declarations.title.amendments")
-    else Title("saved.declarations.title")
+    if(declarations.currentPageElements.exists(_.declarationMeta.status == AMENDMENT_DRAFT) && amendmentFlag.isEnabled) ("saved.declarations.title.amendments")
+    else ("saved.declarations.title")
 }
 
 @savedDeclarations = @{
@@ -77,7 +79,7 @@
 }
 
 @govukLayout(
-    title = titleCheck(declarations),
+    title = Title(titleCheck(declarations)),
     backButton = Some(BackButton(messages("site.backToSelectionPage"), routes.ChoiceController.displayPage(Some(Choice(ContinueDec))))),
     useCustomContentWidth = true,
     showDeclarationSummaryLink = false
@@ -85,14 +87,14 @@
 
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
-      @pageTitle(text = messages("saved.declarations.title"), classes = "govuk-heading-xl")
+      @pageTitle(text = messages(titleCheck(declarations)), classes = "govuk-heading-xl")
 
       @govukTable(Table(
         head = Some(Seq(
           HeadCell(content = Text(messages("saved.declarations.ducr"))),
-          HeadCell(content = Text(messages(""))),
+          HeadCell(content = Text(messages("saved.declarations.status"))),
           HeadCell(content = Text(messages("saved.declarations.dateSaved"))),
-          HeadCell(content = HtmlContent(spanVisuallyHidden(messages("site.remove.header"))))
+          HeadCell(content = Text(messages("saved.declarations.action")))
         )),
         rows = savedDeclarations
       ))
