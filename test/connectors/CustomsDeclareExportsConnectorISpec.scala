@@ -16,9 +16,12 @@
 
 package connectors
 
+import base.OverridableInjector
+import play.api.inject.bind
 import base.TestHelper._
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.WireMock._
+import config.featureFlags.DeclarationAmendmentsConfig
 import forms.Lrn
 import models.CancellationStatus.CancellationStatusWrites
 import models.declaration.notifications.Notification
@@ -26,6 +29,8 @@ import models.declaration.submissions.RequestType.SubmissionRequest
 import models.declaration.submissions.StatusGroup.ActionRequiredStatuses
 import models.declaration.submissions.{Action, Submission, SubmissionStatus}
 import models.{CancelDeclaration, CancellationRequestSent, PageOfSubmissions, Paginated}
+import org.mockito.Mockito
+import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.time.{Millis, Seconds, Span}
 import play.api.http.Status
@@ -42,10 +47,15 @@ class CustomsDeclareExportsConnectorISpec extends ConnectorISpec with ExportsDec
   private val id = "id"
   private val existingDeclaration = aDeclaration(withId(id))
 
+  val mockAmendmentFlag = mock[DeclarationAmendmentsConfig]
+
   private val action = Action(id = UUID.randomUUID().toString, requestType = SubmissionRequest, notifications = None, decId = Some(id), versionNo = 1)
   private val submission = Submission(id, "eori", "lrn", Some("mrn"), None, None, None, Seq(action), latestDecId = Some(id))
   private val notification = Notification("action-id", "mrn", ZonedDateTime.now(ZoneOffset.UTC), SubmissionStatus.UNKNOWN, Seq.empty)
+  private val injector =
+    new OverridableInjector(bind[DeclarationAmendmentsConfig].toInstance(mockAmendmentFlag))
   private val connector = app.injector.instanceOf[CustomsDeclareExportsConnector]
+  private val amendConnector = injector.instanceOf[CustomsDeclareExportsConnector]
 
   implicit val defaultPatience: PatienceConfig =
     PatienceConfig(timeout = Span(5, Seconds), interval = Span(500, Millis))
@@ -59,6 +69,11 @@ class CustomsDeclareExportsConnectorISpec extends ConnectorISpec with ExportsDec
   override protected def afterAll(): Unit = {
     exportsWireMockServer.stop()
     super.afterAll()
+  }
+
+  override protected def beforeEach(): Unit = {
+    super.beforeEach()
+    Mockito.reset(mockAmendmentFlag)
   }
 
   "Create Declaration" should {
@@ -202,7 +217,8 @@ class CustomsDeclareExportsConnectorISpec extends ConnectorISpec with ExportsDec
     }
   }
 
-  "Find Saved Draft Declarations" should {
+  "Find Saved Draft Declarations when Amendment Flag is enabled" should {
+    when(mockAmendmentFlag.isEnabled).thenReturn(true)
     val pagination = models.Page(1, 10)
 
     "return Ok" in {
@@ -215,7 +231,7 @@ class CustomsDeclareExportsConnectorISpec extends ConnectorISpec with ExportsDec
           )
       )
 
-      val response = await(connector.findSavedDeclarations(pagination))
+      val response = await(amendConnector.findSavedDeclarations(pagination))
 
       response mustBe Paginated(Seq(existingDeclaration), pagination, 1)
       WireMock.verify(
@@ -223,6 +239,27 @@ class CustomsDeclareExportsConnectorISpec extends ConnectorISpec with ExportsDec
           urlEqualTo("/declarations?status=DRAFT&status=AMENDMENT_DRAFT&page-index=1&page-size=10&sort-by=updatedDateTime&sort-direction=des")
         )
       )
+    }
+  }
+
+  "Find Saved Draft Declarations when Amendment Flag is disabled" should {
+    when(mockAmendmentFlag.isEnabled).thenReturn(false)
+    val pagination = models.Page(1, 10)
+
+    "return Ok" in {
+      stubForExports(
+        get("/declarations?status=DRAFT&page-index=1&page-size=10&sort-by=updatedDateTime&sort-direction=des")
+          .willReturn(
+            aResponse()
+              .withStatus(Status.OK)
+              .withBody(json(Paginated(Seq(existingDeclaration), pagination, 1)))
+          )
+      )
+
+      val response = await(amendConnector.findSavedDeclarations(pagination))
+
+      response mustBe Paginated(Seq(existingDeclaration), pagination, 1)
+      WireMock.verify(getRequestedFor(urlEqualTo("/declarations?status=DRAFT&page-index=1&page-size=10&sort-by=updatedDateTime&sort-direction=des")))
     }
   }
 
