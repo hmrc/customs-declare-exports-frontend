@@ -83,7 +83,7 @@ class DeclarationHolderSummaryControllerSpec extends ControllerSpec with OptionV
   val declarationHolder = DeclarationHolder(Some("ACE"), Some(Eori("GB56523343784324")), Some(EoriSource.OtherEori))
   val id = "ACE-GB56523343784324"
 
-  "DeclarationHolderSummaryController on displayPage" should {
+  "DeclarationHolderSummaryController on displayOutcomePage" should {
 
     onEveryDeclarationJourney() { request =>
       "return 200 (OK)" when {

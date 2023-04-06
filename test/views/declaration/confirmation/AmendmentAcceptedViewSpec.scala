@@ -37,7 +37,7 @@ class AmendmentAcceptedViewSpec extends UnitViewSpec with GivenWhenThen with Inj
 
   private val declarationDetailsRoute = DeclarationDetailsController.displayPage(submissionId).url
 
-  private def createView(submission: Option[Submission], declarationType: AdditionalDeclarationType = STANDARD_FRONTIER): Document = {
+  private def createView(submission: Submission, declarationType: AdditionalDeclarationType = STANDARD_FRONTIER): Document = {
     val req = buildVerifiedEmailRequest(request, exampleUser)
     val confirmation = Confirmation(req.email, declarationType.toString, submission, None)
     page(confirmation)(req, messages)
@@ -45,7 +45,7 @@ class AmendmentAcceptedViewSpec extends UnitViewSpec with GivenWhenThen with Inj
 
   "Amendment Accepted View" when {
     val submission = createSubmission(statuses = Seq(RECEIVED))
-    val view = createView(Some(submission))
+    val view = createView(submission)
 
     "display the expected panel" in {
       val panels = view.getElementsByClass("govuk-panel")

@@ -23,7 +23,7 @@ import forms.declaration.AuthorisationProcedureCodeChoice.Choice1040
 import forms.declaration.DeclarationChoiceSpec
 import models.DeclarationType
 import models.DeclarationType.{DeclarationType, _}
-import models.requests.ExportsSessionKeys
+import models.requests.SessionHelper
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.OptionValues
@@ -65,7 +65,7 @@ class DeclarationChoiceControllerSpec extends ControllerWithoutFormSpec with Opt
 
   def postChoiceRequest(body: JsValue, decSessionId: Option[String] = None): Request[AnyContentAsJson] = {
     val fakeRequest = decSessionId.map { id =>
-      FakeRequest("POST", "").withSession((ExportsSessionKeys.declarationId, id))
+      FakeRequest("POST", "").withSession((SessionHelper.declarationUuid, id))
     }.getOrElse(FakeRequest("POST", ""))
 
     fakeRequest
@@ -141,14 +141,14 @@ class DeclarationChoiceControllerSpec extends ControllerWithoutFormSpec with Opt
       }
     }
 
-    "sets session declarationId to the target declaration being used" when {
+    "sets session declarationUuid to the target declaration being used" when {
       DeclarationType.values.foreach { journeyType =>
         s"user creates a new $journeyType declaration" in {
           withCreateResponse(aDeclaration(withId(newDeclarationId), withType(journeyType)))
 
           val result = controller.submitChoice()(postChoiceRequest(createChoiceJSON(journeyType.toString)))
 
-          session(result).get(ExportsSessionKeys.declarationId).value mustEqual newDeclaration.id
+          session(result).get(SessionHelper.declarationUuid).value mustEqual newDeclaration.id
         }
 
         s"user updates an existing $journeyType declaration" in {
@@ -157,7 +157,7 @@ class DeclarationChoiceControllerSpec extends ControllerWithoutFormSpec with Opt
 
           val result = controller.submitChoice()(postChoiceRequest(createChoiceJSON(journeyType.toString), Some(existingDeclarationId)))
 
-          session(result).get(ExportsSessionKeys.declarationId).value mustEqual existingDeclarationId
+          session(result).get(SessionHelper.declarationUuid).value mustEqual existingDeclarationId
         }
       }
     }

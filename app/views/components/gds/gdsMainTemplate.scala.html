@@ -17,7 +17,8 @@
 @import config.{AppConfig, TimeoutDialogConfig}
 @import config.featureFlags.BetaBannerConfig
 @import controllers.routes.{Assets, SignOutController}
-@import models.requests.{AuthenticatedRequest, ExportsSessionKeys}
+@import models.requests.AuthenticatedRequest
+@import models.requests.SessionHelper.{declarationUuid, getValue}
 @import play.twirl.api.HtmlFormat
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers._
@@ -117,7 +118,7 @@
         )
 
         @if(showDeclarationSummaryLink){
-            @request.session.get(ExportsSessionKeys.declarationId).map { declarationId =>
+            @getValue(declarationUuid).map { declarationId =>
                 <p>@viewDeclarationSummaryLink(declarationId)</p>
             }
         }

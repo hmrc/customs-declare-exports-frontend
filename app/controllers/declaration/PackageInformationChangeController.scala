@@ -53,7 +53,7 @@ class PackageInformationChangeController @Inject() (
   def displayPage(itemId: String, code: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val maybePackageInformation = singleCachedPackageInformation(code, itemId)
 
-    maybePackageInformation.fold(errorHandler.displayErrorPage) { packageInfo =>
+    maybePackageInformation.fold(errorHandler.redirectToErrorPage) { packageInfo =>
       Future.successful(Ok(packageChangePage(itemId, PackageInformation.form.fill(packageInfo).withSubmissionErrors, code)))
     }
   }
@@ -62,7 +62,7 @@ class PackageInformationChangeController @Inject() (
     val maybePackageInfoToRemove = singleCachedPackageInformation(code, itemId)
     val boundForm = form.bindFromRequest()
 
-    maybePackageInfoToRemove.fold(errorHandler.displayErrorPage) { packageInfoToRemove =>
+    maybePackageInfoToRemove.fold(errorHandler.redirectToErrorPage) { packageInfoToRemove =>
       saveInformation(itemId, boundForm, allCachedPackageInformation(itemId), packageInfoToRemove)
     }
   }

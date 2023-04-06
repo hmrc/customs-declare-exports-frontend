@@ -37,7 +37,7 @@ class AmendmentFailedViewSpec extends UnitViewSpec with GivenWhenThen with Injec
 
   private val declarationDetailsRoute = DeclarationDetailsController.displayPage(submissionId).url
 
-  private def createView(submission: Option[Submission], declarationType: AdditionalDeclarationType = STANDARD_FRONTIER): Document = {
+  private def createView(submission: Submission, declarationType: AdditionalDeclarationType = STANDARD_FRONTIER): Document = {
     val req = buildVerifiedEmailRequest(request, exampleUser)
     val confirmation = Confirmation(req.email, declarationType.toString, submission, None)
     page(confirmation)(req, messages)
@@ -45,7 +45,7 @@ class AmendmentFailedViewSpec extends UnitViewSpec with GivenWhenThen with Injec
 
   "Amendment Failed View" should {
     val submission = createSubmission(statuses = Seq(RECEIVED))
-    val view = createView(Some(submission))
+    val view = createView(submission)
 
     "display the expected heading" in {
       view.getElementsByTag("h1").get(0).text() mustBe messages("declaration.confirmation.failed.amendment.title")

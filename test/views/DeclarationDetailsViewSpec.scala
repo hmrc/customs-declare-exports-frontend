@@ -26,7 +26,7 @@ import controllers.routes.{EADController, RejectedNotificationsController}
 import models.declaration.submissions.EnhancedStatus._
 import models.declaration.submissions.RequestType.{AmendmentRequest, SubmissionRequest}
 import models.declaration.submissions.{Action, EnhancedStatus, NotificationSummary, RequestType, Submission}
-import models.requests.{ExportsSessionKeys, VerifiedEmailRequest}
+import models.requests.{SessionHelper, VerifiedEmailRequest}
 import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
 import org.mockito.Mockito.when
@@ -34,6 +34,7 @@ import org.scalatest.{Assertion, GivenWhenThen}
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
+import play.twirl.api.HtmlFormat.Appendable
 import views.dashboard.DashboardHelper.toDashboard
 import views.declaration.spec.UnitViewSpec
 import views.helpers.{EnhancedStatusHelper, NotificationEvent, ViewDates}
@@ -95,7 +96,7 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
   }
 
   private def createSubmissionWith(notificationSummaries: Seq[NotificationSummary], requestType: RequestType = SubmissionRequest) = {
-    val action = Action("id", requestType, now, Some(notificationSummaries), Some(uuid), 1)
+    val action = Action("id", requestType, now, Some(notificationSummaries), Some(UUID.randomUUID().toString), 1)
     Submission(
       uuid,
       "eori",
@@ -310,7 +311,7 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
     }
 
     "not have View declaration summary link" in {
-      val request = RequestBuilder.buildVerifiedEmailRequest(FakeRequest("", "").withSession((ExportsSessionKeys.declarationId, "decId")), user)
+      val request = RequestBuilder.buildVerifiedEmailRequest(FakeRequest("", "").withSession((SessionHelper.declarationUuid, "decId")), user)
       val view = page(createSubmissionWith(notificationSummaries))(request, messages(request))
       Option(view.getElementById("view_declaration_summary")) mustBe None
     }
@@ -585,34 +586,14 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
       val notificationsWithAmendmentRejected = List(dmsrejNotification, dmsdocNotification, dmsctlNotification, acceptedNotification)
       val submission = createSubmissionWith(notificationsWithAmendmentRejected, AmendmentRequest)
       val view = page(submission)(verifiedEmailRequest(), messages)
-      val buttonGroup = view.getElementsByClass("govuk-button-group")
-      val button = buttonGroup.get(0).child(0)
-      val link = buttonGroup.get(0).child(1)
-
-      button.text() mustBe messages("declaration.details.fix.resubmit.button")
-      button.hasClass("govuk-button")
-      button must haveHref(RejectedNotificationsController.amendmentRejected(submission.uuid, submission.actions.head.id))
-
-      link.text() mustBe messages("declaration.details.cancel.amendment")
-      link.hasClass("gov-link")
-      link must haveHref(SubmissionController.cancelAmendment(submission.actions.head.decId))
+      checkLatestAmendment(submission, view, "declaration.details.fix.resubmit.button")
     }
 
     "display 'Resubmit' button and 'Cancel' link when latest notification is a failed Amendment" in {
       val notificationsWithAmendmentFailed = List(dmsrecNotification, dmsdocNotification, dmsctlNotification, acceptedNotification)
       val submission = createSubmissionWith(notificationsWithAmendmentFailed, AmendmentRequest)
       val view = page(submission)(verifiedEmailRequest(), messages)
-      val buttonGroup = view.getElementsByClass("govuk-button-group")
-      val button = buttonGroup.get(0).child(0)
-      val link = buttonGroup.get(0).child(1)
-
-      button.text() mustBe messages("declaration.details.resubmit.button")
-      button.hasClass("govuk-button")
-      button must haveHref(RejectedNotificationsController.amendmentRejected(submission.uuid, submission.actions.head.id))
-
-      link.text() mustBe messages("declaration.details.cancel.amendment")
-      link.hasClass("gov-link")
-      link must haveHref(SubmissionController.cancelAmendment(submission.actions.head.decId))
+      checkLatestAmendment(submission, view, "declaration.details.resubmit.button")
     }
 
     "display the expected section headers" in {
@@ -692,5 +673,20 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
       val element = view.getElementsByTag("ol")
       assert(element.isEmpty || !element.hasClass("hmrc-timeline"))
     }
+  }
+
+  private def checkLatestAmendment(submission: Submission, view: Appendable, messageKeyOfButton: String): Unit = {
+    val buttonGroup = view.getElementsByClass("govuk-button-group")
+    val button = buttonGroup.get(0).child(0)
+    val link = buttonGroup.get(0).child(1)
+
+    button.text() mustBe messages(messageKeyOfButton)
+    button.hasClass("govuk-button")
+    button must haveHref(RejectedNotificationsController.amendmentRejected(submission.uuid, submission.actions.head.id))
+
+    link.tagName() mustBe "a"
+    link.hasClass("govuk-link")
+    link.text() mustBe messages("declaration.details.cancel.amendment")
+    link must haveHref(SubmissionController.cancelAmendment(submission.actions.head.decId))
   }
 }

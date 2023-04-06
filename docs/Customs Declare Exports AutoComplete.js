@@ -1226,6 +1226,18 @@ function submission(){
     }
 }
 
+function submitAmendment(){
+    if (currentPageIs('/customs-declare-exports/declaration/submit-your-amendment')) {
+        document.getElementById('fullName').value = 'Tim Tester'
+        document.getElementById('jobRole').value = 'Tester'
+        document.getElementById('email').value = 'tim@testing.com'
+        document.getElementById('amendReason').value = 'Some reason'
+        document.getElementById('confirmation').click()
+
+        setDeclaration(0)
+    }
+}
+
 function copyDeclaration(){
     if (currentPageIs('/customs-declare-exports/copy-declaration')) {
         document.getElementById('lrn').value = 'DSLRN' + Math.floor(Math.random() * 8999) + 100
@@ -1339,4 +1351,5 @@ function completeJourney() {
     // summary and confirmation
     summary()
     submission()
+    submitAmendment()
 }

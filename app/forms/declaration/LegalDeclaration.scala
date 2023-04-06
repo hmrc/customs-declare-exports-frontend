@@ -15,6 +15,7 @@
  */
 
 package forms.declaration
+
 import forms.mappings.OptionalSomeMapping
 import play.api.data.Forms.{boolean, text}
 import play.api.data.{Form, Forms, Mapping}

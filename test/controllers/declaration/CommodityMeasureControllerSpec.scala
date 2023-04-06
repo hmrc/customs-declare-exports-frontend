@@ -71,7 +71,7 @@ class CommodityMeasureControllerSpec extends ControllerSpec {
 
   "Commodity Measure controller" should {
 
-    "return 200 (OK) on displayPage" when {
+    "return 200 (OK) on displayOutcomePage" when {
       onJourney(STANDARD, SUPPLEMENTARY, CLEARANCE) { request =>
         "display page method is invoked and commodity measure cache is empty" in {
           withNewCaching(request.cacheModel)
@@ -138,7 +138,7 @@ class CommodityMeasureControllerSpec extends ControllerSpec {
 
     "redirect to the Choice page at '/'" when {
       onJourney(OCCASIONAL, SIMPLIFIED) { request =>
-        "the journey is not valid for displayPage" in {
+        "the journey is not valid for displayOutcomePage" in {
           withNewCaching(request.cacheModel)
 
           val response = controller.displayPage("itemId").apply(getRequest())

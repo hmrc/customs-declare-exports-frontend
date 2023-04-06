@@ -22,7 +22,7 @@ import controllers.declaration.SummaryController.{continuePlaceholder, lrnDuplic
 import controllers.routes.SavedDeclarationsController
 import forms.{Lrn, LrnValidator}
 import models.declaration.submissions.EnhancedStatus.ERRORS
-import models.requests.ExportsSessionKeys._
+import models.requests.SessionHelper._
 import models.requests.JourneyRequest
 import play.api.Logging
 import play.api.data.FormError
@@ -64,7 +64,7 @@ class SummaryController @Inject() (
 
   private def amendmentSummaryPage(implicit request: JourneyRequest[_]): Html =
     Html(
-      amendment_summary(submissionId)
+      amendment_summary(submissionUuid)
         .toString()
         .replace(s"?$lastUrlPlaceholder", "")
     )

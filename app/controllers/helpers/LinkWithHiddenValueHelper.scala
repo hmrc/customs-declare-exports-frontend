@@ -16,16 +16,10 @@
 
 package controllers.helpers
 
-import models.requests.SessionHelper.{errorFixModeSessionKey, getValue}
-import play.api.mvc.{Request, Result}
+import play.api.mvc.{AnyContent, Request}
 
-import scala.util.Try
+object LinkWithHiddenValueHelper {
 
-object ErrorFixModeHelper {
-
-  def inErrorFixMode(implicit request: Request[_]): Boolean =
-    getValue(errorFixModeSessionKey).fold(false)(v => Try(v.toBoolean).getOrElse(false))
-
-  def setErrorFixMode(result: Result)(implicit request: Request[_]): Result =
-    result.addingToSession(errorFixModeSessionKey -> "true")
+  def valueFromRequest(implicit request: Request[AnyContent]): Option[String] =
+    request.body.asFormUrlEncoded.flatMap(_.get("value").flatMap(_.headOption))
 }

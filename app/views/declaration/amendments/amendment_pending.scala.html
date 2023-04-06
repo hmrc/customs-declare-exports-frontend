@@ -40,35 +40,25 @@
 @govukTable(
   Table(rows =
     Seq(
-        Some(
-            Seq(
-            TableRow(content = Text(messages(s"declaration.summary.references.additionalType")), classes = "govuk-!-font-weight-bold"),
-            TableRow(content = Text(messages(s"declaration.summary.references.additionalType.${confirmation.declarationType}")))
-            )
-        ),
-        confirmation.submission
-        .flatMap(_.ducr)
-        .map(ducr =>
-        Seq(
+        Some(Seq(
+          TableRow(content = Text(messages(s"declaration.summary.references.additionalType")), classes = "govuk-!-font-weight-bold"),
+          TableRow(content = Text(messages(s"declaration.summary.references.additionalType.${confirmation.declarationType}")))
+        )),
+        confirmation.submission.ducr.map(ducr =>
+          Seq(
             TableRow(content = Text(messages(s"declaration.confirmation.ducr")), classes = "govuk-!-font-weight-bold"),
             TableRow(content = Text(ducr))
-            )
+          )
         ),
-        confirmation.submission
-        .map(_.lrn)
-        .map(lrn =>
-        Seq(
-            TableRow(content = Text(messages(s"declaration.confirmation.lrn")), classes = "govuk-!-font-weight-bold"),
-            TableRow(content = Text(lrn))
-        )
-        ),
-        confirmation.submission
-        .flatMap(_.mrn)
-        .map(mrn =>
-        Seq(
+        Some(Seq(
+          TableRow(content = Text(messages(s"declaration.confirmation.lrn")), classes = "govuk-!-font-weight-bold"),
+          TableRow(content = Text(confirmation.submission.lrn))
+        )),
+        confirmation.submission.mrn.map(mrn =>
+          Seq(
             TableRow(content = Text(messages(s"declaration.confirmation.mrn")), classes = "govuk-!-font-weight-bold"),
             TableRow(content = Text(mrn))
-        )
+          )
         )
     ).flatten
   )
@@ -76,7 +66,7 @@
 
 @paragraph(messages("declaration.confirmation.pending.amendment.paragraph", link(
   messages("declaration.confirmation.pending.amendment.paragraph.link"),
-  DeclarationDetailsController.displayPage(confirmation.submission.fold("")(_.uuid))
+  DeclarationDetailsController.displayPage(confirmation.submission.uuid)
 )))
 
 @print_page_button(8, 4)

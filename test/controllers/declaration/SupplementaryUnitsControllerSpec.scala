@@ -88,7 +88,7 @@ class SupplementaryUnitsControllerSpec extends ControllerSpec {
 
   private val commodityInfo = CommodityInfo("2208303000", "description", "units")
 
-  "SupplementaryUnitsController.displayPage" when {
+  "SupplementaryUnitsController.displayOutcomePage" when {
 
     onJourney(STANDARD, SUPPLEMENTARY) { request =>
       "the given commodity code was not found by calling the Tariff API" should {

@@ -44,7 +44,7 @@ class JourneyActionSpec extends UnitWithMocksSpec with BeforeAndAfterEach with E
 
   private def request(declarationId: Option[String]): FakeRequest[AnyContentAsEmpty.type] = declarationId match {
     case Some(id) =>
-      FakeRequest().withSession("declarationId" -> id)
+      FakeRequest().withSession("declarationUuid" -> id)
     case None => FakeRequest()
   }
 

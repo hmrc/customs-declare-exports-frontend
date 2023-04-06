@@ -45,7 +45,8 @@ class AppConfigSpec extends UnitWithMocksSpec {
         |microservice.services.customs-declare-exports.submit-declaration=/declaration
         |microservice.services.customs-declare-exports.declarations=/v2/declaration
         |microservice.services.customs-declare-exports.cancel-declaration=/cancellations
-        |microservice.services.customs-declare-exports.notifications=/notifications
+        |microservice.services.customs-declare-exports.action=/submission/action
+        |microservice.services.customs-declare-exports.notifications=/submission/notifications
         |microservice.services.customs-declare-exports.submission=/submission
         |microservice.services.customs-declare-exports.page-of-submissions=/paginated-submissions
         |microservice.services.customs-declare-exports.fetch-ead=/ead
@@ -283,12 +284,16 @@ class AppConfigSpec extends UnitWithMocksSpec {
       validAppConfig.fetchMrnStatusPath must be("/ead")
     }
 
-    "have Notifications URL" in {
-      validAppConfig.notificationsPath must be("/notifications")
-    }
-
     "have single Submission URL" in {
       validAppConfig.submissionPath must be("/submission")
+    }
+
+    "have single Action URL" in {
+      validAppConfig.actionPath must be("/submission/action")
+    }
+
+    "have Notifications URL" in {
+      validAppConfig.notificationsPath must be("/submission/notifications")
     }
 
     "have URL to fetch a page of Submissions" in {
@@ -351,39 +356,31 @@ class AppConfigSpec extends UnitWithMocksSpec {
       }
 
       "submit declaration uri is missing" in {
-        intercept[Exception](missingAppConfig.declarationsPath).getMessage must be(
-          "Missing configuration for Customs Declarations Exports declarations URI"
-        )
+        intercept[Exception](missingAppConfig.declarationsPath).getMessage must be("Missing configuration for CDS Exports declarations URI")
       }
 
       "cancel declaration uri is missing" in {
         intercept[Exception](missingAppConfig.cancelDeclarationPath).getMessage must be(
-          "Missing configuration for Customs Declaration Export cancel declaration URI"
+          "Missing configuration for CDS Exports cancel declaration URI"
         )
       }
 
       "fetch mrn status uri is missing" in {
-        intercept[Exception](missingAppConfig.fetchMrnStatusPath).getMessage must be(
-          "Missing configuration for Customs Declaration Export fetch mrn status URI"
-        )
+        intercept[Exception](missingAppConfig.fetchMrnStatusPath).getMessage must be("Missing configuration for CDS Exports fetch mrn status URI")
       }
 
       "fetch page of Submissions uri is missing" in {
         intercept[Exception](missingAppConfig.pageOfSubmissionsPath).getMessage must be(
-          "Missing configuration for Customs Declaration Exports page of submissions URI"
+          "Missing configuration for CDS Exports page of Submissions URI"
         )
       }
 
       "Single Submission uri is missing" in {
-        intercept[Exception](missingAppConfig.submissionPath).getMessage must be(
-          "Missing configuration for Customs Declaration Exports single submission URI"
-        )
+        intercept[Exception](missingAppConfig.submissionPath).getMessage must be("Missing configuration for CDS Exports single Submission URI")
       }
 
       "Notifications uri is missing" in {
-        intercept[Exception](missingAppConfig.notificationsPath).getMessage must be(
-          "Missing configuration for Customs Declarations Exports notifications URI"
-        )
+        intercept[Exception](missingAppConfig.notificationsPath).getMessage must be("Missing configuration for CDS Exports Notifications URI")
       }
     }
   }

@@ -37,7 +37,7 @@ class AmendmentPendingViewSpec extends UnitViewSpec with GivenWhenThen with Inje
 
   private val declarationDetailsRoute = DeclarationDetailsController.displayPage(submissionId).url
 
-  private def createView(submission: Option[Submission], declarationType: AdditionalDeclarationType = STANDARD_FRONTIER): Document = {
+  private def createView(submission: Submission, declarationType: AdditionalDeclarationType = STANDARD_FRONTIER): Document = {
     val req = buildVerifiedEmailRequest(request, exampleUser)
     val confirmation = Confirmation(req.email, declarationType.toString, submission, None)
     page(confirmation)(req, messages)
@@ -45,7 +45,7 @@ class AmendmentPendingViewSpec extends UnitViewSpec with GivenWhenThen with Inje
 
   "Amendment PENDING View" when {
     val submission = createSubmission(statuses = Seq(PENDING))
-    val view = createView(Some(submission))
+    val view = createView(submission)
 
     "display the expected header" in {
       view.getElementsByTag("h1").get(0) must containMessage("declaration.confirmation.pending.amendment.title")

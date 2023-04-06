@@ -63,7 +63,7 @@ class MucrControllerSpec extends ControllerSpec {
     theResponseForm
   }
 
-  "MucrController on displayPage" should {
+  "MucrController on displayOutcomePage" should {
 
     "return 200 (OK)" when {
 

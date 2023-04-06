@@ -23,7 +23,7 @@ import controllers.actions.{AuthAction, VerifiedEmailAction}
 import controllers.declaration.routes.SummaryController
 import controllers.routes.RootController
 import handlers.ErrorHandler
-import models.requests.ExportsSessionKeys
+import models.requests.SessionHelper.{declarationUuid, getValue, submissionUuid}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
@@ -42,14 +42,13 @@ class AmendDeclarationController @Inject() (
   val initAmendment: Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
     if (!declarationAmendmentsConfig.isEnabled) Future.successful(Redirect(RootController.displayPage))
     else
-      request.session.get(ExportsSessionKeys.submissionId) match {
+      getValue(submissionUuid) match {
         case Some(submissionId) =>
           connector.findOrCreateDraftForAmend(submissionId).map { declarationId =>
-            Redirect(SummaryController.displayPage)
-              .addingToSession(ExportsSessionKeys.declarationId -> declarationId)
+            Redirect(SummaryController.displayPage).addingToSession(declarationUuid -> declarationId)
           }
 
-        case _ => errorHandler.displayErrorPage
+        case _ => errorHandler.redirectToErrorPage
       }
   }
 }

@@ -174,16 +174,17 @@ class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injec
 
     "generate the expected sequence of TimelineEvent instances when the latest action is amendment rejected" in {
       val submission = amendmentUnsuccessfulLatest(ERRORS)
+      val latestAction = submission.actions(1)
       val timelineEvents = createTimelineFromSubmission(submission)
 
       timelineEvents.size mustBe 5
 
       timelineEvents(0).title mustBe messages("submission.enhancedStatus.timeline.title.amendment.rejected")
-      timelineEvents(0).dateTime mustBe submission.actions(1).notifications.get(0).dateTimeIssued
+      timelineEvents(0).dateTime mustBe latestAction.notifications.get(0).dateTimeIssued
 
       val content = timelineEvents(0).content.get.body
-      val expectedButtonUrl = RejectedNotificationsController.amendmentRejected(submission.uuid, submission.actions(1).id).url
-      val expectedLinkUrl = SubmissionController.cancelAmendment(submission.actions(1).decId).url
+      val expectedButtonUrl = RejectedNotificationsController.amendmentRejected(submission.uuid, latestAction.id).url
+      val expectedLinkUrl = SubmissionController.cancelAmendment(latestAction.decId).url
       content must include(expectedButtonUrl)
       content must include(expectedLinkUrl)
 
@@ -259,16 +260,17 @@ class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injec
 
     "generate the expected sequence of TimelineEvent instances when the latest action is amendment failed" in {
       val submission = amendmentUnsuccessfulLatest(CUSTOMS_POSITION_DENIED)
+      val latestAction = submission.actions(1)
       val timelineEvents = createTimelineFromSubmission(submission)
 
       timelineEvents.size mustBe 5
 
       timelineEvents(0).title mustBe messages("submission.enhancedStatus.timeline.title.amendment.failed")
-      timelineEvents(0).dateTime mustBe submission.actions(1).notifications.get(0).dateTimeIssued
+      timelineEvents(0).dateTime mustBe latestAction.notifications.get(0).dateTimeIssued
 
       val content = timelineEvents(0).content.get.body
-      val expectedButtonUrl = RejectedNotificationsController.amendmentRejected(submission.uuid, submission.actions(1).id).url
-      val expectedLinkUrl = SubmissionController.cancelAmendment(submission.actions(1).decId).url
+      val expectedButtonUrl = RejectedNotificationsController.amendmentRejected(submission.uuid, latestAction.id).url
+      val expectedLinkUrl = SubmissionController.cancelAmendment(latestAction.decId).url
       content must include(expectedButtonUrl)
       content must include(expectedLinkUrl)
     }

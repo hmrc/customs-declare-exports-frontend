@@ -131,7 +131,7 @@ class BorderTransportControllerSpec extends ControllerSpec {
     onJourney(SIMPLIFIED, OCCASIONAL, CLEARANCE) { request =>
       "redirect to the start page" when {
 
-        "the 'displayPage' method is invoked" in {
+        "the 'displayOutcomePage' method is invoked" in {
           withNewCaching(request.cacheModel)
 
           val result = controller.displayPage(getRequest())

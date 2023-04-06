@@ -18,12 +18,10 @@ package controllers.declaration.amendments
 
 import base.ControllerWithoutFormSpec
 import config.AppConfig
-import config.featureFlags.DeclarationAmendmentsConfig
-import controllers.declaration.amendments.AmendDeclarationController
 import controllers.declaration.routes.SummaryController
 import controllers.routes.RootController
 import handlers.ErrorHandler
-import models.requests.ExportsSessionKeys
+import models.requests.SessionHelper
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import play.api.test.FakeRequest
@@ -35,7 +33,6 @@ import scala.concurrent.Future
 class AmendDeclarationControllerSpec extends ControllerWithoutFormSpec {
 
   val mcc = stubMessagesControllerComponents()
-  val declarationAmendmentsConfig = mock[DeclarationAmendmentsConfig]
 
   val controller = new AmendDeclarationController(
     mockAuthAction,
@@ -43,26 +40,26 @@ class AmendDeclarationControllerSpec extends ControllerWithoutFormSpec {
     new ErrorHandler(mcc.messagesApi, instanceOf[error_template])(instanceOf[AppConfig]),
     mcc,
     mockCustomsDeclareExportsConnector,
-    declarationAmendmentsConfig
+    mockDeclarationAmendmentsConfig
   )(ec)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
 
     authorizedUser()
-    when(declarationAmendmentsConfig.isEnabled).thenReturn(true)
+    when(mockDeclarationAmendmentsConfig.isEnabled).thenReturn(true)
   }
 
   override protected def afterEach(): Unit = {
     super.afterEach()
-    reset(declarationAmendmentsConfig, mockCustomsDeclareExportsConnector)
+    reset(mockDeclarationAmendmentsConfig, mockCustomsDeclareExportsConnector)
   }
 
   "AmendDeclarationController.initAmendment" should {
 
     "redirect to /" when {
       "the amend flag is disabled" in {
-        when(declarationAmendmentsConfig.isEnabled).thenReturn(false)
+        when(mockDeclarationAmendmentsConfig.isEnabled).thenReturn(false)
 
         val result = controller.initAmendment(FakeRequest("GET", ""))
 
@@ -72,7 +69,7 @@ class AmendDeclarationControllerSpec extends ControllerWithoutFormSpec {
     }
 
     "return 400(BAD_REQUEST)" when {
-      "there is no 'submissionId' key in Session" in {
+      "there is no 'submissionUuid' key in Session" in {
         val result = controller.initAmendment(FakeRequest("GET", ""))
         status(result) mustBe BAD_REQUEST
       }
@@ -84,12 +81,12 @@ class AmendDeclarationControllerSpec extends ControllerWithoutFormSpec {
         when(mockCustomsDeclareExportsConnector.findOrCreateDraftForAmend(any())(any(), any()))
           .thenReturn(Future.successful(expectedDeclarationId))
 
-        val request = FakeRequest("GET", "").withSession(ExportsSessionKeys.submissionId -> "submissionId")
+        val request = FakeRequest("GET", "").withSession(SessionHelper.submissionUuid -> "submissionUuid")
         val result = controller.initAmendment(request)
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(SummaryController.displayPage.url)
-        session(result).get(ExportsSessionKeys.declarationId) mustBe Some(expectedDeclarationId)
+        session(result).get(SessionHelper.declarationUuid) mustBe Some(expectedDeclarationId)
       }
     }
   }

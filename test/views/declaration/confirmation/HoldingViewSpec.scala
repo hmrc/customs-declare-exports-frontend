@@ -38,7 +38,7 @@ class HoldingViewSpec extends UnitViewSpec with GivenWhenThen with Injector {
   "Declaration Holder View" should {
 
     onEveryDeclarationJourney() { implicit request =>
-      val view = holdingPage(holdingPageUrl, confirmationPageUrl)(request, messages)
+      val view = holdingPage(holdingPageUrl, holdingPageUrl, confirmationPageUrl)(request, messages)
 
       "display page title" in {
         view.getElementsByTag("h1").text mustBe messages("declaration.confirmation.holding.title")

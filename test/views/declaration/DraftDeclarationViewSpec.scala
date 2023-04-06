@@ -30,7 +30,7 @@ import java.time.{LocalDateTime, ZoneOffset}
 class DraftDeclarationViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector {
 
   private val page = instanceOf[draft_declaration_page]
-  val declarationId = Some("declarationId")
+  val declarationId = Some("declarationUuid")
   val date: String = LocalDateTime.of(2019, 1, 1, 1, 1).toInstant(ZoneOffset.UTC).toEpochMilli.toString
   private def createView(): Html = page(declarationId, date)(request, messages)
 

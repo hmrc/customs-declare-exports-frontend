@@ -70,7 +70,7 @@ class InvoiceAndExchangeRateChoiceControllerSpec extends ControllerSpec {
     theResponseForm
   }
 
-  "InvoiceAndExchangeRateChoiceController on displayPage" should {
+  "InvoiceAndExchangeRateChoiceController on displayOutcomePage" should {
 
     "return 200 (OK)" when {
 

@@ -129,7 +129,7 @@ class PackageInformationChangeControllerSpec extends ControllerSpec with OptionV
 
           status(result) mustBe BAD_REQUEST
           verifyNoInteractions(mockChangePage)
-          verify(mockErrorHandler).displayErrorPage(any())
+          verify(mockErrorHandler).redirectToErrorPage(any())
         }
 
         "user tries to remove non-existent package info" in {
@@ -138,7 +138,7 @@ class PackageInformationChangeControllerSpec extends ControllerSpec with OptionV
           val result = controller.submitForm(item.id, id)(getRequest())
 
           status(result) mustBe BAD_REQUEST
-          verify(mockErrorHandler).displayErrorPage(any())
+          verify(mockErrorHandler).redirectToErrorPage(any())
         }
       }
 

@@ -105,7 +105,7 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
 
       postalOrFTIModeOfTransportCodes.foreach { modeOfTransportCode =>
         s"TransportLeavingTheBorder is $modeOfTransportCode" should {
-          "redirect to the starting page on displayPage" in {
+          "redirect to the starting page on displayOutcomePage" in {
             withNewCaching(aDeclarationAfter(request.cacheModel, withBorderModeOfTransportCode(modeOfTransportCode)))
 
             val result = controller.displayPage(getRequest())
@@ -212,7 +212,7 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
     onJourney(SIMPLIFIED, OCCASIONAL) { request =>
       "redirect to the 'start page'" when {
 
-        "displayPage is invoked" in {
+        "displayOutcomePage is invoked" in {
           withNewCaching(request.cacheModel)
 
           val result = controller.displayPage(getRequest())

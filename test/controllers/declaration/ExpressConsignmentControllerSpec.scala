@@ -119,7 +119,7 @@ class ExpressConsignmentControllerSpec extends ControllerSpec {
     onJourney(SUPPLEMENTARY) { implicit request =>
       "return 303 (SEE_OTHER)" when {
 
-        "displayPage method is invoked" in {
+        "displayOutcomePage method is invoked" in {
           verifyRedirect(None)
         }
 

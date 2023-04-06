@@ -50,7 +50,7 @@ class PackageInformationRemoveController @Inject() (
   def displayPage(itemId: String, id: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val maybePackageInformation = singleCachedPackageInformation(id, itemId)
 
-    maybePackageInformation.fold(errorHandler.displayErrorPage) { packageInfo =>
+    maybePackageInformation.fold(errorHandler.redirectToErrorPage) { packageInfo =>
       Future.successful(Ok(packageTypeRemove(itemId, packageInfo, removeYesNoForm.withSubmissionErrors)))
     }
   }
@@ -58,7 +58,7 @@ class PackageInformationRemoveController @Inject() (
   def submitForm(itemId: String, id: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val maybePackageInformationToRemove = singleCachedPackageInformation(id, itemId)
 
-    maybePackageInformationToRemove.fold(errorHandler.displayErrorPage) { packageInformationToRemove =>
+    maybePackageInformationToRemove.fold(errorHandler.redirectToErrorPage) { packageInformationToRemove =>
       removeYesNoForm
         .bindFromRequest()
         .fold(
