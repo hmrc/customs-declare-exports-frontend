@@ -28,13 +28,19 @@ import play.api.Logging
 import play.api.libs.json.{Json, Writes}
 import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import config.featureFlags.DeclarationAmendmentsConfig
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}
 
 @Singleton
-class CustomsDeclareExportsConnector @Inject() (appConfig: AppConfig, httpClient: HttpClient, metrics: Metrics) extends Logging {
+class CustomsDeclareExportsConnector @Inject() (
+  appConfig: AppConfig,
+  httpClient: HttpClient,
+  metrics: Metrics,
+  amendmentFlag: DeclarationAmendmentsConfig
+) extends Logging {
 
   private def url(path: String): String =
     s"${appConfig.customsDeclareExportsBaseUrl}$path"
@@ -84,7 +90,9 @@ class CustomsDeclareExportsConnector @Inject() (appConfig: AppConfig, httpClient
     val pagination = models.Page.bindable.unbind("page", page)
     val sort = DeclarationSort.bindable.unbind("sort", DeclarationSort(SortBy.UPDATED, SortDirection.DES))
 
-    httpClient.GET[Paginated[ExportsDeclaration]](url(s"${appConfig.declarationsPath}?status=DRAFT&$pagination&$sort"))
+    val statusParameters = if (amendmentFlag.isEnabled) "?status=DRAFT&status=AMENDMENT_DRAFT&" else "?status=DRAFT&"
+
+    httpClient.GET[Paginated[ExportsDeclaration]](url(s"${appConfig.declarationsPath}$statusParameters$pagination&$sort"))
   }
 
   def findOrCreateDraftForRejected(rejectedId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[String] = {

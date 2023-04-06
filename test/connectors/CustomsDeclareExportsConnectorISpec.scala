@@ -17,18 +17,25 @@
 package connectors
 
 import base.TestHelper._
+import com.codahale.metrics.SharedMetricRegistries
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.WireMock._
+import config.featureFlags.DeclarationAmendmentsConfig
 import forms.Lrn
+import mock.FeatureFlagMocks
 import models.CancellationStatus.CancellationStatusWrites
 import models.declaration.notifications.Notification
 import models.declaration.submissions.RequestType.SubmissionRequest
 import models.declaration.submissions.StatusGroup.ActionRequiredStatuses
 import models.declaration.submissions.{Action, Submission, SubmissionStatus}
 import models.{CancelDeclaration, CancellationRequestSent, PageOfSubmissions, Paginated}
+import org.mockito.Mockito
+import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.time.{Millis, Seconds, Span}
 import play.api.http.Status
+import play.api.inject.bind
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{Json, Writes}
 import play.api.test.Helpers._
 import services.cache.ExportsDeclarationBuilder
@@ -37,7 +44,7 @@ import views.dashboard.DashboardHelper.{Groups, Page}
 import java.time.{ZoneOffset, ZonedDateTime}
 import java.util.UUID
 
-class CustomsDeclareExportsConnectorISpec extends ConnectorISpec with ExportsDeclarationBuilder with ScalaFutures {
+class CustomsDeclareExportsConnectorISpec extends ConnectorISpec with ExportsDeclarationBuilder with ScalaFutures with FeatureFlagMocks {
 
   private val id = "id"
   private val existingDeclaration = aDeclaration(withId(id))
@@ -45,7 +52,14 @@ class CustomsDeclareExportsConnectorISpec extends ConnectorISpec with ExportsDec
   private val action = Action(id = UUID.randomUUID().toString, requestType = SubmissionRequest, notifications = None, decId = Some(id), versionNo = 1)
   private val submission = Submission(id, "eori", "lrn", Some("mrn"), None, None, None, Seq(action), latestDecId = Some(id))
   private val notification = Notification("action-id", "mrn", ZonedDateTime.now(ZoneOffset.UTC), SubmissionStatus.UNKNOWN, Seq.empty)
-  private val connector = app.injector.instanceOf[CustomsDeclareExportsConnector]
+  private val injector = {
+    SharedMetricRegistries.clear()
+    new GuiceApplicationBuilder()
+      .overrides(bind[DeclarationAmendmentsConfig].toInstance(mockDeclarationAmendmentsConfig))
+      .configure(overrideConfig)
+      .injector()
+  }
+  private val connector = injector.instanceOf[CustomsDeclareExportsConnector]
 
   implicit val defaultPatience: PatienceConfig =
     PatienceConfig(timeout = Span(5, Seconds), interval = Span(500, Millis))
@@ -59,6 +73,11 @@ class CustomsDeclareExportsConnectorISpec extends ConnectorISpec with ExportsDec
   override protected def afterAll(): Unit = {
     exportsWireMockServer.stop()
     super.afterAll()
+  }
+
+  override protected def beforeEach(): Unit = {
+    super.beforeEach()
+    Mockito.reset(mockDeclarationAmendmentsConfig)
   }
 
   "Create Declaration" should {
@@ -202,10 +221,36 @@ class CustomsDeclareExportsConnectorISpec extends ConnectorISpec with ExportsDec
     }
   }
 
-  "Find Saved Draft Declarations" should {
+  "Find Saved Draft Declarations when Amendment Flag is enabled" should {
     val pagination = models.Page(1, 10)
 
     "return Ok" in {
+      when(mockDeclarationAmendmentsConfig.isEnabled).thenReturn(true)
+      stubForExports(
+        get("/declarations?status=DRAFT&status=AMENDMENT_DRAFT&page-index=1&page-size=10&sort-by=updatedDateTime&sort-direction=des")
+          .willReturn(
+            aResponse()
+              .withStatus(Status.OK)
+              .withBody(json(Paginated(Seq(existingDeclaration), pagination, 1)))
+          )
+      )
+
+      val response = await(connector.findSavedDeclarations(pagination))
+
+      response mustBe Paginated(Seq(existingDeclaration), pagination, 1)
+      WireMock.verify(
+        getRequestedFor(
+          urlEqualTo("/declarations?status=DRAFT&status=AMENDMENT_DRAFT&page-index=1&page-size=10&sort-by=updatedDateTime&sort-direction=des")
+        )
+      )
+    }
+  }
+
+  "Find Saved Draft Declarations when Amendment Flag is disabled" should {
+    val pagination = models.Page(1, 10)
+
+    "return Ok" in {
+      when(mockDeclarationAmendmentsConfig.isEnabled).thenReturn(false)
       stubForExports(
         get("/declarations?status=DRAFT&page-index=1&page-size=10&sort-by=updatedDateTime&sort-direction=des")
           .willReturn(
