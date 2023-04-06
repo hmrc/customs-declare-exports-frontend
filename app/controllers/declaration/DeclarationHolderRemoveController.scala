@@ -52,7 +52,7 @@ class DeclarationHolderRemoveController @Inject() (
   def displayPage(id: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val maybeExistingHolder = declarationHolders.find(_.id.equals(id))
 
-    maybeExistingHolder.fold(errorHandler.displayErrorPage) { holder =>
+    maybeExistingHolder.fold(errorHandler.redirectToErrorPage) { holder =>
       Future.successful(Ok(holderRemovePage(holder, removeYesNoForm.withSubmissionErrors)))
     }
   }
@@ -60,7 +60,7 @@ class DeclarationHolderRemoveController @Inject() (
   def submitForm(id: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val maybeExistingHolder = declarationHolders.find(_.id.equals(id))
 
-    maybeExistingHolder.fold(errorHandler.displayErrorPage) { holderToRemove =>
+    maybeExistingHolder.fold(errorHandler.redirectToErrorPage) { holderToRemove =>
       removeYesNoForm
         .bindFromRequest()
         .fold(

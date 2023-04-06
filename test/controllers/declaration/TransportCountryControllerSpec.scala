@@ -77,7 +77,7 @@ class TransportCountryControllerSpec extends ControllerSpec with OptionValues {
     captor.getValue
   }
 
-  "TransportCountryController.displayPage" should {
+  "TransportCountryController.displayOutcomePage" should {
 
     onJourney(STANDARD, SUPPLEMENTARY) { request =>
       "return 200 (OK)" when {

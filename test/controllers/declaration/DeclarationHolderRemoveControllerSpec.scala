@@ -89,7 +89,7 @@ class DeclarationHolderRemoveControllerSpec extends ControllerSpec with ErrorHan
   val declarationHolder_2: DeclarationHolder = DeclarationHolder(Some("ACF"), Some(Eori("GB123456543445")), Some(EoriSource.OtherEori))
   val id = declarationHolder.id
 
-  "DeclarationHolderRemoveController on displayPage" must {
+  "DeclarationHolderRemoveController on displayOutcomePage" must {
 
     onEveryDeclarationJourney() { request =>
       "return 200 (OK)" that {

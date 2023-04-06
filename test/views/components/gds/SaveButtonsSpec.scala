@@ -19,7 +19,7 @@ package views.components.gds
 import base.Injector
 import models.declaration.submissions.EnhancedStatus
 import models.declaration.submissions.EnhancedStatus.{ERRORS, EnhancedStatus, RECEIVED}
-import models.requests.ExportsSessionKeys.errorFixModeSessionKey
+import models.requests.SessionHelper.errorFixModeSessionKey
 import play.twirl.api.Html
 import views.declaration.spec.UnitViewSpec
 import views.html.components.gds.saveButtons

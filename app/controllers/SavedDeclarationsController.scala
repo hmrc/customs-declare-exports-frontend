@@ -24,7 +24,7 @@ import controllers.actions.{AuthAction, VerifiedEmailAction}
 import controllers.declaration.routes.SummaryController
 import controllers.routes.SavedDeclarationsController
 import javax.inject.Inject
-import models.requests.ExportsSessionKeys
+import models.requests.SessionHelper
 import models.Page
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -49,7 +49,7 @@ class SavedDeclarationsController @Inject() (
 
   def continueDeclaration(id: String): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
     customsDeclareExportsConnector.findDeclaration(id) flatMap {
-      case Some(_) => Future.successful(Redirect(SummaryController.displayPage).addingToSession(ExportsSessionKeys.declarationId -> id))
+      case Some(_) => Future.successful(Redirect(SummaryController.displayPage).addingToSession(SessionHelper.declarationUuid -> id))
       case None    => Future.successful(Redirect(SavedDeclarationsController.displayDeclarations()))
     }
   }

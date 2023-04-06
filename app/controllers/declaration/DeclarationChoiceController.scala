@@ -22,7 +22,7 @@ import forms.declaration.DeclarationChoice
 import forms.declaration.DeclarationChoice._
 import models.DeclarationType.{CLEARANCE, DeclarationType, SIMPLIFIED}
 import models.declaration.DeclarationStatus
-import models.requests.ExportsSessionKeys
+import models.requests.SessionHelper
 import models.{DeclarationMeta, ExportsDeclaration}
 import play.api.Logging
 import play.api.i18n.I18nSupport
@@ -88,7 +88,7 @@ class DeclarationChoiceController @Inject() (
 
   private def nextPage(declarationId: String)(implicit request: RequestHeader): Result =
     Redirect(AdditionalDeclarationTypeController.displayPage)
-      .addingToSession(ExportsSessionKeys.declarationId -> declarationId)
+      .addingToSession(SessionHelper.declarationUuid -> declarationId)
 
   private def updateDeclarationType(id: String, `type`: DeclarationType)(implicit hc: HeaderCarrier): Future[Option[ExportsDeclaration]] = {
     val updatedDeclaration = exportsCacheService.get(id).map { maybeDeclaration =>

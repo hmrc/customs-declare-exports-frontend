@@ -18,7 +18,7 @@ package controllers
 
 import config.featureFlags.SfusConfig
 import controllers.actions.AuthAction
-import models.requests.{AuthenticatedRequest, ExportsSessionKeys}
+import models.requests.SessionHelper.{getValue, submissionLrn}
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import services.audit.{AuditService, AuditTypes, EventData}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
@@ -31,7 +31,7 @@ class FileUploadController @Inject() (sfusConfig: SfusConfig, authenticate: Auth
   def startFileUpload(mrn: String = ""): Action[AnyContent] = authenticate { implicit request =>
     lazy val sfusLink = s"${sfusConfig.sfusUploadLink}/$mrn"
 
-    def auditData(eori: String, lrn: Option[String], mrn: String, docUploadUrl: String) =
+    def auditData(eori: String, lrn: Option[String], mrn: String, docUploadUrl: String): Map[String, String] =
       Map(
         EventData.eori.toString -> eori,
         EventData.lrn.toString -> lrn.getOrElse(""),
@@ -39,10 +39,7 @@ class FileUploadController @Inject() (sfusConfig: SfusConfig, authenticate: Auth
         EventData.url.toString -> docUploadUrl
       )
 
-    auditService.audit(AuditTypes.UploadDocumentLink, auditData(request.user.eori, extractLrn, mrn, sfusLink))
+    auditService.audit(AuditTypes.UploadDocumentLink, auditData(request.user.eori, getValue(submissionLrn), mrn, sfusLink))
     Redirect(Call("GET", sfusLink))
   }
-
-  private def extractLrn(implicit request: AuthenticatedRequest[_]): Option[String] =
-    request.session.data.get(ExportsSessionKeys.submissionLrn)
 }

@@ -21,7 +21,7 @@ import mock.ErrorHandlerMocks
 import models.declaration.submissions.EnhancedStatus._
 import models.declaration.submissions.RequestType.CancellationRequest
 import models.declaration.submissions.{Action, NotificationSummary, Submission}
-import models.requests.{ExportsSessionKeys, VerifiedEmailRequest}
+import models.requests.{SessionHelper, VerifiedEmailRequest}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
@@ -70,8 +70,8 @@ class CancellationResultControllerSpec extends ControllerWithoutFormSpec with Er
     submissionMrn: Option[String] = Some(mrn)
   ): VerifiedEmailRequest[AnyContentAsEmpty.type] = {
     val session = List(
-      submissionId.fold("dummyKey1" -> "dummyVal")(uuid => ExportsSessionKeys.submissionId -> uuid),
-      submissionMrn.fold("dummyKey2" -> "dummyVal")(mrn => ExportsSessionKeys.submissionMrn -> mrn)
+      submissionId.fold("dummyKey1" -> "dummyVal")(uuid => SessionHelper.submissionUuid -> uuid),
+      submissionMrn.fold("dummyKey2" -> "dummyVal")(mrn => SessionHelper.submissionMrn -> mrn)
     )
     val request = FakeRequest("GET", queryParam).withSession(session: _*)
     buildVerifiedEmailRequest(request, exampleUser)
@@ -188,12 +188,12 @@ class CancellationResultControllerSpec extends ControllerWithoutFormSpec with Er
 
     "return 400 status code" when {
 
-      "the request's session does not include the submissionId" in {
+      "the request's session does not include the submissionUuid" in {
         val request = buildRequest(submissionId = None)
         val result = controller.displayHoldingPage(request)
 
         status(result) mustBe BAD_REQUEST
-        session(result).data.keys mustNot contain(ExportsSessionKeys.submissionId)
+        session(result).data.keys mustNot contain(SessionHelper.submissionUuid)
       }
 
       "the request's session does not include the submission's mrn" in {
@@ -201,7 +201,7 @@ class CancellationResultControllerSpec extends ControllerWithoutFormSpec with Er
         val result = controller.displayHoldingPage(request)
 
         status(result) mustBe BAD_REQUEST
-        session(result).data.keys mustNot contain(ExportsSessionKeys.submissionMrn)
+        session(result).data.keys mustNot contain(SessionHelper.submissionMrn)
       }
     }
   }
@@ -210,12 +210,12 @@ class CancellationResultControllerSpec extends ControllerWithoutFormSpec with Er
 
     "return 400 status code" when {
 
-      "the request's session does not include the submissionId" in {
+      "the request's session does not include the submissionUuid" in {
         val request = buildRequest(submissionId = None)
         val result = controller.displayResultPage(request)
 
         status(result) mustBe BAD_REQUEST
-        session(result).data.keys mustNot contain(ExportsSessionKeys.submissionId)
+        session(result).data.keys mustNot contain(SessionHelper.submissionUuid)
       }
 
       "the request's session does not include the submission's mrn" in {
@@ -223,7 +223,7 @@ class CancellationResultControllerSpec extends ControllerWithoutFormSpec with Er
         val result = controller.displayResultPage(request)
 
         status(result) mustBe BAD_REQUEST
-        session(result).data.keys mustNot contain(ExportsSessionKeys.submissionMrn)
+        session(result).data.keys mustNot contain(SessionHelper.submissionMrn)
       }
     }
 
@@ -238,7 +238,7 @@ class CancellationResultControllerSpec extends ControllerWithoutFormSpec with Er
           val result = controller.displayResultPage(request)
 
           status(result) mustBe OK
-          session(result).data.keys mustNot contain(ExportsSessionKeys.submissionId)
+          session(result).data.keys mustNot contain(SessionHelper.submissionUuid)
 
           val statusCaptor = ArgumentCaptor.forClass(classOf[Option[EnhancedStatus]])
           val mrnCaptor = ArgumentCaptor.forClass(classOf[String])

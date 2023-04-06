@@ -69,7 +69,7 @@ class DucrChoiceControllerSpec extends ControllerSpec {
     theResponseForm
   }
 
-  "DucrChoiceController.displayPage" should {
+  "DucrChoiceController.displayOutcomePage" should {
 
     "return 200 (OK)" when {
       List(STANDARD, CLEARANCE, SIMPLIFIED, OCCASIONAL).foreach { declarationType =>

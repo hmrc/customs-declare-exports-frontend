@@ -17,7 +17,7 @@
 package controllers.declaration
 
 import base.{ControllerWithoutFormSpec, Injector}
-import models.requests.ExportsSessionKeys
+import models.requests.SessionHelper
 import play.api.mvc.Result
 import play.api.test.Helpers._
 import views.html.declaration.draft_declaration_page
@@ -41,7 +41,7 @@ class DraftDeclarationControllerSpec extends ControllerWithoutFormSpec with Inje
       val result: Future[Result] = controller.displayPage(getRequest())
 
       status(result) mustBe OK
-      session(result).get(ExportsSessionKeys.declarationId) mustBe None
+      session(result).get(SessionHelper.declarationUuid) mustBe None
     }
   }
 }

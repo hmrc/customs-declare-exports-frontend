@@ -140,57 +140,62 @@ class AppConfig @Inject() (
 
   lazy val declarationsPath = servicesConfig.getConfString(
     "customs-declare-exports.declarations",
-    throw new IllegalStateException("Missing configuration for Customs Declarations Exports declarations URI")
+    throw new IllegalStateException("Missing configuration for CDS Exports declarations URI")
   )
 
   lazy val amendDeclarationPath = servicesConfig.getConfString(
     "customs-declare-exports.amend-declaration",
-    throw new IllegalStateException("Missing configuration for Customs Declarations Exports amend declaration URI")
+    throw new IllegalStateException("Missing configuration for CDS Exports amend declaration URI")
   )
 
   lazy val draftDeclarationPath = servicesConfig.getConfString(
     "customs-declare-exports.draft-declaration",
-    throw new IllegalStateException("Missing configuration for Customs Declarations Exports draft declaration URI")
+    throw new IllegalStateException("Missing configuration for CDS Exports draft declaration URI")
   )
 
   lazy val submissionPath = servicesConfig.getConfString(
     "customs-declare-exports.submission",
-    throw new IllegalStateException("Missing configuration for Customs Declaration Exports single submission URI")
+    throw new IllegalStateException("Missing configuration for CDS Exports single Submission URI")
   )
 
-  lazy val pageOfSubmissionsPath = servicesConfig.getConfString(
-    "customs-declare-exports.page-of-submissions",
-    throw new IllegalStateException("Missing configuration for Customs Declaration Exports page of submissions URI")
-  )
-
-  lazy val lrnAlreadyUsedPath = servicesConfig.getConfString(
-    "customs-declare-exports.lrn-already-used",
-    throw new IllegalStateException("Missing configuration for Customs Declaration Exports lrn-already-used URI")
+  lazy val actionPath = servicesConfig.getConfString(
+    "customs-declare-exports.action",
+    throw new IllegalStateException("Missing configuration for CDS Exports single Submission's Action URI")
   )
 
   lazy val notificationsPath = servicesConfig.getConfString(
     "customs-declare-exports.notifications",
-    throw new IllegalStateException("Missing configuration for Customs Declarations Exports notifications URI")
+    throw new IllegalStateException("Missing configuration for CDS Exports Notifications URI")
   )
 
-  lazy val latestNotificationPath = servicesConfig.getConfString(
-    "customs-declare-exports.latest-notification",
-    throw new IllegalStateException("Missing configuration for Customs Declarations Exports latest-notification URI")
+  lazy val amendmentsPath = servicesConfig.getConfString(
+    "customs-declare-exports.amendments",
+    throw new IllegalStateException("Missing configuration for CDS Exports amendment Submission URI")
+  )
+
+  lazy val pageOfSubmissionsPath = servicesConfig.getConfString(
+    "customs-declare-exports.page-of-submissions",
+    throw new IllegalStateException("Missing configuration for CDS Exports page of Submissions URI")
+  )
+
+  lazy val lrnAlreadyUsedPath = servicesConfig.getConfString(
+    "customs-declare-exports.lrn-already-used",
+    throw new IllegalStateException("Missing configuration for CDS Exports lrn-already-used URI")
   )
 
   lazy val cancelDeclarationPath = servicesConfig.getConfString(
     "customs-declare-exports.cancel-declaration",
-    throw new IllegalStateException("Missing configuration for Customs Declaration Export cancel declaration URI")
+    throw new IllegalStateException("Missing configuration for CDS Exports cancel declaration URI")
   )
 
   lazy val fetchMrnStatusPath = servicesConfig.getConfString(
     "customs-declare-exports.fetch-ead",
-    throw new IllegalStateException("Missing configuration for Customs Declaration Export fetch mrn status URI")
+    throw new IllegalStateException("Missing configuration for CDS Exports fetch mrn status URI")
   )
 
   lazy val fetchVerifiedEmailPath = servicesConfig.getConfString(
     "customs-declare-exports.fetch-verified-email",
-    throw new IllegalStateException("Missing configuration for Customs Declaration Exports fetch verified email URI")
+    throw new IllegalStateException("Missing configuration for CDS Exports fetch verified email URI")
   )
 
   lazy val isUsingImprovedErrorMessages =

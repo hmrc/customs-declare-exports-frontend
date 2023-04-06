@@ -17,25 +17,31 @@
 package controllers
 
 import base.ControllerWithoutFormSpec
+import config.AppConfig
+import handlers.ErrorHandler
+import mock.ErrorHandlerMocks
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.OptionValues
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import views.dashboard.DashboardHelper.toDashboard
-import views.html.rejected_notification_errors
+import views.html.{error_template, rejected_notification_errors}
 
 import scala.concurrent.ExecutionContext.global
+import scala.concurrent.Future
 
-class RejectedNotificationsControllerSpec extends ControllerWithoutFormSpec with OptionValues {
+class RejectedNotificationsControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerMocks with OptionValues {
 
   private val mockRejectedNotificationPage = mock[rejected_notification_errors]
+
+  private val mcc = stubMessagesControllerComponents()
 
   private val controller = new RejectedNotificationsController(
     mockAuthAction,
     mockVerifiedEmailAction,
+    new ErrorHandler(mcc.messagesApi, instanceOf[error_template])(instanceOf[AppConfig]),
     mockCustomsDeclareExportsConnector,
-    stubMessagesControllerComponents(),
+    mcc,
     mockRejectedNotificationPage
   )(global)
 
@@ -50,14 +56,13 @@ class RejectedNotificationsControllerSpec extends ControllerWithoutFormSpec with
 
   override protected def afterEach(): Unit = {
     reset(mockRejectedNotificationPage)
-
     super.afterEach()
   }
-
-  "Rejected Notification Controller" should {
+  "RejectedNotificationsController.displayPage" should {
 
     "return 200 (OK)" when {
-      "display page method is invoked with submission and notifications" in {
+
+      "declaration and notifications are found" in {
         getDeclaration(declarationId)
         findNotifications(declarationId)
 
@@ -66,16 +71,27 @@ class RejectedNotificationsControllerSpec extends ControllerWithoutFormSpec with
         status(result) mustBe OK
         verify(mockRejectedNotificationPage).apply(any(), any(), any())(any(), any())
       }
+
+      "the declaration is found but the Submission has no notifications" in {
+        getDeclaration(declarationId)
+
+        when(mockCustomsDeclareExportsConnector.findNotifications(any())(any(), any()))
+          .thenReturn(Future.successful(List.empty))
+
+        val result = controller.displayPage(declarationId)(getRequest())
+
+        status(result) mustBe OK
+        verify(mockRejectedNotificationPage).apply(any(), any(), any())(any(), any())
+      }
     }
 
-    "return 303 (SEE_OTHER) and redirect to Submission Controller" when {
-      "display page method is invoked without submission" in {
+    "return 500 (INTERNAL_SERVER_ERROR)" when {
+      "the declaration cannot be found" in {
         declarationNotFound
 
         val result = controller.displayPage(declarationId)(getRequest())
 
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result).value mustBe toDashboard.url
+        status(result) mustBe INTERNAL_SERVER_ERROR
       }
     }
   }

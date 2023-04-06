@@ -23,7 +23,7 @@ import forms.common.Eori
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.DeclarantEoriConfirmation.form
 import forms.declaration.{DeclarantDetails, DeclarantEoriConfirmation, EntityDetails}
-import models.requests.ExportsSessionKeys._
+import models.requests.SessionHelper._
 import models.requests.JourneyRequest
 import models.{DeclarationType, ExportsDeclaration}
 import play.api.i18n.I18nSupport
@@ -63,7 +63,7 @@ class DeclarantDetailsController @Inject() (
           if (validForm.answer == YesNoAnswers.yes)
             updateCache(DeclarantDetails(EntityDetails(Some(Eori(request.eori)), None))).map(_ => navigator.continueTo(nextPage))
           else
-            Future(Redirect(NotEligibleController.displayNotDeclarant).removingFromSession(declarationId, errorFixModeSessionKey))
+            Future(Redirect(NotEligibleController.displayNotDeclarant).removingFromSession(declarationUuid, errorFixModeSessionKey))
       )
   }
 

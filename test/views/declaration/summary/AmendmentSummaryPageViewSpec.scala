@@ -28,7 +28,7 @@ class AmendmentSummaryPageViewSpec extends SummaryPageViewSpec {
   private val dec = aDeclaration(withStatus(AMENDMENT_DRAFT), withConsignmentReferences("ducr", "lrn"))
 
   def view(declaration: ExportsDeclaration = dec): Document =
-    amendmentSummaryPage("submissionId")(journeyRequest(declaration), messages, minimalAppConfig)
+    amendmentSummaryPage("submissionUuid")(journeyRequest(declaration), messages, minimalAppConfig)
 
   "Summary page" should {
 
@@ -46,7 +46,7 @@ class AmendmentSummaryPageViewSpec extends SummaryPageViewSpec {
       val backButton = document.getElementById("back-link")
 
       backButton.text() mustBe messages("site.backToDeclarations")
-      backButton must haveHref(controllers.routes.DeclarationDetailsController.displayPage("submissionId").url)
+      backButton must haveHref(controllers.routes.DeclarationDetailsController.displayPage("submissionUuid").url)
     }
 
     "warning text should be displayed" in {

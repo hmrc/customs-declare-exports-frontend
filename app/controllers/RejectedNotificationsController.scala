@@ -18,25 +18,27 @@ package controllers
 
 import connectors.CustomsDeclareExportsConnector
 import controllers.actions.{AuthAction, VerifiedEmailAction}
+import handlers.ErrorHandler
 import models.declaration.notifications.{Notification, NotificationError}
+import play.api.Logging
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import views.dashboard.DashboardHelper.toDashboard
 import views.html.rejected_notification_errors
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 @Singleton
 class RejectedNotificationsController @Inject() (
   authenticate: AuthAction,
   verifyEmail: VerifiedEmailAction,
+  errorHandler: ErrorHandler,
   customsDeclareExportsConnector: CustomsDeclareExportsConnector,
   mcc: MessagesControllerComponents,
   rejectedNotificationPage: rejected_notification_errors
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport {
+    extends FrontendController(mcc) with I18nSupport with Logging {
 
   def displayPage(id: String): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
     customsDeclareExportsConnector.findDeclaration(id).flatMap {
@@ -46,7 +48,7 @@ class RejectedNotificationsController @Inject() (
           Ok(rejectedNotificationPage(declaration, maybeMrn, getRejectedNotificationErrors(notifications)))
         }
 
-      case None => Future.successful(Redirect(toDashboard))
+      case _ => errorHandler.internalError(s"Declaration($id) not found??")
     }
   }
 

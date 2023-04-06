@@ -88,7 +88,7 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec with Option
     captor.getValue
   }
 
-  "TransportLeavingTheBorderController.displayPage" should {
+  "TransportLeavingTheBorderController.displayOutcomePage" should {
 
     onJourney(STANDARD, SUPPLEMENTARY, CLEARANCE) { request =>
       "return 200 (OK)" when {
@@ -112,7 +112,7 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec with Option
     }
 
     onJourney(SIMPLIFIED, OCCASIONAL) { request =>
-      "redirect to the starting page on displayPage" in {
+      "redirect to the starting page on displayOutcomePage" in {
         withNewCaching(request.cacheModel)
 
         val result = controller.displayPage(getRequest())

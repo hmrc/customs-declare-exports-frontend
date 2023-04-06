@@ -22,7 +22,7 @@ import config.AppConfig
 import forms.Lrn
 import models._
 import models.declaration.notifications.Notification
-import models.declaration.submissions.Submission
+import models.declaration.submissions.{Action, Submission, SubmissionAmendment}
 import models.dis.MrnStatus
 import play.api.Logging
 import play.api.libs.json.{Json, Writes}
@@ -108,6 +108,9 @@ class CustomsDeclareExportsConnector @Inject() (appConfig: AppConfig, httpClient
   def submitDeclaration(id: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Submission] =
     httpClient.POSTEmpty[Submission](url(s"${appConfig.submissionPath}/$id"))
 
+  def submitAmendment(amendment: SubmissionAmendment)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[String] =
+    httpClient.POST[SubmissionAmendment, String](url(s"${appConfig.amendmentsPath}"), amendment)
+
   private val updateTimer: Timer = metrics.defaultRegistry.timer("declaration.update.timer")
 
   def updateDeclaration(declaration: ExportsDeclaration)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[ExportsDeclaration] = {
@@ -133,14 +136,14 @@ class CustomsDeclareExportsConnector @Inject() (appConfig: AppConfig, httpClient
     httpClient
       .GET[Option[Submission]](url(s"${appConfig.submissionPath}/$uuid"))
 
-  def isLrnAlreadyUsed(lrn: Lrn)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean] =
-    httpClient.GET[Boolean](url(s"${appConfig.lrnAlreadyUsedPath}/${lrn.lrn}"))
+  def findAction(actionId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[Action]] =
+    httpClient.GET[Option[Action]](url(s"${appConfig.actionPath}/$actionId"))
 
   def findNotifications(id: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[Notification]] =
-    httpClient.GET[Seq[Notification]](url(s"${appConfig.submissionPath}${appConfig.notificationsPath}/$id"))
+    httpClient.GET[Seq[Notification]](url(s"${appConfig.notificationsPath}/$id"))
 
-  def findLatestNotification(id: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[Notification]] =
-    httpClient.GET[Option[Notification]](url(s"${appConfig.latestNotificationPath}/$id"))
+  def isLrnAlreadyUsed(lrn: Lrn)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean] =
+    httpClient.GET[Boolean](url(s"${appConfig.lrnAlreadyUsedPath}/${lrn.lrn}"))
 
   def fetchMrnStatus(mrn: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[MrnStatus]] = {
     val fetchStopwatch = fetchTimer.time
@@ -154,7 +157,6 @@ class CustomsDeclareExportsConnector @Inject() (appConfig: AppConfig, httpClient
 
   def createCancellation(cancellation: CancelDeclaration)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[CancellationStatus] = {
     logPayload("Create Cancellation Request", cancellation)
-
     httpClient.POST[CancelDeclaration, CancellationStatus](url(s"${appConfig.cancelDeclarationPath}"), cancellation)
   }
 

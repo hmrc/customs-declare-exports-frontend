@@ -39,7 +39,7 @@
     exportsInputCharacterCount: exportsInputCharacterCount
 )
 
-@(form: Form[LegalDeclaration], amend: Boolean = false, action: Option[String] = None)(implicit request: JourneyRequest[_], messages: Messages)
+@(form: Form[LegalDeclaration], amend: Boolean = false, isCancellation: Boolean = false)(implicit request: JourneyRequest[_], messages: Messages)
 
 @headerMsgKey = @{
     if (amend) "legal.declaration.amend.heading"
@@ -55,7 +55,7 @@
 }
 
 @formAction = @{
-    if (amend) SubmissionController.submitAmendment(None)
+    if (amend) SubmissionController.submitAmendment(isCancellation)
     else SubmissionController.submitDeclaration
 }
 
@@ -111,7 +111,7 @@
 
         @pageTitle(messages(headerMsgKey))
 
-        @if(action.contains("cancel")) @{
+        @if(isCancellation) @{
             paragraph(messages("legal.declaration.amend.cancel.info"))
         }
 

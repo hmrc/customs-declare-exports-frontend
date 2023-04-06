@@ -24,7 +24,7 @@ import models._
 import models.declaration.submissions.EnhancedStatus.GOODS_ARRIVED
 import models.declaration.submissions.RequestType.SubmissionRequest
 import models.declaration.submissions.{Action, Submission}
-import models.requests.ExportsSessionKeys
+import models.requests.SessionHelper
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito.{reset, verify, when}
@@ -161,7 +161,7 @@ class SubmissionsControllerSpec extends ControllerWithoutFormSpec with BeforeAnd
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(SummaryController.displayPage.url)
-      session(result).get(ExportsSessionKeys.declarationId) mustBe Some("new-id")
+      session(result).get(SessionHelper.declarationUuid) mustBe Some("new-id")
     }
   }
 
@@ -175,7 +175,7 @@ class SubmissionsControllerSpec extends ControllerWithoutFormSpec with BeforeAnd
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result).get mustBe redirectUrl
-      session(result).get(ExportsSessionKeys.declarationId) mustBe Some("new-id")
+      session(result).get(SessionHelper.declarationUuid) mustBe Some("new-id")
     }
   }
 }

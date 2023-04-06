@@ -24,7 +24,7 @@ import forms.declaration.declarationHolder.AuthorizationTypeCodes.EXRR
 import forms.declaration.declarationHolder.DeclarationHolder
 import mock.ErrorHandlerMocks
 import models.declaration.EoriSource
-import models.requests.ExportsSessionKeys.errorFixModeSessionKey
+import models.requests.SessionHelper.errorFixModeSessionKey
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}

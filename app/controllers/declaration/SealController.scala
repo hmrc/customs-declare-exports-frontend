@@ -65,7 +65,7 @@ class SealController @Inject() (
         validSeal =>
           request.cacheModel.containerBy(containerId) match {
             case Some(container) => saveSeal(Seal.form.fill(validSeal), container)
-            case _               => errorHandler.displayErrorPage
+            case _               => errorHandler.redirectToErrorPage
           }
       )
   }

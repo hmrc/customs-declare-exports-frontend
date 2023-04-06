@@ -25,8 +25,8 @@ import forms.CopyDeclaration.form
 import forms.declaration.ConsignmentReferences
 import forms.{CopyDeclaration, Ducr, LrnValidator}
 import models.declaration.DeclarationStatus.DRAFT
-import models.requests.ExportsSessionKeys.{submissionDucr, submissionLrn, submissionMrn}
-import models.requests.{ExportsSessionKeys, JourneyRequest}
+import models.requests.SessionHelper._
+import models.requests.JourneyRequest
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.cache.ExportsCacheService
@@ -55,8 +55,8 @@ class CopyDeclarationController @Inject() (
     customsDeclareExportsConnector.findSubmission(submissionId).map {
       case Some(submission) if !isDeclarationRejected(submission) =>
         Redirect(CopyDeclarationController.displayPage)
-          .addingToSession(ExportsSessionKeys.declarationId -> submissionId)
-          .removingFromSession(submissionDucr, ExportsSessionKeys.submissionId, submissionLrn, submissionMrn)
+          .addingToSession(declarationUuid -> submissionId)
+          .removingFromSession(submissionDucr, submissionUuid, submissionLrn, submissionMrn)
 
       case _ => Redirect(DeclarationDetailsController.displayPage(submissionId))
     }
@@ -95,7 +95,7 @@ class CopyDeclarationController @Inject() (
         mucr = None
       )
       exportsCacheService.create(declaration).map { declaration =>
-        Redirect(SummaryController.displayPage).addingToSession(ExportsSessionKeys.declarationId -> declaration.id)
+        Redirect(SummaryController.displayPage).addingToSession(declarationUuid -> declaration.id)
       }
     }
 }

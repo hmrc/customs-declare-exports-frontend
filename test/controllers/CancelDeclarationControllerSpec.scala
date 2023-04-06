@@ -23,7 +23,7 @@ import forms.CancelDeclarationDescription
 import forms.cancellation.CancellationChangeReason.NoLongerRequired
 import metrics.{ExportsMetrics, MetricIdentifiers}
 import mock.{ErrorHandlerMocks, ExportsMetricsMocks}
-import models.requests.ExportsSessionKeys._
+import models.requests.SessionHelper._
 import models.{CancelDeclaration, CancellationAlreadyRequested}
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
@@ -40,7 +40,7 @@ class CancelDeclarationControllerSpec extends ControllerWithoutFormSpec with Err
     val mockAuditService = mock[AuditService]
     val cancelDeclarationPage = instanceOf[cancel_declaration]
 
-    val sessionData = Map(submissionId -> "submissionId", submissionLrn -> "lrn", submissionMrn -> "mrn", submissionDucr -> "ducr")
+    val sessionData = Map(submissionUuid -> "submissionUuid", submissionLrn -> "lrn", submissionMrn -> "mrn", submissionDucr -> "ducr")
 
     val controller = new CancelDeclarationController(
       mockAuthAction,
@@ -87,8 +87,8 @@ class CancelDeclarationControllerSpec extends ControllerWithoutFormSpec with Err
     "return 400 BadRequest error page" when {
       "session data is missing" when {
 
-        "submissionId" in new SetUp {
-          val session = (sessionData - submissionId).toSeq
+        "submissionUuid" in new SetUp {
+          val session = (sessionData - submissionUuid).toSeq
 
           val getResult = controller.displayPage(getRequestWithSession(session: _*))
           val postResult = controller.onSubmit()(postRequestWithSession(correctCancelDeclarationJSON, session))
@@ -150,7 +150,7 @@ class CancelDeclarationControllerSpec extends ControllerWithoutFormSpec with Err
       val exportMetrics = instanceOf[ExportsMetrics]
 
       val registry = instanceOf[Metrics].defaultRegistry
-      val cancelMetric = MetricIdentifiers.cancelMetric
+      val cancelMetric = MetricIdentifiers.cancellationMetric
 
       val cancelTimer = registry.getTimers().get(exportMetrics.timerName(cancelMetric))
       val cancelCounter = registry.getCounters().get(exportMetrics.counterName(cancelMetric))

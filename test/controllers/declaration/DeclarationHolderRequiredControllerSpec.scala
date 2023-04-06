@@ -75,7 +75,7 @@ class DeclarationHolderRequiredControllerSpec extends ControllerSpec with Option
   private def verifyPageInvoked(numberOfTimes: Int = 1): HtmlFormat.Appendable =
     verify(mockPage, times(numberOfTimes)).apply(any())(any(), any())
 
-  "DeclarationHolderRequiredController.displayPage" when {
+  "DeclarationHolderRequiredController.displayOutcomePage" when {
 
     List(STANDARD_FRONTIER, STANDARD_PRE_LODGED) foreach { additionalType =>
       s"additional declaration type is $additionalType and" when {

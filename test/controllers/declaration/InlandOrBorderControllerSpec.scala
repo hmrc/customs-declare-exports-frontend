@@ -85,7 +85,7 @@ class InlandOrBorderControllerSpec extends ControllerSpec with OptionValues {
   def cacheRequest(additionalType: AdditionalDeclarationType, modifiers: ExportsDeclarationModifier*): Unit =
     withNewCaching(withRequest(additionalType, modifiers: _*).cacheModel)
 
-  "InlandOrBorderController.displayPage" should {
+  "InlandOrBorderController.displayOutcomePage" should {
 
     "return 200 (OK)" when {
       additionalDeclTypesAllowedOnInlandOrBorder.foreach { additionalType =>
