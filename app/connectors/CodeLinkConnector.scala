@@ -21,6 +21,7 @@ import config.AppConfig
 import connectors.Tag.Tag
 import models.codes.CommonCode
 import play.api.libs.json.{Json, OFormat}
+import play.api.Logging
 import utils.JsonFile
 
 import javax.inject.{Inject, Singleton}
@@ -67,10 +68,12 @@ trait CodeLinkConnector {
 }
 
 @Singleton
-class FileBasedCodeLinkConnector @Inject() (appConfig: AppConfig) extends CodeLinkConnector {
+class FileBasedCodeLinkConnector @Inject() (appConfig: AppConfig, val jsonFileReader: JsonFile) extends CodeLinkConnector with Logging {
 
   private def readCodeLinksFromFile[T <: CommonCode](srcFile: String): Seq[(String, Seq[String])] = {
-    val codeLinks = JsonFile.getJsonArrayFromFile(srcFile, CodeLink.formats)
+    logger.info(s"Loading CodeLinkConnector Reference data file '$srcFile'")
+
+    val codeLinks = jsonFileReader.getJsonArrayFromFile(srcFile, CodeLink.formats)
     codeLinks.map { codeLink =>
       codeLink.parentCode -> codeLink.childCodes
     }

@@ -22,7 +22,9 @@ import forms.declaration.declarationHolder.AuthorizationTypeCodes.{EXRR, MIB}
 import models.codes._
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
+import play.api.{Environment, Mode}
 import services.model.{CustomsOffice, OfficeOfExit, PackageType}
+import utils.JsonFile
 
 import java.util.Locale.{ENGLISH, JAPANESE}
 import scala.collection.immutable.ListMap
@@ -48,7 +50,8 @@ class CodeListConnectorSpec extends UnitWithMocksSpec with BeforeAndAfterEach {
   }
 
   private lazy val glc = mock[GoodsLocationCodesConnector]
-  private lazy val codeListConnector = new FileBasedCodeListConnector(appConfig, glc)
+  private lazy val jsonFile = new JsonFile(Environment.simple(mode = Mode.Test))
+  private lazy val codeListConnector = new FileBasedCodeListConnector(appConfig, glc, jsonFile)
 
   "FileBasedCodeListConnector" should {
     "throw exception on initialisation" when {
@@ -56,19 +59,19 @@ class CodeListConnectorSpec extends UnitWithMocksSpec with BeforeAndAfterEach {
       "code list file is missing" in {
         when(appConfig.procedureCodesListFile).thenReturn("")
 
-        intercept[IllegalArgumentException](new FileBasedCodeListConnector(appConfig, glc).getProcedureCodes(ENGLISH))
+        intercept[IllegalArgumentException](new FileBasedCodeListConnector(appConfig, glc, jsonFile).getProcedureCodes(ENGLISH))
       }
 
       "code list file is malformed" in {
         when(appConfig.procedureCodesListFile).thenReturn("/code-lists/malformedCodes.json")
 
-        intercept[IllegalArgumentException](new FileBasedCodeListConnector(appConfig, glc).getProcedureCodes(ENGLISH))
+        intercept[IllegalArgumentException](new FileBasedCodeListConnector(appConfig, glc, jsonFile).getProcedureCodes(ENGLISH))
       }
 
       "code list file is empty" in {
         when(appConfig.procedureCodesListFile).thenReturn("/code-lists/empty.json")
 
-        intercept[IllegalArgumentException](new FileBasedCodeListConnector(appConfig, glc).getProcedureCodes(ENGLISH))
+        intercept[IllegalArgumentException](new FileBasedCodeListConnector(appConfig, glc, jsonFile).getProcedureCodes(ENGLISH))
       }
     }
 
@@ -147,7 +150,7 @@ class CodeListConnectorSpec extends UnitWithMocksSpec with BeforeAndAfterEach {
     "return a map of 'Holder of Authorisation' codes ordered as expected" when {
       "receives a supported language as input, or default to English for unsupported languages" in {
         when(appConfig.holderOfAuthorisationCodeFile).thenReturn("/code-lists/holder-of-authorisation-codes/holder-of-authorisation-codes.json")
-        val codeListConnector = new FileBasedCodeListConnector(appConfig, glc)
+        val codeListConnector = new FileBasedCodeListConnector(appConfig, glc, jsonFile)
         (codeListConnector.supportedLanguages :+ JAPANESE).foreach { locale =>
           val codes = codeListConnector.getHolderOfAuthorisationCodes(locale).keys.toList
           codes.size mustBe 53
