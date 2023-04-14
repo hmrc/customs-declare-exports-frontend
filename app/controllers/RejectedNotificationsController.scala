@@ -19,9 +19,8 @@ package controllers
 import connectors.CustomsDeclareExportsConnector
 import controllers.actions.{AuthAction, VerifiedEmailAction}
 import models.declaration.notifications.{Notification, NotificationError}
-import models.requests.{AuthenticatedRequest, ExportsSessionKeys}
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.dashboard.DashboardHelper.toDashboard
 import views.html.rejected_notification_errors
@@ -39,24 +38,16 @@ class RejectedNotificationsController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
-  def displayPage(id: String): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
-    rejectedNotificationsPage(id, None)
-  }
-
-  def amendmentRejected(id: String, actionId: String): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
-    rejectedNotificationsPage(id, request.session.get(ExportsSessionKeys.submissionId))
-  }
-
-  private def rejectedNotificationsPage(id: String, maybeActionId: Option[String])(implicit request: AuthenticatedRequest[_]): Future[Result] =
+  def displayPage(id: String, amendment: Boolean): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
     customsDeclareExportsConnector.findDeclaration(id).flatMap {
       case Some(declaration) =>
         customsDeclareExportsConnector.findNotifications(id).map { notifications =>
           val maybeMrn = notifications.headOption.map(_.mrn)
-          Ok(rejectedNotificationPage(declaration, maybeMrn, maybeActionId, getRejectedNotificationErrors(notifications)))
+          Ok(rejectedNotificationPage(declaration, maybeMrn, if (amendment) Some(id) else None, getRejectedNotificationErrors(notifications)))
         }
-
       case None => Future.successful(Redirect(toDashboard))
     }
+  }
 
   private def getRejectedNotificationErrors(notifications: Seq[Notification]): Seq[NotificationError] =
     notifications.find(_.isStatusDMSRej).map(_.errors).getOrElse(Seq.empty)

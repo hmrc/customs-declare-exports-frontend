@@ -85,7 +85,7 @@ class ConfirmationController @Inject() (
         locationCode = declaration.flatMap(_.locations.goodsLocation).map(_.code)
       } yield submission match {
         case Some(submission) if submission.latestEnhancedStatus contains EnhancedStatus.ERRORS =>
-          Redirect(RejectedNotificationsController.displayPage(submissionId))
+          Redirect(RejectedNotificationsController.displayPage(submissionId, false))
 
         case _ =>
           val confirmation = Confirmation(request.email, extractDeclarationType, submission, locationCode)

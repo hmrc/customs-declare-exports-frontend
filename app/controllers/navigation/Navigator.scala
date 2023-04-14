@@ -367,7 +367,7 @@ class Navigator @Inject() (
 
   private def handleErrorFixMode(factory: Call, formAction: FormAction)(implicit request: JourneyRequest[_]): Result =
     (formAction, request.cacheModel.declarationMeta.parentDeclarationId) match {
-      case (SaveAndReturnToErrors, Some(parentId)) => Results.Redirect(RejectedNotificationsController.displayPage(parentId))
+      case (SaveAndReturnToErrors, Some(parentId)) => Results.Redirect(RejectedNotificationsController.displayPage(parentId, false))
       case (Add | Remove(_) | SaveAndContinue, _)  => setErrorFixMode(Results.Redirect(factory))
       case _                                       => setErrorFixMode(Results.Redirect(factory).flashing(request.flash))
     }

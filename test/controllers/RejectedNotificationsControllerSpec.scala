@@ -61,7 +61,7 @@ class RejectedNotificationsControllerSpec extends ControllerWithoutFormSpec with
         getDeclaration(declarationId)
         findNotifications(declarationId)
 
-        val result = controller.displayPage(declarationId)(getRequest())
+        val result = controller.displayPage(declarationId, false)(getRequest())
 
         status(result) mustBe OK
         verify(mockRejectedNotificationPage).apply(any(), any(), any(), any())(any(), any())
@@ -72,7 +72,7 @@ class RejectedNotificationsControllerSpec extends ControllerWithoutFormSpec with
       "display page method is invoked without submission" in {
         declarationNotFound
 
-        val result = controller.displayPage(declarationId)(getRequest())
+        val result = controller.displayPage(declarationId, false)(getRequest())
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result).value mustBe toDashboard.url

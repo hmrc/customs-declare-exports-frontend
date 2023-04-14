@@ -75,7 +75,7 @@
         declaration.declarationMeta.parentDeclarationId.map { parentId =>
           linkButton(
             "site.view.declaration.errors",
-            RejectedNotificationsController.displayPage(parentId),
+            RejectedNotificationsController.displayPage(parentId, false),
             "govuk-button govuk-button--secondary"
           )
         }
