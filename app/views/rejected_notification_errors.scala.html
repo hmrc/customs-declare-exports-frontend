@@ -36,10 +36,36 @@
     notificationErrorHelper: NotificationErrorHelper
 )
 
-@(declaration: ExportsDeclaration, maybeMrn: Option[String], errors: Seq[NotificationError])(implicit request: Request[_], messages: Messages)
+@(declaration: ExportsDeclaration, maybeMrn: Option[String], maybeActionId: Option[String], errors: Seq[NotificationError])(implicit request: Request[_], messages: Messages)
+
+@title = @{
+    if(maybeActionId.isDefined) "rejected.amendment.title"
+    else "rejected.notification.title"
+}
+
+@warningText = @{
+    if(maybeActionId.isDefined) "rejected.amendment.warning"
+    else "rejected.notification.warning"
+}
+
+@checkAnswersText = @{
+    if(maybeActionId.isDefined) "rejected.amendment.check.answers.paragraph"
+    else "rejected.notification.check.answers.paragraph"
+}
+
+@checkAnswersUrl = @{
+    if(maybeActionId.isDefined) routes.SubmissionsController.amend(declaration.id).url
+    else routes.SubmissionsController.amend(declaration.id).url
+}
+
+@guidancePara2Text = @{
+    if(maybeActionId.isDefined) "rejected.amendment.guidance.section.1.paragraph.2"
+    else "rejected.notification.guidance.section.1.paragraph.2"
+}
+
 
 @govukLayout(
-    title = Title("rejected.notification.title"),
+    title = Title(title),
     backButton = Some(BackButton(messages("site.back"), routes.DeclarationDetailsController.displayPage(declaration.id))),
     useCustomContentWidth = true
 ) {
@@ -47,40 +73,40 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-full">
 
-            @pageTitle(text = messages("rejected.notification.title"), classes = "govuk-heading-l")
+            @pageTitle(text = messages(title), classes = "govuk-heading-l")
             @sectionHeader(messages("rejected.notification.mrn", maybeMrn.getOrElse(messages("rejected.notification.mrn.missing"))))
 
             @govukWarningText(WarningText(
                 iconFallbackText = messages("site.warning"),
-                content = Text(messages("rejected.notification.warning"))
+                content = Text(messages(warningText))
             ))
 
             @heading(messages("rejected.notification.table.title"), "govuk-heading-m", "h2")
 
             @govukSummaryList(notificationErrorHelper.createSummaryList(declaration, errors))
 
-            @paragraphBody(messages("rejected.notification.check.answers.paragraph"))
+            @paragraphBody(messages(checkAnswersText))
 
             @govukButton(Button(
                 content = Text(messages("rejected.notification.check.answers.button")),
-                href = Some(routes.SubmissionsController.amend(declaration.id).url),
+                href = Some(checkAnswersUrl),
                 attributes = Map("id" -> "check-your-answers")
             ))
 
-@* Section 1 *@
+            @* Section 1 *@
 
             @heading(messages("rejected.notification.guidance.section.1.header"), "govuk-heading-s", "h2")
 
             @paragraphBody(messages("rejected.notification.guidance.section.1.paragraph.1"))
 
-            @paragraphBody(messages("rejected.notification.guidance.section.1.paragraph.2",
+            @paragraphBody(messages(guidancePara2Text,
                 link(
                     text = messages("rejected.notification.guidance.section.1.paragraph.2.link"),
                     call = routes.SavedDeclarationsController.displayDeclarations()
                 )
             ))
 
-@* Section 2 *@
+            @* Section 2 *@
 
             @heading(messages("rejected.notification.guidance.section.2.header"), "govuk-heading-s", "h2")
 

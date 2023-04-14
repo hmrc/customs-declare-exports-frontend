@@ -38,9 +38,10 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with ExportsTestHe
   private def view(
     reasons: Seq[NotificationError] = Seq.empty,
     maybeMrn: Option[String] = Some(MRN.value),
+    maybeAction: Option[String] = None,
     testMessages: Messages = messages
   ): Document =
-    page(declaration, maybeMrn, reasons)(request, testMessages)
+    page(declaration, maybeMrn, maybeAction, reasons)(request, testMessages)
 
   val defaultView: Document = view()
   val defaultRejectionCode = "CDS10001"
@@ -89,7 +90,7 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with ExportsTestHe
       val testMessages = stubMessages()
 
       "fully populated and we are using the exports error descriptions" in {
-        val doc: Document = view(Seq(reason), Some(MRN.value), testMessages)
+        val doc: Document = view(Seq(reason), Some(MRN.value), None, testMessages)
 
         val text = doc.getElementsByClass("rejected_notifications-row-0-name").text
         text mustBe testMessages("field.declaration.consignmentReferences.lrn")
@@ -100,7 +101,7 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with ExportsTestHe
         val pointer = Pointer("declaration.goodsShipment.governmentAgencyGoodsItem.#0.additionalDocument.#1.id")
         val reason = NotificationError(defaultRejectionCode, Some(pointer))
 
-        val doc: Document = view(Seq(reason), Some(MRN.value), testMessages)
+        val doc: Document = view(Seq(reason), Some(MRN.value), None, testMessages)
 
         doc.getElementsByClass("rejected_notifications-row-0-name").text mustBe testMessages(
           "field.declaration.goodsShipment.governmentAgencyGoodsItem.$.additionalDocument.$.id",
@@ -148,7 +149,7 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with ExportsTestHe
 
         val noteError = NotificationError("CDS12062", Some(Pointer(pointerPattern)))
 
-        val view: Document = page(declaration, Some(MRN.value), Seq(noteError))(request, messages)
+        val view: Document = page(declaration, Some(MRN.value), None, Seq(noteError))(request, messages)
 
         val changeLink = view.getElementsByClass("govuk-link").get(3)
 
