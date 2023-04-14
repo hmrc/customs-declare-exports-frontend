@@ -36,33 +36,35 @@
     notificationErrorHelper: NotificationErrorHelper
 )
 
-@(declaration: ExportsDeclaration, maybeMrn: Option[String], maybeActionId: Option[String], errors: Seq[NotificationError])(implicit request: Request[_], messages: Messages)
+@(declaration: ExportsDeclaration, maybeMrn: Option[String], maybeSubmissionId: Option[String], errors: Seq[NotificationError])(implicit request: Request[_], messages: Messages)
 
 @title = @{
-    if(maybeActionId.isDefined) "rejected.amendment.title"
+    if(maybeSubmissionId.isDefined) "rejected.amendment.title"
     else "rejected.notification.title"
 }
 
 @warningText = @{
-    if(maybeActionId.isDefined) "rejected.amendment.warning"
+    if(maybeSubmissionId.isDefined) "rejected.amendment.warning"
     else "rejected.notification.warning"
 }
 
 @checkAnswersText = @{
-    if(maybeActionId.isDefined) "rejected.amendment.check.answers.paragraph"
+    if(maybeSubmissionId.isDefined) "rejected.amendment.check.answers.paragraph"
     else "rejected.notification.check.answers.paragraph"
 }
 
 @checkAnswersUrl = @{
-    if(maybeActionId.isDefined) routes.SubmissionsController.amend(declaration.id).url
-    else routes.SubmissionsController.amend(declaration.id).url
+    maybeSubmissionId.map{ submissionId =>
+        routes.SubmissionsController.draftAmendment(submissionId).url
+    }.getOrElse{
+        routes.SubmissionsController.amend(declaration.id).url
+    }
 }
 
 @guidancePara2Text = @{
-    if(maybeActionId.isDefined) "rejected.amendment.guidance.section.1.paragraph.2"
+    if(maybeSubmissionId.isDefined) "rejected.amendment.guidance.section.1.paragraph.2"
     else "rejected.notification.guidance.section.1.paragraph.2"
 }
-
 
 @govukLayout(
     title = Title(title),

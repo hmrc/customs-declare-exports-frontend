@@ -2353,19 +2353,10 @@ legal.declaration.amendReason.long=Your amendment reason must not be more than 5
 legal.declaration.amendReason.error=Only letters, numbers, and certain special characters can be used in an amendment reason
 legal.declaration.amend.button=Submit Amendment
 
-rejected.amendment.mrn = MRN: {0}
-rejected.amendment.mrn.missing = No MRN
 rejected.amendment.title = Declaration rejected
-rejected.amendment.table.title = Declaration errors
 rejected.amendment.warning = You need to fix these errors and then submit an amendment request
-rejected.amendment.description.format = Error code {0}.
 rejected.amendment.check.answers.paragraph = You can fix errors by using the change links. You will then need to submit these changes as part of an amendment request.
-rejected.amendment.check.answers.button = Check your answers
-
-rejected.amendment.guidance.section.1.header = Dealing with errors
-rejected.amendment.guidance.section.1.paragraph.1 = A single error can relate to more than one field on the declaration, so you may see some error codes repeated.
 rejected.amendment.guidance.section.1.paragraph.2 = If you start but do not finish fixing the errors, your amended declaration will be in {0}.
-rejected.amendment.guidance.section.1.paragraph.2.link = Saved declarations
 
 rejected.notification.mrn = MRN: {0}
 rejected.notification.mrn.missing = No MRN

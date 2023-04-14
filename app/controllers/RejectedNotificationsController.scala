@@ -19,7 +19,7 @@ package controllers
 import connectors.CustomsDeclareExportsConnector
 import controllers.actions.{AuthAction, VerifiedEmailAction}
 import models.declaration.notifications.{Notification, NotificationError}
-import models.requests.AuthenticatedRequest
+import models.requests.{AuthenticatedRequest, ExportsSessionKeys}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
@@ -44,7 +44,7 @@ class RejectedNotificationsController @Inject() (
   }
 
   def amendmentRejected(id: String, actionId: String): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
-    rejectedNotificationsPage(id, Some(actionId))
+    rejectedNotificationsPage(id, request.session.get(ExportsSessionKeys.submissionId))
   }
 
   private def rejectedNotificationsPage(id: String, maybeActionId: Option[String])(implicit request: AuthenticatedRequest[_]): Future[Result] =

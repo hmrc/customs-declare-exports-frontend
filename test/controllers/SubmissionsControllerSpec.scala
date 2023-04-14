@@ -151,17 +151,32 @@ class SubmissionsControllerSpec extends ControllerWithoutFormSpec with BeforeAnd
   }
 
   private val rejectedId = "id"
+  private val submissionId = "submissionId"
+  private val declarationId = "declarationId"
 
   "SubmissionsController on amend" should {
     "return 303 (SEE OTHER) with the new declaration-id as one the Session keys" in {
       when(mockCustomsDeclareExportsConnector.findOrCreateDraftForRejected(refEq(rejectedId))(any(), any()))
-        .thenReturn(Future.successful("new-id"))
+        .thenReturn(Future.successful(declarationId))
 
       val result = controller.amend(rejectedId)(getRequest(None))
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(SummaryController.displayPage.url)
-      session(result).get(ExportsSessionKeys.declarationId) mustBe Some("new-id")
+      session(result).get(ExportsSessionKeys.declarationId) mustBe Some(declarationId)
+    }
+  }
+
+  "SubmissionsController on draftAmendment" should {
+    "return 303 (SEE OTHER) with the fetched declaration-id as one the Session keys" in {
+      when(mockCustomsDeclareExportsConnector.findOrCreateDraftForAmend(refEq(submissionId))(any(), any()))
+        .thenReturn(Future.successful(declarationId))
+
+      val result = controller.draftAmendment(submissionId)(getRequest(None))
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(SummaryController.displayPage.url)
+      session(result).get(ExportsSessionKeys.declarationId) mustBe Some(declarationId)
     }
   }
 
