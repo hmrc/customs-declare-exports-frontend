@@ -37,7 +37,9 @@ import org.jsoup.nodes.Document
 import org.scalatest.Assertion
 import org.scalatest.Inspectors.forAll
 import play.api.data.Form
+import play.api.{Environment, Mode}
 import services.view.HolderOfAuthorisationCodes
+import utils.JsonFile
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.additionalDocuments.additional_document_edit
 import views.tags.ViewTest
@@ -48,7 +50,8 @@ import java.util.Locale.ENGLISH
 class AdditionalDocumentEditViewSpec extends UnitViewSpec with Injector with MockTaggedCodes {
 
   val appConfig = instanceOf[AppConfig]
-  val glc = new GoodsLocationCodesConnector(appConfig)
+  val jsonFile = new JsonFile(Environment.simple(mode = Mode.Test))
+  val glc = new GoodsLocationCodesConnector(appConfig, jsonFile)
 
   val page = instanceOf[additional_document_edit]
 
@@ -153,7 +156,7 @@ class AdditionalDocumentEditViewSpec extends UnitViewSpec with Injector with Moc
     val clearanceJourneys = List(CLEARANCE_FRONTIER, CLEARANCE_PRE_LODGED)
     val holders = List(DeclarationHolder(Some("OPO"), None, None), DeclarationHolder(Some("FZ"), None, None))
 
-    val authCodeHelper = new HolderOfAuthorisationCodes(new FileBasedCodeListConnector(appConfig, glc), mockMerchandiseInBagConfig)
+    val authCodeHelper = new HolderOfAuthorisationCodes(new FileBasedCodeListConnector(appConfig, glc, jsonFile), mockMerchandiseInBagConfig)
 
     allAdditionalDeclarationTypes.foreach { declarationType =>
       val item = anItem(withItemId(itemId))
