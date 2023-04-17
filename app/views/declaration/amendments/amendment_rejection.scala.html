@@ -34,7 +34,7 @@
 
 @(confirmation: Confirmation)(implicit request: Request[_], messages: Messages)
 
-@govukLayout(title = Title(confirmationHelper.title(confirmation)), showDeclarationSummaryLink = false) {
+@govukLayout(title = Title("declaration.confirmation.rejected.amendment.title"), showDeclarationSummaryLink = false) {
 
     @heading(messages(s"declaration.confirmation.rejected.amendment.title"))
 
