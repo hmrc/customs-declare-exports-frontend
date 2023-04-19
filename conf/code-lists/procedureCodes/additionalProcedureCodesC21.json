@@ -35,6 +35,11 @@
     "cy": "Masnach gyda Thiriogaethau Cyllidol Arbennig neu diriogaethau y mae\u2019r UE wedi ffurfio Undeb Tollau"
   },
   {
+    "code": "16M",
+    "en": "MOU Export",
+    "cy": "Memorandwm Cyd-ddealltwriaeth (MOU) - allforio"
+  },
+  {
     "code": "17X",
     "en": "Exit Safety and Security Summary Declaration (EXS)",
     "cy": "Datganiad Diogelwch Cryno wrth Ymadael (EXS)"
@@ -213,6 +218,11 @@
     "code": "73N",
     "en": "Notification of Presentation (NoP) under EIDR",
     "cy": "Hysbysiad o Gyflwyniad (NoP) o dan EIDR"
+  },
+  {
+    "code": "80I",
+    "en": "Export MOU Inter-shed Removal",
+    "cy": "Memorandwm Cyd-ddealltwriaeth (MOU) - Allforio - Symud Rhwng Siediau"
   },
   {
     "code": "90V",
