@@ -76,7 +76,7 @@ class ConsignmentReferencesControllerSpec extends ControllerSpec with GivenWhenT
     captor.getValue
   }
 
-  "ConsignmentReferencesController on displayPage" should {
+  "ConsignmentReferencesController on displayOutcomePage" should {
 
     onEveryDeclarationJourney() { request =>
       "return 200 (OK)" when {

@@ -100,7 +100,7 @@ class AdditionalProcedureCodesControllerSpec extends ControllerSpec with ErrorHa
     templateParameters._1
   }
 
-  "AdditionalProcedureCodesController on displayPage" should {
+  "AdditionalProcedureCodesController on displayOutcomePage" should {
 
     "return 200 (OK)" when {
 

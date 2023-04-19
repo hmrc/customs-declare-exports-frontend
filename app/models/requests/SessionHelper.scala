@@ -16,15 +16,27 @@
 
 package models.requests
 
-object ExportsSessionKeys {
+import play.api.mvc.{Request, Session}
 
-  val declarationId = "declarationId"
+object SessionHelper {
+
+  val declarationUuid = "declarationUuid"
   val declarationType = "declarationType"
 
   val errorFixModeSessionKey = "in-error-fix-mode"
 
+  val submissionActionId = "submission.actionId"
   val submissionDucr = "submission.ducr"
-  val submissionId = "submission.uuid"
+  val submissionUuid = "submission.uuid"
   val submissionLrn = "submission.lrn"
   val submissionMrn = "submission.mrn"
+
+  def getValue(key: String)(implicit request: Request[_]): Option[String] =
+    request.session.data.get(key)
+
+  def getOrElse(key: String, default: String = "")(implicit request: Request[_]): String =
+    request.session.data.get(key).fold(default)(identity)
+
+  def removeValue(key: String)(implicit request: Request[_]): Session =
+    request.session - key
 }

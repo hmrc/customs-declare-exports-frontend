@@ -46,23 +46,23 @@ class AuditService @Inject() (connector: AuditConnector, appConfig: AppConfig)(i
       detail = AuditExtensions.auditHeaderCarrier(hc).toAuditDetails() ++ auditData
     )
 
-  def auditAllPagesUserInput(auditType: AuditTypes.Audit, userInput: ExportsDeclaration)(implicit hc: HeaderCarrier): Future[AuditResult] = {
+  def auditAllPagesUserInput(auditType: AuditTypes.Audit, declaration: ExportsDeclaration)(implicit hc: HeaderCarrier): Future[AuditResult] = {
     val extendedEvent = ExtendedDataEvent(
       auditSource = appConfig.appName,
       auditType = auditType.toString,
       tags = getAuditTags(s"$auditType-payload-request", s"$auditType/full-payload"),
-      detail = getAuditDetails(Json.toJson(userInput).as[JsObject])
+      detail = getAuditDetails(Json.toJson(declaration).as[JsObject])
     )
     connector.sendExtendedEvent(extendedEvent).map(handleResponse(_, auditType.toString))
   }
 
-  def auditAllPagesDeclarationCancellation(userInput: CancelDeclaration)(implicit hc: HeaderCarrier): Future[AuditResult] = {
+  def auditAllPagesDeclarationCancellation(cancelDeclaration: CancelDeclaration)(implicit hc: HeaderCarrier): Future[AuditResult] = {
     val auditType = AuditTypes.Cancellation.toString
     val extendedEvent = ExtendedDataEvent(
       auditSource = appConfig.appName,
       auditType = auditType,
       tags = getAuditTags(s"$auditType-payload-request", s"$auditType/full-payload"),
-      detail = getAuditDetails(Json.toJson(userInput).as[JsObject])
+      detail = getAuditDetails(Json.toJson(cancelDeclaration).as[JsObject])
     )
     connector.sendExtendedEvent(extendedEvent).map(handleResponse(_, auditType))
   }
@@ -112,8 +112,7 @@ class AuditService @Inject() (connector: AuditConnector, appConfig: AppConfig)(i
 
 object AuditTypes extends Enumeration {
   type Audit = Value
-  val Submission, SaveAndReturnSubmission, SubmissionPayload, Cancellation, SubmissionSuccess, SubmissionFailure, NavigateToMessages,
-    UploadDocumentLink = Value
+  val Submission, SubmissionPayload, Cancellation, NavigateToMessages, Amendment, AmendmentPayload, AmendmentCancellation, UploadDocumentLink = Value
 }
 
 object EventData extends Enumeration {

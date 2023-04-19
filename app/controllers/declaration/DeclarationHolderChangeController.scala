@@ -53,7 +53,7 @@ class DeclarationHolderChangeController @Inject() (
   def displayPage(id: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val maybeExistingHolder = declarationHolders.find(_.id.equals(id))
 
-    maybeExistingHolder.fold(errorHandler.displayErrorPage) { holder =>
+    maybeExistingHolder.fold(errorHandler.redirectToErrorPage) { holder =>
       Future.successful(Ok(declarationHolderChangePage(id, form.fill(holder).withSubmissionErrors, request.eori)))
     }
   }
@@ -65,7 +65,7 @@ class DeclarationHolderChangeController @Inject() (
     boundForm.fold(
       formWithErrors => Future.successful(BadRequest(declarationHolderChangePage(id, formWithErrors, request.eori))),
       newHolder =>
-        maybeExistingHolder.fold(errorHandler.displayErrorPage) { existingHolder =>
+        maybeExistingHolder.fold(errorHandler.redirectToErrorPage) { existingHolder =>
           changeHolder(existingHolder, newHolder, boundForm)
         }
     )

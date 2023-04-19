@@ -17,8 +17,7 @@
 package controllers.declaration
 
 import base.ControllerWithoutFormSpec
-import config.featureFlags.DeclarationAmendmentsConfig
-import controllers.declaration.amendments.routes.AmendmentConfirmationController
+import controllers.declaration.amendments.routes.AmendmentOutcomeController
 import controllers.declaration.routes.ConfirmationController
 import controllers.routes.RootController
 import forms.declaration.LegalDeclaration
@@ -26,10 +25,12 @@ import forms.declaration.LegalDeclaration._
 import mock.ErrorHandlerMocks
 import models.ExportsDeclaration
 import models.declaration.submissions.Submission
-import models.requests.ExportsSessionKeys
+import models.requests.SessionHelper
+import models.requests.SessionHelper._
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
+import org.scalatest.concurrent.ScalaFutures
 import play.api.http.Status.{BAD_REQUEST, INTERNAL_SERVER_ERROR, OK, SEE_OTHER}
 import play.api.libs.json.Json
 import play.api.test.Helpers.{await, redirectLocation, session, status}
@@ -42,11 +43,10 @@ import views.html.declaration.summary.legal_declaration
 import java.util.UUID
 import scala.concurrent.{ExecutionContext, Future}
 
-class SubmissionControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerMocks with UnitViewSpec {
+class SubmissionControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerMocks with ScalaFutures with UnitViewSpec {
 
   private val legalDeclarationPage = mock[legal_declaration]
   private val mockSubmissionService = mock[SubmissionService]
-  private val declarationAmendmentsConfig = mock[DeclarationAmendmentsConfig]
 
   private val controller = new SubmissionController(
     mockAuthAction,
@@ -57,7 +57,7 @@ class SubmissionControllerSpec extends ControllerWithoutFormSpec with ErrorHandl
     mockExportsCacheService,
     mockSubmissionService,
     legalDeclarationPage,
-    declarationAmendmentsConfig
+    mockDeclarationAmendmentsConfig
   )(ec)
 
   override protected def beforeEach(): Unit = {
@@ -65,8 +65,8 @@ class SubmissionControllerSpec extends ControllerWithoutFormSpec with ErrorHandl
     authorizedUser()
     setupErrorHandler()
     when(legalDeclarationPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
-    when(mockSubmissionService.amend).thenReturn(Future.successful(None))
-    when(declarationAmendmentsConfig.isEnabled).thenReturn(true)
+    when(mockSubmissionService.submitAmendment(any(), any(), any(), any(), any())(any(), any())).thenReturn(Future.successful(None))
+    when(mockDeclarationAmendmentsConfig.isEnabled).thenReturn(true)
   }
 
   override protected def afterEach(): Unit = {
@@ -80,15 +80,15 @@ class SubmissionControllerSpec extends ControllerWithoutFormSpec with ErrorHandl
 
       "return 200 and invoke page with the amend parameter to 'true'" in {
         withNewCaching(aDeclaration())
-        val result = controller.displayLegalDeclarationPage(true, None).apply(getJourneyRequest())
+        val result = controller.displayLegalDeclarationPage(true, false).apply(getJourneyRequest())
         status(result) mustBe OK
         verify(legalDeclarationPage).apply(any(), ArgumentMatchers.eq(true), any())(any(), any())
       }
 
       "return 303 when amend feature flag is off" in {
-        when(declarationAmendmentsConfig.isEnabled).thenReturn(false)
+        when(mockDeclarationAmendmentsConfig.isEnabled).thenReturn(false)
         withNewCaching(aDeclaration())
-        val result = controller.displayLegalDeclarationPage(true, None).apply(getJourneyRequest())
+        val result = controller.displayLegalDeclarationPage(true, false).apply(getJourneyRequest())
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(RootController.displayPage.url)
       }
@@ -98,7 +98,7 @@ class SubmissionControllerSpec extends ControllerWithoutFormSpec with ErrorHandl
 
       "return 200 and invoke page with with the amend parameter to 'false'" in {
         withNewCaching(aDeclaration())
-        val result = controller.displayLegalDeclarationPage(false, None).apply(getJourneyRequest())
+        val result = controller.displayLegalDeclarationPage(false, false).apply(getJourneyRequest())
         status(result) mustBe OK
         verify(legalDeclarationPage).apply(any(), ArgumentMatchers.eq(false), any())(any(), any())
       }
@@ -119,39 +119,42 @@ class SubmissionControllerSpec extends ControllerWithoutFormSpec with ErrorHandl
     "when feature flag is on" when {
 
       "update the statementDescription field in the cache model" in {
+        when(mockSubmissionService.submitAmendment(any(), any(), any(), any(), any())(any(), any()))
+          .thenReturn(Future.successful(Some("actionId")))
+
         withNewCaching(declaration)
-        await(controller.submitAmendment(None)(postRequest(body)))
+        val sessionData = List(declarationUuid -> declaration.id, submissionUuid -> "submissionUuid")
+        await(controller.submitAmendment(false)(postRequestWithSession(body, sessionData)))
         theCacheModelUpdated mustBe declaration.copy(statementDescription = Some("amendReason"))
       }
 
-      "invoke the submission service amend method" in {
-        withNewCaching(declaration)
-        await(controller.submitAmendment(None)(postRequest(body)))
-        verify(mockSubmissionService).amend
-      }
-
       "redirect the user if submission is successful" in {
+        val actionId = Some("actionId")
+        when(mockSubmissionService.submitAmendment(any(), any(), any(), any(), any())(any(), any()))
+          .thenReturn(Future.successful(actionId))
+
         withNewCaching(declaration)
-        val result = controller.submitAmendment(None)(postRequest(body))
+        val sessionData = List(declarationUuid -> declaration.id, submissionUuid -> "submissionUuid")
+        val result = controller.submitAmendment(false)(postRequestWithSession(body, sessionData))
         status(result) must be(SEE_OTHER)
-        redirectLocation(result) mustBe Some(AmendmentConfirmationController.displayHoldingPage.url)
+        redirectLocation(result) mustBe Some(AmendmentOutcomeController.displayHoldingPage.url)
+        result.futureValue.session.get(SessionHelper.submissionActionId) mustBe actionId
       }
 
       "display an error if the submission fails due to incorrect form" in {
         val bodyWithoutField = Json.obj(nameKey -> "Test Tester", jobRoleKey -> "Tester", emailKey -> "test@tester.com", confirmationKey -> "true")
 
         withNewCaching(declaration)
-        val result = controller.submitAmendment(None)(postRequest(bodyWithoutField))
+        val result = controller.submitAmendment(false)(postRequest(bodyWithoutField))
         status(result) must be(BAD_REQUEST)
-        verify(mockErrorHandler).displayErrorPage(any())
       }
     }
 
     "when feature flag is off" when {
       "Redirect to root controller" in {
-        when(declarationAmendmentsConfig.isEnabled).thenReturn(false)
+        when(mockDeclarationAmendmentsConfig.isEnabled).thenReturn(false)
         withNewCaching(declaration)
-        val result = controller.submitAmendment(None)(postRequest(body))
+        val result = controller.submitAmendment(false)(postRequest(body))
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(RootController.displayPage.url)
       }
@@ -168,7 +171,9 @@ class SubmissionControllerSpec extends ControllerWithoutFormSpec with ErrorHandl
         val uuid = UUID.randomUUID().toString
         val expectedSubmission =
           Submission(uuid, eori = "GB123456", lrn = "123LRN", ducr = Some("ducr"), actions = List.empty, latestDecId = Some(uuid))
-        when(mockSubmissionService.submit(any(), any[ExportsDeclaration], any[LegalDeclaration])(any[HeaderCarrier], any[ExecutionContext]))
+        when(
+          mockSubmissionService.submitDeclaration(any(), any[ExportsDeclaration], any[LegalDeclaration])(any[HeaderCarrier], any[ExecutionContext])
+        )
           .thenReturn(Future.successful(Some(expectedSubmission)))
 
         val body = Json.obj("fullName" -> "Test Tester", "jobRole" -> "Tester", "email" -> "test@tester.com", "confirmation" -> "true")
@@ -178,13 +183,16 @@ class SubmissionControllerSpec extends ControllerWithoutFormSpec with ErrorHandl
         redirectLocation(result) must be(Some(ConfirmationController.displayHoldingPage.url))
 
         val actualSession = session(result)
-        actualSession.get(ExportsSessionKeys.declarationId) must be(None)
-        actualSession.get(ExportsSessionKeys.declarationType) must be(Some(""))
-        actualSession.get(ExportsSessionKeys.submissionDucr) must be(expectedSubmission.ducr)
-        actualSession.get(ExportsSessionKeys.submissionId) must be(Some(expectedSubmission.uuid))
-        actualSession.get(ExportsSessionKeys.submissionLrn) must be(Some(expectedSubmission.lrn))
+        actualSession.get(declarationUuid) must be(None)
+        actualSession.get(declarationType) must be(Some(""))
+        actualSession.get(submissionDucr) must be(expectedSubmission.ducr)
+        actualSession.get(submissionUuid) must be(Some(expectedSubmission.uuid))
+        actualSession.get(submissionLrn) must be(Some(expectedSubmission.lrn))
 
-        verify(mockSubmissionService).submit(any(), any[ExportsDeclaration], any[LegalDeclaration])(any[HeaderCarrier], any[ExecutionContext])
+        verify(mockSubmissionService).submitDeclaration(any(), any[ExportsDeclaration], any[LegalDeclaration])(
+          any[HeaderCarrier],
+          any[ExecutionContext]
+        )
       }
     }
 
@@ -209,7 +217,7 @@ class SubmissionControllerSpec extends ControllerWithoutFormSpec with ErrorHandl
     "return 500 (INTERNAL_SERVER_ERROR)" when {
       "lrn is not returned from submission service" in {
         withNewCaching(aDeclaration())
-        when(mockSubmissionService.submit(any(), any(), any())(any(), any())).thenReturn(Future.successful(None))
+        when(mockSubmissionService.submitDeclaration(any(), any(), any())(any(), any())).thenReturn(Future.successful(None))
 
         val body = Json.obj("fullName" -> "Test Tester", "jobRole" -> "Tester", "email" -> "test@tester.com", "confirmation" -> "true")
         val result = controller.submitDeclaration()(postRequest(body))

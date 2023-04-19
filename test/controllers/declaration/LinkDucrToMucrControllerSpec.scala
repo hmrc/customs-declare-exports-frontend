@@ -69,7 +69,7 @@ class LinkDucrToMucrControllerSpec extends ControllerSpec {
     theResponseForm
   }
 
-  "LinkDucrToMucrController on displayPage" should {
+  "LinkDucrToMucrController on displayOutcomePage" should {
 
     "return 200 (OK)" when {
 

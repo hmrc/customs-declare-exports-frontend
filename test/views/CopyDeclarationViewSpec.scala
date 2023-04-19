@@ -23,7 +23,7 @@ import forms.CopyDeclaration.form
 import forms.declaration.ConsignmentReferences.ducrId
 import forms.{CopyDeclaration, Ducr, Lrn}
 import models.DeclarationType.{CLEARANCE, SUPPLEMENTARY}
-import models.requests.{ExportsSessionKeys, JourneyRequest}
+import models.requests.{JourneyRequest, SessionHelper}
 import org.jsoup.nodes.Document
 import tools.Stubs
 import views.declaration.spec.UnitViewSpec
@@ -47,7 +47,7 @@ class CopyDeclarationViewSpec extends UnitViewSpec with CommonMessages with Stub
   "CopyDeclaration page on empty page" should {
 
     "not have View declaration summary link" in {
-      val view = createView(journeyRequest(aDeclaration(), (ExportsSessionKeys.declarationId, "decId")))
+      val view = createView(journeyRequest(aDeclaration(), (SessionHelper.declarationUuid, "decId")))
       Option(view.getElementById("view_declaration_summary")) mustBe None
     }
 

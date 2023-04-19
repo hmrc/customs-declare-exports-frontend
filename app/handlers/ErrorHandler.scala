@@ -22,9 +22,9 @@ import models.UnauthorisedReason.{UserIsAgent, UserIsNotEnrolled}
 
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.{Messages, MessagesApi}
-import play.api.mvc.Results.BadRequest
+import play.api.mvc.Results.{BadRequest, InternalServerError}
 import play.api.mvc.{Request, RequestHeader, Result, Results}
-import play.api.{Configuration, Environment}
+import play.api.{Configuration, Environment, Logging}
 import play.twirl.api.Html
 import uk.gov.hmrc.auth.core.{InsufficientEnrolments, NoActiveSession, UnsupportedAffinityGroup}
 import uk.gov.hmrc.play.bootstrap.config.AuthRedirects
@@ -35,7 +35,7 @@ import scala.concurrent.Future
 
 @Singleton
 class ErrorHandler @Inject() (override val messagesApi: MessagesApi, errorPage: error_template)(implicit appConfig: AppConfig)
-    extends FrontendErrorHandler with AuthRedirects {
+    extends FrontendErrorHandler with AuthRedirects with Logging {
   override def config: Configuration = appConfig.runModeConfiguration
 
   override def env: Environment = appConfig.environment
@@ -50,13 +50,24 @@ class ErrorHandler @Inject() (override val messagesApi: MessagesApi, errorPage: 
     case _                           => super.resolveError(rh, ex)
   }
 
-  def globalErrorPage(implicit request: Request[_]): Html =
+  private def globalErrorPage(implicit request: Request[_]): Html =
     standardErrorTemplate(
       pageTitle = Messages("global.error.title"),
       heading = Messages("global.error.heading"),
       message = Messages("global.error.message")
     )
 
-  def displayErrorPage(implicit request: Request[_]): Future[Result] =
-    Future.successful(BadRequest(globalErrorPage))
+  def badRequest(implicit request: Request[_]): Result =
+    BadRequest(globalErrorPage)
+
+  def internalServerError(message: String): Result = {
+    logger.warn(message)
+    InternalServerError("")
+  }
+
+  def internalError(message: String): Future[Result] =
+    Future.successful(internalServerError(message))
+
+  def redirectToErrorPage(implicit request: Request[_]): Future[Result] =
+    Future.successful(badRequest)
 }

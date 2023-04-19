@@ -125,3 +125,17 @@ Alignment for table cells with numeric values
 .govuk-table__cell--numeric {
   text-align: right;
 }
+
+.input-submit {
+  background: none;
+  border: solid #1d70b8;
+  border-width: 0 0 1px;
+  color: #1d70b8;
+  padding: 0;
+}
+
+.input-submit:hover {
+  color: #003078;
+  border: solid #003078;
+  border-width: 0 0 1px;
+}

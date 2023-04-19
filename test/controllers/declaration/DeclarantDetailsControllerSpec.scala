@@ -23,7 +23,7 @@ import forms.declaration.DeclarantEoriConfirmation
 import forms.declaration.DeclarantEoriConfirmation.isEoriKey
 import models.DeclarationType
 import models.DeclarationType.{OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
-import models.requests.ExportsSessionKeys
+import models.requests.SessionHelper
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
@@ -70,7 +70,7 @@ class DeclarantDetailsControllerSpec extends ControllerSpec {
     theResponseForm
   }
 
-  "DeclarantDetailsController on displayPage" should {
+  "DeclarantDetailsController on displayOutcomePage" should {
 
     "return 200 (OK)" when {
 
@@ -148,7 +148,7 @@ class DeclarantDetailsControllerSpec extends ControllerSpec {
           val result = controller.submitForm()(postRequest(correctForm))
           redirectLocation(result) mustBe Some(NotEligibleController.displayNotDeclarant.url)
 
-          session(result).get(ExportsSessionKeys.declarationId) must be(None)
+          session(result).get(SessionHelper.declarationUuid) must be(None)
         }
       }
     }

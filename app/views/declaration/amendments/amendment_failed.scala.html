@@ -48,7 +48,7 @@
 
     @paragraph(messages("declaration.confirmation.failed.amendment.next.4", link(
         messages("declaration.confirmation.declaration.details.link"),
-        DeclarationDetailsController.displayPage(confirmation.submission.fold("")(_.uuid))
+        DeclarationDetailsController.displayPage(confirmation.submission.uuid)
     )))
 
     @print_page_button(8, 4)

@@ -66,7 +66,7 @@ class IsExsControllerSpec extends ControllerSpec with ScalaFutures {
     theResponseForm
   }
 
-  "IsExsController on displayPage" should {
+  "IsExsController on displayOutcomePage" should {
 
     "return 200 (OK)" when {
 

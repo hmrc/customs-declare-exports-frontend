@@ -22,7 +22,6 @@ import controllers.routes.RejectedNotificationsController
 import models.declaration.submissions.EnhancedStatus._
 import models.declaration.submissions.RequestType._
 import models.declaration.submissions.{Action, NotificationSummary, RequestType, Submission}
-import models.declaration.submissions.RequestType.{AmendmentRequest, CancellationRequest}
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import play.twirl.api.{Html, HtmlFormat}

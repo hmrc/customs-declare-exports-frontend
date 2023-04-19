@@ -74,7 +74,7 @@ class ChoiceControllerSpec extends ControllerWithoutFormSpec with OptionValues w
   private def existingDeclaration(choice: DeclarationType = DeclarationType.SUPPLEMENTARY) =
     aDeclaration(withId("existingDeclarationId"), withType(choice))
 
-  "ChoiceController displayPage" should {
+  "ChoiceController displayOutcomePage" should {
 
     "return 200 (OK)" when {
 

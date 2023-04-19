@@ -75,7 +75,7 @@ class ProcedureCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks 
     templateParameters
   }
 
-  "ProcedureCodesController on displayPage" should {
+  "ProcedureCodesController on displayOutcomePage" should {
 
     "return 200 (OK)" when {
       onEveryDeclarationJourney() { request =>

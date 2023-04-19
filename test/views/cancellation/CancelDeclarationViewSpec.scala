@@ -22,7 +22,7 @@ import controllers.routes
 import forms.Choice.AllowedChoiceValues.CancelDec
 import forms.cancellation.CancellationChangeReason.NoLongerRequired
 import forms.{CancelDeclarationDescription, Choice, Lrn}
-import models.requests.ExportsSessionKeys
+import models.requests.SessionHelper
 import org.jsoup.nodes.Document
 import play.api.data.{Form, FormError}
 import tools.Stubs
@@ -179,5 +179,5 @@ class CancelDeclarationViewSpec extends UnitViewSpec with CommonMessages with St
   }
 
   private def createView(form: Form[CancelDeclarationDescription] = form): Document =
-    cancelDeclarationPage(form, lrn, ducr, mrn)(journeyRequest(aDeclaration(), (ExportsSessionKeys.declarationId, "decId")), messages)
+    cancelDeclarationPage(form, lrn, ducr, mrn)(journeyRequest(aDeclaration(), (SessionHelper.declarationUuid, "decId")), messages)
 }

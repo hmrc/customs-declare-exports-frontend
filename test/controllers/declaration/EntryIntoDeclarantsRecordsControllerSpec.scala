@@ -78,7 +78,7 @@ class EntryIntoDeclarantsRecordsControllerSpec extends ControllerSpec with Scala
     modelCaptor.getValue
   }
 
-  "EntryIntoDeclarantsRecordsController on displayPage" when {
+  "EntryIntoDeclarantsRecordsController on displayOutcomePage" when {
 
     onClearance { request =>
       "everything works correctly" should {

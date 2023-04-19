@@ -17,8 +17,9 @@
 package models.requests
 
 import models.SignedInUser
+import models.requests.SessionHelper.{declarationUuid, getValue}
 import play.api.mvc.{Request, WrappedRequest}
 
 class AuthenticatedRequest[+A](request: Request[A], val user: SignedInUser) extends WrappedRequest[A](request) {
-  def declarationId: Option[String] = request.session.data.get(ExportsSessionKeys.declarationId)
+  def declarationId: Option[String] = getValue(declarationUuid)(request)
 }

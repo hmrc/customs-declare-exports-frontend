@@ -75,7 +75,7 @@ class AuthorisationProcedureCodeChoiceControllerSpec extends ControllerSpec {
   private def verifyPageInvoked(numberOfTimes: Int = 1): HtmlFormat.Appendable =
     verify(authorisationProcedureCodeChoice, times(numberOfTimes)).apply(any())(any(), any())
 
-  "AuthorisationProcedureCodeChoiceController.displayPage" should {
+  "AuthorisationProcedureCodeChoiceController.displayOutcomePage" should {
 
     "return 200 (OK)" when {
 

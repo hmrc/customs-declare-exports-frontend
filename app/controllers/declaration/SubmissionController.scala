@@ -19,20 +19,20 @@ package controllers.declaration
 import com.google.inject.Inject
 import config.featureFlags.DeclarationAmendmentsConfig
 import controllers.actions.{AuthAction, JourneyAction, VerifiedEmailAction}
-import controllers.declaration.amendments.routes.AmendmentConfirmationController
+import controllers.declaration.amendments.routes.AmendmentOutcomeController
 import controllers.declaration.routes.ConfirmationController
 import controllers.helpers.ErrorFixModeHelper.inErrorFixMode
 import controllers.routes.RootController
 import forms.declaration.LegalDeclaration
-import forms.declaration.LegalDeclaration.form
+import forms.declaration.LegalDeclaration.{amendReasonKey, form}
 import handlers.ErrorHandler
 import models.declaration.submissions.Submission
-import models.requests.ExportsSessionKeys._
-import models.requests.{ExportsSessionKeys, JourneyRequest}
+import models.requests.JourneyRequest
+import models.requests.SessionHelper._
 import play.api.Logging
-import play.api.data.Form
+import play.api.data.{Form, FormError}
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request, Result, Session}
+import play.api.mvc._
 import services.SubmissionService
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
@@ -56,42 +56,14 @@ class SubmissionController @Inject() (
 
   val actions = authenticate andThen verifyEmail andThen journeyType
 
-  def displayLegalDeclarationPage(isAmendment: Boolean, action: Option[String]): Action[AnyContent] = actions { implicit request =>
+  def displayLegalDeclarationPage(isAmendment: Boolean, isCancellation: Boolean): Action[AnyContent] = actions { implicit request =>
     if (isAmendment) {
-      if (declarationAmendmentsConfig.isEnabled) {
-        Ok(legal_declaration(form, amend = true, action))
-      } else Redirect(RootController.displayPage)
-    } else if (inErrorFixMode) handleError("Invalid mode while redirected to the 'Legal declaration' page")
-    else Ok(legal_declaration(form))
-  }
-
-  def submitAmendment(action: Option[String]): Action[AnyContent] = actions.async { implicit request =>
-    if (!declarationAmendmentsConfig.isEnabled) Future.successful(Redirect(RootController.displayPage))
-    else
-      form
-        .bindFromRequest()
-        .fold(
-          (formWithErrors: Form[LegalDeclaration]) => Future.successful(BadRequest(legal_declaration(formWithErrors, amend = true, action))),
-          _.amendReason match {
-            case Some(amendReason) =>
-              val declaration = exportsCacheService.update(request.cacheModel.copy(statementDescription = Some(amendReason)))
-              declaration.flatMap { _ =>
-                submissionService.amend.map { _ =>
-                  Redirect(AmendmentConfirmationController.displayHoldingPage)
-                }
-              }
-            case _ => errorHandler.displayErrorPage
-          }
-        )
-  }
-
-  def cancelAmendment(decId: Option[String]): Action[AnyContent] = (authenticate andThen verifyEmail) { implicit request =>
-    decId match {
-      case Some(id) if declarationAmendmentsConfig.isEnabled =>
-        Redirect(routes.SubmissionController.submitAmendment(Some("cancel"))).addingToSession((ExportsSessionKeys.declarationId, id))
-      case _ =>
-        Redirect(controllers.routes.RootController.displayPage)
-    }
+      if (declarationAmendmentsConfig.isEnabled) Ok(legal_declaration(form, amend = true, isCancellation))
+      else Redirect(RootController.displayPage)
+    } else if (inErrorFixMode) {
+      val msg = "Invalid mode while redirected to the 'Legal declaration' page"
+      errorHandler.internalServerError(msg)
+    } else Ok(legal_declaration(form))
   }
 
   val submitDeclaration: Action[AnyContent] = actions.async { implicit request =>
@@ -99,22 +71,67 @@ class SubmissionController @Inject() (
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[LegalDeclaration]) => Future.successful(BadRequest(legal_declaration(formWithErrors))),
-        submissionService.submit(request.eori, request.cacheModel, _).map {
+        submissionService.submitDeclaration(request.eori, request.cacheModel, _).map {
           case Some(submission) => Redirect(ConfirmationController.displayHoldingPage).withSession(session(submission))
-          case _                => handleError(s"Error from Customs Declarations API")
+          case _                => errorHandler.internalServerError("Error from Customs Declarations API")
         }
       )
   }
 
-  private def handleError(logMessage: String)(implicit request: Request[_]): Result = {
-    logger.error(logMessage)
-    InternalServerError(errorHandler.globalErrorPage)
+  def cancelAmendment(maybeDeclarationId: Option[String]): Action[AnyContent] = (authenticate andThen verifyEmail) { implicit request =>
+    maybeDeclarationId match {
+      case Some(declarationId) if declarationAmendmentsConfig.isEnabled && declarationId.length > 0 =>
+        Redirect(routes.SubmissionController.displayLegalDeclarationPage(true, true))
+          .addingToSession((declarationUuid -> declarationId))
+
+      case _ =>
+        val msg = "No 'declarationId' from TimelineEvents on cancellation of an amendment"
+        errorHandler.internalServerError(msg)
+    }
+  }
+
+  def submitAmendment(isCancellation: Boolean): Action[AnyContent] = actions.async { implicit request =>
+    if (declarationAmendmentsConfig.isEnabled) {
+      val binding = form.bindFromRequest()
+      binding.fold(
+        formWithErrors => Future.successful(BadRequest(legal_declaration(formWithErrors, amend = true, isCancellation))),
+        legalDeclaration =>
+          (legalDeclaration.amendReason, getValue(submissionUuid)) match {
+            case (Some(amendReason), Some(submissionId)) =>
+              for {
+                declaration <- exportsCacheService.update(request.cacheModel.copy(statementDescription = Some(amendReason)))
+                maybeActionId <- submissionService.submitAmendment(request.eori, declaration, legalDeclaration, submissionId, isCancellation)
+              } yield maybeActionId match {
+                case Some(actionId) =>
+                  Redirect(AmendmentOutcomeController.displayHoldingPage).addingToSession(submissionActionId -> actionId)
+
+                case _ => errorHandler.badRequest
+              }
+
+            case (Some(_), None) =>
+              val declarationId = request.cacheModel.id
+              val msg = s"Cannot retrieve 'submissionUuid' from session on Amendment submission for declaration(${declarationId})"
+              errorHandler.internalError(msg)
+
+            case _ => toPageWithErrorsForEmptyAmendReason(legalDeclaration, isCancellation)
+          }
+      )
+    } else Future.successful(Redirect(RootController.displayPage))
+  }
+
+  private def toPageWithErrorsForEmptyAmendReason(legalDeclaration: LegalDeclaration, isCancellation: Boolean)(
+    implicit request: JourneyRequest[_]
+  ): Future[Result] = {
+    val messages = messagesApi.preferred(request).messages
+    val formError = FormError(amendReasonKey, messages("legal.declaration.amendReason.empty"))
+    val formWithErrors = form.fill(legalDeclaration).copy(errors = List(formError))
+    Future.successful(BadRequest(legal_declaration(formWithErrors, amend = true, isCancellation)))
   }
 
   private def session(submission: Submission)(implicit request: JourneyRequest[_]): Session =
-    request.session - declarationId +
+    removeValue(declarationUuid) +
       (declarationType -> request.cacheModel.additionalDeclarationType.fold("")(_.toString)) +
-      (submissionId -> submission.uuid) +
+      (submissionUuid -> submission.uuid) +
       (submissionDucr -> submission.ducr.fold("")(identity)) +
       (submissionLrn -> submission.lrn)
 }

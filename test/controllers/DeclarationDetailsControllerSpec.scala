@@ -19,7 +19,7 @@ package controllers
 import base.ControllerWithoutFormSpec
 import models.declaration.submissions.RequestType.SubmissionRequest
 import models.declaration.submissions.{Action, Submission}
-import models.requests.ExportsSessionKeys
+import models.requests.SessionHelper
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito.{reset, verify, verifyNoInteractions, when}
@@ -71,7 +71,7 @@ class DeclarationDetailsControllerSpec extends ControllerWithoutFormSpec with Be
   override protected def afterEach(): Unit =
     reset(declarationDetailsPage, mockCustomsDeclareExportsConnector)
 
-  "displayPage method of Declaration Details page" should {
+  "displayOutcomePage method of Declaration Details page" should {
 
     "return 200 (OK)" when {
       "submission but no notifications are provided for the Declaration" in {
@@ -81,10 +81,10 @@ class DeclarationDetailsControllerSpec extends ControllerWithoutFormSpec with Be
         val result = controller.displayPage(actionId)(getRequest())
         status(result) mustBe OK
 
-        session(result).get(ExportsSessionKeys.submissionId).value mustBe submission.uuid
-        session(result).get(ExportsSessionKeys.submissionMrn).value mustBe submission.mrn.value
-        session(result).get(ExportsSessionKeys.submissionLrn).value mustBe submission.lrn
-        session(result).get(ExportsSessionKeys.submissionDucr).value mustBe submission.ducr.value
+        session(result).get(SessionHelper.submissionUuid).value mustBe submission.uuid
+        session(result).get(SessionHelper.submissionMrn).value mustBe submission.mrn.value
+        session(result).get(SessionHelper.submissionLrn).value mustBe submission.lrn
+        session(result).get(SessionHelper.submissionDucr).value mustBe submission.ducr.value
 
         val submissionCaptor: ArgumentCaptor[Submission] = ArgumentCaptor.forClass(classOf[Submission])
         verify(declarationDetailsPage).apply(submissionCaptor.capture())(any(), any())

@@ -64,7 +64,7 @@ class DucrEntryControllerSpec extends ControllerSpec with GivenWhenThen {
     captor.getValue
   }
 
-  "DucrEntryController on displayPage" should {
+  "DucrEntryController on displayOutcomePage" should {
 
     onJourney(STANDARD, OCCASIONAL, SIMPLIFIED, CLEARANCE) { request =>
       "return 200 (OK)" when {

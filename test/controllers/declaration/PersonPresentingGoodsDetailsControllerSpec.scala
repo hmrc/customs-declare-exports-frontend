@@ -78,7 +78,7 @@ class PersonPresentingGoodsDetailsControllerSpec extends ControllerSpec with Sca
     modelCaptor.getValue
   }
 
-  "PersonPresentingGoodsDetailsController on displayPage" when {
+  "PersonPresentingGoodsDetailsController on displayOutcomePage" when {
 
     onClearance { request =>
       "everything works correctly" should {

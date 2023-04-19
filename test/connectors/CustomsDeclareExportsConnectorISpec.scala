@@ -340,29 +340,6 @@ class CustomsDeclareExportsConnectorISpec extends ConnectorISpec with ExportsDec
     }
   }
 
-  "Find last received Notification" should {
-
-    "return Ok when a notification is found" in {
-      val result = aResponse().withStatus(Status.OK).withBody(json(Option(notification)))
-      stubForExports(get(s"/submission/latest-notification/$id").willReturn(result))
-
-      val response = await(connector.findLatestNotification(id))
-
-      response.head mustBe notification
-      WireMock.verify(getRequestedFor(urlEqualTo(s"/submission/latest-notification/$id")))
-    }
-
-    "return None when a notification is not found" in {
-      val result = aResponse().withStatus(Status.NOT_FOUND)
-      stubForExports(get(s"/submission/latest-notification/$id").willReturn(result))
-
-      val response = await(connector.findLatestNotification(id))
-
-      response mustBe None
-      WireMock.verify(getRequestedFor(urlEqualTo(s"/submission/latest-notification/$id")))
-    }
-  }
-
   "Create Cancellation" should {
     val cancellation = CancelDeclaration(id, Lrn("ref"), "id", "statement", "reason")
 

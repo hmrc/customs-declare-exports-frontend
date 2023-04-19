@@ -17,7 +17,7 @@
 package views.declaration.spec
 
 import models.DeclarationType.DeclarationType
-import models.requests.ExportsSessionKeys.errorFixModeSessionKey
+import models.requests.SessionHelper.errorFixModeSessionKey
 import models.requests.JourneyRequest
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat.Appendable

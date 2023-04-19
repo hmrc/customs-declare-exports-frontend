@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,20 +12,15 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package controllers.helpers
+@import uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF
 
-import models.requests.SessionHelper.{errorFixModeSessionKey, getValue}
-import play.api.mvc.{Request, Result}
+@this(formHelper: FormWithCSRF)
 
-import scala.util.Try
+@(text: String, call: Call, value: String)(implicit request: Request[_], messages: Messages)
 
-object ErrorFixModeHelper {
-
-  def inErrorFixMode(implicit request: Request[_]): Boolean =
-    getValue(errorFixModeSessionKey).fold(false)(v => Try(v.toBoolean).getOrElse(false))
-
-  def setErrorFixMode(result: Result)(implicit request: Request[_]): Result =
-    result.addingToSession(errorFixModeSessionKey -> "true")
+@formHelper(action = call, 'autoComplete -> "off") {
+  <input type="hidden" name="value" value="@value" />
+  <input type="submit" class="input-submit govuk-link govuk-link--no-visited-state" value="@text"/>
 }
