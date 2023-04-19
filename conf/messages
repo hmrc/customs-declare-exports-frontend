@@ -2349,6 +2349,7 @@ legal.declaration.amend.heading = Submit amendment request
 legal.declaration.amend.cancel.info = To cancel you need to submit an amendment which makes no changes to your declaration. This is called a ‘Nil amendment’. To do this complete the form on this page. After this request is complete an ‘Amendment request’ will be displayed on the Declaration status page.
 legal.declaration.amend.reason = Reason for your amendment
 legal.declaration.amend.reason.hint = You can enter up to 512 characters
+legal.declaration.amend.reason.cancellation = Submitting a nil amendment to cancel previous amendment request.
 legal.declaration.amendReason.empty = Enter a reason for this amendment
 legal.declaration.amendReason.long = Your amendment reason must not be more than 512 characters
 legal.declaration.amendReason.error = Only letters, numbers, and certain special characters can be used in an amendment reason

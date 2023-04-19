@@ -102,6 +102,14 @@ class LegalDeclarationPageViewSpec extends UnitViewSpec with Injector {
       "have free text 'Reason for Amend' input" in {
         amendView.getElementsByAttributeValue("for", amendReasonKey) must containMessageForElements("legal.declaration.amend.reason")
       }
+      "have a hidden input field with a default text" when {
+        "the user cancels the amendment" in {
+          val view = legalDeclarationPage(emptyForm, amend = true, isCancellation = true)
+          val input = view.getElementById(amendReasonKey)
+          input.attr("type") mustBe "hidden"
+          input.attr("value") mustBe messages("legal.declaration.amend.reason.cancellation")
+        }
+      }
     }
   }
 }
