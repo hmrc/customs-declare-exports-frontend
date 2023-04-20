@@ -78,5 +78,20 @@
     "en": "Widnes / Eddie Stobart Limited / Widnes Railhead, Mathieson Road, Widnes, WA8 0NX",
     "cy": "Widnes / Eddie Stobart Limited / Widnes Railhead, Mathieson Road, Widnes, WA8 0NX",
     "code": "GBAUWDNWDNEST"
+  },
+  {
+    "en": "WHM Daventry, WH Malcolm Ltd Railport - Daventry International Railport, Railport Approach, Crick, Kilsby, Northampton NN6 7JZ",
+    "cy": "WHM Daventry, WH Malcolm Ltd Railport - Daventry International Railport, Railport Approach, Crick, Kilsby, Northampton NN6 7JZ",
+    "code": "GBAUKLSDVYWHM"
+  },
+  {
+    "en": "Eurostar - Ebbsfleet, Ebbsfleet International",
+    "cy": "Eurostar - Ebbsfleet, Ebbsfleet International",
+    "code": "GBAUEBSEBSEURO"
+  },
+  {
+    "en": "Eurostar - St Pancras International",
+    "cy": "Eurostar - St Pancras International",
+    "code": "GBAUSPCSPCEURO"
   }
 ]
