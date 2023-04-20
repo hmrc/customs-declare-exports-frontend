@@ -27,7 +27,7 @@
         Seq(
             Some(Seq(
               TableRow(content = Text(messages(s"declaration.summary.references.additionalType")), classes = "govuk-!-font-weight-bold"),
-              TableRow(content = Text(confirmation.declarationType))
+              TableRow(content = Text(messages(s"declaration.summary.references.additionalType.${confirmation.declarationType}")))
             )),
             confirmation.submission.ducr.map(ducr =>
               Seq(
