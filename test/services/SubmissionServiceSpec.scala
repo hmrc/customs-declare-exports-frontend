@@ -109,6 +109,23 @@ class SubmissionServiceSpec
           .submitAmendment(eori, aDeclaration(), legal, submissionId, false)(hc, global)
           .futureValue mustBe None
       }
+      "the declaration matching the parentDeclarationId is not found" in {
+
+        when(connector.findDeclaration(any())(any(), any())).thenReturn(Future.successful(None))
+
+        val amendedDecl = aDeclaration(
+          withId("id2"),
+          withStatus(DeclarationStatus.AMENDMENT_DRAFT),
+          withParentDeclarationId("id1"),
+          withConsignmentReferences(ducr = "ducr", lrn = lrn),
+          withDestinationCountry(Country(Some("IT"))),
+          withTotalNumberOfItems(Some("654321"), Some("94.1"), Some("GBP"), Some("no"))
+        )
+
+        submissionService
+          .submitAmendment(eori, amendedDecl, legal, submissionId, false)(hc, global)
+          .futureValue mustBe None
+      }
     }
 
     val registry = instanceOf[Metrics].defaultRegistry

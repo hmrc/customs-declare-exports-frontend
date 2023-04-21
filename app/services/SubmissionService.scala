@@ -69,33 +69,38 @@ class SubmissionService @Inject() (connector: CustomsDeclareExportsConnector, au
     isCancellation: Boolean
   )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[String]] =
     declaration.declarationMeta.parentDeclarationId.map { parentDeclarationId =>
-      connector.findDeclaration(parentDeclarationId).flatMap { case Some(parentDeclaration) =>
-        val timerContext = metrics.startTimer(submissionAmendmentMetric)
-        val auditType =
-          if (isCancellation) AmendmentCancellation
-          else {
-            auditService.auditAllPagesUserInput(AmendmentPayload, declaration)
-            AuditTypes.Amendment
-          }
+      connector.findDeclaration(parentDeclarationId).flatMap {
+        case Some(parentDeclaration) =>
+          val timerContext = metrics.startTimer(submissionAmendmentMetric)
+          val auditType =
+            if (isCancellation) AmendmentCancellation
+            else {
+              auditService.auditAllPagesUserInput(AmendmentPayload, declaration)
+              AuditTypes.Amendment
+            }
 
-        val fieldPointers = declaration.createDiff(parentDeclaration).map(_.fieldPointer)
-        val submissionAmendment = SubmissionAmendment(submissionId, declaration.id, fieldPointers)
-        connector
-          .submitAmendment(submissionAmendment)
-          .andThen {
-            case Success(_) =>
-              auditSubmission(eori, declaration, legalDeclaration, Success.toString, auditType)
-              metrics.incrementCounter(submissionAmendmentMetric)
-              timerContext.stop()
+          val fieldPointers = declaration.createDiff(parentDeclaration).map(_.fieldPointer)
+          val submissionAmendment = SubmissionAmendment(submissionId, declaration.id, fieldPointers)
+          connector
+            .submitAmendment(submissionAmendment)
+            .andThen {
+              case Success(_) =>
+                auditSubmission(eori, declaration, legalDeclaration, Success.toString, auditType)
+                metrics.incrementCounter(submissionAmendmentMetric)
+                timerContext.stop()
 
-            case Failure(exception) =>
-              logProgress(declaration, "Amendment Submission Failed")
-              logger.error(s"Error response from backend $exception")
-              auditSubmission(eori, declaration, legalDeclaration, Failure.toString, auditType)
-          }
-          .map(Some(_))
+              case Failure(exception) =>
+                logProgress(declaration, "Amendment Submission Failed")
+                logger.error(s"Error response from backend $exception")
+                auditSubmission(eori, declaration, legalDeclaration, Failure.toString, auditType)
+            }
+            .map(Some(_))
+
+        case None =>
+          logger.warn(s"Amendment declaration $parentDeclarationId cannot be found")
+          Future.successful(None)
       }
-    }.getOrElse {
+    } getOrElse {
       logger.warn(s"Amendment submission of a declaration(${declaration.id}) with 'parentDeclarationId' undefined")
       Future.successful(None)
     }
