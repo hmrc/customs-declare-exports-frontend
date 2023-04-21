@@ -69,7 +69,7 @@ class AdditionalDeclarationTypeControllerSpec extends ControllerSpec {
     theResponseForm
   }
 
-  "AdditionalDeclarationTypeController.displayPage" should {
+  "AdditionalDeclarationTypeController.displayOutcomePage" should {
 
     "return 200 (OK)" when {
 

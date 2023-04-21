@@ -18,7 +18,7 @@ package controllers.declaration
 
 import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
-import models.requests.ExportsSessionKeys.{declarationId, errorFixModeSessionKey}
+import models.requests.SessionHelper.{declarationUuid, errorFixModeSessionKey}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
@@ -38,6 +38,6 @@ class DraftDeclarationController @Inject() (
     val updatedDateTime = request.cacheModel.declarationMeta.updatedDateTime
     val expiry = updatedDateTime.plusSeconds(appConfig.draftTimeToLive.toSeconds).toEpochMilli.toString
 
-    Ok(draftDeclarationPage(request.declarationId, expiry)).removingFromSession(declarationId, errorFixModeSessionKey)
+    Ok(draftDeclarationPage(request.declarationId, expiry)).removingFromSession(declarationUuid, errorFixModeSessionKey)
   }
 }

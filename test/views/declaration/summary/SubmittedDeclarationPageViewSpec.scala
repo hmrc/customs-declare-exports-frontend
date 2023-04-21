@@ -20,7 +20,7 @@ import base.Injector
 import forms.declaration.CommodityDetails
 import models.DeclarationType._
 import models.ExportsDeclaration
-import models.requests.ExportsSessionKeys
+import models.requests.SessionHelper
 import org.jsoup.nodes.{Document, Element}
 import org.jsoup.select.Elements
 import services.cache.ExportsTestHelper
@@ -35,7 +35,7 @@ class SubmittedDeclarationPageViewSpec extends UnitViewSpec with Stubs with Expo
 
   val declarationPage = instanceOf[submitted_declaration_page]
   def createView(declaration: ExportsDeclaration = aDeclaration()): Document =
-    declarationPage(Some(submission), declaration)(journeyRequest(declaration, (ExportsSessionKeys.declarationId, "decId")), messages)
+    declarationPage(Some(submission), declaration)(journeyRequest(declaration, (SessionHelper.declarationUuid, "decId")), messages)
 
   def links(view: Document): Elements = {
     val allLinks = view.getElementsByClass("govuk-link")

@@ -20,7 +20,7 @@ import connectors.CustomsDeclareExportsConnector
 import controllers.actions.{AuthAction, VerifiedEmailAction}
 import controllers.declaration.routes._
 import controllers.helpers.ErrorFixModeHelper.setErrorFixMode
-import models.requests.ExportsSessionKeys.declarationId
+import models.requests.SessionHelper.declarationUuid
 import models.responses.FlashKeys
 import play.api.i18n.I18nSupport
 import play.api.mvc._
@@ -49,7 +49,7 @@ class SubmissionsController @Inject() (
 
   def draftAmendment(submissionId: String): Action[AnyContent] = authAndEmailActions.async { implicit request =>
     customsDeclareExportsConnector.findOrCreateDraftForAmend(submissionId) map { id =>
-      Redirect(SummaryController.displayPage).addingToSession(declarationId -> id)
+      Redirect(SummaryController.displayPage).addingToSession(declarationUuid -> id)
     }
   }
 
@@ -78,6 +78,6 @@ class SubmissionsController @Inject() (
 
   private def findOrCreateDraftForRejected(rejectedId: String, redirect: Result)(implicit request: WrappedRequest[AnyContent]): Future[Result] =
     customsDeclareExportsConnector.findOrCreateDraftForRejected(rejectedId).map { id =>
-      redirect.addingToSession(declarationId -> id)
+      redirect.addingToSession(declarationUuid -> id)
     }
 }

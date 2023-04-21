@@ -23,10 +23,10 @@ import handlers.ErrorHandler
 import models.declaration.submissions.EnhancedStatus.{CUSTOMS_POSITION_DENIED, CUSTOMS_POSITION_GRANTED, EnhancedStatus}
 import models.declaration.submissions.NotificationSummary
 import models.requests.AuthenticatedRequest
-import models.requests.ExportsSessionKeys.{submissionId, submissionMrn}
+import models.requests.SessionHelper.{getValue, removeValue, submissionMrn, submissionUuid}
 import play.api.Logging
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result, Session}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.{cancellation_holding, cancellation_result}
 
@@ -68,14 +68,14 @@ class CancellationResultController @Inject() (
 
         case Some(_) =>
           logger.warn("Unknown value for query parameter 'js'. Can only be 'disabled' or 'enabled'.")
-          errorHandler.displayErrorPage
+          errorHandler.redirectToErrorPage
       }
     }
   }
 
   val displayResultPage: Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
     extractDataFromSession { (submissionId, mrn) =>
-      def result(status: Option[EnhancedStatus]) = Ok(cancellationResultPage(status, mrn)).withSession(removedSubmissionId)
+      def result(status: Option[EnhancedStatus]) = Ok(cancellationResultPage(status, mrn)).withSession(removeValue(submissionUuid))
 
       getLatestCancellationNotificationSummary(submissionId)
         .map(_.fold {
@@ -92,19 +92,16 @@ class CancellationResultController @Inject() (
 
   private def extractDataFromSession(f: (String, String) => Future[Result])(implicit request: AuthenticatedRequest[_]): Future[Result] =
     (for {
-      submissionId <- request.session.get(submissionId)
-      mrn <- request.session.get(submissionMrn)
+      submissionId <- getValue(submissionUuid)
+      mrn <- getValue(submissionMrn)
     } yield (submissionId, mrn)).fold {
-      logger.warn("No submissionId and/or mrn found in session")
-      errorHandler.displayErrorPage
+      logger.warn("No submissionUuid and/or mrn found in session")
+      errorHandler.redirectToErrorPage
     } { case (submissionId, mrn) =>
       f(submissionId, mrn)
     }
 
-  private def removedSubmissionId(implicit request: AuthenticatedRequest[_]): Session =
-    request.session - submissionId
-
-  // TODO: need to refactor to get notificationSummary for submissionId
+  // TODO: need to refactor to get notificationSummary for submissionUuid
   private def getLatestCancellationNotificationSummary(
     submissionId: String
   )(implicit request: AuthenticatedRequest[_]): Future[Option[NotificationSummary]] =

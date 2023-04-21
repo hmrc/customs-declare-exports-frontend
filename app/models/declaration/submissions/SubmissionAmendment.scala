@@ -14,18 +14,13 @@
  * limitations under the License.
  */
 
-package controllers.helpers
+package models.declaration.submissions
 
-import models.requests.SessionHelper.{errorFixModeSessionKey, getValue}
-import play.api.mvc.{Request, Result}
+import models.ExportsFieldPointer.ExportsFieldPointer
+import play.api.libs.json.Json
 
-import scala.util.Try
+case class SubmissionAmendment(submissionId: String, declarationId: String, fieldPointers: Seq[ExportsFieldPointer])
 
-object ErrorFixModeHelper {
-
-  def inErrorFixMode(implicit request: Request[_]): Boolean =
-    getValue(errorFixModeSessionKey).fold(false)(v => Try(v.toBoolean).getOrElse(false))
-
-  def setErrorFixMode(result: Result)(implicit request: Request[_]): Result =
-    result.addingToSession(errorFixModeSessionKey -> "true")
+object SubmissionAmendment {
+  implicit val format = Json.format[SubmissionAmendment]
 }

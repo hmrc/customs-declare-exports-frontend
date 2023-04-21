@@ -18,7 +18,7 @@ package controllers
 
 import base.ControllerWithoutFormSpec
 import config.PaginationConfig
-import models.requests.ExportsSessionKeys
+import models.requests.SessionHelper
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import play.api.test.Helpers._
@@ -67,7 +67,7 @@ class SavedDeclarationsControllerSpec extends ControllerWithoutFormSpec {
         val result = controller.continueDeclaration("123")(getRequest())
 
         status(result) must be(SEE_OTHER)
-        session(result).get(ExportsSessionKeys.declarationId) must be(Some("123"))
+        session(result).get(SessionHelper.declarationUuid) must be(Some("123"))
       }
 
       "continue declaration not found" in {

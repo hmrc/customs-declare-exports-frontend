@@ -73,7 +73,7 @@ class SummaryControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerM
     super.afterEach()
   }
 
-  "SummaryController.displayPage" should {
+  "SummaryController.displayOutcomePage" should {
 
     "return 200 (OK)" when {
 

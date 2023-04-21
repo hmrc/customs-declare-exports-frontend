@@ -16,76 +16,94 @@
 
 package services
 
-import scala.concurrent.{ExecutionContext, Future}
-import scala.util.{Failure, Success}
-
 import com.google.inject.Inject
 import connectors.CustomsDeclareExportsConnector
 import forms.declaration.LegalDeclaration
-import javax.inject.Singleton
 import metrics.ExportsMetrics
-import metrics.MetricIdentifiers.submissionMetric
+import metrics.MetricIdentifiers.{submissionAmendmentMetric, submissionMetric}
 import models.DeclarationType.DeclarationType
 import models.ExportsDeclaration
-import models.declaration.submissions.Submission
+import models.declaration.submissions.{Submission, SubmissionAmendment}
 import play.api.Logging
+import services.audit.AuditTypes.{AmendmentCancellation, AmendmentPayload, Audit, SubmissionPayload}
 import services.audit.{AuditService, AuditTypes, EventData}
 import uk.gov.hmrc.http.HeaderCarrier
 
-@Singleton
-class SubmissionService @Inject() (exportsConnector: CustomsDeclareExportsConnector, auditService: AuditService, exportsMetrics: ExportsMetrics)
-    extends Logging {
+import javax.inject.Singleton
+import scala.concurrent.{ExecutionContext, Future}
+import scala.util.{Failure, Success}
 
-  def submit(eori: String, exportsDeclaration: ExportsDeclaration, legalDeclaration: LegalDeclaration)(
+@Singleton
+class SubmissionService @Inject() (connector: CustomsDeclareExportsConnector, auditService: AuditService, metrics: ExportsMetrics) extends Logging {
+
+  def submitDeclaration(eori: String, declaration: ExportsDeclaration, legalDeclaration: LegalDeclaration)(
     implicit hc: HeaderCarrier,
     ec: ExecutionContext
   ): Future[Option[Submission]] = {
-    val timerContext = exportsMetrics.startTimer(submissionMetric)
-    auditService.auditAllPagesUserInput(AuditTypes.SubmissionPayload, exportsDeclaration)
+    val timerContext = metrics.startTimer(submissionMetric)
+    auditService.auditAllPagesUserInput(SubmissionPayload, declaration)
 
-    logProgress(exportsDeclaration, "Beginning Submission")
-    exportsConnector
-      .submitDeclaration(exportsDeclaration.id)
+    logProgress(declaration, "Beginning Submission")
+    connector
+      .submitDeclaration(declaration.id)
       .andThen {
         case Success(_) =>
-          logProgress(exportsDeclaration, "Submitted Successfully")
-          auditService.audit(
-            AuditTypes.Submission,
-            auditData(
-              eori,
-              exportsDeclaration.`type`,
-              exportsDeclaration.lrn,
-              exportsDeclaration.ducr.map(_.ducr),
-              legalDeclaration,
-              Success.toString
-            )
-          )
-          exportsMetrics.incrementCounter(submissionMetric)
+          logProgress(declaration, "Submitted Successfully")
+          auditSubmission(eori, declaration, legalDeclaration, Success.toString, AuditTypes.Submission)
+          metrics.incrementCounter(submissionMetric)
           timerContext.stop()
 
         case Failure(exception) =>
-          logProgress(exportsDeclaration, "Submission Failed")
+          logProgress(declaration, "Submission Failed")
           logger.error(s"Error response from backend $exception")
-          auditService.audit(
-            AuditTypes.Submission,
-            auditData(
-              eori,
-              exportsDeclaration.`type`,
-              exportsDeclaration.lrn,
-              exportsDeclaration.ducr.map(_.ducr),
-              legalDeclaration,
-              Failure.toString
-            )
-          )
+          auditSubmission(eori, declaration, legalDeclaration, Failure.toString, AuditTypes.Submission)
       }
       .map(Some(_))
   }
 
-  def amend: Future[Option[Submission]] =
-    Future.successful(None)
+  def submitAmendment(
+    eori: String,
+    declaration: ExportsDeclaration,
+    legalDeclaration: LegalDeclaration,
+    submissionId: String,
+    isCancellation: Boolean
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[String]] =
+    declaration.declarationMeta.parentDeclarationId.map { parentDeclarationId =>
+      connector.findDeclaration(parentDeclarationId).flatMap { case Some(parentDeclaration) =>
+        val timerContext = metrics.startTimer(submissionAmendmentMetric)
+        val auditType =
+          if (isCancellation) AmendmentCancellation
+          else {
+            auditService.auditAllPagesUserInput(AmendmentPayload, declaration)
+            AuditTypes.Amendment
+          }
 
-  private def logProgress(declaration: ExportsDeclaration, message: String): Unit =
-    logger.info(s"Declaration [${declaration.id}]: $message")
+        val fieldPointers = declaration.createDiff(parentDeclaration).map(_.fieldPointer)
+        val submissionAmendment = SubmissionAmendment(submissionId, declaration.id, fieldPointers)
+        connector
+          .submitAmendment(submissionAmendment)
+          .andThen {
+            case Success(_) =>
+              auditSubmission(eori, declaration, legalDeclaration, Success.toString, auditType)
+              metrics.incrementCounter(submissionAmendmentMetric)
+              timerContext.stop()
+
+            case Failure(exception) =>
+              logProgress(declaration, "Amendment Submission Failed")
+              logger.error(s"Error response from backend $exception")
+              auditSubmission(eori, declaration, legalDeclaration, Failure.toString, auditType)
+          }
+          .map(Some(_))
+      }
+    }.getOrElse {
+      logger.warn(s"Amendment submission of a declaration(${declaration.id}) with 'parentDeclarationId' undefined")
+      Future.successful(None)
+    }
+
+  private def auditSubmission(eori: String, declaration: ExportsDeclaration, legalDeclaration: LegalDeclaration, opResult: String, auditType: Audit)(
+    implicit hc: HeaderCarrier
+  ): Unit =
+    auditService.audit(auditType, auditData(eori, declaration.`type`, declaration.lrn, declaration.ducr.map(_.ducr), legalDeclaration, opResult))
 
   private def auditData(
     eori: String,
@@ -94,7 +112,7 @@ class SubmissionService @Inject() (exportsConnector: CustomsDeclareExportsConnec
     ducr: Option[String],
     legalDeclaration: LegalDeclaration,
     result: String
-  ) =
+  ): Map[String, String] =
     Map(
       EventData.eori.toString -> eori,
       EventData.decType.toString -> `type`.toString,
@@ -107,4 +125,6 @@ class SubmissionService @Inject() (exportsConnector: CustomsDeclareExportsConnec
       EventData.submissionResult.toString -> result
     )
 
+  private def logProgress(declaration: ExportsDeclaration, message: String): Unit =
+    logger.info(s"Declaration [${declaration.id}]: $message")
 }

@@ -19,7 +19,7 @@ package base
 import controllers.helpers.{Add, AddField, SaveAndContinue}
 import mock.{FeatureFlagMocks, JourneyActionMocks, VerifiedEmailMocks}
 import models.ExportsDeclaration
-import models.requests.{ExportsSessionKeys, JourneyRequest}
+import models.requests.{JourneyRequest, SessionHelper}
 import models.responses.FlashKeys
 import org.mockito.Mockito.when
 import play.api.data.{Form, FormError}
@@ -55,15 +55,16 @@ trait ControllerSpec
 
   protected def postRequest(body: JsValue): Request[AnyContentAsJson] =
     FakeRequest("POST", "")
-      .withSession(ExportsSessionKeys.declarationId -> "declaration-id")
+      .withSession(SessionHelper.declarationUuid -> "declaration-id")
       .withJsonBody(body)
       .withCSRFToken
 
   protected def postRequest(body: JsValue, declaration: ExportsDeclaration): Request[AnyContent] =
     FakeRequest("POST", "")
-      .withSession(ExportsSessionKeys.declarationId -> declaration.id)
+      .withSession(SessionHelper.declarationUuid -> declaration.id)
       .withJsonBody(body)
       .withCSRFToken
+
   protected def postRequestWithSession(body: JsValue, sessionData: Seq[(String, String)]): Request[AnyContent] =
     FakeRequest("POST", "")
       .withSession(sessionData: _*)
@@ -72,19 +73,19 @@ trait ControllerSpec
 
   protected def postRequestAsFormUrlEncoded(body: (String, String)*): Request[AnyContentAsFormUrlEncoded] =
     FakeRequest("POST", "")
-      .withSession(ExportsSessionKeys.declarationId -> "declaration-id")
+      .withSession(SessionHelper.declarationUuid -> "declaration-id")
       .withFormUrlEncodedBody(body: _*)
       .withCSRFToken
 
   protected def postRequestWithSubmissionError: Request[AnyContentAsEmpty.type] =
     FakeRequest("POST", "")
       .withFlash((FlashKeys.fieldName, submissionField), (FlashKeys.errorMessage, submissionError))
-      .withSession(ExportsSessionKeys.declarationId -> "declaration-id")
+      .withSession(SessionHelper.declarationUuid -> "declaration-id")
       .withCSRFToken
 
   protected def deleteRequest(body: JsValue): Request[AnyContentAsJson] =
     FakeRequest("DELETE", "")
-      .withSession(ExportsSessionKeys.declarationId -> "declaration-id")
+      .withSession(SessionHelper.declarationUuid -> "declaration-id")
       .withJsonBody(body)
       .withCSRFToken
 
@@ -95,7 +96,7 @@ trait ControllerSpec
   protected def getRequestWithSubmissionErrors: Request[AnyContentAsEmpty.type] =
     FakeRequest("GET", "")
       .withFlash((FlashKeys.fieldName, submissionField), (FlashKeys.errorMessage, submissionError))
-      .withSession((ExportsSessionKeys.declarationId -> "declaration-id"))
+      .withSession((SessionHelper.declarationUuid -> "declaration-id"))
       .withCSRFToken
 
   protected def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_]

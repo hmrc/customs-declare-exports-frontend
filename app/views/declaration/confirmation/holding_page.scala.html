@@ -15,7 +15,6 @@
  *@
 
 @import controllers.routes.Assets
-@import controllers.declaration.routes.ConfirmationController
 @import uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF
 @import views.helpers.Title
 @import views.html.components.gds.{gdsMainTemplate, pageTitle, paragraphBody}
@@ -27,7 +26,12 @@
     paragraph : paragraphBody
 )
 
-@(urlOnJavaScriptDisabled: String, urlOnJavaScriptEnabled: String)(implicit request: Request[_], messages: Messages)
+@(
+  redirectToUrl: String,
+  urlOnJavaScriptDisabled: String,
+  urlOnJavaScriptEnabled: String,
+  title: String = "declaration.confirmation.holding.title"
+)(implicit request: Request[_], messages: Messages)
 
 @pollingEverySeconds = @{ 5 }
 @pollingEveryMillisecs = @{ pollingEverySeconds * 1000 }
@@ -37,10 +41,10 @@
 }
 
 @govukLayout(
-    title = Title("declaration.confirmation.holding.title"),
+    title = Title(title),
     headContentOnJavaScriptDisabled = Some(headContentOnJavaScriptDisabled)
 ) {
-    @pageTitle(messages("declaration.confirmation.holding.title"))
+    @pageTitle(messages(title))
 
     @paragraph(messages("declaration.confirmation.holding.paragraph"), "govuk-body govuk-label--m")
 
@@ -50,7 +54,7 @@
 <script src='@Assets.versioned("javascripts/jquery-3.6.0.min.js")'></script>
 
 <script type="text/javascript">
-  function redirect() { window.location.href = "@{ConfirmationController.displayConfirmationPage.url}"; }
+  function redirect() { window.location.href = "@{redirectToUrl}"; }
 
   function hasNotifications() {
     $.ajax({ cache: false, timeout: @pollingEveryMillisecs, url: "@urlOnJavaScriptEnabled" })

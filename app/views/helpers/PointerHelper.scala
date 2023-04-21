@@ -73,14 +73,14 @@ object PointerHelper extends Logging {
     "declaration.items.$.statisticalValue.statisticalValue" -> StatisticalValueController.displayPage,
     "declaration.items.$.additionalDocument" -> AdditionalDocumentsController.displayPage,
     "declaration.items.$.additionalDocument.$.documentIdentifier" -> AdditionalDocumentsController.displayPage,
-    "declaration.items.$.additionalDocument.$.documentTypeCode" -> AdditionalDocumentsController.displayPage, // ?? AdditionalDocumentChangeController.displayPage
-    "declaration.items.$.additionalDocument.$.dateOfValidity" -> AdditionalDocumentsController.displayPage, // ?? AdditionalDocumentChangeController.displayPage
-    "declaration.items.$.additionalDocument.$.documentStatus" -> AdditionalDocumentsController.displayPage, // ?? AdditionalDocumentChangeController.displayPage
-    "declaration.items.$.additionalDocument.$.documentStatusReason" -> AdditionalDocumentsController.displayPage, // ?? AdditionalDocumentChangeController.displayPage
-    "declaration.items.$.additionalDocument.$.issuingAuthorityName" -> AdditionalDocumentsController.displayPage, // ?? AdditionalDocumentChangeController.displayPage
-    "declaration.items.$.additionalDocument.$.documentWriteOff.documentQuantity" -> AdditionalDocumentsController.displayPage, // ?? AdditionalDocumentChangeController.displayPage
-    "declaration.items.$.additionalInformation.$.code" -> AdditionalInformationController.displayPage, // ?? AdditionalInformationChangeController.displayPage
-    "declaration.items.$.additionalInformation.$.description" -> AdditionalInformationController.displayPage, // ?? AdditionalInformationChangeController.displayPage
+    "declaration.items.$.additionalDocument.$.documentTypeCode" -> AdditionalDocumentsController.displayPage, // ?? AdditionalDocumentChangeController.displayOutcomePage
+    "declaration.items.$.additionalDocument.$.dateOfValidity" -> AdditionalDocumentsController.displayPage, // ?? AdditionalDocumentChangeController.displayOutcomePage
+    "declaration.items.$.additionalDocument.$.documentStatus" -> AdditionalDocumentsController.displayPage, // ?? AdditionalDocumentChangeController.displayOutcomePage
+    "declaration.items.$.additionalDocument.$.documentStatusReason" -> AdditionalDocumentsController.displayPage, // ?? AdditionalDocumentChangeController.displayOutcomePage
+    "declaration.items.$.additionalDocument.$.issuingAuthorityName" -> AdditionalDocumentsController.displayPage, // ?? AdditionalDocumentChangeController.displayOutcomePage
+    "declaration.items.$.additionalDocument.$.documentWriteOff.documentQuantity" -> AdditionalDocumentsController.displayPage, // ?? AdditionalDocumentChangeController.displayOutcomePage
+    "declaration.items.$.additionalInformation.$.code" -> AdditionalInformationController.displayPage, // ?? AdditionalInformationChangeController.displayOutcomePage
+    "declaration.items.$.additionalInformation.$.description" -> AdditionalInformationController.displayPage, // ?? AdditionalInformationChangeController.displayOutcomePage
     "declaration.items.$.commodityDetails.descriptionOfGoods" -> CommodityDetailsController.displayPage,
     "declaration.items.$.cusCode.id" -> CusCodeController.displayPage,
     "declaration.items.$.cusCode.cusCode" -> CusCodeController.displayPage,
@@ -88,8 +88,8 @@ object PointerHelper extends Logging {
     "declaration.items.$.commodityMeasure.grossMass" -> CommodityMeasureController.displayPage,
     "declaration.items.$.commodityMeasure.netMass" -> CommodityMeasureController.displayPage,
     "declaration.items.$.commodityMeasure.supplementaryUnits" -> SupplementaryUnitsController.displayPage,
-    "declaration.items.$.additionalFiscalReferences.$.id" -> AdditionalFiscalReferencesController.displayPage, // ?? AdditionalFiscalReferencesRemoveController.displayPage
-    "declaration.items.$.additionalFiscalReferences.$.roleCode" -> AdditionalFiscalReferencesController.displayPage, // ?? AdditionalFiscalReferencesRemoveController.displayPage
+    "declaration.items.$.additionalFiscalReferences.$.id" -> AdditionalFiscalReferencesController.displayPage, // ?? AdditionalFiscalReferencesRemoveController.displayOutcomePage
+    "declaration.items.$.additionalFiscalReferences.$.roleCode" -> AdditionalFiscalReferencesController.displayPage, // ?? AdditionalFiscalReferencesRemoveController.displayOutcomePage
     "declaration.items.$.procedureCodes.procedureCode.current" -> ProcedureCodesController.displayPage,
     "declaration.items.$.procedureCodes.procedureCode.previous" -> ProcedureCodesController.displayPage,
     "declaration.items.$.packageInformation.$.shippingMarks" -> PackageInformationSummaryController.displayPage,
@@ -152,10 +152,10 @@ object PointerHelper extends Logging {
     "declaration.locations.goodsLocation.typeOfLocation" -> LocationOfGoodsController.displayPage,
     "declaration.containers.container.$.id" -> TransportContainerController.displayContainerSummary, // ?? SealController.displaySealSummary
     "declaration.containers.container.$.seals.seal.$.id" -> TransportContainerController.displayContainerSummary, // ?? SealController.displaySealRemove
-    "declaration.previousDocuments.$.documentCategory" -> PreviousDocumentsSummaryController.displayPage, // ?? PreviousDocumentsChangeController.displayPage
-    "declaration.previousDocuments.$.documentReference" -> PreviousDocumentsSummaryController.displayPage, // ?? PreviousDocumentsChangeController.displayPage
-    "declaration.previousDocuments.$.documentType" -> PreviousDocumentsSummaryController.displayPage, // ?? PreviousDocumentsChangeController.displayPage
-    "declaration.previousDocuments.$.goodsItemIdentifier" -> PreviousDocumentsSummaryController.displayPage, // ?? PreviousDocumentsChangeController.displayPage
+    "declaration.previousDocuments.$.documentCategory" -> PreviousDocumentsSummaryController.displayPage, // ?? PreviousDocumentsChangeController.displayOutcomePage
+    "declaration.previousDocuments.$.documentReference" -> PreviousDocumentsSummaryController.displayPage, // ?? PreviousDocumentsChangeController.displayOutcomePage
+    "declaration.previousDocuments.$.documentType" -> PreviousDocumentsSummaryController.displayPage, // ?? PreviousDocumentsChangeController.displayOutcomePage
+    "declaration.previousDocuments.$.goodsItemIdentifier" -> PreviousDocumentsSummaryController.displayPage, // ?? PreviousDocumentsChangeController.displayOutcomePage
     "declaration.locations.warehouseIdentification.identificationNumber" -> WarehouseIdentificationController.displayPage,
     "declaration.locations.warehouseIdentification.identificationType" -> WarehouseIdentificationController.displayPage,
     "declaration.locations.warehouseIdentification.supervisingCustomsOffice" -> SupervisingCustomsOfficeController.displayPage

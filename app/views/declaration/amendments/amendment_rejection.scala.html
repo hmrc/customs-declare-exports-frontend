@@ -34,7 +34,7 @@
 
 @(confirmation: Confirmation)(implicit request: Request[_], messages: Messages)
 
-@govukLayout(title = Title(confirmationHelper.title(confirmation)), showDeclarationSummaryLink = false) {
+@govukLayout(title = Title("declaration.confirmation.rejected.amendment.title"), showDeclarationSummaryLink = false) {
 
     @heading(messages(s"declaration.confirmation.rejected.amendment.title"))
 
@@ -49,7 +49,7 @@
         messages(
             "declaration.confirmation.rejected.amendment.next.3",
             link(messages("declaration.confirmation.declaration.details.link"),
-                controllers.routes.DeclarationDetailsController.displayPage(confirmation.submission.map(_.uuid).getOrElse(""))
+                controllers.routes.DeclarationDetailsController.displayPage(confirmation.submission.uuid)
             )
         )
     )

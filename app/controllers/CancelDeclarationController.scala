@@ -24,7 +24,8 @@ import handlers.ErrorHandler
 import metrics.ExportsMetrics
 import metrics.MetricIdentifiers._
 import models._
-import models.requests.{AuthenticatedRequest, ExportsSessionKeys}
+import models.requests.SessionHelper._
+import models.requests.AuthenticatedRequest
 import play.api.Logging
 import play.api.data.{Form, FormError}
 import play.api.i18n.I18nSupport
@@ -53,7 +54,7 @@ class CancelDeclarationController @Inject() (
   def displayPage: Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
     getSessionData() match {
       case Some((_, mrn, lrn, ducr)) => Future.successful(Ok(cancelDeclarationPage(CancelDeclarationDescription.form, lrn, ducr, mrn)))
-      case _                         => errorHandler.displayErrorPage
+      case _                         => errorHandler.redirectToErrorPage
     }
   }
 
@@ -71,10 +72,10 @@ class CancelDeclarationController @Inject() (
                 case models.CancellationAlreadyRequested =>
                   Ok(cancelDeclarationPage(createFormWithErrors(userInput, "cancellation.duplicateRequest.error"), lrn, ducr, mrn))
               } recoverWith { case _ =>
-                errorHandler.displayErrorPage
+                errorHandler.redirectToErrorPage
               }
           )
-      case _ => errorHandler.displayErrorPage
+      case _ => errorHandler.redirectToErrorPage
     }
   }
 
@@ -86,7 +87,7 @@ class CancelDeclarationController @Inject() (
 
     auditService.auditAllPagesDeclarationCancellation(cancelDeclaration)
 
-    val context = exportsMetrics.startTimer(cancelMetric)
+    val context = exportsMetrics.startTimer(cancellationMetric)
 
     customsDeclareExportsConnector.createCancellation(cancelDeclaration) andThen {
       case Failure(exception) =>
@@ -94,7 +95,7 @@ class CancelDeclarationController @Inject() (
         auditService.audit(AuditTypes.Cancellation, auditData(userInput, Failure.toString, lrn, mrn))
       case Success(_) =>
         auditService.audit(AuditTypes.Cancellation, auditData(userInput, Success.toString, lrn, mrn))
-        exportsMetrics.incrementCounter(cancelMetric)
+        exportsMetrics.incrementCounter(cancellationMetric)
         context.stop()
     }
   }
@@ -123,11 +124,9 @@ class CancelDeclarationController @Inject() (
 
   private def getSessionData()(implicit request: AuthenticatedRequest[_]): Option[(String, String, Lrn, String)] =
     for {
-      submissionId <- getSessionValue(ExportsSessionKeys.submissionId)
-      mrn <- getSessionValue(ExportsSessionKeys.submissionMrn)
-      lrn <- getSessionValue(ExportsSessionKeys.submissionLrn).map(Lrn(_))
-      ducr <- getSessionValue(ExportsSessionKeys.submissionDucr)
+      submissionId <- getValue(submissionUuid)
+      mrn <- getValue(submissionMrn)
+      lrn <- getValue(submissionLrn).map(Lrn(_))
+      ducr <- getValue(submissionDucr)
     } yield (submissionId, mrn, lrn, ducr)
-
-  private def getSessionValue(str: String)(implicit request: AuthenticatedRequest[_]): Option[String] = request.session.get(str)
 }

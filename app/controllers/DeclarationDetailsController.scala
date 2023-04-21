@@ -19,7 +19,7 @@ package controllers
 import connectors.CustomsDeclareExportsConnector
 import controllers.actions.{AuthAction, VerifiedEmailAction}
 import models.declaration.submissions.Submission
-import models.requests.ExportsSessionKeys
+import models.requests.SessionHelper._
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
@@ -46,10 +46,10 @@ class DeclarationDetailsController @Inject() (
   }
 
   private def sessionKeys(submission: Submission): Seq[(String, String)] = {
-    val submissionId = Some(ExportsSessionKeys.submissionId -> submission.uuid)
-    val lrn = Some(ExportsSessionKeys.submissionLrn -> submission.lrn)
-    val mrn = submission.mrn.map(ExportsSessionKeys.submissionMrn -> _)
-    val ducr = submission.ducr.map(ExportsSessionKeys.submissionDucr -> _)
+    val submissionId = Some(submissionUuid -> submission.uuid)
+    val lrn = Some(submissionLrn -> submission.lrn)
+    val mrn = submission.mrn.map(submissionMrn -> _)
+    val ducr = submission.ducr.map(submissionDucr -> _)
 
     Seq(submissionId, lrn, mrn, ducr).flatten
   }

@@ -39,7 +39,7 @@
     exportsInputCharacterCount: exportsInputCharacterCount
 )
 
-@(form: Form[LegalDeclaration], amend: Boolean = false, action: Option[String] = None)(implicit request: JourneyRequest[_], messages: Messages)
+@(form: Form[LegalDeclaration], amend: Boolean = false, isCancellation: Boolean = false)(implicit request: JourneyRequest[_], messages: Messages)
 
 @headerMsgKey = @{
     if (amend) "legal.declaration.amend.heading"
@@ -55,7 +55,7 @@
 }
 
 @formAction = @{
-    if (amend) SubmissionController.submitAmendment(None)
+    if (amend) SubmissionController.submitAmendment(isCancellation)
     else SubmissionController.submitDeclaration
 }
 
@@ -83,14 +83,19 @@
         inputClasses = Some("govuk-input govuk-!-width-one-half")
     )
 
-    @if(amend) @{
-        exportsInputCharacterCount(
-            field = form(amendReasonKey),
-            labelKey = Some("legal.declaration.amend.reason"),
-            labelClasses = "govuk-!-font-weight-bold govuk-!-font-size-24",
-            maxLength = Some(amendReasonMaxLength),
-            inputClasses = "govuk-!-width-one-half"
-        )
+    @if(amend) {
+      @if(isCancellation) {
+        <input type="hidden" id="@amendReasonKey" name="@amendReasonKey"
+               class="govuk-input" value='@messages("legal.declaration.amend.reason.cancellation")' />
+      } else {
+        @exportsInputCharacterCount(
+          field = form(amendReasonKey),
+          labelKey = Some("legal.declaration.amend.reason"),
+          labelClasses = "govuk-!-font-weight-bold govuk-!-font-size-24",
+          maxLength = Some(amendReasonMaxLength),
+          inputClasses = "govuk-!-width-one-half"
+       )
+      }
     }
 
     @exportsInputCheckbox(
@@ -111,7 +116,7 @@
 
         @pageTitle(messages(headerMsgKey))
 
-        @if(action.contains("cancel")) @{
+        @if(isCancellation) @{
             paragraph(messages("legal.declaration.amend.cancel.info"))
         }
 

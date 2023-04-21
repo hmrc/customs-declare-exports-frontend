@@ -18,17 +18,18 @@ package controllers.declaration
 
 import connectors.CustomsDeclareExportsConnector
 import controllers.actions.{AuthAction, VerifiedEmailAction}
-import controllers.declaration.ConfirmationController._
 import controllers.routes.RejectedNotificationsController
 import handlers.ErrorHandler
-import models.declaration.submissions.EnhancedStatus
-import models.requests.{AuthenticatedRequest, ExportsSessionKeys}
+import models.declaration.submissions.RequestType.SubmissionRequest
+import models.declaration.submissions.{EnhancedStatus, Submission}
+import models.requests.AuthenticatedRequest
+import models.requests.SessionHelper.{declarationType, getOrElse, getValue, submissionUuid}
 import play.api.Logging
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import views.dashboard.DashboardHelper.toDashboard
 import views.helpers.Confirmation
+import views.helpers.ConfirmationHelper._
 import views.html.declaration.confirmation.{confirmation_page, holding_page}
 
 import javax.inject.Inject
@@ -51,13 +52,15 @@ class ConfirmationController @Inject() (
       // Show page at /holding and wait a few secs.
       case None =>
         val holdingUrl = routes.ConfirmationController.displayHoldingPage.url
-        Future.successful(Ok(holdingPage(s"$holdingUrl?$js=$Disabled", s"$holdingUrl?$js=$Enabled")))
+        val redirectToUrl = routes.ConfirmationController.displayConfirmationPage.url
+        Future.successful(Ok(holdingPage(redirectToUrl, s"$holdingUrl?$js=$Disabled", s"$holdingUrl?$js=$Enabled")))
 
       // Javascript disabled. 1st check if at least 1 notification was sent in response of the submission.
       case Some(Disabled) =>
+        val redirectToUrl = routes.ConfirmationController.displayConfirmationPage
         hasNotification.map {
-          case true  => Redirect(routes.ConfirmationController.displayConfirmationPage)
-          case false => Ok(holdingPage(routes.ConfirmationController.displayConfirmationPage.url, ""))
+          case true  => Redirect(redirectToUrl)
+          case false => Ok(holdingPage(redirectToUrl.url, redirectToUrl.url, ""))
         }
 
       // Javascript enabled. 1st check if at least 1 notification was sent in response of the submission.
@@ -69,48 +72,50 @@ class ConfirmationController @Inject() (
 
       case Some(_) =>
         logger.warn("Unknown value for query parameter 'js'. Can only be 'disabled' or 'enabled'.")
-        errorHandler.displayErrorPage
+        errorHandler.redirectToErrorPage
     }
   }
 
   val displayConfirmationPage: Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
-    extractSubmissionId.fold {
-      logger.warn("Session on /confirmation does not include the submission's uuid!?")
-      Future.successful(Redirect(toDashboard))
+    getValue(submissionUuid).fold {
+      errorHandler.internalError("Session on /confirmation does not include the submission's uuid!?")
     } { submissionId =>
-      for {
-        submission <- customsDeclareExportsConnector.findSubmission(submissionId)
-        // To avoid failing entire Future for sake of getting a location code, recover to None
-        declaration <- customsDeclareExportsConnector.findDeclaration(submissionId) recover { case _ => None }
-        locationCode = declaration.flatMap(_.locations.goodsLocation).map(_.code)
-      } yield submission match {
+      customsDeclareExportsConnector.findSubmission(submissionId).flatMap {
         case Some(submission) if submission.latestEnhancedStatus contains EnhancedStatus.ERRORS =>
-          Redirect(RejectedNotificationsController.displayPage(submissionId, false))
+          Future.successful(Redirect(RejectedNotificationsController.displayPage(submissionId, false)))
+
+        case Some(submission) =>
+          retrieveLocationCode(submission.uuid).flatMap {
+            case Right(maybeLocationCode) =>
+              val confirmation = Confirmation(request.email, getOrElse(declarationType), submission, maybeLocationCode)
+              Future.successful(Ok(confirmationPage(confirmation)))
+
+            case Left(message) => errorHandler.internalError(message)
+          }
 
         case _ =>
-          val confirmation = Confirmation(request.email, extractDeclarationType, submission, locationCode)
-          Ok(confirmationPage(confirmation))
+          errorHandler.internalError(s"Submission($submissionId) not found after the holding page??")
       }
     }
   }
 
-  private def extractDeclarationType(implicit request: AuthenticatedRequest[_]): String =
-    request.session.data.get(ExportsSessionKeys.declarationType).fold("")(identity)
+  private def hasNotification(implicit request: AuthenticatedRequest[_]): Future[Boolean] = {
+    def hasNotificationForSubmissionRequest(submission: Submission): Boolean =
+      submission.actions.exists(action => action.requestType == SubmissionRequest && action.latestNotificationSummary.isDefined)
 
-  private def extractSubmissionId(implicit request: AuthenticatedRequest[_]): Option[String] =
-    request.session.data.get(ExportsSessionKeys.submissionId)
+    getValue(submissionUuid)
+      .map(customsDeclareExportsConnector.findSubmission(_).map(_.exists(hasNotificationForSubmissionRequest)))
+      .getOrElse {
+        logger.warn("Session on /holding does not include the submission's uuid!?")
+        Future.successful(false)
+      }
+  }
 
-  private def hasNotification(implicit request: AuthenticatedRequest[_]): Future[Boolean] =
-    extractSubmissionId.fold {
-      logger.warn("Session on /holding does not include the submission's uuid!?")
-      Future.successful(false)
-    } {
-      customsDeclareExportsConnector.findSubmission(_).map(_.fold(false)(_.latestEnhancedStatus.isDefined))
-    }
-}
-
-object ConfirmationController {
-  val js = "js"
-  val Disabled = "disabled"
-  val Enabled = "enabled"
+  private def retrieveLocationCode(submissionId: String)(implicit request: Request[_]): Future[Either[String, Option[String]]] =
+    customsDeclareExportsConnector
+      .findDeclaration(submissionId)
+      .map {
+        case Some(declaration) => Right(declaration.locations.goodsLocation.map(_.code))
+        case _                 => Left(s"Declaration($submissionId) not found after having been submitted??")
+      }
 }

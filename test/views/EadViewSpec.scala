@@ -19,7 +19,7 @@ package views
 import base.Injector
 import controllers.routes.DeclarationDetailsController
 import models.dis.MrnStatusSpec
-import models.requests.ExportsSessionKeys
+import models.requests.SessionHelper
 import org.jsoup.nodes.Document
 import play.api.test.FakeRequest
 import tools.Stubs
@@ -36,7 +36,7 @@ class EadViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injec
   private val view: Document =
     page(MrnStatusSpec.completeMrnStatus.mrn, MrnStatusSpec.completeMrnStatus, "/img.jpg")(
       messages,
-      FakeRequest().withSession((ExportsSessionKeys.submissionId, "submissionId"))
+      FakeRequest().withSession((SessionHelper.submissionUuid, "submissionUuid"))
     )
 
   "CopyDeclaration page on empty page" should {
@@ -44,7 +44,7 @@ class EadViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injec
     "display 'Back' button that links to /submissions/:id/information" in {
       val backButton = view.getElementsByClass("govuk-back-link").first()
       backButton must containMessage(backCaption)
-      backButton must haveHref(DeclarationDetailsController.displayPage("submissionId").url)
+      backButton must haveHref(DeclarationDetailsController.displayPage("submissionUuid").url)
     }
     "display page title" in {
       view

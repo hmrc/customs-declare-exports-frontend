@@ -99,7 +99,7 @@ class DashboardControllerSpec extends ControllerWithoutFormSpec with BeforeAndAf
     captor.getValue
   }
 
-  "DashboardController.displayPage" should {
+  "DashboardController.displayOutcomePage" should {
     "return 200 (OK)" when {
       "display list of submissions method is invoked" in {
         when(mockCustomsDeclareExportsConnector.fetchSubmissionPage(any())(any(), any())).thenReturn(Future.successful(pageOfSubmissions))

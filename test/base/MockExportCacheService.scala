@@ -33,7 +33,7 @@ trait MockExportCacheService extends ExportsDeclarationBuilder with BeforeAndAft
   self: Suite =>
 
   val mockExportsCacheService: ExportsCacheService = mock[ExportsCacheService]
-  val existingDeclarationId = "declarationId"
+  val existingDeclarationId = "declarationUuid"
 
   def withNewCaching(dataToReturn: ExportsDeclaration): Unit = {
     when(mockExportsCacheService.update(any[ExportsDeclaration])(any()))

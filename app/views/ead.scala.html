@@ -15,7 +15,7 @@
  *@
 
 @import models.dis.MrnStatus
-@import models.requests.ExportsSessionKeys
+@import models.requests.SessionHelper.{getValue, submissionUuid}
 @import views.ead.DeclarationType
 @import views.helpers.{ViewDates, Title, BackButton}
 @import views.html.components.gds._
@@ -26,7 +26,7 @@
 
 @govukLayout(
   title = Title("ead.template.title"),
-   backButton = request.session.get(ExportsSessionKeys.submissionId).map{ id =>
+   backButton = getValue(submissionUuid).map{ id =>
      BackButton(messages("site.back"), routes.DeclarationDetailsController.displayPage(id))
    },
   useCustomContentWidth = true

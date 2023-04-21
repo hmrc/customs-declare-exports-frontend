@@ -22,7 +22,7 @@ import controllers.helpers._
 import controllers.routes.RejectedNotificationsController
 import forms.declaration.AdditionalInformationSummary
 import mock.FeatureFlagMocks
-import models.requests.ExportsSessionKeys.{declarationId, errorFixModeSessionKey}
+import models.requests.SessionHelper.{declarationUuid, errorFixModeSessionKey}
 import models.requests.JourneyRequest
 import models.responses.FlashKeys
 import models.{DeclarationType, ExportsDeclaration, SignedInUser}
@@ -61,8 +61,8 @@ class NavigatorSpec
 
   private def requestWithFormAction(action: Option[FormAction], inErrorFixMode: Boolean = false): FakeRequest[AnyContentAsFormUrlEncoded] = {
     val session =
-      if (inErrorFixMode) List(declarationId -> existingDeclarationId, errorFixModeSessionKey -> "true")
-      else List(declarationId -> existingDeclarationId)
+      if (inErrorFixMode) List(declarationUuid -> existingDeclarationId, errorFixModeSessionKey -> "true")
+      else List(declarationUuid -> existingDeclarationId)
 
     FakeRequest("GET", "uri")
       .withFormUrlEncodedBody(action.getOrElse("other-field").toString -> "")
@@ -136,9 +136,9 @@ class NavigatorSpec
   "Navigator" should {
 
     val request = FakeRequest("GET", "uri")
-      .withSession(declarationId -> existingDeclarationId)
+      .withSession(declarationUuid -> existingDeclarationId)
 
-    "redirect to RejectedNotificationsController.displayPage" when {
+    "redirect to RejectedNotificationsController.displayOutcomePage" when {
 
       val parentDeclarationId = "1234"
       implicit val declaration = aDeclaration(withParentDeclarationId(parentDeclarationId))

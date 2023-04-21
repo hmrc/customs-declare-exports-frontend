@@ -18,11 +18,14 @@ package mock
 
 import controllers.actions.VerifiedEmailAction
 import models.requests.{AuthenticatedRequest, VerifiedEmailRequest}
+import org.scalatest.{BeforeAndAfterEach, Suite}
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.mvc.Result
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait VerifiedEmailMocks {
+trait VerifiedEmailMocks extends BeforeAndAfterEach {
+  self: MockitoSugar with Suite =>
 
   val mockVerifiedEmailAction = new VerifiedEmailAction() {
     implicit val executionContext: ExecutionContext = ExecutionContext.global

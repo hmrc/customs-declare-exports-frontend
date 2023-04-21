@@ -37,7 +37,7 @@ class AmendmentRejectionViewSpec extends UnitViewSpec with GivenWhenThen with In
 
   private val declarationDetailsRoute = DeclarationDetailsController.displayPage(submissionId).url
 
-  private def createView(submission: Option[Submission], declarationType: AdditionalDeclarationType = STANDARD_FRONTIER): Document = {
+  private def createView(submission: Submission, declarationType: AdditionalDeclarationType = STANDARD_FRONTIER): Document = {
     val req = buildVerifiedEmailRequest(request, exampleUser)
     val confirmation = Confirmation(req.email, declarationType.toString, submission, None)
     page(confirmation)(req, messages)
@@ -47,7 +47,7 @@ class AmendmentRejectionViewSpec extends UnitViewSpec with GivenWhenThen with In
 
     "status of last received notification is 'RECEIVED'" should {
       val submission = createSubmission(statuses = Seq(RECEIVED))
-      val view = createView(Some(submission))
+      val view = createView(submission)
 
       "display the h1" in {
 

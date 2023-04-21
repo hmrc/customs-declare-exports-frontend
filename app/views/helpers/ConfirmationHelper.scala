@@ -40,7 +40,7 @@ import views.html.components.gds._
 
 import javax.inject.{Inject, Singleton}
 
-case class Confirmation(email: String, declarationType: String, submission: Option[Submission], locationCode: Option[String])
+case class Confirmation(email: String, declarationType: String, submission: Submission, locationCode: Option[String])
 
 @Singleton
 class ConfirmationHelper @Inject() (
@@ -58,7 +58,7 @@ class ConfirmationHelper @Inject() (
 ) {
 
   def content(confirmation: Confirmation)(implicit messages: Messages): Html =
-    confirmation.submission.flatMap(_.latestEnhancedStatus) match {
+    confirmation.submission.latestEnhancedStatus match {
       case Some(RECEIVED)                                                        => received(confirmation, messages)
       case Some(GOODS_ARRIVED) | Some(GOODS_ARRIVED_MESSAGE)                     => accepted(confirmation, messages)
       case Some(CLEARED) if isArrived(confirmation)                              => cleared(confirmation, messages)
@@ -67,7 +67,7 @@ class ConfirmationHelper @Inject() (
     }
 
   def title(confirmation: Confirmation): String =
-    confirmation.submission.flatMap(_.latestEnhancedStatus) match {
+    confirmation.submission.latestEnhancedStatus match {
       case Some(RECEIVED)                                                        => "declaration.confirmation.received.title"
       case Some(GOODS_ARRIVED) | Some(GOODS_ARRIVED_MESSAGE)                     => "declaration.confirmation.accepted.title"
       case Some(CLEARED) if isArrived(confirmation)                              => "declaration.confirmation.cleared.title"
@@ -101,8 +101,8 @@ class ConfirmationHelper @Inject() (
     val body1 = paragraph(
       messages(
         s"declaration.confirmation.other.body.1",
-        confirmation.submission.flatMap(_.ducr).fold("")(ducr => s" ${messages("declaration.confirmation.body.1.ducr", toBold(ducr))}"),
-        confirmation.submission.map(_.lrn).fold("")(lrn => s" ${messages("declaration.confirmation.body.1.lrn", toBold(lrn))}"),
+        confirmation.submission.ducr.fold("")(ducr => s" ${messages("declaration.confirmation.body.1.ducr", toBold(ducr))}"),
+        s" ${messages("declaration.confirmation.body.1.lrn", toBold(confirmation.submission.lrn))}",
         link(messages("declaration.confirmation.other.body.1.link"), toDashboard)
       )
     )
@@ -118,30 +118,24 @@ class ConfirmationHelper @Inject() (
     govukTable(
       Table(rows =
         Seq(
-          confirmation.submission
-            .flatMap(_.ducr)
-            .map(ducr =>
-              Seq(
-                TableRow(content = Text(messages(s"declaration.confirmation.ducr")), classes = "govuk-!-font-weight-bold"),
-                TableRow(content = Text(ducr))
-              )
-            ),
-          confirmation.submission
-            .map(_.lrn)
-            .map(lrn =>
-              Seq(
-                TableRow(content = Text(messages(s"declaration.confirmation.lrn")), classes = "govuk-!-font-weight-bold"),
-                TableRow(content = Text(lrn))
-              )
-            ),
-          confirmation.submission
-            .flatMap(_.mrn)
-            .map(mrn =>
-              Seq(
-                TableRow(content = Text(messages(s"declaration.confirmation.mrn")), classes = "govuk-!-font-weight-bold"),
-                TableRow(content = Text(mrn))
-              )
+          confirmation.submission.ducr.map(ducr =>
+            Seq(
+              TableRow(content = Text(messages(s"declaration.confirmation.ducr")), classes = "govuk-!-font-weight-bold"),
+              TableRow(content = Text(ducr))
             )
+          ),
+          Some(
+            Seq(
+              TableRow(content = Text(messages(s"declaration.confirmation.lrn")), classes = "govuk-!-font-weight-bold"),
+              TableRow(content = Text(confirmation.submission.lrn))
+            )
+          ),
+          confirmation.submission.mrn.map(mrn =>
+            Seq(
+              TableRow(content = Text(messages(s"declaration.confirmation.mrn")), classes = "govuk-!-font-weight-bold"),
+              TableRow(content = Text(mrn))
+            )
+          )
         ).flatten
       )
     )
@@ -150,9 +144,9 @@ class ConfirmationHelper @Inject() (
     paragraph(
       messages(
         "declaration.confirmation.body.1",
-        confirmation.submission.flatMap(_.ducr).fold("")(ducr => s" ${messages("declaration.confirmation.body.1.ducr", toBold(ducr))}"),
-        confirmation.submission.map(_.lrn).fold("")(lrn => s" ${messages("declaration.confirmation.body.1.lrn", toBold(lrn))}"),
-        confirmation.submission.flatMap(_.mrn).getOrElse("")
+        confirmation.submission.ducr.fold("")(ducr => s" ${messages("declaration.confirmation.body.1.ducr", toBold(ducr))}"),
+        s" ${messages("declaration.confirmation.body.1.lrn", toBold(confirmation.submission.lrn))}",
+        confirmation.submission.mrn.getOrElse("")
       )
     )
 
@@ -176,10 +170,9 @@ class ConfirmationHelper @Inject() (
       )
     )
 
-    val acceptanceTime = confirmation.submission.flatMap { submission =>
-      if (submission.latestEnhancedStatus == Some(RECEIVED)) None
-      else submission.enhancedStatusLastUpdated.map(formatTimeDate(_))
-    }
+    val acceptanceTime =
+      if (confirmation.submission.latestEnhancedStatus == Some(RECEIVED)) None
+      else confirmation.submission.enhancedStatusLastUpdated.map(formatTimeDate(_))
 
     val next2Args =
       List(acceptanceTime, Some(link(messages("declaration.confirmation.next.2.link"), Call("GET", appConfig.nationalClearanceHub)))).flatten
@@ -210,9 +203,9 @@ class ConfirmationHelper @Inject() (
         )
       )
 
-    confirmation.submission.flatMap(_.latestEnhancedStatus) match {
+    confirmation.submission.latestEnhancedStatus match {
       case Some(RECEIVED) =>
-        val mrn = confirmation.submission.flatMap(_.mrn).getOrElse("")
+        val mrn = confirmation.submission.mrn.getOrElse("")
         val paragraph1 = body2
         val paragraph2 = paragraph(
           messages(
@@ -238,22 +231,22 @@ class ConfirmationHelper @Inject() (
   }
 
   private def accOrRcv(implicit confirmation: Confirmation): String =
-    confirmation.submission.flatMap(_.latestEnhancedStatus) match {
+    confirmation.submission.latestEnhancedStatus match {
       case Some(RECEIVED) => "received"
       case _              => "accepted"
     }
 
   private def docOrCtl(implicit confirmation: Confirmation): String =
-    confirmation.submission.flatMap(_.latestEnhancedStatus) match {
+    confirmation.submission.latestEnhancedStatus match {
       case Some(ADDITIONAL_DOCUMENTS_REQUIRED) | Some(UNDERGOING_PHYSICAL_CHECK) => ".needsDocument"
       case _                                                                     => ""
     }
 
   private def declarationDetailsRoute(implicit confirmation: Confirmation): Call =
-    DeclarationDetailsController.displayPage(confirmation.submission.map(_.uuid).getOrElse(""))
+    DeclarationDetailsController.displayPage(confirmation.submission.uuid)
 
   private def status(implicit confirmation: Confirmation): String =
-    confirmation.submission.flatMap(_.latestEnhancedStatus) match {
+    confirmation.submission.latestEnhancedStatus match {
       case Some(RECEIVED) => "received"
       case Some(CLEARED)  => "cleared"
       case _              => "accepted"
@@ -263,4 +256,11 @@ class ConfirmationHelper @Inject() (
     s"""<span class="govuk-!-font-weight-bold">${value}</span>"""
 
   private val sectionBreak = Html(s"""<hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">""")
+}
+
+object ConfirmationHelper {
+
+  val js = "js"
+  val Disabled = "disabled"
+  val Enabled = "enabled"
 }

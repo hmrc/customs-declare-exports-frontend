@@ -42,10 +42,10 @@ class ConfirmationViewSpec extends UnitViewSpec with GivenWhenThen with Injector
   private val submissionId = uuid
 
   private val declarationDetailsRoute = DeclarationDetailsController.displayPage(submissionId).url
-  private def filedUploadRoute(mrn: String) = FileUploadController.startFileUpload(mrn).url
+  private def filedUploadRoute(mrn: String): String = FileUploadController.startFileUpload(mrn).url
 
   private def createView(
-    submission: Option[Submission],
+    submission: Submission,
     declarationType: AdditionalDeclarationType = STANDARD_FRONTIER,
     goodsLocationCode: Option[String] = Some("goodsLocationCode")
   ): Document = {
@@ -58,7 +58,7 @@ class ConfirmationViewSpec extends UnitViewSpec with GivenWhenThen with Injector
 
     "status of last received notification is 'RECEIVED'" should {
       val submission = createSubmission(statuses = Seq(RECEIVED))
-      val view = createView(Some(submission))
+      val view = createView(submission)
 
       "display the expected panel" in {
         val panels = view.getElementsByClass("govuk-panel")
@@ -122,7 +122,7 @@ class ConfirmationViewSpec extends UnitViewSpec with GivenWhenThen with Injector
       s"status of last received notification is '${enhancedStatus}'" should {
 
         val submission = createSubmission(statuses = Seq(enhancedStatus))
-        val view = createView(Some(submission))
+        val view = createView(submission)
 
         "display the expected panel" in {
           val panels = view.getElementsByClass("govuk-panel")
@@ -185,7 +185,7 @@ class ConfirmationViewSpec extends UnitViewSpec with GivenWhenThen with Injector
     Seq(UNDERGOING_PHYSICAL_CHECK, ADDITIONAL_DOCUMENTS_REQUIRED).foreach { enhancedStatus =>
       s"status of last received notification is '${enhancedStatus}'" should {
         val submission = createSubmission(statuses = Seq(enhancedStatus))
-        val view = createView(Some(submission))
+        val view = createView(submission)
 
         "display the expected title" in {
           view.getElementsByTag("h1").text mustBe messages("declaration.confirmation.needsDocument.title")
@@ -207,7 +207,7 @@ class ConfirmationViewSpec extends UnitViewSpec with GivenWhenThen with Injector
         }
 
         "display the expected first body paragraph when DUCR have NOT been defined" in {
-          val view = createView(Some(submission.copy(ducr = None)))
+          val view = createView(submission.copy(ducr = None))
           val text = view.getElementsByClass("govuk-body").get(0).text
           text mustBe messages("declaration.confirmation.body.1", "", s" ${messages("declaration.confirmation.body.1.lrn", lrn)}", mrn)
         }
@@ -227,7 +227,7 @@ class ConfirmationViewSpec extends UnitViewSpec with GivenWhenThen with Injector
       List(STANDARD_FRONTIER, SIMPLIFIED_FRONTIER, OCCASIONAL_FRONTIER, CLEARANCE_FRONTIER).foreach { declarationType =>
         s"the additional declaration type is $declarationType" should {
           val submission = createSubmission(statuses = Seq(CLEARED))
-          val view = createView(Some(submission), declarationType)
+          val view = createView(submission, declarationType)
 
           "display the expected panel" in {
             val panels = view.getElementsByClass("govuk-panel")
@@ -273,7 +273,7 @@ class ConfirmationViewSpec extends UnitViewSpec with GivenWhenThen with Injector
     }
 
     "no notification has been received yet" should {
-      val view = createView(Some(createSubmission(statuses = Seq.empty[EnhancedStatus])))
+      val view = createView(createSubmission(statuses = Seq.empty[EnhancedStatus]))
 
       "display the expected title" in {
         view.getElementsByTag("h1").text mustBe messages("declaration.confirmation.other.title")
@@ -291,7 +291,7 @@ class ConfirmationViewSpec extends UnitViewSpec with GivenWhenThen with Injector
       }
 
       "display the expected first body paragraph when DUCR have NOT been defined" in {
-        val view = createView(Some(submission.copy(ducr = None)))
+        val view = createView(submission.copy(ducr = None))
         val paragraph = view.getElementsByClass("govuk-body").get(0)
         paragraph.text mustBe messages(
           "declaration.confirmation.other.body.1",
@@ -311,7 +311,7 @@ class ConfirmationViewSpec extends UnitViewSpec with GivenWhenThen with Injector
     "Goods location code indicates a GVMS declaration" should {
       Seq(GOODS_ARRIVED, GOODS_ARRIVED_MESSAGE, RECEIVED, CLEARED).foreach { status =>
         val submission = createSubmission(statuses = Seq(status))
-        val view = createView(submission = Some(submission), goodsLocationCode = Some("goodsLocationCodeGVM"))
+        val view = createView(submission, goodsLocationCode = Some("goodsLocationCodeGVM"))
 
         s"not display the non GVMS paragraph on status $status" in {
           Option(view.getElementById("non-gvms-paragraph")) mustBe empty
