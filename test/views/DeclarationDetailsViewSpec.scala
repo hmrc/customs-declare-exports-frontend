@@ -403,6 +403,14 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
       cancelDeclarationLink must haveHref(routes.CancelDeclarationController.displayPage)
     }
 
+    "NOT contain the cancel-declaration link" when {
+      "when the declaration has been cancelled" in {
+        val view = page(subWithStatus(CANCELLED))(verifiedEmailRequest(), messages)
+
+        Option(view.getElementById("cancel-declaration")) mustBe None
+      }
+    }
+
     "display the link to redirect the user to the 'Movements' service" in {
       val redirectionLink = view.getElementById("movements-redirection")
       redirectionLink.text mustBe messages("declaration.details.movements.redirection")
