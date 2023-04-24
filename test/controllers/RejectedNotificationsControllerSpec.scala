@@ -51,7 +51,7 @@ class RejectedNotificationsControllerSpec extends ControllerWithoutFormSpec with
     super.beforeEach()
 
     authorizedUser()
-    when(mockRejectedNotificationPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockRejectedNotificationPage.apply(any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -66,10 +66,10 @@ class RejectedNotificationsControllerSpec extends ControllerWithoutFormSpec with
         getDeclaration(declarationId)
         findNotifications(declarationId)
 
-        val result = controller.displayPage(declarationId)(getRequest())
+        val result = controller.displayPage(declarationId, false)(getRequest())
 
         status(result) mustBe OK
-        verify(mockRejectedNotificationPage).apply(any(), any(), any())(any(), any())
+        verify(mockRejectedNotificationPage).apply(any(), any(), any(), any())(any(), any())
       }
 
       "the declaration is found but the Submission has no notifications" in {
@@ -78,10 +78,10 @@ class RejectedNotificationsControllerSpec extends ControllerWithoutFormSpec with
         when(mockCustomsDeclareExportsConnector.findNotifications(any())(any(), any()))
           .thenReturn(Future.successful(List.empty))
 
-        val result = controller.displayPage(declarationId)(getRequest())
+        val result = controller.displayPage(declarationId, false)(getRequest())
 
         status(result) mustBe OK
-        verify(mockRejectedNotificationPage).apply(any(), any(), any())(any(), any())
+        verify(mockRejectedNotificationPage).apply(any(), any(), any(), any())(any(), any())
       }
     }
 
@@ -89,7 +89,7 @@ class RejectedNotificationsControllerSpec extends ControllerWithoutFormSpec with
       "the declaration cannot be found" in {
         declarationNotFound
 
-        val result = controller.displayPage(declarationId)(getRequest())
+        val result = controller.displayPage(declarationId, false)(getRequest())
 
         status(result) mustBe INTERNAL_SERVER_ERROR
       }

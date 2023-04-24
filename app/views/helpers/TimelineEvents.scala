@@ -159,10 +159,10 @@ class TimelineEvents @Inject() (
     implicit messages: Messages
   ): Html =
     amendmentEventIfLatest.fold {
-      val fixAndResubmit = RejectedNotificationsController.displayPage(submission.uuid)
+      val fixAndResubmit = RejectedNotificationsController.displayPage(submission.uuid, false)
       linkButton("declaration.details.fix.resubmit.button", fixAndResubmit)
     } { amendmentEventAsLatest =>
-      val fixAndResubmit = RejectedNotificationsController.amendmentRejected(submission.uuid, amendmentEventAsLatest.action.id)
+      val fixAndResubmit = RejectedNotificationsController.displayPage(submission.uuid, true)
       val button = amendmentEventAsLatest match {
         case _: AmendmentFailed       => linkButton("declaration.details.resubmit.button", fixAndResubmit)
         case _: AmendmentRejected | _ => linkButton("declaration.details.fix.resubmit.button", fixAndResubmit)

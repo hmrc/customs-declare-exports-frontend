@@ -27,8 +27,8 @@ GET         /conversation/:client/:conversationId/result   controllers.SecureMes
 
 # Notifications
 
-GET         /submissions/:id/rejected-notifications            controllers.RejectedNotificationsController.displayPage(id)
-GET         /submissions/:id/rejected-notifications/:actionId  controllers.RejectedNotificationsController.amendmentRejected(id, actionId)
+GET         /submissions/:id/rejected-notifications        controllers.RejectedNotificationsController.displayPage(id: String, amendment: Boolean = false)
+GET         /submissions/:id/rejected-notifications/amend  controllers.RejectedNotificationsController.displayPage(id: String, amendment: Boolean = true)
 
 # Dashboard
 
@@ -41,6 +41,8 @@ GET         /submissions/:id/information                   controllers.Declarati
 GET         /submissions/:id/view                          controllers.SubmissionsController.viewDeclaration(id: String)
 
 GET         /submissions/:id                               controllers.SubmissionsController.amend(id: String)
+
+GET         /submissions/amendment/:submissionId           controllers.SubmissionsController.draftAmendment(submissionId: String)
 
 GET         /submissions/:id/:url/:pattern/:messageKey     controllers.SubmissionsController.amendErrors(id: String, url: String, pattern: String, messageKey: String)
 

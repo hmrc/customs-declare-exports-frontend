@@ -38,11 +38,13 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with ExportsTestHe
   private def view(
     reasons: Seq[NotificationError] = Seq.empty,
     maybeMrn: Option[String] = Some(MRN.value),
+    maybeSubmission: Option[String] = None,
     testMessages: Messages = messages
   ): Document =
-    page(declaration, maybeMrn, reasons)(request, testMessages)
+    page(declaration, maybeMrn, maybeSubmission, reasons)(request, testMessages)
 
   val defaultView: Document = view()
+  val amendmentView: Document = view(maybeSubmission = Some("submissionId"))
   val defaultRejectionCode = "CDS10001"
 
   "Rejected notification errors page" should {
@@ -51,15 +53,19 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with ExportsTestHe
       messages must haveTranslationFor("rejected.notification.mrn")
       messages must haveTranslationFor("rejected.notification.mrn.missing")
       messages must haveTranslationFor("rejected.notification.title")
+      messages must haveTranslationFor("rejected.amendment.title")
       messages must haveTranslationFor("rejected.notification.table.title")
       messages must haveTranslationFor("rejected.notification.warning")
+      messages must haveTranslationFor("rejected.amendment.warning")
       messages must haveTranslationFor("rejected.notification.description.format")
       messages must haveTranslationFor("rejected.notification.check.answers.paragraph")
+      messages must haveTranslationFor("rejected.amendment.check.answers.paragraph")
       messages must haveTranslationFor("rejected.notification.check.answers.button")
 
       messages must haveTranslationFor("rejected.notification.guidance.section.1.header")
       messages must haveTranslationFor("rejected.notification.guidance.section.1.paragraph.1")
       messages must haveTranslationFor("rejected.notification.guidance.section.1.paragraph.2")
+      messages must haveTranslationFor("rejected.amendment.guidance.section.1.paragraph.2")
       messages must haveTranslationFor("rejected.notification.guidance.section.1.paragraph.2.link")
 
       messages must haveTranslationFor("rejected.notification.guidance.section.2.header")
@@ -70,6 +76,12 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with ExportsTestHe
 
     "have correct title" in {
       defaultView.getElementById("title").text mustBe messages("rejected.notification.title")
+      amendmentView.getElementById("title").text mustBe messages("rejected.amendment.title")
+    }
+
+    "have correct warning" in {
+      defaultView.getElementsByClass("govuk-warning-text").first() must containText(messages("rejected.notification.warning"))
+      amendmentView.getElementsByClass("govuk-warning-text").first() must containText(messages("rejected.amendment.warning"))
     }
 
     "have correct section header" in {
@@ -89,7 +101,7 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with ExportsTestHe
       val testMessages = stubMessages()
 
       "fully populated and we are using the exports error descriptions" in {
-        val doc: Document = view(Seq(reason), Some(MRN.value), testMessages)
+        val doc: Document = view(Seq(reason), Some(MRN.value), None, testMessages)
 
         val text = doc.getElementsByClass("rejected_notifications-row-0-name").text
         text mustBe testMessages("field.declaration.consignmentReferences.lrn")
@@ -100,7 +112,7 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with ExportsTestHe
         val pointer = Pointer("declaration.goodsShipment.governmentAgencyGoodsItem.#0.additionalDocument.#1.id")
         val reason = NotificationError(defaultRejectionCode, Some(pointer))
 
-        val doc: Document = view(Seq(reason), Some(MRN.value), testMessages)
+        val doc: Document = view(Seq(reason), Some(MRN.value), None, testMessages)
 
         doc.getElementsByClass("rejected_notifications-row-0-name").text mustBe testMessages(
           "field.declaration.goodsShipment.governmentAgencyGoodsItem.$.additionalDocument.$.id",
@@ -113,6 +125,8 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with ExportsTestHe
     "contain the 'check-your-answers' paragraph" in {
       val checkYourAnswers = defaultView.getElementsByClass("govuk-body").get(0)
       checkYourAnswers.text mustBe messages("rejected.notification.check.answers.paragraph")
+      val checkYourAmendment = amendmentView.getElementsByClass("govuk-body").get(0)
+      checkYourAmendment.text mustBe messages("rejected.amendment.check.answers.paragraph")
     }
 
     "contain the 'check-your-answers' button" in {
@@ -148,7 +162,7 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with ExportsTestHe
 
         val noteError = NotificationError("CDS12062", Some(Pointer(pointerPattern)))
 
-        val view: Document = page(declaration, Some(MRN.value), Seq(noteError))(request, messages)
+        val view: Document = page(declaration, Some(MRN.value), None, Seq(noteError))(request, messages)
 
         val changeLink = view.getElementsByClass("govuk-link").get(3)
 

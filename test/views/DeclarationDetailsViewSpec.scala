@@ -556,7 +556,7 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
         rejectedElements.size mustBe 1
 
         And("the 'Fix and resubmit' content, should include a primary link-button to the RejectedNotificationsController")
-        val call = RejectedNotificationsController.displayPage(uuid).url
+        val call = RejectedNotificationsController.displayPage(uuid, false).url
         verifyButton(rejectedElements.get(0), false, "fix.resubmit", call)
       }
 
@@ -690,7 +690,7 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
 
     button.text() mustBe messages(messageKeyOfButton)
     button.hasClass("govuk-button")
-    button must haveHref(RejectedNotificationsController.amendmentRejected(submission.uuid, submission.actions.head.id))
+    button must haveHref(RejectedNotificationsController.displayPage(submission.uuid, true))
 
     link.tagName() mustBe "a"
     link.hasClass("govuk-link")
