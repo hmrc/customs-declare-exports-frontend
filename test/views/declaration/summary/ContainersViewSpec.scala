@@ -18,7 +18,8 @@ package views.declaration.summary
 
 import base.Injector
 import controllers.declaration.routes.TransportContainerController
-import models.declaration.{Container, Seal}
+import forms.declaration.Seal
+import models.declaration.Container
 import services.cache.ExportsTestHelper
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.summary.containers

@@ -19,9 +19,10 @@ package forms.declaration
 import forms.DeclarationPage
 import models.DeclarationMeta.sequenceIdPlaceholder
 import models.DeclarationType.{CLEARANCE, DeclarationType}
-import models.viewmodels.TariffContentKey
 import models.ExportsFieldPointer.ExportsFieldPointer
 import models.FieldMapping
+import models.declaration.{EsoFactory, ExplicitlySequencedObject}
+import models.viewmodels.TariffContentKey
 import play.api.data.Forms.{number, optional, text}
 import play.api.data.{Form, Forms, Mapping}
 import play.api.i18n.Messages
@@ -36,7 +37,7 @@ case class PackageInformation(
   typesOfPackages: Option[String],
   numberOfPackages: Option[Int],
   shippingMarks: Option[String]
-) extends DiffTools[PackageInformation] {
+) extends DiffTools[PackageInformation] with ExplicitlySequencedObject[PackageInformation] {
 
   def createDiff(original: PackageInformation, pointerString: ExportsFieldPointer, sequenceId: Option[Int] = None): ExportsDeclarationDiff =
     Seq(
@@ -68,9 +69,11 @@ case class PackageInformation(
   def isEmpty: Boolean = typesOfPackages.isEmpty && numberOfPackages.isEmpty && shippingMarks.isEmpty
 
   def nonEmpty: Boolean = !isEmpty
+
+  override def updateSequenceId(sequenceId: Int): PackageInformation = copy(sequenceId = sequenceId)
 }
 
-object PackageInformation extends DeclarationPage with FieldMapping {
+object PackageInformation extends DeclarationPage with FieldMapping with EsoFactory[PackageInformation] {
   import scala.util.Random
 
   implicit val format = Json.format[PackageInformation]
@@ -130,4 +133,6 @@ object PackageInformation extends DeclarationPage with FieldMapping {
           TariffContentKey("tariff.declaration.item.packageInformation.3.common")
         )
     }
+
+  override val seqIdKey: String = "PackageInformation"
 }

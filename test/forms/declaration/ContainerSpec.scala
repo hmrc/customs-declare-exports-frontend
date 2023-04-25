@@ -18,7 +18,7 @@ package forms.declaration
 
 import forms.common.DeclarationPageBaseSpec
 import models.ExportsDeclaration
-import models.declaration.{Container, Seal, Transport}
+import models.declaration.{Container, Transport}
 import services.AlteredField
 import services.AlteredField.constructAlteredField
 
@@ -40,15 +40,6 @@ class ContainerSpec extends DeclarationPageBaseSpec {
           val container = Container(1, "latest", seals)
           container.createDiff(container, Container.pointer, Some(1)) mustBe Seq.empty[AlteredField]
         }
-      }
-
-      "the Container's id values are not equal" in {
-        val fieldPointer = s"$baseFieldPointer.1.${Container.idPointer}"
-        val container = Container(1, "latest", Seq.empty[Seal])
-        val originalValue = "other"
-        container.createDiff(container.copy(id = originalValue), baseFieldPointer, Some(1)) mustBe Seq(
-          constructAlteredField(fieldPointer, originalValue, container.id)
-        )
       }
 
       "when seals are present but not equal" in {
@@ -74,24 +65,16 @@ class ContainerSpec extends DeclarationPageBaseSpec {
         withClue("both container seals contain different number of elements") {
           val container = Container(1, "latest", seals.drop(1))
           container.createDiff(container.copy(seals = seals), baseFieldPointer, Some(1)) mustBe Seq(
-            constructAlteredField(s"${fieldPointer}.1.id", Some(seals(0).id), Some(seals(1).id)),
-            constructAlteredField(s"${fieldPointer}.2.id", Some(seals(1).id), Some(seals(2).id)),
-            constructAlteredField(s"${fieldPointer}.3", Some(seals(2)), None)
-          )
-        }
-
-        withClue("both container seals contain same elements but in different order") {
-          val container = Container(1, "latest", seals)
-          container.createDiff(container.copy(seals = seals.reverse), baseFieldPointer, Some(1)) mustBe Seq(
-            constructAlteredField(s"${fieldPointer}.1.id", Some(seals(2).id), Some(seals(0).id)),
-            constructAlteredField(s"${fieldPointer}.3.id", Some(seals(0).id), Some(seals(2).id))
+            constructAlteredField(s"${fieldPointer}.1", Some(seals(0)), None)
           )
         }
 
         withClue("container seals contain elements with different values") {
-          val container = Container(1, "latest", Seq(Seal(1, "other")) ++ seals.drop(1))
+          val newSeal = Seal(4, "other")
+          val container = Container(1, "latest", newSeal +: seals.drop(1))
           container.createDiff(container.copy(seals = seals), baseFieldPointer, Some(1)) mustBe Seq(
-            constructAlteredField(s"${fieldPointer}.1.id", Some(seals(0).id), Some("other"))
+            constructAlteredField(s"${fieldPointer}.1", Some(seals(0)), None),
+            constructAlteredField(s"${fieldPointer}.4", None, Some(newSeal))
           )
         }
       }

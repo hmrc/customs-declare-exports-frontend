@@ -20,14 +20,14 @@ import base.ControllerSpec
 import controllers.declaration.routes.{SealController, TransportContainerController}
 import controllers.helpers.{Remove, SaveAndContinue}
 import forms.common.YesNoAnswer
+import forms.declaration.Seal
 import mock.ErrorHandlerMocks
-import models.DeclarationMeta.SealKey
 import models.DeclarationType
-import models.declaration.{Container, Seal}
+import models.declaration.Container
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
-import org.scalatest.Assertion
+import org.scalatest.{Assertion, GivenWhenThen}
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsEmpty, Request}
@@ -35,7 +35,7 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.declaration.{seal_add, seal_remove, seal_summary}
 
-class SealControllerSpec extends ControllerSpec with ErrorHandlerMocks {
+class SealControllerSpec extends ControllerSpec with ErrorHandlerMocks with GivenWhenThen {
 
   val sealAddPage = mock[seal_add]
   val sealRemovePage = mock[seal_remove]
@@ -181,11 +181,14 @@ class SealControllerSpec extends ControllerSpec with ErrorHandlerMocks {
         verifyCachedSeals(Seq(Container(1, containerId, Seq(Seal(1, "value")))), 1)
 
         thePageNavigatedTo mustBe SealController.displaySealSummary(containerId)
+
+        And("max seq Id is updated")
+        theCacheModelUpdated.declarationMeta.maxSequenceIds(Seal.seqIdKey) mustBe 1
       }
 
       "add an additional seal" in {
         val seal1 = Seal(1, "seal1")
-        withNewCaching(aDeclaration(withContainerData(Container(1, containerId, Seq(seal1)))))
+        withNewCaching(aDeclaration(withMaxSeqIds(Map(Seal.seqIdKey -> 1)), withContainerData(Container(1, containerId, Seq(seal1)))))
 
         val body = Seq("id" -> "seal2", (SaveAndContinue.toString, ""))
         val result = controller.submitAddSeal(containerId)(postRequestAsFormUrlEncoded(body: _*))
@@ -195,10 +198,18 @@ class SealControllerSpec extends ControllerSpec with ErrorHandlerMocks {
         verifyCachedSeals(Seq(Container(1, containerId, Seq(seal1, Seal(2, "seal2")))), 2)
 
         thePageNavigatedTo mustBe SealController.displaySealSummary(containerId)
+
+        And("max seq Id is updated")
+        theCacheModelUpdated.declarationMeta.maxSequenceIds(Seal.seqIdKey) mustBe 2
       }
 
       "add the first seal to an additional container" in {
-        withNewCaching(aDeclaration(withContainerData(Container(1, containerId, Seq(Seal(1, "seal1"))), Container(2, "container2", Seq.empty))))
+        withNewCaching(
+          aDeclaration(
+            withMaxSeqIds(Map(Seal.seqIdKey -> 1)),
+            withContainerData(Container(1, containerId, Seq(Seal(1, "seal1"))), Container(2, "container2", Seq.empty))
+          )
+        )
 
         val body = Seq("id" -> "seal2", (SaveAndContinue.toString, ""))
         val result = controller.submitAddSeal("container2")(postRequestAsFormUrlEncoded(body: _*))
@@ -208,6 +219,9 @@ class SealControllerSpec extends ControllerSpec with ErrorHandlerMocks {
         verifyCachedSeals(Seq(Container(1, containerId, Seq(Seal(1, "seal1"))), Container(2, "container2", Seq(Seal(2, "seal2")))), 2)
 
         thePageNavigatedTo mustBe SealController.displaySealSummary("container2")
+
+        And("max seq Id is updated")
+        theCacheModelUpdated.declarationMeta.maxSequenceIds(Seal.seqIdKey) mustBe 2
       }
 
       "add a seal and" when {
@@ -238,13 +252,16 @@ class SealControllerSpec extends ControllerSpec with ErrorHandlerMocks {
         }
 
         "user clicks 'remove' when container in cache" in {
-          withNewCaching(aDeclaration(withContainerData(Container(1, containerId, Seq(Seal(1, "value"))))))
+          withNewCaching(aDeclaration(withMaxSeqIds(Map(Seal.seqIdKey -> 1)), withContainerData(Container(1, containerId, Seq(Seal(1, "value"))))))
           val removeAction = (Remove.toString, "value")
 
           val result = controller.submitSummaryAction(containerId)(postRequestAsFormUrlEncoded(removeAction))
 
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe SealController.displaySealRemove(containerId, "value")
+
+          And("max seq Id remains the same")
+          verifyTheCacheIsUnchanged()
         }
       }
 
@@ -283,7 +300,7 @@ class SealControllerSpec extends ControllerSpec with ErrorHandlerMocks {
         "user confirms that they want to remove" in {
           val container1 = Container(1, containerId, Seq(Seal(1, sealId)))
           val container2 = Container(2, "containerB", Seq(Seal(2, "sealB")))
-          withNewCaching(aDeclaration(withContainerData(container1, container2)))
+          withNewCaching(aDeclaration(withMaxSeqIds(Map(Seal.seqIdKey -> 2)), withContainerData(container1, container2)))
 
           val body = Json.obj("yesNo" -> "Yes")
           val result = controller.submitSealRemove(containerId, sealId)(postRequest(body))
@@ -311,7 +328,7 @@ class SealControllerSpec extends ControllerSpec with ErrorHandlerMocks {
       def verifyCachedSeals(expectedContainers: Seq[Container], expectedSequenceId: Int): Assertion = {
         val declaration = theCacheModelUpdated
         declaration.containers mustBe expectedContainers
-        declaration.declarationMeta.maxSequenceIds.get(SealKey) mustBe Some(expectedSequenceId)
+        declaration.declarationMeta.maxSequenceIds.get(Seal.seqIdKey) mustBe Some(expectedSequenceId)
       }
     }
   }

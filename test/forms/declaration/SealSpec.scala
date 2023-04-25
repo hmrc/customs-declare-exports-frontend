@@ -43,7 +43,7 @@ class SealSpec extends UnitSpec with DeclarationPageBaseSpec {
 
       "id field contains correct value" in {
 
-        val correctForm = Seal("12345")
+        val correctForm = Seal(1, "12345")
 
         val result = form.fill(correctForm)
 

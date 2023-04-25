@@ -24,7 +24,7 @@ import controllers.navigation.Navigator
 import forms.declaration.RoutingCountryQuestionYesNo._
 import forms.declaration.countries.Countries.RoutingCountryPage
 import forms.declaration.countries.{Countries, Country}
-import models.DeclarationMeta.RoutingCountryKey
+import models.DeclarationMeta.sequenceIdPlaceholder
 import models.ExportsDeclaration
 import models.declaration.RoutingCountry
 import models.requests.JourneyRequest
@@ -120,19 +120,17 @@ class RoutingCountriesController @Inject() (
       .bindFromRequest()
       .fold(
         formWithErrors => Future.successful(BadRequest(countryOfRoutingPage(formWithErrors))),
-        routingCountry => updateCache(routingCountry).map(_ => redirect)
+        routingCountry => updateCache(RoutingCountry(sequenceIdPlaceholder, routingCountry)).map(_ => redirect)
       )
 
-  private def updateCache(newRoutingCountry: Country)(implicit request: JourneyRequest[AnyContent]): Future[ExportsDeclaration] = {
+  private def updateCache(newRoutingCountry: RoutingCountry)(implicit request: JourneyRequest[AnyContent]): Future[ExportsDeclaration] = {
     val declarationMeta = request.cacheModel.declarationMeta
-    val maxSequenceIds = declarationMeta.maxSequenceIds
-    val maxSequenceId = maxSequenceIds.get(RoutingCountryKey).getOrElse(0) + 1
-
-    val newRoutingCountries = request.cacheModel.locations.routingCountries :+ RoutingCountry(maxSequenceId, newRoutingCountry)
+    val (newRoutingCountryWithSequenceId, updatedMeta) = RoutingCountry.copyWithIncrementedSeqId(newRoutingCountry, declarationMeta)
+    val newRoutingCountries = request.cacheModel.locations.routingCountries :+ newRoutingCountryWithSequenceId
 
     updateDeclarationFromRequest(
       _.updateCountriesOfRouting(newRoutingCountries)
-        .copy(declarationMeta = declarationMeta.copy(maxSequenceIds = maxSequenceIds + (RoutingCountryKey -> maxSequenceId)))
+        .copy(declarationMeta = updatedMeta)
     )
   }
 }

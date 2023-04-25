@@ -20,19 +20,18 @@ import base.ControllerSpec
 import forms.common.YesNoAnswer
 import forms.declaration.PackageInformation
 import mock.ErrorHandlerMocks
-import models.DeclarationMeta.PackageInformationKey
 import models.declaration.ExportDeclarationTestData.declarationMeta
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
-import org.scalatest.OptionValues
+import org.scalatest.{GivenWhenThen, OptionValues}
 import play.api.data.Form
 import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.declaration.packageInformation.package_information_remove
 
-class PackageInformationRemoveControllerSpec extends ControllerSpec with OptionValues with ErrorHandlerMocks {
+class PackageInformationRemoveControllerSpec extends ControllerSpec with OptionValues with ErrorHandlerMocks with GivenWhenThen {
 
   val mockRemovePage = mock[package_information_remove]
 
@@ -140,7 +139,7 @@ class PackageInformationRemoveControllerSpec extends ControllerSpec with OptionV
           val id2 = "pkgId2"
           val packageInformation2 = PackageInformation(2, id2, Some("AE"), Some(1), Some("SHIP"))
           val item = anItem(withPackageInformation(packageInformation1, packageInformation2))
-          val meta = declarationMeta.copy(maxSequenceIds = declarationMeta.maxSequenceIds + (PackageInformationKey -> 2))
+          val meta = declarationMeta.copy(maxSequenceIds = declarationMeta.maxSequenceIds + (PackageInformation.seqIdKey -> 2))
           withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)).copy(declarationMeta = meta))
 
           val requestBody = Seq("yesNo" -> "Yes")
@@ -149,8 +148,9 @@ class PackageInformationRemoveControllerSpec extends ControllerSpec with OptionV
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe routes.PackageInformationSummaryController.displayPage(item.id)
 
+          And("max seq Id remains the same in dec meta")
           val declaration = theCacheModelUpdated
-          declaration.declarationMeta.maxSequenceIds.get(PackageInformationKey).value mustBe 2
+          declaration.declarationMeta.maxSequenceIds.get(PackageInformation.seqIdKey).value mustBe 2
 
           val packageInfos = declaration.itemBy(item.id).flatMap(_.packageInformation).value
           packageInfos.size mustBe 1

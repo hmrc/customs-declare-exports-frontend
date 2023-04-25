@@ -114,9 +114,10 @@ class ItemsSummaryController @Inject() (
     }
 
   private def createNewItemInCache(implicit request: JourneyRequest[AnyContent]): Future[String] = {
-    val newItem = ExportItem(id = exportItemIdGeneratorService.generateItemId(), sequenceId = request.cacheModel.items.size + 1)
+    val (newItem, updatedMeta) =
+      ExportItem.copyWithIncrementedSeqId(ExportItem(id = exportItemIdGeneratorService.generateItemId()), request.cacheModel.declarationMeta)
     val items = request.cacheModel.items :+ newItem
-    exportsCacheService.update(request.cacheModel.copy(items = items)).map(_ => newItem.id)
+    exportsCacheService.update(request.cacheModel.copy(items = items, declarationMeta = updatedMeta)).map(_ => newItem.id)
   }
 
   private def removeEmptyItems(implicit request: JourneyRequest[AnyContent]): Future[ExportsDeclaration] = {
@@ -154,11 +155,7 @@ class ItemsSummaryController @Inject() (
   private def removeItemFromCache(itemId: String)(implicit request: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
     request.cacheModel.itemBy(itemId) match {
       case Some(itemToDelete) =>
-        val updatedItems =
-          request.cacheModel.items.filterNot(_ == itemToDelete).zipWithIndex.map { case (item, index) =>
-            item.copy(sequenceId = index + 1)
-          }
-
+        val updatedItems = request.cacheModel.items.filterNot(_ == itemToDelete)
         val updatedModel = removeWarehouseIdentification(request.cacheModel.copy(items = updatedItems))
         exportsCacheService.update(updatedModel)
 

@@ -19,13 +19,13 @@ package models.declaration
 import forms.DeclarationPage
 import forms.declaration.FiscalInformation.AllowedFiscalInformationAnswers.yes
 import forms.declaration._
-import models.{DeclarationType, FieldMapping}
 import models.DeclarationType.DeclarationType
-import models.viewmodels.TariffContentKey
 import models.ExportsFieldPointer.ExportsFieldPointer
+import models.viewmodels.TariffContentKey
+import models.{DeclarationType, FieldMapping}
 import play.api.libs.json.{Json, OFormat}
 import services.DiffTools
-import services.DiffTools.{combinePointers, compareBooleanDifference, compareDifference, compareIntDifference, ExportsDeclarationDiff}
+import services.DiffTools._
 
 case class ExportItem(
   id: String,
@@ -45,7 +45,7 @@ case class ExportItem(
   additionalInformation: Option[AdditionalInformationData] = None,
   additionalDocuments: Option[AdditionalDocuments] = None,
   isLicenceRequired: Option[Boolean] = None
-) extends DiffTools[ExportItem] {
+) extends DiffTools[ExportItem] with ExplicitlySequencedObject[ExportItem] {
 
   // id and fiscalInformation fields are not used to create WCO XML
   override def createDiff(original: ExportItem, pointerString: ExportsFieldPointer, maybeSequenceId: Option[Int] = None): ExportsDeclarationDiff =
@@ -87,6 +87,8 @@ case class ExportItem(
       )
     ).flatten
 
+  override def updateSequenceId(sequenceId: Int): ExportItem = copy(sequenceId = sequenceId)
+
   def hasFiscalReferences: Boolean =
     fiscalInformation.exists(_.onwardSupplyRelief == yes)
 
@@ -125,7 +127,7 @@ case class ExportItem(
     procedureCodes.flatMap(_.procedureCode).exists(ProcedureCodesData.isWarehouseRequiredCode)
 }
 
-object ExportItem extends DeclarationPage with FieldMapping {
+object ExportItem extends DeclarationPage with FieldMapping with EsoFactory[ExportItem] {
   implicit val format: OFormat[ExportItem] = Json.format[ExportItem]
 
   val pointer: ExportsFieldPointer = "items"
@@ -135,4 +137,6 @@ object ExportItem extends DeclarationPage with FieldMapping {
 
   override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
     Seq(TariffContentKey(s"tariff.declaration.declarationItemsList.${DeclarationPage.getJourneyTypeSpecialisation(decType)}"))
+
+  override val seqIdKey: String = "ExportItems"
 }

@@ -162,13 +162,13 @@ class LocationsSpec extends UnitSpec {
         }
 
         "when routingCountries are not equal" in {
-          val fieldPointer = s"${baseFieldPointer}.${Locations.routingCountriesPointer}"
+          val fieldPointer = s"$baseFieldPointer.${Locations.routingCountriesPointer}"
           val routingCountries =
             Seq(RoutingCountry(1, Country(Some("one"))), RoutingCountry(2, Country(Some("two"))), RoutingCountry(3, Country(Some("three"))))
 
           withClue("original Locations routingCountries are not present") {
             val locations = Locations(routingCountries = routingCountries)
-            locations.createDiff(locations.copy(routingCountries = Seq.empty), baseFieldPointer, Some(1)) mustBe Seq(
+            locations.createDiff(locations.copy(routingCountries = Seq.empty), baseFieldPointer, Some(1)) must contain theSameElementsAs Seq(
               constructAlteredField(s"${fieldPointer}.1", None, Some(routingCountries(0))),
               constructAlteredField(s"${fieldPointer}.2", None, Some(routingCountries(1))),
               constructAlteredField(s"${fieldPointer}.3", None, Some(routingCountries(2)))
@@ -187,24 +187,21 @@ class LocationsSpec extends UnitSpec {
           withClue("both locations routingCountries contain different number of elements") {
             val locations = Locations(routingCountries = routingCountries.drop(1))
             locations.createDiff(locations.copy(routingCountries = routingCountries), baseFieldPointer, Some(1)) mustBe Seq(
-              constructAlteredField(s"${fieldPointer}.1.code", routingCountries(0).country.code, routingCountries(1).country.code),
-              constructAlteredField(s"${fieldPointer}.2.code", routingCountries(1).country.code, routingCountries(2).country.code),
-              constructAlteredField(s"${fieldPointer}.3", Some(routingCountries(2)), None)
-            )
-          }
-
-          withClue("both locations routingCountries contain same elements but in different order") {
-            val locations = Locations(routingCountries = routingCountries)
-            locations.createDiff(locations.copy(routingCountries = routingCountries.reverse), baseFieldPointer, Some(1)) mustBe Seq(
-              constructAlteredField(s"${fieldPointer}.1.code", routingCountries(2).country.code, routingCountries(0).country.code),
-              constructAlteredField(s"${fieldPointer}.3.code", routingCountries(0).country.code, routingCountries(2).country.code)
+              constructAlteredField(s"${fieldPointer}.1", Some(routingCountries(0)), None)
             )
           }
 
           withClue("locations routingCountries contain elements with different values") {
-            val locations = Locations(routingCountries = Seq(RoutingCountry(1, Country(Some("other")))) ++ routingCountries.drop(1))
-            locations.createDiff(locations.copy(routingCountries = routingCountries), baseFieldPointer, Some(1)) mustBe Seq(
-              constructAlteredField(s"${fieldPointer}.1.code", routingCountries(0).country.code, Some("other"))
+            val locations = Locations(routingCountries =
+              Seq(RoutingCountry(4, Country(Some("other"))), RoutingCountry(5, Country(Some("other"))), RoutingCountry(6, Country(Some("other"))))
+            )
+            locations.createDiff(locations.copy(routingCountries = routingCountries), baseFieldPointer, Some(1)) must contain theSameElementsAs Seq(
+              constructAlteredField(s"${fieldPointer}.1", Some(routingCountries(0)), None),
+              constructAlteredField(s"${fieldPointer}.2", Some(routingCountries(1)), None),
+              constructAlteredField(s"${fieldPointer}.3", Some(routingCountries(2)), None),
+              constructAlteredField(s"${fieldPointer}.4", None, Some(RoutingCountry(4, Country(Some("other"))))),
+              constructAlteredField(s"${fieldPointer}.5", None, Some(RoutingCountry(5, Country(Some("other"))))),
+              constructAlteredField(s"${fieldPointer}.6", None, Some(RoutingCountry(6, Country(Some("other")))))
             )
           }
         }

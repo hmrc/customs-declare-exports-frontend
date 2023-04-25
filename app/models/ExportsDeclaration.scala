@@ -27,11 +27,11 @@ import forms.declaration.countries.Country
 import forms.declaration.declarationHolder.DeclarationHolder
 import models.DeclarationType.DeclarationType
 import models.ExportsDeclaration.isCodePrefixedWith
-import models.declaration._
 import models.ExportsFieldPointer.ExportsFieldPointer
+import models.declaration._
 import play.api.libs.json._
 import services.DiffTools
-import services.DiffTools.{combinePointers, compareDifference, ExportsDeclarationDiff}
+import services.DiffTools.{combinePointers, compareDifference, compareIntDifference, ExportsDeclarationDiff}
 
 // scalastyle:off
 case class ExportsDeclaration(
@@ -64,7 +64,8 @@ case class ExportsDeclaration(
     Seq(
       compareDifference(original.mucr, mucr, combinePointers(pointerString, Mucr.pointer, sequenceId)),
       compareDifference(original.natureOfTransaction, natureOfTransaction, combinePointers(pointerString, NatureOfTransaction.pointer, sequenceId)),
-      createDiff(original.items, items, combinePointers(pointerString, ExportItem.pointer, sequenceId))
+      createDiff(original.items, items, combinePointers(pointerString, ExportItem.pointer, sequenceId)),
+      compareIntDifference(original.items.size, items.size, combinePointers(pointerString, ExportsDeclaration.goodsItemQuantityPointer))
     ).flatten ++
       transport.createDiff(original.transport, combinePointers(pointerString, Transport.pointer, sequenceId)) ++
       parties.createDiff(original.parties, combinePointers(pointerString, Parties.pointer, sequenceId)) ++
@@ -233,6 +234,7 @@ object ExportsDeclaration extends FieldMapping {
   implicit val format: OFormat[ExportsDeclaration] = Json.format[ExportsDeclaration]
 
   val pointer: ExportsFieldPointer = "declaration"
+  val goodsItemQuantityPointer: ExportsFieldPointer = "goodsItemQuantity"
 
   def isCodePrefixedWith(maybeCode: Option[String], prefixes: Seq[Int]): Boolean = maybeCode match {
     case Some(code) if code.trim.nonEmpty =>

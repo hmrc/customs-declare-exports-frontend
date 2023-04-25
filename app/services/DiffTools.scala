@@ -17,6 +17,7 @@
 package services
 
 import models.ExportsFieldPointer.ExportsFieldPointer
+import models.declaration.ExplicitlySequencedObject
 import services.DiffTools.{combinePointers, ExportsDeclarationDiff}
 
 case class OriginalAndNewValues[T](originalVal: Option[T], newVal: Option[T]) {}
@@ -50,8 +51,64 @@ trait DiffTools[T] {
     allDifferences.flatten
   }
 
+  def createDiff[S <: DiffTools[S] with ExplicitlySequencedObject[S]](original: Seq[S], current: Seq[S], pointerString: ExportsFieldPointer)(
+    implicit esoTag: DummyImplicit
+  ): ExportsDeclarationDiff = {
+    val intersectingObjectPairs = for {
+      originalObject <- original
+      currentObject <- current
+      if originalObject.sequenceId == currentObject.sequenceId
+    } yield (Some(currentObject), Some(originalObject))
+
+    val intersectingObjectDiffs = intersectingObjectPairs.map { case (Some(x), Some(y)) =>
+      x.createDiff(y, pointerString, Some(x.sequenceId))
+    }
+
+    val originalObjectIds = original.map(_.sequenceId).toSet
+    val currentObjectIds = current.map(_.sequenceId).toSet
+    val newObjectsIds = currentObjectIds.diff(originalObjectIds)
+    val removedObjectsIds = originalObjectIds.diff(currentObjectIds)
+    val removedObjectsDiff =
+      removedObjectsIds.map(sequenceId =>
+        AlteredField(s"$pointerString.$sequenceId", OriginalAndNewValues(original.find(_.sequenceId == sequenceId), None))
+      )
+    val newObjectsDiff =
+      newObjectsIds.map(sequenceId =>
+        AlteredField(s"$pointerString.$sequenceId", OriginalAndNewValues(None, current.find(_.sequenceId == sequenceId)))
+      )
+
+    intersectingObjectDiffs.flatten ++ removedObjectsDiff ++ newObjectsDiff
+  }
+
+  def createDiff[S <: ExplicitlySequencedObject[S]](original: Seq[S], current: Seq[S], pointerString: ExportsFieldPointer)(
+    implicit esoTag: DummyImplicit,
+    nonDiffEsoTag: DummyImplicit
+  ): ExportsDeclarationDiff = {
+    val originalObjectIds = original.map(_.sequenceId).toSet
+    val currentObjectIds = current.map(_.sequenceId).toSet
+    val newObjectsIds = currentObjectIds.diff(originalObjectIds)
+    val removedObjectsIds = originalObjectIds.diff(currentObjectIds)
+    val removedObjectsDiff =
+      removedObjectsIds.map(sequenceId =>
+        AlteredField(s"$pointerString.$sequenceId", OriginalAndNewValues(original.find(_.sequenceId == sequenceId), None))
+      )
+    val newObjectsDiff =
+      newObjectsIds.map(sequenceId =>
+        AlteredField(s"$pointerString.$sequenceId", OriginalAndNewValues(None, current.find(_.sequenceId == sequenceId)))
+      )
+
+    (removedObjectsDiff ++ newObjectsDiff).toSeq
+  }
+
   def createDiff[E <: DiffTools[E]](original: Option[Seq[E]], current: Option[Seq[E]], pointerString: ExportsFieldPointer): ExportsDeclarationDiff =
     createDiff(original.getOrElse(Seq.empty[E]), current.getOrElse(Seq.empty[E]), pointerString)
+
+  def createDiff[S <: DiffTools[S] with ExplicitlySequencedObject[S]](
+    original: Option[Seq[S]],
+    current: Option[Seq[S]],
+    pointerString: ExportsFieldPointer
+  )(implicit esoTag: DummyImplicit): ExportsDeclarationDiff =
+    createDiff(original.getOrElse(Seq.empty[S]), current.getOrElse(Seq.empty[S]), pointerString)
 
   def createDiffOfOptions[E <: DiffTools[E]](original: Option[E], current: Option[E], pointerString: ExportsFieldPointer): ExportsDeclarationDiff =
     (original, current) match {

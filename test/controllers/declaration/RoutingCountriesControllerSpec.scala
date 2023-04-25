@@ -21,12 +21,12 @@ import connectors.CodeListConnector
 import controllers.declaration.routes.{LocationOfGoodsController, RoutingCountriesController}
 import controllers.helpers.Remove
 import forms.declaration.countries.{Country => FormCountry}
-import models.DeclarationMeta.RoutingCountryKey
 import models.codes.Country
+import models.declaration.RoutingCountry
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
-import org.scalatest.Assertion
+import org.scalatest.{Assertion, GivenWhenThen}
 import play.api.data.Form
 import play.api.libs.json.{JsObject, JsString}
 import play.api.mvc.{AnyContentAsEmpty, Request}
@@ -37,7 +37,7 @@ import views.html.declaration.destinationCountries.{country_of_routing, routing_
 
 import scala.collection.immutable.ListMap
 
-class RoutingCountriesControllerSpec extends ControllerSpec {
+class RoutingCountriesControllerSpec extends ControllerSpec with GivenWhenThen {
 
   val mockRoutingQuestionPage = mock[routing_country_question]
   val mockCountryOfRoutingPage = mock[country_of_routing]
@@ -222,10 +222,13 @@ class RoutingCountriesControllerSpec extends ControllerSpec {
             thePageNavigatedTo mustBe RoutingCountriesController.displayRoutingCountry
 
             verifyCachedRoutingCountries(1 -> "GB")
+
+            And("max seq id is updated")
+            theCacheModelUpdated.declarationMeta.maxSequenceIds(RoutingCountry.seqIdKey) mustBe 1
           }
 
           "there are existing countries" in {
-            withNewCaching(aDeclaration(withRoutingQuestion(), withRoutingCountries()))
+            withNewCaching(aDeclaration(withRoutingQuestion(), withRoutingCountries(), withMaxSeqIds(Map(RoutingCountry.seqIdKey -> 2))))
 
             val correctForm = Seq("countryCode" -> "IE", addActionUrlEncoded())
 
@@ -235,6 +238,8 @@ class RoutingCountriesControllerSpec extends ControllerSpec {
             thePageNavigatedTo mustBe RoutingCountriesController.displayRoutingCountry
 
             verifyCachedRoutingCountries(1 -> "FR", 2 -> "GB", 3 -> "IE")
+            And("max seq id is updated")
+            theCacheModelUpdated.declarationMeta.maxSequenceIds(RoutingCountry.seqIdKey) mustBe 3
           }
         }
       }
@@ -243,7 +248,13 @@ class RoutingCountriesControllerSpec extends ControllerSpec {
         val removeAction = (Remove.toString, "FR")
 
         "country removed not in list" in {
-          withNewCaching(aDeclaration(withRoutingQuestion(), withRoutingCountries(Seq(FormCountry(Some("PL")), FormCountry(Some("GB"))))))
+          withNewCaching(
+            aDeclaration(
+              withRoutingQuestion(),
+              withMaxSeqIds(Map(RoutingCountry.seqIdKey -> 2)),
+              withRoutingCountries(Seq(FormCountry(Some("PL")), FormCountry(Some("GB"))))
+            )
+          )
 
           val result = controller.submitRoutingCountry()(postRequestAsFormUrlEncoded(Seq(removeAction): _*))
 
@@ -251,10 +262,18 @@ class RoutingCountriesControllerSpec extends ControllerSpec {
           thePageNavigatedTo mustBe RoutingCountriesController.displayRoutingCountry
 
           verifyCachedRoutingCountries(1 -> "PL", 2 -> "GB")
+          And("max seq id remains the same")
+          theCacheModelUpdated.declarationMeta.maxSequenceIds(RoutingCountry.seqIdKey) mustBe 2
         }
 
         "removing country that exists in cache" in {
-          withNewCaching(aDeclaration(withRoutingQuestion(), withRoutingCountries(Seq(FormCountry(Some("FR")), FormCountry(Some("GB"))))))
+          withNewCaching(
+            aDeclaration(
+              withRoutingQuestion(),
+              withMaxSeqIds(Map(RoutingCountry.seqIdKey -> 2)),
+              withRoutingCountries(Seq(FormCountry(Some("FR")), FormCountry(Some("GB"))))
+            )
+          )
 
           val result = controller.submitRoutingCountry()(postRequestAsFormUrlEncoded(removeAction))
 
@@ -262,6 +281,8 @@ class RoutingCountriesControllerSpec extends ControllerSpec {
           thePageNavigatedTo mustBe RoutingCountriesController.displayRoutingCountry
 
           verifyCachedRoutingCountries(2 -> "GB")
+          And("max seq id remains the same")
+          theCacheModelUpdated.declarationMeta.maxSequenceIds(RoutingCountry.seqIdKey) mustBe 2
         }
       }
 
@@ -314,13 +335,11 @@ class RoutingCountriesControllerSpec extends ControllerSpec {
         declaration.containRoutingCountries mustBe true
 
         val routingCountries = declaration.locations.routingCountries
-        routingCountries.size mustBe expected.size
 
         routingCountries.zip(expected).foreach { case (routingCountry, (expectedSequenceId, expectedCountry)) =>
           (routingCountry.sequenceId == expectedSequenceId && routingCountry.country == FormCountry(Some(expectedCountry))) mustBe true
         }
-
-        declaration.declarationMeta.maxSequenceIds.get(RoutingCountryKey) mustBe Some(expected.last._1)
+        routingCountries.size mustBe expected.size
       }
     }
   }

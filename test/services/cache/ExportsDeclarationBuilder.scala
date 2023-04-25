@@ -17,9 +17,6 @@
 package services.cache
 
 import base.ExportsTestData._
-
-import java.time.{Instant, LocalDate, LocalDateTime, ZoneOffset}
-import java.util.UUID
 import forms.common.YesNoAnswer.{No, YesNoAnswers}
 import forms.common.{Address, Eori, YesNoAnswer}
 import forms.declaration._
@@ -32,12 +29,14 @@ import forms.declaration.declarationHolder.DeclarationHolder
 import forms.declaration.exporter.ExporterDetails
 import forms.declaration.officeOfExit.OfficeOfExit
 import forms.{Ducr, Lrn, Mrn}
-import models.declaration.DeclarationStatus.DeclarationStatus
-import models.DeclarationMeta.{ContainerKey, RoutingCountryKey, SealKey}
 import models.DeclarationType.DeclarationType
+import models.declaration.DeclarationStatus.DeclarationStatus
 import models.declaration._
 import models.declaration.submissions.EnhancedStatus.EnhancedStatus
 import models.{DeclarationMeta, DeclarationType, ExportsDeclaration}
+
+import java.time.{Instant, LocalDate, LocalDateTime, ZoneOffset}
+import java.util.UUID
 
 //noinspection ScalaStyle
 trait ExportsDeclarationBuilder {
@@ -83,6 +82,9 @@ trait ExportsDeclarationBuilder {
 
   def withStatus(status: DeclarationStatus): ExportsDeclarationModifier =
     declaration => declaration.copy(declarationMeta = declaration.declarationMeta.copy(status = status))
+
+  def withMaxSeqIds(ids: Map[String, Int]): ExportsDeclarationModifier =
+    declaration => declaration.copy(declarationMeta = declaration.declarationMeta.copy(maxSequenceIds = ids))
 
   def withType(`type`: DeclarationType): ExportsDeclarationModifier = _.copy(`type` = `type`)
 
@@ -188,17 +190,20 @@ trait ExportsDeclarationBuilder {
       val meta = model.declarationMeta
       val routingCountries = countries.zipWithIndex.map { case (country, ix) => RoutingCountry(ix + 1, country) }
       model.copy(
-        declarationMeta = meta.copy(maxSequenceIds = meta.maxSequenceIds + (RoutingCountryKey -> routingCountries.last.sequenceId)),
+        declarationMeta = meta.copy(maxSequenceIds = meta.maxSequenceIds + (RoutingCountry.seqIdKey -> routingCountries.last.sequenceId)),
         locations = model.locations.copy(routingCountries = routingCountries, hasRoutingCountries = Some(true))
       )
     }
   }
 
+  def withRoutingCountriesWithSeqId(routingCountries: Seq[RoutingCountry]): ExportsDeclarationModifier = model =>
+    model.copy(locations = model.locations.copy(routingCountries = routingCountries, hasRoutingCountries = Some(true)))
+
   def withoutRoutingCountries(): ExportsDeclarationModifier =
     model => {
       val meta = model.declarationMeta
       model.copy(
-        declarationMeta = meta.copy(maxSequenceIds = meta.maxSequenceIds + (RoutingCountryKey -> 0)),
+        declarationMeta = meta.copy(maxSequenceIds = meta.maxSequenceIds + (RoutingCountry.seqIdKey -> 0)),
         locations = model.locations.copy(routingCountries = Seq.empty)
       )
     }
@@ -440,22 +445,14 @@ trait ExportsDeclarationBuilder {
       )
 
   def withContainerData(containers: Container*): ExportsDeclarationModifier = { cache =>
-    val meta = cache.declarationMeta
-    val lastContainerId = containers.foldLeft(0) { case (max, container) => Math.max(max, container.sequenceId) }
-    val lastSealId = containers.foldLeft(0) { case (max, container) =>
-      container.seals.foldLeft(max) { case (max, seal) => Math.max(max, seal.sequenceId) }
-    }
-    cache.copy(
-      declarationMeta = meta.copy(maxSequenceIds = meta.maxSequenceIds ++ List(ContainerKey -> lastContainerId, SealKey -> lastSealId)),
-      transport = cache.transport.copy(containers = Some(containers))
-    )
+    cache.copy(transport = cache.transport.copy(containers = Some(containers)))
   }
 
   def withoutContainerData(): ExportsDeclarationModifier =
     model => {
       val meta = model.declarationMeta
       model.copy(
-        declarationMeta = meta.copy(maxSequenceIds = meta.maxSequenceIds ++ List(ContainerKey -> 0, SealKey -> 0)),
+        declarationMeta = meta.copy(maxSequenceIds = meta.maxSequenceIds ++ List(Container.seqIdKey -> 0, Seal.seqIdKey -> 0)),
         transport = model.transport.copy(containers = None)
       )
     }

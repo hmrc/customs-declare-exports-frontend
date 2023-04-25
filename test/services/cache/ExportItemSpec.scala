@@ -428,78 +428,8 @@ class ExportItemSpec extends UnitWithMocksSpec with ExportsItemBuilder {
 
         withClue("both packageInformation contain different number of elements") {
           val item = ExportItem("latestId", packageInformation = Some(packageInformations.drop(1)))
-          item.createDiff(item.copy(packageInformation = Some(packageInformations)), baseFieldPointer) mustBe Seq(
-            constructAlteredField(s"${fieldPointer}.1.id", Some(packageInformations(0).id), Some(packageInformations(1).id)),
-            constructAlteredField(
-              s"${fieldPointer}.1.typesOfPackages",
-              Some(packageInformations(0).typesOfPackages.get),
-              Some(packageInformations(1).typesOfPackages.get)
-            ),
-            constructAlteredField(
-              s"${fieldPointer}.1.numberOfPackages",
-              Some(packageInformations(0).numberOfPackages.get),
-              Some(packageInformations(1).numberOfPackages.get)
-            ),
-            constructAlteredField(
-              s"${fieldPointer}.1.shippingMarks",
-              Some(packageInformations(0).shippingMarks.get),
-              Some(packageInformations(1).shippingMarks.get)
-            ),
-            constructAlteredField(s"${fieldPointer}.2.id", Some(packageInformations(1).id), Some(packageInformations(2).id)),
-            constructAlteredField(
-              s"${fieldPointer}.2.typesOfPackages",
-              Some(packageInformations(1).typesOfPackages.get),
-              Some(packageInformations(2).typesOfPackages.get)
-            ),
-            constructAlteredField(
-              s"${fieldPointer}.2.numberOfPackages",
-              Some(packageInformations(1).numberOfPackages.get),
-              Some(packageInformations(2).numberOfPackages.get)
-            ),
-            constructAlteredField(
-              s"${fieldPointer}.2.shippingMarks",
-              Some(packageInformations(1).shippingMarks.get),
-              Some(packageInformations(2).shippingMarks.get)
-            ),
-            constructAlteredField(s"${fieldPointer}.3", Some(packageInformations(2)), None)
-          )
-        }
-
-        withClue("both packageInformation contain same elements but in different order") {
-          val item = ExportItem("latestId", packageInformation = Some(packageInformations))
-          item.createDiff(item.copy(packageInformation = Some(packageInformations.reverse)), baseFieldPointer) mustBe Seq(
-            constructAlteredField(s"${fieldPointer}.1.id", Some(packageInformations(2).id), Some(packageInformations(0).id)),
-            constructAlteredField(
-              s"${fieldPointer}.1.typesOfPackages",
-              Some(packageInformations(2).typesOfPackages.get),
-              Some(packageInformations(0).typesOfPackages.get)
-            ),
-            constructAlteredField(
-              s"${fieldPointer}.1.numberOfPackages",
-              Some(packageInformations(2).numberOfPackages.get),
-              Some(packageInformations(0).numberOfPackages.get)
-            ),
-            constructAlteredField(
-              s"${fieldPointer}.1.shippingMarks",
-              Some(packageInformations(2).shippingMarks.get),
-              Some(packageInformations(0).shippingMarks.get)
-            ),
-            constructAlteredField(s"${fieldPointer}.3.id", Some(packageInformations(0).id), Some(packageInformations(2).id)),
-            constructAlteredField(
-              s"${fieldPointer}.3.typesOfPackages",
-              Some(packageInformations(0).typesOfPackages.get),
-              Some(packageInformations(2).typesOfPackages.get)
-            ),
-            constructAlteredField(
-              s"${fieldPointer}.3.numberOfPackages",
-              Some(packageInformations(0).numberOfPackages.get),
-              Some(packageInformations(2).numberOfPackages.get)
-            ),
-            constructAlteredField(
-              s"${fieldPointer}.3.shippingMarks",
-              Some(packageInformations(0).shippingMarks.get),
-              Some(packageInformations(2).shippingMarks.get)
-            )
+          item.createDiff(item.copy(packageInformation = Some(packageInformations)), baseFieldPointer) must contain theSameElementsAs Seq(
+            constructAlteredField(s"${fieldPointer}.1", Some(packageInformations(0)), None)
           )
         }
 
@@ -507,22 +437,8 @@ class ExportItemSpec extends UnitWithMocksSpec with ExportsItemBuilder {
           val newValue = PackageInformation(4, "4", Some("typesOfPackagesFour"), Some(3), Some("shippingMarksFour"))
           val item = ExportItem("latestId", packageInformation = Some(List(newValue) ++ packageInformations.drop(1)))
           item.createDiff(item.copy(packageInformation = Some(packageInformations)), baseFieldPointer) mustBe Seq(
-            constructAlteredField(s"${fieldPointer}.1.id", Some(packageInformations(0).id), Some(newValue.id)),
-            constructAlteredField(
-              s"${fieldPointer}.1.typesOfPackages",
-              Some(packageInformations(0).typesOfPackages.get),
-              Some(newValue.typesOfPackages.get)
-            ),
-            constructAlteredField(
-              s"${fieldPointer}.1.numberOfPackages",
-              Some(packageInformations(0).numberOfPackages.get),
-              Some(newValue.numberOfPackages.get)
-            ),
-            constructAlteredField(
-              s"${fieldPointer}.1.shippingMarks",
-              Some(packageInformations(0).shippingMarks.get),
-              Some(newValue.shippingMarks.get)
-            )
+            constructAlteredField(s"${fieldPointer}.1", Some(packageInformations(0)), None),
+            constructAlteredField(s"${fieldPointer}.4", None, Some(newValue))
           )
         }
       }

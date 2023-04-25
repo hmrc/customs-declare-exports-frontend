@@ -19,7 +19,7 @@ package forms.declaration
 import base.UnitSpec
 import forms.common.YesNoAnswer
 import forms.declaration.ModeOfTransportCode.{Maritime, Rail}
-import models.declaration.{Container, Seal, Transport}
+import models.declaration.{Container, Transport}
 import play.api.libs.json.{JsSuccess, Json}
 import services.AlteredField
 import services.AlteredField.constructAlteredField
@@ -137,13 +137,26 @@ class TransportSpec extends UnitSpec {
         }
       }
 
-      "the original version's containers field has a different value to this one" in {
-        val fieldPointer = s"${Transport.pointer}.${Container.pointer}.1.id"
-        withClue("both versions have Some non-empty containers values but values are different") {
-          val transport = Transport(containers = Some(Seq(Container(1, "latest", Seq.empty[Seal]))))
-          val originalValue = Seq(Container(1, "original", Seq.empty[Seal]))
-          transport.createDiff(transport.copy(containers = Some(originalValue)), Transport.pointer) mustBe Seq(
-            constructAlteredField(fieldPointer, originalValue(0).id, (transport.containers.get)(0).id)
+      "the original containers are different" in {
+        val containers =
+          Seq(Container(1, "original", Seq.empty[Seal]), Container(2, "original", Seq.empty[Seal]), Container(3, "original", Seq.empty[Seal]))
+        val fieldPointer = s"${Transport.pointer}.${Container.pointer}"
+
+        withClue("original containers are not present") {
+          val transport = Transport(containers = Some(containers))
+          transport.copy(containers = None).createDiff(transport, Transport.pointer) mustBe Seq(
+            constructAlteredField(s"$fieldPointer.1", Some(containers(0)), None),
+            constructAlteredField(s"$fieldPointer.2", Some(containers(1)), None),
+            constructAlteredField(s"$fieldPointer.3", Some(containers(2)), None)
+          )
+        }
+
+        withClue("a container had been removed and another added") {
+          val transport = Transport(containers = Some(containers))
+          val updatedContainers = Some(containers.drop(1) :+ Container(4, "4", Seq.empty[Seal]))
+          transport.copy(containers = updatedContainers).createDiff(transport, Transport.pointer) mustBe Seq(
+            constructAlteredField(s"$fieldPointer.1", Some(containers(0)), None),
+            constructAlteredField(s"$fieldPointer.4", None, Some(Container(4, "4", Seq.empty[Seal])))
           )
         }
       }

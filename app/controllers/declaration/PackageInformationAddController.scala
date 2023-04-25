@@ -23,9 +23,8 @@ import controllers.helpers.PackageInformationHelper.allCachedPackageInformation
 import controllers.navigation.Navigator
 import forms.declaration.PackageInformation
 import forms.declaration.PackageInformation.form
-import models.DeclarationMeta.{sequenceIdPlaceholder, PackageInformationKey}
-import models.ExportsDeclaration
 import models.requests.JourneyRequest
+import models.{DeclarationMeta, ExportsDeclaration}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
@@ -69,23 +68,27 @@ class PackageInformationAddController @Inject() (
             .map(_ => navigator.continueTo(routes.PackageInformationSummaryController.displayPage(itemId)))
       )
 
-  private def updateCache(itemId: String, packageInformation: Seq[PackageInformation])(
+  private def updateCache(itemId: String, packageInformations: Seq[PackageInformation])(
     implicit request: JourneyRequest[AnyContent]
   ): Future[ExportsDeclaration] = {
     val declarationMeta = request.cacheModel.declarationMeta
-    val maxSequenceIds = declarationMeta.maxSequenceIds
-    val maxSequenceId = maxSequenceIds.get(PackageInformationKey).getOrElse(0)
 
-    val (newMaxSequenceId, newPackageInformation) = packageInformation.foldLeft((maxSequenceId, List.empty[PackageInformation])) {
-      (tuple: (Int, List[PackageInformation]), packageInfo: PackageInformation) =>
-        val sequenceId = tuple._1
-        val packageInfos = tuple._2
-        if (packageInfo.sequenceId == sequenceIdPlaceholder) (sequenceId + 1, packageInfos :+ packageInfo.copy(sequenceId + 1))
-        else (sequenceId, packageInfos :+ packageInfo)
-    }
+    val (updatedMeta, updatedPackageInformations): (DeclarationMeta, List[PackageInformation]) =
+      packageInformations.foldLeft((declarationMeta, List.empty[PackageInformation])) {
+        (tuple: (DeclarationMeta, List[PackageInformation]), packageInformation: PackageInformation) =>
+          val meta = tuple._1
+          val packageInformations = tuple._2
+          packageInformation match {
+            case newPackageInformation @ PackageInformation(DeclarationMeta.sequenceIdPlaceholder, _, _, _, _) =>
+              val (packInfo, updatedMeta) = PackageInformation.copyWithIncrementedSeqId(newPackageInformation, meta)
+              (updatedMeta, packageInformations :+ packInfo)
+            case existingPackageInformation @ _ => (meta, packageInformations :+ existingPackageInformation)
+          }
+      }
+
     updateDeclarationFromRequest(
-      _.updatedItem(itemId, _.copy(packageInformation = Some(newPackageInformation)))
-        .copy(declarationMeta = declarationMeta.copy(maxSequenceIds = maxSequenceIds + (PackageInformationKey -> newMaxSequenceId)))
+      _.updatedItem(itemId, _.copy(packageInformation = Some(updatedPackageInformations)))
+        .copy(declarationMeta = updatedMeta)
     )
   }
 }

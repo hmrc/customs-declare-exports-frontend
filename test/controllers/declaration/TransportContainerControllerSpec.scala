@@ -20,12 +20,11 @@ import base.{ControllerSpec, Injector}
 import controllers.declaration.routes.{SealController, TransportContainerController}
 import controllers.helpers.Remove
 import forms.common.YesNoAnswer
-import forms.declaration.{ContainerAdd, ContainerFirst}
+import forms.declaration.{ContainerAdd, ContainerFirst, Seal}
 import mock.ErrorHandlerMocks
-import models.DeclarationMeta.ContainerKey
 import models.DeclarationType
 import models.declaration.Container.maxNumberOfItems
-import models.declaration.{Container, Seal}
+import models.declaration.Container
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
@@ -191,7 +190,13 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
       val requestBody = Seq(ContainerAdd.containerIdKey -> "C2")
 
       "working on standard declaration with existing container" in {
-        withNewCaching(aDeclaration(withType(DeclarationType.STANDARD), withContainerData(Container(1, "C1", Seq.empty))))
+        withNewCaching(
+          aDeclaration(
+            withType(DeclarationType.STANDARD),
+            withMaxSeqIds(Map(Container.seqIdKey -> 1)),
+            withContainerData(Container(1, "C1", Seq.empty))
+          )
+        )
 
         val result = controller.submitAddContainer()(postRequestAsFormUrlEncoded(requestBody: _*))
 
@@ -202,7 +207,13 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
       }
 
       "working on supplementary declaration with existing container" in {
-        withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withContainerData(Container(1, "C1", Seq.empty))))
+        withNewCaching(
+          aDeclaration(
+            withType(DeclarationType.SUPPLEMENTARY),
+            withMaxSeqIds(Map(Container.seqIdKey -> 1)),
+            withContainerData(Container(1, "C1", Seq.empty))
+          )
+        )
 
         val result = controller.submitAddContainer()(postRequestAsFormUrlEncoded(requestBody: _*))
 
@@ -213,7 +224,13 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
       }
 
       "working on simplified declaration with existing container" in {
-        withNewCaching(aDeclaration(withType(DeclarationType.SIMPLIFIED), withContainerData(Container(1, "C1", Seq.empty))))
+        withNewCaching(
+          aDeclaration(
+            withType(DeclarationType.SIMPLIFIED),
+            withMaxSeqIds(Map(Container.seqIdKey -> 1)),
+            withContainerData(Container(1, "C1", Seq.empty))
+          )
+        )
 
         val result = controller.submitAddContainer()(postRequestAsFormUrlEncoded(requestBody: _*))
 
@@ -279,7 +296,7 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
 
     "remove container and redirect" when {
       "user confirms that they want to remove" in {
-        withNewCaching(aDeclaration(withContainerData(containerData)))
+        withNewCaching(aDeclaration(withContainerData(containerData), withMaxSeqIds(Map(Container.seqIdKey -> 1))))
 
         val body = Json.obj("yesNo" -> "Yes")
         val result = controller.submitContainerRemove(containerId)(postRequest(body))
@@ -337,6 +354,6 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
   def verifyCachedContainers(expectedContainers: Seq[Container], expectedSequenceId: Int): Assertion = {
     val declaration = theCacheModelUpdated
     declaration.containers mustBe expectedContainers
-    declaration.declarationMeta.maxSequenceIds.get(ContainerKey) mustBe Some(expectedSequenceId)
+    declaration.declarationMeta.maxSequenceIds.get(Container.seqIdKey) mustBe Some(expectedSequenceId)
   }
 }
