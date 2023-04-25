@@ -70,7 +70,7 @@ class SummaryController @Inject() (
     )
 
   private def continueToDisplayPage(implicit request: JourneyRequest[_]): Future[Result] = {
-    val hasMandatoryData = request.cacheModel.consignmentReferences.exists(references => references.lrn.nonEmpty)
+    val hasMandatoryData = request.cacheModel.consignmentReferences.exists(refs => refs.ducr.nonEmpty && refs.lrn.nonEmpty)
     if (hasMandatoryData) displaySummaryPage()
     else Future.successful(Ok(summaryPageNoData()).removingFromSession(errorFixModeSessionKey))
   }

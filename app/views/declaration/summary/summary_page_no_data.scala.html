@@ -34,15 +34,11 @@
     useCustomContentWidth = true,
     showDeclarationSummaryLink = false
 ) {
-
-    <div>
-
+  <div>
     @pageTitle(messages("declaration.summary.noData.header", decType))
 
     @paragraphBody(messages("declaration.summary.noData.header.secondary"))
 
     @linkButton("declaration.summary.noData.button", routes.RootController.displayPage)
-
-    </div>
-
+  </div>
 }
