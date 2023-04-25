@@ -1418,5 +1418,25 @@
     "en": "Workington",
     "cy": "Workington",
     "code": "GBAUWORWORWOR"
+  },
+  {
+    "en": "Finsa UK Ltd. Vittoria Wharf, East Float, Birkenhead",
+    "cy": "Finsa UK Ltd. Vittoria Wharf, East Float, Birkenhead",
+    "code": "GBAUBRKLIVTFI"
+  },
+  {
+    "en": "Sibelco Bulk Clay Ports (Marine) -Town Quay, Bideford, EX39 2QG",
+    "cy": "Sibelco Bulk Clay Ports (Marine) -Town Quay, Bideford, EX39 2QG",
+    "code": "GBAUBIDBDFBDP"
+  },
+  {
+    "en": "Sibelco Bulk Clay Ports (Marine) -Victoria Wharf, Plymouth, PL4 0RF",
+    "cy": "Sibelco Bulk Clay Ports (Marine) -Victoria Wharf, Plymouth, PL4 0RF",
+    "code": "GBAUPLYVCWPZP"
+  },
+  {
+    "en": "Sibelco Bulk Clay Ports (Marine) -Catterdown Road, Plymouth, PL4 0RP",
+    "cy": "Sibelco Bulk Clay Ports (Marine) -Catterdown Road, Plymouth, PL4 0RP",
+    "code": "GBAUPLYCDWPXP"
   }
 ]

@@ -403,6 +403,14 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
       cancelDeclarationLink must haveHref(routes.CancelDeclarationController.displayPage)
     }
 
+    "NOT contain the cancel-declaration link" when {
+      "when the declaration has been cancelled" in {
+        val view = page(subWithStatus(CANCELLED))(verifiedEmailRequest(), messages)
+
+        Option(view.getElementById("cancel-declaration")) mustBe None
+      }
+    }
+
     "display the link to redirect the user to the 'Movements' service" in {
       val redirectionLink = view.getElementById("movements-redirection")
       redirectionLink.text mustBe messages("declaration.details.movements.redirection")
@@ -548,7 +556,7 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
         rejectedElements.size mustBe 1
 
         And("the 'Fix and resubmit' content, should include a primary link-button to the RejectedNotificationsController")
-        val call = RejectedNotificationsController.displayPage(uuid).url
+        val call = RejectedNotificationsController.displayPage(uuid, false).url
         verifyButton(rejectedElements.get(0), false, "fix.resubmit", call)
       }
 
@@ -682,7 +690,7 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
 
     button.text() mustBe messages(messageKeyOfButton)
     button.hasClass("govuk-button")
-    button must haveHref(RejectedNotificationsController.amendmentRejected(submission.uuid, submission.actions.head.id))
+    button must haveHref(RejectedNotificationsController.displayPage(submission.uuid, true))
 
     link.tagName() mustBe "a"
     link.hasClass("govuk-link")

@@ -40,20 +40,16 @@ class RejectedNotificationsController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with Logging {
 
-  def displayPage(id: String): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
+  def displayPage(id: String, amendment: Boolean): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
     customsDeclareExportsConnector.findDeclaration(id).flatMap {
       case Some(declaration) =>
         customsDeclareExportsConnector.findNotifications(id).map { notifications =>
           val maybeMrn = notifications.headOption.map(_.mrn)
-          Ok(rejectedNotificationPage(declaration, maybeMrn, getRejectedNotificationErrors(notifications)))
+          Ok(rejectedNotificationPage(declaration, maybeMrn, if (amendment) Some(id) else None, getRejectedNotificationErrors(notifications)))
         }
 
       case _ => errorHandler.internalError(s"Declaration($id) not found??")
     }
-  }
-
-  def amendmentRejected(id: String, actionId: String): Action[AnyContent] = (authenticate andThen verifyEmail).async { _ =>
-    throw new NotImplementedError()
   }
 
   private def getRejectedNotificationErrors(notifications: Seq[Notification]): Seq[NotificationError] =

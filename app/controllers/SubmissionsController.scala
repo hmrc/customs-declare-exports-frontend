@@ -47,6 +47,12 @@ class SubmissionsController @Inject() (
     findOrCreateDraftForRejected(rejectedId, Redirect(SummaryController.displayPage))
   }
 
+  def draftAmendment(submissionId: String): Action[AnyContent] = authAndEmailActions.async { implicit request =>
+    customsDeclareExportsConnector.findOrCreateDraftForAmend(submissionId) map { id =>
+      Redirect(SummaryController.displayPage).addingToSession(declarationUuid -> id)
+    }
+  }
+
   def amendErrors(rejectedId: String, redirectUrl: String, pattern: String, message: String): Action[AnyContent] =
     authAndEmailActions.async { implicit request =>
       val flashData = FieldNamePointer.getFieldName(pattern) match {

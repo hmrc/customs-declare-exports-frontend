@@ -92,7 +92,7 @@ class SummaryPageViewNormalSpec extends SummaryPageViewSpec {
           val button = buttons.get(0)
           button.tagName mustBe "a"
           button.text mustBe messages("site.view.declaration.errors")
-          button must haveHref(RejectedNotificationsController.displayPage(parentId))
+          button must haveHref(RejectedNotificationsController.displayPage(parentId, false))
         }
       }
     }

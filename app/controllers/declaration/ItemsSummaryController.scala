@@ -155,7 +155,7 @@ class ItemsSummaryController @Inject() (
   private def removeItemFromCache(itemId: String)(implicit request: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
     request.cacheModel.itemBy(itemId) match {
       case Some(itemToDelete) =>
-        val updatedItems = request.cacheModel.items.filterNot(_ == itemToDelete)
+        val updatedItems = request.cacheModel.items.filterNot(_.id == itemToDelete.id)
         val updatedModel = removeWarehouseIdentification(request.cacheModel.copy(items = updatedItems))
         exportsCacheService.update(updatedModel)
 

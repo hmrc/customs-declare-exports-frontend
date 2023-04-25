@@ -183,8 +183,8 @@ class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injec
       timelineEvents(0).dateTime mustBe latestAction.notifications.get(0).dateTimeIssued
 
       val content = timelineEvents(0).content.get.body
-      val expectedButtonUrl = RejectedNotificationsController.amendmentRejected(submission.uuid, latestAction.id).url
-      val expectedLinkUrl = SubmissionController.cancelAmendment(latestAction.decId).url
+      val expectedButtonUrl = RejectedNotificationsController.displayPage(submission.uuid, true).url
+      val expectedLinkUrl = SubmissionController.cancelAmendment(submission.actions(1).decId).url
       content must include(expectedButtonUrl)
       content must include(expectedLinkUrl)
 
@@ -269,8 +269,8 @@ class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injec
       timelineEvents(0).dateTime mustBe latestAction.notifications.get(0).dateTimeIssued
 
       val content = timelineEvents(0).content.get.body
-      val expectedButtonUrl = RejectedNotificationsController.amendmentRejected(submission.uuid, latestAction.id).url
-      val expectedLinkUrl = SubmissionController.cancelAmendment(latestAction.decId).url
+      val expectedButtonUrl = RejectedNotificationsController.displayPage(submission.uuid, true).url
+      val expectedLinkUrl = SubmissionController.cancelAmendment(submission.actions(1).decId).url
       content must include(expectedButtonUrl)
       content must include(expectedLinkUrl)
     }
