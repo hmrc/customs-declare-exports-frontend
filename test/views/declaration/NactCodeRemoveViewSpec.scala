@@ -17,6 +17,7 @@
 package views.declaration
 
 import base.Injector
+import controllers.declaration.routes.NactCodeSummaryController
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.form
 import models.DeclarationType.STANDARD
@@ -55,10 +56,10 @@ class NactCodeRemoveViewSpec extends PageWithButtonsSpec with Injector {
     }
 
     "display 'Back' button that links to 'nact codes summary' page" in {
-      val backLinkContainer = view.getElementById("back-link")
+      val backLink = view.getElementById("back-link")
 
-      backLinkContainer must containMessage(backToPreviousQuestionCaption)
-      backLinkContainer.getElementById("back-link") must haveHref(controllers.declaration.routes.NactCodeSummaryController.displayPage(itemId))
+      backLink must containMessage(backToPreviousQuestionCaption)
+      backLink must haveHref(NactCodeSummaryController.displayPage(itemId))
     }
 
     checkAllSaveButtonsAreDisplayed(createView())

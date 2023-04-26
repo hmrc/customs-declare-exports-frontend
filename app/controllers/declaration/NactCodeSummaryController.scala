@@ -71,9 +71,11 @@ class NactCodeSummaryController @Inject() (
 }
 
 object NactCodeSummaryController {
+
   def nextPage(itemId: String)(implicit request: JourneyRequest[AnyContent]): Call =
     request.declarationType match {
-      case SUPPLEMENTARY | STANDARD => StatisticalValueController.displayPage(itemId)
-      case SIMPLIFIED | OCCASIONAL  => routes.PackageInformationSummaryController.displayPage(itemId)
+      case SUPPLEMENTARY | STANDARD                                       => StatisticalValueController.displayPage(itemId)
+      case SIMPLIFIED if request.cacheModel.isLowValueDeclaration(itemId) => StatisticalValueController.displayPage(itemId)
+      case SIMPLIFIED | OCCASIONAL                                        => routes.PackageInformationSummaryController.displayPage(itemId)
     }
 }

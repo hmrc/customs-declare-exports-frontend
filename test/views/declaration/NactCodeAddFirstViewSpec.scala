@@ -22,9 +22,9 @@ import controllers.declaration.routes.{TaricCodeSummaryController, ZeroRatedForV
 import forms.declaration.NactCodeFirst
 import forms.declaration.NactCodeFirst.form
 import forms.declaration.NatureOfTransaction.{BusinessPurchase, Construction, Sale}
-import models.DeclarationType.STANDARD
+import models.DeclarationType._
+import models.declaration.ProcedureCodesData.lowValueDeclaration
 import models.requests.JourneyRequest
-import models.DeclarationType
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import views.declaration.spec.PageWithButtonsSpec
@@ -69,38 +69,38 @@ class NactCodeAddFirstViewSpec extends PageWithButtonsSpec with Injector {
       "STANDARD journey" when {
 
         "answered sale in nature of transaction" in {
-          val view = createView()(journeyRequest(aDeclaration(withType(DeclarationType.STANDARD), withNatureOfTransaction(Sale))))
-
-          val backLink = view.getElementById("back-link")
-          backLink.getElementById("back-link") must haveHref(ZeroRatedForVatController.displayPage(itemId))
+          val view = createView()(journeyRequest(aDeclaration(withType(STANDARD), withNatureOfTransaction(Sale))))
+          view.getElementById("back-link") must haveHref(ZeroRatedForVatController.displayPage(itemId))
         }
 
         "answered business purchase nature of transaction" in {
-          val view = createView()(journeyRequest(aDeclaration(withType(DeclarationType.STANDARD), withNatureOfTransaction(BusinessPurchase))))
-
-          val backLink = view.getElementById("back-link")
-          backLink.getElementById("back-link") must haveHref(ZeroRatedForVatController.displayPage(itemId))
+          val view = createView()(journeyRequest(aDeclaration(withType(STANDARD), withNatureOfTransaction(BusinessPurchase))))
+          view.getElementById("back-link") must haveHref(ZeroRatedForVatController.displayPage(itemId))
         }
 
         "answered other nature of transaction" in {
-          val view = createView()(journeyRequest(aDeclaration(withType(DeclarationType.STANDARD), withNatureOfTransaction(Construction))))
-
-          val backLink = view.getElementById("back-link")
-          backLink.getElementById("back-link") must haveHref(TaricCodeSummaryController.displayPage(itemId))
+          val view = createView()(journeyRequest(aDeclaration(withType(STANDARD), withNatureOfTransaction(Construction))))
+          view.getElementById("back-link") must haveHref(TaricCodeSummaryController.displayPage(itemId))
         }
 
         "not answered nature of transaction" in {
-          val view = createView()(journeyRequest(aDeclaration(withType(DeclarationType.STANDARD))))
-
-          val backLink = view.getElementById("back-link")
-          backLink.getElementById("back-link") must haveHref(TaricCodeSummaryController.displayPage(itemId))
+          val view = createView()(journeyRequest(aDeclaration(withType(STANDARD))))
+          view.getElementById("back-link") must haveHref(TaricCodeSummaryController.displayPage(itemId))
         }
       }
 
-      onJourney(DeclarationType.SUPPLEMENTARY, DeclarationType.OCCASIONAL, DeclarationType.SIMPLIFIED) { implicit request =>
+      onSimplified { implicit request =>
+        "for 'low value' declarations" in {
+          val item = anItem(withItemId(itemId), withProcedureCodes(additionalProcedureCodes = Seq(lowValueDeclaration)))
+          val requestWithCache = journeyRequest(aDeclarationAfter(request.cacheModel, withItems(item)))
+          val view = createView()(requestWithCache)
+          view.getElementById("back-link") must haveHref(ZeroRatedForVatController.displayPage(itemId))
+        }
+      }
+
+      onJourney(SUPPLEMENTARY, OCCASIONAL, SIMPLIFIED) { implicit request =>
         s"${request.declarationType} journey" in {
-          val backLink = createView().getElementById("back-link")
-          backLink.getElementById("back-link") must haveHref(TaricCodeSummaryController.displayPage(itemId))
+          createView().getElementById("back-link") must haveHref(TaricCodeSummaryController.displayPage(itemId))
         }
       }
     }

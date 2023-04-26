@@ -29,6 +29,7 @@ import models.DeclarationType.DeclarationType
 import models.ExportsDeclaration.isCodePrefixedWith
 import models.ExportsFieldPointer.ExportsFieldPointer
 import models.declaration._
+import models.declaration.ProcedureCodesData.lowValueDeclaration
 import play.api.libs.json._
 import services.DiffTools
 import services.DiffTools.{combinePointers, compareDifference, compareIntDifference, ExportsDeclarationDiff}
@@ -150,6 +151,9 @@ case class ExportsDeclaration(
   def isInlandOrBorder(inlandOrBorder: InlandOrBorder): Boolean = locations.inlandOrBorder.exists(_ == inlandOrBorder)
 
   def isLicenseRequired(itemId: String): Boolean = itemBy(itemId).exists(_.isLicenceRequired.contains(true))
+
+  def isLowValueDeclaration(itemId: String): Boolean =
+    procedureCodeOfItem(itemId).exists(_.containsAPC(lowValueDeclaration))
 
   def isType(declarationType: DeclarationType): Boolean = `type` == declarationType
 

@@ -23,7 +23,7 @@ import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.NatureOfTransaction
 import forms.declaration.NatureOfTransaction._
-import models.DeclarationType.STANDARD
+import models.DeclarationType.{SIMPLIFIED, STANDARD}
 import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
@@ -60,12 +60,17 @@ class TaricCodeSummaryController @Inject() (
         (formWithErrors: Form[YesNoAnswer]) => BadRequest(taricCodesPage(itemId, formWithErrors, taricCodes)),
         validYesNo =>
           validYesNo.answer match {
-            case YesNoAnswers.yes                      => navigator.continueTo(TaricCodeAddController.displayPage(itemId))
-            case YesNoAnswers.no if eligibleForZeroVat => navigator.continueTo(ZeroRatedForVatController.displayPage(itemId))
-            case YesNoAnswers.no                       => navigator.continueTo(routes.NactCodeSummaryController.displayPage(itemId))
+            case YesNoAnswers.yes => navigator.continueTo(TaricCodeAddController.displayPage(itemId))
+
+            case YesNoAnswers.no if eligibleForZeroVat || isLowValueDeclaration(itemId) =>
+              navigator.continueTo(ZeroRatedForVatController.displayPage(itemId))
+
+            case YesNoAnswers.no => navigator.continueTo(routes.NactCodeSummaryController.displayPage(itemId))
           }
       )
   }
+
+  private def addYesNoForm: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.taricAdditionalCodes.add.answer.empty")
 
   private def eligibleForZeroVat(implicit request: JourneyRequest[_]): Boolean =
     request.cacheModel.natureOfTransaction match {
@@ -73,5 +78,6 @@ class TaricCodeSummaryController @Inject() (
       case _                                                                           => false
     }
 
-  private def addYesNoForm: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.taricAdditionalCodes.add.answer.empty")
+  private def isLowValueDeclaration(itemId: String)(implicit request: JourneyRequest[_]): Boolean =
+    request.declarationType == SIMPLIFIED && request.cacheModel.isLowValueDeclaration(itemId)
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import controllers.declaration.routes._
+@import controllers.declaration.routes.{PackageInformationRemoveController, PackageInformationSummaryController}
 @import forms.common.YesNoAnswer
 @import forms.common.YesNoAnswer.YesNoAnswers._
 @import play.twirl.api.HtmlFormat
@@ -65,7 +65,7 @@
 
 @govukLayout(
     title = Title("declaration.packageInformation.remove.title", "declaration.section.5", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), controllers.declaration.routes.PackageInformationSummaryController.displayPage(itemId)))) {
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), PackageInformationSummaryController.displayPage(itemId)))) {
 
     @formHelper(action = PackageInformationRemoveController.submitForm(itemId, info.id), 'autoComplete -> "off") {
         @errorSummary(yesNoErrors(form.errors))

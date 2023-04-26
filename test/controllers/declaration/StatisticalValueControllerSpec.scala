@@ -17,9 +17,12 @@
 package controllers.declaration
 
 import base.ControllerSpec
+import controllers.declaration.routes.PackageInformationSummaryController
+import controllers.routes.RootController
 import forms.declaration.StatisticalValue
 import mock.ErrorHandlerMocks
 import models.DeclarationType._
+import models.declaration.ProcedureCodesData.lowValueDeclaration
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -98,6 +101,19 @@ class StatisticalValueControllerSpec extends ControllerSpec with ErrorHandlerMoc
           theResponseForm.value mustBe empty
         }
       }
+
+      onSimplified { request =>
+        "for a 'low value' declaration" in {
+          val procedureCodes = withProcedureCodes(additionalProcedureCodes = Seq(lowValueDeclaration))
+          val item = anItem(withItemId(itemId), withStatisticalValue(), procedureCodes)
+          withNewCaching(aDeclaration(withItem(item)))
+
+          val result = controller.displayPage(itemId)(getRequest(request.cacheModel))
+
+          status(result) mustBe OK
+          theResponseForm.value mustNot be(empty)
+        }
+      }
     }
 
     "return 400 (BAD_REQUEST)" when {
@@ -124,7 +140,7 @@ class StatisticalValueControllerSpec extends ControllerSpec with ErrorHandlerMoc
           val result = controller.displayPage(itemId).apply(getRequest(request.cacheModel))
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.routes.RootController.displayPage.url)
+          redirectLocation(result) mustBe Some(RootController.displayPage.url)
         }
       }
 
@@ -137,8 +153,7 @@ class StatisticalValueControllerSpec extends ControllerSpec with ErrorHandlerMoc
           val result = controller.submitItemType(itemId)(postRequest(badData))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.PackageInformationSummaryController
-            .displayPage(itemId)
+          thePageNavigatedTo mustBe PackageInformationSummaryController.displayPage(itemId)
           verify(mockItemTypePage, times(0)).apply(any(), any())(any(), any())
 
           validateCache(StatisticalValue("7"))

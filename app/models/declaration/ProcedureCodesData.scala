@@ -40,7 +40,7 @@ case class ProcedureCodesData(procedureCode: Option[String], additionalProcedure
 
   def toProcedureCode(): ProcedureCode = ProcedureCode(procedureCode.getOrElse(""))
 
-  def containsAdditionalCode(code: String): Boolean = additionalProcedureCodes.contains(code)
+  def containsAPC(code: String): Boolean = additionalProcedureCodes.contains(code)
 }
 
 object ProcedureCodesData extends FieldMapping {
@@ -51,6 +51,8 @@ object ProcedureCodesData extends FieldMapping {
   val additionalProcedureCodesPointer: ExportsFieldPointer = "additionalProcedureCodes"
 
   val formId = "ProcedureCodesData"
+
+  val lowValueDeclaration = "3LV"
 
   // Onward Supply Relief
   val osrProcedureCodes = Set("1042")

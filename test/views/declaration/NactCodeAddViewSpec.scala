@@ -17,6 +17,7 @@
 package views.declaration
 
 import base.Injector
+import controllers.declaration.routes.NactCodeSummaryController
 import forms.declaration.NactCode
 import forms.declaration.NactCode.form
 import models.DeclarationType.STANDARD
@@ -45,9 +46,7 @@ class NactCodeAddViewSpec extends PageWithButtonsSpec with ExportsTestHelper wit
     }
 
     "display 'Back' button that links to 'Nact code summary' page" in {
-      val backLinkContainer = view.getElementById("back-link")
-
-      backLinkContainer.getElementById("back-link") must haveHref(controllers.declaration.routes.NactCodeSummaryController.displayPage(itemId))
+      view.getElementById("back-link") must haveHref(NactCodeSummaryController.displayPage(itemId))
     }
 
     checkAllSaveButtonsAreDisplayed(createView())

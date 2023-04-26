@@ -26,6 +26,7 @@ import controllers.declaration.routes.{
 import forms.declaration.PackageInformation
 import forms.declaration.PackageInformation.form
 import models.DeclarationType._
+import models.declaration.ProcedureCodesData.lowValueDeclaration
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import org.scalatest.Inspectors.forAll
@@ -72,10 +73,8 @@ class PackageInformationAddViewSpec extends PageWithButtonsSpec with ExportsTest
       }
 
       "display 'Back' button that links to 'PackageInformation summary' page when adding subsequent value" in {
-        val view = page(itemWithPackageInfo.id, form)(request, messages)
-        val backLinkContainer = view.getElementById("back-link")
-        val href = PackageInformationSummaryController.displayPage(itemWithPackageInfo.id)
-        backLinkContainer.getElementById("back-link") must haveHref(href)
+        val backLink = page(itemWithPackageInfo.id, form)(request, messages).getElementById("back-link")
+        backLink must haveHref(PackageInformationSummaryController.displayPage(itemWithPackageInfo.id))
       }
 
       "display the expected hint paragraphs" in {
@@ -109,25 +108,31 @@ class PackageInformationAddViewSpec extends PageWithButtonsSpec with ExportsTest
   "PackageInformation Add View when adding first value" should {
     onJourney(STANDARD, SUPPLEMENTARY) { implicit request =>
       "display 'Back' button that links to 'statistical value' page when adding first value" in {
-        val backLinkContainer = createView().getElementById("back-link")
+        val backLink = createView().getElementById("back-link")
+        backLink must haveHref(StatisticalValueController.displayPage(itemId))
+      }
+    }
 
-        backLinkContainer.getElementById("back-link") must haveHref(StatisticalValueController.displayPage(itemId))
+    onSimplified { implicit request =>
+      "display 'Back' button that links to 'statistical value' on 'low value' declarations" in {
+        val item = anItem(withItemId(itemId), withProcedureCodes(additionalProcedureCodes = Seq(lowValueDeclaration)))
+        val requestWithCache = journeyRequest(aDeclarationAfter(request.cacheModel, withItems(item)))
+        val view = createView()(requestWithCache)
+        view.getElementById("back-link") must haveHref(StatisticalValueController.displayPage(itemId))
       }
     }
 
     onJourney(OCCASIONAL, SIMPLIFIED) { implicit request =>
       "display 'Back' button that links to 'NACT code' page when adding first value" in {
-        val backLinkContainer = createView().getElementById("back-link")
-
-        backLinkContainer.getElementById("back-link") must haveHref(NactCodeSummaryController.displayPage(itemId))
+        val backLink = createView().getElementById("back-link")
+        backLink must haveHref(NactCodeSummaryController.displayPage(itemId))
       }
     }
 
     onJourney(CLEARANCE) { implicit request =>
       "display 'Back' button that links to 'commodity details' page when adding first value" in {
-        val backLinkContainer = createView().getElementById("back-link")
-
-        backLinkContainer.getElementById("back-link") must haveHref(CommodityDetailsController.displayPage(itemId))
+        val backLink = createView().getElementById("back-link")
+        backLink must haveHref(CommodityDetailsController.displayPage(itemId))
       }
     }
   }

@@ -22,6 +22,7 @@ import forms.common.YesNoAnswer
 import forms.declaration.NatureOfTransaction.{BusinessPurchase, NationalPurposes, Sale}
 import forms.declaration.TaricCode
 import models.DeclarationType._
+import models.declaration.ProcedureCodesData.lowValueDeclaration
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -192,6 +193,22 @@ class TaricCodeSummaryControllerSpec extends ControllerSpec with OptionValues {
             await(result) mustBe aRedirectToTheNextPage
             thePageNavigatedTo mustBe routes.NactCodeSummaryController.displayPage(item.id)
           }
+        }
+      }
+    }
+
+    onSimplified { request =>
+      "re-direct to next question" when {
+        "user submits valid No answer for a 'low value' declaration" in {
+          val taricCode = TaricCode("QWER")
+          val item = anItem(withTaricCodes(taricCode), withProcedureCodes(additionalProcedureCodes = Seq(lowValueDeclaration)))
+          withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
+
+          val requestBody = Seq("yesNo" -> "No")
+          val result = controller.submitForm(item.id)(postRequestAsFormUrlEncoded(requestBody: _*))
+
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe routes.ZeroRatedForVatController.displayPage(item.id)
         }
       }
     }
