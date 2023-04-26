@@ -19,7 +19,7 @@
 @import controllers.declaration.amendments.routes.AmendDeclarationController
 @import models.declaration.notifications.Notification
 @import models.declaration.submissions.Submission
-@import models.declaration.submissions.EnhancedStatus.{CANCELLED, amendmentBlockingStatuses}
+@import models.declaration.submissions.EnhancedStatus.{amendmentBlockingStatuses, cancelledStatuses}
 @import models.requests.VerifiedEmailRequest
 @import play.api.mvc.Call
 @import uk.gov.hmrc.govukfrontend.views.html.components._
@@ -120,7 +120,7 @@
 }
 
 @cancelDeclarationLink = {
-  @if(submission.latestEnhancedStatus != Some(CANCELLED)) {
+  @if(submission.latestEnhancedStatus.fold(true)(!cancelledStatuses.contains(_))) {
     <p>
         @link(
             id = Some("cancel-declaration"),
