@@ -17,15 +17,15 @@
 package models
 
 import base.{MockTaggedCodes, UnitSpec}
-import forms.declaration.{CommodityDetails, Mucr, NatureOfTransaction, PreviousDocumentsData}
-import forms.declaration.countries.Country
 import forms.common.YesNoAnswer
-import models.declaration.{ExportItem, InvoiceAndPackageTotals, Locations, Parties, ProcedureCodesData, Transport}
+import forms.declaration.countries.Country
+import forms.declaration.{CommodityDetails, Mucr, NatureOfTransaction, PreviousDocumentsData}
+import models.declaration._
 import org.scalatest.OptionValues
 import org.scalatestplus.mockito.MockitoSugar
+import services.AlteredField.constructAlteredField
 import services.cache.{ExportsDeclarationBuilder, ExportsItemBuilder}
 import services.{AlteredField, OriginalAndNewValues}
-import services.AlteredField.constructAlteredField
 
 class ExportsDeclarationSpec
     extends UnitSpec with ExportsDeclarationBuilder with ExportsItemBuilder with MockitoSugar with MockTaggedCodes with OptionValues {
@@ -123,6 +123,7 @@ class ExportsDeclarationSpec
 
   "ExportsDeclaration.createDiff" should {
     val baseFieldPointer = ExportsDeclaration.pointer
+    val goodsItemQuantityFieldPointer = s"$baseFieldPointer.${ExportsDeclaration.goodsItemQuantityPointer}"
 
     "produce the expected ExportsDeclarationDiff instance" when {
       "no differences exist between the two versions" in {
@@ -167,7 +168,7 @@ class ExportsDeclarationSpec
       }
 
       "the original version's parties field has a different value to this one" in {
-        val fieldPointer = s"${baseFieldPointer}.${Parties.pointer}.${Parties.isEntryIntoDeclarantsRecordsPointer}"
+        val fieldPointer = s"$baseFieldPointer.${Parties.pointer}.${Parties.isEntryIntoDeclarantsRecordsPointer}"
         val declaration = aDeclaration()
         val originalValue = Parties(isEntryIntoDeclarantsRecords = YesNoAnswer.Yes)
         declaration.createDiff(declaration.copy(parties = originalValue)) mustBe Seq(
@@ -184,12 +185,29 @@ class ExportsDeclarationSpec
         )
       }
 
-      "the original version's items field has a different value to this one" in {
-        val fieldPointer = s"${baseFieldPointer}.${ExportItem.pointer}.1"
-        val declaration = aDeclaration()
-        val originalValue = ExportItem("1", 1)
-        declaration.createDiff(declaration.copy(items = Seq(originalValue))) mustBe Seq(
-          AlteredField(fieldPointer, OriginalAndNewValues(Some(originalValue), None))
+      "the original version's items field has had an existing item removed" in {
+        val itemFieldPointer = s"${baseFieldPointer}.${ExportItem.pointer}.2"
+        val originalItem1 = ExportItem("1", 1)
+        val originalItem2 = ExportItem("2", 2)
+        val originalDeclaration = aDeclaration(withItems(originalItem1, originalItem2))
+        val amendedDeclaration = aDeclaration(withItems(originalItem1))
+
+        amendedDeclaration.createDiff(originalDeclaration) mustBe Seq(
+          AlteredField(itemFieldPointer, OriginalAndNewValues(Some(originalItem2), None)),
+          AlteredField(goodsItemQuantityFieldPointer, OriginalAndNewValues(Some(2), Some(1)))
+        )
+      }
+
+      "the original version's items field has had a new item added" in {
+        val itemFieldPointer = s"${baseFieldPointer}.${ExportItem.pointer}.2"
+        val originalItem = ExportItem("1", 1)
+        val originalDeclaration = aDeclaration(withItems(originalItem))
+        val newItem = ExportItem(s"2", 2)
+        val amendedDeclaration = aDeclaration(withItems(originalItem, newItem))
+
+        amendedDeclaration.createDiff(originalDeclaration) mustBe Seq(
+          AlteredField(itemFieldPointer, OriginalAndNewValues(None, Some(newItem))),
+          AlteredField(goodsItemQuantityFieldPointer, OriginalAndNewValues(Some(1), Some(2)))
         )
       }
 

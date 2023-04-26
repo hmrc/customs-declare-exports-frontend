@@ -71,7 +71,7 @@ class SealAddViewSpec extends PageWithButtonsSpec with Injector {
     }
 
     "display error if incorrect seal is entered" in {
-      val view = createView(form.fillAndValidate(Seal("Invalid!!!")))
+      val view = createView(form.fillAndValidate(Seal(1, "Invalid!!!")))
 
       view must haveGovukGlobalErrorSummary
       view must containErrorElementWithTagAndHref("a", "#id")

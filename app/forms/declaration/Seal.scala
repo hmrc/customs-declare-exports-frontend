@@ -16,17 +16,22 @@
 
 package forms.declaration
 import forms.DeclarationPage
-import models.viewmodels.TariffContentKey
 import models.DeclarationType.DeclarationType
-import play.api.data.{Form, Forms, Mapping}
+import models.ExportsFieldPointer.ExportsFieldPointer
+import models.declaration.{EsoFactory, ExplicitlySequencedObject}
+import models.viewmodels.TariffContentKey
+import models.{DeclarationMeta, FieldMapping}
 import play.api.data.Forms.text
-import play.api.libs.json.Json
+import play.api.data.{Form, Forms, Mapping}
+import play.api.libs.json.{Json, OFormat}
 import utils.validators.forms.FieldValidator._
 
-case class Seal(id: String)
+case class Seal(sequenceId: Int, id: String) extends ExplicitlySequencedObject[Seal] {
+  def updateSequenceId(sequenceId: Int): Seal = copy(sequenceId = sequenceId)
+}
 
-object Seal extends DeclarationPage {
-  implicit val format = Json.format[Seal]
+object Seal extends DeclarationPage with FieldMapping with EsoFactory[Seal] {
+  implicit val format: OFormat[Seal] = Json.format[Seal]
 
   val formId = "Seal"
 
@@ -35,11 +40,20 @@ object Seal extends DeclarationPage {
       text()
         .verifying("declaration.transport.sealId.empty.error", nonEmpty)
         .verifying("declaration.transport.sealId.error.invalid", isEmpty or (isAlphanumeric and noLongerThan(20)))
-  )(Seal.apply)(Seal.unapply)
+  )(form2Data)(data2Form)
+
+  def form2Data(id: String): Seal =
+    Seal(DeclarationMeta.sequenceIdPlaceholder, id)
+
+  def data2Form(seal: Seal): Option[String] =
+    Some(seal.id)
 
   def form: Form[Seal] = Form(formMapping)
   val sealsAllowed = 9999
 
   override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
     Seq(TariffContentKey(s"tariff.declaration.containers.seals.${DeclarationPage.getJourneyTypeSpecialisation(decType)}"))
+
+  override val pointer: ExportsFieldPointer = "seals"
+  override val seqIdKey: String = "Seals"
 }

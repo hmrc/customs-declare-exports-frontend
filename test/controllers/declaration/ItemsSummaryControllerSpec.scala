@@ -29,7 +29,7 @@ import models.{DeclarationType, ExportsDeclaration}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.{any, anyString}
 import org.mockito.Mockito.{reset, verify, when}
-import org.scalatest.OptionValues
+import org.scalatest.{GivenWhenThen, OptionValues}
 import org.scalatest.concurrent.ScalaFutures
 import play.api.data.{Form, FormError}
 import play.api.libs.json.Json
@@ -41,7 +41,7 @@ import views.html.declaration.declarationitems.{items_add_item, items_remove_ite
 import scala.concurrent.Await
 import scala.concurrent.duration._
 
-class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionValues with ScalaFutures {
+class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionValues with ScalaFutures with GivenWhenThen {
 
   private val addItemPage = mock[items_add_item]
   private val itemsSummaryPage = mock[items_summary]
@@ -64,6 +64,7 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
 
   private val itemId = "ItemId12345"
   private val exportItem: ExportItem = anItem(
+    withSequenceId(1),
     withItemId(itemId),
     withProcedureCodes(),
     withFiscalInformation(FiscalInformation(AllowedFiscalInformationAnswers.yes)),
@@ -167,6 +168,9 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
         thePageNavigatedTo mustBe routes.ProcedureCodesController.displayPage(itemId)
 
         theCacheModelUpdated.items.size mustBe 1
+
+        And("the max sequence id for export items is updated")
+        theCacheModelUpdated.declarationMeta.maxSequenceIds(ExportItem.seqIdKey) mustBe 1
       }
     }
   }
@@ -239,7 +243,8 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
         }
 
         "return 303 (SEE_OTHER) and redirect to Procedure Codes page" in {
-          val cachedData = aDeclaration(withType(request.declarationType), withItem(exportItem))
+          val cachedData =
+            aDeclaration(withType(request.declarationType), withMaxSeqIds(Map(ExportItem.seqIdKey -> 1)), withItem(anItem(withSequenceId(1))))
           withNewCaching(cachedData)
           val answerForm = Json.obj("yesNo" -> YesNoAnswers.yes)
 
@@ -249,6 +254,9 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
           thePageNavigatedTo mustBe routes.ProcedureCodesController.displayPage(itemId)
 
           verify(navigator).continueTo(any())(any())
+
+          And("max sequence id is updated")
+          theCacheModelUpdated.declarationMeta.maxSequenceIds(ExportItem.seqIdKey) mustBe 2
         }
       }
 
@@ -380,8 +388,8 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
   }
 
   "removeItem" when {
-    val cachedItem = ExportItem(itemId)
-    val secondItem = ExportItem("123654")
+    val cachedItem = ExportItem(sequenceId = 1, id = itemId)
+    val secondItem = ExportItem(sequenceId = 2, id = "123654")
 
     def declarationPassedToUpdateCache: ExportsDeclaration = {
       val captor = ArgumentCaptor.forClass(classOf[ExportsDeclaration])
@@ -396,7 +404,14 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
         "there is no Item in declaration with requested Id" should {
 
           "not call ExportsCacheService update method" in {
-            withNewCaching(aDeclaration(withType(request.declarationType), withItem(cachedItem), withItem(secondItem)))
+            withNewCaching(
+              aDeclaration(
+                withType(request.declarationType),
+                withMaxSeqIds(Map(ExportItem.seqIdKey -> 2)),
+                withItem(cachedItem),
+                withItem(secondItem)
+              )
+            )
 
             val result = controller.removeItem("someId123")(postRequest(removeItemForm))
             status(result) mustBe SEE_OTHER
@@ -417,14 +432,24 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
         "there is Item in declaration with requested Id" should {
 
           "remove the Item from cache" in {
-            withNewCaching(aDeclaration(withType(request.declarationType), withItem(cachedItem), withItem(secondItem)))
+            withNewCaching(
+              aDeclaration(
+                withType(request.declarationType),
+                withMaxSeqIds(Map(ExportItem.seqIdKey -> 2)),
+                withItem(cachedItem),
+                withItem(secondItem)
+              )
+            )
 
             val result = controller.removeItem(itemId)(postRequest(removeItemForm))
             status(result) mustBe SEE_OTHER
 
             val items = declarationPassedToUpdateCache.items
             items.size mustBe 1
-            items must contain(secondItem.copy(sequenceId = secondItem.sequenceId + 1))
+            items must contain(secondItem)
+
+            And("max sequence id value is unchanged")
+            theCacheModelUpdated.declarationMeta.maxSequenceIds(ExportItem.seqIdKey) mustBe 2
           }
 
           "return 303 (SEE_OTHER) and redirect to Items Summary page" in {
@@ -437,7 +462,7 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
 
             val items = declarationPassedToUpdateCache.items
             items.size mustBe 1
-            items must contain(secondItem.copy(sequenceId = secondItem.sequenceId + 1))
+            items must contain(secondItem)
           }
         }
       }

@@ -16,6 +16,7 @@
 
 package controllers.helpers
 
+import forms.declaration.Seal
 import play.api.data.{Form, FormError}
 
 /**
@@ -35,28 +36,21 @@ object MultipleItemsHelper {
    * @tparam A - type of case class represents form
    * @return Either which can contain Form with errors or Sequence ready to insert to db
    */
-  def add[A](form: Form[A], cachedData: Seq[A], limit: Int, fieldId: String = "", messageKey: String): Either[Form[A], Seq[A]] =
+  def add[A](form: Form[A], cachedData: Seq[A], limit: Int, fieldId: String = "", messageKey: String)(
+    implicit handler: MultipleItemsDuplicateHandler[A]
+  ): Either[Form[A], Seq[A]] =
     form.value match {
       case Some(document) => prepareData(form, document, cachedData, limit, fieldId, messageKey)
       case _              => Left(form)
     }
 
-  private def prepareData[A](
-    form: Form[A],
-    document: A,
-    cachedData: Seq[A],
-    limit: Int,
-    fieldId: String,
-    messageKey: String
+  private def prepareData[A](form: Form[A], document: A, cachedData: Seq[A], limit: Int, fieldId: String, messageKey: String)(
+    implicit handler: MultipleItemsDuplicateHandler[A]
   ): Either[Form[A], Seq[A]] =
-    (duplication(document, cachedData, fieldId, messageKey) ++ limitOfElems(limit, cachedData, fieldId)) match {
+    handler.duplication(document, cachedData, fieldId, messageKey) ++ limitOfElems(limit, cachedData, fieldId) match {
       case Seq()  => Right(addElement(document, cachedData))
       case errors => Left(form.copy(errors = errors))
     }
-
-  private def duplication[A](document: A, cachedData: Seq[A], fieldId: String, messageKey: String): Seq[FormError] =
-    if (cachedData.contains(document)) Seq(FormError(fieldId, s"${messageKey}.error.duplicate"))
-    else Seq.empty
 
   private def limitOfElems[A](limit: Int, cachedData: Seq[A], fieldId: String): Seq[FormError] =
     if (cachedData.length >= limit) Seq(FormError(fieldId, "supplementary.limit"))
@@ -102,13 +96,8 @@ object MultipleItemsHelper {
    * @tparam A - type of case class represents form
    * @return Form with updated errors or Sequence ready to insert to db
    */
-  def saveAndContinue[A](
-    form: Form[A],
-    cachedData: Seq[A],
-    isMandatory: Boolean,
-    limit: Int,
-    fieldId: String = "",
-    messageKey: String
+  def saveAndContinue[A](form: Form[A], cachedData: Seq[A], isMandatory: Boolean, limit: Int, fieldId: String = "", messageKey: String)(
+    implicit handler: MultipleItemsDuplicateHandler[A]
   ): Either[Form[A], Seq[A]] =
     if (!isFormEmpty(form)) add(form, cachedData, limit, fieldId, messageKey)
     else {
@@ -126,5 +115,23 @@ object MultipleItemsHelper {
   def appendAll[A](sequence: Seq[A], maybeA: Option[A]*): Seq[A] = {
     def append(sequence: Seq[A], maybeItem: Option[A]): Seq[A] = maybeItem.foldLeft(sequence)((seq, item) => seq :+ item)
     maybeA.foldLeft(sequence)((sequence, maybeItem) => append(sequence, maybeItem))
+  }
+}
+
+trait MultipleItemsDuplicateHandler[A] {
+  def duplication(document: A, cachedData: Seq[A], fieldId: String, messageKey: String): Seq[FormError]
+}
+
+object MultipleItemsDuplicateHandler {
+  implicit val sealHandler: MultipleItemsDuplicateHandler[Seal] = new MultipleItemsDuplicateHandler[Seal] {
+    def duplication(document: Seal, cachedData: Seq[Seal], fieldId: String, messageKey: String): Seq[FormError] =
+      if (cachedData.map(_.id).contains(document.id)) Seq(FormError(fieldId, s"${messageKey}.error.duplicate"))
+      else Seq.empty
+  }
+
+  implicit def defaultHandler[A]: MultipleItemsDuplicateHandler[A] = new MultipleItemsDuplicateHandler[A] {
+    def duplication(document: A, cachedData: Seq[A], fieldId: String, messageKey: String): Seq[FormError] =
+      if (cachedData.contains(document)) Seq(FormError(fieldId, s"${messageKey}.error.duplicate"))
+      else Seq.empty
   }
 }

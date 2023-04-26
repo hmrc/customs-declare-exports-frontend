@@ -19,20 +19,19 @@ package models.declaration
 import forms.declaration.countries.Country
 import forms.declaration.officeOfExit.OfficeOfExit
 import forms.declaration.{InlandModeOfTransportCode, InlandOrBorder, SupervisingCustomsOffice, WarehouseIdentification}
-import models.{ExportsDeclaration, FieldMapping}
 import models.ExportsFieldPointer.ExportsFieldPointer
+import models.{ExportsDeclaration, FieldMapping}
 import play.api.libs.json.Json
-import services.DiffTools.{combinePointers, compareDifference, compareStringDifference, ExportsDeclarationDiff}
 import services.DiffTools
+import services.DiffTools.{combinePointers, compareDifference, ExportsDeclarationDiff}
 
-case class RoutingCountry(sequenceId: Int, country: Country) extends DiffTools[RoutingCountry] {
-  override def createDiff(original: RoutingCountry, pointerString: ExportsFieldPointer, sequenceId: Option[Int] = None): ExportsDeclarationDiff =
-    Seq(compareStringDifference(original.country.code, country.code, combinePointers(pointerString, Country.pointer, sequenceId))).flatten
+case class RoutingCountry(sequenceId: Int, country: Country) extends ExplicitlySequencedObject[RoutingCountry] {
+  override def updateSequenceId(sequenceId: Int): RoutingCountry = copy(sequenceId = sequenceId)
 }
 
-object RoutingCountry {
-
+object RoutingCountry extends EsoFactory[RoutingCountry] {
   implicit val format = Json.format[RoutingCountry]
+  override val seqIdKey: String = "RoutingCountries"
 }
 
 case class Locations(

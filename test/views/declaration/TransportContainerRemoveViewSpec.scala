@@ -20,8 +20,9 @@ import base.Injector
 import controllers.declaration.routes.TransportContainerController
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.form
+import forms.declaration.Seal
 import models.DeclarationType.STANDARD
-import models.declaration.{Container, Seal}
+import models.declaration.Container
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import views.declaration.spec.PageWithButtonsSpec

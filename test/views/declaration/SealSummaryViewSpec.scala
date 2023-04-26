@@ -33,7 +33,7 @@ class SealSummaryViewSpec extends PageWithButtonsSpec with Injector {
 
   val containerId = "212374"
   val sealId = "76434574"
-  val seal = Seal(sealId)
+  val seal = Seal(1, sealId)
 
   val page = instanceOf[seal_summary]
 

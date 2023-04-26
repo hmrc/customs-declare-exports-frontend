@@ -24,11 +24,11 @@ import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.ContainerAdd.form
 import forms.declaration.{ContainerAdd, ContainerFirst}
-import models.DeclarationMeta.{sequenceIdPlaceholder, ContainerKey}
-import models.ExportsDeclaration
+import models.DeclarationMeta.sequenceIdPlaceholder
 import models.declaration.Container
 import models.declaration.Container.maxNumberOfItems
 import models.requests.JourneyRequest
+import models.{DeclarationMeta, ExportsDeclaration}
 import play.api.data.{Form, FormError}
 import play.api.i18n.I18nSupport
 import play.api.mvc._
@@ -182,19 +182,21 @@ class TransportContainerController @Inject() (
 
   private def updateCache(containers: Seq[Container])(implicit request: JourneyRequest[AnyContent]): Future[ExportsDeclaration] = {
     val declarationMeta = request.cacheModel.declarationMeta
-    val maxSequenceIds = declarationMeta.maxSequenceIds
-    val maxSequenceId = maxSequenceIds.get(ContainerKey).getOrElse(0)
-
-    val (newMaxSequenceId, newContainers) = containers.foldLeft((maxSequenceId, List.empty[Container])) {
-      (tuple: (Int, List[Container]), container: Container) =>
-        val sequenceId = tuple._1
+    val (updatedMeta, updatedContainers): (DeclarationMeta, Seq[Container]) = containers.foldLeft((declarationMeta, Seq.empty[Container])) {
+      (tuple: (DeclarationMeta, Seq[Container]), container: Container) =>
+        val meta = tuple._1
         val containers = tuple._2
-        if (container.sequenceId == sequenceIdPlaceholder) (sequenceId + 1, containers :+ container.copy(sequenceId + 1))
-        else (sequenceId, containers :+ container)
+        container match {
+          case newContainer @ Container(DeclarationMeta.sequenceIdPlaceholder, _, _) =>
+            val (container, updatedMeta) = Container.copyWithIncrementedSeqId(newContainer, meta)
+            (updatedMeta, containers :+ container)
+          case existingContainer @ _ => (meta, containers :+ existingContainer)
+        }
     }
+
     updateDeclarationFromRequest(
-      _.updateContainers(newContainers)
-        .copy(declarationMeta = declarationMeta.copy(maxSequenceIds = maxSequenceIds + (ContainerKey -> newMaxSequenceId)))
+      _.updateContainers(updatedContainers)
+        .copy(declarationMeta = updatedMeta)
     )
   }
 

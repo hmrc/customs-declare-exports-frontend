@@ -50,9 +50,4 @@ object DeclarationMeta {
   implicit val format: OFormat[DeclarationMeta] = Json.format[DeclarationMeta]
 
   val sequenceIdPlaceholder = -1
-
-  val RoutingCountryKey = "RoutingCountries"
-  val ContainerKey = "Containers"
-  val PackageInformationKey = "PackageInformation"
-  val SealKey = "Seals"
 }
