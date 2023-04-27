@@ -18,11 +18,14 @@ package controllers.declaration
 
 import base.{ControllerSpec, Injector}
 import connectors.CodeLinkConnector
+import controllers.routes.RootController
 import forms.declaration.NactCode
 import forms.declaration.NactCode.nactCodeKey
 import forms.declaration.ZeroRatedForVat._
 import mock.ErrorHandlerMocks
 import models.DeclarationType
+import models.DeclarationType._
+import models.declaration.ProcedureCodesData.lowValueDeclaration
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
@@ -79,7 +82,7 @@ class ZeroRatedForVatControllerSpec extends ControllerSpec with ErrorHandlerMock
     theResponseForm
   }
 
-  "Declaration Additional Actors controller" should {
+  "ZeroRatedForVatController" should {
 
     "return 200 (OK)" when {
 
@@ -152,6 +155,50 @@ class ZeroRatedForVatControllerSpec extends ControllerSpec with ErrorHandlerMock
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe routes.NactCodeSummaryController.displayPage(item.id)
+      }
+    }
+  }
+
+  "ZeroRatedForVatController.displayPage" should {
+    val itemId = "Some UUID"
+    val item = anItem(withItemId(itemId), withProcedureCodes(additionalProcedureCodes = Seq(lowValueDeclaration)))
+    val lowValueDecl = aDeclaration(withType(SIMPLIFIED), withItem(item))
+
+    "return 200 (OK)" when {
+      onSimplified(lowValueDecl) { request =>
+        "for 'low value' declarations" in {
+          when(codeLinkConnector.getValidProcedureCodesForTag(any())).thenReturn(Seq.empty)
+
+          withNewCaching(request.cacheModel)
+
+          val result = controller.displayPage(itemId)(getRequest(request.cacheModel))
+
+          status(result) must be(OK)
+        }
+      }
+    }
+
+    onJourney(CLEARANCE, OCCASIONAL, SIMPLIFIED, SUPPLEMENTARY) { request =>
+      "return 303 (SEE_OTHER)" in {
+        withNewCaching(request.cacheModel)
+
+        val result = controller.displayPage(item.id)(getRequest())
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(RootController.displayPage.url)
+      }
+    }
+  }
+
+  "ZeroRatedForVatController.submitForm" should {
+    onJourney(CLEARANCE, OCCASIONAL, SIMPLIFIED, SUPPLEMENTARY) { request =>
+      "return 303 (SEE_OTHER)" in {
+        withNewCaching(request.cacheModel)
+
+        val result = controller.submitForm(item.id)(getRequest())
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(RootController.displayPage.url)
       }
     }
   }

@@ -281,12 +281,10 @@ class Navigator @Inject() (
   }
 
   val simplifiedItemPage: PartialFunction[DeclarationPage, String => Call] = {
-    case PackageInformation            => routes.NactCodeSummaryController.displayPage
     case AdditionalInformationRequired => routes.PackageInformationSummaryController.displayPage
     case AdditionalInformationSummary  => routes.PackageInformationSummaryController.displayPage
     case CusCode                       => routes.UNDangerousGoodsCodeController.displayPage
     case NactCode                      => routes.NactCodeSummaryController.displayPage
-    case NactCodeFirst                 => routes.TaricCodeSummaryController.displayPage
     case CommodityMeasure              => routes.PackageInformationSummaryController.displayPage
     case page                          => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on simplified")
   }
@@ -307,6 +305,8 @@ class Navigator @Inject() (
     case AdditionalDocumentsRequired => additionalDocumentsSummaryPreviousPage
     case AdditionalDocumentsSummary  => additionalDocumentsSummaryPreviousPage
     case AdditionalDocument          => additionalDocumentsPreviousPage
+    case NactCodeFirst               => nactCodePreviousPageForSimplified
+    case PackageInformation          => packageInformationPreviousPageForSimplified
   }
 
   val occasional: PartialFunction[DeclarationPage, Call] = {
@@ -377,6 +377,14 @@ class Navigator @Inject() (
       case Some(NatureOfTransaction(`Sale`) | NatureOfTransaction(`BusinessPurchase`)) => routes.ZeroRatedForVatController.displayPage(itemId)
       case _                                                                           => routes.TaricCodeSummaryController.displayPage(itemId)
     }
+
+  private def nactCodePreviousPageForSimplified(cacheModel: ExportsDeclaration, itemId: String): Call =
+    if (cacheModel.isLowValueDeclaration(itemId)) routes.ZeroRatedForVatController.displayPage(itemId)
+    else routes.TaricCodeSummaryController.displayPage(itemId)
+
+  private def packageInformationPreviousPageForSimplified(cacheModel: ExportsDeclaration, itemId: String): Call =
+    if (cacheModel.isLowValueDeclaration(itemId)) routes.StatisticalValueController.displayPage(itemId)
+    else routes.NactCodeSummaryController.displayPage(itemId)
 
   private def declarantIsExporterPreviousPage(cacheModel: ExportsDeclaration): Call =
     cacheModel.`type` match {

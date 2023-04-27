@@ -27,6 +27,7 @@ import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.form
 import forms.declaration.{IsExs, PackageInformation}
 import models.DeclarationType._
+import models.declaration.ProcedureCodesData.lowValueDeclaration
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import org.scalatest.Assertion
@@ -64,17 +65,22 @@ class PackageInformationViewSpec extends PageWithButtonsSpec with Injector {
 
     onJourney(STANDARD, SUPPLEMENTARY) { implicit request =>
       "display back link" in {
-        val view = createView()
-        view must containElementWithID("back-link")
+        createView().getElementById("back-link") must haveHref(StatisticalValueController.displayPage(itemId))
+      }
+    }
+
+    onSimplified { implicit request =>
+      "display back link for 'low value' declarations" in {
+        val item = anItem(withItemId(itemId), withProcedureCodes(additionalProcedureCodes = Seq(lowValueDeclaration)))
+        val requestWithCache = journeyRequest(aDeclarationAfter(request.cacheModel, withItems(item)))
+        val view = createView()(requestWithCache)
         view.getElementById("back-link") must haveHref(StatisticalValueController.displayPage(itemId))
       }
     }
 
     onJourney(SIMPLIFIED, OCCASIONAL) { implicit request =>
       "display back link" in {
-        val view = createView()
-        view must containElementWithID("back-link")
-        view.getElementById("back-link") must haveHref(NactCodeSummaryController.displayPage(itemId))
+        createView().getElementById("back-link") must haveHref(NactCodeSummaryController.displayPage(itemId))
       }
     }
 
@@ -82,7 +88,6 @@ class PackageInformationViewSpec extends PageWithButtonsSpec with Injector {
       def viewHasBackLinkForExsStatus(exsStatus: String, call: Call): Assertion = {
         val requestWithCache = journeyRequest(aDeclarationAfter(request.cacheModel, withIsExs(IsExs(exsStatus))))
         val view = createView()(requestWithCache)
-        view must containElementWithID("back-link")
         view.getElementById("back-link") must haveHref(call)
       }
 

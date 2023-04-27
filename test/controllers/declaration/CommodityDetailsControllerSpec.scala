@@ -17,12 +17,13 @@
 package controllers.declaration
 
 import base.ControllerSpec
+import controllers.declaration.routes.{CommodityMeasureController, PackageInformationSummaryController, UNDangerousGoodsCodeController}
 import forms.declaration.{CommodityDetails, CusCode, IsExs}
 import models.DeclarationType._
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
-import org.scalatest.OptionValues
+import org.scalatest.{Assertion, OptionValues}
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsEmpty, Call, Request}
@@ -75,7 +76,6 @@ class CommodityDetailsControllerSpec extends ControllerSpec with OptionValues {
     "return 200 (OK)" when {
 
       "display page method is invoked and cache is empty" in {
-
         withNewCaching(aDeclaration())
 
         val result = controller.displayPage(itemId)(getRequest())
@@ -87,7 +87,6 @@ class CommodityDetailsControllerSpec extends ControllerSpec with OptionValues {
       }
 
       "display page method is invoked and cache contains data" in {
-
         val details = CommodityDetails(Some("1234567809"), Some("Description"))
         val item = anItem(withCommodityDetails(details))
         withNewCaching(aDeclaration(withItems(item)))
@@ -102,9 +101,7 @@ class CommodityDetailsControllerSpec extends ControllerSpec with OptionValues {
     }
 
     "return 400 (BAD_REQUEST)" when {
-
       "form is incorrect" in {
-
         withNewCaching(aDeclaration())
 
         val incorrectForm = Json.toJson(CommodityDetails(None, Some("Description")))
@@ -118,33 +115,30 @@ class CommodityDetailsControllerSpec extends ControllerSpec with OptionValues {
 
     onJourney(STANDARD, SUPPLEMENTARY, OCCASIONAL) { request =>
       "return 303 (SEE_OTHER) and redirect to UN Dangerous Goods Code page" in {
-
         withNewCaching(request.cacheModel)
         val correctForm = Json.toJson(CommodityDetails(Some("1234567809"), Some("Description")))
 
         val result = controller.submitForm(itemId)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.UNDangerousGoodsCodeController.displayPage(itemId)
+        thePageNavigatedTo mustBe UNDangerousGoodsCodeController.displayPage(itemId)
       }
     }
 
     onJourney(SIMPLIFIED) { request =>
       "return 303 (SEE_OTHER) and redirect to UN Dangerous Goods Code page" in {
-
         withNewCaching(request.cacheModel)
         val correctForm = Json.toJson(CommodityDetails(None, Some("Description")))
 
         val result = controller.submitForm(itemId)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.UNDangerousGoodsCodeController.displayPage(itemId)
+        thePageNavigatedTo mustBe UNDangerousGoodsCodeController.displayPage(itemId)
       }
     }
 
     onJourney(CLEARANCE) { request =>
-      def controllerRedirectsToNextPageForProcedureCodeAndExsStatus(procedureCode: String, exsStatus: String, expectedCall: Call) = {
-
+      def controllerRedirectsToNextPageForProcedureCodeAndExsStatus(procedureCode: String, exsStatus: String, expectedCall: Call): Assertion = {
         withNewCaching(
           aDeclarationAfter(
             request.cacheModel,
@@ -161,30 +155,15 @@ class CommodityDetailsControllerSpec extends ControllerSpec with OptionValues {
       }
 
       "return 303 (SEE_OTHER) and redirects when Exs No and Procedure Code 1234" in {
-
-        controllerRedirectsToNextPageForProcedureCodeAndExsStatus(
-          "1234",
-          "No",
-          controllers.declaration.routes.PackageInformationSummaryController.displayPage(itemId)
-        )
+        controllerRedirectsToNextPageForProcedureCodeAndExsStatus("1234", "No", PackageInformationSummaryController.displayPage(itemId))
       }
 
       "return 303 (SEE_OTHER) and redirects when Exs No and Procedure Code 0019" in {
-
-        controllerRedirectsToNextPageForProcedureCodeAndExsStatus(
-          "0019",
-          "No",
-          controllers.declaration.routes.CommodityMeasureController.displayPage(itemId)
-        )
+        controllerRedirectsToNextPageForProcedureCodeAndExsStatus("0019", "No", CommodityMeasureController.displayPage(itemId))
       }
 
       "return 303 (SEE_OTHER) and redirects when Exs Yes" in {
-
-        controllerRedirectsToNextPageForProcedureCodeAndExsStatus(
-          "0000",
-          "Yes",
-          controllers.declaration.routes.UNDangerousGoodsCodeController.displayPage(itemId)
-        )
+        controllerRedirectsToNextPageForProcedureCodeAndExsStatus("0000", "Yes", UNDangerousGoodsCodeController.displayPage(itemId))
       }
     }
 

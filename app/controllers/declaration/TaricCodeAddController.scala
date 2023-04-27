@@ -17,13 +17,13 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.declaration.routes.{TaricCodeSummaryController, ZeroRatedForVatController}
+import controllers.declaration.routes.{NactCodeSummaryController, TaricCodeSummaryController, ZeroRatedForVatController}
 import controllers.helpers.MultipleItemsHelper
 import controllers.navigation.Navigator
 import forms.declaration.NatureOfTransaction._
 import forms.declaration.TaricCode.taricCodeLimit
 import forms.declaration.{NatureOfTransaction, TaricCode, TaricCodeFirst}
-import models.DeclarationType.STANDARD
+import models.DeclarationType.{SIMPLIFIED, STANDARD}
 import models.ExportsDeclaration
 import models.requests.JourneyRequest
 import play.api.data.Form
@@ -81,7 +81,10 @@ class TaricCodeAddController @Inject() (
           .map(_ => navigator.continueTo(TaricCodeSummaryController.displayPage(itemId)))
 
       case None =>
-        val call = if (eligibleForZeroVat) ZeroRatedForVatController.displayPage(itemId) else routes.NactCodeSummaryController.displayPage(itemId)
+        val call =
+          if (eligibleForZeroVat || isLowValueDeclaration(itemId)) ZeroRatedForVatController.displayPage(itemId)
+          else NactCodeSummaryController.displayPage(itemId)
+
         updateExportsCache(itemId, Seq.empty).map(_ => navigator.continueTo(call))
     }
 
@@ -95,12 +98,15 @@ class TaricCodeAddController @Inject() (
         updateExportsCache(itemId, _).map(_ => navigator.continueTo(TaricCodeSummaryController.displayPage(itemId)))
       )
 
-  private def updateExportsCache(itemId: String, updatedCache: Seq[TaricCode])(implicit r: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
-    updateDeclarationFromRequest(model => model.updatedItem(itemId, _.copy(taricCodes = Some(updatedCache.toList))))
-
   private def eligibleForZeroVat(implicit request: JourneyRequest[_]): Boolean =
     request.cacheModel.natureOfTransaction match {
       case Some(NatureOfTransaction(`Sale`) | NatureOfTransaction(`BusinessPurchase`)) => request.declarationType == STANDARD
       case _                                                                           => false
     }
+
+  private def isLowValueDeclaration(itemId: String)(implicit request: JourneyRequest[_]): Boolean =
+    request.declarationType == SIMPLIFIED && request.cacheModel.isLowValueDeclaration(itemId)
+
+  private def updateExportsCache(itemId: String, updatedCache: Seq[TaricCode])(implicit r: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
+    updateDeclarationFromRequest(model => model.updatedItem(itemId, _.copy(taricCodes = Some(updatedCache.toList))))
 }

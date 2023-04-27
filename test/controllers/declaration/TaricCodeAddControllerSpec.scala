@@ -17,10 +17,10 @@
 package controllers.declaration
 
 import base.{ControllerSpec, TestHelper}
-import controllers.declaration.routes.{TaricCodeSummaryController, ZeroRatedForVatController}
+import controllers.declaration.routes.{NactCodeSummaryController, TaricCodeSummaryController, ZeroRatedForVatController}
 import forms.declaration.NatureOfTransaction.{BusinessPurchase, NationalPurposes, Sale}
 import forms.declaration.{TaricCode, TaricCodeFirst}
-import models.DeclarationType
+import models.declaration.ProcedureCodesData.lowValueDeclaration
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -207,12 +207,12 @@ class TaricCodeAddControllerSpec extends ControllerSpec with OptionValues {
           val result = controller.submitForm(item.id)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe routes.NactCodeSummaryController.displayPage(item.id)
+          thePageNavigatedTo mustBe NactCodeSummaryController.displayPage(item.id)
         }
       }
     }
 
-    onJourney(DeclarationType.STANDARD) { request =>
+    onStandard { request =>
       "re-direct to next question and" when {
         "user submits valid No answer and" when {
 
@@ -246,7 +246,7 @@ class TaricCodeAddControllerSpec extends ControllerSpec with OptionValues {
             val result = controller.submitForm(item.id)(postRequestAsFormUrlEncoded(requestBody: _*))
 
             await(result) mustBe aRedirectToTheNextPage
-            thePageNavigatedTo mustBe routes.NactCodeSummaryController.displayPage(item.id)
+            thePageNavigatedTo mustBe NactCodeSummaryController.displayPage(item.id)
           }
 
           "user has answered other nature of transaction" in {
@@ -257,8 +257,23 @@ class TaricCodeAddControllerSpec extends ControllerSpec with OptionValues {
             val result = controller.submitForm(item.id)(postRequestAsFormUrlEncoded(requestBody: _*))
 
             await(result) mustBe aRedirectToTheNextPage
-            thePageNavigatedTo mustBe routes.NactCodeSummaryController.displayPage(item.id)
+            thePageNavigatedTo mustBe NactCodeSummaryController.displayPage(item.id)
           }
+        }
+      }
+    }
+
+    onSimplified { request =>
+      "re-direct to next question and" when {
+        "user submits valid No answer for a 'low value' declaration" in {
+          val item = anItem(withProcedureCodes(additionalProcedureCodes = Seq(lowValueDeclaration)))
+          withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
+
+          val requestBody = Seq(TaricCodeFirst.hasTaricCodeKey -> "No")
+          val result = controller.submitForm(item.id)(postRequestAsFormUrlEncoded(requestBody: _*))
+
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe ZeroRatedForVatController.displayPage(item.id)
         }
       }
     }
