@@ -404,10 +404,12 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
     }
 
     "NOT contain the cancel-declaration link" when {
-      "when the declaration has been cancelled" in {
-        val view = page(subWithStatus(CANCELLED))(verifiedEmailRequest(), messages)
+      cancelledStatuses.foreach { status =>
+        s"when the declaration has status $status" in {
+          val view = page(subWithStatus(status))(verifiedEmailRequest(), messages)
 
-        Option(view.getElementById("cancel-declaration")) mustBe None
+          Option(view.getElementById("cancel-declaration")) mustBe None
+        }
       }
     }
 
