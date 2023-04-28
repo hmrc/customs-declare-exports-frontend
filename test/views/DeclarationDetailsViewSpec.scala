@@ -22,7 +22,7 @@ import config.featureFlags._
 import controllers.routes
 import controllers.declaration.amendments.routes.AmendDeclarationController
 import controllers.declaration.routes.SubmissionController
-import controllers.routes.{EADController, RejectedNotificationsController}
+import controllers.routes._
 import models.declaration.submissions.EnhancedStatus._
 import models.declaration.submissions.RequestType.{AmendmentRequest, SubmissionRequest}
 import models.declaration.submissions.{Action, EnhancedStatus, NotificationSummary, RequestType, Submission}
@@ -57,11 +57,14 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
   private val user = ExportsTestData.newUser(ExportsTestData.eori, "Id")
   private val testEmail = "testEmail@mail.org"
 
-  private val uuid = "uuid"
-  private val submission = Submission(uuid, "eori", "lrn", Some(mrn), Some("ducr"), None, None, Seq.empty, latestDecId = Some(uuid))
+  private val uuid = "uuid1"
+  private val latestDecId = Some("uuid2")
+
+  private val submission = Submission(uuid, "eori", "lrn", Some(mrn), Some("ducr"), None, None, Seq.empty, latestDecId = latestDecId)
   private val subWithoutLatestDecId = Submission(uuid, "eori", "lrn", Some(mrn), Some("ducr"), None, None, Seq.empty, latestDecId = None)
+
   private def subWithStatus(status: EnhancedStatus) =
-    Submission(uuid, "eori", "lrn", Some(mrn), Some("ducr"), latestEnhancedStatus = Some(status), None, Seq.empty, latestDecId = Some(uuid))
+    Submission(uuid, "eori", "lrn", Some(mrn), Some("ducr"), latestEnhancedStatus = Some(status), None, Seq.empty, latestDecId = latestDecId)
 
   private val dmsqry1Notification = NotificationSummary(UUID.randomUUID, now, QUERY_NOTIFICATION_MESSAGE)
   private val dmsqry2Notification = NotificationSummary(UUID.randomUUID, now.plusMinutes(1), QUERY_NOTIFICATION_MESSAGE)
@@ -92,7 +95,7 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
 
   private def createSubmissionWith(status: EnhancedStatus) = {
     val action = Action("id", SubmissionRequest, now, Some(Seq(NotificationSummary(UUID.randomUUID, now, status))), Some(uuid), 1)
-    Submission(uuid, "eori", "lrn", Some(mrn), Some("ducr"), Some(status), Some(now), Seq(action), latestDecId = Some(uuid))
+    Submission(uuid, "eori", "lrn", Some(mrn), Some("ducr"), Some(status), Some(now), Seq(action), latestDecId = latestDecId)
   }
 
   private def createSubmissionWith(notificationSummaries: Seq[NotificationSummary], requestType: RequestType = SubmissionRequest) = {
@@ -106,7 +109,7 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
       notificationSummaries.reverse.headOption.map(_.enhancedStatus),
       notificationSummaries.headOption.map(_ => now),
       Seq(action),
-      latestDecId = Some(uuid)
+      latestDecId = latestDecId
     )
   }
 
@@ -158,11 +161,13 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
         val view = page(submission)(verifiedEmailRequest(), messages)
         Option(view.getElementById("amend-declaration")) mustBe None
       }
+
       "submission has no latestDecId" in {
         when(mockDeclarationAmendmentsConfig.isEnabled).thenReturn(true)
         val view = page(subWithoutLatestDecId)(verifiedEmailRequest(), messages)
         Option(view.getElementById("amend-declaration")) mustBe None
       }
+
       amendmentBlockingStatuses.foreach { status =>
         s"submission has one of the enhanced status of $status" in {
           when(mockDeclarationAmendmentsConfig.isEnabled).thenReturn(true)
@@ -311,7 +316,13 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
     }
 
     "not have View declaration summary link" in {
-      val request = RequestBuilder.buildVerifiedEmailRequest(FakeRequest("", "").withSession((SessionHelper.declarationUuid, "decId")), user)
+      val request = RequestBuilder
+        .buildVerifiedEmailRequest(
+          FakeRequest("", "")
+            .withSession((SessionHelper.declarationUuid, "decId")),
+          user
+        )
+
       val view = page(createSubmissionWith(notificationSummaries))(request, messages(request))
       Option(view.getElementById("view_declaration_summary")) mustBe None
     }
@@ -349,7 +360,7 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
 
           val uploadingDocumentsLink = view.getElementById("uploading-documents-link")
           uploadingDocumentsLink must containMessage("declaration.details.uploading.documents")
-          uploadingDocumentsLink must haveHref(routes.FileUploadController.startFileUpload(mrn))
+          uploadingDocumentsLink must haveHref(FileUploadController.startFileUpload(mrn))
         }
       }
     }
@@ -369,7 +380,17 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
 
         val declarationLink = view.getElementById("view-declaration")
         declarationLink must containMessage(s"${msgKey}.view.declaration")
-        declarationLink must haveHref(routes.SubmissionsController.viewDeclaration(submission.uuid))
+        declarationLink must haveHref(SubmissionsController.viewDeclaration(latestDecId.value))
+      }
+    }
+
+    "contain the view-declaration link pointing to the declaration to show via Submission.uuid" when {
+      "Submission.latestDecId is None" in {
+        val view = page(subWithoutLatestDecId)(verifiedEmailRequest(), messages)
+
+        val declarationLink = view.getElementById("view-declaration")
+        declarationLink must containMessage(s"${msgKey}.view.declaration")
+        declarationLink must haveHref(SubmissionsController.viewDeclaration(subWithoutLatestDecId.uuid))
       }
     }
 
@@ -384,7 +405,7 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
 
         val copyDeclarationLink = view.getElementById("copy-declaration")
         copyDeclarationLink must containMessage("declaration.details.copy.declaration")
-        copyDeclarationLink must haveHref(routes.CopyDeclarationController.redirectToReceiveJourneyRequest(submission.uuid))
+        copyDeclarationLink must haveHref(CopyDeclarationController.redirectToReceiveJourneyRequest(submission.uuid))
       }
     }
 
@@ -400,7 +421,7 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
 
       val cancelDeclarationLink = view.getElementById("cancel-declaration")
       cancelDeclarationLink must containMessage("declaration.details.cancel.declaration")
-      cancelDeclarationLink must haveHref(routes.CancelDeclarationController.displayPage)
+      cancelDeclarationLink must haveHref(CancelDeclarationController.displayPage)
     }
 
     "NOT contain the cancel-declaration link" when {
@@ -567,7 +588,7 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
         uploadFilesElements.size mustBe 2
 
         And("the 'Documents required' content, when defined, should include a link-button to SFUS")
-        verifyButton(uploadFilesElements.get(0), buttonIsSecondary, "upload.files", controllers.routes.FileUploadController.startFileUpload(mrn).url)
+        verifyButton(uploadFilesElements.get(0), buttonIsSecondary, "upload.files", FileUploadController.startFileUpload(mrn).url)
 
         And("and an expander")
         val details = uploadFilesElements.get(1)
