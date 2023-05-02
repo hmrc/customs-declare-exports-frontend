@@ -87,7 +87,7 @@
         @link(
             id = Some("view-declaration"),
             text = messages("declaration.details.view.declaration"),
-            call = routes.SubmissionsController.viewDeclaration(submission.uuid)
+            call = routes.SubmissionsController.viewDeclaration(submission.latestDecId.getOrElse(submission.uuid))
         )
     </div>
   }
