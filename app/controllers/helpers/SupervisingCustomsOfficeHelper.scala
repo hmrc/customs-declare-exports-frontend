@@ -55,12 +55,12 @@ class SupervisingCustomsOfficeHelper @Inject() (inlandOrBorderHelper: InlandOrBo
 
   def nextPage(declaration: ExportsDeclaration): Call =
     declaration.`type` match {
-      case STANDARD | SUPPLEMENTARY =>
+      case STANDARD | SIMPLIFIED | SUPPLEMENTARY =>
         if (inlandOrBorderHelper.skipInlandOrBorder(declaration)) InlandTransportDetailsController.displayPage
         else InlandOrBorderController.displayPage
 
-      case CLEARANCE               => nextPageOnClearance(declaration)
-      case SIMPLIFIED | OCCASIONAL => ExpressConsignmentController.displayPage
+      case CLEARANCE  => nextPageOnClearance(declaration)
+      case OCCASIONAL => ExpressConsignmentController.displayPage
     }
 
   private def nextPageOnClearance(declaration: ExportsDeclaration): Call = {

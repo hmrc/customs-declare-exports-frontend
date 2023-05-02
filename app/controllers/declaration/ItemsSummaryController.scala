@@ -27,7 +27,7 @@ import controllers.helpers.SupervisingCustomsOfficeHelper
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
-import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
+import models.DeclarationType.{CLEARANCE, OCCASIONAL}
 import models.ExportsDeclaration
 import models.declaration.ExportItem
 import models.requests.JourneyRequest
@@ -99,11 +99,10 @@ class ItemsSummaryController @Inject() (
 
   private def nextPage(implicit request: JourneyRequest[AnyContent]): Call =
     request.declarationType match {
-      case SUPPLEMENTARY | STANDARD | CLEARANCE => TransportLeavingTheBorderController.displayPage
-
-      case SIMPLIFIED | OCCASIONAL =>
+      case OCCASIONAL =>
         if (request.cacheModel.requiresWarehouseId) WarehouseIdentificationController.displayPage
         else supervisingCustomsOfficeHelper.landOnOrSkipToNextPage(request.cacheModel)
+      case _ => TransportLeavingTheBorderController.displayPage
     }
 
   private def buildIncorrectItemsErrors(request: JourneyRequest[AnyContent]): Seq[FormError] =

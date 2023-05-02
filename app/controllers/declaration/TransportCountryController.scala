@@ -21,7 +21,7 @@ import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.routes.{ExpressConsignmentController, TransportContainerController}
 import controllers.navigation.Navigator
 import forms.declaration.TransportCountry
-import models.DeclarationType.{STANDARD, SUPPLEMENTARY}
+import models.DeclarationType.{SIMPLIFIED, STANDARD, SUPPLEMENTARY}
 import models.requests.JourneyRequest
 import models.ExportsDeclaration
 import play.api.i18n.I18nSupport
@@ -45,7 +45,7 @@ class TransportCountryController @Inject() (
 )(implicit ec: ExecutionContext, codeListConnector: CodeListConnector)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
 
-  private val validTypes = Seq(STANDARD, SUPPLEMENTARY)
+  private val validTypes = Seq(STANDARD, SUPPLEMENTARY, SIMPLIFIED)
 
   def displayPage: Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
     val transportMode = ModeOfTransportCodeHelper.transportMode(request.cacheModel.transportLeavingBorderCode)
@@ -71,8 +71,8 @@ class TransportCountryController @Inject() (
 
   private def nextPage(implicit request: JourneyRequest[AnyContent]): Call =
     request.declarationType match {
-      case STANDARD      => ExpressConsignmentController.displayPage
-      case SUPPLEMENTARY => TransportContainerController.displayContainerSummary
+      case STANDARD | SIMPLIFIED => ExpressConsignmentController.displayPage
+      case SUPPLEMENTARY         => TransportContainerController.displayContainerSummary
     }
 
   private def updateCache(transportCountry: TransportCountry)(implicit r: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =

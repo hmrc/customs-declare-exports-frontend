@@ -29,6 +29,7 @@ import controllers.navigation.Navigator
 import controllers.routes.RootController
 import forms.declaration.InlandOrBorder
 import forms.declaration.InlandOrBorder.{form, Border, Inland}
+import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.{SIMPLIFIED_FRONTIER, SIMPLIFIED_PRE_LODGED}
 import models.DeclarationType.SUPPLEMENTARY
 import models.requests.JourneyRequest
 import models.ExportsDeclaration
@@ -53,7 +54,9 @@ class InlandOrBorderController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
 
-  private val actionBuilder = authenticate andThen journeyAction.onAdditionalTypes(additionalDeclTypesAllowedOnInlandOrBorder)
+  private val actionBuilder = authenticate andThen journeyAction.onAdditionalTypes(
+    additionalDeclTypesAllowedOnInlandOrBorder ++ Seq(SIMPLIFIED_FRONTIER, SIMPLIFIED_PRE_LODGED)
+  )
 
   def displayPage: Action[AnyContent] = actionBuilder { implicit request =>
     if (inlandOrBorderHelper.skipInlandOrBorder(request.cacheModel)) Results.Redirect(RootController.displayPage)

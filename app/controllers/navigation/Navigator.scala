@@ -27,7 +27,13 @@ import forms.declaration.InlandOrBorder.Border
 import forms.declaration.NatureOfTransaction.{BusinessPurchase, Sale}
 import forms.declaration.RoutingCountryQuestionYesNo.{ChangeCountryPage, RemoveCountryPage, RoutingCountryQuestionPage}
 import forms.declaration._
-import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.{STANDARD_FRONTIER, STANDARD_PRE_LODGED, SUPPLEMENTARY_SIMPLIFIED}
+import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.{
+  SIMPLIFIED_FRONTIER,
+  SIMPLIFIED_PRE_LODGED,
+  STANDARD_FRONTIER,
+  STANDARD_PRE_LODGED,
+  SUPPLEMENTARY_SIMPLIFIED
+}
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypePage
 import forms.declaration.additionaldocuments.{AdditionalDocument, AdditionalDocumentsRequired, AdditionalDocumentsSummary}
 import forms.declaration.carrier.{CarrierDetails, CarrierEoriNumber}
@@ -277,6 +283,7 @@ class Navigator @Inject() (
     case AdditionalActorsSummary     => routes.ConsigneeDetailsController.displayPage
     case DepartureTransport          => routes.InlandTransportDetailsController.displayPage
     case DocumentSummary             => routes.OfficeOfExitController.displayPage
+    case BorderTransport             => routes.DepartureTransportController.displayPage
     case page                        => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on simplified")
   }
 
@@ -297,6 +304,9 @@ class Navigator @Inject() (
     case DestinationCountryPage    => destinationCountryPreviousPage
     case RepresentativeAgent       => representativeAgentPreviousPage
     case InlandModeOfTransportCode => supervisingCustomsOfficePageOnCondition
+    case InlandOrBorder            => inlandOrBorderPreviousPage
+    case DepartureTransport        => departureTransportPreviousPageOnStandardOrSuppl
+    case TransportCountry          => transportCountryPreviousPage
     case ExpressConsignment        => supervisingCustomsOfficePageOnCondition
     case ContainerFirst            => containerFirstPreviousPage
   }
@@ -545,8 +555,8 @@ class Navigator @Inject() (
 
   private def warehouseIdentificationPreviousPage(cacheModel: ExportsDeclaration): Call =
     cacheModel.`type` match {
-      case OCCASIONAL | SIMPLIFIED => routes.ItemsSummaryController.displayItemsSummaryPage
-      case _                       => routes.TransportLeavingTheBorderController.displayPage
+      case OCCASIONAL => routes.ItemsSummaryController.displayItemsSummaryPage
+      case _          => routes.TransportLeavingTheBorderController.displayPage
     }
 
   private def representativeAgentPreviousPage(cacheModel: ExportsDeclaration): Call =
@@ -564,8 +574,9 @@ class Navigator @Inject() (
 
   private def inlandOrBorderPreviousPage(cacheModel: ExportsDeclaration): Call =
     cacheModel.additionalDeclarationType match {
-      case Some(STANDARD_FRONTIER) | Some(STANDARD_PRE_LODGED) | Some(SUPPLEMENTARY_SIMPLIFIED)
-          if supervisingCustomsOfficeHelper.isConditionForAllProcedureCodesVerified(cacheModel) =>
+      case Some(STANDARD_FRONTIER) | Some(STANDARD_PRE_LODGED) | Some(SUPPLEMENTARY_SIMPLIFIED) | Some(SIMPLIFIED_PRE_LODGED) | Some(
+            SIMPLIFIED_FRONTIER
+          ) if supervisingCustomsOfficeHelper.isConditionForAllProcedureCodesVerified(cacheModel) =>
         routes.TransportLeavingTheBorderController.displayPage
 
       case _ => routes.SupervisingCustomsOfficeController.displayPage

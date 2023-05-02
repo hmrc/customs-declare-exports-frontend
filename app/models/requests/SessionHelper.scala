@@ -35,7 +35,7 @@ object SessionHelper {
     request.session.data.get(key)
 
   def getOrElse(key: String, default: String = "")(implicit request: Request[_]): String =
-    request.session.data.get(key).fold(default)(identity)
+    request.session.data.getOrElse(key, default)
 
   def removeValue(key: String)(implicit request: Request[_]): Session =
     request.session - key
