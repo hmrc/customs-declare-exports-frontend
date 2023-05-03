@@ -145,9 +145,9 @@ class TransportSpec extends UnitSpec {
         withClue("original containers are not present") {
           val transport = Transport(containers = Some(containers))
           transport.copy(containers = None).createDiff(transport, Transport.pointer) mustBe Seq(
-            constructAlteredField(s"$fieldPointer.1", Some(containers(0)), None),
-            constructAlteredField(s"$fieldPointer.2", Some(containers(1)), None),
-            constructAlteredField(s"$fieldPointer.3", Some(containers(2)), None)
+            constructAlteredField(s"$fieldPointer.#1", Some(containers(0)), None),
+            constructAlteredField(s"$fieldPointer.#2", Some(containers(1)), None),
+            constructAlteredField(s"$fieldPointer.#3", Some(containers(2)), None)
           )
         }
 
@@ -155,8 +155,8 @@ class TransportSpec extends UnitSpec {
           val transport = Transport(containers = Some(containers))
           val updatedContainers = Some(containers.drop(1) :+ Container(4, "4", Seq.empty[Seal]))
           transport.copy(containers = updatedContainers).createDiff(transport, Transport.pointer) mustBe Seq(
-            constructAlteredField(s"$fieldPointer.1", Some(containers(0)), None),
-            constructAlteredField(s"$fieldPointer.4", None, Some(Container(4, "4", Seq.empty[Seal])))
+            constructAlteredField(s"$fieldPointer.#1", Some(containers(0)), None),
+            constructAlteredField(s"$fieldPointer.#4", None, Some(Container(4, "4", Seq.empty[Seal])))
           )
         }
       }

@@ -30,13 +30,13 @@ class DiffToolsISpec extends UnitSpec with ExportsDeclarationBuilder with Export
   private val baseFieldPointer = ExportsDeclaration.pointer
   private val goodsItemQuantityFieldPointer = s"$baseFieldPointer.${ExportsDeclaration.goodsItemQuantityPointer}"
   private val destinationCountryPointer = s"$baseFieldPointer.${Locations.pointer}.${Locations.destinationCountryPointer}.${Country.pointer}"
-  private def itemFieldPointer(itemSeqId: Int) = s"$baseFieldPointer.${ExportItem.pointer}.$itemSeqId"
+  private def itemFieldPointer(itemSeqId: Int) = s"$baseFieldPointer.${ExportItem.pointer}.#$itemSeqId"
   private def procedureCodePointer(itemSeqId: Int) =
-    s"$baseFieldPointer.${ExportItem.pointer}.$itemSeqId.${ProcedureCodesData.pointer}.${ProcedureCodesData.procedureCodesPointer}"
-  private def packageInfoPointer(seqId: Int, itemSeqId: Int = 1) = itemFieldPointer(itemSeqId) + s".${PackageInformation.pointer}.$seqId"
-  private def containerPointer(seqId: Int) = s"$baseFieldPointer.${Transport.pointer}.${Container.pointer}.$seqId"
-  private def sealPointer(seqId: Int, containerSeqId: Int = 1) = s"${containerPointer(containerSeqId)}.${Seal.pointer}.$seqId"
-  private def routingCountryPointer(seqId: Int) = s"$baseFieldPointer.${Locations.pointer}.${Locations.routingCountriesPointer}.$seqId"
+    s"$baseFieldPointer.${ExportItem.pointer}.#$itemSeqId.${ProcedureCodesData.pointer}.${ProcedureCodesData.procedureCodesPointer}"
+  private def packageInfoPointer(seqId: Int, itemSeqId: Int = 1) = itemFieldPointer(itemSeqId) + s".${PackageInformation.pointer}.#$seqId"
+  private def containerPointer(seqId: Int) = s"$baseFieldPointer.${Transport.pointer}.${Container.pointer}.#$seqId"
+  private def sealPointer(seqId: Int, containerSeqId: Int = 1) = s"${containerPointer(containerSeqId)}.${Seal.pointer}.#$seqId"
+  private def routingCountryPointer(seqId: Int) = s"$baseFieldPointer.${Locations.pointer}.${Locations.routingCountriesPointer}.#$seqId"
 
   "DiffTools" should {
     "produce the expected field pointers on item addition and removal" when {
