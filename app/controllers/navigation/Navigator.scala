@@ -303,11 +303,11 @@ class Navigator @Inject() (
     case ConsigneeDetails          => consigneeDetailsPreviousPage
     case DestinationCountryPage    => destinationCountryPreviousPage
     case RepresentativeAgent       => representativeAgentPreviousPage
-    case InlandModeOfTransportCode => supervisingCustomsOfficePageOnCondition
+    case InlandModeOfTransportCode => inlandTransportDetailsPreviousPage
     case InlandOrBorder            => inlandOrBorderPreviousPage
     case DepartureTransport        => departureTransportPreviousPageOnStandardOrSuppl
     case TransportCountry          => transportCountryPreviousPage
-    case ExpressConsignment        => supervisingCustomsOfficePageOnCondition
+    case ExpressConsignment        => expressConsignmentPreviousPageOnStandard
     case ContainerFirst            => containerFirstPreviousPage
   }
 
