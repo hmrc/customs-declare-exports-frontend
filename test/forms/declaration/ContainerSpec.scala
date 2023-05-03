@@ -43,29 +43,29 @@ class ContainerSpec extends DeclarationPageBaseSpec {
       }
 
       "when seals are present but not equal" in {
-        val fieldPointer = s"$baseFieldPointer.1.${Seal.pointer}"
+        val fieldPointer = s"$baseFieldPointer.#1.${Seal.pointer}"
         withClue("original container's seals are not present") {
           val container = Container(1, "latest", seals)
           container.createDiff(container.copy(seals = Seq.empty[Seal]), baseFieldPointer, Some(1)) mustBe Seq(
-            constructAlteredField(s"${fieldPointer}.1", None, Some(seals(0))),
-            constructAlteredField(s"${fieldPointer}.2", None, Some(seals(1))),
-            constructAlteredField(s"${fieldPointer}.3", None, Some(seals(2)))
+            constructAlteredField(s"${fieldPointer}.#1", None, Some(seals(0))),
+            constructAlteredField(s"${fieldPointer}.#2", None, Some(seals(1))),
+            constructAlteredField(s"${fieldPointer}.#3", None, Some(seals(2)))
           )
         }
 
         withClue("this container's seals are not present") {
           val container = Container(1, "latest", Seq.empty[Seal])
           container.createDiff(container.copy(seals = seals), baseFieldPointer, Some(1)) mustBe Seq(
-            constructAlteredField(s"${fieldPointer}.1", Some(seals(0)), None),
-            constructAlteredField(s"${fieldPointer}.2", Some(seals(1)), None),
-            constructAlteredField(s"${fieldPointer}.3", Some(seals(2)), None)
+            constructAlteredField(s"${fieldPointer}.#1", Some(seals(0)), None),
+            constructAlteredField(s"${fieldPointer}.#2", Some(seals(1)), None),
+            constructAlteredField(s"${fieldPointer}.#3", Some(seals(2)), None)
           )
         }
 
         withClue("both container seals contain different number of elements") {
           val container = Container(1, "latest", seals.drop(1))
           container.createDiff(container.copy(seals = seals), baseFieldPointer, Some(1)) mustBe Seq(
-            constructAlteredField(s"${fieldPointer}.1", Some(seals(0)), None)
+            constructAlteredField(s"${fieldPointer}.#1", Some(seals(0)), None)
           )
         }
 
@@ -73,8 +73,8 @@ class ContainerSpec extends DeclarationPageBaseSpec {
           val newSeal = Seal(4, "other")
           val container = Container(1, "latest", newSeal +: seals.drop(1))
           container.createDiff(container.copy(seals = seals), baseFieldPointer, Some(1)) mustBe Seq(
-            constructAlteredField(s"${fieldPointer}.1", Some(seals(0)), None),
-            constructAlteredField(s"${fieldPointer}.4", None, Some(newSeal))
+            constructAlteredField(s"${fieldPointer}.#1", Some(seals(0)), None),
+            constructAlteredField(s"${fieldPointer}.#4", None, Some(newSeal))
           )
         }
       }
