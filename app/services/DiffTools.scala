@@ -70,11 +70,11 @@ trait DiffTools[T] {
     val removedObjectsIds = originalObjectIds.diff(currentObjectIds)
     val removedObjectsDiff =
       removedObjectsIds.map(sequenceId =>
-        AlteredField(s"$pointerString.$sequenceId", OriginalAndNewValues(original.find(_.sequenceId == sequenceId), None))
+        AlteredField(combinePointers(s"$pointerString", Some(sequenceId)), OriginalAndNewValues(original.find(_.sequenceId == sequenceId), None))
       )
     val newObjectsDiff =
       newObjectsIds.map(sequenceId =>
-        AlteredField(s"$pointerString.$sequenceId", OriginalAndNewValues(None, current.find(_.sequenceId == sequenceId)))
+        AlteredField(combinePointers(s"$pointerString", Some(sequenceId)), OriginalAndNewValues(None, current.find(_.sequenceId == sequenceId)))
       )
 
     intersectingObjectDiffs.flatten ++ removedObjectsDiff ++ newObjectsDiff
@@ -90,11 +90,11 @@ trait DiffTools[T] {
     val removedObjectsIds = originalObjectIds.diff(currentObjectIds)
     val removedObjectsDiff =
       removedObjectsIds.map(sequenceId =>
-        AlteredField(s"$pointerString.$sequenceId", OriginalAndNewValues(original.find(_.sequenceId == sequenceId), None))
+        AlteredField(combinePointers(s"$pointerString", Some(sequenceId)), OriginalAndNewValues(original.find(_.sequenceId == sequenceId), None))
       )
     val newObjectsDiff =
       newObjectsIds.map(sequenceId =>
-        AlteredField(s"$pointerString.$sequenceId", OriginalAndNewValues(None, current.find(_.sequenceId == sequenceId)))
+        AlteredField(combinePointers(s"$pointerString", Some(sequenceId)), OriginalAndNewValues(None, current.find(_.sequenceId == sequenceId)))
       )
 
     (removedObjectsDiff ++ newObjectsDiff).toSeq
@@ -217,7 +217,7 @@ object DiffTools {
     }
 
   def combinePointers(parent: ExportsFieldPointer, childIndex: Option[Int]): ExportsFieldPointer = {
-    val sequenceIndexPart = childIndex.fold("")(idx => s".$idx")
+    val sequenceIndexPart = childIndex.fold("")(idx => s".#$idx") // Hash is used to denote following Int is a sequenceId, as opposed to a TagId
     s"$parent$sequenceIndexPart"
   }
 
@@ -228,10 +228,11 @@ object DiffTools {
     seq1.size == seq2.size && seq1.zip(seq2).forall { case (x, y) => x == y }
 
   def removeTrailingSequenceNbr(field: AlteredField): AlteredField =
-    if (field.fieldPointer.length > 0 && field.fieldPointer.takeRight(1).charAt(0).isDigit)
-      field.copy(fieldPointer = field.fieldPointer.dropRight(2))
-    else
-      field
+    if (field.fieldPointer.length > 0 && field.fieldPointer.takeRight(1).charAt(0).isDigit) {
+      val lastPeriodIndex = field.fieldPointer.lastIndexOf('.')
+      val dropCount = field.fieldPointer.length - lastPeriodIndex
+      field.copy(fieldPointer = field.fieldPointer.dropRight(dropCount))
+    } else field
 
   def compareOptionalString(optionOne: Option[String], optionTwo: Option[String]): Int =
     (optionOne, optionTwo) match {

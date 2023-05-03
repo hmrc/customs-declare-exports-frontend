@@ -169,25 +169,25 @@ class LocationsSpec extends UnitSpec {
           withClue("original Locations routingCountries are not present") {
             val locations = Locations(routingCountries = routingCountries)
             locations.createDiff(locations.copy(routingCountries = Seq.empty), baseFieldPointer, Some(1)) must contain theSameElementsAs Seq(
-              constructAlteredField(s"${fieldPointer}.1", None, Some(routingCountries(0))),
-              constructAlteredField(s"${fieldPointer}.2", None, Some(routingCountries(1))),
-              constructAlteredField(s"${fieldPointer}.3", None, Some(routingCountries(2)))
+              constructAlteredField(s"${fieldPointer}.#1", None, Some(routingCountries(0))),
+              constructAlteredField(s"${fieldPointer}.#2", None, Some(routingCountries(1))),
+              constructAlteredField(s"${fieldPointer}.#3", None, Some(routingCountries(2)))
             )
           }
 
           withClue("this locations routingCountries are not present") {
             val locations = Locations(routingCountries = Seq.empty)
             locations.createDiff(locations.copy(routingCountries = routingCountries), baseFieldPointer, Some(1)) mustBe Seq(
-              constructAlteredField(s"${fieldPointer}.1", Some(routingCountries(0)), None),
-              constructAlteredField(s"${fieldPointer}.2", Some(routingCountries(1)), None),
-              constructAlteredField(s"${fieldPointer}.3", Some(routingCountries(2)), None)
+              constructAlteredField(s"${fieldPointer}.#1", Some(routingCountries(0)), None),
+              constructAlteredField(s"${fieldPointer}.#2", Some(routingCountries(1)), None),
+              constructAlteredField(s"${fieldPointer}.#3", Some(routingCountries(2)), None)
             )
           }
 
           withClue("both locations routingCountries contain different number of elements") {
             val locations = Locations(routingCountries = routingCountries.drop(1))
             locations.createDiff(locations.copy(routingCountries = routingCountries), baseFieldPointer, Some(1)) mustBe Seq(
-              constructAlteredField(s"${fieldPointer}.1", Some(routingCountries(0)), None)
+              constructAlteredField(s"${fieldPointer}.#1", Some(routingCountries(0)), None)
             )
           }
 
@@ -196,12 +196,12 @@ class LocationsSpec extends UnitSpec {
               Seq(RoutingCountry(4, Country(Some("other"))), RoutingCountry(5, Country(Some("other"))), RoutingCountry(6, Country(Some("other"))))
             )
             locations.createDiff(locations.copy(routingCountries = routingCountries), baseFieldPointer, Some(1)) must contain theSameElementsAs Seq(
-              constructAlteredField(s"${fieldPointer}.1", Some(routingCountries(0)), None),
-              constructAlteredField(s"${fieldPointer}.2", Some(routingCountries(1)), None),
-              constructAlteredField(s"${fieldPointer}.3", Some(routingCountries(2)), None),
-              constructAlteredField(s"${fieldPointer}.4", None, Some(RoutingCountry(4, Country(Some("other"))))),
-              constructAlteredField(s"${fieldPointer}.5", None, Some(RoutingCountry(5, Country(Some("other"))))),
-              constructAlteredField(s"${fieldPointer}.6", None, Some(RoutingCountry(6, Country(Some("other")))))
+              constructAlteredField(s"${fieldPointer}.#1", Some(routingCountries(0)), None),
+              constructAlteredField(s"${fieldPointer}.#2", Some(routingCountries(1)), None),
+              constructAlteredField(s"${fieldPointer}.#3", Some(routingCountries(2)), None),
+              constructAlteredField(s"${fieldPointer}.#4", None, Some(RoutingCountry(4, Country(Some("other"))))),
+              constructAlteredField(s"${fieldPointer}.#5", None, Some(RoutingCountry(5, Country(Some("other"))))),
+              constructAlteredField(s"${fieldPointer}.#6", None, Some(RoutingCountry(6, Country(Some("other")))))
             )
           }
         }

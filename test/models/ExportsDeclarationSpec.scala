@@ -186,7 +186,7 @@ class ExportsDeclarationSpec
       }
 
       "the original version's items field has had an existing item removed" in {
-        val itemFieldPointer = s"${baseFieldPointer}.${ExportItem.pointer}.2"
+        val itemFieldPointer = s"${baseFieldPointer}.${ExportItem.pointer}.#2"
         val originalItem1 = ExportItem("1", 1)
         val originalItem2 = ExportItem("2", 2)
         val originalDeclaration = aDeclaration(withItems(originalItem1, originalItem2))
@@ -199,7 +199,7 @@ class ExportsDeclarationSpec
       }
 
       "the original version's items field has had a new item added" in {
-        val itemFieldPointer = s"${baseFieldPointer}.${ExportItem.pointer}.2"
+        val itemFieldPointer = s"${baseFieldPointer}.${ExportItem.pointer}.#2"
         val originalItem = ExportItem("1", 1)
         val originalDeclaration = aDeclaration(withItems(originalItem))
         val newItem = ExportItem(s"2", 2)
