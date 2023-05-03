@@ -71,7 +71,7 @@ trait SimplifiedNavigator extends CacheDependentNavigators {
     case InlandOrBorder            => inlandOrBorderPreviousPage
     case DepartureTransport        => departureTransportPreviousPageOnStandardOrSuppl
     case TransportCountry          => transportCountryPreviousPage
-    case ExpressConsignment        => supervisingCustomsOfficePageOnCondition
+    case ExpressConsignment        => expressConsignmentPreviousPageOnStandard
     case ContainerFirst            => containerFirstPreviousPage
   }
 

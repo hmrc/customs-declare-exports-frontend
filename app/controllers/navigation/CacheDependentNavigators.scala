@@ -27,7 +27,13 @@ import models.ExportsDeclaration
 import play.api.mvc.Call
 import services.TaggedAuthCodes
 import forms.declaration.NatureOfTransaction.{BusinessPurchase, Sale}
-import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.{STANDARD_FRONTIER, STANDARD_PRE_LODGED, SUPPLEMENTARY_SIMPLIFIED}
+import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.{
+  SIMPLIFIED_FRONTIER,
+  SIMPLIFIED_PRE_LODGED,
+  STANDARD_FRONTIER,
+  STANDARD_PRE_LODGED,
+  SUPPLEMENTARY_SIMPLIFIED
+}
 
 trait CacheDependentNavigators {
 
@@ -208,8 +214,8 @@ trait CacheDependentNavigators {
 
   protected def warehouseIdentificationPreviousPage(cacheModel: ExportsDeclaration): Call =
     cacheModel.`type` match {
-      case OCCASIONAL | SIMPLIFIED => routes.ItemsSummaryController.displayItemsSummaryPage
-      case _                       => routes.TransportLeavingTheBorderController.displayPage
+      case OCCASIONAL => routes.ItemsSummaryController.displayItemsSummaryPage
+      case _          => routes.TransportLeavingTheBorderController.displayPage
     }
 
   protected def representativeAgentPreviousPage(cacheModel: ExportsDeclaration): Call =
@@ -227,8 +233,9 @@ trait CacheDependentNavigators {
 
   protected def inlandOrBorderPreviousPage(cacheModel: ExportsDeclaration): Call =
     cacheModel.additionalDeclarationType match {
-      case Some(STANDARD_FRONTIER) | Some(STANDARD_PRE_LODGED) | Some(SUPPLEMENTARY_SIMPLIFIED)
-          if supervisingCustomsOfficeHelper.isConditionForAllProcedureCodesVerified(cacheModel) =>
+      case Some(STANDARD_FRONTIER) | Some(STANDARD_PRE_LODGED) | Some(SUPPLEMENTARY_SIMPLIFIED) | Some(SIMPLIFIED_PRE_LODGED) | Some(
+            SIMPLIFIED_FRONTIER
+          ) if supervisingCustomsOfficeHelper.isConditionForAllProcedureCodesVerified(cacheModel) =>
         routes.TransportLeavingTheBorderController.displayPage
 
       case _ => routes.SupervisingCustomsOfficeController.displayPage
