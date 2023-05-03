@@ -148,7 +148,7 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec {
 
     "redirect to the 'Inland or Border' page" when {
       "all declaration's items have '1040' as Procedure code and '000' as unique Additional Procedure code and" when {
-        additionalDeclTypesAllowedOnInlandOrBorder.foreach { additionalType =>
+        (additionalDeclTypesAllowedOnInlandOrBorder ++ Seq(SIMPLIFIED_FRONTIER, SIMPLIFIED_PRE_LODGED)).foreach { additionalType =>
           s"AdditionalDeclarationType is $additionalType" in {
             withNewCaching(withRequest(additionalType, withItem(itemWithPC("1040"))).cacheModel)
             val correctForm = Json.obj(WarehouseIdentification.warehouseIdKey -> "R12341234")
@@ -162,7 +162,7 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec {
       }
     }
 
-    onJourney(SIMPLIFIED, OCCASIONAL)(aDeclaration(withItem(itemWithPC("1040")))) { request =>
+    onJourney(OCCASIONAL)(aDeclaration(withItem(itemWithPC("1040")))) { request =>
       "redirect to the 'Express Consignment' page" when {
         "all declaration's items have '1040' as Procedure code and '000' as unique Additional Procedure code" in {
           withNewCaching(request.cacheModel)

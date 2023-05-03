@@ -26,7 +26,7 @@ import controllers.declaration.routes.{
 }
 import controllers.helpers.TransportSectionHelper.additionalDeclTypesAllowedOnInlandOrBorder
 import forms.declaration.ModeOfTransportCode.{meaningfulModeOfTransportCodes, FixedTransportInstallations, PostalConsignment}
-import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.SUPPLEMENTARY_EIDR
+import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.{SIMPLIFIED_FRONTIER, SIMPLIFIED_PRE_LODGED, SUPPLEMENTARY_EIDR}
 import models.DeclarationType
 import services.cache.{ExportsDeclarationBuilder, ExportsItemBuilder}
 
@@ -86,7 +86,7 @@ class SupervisingCustomsOfficeHelperSpec
 
   "SupervisingCustomsOfficeHelper on nextPage" when {
 
-    additionalDeclTypesAllowedOnInlandOrBorder.foreach { additionalType =>
+    (additionalDeclTypesAllowedOnInlandOrBorder ++ Seq(SIMPLIFIED_FRONTIER, SIMPLIFIED_PRE_LODGED)).foreach { additionalType =>
       s"AdditionalDeclarationType is ${additionalType}" should {
         "goto to InlandOrBorderController" in {
           val declaration = withRequest(additionalType).cacheModel
@@ -104,7 +104,7 @@ class SupervisingCustomsOfficeHelperSpec
       }
     }
 
-    onJourney(DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL) { request =>
+    onOccasional { request =>
       "goto ExpressConsignmentController for SIMPLIFIED & OCCASIONAL journeys" in {
         supervisingCustomsOfficeHelper.nextPage(request.cacheModel) mustBe ExpressConsignmentController.displayPage
       }
