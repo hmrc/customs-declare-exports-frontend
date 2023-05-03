@@ -81,7 +81,7 @@ class ExpressConsignmentViewSpec extends UnitViewSpec with CommonMessages with I
 
     }
 
-    onStandard { implicit request =>
+    onJourney(STANDARD, SIMPLIFIED) { implicit request =>
       val view: Document = createView()
 
       "display 'Back' button to the 'Border Transport' page" in {
@@ -93,7 +93,7 @@ class ExpressConsignmentViewSpec extends UnitViewSpec with CommonMessages with I
       }
     }
 
-    onJourney(SIMPLIFIED, OCCASIONAL) { implicit request =>
+    onJourney(OCCASIONAL) { implicit request =>
       val view: Document = createView()
 
       "display 'Back' button to the 'Supervising Customs Office' page" in {
@@ -105,7 +105,7 @@ class ExpressConsignmentViewSpec extends UnitViewSpec with CommonMessages with I
       }
     }
 
-    onJourney(SIMPLIFIED, OCCASIONAL)(aDeclaration(withItem(itemWithPC("1040")))) { implicit request =>
+    onJourney(OCCASIONAL)(aDeclaration(withItem(itemWithPC("1040")))) { implicit request =>
       val view: Document = createView()
 
       "display 'Back' button to the 'Items Summary' page" when {

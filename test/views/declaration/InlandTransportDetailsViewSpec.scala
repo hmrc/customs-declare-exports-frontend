@@ -124,7 +124,7 @@ class InlandTransportDetailsViewSpec extends PageWithButtonsSpec with ExportsTes
     }
 
     "display 'Back' button that links to /inland-or-border" when {
-      additionalDeclTypesAllowedOnInlandOrBorder.foreach { additionalType =>
+      (additionalDeclTypesAllowedOnInlandOrBorder ++ Seq(SIMPLIFIED_FRONTIER, SIMPLIFIED_PRE_LODGED)).foreach { additionalType =>
         s"AdditionalDeclarationType is $additionalType" in {
           val view = createView()(withRequest(additionalType))
           val backButton = view.getElementById("back-link")
@@ -149,7 +149,7 @@ class InlandTransportDetailsViewSpec extends PageWithButtonsSpec with ExportsTes
         }
       }
 
-      List(SUPPLEMENTARY_EIDR, OCCASIONAL_FRONTIER, OCCASIONAL_PRE_LODGED, SIMPLIFIED_FRONTIER, SIMPLIFIED_PRE_LODGED).foreach { additionalType =>
+      List(SUPPLEMENTARY_EIDR, OCCASIONAL_FRONTIER, OCCASIONAL_PRE_LODGED).foreach { additionalType =>
         s"AdditionalDeclarationType is ${additionalType}" in {
           val view = createView()(withRequest(additionalType))
           val backButton = view.getElementById("back-link")

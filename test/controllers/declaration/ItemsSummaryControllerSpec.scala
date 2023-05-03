@@ -270,7 +270,7 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
 
           status(result) mustBe SEE_OTHER
           request.declarationType match {
-            case DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL =>
+            case DeclarationType.OCCASIONAL =>
               thePageNavigatedTo mustBe routes.SupervisingCustomsOfficeController.displayPage
             case _ => thePageNavigatedTo mustBe routes.TransportLeavingTheBorderController.displayPage
           }
@@ -304,7 +304,7 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
       }
     }
 
-    onJourney(STANDARD, SUPPLEMENTARY, CLEARANCE) { request =>
+    onJourney(STANDARD, SUPPLEMENTARY, CLEARANCE, SIMPLIFIED) { request =>
       "user does not want to add another item" should {
         "return 303 (SEE_OTHER) and redirect to Transport Leaving the Border page" in {
           val cachedData = aDeclaration(withType(request.declarationType), withItem(exportItem))
@@ -319,7 +319,7 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
       }
     }
 
-    onJourney(SIMPLIFIED, OCCASIONAL) { request =>
+    onJourney(OCCASIONAL) { request =>
       "return 303 (SEE_OTHER)" in {
         val cachedData = aDeclaration(withType(request.declarationType), withItem(exportItem))
         withNewCaching(cachedData)

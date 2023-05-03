@@ -79,7 +79,7 @@ class TransportCountryControllerSpec extends ControllerSpec with OptionValues {
 
   "TransportCountryController.displayOutcomePage" should {
 
-    onJourney(STANDARD, SUPPLEMENTARY) { request =>
+    onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED) { request =>
       "return 200 (OK)" when {
 
         "display page method is invoked and cache is empty" in {
@@ -105,7 +105,7 @@ class TransportCountryControllerSpec extends ControllerSpec with OptionValues {
       }
     }
 
-    onJourney(CLEARANCE, SIMPLIFIED, OCCASIONAL) { request =>
+    onJourney(CLEARANCE, OCCASIONAL) { request =>
       "redirect to the starting page" in {
         withNewCaching(request.cacheModel)
 
@@ -118,9 +118,9 @@ class TransportCountryControllerSpec extends ControllerSpec with OptionValues {
   "TransportCountryController.submitForm" should {
 
     onJourney(STANDARD, SUPPLEMENTARY) { request =>
-      def nextPage(declarationType: DeclarationType): Call = declarationType match {
-        case STANDARD      => ExpressConsignmentController.displayPage
-        case SUPPLEMENTARY => TransportContainerController.displayContainerSummary
+      def nextPage: PartialFunction[DeclarationType, Call] = {
+        case STANDARD | SIMPLIFIED => ExpressConsignmentController.displayPage
+        case SUPPLEMENTARY         => TransportContainerController.displayContainerSummary
       }
 
       "return 303 (SEE_OTHER)" when {
@@ -160,7 +160,7 @@ class TransportCountryControllerSpec extends ControllerSpec with OptionValues {
 
     }
 
-    onJourney(CLEARANCE, SIMPLIFIED, OCCASIONAL) { request =>
+    onJourney(CLEARANCE, OCCASIONAL) { request =>
       "redirect to the starting page" in {
         withNewCaching(request.cacheModel)
 

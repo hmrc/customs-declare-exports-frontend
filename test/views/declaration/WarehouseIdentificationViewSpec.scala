@@ -73,7 +73,7 @@ class WarehouseIdentificationViewSpec extends PageWithButtonsSpec with Injector 
       checkAllSaveButtonsAreDisplayed(createView())
     }
 
-    onJourney(STANDARD, SUPPLEMENTARY, CLEARANCE) { implicit request =>
+    onJourney(STANDARD, SUPPLEMENTARY, CLEARANCE, SIMPLIFIED) { implicit request =>
       "display 'Back' button that links to 'Transport Leaving the Border' page" in {
         val backButton = createView().getElementById("back-link")
         backButton.text() mustBe messages("site.backToPreviousQuestion")
@@ -81,7 +81,7 @@ class WarehouseIdentificationViewSpec extends PageWithButtonsSpec with Injector 
       }
     }
 
-    onJourney(SIMPLIFIED, OCCASIONAL) { implicit request =>
+    onOccasional { implicit request =>
       "display 'Back' button that links to 'Items Summary' page" in {
         val backButton = createView().getElementById("back-link")
         backButton.text() mustBe messages("site.backToPreviousQuestion")

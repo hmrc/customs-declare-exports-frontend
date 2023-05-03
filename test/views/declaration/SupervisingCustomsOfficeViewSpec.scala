@@ -86,7 +86,7 @@ class SupervisingCustomsOfficeViewSpec extends UnitViewSpec with ExportsTestHelp
       }
     }
 
-    onJourney(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY) { implicit request =>
+    onJourney(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY, DeclarationType.SIMPLIFIED) { implicit request =>
       "display 'Back' button that links to 'Transport Leaving the Border' page when procedure code ends with '00'" in {
 
         val modelWithProcedureCode: ExportsDeclaration =
@@ -98,7 +98,7 @@ class SupervisingCustomsOfficeViewSpec extends UnitViewSpec with ExportsTestHelp
       }
     }
 
-    onJourney(DeclarationType.OCCASIONAL, DeclarationType.SIMPLIFIED) { implicit request =>
+    onOccasional { implicit request =>
       "display 'Back' button that links to 'Items Summary' page when procedure code ends with '00'" in {
 
         val modelWithProcedureCode: ExportsDeclaration =
