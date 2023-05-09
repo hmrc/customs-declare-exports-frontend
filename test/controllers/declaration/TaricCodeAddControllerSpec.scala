@@ -18,7 +18,7 @@ package controllers.declaration
 
 import base.{ControllerSpec, TestHelper}
 import controllers.declaration.routes.{NactCodeSummaryController, TaricCodeSummaryController, ZeroRatedForVatController}
-import forms.declaration.NatureOfTransaction.{BusinessPurchase, NationalPurposes, Sale}
+import forms.declaration.NatureOfTransaction.{BusinessPurchase, Other, Sale}
 import forms.declaration.{TaricCode, TaricCodeFirst}
 import models.declaration.ProcedureCodesData.lowValueDeclaration
 import org.mockito.ArgumentCaptor
@@ -251,7 +251,7 @@ class TaricCodeAddControllerSpec extends ControllerSpec with OptionValues {
 
           "user has answered other nature of transaction" in {
             val item = anItem()
-            withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item), withNatureOfTransaction(NationalPurposes)))
+            withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item), withNatureOfTransaction(Other)))
 
             val requestBody = Seq(TaricCodeFirst.hasTaricCodeKey -> "No")
             val result = controller.submitForm(item.id)(postRequestAsFormUrlEncoded(requestBody: _*))
