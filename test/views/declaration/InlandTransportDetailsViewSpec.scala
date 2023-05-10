@@ -124,7 +124,7 @@ class InlandTransportDetailsViewSpec extends PageWithButtonsSpec with ExportsTes
     }
 
     "display 'Back' button that links to /inland-or-border" when {
-      (additionalDeclTypesAllowedOnInlandOrBorder ++ Seq(SIMPLIFIED_FRONTIER, SIMPLIFIED_PRE_LODGED)).foreach { additionalType =>
+      additionalDeclTypesAllowedOnInlandOrBorder.foreach { additionalType =>
         s"AdditionalDeclarationType is $additionalType" in {
           val view = createView()(withRequest(additionalType))
           val backButton = view.getElementById("back-link")
@@ -162,7 +162,7 @@ class InlandTransportDetailsViewSpec extends PageWithButtonsSpec with ExportsTes
     "display 'Back' button that links to /transport-leaving-the-border" when {
       "all declaration's items have '1040' as Procedure code and '000' as unique Additional Procedure code and" when {
 
-        (additionalDeclTypesAllowedOnInlandOrBorder ++ Seq(SIMPLIFIED_FRONTIER, SIMPLIFIED_PRE_LODGED)).foreach { additionalType =>
+        additionalDeclTypesAllowedOnInlandOrBorder.foreach { additionalType =>
           s"AdditionalDeclarationType is $additionalType and" when {
             "the user has previously entered a value which requires to skip the /inland-or-border page" in {
               valuesRequiringToSkipInlandOrBorder.foreach { modifier =>

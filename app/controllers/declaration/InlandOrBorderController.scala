@@ -29,10 +29,9 @@ import controllers.navigation.Navigator
 import controllers.routes.RootController
 import forms.declaration.InlandOrBorder
 import forms.declaration.InlandOrBorder.{form, Border, Inland}
-import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.{SIMPLIFIED_FRONTIER, SIMPLIFIED_PRE_LODGED}
 import models.DeclarationType.SUPPLEMENTARY
-import models.requests.JourneyRequest
 import models.ExportsDeclaration
+import models.requests.JourneyRequest
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.cache.ExportsCacheService
@@ -54,9 +53,7 @@ class InlandOrBorderController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
 
-  private val actionBuilder = authenticate andThen journeyAction.onAdditionalTypes(
-    additionalDeclTypesAllowedOnInlandOrBorder ++ Seq(SIMPLIFIED_FRONTIER, SIMPLIFIED_PRE_LODGED)
-  )
+  private val actionBuilder = authenticate andThen journeyAction.onAdditionalTypes(additionalDeclTypesAllowedOnInlandOrBorder)
 
   def displayPage: Action[AnyContent] = actionBuilder { implicit request =>
     if (inlandOrBorderHelper.skipInlandOrBorder(request.cacheModel)) Results.Redirect(RootController.displayPage)
@@ -77,16 +74,6 @@ class InlandOrBorderController @Inject() (
         .fold(formWithErrors => Future.successful(BadRequest(inlandOrBorderPage(formWithErrors))), updateExportsCache(_))
   }
 
-  private def nextPage(declaration: ExportsDeclaration, inlandOrBorder: InlandOrBorder): Call =
-    inlandOrBorder match {
-      case Border if isPostalOrFTIModeOfTransport(declaration.transportLeavingBorderCode) =>
-        if (declaration.isType(SUPPLEMENTARY)) TransportContainerController.displayContainerSummary
-        else ExpressConsignmentController.displayPage
-
-      case Border => DepartureTransportController.displayPage
-      case Inland => InlandTransportDetailsController.displayPage
-    }
-
   private def updateExportsCache(inlandOrBorder: InlandOrBorder)(implicit request: JourneyRequest[AnyContent]): Future[Result] =
     updateDeclarationFromRequest { declaration =>
       declaration.copy(locations =
@@ -97,5 +84,15 @@ class InlandOrBorderController @Inject() (
       )
     } map { _ =>
       navigator.continueTo(nextPage(request.cacheModel, inlandOrBorder))
+    }
+
+  private def nextPage(declaration: ExportsDeclaration, inlandOrBorder: InlandOrBorder): Call =
+    inlandOrBorder match {
+      case Border if isPostalOrFTIModeOfTransport(declaration.transportLeavingBorderCode) =>
+        if (declaration.isType(SUPPLEMENTARY)) TransportContainerController.displayContainerSummary
+        else ExpressConsignmentController.displayPage
+
+      case Border => DepartureTransportController.displayPage
+      case Inland => InlandTransportDetailsController.displayPage
     }
 }

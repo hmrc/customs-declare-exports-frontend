@@ -250,9 +250,7 @@ trait CacheDependentNavigators {
     else routes.SupervisingCustomsOfficeController.displayPage
 
   protected def departureTransportPreviousPageOnStandardOrSuppl(cacheModel: ExportsDeclaration): Call = {
-    val inAllowedFlow = cacheModel.additionalDeclarationType.exists(
-      (additionalDeclTypesAllowedOnInlandOrBorder ++ Seq(SIMPLIFIED_PRE_LODGED, SIMPLIFIED_FRONTIER)).contains
-    )
+    val inAllowedFlow = cacheModel.additionalDeclarationType.exists(additionalDeclTypesAllowedOnInlandOrBorder.contains)
     if (inAllowedFlow && cacheModel.isInlandOrBorder(Border)) routes.InlandOrBorderController.displayPage
     else routes.InlandTransportDetailsController.displayPage
   }

@@ -26,7 +26,7 @@ import controllers.declaration.routes.{
 }
 import controllers.helpers.TransportSectionHelper.additionalDeclTypesAllowedOnInlandOrBorder
 import forms.declaration.ModeOfTransportCode.{meaningfulModeOfTransportCodes, FixedTransportInstallations, PostalConsignment}
-import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.{SIMPLIFIED_FRONTIER, SIMPLIFIED_PRE_LODGED, SUPPLEMENTARY_EIDR}
+import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.SUPPLEMENTARY_EIDR
 import models.DeclarationType
 import services.cache.{ExportsDeclarationBuilder, ExportsItemBuilder}
 
@@ -86,7 +86,7 @@ class SupervisingCustomsOfficeHelperSpec
 
   "SupervisingCustomsOfficeHelper on nextPage" when {
 
-    (additionalDeclTypesAllowedOnInlandOrBorder ++ Seq(SIMPLIFIED_FRONTIER, SIMPLIFIED_PRE_LODGED)).foreach { additionalType =>
+    additionalDeclTypesAllowedOnInlandOrBorder.foreach { additionalType =>
       s"AdditionalDeclarationType is ${additionalType}" should {
         "goto to InlandOrBorderController" in {
           val declaration = withRequest(additionalType).cacheModel
