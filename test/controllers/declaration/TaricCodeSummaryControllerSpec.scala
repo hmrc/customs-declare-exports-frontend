@@ -19,7 +19,7 @@ package controllers.declaration
 import base.ControllerSpec
 import controllers.declaration.routes.{TaricCodeAddController, ZeroRatedForVatController}
 import forms.common.YesNoAnswer
-import forms.declaration.NatureOfTransaction.{BusinessPurchase, NationalPurposes, Sale}
+import forms.declaration.NatureOfTransaction.{BusinessPurchase, Other, Sale}
 import forms.declaration.TaricCode
 import models.DeclarationType._
 import models.declaration.ProcedureCodesData.lowValueDeclaration
@@ -185,7 +185,7 @@ class TaricCodeSummaryControllerSpec extends ControllerSpec with OptionValues {
             val taricCode = TaricCode("QWER")
             val item = anItem(withTaricCodes(taricCode))
 
-            withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item), withNatureOfTransaction(NationalPurposes)))
+            withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item), withNatureOfTransaction(Other)))
 
             val requestBody = Seq("yesNo" -> "No")
             val result = controller.submitForm(item.id)(postRequestAsFormUrlEncoded(requestBody: _*))

@@ -3182,8 +3182,6 @@ declaration.natureOfTransaction.processed = Nwyddau wedi’u prosesu
 
 declaration.natureOfTransaction.processed.hint = Er enghraifft, anfon yn ôl ar ôl cael ei newid o dan gontract.
 
-declaration.natureOfTransaction.nationalPurposes = Dibenion cenedlaethol
-
 declaration.natureOfTransaction.military = Dibenion rhyng-lywodraethol
 
 declaration.natureOfTransaction.construction = Nwyddau yn cael eu cyflenwi o dan gontract ar gyfer adeiladu neu beirianneg sifil

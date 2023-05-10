@@ -43,14 +43,13 @@ object NatureOfTransaction extends DeclarationPage with FieldMapping {
   val Donation = "3"
   val Processing = "4"
   val Processed = "5"
-  val NationalPurposes = "6"
   val Military = "7"
   val Construction = "8"
   val HouseRemoval = "9_A"
   val Other = "9"
 
   val allowedTypes: Set[String] =
-    Set(Sale, BusinessPurchase, Return, Donation, Processing, Processed, NationalPurposes, Military, Construction, HouseRemoval, Other)
+    Set(Sale, BusinessPurchase, Return, Donation, Processing, Processed, Military, Construction, HouseRemoval, Other)
 
   val mapping: Mapping[NatureOfTransaction] = Forms.mapping(
     "natureType" -> requiredRadio("declaration.natureOfTransaction.empty")
