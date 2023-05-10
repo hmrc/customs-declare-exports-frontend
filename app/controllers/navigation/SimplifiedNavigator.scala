@@ -45,7 +45,6 @@ trait SimplifiedNavigator extends CacheDependentNavigators {
     case ChangeCountryPage           => routes.RoutingCountriesController.displayRoutingCountry
     case LocationOfGoods             => routes.RoutingCountriesController.displayRoutingCountry
     case AdditionalActorsSummary     => routes.ConsigneeDetailsController.displayPage
-    case DepartureTransport          => routes.InlandTransportDetailsController.displayPage
     case DocumentSummary             => routes.OfficeOfExitController.displayPage
     case BorderTransport             => routes.DepartureTransportController.displayPage
     case page                        => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on simplified")
