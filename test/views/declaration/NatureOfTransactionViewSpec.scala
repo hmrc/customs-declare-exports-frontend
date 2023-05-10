@@ -54,7 +54,6 @@ class NatureOfTransactionViewSpec extends PageWithButtonsSpec with Injector {
       messages must haveTranslationFor("declaration.natureOfTransaction.processing.hint")
       messages must haveTranslationFor("declaration.natureOfTransaction.processed")
       messages must haveTranslationFor("declaration.natureOfTransaction.processed.hint")
-      messages must haveTranslationFor("declaration.natureOfTransaction.nationalPurposes")
       messages must haveTranslationFor("declaration.natureOfTransaction.military")
       messages must haveTranslationFor("declaration.natureOfTransaction.construction")
       messages must haveTranslationFor("declaration.natureOfTransaction.other")
@@ -100,10 +99,6 @@ class NatureOfTransactionViewSpec extends PageWithButtonsSpec with Injector {
       "display radio button with Processed option" in {
         view.getElementById("Processed").attr("value") mustBe Processed
         view.getElementsByAttributeValue("for", "Processed") must containMessageForElements("declaration.natureOfTransaction.processed")
-      }
-      "display radio button with National Purposes option" in {
-        view.getElementById("NationalPurposes").attr("value") mustBe NationalPurposes
-        view.getElementsByAttributeValue("for", "NationalPurposes") must containMessageForElements("declaration.natureOfTransaction.nationalPurposes")
       }
       "display radio button with Military option" in {
         view.getElementById("Military").attr("value") mustBe Military
