@@ -84,7 +84,7 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
     Json.obj(radioButtonGroupId -> transportCodeValue, inputFieldId -> reference)
 
   "Departure transport controller" when {
-    onJourney(STANDARD, SUPPLEMENTARY, CLEARANCE) { request =>
+    onJourney(STANDARD, SUPPLEMENTARY, CLEARANCE, SIMPLIFIED) { request =>
       "return 200 (OK)" when {
 
         "display page method is invoked and cache is empty" in {
@@ -151,7 +151,7 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
       }
     }
 
-    onJourney(STANDARD, SUPPLEMENTARY) { request =>
+    onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED) { request =>
       "redirect to the /border-transport page" when {
         "information provided by user are correct" in {
           withNewCaching(request.cacheModel)
@@ -209,7 +209,7 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
       }
     }
 
-    onJourney(SIMPLIFIED, OCCASIONAL) { request =>
+    onJourney(OCCASIONAL) { request =>
       "redirect to the 'start page'" when {
 
         "displayOutcomePage is invoked" in {

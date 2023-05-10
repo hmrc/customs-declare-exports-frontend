@@ -80,7 +80,7 @@ class WarehouseIdentificationYesNoViewSpec extends PageWithButtonsSpec with Inje
       checkAllSaveButtonsAreDisplayed(createView())
     }
 
-    onJourney(STANDARD, SUPPLEMENTARY, CLEARANCE) { implicit request =>
+    onJourney(STANDARD, SUPPLEMENTARY, CLEARANCE, SIMPLIFIED) { implicit request =>
       "display 'Back' button that links to 'Transport Leaving the Border' page" in {
         val backButton = createView().getElementById("back-link")
 
@@ -88,7 +88,7 @@ class WarehouseIdentificationYesNoViewSpec extends PageWithButtonsSpec with Inje
         backButton.getElementById("back-link") must haveHref(TransportLeavingTheBorderController.displayPage)
       }
     }
-    onJourney(SIMPLIFIED, OCCASIONAL) { implicit request =>
+    onOccasional { implicit request =>
       "display 'Back' button that links to 'Items Summary' page" in {
         val backButton = createView().getElementById("back-link")
 

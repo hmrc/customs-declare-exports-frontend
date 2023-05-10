@@ -90,7 +90,7 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec with Option
 
   "TransportLeavingTheBorderController.displayOutcomePage" should {
 
-    onJourney(STANDARD, SUPPLEMENTARY, CLEARANCE) { request =>
+    onJourney(STANDARD, SUPPLEMENTARY, CLEARANCE, SIMPLIFIED) { request =>
       "return 200 (OK)" when {
 
         "display page method is invoked and cache is empty" in {
@@ -111,7 +111,7 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec with Option
       }
     }
 
-    onJourney(SIMPLIFIED, OCCASIONAL) { request =>
+    onJourney(OCCASIONAL) { request =>
       "redirect to the starting page on displayOutcomePage" in {
         withNewCaching(request.cacheModel)
 
@@ -123,7 +123,7 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec with Option
 
   "TransportLeavingTheBorderController.submitForm" when {
 
-    onJourney(STANDARD, SUPPLEMENTARY, CLEARANCE) { request =>
+    onJourney(STANDARD, SUPPLEMENTARY, CLEARANCE, SIMPLIFIED) { request =>
       "the user does not select any option" should {
         "return 400 (BAD_REQUEST)" in {
           withNewCaching(request.cacheModel)
@@ -296,7 +296,7 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec with Option
       }
     }
 
-    onJourney(SIMPLIFIED, OCCASIONAL) { request =>
+    onJourney(OCCASIONAL) { request =>
       "always redirect to the starting page" in {
         withNewCaching(request.cacheModel)
         val body = Json.obj("transportLeavingTheBorder" -> "any")

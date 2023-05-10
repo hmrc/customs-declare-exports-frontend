@@ -162,7 +162,7 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec {
       }
     }
 
-    onJourney(SIMPLIFIED, OCCASIONAL)(aDeclaration(withItem(itemWithPC("1040")))) { request =>
+    onJourney(OCCASIONAL)(aDeclaration(withItem(itemWithPC("1040")))) { request =>
       "redirect to the 'Express Consignment' page" when {
         "all declaration's items have '1040' as Procedure code and '000' as unique Additional Procedure code" in {
           withNewCaching(request.cacheModel)

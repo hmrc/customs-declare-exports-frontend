@@ -104,7 +104,7 @@ class SupervisingCustomsOfficeHelperSpec
       }
     }
 
-    onJourney(DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL) { request =>
+    onOccasional { request =>
       "goto ExpressConsignmentController for SIMPLIFIED & OCCASIONAL journeys" in {
         supervisingCustomsOfficeHelper.nextPage(request.cacheModel) mustBe ExpressConsignmentController.displayPage
       }

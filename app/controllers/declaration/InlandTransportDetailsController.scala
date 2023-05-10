@@ -48,7 +48,7 @@ class InlandTransportDetailsController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
 
-  private val validJourneys = List(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY)
+  private val validJourneys = List(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY, DeclarationType.SIMPLIFIED)
 
   def displayPage: Action[AnyContent] = (authenticate andThen journeyType(validJourneys)) { implicit request =>
     val frm = form.withSubmissionErrors

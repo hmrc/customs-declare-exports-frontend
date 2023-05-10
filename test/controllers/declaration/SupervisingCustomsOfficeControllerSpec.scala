@@ -206,13 +206,13 @@ class SupervisingCustomsOfficeControllerSpec extends ControllerSpec with BeforeA
 
     "we are on simplified declaration journey" should {
 
-      "redirect to /express-consignment after a successful bind" in {
+      "redirect to /inland-or-border after a successful bind" in {
         withNewCaching(simplifiedCacheModel)
 
         val result = await(controller.submit().apply(postRequest(body)))
 
         result mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe ExpressConsignmentController.displayPage
+        thePageNavigatedTo mustBe InlandOrBorderController.displayPage
       }
 
       "update cache after successful bind" in {

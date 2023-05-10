@@ -23,7 +23,7 @@ import controllers.navigation.Navigator
 import controllers.routes.RootController
 import forms.declaration.DepartureTransport
 import forms.declaration.InlandOrBorder.Border
-import models.DeclarationType.{CLEARANCE, STANDARD, SUPPLEMENTARY}
+import models.DeclarationType.{allDeclarationTypesExcluding, CLEARANCE, OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
 import models.ExportsDeclaration
 import models.requests.JourneyRequest
 import play.api.data.Form
@@ -55,7 +55,7 @@ class DepartureTransportController @Inject() (
   private def form(implicit request: JourneyRequest[_]): Form[DepartureTransport] =
     DepartureTransport.form(departureTransportHelper.transportCodes)
 
-  private val validTypes = Seq(STANDARD, SUPPLEMENTARY, CLEARANCE)
+  private val validTypes = allDeclarationTypesExcluding(OCCASIONAL)
 
   def displayPage: Action[AnyContent] =
     (authenticate andThen journeyType(validTypes)) { implicit request =>
@@ -83,7 +83,7 @@ class DepartureTransportController @Inject() (
   private def nextPage(implicit request: JourneyRequest[AnyContent]): Call =
     request.declarationType match {
       case CLEARANCE => ExpressConsignmentController.displayPage
-      case STANDARD | SUPPLEMENTARY =>
+      case STANDARD | SUPPLEMENTARY | SIMPLIFIED =>
         if (request.cacheModel.isInlandOrBorder(Border)) TransportCountryController.displayPage
         else BorderTransportController.displayPage
     }

@@ -50,7 +50,7 @@ class TransportLeavingTheBorderController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
 
-  private val validTypes = Seq(STANDARD, SUPPLEMENTARY, CLEARANCE)
+  private val validTypes = allDeclarationTypesExcluding(OCCASIONAL)
 
   def displayPage: Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
     request.cacheModel.transport.borderModeOfTransportCode match {
