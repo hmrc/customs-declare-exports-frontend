@@ -71,9 +71,9 @@ class SavedDeclarationsViewSpec extends UnitViewSpec with Injector {
 
       view.title() must include(view.getElementsByTag("h1").text())
 
-      tableHead(view)(0).text() mustBe messages(ducr)
-      tableHead(view)(1).text() mustBe messages("saved.declarations.status")
-      tableHead(view)(2).text() mustBe messages(dateSaved)
+      tableHead(view)(0).text() mustBe messages(dateSaved)
+      tableHead(view)(1).text() mustBe messages(ducr)
+      tableHead(view)(2).text() mustBe messages("saved.declarations.status")
       tableHead(view)(3).text() mustBe messages("site.remove.header")
 
       numberOfTableRows(view) mustBe 0
@@ -88,10 +88,10 @@ class SavedDeclarationsViewSpec extends UnitViewSpec with Injector {
 
       numberOfTableRows(view) mustBe 1
 
-      tableCell(view)(1, 0) must containMessage("saved.declarations.noDucr")
-      tableCell(view)(1, 0) must containMessage("saved.declarations.continue.hidden", noDucrLabel)
-      tableCell(view)(1, 1) must containMessage("saved.declarations.draft")
-      tableCell(view)(1, 2).text() mustBe "1 January 2019 at 9:45am"
+      tableCell(view)(1, 0).text() mustBe "1 January 2019 at 9:45am"
+      tableCell(view)(1, 1) must containMessage("saved.declarations.noDucr")
+      tableCell(view)(1, 1) must containMessage("saved.declarations.continue.hidden", noDucrLabel)
+      tableCell(view)(1, 2) must containMessage("saved.declarations.draft")
       tableCell(view)(1, 3) must containMessage("site.remove")
       tableCell(view)(1, 3) must containMessage("saved.declarations.remove.hidden", noDucrLabel)
 
@@ -110,10 +110,10 @@ class SavedDeclarationsViewSpec extends UnitViewSpec with Injector {
 
       numberOfTableRows(view) mustBe 1
 
-      tableCell(view)(1, 0) must containMessage("saved.declarations.noDucr")
-      tableCell(view)(1, 0) must containMessage("saved.declarations.continue.hidden", noDucrLabel)
-      tableCell(view)(1, 1) must containMessage("saved.declarations.draft")
-      tableCell(view)(1, 2).text() mustBe "1 May 2019 at 10:45am"
+      tableCell(view)(1, 0).text() mustBe "1 May 2019 at 10:45am"
+      tableCell(view)(1, 1) must containMessage("saved.declarations.noDucr")
+      tableCell(view)(1, 1) must containMessage("saved.declarations.continue.hidden", noDucrLabel)
+      tableCell(view)(1, 2) must containMessage("saved.declarations.draft")
       tableCell(view)(1, 3) must containMessage("site.remove")
       tableCell(view)(1, 3) must containMessage("saved.declarations.remove.hidden", noDucrLabel)
 
@@ -128,10 +128,10 @@ class SavedDeclarationsViewSpec extends UnitViewSpec with Injector {
 
       view.getElementsByClass("govuk-heading-xl").get(0) must containMessage("saved.declarations.title.amendments")
 
-      tableCell(view)(1, 0) must containMessage("saved.declarations.noDucr")
-      tableCell(view)(1, 0) must containMessage("saved.declarations.continue.hidden", noDucrLabel)
-      tableCell(view)(1, 1) must containMessage("saved.declarations.amendment")
-      tableCell(view)(1, 2).text() mustBe "1 January 2019 at 9:45am"
+      tableCell(view)(1, 0).text() mustBe "1 January 2019 at 9:45am"
+      tableCell(view)(1, 1) must containMessage("saved.declarations.noDucr")
+      tableCell(view)(1, 1) must containMessage("saved.declarations.continue.hidden", noDucrLabel)
+      tableCell(view)(1, 2) must containMessage("saved.declarations.amendment")
       tableCell(view)(1, 3) must containMessage("site.remove")
       tableCell(view)(1, 3) must containMessage("saved.declarations.remove.hidden", noDucrLabel)
 
