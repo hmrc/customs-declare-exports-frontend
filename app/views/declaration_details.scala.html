@@ -94,14 +94,16 @@
 }
 
 @copyDeclarationLink = {
-  @if(!isDeclarationRejected(submission)){
-    <p>
+  @submission.latestDecId.map { _ =>
+    @if(!isDeclarationRejected(submission)){
+      <p>
         @link(
-            id = Some("copy-declaration"),
-            text = messages("declaration.details.copy.declaration"),
-            call = routes.CopyDeclarationController.redirectToReceiveJourneyRequest(submission.uuid)
+          id = Some("copy-declaration"),
+          text = messages("declaration.details.copy.declaration"),
+          call = routes.CopyDeclarationController.redirectToReceiveJourneyRequest(submission.uuid)
         )
-    </p>
+      </p>
+    }
   }
 }
 

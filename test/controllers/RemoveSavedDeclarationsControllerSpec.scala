@@ -49,7 +49,7 @@ class RemoveSavedDeclarationsControllerSpec extends ControllerWithoutFormSpec {
 
       "display declaration about to be removed" in new SetUp {
 
-        getDeclaration("123")
+        fetchDeclaration("123")
 
         val result = controller.displayPage("123")(getRequest())
 
@@ -67,7 +67,7 @@ class RemoveSavedDeclarationsControllerSpec extends ControllerWithoutFormSpec {
       }
 
       "rejecting to delete a draft declaration" in new SetUp {
-        getDeclaration("123")
+        fetchDeclaration("123")
 
         val body = Json.toJson(RemoveDraftDeclaration(false))
         val result = controller.removeDeclaration("123")(deleteRequest(body))
@@ -78,7 +78,7 @@ class RemoveSavedDeclarationsControllerSpec extends ControllerWithoutFormSpec {
 
       "deleting a draft declaration" in new SetUp {
         deleteDraftDeclaration()
-        getDeclaration("123")
+        fetchDeclaration("123")
 
         val body = Json.toJson(RemoveDraftDeclaration(true))
         val result = controller.removeDeclaration("123")(deleteRequest(body))
@@ -90,7 +90,7 @@ class RemoveSavedDeclarationsControllerSpec extends ControllerWithoutFormSpec {
 
     "return 400 (BAD_REQUEST)" when {
       "attempting to render a declaration that does not exist" in new SetUp {
-        getDeclaration("123")
+        fetchDeclaration("123")
 
         val body = JsObject(Map("remove" -> JsString("")))
         val result = controller.removeDeclaration("123")(deleteRequest(body))

@@ -20,6 +20,7 @@ import handlers.ErrorHandler
 import org.mockito.ArgumentMatchers.{any, anyString}
 import org.mockito.Mockito
 import org.mockito.Mockito.when
+import org.mockito.invocation.InvocationOnMock
 import org.scalatest.{BeforeAndAfterEach, Suite}
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.mvc.Results.{BadRequest, InternalServerError}
@@ -36,7 +37,11 @@ trait ErrorHandlerMocks extends BeforeAndAfterEach { self: MockitoSugar with Sui
 
     when(mockErrorHandler.badRequest(any())).thenReturn(BadRequest(HtmlFormat.empty))
 
-    when(mockErrorHandler.internalServerError(any())).thenReturn(InternalServerError(HtmlFormat.empty))
+    when(mockErrorHandler.internalServerError(anyString()))
+      .thenAnswer((ans: InvocationOnMock) => InternalServerError(ans.getArgument[String](0)))
+
+    when(mockErrorHandler.internalError(anyString()))
+      .thenAnswer((ans: InvocationOnMock) => Future.successful(InternalServerError(ans.getArgument[String](0))))
 
     when(mockErrorHandler.redirectToErrorPage(any())).thenReturn(Future.successful(BadRequest(HtmlFormat.empty)))
   }

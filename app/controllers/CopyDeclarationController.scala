@@ -24,6 +24,7 @@ import controllers.routes.{CopyDeclarationController, DeclarationDetailsControll
 import forms.CopyDeclaration.form
 import forms.declaration.ConsignmentReferences
 import forms.{CopyDeclaration, Ducr, LrnValidator}
+import handlers.ErrorHandler
 import models.declaration.DeclarationStatus.DRAFT
 import models.requests.SessionHelper._
 import models.requests.JourneyRequest
@@ -43,6 +44,7 @@ class CopyDeclarationController @Inject() (
   authenticate: AuthAction,
   verifyEmail: VerifiedEmailAction,
   journeyType: JourneyAction,
+  errorHandler: ErrorHandler,
   customsDeclareExportsConnector: CustomsDeclareExportsConnector,
   override val exportsCacheService: ExportsCacheService,
   lrnValidator: LrnValidator,
@@ -53,12 +55,14 @@ class CopyDeclarationController @Inject() (
 
   def redirectToReceiveJourneyRequest(submissionId: String): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
     customsDeclareExportsConnector.findSubmission(submissionId).map {
-      case Some(submission) if !isDeclarationRejected(submission) =>
-        Redirect(CopyDeclarationController.displayPage)
-          .addingToSession(declarationUuid -> submissionId)
-          .removingFromSession(submissionDucr, submissionUuid, submissionLrn, submissionMrn)
+      case Some(submission) =>
+        if (isDeclarationRejected(submission)) Redirect(DeclarationDetailsController.displayPage(submissionId))
+        else
+          Redirect(CopyDeclarationController.displayPage)
+            .addingToSession(declarationUuid -> submissionId)
+            .removingFromSession(submissionDucr, submissionUuid, submissionLrn, submissionMrn)
 
-      case _ => Redirect(DeclarationDetailsController.displayPage(submissionId))
+      case _ => errorHandler.internalServerError(s"Cannot found Submission($submissionId) while redirecting to a declaration copy?!")
     }
   }
 
@@ -75,27 +79,36 @@ class CopyDeclarationController @Inject() (
       }
   }
 
-  private def copyDeclaration(data: CopyDeclaration)(implicit request: JourneyRequest[_]): Future[Result] =
-    customsDeclareExportsConnector.findSubmission(request.cacheModel.id).flatMap { maybeSubmssion =>
-      val maybeEnhancedStatus = maybeSubmssion match {
-        case Some(submission) => submission.latestEnhancedStatus
-        case _                => None
-      }
+  private def copyDeclaration(data: CopyDeclaration)(implicit request: JourneyRequest[_]): Future[Result] = {
+    val submissionId = request.cacheModel.id
+    customsDeclareExportsConnector.findSubmission(submissionId).flatMap {
+      case Some(submission) =>
+        submission.latestDecId.fold {
+          errorHandler.internalError(s"Submission(${submissionId}) with undefined latestDecId while a declaration copy?!")
+        } { latestDecId =>
+          customsDeclareExportsConnector.findDeclaration(latestDecId).flatMap {
+            case Some(latestDeclaration) =>
+              val declaration = latestDeclaration.copy(
+                declarationMeta = latestDeclaration.declarationMeta.copy(
+                  parentDeclarationId = Some(latestDeclaration.id),
+                  parentDeclarationEnhancedStatus = submission.latestEnhancedStatus,
+                  status = DRAFT,
+                  createdDateTime = Instant.now,
+                  updatedDateTime = Instant.now
+                ),
+                consignmentReferences = Some(ConsignmentReferences(Some(Ducr(data.ducr.ducr.toUpperCase)), Some(data.lrn))),
+                linkDucrToMucr = None,
+                mucr = None
+              )
+              exportsCacheService.create(declaration).map { declaration =>
+                Redirect(SummaryController.displayPage).addingToSession(declarationUuid -> declaration.id)
+              }
 
-      val declaration = request.cacheModel.copy(
-        declarationMeta = request.cacheModel.declarationMeta.copy(
-          parentDeclarationId = Some(request.cacheModel.id),
-          parentDeclarationEnhancedStatus = maybeEnhancedStatus,
-          status = DRAFT,
-          createdDateTime = Instant.now,
-          updatedDateTime = Instant.now
-        ),
-        consignmentReferences = Some(ConsignmentReferences(Some(Ducr(data.ducr.ducr.toUpperCase)), Some(data.lrn))),
-        linkDucrToMucr = None,
-        mucr = None
-      )
-      exportsCacheService.create(declaration).map { declaration =>
-        Redirect(SummaryController.displayPage).addingToSession(declarationUuid -> declaration.id)
-      }
+            case _ => errorHandler.internalError(s"Cannot found latest declaration(${latestDecId}) while a declaration copy?!")
+          }
+        }
+
+      case _ => errorHandler.internalError(s"Cannot found Submission(${submissionId}) while a declaration copy?!")
     }
+  }
 }

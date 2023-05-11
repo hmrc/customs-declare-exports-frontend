@@ -62,7 +62,7 @@ class SavedDeclarationsControllerSpec extends ControllerWithoutFormSpec {
     "return 303 (SEE_OTHER)" when {
 
       "continue declaration found" in {
-        getDeclaration("123")
+        fetchDeclaration("123")
 
         val result = controller.continueDeclaration("123")(getRequest())
 
