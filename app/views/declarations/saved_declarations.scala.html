@@ -50,6 +50,9 @@
   declarations.currentPageElements.map { declaration =>
     Seq(
       TableRow(
+        content = HtmlContent(formatDateAtTime(declaration.declarationMeta.updatedDateTime.atZone(ZoneId.of("Europe/London"))))
+      ),
+      TableRow(
           content = HtmlContent(
               link(
                   text = declaration.ducr.map(_.ducr).getOrElse(messages("saved.declarations.noDucr")),
@@ -61,9 +64,6 @@
       ),
       TableRow(
           content = amendmentRowContent(declaration.declarationMeta.status)
-      ),
-      TableRow(
-          content = HtmlContent(formatDateAtTime(declaration.declarationMeta.updatedDateTime.atZone(ZoneId.of("Europe/London"))))
       ),
       TableRow(
           content = HtmlContent(
@@ -91,9 +91,9 @@
 
       @govukTable(Table(
         head = Some(Seq(
-          HeadCell(content = Text(messages("saved.declarations.ducr"))),
-          HeadCell(content = Text(messages("saved.declarations.status"))),
-          HeadCell(content = Text(messages("saved.declarations.dateSaved"))),
+        HeadCell(content = Text(messages("saved.declarations.dateSaved"))),
+        HeadCell(content = Text(messages("saved.declarations.ducr"))),
+        HeadCell(content = Text(messages("saved.declarations.status"))),
           HeadCell(content = Text(messages("saved.declarations.action")))
         )),
         rows = savedDeclarations
