@@ -20,15 +20,17 @@ import base.ControllerSpec
 import controllers.declaration.routes.SummaryController
 import controllers.routes.{CopyDeclarationController, DeclarationDetailsController}
 import forms.{CopyDeclaration, Ducr, Lrn, LrnValidator}
+import mock.ErrorHandlerMocks
+import models.DeclarationType.STANDARD
 import models.declaration.DeclarationStatus.DRAFT
 import models.declaration.submissions.EnhancedStatus
-import models.declaration.submissions.EnhancedStatus.rejectedStatuses
+import models.declaration.submissions.EnhancedStatus.{rejectedStatuses, CLEARED}
 import models.requests.SessionHelper
 import models.requests.SessionHelper.{submissionDucr, submissionLrn, submissionMrn, submissionUuid}
 import org.mockito.ArgumentCaptor
-import org.mockito.ArgumentMatchers.{any, refEq}
-import org.mockito.Mockito.{clearInvocations, reset, verify, when}
-import org.scalatest.GivenWhenThen
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{reset, verify, when}
+import org.scalatest.{GivenWhenThen, OptionValues}
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsEmpty, Request}
@@ -40,7 +42,7 @@ import views.html.copy_declaration
 
 import scala.concurrent.Future
 
-class CopyDeclarationControllerSpec extends ControllerSpec with GivenWhenThen {
+class CopyDeclarationControllerSpec extends ControllerSpec with ErrorHandlerMocks with GivenWhenThen with OptionValues {
 
   private val lrnValidator = mock[LrnValidator]
   private val copyDeclarationPage = mock[copy_declaration]
@@ -49,6 +51,7 @@ class CopyDeclarationControllerSpec extends ControllerSpec with GivenWhenThen {
     mockAuthAction,
     mockVerifiedEmailAction,
     mockJourneyAction,
+    mockErrorHandler,
     mockCustomsDeclareExportsConnector,
     mockExportsCacheService,
     lrnValidator,
@@ -58,6 +61,7 @@ class CopyDeclarationControllerSpec extends ControllerSpec with GivenWhenThen {
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
+    setupErrorHandler()
 
     authorizedUser()
     when(lrnValidator.hasBeenSubmittedInThePast48Hours(any[Lrn])(any(), any())).thenReturn(Future.successful(false))
@@ -81,25 +85,15 @@ class CopyDeclarationControllerSpec extends ControllerSpec with GivenWhenThen {
     captor.getValue
   }
 
+  private val correctForm = Json.toJson(CopyDeclaration(Ducr(DUCR), LRN))
+
   "CopyDeclarationController.redirectToReceiveJourneyRequest" should {
 
     "redirect to /submissions/:id/information" when {
-
-      "the Submission document was not found" in {
-        when(mockCustomsDeclareExportsConnector.findSubmission(any())(any(), any())).thenReturn(Future.successful(None))
-
-        val submissionId = "submissionUuid"
-        val result = controller.redirectToReceiveJourneyRequest(submissionId)(FakeRequest("GET", ""))
-
-        status(result) must be(SEE_OTHER)
-        redirectLocation(result) mustBe Some(DeclarationDetailsController.displayPage(submissionId).url)
-      }
-
       rejectedStatuses.foreach { enhancedStatus =>
         s"the Submission document was found but lastEnhancedStatus is $enhancedStatus" in {
           val rejectedSubmission = submission.copy(latestEnhancedStatus = Some(enhancedStatus))
-          when(mockCustomsDeclareExportsConnector.findSubmission(any())(any(), any()))
-            .thenReturn(Future.successful(Some(rejectedSubmission)))
+          fetchSubmission(submission.uuid, rejectedSubmission)
 
           val result = controller.redirectToReceiveJourneyRequest(rejectedSubmission.uuid)(FakeRequest("GET", ""))
 
@@ -109,13 +103,21 @@ class CopyDeclarationControllerSpec extends ControllerSpec with GivenWhenThen {
       }
     }
 
+    "return 500 (InternalServerError)" when {
+      "the Submission document was not found" in {
+        submissionNotFound
+
+        val result = controller.redirectToReceiveJourneyRequest("submissionUuid")(FakeRequest("GET", ""))
+        status(result) must be(INTERNAL_SERVER_ERROR)
+      }
+    }
+
     "redirect to /copy-declaration" when {
       "the Submission document was found and" when {
         EnhancedStatus.values.filterNot(rejectedStatuses.contains).foreach { enhancedStatus =>
           s"lastEnhancedStatus is $enhancedStatus" in {
             val nonRejectedSubmission = submission.copy(latestEnhancedStatus = Some(enhancedStatus))
-            when(mockCustomsDeclareExportsConnector.findSubmission(any())(any(), any()))
-              .thenReturn(Future.successful(Some(nonRejectedSubmission)))
+            fetchSubmission(submission.uuid, nonRejectedSubmission)
 
             val result = controller.redirectToReceiveJourneyRequest(nonRejectedSubmission.uuid)(FakeRequest("GET", ""))
 
@@ -130,8 +132,8 @@ class CopyDeclarationControllerSpec extends ControllerSpec with GivenWhenThen {
     }
   }
 
-  "CopyDeclarationController.displayOutcomePage" should {
-    onEveryDeclarationJourney() { request =>
+  "CopyDeclarationController.displayPage" should {
+    onStandard { request =>
       "return 200 (OK)" in {
         withNewCaching(request.cacheModel)
 
@@ -143,103 +145,104 @@ class CopyDeclarationControllerSpec extends ControllerSpec with GivenWhenThen {
 
   "CopyDeclarationController.submitPage" should {
 
-    onEveryDeclarationJourney() { request =>
-      "return 400 (BAD_REQUEST)" when {
+    "return 400 (BAD_REQUEST)" when {
 
-        "user enters incorrect data" in {
-          withNewCaching(request.cacheModel)
-          val incorrectForm = Json.toJson(CopyDeclaration(Ducr("1234"), Lrn("")))
+      "user enters incorrect data" in {
+        withNewCaching(withRequestOfType(STANDARD).cacheModel)
+        val incorrectForm = Json.toJson(CopyDeclaration(Ducr("1234"), Lrn("")))
 
-          val result = controller.submitPage(postRequest(incorrectForm))
-          status(result) must be(BAD_REQUEST)
-        }
-
-        "LrnValidator returns false" in {
-          when(lrnValidator.hasBeenSubmittedInThePast48Hours(any[Lrn])(any(), any())).thenReturn(Future.successful(true))
-          withNewCaching(request.cacheModel)
-          val correctForm = Json.toJson(CopyDeclaration(Ducr(DUCR), LRN))
-
-          val result = controller.submitPage(postRequest(correctForm))
-          status(result) must be(BAD_REQUEST)
-        }
+        val result = controller.submitPage(postRequest(incorrectForm))
+        status(result) must be(BAD_REQUEST)
       }
 
-      "change to uppercase any lowercase letter entered in the DUCR field" in {
-        withNewCaching(request.cacheModel)
-
-        val ducr = "9gb123456664559-1abc"
-        val correctForm = Json.toJson(CopyDeclaration(Ducr(ducr), LRN))
-        val result = controller.submitPage(postRequest(correctForm))
-
-        And("return 303 (SEE_OTHER)")
-        status(result) must be(SEE_OTHER)
-
-        val declaration = theCacheModelCreated
-        declaration.consignmentReferences.head.ducr.get.ducr mustBe ducr.toUpperCase
-        declaration.consignmentReferences.head.lrn mustBe Some(LRN)
-        declaration.consignmentReferences.head.mrn mustBe None
-        declaration.consignmentReferences.head.eidrDateStamp mustBe None
-      }
-
-      "redirect to /saved-summary" in {
-        withNewCaching(request.cacheModel)
-
+      "LrnValidator returns false" in {
+        when(lrnValidator.hasBeenSubmittedInThePast48Hours(any[Lrn])(any(), any())).thenReturn(Future.successful(true))
+        withNewCaching(withRequestOfType(STANDARD).cacheModel)
         val correctForm = Json.toJson(CopyDeclaration(Ducr(DUCR), LRN))
-        val result = controller.submitPage(postRequest(correctForm))
 
-        status(result) must be(SEE_OTHER)
-        redirectLocation(result) mustBe Some(SummaryController.displayPage.url)
+        val result = controller.submitPage(postRequest(correctForm))
+        status(result) must be(BAD_REQUEST)
       }
     }
 
-    "lookup the declaration's related submission details" when {
-      onStandard { request =>
-        "submission found then use it to populate the new declaration" in {
+    "return 500 (InternalServerError)" when {
 
-          withNewCaching(request.cacheModel)
+      "the Submission document was not found" in {
+        withNewCaching(withRequestOfType(STANDARD).cacheModel)
+        submissionNotFound
 
-          clearInvocations(mockCustomsDeclareExportsConnector)
-
-          val correctForm = Json.toJson(CopyDeclaration(Ducr(DUCR), LRN))
-          val result = controller.submitPage(postRequest(correctForm))
-
-          status(result) must be(SEE_OTHER)
-          redirectLocation(result) mustBe Some(SummaryController.displayPage.url)
-
-          verify(mockCustomsDeclareExportsConnector).findSubmission(refEq(request.cacheModel.id))(any(), any())
-
-          val declaration = theCacheModelCreated
-          declaration.declarationMeta.parentDeclarationId mustBe Some(request.cacheModel.id)
-          declaration.declarationMeta.parentDeclarationEnhancedStatus mustBe Some(EnhancedStatus.UNKNOWN)
-          declaration.declarationMeta.status mustBe DRAFT
-          declaration.linkDucrToMucr mustBe None
-          declaration.mucr mustBe None
-        }
-
-        "no submission found leave new declaration's parentDeclarationEnhancedStatus empty" in {
-
-          val sessionDecId = "noSuchSubmission"
-          withNewCaching(request.cacheModel.copy(id = sessionDecId))
-
-          clearInvocations(mockCustomsDeclareExportsConnector)
-          when(mockCustomsDeclareExportsConnector.findSubmission(refEq(sessionDecId))(any(), any())).thenReturn(Future.successful(None))
-
-          val correctForm = Json.toJson(CopyDeclaration(Ducr(DUCR), LRN))
-          val result = controller.submitPage(postRequest(correctForm))
-
-          status(result) must be(SEE_OTHER)
-          redirectLocation(result) mustBe Some(SummaryController.displayPage.url)
-
-          verify(mockCustomsDeclareExportsConnector).findSubmission(refEq(sessionDecId))(any(), any())
-
-          val declaration = theCacheModelCreated
-          declaration.declarationMeta.parentDeclarationId mustBe Some(sessionDecId)
-          declaration.declarationMeta.parentDeclarationEnhancedStatus mustBe None
-          declaration.declarationMeta.status mustBe DRAFT
-          declaration.linkDucrToMucr mustBe None
-          declaration.mucr mustBe None
-        }
+        val result = controller.submitPage(postRequest(correctForm))
+        status(result) must be(INTERNAL_SERVER_ERROR)
       }
+
+      "the Submission document was found but latestDecId is undefined" in {
+        withNewCaching(withRequestOfType(STANDARD, withId(submission.uuid)).cacheModel)
+        fetchSubmission(submission.uuid, submission.copy(latestDecId = None))
+
+        val result = controller.submitPage(postRequest(correctForm))
+        status(result) must be(INTERNAL_SERVER_ERROR)
+      }
+
+      "the ExportsDeclaration document to copy was not found" in {
+        withNewCaching(withRequestOfType(STANDARD, withId(submission.uuid)).cacheModel)
+        fetchSubmission(submission.uuid, submission)
+        declarationNotFound
+
+        val result = controller.submitPage(postRequest(correctForm))
+        status(result) must be(INTERNAL_SERVER_ERROR)
+      }
+    }
+
+    "change to uppercase any lowercase letter entered in the DUCR field" in {
+      withNewCaching(withRequestOfType(STANDARD, withId(submission.uuid)).cacheModel)
+      fetchSubmission(submission.uuid, submission)
+      fetchDeclaration(submission.latestDecId.value)
+
+      val ducr = "9gb123456664559-1abc"
+      val correctForm = Json.toJson(CopyDeclaration(Ducr(ducr), LRN))
+      val result = controller.submitPage(postRequest(correctForm))
+
+      And("return 303 (SEE_OTHER)")
+      status(result) must be(SEE_OTHER)
+
+      val declaration = theCacheModelCreated
+      declaration.consignmentReferences.head.ducr.get.ducr mustBe ducr.toUpperCase
+      declaration.consignmentReferences.head.lrn mustBe Some(LRN)
+      declaration.consignmentReferences.head.mrn mustBe None
+      declaration.consignmentReferences.head.eidrDateStamp mustBe None
+    }
+
+    "populate the new declaration" in {
+      val subWithEnhancedStatus = submission.copy(latestEnhancedStatus = Some(CLEARED))
+      withNewCaching(withRequestOfType(STANDARD, withId(subWithEnhancedStatus.uuid)).cacheModel)
+      fetchSubmission(subWithEnhancedStatus.uuid, subWithEnhancedStatus)
+
+      val declarationId = subWithEnhancedStatus.latestDecId.value
+      val latestDeclaration = aDeclaration(withId(declarationId))
+      fetchDeclaration(declarationId, latestDeclaration)
+
+      val result = controller.submitPage(postRequest(correctForm))
+
+      status(result) must be(SEE_OTHER)
+      redirectLocation(result) mustBe Some(SummaryController.displayPage.url)
+
+      val declaration = theCacheModelCreated
+      declaration.declarationMeta.parentDeclarationId mustBe Some(declarationId)
+      declaration.declarationMeta.parentDeclarationEnhancedStatus mustBe Some(CLEARED)
+      declaration.declarationMeta.status mustBe DRAFT
+      declaration.linkDucrToMucr mustBe None
+      declaration.mucr mustBe None
+    }
+
+    "redirect to /saved-summary" in {
+      withNewCaching(withRequestOfType(STANDARD, withId(submission.uuid)).cacheModel)
+      fetchSubmission(submission.uuid, submission)
+      fetchDeclaration(submission.latestDecId.value)
+
+      val result = controller.submitPage(postRequest(correctForm))
+
+      status(result) must be(SEE_OTHER)
+      redirectLocation(result) mustBe Some(SummaryController.displayPage.url)
     }
   }
 }

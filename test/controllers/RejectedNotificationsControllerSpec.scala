@@ -63,7 +63,7 @@ class RejectedNotificationsControllerSpec extends ControllerWithoutFormSpec with
     "return 200 (OK)" when {
 
       "declaration and notifications are found" in {
-        getDeclaration(declarationId)
+        fetchDeclaration(declarationId)
         findNotifications(declarationId)
 
         val result = controller.displayPage(declarationId, false)(getRequest())
@@ -73,7 +73,7 @@ class RejectedNotificationsControllerSpec extends ControllerWithoutFormSpec with
       }
 
       "the declaration is found but the Submission has no notifications" in {
-        getDeclaration(declarationId)
+        fetchDeclaration(declarationId)
 
         when(mockCustomsDeclareExportsConnector.findNotifications(any())(any(), any()))
           .thenReturn(Future.successful(List.empty))

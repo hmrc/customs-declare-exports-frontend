@@ -16,6 +16,7 @@
 
 package base
 
+import base.ExportsTestData.{aDeclaration, withStatus}
 import connectors.CustomsDeclareExportsConnector
 import models._
 import models.declaration.DeclarationStatus
@@ -48,30 +49,29 @@ trait MockConnectors {
     when(mockCustomsDeclareExportsConnector.findSavedDeclarations(any[Page])(any(), any()))
       .thenReturn(Future.successful(Paginated(draftDeclarations, Page(), 1)))
 
-  private def draftDeclarations: Seq[ExportsDeclaration] =
-    Seq(ExportsTestData.aDeclaration(ExportsTestData.withStatus(DeclarationStatus.DRAFT)))
+  private def draftDeclarations: Seq[ExportsDeclaration] = Seq(aDeclaration(withStatus(DeclarationStatus.DRAFT)))
 
   def deleteDraftDeclaration(): OngoingStubbing[Future[Unit]] =
-    when(mockCustomsDeclareExportsConnector.deleteDraftDeclaration(anyString())(any(), any()))
-      .thenReturn(Future.successful((): Unit))
+    when(mockCustomsDeclareExportsConnector.deleteDraftDeclaration(anyString())(any(), any())).thenReturn(Future.successful((): Unit))
 
-  def getDeclaration(id: String): OngoingStubbing[Future[Option[ExportsDeclaration]]] =
-    when(mockCustomsDeclareExportsConnector.findDeclaration(refEq(id))(any(), any()))
-      .thenReturn(Future.successful(Some(ExportsTestData.aDeclaration())))
+  def fetchDeclaration(id: String): OngoingStubbing[Future[Option[ExportsDeclaration]]] =
+    when(mockCustomsDeclareExportsConnector.findDeclaration(refEq(id))(any(), any())).thenReturn(Future.successful(Some(aDeclaration())))
+
+  def fetchDeclaration(id: String, declaration: ExportsDeclaration): OngoingStubbing[Future[Option[ExportsDeclaration]]] =
+    when(mockCustomsDeclareExportsConnector.findDeclaration(refEq(id))(any(), any())).thenReturn(Future.successful(Some(declaration)))
 
   def declarationNotFound: OngoingStubbing[Future[Option[ExportsDeclaration]]] =
-    when(mockCustomsDeclareExportsConnector.findDeclaration(anyString())(any(), any()))
-      .thenReturn(Future.successful(None))
+    when(mockCustomsDeclareExportsConnector.findDeclaration(anyString())(any(), any())).thenReturn(Future.successful(None))
 
   def cancelDeclarationResponse(response: CancellationStatus = CancellationRequestSent): OngoingStubbing[Future[CancellationStatus]] =
-    when(mockCustomsDeclareExportsConnector.createCancellation(any())(any(), any()))
-      .thenReturn(Future.successful(response))
+    when(mockCustomsDeclareExportsConnector.createCancellation(any())(any(), any())).thenReturn(Future.successful(response))
 
-  def findSubmission(id: String, submission: Option[Submission] = None): OngoingStubbing[Future[Option[Submission]]] =
-    when(mockCustomsDeclareExportsConnector.findSubmission(refEq(id))(any(), any()))
-      .thenReturn(Future.successful(submission))
+  def fetchSubmission(id: String, submission: Submission): OngoingStubbing[Future[Option[Submission]]] =
+    when(mockCustomsDeclareExportsConnector.findSubmission(refEq(id))(any(), any())).thenReturn(Future.successful(Some(submission)))
+
+  def submissionNotFound: OngoingStubbing[Future[Option[Submission]]] =
+    when(mockCustomsDeclareExportsConnector.findSubmission(anyString())(any(), any())).thenReturn(Future.successful(None))
 
   def findNotifications(id: String, notifications: Seq[Notification] = Seq.empty): OngoingStubbing[Future[Seq[Notification]]] =
-    when(mockCustomsDeclareExportsConnector.findNotifications(refEq(id))(any(), any()))
-      .thenReturn(Future.successful(notifications))
+    when(mockCustomsDeclareExportsConnector.findNotifications(refEq(id))(any(), any())).thenReturn(Future.successful(notifications))
 }
