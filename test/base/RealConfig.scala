@@ -48,6 +48,8 @@ trait RealConfig {
         |files.codelists.packageTypeCode="/code-lists/packageTypes.json"
         |files.codelists.officeOfExits="/code-lists/officeOfExits.json"
         |files.codelists.customsOffices="/code-lists/customsOffices.json"
+        |files.codelists.docTypes="/code-lists/document-type.json"
+        |files.codelists.docTypeLinks="/code-lists/linkDocumentTypes.json"
         |
         |files.codelists.glc.acts = "/code-lists/goods-locations-codes/acts-16n-from-15-30-2022.json"
         |files.codelists.glc.airports = "/code-lists/goods-locations-codes/airports-16a-from-03-08-2022.json"

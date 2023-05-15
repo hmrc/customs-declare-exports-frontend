@@ -16,7 +16,7 @@
 
 @import controllers.declaration.routes
 @import forms.declaration.Document
-@import services.DocumentType
+@import services.DocumentTypeService
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.declaration.summary.TableCell
 @import views.helpers.ActionItemBuilder._
@@ -27,7 +27,8 @@
     link: link,
     linkContent: linkContent,
     spanVisuallyHidden: spanVisuallyHidden,
-    summaryList: summary_list
+    summaryList: summary_list,
+    documentTypeService: DocumentTypeService
 )
 
 @(documents: Seq[Document], actionsEnabled: Boolean = true)(implicit messages: Messages)
@@ -67,7 +68,7 @@
       rows = documents.map(document =>
         Seq(
           TableRow(
-            content = Text(DocumentType.findByCode(document.documentType).asText)
+            content = Text(documentTypeService.findByCode(document.documentType).asText)
           ),
           TableRow(
             content = Text(document.documentReference)

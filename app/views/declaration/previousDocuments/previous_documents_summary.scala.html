@@ -21,13 +21,13 @@
 @import forms.declaration.{Document, DocumentSummary}
 @import models.requests.JourneyRequest
 @import play.twirl.api.HtmlFormat
-@import services.DocumentType
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import utils.ListItem._
 @import views.components.gds.Styles._
 @import views.helpers.{BackButton, PreviousDocumentsHelper, Title}
 @import views.helpers.ErrorMapper.yesNoErrors
 @import views.html.components.gds._
+@import services.DocumentTypeService
 
 @this(
     templateHelper: PreviousDocumentsHelper,
@@ -44,7 +44,8 @@
     saveButtons: saveButtons,
     formHelper: FormWithCSRF,
     navigator: Navigator,
-    appConfig: AppConfig
+    appConfig: AppConfig,
+    documentTypeService: DocumentTypeService
 )
 
 @(form: Form[YesNoAnswer], documents: Seq[Document])(implicit request: JourneyRequest[_], messages: Messages)
@@ -73,7 +74,7 @@
         @govukTable(Table(
             rows = documents.zipWithIndex.map { case (document, index) =>
                 Seq(
-                    TableRow(content = Text(DocumentType.documentCodesMap(document.documentType).asTextWithBrackets)),
+                    TableRow(content = Text(documentTypeService.findByCode(document.documentType).asTextWithBrackets)),
 
                     TableRow(content = Text(document.documentReference)),
 
@@ -86,7 +87,7 @@
                             textHidden = Some(messages(
                                 "declaration.previousDocuments.remove.hint",
                                 index + 1,
-                                DocumentType.documentCodesMap(document.documentType).asTextWithBrackets,
+                                documentTypeService.findByCode(document.documentType).asTextWithBrackets,
                                 document.documentReference
                             )),
                         )),

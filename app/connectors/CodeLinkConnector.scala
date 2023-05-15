@@ -65,6 +65,7 @@ trait CodeLinkConnector {
 
   def getAliasesForCountryCode(countryCode: String): Option[Seq[String]]
   def getShortNamesForCountryCode(countryCode: String): Option[Seq[String]]
+  def getDocumentTypesToExclude(code: String): Seq[String]
 }
 
 @Singleton
@@ -109,6 +110,9 @@ class FileBasedCodeLinkConnector @Inject() (appConfig: AppConfig, val jsonFileRe
   private val countryCodeToShortName: Map[String, Seq[String]] =
     readCodeLinksFromFileAsMap(appConfig.countryCodeToShortNameLinkFile)
 
+  private val documentTypeLink: Map[String, Seq[String]] =
+    readCodeLinksFromFileAsMap(appConfig.countryCodeToShortNameLinkFile)
+
   def getAdditionalDocumentStatusCodeForTag(tag: Tag): Seq[String] =
     additionalDocumentStatusCodeLink.filter(_._2.contains(tag.toString)).map(_._1)
 
@@ -140,4 +144,7 @@ class FileBasedCodeLinkConnector @Inject() (appConfig: AppConfig, val jsonFileRe
 
   def getShortNamesForCountryCode(countryCode: String): Option[Seq[String]] =
     countryCodeToShortName.get(countryCode)
+
+  def getDocumentTypesToExclude(code: String): Seq[String] =
+    documentTypeLink.filter(_._2.contains(code)).map(_._1).toSeq
 }

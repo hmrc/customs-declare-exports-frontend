@@ -20,16 +20,22 @@ import base.Injector
 import controllers.declaration.routes.PreviousDocumentsSummaryController
 import forms.declaration.Document
 import models.requests.JourneyRequest
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 import play.twirl.api.Html
+import services.{DocumentType, DocumentTypeService}
 import utils.ListItem
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.previousDocuments.previous_documents_change
 
 class PreviousDocumentsChangeViewSpec extends UnitViewSpec with Injector {
 
+  val mockDocumentTypeService = mock[DocumentTypeService]
+  when(mockDocumentTypeService.allDocuments()(any())).thenReturn(List(DocumentType("DocumentReference", "355")))
+
   private val page = instanceOf[previous_documents_change]
   private val document = Document("750", "reference", Some("3"))
-  private val form = Document.form.fill(document)
+  private val form = Document.form(mockDocumentTypeService)(messages).fill(document)
 
   private def createView(implicit request: JourneyRequest[_]): Html =
     page(ListItem.createId(0, document), form)(request, messages)

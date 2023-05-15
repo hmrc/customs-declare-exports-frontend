@@ -16,24 +16,25 @@
 
 package controllers.declaration
 
-import scala.concurrent.{ExecutionContext, Future}
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.PreviousDocumentsController.PreviousDocumentsFormGroupId
-import controllers.navigation.Navigator
 import controllers.helpers.MultipleItemsHelper
-import forms.declaration.Document.form
+import controllers.navigation.Navigator
 import forms.declaration.{Document, PreviousDocumentsData}
+import forms.declaration.Document.form
 import forms.declaration.PreviousDocumentsData.maxAmountOfItems
-
-import javax.inject.Inject
 import models.requests.JourneyRequest
 import models.ExportsDeclaration
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.cache.ExportsCacheService
+import services.DocumentTypeService
 import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.previousDocuments.previous_documents
+
+import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
 class PreviousDocumentsController @Inject() (
   authenticate: AuthAction,
@@ -41,19 +42,20 @@ class PreviousDocumentsController @Inject() (
   navigator: Navigator,
   mcc: MessagesControllerComponents,
   previousDocumentsPage: previous_documents,
-  override val exportsCacheService: ExportsCacheService
+  override val exportsCacheService: ExportsCacheService,
+  documentTypeService: DocumentTypeService
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
 
   def displayPage: Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    Ok(previousDocumentsPage(form))
+    Ok(previousDocumentsPage(form(documentTypeService)))
   }
 
   def submit(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val documents = request.cacheModel.previousDocuments.getOrElse(PreviousDocumentsData(Seq.empty)).documents
 
     MultipleItemsHelper
-      .add(form.bindFromRequest(), documents, maxAmountOfItems, PreviousDocumentsFormGroupId, "declaration.previousDocuments")
+      .add(form(documentTypeService).bindFromRequest(), documents, maxAmountOfItems, PreviousDocumentsFormGroupId, "declaration.previousDocuments")
       .fold(
         formWithErrors => Future.successful(BadRequest(previousDocumentsPage(formWithErrors))),
         updateCache(_).map(_ => navigator.continueTo(routes.PreviousDocumentsSummaryController.displayPage))

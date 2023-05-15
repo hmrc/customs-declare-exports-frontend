@@ -18,14 +18,15 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.PreviousDocumentsController.PreviousDocumentsFormGroupId
-import controllers.navigation.Navigator
 import controllers.helpers.MultipleItemsHelper
+import controllers.navigation.Navigator
 import forms.declaration.{Document, PreviousDocumentsData}
 import models.requests.JourneyRequest
 import models.ExportsDeclaration
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.cache.ExportsCacheService
+import services.DocumentTypeService
 import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.ListItem
@@ -40,13 +41,14 @@ class PreviousDocumentsChangeController @Inject() (
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
   mcc: MessagesControllerComponents,
-  changePage: previous_documents_change
+  changePage: previous_documents_change,
+  documentTypeService: DocumentTypeService
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
 
   def displayPage(id: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     findDocument(id) match {
-      case Some(document) => Ok(changePage(id, Document.form.fill(document).withSubmissionErrors))
+      case Some(document) => Ok(changePage(id, Document.form(documentTypeService).fill(document).withSubmissionErrors))
       case _              => returnToSummary()
     }
   }
@@ -54,7 +56,7 @@ class PreviousDocumentsChangeController @Inject() (
   def submit(id: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     findDocument(id) match {
       case Some(existingDocument) =>
-        val boundForm = Document.form.bindFromRequest()
+        val boundForm = Document.form(documentTypeService).bindFromRequest()
         val documentsWithoutExisting = request.cacheModel.previousDocuments.map(_.documents).getOrElse(Seq.empty).filterNot(_ == existingDocument)
 
         MultipleItemsHelper

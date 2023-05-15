@@ -269,6 +269,8 @@ class AppConfig @Inject() (
   val packageTypeCodeFile = loadConfig("files.codelists.packageTypeCode")
   val officeOfExitsCodeFile = loadConfig("files.codelists.officeOfExits")
   val customsOfficesCodeFile = loadConfig("files.codelists.customsOffices")
+  val documentTypeCodeFile = loadConfig("files.codelists.docTypes")
+  val documentTypeCodeLinkFile = loadConfig("files.codelists.docTypeLinks")
 
   val glcAirports16a = loadConfig("files.codelists.glc.airports")
   val glcCoaAirports16b = loadConfig("files.codelists.glc.coa-airports")

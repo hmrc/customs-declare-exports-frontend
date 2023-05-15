@@ -16,45 +16,11 @@
 
 package services
 
-import play.api.libs.json.{JsArray, JsString, Json}
+import models.codes.CommonCode
 
-//import utils.JsonFile
-
-case class DocumentType(description: String, code: String) {
+case class DocumentType(description: String, code: String) extends CommonCode {
 
   def asText: String = description + " - " + code
 
   def asTextWithBrackets: String = description + " (" + code + ")"
-}
-
-object DocumentType {
-
-  val documentsExcludedFromDropdown = Seq("MCR", "CLE")
-  private val deserialiser: (String, String) => DocumentType = (a: String, b: String) => DocumentType(a, b)
-
-  def readFromJsonFile[T](file: String, deserializer: (String, String) => T): List[T] = {
-    val jsonInputStream = getClass.getResourceAsStream(file)
-
-    Json.parse(jsonInputStream) match {
-      case JsArray(cs) =>
-        // Using collection.Seq instead of Seq due to Json.parse return type
-        cs.toList.collect { case JsArray(collection.Seq(label: JsString, code: JsString)) =>
-          deserializer(label.value, code.value)
-        }
-      case _ => throw new IllegalArgumentException(s"Could not read JSON array from file: '$file'")
-    }
-  }
-
-  // CEDS-3132: the resulting tariff list should be rendered in the same order as shown at:
-  // https://assets.publishing.service.gov.uk/government/uploads/system/uploads/attachment_data/file/915216/Previous_document_codes_for_Data_Element_2-1_of_the_Customs_Declaration_Service_-_v2.csv/preview
-  val allDocuments: List[DocumentType] = readFromJsonFile("/code-lists/document-type-autocomplete-list.json", deserialiser)
-
-  val documentsForDropdown: List[DocumentType] = allDocuments.filterNot(docType => documentsExcludedFromDropdown.contains(docType.code))
-
-  val documentCodesMap: Map[String, DocumentType] =
-    allDocuments.map(documentType => (documentType.code, documentType)).toMap
-
-  def findByCode(code: String): DocumentType = documentCodesMap(code)
-
-  def findByCodes(codes: Seq[String]): Seq[DocumentType] = codes.map(documentCodesMap(_))
 }

@@ -18,10 +18,20 @@ package forms.declaration
 
 import forms.common.DeclarationPageBaseSpec
 import forms.declaration.DocumentSpec.json
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 import org.scalatest.OptionValues
+import org.scalatestplus.mockito.MockitoSugar
+import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, JsString, Json}
+import services.{DocumentType, DocumentTypeService}
 
-class DocumentSpec extends DeclarationPageBaseSpec with OptionValues {
+class DocumentSpec extends DeclarationPageBaseSpec with OptionValues with MockitoSugar {
+
+  val mockDocumentTypeService = mock[DocumentTypeService]
+  implicit val mockMessages = mock[Messages]
+
+  when(mockDocumentTypeService.allDocuments()(any())).thenReturn(List(DocumentType("DocumentReference", "DCS")))
 
   "Document mapping" should {
 
@@ -29,32 +39,32 @@ class DocumentSpec extends DeclarationPageBaseSpec with OptionValues {
 
       "provided with valid input" in {
         val correctJson = json("DCS", "DocumentReference", "12")
-        val form = Document.form.bind(correctJson, JsonBindMaxChars)
+        val form = Document.form(mockDocumentTypeService).bind(correctJson, JsonBindMaxChars)
         form.errors mustBe empty
       }
 
       "provided document reference with '-' and '/'" in {
         val correctJson = json("DCS", "GB/239355053000-PATYR8987", "123")
-        val form = Document.form.bind(correctJson, JsonBindMaxChars)
+        val form = Document.form(mockDocumentTypeService).bind(correctJson, JsonBindMaxChars)
         form.errors mustBe empty
       }
 
       "provided document reference with ':'" in {
         val correctJson = json("DCS", "A:12345645", "123")
-        val form = Document.form.bind(correctJson, JsonBindMaxChars)
+        val form = Document.form(mockDocumentTypeService).bind(correctJson, JsonBindMaxChars)
         form.errors mustBe empty
       }
 
       "the document reference contains multiple initial and/or trailing spaces" in {
         val correctJson = json("DCS", "  ABCD1234  ", "123")
-        val form = Document.form.bind(correctJson, JsonBindMaxChars)
+        val form = Document.form(mockDocumentTypeService).bind(correctJson, JsonBindMaxChars)
         form.errors mustBe empty
         form.value.value.documentReference mustBe "ABCD1234"
       }
 
       "the document reference includes single spaces" in {
         val correctJson = json("DCS", "  ABC 123 987  ", "123")
-        val form = Document.form.bind(correctJson, JsonBindMaxChars)
+        val form = Document.form(mockDocumentTypeService).bind(correctJson, JsonBindMaxChars)
         form.errors mustBe empty
         form.value.value.documentReference mustBe "ABC 123 987"
       }
@@ -64,56 +74,56 @@ class DocumentSpec extends DeclarationPageBaseSpec with OptionValues {
 
       "an empty document type is entered" in {
         val withEmptyType = json("", "abcd", "123")
-        val form = Document.form.bind(withEmptyType, JsonBindMaxChars)
+        val form = Document.form(mockDocumentTypeService).bind(withEmptyType, JsonBindMaxChars)
         form.errors.length must be(1)
         form.errors.head.message must be("declaration.previousDocuments.documentCode.empty")
       }
 
       "an unknown document type is entered" in {
         val withUnknownType = json("BLAbla", "abcd", "123")
-        val form = Document.form.bind(withUnknownType, JsonBindMaxChars)
+        val form = Document.form(mockDocumentTypeService).bind(withUnknownType, JsonBindMaxChars)
         form.errors.length must be(1)
         form.errors.head.message must be("declaration.previousDocuments.documentCode.error")
       }
 
       "an empty document reference is entered" in {
         val withEmptyReference = json("DCS", "", "123")
-        val form = Document.form.bind(withEmptyReference, JsonBindMaxChars)
+        val form = Document.form(mockDocumentTypeService).bind(withEmptyReference, JsonBindMaxChars)
         form.errors.length must be(1)
         form.errors.head.message must be("declaration.previousDocuments.documentReference.empty")
       }
 
       "a too long document reference is entered" in {
         val withTooLongReference = json("DCS", "abcd" * 9, "123")
-        val form = Document.form.bind(withTooLongReference, JsonBindMaxChars)
+        val form = Document.form(mockDocumentTypeService).bind(withTooLongReference, JsonBindMaxChars)
         form.errors.length must be(1)
         form.errors.head.message must be("declaration.previousDocuments.documentReference.error.length")
       }
 
       "a document reference with invalid characters is entered" in {
         val withIllegalReference = json("DCS", "abcd)", "123")
-        val form = Document.form.bind(withIllegalReference, JsonBindMaxChars)
+        val form = Document.form(mockDocumentTypeService).bind(withIllegalReference, JsonBindMaxChars)
         form.errors.length must be(1)
         form.errors.head.message must be("declaration.previousDocuments.documentReference.error")
       }
 
       "a document reference with consecutive spaces is entered" in {
         val withIllegalReference = json("DCS", "abcd  1234", "123")
-        val form = Document.form.bind(withIllegalReference, JsonBindMaxChars)
+        val form = Document.form(mockDocumentTypeService).bind(withIllegalReference, JsonBindMaxChars)
         form.errors.length must be(1)
         form.errors.head.message must be("declaration.previousDocuments.documentReference.error.spaces")
       }
 
       "a too long goods-identifier is entered" in {
         val withTooLongIdentifier = json("DCS", "abcd", "1234")
-        val form = Document.form.bind(withTooLongIdentifier, JsonBindMaxChars)
+        val form = Document.form(mockDocumentTypeService).bind(withTooLongIdentifier, JsonBindMaxChars)
         form.errors.length must be(1)
         form.errors.head.message must be("declaration.previousDocuments.goodsItemIdentifier.error")
       }
 
       "a document reference with invalid characters and consecutive spaces is entered" in {
         val withIllegalReference = json("DCS", "abcd)  123", "123")
-        val form = Document.form.bind(withIllegalReference, JsonBindMaxChars)
+        val form = Document.form(mockDocumentTypeService).bind(withIllegalReference, JsonBindMaxChars)
         form.errors.length must be(2)
         form.errors.head.message must be("declaration.previousDocuments.documentReference.error")
         form.errors.last.message must be("declaration.previousDocuments.documentReference.error.spaces")
@@ -121,7 +131,7 @@ class DocumentSpec extends DeclarationPageBaseSpec with OptionValues {
 
       "a non-numeric goods-identifier is entered" in {
         val withNonNumericIdentifier = json("DCS", "abcd", "A12")
-        val form = Document.form.bind(withNonNumericIdentifier, JsonBindMaxChars)
+        val form = Document.form(mockDocumentTypeService).bind(withNonNumericIdentifier, JsonBindMaxChars)
         form.errors.length must be(1)
         form.errors.head.message must be("declaration.previousDocuments.goodsItemIdentifier.error")
       }

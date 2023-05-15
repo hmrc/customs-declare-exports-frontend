@@ -23,6 +23,7 @@ import models.codes._
 import play.api.libs.json.{Json, OFormat}
 import play.api.Logging
 import services.model.{CustomsOffice, OfficeOfExit, PackageType}
+import services.DocumentType
 import utils.JsonFile
 
 import java.util.Locale
@@ -73,6 +74,7 @@ trait CodeListConnector {
   def getRoroCodes(locale: Locale): ListMap[String, GoodsLocationCode]
   def getGvmsCodes(locale: Locale): ListMap[String, GoodsLocationCode]
   def allGoodsLocationCodes(locale: Locale): ListMap[String, GoodsLocationCode]
+  def getDocumentTypes(locale: Locale): ListMap[String, DocumentType]
 
 }
 
@@ -135,6 +137,10 @@ class FileBasedCodeListConnector @Inject() (
     appConfig.customsOfficesCodeFile,
     (codeItem: CodeItem, locale: Locale) => CustomsOffice(codeItem.code, codeItem.getDescriptionByLocale(locale))
   )
+  private val documentTypeCodesByLang = loadCommonCodesAsOrderedMap(
+    appConfig.documentTypeCodeFile,
+    (codeItem: CodeItem, locale: Locale) => DocumentType(codeItem.getDescriptionByLocale(locale), codeItem.code)
+  )
 
   def getAdditionalProcedureCodesMap(locale: Locale): ListMap[String, AdditionalProcedureCode] =
     additionalProcedureCodeMapsByLang.getOrElse(locale.getLanguage, additionalProcedureCodeMapsByLang.value.head._2)
@@ -165,6 +171,9 @@ class FileBasedCodeListConnector @Inject() (
 
   def getCustomsOffices(locale: Locale): ListMap[String, CustomsOffice] =
     customsOfficesCodesByLang.getOrElse(locale.getLanguage, customsOfficesCodesByLang.value.head._2)
+
+  def getDocumentTypes(locale: Locale): ListMap[String, DocumentType] =
+    documentTypeCodesByLang.getOrElse(locale.getLanguage, documentTypeCodesByLang.value.head._2)
 
   override def getDepCodes(locale: Locale): ListMap[String, GoodsLocationCode] =
     goodsLocationCodesConnector.getDepCodes(locale)

@@ -26,6 +26,7 @@
 @import views.helpers.PreviousDocumentsHelper
 @import views.html.components.fields.field_accessible_autocomplete
 @import views.html.components.gds._
+@import services.DocumentTypeService
 
 @this(
     templateHelper: PreviousDocumentsHelper,
@@ -39,7 +40,8 @@
     exportsInputText: exportsInputText,
     tariffExpander: tariffExpander,
     saveButtons: saveButtons,
-    appConfig: AppConfig
+    appConfig: AppConfig,
+    documentTypeService: DocumentTypeService
 )
 
 @(form: Form[Document])(implicit request: JourneyRequest[_], messages: Messages)
@@ -53,7 +55,7 @@
             labelClass = Some("govuk-label--m"),
             bodyHtml = Some(templateHelper.helpForDocumentCode),
             emptySelectValue = messages("declaration.previousDocuments.documentCode.empty"),
-            items = AutoCompleteItem.fromDocumentType(DocumentType.documentsForDropdown)
+            items = AutoCompleteItem.fromDocumentType(documentTypeService.allDocuments())
         )
 
         @exportsInputText(

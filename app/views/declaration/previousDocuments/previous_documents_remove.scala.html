@@ -21,7 +21,7 @@
 @import forms.declaration.{Document, DocumentChangeOrRemove}
 @import models.requests.JourneyRequest
 @import play.twirl.api.HtmlFormat
-@import services.DocumentType
+@import services.DocumentTypeService
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.components.gds.Styles._
 @import views.html.components.gds._
@@ -39,8 +39,10 @@
     yesNoRadios: yesNoRadios,
     formHelper: FormWithCSRF,
     navigator: Navigator,
-    appConfig: AppConfig
+    appConfig: AppConfig,
+    documentTypeService: DocumentTypeService
 )
+
 
 @(documentId: String, document: Document, form: Form[YesNoAnswer])(implicit request: JourneyRequest[_], messages: Messages)
 
@@ -51,7 +53,7 @@
         rows = Seq(
             SummaryListRow(
                 Key(Text(messages("declaration.previousDocuments.summary.documentCode.label"))),
-                Value(Text(DocumentType.documentCodesMap(document.documentType).asTextWithBrackets))
+                Value(Text(documentTypeService.findByCode(document.documentType).asTextWithBrackets))
             ),
             SummaryListRow(
                 Key(Text(messages("declaration.previousDocuments.summary.documentReference.label"))),

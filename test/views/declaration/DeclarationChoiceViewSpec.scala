@@ -118,6 +118,7 @@ class DeclarationChoiceViewSpec extends UnitViewSpec with CommonMessages with St
                                     |list-of-available-declarations="STANDARD"
                                     |google-analytics.token=N/A
                                     |google-analytics.host=localhostGoogle
+                                    |files.codelists.doc-type="/code-lists/document-type.json"
                                   """.stripMargin)
 
       val conf: Configuration = Configuration(config)
