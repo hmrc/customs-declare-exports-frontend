@@ -19,12 +19,13 @@ package connectors
 import akka.util.Helpers.Requiring
 import config.AppConfig
 import models.codes.GoodsLocationCode
+import utils.JsonFile
 
 import java.util.Locale
 import javax.inject.Inject
 import scala.collection.immutable.ListMap
 
-class GoodsLocationCodesConnector @Inject() (appConfig: AppConfig) extends FileBasedCodeListFunctions {
+class GoodsLocationCodesConnector @Inject() (appConfig: AppConfig, val jsonFileReader: JsonFile) extends FileBasedCodeListFunctions {
 
   private lazy val glcAirportsByLang = loadCommonCodesAsOrderedMap(
     appConfig.glcAirports16a,

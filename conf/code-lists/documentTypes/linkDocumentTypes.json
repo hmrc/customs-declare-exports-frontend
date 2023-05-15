@@ -1,0 +1,10 @@
+[
+  {
+    "parentCode": "MCR",
+    "childCodes": ["ExcludeFromDropdown"]
+  },
+  {
+    "parentCode": "CLE",
+    "childCodes": ["ExcludeFromDropdown"]
+  }
+]

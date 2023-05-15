@@ -21,6 +21,9 @@ import config.AppConfig
 import connectors.Tag._
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
+import play.api.{Environment, Mode}
+import services.DocumentTypeService
+import utils.JsonFile
 
 class CodeLinkConnectorSpec extends UnitWithMocksSpec with BeforeAndAfterEach {
 
@@ -39,9 +42,11 @@ class CodeLinkConnectorSpec extends UnitWithMocksSpec with BeforeAndAfterEach {
     when(appConfig.countryCodeToShortNameLinkFile).thenReturn("/code-links/manyLinks.json")
     when(appConfig.additionalDocumentCodeLinkFile).thenReturn("/code-links/manyLinks.json")
     when(appConfig.additionalDocumentStatusCodeLinkFile).thenReturn("/code-links/manyLinks.json")
+    when(appConfig.documentTypeCodeLinkFile).thenReturn("/code-lists/manyLinks.json")
   }
 
-  private lazy val connector = new FileBasedCodeLinkConnector(appConfig)
+  private lazy val jsonFile = new JsonFile(Environment.simple(mode = Mode.Test))
+  private lazy val connector = new FileBasedCodeLinkConnector(appConfig, jsonFile)
 
   "FileBasedCodeListConnector" should {
 
@@ -50,19 +55,19 @@ class CodeLinkConnectorSpec extends UnitWithMocksSpec with BeforeAndAfterEach {
       "code link file is missing" in {
         when(appConfig.procedureCodeToAdditionalProcedureCodesLinkFile).thenReturn("")
 
-        intercept[IllegalArgumentException](new FileBasedCodeLinkConnector(appConfig))
+        intercept[IllegalArgumentException](new FileBasedCodeLinkConnector(appConfig, jsonFile))
       }
 
       "code link file is malformed" in {
         when(appConfig.procedureCodeToAdditionalProcedureCodesLinkFile).thenReturn("/code-lists/malformedLinks.json")
 
-        intercept[IllegalArgumentException](new FileBasedCodeLinkConnector(appConfig))
+        intercept[Exception](new FileBasedCodeLinkConnector(appConfig, jsonFile))
       }
 
       "code link file is empty" in {
         when(appConfig.procedureCodeToAdditionalProcedureCodesLinkFile).thenReturn("/code-lists/empty.json")
 
-        intercept[IllegalArgumentException](new FileBasedCodeLinkConnector(appConfig))
+        intercept[IllegalArgumentException](new FileBasedCodeLinkConnector(appConfig, jsonFile))
       }
     }
 
@@ -207,6 +212,12 @@ class CodeLinkConnectorSpec extends UnitWithMocksSpec with BeforeAndAfterEach {
 
       "the tag provided is 'WagonNumber'" in {
         connector.getTransportCodeForTag(WagonNumber) mustBe ("WagonNumber", "20")
+      }
+    }
+
+    "return the expected document type exclusion codes" when {
+      s"the code provided is '${DocumentTypeService.exclusionKey}'" in {
+        connector.getDocumentTypesToExclude(DocumentTypeService.exclusionKey) mustBe List("MCR")
       }
     }
   }

@@ -24,6 +24,8 @@ import forms.declaration.declarationHolder.DeclarationHolder
 import mock.FeatureFlagMocks
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
+import play.api.{Environment, Mode}
+import utils.JsonFile
 
 import java.util.Locale.ENGLISH
 
@@ -45,10 +47,12 @@ class HolderOfAuthorisationCodesSpec extends UnitWithMocksSpec with BeforeAndAft
     when(appConfig.packageTypeCodeFile).thenReturn("/code-lists/manyCodes.json")
     when(appConfig.officeOfExitsCodeFile).thenReturn("/code-lists/manyCodes.json")
     when(appConfig.customsOfficesCodeFile).thenReturn("/code-lists/manyCodes.json")
+    when(appConfig.documentTypeCodeFile).thenReturn("/code-lists/manyCodes.json")
   }
 
   private lazy val glc = mock[GoodsLocationCodesConnector]
-  private lazy val codeListConnector = new FileBasedCodeListConnector(appConfig, glc)
+  private lazy val jsonFile = new JsonFile(Environment.simple(mode = Mode.Test))
+  private lazy val codeListConnector = new FileBasedCodeListConnector(appConfig, glc, jsonFile)
   private lazy val holderOfAuthorisationCodes = new HolderOfAuthorisationCodes(codeListConnector, mockMerchandiseInBagConfig)
 
   "HolderOfAuthorisationCodes.asListOfAutoCompleteItems" should {

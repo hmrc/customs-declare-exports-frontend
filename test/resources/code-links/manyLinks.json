@@ -78,5 +78,9 @@
   {
     "parentCode": "20",
     "childCodes": ["WagonNumber"]
+  },
+  {
+    "parentCode": "MCR",
+    "childCodes": ["ExcludeFromDropdown"]
   }
 ]

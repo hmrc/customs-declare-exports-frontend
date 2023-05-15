@@ -17,12 +17,15 @@
 package utils
 
 import play.api.libs.json.{JsArray, JsString, Json, Reads}
+import play.api.Environment
 
+import javax.inject.{Inject, Singleton}
 import scala.util.{Failure, Success, Try}
 
-object JsonFile {
+@Singleton
+class JsonFile @Inject() (environment: Environment) {
   def readFromJsonFile[T](file: String, deserializer: (String, String) => T): List[T] = {
-    val jsonInputStream = getClass.getResourceAsStream(file)
+    val jsonInputStream = environment.resourceAsStream(file).getOrElse(throw new Exception(s"$file could not be read!"))
 
     Json.parse(jsonInputStream) match {
       case JsArray(cs) =>
@@ -35,7 +38,7 @@ object JsonFile {
   }
 
   def getJsonArrayFromFile[T](file: String, reader: Reads[T]): List[T] = {
-    val jsonInputStream = getClass.getResourceAsStream(file)
+    val jsonInputStream = environment.resourceAsStream(file).getOrElse(throw new Exception(s"$file could not be read!"))
 
     Try(Json.parse(jsonInputStream)) match {
       case Success(JsArray(jsValues)) =>

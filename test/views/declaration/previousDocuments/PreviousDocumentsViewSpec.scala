@@ -25,22 +25,28 @@ import forms.declaration.Document.form
 import forms.declaration.{Document, PreviousDocumentsData}
 import models.DeclarationType._
 import models.requests.JourneyRequest
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 import org.scalatest.Assertion
 import play.twirl.api.Html
-import views.declaration.spec.PageWithButtonsSpec
+import services.{DocumentType, DocumentTypeService}
+import views.declaration.spec.{PageWithButtonsSpec, UnitViewSpec}
 import views.html.declaration.previousDocuments.previous_documents
 import views.tags.ViewTest
 
 @ViewTest
-class PreviousDocumentsViewSpec extends PageWithButtonsSpec with Injector {
+class PreviousDocumentsViewSpec extends PageWithButtonsSpec with Injector with UnitViewSpec {
 
+  val mockDocumentTypeService = mock[DocumentTypeService]
   val appConfig = instanceOf[AppConfig]
 
   val page = instanceOf[previous_documents]
 
-  override val typeAndViewInstance = (STANDARD, page(form)(_, _))
+  when(mockDocumentTypeService.allDocuments()(any())).thenReturn(List(DocumentType("DocumentReference", "355")))
 
-  def createView()(implicit request: JourneyRequest[_]): Html = page(form)(request, messages)
+  override val typeAndViewInstance = (STANDARD, page(form(mockDocumentTypeService))(_, _))
+
+  def createView()(implicit request: JourneyRequest[_]): Html = page(form(mockDocumentTypeService)(messages))(request, messages)
 
   "Previous Documents View" should {
 

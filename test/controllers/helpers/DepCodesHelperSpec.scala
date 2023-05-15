@@ -16,17 +16,20 @@
 
 package controllers.helpers
 
-import base.{MockExportCacheService, UnitWithMocksSpec}
+import base.{MockExportCacheService, RealConfig, UnitWithMocksSpec}
 import config.AppConfig
 import connectors.{FileBasedCodeListConnector, GoodsLocationCodesConnector}
 import forms.declaration.LocationOfGoods
 import org.mockito.Mockito.{reset, when}
+import play.api.{Environment, Mode}
+import utils.JsonFile
 
-class DepCodesHelperSpec extends UnitWithMocksSpec with MockExportCacheService {
+class DepCodesHelperSpec extends UnitWithMocksSpec with MockExportCacheService with RealConfig {
 
   private val appConfig = mock[AppConfig]
-  private lazy val glcConnector = new GoodsLocationCodesConnector(appConfig)
-  private lazy val codeListConnector = new FileBasedCodeListConnector(appConfig, glcConnector)
+  private lazy val jsonFile = new JsonFile(Environment.simple(mode = Mode.Test))
+  private lazy val glcConnector = new GoodsLocationCodesConnector(appConfig, jsonFile)
+  private lazy val codeListConnector = new FileBasedCodeListConnector(appConfig, glcConnector, jsonFile)
   private lazy val depCodesHelper = new DepCodesHelper(codeListConnector)
 
   override def beforeEach(): Unit = {
@@ -34,6 +37,17 @@ class DepCodesHelperSpec extends UnitWithMocksSpec with MockExportCacheService {
 
     reset(appConfig)
     when(appConfig.glcDep16k).thenReturn("/code-lists/manyCodes.json")
+    when(appConfig.holderOfAuthorisationCodeFile).thenReturn("/code-lists/manyCodes.json")
+    when(appConfig.procedureCodesListFile).thenReturn("/code-lists/manyCodes.json")
+    when(appConfig.procedureCodesForC21ListFile).thenReturn("/code-lists/manyCodes.json")
+    when(appConfig.additionalProcedureCodes).thenReturn("/code-lists/manyCodes.json")
+    when(appConfig.additionalProcedureCodesForC21).thenReturn("/code-lists/manyCodes.json")
+    when(appConfig.dmsErrorCodes).thenReturn("/code-lists/manyCodes.json")
+    when(appConfig.countryCodes).thenReturn("/code-lists/manyCodes.json")
+    when(appConfig.packageTypeCodeFile).thenReturn("/code-lists/manyCodes.json")
+    when(appConfig.officeOfExitsCodeFile).thenReturn("/code-lists/manyCodes.json")
+    when(appConfig.customsOfficesCodeFile).thenReturn("/code-lists/manyCodes.json")
+    when(appConfig.documentTypeCodeFile).thenReturn("/code-lists/manyCodes.json")
   }
 
   "DepCodesHelper on isDesignatedExportPlaceCode" should {

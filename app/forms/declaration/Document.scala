@@ -23,8 +23,9 @@ import models.ExportsFieldPointer.ExportsFieldPointer
 import models.FieldMapping
 import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, Forms, Mapping}
+import play.api.i18n.Messages
 import play.api.libs.json.Json
-import services.{DiffTools, DocumentType}
+import services.{DiffTools, DocumentTypeService}
 import services.DiffTools.{combinePointers, compareStringDifference, ExportsDeclarationDiff}
 import utils.validators.forms.FieldValidator._
 
@@ -55,14 +56,16 @@ object Document extends DeclarationPage with FieldMapping {
 
   val formId = "PreviousDocuments"
 
-  val mapping = Forms.mapping(documentTypeMapping, documentReferenceMapping, goodsIdentifierMapping)(Document.apply)(Document.unapply)
+  def form(docService: DocumentTypeService)(implicit messages: Messages): Form[Document] = {
+    val mapping = Forms.mapping(documentTypeMapping(docService), documentReferenceMapping, goodsIdentifierMapping)(Document.apply)(Document.unapply)
 
-  def form: Form[Document] = Form(mapping)
+    Form(mapping)
+  }
 
-  private def documentTypeMapping: (String, Mapping[String]) =
+  private def documentTypeMapping(docService: DocumentTypeService)(implicit messages: Messages): (String, Mapping[String]) =
     "documentType" -> text()
       .verifying("declaration.previousDocuments.documentCode.empty", nonEmpty)
-      .verifying("declaration.previousDocuments.documentCode.error", isEmpty or isContainedIn(DocumentType.allDocuments.map(_.code)))
+      .verifying("declaration.previousDocuments.documentCode.error", isEmpty or isContainedIn(docService.allDocuments().map(_.code)))
 
   private def documentReferenceMapping: (String, Mapping[String]) =
     "documentReference" -> text()

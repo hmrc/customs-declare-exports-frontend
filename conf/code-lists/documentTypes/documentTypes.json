@@ -1,0 +1,213 @@
+[
+    {
+       "en": "Commercial Invoice", 
+       "cy": "Commercial Invoice",
+       "code": "380"
+    },
+    {
+       "en": "Proforma Invoice",
+       "cy": "Proforma Invoice",
+       "code": "325"
+    },
+    {
+       "en": "Packing List",
+       "cy": "Packing List",
+       "code": "271"
+    },
+
+    {
+       "en": "House Waybill",
+       "cy": "House Waybill",
+       "code": "703"
+    },
+    {
+       "en": "Air Waybill",
+       "cy": "Air Waybill",
+       "code": "740"
+    },
+    {
+       "en": "Master Air Waybill",
+       "cy": "Master Air Waybill",
+       "code": "741"
+    },
+    {
+       "en": "Cargo Manifest",
+       "cy": "Cargo Manifest",
+       "code": "785"
+    },
+    {
+       "en": "Other",
+       "cy": "Other",
+       "code": "ZZZ"
+    },
+    {
+       "en": "Container List",
+       "cy": "Container List",
+       "code": "235"
+    },
+    {
+       "en": "Delivery Note",
+       "cy": "Delivery Note",
+       "code": "270"
+    },
+    {
+       "en": "Temporary Storage Declaration",
+       "cy": "Temporary Storage Declaration",
+       "code": "337"
+    },
+    {
+       "en": "Entry Summary Declaration (ENS)",
+       "cy": "Entry Summary Declaration (ENS)",
+       "code": "355"
+    },
+    {
+       "en": "Master Bill of Lading",
+       "cy": "Master Bill of Lading",
+       "code": "704"
+    },
+    {
+       "en": "Bill of Lading",
+       "cy": "Bill of Lading",
+       "code": "705"
+    },
+    {
+       "en": "House Bill of Lading",
+       "cy": "House Bill of Lading",
+       "code": "714"
+    },
+    {
+       "en": "Rail Consignment Note",
+       "cy": "Rail Consignment Note",
+       "code": "720"
+    },
+    {
+       "en": "Road list SMGS",
+       "cy": "Road list SMGS",
+       "code": "722"
+    },
+    {
+       "en": "Road Consignment Note",
+       "cy": "Road Consignment Note",
+       "code": "730"
+    },
+    {
+       "en": "Despatch Note (Post Parcels)",
+       "cy": "Despatch Note (Post Parcels)",
+       "code": "750"
+    },
+    {
+       "en": "Multimodal/ Combined Transport Document",
+       "cy": "Multimodal/ Combined Transport Document",
+       "code": "760"
+    },
+    {
+       "en": "Bordereau",
+       "cy": "Bordereau",
+       "code": "787"
+    },
+    {
+       "en": "Union/ Common Transit Declaration - Mixed Consignments (T)",
+       "cy": "Union/ Common Transit Declaration - Mixed Consignments (T)",
+       "code": "820"
+    },
+    {
+       "en": "External Union/ Common Transit Declaration (T1)",
+       "cy": "External Union/ Common Transit Declaration (T1)",
+       "code": "821"
+    },
+    {
+       "en": "Internal Union/ Common Transit Declaration (T2)",
+       "cy": "Internal Union/ Common Transit Declaration (T2)",
+       "code": "822"
+    },
+    {
+       "en": "Proof of the Customs Status of Union Goods T2L",
+       "cy": "Proof of the Customs Status of Union Goods T2L",
+       "code": "825"
+    },
+    {
+       "en": "TIR Carnet",
+       "cy": "TIR Carnet",
+       "code": "952"
+    },
+    {
+       "en": "ATA Carnet",
+       "cy": "ATA Carnet",
+       "code": "955"
+    },
+    {
+       "en": "Reference/Date of Entry in the Declarant’s Records (EIDR)*",
+       "cy": "Reference/Date of Entry in the Declarant’s Records (EIDR)*",
+       "code": "CLE"
+    },
+    {
+       "en": "Information Sheet INF3",
+       "cy": "Information Sheet INF3",
+       "code": "IF3"
+    },
+    {
+       "en": "Cargo Manifest - Simplified Procedure",
+       "cy": "Cargo Manifest - Simplified Procedure",
+       "code": "MNS"
+    },
+    {
+       "en": "Declaration/ Notification MRN (including reference no. of any EAD)",
+       "cy": "Declaration/ Notification MRN (including reference no. of any EAD)",
+       "code": "MRN"
+    },
+    {
+       "en": "Internal Union Transit Declaration - Article 227 of the Code",
+       "cy": "Internal Union Transit Declaration - Article 227 of the Code",
+       "code": "T2F"
+    },
+    {
+       "en": "Proof of the Customs Status of Union Goods T2LF",
+       "cy": "Proof of the Customs Status of Union Goods T2LF",
+       "code": "T2G"
+    },
+    {
+       "en": "T2M Proof",
+       "cy": "T2M Proof",
+       "code": "T2M"
+    },
+    {
+       "en": "Simplified Declaration** for Simplified Declaration Procedure (SDP)",
+       "cy": "Simplified Declaration** for Simplified Declaration Procedure (SDP)",
+       "code": "SDE"
+    },
+    {
+       "en": "Customs Supervised Export",
+       "cy": "Customs Supervised Export",
+       "code": "CSE"
+    },
+    {
+       "en": "Master Unique Consignment Reference (MUCR) (Including any inventory reference where applicable)",
+       "cy": "Master Unique Consignment Reference (MUCR) (Including any inventory reference where applicable)",
+       "code": "MCR"
+    },
+    {
+       "en": "Declaration Unique Consignment Reference (DUCR)",
+       "cy": "Declaration Unique Consignment Reference (DUCR)",
+       "code": "DCR"
+    },
+    {
+       "en": "Declaration Unique Consignment Reference Part Number (DUCR Part)",
+       "cy": "Declaration Unique Consignment Reference Part Number (DUCR Part)",
+       "code": "DCS"
+    },
+    {
+       "en": "Administrative Accompanying Document",
+       "cy": "Administrative Accompanying Document",
+       "code": "AAD"
+    },
+    {
+       "en": "Memorandum of Understanding (approved exporters only)",
+       "cy": "Memorandum of Understanding (approved exporters only)",
+       "code": "MOU"
+    },
+    {
+       "en": "Carnet de Passages en Douane (CPD)",
+       "cy": "Carnet de Passages en Douane (CPD)",
+       "code": "CPD"
+    }
+]

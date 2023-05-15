@@ -27,11 +27,13 @@ import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.twirl.api.{Html, HtmlFormat}
+import services.{DocumentType, DocumentTypeService}
 import views.html.declaration.previousDocuments.previous_documents
 
 class PreviousDocumentsControllerSpec extends ControllerWithoutFormSpec {
 
   val mockPreviousDocumentsPage = mock[previous_documents]
+  val mockDocumentTypeService = mock[DocumentTypeService]
 
   val controller = new PreviousDocumentsController(
     mockAuthAction,
@@ -39,7 +41,8 @@ class PreviousDocumentsControllerSpec extends ControllerWithoutFormSpec {
     navigator,
     stubMessagesControllerComponents(),
     mockPreviousDocumentsPage,
-    mockExportsCacheService
+    mockExportsCacheService,
+    mockDocumentTypeService
   )(ec)
 
   override protected def beforeEach(): Unit = {
@@ -48,6 +51,7 @@ class PreviousDocumentsControllerSpec extends ControllerWithoutFormSpec {
     authorizedUser()
     withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY)))
     when(mockPreviousDocumentsPage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockDocumentTypeService.allDocuments()(any())).thenReturn(List(DocumentType("DocumentReference", "355")))
   }
 
   override protected def afterEach(): Unit = {

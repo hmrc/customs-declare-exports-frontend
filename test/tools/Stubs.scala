@@ -76,6 +76,7 @@ trait Stubs {
       |urls.generalEnquiriesHelp=generalEnquiriesHelpUrl
       |play.i18n.langs = ["en", "cy"]
       |language.fallback.url=""
+      |files.codelists.doc-type="/code-lists/document-type.json"
     """.stripMargin)
 
   val minimalConfiguration = Configuration(minimalConfig)

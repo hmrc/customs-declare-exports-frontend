@@ -21,6 +21,7 @@ import config.AppConfig
 import connectors.Tag.Tag
 import models.codes.CommonCode
 import play.api.libs.json.{Json, OFormat}
+import play.api.Logging
 import utils.JsonFile
 
 import javax.inject.{Inject, Singleton}
@@ -64,13 +65,16 @@ trait CodeLinkConnector {
 
   def getAliasesForCountryCode(countryCode: String): Option[Seq[String]]
   def getShortNamesForCountryCode(countryCode: String): Option[Seq[String]]
+  def getDocumentTypesToExclude(code: String): Seq[String]
 }
 
 @Singleton
-class FileBasedCodeLinkConnector @Inject() (appConfig: AppConfig) extends CodeLinkConnector {
+class FileBasedCodeLinkConnector @Inject() (appConfig: AppConfig, val jsonFileReader: JsonFile) extends CodeLinkConnector with Logging {
 
   private def readCodeLinksFromFile[T <: CommonCode](srcFile: String): Seq[(String, Seq[String])] = {
-    val codeLinks = JsonFile.getJsonArrayFromFile(srcFile, CodeLink.formats)
+    logger.info(s"Loading CodeLinkConnector Reference data file '$srcFile'")
+
+    val codeLinks = jsonFileReader.getJsonArrayFromFile(srcFile, CodeLink.formats)
     codeLinks.map { codeLink =>
       codeLink.parentCode -> codeLink.childCodes
     }
@@ -106,6 +110,9 @@ class FileBasedCodeLinkConnector @Inject() (appConfig: AppConfig) extends CodeLi
   private val countryCodeToShortName: Map[String, Seq[String]] =
     readCodeLinksFromFileAsMap(appConfig.countryCodeToShortNameLinkFile)
 
+  private val documentTypeLink: Map[String, Seq[String]] =
+    readCodeLinksFromFileAsMap(appConfig.countryCodeToShortNameLinkFile)
+
   def getAdditionalDocumentStatusCodeForTag(tag: Tag): Seq[String] =
     additionalDocumentStatusCodeLink.filter(_._2.contains(tag.toString)).map(_._1)
 
@@ -137,4 +144,7 @@ class FileBasedCodeLinkConnector @Inject() (appConfig: AppConfig) extends CodeLi
 
   def getShortNamesForCountryCode(countryCode: String): Option[Seq[String]] =
     countryCodeToShortName.get(countryCode)
+
+  def getDocumentTypesToExclude(code: String): Seq[String] =
+    documentTypeLink.filter(_._2.contains(code)).map(_._1).toSeq
 }
