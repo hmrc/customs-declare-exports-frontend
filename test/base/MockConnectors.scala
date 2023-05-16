@@ -21,7 +21,7 @@ import connectors.CustomsDeclareExportsConnector
 import models._
 import models.declaration.DeclarationStatus
 import models.declaration.notifications.Notification
-import models.declaration.submissions.Submission
+import models.declaration.submissions.{Action, Submission}
 import org.mockito.ArgumentMatchers.{any, anyString, refEq}
 import org.mockito.Mockito.when
 import org.mockito.invocation.InvocationOnMock
@@ -54,8 +54,15 @@ trait MockConnectors {
   def deleteDraftDeclaration(): OngoingStubbing[Future[Unit]] =
     when(mockCustomsDeclareExportsConnector.deleteDraftDeclaration(anyString())(any(), any())).thenReturn(Future.successful((): Unit))
 
+  def fetchAction(action: Action): OngoingStubbing[Future[Option[Action]]] =
+    when(mockCustomsDeclareExportsConnector.findAction(refEq(action.id))(any(), any())).thenReturn(Future.successful(Some(action)))
+
   def fetchDeclaration(id: String): OngoingStubbing[Future[Option[ExportsDeclaration]]] =
     when(mockCustomsDeclareExportsConnector.findDeclaration(refEq(id))(any(), any())).thenReturn(Future.successful(Some(aDeclaration())))
+
+  def fetchLatestNotification(notification: Notification): OngoingStubbing[Future[Option[Notification]]] =
+    when(mockCustomsDeclareExportsConnector.findLatestNotification(refEq(notification.actionId))(any(), any()))
+      .thenReturn(Future.successful(Some(notification)))
 
   def fetchDeclaration(id: String, declaration: ExportsDeclaration): OngoingStubbing[Future[Option[ExportsDeclaration]]] =
     when(mockCustomsDeclareExportsConnector.findDeclaration(refEq(id))(any(), any())).thenReturn(Future.successful(Some(declaration)))

@@ -146,7 +146,7 @@ class NavigatorSpec
       "Save and return to errors is clicked when in error-fix mode and parentDeclarationId in request" in {
         val request = requestWithFormAction(Some(SaveAndReturnToErrors), true)
         val result = navigator.continueTo(call)(decoratedRequest(request))
-        redirectLocation(result) mustBe Some(RejectedNotificationsController.displayPage(parentDeclarationId, false).url)
+        redirectLocation(result) mustBe Some(RejectedNotificationsController.displayPage(parentDeclarationId).url)
       }
 
       "Save and continue is clicked with mode ErrorFix and parentDeclarationId in request" in {

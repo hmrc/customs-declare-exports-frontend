@@ -82,7 +82,7 @@ class ConfirmationController @Inject() (
     } { submissionId =>
       customsDeclareExportsConnector.findSubmission(submissionId).flatMap {
         case Some(submission) if submission.latestEnhancedStatus contains EnhancedStatus.ERRORS =>
-          Future.successful(Redirect(RejectedNotificationsController.displayPage(submissionId, false)))
+          Future.successful(Redirect(RejectedNotificationsController.displayPage(submissionId)))
 
         case Some(submission) =>
           retrieveLocationCode(submission.uuid).flatMap {

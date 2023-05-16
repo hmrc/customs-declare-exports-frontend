@@ -47,10 +47,8 @@ class SubmissionsController @Inject() (
     findOrCreateDraftForRejected(rejectedId, Redirect(SummaryController.displayPage))
   }
 
-  def draftAmendment(submissionId: String): Action[AnyContent] = authAndEmailActions.async { implicit request =>
-    customsDeclareExportsConnector.findOrCreateDraftForAmend(submissionId) map { id =>
-      Redirect(SummaryController.displayPage).addingToSession(declarationUuid -> id)
-    }
+  def unacceptedAmendment(declarationId: String): Action[AnyContent] = authAndEmailActions { implicit request =>
+    Redirect(SummaryController.displayPage).addingToSession(declarationUuid -> declarationId)
   }
 
   def amendErrors(rejectedId: String, redirectUrl: String, pattern: String, message: String): Action[AnyContent] =

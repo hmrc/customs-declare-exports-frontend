@@ -204,7 +204,7 @@ class ConfirmationControllerSpec extends ControllerWithoutFormSpec with GivenWhe
         val result = controller.displayConfirmationPage(request)
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(RejectedNotificationsController.displayPage(submissionId, false).url)
+        redirectLocation(result) mustBe Some(RejectedNotificationsController.displayPage(submissionId).url)
       }
     }
 
