@@ -62,6 +62,11 @@ case class Parties(
         combinePointers(pointerString, RepresentativeDetails.pointer, sequenceId)
       ) ++
       createDiffOfOptions(
+        original.declarationHoldersData,
+        declarationHoldersData,
+        combinePointers(pointerString, DeclarationHoldersData.pointer, sequenceId)
+      ) ++
+      createDiffOfOptions(
         original.declarationAdditionalActorsData,
         declarationAdditionalActorsData,
         combinePointers(pointerString, DeclarationAdditionalActors.pointer, sequenceId)
