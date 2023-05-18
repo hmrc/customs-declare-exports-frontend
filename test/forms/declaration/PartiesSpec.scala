@@ -23,6 +23,7 @@ import forms.declaration.consignor.ConsignorDetails
 import forms.declaration.declarationHolder.DeclarationHolder
 import forms.declaration.exporter.ExporterDetails
 import models.declaration.{Container, DeclarationAdditionalActorsData, DeclarationHoldersData, EoriSource, Parties, RepresentativeDetails}
+import models.declaration.EoriSource.UserEori
 import services.AlteredField
 import services.AlteredField.constructAlteredField
 
@@ -207,6 +208,14 @@ class PartiesSpec extends UnitSpec {
         )
       }
 
+      "the original version's declarationAdditionalActorsData field has a different value to this one" in {
+        val fieldPointer = s"${baseFieldPointer}.${DeclarationAdditionalActors.pointer}"
+        val originalValue = Some(DeclarationAdditionalActorsData(Seq(DeclarationAdditionalActors(Some(Eori("1234")), None))))
+        parties.createDiff(parties.copy(declarationAdditionalActorsData = originalValue), baseFieldPointer) mustBe Seq(
+          constructAlteredField(fieldPointer, originalValue, parties.declarationAdditionalActorsData)
+        )
+      }
+
       "the original version's representativeDetails field has a different value to this one" in {
         val fieldPointer = s"${baseFieldPointer}.${RepresentativeDetails.pointer}"
         val originalValue = Some(RepresentativeDetails(None, None, Some("other")))
@@ -215,11 +224,11 @@ class PartiesSpec extends UnitSpec {
         )
       }
 
-      "the original version's declarationAdditionalActorsData field has a different value to this one" in {
-        val fieldPointer = s"${baseFieldPointer}.${DeclarationAdditionalActors.pointer}"
-        val originalValue = Some(DeclarationAdditionalActorsData(Seq.empty))
-        parties.createDiff(parties.copy(declarationAdditionalActorsData = originalValue), baseFieldPointer) mustBe Seq(
-          constructAlteredField(fieldPointer, originalValue, parties.declarationAdditionalActorsData)
+      "the original version's declarationHoldersData field has a different value to this one" in {
+        val fieldPointer = s"${baseFieldPointer}.${DeclarationHoldersData.pointer}"
+        val originalValue = Some(DeclarationHoldersData(Seq(DeclarationHolder(Some("TypeCode"), Some(Eori("1234")), Some(UserEori))), None))
+        parties.createDiff(parties.copy(declarationHoldersData = originalValue), baseFieldPointer) mustBe Seq(
+          constructAlteredField(fieldPointer, originalValue, parties.declarationHoldersData)
         )
       }
 
