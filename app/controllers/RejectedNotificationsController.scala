@@ -40,15 +40,40 @@ class RejectedNotificationsController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with Logging {
 
-  def displayPage(id: String, amendment: Boolean): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
+  def displayPage(id: String): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
     customsDeclareExportsConnector.findDeclaration(id).flatMap {
       case Some(declaration) =>
         customsDeclareExportsConnector.findNotifications(id).map { notifications =>
-          val maybeMrn = notifications.headOption.map(_.mrn)
-          Ok(rejectedNotificationPage(declaration, maybeMrn, if (amendment) Some(id) else None, getRejectedNotificationErrors(notifications)))
+          val messages = messagesApi.preferred(request).messages
+          val mrn = notifications.headOption.map(_.mrn).getOrElse(messages("rejected.notification.mrn.missing"))
+          Ok(rejectedNotificationPage(declaration, mrn, None, getRejectedNotificationErrors(notifications)))
         }
 
-      case _ => errorHandler.internalError(s"Declaration($id) not found??")
+      case _ => errorHandler.internalError(s"Declaration($id) not found for a rejected submission??")
+    }
+  }
+
+  def displayPageOnUnacceptedAmendment(actionId: String): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
+    customsDeclareExportsConnector.findAction(actionId).flatMap {
+      case Some(action) =>
+        action.decId match {
+          case Some(declarationId) =>
+            customsDeclareExportsConnector.findDeclaration(declarationId).flatMap {
+              case Some(declaration) =>
+                customsDeclareExportsConnector.findLatestNotification(actionId).map {
+                  case Some(notification) =>
+                    Ok(rejectedNotificationPage(declaration, notification.mrn, Some(declarationId), notification.errors))
+
+                  case _ => errorHandler.internalServerError(s"Failed|rejected amended Notification not found for Action($actionId)??")
+                }
+
+              case _ => errorHandler.internalError(s"Failed|rejected amended declaration($declarationId) not found for Action($actionId)??")
+            }
+
+          case _ => errorHandler.internalError(s"The Action($actionId) does not have decId for a failed|rejected amendment??")
+        }
+
+      case _ => errorHandler.internalError(s"Action($actionId) not found for a failed|rejected amendment??")
     }
   }
 

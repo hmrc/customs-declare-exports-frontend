@@ -168,6 +168,11 @@ class AppConfig @Inject() (
     throw new IllegalStateException("Missing configuration for CDS Exports Notifications URI")
   )
 
+  lazy val latestNotificationPath = servicesConfig.getConfString(
+    "customs-declare-exports.latest-notification",
+    throw new IllegalStateException("Missing configuration for CDS Exports Single Notification URI")
+  )
+
   lazy val amendmentsPath = servicesConfig.getConfString(
     "customs-declare-exports.amendments",
     throw new IllegalStateException("Missing configuration for CDS Exports amendment Submission URI")

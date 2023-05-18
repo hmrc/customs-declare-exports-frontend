@@ -159,10 +159,9 @@ class TimelineEvents @Inject() (
     implicit messages: Messages
   ): Html =
     amendmentEventIfLatest.fold {
-      val fixAndResubmit = RejectedNotificationsController.displayPage(submission.uuid, false)
-      linkButton("declaration.details.fix.resubmit.button", fixAndResubmit)
+      linkButton("declaration.details.fix.resubmit.button", RejectedNotificationsController.displayPage(submission.uuid))
     } { amendmentEventAsLatest =>
-      val fixAndResubmit = RejectedNotificationsController.displayPage(submission.uuid, true)
+      val fixAndResubmit = RejectedNotificationsController.displayPageOnUnacceptedAmendment(amendmentEventAsLatest.action.id)
       val button = amendmentEventAsLatest match {
         case _: AmendmentFailed       => linkButton("declaration.details.resubmit.button", fixAndResubmit)
         case _: AmendmentRejected | _ => linkButton("declaration.details.fix.resubmit.button", fixAndResubmit)
@@ -184,5 +183,4 @@ class TimelineEvents @Inject() (
       Call("GET", secureMessagingInboxConfig.sfusInboxLink),
       if (isPrimary) "govuk-button" else "govuk-button govuk-button--secondary"
     )
-
 }

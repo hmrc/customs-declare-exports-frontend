@@ -36,33 +36,33 @@
     notificationErrorHelper: NotificationErrorHelper
 )
 
-@(declaration: ExportsDeclaration, maybeMrn: Option[String], maybeSubmissionId: Option[String], errors: Seq[NotificationError])(implicit request: Request[_], messages: Messages)
+@(declaration: ExportsDeclaration, mrn: String, maybeDeclarationId: Option[String], errors: Seq[NotificationError])(implicit request: Request[_], messages: Messages)
 
 @title = @{
-    if(maybeSubmissionId.isDefined) "rejected.amendment.title"
+    if(maybeDeclarationId.isDefined) "rejected.amendment.title"
     else "rejected.notification.title"
 }
 
 @warningText = @{
-    if(maybeSubmissionId.isDefined) "rejected.amendment.warning"
+    if(maybeDeclarationId.isDefined) "rejected.amendment.warning"
     else "rejected.notification.warning"
 }
 
 @checkAnswersText = @{
-    if(maybeSubmissionId.isDefined) "rejected.amendment.check.answers.paragraph"
+    if(maybeDeclarationId.isDefined) "rejected.amendment.check.answers.paragraph"
     else "rejected.notification.check.answers.paragraph"
 }
 
 @checkAnswersUrl = @{
-    maybeSubmissionId.map{ submissionId =>
-        routes.SubmissionsController.draftAmendment(submissionId).url
-    }.getOrElse{
+    maybeDeclarationId.map { declarationId =>
+        routes.SubmissionsController.unacceptedAmendment(declarationId).url
+    }.getOrElse {
         routes.SubmissionsController.amend(declaration.id).url
     }
 }
 
 @guidancePara2Text = @{
-    if(maybeSubmissionId.isDefined) "rejected.amendment.guidance.section.1.paragraph.2"
+    if(maybeDeclarationId.isDefined) "rejected.amendment.guidance.section.1.paragraph.2"
     else "rejected.notification.guidance.section.1.paragraph.2"
 }
 
@@ -76,7 +76,7 @@
         <div class="govuk-grid-column-full">
 
             @pageTitle(text = messages(title), classes = "govuk-heading-l")
-            @sectionHeader(messages("rejected.notification.mrn", maybeMrn.getOrElse(messages("rejected.notification.mrn.missing"))))
+            @sectionHeader(messages("rejected.notification.mrn", mrn))
 
             @govukWarningText(WarningText(
                 iconFallbackText = messages("site.warning"),

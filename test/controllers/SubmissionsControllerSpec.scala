@@ -151,7 +151,6 @@ class SubmissionsControllerSpec extends ControllerWithoutFormSpec with BeforeAnd
   }
 
   private val rejectedId = "id"
-  private val submissionId = "submissionId"
   private val declarationId = "declarationId"
 
   "SubmissionsController on amend" should {
@@ -167,12 +166,9 @@ class SubmissionsControllerSpec extends ControllerWithoutFormSpec with BeforeAnd
     }
   }
 
-  "SubmissionsController on draftAmendment" should {
+  "SubmissionsController on unacceptedAmendment" should {
     "return 303 (SEE OTHER) with the fetched declaration-id as one the Session keys" in {
-      when(mockCustomsDeclareExportsConnector.findOrCreateDraftForAmend(refEq(submissionId))(any(), any()))
-        .thenReturn(Future.successful(declarationId))
-
-      val result = controller.draftAmendment(submissionId)(getRequest(None))
+      val result = controller.unacceptedAmendment(declarationId)(getRequest(None))
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(SummaryController.displayPage.url)
