@@ -52,7 +52,7 @@ case class ExportItem(
     Seq(
       compareIntDifference(original.sequenceId, sequenceId, combinePointers(pointerString, ExportItem.sequenceIdPointer, maybeSequenceId)),
       createDiffOfOptions(original.procedureCodes, procedureCodes, combinePointers(pointerString, ProcedureCodesData.pointer, maybeSequenceId)),
-      createDiffOfOptions(
+      createDiffOfOptionIsos(
         original.additionalFiscalReferencesData,
         additionalFiscalReferencesData,
         combinePointers(pointerString, AdditionalFiscalReferencesData.pointer, maybeSequenceId)
@@ -70,20 +70,15 @@ case class ExportItem(
       compareDifference(original.nactExemptionCode, nactExemptionCode, combinePointers(pointerString, NactCode.pointer, maybeSequenceId)),
       createDiff(original.packageInformation, packageInformation, combinePointers(pointerString, PackageInformation.pointer, maybeSequenceId)),
       createDiffOfOptions(original.commodityMeasure, commodityMeasure, combinePointers(pointerString, CommodityMeasure.pointer, maybeSequenceId)),
-      createDiffOfOptions(
+      createDiffOfOptionIsos(
         original.additionalInformation,
         additionalInformation,
         combinePointers(pointerString, AdditionalInformationData.pointer, maybeSequenceId)
       ),
-      createDiffOfOptions(
+      createDiffOfOptionIsos(
         original.additionalDocuments,
         additionalDocuments,
         combinePointers(pointerString, AdditionalDocuments.pointer, maybeSequenceId)
-      ),
-      compareBooleanDifference(
-        original.isLicenceRequired,
-        isLicenceRequired,
-        combinePointers(pointerString, s"${AdditionalDocuments.pointer}.${AdditionalDocuments.documentsPointer}", maybeSequenceId)
       )
     ).flatten
 

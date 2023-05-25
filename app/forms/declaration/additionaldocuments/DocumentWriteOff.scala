@@ -22,22 +22,14 @@ import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, FormError, Forms}
 import play.api.libs.json.Json
 import services.DiffTools
-import services.DiffTools.{combinePointers, compareBigDecimalDifference, compareStringDifference, ExportsDeclarationDiff}
+import services.DiffTools.{compareBigDecimalDifference, compareStringDifference, ExportsDeclarationDiff}
 import utils.validators.forms.FieldValidator._
 
 case class DocumentWriteOff(measurementUnit: Option[String], documentQuantity: Option[BigDecimal]) extends DiffTools[DocumentWriteOff] {
   def createDiff(original: DocumentWriteOff, pointerString: ExportsFieldPointer, sequenceId: Option[Int] = None): ExportsDeclarationDiff =
     Seq(
-      compareStringDifference(
-        original.measurementUnit,
-        measurementUnit,
-        combinePointers(pointerString, DocumentWriteOff.measurementUnitPointer, sequenceId)
-      ),
-      compareBigDecimalDifference(
-        original.documentQuantity,
-        documentQuantity,
-        combinePointers(pointerString, DocumentWriteOff.documentQuantityPointer, sequenceId)
-      )
+      compareStringDifference(original.measurementUnit, measurementUnit, pointerString),
+      compareBigDecimalDifference(original.documentQuantity, documentQuantity, pointerString)
     ).flatten
 
   def measurementUnitDisplay: String = measurementUnit.map(_.replace("#", " ")).getOrElse("")

@@ -24,10 +24,16 @@ import play.api.libs.json.Json
 import services.DiffTools
 import services.DiffTools.{combinePointers, ExportsDeclarationDiff}
 
-case class AdditionalDocuments(isRequired: Option[YesNoAnswer], documents: Seq[AdditionalDocument]) extends DiffTools[AdditionalDocuments] {
+case class AdditionalDocuments(isRequired: Option[YesNoAnswer], documents: Seq[AdditionalDocument])
+    extends DiffTools[AdditionalDocuments] with IsoData[AdditionalDocument] {
   // isRequired field is not used to produce the WCO XML payload
   def createDiff(original: AdditionalDocuments, pointerString: ExportsFieldPointer, sequenceId: Option[Int] = None): ExportsDeclarationDiff =
-    Seq(createDiff(original.documents, documents, combinePointers(pointerString, AdditionalDocuments.documentsPointer, sequenceId))).flatten
+    createDiff(original.documents, documents, combinePointers(pointerString, AdditionalDocuments.documentsPointer, sequenceId))
+
+  override def createDiffWithEmpty(originalIsEmpty: Boolean, pointerString: ExportsFieldPointer): ExportsDeclarationDiff =
+    if (originalIsEmpty)
+      createDiff(Seq.empty, documents, combinePointers(pointerString, AdditionalDocuments.documentsPointer))
+    else createDiff(documents, Seq.empty, combinePointers(pointerString, AdditionalDocuments.documentsPointer))
 }
 
 object AdditionalDocuments extends FieldMapping {

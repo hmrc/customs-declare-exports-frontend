@@ -17,7 +17,7 @@
 package services
 
 import models.ExportsFieldPointer.ExportsFieldPointer
-import models.declaration.ExplicitlySequencedObject
+import models.declaration.{ExplicitlySequencedObject, IsoData}
 import services.DiffTools.{combinePointers, ExportsDeclarationDiff}
 
 case class OriginalAndNewValues[T](originalVal: Option[T], newVal: Option[T]) {}
@@ -116,6 +116,18 @@ trait DiffTools[T] {
       case (orig, None)             => Seq(AlteredField(pointerString, OriginalAndNewValues(orig, None)))
       case (None, curr)             => Seq(AlteredField(pointerString, OriginalAndNewValues(None, curr)))
       case (Some(orig), Some(curr)) => curr.createDiff(orig, pointerString, None)
+    }
+
+  def createDiffOfOptionIsos[E <: IsoData[_] with DiffTools[E]](
+    original: Option[E],
+    current: Option[E],
+    pointerString: ExportsFieldPointer
+  ): ExportsDeclarationDiff =
+    (original, current) match {
+      case (None, None)       => Seq.empty[AlteredField]
+      case (Some(orig), None) => orig.createDiffWithEmpty(originalIsEmpty = false, pointerString)
+      case (None, Some(curr)) => curr.createDiffWithEmpty(originalIsEmpty = true, pointerString)
+      case _                  => createDiffOfOptions(original, current, pointerString)
     }
 }
 

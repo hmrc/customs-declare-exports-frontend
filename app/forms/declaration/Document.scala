@@ -21,6 +21,7 @@ import models.DeclarationType.DeclarationType
 import models.viewmodels.TariffContentKey
 import models.ExportsFieldPointer.ExportsFieldPointer
 import models.FieldMapping
+import models.declaration.{ImplicitlySequencedObject, IsoData}
 import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, Forms, Mapping}
 import play.api.i18n.Messages
@@ -29,20 +30,13 @@ import services.{DiffTools, DocumentTypeService}
 import services.DiffTools.{combinePointers, compareStringDifference, ExportsDeclarationDiff}
 import utils.validators.forms.FieldValidator._
 
-case class Document(documentType: String, documentReference: String, goodsItemIdentifier: Option[String]) extends DiffTools[Document] {
+case class Document(documentType: String, documentReference: String, goodsItemIdentifier: Option[String])
+    extends DiffTools[Document] with ImplicitlySequencedObject {
   def createDiff(original: Document, pointerString: ExportsFieldPointer, sequenceId: Option[Int] = None): ExportsDeclarationDiff =
     Seq(
-      compareStringDifference(original.documentType, documentType, combinePointers(pointerString, Document.documentTypePointer, sequenceId)),
-      compareStringDifference(
-        original.documentReference,
-        documentReference,
-        combinePointers(pointerString, Document.documentReferencePointer, sequenceId)
-      ),
-      compareStringDifference(
-        original.goodsItemIdentifier,
-        goodsItemIdentifier,
-        combinePointers(pointerString, Document.goodsItemIdentifierPointer, sequenceId)
-      )
+      compareStringDifference(original.documentType, documentType, combinePointers(pointerString, sequenceId)),
+      compareStringDifference(original.documentReference, documentReference, combinePointers(pointerString, sequenceId)),
+      compareStringDifference(original.goodsItemIdentifier, goodsItemIdentifier, combinePointers(pointerString, sequenceId))
     ).flatten
 }
 
@@ -83,9 +77,14 @@ object Document extends DeclarationPage with FieldMapping {
     Seq(TariffContentKey(s"tariff.declaration.addPreviousDocument.${DeclarationPage.getJourneyTypeSpecialisation(decType)}"))
 }
 
-case class PreviousDocumentsData(documents: Seq[Document]) extends DiffTools[PreviousDocumentsData] {
+case class PreviousDocumentsData(documents: Seq[Document]) extends DiffTools[PreviousDocumentsData] with IsoData[Document] {
   def createDiff(original: PreviousDocumentsData, pointerString: ExportsFieldPointer, sequenceId: Option[Int] = None): ExportsDeclarationDiff =
-    createDiff(original.documents, documents, combinePointers(pointerString, PreviousDocumentsData.pointer, sequenceId))
+    createDiff(original.documents, documents, combinePointers(pointerString, Document.pointer, sequenceId))
+
+  override def createDiffWithEmpty(originalIsEmpty: Boolean, pointerString: ExportsFieldPointer): ExportsDeclarationDiff =
+    if (originalIsEmpty)
+      createDiff(Seq.empty, documents, combinePointers(pointerString, Document.pointer))
+    else createDiff(documents, Seq.empty, combinePointers(pointerString, Document.pointer))
 }
 
 object PreviousDocumentsData extends FieldMapping {

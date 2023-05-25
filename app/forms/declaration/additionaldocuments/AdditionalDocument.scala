@@ -16,18 +16,19 @@
 
 package forms.declaration.additionaldocuments
 
-import forms.{AdditionalConstraintsMapping, ConditionalConstraint, DeclarationPage}
 import forms.common.Date
 import forms.declaration.additionaldocuments.DocumentWriteOff._
+import forms.{AdditionalConstraintsMapping, ConditionalConstraint, DeclarationPage}
 import models.DeclarationType.{CLEARANCE, DeclarationType}
-import models.{ExportsDeclaration, FieldMapping}
-import models.viewmodels.TariffContentKey
 import models.ExportsFieldPointer.ExportsFieldPointer
-import play.api.data.{Form, FormError, Forms, Mapping}
+import models.declaration.ImplicitlySequencedObject
+import models.viewmodels.TariffContentKey
+import models.{ExportsDeclaration, FieldMapping}
 import play.api.data.Forms._
+import play.api.data.{Form, FormError, Forms, Mapping}
 import play.api.libs.json.{JsValue, Json}
-import services.{DiffTools, TaggedAdditionalDocumentCodes, TaggedAuthCodes}
 import services.DiffTools.{combinePointers, compareStringDifference, ExportsDeclarationDiff}
+import services.{DiffTools, TaggedAdditionalDocumentCodes, TaggedAuthCodes}
 import uk.gov.voa.play.form.ConditionalMappings.isAnyOf
 import utils.validators.forms.FieldValidator.{nonEmpty, _}
 
@@ -39,36 +40,16 @@ case class AdditionalDocument(
   issuingAuthorityName: Option[String],
   dateOfValidity: Option[Date],
   documentWriteOff: Option[DocumentWriteOff]
-) extends DiffTools[AdditionalDocument] {
+) extends DiffTools[AdditionalDocument] with ImplicitlySequencedObject {
   def createDiff(original: AdditionalDocument, pointerString: ExportsFieldPointer, sequenceId: Option[Int] = None): ExportsDeclarationDiff =
     Seq(
-      compareStringDifference(
-        original.documentTypeCode,
-        documentTypeCode,
-        combinePointers(pointerString, AdditionalDocument.documentTypeCodePointer, sequenceId)
-      ),
-      compareStringDifference(
-        original.documentIdentifier,
-        documentIdentifier,
-        combinePointers(pointerString, AdditionalDocument.documentIdentifierPointer, sequenceId)
-      ),
-      compareStringDifference(
-        original.documentStatus,
-        documentStatus,
-        combinePointers(pointerString, AdditionalDocument.documentStatusPointer, sequenceId)
-      ),
-      compareStringDifference(
-        original.documentStatusReason,
-        documentStatusReason,
-        combinePointers(pointerString, AdditionalDocument.documentStatusReasonPointer, sequenceId)
-      ),
-      compareStringDifference(
-        original.issuingAuthorityName,
-        issuingAuthorityName,
-        combinePointers(pointerString, AdditionalDocument.issuingAuthorityNamePointer, sequenceId)
-      ),
-      createDiffOfOptions(original.dateOfValidity, dateOfValidity, combinePointers(pointerString, Date.pointer, sequenceId)),
-      createDiffOfOptions(original.documentWriteOff, documentWriteOff, combinePointers(pointerString, DocumentWriteOff.pointer, sequenceId))
+      compareStringDifference(original.documentTypeCode, documentTypeCode, combinePointers(pointerString, sequenceId)),
+      compareStringDifference(original.documentIdentifier, documentIdentifier, combinePointers(pointerString, sequenceId)),
+      compareStringDifference(original.documentStatus, documentStatus, combinePointers(pointerString, sequenceId)),
+      compareStringDifference(original.documentStatusReason, documentStatusReason, combinePointers(pointerString, sequenceId)),
+      compareStringDifference(original.issuingAuthorityName, issuingAuthorityName, combinePointers(pointerString, sequenceId)),
+      createDiffOfOptions(original.dateOfValidity, dateOfValidity, combinePointers(pointerString, sequenceId)),
+      createDiffOfOptions(original.documentWriteOff, documentWriteOff, combinePointers(pointerString, sequenceId))
     ).flatten
 
   def toJson: JsValue = Json.toJson(this)(AdditionalDocument.format)

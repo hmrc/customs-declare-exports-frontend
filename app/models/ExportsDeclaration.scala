@@ -76,7 +76,7 @@ case class ExportsDeclaration(
         totalNumberOfItems,
         combinePointers(pointerString, InvoiceAndPackageTotals.pointer, sequenceId)
       ) ++
-      createDiffOfOptions(original.previousDocuments, previousDocuments, combinePointers(pointerString, PreviousDocumentsData.pointer, sequenceId))
+      createDiffOfOptionIsos(original.previousDocuments, previousDocuments, combinePointers(pointerString, PreviousDocumentsData.pointer, sequenceId))
 
   def lrn: Option[String] = consignmentReferences.flatMap(_.lrn.map(_.lrn))
   def ducr: Option[Ducr] = consignmentReferences.flatMap(_.ducr)

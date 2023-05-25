@@ -19,11 +19,12 @@ package forms.declaration
 import connectors.CodeListConnector
 import forms.DeclarationPage
 import models.DeclarationType.DeclarationType
-import models.viewmodels.TariffContentKey
 import models.ExportsFieldPointer.ExportsFieldPointer
 import models.FieldMapping
-import play.api.data.{Form, Forms}
+import models.declaration.{ImplicitlySequencedObject, IsoData}
+import models.viewmodels.TariffContentKey
 import play.api.data.Forms.text
+import play.api.data.{Form, Forms}
 import play.api.i18n.Messages
 import play.api.libs.json.Json
 import services.Countries._
@@ -31,15 +32,15 @@ import services.DiffTools
 import services.DiffTools.{combinePointers, compareStringDifference, ExportsDeclarationDiff}
 import utils.validators.forms.FieldValidator._
 
-case class AdditionalFiscalReference(country: String, reference: String) extends DiffTools[AdditionalFiscalReference] {
+case class AdditionalFiscalReference(country: String, reference: String) extends DiffTools[AdditionalFiscalReference] with ImplicitlySequencedObject {
   override def createDiff(
     original: AdditionalFiscalReference,
     pointerString: ExportsFieldPointer,
     sequenceId: Option[Int] = None
   ): ExportsDeclarationDiff =
     Seq(
-      compareStringDifference(original.country, country, combinePointers(pointerString, AdditionalFiscalReference.countryPointer, sequenceId)),
-      compareStringDifference(original.reference, reference, combinePointers(pointerString, AdditionalFiscalReference.referencePointer, sequenceId))
+      compareStringDifference(original.country, country, combinePointers(pointerString, sequenceId)),
+      compareStringDifference(original.reference, reference, combinePointers(pointerString, sequenceId))
     ).flatten
 
   val asString: String = country + reference
@@ -70,13 +71,19 @@ object AdditionalFiscalReference extends DeclarationPage with FieldMapping {
     Seq(TariffContentKey(s"tariff.declaration.item.additionalFiscalReferences.${DeclarationPage.getJourneyTypeSpecialisation(decType)}"))
 }
 
-case class AdditionalFiscalReferencesData(references: Seq[AdditionalFiscalReference]) extends DiffTools[AdditionalFiscalReferencesData] {
+case class AdditionalFiscalReferencesData(references: Seq[AdditionalFiscalReference])
+    extends DiffTools[AdditionalFiscalReferencesData] with IsoData[AdditionalFiscalReference] {
   override def createDiff(
     original: AdditionalFiscalReferencesData,
     pointerString: ExportsFieldPointer,
     sequenceId: Option[Int] = None
   ): ExportsDeclarationDiff =
-    Seq(createDiff(original.references, references, combinePointers(pointerString, AdditionalFiscalReferencesData.pointer, sequenceId))).flatten
+    createDiff(original.references, references, combinePointers(pointerString, AdditionalFiscalReference.pointer, sequenceId))
+
+  override def createDiffWithEmpty(originalIsEmpty: Boolean, pointerString: ExportsFieldPointer): ExportsDeclarationDiff =
+    if (originalIsEmpty)
+      createDiff(Seq.empty, references, combinePointers(pointerString, AdditionalFiscalReference.pointer))
+    else createDiff(references, Seq.empty, combinePointers(pointerString, AdditionalFiscalReference.pointer))
 
   def removeReferences(values: Seq[String]): AdditionalFiscalReferencesData = {
     val patterns = values.toSet
