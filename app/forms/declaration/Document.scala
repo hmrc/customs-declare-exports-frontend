@@ -75,13 +75,11 @@ object Document extends DeclarationPage with FieldMapping {
 }
 
 case class PreviousDocumentsData(documents: Seq[Document]) extends DiffTools[PreviousDocumentsData] with IsoData[Document] {
-  def createDiff(original: PreviousDocumentsData, pointerString: ExportsFieldPointer, sequenceId: Option[Int] = None): ExportsDeclarationDiff =
-    createDiff(original.documents, documents, combinePointers(pointerString, Document.pointer, sequenceId))
+  override val subPointer: ExportsFieldPointer = Document.pointer
+  override val elements: Seq[Document] = documents
 
-  override def createDiffWithEmpty(originalIsEmpty: Boolean, pointerString: ExportsFieldPointer): ExportsDeclarationDiff =
-    if (originalIsEmpty)
-      createDiff(Seq.empty, documents, combinePointers(pointerString, Document.pointer))
-    else createDiff(documents, Seq.empty, combinePointers(pointerString, Document.pointer))
+  def createDiff(original: PreviousDocumentsData, pointerString: ExportsFieldPointer, sequenceId: Option[Int] = None): ExportsDeclarationDiff =
+    createDiff(original.documents, documents, combinePointers(pointerString, subPointer, sequenceId))
 }
 
 object PreviousDocumentsData extends FieldMapping {

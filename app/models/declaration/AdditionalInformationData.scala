@@ -27,15 +27,12 @@ import services.DiffTools.{combinePointers, ExportsDeclarationDiff}
 
 case class AdditionalInformationData(isRequired: Option[YesNoAnswer], items: Seq[AdditionalInformation])
     extends DiffTools[AdditionalInformationData] with IsoData[AdditionalInformation] {
-
   // isRequired field is not used to produce the WCO XML payload
-  def createDiff(original: AdditionalInformationData, pointerString: ExportsFieldPointer, sequenceId: Option[Int] = None): ExportsDeclarationDiff =
-    createDiff(original.items, items, combinePointers(pointerString, AdditionalInformation.pointer, sequenceId))
+  override val subPointer: ExportsFieldPointer = AdditionalInformation.pointer
+  override val elements: Seq[AdditionalInformation] = items
 
-  override def createDiffWithEmpty(originalIsEmpty: Boolean, pointerString: ExportsFieldPointer): ExportsDeclarationDiff =
-    if (originalIsEmpty)
-      createDiff(Seq.empty, items, combinePointers(pointerString, AdditionalInformation.pointer))
-    else createDiff(items, Seq.empty, combinePointers(pointerString, AdditionalInformation.pointer))
+  def createDiff(original: AdditionalInformationData, pointerString: ExportsFieldPointer, sequenceId: Option[Int] = None): ExportsDeclarationDiff =
+    createDiff(original.items, items, combinePointers(pointerString, subPointer, sequenceId))
 }
 
 object AdditionalInformationData extends FieldMapping {

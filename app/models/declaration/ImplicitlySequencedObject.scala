@@ -18,10 +18,16 @@ package models.declaration
 
 import models.ExportsFieldPointer.ExportsFieldPointer
 import services.DiffTools
-import services.DiffTools.ExportsDeclarationDiff
+import services.DiffTools.{combinePointers, ExportsDeclarationDiff}
 
 trait ImplicitlySequencedObject
 
 trait IsoData[E <: DiffTools[E] with ImplicitlySequencedObject] {
-  def createDiffWithEmpty(originalIsEmpty: Boolean, pointerString: ExportsFieldPointer): ExportsDeclarationDiff
+  this: DiffTools[_] =>
+  val subPointer: String
+  val elements: Seq[E]
+
+  def createDiffWithEmpty(originalIsEmpty: Boolean, pointerString: ExportsFieldPointer): ExportsDeclarationDiff =
+    if (originalIsEmpty) createDiff(Seq.empty, elements, combinePointers(pointerString, subPointer))
+    else createDiff(elements, Seq.empty, combinePointers(pointerString, subPointer))
 }

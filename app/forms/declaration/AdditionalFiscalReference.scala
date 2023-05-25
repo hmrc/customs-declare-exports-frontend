@@ -71,17 +71,14 @@ object AdditionalFiscalReference extends DeclarationPage with FieldMapping {
 
 case class AdditionalFiscalReferencesData(references: Seq[AdditionalFiscalReference])
     extends DiffTools[AdditionalFiscalReferencesData] with IsoData[AdditionalFiscalReference] {
+  override val subPointer: ExportsFieldPointer = AdditionalFiscalReference.pointer
+  override val elements: Seq[AdditionalFiscalReference] = references
   override def createDiff(
     original: AdditionalFiscalReferencesData,
     pointerString: ExportsFieldPointer,
     sequenceId: Option[Int] = None
   ): ExportsDeclarationDiff =
-    createDiff(original.references, references, combinePointers(pointerString, AdditionalFiscalReference.pointer, sequenceId))
-
-  override def createDiffWithEmpty(originalIsEmpty: Boolean, pointerString: ExportsFieldPointer): ExportsDeclarationDiff =
-    if (originalIsEmpty)
-      createDiff(Seq.empty, references, combinePointers(pointerString, AdditionalFiscalReference.pointer))
-    else createDiff(references, Seq.empty, combinePointers(pointerString, AdditionalFiscalReference.pointer))
+    createDiff(original.references, references, combinePointers(pointerString, subPointer, sequenceId))
 
   def removeReferences(values: Seq[String]): AdditionalFiscalReferencesData = {
     val patterns = values.toSet
