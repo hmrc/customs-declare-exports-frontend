@@ -44,9 +44,6 @@ object Document extends DeclarationPage with FieldMapping {
   implicit val format = Json.format[Document]
 
   val pointer: ExportsFieldPointer = "documents"
-  val documentTypePointer: ExportsFieldPointer = "documentType"
-  val documentReferencePointer: ExportsFieldPointer = "documentReference"
-  val goodsItemIdentifierPointer: ExportsFieldPointer = "goodsItemIdentifier"
 
   val formId = "PreviousDocuments"
 

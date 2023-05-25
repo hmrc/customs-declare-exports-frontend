@@ -28,12 +28,12 @@ case class AdditionalDocuments(isRequired: Option[YesNoAnswer], documents: Seq[A
     extends DiffTools[AdditionalDocuments] with IsoData[AdditionalDocument] {
   // isRequired field is not used to produce the WCO XML payload
   def createDiff(original: AdditionalDocuments, pointerString: ExportsFieldPointer, sequenceId: Option[Int] = None): ExportsDeclarationDiff =
-    createDiff(original.documents, documents, combinePointers(pointerString, AdditionalDocuments.documentsPointer, sequenceId))
+    createDiff(original.documents, documents, combinePointers(pointerString, AdditionalDocument.pointer, sequenceId))
 
   override def createDiffWithEmpty(originalIsEmpty: Boolean, pointerString: ExportsFieldPointer): ExportsDeclarationDiff =
     if (originalIsEmpty)
-      createDiff(Seq.empty, documents, combinePointers(pointerString, AdditionalDocuments.documentsPointer))
-    else createDiff(documents, Seq.empty, combinePointers(pointerString, AdditionalDocuments.documentsPointer))
+      createDiff(Seq.empty, documents, combinePointers(pointerString, AdditionalDocument.pointer))
+    else createDiff(documents, Seq.empty, combinePointers(pointerString, AdditionalDocument.pointer))
 }
 
 object AdditionalDocuments extends FieldMapping {
@@ -42,5 +42,4 @@ object AdditionalDocuments extends FieldMapping {
   val maxNumberOfItems = 99
 
   val pointer: ExportsFieldPointer = "additionalDocuments"
-  val documentsPointer: ExportsFieldPointer = "documents"
 }

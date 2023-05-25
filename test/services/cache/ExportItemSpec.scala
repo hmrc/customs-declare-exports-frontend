@@ -456,7 +456,7 @@ class ExportItemSpec extends UnitWithMocksSpec with ExportsItemBuilder {
 
       "the original version's additionalInformation field has a different value to this one" in {
         val additionalInformations = AdditionalInformationData(None, Seq(AdditionalInformation("latestCode", "latestDescription")))
-        val fieldPointer = s"${baseFieldPointer}.${AdditionalInformationData.pointer}.${AdditionalInformationData.itemsPointer}.#1"
+        val fieldPointer = s"${baseFieldPointer}.${AdditionalInformationData.pointer}.${AdditionalInformation.pointer}.#1"
         val item = ExportItem("latestId", additionalInformation = Some(additionalInformations))
         val originalValue = Seq.empty[AdditionalInformation]
         item.createDiff(item.copy(additionalInformation = Some(additionalInformations.copy(items = originalValue))), baseFieldPointer) mustBe Seq(
@@ -475,7 +475,7 @@ class ExportItemSpec extends UnitWithMocksSpec with ExportsItemBuilder {
           Some(DocumentWriteOff(None, None))
         )
         val additionalDocuments = AdditionalDocuments(None, Seq(additionalDoc))
-        val fieldPointer = s"${baseFieldPointer}.${AdditionalDocuments.pointer}.${AdditionalDocuments.documentsPointer}.#1"
+        val fieldPointer = s"${baseFieldPointer}.${AdditionalDocuments.pointer}.${AdditionalDocument.pointer}.#1"
         val item = ExportItem("latestId", additionalDocuments = Some(additionalDocuments))
         val originalValue = Seq.empty[AdditionalDocument]
         item.createDiff(item.copy(additionalDocuments = Some(additionalDocuments.copy(documents = originalValue))), baseFieldPointer) mustBe Seq(
@@ -859,7 +859,7 @@ class ExportItemSpec extends UnitWithMocksSpec with ExportsItemBuilder {
       )
 
       "when items are present but not equal" in {
-        val fieldPointer = s"$baseFieldPointer.${AdditionalInformationData.itemsPointer}"
+        val fieldPointer = s"$baseFieldPointer.${AdditionalInformation.pointer}"
         withClue("original AdditionalInformations items are not present") {
           val additionalInformations = AdditionalInformationData(None, items)
           additionalInformations.createDiff(additionalInformations.copy(items = Seq.empty), baseFieldPointer) mustBe Seq(
@@ -1110,7 +1110,7 @@ class ExportItemSpec extends UnitWithMocksSpec with ExportsItemBuilder {
       )
 
       "when items are present but not equal" in {
-        val fieldPointer = s"$baseFieldPointer.${AdditionalDocuments.documentsPointer}"
+        val fieldPointer = s"$baseFieldPointer.${AdditionalDocument.pointer}"
         withClue("original AdditionalDocuments items are not present") {
           val additionalDocuments = AdditionalDocuments(None, documents)
           additionalDocuments.createDiff(additionalDocuments.copy(documents = Seq.empty), baseFieldPointer) mustBe Seq(

@@ -41,9 +41,7 @@ case class AdditionalInformation(code: String, description: String) extends Diff
 
 object AdditionalInformation extends DeclarationPage with FieldMapping {
 
-  val pointer: ExportsFieldPointer = "info"
-  val codePointer: ExportsFieldPointer = "code"
-  val descriptionPointer: ExportsFieldPointer = "description"
+  val pointer: ExportsFieldPointer = "items"
 
   implicit val format = Json.format[AdditionalInformation]
 

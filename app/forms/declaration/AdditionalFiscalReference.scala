@@ -49,8 +49,6 @@ case class AdditionalFiscalReference(country: String, reference: String) extends
 object AdditionalFiscalReference extends DeclarationPage with FieldMapping {
 
   val pointer: ExportsFieldPointer = "references"
-  val countryPointer: ExportsFieldPointer = "country"
-  val referencePointer: ExportsFieldPointer = "reference"
 
   def build(country: String, reference: String): AdditionalFiscalReference = new AdditionalFiscalReference(country, reference.toUpperCase)
   implicit val format = Json.format[AdditionalFiscalReference]

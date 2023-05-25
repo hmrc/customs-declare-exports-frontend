@@ -64,13 +64,7 @@ case class AdditionalDocument(
 
 object AdditionalDocument extends DeclarationPage with FieldMapping {
 
-  val pointer: ExportsFieldPointer = "document"
-  val documentTypeCodePointer: ExportsFieldPointer = "documentTypeCode"
-  val documentIdentifierPointer: ExportsFieldPointer = "documentIdentifier"
-  val documentStatusPointer: ExportsFieldPointer = "documentStatus"
-  val documentStatusReasonPointer: ExportsFieldPointer = "documentStatusReason"
-  val issuingAuthorityNamePointer: ExportsFieldPointer = "issuingAuthorityName"
-  val documentWriteOffPointer: ExportsFieldPointer = "documentWriteOff"
+  val pointer: ExportsFieldPointer = "documents"
 
   def fromJsonString(value: String): Option[AdditionalDocument] = Json.fromJson(Json.parse(value)).asOpt
 

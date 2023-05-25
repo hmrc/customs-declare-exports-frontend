@@ -30,12 +30,12 @@ case class AdditionalInformationData(isRequired: Option[YesNoAnswer], items: Seq
 
   // isRequired field is not used to produce the WCO XML payload
   def createDiff(original: AdditionalInformationData, pointerString: ExportsFieldPointer, sequenceId: Option[Int] = None): ExportsDeclarationDiff =
-    createDiff(original.items, items, combinePointers(pointerString, AdditionalInformationData.itemsPointer, sequenceId))
+    createDiff(original.items, items, combinePointers(pointerString, AdditionalInformation.pointer, sequenceId))
 
   override def createDiffWithEmpty(originalIsEmpty: Boolean, pointerString: ExportsFieldPointer): ExportsDeclarationDiff =
     if (originalIsEmpty)
-      createDiff(Seq.empty, items, combinePointers(pointerString, AdditionalInformationData.itemsPointer))
-    else createDiff(items, Seq.empty, combinePointers(pointerString, AdditionalInformationData.itemsPointer))
+      createDiff(Seq.empty, items, combinePointers(pointerString, AdditionalInformation.pointer))
+    else createDiff(items, Seq.empty, combinePointers(pointerString, AdditionalInformation.pointer))
 }
 
 object AdditionalInformationData extends FieldMapping {
@@ -51,5 +51,4 @@ object AdditionalInformationData extends FieldMapping {
   val maxNumberOfItems = 99
 
   val pointer: ExportsFieldPointer = "additionalInformation"
-  val itemsPointer: ExportsFieldPointer = "items"
 }
