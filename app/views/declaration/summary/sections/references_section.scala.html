@@ -197,7 +197,8 @@
                 value = Value(
                     content = Text(refs.answer)
                 ),
-                actions = actions(Actions(
+                actions = if (declaration.isAmendmentDraft) None
+                    else actions(Actions(
                     items = Seq(
                         actionSummaryItem(
                             href = routes.LinkDucrToMucrController.displayPage.url,
@@ -217,7 +218,8 @@
                 value = Value(
                     content = Text(refs.mucr)
                 ),
-                actions = actions(Actions(
+                actions = if (declaration.isAmendmentDraft) None
+                    else actions(Actions(
                     items = Seq(
                         actionSummaryItem(
                             href = routes.MucrController.displayPage.url,
