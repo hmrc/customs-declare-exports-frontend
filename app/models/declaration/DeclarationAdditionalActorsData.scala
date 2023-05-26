@@ -21,18 +21,19 @@ import models.ExportsFieldPointer.ExportsFieldPointer
 import models.FieldMapping
 import play.api.libs.json.Json
 import services.DiffTools
-import services.DiffTools.{combinePointers, removeTrailingSequenceNbr, ExportsDeclarationDiff}
+import services.DiffTools.{combinePointers, ExportsDeclarationDiff}
 
-case class DeclarationAdditionalActorsData(actors: Seq[DeclarationAdditionalActors]) extends DiffTools[DeclarationAdditionalActorsData] {
+case class DeclarationAdditionalActorsData(actors: Seq[DeclarationAdditionalActors])
+    extends DiffTools[DeclarationAdditionalActorsData] with IsoData[DeclarationAdditionalActors] {
+  override val subPointer: ExportsFieldPointer = DeclarationAdditionalActors.pointer
+  override val elements: Seq[DeclarationAdditionalActors] = actors
+
   def createDiff(
     original: DeclarationAdditionalActorsData,
     pointerString: ExportsFieldPointer,
     sequenceId: Option[Int] = None
   ): ExportsDeclarationDiff =
-    createDiff(original.actors, actors, combinePointers(pointerString, DeclarationAdditionalActorsData.pointer, None))
-      .map(
-        removeTrailingSequenceNbr(_)
-      ) // This entity is unique in being a sequence of items but not having a SequenceNumber (so we strip off the numeric part)
+    createDiff(original.actors, actors, combinePointers(pointerString, subPointer, sequenceId))
 
   def addActor(actor: DeclarationAdditionalActors): DeclarationAdditionalActorsData =
     if (actor.isAllowed) DeclarationAdditionalActorsData(actor +: actors) else this
