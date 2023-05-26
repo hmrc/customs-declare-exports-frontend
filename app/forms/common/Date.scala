@@ -25,23 +25,23 @@ import play.api.data.Forms.{number, optional}
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
 import services.DiffTools
-import services.DiffTools.{combinePointers, compareIntDifference, ExportsDeclarationDiff}
+import services.DiffTools.{compareIntDifference, ExportsDeclarationDiff}
 
 import scala.util.Try
 
 case class Date(day: Option[Int], month: Option[Int], year: Option[Int]) extends DiffTools[Date] {
   def createDiff(original: Date, pointerString: ExportsFieldPointer, sequenceId: Option[Int] = None): ExportsDeclarationDiff =
     Seq(
-      compareIntDifference(original.day, day, combinePointers(pointerString, Date.dayPointer, sequenceId)),
-      compareIntDifference(original.month, month, combinePointers(pointerString, Date.monthPointer, sequenceId)),
-      compareIntDifference(original.year, year, combinePointers(pointerString, Date.yearPointer, sequenceId))
+      compareIntDifference(original.day, day, pointerString),
+      compareIntDifference(original.month, month, pointerString),
+      compareIntDifference(original.year, year, pointerString)
     ).flatten
 
   private val formatDisplay = DateTimeFormatter.ofPattern("dd/MM/yyyy")
 
   def toDisplayFormat: String = LocalDate.parse(this.toString).format(formatDisplay)
 
-  override def toString: String = LocalDate.of(year.getOrElse(0), month.getOrElse(0), day.getOrElse(0)).toString
+  override def toString: String = LocalDate.of(year.getOrElse(1), month.getOrElse(1), day.getOrElse(1)).toString
 }
 
 object Date extends FieldMapping {

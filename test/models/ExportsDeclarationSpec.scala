@@ -19,7 +19,7 @@ package models
 import base.{MockTaggedCodes, UnitSpec}
 import forms.common.YesNoAnswer
 import forms.declaration.countries.Country
-import forms.declaration.{CommodityDetails, Mucr, NatureOfTransaction, PreviousDocumentsData}
+import forms.declaration.{CommodityDetails, Document, Mucr, NatureOfTransaction, PreviousDocumentsData}
 import models.declaration._
 import org.scalatest.OptionValues
 import org.scalatestplus.mockito.MockitoSugar
@@ -221,11 +221,11 @@ class ExportsDeclarationSpec
       }
 
       "the original version's previousDocuments field has a different value to this one" in {
-        val fieldPointer = s"${baseFieldPointer}.${PreviousDocumentsData.pointer}"
+        val fieldPointer = s"${baseFieldPointer}.${PreviousDocumentsData.pointer}.${Document.pointer}.#1"
         val declaration = aDeclaration()
-        val originalValue = PreviousDocumentsData(Seq.empty)
+        val originalValue = PreviousDocumentsData(Seq(Document("", "", None)))
         declaration.createDiff(declaration.copy(previousDocuments = Some(originalValue))) mustBe Seq(
-          constructAlteredField(fieldPointer, Some(originalValue), declaration.previousDocuments)
+          constructAlteredField(fieldPointer, Some(originalValue.documents.head), None)
         )
       }
 

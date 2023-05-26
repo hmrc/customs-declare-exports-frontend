@@ -26,11 +26,13 @@ import services.DiffTools
 import services.DiffTools.{combinePointers, ExportsDeclarationDiff}
 
 case class AdditionalInformationData(isRequired: Option[YesNoAnswer], items: Seq[AdditionalInformation])
-    extends DiffTools[AdditionalInformationData] {
-
+    extends DiffTools[AdditionalInformationData] with IsoData[AdditionalInformation] {
   // isRequired field is not used to produce the WCO XML payload
+  override val subPointer: ExportsFieldPointer = AdditionalInformation.pointer
+  override val elements: Seq[AdditionalInformation] = items
+
   def createDiff(original: AdditionalInformationData, pointerString: ExportsFieldPointer, sequenceId: Option[Int] = None): ExportsDeclarationDiff =
-    Seq(createDiff(original.items, items, combinePointers(pointerString, AdditionalInformationData.itemsPointer, sequenceId))).flatten
+    createDiff(original.items, items, combinePointers(pointerString, subPointer, sequenceId))
 }
 
 object AdditionalInformationData extends FieldMapping {
@@ -46,5 +48,4 @@ object AdditionalInformationData extends FieldMapping {
   val maxNumberOfItems = 99
 
   val pointer: ExportsFieldPointer = "additionalInformation"
-  val itemsPointer: ExportsFieldPointer = "items"
 }

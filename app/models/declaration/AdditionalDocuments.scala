@@ -24,10 +24,14 @@ import play.api.libs.json.Json
 import services.DiffTools
 import services.DiffTools.{combinePointers, ExportsDeclarationDiff}
 
-case class AdditionalDocuments(isRequired: Option[YesNoAnswer], documents: Seq[AdditionalDocument]) extends DiffTools[AdditionalDocuments] {
+case class AdditionalDocuments(isRequired: Option[YesNoAnswer], documents: Seq[AdditionalDocument])
+    extends DiffTools[AdditionalDocuments] with IsoData[AdditionalDocument] {
   // isRequired field is not used to produce the WCO XML payload
+  override val subPointer: ExportsFieldPointer = AdditionalDocument.pointer
+  override val elements: Seq[AdditionalDocument] = documents
+
   def createDiff(original: AdditionalDocuments, pointerString: ExportsFieldPointer, sequenceId: Option[Int] = None): ExportsDeclarationDiff =
-    Seq(createDiff(original.documents, documents, combinePointers(pointerString, AdditionalDocuments.documentsPointer, sequenceId))).flatten
+    createDiff(original.documents, documents, combinePointers(pointerString, subPointer, sequenceId))
 }
 
 object AdditionalDocuments extends FieldMapping {
@@ -36,5 +40,4 @@ object AdditionalDocuments extends FieldMapping {
   val maxNumberOfItems = 99
 
   val pointer: ExportsFieldPointer = "additionalDocuments"
-  val documentsPointer: ExportsFieldPointer = "documents"
 }
