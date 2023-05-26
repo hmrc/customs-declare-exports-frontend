@@ -33,7 +33,7 @@ case class NactCode(nactCode: String) extends Ordered[NactCode] {
 object NactCode extends DeclarationPage with FieldMapping {
   implicit val format = Json.format[NactCode]
 
-  val pointer: ExportsFieldPointer = CommodityDetails.combinedNomenclatureCodePointer
+  val pointer: ExportsFieldPointer = "nactCode"
 
   val nactCodeKey = "nactCode"
 

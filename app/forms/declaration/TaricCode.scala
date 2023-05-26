@@ -32,7 +32,7 @@ case class TaricCode(taricCode: String) extends Ordered[TaricCode] {
 object TaricCode extends DeclarationPage with FieldMapping {
   implicit val format = Json.format[TaricCode]
 
-  val pointer: ExportsFieldPointer = CommodityDetails.combinedNomenclatureCodePointer
+  val pointer: ExportsFieldPointer = "taricCode"
 
   val taricCodeKey = "taricCode"
   val taricCodeLength = 4
