@@ -23,17 +23,19 @@ import models.DeclarationType.DeclarationType
 import models.viewmodels.TariffContentKey
 import models.ExportsFieldPointer.ExportsFieldPointer
 import models.FieldMapping
+import models.declaration.ImplicitlySequencedObject
 import play.api.data.{Form, Forms, Mapping}
 import play.api.libs.json.{Format, JsValue, Json}
 import services.DiffTools
 import services.DiffTools.{combinePointers, compareDifference, compareStringDifference, ExportsDeclarationDiff}
 import uk.gov.voa.play.form.ConditionalMappings._
 
-case class DeclarationAdditionalActors(eori: Option[Eori], partyType: Option[String]) extends DiffTools[DeclarationAdditionalActors] {
+case class DeclarationAdditionalActors(eori: Option[Eori], partyType: Option[String])
+    extends DiffTools[DeclarationAdditionalActors] with ImplicitlySequencedObject {
   def createDiff(original: DeclarationAdditionalActors, pointerString: ExportsFieldPointer, sequenceId: Option[Int] = None): ExportsDeclarationDiff =
     Seq(
-      compareDifference(original.eori, eori, combinePointers(pointerString, DeclarationAdditionalActors.eoriPointer, None)),
-      compareStringDifference(original.partyType, partyType, combinePointers(pointerString, DeclarationAdditionalActors.partyTypePointer, None))
+      compareDifference(original.eori, eori, combinePointers(pointerString, sequenceId)),
+      compareStringDifference(original.partyType, partyType, combinePointers(pointerString, sequenceId))
     ).flatten
 
   import DeclarationAdditionalActors._
