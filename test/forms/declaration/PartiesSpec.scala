@@ -28,19 +28,20 @@ import services.AlteredField
 import services.AlteredField.constructAlteredField
 
 class PartiesSpec extends UnitSpec {
+  val address = Address("latestFullName", "latestAddressLine", "latestTownOrCity", "latestPostCode", "latestCountry")
+  val otherAddress = address.copy(fullName = "originalFullName")
+
   "Address.createDiff" should {
     val baseFieldPointer = Address.pointer
     val originalValue = "original"
 
     "produce the expected ExportsDeclarationDiff instance" when {
       "no differences exist between the two versions" in {
-        val address = Address("latestFullName", "latestAddressLine", "latestTownOrCity", "latestPostCode", "latestCountry")
         address.createDiff(address, baseFieldPointer) mustBe Seq.empty[AlteredField]
       }
 
       "the original version's fullName field has a different value to this one" in {
         val fieldPointer = s"${baseFieldPointer}.${Address.fullNamePointer}"
-        val address = Address("latestFullName", "latestAddressLine", "latestTownOrCity", "latestPostCode", "latestCountry")
         address.createDiff(address.copy(fullName = originalValue), baseFieldPointer) mustBe Seq(
           constructAlteredField(fieldPointer, originalValue, address.fullName)
         )
@@ -48,7 +49,7 @@ class PartiesSpec extends UnitSpec {
 
       "the original version's addressLine field has a different value to this one" in {
         val fieldPointer = s"${baseFieldPointer}.${Address.addressLinePointer}"
-        val address = Address("latestFullName", "latestAddressLine", "latestTownOrCity", "latestPostCode", "latestCountry")
+
         address.createDiff(address.copy(addressLine = originalValue), baseFieldPointer) mustBe Seq(
           constructAlteredField(fieldPointer, originalValue, address.addressLine)
         )
@@ -56,7 +57,6 @@ class PartiesSpec extends UnitSpec {
 
       "the original version's townOrCity field has a different value to this one" in {
         val fieldPointer = s"${baseFieldPointer}.${Address.townOrCityPointer}"
-        val address = Address("latestFullName", "latestAddressLine", "latestTownOrCity", "latestPostCode", "latestCountry")
         address.createDiff(address.copy(townOrCity = originalValue), baseFieldPointer) mustBe Seq(
           constructAlteredField(fieldPointer, originalValue, address.townOrCity)
         )
@@ -64,7 +64,6 @@ class PartiesSpec extends UnitSpec {
 
       "the original version's postCode field has a different value to this one" in {
         val fieldPointer = s"${baseFieldPointer}.${Address.postCodePointer}"
-        val address = Address("latestFullName", "latestAddressLine", "latestTownOrCity", "latestPostCode", "latestCountry")
         address.createDiff(address.copy(postCode = originalValue), baseFieldPointer) mustBe Seq(
           constructAlteredField(fieldPointer, originalValue, address.postCode)
         )
@@ -72,15 +71,12 @@ class PartiesSpec extends UnitSpec {
 
       "the original version's country field has a different value to this one" in {
         val fieldPointer = s"${baseFieldPointer}.${Address.countryPointer}"
-        val address = Address("latestFullName", "latestAddressLine", "latestTownOrCity", "latestPostCode", "latestCountry")
         address.createDiff(address.copy(country = originalValue), baseFieldPointer) mustBe Seq(
           constructAlteredField(fieldPointer, originalValue, address.country)
         )
       }
     }
   }
-
-  val address = Address("latestFullName", "latestAddressLine", "latestTownOrCity", "latestPostCode", "latestCountry")
 
   "EntityDetails.createDiff" should {
     val baseFieldPointer = EntityDetails.pointer
@@ -184,20 +180,50 @@ class PartiesSpec extends UnitSpec {
         )
       }
 
-      "the original version's consigneeDetails field has a different value to this one" in {
-        val fieldPointer = s"${baseFieldPointer}.${ConsigneeDetails.pointer}"
-        val originalValue = Some(ConsigneeDetails(EntityDetails(None, None)))
-        parties.createDiff(parties.copy(consigneeDetails = originalValue), baseFieldPointer) mustBe Seq(
-          constructAlteredField(fieldPointer, originalValue, parties.consigneeDetails)
-        )
+      "the original version's consigneeDetails field has a different value to this one" when {
+        "one value is none" in {
+          val fieldPointer = s"${baseFieldPointer}.${ConsigneeDetails.pointer}"
+          val originalValue = Some(ConsigneeDetails(EntityDetails(None, None)))
+          parties.createDiff(parties.copy(consigneeDetails = originalValue), baseFieldPointer) mustBe Seq(
+            constructAlteredField(fieldPointer, originalValue, parties.consigneeDetails)
+          )
+        }
+
+        "both have some value" in {
+          val parties = Parties().copy(consigneeDetails = Some(ConsigneeDetails(EntityDetails(None, Some(otherAddress)))))
+          val fieldPointer = s"${baseFieldPointer}.${ConsigneeDetails.pointer}.${Address.pointer}.${Address.fullNamePointer}"
+          val originalValue = Some(ConsigneeDetails(EntityDetails(None, Some(address))))
+          parties.createDiff(parties.copy(consigneeDetails = originalValue), baseFieldPointer) mustBe Seq(
+            constructAlteredField(
+              fieldPointer,
+              originalValue.flatMap(_.details.address.map(_.fullName)),
+              parties.consigneeDetails.flatMap(_.details.address.map(_.fullName))
+            )
+          )
+        }
       }
 
-      "the original version's consignorDetails field has a different value to this one" in {
-        val fieldPointer = s"${baseFieldPointer}.${ConsignorDetails.pointer}"
-        val originalValue = Some(ConsignorDetails(EntityDetails(None, None)))
-        parties.createDiff(parties.copy(consignorDetails = originalValue), baseFieldPointer) mustBe Seq(
-          constructAlteredField(fieldPointer, originalValue, parties.consignorDetails)
-        )
+      "the original version's consignorDetails field has a different value to this one" when {
+        "one value is none" in {
+          val fieldPointer = s"${baseFieldPointer}.${ConsignorDetails.pointer}"
+          val originalValue = Some(ConsignorDetails(EntityDetails(None, None)))
+          parties.createDiff(parties.copy(consignorDetails = originalValue), baseFieldPointer) mustBe Seq(
+            constructAlteredField(fieldPointer, originalValue, parties.consignorDetails)
+          )
+        }
+
+        "both have some value" in {
+          val parties = Parties().copy(consignorDetails = Some(ConsignorDetails(EntityDetails(None, Some(otherAddress)))))
+          val fieldPointer = s"${baseFieldPointer}.${ConsignorDetails.pointer}.${Address.pointer}.${Address.fullNamePointer}"
+          val originalValue = Some(ConsignorDetails(EntityDetails(None, Some(address))))
+          parties.createDiff(parties.copy(consignorDetails = originalValue), baseFieldPointer) mustBe Seq(
+            constructAlteredField(
+              fieldPointer,
+              originalValue.flatMap(_.details.address.map(_.fullName)),
+              parties.consignorDetails.flatMap(_.details.address.map(_.fullName))
+            )
+          )
+        }
       }
 
       "the original version's declarantDetails field has a different value to this one" in {
@@ -232,12 +258,27 @@ class PartiesSpec extends UnitSpec {
         )
       }
 
-      "the original version's carrierDetails field has a different value to this one" in {
-        val fieldPointer = s"${baseFieldPointer}.${CarrierDetails.pointer}"
-        val originalValue = Some(CarrierDetails(EntityDetails(None, None)))
-        parties.createDiff(parties.copy(carrierDetails = originalValue), baseFieldPointer) mustBe Seq(
-          constructAlteredField(fieldPointer, originalValue, parties.carrierDetails)
-        )
+      "the original version's carrierDetails field has a different value to this one" when {
+        "one value is none" in {
+          val fieldPointer = s"${baseFieldPointer}.${CarrierDetails.pointer}"
+          val originalValue = Some(CarrierDetails(EntityDetails(None, None)))
+          parties.createDiff(parties.copy(carrierDetails = originalValue), baseFieldPointer) mustBe Seq(
+            constructAlteredField(fieldPointer, originalValue, parties.carrierDetails)
+          )
+        }
+
+        "both have some value" in {
+          val parties = Parties().copy(carrierDetails = Some(CarrierDetails(EntityDetails(None, Some(otherAddress)))))
+          val fieldPointer = s"${baseFieldPointer}.${CarrierDetails.pointer}.${Address.pointer}.${Address.fullNamePointer}"
+          val originalValue = Some(CarrierDetails(EntityDetails(None, Some(address))))
+          parties.createDiff(parties.copy(carrierDetails = originalValue), baseFieldPointer) mustBe Seq(
+            constructAlteredField(
+              fieldPointer,
+              originalValue.flatMap(_.details.address.map(_.fullName)),
+              parties.carrierDetails.flatMap(_.details.address.map(_.fullName))
+            )
+          )
+        }
       }
 
       "the original version's personPresentingGoodsDetails field has a different value to this one" in {
