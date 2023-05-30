@@ -18,11 +18,8 @@ package mock
 
 import base.MockExportCacheService
 import config.featureFlags._
-import controllers.actions.FeatureFlagAction
 import org.scalatest.{BeforeAndAfterEach, Suite}
 import org.scalatestplus.mockito.MockitoSugar
-
-import scala.concurrent.ExecutionContext
 
 trait FeatureFlagMocks extends MockExportCacheService with BeforeAndAfterEach {
   self: MockitoSugar with Suite =>
@@ -37,5 +34,4 @@ trait FeatureFlagMocks extends MockExportCacheService with BeforeAndAfterEach {
 
   val mockFeatureSwitchConfig: FeatureSwitchConfig = mock[FeatureSwitchConfig]
 
-  val mockFeatureFlagAction = new FeatureFlagAction(mockFeatureSwitchConfig)(ExecutionContext.global)
 }

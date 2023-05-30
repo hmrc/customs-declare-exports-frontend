@@ -17,17 +17,15 @@
 package controllers.actions
 
 import com.google.inject.Inject
-import config.featureFlags.FeatureSwitchConfig
 import controllers.routes.RootController
-import features.Feature
+import play.api.http.HeaderNames.LOCATION
 import models.requests.JourneyRequest
 import play.api.Logging
 import play.api.mvc.{ActionRefiner, Result, Results}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class FeatureFlagAction @Inject() (featureSwitchConfig: FeatureSwitchConfig)(implicit val exc: ExecutionContext)
-    extends ActionRefiner[JourneyRequest, JourneyRequest] with Logging {
+class AmendmentDraftFilterAction @Inject() ()(implicit val exc: ExecutionContext) extends ActionRefiner[JourneyRequest, JourneyRequest] with Logging {
 
   type RefineResult[A] = Future[Either[Result, JourneyRequest[A]]]
 
@@ -36,18 +34,18 @@ class FeatureFlagAction @Inject() (featureSwitchConfig: FeatureSwitchConfig)(imp
   override def refine[A](request: JourneyRequest[A]): RefineResult[A] =
     Future.successful(Right(request))
 
-  def apply(feature: Feature.Value): ActionRefiner[JourneyRequest, JourneyRequest] =
+  def apply(): ActionRefiner[JourneyRequest, JourneyRequest] =
     new ActionRefiner[JourneyRequest, JourneyRequest] {
       override protected def executionContext: ExecutionContext = exc
 
-      override protected def refine[A](request: JourneyRequest[A]): RefineResult[A] = refineOnFeatureFlag(request, feature)
+      override protected def refine[A](request: JourneyRequest[A]): RefineResult[A] = refineOnAmendmentDraft(request)
     }
 
-  private def refineOnFeatureFlag[A](request: JourneyRequest[A], feature: Feature.Value): RefineResult[A] =
+  private def refineOnAmendmentDraft[A](request: JourneyRequest[A]): RefineResult[A] =
     Future.successful {
-      if (featureSwitchConfig.isFeatureOn(feature)) Right(request)
+      if (!request.cacheModel.isAmendmentDraft) Right(request)
       else {
-        logger.warn(s"Redirection to start for eori ${request.user.eori}, as feature flag $feature is disabled")
+        logger.warn(s"Redirection to summary for eori ${request.user.eori}, as amendment draft from ${request.headers.get(LOCATION)}")
         Left(Results.Redirect(RootController.displayPage))
       }
     }
