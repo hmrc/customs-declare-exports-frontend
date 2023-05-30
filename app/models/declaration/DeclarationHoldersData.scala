@@ -24,10 +24,13 @@ import play.api.libs.json.Json
 import services.DiffTools
 import services.DiffTools.{combinePointers, ExportsDeclarationDiff}
 
-case class DeclarationHoldersData(holders: Seq[DeclarationHolder], isRequired: Option[YesNoAnswer]) extends DiffTools[DeclarationHoldersData] {
+case class DeclarationHoldersData(holders: Seq[DeclarationHolder], isRequired: Option[YesNoAnswer])
+    extends DiffTools[DeclarationHoldersData] with IsoData[DeclarationHolder] {
   // isRequired field is not used to generate the WCO XML
+  override val subPointer: ExportsFieldPointer = DeclarationHolder.pointer
+  override val elements: Seq[DeclarationHolder] = holders
   def createDiff(original: DeclarationHoldersData, pointerString: ExportsFieldPointer, sequenceId: Option[Int] = None): ExportsDeclarationDiff =
-    createDiff(original.holders, holders, combinePointers(pointerString, DeclarationHolder.pointer, None))
+    createDiff(original.holders, holders, combinePointers(pointerString, subPointer, None))
   def containsHolder(holder: DeclarationHolder): Boolean = holders.contains(holder)
 }
 
