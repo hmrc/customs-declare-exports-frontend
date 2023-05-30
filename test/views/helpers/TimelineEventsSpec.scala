@@ -31,6 +31,7 @@ import views.html.components.gds.{link, linkButton, paragraphBody}
 import views.html.components.upload_files_partial_for_timeline
 
 import java.time.ZonedDateTime
+import java.time.temporal.ChronoUnit.SECONDS
 import java.util.UUID
 
 class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injector {
@@ -184,7 +185,7 @@ class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injec
 
       val content = timelineEvents(0).content.get.body
       val expectedButtonUrl = RejectedNotificationsController.displayPageOnUnacceptedAmendment(latestAction.id).url
-      val expectedLinkUrl = SubmissionController.cancelAmendment(submission.actions(1).decId).url
+      val expectedLinkUrl = SubmissionController.cancelAmendment(latestAction.decId).url
       content must include(expectedButtonUrl)
       content must include(expectedLinkUrl)
 
@@ -224,6 +225,25 @@ class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injec
       timelineEvents(4).dateTime mustBe submission.actions(1).requestTimestamp
     }
 
+    "generate the expected sequence of TimelineEvent instances for multiple amendments, with the last one rejected" in {
+      val timelineEvents = createTimelineFromSubmission(multipleAmendments)
+      val latestAction = multipleAmendments.actions(4)
+
+      timelineEvents.size mustBe 9
+
+      timelineEvents(0).title mustBe messages("submission.enhancedStatus.timeline.title.amendment.rejected")
+      timelineEvents(0).dateTime mustBe latestAction.notifications.get(0).dateTimeIssued
+
+      val content = timelineEvents(0).content.get.body
+      val expectedButtonUrl = RejectedNotificationsController.displayPageOnUnacceptedAmendment(latestAction.id).url
+      val expectedLinkUrl = SubmissionController.cancelAmendment(latestAction.decId).url
+      content must include(expectedButtonUrl)
+      content must include(expectedLinkUrl)
+
+      timelineEvents(1).title mustBe messages("submission.enhancedStatus.timeline.title.amendment.requested")
+      timelineEvents(1).dateTime mustBe latestAction.notifications.get(0).dateTimeIssued
+    }
+
     "generate the expected sequence of TimelineEvent instances" when {
       "the amendment is external and" when {
 
@@ -234,7 +254,7 @@ class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injec
           timelineEvents.size mustBe 2
 
           timelineEvents(0).title mustBe messages(s"submission.enhancedStatus.timeline.title.amendment.external")
-          timelineEvents(0).dateTime mustBe externalAmendment(1).requestTimestamp
+          timelineEvents(0).dateTime mustBe externalAmendment(1).requestTimestamp.truncatedTo(SECONDS)
           val expectedContent = messages("submission.enhancedStatus.timeline.content.external.amendment")
           timelineEvents(0).content.value.body must include(expectedContent)
 
@@ -387,8 +407,9 @@ class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injec
 
 object TimelineEventsSpec {
 
-  val amendmentRequest = Json
-    .parse(s"""[
+  val amendmentRequest =
+    Json
+      .parse(s"""[
          | {
          |   "id" : "7f73dc47-6aaa-4122-b0ef-547e500c81e7",
          |   "requestType" : "SubmissionRequest",
@@ -411,7 +432,7 @@ object TimelineEventsSpec {
          | }
          |]
          |""".stripMargin)
-    .as[Seq[Action]]
+      .as[Seq[Action]]
 
   val amendmentUnsuccessfulLatest = (status: EnhancedStatus) =>
     Json
@@ -523,8 +544,96 @@ object TimelineEventsSpec {
          |}""".stripMargin)
       .as[Submission]
 
-  val amendmentGranted = Json
-    .parse(s"""[
+  val multipleAmendments =
+    Json
+      .parse(s"""{
+         |    "uuid" : "ee096b12-e0d2-4952-8563-987d096bdeec",
+         |    "eori" : "GB7172755067703",
+         |    "lrn" : "LEGAL DEC TEST",
+         |    "ducr" : "8GB123456184041-101SHIP1",
+         |    "latestEnhancedStatus" : "ON_HOLD",
+         |    "enhancedStatusLastUpdated" : "2023-05-19T08:38:06Z[UTC]",
+         |    "actions" : [
+         |        {
+         |            "id" : "28852392-857f-4a1f-98e0-9347547d402a",
+         |            "requestType" : "SubmissionRequest",
+         |            "decId" : "ee096b12-e0d2-4952-8563-987d096bdeec",
+         |            "versionNo" : 1,
+         |            "notifications" : [
+         |                {
+         |                    "notificationId" : "1f38b191-a40f-4531-8af4-af75d03ffd9a",
+         |                    "dateTimeIssued" : "2023-05-19T08:11:54Z[UTC]",
+         |                    "enhancedStatus" : "RECEIVED"
+         |                }
+         |            ],
+         |            "requestTimestamp" : "2023-05-19T08:11:53.384315Z[UTC]"
+         |        },
+         |        {
+         |            "id" : "8c3d6681-9cff-49d4-8c12-9d6cd7fe15d4",
+         |            "requestType" : "AmendmentRequest",
+         |            "decId" : "df9704e0-1e91-4d52-90cf-e84614329cd8",
+         |            "versionNo" : 2,
+         |            "notifications" : [
+         |                {
+         |                    "notificationId" : "6499dec5-bcaf-4306-8a85-5db6e1a27d22",
+         |                    "dateTimeIssued" : "2023-05-19T08:12:42Z[UTC]",
+         |                    "enhancedStatus" : "CUSTOMS_POSITION_GRANTED"
+         |                }
+         |            ],
+         |            "requestTimestamp" : "2023-05-19T08:12:41.08387Z[UTC]"
+         |        },
+         |        {
+         |            "id" : "3b3cdf4f-9d79-4111-99f1-83802e3d6bfd",
+         |            "requestType" : "AmendmentRequest",
+         |            "decId" : "57657e30-3f08-4e34-9a50-95072db30824",
+         |            "versionNo" : 3,
+         |            "notifications" : [
+         |                {
+         |                    "notificationId" : "d85c58a4-7603-4d27-8570-de4a7df7e8bb",
+         |                    "dateTimeIssued" : "2023-05-19T08:13:42Z[UTC]",
+         |                    "enhancedStatus" : "CUSTOMS_POSITION_GRANTED"
+         |                }
+         |            ],
+         |            "requestTimestamp" : "2023-05-19T08:13:41.76615Z[UTC]"
+         |        },
+         |        {
+         |            "id" : "f3bac271-aa92-45a1-90aa-185413ac3af7",
+         |            "requestType" : "AmendmentRequest",
+         |            "decId" : "5670b1ae-20b8-40d4-8e69-de779a0a6ce7",
+         |            "versionNo" : 4,
+         |            "notifications" : [
+         |                {
+         |                    "notificationId" : "925c514a-06d0-4140-b9bd-07840ab67fed",
+         |                    "dateTimeIssued" : "2023-05-19T08:37:25Z[UTC]",
+         |                    "enhancedStatus" : "CUSTOMS_POSITION_GRANTED"
+         |                }
+         |            ],
+         |            "requestTimestamp" : "2023-05-19T08:37:24.132679Z[UTC]"
+         |        },
+         |        {
+         |            "id" : "60d9d629-f6e2-4e88-94e5-0e04bbf31dc1",
+         |            "requestType" : "AmendmentRequest",
+         |            "decId" : "68d52fbf-e24b-4a2b-a0bc-3505bbc86adb",
+         |            "versionNo" : 5,
+         |            "notifications" : [
+         |                {
+         |                    "notificationId" : "c466d79e-1974-41bb-810d-2f5da540b140",
+         |                    "dateTimeIssued" : "2023-05-19T08:38:06Z[UTC]",
+         |                    "enhancedStatus" : "ERRORS"
+         |                }
+         |            ],
+         |            "requestTimestamp" : "2023-05-19T08:38:06.183854Z[UTC]"
+         |        }
+         |    ],
+         |    "latestDecId" : "5670b1ae-20b8-40d4-8e69-de779a0a6ce7",
+         |    "latestVersionNo" : 4,
+         |    "mrn" : "23GB5HOC4VL41EYAA7"
+         |}""".stripMargin)
+      .as[Submission]
+
+  val amendmentGranted =
+    Json
+      .parse(s"""[
          |    {
          |      "id": "49cadcf1-167f-4c03-b4a4-5433cdea894e",
          |      "requestType" : "SubmissionRequest",
@@ -555,10 +664,11 @@ object TimelineEventsSpec {
          |    }
          |]
          |""".stripMargin)
-    .as[Seq[Action]]
+      .as[Seq[Action]]
 
-  val cancellationDenied = Json
-    .parse(s"""[
+  val cancellationDenied =
+    Json
+      .parse(s"""[
       |    {
       |      "id": "49cadcf1-167f-4c03-b4a4-5433cdea894e",
       |      "requestType" : "SubmissionRequest",
@@ -589,10 +699,11 @@ object TimelineEventsSpec {
       |    }
       |]
       |""".stripMargin)
-    .as[Seq[Action]]
+      .as[Seq[Action]]
 
-  val cancellationGranted = Json
-    .parse(s"""[
+  val cancellationGranted =
+    Json
+      .parse(s"""[
       |    {
       |      "id": "49cadcf1-167f-4c03-b4a4-5433cdea894e",
       |      "requestType" : "SubmissionRequest",
@@ -628,10 +739,11 @@ object TimelineEventsSpec {
       |    }
       |]
       |""".stripMargin)
-    .as[Seq[Action]]
+      .as[Seq[Action]]
 
-  val cancellationRequestNotConfirmedYet = Json
-    .parse(s"""[
+  val cancellationRequestNotConfirmedYet =
+    Json
+      .parse(s"""[
       |    {
       |      "id": "49cadcf1-167f-4c03-b4a4-5433cdea894e",
       |      "requestType" : "SubmissionRequest",
@@ -662,10 +774,11 @@ object TimelineEventsSpec {
       |    }
       |]
       |""".stripMargin)
-    .as[Seq[Action]]
+      .as[Seq[Action]]
 
-  val cancellationRequest = Json
-    .parse(s"""[
+  val cancellationRequest =
+    Json
+      .parse(s"""[
       |  {
       |      "id" : "8fdfd197-04ee-488e-910c-786cbfa63edf",
       |      "requestType" : "SubmissionRequest",
@@ -700,10 +813,11 @@ object TimelineEventsSpec {
       |      "versionNo" : 1
       |  }
       |]""".stripMargin)
-    .as[Seq[Action]]
+      .as[Seq[Action]]
 
-  val externalAmendment = Json
-    .parse(s"""[
+  val externalAmendment =
+    Json
+      .parse(s"""[
       |  {
       |     "id" : "7f73dc47-6aaa-4122-b0ef-547e500c81e7",
       |      "requestType" : "SubmissionRequest",
@@ -730,5 +844,5 @@ object TimelineEventsSpec {
       |      "requestTimestamp" : "2023-03-27T12:46:20.993842Z[UTC]"
       |  }
       |]""".stripMargin)
-    .as[Seq[Action]]
+      .as[Seq[Action]]
 }
