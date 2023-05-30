@@ -18,7 +18,7 @@ package controllers.declaration
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
-import controllers.actions.{AuthAction, JourneyAction}
+import controllers.actions.{AmendmentDraftFilterAction, AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.{form, YesNoAnswers}
@@ -35,6 +35,7 @@ import views.html.declaration.link_ducr_to_mucr
 class LinkDucrToMucrController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
+  amendmentDraftFilterAction: AmendmentDraftFilterAction,
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
   mcc: MessagesControllerComponents,
@@ -42,7 +43,7 @@ class LinkDucrToMucrController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
 
-  def displayPage: Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayPage: Action[AnyContent] = (authenticate andThen journeyType andThen amendmentDraftFilterAction()) { implicit request =>
     val frm = form().withSubmissionErrors
     request.cacheModel.linkDucrToMucr match {
       case Some(yesNoAnswer) => Ok(linkDucrToMucrPage(frm.fill(yesNoAnswer)))
@@ -50,7 +51,7 @@ class LinkDucrToMucrController @Inject() (
     }
   }
 
-  def submitForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def submitForm(): Action[AnyContent] = (authenticate andThen journeyType andThen amendmentDraftFilterAction()).async { implicit request =>
     form()
       .bindFromRequest()
       .fold(
