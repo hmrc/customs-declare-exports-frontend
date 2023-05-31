@@ -19,6 +19,7 @@ package controllers.declaration
 import base.ControllerSpec
 import forms.Ducr
 import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED, STANDARD}
+import models.declaration.DeclarationStatus
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
@@ -35,9 +36,15 @@ class DucrEntryControllerSpec extends ControllerSpec with GivenWhenThen {
   private val ducrEntryPage = mock[ducr_entry]
 
   val controller =
-    new DucrEntryController(mockAuthAction, mockJourneyAction, mockExportsCacheService, navigator, stubMessagesControllerComponents(), ducrEntryPage)(
-      ec
-    )
+    new DucrEntryController(
+      mockAuthAction,
+      mockJourneyAction,
+      mockAmendmentDraftFilterAction,
+      mockExportsCacheService,
+      navigator,
+      stubMessagesControllerComponents(),
+      ducrEntryPage
+    )(ec)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -84,6 +91,18 @@ class DucrEntryControllerSpec extends ControllerSpec with GivenWhenThen {
         }
       }
     }
+
+    onEveryDeclarationJourney(withStatus(DeclarationStatus.AMENDMENT_DRAFT)) { implicit request =>
+      "return 303 (SEE_OTHER) and redirect" which {
+        "redirects to /saved-summary" in {
+          withNewCaching(request.cacheModel)
+
+          val result = controller.displayPage(getRequest())
+          status(result) must be(SEE_OTHER)
+          redirectLocation(result) mustBe Some(controllers.declaration.routes.SummaryController.displayPage.url)
+        }
+      }
+    }
   }
 
   "DucrEntryController on submitDucr" should {
@@ -125,6 +144,21 @@ class DucrEntryControllerSpec extends ControllerSpec with GivenWhenThen {
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe routes.LocalReferenceNumberController.displayPage
+      }
+    }
+
+    onEveryDeclarationJourney(withStatus(DeclarationStatus.AMENDMENT_DRAFT)) { implicit request =>
+      "return 303 (SEE_OTHER) and redirect" which {
+        "redirects to /saved-summary" in {
+
+          val correctForm = Json.toJson(Ducr(DUCR))
+
+          withNewCaching(request.cacheModel)
+
+          val result = controller.submitDucr(postRequest(correctForm))
+          status(result) must be(SEE_OTHER)
+          redirectLocation(result) mustBe Some(controllers.declaration.routes.SummaryController.displayPage.url)
+        }
       }
     }
 

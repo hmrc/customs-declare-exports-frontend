@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import controllers.actions.{AuthAction, JourneyAction}
+import controllers.actions.{AmendmentDraftFilterAction, AuthAction, JourneyAction}
 import controllers.declaration.routes.{DucrEntryController, TraderReferenceController}
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
@@ -37,6 +37,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class DucrChoiceController @Inject() (
   authenticate: AuthAction,
   journeyAction: JourneyAction,
+  amendmentDraftFilterAction: AmendmentDraftFilterAction,
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
   mcc: MessagesControllerComponents,
@@ -44,7 +45,8 @@ class DucrChoiceController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
 
-  private val authAndAcceptedTypes = authenticate andThen journeyAction(List(STANDARD, CLEARANCE, SIMPLIFIED, OCCASIONAL))
+  private val authAndAcceptedTypes =
+    authenticate andThen journeyAction(List(STANDARD, CLEARANCE, SIMPLIFIED, OCCASIONAL)) andThen amendmentDraftFilterAction()
 
   val displayPage: Action[AnyContent] = authAndAcceptedTypes { implicit request =>
     val form = YesNoAnswer.form(errorKey = "declaration.ducr.choice.answer.empty").withSubmissionErrors

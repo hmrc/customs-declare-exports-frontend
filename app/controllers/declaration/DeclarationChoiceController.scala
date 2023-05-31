@@ -50,8 +50,9 @@ class DeclarationChoiceController @Inject() (
     request.declarationId match {
       case Some(id) =>
         exportsCacheService.get(id).map {
-          case Some(declaration) => Ok(choicePage(form.fill(DeclarationChoice(declaration.`type`))))
-          case _                 => Ok(choicePage(form))
+          case Some(declaration) if declaration.isAmendmentDraft => Redirect(routes.SummaryController.displayPage)
+          case Some(declaration)                                 => Ok(choicePage(form.fill(DeclarationChoice(declaration.`type`))))
+          case _                                                 => Ok(choicePage(form))
         }
 
       case _ => Future.successful(Ok(choicePage(form)))
@@ -65,8 +66,19 @@ class DeclarationChoiceController @Inject() (
         formWithErrors => Future.successful(BadRequest(choicePage(formWithErrors))),
         declarationType =>
           request.declarationId match {
-            case Some(id) => updateDeclarationType(id, declarationType.value).map(_ => nextPage(id))
-            case _        => create(declarationType.value).map(created => nextPage(created.id))
+            case Some(id) =>
+              val updatedDeclaration: Future[Option[ExportsDeclaration]] = exportsCacheService.get(id).map { maybeDeclaration =>
+                maybeDeclaration
+                  .map(_.updateType(declarationType.value))
+                  .map(clearAuthorisationProcedureCodeChoiceIfRequired)
+              }
+
+              updatedDeclaration flatMap {
+                case Some(declaration) if declaration.isAmendmentDraft => Future.successful(Redirect(routes.SummaryController.displayPage))
+                case maybeDeclaration                                  => updateDeclarationType(maybeDeclaration, id).map(_ => nextPage(id))
+              }
+
+            case _ => create(declarationType.value).map(created => nextPage(created.id))
           }
       )
   }
@@ -90,18 +102,13 @@ class DeclarationChoiceController @Inject() (
     Redirect(AdditionalDeclarationTypeController.displayPage)
       .addingToSession(SessionHelper.declarationUuid -> declarationId)
 
-  private def updateDeclarationType(id: String, `type`: DeclarationType)(implicit hc: HeaderCarrier): Future[Option[ExportsDeclaration]] = {
-    val updatedDeclaration = exportsCacheService.get(id).map { maybeDeclaration =>
-      maybeDeclaration
-        .map(_.updateType(`type`))
-        .map(clearAuthorisationProcedureCodeChoiceIfRequired)
-    }
-
-    updatedDeclaration.flatMap {
+  private def updateDeclarationType(maybeDeclaration: Option[ExportsDeclaration], id: String)(
+    implicit hc: HeaderCarrier
+  ): Future[Option[ExportsDeclaration]] =
+    maybeDeclaration match {
       case Some(declaration) => exportsCacheService.update(declaration).map(Some(_))
       case None =>
         logger.error(s"Failed to find declaration for id $id")
         Future.successful(None)
     }
-  }
 }
