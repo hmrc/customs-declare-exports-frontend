@@ -18,7 +18,6 @@ package controllers.actions
 
 import com.google.inject.Inject
 import controllers.declaration.routes.SummaryController
-import play.api.http.HeaderNames.LOCATION
 import models.requests.JourneyRequest
 import play.api.Logging
 import play.api.mvc.{ActionRefiner, Result, Results}
@@ -45,7 +44,7 @@ class AmendmentDraftFilterAction @Inject() ()(implicit val exc: ExecutionContext
     Future.successful {
       if (!request.cacheModel.isAmendmentDraft) Right(request)
       else {
-        logger.warn(s"Redirection to summary for eori ${request.user.eori}, as amendment draft from ${request.headers.get(LOCATION)}")
+        logger.warn(s"Redirection to summary for eori ${request.user.eori}, as amendment draft from ${request.headers.get("Raw-Request-URI")}")
         Left(Results.Redirect(SummaryController.displayPage))
       }
     }

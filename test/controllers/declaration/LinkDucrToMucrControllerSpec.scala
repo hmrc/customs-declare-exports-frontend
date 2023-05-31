@@ -93,7 +93,7 @@ class LinkDucrToMucrControllerSpec extends ControllerSpec {
     "return 303 (SEE_OTHER)" when {
       "AMENDMENT_DRAFT" which {
         "redirects to /saved-summary" in {
-          withNewCaching(aDeclaration(withStatus(DeclarationStatus.AMENDMENT_DRAFT), withMucr()))
+          withNewCaching(aDeclaration(withStatus(DeclarationStatus.AMENDMENT_DRAFT)))
 
           val result = controller.displayPage(getRequest())
           status(result) must be(SEE_OTHER)

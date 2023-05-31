@@ -22,6 +22,7 @@ import controllers.declaration.routes.DucrEntryController
 import forms.Lrn
 import forms.Lrn.form
 import models.DeclarationType._
+import models.declaration.DeclarationStatus
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
@@ -142,6 +143,12 @@ class LocalReferenceNumberViewSpec extends PageWithButtonsSpec with Injector {
     val backButton = createView.getElementById("back-link")
     backButton must containMessage(backToPreviousQuestionCaption)
     backButton must haveHref(DucrEntryController.displayPage.url)
+  }
+
+  "hide 'Back' button when AMENDMENT_DRAFT" in {
+
+    val backButton = createView(journeyRequest(aDeclaration(withStatus(DeclarationStatus.AMENDMENT_DRAFT)))).getElementById("back-link")
+    backButton must not(containMessage(backToPreviousQuestionCaption))
   }
 
 }

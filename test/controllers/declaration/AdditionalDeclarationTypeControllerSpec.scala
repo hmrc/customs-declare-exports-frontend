@@ -23,6 +23,7 @@ import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypePage.radioButtonGroupId
 import models.DeclarationType
 import models.DeclarationType._
+import models.declaration.DeclarationStatus
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
@@ -40,6 +41,7 @@ class AdditionalDeclarationTypeControllerSpec extends ControllerSpec {
   val controller = new AdditionalDeclarationTypeController(
     mockAuthAction,
     mockJourneyAction,
+    mockAmendmentDraftFilterAction,
     mockExportsCacheService,
     navigator,
     stubMessagesControllerComponents(),
@@ -96,6 +98,18 @@ class AdditionalDeclarationTypeControllerSpec extends ControllerSpec {
         }
       }
     }
+
+    "return 303 (SEE_OTHER)" when {
+      "AMENDMENT_DRAFT" which {
+        "redirects to /saved-summary" in {
+          withNewCaching(aDeclaration(withStatus(DeclarationStatus.AMENDMENT_DRAFT)))
+
+          val result = controller.displayPage(getRequest())
+          status(result) must be(SEE_OTHER)
+          redirectLocation(result) mustBe Some(controllers.declaration.routes.SummaryController.displayPage.url)
+        }
+      }
+    }
   }
 
   "AdditionalDeclarationTypeController.submitForm" should {
@@ -116,6 +130,20 @@ class AdditionalDeclarationTypeControllerSpec extends ControllerSpec {
             val result = controller.submitForm()(postRequest(JsString("x")))
             status(result) must be(BAD_REQUEST)
           }
+        }
+      }
+    }
+
+    "return 303 (SEE_OTHER)" when {
+      "AMENDMENT_DRAFT" which {
+        "redirects to /saved-summary" in {
+          withNewCaching(aDeclaration(withStatus(DeclarationStatus.AMENDMENT_DRAFT), withMucr()))
+
+          val correctForm = Json.obj(radioButtonGroupId -> AdditionalDeclarationType.values.head.toString)
+
+          val result = controller.submitForm()(postRequest(correctForm))
+          status(result) must be(SEE_OTHER)
+          redirectLocation(result) mustBe Some(controllers.declaration.routes.SummaryController.displayPage.url)
         }
       }
     }
