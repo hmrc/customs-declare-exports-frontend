@@ -29,6 +29,7 @@ import views.html.components.gds.{link, linkButton, paragraphBody}
 import views.html.components.upload_files_partial_for_timeline
 
 import java.time.ZonedDateTime
+import java.time.temporal.ChronoUnit.SECONDS
 import java.util.UUID
 import javax.inject.{Inject, Singleton}
 
@@ -126,7 +127,7 @@ class TimelineEvents @Inject() (
   }
 
   private def amendmentEvent(action: Action): NotificationEvent = {
-    val notificationSummary = NotificationSummary(UUID.randomUUID, action.requestTimestamp, AMENDED)
+    val notificationSummary = NotificationSummary(UUID.randomUUID, action.requestTimestamp.truncatedTo(SECONDS), AMENDED)
     NotificationEvent(action.id, action.requestType, notificationSummary)
   }
 
