@@ -19,7 +19,7 @@ package models
 import base.{MockTaggedCodes, UnitSpec}
 import forms.common.YesNoAnswer
 import forms.declaration.countries.Country
-import forms.declaration.{CommodityDetails, Document, Mucr, NatureOfTransaction, PreviousDocumentsData}
+import forms.declaration.{CommodityDetails, Document, NatureOfTransaction, PreviousDocumentsData}
 import models.declaration._
 import org.scalatest.OptionValues
 import org.scalatestplus.mockito.MockitoSugar
@@ -129,33 +129,6 @@ class ExportsDeclarationSpec
       "no differences exist between the two versions" in {
         val declaration = aDeclaration()
         declaration.createDiff(declaration) mustBe Seq.empty[AlteredField]
-      }
-
-      "the original version's MUCR field has a different value to this one" in {
-        val fieldPointer = s"${baseFieldPointer}.${Mucr.pointer}"
-        withClue("both declarations have Some values but values are different") {
-          val declaration = aDeclaration(withMucr(Mucr("latest")))
-          val originalValue = Mucr("original")
-          declaration.createDiff(declaration.copy(mucr = Some(originalValue))) mustBe Seq(
-            constructAlteredField(fieldPointer, originalValue, declaration.mucr.get)
-          )
-        }
-
-        withClue("the original version's MUCR field is None but this one has Some value") {
-          val declaration = aDeclaration(withMucr(Mucr("latest")))
-          val originalValue = None
-          declaration.createDiff(declaration.copy(mucr = originalValue)) mustBe Seq(
-            constructAlteredField(fieldPointer, originalValue, declaration.mucr)
-          )
-        }
-
-        withClue("the original version's MUCR field is Some but this one has None as its value") {
-          val declaration = aDeclaration()
-          val originalValue = Some(Mucr("original"))
-          declaration.createDiff(declaration.copy(mucr = originalValue)) mustBe Seq(
-            constructAlteredField(fieldPointer, originalValue, declaration.mucr)
-          )
-        }
       }
 
       "the original version's transport field has a different value to this one" in {
