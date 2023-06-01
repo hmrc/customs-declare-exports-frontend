@@ -22,6 +22,7 @@ import handlers.ErrorHandler
 import mock.ErrorHandlerMocks
 import models.declaration.notifications.Notification
 import models.declaration.submissions.Action
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.OptionValues
@@ -103,6 +104,7 @@ class RejectedNotificationsControllerSpec extends ControllerWithoutFormSpec with
   "RejectedNotificationsController.displayPageOnUnacceptedAmendment" should {
 
     "return 200 (OK)" when {
+
       "Action, declaration and notification are found" in {
         fetchAction(failedAction)
         fetchDeclaration(failedAction.decId.value)
@@ -112,6 +114,21 @@ class RejectedNotificationsControllerSpec extends ControllerWithoutFormSpec with
 
         status(result) mustBe OK
         verify(mockRejectedNotificationPage).apply(any(), any(), any[Option[String]], any())(any(), any())
+      }
+
+      "for a draft declaration of an unaccepted amendment" in {
+        val draftDeclarationId = "1234"
+        fetchAction(failedAction)
+        fetchDeclaration(draftDeclarationId)
+        fetchLatestNotification(failedNotification)
+
+        val result = controller.displayPageOnUnacceptedAmendment(failedAction.id, Some(draftDeclarationId))(getRequest())
+
+        status(result) mustBe OK
+
+        val captor = ArgumentCaptor.forClass(classOf[Option[String]])
+        verify(mockRejectedNotificationPage).apply(any(), any(), captor.capture(), any())(any(), any())
+        captor.getValue.asInstanceOf[Option[String]].value mustBe draftDeclarationId
       }
     }
 

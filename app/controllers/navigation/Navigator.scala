@@ -25,6 +25,7 @@ import forms.declaration._
 import models.DeclarationType._
 import models.ExportsDeclaration
 import models.requests.JourneyRequest
+import models.requests.SessionHelper.{getValue, submissionActionId}
 import play.api.mvc.{AnyContent, Call, Result, Results}
 import services.TariffApiService.SupplementaryUnitsNotRequired
 import services.{TaggedAuthCodes, TariffApiService}
@@ -53,9 +54,17 @@ class Navigator @Inject() (
 
   private def handleErrorFixMode(factory: Call, formAction: FormAction)(implicit request: JourneyRequest[_]): Result =
     (formAction, request.cacheModel.declarationMeta.parentDeclarationId) match {
-      case (SaveAndReturnToErrors, Some(parentId)) => Results.Redirect(RejectedNotificationsController.displayPage(parentId))
-      case (Add | Remove(_) | SaveAndContinue, _)  => setErrorFixMode(Results.Redirect(factory))
-      case _                                       => setErrorFixMode(Results.Redirect(factory).flashing(request.flash))
+      case (SaveAndReturnToErrors, Some(parentId)) =>
+        val call = getValue(submissionActionId).fold {
+          RejectedNotificationsController.displayPage(parentId)
+        } { actionId =>
+          val draftDeclarationId = request.cacheModel.id
+          RejectedNotificationsController.displayPageOnUnacceptedAmendment(actionId, Some(draftDeclarationId))
+        }
+        Results.Redirect(call)
+
+      case (Add | Remove(_) | SaveAndContinue, _) => setErrorFixMode(Results.Redirect(factory))
+      case _                                      => setErrorFixMode(Results.Redirect(factory).flashing(request.flash))
     }
 
   def backLink[A, B](page: DeclarationPage)(implicit request: JourneyRequest[_]): Call = {
