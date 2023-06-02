@@ -17,13 +17,13 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.declaration.routes.{TaricCodeAddController, ZeroRatedForVatController}
+import controllers.declaration.routes.{NactCodeSummaryController, TaricCodeAddController, ZeroRatedForVatController}
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.NatureOfTransaction
 import forms.declaration.NatureOfTransaction._
-import models.DeclarationType.{SIMPLIFIED, STANDARD}
+import models.DeclarationType._
 import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
@@ -65,7 +65,7 @@ class TaricCodeSummaryController @Inject() (
             case YesNoAnswers.no if eligibleForZeroVat || isLowValueDeclaration(itemId) =>
               navigator.continueTo(ZeroRatedForVatController.displayPage(itemId))
 
-            case YesNoAnswers.no => navigator.continueTo(routes.NactCodeSummaryController.displayPage(itemId))
+            case YesNoAnswers.no => navigator.continueTo(NactCodeSummaryController.displayPage(itemId))
           }
       )
   }
@@ -78,6 +78,8 @@ class TaricCodeSummaryController @Inject() (
       case _                                                                           => false
     }
 
+  val journeysOnLowValue = List(OCCASIONAL, SIMPLIFIED)
+
   private def isLowValueDeclaration(itemId: String)(implicit request: JourneyRequest[_]): Boolean =
-    request.declarationType == SIMPLIFIED && request.cacheModel.isLowValueDeclaration(itemId)
+    journeysOnLowValue.contains(request.declarationType) && request.cacheModel.isLowValueDeclaration(itemId)
 }

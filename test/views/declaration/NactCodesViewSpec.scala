@@ -91,7 +91,7 @@ class NactCodesViewSpec extends UnitViewSpec with Injector {
       }
     }
 
-    onSimplified { implicit request =>
+    onJourney(OCCASIONAL, SIMPLIFIED) { implicit request =>
       "display 'Back' button" when {
         "for 'low value' declarations" in {
           val item = anItem(withItemId(itemId), withProcedureCodes(additionalProcedureCodes = Seq(lowValueDeclaration)))

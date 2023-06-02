@@ -21,7 +21,6 @@ import controllers.declaration.routes.{NactCodeAddController, StatisticalValueCo
 import controllers.routes.RootController
 import forms.common.YesNoAnswer
 import forms.declaration.{NactCode, NactCodeFirst}
-import models.DeclarationType
 import models.DeclarationType._
 import models.declaration.ProcedureCodesData.lowValueDeclaration
 import org.mockito.ArgumentCaptor
@@ -75,7 +74,7 @@ class NactCodeSummaryControllerSpec extends ControllerSpec with OptionValues {
 
   "NACT Code Summary Controller" should {
 
-    onJourney(STANDARD, SUPPLEMENTARY, DeclarationType.OCCASIONAL, DeclarationType.SIMPLIFIED) { request =>
+    onJourney(STANDARD, SUPPLEMENTARY, OCCASIONAL, SIMPLIFIED) { request =>
       "return 200 (OK)" that {
         "display page method is invoked and cache contains data" in {
           val nactCode = NactCode("VATE")
@@ -147,23 +146,7 @@ class NactCodeSummaryControllerSpec extends ControllerSpec with OptionValues {
       }
     }
 
-    onSimplified { request =>
-      "re-direct to next question" when {
-        "user submits valid No answer for a 'low value' declaration" in {
-          val nactCode = NactCode("VATE")
-          val item = anItem(withNactCodes(nactCode), withProcedureCodes(additionalProcedureCodes = Seq(lowValueDeclaration)))
-          withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
-
-          val requestBody = Seq("yesNo" -> "No")
-          val result = controller.submitForm(item.id)(postRequestAsFormUrlEncoded(requestBody: _*))
-
-          await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe StatisticalValueController.displayPage(item.id)
-        }
-      }
-    }
-
-    onJourney(SIMPLIFIED, OCCASIONAL) { request =>
+    onJourney(OCCASIONAL, SIMPLIFIED) { request =>
       "re-direct to next question" when {
         "user submits valid No answer" in {
           val nactCode = NactCode("VATE")
@@ -175,6 +158,18 @@ class NactCodeSummaryControllerSpec extends ControllerSpec with OptionValues {
 
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe routes.PackageInformationSummaryController.displayPage(item.id)
+        }
+
+        "user submits valid No answer for a 'low value' declaration" in {
+          val nactCode = NactCode("VATE")
+          val item = anItem(withNactCodes(nactCode), withProcedureCodes(additionalProcedureCodes = Seq(lowValueDeclaration)))
+          withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
+
+          val requestBody = Seq("yesNo" -> "No")
+          val result = controller.submitForm(item.id)(postRequestAsFormUrlEncoded(requestBody: _*))
+
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe StatisticalValueController.displayPage(item.id)
         }
       }
     }

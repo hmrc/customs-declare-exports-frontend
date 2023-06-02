@@ -197,7 +197,7 @@ class TaricCodeSummaryControllerSpec extends ControllerSpec with OptionValues {
       }
     }
 
-    onSimplified { request =>
+    onJourney(OCCASIONAL, SIMPLIFIED) { request =>
       "re-direct to next question" when {
         "user submits valid No answer for a 'low value' declaration" in {
           val taricCode = TaricCode("QWER")
@@ -208,7 +208,7 @@ class TaricCodeSummaryControllerSpec extends ControllerSpec with OptionValues {
           val result = controller.submitForm(item.id)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe routes.ZeroRatedForVatController.displayPage(item.id)
+          thePageNavigatedTo mustBe ZeroRatedForVatController.displayPage(item.id)
         }
       }
     }

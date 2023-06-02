@@ -44,16 +44,16 @@ class NactCodeSummaryController @Inject() (
 
   import NactCodeSummaryController._
 
-  val validTypes = Seq(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL)
+  val validJourneys = List(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL)
 
-  def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
+  def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType(validJourneys)) { implicit request =>
     request.cacheModel.itemBy(itemId).flatMap(_.nactCodes) match {
       case Some(nactCodes) if nactCodes.nonEmpty => Ok(nactCodesPage(itemId, anotherYesNoForm.withSubmissionErrors, nactCodes))
       case _                                     => navigator.continueTo(NactCodeAddController.displayPage(itemId))
     }
   }
 
-  def submitForm(itemId: String): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
+  def submitForm(itemId: String): Action[AnyContent] = (authenticate andThen journeyType(validJourneys)) { implicit request =>
     val nactCodes = request.cacheModel.itemBy(itemId).flatMap(_.nactCodes).getOrElse(List.empty)
     anotherYesNoForm
       .bindFromRequest()
@@ -74,8 +74,12 @@ object NactCodeSummaryController {
 
   def nextPage(itemId: String)(implicit request: JourneyRequest[AnyContent]): Call =
     request.declarationType match {
-      case SUPPLEMENTARY | STANDARD                                       => StatisticalValueController.displayPage(itemId)
-      case SIMPLIFIED if request.cacheModel.isLowValueDeclaration(itemId) => StatisticalValueController.displayPage(itemId)
-      case SIMPLIFIED | OCCASIONAL                                        => routes.PackageInformationSummaryController.displayPage(itemId)
+      case SUPPLEMENTARY | STANDARD => StatisticalValueController.displayPage(itemId)
+
+      case SIMPLIFIED | OCCASIONAL if request.cacheModel.isLowValueDeclaration(itemId) =>
+        StatisticalValueController.displayPage(itemId)
+
+      case SIMPLIFIED | OCCASIONAL =>
+        routes.PackageInformationSummaryController.displayPage(itemId)
     }
 }
