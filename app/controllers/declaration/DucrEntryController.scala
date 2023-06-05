@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import controllers.actions.{AuthAction, JourneyAction}
+import controllers.actions.{AmendmentDraftFilterAction, AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.Ducr
 import forms.Ducr.form
@@ -35,6 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class DucrEntryController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
+  amendmentDraftFilterAction: AmendmentDraftFilterAction,
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
   mcc: MessagesControllerComponents,
@@ -42,7 +43,7 @@ class DucrEntryController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
 
-  val displayPage: Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  val displayPage: Action[AnyContent] = (authenticate andThen journeyType andThen amendmentDraftFilterAction) { implicit request =>
     val frm = form.withSubmissionErrors
     request.cacheModel.ducr match {
       case Some(data) => Ok(ducrEntryPage(frm.fill(data)))
@@ -50,7 +51,7 @@ class DucrEntryController @Inject() (
     }
   }
 
-  val submitDucr: Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  val submitDucr: Action[AnyContent] = (authenticate andThen journeyType andThen amendmentDraftFilterAction).async { implicit request =>
     form
       .bindFromRequest()
       .fold(formWithErrors => Future.successful(BadRequest(ducrEntryPage(formWithErrors))), updateCacheAndContinue(_))

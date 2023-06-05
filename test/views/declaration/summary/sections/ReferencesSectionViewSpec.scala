@@ -27,7 +27,7 @@ import controllers.declaration.routes.{
 }
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
-import models.declaration.DeclarationStatus.DRAFT
+import models.declaration.DeclarationStatus.{AMENDMENT_DRAFT, DRAFT}
 import models.DeclarationType
 import models.DeclarationType._
 import services.cache.ExportsTestHelper
@@ -50,9 +50,12 @@ class ReferencesSectionViewSpec extends UnitViewSpec with ExportsTestHelper with
     withUpdateDate(localDateTime)
   )
 
+  val amendmentData = data.copy(declarationMeta = data.declarationMeta.copy(status = AMENDMENT_DRAFT))
+
   val section = instanceOf[references_section]
 
   val view = section(data)(messages)
+  val amendmentView = section(amendmentData)(messages)
   val viewNoAnswers = section(aDeclaration(withType(DeclarationType.STANDARD)))(messages)
 
   val expectedCreatedTime = "28 November 2019 at 2:48pm"
@@ -146,22 +149,42 @@ class ReferencesSectionViewSpec extends UnitViewSpec with ExportsTestHelper with
       }
     }
 
-    "have 'Link to a MUCR' with change button" in {
-      val row = view.getElementsByClass("linkDucrToMucr-row")
-      row must haveSummaryKey(messages("declaration.summary.references.linkDucrToMucr"))
-      row must haveSummaryValue(YesNoAnswers.yes)
+    "have 'Link to a MUCR' row" which {
+      "has change button" in {
+        val row = view.getElementsByClass("linkDucrToMucr-row")
+        row must haveSummaryKey(messages("declaration.summary.references.linkDucrToMucr"))
+        row must haveSummaryValue(YesNoAnswers.yes)
 
-      row must haveSummaryActionsTexts("site.change", "declaration.summary.references.linkDucrToMucr.change")
-      row must haveSummaryActionWithPlaceholder(LinkDucrToMucrController.displayPage)
+        row must haveSummaryActionsTexts("site.change", "declaration.summary.references.linkDucrToMucr.change")
+        row must haveSummaryActionWithPlaceholder(LinkDucrToMucrController.displayPage)
+      }
+      "hides change button" in {
+        val row = amendmentView.getElementsByClass("linkDucrToMucr-row")
+        row must haveSummaryKey(messages("declaration.summary.references.linkDucrToMucr"))
+        row must haveSummaryValue(YesNoAnswers.yes)
+
+        row must not(haveSummaryActionsTexts("site.change", "declaration.summary.references.linkDucrToMucr.change"))
+        row must not(haveSummaryActionWithPlaceholder(LinkDucrToMucrController.displayPage))
+      }
     }
 
-    "have MUCR with change button" in {
-      val row = view.getElementsByClass("mucr-row")
-      row must haveSummaryKey(messages("declaration.summary.references.mucr"))
-      row must haveSummaryValue(MUCR.mucr)
+    "have MUCR row" which {
+      "has change button" in {
+        val row = view.getElementsByClass("mucr-row")
+        row must haveSummaryKey(messages("declaration.summary.references.mucr"))
+        row must haveSummaryValue(MUCR.mucr)
 
-      row must haveSummaryActionsTexts("site.change", "declaration.summary.references.mucr.change")
-      row must haveSummaryActionWithPlaceholder(MucrController.displayPage)
+        row must haveSummaryActionsTexts("site.change", "declaration.summary.references.mucr.change")
+        row must haveSummaryActionWithPlaceholder(MucrController.displayPage)
+      }
+      "hides change button" in {
+        val row = amendmentView.getElementsByClass("mucr-row")
+        row must haveSummaryKey(messages("declaration.summary.references.mucr"))
+        row must haveSummaryValue(MUCR.mucr)
+
+        row must not(haveSummaryActionsTexts("site.change", "declaration.summary.references.mucr.change"))
+        row must not(haveSummaryActionWithPlaceholder(MucrController.displayPage))
+      }
     }
   }
 

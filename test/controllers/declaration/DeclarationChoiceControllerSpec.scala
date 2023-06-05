@@ -23,6 +23,7 @@ import forms.declaration.AuthorisationProcedureCodeChoice.Choice1040
 import forms.declaration.DeclarationChoiceSpec
 import models.DeclarationType
 import models.DeclarationType.{DeclarationType, _}
+import models.declaration.DeclarationStatus
 import models.requests.SessionHelper
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
@@ -94,6 +95,23 @@ class DeclarationChoiceControllerSpec extends ControllerWithoutFormSpec with Opt
       }
     }
 
+    "return 303 (SEE_OTHER)" when {
+      "display page method is invoked with data in cache" which {
+        "is AMENDMENT_DRAFT" in {
+
+          val dec =
+            aDeclaration(withId("existingDeclarationId"), withType(DeclarationType.SUPPLEMENTARY), withStatus(DeclarationStatus.AMENDMENT_DRAFT))
+
+          withNewCaching(dec)
+
+          val result = controller.displayPage(getRequest())
+
+          status(result) must be(SEE_OTHER)
+          redirectLocation(result) must be(Some(controllers.declaration.routes.SummaryController.displayPage.url))
+        }
+      }
+    }
+
     "not select any choice " when {
       "cache empty" in {
         withNoDeclaration()
@@ -137,6 +155,18 @@ class DeclarationChoiceControllerSpec extends ControllerWithoutFormSpec with Opt
 
           status(result) must be(SEE_OTHER)
           redirectLocation(result) must be(Some(AdditionalDeclarationTypeController.displayPage.url))
+        }
+
+        s"user updates an existing $journeyType declaration" which {
+          "is an AMENDMENT_DRAFT" in {
+            val dec = aDeclaration(withId(existingDeclarationId), withType(journeyType), withStatus(DeclarationStatus.AMENDMENT_DRAFT))
+            withNewCaching(aDeclarationAfter(dec, withAuthorisationProcedureCodeChoice(Choice1040)))
+
+            val result = controller.submitChoice()(postChoiceRequest(createChoiceJSON(journeyType.toString), Some(existingDeclarationId)))
+
+            status(result) must be(SEE_OTHER)
+            redirectLocation(result) must be(Some(controllers.declaration.routes.SummaryController.displayPage.url))
+          }
         }
       }
     }

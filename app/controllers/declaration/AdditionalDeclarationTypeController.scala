@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import controllers.actions.{AuthAction, JourneyAction}
+import controllers.actions.{AmendmentDraftFilterAction, AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypePage
@@ -36,6 +36,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class AdditionalDeclarationTypeController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
+  amendmentDraftFilterAction: AmendmentDraftFilterAction,
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
   mcc: MessagesControllerComponents,
@@ -43,7 +44,7 @@ class AdditionalDeclarationTypeController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
 
-  def displayPage: Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayPage: Action[AnyContent] = (authenticate andThen journeyType andThen amendmentDraftFilterAction) { implicit request =>
     val form = AdditionalDeclarationTypePage.form.withSubmissionErrors
     request.cacheModel.additionalDeclarationType match {
       case Some(data) => Ok(additionalTypePage(form.fill(data)))
@@ -51,7 +52,7 @@ class AdditionalDeclarationTypeController @Inject() (
     }
   }
 
-  def submitForm: Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def submitForm: Action[AnyContent] = (authenticate andThen journeyType andThen amendmentDraftFilterAction).async { implicit request =>
     val form = AdditionalDeclarationTypePage.form.bindFromRequest()
     form
       .fold(

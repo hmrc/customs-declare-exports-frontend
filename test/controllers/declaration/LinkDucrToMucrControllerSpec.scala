@@ -21,6 +21,7 @@ import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import models.DeclarationType
 import models.DeclarationType.{OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
+import models.declaration.DeclarationStatus
 import models.requests.JourneyRequest
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -40,6 +41,7 @@ class LinkDucrToMucrControllerSpec extends ControllerSpec {
   val controller = new LinkDucrToMucrController(
     mockAuthAction,
     mockJourneyAction,
+    mockAmendmentDraftFilterAction,
     mockExportsCacheService,
     navigator,
     stubMessagesControllerComponents(),
@@ -87,6 +89,18 @@ class LinkDucrToMucrControllerSpec extends ControllerSpec {
         verifyPageInvoked
       }
     }
+
+    "return 303 (SEE_OTHER)" when {
+      "AMENDMENT_DRAFT" which {
+        "redirects to /saved-summary" in {
+          withNewCaching(aDeclaration(withStatus(DeclarationStatus.AMENDMENT_DRAFT)))
+
+          val result = controller.displayPage(getRequest())
+          status(result) must be(SEE_OTHER)
+          redirectLocation(result) mustBe Some(controllers.declaration.routes.SummaryController.displayPage.url)
+        }
+      }
+    }
   }
 
   "LinkDucrToMucrController on submitForm" should {
@@ -111,6 +125,20 @@ class LinkDucrToMucrControllerSpec extends ControllerSpec {
       onClearance { implicit request =>
         "answer is 'no'" in {
           verifyRedirect(YesNoAnswers.no, routes.EntryIntoDeclarantsRecordsController.displayPage)
+        }
+      }
+    }
+
+    "return 303 (SEE_OTHER)" when {
+      "AMENDMENT_DRAFT" which {
+        "redirects to /saved-summary" in {
+          withNewCaching(aDeclaration(withStatus(DeclarationStatus.AMENDMENT_DRAFT), withMucr()))
+
+          val correctForm = Json.obj("yesNo" -> YesNoAnswers.yes)
+
+          val result = controller.submitForm()(postRequest(correctForm))
+          status(result) must be(SEE_OTHER)
+          redirectLocation(result) mustBe Some(controllers.declaration.routes.SummaryController.displayPage.url)
         }
       }
     }

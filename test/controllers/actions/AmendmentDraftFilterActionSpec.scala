@@ -17,16 +17,13 @@
 package controllers.actions
 
 import base.{RequestBuilder, UnitWithMocksSpec}
-import com.typesafe.config.ConfigFactory
-import config.featureFlags.FeatureSwitchConfig
-import features.Feature
+import models.declaration.DeclarationStatus
 import models.requests.JourneyRequest
 import models.{IdentityData, SignedInUser}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.BDDMockito.`given`
 import org.mockito.Mockito.reset
 import org.scalatest.BeforeAndAfterEach
-import play.api.Configuration
 import play.api.mvc.{Result, Results}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -36,11 +33,9 @@ import uk.gov.hmrc.auth.core.Enrolments
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class FeatureFlagActionSpec extends UnitWithMocksSpec with BeforeAndAfterEach with ExportsDeclarationBuilder with RequestBuilder {
+class AmendmentDraftFilterActionSpec extends UnitWithMocksSpec with BeforeAndAfterEach with ExportsDeclarationBuilder with RequestBuilder {
 
   private val block = mock[JourneyRequest[_] => Future[Result]]
-  private val journey =
-    new JourneyRequest(buildAuthenticatedRequest(FakeRequest(), SignedInUser("eori", Enrolments(Set.empty), IdentityData())), aDeclaration())
 
   override def afterEach(): Unit = {
     reset(block)
@@ -50,14 +45,20 @@ class FeatureFlagActionSpec extends UnitWithMocksSpec with BeforeAndAfterEach wi
   "refine" should {
 
     "permit request" when {
-      "feature flag enabled" in {
+      "draft" in {
+
+        val journey =
+          new JourneyRequest(
+            buildAuthenticatedRequest(FakeRequest(), SignedInUser("eori", Enrolments(Set.empty), IdentityData())),
+            aDeclaration(withStatus(DeclarationStatus.DRAFT))
+          )
 
         given(block.apply(any())).willReturn(Future.successful(Results.Ok))
 
         val refiner =
-          new FeatureFlagAction(new FeatureSwitchConfig(Configuration(ConfigFactory.parseString("microservice.services.features.default=enabled"))))
+          new AmendmentDraftFilterAction()
 
-        await(refiner(Feature.default).invokeBlock(journey, block)) mustBe Results.Ok
+        await(refiner.invokeBlock(journey, block)) mustBe Results.Ok
 
       }
 
@@ -65,12 +66,18 @@ class FeatureFlagActionSpec extends UnitWithMocksSpec with BeforeAndAfterEach wi
 
     "block request" when {
 
-      "feature flag disabled" in {
+      "amendment draft" in {
+
+        val journey =
+          new JourneyRequest(
+            buildAuthenticatedRequest(FakeRequest(), SignedInUser("eori", Enrolments(Set.empty), IdentityData())),
+            aDeclaration(withStatus(DeclarationStatus.AMENDMENT_DRAFT))
+          )
 
         val refiner =
-          new FeatureFlagAction(new FeatureSwitchConfig(Configuration(ConfigFactory.parseString("microservice.services.features.default=disabled"))))
+          new AmendmentDraftFilterAction()
 
-        await(refiner(Feature.default).invokeBlock(journey, block)) mustBe Results.Redirect(controllers.routes.RootController.displayPage)
+        await(refiner.invokeBlock(journey, block)) mustBe Results.Redirect(controllers.declaration.routes.SummaryController.displayPage)
       }
 
     }

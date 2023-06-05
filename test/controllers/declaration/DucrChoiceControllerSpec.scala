@@ -23,6 +23,7 @@ import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import models.DeclarationType
 import models.DeclarationType._
+import models.declaration.DeclarationStatus
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
@@ -40,6 +41,7 @@ class DucrChoiceControllerSpec extends ControllerSpec {
   val controller = new DucrChoiceController(
     mockAuthAction,
     mockJourneyAction,
+    mockAmendmentDraftFilterAction,
     mockExportsCacheService,
     navigator,
     stubMessagesControllerComponents(),
@@ -78,6 +80,20 @@ class DucrChoiceControllerSpec extends ControllerSpec {
 
           val result = controller.displayPage(getRequest())
           status(result) must be(OK)
+        }
+      }
+    }
+
+    "return 303 (SEE_OTHER)" when {
+      List(STANDARD, CLEARANCE, SIMPLIFIED, OCCASIONAL).foreach { declarationType =>
+        s"journey is $declarationType" when {
+          "AMENDMENT_DRAFT" in {
+            withNewCaching(aDeclaration(withType(declarationType), withStatus(DeclarationStatus.AMENDMENT_DRAFT)))
+
+            val result = controller.displayPage(getRequest())
+            status(result) must be(SEE_OTHER)
+            redirectLocation(result) must be(Some(controllers.declaration.routes.SummaryController.displayPage.url))
+          }
         }
       }
     }
@@ -137,6 +153,21 @@ class DucrChoiceControllerSpec extends ControllerSpec {
 
             status(result) mustBe SEE_OTHER
             thePageNavigatedTo mustBe TraderReferenceController.displayPage
+          }
+        }
+      }
+
+      "return 303 (SEE_OTHER)" when {
+        List(STANDARD, CLEARANCE, SIMPLIFIED, OCCASIONAL).foreach { declarationType =>
+          s"journey is $declarationType" when {
+            "AMENDMENT_DRAFT" in {
+              withNewCaching(aDeclaration(withType(declarationType), withStatus(DeclarationStatus.AMENDMENT_DRAFT)))
+              val body = Json.obj(YesNoAnswer.formId -> YesNoAnswers.yes)
+
+              val result = controller.submitForm(postRequest(body))
+              status(result) must be(SEE_OTHER)
+              redirectLocation(result) must be(Some(controllers.declaration.routes.SummaryController.displayPage.url))
+            }
           }
         }
       }

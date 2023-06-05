@@ -63,7 +63,6 @@ case class ExportsDeclaration(
     sequenceId: Option[Int] = None
   ): ExportsDeclarationDiff =
     Seq(
-      compareDifference(original.mucr, mucr, combinePointers(pointerString, Mucr.pointer, sequenceId)),
       compareDifference(original.natureOfTransaction, natureOfTransaction, combinePointers(pointerString, NatureOfTransaction.pointer, sequenceId)),
       createDiff(original.items, items, combinePointers(pointerString, ExportItem.pointer, sequenceId)),
       compareIntDifference(original.items.size, items.size, combinePointers(pointerString, ExportsDeclaration.goodsItemQuantityPointer))
@@ -148,7 +147,7 @@ case class ExportsDeclaration(
   def isEntryIntoDeclarantsRecords: Boolean = parties.isEntryIntoDeclarantsRecords.exists(_.answer == YesNoAnswers.yes)
   def isNotEntryIntoDeclarantsRecords: Boolean = !isEntryIntoDeclarantsRecords
 
-  def isInlandOrBorder(inlandOrBorder: InlandOrBorder): Boolean = locations.inlandOrBorder.exists(_ == inlandOrBorder)
+  def isInlandOrBorder(inlandOrBorder: InlandOrBorder): Boolean = locations.inlandOrBorder.contains(inlandOrBorder)
 
   def isLicenseRequired(itemId: String): Boolean = itemBy(itemId).exists(_.isLicenceRequired.contains(true))
 

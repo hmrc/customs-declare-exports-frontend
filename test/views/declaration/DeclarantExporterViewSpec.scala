@@ -22,6 +22,7 @@ import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.DeclarantIsExporter
 import forms.declaration.DeclarantIsExporter.form
 import models.DeclarationType.{OCCASIONAL, SIMPLIFIED, STANDARD}
+import models.declaration.DeclarationStatus
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
@@ -84,32 +85,48 @@ class DeclarantExporterViewSpec extends PageWithButtonsSpec with Injector {
       checkAllSaveButtonsAreDisplayed(createView())
     }
 
-    onJourney(STANDARD, SIMPLIFIED, OCCASIONAL) { implicit request =>
-      "display 'Back' button that links to 'Link DUCR to a MUCR' page" in {
-        val backButton = createView().getElementById("back-link")
+    "display links" when {
 
-        backButton must containMessage(backToPreviousQuestionCaption)
-        backButton must haveHref(LinkDucrToMucrController.displayPage.url)
+      onJourney(STANDARD, SIMPLIFIED, OCCASIONAL) { implicit request =>
+        "display 'Back' button that links to 'Link DUCR to a MUCR' page" in {
+          val backButton = createView().getElementById("back-link")
+
+          backButton must containMessage(backToPreviousQuestionCaption)
+          backButton must haveHref(LinkDucrToMucrController.displayPage.url)
+        }
+      }
+
+      onSupplementary { implicit request =>
+        "display 'Back' button that links to 'Are you the exporter' page" in {
+          val backButton = createView().getElementById("back-link")
+
+          backButton must containMessage(backToPreviousQuestionCaption)
+          backButton must haveHref(ConsignmentReferencesController.displayPage.url)
+        }
+      }
+
+      onClearance { implicit request =>
+        "display 'Back' button that links to 'Declarant Details' page" in {
+          val backButton = createView().getElementById("back-link")
+
+          backButton must containMessage(backToPreviousQuestionCaption)
+          backButton must haveHref(DeclarantDetailsController.displayPage.url)
+        }
       }
     }
 
-    onSupplementary { implicit request =>
-      "display 'Back' button that links to 'Are you the exporter' page" in {
-        val backButton = createView().getElementById("back-link")
+    "hide links" when {
+      "AMENDMENT_DRAFT" when {
+        onEveryDeclarationJourney(withStatus(DeclarationStatus.AMENDMENT_DRAFT)) { implicit request =>
+          "hide 'Back' button that links to 'Link DUCR to a MUCR' page" in {
+            val backButton = createView().getElementById("back-link")
 
-        backButton must containMessage(backToPreviousQuestionCaption)
-        backButton must haveHref(ConsignmentReferencesController.displayPage.url)
+            backButton must not(containMessage(backToPreviousQuestionCaption))
+          }
+        }
       }
     }
 
-    onClearance { implicit request =>
-      "display 'Back' button that links to 'Declarant Details' page" in {
-        val backButton = createView().getElementById("back-link")
-
-        backButton must containMessage(backToPreviousQuestionCaption)
-        backButton must haveHref(DeclarantDetailsController.displayPage.url)
-      }
-    }
   }
 
   "Declarant Exporter View with invalid input" should {
