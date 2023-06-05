@@ -22,7 +22,7 @@ import controllers.helpers._
 import controllers.routes.RejectedNotificationsController
 import forms.declaration.AdditionalInformationSummary
 import mock.FeatureFlagMocks
-import models.requests.SessionHelper.{declarationUuid, errorFixModeSessionKey}
+import models.requests.SessionHelper.{declarationUuid, errorFixModeSessionKey, submissionActionId}
 import models.requests.JourneyRequest
 import models.responses.FlashKeys
 import models.{DeclarationType, ExportsDeclaration, SignedInUser}
@@ -135,10 +135,7 @@ class NavigatorSpec
 
   "Navigator" should {
 
-    val request = FakeRequest("GET", "uri")
-      .withSession(declarationUuid -> existingDeclarationId)
-
-    "redirect to RejectedNotificationsController.displayOutcomePage" when {
+    "redirect to RejectedNotificationsController.displayPage" when {
 
       val parentDeclarationId = "1234"
       implicit val declaration = aDeclaration(withParentDeclarationId(parentDeclarationId))
@@ -156,6 +153,22 @@ class NavigatorSpec
       }
     }
 
+    "redirect to RejectedNotificationsController.displayPageOnUnacceptedAmendment" when {
+      "the user fixes a rejected amendment, indicated by the actionId in Session, and" when {
+        "clicks the 'Save and return to errors' button" in {
+          implicit val declaration = aDeclaration(withParentDeclarationId("1234"))
+
+          val actionId = "9876"
+          val request = requestWithFormAction(Some(SaveAndReturnToErrors), true)
+            .withSession(submissionActionId -> actionId)
+
+          val result = navigator.continueTo(call)(decoratedRequest(request))
+          val expectedCall = RejectedNotificationsController.displayPageOnUnacceptedAmendment(actionId, Some(declaration.id))
+          redirectLocation(result) mustBe Some(expectedCall.url)
+        }
+      }
+    }
+
     "redirect to the url provided" when {
 
       "continueTo method is invoked when in error-fix mode and form action SaveAndReturnToErrors and" when {
@@ -169,6 +182,7 @@ class NavigatorSpec
 
       "continueTo method is invoked when in error-fix mode and" when {
         "parentDeclarationId is None" in {
+          val request = FakeRequest("GET", "uri").withSession(declarationUuid -> existingDeclarationId)
           val result = navigator.continueTo(call)(decoratedRequest(request)(aDeclaration()))
           result.header.headers.get("Location") mustBe Some(url)
           result.newFlash mustBe None
