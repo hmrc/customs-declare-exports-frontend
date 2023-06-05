@@ -149,15 +149,17 @@ class DucrEntryControllerSpec extends ControllerSpec with GivenWhenThen {
 
     onEveryDeclarationJourney(withStatus(DeclarationStatus.AMENDMENT_DRAFT)) { implicit request =>
       "return 303 (SEE_OTHER) and redirect" which {
-        "redirects to /saved-summary" in {
+        "redirects to /saved-summary" when {
+          "AMENDMENT_DRAFT" in {
 
-          val correctForm = Json.toJson(Ducr(DUCR))
+            val correctForm = Json.toJson(Ducr(DUCR))
 
-          withNewCaching(request.cacheModel)
+            withNewCaching(request.cacheModel)
 
-          val result = controller.submitDucr(postRequest(correctForm))
-          status(result) must be(SEE_OTHER)
-          redirectLocation(result) mustBe Some(controllers.declaration.routes.SummaryController.displayPage.url)
+            val result = controller.submitDucr(postRequest(correctForm))
+            status(result) must be(SEE_OTHER)
+            redirectLocation(result) mustBe Some(controllers.declaration.routes.SummaryController.displayPage.url)
+          }
         }
       }
     }

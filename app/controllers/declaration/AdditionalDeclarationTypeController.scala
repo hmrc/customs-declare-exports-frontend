@@ -44,7 +44,7 @@ class AdditionalDeclarationTypeController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
 
-  def displayPage: Action[AnyContent] = (authenticate andThen journeyType andThen amendmentDraftFilterAction()) { implicit request =>
+  def displayPage: Action[AnyContent] = (authenticate andThen journeyType andThen amendmentDraftFilterAction) { implicit request =>
     val form = AdditionalDeclarationTypePage.form.withSubmissionErrors
     request.cacheModel.additionalDeclarationType match {
       case Some(data) => Ok(additionalTypePage(form.fill(data)))
@@ -52,7 +52,7 @@ class AdditionalDeclarationTypeController @Inject() (
     }
   }
 
-  def submitForm: Action[AnyContent] = (authenticate andThen journeyType andThen amendmentDraftFilterAction()).async { implicit request =>
+  def submitForm: Action[AnyContent] = (authenticate andThen journeyType andThen amendmentDraftFilterAction).async { implicit request =>
     val form = AdditionalDeclarationTypePage.form.bindFromRequest()
     form
       .fold(

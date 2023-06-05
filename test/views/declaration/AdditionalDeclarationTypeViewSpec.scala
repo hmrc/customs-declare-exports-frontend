@@ -51,13 +51,18 @@ class AdditionalDeclarationTypeViewSpec extends UnitViewSpec with CommonMessages
           backButton must haveHref(DeclarationChoiceController.displayPage)
         }
 
-        "hide the expected 'Back' button" in {
+        "hide the expected 'Back' button" when {
+          "AMENDMENT_DRAFT" in {
 
-          val view =
-            additionalTypePage(form)(journeyRequest(aDeclaration(withType(declarationType), withStatus(DeclarationStatus.AMENDMENT_DRAFT))), messages)
+            val view =
+              additionalTypePage(form)(
+                journeyRequest(aDeclaration(withType(declarationType), withStatus(DeclarationStatus.AMENDMENT_DRAFT))),
+                messages
+              )
 
-          val backButton = view.getElementById("back-link")
-          backButton must not(containMessage(backToPreviousQuestionCaption))
+            val backButton = view.getElementById("back-link")
+            backButton must not(containMessage(backToPreviousQuestionCaption))
+          }
         }
 
         "display the expected section header" in {

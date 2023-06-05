@@ -86,12 +86,14 @@ class DucrChoiceControllerSpec extends ControllerSpec {
 
     "return 303 (SEE_OTHER)" when {
       List(STANDARD, CLEARANCE, SIMPLIFIED, OCCASIONAL).foreach { declarationType =>
-        s"journey is $declarationType" in {
-          withNewCaching(aDeclaration(withType(declarationType), withStatus(DeclarationStatus.AMENDMENT_DRAFT)))
+        s"journey is $declarationType" when {
+          "AMENDMENT_DRAFT" in {
+            withNewCaching(aDeclaration(withType(declarationType), withStatus(DeclarationStatus.AMENDMENT_DRAFT)))
 
-          val result = controller.displayPage(getRequest())
-          status(result) must be(SEE_OTHER)
-          redirectLocation(result) must be(Some(controllers.declaration.routes.SummaryController.displayPage.url))
+            val result = controller.displayPage(getRequest())
+            status(result) must be(SEE_OTHER)
+            redirectLocation(result) must be(Some(controllers.declaration.routes.SummaryController.displayPage.url))
+          }
         }
       }
     }
@@ -157,13 +159,15 @@ class DucrChoiceControllerSpec extends ControllerSpec {
 
       "return 303 (SEE_OTHER)" when {
         List(STANDARD, CLEARANCE, SIMPLIFIED, OCCASIONAL).foreach { declarationType =>
-          s"journey is $declarationType" in {
-            withNewCaching(aDeclaration(withType(declarationType), withStatus(DeclarationStatus.AMENDMENT_DRAFT)))
-            val body = Json.obj(YesNoAnswer.formId -> YesNoAnswers.yes)
+          s"journey is $declarationType" when {
+            "AMENDMENT_DRAFT" in {
+              withNewCaching(aDeclaration(withType(declarationType), withStatus(DeclarationStatus.AMENDMENT_DRAFT)))
+              val body = Json.obj(YesNoAnswer.formId -> YesNoAnswers.yes)
 
-            val result = controller.submitForm(postRequest(body))
-            status(result) must be(SEE_OTHER)
-            redirectLocation(result) must be(Some(controllers.declaration.routes.SummaryController.displayPage.url))
+              val result = controller.submitForm(postRequest(body))
+              status(result) must be(SEE_OTHER)
+              redirectLocation(result) must be(Some(controllers.declaration.routes.SummaryController.displayPage.url))
+            }
           }
         }
       }

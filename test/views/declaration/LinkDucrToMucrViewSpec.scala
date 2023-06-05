@@ -121,9 +121,11 @@ class LinkDucrToMucrViewSpec extends UnitViewSpec with CommonMessages with Injec
     onEveryDeclarationJourney(withStatus(DeclarationStatus.AMENDMENT_DRAFT)) { implicit request =>
       val view = createView()
 
-      "hide 'Back' button" in {
-        val backButton = view.getElementById("back-link")
-        backButton must not(containMessage(backToPreviousQuestionCaption))
+      "hide 'Back' button" when {
+        "AMENDMENT_DRAFT" in {
+          val backButton = view.getElementById("back-link")
+          backButton must not(containMessage(backToPreviousQuestionCaption))
+        }
       }
     }
 

@@ -46,7 +46,7 @@ class DucrChoiceController @Inject() (
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
 
   private val authAndAcceptedTypes =
-    authenticate andThen journeyAction(List(STANDARD, CLEARANCE, SIMPLIFIED, OCCASIONAL)) andThen amendmentDraftFilterAction()
+    authenticate andThen journeyAction(List(STANDARD, CLEARANCE, SIMPLIFIED, OCCASIONAL)) andThen amendmentDraftFilterAction
 
   val displayPage: Action[AnyContent] = authAndAcceptedTypes { implicit request =>
     val form = YesNoAnswer.form(errorKey = "declaration.ducr.choice.answer.empty").withSubmissionErrors

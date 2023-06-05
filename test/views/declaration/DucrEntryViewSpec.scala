@@ -129,9 +129,11 @@ class DucrEntryViewSpec extends PageWithButtonsSpec with Injector {
     }
 
     onJourney(STANDARD, CLEARANCE, OCCASIONAL, SIMPLIFIED)(aDeclaration(withStatus(DeclarationStatus.AMENDMENT_DRAFT))) { implicit request =>
-      "hide 'Back' button that links to 'Ducr Choice' page" in {
-        val backButton = createView().getElementById("back-link")
-        backButton must not(containMessage(backToPreviousQuestionCaption))
+      "hide 'Back' button that links to 'Ducr Choice' page" when {
+        "AMENDMENT_DRAFT" in {
+          val backButton = createView().getElementById("back-link")
+          backButton must not(containMessage(backToPreviousQuestionCaption))
+        }
       }
     }
 

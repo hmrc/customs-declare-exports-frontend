@@ -43,7 +43,7 @@ class MucrController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
 
-  def displayPage: Action[AnyContent] = (authenticate andThen journeyType andThen amendmentDraftFilterAction()) { implicit request =>
+  def displayPage: Action[AnyContent] = (authenticate andThen journeyType andThen amendmentDraftFilterAction) { implicit request =>
     val frm = form.withSubmissionErrors
     request.cacheModel.mucr match {
       case Some(mucr) => Ok(mucrPage(frm.fill(mucr)))
@@ -51,7 +51,7 @@ class MucrController @Inject() (
     }
   }
 
-  def submitForm(): Action[AnyContent] = (authenticate andThen journeyType andThen amendmentDraftFilterAction()).async { implicit request =>
+  def submitForm(): Action[AnyContent] = (authenticate andThen journeyType andThen amendmentDraftFilterAction).async { implicit request =>
     form
       .bindFromRequest()
       .fold(

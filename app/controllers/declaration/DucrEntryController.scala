@@ -43,7 +43,7 @@ class DucrEntryController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
 
-  val displayPage: Action[AnyContent] = (authenticate andThen journeyType andThen amendmentDraftFilterAction()) { implicit request =>
+  val displayPage: Action[AnyContent] = (authenticate andThen journeyType andThen amendmentDraftFilterAction) { implicit request =>
     val frm = form.withSubmissionErrors
     request.cacheModel.ducr match {
       case Some(data) => Ok(ducrEntryPage(frm.fill(data)))
@@ -51,7 +51,7 @@ class DucrEntryController @Inject() (
     }
   }
 
-  val submitDucr: Action[AnyContent] = (authenticate andThen journeyType andThen amendmentDraftFilterAction()).async { implicit request =>
+  val submitDucr: Action[AnyContent] = (authenticate andThen journeyType andThen amendmentDraftFilterAction).async { implicit request =>
     form
       .bindFromRequest()
       .fold(formWithErrors => Future.successful(BadRequest(ducrEntryPage(formWithErrors))), updateCacheAndContinue(_))

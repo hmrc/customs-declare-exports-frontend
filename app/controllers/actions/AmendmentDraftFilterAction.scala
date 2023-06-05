@@ -31,21 +31,14 @@ class AmendmentDraftFilterAction @Inject() ()(implicit val exc: ExecutionContext
   override protected def executionContext: ExecutionContext = exc
 
   override def refine[A](request: JourneyRequest[A]): RefineResult[A] =
-    Future.successful(Right(request))
-
-  def apply(): ActionRefiner[JourneyRequest, JourneyRequest] =
-    new ActionRefiner[JourneyRequest, JourneyRequest] {
-      override protected def executionContext: ExecutionContext = exc
-
-      override protected def refine[A](request: JourneyRequest[A]): RefineResult[A] = refineOnAmendmentDraft(request)
-    }
-
-  private def refineOnAmendmentDraft[A](request: JourneyRequest[A]): RefineResult[A] =
     Future.successful {
       if (!request.cacheModel.isAmendmentDraft) Right(request)
       else {
-        logger.warn(s"Redirection to summary for eori ${request.user.eori}, as amendment draft from ${request.headers.get("Raw-Request-URI")}")
+        val eori = request.user.eori
+        val visited = request.headers.get("Raw-Request-URI")
+        logger.warn(s"Redirection to /saved-summary as the draft declaration is an amendment draft for eori $eori from $visited")
         Left(Results.Redirect(SummaryController.displayPage))
       }
     }
+
 }

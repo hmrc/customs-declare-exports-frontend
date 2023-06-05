@@ -116,30 +116,13 @@ class DeclarantExporterViewSpec extends PageWithButtonsSpec with Injector {
     }
 
     "hide links" when {
+      "AMENDMENT_DRAFT" when {
+        onEveryDeclarationJourney(withStatus(DeclarationStatus.AMENDMENT_DRAFT)) { implicit request =>
+          "hide 'Back' button that links to 'Link DUCR to a MUCR' page" in {
+            val backButton = createView().getElementById("back-link")
 
-      val amendmentDraftDec = aDeclaration(withStatus(DeclarationStatus.AMENDMENT_DRAFT))
-
-      onJourney(STANDARD, SIMPLIFIED, OCCASIONAL)(amendmentDraftDec) { implicit request =>
-        "hide 'Back' button that links to 'Link DUCR to a MUCR' page" in {
-          val backButton = createView().getElementById("back-link")
-
-          backButton must not(containMessage(backToPreviousQuestionCaption))
-        }
-      }
-
-      onSupplementary(amendmentDraftDec) { implicit request =>
-        "hide 'Back' button that links to 'Are you the exporter' page" in {
-          val backButton = createView().getElementById("back-link")
-
-          backButton must not(containMessage(backToPreviousQuestionCaption))
-        }
-      }
-
-      onClearance(amendmentDraftDec) { implicit request =>
-        "hide 'Back' button that links to 'Declarant Details' page" in {
-          val backButton = createView().getElementById("back-link")
-
-          backButton must not(containMessage(backToPreviousQuestionCaption))
+            backButton must not(containMessage(backToPreviousQuestionCaption))
+          }
         }
       }
     }

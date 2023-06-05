@@ -58,7 +58,7 @@ class AmendmentDraftFilterActionSpec extends UnitWithMocksSpec with BeforeAndAft
         val refiner =
           new AmendmentDraftFilterAction()
 
-        await(refiner().invokeBlock(journey, block)) mustBe Results.Ok
+        await(refiner.invokeBlock(journey, block)) mustBe Results.Ok
 
       }
 
@@ -77,7 +77,7 @@ class AmendmentDraftFilterActionSpec extends UnitWithMocksSpec with BeforeAndAft
         val refiner =
           new AmendmentDraftFilterAction()
 
-        await(refiner().invokeBlock(journey, block)) mustBe Results.Redirect(controllers.declaration.routes.SummaryController.displayPage)
+        await(refiner.invokeBlock(journey, block)) mustBe Results.Redirect(controllers.declaration.routes.SummaryController.displayPage)
       }
 
     }
