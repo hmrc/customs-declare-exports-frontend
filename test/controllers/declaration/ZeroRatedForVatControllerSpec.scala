@@ -165,7 +165,7 @@ class ZeroRatedForVatControllerSpec extends ControllerSpec with ErrorHandlerMock
     val lowValueDecl = aDeclaration(withType(SIMPLIFIED), withItem(item))
 
     "return 200 (OK)" when {
-      onSimplified(lowValueDecl) { request =>
+      onJourney(OCCASIONAL, SIMPLIFIED)(lowValueDecl) { request =>
         "for 'low value' declarations" in {
           when(codeLinkConnector.getValidProcedureCodesForTag(any())).thenReturn(Seq.empty)
 

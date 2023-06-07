@@ -102,7 +102,7 @@ class StatisticalValueControllerSpec extends ControllerSpec with ErrorHandlerMoc
         }
       }
 
-      onSimplified { request =>
+      onJourney(OCCASIONAL, SIMPLIFIED) { request =>
         "for a 'low value' declaration" in {
           val procedureCodes = withProcedureCodes(additionalProcedureCodes = Seq(lowValueDeclaration))
           val item = anItem(withItemId(itemId), withStatisticalValue(), procedureCodes)

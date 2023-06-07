@@ -20,6 +20,7 @@ import base.{ControllerSpec, TestHelper}
 import controllers.declaration.routes.{NactCodeSummaryController, TaricCodeSummaryController, ZeroRatedForVatController}
 import forms.declaration.NatureOfTransaction.{BusinessPurchase, Other, Sale}
 import forms.declaration.{TaricCode, TaricCodeFirst}
+import models.DeclarationType.{OCCASIONAL, SIMPLIFIED}
 import models.declaration.ProcedureCodesData.lowValueDeclaration
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -263,7 +264,7 @@ class TaricCodeAddControllerSpec extends ControllerSpec with OptionValues {
       }
     }
 
-    onSimplified { request =>
+    onJourney(OCCASIONAL, SIMPLIFIED) { request =>
       "re-direct to next question and" when {
         "user submits valid No answer for a 'low value' declaration" in {
           val item = anItem(withProcedureCodes(additionalProcedureCodes = Seq(lowValueDeclaration)))

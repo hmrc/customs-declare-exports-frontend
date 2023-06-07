@@ -23,7 +23,7 @@ import controllers.navigation.Navigator
 import forms.declaration.NatureOfTransaction._
 import forms.declaration.TaricCode.taricCodeLimit
 import forms.declaration.{NatureOfTransaction, TaricCode, TaricCodeFirst}
-import models.DeclarationType.{SIMPLIFIED, STANDARD}
+import models.DeclarationType._
 import models.ExportsDeclaration
 import models.requests.JourneyRequest
 import play.api.data.Form
@@ -104,8 +104,10 @@ class TaricCodeAddController @Inject() (
       case _                                                                           => false
     }
 
+  val journeysOnLowValue = List(OCCASIONAL, SIMPLIFIED)
+
   private def isLowValueDeclaration(itemId: String)(implicit request: JourneyRequest[_]): Boolean =
-    request.declarationType == SIMPLIFIED && request.cacheModel.isLowValueDeclaration(itemId)
+    journeysOnLowValue.contains(request.declarationType) && request.cacheModel.isLowValueDeclaration(itemId)
 
   private def updateExportsCache(itemId: String, updatedCache: Seq[TaricCode])(implicit r: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
     updateDeclarationFromRequest(model => model.updatedItem(itemId, _.copy(taricCodes = Some(updatedCache.toList))))

@@ -69,18 +69,16 @@ class PackageInformationViewSpec extends PageWithButtonsSpec with Injector {
       }
     }
 
-    onSimplified { implicit request =>
+    onJourney(OCCASIONAL, SIMPLIFIED) { implicit request =>
+      "display back link" in {
+        createView().getElementById("back-link") must haveHref(NactCodeSummaryController.displayPage(itemId))
+      }
+
       "display back link for 'low value' declarations" in {
         val item = anItem(withItemId(itemId), withProcedureCodes(additionalProcedureCodes = Seq(lowValueDeclaration)))
         val requestWithCache = journeyRequest(aDeclarationAfter(request.cacheModel, withItems(item)))
         val view = createView()(requestWithCache)
         view.getElementById("back-link") must haveHref(StatisticalValueController.displayPage(itemId))
-      }
-    }
-
-    onJourney(SIMPLIFIED, OCCASIONAL) { implicit request =>
-      "display back link" in {
-        createView().getElementById("back-link") must haveHref(NactCodeSummaryController.displayPage(itemId))
       }
     }
 

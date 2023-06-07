@@ -89,7 +89,7 @@ class NactCodeAddFirstViewSpec extends PageWithButtonsSpec with Injector {
         }
       }
 
-      onSimplified { implicit request =>
+      onJourney(OCCASIONAL, SIMPLIFIED) { implicit request =>
         "for 'low value' declarations" in {
           val item = anItem(withItemId(itemId), withProcedureCodes(additionalProcedureCodes = Seq(lowValueDeclaration)))
           val requestWithCache = journeyRequest(aDeclarationAfter(request.cacheModel, withItems(item)))

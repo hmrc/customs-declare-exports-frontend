@@ -51,12 +51,10 @@ trait OccasionalNavigator extends CacheDependentNavigators {
   }
 
   val occasionalItemPage: PartialFunction[DeclarationPage, String => Call] = {
-    case PackageInformation            => routes.NactCodeSummaryController.displayPage
     case AdditionalInformationRequired => routes.PackageInformationSummaryController.displayPage
     case AdditionalInformationSummary  => routes.PackageInformationSummaryController.displayPage
     case CusCode                       => routes.UNDangerousGoodsCodeController.displayPage
     case NactCode                      => routes.NactCodeSummaryController.displayPage
-    case NactCodeFirst                 => routes.TaricCodeSummaryController.displayPage
     case CommodityMeasure              => routes.PackageInformationSummaryController.displayPage
     case page                          => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on occasional")
   }
@@ -77,6 +75,7 @@ trait OccasionalNavigator extends CacheDependentNavigators {
     case AdditionalDocumentsRequired => additionalDocumentsSummaryPreviousPage
     case AdditionalDocumentsSummary  => additionalDocumentsSummaryPreviousPage
     case AdditionalDocument          => additionalDocumentsPreviousPage
+    case NactCodeFirst               => nactCodePreviousPageForSimplified
+    case PackageInformation          => packageInformationPreviousPageForSimplified
   }
-
 }

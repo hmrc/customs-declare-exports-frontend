@@ -81,5 +81,4 @@ trait SimplifiedNavigator extends CacheDependentNavigators {
     case NactCodeFirst               => nactCodePreviousPageForSimplified
     case PackageInformation          => packageInformationPreviousPageForSimplified
   }
-
 }

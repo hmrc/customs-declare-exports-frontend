@@ -17,11 +17,12 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
+import controllers.declaration.routes.PackageInformationSummaryController
 import controllers.navigation.Navigator
 import controllers.routes.RootController
 import forms.declaration.StatisticalValue
 import forms.declaration.StatisticalValue.form
-import models.DeclarationType.{SIMPLIFIED, STANDARD, SUPPLEMENTARY}
+import models.DeclarationType._
 import models.ExportsDeclaration
 import models.requests.JourneyRequest
 import play.api.data.Form
@@ -45,10 +46,11 @@ class StatisticalValueController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
 
-  val validTypes = Seq(SIMPLIFIED, STANDARD, SUPPLEMENTARY)
+  val journeysOnLowValue = List(OCCASIONAL, SIMPLIFIED)
+  val validJourneys = List(STANDARD, SUPPLEMENTARY) ::: journeysOnLowValue
 
-  def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
-    if (request.declarationType == SIMPLIFIED && !request.cacheModel.isLowValueDeclaration(itemId)) Redirect(RootController.displayPage)
+  def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType(validJourneys)) { implicit request =>
+    if (redirectToRoot(itemId)) Redirect(RootController.displayPage)
     else
       request.cacheModel.itemBy(itemId).flatMap(_.statisticalValue) match {
         case Some(itemType) => Ok(itemTypePage(itemId, form.withSubmissionErrors.fill(itemType)))
@@ -56,17 +58,19 @@ class StatisticalValueController @Inject() (
       }
   }
 
-  def submitItemType(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    if (request.declarationType == SIMPLIFIED && !request.cacheModel.isLowValueDeclaration(itemId))
-      Future.successful(Redirect(RootController.displayPage))
+  def submitItemType(itemId: String): Action[AnyContent] = (authenticate andThen journeyType(validJourneys)).async { implicit request =>
+    if (redirectToRoot(itemId)) Future.successful(Redirect(RootController.displayPage))
     else
       form
         .bindFromRequest()
         .fold(
           (formWithErrors: Form[StatisticalValue]) => Future.successful(BadRequest(itemTypePage(itemId, formWithErrors))),
-          updateExportsCache(itemId, _).map(_ => navigator.continueTo(routes.PackageInformationSummaryController.displayPage(itemId)))
+          updateExportsCache(itemId, _).map(_ => navigator.continueTo(PackageInformationSummaryController.displayPage(itemId)))
         )
   }
+
+  private def redirectToRoot(itemId: String)(implicit request: JourneyRequest[_]): Boolean =
+    journeysOnLowValue.contains(request.declarationType) && !request.cacheModel.isLowValueDeclaration(itemId)
 
   private def updateExportsCache(itemId: String, updatedItem: StatisticalValue)(
     implicit request: JourneyRequest[AnyContent]
