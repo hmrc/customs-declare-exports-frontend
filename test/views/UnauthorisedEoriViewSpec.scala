@@ -29,17 +29,8 @@ class UnauthorisedEoriViewSpec extends UnitViewSpec with Injector {
   val view = page()(request, messages)
 
   "UnauthorisedEori Page view" when {
-
     "display the expected page header" in {
       view.getElementsByTag("h1").first must containMessage("unauthorised.tdr.heading")
-    }
-
-    "display the expected contact email address link" in {
-      val link = view.getElementById("contact_support_link")
-
-      link must containMessage("unauthorised.tdr.body.link")
-      link must haveHref(s"mailto:${messages("unauthorised.tdr.body.link")}")
-      link.attr("target") mustBe "_blank"
     }
   }
 }

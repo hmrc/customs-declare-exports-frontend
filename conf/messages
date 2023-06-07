@@ -75,8 +75,8 @@ unauthorised.paragraph.3.linkText = add you as an administrator level team membe
 unauthorised.insetText = Check with the person who deals with VAT, for example, as they may have registered for CDS in order to claim back VAT.
 
 unauthorised.heading.eori.not.allowed = Your EORI number is not valid on this service
-unauthorised.tdr.heading = The EORI you entered is not yet valid on the CDS test service
-unauthorised.tdr.body = Please contact {0} to ensure access has been set up for your EORI number.
+unauthorised.tdr.heading = The CDS Trader Dress Rehearsal Service for Making an Export Declaration Online is temporarily unavailable whilst we carry out a system update
+unauthorised.tdr.body = We will advise as soon as the update is complete.
 unauthorised.tdr.body.link = cdsexportsuiteam@hmrc.gov.uk
 
 unauthorisedAgent.heading = You cannot use this service
