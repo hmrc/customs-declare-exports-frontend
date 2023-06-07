@@ -78,7 +78,7 @@ class AmendDeclarationControllerSpec extends ControllerWithoutFormSpec {
     "redirect to /saved-summary" when {
       "a declaration-id is returned by the connector" in {
         val expectedDeclarationId = "newDeclarationId"
-        when(mockCustomsDeclareExportsConnector.findOrCreateDraftForAmend(any())(any(), any()))
+        when(mockCustomsDeclareExportsConnector.findOrCreateDraftForAmendment(any())(any(), any()))
           .thenReturn(Future.successful(expectedDeclarationId))
 
         val request = FakeRequest("GET", "").withSession(SessionHelper.submissionUuid -> "submissionUuid")

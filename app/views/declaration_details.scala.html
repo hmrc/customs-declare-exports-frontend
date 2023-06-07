@@ -16,7 +16,7 @@
 
 @import config.ExternalServicesConfig
 @import config.featureFlags.{DeclarationAmendmentsConfig, SecureMessagingConfig}
-@import controllers.declaration.amendments.routes.AmendDeclarationController
+@import controllers.declaration.amendments.AmendDeclarationController
 @import models.declaration.notifications.Notification
 @import models.declaration.submissions.Submission
 @import models.declaration.submissions.EnhancedStatus.{amendmentBlockingStatuses, cancelledStatuses}
@@ -114,7 +114,7 @@
             @link(
                 id = Some("amend-declaration"),
                 text = messages("declaration.details.amend.declaration"),
-                call = AmendDeclarationController.initAmendment
+                call = AmendDeclarationController.initAmendment(submission)
             )
         </p>
     }

@@ -20,6 +20,7 @@ import connectors.CustomsDeclareExportsConnector
 import controllers.actions.{AuthAction, VerifiedEmailAction}
 import controllers.declaration.routes._
 import controllers.helpers.ErrorFixModeHelper.setErrorFixMode
+import models.declaration.submissions.EnhancedStatus.ERRORS
 import models.requests.SessionHelper.declarationUuid
 import models.responses.FlashKeys
 import play.api.i18n.I18nSupport
@@ -43,15 +44,17 @@ class SubmissionsController @Inject() (
 
   private val authAndEmailActions = authenticate andThen verifyEmail
 
-  def amend(rejectedId: String): Action[AnyContent] = authAndEmailActions.async { implicit request =>
-    findOrCreateDraftForRejected(rejectedId, Redirect(SummaryController.displayPage))
+  def amend(rejectedParentId: String, isAmendment: Boolean): Action[AnyContent] = authAndEmailActions.async { implicit request =>
+    val redirect = Redirect(SummaryController.displayPage)
+    if (isAmendment) findOrCreateDraftForAmendment(rejectedParentId, redirect)
+    else findOrCreateDraftForRejection(rejectedParentId, redirect)
   }
 
   def unacceptedAmendment(declarationId: String): Action[AnyContent] = authAndEmailActions { implicit request =>
     Redirect(SummaryController.displayPage).addingToSession(declarationUuid -> declarationId)
   }
 
-  def amendErrors(rejectedId: String, redirectUrl: String, pattern: String, message: String): Action[AnyContent] =
+  def amendErrors(rejectedParentId: String, redirectUrl: String, pattern: String, message: String, isAmendment: Boolean): Action[AnyContent] =
     authAndEmailActions.async { implicit request =>
       val flashData = FieldNamePointer.getFieldName(pattern) match {
         case Some(name) if message.nonEmpty => Map(FlashKeys.fieldName -> name, FlashKeys.errorMessage -> message)
@@ -60,7 +63,9 @@ class SubmissionsController @Inject() (
         case _                              => Map.empty[String, String]
       }
 
-      findOrCreateDraftForRejected(rejectedId, setErrorFixMode(Redirect(redirectUrl).flashing(Flash(flashData))))
+      val redirect = setErrorFixMode(Redirect(redirectUrl).flashing(Flash(flashData)))
+      if (isAmendment) findOrCreateDraftForAmendment(rejectedParentId, redirect)
+      else findOrCreateDraftForRejection(rejectedParentId, redirect)
     }
 
   def viewDeclaration(id: String): Action[AnyContent] = authAndEmailActions.async { implicit request =>
@@ -74,8 +79,13 @@ class SubmissionsController @Inject() (
     }
   }
 
-  private def findOrCreateDraftForRejected(rejectedId: String, redirect: Result)(implicit request: WrappedRequest[AnyContent]): Future[Result] =
-    customsDeclareExportsConnector.findOrCreateDraftForRejected(rejectedId).map { id =>
+  private def findOrCreateDraftForAmendment(rejectedParentId: String, redirect: Result)(implicit request: WrappedRequest[_]): Future[Result] =
+    customsDeclareExportsConnector.findOrCreateDraftForAmendment(rejectedParentId, ERRORS).map { id =>
+      redirect.addingToSession(declarationUuid -> id)
+    }
+
+  private def findOrCreateDraftForRejection(rejectedParentId: String, redirect: Result)(implicit request: WrappedRequest[_]): Future[Result] =
+    customsDeclareExportsConnector.findOrCreateDraftForRejection(rejectedParentId).map { id =>
       redirect.addingToSession(declarationUuid -> id)
     }
 }

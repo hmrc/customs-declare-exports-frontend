@@ -20,7 +20,8 @@ import connectors.CustomsDeclareExportsConnector
 import controllers.actions.{AuthAction, VerifiedEmailAction}
 import handlers.ErrorHandler
 import models.declaration.notifications.{Notification, NotificationError}
-import models.requests.SessionHelper.submissionActionId
+import models.requests.SessionHelper
+import models.requests.SessionHelper.{getValue, submissionActionId, submissionUuid}
 import play.api.Logging
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -47,7 +48,7 @@ class RejectedNotificationsController @Inject() (
         customsDeclareExportsConnector.findNotifications(id).map { notifications =>
           val messages = messagesApi.preferred(request).messages
           val mrn = notifications.headOption.map(_.mrn).getOrElse(messages("rejected.notification.mrn.missing"))
-          Ok(rejectedNotificationPage(declaration, mrn, None, getRejectedNotificationErrors(notifications)))
+          Ok(rejectedNotificationPage(None, declaration, mrn, None, getRejectedNotificationErrors(notifications)))
         }
 
       case _ => errorHandler.internalError(s"Declaration($id) not found for a rejected submission??")
@@ -65,7 +66,8 @@ class RejectedNotificationsController @Inject() (
                 case Some(declaration) =>
                   customsDeclareExportsConnector.findLatestNotification(actionId).map {
                     case Some(notification) =>
-                      Ok(rejectedNotificationPage(declaration, notification.mrn, Some(declarationId), notification.errors))
+                      SessionHelper.print
+                      Ok(rejectedNotificationPage(getValue(submissionUuid), declaration, notification.mrn, Some(declarationId), notification.errors))
                         .addingToSession(submissionActionId -> actionId)
 
                     case _ => errorHandler.internalServerError(s"Failed|rejected amended Notification not found for Action($actionId)??")

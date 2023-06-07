@@ -67,7 +67,7 @@ class Navigator @Inject() (
       case _                                      => setErrorFixMode(Results.Redirect(factory).flashing(request.flash))
     }
 
-  def backLink[A, B](page: DeclarationPage)(implicit request: JourneyRequest[_]): Call = {
+  def backLink(page: DeclarationPage)(implicit request: JourneyRequest[_]): Call = {
     val specific: PartialFunction[DeclarationPage, Object] = request.declarationType match {
       case STANDARD      => standardCacheDependent.orElse(standard)
       case SUPPLEMENTARY => supplementaryCacheDependent.orElse(supplementary)

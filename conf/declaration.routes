@@ -546,7 +546,7 @@ GET         /cancel-amendment                    controllers.declaration.Submiss
 
 # Amendment declaration
 
-GET         /amend-declaration                   controllers.declaration.amendments.AmendDeclarationController.initAmendment
+GET         /amend-declaration/:parentId/:enhancedStatus  controllers.declaration.amendments.AmendDeclarationController.initAmendment(parentId: String, enhancedStatus: String)
 
 # Confirmation
 
