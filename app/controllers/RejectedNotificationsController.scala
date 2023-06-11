@@ -20,7 +20,6 @@ import connectors.CustomsDeclareExportsConnector
 import controllers.actions.{AuthAction, VerifiedEmailAction}
 import handlers.ErrorHandler
 import models.declaration.notifications.{Notification, NotificationError}
-import models.requests.SessionHelper
 import models.requests.SessionHelper.{getValue, submissionActionId, submissionUuid}
 import play.api.Logging
 import play.api.i18n.I18nSupport
@@ -66,7 +65,6 @@ class RejectedNotificationsController @Inject() (
                 case Some(declaration) =>
                   customsDeclareExportsConnector.findLatestNotification(actionId).map {
                     case Some(notification) =>
-                      SessionHelper.print
                       Ok(rejectedNotificationPage(getValue(submissionUuid), declaration, notification.mrn, Some(declarationId), notification.errors))
                         .addingToSession(submissionActionId -> actionId)
 

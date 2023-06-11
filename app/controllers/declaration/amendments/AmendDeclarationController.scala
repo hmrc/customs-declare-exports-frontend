@@ -40,9 +40,10 @@ class AmendDeclarationController @Inject() (
 
   def initAmendment(parentId: String, enhancedStatus: String): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
     if (!declarationAmendmentsConfig.isEnabled) Future.successful(Redirect(RootController.displayPage))
-    else connector.findOrCreateDraftForAmendment(parentId, EnhancedStatus.withName(enhancedStatus)).map { declarationId =>
-      Redirect(SummaryController.displayPage).addingToSession(declarationUuid -> declarationId)
-    }
+    else
+      connector.findOrCreateDraftForAmendment(parentId, EnhancedStatus.withName(enhancedStatus)).map { declarationId =>
+        Redirect(SummaryController.displayPage).addingToSession(declarationUuid -> declarationId)
+      }
   }
 }
 
@@ -52,10 +53,8 @@ object AmendDeclarationController {
     (for {
       parentId <- submission.latestDecId
       enhancedStatus <- submission.latestEnhancedStatus
+    } yield routes.AmendDeclarationController.initAmendment(parentId, enhancedStatus.toString)).getOrElse {
+      val message = s"(Amendment) 'latestDecId' and/or 'latestEnhancedStatus' undefined for Submission(${submission.uuid})??"
+      throw new IllegalStateException(message)
     }
-    yield routes.AmendDeclarationController.initAmendment(parentId, enhancedStatus.toString))
-      .getOrElse {
-        val message = s"(Amendment) 'latestDecId' and/or 'latestEnhancedStatus' undefined for Submission(${submission.uuid})??"
-        throw new IllegalStateException(message)
-      }
 }

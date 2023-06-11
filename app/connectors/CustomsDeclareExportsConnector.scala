@@ -96,7 +96,10 @@ class CustomsDeclareExportsConnector @Inject() (
     httpClient.GET[Paginated[ExportsDeclaration]](url(s"${appConfig.declarationsPath}$statusParameters$pagination&$sort"))
   }
 
-  def findOrCreateDraftForAmendment(parentId: String, enhancedStatus: EnhancedStatus)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[String] = {
+  def findOrCreateDraftForAmendment(
+    parentId: String,
+    enhancedStatus: EnhancedStatus
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[String] = {
     val fetchStopwatch = fetchTimer.time
 
     httpClient

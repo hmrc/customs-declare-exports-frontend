@@ -50,10 +50,6 @@ class SubmissionsController @Inject() (
     else findOrCreateDraftForRejection(rejectedParentId, redirect)
   }
 
-  def unacceptedAmendment(declarationId: String): Action[AnyContent] = authAndEmailActions { implicit request =>
-    Redirect(SummaryController.displayPage).addingToSession(declarationUuid -> declarationId)
-  }
-
   def amendErrors(rejectedParentId: String, redirectUrl: String, pattern: String, message: String, isAmendment: Boolean): Action[AnyContent] =
     authAndEmailActions.async { implicit request =>
       val flashData = FieldNamePointer.getFieldName(pattern) match {

@@ -35,7 +35,9 @@ import javax.inject.{Inject, Singleton}
 class NotificationErrorHelper @Inject() (codeListConnector: CodeListConnector, paragraphBody: paragraphBody) {
   import NotificationErrorHelper._
 
-  def createSummaryList(declaration: ExportsDeclaration, isAmendment: Boolean, errors: Seq[NotificationError])(implicit messages: Messages): SummaryList = {
+  def createSummaryList(declaration: ExportsDeclaration, isAmendment: Boolean, errors: Seq[NotificationError])(
+    implicit messages: Messages
+  ): SummaryList = {
     val errorRows = createRowsFromErrors(declaration, isAmendment, errors)
     val groupedErrorRows = groupRowsByErrorCode(errorRows)
     val redactedErrorRows = removeRepeatFieldNameAndDescriptions(groupedErrorRows).flatten
@@ -139,8 +141,8 @@ class NotificationErrorHelper @Inject() (codeListConnector: CodeListConnector, p
       actions = errorRow.action
     )
 
-  private def createRowsFromErrors(
-    declaration: ExportsDeclaration, isAmendment: Boolean, errors: Seq[NotificationError])(implicit messages: Messages
+  private def createRowsFromErrors(declaration: ExportsDeclaration, isAmendment: Boolean, errors: Seq[NotificationError])(
+    implicit messages: Messages
   ): ErrorRows =
     errors.map { notificationError =>
       val maybeFieldName = notificationError.pointer.map(p => messages(p.messageKey, p.sequenceArgs: _*))

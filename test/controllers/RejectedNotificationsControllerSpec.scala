@@ -19,14 +19,16 @@ package controllers
 import base.ControllerWithoutFormSpec
 import config.AppConfig
 import handlers.ErrorHandler
-import mock.ErrorHandlerMocks
 import models.declaration.notifications.Notification
 import models.declaration.submissions.Action
+import models.requests.SessionHelper.submissionUuid
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
-import org.scalatest.OptionValues
+import org.scalatest.{Assertion, OptionValues}
 import play.api.libs.json.Json
+import play.api.mvc.Result
+import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.{error_template, rejected_notification_errors}
@@ -34,7 +36,7 @@ import views.html.{error_template, rejected_notification_errors}
 import scala.concurrent.ExecutionContext.global
 import scala.concurrent.Future
 
-class RejectedNotificationsControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerMocks with OptionValues {
+class RejectedNotificationsControllerSpec extends ControllerWithoutFormSpec with OptionValues {
 
   private val mockRejectedNotificationPage = mock[rejected_notification_errors]
 
@@ -55,7 +57,7 @@ class RejectedNotificationsControllerSpec extends ControllerWithoutFormSpec with
     super.beforeEach()
 
     authorizedUser()
-    when(mockRejectedNotificationPage.apply(any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockRejectedNotificationPage.apply(any(), any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -71,10 +73,7 @@ class RejectedNotificationsControllerSpec extends ControllerWithoutFormSpec with
         fetchDeclaration(declarationId)
         findNotifications(declarationId)
 
-        val result = controller.displayPage(declarationId)(getRequest())
-
-        status(result) mustBe OK
-        verify(mockRejectedNotificationPage).apply(any(), any(), any[Option[Nothing]], any())(any(), any())
+        verifyResult(controller.displayPage(declarationId)(getRequest()), None, None)
       }
 
       "the declaration is found but the Submission has no notifications" in {
@@ -83,10 +82,7 @@ class RejectedNotificationsControllerSpec extends ControllerWithoutFormSpec with
         when(mockCustomsDeclareExportsConnector.findNotifications(any())(any(), any()))
           .thenReturn(Future.successful(List.empty))
 
-        val result = controller.displayPage(declarationId)(getRequest())
-
-        status(result) mustBe OK
-        verify(mockRejectedNotificationPage).apply(any(), any(), any[Option[Nothing]], any())(any(), any())
+        verifyResult(controller.displayPage(declarationId)(getRequest()), None, None)
       }
     }
 
@@ -104,16 +100,16 @@ class RejectedNotificationsControllerSpec extends ControllerWithoutFormSpec with
   "RejectedNotificationsController.displayPageOnUnacceptedAmendment" should {
 
     "return 200 (OK)" when {
+      val submissionId = "submissionId"
+      val request = FakeRequest("GET", "").withSession(submissionUuid -> submissionId)
 
       "Action, declaration and notification are found" in {
         fetchAction(failedAction)
         fetchDeclaration(failedAction.decId.value)
         fetchLatestNotification(failedNotification)
 
-        val result = controller.displayPageOnUnacceptedAmendment(failedAction.id)(getRequest())
-
-        status(result) mustBe OK
-        verify(mockRejectedNotificationPage).apply(any(), any(), any[Option[String]], any())(any(), any())
+        val result = controller.displayPageOnUnacceptedAmendment(failedAction.id)(request)
+        verifyResult(result, failedAction.decId, Some(submissionId))
       }
 
       "for a draft declaration of an unaccepted amendment" in {
@@ -122,13 +118,8 @@ class RejectedNotificationsControllerSpec extends ControllerWithoutFormSpec with
         fetchDeclaration(draftDeclarationId)
         fetchLatestNotification(failedNotification)
 
-        val result = controller.displayPageOnUnacceptedAmendment(failedAction.id, Some(draftDeclarationId))(getRequest())
-
-        status(result) mustBe OK
-
-        val captor = ArgumentCaptor.forClass(classOf[Option[String]])
-        verify(mockRejectedNotificationPage).apply(any(), any(), captor.capture(), any())(any(), any())
-        captor.getValue.asInstanceOf[Option[String]].value mustBe draftDeclarationId
+        val result = controller.displayPageOnUnacceptedAmendment(failedAction.id, Some(draftDeclarationId))(request)
+        verifyResult(result, Some(draftDeclarationId), Some(submissionId))
       }
     }
 
@@ -155,6 +146,15 @@ class RejectedNotificationsControllerSpec extends ControllerWithoutFormSpec with
         status(result) mustBe INTERNAL_SERVER_ERROR
       }
     }
+  }
+
+  private def verifyResult(result: Future[Result], expectedDec: Option[String], expectedSub: Option[String]): Assertion = {
+    status(result) mustBe OK
+    val captorDec = ArgumentCaptor.forClass(classOf[Option[String]])
+    val captorSub = ArgumentCaptor.forClass(classOf[Option[String]])
+    verify(mockRejectedNotificationPage).apply(captorSub.capture(), any(), any(), captorDec.capture(), any())(any(), any())
+    captorDec.getValue.asInstanceOf[Option[String]] mustBe expectedDec
+    captorSub.getValue.asInstanceOf[Option[String]] mustBe expectedSub
   }
 
   val failedAction: Action =

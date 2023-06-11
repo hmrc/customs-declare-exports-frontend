@@ -24,12 +24,13 @@ import models._
 import models.declaration.submissions.EnhancedStatus.GOODS_ARRIVED
 import models.declaration.submissions.RequestType.SubmissionRequest
 import models.declaration.submissions.{Action, Submission}
-import models.requests.SessionHelper
+import models.requests.SessionHelper.declarationUuid
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito.{reset, verify, when}
-import org.scalatest.BeforeAndAfterEach
 import org.scalatest.matchers.{BeMatcher, MatchResult}
+import org.scalatest.{Assertion, BeforeAndAfterEach}
+import play.api.mvc.Result
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.dashboard.DashboardHelper.toDashboard
@@ -154,39 +155,58 @@ class SubmissionsControllerSpec extends ControllerWithoutFormSpec with BeforeAnd
   private val declarationId = "declarationId"
 
   "SubmissionsController on amend" should {
-    "return 303 (SEE OTHER) with the new declaration-id as one the Session keys" in {
-      when(mockCustomsDeclareExportsConnector.findOrCreateDraftForRejection(refEq(rejectedId))(any(), any()))
-        .thenReturn(Future.successful(declarationId))
 
-      val result = controller.amend(rejectedId)(getRequest(None))
+    "return 303 (SEE OTHER) with the new declaration-id as one the Session keys on declaration submission" in {
+      val isAmendment = false
+      initMock(isAmendment)
 
-      status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(SummaryController.displayPage.url)
-      session(result).get(SessionHelper.declarationUuid) mustBe Some(declarationId)
+      val result = controller.amend(rejectedId, isAmendment)(getRequest(None))
+      verifyResult(result, SummaryController.displayPage.url)
     }
-  }
 
-  "SubmissionsController on unacceptedAmendment" should {
-    "return 303 (SEE OTHER) with the fetched declaration-id as one the Session keys" in {
-      val result = controller.unacceptedAmendment(declarationId)(getRequest(None))
+    "return 303 (SEE OTHER) with the new declaration-id as one the Session keys on declaration amendment" in {
+      val isAmendment = true
+      initMock(isAmendment)
 
-      status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(SummaryController.displayPage.url)
-      session(result).get(SessionHelper.declarationUuid) mustBe Some(declarationId)
+      val result = controller.amend(rejectedId, isAmendment)(getRequest(None))
+      verifyResult(result, SummaryController.displayPage.url)
     }
   }
 
   "SubmissionsController on amendErrors" should {
-    "return 303 (SEE OTHER) with the new declaration-id as one the Session keys" in {
-      when(mockCustomsDeclareExportsConnector.findOrCreateDraftForRejection(refEq(rejectedId))(any(), any()))
-        .thenReturn(Future.successful("new-id"))
+
+    "return 303 (SEE OTHER) with the new declaration-id as one the Session keys on declaration submission" in {
+      val isAmendment = false
+      initMock(isAmendment)
 
       val redirectUrl = "/specific-page-url"
-      val result = controller.amendErrors(rejectedId, redirectUrl, "pattern", "message")(getRequest(None))
+      val result = controller.amendErrors(rejectedId, redirectUrl, "pattern", "message", isAmendment)(getRequest(None))
 
-      status(result) mustBe SEE_OTHER
-      redirectLocation(result).get mustBe redirectUrl
-      session(result).get(SessionHelper.declarationUuid) mustBe Some("new-id")
+      verifyResult(result, redirectUrl)
     }
+
+    "return 303 (SEE OTHER) with the new declaration-id as one the Session keys on declaration amendment" in {
+      val isAmendment = true
+      initMock(isAmendment)
+
+      val redirectUrl = "/specific-page-url"
+      val result = controller.amendErrors(rejectedId, redirectUrl, "pattern", "message", isAmendment)(getRequest(None))
+
+      verifyResult(result, redirectUrl)
+    }
+  }
+
+  private def initMock(isAmendment: Boolean): Unit =
+    if (isAmendment)
+      when(mockCustomsDeclareExportsConnector.findOrCreateDraftForAmendment(refEq(rejectedId), any())(any(), any()))
+        .thenReturn(Future.successful(declarationId))
+    else
+      when(mockCustomsDeclareExportsConnector.findOrCreateDraftForRejection(refEq(rejectedId))(any(), any()))
+        .thenReturn(Future.successful(declarationId))
+
+  private def verifyResult(result: Future[Result], expectedRedirect: String): Assertion = {
+    status(result) mustBe SEE_OTHER
+    redirectLocation(result).get mustBe expectedRedirect
+    session(result).get(declarationUuid) mustBe Some(declarationId)
   }
 }

@@ -17,10 +17,12 @@
 package controllers.declaration
 
 import base.ControllerWithoutFormSpec
+import config.AppConfig
 import controllers.declaration.SummaryController.{continuePlaceholder, lrnDuplicateError}
 import controllers.declaration.SummaryControllerSpec.{expectedHref, fakeSummaryPage}
 import controllers.routes.SavedDeclarationsController
 import forms.{Lrn, LrnValidator}
+import handlers.ErrorHandler
 import mock.ErrorHandlerMocks
 import org.jsoup.Jsoup
 import org.mockito.ArgumentCaptor
@@ -34,6 +36,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import views.helpers.ActionItemBuilder.lastUrlPlaceholder
 import views.html.declaration.amendments.amendment_summary
 import views.html.declaration.summary._
+import views.html.error_template
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -46,12 +49,15 @@ class SummaryControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerM
 
   private val normalModeBackLink = SavedDeclarationsController.displayDeclarations()
 
+  private val mcc = stubMessagesControllerComponents()
+
   private val controller = new SummaryController(
     mockAuthAction,
     mockVerifiedEmailAction,
     mockJourneyAction,
+    new ErrorHandler(mcc.messagesApi, instanceOf[error_template])(instanceOf[AppConfig]),
     mockExportsCacheService,
-    stubMessagesControllerComponents(),
+    mcc,
     amendmentSummaryPage,
     normalSummaryPage,
     mockSummaryPageNoData,
