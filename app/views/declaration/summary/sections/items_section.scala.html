@@ -20,7 +20,7 @@
 
 @if(declaration.items.nonEmpty) {
     <h2 class="govuk-heading-m">@messages("declaration.summary.items")</h2>
-    @declaration.items.sortBy(_.sequenceId).map { item =>
-        @item_section(item, declaration.`type`, actionsEnabled)
+    @declaration.items.sortBy(_.sequenceId).zipWithIndex.map { case (item, idx) =>
+        @item_section(item, idx, declaration.`type`, actionsEnabled)
     }
 }

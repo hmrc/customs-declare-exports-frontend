@@ -91,23 +91,23 @@
             )),
             caption = Some(messages("declaration.itemsSummary.addAnotherItem.table.caption")),
             captionClasses = "govuk-visually-hidden",
-            rows = items.zipWithIndex.map { case (item, index) =>
+            rows = items.zipWithIndex.map { case (item, index) => {
                 Seq(
                     TableRow(
-                        content = Text(item.sequenceId.toString),
-                        attributes = Map("id" -> s"item_$index--sequence_id")
+                        content = Text((index + 1).toString),
+                        attributes = Map("id" -> s"item_${index + 1}--sequence_id")
                     ),
                     TableRow(
                         content = Text(item.procedureCodes.flatMap(_.procedureCode).getOrElse("")),
-                        attributes = Map("id" -> s"item_$index--procedure_code")
+                        attributes = Map("id" -> s"item_${index + 1}--procedure_code")
                     ),
                     TableRow(
                         content = Text(item.commodityDetails.flatMap(_.combinedNomenclatureCode).getOrElse("")),
-                        attributes = Map("id" -> s"item_$index--item_type")
+                        attributes = Map("id" -> s"item_${index + 1}--item_type")
                     ),
                     TableRow(
                         content = HtmlContent(noOfPackagesSection(item).toString),
-                        attributes = Map("id" -> s"item_$index--package_count")
+                        attributes = Map("id" -> s"item_${index + 1}--package_count")
                     ),
                     TableRow(
                         content = HtmlContent(link(
@@ -116,7 +116,7 @@
                             textHidden = Some(messages("declaration.itemsAdd.change.hint", item.sequenceId))
                         )),
                         classes = "govuk-table__cell--numeric",
-                        attributes = Map("id" -> s"item_$index--change")
+                        attributes = Map("id" -> s"item_${index + 1}--change")
                     ),
                     TableRow(
                         content = HtmlContent(link(
@@ -125,10 +125,10 @@
                             textHidden = Some(messages("declaration.itemsAdd.remove.hint", item.sequenceId))
                         )),
                         classes = "govuk-table__cell--numeric",
-                        attributes = Map("id" -> s"item_$index--remove")
+                        attributes = Map("id" -> s"item_${index + 1}--remove")
                     )
                 )
-            }
+            }}
         ))
     }
 }

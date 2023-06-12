@@ -43,7 +43,7 @@
   linkButton: linkButton
 )
 
-@(form: Form[YesNoAnswer], item: ExportItem, fromSummary: Boolean)(implicit request: JourneyRequest[_], messages: Messages)
+@(form: Form[YesNoAnswer], item: ExportItem, itemIdx: Int, fromSummary: Boolean)(implicit request: JourneyRequest[_], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
@@ -53,8 +53,10 @@
     else saveButtons()
 }
 
+@itemDisplayNum = @{ itemIdx + 1 }
+
 @govukLayout(
-    title = Title("declaration.itemsRemove.title", "declaration.section.5", item.sequenceId.toString, hasErrors = hasErrors),
+    title = Title("declaration.itemsRemove.title", "declaration.section.5", itemDisplayNum.toString, hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(RemoveItem)))) {
 
     @formHelper(action = routes.ItemsSummaryController.removeItem(item.id, fromSummary), 'autoComplete -> "off") {
@@ -65,12 +67,12 @@
 
       @govukFieldset(Fieldset(
         legend = Some(Legend(
-          content = Text(messages("declaration.itemsRemove.title", item.sequenceId.toString)),
+          content = Text(messages("declaration.itemsRemove.title", itemDisplayNum)),
           classes = gdsPageLegend,
           isPageHeading = true
         )),
         html = HtmlFormat.fill(immutable.Seq(
-          item_section(item, request.declarationType, actionsEnabled = false),
+          item_section(item, itemIdx, request.declarationType, actionsEnabled = false),
           yesNoRadios(form, inline = true),
           buttons
         ))

@@ -59,10 +59,10 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
     "has item answers and" when {
 
       "actions are enabled" should {
-        val view = itemSection(itemWithAnswers, STANDARD)(messages)
+        val view = itemSection(itemWithAnswers, 0, STANDARD)(messages)
 
         "have item header" in {
-          view.getElementsByClass("govuk-heading-m").text mustBe messages("declaration.summary.items.item.sequenceId", "1")
+          view.getElementsByClass("govuk-heading-m").text mustBe messages("declaration.summary.items.item.presentationId", "1")
         }
 
         "have header action" in {
@@ -218,7 +218,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
         "not have a 'Supplementary Units' row" when {
           "the declaration has a 'CommodityMeasure' instance with 'supplementaryUnits' undefined" in {
             val item = itemWithAnswers.copy(commodityMeasure = Some(commodityMeasure.copy(supplementaryUnits = None)))
-            val view = itemSection(item, STANDARD)(messages)
+            val view = itemSection(item, 0, STANDARD)(messages)
             view.getElementsByClass("item-1-supplementaryUnits-row") mustBe empty
           }
         }
@@ -256,10 +256,10 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
 
       "actions are disabled using actionsEnabled = false" should {
 
-        val view = itemSection(itemWithAnswers, STANDARD, actionsEnabled = false)(messages)
+        val view = itemSection(itemWithAnswers, 0, STANDARD, actionsEnabled = false)(messages)
 
         "have item header" in {
-          view.getElementsByClass("govuk-heading-m").text mustBe messages("declaration.summary.items.item.sequenceId", "1")
+          view.getElementsByClass("govuk-heading-m").text mustBe messages("declaration.summary.items.item.presentationId", "1")
         }
 
         "not have header action" in {
@@ -421,7 +421,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
 
     "has no answers" should {
 
-      val view = itemSection(itemWithoutAnswers, STANDARD)(messages)
+      val view = itemSection(itemWithoutAnswers, 0, STANDARD)(messages)
 
       "not display procedure code" in {
         view.getElementsByClass("item-1-procedureCode-row") mustBe empty

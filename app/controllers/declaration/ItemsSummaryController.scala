@@ -23,7 +23,7 @@ import controllers.declaration.routes.{
   TransportLeavingTheBorderController,
   WarehouseIdentificationController
 }
-import controllers.helpers.SupervisingCustomsOfficeHelper
+import controllers.helpers.{SequenceIdHelper, SupervisingCustomsOfficeHelper}
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
@@ -52,7 +52,8 @@ class ItemsSummaryController @Inject() (
   addItemPage: items_add_item,
   itemsSummaryPage: items_summary,
   removeItemPage: items_remove_item,
-  supervisingCustomsOfficeHelper: SupervisingCustomsOfficeHelper
+  supervisingCustomsOfficeHelper: SupervisingCustomsOfficeHelper,
+  sequenceIdHandler: SequenceIdHelper
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with WithUnsafeDefaultFormBinding {
 
@@ -113,22 +114,24 @@ class ItemsSummaryController @Inject() (
     }
 
   private def createNewItemInCache(implicit request: JourneyRequest[AnyContent]): Future[String] = {
-    val (newItem, updatedMeta) =
-      ExportItem.copyWithIncrementedSeqId(ExportItem(id = exportItemIdGeneratorService.generateItemId()), request.cacheModel.declarationMeta)
-    val items = request.cacheModel.items :+ newItem
-    exportsCacheService.update(request.cacheModel.copy(items = items, declarationMeta = updatedMeta)).map(_ => newItem.id)
+    val newItemId = exportItemIdGeneratorService.generateItemId()
+    val itemsToSequence = request.cacheModel.items :+ ExportItem(id = newItemId)
+    val (itemsSequenced, updatedMeta) = sequenceIdHandler.handleSequencing(itemsToSequence, request.cacheModel.declarationMeta)
+
+    exportsCacheService.update(request.cacheModel.copy(items = itemsSequenced, declarationMeta = updatedMeta)).map(_ => newItemId)
   }
 
   private def removeEmptyItems(implicit request: JourneyRequest[AnyContent]): Future[ExportsDeclaration] = {
     val itemsWithAnswers = request.cacheModel.items.filter(ExportItem.containsAnswers)
-    exportsCacheService.update(request.cacheModel.copy(items = itemsWithAnswers))
+    val (itemsSequenced, updatedMeta) = sequenceIdHandler.handleSequencing(itemsWithAnswers, request.cacheModel.declarationMeta)
+    exportsCacheService.update(request.cacheModel.copy(items = itemsSequenced, declarationMeta = updatedMeta))
   }
 
   def displayRemoveItemConfirmationPage(itemId: String, fromSummary: Boolean = false): Action[AnyContent] = (authenticate andThen journeyType) {
     implicit request =>
-      request.cacheModel.itemBy(itemId) match {
-        case Some(item) => Ok(removeItemPage(removeItemForm, item, fromSummary))
-        case None       => navigator.continueTo(ItemsSummaryController.displayItemsSummaryPage)
+      request.cacheModel.itemWithIndexBy(itemId) match {
+        case Some((item, idx)) => Ok(removeItemPage(removeItemForm, item, idx, fromSummary))
+        case None              => navigator.continueTo(ItemsSummaryController.displayItemsSummaryPage)
       }
   }
 
@@ -137,9 +140,9 @@ class ItemsSummaryController @Inject() (
       .bindFromRequest()
       .fold(
         formWithErrors =>
-          Future.successful(request.cacheModel.itemBy(itemId) match {
-            case Some(item) => BadRequest(removeItemPage(formWithErrors, item, fromSummary))
-            case None       => throw new IllegalStateException(s"Could not find ExportItem with id = [$itemId] to remove")
+          Future.successful(request.cacheModel.itemWithIndexBy(itemId) match {
+            case Some((item, idx)) => BadRequest(removeItemPage(formWithErrors, item, idx, fromSummary))
+            case None              => throw new IllegalStateException(s"Could not find ExportItem with id = [$itemId] to remove")
           }),
         _.answer match {
           case YesNoAnswers.yes =>
@@ -154,10 +157,10 @@ class ItemsSummaryController @Inject() (
   private def removeItemFromCache(itemId: String)(implicit request: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
     request.cacheModel.itemBy(itemId) match {
       case Some(itemToDelete) =>
-        val updatedItems = request.cacheModel.items.filterNot(_.id == itemToDelete.id)
-        val updatedModel = removeWarehouseIdentification(request.cacheModel.copy(items = updatedItems))
+        val filteredItems = request.cacheModel.items.filterNot(_.id == itemToDelete.id)
+        val (updatedItems, updatedMeta) = sequenceIdHandler.handleSequencing(filteredItems, request.cacheModel.declarationMeta)
+        val updatedModel = removeWarehouseIdentification(request.cacheModel.copy(items = updatedItems, declarationMeta = updatedMeta))
         exportsCacheService.update(updatedModel)
-
       case None => Future.successful(request.cacheModel)
     }
 

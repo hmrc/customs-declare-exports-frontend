@@ -119,7 +119,7 @@ class SummaryMessagesSpec extends UnitViewSpec {
 
       messages must haveTranslationFor("declaration.summary.items")
       messages must haveTranslationFor("declaration.summary.items.empty")
-      messages must haveTranslationFor("declaration.summary.items.item.sequenceId")
+      messages must haveTranslationFor("declaration.summary.items.item.presentationId")
       messages must haveTranslationFor("declaration.summary.items.item.procedureCode")
       messages must haveTranslationFor("declaration.summary.items.item.onwardSupplyRelief")
       messages must haveTranslationFor("declaration.summary.items.item.VATdetails")
