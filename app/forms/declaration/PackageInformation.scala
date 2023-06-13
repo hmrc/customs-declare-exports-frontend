@@ -21,7 +21,7 @@ import models.DeclarationMeta.sequenceIdPlaceholder
 import models.DeclarationType.{CLEARANCE, DeclarationType}
 import models.ExportsFieldPointer.ExportsFieldPointer
 import models.FieldMapping
-import models.declaration.{EsoFactory, ExplicitlySequencedObject}
+import models.declaration.ExplicitlySequencedObject
 import models.viewmodels.TariffContentKey
 import play.api.data.Forms.{number, optional, text}
 import play.api.data.{Form, Forms, Mapping}
@@ -32,7 +32,7 @@ import services.{DiffTools, PackageTypesService}
 import utils.validators.forms.FieldValidator._
 
 case class PackageInformation(
-  sequenceId: Int,
+  sequenceId: Int = sequenceIdPlaceholder,
   id: String,
   typesOfPackages: Option[String],
   numberOfPackages: Option[Int],
@@ -73,7 +73,7 @@ case class PackageInformation(
   override def updateSequenceId(sequenceId: Int): PackageInformation = copy(sequenceId = sequenceId)
 }
 
-object PackageInformation extends DeclarationPage with FieldMapping with EsoFactory[PackageInformation] {
+object PackageInformation extends DeclarationPage with FieldMapping {
   import scala.util.Random
 
   implicit val format = Json.format[PackageInformation]
@@ -133,6 +133,4 @@ object PackageInformation extends DeclarationPage with FieldMapping with EsoFact
           TariffContentKey("tariff.declaration.item.packageInformation.3.common")
         )
     }
-
-  override val seqIdKey: String = "PackageInformation"
 }

@@ -16,9 +16,10 @@
 
 package forms.declaration
 import forms.DeclarationPage
+import models.DeclarationMeta.sequenceIdPlaceholder
 import models.DeclarationType.DeclarationType
 import models.ExportsFieldPointer.ExportsFieldPointer
-import models.declaration.{EsoFactory, ExplicitlySequencedObject}
+import models.declaration.ExplicitlySequencedObject
 import models.viewmodels.TariffContentKey
 import models.{DeclarationMeta, FieldMapping}
 import play.api.data.Forms.text
@@ -26,11 +27,11 @@ import play.api.data.{Form, Forms, Mapping}
 import play.api.libs.json.{Json, OFormat}
 import utils.validators.forms.FieldValidator._
 
-case class Seal(sequenceId: Int, id: String) extends ExplicitlySequencedObject[Seal] {
-  def updateSequenceId(sequenceId: Int): Seal = copy(sequenceId = sequenceId)
+case class Seal(sequenceId: Int = sequenceIdPlaceholder, id: String) extends ExplicitlySequencedObject[Seal] {
+  override def updateSequenceId(sequenceId: Int): Seal = copy(sequenceId = sequenceId)
 }
 
-object Seal extends DeclarationPage with FieldMapping with EsoFactory[Seal] {
+object Seal extends DeclarationPage with FieldMapping {
   implicit val format: OFormat[Seal] = Json.format[Seal]
 
   val formId = "Seal"
@@ -55,5 +56,4 @@ object Seal extends DeclarationPage with FieldMapping with EsoFactory[Seal] {
     Seq(TariffContentKey(s"tariff.declaration.containers.seals.${DeclarationPage.getJourneyTypeSpecialisation(decType)}"))
 
   override val pointer: ExportsFieldPointer = "seals"
-  override val seqIdKey: String = "Seals"
 }
