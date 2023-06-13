@@ -267,6 +267,15 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
 
     "redirect to summary page" when {
 
+      "user indicates they do not want to add the first container" in {
+        val requestBody = Seq(ContainerFirst.hasContainerKey -> "No", ContainerFirst.containerIdKey -> "")
+        val result = controller.submitAddContainer()(postRequestAsFormUrlEncoded(requestBody: _*))
+
+        await(result) mustBe aRedirectToTheNextPage
+        theCacheModelUpdated(2).last.transport.containers mustBe Some(Nil)
+        thePageNavigatedTo mustBe routes.SummaryController.displayPage
+      }
+
       "user indicates they do not want to add another container" in {
         val body = Json.obj("yesNo" -> "No")
         val result = controller.submitSummaryAction()(postRequest(body))
