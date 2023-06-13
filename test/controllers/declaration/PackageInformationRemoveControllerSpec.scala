@@ -17,13 +17,16 @@
 package controllers.declaration
 
 import base.ControllerSpec
+import controllers.helpers.SequenceIdHelper
 import forms.common.YesNoAnswer
 import forms.declaration.PackageInformation
 import mock.ErrorHandlerMocks
-import models.declaration.ExportDeclarationTestData.declarationMeta
+import models.DeclarationMeta
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
+import org.mockito.invocation.InvocationOnMock
+import org.mockito.stubbing.Answer
 import org.scalatest.{GivenWhenThen, OptionValues}
 import play.api.data.Form
 import play.api.mvc.{AnyContentAsEmpty, Request}
@@ -34,6 +37,7 @@ import views.html.declaration.packageInformation.package_information_remove
 class PackageInformationRemoveControllerSpec extends ControllerSpec with OptionValues with ErrorHandlerMocks with GivenWhenThen {
 
   val mockRemovePage = mock[package_information_remove]
+  private val mockSeqIdHandler = mock[SequenceIdHelper]
 
   val controller =
     new PackageInformationRemoveController(
@@ -43,7 +47,8 @@ class PackageInformationRemoveControllerSpec extends ControllerSpec with OptionV
       mockErrorHandler,
       navigator,
       stubMessagesControllerComponents(),
-      mockRemovePage
+      mockRemovePage,
+      mockSeqIdHandler
     )(ec)
 
   override protected def beforeEach(): Unit = {
@@ -51,10 +56,17 @@ class PackageInformationRemoveControllerSpec extends ControllerSpec with OptionV
     authorizedUser()
     setupErrorHandler()
     when(mockRemovePage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockSeqIdHandler.handleSequencing[PackageInformation](any(), any())(any()))
+      .thenAnswer(new Answer[(Seq[PackageInformation], DeclarationMeta)] {
+        def answer(invocation: InvocationOnMock): (Seq[PackageInformation], DeclarationMeta) = {
+          val args = invocation.getArguments
+          (args(0).asInstanceOf[Seq[PackageInformation]], args(1).asInstanceOf[DeclarationMeta])
+        }
+      })
   }
 
   override protected def afterEach(): Unit = {
-    reset(mockRemovePage)
+    reset(mockRemovePage, mockSeqIdHandler)
     super.afterEach()
   }
 
@@ -137,10 +149,11 @@ class PackageInformationRemoveControllerSpec extends ControllerSpec with OptionV
 
         "user submits 'Yes' answer" in {
           val id2 = "pkgId2"
-          val packageInformation2 = PackageInformation(2, id2, Some("AE"), Some(1), Some("SHIP"))
+          val packageInformation2 =
+            PackageInformation(id = id2, typesOfPackages = Some("AE"), numberOfPackages = Some(1), shippingMarks = Some("SHIP"))
           val item = anItem(withPackageInformation(packageInformation1, packageInformation2))
-          val meta = declarationMeta.copy(maxSequenceIds = declarationMeta.maxSequenceIds + (PackageInformation.seqIdKey -> 2))
-          withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)).copy(declarationMeta = meta))
+
+          withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
 
           val requestBody = Seq("yesNo" -> "Yes")
           val result = controller.submitForm(item.id, id1)(postRequestAsFormUrlEncoded(requestBody: _*))
@@ -149,12 +162,11 @@ class PackageInformationRemoveControllerSpec extends ControllerSpec with OptionV
           thePageNavigatedTo mustBe routes.PackageInformationSummaryController.displayPage(item.id)
 
           And("max seq Id remains the same in dec meta")
-          val declaration = theCacheModelUpdated
-          declaration.declarationMeta.maxSequenceIds.get(PackageInformation.seqIdKey).value mustBe 2
+          verify(mockSeqIdHandler).handleSequencing[PackageInformation](any(), any())(any())
 
+          val declaration = theCacheModelUpdated
           val packageInfos = declaration.itemBy(item.id).flatMap(_.packageInformation).value
           packageInfos.size mustBe 1
-          packageInfos.head.sequenceId mustBe 2
           packageInfos.head.id mustBe id2
         }
 

@@ -83,9 +83,6 @@ trait ExportsDeclarationBuilder {
   def withStatus(status: DeclarationStatus): ExportsDeclarationModifier =
     declaration => declaration.copy(declarationMeta = declaration.declarationMeta.copy(status = status))
 
-  def withMaxSeqIds(ids: Map[String, Int]): ExportsDeclarationModifier =
-    declaration => declaration.copy(declarationMeta = declaration.declarationMeta.copy(maxSequenceIds = ids))
-
   def withType(`type`: DeclarationType): ExportsDeclarationModifier = _.copy(`type` = `type`)
 
   def withCreatedDate(date: LocalDateTime): ExportsDeclarationModifier =
@@ -190,7 +187,8 @@ trait ExportsDeclarationBuilder {
       val meta = model.declarationMeta
       val routingCountries = countries.zipWithIndex.map { case (country, ix) => RoutingCountry(ix + 1, country) }
       model.copy(
-        declarationMeta = meta.copy(maxSequenceIds = meta.maxSequenceIds + (RoutingCountry.seqIdKey -> routingCountries.last.sequenceId)),
+        declarationMeta =
+          meta.copy(maxSequenceIds = meta.maxSequenceIds + (implicitly[EsoKeyProvider[RoutingCountry]].seqIdKey -> routingCountries.last.sequenceId)),
         locations = model.locations.copy(routingCountries = routingCountries, hasRoutingCountries = Some(true))
       )
     }
@@ -203,7 +201,7 @@ trait ExportsDeclarationBuilder {
     model => {
       val meta = model.declarationMeta
       model.copy(
-        declarationMeta = meta.copy(maxSequenceIds = meta.maxSequenceIds + (RoutingCountry.seqIdKey -> 0)),
+        declarationMeta = meta.copy(maxSequenceIds = meta.maxSequenceIds + (implicitly[EsoKeyProvider[RoutingCountry]].seqIdKey -> 0)),
         locations = model.locations.copy(routingCountries = Seq.empty)
       )
     }
@@ -452,7 +450,9 @@ trait ExportsDeclarationBuilder {
     model => {
       val meta = model.declarationMeta
       model.copy(
-        declarationMeta = meta.copy(maxSequenceIds = meta.maxSequenceIds ++ List(Container.seqIdKey -> 0, Seal.seqIdKey -> 0)),
+        declarationMeta = meta.copy(maxSequenceIds =
+          meta.maxSequenceIds ++ List(implicitly[EsoKeyProvider[Container]].seqIdKey -> 0, implicitly[EsoKeyProvider[Seal]].seqIdKey -> 0)
+        ),
         transport = model.transport.copy(containers = None)
       )
     }

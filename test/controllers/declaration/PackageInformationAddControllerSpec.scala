@@ -17,11 +17,16 @@
 package controllers.declaration
 
 import base.{ControllerSpec, Injector}
+import controllers.helpers.SequenceIdHelper
 import forms.declaration.PackageInformation
+import models.DeclarationMeta
+import models.declaration.EsoKeyProvider
 import models.declaration.ExportDeclarationTestData.declarationMeta
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
+import org.mockito.invocation.InvocationOnMock
+import org.mockito.stubbing.Answer
 import org.scalatest.{GivenWhenThen, OptionValues}
 import play.api.data.Form
 import play.api.mvc.{AnyContentAsEmpty, Request}
@@ -35,6 +40,7 @@ class PackageInformationAddControllerSpec extends ControllerSpec with OptionValu
 
   val mockAddPage = mock[package_information_add]
   val mockPackageTypesService = instanceOf[PackageTypesService]
+  private val mockSeqIdHandler = mock[SequenceIdHelper]
 
   val controller =
     new PackageInformationAddController(
@@ -43,17 +49,25 @@ class PackageInformationAddControllerSpec extends ControllerSpec with OptionValu
       mockExportsCacheService,
       navigator,
       stubMessagesControllerComponents(),
-      mockAddPage
+      mockAddPage,
+      mockSeqIdHandler
     )(ec, mockPackageTypesService)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
     when(mockAddPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockSeqIdHandler.handleSequencing[PackageInformation](any(), any())(any()))
+      .thenAnswer(new Answer[(Seq[PackageInformation], DeclarationMeta)] {
+        def answer(invocation: InvocationOnMock): (Seq[PackageInformation], DeclarationMeta) = {
+          val args = invocation.getArguments
+          (args(0).asInstanceOf[Seq[PackageInformation]], args(1).asInstanceOf[DeclarationMeta])
+        }
+      })
   }
 
   override protected def afterEach(): Unit = {
-    reset(mockAddPage)
+    reset(mockAddPage, mockSeqIdHandler)
     super.afterEach()
   }
 
@@ -133,7 +147,8 @@ class PackageInformationAddControllerSpec extends ControllerSpec with OptionValu
 
       "return 303 (SEE_OTHER)" when {
         "user submits valid data" in {
-          val meta = declarationMeta.copy(maxSequenceIds = declarationMeta.maxSequenceIds + (PackageInformation.seqIdKey -> 1))
+          val meta =
+            declarationMeta.copy(maxSequenceIds = declarationMeta.maxSequenceIds + (implicitly[EsoKeyProvider[PackageInformation]].seqIdKey -> 1))
           val item1 = anItem(withPackageInformation(List(packageInformation)))
           withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item1)).copy(declarationMeta = meta))
 
@@ -144,11 +159,10 @@ class PackageInformationAddControllerSpec extends ControllerSpec with OptionValu
           thePageNavigatedTo mustBe routes.PackageInformationSummaryController.displayPage(item.id)
 
           And("max seq id is updated in dec meta")
-          val declaration = theCacheModelUpdated
-          declaration.declarationMeta.maxSequenceIds.get(PackageInformation.seqIdKey).value mustBe 2
+          verify(mockSeqIdHandler).handleSequencing[PackageInformation](any(), any())(any())
 
+          val declaration = theCacheModelUpdated
           val savedPackage = declaration.itemBy(item.id).flatMap(_.packageInformation).map(_.last)
-          savedPackage.value.sequenceId mustBe 2
           savedPackage.flatMap(_.typesOfPackages) mustBe Some("AE")
           savedPackage.flatMap(_.numberOfPackages) mustBe Some(1)
           savedPackage.flatMap(_.shippingMarks) mustBe Some("1234")
