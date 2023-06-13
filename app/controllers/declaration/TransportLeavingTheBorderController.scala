@@ -24,9 +24,9 @@ import controllers.navigation.Navigator
 import forms.declaration.ModeOfTransportCode.RoRo
 import forms.declaration.TransportLeavingTheBorder
 import forms.declaration.TransportLeavingTheBorder.form
-import models.DeclarationType._
-import models.requests.JourneyRequest
+import models.DeclarationType.CLEARANCE
 import models.ExportsDeclaration
+import models.requests.JourneyRequest
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import services.cache.ExportsCacheService
@@ -50,16 +50,14 @@ class TransportLeavingTheBorderController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
 
-  private val validTypes = allDeclarationTypesExcluding(OCCASIONAL)
-
-  def displayPage: Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
+  def displayPage: Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.transport.borderModeOfTransportCode match {
       case Some(data) => Ok(transportAtBorder(form.withSubmissionErrors.fill(data)))
       case _          => Ok(transportAtBorder(form.withSubmissionErrors))
     }
   }
 
-  def submitForm(): Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async { implicit request =>
+  def submitForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     form.withSubmissionErrors
       .bindFromRequest()
       .fold(

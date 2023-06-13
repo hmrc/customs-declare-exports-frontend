@@ -17,15 +17,14 @@
 package controllers.declaration
 
 import base.ControllerWithoutFormSpec
-import base.ExportsTestData.pc1040
-import controllers.helpers.{SequenceIdHelper, SupervisingCustomsOfficeHelper}
+import controllers.helpers.SequenceIdHelper
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.FiscalInformation.AllowedFiscalInformationAnswers
 import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData, FiscalInformation, WarehouseIdentification}
 import models.DeclarationType._
-import models.declaration._
-import models.{DeclarationMeta, DeclarationType, ExportsDeclaration}
+import models.declaration.{CommodityMeasure, ExportItem}
+import models.{DeclarationMeta, ExportsDeclaration}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.{any, anyString}
 import org.mockito.Mockito.{reset, verify, when}
@@ -49,7 +48,6 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
   private val itemsSummaryPage = mock[items_summary]
   private val removeItemPage = mock[items_remove_item]
   private val mockExportIdGeneratorService = mock[ExportItemIdGeneratorService]
-  private val supervisingCustomsOfficeHelper = instanceOf[SupervisingCustomsOfficeHelper]
   private val sequenceIdHandler: SequenceIdHelper = mock[SequenceIdHelper]
 
   private val controller = new ItemsSummaryController(
@@ -62,7 +60,6 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
     addItemPage,
     itemsSummaryPage,
     removeItemPage,
-    supervisingCustomsOfficeHelper,
     sequenceIdHandler
   )(ec)
 
@@ -279,11 +276,7 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
           val result = controller.submit()(postRequest(answerForm))
 
           status(result) mustBe SEE_OTHER
-          request.declarationType match {
-            case DeclarationType.OCCASIONAL =>
-              thePageNavigatedTo mustBe routes.SupervisingCustomsOfficeController.displayPage
-            case _ => thePageNavigatedTo mustBe routes.TransportLeavingTheBorderController.displayPage
-          }
+          thePageNavigatedTo mustBe routes.TransportLeavingTheBorderController.displayPage
 
           verify(navigator).continueTo(any())(any())
         }
@@ -314,7 +307,7 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
       }
     }
 
-    onJourney(STANDARD, SUPPLEMENTARY, CLEARANCE, SIMPLIFIED) { request =>
+    onEveryDeclarationJourney() { request =>
       "user does not want to add another item" should {
         "return 303 (SEE_OTHER) and redirect to Transport Leaving the Border page" in {
           val cachedData = aDeclaration(withType(request.declarationType), withItem(exportItem))
@@ -325,46 +318,6 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
 
           status(result) mustBe SEE_OTHER
           thePageNavigatedTo mustBe routes.TransportLeavingTheBorderController.displayPage
-        }
-      }
-    }
-
-    onJourney(OCCASIONAL) { request =>
-      "return 303 (SEE_OTHER)" in {
-        val cachedData = aDeclaration(withType(request.declarationType), withItem(exportItem))
-        withNewCaching(cachedData)
-        val answerForm = Json.obj("yesNo" -> YesNoAnswers.no)
-
-        val result = controller.submit()(postRequest(answerForm))
-
-        status(result) mustBe SEE_OTHER
-        thePageNavigatedTo mustBe routes.SupervisingCustomsOfficeController.displayPage
-      }
-
-      "return 303 (SEE_OTHER) and redirect to Warehouse Identification page when procedure code requires warehouse id" in {
-        val cachedData = aDeclaration(
-          withType(request.declarationType),
-          withItem(exportItem.copy(procedureCodes = Some(ProcedureCodesData(Some("0007"), Seq("123")))))
-        )
-        withNewCaching(cachedData)
-        val answerForm = Json.obj("yesNo" -> YesNoAnswers.no)
-
-        val result = controller.submit()(postRequest(answerForm))
-
-        status(result) mustBe SEE_OTHER
-        thePageNavigatedTo mustBe routes.WarehouseIdentificationController.displayPage
-      }
-
-      "return 303 (SEE_OTHER) and redirect to Express Consignment page" when {
-        "cache contains '1040' as procedure code and '000' as APC" in {
-          val cachedData = aDeclaration(withType(request.declarationType), withItem(exportItem.copy(procedureCodes = pc1040)))
-          withNewCaching(cachedData)
-          val answerForm = Json.obj("yesNo" -> YesNoAnswers.no)
-
-          val result = controller.submit()(postRequest(answerForm))
-
-          status(result) mustBe SEE_OTHER
-          thePageNavigatedTo mustBe routes.ExpressConsignmentController.displayPage
         }
       }
     }
@@ -501,7 +454,7 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
       }
     }
 
-    onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { request =>
+    onJourney(STANDARD, OCCASIONAL, SUPPLEMENTARY, SIMPLIFIED) { request =>
       "warehouse identification answer is updated" when {
         val removeItemForm = Json.obj("yesNo" -> YesNoAnswers.yes)
 

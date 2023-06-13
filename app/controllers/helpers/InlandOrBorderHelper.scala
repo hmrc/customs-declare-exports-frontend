@@ -28,7 +28,7 @@ import javax.inject.{Inject, Singleton}
 @Singleton
 class InlandOrBorderHelper @Inject() (depCodes: DepCodesHelper, taggedAuthCodes: TaggedAuthCodes) {
 
-  val notAllowedOnInlandOrBorder = List(CLEARANCE, OCCASIONAL, SIMPLIFIED)
+  val notAllowedOnInlandOrBorder = List(CLEARANCE, SIMPLIFIED)
 
   def resetInlandOrBorderIfRequired(declaration: ExportsDeclaration): Option[InlandOrBorder] =
     if (declaration.locations.inlandOrBorder.isEmpty) None

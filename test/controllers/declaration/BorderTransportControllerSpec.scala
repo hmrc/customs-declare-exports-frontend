@@ -85,7 +85,7 @@ class BorderTransportControllerSpec extends ControllerSpec {
 
   "Transport Details Controller" should {
 
-    onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED) { request =>
+    onJourney(STANDARD, OCCASIONAL, SUPPLEMENTARY, SIMPLIFIED) { request =>
       "return 200 (OK)" when {
 
         "display page method is invoked and cache is empty" in {
@@ -128,7 +128,7 @@ class BorderTransportControllerSpec extends ControllerSpec {
       }
     }
 
-    onJourney(OCCASIONAL, CLEARANCE) { request =>
+    onJourney(CLEARANCE) { request =>
       "redirect to the start page" when {
 
         "the 'displayOutcomePage' method is invoked" in {

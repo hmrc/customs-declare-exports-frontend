@@ -18,23 +18,17 @@ package controllers.navigation
 
 import controllers.declaration.routes
 import controllers.helpers.DeclarationHolderHelper.userCanLandOnIsAuthRequiredPage
-import controllers.helpers.TransportSectionHelper.{additionalDeclTypesAllowedOnInlandOrBorder, isPostalOrFTIModeOfTransport}
+import controllers.helpers.TransportSectionHelper.{isPostalOrFTIModeOfTransport, isTypeForInlandOrBorder}
 import controllers.helpers.{InlandOrBorderHelper, SupervisingCustomsOfficeHelper}
-import forms.declaration._
 import forms.declaration.InlandOrBorder.Border
+import forms.declaration.NatureOfTransaction.{BusinessPurchase, Sale}
+import forms.declaration._
 import models.DeclarationType._
 import models.ExportsDeclaration
 import play.api.mvc.Call
 import services.TaggedAuthCodes
-import forms.declaration.NatureOfTransaction.{BusinessPurchase, Sale}
-import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.{
-  SIMPLIFIED_FRONTIER,
-  SIMPLIFIED_PRE_LODGED,
-  STANDARD_FRONTIER,
-  STANDARD_PRE_LODGED,
-  SUPPLEMENTARY_SIMPLIFIED
-}
 
+// scalastyle:off
 trait CacheDependentNavigators {
 
   val taggedAuthCodes: TaggedAuthCodes
@@ -212,12 +206,6 @@ trait CacheDependentNavigators {
   protected def destinationCountryPreviousPage(cacheModel: ExportsDeclaration): Call =
     declarationHolderAddPreviousPage(cacheModel)
 
-  protected def warehouseIdentificationPreviousPage(cacheModel: ExportsDeclaration): Call =
-    cacheModel.`type` match {
-      case OCCASIONAL => routes.ItemsSummaryController.displayItemsSummaryPage
-      case _          => routes.TransportLeavingTheBorderController.displayPage
-    }
-
   protected def representativeAgentPreviousPage(cacheModel: ExportsDeclaration): Call =
     if (cacheModel.parties.exporterDetails.flatMap(_.details.eori).isDefined)
       routes.ExporterEoriNumberController.displayPage
@@ -229,30 +217,24 @@ trait CacheDependentNavigators {
 
   protected def supervisingCustomsOfficePreviousPage(cacheModel: ExportsDeclaration): Call =
     if (cacheModel.requiresWarehouseId || cacheModel.isType(CLEARANCE)) routes.WarehouseIdentificationController.displayPage
-    else warehouseIdentificationPreviousPage(cacheModel)
+    else routes.TransportLeavingTheBorderController.displayPage
 
-  protected def inlandOrBorderPreviousPage(cacheModel: ExportsDeclaration): Call =
-    cacheModel.additionalDeclarationType match {
-      case Some(STANDARD_FRONTIER) | Some(STANDARD_PRE_LODGED) | Some(SUPPLEMENTARY_SIMPLIFIED) | Some(SIMPLIFIED_PRE_LODGED) | Some(
-            SIMPLIFIED_FRONTIER
-          ) if supervisingCustomsOfficeHelper.isConditionForAllProcedureCodesVerified(cacheModel) =>
-        routes.TransportLeavingTheBorderController.displayPage
-
-      case _ => routes.SupervisingCustomsOfficeController.displayPage
-    }
+  protected def inlandOrBorderPreviousPage(cacheModel: ExportsDeclaration): Call = {
+    val condition = isTypeForInlandOrBorder(cacheModel) && supervisingCustomsOfficeHelper.isConditionForAllProcedureCodesVerified(cacheModel)
+    if (condition) routes.TransportLeavingTheBorderController.displayPage else routes.SupervisingCustomsOfficeController.displayPage
+  }
 
   protected def inlandTransportDetailsPreviousPage(cacheModel: ExportsDeclaration): Call =
     if (inlandOrBorderHelper.skipInlandOrBorder(cacheModel)) supervisingCustomsOfficePageOnCondition(cacheModel)
     else routes.InlandOrBorderController.displayPage
 
-  protected def supervisingCustomsOfficePageOnCondition(cacheModel: ExportsDeclaration): Call =
+  private def supervisingCustomsOfficePageOnCondition(cacheModel: ExportsDeclaration): Call =
     if (supervisingCustomsOfficeHelper.isConditionForAllProcedureCodesVerified(cacheModel)) supervisingCustomsOfficePreviousPage(cacheModel)
     else routes.SupervisingCustomsOfficeController.displayPage
 
   protected def departureTransportPreviousPageOnStandardOrSuppl(cacheModel: ExportsDeclaration): Call = {
-    val inAllowedFlow = cacheModel.additionalDeclarationType.exists(additionalDeclTypesAllowedOnInlandOrBorder.contains)
-    if (inAllowedFlow && cacheModel.isInlandOrBorder(Border)) routes.InlandOrBorderController.displayPage
-    else routes.InlandTransportDetailsController.displayPage
+    val condition = isTypeForInlandOrBorder(cacheModel) && cacheModel.isInlandOrBorder(Border)
+    if (condition) routes.InlandOrBorderController.displayPage else routes.InlandTransportDetailsController.displayPage
   }
 
   protected def transportCountryPreviousPage(cacheModel: ExportsDeclaration): Call =

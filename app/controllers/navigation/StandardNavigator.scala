@@ -38,15 +38,15 @@ trait StandardNavigator extends CacheDependentNavigators {
     case ConsignmentReferences       => routes.DeclarantDetailsController.displayPage
     case ExporterEoriNumber          => routes.DeclarantExporterController.displayPage
     case ExporterDetails             => routes.ExporterEoriNumberController.displayPage
-    case BorderTransport             => routes.DepartureTransportController.displayPage
-    case ContainerAdd                => routes.TransportContainerController.displayContainerSummary
+    case DeclarationAdditionalActors => routes.ConsigneeDetailsController.displayPage
     case RoutingCountryQuestionPage  => routes.DestinationCountryController.displayPage
     case RemoveCountryPage           => routes.RoutingCountriesController.displayRoutingCountry
     case ChangeCountryPage           => routes.RoutingCountriesController.displayRoutingCountry
-    case DocumentSummary             => routes.NatureOfTransactionController.displayPage
     case LocationOfGoods             => routes.RoutingCountriesController.displayRoutingCountry
     case AdditionalActorsSummary     => routes.ConsigneeDetailsController.displayPage
-    case DeclarationAdditionalActors => routes.ConsigneeDetailsController.displayPage
+    case DocumentSummary             => routes.NatureOfTransactionController.displayPage
+    case BorderTransport             => routes.DepartureTransportController.displayPage
+    case ContainerAdd                => routes.TransportContainerController.displayContainerSummary
     case page                        => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on standard")
   }
 
@@ -61,17 +61,17 @@ trait StandardNavigator extends CacheDependentNavigators {
   val standardCacheDependent: PartialFunction[DeclarationPage, ExportsDeclaration => Call] = {
     case CarrierEoriNumber         => carrierEoriNumberPreviousPage
     case ConsigneeDetails          => consigneeDetailsPreviousPage
-    case ContainerFirst            => containerFirstPreviousPage
     case DeclarantIsExporter       => declarantIsExporterPreviousPage
     case DestinationCountryPage    => destinationCountryPreviousPage
-    case TotalPackageQuantity      => totalPackageQuantityPreviousPage
+    case RepresentativeAgent       => representativeAgentPreviousPage
     case Document                  => previousDocumentsPreviousPageDefault
+    case TotalPackageQuantity      => totalPackageQuantityPreviousPage
     case InlandOrBorder            => inlandOrBorderPreviousPage
     case InlandModeOfTransportCode => inlandTransportDetailsPreviousPage
     case DepartureTransport        => departureTransportPreviousPageOnStandardOrSuppl
     case TransportCountry          => transportCountryPreviousPage
     case ExpressConsignment        => expressConsignmentPreviousPageOnStandard
-    case RepresentativeAgent       => representativeAgentPreviousPage
+    case ContainerFirst            => containerFirstPreviousPage
   }
 
   val standardCacheItemDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, String) => Call] = {
@@ -79,7 +79,5 @@ trait StandardNavigator extends CacheDependentNavigators {
     case AdditionalDocumentsSummary  => additionalDocumentsSummaryPreviousPage
     case AdditionalDocument          => additionalDocumentsPreviousPage
     case NactCodeFirst               => nactCodeFirstPreviousPage
-
   }
-
 }

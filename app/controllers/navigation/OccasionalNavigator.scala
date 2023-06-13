@@ -32,21 +32,21 @@ trait OccasionalNavigator extends CacheDependentNavigators {
 
   val occasional: PartialFunction[DeclarationPage, Call] = {
     case DeclarantDetails            => routes.AdditionalDeclarationTypeController.displayPage
+    case LinkDucrToMucr              => routes.LocalReferenceNumberController.displayPage
     case DucrChoice                  => routes.DeclarantDetailsController.displayPage
     case Ducr                        => routes.DucrChoiceController.displayPage
-    case LinkDucrToMucr              => routes.LocalReferenceNumberController.displayPage
     case ConsignmentReferences       => routes.DeclarantDetailsController.displayPage
     case ExporterEoriNumber          => routes.DeclarantExporterController.displayPage
     case ExporterDetails             => routes.ExporterEoriNumberController.displayPage
     case DeclarationAdditionalActors => routes.ConsigneeDetailsController.displayPage
-    case ContainerAdd                => routes.TransportContainerController.displayContainerSummary
     case RoutingCountryQuestionPage  => routes.DestinationCountryController.displayPage
     case RemoveCountryPage           => routes.RoutingCountriesController.displayRoutingCountry
+    case ChangeCountryPage           => routes.RoutingCountriesController.displayRoutingCountry
     case LocationOfGoods             => routes.RoutingCountriesController.displayRoutingCountry
     case AdditionalActorsSummary     => routes.ConsigneeDetailsController.displayPage
-    case ChangeCountryPage           => routes.RoutingCountriesController.displayRoutingCountry
-    case DepartureTransport          => routes.InlandTransportDetailsController.displayPage
     case DocumentSummary             => routes.OfficeOfExitController.displayPage
+    case BorderTransport             => routes.DepartureTransportController.displayPage
+    case ContainerAdd                => routes.TransportContainerController.displayContainerSummary
     case page                        => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on occasional")
   }
 
@@ -60,14 +60,17 @@ trait OccasionalNavigator extends CacheDependentNavigators {
   }
 
   val occasionalCacheDependent: PartialFunction[DeclarationPage, ExportsDeclaration => Call] = {
-    case DeclarantIsExporter       => declarantIsExporterPreviousPage
     case CarrierEoriNumber         => carrierEoriNumberPreviousPage
-    case Document                  => previousDocumentsPreviousPage
     case ConsigneeDetails          => consigneeDetailsPreviousPage
+    case DeclarantIsExporter       => declarantIsExporterPreviousPage
     case DestinationCountryPage    => destinationCountryPreviousPage
     case RepresentativeAgent       => representativeAgentPreviousPage
-    case InlandModeOfTransportCode => supervisingCustomsOfficePageOnCondition
-    case ExpressConsignment        => supervisingCustomsOfficePageOnCondition
+    case Document                  => previousDocumentsPreviousPage
+    case InlandOrBorder            => inlandOrBorderPreviousPage
+    case InlandModeOfTransportCode => inlandTransportDetailsPreviousPage
+    case DepartureTransport        => departureTransportPreviousPageOnStandardOrSuppl
+    case TransportCountry          => transportCountryPreviousPage
+    case ExpressConsignment        => expressConsignmentPreviousPageOnStandard
     case ContainerFirst            => containerFirstPreviousPage
   }
 

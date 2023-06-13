@@ -54,14 +54,9 @@ class SupervisingCustomsOfficeHelper @Inject() (inlandOrBorderHelper: InlandOrBo
     else SupervisingCustomsOfficeController.displayPage
 
   def nextPage(declaration: ExportsDeclaration): Call =
-    declaration.`type` match {
-      case STANDARD | SIMPLIFIED | SUPPLEMENTARY =>
-        if (inlandOrBorderHelper.skipInlandOrBorder(declaration)) InlandTransportDetailsController.displayPage
-        else InlandOrBorderController.displayPage
-
-      case CLEARANCE  => nextPageOnClearance(declaration)
-      case OCCASIONAL => ExpressConsignmentController.displayPage
-    }
+    if (declaration.`type` == CLEARANCE) nextPageOnClearance(declaration)
+    else if (inlandOrBorderHelper.skipInlandOrBorder(declaration)) InlandTransportDetailsController.displayPage
+    else InlandOrBorderController.displayPage
 
   private def nextPageOnClearance(declaration: ExportsDeclaration): Call = {
     val condition = isPostalOrFTIModeOfTransport(declaration.transportLeavingBorderCode)

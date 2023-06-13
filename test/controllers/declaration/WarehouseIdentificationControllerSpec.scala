@@ -24,7 +24,6 @@ import controllers.helpers.TransportSectionHelper.additionalDeclTypesAllowedOnIn
 import forms.declaration.InlandOrBorder.{Border, Inland}
 import forms.declaration.WarehouseIdentification
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
-import models.DeclarationType
 import models.DeclarationType._
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -57,7 +56,7 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec {
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    withNewCaching(aDeclaration(withType(DeclarationType.STANDARD)))
+    withNewCaching(aDeclaration(withType(STANDARD)))
     when(pageYesNo.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
     when(pageIdentification.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
@@ -158,20 +157,6 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec {
             status(result) mustBe SEE_OTHER
             thePageNavigatedTo mustBe InlandOrBorderController.displayPage
           }
-        }
-      }
-    }
-
-    onJourney(OCCASIONAL)(aDeclaration(withItem(itemWithPC("1040")))) { request =>
-      "redirect to the 'Express Consignment' page" when {
-        "all declaration's items have '1040' as Procedure code and '000' as unique Additional Procedure code" in {
-          withNewCaching(request.cacheModel)
-          val correctForm = Json.obj(WarehouseIdentification.warehouseIdKey -> "R12341234")
-
-          val result = controller.saveIdentificationNumber()(postRequest(correctForm))
-
-          status(result) mustBe SEE_OTHER
-          thePageNavigatedTo mustBe ExpressConsignmentController.displayPage
         }
       }
     }

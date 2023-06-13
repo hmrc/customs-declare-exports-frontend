@@ -17,11 +17,11 @@
 package views.declaration
 
 import base.Injector
-import controllers.declaration.routes.{ItemsSummaryController, TransportLeavingTheBorderController}
+import controllers.declaration.routes.TransportLeavingTheBorderController
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.WarehouseIdentification
 import forms.declaration.WarehouseIdentification.form
-import models.DeclarationType._
+import models.DeclarationType.STANDARD
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
@@ -80,20 +80,12 @@ class WarehouseIdentificationYesNoViewSpec extends PageWithButtonsSpec with Inje
       checkAllSaveButtonsAreDisplayed(createView())
     }
 
-    onJourney(STANDARD, SUPPLEMENTARY, CLEARANCE, SIMPLIFIED) { implicit request =>
+    onEveryDeclarationJourney() { implicit request =>
       "display 'Back' button that links to 'Transport Leaving the Border' page" in {
         val backButton = createView().getElementById("back-link")
 
         backButton must containMessage("site.backToPreviousQuestion")
         backButton.getElementById("back-link") must haveHref(TransportLeavingTheBorderController.displayPage)
-      }
-    }
-    onOccasional { implicit request =>
-      "display 'Back' button that links to 'Items Summary' page" in {
-        val backButton = createView().getElementById("back-link")
-
-        backButton must containMessage("site.backToPreviousQuestion")
-        backButton.getElementById("back-link") must haveHref(ItemsSummaryController.displayItemsSummaryPage)
       }
     }
   }

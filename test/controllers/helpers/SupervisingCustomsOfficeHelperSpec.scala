@@ -27,7 +27,7 @@ import controllers.declaration.routes.{
 import controllers.helpers.TransportSectionHelper.additionalDeclTypesAllowedOnInlandOrBorder
 import forms.declaration.ModeOfTransportCode.{meaningfulModeOfTransportCodes, FixedTransportInstallations, PostalConsignment}
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.SUPPLEMENTARY_EIDR
-import models.DeclarationType
+import models.DeclarationType.CLEARANCE
 import services.cache.{ExportsDeclarationBuilder, ExportsItemBuilder}
 
 class SupervisingCustomsOfficeHelperSpec
@@ -104,13 +104,7 @@ class SupervisingCustomsOfficeHelperSpec
       }
     }
 
-    onOccasional { request =>
-      "goto ExpressConsignmentController for SIMPLIFIED & OCCASIONAL journeys" in {
-        supervisingCustomsOfficeHelper.nextPage(request.cacheModel) mustBe ExpressConsignmentController.displayPage
-      }
-    }
-
-    onJourney(DeclarationType.CLEARANCE) { request =>
+    onJourney(CLEARANCE) { request =>
       skipDepartureTransportPageCodes.foreach { modeOfTransportCode =>
         s"transportLeavingBoarderCode is ${modeOfTransportCode}" should {
           "goto ExpressConsignmentController" in {

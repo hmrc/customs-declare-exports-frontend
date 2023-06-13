@@ -45,7 +45,7 @@ class ExpressConsignmentController @Inject() (
 
   private lazy val emptyKey = "declaration.transportInformation.expressConsignment.empty"
 
-  private val validTypes = Seq(STANDARD, SIMPLIFIED, OCCASIONAL, CLEARANCE)
+  private val validTypes = Seq(STANDARD, OCCASIONAL, SIMPLIFIED, CLEARANCE)
 
   def displayPage: Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
     val frm = form(errorKey = emptyKey).withSubmissionErrors

@@ -30,7 +30,7 @@ import forms.declaration.InlandOrBorder.{Border, Inland}
 import forms.declaration.ModeOfTransportCode.{FixedTransportInstallations, PostalConsignment}
 import forms.declaration.SupervisingCustomsOffice
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
-import models.DeclarationType
+import models.DeclarationType._
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{verify, when}
 import org.mockito.{ArgumentCaptor, Mockito}
@@ -62,13 +62,13 @@ class SupervisingCustomsOfficeControllerSpec extends ControllerSpec with BeforeA
   private val exampleCustomsOfficeIdentifier = "A1B2C3D4"
   private val exampleWarehouseIdentificationNumber = "SecretStash"
 
-  private val standardCacheModel = aDeclaration(withType(DeclarationType.STANDARD))
+  private val standardCacheModel = aDeclaration(withType(STANDARD))
 
-  private val supplementaryCacheModel = aDeclaration(withType(DeclarationType.SUPPLEMENTARY))
+  private val supplementaryCacheModel = aDeclaration(withType(SUPPLEMENTARY))
 
-  private val simplifiedCacheModel = aDeclaration(withType(DeclarationType.SIMPLIFIED))
+  private val simplifiedCacheModel = aDeclaration(withType(SIMPLIFIED))
 
-  private val clearanceCacheModel = aDeclaration(withType(DeclarationType.CLEARANCE))
+  private val clearanceCacheModel = aDeclaration(withType(CLEARANCE))
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -249,7 +249,7 @@ class SupervisingCustomsOfficeControllerSpec extends ControllerSpec with BeforeA
         List(FixedTransportInstallations, PostalConsignment).foreach { modeOfTransport =>
           s"'$modeOfTransport' has been selected on /transport-leaving-the-border" in {
             val borderModeOfTransportCode = withBorderModeOfTransportCode(Some(modeOfTransport))
-            withNewCaching(aDeclaration(withType(DeclarationType.CLEARANCE), borderModeOfTransportCode))
+            withNewCaching(aDeclaration(withType(CLEARANCE), borderModeOfTransportCode))
 
             val result = await(controller.submit()(postRequest(body)))
 
@@ -285,8 +285,8 @@ class SupervisingCustomsOfficeControllerSpec extends ControllerSpec with BeforeA
       (SUPPLEMENTARY_EIDR, Border, None),
       (SIMPLIFIED_FRONTIER, Border, None),
       (SIMPLIFIED_PRE_LODGED, Border, None),
-      (OCCASIONAL_FRONTIER, Border, None),
-      (OCCASIONAL_PRE_LODGED, Border, None),
+      (OCCASIONAL_FRONTIER, Border, Some(Border)),
+      (OCCASIONAL_PRE_LODGED, Border, Some(Border)),
       (CLEARANCE_FRONTIER, Border, None),
       (CLEARANCE_PRE_LODGED, Inland, None)
     )

@@ -84,7 +84,7 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
     Json.obj(radioButtonGroupId -> transportCodeValue, inputFieldId -> reference)
 
   "Departure transport controller" when {
-    onJourney(STANDARD, SUPPLEMENTARY, CLEARANCE, SIMPLIFIED) { request =>
+    onEveryDeclarationJourney() { request =>
       "return 200 (OK)" when {
 
         "display page method is invoked and cache is empty" in {
@@ -151,7 +151,7 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
       }
     }
 
-    onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED) { request =>
+    onJourney(STANDARD, OCCASIONAL, SUPPLEMENTARY, SIMPLIFIED) { request =>
       "redirect to the /border-transport page" when {
         "information provided by user are correct" in {
           withNewCaching(request.cacheModel)
@@ -205,27 +205,6 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
             await(result) mustBe aRedirectToTheNextPage
             thePageNavigatedTo mustBe ExpressConsignmentController.displayPage
           }
-        }
-      }
-    }
-
-    onJourney(OCCASIONAL) { request =>
-      "redirect to the 'start page'" when {
-
-        "displayOutcomePage is invoked" in {
-          withNewCaching(request.cacheModel)
-
-          val result = controller.displayPage(getRequest())
-          redirectLocation(result) mustBe Some(RootController.displayPage.url)
-        }
-
-        "submitForm is invoked" in {
-          withNewCaching(request.cacheModel)
-
-          val correctForm = formData(transportCodeService.WagonNumber.value, transportCodeService.WagonNumber.id, "FAA")
-
-          val result = controller.submitForm()(postRequest(correctForm))
-          redirectLocation(result) mustBe Some(RootController.displayPage.url)
         }
       }
     }

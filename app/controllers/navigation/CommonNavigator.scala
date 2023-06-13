@@ -48,6 +48,7 @@ trait CommonNavigator extends CacheDependentNavigators {
     case RemoveItem                    => routes.ItemsSummaryController.displayItemsSummaryPage
     case DocumentChangeOrRemove        => routes.PreviousDocumentsSummaryController.displayPage
     case TransportLeavingTheBorder     => routes.ItemsSummaryController.displayItemsSummaryPage
+    case WarehouseIdentification       => routes.TransportLeavingTheBorderController.displayPage
     case TransportPayment              => routes.ExpressConsignmentController.displayPage
     case CarrierDetails                => routes.CarrierEoriNumberController.displayPage
     case InvoiceAndExchangeRateChoice  => routes.OfficeOfExitController.displayPage
@@ -73,7 +74,6 @@ trait CommonNavigator extends CacheDependentNavigators {
     case DeclarationHolder                => declarationHolderAddPreviousPage
     case DeclarationHolderSummary         => declarationHolderSummaryPreviousPage
     case SupervisingCustomsOffice         => supervisingCustomsOfficePreviousPage
-    case WarehouseIdentification          => warehouseIdentificationPreviousPage
     case AuthorisationProcedureCodeChoice => authorisationProcedureCodeChoicePreviousPage
     case OfficeOfExit                     => officeOfExitPreviousPage
     case RoutingCountryPage               => _ => routes.RoutingCountriesController.displayRoutingQuestion
@@ -85,5 +85,4 @@ trait CommonNavigator extends CacheDependentNavigators {
     case AdditionalFiscalReference => additionalFiscalReferencesPreviousPage
     case TaricCodeFirst            => additionalTaricCodesPreviousPage
   }
-
 }
