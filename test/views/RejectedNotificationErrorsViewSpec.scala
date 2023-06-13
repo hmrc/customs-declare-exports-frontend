@@ -35,12 +35,19 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with ExportsTestHe
 
   private val declaration = aDeclaration(withConsignmentReferences("DUCR", "lrn"))
 
-  private def view(reasons: Seq[NotificationError] = Seq.empty, maybeSubmission: Option[String] = None, testMessages: Messages = messages): Document =
-    page(declaration, MRN.value, maybeSubmission, reasons)(request, testMessages)
+  private def view(
+    reasons: Seq[NotificationError] = Seq.empty,
+    maybeDeclarationId: Option[String] = None,
+    testMessages: Messages = messages,
+    maybeSubmissionId: Option[String] = None
+  ): Document =
+    page(maybeSubmissionId, declaration, MRN.value, maybeDeclarationId, reasons)(request, testMessages)
+
+  val submissionId = "submissionId"
+  val defaultRejectionCode = "CDS10001"
 
   val defaultView: Document = view()
-  val amendmentView: Document = view(maybeSubmission = Some("submissionId"))
-  val defaultRejectionCode = "CDS10001"
+  val amendmentView: Document = view(maybeDeclarationId = Some("declarationId"), maybeSubmissionId = Some(submissionId))
 
   "Rejected notification errors page" should {
 
@@ -90,6 +97,13 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with ExportsTestHe
       backLink.attr("href") mustBe DeclarationDetailsController.displayPage(declaration.id).url
     }
 
+    "have correct back link for amended declarations which has been rejected" in {
+      val backLink = amendmentView.getElementById("back-link")
+
+      backLink.text mustBe messages("site.back")
+      backLink.attr("href") mustBe DeclarationDetailsController.displayPage(submissionId).url
+    }
+
     "contain notifications" when {
       val reason = NotificationError(defaultRejectionCode, Some(Pointer("declaration.consignmentReferences.lrn")))
 
@@ -120,6 +134,7 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with ExportsTestHe
     "contain the 'check-your-answers' paragraph" in {
       val checkYourAnswers = defaultView.getElementsByClass("govuk-body").get(0)
       checkYourAnswers.text mustBe messages("rejected.notification.check.answers.paragraph")
+
       val checkYourAmendment = amendmentView.getElementsByClass("govuk-body").get(0)
       checkYourAmendment.text mustBe messages("rejected.amendment.check.answers.paragraph")
     }
@@ -128,41 +143,55 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with ExportsTestHe
       val checkYourAnswers = defaultView.getElementById("check-your-answers")
       checkYourAnswers.className mustBe "govuk-button"
 
-      val href = checkYourAnswers.getElementsByAttributeValue("href", SubmissionsController.amend(declaration.id).url)
+      val href = checkYourAnswers.getElementsByAttributeValue("href", SubmissionsController.amend(declaration.id, false).url)
+      href.text mustBe messages("rejected.notification.check.answers.button")
+    }
+
+    "contain the 'check-your-answers' button for amended declarations which has been rejected" in {
+      val checkYourAnswers = amendmentView.getElementById("check-your-answers")
+      checkYourAnswers.className mustBe "govuk-button"
+
+      val href = checkYourAnswers.getElementsByAttributeValue("href", SubmissionsController.amend(declaration.id, true).url)
       href.text mustBe messages("rejected.notification.check.answers.button")
     }
 
     "display all other expected content links" in {
-      val reason =
-        NotificationError(defaultRejectionCode, Some(Pointer("declaration.consignmentReferences.lrn")))
+      val reason = NotificationError(defaultRejectionCode, Some(Pointer("declaration.consignmentReferences.lrn")))
 
-      val doc: Document = view(Seq(reason))
+      val document = view(Seq(reason))
 
-      val links = doc.getElementsByClass("govuk-link--no-visited-state")
+      val links = document.getElementsByClass("govuk-link--no-visited-state")
       links.size mustBe 2
-
       links.get(1) must haveHref(SavedDeclarationsController.displayDeclarations())
     }
 
     "contain change error link" when {
+      val itemId = "12sd31"
+      val item = withItem(anItem(withSequenceId(1), withItemId(itemId)))
+      val declaration = aDeclaration(withConsignmentReferences("DUCR", "lrn"), item)
+
+      val `expectedUrl` = AdditionalDocumentsController.displayPage(itemId)
+
+      val pointerPattern = "declaration.items.#1.additionalDocument.#1.documentStatus"
+      val urlPattern = "declaration.items.$.additionalDocument.$.documentStatus"
+
+      val noteError = NotificationError("CDS12062", Some(Pointer(pointerPattern)))
+
       "link for the error exists" in {
-        val itemId = "12sd31"
-        val item = withItem(anItem(withSequenceId(1), withItemId(itemId)))
-        val declaration = aDeclaration(withConsignmentReferences("DUCR", "lrn"), item)
-
-        val `expectedUrl` = AdditionalDocumentsController.displayPage(itemId)
-
-        val pointerPattern = "declaration.items.#1.additionalDocument.#1.documentStatus"
-        val urlPattern = "declaration.items.$.additionalDocument.$.documentStatus"
-
-        val noteError = NotificationError("CDS12062", Some(Pointer(pointerPattern)))
-
-        val view: Document = page(declaration, MRN.value, None, Seq(noteError))(request, messages)
+        val view = page(None, declaration, MRN.value, None, Seq(noteError))(request, messages)
 
         val changeLink = view.getElementsByClass("govuk-link").get(3)
-
         changeLink must haveHref(
-          SubmissionsController.amendErrors(declaration.id, expectedUrl.url, urlPattern, messages("dmsError.CDS12062.title")).url
+          SubmissionsController.amendErrors(declaration.id, expectedUrl.url, urlPattern, messages("dmsError.CDS12062.title"), false).url
+        )
+      }
+
+      "link for the error exists for amended declarations which has been rejected" in {
+        val view = page(Some(submissionId), declaration, MRN.value, Some("declarationId"), Seq(noteError))(request, messages)
+
+        val changeLink = view.getElementsByClass("govuk-link").get(3)
+        changeLink must haveHref(
+          SubmissionsController.amendErrors(declaration.id, expectedUrl.url, urlPattern, messages("dmsError.CDS12062.title"), true).url
         )
       }
     }

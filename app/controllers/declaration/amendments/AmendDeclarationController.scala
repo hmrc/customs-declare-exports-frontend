@@ -22,9 +22,9 @@ import connectors.CustomsDeclareExportsConnector
 import controllers.actions.{AuthAction, VerifiedEmailAction}
 import controllers.declaration.routes.SummaryController
 import controllers.routes.RootController
-import handlers.ErrorHandler
-import models.requests.SessionHelper.{declarationUuid, getValue, submissionUuid}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import models.declaration.submissions.{EnhancedStatus, Submission}
+import models.requests.SessionHelper.declarationUuid
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -32,23 +32,29 @@ import scala.concurrent.{ExecutionContext, Future}
 class AmendDeclarationController @Inject() (
   authenticate: AuthAction,
   verifyEmail: VerifiedEmailAction,
-  errorHandler: ErrorHandler,
   mcc: MessagesControllerComponents,
   connector: CustomsDeclareExportsConnector,
   declarationAmendmentsConfig: DeclarationAmendmentsConfig
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) {
 
-  val initAmendment: Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
+  def initAmendment(parentId: String, enhancedStatus: String): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
     if (!declarationAmendmentsConfig.isEnabled) Future.successful(Redirect(RootController.displayPage))
     else
-      getValue(submissionUuid) match {
-        case Some(submissionId) =>
-          connector.findOrCreateDraftForAmend(submissionId).map { declarationId =>
-            Redirect(SummaryController.displayPage).addingToSession(declarationUuid -> declarationId)
-          }
-
-        case _ => errorHandler.redirectToErrorPage
+      connector.findOrCreateDraftForAmendment(parentId, EnhancedStatus.withName(enhancedStatus)).map { declarationId =>
+        Redirect(SummaryController.displayPage).addingToSession(declarationUuid -> declarationId)
       }
   }
+}
+
+object AmendDeclarationController {
+
+  def initAmendment(submission: Submission): Call =
+    (for {
+      parentId <- submission.latestDecId
+      enhancedStatus <- submission.latestEnhancedStatus
+    } yield routes.AmendDeclarationController.initAmendment(parentId, enhancedStatus.toString)).getOrElse {
+      val message = s"(Amendment) 'latestDecId' and/or 'latestEnhancedStatus' undefined for Submission(${submission.uuid})??"
+      throw new IllegalStateException(message)
+    }
 }

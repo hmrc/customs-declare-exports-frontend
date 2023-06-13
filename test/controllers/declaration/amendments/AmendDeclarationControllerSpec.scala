@@ -17,31 +17,27 @@
 package controllers.declaration.amendments
 
 import base.ControllerWithoutFormSpec
-import config.AppConfig
 import controllers.declaration.routes.SummaryController
 import controllers.routes.RootController
-import handlers.ErrorHandler
+import models.declaration.submissions.EnhancedStatus.{EnhancedStatus, PENDING}
 import models.requests.SessionHelper
-import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers.{any, anyString}
 import org.mockito.Mockito.{reset, when}
+import org.scalatest.OptionValues
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.error_template
+import testdata.SubmissionsTestData
 
 import scala.concurrent.Future
 
-class AmendDeclarationControllerSpec extends ControllerWithoutFormSpec {
+class AmendDeclarationControllerSpec extends ControllerWithoutFormSpec with OptionValues {
 
   val mcc = stubMessagesControllerComponents()
 
-  val controller = new AmendDeclarationController(
-    mockAuthAction,
-    mockVerifiedEmailAction,
-    new ErrorHandler(mcc.messagesApi, instanceOf[error_template])(instanceOf[AppConfig]),
-    mcc,
-    mockCustomsDeclareExportsConnector,
-    mockDeclarationAmendmentsConfig
-  )(ec)
+  val controller =
+    new AmendDeclarationController(mockAuthAction, mockVerifiedEmailAction, mcc, mockCustomsDeclareExportsConnector, mockDeclarationAmendmentsConfig)(
+      ec
+    )
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -55,39 +51,40 @@ class AmendDeclarationControllerSpec extends ControllerWithoutFormSpec {
     reset(mockDeclarationAmendmentsConfig, mockCustomsDeclareExportsConnector)
   }
 
+  val request = FakeRequest()
+
   "AmendDeclarationController.initAmendment" should {
 
     "redirect to /" when {
       "the amend flag is disabled" in {
         when(mockDeclarationAmendmentsConfig.isEnabled).thenReturn(false)
 
-        val result = controller.initAmendment(FakeRequest("GET", ""))
+        val result = controller.initAmendment("parentId", "QUERY_NOTIFICATION_MESSAGE")(request)
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(RootController.displayPage.url)
       }
     }
 
-    "return 400(BAD_REQUEST)" when {
-      "there is no 'submissionUuid' key in Session" in {
-        val result = controller.initAmendment(FakeRequest("GET", ""))
-        status(result) mustBe BAD_REQUEST
-      }
-    }
-
     "redirect to /saved-summary" when {
       "a declaration-id is returned by the connector" in {
         val expectedDeclarationId = "newDeclarationId"
-        when(mockCustomsDeclareExportsConnector.findOrCreateDraftForAmend(any())(any(), any()))
+        when(mockCustomsDeclareExportsConnector.findOrCreateDraftForAmendment(anyString(), any[EnhancedStatus])(any(), any()))
           .thenReturn(Future.successful(expectedDeclarationId))
 
-        val request = FakeRequest("GET", "").withSession(SessionHelper.submissionUuid -> "submissionUuid")
-        val result = controller.initAmendment(request)
+        val result = controller.initAmendment("parentId", "PENDING")(request)
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(SummaryController.displayPage.url)
         session(result).get(SessionHelper.declarationUuid) mustBe Some(expectedDeclarationId)
       }
+    }
+
+    "return the expected Call" in {
+      val submission = SubmissionsTestData.submission.copy(latestEnhancedStatus = Some(PENDING))
+      val expectedStatus = submission.latestEnhancedStatus.value.toString
+      val expectedRoute = routes.AmendDeclarationController.initAmendment(submission.latestDecId.value, expectedStatus)
+      AmendDeclarationController.initAmendment(submission) mustBe expectedRoute
     }
   }
 }

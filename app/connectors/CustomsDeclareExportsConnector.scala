@@ -29,6 +29,7 @@ import play.api.libs.json.{Json, Writes}
 import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import config.featureFlags.DeclarationAmendmentsConfig
+import models.declaration.submissions.EnhancedStatus.EnhancedStatus
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -95,22 +96,25 @@ class CustomsDeclareExportsConnector @Inject() (
     httpClient.GET[Paginated[ExportsDeclaration]](url(s"${appConfig.declarationsPath}$statusParameters$pagination&$sort"))
   }
 
-  def findOrCreateDraftForRejected(rejectedId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[String] = {
-    val fetchStopwatch = fetchTimer.time
-
-    httpClient.GET[String](url(s"${appConfig.draftDeclarationPath}/$rejectedId")).andThen { case _ =>
-      fetchStopwatch.stop
-    }
-  }
-
-  def findOrCreateDraftForAmend(submissionId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[String] = {
+  def findOrCreateDraftForAmendment(
+    parentId: String,
+    enhancedStatus: EnhancedStatus
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[String] = {
     val fetchStopwatch = fetchTimer.time
 
     httpClient
-      .GET[String](url(s"${appConfig.amendDeclarationPath}/$submissionId"))
+      .GET[String](url(s"${appConfig.draftAmendmentPath}/$parentId/${enhancedStatus.toString}"))
       .andThen { case _ =>
         fetchStopwatch.stop
       }
+  }
+
+  def findOrCreateDraftForRejection(rejectedParentId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[String] = {
+    val fetchStopwatch = fetchTimer.time
+
+    httpClient.GET[String](url(s"${appConfig.draftRejectionPath}/$rejectedParentId")).andThen { case _ =>
+      fetchStopwatch.stop
+    }
   }
 
   def submitDeclaration(id: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Submission] =

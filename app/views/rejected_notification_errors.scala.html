@@ -36,7 +36,16 @@
     notificationErrorHelper: NotificationErrorHelper
 )
 
-@(declaration: ExportsDeclaration, mrn: String, maybeDeclarationId: Option[String], errors: Seq[NotificationError])(implicit request: Request[_], messages: Messages)
+@(submissionId: Option[String],
+  declaration: ExportsDeclaration,
+  mrn: String,
+  maybeDeclarationId: Option[String],
+  errors: Seq[NotificationError]
+)(implicit request: Request[_], messages: Messages)
+
+@backUrl = @{
+    routes.DeclarationDetailsController.displayPage(submissionId.fold(declaration.id)(identity))
+}
 
 @title = @{
     if(maybeDeclarationId.isDefined) "rejected.amendment.title"
@@ -54,11 +63,7 @@
 }
 
 @checkAnswersUrl = @{
-    maybeDeclarationId.map { declarationId =>
-        routes.SubmissionsController.unacceptedAmendment(declarationId).url
-    }.getOrElse {
-        routes.SubmissionsController.amend(declaration.id).url
-    }
+    routes.SubmissionsController.amend(declaration.id, maybeDeclarationId.isDefined).url
 }
 
 @guidancePara2Text = @{
@@ -68,7 +73,7 @@
 
 @govukLayout(
     title = Title(title),
-    backButton = Some(BackButton(messages("site.back"), routes.DeclarationDetailsController.displayPage(declaration.id))),
+    backButton = Some(BackButton(messages("site.back"), backUrl)),
     useCustomContentWidth = true
 ) {
 
@@ -85,7 +90,7 @@
 
             @heading(messages("rejected.notification.table.title"), "govuk-heading-m", "h2")
 
-            @govukSummaryList(notificationErrorHelper.createSummaryList(declaration, errors))
+            @govukSummaryList(notificationErrorHelper.createSummaryList(declaration, maybeDeclarationId.isDefined, errors))
 
             @paragraphBody(messages(checkAnswersText))
 

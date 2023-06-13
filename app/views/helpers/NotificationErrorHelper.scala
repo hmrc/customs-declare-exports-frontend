@@ -35,8 +35,10 @@ import javax.inject.{Inject, Singleton}
 class NotificationErrorHelper @Inject() (codeListConnector: CodeListConnector, paragraphBody: paragraphBody) {
   import NotificationErrorHelper._
 
-  def createSummaryList(declaration: ExportsDeclaration, errors: Seq[NotificationError])(implicit messages: Messages): SummaryList = {
-    val errorRows = createRowsFromErrors(declaration, errors)
+  def createSummaryList(declaration: ExportsDeclaration, isAmendment: Boolean, errors: Seq[NotificationError])(
+    implicit messages: Messages
+  ): SummaryList = {
+    val errorRows = createRowsFromErrors(declaration, isAmendment, errors)
     val groupedErrorRows = groupRowsByErrorCode(errorRows)
     val redactedErrorRows = removeRepeatFieldNameAndDescriptions(groupedErrorRows).flatten
 
@@ -102,13 +104,13 @@ class NotificationErrorHelper @Inject() (codeListConnector: CodeListConnector, p
       }
     }
 
-  private def errorChangeAction(notificationError: NotificationError, declaration: ExportsDeclaration)(
+  private def errorChangeAction(notificationError: NotificationError, declaration: ExportsDeclaration, isAmendment: Boolean)(
     implicit messages: Messages
   ): Option[Actions] = {
     def constructChangeLinkAction(call: Call): Actions = {
       val errorPattern = notificationError.pointer.map(_.pattern).getOrElse("")
       val errorMessage = messages(s"dmsError.${notificationError.validationCode}.title")
-      val url = SubmissionsController.amendErrors(declaration.id, call.url, errorPattern, errorMessage).url
+      val url = SubmissionsController.amendErrors(declaration.id, call.url, errorPattern, errorMessage, isAmendment).url
       val action = actionItem(
         href = url,
         content = Text(messages("site.change")),
@@ -139,10 +141,12 @@ class NotificationErrorHelper @Inject() (codeListConnector: CodeListConnector, p
       actions = errorRow.action
     )
 
-  private def createRowsFromErrors(declaration: ExportsDeclaration, errors: Seq[NotificationError])(implicit messages: Messages): ErrorRows =
+  private def createRowsFromErrors(declaration: ExportsDeclaration, isAmendment: Boolean, errors: Seq[NotificationError])(
+    implicit messages: Messages
+  ): ErrorRows =
     errors.map { notificationError =>
       val maybeFieldName = notificationError.pointer.map(p => messages(p.messageKey, p.sequenceArgs: _*))
-      val maybeAction = errorChangeAction(notificationError, declaration)
+      val maybeAction = errorChangeAction(notificationError, declaration, isAmendment)
       val code = notificationError.validationCode
 
       ErrorRow(

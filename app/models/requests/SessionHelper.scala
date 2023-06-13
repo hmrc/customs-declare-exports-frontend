@@ -16,9 +16,10 @@
 
 package models.requests
 
+import play.api.Logging
 import play.api.mvc.{Request, Session}
 
-object SessionHelper {
+object SessionHelper extends Logging {
 
   val declarationUuid = "declarationUuid"
   val declarationType = "declarationType"
@@ -39,4 +40,7 @@ object SessionHelper {
 
   def removeValue(key: String)(implicit request: Request[_]): Session =
     request.session - key
+
+  def print(implicit request: Request[_]): Unit =
+    logger.debug(s"\n======\n${request.session.data.toList.sortBy(_._1).map(t => s"${t._1} -> ${t._2}").mkString("\n")}\n======\n")
 }

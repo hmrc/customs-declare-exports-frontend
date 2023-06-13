@@ -143,14 +143,14 @@ class AppConfig @Inject() (
     throw new IllegalStateException("Missing configuration for CDS Exports declarations URI")
   )
 
-  lazy val amendDeclarationPath = servicesConfig.getConfString(
-    "customs-declare-exports.amend-declaration",
-    throw new IllegalStateException("Missing configuration for CDS Exports amend declaration URI")
+  lazy val draftAmendmentPath = servicesConfig.getConfString(
+    "customs-declare-exports.draft-amendment",
+    throw new IllegalStateException("Missing configuration for CDS Exports draft amendment URI")
   )
 
-  lazy val draftDeclarationPath = servicesConfig.getConfString(
-    "customs-declare-exports.draft-declaration",
-    throw new IllegalStateException("Missing configuration for CDS Exports draft declaration URI")
+  lazy val draftRejectionPath = servicesConfig.getConfString(
+    "customs-declare-exports.draft-rejection",
+    throw new IllegalStateException("Missing configuration for CDS Exports draft rejection URI")
   )
 
   lazy val submissionPath = servicesConfig.getConfString(

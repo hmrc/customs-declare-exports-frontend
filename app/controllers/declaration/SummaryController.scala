@@ -21,9 +21,10 @@ import controllers.actions.{AuthAction, JourneyAction, VerifiedEmailAction}
 import controllers.declaration.SummaryController.{continuePlaceholder, lrnDuplicateError}
 import controllers.routes.SavedDeclarationsController
 import forms.{Lrn, LrnValidator}
+import handlers.ErrorHandler
 import models.declaration.submissions.EnhancedStatus.ERRORS
-import models.requests.SessionHelper._
 import models.requests.JourneyRequest
+import models.requests.SessionHelper._
 import play.api.Logging
 import play.api.data.FormError
 import play.api.i18n.I18nSupport
@@ -44,6 +45,7 @@ class SummaryController @Inject() (
   authenticate: AuthAction,
   verifyEmail: VerifiedEmailAction,
   journeyType: JourneyAction,
+  errorHandler: ErrorHandler,
   override val exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents,
   amendment_summary: amendment_summary,
@@ -54,7 +56,7 @@ class SummaryController @Inject() (
     extends FrontendController(mcc) with I18nSupport with Logging with ModelCacheable {
 
   val displayPage: Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType).async { implicit request =>
-    if (request.cacheModel.isAmendmentDraft) Future.successful(Ok(amendmentSummaryPage))
+    if (request.cacheModel.isAmendmentDraft) amendmentSummaryPage()
     else if (request.cacheModel.declarationMeta.summaryWasVisited.contains(true)) continueToDisplayPage
     else
       updateDeclarationFromRequest(declaration =>
@@ -62,12 +64,17 @@ class SummaryController @Inject() (
       ).flatMap(_ => continueToDisplayPage)
   }
 
-  private def amendmentSummaryPage(implicit request: JourneyRequest[_]): Html =
-    Html(
-      amendment_summary(submissionUuid)
-        .toString()
-        .replace(s"?$lastUrlPlaceholder", "")
-    )
+  private def amendmentSummaryPage()(implicit request: JourneyRequest[_]): Future[Result] =
+    getValue(submissionUuid).fold {
+      errorHandler.internalError("Session on /saved-summary (for draft amendment) does not include 'submissionUuid'??")
+    } { submissionId =>
+      val html = Html(
+        amendment_summary(submissionId)
+          .toString()
+          .replace(s"?$lastUrlPlaceholder", "")
+      )
+      Future.successful(Ok(html))
+    }
 
   private def continueToDisplayPage(implicit request: JourneyRequest[_]): Future[Result] = {
     val hasMandatoryData = request.cacheModel.consignmentReferences.exists(refs => refs.ducr.nonEmpty && refs.lrn.nonEmpty)

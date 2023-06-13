@@ -19,7 +19,8 @@ package base
 import base.ExportsTestData._
 import config.AppConfig
 import controllers.actions.{AuthActionImpl, EoriAllowList}
-import models.requests.{JourneyRequest, SessionHelper, VerifiedEmailRequest}
+import models.requests.SessionHelper.declarationUuid
+import models.requests.{JourneyRequest, VerifiedEmailRequest}
 import models.{ExportsDeclaration, SignedInUser}
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
@@ -268,29 +269,29 @@ trait MockAuthAction extends MockitoSugar with Stubs with MetricsMocks with Inje
   // scalastyle:on
 
   def getAuthenticatedRequest(declarationId: String = "declarationUuid"): VerifiedEmailRequest[AnyContentAsEmpty.type] =
-    buildVerifiedEmailRequest(FakeRequest("GET", "").withSession(SessionHelper.declarationUuid -> declarationId).withCSRFToken, exampleUser)
+    buildVerifiedEmailRequest(FakeRequest("GET", "").withSession(declarationUuid -> declarationId).withCSRFToken, exampleUser)
 
   def getRequest(): Request[AnyContentAsEmpty.type] =
-    FakeRequest("GET", "").withSession(SessionHelper.declarationUuid -> "declarationUuid").withCSRFToken
+    FakeRequest("GET", "").withSession(declarationUuid -> "declarationUuid").withCSRFToken
 
   def getJourneyRequest(declaration: ExportsDeclaration = aDeclaration()): JourneyRequest[AnyContentAsEmpty.type] =
     new JourneyRequest[AnyContentAsEmpty.type](getAuthenticatedRequest(), declaration)
 
   def getRequestWithSession(session: (String, String)*): Request[AnyContentAsEmpty.type] =
     FakeRequest("GET", "")
-      .withSession(SessionHelper.declarationUuid -> "declarationUuid")
+      .withSession(declarationUuid -> "declarationUuid")
       .withSession(session: _*)
       .withCSRFToken
 
   def getRequest(data: (String, String)*): Request[AnyContentAsEmpty.type] =
     FakeRequest("GET", "")
       .withFlash(data: _*)
-      .withSession(SessionHelper.declarationUuid -> "declarationUuid")
+      .withSession(declarationUuid -> "declarationUuid")
       .withCSRFToken
 
   def getRequest(declarationId: Option[String]): Request[AnyContentAsEmpty.type] =
     declarationId match {
-      case Some(declId) => FakeRequest("GET", "").withSession(SessionHelper.declarationUuid -> declId).withCSRFToken
+      case Some(declId) => FakeRequest("GET", "").withSession(declarationUuid -> declId).withCSRFToken
       case _            => FakeRequest("GET", "").withCSRFToken
     }
 }
