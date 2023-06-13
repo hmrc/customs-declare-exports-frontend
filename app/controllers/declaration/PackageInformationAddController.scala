@@ -18,13 +18,13 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.PackageInformationAddController.PackageInformationFormGroupId
-import controllers.helpers.MultipleItemsHelper
+import controllers.helpers.{MultipleItemsHelper, SequenceIdHelper}
 import controllers.helpers.PackageInformationHelper.allCachedPackageInformation
 import controllers.navigation.Navigator
 import forms.declaration.PackageInformation
 import forms.declaration.PackageInformation.form
+import models.ExportsDeclaration
 import models.requests.JourneyRequest
-import models.{DeclarationMeta, ExportsDeclaration}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
@@ -43,7 +43,8 @@ class PackageInformationAddController @Inject() (
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
   mcc: MessagesControllerComponents,
-  packageInformationPage: package_information_add
+  packageInformationPage: package_information_add,
+  sequenceIdHandler: SequenceIdHelper
 )(implicit ec: ExecutionContext, packageTypesService: PackageTypesService)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
 
@@ -72,22 +73,10 @@ class PackageInformationAddController @Inject() (
     implicit request: JourneyRequest[AnyContent]
   ): Future[ExportsDeclaration] = {
     val declarationMeta = request.cacheModel.declarationMeta
-
-    val (updatedMeta, updatedPackageInformations): (DeclarationMeta, List[PackageInformation]) =
-      packageInformations.foldLeft((declarationMeta, List.empty[PackageInformation])) {
-        (tuple: (DeclarationMeta, List[PackageInformation]), packageInformation: PackageInformation) =>
-          val meta = tuple._1
-          val packageInformations = tuple._2
-          packageInformation match {
-            case newPackageInformation @ PackageInformation(DeclarationMeta.sequenceIdPlaceholder, _, _, _, _) =>
-              val (packInfo, updatedMeta) = PackageInformation.copyWithIncrementedSeqId(newPackageInformation, meta)
-              (updatedMeta, packageInformations :+ packInfo)
-            case existingPackageInformation @ _ => (meta, packageInformations :+ existingPackageInformation)
-          }
-      }
+    val (updatedPackageInformations, updatedMeta) = sequenceIdHandler.handleSequencing(packageInformations, declarationMeta)
 
     updateDeclarationFromRequest(
-      _.updatedItem(itemId, _.copy(packageInformation = Some(updatedPackageInformations)))
+      _.updatedItem(itemId, _.copy(packageInformation = Some(updatedPackageInformations.toList)))
         .copy(declarationMeta = updatedMeta)
     )
   }

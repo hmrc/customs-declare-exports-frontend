@@ -19,6 +19,7 @@ package models.declaration
 import forms.DeclarationPage
 import forms.declaration.FiscalInformation.AllowedFiscalInformationAnswers.yes
 import forms.declaration._
+import models.DeclarationMeta.sequenceIdPlaceholder
 import models.DeclarationType.DeclarationType
 import models.ExportsFieldPointer.ExportsFieldPointer
 import models.viewmodels.TariffContentKey
@@ -29,7 +30,7 @@ import services.DiffTools._
 
 case class ExportItem(
   id: String,
-  sequenceId: Int = 0,
+  sequenceId: Int = sequenceIdPlaceholder,
   procedureCodes: Option[ProcedureCodesData] = None,
   fiscalInformation: Option[FiscalInformation] = None,
   additionalFiscalReferencesData: Option[AdditionalFiscalReferencesData] = None,
@@ -122,7 +123,7 @@ case class ExportItem(
     procedureCodes.flatMap(_.procedureCode).exists(ProcedureCodesData.isWarehouseRequiredCode)
 }
 
-object ExportItem extends DeclarationPage with FieldMapping with EsoFactory[ExportItem] {
+object ExportItem extends DeclarationPage with FieldMapping {
   implicit val format: OFormat[ExportItem] = Json.format[ExportItem]
 
   val pointer: ExportsFieldPointer = "items"
@@ -132,6 +133,4 @@ object ExportItem extends DeclarationPage with FieldMapping with EsoFactory[Expo
 
   override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
     Seq(TariffContentKey(s"tariff.declaration.declarationItemsList.${DeclarationPage.getJourneyTypeSpecialisation(decType)}"))
-
-  override val seqIdKey: String = "ExportItems"
 }

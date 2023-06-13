@@ -3592,7 +3592,7 @@ declaration.summary.items = Ynglŷn â’r eitemau
 
 declaration.summary.items.empty = Nid ydych wedi ychwanegu unrhyw eitemau eto
 
-declaration.summary.items.item.sequenceId = Eitem ddatganiad {0}
+declaration.summary.items.item.presentationId = Eitem ddatganiad {0}
 
 declaration.summary.items.item.procedureCode = Cod gweithdrefn
 

@@ -42,7 +42,7 @@ class ItemsSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Inje
       "item exists" in {
 
         val data =
-          aDeclaration(withItems(anItem(withSequenceId(1), withStatisticalValue("10")), anItem(withSequenceId(2), withProcedureCodes(Some("code")))))
+          aDeclaration(withItems(anItem(withStatisticalValue("10")), anItem(withProcedureCodes(Some("code")))))
 
         val view = itemsSection(data)(messages)
 

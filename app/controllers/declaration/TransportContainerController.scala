@@ -18,17 +18,17 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.routes.{SealController, TransportContainerController}
-import controllers.helpers.{FormAction, Remove}
+import controllers.helpers.{FormAction, Remove, SequenceIdHelper}
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.ContainerAdd.form
 import forms.declaration.{ContainerAdd, ContainerFirst}
 import models.DeclarationMeta.sequenceIdPlaceholder
+import models.ExportsDeclaration
 import models.declaration.Container
 import models.declaration.Container.maxNumberOfItems
 import models.requests.JourneyRequest
-import models.{DeclarationMeta, ExportsDeclaration}
 import play.api.data.{Form, FormError}
 import play.api.i18n.I18nSupport
 import play.api.mvc._
@@ -50,7 +50,8 @@ class TransportContainerController @Inject() (
   addFirstPage: transport_container_add_first,
   addPage: transport_container_add,
   summaryPage: transport_container_summary,
-  removePage: transport_container_remove
+  removePage: transport_container_remove,
+  sequenceIdHandler: SequenceIdHelper
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
 
@@ -104,7 +105,7 @@ class TransportContainerController @Inject() (
     containerId match {
       case Some(id) => updateCache(Seq(Container(sequenceIdPlaceholder, id, Seq.empty))).map(_ => redirectAfterAdd(id))
       case None =>
-        updateDeclarationFromRequest(_.updateContainers(Seq.empty).updateReadyForSubmission(true)) map { _ =>
+        updateCache(Seq.empty).flatMap(_ => updateDeclarationFromRequest(_.updateReadyForSubmission(true))) map { _ =>
           navigator.continueTo(routes.SummaryController.displayPage)
         }
     }
@@ -182,17 +183,7 @@ class TransportContainerController @Inject() (
 
   private def updateCache(containers: Seq[Container])(implicit request: JourneyRequest[AnyContent]): Future[ExportsDeclaration] = {
     val declarationMeta = request.cacheModel.declarationMeta
-    val (updatedMeta, updatedContainers): (DeclarationMeta, Seq[Container]) = containers.foldLeft((declarationMeta, Seq.empty[Container])) {
-      (tuple: (DeclarationMeta, Seq[Container]), container: Container) =>
-        val meta = tuple._1
-        val containers = tuple._2
-        container match {
-          case newContainer @ Container(DeclarationMeta.sequenceIdPlaceholder, _, _) =>
-            val (container, updatedMeta) = Container.copyWithIncrementedSeqId(newContainer, meta)
-            (updatedMeta, containers :+ container)
-          case existingContainer @ _ => (meta, containers :+ existingContainer)
-        }
-    }
+    val (updatedContainers, updatedMeta) = sequenceIdHandler.handleSequencing(containers, declarationMeta)
 
     updateDeclarationFromRequest(
       _.updateContainers(updatedContainers)

@@ -38,11 +38,13 @@ class ItemsRemoveItemViewSpec extends UnitViewSpec with ExportsTestHelper with S
 
   private val page = instanceOf[items_remove_item]
   private val form = YesNoAnswer.form()
+  private val itemIdx = 0
+  private val itemDisplayNum = itemIdx + 1
   override val typeAndViewInstance: (DeclarationType, (JourneyRequest[_], Messages) => HtmlFormat.Appendable) =
-    (STANDARD, page(form, exportItem, false)(_, _))
+    (STANDARD, page(form, exportItem, itemIdx, fromSummary = false)(_, _))
 
   private def createView(form: Form[YesNoAnswer] = form, item: ExportItem, fromSummary: Boolean = false): Document =
-    page(form, item, fromSummary)(journeyRequest(), messages)
+    page(form, item, itemIdx, fromSummary)(journeyRequest(), messages)
 
   private val exportItem = anItem()
 
@@ -76,12 +78,12 @@ class ItemsRemoveItemViewSpec extends UnitViewSpec with ExportsTestHelper with S
 
     "display title" in {
 
-      view.getElementsByClass(Styles.gdsPageLegend).first() must containMessage("declaration.itemsRemove.title", "0")
+      view.getElementsByClass(Styles.gdsPageLegend).first() must containMessage("declaration.itemsRemove.title", itemDisplayNum)
     }
 
     "display Item Section table" in {
 
-      view must containElementWithID("declaration-items-summary-0")
+      view must containElementWithID(s"declaration-items-summary-$itemDisplayNum")
     }
 
     "not display Item Section header" in {}

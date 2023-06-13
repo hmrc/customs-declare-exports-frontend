@@ -18,19 +18,21 @@ package controllers.declaration
 
 import base.ControllerWithoutFormSpec
 import base.ExportsTestData.pc1040
-import controllers.helpers.SupervisingCustomsOfficeHelper
+import controllers.helpers.{SequenceIdHelper, SupervisingCustomsOfficeHelper}
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.FiscalInformation.AllowedFiscalInformationAnswers
 import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData, FiscalInformation, WarehouseIdentification}
 import models.DeclarationType._
-import models.declaration.{CommodityMeasure, ExportItem, ProcedureCodesData}
-import models.{DeclarationType, ExportsDeclaration}
+import models.declaration._
+import models.{DeclarationMeta, DeclarationType, ExportsDeclaration}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.{any, anyString}
 import org.mockito.Mockito.{reset, verify, when}
-import org.scalatest.{GivenWhenThen, OptionValues}
+import org.mockito.invocation.InvocationOnMock
+import org.mockito.stubbing.Answer
 import org.scalatest.concurrent.ScalaFutures
+import org.scalatest.{GivenWhenThen, OptionValues}
 import play.api.data.{Form, FormError}
 import play.api.libs.json.Json
 import play.api.test.Helpers._
@@ -48,6 +50,7 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
   private val removeItemPage = mock[items_remove_item]
   private val mockExportIdGeneratorService = mock[ExportItemIdGeneratorService]
   private val supervisingCustomsOfficeHelper = instanceOf[SupervisingCustomsOfficeHelper]
+  private val sequenceIdHandler: SequenceIdHelper = mock[SequenceIdHelper]
 
   private val controller = new ItemsSummaryController(
     mockAuthAction,
@@ -59,7 +62,8 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
     addItemPage,
     itemsSummaryPage,
     removeItemPage,
-    supervisingCustomsOfficeHelper
+    supervisingCustomsOfficeHelper,
+    sequenceIdHandler
   )(ec)
 
   private val itemId = "ItemId12345"
@@ -95,7 +99,7 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
 
   private def itemPassedToRemoveItemView: ExportItem = {
     val captor = ArgumentCaptor.forClass(classOf[ExportItem])
-    verify(removeItemPage).apply(any(), captor.capture(), any())(any(), any())
+    verify(removeItemPage).apply(any(), captor.capture(), any(), any())(any(), any())
     captor.getValue
   }
 
@@ -104,12 +108,18 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
     authorizedUser()
     when(addItemPage.apply()(any(), any())).thenReturn(HtmlFormat.empty)
     when(itemsSummaryPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
-    when(removeItemPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(removeItemPage.apply(any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
     when(mockExportIdGeneratorService.generateItemId()).thenReturn(itemId)
+    when(sequenceIdHandler.handleSequencing[ExportItem](any(), any())(any())).thenAnswer(new Answer[(Seq[ExportItem], DeclarationMeta)] {
+      def answer(invocation: InvocationOnMock): (Seq[ExportItem], DeclarationMeta) = {
+        val args = invocation.getArguments
+        (args(0).asInstanceOf[Seq[ExportItem]], args(1).asInstanceOf[DeclarationMeta])
+      }
+    })
   }
 
   override protected def afterEach(): Unit = {
-    reset(addItemPage, itemsSummaryPage, removeItemPage, mockExportIdGeneratorService, mockExportsCacheService)
+    reset(addItemPage, itemsSummaryPage, removeItemPage, mockExportIdGeneratorService, mockExportsCacheService, sequenceIdHandler)
     super.afterEach()
   }
 
@@ -170,7 +180,7 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
         theCacheModelUpdated.items.size mustBe 1
 
         And("the max sequence id for export items is updated")
-        theCacheModelUpdated.declarationMeta.maxSequenceIds(ExportItem.seqIdKey) mustBe 1
+        verify(sequenceIdHandler).handleSequencing[ExportItem](any(), any())(any())
       }
     }
   }
@@ -244,7 +254,7 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
 
         "return 303 (SEE_OTHER) and redirect to Procedure Codes page" in {
           val cachedData =
-            aDeclaration(withType(request.declarationType), withMaxSeqIds(Map(ExportItem.seqIdKey -> 1)), withItem(anItem(withSequenceId(1))))
+            aDeclaration(withType(request.declarationType), withItem(anItem()))
           withNewCaching(cachedData)
           val answerForm = Json.obj("yesNo" -> YesNoAnswers.yes)
 
@@ -256,7 +266,7 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
           verify(navigator).continueTo(any())(any())
 
           And("max sequence id is updated")
-          theCacheModelUpdated.declarationMeta.maxSequenceIds(ExportItem.seqIdKey) mustBe 2
+          verify(sequenceIdHandler).handleSequencing[ExportItem](any(), any())(any())
         }
       }
 
@@ -369,7 +379,7 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
         val result = controller.displayRemoveItemConfirmationPage(itemId)(getRequest())
 
         status(result) mustBe OK
-        verify(removeItemPage).apply(any(), any(), any())(any(), any())
+        verify(removeItemPage).apply(any(), any(), any(), any())(any(), any())
         itemPassedToRemoveItemView mustBe exportItem
       }
 
@@ -404,14 +414,7 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
         "there is no Item in declaration with requested Id" should {
 
           "not call ExportsCacheService update method" in {
-            withNewCaching(
-              aDeclaration(
-                withType(request.declarationType),
-                withMaxSeqIds(Map(ExportItem.seqIdKey -> 2)),
-                withItem(cachedItem),
-                withItem(secondItem)
-              )
-            )
+            withNewCaching(aDeclaration(withType(request.declarationType), withItem(cachedItem), withItem(secondItem)))
 
             val result = controller.removeItem("someId123")(postRequest(removeItemForm))
             status(result) mustBe SEE_OTHER
@@ -432,14 +435,7 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
         "there is Item in declaration with requested Id" should {
 
           "remove the Item from cache" in {
-            withNewCaching(
-              aDeclaration(
-                withType(request.declarationType),
-                withMaxSeqIds(Map(ExportItem.seqIdKey -> 2)),
-                withItem(cachedItem),
-                withItem(secondItem)
-              )
-            )
+            withNewCaching(aDeclaration(withType(request.declarationType), withItem(cachedItem), withItem(secondItem)))
 
             val result = controller.removeItem(itemId)(postRequest(removeItemForm))
             status(result) mustBe SEE_OTHER
@@ -449,7 +445,7 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
             items must contain(secondItem)
 
             And("max sequence id value is unchanged")
-            theCacheModelUpdated.declarationMeta.maxSequenceIds(ExportItem.seqIdKey) mustBe 2
+            verify(sequenceIdHandler).handleSequencing[ExportItem](any(), any())(any())
           }
 
           "return 303 (SEE_OTHER) and redirect to Items Summary page" in {
@@ -491,7 +487,7 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
           val result = controller.removeItem(itemId)(postRequest(incorrectRemoveItemForm))
 
           status(result) mustBe BAD_REQUEST
-          verify(removeItemPage).apply(any(), any(), any())(any(), any())
+          verify(removeItemPage).apply(any(), any(), any(), any())(any(), any())
         }
 
         "throw IllegalStateException if the Item has already been removed" in {

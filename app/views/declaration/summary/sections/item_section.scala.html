@@ -32,7 +32,7 @@
     additional_documents: additional_documents
 )
 
-@(item: ExportItem, declarationType: DeclarationType, actionsEnabled: Boolean = true)(implicit messages: Messages)
+@(item: ExportItem, itemIdx: Int, declarationType: DeclarationType, actionsEnabled: Boolean = true)(implicit messages: Messages)
 
 @actions(action: => Actions) = @{ if(actionsEnabled) Some(action) else None }
 
@@ -41,14 +41,16 @@
     else None
 }
 
+@itemDisplayNum = @{ itemIdx + 1 }
+
 @summaryList(
-    id = s"declaration-items-summary-${item.sequenceId}",
-    heading = Some(messages("declaration.summary.items.item.sequenceId", item.sequenceId)),
+    id = s"declaration-items-summary-$itemDisplayNum",
+    heading = Some(messages("declaration.summary.items.item.presentationId", itemDisplayNum)),
     headerAction = headerAction,
     summaryListRows = Seq(
         item.procedureCodes.flatMap(_.procedureCode).map(data =>
             SummaryListRow(
-                classes = s"item-${item.sequenceId}-procedureCode-row",
+                classes = s"item-${itemDisplayNum}-procedureCode-row",
                 key = Key(
                     content = Text(messages("declaration.summary.items.item.procedureCode"))
                 ),
@@ -60,7 +62,7 @@
                         actionSummaryItem(
                             href = routes.ProcedureCodesController.displayPage(item.id).url,
                             content = HtmlContent(linkContent(messages("site.change"))),
-                            visuallyHiddenText = Some(messages("declaration.summary.items.item.procedureCode.change", item.sequenceId))
+                            visuallyHiddenText = Some(messages("declaration.summary.items.item.procedureCode.change", itemDisplayNum))
                         )
                     )
                 ))
@@ -68,7 +70,7 @@
         ),
         item.procedureCodes.map(data =>
             SummaryListRow(
-                classes = s"item-${item.sequenceId}-additionalProcedureCodes-row",
+                classes = s"item-${itemDisplayNum}-additionalProcedureCodes-row",
                 key = Key(
                     content = Text(messages("declaration.summary.items.item.additionalProcedureCodes"))
                 ),
@@ -80,7 +82,7 @@
                         actionSummaryItem(
                             href = routes.AdditionalProcedureCodesController.displayPage(item.id).url,
                             content = HtmlContent(linkContent(messages("site.change"))),
-                            visuallyHiddenText = Some(messages("declaration.summary.items.item.additionalProcedureCodes.change", item.sequenceId))
+                            visuallyHiddenText = Some(messages("declaration.summary.items.item.additionalProcedureCodes.change", itemDisplayNum))
                         )
                     )
                 ))
@@ -88,7 +90,7 @@
         ),
         item.fiscalInformation.map(fiscalInformation =>
             SummaryListRow(
-                classes = s"item-${item.sequenceId}-onwardSupplyRelief-row",
+                classes = s"item-${itemDisplayNum}-onwardSupplyRelief-row",
                 key = Key(
                     content = Text(messages("declaration.summary.items.item.onwardSupplyRelief"))
                 ),
@@ -100,7 +102,7 @@
                         actionSummaryItem(
                             href = routes.FiscalInformationController.displayPage(item.id).url,
                             content = HtmlContent(linkContent(messages("site.change"))),
-                            visuallyHiddenText = Some(messages("declaration.summary.items.item.onwardSupplyRelief.change", item.sequenceId))
+                            visuallyHiddenText = Some(messages("declaration.summary.items.item.onwardSupplyRelief.change", itemDisplayNum))
                         )
                     )
                 ))
@@ -108,7 +110,7 @@
         ),
         item.additionalFiscalReferencesData.map(additionalFiscalReferences =>
             SummaryListRow(
-                classes = s"item-${item.sequenceId}-VATdetails-row",
+                classes = s"item-${itemDisplayNum}-VATdetails-row",
                 key = Key(
                     content = Text(messages("declaration.summary.items.item.VATdetails"))
                 ),
@@ -118,7 +120,7 @@
                         actionSummaryItem(
                             href = routes.AdditionalFiscalReferencesController.displayPage(item.id).url,
                             content = HtmlContent(linkContent(messages("site.change"))),
-                            visuallyHiddenText = Some(messages("declaration.summary.items.item.VATdetails.change", item.sequenceId))
+                            visuallyHiddenText = Some(messages("declaration.summary.items.item.VATdetails.change", itemDisplayNum))
                         )
                     )
                 ))
@@ -126,7 +128,7 @@
         ),
         item.commodityDetails.map(commodityDetails =>
             SummaryListRow(
-                classes = s"item-${item.sequenceId}-commodityCode-row",
+                classes = s"item-${itemDisplayNum}-commodityCode-row",
                 key = Key(
                     content = Text(messages("declaration.summary.items.item.commodityCode"))
                 ),
@@ -138,7 +140,7 @@
                         actionSummaryItem(
                             href = routes.CommodityDetailsController.displayPage(item.id).url,
                             content = HtmlContent(linkContent(messages("site.change"))),
-                            visuallyHiddenText = Some(messages("declaration.summary.items.item.commodityCode.change", item.sequenceId))
+                            visuallyHiddenText = Some(messages("declaration.summary.items.item.commodityCode.change", itemDisplayNum))
                         )
                     )
                 ))
@@ -146,7 +148,7 @@
         ),
         item.commodityDetails.map(commodityDetails =>
             SummaryListRow(
-                classes = s"item-${item.sequenceId}-goodsDescription-row",
+                classes = s"item-${itemDisplayNum}-goodsDescription-row",
                 key = Key(
                     content = Text(messages("declaration.summary.items.item.goodsDescription"))
                 ),
@@ -158,7 +160,7 @@
                         actionSummaryItem(
                             href = routes.CommodityDetailsController.displayPage(item.id).url,
                             content = HtmlContent(linkContent(messages("site.change"))),
-                            visuallyHiddenText = Some(messages("declaration.summary.items.item.goodsDescription.change", item.sequenceId))
+                            visuallyHiddenText = Some(messages("declaration.summary.items.item.goodsDescription.change", itemDisplayNum))
                         )
                     )
                 ))
@@ -166,7 +168,7 @@
         ),
         item.dangerousGoodsCode.map(dangerousGoodsCode =>
             SummaryListRow(
-                classes = s"item-${item.sequenceId}-unDangerousGoodsCode-row",
+                classes = s"item-${itemDisplayNum}-unDangerousGoodsCode-row",
                 key = Key(
                     content = Text(messages("declaration.summary.items.item.unDangerousGoodsCode"))
                 ),
@@ -178,7 +180,7 @@
                         actionSummaryItem(
                             href = routes.UNDangerousGoodsCodeController.displayPage(item.id).url,
                             content = HtmlContent(linkContent(messages("site.change"))),
-                            visuallyHiddenText = Some(messages("declaration.summary.items.item.unDangerousGoodsCode.change", item.sequenceId))
+                            visuallyHiddenText = Some(messages("declaration.summary.items.item.unDangerousGoodsCode.change", itemDisplayNum))
                         )
                     )
                 ))
@@ -186,7 +188,7 @@
         ),
         item.cusCode.map(cusCode =>
             SummaryListRow(
-                classes = s"item-${item.sequenceId}-cusCode-row",
+                classes = s"item-${itemDisplayNum}-cusCode-row",
                 key = Key(
                     content = Text(messages("declaration.summary.items.item.cusCode"))
                 ),
@@ -198,7 +200,7 @@
                         actionSummaryItem(
                             href = routes.CusCodeController.displayPage(item.id).url,
                             content = HtmlContent(linkContent(messages("site.change"))),
-                            visuallyHiddenText = Some(messages("declaration.summary.items.item.cusCode.change", item.sequenceId))
+                            visuallyHiddenText = Some(messages("declaration.summary.items.item.cusCode.change", itemDisplayNum))
                         )
                     )
                 ))
@@ -206,7 +208,7 @@
         ),
         item.taricCodes.map(taricCodes =>
             SummaryListRow(
-                classes = s"item-${item.sequenceId}-taricAdditionalCodes-row",
+                classes = s"item-${itemDisplayNum}-taricAdditionalCodes-row",
                 key = Key(
                     content = Text(messages("declaration.summary.items.item.taricAdditionalCodes"))
                 ),
@@ -218,7 +220,7 @@
                         actionSummaryItem(
                             href = routes.TaricCodeSummaryController.displayPage(item.id).url,
                             content = HtmlContent(linkContent(messages("site.change"))),
-                            visuallyHiddenText = Some(messages("declaration.summary.items.item.taricAdditionalCodes.change", item.sequenceId))
+                            visuallyHiddenText = Some(messages("declaration.summary.items.item.taricAdditionalCodes.change", itemDisplayNum))
                         )
                     )
                 ))
@@ -226,7 +228,7 @@
         ),
         item.nactCodes.map(nactCodes =>
             SummaryListRow(
-                classes = s"item-${item.sequenceId}-nationalAdditionalCodes-row",
+                classes = s"item-${itemDisplayNum}-nationalAdditionalCodes-row",
                 key = Key(
                     content = Text(messages("declaration.summary.items.item.nationalAdditionalCodes"))
                 ),
@@ -238,7 +240,7 @@
                         actionSummaryItem(
                             href = routes.NactCodeSummaryController.displayPage(item.id).url,
                             content = HtmlContent(linkContent(messages("site.change"))),
-                            visuallyHiddenText = Some(messages("declaration.summary.items.item.nationalAdditionalCodes.change", item.sequenceId))
+                            visuallyHiddenText = Some(messages("declaration.summary.items.item.nationalAdditionalCodes.change", itemDisplayNum))
                         )
                     )
                 ))
@@ -246,7 +248,7 @@
         ),
         item.nactExemptionCode.map( nactCode =>
             SummaryListRow(
-                classes = s"item-${item.sequenceId}-zeroRatedForVat-row",
+                classes = s"item-${itemDisplayNum}-zeroRatedForVat-row",
                 key = Key(
                     content = Text(messages("declaration.summary.items.item.zeroRatedForVat"))
                 ),
@@ -258,7 +260,7 @@
                         actionSummaryItem(
                             href = routes.ZeroRatedForVatController.displayPage(item.id).url,
                             content = HtmlContent(linkContent(messages("site.change"))),
-                            visuallyHiddenText = Some(messages("declaration.summary.items.item.zeroRatedForVat.change", item.sequenceId))
+                            visuallyHiddenText = Some(messages("declaration.summary.items.item.zeroRatedForVat.change", itemDisplayNum))
                         )
                     )
                 ))
@@ -266,7 +268,7 @@
         ),
         item.statisticalValue.map(statisticalValue =>
             SummaryListRow(
-                classes = s"item-${item.sequenceId}-itemValue-row",
+                classes = s"item-${itemDisplayNum}-itemValue-row",
                 key = Key(
                     content = Text(messages("declaration.summary.items.item.itemValue"))
                 ),
@@ -278,7 +280,7 @@
                         actionSummaryItem(
                             href = routes.StatisticalValueController.displayPage(item.id).url,
                             content = HtmlContent(linkContent(messages("site.change"))),
-                            visuallyHiddenText = Some(messages("declaration.summary.items.item.itemValue.change", item.sequenceId))
+                            visuallyHiddenText = Some(messages("declaration.summary.items.item.itemValue.change", itemDisplayNum))
                         )
                     )
                 ))
@@ -289,13 +291,13 @@
 )
 
 @item.packageInformation.map(packageInformation =>
-    package_information(item.id, item.sequenceId, packageInformation, actionsEnabled)
+    package_information(item.id, itemDisplayNum, packageInformation, actionsEnabled)
 )
 
 @summaryList("", None, None, Seq(
     item.commodityMeasure.map(commodityMeasure =>
         SummaryListRow(
-            classes = s"item-${item.sequenceId}-grossWeight-row",
+            classes = s"item-${itemDisplayNum}-grossWeight-row",
             key = Key(
                 content = Text(messages("declaration.summary.items.item.grossWeight"))
             ),
@@ -307,7 +309,7 @@
                     actionSummaryItem(
                         href = routes.CommodityMeasureController.displayPage(item.id).url,
                         content = HtmlContent(linkContent(messages("site.change"))),
-                        visuallyHiddenText = Some(messages("declaration.summary.items.item.grossWeight.change", item.sequenceId))
+                        visuallyHiddenText = Some(messages("declaration.summary.items.item.grossWeight.change", itemDisplayNum))
                     )
                 )
             ))
@@ -315,7 +317,7 @@
     ),
     item.commodityMeasure.map(commodityMeasure =>
         SummaryListRow(
-            classes = s"item-${item.sequenceId}-netWeight-row",
+            classes = s"item-${itemDisplayNum}-netWeight-row",
             key = Key(
                 content = Text(messages("declaration.summary.items.item.netWeight"))
             ),
@@ -327,7 +329,7 @@
                     actionSummaryItem(
                         href = routes.CommodityMeasureController.displayPage(item.id).url,
                         content = HtmlContent(linkContent(messages("site.change"))),
-                        visuallyHiddenText = Some(messages("declaration.summary.items.item.netWeight.change", item.sequenceId))
+                        visuallyHiddenText = Some(messages("declaration.summary.items.item.netWeight.change", itemDisplayNum))
                     )
                 )
             ))
@@ -337,7 +339,7 @@
         item.commodityMeasure.flatMap(commodityMeasure =>
             commodityMeasure.supplementaryUnits.map(supplementaryUnits =>
                 SummaryListRow(
-                    classes = s"item-${item.sequenceId}-supplementaryUnits-row",
+                    classes = s"item-${itemDisplayNum}-supplementaryUnits-row",
                     key = Key(
                         content = Text(messages("declaration.summary.items.item.supplementaryUnits"))
                     ),
@@ -349,7 +351,7 @@
                             actionSummaryItem(
                                 href = routes.SupplementaryUnitsController.displayPage(item.id).url,
                                 content = HtmlContent(linkContent(messages("site.change"))),
-                                visuallyHiddenText = Some(messages("declaration.summary.items.item.supplementaryUnits.change", item.sequenceId))
+                                visuallyHiddenText = Some(messages("declaration.summary.items.item.supplementaryUnits.change", itemDisplayNum))
                             )
                         )
                     ))
@@ -362,7 +364,7 @@
 )
 
 @item.additionalInformation.map(additionalInformation =>
-    union_and_national_codes(item.id, item.sequenceId, additionalInformation.items, actionsEnabled)
+    union_and_national_codes(item.id, itemDisplayNum, additionalInformation.items, actionsEnabled)
 )
 
 @additional_documents(item, actionsEnabled)

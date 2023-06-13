@@ -18,13 +18,12 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.PackageInformationAddController.PackageInformationFormGroupId
-import controllers.helpers.MultipleItemsHelper
+import controllers.helpers.{MultipleItemsHelper, SequenceIdHelper}
 import controllers.helpers.PackageInformationHelper.{allCachedPackageInformation, singleCachedPackageInformation}
 import controllers.navigation.Navigator
 import forms.declaration.PackageInformation
 import forms.declaration.PackageInformation.form
 import handlers.ErrorHandler
-import models.DeclarationMeta.sequenceIdPlaceholder
 import models.ExportsDeclaration
 import models.requests.JourneyRequest
 import play.api.data.Form
@@ -46,7 +45,8 @@ class PackageInformationChangeController @Inject() (
   val exportsCacheService: ExportsCacheService,
   errorHandler: ErrorHandler,
   mcc: MessagesControllerComponents,
-  packageChangePage: package_information_change
+  packageChangePage: package_information_change,
+  sequenceIdHandler: SequenceIdHelper
 )(implicit ec: ExecutionContext, packageTypesService: PackageTypesService)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
 
@@ -79,16 +79,17 @@ class PackageInformationChangeController @Inject() (
       .fold(
         formWithErrors => Future.successful(BadRequest(packageChangePage(itemId, formWithErrors, packageInfoToRemove.id))),
         newPackageInfos =>
-          updateExportsCache(itemId, updateReplacedPackageInfo(newPackageInfos, packageInfoToRemove.sequenceId))
+          updateExportsCache(itemId, newPackageInfos)
             .map(_ => navigator.continueTo(routes.PackageInformationSummaryController.displayPage(itemId)))
       )
   }
 
-  private def updateReplacedPackageInfo(packageInfos: Seq[PackageInformation], sequenceId: Int): Seq[PackageInformation] =
-    packageInfos.map(packageInfo => if (packageInfo.sequenceId == sequenceIdPlaceholder) packageInfo.copy(sequenceId) else packageInfo)
-
   private def updateExportsCache(itemId: String, packageInfos: Seq[PackageInformation])(
     implicit request: JourneyRequest[AnyContent]
-  ): Future[ExportsDeclaration] =
-    updateDeclarationFromRequest(_.updatedItem(itemId, _.copy(packageInformation = Some(packageInfos.toList))))
+  ): Future[ExportsDeclaration] = {
+    val (updatedPackageInfo, updatedMeta) = sequenceIdHandler.handleSequencing(packageInfos, request.cacheModel.declarationMeta)
+    updateDeclarationFromRequest(
+      _.updatedItem(itemId, _.copy(packageInformation = Some(updatedPackageInfo.toList))).copy(declarationMeta = updatedMeta)
+    )
+  }
 }

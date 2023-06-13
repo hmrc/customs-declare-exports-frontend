@@ -106,6 +106,8 @@ case class ExportsDeclaration(
 
   def containers: Seq[Container] = transport.containers.getOrElse(Seq.empty)
 
+  def seals: Seq[Seal] = containers.flatMap(_.seals)
+
   def containRoutingCountries: Boolean = locations.routingCountries.nonEmpty
 
   def declarationHolders: Seq[DeclarationHolder] = parties.declarationHoldersData.map(_.holders).getOrElse(Seq.empty)
@@ -157,6 +159,8 @@ case class ExportsDeclaration(
   def isType(declarationType: DeclarationType): Boolean = `type` == declarationType
 
   def itemBy(itemId: String): Option[ExportItem] = items.find(_.id.equalsIgnoreCase(itemId))
+
+  def itemWithIndexBy(itemId: String): Option[(ExportItem, Int)] = items.zipWithIndex.find(_._1.id.equalsIgnoreCase(itemId))
 
   def itemBySequenceNo(seqNo: String): Option[ExportItem] = items.find(_.sequenceId.toString == seqNo)
 

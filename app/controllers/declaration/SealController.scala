@@ -19,15 +19,15 @@ package controllers.declaration
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.routes.{SealController, TransportContainerController}
 import controllers.helpers.MultipleItemsHelper.saveAndContinue
-import controllers.helpers.{FormAction, Remove}
+import controllers.helpers.{FormAction, Remove, SequenceIdHelper}
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.Seal
 import handlers.ErrorHandler
+import models.ExportsDeclaration
 import models.declaration.Container
 import models.requests.JourneyRequest
-import models.{DeclarationMeta, ExportsDeclaration}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
@@ -48,7 +48,8 @@ class SealController @Inject() (
   mcc: MessagesControllerComponents,
   addPage: seal_add,
   removePage: seal_remove,
-  summaryPage: seal_summary
+  summaryPage: seal_summary,
+  sequenceIdHandler: SequenceIdHelper
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
 
@@ -126,14 +127,10 @@ class SealController @Inject() (
     Future.successful(navigator.continueTo(SealController.displaySealRemove(containerId, sealId)))
 
   private def removeSeal(containerId: String, sealId: String)(implicit request: JourneyRequest[AnyContent]): Future[Result] = {
-
-    def updateCache(updatedContainer: Container): Future[ExportsDeclaration] =
-      updateDeclarationFromRequest(model => model.addOrUpdateContainer(updatedContainer))
-
     val result = request.cacheModel
       .containerBy(containerId)
       .map(c => c.copy(seals = c.seals.filterNot(_.id == sealId))) match {
-      case Some(container) => updateCache(container)
+      case Some(container) => updateCache(container, container.seals)
       case _               => Future.successful(None)
     }
 
@@ -155,18 +152,7 @@ class SealController @Inject() (
 
   private def updateCache(container: Container, seals: Seq[Seal])(implicit request: JourneyRequest[AnyContent]): Future[ExportsDeclaration] = {
     val declarationMeta = request.cacheModel.declarationMeta
-
-    val (updatedMeta, updatedSeals): (DeclarationMeta, Seq[Seal]) = seals.foldLeft((declarationMeta, Seq.empty[Seal])) {
-      (tuple: (DeclarationMeta, Seq[Seal]), seal: Seal) =>
-        val meta = tuple._1
-        val seals = tuple._2
-        seal match {
-          case newSeal @ Seal(DeclarationMeta.sequenceIdPlaceholder, _) =>
-            val (seal, updatedMeta) = Seal.copyWithIncrementedSeqId(newSeal, meta)
-            (updatedMeta, seals :+ seal)
-          case existingSeal @ _ => (meta, seals :+ existingSeal)
-        }
-    }
+    val (updatedSeals, updatedMeta) = sequenceIdHandler.handleSequencing(seals, declarationMeta)
 
     updateDeclarationFromRequest(
       _.addOrUpdateContainer(container.copy(seals = updatedSeals))

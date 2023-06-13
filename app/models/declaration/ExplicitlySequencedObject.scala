@@ -16,18 +16,31 @@
 
 package models.declaration
 
-import models.DeclarationMeta
+import forms.declaration.{PackageInformation, Seal}
 
 trait ExplicitlySequencedObject[T] {
   val sequenceId: Int
   def updateSequenceId(sequenceId: Int): T
 }
 
-trait EsoFactory[T <: ExplicitlySequencedObject[T]] {
+trait EsoKeyProvider[T] {
   val seqIdKey: String
+}
 
-  def copyWithIncrementedSeqId(element: T, declarationMeta: DeclarationMeta): (T, DeclarationMeta) = {
-    val nextSeqId: Int = declarationMeta.maxSequenceIds.getOrElse(seqIdKey, 0) + 1
-    (element.updateSequenceId(nextSeqId), declarationMeta.copy(maxSequenceIds = declarationMeta.maxSequenceIds.updated(seqIdKey, nextSeqId)))
+object EsoKeyProvider {
+  implicit val packageInformationKeyProvider: EsoKeyProvider[PackageInformation] = new EsoKeyProvider[PackageInformation] {
+    val seqIdKey: String = "PackageInformation"
+  }
+  implicit val routingCountryKeyProvider: EsoKeyProvider[RoutingCountry] = new EsoKeyProvider[RoutingCountry] {
+    val seqIdKey: String = "RoutingCountries"
+  }
+  implicit val sealKeyProvider: EsoKeyProvider[Seal] = new EsoKeyProvider[Seal] {
+    val seqIdKey: String = "Seals"
+  }
+  implicit val containerKeyProvider: EsoKeyProvider[Container] = new EsoKeyProvider[Container] {
+    val seqIdKey: String = "Containers"
+  }
+  implicit val exportItemKeyProvider: EsoKeyProvider[ExportItem] = new EsoKeyProvider[ExportItem] {
+    val seqIdKey: String = "ExportItems"
   }
 }

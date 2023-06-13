@@ -23,4 +23,6 @@ object DeclarationStatus extends Enumeration {
   type DeclarationStatus = Value
   implicit val format: Format[DeclarationStatus.Value] = EnumJson.format(DeclarationStatus)
   val INITIAL, DRAFT, COMPLETE, AMENDMENT_DRAFT = Value
+
+  val preSubmissionStatuses = Set(INITIAL, DRAFT)
 }

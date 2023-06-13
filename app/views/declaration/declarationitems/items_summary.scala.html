@@ -91,10 +91,10 @@
             )),
             caption = Some(messages("declaration.itemsSummary.addAnotherItem.table.caption")),
             captionClasses = "govuk-visually-hidden",
-            rows = items.zipWithIndex.map { case (item, index) =>
+            rows = items.zipWithIndex.map { case (item, index) => {
                 Seq(
                     TableRow(
-                        content = Text(item.sequenceId.toString),
+                        content = Text((index + 1).toString),
                         attributes = Map("id" -> s"item_$index--sequence_id")
                     ),
                     TableRow(
@@ -113,7 +113,7 @@
                         content = HtmlContent(link(
                             messages("site.change"),
                             routes.ProcedureCodesController.displayPage(item.id),
-                            textHidden = Some(messages("declaration.itemsAdd.change.hint", item.sequenceId))
+                            textHidden = Some(messages("declaration.itemsAdd.change.hint", index + 1))
                         )),
                         classes = "govuk-table__cell--numeric",
                         attributes = Map("id" -> s"item_$index--change")
@@ -122,13 +122,13 @@
                         content = HtmlContent(link(
                             messages("site.remove"),
                             routes.ItemsSummaryController.displayRemoveItemConfirmationPage(item.id),
-                            textHidden = Some(messages("declaration.itemsAdd.remove.hint", item.sequenceId))
+                            textHidden = Some(messages("declaration.itemsAdd.remove.hint", index + 1))
                         )),
                         classes = "govuk-table__cell--numeric",
                         attributes = Map("id" -> s"item_$index--remove")
                     )
                 )
-            }
+            }}
         ))
     }
 }

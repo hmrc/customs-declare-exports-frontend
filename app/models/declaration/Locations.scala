@@ -19,19 +19,19 @@ package models.declaration
 import forms.declaration.countries.Country
 import forms.declaration.officeOfExit.OfficeOfExit
 import forms.declaration.{InlandModeOfTransportCode, InlandOrBorder, SupervisingCustomsOffice, WarehouseIdentification}
+import models.DeclarationMeta.sequenceIdPlaceholder
 import models.ExportsFieldPointer.ExportsFieldPointer
 import models.{ExportsDeclaration, FieldMapping}
 import play.api.libs.json.Json
 import services.DiffTools
 import services.DiffTools.{combinePointers, compareDifference, ExportsDeclarationDiff}
 
-case class RoutingCountry(sequenceId: Int, country: Country) extends ExplicitlySequencedObject[RoutingCountry] {
+case class RoutingCountry(sequenceId: Int = sequenceIdPlaceholder, country: Country) extends ExplicitlySequencedObject[RoutingCountry] {
   override def updateSequenceId(sequenceId: Int): RoutingCountry = copy(sequenceId = sequenceId)
 }
 
-object RoutingCountry extends EsoFactory[RoutingCountry] {
+object RoutingCountry {
   implicit val format = Json.format[RoutingCountry]
-  override val seqIdKey: String = "RoutingCountries"
 }
 
 case class Locations(
