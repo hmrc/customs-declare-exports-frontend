@@ -20,8 +20,6 @@ import base.{ControllerSpec, Injector}
 import controllers.helpers.SequenceIdHelper
 import forms.declaration.PackageInformation
 import models.DeclarationMeta
-import models.declaration.EsoKeyProvider
-import models.declaration.ExportDeclarationTestData.declarationMeta
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -147,10 +145,8 @@ class PackageInformationAddControllerSpec extends ControllerSpec with OptionValu
 
       "return 303 (SEE_OTHER)" when {
         "user submits valid data" in {
-          val meta =
-            declarationMeta.copy(maxSequenceIds = declarationMeta.maxSequenceIds + (implicitly[EsoKeyProvider[PackageInformation]].seqIdKey -> 1))
           val item1 = anItem(withPackageInformation(List(packageInformation)))
-          withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item1)).copy(declarationMeta = meta))
+          withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item1)))
 
           val requestBody = Seq("typesOfPackages" -> "AE", "numberOfPackages" -> "1", "shippingMarks" -> "1234")
           val result = controller.submitForm(item.id)(postRequestAsFormUrlEncoded(requestBody: _*))

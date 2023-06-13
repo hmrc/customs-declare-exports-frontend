@@ -95,37 +95,37 @@
                 Seq(
                     TableRow(
                         content = Text((index + 1).toString),
-                        attributes = Map("id" -> s"item_${index + 1}--sequence_id")
+                        attributes = Map("id" -> s"item_$index--sequence_id")
                     ),
                     TableRow(
                         content = Text(item.procedureCodes.flatMap(_.procedureCode).getOrElse("")),
-                        attributes = Map("id" -> s"item_${index + 1}--procedure_code")
+                        attributes = Map("id" -> s"item_$index--procedure_code")
                     ),
                     TableRow(
                         content = Text(item.commodityDetails.flatMap(_.combinedNomenclatureCode).getOrElse("")),
-                        attributes = Map("id" -> s"item_${index + 1}--item_type")
+                        attributes = Map("id" -> s"item_$index--item_type")
                     ),
                     TableRow(
                         content = HtmlContent(noOfPackagesSection(item).toString),
-                        attributes = Map("id" -> s"item_${index + 1}--package_count")
+                        attributes = Map("id" -> s"item_$index--package_count")
                     ),
                     TableRow(
                         content = HtmlContent(link(
                             messages("site.change"),
                             routes.ProcedureCodesController.displayPage(item.id),
-                            textHidden = Some(messages("declaration.itemsAdd.change.hint", item.sequenceId))
+                            textHidden = Some(messages("declaration.itemsAdd.change.hint", index + 1))
                         )),
                         classes = "govuk-table__cell--numeric",
-                        attributes = Map("id" -> s"item_${index + 1}--change")
+                        attributes = Map("id" -> s"item_$index--change")
                     ),
                     TableRow(
                         content = HtmlContent(link(
                             messages("site.remove"),
                             routes.ItemsSummaryController.displayRemoveItemConfirmationPage(item.id),
-                            textHidden = Some(messages("declaration.itemsAdd.remove.hint", item.sequenceId))
+                            textHidden = Some(messages("declaration.itemsAdd.remove.hint", index + 1))
                         )),
                         classes = "govuk-table__cell--numeric",
-                        attributes = Map("id" -> s"item_${index + 1}--remove")
+                        attributes = Map("id" -> s"item_$index--remove")
                     )
                 )
             }}

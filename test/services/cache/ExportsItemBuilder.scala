@@ -110,11 +110,10 @@ trait ExportsItemBuilder {
     exportItem => {
       val packageInfos = exportItem.packageInformation.getOrElse(List.empty)
       val packageInformation = PackageInformation(
-        if (packageInfos.isEmpty) 1 else packageInfos.last.sequenceId + 1,
-        UUID.randomUUID().toString,
-        Some(typesOfPackages),
-        Some(numberOfPackages),
-        Some(shippingMarks)
+        id = UUID.randomUUID().toString,
+        typesOfPackages = Some(typesOfPackages),
+        numberOfPackages = Some(numberOfPackages),
+        shippingMarks = Some(shippingMarks)
       )
 
       exportItem.copy(packageInformation = Some(packageInfos :+ packageInformation))

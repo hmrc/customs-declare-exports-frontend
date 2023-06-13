@@ -198,13 +198,7 @@ trait ExportsDeclarationBuilder {
     model.copy(locations = model.locations.copy(routingCountries = routingCountries, hasRoutingCountries = Some(true)))
 
   def withoutRoutingCountries(): ExportsDeclarationModifier =
-    model => {
-      val meta = model.declarationMeta
-      model.copy(
-        declarationMeta = meta.copy(maxSequenceIds = meta.maxSequenceIds + (implicitly[EsoKeyProvider[RoutingCountry]].seqIdKey -> 0)),
-        locations = model.locations.copy(routingCountries = Seq.empty)
-      )
-    }
+    model => model.copy(locations = model.locations.copy(routingCountries = Seq.empty))
 
   def withoutItems(): ExportsDeclarationModifier = _.copy(items = Seq.empty)
 
@@ -447,15 +441,7 @@ trait ExportsDeclarationBuilder {
   }
 
   def withoutContainerData(): ExportsDeclarationModifier =
-    model => {
-      val meta = model.declarationMeta
-      model.copy(
-        declarationMeta = meta.copy(maxSequenceIds =
-          meta.maxSequenceIds ++ List(implicitly[EsoKeyProvider[Container]].seqIdKey -> 0, implicitly[EsoKeyProvider[Seal]].seqIdKey -> 0)
-        ),
-        transport = model.transport.copy(containers = None)
-      )
-    }
+    model => model.copy(transport = model.transport.copy(containers = None))
 
   def withIsExs(data: IsExs = IsExs("Yes")): ExportsDeclarationModifier = cache => cache.copy(parties = cache.parties.copy(isExs = Some(data)))
 
