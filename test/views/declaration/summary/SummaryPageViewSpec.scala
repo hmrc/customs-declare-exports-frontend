@@ -118,7 +118,7 @@ trait SummaryPageViewSpec extends UnitViewSpec with Injector with Stubs {
     "have items section" in {
       val details = CommodityDetails(Some("1234567890"), Some("Description"))
       view(aDeclaration(withItem(anItem(withCommodityDetails(details)))))
-        .getElementById("declaration-items-summary-1")
+        .getElementById("declaration-items-summary-0")
         .text mustNot be(empty)
     }
 

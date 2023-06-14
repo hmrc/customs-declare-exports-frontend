@@ -72,7 +72,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
         }
 
         "have procedure code with change button" in {
-          val row = view.getElementsByClass("item-1-procedureCode-row")
+          val row = view.getElementsByClass("item-0-procedureCode-row")
           row must haveSummaryKey(messages("declaration.summary.items.item.procedureCode"))
           row must haveSummaryValue("1234")
 
@@ -82,7 +82,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
         }
 
         "have additional procedure codes separated by space with change button" in {
-          val row = view.getElementsByClass("item-1-additionalProcedureCodes-row")
+          val row = view.getElementsByClass("item-0-additionalProcedureCodes-row")
           row must haveSummaryKey(messages("declaration.summary.items.item.additionalProcedureCodes"))
           row must haveSummaryValue("000 111")
 
@@ -92,7 +92,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
         }
 
         "have onward supply answer with change button" in {
-          val row = view.getElementsByClass("item-1-onwardSupplyRelief-row")
+          val row = view.getElementsByClass("item-0-onwardSupplyRelief-row")
           row must haveSummaryKey(messages("declaration.summary.items.item.onwardSupplyRelief"))
           row must haveSummaryValue("Yes")
 
@@ -102,7 +102,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
         }
 
         "have VAT answer with change button" in {
-          val row = view.getElementsByClass("item-1-VATdetails-row")
+          val row = view.getElementsByClass("item-0-VATdetails-row")
           row must haveSummaryKey(messages("declaration.summary.items.item.VATdetails"))
           row must haveSummaryValue("GB1234")
 
@@ -112,7 +112,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
         }
 
         "have commodity code with change button" in {
-          val row = view.getElementsByClass("item-1-commodityCode-row")
+          val row = view.getElementsByClass("item-0-commodityCode-row")
           row must haveSummaryKey(messages("declaration.summary.items.item.commodityCode"))
           row must haveSummaryValue("1234567890")
 
@@ -122,7 +122,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
         }
 
         "have goods description with change button" in {
-          val row = view.getElementsByClass("item-1-goodsDescription-row")
+          val row = view.getElementsByClass("item-0-goodsDescription-row")
           row must haveSummaryKey(messages("declaration.summary.items.item.goodsDescription"))
           row must haveSummaryValue("description")
 
@@ -132,7 +132,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
         }
 
         "have un dangerous goods code with change button" in {
-          val row = view.getElementsByClass("item-1-unDangerousGoodsCode-row")
+          val row = view.getElementsByClass("item-0-unDangerousGoodsCode-row")
           row must haveSummaryKey(messages("declaration.summary.items.item.unDangerousGoodsCode"))
           row must haveSummaryValue("345")
 
@@ -142,7 +142,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
         }
 
         "have cus code with change button" in {
-          val row = view.getElementsByClass("item-1-cusCode-row")
+          val row = view.getElementsByClass("item-0-cusCode-row")
           row must haveSummaryKey(messages("declaration.summary.items.item.cusCode"))
           row must haveSummaryValue("321")
 
@@ -152,7 +152,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
         }
 
         "have taric codes separated by comma with change button" in {
-          val row = view.getElementsByClass("item-1-taricAdditionalCodes-row")
+          val row = view.getElementsByClass("item-0-taricAdditionalCodes-row")
           row must haveSummaryKey(messages("declaration.summary.items.item.taricAdditionalCodes"))
           row must haveSummaryValue("999, 888")
 
@@ -162,7 +162,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
         }
 
         "have nact codes separated by comma with change button" in {
-          val row = view.getElementsByClass("item-1-nationalAdditionalCodes-row")
+          val row = view.getElementsByClass("item-0-nationalAdditionalCodes-row")
           row must haveSummaryKey(messages("declaration.summary.items.item.nationalAdditionalCodes"))
           row must haveSummaryValue("111, 222")
 
@@ -172,7 +172,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
         }
 
         "have zero rated for vat row with change button" in {
-          val row = view.getElementsByClass("item-1-zeroRatedForVat-row")
+          val row = view.getElementsByClass("item-0-zeroRatedForVat-row")
           row must haveSummaryKey(messages("declaration.summary.items.item.zeroRatedForVat"))
           row must haveSummaryValue(messages("declaration.summary.items.item.zeroRatedForVat.VATE"))
 
@@ -182,7 +182,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
         }
 
         "have statistical item value with change button" in {
-          val row = view.getElementsByClass("item-1-itemValue-row")
+          val row = view.getElementsByClass("item-0-itemValue-row")
           row must haveSummaryKey(messages("declaration.summary.items.item.itemValue"))
           row must haveSummaryValue("123")
 
@@ -192,7 +192,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
         }
 
         "have package information section" in {
-          view.getElementById("package-information-1-table").getElementsByClass("govuk-table__caption").text mustBe messages(
+          view.getElementById("package-information-0-table").getElementsByClass("govuk-table__caption").text mustBe messages(
             "declaration.summary.items.item.packageInformation"
           )
         }
@@ -205,7 +205,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
         }
 
         "have supplementary units with change button" in {
-          val row = view.getElementsByClass("item-1-supplementaryUnits-row")
+          val row = view.getElementsByClass("item-0-supplementaryUnits-row")
           row must haveSummaryKey(messages("declaration.summary.items.item.supplementaryUnits"))
           row must haveSummaryValue("12")
 
@@ -219,12 +219,12 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
           "the declaration has a 'CommodityMeasure' instance with 'supplementaryUnits' undefined" in {
             val item = itemWithAnswers.copy(commodityMeasure = Some(commodityMeasure.copy(supplementaryUnits = None)))
             val view = itemSection(item, 0, STANDARD)(messages)
-            view.getElementsByClass("item-1-supplementaryUnits-row") mustBe empty
+            view.getElementsByClass("item-0-supplementaryUnits-row") mustBe empty
           }
         }
 
         "have gross weight with change button" in {
-          val row = view.getElementsByClass("item-1-grossWeight-row")
+          val row = view.getElementsByClass("item-0-grossWeight-row")
           row must haveSummaryKey(messages("declaration.summary.items.item.grossWeight"))
           row must haveSummaryValue("666")
 
@@ -234,7 +234,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
         }
 
         "have net weight with change button" in {
-          val row = view.getElementsByClass("item-1-netWeight-row")
+          val row = view.getElementsByClass("item-0-netWeight-row")
           row must haveSummaryKey(messages("declaration.summary.items.item.netWeight"))
           row must haveSummaryValue("555")
 
@@ -244,13 +244,13 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
         }
 
         "have union and national codes section" in {
-          view.getElementById("additional-information-1-table").getElementsByClass("govuk-table__caption").text mustBe messages(
+          view.getElementById("additional-information-0-table").getElementsByClass("govuk-table__caption").text mustBe messages(
             "declaration.summary.items.item.additionalInformation"
           )
         }
 
         "have additional documents section" in {
-          view.getElementById("additional-docs-section-item-1").child(0).text mustBe messages("declaration.summary.items.item.additionalDocuments")
+          view.getElementById("additional-docs-section-item-0").child(0).text mustBe messages("declaration.summary.items.item.additionalDocuments")
         }
       }
 
@@ -267,7 +267,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
         }
 
         "have procedure code with change button" in {
-          val row = view.getElementsByClass("item-1-procedureCode-row")
+          val row = view.getElementsByClass("item-0-procedureCode-row")
           row must haveSummaryKey(messages("declaration.summary.items.item.procedureCode"))
           row must haveSummaryValue("1234")
 
@@ -276,7 +276,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
         }
 
         "have additional procedure codes separated by space with change button" in {
-          val row = view.getElementsByClass("item-1-additionalProcedureCodes-row")
+          val row = view.getElementsByClass("item-0-additionalProcedureCodes-row")
           row must haveSummaryKey(messages("declaration.summary.items.item.additionalProcedureCodes"))
           row must haveSummaryValue("000 111")
 
@@ -285,7 +285,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
         }
 
         "have onward supply answer with change button" in {
-          val row = view.getElementsByClass("item-1-onwardSupplyRelief-row")
+          val row = view.getElementsByClass("item-0-onwardSupplyRelief-row")
           row must haveSummaryKey(messages("declaration.summary.items.item.onwardSupplyRelief"))
           row must haveSummaryValue("Yes")
 
@@ -294,7 +294,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
         }
 
         "have VAT answer with change button" in {
-          val row = view.getElementsByClass("item-1-VATdetails-row")
+          val row = view.getElementsByClass("item-0-VATdetails-row")
           row must haveSummaryKey(messages("declaration.summary.items.item.VATdetails"))
           row must haveSummaryValue("GB1234")
 
@@ -303,7 +303,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
         }
 
         "have commodity code with change button" in {
-          val row = view.getElementsByClass("item-1-commodityCode-row")
+          val row = view.getElementsByClass("item-0-commodityCode-row")
           row must haveSummaryKey(messages("declaration.summary.items.item.commodityCode"))
           row must haveSummaryValue("1234567890")
 
@@ -312,7 +312,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
         }
 
         "have goods description with change button" in {
-          val row = view.getElementsByClass("item-1-goodsDescription-row")
+          val row = view.getElementsByClass("item-0-goodsDescription-row")
           row must haveSummaryKey(messages("declaration.summary.items.item.goodsDescription"))
           row must haveSummaryValue("description")
 
@@ -321,7 +321,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
         }
 
         "have un dangerous goods code with change button" in {
-          val row = view.getElementsByClass("item-1-unDangerousGoodsCode-row")
+          val row = view.getElementsByClass("item-0-unDangerousGoodsCode-row")
           row must haveSummaryKey(messages("declaration.summary.items.item.unDangerousGoodsCode"))
           row must haveSummaryValue("345")
 
@@ -330,7 +330,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
         }
 
         "have cus code with change button" in {
-          val row = view.getElementsByClass("item-1-cusCode-row")
+          val row = view.getElementsByClass("item-0-cusCode-row")
           row must haveSummaryKey(messages("declaration.summary.items.item.cusCode"))
           row must haveSummaryValue("321")
 
@@ -339,7 +339,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
         }
 
         "have taric codes separated by comma with change button" in {
-          val row = view.getElementsByClass("item-1-taricAdditionalCodes-row")
+          val row = view.getElementsByClass("item-0-taricAdditionalCodes-row")
           row must haveSummaryKey(messages("declaration.summary.items.item.taricAdditionalCodes"))
           row must haveSummaryValue("999, 888")
 
@@ -348,7 +348,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
         }
 
         "have nact codes separated by comma with change button" in {
-          val row = view.getElementsByClass("item-1-nationalAdditionalCodes-row")
+          val row = view.getElementsByClass("item-0-nationalAdditionalCodes-row")
           row must haveSummaryKey(messages("declaration.summary.items.item.nationalAdditionalCodes"))
           row must haveSummaryValue("111, 222")
 
@@ -357,7 +357,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
         }
 
         "have zero rated for vat row with change button" in {
-          val row = view.getElementsByClass("item-1-zeroRatedForVat-row")
+          val row = view.getElementsByClass("item-0-zeroRatedForVat-row")
           row must haveSummaryKey(messages("declaration.summary.items.item.zeroRatedForVat"))
           row must haveSummaryValue(messages("declaration.summary.items.item.zeroRatedForVat.VATE"))
 
@@ -366,7 +366,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
         }
 
         "have statistical item value with change button" in {
-          val row = view.getElementsByClass("item-1-itemValue-row")
+          val row = view.getElementsByClass("item-0-itemValue-row")
           row must haveSummaryKey(messages("declaration.summary.items.item.itemValue"))
           row must haveSummaryValue("123")
 
@@ -375,7 +375,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
         }
 
         "have supplementary units with change button" in {
-          val row = view.getElementsByClass("item-1-supplementaryUnits-row")
+          val row = view.getElementsByClass("item-0-supplementaryUnits-row")
           row must haveSummaryKey(messages("declaration.summary.items.item.supplementaryUnits"))
           row must haveSummaryValue("12")
 
@@ -384,7 +384,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
         }
 
         "have gross weight with change button" in {
-          val row = view.getElementsByClass("item-1-grossWeight-row")
+          val row = view.getElementsByClass("item-0-grossWeight-row")
           row must haveSummaryKey(messages("declaration.summary.items.item.grossWeight"))
           row must haveSummaryValue("666")
 
@@ -393,7 +393,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
         }
 
         "have net weight with change button" in {
-          val row = view.getElementsByClass("item-1-netWeight-row")
+          val row = view.getElementsByClass("item-0-netWeight-row")
           row must haveSummaryKey(messages("declaration.summary.items.item.netWeight"))
           row must haveSummaryValue("555")
 
@@ -402,19 +402,19 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
         }
 
         "have package information section" in {
-          view.getElementById("package-information-1-table").getElementsByClass("govuk-table__caption").text mustBe messages(
+          view.getElementById("package-information-0-table").getElementsByClass("govuk-table__caption").text mustBe messages(
             "declaration.summary.items.item.packageInformation"
           )
         }
 
         "have union and national codes section" in {
-          view.getElementById("additional-information-1-table").getElementsByClass("govuk-table__caption").text mustBe messages(
+          view.getElementById("additional-information-0-table").getElementsByClass("govuk-table__caption").text mustBe messages(
             "declaration.summary.items.item.additionalInformation"
           )
         }
 
         "have additional documents section" in {
-          view.getElementById("additional-docs-section-item-1").child(0).text mustBe messages("declaration.summary.items.item.additionalDocuments")
+          view.getElementById("additional-docs-section-item-0").child(0).text mustBe messages("declaration.summary.items.item.additionalDocuments")
         }
       }
     }
@@ -424,23 +424,23 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
       val view = itemSection(itemWithoutAnswers, 0, STANDARD)(messages)
 
       "not display procedure code" in {
-        view.getElementsByClass("item-1-procedureCode-row") mustBe empty
+        view.getElementsByClass("item-0-procedureCode-row") mustBe empty
       }
 
       "not display commodity code" in {
-        view.getElementsByClass("item-1-commodityCode-row") mustBe empty
+        view.getElementsByClass("item-0-commodityCode-row") mustBe empty
       }
 
       "not display goods description" in {
-        view.getElementsByClass("item-1-goodsDescription-row") mustBe empty
+        view.getElementsByClass("item-0-goodsDescription-row") mustBe empty
       }
 
       "not display UN Dangerous Goods Code" in {
-        view.getElementsByClass("item-1-unDangerousGoodsCode-row") mustBe empty
+        view.getElementsByClass("item-0-unDangerousGoodsCode-row") mustBe empty
       }
 
       "not display UN CUS Code" in {
-        view.getElementsByClass("item-1-cusCode-row") mustBe empty
+        view.getElementsByClass("item-0-cusCode-row") mustBe empty
       }
 
       "not display TARIC Codes" in {
@@ -448,27 +448,27 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
       }
 
       "not display National Additional Codes" in {
-        view.getElementsByClass("item-1-nationalAdditionalCodes-row") mustBe empty
+        view.getElementsByClass("item-0-nationalAdditionalCodes-row") mustBe empty
       }
 
       "not display Item Value" in {
-        view.getElementsByClass("item-1-itemValue-row") mustBe empty
+        view.getElementsByClass("item-0-itemValue-row") mustBe empty
       }
 
       "not display Supplementary Units" in {
-        view.getElementsByClass("item-1-supplementaryUnits-row") mustBe empty
+        view.getElementsByClass("item-0-supplementaryUnits-row") mustBe empty
       }
 
       "not display Gross Weight" in {
-        view.getElementsByClass("item-1-grossWeight-row") mustBe empty
+        view.getElementsByClass("item-0-grossWeight-row") mustBe empty
       }
 
       "not display Net Weight" in {
-        view.getElementsByClass("item-1-netWeight-row") mustBe empty
+        view.getElementsByClass("item-0-netWeight-row") mustBe empty
       }
 
       "not display package information section" in {
-        view.getElementsByClass("item-1-commodityCode-row") mustBe empty
+        view.getElementsByClass("item-0-commodityCode-row") mustBe empty
 
         Option(view.getElementById("package-information-1")) mustBe None
       }

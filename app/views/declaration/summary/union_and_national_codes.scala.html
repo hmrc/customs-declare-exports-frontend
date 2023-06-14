@@ -29,7 +29,7 @@
     summaryList: summary_list
 )
 
-@(itemId: String, itemNo: Int, additionalInformation: Seq[AdditionalInformation], actionsEnabled: Boolean = true)(implicit messages: Messages)
+@(itemId: String, itemIdx: Int, additionalInformation: Seq[AdditionalInformation], actionsEnabled: Boolean = true)(implicit messages: Messages)
 
 @change(information: AdditionalInformation) = {
     @{
@@ -37,7 +37,7 @@
             link(
                 messages("site.change"),
                 callForSummaryChangeLink(routes.AdditionalInformationController.displayPage(itemId)),
-                textHidden = Some(messages("declaration.summary.items.item.additionalInformation.change", information.code, itemNo))
+                textHidden = Some(messages("declaration.summary.items.item.additionalInformation.change", information.code, itemIdx + 1))
             )
         else
             ""
@@ -76,12 +76,12 @@
             ),
             caption = Some(messages("declaration.summary.items.item.additionalInformation")),
             classes = "govuk-table govuk-!-margin-bottom-3",
-            attributes = Map("id" -> s"additional-information-$itemNo-table")
+            attributes = Map("id" -> s"additional-information-$itemIdx-table")
         ))
     } else {
-        @summaryList(id = s"additional-information-$itemNo", heading = None, summaryListRows = Seq(
+        @summaryList(id = s"additional-information-$itemIdx", heading = None, summaryListRows = Seq(
             Some(SummaryListRow(
-                classes = s"additional-information-$itemNo-row",
+                classes = s"additional-information-$itemIdx-row",
                 key = Key(
                     content = Text(messages("declaration.summary.items.item.additionalInformation"))
                 ),
