@@ -83,7 +83,7 @@ class ItemsRemoveItemViewSpec extends UnitViewSpec with ExportsTestHelper with S
 
     "display Item Section table" in {
 
-      view must containElementWithID(s"declaration-items-summary-$itemIdx")
+      view must containElementWithID(s"declaration-items-summary-$itemDisplayNum")
     }
 
     "not display Item Section header" in {}

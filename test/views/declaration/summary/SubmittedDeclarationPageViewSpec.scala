@@ -130,7 +130,7 @@ class SubmittedDeclarationPageViewSpec extends UnitViewSpec with Stubs with Expo
     "have items section" in {
       val details = CommodityDetails(Some("1234567890"), Some("Description"))
       val view = createView(declaration = aDeclaration(withItem(anItem(withCommodityDetails(details)))))
-      view.getElementById("declaration-items-summary-0").text mustNot be(empty)
+      view.getElementById("declaration-items-summary-1").text mustNot be(empty)
       links(view) mustBe empty
     }
 

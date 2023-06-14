@@ -42,12 +42,12 @@ class AdditionalDocumentsViewSpec extends UnitViewSpec with ExportsTestHelper wi
   ): ExportItem = {
     val isLicenceRequired = Some(licenceRequired == YesNoAnswers.yes)
     val additionalDocuments = maybeAdditionalDocuments.fold(withoutAdditionalInformation)(withAdditionalDocuments)
-    anItem(withItemId("itemId"), additionalDocuments).copy(isLicenceRequired = isLicenceRequired)
+    anItem(withItemId("itemId"), withSequenceId(1), additionalDocuments).copy(isLicenceRequired = isLicenceRequired)
   }
 
   private def itemWithNoLicenceReq(maybeAdditionalDocuments: Option[AdditionalDocuments] = Some(AdditionalDocuments(Yes, documents))): ExportItem = {
     val additionalDocuments = maybeAdditionalDocuments.fold(withoutAdditionalInformation)(withAdditionalDocuments)
-    anItem(withItemId("itemId"), additionalDocuments)
+    anItem(withItemId("itemId"), withSequenceId(1), additionalDocuments)
   }
 
   "AdditionalDocuments view" when {
@@ -56,10 +56,10 @@ class AdditionalDocumentsViewSpec extends UnitViewSpec with ExportsTestHelper wi
 
     "with additionalDocuments defined but without actual documents or defined licence answer" should {
       "display title and 'No Additional documents' row only" in {
-        val view = additionalDocumentsSection(itemWithNoLicenceReq(Some(AdditionalDocuments(None, Seq.empty))), 0)(messages)
+        val view = additionalDocumentsSection(itemWithNoLicenceReq(Some(AdditionalDocuments(None, Seq.empty))))(messages)
         verifyHeader(view)
 
-        view.getElementsByClass("licences-0-row") mustBe empty
+        view.getElementsByClass("licences-1-row") mustBe empty
         view.getElementsByTag("table") mustBe empty
 
         verifyAdditionalDocumentsEq2No(view)
@@ -72,7 +72,7 @@ class AdditionalDocumentsViewSpec extends UnitViewSpec with ExportsTestHelper wi
         onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL)(aDeclaration(withItem(itemWithLicenceReq(answer)))) { implicit request =>
           "with Additional Documents" should {
             "display a licences row and a table for the Additional Documents" in {
-              val view = additionalDocumentsSection(itemWithLicenceReq(answer), 0)(messages)
+              val view = additionalDocumentsSection(itemWithLicenceReq(answer))(messages)
               verifyHeader(view)
               verifyLicenseRow(view, answer)
               verifyAdditionalDocumentsTable(view)
@@ -83,10 +83,10 @@ class AdditionalDocumentsViewSpec extends UnitViewSpec with ExportsTestHelper wi
         onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL)(aDeclaration(withItem(itemWithLicenceReq(answer, None)))) { implicit request =>
           "without Additional Documents" should {
             "display a licences row" in {
-              val view = additionalDocumentsSection(itemWithLicenceReq(answer, None), 0)(messages)
+              val view = additionalDocumentsSection(itemWithLicenceReq(answer, None))(messages)
               verifyHeader(view)
               verifyLicenseRow(view, answer)
-              view.getElementsByClass("additional-documents-0-row") mustBe empty
+              view.getElementsByClass("additional-documents-1-row") mustBe empty
             }
           }
         }
@@ -98,16 +98,16 @@ class AdditionalDocumentsViewSpec extends UnitViewSpec with ExportsTestHelper wi
 
         "actions are enabled" should {
           "not have a 'License' section and have 'Change' buttons" in {
-            val view = additionalDocumentsSection(itemWithNoLicenceReq(), 0)(messages)
+            val view = additionalDocumentsSection(itemWithNoLicenceReq())(messages)
             verifyHeader(view)
-            view.getElementsByClass("licences-0-row") mustBe empty
+            view.getElementsByClass("licences-1-row") mustBe empty
             verifyAdditionalDocumentsTable(view)
           }
         }
 
         "actions are disabled" should {
           "not have a 'License' section and not have 'Change' buttons" in {
-            val view = additionalDocumentsSection(itemWithNoLicenceReq(), 0, actionsEnabled = false)(messages)
+            val view = additionalDocumentsSection(itemWithNoLicenceReq(), actionsEnabled = false)(messages)
             verifyHeader(view)
             verifyAdditionalDocumentsTable(view, false)
           }
@@ -117,13 +117,13 @@ class AdditionalDocumentsViewSpec extends UnitViewSpec with ExportsTestHelper wi
   }
 
   private def verifyHeader(view: Appendable): Assertion = {
-    val section = view.getElementById("additional-docs-section-item-0")
+    val section = view.getElementById("additional-docs-section-item-1")
     section.child(0).tagName mustBe "h3"
     section.child(0).text mustBe messages("declaration.summary.items.item.additionalDocuments")
   }
 
   private def verifyLicenseRow(view: Appendable, expectedValue: String): Assertion = {
-    val licencesRow = view.getElementsByClass("licences-0-row")
+    val licencesRow = view.getElementsByClass("licences-1-row")
     licencesRow must haveSummaryKey(messages("declaration.summary.items.item.licences"))
     licencesRow must haveSummaryValue(expectedValue)
     licencesRow must haveSummaryActionsTexts("site.change", "declaration.summary.items.item.additionalDocuments.changeAll", "1")
@@ -131,7 +131,7 @@ class AdditionalDocumentsViewSpec extends UnitViewSpec with ExportsTestHelper wi
   }
 
   private def verifyAdditionalDocumentsEq2No(view: Appendable): Assertion = {
-    val row = view.getElementsByClass("additional-documents-0-row")
+    val row = view.getElementsByClass("additional-documents-1-row")
     row must haveSummaryKey(messages("declaration.summary.items.item.additionalDocuments"))
     row must haveSummaryValue("None")
     row must haveSummaryActionsTexts("site.change", "declaration.summary.items.item.additionalDocuments.changeAll", "1")
@@ -139,7 +139,7 @@ class AdditionalDocumentsViewSpec extends UnitViewSpec with ExportsTestHelper wi
   }
 
   private def verifyAdditionalDocumentsTable(view: Appendable, actionsEnabled: Boolean = true): Assertion = {
-    val table = view.getElementById("additional-documents-0-table")
+    val table = view.getElementById("additional-documents-1-table")
 
     val tableHeader = table.getElementsByClass("govuk-table__header")
     tableHeader.get(0).text mustBe messages("declaration.summary.items.item.additionalDocuments.code")
