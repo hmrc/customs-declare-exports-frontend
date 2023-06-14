@@ -44,13 +44,13 @@
 @itemDisplayNum = @{ itemIdx + 1 }
 
 @summaryList(
-    id = s"declaration-items-summary-$itemIdx",
+    id = s"declaration-items-summary-$itemDisplayNum",
     heading = Some(messages("declaration.summary.items.item.presentationId", itemDisplayNum)),
     headerAction = headerAction,
     summaryListRows = Seq(
         item.procedureCodes.flatMap(_.procedureCode).map(data =>
             SummaryListRow(
-                classes = s"item-${itemIdx}-procedureCode-row",
+                classes = s"item-${itemDisplayNum}-procedureCode-row",
                 key = Key(
                     content = Text(messages("declaration.summary.items.item.procedureCode"))
                 ),
@@ -70,7 +70,7 @@
         ),
         item.procedureCodes.map(data =>
             SummaryListRow(
-                classes = s"item-${itemIdx}-additionalProcedureCodes-row",
+                classes = s"item-${itemDisplayNum}-additionalProcedureCodes-row",
                 key = Key(
                     content = Text(messages("declaration.summary.items.item.additionalProcedureCodes"))
                 ),
@@ -90,7 +90,7 @@
         ),
         item.fiscalInformation.map(fiscalInformation =>
             SummaryListRow(
-                classes = s"item-${itemIdx}-onwardSupplyRelief-row",
+                classes = s"item-${itemDisplayNum}-onwardSupplyRelief-row",
                 key = Key(
                     content = Text(messages("declaration.summary.items.item.onwardSupplyRelief"))
                 ),
@@ -110,7 +110,7 @@
         ),
         item.additionalFiscalReferencesData.map(additionalFiscalReferences =>
             SummaryListRow(
-                classes = s"item-${itemIdx}-VATdetails-row",
+                classes = s"item-${itemDisplayNum}-VATdetails-row",
                 key = Key(
                     content = Text(messages("declaration.summary.items.item.VATdetails"))
                 ),
@@ -128,7 +128,7 @@
         ),
         item.commodityDetails.map(commodityDetails =>
             SummaryListRow(
-                classes = s"item-${itemIdx}-commodityCode-row",
+                classes = s"item-${itemDisplayNum}-commodityCode-row",
                 key = Key(
                     content = Text(messages("declaration.summary.items.item.commodityCode"))
                 ),
@@ -148,7 +148,7 @@
         ),
         item.commodityDetails.map(commodityDetails =>
             SummaryListRow(
-                classes = s"item-${itemIdx}-goodsDescription-row",
+                classes = s"item-${itemDisplayNum}-goodsDescription-row",
                 key = Key(
                     content = Text(messages("declaration.summary.items.item.goodsDescription"))
                 ),
@@ -168,7 +168,7 @@
         ),
         item.dangerousGoodsCode.map(dangerousGoodsCode =>
             SummaryListRow(
-                classes = s"item-${itemIdx}-unDangerousGoodsCode-row",
+                classes = s"item-${itemDisplayNum}-unDangerousGoodsCode-row",
                 key = Key(
                     content = Text(messages("declaration.summary.items.item.unDangerousGoodsCode"))
                 ),
@@ -188,7 +188,7 @@
         ),
         item.cusCode.map(cusCode =>
             SummaryListRow(
-                classes = s"item-${itemIdx}-cusCode-row",
+                classes = s"item-${itemDisplayNum}-cusCode-row",
                 key = Key(
                     content = Text(messages("declaration.summary.items.item.cusCode"))
                 ),
@@ -208,7 +208,7 @@
         ),
         item.taricCodes.map(taricCodes =>
             SummaryListRow(
-                classes = s"item-${itemIdx}-taricAdditionalCodes-row",
+                classes = s"item-${itemDisplayNum}-taricAdditionalCodes-row",
                 key = Key(
                     content = Text(messages("declaration.summary.items.item.taricAdditionalCodes"))
                 ),
@@ -228,7 +228,7 @@
         ),
         item.nactCodes.map(nactCodes =>
             SummaryListRow(
-                classes = s"item-${itemIdx}-nationalAdditionalCodes-row",
+                classes = s"item-${itemDisplayNum}-nationalAdditionalCodes-row",
                 key = Key(
                     content = Text(messages("declaration.summary.items.item.nationalAdditionalCodes"))
                 ),
@@ -248,7 +248,7 @@
         ),
         item.nactExemptionCode.map( nactCode =>
             SummaryListRow(
-                classes = s"item-${itemIdx}-zeroRatedForVat-row",
+                classes = s"item-${itemDisplayNum}-zeroRatedForVat-row",
                 key = Key(
                     content = Text(messages("declaration.summary.items.item.zeroRatedForVat"))
                 ),
@@ -268,7 +268,7 @@
         ),
         item.statisticalValue.map(statisticalValue =>
             SummaryListRow(
-                classes = s"item-${itemIdx}-itemValue-row",
+                classes = s"item-${itemDisplayNum}-itemValue-row",
                 key = Key(
                     content = Text(messages("declaration.summary.items.item.itemValue"))
                 ),
@@ -291,13 +291,13 @@
 )
 
 @item.packageInformation.map(packageInformation =>
-    package_information(item.id, itemIdx, packageInformation, actionsEnabled)
+    package_information(item.id, itemDisplayNum, packageInformation, actionsEnabled)
 )
 
 @summaryList("", None, None, Seq(
     item.commodityMeasure.map(commodityMeasure =>
         SummaryListRow(
-            classes = s"item-${itemIdx}-grossWeight-row",
+            classes = s"item-${itemDisplayNum}-grossWeight-row",
             key = Key(
                 content = Text(messages("declaration.summary.items.item.grossWeight"))
             ),
@@ -317,7 +317,7 @@
     ),
     item.commodityMeasure.map(commodityMeasure =>
         SummaryListRow(
-            classes = s"item-${itemIdx}-netWeight-row",
+            classes = s"item-${itemDisplayNum}-netWeight-row",
             key = Key(
                 content = Text(messages("declaration.summary.items.item.netWeight"))
             ),
@@ -339,7 +339,7 @@
         item.commodityMeasure.flatMap(commodityMeasure =>
             commodityMeasure.supplementaryUnits.map(supplementaryUnits =>
                 SummaryListRow(
-                    classes = s"item-${itemIdx}-supplementaryUnits-row",
+                    classes = s"item-${itemDisplayNum}-supplementaryUnits-row",
                     key = Key(
                         content = Text(messages("declaration.summary.items.item.supplementaryUnits"))
                     ),
@@ -364,7 +364,7 @@
 )
 
 @item.additionalInformation.map(additionalInformation =>
-    union_and_national_codes(item.id, itemIdx, additionalInformation.items, actionsEnabled)
+    union_and_national_codes(item.id, itemDisplayNum, additionalInformation.items, actionsEnabled)
 )
 
-@additional_documents(item, itemIdx, actionsEnabled)
+@additional_documents(item, actionsEnabled)

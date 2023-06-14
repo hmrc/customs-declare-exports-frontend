@@ -35,8 +35,8 @@ class PackageInformationViewSpec extends UnitViewSpec with ExportsTestHelper wit
     )
 
     "display title only and change link if Sequence is empty" in {
-      val view = packageSection("itemId", 0, Seq.empty, true)(messages)
-      val row = view.getElementsByClass("package-information-0-row")
+      val view = packageSection("itemId", 1, Seq.empty, true)(messages)
+      val row = view.getElementsByClass("package-information-1-row")
 
       row must haveSummaryKey(messages("declaration.summary.items.item.packageInformation"))
       row must haveSummaryValue("")
@@ -46,8 +46,8 @@ class PackageInformationViewSpec extends UnitViewSpec with ExportsTestHelper wit
     }
 
     "display package information section with multiple package information and change buttons" in {
-      val view = packageSection("itemId", 0, data, true)(messages)
-      val table = view.getElementById("package-information-0-table")
+      val view = packageSection("itemId", 1, data, true)(messages)
+      val table = view.getElementById("package-information-1-table")
 
       table.getElementsByTag("caption").text() mustBe messages("declaration.summary.items.item.packageInformation")
 
