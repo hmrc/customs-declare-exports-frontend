@@ -46,8 +46,8 @@ class ItemsSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Inje
 
         val view = itemsSection(data)(messages)
 
+        view.getElementById("declaration-items-summary-0").text() mustNot be(empty)
         view.getElementById("declaration-items-summary-1").text() mustNot be(empty)
-        view.getElementById("declaration-items-summary-2").text() mustNot be(empty)
       }
     }
   }

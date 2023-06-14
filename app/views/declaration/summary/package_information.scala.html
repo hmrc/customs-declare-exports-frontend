@@ -32,7 +32,7 @@
     packageTypesService: PackageTypesService
 )
 
-@(itemId: String, itemNo: Int, packageInformation: Seq[PackageInformation], actionsEnabled: Boolean)(implicit messages: Messages)
+@(itemId: String, itemIdx: Int, packageInformation: Seq[PackageInformation], actionsEnabled: Boolean)(implicit messages: Messages)
 
 @actions(action: Actions) = @{ if (actionsEnabled) Some(action) else None }
 
@@ -44,7 +44,7 @@
         textHidden = Some(messages(
             "declaration.summary.items.item.packageInformation.change",
             packageTypesService.typesOfPackagesText(information.typesOfPackages).getOrElse(""),
-            information.shippingMarks.getOrElse(""), itemNo
+            information.shippingMarks.getOrElse(""), itemIdx + 1
         ))
     )
 }
@@ -83,12 +83,12 @@
 
             caption = Some(messages("declaration.summary.items.item.packageInformation")),
             classes = "govuk-table govuk-!-margin-bottom-0",
-            attributes = Map("id" -> s"package-information-$itemNo-table")
+            attributes = Map("id" -> s"package-information-$itemIdx-table")
         ))
     } else {
-        @summaryList(id = s"package-information-$itemNo", heading = None, summaryListRows = Seq(
+        @summaryList(id = s"package-information-$itemIdx", heading = None, summaryListRows = Seq(
             Some(SummaryListRow(
-                classes = s"package-information-$itemNo-row",
+                classes = s"package-information-$itemIdx-row",
                 key = Key(
                     content = Text(messages("declaration.summary.items.item.packageInformation"))
                 ),
@@ -97,7 +97,7 @@
                         actionSummaryItem(
                             href = routes.PackageInformationSummaryController.displayPage(itemId).url,
                             content = HtmlContent(linkContent(messages("site.change"))),
-                            visuallyHiddenText = Some(messages("declaration.summary.items.item.packageInformation.changeAll", itemNo))
+                            visuallyHiddenText = Some(messages("declaration.summary.items.item.packageInformation.changeAll", itemIdx + 1))
                         )
                     )
                 ))

@@ -33,7 +33,7 @@
     heading: heading
 )
 
-@(item: ExportItem, actionsEnabled: Boolean = true)(implicit messages: Messages)
+@(item: ExportItem, itemIdx: Int, actionsEnabled: Boolean = true)(implicit messages: Messages)
 
 @actions(actions: => Actions) = @{ if (actionsEnabled) Some(actions) else None }
 
@@ -46,7 +46,7 @@
             "declaration.summary.items.item.additionalDocuments.change",
             document.documentTypeCode.getOrElse(""),
             document.documentIdentifier.getOrElse(""),
-            item.sequenceId
+            itemIdx + 1
         ))
     )
 }
@@ -54,7 +54,7 @@
 @licenceRow = @{
     item.isLicenceRequired.map { isLicenceRequired =>
         SummaryListRow(
-            classes = s"licences-${item.sequenceId}-row",
+            classes = s"licences-${itemIdx}-row",
             key = Key(content = Text(messages("declaration.summary.items.item.licences"))),
             value = Value(content = Text(messages(s"""site.${if (isLicenceRequired) "yes" else "no"}"""))),
             actions = actions(Actions(
@@ -62,7 +62,7 @@
                     actionSummaryItem(
                         href = routes.IsLicenceRequiredController.displayPage(item.id).url,
                         content = HtmlContent(linkContent(messages("site.change"))),
-                        visuallyHiddenText = Some(messages("declaration.summary.items.item.additionalDocuments.changeAll", item.sequenceId))
+                        visuallyHiddenText = Some(messages("declaration.summary.items.item.additionalDocuments.changeAll", itemIdx + 1))
                     )
                 )
             ))
@@ -75,7 +75,7 @@
 @documentsHeader = @{
     if (dontShowNoDocumentHeader) None
     else Some(SummaryListRow(
-        classes = s"additional-documents-${item.sequenceId}-row",
+        classes = s"additional-documents-${itemIdx}-row",
         key = Key(content = Text(messages("declaration.summary.items.item.additionalDocuments"))),
         value = Value(content = Text(messages("declaration.summary.items.item.additionalDocuments.none"))),
         actions = actions(Actions(
@@ -83,7 +83,7 @@
                 actionSummaryItem(
                     href = routes.AdditionalDocumentsController.displayPage(item.id).url,
                     content = HtmlContent(linkContent(messages("site.change"))),
-                    visuallyHiddenText = Some(messages("declaration.summary.items.item.additionalDocuments.changeAll", item.sequenceId))
+                    visuallyHiddenText = Some(messages("declaration.summary.items.item.additionalDocuments.changeAll", itemIdx + 1))
                 )
             )
         ))
@@ -114,7 +114,7 @@
         else Some(govukTable(Table(
             rows = documentsRows(additionalDocuments),
             head = documentsTableHeader,
-            attributes = Map("id" -> s"additional-documents-${item.sequenceId}-table")
+            attributes = Map("id" -> s"additional-documents-${itemIdx}-table")
         )))
    }
 }
@@ -122,11 +122,11 @@
 @hasDocuments = @{ item.additionalDocuments.fold(false)(_.documents.nonEmpty) }
 
 @if(item.isLicenceRequired.isDefined || item.additionalDocuments.isDefined) {
-  <div id="additional-docs-section-item-@item.sequenceId">
+  <div id="additional-docs-section-item-@itemIdx">
     @heading(messages("declaration.summary.items.item.additionalDocuments"), "govuk-heading-s govuk-!-margin-bottom-0", "h3")
 
     @summaryList(
-        id = s"additional-docs-summary-list-${item.sequenceId}",
+        id = s"additional-docs-summary-list-${itemIdx}",
         heading = None,
         summaryListRows = Seq(licenceRow, documentsHeader),
         classes = s"govuk-!-margin-bottom-${if (hasDocuments) "0" else "6"}"

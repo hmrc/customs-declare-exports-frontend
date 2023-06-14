@@ -46,8 +46,8 @@ class UnionAndNationalCodesViewSpec extends UnitViewSpec with ExportsTestHelper 
     }
 
     "display additional information with change buttons" in {
-      val view = section("itemId", 1, data)(messages)
-      val table = view.getElementById("additional-information-1-table")
+      val view = section("itemId", 0, data)(messages)
+      val table = view.getElementById("additional-information-0-table")
 
       table.getElementsByTag("caption").text() mustBe messages("declaration.summary.items.item.additionalInformation")
 
