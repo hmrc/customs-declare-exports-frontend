@@ -103,9 +103,9 @@ class TransportContainerController @Inject() (
 
   private def saveFirstContainer(containerId: Option[String])(implicit request: JourneyRequest[AnyContent]): Future[Result] =
     containerId match {
-      case Some(id) => updateCache(Seq(Container(sequenceIdPlaceholder, id, Seq.empty))).map(_ => redirectAfterAdd(id))
+      case Some(id) => updateCache(Seq(Container(id = id, seals = Seq.empty))).map(_ => redirectAfterAdd(id))
       case None =>
-        updateCache(Seq.empty).flatMap(_ => updateDeclarationFromRequest(_.updateReadyForSubmission(true))) map { _ =>
+        updateCache(Seq.empty).flatMap(dec => updateDeclaration(dec.updateReadyForSubmission(true))) map { _ =>
           navigator.continueTo(routes.SummaryController.displayPage)
         }
     }
