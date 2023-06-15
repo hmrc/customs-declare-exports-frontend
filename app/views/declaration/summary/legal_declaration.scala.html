@@ -16,10 +16,12 @@
 
 @import config.AppConfig
 @import controllers.declaration.routes.{SubmissionController, SummaryController}
+@import controllers.routes.DeclarationDetailsController
 @import forms.declaration.LegalDeclaration._
 @import forms.declaration.LegalDeclaration
 @import models.declaration.submissions.EnhancedStatus.ERRORS
 @import models.requests.JourneyRequest
+@import models.requests.SessionHelper._
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.helpers.{BackButton, Title}
 @import views.html.components.gds._
@@ -104,9 +106,11 @@
     )
 }
 
+@backButtonDestination = @{ if(isCancellation) { DeclarationDetailsController.displayPage(request.session.data.getOrElse(submissionUuid, "")) } else {SummaryController.displayPage }}
+
 @govukLayout(
     title = Title(headerMsgKey),
-    backButton = Some(BackButton(messages("site.back"), SummaryController.displayPage)),
+    backButton = Some(BackButton(messages("site.back"), backButtonDestination)),
     useCustomContentWidth = true,
     showDeclarationSummaryLink = false
 ) {

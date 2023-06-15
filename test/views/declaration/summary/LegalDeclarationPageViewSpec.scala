@@ -29,6 +29,7 @@ class LegalDeclarationPageViewSpec extends UnitViewSpec with Injector {
   private val legalDeclarationPage = instanceOf[legal_declaration]
   private val view = legalDeclarationPage(emptyForm, amend = false)
   private val amendView = legalDeclarationPage(emptyForm, amend = true)
+  private val amendCancellationView = legalDeclarationPage(emptyForm, amend = true, isCancellation = true)
 
   "Legal Declaration View" when {
 
@@ -92,6 +93,9 @@ class LegalDeclarationPageViewSpec extends UnitViewSpec with Injector {
     "for amendments" should {
       "go back to normal summary page" in {
         amendView.getElementById("back-link") must haveHref(SummaryController.displayPage.url)
+      }
+      "go back to declaration details page" in {
+        amendCancellationView.getElementById("back-link") must haveHref(controllers.routes.DeclarationDetailsController.displayPage("").url)
       }
       "have correct header" in {
         amendView.getElementById("title") must containMessage("legal.declaration.amend.heading")
