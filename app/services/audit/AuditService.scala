@@ -117,6 +117,7 @@ object AuditTypes extends Enumeration {
 
 object EventData extends Enumeration {
   type Data = Value
-  val eori, lrn, mrn, ducr, decType, changeReason, changeDescription, fullName, jobRole, email, confirmed, submissionResult, Success, Failure, url =
+  val eori, lrn, mrn, ducr, decType, changeReason, changeDescription, fullName, jobRole, email, confirmed, submissionResult, Success, Failure, url,
+    AmendedFields =
     Value
 }
