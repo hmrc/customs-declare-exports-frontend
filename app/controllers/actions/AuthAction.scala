@@ -20,14 +20,14 @@ import com.google.inject.{ImplementedBy, Inject, ProvidedBy}
 import com.kenshoo.play.metrics.Metrics
 import config.AppConfig
 import controllers.routes
-import models.AuthKey.{enrolment, identifierKey}
+import models.{IdentityData, SignedInUser}
+import models.AuthKey.{enrolment, hashIdentifierKey, identifierKey}
 import models.UnauthorisedReason.{UrlDirect, UserEoriNotAllowed, UserIsAgent, UserIsNotEnrolled}
 import models.requests.AuthenticatedRequest
-import models.{IdentityData, SignedInUser}
-import play.api.mvc._
 import play.api.{Configuration, Logging}
-import uk.gov.hmrc.auth.core.AffinityGroup.{Individual, Organisation}
+import play.api.mvc._
 import uk.gov.hmrc.auth.core._
+import uk.gov.hmrc.auth.core.AffinityGroup.{Individual, Organisation}
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals._
 import uk.gov.hmrc.auth.core.retrieve.~
 import uk.gov.hmrc.http.HeaderCarrier
@@ -91,8 +91,13 @@ class AuthActionImpl @Inject() (
           Some(loginTimes)
         )
 
+        println(s"allEnrolments == $allEnrolments  EORI==$eori -- $identityData")
         val cdsLoggedInUser = SignedInUser(eori.get.value, allEnrolments, identityData)
-        if (eoriAllowList.allows(cdsLoggedInUser.eori)) {
+
+        val userProvidedEoriHash = getEoriHashFromEnrolments(allEnrolments).map(_.value).getOrElse("NoneProvided")
+        val hiddenSalt = "&^H*&TE%$FOU" //TODO: store securely in secret config
+
+        if (eoriAllowList.allows(cdsLoggedInUser.eori) && isProvidedHashValid(cdsLoggedInUser.eori, hiddenSalt, userProvidedEoriHash)) {
           block(new AuthenticatedRequest(request, cdsLoggedInUser))
         } else {
           logger.warn("User is not in allow list")
@@ -127,6 +132,9 @@ class AuthActionImpl @Inject() (
   private def getEoriFromEnrolments(enrolments: Enrolments): Option[EnrolmentIdentifier] =
     enrolments.getEnrolment(enrolment).flatMap(_.getIdentifier(identifierKey))
 
+  private def getEoriHashFromEnrolments(enrolments: Enrolments): Option[EnrolmentIdentifier] =
+    enrolments.enrolments.filter(_.key.equalsIgnoreCase(enrolment)).flatMap(_.getIdentifier(hashIdentifierKey)).headOption
+
   private def validateEnrolments(eori: Option[EnrolmentIdentifier], externalId: Option[String]): Unit = {
     if (eori.isEmpty) {
       // $COVERAGE-OFF$Trivial
@@ -141,6 +149,27 @@ class AuthActionImpl @Inject() (
       // $COVERAGE-ON
       throw NoExternalId()
     }
+  }
+
+  import org.apache.commons.codec.digest.HmacAlgorithms
+
+  import javax.crypto.Mac
+  import javax.crypto.spec.SecretKeySpec
+  import javax.xml.bind.DatatypeConverter
+
+  def isProvidedHashValid(eori: String, hiddenSalt: String, providedHash: String): Boolean = {
+    val algorithm  = HmacAlgorithms.HMAC_SHA_256.toString
+    val secretSpec = new SecretKeySpec(hiddenSalt.getBytes(), algorithm)
+    val hmac       = Mac.getInstance(algorithm)
+
+    hmac.init(secretSpec)
+
+    val sig           = hmac.doFinal(eori.getBytes("UTF-8"))
+    val hashOfPayload = DatatypeConverter.printHexBinary(sig)
+
+    println(s"hashOfPayload = $hashOfPayload")
+
+    providedHash.equalsIgnoreCase(hashOfPayload)
   }
 }
 

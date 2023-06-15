@@ -15,7 +15,8 @@ object AppDependencies {
     "com.fasterxml.jackson.module" %% "jackson-module-scala"          % "2.14.2",
     "com.github.tototoshi"         %% "scala-csv"                     % "1.3.10",
     "net.sf.barcode4j"             %  "barcode4j"                     % "2.1",
-    "org.webjars.npm"              %  "accessible-autocomplete"       % "2.0.4"
+    "org.webjars.npm"              %  "accessible-autocomplete"       % "2.0.4",
+    "commons-codec"                %  "commons-codec"                 % "1.15"
   ).map(_.withSources)
 
   val test: Seq[ModuleID] = Seq(

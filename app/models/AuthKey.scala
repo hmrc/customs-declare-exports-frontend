@@ -20,4 +20,5 @@ object AuthKey {
 
   val enrolment: String = "HMRC-CUS-ORG"
   val identifierKey: String = "EORINumber"
+  val hashIdentifierKey: String = "TDRSecret"
 }
