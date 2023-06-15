@@ -23,9 +23,8 @@ import controllers.navigation.Navigator
 import forms.declaration.InlandModeOfTransportCode._
 import forms.declaration.ModeOfTransportCode.{FixedTransportInstallations, PostalConsignment}
 import forms.declaration.{InlandModeOfTransportCode, ModeOfTransportCode}
-import models.DeclarationType.{DeclarationType, SUPPLEMENTARY}
+import models.DeclarationType._
 import models.requests.JourneyRequest
-import models.DeclarationType
 import play.api.data.FormError
 import play.api.i18n.I18nSupport
 import play.api.mvc._
@@ -48,7 +47,7 @@ class InlandTransportDetailsController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
 
-  private val validJourneys = List(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY, DeclarationType.SIMPLIFIED)
+  private val validJourneys = allDeclarationTypesExcluding(CLEARANCE)
 
   def displayPage: Action[AnyContent] = (authenticate andThen journeyType(validJourneys)) { implicit request =>
     val frm = form.withSubmissionErrors

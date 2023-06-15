@@ -19,11 +19,22 @@ package controllers.helpers
 import forms.declaration.ModeOfTransportCode
 import forms.declaration.ModeOfTransportCode.{meaningfulModeOfTransportCodes, FixedTransportInstallations, PostalConsignment}
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
+import models.ExportsDeclaration
 
 object TransportSectionHelper {
 
-  val additionalDeclTypesAllowedOnInlandOrBorder =
-    List(STANDARD_PRE_LODGED, STANDARD_FRONTIER, SUPPLEMENTARY_SIMPLIFIED, SIMPLIFIED_PRE_LODGED, SIMPLIFIED_FRONTIER)
+  val additionalDeclTypesAllowedOnInlandOrBorder = List(
+    STANDARD_PRE_LODGED,
+    STANDARD_FRONTIER,
+    OCCASIONAL_PRE_LODGED,
+    OCCASIONAL_FRONTIER,
+    SIMPLIFIED_PRE_LODGED,
+    SIMPLIFIED_FRONTIER,
+    SUPPLEMENTARY_SIMPLIFIED
+  )
+
+  def isTypeForInlandOrBorder(declaration: ExportsDeclaration): Boolean =
+    declaration.additionalDeclarationType.exists(additionalDeclTypesAllowedOnInlandOrBorder.contains)
 
   val postalOrFTIModeOfTransportCodes = List(Some(FixedTransportInstallations), Some(PostalConsignment))
 

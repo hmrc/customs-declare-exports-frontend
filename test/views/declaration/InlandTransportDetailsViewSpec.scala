@@ -18,12 +18,7 @@ package views.declaration
 
 import base.ExportsTestData.{allValuesRequiringToSkipInlandOrBorder, itemWithPC, valuesRequiringToSkipInlandOrBorder}
 import base.Injector
-import controllers.declaration.routes.{
-  InlandOrBorderController,
-  ItemsSummaryController,
-  SupervisingCustomsOfficeController,
-  TransportLeavingTheBorderController
-}
+import controllers.declaration.routes.{InlandOrBorderController, SupervisingCustomsOfficeController, TransportLeavingTheBorderController}
 import controllers.helpers.TransportSectionHelper.additionalDeclTypesAllowedOnInlandOrBorder
 import forms.declaration.InlandModeOfTransportCode
 import forms.declaration.InlandModeOfTransportCode.form
@@ -149,7 +144,7 @@ class InlandTransportDetailsViewSpec extends PageWithButtonsSpec with ExportsTes
         }
       }
 
-      List(SUPPLEMENTARY_EIDR, OCCASIONAL_FRONTIER, OCCASIONAL_PRE_LODGED).foreach { additionalType =>
+      List(SUPPLEMENTARY_EIDR).foreach { additionalType =>
         s"AdditionalDeclarationType is ${additionalType}" in {
           val view = createView()(withRequest(additionalType))
           val backButton = view.getElementById("back-link")
@@ -181,19 +176,6 @@ class InlandTransportDetailsViewSpec extends PageWithButtonsSpec with ExportsTes
             val backButton = view.getElementById("back-link")
             backButton must containMessage("site.backToPreviousQuestion")
             backButton.getElementById("back-link") must haveHref(TransportLeavingTheBorderController.displayPage)
-          }
-        }
-      }
-    }
-
-    "display 'Back' button that links to /declaration-items-list" when {
-      "all declaration's items have '1040' as Procedure code and '000' as unique Additional Procedure code and" when {
-        List(OCCASIONAL_FRONTIER, OCCASIONAL_PRE_LODGED).foreach { additionalType =>
-          s"AdditionalDeclarationType is ${additionalType}" in {
-            val view = createView()(withRequest(additionalType, withItem(itemWithPC("1040"))))
-            val backButton = view.getElementById("back-link")
-            backButton must containMessage("site.backToPreviousQuestion")
-            backButton.getElementById("back-link") must haveHref(ItemsSummaryController.displayItemsSummaryPage)
           }
         }
       }

@@ -74,7 +74,7 @@ class InlandTransportDetailsControllerSpec extends ControllerSpec with GivenWhen
 
   "Inland Transport Details Controller on GET request" should {
 
-    onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED) { request =>
+    onJourney(STANDARD, OCCASIONAL, SUPPLEMENTARY, SIMPLIFIED) { request =>
       "return 200 OK" in {
         withNewCaching(request.cacheModel)
 
@@ -93,7 +93,7 @@ class InlandTransportDetailsControllerSpec extends ControllerSpec with GivenWhen
       }
     }
 
-    onJourney(OCCASIONAL, CLEARANCE) { request =>
+    onJourney(CLEARANCE) { request =>
       "redirect to start" in {
         withNewCaching(request.cacheModel)
 
@@ -107,7 +107,7 @@ class InlandTransportDetailsControllerSpec extends ControllerSpec with GivenWhen
 
   private val body = Json.obj("inlandModeOfTransportCode" -> exampleTransportMode.value)
 
-  onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED) { request =>
+  onJourney(STANDARD, OCCASIONAL, SUPPLEMENTARY, SIMPLIFIED) { request =>
     "Inland Transport Details Controller on POST" should {
 
       "update cache after successful bind" in {
@@ -188,7 +188,7 @@ class InlandTransportDetailsControllerSpec extends ControllerSpec with GivenWhen
     }
   }
 
-  onJourney(OCCASIONAL, CLEARANCE) { request =>
+  onJourney(CLEARANCE) { request =>
     "Inland Transport Details Controller on POST" should {
       "redirect to start" in {
         withNewCaching(request.cacheModel)

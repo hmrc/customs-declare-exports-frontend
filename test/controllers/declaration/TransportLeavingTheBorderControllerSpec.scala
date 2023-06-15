@@ -24,15 +24,13 @@ import controllers.declaration.routes.{
   SupervisingCustomsOfficeController,
   WarehouseIdentificationController
 }
-import controllers.helpers.{InlandOrBorderHelper, SupervisingCustomsOfficeHelper}
 import controllers.helpers.TransportSectionHelper._
-import controllers.routes.RootController
+import controllers.helpers.{InlandOrBorderHelper, SupervisingCustomsOfficeHelper}
 import forms.declaration.InlandOrBorder.{Border, Inland}
 import forms.declaration.LocationOfGoods.suffixForGVMS
 import forms.declaration.ModeOfTransportCode.{meaningfulModeOfTransportCodes, Maritime, RoRo}
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
 import forms.declaration.{LocationOfGoods, ModeOfTransportCode, TransportLeavingTheBorder}
-import models.DeclarationType
 import models.DeclarationType._
 import models.declaration.ProcedureCodesData.warehouseRequiredProcedureCodes
 import org.mockito.ArgumentCaptor
@@ -67,7 +65,7 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec with Option
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    withNewCaching(aDeclaration(withType(DeclarationType.STANDARD)))
+    withNewCaching(aDeclaration(withType(STANDARD)))
     when(transportLeavingTheBorder.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
@@ -90,7 +88,7 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec with Option
 
   "TransportLeavingTheBorderController.displayOutcomePage" should {
 
-    onJourney(STANDARD, SUPPLEMENTARY, CLEARANCE, SIMPLIFIED) { request =>
+    onEveryDeclarationJourney() { request =>
       "return 200 (OK)" when {
 
         "display page method is invoked and cache is empty" in {
@@ -110,20 +108,11 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec with Option
         }
       }
     }
-
-    onJourney(OCCASIONAL) { request =>
-      "redirect to the starting page on displayOutcomePage" in {
-        withNewCaching(request.cacheModel)
-
-        val result = controller.displayPage(getRequest())
-        redirectLocation(result) mustBe Some(RootController.displayPage.url)
-      }
-    }
   }
 
   "TransportLeavingTheBorderController.submitForm" when {
 
-    onJourney(STANDARD, SUPPLEMENTARY, CLEARANCE, SIMPLIFIED) { request =>
+    onEveryDeclarationJourney() { request =>
       "the user does not select any option" should {
         "return 400 (BAD_REQUEST)" in {
           withNewCaching(request.cacheModel)
@@ -182,7 +171,7 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec with Option
       s"ModeOfTransportCode is '${modeOfTransportCode}'" should {
         val body = Json.obj("transportLeavingTheBorder" -> modeOfTransportCode.value)
 
-        onJourney(STANDARD, SUPPLEMENTARY, CLEARANCE) { request =>
+        onJourney(STANDARD, OCCASIONAL, SUPPLEMENTARY, CLEARANCE) { request =>
           "update the cache after a successful bind" in {
             withNewCaching(request.cacheModel)
 
@@ -192,7 +181,7 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec with Option
           }
         }
 
-        onJourney(STANDARD, SUPPLEMENTARY) { request =>
+        onJourney(STANDARD, OCCASIONAL, SUPPLEMENTARY) { request =>
           "redirect to /warehouse-details after a successful bind" when {
             warehouseRequiredProcedureCodes.foreach { suffix =>
               s"user had entered a Procedure Code ending with '$suffix'" in {
@@ -296,20 +285,12 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec with Option
       }
     }
 
-    onJourney(OCCASIONAL) { request =>
-      "always redirect to the starting page" in {
-        withNewCaching(request.cacheModel)
-        val body = Json.obj("transportLeavingTheBorder" -> "any")
-
-        val result = controller.submitForm()(postRequest(body))
-        redirectLocation(result) mustBe Some(RootController.displayPage.url)
-      }
-    }
-
     val resetInlandOrBorderConditions = List(
       (STANDARD_FRONTIER, Maritime, Border, Some(Border)),
       (STANDARD_FRONTIER, RoRo, Border, None),
       (STANDARD_PRE_LODGED, Maritime, Border, Some(Border)),
+      (OCCASIONAL_FRONTIER, RoRo, Border, None),
+      (OCCASIONAL_PRE_LODGED, Maritime, Border, Some(Border)),
       (SUPPLEMENTARY_SIMPLIFIED, Maritime, Inland, Some(Inland)),
       (SUPPLEMENTARY_EIDR, Maritime, Border, None),
       (CLEARANCE_FRONTIER, Maritime, Border, None),

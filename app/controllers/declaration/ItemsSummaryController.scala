@@ -17,23 +17,18 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.declaration.routes.{
-  ItemsSummaryController,
-  ProcedureCodesController,
-  TransportLeavingTheBorderController,
-  WarehouseIdentificationController
-}
-import controllers.helpers.{SequenceIdHelper, SupervisingCustomsOfficeHelper}
+import controllers.declaration.routes.{ItemsSummaryController, ProcedureCodesController, TransportLeavingTheBorderController}
+import controllers.helpers.SequenceIdHelper
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
-import models.DeclarationType.{CLEARANCE, OCCASIONAL}
+import models.DeclarationType.CLEARANCE
 import models.ExportsDeclaration
 import models.declaration.ExportItem
 import models.requests.JourneyRequest
 import play.api.data.{Form, FormError}
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.cache.{ExportItemIdGeneratorService, ExportsCacheService}
 import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
@@ -52,7 +47,6 @@ class ItemsSummaryController @Inject() (
   addItemPage: items_add_item,
   itemsSummaryPage: items_summary,
   removeItemPage: items_remove_item,
-  supervisingCustomsOfficeHelper: SupervisingCustomsOfficeHelper,
   sequenceIdHandler: SequenceIdHelper
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with WithUnsafeDefaultFormBinding {
@@ -93,18 +87,10 @@ class ItemsSummaryController @Inject() (
               Future.successful(BadRequest(itemsSummaryPage(itemSummaryForm.fill(validYesNo), request.cacheModel.items.toList, incorrectItems)))
 
             case YesNoAnswers.no =>
-              Future.successful(navigator.continueTo(nextPage))
+              Future.successful(navigator.continueTo(TransportLeavingTheBorderController.displayPage))
           }
       )
   }
-
-  private def nextPage(implicit request: JourneyRequest[AnyContent]): Call =
-    request.declarationType match {
-      case OCCASIONAL =>
-        if (request.cacheModel.requiresWarehouseId) WarehouseIdentificationController.displayPage
-        else supervisingCustomsOfficeHelper.landOnOrSkipToNextPage(request.cacheModel)
-      case _ => TransportLeavingTheBorderController.displayPage
-    }
 
   private def buildIncorrectItemsErrors(request: JourneyRequest[AnyContent]): Seq[FormError] =
     request.cacheModel.items.zipWithIndex.filterNot { case (item, _) =>

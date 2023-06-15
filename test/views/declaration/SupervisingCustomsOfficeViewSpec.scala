@@ -17,10 +17,13 @@
 package views.declaration
 
 import base.Injector
+import controllers.declaration.routes.{TransportLeavingTheBorderController, WarehouseIdentificationController}
 import forms.declaration.SupervisingCustomsOffice
+import models.DeclarationType
+import models.DeclarationType._
 import models.requests.JourneyRequest
-import models.{DeclarationType, ExportsDeclaration}
 import play.api.data.Form
+import play.twirl.api.HtmlFormat.Appendable
 import services.cache.ExportsTestHelper
 import tools.Stubs
 import views.declaration.spec.UnitViewSpec
@@ -33,7 +36,7 @@ class SupervisingCustomsOfficeViewSpec extends UnitViewSpec with ExportsTestHelp
   private val page = instanceOf[supervising_customs_office]
   private val form: Form[SupervisingCustomsOffice] = SupervisingCustomsOffice.form
 
-  private def createView(form: Form[SupervisingCustomsOffice] = form)(implicit request: JourneyRequest[_]) =
+  private def createView(form: Form[SupervisingCustomsOffice] = form)(implicit request: JourneyRequest[_]): Appendable =
     page(form)(request, messages)
 
   "Supervising Customs Office View" should {
@@ -70,43 +73,27 @@ class SupervisingCustomsOfficeViewSpec extends UnitViewSpec with ExportsTestHelp
         val backButton = createView().getElementById("back-link")
 
         backButton must containMessage("site.backToPreviousQuestion")
-        backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.WarehouseIdentificationController.displayPage)
+        backButton.getElementById("back-link") must haveHref(WarehouseIdentificationController.displayPage)
       }
     }
 
-    onJourney(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY, DeclarationType.OCCASIONAL, DeclarationType.SIMPLIFIED) { implicit request =>
+    onJourney(STANDARD, OCCASIONAL, SUPPLEMENTARY, SIMPLIFIED) { implicit request =>
       "display 'Back' button that links to 'Warehouse Identification Number' page when procedure code ends with '78'" in {
-
-        val modelWithProcedureCode: ExportsDeclaration =
-          aDeclarationAfter(request.cacheModel, withItem(anItem(withProcedureCodes(Some("1078"), Seq("000")))))
-        val backButton = createView()(journeyRequest(modelWithProcedureCode)).getElementById("back-link")
+        val declaration = aDeclarationAfter(request.cacheModel, withItem(anItem(withProcedureCodes(Some("1078"), Seq("000")))))
+        val backButton = createView()(journeyRequest(declaration)).getElementById("back-link")
 
         backButton must containMessage("site.backToPreviousQuestion")
-        backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.WarehouseIdentificationController.displayPage)
+        backButton.getElementById("back-link") must haveHref(WarehouseIdentificationController.displayPage)
       }
     }
 
-    onJourney(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY, DeclarationType.SIMPLIFIED) { implicit request =>
+    onJourney(STANDARD, OCCASIONAL, SUPPLEMENTARY, SIMPLIFIED) { implicit request =>
       "display 'Back' button that links to 'Transport Leaving the Border' page when procedure code ends with '00'" in {
-
-        val modelWithProcedureCode: ExportsDeclaration =
-          aDeclarationAfter(request.cacheModel, withItem(anItem(withProcedureCodes(Some("0000"), Seq("000")))))
-        val backButton = createView()(journeyRequest(modelWithProcedureCode)).getElementById("back-link")
+        val declaration = aDeclarationAfter(request.cacheModel, withItem(anItem(withProcedureCodes(Some("0000"), Seq("000")))))
+        val backButton = createView()(journeyRequest(declaration)).getElementById("back-link")
 
         backButton must containMessage("site.backToPreviousQuestion")
-        backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.TransportLeavingTheBorderController.displayPage)
-      }
-    }
-
-    onOccasional { implicit request =>
-      "display 'Back' button that links to 'Items Summary' page when procedure code ends with '00'" in {
-
-        val modelWithProcedureCode: ExportsDeclaration =
-          aDeclarationAfter(request.cacheModel, withItem(anItem(withProcedureCodes(Some("0000"), Seq("000")))))
-        val backButton = createView()(journeyRequest(modelWithProcedureCode)).getElementById("back-link")
-
-        backButton must containMessage("site.backToPreviousQuestion")
-        backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.ItemsSummaryController.displayItemsSummaryPage)
+        backButton.getElementById("back-link") must haveHref(TransportLeavingTheBorderController.displayPage)
       }
     }
   }

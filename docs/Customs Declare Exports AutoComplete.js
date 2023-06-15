@@ -558,11 +558,9 @@ function holderOfAuthorisation(){
                 submit()
                 break
             case 'D':
+            case 'E':
                 selectFromAutoPredict(document.getElementById('authorisationTypeCode-container'), "AEOC")
                 document.getElementById('eori').value = 'GB717572504502801'
-                submit()
-                break
-            case 'E':
                 submit()
                 break
         }

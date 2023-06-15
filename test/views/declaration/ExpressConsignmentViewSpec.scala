@@ -16,7 +16,6 @@
 
 package views.declaration
 
-import base.ExportsTestData.itemWithPC
 import base.{Injector, MockAuthAction}
 import controllers.declaration.routes
 import controllers.helpers.SupervisingCustomsOfficeHelperSpec.skipDepartureTransportPageCodes
@@ -24,7 +23,6 @@ import forms.common.YesNoAnswer
 import forms.declaration.ModeOfTransportCode.meaningfulModeOfTransportCodes
 import forms.declaration.TransportLeavingTheBorder
 import models.DeclarationType._
-import models.DeclarationType
 import models.declaration.Transport
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
@@ -81,7 +79,7 @@ class ExpressConsignmentViewSpec extends UnitViewSpec with CommonMessages with I
 
     }
 
-    onJourney(STANDARD, SIMPLIFIED) { implicit request =>
+    onJourney(STANDARD, OCCASIONAL, SIMPLIFIED) { implicit request =>
       val view: Document = createView()
 
       "display 'Back' button to the 'Border Transport' page" in {
@@ -93,42 +91,19 @@ class ExpressConsignmentViewSpec extends UnitViewSpec with CommonMessages with I
       }
     }
 
-    onJourney(OCCASIONAL) { implicit request =>
-      val view: Document = createView()
+    onClearance(aDeclaration(withType(CLEARANCE), withItem(anItem(withProcedureCodes(Some("1040"), Seq("000")))))) { implicit request =>
+      "display 'Back' button to the 'Warehouse Details' page" when {
+        skipDepartureTransportPageCodes.foreach { modeOfTransportCode =>
+          val cachedDec =
+            request.cacheModel.copy(transport = Transport(borderModeOfTransportCode = Some(TransportLeavingTheBorder(Some(modeOfTransportCode)))))
+          val requestWithUpdatedDec = new JourneyRequest(getAuthenticatedRequest(), cachedDec)
+          val view: Document = createView()(requestWithUpdatedDec)
 
-      "display 'Back' button to the 'Supervising Customs Office' page" in {
-        verifyBackButton(view, routes.SupervisingCustomsOfficeController.displayPage)
-      }
-
-      "display the expected tariff details" in {
-        verifyTariffDetails(view, "common")
-      }
-    }
-
-    onJourney(OCCASIONAL)(aDeclaration(withItem(itemWithPC("1040")))) { implicit request =>
-      val view: Document = createView()
-
-      "display 'Back' button to the 'Items Summary' page" when {
-        "all declaration's items have '1040' as Procedure code and '000' as unique Additional Procedure code" in {
-          verifyBackButton(view, routes.ItemsSummaryController.displayItemsSummaryPage)
-        }
-      }
-    }
-
-    onClearance(aDeclaration(withType(DeclarationType.CLEARANCE), withItem(anItem(withProcedureCodes(Some("1040"), Seq("000")))))) {
-      implicit request =>
-        "display 'Back' button to the 'Warehouse Details' page" when {
-          skipDepartureTransportPageCodes.foreach { modeOfTransportCode =>
-            val cachedDec =
-              request.cacheModel.copy(transport = Transport(borderModeOfTransportCode = Some(TransportLeavingTheBorder(Some(modeOfTransportCode)))))
-            val requestWithUpdatedDec = new JourneyRequest(getAuthenticatedRequest(), cachedDec)
-            val view: Document = createView()(requestWithUpdatedDec)
-
-            s"transportLeavingBoarderCode is ${modeOfTransportCode}" in {
-              verifyBackButton(view, routes.WarehouseIdentificationController.displayPage)
-            }
+          s"transportLeavingBoarderCode is ${modeOfTransportCode}" in {
+            verifyBackButton(view, routes.WarehouseIdentificationController.displayPage)
           }
         }
+      }
 
     }
 
