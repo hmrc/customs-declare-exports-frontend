@@ -943,6 +943,9 @@ declaration.details.uploadDocuments.details.paragraph.1.bullet.3 = any certifica
 declaration.details.uploadDocuments.details.paragraph.2 = You do not have to upload any documents unless you are asked to do so.
 declaration.details.uploadDocuments.details.paragraph.3 = You can upload documents before your goods are arrived if you wish, and if they are not needed by customs they will be deleted within six months.
 
+declaration.details.unavailable.actions.header = Sorry, you can no longer view, copy or amend this declaration
+declaration.details.unavailable.actions.paragraph = This is because there has been an update and this prevents us from providing you with the most recent information.
+
 saved.declarations.title = Your saved declarations
 saved.declarations.title.amendments = Your saved declarations and amendments
 saved.declarations.ducr = DUCR

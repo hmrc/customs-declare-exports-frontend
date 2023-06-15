@@ -25,7 +25,7 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.dashboard.DashboardHelper.toDashboard
 @import views.helpers.{BackButton, EnhancedStatusHelper, TimelineEvents, Title, ViewDates}
-@import views.helpers.DeclarationDetailsLinks._
+@import views.helpers.DeclarationDetailsHelper._
 @import views.html.components.gds._
 
 @this(
@@ -87,7 +87,7 @@
         @link(
             id = Some("view-declaration"),
             text = messages("declaration.details.view.declaration"),
-            call = routes.SubmissionsController.viewDeclaration(submission.latestDecId.getOrElse(submission.uuid))
+            call = callForViewDeclaration(submission)
         )
     </div>
   }
@@ -100,7 +100,7 @@
         @link(
           id = Some("copy-declaration"),
           text = messages("declaration.details.copy.declaration"),
-          call = routes.CopyDeclarationController.redirectToReceiveJourneyRequest(submission.uuid)
+          call = callForCopyDeclaration(submission)
         )
       </p>
     }
@@ -114,7 +114,7 @@
             @link(
                 id = Some("amend-declaration"),
                 text = messages("declaration.details.amend.declaration"),
-                call = AmendDeclarationController.initAmendment(submission)
+                call = callForAmendDeclaration(submission)
             )
         </p>
     }

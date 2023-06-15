@@ -24,7 +24,7 @@ import play.api.i18n.I18nSupport
 import play.api.mvc._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.dashboard.DashboardHelper.toDashboard
-import views.html.declaration_details
+import views.html.{declaration_details, unavailable_timeline_actions}
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -34,7 +34,8 @@ class DeclarationDetailsController @Inject() (
   verifyEmail: VerifiedEmailAction,
   customsDeclareExportsConnector: CustomsDeclareExportsConnector,
   mcc: MessagesControllerComponents,
-  declarationDetailsPage: declaration_details
+  declarationDetailsPage: declaration_details,
+  unavailableTimelineActions: unavailable_timeline_actions
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
@@ -43,6 +44,10 @@ class DeclarationDetailsController @Inject() (
       case Some(submission) => Ok(declarationDetailsPage(submission)).addingToSession(sessionKeys(submission): _*)
       case _                => Redirect(toDashboard)
     }
+  }
+
+  def unavailableActions(submissionId: String): Action[AnyContent] = (authenticate andThen verifyEmail) { implicit request =>
+    Ok(unavailableTimelineActions(submissionId))
   }
 
   private def sessionKeys(submission: Submission): Seq[(String, String)] = {

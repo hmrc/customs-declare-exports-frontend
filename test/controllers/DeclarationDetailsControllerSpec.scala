@@ -27,7 +27,7 @@ import org.scalatest.{BeforeAndAfterEach, OptionValues}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.dashboard.DashboardHelper.toDashboard
-import views.html.declaration_details
+import views.html.{declaration_details, unavailable_timeline_actions}
 
 import java.time.ZonedDateTime
 import java.util.UUID
@@ -52,13 +52,15 @@ class DeclarationDetailsControllerSpec extends ControllerWithoutFormSpec with Be
   }
 
   private val declarationDetailsPage = mock[declaration_details]
+  private val unavailableTimelineActionsPage = mock[unavailable_timeline_actions]
 
   val controller = new DeclarationDetailsController(
     mockAuthAction,
     mockVerifiedEmailAction,
     mockCustomsDeclareExportsConnector,
     stubMessagesControllerComponents(),
-    declarationDetailsPage
+    declarationDetailsPage,
+    unavailableTimelineActionsPage
   )(ec)
 
   override protected def beforeEach(): Unit = {
@@ -66,12 +68,13 @@ class DeclarationDetailsControllerSpec extends ControllerWithoutFormSpec with Be
 
     authorizedUser()
     when(declarationDetailsPage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(unavailableTimelineActionsPage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit =
-    reset(declarationDetailsPage, mockCustomsDeclareExportsConnector)
+    reset(declarationDetailsPage, unavailableTimelineActionsPage, mockCustomsDeclareExportsConnector)
 
-  "displayOutcomePage method of Declaration Details page" should {
+  "DeclarationDetailsController.displayPage" should {
 
     "return 200 (OK)" when {
       "submission but no notifications are provided for the Declaration" in {
@@ -103,6 +106,13 @@ class DeclarationDetailsControllerSpec extends ControllerWithoutFormSpec with Be
 
         verifyNoInteractions(declarationDetailsPage)
       }
+    }
+  }
+
+  "DeclarationDetailsController.displayPage" should {
+    "return 200 (OK)" in {
+      val result = controller.unavailableActions(submission.uuid)(getRequest())
+      status(result) mustBe OK
     }
   }
 }

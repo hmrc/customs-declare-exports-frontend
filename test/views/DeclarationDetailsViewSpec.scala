@@ -24,7 +24,7 @@ import controllers.declaration.amendments.routes.AmendDeclarationController
 import controllers.declaration.routes.SubmissionController
 import controllers.routes._
 import models.declaration.submissions.EnhancedStatus._
-import models.declaration.submissions.RequestType.{AmendmentRequest, SubmissionRequest}
+import models.declaration.submissions.RequestType.{AmendmentRequest, ExternalAmendmentRequest, SubmissionRequest}
 import models.declaration.submissions.{Action, EnhancedStatus, NotificationSummary, RequestType, Submission}
 import models.requests.{SessionHelper, VerifiedEmailRequest}
 import org.jsoup.nodes.Element
@@ -148,16 +148,34 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
     }
 
     "contain the 'Amend declaration' link" when {
-      "the 'declarationAmendments' feature flag is enabled" in {
-        when(mockDeclarationAmendmentsConfig.isEnabled).thenReturn(true)
-        val submission = submissionWithStatus(RECEIVED)
-        val view = page(submission)(verifiedEmailRequest(), messages)
+      "the 'declarationAmendments' feature flag is enabled and" when {
+        "the declaration has NOT been externally amended" in {
+          when(mockDeclarationAmendmentsConfig.isEnabled).thenReturn(true)
+          val submission = submissionWithStatus(RECEIVED)
+          val view = page(submission)(verifiedEmailRequest(), messages)
 
-        val cancelDeclarationLink = view.getElementById("amend-declaration")
-        cancelDeclarationLink must containMessage("declaration.details.amend.declaration")
+          val amendDeclarationLink = view.getElementById("amend-declaration")
+          amendDeclarationLink must containMessage("declaration.details.amend.declaration")
 
-        val parentId = submission.latestDecId.value
-        cancelDeclarationLink must haveHref(AmendDeclarationController.initAmendment(parentId, RECEIVED.toString))
+          val parentId = submission.latestDecId.value
+          amendDeclarationLink must haveHref(AmendDeclarationController.initAmendment(parentId, RECEIVED.toString))
+        }
+      }
+    }
+
+    "contain the 'Amend declaration' link pointing to '/unavailable-actions'" when {
+      "the 'declarationAmendments' feature flag is enabled and" when {
+        "the declaration has been externally amended" in {
+          when(mockDeclarationAmendmentsConfig.isEnabled).thenReturn(true)
+
+          val action = Action("id", ExternalAmendmentRequest, now, None, None, 2)
+          val submission = submissionWithStatus(RECEIVED).copy(actions = Seq(action))
+          val view = page(submission)(verifiedEmailRequest(), messages)
+
+          val amendDeclarationLink = view.getElementById("amend-declaration")
+          amendDeclarationLink must containMessage("declaration.details.amend.declaration")
+          amendDeclarationLink must haveHref(DeclarationDetailsController.unavailableActions(submission.uuid))
+        }
       }
     }
 
@@ -384,9 +402,9 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
       s"contain the view-declaration link when notification's status is ${status}" in {
         val view = page(submissionWithAction(status))(verifiedEmailRequest(), messages)
 
-        val declarationLink = view.getElementById("view-declaration")
-        declarationLink must containMessage(s"${msgKey}.view.declaration")
-        declarationLink must haveHref(SubmissionsController.viewDeclaration(latestDecId.value))
+        val viewDeclarationLink = view.getElementById("view-declaration")
+        viewDeclarationLink must containMessage(s"${msgKey}.view.declaration")
+        viewDeclarationLink must haveHref(SubmissionsController.viewDeclaration(latestDecId.value))
       }
     }
 
@@ -394,9 +412,21 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
       "Submission.latestDecId is None" in {
         val view = page(subWithoutLatestDecId)(verifiedEmailRequest(), messages)
 
-        val declarationLink = view.getElementById("view-declaration")
-        declarationLink must containMessage(s"${msgKey}.view.declaration")
-        declarationLink must haveHref(SubmissionsController.viewDeclaration(subWithoutLatestDecId.uuid))
+        val viewDeclarationLink = view.getElementById("view-declaration")
+        viewDeclarationLink must containMessage(s"${msgKey}.view.declaration")
+        viewDeclarationLink must haveHref(SubmissionsController.viewDeclaration(subWithoutLatestDecId.uuid))
+      }
+    }
+
+    "contain the view-declaration link pointing to '/unavailable-actions'" when {
+      "the declaration has been externally amended" in {
+        val action = Action("id", ExternalAmendmentRequest, now, None, None, 2)
+        val submission = submissionWithStatus(RECEIVED).copy(actions = Seq(action))
+        val view = page(submission)(verifiedEmailRequest(), messages)
+
+        val viewDeclarationLink = view.getElementById("view-declaration")
+        viewDeclarationLink must containMessage(s"${msgKey}.view.declaration")
+        viewDeclarationLink must haveHref(DeclarationDetailsController.unavailableActions(submission.uuid))
       }
     }
 
@@ -412,6 +442,18 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
         val copyDeclarationLink = view.getElementById("copy-declaration")
         copyDeclarationLink must containMessage("declaration.details.copy.declaration")
         copyDeclarationLink must haveHref(CopyDeclarationController.redirectToReceiveJourneyRequest(submission.uuid))
+      }
+    }
+
+    "contain the copy-declaration link pointing to '/unavailable-actions'" when {
+      "the declaration has been externally amended" in {
+        val action = Action("id", ExternalAmendmentRequest, now, None, None, 2)
+        val submission = submissionWithStatus(RECEIVED).copy(actions = Seq(action))
+        val view = page(submission)(verifiedEmailRequest(), messages)
+
+        val copyDeclarationLink = view.getElementById("copy-declaration")
+        copyDeclarationLink must containMessage("declaration.details.copy.declaration")
+        copyDeclarationLink must haveHref(DeclarationDetailsController.unavailableActions(submission.uuid))
       }
     }
 
