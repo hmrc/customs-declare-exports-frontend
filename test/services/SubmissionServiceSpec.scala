@@ -29,6 +29,7 @@ import org.mockito.ArgumentMatchers.{any, eq => equalTo}
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.OptionValues
 import org.scalatest.concurrent.ScalaFutures
+import services.DiffTools.ExportsDeclarationDiff
 import services.audit.{AuditService, AuditTypes, EventData}
 import services.cache.SubmissionBuilder
 import uk.gov.hmrc.http.HeaderCarrier
@@ -45,17 +46,19 @@ class SubmissionServiceSpec
   private val exportMetrics = instanceOf[ExportsMetrics]
   private val hc: HeaderCarrier = mock[HeaderCarrier]
   private val legal = LegalDeclaration("Name", "Role", "email@test.com", None, confirmation = true)
-  private val auditData = Map(
-    EventData.eori.toString -> "eori",
-    EventData.lrn.toString -> "123LRN",
-    EventData.ducr.toString -> "ducr",
-    EventData.decType.toString -> "STANDARD",
-    EventData.fullName.toString -> legal.fullName,
-    EventData.jobRole.toString -> legal.jobRole,
-    EventData.email.toString -> legal.email,
-    EventData.confirmed.toString -> legal.confirmation.toString,
-    EventData.submissionResult.toString -> "Success"
-  )
+  private def auditData(diff: Option[ExportsDeclarationDiff]) =
+    Map(
+      EventData.eori.toString -> "eori",
+      EventData.lrn.toString -> "123LRN",
+      EventData.ducr.toString -> "ducr",
+      EventData.AmendedFields.toString -> diff.fold("n/a")(DiffTools.toStringForAudit),
+      EventData.decType.toString -> "STANDARD",
+      EventData.fullName.toString -> legal.fullName,
+      EventData.jobRole.toString -> legal.jobRole,
+      EventData.email.toString -> legal.email,
+      EventData.confirmed.toString -> legal.confirmation.toString,
+      EventData.submissionResult.toString -> "Success"
+    )
   private val submissionService = new SubmissionService(connector, auditService, exportMetrics)
 
   override def beforeEach(): Unit = {
@@ -94,7 +97,7 @@ class SubmissionServiceSpec
       // Then
       verify(connector).submitDeclaration(equalTo("id"))(equalTo(hc), any())
       verify(auditService).auditAllPagesUserInput(equalTo(AuditTypes.SubmissionPayload), equalTo(declaration))(equalTo(hc))
-      verify(auditService).audit(equalTo(AuditTypes.Submission), equalTo[Map[String, String]](auditData))(equalTo(hc))
+      verify(auditService).audit(equalTo(AuditTypes.Submission), equalTo[Map[String, String]](auditData(None)))(equalTo(hc))
       registry.getTimers.get(exportMetrics.timerName(metric)).getCount mustBe >(timerBefore)
       registry.getCounters.get(exportMetrics.counterName(metric)).getCount mustBe >(counterBefore)
     }
@@ -153,6 +156,8 @@ class SubmissionServiceSpec
         withTotalNumberOfItems(Some("654321"), Some("94.1"), Some("GBP"), Some("no"))
       )
 
+      val diff = amendedDecl.createDiff(parentDeclaration)
+
       val expectedActionId = "actionId"
       when(connector.submitAmendment(any())(any(), any())).thenReturn(Future.successful(expectedActionId))
 
@@ -168,7 +173,7 @@ class SubmissionServiceSpec
       val expectedSubmissionAmendment = SubmissionAmendment(submissionId, "id2", expectedFieldPointers)
       verify(connector).submitAmendment(equalTo(expectedSubmissionAmendment))(any(), any())
       verify(auditService).auditAllPagesUserInput(equalTo(AuditTypes.AmendmentPayload), equalTo(amendedDecl))(any())
-      verify(auditService).audit(equalTo(AuditTypes.Amendment), equalTo[Map[String, String]](auditData))(any)
+      verify(auditService).audit(equalTo(AuditTypes.Amendment), equalTo[Map[String, String]](auditData(Some(diff))))(any)
 
       registry.getTimers.get(exportMetrics.timerName(metric)).getCount mustBe >(timerBefore)
       registry.getCounters.get(exportMetrics.counterName(metric)).getCount mustBe >(counterBefore)

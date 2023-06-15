@@ -23,7 +23,7 @@ import services.DiffTools.{combinePointers, ExportsDeclarationDiff}
 case class OriginalAndNewValues[T](originalVal: Option[T], newVal: Option[T]) {}
 
 case class AlteredField(fieldPointer: ExportsFieldPointer, values: OriginalAndNewValues[_]) {
-  override def toString: String = s"[$fieldPointer -> ${values.originalVal} :: ${values.newVal}]"
+  override def toString: String = s"[$fieldPointer :: OLD: ${values.originalVal} -> NEW: ${values.newVal}]"
 }
 
 object AlteredField {
@@ -132,6 +132,8 @@ trait DiffTools[T] {
 object DiffTools {
 
   type ExportsDeclarationDiff = Seq[AlteredField]
+
+  def toStringForAudit(diff: ExportsDeclarationDiff): String = diff.map(_.toString).mkString("\n")
 
   def compareBooleanDifference(original: Boolean, current: Boolean, pointerString: ExportsFieldPointer): Option[AlteredField] =
     Option.when(!current.compare(original).equals(0))(AlteredField(pointerString, OriginalAndNewValues(Some(original), Some(current))))
