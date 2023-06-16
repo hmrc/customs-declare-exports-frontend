@@ -102,11 +102,8 @@ class AmendmentOutcomeControllerSpec extends ControllerWithoutFormSpec with Give
   )
 
   def buildRequest(queryParam: String = ""): VerifiedEmailRequest[AnyContentAsEmpty.type] = {
-    val request = FakeRequest("GET", queryParam).withSession(
-      SessionHelper.declarationType -> "K",
-      SessionHelper.submissionActionId -> actionId,
-      SessionHelper.submissionUuid -> submissionId
-    )
+    val request =
+      FakeRequest("GET", queryParam).withSession(SessionHelper.submissionActionId -> actionId, SessionHelper.submissionUuid -> submissionId)
 
     buildVerifiedEmailRequest(request, exampleUser)
   }
@@ -256,7 +253,7 @@ class AmendmentOutcomeControllerSpec extends ControllerWithoutFormSpec with Give
           .thenReturn(Future.successful(Some(submission(List(action(Some(CUSTOMS_POSITION_DENIED)))))))
 
         when(mockCustomsDeclareExportsConnector.findDeclaration(any())(any(), any()))
-          .thenReturn(Future.successful(Some(aDeclaration())))
+          .thenReturn(Future.successful(Some(aDeclaration(withAdditionalDeclarationType()))))
 
         when(amendment_failed.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
 
@@ -274,7 +271,7 @@ class AmendmentOutcomeControllerSpec extends ControllerWithoutFormSpec with Give
           .thenReturn(Future.successful(Some(submission(List(action(Some(CUSTOMS_POSITION_GRANTED)))))))
 
         when(mockCustomsDeclareExportsConnector.findDeclaration(any())(any(), any()))
-          .thenReturn(Future.successful(Some(aDeclaration())))
+          .thenReturn(Future.successful(Some(aDeclaration(withAdditionalDeclarationType()))))
 
         when(amendment_accepted.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
 
@@ -292,7 +289,7 @@ class AmendmentOutcomeControllerSpec extends ControllerWithoutFormSpec with Give
           .thenReturn(Future.successful(Some(submission(List(action(Some(ERRORS)))))))
 
         when(mockCustomsDeclareExportsConnector.findDeclaration(any())(any(), any()))
-          .thenReturn(Future.successful(Some(aDeclaration())))
+          .thenReturn(Future.successful(Some(aDeclaration(withAdditionalDeclarationType()))))
 
         when(amendment_rejection.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
 
@@ -310,7 +307,7 @@ class AmendmentOutcomeControllerSpec extends ControllerWithoutFormSpec with Give
           .thenReturn(Future.successful(Some(submission(List(action())))))
 
         when(mockCustomsDeclareExportsConnector.findDeclaration(any())(any(), any()))
-          .thenReturn(Future.successful(Some(aDeclaration())))
+          .thenReturn(Future.successful(Some(aDeclaration(withAdditionalDeclarationType()))))
 
         when(amendment_pending.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
 

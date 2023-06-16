@@ -130,7 +130,6 @@ class SubmissionController @Inject() (
 
   private def session(submission: Submission)(implicit request: JourneyRequest[_]): Session =
     removeValue(declarationUuid) +
-      (declarationType -> request.cacheModel.additionalDeclarationType.fold("")(_.toString)) +
       (submissionUuid -> submission.uuid) +
       (submissionDucr -> submission.ducr.fold("")(identity)) +
       (submissionLrn -> submission.lrn)
