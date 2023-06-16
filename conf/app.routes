@@ -37,6 +37,7 @@ GET         /dashboard                                     controllers.Dashboard
 # Submissions
 
 GET         /submissions/:id/information                   controllers.DeclarationDetailsController.displayPage(id: String)
+GET         /submissions/:id/unavailable-actions           controllers.DeclarationDetailsController.unavailableActions(id: String)
 
 GET         /submissions/:id/view                          controllers.SubmissionsController.viewDeclaration(id: String)
 

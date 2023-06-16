@@ -17,7 +17,7 @@
 package models.declaration.submissions
 
 import models.declaration.submissions.EnhancedStatus._
-import models.declaration.submissions.RequestType.{CancellationRequest, SubmissionRequest}
+import models.declaration.submissions.RequestType.{CancellationRequest, ExternalAmendmentRequest, SubmissionRequest}
 import play.api.libs.json.Json
 
 import java.time.ZonedDateTime
@@ -34,17 +34,6 @@ case class Submission(
   latestDecId: Option[String],
   latestVersionNo: Int = 1
 ) {
-  val latestAction: Option[Action] =
-    if (actions.isEmpty) None
-    else Some(actions.minBy(_.requestTimestamp)(Submission.dateTimeOrdering))
-
-  val latestCancellationAction: Option[Action] = {
-    val cancelActions = actions.filter(_.requestType == CancellationRequest)
-    if (cancelActions.nonEmpty) {
-      Some(cancelActions.minBy(_.requestTimestamp)(Submission.dateTimeOrdering))
-    } else None
-  }
-
   lazy val allSubmissionRequestStatuses: Seq[EnhancedStatus] = (
     for {
       subRequestAction <- actions.find(_.requestType == SubmissionRequest)
@@ -52,10 +41,23 @@ case class Submission(
     } yield notificationSummaries.map(_.enhancedStatus)
   ).getOrElse(Seq.empty[EnhancedStatus])
 
+  lazy val blockAmendments: Boolean = latestDecId.isEmpty
+
   lazy val isStatusAcceptedOrReceived: Boolean =
     allSubmissionRequestStatuses.intersect(Seq(GOODS_ARRIVED_MESSAGE, GOODS_ARRIVED, RECEIVED)).nonEmpty
 
-  val blockAmendments: Boolean = latestDecId.isEmpty
+  lazy val hasExternalAmendments = actions.exists(_.requestType == ExternalAmendmentRequest)
+
+  lazy val latestAction: Option[Action] =
+    if (actions.isEmpty) None
+    else Some(actions.minBy(_.requestTimestamp)(Submission.dateTimeOrdering))
+
+  lazy val latestCancellationAction: Option[Action] = {
+    val cancelActions = actions.filter(_.requestType == CancellationRequest)
+    if (cancelActions.nonEmpty) {
+      Some(cancelActions.minBy(_.requestTimestamp)(Submission.dateTimeOrdering))
+    } else None
+  }
 }
 
 object Submission {
@@ -67,6 +69,4 @@ object Submission {
   implicit val ordering: Ordering[Submission] = Ordering.by[Submission, Option[ZonedDateTime]] { submission =>
     submission.latestAction.map(_.requestTimestamp)
   }(Ordering.Option(dateTimeOrdering))
-
-  val newestEarlierOrdering: Ordering[Submission] = ordering
 }

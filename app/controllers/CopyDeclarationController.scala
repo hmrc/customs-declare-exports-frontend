@@ -33,7 +33,7 @@ import play.api.mvc._
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import views.helpers.DeclarationDetailsLinks.isDeclarationRejected
+import views.helpers.DeclarationDetailsHelper.isDeclarationRejected
 import views.html.copy_declaration
 
 import java.time.Instant
