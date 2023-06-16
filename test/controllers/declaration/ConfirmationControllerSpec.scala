@@ -247,7 +247,7 @@ class ConfirmationControllerSpec extends ControllerWithoutFormSpec with GivenWhe
           .thenReturn(Future.successful(Some(submission)))
 
         when(mockCustomsDeclareExportsConnector.findDeclaration(any())(any(), any()))
-          .thenReturn(Future.successful(Some(aDeclaration())))
+          .thenReturn(Future.successful(Some(aDeclaration(withAdditionalDeclarationType()))))
 
         val request = buildRequest()
         val result = controller.displayConfirmationPage(request)
@@ -266,7 +266,7 @@ class ConfirmationControllerSpec extends ControllerWithoutFormSpec with GivenWhe
           .thenReturn(Future.successful(Some(submissionReceived)))
 
         when(mockCustomsDeclareExportsConnector.findDeclaration(any())(any(), any()))
-          .thenReturn(Future.successful(Some(aDeclaration())))
+          .thenReturn(Future.successful(Some(aDeclaration(withAdditionalDeclarationType()))))
 
         val request = buildRequest()
         val result = controller.displayConfirmationPage(request)
@@ -283,8 +283,10 @@ class ConfirmationControllerSpec extends ControllerWithoutFormSpec with GivenWhe
       "a submission and declaration are found" in new SetUp {
         when(mockCustomsDeclareExportsConnector.findSubmission(any())(any(), any()))
           .thenReturn(Future.successful(Some(submissionReceived)))
+
+        val declaration = aDeclaration(withAdditionalDeclarationType(), withGoodsLocation(LocationOfGoods("")))
         when(mockCustomsDeclareExportsConnector.findDeclaration(any())(any(), any()))
-          .thenReturn(Future.successful(Some(aDeclaration(withGoodsLocation(LocationOfGoods(""))))))
+          .thenReturn(Future.successful(Some(declaration)))
 
         val request = buildRequest()
         val result = controller.displayConfirmationPage(request)

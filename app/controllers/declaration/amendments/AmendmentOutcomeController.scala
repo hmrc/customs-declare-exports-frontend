@@ -119,9 +119,8 @@ class AmendmentOutcomeController @Inject() (
     }
 
   private def displayOutcomePage(submission: Submission, action: A)(implicit request: VerifiedEmailRequest[_]): Future[Result] =
-    retrieveLocationCode(submission.uuid).flatMap {
-      case Right(maybeLocationCode) =>
-        val confirmation = Confirmation(request.email, getOrElse(declarationType), submission, maybeLocationCode)
+    retrieveLocationCode(submission).flatMap {
+      case Right(confirmation) =>
         val page = action.latestNotificationSummary match {
           case Some(notification) if notification.enhancedStatus == CUSTOMS_POSITION_DENIED  => amendment_failed(confirmation)
           case Some(notification) if notification.enhancedStatus == CUSTOMS_POSITION_GRANTED => amendment_accepted(confirmation)
@@ -141,11 +140,18 @@ class AmendmentOutcomeController @Inject() (
         Future.successful(false)
       }
 
-  private def retrieveLocationCode(submissionId: String)(implicit request: Request[_]): Future[Either[String, Option[String]]] =
+  private def retrieveLocationCode(submission: Submission)(implicit request: VerifiedEmailRequest[_]): Future[Either[String, Confirmation]] =
     customsDeclareExportsConnector
-      .findDeclaration(submissionId)
+      .findDeclaration(submission.uuid)
       .map {
-        case Some(declaration) => Right(declaration.locations.goodsLocation.map(_.code))
-        case _                 => Left(s"Declaration($submissionId) not found after the submission of an amendment??")
+        case Some(declaration) =>
+          declaration.additionalDeclarationType.fold[Either[String, Confirmation]] {
+            Left(s"Declaration(${declaration.id}) without 'additionalDeclarationType' after the submission of an amendment??")
+          } { additionalDeclarationType =>
+            val maybeLocationCode = declaration.locations.goodsLocation.map(_.code)
+            Right(Confirmation(request.email, additionalDeclarationType.toString, submission, maybeLocationCode))
+          }
+
+        case _ => Left(s"Declaration(${submission.uuid}) not found after the submission of an amendment??")
       }
 }

@@ -22,7 +22,6 @@ import play.api.mvc.{Request, Session}
 object SessionHelper extends Logging {
 
   val declarationUuid = "declarationUuid"
-  val declarationType = "declarationType"
 
   val errorFixModeSessionKey = "in-error-fix-mode"
 

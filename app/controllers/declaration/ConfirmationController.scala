@@ -22,11 +22,11 @@ import controllers.routes.RejectedNotificationsController
 import handlers.ErrorHandler
 import models.declaration.submissions.RequestType.SubmissionRequest
 import models.declaration.submissions.{EnhancedStatus, Submission}
-import models.requests.AuthenticatedRequest
-import models.requests.SessionHelper.{declarationType, getOrElse, getValue, submissionUuid}
+import models.requests.SessionHelper.{getValue, submissionUuid}
+import models.requests.{AuthenticatedRequest, VerifiedEmailRequest}
 import play.api.Logging
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.helpers.Confirmation
 import views.helpers.ConfirmationHelper._
@@ -85,12 +85,9 @@ class ConfirmationController @Inject() (
           Future.successful(Redirect(RejectedNotificationsController.displayPage(submissionId)))
 
         case Some(submission) =>
-          retrieveLocationCode(submission.uuid).flatMap {
-            case Right(maybeLocationCode) =>
-              val confirmation = Confirmation(request.email, getOrElse(declarationType), submission, maybeLocationCode)
-              Future.successful(Ok(confirmationPage(confirmation)))
-
-            case Left(message) => errorHandler.internalError(message)
+          retrieveLocationCode(submission).flatMap {
+            case Right(confirmation) => Future.successful(Ok(confirmationPage(confirmation)))
+            case Left(message)       => errorHandler.internalError(message)
           }
 
         case _ =>
@@ -111,11 +108,18 @@ class ConfirmationController @Inject() (
       }
   }
 
-  private def retrieveLocationCode(submissionId: String)(implicit request: Request[_]): Future[Either[String, Option[String]]] =
+  private def retrieveLocationCode(submission: Submission)(implicit request: VerifiedEmailRequest[_]): Future[Either[String, Confirmation]] =
     customsDeclareExportsConnector
-      .findDeclaration(submissionId)
+      .findDeclaration(submission.uuid)
       .map {
-        case Some(declaration) => Right(declaration.locations.goodsLocation.map(_.code))
-        case _                 => Left(s"Declaration($submissionId) not found after having been submitted??")
+        case Some(declaration) =>
+          declaration.additionalDeclarationType.fold[Either[String, Confirmation]] {
+            Left(s"Declaration(${declaration.id}) without 'additionalDeclarationType' after having been submitted??")
+          } { additionalDeclarationType =>
+            val maybeLocationCode = declaration.locations.goodsLocation.map(_.code)
+            Right(Confirmation(request.email, additionalDeclarationType.toString, submission, maybeLocationCode))
+          }
+
+        case _ => Left(s"Declaration(${submission.uuid}) not found after having been submitted??")
       }
 }

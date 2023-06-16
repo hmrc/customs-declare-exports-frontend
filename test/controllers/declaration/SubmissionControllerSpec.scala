@@ -184,7 +184,6 @@ class SubmissionControllerSpec extends ControllerWithoutFormSpec with ErrorHandl
 
         val actualSession = session(result)
         actualSession.get(declarationUuid) must be(None)
-        actualSession.get(declarationType) must be(Some(""))
         actualSession.get(submissionDucr) must be(expectedSubmission.ducr)
         actualSession.get(submissionUuid) must be(Some(expectedSubmission.uuid))
         actualSession.get(submissionLrn) must be(Some(expectedSubmission.lrn))
