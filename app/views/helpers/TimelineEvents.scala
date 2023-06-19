@@ -106,7 +106,9 @@ class TimelineEvents @Inject() (
   private def createNotificationEvents(submission: Submission): Seq[NotificationEvent] = {
     val allEvents = submission.actions.flatMap { action =>
       val events = action.notifications.fold(amendmentEventIfEmpty(action)) { notificationSummaries =>
-        val events = notificationSummaries.map(NotificationEvent(action.id, action.requestType, _))
+        val events = notificationSummaries
+          .filterNot(summary => amendmentRequests.contains(action.requestType) && summary.enhancedStatus == RECEIVED)
+          .map(NotificationEvent(action.id, action.requestType, _))
         if (amendmentRequests.contains(action.requestType)) events :+ amendmentEvent(action) else events
       }
 

@@ -657,7 +657,12 @@ object TimelineEventsSpec {
          |          "notificationId": "855e4c4a-2889-417b-9338-d2f487dd19c4",
          |          "dateTimeIssued": "2022-05-14T12:31:06Z[UTC]",
          |          "enhancedStatus": "CUSTOMS_POSITION_GRANTED"
-         |        }
+         |        },
+         |        {
+         |					"notificationId" : "cdfefc8e-004c-4df0-b796-0d727f47cab5",
+         |					"dateTimeIssued" : "2022-05-14T12:31:05Z[UTC]",
+         |					"enhancedStatus" : "RECEIVED"
+         |				}
          |      ],
          |      "decId" : "id",
          |      "versionNo" : 1
