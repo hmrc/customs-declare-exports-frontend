@@ -20,8 +20,7 @@ import base.ExportsTestData._
 import forms.common.YesNoAnswer.{No, YesNoAnswers}
 import forms.common.{Address, Eori, YesNoAnswer}
 import forms.declaration._
-import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
-import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
+import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.{AdditionalDeclarationType, STANDARD_FRONTIER}
 import forms.declaration.carrier.CarrierDetails
 import forms.declaration.consignor.ConsignorDetails
 import forms.declaration.countries.Country
@@ -158,7 +157,7 @@ trait ExportsDeclarationBuilder {
     declaration.copy(totalNumberOfItems = declaration.totalNumberOfItems.map(_.copy(totalPackage = None)))
   }
 
-  def withAdditionalDeclarationType(decType: AdditionalDeclarationType = AdditionalDeclarationType.STANDARD_FRONTIER): ExportsDeclarationModifier =
+  def withAdditionalDeclarationType(decType: AdditionalDeclarationType = STANDARD_FRONTIER): ExportsDeclarationModifier =
     _.copy(additionalDeclarationType = Some(decType))
 
   def withGoodsLocation(locationOfGoods: LocationOfGoods): ExportsDeclarationModifier = { model =>

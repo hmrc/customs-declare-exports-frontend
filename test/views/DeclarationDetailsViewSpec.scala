@@ -19,21 +19,21 @@ package views
 import base.{ExportsTestData, Injector, OverridableInjector, RequestBuilder}
 import config.ExternalServicesConfig
 import config.featureFlags._
-import controllers.routes
 import controllers.declaration.amendments.routes.AmendDeclarationController
 import controllers.declaration.routes.SubmissionController
+import controllers.routes
 import controllers.routes._
+import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
 import models.declaration.submissions.EnhancedStatus._
 import models.declaration.submissions.RequestType.{AmendmentRequest, ExternalAmendmentRequest, SubmissionRequest}
-import models.declaration.submissions.{Action, EnhancedStatus, NotificationSummary, RequestType, Submission}
-import models.requests.{SessionHelper, VerifiedEmailRequest}
+import models.declaration.submissions.{EnhancedStatus, _}
+import models.requests.VerifiedEmailRequest
 import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
 import org.mockito.Mockito.when
 import org.scalatest.{Assertion, GivenWhenThen}
 import play.api.inject.bind
 import play.api.mvc.Call
-import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat.Appendable
 import views.dashboard.DashboardHelper.toDashboard
 import views.declaration.spec.UnitViewSpec
@@ -116,18 +116,24 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
     )
   }
 
+  private def createView(submission: Submission, declarationType: AdditionalDeclarationType = STANDARD_PRE_LODGED)(
+    implicit injector: OverridableInjector
+  ): Appendable = {
+    val page = injector.instanceOf[declaration_details]
+    page(submission, declarationType)(verifiedEmailRequest(), messages)
+  }
+
   "Declaration details page" should {
 
-    val injector = new OverridableInjector(
+    implicit val injector = new OverridableInjector(
       bind[DeclarationAmendmentsConfig].toInstance(mockDeclarationAmendmentsConfig),
       bind[SecureMessagingConfig].toInstance(mockSecureMessagingConfig)
     )
-    val page = injector.instanceOf[declaration_details]
 
     "contain the navigation banner" when {
       "the Secure Messaging feature flag is enabled" in {
         when(mockSecureMessagingConfig.isSecureMessagingEnabled).thenReturn(true)
-        val view = page(submission)(verifiedEmailRequest(), messages)
+        val view = createView(submission)
 
         val banner = view.getElementById("navigation-banner")
         assert(Option(banner).isDefined && banner.childrenSize == 2)
@@ -142,7 +148,7 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
     "not contain the navigation banner" when {
       "the Secure Messaging feature flag is disabled" in {
         when(mockSecureMessagingConfig.isSecureMessagingEnabled).thenReturn(false)
-        val view = page(submissionWithStatus())(verifiedEmailRequest(), messages)
+        val view = createView(submissionWithStatus())
         Option(view.getElementById("amend-declaration")) mustBe None
       }
     }
@@ -152,7 +158,7 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
         "the declaration has NOT been externally amended" in {
           when(mockDeclarationAmendmentsConfig.isEnabled).thenReturn(true)
           val submission = submissionWithStatus(RECEIVED)
-          val view = page(submission)(verifiedEmailRequest(), messages)
+          val view = createView(submission)
 
           val amendDeclarationLink = view.getElementById("amend-declaration")
           amendDeclarationLink must containMessage("declaration.details.amend.declaration")
@@ -170,7 +176,7 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
 
           val action = Action("id", ExternalAmendmentRequest, now, None, None, 2)
           val submission = submissionWithStatus(RECEIVED).copy(actions = Seq(action))
-          val view = page(submission)(verifiedEmailRequest(), messages)
+          val view = createView(submission)
 
           val amendDeclarationLink = view.getElementById("amend-declaration")
           amendDeclarationLink must containMessage("declaration.details.amend.declaration")
@@ -182,20 +188,20 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
     "NOT contain the 'Amend declaration' link" when {
       "the 'declarationAmendments' feature flag is disabled" in {
         when(mockDeclarationAmendmentsConfig.isEnabled).thenReturn(false)
-        val view = page(submission)(verifiedEmailRequest(), messages)
+        val view = createView(submission)
         Option(view.getElementById("amend-declaration")) mustBe None
       }
 
       "submission has no latestDecId" in {
         when(mockDeclarationAmendmentsConfig.isEnabled).thenReturn(true)
-        val view = page(subWithoutLatestDecId)(verifiedEmailRequest(), messages)
+        val view = createView(subWithoutLatestDecId)
         Option(view.getElementById("amend-declaration")) mustBe None
       }
 
       amendmentBlockingStatuses.foreach { status =>
         s"submission has one of the enhanced status of $status" in {
           when(mockDeclarationAmendmentsConfig.isEnabled).thenReturn(true)
-          val view = page(submissionWithStatus(status))(verifiedEmailRequest(), messages)
+          val view = createView(submissionWithStatus(status))
           Option(view.getElementById("amend-declaration")) mustBe None
         }
       }
@@ -203,8 +209,7 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
   }
 
   "Declaration details page" when {
-
-    val page = instanceOf[declaration_details]
+    implicit val injector = new OverridableInjector()
 
     "contain the EAD link for any accepted notification's status" in {
       EnhancedStatus.values
@@ -217,19 +222,19 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
         EnhancedStatus.values
           .filterNot(_ in eadAcceptableStatuses)
           .foreach { status =>
-            val view = page(submissionWithAction(status))(verifiedEmailRequest(), messages)
+            val view = createView(submissionWithAction(status))
             Option(view.getElementById("generate-ead")) mustBe None
           }
       }
 
       "there is no mrn" in {
-        val view = page(submissionWithStatus().copy(mrn = None))(verifiedEmailRequest(), messages)
+        val view = createView(submissionWithStatus().copy(mrn = None))
         Option(view.getElementById("generate-ead")) mustBe None
       }
     }
 
     def verifyEadLink(status: EnhancedStatus): Assertion = {
-      val view = page(submissionWithAction(status))(verifiedEmailRequest(), messages)
+      val view = createView(submissionWithAction(status))
 
       val declarationLink = view.getElementById("generate-ead")
       declarationLink must containMessage("declaration.details.generateEAD")
@@ -324,14 +329,13 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
     when(mockSfusConfig.isSfusUploadEnabled).thenReturn(true)
     when(mockSfusConfig.sfusUploadLink).thenReturn(dummySfusLink)
 
-    val injector =
+    implicit val injector =
       new OverridableInjector(
         bind[SecureMessagingInboxConfig].toInstance(mockSecureMessagingInboxConfig),
         bind[SfusConfig].toInstance(mockSfusConfig)
       )
 
-    val page = injector.instanceOf[declaration_details]
-    val view = page(submissionWithNotifications(notificationSummaries))(verifiedEmailRequest(), messages)
+    val view = createView(submissionWithNotifications(notificationSummaries))
 
     "display 'Back' button to the 'Submission list' page" in {
       val backButton = view.getElementById("back-link")
@@ -340,20 +344,13 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
     }
 
     "not have View declaration summary link" in {
-      val request = RequestBuilder
-        .buildVerifiedEmailRequest(
-          FakeRequest("", "")
-            .withSession((SessionHelper.declarationUuid, "decId")),
-          user
-        )
-
-      val view = page(submissionWithNotifications(notificationSummaries))(request, messages(request))
+      val view = createView(submissionWithNotifications(notificationSummaries))
       Option(view.getElementById("view_declaration_summary")) mustBe None
     }
 
     "display page title" in {
       EnhancedStatus.values.foreach { status =>
-        val view = page(submissionWithAction(status))(verifiedEmailRequest(), messages)
+        val view = createView(submissionWithAction(status))
         val expected = messages(s"$statusKey.$status")
         view.getElementsByTag("h1").first.text mustBe messages(s"$msgKey.title", expected)
       }
@@ -380,7 +377,7 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
     "contain the uploading-documents link" when {
       List(GOODS_ARRIVED, RECEIVED).foreach { status =>
         s"enhanced status is $status" in {
-          val view = page(submissionWithAction(status))(verifiedEmailRequest(), messages)
+          val view = createView(submissionWithAction(status))
 
           val uploadingDocumentsLink = view.getElementById("uploading-documents-link")
           uploadingDocumentsLink must containMessage("declaration.details.uploading.documents")
@@ -392,7 +389,7 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
     "not contain the uploading-documents link" when {
       (EnhancedStatus.values &~ Set(GOODS_ARRIVED, GOODS_ARRIVED_MESSAGE, RECEIVED)).foreach { status =>
         s"notification's status is $status" in {
-          val view = page(submissionWithAction(status))(verifiedEmailRequest(), messages)
+          val view = createView(submissionWithAction(status))
           Option(view.getElementById("uploading-documents-link")) mustBe None
         }
       }
@@ -400,7 +397,7 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
 
     EnhancedStatus.values.filter(_ != ERRORS) foreach { status =>
       s"contain the view-declaration link when notification's status is ${status}" in {
-        val view = page(submissionWithAction(status))(verifiedEmailRequest(), messages)
+        val view = createView(submissionWithAction(status))
 
         val viewDeclarationLink = view.getElementById("view-declaration")
         viewDeclarationLink must containMessage(s"${msgKey}.view.declaration")
@@ -410,7 +407,7 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
 
     "contain the view-declaration link pointing to the declaration to show via Submission.uuid" when {
       "Submission.latestDecId is None" in {
-        val view = page(subWithoutLatestDecId)(verifiedEmailRequest(), messages)
+        val view = createView(subWithoutLatestDecId)
 
         val viewDeclarationLink = view.getElementById("view-declaration")
         viewDeclarationLink must containMessage(s"${msgKey}.view.declaration")
@@ -422,7 +419,7 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
       "the declaration has been externally amended" in {
         val action = Action("id", ExternalAmendmentRequest, now, None, None, 2)
         val submission = submissionWithStatus(RECEIVED).copy(actions = Seq(action))
-        val view = page(submission)(verifiedEmailRequest(), messages)
+        val view = createView(submission)
 
         val viewDeclarationLink = view.getElementById("view-declaration")
         viewDeclarationLink must containMessage(s"${msgKey}.view.declaration")
@@ -431,13 +428,13 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
     }
 
     "not contain the view-declaration link when notification's status is ERRORS" in {
-      val view = page(submissionWithAction(ERRORS))(verifiedEmailRequest(), messages)
+      val view = createView(submissionWithAction(ERRORS))
       Option(view.getElementById("view-declaration")) mustBe None
     }
 
     EnhancedStatus.values.diff(rejectedStatuses) foreach { status =>
       s"contain the copy-declaration link when notification's status is ${status}" in {
-        val view = page(submissionWithAction(status))(verifiedEmailRequest(), messages)
+        val view = createView(submissionWithAction(status))
 
         val copyDeclarationLink = view.getElementById("copy-declaration")
         copyDeclarationLink must containMessage("declaration.details.copy.declaration")
@@ -449,7 +446,7 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
       "the declaration has been externally amended" in {
         val action = Action("id", ExternalAmendmentRequest, now, None, None, 2)
         val submission = submissionWithStatus(RECEIVED).copy(actions = Seq(action))
-        val view = page(submission)(verifiedEmailRequest(), messages)
+        val view = createView(submission)
 
         val copyDeclarationLink = view.getElementById("copy-declaration")
         copyDeclarationLink must containMessage("declaration.details.copy.declaration")
@@ -459,13 +456,13 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
 
     EnhancedStatus.values.intersect(rejectedStatuses) foreach { status =>
       s"not contain the copy-declaration link when notification's status is ${status}" in {
-        val view = page(submissionWithAction(status))(verifiedEmailRequest(), messages)
+        val view = createView(submissionWithAction(status))
         Option(view.getElementById("copy-declaration")) mustBe None
       }
     }
 
     "contain the cancel-declaration link" in {
-      val view = page(submissionWithStatus())(verifiedEmailRequest(), messages)
+      val view = createView(submissionWithStatus())
 
       val cancelDeclarationLink = view.getElementById("cancel-declaration")
       cancelDeclarationLink must containMessage("declaration.details.cancel.declaration")
@@ -475,7 +472,7 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
     "NOT contain the cancel-declaration link" when {
       cancelledStatuses.foreach { status =>
         s"when the declaration has status $status" in {
-          val view = page(submissionWithStatus(status))(verifiedEmailRequest(), messages)
+          val view = createView(submissionWithStatus(status))
 
           Option(view.getElementById("cancel-declaration")) mustBe None
         }
@@ -594,6 +591,15 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
         }
       }
 
+      "must NOT include an additional body text for a 'CLEARED' notification" when {
+        "the declaration has type 'Y' (SUPPLEMENTARY_SIMPLIFIED)" in {
+          val notifications = List(NotificationSummary(UUID.randomUUID, now, CLEARED))
+          val view = createView(submissionWithNotifications(notifications), SUPPLEMENTARY_SIMPLIFIED)
+          val events = view.getElementsByClass("hmrc-timeline__event")
+          events.get(0).getElementsByClass("hmrc-timeline__event-content").size() mustBe 0
+        }
+      }
+
       "must include additional body text" when {
         val statusesWithBodyText = Seq(CANCELLED, WITHDRAWN, EXPIRED_NO_DEPARTURE, EXPIRED_NO_ARRIVAL, CLEARED, RECEIVED, GOODS_ARRIVED_MESSAGE)
 
@@ -616,7 +622,7 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
       }
 
       def eventsOnTimeline(notifications: List[NotificationSummary]): Elements = {
-        val view = page(submissionWithNotifications(notifications))(verifiedEmailRequest(), messages)
+        val view = createView(submissionWithNotifications(notifications))
         view.getElementsByClass("hmrc-timeline__event")
       }
 
@@ -664,14 +670,14 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
     "display 'Fix and resubmit' button and 'Cancel' link when latest notification is a rejected Amendment" in {
       val notificationsWithAmendmentRejected = List(dmsrejNotification, dmsdocNotification, dmsctlNotification, acceptedNotification)
       val submission = submissionWithNotifications(notificationsWithAmendmentRejected, AmendmentRequest)
-      val view = page(submission)(verifiedEmailRequest(), messages)
+      val view = createView(submission)
       checkLatestAmendment(submission, view, "declaration.details.fix.resubmit.button")
     }
 
     "display 'Resubmit' button and 'Cancel' link when latest notification is a failed Amendment" in {
       val notificationsWithAmendmentFailed = List(dmsrecNotification, dmsdocNotification, dmsctlNotification, acceptedNotification)
       val submission = submissionWithNotifications(notificationsWithAmendmentFailed, AmendmentRequest)
-      val view = page(submission)(verifiedEmailRequest(), messages)
+      val view = createView(submission)
       checkLatestAmendment(submission, view, "declaration.details.resubmit.button")
     }
 
@@ -748,7 +754,7 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
     }
 
     "omit the Declaration Timeline from the page when there are no notifications for the declaration" in {
-      val view = page(submissionWithStatus())(verifiedEmailRequest(), messages)
+      val view = createView(submissionWithStatus())
       val element = view.getElementsByTag("ol")
       assert(element.isEmpty || !element.hasClass("hmrc-timeline"))
     }

@@ -17,39 +17,30 @@
 package controllers
 
 import base.ControllerWithoutFormSpec
-import models.declaration.submissions.RequestType.SubmissionRequest
+import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.{AdditionalDeclarationType, STANDARD_FRONTIER}
+import mock.ErrorHandlerMocks
+import models.declaration.submissions.RequestType.{ExternalAmendmentRequest, SubmissionRequest}
 import models.declaration.submissions.{Action, Submission}
 import models.requests.SessionHelper
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers._
-import org.mockito.Mockito.{reset, verify, verifyNoInteractions, when}
+import org.mockito.Mockito._
 import org.scalatest.{BeforeAndAfterEach, OptionValues}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import views.dashboard.DashboardHelper.toDashboard
 import views.html.{declaration_details, unavailable_timeline_actions}
 
 import java.time.ZonedDateTime
 import java.util.UUID
 import scala.concurrent.Future
 
-class DeclarationDetailsControllerSpec extends ControllerWithoutFormSpec with BeforeAndAfterEach with OptionValues {
+class DeclarationDetailsControllerSpec extends ControllerWithoutFormSpec with BeforeAndAfterEach with ErrorHandlerMocks with OptionValues {
 
-  private val actionId = "actionId"
+  private val uuid = UUID.randomUUID().toString
+  private val action = Action("actionId", SubmissionRequest, ZonedDateTime.now, notifications = None, Some(uuid), 1)
 
-  private val submission = {
-    val uuid = UUID.randomUUID().toString
-    Submission(
-      uuid = uuid,
-      eori = "eori",
-      lrn = "lrn",
-      mrn = Some("mrn"),
-      ducr = Some("ducr"),
-      actions =
-        Seq(Action(id = actionId, requestType = SubmissionRequest, requestTimestamp = ZonedDateTime.now, notifications = None, Some(uuid), 1)),
-      latestDecId = Some(uuid)
-    )
-  }
+  private val submission =
+    Submission(uuid = uuid, eori = "eori", lrn = "lrn", mrn = Some("mrn"), ducr = Some("ducr"), actions = List(action), latestDecId = Some(uuid))
 
   private val declarationDetailsPage = mock[declaration_details]
   private val unavailableTimelineActionsPage = mock[unavailable_timeline_actions]
@@ -57,6 +48,7 @@ class DeclarationDetailsControllerSpec extends ControllerWithoutFormSpec with Be
   val controller = new DeclarationDetailsController(
     mockAuthAction,
     mockVerifiedEmailAction,
+    mockErrorHandler,
     mockCustomsDeclareExportsConnector,
     stubMessagesControllerComponents(),
     declarationDetailsPage,
@@ -67,12 +59,13 @@ class DeclarationDetailsControllerSpec extends ControllerWithoutFormSpec with Be
     super.beforeEach()
 
     authorizedUser()
-    when(declarationDetailsPage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
+    setupErrorHandler()
+    when(declarationDetailsPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
     when(unavailableTimelineActionsPage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit =
-    reset(declarationDetailsPage, unavailableTimelineActionsPage, mockCustomsDeclareExportsConnector)
+    reset(declarationDetailsPage, mockCustomsDeclareExportsConnector, mockErrorHandler, unavailableTimelineActionsPage)
 
   "DeclarationDetailsController.displayPage" should {
 
@@ -81,7 +74,12 @@ class DeclarationDetailsControllerSpec extends ControllerWithoutFormSpec with Be
         when(mockCustomsDeclareExportsConnector.findSubmission(any())(any(), any()))
           .thenReturn(Future.successful(Some(submission)))
 
-        val result = controller.displayPage(actionId)(getRequest())
+        val expectedDeclarationType = STANDARD_FRONTIER
+        val declaration = aDeclaration(withAdditionalDeclarationType(expectedDeclarationType))
+        when(mockCustomsDeclareExportsConnector.findDeclaration(any())(any(), any()))
+          .thenReturn(Future.successful(Some(declaration)))
+
+        val result = controller.displayPage(submission.uuid)(getAuthenticatedRequest())
         status(result) mustBe OK
 
         session(result).get(SessionHelper.submissionUuid).value mustBe submission.uuid
@@ -90,28 +88,120 @@ class DeclarationDetailsControllerSpec extends ControllerWithoutFormSpec with Be
         session(result).get(SessionHelper.submissionDucr).value mustBe submission.ducr.value
 
         val submissionCaptor: ArgumentCaptor[Submission] = ArgumentCaptor.forClass(classOf[Submission])
-        verify(declarationDetailsPage).apply(submissionCaptor.capture())(any(), any())
+        val declarationTypeCaptor: ArgumentCaptor[AdditionalDeclarationType] = ArgumentCaptor.forClass(classOf[AdditionalDeclarationType])
+        verify(declarationDetailsPage).apply(submissionCaptor.capture(), declarationTypeCaptor.capture())(any(), any())
         submissionCaptor.getValue mustBe submission
+        declarationTypeCaptor.getValue mustBe expectedDeclarationType
       }
     }
 
-    "return 303 (SEE_OTHER)" when {
+    "fetch the correct declaration according to the expected declarationId" when {
+      val declaration = aDeclaration(withAdditionalDeclarationType())
+
+      "the declaration was NOT externally amended" in {
+        val expectedDeclarationId = "latestDecId"
+        val notAmendedSubmission = submission.copy(latestDecId = Some(expectedDeclarationId))
+
+        when(mockCustomsDeclareExportsConnector.findSubmission(any())(any(), any()))
+          .thenReturn(Future.successful(Some(notAmendedSubmission)))
+
+        when(mockCustomsDeclareExportsConnector.findDeclaration(any())(any(), any()))
+          .thenReturn(Future.successful(Some(declaration)))
+
+        val result = controller.displayPage(notAmendedSubmission.uuid)(getAuthenticatedRequest())
+        status(result) mustBe OK
+
+        val declarationIdCaptor: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
+        verify(mockCustomsDeclareExportsConnector).findDeclaration(declarationIdCaptor.capture())(any(), any())
+        declarationIdCaptor.getValue mustBe expectedDeclarationId
+      }
+
+      "the declaration was externally amended" in {
+        val action = Action("actionId", ExternalAmendmentRequest, ZonedDateTime.now, None, None, 2)
+        val amendedSubmission = submission.copy(actions = List(action))
+
+        when(mockCustomsDeclareExportsConnector.findSubmission(any())(any(), any()))
+          .thenReturn(Future.successful(Some(amendedSubmission)))
+
+        when(mockCustomsDeclareExportsConnector.findDeclaration(any())(any(), any()))
+          .thenReturn(Future.successful(Some(declaration)))
+
+        val result = controller.displayPage(amendedSubmission.uuid)(getAuthenticatedRequest())
+        status(result) mustBe OK
+
+        val declarationIdCaptor: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
+        verify(mockCustomsDeclareExportsConnector).findDeclaration(declarationIdCaptor.capture())(any(), any())
+        declarationIdCaptor.getValue mustBe amendedSubmission.uuid
+      }
+    }
+
+    "return 500 (INTERNAL_SERVER-ERROR)" when {
+
       "there is no submission for the Declaration" in {
         when(mockCustomsDeclareExportsConnector.findSubmission(any())(any(), any())).thenReturn(Future.successful(None))
 
-        val result = controller.displayPage(actionId)(getRequest())
+        val result = controller.displayPage(submission.uuid)(getAuthenticatedRequest())
 
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result).get mustBe toDashboard.url
+        status(result) mustBe INTERNAL_SERVER_ERROR
 
-        verifyNoInteractions(declarationDetailsPage)
+        val messageCaptor: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
+        verify(mockErrorHandler).internalError(messageCaptor.capture())
+        assert(messageCaptor.getValue.contains(s"Cannot found Submission(${submission.uuid})"))
+      }
+
+      "the declaration was not externally amended and" when {
+        "'latestDecId' in the given submission is not defined" in {
+          when(mockCustomsDeclareExportsConnector.findSubmission(any())(any(), any()))
+            .thenReturn(Future.successful(Some(submission.copy(latestDecId = None))))
+
+          val result = controller.displayPage(submission.uuid)(getAuthenticatedRequest())
+
+          status(result) mustBe INTERNAL_SERVER_ERROR
+          verify(mockCustomsDeclareExportsConnector, never).findDeclaration(any())(any(), any())
+
+          val messageCaptor: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
+          verify(mockErrorHandler).internalServerError(messageCaptor.capture())
+          assert(messageCaptor.getValue.contains("undefined latestDecId"))
+        }
+      }
+
+      "the latest declaration, given the submission, cannot be fetched" in {
+        when(mockCustomsDeclareExportsConnector.findSubmission(any())(any(), any()))
+          .thenReturn(Future.successful(Some(submission)))
+
+        when(mockCustomsDeclareExportsConnector.findDeclaration(any())(any(), any()))
+          .thenReturn(Future.successful(None))
+
+        val result = controller.displayPage(submission.uuid)(getAuthenticatedRequest())
+
+        status(result) mustBe INTERNAL_SERVER_ERROR
+
+        val messageCaptor: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
+        verify(mockErrorHandler).internalServerError(messageCaptor.capture())
+        assert(messageCaptor.getValue.contains("Cannot found latest declaration"))
+      }
+
+      "the additional declaration type of the declaration is not defined" in {
+        when(mockCustomsDeclareExportsConnector.findSubmission(any())(any(), any()))
+          .thenReturn(Future.successful(Some(submission)))
+
+        when(mockCustomsDeclareExportsConnector.findDeclaration(any())(any(), any()))
+          .thenReturn(Future.successful(Some(aDeclaration())))
+
+        val result = controller.displayPage(submission.uuid)(getAuthenticatedRequest())
+
+        status(result) mustBe INTERNAL_SERVER_ERROR
+
+        val messageCaptor: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
+        verify(mockErrorHandler).internalServerError(messageCaptor.capture())
+        assert(messageCaptor.getValue.contains("has no additionalDeclarationType"))
       }
     }
   }
 
-  "DeclarationDetailsController.displayPage" should {
+  "DeclarationDetailsController.unavailableActions" should {
     "return 200 (OK)" in {
-      val result = controller.unavailableActions(submission.uuid)(getRequest())
+      val result = controller.unavailableActions(submission.uuid)(getAuthenticatedRequest())
       status(result) mustBe OK
     }
   }

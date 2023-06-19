@@ -19,6 +19,7 @@ package views.helpers
 import base.Injector
 import controllers.declaration.routes.SubmissionController
 import controllers.routes.RejectedNotificationsController
+import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
 import models.declaration.submissions.EnhancedStatus._
 import models.declaration.submissions.RequestType.{CancellationRequest, SubmissionRequest}
 import models.declaration.submissions.{Action, EnhancedStatus, NotificationSummary, Submission}
@@ -58,16 +59,22 @@ class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injec
       uploadFilesPartialForTimeline
     )
 
-  private def genTimelineEvents(notificationSummaries: Seq[NotificationSummary]): Seq[TimelineEvent] = {
+  private def genTimelineEvents(
+    notificationSummaries: Seq[NotificationSummary],
+    declarationType: AdditionalDeclarationType = STANDARD_PRE_LODGED
+  ): Seq[TimelineEvent] = {
     val action = Action("id", SubmissionRequest, issued(0), Some(notificationSummaries), decId = Some("id"), versionNo = 1)
-    timelineEvents.apply(submission.copy(actions = Seq(action)))
+    timelineEvents.apply(submission.copy(actions = Seq(action)), declarationType)
   }
 
-  private def createTimelineFromActions(actions: Seq[Action]): Seq[TimelineEvent] =
-    timelineEvents.apply(submission.copy(actions = actions))
+  private def createTimelineFromActions(actions: Seq[Action], declarationType: AdditionalDeclarationType = STANDARD_PRE_LODGED): Seq[TimelineEvent] =
+    timelineEvents.apply(submission.copy(actions = actions), declarationType)
 
-  private def createTimelineFromSubmission(submission: Submission): Seq[TimelineEvent] =
-    timelineEvents.apply(submission)
+  private def createTimelineFromSubmission(
+    submission: Submission,
+    declarationType: AdditionalDeclarationType = STANDARD_PRE_LODGED
+  ): Seq[TimelineEvent] =
+    timelineEvents.apply(submission, declarationType)
 
   "TimelineEvents" should {
 
@@ -305,9 +312,25 @@ class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injec
       timelineEvents(3).content mustBe None
     }
 
+    "generate the expected sequence of TimelineEvent instances when the EnhancedStatus is CLEARED and" when {
+      val notifications = List(NotificationSummary(UUID.randomUUID, issued(1), CLEARED))
+
+      "the declaration type is NOT 'Y' (SUPPLEMENTARY_SIMPLIFIED)" in {
+        allAdditionalDeclarationTypes.filterNot(_ == SUPPLEMENTARY_SIMPLIFIED).foreach { declarationType =>
+          val timelineEvents = genTimelineEvents(notifications, declarationType)
+          assert(timelineEvents(0).content.isDefined)
+        }
+      }
+
+      "the declaration type IS 'Y' (SUPPLEMENTARY_SIMPLIFIED)" in {
+        val timelineEvents = genTimelineEvents(notifications, SUPPLEMENTARY_SIMPLIFIED)
+        assert(timelineEvents(0).content.isEmpty)
+      }
+    }
+
     "generate a sequence of TimelineEvent instances" which {
 
-      "have an Html content only" when {
+      "have a Html content only" when {
         "the source notifications have submission statuses that require it (the Html content)" in {
           val notification = NotificationSummary(UUID.randomUUID, issued(1), PENDING)
 
@@ -845,8 +868,8 @@ object TimelineEventsSpec {
       |  {
       |      "id" : "29e6c2e5-8589-42f6-8903-abe5205b6c1b",
       |      "requestType" : "ExternalAmendmentRequest",
-      |      "versionNo" : 2,
-      |      "requestTimestamp" : "2023-03-27T12:46:20.993842Z[UTC]"
+      |      "requestTimestamp" : "2023-03-27T12:46:20.993842Z[UTC]",
+      |      "versionNo" : 2
       |  }
       |]""".stripMargin)
       .as[Seq[Action]]
