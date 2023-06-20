@@ -112,7 +112,8 @@ object DeclarationHolderRequired extends DeclarationPage {
       case _ =>
         List(
           TariffContentKey("tariff.declaration.isAuthorisationRequired.1.common"),
-          TariffContentKey("tariff.declaration.isAuthorisationRequired.2.common")
+          TariffContentKey("tariff.declaration.isAuthorisationRequired.2.common"),
+          TariffContentKey("tariff.declaration.isAuthorisationRequired.3.common")
         )
     }
 }

@@ -30,7 +30,7 @@ class DeclarationHolderSpec extends DeclarationPageBaseSpec with JourneyTypeTest
 
   override def getCommonTariffKeys(messageKey: String): Seq[TariffContentKey] =
     if (messageKey.endsWith("addAuthorisationRequired")) List(TariffContentKey(s"${messageKey}.common"))
-    else List(TariffContentKey(s"${messageKey}.1.common"), TariffContentKey(s"${messageKey}.2.common"))
+    else List(TariffContentKey(s"${messageKey}.1.common"), TariffContentKey(s"${messageKey}.2.common"), TariffContentKey(s"${messageKey}.3.common"))
 
   private val eoriSource = EoriSource.OtherEori.toString
   private val authorisationTypeCode = correctDeclarationHolder.authorisationTypeCode.get

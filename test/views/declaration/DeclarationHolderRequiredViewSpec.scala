@@ -108,6 +108,8 @@ class DeclarationHolderRequiredViewSpec extends UnitViewSpec with ExportsTestHel
               s"""
                 ${messages(s"$prefix.1.common.text", messages(s"$prefix.1.common.linkText.0"))}
                 ${messages(s"$prefix.2.common.text", messages(s"$prefix.2.common.linkText.0"))}
+                ${messages(s"$prefix.3.common.text", messages(s"$prefix.3.common.linkText.0"))}
+
               """
           }
 
