@@ -31,6 +31,7 @@
     pageTitle: pageTitle,
     heading: heading,
     paragraphBody: paragraphBody,
+    externalLink: externalLink,
     link: link,
     appConfig: AppConfig,
     notificationErrorHelper: NotificationErrorHelper
@@ -119,9 +120,15 @@
 
             @paragraphBody(messages("rejected.notification.guidance.section.2.paragraph.1"))
 
-            @paragraphBody(messages("rejected.notification.guidance.section.2.paragraph.2"))
-
+            @paragraphBody(messages("rejected.notification.guidance.section.2.paragraph.2",
+                externalLink(
+                    text = messages("rejected.notification.guidance.section.2.paragraph.2.email"),
+                    url = s"mailto:${messages("rejected.notification.guidance.section.2.paragraph.2.email")}"
+                )
+            ))
             @paragraphBody(messages("rejected.notification.guidance.section.2.paragraph.3"))
+
+            @paragraphBody(messages("rejected.notification.guidance.section.2.paragraph.4"))
 
         </div>
     </div>
