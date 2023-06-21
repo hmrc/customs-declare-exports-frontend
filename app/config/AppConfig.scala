@@ -16,14 +16,11 @@
 
 package config
 
-import java.util.Base64
-
 import com.google.inject.{Inject, Singleton}
 import forms.Choice
 import javax.inject.Named
 import models.DeclarationType
 import play.api.i18n.Lang
-import play.api.mvc.Call
 import play.api.{Configuration, Environment}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
@@ -39,6 +36,11 @@ class AppConfig @Inject() (
 
   private def loadConfig(key: String): String =
     runModeConfiguration.getOptional[String](key).getOrElse(throw new IllegalStateException(s"Missing configuration key: $key"))
+
+  private def loadOptionalConfig(key: String): Option[String] =
+    runModeConfiguration.getOptional[String](key)
+
+  val maybeTdrHashSalt = loadOptionalConfig("secret.tdrHashSalt")
 
   val analyticsToken = loadConfig(s"google-analytics.token")
   val analyticsHost = loadConfig(s"google-analytics.host")
@@ -128,7 +130,7 @@ class AppConfig @Inject() (
 
   val combinedPackaging = loadConfig("urls.combinedPackaging")
 
-  lazy val selfBaseUrl: Option[String] = runModeConfiguration.getOptional[String]("play.frontend.host")
+  lazy val selfBaseUrl: Option[String] = loadOptionalConfig("play.frontend.host")
   val giveFeedbackLink = {
     val contactFrontendUrl = loadConfig("microservice.services.contact-frontend.url")
     val contactFrontendServiceId = loadConfig("microservice.services.contact-frontend.serviceId")
@@ -229,28 +231,6 @@ class AppConfig @Inject() (
       .map(_.split(","))
       .getOrElse(Array(DeclarationType.STANDARD.toString))
       .toSeq
-
-  private def allowListConfig(key: String): Seq[String] =
-    Some(
-      new String(
-        Base64.getDecoder.decode(
-          runModeConfiguration
-            .getOptional[String](key)
-            .getOrElse("")
-        ),
-        "UTF-8"
-      )
-    ).map(_.split(",")).getOrElse(Array.empty).toSeq
-
-  val shutterPageToAllowList: String = "allowList.shutterPage"
-  val allowListedIps: String = "allowList.ips"
-  val allowListExcludedPathsDefined: String = "allowList.excludedPaths"
-  val allowListed: String = "allowList.enabled"
-
-  lazy val shutterPage: String = servicesConfig.getString(shutterPageToAllowList)
-  lazy val allowListIps: Seq[String] = allowListConfig(allowListedIps)
-  lazy val allowListExcludedPaths: Seq[Call] = allowListConfig(allowListExcludedPathsDefined).map(path => Call("GET", path))
-  lazy val allowListEnabled: Boolean = servicesConfig.getBoolean(allowListed)
 
   lazy val gtmContainer: String = servicesConfig.getString("tracking-consent-frontend.gtm.container")
 

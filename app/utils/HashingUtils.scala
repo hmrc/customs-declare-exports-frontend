@@ -14,11 +14,24 @@
  * limitations under the License.
  */
 
-package models
+package utils
 
-object AuthKey {
+import org.apache.commons.codec.digest.HmacAlgorithms
 
-  val enrolment: String = "HMRC-CUS-ORG"
-  val identifierKey: String = "EORINumber"
-  val hashIdentifierKey: String = "TDRSecret"
+import javax.crypto.Mac
+import javax.crypto.spec.SecretKeySpec
+import javax.xml.bind.DatatypeConverter
+
+object HashingUtils {
+  private val algorithm = HmacAlgorithms.HMAC_SHA_256.toString
+
+  def generateHashOfValue(value: String, hiddenSalt: String): String = {
+    val secretSpec = new SecretKeySpec(hiddenSalt.getBytes(), algorithm)
+    val hmac = Mac.getInstance(algorithm)
+
+    hmac.init(secretSpec)
+
+    val sig = hmac.doFinal(value.getBytes("UTF-8"))
+    DatatypeConverter.printHexBinary(sig)
+  }
 }

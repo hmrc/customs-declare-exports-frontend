@@ -14,11 +14,19 @@
  * limitations under the License.
  */
 
-package models
+package utils
 
-object AuthKey {
+import utils.HashingUtils.generateHashOfValue
 
-  val enrolment: String = "HMRC-CUS-ORG"
-  val identifierKey: String = "EORINumber"
-  val hashIdentifierKey: String = "TDRSecret"
+object GenerateTdrSecret {
+  def main(args: Array[String]): Unit =
+    if (args.length != 2) {
+      Console.err.println("Usage: GenerateTdrSecret <tdrHashSalt> <eori>")
+      sys.exit(1)
+    } else {
+      val tdrHashSalt = args(0)
+      val eori = args(1)
+
+      println(generateHashOfValue(eori, tdrHashSalt))
+    }
 }
