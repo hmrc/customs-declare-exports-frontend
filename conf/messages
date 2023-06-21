@@ -617,8 +617,8 @@ declaration.consignmentReferences.supplementary.eidr.hint1 = Enter the date the 
 declaration.consignmentReferences.supplementary.eidr.error.empty = Enter the date of the EIDR
 declaration.consignmentReferences.supplementary.eidr.error.invalid = Enter the yyyymmdd code in the correct format
 
-declaration.traderReference.title = Enter a trader reference
-declaration.traderReference.body = This component of the DUCR is restricted to up to 19 numbers, upper case letters, brackets and forward slashes. Your reference can be anything you like and will provide an audit trail within your commercial records.
+declaration.traderReference.title = Enter a reference
+declaration.traderReference.body = This part of the DUCR is limited to 19 numbers, upper case letters, brackets and forward slashes. You can use whatever you like as a reference and this will provide an audit trail in your commercial records.
 declaration.traderReference.hintText = For example, INVOICE123/4
 declaration.traderReference.expander.content = For details about the DUCR number, go to {0} (opens in a new tab).
 declaration.traderReference.expander.content.link = data element 2/4 - Reference Number / UCR
