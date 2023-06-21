@@ -104,6 +104,37 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with ExportsTestHe
       backLink.attr("href") mustBe DeclarationDetailsController.displayPage(submissionId).url
     }
 
+    "have the expected headings" in {
+      val headingm = defaultView.getElementsByClass("govuk-heading-m").get(0).text()
+      headingm mustBe messages("rejected.notification.table.title")
+
+      val headings = defaultView.getElementsByClass("govuk-heading-s")
+      headings.get(0).text() mustBe messages("rejected.notification.guidance.section.1.header")
+      headings.get(1).text() mustBe messages("rejected.notification.guidance.section.2.header")
+    }
+
+    "have the expected body content" in {
+      val body = defaultView.getElementsByClass("govuk-body")
+      body.get(0).text() mustBe messages("rejected.notification.check.answers.paragraph")
+
+      body.get(1).text() mustBe messages("rejected.notification.guidance.section.1.paragraph.1")
+      body.get(2).text() mustBe messages(
+        "rejected.notification.guidance.section.1.paragraph.2",
+        messages("rejected.notification.guidance.section.1.paragraph.2.link")
+      )
+
+      body.get(3).text() mustBe messages("rejected.notification.guidance.section.2.paragraph.1")
+
+      val email = messages("rejected.notification.guidance.section.2.paragraph.2.email")
+      body.get(4).text() mustBe messages("rejected.notification.guidance.section.2.paragraph.2", email)
+
+      val emailElement = body.get(4).getElementsByClass("govuk-link").get(0)
+      emailElement.getElementsByAttributeValue("href", s"mailto:$email")
+
+      body.get(5).text() mustBe messages("rejected.notification.guidance.section.2.paragraph.3")
+      body.get(6).text() mustBe messages("rejected.notification.guidance.section.2.paragraph.4")
+    }
+
     "contain notifications" when {
       val reason = NotificationError(defaultRejectionCode, Some(Pointer("declaration.consignmentReferences.lrn")))
 
@@ -161,7 +192,7 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with ExportsTestHe
       val document = view(Seq(reason))
 
       val links = document.getElementsByClass("govuk-link--no-visited-state")
-      links.size mustBe 2
+      links.size mustBe 3
       links.get(1) must haveHref(SavedDeclarationsController.displayDeclarations())
     }
 
