@@ -106,7 +106,7 @@ class SecureMessagingController @Inject() (
       }
   }
 
-  private def defineUploadLink(refererUrl: String) = {
+  private def defineUploadLink(refererUrl: String): String = {
     val encodedRefererUrl = encode(refererUrl, "UTF-8")
     s"${routes.DeclarationDetailsController.displayPage(encodedRefererUrl).url}#action-submissions"
   }

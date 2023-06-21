@@ -14,9 +14,10 @@
  * limitations under the License.
  *@
 
+@import controllers.routes.DeclarationDetailsController
+@import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.helpers.{Confirmation, ConfirmationHelper, Title}
 @import views.html.components.buttons.print_page_button
-@import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.html.components.gds._
 @import views.html.components.exit_survey
 
@@ -49,7 +50,7 @@
             "declaration.confirmation.accepted.amendment.next.2",
             s"""<span class="govuk-!-font-weight-bold">${confirmation.email}</span>""",
             link(messages("declaration.confirmation.declaration.details.link"),
-                controllers.routes.DeclarationDetailsController.displayPage(confirmation.submission.uuid)
+                DeclarationDetailsController.displayPage(confirmation.submission.uuid)
             )
         )
     )

@@ -19,6 +19,7 @@ package views.helpers
 import config.featureFlags.{DeclarationAmendmentsConfig, SecureMessagingInboxConfig, SfusConfig}
 import controllers.declaration.routes.SubmissionController
 import controllers.routes.RejectedNotificationsController
+import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.{AdditionalDeclarationType, SUPPLEMENTARY_SIMPLIFIED}
 import models.declaration.submissions.EnhancedStatus._
 import models.declaration.submissions.RequestType._
 import models.declaration.submissions.{Action, NotificationSummary, RequestType, Submission}
@@ -55,7 +56,7 @@ class TimelineEvents @Inject() (
   declarationAmendmentsConfig: DeclarationAmendmentsConfig,
   uploadFilesPartialForTimeline: upload_files_partial_for_timeline
 ) {
-  def apply(submission: Submission)(implicit messages: Messages): Seq[TimelineEvent] = {
+  def apply(submission: Submission, declarationType: AdditionalDeclarationType)(implicit messages: Messages): Seq[TimelineEvent] = {
     val notificationEvents = createNotificationEvents(submission)
 
     val amendmentEventIfLatest = getAmendmentEventIfLatest(submission)
@@ -70,9 +71,6 @@ class TimelineEvents @Inject() (
       amendmentEventIfLatest.fold(notificationEvents.indexWhere(_.notificationSummary.enhancedStatus == ERRORS))(_ => 0)
 
     notificationEvents.zipWithIndex.map { case (notificationEvent, index) =>
-      val messageKey = s"submission.enhancedStatus.timeline.content.${notificationEvent.notificationSummary.enhancedStatus}"
-      val bodyContent = if (messages.isDefinedAt(messageKey)) paragraphBody(messages(messageKey)) else HtmlFormat.empty
-
       val actionContent = index match {
         case IndexToMatchForFixResubmitContent if notificationEvent.requestType != AmendmentRequest || amendmentEventIfLatest.isDefined =>
           fixAndResubmitContent(submission, amendmentEventIfLatest)
@@ -91,7 +89,7 @@ class TimelineEvents @Inject() (
         case _ => HtmlFormat.empty
       }
 
-      val content = new Html(List(bodyContent, actionContent))
+      val content = new Html(List(bodyContent(notificationEvent, declarationType), actionContent))
 
       TimelineEvent(
         title = EnhancedStatusHelper.asTimelineEvent(notificationEvent),
@@ -100,6 +98,13 @@ class TimelineEvents @Inject() (
       )
     }
   }
+
+  private def bodyContent(notificationEvent: NotificationEvent, declarationType: AdditionalDeclarationType)(implicit messages: Messages): Html =
+    if (declarationType == SUPPLEMENTARY_SIMPLIFIED && notificationEvent.notificationSummary.enhancedStatus == CLEARED) HtmlFormat.empty
+    else {
+      val messageKey = s"submission.enhancedStatus.timeline.content.${notificationEvent.notificationSummary.enhancedStatus}"
+      if (messages.isDefinedAt(messageKey)) paragraphBody(messages(messageKey)) else HtmlFormat.empty
+    }
 
   private val amendmentRequests = List(AmendmentRequest, ExternalAmendmentRequest)
 

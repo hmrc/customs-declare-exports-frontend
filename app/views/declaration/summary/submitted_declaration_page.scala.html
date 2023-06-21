@@ -35,9 +35,9 @@
     transport_section: transport_section
 )
 
-@(maybeSubmission: Option[Submission], declarationData: ExportsDeclaration)(implicit request: Request[_], messages: Messages)
+@(maybeSubmission: Option[Submission], declaration: ExportsDeclaration)(implicit request: Request[_], messages: Messages)
 
-@backLink = @{routes.DeclarationDetailsController.displayPage(declarationData.id)}
+@backLink = @{routes.DeclarationDetailsController.displayPage(declaration.id)}
 
 @govukLayout(
     title = Title("declaration.summary.submitted-header"),
@@ -54,19 +54,19 @@
 
     @notificationsSection(maybeSubmission)
 
-    <div class="govuk-section-break">@references_section(declarationData, false)</div>
+    <div class="govuk-section-break">@references_section(declaration, false)</div>
 
-    <div class="govuk-section-break">@parties_section(declarationData, false)</div>
+    <div class="govuk-section-break">@parties_section(declaration, false)</div>
 
-    <div class="govuk-section-break">@countries_section(declarationData, false)</div>
+    <div class="govuk-section-break">@countries_section(declaration, false)</div>
 
-    <div class="govuk-section-break">@locations_section(declarationData, false)</div>
+    <div class="govuk-section-break">@locations_section(declaration, false)</div>
 
-    <div class="govuk-section-break">@transaction_section(declarationData, false)</div>
+    <div class="govuk-section-break">@transaction_section(declaration, false)</div>
 
-    @items_section(declarationData, false)
+    @items_section(declaration, false)
 
-    <div class="govuk-section-break">@transport_section(declarationData, false)</div>
+    <div class="govuk-section-break">@transport_section(declaration, false)</div>
 
     @print_page_button(marginBottom = 1)
 }
