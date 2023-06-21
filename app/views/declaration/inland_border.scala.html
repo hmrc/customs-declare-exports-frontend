@@ -14,6 +14,7 @@
  * limitations under the License.
  *@
 
+@import config.AppConfig
 @import controllers.declaration.routes.InlandOrBorderController
 @import controllers.navigation.Navigator
 @import forms.declaration.InlandOrBorder
@@ -33,9 +34,11 @@
     insetText: exportsInsetText,
     body: paragraphBody,
     bulletList: bulletList,
+    tariffExpander: tariffExpander,
     saveButtons: saveButtons,
     navigator: Navigator,
-    formHelper: FormWithCSRF
+    formHelper: FormWithCSRF,
+    appConfig: AppConfig
 )
 
 @(form: Form[InlandOrBorder])(implicit request: JourneyRequest[_], messages: Messages)
@@ -88,6 +91,8 @@
         ))
 
         @insetText(content = HtmlContent(insetContent))
+
+        @tariffExpander(InlandOrBorder, request.declarationType)(messages, appConfig)
 
         @saveButtons()
     }
