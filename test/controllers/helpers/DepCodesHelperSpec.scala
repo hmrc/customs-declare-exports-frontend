@@ -16,7 +16,7 @@
 
 package controllers.helpers
 
-import base.{MockExportCacheService, RealConfig, UnitWithMocksSpec}
+import base.{MockExportCacheService, UnitWithMocksSpec}
 import config.AppConfig
 import connectors.{FileBasedCodeListConnector, GoodsLocationCodesConnector}
 import forms.declaration.LocationOfGoods
@@ -24,7 +24,7 @@ import org.mockito.Mockito.{reset, when}
 import play.api.{Environment, Mode}
 import utils.JsonFile
 
-class DepCodesHelperSpec extends UnitWithMocksSpec with MockExportCacheService with RealConfig {
+class DepCodesHelperSpec extends UnitWithMocksSpec with MockExportCacheService {
 
   private val appConfig = mock[AppConfig]
   private lazy val jsonFile = new JsonFile(Environment.simple(mode = Mode.Test))
