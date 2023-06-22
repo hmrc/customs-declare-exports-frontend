@@ -31,7 +31,7 @@ class GoodsLocationCodesServiceSpec extends UnitSpec with Injector {
   "GoodsLocationCodes" should {
 
     "have all entries" in {
-      goodsLocationCodesService.all.length mustBe 1544
+      goodsLocationCodesService.all.length mustBe 1552
       goodsLocationCodesService.all.head mustBe GoodsLocationCode("GBCUASDDOVAPF", "AP FINANCIAL LTD. Unit 17, Arrowhead Road, Ashford. TN24 0FL")
     }
 
@@ -56,7 +56,7 @@ class GoodsLocationCodesServiceSpec extends UnitSpec with Injector {
         goodsLocationCodesService.maritimeAndWharvesCodes.head mustBe GoodsLocationCode("GBAUABDABDABD", "Aberdeen Docks")
       }
       "itsf" in {
-        goodsLocationCodesService.itsfCodes.length mustBe 119
+        goodsLocationCodesService.itsfCodes.length mustBe 120
         goodsLocationCodesService.itsfCodes.head mustBe GoodsLocationCode(
           "GBAUABDABDABM",
           "Aberdeen - Matthews Quay / Sea Cargo Aberdeen Limited / Matthews Quay Aberdeen Harbour Aberdeen AB11 5PG"
@@ -70,7 +70,7 @@ class GoodsLocationCodesServiceSpec extends UnitSpec with Injector {
         )
       }
       "external itsf" in {
-        goodsLocationCodesService.externalItsfCodes.length mustBe 648
+        goodsLocationCodesService.externalItsfCodes.length mustBe 649
         goodsLocationCodesService.externalItsfCodes.head mustBe GoodsLocationCode(
           "GBAUPOEABZEBX",
           "Aberdeen / Crane Worldwide UK Ltd / Warehouse Unit 7, Gourdieburn, Potterton, Aberdeen, AB23 8UY"
@@ -107,7 +107,7 @@ class GoodsLocationCodesServiceSpec extends UnitSpec with Injector {
         goodsLocationCodesService.railCodes.head mustBe GoodsLocationCode("GBAUASDASDASD", "Ashford / Eurostar / Ashford International")
       }
       "acts" in {
-        goodsLocationCodesService.actsCodes.length mustBe 42
+        goodsLocationCodesService.actsCodes.length mustBe 48
         goodsLocationCodesService.actsCodes.head mustBe GoodsLocationCode(
           "GBCUASDDOVAPF",
           "AP FINANCIAL LTD. Unit 17, Arrowhead Road, Ashford. TN24 0FL"
