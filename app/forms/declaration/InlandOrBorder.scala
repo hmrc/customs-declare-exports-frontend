@@ -18,6 +18,8 @@ package forms.declaration
 
 import forms.DeclarationPage
 import forms.MappingHelper.requiredRadio
+import models.DeclarationType.DeclarationType
+import models.viewmodels.TariffContentKey
 import play.api.data.{Form, Forms, Mapping}
 import play.api.libs.json.{Json, OFormat}
 
@@ -39,4 +41,7 @@ object InlandOrBorder extends DeclarationPage {
       .mapping(fieldId -> requiredRadio("declaration.inlandOrBorder.answer.empty"))(apply)(InlandOrBorder.unapply)
 
   def form: Form[InlandOrBorder] = Form(mapping)
+
+  override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
+    Seq(TariffContentKey(s"tariff.declaration.inlandOrBorder.common"))
 }
