@@ -54,6 +54,8 @@ class AppConfigSpec extends UnitWithMocksSpec {
         |microservice.services.customs-declare-exports-movements.port=9876
         |microservice.services.customs-declare-exports-movements.save-movement-uri=/save-movement-submission
         |play.frontend.host="self/base-url"
+        |
+        |secret.tdrHashSalt="SomeSuperSecret"
       """.stripMargin)
 
   private val validServicesConfiguration = Configuration(validConfig)
@@ -305,6 +307,18 @@ class AppConfigSpec extends UnitWithMocksSpec {
       validAppConfig.selfBaseUrl.get must be("self/base-url")
     }
 
+    "empty selfBaseUrl when the key is missing" in {
+      missingAppConfig.selfBaseUrl must be(None)
+    }
+
+    "have tdrHashSalt" in {
+      validAppConfig.maybeTdrHashSalt must be(Some("SomeSuperSecret"))
+    }
+
+    "empty tdrHashSalt when the key is missing" in {
+      missingAppConfig.maybeTdrHashSalt must be(None)
+    }
+
     "have additionalProcedureCodesOfCDs URL" in {
       validAppConfig.additionalProcedureCodesOfCDs must be("http://additionalProcedureCodesOfCDs")
     }
@@ -333,10 +347,6 @@ class AppConfigSpec extends UnitWithMocksSpec {
     "have single Declaration type options when list-of-available-declarations is not defined" in {
       missingAppConfig.availableDeclarations().size must be(1)
       missingAppConfig.availableDeclarations() must contain(DeclarationType.STANDARD.toString)
-    }
-
-    "empty selfBaseUrl when the key is missing" in {
-      missingAppConfig.selfBaseUrl must be(None)
     }
 
     "throw an exception" when {

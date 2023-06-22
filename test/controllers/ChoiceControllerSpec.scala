@@ -40,7 +40,7 @@ class ChoiceControllerSpec extends ControllerWithoutFormSpec with OptionValues w
   import ChoiceControllerSpec._
 
   val choicePage = mock[choice_page]
-  override val appConfig = mock[AppConfig]
+  val controllerAppConfig = mock[AppConfig]
   val externalServicesConfig = instanceOf[ExternalServicesConfig]
 
   val controller =
@@ -50,7 +50,7 @@ class ChoiceControllerSpec extends ControllerWithoutFormSpec with OptionValues w
       stubMessagesControllerComponents(),
       mockSecureMessagingInboxConfig,
       choicePage,
-      appConfig,
+      controllerAppConfig,
       externalServicesConfig
     )
 
@@ -58,11 +58,12 @@ class ChoiceControllerSpec extends ControllerWithoutFormSpec with OptionValues w
     super.beforeEach()
     authorizedUser()
     when(choicePage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
-    when(appConfig.availableJourneys()).thenReturn(allJourneys)
+    when(controllerAppConfig.availableJourneys()).thenReturn(allJourneys)
+    when(controllerAppConfig.maybeTdrHashSalt).thenReturn(None)
   }
 
   override protected def afterEach(): Unit = {
-    reset(choicePage, appConfig, mockSecureMessagingInboxConfig)
+    reset(choicePage, controllerAppConfig, mockSecureMessagingInboxConfig)
     super.afterEach()
   }
 
@@ -214,7 +215,7 @@ class ChoiceControllerSpec extends ControllerWithoutFormSpec with OptionValues w
         stubMessagesControllerComponents(),
         mockSecureMessagingInboxConfig,
         choicePage,
-        appConfig,
+        controllerAppConfig,
         externalServicesConfig
       )
       allJourneys.diff(choiceCtrl.availableJourneys).size mustBe 0
@@ -229,7 +230,7 @@ class ChoiceControllerSpec extends ControllerWithoutFormSpec with OptionValues w
         stubMessagesControllerComponents(),
         mockSecureMessagingInboxConfig,
         choicePage,
-        appConfig,
+        controllerAppConfig,
         externalServicesConfig
       )
       val missingJourneyTypes = allJourneys.diff(choiceCtrl.availableJourneys)

@@ -45,7 +45,7 @@ trait MockAuthAction extends MockitoSugar with Stubs with MetricsMocks with Inje
     new AuthActionImpl(mockAuthConnector, new EoriAllowList(Seq.empty), stubMessagesControllerComponents(), metricsMock, appConfig)
 
   val authEori = "12345"
-  val exampleUser = newUser(authEori, "external1")
+  val exampleUser = newUser(authEori, "external1", Some("9C7605A1AA5F58FE5E21F66CA413ACD0DD2F18EF341B33D9B059379B3214CDDF"))
 
   def unauthorizedUser(exceptionThrown: AuthorisationException): Unit =
     when(

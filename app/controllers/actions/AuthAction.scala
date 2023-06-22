@@ -20,18 +20,19 @@ import com.google.inject.{ImplementedBy, Inject, ProvidedBy}
 import com.kenshoo.play.metrics.Metrics
 import config.AppConfig
 import controllers.routes
-import models.AuthKey.{enrolment, identifierKey}
+import models.{IdentityData, SignedInUser}
+import models.AuthKey.{enrolment, hashIdentifierKey, identifierKey}
 import models.UnauthorisedReason.{UrlDirect, UserEoriNotAllowed, UserIsAgent, UserIsNotEnrolled}
 import models.requests.AuthenticatedRequest
-import models.{IdentityData, SignedInUser}
-import play.api.mvc._
 import play.api.{Configuration, Logging}
-import uk.gov.hmrc.auth.core.AffinityGroup.{Individual, Organisation}
+import play.api.mvc._
 import uk.gov.hmrc.auth.core._
+import uk.gov.hmrc.auth.core.AffinityGroup.{Individual, Organisation}
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals._
 import uk.gov.hmrc.auth.core.retrieve.~
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
+import utils.HashingUtils.generateHashOfValue
 
 import javax.inject.Provider
 import scala.concurrent.{ExecutionContext, Future}
@@ -92,12 +93,14 @@ class AuthActionImpl @Inject() (
         )
 
         val cdsLoggedInUser = SignedInUser(eori.get.value, allEnrolments, identityData)
-        if (eoriAllowList.allows(cdsLoggedInUser.eori)) {
+
+        val userProvidedEoriHash = getTdrSecretFromEnrolments(allEnrolments).map(_.value).getOrElse("NoHashProvided")
+        val maybeHiddenSalt = appConfig.maybeTdrHashSalt
+
+        if (allowListAuthentication(cdsLoggedInUser.eori) && tdrSecretAuthentication(cdsLoggedInUser.eori, maybeHiddenSalt, userProvidedEoriHash))
           block(new AuthenticatedRequest(request, cdsLoggedInUser))
-        } else {
-          logger.warn("User is not in allow list")
+        else
           Future.successful(Results.Redirect(routes.UnauthorisedController.onPageLoad(UserEoriNotAllowed)))
-        }
     }
 
     result.recoverWith {
@@ -127,6 +130,9 @@ class AuthActionImpl @Inject() (
   private def getEoriFromEnrolments(enrolments: Enrolments): Option[EnrolmentIdentifier] =
     enrolments.getEnrolment(enrolment).flatMap(_.getIdentifier(identifierKey))
 
+  private def getTdrSecretFromEnrolments(enrolments: Enrolments): Option[EnrolmentIdentifier] =
+    enrolments.enrolments.filter(_.key.equalsIgnoreCase(enrolment)).flatMap(_.getIdentifier(hashIdentifierKey)).headOption
+
   private def validateEnrolments(eori: Option[EnrolmentIdentifier], externalId: Option[String]): Unit = {
     if (eori.isEmpty) {
       // $COVERAGE-OFF$Trivial
@@ -142,6 +148,28 @@ class AuthActionImpl @Inject() (
       throw NoExternalId()
     }
   }
+
+  def allowListAuthentication(eori: String): Boolean = {
+    val eoriOnAllowList = eoriAllowList.allows(eori)
+
+    if (!eoriOnAllowList)
+      logger.info("Authentication Rejected: User's EORI not on allow list")
+
+    eoriOnAllowList
+  }
+
+  def tdrSecretAuthentication(eori: String, maybeHiddenSalt: Option[String], providedHash: String): Boolean =
+    maybeHiddenSalt match {
+      case None => true
+      case Some(hiddenSalt) =>
+        val hashOfPayload = generateHashOfValue(eori, hiddenSalt)
+        val matchingHash = providedHash.equalsIgnoreCase(hashOfPayload)
+
+        if (!matchingHash)
+          logger.info("Authentication Rejected: User's TDRSecret does not match")
+
+        matchingHash
+    }
 }
 
 @ImplementedBy(classOf[AuthActionImpl])

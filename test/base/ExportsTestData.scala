@@ -22,7 +22,7 @@ import forms.Choice._
 import forms.declaration.LocationOfGoods
 import forms.declaration.ModeOfTransportCode.RoRo
 import forms.declaration.declarationHolder.AuthorizationTypeCodes.{CSE, EXRR}
-import models.AuthKey.{enrolment, identifierKey}
+import models.AuthKey.{enrolment, hashIdentifierKey, identifierKey}
 import models.codes.AdditionalProcedureCode.NO_APC_APPLIES_CODE
 import models.declaration.ProcedureCodesData.warehouseRequiredProcedureCodes
 import models.declaration.{ExportItem, ProcedureCodesData}
@@ -87,10 +87,15 @@ object ExportsTestData extends ExportsDeclarationBuilder with ExportsItemBuilder
     valuesRequiringToSkipInlandOrBorder ++
       warehouseRequiredProcedureCodes.map(pc => withItem(anItem(withProcedureCodes(Some(s"12$pc")))))
 
-  def newUser(eori: String, externalId: String): SignedInUser =
+  def newUser(eori: String, externalId: String, tdrSecret: Option[String] = None): SignedInUser = {
+
+    val eoriEnrolment = Set(Enrolment(enrolment).withIdentifier(identifierKey, eori))
+    val enrolmentSet =
+      tdrSecret.map(secret => eoriEnrolment + Enrolment(enrolment).withIdentifier(hashIdentifierKey, secret)).getOrElse(eoriEnrolment)
+
     SignedInUser(
       eori,
-      Enrolments(Set(Enrolment(enrolment).withIdentifier(identifierKey, eori))),
+      Enrolments(enrolmentSet),
       IdentityData(
         Some("Int-ba17b467-90f3-42b6-9570-73be7b78eb2b"),
         Some(externalId),
@@ -114,6 +119,7 @@ object ExportsTestData extends ExportsDeclarationBuilder with ExportsItemBuilder
         Some(LoginTimes(Instant.now, None))
       )
     )
+  }
 
   val addressJson: JsValue = JsObject(
     Map(

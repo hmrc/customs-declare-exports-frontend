@@ -16,28 +16,31 @@
 
 package controllers.actions
 
-import base.ExportsTestData.newUser
 import base.{ControllerWithoutFormSpec, Injector}
+import base.ExportsTestData.newUser
 import config.{AppConfig, ExternalServicesConfig}
 import controllers.{routes, ChoiceController}
 import models.UnauthorisedReason.{UrlDirect, UserEoriNotAllowed, UserIsAgent, UserIsNotEnrolled}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import play.api.test.Helpers._
+import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.auth.core.{BearerTokenExpired, InternalError, UnsupportedAffinityGroup}
-import views.html.choice_page
+import views.html.{choice_page, declaration_details}
 
 import java.net.URLEncoder
 import scala.concurrent.Future
 
 class AuthActionSpec extends ControllerWithoutFormSpec with Injector {
 
-  val choicePage = instanceOf[choice_page]
+  val page = instanceOf[declaration_details]
+
+  val choicePage = mock[choice_page]
   override val appConfig = mock[AppConfig]
   val externalServicesConfig = mock[ExternalServicesConfig]
 
   override val mockAuthAction =
-    new AuthActionImpl(mockAuthConnector, new EoriAllowList(Seq("12345")), stubMessagesControllerComponents(), metricsMock, appConfig)
+    new AuthActionImpl(mockAuthConnector, new EoriAllowList(Seq(authEori)), stubMessagesControllerComponents(), metricsMock, appConfig)
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -45,6 +48,9 @@ class AuthActionSpec extends ControllerWithoutFormSpec with Injector {
     reset(appConfig)
     when(appConfig.loginUrl).thenReturn("/unauthorised")
     when(appConfig.loginContinueUrl).thenReturn("/loginContinueUrl")
+    when(choicePage(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockSecureMessagingInboxConfig.isExportsSecureMessagingEnabled).thenReturn(true)
+    when(appConfig.maybeTdrHashSalt).thenReturn(None)
   }
 
   val controller = new ChoiceController(
@@ -57,7 +63,26 @@ class AuthActionSpec extends ControllerWithoutFormSpec with Injector {
     externalServicesConfig
   )
 
+  val tdrHashSalt = Some("SomeSuperSecret")
+
   "Auth Action" should {
+
+    "allow user into choice page" when {
+      "No allow list is active or user's EORI is on the allow list" in {
+        authorizedUser()
+
+        val result = controller.displayPage(None)(getRequest())
+        status(result) mustBe OK
+      }
+
+      "TDRSecret enrolment is required and correctly supplied by user" in {
+        authorizedUser()
+        when(appConfig.maybeTdrHashSalt).thenReturn(tdrHashSalt)
+
+        val result = controller.displayPage(None)(getRequest())
+        status(result) mustBe OK
+      }
+    }
 
     "redirect to login page when a NoActiveSession type exception is thrown" in {
       val loginPageUrl = Some(s"${appConfig.loginUrl}?continue=${URLEncoder.encode(appConfig.loginContinueUrl, "UTF-8")}")
@@ -69,31 +94,56 @@ class AuthActionSpec extends ControllerWithoutFormSpec with Injector {
       redirectLocation(result) mustBe loginPageUrl
     }
 
-    "redirect to /unauthorised when EORI number is missing" in {
-      userWithoutEori()
+    "redirect to /unauthorised" when {
+      "EORI number is missing" in {
+        userWithoutEori()
 
-      val result = controller.displayPage(None)(getRequest())
+        val result = controller.displayPage(None)(getRequest())
 
-      status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(routes.UnauthorisedController.onPageLoad(UserIsNotEnrolled).url)
-    }
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(routes.UnauthorisedController.onPageLoad(UserIsNotEnrolled).url)
+      }
 
-    "redirect to /unauthorised when EORI is not on allow list" in {
-      authorizedUser(newUser("11111", "external1"))
+      "EORI is not on allow list" in {
+        authorizedUser(newUser("11111", "external1"))
 
-      val result = controller.displayPage(None)(getRequest())
+        val result = controller.displayPage(None)(getRequest())
 
-      status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(routes.UnauthorisedController.onPageLoad(UserEoriNotAllowed).url)
-    }
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(routes.UnauthorisedController.onPageLoad(UserEoriNotAllowed).url)
+      }
 
-    "redirect to /unauthorised on other 'AuthorisationException' errors" in {
-      unauthorizedUser(InternalError("MissingResponseHeader"))
+      "EORI is on allow list and TDRSecret enrolment is required" when {
 
-      val result = controller.displayPage(None)(getRequest())
+        "user does not enter a TDRSecret value" in {
+          when(appConfig.maybeTdrHashSalt).thenReturn(tdrHashSalt)
+          authorizedUser(newUser(authEori, "external1", None))
 
-      status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(routes.UnauthorisedController.onPageLoad(UrlDirect).url)
+          val result = controller.displayPage(None)(getRequest())
+
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(routes.UnauthorisedController.onPageLoad(UserEoriNotAllowed).url)
+        }
+
+        "user enters a non-matching TDRSecret value" in {
+          when(appConfig.maybeTdrHashSalt).thenReturn(tdrHashSalt)
+          authorizedUser(newUser(authEori, "external1", Some("IncorrectValue")))
+
+          val result = controller.displayPage(None)(getRequest())
+
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(routes.UnauthorisedController.onPageLoad(UserEoriNotAllowed).url)
+        }
+      }
+
+      "on other 'AuthorisationException' errors" in {
+        unauthorizedUser(InternalError("MissingResponseHeader"))
+
+        val result = controller.displayPage(None)(getRequest())
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(routes.UnauthorisedController.onPageLoad(UrlDirect).url)
+      }
     }
 
     "redirect to /you-cannot-use-this-service when user is an Agent" in {
