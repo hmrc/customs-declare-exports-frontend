@@ -99,6 +99,11 @@ To generate a valid 'TDRSecret' value for a user you can call the following prog
 
 ```sbt "runMain utils.GenerateTdrSecret <tdrHashSalt> <eori>"```
 
+Note the `<eori>` parameter can be a comma delimited list of EORIs (if you want to generate multiple 'TDRSecret' values at any one time). 
+
+The output of the program is:
+```<eori>,<newGeneratedTdrSecret>```
+
 ## License
 
 This code is open source software licensed under the [Apache 2.0 License]("http://www.apache.org/licenses/LICENSE-2.0.html")
