@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import controllers.actions.{AuthAction, JourneyAction}
+import controllers.actions.{AmendmentDraftFilter, AuthAction, JourneyAction}
 import controllers.declaration.routes.{ConsignmentReferencesController, DeclarantExporterController, DucrChoiceController, NotEligibleController}
 import controllers.navigation.Navigator
 import forms.common.Eori
@@ -44,9 +44,19 @@ class DeclarantDetailsController @Inject() (
   mcc: MessagesControllerComponents,
   declarantDetailsPage: declarant_details
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
+    extends FrontendController(mcc) with AmendmentDraftFilter with I18nSupport with ModelCacheable with SubmissionErrors
+    with WithUnsafeDefaultFormBinding {
 
-  def displayPage: Action[AnyContent] = (authenticate andThen journeyAction) { implicit request =>
+  val nextPage: JourneyRequest[_] => Call =
+    _.declarationType match {
+      case DeclarationType.CLEARANCE     => DeclarantExporterController.displayPage
+      case DeclarationType.SUPPLEMENTARY => ConsignmentReferencesController.displayPage
+      case _                             => DucrChoiceController.displayPage
+    }
+
+  private val actionFilters = authenticate andThen journeyAction andThen nextPageIfAmendmentDraft
+
+  val displayPage: Action[AnyContent] = actionFilters { implicit request =>
     val frm = form.withSubmissionErrors
     request.cacheModel.parties.declarantDetails match {
       case Some(_) => Ok(declarantDetailsPage(frm.fill(DeclarantEoriConfirmation(YesNoAnswers.yes))))
@@ -54,14 +64,14 @@ class DeclarantDetailsController @Inject() (
     }
   }
 
-  def submitForm(): Action[AnyContent] = (authenticate andThen journeyAction).async { implicit request =>
+  val submitForm: Action[AnyContent] = actionFilters.async { implicit request =>
     form
       .bindFromRequest()
       .fold(
         formWithErrors => Future.successful(BadRequest(declarantDetailsPage(formWithErrors))),
         validForm =>
           if (validForm.answer == YesNoAnswers.yes)
-            updateCache(DeclarantDetails(EntityDetails(Some(Eori(request.eori)), None))).map(_ => navigator.continueTo(nextPage))
+            updateCache(DeclarantDetails(EntityDetails(Some(Eori(request.eori)), None))).map(_ => navigator.continueTo(nextPage(request)))
           else
             Future(Redirect(NotEligibleController.displayNotDeclarant).removingFromSession(declarationUuid, errorFixModeSessionKey))
       )
@@ -69,10 +79,4 @@ class DeclarantDetailsController @Inject() (
 
   private def updateCache(declarant: DeclarantDetails)(implicit r: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
     updateDeclarationFromRequest(model => model.copy(parties = model.parties.copy(declarantDetails = Some(declarant))))
-
-  private def nextPage(implicit request: JourneyRequest[_]): Call = request.declarationType match {
-    case DeclarationType.CLEARANCE     => DeclarantExporterController.displayPage
-    case DeclarationType.SUPPLEMENTARY => ConsignmentReferencesController.displayPage
-    case _                             => DucrChoiceController.displayPage
-  }
 }

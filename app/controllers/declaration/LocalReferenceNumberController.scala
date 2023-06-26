@@ -16,10 +16,11 @@
 
 package controllers.declaration
 
-import controllers.actions.{AuthAction, JourneyAction}
+import controllers.actions.{AmendmentDraftFilter, AuthAction, JourneyAction}
+import controllers.declaration.routes.LinkDucrToMucrController
 import controllers.navigation.Navigator
-import forms.declaration.ConsignmentReferences
 import forms.Lrn.form
+import forms.declaration.ConsignmentReferences
 import forms.{Lrn, LrnValidator}
 import models.requests.JourneyRequest
 import play.api.i18n.I18nSupport
@@ -34,35 +35,38 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class LocalReferenceNumberController @Inject() (
   authenticate: AuthAction,
-  journeyType: JourneyAction,
+  journeyAction: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
   lrnValidator: LrnValidator,
   navigator: Navigator,
   mcc: MessagesControllerComponents,
   LrnPage: local_reference_number
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
+    extends FrontendController(mcc) with AmendmentDraftFilter with I18nSupport with ModelCacheable with SubmissionErrors
+    with WithUnsafeDefaultFormBinding {
 
-  def displayPage: Action[AnyContent] =
-    (authenticate andThen journeyType) { implicit request =>
-      val frm = form.withSubmissionErrors
-      request.cacheModel.consignmentReferences.flatMap(_.lrn) match {
-        case Some(data) => Ok(LrnPage(frm.fill(data)))
-        case _          => Ok(LrnPage(frm))
-      }
-    }
+  val nextPage: JourneyRequest[_] => Call = _ => LinkDucrToMucrController.displayPage
 
-  def submitLrn(): Action[AnyContent] =
-    (authenticate andThen journeyType).async { implicit request =>
-      form
-        .bindFromRequest()
-        .verifyLrnValidity(lrnValidator)
-        .flatMap(_.fold(formWithErrors => Future.successful(BadRequest(LrnPage(formWithErrors))), updateCacheAndContinue(_)))
+  private val actionFilters = authenticate andThen journeyAction andThen nextPageIfAmendmentDraft
+
+  val displayPage: Action[AnyContent] = actionFilters { implicit request =>
+    val frm = form.withSubmissionErrors
+    request.cacheModel.consignmentReferences.flatMap(_.lrn) match {
+      case Some(data) => Ok(LrnPage(frm.fill(data)))
+      case _          => Ok(LrnPage(frm))
     }
+  }
+
+  val submitForm: Action[AnyContent] = actionFilters.async { implicit request =>
+    form
+      .bindFromRequest()
+      .verifyLrnValidity(lrnValidator)
+      .flatMap(_.fold(formWithErrors => Future.successful(BadRequest(LrnPage(formWithErrors))), updateCacheAndContinue(_)))
+  }
 
   private def updateCacheAndContinue(lrn: Lrn)(implicit request: JourneyRequest[AnyContent]): Future[Result] =
     updateDeclarationFromRequest { dec =>
       dec.copy(consignmentReferences = dec.ducr.map(ducr => ConsignmentReferences(Some(ducr), Some(lrn))))
-    } map (_ => navigator.continueTo(routes.LinkDucrToMucrController.displayPage))
+    } map (_ => navigator.continueTo(nextPage(request)))
 
 }

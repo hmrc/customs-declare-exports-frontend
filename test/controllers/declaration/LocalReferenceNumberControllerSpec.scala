@@ -17,8 +17,10 @@
 package controllers.declaration
 
 import base.ControllerSpec
+import controllers.actions.AmendmentDraftFilterSpec
+import controllers.declaration.routes.LinkDucrToMucrController
 import forms.{Lrn, LrnValidator}
-import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED, STANDARD}
+import models.DeclarationType._
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
@@ -32,7 +34,7 @@ import views.html.declaration.local_reference_number
 
 import scala.concurrent.Future
 
-class LocalReferenceNumberControllerSpec extends ControllerSpec with GivenWhenThen {
+class LocalReferenceNumberControllerSpec extends ControllerSpec with AmendmentDraftFilterSpec with GivenWhenThen {
 
   private val lrnValidator = mock[LrnValidator]
   private val lrnPage = mock[local_reference_number]
@@ -57,9 +59,10 @@ class LocalReferenceNumberControllerSpec extends ControllerSpec with GivenWhenTh
 
   override protected def afterEach(): Unit = {
     super.afterEach()
-
     reset(lrnValidator, lrnPage)
   }
+
+  def nextPageOnTypes: Seq[NextPageOnType] = allDeclarationTypes.map(NextPageOnType(_, LinkDucrToMucrController.displayPage))
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration(withType(STANDARD)))
@@ -99,7 +102,7 @@ class LocalReferenceNumberControllerSpec extends ControllerSpec with GivenWhenTh
           withNewCaching(req.cacheModel)
           val incorrectForm = Json.toJson(Some(Lrn("")))
 
-          val result = controller.submitLrn()(postRequest(incorrectForm))
+          val result = controller.submitForm()(postRequest(incorrectForm))
           status(result) must be(BAD_REQUEST)
         }
 
@@ -108,7 +111,7 @@ class LocalReferenceNumberControllerSpec extends ControllerSpec with GivenWhenTh
           withNewCaching(req.cacheModel)
           val correctForm = Json.obj("lrn" -> LRN)
 
-          val result = controller.submitLrn()(postRequest(correctForm))
+          val result = controller.submitForm()(postRequest(correctForm))
           status(result) must be(BAD_REQUEST)
         }
       }
@@ -118,7 +121,7 @@ class LocalReferenceNumberControllerSpec extends ControllerSpec with GivenWhenTh
         withNewCaching(request.cacheModel)
         val correctForm = Json.obj("lrn" -> LRN)
 
-        val result = controller.submitLrn()(postRequest(correctForm))
+        val result = controller.submitForm()(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe routes.LinkDucrToMucrController.displayPage

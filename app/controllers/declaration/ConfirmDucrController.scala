@@ -16,7 +16,8 @@
 
 package controllers.declaration
 
-import controllers.actions.{AuthAction, JourneyAction}
+import controllers.actions.{AmendmentDraftFilter, AuthAction, JourneyAction}
+import controllers.declaration.routes.DucrEntryController
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
@@ -26,7 +27,7 @@ import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.i18n.Lang.logger
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
@@ -43,11 +44,15 @@ class ConfirmDucrController @Inject() (
   override val exportsCacheService: ExportsCacheService,
   confirmDucrPage: confirm_ducr
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with WithUnsafeDefaultFormBinding with ModelCacheable with SubmissionErrors {
+    extends FrontendController(mcc) with AmendmentDraftFilter with I18nSupport with ModelCacheable with SubmissionErrors
+    with WithUnsafeDefaultFormBinding {
 
-  private val authAndAcceptedTypes = authenticate andThen journeyAction(List(STANDARD, CLEARANCE, SIMPLIFIED, OCCASIONAL))
+  val nextPage: JourneyRequest[_] => Call = _ => DucrEntryController.displayPage
+  private val validTypes = allDeclarationTypesExcluding(SUPPLEMENTARY)
 
-  def displayPage: Action[AnyContent] = authAndAcceptedTypes { implicit request =>
+  private val actionFilters = authenticate andThen journeyAction(validTypes) andThen nextPageIfAmendmentDraft
+
+  val displayPage: Action[AnyContent] = actionFilters { implicit request =>
     request.cacheModel.ducr.fold {
       logger.warn("No generated DUCR found in cache!")
       Redirect(routes.DucrEntryController.displayPage)
@@ -56,7 +61,7 @@ class ConfirmDucrController @Inject() (
     }
   }
 
-  def submitForm(): Action[AnyContent] = authAndAcceptedTypes.async { implicit request =>
+  val submitForm: Action[AnyContent] = actionFilters.async { implicit request =>
     request.cacheModel.ducr.fold {
       logger.warn("No generated DUCR found in cache!")
       Future.successful(Redirect(routes.DucrEntryController.displayPage))
@@ -67,7 +72,7 @@ class ConfirmDucrController @Inject() (
           formWithErrors => Future.successful(BadRequest(confirmDucrPage(formWithErrors, ducr))),
           {
             case YesNoAnswer(YesNoAnswers.yes) => Future.successful(navigator.continueTo(routes.LocalReferenceNumberController.displayPage))
-            case _                             => updateCache.map(_ => navigator.continueTo(routes.DucrEntryController.displayPage))
+            case _                             => updateCache.map(_ => navigator.continueTo(nextPage(request)))
           }
         )
     }

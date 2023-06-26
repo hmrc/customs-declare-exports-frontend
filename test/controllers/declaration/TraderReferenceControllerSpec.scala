@@ -17,10 +17,12 @@
 package controllers.declaration
 
 import base.ControllerSpec
+import controllers.actions.AmendmentDraftFilterSpec
+import controllers.declaration.routes.ConfirmDucrController
 import forms.Ducr
-import forms.declaration.{ConsignmentReferences, TraderReference}
 import forms.declaration.TraderReference.traderReferenceKey
-import models.DeclarationType.SUPPLEMENTARY
+import forms.declaration.{ConsignmentReferences, TraderReference}
+import models.DeclarationType.{allDeclarationTypesExcluding, SUPPLEMENTARY}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{verify, when}
 import org.mockito.{ArgumentCaptor, Mockito}
@@ -33,11 +35,11 @@ import views.html.declaration.trader_reference
 
 import java.time.{LocalDate, ZonedDateTime}
 
-class TraderReferenceControllerSpec extends ControllerSpec {
+class TraderReferenceControllerSpec extends ControllerSpec with AmendmentDraftFilterSpec {
 
   private val traderReferencePage = mock[trader_reference]
 
-  private val controller = new TraderReferenceController(
+  val controller = new TraderReferenceController(
     mockAuthAction,
     mockJourneyAction,
     navigator,
@@ -45,6 +47,9 @@ class TraderReferenceControllerSpec extends ControllerSpec {
     mockExportsCacheService,
     traderReferencePage
   )
+
+  def nextPageOnTypes: Seq[NextPageOnType] =
+    allDeclarationTypesExcluding(SUPPLEMENTARY).map(NextPageOnType(_, ConfirmDucrController.displayPage))
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration())
@@ -82,7 +87,6 @@ class TraderReferenceControllerSpec extends ControllerSpec {
         withNewCaching(aDeclaration())
 
         val result = controller.displayPage(getJourneyRequest())
-
         status(result) mustBe OK
       }
 
@@ -90,7 +94,6 @@ class TraderReferenceControllerSpec extends ControllerSpec {
         withNewCaching(aDeclaration())
 
         val result = controller.displayPage(getJourneyRequest(aDeclaration(withConsignmentReferences(dummyConRefs))))
-
         status(result) mustBe OK
       }
     }

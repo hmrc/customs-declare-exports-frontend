@@ -71,7 +71,7 @@
     backButton = if(request.cacheModel.isAmendmentDraft) None else Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(Ducr))),
     showDeclarationSummaryLink = false) {
 
-    @formHelper(action = DucrEntryController.submitDucr, 'autoComplete -> "off") {
+    @formHelper(action = DucrEntryController.submitForm, 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
         @sectionHeader(messages("declaration.section.1"))

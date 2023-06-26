@@ -50,7 +50,7 @@
     backButton = if(request.cacheModel.isAmendmentDraft) None else Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(Lrn))),
     showDeclarationSummaryLink = false) {
 
-    @formHelper(action = LocalReferenceNumberController.submitLrn, 'autoComplete -> "off") {
+    @formHelper(action = LocalReferenceNumberController.submitForm, 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
         @sectionHeader(messages("declaration.section.1"))

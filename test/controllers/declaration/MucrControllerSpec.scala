@@ -18,10 +18,10 @@ package controllers.declaration
 
 import base.ControllerSpec
 import base.TestHelper._
+import controllers.actions.AmendmentDraftFilterSpec
+import controllers.declaration.routes.{DeclarantExporterController, EntryIntoDeclarantsRecordsController}
 import forms.declaration.Mucr
-import models.DeclarationType
-import models.DeclarationType.{OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
-import models.declaration.DeclarationStatus
+import models.DeclarationType._
 import models.requests.JourneyRequest
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -34,25 +34,17 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.declaration.mucr_code
 
-class MucrControllerSpec extends ControllerSpec {
+class MucrControllerSpec extends ControllerSpec with AmendmentDraftFilterSpec {
 
   private val mucrPage = mock[mucr_code]
 
   val controller =
-    new MucrController(
-      mockAuthAction,
-      mockJourneyAction,
-      mockAmendmentDraftFilterAction,
-      mockExportsCacheService,
-      navigator,
-      stubMessagesControllerComponents(),
-      mucrPage
-    )(ec)
+    new MucrController(mockAuthAction, mockJourneyAction, mockExportsCacheService, navigator, stubMessagesControllerComponents(), mucrPage)(ec)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    withNewCaching(aDeclaration(withType(DeclarationType.STANDARD)))
+    withNewCaching(aDeclaration(withType(STANDARD)))
     when(mucrPage.apply(any[Form[Mucr]])(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
@@ -60,6 +52,10 @@ class MucrControllerSpec extends ControllerSpec {
     reset(mucrPage)
     super.afterEach()
   }
+
+  def nextPageOnTypes: Seq[NextPageOnType] =
+    allDeclarationTypesExcluding(CLEARANCE).map(NextPageOnType(_, DeclarantExporterController.displayPage)) :+
+      NextPageOnType(CLEARANCE, EntryIntoDeclarantsRecordsController.displayPage)
 
   def theResponseForm: Form[Mucr] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[Mucr]])
@@ -90,18 +86,6 @@ class MucrControllerSpec extends ControllerSpec {
         verifyPageInvoked
       }
     }
-
-    "return 303 (SEE_OTHER)" when {
-      "AMENDMENT_DRAFT" which {
-        "redirects to /saved-summary" in {
-          withNewCaching(aDeclaration(withStatus(DeclarationStatus.AMENDMENT_DRAFT), withMucr()))
-
-          val result = controller.displayPage(getRequest())
-          status(result) must be(SEE_OTHER)
-          redirectLocation(result) mustBe Some(controllers.declaration.routes.SummaryController.displayPage.url)
-        }
-      }
-    }
   }
 
   "MucrController on submitForm" should {
@@ -118,20 +102,6 @@ class MucrControllerSpec extends ControllerSpec {
       onClearance { implicit request =>
         "a valid MUCR is entered" in {
           verifyRedirect(routes.EntryIntoDeclarantsRecordsController.displayPage)
-        }
-      }
-    }
-
-    "return 303 (SEE_OTHER)" when {
-      "AMENDMENT_DRAFT" which {
-        "redirects to /saved-summary" in {
-          withNewCaching(aDeclaration(withStatus(DeclarationStatus.AMENDMENT_DRAFT), withMucr()))
-
-          val correctForm = Json.obj(Mucr.MUCR -> MUCR.mucr)
-
-          val result = controller.submitForm()(postRequest(correctForm))
-          status(result) must be(SEE_OTHER)
-          redirectLocation(result) mustBe Some(controllers.declaration.routes.SummaryController.displayPage.url)
         }
       }
     }

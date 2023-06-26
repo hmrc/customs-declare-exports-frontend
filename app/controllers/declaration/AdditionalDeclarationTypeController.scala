@@ -16,13 +16,14 @@
 
 package controllers.declaration
 
-import controllers.actions.{AmendmentDraftFilterAction, AuthAction, JourneyAction}
+import controllers.actions.{AmendmentDraftFilter, AuthAction, JourneyAction}
+import controllers.declaration.routes.{DeclarantDetailsController, DucrChoiceController}
 import controllers.navigation.Navigator
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypePage
 import models.DeclarationType.CLEARANCE
-import models.requests.JourneyRequest
 import models.ExportsDeclaration
+import models.requests.JourneyRequest
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import services.cache.ExportsCacheService
@@ -35,16 +36,23 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class AdditionalDeclarationTypeController @Inject() (
   authenticate: AuthAction,
-  journeyType: JourneyAction,
-  amendmentDraftFilterAction: AmendmentDraftFilterAction,
+  journeyAction: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
   mcc: MessagesControllerComponents,
   additionalTypePage: additional_declaration_type
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
+    extends FrontendController(mcc) with AmendmentDraftFilter with I18nSupport with ModelCacheable with SubmissionErrors
+    with WithUnsafeDefaultFormBinding {
 
-  def displayPage: Action[AnyContent] = (authenticate andThen journeyType andThen amendmentDraftFilterAction) { implicit request =>
+  val nextPage: JourneyRequest[_] => Call =
+    request =>
+      if (request.declarationType == CLEARANCE) DucrChoiceController.displayPage
+      else DeclarantDetailsController.displayPage
+
+  private val actionFilters = authenticate andThen journeyAction andThen nextPageIfAmendmentDraft
+
+  val displayPage: Action[AnyContent] = actionFilters { implicit request =>
     val form = AdditionalDeclarationTypePage.form.withSubmissionErrors
     request.cacheModel.additionalDeclarationType match {
       case Some(data) => Ok(additionalTypePage(form.fill(data)))
@@ -52,18 +60,14 @@ class AdditionalDeclarationTypeController @Inject() (
     }
   }
 
-  def submitForm: Action[AnyContent] = (authenticate andThen journeyType andThen amendmentDraftFilterAction).async { implicit request =>
+  val submitForm: Action[AnyContent] = actionFilters.async { implicit request =>
     val form = AdditionalDeclarationTypePage.form.bindFromRequest()
     form
       .fold(
         formWithErrors => Future.successful(BadRequest(additionalTypePage(formWithErrors))),
-        updateCache(_).map(_ => navigator.continueTo(nextPage))
+        updateCache(_).map(_ => navigator.continueTo(nextPage(request)))
       )
   }
-
-  private def nextPage(implicit request: JourneyRequest[_]): Call =
-    if (request.declarationType == CLEARANCE) routes.DucrChoiceController.displayPage
-    else routes.DeclarantDetailsController.displayPage
 
   private def updateCache(adt: AdditionalDeclarationType)(implicit request: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
     updateDeclarationFromRequest(_.copy(additionalDeclarationType = Some(adt)))

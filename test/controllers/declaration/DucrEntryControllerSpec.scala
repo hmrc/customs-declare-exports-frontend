@@ -17,9 +17,10 @@
 package controllers.declaration
 
 import base.ControllerSpec
+import controllers.actions.AmendmentDraftFilterSpec
+import controllers.declaration.routes.LocalReferenceNumberController
 import forms.Ducr
-import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED, STANDARD}
-import models.declaration.DeclarationStatus
+import models.DeclarationType._
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
@@ -31,20 +32,14 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.declaration.ducr_entry
 
-class DucrEntryControllerSpec extends ControllerSpec with GivenWhenThen {
+class DucrEntryControllerSpec extends ControllerSpec with AmendmentDraftFilterSpec with GivenWhenThen {
 
   private val ducrEntryPage = mock[ducr_entry]
 
   val controller =
-    new DucrEntryController(
-      mockAuthAction,
-      mockJourneyAction,
-      mockAmendmentDraftFilterAction,
-      mockExportsCacheService,
-      navigator,
-      stubMessagesControllerComponents(),
-      ducrEntryPage
-    )(ec)
+    new DucrEntryController(mockAuthAction, mockJourneyAction, mockExportsCacheService, navigator, stubMessagesControllerComponents(), ducrEntryPage)(
+      ec
+    )
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -58,6 +53,8 @@ class DucrEntryControllerSpec extends ControllerSpec with GivenWhenThen {
 
     reset(ducrEntryPage)
   }
+
+  def nextPageOnTypes: Seq[NextPageOnType] = allDeclarationTypes.map(NextPageOnType(_, LocalReferenceNumberController.displayPage))
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration())
@@ -91,35 +88,18 @@ class DucrEntryControllerSpec extends ControllerSpec with GivenWhenThen {
         }
       }
     }
-
-    onEveryDeclarationJourney(withStatus(DeclarationStatus.AMENDMENT_DRAFT)) { implicit request =>
-      "return 303 (SEE_OTHER) and redirect" which {
-        "redirects to /saved-summary" when {
-          "AMENDMENT_DRAFT" in {
-            withNewCaching(request.cacheModel)
-
-            val result = controller.displayPage(getRequest())
-            status(result) must be(SEE_OTHER)
-            redirectLocation(result) mustBe Some(controllers.declaration.routes.SummaryController.displayPage.url)
-          }
-        }
-      }
-    }
   }
 
-  "DucrEntryController on submitDucr" should {
-
+  "DucrEntryController on submitForm" should {
     onJourney(STANDARD, OCCASIONAL, SIMPLIFIED, CLEARANCE) { request =>
       "return 400 (BAD_REQUEST)" when {
-
         "user enters incorrect data" in {
           withNewCaching(request.cacheModel)
           val incorrectForm = Json.toJson(Ducr("1234"))
 
-          val result = controller.submitDucr()(postRequest(incorrectForm))
+          val result = controller.submitForm()(postRequest(incorrectForm))
           status(result) must be(BAD_REQUEST)
         }
-
       }
 
       "change to uppercase any lowercase letter entered in the DUCR field" in {
@@ -127,45 +107,24 @@ class DucrEntryControllerSpec extends ControllerSpec with GivenWhenThen {
 
         val ducr = "9gb123456664559-1abc"
         val correctForm = Json.toJson(Ducr(ducr))
-        val result = controller.submitDucr()(postRequest(correctForm))
+        val result = controller.submitForm()(postRequest(correctForm))
 
         And("return 303 (SEE_OTHER)")
         await(result) mustBe aRedirectToTheNextPage
 
         val declaration = theCacheModelUpdated
         declaration.consignmentReferences.head.ducr.get.ducr mustBe ducr.toUpperCase
-
       }
 
       "return 303 (SEE_OTHER) and redirect to 'Lrn' page" in {
-
         val correctForm = Json.toJson(Ducr(DUCR))
         withNewCaching(request.cacheModel)
 
-        val result = controller.submitDucr()(postRequest(correctForm))
+        val result = controller.submitForm()(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe routes.LocalReferenceNumberController.displayPage
+        thePageNavigatedTo mustBe LocalReferenceNumberController.displayPage
       }
     }
-
-    onEveryDeclarationJourney(withStatus(DeclarationStatus.AMENDMENT_DRAFT)) { implicit request =>
-      "return 303 (SEE_OTHER) and redirect" which {
-        "redirects to /saved-summary" when {
-          "AMENDMENT_DRAFT" in {
-
-            val correctForm = Json.toJson(Ducr(DUCR))
-
-            withNewCaching(request.cacheModel)
-
-            val result = controller.submitDucr(postRequest(correctForm))
-            status(result) must be(SEE_OTHER)
-            redirectLocation(result) mustBe Some(controllers.declaration.routes.SummaryController.displayPage.url)
-          }
-        }
-      }
-    }
-
   }
-
 }

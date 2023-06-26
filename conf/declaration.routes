@@ -33,13 +33,13 @@ POST        /do-you-have-ducr                    controllers.declaration.DucrCho
 
 GET         /ducr-entry                          controllers.declaration.DucrEntryController.displayPage
 
-POST        /ducr-entry                          controllers.declaration.DucrEntryController.submitDucr
+POST        /ducr-entry                          controllers.declaration.DucrEntryController.submitForm
 
 # LRN
 
 GET         /local-reference-number              controllers.declaration.LocalReferenceNumberController.displayPage
 
-POST        /local-reference-number              controllers.declaration.LocalReferenceNumberController.submitLrn
+POST        /local-reference-number              controllers.declaration.LocalReferenceNumberController.submitForm
 
 # Trader reference
 
@@ -57,7 +57,7 @@ POST        /confirm-ducr                       controllers.declaration.ConfirmD
 
 GET         /consignment-references              controllers.declaration.ConsignmentReferencesController.displayPage
 
-POST        /consignment-references              controllers.declaration.ConsignmentReferencesController.submitConsignmentReferences
+POST        /consignment-references              controllers.declaration.ConsignmentReferencesController.submitForm
 
 # MUCR
 
