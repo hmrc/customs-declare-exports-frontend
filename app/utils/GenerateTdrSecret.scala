@@ -25,8 +25,8 @@ object GenerateTdrSecret {
       sys.exit(1)
     } else {
       val tdrHashSalt = args(0)
-      val eori = args(1)
+      val eoris = args(1).split(",")
 
-      println(generateHashOfValue(eori, tdrHashSalt))
+      eoris.foreach(eori => println(s"${eori},${generateHashOfValue(eori, tdrHashSalt)}"))
     }
 }
