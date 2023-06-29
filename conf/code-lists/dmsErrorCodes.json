@@ -471,12 +471,12 @@
   },
   {
     "code": "CDS12141",
-    "en": "Relation Error: Incompatible goods movements declared. AI codes 'NIDOM' and 'NIIMP' must not be entered together on the same declaration",
+    "en": "Relation Error: Incompatible goods movements declared. Additional Information codes 'NIDOM' and 'NIIMP' must not be entered together on the same declaration",
     "cy": "Gwall Perthynas: Symudiadau nwyddau anghydnaws wedi\u2019u datgan. Mae\u2019n rhaid peidio \u00e2 nodi codau AI \u2018NIDOM\u2019 a \u2018NIIMP\u2019 gyda\u2019i gilydd ar yr un datganiad"
   },
   {
     "code": "CDS12143",
-    "en": "Incompatible goods movements declared. AI codes 'NIREM' and 'NIAID' must not be entered together on the same goods item on a declaration",
+    "en": "Incompatible goods movements declared. Additional Information codes 'NIREM' and 'NIAID' must not be entered together on the same goods item on a declaration",
     "cy": "Symudiadau nwyddau anghydnaws wedi\u2019u datgan. Mae\u2019n rhaid peidio \u00e2 nodi codau AI \u2018NIREM\u2019 a \u2018NIAID\u2019 gyda\u2019i gilydd ar yr un eitem o nwyddau ar ddatganiad"
   },
   {
@@ -611,27 +611,27 @@
   },
   {
     "code": "CDS40070",
-    "en": "When AI code 'NIIMP' is entered at item level in D.E. 2/2, it must be declared on all goods items in the declaration",
+    "en": "When Additional Information code 'NIIMP' is entered at item level in D.E. 2/2, it must be declared on all goods items in the declaration",
     "cy": "Pan fydd cod AI \u2018NIIMP\u2019 yn cael ei nodi ar lefel yr eitem yn D.E. 2/2, mae\u2019n rhaid ei ddatgan ar yr holl eitemau o nwyddau yn y datganiad"
   },
   {
     "code": "CDS40071",
-    "en": "When AI code 'NIDOM' is entered at item level in D.E. 2/2, it must be declared on all goods items in the declaration",
+    "en": "When Additional Information code 'NIDOM' is entered at item level in D.E. 2/2, it must be declared on all goods items in the declaration",
     "cy": "Pan fydd cod AI \u2018NIDOM\u2019 yn cael ei nodi ar lefel yr eitem yn D.E. 2/2, mae\u2019n rhaid ei ddatgan ar yr holl eitemau o nwyddau yn y datganiad"
   },
   {
     "code": "CDS40072",
-    "en": "When AI code 'NIEXP' is entered at item level in D.E. 2/2, it must be declared on all goods items in the declaration",
+    "en": "When Additional Information code 'NIEXP' is entered at item level in D.E. 2/2, it must be declared on all goods items in the declaration",
     "cy": "Pan fydd cod AI \u2018NIEXP\u2019 yn cael ei nodi ar lefel yr eitem yn D.E. 2/2, mae\u2019n rhaid ei ddatgan ar yr holl eitemau o nwyddau yn y datganiad"
   },
   {
     "code": "CDS40073",
-    "en": "When de-risking AI code 'NIREM' is entered at item level in D.E. 2/2, either 'NIIMP' or 'NIDOM' AI codes must also be entered at item level on the same goods item",
+    "en": "When de-risking Additional Information code 'NIREM' is entered at item level in D.E. 2/2, either 'NIIMP' or 'NIDOM' Additional Information codes must also be entered at item level on the same goods item",
     "cy": "Pan fydd cod AI \u2018NIREM\u2019 dad-risgio\u2019n cael ei nodi ar lefel yr eitem yn D.E. 2/2, mae\u2019n rhaid hefyd nodi naill ai cod AI \u2018NIIMP\u2019 neu \u2018NIDOM\u2019 ar lefel yr eitem ar yr un eitem o nwyddau"
   },
   {
     "code": "CDS40074",
-    "en": "When subsidy AI code 'NIAID' is entered at item level in D.E. 2/2, either 'NIIMP' or 'NIDOM' AI codes must also be entered at item level on the same goods item",
+    "en": "When subsidy Additional Information code 'NIAID' is entered at item level in D.E. 2/2, either 'NIIMP' or 'NIDOM' Additional Information codes must also be entered at item level on the same goods item",
     "cy": "Pan fydd cod cymhorthdal AI \u2018NIAID\u2019 yn cael ei nodi ar lefel yr eitem yn D.E. 2/2, mae\u2019n rhaid hefyd nodi naill ai cod AI \u2018NIIMP\u2019 neu \u2018NIDOM\u2019 ar lefel yr eitem ar yr un eitem o nwyddau"
   },
   {

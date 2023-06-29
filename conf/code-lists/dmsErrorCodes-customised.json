@@ -341,7 +341,7 @@
   },
   {
     "code": "CDS12106",
-    "en": "An appropriate Additional Information (AI) code is required with the additional procedure code 1CL",
+    "en": "An appropriate Additional Information code is required with the additional procedure code 1CL",
     "cy": "Mae angen cod Gwybodaeth Ychwanegol (AI) priodol gyda\u00e2\u0080\u0099r cod gweithdrefn ychwanegol 1CL"
   },
   {
@@ -461,7 +461,7 @@
   },
   {
     "code": "CDS12139",
-    "en": "You have not provided the Additional Information (AI) Code OVR01 required for the declared manual tax amount in data element 4/6 or 4/7",
+    "en": "You have not provided the Additional Information Code OVR01 required for the declared manual tax amount in data element 4/6 or 4/7",
     "cy": "Nid ydych wedi rhoi\u00e2\u0080\u0099r Cod Gwybodaeth Ychwanegol (AI) OVR01 sy\u00e2\u0080\u0099n ofynnol ar gyfer swm y dreth law a ddatganwyd yn elfen ddata 4/6 neu 4/7"
   },
   {
@@ -491,7 +491,7 @@
   },
   {
     "code": "CDS12147",
-    "en": "AI code UVC01 may only be used on an amendment",
+    "en": "Additional Information code UVC01 may only be used on an amendment",
     "cy": "Gellir defnyddio cod AI UVC01 ar ddiwygiad yn unig"
   },
   {
@@ -611,27 +611,27 @@
   },
   {
     "code": "CDS40070",
-    "en": "Additional information code NIIMP when used on one item must be entered on all items",
+    "en": "Additional Information code NIIMP when used on one item must be entered on all items",
     "cy": "Mae\u00e2\u0080\u0099n rhaid nodi cod gwybodaeth ychwanegol NIIMP ar bob eitem pan gaiff ei ddefnyddio ar un eitem"
   },
   {
     "code": "CDS40071",
-    "en": "Additional information code NIDOM when used on one item must be entered on all items",
+    "en": "Additional Information code NIDOM when used on one item must be entered on all items",
     "cy": "Mae\u00e2\u0080\u0099n rhaid nodi cod gwybodaeth ychwanegol NIDOM ar bob eitem pan gaiff ei ddefnyddio ar un eitem"
   },
   {
     "code": "CDS40072",
-    "en": "Additional information code NIEXP when used on one item must be entered on all items",
+    "en": "Additional Information code NIEXP when used on one item must be entered on all items",
     "cy": "Mae\u00e2\u0080\u0099n rhaid nodi cod gwybodaeth ychwanegol NIEXP ar bob eitem pan gaiff ei ddefnyddio ar un eitem"
   },
   {
     "code": "CDS40073",
-    "en": "NIREM additional information (AI) code may not be declared in isolation; NIDOM or NIIMP must also be declared on the same item",
+    "en": "NIREM Additional Information code may not be declared in isolation; NIDOM or NIIMP must also be declared on the same item",
     "cy": "Ni chaniateir datgan cod gwybodaeth ychwanegol NIREM (AI) ar ei ben ei hun; mae\u00e2\u0080\u0099n rhaid datgan NIDOM neu NIIMP ar yr un eitem hefyd"
   },
   {
     "code": "CDS40074",
-    "en": "You have not entered either 'NIIMP' or 'NIDOM' AI codes when you declared subsidy AI code 'NIAID'. Either of these codes are required to be entered at item level on the same good item",
+    "en": "You have not entered either 'NIIMP' or 'NIDOM' Additional Information codes when you declared subsidy Additional Information code 'NIAID'. Either of these codes are required to be entered at item level on the same good item",
     "cy": "Nid ydych wedi nodi naill ai codau AI \u00e2\u0080\u0098NIIMP\u00e2\u0080\u0099 neu \u00e2\u0080\u0098NIDOM\u00e2\u0080\u0099 pan wnaethoch ddatgan cod cymhorthdal AI \u00e2\u0080\u0098NIAID\u00e2\u0080\u0099. Mae\u00e2\u0080\u0099n ofynnol nodi\u00e2\u0080\u0099r naill neu\u00e2\u0080\u0099r llall o\u00e2\u0080\u0099r codau hyn ar lefel yr eitem ar yr un eitem o nwydd"
   },
   {
