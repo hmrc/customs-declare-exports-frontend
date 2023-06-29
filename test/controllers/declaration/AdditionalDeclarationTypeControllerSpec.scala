@@ -17,13 +17,12 @@
 package controllers.declaration
 
 import base.ControllerSpec
+import controllers.actions.AmendmentDraftFilterSpec
 import controllers.declaration.routes.{DeclarantDetailsController, DucrChoiceController}
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypePage.radioButtonGroupId
-import models.DeclarationType
 import models.DeclarationType._
-import models.declaration.DeclarationStatus
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
@@ -34,14 +33,13 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.declaration.additional_declaration_type
 
-class AdditionalDeclarationTypeControllerSpec extends ControllerSpec {
+class AdditionalDeclarationTypeControllerSpec extends ControllerSpec with AmendmentDraftFilterSpec {
 
   val additionalDeclarationTypePage = mock[additional_declaration_type]
 
   val controller = new AdditionalDeclarationTypeController(
     mockAuthAction,
     mockJourneyAction,
-    mockAmendmentDraftFilterAction,
     mockExportsCacheService,
     navigator,
     stubMessagesControllerComponents(),
@@ -59,6 +57,10 @@ class AdditionalDeclarationTypeControllerSpec extends ControllerSpec {
     reset(additionalDeclarationTypePage)
   }
 
+  def nextPageOnTypes: Seq[NextPageOnType] =
+    allDeclarationTypesExcluding(CLEARANCE).map(NextPageOnType(_, DeclarantDetailsController.displayPage)) :+
+      NextPageOnType(CLEARANCE, DucrChoiceController.displayPage)
+
   def theResponseForm: Form[AdditionalDeclarationType] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[AdditionalDeclarationType]])
     verify(additionalDeclarationTypePage).apply(captor.capture())(any(), any())
@@ -71,12 +73,12 @@ class AdditionalDeclarationTypeControllerSpec extends ControllerSpec {
     theResponseForm
   }
 
-  "AdditionalDeclarationTypeController.displayOutcomePage" should {
+  "AdditionalDeclarationTypeController.displayPage" should {
 
     "return 200 (OK)" when {
 
       "cache is empty and" when {
-        DeclarationType.values.foreach { declarationType =>
+        allDeclarationTypes.foreach { declarationType =>
           s"the journey selected was $declarationType" in {
             withNewCaching(aDeclaration(withType(declarationType)))
             val result = controller.displayPage(getRequest())
@@ -98,25 +100,13 @@ class AdditionalDeclarationTypeControllerSpec extends ControllerSpec {
         }
       }
     }
-
-    "return 303 (SEE_OTHER)" when {
-      "AMENDMENT_DRAFT" which {
-        "redirects to /saved-summary" in {
-          withNewCaching(aDeclaration(withStatus(DeclarationStatus.AMENDMENT_DRAFT)))
-
-          val result = controller.displayPage(getRequest())
-          status(result) must be(SEE_OTHER)
-          redirectLocation(result) mustBe Some(controllers.declaration.routes.SummaryController.displayPage.url)
-        }
-      }
-    }
   }
 
   "AdditionalDeclarationTypeController.submitForm" should {
 
     "return 400 (BAD_REQUEST)" when {
 
-      DeclarationType.values.foreach { declarationType =>
+      allDeclarationTypes.foreach { declarationType =>
         s"the journey selected was $declarationType and" when {
 
           s"no value has been selected" in {
@@ -130,20 +120,6 @@ class AdditionalDeclarationTypeControllerSpec extends ControllerSpec {
             val result = controller.submitForm()(postRequest(JsString("x")))
             status(result) must be(BAD_REQUEST)
           }
-        }
-      }
-    }
-
-    "return 303 (SEE_OTHER)" when {
-      "AMENDMENT_DRAFT" which {
-        "redirects to /saved-summary" in {
-          withNewCaching(aDeclaration(withStatus(DeclarationStatus.AMENDMENT_DRAFT), withMucr()))
-
-          val correctForm = Json.obj(radioButtonGroupId -> AdditionalDeclarationType.values.head.toString)
-
-          val result = controller.submitForm()(postRequest(correctForm))
-          status(result) must be(SEE_OTHER)
-          redirectLocation(result) mustBe Some(controllers.declaration.routes.SummaryController.displayPage.url)
         }
       }
     }

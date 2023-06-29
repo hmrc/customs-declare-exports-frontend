@@ -17,11 +17,11 @@
 package controllers.declaration
 
 import base.ControllerSpec
+import controllers.actions.AmendmentDraftFilterSpec
+import controllers.declaration.routes.{DeclarantExporterController, EntryIntoDeclarantsRecordsController}
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
-import models.DeclarationType
-import models.DeclarationType.{OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
-import models.declaration.DeclarationStatus
+import models.DeclarationType._
 import models.requests.JourneyRequest
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -34,14 +34,13 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.declaration.link_ducr_to_mucr
 
-class LinkDucrToMucrControllerSpec extends ControllerSpec {
+class LinkDucrToMucrControllerSpec extends ControllerSpec with AmendmentDraftFilterSpec {
 
   private val linkDucrToMucrPage = mock[link_ducr_to_mucr]
 
   val controller = new LinkDucrToMucrController(
     mockAuthAction,
     mockJourneyAction,
-    mockAmendmentDraftFilterAction,
     mockExportsCacheService,
     navigator,
     stubMessagesControllerComponents(),
@@ -51,7 +50,7 @@ class LinkDucrToMucrControllerSpec extends ControllerSpec {
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    withNewCaching(aDeclaration(withType(DeclarationType.STANDARD)))
+    withNewCaching(aDeclaration(withType(STANDARD)))
     when(linkDucrToMucrPage.apply(any[Form[YesNoAnswer]])(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
@@ -59,6 +58,10 @@ class LinkDucrToMucrControllerSpec extends ControllerSpec {
     reset(linkDucrToMucrPage)
     super.afterEach()
   }
+
+  def nextPageOnTypes: Seq[NextPageOnType] =
+    allDeclarationTypesExcluding(CLEARANCE).map(NextPageOnType(_, DeclarantExporterController.displayPage)) :+
+      NextPageOnType(CLEARANCE, EntryIntoDeclarantsRecordsController.displayPage)
 
   def theResponseForm: Form[YesNoAnswer] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[YesNoAnswer]])
@@ -89,18 +92,6 @@ class LinkDucrToMucrControllerSpec extends ControllerSpec {
         verifyPageInvoked
       }
     }
-
-    "return 303 (SEE_OTHER)" when {
-      "AMENDMENT_DRAFT" which {
-        "redirects to /saved-summary" in {
-          withNewCaching(aDeclaration(withStatus(DeclarationStatus.AMENDMENT_DRAFT)))
-
-          val result = controller.displayPage(getRequest())
-          status(result) must be(SEE_OTHER)
-          redirectLocation(result) mustBe Some(controllers.declaration.routes.SummaryController.displayPage.url)
-        }
-      }
-    }
   }
 
   "LinkDucrToMucrController on submitForm" should {
@@ -125,20 +116,6 @@ class LinkDucrToMucrControllerSpec extends ControllerSpec {
       onClearance { implicit request =>
         "answer is 'no'" in {
           verifyRedirect(YesNoAnswers.no, routes.EntryIntoDeclarantsRecordsController.displayPage)
-        }
-      }
-    }
-
-    "return 303 (SEE_OTHER)" when {
-      "AMENDMENT_DRAFT" which {
-        "redirects to /saved-summary" in {
-          withNewCaching(aDeclaration(withStatus(DeclarationStatus.AMENDMENT_DRAFT), withMucr()))
-
-          val correctForm = Json.obj("yesNo" -> YesNoAnswers.yes)
-
-          val result = controller.submitForm()(postRequest(correctForm))
-          status(result) must be(SEE_OTHER)
-          redirectLocation(result) mustBe Some(controllers.declaration.routes.SummaryController.displayPage.url)
         }
       }
     }

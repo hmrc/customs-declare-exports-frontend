@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import controllers.actions.{AuthAction, JourneyAction}
+import controllers.actions.{AmendmentDraftFilter, AuthAction, JourneyAction}
 import controllers.declaration.routes.ConfirmDucrController
 import controllers.navigation.Navigator
 import forms.Ducr
@@ -25,7 +25,7 @@ import models.DeclarationType.{allDeclarationTypesExcluding, SUPPLEMENTARY}
 import models.ExportsDeclaration
 import models.requests.JourneyRequest
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
@@ -36,16 +36,22 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class TraderReferenceController @Inject() (
-  authorise: AuthAction,
-  getJourney: JourneyAction,
+  authenticate: AuthAction,
+  journeyAction: JourneyAction,
   navigator: Navigator,
   mcc: MessagesControllerComponents,
   override val exportsCacheService: ExportsCacheService,
   traderReferencePage: trader_reference
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with WithUnsafeDefaultFormBinding with SubmissionErrors {
+    extends FrontendController(mcc) with AmendmentDraftFilter with I18nSupport with ModelCacheable with SubmissionErrors
+    with WithUnsafeDefaultFormBinding {
 
-  def displayPage: Action[AnyContent] = (authorise andThen getJourney(allDeclarationTypesExcluding(SUPPLEMENTARY))) { implicit request =>
+  val nextPage: JourneyRequest[_] => Call = _ => ConfirmDucrController.displayPage
+  private val validTypes = allDeclarationTypesExcluding(SUPPLEMENTARY)
+
+  private val actionFilters = authenticate andThen journeyAction(validTypes) andThen nextPageIfAmendmentDraft
+
+  val displayPage: Action[AnyContent] = actionFilters { implicit request =>
     val ducr = request.cacheModel.ducr
     val traderReference = ducr.map(ducr => TraderReference(ducr.ducr.split('-')(1)))
     val form = TraderReference.form.withSubmissionErrors
@@ -53,12 +59,12 @@ class TraderReferenceController @Inject() (
     Ok(traderReferencePage(traderReference.fold(form)(value => form.fill(value))))
   }
 
-  def submitForm(): Action[AnyContent] = (authorise andThen getJourney(allDeclarationTypesExcluding(SUPPLEMENTARY))).async { implicit request =>
+  val submitForm: Action[AnyContent] = actionFilters.async { implicit request =>
     TraderReference.form
       .bindFromRequest()
       .fold(
         formWithErrors => Future.successful(BadRequest(traderReferencePage(formWithErrors))),
-        traderReference => updateCache(generateDucr(traderReference)).map(_ => navigator.continueTo(ConfirmDucrController.displayPage))
+        traderReference => updateCache(generateDucr(traderReference)).map(_ => navigator.continueTo(nextPage(request)))
       )
   }
 

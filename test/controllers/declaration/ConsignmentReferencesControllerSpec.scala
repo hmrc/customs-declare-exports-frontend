@@ -18,10 +18,12 @@ package controllers.declaration
 
 import base.ControllerSpec
 import base.ExportsTestData.eidrDateStamp
+import controllers.actions.AmendmentDraftFilterSpec
+import controllers.declaration.routes.{DeclarantExporterController, LinkDucrToMucrController}
 import forms.declaration.ConsignmentReferences
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.{SUPPLEMENTARY_EIDR, SUPPLEMENTARY_SIMPLIFIED}
 import forms.{Ducr, Lrn, LrnValidator}
-import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
+import models.DeclarationType._
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
@@ -35,7 +37,7 @@ import views.html.declaration.consignment_references
 
 import scala.concurrent.Future
 
-class ConsignmentReferencesControllerSpec extends ControllerSpec with GivenWhenThen {
+class ConsignmentReferencesControllerSpec extends ControllerSpec with AmendmentDraftFilterSpec with GivenWhenThen {
 
   private val lrnValidator = mock[LrnValidator]
   private val consignmentReferencesPage = mock[consignment_references]
@@ -63,6 +65,10 @@ class ConsignmentReferencesControllerSpec extends ControllerSpec with GivenWhenT
 
     reset(lrnValidator, consignmentReferencesPage)
   }
+
+  def nextPageOnTypes: Seq[NextPageOnType] =
+    allDeclarationTypesExcluding(SUPPLEMENTARY).map(NextPageOnType(_, LinkDucrToMucrController.displayPage)) :+
+      NextPageOnType(SUPPLEMENTARY, DeclarantExporterController.displayPage)
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration())
@@ -98,7 +104,7 @@ class ConsignmentReferencesControllerSpec extends ControllerSpec with GivenWhenT
     }
   }
 
-  "ConsignmentReferencesController on submitConsignmentReferences" should {
+  "ConsignmentReferencesController on submitForm" should {
 
     onEveryDeclarationJourney() { request =>
       "return 400 (BAD_REQUEST)" when {
@@ -107,7 +113,7 @@ class ConsignmentReferencesControllerSpec extends ControllerSpec with GivenWhenT
           withNewCaching(request.cacheModel)
           val incorrectForm = Json.toJson(ConsignmentReferences(Some(Ducr("1234")), Some(Lrn(""))))
 
-          val result = controller.submitConsignmentReferences()(postRequest(incorrectForm))
+          val result = controller.submitForm()(postRequest(incorrectForm))
           status(result) must be(BAD_REQUEST)
         }
 
@@ -116,7 +122,7 @@ class ConsignmentReferencesControllerSpec extends ControllerSpec with GivenWhenT
           withNewCaching(request.cacheModel)
           val correctForm = Json.toJson(ConsignmentReferences(Some(Ducr(DUCR)), Some(LRN)))
 
-          val result = controller.submitConsignmentReferences()(postRequest(correctForm))
+          val result = controller.submitForm()(postRequest(correctForm))
           status(result) must be(BAD_REQUEST)
         }
       }
@@ -126,7 +132,7 @@ class ConsignmentReferencesControllerSpec extends ControllerSpec with GivenWhenT
 
         val ducr = "9gb123456664559-1abc"
         val correctForm = Json.toJson(ConsignmentReferences(Some(Ducr(ducr)), Some(LRN)))
-        val result = controller.submitConsignmentReferences()(postRequest(correctForm))
+        val result = controller.submitForm()(postRequest(correctForm))
 
         And("return 303 (SEE_OTHER)")
         await(result) mustBe aRedirectToTheNextPage
@@ -142,7 +148,7 @@ class ConsignmentReferencesControllerSpec extends ControllerSpec with GivenWhenT
       "return 303 (SEE_OTHER) and redirect to 'Link DUCR to MUCR' page" in {
         withNewCaching(request.cacheModel)
 
-        val result = controller.submitConsignmentReferences()(postRequest(correctForm))
+        val result = controller.submitForm()(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe routes.LinkDucrToMucrController.displayPage
@@ -157,7 +163,7 @@ class ConsignmentReferencesControllerSpec extends ControllerSpec with GivenWhenT
           withNewCaching(request.cacheModel)
           val correctForm = Json.toJson(ConsignmentReferences(Some(Ducr(DUCR)), Some(LRN), Some(MRN)))
 
-          val result = controller.submitConsignmentReferences()(postRequest(correctForm))
+          val result = controller.submitForm()(postRequest(correctForm))
 
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe routes.DeclarantExporterController.displayPage
@@ -168,7 +174,7 @@ class ConsignmentReferencesControllerSpec extends ControllerSpec with GivenWhenT
           withNewCaching(request.cacheModel)
           val correctForm = Json.toJson(ConsignmentReferences(Some(Ducr(DUCR)), Some(LRN), None, Some(eidrDateStamp)))
 
-          val result = controller.submitConsignmentReferences()(postRequest(correctForm))
+          val result = controller.submitForm()(postRequest(correctForm))
 
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe routes.DeclarantExporterController.displayPage

@@ -46,11 +46,11 @@ class DeclarationChoiceController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with Logging with ModelCacheable with WithUnsafeDefaultFormBinding {
 
-  def displayPage: Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
+  val displayPage: Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
     request.declarationId match {
-      case Some(id) =>
-        exportsCacheService.get(id).map {
-          case Some(declaration) if declaration.isAmendmentDraft => Redirect(routes.SummaryController.displayPage)
+      case Some(declarationId) =>
+        exportsCacheService.get(declarationId).map {
+          case Some(declaration) if declaration.isAmendmentDraft => nextPage(declarationId)
           case Some(declaration)                                 => Ok(choicePage(form.fill(DeclarationChoice(declaration.`type`))))
           case _                                                 => Ok(choicePage(form))
         }
@@ -59,28 +59,34 @@ class DeclarationChoiceController @Inject() (
     }
   }
 
-  def submitChoice(): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
-    form
-      .bindFromRequest()
-      .fold(
-        formWithErrors => Future.successful(BadRequest(choicePage(formWithErrors))),
-        declarationType =>
-          request.declarationId match {
-            case Some(id) =>
-              val updatedDeclaration: Future[Option[ExportsDeclaration]] = exportsCacheService.get(id).map { maybeDeclaration =>
-                maybeDeclaration
-                  .map(_.updateType(declarationType.value))
-                  .map(clearAuthorisationProcedureCodeChoiceIfRequired)
-              }
+  val submitChoice: Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
+    val nextPageOrMaybeDeclaration = request.declarationId match {
+      case Some(declarationId) =>
+        exportsCacheService.get(declarationId).map {
+          case Some(declaration) if declaration.isAmendmentDraft => Left(nextPage(declarationId))
+          case Some(declaration)                                 => Right(Some(declaration))
+          case _                                                 => Right(None)
+        }
 
-              updatedDeclaration flatMap {
-                case Some(declaration) if declaration.isAmendmentDraft => Future.successful(Redirect(routes.SummaryController.displayPage))
-                case maybeDeclaration                                  => updateDeclarationType(maybeDeclaration, id).map(_ => nextPage(id))
-              }
+      case _ => Future.successful(Right(None))
+    }
 
-            case _ => create(declarationType.value).map(created => nextPage(created.id))
-          }
-      )
+    nextPageOrMaybeDeclaration.flatMap {
+      case Left(result) => Future.successful(result)
+      case Right(maybeDeclaration) =>
+        form
+          .bindFromRequest()
+          .fold(
+            formWithErrors => Future.successful(BadRequest(choicePage(formWithErrors))),
+            declarationType =>
+              maybeDeclaration
+                .map(_.updateType(declarationType.value))
+                .map(clearAuthorisationProcedureCodeChoiceIfRequired)
+                .map(exportsCacheService.update(_))
+                .getOrElse(create(declarationType.value))
+                .map(declaration => nextPage(declaration.id))
+          )
+    }
   }
 
   private def clearAuthorisationProcedureCodeChoiceIfRequired(declaration: ExportsDeclaration): ExportsDeclaration =
@@ -101,14 +107,4 @@ class DeclarationChoiceController @Inject() (
   private def nextPage(declarationId: String)(implicit request: RequestHeader): Result =
     Redirect(AdditionalDeclarationTypeController.displayPage)
       .addingToSession(SessionHelper.declarationUuid -> declarationId)
-
-  private def updateDeclarationType(maybeDeclaration: Option[ExportsDeclaration], id: String)(
-    implicit hc: HeaderCarrier
-  ): Future[Option[ExportsDeclaration]] =
-    maybeDeclaration match {
-      case Some(declaration) => exportsCacheService.update(declaration).map(Some(_))
-      case None =>
-        logger.error(s"Failed to find declaration for id $id")
-        Future.successful(None)
-    }
 }

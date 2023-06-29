@@ -17,12 +17,14 @@
 package controllers.declaration
 
 import base.ControllerSpec
+import controllers.actions.AmendmentDraftFilterSpec
+import controllers.declaration.routes.DucrEntryController
 import forms.Ducr
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.ConsignmentReferences
 import mock.ErrorHandlerMocks
-import models.DeclarationType.SUPPLEMENTARY
+import models.DeclarationType.{allDeclarationTypesExcluding, SUPPLEMENTARY}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.{reset, verify, when}
@@ -34,11 +36,11 @@ import play.api.test.Helpers.{await, redirectLocation, status}
 import play.twirl.api.HtmlFormat
 import views.html.declaration.confirm_ducr
 
-class ConfirmDucrControllerSpec extends ControllerSpec with ErrorHandlerMocks {
+class ConfirmDucrControllerSpec extends ControllerSpec with AmendmentDraftFilterSpec with ErrorHandlerMocks {
 
   private val confirmDucrPage = mock[confirm_ducr]
 
-  private val controller = new ConfirmDucrController(
+  val controller = new ConfirmDucrController(
     mockAuthAction,
     mockJourneyAction,
     navigator,
@@ -46,18 +48,6 @@ class ConfirmDucrControllerSpec extends ControllerSpec with ErrorHandlerMocks {
     mockExportsCacheService,
     confirmDucrPage
   )
-
-  override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
-    withNewCaching(aDeclaration(withConsignmentReferences(dummyConRefs)))
-    await(controller.displayPage(request))
-    theResponseForm
-  }
-
-  def theResponseForm: Form[YesNoAnswer] = {
-    val captor = ArgumentCaptor.forClass(classOf[Form[YesNoAnswer]])
-    verify(confirmDucrPage).apply(captor.capture(), any())(any(), any())
-    captor.getValue
-  }
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -69,6 +59,21 @@ class ConfirmDucrControllerSpec extends ControllerSpec with ErrorHandlerMocks {
   override protected def afterEach(): Unit = {
     reset(confirmDucrPage)
     super.afterEach()
+  }
+
+  def nextPageOnTypes: Seq[NextPageOnType] =
+    allDeclarationTypesExcluding(SUPPLEMENTARY).map(NextPageOnType(_, DucrEntryController.displayPage))
+
+  override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
+    withNewCaching(aDeclaration(withConsignmentReferences(dummyConRefs)))
+    await(controller.displayPage(request))
+    theResponseForm
+  }
+
+  def theResponseForm: Form[YesNoAnswer] = {
+    val captor = ArgumentCaptor.forClass(classOf[Form[YesNoAnswer]])
+    verify(confirmDucrPage).apply(captor.capture(), any())(any(), any())
+    captor.getValue
   }
 
   private val dummyConRefs = ConsignmentReferences(Some(Ducr("DUCR")))

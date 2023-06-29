@@ -16,12 +16,12 @@
 
 package controllers.declaration
 
-import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
-import controllers.actions.{AmendmentDraftFilterAction, AuthAction, JourneyAction}
+import controllers.actions.{AmendmentDraftFilter, AuthAction, JourneyAction}
+import controllers.declaration.routes.{DeclarantExporterController, EntryIntoDeclarantsRecordsController}
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.{form, YesNoAnswers}
+import models.DeclarationType.CLEARANCE
 import models.requests.JourneyRequest
 import models.{DeclarationType, ExportsDeclaration}
 import play.api.i18n.I18nSupport
@@ -31,19 +31,29 @@ import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.link_ducr_to_mucr
 
+import javax.inject.{Inject, Singleton}
+import scala.concurrent.{ExecutionContext, Future}
+
 @Singleton
 class LinkDucrToMucrController @Inject() (
   authenticate: AuthAction,
-  journeyType: JourneyAction,
-  amendmentDraftFilterAction: AmendmentDraftFilterAction,
+  journeyAction: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
   mcc: MessagesControllerComponents,
   linkDucrToMucrPage: link_ducr_to_mucr
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
+    extends FrontendController(mcc) with AmendmentDraftFilter with I18nSupport with ModelCacheable with SubmissionErrors
+    with WithUnsafeDefaultFormBinding {
 
-  def displayPage: Action[AnyContent] = (authenticate andThen journeyType andThen amendmentDraftFilterAction) { implicit request =>
+  val nextPage: JourneyRequest[_] => Call =
+    request =>
+      if (request.declarationType == CLEARANCE) EntryIntoDeclarantsRecordsController.displayPage
+      else DeclarantExporterController.displayPage
+
+  private val actionFilters = authenticate andThen journeyAction andThen nextPageIfAmendmentDraft
+
+  val displayPage: Action[AnyContent] = actionFilters { implicit request =>
     val frm = form().withSubmissionErrors
     request.cacheModel.linkDucrToMucr match {
       case Some(yesNoAnswer) => Ok(linkDucrToMucrPage(frm.fill(yesNoAnswer)))
@@ -51,7 +61,7 @@ class LinkDucrToMucrController @Inject() (
     }
   }
 
-  def submitForm(): Action[AnyContent] = (authenticate andThen journeyType andThen amendmentDraftFilterAction).async { implicit request =>
+  val submitForm: Action[AnyContent] = actionFilters.async { implicit request =>
     form()
       .bindFromRequest()
       .fold(
@@ -64,8 +74,8 @@ class LinkDucrToMucrController @Inject() (
     if (yesNoAnswer.answer == YesNoAnswers.yes) routes.MucrController.displayPage
     else {
       request.declarationType match {
-        case DeclarationType.CLEARANCE => routes.EntryIntoDeclarantsRecordsController.displayPage
-        case _                         => routes.DeclarantExporterController.displayPage
+        case DeclarationType.CLEARANCE => EntryIntoDeclarantsRecordsController.displayPage
+        case _                         => DeclarantExporterController.displayPage
       }
     }
 

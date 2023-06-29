@@ -17,13 +17,12 @@
 package controllers.declaration
 
 import base.ControllerSpec
+import controllers.actions.AmendmentDraftFilterSpec
 import controllers.declaration.routes.{DucrEntryController, TraderReferenceController}
 import controllers.routes.RootController
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
-import models.DeclarationType
 import models.DeclarationType._
-import models.declaration.DeclarationStatus
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
@@ -34,14 +33,13 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.declaration.ducr_choice
 
-class DucrChoiceControllerSpec extends ControllerSpec {
+class DucrChoiceControllerSpec extends ControllerSpec with AmendmentDraftFilterSpec {
 
   private val ducrChoicePage = mock[ducr_choice]
 
   val controller = new DucrChoiceController(
     mockAuthAction,
     mockJourneyAction,
-    mockAmendmentDraftFilterAction,
     mockExportsCacheService,
     navigator,
     stubMessagesControllerComponents(),
@@ -51,7 +49,7 @@ class DucrChoiceControllerSpec extends ControllerSpec {
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    withNewCaching(aDeclaration(withType(DeclarationType.STANDARD)))
+    withNewCaching(aDeclaration(withType(STANDARD)))
     when(ducrChoicePage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
@@ -59,6 +57,9 @@ class DucrChoiceControllerSpec extends ControllerSpec {
     reset(ducrChoicePage)
     super.afterEach()
   }
+
+  def nextPageOnTypes: Seq[NextPageOnType] =
+    allDeclarationTypesExcluding(SUPPLEMENTARY).map(NextPageOnType(_, DucrEntryController.displayPage))
 
   def theResponseForm: Form[YesNoAnswer] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[YesNoAnswer]])
@@ -80,20 +81,6 @@ class DucrChoiceControllerSpec extends ControllerSpec {
 
           val result = controller.displayPage(getRequest())
           status(result) must be(OK)
-        }
-      }
-    }
-
-    "return 303 (SEE_OTHER)" when {
-      List(STANDARD, CLEARANCE, SIMPLIFIED, OCCASIONAL).foreach { declarationType =>
-        s"journey is $declarationType" when {
-          "AMENDMENT_DRAFT" in {
-            withNewCaching(aDeclaration(withType(declarationType), withStatus(DeclarationStatus.AMENDMENT_DRAFT)))
-
-            val result = controller.displayPage(getRequest())
-            status(result) must be(SEE_OTHER)
-            redirectLocation(result) must be(Some(controllers.declaration.routes.SummaryController.displayPage.url))
-          }
         }
       }
     }
@@ -153,21 +140,6 @@ class DucrChoiceControllerSpec extends ControllerSpec {
 
             status(result) mustBe SEE_OTHER
             thePageNavigatedTo mustBe TraderReferenceController.displayPage
-          }
-        }
-      }
-
-      "return 303 (SEE_OTHER)" when {
-        List(STANDARD, CLEARANCE, SIMPLIFIED, OCCASIONAL).foreach { declarationType =>
-          s"journey is $declarationType" when {
-            "AMENDMENT_DRAFT" in {
-              withNewCaching(aDeclaration(withType(declarationType), withStatus(DeclarationStatus.AMENDMENT_DRAFT)))
-              val body = Json.obj(YesNoAnswer.formId -> YesNoAnswers.yes)
-
-              val result = controller.submitForm(postRequest(body))
-              status(result) must be(SEE_OTHER)
-              redirectLocation(result) must be(Some(controllers.declaration.routes.SummaryController.displayPage.url))
-            }
           }
         }
       }

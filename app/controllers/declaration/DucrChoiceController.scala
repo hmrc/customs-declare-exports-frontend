@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import controllers.actions.{AmendmentDraftFilterAction, AuthAction, JourneyAction}
+import controllers.actions.{AmendmentDraftFilter, AuthAction, JourneyAction}
 import controllers.declaration.routes.{DucrEntryController, TraderReferenceController}
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
@@ -25,7 +25,7 @@ import models.DeclarationType._
 import models.ExportsDeclaration
 import models.requests.JourneyRequest
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
@@ -37,23 +37,25 @@ import scala.concurrent.{ExecutionContext, Future}
 class DucrChoiceController @Inject() (
   authenticate: AuthAction,
   journeyAction: JourneyAction,
-  amendmentDraftFilterAction: AmendmentDraftFilterAction,
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
   mcc: MessagesControllerComponents,
   ducrChoicePage: ducr_choice
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
+    extends FrontendController(mcc) with AmendmentDraftFilter with I18nSupport with ModelCacheable with SubmissionErrors
+    with WithUnsafeDefaultFormBinding {
 
-  private val authAndAcceptedTypes =
-    authenticate andThen journeyAction(List(STANDARD, CLEARANCE, SIMPLIFIED, OCCASIONAL)) andThen amendmentDraftFilterAction
+  val nextPage: JourneyRequest[_] => Call = _ => DucrEntryController.displayPage
+  private val validTypes = allDeclarationTypesExcluding(SUPPLEMENTARY)
 
-  val displayPage: Action[AnyContent] = authAndAcceptedTypes { implicit request =>
+  private val actionFilters = authenticate andThen journeyAction(validTypes) andThen nextPageIfAmendmentDraft
+
+  val displayPage: Action[AnyContent] = actionFilters { implicit request =>
     val form = YesNoAnswer.form(errorKey = "declaration.ducr.choice.answer.empty").withSubmissionErrors
     Ok(ducrChoicePage(form))
   }
 
-  val submitForm: Action[AnyContent] = authAndAcceptedTypes.async { implicit request =>
+  val submitForm: Action[AnyContent] = actionFilters.async { implicit request =>
     YesNoAnswer
       .form(errorKey = "declaration.ducr.choice.answer.empty")
       .bindFromRequest()
@@ -61,7 +63,7 @@ class DucrChoiceController @Inject() (
         formWithErrors => Future.successful(BadRequest(ducrChoicePage(formWithErrors))),
         yesNoAnswer =>
           if (yesNoAnswer.answer == no) Future.successful(navigator.continueTo(TraderReferenceController.displayPage))
-          else updateCache.map(_ => navigator.continueTo(DucrEntryController.displayPage))
+          else updateCache.map(_ => navigator.continueTo(nextPage(request)))
       )
   }
 

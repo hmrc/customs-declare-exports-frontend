@@ -17,12 +17,12 @@
 package controllers.declaration
 
 import base.ControllerSpec
+import controllers.actions.AmendmentDraftFilterSpec
 import controllers.declaration.routes.{ConsignmentReferencesController, DeclarantExporterController, DucrChoiceController, NotEligibleController}
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.DeclarantEoriConfirmation
 import forms.declaration.DeclarantEoriConfirmation.isEoriKey
-import models.DeclarationType
-import models.DeclarationType.{OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
+import models.DeclarationType._
 import models.requests.SessionHelper
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -34,7 +34,7 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.declaration.declarant_details
 
-class DeclarantDetailsControllerSpec extends ControllerSpec {
+class DeclarantDetailsControllerSpec extends ControllerSpec with AmendmentDraftFilterSpec {
 
   private val declarantDetailsPage = mock[declarant_details]
 
@@ -50,7 +50,7 @@ class DeclarantDetailsControllerSpec extends ControllerSpec {
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY)))
+    withNewCaching(aDeclaration(withType(SUPPLEMENTARY)))
     when(declarantDetailsPage.apply(any[Form[DeclarantEoriConfirmation]])(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
@@ -58,6 +58,11 @@ class DeclarantDetailsControllerSpec extends ControllerSpec {
     super.afterEach()
     reset(declarantDetailsPage)
   }
+
+  def nextPageOnTypes: Seq[NextPageOnType] =
+    List(STANDARD, OCCASIONAL, SIMPLIFIED).map(NextPageOnType(_, DucrChoiceController.displayPage)) :+
+      NextPageOnType(CLEARANCE, DeclarantExporterController.displayPage) :+
+      NextPageOnType(SUPPLEMENTARY, ConsignmentReferencesController.displayPage)
 
   def theResponseForm: Form[DeclarantEoriConfirmation] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[DeclarantEoriConfirmation]])

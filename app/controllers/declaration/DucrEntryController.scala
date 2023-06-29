@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import controllers.actions.{AmendmentDraftFilterAction, AuthAction, JourneyAction}
+import controllers.actions.{AmendmentDraftFilter, AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.Ducr
 import forms.Ducr.form
@@ -34,16 +34,20 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class DucrEntryController @Inject() (
   authenticate: AuthAction,
-  journeyType: JourneyAction,
-  amendmentDraftFilterAction: AmendmentDraftFilterAction,
+  journeyAction: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
   mcc: MessagesControllerComponents,
   ducrEntryPage: ducr_entry
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
+    extends FrontendController(mcc) with AmendmentDraftFilter with I18nSupport with ModelCacheable with SubmissionErrors
+    with WithUnsafeDefaultFormBinding {
 
-  val displayPage: Action[AnyContent] = (authenticate andThen journeyType andThen amendmentDraftFilterAction) { implicit request =>
+  val nextPage: JourneyRequest[_] => Call = _ => routes.LocalReferenceNumberController.displayPage
+
+  private val actionFilters = authenticate andThen journeyAction andThen nextPageIfAmendmentDraft
+
+  val displayPage: Action[AnyContent] = actionFilters { implicit request =>
     val frm = form.withSubmissionErrors
     request.cacheModel.ducr match {
       case Some(data) => Ok(ducrEntryPage(frm.fill(data)))
@@ -51,7 +55,7 @@ class DucrEntryController @Inject() (
     }
   }
 
-  val submitDucr: Action[AnyContent] = (authenticate andThen journeyType andThen amendmentDraftFilterAction).async { implicit request =>
+  val submitForm: Action[AnyContent] = actionFilters.async { implicit request =>
     form
       .bindFromRequest()
       .fold(formWithErrors => Future.successful(BadRequest(ducrEntryPage(formWithErrors))), updateCacheAndContinue(_))
@@ -63,5 +67,5 @@ class DucrEntryController @Inject() (
         case Some(consignmentRefs) => Some(consignmentRefs.copy(ducr = Some(ducr)))
         case _                     => Some(ConsignmentReferences(Some(ducr), None))
       })
-    } map (_ => navigator.continueTo(routes.LocalReferenceNumberController.displayPage))
+    } map (_ => navigator.continueTo(nextPage(request)))
 }
