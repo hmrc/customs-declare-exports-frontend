@@ -107,13 +107,14 @@ class SubmissionServiceSpec
     val submissionId = "submissionId"
 
     "return None" when {
+
       "the declaration's parentDeclarationId is not defined" in {
         submissionService
           .submitAmendment(eori, aDeclaration(), legal, submissionId, false)(hc, global)
           .futureValue mustBe None
       }
-      "the declaration matching the parentDeclarationId is not found" in {
 
+      "the declaration matching the parentDeclarationId is not found" in {
         when(connector.findDeclaration(any())(any(), any())).thenReturn(Future.successful(None))
 
         val amendedDecl = aDeclaration(

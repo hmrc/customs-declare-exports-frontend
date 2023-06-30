@@ -46,12 +46,14 @@ trait SupplementaryNavigator extends CacheDependentNavigators {
   }
 
   val supplementaryItemPage: PartialFunction[DeclarationPage, String => Call] = {
-    case PackageInformation => routes.StatisticalValueController.displayPage
-    case CusCode            => routes.UNDangerousGoodsCodeController.displayPage
-    case NactCode           => routes.NactCodeSummaryController.displayPage
-    case NactCodeFirst      => routes.TaricCodeSummaryController.displayPage
-    case CommodityMeasure   => routes.PackageInformationSummaryController.displayPage
-    case page               => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on supplementary")
+    case AdditionalDocumentsRequired => routes.IsLicenceRequiredController.displayPage
+    case AdditionalDocumentsSummary  => routes.IsLicenceRequiredController.displayPage
+    case PackageInformation          => routes.StatisticalValueController.displayPage
+    case CusCode                     => routes.UNDangerousGoodsCodeController.displayPage
+    case NactCode                    => routes.NactCodeSummaryController.displayPage
+    case NactCodeFirst               => routes.TaricCodeSummaryController.displayPage
+    case CommodityMeasure            => routes.PackageInformationSummaryController.displayPage
+    case page                        => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on supplementary")
   }
 
   val supplementaryCacheDependent: PartialFunction[DeclarationPage, ExportsDeclaration => Call] = {
@@ -69,10 +71,7 @@ trait SupplementaryNavigator extends CacheDependentNavigators {
     case RepresentativeAgent       => representativeAgentPreviousPage
   }
 
-  val supplementaryCacheItemDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, String) => Call] = {
-    case AdditionalDocumentsRequired => additionalDocumentsSummaryPreviousPage
-    case AdditionalDocumentsSummary  => additionalDocumentsSummaryPreviousPage
-    case AdditionalDocument          => additionalDocumentsPreviousPage
+  val supplementaryCacheItemDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, String) => Call] = { case AdditionalDocument =>
+    additionalDocumentsPreviousPage
   }
-
 }

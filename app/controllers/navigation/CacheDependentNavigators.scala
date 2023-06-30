@@ -51,7 +51,12 @@ trait CacheDependentNavigators {
 
   protected def declarantIsExporterPreviousPage(cacheModel: ExportsDeclaration): Call =
     cacheModel.`type` match {
+      case CLEARANCE =>
+        if (cacheModel.isAmendmentDraft) routes.EntryIntoDeclarantsRecordsController.displayPage
+        else routes.DeclarantDetailsController.displayPage
+
       case SUPPLEMENTARY => routes.ConsignmentReferencesController.displayPage
+
       case _ =>
         if (cacheModel.mucr.isEmpty) routes.LinkDucrToMucrController.displayPage
         else routes.MucrController.displayPage
@@ -95,9 +100,6 @@ trait CacheDependentNavigators {
     if (isLicenseRequired) routes.IsLicenceRequiredController.displayPage(itemId)
     else routes.AdditionalDocumentsRequiredController.displayPage(itemId)
   }
-
-  protected def additionalDocumentsSummaryPreviousPage(cacheModel: ExportsDeclaration, itemId: String): Call =
-    routes.IsLicenceRequiredController.displayPage(itemId)
 
   protected def additionalDocumentsSummaryClearancePreviousPage(cacheModel: ExportsDeclaration, itemId: String): Call =
     if (cacheModel.listOfAdditionalInformationOfItem(itemId).nonEmpty)

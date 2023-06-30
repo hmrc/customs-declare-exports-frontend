@@ -48,6 +48,7 @@ class ConfirmDucrController @Inject() (
     with WithUnsafeDefaultFormBinding {
 
   val nextPage: JourneyRequest[_] => Call = _ => DucrEntryController.displayPage
+
   private val validTypes = allDeclarationTypesExcluding(SUPPLEMENTARY)
 
   private val actionFilters = authenticate andThen journeyAction(validTypes) andThen nextPageIfAmendmentDraft

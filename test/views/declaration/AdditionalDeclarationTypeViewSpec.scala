@@ -21,9 +21,8 @@ import config.AppConfig
 import controllers.declaration.routes.DeclarationChoiceController
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypePage.{form, radioButtonGroupId}
-import models.DeclarationType._
 import models.DeclarationType
-import models.declaration.DeclarationStatus
+import models.DeclarationType._
 import play.twirl.api.Html
 import views.declaration.spec.UnitViewSpec
 import views.helpers.CommonMessages
@@ -49,20 +48,6 @@ class AdditionalDeclarationTypeViewSpec extends UnitViewSpec with CommonMessages
           val backButton = view.getElementById("back-link")
           backButton.text mustBe messages(backToPreviousQuestionCaption)
           backButton must haveHref(DeclarationChoiceController.displayPage)
-        }
-
-        "hide the expected 'Back' button" when {
-          "AMENDMENT_DRAFT" in {
-
-            val view =
-              additionalTypePage(form)(
-                journeyRequest(aDeclaration(withType(declarationType), withStatus(DeclarationStatus.AMENDMENT_DRAFT))),
-                messages
-              )
-
-            val backButton = view.getElementById("back-link")
-            backButton must not(containMessage(backToPreviousQuestionCaption))
-          }
         }
 
         "display the expected section header" in {

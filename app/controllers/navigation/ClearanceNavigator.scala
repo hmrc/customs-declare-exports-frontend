@@ -39,7 +39,6 @@ trait ClearanceNavigator extends CacheDependentNavigators {
     case ExporterDetails              => routes.ExporterEoriNumberController.displayPage
     case DeclarantDetails             => routes.EntryIntoDeclarantsRecordsController.displayPage
     case PersonPresentingGoodsDetails => routes.EntryIntoDeclarantsRecordsController.displayPage
-    case DeclarantIsExporter          => routes.DeclarantDetailsController.displayPage
     case ContainerAdd                 => routes.TransportContainerController.displayContainerSummary
     case RoutingCountryQuestionPage   => routes.DestinationCountryController.displayPage
     case RemoveCountryPage            => routes.RoutingCountriesController.displayRoutingCountry
@@ -59,6 +58,7 @@ trait ClearanceNavigator extends CacheDependentNavigators {
 
   val clearanceCacheDependent: PartialFunction[DeclarationPage, ExportsDeclaration => Call] = {
     case EntryIntoDeclarantsRecords => entryIntoDeclarantsPreviousPage
+    case DeclarantIsExporter        => declarantIsExporterPreviousPage
     case CarrierEoriNumber          => carrierEoriNumberClearancePreviousPage
     case ExporterEoriNumber         => exporterEoriNumberClearancePreviousPage
     case ConsigneeDetails           => consigneeDetailsClearancePreviousPage

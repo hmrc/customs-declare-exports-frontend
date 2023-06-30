@@ -17,12 +17,17 @@
 package views.declaration
 
 import base.Injector
-import controllers.declaration.routes.{ConsignmentReferencesController, DeclarantDetailsController, LinkDucrToMucrController}
+import controllers.declaration.routes.{
+  ConsignmentReferencesController,
+  DeclarantDetailsController,
+  EntryIntoDeclarantsRecordsController,
+  LinkDucrToMucrController
+}
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.DeclarantIsExporter
 import forms.declaration.DeclarantIsExporter.form
-import models.DeclarationType.{OCCASIONAL, SIMPLIFIED, STANDARD}
-import models.declaration.DeclarationStatus
+import models.DeclarationType._
+import models.declaration.DeclarationStatus.AMENDMENT_DRAFT
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
@@ -41,7 +46,7 @@ class DeclarantExporterViewSpec extends PageWithButtonsSpec with Injector {
   def createView(frm: Form[DeclarantIsExporter] = form)(implicit request: JourneyRequest[_]): Document =
     page(frm)(request, messages)
 
-  "Declarant Exporter View on empty page" should {
+  "Declarant Exporter View" should {
 
     "have correct message keys" in {
       messages must haveTranslationFor("declaration.declarant.exporter.title")
@@ -85,48 +90,58 @@ class DeclarantExporterViewSpec extends PageWithButtonsSpec with Injector {
       checkAllSaveButtonsAreDisplayed(createView())
     }
 
-    "display links" when {
+    onJourney(STANDARD, SIMPLIFIED, OCCASIONAL) { implicit request =>
+      "display 'Back' button that links to 'Link DUCR to a MUCR' page" in {
+        val backButton = createView().getElementById("back-link")
 
-      onJourney(STANDARD, SIMPLIFIED, OCCASIONAL) { implicit request =>
-        "display 'Back' button that links to 'Link DUCR to a MUCR' page" in {
-          val backButton = createView().getElementById("back-link")
-
-          backButton must containMessage(backToPreviousQuestionCaption)
-          backButton must haveHref(LinkDucrToMucrController.displayPage.url)
-        }
-      }
-
-      onSupplementary { implicit request =>
-        "display 'Back' button that links to 'Are you the exporter' page" in {
-          val backButton = createView().getElementById("back-link")
-
-          backButton must containMessage(backToPreviousQuestionCaption)
-          backButton must haveHref(ConsignmentReferencesController.displayPage.url)
-        }
-      }
-
-      onClearance { implicit request =>
-        "display 'Back' button that links to 'Declarant Details' page" in {
-          val backButton = createView().getElementById("back-link")
-
-          backButton must containMessage(backToPreviousQuestionCaption)
-          backButton must haveHref(DeclarantDetailsController.displayPage.url)
-        }
+        backButton must containMessage(backToPreviousQuestionCaption)
+        backButton must haveHref(LinkDucrToMucrController.displayPage.url)
       }
     }
 
-    "hide links" when {
-      "AMENDMENT_DRAFT" when {
-        onEveryDeclarationJourney(withStatus(DeclarationStatus.AMENDMENT_DRAFT)) { implicit request =>
-          "hide 'Back' button that links to 'Link DUCR to a MUCR' page" in {
-            val backButton = createView().getElementById("back-link")
+    onSupplementary { implicit request =>
+      "display 'Back' button that links to 'Are you the exporter' page" in {
+        val backButton = createView().getElementById("back-link")
 
-            backButton must not(containMessage(backToPreviousQuestionCaption))
+        backButton must containMessage(backToPreviousQuestionCaption)
+        backButton must haveHref(ConsignmentReferencesController.displayPage.url)
+      }
+    }
+
+    onClearance { implicit request =>
+      "display 'Back' button that links to 'Declarant Details' page" in {
+        val backButton = createView().getElementById("back-link")
+
+        backButton must containMessage(backToPreviousQuestionCaption)
+        backButton must haveHref(DeclarantDetailsController.displayPage.url)
+      }
+    }
+  }
+
+  "Declarant Exporter View" when {
+
+    "the declaration is in AMENDMENT_DRAFT mode" should {
+      val status = withStatus(AMENDMENT_DRAFT)
+
+      "display 'Back' button that links to '/entry-into-declarants-records' page" when {
+        "on CLEARANCE journey" in {
+          implicit val request = withRequestOfType(CLEARANCE, status)
+          val backButton = createView().getElementById("back-link")
+
+          backButton must containMessage(backToPreviousQuestionCaption)
+          backButton must haveHref(EntryIntoDeclarantsRecordsController.displayPage.url)
+        }
+      }
+
+      "not display the 'Back' button" when {
+        allDeclarationTypesExcluding(CLEARANCE).foreach { declarationType =>
+          s"the journey is $declarationType" in {
+            implicit val request = withRequestOfType(declarationType, status)
+            Option(createView().getElementById("back-link")) mustBe None
           }
         }
       }
     }
-
   }
 
   "Declarant Exporter View with invalid input" should {

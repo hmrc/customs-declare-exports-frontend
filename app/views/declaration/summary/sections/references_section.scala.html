@@ -66,10 +66,7 @@
             ),
             value = Value(
                 content = Text(ViewDates.formatDateAtTime(declaration.declarationMeta.createdDateTime))
-            ),
-            actions = Some(Actions(
-
-            ))
+            )
         )),
 
         Some(SummaryListRow(
@@ -79,10 +76,7 @@
             ),
             value = Value(
                 content = Text(ViewDates.formatDateAtTime(declaration.declarationMeta.updatedDateTime.plusSeconds(appConfig.draftTimeToLive.toSeconds)))
-            ),
-            actions = Some(Actions(
-
-            ))
+            )
         )),
         Some(SummaryListRow(
             classes = "declarationType-row",
@@ -116,14 +110,12 @@
                 actions =
                     if (declaration.isAmendmentDraft) None
                     else actions(Actions(
-                    items = Seq(
-                        actionSummaryItem(
+                        items = Seq(actionSummaryItem(
                             href = ducrChangeLink,
                             content = HtmlContent(linkContent(messages("site.change"))),
                             visuallyHiddenText = Some(messages("declaration.summary.references.ducr.change"))
-                        )
-                    )
-                ))
+                        ))
+                    ))
             )
         ),
         declaration.consignmentReferences.flatMap(_.mrn).map(refs =>
@@ -135,15 +127,15 @@
                 value = Value(
                     content = Text(refs.value)
                 ),
-                actions = actions(Actions(
-                    items = Seq(
-                        actionSummaryItem(
+                actions =
+                    if (declaration.isAmendmentDraft) None
+                    else actions(Actions(
+                        items = Seq(actionSummaryItem(
                             href = routes.ConsignmentReferencesController.displayPage.url,
                             content = HtmlContent(linkContent(messages("site.change"))),
                             visuallyHiddenText = Some(messages("declaration.summary.references.mrn.change"))
-                        )
-                    )
-                ))
+                        ))
+                    ))
             )
         ),
         declaration.consignmentReferences.flatMap(_.eidrDateStamp).map( ref =>
@@ -155,15 +147,15 @@
                 value = Value(
                     content = Text(ref)
                 ),
-                actions = actions(Actions(
-                    items = Seq(
-                        actionSummaryItem(
+                actions =
+                    if (declaration.isAmendmentDraft) None
+                    else actions(Actions(
+                        items = Seq(actionSummaryItem(
                             href = routes.ConsignmentReferencesController.displayPage.url,
                             content = HtmlContent(linkContent(messages("site.change"))),
                             visuallyHiddenText = Some(messages("declaration.summary.references.eidr.change"))
-                        )
-                    )
-                ))
+                        ))
+                    ))
             )
         ),
         declaration.consignmentReferences.flatMap(_.lrn).map(lrn =>
@@ -178,14 +170,12 @@
                 actions =
                     if (declaration.isAmendmentDraft) None
                     else actions(Actions(
-                    items = Seq(
-                        actionSummaryItem(
+                        items = Seq(actionSummaryItem(
                             href = lrnChangeLink,
                             content = HtmlContent(linkContent(messages("site.change"))),
                             visuallyHiddenText = Some(messages("declaration.summary.references.lrn.change"))
-                        )
-                    )
-                ))
+                        ))
+                    ))
             )
         ),
         declaration.linkDucrToMucr.map(refs =>
@@ -197,16 +187,15 @@
                 value = Value(
                     content = Text(refs.answer)
                 ),
-                actions = if (declaration.isAmendmentDraft) None
+                actions =
+                    if (declaration.isAmendmentDraft) None
                     else actions(Actions(
-                    items = Seq(
-                        actionSummaryItem(
+                        items = Seq(actionSummaryItem(
                             href = routes.LinkDucrToMucrController.displayPage.url,
                             content = HtmlContent(linkContent(messages("site.change"))),
                             visuallyHiddenText = Some(messages("declaration.summary.references.linkDucrToMucr.change"))
-                        )
-                    )
-                ))
+                        ))
+                    ))
             )
         ),
         declaration.mucr.map(refs =>
@@ -218,16 +207,15 @@
                 value = Value(
                     content = Text(refs.mucr)
                 ),
-                actions = if (declaration.isAmendmentDraft) None
+                actions =
+                    if (declaration.isAmendmentDraft) None
                     else actions(Actions(
-                    items = Seq(
-                        actionSummaryItem(
+                        items = Seq(actionSummaryItem(
                             href = routes.MucrController.displayPage.url,
                             content = HtmlContent(linkContent(messages("site.change"))),
                             visuallyHiddenText = Some(messages("declaration.summary.references.mucr.change"))
-                        )
-                    )
-                ))
+                        ))
+                    ))
             )
         )
     )

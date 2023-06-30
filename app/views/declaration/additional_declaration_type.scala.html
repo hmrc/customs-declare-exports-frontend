@@ -57,7 +57,7 @@
 
 @govukLayout(
     title = Title(s"declaration.declarationType.header.${request.declarationType}", "declaration.section.1"),
-    backButton = if(request.cacheModel.isAmendmentDraft) None else Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(AdditionalDeclarationTypePage))),
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(AdditionalDeclarationTypePage))),
     showDeclarationSummaryLink = false
     ){
 

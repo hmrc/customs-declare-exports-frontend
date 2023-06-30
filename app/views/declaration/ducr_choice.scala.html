@@ -45,7 +45,7 @@
 
 @govukLayout(
     title = Title("declaration.ducr.choice.title", "declaration.section.1", hasErrors = hasErrors),
-    backButton = if(request.cacheModel.isAmendmentDraft) None else Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(DucrChoice))),
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(DucrChoice))),
     showDeclarationSummaryLink = false
 ) {
     @formHelper(action = routes.DucrChoiceController.submitForm, 'autoComplete -> "off") {

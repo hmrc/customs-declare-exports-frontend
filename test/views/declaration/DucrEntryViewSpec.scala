@@ -21,7 +21,6 @@ import controllers.declaration.routes.DucrChoiceController
 import forms.Ducr
 import forms.Ducr.form
 import models.DeclarationType._
-import models.declaration.DeclarationStatus
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
@@ -125,15 +124,6 @@ class DucrEntryViewSpec extends PageWithButtonsSpec with Injector {
         val backButton = createView().getElementById("back-link")
         backButton must containMessage(backToPreviousQuestionCaption)
         backButton must haveHref(DucrChoiceController.displayPage.url)
-      }
-    }
-
-    onJourney(STANDARD, CLEARANCE, OCCASIONAL, SIMPLIFIED)(aDeclaration(withStatus(DeclarationStatus.AMENDMENT_DRAFT))) { implicit request =>
-      "hide 'Back' button that links to 'Ducr Choice' page" when {
-        "AMENDMENT_DRAFT" in {
-          val backButton = createView().getElementById("back-link")
-          backButton must not(containMessage(backToPreviousQuestionCaption))
-        }
       }
     }
 

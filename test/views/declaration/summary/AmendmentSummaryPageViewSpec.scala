@@ -72,6 +72,5 @@ class AmendmentSummaryPageViewSpec extends SummaryPageViewSpec {
     }
 
     behave like sectionsVisibility(view)
-
   }
 }
