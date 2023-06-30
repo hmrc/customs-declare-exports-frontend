@@ -22,7 +22,6 @@ import controllers.declaration.routes.DucrEntryController
 import forms.Lrn
 import forms.Lrn.form
 import models.DeclarationType._
-import models.declaration.DeclarationStatus
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
@@ -53,7 +52,7 @@ class LocalReferenceNumberViewSpec extends PageWithButtonsSpec with Injector {
   private def createView(form: Form[Lrn])(implicit request: JourneyRequest[_]): Document =
     createView(Some(form))(request)
 
-  "Local Reference Number" should {
+  "Local Reference Number view" should {
 
     "have correct message keys" in {
       messages must haveTranslationFor("declaration.lrn.header")
@@ -64,9 +63,6 @@ class LocalReferenceNumberViewSpec extends PageWithButtonsSpec with Injector {
       messages must haveTranslationFor("declaration.consignmentReferences.lrn.error.length")
       messages must haveTranslationFor("declaration.consignmentReferences.lrn.error.specialCharacter")
     }
-  }
-
-  "Lrn View" should {
 
     "display page title" in {
       createView.getElementById("title").text() mustBe messages("declaration.lrn.header")
@@ -81,74 +77,67 @@ class LocalReferenceNumberViewSpec extends PageWithButtonsSpec with Injector {
     }
 
     checkSaveAndContinueButtonIsDisplayed(createView)
+
+    "not display empty input with label for MRN" in {
+      createView.getElementsByAttributeValue("for", "mrn") mustBe empty
+    }
+
+    "display empty input with label for LRN" in {
+      createView.getElementsByAttributeValue("for", "lrn").text() mustBe messages("declaration.lrn.body")
+      createView.getElementById("lrn-hint").text() mustBe messages("declaration.lrn.hint")
+      createView.getElementById("lrn").attr("value") mustBe empty
+    }
+
+    "display inset text for LRN" in {
+      createView.getElementsByClass("govuk-inset-text").first().text() mustBe messages("declaration.lrn.inset")
+    }
+
+    "display error for empty LRN" in {
+      val view = viewOnInvalidInput(Lrn(""))
+      view must containErrorElementWithTagAndHref("a", "#lrn")
+      view must containErrorElementWithMessageKey("declaration.consignmentReferences.lrn.error.empty")
+    }
+
+    "display error when LRN is longer then 22 characters" in {
+      val view = viewOnInvalidInput(Lrn(TestHelper.createRandomAlphanumericString(23)))
+      view must containErrorElementWithTagAndHref("a", "#lrn")
+      view must containErrorElementWithMessageKey("declaration.consignmentReferences.lrn.error.length")
+    }
+
+    "display error when LRN contains special character" in {
+      val view = viewOnInvalidInput(Lrn("#@#$"))
+      view must containErrorElementWithTagAndHref("a", "#lrn")
+      view must containErrorElementWithMessageKey("declaration.consignmentReferences.lrn.error.specialCharacter")
+    }
+
+    "display error LRN empty" in {
+      val view = viewOnInvalidInput(Lrn(""))
+      view must containErrorElementWithTagAndHref("a", "#lrn")
+      view must containErrorElementWithMessageKey("declaration.consignmentReferences.lrn.error.empty")
+    }
+
+    "display error LRN is longer then 22 characters" in {
+      val view = viewOnInvalidInput(Lrn(TestHelper.createRandomAlphanumericString(23)))
+      view must containErrorElementWithTagAndHref("a", "#lrn")
+      view must containErrorElementWithMessageKey("declaration.consignmentReferences.lrn.error.length")
+    }
+
+    "display error LRN contains special character" in {
+      val view = viewOnInvalidInput(Lrn("$$%"))
+      view must containErrorElementWithTagAndHref("a", "#lrn")
+      view must containErrorElementWithMessageKey("declaration.consignmentReferences.lrn.error.specialCharacter")
+    }
+
+    "display data in LRN input" in {
+      val frm = form.fill(Lrn(lrn))
+      val view = createView(frm)
+      view.getElementById("lrn").attr("value") mustBe lrn
+    }
+
+    "display 'Back' button that links to 'Declarant Details' page" in {
+      val backButton = createView.getElementById("back-link")
+      backButton must containMessage(backToPreviousQuestionCaption)
+      backButton must haveHref(DucrEntryController.displayPage.url)
+    }
   }
-
-  "not display empty input with label for MRN" in {
-    createView.getElementsByAttributeValue("for", "mrn") mustBe empty
-  }
-
-  "display empty input with label for LRN" in {
-    createView.getElementsByAttributeValue("for", "lrn").text() mustBe messages("declaration.lrn.body")
-    createView.getElementById("lrn-hint").text() mustBe messages("declaration.lrn.hint")
-    createView.getElementById("lrn").attr("value") mustBe empty
-  }
-
-  "display inset text for LRN" in {
-    createView.getElementsByClass("govuk-inset-text").first().text() mustBe messages("declaration.lrn.inset")
-  }
-
-  "display error for empty LRN" in {
-    val view = viewOnInvalidInput(Lrn(""))
-    view must containErrorElementWithTagAndHref("a", "#lrn")
-    view must containErrorElementWithMessageKey("declaration.consignmentReferences.lrn.error.empty")
-  }
-
-  "display error when LRN is longer then 22 characters" in {
-    val view = viewOnInvalidInput(Lrn(TestHelper.createRandomAlphanumericString(23)))
-    view must containErrorElementWithTagAndHref("a", "#lrn")
-    view must containErrorElementWithMessageKey("declaration.consignmentReferences.lrn.error.length")
-  }
-
-  "display error when LRN contains special character" in {
-    val view = viewOnInvalidInput(Lrn("#@#$"))
-    view must containErrorElementWithTagAndHref("a", "#lrn")
-    view must containErrorElementWithMessageKey("declaration.consignmentReferences.lrn.error.specialCharacter")
-  }
-
-  "display error LRN empty" in {
-    val view = viewOnInvalidInput(Lrn(""))
-    view must containErrorElementWithTagAndHref("a", "#lrn")
-    view must containErrorElementWithMessageKey("declaration.consignmentReferences.lrn.error.empty")
-  }
-
-  "display error LRN is longer then 22 characters" in {
-    val view = viewOnInvalidInput(Lrn(TestHelper.createRandomAlphanumericString(23)))
-    view must containErrorElementWithTagAndHref("a", "#lrn")
-    view must containErrorElementWithMessageKey("declaration.consignmentReferences.lrn.error.length")
-  }
-
-  "display error LRN contains special character" in {
-    val view = viewOnInvalidInput(Lrn("$$%"))
-    view must containErrorElementWithTagAndHref("a", "#lrn")
-    view must containErrorElementWithMessageKey("declaration.consignmentReferences.lrn.error.specialCharacter")
-  }
-
-  "display data in LRN input" in {
-    val frm = form.fill(Lrn(lrn))
-    val view = createView(frm)
-    view.getElementById("lrn").attr("value") mustBe lrn
-  }
-
-  "display 'Back' button that links to 'Declarant Details' page" in {
-    val backButton = createView.getElementById("back-link")
-    backButton must containMessage(backToPreviousQuestionCaption)
-    backButton must haveHref(DucrEntryController.displayPage.url)
-  }
-
-  "hide 'Back' button when AMENDMENT_DRAFT" in {
-
-    val backButton = createView(journeyRequest(aDeclaration(withStatus(DeclarationStatus.AMENDMENT_DRAFT)))).getElementById("back-link")
-    backButton must not(containMessage(backToPreviousQuestionCaption))
-  }
-
 }

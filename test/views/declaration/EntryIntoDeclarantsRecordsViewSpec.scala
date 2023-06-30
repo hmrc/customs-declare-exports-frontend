@@ -20,8 +20,9 @@ import base.Injector
 import controllers.declaration.routes
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.{No, Yes, YesNoAnswers}
-import forms.declaration.EntryIntoDeclarantsRecords
-import models.DeclarationType
+import forms.declaration.EntryIntoDeclarantsRecords.form
+import models.DeclarationType.CLEARANCE
+import models.declaration.DeclarationStatus.AMENDMENT_DRAFT
 import org.jsoup.nodes.Document
 import play.api.data.{Form, FormError}
 import views.declaration.spec.UnitViewSpec
@@ -31,15 +32,15 @@ import views.html.declaration.entry_into_declarants_records
 class EntryIntoDeclarantsRecordsViewSpec extends UnitViewSpec with Injector with CommonMessages {
 
   private val page = instanceOf[entry_into_declarants_records]
-  private def createView(form: Form[YesNoAnswer] = EntryIntoDeclarantsRecords.form): Document =
-    page(form)(journeyRequest(DeclarationType.CLEARANCE), messages)
+
+  private def createView(frm: Form[YesNoAnswer] = form): Document =
+    page(frm)(journeyRequest(CLEARANCE), messages)
 
   "Entry Into Declarant Records view" when {
 
     "on empty page" should {
 
       "display page title" in {
-
         createView().getElementsByTag("h1").first() must containMessage("declaration.entryIntoDeclarantRecords.title")
       }
 
@@ -48,7 +49,6 @@ class EntryIntoDeclarantsRecordsViewSpec extends UnitViewSpec with Injector with
       }
 
       "display radio button with yes and no options" in {
-
         val view = createView()
 
         view.getElementById("answer_yes").attr("value") mustBe YesNoAnswers.yes
@@ -57,33 +57,35 @@ class EntryIntoDeclarantsRecordsViewSpec extends UnitViewSpec with Injector with
         view.getElementsByAttributeValue("for", "answer_no").first() must containMessage("declaration.entryIntoDeclarantRecords.answer.no")
       }
 
-      "display 'Back' button" in {
-
+      "display the 'Back' button" in {
         val backButton = createView().getElementById("back-link")
 
         backButton must containMessage(backToPreviousQuestionCaption)
         backButton must haveHref(routes.LinkDucrToMucrController.displayPage.url)
       }
 
+      "not display the 'Back' button" when {
+        "the declaration is in AMENDMENT_DRAFT mode" in {
+          implicit val request = journeyRequest(aDeclaration(withType(CLEARANCE), withStatus(AMENDMENT_DRAFT)))
+          Option(page(form).getElementById("back-link")) mustBe None
+        }
+      }
     }
 
     "on page filled" should {
-
       "have proper radio selected" when {
 
         "the answer is Yes" in {
-
-          val form = EntryIntoDeclarantsRecords.form.fill(Yes.value)
-          val view = createView(form)
+          val eidrForm = form.fill(Yes.value)
+          val view = createView(eidrForm)
 
           view.getElementById("answer_yes") must beSelected
           view.getElementById("answer_no") mustNot beSelected
         }
 
         "the answer is No" in {
-
-          val form = EntryIntoDeclarantsRecords.form.fill(No.value)
-          val view = createView(form)
+          val eidrForm = form.fill(No.value)
+          val view = createView(eidrForm)
 
           view.getElementById("answer_yes") mustNot beSelected
           view.getElementById("answer_no") must beSelected
@@ -94,19 +96,16 @@ class EntryIntoDeclarantsRecordsViewSpec extends UnitViewSpec with Injector with
     "provided with form with errors" should {
 
       "display error summary" in {
-
-        val form =
-          EntryIntoDeclarantsRecords.form.withError(FormError("is-entry-into-declarant-records", "declaration.entryIntoDeclarantRecords.error"))
-        createView(form) must haveGovukGlobalErrorSummary
+        val formError = FormError("is-entry-into-declarant-records", "declaration.entryIntoDeclarantRecords.error")
+        val eidrForm = form.withError(formError)
+        createView(eidrForm) must haveGovukGlobalErrorSummary
       }
 
       "display error next to the radio button element" in {
-
-        val form =
-          EntryIntoDeclarantsRecords.form.withError(FormError("is-entry-into-declarant-records", "declaration.entryIntoDeclarantRecords.error"))
-        createView(form) must haveGovukFieldError("is-entry-into-declarant-records", messages("declaration.entryIntoDeclarantRecords.error"))
+        val formError = FormError("is-entry-into-declarant-records", "declaration.entryIntoDeclarantRecords.error")
+        val eidrForm = form.withError(formError)
+        createView(eidrForm) must haveGovukFieldError("is-entry-into-declarant-records", messages("declaration.entryIntoDeclarantRecords.error"))
       }
     }
   }
-
 }

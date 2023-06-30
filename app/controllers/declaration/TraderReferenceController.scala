@@ -47,6 +47,7 @@ class TraderReferenceController @Inject() (
     with WithUnsafeDefaultFormBinding {
 
   val nextPage: JourneyRequest[_] => Call = _ => ConfirmDucrController.displayPage
+
   private val validTypes = allDeclarationTypesExcluding(SUPPLEMENTARY)
 
   private val actionFilters = authenticate andThen journeyAction(validTypes) andThen nextPageIfAmendmentDraft

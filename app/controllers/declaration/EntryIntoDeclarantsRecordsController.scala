@@ -17,6 +17,7 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
+import controllers.declaration.routes.{DeclarantDetailsController, PersonPresentingGoodsDetailsController}
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
@@ -74,6 +75,6 @@ class EntryIntoDeclarantsRecordsController @Inject() (
     }
 
   private def nextPage(answer: YesNoAnswer): Call =
-    if (answer.answer == YesNoAnswers.yes) routes.PersonPresentingGoodsDetailsController.displayPage
-    else routes.DeclarantDetailsController.displayPage
+    if (answer.answer == YesNoAnswers.yes) PersonPresentingGoodsDetailsController.displayPage
+    else DeclarantDetailsController.displayPage
 }

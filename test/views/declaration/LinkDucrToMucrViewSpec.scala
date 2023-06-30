@@ -20,8 +20,7 @@ import base.Injector
 import config.AppConfig
 import controllers.declaration.routes
 import forms.common.YesNoAnswer
-import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
-import models.declaration.DeclarationStatus
+import models.DeclarationType._
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
@@ -99,35 +98,19 @@ class LinkDucrToMucrViewSpec extends UnitViewSpec with CommonMessages with Injec
     }
 
     onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, CLEARANCE) { implicit request =>
-      val view = createView()
-
       "display 'Back' button to 'Consignment Reference' page" in {
-        val backButton = view.getElementById("back-link")
+        val backButton = createView().getElementById("back-link")
         backButton must containMessage(backToPreviousQuestionCaption)
         backButton must haveHref(routes.LocalReferenceNumberController.displayPage)
       }
     }
 
     onJourney(SUPPLEMENTARY) { implicit request =>
-      val view = createView()
-
       "display 'Back' button to 'Consignment Reference' page" in {
-        val backButton = view.getElementById("back-link")
+        val backButton = createView().getElementById("back-link")
         backButton must containMessage(backToPreviousQuestionCaption)
         backButton must haveHref(routes.ConsignmentReferencesController.displayPage)
       }
     }
-
-    onEveryDeclarationJourney(withStatus(DeclarationStatus.AMENDMENT_DRAFT)) { implicit request =>
-      val view = createView()
-
-      "hide 'Back' button" when {
-        "AMENDMENT_DRAFT" in {
-          val backButton = view.getElementById("back-link")
-          backButton must not(containMessage(backToPreviousQuestionCaption))
-        }
-      }
-    }
-
   }
 }

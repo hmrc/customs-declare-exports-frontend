@@ -17,6 +17,7 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
+import controllers.declaration.routes.ExporterEoriNumberController
 import controllers.navigation.Navigator
 import forms.declaration.PersonPresentingGoodsDetails
 import forms.declaration.PersonPresentingGoodsDetails.form
@@ -56,7 +57,7 @@ class PersonPresentingGoodsDetailsController @Inject() (
       .bindFromRequest()
       .fold(
         formWithErrors => Future.successful(BadRequest(personPresentingGoodsDetailsPage(formWithErrors))),
-        validData => updateCache(validData).map(_ => navigator.continueTo(controllers.declaration.routes.ExporterEoriNumberController.displayPage))
+        validData => updateCache(validData).map(_ => navigator.continueTo(ExporterEoriNumberController.displayPage))
       )
   }
 

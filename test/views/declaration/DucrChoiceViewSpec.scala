@@ -20,8 +20,7 @@ import base.Injector
 import controllers.declaration.routes.{AdditionalDeclarationTypeController, DeclarantDetailsController}
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.form
-import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED, STANDARD}
-import models.declaration.DeclarationStatus
+import models.DeclarationType._
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
@@ -58,15 +57,6 @@ class DucrChoiceViewSpec extends PageWithButtonsSpec with Injector {
         val backButton = view.getElementById("back-link")
         backButton must containMessage(backToPreviousQuestionCaption)
         backButton must haveHref(DeclarantDetailsController.displayPage)
-      }
-    }
-
-    onEveryDeclarationJourney(withStatus(DeclarationStatus.AMENDMENT_DRAFT)) { implicit request =>
-      val view = createView()
-
-      "hide 'Back' button to the /declarant-details page" in {
-        val backButton = view.getElementById("back-link")
-        backButton must not(containMessage(backToPreviousQuestionCaption))
       }
     }
 

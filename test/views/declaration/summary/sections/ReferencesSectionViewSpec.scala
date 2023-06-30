@@ -17,19 +17,12 @@
 package views.declaration.summary.sections
 
 import base.Injector
-import controllers.declaration.routes.{
-  AdditionalDeclarationTypeController,
-  ConsignmentReferencesController,
-  DucrEntryController,
-  LinkDucrToMucrController,
-  LocalReferenceNumberController,
-  MucrController
-}
+import controllers.declaration.routes._
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
-import models.declaration.DeclarationStatus.{AMENDMENT_DRAFT, DRAFT}
 import models.DeclarationType
 import models.DeclarationType._
+import models.declaration.DeclarationStatus.{AMENDMENT_DRAFT, DRAFT}
 import services.cache.ExportsTestHelper
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.summary.sections.references_section
@@ -105,86 +98,100 @@ class ReferencesSectionViewSpec extends UnitViewSpec with ExportsTestHelper with
       row must haveSummaryValue(messages("declaration.summary.references.additionalType.A"))
     }
 
-    onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, CLEARANCE) { implicit request =>
-      "have DUCR with change button" in {
-        val row = view.getElementsByClass("ducr-row")
+    "have a DUCR row with change button" in {
+      allDeclarationTypes.foreach { declarationType =>
+        val row = section(data.copy(`type` = declarationType))(messages).getElementsByClass("ducr-row")
         row must haveSummaryKey(messages("declaration.summary.references.ducr"))
         row must haveSummaryValue("DUCR")
 
         row must haveSummaryActionsTexts("site.change", "declaration.summary.references.ducr.change")
-        row must haveSummaryActionWithPlaceholder(DucrEntryController.displayPage)
-      }
-      "have LRN with change button" in {
-        val view = section(data.copy(`type` = request.declarationType))(messages)
 
-        val row = view.getElementsByClass("lrn-row")
-        row must haveSummaryKey(messages("declaration.summary.references.lrn"))
-        row must haveSummaryValue("LRN")
+        val call =
+          if (declarationType == SUPPLEMENTARY) ConsignmentReferencesController.displayPage
+          else DucrEntryController.displayPage
 
-        row must haveSummaryActionsTexts("site.change", "declaration.summary.references.lrn.change")
-        row must haveSummaryActionWithPlaceholder(LocalReferenceNumberController.displayPage)
+        row.get(0).getElementsByClass("govuk-link").attr("href") must startWith(call.url)
       }
     }
 
-    onJourney(SUPPLEMENTARY) { implicit request =>
-      "have LRN with change button" in {
-        val view = section(data.copy(`type` = request.declarationType))(messages)
-
-        val row = view.getElementsByClass("lrn-row")
-        row must haveSummaryKey(messages("declaration.summary.references.supplementary.lrn"))
-        row must haveSummaryValue("LRN")
-
-        row must haveSummaryActionsTexts("site.change", "declaration.summary.references.lrn.change")
-        row must haveSummaryActionWithPlaceholder(ConsignmentReferencesController.displayPage)
-      }
-      "have Ducr with change button" in {
-        val view = section(data.copy(`type` = request.declarationType))(messages)
-
-        val row = view.getElementsByClass("ducr-row")
+    "have a DUCR row with no change button when on amendment" in {
+      allDeclarationTypes.foreach { declarationType =>
+        val row = section(amendmentData.copy(`type` = declarationType))(messages).getElementsByClass("ducr-row")
         row must haveSummaryKey(messages("declaration.summary.references.ducr"))
         row must haveSummaryValue("DUCR")
 
-        row must haveSummaryActionsTexts("site.change", "declaration.summary.references.ducr.change")
-        row must haveSummaryActionWithPlaceholder(ConsignmentReferencesController.displayPage)
+        row.get(0).getElementsByClass("govuk-link").size mustBe 0
       }
     }
 
-    "have 'Link to a MUCR' row" which {
-      "has change button" in {
-        val row = view.getElementsByClass("linkDucrToMucr-row")
-        row must haveSummaryKey(messages("declaration.summary.references.linkDucrToMucr"))
-        row must haveSummaryValue(YesNoAnswers.yes)
+    "have a LRN row  with change button" in {
+      allDeclarationTypes.foreach { declarationType =>
+        val row = section(data.copy(`type` = declarationType))(messages).getElementsByClass("lrn-row")
 
-        row must haveSummaryActionsTexts("site.change", "declaration.summary.references.linkDucrToMucr.change")
-        row must haveSummaryActionWithPlaceholder(LinkDucrToMucrController.displayPage)
-      }
-      "hides change button" in {
-        val row = amendmentView.getElementsByClass("linkDucrToMucr-row")
-        row must haveSummaryKey(messages("declaration.summary.references.linkDucrToMucr"))
-        row must haveSummaryValue(YesNoAnswers.yes)
+        val expectedText =
+          if (declarationType == SUPPLEMENTARY) "declaration.summary.references.supplementary.lrn"
+          else "declaration.summary.references.lrn"
 
-        row must not(haveSummaryActionsTexts("site.change", "declaration.summary.references.linkDucrToMucr.change"))
-        row must not(haveSummaryActionWithPlaceholder(LinkDucrToMucrController.displayPage))
+        row must haveSummaryKey(messages(expectedText))
+        row must haveSummaryValue("LRN")
+
+        row must haveSummaryActionsTexts("site.change", "declaration.summary.references.lrn.change")
+
+        val call =
+          if (declarationType == SUPPLEMENTARY) ConsignmentReferencesController.displayPage
+          else LocalReferenceNumberController.displayPage
+
+        row.get(0).getElementsByClass("govuk-link").attr("href") must startWith(call.url)
       }
     }
 
-    "have MUCR row" which {
-      "has change button" in {
-        val row = view.getElementsByClass("mucr-row")
-        row must haveSummaryKey(messages("declaration.summary.references.mucr"))
-        row must haveSummaryValue(MUCR.mucr)
+    "have a LRN row with no change button when on amendment" in {
+      allDeclarationTypes.foreach { declarationType =>
+        val row = section(amendmentData.copy(`type` = declarationType))(messages).getElementsByClass("lrn-row")
 
-        row must haveSummaryActionsTexts("site.change", "declaration.summary.references.mucr.change")
-        row must haveSummaryActionWithPlaceholder(MucrController.displayPage)
-      }
-      "hides change button" in {
-        val row = amendmentView.getElementsByClass("mucr-row")
-        row must haveSummaryKey(messages("declaration.summary.references.mucr"))
-        row must haveSummaryValue(MUCR.mucr)
+        val expectedText =
+          if (declarationType == SUPPLEMENTARY) "declaration.summary.references.supplementary.lrn"
+          else "declaration.summary.references.lrn"
 
-        row must not(haveSummaryActionsTexts("site.change", "declaration.summary.references.mucr.change"))
-        row must not(haveSummaryActionWithPlaceholder(MucrController.displayPage))
+        row must haveSummaryKey(messages(expectedText))
+        row must haveSummaryValue("LRN")
+
+        row.get(0).getElementsByClass("govuk-link").size mustBe 0
       }
+    }
+
+    "have a 'Link to a MUCR' row with change button" in {
+      val row = view.getElementsByClass("linkDucrToMucr-row")
+      row must haveSummaryKey(messages("declaration.summary.references.linkDucrToMucr"))
+      row must haveSummaryValue(YesNoAnswers.yes)
+
+      row must haveSummaryActionsTexts("site.change", "declaration.summary.references.linkDucrToMucr.change")
+      row must haveSummaryActionWithPlaceholder(LinkDucrToMucrController.displayPage)
+    }
+
+    "have a 'Link to a MUCR' row with no change button when on amendment" in {
+      val row = amendmentView.getElementsByClass("linkDucrToMucr-row")
+      row must haveSummaryKey(messages("declaration.summary.references.linkDucrToMucr"))
+      row must haveSummaryValue(YesNoAnswers.yes)
+
+      row.get(0).getElementsByClass("govuk-link").size mustBe 0
+    }
+
+    "have a MUCR row with change button" in {
+      val row = view.getElementsByClass("mucr-row")
+      row must haveSummaryKey(messages("declaration.summary.references.mucr"))
+      row must haveSummaryValue(MUCR.mucr)
+
+      row must haveSummaryActionsTexts("site.change", "declaration.summary.references.mucr.change")
+      row must haveSummaryActionWithPlaceholder(MucrController.displayPage)
+    }
+
+    "have a MUCR row with no change button when on amendment" in {
+      val row = amendmentView.getElementsByClass("mucr-row")
+      row must haveSummaryKey(messages("declaration.summary.references.mucr"))
+      row must haveSummaryValue(MUCR.mucr)
+
+      row.get(0).getElementsByClass("govuk-link").size mustBe 0
     }
   }
 

@@ -18,6 +18,7 @@
 @import controllers.navigation.Navigator
 @import forms.common.YesNoAnswer.YesNoAnswers
 @import forms.declaration.DeclarantIsExporter
+@import models.DeclarationType.CLEARANCE
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.components.gds.Styles._
@@ -45,9 +46,10 @@
 
 @govukLayout(
     title = Title("declaration.declarant.exporter.title", "declaration.section.2", hasErrors = hasErrors),
-    backButton = if(request.cacheModel.isAmendmentDraft) None else Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(DeclarantIsExporter)))
+    backButton =
+      if (request.cacheModel.isAmendmentDraft && !request.isType(CLEARANCE)) None
+      else Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(DeclarantIsExporter)))
 ) {
-
     @formHelper(action = controllers.declaration.routes.DeclarantExporterController.submitForm, 'autoComplete -> "off") {
         @errorSummary(yesNoErrors(form.errors, DeclarantIsExporter.answerKey))
 

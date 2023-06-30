@@ -98,15 +98,14 @@ class AdditionalDocumentsViewSpec extends UnitViewSpec with Injector {
         backButton must containMessage(backToPreviousQuestionCaption)
         backButton must haveHref(routes.IsLicenceRequiredController.displayPage(itemId))
       }
-
     }
+
     onJourney(CLEARANCE)(declarationWithAdditionalInfo) { implicit request =>
       "display 'Back' button that links to 'Additional Info' page when additional info present" in {
         val backButton = createView().getElementById("back-link")
         backButton must containMessage(backToPreviousQuestionCaption)
         backButton must haveHref(AdditionalInformationController.displayPage(itemId))
       }
-
     }
 
     onJourney(CLEARANCE)(aDeclaration()) { implicit request =>

@@ -53,6 +53,8 @@ trait SimplifiedNavigator extends CacheDependentNavigators {
   val simplifiedItemPage: PartialFunction[DeclarationPage, String => Call] = {
     case AdditionalInformationRequired => routes.PackageInformationSummaryController.displayPage
     case AdditionalInformationSummary  => routes.PackageInformationSummaryController.displayPage
+    case AdditionalDocumentsRequired   => routes.IsLicenceRequiredController.displayPage
+    case AdditionalDocumentsSummary    => routes.IsLicenceRequiredController.displayPage
     case CusCode                       => routes.UNDangerousGoodsCodeController.displayPage
     case NactCode                      => routes.NactCodeSummaryController.displayPage
     case CommodityMeasure              => routes.PackageInformationSummaryController.displayPage
@@ -75,10 +77,8 @@ trait SimplifiedNavigator extends CacheDependentNavigators {
   }
 
   val simplifiedCacheItemDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, String) => Call] = {
-    case AdditionalDocumentsRequired => additionalDocumentsSummaryPreviousPage
-    case AdditionalDocumentsSummary  => additionalDocumentsSummaryPreviousPage
-    case AdditionalDocument          => additionalDocumentsPreviousPage
-    case NactCodeFirst               => nactCodePreviousPageForSimplified
-    case PackageInformation          => packageInformationPreviousPageForSimplified
+    case AdditionalDocument => additionalDocumentsPreviousPage
+    case NactCodeFirst      => nactCodePreviousPageForSimplified
+    case PackageInformation => packageInformationPreviousPageForSimplified
   }
 }

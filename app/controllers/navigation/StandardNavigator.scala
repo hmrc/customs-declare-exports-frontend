@@ -51,11 +51,13 @@ trait StandardNavigator extends CacheDependentNavigators {
   }
 
   val standardItemPage: PartialFunction[DeclarationPage, String => Call] = {
-    case PackageInformation => routes.StatisticalValueController.displayPage
-    case CusCode            => routes.UNDangerousGoodsCodeController.displayPage
-    case NactCode           => routes.NactCodeSummaryController.displayPage
-    case CommodityMeasure   => routes.PackageInformationSummaryController.displayPage
-    case page               => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on standard")
+    case AdditionalDocumentsRequired => routes.IsLicenceRequiredController.displayPage
+    case AdditionalDocumentsSummary  => routes.IsLicenceRequiredController.displayPage
+    case PackageInformation          => routes.StatisticalValueController.displayPage
+    case CusCode                     => routes.UNDangerousGoodsCodeController.displayPage
+    case NactCode                    => routes.NactCodeSummaryController.displayPage
+    case CommodityMeasure            => routes.PackageInformationSummaryController.displayPage
+    case page                        => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on standard")
   }
 
   val standardCacheDependent: PartialFunction[DeclarationPage, ExportsDeclaration => Call] = {
@@ -75,9 +77,7 @@ trait StandardNavigator extends CacheDependentNavigators {
   }
 
   val standardCacheItemDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, String) => Call] = {
-    case AdditionalDocumentsRequired => additionalDocumentsSummaryPreviousPage
-    case AdditionalDocumentsSummary  => additionalDocumentsSummaryPreviousPage
-    case AdditionalDocument          => additionalDocumentsPreviousPage
-    case NactCodeFirst               => nactCodeFirstPreviousPage
+    case AdditionalDocument => additionalDocumentsPreviousPage
+    case NactCodeFirst      => nactCodeFirstPreviousPage
   }
 }

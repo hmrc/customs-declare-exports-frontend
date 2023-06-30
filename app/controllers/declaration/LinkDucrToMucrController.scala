@@ -17,13 +17,13 @@
 package controllers.declaration
 
 import controllers.actions.{AmendmentDraftFilter, AuthAction, JourneyAction}
-import controllers.declaration.routes.{DeclarantExporterController, EntryIntoDeclarantsRecordsController}
+import controllers.declaration.routes.{DeclarantExporterController, EntryIntoDeclarantsRecordsController, MucrController}
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.{form, YesNoAnswers}
 import models.DeclarationType.CLEARANCE
+import models.ExportsDeclaration
 import models.requests.JourneyRequest
-import models.{DeclarationType, ExportsDeclaration}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import services.cache.ExportsCacheService
@@ -71,13 +71,7 @@ class LinkDucrToMucrController @Inject() (
   }
 
   private def nextPage(yesNoAnswer: YesNoAnswer)(implicit request: JourneyRequest[_]): Call =
-    if (yesNoAnswer.answer == YesNoAnswers.yes) routes.MucrController.displayPage
-    else {
-      request.declarationType match {
-        case DeclarationType.CLEARANCE => EntryIntoDeclarantsRecordsController.displayPage
-        case _                         => DeclarantExporterController.displayPage
-      }
-    }
+    if (yesNoAnswer.answer == YesNoAnswers.yes) MucrController.displayPage else nextPage(request)
 
   private def updateCache(yesNoAnswer: YesNoAnswer)(implicit request: JourneyRequest[_]): Future[ExportsDeclaration] =
     updateDeclarationFromRequest { model =>
