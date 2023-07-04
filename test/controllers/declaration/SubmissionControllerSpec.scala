@@ -17,6 +17,7 @@
 package controllers.declaration
 
 import base.ControllerWithoutFormSpec
+import connectors.CustomsDeclareExportsConnector
 import controllers.declaration.amendments.routes.AmendmentOutcomeController
 import controllers.declaration.routes.ConfirmationController
 import controllers.routes.RootController
@@ -47,6 +48,7 @@ class SubmissionControllerSpec extends ControllerWithoutFormSpec with ErrorHandl
 
   private val legalDeclarationPage = mock[legal_declaration]
   private val mockSubmissionService = mock[SubmissionService]
+  private val mockCDEConnector = mock[CustomsDeclareExportsConnector]
 
   private val controller = new SubmissionController(
     mockAuthAction,
@@ -54,6 +56,7 @@ class SubmissionControllerSpec extends ControllerWithoutFormSpec with ErrorHandl
     mockJourneyAction,
     mockErrorHandler,
     stubMessagesControllerComponents(),
+    mockCDEConnector,
     mockExportsCacheService,
     mockSubmissionService,
     legalDeclarationPage,

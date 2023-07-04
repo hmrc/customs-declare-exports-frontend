@@ -23,9 +23,11 @@ import controllers.declaration.amendments.routes.AmendmentOutcomeController
 import controllers.declaration.routes.ConfirmationController
 import controllers.helpers.ErrorFixModeHelper.inErrorFixMode
 import controllers.routes.RootController
+import connectors.CustomsDeclareExportsConnector
 import forms.declaration.LegalDeclaration
 import forms.declaration.LegalDeclaration.{amendReasonKey, form}
 import handlers.ErrorHandler
+import models.declaration.submissions.EnhancedStatus.ERRORS
 import models.declaration.submissions.Submission
 import models.requests.JourneyRequest
 import models.requests.SessionHelper._
@@ -47,6 +49,7 @@ class SubmissionController @Inject() (
   journeyType: JourneyAction,
   errorHandler: ErrorHandler,
   mcc: MessagesControllerComponents,
+  customsDeclareExportsConnector: CustomsDeclareExportsConnector,
   override val exportsCacheService: ExportsCacheService,
   submissionService: SubmissionService,
   legal_declaration: legal_declaration,
@@ -78,15 +81,21 @@ class SubmissionController @Inject() (
       )
   }
 
-  def cancelAmendment(maybeDeclarationId: Option[String]): Action[AnyContent] = (authenticate andThen verifyEmail) { implicit request =>
-    maybeDeclarationId match {
-      case Some(declarationId) if declarationAmendmentsConfig.isEnabled && declarationId.length > 0 =>
-        Redirect(routes.SubmissionController.displayLegalDeclarationPage(true, true))
-          .addingToSession((declarationUuid -> declarationId))
+  private def findOrCreateDraftForAmendment(rejectedParentId: String, redirect: Result)(implicit request: WrappedRequest[_]): Future[Result] =
+    customsDeclareExportsConnector.findOrCreateDraftForAmendment(rejectedParentId, ERRORS).map { id =>
+      redirect.addingToSession(declarationUuid -> id)
+    }
 
-      case _ =>
-        val msg = "No 'declarationId' from TimelineEvents on cancellation of an amendment"
-        errorHandler.internalServerError(msg)
+  def cancelAmendment(): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
+    getValue(submissionUuid) match {
+
+      case Some(submissionId) =>
+        customsDeclareExportsConnector.findSubmission(submissionId).flatMap { case Some(submission) =>
+          submission.latestDecId match {
+            case Some(latestDecId) =>
+              findOrCreateDraftForAmendment(latestDecId, Redirect(routes.SubmissionController.displayLegalDeclarationPage(true, true)))
+          }
+        }
     }
   }
 
