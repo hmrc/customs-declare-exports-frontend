@@ -81,22 +81,23 @@ class SubmissionController @Inject() (
       )
   }
 
-  private def findOrCreateDraftForAmendment(rejectedParentId: String, redirect: Result)(implicit request: WrappedRequest[_]): Future[Result] =
-    customsDeclareExportsConnector.findOrCreateDraftForAmendment(rejectedParentId, ERRORS).map { id =>
-      redirect.addingToSession(declarationUuid -> id)
-    }
-
   def cancelAmendment(): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
     getValue(submissionUuid) match {
-
       case Some(submissionId) =>
-        customsDeclareExportsConnector.findSubmission(submissionId).flatMap { case Some(submission) =>
-          submission.latestDecId match {
-            case Some(latestDecId) =>
-              findOrCreateDraftForAmendment(latestDecId, Redirect(routes.SubmissionController.displayLegalDeclarationPage(true, true)))
+        customsDeclareExportsConnector.findSubmission(submissionId) flatMap { maybeSubmission =>
+          (for {
+            submission <- maybeSubmission
+            latestDecId <- submission.latestDecId
+          } yield customsDeclareExportsConnector.findOrCreateDraftForAmendment(latestDecId, ERRORS) map { _ =>
+            Redirect(routes.SubmissionController.displayLegalDeclarationPage(true, true))
+          }) getOrElse {
+            Future.successful(errorHandler.internalServerError("latestDecId does not exist in submission for amendment cancellation"))
           }
         }
+      case _ =>
+        Future.successful(errorHandler.internalServerError("No 'submissionUuid' from in session data for an amendment cancellation"))
     }
+
   }
 
   def submitAmendment(isCancellation: Boolean): Action[AnyContent] = actions.async { implicit request =>
