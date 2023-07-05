@@ -17,7 +17,6 @@
 package controllers.declaration
 
 import base.ControllerWithoutFormSpec
-import connectors.CustomsDeclareExportsConnector
 import controllers.declaration.amendments.routes.AmendmentOutcomeController
 import controllers.declaration.routes.ConfirmationController
 import controllers.routes.RootController
@@ -48,7 +47,6 @@ class SubmissionControllerSpec extends ControllerWithoutFormSpec with ErrorHandl
 
   private val legalDeclarationPage = mock[legal_declaration]
   private val mockSubmissionService = mock[SubmissionService]
-  private val mockCDEConnector = mock[CustomsDeclareExportsConnector]
 
   private val controller = new SubmissionController(
     mockAuthAction,
@@ -56,7 +54,7 @@ class SubmissionControllerSpec extends ControllerWithoutFormSpec with ErrorHandl
     mockJourneyAction,
     mockErrorHandler,
     stubMessagesControllerComponents(),
-    mockCDEConnector,
+    mockCustomsDeclareExportsConnector,
     mockExportsCacheService,
     mockSubmissionService,
     legalDeclarationPage,
@@ -76,6 +74,10 @@ class SubmissionControllerSpec extends ControllerWithoutFormSpec with ErrorHandl
     reset(legalDeclarationPage, mockSubmissionService)
     super.afterEach()
   }
+
+  val uuid = UUID.randomUUID().toString
+  val expectedSubmission =
+    Submission(uuid, eori = "GB123456", lrn = "123LRN", ducr = Some("ducr"), actions = List.empty, latestDecId = Some(uuid))
 
   "SubmissionController.displayLegalDeclarationPage" when {
 
@@ -171,9 +173,6 @@ class SubmissionControllerSpec extends ControllerWithoutFormSpec with ErrorHandl
         val declaration = aDeclaration()
         withNewCaching(declaration)
 
-        val uuid = UUID.randomUUID().toString
-        val expectedSubmission =
-          Submission(uuid, eori = "GB123456", lrn = "123LRN", ducr = Some("ducr"), actions = List.empty, latestDecId = Some(uuid))
         when(
           mockSubmissionService.submitDeclaration(any(), any[ExportsDeclaration], any[LegalDeclaration])(any[HeaderCarrier], any[ExecutionContext])
         )
@@ -228,4 +227,63 @@ class SubmissionControllerSpec extends ControllerWithoutFormSpec with ErrorHandl
       }
     }
   }
+
+  /*
+. Case where the SubmissionID/latestDecId cannot be found/retrieved (database failure)
+. If the latestDecId declaration is Complete
+. If latestDecId is part of the SubmissionID-belonging submission
+. Check if the amendment has actually been cancelled AND on the appropriate declaration
+. Confirm the Redirection URL post cancellation *DONE*
+
+   */
+
+  "SubmissionController.cancelAmendment" should {
+
+    "Redirect to Legal Declaration page" when {
+      "Backend returns a Submission to send a latestDecId to findOrCreateDraftForAmendment" in {
+
+        when(mockCustomsDeclareExportsConnector.findSubmission(any())(any(), any()))
+          .thenReturn(Future.successful(Some(expectedSubmission)))
+
+        when(mockCustomsDeclareExportsConnector.findOrCreateDraftForAmendment(any(), any())(any(), any()))
+          .thenReturn(Future.successful("String"))
+
+        val result = controller.cancelAmendment()(getRequestWithSession(("submission.uuid", "Id")))
+        status(result) must be(SEE_OTHER)
+        redirectLocation(result) must be(Some(routes.SubmissionController.displayLegalDeclarationPage(true, true).url))
+
+      }
+    }
+
+    "Return 400 (Bad Request)" when {
+
+      "missing legal declaration data" in {
+        withNewCaching(aDeclaration())
+        val body = Json.obj("fullName" -> "Test Tester", "jobRole" -> "Tester", "email" -> "test@tester.com")
+        val result = controller.submitDeclaration()(postRequest(body))
+
+        status(result) must be(BAD_REQUEST)
+      }
+
+      "form is submitted with form errors" in {
+        withNewCaching(aDeclaration())
+        val result = controller.submitDeclaration()(postRequestWithSubmissionError)
+
+        status(result) must be(BAD_REQUEST)
+      }
+    }
+
+    "return 500 (INTERNAL_SERVER_ERROR)" when {
+      "no submissionUuid/latestDecId is found" in {
+        withNewCaching(aDeclaration())
+        when(mockSubmissionService.submitDeclaration(any(), any(), any())(any(), any())).thenReturn(Future.successful(None))
+
+        val body = Json.obj("fullName" -> "Test Tester", "jobRole" -> "Tester", "email" -> "test@tester.com", "confirmation" -> "true")
+        val result = controller.submitDeclaration()(postRequest(body))
+
+        status(result) mustBe INTERNAL_SERVER_ERROR
+      }
+    }
+  }
+
 }
