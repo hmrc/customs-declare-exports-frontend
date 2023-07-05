@@ -88,8 +88,9 @@ class SubmissionController @Inject() (
           (for {
             submission <- maybeSubmission
             latestDecId <- submission.latestDecId
-          } yield customsDeclareExportsConnector.findOrCreateDraftForAmendment(latestDecId, ERRORS) map { _ =>
+          } yield customsDeclareExportsConnector.findOrCreateDraftForAmendment(latestDecId, ERRORS) map { id =>
             Redirect(routes.SubmissionController.displayLegalDeclarationPage(true, true))
+              .addingToSession((declarationUuid, id))
           }) getOrElse {
             Future.successful(errorHandler.internalServerError("latestDecId does not exist in submission for amendment cancellation"))
           }

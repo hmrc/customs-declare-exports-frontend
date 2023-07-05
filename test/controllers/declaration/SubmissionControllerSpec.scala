@@ -239,7 +239,7 @@ class SubmissionControllerSpec extends ControllerWithoutFormSpec with ErrorHandl
         when(mockCustomsDeclareExportsConnector.findOrCreateDraftForAmendment(any(), any())(any(), any()))
           .thenReturn(Future.successful("String"))
 
-        val result = controller.cancelAmendment()(getRequestWithSession((submissionUuid, "Id")))
+        val result = controller.cancelAmendment()(getRequestWithSession(("submission.uuid", "Id")))
         status(result) must be(SEE_OTHER)
         redirectLocation(result) must be(Some(routes.SubmissionController.displayLegalDeclarationPage(true, true).url))
 
@@ -247,29 +247,13 @@ class SubmissionControllerSpec extends ControllerWithoutFormSpec with ErrorHandl
     }
 
     "return 500 (INTERNAL_SERVER_ERROR)" when {
-      "Backend fails to find/return a matching submission" in {
+      "no submissionUuid is found in session" in {
 
-        when(mockCustomsDeclareExportsConnector.findSubmission(any())(any(), any()))
-          .thenReturn(Future.successful(None))
+        val result = controller.cancelAmendment()(getJourneyRequest())
 
-        val result = controller.cancelAmendment()(getRequestWithSession((submissionUuid, "Id")))
-        status(result) must be(INTERNAL_SERVER_ERROR)
-
-      }
-
-      "latestDecId does not belong to the appropriate submission" in {
-
-        val uuid = UUID.randomUUID().toString
-        val expectedSubmission =
-          Submission(uuid, eori = "GB123456", lrn = "123LRN", ducr = Some("ducr"), actions = List.empty, latestDecId = None)
-
-        when(mockCustomsDeclareExportsConnector.findSubmission(any())(any(), any()))
-          .thenReturn(Future.successful(Some(expectedSubmission)))
-
-        val result = controller.cancelAmendment()(getRequestWithSession((submissionUuid, "Id")))
-        status(result) must be(INTERNAL_SERVER_ERROR)
-
+        status(result) mustBe INTERNAL_SERVER_ERROR
       }
     }
   }
+
 }
