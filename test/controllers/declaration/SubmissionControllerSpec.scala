@@ -228,15 +228,6 @@ class SubmissionControllerSpec extends ControllerWithoutFormSpec with ErrorHandl
     }
   }
 
-  /*
-. Case where the SubmissionID/latestDecId cannot be found/retrieved (database failure)
-. If the latestDecId declaration is Complete
-. If latestDecId is part of the SubmissionID-belonging submission
-. Check if the amendment has actually been cancelled AND on the appropriate declaration
-. Confirm the Redirection URL post cancellation *DONE*
-
-   */
-
   "SubmissionController.cancelAmendment" should {
 
     "Redirect to Legal Declaration page" when {
@@ -255,31 +246,10 @@ class SubmissionControllerSpec extends ControllerWithoutFormSpec with ErrorHandl
       }
     }
 
-    "Return 400 (Bad Request)" when {
-
-      "missing legal declaration data" in {
-        withNewCaching(aDeclaration())
-        val body = Json.obj("fullName" -> "Test Tester", "jobRole" -> "Tester", "email" -> "test@tester.com")
-        val result = controller.submitDeclaration()(postRequest(body))
-
-        status(result) must be(BAD_REQUEST)
-      }
-
-      "form is submitted with form errors" in {
-        withNewCaching(aDeclaration())
-        val result = controller.submitDeclaration()(postRequestWithSubmissionError)
-
-        status(result) must be(BAD_REQUEST)
-      }
-    }
-
     "return 500 (INTERNAL_SERVER_ERROR)" when {
-      "no submissionUuid/latestDecId is found" in {
-        withNewCaching(aDeclaration())
-        when(mockSubmissionService.submitDeclaration(any(), any(), any())(any(), any())).thenReturn(Future.successful(None))
+      "no submissionUuid is found in session" in {
 
-        val body = Json.obj("fullName" -> "Test Tester", "jobRole" -> "Tester", "email" -> "test@tester.com", "confirmation" -> "true")
-        val result = controller.submitDeclaration()(postRequest(body))
+        val result = controller.cancelAmendment()(getJourneyRequest())
 
         status(result) mustBe INTERNAL_SERVER_ERROR
       }
