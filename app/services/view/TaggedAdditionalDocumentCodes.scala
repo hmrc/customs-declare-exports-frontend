@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package services
+package services.view
 
-import connectors.CodeListConnector
-import play.api.i18n.Messages
-import services.model.OfficeOfExit
+import connectors.CodeLinkConnector
+import connectors.Tag._
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 
-class OfficeOfExitsService @Inject() (codeListConnector: CodeListConnector) {
+@Singleton
+class TaggedAdditionalDocumentCodes @Inject() (codeLinkConnector: CodeLinkConnector) {
 
-  def all(implicit messages: Messages): List[OfficeOfExit] =
-    codeListConnector.getOfficeOfExits(messages.lang.toLocale).values.toList.sortBy(_.description)
+  def statusCodesRequiringAReason: Seq[String] = codeLinkConnector.getAdditionalDocumentStatusCodeForTag(StatusCodesRequiringAReason)
+  def documentCodesRequiringAReason: Seq[String] = codeLinkConnector.getAdditionalDocumentCodesForTag(DocumentCodesRequiringAReason)
 }

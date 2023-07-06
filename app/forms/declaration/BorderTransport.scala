@@ -23,7 +23,7 @@ import models.viewmodels.TariffContentKey
 import play.api.data.Forms.{mapping, text}
 import play.api.data.{Form, Mapping}
 import play.api.libs.json.{Json, OFormat}
-import services.TransportCodeService
+import services.view.TransportCodeService
 import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfEqual
 import utils.validators.forms.FieldValidator._
 

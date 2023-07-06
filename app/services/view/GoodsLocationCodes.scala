@@ -16,9 +16,9 @@
 
 package services.view
 
+import connectors.CodeListConnector
 import models.codes.GoodsLocationCode
 import play.api.i18n.Messages
-import services.GoodsLocationCodesService
 
 import javax.inject.{Inject, Singleton}
 
@@ -36,4 +36,14 @@ class GoodsLocationCodes @Inject() (goodsLocationCodesService: GoodsLocationCode
   }
 
   private def description(h: GoodsLocationCode): String = s"${h.code} - ${h.description}"
+}
+
+object GoodsLocationCodes {
+
+  def findByCseCode(code: String)(implicit messages: Messages, codeListConnector: CodeListConnector): Option[GoodsLocationCode] =
+    codeListConnector.getCseCodes(messages.lang.toLocale).get(code)
+
+  def findByCode(code: String)(implicit messages: Messages, codeListConnector: CodeListConnector): Option[GoodsLocationCode] =
+    codeListConnector.allGoodsLocationCodes(messages.lang.toLocale).get(code)
+
 }

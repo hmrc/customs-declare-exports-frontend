@@ -25,6 +25,7 @@ import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import services.ProcedureCodeServiceSpec._
+import services.view.ProcedureCodeService
 
 import java.util.Locale
 import java.util.Locale.ENGLISH

@@ -31,8 +31,8 @@ import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import org.scalatest.Inspectors.forAll
 import play.api.data.Form
-import services.PackageTypesService
 import services.cache.ExportsTestHelper
+import services.view.PackageTypesService
 import views.declaration.spec.PageWithButtonsSpec
 import views.html.declaration.packageInformation.package_information_add
 import views.tags.ViewTest

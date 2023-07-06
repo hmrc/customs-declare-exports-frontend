@@ -20,6 +20,7 @@ import base.{Injector, UnitWithMocksSpec}
 import play.api.i18n.{Lang, Messages}
 import play.api.test.Helpers.stubMessagesApi
 import services.model.PackageType
+import services.view.PackageTypesService
 
 import java.util.Locale
 

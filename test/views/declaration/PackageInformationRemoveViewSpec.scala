@@ -23,7 +23,7 @@ import forms.declaration.PackageInformation
 import models.DeclarationType.STANDARD
 import org.jsoup.nodes.Document
 import play.api.data.Form
-import services.PackageTypesService
+import services.view.PackageTypesService
 import views.declaration.spec.PageWithButtonsSpec
 import views.html.declaration.packageInformation.package_information_remove
 import views.tags.ViewTest

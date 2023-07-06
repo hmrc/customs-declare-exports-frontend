@@ -26,7 +26,7 @@ import forms.declaration._
 import models.DeclarationType._
 import models.ExportsDeclaration
 import play.api.mvc.Call
-import services.TaggedAuthCodes
+import services.view.TaggedAuthCodes
 
 // scalastyle:off
 trait CacheDependentNavigators {

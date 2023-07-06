@@ -24,7 +24,7 @@ import models.codes.AdditionalProcedureCode.NO_APC_APPLIES_CODE
 import models.declaration.ProcedureCodesData
 import models.ExportsDeclaration
 import play.api.mvc.Call
-import services.TaggedAuthCodes
+import services.view.TaggedAuthCodes
 
 import javax.inject.{Inject, Singleton}
 

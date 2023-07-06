@@ -26,8 +26,9 @@ import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, Forms, Mapping}
 import play.api.i18n.Messages
 import play.api.libs.json.Json
-import services.{DiffTools, DocumentTypeService}
+import services.{DiffTools}
 import services.DiffTools.{combinePointers, compareStringDifference, ExportsDeclarationDiff}
+import services.view.DocumentTypeService
 import utils.validators.forms.FieldValidator._
 
 case class Document(documentType: String, documentReference: String, goodsItemIdentifier: Option[String])

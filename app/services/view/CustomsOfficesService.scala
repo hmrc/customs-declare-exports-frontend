@@ -14,24 +14,16 @@
  * limitations under the License.
  */
 
-package services
+package services.view
 
 import connectors.CodeListConnector
 import play.api.i18n.Messages
+import services.model.CustomsOffice
 
 import javax.inject.Inject
 
-class DocumentTypeService @Inject() (codeListConnector: CodeListConnector) {
-  def documentCodesMap()(implicit messages: Messages): Map[String, DocumentType] = codeListConnector.getDocumentTypes(messages.lang.toLocale)
+class CustomsOfficesService @Inject() (codeListConnector: CodeListConnector) {
 
-  def allDocuments()(implicit messages: Messages): List[DocumentType] = documentCodesMap().map(_._2).toList
-
-  def documentsForDropdown()(implicit messages: Messages): List[DocumentType] =
-    allDocuments().filterNot(docType => allDocuments().contains(docType.code))
-
-  def findByCode(code: String)(implicit messages: Messages): DocumentType = documentCodesMap()(messages)(code)
-}
-
-object DocumentTypeService {
-  val exclusionKey = "ExcludeFromDropdown"
+  def all(implicit messages: Messages): List[CustomsOffice] =
+    codeListConnector.getCustomsOffices(messages.lang.toLocale).values.toList.sortBy(_.description)
 }

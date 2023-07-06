@@ -20,6 +20,7 @@ import base.{Injector, UnitSpec}
 import play.api.i18n.{Lang, Messages}
 import play.api.test.Helpers.stubMessagesApi
 import services.model.CustomsOffice
+import services.view.CustomsOfficesService
 
 import java.util.Locale
 

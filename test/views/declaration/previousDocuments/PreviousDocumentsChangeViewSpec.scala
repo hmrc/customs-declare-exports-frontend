@@ -23,7 +23,7 @@ import models.requests.JourneyRequest
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import play.twirl.api.Html
-import services.{DocumentType, DocumentTypeService}
+import services.view.{DocumentType, DocumentTypeService}
 import utils.ListItem
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.previousDocuments.previous_documents_change

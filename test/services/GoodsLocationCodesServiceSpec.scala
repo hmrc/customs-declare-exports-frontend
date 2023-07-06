@@ -20,6 +20,7 @@ import base.{Injector, UnitSpec}
 import models.codes.GoodsLocationCode
 import play.api.i18n.{Lang, Messages}
 import play.api.test.Helpers.stubMessagesApi
+import services.view.GoodsLocationCodesService
 
 import java.util.Locale
 

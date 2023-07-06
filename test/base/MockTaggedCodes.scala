@@ -24,7 +24,7 @@ import org.mockito.Mockito
 import org.mockito.Mockito.when
 import org.scalatest.{BeforeAndAfterEach, Suite}
 import org.scalatestplus.mockito.MockitoSugar
-import services.{TaggedAdditionalDocumentCodes, TaggedAuthCodes}
+import services.view.{TaggedAdditionalDocumentCodes, TaggedAuthCodes}
 
 trait MockTaggedCodes extends MockitoSugar with BeforeAndAfterEach { this: Suite =>
 

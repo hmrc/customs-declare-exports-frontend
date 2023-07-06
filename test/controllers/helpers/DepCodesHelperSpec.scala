@@ -48,6 +48,7 @@ class DepCodesHelperSpec extends UnitWithMocksSpec with MockExportCacheService {
     when(appConfig.officeOfExitsCodeFile).thenReturn("/code-lists/manyCodes.json")
     when(appConfig.customsOfficesCodeFile).thenReturn("/code-lists/manyCodes.json")
     when(appConfig.documentTypeCodeFile).thenReturn("/code-lists/manyCodes.json")
+    when(appConfig.currencyCodesFile).thenReturn("/code-lists/manyCodes.json")
   }
 
   "DepCodesHelper on isDesignatedExportPlaceCode" should {

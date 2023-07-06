@@ -28,9 +28,10 @@ import play.api.data.Forms._
 import play.api.data.{Form, FormError, Forms, Mapping}
 import play.api.libs.json.{JsValue, Json}
 import services.DiffTools.{combinePointers, compareStringDifference, ExportsDeclarationDiff}
-import services.{DiffTools, TaggedAdditionalDocumentCodes, TaggedAuthCodes}
+import services.view.{TaggedAdditionalDocumentCodes, TaggedAuthCodes}
+import services.DiffTools
 import uk.gov.voa.play.form.ConditionalMappings.isAnyOf
-import utils.validators.forms.FieldValidator.{nonEmpty, _}
+import utils.validators.forms.FieldValidator._
 
 case class AdditionalDocument(
   documentTypeCode: Option[String],

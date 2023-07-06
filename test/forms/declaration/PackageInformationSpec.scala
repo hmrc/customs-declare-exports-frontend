@@ -22,7 +22,7 @@ import forms.declaration.PackageInformation.form
 import models.viewmodels.TariffContentKey
 import play.api.i18n.{Lang, Messages}
 import play.api.test.Helpers.stubMessagesApi
-import services.PackageTypesService
+import services.view.PackageTypesService
 
 import java.util.Locale
 

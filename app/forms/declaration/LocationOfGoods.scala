@@ -28,8 +28,8 @@ import play.api.data.Forms.text
 import play.api.data.{Form, Forms, Mapping}
 import play.api.i18n.Messages
 import play.api.libs.json.{Json, OFormat}
-import services.Countries.isValidCountryCode
-import services.GoodsLocationCodes
+import services.view.Countries.isValidCountryCode
+import services.view.GoodsLocationCodes
 import uk.gov.voa.play.form.ConditionalMappings._
 import utils.validators.forms.FieldValidator._
 

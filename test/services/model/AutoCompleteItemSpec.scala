@@ -18,8 +18,7 @@ package services.model
 
 import base.UnitWithMocksSpec
 import models.codes.{AdditionalProcedureCode, Country, ProcedureCode}
-import services.DocumentType
-import services.view.AutoCompleteItem
+import services.view.{AutoCompleteItem, DocumentType}
 
 class AutoCompleteItemSpec extends UnitWithMocksSpec {
 

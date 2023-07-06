@@ -49,6 +49,7 @@ class InvoiceAndExchangeRateViewSpec extends PageWithButtonsSpec with Injector {
       messages must haveTranslationFor("declaration.invoice.details.title")
       messages must haveTranslationFor("declaration.invoice.details.body.1")
       messages must haveTranslationFor("declaration.invoice.details.body.2")
+      messages must haveTranslationFor("declaration.invoice.details.body.3")
       messages must haveTranslationFor("declaration.totalAmountInvoiced")
       messages must haveTranslationFor("declaration.totalAmountInvoiced.error")
       messages must haveTranslationFor("declaration.exchangeRate")

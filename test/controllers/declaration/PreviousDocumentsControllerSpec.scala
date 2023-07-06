@@ -27,7 +27,7 @@ import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.twirl.api.{Html, HtmlFormat}
-import services.{DocumentType, DocumentTypeService}
+import services.view.{DocumentType, DocumentTypeService}
 import views.html.declaration.previousDocuments.previous_documents
 
 class PreviousDocumentsControllerSpec extends ControllerWithoutFormSpec {

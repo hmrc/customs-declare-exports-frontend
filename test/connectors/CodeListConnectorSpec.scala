@@ -24,7 +24,7 @@ import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 import play.api.{Environment, Mode}
 import services.model.{CustomsOffice, OfficeOfExit, PackageType}
-import services.DocumentType
+import services.view.DocumentType
 import utils.JsonFile
 
 import java.util.Locale.{ENGLISH, JAPANESE}
@@ -49,6 +49,7 @@ class CodeListConnectorSpec extends UnitWithMocksSpec with BeforeAndAfterEach {
     when(appConfig.officeOfExitsCodeFile).thenReturn("/code-lists/manyCodes.json")
     when(appConfig.customsOfficesCodeFile).thenReturn("/code-lists/manyCodes.json")
     when(appConfig.documentTypeCodeFile).thenReturn("/code-lists/manyCodes.json")
+    when(appConfig.currencyCodesFile).thenReturn("/code-lists/manyCodes.json")
   }
 
   private lazy val glc = mock[GoodsLocationCodesConnector]

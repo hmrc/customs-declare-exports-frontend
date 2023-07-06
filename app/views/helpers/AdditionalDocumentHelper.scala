@@ -22,8 +22,7 @@ import models.DeclarationType.CLEARANCE
 import models.requests.JourneyRequest
 import play.api.i18n.Messages
 import play.twirl.api.{Html, HtmlFormat}
-import services.TaggedAuthCodes
-import services.view.HolderOfAuthorisationCodes
+import services.view.{HolderOfAuthorisationCodes, TaggedAuthCodes}
 import uk.gov.hmrc.govukfrontend.views.html.components.{GovukDetails, GovukInsetText}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.details.Details

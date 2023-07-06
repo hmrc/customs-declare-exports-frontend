@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package services
+package services.view
 
 import connectors.CodeListConnector
 import play.api.i18n.Messages
-import services.model.CustomsOffice
+import services.model.OfficeOfExit
 
 import javax.inject.Inject
 
-class CustomsOfficesService @Inject() (codeListConnector: CodeListConnector) {
+class OfficeOfExitsService @Inject() (codeListConnector: CodeListConnector) {
 
-  def all(implicit messages: Messages): List[CustomsOffice] =
-    codeListConnector.getCustomsOffices(messages.lang.toLocale).values.toList.sortBy(_.description)
+  def all(implicit messages: Messages): List[OfficeOfExit] =
+    codeListConnector.getOfficeOfExits(messages.lang.toLocale).values.toList.sortBy(_.description)
 }

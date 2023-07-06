@@ -30,7 +30,7 @@ import play.api.data.Form
 import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import services.PackageTypesService
+import services.view.PackageTypesService
 import views.declaration.PackageInformationViewSpec.packageInformation
 import views.html.declaration.packageInformation.package_information_add
 

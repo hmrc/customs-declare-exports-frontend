@@ -18,6 +18,7 @@
 @import controllers.navigation.Navigator
 @import forms.declaration.InvoiceAndExchangeRate
 @import forms.declaration.InvoiceAndExchangeRate._
+@import views.html.components.fields.field_accessible_autocomplete
 @import models.requests.JourneyRequest
 @import play.twirl.api.HtmlFormat
 @import uk.gov.hmrc.govukfrontend.views.html.components._
@@ -77,11 +78,14 @@
 
     <div class="govuk-date-input">
         <div class="govuk-date-input__item">
-        @input(
-            field = totalAmountInvoicedCurrencyField,
-            labelKey = "declaration.totalAmountInvoiced.currency.label",
-            inputClasses = "govuk-input--width-2"
-        )
+            @field_accessible_autocomplete(
+                field = form("totalAmountInvoicedCurrency"),
+                label = messages("declaration.locationOfGoods.yesNo.yesHint"),
+                labelClass = Some("govuk-label--s"),
+                hintParagraphs = List(messages("declaration.locationOfGoods.yesNo.yes.hint")),
+                emptySelectValue = "",
+                items = List()
+            )
         </div>
         <div class="govuk-date-input__item">
         @input(

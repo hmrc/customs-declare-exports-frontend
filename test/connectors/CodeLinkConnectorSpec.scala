@@ -22,7 +22,7 @@ import connectors.Tag._
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 import play.api.{Environment, Mode}
-import services.DocumentTypeService
+import services.view.DocumentTypeService
 import utils.JsonFile
 
 class CodeLinkConnectorSpec extends UnitWithMocksSpec with BeforeAndAfterEach {

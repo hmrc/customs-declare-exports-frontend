@@ -30,6 +30,7 @@ import models.requests.JourneyRequest
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.cache.ExportsCacheService
+import services.view
 import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.destinationCountries.{country_of_routing, routing_country_question}
@@ -103,7 +104,7 @@ class RoutingCountriesController @Inject() (
         val redirect = navigator.continueTo(RoutingCountriesController.displayRoutingCountry)
 
         values.headOption
-          .map(services.Countries.findByCode)
+          .map(view.Countries.findByCode)
           .fold(Future.successful(redirect)) { country =>
             val countryToRemove = Country(Some(country.countryCode))
             val updatedCountries = cachedRoutingCountries.filterNot(_.country == countryToRemove)

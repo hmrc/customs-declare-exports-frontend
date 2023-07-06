@@ -29,7 +29,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.Assertion
 import play.twirl.api.Html
-import services.{DocumentType, DocumentTypeService}
+import services.view.{DocumentType, DocumentTypeService}
 import views.declaration.spec.{PageWithButtonsSpec, UnitViewSpec}
 import views.html.declaration.previousDocuments.previous_documents
 import views.tags.ViewTest

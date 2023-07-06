@@ -28,7 +28,8 @@ import play.api.data.{Form, Forms, Mapping}
 import play.api.i18n.Messages
 import play.api.libs.json.Json
 import services.DiffTools.{combinePointers, compareIntDifference, compareStringDifference, ExportsDeclarationDiff}
-import services.{DiffTools, PackageTypesService}
+import services.{DiffTools}
+import services.view.PackageTypesService
 import utils.validators.forms.FieldValidator._
 
 case class PackageInformation(

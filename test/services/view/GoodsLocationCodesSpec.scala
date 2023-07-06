@@ -21,7 +21,6 @@ import models.codes.GoodsLocationCode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.BeforeAndAfterEach
-import services.GoodsLocationCodesService
 import views.declaration.spec.UnitViewSpec
 
 class GoodsLocationCodesSpec extends UnitViewSpec with BeforeAndAfterEach with FeatureFlagMocks {

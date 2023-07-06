@@ -24,7 +24,7 @@ import org.scalatest.OptionValues
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, JsString, Json}
-import services.{DocumentType, DocumentTypeService}
+import services.view.{DocumentType, DocumentTypeService}
 
 class DocumentSpec extends DeclarationPageBaseSpec with OptionValues with MockitoSugar {
 

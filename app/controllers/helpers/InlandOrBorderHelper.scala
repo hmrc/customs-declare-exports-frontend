@@ -21,7 +21,7 @@ import forms.declaration.ModeOfTransportCode.RoRo
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.SUPPLEMENTARY_EIDR
 import models.DeclarationType._
 import models.ExportsDeclaration
-import services.TaggedAuthCodes
+import services.view.TaggedAuthCodes
 
 import javax.inject.{Inject, Singleton}
 

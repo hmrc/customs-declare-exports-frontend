@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package services
+package services.view
 
 import connectors.CodeListConnector
 import play.api.i18n.Messages

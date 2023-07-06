@@ -28,7 +28,8 @@ import models.requests.JourneyRequest
 import models.requests.SessionHelper.{getValue, submissionActionId}
 import play.api.mvc.{AnyContent, Call, Result, Results}
 import services.TariffApiService.SupplementaryUnitsNotRequired
-import services.{TaggedAuthCodes, TariffApiService}
+import services.TariffApiService
+import services.view.TaggedAuthCodes
 
 import javax.inject.{Inject, Singleton}
 import scala.annotation.nowarn

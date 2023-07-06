@@ -25,7 +25,7 @@ import play.api.data.{Form, Forms, Mapping}
 import play.api.data.Forms.{optional, text}
 import play.api.i18n.Messages
 import utils.validators.forms.FieldValidator._
-import services.Countries.isValidCountryCode
+import services.view.Countries.isValidCountryCode
 
 object Countries {
 

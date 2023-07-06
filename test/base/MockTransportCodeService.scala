@@ -21,7 +21,7 @@ import connectors.Tag._
 import org.mockito.ArgumentMatchers.refEq
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import services.TransportCodeService
+import services.view.TransportCodeService
 
 object MockTransportCodeService extends MockitoSugar {
 

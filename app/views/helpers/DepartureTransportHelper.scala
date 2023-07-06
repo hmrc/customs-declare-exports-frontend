@@ -26,7 +26,7 @@ import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.Messages
 import play.twirl.api.{Html, HtmlFormat}
-import services.TransportCodeService
+import services.view.TransportCodeService
 import uk.gov.hmrc.govukfrontend.views.html.components.{GovukInsetText, GovukRadios}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.errormessage.ErrorMessage

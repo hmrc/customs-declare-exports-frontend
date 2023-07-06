@@ -26,7 +26,7 @@ import models.ExportsDeclaration
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.cache.ExportsCacheService
-import services.DocumentTypeService
+import services.view.DocumentTypeService
 import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.ListItem

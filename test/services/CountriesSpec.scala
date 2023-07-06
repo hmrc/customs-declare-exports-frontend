@@ -25,6 +25,7 @@ import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.i18n.Lang
 import play.api.test.Helpers._
+import services.view.Countries
 
 import java.util.Locale
 import scala.collection.immutable.ListMap

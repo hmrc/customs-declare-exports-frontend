@@ -39,7 +39,7 @@ import play.api.i18n.{Lang, Messages}
 import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers.{await, status, _}
 import play.twirl.api.HtmlFormat
-import services.ProcedureCodeService
+import services.view.ProcedureCodeService
 import views.html.declaration.procedureCodes.additional_procedure_codes
 
 import java.util.{Locale, UUID}

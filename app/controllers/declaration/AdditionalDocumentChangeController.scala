@@ -28,8 +28,8 @@ import models.ExportsDeclaration
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
-import services.{TaggedAdditionalDocumentCodes, TaggedAuthCodes}
 import services.cache.ExportsCacheService
+import services.view.{TaggedAdditionalDocumentCodes, TaggedAuthCodes}
 import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.ListItem

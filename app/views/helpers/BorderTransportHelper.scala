@@ -22,7 +22,7 @@ import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.Messages
 import play.twirl.api.Html
-import services.TransportCodeService
+import services.view.TransportCodeService
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 import views.html.components.gds.exportsInputText

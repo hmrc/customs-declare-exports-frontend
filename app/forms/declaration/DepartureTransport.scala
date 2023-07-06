@@ -22,9 +22,9 @@ import models.viewmodels.TariffContentKey
 import play.api.data.Forms.{mapping, optional, text}
 import play.api.data.{Form, Mapping}
 import play.api.libs.json.Json
-import services.TransportCodeService
+import services.view.TransportCodeService
 import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfEqual
-import utils.validators.forms.FieldValidator.{isContainedIn, noLongerThan, _}
+import utils.validators.forms.FieldValidator._
 
 case class DepartureTransport(meansOfTransportOnDepartureType: Option[String], meansOfTransportOnDepartureIDNumber: Option[String])
 

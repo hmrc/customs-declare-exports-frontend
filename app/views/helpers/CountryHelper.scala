@@ -21,7 +21,7 @@ import models.codes.Country
 import models.requests.JourneyRequest
 import play.api.i18n.Messages
 import play.api.libs.json.{JsValue, Json}
-import services.Countries
+import services.view.Countries
 
 import javax.inject.{Inject, Singleton}
 

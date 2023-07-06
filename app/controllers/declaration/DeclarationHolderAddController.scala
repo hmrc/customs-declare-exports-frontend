@@ -29,8 +29,8 @@ import models.requests.JourneyRequest
 import play.api.data.{Form, FormError}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
-import services.TaggedAuthCodes
 import services.cache.ExportsCacheService
+import services.view.TaggedAuthCodes
 import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.declarationHolder.declaration_holder_add
