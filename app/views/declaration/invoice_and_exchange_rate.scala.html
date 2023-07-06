@@ -68,10 +68,6 @@
 
 @currencyCodeAndAmountContent = {
 
-    <div class="govuk-hint" id="totalAmountInvoiced-hint">
-        @Html(messages("declaration.totalAmountInvoiced.hint"))
-    </div>
-
     @if(totalAmountInvoicedErrors.nonEmpty){
         <p class="govuk-error-message">
             <span class="govuk-visually-hidden">@messages("site.accessibility.error")</span>
@@ -138,6 +134,7 @@
                 url = appConfig.exchangeRatesForCustoms
             )
         ))
+        @paragraphBody(messages("declaration.invoice.details.body.3"))
 
         @currencyCodeAndAmount
 
