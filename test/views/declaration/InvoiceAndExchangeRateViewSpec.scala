@@ -117,14 +117,16 @@ class InvoiceAndExchangeRateViewSpec extends PageWithButtonsSpec with Injector {
   "Total Number Of Items View for invalid input" should {
     onEveryDeclarationJourney() { implicit request =>
       "display error when all entered input is incorrect" in {
-        val view = createView(form.fillAndValidate(InvoiceAndExchangeRate("abcd", Some("dsfsd"), "kjf", Some("abcd"))))
+        val invoiceAndExchangeRate =
+          Map("exchangeRate" -> "abcd", "totalAmountInvoiced" -> "kjsad", "totalAmountInvoicedCurrency" -> "jsad", "agreedExchangeRate" -> "asd")
+        val view = createView(form.bind(invoiceAndExchangeRate))
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#totalAmountInvoiced")
-        view must containErrorElementWithTagAndHref("a", "#exchangeRate")
+        view must containErrorElementWithTagAndHref("a", "#agreedExchangeRate")
 
         view must containErrorElementWithMessageKey("declaration.totalAmountInvoiced.error")
-        view must containErrorElementWithMessageKey("declaration.exchangeRate.error")
+        view must containErrorElementWithMessageKey("declaration.exchangeRate.required.error")
       }
 
       "display error when Total Amount Invoiced is incorrect" in {
@@ -138,17 +140,19 @@ class InvoiceAndExchangeRateViewSpec extends PageWithButtonsSpec with Injector {
       }
 
       "display error when Exchange Rate is incorrect" in {
-        val invoiceAndExchangeRate = InvoiceAndExchangeRate("123.12", Some(validCurrencyCode), YesNoAnswers.yes, Some("abcd"))
-        val view = createView(form.fillAndValidate(invoiceAndExchangeRate))
+        val invoiceAndExchangeRate =
+          Map("exchangeRate" -> "abcd", "totalAmountInvoiced" -> "123.12", "totalAmountInvoicedCurrency" -> "GBP", "agreedExchangeRate" -> "Yes")
+        val view = createView(form.bind(invoiceAndExchangeRate))
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#exchangeRate")
 
-        view must containErrorElementWithMessageKey("declaration.exchangeRate.error")
+        view must containErrorElementWithMessageKey("declaration.exchangeRate.noFixedRate.error")
       }
 
       "display error when Currency Code is incorrect" in {
-        val invoiceAndExchangeRate = Map("exchangeRate" -> "123.12345", "totalAmountInvoiced" -> "123.12", "totalAmountInvoicedCurrency" -> "US")
+        val invoiceAndExchangeRate =
+          Map("exchangeRate" -> "123.12345", "totalAmountInvoiced" -> "123.12", "totalAmountInvoicedCurrency" -> "US", "agreedExchangeRate" -> "Yes")
         val view = createView(form.bind(invoiceAndExchangeRate))
 
         view must haveGovukGlobalErrorSummary
@@ -171,7 +175,7 @@ class InvoiceAndExchangeRateViewSpec extends PageWithButtonsSpec with Injector {
       }
 
       "display data in Exchange Rate input" in {
-        val invoiceAndExchangeRate = InvoiceAndExchangeRate("", None, YesNoAnswers.no, Some("123.12345"))
+        val invoiceAndExchangeRate = InvoiceAndExchangeRate("", None, YesNoAnswers.yes, Some("123.12345"))
         val view = createView(form.fill(invoiceAndExchangeRate))
 
         view.getElementById("totalAmountInvoiced").attr("value") mustBe empty
