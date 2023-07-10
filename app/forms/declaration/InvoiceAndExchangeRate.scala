@@ -129,12 +129,13 @@ object InvoiceAndExchangeRate extends DeclarationPage {
     optional(text()).transform(_.map(_.toUpperCase), (o: Option[String]) => o),
     Seq(
       ConditionalConstraint(
-        isFieldIgnoreCaseString(totalAmountInvoicedCurrency, "GBP") and isAmountLessThan(totalAmountInvoiced),
+        isFieldIgnoreCaseString(agreedExchangeRateYesNo, YesNoAnswers.yes) and
+          isFieldIgnoreCaseString(totalAmountInvoicedCurrency, "GBP") and isAmountLessThan(totalAmountInvoiced),
         exchangeRateNoFixedRateErrorKey,
         isEmptyOptionString
       ),
       ConditionalConstraint(
-        isFieldNotEmpty(exchangeRate),
+        isFieldIgnoreCaseString(agreedExchangeRateYesNo, YesNoAnswers.yes) and isFieldNotEmpty(exchangeRate),
         rateFieldErrorKey,
         isNotOnlyCommasOption and validateOptionWithoutCommas(ofPattern(exchangeRatePattern))
       ),
@@ -160,7 +161,7 @@ object InvoiceAndExchangeRate extends DeclarationPage {
         (_: Option[String]) => false
       ),
       ConditionalConstraint(
-        isFieldNotEmpty(exchangeRate),
+        isFieldIgnoreCaseString(agreedExchangeRateYesNo, YesNoAnswers.yes) and isFieldNotEmpty(exchangeRate),
         invoiceCurrencyFieldWithExchangeRateErrorKey,
         isEmptyOptionString or equalsIgnoreCaseOptionString("GBP")
       ),
