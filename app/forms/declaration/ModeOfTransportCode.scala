@@ -22,6 +22,7 @@ import play.api.data.format.Formatter
 import play.api.libs.json.{JsString, JsonValidationError, Reads, Writes}
 
 sealed abstract class ModeOfTransportCode(val value: String) extends Ordered[ModeOfTransportCode] {
+
   override def compare(y: ModeOfTransportCode): Int = value.compareTo(y.value)
 }
 

@@ -579,20 +579,20 @@ class ExportItemSpec extends UnitWithMocksSpec with ExportsItemBuilder {
       }
 
       "the original version's country field has a different value to this one" in {
-        val fieldPointer = s"${baseFieldPointer}.${AdditionalFiscalReference.countryPointer}"
+        val fieldPointer = s"${baseFieldPointer}"
         val additionalFiscalReference = AdditionalFiscalReference("latestCountry", "latestReference")
-        val originalValue = "originalCountry"
-        additionalFiscalReference.createDiff(additionalFiscalReference.copy(country = originalValue), baseFieldPointer) mustBe Seq(
-          constructAlteredField(fieldPointer, originalValue, additionalFiscalReference.country)
+        val originalValue = additionalFiscalReference.copy(country = "originCountry")
+        additionalFiscalReference.createDiff(originalValue, baseFieldPointer) mustBe Seq(
+          constructAlteredField(fieldPointer, Some(originalValue), Some(additionalFiscalReference))
         )
       }
 
       "the original version's reference field has a different value to this one" in {
-        val fieldPointer = s"${baseFieldPointer}.${AdditionalFiscalReference.referencePointer}"
+        val fieldPointer = s"${baseFieldPointer}"
         val additionalFiscalReference = AdditionalFiscalReference("latestCountry", "latestReference")
-        val originalValue = "originalReference"
-        additionalFiscalReference.createDiff(additionalFiscalReference.copy(reference = originalValue), baseFieldPointer) mustBe Seq(
-          constructAlteredField(fieldPointer, originalValue, additionalFiscalReference.reference)
+        val originalValue = additionalFiscalReference.copy(reference = "originalReference")
+        additionalFiscalReference.createDiff(originalValue, baseFieldPointer) mustBe Seq(
+          constructAlteredField(fieldPointer, Some(originalValue), Some(additionalFiscalReference))
         )
       }
     }
@@ -636,26 +636,8 @@ class ExportItemSpec extends UnitWithMocksSpec with ExportsItemBuilder {
         withClue("both AdditionalFiscalReferences references contain different number of elements") {
           val additionalFiscalReferences = AdditionalFiscalReferencesData(references.drop(1))
           additionalFiscalReferences.createDiff(additionalFiscalReferences.copy(references = references), fieldPointer, None) mustBe Seq(
-            constructAlteredField(
-              s"${fieldPointer}.references.#1.${AdditionalFiscalReference.countryPointer}",
-              Some(references(0).country),
-              Some(references(1).country)
-            ),
-            constructAlteredField(
-              s"${fieldPointer}.references.#1.${AdditionalFiscalReference.referencePointer}",
-              Some(references(0).reference),
-              Some(references(1).reference)
-            ),
-            constructAlteredField(
-              s"${fieldPointer}.references.#2.${AdditionalFiscalReference.countryPointer}",
-              Some(references(1).country),
-              Some(references(2).country)
-            ),
-            constructAlteredField(
-              s"${fieldPointer}.references.#2.${AdditionalFiscalReference.referencePointer}",
-              Some(references(1).reference),
-              Some(references(2).reference)
-            ),
+            constructAlteredField(s"${fieldPointer}.references.#1", Some(references(0)), Some(references(1))),
+            constructAlteredField(s"${fieldPointer}.references.#2", Some(references(1)), Some(references(2))),
             constructAlteredField(s"${fieldPointer}.references.#3", Some(references(2)), None)
           )
         }
@@ -663,26 +645,8 @@ class ExportItemSpec extends UnitWithMocksSpec with ExportsItemBuilder {
         withClue("both AdditionalFiscalReferences references contain same elements but in different order") {
           val additionalFiscalReferences = AdditionalFiscalReferencesData(references)
           additionalFiscalReferences.createDiff(additionalFiscalReferences.copy(references = references.reverse), fieldPointer, None) mustBe Seq(
-            constructAlteredField(
-              s"${fieldPointer}.references.#1.${AdditionalFiscalReference.countryPointer}",
-              Some(references(2).country),
-              Some(references(0).country)
-            ),
-            constructAlteredField(
-              s"${fieldPointer}.references.#1.${AdditionalFiscalReference.referencePointer}",
-              Some(references(2).reference),
-              Some(references(0).reference)
-            ),
-            constructAlteredField(
-              s"${fieldPointer}.references.#3.${AdditionalFiscalReference.countryPointer}",
-              Some(references(0).country),
-              Some(references(2).country)
-            ),
-            constructAlteredField(
-              s"${fieldPointer}.references.#3.${AdditionalFiscalReference.referencePointer}",
-              Some(references(0).reference),
-              Some(references(2).reference)
-            )
+            constructAlteredField(s"${fieldPointer}.references.#1", Some(references(2)), Some(references(0))),
+            constructAlteredField(s"${fieldPointer}.references.#3", Some(references(0)), Some(references(2)))
           )
         }
 
@@ -690,16 +654,7 @@ class ExportItemSpec extends UnitWithMocksSpec with ExportsItemBuilder {
           val newValue = AdditionalFiscalReference("countryFour", "referenceFour")
           val additionalFiscalReferences = AdditionalFiscalReferencesData(Seq(newValue) ++ references.drop(1))
           additionalFiscalReferences.createDiff(additionalFiscalReferences.copy(references = references), fieldPointer, None) mustBe Seq(
-            constructAlteredField(
-              s"${fieldPointer}.references.#1.${AdditionalFiscalReference.countryPointer}",
-              Some(references(0).country),
-              Some(newValue.country)
-            ),
-            constructAlteredField(
-              s"${fieldPointer}.references.#1.${AdditionalFiscalReference.referencePointer}",
-              Some(references(0).reference),
-              Some(newValue.reference)
-            )
+            constructAlteredField(s"${fieldPointer}.references.#1", Some(references(0)), Some(newValue))
           )
         }
       }
@@ -1105,9 +1060,9 @@ class ExportItemSpec extends UnitWithMocksSpec with ExportsItemBuilder {
           Some(Date(None, None, None)),
           Some(DocumentWriteOff(None, None))
         )
-        val originalValue = Date(Some(1), None, None)
-        additionalDocument.createDiff(additionalDocument.copy(dateOfValidity = Some(originalValue)), baseFieldPointer) mustBe Seq(
-          constructAlteredField(fieldPointer, originalValue.day, additionalDocument.dateOfValidity.get.day)
+        val originalValue = Some(Date(Some(1), None, None))
+        additionalDocument.createDiff(additionalDocument.copy(dateOfValidity = originalValue), baseFieldPointer) mustBe Seq(
+          constructAlteredField(fieldPointer, originalValue, additionalDocument.dateOfValidity)
         )
       }
 

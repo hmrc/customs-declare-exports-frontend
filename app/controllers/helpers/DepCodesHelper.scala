@@ -26,7 +26,7 @@ import javax.inject.{Inject, Singleton}
 class DepCodesHelper @Inject() (codeListConnector: CodeListConnector) {
 
   def isDesignatedExportPlaceCode(declaration: ExportsDeclaration): Boolean =
-    declaration.locations.goodsLocation.exists(location => checkDesignatedExportPlaceCodes(location.code))
+    declaration.locations.goodsLocation.exists(location => checkDesignatedExportPlaceCodes(location.value))
 
   private def checkDesignatedExportPlaceCodes(goodsLocationCode: String): Boolean =
     codeListConnector.getDepCodes(Locale.ENGLISH).values.map(_.code).toSeq.contains(goodsLocationCode)

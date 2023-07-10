@@ -31,6 +31,7 @@
 @(declaration: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages)
 
 @sectionRequired(transport: Transport, locations: Locations) = @{
+    transport.expressConsignment.isDefined ||
     transport.transportPayment.isDefined ||
     transport.containers.isDefined ||
     transport.borderModeOfTransportCode.isDefined ||

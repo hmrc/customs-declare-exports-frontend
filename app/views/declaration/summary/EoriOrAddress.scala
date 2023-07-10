@@ -43,12 +43,12 @@ object EoriOrAddress {
     def emptyRow: Option[SummaryListRow] =
       if (eori.isDefined || address.isDefined) None
       else if (isEoriDefault) Some(rowForEori(key, eoriLabel, eoriChangeLabel, changeController, None, actionsEnabled))
-      else Some(forForAddress(key, addressLabel, addressChangeLabel, changeController, extractAddress, None, actionsEnabled))
+      else Some(rowForAddress(key, addressLabel, addressChangeLabel, changeController, extractAddress, None, actionsEnabled))
 
     Seq(
       emptyRow,
       eori.map(eori => rowForEori(key, eoriLabel, eoriChangeLabel, changeController, Some(eori), actionsEnabled)),
-      address.map(address => forForAddress(key, addressLabel, addressChangeLabel, changeController, extractAddress _, Some(address), actionsEnabled))
+      address.map(address => rowForAddress(key, addressLabel, addressChangeLabel, changeController, extractAddress _, Some(address), actionsEnabled))
     )
   }
   // scalastyle:on
@@ -85,7 +85,7 @@ object EoriOrAddress {
       )
     )
 
-  private def forForAddress(
+  private def rowForAddress(
     key: String,
     addressLabel: String,
     addressChangeLabel: String,

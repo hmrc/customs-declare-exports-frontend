@@ -58,6 +58,8 @@ case class Submission(
       Some(cancelActions.minBy(_.requestTimestamp)(Submission.dateTimeOrdering))
     } else None
   }
+
+  def action(actionId: String): Option[Action] = actions.find(_.id == actionId)
 }
 
 object Submission {

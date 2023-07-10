@@ -18,23 +18,44 @@ package forms.declaration
 
 import forms.DeclarationPage
 import forms.MappingHelper.requiredRadio
+import forms.declaration.TransportPayment.keyForAmend
+import models.AmendmentRow.{forAddedValue, forAmendedValue, forRemovedValue, safeMessage}
 import models.DeclarationType.DeclarationType
-import models.viewmodels.TariffContentKey
 import models.ExportsFieldPointer.ExportsFieldPointer
-import models.FieldMapping
-import play.api.data.{Form, Mapping}
+import models.viewmodels.TariffContentKey
+import models.{Amendment, FieldMapping}
 import play.api.data.Forms.mapping
+import play.api.data.{Form, Mapping}
+import play.api.i18n.Messages
 import play.api.libs.json.{Json, OFormat}
 import utils.validators.forms.FieldValidator.isContainedIn
 
-case class TransportPayment(paymentMethod: String) extends Ordered[TransportPayment] {
+case class TransportPayment(paymentMethod: String) extends Ordered[TransportPayment] with Amendment {
+
+  def value: String = paymentMethod
+
+  private def toUserValue(value: String)(implicit messages: Messages): String =
+    safeMessage(s"$keyForAmend.$value", value)
+
+  def valueAdded(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
+    forAddedValue(pointer, messages(keyForAmend), toUserValue(value))
+
+  def valueAmended(newValue: Amendment, pointer: ExportsFieldPointer)(implicit messages: Messages): String =
+    forAmendedValue(pointer, messages(keyForAmend), toUserValue(value), toUserValue(newValue.value))
+
+  def valueRemoved(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
+    forRemovedValue(pointer, messages(keyForAmend), toUserValue(value))
+
   override def compare(that: TransportPayment): Int = paymentMethod.compare(that.paymentMethod)
 }
 
 object TransportPayment extends DeclarationPage with FieldMapping {
-  implicit val formats: OFormat[TransportPayment] = Json.format[TransportPayment]
 
   override val pointer: ExportsFieldPointer = "transportPayment.paymentMethod"
+
+  private val keyForAmend = "declaration.summary.transport.payment"
+
+  implicit val formats: OFormat[TransportPayment] = Json.format[TransportPayment]
 
   val cash = "A"
   val creditCard = "B"
@@ -45,12 +66,14 @@ object TransportPayment extends DeclarationPage with FieldMapping {
   val notPrePaid = "Z"
   val notAvailable = "_"
 
-  val validPaymentMethods = Set(cash, creditCard, cheque, other, eFunds, accHolder, notPrePaid, notAvailable)
+  private val validPaymentMethods = Set(cash, creditCard, cheque, other, eFunds, accHolder, notPrePaid, notAvailable)
+
+  private val prefix = "declaration.transportInformation.transportPayment.paymentMethod"
 
   val formMapping: Mapping[TransportPayment] = mapping(
     "paymentMethod" ->
-      requiredRadio("declaration.transportInformation.transportPayment.paymentMethod.error.empty")
-        .verifying("declaration.transportInformation.transportPayment.paymentMethod.error.empty", isContainedIn(validPaymentMethods))
+      requiredRadio(s"$prefix.error.empty")
+        .verifying(s"$prefix.error.empty", isContainedIn(validPaymentMethods))
   )(TransportPayment.apply)(TransportPayment.unapply)
 
   def form: Form[TransportPayment] = Form(formMapping)

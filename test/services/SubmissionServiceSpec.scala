@@ -46,7 +46,8 @@ class SubmissionServiceSpec
   private val exportMetrics = instanceOf[ExportsMetrics]
   private val hc: HeaderCarrier = mock[HeaderCarrier]
   private val legal = LegalDeclaration("Name", "Role", "email@test.com", None, confirmation = true)
-  private def auditData(diff: Option[ExportsDeclarationDiff]) =
+
+  private def auditData(diff: Option[ExportsDeclarationDiff]): Map[String, String] =
     Map(
       EventData.eori.toString -> "eori",
       EventData.lrn.toString -> "123LRN",
@@ -164,7 +165,7 @@ class SubmissionServiceSpec
 
       // Then
       val expectedFieldPointers = List(
-        "declaration.locations.destinationCountry.code",
+        "declaration.locations.destinationCountry",
         "declaration.totalNumberOfItems.totalAmountInvoiced",
         "declaration.totalNumberOfItems.exchangeRate"
       )

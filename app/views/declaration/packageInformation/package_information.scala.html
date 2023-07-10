@@ -75,7 +75,7 @@
       captionClasses = "govuk-visually-hidden",
       rows = packages.zipWithIndex.map { case (item, index) =>
         Seq(
-          TableRow(content = Text(item.typesOfPackages.map(packageTypesService.findByCode).map(_.asText()).getOrElse(""))),
+          TableRow(content = Text(item.typesOfPackages.map(packageTypesService.findByCode).map(_.asText).getOrElse(""))),
           TableRow(content = Text(item.numberOfPackages.getOrElse(0).toString)),
           TableRow(content = Text(item.shippingMarks.getOrElse(""))),
           TableRow(

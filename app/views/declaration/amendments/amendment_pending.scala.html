@@ -23,31 +23,29 @@
 
 @this(
   govukLayout: gdsMainTemplate,
-  govukTable: GovukTable,
   heading: heading,
   paragraph: paragraphBody,
   link: link,
   exitSurvey: exit_survey,
-  references_table: references_table,
-  confirmationHelper: ConfirmationHelper
+  references_table: references_table
 )
 
 @(confirmation: Confirmation)(implicit request: Request[_], messages: Messages)
 
 @govukLayout(title = Title("declaration.confirmation.pending.amendment.title"), showDeclarationSummaryLink = false) {
 
-@heading(messages("declaration.confirmation.pending.amendment.title"))
+    @heading(messages("declaration.confirmation.pending.amendment.title"))
 
-@references_table(confirmation)
+    @references_table(confirmation)
 
-@paragraph(messages("declaration.confirmation.pending.amendment.paragraph", link(
-  messages("declaration.confirmation.pending.amendment.paragraph.link"),
-  DeclarationDetailsController.displayPage(confirmation.submission.uuid)
-)))
+    @paragraph(messages("declaration.confirmation.pending.amendment.paragraph", link(
+      messages("declaration.confirmation.pending.amendment.paragraph.link"),
+      DeclarationDetailsController.displayPage(confirmation.submission.uuid)
+    )))
 
-@print_page_button(8, 4)
+    @print_page_button(8, 4)
 
-<hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+    <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
 
-@exitSurvey()
+    @exitSurvey()
 }

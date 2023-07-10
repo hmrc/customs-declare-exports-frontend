@@ -44,7 +44,7 @@ class CancelDeclarationViewSpec extends UnitViewSpec with CommonMessages with St
   "Cancel DeclarationView on empty page" should {
 
     "display mrn in header" in {
-      createView().getElementById("section-header").text() must include(messages("cancellation.mrn", mrn))
+      createView().getElementById("section-header").text() must include(messages("mrn.heading", mrn))
     }
 
     "display page title" in {

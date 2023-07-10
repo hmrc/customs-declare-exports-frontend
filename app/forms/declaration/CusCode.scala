@@ -17,26 +17,44 @@
 package forms.declaration
 import forms.DeclarationPage
 import forms.MappingHelper.requiredRadio
+import forms.declaration.CusCode.keyForAmend
+import models.AmendmentRow.{forAddedValue, forAmendedValue, forRemovedValue}
 import models.DeclarationType.DeclarationType
 import models.viewmodels.TariffContentKey
 import models.ExportsFieldPointer.ExportsFieldPointer
-import models.FieldMapping
+import models.declaration.ExportItem.itemsPrefix
+import models.{Amendment, FieldMapping}
 import play.api.data.Forms.text
 import play.api.data.{Form, Forms}
+import play.api.i18n.Messages
 import play.api.libs.json.Json
 import services.DiffTools.compareOptionalString
 import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfEqual
 import utils.validators.forms.FieldValidator._
 
-case class CusCode(cusCode: Option[String]) extends Ordered[CusCode] {
+case class CusCode(cusCode: Option[String]) extends Ordered[CusCode] with Amendment {
+
   override def compare(that: CusCode): Int =
     compareOptionalString(cusCode, that.cusCode)
+
+  def value: String = cusCode.getOrElse("")
+
+  def valueAdded(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
+    cusCode.fold("")(forAddedValue(pointer, messages(keyForAmend), _))
+
+  def valueAmended(newValue: Amendment, pointer: ExportsFieldPointer)(implicit messages: Messages): String =
+    forAmendedValue(pointer, messages(keyForAmend), value, newValue.value)
+
+  def valueRemoved(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
+    cusCode.fold("")(forRemovedValue(pointer, messages(keyForAmend), _))
 }
 
 object CusCode extends DeclarationPage with FieldMapping {
   implicit val format = Json.format[CusCode]
 
   val pointer: ExportsFieldPointer = "cusCode"
+
+  private lazy val keyForAmend = s"$itemsPrefix.cusCode"
 
   val hasCusCodeKey = "hasCusCode"
   val cusCodeKey = "cusCode"

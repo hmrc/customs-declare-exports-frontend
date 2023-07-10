@@ -31,7 +31,7 @@
     holderOfAuthorisationCodes: HolderOfAuthorisationCodes
 )
 
-@(declarationData: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages)
+@(declaration: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages)
 
 @actions(action: Actions) = @{  if (actionsEnabled) Some(action) else None }
 
@@ -59,7 +59,7 @@
 }}
 
 @holders = @{
-  declarationData.parties.declarationHoldersData.map(_.holders).getOrElse(Seq.empty)
+  declaration.parties.declarationHoldersData.map(_.holders).getOrElse(Seq.empty)
 }
 
 @if(holders.isEmpty) {

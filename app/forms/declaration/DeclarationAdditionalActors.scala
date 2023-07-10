@@ -20,19 +20,23 @@ import forms.DeclarationPage
 import forms.MappingHelper._
 import forms.common.Eori
 import forms.declaration.DeclarationAdditionalActors.{eoriPointer, partyTypePointer}
+import models.AmendmentRow.{forAddedValue, forRemovedValue, safeMessage}
 import models.DeclarationType.DeclarationType
-import models.viewmodels.TariffContentKey
 import models.ExportsFieldPointer.ExportsFieldPointer
-import models.FieldMapping
 import models.declaration.ImplicitlySequencedObject
+import models.declaration.Parties.partiesPrefix
+import models.viewmodels.TariffContentKey
+import models.{AmendmentOp, FieldMapping}
 import play.api.data.{Form, Forms, Mapping}
+import play.api.i18n.Messages
 import play.api.libs.json.{Format, JsValue, Json}
 import services.DiffTools
 import services.DiffTools.{combinePointers, compareDifference, compareStringDifference, ExportsDeclarationDiff}
 import uk.gov.voa.play.form.ConditionalMappings._
 
 case class DeclarationAdditionalActors(eori: Option[Eori], partyType: Option[String])
-    extends DiffTools[DeclarationAdditionalActors] with ImplicitlySequencedObject {
+    extends DiffTools[DeclarationAdditionalActors] with ImplicitlySequencedObject with AmendmentOp {
+
   def createDiff(original: DeclarationAdditionalActors, pointerString: ExportsFieldPointer, sequenceId: Option[Int] = None): ExportsDeclarationDiff =
     Seq(
       compareDifference(original.eori, eori, combinePointers(pointerString, eoriPointer, sequenceId)),
@@ -48,6 +52,17 @@ case class DeclarationAdditionalActors(eori: Option[Eori], partyType: Option[Str
   def isAllowed: Boolean = partyType.exists(allowedPartyTypes.contains)
 
   def toJson: JsValue = Json.toJson(this)(format)
+
+  private def toUserValue(value: String)(implicit messages: Messages): String =
+    safeMessage(s"declaration.summary.parties.actors.$value", value)
+
+  def valueAdded(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
+    eori.fold("")(eori => forAddedValue(s"$pointer-$eoriPointer", messages(keyForEori), eori.value)) +
+      partyType.fold("")(pt => forAddedValue(s"$pointer-$partyTypePointer", messages(keyForPartyType), toUserValue(pt)))
+
+  def valueRemoved(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
+    eori.fold("")(eori => forRemovedValue(s"$pointer-$eoriPointer", messages(keyForEori), eori.value)) +
+      partyType.fold("")(pt => forRemovedValue(s"$pointer-$partyTypePointer", messages(keyForPartyType), toUserValue(pt)))
 }
 
 object DeclarationAdditionalActors extends DeclarationPage with FieldMapping {
@@ -56,7 +71,8 @@ object DeclarationAdditionalActors extends DeclarationPage with FieldMapping {
   val eoriPointer: ExportsFieldPointer = "eori"
   val partyTypePointer: ExportsFieldPointer = "partyType"
 
-  def fromJsonString(value: String): Option[DeclarationAdditionalActors] = Json.fromJson(Json.parse(value)).asOpt
+  lazy val keyForEori = s"${partiesPrefix}.actors.eori"
+  lazy val keyForPartyType = s"${partiesPrefix}.actors.type"
 
   implicit val format: Format[DeclarationAdditionalActors] = Json.format[DeclarationAdditionalActors]
 

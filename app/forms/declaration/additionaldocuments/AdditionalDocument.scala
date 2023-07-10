@@ -28,13 +28,24 @@ import forms.declaration.additionaldocuments.AdditionalDocument.{
   documentWriteOffPointer,
   issuingAuthorityNamePointer
 }
+import forms.declaration.additionaldocuments.AdditionalDocument.{
+  keyForDateOfValidity,
+  keyForIdentifier,
+  keyForIssuingAuthorityName,
+  keyForStatus,
+  keyForStatusReason,
+  keyForTypeCode
+}
+import models.AmendmentRow.{forAddedValue, forRemovedValue, pointerToSelector}
 import models.DeclarationType.{CLEARANCE, DeclarationType}
 import models.ExportsFieldPointer.ExportsFieldPointer
+import models.declaration.ExportItem.itemsPrefix
 import models.declaration.ImplicitlySequencedObject
 import models.viewmodels.TariffContentKey
-import models.{ExportsDeclaration, FieldMapping}
+import models.{AmendmentOp, ExportsDeclaration, FieldMapping}
 import play.api.data.Forms._
 import play.api.data.{Form, FormError, Forms, Mapping}
+import play.api.i18n.Messages
 import play.api.libs.json.{JsValue, Json}
 import services.DiffTools.{combinePointers, compareStringDifference, ExportsDeclarationDiff}
 import services.{DiffTools, TaggedAdditionalDocumentCodes, TaggedAuthCodes}
@@ -49,7 +60,8 @@ case class AdditionalDocument(
   issuingAuthorityName: Option[String],
   dateOfValidity: Option[Date],
   documentWriteOff: Option[DocumentWriteOff]
-) extends DiffTools[AdditionalDocument] with ImplicitlySequencedObject {
+) extends DiffTools[AdditionalDocument] with ImplicitlySequencedObject with AmendmentOp {
+
   def createDiff(original: AdditionalDocument, pointerString: ExportsFieldPointer, sequenceId: Option[Int] = None): ExportsDeclarationDiff =
     Seq(
       compareStringDifference(original.documentTypeCode, documentTypeCode, combinePointers(pointerString, documentTypeCodePointer, sequenceId)),
@@ -77,6 +89,28 @@ case class AdditionalDocument(
     List(documentTypeCode, documentIdentifier, documentStatus, documentStatusReason, issuingAuthorityName, dateOfValidity, documentWriteOff).exists(
       _.isDefined
     )
+
+  def valueAdded(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
+    documentTypeCode.fold("")(forAddedValue(pointerToSelector(pointer, documentTypeCodePointer), messages(keyForTypeCode), _)) +
+      documentIdentifier.fold("")(forAddedValue(pointerToSelector(pointer, documentIdentifierPointer), messages(keyForIdentifier), _)) +
+      documentStatus.fold("")(forAddedValue(pointerToSelector(pointer, documentStatusPointer), messages(keyForStatus), _)) +
+      documentStatusReason.fold("")(forAddedValue(pointerToSelector(pointer, documentStatusReasonPointer), messages(keyForStatusReason), _)) +
+      issuingAuthorityName.fold("")(forAddedValue(pointerToSelector(pointer, issuingAuthorityNamePointer), messages(keyForIssuingAuthorityName), _)) +
+      dateOfValidity.fold("")(date =>
+        forAddedValue(pointerToSelector(pointer, dateOfValidityPointer), messages(keyForDateOfValidity), date.toString)
+      ) +
+      documentWriteOff.fold("")(_.valueAdded(pointerToSelector(pointer, documentWriteOffPointer)))
+
+  def valueRemoved(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
+    documentTypeCode.fold("")(forRemovedValue(pointerToSelector(pointer, documentTypeCodePointer), messages(keyForTypeCode), _)) +
+      documentIdentifier.fold("")(forRemovedValue(pointerToSelector(pointer, documentIdentifierPointer), messages(keyForIdentifier), _)) +
+      documentStatus.fold("")(forRemovedValue(pointerToSelector(pointer, documentStatusPointer), messages(keyForStatus), _)) +
+      documentStatusReason.fold("")(forRemovedValue(pointerToSelector(pointer, documentStatusReasonPointer), messages(keyForStatusReason), _)) +
+      issuingAuthorityName.fold("")(
+        forRemovedValue(pointerToSelector(pointer, issuingAuthorityNamePointer), messages(keyForIssuingAuthorityName), _)
+      ) +
+      dateOfValidity.fold("")(dt => forRemovedValue(pointerToSelector(pointer, dateOfValidityPointer), messages(keyForDateOfValidity), dt.toString)) +
+      documentWriteOff.fold("")(_.valueRemoved(pointerToSelector(pointer, documentWriteOffPointer)))
 }
 
 object AdditionalDocument extends DeclarationPage with FieldMapping {
@@ -90,7 +124,12 @@ object AdditionalDocument extends DeclarationPage with FieldMapping {
   val dateOfValidityPointer: ExportsFieldPointer = "dateOfValidity"
   val documentWriteOffPointer: ExportsFieldPointer = "documentWriteOff"
 
-  def fromJsonString(value: String): Option[AdditionalDocument] = Json.fromJson(Json.parse(value)).asOpt
+  lazy val keyForDateOfValidity = s"$itemsPrefix.additionalDocuments.dateOfValidity"
+  lazy val keyForIdentifier = s"$itemsPrefix.additionalDocuments.identifier"
+  lazy val keyForIssuingAuthorityName = s"$itemsPrefix.additionalDocuments.issuingAuthorityName"
+  lazy val keyForStatus = s"$itemsPrefix.additionalDocuments.status"
+  lazy val keyForStatusReason = s"$itemsPrefix.additionalDocuments.statusReason"
+  lazy val keyForTypeCode = s"$itemsPrefix.additionalDocuments.code"
 
   implicit val format = Json.format[AdditionalDocument]
 

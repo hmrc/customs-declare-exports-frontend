@@ -40,7 +40,7 @@
                     content = Text(messages("declaration.summary.locations.goodsLocationCode"))
                 ),
                 value = Value(
-                    content = Text(goodsLocation.code)
+                    content = Text(goodsLocation.value)
                 ),
                 actions = actions(Actions(
                     items = Seq(
@@ -53,8 +53,8 @@
                 ))
             ))
         ),
-        declarationData.locations.goodsLocation.map{
-            case goodsLocation if goodsLocation.code.endsWith(LocationOfGoods.suffixForGVMS) =>
+        declarationData.locations.goodsLocation.map {
+            case goodsLocation if goodsLocation.value.endsWith(LocationOfGoods.suffixForGVMS) =>
                 Some(SummaryListRow(
                     classes = "rrs01AdditionalInformation-row",
                     key = Key(

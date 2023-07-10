@@ -30,7 +30,7 @@ object AutoCompleteItem {
     countries map (c => AutoCompleteItem(c.asString(), value(c)))
 
   def fromPackageType(packageTypes: List[PackageType]): List[AutoCompleteItem] =
-    packageTypes map (c => AutoCompleteItem(c.asText(), c.code))
+    packageTypes map (c => AutoCompleteItem(c.asText, c.code))
 
   def fromCurrencyCode(codes: List[CurrencyCode]): List[AutoCompleteItem] =
     codes map (d => AutoCompleteItem(s"${d.description} - ${d.code}", d.code))

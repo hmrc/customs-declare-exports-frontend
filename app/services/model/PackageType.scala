@@ -20,5 +20,5 @@ import models.codes.CommonCode
 
 case class PackageType(code: String, description: String) extends CommonCode {
 
-  def asText(): String = s"$description ($code)"
+  def asText: String = s"$description ($code)"
 }

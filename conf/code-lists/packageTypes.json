@@ -1,1 +1,1892 @@
-[{"code": "43", "en": "Bag, super bulk", "cy": "Bag, super bulk"}, {"code": "44", "en": "Bag, polybag", "cy": "Bag, polybag"}, {"code": "1A", "en": "Drum, steel", "cy": "Drum, steel"}, {"code": "1B", "en": "Drum, aluminium", "cy": "Drum, aluminium"}, {"code": "1D", "en": "Drum, plywood", "cy": "Drum, plywood"}, {"code": "1F", "en": "Container, flexible", "cy": "Container, flexible"}, {"code": "1G", "en": "Drum, fibre", "cy": "Drum, fibre"}, {"code": "1W", "en": "Drum, wooden", "cy": "Drum, wooden"}, {"code": "2C", "en": "Barrel, wooden", "cy": "Barrel, wooden"}, {"code": "3A", "en": "Jerrican, steel", "cy": "Jerrican, steel"}, {"code": "3H", "en": "Jerrican, plastic", "cy": "Jerrican, plastic"}, {"code": "4A", "en": "Box, steel", "cy": "Box, steel"}, {"code": "4B", "en": "Box, aluminium", "cy": "Box, aluminium"}, {"code": "4C", "en": "Box, natural wood", "cy": "Box, natural wood"}, {"code": "4D", "en": "Box, plywood", "cy": "Box, plywood"}, {"code": "4F", "en": "Box, reconstituted wood", "cy": "Box, reconstituted wood"}, {"code": "4G", "en": "Box, fibreboard", "cy": "Box, fibreboard"}, {"code": "4H", "en": "Box, plastic", "cy": "Box, plastic"}, {"code": "5H", "en": "Bag, woven plastic", "cy": "Bag, woven plastic"}, {"code": "5L", "en": "Bag, textile", "cy": "Bag, textile"}, {"code": "5M", "en": "Bag, paper", "cy": "Bag, paper"}, {"code": "6H", "en": "Composite packaging, plastic receptacle", "cy": "Composite packaging, plastic receptacle"}, {"code": "6P", "en": "Composite packaging, glass receptacle", "cy": "Composite packaging, glass receptacle"}, {"code": "7A", "en": "Case, car", "cy": "Case, car"}, {"code": "7B", "en": "Case, wooden", "cy": "Case, wooden"}, {"code": "8A", "en": "Pallet, wooden", "cy": "Pallet, wooden"}, {"code": "8B", "en": "Crate, wooden", "cy": "Crate, wooden"}, {"code": "8C", "en": "Bundle, wooden", "cy": "Bundle, wooden"}, {"code": "AA", "en": "Intermediate bulk container, rigid plastic", "cy": "Intermediate bulk container, rigid plastic"}, {"code": "AB", "en": "Receptacle, fibre", "cy": "Receptacle, fibre"}, {"code": "AC", "en": "Receptacle, paper", "cy": "Receptacle, paper"}, {"code": "AD", "en": "Receptacle, wooden", "cy": "Receptacle, wooden"}, {"code": "AE", "en": "Aerosol", "cy": "Aerosol"}, {"code": "AF", "en": "Pallet, modular, collars 80cms * 60cms", "cy": "Pallet, modular, collars 80cms * 60cms"}, {"code": "AG", "en": "Pallet, shrinkwrapped", "cy": "Pallet, shrinkwrapped"}, {"code": "AH", "en": "Pallet, 100cms * 110cms", "cy": "Pallet, 100cms * 110cms"}, {"code": "AI", "en": "Clamshell", "cy": "Clamshell"}, {"code": "AJ", "en": "Cone", "cy": "Cone"}, {"code": "AL", "en": "Ball", "cy": "Ball"}, {"code": "AM", "en": "Ampoule, non-protected", "cy": "Ampoule, non-protected"}, {"code": "AP", "en": "Ampoule, protected", "cy": "Ampoule, protected"}, {"code": "AT", "en": "Atomizer", "cy": "Atomizer"}, {"code": "AV", "en": "Capsule", "cy": "Capsule"}, {"code": "B4", "en": "Belt", "cy": "Belt"}, {"code": "BA", "en": "Barrel", "cy": "Barrel"}, {"code": "BB", "en": "Bobbin", "cy": "Bobbin"}, {"code": "BC", "en": "Bottlecrate / bottlerack", "cy": "Bottlecrate / bottlerack"}, {"code": "BD", "en": "Board", "cy": "Board"}, {"code": "BE", "en": "Bundle", "cy": "Bundle"}, {"code": "BF", "en": "Balloon, non-protected", "cy": "Balloon, non-protected"}, {"code": "BG", "en": "Bag", "cy": "Bag"}, {"code": "BH", "en": "Bunch", "cy": "Bunch"}, {"code": "BI", "en": "Bin", "cy": "Bin"}, {"code": "BJ", "en": "Bucket", "cy": "Bucket"}, {"code": "BK", "en": "Basket", "cy": "Basket"}, {"code": "BL", "en": "Bale, compressed", "cy": "Bale, compressed"}, {"code": "BM", "en": "Basin", "cy": "Basin"}, {"code": "BN", "en": "Bale, non-compressed", "cy": "Bale, non-compressed"}, {"code": "BO", "en": "Bottle, non-protected, cylindrical", "cy": "Bottle, non-protected, cylindrical"}, {"code": "BP", "en": "Balloon, protected", "cy": "Balloon, protected"}, {"code": "BQ", "en": "Bottle, protected cylindrical", "cy": "Bottle, protected cylindrical"}, {"code": "BR", "en": "Bar", "cy": "Bar"}, {"code": "BS", "en": "Bottle, non-protected, bulbous", "cy": "Bottle, non-protected, bulbous"}, {"code": "BT", "en": "Bolt", "cy": "Bolt"}, {"code": "BU", "en": "Butt", "cy": "Butt"}, {"code": "BV", "en": "Bottle, protected bulbous", "cy": "Bottle, protected bulbous"}, {"code": "BW", "en": "Box, for liquids", "cy": "Box, for liquids"}, {"code": "BX", "en": "Box", "cy": "Box"}, {"code": "BY", "en": "Board, in bundle/bunch/truss", "cy": "Board, in bundle/bunch/truss"}, {"code": "BZ", "en": "Bars, in bundle/bunch/truss", "cy": "Bars, in bundle/bunch/truss"}, {"code": "CA", "en": "Can, rectangular", "cy": "Can, rectangular"}, {"code": "CB", "en": "Crate, beer", "cy": "Crate, beer"}, {"code": "CC", "en": "Churn", "cy": "Churn"}, {"code": "CD", "en": "Can, with handle and spout", "cy": "Can, with handle and spout"}, {"code": "CE", "en": "Creel", "cy": "Creel"}, {"code": "CF", "en": "Coffer", "cy": "Coffer"}, {"code": "CG", "en": "Cage", "cy": "Cage"}, {"code": "CH", "en": "Chest", "cy": "Chest"}, {"code": "CI", "en": "Canister", "cy": "Canister"}, {"code": "CJ", "en": "Coffin", "cy": "Coffin"}, {"code": "CK", "en": "Cask", "cy": "Cask"}, {"code": "CL", "en": "Coil", "cy": "Coil"}, {"code": "CM", "en": "Card", "cy": "Card"}, {"code": "CN", "en": "Container, not otherwise specified as transport equipment", "cy": "Container, not otherwise specified as transport equipment"}, {"code": "CO", "en": "Carboy, non-protected", "cy": "Carboy, non-protected"}, {"code": "CP", "en": "Carboy, protected", "cy": "Carboy, protected"}, {"code": "CQ", "en": "Cartridge", "cy": "Cartridge"}, {"code": "CR", "en": "Crate", "cy": "Crate"}, {"code": "CS", "en": "Case", "cy": "Case"}, {"code": "CT", "en": "Carton", "cy": "Carton"}, {"code": "CU", "en": "Cup", "cy": "Cup"}, {"code": "CV", "en": "Cover", "cy": "Cover"}, {"code": "CW", "en": "Cage, roll", "cy": "Cage, roll"}, {"code": "CX", "en": "Can, cylindrical", "cy": "Can, cylindrical"}, {"code": "CY", "en": "Cylinder", "cy": "Cylinder"}, {"code": "CZ", "en": "Canvas", "cy": "Canvas"}, {"code": "DA", "en": "Crate, multiple layer, plastic", "cy": "Crate, multiple layer, plastic"}, {"code": "DB", "en": "Crate, multiple layer, wooden", "cy": "Crate, multiple layer, wooden"}, {"code": "DC", "en": "Crate, multiple layer, cardboard", "cy": "Crate, multiple layer, cardboard"}, {"code": "DG", "en": "Cage, Commonwealth Handling Equipment Pool (CHEP)", "cy": "Cage, Commonwealth Handling Equipment Pool (CHEP)"}, {"code": "DH", "en": "Box, Commonwealth Handling Equipment Pool (CHEP), Eurobox", "cy": "Box, Commonwealth Handling Equipment Pool (CHEP), Eurobox"}, {"code": "DI", "en": "Drum, iron", "cy": "Drum, iron"}, {"code": "DJ", "en": "Demijohn, non-protected", "cy": "Demijohn, non-protected"}, {"code": "DK", "en": "Crate, bulk, cardboard", "cy": "Crate, bulk, cardboard"}, {"code": "DL", "en": "Crate, bulk, plastic", "cy": "Crate, bulk, plastic"}, {"code": "DM", "en": "Crate, bulk, wooden", "cy": "Crate, bulk, wooden"}, {"code": "DN", "en": "Dispenser", "cy": "Dispenser"}, {"code": "DP", "en": "Demijohn, protected", "cy": "Demijohn, protected"}, {"code": "DR", "en": "Drum", "cy": "Drum"}, {"code": "DS", "en": "Tray, one layer no cover, plastic", "cy": "Tray, one layer no cover, plastic"}, {"code": "DT", "en": "Tray, one layer no cover, wooden", "cy": "Tray, one layer no cover, wooden"}, {"code": "DU", "en": "Tray, one layer no cover, polystyrene", "cy": "Tray, one layer no cover, polystyrene"}, {"code": "DV", "en": "Tray, one layer no cover, cardboard", "cy": "Tray, one layer no cover, cardboard"}, {"code": "DW", "en": "Tray, two layers no cover, plastic tray", "cy": "Tray, two layers no cover, plastic tray"}, {"code": "DX", "en": "Tray, two layers no cover, wooden", "cy": "Tray, two layers no cover, wooden"}, {"code": "DY", "en": "Tray, two layers no cover, cardboard", "cy": "Tray, two layers no cover, cardboard"}, {"code": "EC", "en": "Bag, plastic", "cy": "Bag, plastic"}, {"code": "ED", "en": "Case, with pallet base", "cy": "Case, with pallet base"}, {"code": "EE", "en": "Case, with pallet base, wooden", "cy": "Case, with pallet base, wooden"}, {"code": "EF", "en": "Case, with pallet base, cardboard", "cy": "Case, with pallet base, cardboard"}, {"code": "EG", "en": "Case, with pallet base, plastic", "cy": "Case, with pallet base, plastic"}, {"code": "EH", "en": "Case, with pallet base, metal", "cy": "Case, with pallet base, metal"}, {"code": "EI", "en": "Case, isothermic", "cy": "Case, isothermic"}, {"code": "EN", "en": "Envelope", "cy": "Envelope"}, {"code": "FB", "en": "Flexibag", "cy": "Flexibag"}, {"code": "FC", "en": "Crate, fruit", "cy": "Crate, fruit"}, {"code": "FD", "en": "Crate, framed", "cy": "Crate, framed"}, {"code": "FE", "en": "Flexitank", "cy": "Flexitank"}, {"code": "FI", "en": "Firkin", "cy": "Firkin"}, {"code": "FL", "en": "Flask", "cy": "Flask"}, {"code": "FO", "en": "Footlocker", "cy": "Footlocker"}, {"code": "FP", "en": "Filmpack", "cy": "Filmpack"}, {"code": "FR", "en": "Frame", "cy": "Frame"}, {"code": "FT", "en": "Foodtainer", "cy": "Foodtainer"}, {"code": "FW", "en": "Cart, flatbed", "cy": "Cart, flatbed"}, {"code": "FX", "en": "Bag, flexible container", "cy": "Bag, flexible container"}, {"code": "GB", "en": "Bottle, gas", "cy": "Bottle, gas"}, {"code": "GI", "en": "Girder", "cy": "Girder"}, {"code": "GL", "en": "Container, gallon", "cy": "Container, gallon"}, {"code": "GR", "en": "Receptacle, glass", "cy": "Receptacle, glass"}, {"code": "GU", "en": "Tray, containing horizontally stacked flat items", "cy": "Tray, containing horizontally stacked flat items"}, {"code": "GY", "en": "Bag, gunny", "cy": "Bag, gunny"}, {"code": "GZ", "en": "Girders, in bundle/bunch/truss", "cy": "Girders, in bundle/bunch/truss"}, {"code": "HA", "en": "Basket, with handle, plastic", "cy": "Basket, with handle, plastic"}, {"code": "HB", "en": "Basket, with handle, wooden", "cy": "Basket, with handle, wooden"}, {"code": "HC", "en": "Basket, with handle, cardboard", "cy": "Basket, with handle, cardboard"}, {"code": "HG", "en": "Hogshead", "cy": "Hogshead"}, {"code": "HN", "en": "Hanger", "cy": "Hanger"}, {"code": "HR", "en": "Hamper", "cy": "Hamper"}, {"code": "IA", "en": "Package, display, wooden", "cy": "Package, display, wooden"}, {"code": "IB", "en": "Package, display, cardboard", "cy": "Package, display, cardboard"}, {"code": "IC", "en": "Package, display, plastic", "cy": "Package, display, plastic"}, {"code": "ID", "en": "Package, display, metal", "cy": "Package, display, metal"}, {"code": "IE", "en": "Package, show", "cy": "Package, show"}, {"code": "IF", "en": "Package, flow", "cy": "Package, flow"}, {"code": "IG", "en": "Package, paper wrapped", "cy": "Package, paper wrapped"}, {"code": "IH", "en": "Drum, plastic", "cy": "Drum, plastic"}, {"code": "IK", "en": "Package, cardboard, with bottle grip-holes", "cy": "Package, cardboard, with bottle grip-holes"}, {"code": "IL", "en": "Tray, rigid, lidded stackable (CEN TS 14482:2002)", "cy": "Tray, rigid, lidded stackable (CEN TS 14482:2002)"}, {"code": "IN", "en": "Ingot", "cy": "Ingot"}, {"code": "IZ", "en": "Ingots, in bundle/bunch/truss", "cy": "Ingots, in bundle/bunch/truss"}, {"code": "JB", "en": "Bag, jumbo", "cy": "Bag, jumbo"}, {"code": "JC", "en": "Jerrican, rectangular", "cy": "Jerrican, rectangular"}, {"code": "JG", "en": "Jug", "cy": "Jug"}, {"code": "JR", "en": "Jar", "cy": "Jar"}, {"code": "JT", "en": "Jutebag", "cy": "Jutebag"}, {"code": "JY", "en": "Jerrican, cylindrical", "cy": "Jerrican, cylindrical"}, {"code": "KG", "en": "Keg", "cy": "Keg"}, {"code": "KI", "en": "Kit", "cy": "Kit"}, {"code": "LE", "en": "Luggage", "cy": "Luggage"}, {"code": "LG", "en": "Log", "cy": "Log"}, {"code": "LT", "en": "Lot", "cy": "Lot"}, {"code": "LU", "en": "Lug", "cy": "Lug"}, {"code": "LV", "en": "Liftvan", "cy": "Liftvan"}, {"code": "LZ", "en": "Logs, in bundle/bunch/truss", "cy": "Logs, in bundle/bunch/truss"}, {"code": "MA", "en": "Crate, metal", "cy": "Crate, metal"}, {"code": "MB", "en": "Bag, multiply", "cy": "Bag, multiply"}, {"code": "MC", "en": "Crate, milk", "cy": "Crate, milk"}, {"code": "ME", "en": "Container, metal", "cy": "Container, metal"}, {"code": "MR", "en": "Receptacle, metal", "cy": "Receptacle, metal"}, {"code": "MS", "en": "Sack, multi-wall", "cy": "Sack, multi-wall"}, {"code": "MT", "en": "Mat", "cy": "Mat"}, {"code": "MW", "en": "Receptacle, plastic wrapped", "cy": "Receptacle, plastic wrapped"}, {"code": "MX", "en": "Matchbox", "cy": "Matchbox"}, {"code": "NA", "en": "Not available", "cy": "Not available"}, {"code": "NE", "en": "Unpacked or unpackaged", "cy": "Unpacked or unpackaged"}, {"code": "NF", "en": "Unpacked or unpackaged, single unit", "cy": "Unpacked or unpackaged, single unit"}, {"code": "NG", "en": "Unpacked or unpackaged, multiple units", "cy": "Unpacked or unpackaged, multiple units"}, {"code": "NS", "en": "Nest", "cy": "Nest"}, {"code": "NT", "en": "Net", "cy": "Net"}, {"code": "NU", "en": "Net, tube, plastic", "cy": "Net, tube, plastic"}, {"code": "NV", "en": "Net, tube, textile", "cy": "Net, tube, textile"}, {"code": "OA", "en": "Pallet, CHEP 40 cm x 60 cm", "cy": "Pallet, CHEP 40 cm x 60 cm"}, {"code": "OB", "en": "Pallet, CHEP 80 cm x 120 cm", "cy": "Pallet, CHEP 80 cm x 120 cm"}, {"code": "OC", "en": "Pallet, CHEP 100 cm x 120 cm", "cy": "Pallet, CHEP 100 cm x 120 cm"}, {"code": "OD", "en": "Pallet, AS 4068-1993", "cy": "Pallet, AS 4068-1994"}, {"code": "OE", "en": "Pallet, ISO T11", "cy": "Pallet, ISO T12"}, {"code": "OF", "en": "Platform, unspecified weight or dimension", "cy": "Platform, unspecified weight or dimension"}, {"code": "OK", "en": "Block", "cy": "Block"}, {"code": "OT", "en": "Octabin", "cy": "Octabin"}, {"code": "OU", "en": "Container, outer", "cy": "Container, outer"}, {"code": "P2", "en": "Pan", "cy": "Pan"}, {"code": "PA", "en": "Packet", "cy": "Packet"}, {"code": "PB", "en": "Pallet, box Combined open-ended box and pallet", "cy": "Pallet, box Combined open-ended box and pallet"}, {"code": "PC", "en": "Parcel", "cy": "Parcel"}, {"code": "PD", "en": "Pallet, modular, collars 80cms * 100cms", "cy": "Pallet, modular, collars 80cms * 100cms"}, {"code": "PE", "en": "Pallet, modular, collars 80cms * 120cms", "cy": "Pallet, modular, collars 80cms * 120cms"}, {"code": "PF", "en": "Pen", "cy": "Pen"}, {"code": "PG", "en": "Plate", "cy": "Plate"}, {"code": "PH", "en": "Pitcher", "cy": "Pitcher"}, {"code": "PI", "en": "Pipe", "cy": "Pipe"}, {"code": "PJ", "en": "Punnet", "cy": "Punnet"}, {"code": "PK", "en": "Package", "cy": "Package"}, {"code": "PL", "en": "Pail", "cy": "Pail"}, {"code": "PN", "en": "Plank", "cy": "Plank"}, {"code": "PO", "en": "Pouch", "cy": "Pouch"}, {"code": "PP", "en": "Piece", "cy": "Piece"}, {"code": "PR", "en": "Receptacle, plastic", "cy": "Receptacle, plastic"}, {"code": "PT", "en": "Pot", "cy": "Pot"}, {"code": "PU", "en": "Tray", "cy": "Tray"}, {"code": "PV", "en": "Pipes, in bundle/bunch/truss", "cy": "Pipes, in bundle/bunch/truss"}, {"code": "PX", "en": "Pallet", "cy": "Pallet"}, {"code": "PY", "en": "Plates, in bundle/bunch/truss", "cy": "Plates, in bundle/bunch/truss"}, {"code": "PZ", "en": "Planks, in bundle/bunch/truss", "cy": "Planks, in bundle/bunch/truss"}, {"code": "QA", "en": "Drum, steel, non-removable head", "cy": "Drum, steel, non-removable head"}, {"code": "QB", "en": "Drum, steel, removable head", "cy": "Drum, steel, removable head"}, {"code": "QC", "en": "Drum, aluminium, non-removable head", "cy": "Drum, aluminium, non-removable head"}, {"code": "QD", "en": "Drum, aluminium, removable head", "cy": "Drum, aluminium, removable head"}, {"code": "QF", "en": "Drum, plastic, non-removable head", "cy": "Drum, plastic, non-removable head"}, {"code": "QG", "en": "Drum, plastic, removable head", "cy": "Drum, plastic, removable head"}, {"code": "QH", "en": "Barrel, wooden, bung type", "cy": "Barrel, wooden, bung type"}, {"code": "QJ", "en": "Barrel, wooden, removable head", "cy": "Barrel, wooden, removable head"}, {"code": "QK", "en": "Jerrican, steel, non-removable head", "cy": "Jerrican, steel, non-removable head"}, {"code": "QL", "en": "Jerrican, steel, removable head", "cy": "Jerrican, steel, removable head"}, {"code": "QM", "en": "Jerrican, plastic, non-removable head", "cy": "Jerrican, plastic, non-removable head"}, {"code": "QN", "en": "Jerrican, plastic, removable head", "cy": "Jerrican, plastic, removable head"}, {"code": "QP", "en": "Box, wooden, natural wood, ordinary", "cy": "Box, wooden, natural wood, ordinary"}, {"code": "QQ", "en": "Box, wooden, natural wood, with sift proof walls", "cy": "Box, wooden, natural wood, with sift proof walls"}, {"code": "QR", "en": "Box, plastic, expanded", "cy": "Box, plastic, expanded"}, {"code": "QS", "en": "Box, plastic, solid", "cy": "Box, plastic, solid"}, {"code": "RD", "en": "Rod", "cy": "Rod"}, {"code": "RG", "en": "Ring", "cy": "Ring"}, {"code": "RJ", "en": "Rack, clothing hanger", "cy": "Rack, clothing hanger"}, {"code": "RK", "en": "Rack", "cy": "Rack"}, {"code": "RL", "en": "Reel", "cy": "Reel"}, {"code": "RO", "en": "Roll", "cy": "Roll"}, {"code": "RT", "en": "Rednet", "cy": "Rednet"}, {"code": "RZ", "en": "Rods, in bundle/bunch/truss", "cy": "Rods, in bundle/bunch/truss"}, {"code": "SA", "en": "Sack", "cy": "Sack"}, {"code": "SB", "en": "Slab", "cy": "Slab"}, {"code": "SC", "en": "Crate, shallow", "cy": "Crate, shallow"}, {"code": "SD", "en": "Spindle", "cy": "Spindle"}, {"code": "SE", "en": "Sea-chest", "cy": "Sea-chest"}, {"code": "SH", "en": "Sachet", "cy": "Sachet"}, {"code": "SI", "en": "Skid", "cy": "Skid"}, {"code": "SK", "en": "Case, skeleton", "cy": "Case, skeleton"}, {"code": "SL", "en": "Slipsheet", "cy": "Slipsheet"}, {"code": "SM", "en": "Sheetmetal", "cy": "Sheetmetal"}, {"code": "SO", "en": "Spool", "cy": "Spool"}, {"code": "SP", "en": "Sheet, plastic wrapping", "cy": "Sheet, plastic wrapping"}, {"code": "SS", "en": "Case, steel", "cy": "Case, steel"}, {"code": "ST", "en": "Sheet", "cy": "Sheet"}, {"code": "SU", "en": "Suitcase", "cy": "Suitcase"}, {"code": "SV", "en": "Envelope, steel", "cy": "Envelope, steel"}, {"code": "SW", "en": "Shrinkwrapped", "cy": "Shrinkwrapped"}, {"code": "SX", "en": "Set", "cy": "Set"}, {"code": "SY", "en": "Sleeve", "cy": "Sleeve"}, {"code": "SZ", "en": "Sheets, in bundle/bunch/truss", "cy": "Sheets, in bundle/bunch/truss"}, {"code": "T1", "en": "Tablet", "cy": "Tablet"}, {"code": "TB", "en": "Tub", "cy": "Tub"}, {"code": "TC", "en": "Tea-chest", "cy": "Tea-chest"}, {"code": "TD", "en": "Tube, collapsible", "cy": "Tube, collapsible"}, {"code": "TE", "en": "Tyre", "cy": "Tyre"}, {"code": "TG", "en": "Tank container, generic", "cy": "Tank container, generic"}, {"code": "TI", "en": "Tierce", "cy": "Tierce"}, {"code": "TK", "en": "Tank, rectangular", "cy": "Tank, rectangular"}, {"code": "TL", "en": "Tub, with lid", "cy": "Tub, with lid"}, {"code": "TN", "en": "Tin", "cy": "Tin"}, {"code": "TO", "en": "Tun", "cy": "Tun"}, {"code": "TR", "en": "Trunk", "cy": "Trunk"}, {"code": "TS", "en": "Truss", "cy": "Truss"}, {"code": "TT", "en": "Bag, tote", "cy": "Bag, tote"}, {"code": "TU", "en": "Tube", "cy": "Tube"}, {"code": "TV", "en": "Tube, with nozzle", "cy": "Tube, with nozzle"}, {"code": "TW", "en": "Pallet, triwall", "cy": "Pallet, triwall"}, {"code": "TY", "en": "Tank, cylindrical", "cy": "Tank, cylindrical"}, {"code": "TZ", "en": "Tubes, in bundle/bunch/truss", "cy": "Tubes, in bundle/bunch/truss"}, {"code": "UC", "en": "Uncaged", "cy": "Uncaged"}, {"code": "UN", "en": "Unit", "cy": "Unit"}, {"code": "VA", "en": "Vat", "cy": "Vat"}, {"code": "VG", "en": "Bulk, gas (at 1031 mbar and 15 degrees celsius)", "cy": "Bulk, gas (at 1031 mbar and 15 degrees celsius)"}, {"code": "VI", "en": "Vial", "cy": "Vial"}, {"code": "VK", "en": "Vanpack", "cy": "Vanpack"}, {"code": "VL", "en": "Bulk, liquid", "cy": "Bulk, liquid"}, {"code": "VN", "en": "Vehicle", "cy": "Vehicle"}, {"code": "VO", "en": "Bulk, solid, large particles (\"nodules\")", "cy": "Bulk, solid, large particles (\"nodules\")"}, {"code": "VP", "en": "Vacuum-packed", "cy": "Vacuum-packed"}, {"code": "VQ", "en": "Bulk, liquefied gas (at abnormal temperature/pressure)", "cy": "Bulk, liquefied gas (at abnormal temperature/pressure)"}, {"code": "VR", "en": "Bulk, solid, granular particles (\"grains\")", "cy": "Bulk, solid, granular particles (\"grains\")"}, {"code": "VS", "en": "Bulk, scrap metal", "cy": "Bulk, scrap metal"}, {"code": "VY", "en": "Bulk, solid, fine particles (\"powders\")", "cy": "Bulk, solid, fine particles (\"powders\")"}, {"code": "WA", "en": "Intermediate bulk container", "cy": "Intermediate bulk container"}, {"code": "WB", "en": "Wickerbottle", "cy": "Wickerbottle"}, {"code": "WC", "en": "Intermediate bulk container, steel", "cy": "Intermediate bulk container, steel"}, {"code": "WD", "en": "Intermediate bulk container, aluminium", "cy": "Intermediate bulk container, aluminium"}, {"code": "WF", "en": "Intermediate bulk container, metal", "cy": "Intermediate bulk container, metal"}, {"code": "WG", "en": "Intermediate bulk container, steel, pressurised > 10 kpa", "cy": "Intermediate bulk container, steel, pressurised > 10 kpa"}, {"code": "WH", "en": "Intermediate bulk container, aluminium, pressurised > 10 kpa", "cy": "Intermediate bulk container, aluminium, pressurised > 10 kpa"}, {"code": "WJ", "en": "Intermediate bulk container, metal, pressure 10 kpa", "cy": "Intermediate bulk container, metal, pressure 10 kpa"}, {"code": "WK", "en": "Intermediate bulk container, steel, liquid", "cy": "Intermediate bulk container, steel, liquid"}, {"code": "WL", "en": "Intermediate bulk container, aluminium, liquid", "cy": "Intermediate bulk container, aluminium, liquid"}, {"code": "WM", "en": "Intermediate bulk container, metal, liquid", "cy": "Intermediate bulk container, metal, liquid"}, {"code": "WN", "en": "Intermediate bulk container, woven plastic, without coat/liner", "cy": "Intermediate bulk container, woven plastic, without coat/liner"}, {"code": "WP", "en": "Intermediate bulk container, woven plastic, coated", "cy": "Intermediate bulk container, woven plastic, coated"}, {"code": "WQ", "en": "Intermediate bulk container, woven plastic, with liner", "cy": "Intermediate bulk container, woven plastic, with liner"}, {"code": "WR", "en": "Intermediate bulk container, woven plastic, coated and liner", "cy": "Intermediate bulk container, woven plastic, coated and liner"}, {"code": "WS", "en": "Intermediate bulk container, plastic film", "cy": "Intermediate bulk container, plastic film"}, {"code": "WT", "en": "Intermediate bulk container, textile without coat/liner", "cy": "Intermediate bulk container, textile without coat/liner"}, {"code": "WU", "en": "Intermediate bulk container, natural wood, with inner liner", "cy": "Intermediate bulk container, natural wood, with inner liner"}, {"code": "WV", "en": "Intermediate bulk container, textile, coated", "cy": "Intermediate bulk container, textile, coated"}, {"code": "WW", "en": "Intermediate bulk container, textile, with liner", "cy": "Intermediate bulk container, textile, with liner"}, {"code": "WX", "en": "Intermediate bulk container, textile, coated and liner", "cy": "Intermediate bulk container, textile, coated and liner"}, {"code": "WY", "en": "Intermediate bulk container, plywood, with inner liner", "cy": "Intermediate bulk container, plywood, with inner liner"}, {"code": "WZ", "en": "Intermediate bulk container, reconstituted wood, with inner liner", "cy": "Intermediate bulk container, reconstituted wood, with inner liner"}, {"code": "XA", "en": "Bag, woven plastic, without inner coat/liner", "cy": "Bag, woven plastic, without inner coat/liner"}, {"code": "XB", "en": "Bag, woven plastic, sift proof", "cy": "Bag, woven plastic, sift proof"}, {"code": "XC", "en": "Bag, woven plastic, water resistant", "cy": "Bag, woven plastic, water resistant"}, {"code": "XD", "en": "Bag, plastics film", "cy": "Bag, plastics film"}, {"code": "XF", "en": "Bag, textile, without inner coat/liner", "cy": "Bag, textile, without inner coat/liner"}, {"code": "XG", "en": "Bag, textile, sift proof", "cy": "Bag, textile, sift proof"}, {"code": "XH", "en": "Bag, textile, water resistant", "cy": "Bag, textile, water resistant"}, {"code": "XJ", "en": "Bag, paper, multi-wall", "cy": "Bag, paper, multi-wall"}, {"code": "XK", "en": "Bag, paper, multi-wall, water resistant", "cy": "Bag, paper, multi-wall, water resistant"}, {"code": "YA", "en": "Composite packaging, plastic receptacle in steel drum", "cy": "Composite packaging, plastic receptacle in steel drum"}, {"code": "YB", "en": "Composite packaging, plastic receptacle in steel crate box", "cy": "Composite packaging, plastic receptacle in steel crate box"}, {"code": "YC", "en": "Composite packaging, plastic receptacle in aluminium drum", "cy": "Composite packaging, plastic receptacle in aluminium drum"}, {"code": "YD", "en": "Composite packaging, plastic receptacle in aluminium crate", "cy": "Composite packaging, plastic receptacle in aluminium crate"}, {"code": "YF", "en": "Composite packaging, plastic receptacle in wooden box", "cy": "Composite packaging, plastic receptacle in wooden box"}, {"code": "YG", "en": "Composite packaging, plastic receptacle in plywood drum", "cy": "Composite packaging, plastic receptacle in plywood drum"}, {"code": "YH", "en": "Composite packaging, plastic receptacle in plywood box", "cy": "Composite packaging, plastic receptacle in plywood box"}, {"code": "YJ", "en": "Composite packaging, plastic receptacle in fibre drum", "cy": "Composite packaging, plastic receptacle in fibre drum"}, {"code": "YK", "en": "Composite packaging, plastic receptacle in fibreboard box", "cy": "Composite packaging, plastic receptacle in fibreboard box"}, {"code": "YL", "en": "Composite packaging, plastic receptacle in plastic drum", "cy": "Composite packaging, plastic receptacle in plastic drum"}, {"code": "YM", "en": "Composite packaging, plastic receptacle in solid plastic box", "cy": "Composite packaging, plastic receptacle in solid plastic box"}, {"code": "YN", "en": "Composite packaging, glass receptacle in steel drum", "cy": "Composite packaging, glass receptacle in steel drum"}, {"code": "YP", "en": "Composite packaging, glass receptacle in steel crate box", "cy": "Composite packaging, glass receptacle in steel crate box"}, {"code": "YQ", "en": "Composite packaging, glass receptacle in aluminium drum", "cy": "Composite packaging, glass receptacle in aluminium drum"}, {"code": "YR", "en": "Composite packaging, glass receptacle in aluminium crate", "cy": "Composite packaging, glass receptacle in aluminium crate"}, {"code": "YS", "en": "Composite packaging, glass receptacle in wooden box", "cy": "Composite packaging, glass receptacle in wooden box"}, {"code": "YT", "en": "Composite packaging, glass receptacle in plywood drum", "cy": "Composite packaging, glass receptacle in plywood drum"}, {"code": "YV", "en": "Composite packaging, glass receptacle in wickerwork hamper", "cy": "Composite packaging, glass receptacle in wickerwork hamper"}, {"code": "YW", "en": "Composite packaging, glass receptacle in fibre drum", "cy": "Composite packaging, glass receptacle in fibre drum"}, {"code": "YX", "en": "Composite packaging, glass receptacle in fibreboard box", "cy": "Composite packaging, glass receptacle in fibreboard box"}, {"code": "YY", "en": "Composite packaging, glass receptacle in expandable plastic pack", "cy": "Composite packaging, glass receptacle in expandable plastic pack"}, {"code": "YZ", "en": "Composite packaging, glass receptacle in solid plastic pack", "cy": "Composite packaging, glass receptacle in solid plastic pack"}, {"code": "ZA", "en": "Intermediate bulk container, paper, multi-wall", "cy": "Intermediate bulk container, paper, multi-wall"}, {"code": "ZB", "en": "Bag, large", "cy": "Bag, large"}, {"code": "ZC", "en": "Intermediate bulk container, paper, multi-wall, water resistant", "cy": "Intermediate bulk container, paper, multi-wall, water resistant"}, {"code": "ZD", "en": "Intermediate bulk container, rigid plastic, with structural equipment, solids", "cy": "Intermediate bulk container, rigid plastic, with structural equipment, solids"}, {"code": "ZF", "en": "Intermediate bulk container, rigid plastic, freestanding, solids", "cy": "Intermediate bulk container, rigid plastic, freestanding, solids"}, {"code": "ZG", "en": "Intermediate bulk container, rigid plastic, with structural equipment, pressurised", "cy": "Intermediate bulk container, rigid plastic, with structural equipment, pressurised"}, {"code": "ZH", "en": "Intermediate bulk container, rigid plastic, freestanding, pressurised", "cy": "Intermediate bulk container, rigid plastic, freestanding, pressurised"}, {"code": "ZJ", "en": "Intermediate bulk container, rigid plastic, with structural equipment, liquids", "cy": "Intermediate bulk container, rigid plastic, with structural equipment, liquids"}, {"code": "ZK", "en": "Intermediate bulk container, rigid plastic, freestanding, liquids", "cy": "Intermediate bulk container, rigid plastic, freestanding, liquids"}, {"code": "ZL", "en": "Intermediate bulk container, composite, rigid plastic, solids", "cy": "Intermediate bulk container, composite, rigid plastic, solids"}, {"code": "ZM", "en": "Intermediate bulk container, composite, flexible plastic, solids", "cy": "Intermediate bulk container, composite, flexible plastic, solids"}, {"code": "ZN", "en": "Intermediate bulk container, composite, rigid plastic, pressurised", "cy": "Intermediate bulk container, composite, rigid plastic, pressurised"}, {"code": "ZP", "en": "Intermediate bulk container, composite, flexible plastic, pressurised", "cy": "Intermediate bulk container, composite, flexible plastic, pressurised"}, {"code": "ZQ", "en": "Intermediate bulk container, composite, rigid plastic, liquids", "cy": "Intermediate bulk container, composite, rigid plastic, liquids"}, {"code": "ZR", "en": "Intermediate bulk container, composite, flexible plastic, liquids", "cy": "Intermediate bulk container, composite, flexible plastic, liquids"}, {"code": "ZS", "en": "Intermediate bulk container, composite", "cy": "Intermediate bulk container, composite"}, {"code": "ZT", "en": "Intermediate bulk container, fibreboard", "cy": "Intermediate bulk container, fibreboard"}, {"code": "ZU", "en": "Intermediate bulk container, flexible", "cy": "Intermediate bulk container, flexible"}, {"code": "ZV", "en": "Intermediate bulk container, metal, other than steel", "cy": "Intermediate bulk container, metal, other than steel"}, {"code": "ZW", "en": "Intermediate bulk container, natural wood", "cy": "Intermediate bulk container, natural wood"}, {"code": "ZX", "en": "Intermediate bulk container, plywood", "cy": "Intermediate bulk container, plywood"}, {"code": "ZY", "en": "Intermediate bulk container, reconstituted wood", "cy": "Intermediate bulk container, reconstituted wood"}, {"code": "ZZ", "en": "Mutually defined", "cy": "Mutually defined"}]
+[
+  {
+    "code": "43",
+    "en": "Bag, super bulk",
+    "cy": "Bag, super bulk"
+  },
+  {
+    "code": "44",
+    "en": "Bag, polybag",
+    "cy": "Bag, polybag"
+  },
+  {
+    "code": "1A",
+    "en": "Drum, steel",
+    "cy": "Drum, steel"
+  },
+  {
+    "code": "1B",
+    "en": "Drum, aluminium",
+    "cy": "Drum, aluminium"
+  },
+  {
+    "code": "1D",
+    "en": "Drum, plywood",
+    "cy": "Drum, plywood"
+  },
+  {
+    "code": "1F",
+    "en": "Container, flexible",
+    "cy": "Container, flexible"
+  },
+  {
+    "code": "1G",
+    "en": "Drum, fibre",
+    "cy": "Drum, fibre"
+  },
+  {
+    "code": "1W",
+    "en": "Drum, wooden",
+    "cy": "Drum, wooden"
+  },
+  {
+    "code": "2C",
+    "en": "Barrel, wooden",
+    "cy": "Barrel, wooden"
+  },
+  {
+    "code": "3A",
+    "en": "Jerrican, steel",
+    "cy": "Jerrican, steel"
+  },
+  {
+    "code": "3H",
+    "en": "Jerrican, plastic",
+    "cy": "Jerrican, plastic"
+  },
+  {
+    "code": "4A",
+    "en": "Box, steel",
+    "cy": "Box, steel"
+  },
+  {
+    "code": "4B",
+    "en": "Box, aluminium",
+    "cy": "Box, aluminium"
+  },
+  {
+    "code": "4C",
+    "en": "Box, natural wood",
+    "cy": "Box, natural wood"
+  },
+  {
+    "code": "4D",
+    "en": "Box, plywood",
+    "cy": "Box, plywood"
+  },
+  {
+    "code": "4F",
+    "en": "Box, reconstituted wood",
+    "cy": "Box, reconstituted wood"
+  },
+  {
+    "code": "4G",
+    "en": "Box, fibreboard",
+    "cy": "Box, fibreboard"
+  },
+  {
+    "code": "4H",
+    "en": "Box, plastic",
+    "cy": "Box, plastic"
+  },
+  {
+    "code": "5H",
+    "en": "Bag, woven plastic",
+    "cy": "Bag, woven plastic"
+  },
+  {
+    "code": "5L",
+    "en": "Bag, textile",
+    "cy": "Bag, textile"
+  },
+  {
+    "code": "5M",
+    "en": "Bag, paper",
+    "cy": "Bag, paper"
+  },
+  {
+    "code": "6H",
+    "en": "Composite packaging, plastic receptacle",
+    "cy": "Composite packaging, plastic receptacle"
+  },
+  {
+    "code": "6P",
+    "en": "Composite packaging, glass receptacle",
+    "cy": "Composite packaging, glass receptacle"
+  },
+  {
+    "code": "7A",
+    "en": "Case, car",
+    "cy": "Case, car"
+  },
+  {
+    "code": "7B",
+    "en": "Case, wooden",
+    "cy": "Case, wooden"
+  },
+  {
+    "code": "8A",
+    "en": "Pallet, wooden",
+    "cy": "Pallet, wooden"
+  },
+  {
+    "code": "8B",
+    "en": "Crate, wooden",
+    "cy": "Crate, wooden"
+  },
+  {
+    "code": "8C",
+    "en": "Bundle, wooden",
+    "cy": "Bundle, wooden"
+  },
+  {
+    "code": "AA",
+    "en": "Intermediate bulk container, rigid plastic",
+    "cy": "Intermediate bulk container, rigid plastic"
+  },
+  {
+    "code": "AB",
+    "en": "Receptacle, fibre",
+    "cy": "Receptacle, fibre"
+  },
+  {
+    "code": "AC",
+    "en": "Receptacle, paper",
+    "cy": "Receptacle, paper"
+  },
+  {
+    "code": "AD",
+    "en": "Receptacle, wooden",
+    "cy": "Receptacle, wooden"
+  },
+  {
+    "code": "AE",
+    "en": "Aerosol",
+    "cy": "Aerosol"
+  },
+  {
+    "code": "AF",
+    "en": "Pallet, modular, collars 80cms * 60cms",
+    "cy": "Pallet, modular, collars 80cms * 60cms"
+  },
+  {
+    "code": "AG",
+    "en": "Pallet, shrinkwrapped",
+    "cy": "Pallet, shrinkwrapped"
+  },
+  {
+    "code": "AH",
+    "en": "Pallet, 100cms * 110cms",
+    "cy": "Pallet, 100cms * 110cms"
+  },
+  {
+    "code": "AI",
+    "en": "Clamshell",
+    "cy": "Clamshell"
+  },
+  {
+    "code": "AJ",
+    "en": "Cone",
+    "cy": "Cone"
+  },
+  {
+    "code": "AL",
+    "en": "Ball",
+    "cy": "Ball"
+  },
+  {
+    "code": "AM",
+    "en": "Ampoule, non-protected",
+    "cy": "Ampoule, non-protected"
+  },
+  {
+    "code": "AP",
+    "en": "Ampoule, protected",
+    "cy": "Ampoule, protected"
+  },
+  {
+    "code": "AT",
+    "en": "Atomizer",
+    "cy": "Atomizer"
+  },
+  {
+    "code": "AV",
+    "en": "Capsule",
+    "cy": "Capsule"
+  },
+  {
+    "code": "B4",
+    "en": "Belt",
+    "cy": "Belt"
+  },
+  {
+    "code": "BA",
+    "en": "Barrel",
+    "cy": "Barrel"
+  },
+  {
+    "code": "BB",
+    "en": "Bobbin",
+    "cy": "Bobbin"
+  },
+  {
+    "code": "BC",
+    "en": "Bottlecrate / bottlerack",
+    "cy": "Bottlecrate / bottlerack"
+  },
+  {
+    "code": "BD",
+    "en": "Board",
+    "cy": "Board"
+  },
+  {
+    "code": "BE",
+    "en": "Bundle",
+    "cy": "Bundle"
+  },
+  {
+    "code": "BF",
+    "en": "Balloon, non-protected",
+    "cy": "Balloon, non-protected"
+  },
+  {
+    "code": "BG",
+    "en": "Bag",
+    "cy": "Bag"
+  },
+  {
+    "code": "BH",
+    "en": "Bunch",
+    "cy": "Bunch"
+  },
+  {
+    "code": "BI",
+    "en": "Bin",
+    "cy": "Bin"
+  },
+  {
+    "code": "BJ",
+    "en": "Bucket",
+    "cy": "Bucket"
+  },
+  {
+    "code": "BK",
+    "en": "Basket",
+    "cy": "Basket"
+  },
+  {
+    "code": "BL",
+    "en": "Bale, compressed",
+    "cy": "Bale, compressed"
+  },
+  {
+    "code": "BM",
+    "en": "Basin",
+    "cy": "Basin"
+  },
+  {
+    "code": "BN",
+    "en": "Bale, non-compressed",
+    "cy": "Bale, non-compressed"
+  },
+  {
+    "code": "BO",
+    "en": "Bottle, non-protected, cylindrical",
+    "cy": "Bottle, non-protected, cylindrical"
+  },
+  {
+    "code": "BP",
+    "en": "Balloon, protected",
+    "cy": "Balloon, protected"
+  },
+  {
+    "code": "BQ",
+    "en": "Bottle, protected cylindrical",
+    "cy": "Bottle, protected cylindrical"
+  },
+  {
+    "code": "BR",
+    "en": "Bar",
+    "cy": "Bar"
+  },
+  {
+    "code": "BS",
+    "en": "Bottle, non-protected, bulbous",
+    "cy": "Bottle, non-protected, bulbous"
+  },
+  {
+    "code": "BT",
+    "en": "Bolt",
+    "cy": "Bolt"
+  },
+  {
+    "code": "BU",
+    "en": "Butt",
+    "cy": "Butt"
+  },
+  {
+    "code": "BV",
+    "en": "Bottle, protected bulbous",
+    "cy": "Bottle, protected bulbous"
+  },
+  {
+    "code": "BW",
+    "en": "Box, for liquids",
+    "cy": "Box, for liquids"
+  },
+  {
+    "code": "BX",
+    "en": "Box",
+    "cy": "Box"
+  },
+  {
+    "code": "BY",
+    "en": "Board, in bundle/bunch/truss",
+    "cy": "Board, in bundle/bunch/truss"
+  },
+  {
+    "code": "BZ",
+    "en": "Bars, in bundle/bunch/truss",
+    "cy": "Bars, in bundle/bunch/truss"
+  },
+  {
+    "code": "CA",
+    "en": "Can, rectangular",
+    "cy": "Can, rectangular"
+  },
+  {
+    "code": "CB",
+    "en": "Crate, beer",
+    "cy": "Crate, beer"
+  },
+  {
+    "code": "CC",
+    "en": "Churn",
+    "cy": "Churn"
+  },
+  {
+    "code": "CD",
+    "en": "Can, with handle and spout",
+    "cy": "Can, with handle and spout"
+  },
+  {
+    "code": "CE",
+    "en": "Creel",
+    "cy": "Creel"
+  },
+  {
+    "code": "CF",
+    "en": "Coffer",
+    "cy": "Coffer"
+  },
+  {
+    "code": "CG",
+    "en": "Cage",
+    "cy": "Cage"
+  },
+  {
+    "code": "CH",
+    "en": "Chest",
+    "cy": "Chest"
+  },
+  {
+    "code": "CI",
+    "en": "Canister",
+    "cy": "Canister"
+  },
+  {
+    "code": "CJ",
+    "en": "Coffin",
+    "cy": "Coffin"
+  },
+  {
+    "code": "CK",
+    "en": "Cask",
+    "cy": "Cask"
+  },
+  {
+    "code": "CL",
+    "en": "Coil",
+    "cy": "Coil"
+  },
+  {
+    "code": "CM",
+    "en": "Card",
+    "cy": "Card"
+  },
+  {
+    "code": "CN",
+    "en": "Container, not otherwise specified as transport equipment",
+    "cy": "Container, not otherwise specified as transport equipment"
+  },
+  {
+    "code": "CO",
+    "en": "Carboy, non-protected",
+    "cy": "Carboy, non-protected"
+  },
+  {
+    "code": "CP",
+    "en": "Carboy, protected",
+    "cy": "Carboy, protected"
+  },
+  {
+    "code": "CQ",
+    "en": "Cartridge",
+    "cy": "Cartridge"
+  },
+  {
+    "code": "CR",
+    "en": "Crate",
+    "cy": "Crate"
+  },
+  {
+    "code": "CS",
+    "en": "Case",
+    "cy": "Case"
+  },
+  {
+    "code": "CT",
+    "en": "Carton",
+    "cy": "Carton"
+  },
+  {
+    "code": "CU",
+    "en": "Cup",
+    "cy": "Cup"
+  },
+  {
+    "code": "CV",
+    "en": "Cover",
+    "cy": "Cover"
+  },
+  {
+    "code": "CW",
+    "en": "Cage, roll",
+    "cy": "Cage, roll"
+  },
+  {
+    "code": "CX",
+    "en": "Can, cylindrical",
+    "cy": "Can, cylindrical"
+  },
+  {
+    "code": "CY",
+    "en": "Cylinder",
+    "cy": "Cylinder"
+  },
+  {
+    "code": "CZ",
+    "en": "Canvas",
+    "cy": "Canvas"
+  },
+  {
+    "code": "DA",
+    "en": "Crate, multiple layer, plastic",
+    "cy": "Crate, multiple layer, plastic"
+  },
+  {
+    "code": "DB",
+    "en": "Crate, multiple layer, wooden",
+    "cy": "Crate, multiple layer, wooden"
+  },
+  {
+    "code": "DC",
+    "en": "Crate, multiple layer, cardboard",
+    "cy": "Crate, multiple layer, cardboard"
+  },
+  {
+    "code": "DG",
+    "en": "Cage, Commonwealth Handling Equipment Pool (CHEP)",
+    "cy": "Cage, Commonwealth Handling Equipment Pool (CHEP)"
+  },
+  {
+    "code": "DH",
+    "en": "Box, Commonwealth Handling Equipment Pool (CHEP), Eurobox",
+    "cy": "Box, Commonwealth Handling Equipment Pool (CHEP), Eurobox"
+  },
+  {
+    "code": "DI",
+    "en": "Drum, iron",
+    "cy": "Drum, iron"
+  },
+  {
+    "code": "DJ",
+    "en": "Demijohn, non-protected",
+    "cy": "Demijohn, non-protected"
+  },
+  {
+    "code": "DK",
+    "en": "Crate, bulk, cardboard",
+    "cy": "Crate, bulk, cardboard"
+  },
+  {
+    "code": "DL",
+    "en": "Crate, bulk, plastic",
+    "cy": "Crate, bulk, plastic"
+  },
+  {
+    "code": "DM",
+    "en": "Crate, bulk, wooden",
+    "cy": "Crate, bulk, wooden"
+  },
+  {
+    "code": "DN",
+    "en": "Dispenser",
+    "cy": "Dispenser"
+  },
+  {
+    "code": "DP",
+    "en": "Demijohn, protected",
+    "cy": "Demijohn, protected"
+  },
+  {
+    "code": "DR",
+    "en": "Drum",
+    "cy": "Drum"
+  },
+  {
+    "code": "DS",
+    "en": "Tray, one layer no cover, plastic",
+    "cy": "Tray, one layer no cover, plastic"
+  },
+  {
+    "code": "DT",
+    "en": "Tray, one layer no cover, wooden",
+    "cy": "Tray, one layer no cover, wooden"
+  },
+  {
+    "code": "DU",
+    "en": "Tray, one layer no cover, polystyrene",
+    "cy": "Tray, one layer no cover, polystyrene"
+  },
+  {
+    "code": "DV",
+    "en": "Tray, one layer no cover, cardboard",
+    "cy": "Tray, one layer no cover, cardboard"
+  },
+  {
+    "code": "DW",
+    "en": "Tray, two layers no cover, plastic tray",
+    "cy": "Tray, two layers no cover, plastic tray"
+  },
+  {
+    "code": "DX",
+    "en": "Tray, two layers no cover, wooden",
+    "cy": "Tray, two layers no cover, wooden"
+  },
+  {
+    "code": "DY",
+    "en": "Tray, two layers no cover, cardboard",
+    "cy": "Tray, two layers no cover, cardboard"
+  },
+  {
+    "code": "EC",
+    "en": "Bag, plastic",
+    "cy": "Bag, plastic"
+  },
+  {
+    "code": "ED",
+    "en": "Case, with pallet base",
+    "cy": "Case, with pallet base"
+  },
+  {
+    "code": "EE",
+    "en": "Case, with pallet base, wooden",
+    "cy": "Case, with pallet base, wooden"
+  },
+  {
+    "code": "EF",
+    "en": "Case, with pallet base, cardboard",
+    "cy": "Case, with pallet base, cardboard"
+  },
+  {
+    "code": "EG",
+    "en": "Case, with pallet base, plastic",
+    "cy": "Case, with pallet base, plastic"
+  },
+  {
+    "code": "EH",
+    "en": "Case, with pallet base, metal",
+    "cy": "Case, with pallet base, metal"
+  },
+  {
+    "code": "EI",
+    "en": "Case, isothermic",
+    "cy": "Case, isothermic"
+  },
+  {
+    "code": "EN",
+    "en": "Envelope",
+    "cy": "Envelope"
+  },
+  {
+    "code": "FB",
+    "en": "Flexibag",
+    "cy": "Flexibag"
+  },
+  {
+    "code": "FC",
+    "en": "Crate, fruit",
+    "cy": "Crate, fruit"
+  },
+  {
+    "code": "FD",
+    "en": "Crate, framed",
+    "cy": "Crate, framed"
+  },
+  {
+    "code": "FE",
+    "en": "Flexitank",
+    "cy": "Flexitank"
+  },
+  {
+    "code": "FI",
+    "en": "Firkin",
+    "cy": "Firkin"
+  },
+  {
+    "code": "FL",
+    "en": "Flask",
+    "cy": "Flask"
+  },
+  {
+    "code": "FO",
+    "en": "Footlocker",
+    "cy": "Footlocker"
+  },
+  {
+    "code": "FP",
+    "en": "Filmpack",
+    "cy": "Filmpack"
+  },
+  {
+    "code": "FR",
+    "en": "Frame",
+    "cy": "Frame"
+  },
+  {
+    "code": "FT",
+    "en": "Foodtainer",
+    "cy": "Foodtainer"
+  },
+  {
+    "code": "FW",
+    "en": "Cart, flatbed",
+    "cy": "Cart, flatbed"
+  },
+  {
+    "code": "FX",
+    "en": "Bag, flexible container",
+    "cy": "Bag, flexible container"
+  },
+  {
+    "code": "GB",
+    "en": "Bottle, gas",
+    "cy": "Bottle, gas"
+  },
+  {
+    "code": "GI",
+    "en": "Girder",
+    "cy": "Girder"
+  },
+  {
+    "code": "GL",
+    "en": "Container, gallon",
+    "cy": "Container, gallon"
+  },
+  {
+    "code": "GR",
+    "en": "Receptacle, glass",
+    "cy": "Receptacle, glass"
+  },
+  {
+    "code": "GU",
+    "en": "Tray, containing horizontally stacked flat items",
+    "cy": "Tray, containing horizontally stacked flat items"
+  },
+  {
+    "code": "GY",
+    "en": "Bag, gunny",
+    "cy": "Bag, gunny"
+  },
+  {
+    "code": "GZ",
+    "en": "Girders, in bundle/bunch/truss",
+    "cy": "Girders, in bundle/bunch/truss"
+  },
+  {
+    "code": "HA",
+    "en": "Basket, with handle, plastic",
+    "cy": "Basket, with handle, plastic"
+  },
+  {
+    "code": "HB",
+    "en": "Basket, with handle, wooden",
+    "cy": "Basket, with handle, wooden"
+  },
+  {
+    "code": "HC",
+    "en": "Basket, with handle, cardboard",
+    "cy": "Basket, with handle, cardboard"
+  },
+  {
+    "code": "HG",
+    "en": "Hogshead",
+    "cy": "Hogshead"
+  },
+  {
+    "code": "HN",
+    "en": "Hanger",
+    "cy": "Hanger"
+  },
+  {
+    "code": "HR",
+    "en": "Hamper",
+    "cy": "Hamper"
+  },
+  {
+    "code": "IA",
+    "en": "Package, display, wooden",
+    "cy": "Package, display, wooden"
+  },
+  {
+    "code": "IB",
+    "en": "Package, display, cardboard",
+    "cy": "Package, display, cardboard"
+  },
+  {
+    "code": "IC",
+    "en": "Package, display, plastic",
+    "cy": "Package, display, plastic"
+  },
+  {
+    "code": "ID",
+    "en": "Package, display, metal",
+    "cy": "Package, display, metal"
+  },
+  {
+    "code": "IE",
+    "en": "Package, show",
+    "cy": "Package, show"
+  },
+  {
+    "code": "IF",
+    "en": "Package, flow",
+    "cy": "Package, flow"
+  },
+  {
+    "code": "IG",
+    "en": "Package, paper wrapped",
+    "cy": "Package, paper wrapped"
+  },
+  {
+    "code": "IH",
+    "en": "Drum, plastic",
+    "cy": "Drum, plastic"
+  },
+  {
+    "code": "IK",
+    "en": "Package, cardboard, with bottle grip-holes",
+    "cy": "Package, cardboard, with bottle grip-holes"
+  },
+  {
+    "code": "IL",
+    "en": "Tray, rigid, lidded stackable (CEN TS 14482:2002)",
+    "cy": "Tray, rigid, lidded stackable (CEN TS 14482:2002)"
+  },
+  {
+    "code": "IN",
+    "en": "Ingot",
+    "cy": "Ingot"
+  },
+  {
+    "code": "IZ",
+    "en": "Ingots, in bundle/bunch/truss",
+    "cy": "Ingots, in bundle/bunch/truss"
+  },
+  {
+    "code": "JB",
+    "en": "Bag, jumbo",
+    "cy": "Bag, jumbo"
+  },
+  {
+    "code": "JC",
+    "en": "Jerrican, rectangular",
+    "cy": "Jerrican, rectangular"
+  },
+  {
+    "code": "JG",
+    "en": "Jug",
+    "cy": "Jug"
+  },
+  {
+    "code": "JR",
+    "en": "Jar",
+    "cy": "Jar"
+  },
+  {
+    "code": "JT",
+    "en": "Jutebag",
+    "cy": "Jutebag"
+  },
+  {
+    "code": "JY",
+    "en": "Jerrican, cylindrical",
+    "cy": "Jerrican, cylindrical"
+  },
+  {
+    "code": "KG",
+    "en": "Keg",
+    "cy": "Keg"
+  },
+  {
+    "code": "KI",
+    "en": "Kit",
+    "cy": "Kit"
+  },
+  {
+    "code": "LE",
+    "en": "Luggage",
+    "cy": "Luggage"
+  },
+  {
+    "code": "LG",
+    "en": "Log",
+    "cy": "Log"
+  },
+  {
+    "code": "LT",
+    "en": "Lot",
+    "cy": "Lot"
+  },
+  {
+    "code": "LU",
+    "en": "Lug",
+    "cy": "Lug"
+  },
+  {
+    "code": "LV",
+    "en": "Liftvan",
+    "cy": "Liftvan"
+  },
+  {
+    "code": "LZ",
+    "en": "Logs, in bundle/bunch/truss",
+    "cy": "Logs, in bundle/bunch/truss"
+  },
+  {
+    "code": "MA",
+    "en": "Crate, metal",
+    "cy": "Crate, metal"
+  },
+  {
+    "code": "MB",
+    "en": "Bag, multiply",
+    "cy": "Bag, multiply"
+  },
+  {
+    "code": "MC",
+    "en": "Crate, milk",
+    "cy": "Crate, milk"
+  },
+  {
+    "code": "ME",
+    "en": "Container, metal",
+    "cy": "Container, metal"
+  },
+  {
+    "code": "MR",
+    "en": "Receptacle, metal",
+    "cy": "Receptacle, metal"
+  },
+  {
+    "code": "MS",
+    "en": "Sack, multi-wall",
+    "cy": "Sack, multi-wall"
+  },
+  {
+    "code": "MT",
+    "en": "Mat",
+    "cy": "Mat"
+  },
+  {
+    "code": "MW",
+    "en": "Receptacle, plastic wrapped",
+    "cy": "Receptacle, plastic wrapped"
+  },
+  {
+    "code": "MX",
+    "en": "Matchbox",
+    "cy": "Matchbox"
+  },
+  {
+    "code": "NA",
+    "en": "Not available",
+    "cy": "Not available"
+  },
+  {
+    "code": "NE",
+    "en": "Unpacked or unpackaged",
+    "cy": "Unpacked or unpackaged"
+  },
+  {
+    "code": "NF",
+    "en": "Unpacked or unpackaged, single unit",
+    "cy": "Unpacked or unpackaged, single unit"
+  },
+  {
+    "code": "NG",
+    "en": "Unpacked or unpackaged, multiple units",
+    "cy": "Unpacked or unpackaged, multiple units"
+  },
+  {
+    "code": "NS",
+    "en": "Nest",
+    "cy": "Nest"
+  },
+  {
+    "code": "NT",
+    "en": "Net",
+    "cy": "Net"
+  },
+  {
+    "code": "NU",
+    "en": "Net, tube, plastic",
+    "cy": "Net, tube, plastic"
+  },
+  {
+    "code": "NV",
+    "en": "Net, tube, textile",
+    "cy": "Net, tube, textile"
+  },
+  {
+    "code": "OA",
+    "en": "Pallet, CHEP 40 cm x 60 cm",
+    "cy": "Pallet, CHEP 40 cm x 60 cm"
+  },
+  {
+    "code": "OB",
+    "en": "Pallet, CHEP 80 cm x 120 cm",
+    "cy": "Pallet, CHEP 80 cm x 120 cm"
+  },
+  {
+    "code": "OC",
+    "en": "Pallet, CHEP 100 cm x 120 cm",
+    "cy": "Pallet, CHEP 100 cm x 120 cm"
+  },
+  {
+    "code": "OD",
+    "en": "Pallet, AS 4068-1993",
+    "cy": "Pallet, AS 4068-1994"
+  },
+  {
+    "code": "OE",
+    "en": "Pallet, ISO T11",
+    "cy": "Pallet, ISO T12"
+  },
+  {
+    "code": "OF",
+    "en": "Platform, unspecified weight or dimension",
+    "cy": "Platform, unspecified weight or dimension"
+  },
+  {
+    "code": "OK",
+    "en": "Block",
+    "cy": "Block"
+  },
+  {
+    "code": "OT",
+    "en": "Octabin",
+    "cy": "Octabin"
+  },
+  {
+    "code": "OU",
+    "en": "Container, outer",
+    "cy": "Container, outer"
+  },
+  {
+    "code": "P2",
+    "en": "Pan",
+    "cy": "Pan"
+  },
+  {
+    "code": "PA",
+    "en": "Packet",
+    "cy": "Packet"
+  },
+  {
+    "code": "PB",
+    "en": "Pallet, box Combined open-ended box and pallet",
+    "cy": "Pallet, box Combined open-ended box and pallet"
+  },
+  {
+    "code": "PC",
+    "en": "Parcel",
+    "cy": "Parcel"
+  },
+  {
+    "code": "PD",
+    "en": "Pallet, modular, collars 80cms * 100cms",
+    "cy": "Pallet, modular, collars 80cms * 100cms"
+  },
+  {
+    "code": "PE",
+    "en": "Pallet, modular, collars 80cms * 120cms",
+    "cy": "Pallet, modular, collars 80cms * 120cms"
+  },
+  {
+    "code": "PF",
+    "en": "Pen",
+    "cy": "Pen"
+  },
+  {
+    "code": "PG",
+    "en": "Plate",
+    "cy": "Plate"
+  },
+  {
+    "code": "PH",
+    "en": "Pitcher",
+    "cy": "Pitcher"
+  },
+  {
+    "code": "PI",
+    "en": "Pipe",
+    "cy": "Pipe"
+  },
+  {
+    "code": "PJ",
+    "en": "Punnet",
+    "cy": "Punnet"
+  },
+  {
+    "code": "PK",
+    "en": "Package",
+    "cy": "Package"
+  },
+  {
+    "code": "PL",
+    "en": "Pail",
+    "cy": "Pail"
+  },
+  {
+    "code": "PN",
+    "en": "Plank",
+    "cy": "Plank"
+  },
+  {
+    "code": "PO",
+    "en": "Pouch",
+    "cy": "Pouch"
+  },
+  {
+    "code": "PP",
+    "en": "Piece",
+    "cy": "Piece"
+  },
+  {
+    "code": "PR",
+    "en": "Receptacle, plastic",
+    "cy": "Receptacle, plastic"
+  },
+  {
+    "code": "PT",
+    "en": "Pot",
+    "cy": "Pot"
+  },
+  {
+    "code": "PU",
+    "en": "Tray",
+    "cy": "Tray"
+  },
+  {
+    "code": "PV",
+    "en": "Pipes, in bundle/bunch/truss",
+    "cy": "Pipes, in bundle/bunch/truss"
+  },
+  {
+    "code": "PX",
+    "en": "Pallet",
+    "cy": "Pallet"
+  },
+  {
+    "code": "PY",
+    "en": "Plates, in bundle/bunch/truss",
+    "cy": "Plates, in bundle/bunch/truss"
+  },
+  {
+    "code": "PZ",
+    "en": "Planks, in bundle/bunch/truss",
+    "cy": "Planks, in bundle/bunch/truss"
+  },
+  {
+    "code": "QA",
+    "en": "Drum, steel, non-removable head",
+    "cy": "Drum, steel, non-removable head"
+  },
+  {
+    "code": "QB",
+    "en": "Drum, steel, removable head",
+    "cy": "Drum, steel, removable head"
+  },
+  {
+    "code": "QC",
+    "en": "Drum, aluminium, non-removable head",
+    "cy": "Drum, aluminium, non-removable head"
+  },
+  {
+    "code": "QD",
+    "en": "Drum, aluminium, removable head",
+    "cy": "Drum, aluminium, removable head"
+  },
+  {
+    "code": "QF",
+    "en": "Drum, plastic, non-removable head",
+    "cy": "Drum, plastic, non-removable head"
+  },
+  {
+    "code": "QG",
+    "en": "Drum, plastic, removable head",
+    "cy": "Drum, plastic, removable head"
+  },
+  {
+    "code": "QH",
+    "en": "Barrel, wooden, bung type",
+    "cy": "Barrel, wooden, bung type"
+  },
+  {
+    "code": "QJ",
+    "en": "Barrel, wooden, removable head",
+    "cy": "Barrel, wooden, removable head"
+  },
+  {
+    "code": "QK",
+    "en": "Jerrican, steel, non-removable head",
+    "cy": "Jerrican, steel, non-removable head"
+  },
+  {
+    "code": "QL",
+    "en": "Jerrican, steel, removable head",
+    "cy": "Jerrican, steel, removable head"
+  },
+  {
+    "code": "QM",
+    "en": "Jerrican, plastic, non-removable head",
+    "cy": "Jerrican, plastic, non-removable head"
+  },
+  {
+    "code": "QN",
+    "en": "Jerrican, plastic, removable head",
+    "cy": "Jerrican, plastic, removable head"
+  },
+  {
+    "code": "QP",
+    "en": "Box, wooden, natural wood, ordinary",
+    "cy": "Box, wooden, natural wood, ordinary"
+  },
+  {
+    "code": "QQ",
+    "en": "Box, wooden, natural wood, with sift proof walls",
+    "cy": "Box, wooden, natural wood, with sift proof walls"
+  },
+  {
+    "code": "QR",
+    "en": "Box, plastic, expanded",
+    "cy": "Box, plastic, expanded"
+  },
+  {
+    "code": "QS",
+    "en": "Box, plastic, solid",
+    "cy": "Box, plastic, solid"
+  },
+  {
+    "code": "RD",
+    "en": "Rod",
+    "cy": "Rod"
+  },
+  {
+    "code": "RG",
+    "en": "Ring",
+    "cy": "Ring"
+  },
+  {
+    "code": "RJ",
+    "en": "Rack, clothing hanger",
+    "cy": "Rack, clothing hanger"
+  },
+  {
+    "code": "RK",
+    "en": "Rack",
+    "cy": "Rack"
+  },
+  {
+    "code": "RL",
+    "en": "Reel",
+    "cy": "Reel"
+  },
+  {
+    "code": "RO",
+    "en": "Roll",
+    "cy": "Roll"
+  },
+  {
+    "code": "RT",
+    "en": "Rednet",
+    "cy": "Rednet"
+  },
+  {
+    "code": "RZ",
+    "en": "Rods, in bundle/bunch/truss",
+    "cy": "Rods, in bundle/bunch/truss"
+  },
+  {
+    "code": "SA",
+    "en": "Sack",
+    "cy": "Sack"
+  },
+  {
+    "code": "SB",
+    "en": "Slab",
+    "cy": "Slab"
+  },
+  {
+    "code": "SC",
+    "en": "Crate, shallow",
+    "cy": "Crate, shallow"
+  },
+  {
+    "code": "SD",
+    "en": "Spindle",
+    "cy": "Spindle"
+  },
+  {
+    "code": "SE",
+    "en": "Sea-chest",
+    "cy": "Sea-chest"
+  },
+  {
+    "code": "SH",
+    "en": "Sachet",
+    "cy": "Sachet"
+  },
+  {
+    "code": "SI",
+    "en": "Skid",
+    "cy": "Skid"
+  },
+  {
+    "code": "SK",
+    "en": "Case, skeleton",
+    "cy": "Case, skeleton"
+  },
+  {
+    "code": "SL",
+    "en": "Slipsheet",
+    "cy": "Slipsheet"
+  },
+  {
+    "code": "SM",
+    "en": "Sheetmetal",
+    "cy": "Sheetmetal"
+  },
+  {
+    "code": "SO",
+    "en": "Spool",
+    "cy": "Spool"
+  },
+  {
+    "code": "SP",
+    "en": "Sheet, plastic wrapping",
+    "cy": "Sheet, plastic wrapping"
+  },
+  {
+    "code": "SS",
+    "en": "Case, steel",
+    "cy": "Case, steel"
+  },
+  {
+    "code": "ST",
+    "en": "Sheet",
+    "cy": "Sheet"
+  },
+  {
+    "code": "SU",
+    "en": "Suitcase",
+    "cy": "Suitcase"
+  },
+  {
+    "code": "SV",
+    "en": "Envelope, steel",
+    "cy": "Envelope, steel"
+  },
+  {
+    "code": "SW",
+    "en": "Shrinkwrapped",
+    "cy": "Shrinkwrapped"
+  },
+  {
+    "code": "SX",
+    "en": "Set",
+    "cy": "Set"
+  },
+  {
+    "code": "SY",
+    "en": "Sleeve",
+    "cy": "Sleeve"
+  },
+  {
+    "code": "SZ",
+    "en": "Sheets, in bundle/bunch/truss",
+    "cy": "Sheets, in bundle/bunch/truss"
+  },
+  {
+    "code": "T1",
+    "en": "Tablet",
+    "cy": "Tablet"
+  },
+  {
+    "code": "TB",
+    "en": "Tub",
+    "cy": "Tub"
+  },
+  {
+    "code": "TC",
+    "en": "Tea-chest",
+    "cy": "Tea-chest"
+  },
+  {
+    "code": "TD",
+    "en": "Tube, collapsible",
+    "cy": "Tube, collapsible"
+  },
+  {
+    "code": "TE",
+    "en": "Tyre",
+    "cy": "Tyre"
+  },
+  {
+    "code": "TG",
+    "en": "Tank container, generic",
+    "cy": "Tank container, generic"
+  },
+  {
+    "code": "TI",
+    "en": "Tierce",
+    "cy": "Tierce"
+  },
+  {
+    "code": "TK",
+    "en": "Tank, rectangular",
+    "cy": "Tank, rectangular"
+  },
+  {
+    "code": "TL",
+    "en": "Tub, with lid",
+    "cy": "Tub, with lid"
+  },
+  {
+    "code": "TN",
+    "en": "Tin",
+    "cy": "Tin"
+  },
+  {
+    "code": "TO",
+    "en": "Tun",
+    "cy": "Tun"
+  },
+  {
+    "code": "TR",
+    "en": "Trunk",
+    "cy": "Trunk"
+  },
+  {
+    "code": "TS",
+    "en": "Truss",
+    "cy": "Truss"
+  },
+  {
+    "code": "TT",
+    "en": "Bag, tote",
+    "cy": "Bag, tote"
+  },
+  {
+    "code": "TU",
+    "en": "Tube",
+    "cy": "Tube"
+  },
+  {
+    "code": "TV",
+    "en": "Tube, with nozzle",
+    "cy": "Tube, with nozzle"
+  },
+  {
+    "code": "TW",
+    "en": "Pallet, triwall",
+    "cy": "Pallet, triwall"
+  },
+  {
+    "code": "TY",
+    "en": "Tank, cylindrical",
+    "cy": "Tank, cylindrical"
+  },
+  {
+    "code": "TZ",
+    "en": "Tubes, in bundle/bunch/truss",
+    "cy": "Tubes, in bundle/bunch/truss"
+  },
+  {
+    "code": "UC",
+    "en": "Uncaged",
+    "cy": "Uncaged"
+  },
+  {
+    "code": "UN",
+    "en": "Unit",
+    "cy": "Unit"
+  },
+  {
+    "code": "VA",
+    "en": "Vat",
+    "cy": "Vat"
+  },
+  {
+    "code": "VG",
+    "en": "Bulk, gas (at 1031 mbar and 15 degrees celsius)",
+    "cy": "Bulk, gas (at 1031 mbar and 15 degrees celsius)"
+  },
+  {
+    "code": "VI",
+    "en": "Vial",
+    "cy": "Vial"
+  },
+  {
+    "code": "VK",
+    "en": "Vanpack",
+    "cy": "Vanpack"
+  },
+  {
+    "code": "VL",
+    "en": "Bulk, liquid",
+    "cy": "Bulk, liquid"
+  },
+  {
+    "code": "VN",
+    "en": "Vehicle",
+    "cy": "Vehicle"
+  },
+  {
+    "code": "VO",
+    "en": "Bulk, solid, large particles (\"nodules\")",
+    "cy": "Bulk, solid, large particles (\"nodules\")"
+  },
+  {
+    "code": "VP",
+    "en": "Vacuum-packed",
+    "cy": "Vacuum-packed"
+  },
+  {
+    "code": "VQ",
+    "en": "Bulk, liquefied gas (at abnormal temperature/pressure)",
+    "cy": "Bulk, liquefied gas (at abnormal temperature/pressure)"
+  },
+  {
+    "code": "VR",
+    "en": "Bulk, solid, granular particles (\"grains\")",
+    "cy": "Bulk, solid, granular particles (\"grains\")"
+  },
+  {
+    "code": "VS",
+    "en": "Bulk, scrap metal",
+    "cy": "Bulk, scrap metal"
+  },
+  {
+    "code": "VY",
+    "en": "Bulk, solid, fine particles (\"powders\")",
+    "cy": "Bulk, solid, fine particles (\"powders\")"
+  },
+  {
+    "code": "WA",
+    "en": "Intermediate bulk container",
+    "cy": "Intermediate bulk container"
+  },
+  {
+    "code": "WB",
+    "en": "Wickerbottle",
+    "cy": "Wickerbottle"
+  },
+  {
+    "code": "WC",
+    "en": "Intermediate bulk container, steel",
+    "cy": "Intermediate bulk container, steel"
+  },
+  {
+    "code": "WD",
+    "en": "Intermediate bulk container, aluminium",
+    "cy": "Intermediate bulk container, aluminium"
+  },
+  {
+    "code": "WF",
+    "en": "Intermediate bulk container, metal",
+    "cy": "Intermediate bulk container, metal"
+  },
+  {
+    "code": "WG",
+    "en": "Intermediate bulk container, steel, pressurised > 10 kpa",
+    "cy": "Intermediate bulk container, steel, pressurised > 10 kpa"
+  },
+  {
+    "code": "WH",
+    "en": "Intermediate bulk container, aluminium, pressurised > 10 kpa",
+    "cy": "Intermediate bulk container, aluminium, pressurised > 10 kpa"
+  },
+  {
+    "code": "WJ",
+    "en": "Intermediate bulk container, metal, pressure 10 kpa",
+    "cy": "Intermediate bulk container, metal, pressure 10 kpa"
+  },
+  {
+    "code": "WK",
+    "en": "Intermediate bulk container, steel, liquid",
+    "cy": "Intermediate bulk container, steel, liquid"
+  },
+  {
+    "code": "WL",
+    "en": "Intermediate bulk container, aluminium, liquid",
+    "cy": "Intermediate bulk container, aluminium, liquid"
+  },
+  {
+    "code": "WM",
+    "en": "Intermediate bulk container, metal, liquid",
+    "cy": "Intermediate bulk container, metal, liquid"
+  },
+  {
+    "code": "WN",
+    "en": "Intermediate bulk container, woven plastic, without coat/liner",
+    "cy": "Intermediate bulk container, woven plastic, without coat/liner"
+  },
+  {
+    "code": "WP",
+    "en": "Intermediate bulk container, woven plastic, coated",
+    "cy": "Intermediate bulk container, woven plastic, coated"
+  },
+  {
+    "code": "WQ",
+    "en": "Intermediate bulk container, woven plastic, with liner",
+    "cy": "Intermediate bulk container, woven plastic, with liner"
+  },
+  {
+    "code": "WR",
+    "en": "Intermediate bulk container, woven plastic, coated and liner",
+    "cy": "Intermediate bulk container, woven plastic, coated and liner"
+  },
+  {
+    "code": "WS",
+    "en": "Intermediate bulk container, plastic film",
+    "cy": "Intermediate bulk container, plastic film"
+  },
+  {
+    "code": "WT",
+    "en": "Intermediate bulk container, textile without coat/liner",
+    "cy": "Intermediate bulk container, textile without coat/liner"
+  },
+  {
+    "code": "WU",
+    "en": "Intermediate bulk container, natural wood, with inner liner",
+    "cy": "Intermediate bulk container, natural wood, with inner liner"
+  },
+  {
+    "code": "WV",
+    "en": "Intermediate bulk container, textile, coated",
+    "cy": "Intermediate bulk container, textile, coated"
+  },
+  {
+    "code": "WW",
+    "en": "Intermediate bulk container, textile, with liner",
+    "cy": "Intermediate bulk container, textile, with liner"
+  },
+  {
+    "code": "WX",
+    "en": "Intermediate bulk container, textile, coated and liner",
+    "cy": "Intermediate bulk container, textile, coated and liner"
+  },
+  {
+    "code": "WY",
+    "en": "Intermediate bulk container, plywood, with inner liner",
+    "cy": "Intermediate bulk container, plywood, with inner liner"
+  },
+  {
+    "code": "WZ",
+    "en": "Intermediate bulk container, reconstituted wood, with inner liner",
+    "cy": "Intermediate bulk container, reconstituted wood, with inner liner"
+  },
+  {
+    "code": "XA",
+    "en": "Bag, woven plastic, without inner coat/liner",
+    "cy": "Bag, woven plastic, without inner coat/liner"
+  },
+  {
+    "code": "XB",
+    "en": "Bag, woven plastic, sift proof",
+    "cy": "Bag, woven plastic, sift proof"
+  },
+  {
+    "code": "XC",
+    "en": "Bag, woven plastic, water resistant",
+    "cy": "Bag, woven plastic, water resistant"
+  },
+  {
+    "code": "XD",
+    "en": "Bag, plastics film",
+    "cy": "Bag, plastics film"
+  },
+  {
+    "code": "XF",
+    "en": "Bag, textile, without inner coat/liner",
+    "cy": "Bag, textile, without inner coat/liner"
+  },
+  {
+    "code": "XG",
+    "en": "Bag, textile, sift proof",
+    "cy": "Bag, textile, sift proof"
+  },
+  {
+    "code": "XH",
+    "en": "Bag, textile, water resistant",
+    "cy": "Bag, textile, water resistant"
+  },
+  {
+    "code": "XJ",
+    "en": "Bag, paper, multi-wall",
+    "cy": "Bag, paper, multi-wall"
+  },
+  {
+    "code": "XK",
+    "en": "Bag, paper, multi-wall, water resistant",
+    "cy": "Bag, paper, multi-wall, water resistant"
+  },
+  {
+    "code": "YA",
+    "en": "Composite packaging, plastic receptacle in steel drum",
+    "cy": "Composite packaging, plastic receptacle in steel drum"
+  },
+  {
+    "code": "YB",
+    "en": "Composite packaging, plastic receptacle in steel crate box",
+    "cy": "Composite packaging, plastic receptacle in steel crate box"
+  },
+  {
+    "code": "YC",
+    "en": "Composite packaging, plastic receptacle in aluminium drum",
+    "cy": "Composite packaging, plastic receptacle in aluminium drum"
+  },
+  {
+    "code": "YD",
+    "en": "Composite packaging, plastic receptacle in aluminium crate",
+    "cy": "Composite packaging, plastic receptacle in aluminium crate"
+  },
+  {
+    "code": "YF",
+    "en": "Composite packaging, plastic receptacle in wooden box",
+    "cy": "Composite packaging, plastic receptacle in wooden box"
+  },
+  {
+    "code": "YG",
+    "en": "Composite packaging, plastic receptacle in plywood drum",
+    "cy": "Composite packaging, plastic receptacle in plywood drum"
+  },
+  {
+    "code": "YH",
+    "en": "Composite packaging, plastic receptacle in plywood box",
+    "cy": "Composite packaging, plastic receptacle in plywood box"
+  },
+  {
+    "code": "YJ",
+    "en": "Composite packaging, plastic receptacle in fibre drum",
+    "cy": "Composite packaging, plastic receptacle in fibre drum"
+  },
+  {
+    "code": "YK",
+    "en": "Composite packaging, plastic receptacle in fibreboard box",
+    "cy": "Composite packaging, plastic receptacle in fibreboard box"
+  },
+  {
+    "code": "YL",
+    "en": "Composite packaging, plastic receptacle in plastic drum",
+    "cy": "Composite packaging, plastic receptacle in plastic drum"
+  },
+  {
+    "code": "YM",
+    "en": "Composite packaging, plastic receptacle in solid plastic box",
+    "cy": "Composite packaging, plastic receptacle in solid plastic box"
+  },
+  {
+    "code": "YN",
+    "en": "Composite packaging, glass receptacle in steel drum",
+    "cy": "Composite packaging, glass receptacle in steel drum"
+  },
+  {
+    "code": "YP",
+    "en": "Composite packaging, glass receptacle in steel crate box",
+    "cy": "Composite packaging, glass receptacle in steel crate box"
+  },
+  {
+    "code": "YQ",
+    "en": "Composite packaging, glass receptacle in aluminium drum",
+    "cy": "Composite packaging, glass receptacle in aluminium drum"
+  },
+  {
+    "code": "YR",
+    "en": "Composite packaging, glass receptacle in aluminium crate",
+    "cy": "Composite packaging, glass receptacle in aluminium crate"
+  },
+  {
+    "code": "YS",
+    "en": "Composite packaging, glass receptacle in wooden box",
+    "cy": "Composite packaging, glass receptacle in wooden box"
+  },
+  {
+    "code": "YT",
+    "en": "Composite packaging, glass receptacle in plywood drum",
+    "cy": "Composite packaging, glass receptacle in plywood drum"
+  },
+  {
+    "code": "YV",
+    "en": "Composite packaging, glass receptacle in wickerwork hamper",
+    "cy": "Composite packaging, glass receptacle in wickerwork hamper"
+  },
+  {
+    "code": "YW",
+    "en": "Composite packaging, glass receptacle in fibre drum",
+    "cy": "Composite packaging, glass receptacle in fibre drum"
+  },
+  {
+    "code": "YX",
+    "en": "Composite packaging, glass receptacle in fibreboard box",
+    "cy": "Composite packaging, glass receptacle in fibreboard box"
+  },
+  {
+    "code": "YY",
+    "en": "Composite packaging, glass receptacle in expandable plastic pack",
+    "cy": "Composite packaging, glass receptacle in expandable plastic pack"
+  },
+  {
+    "code": "YZ",
+    "en": "Composite packaging, glass receptacle in solid plastic pack",
+    "cy": "Composite packaging, glass receptacle in solid plastic pack"
+  },
+  {
+    "code": "ZA",
+    "en": "Intermediate bulk container, paper, multi-wall",
+    "cy": "Intermediate bulk container, paper, multi-wall"
+  },
+  {
+    "code": "ZB",
+    "en": "Bag, large",
+    "cy": "Bag, large"
+  },
+  {
+    "code": "ZC",
+    "en": "Intermediate bulk container, paper, multi-wall, water resistant",
+    "cy": "Intermediate bulk container, paper, multi-wall, water resistant"
+  },
+  {
+    "code": "ZD",
+    "en": "Intermediate bulk container, rigid plastic, with structural equipment, solids",
+    "cy": "Intermediate bulk container, rigid plastic, with structural equipment, solids"
+  },
+  {
+    "code": "ZF",
+    "en": "Intermediate bulk container, rigid plastic, freestanding, solids",
+    "cy": "Intermediate bulk container, rigid plastic, freestanding, solids"
+  },
+  {
+    "code": "ZG",
+    "en": "Intermediate bulk container, rigid plastic, with structural equipment, pressurised",
+    "cy": "Intermediate bulk container, rigid plastic, with structural equipment, pressurised"
+  },
+  {
+    "code": "ZH",
+    "en": "Intermediate bulk container, rigid plastic, freestanding, pressurised",
+    "cy": "Intermediate bulk container, rigid plastic, freestanding, pressurised"
+  },
+  {
+    "code": "ZJ",
+    "en": "Intermediate bulk container, rigid plastic, with structural equipment, liquids",
+    "cy": "Intermediate bulk container, rigid plastic, with structural equipment, liquids"
+  },
+  {
+    "code": "ZK",
+    "en": "Intermediate bulk container, rigid plastic, freestanding, liquids",
+    "cy": "Intermediate bulk container, rigid plastic, freestanding, liquids"
+  },
+  {
+    "code": "ZL",
+    "en": "Intermediate bulk container, composite, rigid plastic, solids",
+    "cy": "Intermediate bulk container, composite, rigid plastic, solids"
+  },
+  {
+    "code": "ZM",
+    "en": "Intermediate bulk container, composite, flexible plastic, solids",
+    "cy": "Intermediate bulk container, composite, flexible plastic, solids"
+  },
+  {
+    "code": "ZN",
+    "en": "Intermediate bulk container, composite, rigid plastic, pressurised",
+    "cy": "Intermediate bulk container, composite, rigid plastic, pressurised"
+  },
+  {
+    "code": "ZP",
+    "en": "Intermediate bulk container, composite, flexible plastic, pressurised",
+    "cy": "Intermediate bulk container, composite, flexible plastic, pressurised"
+  },
+  {
+    "code": "ZQ",
+    "en": "Intermediate bulk container, composite, rigid plastic, liquids",
+    "cy": "Intermediate bulk container, composite, rigid plastic, liquids"
+  },
+  {
+    "code": "ZR",
+    "en": "Intermediate bulk container, composite, flexible plastic, liquids",
+    "cy": "Intermediate bulk container, composite, flexible plastic, liquids"
+  },
+  {
+    "code": "ZS",
+    "en": "Intermediate bulk container, composite",
+    "cy": "Intermediate bulk container, composite"
+  },
+  {
+    "code": "ZT",
+    "en": "Intermediate bulk container, fibreboard",
+    "cy": "Intermediate bulk container, fibreboard"
+  },
+  {
+    "code": "ZU",
+    "en": "Intermediate bulk container, flexible",
+    "cy": "Intermediate bulk container, flexible"
+  },
+  {
+    "code": "ZV",
+    "en": "Intermediate bulk container, metal, other than steel",
+    "cy": "Intermediate bulk container, metal, other than steel"
+  },
+  {
+    "code": "ZW",
+    "en": "Intermediate bulk container, natural wood",
+    "cy": "Intermediate bulk container, natural wood"
+  },
+  {
+    "code": "ZX",
+    "en": "Intermediate bulk container, plywood",
+    "cy": "Intermediate bulk container, plywood"
+  },
+  {
+    "code": "ZY",
+    "en": "Intermediate bulk container, reconstituted wood",
+    "cy": "Intermediate bulk container, reconstituted wood"
+  },
+  {
+    "code": "ZZ",
+    "en": "Mutually defined",
+    "cy": "Mutually defined"
+  }
+]

@@ -17,23 +17,41 @@
 package forms.declaration
 
 import forms.DeclarationPage
+import forms.declaration.StatisticalValue.keyForAmend
+import models.AmendmentRow.{forAddedValue, forAmendedValue, forRemovedValue}
 import models.DeclarationType.DeclarationType
-import models.viewmodels.TariffContentKey
 import models.ExportsFieldPointer.ExportsFieldPointer
-import models.FieldMapping
+import models.declaration.ExportItem.itemsPrefix
+import models.viewmodels.TariffContentKey
+import models.{Amendment, FieldMapping}
 import play.api.data.Forms.text
 import play.api.data.{Form, Forms, Mapping}
+import play.api.i18n.Messages
 import play.api.libs.json.Json
 import utils.validators.forms.FieldValidator._
 
-case class StatisticalValue(statisticalValue: String) extends Ordered[StatisticalValue] {
+case class StatisticalValue(statisticalValue: String) extends Ordered[StatisticalValue] with Amendment {
+
   override def compare(y: StatisticalValue): Int = statisticalValue.compareTo(y.statisticalValue)
+
+  def value: String = statisticalValue
+
+  def valueAdded(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
+    forAddedValue(pointer, messages(keyForAmend), statisticalValue)
+
+  def valueAmended(newValue: Amendment, pointer: ExportsFieldPointer)(implicit messages: Messages): String =
+    forAmendedValue(pointer, messages(keyForAmend), statisticalValue, newValue.value)
+
+  def valueRemoved(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
+    forRemovedValue(pointer, messages(keyForAmend), statisticalValue)
 }
 
 object StatisticalValue extends DeclarationPage with FieldMapping {
   implicit val format = Json.format[StatisticalValue]
 
   val pointer: ExportsFieldPointer = "statisticalValue.statisticalValue"
+
+  lazy val keyForAmend = s"$itemsPrefix.itemValue"
 
   val statisticalValueKey = "statisticalValue"
 

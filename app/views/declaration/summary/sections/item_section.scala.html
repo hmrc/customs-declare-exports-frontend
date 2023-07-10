@@ -114,7 +114,7 @@
                 key = Key(
                     content = Text(messages("declaration.summary.items.item.VATdetails"))
                 ),
-                value = Value(HtmlContent(elements_in_separate_lines(additionalFiscalReferences.references.map(_.asString)))),
+                value = Value(HtmlContent(elements_in_separate_lines(additionalFiscalReferences.references.map(_.value)))),
                 actions = actions(Actions(
                     items = Seq(
                         actionSummaryItem(

@@ -20,19 +20,20 @@ import connectors.CodeListConnector
 import play.api.i18n.Messages
 import services.model.PackageType
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 
+@Singleton
 class PackageTypesService @Inject() (codeListConnector: CodeListConnector) {
 
   def all(implicit messages: Messages): List[PackageType] =
-    codeListConnector.getPackageTypes(messages.lang.toLocale).values.toList.sortBy(_.description)
-
-  def packageTypeCodeMap(implicit messages: Messages): Map[String, PackageType] =
-    all.map(packageType => (packageType.code, packageType)).toMap
+    packageTypesMap.values.toList.sortBy(_.description)
 
   def findByCode(code: String)(implicit messages: Messages): PackageType =
-    packageTypeCodeMap.getOrElse(code, PackageType(code, "Unknown package type"))
+    packageTypesMap.getOrElse(code, PackageType(code, "Unknown package type"))
+
+  def packageTypesMap(implicit messages: Messages): Map[String, PackageType] =
+    codeListConnector.getPackageTypes(messages.lang.toLocale)
 
   def typesOfPackagesText(typesOfPackages: Option[String])(implicit messages: Messages): Option[String] =
-    typesOfPackages.map(types => findByCode(types).asText())
+    typesOfPackages.map(types => findByCode(types).asText)
 }

@@ -16,21 +16,45 @@
 
 package forms.declaration.countries
 
+import forms.declaration.countries.Country.mappingsForAmendment
+import models.AmendmentRow.{forAddedValue, forAmendedValue, forRemovedValue}
 import models.ExportsFieldPointer.ExportsFieldPointer
-import models.FieldMapping
+import models.declaration.Locations.destinationCountryPointer
+import models.{Amendment, FieldMapping}
+import play.api.i18n.Messages
 import play.api.libs.json.Json
-import services.DiffTools
-import services.DiffTools.{combinePointers, compareStringDifference, ExportsDeclarationDiff}
 
-case class Country(code: Option[String]) extends DiffTools[Country] {
-  override def createDiff(original: Country, pointerString: ExportsFieldPointer, sequenceId: Option[Int] = None): ExportsDeclarationDiff =
-    Seq(compareStringDifference(original.code, code, combinePointers(pointerString, Country.pointer, sequenceId))).flatten
+case class Country(code: Option[String]) extends Ordered[Country] with Amendment {
+
+  override def compare(that: Country): Int =
+    (code, that.code) match {
+      case (None, None)                    => 0
+      case (_, None)                       => 1
+      case (None, _)                       => -1
+      case (Some(current), Some(original)) => current.compare(original)
+    }
+
+  def value: String = code.getOrElse("")
+
+  def valueAdded(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
+    code.fold("")(forAddedValue(pointer, messages(mappingsForAmendment(pointer)), _))
+
+  def valueAmended(newValue: Amendment, pointer: ExportsFieldPointer)(implicit messages: Messages): String =
+    forAmendedValue(pointer, messages(mappingsForAmendment(pointer)), value, newValue.value)
+
+  def valueRemoved(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
+    code.fold("")(forRemovedValue(pointer, messages(mappingsForAmendment(pointer)), _))
 }
 
 object Country extends FieldMapping {
-  implicit val format = Json.format[Country]
 
   val pointer: ExportsFieldPointer = "code"
+
+  def mappingsForAmendment(pointer: ExportsFieldPointer): String =
+    if (pointer.endsWith(destinationCountryPointer)) "declaration.summary.countries.countryOfDestination"
+    else "declaration.summary.countries.routingCountry"
+
+  implicit val format = Json.format[Country]
 
   val GB = Country(Some("GB"))
 }

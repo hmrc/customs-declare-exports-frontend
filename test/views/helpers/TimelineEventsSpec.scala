@@ -178,6 +178,10 @@ class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injec
       timelineEvents(0).title mustBe messages("submission.enhancedStatus.timeline.title.amendment.accepted")
       timelineEvents(1).title mustBe messages("submission.enhancedStatus.timeline.title.amendment.requested")
       timelineEvents(2).title mustBe messages(s"submission.enhancedStatus.$RECEIVED")
+
+      val detailsLink = timelineEvents(1).content.value.getElementsByTag("a").get(0)
+      assert(detailsLink.attr("href").endsWith(s"/amendment-details/${amendmentGranted(1).id}"))
+      detailsLink.text() mustBe messages("declaration.details.view.amendments.button")
     }
 
     "generate the expected sequence of TimelineEvent instances when the latest action is amendment rejected" in {

@@ -64,19 +64,19 @@ class PackageInformationAddController @Inject() (
       .add(boundForm, cachedData, PackageInformation.limit, fieldId = PackageInformationFormGroupId, "declaration.packageInformation")
       .fold(
         formWithErrors => Future.successful(BadRequest(packageInformationPage(itemId, formWithErrors))),
-        updatedCache =>
-          updateCache(itemId, updatedCache)
+        packageInformation =>
+          updateCache(itemId, packageInformation)
             .map(_ => navigator.continueTo(routes.PackageInformationSummaryController.displayPage(itemId)))
       )
 
-  private def updateCache(itemId: String, packageInformations: Seq[PackageInformation])(
+  private def updateCache(itemId: String, packageInformation: Seq[PackageInformation])(
     implicit request: JourneyRequest[AnyContent]
   ): Future[ExportsDeclaration] = {
     val declarationMeta = request.cacheModel.declarationMeta
-    val (updatedPackageInformations, updatedMeta) = sequenceIdHandler.handleSequencing(packageInformations, declarationMeta)
+    val (updatedPackageInformation, updatedMeta) = sequenceIdHandler.handleSequencing(packageInformation, declarationMeta)
 
     updateDeclarationFromRequest(
-      _.updatedItem(itemId, _.copy(packageInformation = Some(updatedPackageInformations.toList)))
+      _.updatedItem(itemId, _.copy(packageInformation = Some(updatedPackageInformation.toList)))
         .copy(declarationMeta = updatedMeta)
     )
   }

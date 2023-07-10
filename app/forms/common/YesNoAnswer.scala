@@ -17,17 +17,49 @@
 package forms.common
 
 import forms.MappingHelper.requiredRadio
+import forms.common.YesNoAnswer.{mappingsForAmendment, valueForYesNo}
+import models.{Amendment, ExportsDeclaration}
+import models.AmendmentRow.{forAddedValue, forAmendedValue, forRemovedValue}
+import models.ExportsFieldPointer.ExportsFieldPointer
+import models.declaration.{Parties, Transport}
 import play.api.data.{Form, Forms, Mapping}
+import play.api.i18n.Messages
 import play.api.libs.json.Json
 import utils.validators.forms.FieldValidator.isContainedIn
 
-case class YesNoAnswer(answer: String) extends Ordered[YesNoAnswer] {
+case class YesNoAnswer(answer: String) extends Ordered[YesNoAnswer] with Amendment {
+
   override def compare(that: YesNoAnswer): Int = answer.compare(that.answer)
+
+  def value: String = answer
+
+  def valueAdded(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
+    forAddedValue(pointer, messages(mappingsForAmendment(pointer)), valueForYesNo(answer))
+
+  def valueAmended(newValue: Amendment, pointer: ExportsFieldPointer)(implicit messages: Messages): String =
+    forAmendedValue(pointer, messages(mappingsForAmendment(pointer)), valueForYesNo(answer), valueForYesNo(newValue.value))
+
+  def valueRemoved(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
+    forRemovedValue(pointer, messages(mappingsForAmendment(pointer)), valueForYesNo(answer))
 }
 
 object YesNoAnswer {
 
   implicit val format = Json.format[YesNoAnswer]
+
+  private lazy val parties = s"${ExportsDeclaration.pointer}.${Parties.pointer}"
+  private lazy val transport = s"${ExportsDeclaration.pointer}.${Transport.pointer}"
+
+  lazy val mappingsForAmendment = Map(
+    s"$parties.personPresentingGoodsDetails.eori" -> "declaration.summary.parties.eidr",
+    s"$transport.expressConsignment" -> "declaration.summary.transport.expressConsignment"
+  )
+
+  def valueForYesNo(isYes: Boolean)(implicit messages: Messages): String =
+    messages(if (isYes) "site.yes" else "site.no")
+
+  def valueForYesNo(value: String)(implicit messages: Messages): String =
+    messages(if (value.toLowerCase == "yes") "site.yes" else "site.no")
 
   object YesNoAnswers {
     val yes = "Yes"

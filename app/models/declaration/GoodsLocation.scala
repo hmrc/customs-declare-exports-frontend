@@ -17,45 +17,48 @@
 package models.declaration
 
 import forms.declaration.LocationOfGoods
+import models.AmendmentRow.{forAddedValue, forAmendedValue, forRemovedValue}
 import models.ExportsFieldPointer.ExportsFieldPointer
-import models.FieldMapping
+import models.declaration.GoodsLocation.keyForAmend
+import models.{Amendment, FieldMapping}
+import play.api.i18n.Messages
 import play.api.libs.json.{Json, OFormat}
-import services.DiffTools
-import services.DiffTools.{combinePointers, compareStringDifference, ExportsDeclarationDiff}
+import services.DiffTools.{combinePointers, ExportsDeclarationDiff}
+import services.{AlteredField, DiffTools, OriginalAndNewValues}
 
 case class GoodsLocation(country: String, typeOfLocation: String, qualifierOfIdentification: String, identificationOfLocation: String)
-    extends DiffTools[GoodsLocation] {
+    extends DiffTools[GoodsLocation] with Amendment {
+
   def createDiff(original: GoodsLocation, pointerString: ExportsFieldPointer, sequenceId: Option[Int] = None): ExportsDeclarationDiff =
+    // special implementation to ensure GoodsLocation entity returned as value diff instead of individual field values
     Seq(
-      compareStringDifference(original.country, country, combinePointers(pointerString, GoodsLocation.countryPointer, sequenceId)),
-      compareStringDifference(
-        original.typeOfLocation,
-        typeOfLocation,
-        combinePointers(pointerString, GoodsLocation.typeOfLocationPointer, sequenceId)
-      ),
-      compareStringDifference(
-        original.qualifierOfIdentification,
-        qualifierOfIdentification,
-        combinePointers(pointerString, GoodsLocation.qualifierOfIdentificationPointer, sequenceId)
-      ),
-      compareStringDifference(
-        original.identificationOfLocation,
-        identificationOfLocation,
-        combinePointers(pointerString, GoodsLocation.identificationOfLocationPointer, sequenceId)
-      )
+      Option.when(
+        !country.compare(original.country).equals(0) ||
+          !typeOfLocation.compare(original.typeOfLocation).equals(0) ||
+          !qualifierOfIdentification.compare(original.qualifierOfIdentification).equals(0) ||
+          !identificationOfLocation.compare(original.identificationOfLocation).equals(0)
+      )(AlteredField(combinePointers(pointerString, sequenceId), OriginalAndNewValues(Some(original), Some(this))))
     ).flatten
 
-  lazy val code = country + typeOfLocation + qualifierOfIdentification + identificationOfLocation
+  def value: String = country + typeOfLocation + qualifierOfIdentification + identificationOfLocation
 
-  def toForm: LocationOfGoods = LocationOfGoods(code)
+  def valueAdded(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
+    forAddedValue(pointer, messages(keyForAmend), value)
+
+  def valueAmended(newValue: Amendment, pointer: ExportsFieldPointer)(implicit messages: Messages): String =
+    forAmendedValue(pointer, messages(keyForAmend), value, newValue.value)
+
+  def valueRemoved(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
+    forRemovedValue(pointer, messages(keyForAmend), value)
+
+  def toForm: LocationOfGoods = LocationOfGoods(value)
 }
 
 object GoodsLocation extends FieldMapping {
-  implicit val format: OFormat[GoodsLocation] = Json.format[GoodsLocation]
 
   val pointer: ExportsFieldPointer = "goodsLocation"
-  val countryPointer: ExportsFieldPointer = "country"
-  val typeOfLocationPointer: ExportsFieldPointer = "typeOfLocation"
-  val qualifierOfIdentificationPointer: ExportsFieldPointer = "qualifierOfIdentification"
-  val identificationOfLocationPointer: ExportsFieldPointer = "identificationOfLocation"
+
+  val keyForAmend = "declaration.summary.locations.goodsLocationCode"
+
+  implicit val format: OFormat[GoodsLocation] = Json.format[GoodsLocation]
 }

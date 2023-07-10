@@ -22,16 +22,23 @@ import forms.declaration.EntityDetails
 import models.DeclarationType.{CLEARANCE, DeclarationType}
 import models.viewmodels.TariffContentKey
 import models.ExportsFieldPointer.ExportsFieldPointer
-import models.FieldMapping
-import play.api.data.{Form, Forms}
+import models.{AmendmentOp, FieldMapping}
+import play.api.data.{Form, Forms, Mapping}
 import play.api.i18n.Messages
 import play.api.libs.json.Json
 import services.DiffTools
 import services.DiffTools.{combinePointers, ExportsDeclarationDiff}
 
-case class CarrierDetails(details: EntityDetails) extends DiffTools[CarrierDetails] {
+case class CarrierDetails(details: EntityDetails) extends DiffTools[CarrierDetails] with AmendmentOp {
+
   override def createDiff(original: CarrierDetails, pointerString: ExportsFieldPointer, sequenceId: Option[Int] = None): ExportsDeclarationDiff =
     Seq(details.createDiff(original.details, combinePointers(pointerString, sequenceId))).flatten
+
+  def valueAdded(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
+    details.valueAdded(pointer)
+
+  def valueRemoved(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
+    details.valueRemoved(pointer)
 }
 
 object CarrierDetails extends DeclarationPage with FieldMapping {
@@ -41,10 +48,10 @@ object CarrierDetails extends DeclarationPage with FieldMapping {
 
   val id = "CarrierDetails"
 
-  def defaultMapping(implicit messages: Messages, codeListConnector: CodeListConnector) =
+  def defaultMapping(implicit messages: Messages, codeListConnector: CodeListConnector): Mapping[CarrierDetails] =
     Forms.mapping("details" -> EntityDetails.addressMapping)(CarrierDetails.apply)(CarrierDetails.unapply)
 
-  def optionalMapping(implicit messages: Messages, codeListConnector: CodeListConnector) =
+  def optionalMapping(implicit messages: Messages, codeListConnector: CodeListConnector): Mapping[CarrierDetails] =
     Forms.mapping("details" -> EntityDetails.optionalAddressMapping)(CarrierDetails.apply)(CarrierDetails.unapply)
 
   def form(declarationType: DeclarationType)(implicit messages: Messages, codeListConnector: CodeListConnector): Form[CarrierDetails] =

@@ -17,14 +17,19 @@
 package forms.declaration
 
 import forms.DeclarationPage
+import forms.declaration.InlandModeOfTransportCode.keyForAmend
+import models.AmendmentRow.{forAddedValue, forAmendedValue, forRemovedValue, safeMessage}
 import models.DeclarationType.DeclarationType
-import models.viewmodels.TariffContentKey
 import models.ExportsFieldPointer.ExportsFieldPointer
-import models.FieldMapping
+import models.viewmodels.TariffContentKey
+import models.{Amendment, FieldMapping}
 import play.api.data.{Form, Forms}
+import play.api.i18n.Messages
 import play.api.libs.json.Json
 
-case class InlandModeOfTransportCode(inlandModeOfTransportCode: Option[ModeOfTransportCode] = None) extends Ordered[InlandModeOfTransportCode] {
+case class InlandModeOfTransportCode(inlandModeOfTransportCode: Option[ModeOfTransportCode] = None)
+    extends Ordered[InlandModeOfTransportCode] with Amendment {
+
   override def compare(that: InlandModeOfTransportCode): Int =
     (inlandModeOfTransportCode, that.inlandModeOfTransportCode) match {
       case (None, None)                    => 0
@@ -32,12 +37,29 @@ case class InlandModeOfTransportCode(inlandModeOfTransportCode: Option[ModeOfTra
       case (None, _)                       => -1
       case (Some(current), Some(original)) => current.compare(original)
     }
+
+  def value: String = inlandModeOfTransportCode.fold("")(_.toString)
+
+  private def toUserValue(value: String)(implicit messages: Messages): String =
+    safeMessage(s"declaration.summary.transport.inlandModeOfTransport.$value", value)
+
+  def valueAdded(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
+    inlandModeOfTransportCode.fold("")(code => forAddedValue(pointer, messages(keyForAmend), toUserValue(code.toString)))
+
+  def valueAmended(newValue: Amendment, pointer: ExportsFieldPointer)(implicit messages: Messages): String =
+    forAmendedValue(pointer, messages(keyForAmend), toUserValue(value), toUserValue(newValue.value))
+
+  def valueRemoved(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
+    inlandModeOfTransportCode.fold("")(code => forRemovedValue(pointer, messages(keyForAmend), toUserValue(code.toString)))
 }
 
 object InlandModeOfTransportCode extends DeclarationPage with FieldMapping {
-  implicit val format = Json.format[InlandModeOfTransportCode]
 
   val pointer: ExportsFieldPointer = "inlandModeOfTransportCode.inlandModeOfTransportCode"
+
+  private val keyForAmend = "declaration.summary.transport.inlandModeOfTransport"
+
+  implicit val format = Json.format[InlandModeOfTransportCode]
 
   val formId = "InlandModeOfTransportCode"
 

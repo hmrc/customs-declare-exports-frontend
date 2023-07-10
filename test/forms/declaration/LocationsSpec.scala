@@ -25,53 +25,6 @@ import services.AlteredField
 import services.AlteredField.constructAlteredField
 
 class LocationsSpec extends UnitSpec {
-  "Country.createDiff" should {
-    val baseFieldPointer = Locations.pointer
-    val someVal = Some("GB")
-
-    "produce the expected ExportsDeclarationDiff instance" when {
-      "no differences exist between the two versions" in {
-        withClue("both values are None") {
-          val country = Country(None)
-          country.createDiff(country, baseFieldPointer) mustBe Seq.empty[AlteredField]
-        }
-
-        withClue("both values are same Some value") {
-          val country = Country(someVal)
-          country.createDiff(country, baseFieldPointer) mustBe Seq.empty[AlteredField]
-        }
-      }
-
-      "differences exist between the two versions" in {
-        withClue("original is None but this has Some") {
-          val fieldPointer = s"${baseFieldPointer}.${Country.pointer}"
-          val country = Country(someVal)
-          val originalValue = None
-          country.createDiff(country.copy(code = originalValue), baseFieldPointer) mustBe Seq(
-            constructAlteredField(fieldPointer, originalValue, country.code)
-          )
-        }
-
-        withClue("original is Some but this has None") {
-          val fieldPointer = s"${baseFieldPointer}.${Country.pointer}"
-          val country = Country(None)
-          val originalValue = someVal
-          country.createDiff(country.copy(code = originalValue), baseFieldPointer) mustBe Seq(
-            constructAlteredField(fieldPointer, originalValue, country.code)
-          )
-        }
-
-        withClue("original is Some and this is Some but values are different") {
-          val fieldPointer = s"${baseFieldPointer}.${Country.pointer}"
-          val country = Country(Some("FR"))
-          val originalValue = someVal
-          country.createDiff(country.copy(code = originalValue), baseFieldPointer) mustBe Seq(
-            constructAlteredField(fieldPointer, originalValue, country.code)
-          )
-        }
-      }
-    }
-  }
 
   "GoodsLocation.createDiff" should {
     val baseFieldPointer = GoodsLocation.pointer
@@ -86,44 +39,36 @@ class LocationsSpec extends UnitSpec {
       }
 
       "the original version's country field has a different value to this one" in {
-        val fieldPointer = s"${baseFieldPointer}.${GoodsLocation.countryPointer}"
+        val fieldPointer = s"${baseFieldPointer}"
         val goodsLocation =
           GoodsLocation("latestCountry", "latestTypeOfLocation", "latestQualifierOfIdentification", "latestIdentificationOfLocation")
-        val originalValue = "original"
-        goodsLocation.createDiff(goodsLocation.copy(country = originalValue), baseFieldPointer) mustBe Seq(
-          constructAlteredField(fieldPointer, originalValue, goodsLocation.country)
-        )
+        val originalValue = goodsLocation.copy(country = "original")
+        goodsLocation.createDiff(originalValue, baseFieldPointer) mustBe Seq(constructAlteredField(fieldPointer, originalValue, goodsLocation))
       }
 
       "the original version's typeOfLocation field has a different value to this one" in {
-        val fieldPointer = s"${baseFieldPointer}.${GoodsLocation.typeOfLocationPointer}"
+        val fieldPointer = s"${baseFieldPointer}"
         val goodsLocation =
           GoodsLocation("latestCountry", "latestTypeOfLocation", "latestQualifierOfIdentification", "latestIdentificationOfLocation")
-        val originalValue = "original"
-        goodsLocation.createDiff(goodsLocation.copy(typeOfLocation = originalValue), baseFieldPointer) mustBe Seq(
-          constructAlteredField(fieldPointer, originalValue, goodsLocation.typeOfLocation)
-        )
+        val originalValue = goodsLocation.copy(typeOfLocation = "original")
+        goodsLocation.createDiff(originalValue, baseFieldPointer) mustBe Seq(constructAlteredField(fieldPointer, originalValue, goodsLocation))
       }
 
       "the original version's qualifierOfIdentification field has a different value to this one" in {
-        val fieldPointer = s"${baseFieldPointer}.${GoodsLocation.qualifierOfIdentificationPointer}"
+        val fieldPointer = s"${baseFieldPointer}"
         val goodsLocation =
           GoodsLocation("latestCountry", "latestTypeOfLocation", "latestQualifierOfIdentification", "latestIdentificationOfLocation")
-        val originalValue = "original"
-        goodsLocation.createDiff(goodsLocation.copy(qualifierOfIdentification = originalValue), baseFieldPointer) mustBe Seq(
-          constructAlteredField(fieldPointer, originalValue, goodsLocation.qualifierOfIdentification)
-        )
+        val originalValue = goodsLocation.copy(qualifierOfIdentification = "original")
+        goodsLocation.createDiff(originalValue, baseFieldPointer) mustBe Seq(constructAlteredField(fieldPointer, originalValue, goodsLocation))
       }
 
       "the original version's identificationOfLocation field has a different value to this one" in {
         withClue("both version have Some value") {
-          val fieldPointer = s"${baseFieldPointer}.${GoodsLocation.identificationOfLocationPointer}"
+          val fieldPointer = s"${baseFieldPointer}"
           val goodsLocation =
             GoodsLocation("latestCountry", "latestTypeOfLocation", "latestQualifierOfIdentification", "latestIdentificationOfLocation")
-          val originalValue = "original"
-          goodsLocation.createDiff(goodsLocation.copy(identificationOfLocation = originalValue), baseFieldPointer) mustBe Seq(
-            constructAlteredField(fieldPointer, originalValue, goodsLocation.identificationOfLocation)
-          )
+          val originalValue = goodsLocation.copy(qualifierOfIdentification = "original")
+          goodsLocation.createDiff(originalValue, baseFieldPointer) mustBe Seq(constructAlteredField(fieldPointer, originalValue, goodsLocation))
         }
       }
     }
@@ -144,20 +89,20 @@ class LocationsSpec extends UnitSpec {
         val latestCountry = Country(Some("GB"))
 
         "the original version's originationCountry field has a different value to this one" in {
-          val fieldPointer = s"${baseFieldPointer}.${Locations.originationCountryPointer}.${Country.pointer}"
+          val fieldPointer = s"${baseFieldPointer}.${Locations.originationCountryPointer}"
           val locations = Locations(originationCountry = Some(latestCountry))
-          val originalValue = Country(Some("FR"))
-          locations.createDiff(locations.copy(originationCountry = Some(originalValue)), baseFieldPointer) mustBe Seq(
-            constructAlteredField(fieldPointer, originalValue.code, locations.originationCountry.get.code)
+          val originalValue = Some(Country(Some("FR")))
+          locations.createDiff(locations.copy(originationCountry = originalValue), baseFieldPointer) mustBe Seq(
+            constructAlteredField(fieldPointer, originalValue, locations.originationCountry)
           )
         }
 
         "the original version's destinationCountry field has a different value to this one" in {
-          val fieldPointer = s"${baseFieldPointer}.${Locations.destinationCountryPointer}.${Country.pointer}"
+          val fieldPointer = s"${baseFieldPointer}.${Locations.destinationCountryPointer}"
           val locations = Locations(destinationCountry = Some(latestCountry))
-          val originalValue = Country(Some("FR"))
-          locations.createDiff(locations.copy(destinationCountry = Some(originalValue)), baseFieldPointer) mustBe Seq(
-            constructAlteredField(fieldPointer, originalValue.code, locations.destinationCountry.get.code)
+          val originalValue = Some(Country(Some("FR")))
+          locations.createDiff(locations.copy(destinationCountry = originalValue), baseFieldPointer) mustBe Seq(
+            constructAlteredField(fieldPointer, originalValue, locations.destinationCountry)
           )
         }
 
@@ -206,15 +151,16 @@ class LocationsSpec extends UnitSpec {
           }
 
           withClue("locations routingCountries contain elements with different values") {
-            val locations = Locations(routingCountries =
+            val newRoutingCountries =
               Seq(RoutingCountry(1, Country(Some("one"))), RoutingCountry(2, Country(Some("DIFF"))), RoutingCountry(4, Country(Some("four"))))
-            )
+            val locations = Locations(routingCountries = newRoutingCountries)
+
             locations.createDiff(
               locations.copy(routingCountries = routingCountries.dropRight(1)),
               baseFieldPointer,
               Some(1)
             ) must contain theSameElementsAs Seq(
-              constructAlteredField(s"${fieldPointer}.#2.code", Some("two"), Some("DIFF")),
+              constructAlteredField(s"${fieldPointer}.#2", Some(routingCountries(1).country), Some(newRoutingCountries(1).country)),
               constructAlteredField(s"${fieldPointer}.#4", None, Some(RoutingCountry(4, Country(Some("four")))))
             )
           }

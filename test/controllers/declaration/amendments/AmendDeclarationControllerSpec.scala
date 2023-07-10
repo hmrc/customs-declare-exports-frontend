@@ -32,12 +32,13 @@ import scala.concurrent.Future
 
 class AmendDeclarationControllerSpec extends ControllerWithoutFormSpec with OptionValues {
 
-  val mcc = stubMessagesControllerComponents()
-
-  val controller =
-    new AmendDeclarationController(mockAuthAction, mockVerifiedEmailAction, mcc, mockCustomsDeclareExportsConnector, mockDeclarationAmendmentsConfig)(
-      ec
-    )
+  val controller = new AmendDeclarationController(
+    mockAuthAction,
+    mockVerifiedEmailAction,
+    stubMessagesControllerComponents(),
+    mockCustomsDeclareExportsConnector,
+    mockDeclarationAmendmentsConfig
+  )(ec)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()

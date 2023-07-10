@@ -229,4 +229,12 @@ object DiffTools {
       case (None, _)                       => -1
       case (Some(current), Some(original)) => current.compare(original)
     }
+
+  def compareOptInt(orig: Option[Int], other: Option[Int]) =
+    (orig, other) match {
+      case (None, None)                    => 0
+      case (_, None)                       => 1
+      case (None, _)                       => -1
+      case (Some(current), Some(original)) => current.compare(original)
+    }
 }

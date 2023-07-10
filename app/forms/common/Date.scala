@@ -18,24 +18,27 @@ package forms.common
 
 import models.ExportsFieldPointer.ExportsFieldPointer
 import models.FieldMapping
+import play.api.data.{Form, Forms}
+import play.api.data.Forms.{number, optional}
+import play.api.libs.json.Json
+import services.{AlteredField, DiffTools, OriginalAndNewValues}
+import services.DiffTools.{compareOptInt, ExportsDeclarationDiff}
 
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-import play.api.data.Forms.{number, optional}
-import play.api.data.{Form, Forms}
-import play.api.libs.json.Json
-import services.DiffTools
-import services.DiffTools.{compareIntDifference, ExportsDeclarationDiff}
-
 import scala.util.Try
 
 case class Date(day: Option[Int], month: Option[Int], year: Option[Int]) extends DiffTools[Date] {
-  def createDiff(original: Date, pointerString: ExportsFieldPointer, sequenceId: Option[Int] = None): ExportsDeclarationDiff =
-    Seq(
-      compareIntDifference(original.day, day, pointerString),
-      compareIntDifference(original.month, month, pointerString),
-      compareIntDifference(original.year, year, pointerString)
-    ).flatten
+
+  // Special implementation to treat any single field difference as a difference for the whole date
+  def createDiff(original: Date, pointerString: ExportsFieldPointer, sequenceId: Option[Int] = None): ExportsDeclarationDiff = {
+    val differences = Seq(compareOptInt(original.day, day), compareOptInt(original.month, month), compareOptInt(original.year, year))
+
+    if (differences != Seq(0, 0, 0))
+      Seq(AlteredField(pointerString, OriginalAndNewValues(Some(original), Some(this))))
+    else
+      Seq()
+  }
 
   private val formatDisplay = DateTimeFormatter.ofPattern("dd/MM/yyyy")
 

@@ -27,6 +27,7 @@ import services.DiffTools.{combinePointers, ExportsDeclarationDiff}
 
 case class AdditionalInformationData(isRequired: Option[YesNoAnswer], items: Seq[AdditionalInformation])
     extends DiffTools[AdditionalInformationData] with IsoData[AdditionalInformation] {
+
   // isRequired field is not used to produce the WCO XML payload
   override val subPointer: ExportsFieldPointer = AdditionalInformation.pointer
   override val elements: Seq[AdditionalInformation] = items
@@ -36,6 +37,12 @@ case class AdditionalInformationData(isRequired: Option[YesNoAnswer], items: Seq
 }
 
 object AdditionalInformationData extends FieldMapping {
+
+  val pointer: ExportsFieldPointer = "additionalInformation"
+
+  val codePointerForAmend = s"item.$pointer.${AdditionalInformation.pointer}.${AdditionalInformation.codePointer}"
+  val descriptionPointerForAmend = s"item.$pointer.${AdditionalInformation.pointer}.${AdditionalInformation.descriptionPointer}"
+
   implicit val format = Json.format[AdditionalInformationData]
 
   def apply(items: Seq[AdditionalInformation]): AdditionalInformationData =
@@ -46,6 +53,4 @@ object AdditionalInformationData extends FieldMapping {
   val formId = "AdditionalInformationData"
 
   val maxNumberOfItems = 99
-
-  val pointer: ExportsFieldPointer = "additionalInformation"
 }

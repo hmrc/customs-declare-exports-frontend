@@ -148,7 +148,7 @@ class AmendmentOutcomeController @Inject() (
           declaration.additionalDeclarationType.fold[Either[String, Confirmation]] {
             Left(s"Declaration(${declaration.id}) without 'additionalDeclarationType' after the submission of an amendment??")
           } { additionalDeclarationType =>
-            val maybeLocationCode = declaration.locations.goodsLocation.map(_.code)
+            val maybeLocationCode = declaration.locations.goodsLocation.map(_.value)
             Right(Confirmation(request.email, additionalDeclarationType.toString, submission, maybeLocationCode))
           }
 

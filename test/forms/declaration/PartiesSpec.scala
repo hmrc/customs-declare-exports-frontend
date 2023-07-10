@@ -79,7 +79,7 @@ class PartiesSpec extends UnitSpec {
   }
 
   "EntityDetails.createDiff" should {
-    val baseFieldPointer = EntityDetails.pointer
+    val baseFieldPointer = "details"
 
     "produce the expected ExportsDeclarationDiff instance" when {
       "no differences exist between the two versions" in {
@@ -302,7 +302,7 @@ class PartiesSpec extends UnitSpec {
       }
 
       "the original version's eori field has a different value to this one" in {
-        val fieldPointer = s"${baseFieldPointer}.${EntityDetails.pointer}.${EntityDetails.eoriPointer}"
+        val fieldPointer = s"${baseFieldPointer}.${EntityDetails.eoriPointer}"
         val exporterDetails = ExporterDetails(details)
         val originalValue = details.copy(eori = Some(Eori("original")))
         exporterDetails.createDiff(exporterDetails.copy(details = originalValue), baseFieldPointer) mustBe Seq(
@@ -323,7 +323,7 @@ class PartiesSpec extends UnitSpec {
       }
 
       "the original version's details field has a different value to this one" in {
-        val fieldPointer = s"${baseFieldPointer}.${RepresentativeDetails.detailsPointer}"
+        val fieldPointer = s"${baseFieldPointer}"
         val representativeDetails = RepresentativeDetails(None, None, None)
         val originalValue = Some(details)
         representativeDetails.createDiff(representativeDetails.copy(details = originalValue), baseFieldPointer) mustBe Seq(

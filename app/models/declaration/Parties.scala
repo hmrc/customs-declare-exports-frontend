@@ -87,6 +87,9 @@ object Parties extends FieldMapping {
 
   val id = "Parties"
 
+  // prefix of the message keys used for the 'Amendment details' page
+  val partiesPrefix = "declaration.summary.parties"
+
   def apply(cacheData: ExportsDeclaration): Parties = Parties(
     exporterDetails = cacheData.parties.exporterDetails,
     consigneeDetails = cacheData.parties.consigneeDetails,

@@ -15,28 +15,42 @@
  */
 
 package forms.declaration
+
 import forms.DeclarationPage
-import models.{DeclarationMeta, FieldMapping}
+import forms.declaration.Seal.keyForAmend
+import models.AmendmentRow.{forAddedValue, forRemovedValue}
 import models.DeclarationMeta.sequenceIdPlaceholder
 import models.DeclarationType.DeclarationType
 import models.ExportsFieldPointer.ExportsFieldPointer
 import models.declaration.ExplicitlySequencedObject
 import models.viewmodels.TariffContentKey
-import play.api.data.{Form, Forms, Mapping}
+import models.{AmendmentOp, DeclarationMeta, FieldMapping}
 import play.api.data.Forms.text
+import play.api.data.{Form, Forms, Mapping}
+import play.api.i18n.Messages
 import play.api.libs.json.{Json, OFormat}
 import services.DiffTools
 import services.DiffTools.{combinePointers, compareStringDifference, ExportsDeclarationDiff}
 import utils.validators.forms.FieldValidator._
 
-case class Seal(sequenceId: Int = sequenceIdPlaceholder, id: String) extends DiffTools[Seal] with ExplicitlySequencedObject[Seal] {
-  override def updateSequenceId(sequenceId: Int): Seal = copy(sequenceId = sequenceId)
+case class Seal(sequenceId: Int = sequenceIdPlaceholder, id: String) extends DiffTools[Seal] with ExplicitlySequencedObject[Seal] with AmendmentOp {
 
   override def createDiff(original: Seal, pointerString: ExportsFieldPointer, sequenceId: Option[Int]): ExportsDeclarationDiff =
     Seq(compareStringDifference(original.id, id, combinePointers(pointerString, sequenceId))).flatten
+
+  override def updateSequenceId(sequenceId: Int): Seal = copy(sequenceId = sequenceId)
+
+  def valueAdded(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
+    forAddedValue(pointer, messages(keyForAmend), id)
+
+  def valueRemoved(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
+    forRemovedValue(pointer, messages(keyForAmend), id)
 }
 
 object Seal extends DeclarationPage with FieldMapping {
+
+  val keyForAmend = "declaration.summary.container.securitySeal"
+
   implicit val format: OFormat[Seal] = Json.format[Seal]
 
   val formId = "Seal"

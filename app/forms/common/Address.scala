@@ -17,8 +17,12 @@
 package forms.common
 
 import connectors.CodeListConnector
+import forms.common.Address.mappingsForAmendment
+import models.AmendmentRow.{forAddedValue, forRemovedValue, pointerToSelector}
 import models.ExportsFieldPointer.ExportsFieldPointer
-import models.FieldMapping
+import models.declaration.Parties
+import models.declaration.Parties.partiesPrefix
+import models.{AmendmentOp, ExportsDeclaration, FieldMapping}
 import play.api.data.Forms.text
 import play.api.data.{Form, Forms, Mapping}
 import play.api.i18n.Messages
@@ -34,7 +38,8 @@ case class Address(
   townOrCity: String, // alphanumeric length 1 - 35
   postCode: String, // alphanumeric length 1 - 9
   country: String // full country name, convert to 2 upper case alphabetic characters for backend
-) extends DiffTools[Address] {
+) extends DiffTools[Address] with AmendmentOp {
+
   override def createDiff(original: Address, pointerString: ExportsFieldPointer, sequenceId: Option[Int] = None): ExportsDeclarationDiff =
     Seq(
       compareStringDifference(original.fullName, fullName, combinePointers(pointerString, Address.fullNamePointer, sequenceId)),
@@ -43,17 +48,46 @@ case class Address(
       compareStringDifference(original.postCode, postCode, combinePointers(pointerString, Address.postCodePointer, sequenceId)),
       compareStringDifference(original.country, country, combinePointers(pointerString, Address.countryPointer, sequenceId))
     ).flatten
+
+  def valueAdded(pointer: ExportsFieldPointer)(implicit messages: Messages): String = {
+    val address = s"$fullName<br/>$addressLine<br/>$townOrCity<br/>$postCode<br/>$country"
+    forAddedValue(pointerToSelector(pointer, "address"), messages(mappingsForAmendment(pointer)), address)
+  }
+
+  def valueRemoved(pointer: ExportsFieldPointer)(implicit messages: Messages): String = {
+    val address = s"$fullName<br/>$addressLine<br/>$townOrCity<br/>$postCode<br/>$country"
+    forRemovedValue(pointerToSelector(pointer, "address"), messages(mappingsForAmendment(pointer)), address)
+  }
 }
 
 object Address extends FieldMapping {
+
   implicit val format = Json.format[Address]
 
   val pointer: ExportsFieldPointer = "address"
+
   val fullNamePointer: ExportsFieldPointer = "fullName"
   val addressLinePointer: ExportsFieldPointer = "addressLine"
   val townOrCityPointer: ExportsFieldPointer = "townOrCity"
   val postCodePointer: ExportsFieldPointer = "postCode"
   val countryPointer: ExportsFieldPointer = "country"
+
+  private lazy val parties = s"${ExportsDeclaration.pointer}.${Parties.pointer}"
+
+  lazy val mappingsForAmendment = Map(
+    s"${parties}.carrierDetails" -> s"${partiesPrefix}.carrier.address",
+    s"${parties}.carrierDetails.address" -> s"${partiesPrefix}.carrier.address",
+    s"${parties}.consigneeDetails" -> s"${partiesPrefix}.consignee.address",
+    s"${parties}.consigneeDetails.address" -> s"${partiesPrefix}.consignee.address",
+    s"${parties}.consignorDetails" -> s"${partiesPrefix}.consignor.address",
+    s"${parties}.consignorDetails.address" -> s"${partiesPrefix}.consignor.address",
+    s"${parties}.declarantDetails" -> s"${partiesPrefix}.declarant.address",
+    s"${parties}.declarantDetails.address" -> s"${partiesPrefix}.declarant.address",
+    s"${parties}.exporterDetails" -> s"${partiesPrefix}.exporter.address",
+    s"${parties}.exporterDetails.address" -> s"${partiesPrefix}.exporter.address",
+    s"${parties}.representativeDetails" -> s"${partiesPrefix}.representative.address",
+    s"${parties}.representativeDetails.address" -> s"${partiesPrefix}.representative.address"
+  )
 
   def mapping(implicit messages: Messages, codeListConnector: CodeListConnector): Mapping[Address] =
     Forms.mapping(

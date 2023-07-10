@@ -17,25 +17,38 @@
 package forms.declaration
 
 import forms.DeclarationPage
-import forms.declaration.AdditionalInformation.{codePointer, descriptionPointer}
+import forms.declaration.AdditionalInformation.{codePointer, descriptionPointer, keyForCode, keyForDescription}
+import models.AmendmentRow.{forAddedValue, forRemovedValue, pointerToSelector}
 import models.viewmodels.TariffContentKey
 import models.DeclarationType.DeclarationType
 import models.ExportsFieldPointer.ExportsFieldPointer
-import models.FieldMapping
+import models.{AmendmentOp, FieldMapping}
+import models.declaration.ExportItem.itemsPrefix
 import models.declaration.ImplicitlySequencedObject
 import play.api.data.{Form, Forms}
 import play.api.data.Forms._
+import play.api.i18n.Messages
 import play.api.libs.json.Json
 import services.DiffTools
 import services.DiffTools.{combinePointers, compareStringDifference, ExportsDeclarationDiff}
 import utils.validators.forms.FieldValidator._
 
-case class AdditionalInformation(code: String, description: String) extends DiffTools[AdditionalInformation] with ImplicitlySequencedObject {
+case class AdditionalInformation(code: String, description: String)
+    extends DiffTools[AdditionalInformation] with ImplicitlySequencedObject with AmendmentOp {
+
   def createDiff(original: AdditionalInformation, pointerString: ExportsFieldPointer, sequenceId: Option[Int] = None): ExportsDeclarationDiff =
     Seq(
       compareStringDifference(original.code, code, combinePointers(pointerString, codePointer, sequenceId)),
       compareStringDifference(original.description, description, combinePointers(pointerString, descriptionPointer, sequenceId))
     ).flatten
+
+  def valueAdded(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
+    forAddedValue(pointerToSelector(pointer, codePointer), messages(keyForCode), code) +
+      forAddedValue(pointerToSelector(pointer, descriptionPointer), messages(keyForDescription), description)
+
+  def valueRemoved(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
+    forRemovedValue(pointerToSelector(pointer, codePointer), messages(keyForCode), code) +
+      forRemovedValue(pointerToSelector(pointer, descriptionPointer), messages(keyForDescription), description)
 }
 
 object AdditionalInformation extends DeclarationPage with FieldMapping {
@@ -43,6 +56,9 @@ object AdditionalInformation extends DeclarationPage with FieldMapping {
   val pointer: ExportsFieldPointer = "items"
   val codePointer: ExportsFieldPointer = "code"
   val descriptionPointer: ExportsFieldPointer = "description"
+
+  lazy val keyForCode = s"$itemsPrefix.additionalInformation.code"
+  lazy val keyForDescription = s"$itemsPrefix.additionalInformation.information"
 
   implicit val format = Json.format[AdditionalInformation]
 

@@ -16,17 +16,26 @@
 
 package forms.declaration.additionaldocuments
 
-import forms.declaration.additionaldocuments.DocumentWriteOff.{documentQuantityPointer, measurementUnitPointer}
+import forms.declaration.additionaldocuments.DocumentWriteOff.{
+  documentQuantityPointer,
+  keyForDocumentQuantity,
+  keyForMeasurementUnit,
+  measurementUnitPointer
+}
+import models.AmendmentRow.{forAddedValue, forRemovedValue, pointerToSelector}
+import models.declaration.ExportItem.itemsPrefix
 import models.ExportsFieldPointer.ExportsFieldPointer
-import models.FieldMapping
-import play.api.data.{Form, FormError, Forms}
+import models.{AmendmentOp, FieldMapping}
 import play.api.data.Forms.{optional, text}
+import play.api.data.{Form, FormError, Forms}
+import play.api.i18n.Messages
 import play.api.libs.json.Json
 import services.DiffTools
 import services.DiffTools.{combinePointers, compareBigDecimalDifference, compareStringDifference, ExportsDeclarationDiff}
 import utils.validators.forms.FieldValidator._
 
-case class DocumentWriteOff(measurementUnit: Option[String], documentQuantity: Option[BigDecimal]) extends DiffTools[DocumentWriteOff] {
+case class DocumentWriteOff(measurementUnit: Option[String], documentQuantity: Option[BigDecimal])
+    extends DiffTools[DocumentWriteOff] with AmendmentOp {
   def createDiff(original: DocumentWriteOff, pointerString: ExportsFieldPointer, sequenceId: Option[Int] = None): ExportsDeclarationDiff =
     Seq(
       compareStringDifference(original.measurementUnit, measurementUnit, combinePointers(pointerString, measurementUnitPointer, sequenceId)),
@@ -34,6 +43,18 @@ case class DocumentWriteOff(measurementUnit: Option[String], documentQuantity: O
     ).flatten
 
   def measurementUnitDisplay: String = measurementUnit.map(_.replace("#", " ")).getOrElse("")
+
+  def valueAdded(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
+    measurementUnit.fold("")(forAddedValue(pointerToSelector(pointer, measurementUnitPointer), messages(keyForMeasurementUnit), _)) +
+      documentQuantity.fold("")(qty =>
+        forAddedValue(pointerToSelector(pointer, documentQuantityPointer), messages(keyForDocumentQuantity), qty.toString)
+      )
+
+  def valueRemoved(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
+    measurementUnit.fold("")(forRemovedValue(pointerToSelector(pointer, measurementUnitPointer), messages(keyForMeasurementUnit), _)) +
+      documentQuantity.fold("")(qty =>
+        forRemovedValue(pointerToSelector(pointer, documentQuantityPointer), messages(keyForDocumentQuantity), qty.toString)
+      )
 }
 
 object DocumentWriteOff extends FieldMapping {
@@ -42,7 +63,10 @@ object DocumentWriteOff extends FieldMapping {
   val measurementUnitPointer: ExportsFieldPointer = "measurementUnit"
   val documentQuantityPointer: ExportsFieldPointer = "documentQuantity"
 
-  def convert(measurementUnit: Option[String], documentQuantity: Option[String]): DocumentWriteOff =
+  lazy val keyForMeasurementUnit = s"$itemsPrefix.additionalDocuments.measurementUnit"
+  lazy val keyForDocumentQuantity = s"$itemsPrefix.additionalDocuments.measurementUnitQuantity"
+
+  private def convert(measurementUnit: Option[String], documentQuantity: Option[String]): DocumentWriteOff =
     new DocumentWriteOff(measurementUnit, documentQuantity.map(BigDecimal(_)))
 
   implicit val format = Json.format[DocumentWriteOff]
@@ -93,12 +117,12 @@ object DocumentWriteOff extends FieldMapping {
 
   def globalErrors(writeOff: DocumentWriteOff): Seq[FormError] = {
 
-    def missingUnits =
+    def missingUnits: Seq[FormError] =
       if ((writeOff.measurementUnit.isEmpty && writeOff.documentQuantity.isDefined) || writeOff.measurementUnit.exists(_.length == qualifierLength))
         Seq(FormError(s"$documentWriteOffKey.$measurementUnitKey", "declaration.additionalDocument.measurementUnit.error"))
       else Seq.empty
 
-    def missingQuantity =
+    def missingQuantity: Seq[FormError] =
       if (writeOff.measurementUnit.isDefined && writeOff.documentQuantity.isEmpty)
         Seq(FormError(s"$documentWriteOffKey.$documentQuantityKey", "declaration.additionalDocument.quantity.error"))
       else Seq.empty

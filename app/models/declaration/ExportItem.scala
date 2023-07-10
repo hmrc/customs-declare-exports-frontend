@@ -17,13 +17,17 @@
 package models.declaration
 
 import forms.DeclarationPage
+import forms.common.YesNoAnswer.valueForYesNo
 import forms.declaration.FiscalInformation.AllowedFiscalInformationAnswers.yes
 import forms.declaration._
+import models.AmendmentRow.{forAddedValue, forRemovedValue}
 import models.DeclarationMeta.sequenceIdPlaceholder
 import models.DeclarationType.DeclarationType
 import models.ExportsFieldPointer.ExportsFieldPointer
+import models.declaration.ExportItem.keyForIsLicenceRequired
 import models.viewmodels.TariffContentKey
-import models.{DeclarationType, FieldMapping}
+import models.{AmendmentOp, DeclarationType, FieldMapping}
+import play.api.i18n.Messages
 import play.api.libs.json.{Json, OFormat}
 import services.DiffTools
 import services.DiffTools._
@@ -46,7 +50,7 @@ case class ExportItem(
   additionalInformation: Option[AdditionalInformationData] = None,
   additionalDocuments: Option[AdditionalDocuments] = None,
   isLicenceRequired: Option[Boolean] = None
-) extends DiffTools[ExportItem] with ExplicitlySequencedObject[ExportItem] {
+) extends DiffTools[ExportItem] with ExplicitlySequencedObject[ExportItem] with AmendmentOp {
 
   // id and fiscalInformation fields are not used to create WCO XML
   override def createDiff(original: ExportItem, pointerString: ExportsFieldPointer, maybeSequenceId: Option[Int] = None): ExportsDeclarationDiff =
@@ -121,6 +125,62 @@ case class ExportItem(
 
   def requiresWarehouseId: Boolean =
     procedureCodes.flatMap(_.procedureCode).exists(ProcedureCodesData.isWarehouseRequiredCode)
+
+  def valueAdded(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
+    procedureCodes.fold("")(_.valueAdded(s"$pointer.${ProcedureCodesData.pointer}")) +
+      additionalFiscalReferencesData.fold("")(_.references.zipWithIndex.map { case (reference, index) =>
+        reference.valueAdded(s"$pointer.${AdditionalFiscalReferencesData.pointer}.${index + 1}")
+      }.mkString) +
+      statisticalValue.fold("")(_.valueAdded(s"$pointer.${StatisticalValue.pointer}")) +
+      commodityDetails.fold("")(_.valueAdded(s"$pointer.${CommodityDetails.pointer}")) +
+      dangerousGoodsCode.fold("")(_.valueAdded(s"$pointer.${UNDangerousGoodsCode.pointer}")) +
+      cusCode.fold("")(_.valueAdded(s"$pointer.${CusCode.pointer}")) +
+      taricCodes.fold("")(_.zipWithIndex.map { case (taricCode, index) =>
+        taricCode.valueAdded(s"$pointer.${TaricCode.pointer}.${index + 1}")
+      }.mkString) +
+      nactCodes.fold("")(_.zipWithIndex.map { case (nactCode, index) =>
+        nactCode.valueAdded(s"$pointer.${NactCode.pointer}.${index + 1}")
+      }.mkString) +
+      nactExemptionCode.fold("")(_.valueAdded(s"$pointer.${NactCode.exemptionPointer}")) +
+      packageInformation.fold("")(_.zipWithIndex.map { case (packageInfo, index) =>
+        packageInfo.valueAdded(s"$pointer.${PackageInformation.pointer}.${index + 1}")
+      }.mkString) +
+      commodityMeasure.fold("")(_.valueAdded(s"$pointer.${CommodityMeasure.pointer}")) +
+      additionalInformation.fold("")(_.items.zipWithIndex.map { case (additionalInfo, index) =>
+        additionalInfo.valueAdded(s"$pointer.${AdditionalInformationData.pointer}.${index + 1}")
+      }.mkString) +
+      additionalDocuments.fold("")(_.documents.zipWithIndex.map { case (document, index) =>
+        document.valueAdded(s"$pointer.${AdditionalDocuments.pointer}.${index + 1}")
+      }.mkString) +
+      isLicenceRequired.fold("")(ilr => forAddedValue(s"$pointer.licences", messages(keyForIsLicenceRequired), valueForYesNo(ilr)))
+
+  def valueRemoved(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
+    procedureCodes.fold("")(_.valueRemoved(s"$pointer.${ProcedureCodesData.pointer}")) +
+      additionalFiscalReferencesData.fold("")(_.references.zipWithIndex.map { case (reference, index) =>
+        reference.valueRemoved(s"$pointer.${AdditionalFiscalReferencesData.pointer}.${index + 1}")
+      }.mkString) +
+      statisticalValue.fold("")(_.valueRemoved(s"$pointer.${StatisticalValue.pointer}")) +
+      commodityDetails.fold("")(_.valueRemoved(s"$pointer.${CommodityDetails.pointer}")) +
+      dangerousGoodsCode.fold("")(_.valueRemoved(s"$pointer.${UNDangerousGoodsCode.pointer}")) +
+      cusCode.fold("")(_.valueRemoved(s"$pointer.${CusCode.pointer}")) +
+      taricCodes.fold("")(_.zipWithIndex.map { case (taricCode, index) =>
+        taricCode.valueRemoved(s"$pointer.${TaricCode.pointer}.${index + 1}")
+      }.mkString) +
+      nactCodes.fold("")(_.zipWithIndex.map { case (nactCode, index) =>
+        nactCode.valueRemoved(s"$pointer.${NactCode.pointer}.${index + 1}")
+      }.mkString) +
+      nactExemptionCode.fold("")(_.valueRemoved(s"$pointer.${NactCode.exemptionPointer}")) +
+      packageInformation.fold("")(_.zipWithIndex.map { case (packageInfo, index) =>
+        packageInfo.valueRemoved(s"$pointer.${PackageInformation.pointer}.${index + 1}")
+      }.mkString) +
+      commodityMeasure.fold("")(_.valueRemoved(s"$pointer.${CommodityMeasure.pointer}")) +
+      additionalInformation.fold("")(_.items.zipWithIndex.map { case (additionalInfo, index) =>
+        additionalInfo.valueRemoved(s"$pointer.${AdditionalInformationData.pointer}.${index + 1}")
+      }.mkString) +
+      additionalDocuments.fold("")(_.documents.zipWithIndex.map { case (document, index) =>
+        document.valueRemoved(s"$pointer.${AdditionalDocuments.pointer}.${index + 1}")
+      }.mkString) +
+      isLicenceRequired.fold("")(ilr => forRemovedValue(s"$pointer.licences", messages(keyForIsLicenceRequired), valueForYesNo(ilr)))
 }
 
 object ExportItem extends DeclarationPage with FieldMapping {
@@ -128,6 +188,11 @@ object ExportItem extends DeclarationPage with FieldMapping {
 
   val pointer: ExportsFieldPointer = "items"
   val sequenceIdPointer: ExportsFieldPointer = "sequenceId"
+
+  // prefix of the message keys used for the 'Amendment details' page
+  val itemsPrefix = "declaration.summary.items.item"
+
+  private lazy val keyForIsLicenceRequired = s"${itemsPrefix}.licences"
 
   def containsAnswers(item: ExportItem): Boolean = item != ExportItem(id = item.id, sequenceId = item.sequenceId)
 

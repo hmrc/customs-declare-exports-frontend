@@ -20,9 +20,12 @@ import connectors.CodeListConnector
 import forms.DeclarationPage
 import forms.MappingHelper.requiredRadioWithArgs
 import forms.common.YesNoAnswer.YesNoAnswers.{no, yes}
+import forms.declaration.TransportCountry.keyForAmend
+import models.AmendmentRow.{forAddedValue, forAmendedValue, forRemovedValue}
 import models.DeclarationType.DeclarationType
+import models.ExportsFieldPointer.ExportsFieldPointer
 import models.viewmodels.TariffContentKey
-import models.FieldMapping
+import models.{Amendment, FieldMapping}
 import play.api.data.{Form, Forms, Mapping}
 import play.api.data.Forms.text
 import play.api.data.validation.{Constraint, Invalid, Valid, ValidationError}
@@ -32,7 +35,8 @@ import services.Countries.isValidCountryName
 import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfEqual
 import utils.validators.forms.FieldValidator._
 
-case class TransportCountry(countryName: Option[String]) extends Ordered[TransportCountry] {
+case class TransportCountry(countryName: Option[String]) extends Ordered[TransportCountry] with Amendment {
+
   override def compare(that: TransportCountry): Int =
     (countryName, that.countryName) match {
       case (None, None)                    => 0
@@ -40,12 +44,25 @@ case class TransportCountry(countryName: Option[String]) extends Ordered[Transpo
       case (None, _)                       => -1
       case (Some(current), Some(original)) => current.compare(original)
     }
+
+  def value: String = countryName.getOrElse("")
+
+  def valueAdded(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
+    countryName.fold("")(forAddedValue(pointer, messages(keyForAmend), _))
+
+  def valueAmended(newValue: Amendment, pointer: ExportsFieldPointer)(implicit messages: Messages): String =
+    forAmendedValue(pointer, messages(keyForAmend), value, newValue.value)
+
+  def valueRemoved(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
+    countryName.fold("")(forRemovedValue(pointer, messages(keyForAmend), _))
 }
 
 object TransportCountry extends DeclarationPage with FieldMapping {
   implicit val format: OFormat[TransportCountry] = Json.format[TransportCountry]
 
   val pointer: String = "meansOfTransportCrossingTheBorderNationality"
+
+  private val keyForAmend = "declaration.summary.transport.registrationCountry"
 
   val transportCountry = "transportCountry"
   val hasTransportCountry = "hasTransportCountry"
