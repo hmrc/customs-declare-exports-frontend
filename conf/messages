@@ -1712,12 +1712,11 @@ declaration.nationalAdditionalCode.error.duplicate = National additional code al
 declaration.nationalAdditionalCode.table.header = National additional code
 declaration.nationalAdditionalCode.remove.hint = Remove national additional code {0}.
 
-declaration.statisticalValue.title = This item's statistical value in pounds
+declaration.statisticalValue.title = The statistical value of this item in pounds
 declaration.statisticalValue.label = Statistical value
-declaration.statisticalValue.hint = If a value is needed you only need to confirm the statistical value for the UK portion of the journey. The statistical value is defined as the value of the item plus expenses in GBP. Add together:
+declaration.statisticalValue.hint = If a value is needed, you only need to confirm the statistical value for the UK portion of the journey. The statistical value is defined as the value of the item plus expenses in GBP. Add together:
 declaration.statisticalValue.hint.bullet.1 = the amount paid or, if there is no sale agreed, the amount the goods could reasonably be sold for
 declaration.statisticalValue.hint.bullet.2 = the amount for packing, loading, insurance and transport, calculated or paid, for the UK portion of the journey
-
 declaration.statisticalValue.inset.text.1 = If you have paid for transport or insurance for the whole journey, calculate the percentage of the total distance that was within the UK.
 declaration.statisticalValue.inset.text.2 = If any of the invoices are in another currency, use the {0} for the month when the declaration will be lodged.
 declaration.statisticalValue.inset.text.2.link = HMRC exchange rate (opens in new tab)
