@@ -608,9 +608,9 @@ tariff.declaration.item.zeroRatedForVat.common.text = Bydd y cofnod hwn yn anfon
 
 tariff.declaration.item.zeroRatedForVat.common.linkText.0 = elfen ddata 6/17 - Cod Ychwanegol Cenedlaethol (yn agor tab newydd)
 
-tariff.declaration.item.statisticalValue.common.text = I gael manylion llawn am sut i gyfrifo’r gwerth hwn ewch i {0}.
+tariff.declaration.item.statisticalValue.1.common.text = I gael manylion llawn am sut i gyfrifo’r gwerth hwn ewch i {0}.
 
-tariff.declaration.item.statisticalValue.common.linkText.0 = elfen ddata 8/6 - Gwerth Ystadegol (yn agor tab newydd)
+tariff.declaration.item.statisticalValue.1.common.linkText.0 = elfen ddata 8/6 - Gwerth Ystadegol (yn agor tab newydd)
 
 tariff.declaration.item.packageInformation.1.common.text = I gael manylion am y math o becyn, ewch i<br>{0}.
 

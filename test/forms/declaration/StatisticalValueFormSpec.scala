@@ -19,6 +19,7 @@ package forms.declaration
 import forms.common.DeclarationPageBaseSpec
 import forms.declaration.StatisticalValue._
 import forms.declaration.StatisticalValueFormSpec.correctStatisticalValueMap
+import models.viewmodels.TariffContentKey
 import play.api.data.FormError
 
 class StatisticalValueFormSpec extends DeclarationPageBaseSpec {
@@ -42,6 +43,9 @@ class StatisticalValueFormSpec extends DeclarationPageBaseSpec {
       }
     }
   }
+
+  override def getCommonTariffKeys(messageKey: String): Seq[TariffContentKey] =
+    Seq(TariffContentKey(s"${messageKey}.1.common"), TariffContentKey(s"${messageKey}.2.common"))
 
   "StatisticalValue" when {
     testTariffContentKeysNoSpecialisation(StatisticalValue, "tariff.declaration.item.statisticalValue")
