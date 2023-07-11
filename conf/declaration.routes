@@ -542,7 +542,7 @@ GET         /submit-your-amendment               controllers.declaration.Submiss
 
 POST        /submit-your-amendment               controllers.declaration.SubmissionController.submitAmendment(isCancellation: Boolean)
 
-GET         /cancel-amendment                    controllers.declaration.SubmissionController.cancelAmendment(declarationId: Option[String])
+GET         /cancel-amendment                    controllers.declaration.SubmissionController.cancelAmendment()
 
 # Amendment declaration
 

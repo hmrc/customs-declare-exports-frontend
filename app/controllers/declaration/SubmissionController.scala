@@ -23,9 +23,11 @@ import controllers.declaration.amendments.routes.AmendmentOutcomeController
 import controllers.declaration.routes.ConfirmationController
 import controllers.helpers.ErrorFixModeHelper.inErrorFixMode
 import controllers.routes.RootController
+import connectors.CustomsDeclareExportsConnector
 import forms.declaration.LegalDeclaration
 import forms.declaration.LegalDeclaration.{amendReasonKey, form}
 import handlers.ErrorHandler
+import models.declaration.submissions.EnhancedStatus.ERRORS
 import models.declaration.submissions.Submission
 import models.requests.JourneyRequest
 import models.requests.SessionHelper._
@@ -47,6 +49,7 @@ class SubmissionController @Inject() (
   journeyType: JourneyAction,
   errorHandler: ErrorHandler,
   mcc: MessagesControllerComponents,
+  customsDeclareExportsConnector: CustomsDeclareExportsConnector,
   override val exportsCacheService: ExportsCacheService,
   submissionService: SubmissionService,
   legal_declaration: legal_declaration,
@@ -78,16 +81,24 @@ class SubmissionController @Inject() (
       )
   }
 
-  def cancelAmendment(maybeDeclarationId: Option[String]): Action[AnyContent] = (authenticate andThen verifyEmail) { implicit request =>
-    maybeDeclarationId match {
-      case Some(declarationId) if declarationAmendmentsConfig.isEnabled && declarationId.length > 0 =>
-        Redirect(routes.SubmissionController.displayLegalDeclarationPage(true, true))
-          .addingToSession((declarationUuid -> declarationId))
-
+  def cancelAmendment(): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
+    getValue(submissionUuid) match {
+      case Some(submissionId) =>
+        customsDeclareExportsConnector.findSubmission(submissionId) flatMap { maybeSubmission =>
+          (for {
+            submission <- maybeSubmission
+            latestDecId <- submission.latestDecId
+          } yield customsDeclareExportsConnector.findOrCreateDraftForAmendment(latestDecId, ERRORS) map { id =>
+            Redirect(routes.SubmissionController.displayLegalDeclarationPage(true, true))
+              .addingToSession((declarationUuid, id))
+          }) getOrElse {
+            Future.successful(errorHandler.internalServerError("latestDecId does not exist in submission for amendment cancellation"))
+          }
+        }
       case _ =>
-        val msg = "No 'declarationId' from TimelineEvents on cancellation of an amendment"
-        errorHandler.internalServerError(msg)
+        Future.successful(errorHandler.internalServerError("No 'submissionUuid' from in session data for an amendment cancellation"))
     }
+
   }
 
   def submitAmendment(isCancellation: Boolean): Action[AnyContent] = actions.async { implicit request =>
