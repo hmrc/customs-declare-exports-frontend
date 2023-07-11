@@ -52,8 +52,8 @@ class StatisticalValueViewSpec extends PageWithButtonsSpec with Injector {
       messages must haveTranslationFor("declaration.statisticalValue.hint.bullet.2")
       messages must haveTranslationFor("declaration.statisticalValue.inset.text.1")
       messages must haveTranslationFor("declaration.statisticalValue.inset.text.2")
-      messages must haveTranslationFor("tariff.declaration.item.statisticalValue.common.text")
-      messages must haveTranslationFor("tariff.declaration.item.statisticalValue.common.linkText.0")
+      messages must haveTranslationFor("tariff.declaration.item.statisticalValue.1.common.text")
+      messages must haveTranslationFor("tariff.declaration.item.statisticalValue.1.common.linkText.0")
     }
 
     "display same page title as header" in {
