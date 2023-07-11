@@ -49,8 +49,8 @@ class InvoiceAndExchangeRateViewSpec extends PageWithButtonsSpec with Injector {
       messages must haveTranslationFor("declaration.invoice.details.title")
       messages must haveTranslationFor("declaration.invoice.details.body.1")
       messages must haveTranslationFor("declaration.invoice.details.body.2")
+      messages must haveTranslationFor("declaration.invoice.details.body.3")
       messages must haveTranslationFor("declaration.totalAmountInvoiced")
-      messages must haveTranslationFor("declaration.totalAmountInvoiced.hint")
       messages must haveTranslationFor("declaration.totalAmountInvoiced.error")
       messages must haveTranslationFor("declaration.exchangeRate")
       messages must haveTranslationFor("declaration.exchangeRate.error")
@@ -82,7 +82,6 @@ class InvoiceAndExchangeRateViewSpec extends PageWithButtonsSpec with Injector {
 
       "display empty input with label for Total Amount Invoiced" in {
         view.getElementsByAttributeValue("for", "totalAmountInvoiced") must containMessageForElements("declaration.totalAmountInvoiced")
-        view.getElementById("totalAmountInvoiced-hint") must containMessage("declaration.totalAmountInvoiced.hint")
         view.getElementById("totalAmountInvoiced").attr("value") mustBe empty
       }
 
