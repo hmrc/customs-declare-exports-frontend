@@ -139,3 +139,11 @@ Alignment for table cells with numeric values
   border: solid #003078;
   border-width: 0 0 1px;
 }
+
+.currency-dropdown>div:nth-child(1) {
+      position: relative;
+      top: -36px;
+   }
+ .currency-dropdown>div:nth-child(1) input {
+      height: 38px;
+   }
