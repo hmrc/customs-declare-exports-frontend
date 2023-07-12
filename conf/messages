@@ -1596,6 +1596,7 @@ declaration.totalAmountInvoicedCurrency.exchangeRatePresent.error.invalid = You 
 declaration.totalAmountInvoiced = Total amount invoiced
 declaration.totalAmountInvoiced.amount.label = Total amount invoiced
 declaration.totalAmountInvoiced.currency.label = Currency code
+declaration.totalAmountInvoiced.currency.select = Select currency
 declaration.exchangeRate.error = Rate of exchange must contain only numbers, commas and a single full stop
 declaration.exchangeRate.noFixedRate.error = Convert the amount to GBP using the contractually agreed rate of exchange
 declaration.exchangeRate.required.error = Select ‘Yes’ if the invoice or contract has an agreed rate of exchange

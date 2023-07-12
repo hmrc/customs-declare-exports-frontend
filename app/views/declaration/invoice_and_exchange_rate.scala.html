@@ -19,7 +19,8 @@
 @import forms.declaration.InvoiceAndExchangeRate
 @import forms.declaration.InvoiceAndExchangeRate._
 @import services.view.AutoCompleteItem
-@import views.html.components.fields.field_accessible_autocomplete
+@import views.html.components.fields.field_accessible_autocomplete_with_header
+@import views.html.components.inputs.input_accessible_autocomplete
 @import services.InvoiceAndExchangeRateService
 @import models.requests.JourneyRequest
 @import play.twirl.api.HtmlFormat
@@ -37,6 +38,7 @@
     govukRadios : GovukRadios,
     pageTitle: pageTitle,
     heading: heading,
+    label: label,
     exportsInputText: exportsInputText,
     errorSummary: errorSummary,
     sectionHeader: sectionHeader,
@@ -79,16 +81,21 @@
         </p>
     }
 
-    <div class="govuk-date-input currency-dropdown">
+    <div class="currency-dropdown">
         <div class="govuk-date-input__item">
-            @field_accessible_autocomplete(
-                field = form("totalAmountInvoicedCurrency"),
-                label = messages("declaration.totalAmountInvoiced.currency.label"),
-                labelClass = None,
-                hintParagraphs = List.empty,
-                emptySelectValue = "",
-                items = AutoCompleteItem.fromCurrencyCode(invoiceAndExchangeRateService.all),
+
+            @label(
+                "declaration.totalAmountInvoiced.currency.label",
+                "totalAmountInvoicedCurrency",
+                "govuk-label"
             )
+
+            @input_accessible_autocomplete(
+                field = form("totalAmountInvoicedCurrency"),
+                emptySelectValue = messages("declaration.totalAmountInvoiced.currency.select"),
+                items = AutoCompleteItem.fromCurrencyCode(invoiceAndExchangeRateService.all)
+            )
+
         </div>
         <div class="govuk-date-input__item">
         @input(

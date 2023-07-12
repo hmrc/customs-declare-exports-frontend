@@ -217,6 +217,10 @@ class AppConfigSpec extends UnitWithMocksSpec {
       validAppConfig.countryCodes must be("/code-lists/countryCodes.json")
     }
 
+    "have currencyCodes file path" in {
+      validAppConfig.currencyCodesFile must be("/code-lists/currencyCodes.json")
+    }
+
     "have countryCodeToAliasesLink file path" in {
       validAppConfig.countryCodeToAliasesLinkFile must be("countryCodeToAliasesLink")
     }
@@ -501,6 +505,7 @@ object AppConfigSpec {
       |files.codelists.additionalDocumentCodeLink="additionalDocumentCodesLink"
       |files.codelists.dmsErrorCodes="/code-lists/dmsErrorCodes.json"
       |files.codelists.countryCodes="/code-lists/countryCodes.json"
+      |files.codelists.currencyCodes="/code-lists/currencyCodes.json"
       |files.codelists.countryCodeToAliasesLink="countryCodeToAliasesLink"
       |files.codelists.countryCodeToShortNameLink="countryCodeToShortNameLink"
       |files.codelists.goodsLocationCodeToLocationTypeLink="goodsLocationCodeToLocationTypeLink"

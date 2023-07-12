@@ -144,7 +144,7 @@ class FileBasedCodeListConnector @Inject() (
   )
   private val currencyCodesByLang = loadCommonCodesAsOrderedMap(
     appConfig.currencyCodesFile,
-    (codeItem: CodeItem, locale: Locale) => CurrencyCode(codeItem.getDescriptionByLocale(locale), codeItem.code)
+    (codeItem: CodeItem, locale: Locale) => CurrencyCode(codeItem.code, codeItem.getDescriptionByLocale(locale))
   )
 
   def getAdditionalProcedureCodesMap(locale: Locale): ListMap[String, AdditionalProcedureCode] =
