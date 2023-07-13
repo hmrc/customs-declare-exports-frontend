@@ -18,15 +18,15 @@ package services.audit
 
 import com.google.inject.Inject
 import config.AppConfig
-import models.AuthKey.enrolment
 import models.{CancelDeclaration, ExportsDeclaration}
+import models.AuthKey.enrolment
 import play.api.Logging
 import play.api.libs.json.{JsObject, JsValue, Json}
 import services.audit.AuditTypes.Audit
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.AuditExtensions
-import uk.gov.hmrc.play.audit.http.connector.AuditResult.{Disabled, Failure, Success}
 import uk.gov.hmrc.play.audit.http.connector.{AuditConnector, AuditResult}
+import uk.gov.hmrc.play.audit.http.connector.AuditResult.{Disabled, Failure, Success}
 import uk.gov.hmrc.play.audit.model.{DataEvent, ExtendedDataEvent}
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -45,6 +45,20 @@ class AuditService @Inject() (connector: AuditConnector, appConfig: AppConfig)(i
       tags = getAuditTags(s"${audit.toString}-request", path = s"${audit.toString}"),
       detail = AuditExtensions.auditHeaderCarrier(hc).toAuditDetails() ++ auditData
     )
+
+  def auditAmendmentSent(audit: Audit, auditData: JsObject)(implicit hc: HeaderCarrier) = {
+    val hcAuditDetails = Json.toJson(AuditExtensions.auditHeaderCarrier(hc).toAuditDetails()).as[JsObject]
+    val collatedDetails = hcAuditDetails.deepMerge(auditData)
+
+    val extendedEvent = ExtendedDataEvent(
+      auditSource = appConfig.appName,
+      auditType = audit.toString,
+      tags = getAuditTags(s"${audit.toString}-request", path = s"${audit.toString}"),
+      detail = collatedDetails
+    )
+
+    connector.sendExtendedEvent(extendedEvent).map(handleResponse(_, audit.toString))
+  }
 
   def auditAllPagesUserInput(auditType: AuditTypes.Audit, declaration: ExportsDeclaration)(implicit hc: HeaderCarrier): Future[AuditResult] = {
     val extendedEvent = ExtendedDataEvent(
@@ -118,6 +132,6 @@ object AuditTypes extends Enumeration {
 object EventData extends Enumeration {
   type Data = Value
   val eori, lrn, mrn, ducr, decType, changeReason, changeDescription, fullName, jobRole, email, confirmed, submissionResult, Success, Failure, url,
-    AmendedFields =
+    preAmendmentDeclaration, postAmendmentDeclaration =
     Value
 }

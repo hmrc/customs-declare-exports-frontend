@@ -25,7 +25,7 @@ import metrics.{ExportsMetrics, MetricIdentifiers}
 import models.declaration.submissions.{Action, Submission, SubmissionAmendment}
 import models.DeclarationType
 import models.declaration.DeclarationStatus
-import org.mockito.ArgumentMatchers.{any, eq => equalTo}
+import org.mockito.ArgumentMatchers.{any, eq => equalTo, notNull}
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.OptionValues
 import org.scalatest.concurrent.ScalaFutures
@@ -51,7 +51,6 @@ class SubmissionServiceSpec
       EventData.eori.toString -> "eori",
       EventData.lrn.toString -> "123LRN",
       EventData.ducr.toString -> "ducr",
-      EventData.AmendedFields.toString -> diff.fold("n/a")(DiffTools.toStringForAudit),
       EventData.decType.toString -> "STANDARD",
       EventData.fullName.toString -> legal.fullName,
       EventData.jobRole.toString -> legal.jobRole,
@@ -157,8 +156,6 @@ class SubmissionServiceSpec
         withTotalNumberOfItems(Some("654321"), Some("94.1"), Some("GBP"), Some("no"))
       )
 
-      val diff = amendedDecl.createDiff(parentDeclaration)
-
       val expectedActionId = "actionId"
       when(connector.submitAmendment(any())(any(), any())).thenReturn(Future.successful(expectedActionId))
 
@@ -174,7 +171,7 @@ class SubmissionServiceSpec
       val expectedSubmissionAmendment = SubmissionAmendment(submissionId, "id2", expectedFieldPointers)
       verify(connector).submitAmendment(equalTo(expectedSubmissionAmendment))(any(), any())
       verify(auditService).auditAllPagesUserInput(equalTo(AuditTypes.AmendmentPayload), equalTo(amendedDecl))(any())
-      verify(auditService).audit(equalTo(AuditTypes.Amendment), equalTo[Map[String, String]](auditData(Some(diff))))(any)
+      verify(auditService).auditAmendmentSent(equalTo(AuditTypes.Amendment), notNull())(any)
 
       registry.getTimers.get(exportMetrics.timerName(metric)).getCount mustBe >(timerBefore)
       registry.getCounters.get(exportMetrics.counterName(metric)).getCount mustBe >(counterBefore)

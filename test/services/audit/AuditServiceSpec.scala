@@ -27,7 +27,7 @@ import org.mockito.Mockito.{reset, verify, when}
 import org.mockito.stubbing.OngoingStubbing
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.{Assertion, BeforeAndAfterEach}
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.{JsObject, JsString, Json}
 import services.cache.ExportsDeclarationBuilder
 import uk.gov.hmrc.http.{Authorization, HeaderCarrier}
 import uk.gov.hmrc.play.audit.AuditExtensions
@@ -57,6 +57,12 @@ class AuditServiceSpec extends AuditTestSupport with BeforeAndAfterEach {
       mockExtendedDataEvent
       auditService.auditAllPagesUserInput(AuditTypes.SubmissionPayload, allRecordsXmlMarshallingTest)(hc)
       verifyExtendedDataEvent(extendedSubmissionEvent)
+    }
+
+    "audit Amendment payload" in {
+      mockExtendedDataEvent
+      auditService.auditAmendmentSent(AuditTypes.Amendment, amendmentJson)(hc)
+      verifyExtendedDataEvent(extendedAmendmentEvent)
     }
 
     "audit Cancellation payload" in {
@@ -170,6 +176,25 @@ trait AuditTestSupport extends UnitWithMocksSpec with ExportsDeclarationBuilder 
       "eoriNumber" -> ExportsTestData.eori,
       "tags" -> Json.obj("notificationType" -> secureMessagingConfig.notificationType)
     )
+  )
+
+  val amendmentJson = new JsObject(
+    Map(EventData.preAmendmentDeclaration.toString -> JsString("someDec"), EventData.postAmendmentDeclaration.toString -> JsString("otherDec"))
+  )
+
+  val extendedAmendmentEvent = ExtendedDataEvent(
+    auditSource = appConfig.appName,
+    auditType = AuditTypes.Amendment.toString,
+    tags = AuditExtensions
+      .auditHeaderCarrier(hc)
+      .toAuditTags(
+        transactionName = s"export-declaration-${AuditTypes.Amendment.toString.toLowerCase}-request",
+        path = s"customs-declare-exports/${AuditTypes.Amendment.toString}"
+      ),
+    detail = Json
+      .toJson(auditCarrierDetails)
+      .as[JsObject]
+      .deepMerge(amendmentJson)
   )
 
   val auditFailure = Failure("Event sending failed")
