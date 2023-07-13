@@ -60,12 +60,12 @@ class ErrorHandler @Inject() (override val messagesApi: MessagesApi, errorPage: 
   def badRequest(implicit request: Request[_]): Result =
     BadRequest(globalErrorPage)
 
-  def internalServerError(message: String): Result = {
+  def internalServerError(message: String)(implicit request: Request[_]): Result = {
     logger.warn(message)
-    InternalServerError("")
+    InternalServerError(globalErrorPage)
   }
 
-  def internalError(message: String): Future[Result] =
+  def internalError(message: String)(implicit request: Request[_]): Future[Result] =
     Future.successful(internalServerError(message))
 
   def redirectToErrorPage(implicit request: Request[_]): Future[Result] =

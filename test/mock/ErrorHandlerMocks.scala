@@ -37,10 +37,10 @@ trait ErrorHandlerMocks extends BeforeAndAfterEach { self: MockitoSugar with Sui
 
     when(mockErrorHandler.badRequest(any())).thenReturn(BadRequest(HtmlFormat.empty))
 
-    when(mockErrorHandler.internalServerError(anyString()))
+    when(mockErrorHandler.internalServerError(anyString())(any()))
       .thenAnswer((ans: InvocationOnMock) => InternalServerError(ans.getArgument[String](0)))
 
-    when(mockErrorHandler.internalError(anyString()))
+    when(mockErrorHandler.internalError(anyString())(any()))
       .thenAnswer((ans: InvocationOnMock) => Future.successful(InternalServerError(ans.getArgument[String](0))))
 
     when(mockErrorHandler.redirectToErrorPage(any())).thenReturn(Future.successful(BadRequest(HtmlFormat.empty)))

@@ -19,8 +19,8 @@ package controllers
 import base.ControllerWithoutFormSpec
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.{AdditionalDeclarationType, STANDARD_FRONTIER}
 import mock.ErrorHandlerMocks
-import models.declaration.submissions.RequestType.{ExternalAmendmentRequest, SubmissionRequest}
 import models.declaration.submissions.{Action, Submission}
+import models.declaration.submissions.RequestType.{ExternalAmendmentRequest, SubmissionRequest}
 import models.requests.SessionHelper
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers._
@@ -136,7 +136,6 @@ class DeclarationDetailsControllerSpec extends ControllerWithoutFormSpec with Be
     }
 
     "return 500 (INTERNAL_SERVER-ERROR)" when {
-
       "there is no submission for the Declaration" in {
         when(mockCustomsDeclareExportsConnector.findSubmission(any())(any(), any())).thenReturn(Future.successful(None))
 
@@ -145,7 +144,7 @@ class DeclarationDetailsControllerSpec extends ControllerWithoutFormSpec with Be
         status(result) mustBe INTERNAL_SERVER_ERROR
 
         val messageCaptor: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-        verify(mockErrorHandler).internalError(messageCaptor.capture())
+        verify(mockErrorHandler).internalError(messageCaptor.capture())(any())
         assert(messageCaptor.getValue.contains(s"Cannot found Submission(${submission.uuid})"))
       }
 
@@ -160,7 +159,7 @@ class DeclarationDetailsControllerSpec extends ControllerWithoutFormSpec with Be
           verify(mockCustomsDeclareExportsConnector, never).findDeclaration(any())(any(), any())
 
           val messageCaptor: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-          verify(mockErrorHandler).internalServerError(messageCaptor.capture())
+          verify(mockErrorHandler).internalServerError(messageCaptor.capture())(any())
           assert(messageCaptor.getValue.contains("undefined latestDecId"))
         }
       }
@@ -177,7 +176,7 @@ class DeclarationDetailsControllerSpec extends ControllerWithoutFormSpec with Be
         status(result) mustBe INTERNAL_SERVER_ERROR
 
         val messageCaptor: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-        verify(mockErrorHandler).internalServerError(messageCaptor.capture())
+        verify(mockErrorHandler).internalServerError(messageCaptor.capture())(any())
         assert(messageCaptor.getValue.contains("Cannot found latest declaration"))
       }
 
@@ -193,7 +192,7 @@ class DeclarationDetailsControllerSpec extends ControllerWithoutFormSpec with Be
         status(result) mustBe INTERNAL_SERVER_ERROR
 
         val messageCaptor: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-        verify(mockErrorHandler).internalServerError(messageCaptor.capture())
+        verify(mockErrorHandler).internalServerError(messageCaptor.capture())(any())
         assert(messageCaptor.getValue.contains("has no additionalDeclarationType"))
       }
     }
