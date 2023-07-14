@@ -75,6 +75,7 @@ trait CodeListConnector {
   def getGvmsCodes(locale: Locale): ListMap[String, GoodsLocationCode]
   def allGoodsLocationCodes(locale: Locale): ListMap[String, GoodsLocationCode]
   def getDocumentTypes(locale: Locale): ListMap[String, DocumentType]
+  def getCurrencyCodes(locale: Locale): ListMap[String, CurrencyCode]
 
 }
 
@@ -141,6 +142,10 @@ class FileBasedCodeListConnector @Inject() (
     appConfig.documentTypeCodeFile,
     (codeItem: CodeItem, locale: Locale) => DocumentType(codeItem.getDescriptionByLocale(locale), codeItem.code)
   )
+  private val currencyCodesByLang = loadCommonCodesAsOrderedMap(
+    appConfig.currencyCodesFile,
+    (codeItem: CodeItem, locale: Locale) => CurrencyCode(codeItem.code, codeItem.getDescriptionByLocale(locale))
+  )
 
   def getAdditionalProcedureCodesMap(locale: Locale): ListMap[String, AdditionalProcedureCode] =
     additionalProcedureCodeMapsByLang.getOrElse(locale.getLanguage, additionalProcedureCodeMapsByLang.value.head._2)
@@ -174,6 +179,9 @@ class FileBasedCodeListConnector @Inject() (
 
   def getDocumentTypes(locale: Locale): ListMap[String, DocumentType] =
     documentTypeCodesByLang.getOrElse(locale.getLanguage, documentTypeCodesByLang.value.head._2)
+
+  def getCurrencyCodes(locale: Locale): ListMap[String, CurrencyCode] =
+    currencyCodesByLang.getOrElse(locale.getLanguage, currencyCodesByLang.value.head._2)
 
   override def getDepCodes(locale: Locale): ListMap[String, GoodsLocationCode] =
     goodsLocationCodesConnector.getDepCodes(locale)

@@ -1,0 +1,777 @@
+[
+  {
+    "code": "AED",
+    "en": "UAE Dirham",
+    "cy": "UAE Dirham"
+  },
+  {
+    "code": "AFN",
+    "en": "Afghani",
+    "cy": "Afghani"
+  },
+  {
+    "code": "ALL",
+    "en": "Lek",
+    "cy": "Lek"
+  },
+  {
+    "code": "AMD",
+    "en": "Armenian Dram",
+    "cy": "Armenian Dram"
+  },
+  {
+    "code": "ANG",
+    "en": "Netherlands Antillean Guilder",
+    "cy": "Netherlands Antillean Guilder"
+  },
+  {
+    "code": "AOA",
+    "en": "Kwanza",
+    "cy": "Kwanza"
+  },
+  {
+    "code": "ARS",
+    "en": "Argentine Peso",
+    "cy": "Argentine Peso"
+  },
+  {
+    "code": "AUD",
+    "en": "Australian Dollar",
+    "cy": "Australian Dollar"
+  },
+  {
+    "code": "AWG",
+    "en": "Aruban Florin",
+    "cy": "Aruban Florin"
+  },
+  {
+    "code": "AZN",
+    "en": "Azerbaijanian Manat",
+    "cy": "Azerbaijanian Manat"
+  },
+  {
+    "code": "BAM",
+    "en": "Convertible Mark",
+    "cy": "Convertible Mark"
+  },
+  {
+    "code": "BBD",
+    "en": "Barbados Dollar",
+    "cy": "Barbados Dollar"
+  },
+  {
+    "code": "BDT",
+    "en": "Taka",
+    "cy": "Taka"
+  },
+  {
+    "code": "BGN",
+    "en": "Bulgarian Lev",
+    "cy": "Bulgarian Lev"
+  },
+  {
+    "code": "BHD",
+    "en": "Bahraini Dinar",
+    "cy": "Bahraini Dinar"
+  },
+  {
+    "code": "BIF",
+    "en": "Burundi Franc",
+    "cy": "Burundi Franc"
+  },
+  {
+    "code": "BMD",
+    "en": "Bermudian Dollar",
+    "cy": "Bermudian Dollar"
+  },
+  {
+    "code": "BND",
+    "en": "Brunei Dollar",
+    "cy": "Brunei Dollar"
+  },
+  {
+    "code": "BOB",
+    "en": "Boliviano",
+    "cy": "Boliviano"
+  },
+  {
+    "code": "BRL",
+    "en": "Brazilian Real",
+    "cy": "Brazilian Real"
+  },
+  {
+    "code": "BSD",
+    "en": "Bahamian Dollar",
+    "cy": "Bahamian Dollar"
+  },
+  {
+    "code": "BWP",
+    "en": "Pula",
+    "cy": "Pula"
+  },
+  {
+    "code": "BYN",
+    "en": "Belarusian Ruble",
+    "cy": "Belarusian Ruble"
+  },
+  {
+    "code": "BZD",
+    "en": "Belize Dollar",
+    "cy": "Belize Dollar"
+  },
+  {
+    "code": "CAD",
+    "en": "Canadian Dollar",
+    "cy": "Canadian Dollar"
+  },
+  {
+    "code": "CDF",
+    "en": "Congolese Franc",
+    "cy": "Congolese Franc"
+  },
+  {
+    "code": "CHF",
+    "en": "Swiss Franc",
+    "cy": "Swiss Franc"
+  },
+  {
+    "code": "CLP",
+    "en": "Chilean Peso",
+    "cy": "Chilean Peso"
+  },
+  {
+    "code": "CNY",
+    "en": "Yuan Renminbi",
+    "cy": "Yuan Renminbi"
+  },
+  {
+    "code": "COP",
+    "en": "Colombian Peso",
+    "cy": "Colombian Peso"
+  },
+  {
+    "code": "CRC",
+    "en": "Costa Rican Colon",
+    "cy": "Costa Rican Colon"
+  },
+  {
+    "code": "CUP",
+    "en": "Cuban Peso",
+    "cy": "Cuban Peso"
+  },
+  {
+    "code": "CVE",
+    "en": "Cabo Verde Escudo",
+    "cy": "Cabo Verde Escudo"
+  },
+  {
+    "code": "CZK",
+    "en": "Czech Koruna",
+    "cy": "Czech Koruna"
+  },
+  {
+    "code": "DJF",
+    "en": "Djibouti Franc",
+    "cy": "Djibouti Franc"
+  },
+  {
+    "code": "DKK",
+    "en": "Danish Krone",
+    "cy": "Danish Krone"
+  },
+  {
+    "code": "DOP",
+    "en": "Dominican Peso",
+    "cy": "Dominican Peso"
+  },
+  {
+    "code": "DZD",
+    "en": "Algerian Dinar",
+    "cy": "Algerian Dinar"
+  },
+  {
+    "code": "EGP",
+    "en": "Egyptian Pound",
+    "cy": "Egyptian Pound"
+  },
+  {
+    "code": "ERN",
+    "en": "Nakfa",
+    "cy": "Nakfa"
+  },
+  {
+    "code": "ETB",
+    "en": "Ethiopian Birr",
+    "cy": "Ethiopian Birr"
+  },
+  {
+    "code": "EUR",
+    "en": "Euro",
+    "cy": "Euro"
+  },
+  {
+    "code": "FJD",
+    "en": "Fiji Dollar",
+    "cy": "Fiji Dollar"
+  },
+  {
+    "code": "FKP",
+    "en": "Falkland Islands Pound",
+    "cy": "Falkland Islands Pound"
+  },
+  {
+    "code": "GBP",
+    "en": "Pounds Sterling",
+    "cy": "Pounds Sterling"
+  },
+  {
+    "code": "GEL",
+    "en": "Lari",
+    "cy": "Lari"
+  },
+  {
+    "code": "GHS",
+    "en": "Ghananian Cedi",
+    "cy": "Ghananian Cedi"
+  },
+  {
+    "code": "GIP",
+    "en": "Gibraltar Pound",
+    "cy": "Gibraltar Pound"
+  },
+  {
+    "code": "GMD",
+    "en": "Dalasi",
+    "cy": "Dalasi"
+  },
+  {
+    "code": "GNF",
+    "en": "Guinean Franc",
+    "cy": "Guinean Franc"
+  },
+  {
+    "code": "GTQ",
+    "en": "Quetzal",
+    "cy": "Quetzal"
+  },
+  {
+    "code": "GYD",
+    "en": "Guyana Dollar",
+    "cy": "Guyana Dollar"
+  },
+  {
+    "code": "HKD",
+    "en": "Hong Kong Dollar",
+    "cy": "Hong Kong Dollar"
+  },
+  {
+    "code": "HNL",
+    "en": "Lempira",
+    "cy": "Lempira"
+  },
+  {
+    "code": "HRK",
+    "en": "Kuna",
+    "cy": "Kuna"
+  },
+  {
+    "code": "HTG",
+    "en": "Gourde",
+    "cy": "Gourde"
+  },
+  {
+    "code": "HUF",
+    "en": "Forint",
+    "cy": "Forint"
+  },
+  {
+    "code": "IDR",
+    "en": "Rupiah",
+    "cy": "Rupiah"
+  },
+  {
+    "code": "ILS",
+    "en": "New Israeli Sheqel",
+    "cy": "New Israeli Sheqel"
+  },
+  {
+    "code": "INR",
+    "en": "Indian Rupee",
+    "cy": "Indian Rupee"
+  },
+  {
+    "code": "IQD",
+    "en": "Iraqi Dinar",
+    "cy": "Iraqi Dinar"
+  },
+  {
+    "code": "IRR",
+    "en": "Iranian Rial",
+    "cy": "Iranian Rial"
+  },
+  {
+    "code": "ISK",
+    "en": "Iceland Krona",
+    "cy": "Iceland Krona"
+  },
+  {
+    "code": "JMD",
+    "en": "Jamaican Dollar",
+    "cy": "Jamaican Dollar"
+  },
+  {
+    "code": "JOD",
+    "en": "Jordanian Dinar",
+    "cy": "Jordanian Dinar"
+  },
+  {
+    "code": "JPY",
+    "en": "Yen",
+    "cy": "Yen"
+  },
+  {
+    "code": "KES",
+    "en": "Kenyan Shilling",
+    "cy": "Kenyan Shilling"
+  },
+  {
+    "code": "KGS",
+    "en": "Som",
+    "cy": "Som"
+  },
+  {
+    "code": "KHR",
+    "en": "Riel",
+    "cy": "Riel"
+  },
+  {
+    "code": "KMF",
+    "en": "Comoro Franc",
+    "cy": "Comoro Franc"
+  },
+  {
+    "code": "KPW",
+    "en": "North Korean Won",
+    "cy": "North Korean Won"
+  },
+  {
+    "code": "KRW",
+    "en": "Korean Won",
+    "cy": "Korean Won"
+  },
+  {
+    "code": "KWD",
+    "en": "Kuwaiti Dina",
+    "cy": "Kuwaiti Dina"
+  },
+  {
+    "code": "KYD",
+    "en": "Cayman Islands Dollar",
+    "cy": "Cayman Islands Dollar"
+  },
+  {
+    "code": "KZT",
+    "en": "Tenge",
+    "cy": "Tenge"
+  },
+  {
+    "code": "LAK",
+    "en": "Kip",
+    "cy": "Kip"
+  },
+  {
+    "code": "LBP",
+    "en": "Lebanese Pound",
+    "cy": "Lebanese Pound"
+  },
+  {
+    "code": "LKR",
+    "en": "Sri Lanka Rupee",
+    "cy": "Sri Lanka Rupee"
+  },
+  {
+    "code": "LRD",
+    "en": "Liberian Dollar",
+    "cy": "Liberian Dollar"
+  },
+  {
+    "code": "LYD",
+    "en": "Libyan Dinar",
+    "cy": "Libyan Dinar"
+  },
+  {
+    "code": "MAD",
+    "en": "Moroccan Dirham",
+    "cy": "Moroccan Dirham"
+  },
+  {
+    "code": "MDL",
+    "en": "Moldovan Leu",
+    "cy": "Moldovan Leu"
+  },
+  {
+    "code": "MGA",
+    "en": "Malagasy Ariary",
+    "cy": "Malagasy Ariary"
+  },
+  {
+    "code": "MKD",
+    "en": "Denar",
+    "cy": "Denar"
+  },
+  {
+    "code": "MMK",
+    "en": "Kyat",
+    "cy": "Kyat"
+  },
+  {
+    "code": "MNT",
+    "en": "Tugrik",
+    "cy": "Tugrik"
+  },
+  {
+    "code": "MOP",
+    "en": "Pataca",
+    "cy": "Pataca"
+  },
+  {
+    "code": "MRO",
+    "en": "Ouguiya",
+    "cy": "Ouguiya"
+  },
+  {
+    "code": "MUR",
+    "en": "Mauritius Rupee",
+    "cy": "Mauritius Rupee"
+  },
+  {
+    "code": "MVR",
+    "en": "Rufiyaa",
+    "cy": "Rufiyaa"
+  },
+  {
+    "code": "MWK",
+    "en": "Malawi Kwacha",
+    "cy": "Malawi Kwacha"
+  },
+  {
+    "code": "MXN",
+    "en": "Mexican Peso",
+    "cy": "Mexican Peso"
+  },
+  {
+    "code": "MYR",
+    "en": "Malaysian Ringgit",
+    "cy": "Malaysian Ringgit"
+  },
+  {
+    "code": "MZN",
+    "en": "Mozambique Metical",
+    "cy": "Mozambique Metical"
+  },
+  {
+    "code": "NAD",
+    "en": "Namibia Dollar",
+    "cy": "Namibia Dollar"
+  },
+  {
+    "code": "NGN",
+    "en": "Naira",
+    "cy": "Naira"
+  },
+  {
+    "code": "NIO",
+    "en": "Cordoba Oro",
+    "cy": "Cordoba Oro"
+  },
+  {
+    "code": "NOK",
+    "en": "Norwegian Krone",
+    "cy": "Norwegian Krone"
+  },
+  {
+    "code": "NPR",
+    "en": "Nepalese Rupee",
+    "cy": "Nepalese Rupee"
+  },
+  {
+    "code": "NZD",
+    "en": "New Zealand Dollar",
+    "cy": "New Zealand Dollar"
+  },
+  {
+    "code": "OMR",
+    "en": "Rial Omani",
+    "cy": "Rial Omani"
+  },
+  {
+    "code": "PAB",
+    "en": "Balboa",
+    "cy": "Balboa"
+  },
+  {
+    "code": "PEN",
+    "en": "Sol",
+    "cy": "Sol"
+  },
+  {
+    "code": "PGK",
+    "en": "Kina",
+    "cy": "Kina"
+  },
+  {
+    "code": "PHP",
+    "en": "Philippine Peso",
+    "cy": "Philippine Peso"
+  },
+  {
+    "code": "PKR",
+    "en": "Pakistan Rupee",
+    "cy": "Pakistan Rupee"
+  },
+  {
+    "code": "PLN",
+    "en": "Zloty",
+    "cy": "Zloty"
+  },
+  {
+    "code": "PYG",
+    "en": "Guarani",
+    "cy": "Guarani"
+  },
+  {
+    "code": "QAR",
+    "en": "Qatari Rial",
+    "cy": "Qatari Rial"
+  },
+  {
+    "code": "RON",
+    "en": "Romanian Leu",
+    "cy": "Romanian Leu"
+  },
+  {
+    "code": "RSD",
+    "en": "Serbian Dinar",
+    "cy": "Serbian Dinar"
+  },
+  {
+    "code": "RUB",
+    "en": "Russian Ruble",
+    "cy": "Russian Ruble"
+  },
+  {
+    "code": "RWF",
+    "en": "Rwanda Franc",
+    "cy": "Rwanda Franc"
+  },
+  {
+    "code": "SAR",
+    "en": "Saudi Riyal",
+    "cy": "Saudi Riyal"
+  },
+  {
+    "code": "SBD",
+    "en": "Solomon Islands Dollar",
+    "cy": "Solomon Islands Dollar"
+  },
+  {
+    "code": "SCR",
+    "en": "Seychelles Rupee",
+    "cy": "Seychelles Rupee"
+  },
+  {
+    "code": "SDG",
+    "en": "Sudanese Pound",
+    "cy": "Sudanese Pound"
+  },
+  {
+    "code": "SEK",
+    "en": "Swedish Krona",
+    "cy": "Swedish Krona"
+  },
+  {
+    "code": "SGD",
+    "en": "Singapore Dollar",
+    "cy": "Singapore Dollar"
+  },
+  {
+    "code": "SHP",
+    "en": "Saint Helena Pound",
+    "cy": "Saint Helena Pound"
+  },
+  {
+    "code": "SLL",
+    "en": "Leone",
+    "cy": "Leone"
+  },
+  {
+    "code": "SOS",
+    "en": "Somali Shilling",
+    "cy": "Somali Shilling"
+  },
+  {
+    "code": "SRD",
+    "en": "Surinam Dolla",
+    "cy": "Surinam Dolla"
+  },
+  {
+    "code": "SSP",
+    "en": "South Sudanese Pound",
+    "cy": "South Sudanese Pound"
+  },
+  {
+    "code": "STD",
+    "en": "Dobra",
+    "cy": "Dobra"
+  },
+  {
+    "code": "SVC",
+    "en": "El Salvador Colon",
+    "cy": "El Salvador Colon"
+  },
+  {
+    "code": "SYP",
+    "en": "Syrian Pound",
+    "cy": "Syrian Pound"
+  },
+  {
+    "code": "SZL",
+    "en": "Lilangeni",
+    "cy": "Lilangeni"
+  },
+  {
+    "code": "THB",
+    "en": "Baht",
+    "cy": "Baht"
+  },
+  {
+    "code": "TJS",
+    "en": "Somoni",
+    "cy": "Somoni"
+  },
+  {
+    "code": "TMT",
+    "en": "Turkmenistan New Manat",
+    "cy": "Turkmenistan New Manat"
+  },
+  {
+    "code": "TND",
+    "en": "Tunisian Dinar",
+    "cy": "Tunisian Dinar"
+  },
+  {
+    "code": "TOP",
+    "en": "Pa’anga",
+    "cy": "Pa’anga"
+  },
+  {
+    "code": "TRY",
+    "en": "Turkish Lira",
+    "cy": "Turkish Lira"
+  },
+  {
+    "code": "TTD",
+    "en": "Trinidad and Tobago Dollar",
+    "cy": "Trinidad and Tobago Dollar"
+  },
+  {
+    "code": "TWD",
+    "en": "New Taiwan Dollar",
+    "cy": "New Taiwan Dollar"
+  },
+  {
+    "code": "TZS",
+    "en": "Tanzanian Shilling",
+    "cy": "Tanzanian Shilling"
+  },
+  {
+    "code": "UAH",
+    "en": "Hryvnia",
+    "cy": "Hryvnia"
+  },
+  {
+    "code": "USD",
+    "en": "US Dollar",
+    "cy": "US Dollar"
+  },
+  {
+    "code": "UYU",
+    "en": "Uruguay Peso en Unidades",
+    "cy": "Uruguay Peso en Unidades"
+  },
+  {
+    "code": "UZS",
+    "en": "Uzbekistan Sum",
+    "cy": "Uzbekistan Sum"
+  },
+  {
+    "code": "VEF",
+    "en": "Bolívar",
+    "cy": "Bolívar"
+  },
+  {
+    "code": "VND",
+    "en": "Dong",
+    "cy": "Dong"
+  },
+  {
+    "code": "VUV",
+    "en": "Vatu",
+    "cy": "Vatu"
+  },
+  {
+    "code": "WST",
+    "en": "Tala",
+    "cy": "Tala"
+  },
+  {
+    "code": "XAF",
+    "en": "CFA Franc",
+    "cy": "CFA Franc"
+  },
+  {
+    "code": "XCD",
+    "en": "East Caribbean Dollar",
+    "cy": "East Caribbean Dollar"
+  },
+  {
+    "code": "XOF",
+    "en": "CFA Franc BCEAO",
+    "cy": "CFA Franc BCEAO"
+  },
+  {
+    "code": "XPF",
+    "en": "CFP Franc",
+    "cy": "CFP Franc"
+  },
+  {
+    "code": "YER",
+    "en": "Yemeni Rial",
+    "cy": "Yemeni Rial"
+  },
+  {
+    "code": "YUM",
+    "en": "Yugoslavian Dinar",
+    "cy": "Yugoslavian Dinar"
+  },
+  {
+    "code": "ZAR",
+    "en": "Rand",
+    "cy": "Rand"
+  },
+  {
+    "code": "ZMW",
+    "en": "Zambian Kwacha",
+    "cy": "Zambian Kwacha"
+  },
+  {
+    "code": "ZWL",
+    "en": "Zimbabwe Dollar",
+    "cy": "Zimbabwe Dollar"
+  },
+  {
+    "code": "UGX",
+    "en": "Ugandan Shilling",
+    "cy": "Ugandan Shilling"
+  }
+]

@@ -16,7 +16,7 @@
 
 package services.view
 
-import models.codes.{AdditionalProcedureCode, Country, ProcedureCode}
+import models.codes.{AdditionalProcedureCode, Country, CurrencyCode, ProcedureCode}
 import services.DocumentType
 import services.model.{CustomsOffice, OfficeOfExit, PackageType}
 
@@ -31,6 +31,9 @@ object AutoCompleteItem {
 
   def fromPackageType(packageTypes: List[PackageType]): List[AutoCompleteItem] =
     packageTypes map (c => AutoCompleteItem(c.asText(), c.code))
+
+  def fromCurrencyCode(codes: List[CurrencyCode]): List[AutoCompleteItem] =
+    codes map (d => AutoCompleteItem(s"${d.description} - ${d.code}", d.code))
 
   def fromDocumentType(documents: List[DocumentType]): List[AutoCompleteItem] =
     documents map (d => AutoCompleteItem(s"${d.description} - ${d.code}", d.code))
