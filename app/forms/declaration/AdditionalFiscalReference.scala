@@ -23,13 +23,13 @@ import models.ExportsFieldPointer.ExportsFieldPointer
 import models.FieldMapping
 import models.declaration.{ImplicitlySequencedObject, IsoData}
 import models.viewmodels.TariffContentKey
-import play.api.data.Forms.text
 import play.api.data.{Form, Forms}
+import play.api.data.Forms.text
 import play.api.i18n.Messages
 import play.api.libs.json.Json
+import services.{AlteredField, DiffTools, OriginalAndNewValues}
 import services.Countries._
-import services.DiffTools
-import services.DiffTools.{combinePointers, compareStringDifference, ExportsDeclarationDiff}
+import services.DiffTools.{combinePointers, ExportsDeclarationDiff}
 import utils.validators.forms.FieldValidator._
 
 case class AdditionalFiscalReference(country: String, reference: String) extends DiffTools[AdditionalFiscalReference] with ImplicitlySequencedObject {
@@ -38,9 +38,11 @@ case class AdditionalFiscalReference(country: String, reference: String) extends
     pointerString: ExportsFieldPointer,
     sequenceId: Option[Int] = None
   ): ExportsDeclarationDiff =
+    // special implementation to ensure AdditionalFiscalReference entity returned as value diff instead of Country and/or reference values
     Seq(
-      compareStringDifference(original.country, country, combinePointers(pointerString, sequenceId)),
-      compareStringDifference(original.reference, reference, combinePointers(pointerString, sequenceId))
+      Option.when(!country.compare(original.country).equals(0) || !reference.compare(original.reference).equals(0))(
+        AlteredField(combinePointers(pointerString, sequenceId), OriginalAndNewValues(Some(original), Some(this)))
+      )
     ).flatten
 
   val asString: String = country + reference

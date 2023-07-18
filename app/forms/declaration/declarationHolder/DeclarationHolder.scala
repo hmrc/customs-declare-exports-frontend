@@ -40,8 +40,12 @@ case class DeclarationHolder(authorisationTypeCode: Option[String], eori: Option
   // eoriSource is not used to generate the WCO XML
   def createDiff(original: DeclarationHolder, pointerString: ExportsFieldPointer, sequenceId: Option[Int] = None): ExportsDeclarationDiff =
     Seq(
-      compareStringDifference(original.authorisationTypeCode, authorisationTypeCode, combinePointers(pointerString, sequenceId)),
-      compareDifference(original.eori, eori, combinePointers(pointerString, sequenceId))
+      compareStringDifference(
+        original.authorisationTypeCode,
+        authorisationTypeCode,
+        combinePointers(pointerString, DeclarationHolder.authorisationTypeCodePointer, sequenceId)
+      ),
+      compareDifference(original.eori, eori, combinePointers(pointerString, DeclarationHolder.eoriPointer, sequenceId))
     ).flatten
 
   def id: String = s"${authorisationTypeCode.getOrElse("")}-${eori.getOrElse("")}"

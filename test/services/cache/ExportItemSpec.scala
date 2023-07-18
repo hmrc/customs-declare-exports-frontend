@@ -375,7 +375,7 @@ class ExportItemSpec extends UnitWithMocksSpec with ExportsItemBuilder {
       }
 
       "the original version's nactExemptionCode field has a different value to this one" in {
-        val fieldPointer = s"${baseFieldPointer}.${NactCode.pointer}"
+        val fieldPointer = s"${baseFieldPointer}.${NactCode.exemptionPointer}"
         val item = ExportItem("latestId", nactExemptionCode = Some(NactCode("taricCodeFour")))
         val originalValue = NactCode("originalValue")
         item.createDiff(item.copy(nactExemptionCode = Some(originalValue)), baseFieldPointer) mustBe Seq(
@@ -581,18 +581,18 @@ class ExportItemSpec extends UnitWithMocksSpec with ExportsItemBuilder {
       "the original version's country field has a different value to this one" in {
         val fieldPointer = s"${baseFieldPointer}"
         val additionalFiscalReference = AdditionalFiscalReference("latestCountry", "latestReference")
-        val originalValue = "originalCountry"
-        additionalFiscalReference.createDiff(additionalFiscalReference.copy(country = originalValue), baseFieldPointer) mustBe Seq(
-          constructAlteredField(fieldPointer, originalValue, additionalFiscalReference.country)
+        val originalValue = additionalFiscalReference.copy(country = "originCountry")
+        additionalFiscalReference.createDiff(originalValue, baseFieldPointer) mustBe Seq(
+          constructAlteredField(fieldPointer, Some(originalValue), Some(additionalFiscalReference))
         )
       }
 
       "the original version's reference field has a different value to this one" in {
         val fieldPointer = s"${baseFieldPointer}"
         val additionalFiscalReference = AdditionalFiscalReference("latestCountry", "latestReference")
-        val originalValue = "originalReference"
-        additionalFiscalReference.createDiff(additionalFiscalReference.copy(reference = originalValue), baseFieldPointer) mustBe Seq(
-          constructAlteredField(fieldPointer, originalValue, additionalFiscalReference.reference)
+        val originalValue = additionalFiscalReference.copy(reference = "originalReference")
+        additionalFiscalReference.createDiff(originalValue, baseFieldPointer) mustBe Seq(
+          constructAlteredField(fieldPointer, Some(originalValue), Some(additionalFiscalReference))
         )
       }
     }
@@ -636,10 +636,8 @@ class ExportItemSpec extends UnitWithMocksSpec with ExportsItemBuilder {
         withClue("both AdditionalFiscalReferences references contain different number of elements") {
           val additionalFiscalReferences = AdditionalFiscalReferencesData(references.drop(1))
           additionalFiscalReferences.createDiff(additionalFiscalReferences.copy(references = references), fieldPointer, None) mustBe Seq(
-            constructAlteredField(s"${fieldPointer}.references.#1", Some(references(0).country), Some(references(1).country)),
-            constructAlteredField(s"${fieldPointer}.references.#1", Some(references(0).reference), Some(references(1).reference)),
-            constructAlteredField(s"${fieldPointer}.references.#2", Some(references(1).country), Some(references(2).country)),
-            constructAlteredField(s"${fieldPointer}.references.#2", Some(references(1).reference), Some(references(2).reference)),
+            constructAlteredField(s"${fieldPointer}.references.#1", Some(references(0)), Some(references(1))),
+            constructAlteredField(s"${fieldPointer}.references.#2", Some(references(1)), Some(references(2))),
             constructAlteredField(s"${fieldPointer}.references.#3", Some(references(2)), None)
           )
         }
@@ -647,10 +645,8 @@ class ExportItemSpec extends UnitWithMocksSpec with ExportsItemBuilder {
         withClue("both AdditionalFiscalReferences references contain same elements but in different order") {
           val additionalFiscalReferences = AdditionalFiscalReferencesData(references)
           additionalFiscalReferences.createDiff(additionalFiscalReferences.copy(references = references.reverse), fieldPointer, None) mustBe Seq(
-            constructAlteredField(s"${fieldPointer}.references.#1", Some(references(2).country), Some(references(0).country)),
-            constructAlteredField(s"${fieldPointer}.references.#1", Some(references(2).reference), Some(references(0).reference)),
-            constructAlteredField(s"${fieldPointer}.references.#3", Some(references(0).country), Some(references(2).country)),
-            constructAlteredField(s"${fieldPointer}.references.#3", Some(references(0).reference), Some(references(2).reference))
+            constructAlteredField(s"${fieldPointer}.references.#1", Some(references(2)), Some(references(0))),
+            constructAlteredField(s"${fieldPointer}.references.#3", Some(references(0)), Some(references(2)))
           )
         }
 
@@ -658,8 +654,7 @@ class ExportItemSpec extends UnitWithMocksSpec with ExportsItemBuilder {
           val newValue = AdditionalFiscalReference("countryFour", "referenceFour")
           val additionalFiscalReferences = AdditionalFiscalReferencesData(Seq(newValue) ++ references.drop(1))
           additionalFiscalReferences.createDiff(additionalFiscalReferences.copy(references = references), fieldPointer, None) mustBe Seq(
-            constructAlteredField(s"${fieldPointer}.references.#1", Some(references(0).country), Some(newValue.country)),
-            constructAlteredField(s"${fieldPointer}.references.#1", Some(references(0).reference), Some(newValue.reference))
+            constructAlteredField(s"${fieldPointer}.references.#1", Some(references(0)), Some(newValue))
           )
         }
       }
@@ -824,7 +819,7 @@ class ExportItemSpec extends UnitWithMocksSpec with ExportsItemBuilder {
       }
 
       "the original version's code field has a different value to this one" in {
-        val fieldPointer = s"${baseFieldPointer}"
+        val fieldPointer = s"${baseFieldPointer}.${AdditionalInformation.codePointer}"
         val additionalInformation = AdditionalInformation("latestCode", "latestDescription")
         val originalValue = "originalCountry"
         additionalInformation.createDiff(additionalInformation.copy(code = originalValue), baseFieldPointer) mustBe Seq(
@@ -833,7 +828,7 @@ class ExportItemSpec extends UnitWithMocksSpec with ExportsItemBuilder {
       }
 
       "the original version's description field has a different value to this one" in {
-        val fieldPointer = s"${baseFieldPointer}"
+        val fieldPointer = s"${baseFieldPointer}.${AdditionalInformation.descriptionPointer}"
         val additionalInformation = AdditionalInformation("latestCode", "latestDescription")
         val originalValue = "originalCountry"
         additionalInformation.createDiff(additionalInformation.copy(description = originalValue), baseFieldPointer) mustBe Seq(
@@ -881,10 +876,18 @@ class ExportItemSpec extends UnitWithMocksSpec with ExportsItemBuilder {
         withClue("both AdditionalInformations items contain different number of elements") {
           val additionalInformations = AdditionalInformationData(None, items.drop(1))
           additionalInformations.createDiff(additionalInformations.copy(items = items), baseFieldPointer) mustBe Seq(
-            constructAlteredField(s"${fieldPointer}.#1", Some(items(0).code), Some(items(1).code)),
-            constructAlteredField(s"${fieldPointer}.#1", Some(items(0).description), Some(items(1).description)),
-            constructAlteredField(s"${fieldPointer}.#2", Some(items(1).code), Some(items(2).code)),
-            constructAlteredField(s"${fieldPointer}.#2", Some(items(1).description), Some(items(2).description)),
+            constructAlteredField(s"${fieldPointer}.#1.${AdditionalInformation.codePointer}", Some(items(0).code), Some(items(1).code)),
+            constructAlteredField(
+              s"${fieldPointer}.#1.${AdditionalInformation.descriptionPointer}",
+              Some(items(0).description),
+              Some(items(1).description)
+            ),
+            constructAlteredField(s"${fieldPointer}.#2.${AdditionalInformation.codePointer}", Some(items(1).code), Some(items(2).code)),
+            constructAlteredField(
+              s"${fieldPointer}.#2.${AdditionalInformation.descriptionPointer}",
+              Some(items(1).description),
+              Some(items(2).description)
+            ),
             constructAlteredField(s"${fieldPointer}.#3", Some(items(2)), None)
           )
         }
@@ -892,10 +895,18 @@ class ExportItemSpec extends UnitWithMocksSpec with ExportsItemBuilder {
         withClue("both AdditionalInformations items contain same elements but in different order") {
           val additionalInformations = AdditionalInformationData(None, items)
           additionalInformations.createDiff(additionalInformations.copy(items = items.reverse), baseFieldPointer) mustBe Seq(
-            constructAlteredField(s"${fieldPointer}.#1", Some(items(2).code), Some(items(0).code)),
-            constructAlteredField(s"${fieldPointer}.#1", Some(items(2).description), Some(items(0).description)),
-            constructAlteredField(s"${fieldPointer}.#3", Some(items(0).code), Some(items(2).code)),
-            constructAlteredField(s"${fieldPointer}.#3", Some(items(0).description), Some(items(2).description))
+            constructAlteredField(s"${fieldPointer}.#1.${AdditionalInformation.codePointer}", Some(items(2).code), Some(items(0).code)),
+            constructAlteredField(
+              s"${fieldPointer}.#1.${AdditionalInformation.descriptionPointer}",
+              Some(items(2).description),
+              Some(items(0).description)
+            ),
+            constructAlteredField(s"${fieldPointer}.#3.${AdditionalInformation.codePointer}", Some(items(0).code), Some(items(2).code)),
+            constructAlteredField(
+              s"${fieldPointer}.#3.${AdditionalInformation.descriptionPointer}",
+              Some(items(0).description),
+              Some(items(2).description)
+            )
           )
         }
 
@@ -903,8 +914,12 @@ class ExportItemSpec extends UnitWithMocksSpec with ExportsItemBuilder {
           val newValue = AdditionalInformation("codeFour", "descriptionFour")
           val additionalInformations = AdditionalInformationData(None, Seq(newValue) ++ items.drop(1))
           additionalInformations.createDiff(additionalInformations.copy(items = items), baseFieldPointer) mustBe Seq(
-            constructAlteredField(s"${fieldPointer}.#1", Some(items(0).code), Some(newValue.code)),
-            constructAlteredField(s"${fieldPointer}.#1", Some(items(0).description), Some(newValue.description))
+            constructAlteredField(s"${fieldPointer}.#1.${AdditionalInformation.codePointer}", Some(items(0).code), Some(newValue.code)),
+            constructAlteredField(
+              s"${fieldPointer}.#1.${AdditionalInformation.descriptionPointer}",
+              Some(items(0).description),
+              Some(newValue.description)
+            )
           )
         }
       }
@@ -921,7 +936,7 @@ class ExportItemSpec extends UnitWithMocksSpec with ExportsItemBuilder {
       }
 
       "the original version's measurementUnit field has a different value to this one" in {
-        val fieldPointer = s"${baseFieldPointer}"
+        val fieldPointer = s"${baseFieldPointer}.${DocumentWriteOff.measurementUnitPointer}"
         val documentWriteOff = DocumentWriteOff(Some("latestMeasurementUnitPointer"), Some(BigDecimal(1)))
         val originalValue = "originalCountry"
         documentWriteOff.createDiff(documentWriteOff.copy(measurementUnit = Some(originalValue)), baseFieldPointer) mustBe Seq(
@@ -930,7 +945,7 @@ class ExportItemSpec extends UnitWithMocksSpec with ExportsItemBuilder {
       }
 
       "the original version's documentQuantity field has a different value to this one" in {
-        val fieldPointer = s"${baseFieldPointer}"
+        val fieldPointer = s"${baseFieldPointer}.${DocumentWriteOff.documentQuantityPointer}"
         val documentWriteOff = DocumentWriteOff(Some("latestMeasurementUnitPointer"), Some(BigDecimal(1)))
         val originalValue = BigDecimal(2)
         documentWriteOff.createDiff(documentWriteOff.copy(documentQuantity = Some(originalValue)), baseFieldPointer) mustBe Seq(
@@ -950,7 +965,7 @@ class ExportItemSpec extends UnitWithMocksSpec with ExportsItemBuilder {
       }
 
       "the original version's documentTypeCode field has a different value to this one" in {
-        val fieldPointer = s"${baseFieldPointer}"
+        val fieldPointer = s"${baseFieldPointer}.${AdditionalDocument.documentTypeCodePointer}"
         val additionalDocument = AdditionalDocument(
           Some("latestDocumentTypeCode"),
           Some("latestDocumentIdentifier"),
@@ -967,7 +982,7 @@ class ExportItemSpec extends UnitWithMocksSpec with ExportsItemBuilder {
       }
 
       "the original version's documentIdentifier field has a different value to this one" in {
-        val fieldPointer = s"${baseFieldPointer}"
+        val fieldPointer = s"${baseFieldPointer}.${AdditionalDocument.documentIdentifierPointer}"
         val additionalDocument = AdditionalDocument(
           Some("latestDocumentTypeCode"),
           Some("latestDocumentIdentifier"),
@@ -984,7 +999,7 @@ class ExportItemSpec extends UnitWithMocksSpec with ExportsItemBuilder {
       }
 
       "the original version's documentStatus field has a different value to this one" in {
-        val fieldPointer = s"${baseFieldPointer}"
+        val fieldPointer = s"${baseFieldPointer}.${AdditionalDocument.documentStatusPointer}"
         val additionalDocument = AdditionalDocument(
           Some("latestDocumentTypeCode"),
           Some("latestDocumentIdentifier"),
@@ -1001,7 +1016,7 @@ class ExportItemSpec extends UnitWithMocksSpec with ExportsItemBuilder {
       }
 
       "the original version's documentStatusReason field has a different value to this one" in {
-        val fieldPointer = s"${baseFieldPointer}"
+        val fieldPointer = s"${baseFieldPointer}.${AdditionalDocument.documentStatusReasonPointer}"
         val additionalDocument = AdditionalDocument(
           Some("latestDocumentTypeCode"),
           Some("latestDocumentIdentifier"),
@@ -1018,7 +1033,7 @@ class ExportItemSpec extends UnitWithMocksSpec with ExportsItemBuilder {
       }
 
       "the original version's issuingAuthorityName field has a different value to this one" in {
-        val fieldPointer = s"${baseFieldPointer}"
+        val fieldPointer = s"${baseFieldPointer}.${AdditionalDocument.issuingAuthorityNamePointer}"
         val additionalDocument = AdditionalDocument(
           Some("latestDocumentTypeCode"),
           Some("latestDocumentIdentifier"),
@@ -1035,7 +1050,7 @@ class ExportItemSpec extends UnitWithMocksSpec with ExportsItemBuilder {
       }
 
       "the original version's dateOfValidity field has a different value to this one" in {
-        val fieldPointer = s"${baseFieldPointer}"
+        val fieldPointer = s"${baseFieldPointer}.${AdditionalDocument.dateOfValidityPointer}"
         val additionalDocument = AdditionalDocument(
           Some("latestDocumentTypeCode"),
           Some("latestDocumentIdentifier"),
@@ -1045,14 +1060,14 @@ class ExportItemSpec extends UnitWithMocksSpec with ExportsItemBuilder {
           Some(Date(None, None, None)),
           Some(DocumentWriteOff(None, None))
         )
-        val originalValue = Date(Some(1), None, None)
-        additionalDocument.createDiff(additionalDocument.copy(dateOfValidity = Some(originalValue)), baseFieldPointer) mustBe Seq(
-          constructAlteredField(fieldPointer, originalValue.day, additionalDocument.dateOfValidity.get.day)
+        val originalValue = Some(Date(Some(1), None, None))
+        additionalDocument.createDiff(additionalDocument.copy(dateOfValidity = originalValue), baseFieldPointer) mustBe Seq(
+          constructAlteredField(fieldPointer, originalValue, additionalDocument.dateOfValidity)
         )
       }
 
       "the original version's documentWriteOff field has a different value to this one" in {
-        val fieldPointer = s"${baseFieldPointer}"
+        val fieldPointer = s"${baseFieldPointer}.${AdditionalDocument.documentWriteOffPointer}.${DocumentWriteOff.measurementUnitPointer}"
         val additionalDocument = AdditionalDocument(
           Some("latestDocumentTypeCode"),
           Some("latestDocumentIdentifier"),
@@ -1132,16 +1147,56 @@ class ExportItemSpec extends UnitWithMocksSpec with ExportsItemBuilder {
         withClue("both AdditionalDocuments documents contain different number of elements") {
           val additionalDocuments = AdditionalDocuments(None, documents.drop(1))
           additionalDocuments.createDiff(additionalDocuments.copy(documents = documents), baseFieldPointer) mustBe Seq(
-            constructAlteredField(s"${fieldPointer}.#1", Some(documents(0).documentTypeCode.get), Some(documents(1).documentTypeCode.get)),
-            constructAlteredField(s"${fieldPointer}.#1", Some(documents(0).documentIdentifier.get), Some(documents(1).documentIdentifier.get)),
-            constructAlteredField(s"${fieldPointer}.#1", Some(documents(0).documentStatus.get), Some(documents(1).documentStatus.get)),
-            constructAlteredField(s"${fieldPointer}.#1", Some(documents(0).documentStatusReason.get), Some(documents(1).documentStatusReason.get)),
-            constructAlteredField(s"${fieldPointer}.#1", Some(documents(0).issuingAuthorityName.get), Some(documents(1).issuingAuthorityName.get)),
-            constructAlteredField(s"${fieldPointer}.#2", Some(documents(1).documentTypeCode.get), Some(documents(2).documentTypeCode.get)),
-            constructAlteredField(s"${fieldPointer}.#2", Some(documents(1).documentIdentifier.get), Some(documents(2).documentIdentifier.get)),
-            constructAlteredField(s"${fieldPointer}.#2", Some(documents(1).documentStatus.get), Some(documents(2).documentStatus.get)),
-            constructAlteredField(s"${fieldPointer}.#2", Some(documents(1).documentStatusReason.get), Some(documents(2).documentStatusReason.get)),
-            constructAlteredField(s"${fieldPointer}.#2", Some(documents(1).issuingAuthorityName.get), Some(documents(2).issuingAuthorityName.get)),
+            constructAlteredField(
+              s"${fieldPointer}.#1.${AdditionalDocument.documentTypeCodePointer}",
+              Some(documents(0).documentTypeCode.get),
+              Some(documents(1).documentTypeCode.get)
+            ),
+            constructAlteredField(
+              s"${fieldPointer}.#1.${AdditionalDocument.documentIdentifierPointer}",
+              Some(documents(0).documentIdentifier.get),
+              Some(documents(1).documentIdentifier.get)
+            ),
+            constructAlteredField(
+              s"${fieldPointer}.#1.${AdditionalDocument.documentStatusPointer}",
+              Some(documents(0).documentStatus.get),
+              Some(documents(1).documentStatus.get)
+            ),
+            constructAlteredField(
+              s"${fieldPointer}.#1.${AdditionalDocument.documentStatusReasonPointer}",
+              Some(documents(0).documentStatusReason.get),
+              Some(documents(1).documentStatusReason.get)
+            ),
+            constructAlteredField(
+              s"${fieldPointer}.#1.${AdditionalDocument.issuingAuthorityNamePointer}",
+              Some(documents(0).issuingAuthorityName.get),
+              Some(documents(1).issuingAuthorityName.get)
+            ),
+            constructAlteredField(
+              s"${fieldPointer}.#2.${AdditionalDocument.documentTypeCodePointer}",
+              Some(documents(1).documentTypeCode.get),
+              Some(documents(2).documentTypeCode.get)
+            ),
+            constructAlteredField(
+              s"${fieldPointer}.#2.${AdditionalDocument.documentIdentifierPointer}",
+              Some(documents(1).documentIdentifier.get),
+              Some(documents(2).documentIdentifier.get)
+            ),
+            constructAlteredField(
+              s"${fieldPointer}.#2.${AdditionalDocument.documentStatusPointer}",
+              Some(documents(1).documentStatus.get),
+              Some(documents(2).documentStatus.get)
+            ),
+            constructAlteredField(
+              s"${fieldPointer}.#2.${AdditionalDocument.documentStatusReasonPointer}",
+              Some(documents(1).documentStatusReason.get),
+              Some(documents(2).documentStatusReason.get)
+            ),
+            constructAlteredField(
+              s"${fieldPointer}.#2.${AdditionalDocument.issuingAuthorityNamePointer}",
+              Some(documents(1).issuingAuthorityName.get),
+              Some(documents(2).issuingAuthorityName.get)
+            ),
             constructAlteredField(s"${fieldPointer}.#3", Some(documents(2)), None)
           )
         }
@@ -1149,16 +1204,56 @@ class ExportItemSpec extends UnitWithMocksSpec with ExportsItemBuilder {
         withClue("both AdditionalDocuments documents contain same elements but in different order") {
           val additionalDocuments = AdditionalDocuments(None, documents)
           additionalDocuments.createDiff(additionalDocuments.copy(documents = documents.reverse), baseFieldPointer) mustBe Seq(
-            constructAlteredField(s"${fieldPointer}.#1", Some(documents(2).documentTypeCode.get), Some(documents(0).documentTypeCode.get)),
-            constructAlteredField(s"${fieldPointer}.#1", Some(documents(2).documentIdentifier.get), Some(documents(0).documentIdentifier.get)),
-            constructAlteredField(s"${fieldPointer}.#1", Some(documents(2).documentStatus.get), Some(documents(0).documentStatus.get)),
-            constructAlteredField(s"${fieldPointer}.#1", Some(documents(2).documentStatusReason.get), Some(documents(0).documentStatusReason.get)),
-            constructAlteredField(s"${fieldPointer}.#1", Some(documents(2).issuingAuthorityName.get), Some(documents(0).issuingAuthorityName.get)),
-            constructAlteredField(s"${fieldPointer}.#3", Some(documents(0).documentTypeCode.get), Some(documents(2).documentTypeCode.get)),
-            constructAlteredField(s"${fieldPointer}.#3", Some(documents(0).documentIdentifier.get), Some(documents(2).documentIdentifier.get)),
-            constructAlteredField(s"${fieldPointer}.#3", Some(documents(0).documentStatus.get), Some(documents(2).documentStatus.get)),
-            constructAlteredField(s"${fieldPointer}.#3", Some(documents(0).documentStatusReason.get), Some(documents(2).documentStatusReason.get)),
-            constructAlteredField(s"${fieldPointer}.#3", Some(documents(0).issuingAuthorityName.get), Some(documents(2).issuingAuthorityName.get))
+            constructAlteredField(
+              s"${fieldPointer}.#1.${AdditionalDocument.documentTypeCodePointer}",
+              Some(documents(2).documentTypeCode.get),
+              Some(documents(0).documentTypeCode.get)
+            ),
+            constructAlteredField(
+              s"${fieldPointer}.#1.${AdditionalDocument.documentIdentifierPointer}",
+              Some(documents(2).documentIdentifier.get),
+              Some(documents(0).documentIdentifier.get)
+            ),
+            constructAlteredField(
+              s"${fieldPointer}.#1.${AdditionalDocument.documentStatusPointer}",
+              Some(documents(2).documentStatus.get),
+              Some(documents(0).documentStatus.get)
+            ),
+            constructAlteredField(
+              s"${fieldPointer}.#1.${AdditionalDocument.documentStatusReasonPointer}",
+              Some(documents(2).documentStatusReason.get),
+              Some(documents(0).documentStatusReason.get)
+            ),
+            constructAlteredField(
+              s"${fieldPointer}.#1.${AdditionalDocument.issuingAuthorityNamePointer}",
+              Some(documents(2).issuingAuthorityName.get),
+              Some(documents(0).issuingAuthorityName.get)
+            ),
+            constructAlteredField(
+              s"${fieldPointer}.#3.${AdditionalDocument.documentTypeCodePointer}",
+              Some(documents(0).documentTypeCode.get),
+              Some(documents(2).documentTypeCode.get)
+            ),
+            constructAlteredField(
+              s"${fieldPointer}.#3.${AdditionalDocument.documentIdentifierPointer}",
+              Some(documents(0).documentIdentifier.get),
+              Some(documents(2).documentIdentifier.get)
+            ),
+            constructAlteredField(
+              s"${fieldPointer}.#3.${AdditionalDocument.documentStatusPointer}",
+              Some(documents(0).documentStatus.get),
+              Some(documents(2).documentStatus.get)
+            ),
+            constructAlteredField(
+              s"${fieldPointer}.#3.${AdditionalDocument.documentStatusReasonPointer}",
+              Some(documents(0).documentStatusReason.get),
+              Some(documents(2).documentStatusReason.get)
+            ),
+            constructAlteredField(
+              s"${fieldPointer}.#3.${AdditionalDocument.issuingAuthorityNamePointer}",
+              Some(documents(0).issuingAuthorityName.get),
+              Some(documents(2).issuingAuthorityName.get)
+            )
           )
         }
 
@@ -1174,11 +1269,31 @@ class ExportItemSpec extends UnitWithMocksSpec with ExportsItemBuilder {
           )
           val additionalDocuments = AdditionalDocuments(None, Seq(newValue) ++ documents.drop(1))
           additionalDocuments.createDiff(additionalDocuments.copy(documents = documents), baseFieldPointer) mustBe Seq(
-            constructAlteredField(s"${fieldPointer}.#1", Some(documents(0).documentTypeCode.get), Some(newValue.documentTypeCode.get)),
-            constructAlteredField(s"${fieldPointer}.#1", Some(documents(0).documentIdentifier.get), Some(newValue.documentIdentifier.get)),
-            constructAlteredField(s"${fieldPointer}.#1", Some(documents(0).documentStatus.get), Some(newValue.documentStatus.get)),
-            constructAlteredField(s"${fieldPointer}.#1", Some(documents(0).documentStatusReason.get), Some(newValue.documentStatusReason.get)),
-            constructAlteredField(s"${fieldPointer}.#1", Some(documents(0).issuingAuthorityName.get), Some(newValue.issuingAuthorityName.get))
+            constructAlteredField(
+              s"${fieldPointer}.#1.${AdditionalDocument.documentTypeCodePointer}",
+              Some(documents(0).documentTypeCode.get),
+              Some(newValue.documentTypeCode.get)
+            ),
+            constructAlteredField(
+              s"${fieldPointer}.#1.${AdditionalDocument.documentIdentifierPointer}",
+              Some(documents(0).documentIdentifier.get),
+              Some(newValue.documentIdentifier.get)
+            ),
+            constructAlteredField(
+              s"${fieldPointer}.#1.${AdditionalDocument.documentStatusPointer}",
+              Some(documents(0).documentStatus.get),
+              Some(newValue.documentStatus.get)
+            ),
+            constructAlteredField(
+              s"${fieldPointer}.#1.${AdditionalDocument.documentStatusReasonPointer}",
+              Some(documents(0).documentStatusReason.get),
+              Some(newValue.documentStatusReason.get)
+            ),
+            constructAlteredField(
+              s"${fieldPointer}.#1.${AdditionalDocument.issuingAuthorityNamePointer}",
+              Some(documents(0).issuingAuthorityName.get),
+              Some(newValue.issuingAuthorityName.get)
+            )
           )
         }
       }

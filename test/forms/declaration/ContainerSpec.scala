@@ -42,6 +42,14 @@ class ContainerSpec extends DeclarationPageBaseSpec {
         }
       }
 
+      "when the container Ids are not equal" in {
+        val fieldPointer = s"$baseFieldPointer.#1.${Container.idPointer}"
+        val container = Container(1, "latest", seals)
+        container.createDiff(container.copy(id = "original"), baseFieldPointer, Some(1)) mustBe Seq(
+          constructAlteredField(s"${fieldPointer}", "original", "latest")
+        )
+      }
+
       "when seals are present but not equal" in {
         val fieldPointer = s"$baseFieldPointer.#1.${Seal.pointer}"
         withClue("original container's seals are not present") {
@@ -75,6 +83,13 @@ class ContainerSpec extends DeclarationPageBaseSpec {
           container.createDiff(container.copy(seals = seals), baseFieldPointer, Some(1)) mustBe Seq(
             constructAlteredField(s"${fieldPointer}.#1", Some(seals(0)), None),
             constructAlteredField(s"${fieldPointer}.#4", None, Some(newSeal))
+          )
+        }
+
+        withClue("container seals contains same element with a different value") {
+          val container = Container(1, "latest", Seq(seals(0)))
+          container.createDiff(container.copy(seals = Seq(seals(0).copy(id = "one hundred"))), baseFieldPointer, Some(1)) mustBe Seq(
+            constructAlteredField(s"${fieldPointer}.#1", Some("one hundred"), Some("one"))
           )
         }
       }

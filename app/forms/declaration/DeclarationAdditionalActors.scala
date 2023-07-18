@@ -19,6 +19,7 @@ package forms.declaration
 import forms.DeclarationPage
 import forms.MappingHelper._
 import forms.common.Eori
+import forms.declaration.DeclarationAdditionalActors.{eoriPointer, partyTypePointer}
 import models.DeclarationType.DeclarationType
 import models.viewmodels.TariffContentKey
 import models.ExportsFieldPointer.ExportsFieldPointer
@@ -34,8 +35,8 @@ case class DeclarationAdditionalActors(eori: Option[Eori], partyType: Option[Str
     extends DiffTools[DeclarationAdditionalActors] with ImplicitlySequencedObject {
   def createDiff(original: DeclarationAdditionalActors, pointerString: ExportsFieldPointer, sequenceId: Option[Int] = None): ExportsDeclarationDiff =
     Seq(
-      compareDifference(original.eori, eori, combinePointers(pointerString, sequenceId)),
-      compareStringDifference(original.partyType, partyType, combinePointers(pointerString, sequenceId))
+      compareDifference(original.eori, eori, combinePointers(pointerString, eoriPointer, sequenceId)),
+      compareStringDifference(original.partyType, partyType, combinePointers(pointerString, partyTypePointer, sequenceId))
     ).flatten
 
   import DeclarationAdditionalActors._

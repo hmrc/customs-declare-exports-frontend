@@ -164,7 +164,7 @@ class SubmissionServiceSpec
 
       // Then
       val expectedFieldPointers = List(
-        "declaration.locations.destinationCountry.code",
+        "declaration.locations.destinationCountry",
         "declaration.totalNumberOfItems.totalAmountInvoiced",
         "declaration.totalNumberOfItems.exchangeRate"
       )

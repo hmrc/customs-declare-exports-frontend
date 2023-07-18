@@ -68,7 +68,7 @@ case class ExportItem(
       compareDifference(original.cusCode, cusCode, combinePointers(pointerString, CusCode.pointer, maybeSequenceId)),
       compareDifference(original.taricCodes, taricCodes, combinePointers(pointerString, TaricCode.pointer, maybeSequenceId)),
       compareDifference(original.nactCodes, nactCodes, combinePointers(pointerString, NactCode.pointer, maybeSequenceId)),
-      compareDifference(original.nactExemptionCode, nactExemptionCode, combinePointers(pointerString, NactCode.pointer, maybeSequenceId)),
+      compareDifference(original.nactExemptionCode, nactExemptionCode, combinePointers(pointerString, NactCode.exemptionPointer, maybeSequenceId)),
       createDiff(original.packageInformation, packageInformation, combinePointers(pointerString, PackageInformation.pointer, maybeSequenceId)),
       createDiffOfOptions(original.commodityMeasure, commodityMeasure, combinePointers(pointerString, CommodityMeasure.pointer, maybeSequenceId)),
       createDiffOfOptionIsos(

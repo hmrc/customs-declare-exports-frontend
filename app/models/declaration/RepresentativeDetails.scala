@@ -34,7 +34,7 @@ case class RepresentativeDetails(details: Option[EntityDetails], statusCode: Opt
     sequenceId: Option[Int] = None
   ): ExportsDeclarationDiff =
     Seq(
-      createDiffOfOptions(original.details, details, combinePointers(pointerString, RepresentativeDetails.detailsPointer, sequenceId)),
+      createDiffOfOptions(original.details, details, combinePointers(pointerString, sequenceId)),
       compareStringDifference(original.statusCode, statusCode, combinePointers(pointerString, RepresentativeDetails.statusCodePointer, sequenceId))
     ).flatten
 }
@@ -43,7 +43,6 @@ object RepresentativeDetails extends FieldMapping {
   implicit val format = Json.format[RepresentativeDetails]
 
   val pointer: ExportsFieldPointer = "representativeDetails"
-  val detailsPointer: ExportsFieldPointer = "details"
   val statusCodePointer: ExportsFieldPointer = "statusCode"
 
   def apply(): RepresentativeDetails = new RepresentativeDetails(None, None, None)

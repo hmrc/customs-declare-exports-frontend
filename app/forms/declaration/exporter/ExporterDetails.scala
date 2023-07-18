@@ -31,7 +31,7 @@ import services.DiffTools.{combinePointers, ExportsDeclarationDiff}
 
 case class ExporterDetails(details: EntityDetails) extends DiffTools[ExporterDetails] {
   override def createDiff(original: ExporterDetails, pointerString: ExportsFieldPointer, sequenceId: Option[Int] = None): ExportsDeclarationDiff =
-    Seq(details.createDiff(original.details, combinePointers(pointerString, EntityDetails.pointer, sequenceId))).flatten
+    Seq(details.createDiff(original.details, combinePointers(pointerString, sequenceId))).flatten
 }
 
 object ExporterDetails extends DeclarationPage with FieldMapping {

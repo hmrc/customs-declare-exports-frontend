@@ -19,12 +19,15 @@ package forms.declaration.countries
 import models.ExportsFieldPointer.ExportsFieldPointer
 import models.FieldMapping
 import play.api.libs.json.Json
-import services.DiffTools
-import services.DiffTools.{combinePointers, compareStringDifference, ExportsDeclarationDiff}
 
-case class Country(code: Option[String]) extends DiffTools[Country] {
-  override def createDiff(original: Country, pointerString: ExportsFieldPointer, sequenceId: Option[Int] = None): ExportsDeclarationDiff =
-    Seq(compareStringDifference(original.code, code, combinePointers(pointerString, Country.pointer, sequenceId))).flatten
+case class Country(code: Option[String]) extends Ordered[Country] {
+  override def compare(that: Country): Int =
+    (code, that.code) match {
+      case (None, None)                    => 0
+      case (_, None)                       => 1
+      case (None, _)                       => -1
+      case (Some(current), Some(original)) => current.compare(original)
+    }
 }
 
 object Country extends FieldMapping {

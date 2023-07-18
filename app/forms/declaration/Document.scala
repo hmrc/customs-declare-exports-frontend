@@ -17,6 +17,7 @@
 package forms.declaration
 
 import forms.DeclarationPage
+import forms.declaration.Document.{documentReferencePointer, documentTypePointer, goodsItemIdentifierPointer}
 import models.DeclarationType.DeclarationType
 import models.viewmodels.TariffContentKey
 import models.ExportsFieldPointer.ExportsFieldPointer
@@ -34,9 +35,13 @@ case class Document(documentType: String, documentReference: String, goodsItemId
     extends DiffTools[Document] with ImplicitlySequencedObject {
   def createDiff(original: Document, pointerString: ExportsFieldPointer, sequenceId: Option[Int] = None): ExportsDeclarationDiff =
     Seq(
-      compareStringDifference(original.documentType, documentType, combinePointers(pointerString, sequenceId)),
-      compareStringDifference(original.documentReference, documentReference, combinePointers(pointerString, sequenceId)),
-      compareStringDifference(original.goodsItemIdentifier, goodsItemIdentifier, combinePointers(pointerString, sequenceId))
+      compareStringDifference(original.documentType, documentType, combinePointers(pointerString, documentTypePointer, sequenceId)),
+      compareStringDifference(original.documentReference, documentReference, combinePointers(pointerString, documentReferencePointer, sequenceId)),
+      compareStringDifference(
+        original.goodsItemIdentifier,
+        goodsItemIdentifier,
+        combinePointers(pointerString, goodsItemIdentifierPointer, sequenceId)
+      )
     ).flatten
 }
 
@@ -44,6 +49,9 @@ object Document extends DeclarationPage with FieldMapping {
   implicit val format = Json.format[Document]
 
   val pointer: ExportsFieldPointer = "documents"
+  val documentTypePointer: ExportsFieldPointer = "documentType"
+  val documentReferencePointer: ExportsFieldPointer = "documentReference"
+  val goodsItemIdentifierPointer: ExportsFieldPointer = "goodsItemIdentifier"
 
   val formId = "PreviousDocuments"
 
