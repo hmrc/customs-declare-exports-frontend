@@ -23,12 +23,15 @@ import models.ExportsFieldPointer.ExportsFieldPointer
 import models.FieldMapping
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
-import services.DiffTools
-import services.DiffTools.{compareDifference, ExportsDeclarationDiff}
 
-case class InlandModeOfTransportCode(inlandModeOfTransportCode: Option[ModeOfTransportCode] = None) extends DiffTools[InlandModeOfTransportCode] {
-  def createDiff(original: InlandModeOfTransportCode, pointerString: ExportsFieldPointer, sequenceId: Option[Int] = None): ExportsDeclarationDiff =
-    Seq(compareDifference(original.inlandModeOfTransportCode, inlandModeOfTransportCode, pointerString)).flatten
+case class InlandModeOfTransportCode(inlandModeOfTransportCode: Option[ModeOfTransportCode] = None) extends Ordered[InlandModeOfTransportCode] {
+  override def compare(that: InlandModeOfTransportCode): Int =
+    (inlandModeOfTransportCode, that.inlandModeOfTransportCode) match {
+      case (None, None)                    => 0
+      case (_, None)                       => 1
+      case (None, _)                       => -1
+      case (Some(current), Some(original)) => current.compare(original)
+    }
 }
 
 object InlandModeOfTransportCode extends DeclarationPage with FieldMapping {

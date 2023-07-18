@@ -19,6 +19,15 @@ package forms.declaration.additionaldocuments
 import forms.common.Date
 import forms.declaration.additionaldocuments.DocumentWriteOff._
 import forms.{AdditionalConstraintsMapping, ConditionalConstraint, DeclarationPage}
+import forms.declaration.additionaldocuments.AdditionalDocument.{
+  dateOfValidityPointer,
+  documentIdentifierPointer,
+  documentStatusPointer,
+  documentStatusReasonPointer,
+  documentTypeCodePointer,
+  documentWriteOffPointer,
+  issuingAuthorityNamePointer
+}
 import models.DeclarationType.{CLEARANCE, DeclarationType}
 import models.ExportsFieldPointer.ExportsFieldPointer
 import models.declaration.ImplicitlySequencedObject
@@ -43,13 +52,21 @@ case class AdditionalDocument(
 ) extends DiffTools[AdditionalDocument] with ImplicitlySequencedObject {
   def createDiff(original: AdditionalDocument, pointerString: ExportsFieldPointer, sequenceId: Option[Int] = None): ExportsDeclarationDiff =
     Seq(
-      compareStringDifference(original.documentTypeCode, documentTypeCode, combinePointers(pointerString, sequenceId)),
-      compareStringDifference(original.documentIdentifier, documentIdentifier, combinePointers(pointerString, sequenceId)),
-      compareStringDifference(original.documentStatus, documentStatus, combinePointers(pointerString, sequenceId)),
-      compareStringDifference(original.documentStatusReason, documentStatusReason, combinePointers(pointerString, sequenceId)),
-      compareStringDifference(original.issuingAuthorityName, issuingAuthorityName, combinePointers(pointerString, sequenceId)),
-      createDiffOfOptions(original.dateOfValidity, dateOfValidity, combinePointers(pointerString, sequenceId)),
-      createDiffOfOptions(original.documentWriteOff, documentWriteOff, combinePointers(pointerString, sequenceId))
+      compareStringDifference(original.documentTypeCode, documentTypeCode, combinePointers(pointerString, documentTypeCodePointer, sequenceId)),
+      compareStringDifference(original.documentIdentifier, documentIdentifier, combinePointers(pointerString, documentIdentifierPointer, sequenceId)),
+      compareStringDifference(original.documentStatus, documentStatus, combinePointers(pointerString, documentStatusPointer, sequenceId)),
+      compareStringDifference(
+        original.documentStatusReason,
+        documentStatusReason,
+        combinePointers(pointerString, documentStatusReasonPointer, sequenceId)
+      ),
+      compareStringDifference(
+        original.issuingAuthorityName,
+        issuingAuthorityName,
+        combinePointers(pointerString, issuingAuthorityNamePointer, sequenceId)
+      ),
+      createDiffOfOptions(original.dateOfValidity, dateOfValidity, combinePointers(pointerString, dateOfValidityPointer, sequenceId)),
+      createDiffOfOptions(original.documentWriteOff, documentWriteOff, combinePointers(pointerString, documentWriteOffPointer, sequenceId))
     ).flatten
 
   def toJson: JsValue = Json.toJson(this)(AdditionalDocument.format)
@@ -65,6 +82,13 @@ case class AdditionalDocument(
 object AdditionalDocument extends DeclarationPage with FieldMapping {
 
   val pointer: ExportsFieldPointer = "documents"
+  val documentTypeCodePointer: ExportsFieldPointer = "documentTypeCode"
+  val documentIdentifierPointer: ExportsFieldPointer = "documentIdentifier"
+  val documentStatusPointer: ExportsFieldPointer = "documentStatus"
+  val documentStatusReasonPointer: ExportsFieldPointer = "documentStatusReason"
+  val issuingAuthorityNamePointer: ExportsFieldPointer = "issuingAuthorityName"
+  val dateOfValidityPointer: ExportsFieldPointer = "dateOfValidity"
+  val documentWriteOffPointer: ExportsFieldPointer = "documentWriteOff"
 
   def fromJsonString(value: String): Option[AdditionalDocument] = Json.fromJson(Json.parse(value)).asOpt
 

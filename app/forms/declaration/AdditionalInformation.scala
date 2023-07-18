@@ -17,6 +17,7 @@
 package forms.declaration
 
 import forms.DeclarationPage
+import forms.declaration.AdditionalInformation.{codePointer, descriptionPointer}
 import models.viewmodels.TariffContentKey
 import models.DeclarationType.DeclarationType
 import models.ExportsFieldPointer.ExportsFieldPointer
@@ -32,16 +33,16 @@ import utils.validators.forms.FieldValidator._
 case class AdditionalInformation(code: String, description: String) extends DiffTools[AdditionalInformation] with ImplicitlySequencedObject {
   def createDiff(original: AdditionalInformation, pointerString: ExportsFieldPointer, sequenceId: Option[Int] = None): ExportsDeclarationDiff =
     Seq(
-      compareStringDifference(original.code, code, combinePointers(pointerString, sequenceId)),
-      compareStringDifference(original.description, description, combinePointers(pointerString, sequenceId))
+      compareStringDifference(original.code, code, combinePointers(pointerString, codePointer, sequenceId)),
+      compareStringDifference(original.description, description, combinePointers(pointerString, descriptionPointer, sequenceId))
     ).flatten
-
-  override def toString: String = s"${code}-${description}"
 }
 
 object AdditionalInformation extends DeclarationPage with FieldMapping {
 
   val pointer: ExportsFieldPointer = "items"
+  val codePointer: ExportsFieldPointer = "code"
+  val descriptionPointer: ExportsFieldPointer = "description"
 
   implicit val format = Json.format[AdditionalInformation]
 

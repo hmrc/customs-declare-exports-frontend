@@ -18,6 +18,7 @@ package forms.declaration
 
 import connectors.CodeListConnector
 import forms.DeclarationPage
+import forms.declaration.AdditionalFiscalReference.{countryPointer, referencePointer}
 import models.DeclarationType.DeclarationType
 import models.ExportsFieldPointer.ExportsFieldPointer
 import models.FieldMapping
@@ -39,8 +40,8 @@ case class AdditionalFiscalReference(country: String, reference: String) extends
     sequenceId: Option[Int] = None
   ): ExportsDeclarationDiff =
     Seq(
-      compareStringDifference(original.country, country, combinePointers(pointerString, sequenceId)),
-      compareStringDifference(original.reference, reference, combinePointers(pointerString, sequenceId))
+      compareStringDifference(original.country, country, combinePointers(pointerString, countryPointer, sequenceId)),
+      compareStringDifference(original.reference, reference, combinePointers(pointerString, referencePointer, sequenceId))
     ).flatten
 
   val asString: String = country + reference
@@ -49,6 +50,8 @@ case class AdditionalFiscalReference(country: String, reference: String) extends
 object AdditionalFiscalReference extends DeclarationPage with FieldMapping {
 
   val pointer: ExportsFieldPointer = "references"
+  val countryPointer: ExportsFieldPointer = "country"
+  val referencePointer: ExportsFieldPointer = "reference"
 
   def build(country: String, reference: String): AdditionalFiscalReference = new AdditionalFiscalReference(country, reference.toUpperCase)
   implicit val format = Json.format[AdditionalFiscalReference]

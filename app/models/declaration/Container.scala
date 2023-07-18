@@ -22,13 +22,14 @@ import models.ExportsFieldPointer.ExportsFieldPointer
 import models.FieldMapping
 import play.api.libs.json.{Json, OFormat}
 import services.DiffTools
-import services.DiffTools.{combinePointers, ExportsDeclarationDiff}
+import services.DiffTools.{combinePointers, compareStringDifference, ExportsDeclarationDiff}
 
 case class Container(sequenceId: Int = sequenceIdPlaceholder, id: String, seals: Seq[Seal])
     extends DiffTools[Container] with ExplicitlySequencedObject[Container] {
 
   override def createDiff(original: Container, pointerString: ExportsFieldPointer, sequenceId: Option[Int]): ExportsDeclarationDiff =
-    createDiff(original.seals, seals, combinePointers(pointerString, Seal.pointer, sequenceId))
+    Seq(compareStringDifference(original.id, id, combinePointers(pointerString, Container.idPointer, sequenceId))).flatten ++
+      createDiff(original.seals, seals, combinePointers(pointerString, Seal.pointer, sequenceId))
 
   override def updateSequenceId(sequenceId: Int): Container = copy(sequenceId = sequenceId)
 }

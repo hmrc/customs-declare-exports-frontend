@@ -204,6 +204,20 @@ class LocationsSpec extends UnitSpec {
               constructAlteredField(s"${fieldPointer}.#6", None, Some(RoutingCountry(6, Country(Some("other")))))
             )
           }
+
+          withClue("locations routingCountries contain elements with different values") {
+            val locations = Locations(routingCountries =
+              Seq(RoutingCountry(1, Country(Some("one"))), RoutingCountry(2, Country(Some("DIFF"))), RoutingCountry(4, Country(Some("four"))))
+            )
+            locations.createDiff(
+              locations.copy(routingCountries = routingCountries.dropRight(1)),
+              baseFieldPointer,
+              Some(1)
+            ) must contain theSameElementsAs Seq(
+              constructAlteredField(s"${fieldPointer}.#2.code", Some("two"), Some("DIFF")),
+              constructAlteredField(s"${fieldPointer}.#4", None, Some(RoutingCountry(4, Country(Some("four")))))
+            )
+          }
         }
 
         "the original version's officeOfExit field has a different value to this one" in {
@@ -317,25 +331,17 @@ class LocationsSpec extends UnitSpec {
           val fieldPointer = s"${baseFieldPointer}.${InlandModeOfTransportCode.pointer}"
           withClue("both versions have Some(Some) values but values are different") {
             val locations = Locations(inlandModeOfTransportCode = Some(InlandModeOfTransportCode(Some(Maritime))))
-            val originalValue = InlandModeOfTransportCode(Some(Rail))
-            locations.createDiff(locations.copy(inlandModeOfTransportCode = Some(originalValue)), baseFieldPointer) mustBe Seq(
-              constructAlteredField(
-                fieldPointer,
-                originalValue.inlandModeOfTransportCode,
-                locations.inlandModeOfTransportCode.get.inlandModeOfTransportCode
-              )
+            val originalValue = Some(InlandModeOfTransportCode(Some(Rail)))
+            locations.createDiff(locations.copy(inlandModeOfTransportCode = originalValue), baseFieldPointer) mustBe Seq(
+              constructAlteredField(fieldPointer, originalValue, locations.inlandModeOfTransportCode)
             )
           }
 
           withClue("the original version's inlandModeOfTransportCode field is Some(None) but this one has Some(Some) value") {
             val locations = Locations(inlandModeOfTransportCode = Some(InlandModeOfTransportCode(Some(Maritime))))
-            val originalValue = InlandModeOfTransportCode(None)
-            locations.createDiff(locations.copy(inlandModeOfTransportCode = Some(originalValue)), baseFieldPointer) mustBe Seq(
-              constructAlteredField(
-                fieldPointer,
-                originalValue.inlandModeOfTransportCode,
-                locations.inlandModeOfTransportCode.get.inlandModeOfTransportCode
-              )
+            val originalValue = Some(InlandModeOfTransportCode(None))
+            locations.createDiff(locations.copy(inlandModeOfTransportCode = originalValue), baseFieldPointer) mustBe Seq(
+              constructAlteredField(fieldPointer, originalValue, locations.inlandModeOfTransportCode)
             )
           }
 

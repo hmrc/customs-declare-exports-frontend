@@ -16,20 +16,21 @@
 
 package forms.declaration.additionaldocuments
 
+import forms.declaration.additionaldocuments.DocumentWriteOff.{documentQuantityPointer, measurementUnitPointer}
 import models.ExportsFieldPointer.ExportsFieldPointer
 import models.FieldMapping
-import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, FormError, Forms}
+import play.api.data.Forms.{optional, text}
 import play.api.libs.json.Json
 import services.DiffTools
-import services.DiffTools.{compareBigDecimalDifference, compareStringDifference, ExportsDeclarationDiff}
+import services.DiffTools.{combinePointers, compareBigDecimalDifference, compareStringDifference, ExportsDeclarationDiff}
 import utils.validators.forms.FieldValidator._
 
 case class DocumentWriteOff(measurementUnit: Option[String], documentQuantity: Option[BigDecimal]) extends DiffTools[DocumentWriteOff] {
   def createDiff(original: DocumentWriteOff, pointerString: ExportsFieldPointer, sequenceId: Option[Int] = None): ExportsDeclarationDiff =
     Seq(
-      compareStringDifference(original.measurementUnit, measurementUnit, pointerString),
-      compareBigDecimalDifference(original.documentQuantity, documentQuantity, pointerString)
+      compareStringDifference(original.measurementUnit, measurementUnit, combinePointers(pointerString, measurementUnitPointer, sequenceId)),
+      compareBigDecimalDifference(original.documentQuantity, documentQuantity, combinePointers(pointerString, documentQuantityPointer, sequenceId))
     ).flatten
 
   def measurementUnitDisplay: String = measurementUnit.map(_.replace("#", " ")).getOrElse("")

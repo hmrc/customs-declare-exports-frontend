@@ -26,8 +26,16 @@ import play.api.libs.json.Json
 import services.DiffTools
 import services.DiffTools.{combinePointers, compareDifference, ExportsDeclarationDiff}
 
-case class RoutingCountry(sequenceId: Int = sequenceIdPlaceholder, country: Country) extends ExplicitlySequencedObject[RoutingCountry] {
+case class RoutingCountry(sequenceId: Int = sequenceIdPlaceholder, country: Country)
+    extends DiffTools[RoutingCountry] with ExplicitlySequencedObject[RoutingCountry] {
   override def updateSequenceId(sequenceId: Int): RoutingCountry = copy(sequenceId = sequenceId)
+
+  def createDiff(
+    original: RoutingCountry,
+    pointerString: ExportsFieldPointer = ExportsDeclaration.pointer,
+    sequenceId: Option[Int] = None
+  ): ExportsDeclarationDiff =
+    country.createDiff(original.country, pointerString, sequenceId)
 }
 
 object RoutingCountry {
@@ -64,6 +72,11 @@ case class Locations(
         original.warehouseIdentification,
         warehouseIdentification,
         combinePointers(pointerString, WarehouseIdentification.pointer, sequenceId)
+      ),
+      compareDifference(
+        original.inlandModeOfTransportCode,
+        inlandModeOfTransportCode,
+        combinePointers(pointerString, InlandModeOfTransportCode.pointer, sequenceId)
       )
     ).flatten ++
       createDiffOfOptions(
@@ -77,12 +90,7 @@ case class Locations(
         combinePointers(pointerString, Locations.destinationCountryPointer, sequenceId)
       ) ++
       createDiff(original.routingCountries, routingCountries, combinePointers(pointerString, Locations.routingCountriesPointer)) ++
-      createDiffOfOptions(original.goodsLocation, goodsLocation, combinePointers(pointerString, GoodsLocation.pointer, sequenceId)) ++
-      createDiffOfOptions(
-        original.inlandModeOfTransportCode,
-        inlandModeOfTransportCode,
-        combinePointers(pointerString, InlandModeOfTransportCode.pointer, sequenceId)
-      )
+      createDiffOfOptions(original.goodsLocation, goodsLocation, combinePointers(pointerString, GoodsLocation.pointer, sequenceId))
 }
 
 object Locations extends FieldMapping {

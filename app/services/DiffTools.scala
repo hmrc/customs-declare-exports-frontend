@@ -78,35 +78,15 @@ trait DiffTools[T] {
     intersectingObjectDiffs.flatten ++ removedObjectsDiff ++ newObjectsDiff
   }
 
-  def createDiff[S <: ExplicitlySequencedObject[S]](original: Seq[S], current: Seq[S], pointerString: ExportsFieldPointer)(
-    implicit esoTag: DummyImplicit,
-    nonDiffEsoTag: DummyImplicit
-  ): ExportsDeclarationDiff = {
-    val originalObjectIds = original.map(_.sequenceId).toSet
-    val currentObjectIds = current.map(_.sequenceId).toSet
-    val newObjectsIds = currentObjectIds.diff(originalObjectIds)
-    val removedObjectsIds = originalObjectIds.diff(currentObjectIds)
-    val removedObjectsDiff =
-      removedObjectsIds.map(sequenceId =>
-        AlteredField(combinePointers(s"$pointerString", Some(sequenceId)), OriginalAndNewValues(original.find(_.sequenceId == sequenceId), None))
-      )
-    val newObjectsDiff =
-      newObjectsIds.map(sequenceId =>
-        AlteredField(combinePointers(s"$pointerString", Some(sequenceId)), OriginalAndNewValues(None, current.find(_.sequenceId == sequenceId)))
-      )
-
-    (removedObjectsDiff ++ newObjectsDiff).toSeq
-  }
-
   def createDiff[E <: DiffTools[E]](original: Option[Seq[E]], current: Option[Seq[E]], pointerString: ExportsFieldPointer): ExportsDeclarationDiff =
     createDiff(original.getOrElse(Seq.empty[E]), current.getOrElse(Seq.empty[E]), pointerString)
 
   def createDiff[S <: DiffTools[S] with ExplicitlySequencedObject[S]](
-    original: Option[Seq[S]],
-    current: Option[Seq[S]],
+    maybeOriginal: Option[Seq[S]],
+    maybeCurrent: Option[Seq[S]],
     pointerString: ExportsFieldPointer
   )(implicit esoTag: DummyImplicit): ExportsDeclarationDiff =
-    createDiff(original.getOrElse(Seq.empty[S]), current.getOrElse(Seq.empty[S]), pointerString)
+    createDiff(maybeOriginal.getOrElse(Seq.empty[S]), maybeCurrent.getOrElse(Seq.empty[S]), pointerString)
 
   def createDiffOfOptions[E <: DiffTools[E]](original: Option[E], current: Option[E], pointerString: ExportsFieldPointer): ExportsDeclarationDiff =
     (original, current) match {

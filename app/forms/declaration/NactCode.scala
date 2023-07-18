@@ -34,6 +34,7 @@ object NactCode extends DeclarationPage with FieldMapping {
   implicit val format = Json.format[NactCode]
 
   val pointer: ExportsFieldPointer = "nactCode"
+  val exemptionPointer: ExportsFieldPointer = "nactExemptionCode"
 
   val nactCodeKey = "nactCode"
 
