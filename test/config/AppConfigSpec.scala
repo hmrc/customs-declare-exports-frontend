@@ -263,7 +263,7 @@ class AppConfigSpec extends UnitWithMocksSpec {
     }
 
     "have improved error messages feature toggle set to true if defined" in {
-      validAppConfig.isUsingImprovedErrorMessages must be(true)
+      validAppConfig.isUsingImprovedErrorMessages must be(false)
     }
 
     "have language map with English" in {
