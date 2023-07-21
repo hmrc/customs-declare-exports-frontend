@@ -26,7 +26,7 @@ class FeatureSwitchConfigSpec extends UnitWithMocksSpec {
   private val validConfig: Config =
     ConfigFactory.parseString("""
         |microservice.services.features.default=disabled
-        |microservice.services.features.use-improved-error-messages=false
+        |microservice.services.features.use-improved-error-messages=true
       """.stripMargin)
   private val emptyConfig: Config = ConfigFactory.empty()
 
