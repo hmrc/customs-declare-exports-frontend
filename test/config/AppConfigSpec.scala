@@ -39,7 +39,7 @@ class AppConfigSpec extends UnitWithMocksSpec {
         |
         |list-of-available-journeys="CRT,CAN,SUB"
         |list-of-available-declarations="STANDARD,SUPPLEMENTARY"
-        |microservice.services.features.use-improved-error-messages=true
+        |microservice.services.features.use-improved-error-messages=false
         |microservice.services.customs-declare-exports.host=localhost
         |microservice.services.customs-declare-exports.port=9875
         |microservice.services.customs-declare-exports.submit-declaration=/declaration
