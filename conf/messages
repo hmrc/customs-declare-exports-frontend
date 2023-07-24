@@ -2458,6 +2458,7 @@ field.declaration.items.$.additionalDocument.$.issuingAuthorityName = Issuing au
 field.declaration.items.$.additionalDocument.$.documentWriteOff.documentQuantity = Quantity of Additional document in {1} Item {0}
 field.declaration.items.$.additionalInformation.$.code = Code of Additional Information {1} in Item {0}
 field.declaration.items.$.additionalInformation.$.description = Description of Additional Information {1} in Item {0}
+field.declaration.items.$.commodityDetails = Commodity code of Item {0}
 field.declaration.items.$.commodityDetails.descriptionOfGoods = Goods description of Item {0}
 field.declaration.items.$.cusCode.id = CUS code of Item {0}
 field.declaration.items.$.cusCode.cusCode = CUS code of Item {0}
