@@ -81,6 +81,7 @@ object PointerHelper extends Logging {
     "declaration.items.$.additionalDocument.$.documentWriteOff.documentQuantity" -> AdditionalDocumentsController.displayPage, // ?? AdditionalDocumentChangeController.displayOutcomePage
     "declaration.items.$.additionalInformation.$.code" -> AdditionalInformationController.displayPage, // ?? AdditionalInformationChangeController.displayOutcomePage
     "declaration.items.$.additionalInformation.$.description" -> AdditionalInformationController.displayPage, // ?? AdditionalInformationChangeController.displayOutcomePage
+    "declaration.items.$.commodityDetails" -> CommodityDetailsController.displayPage,
     "declaration.items.$.commodityDetails.descriptionOfGoods" -> CommodityDetailsController.displayPage,
     "declaration.items.$.cusCode.id" -> CusCodeController.displayPage,
     "declaration.items.$.cusCode.cusCode" -> CusCodeController.displayPage,
