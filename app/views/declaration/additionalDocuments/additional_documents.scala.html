@@ -67,7 +67,7 @@
 
 @warning = {
     @govukWarningText(WarningText(
-        iconFallbackText = messages("site.warning"),
+        iconFallbackText = Some(messages("site.warning")),
         content = Text(messages("declaration.additionalDocument.summary.warning.text"))
     ))
 }

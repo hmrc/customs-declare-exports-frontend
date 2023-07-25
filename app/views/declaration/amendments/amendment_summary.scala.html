@@ -56,7 +56,7 @@
     @pageTitle(messages("declaration.summary.amendment-draft-header"))
 
     @govukWarningText(WarningText(
-        iconFallbackText = messages("site.warning"),
+        iconFallbackText = Some(messages("site.warning")),
         content = Text(messages("declaration.summary.warning"))
     ))
 
