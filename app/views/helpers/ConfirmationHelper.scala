@@ -90,7 +90,7 @@ class ConfirmationHelper @Inject() (
   private def needsDocuments(implicit confirmation: Confirmation, messages: Messages): Html = {
     val title = pageTitle(messages("declaration.confirmation.needsDocument.title"))
     val warning = govukWarningText(
-      WarningText(iconFallbackText = messages("site.warning"), content = Text(messages("declaration.confirmation.needsDocument.warning")))
+      WarningText(iconFallbackText = Some(messages("site.warning")), content = Text(messages("declaration.confirmation.needsDocument.warning")))
     )
 
     new Html(List(title, warning, body1, body2))
