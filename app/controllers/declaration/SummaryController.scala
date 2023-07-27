@@ -65,16 +65,15 @@ class SummaryController @Inject() (
   }
 
   private def amendmentSummaryPage()(implicit request: JourneyRequest[_]): Future[Result] =
-    getValue(submissionUuid).fold {
-      errorHandler.internalError("Session on /saved-summary (for draft amendment) does not include 'submissionUuid'??")
-    } { submissionId =>
-      val html = Html(
-        amendment_summary(submissionId)
-          .toString()
-          .replace(s"?$lastUrlPlaceholder", "")
+    Future.successful(
+      Ok(
+        Html(
+          amendment_summary()
+            .toString()
+            .replace(s"?$lastUrlPlaceholder", "")
+        )
       )
-      Future.successful(Ok(html))
-    }
+    )
 
   private def continueToDisplayPage(implicit request: JourneyRequest[_]): Future[Result] = {
     val hasMandatoryData = request.cacheModel.consignmentReferences.exists(refs => refs.ducr.nonEmpty && refs.lrn.nonEmpty)
