@@ -56,6 +56,7 @@ class SummaryControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerM
     mockVerifiedEmailAction,
     mockJourneyAction,
     new ErrorHandler(mcc.messagesApi, instanceOf[error_template])(instanceOf[AppConfig]),
+    mockCustomsDeclareExportsConnector,
     mockExportsCacheService,
     mcc,
     amendmentSummaryPage,

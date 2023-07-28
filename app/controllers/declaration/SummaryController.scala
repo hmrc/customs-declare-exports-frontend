@@ -17,6 +17,7 @@
 package controllers.declaration
 
 import config.AppConfig
+import connectors.CustomsDeclareExportsConnector
 import controllers.actions.{AuthAction, JourneyAction, VerifiedEmailAction}
 import controllers.declaration.SummaryController.{continuePlaceholder, lrnDuplicateError}
 import controllers.routes.SavedDeclarationsController
@@ -46,6 +47,7 @@ class SummaryController @Inject() (
   verifyEmail: VerifiedEmailAction,
   journeyType: JourneyAction,
   errorHandler: ErrorHandler,
+  connector: CustomsDeclareExportsConnector,
   override val exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents,
   amendment_summary: amendment_summary,
@@ -65,15 +67,21 @@ class SummaryController @Inject() (
   }
 
   private def amendmentSummaryPage()(implicit request: JourneyRequest[_]): Future[Result] =
-    Future.successful(
-      Ok(
-        Html(
-          amendment_summary()
-            .toString()
-            .replace(s"?$lastUrlPlaceholder", "")
-        )
-      )
-    )
+    request.cacheModel.declarationMeta.parentDeclarationId map { parentDeclarationId =>
+      connector.findSubmissionByLatestDecId(parentDeclarationId) flatMap { submissionIdOpt =>
+        submissionIdOpt map { submission =>
+          Future.successful(
+            Ok(
+              Html(
+                amendment_summary()
+                  .toString()
+                  .replace(s"?$lastUrlPlaceholder", "")
+              )
+            ).addingToSession(submissionUuid -> submission.uuid)
+          )
+        } getOrElse errorHandler.internalError("Cannot associate submission with parentDecId")
+      }
+    } getOrElse errorHandler.internalError("ParentDecId cannot be found")
 
   private def continueToDisplayPage(implicit request: JourneyRequest[_]): Future[Result] = {
     val hasMandatoryData = request.cacheModel.consignmentReferences.exists(refs => refs.ducr.nonEmpty && refs.lrn.nonEmpty)
