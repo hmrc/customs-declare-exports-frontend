@@ -608,9 +608,15 @@ tariff.declaration.item.zeroRatedForVat.common.text = Bydd y cofnod hwn yn anfon
 
 tariff.declaration.item.zeroRatedForVat.common.linkText.0 = elfen ddata 6/17 - Cod Ychwanegol Cenedlaethol (yn agor tab newydd)
 
-tariff.declaration.item.statisticalValue.1.common.text = I gael manylion llawn am sut i gyfrifo’r gwerth hwn ewch i {0}.
+tariff.declaration.item.statisticalValue.1.common.text = I gael manylion llawn ynghylch penderfynu a oes angen gwerth, ewch i <br> {0} ac <br>{1}.
 
-tariff.declaration.item.statisticalValue.1.common.linkText.0 = elfen ddata 8/6 - Gwerth Ystadegol (yn agor tab newydd)
+tariff.declaration.item.statisticalValue.1.common.linkText.0 = elfen ddata 1/10 – Cod Gweithdrefn (yn agor tab newydd)
+
+tariff.declaration.item.statisticalValue.1.common.linkText.1 = elfen ddata 1/11 – Codau Gweithdrefn Ychwanegol (yn agor tab newydd)
+
+tariff.declaration.item.statisticalValue.2.common.text = I gael manylion llawn am sut i gyfrifo’r gwerth hwn, ewch i <br>{0}.
+
+tariff.declaration.item.statisticalValue.2.common.linkText.0 = elfen ddata 8/6 – Gwerth Ystadegol (yn agor tab newydd)
 
 tariff.declaration.item.packageInformation.1.common.text = I gael manylion am y math o becyn, ewch i<br>{0}.
 
@@ -2920,21 +2926,21 @@ declaration.nationalAdditionalCode.table.header = Cod ychwanegol cenedlaethol
 
 declaration.nationalAdditionalCode.remove.hint = Tynnwch god ychwanegol cenedlaethol {0}.
 
-declaration.statisticalValue.title = Beth yw gwerth ystadegol yr eitem hon mewn punnoedd?
+declaration.statisticalValue.title = Gwerth ystadegol yr eitem hon mewn punnoedd
 
 declaration.statisticalValue.label = Gwerth ystadegol
 
-declaration.statisticalValue.hint = Diffinnir y gwerth ystadegol fel gwerth GBP yr eitem ynghyd â threuliau ar gyfer cyfran y daith yn y DU. Adiwch y canlynol at ei gilydd:
+declaration.statisticalValue.hint = Os oes angen gwerth, dim ond gwerth ystadegol y rhan o’r daith a ddigwyddodd yn y DU y bydd angen i chi ei gadarnhau. Mae’r gwerth ystadegol yn cael ei ddiffinio fel gwerth yr eitem ynghyd â threuliau mewn GBP. Bydd angen adio’r canlynol at ei gilydd:
 
-declaration.statisticalValue.hint.bullet.1 = y swm a dalwyd (neu, os nad oes gwerthiant yn cael ei gytuno, am faint y gellid gwerthu’r nwyddau’n rhesymol)
+declaration.statisticalValue.hint.bullet.1 = y swm a dalwyd neu, os nad yw gwerthiant wedi’i gytuno, y swm y byddai’n rhesymol disgwyl i’r nwyddau gael eu gwerthu amdano
 
-declaration.statisticalValue.hint.bullet.2 = pacio, llwytho, yswirio a chludo - wedi’i gyfrifo neu wedi’i dalu - am gyfran y daith yn y DU
+declaration.statisticalValue.hint.bullet.2 = y swm ar gyfer pacio, llwytho, yswiriant a thrafnidiaeth, wedi’i gyfrifo neu ei dalu, ar gyfer y rhan o’r daith a ddigwyddodd yn y DU.
 
-declaration.statisticalValue.inset.text.1 = Os oeddech wedi talu am gludiant neu yswiriant ar gyfer y daith gyfan, cyfrifwch y gyfran yn y DU yn seiliedig ar ba ganran o’r pellter cyfan sydd o fewn y DU.
+declaration.statisticalValue.inset.text.1 = Os ydych wedi talu am drafnidiaeth neu yswiriant ar gyfer y daith gyfan, cyfrifwch y ganran o gyfanswm y pellter a ddigwyddodd yn y DU.
 
-declaration.statisticalValue.inset.text.2 = I drosi unrhyw anfonebau mewn arian cyfred arall, defnyddiwch {0} am y mis pan fydd eich datganiad yn cael ei gyflwyno.
+declaration.statisticalValue.inset.text.2 = Os oes unrhyw un o’r anfonebau mewn arian cyfred arall, defnyddiwch {0} ar gyfer y mis pan fydd y datganiad yn cael ei gyflwyno.
 
-declaration.statisticalValue.inset.text.2.link = Cyfradd gyfnewid CThEF (yn agor tab newydd)
+declaration.statisticalValue.inset.text.2.link = gyfradd gyfnewid CThEF (yn agor tab newydd)
 
 declaration.statisticalValue.error.empty = Nodwch gyfanswm y gost
 
