@@ -56,6 +56,7 @@ class SummaryControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerM
     mockVerifiedEmailAction,
     mockJourneyAction,
     new ErrorHandler(mcc.messagesApi, instanceOf[error_template])(instanceOf[AppConfig]),
+    mockCustomsDeclareExportsConnector,
     mockExportsCacheService,
     mcc,
     amendmentSummaryPage,
@@ -68,7 +69,7 @@ class SummaryControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerM
     super.beforeEach()
     authorizedUser()
     setupErrorHandler()
-    when(amendmentSummaryPage.apply(any())(any(), any(), any())).thenReturn(HtmlFormat.empty)
+    when(amendmentSummaryPage.apply()(any(), any(), any())).thenReturn(HtmlFormat.empty)
     when(normalSummaryPage.apply(any(), any(), any())(any(), any(), any())).thenReturn(HtmlFormat.empty)
     when(mockSummaryPageNoData.apply()(any(), any())).thenReturn(HtmlFormat.empty)
     when(mockLrnValidator.hasBeenSubmittedInThePast48Hours(any[Lrn])(any[HeaderCarrier], any[ExecutionContext])).thenReturn(Future.successful(false))

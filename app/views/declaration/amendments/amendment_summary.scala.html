@@ -16,7 +16,7 @@
 
 @import config.AppConfig
 @import controllers.declaration.routes.SubmissionController
-@import controllers.routes.DeclarationDetailsController
+@import controllers.routes.SavedDeclarationsController
 @import models.declaration.submissions.EnhancedStatus.ERRORS
 @import models.requests.JourneyRequest
 @import views.helpers.{BackButton, Title}
@@ -39,7 +39,7 @@
     paragraphBody: paragraphBody
 )
 
-@(submissionId: String)(implicit request: JourneyRequest[_], messages: Messages, appConfig: AppConfig)
+@()(implicit request: JourneyRequest[_], messages: Messages, appConfig: AppConfig)
 
 @draftBodyText = @{
     if(request.cacheModel.declarationMeta.readyForSubmission != Some(true))
@@ -48,7 +48,7 @@
 
 @govukLayout(
     title = Title("declaration.summary.amendment-draft-header"),
-    backButton = Some(BackButton(messages("site.backToDeclarations"), DeclarationDetailsController.displayPage(submissionId))),
+    backButton = Some(BackButton(messages("site.backToDeclarations"), SavedDeclarationsController.displayDeclarations())),
     useCustomContentWidth = true,
     showDeclarationSummaryLink = false
 ) {

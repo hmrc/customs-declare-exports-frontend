@@ -148,6 +148,10 @@ class CustomsDeclareExportsConnector @Inject() (
     httpClient
       .GET[Option[Submission]](url(s"${appConfig.submissionPath}/$uuid"))
 
+  def findSubmissionByLatestDecId(decId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[Submission]] =
+    httpClient
+      .GET[Option[Submission]](url(s"${appConfig.submissionByLatestDecIdPath}/$decId"))
+
   def findAction(actionId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[Action]] =
     httpClient.GET[Option[Action]](url(s"${appConfig.actionPath}/$actionId"))
 
