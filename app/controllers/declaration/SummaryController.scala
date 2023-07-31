@@ -79,9 +79,11 @@ class SummaryController @Inject() (
               )
             ).addingToSession(submissionUuid -> submission.uuid)
           )
-        } getOrElse errorHandler.internalError("Cannot associate submission with parentDecId")
+        } getOrElse errorHandler.internalError(
+          s"Cannot associate submission to parentDecId: $parentDeclarationId from declaration ${request.cacheModel.id}"
+        )
       }
-    } getOrElse errorHandler.internalError("ParentDecId cannot be found")
+    } getOrElse errorHandler.internalError(s"ParentDecId is not attached to declaration ${request.cacheModel.id}")
 
   private def continueToDisplayPage(implicit request: JourneyRequest[_]): Future[Result] = {
     val hasMandatoryData = request.cacheModel.consignmentReferences.exists(refs => refs.ducr.nonEmpty && refs.lrn.nonEmpty)
