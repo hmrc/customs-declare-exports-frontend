@@ -51,7 +51,9 @@ class SubmissionsController @Inject() (
     else findOrCreateDraftForRejection(rejectedParentId, redirect)
   }
 
-  def amendErrors(rejectedParentId: String, redirectUrl: String, pattern: String, message: String, isAmendment: Boolean): Action[AnyContent] =
+  def amendErrors(rejectedParentId: String, redirectUrl: String, pattern: String, message: String, isAmendment: Boolean): Action[AnyContent] = {
+    println("HERE!")
+
     authAndEmailActions.async { implicit request =>
       val flashData = FieldNamePointer.getFieldName(pattern) match {
         case Some(name) if message.nonEmpty => Map(FlashKeys.fieldName -> name, FlashKeys.errorMessage -> message)
@@ -64,6 +66,7 @@ class SubmissionsController @Inject() (
       if (isAmendment) findOrCreateDraftForAmendment(rejectedParentId, redirect)
       else findOrCreateDraftForRejection(rejectedParentId, redirect)
     }
+  }
 
   def viewDeclaration(id: String): Action[AnyContent] = authAndEmailActions.async { implicit request =>
     customsDeclareExportsConnector.findDeclaration(id).flatMap {

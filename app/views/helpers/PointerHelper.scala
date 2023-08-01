@@ -17,12 +17,72 @@
 package views.helpers
 
 import controllers.declaration.routes._
-import models.DeclarationType.CLEARANCE
 import models.{ExportsDeclaration, Pointer}
+import models.DeclarationType.CLEARANCE
+import models.declaration.ExportItem
 import play.api.Logging
 import play.api.mvc.Call
 
+trait PointerRecord[A] {
+
+  def fetchValue(dec: ExportsDeclaration, args: Int*): Option[A]
+  val fieldNameI18nKey: Option[String] = None
+  val pageLink1Param: Option[Call] = None
+  val pageLink2Param: Option[String => Call] = None
+}
+
 object PointerHelper extends Logging {
+
+  val getItem = (dec: ExportsDeclaration, idx: Int) => dec.items.lift(idx)
+  val getAdditionalDocument = (item: ExportItem, idx: Int) => item.additionalDocuments.flatMap(_.documents.lift(idx))
+
+  val pointerRecords: Map[String, PointerRecord[String]] = Map(
+    "declaration.typeCode" -> new PointerRecord[String]() {
+      def fetchValue(dec: ExportsDeclaration, args: Int*) =
+        Option(dec.`type`.toString)
+    },
+    "declaration.items.$.packageInformation.$.shippingMarks" -> new PointerRecord[String]() {
+      def fetchValue(dec: ExportsDeclaration, args: Int*) =
+        getItem(dec, args(0)).flatMap(_.packageInformation).flatMap(_.lift(args(1))).flatMap(_.shippingMarks)
+      override val pageLink2Param = Some(PackageInformationSummaryController.displayPage)
+    },
+    "declaration.items.$.statisticalValue.statisticalValue" -> new PointerRecord[String]() {
+      def fetchValue(dec: ExportsDeclaration, args: Int*) =
+        getItem(dec, args(0)).flatMap(_.statisticalValue.map(_.statisticalValue))
+      override val pageLink2Param = Some(StatisticalValueController.displayPage)
+    },
+    "declaration.items.$.additionalDocument" -> new PointerRecord[String]() {
+      def fetchValue(dec: ExportsDeclaration, args: Int*) = Option.empty[String]
+      override val pageLink2Param = Some(AdditionalDocumentsController.displayPage)
+    },
+    "declaration.items.$.additionalDocument.$.documentTypeCode" -> new PointerRecord[String]() {
+      def fetchValue(dec: ExportsDeclaration, args: Int*) =
+        getItem(dec, args(0)).flatMap(getAdditionalDocument(_, args(1)).flatMap(_.documentTypeCode))
+      override val pageLink2Param = Some(AdditionalDocumentsController.displayPage)
+    },
+    "declaration.items.$.additionalDocument.$.documentIdentifier" -> new PointerRecord[String]() {
+      def fetchValue(dec: ExportsDeclaration, args: Int*) =
+        getItem(dec, args(0)).flatMap(getAdditionalDocument(_, args(1)).flatMap(_.documentIdentifier))
+      override val pageLink2Param = Some(AdditionalDocumentsController.displayPage)
+    },
+    "declaration.items.$.additionalDocument.$.documentStatus" -> new PointerRecord[String]() {
+      def fetchValue(dec: ExportsDeclaration, args: Int*) =
+        getItem(dec, args(0)).flatMap(getAdditionalDocument(_, args(1)).flatMap(_.documentStatus))
+      override val pageLink2Param = Some(AdditionalDocumentsController.displayPage)
+    },
+    "declaration.consignmentReferences.lrn" -> new PointerRecord[String]() {
+      def fetchValue(dec: ExportsDeclaration, args: Int*) = dec.consignmentReferences.flatMap(_.lrn.map(_.toString))
+      override val fieldNameI18nKey = Some("declaration.consignmentReferences.lrn.info")
+      override val pageLink1Param = Some(LocalReferenceNumberController.displayPage)
+    },
+    "declaration.consignmentReferences.ucr" -> new PointerRecord[String]() {
+      def fetchValue(dec: ExportsDeclaration, args: Int*) = dec.consignmentReferences.flatMap(_.ducr.map(_.toString))
+      override val pageLink1Param = Some(DucrEntryController.displayPage)
+    },
+    "declaration.items.$" -> new PointerRecord[String]() {
+      def fetchValue(dec: ExportsDeclaration, args: Int*) = Option.empty[String]
+    }
+  )
 
   val defaultItemsCall = ItemsSummaryController.displayItemsSummaryPage
   val clearanceDecDetailsCall = PersonPresentingGoodsDetailsController.displayPage

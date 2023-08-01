@@ -325,7 +325,7 @@ object AmendmentDetailsHelper {
     transport -> s"$summary.transport"
   )
 
-  private val fieldIdMappings: Map[String, String] = Map(
+  val fieldIdMappings: Map[String, String] = Map(
     s"$carrier.${EntityDetails.eoriPointer}" -> s"${partiesPrefix}.carrier.eori",
     s"${address(CarrierDetails.pointer)}.${Address.fullNamePointer}" -> s"${addressMsg("carrier")}.fullName",
     s"${address(CarrierDetails.pointer)}.${Address.addressLinePointer}" -> s"${addressMsg("carrier")}.addressLine",
