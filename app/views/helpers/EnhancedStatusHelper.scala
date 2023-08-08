@@ -53,21 +53,20 @@ object EnhancedStatusHelper {
         else messages("submission.enhancedStatus.timeline.title.CUSTOMS_POSITION_DENIED")
     }
 
-  def extractNotificationRows(maybeSubmission: Option[Submission])(implicit messages: Messages): Seq[SummaryListRow] =
-    maybeSubmission.map { submission =>
-      val actions = submission.actions.filter(_.requestType == SubmissionRequest)
-      actions flatMap {
-        _.notifications.map {
-          _.map { notification =>
-            SummaryListRow(
-              classes = s"${notification.enhancedStatus.toString.toLowerCase}-row",
-              key = Key(content = Text(asText(notification.enhancedStatus))),
-              value = Value(content = Text(ViewDates.formatDateAtTime(notification.dateTimeIssued)))
-            )
-          }
-        }.getOrElse(List.empty)
-      }
-    }.getOrElse(List.empty)
+  def extractNotificationRows(submission: Submission)(implicit messages: Messages): Seq[SummaryListRow] = {
+    val actions = submission.actions.filter(_.requestType == SubmissionRequest)
+    actions flatMap {
+      _.notifications.map {
+        _.map { notification =>
+          SummaryListRow(
+            classes = s"${notification.enhancedStatus.toString.toLowerCase}-row",
+            key = Key(content = Text(asText(notification.enhancedStatus))),
+            value = Value(content = Text(ViewDates.formatDateAtTime(notification.dateTimeIssued)))
+          )
+        }
+      }.getOrElse(List.empty)
+    }
+  }
 
   def hasQueryNotificationMessageStatus(submission: Submission): Boolean =
     submission.actions.exists { action =>

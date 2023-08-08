@@ -20,6 +20,7 @@ import connectors.CustomsDeclareExportsConnector
 import controllers.actions.{AuthAction, VerifiedEmailAction}
 import controllers.declaration.routes._
 import controllers.helpers.ErrorFixModeHelper.setErrorFixMode
+import handlers.ErrorHandler
 import models.declaration.submissions.EnhancedStatus.ERRORS
 import models.requests.SessionHelper.declarationUuid
 import models.responses.FlashKeys
@@ -27,7 +28,6 @@ import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.model.FieldNamePointer
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import views.dashboard.DashboardHelper.toDashboard
 import views.html.declaration.summary.submitted_declaration_page
 
 import javax.inject.Inject
@@ -37,6 +37,7 @@ class SubmissionsController @Inject() (
   authenticate: AuthAction,
   verifyEmail: VerifiedEmailAction,
   customsDeclareExportsConnector: CustomsDeclareExportsConnector,
+  errorHandler: ErrorHandler,
   mcc: MessagesControllerComponents,
   submittedDeclarationPage: submitted_declaration_page
 )(implicit ec: ExecutionContext)
@@ -67,11 +68,13 @@ class SubmissionsController @Inject() (
   def viewDeclaration(id: String): Action[AnyContent] = authAndEmailActions.async { implicit request =>
     customsDeclareExportsConnector.findDeclaration(id).flatMap {
       case Some(declaration) =>
-        customsDeclareExportsConnector.findSubmission(id).map { maybeSubmission =>
-          Ok(submittedDeclarationPage(maybeSubmission, declaration))
+        customsDeclareExportsConnector.findSubmissionByLatestDecId(id) flatMap {
+          case Some(submission) =>
+            Future.successful(Ok(submittedDeclarationPage(submission, declaration)))
+          case _ =>
+            errorHandler.internalError(s"Cannot find submission from latestDecId $id")
         }
-
-      case None => Future.successful(Redirect(toDashboard))
+      case None => errorHandler.internalError(s"Cannot find declaration from $id")
     }
   }
 

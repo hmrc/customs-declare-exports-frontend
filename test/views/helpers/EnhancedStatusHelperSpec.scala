@@ -69,11 +69,11 @@ class EnhancedStatusHelperSpec extends UnitViewSpec {
     "return the expected list of SummaryListRow" when {
 
       "a Submission does NOT contain any 'Notification Summary' element" in {
-        extractNotificationRows(Some(submissionWithoutNotificationSummaries)) mustBe List.empty
+        extractNotificationRows(submissionWithoutNotificationSummaries) mustBe List.empty
       }
 
       "a Submission does contain 'Notification Summary' elements" in {
-        extractNotificationRows(Some(submission)).size mustBe 3
+        extractNotificationRows(submission).size mustBe 3
       }
     }
 

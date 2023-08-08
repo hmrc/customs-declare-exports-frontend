@@ -17,7 +17,6 @@
 package controllers.declaration
 
 import config.AppConfig
-import connectors.CustomsDeclareExportsConnector
 import controllers.actions.{AuthAction, JourneyAction, VerifiedEmailAction}
 import controllers.declaration.SummaryController.{continuePlaceholder, lrnDuplicateError}
 import controllers.routes.SavedDeclarationsController
@@ -31,6 +30,7 @@ import play.api.data.FormError
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import play.twirl.api.Html
+import services.SubmissionService
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
@@ -47,7 +47,7 @@ class SummaryController @Inject() (
   verifyEmail: VerifiedEmailAction,
   journeyType: JourneyAction,
   errorHandler: ErrorHandler,
-  connector: CustomsDeclareExportsConnector,
+  submissionService: SubmissionService,
   override val exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents,
   amendment_summary: amendment_summary,
@@ -67,23 +67,21 @@ class SummaryController @Inject() (
   }
 
   private def amendmentSummaryPage()(implicit request: JourneyRequest[_]): Future[Result] =
-    request.cacheModel.declarationMeta.parentDeclarationId map { parentDeclarationId =>
-      connector.findSubmissionByLatestDecId(parentDeclarationId) flatMap { submissionIdOpt =>
-        submissionIdOpt map { submission =>
-          Future.successful(
-            Ok(
-              Html(
-                amendment_summary()
-                  .toString()
-                  .replace(s"?$lastUrlPlaceholder", "")
-              )
-            ).addingToSession(submissionUuid -> submission.uuid)
-          )
-        } getOrElse errorHandler.internalError(
-          s"Cannot associate submission to parentDecId: $parentDeclarationId from declaration ${request.cacheModel.id}"
+    submissionService.fetchSubmissionFromAmendmentDraft(request.cacheModel) flatMap { submissionIdOpt =>
+      submissionIdOpt map { submission =>
+        Future.successful(
+          Ok(
+            Html(
+              amendment_summary()
+                .toString()
+                .replace(s"?$lastUrlPlaceholder", "")
+            )
+          ).addingToSession(submissionUuid -> submission.uuid)
         )
-      }
-    } getOrElse errorHandler.internalError(s"ParentDecId is not attached to declaration ${request.cacheModel.id}")
+      } getOrElse errorHandler.internalError(
+        s"Cannot associate submission to parentDecId: ${request.cacheModel.declarationMeta.parentDeclarationId} from declaration ${request.cacheModel.id}"
+      )
+    }
 
   private def continueToDisplayPage(implicit request: JourneyRequest[_]): Future[Result] = {
     val hasMandatoryData = request.cacheModel.consignmentReferences.exists(refs => refs.ducr.nonEmpty && refs.lrn.nonEmpty)
