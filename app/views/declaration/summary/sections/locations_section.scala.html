@@ -18,10 +18,10 @@
 @import forms.declaration.LocationOfGoods
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.html.components.gds.linkContent
-@import views.html.components.gds.summary_list
+@import views.html.components.gds.summary_card
 @import views.helpers.ActionItemBuilder.actionSummaryItem
 
-@this(summaryList: summary_list, linkContent: linkContent)
+@this(summaryCard: summary_card, linkContent: linkContent)
 
 @(declarationData: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages)
 
@@ -32,7 +32,7 @@
 @actions(action: Actions) = @{ if (actionsEnabled) Some(action) else None }
 
 @if(hasLocations(declarationData.locations)) {
-    @summaryList(id = "declaration-locations-summary", heading = Some(messages("declaration.summary.locations")), summaryListRows = Seq(
+    @summaryCard(Some(Card(Some(CardTitle(Text(messages("declaration.summary.locations")))))), id = "declaration-locations-summary", heading = None, summaryListRows = Seq(
         declarationData.locations.goodsLocation.map(goodsLocation =>
             Some(SummaryListRow(
                 classes = "goodsLocationCode-row",

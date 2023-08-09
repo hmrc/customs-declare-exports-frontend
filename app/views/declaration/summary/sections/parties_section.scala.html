@@ -21,11 +21,11 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.declaration.summary.EoriOrAddress
 @import views.helpers.ActionItemBuilder.actionSummaryItem
-@import views.html.components.gds.{linkContent, summary_list}
+@import views.html.components.gds.{linkContent, summary_card}
 @import views.html.declaration.summary._
 
 @this(
-    summaryList: summary_list,
+    summaryCard: summary_card,
     linkContent: linkContent,
     additionalActorsSection: parties_section_additional_actors,
     holdersSection: parties_section_holders
@@ -64,30 +64,23 @@
     Seq(address.fullName, address.addressLine, address.townOrCity, address.postCode, address.country).mkString("<br>")
 }
 
-@declarantEori(declarant: DeclarantDetails) = {
-    <dl class="govuk-summary-list govuk-!-margin-bottom-0">
-        <div class="govuk-summary-list__row declarant-eori-row">
-            <dt class="govuk-summary-list__key">
-            @messages("declaration.summary.parties.declarant.eori")
-            </dt>
-            <dd class="govuk-summary-list__value">
-            @declarant.details.eori.map(_.value).getOrElse("")
-            </dd>
-            <dd class="govuk-summary-list__actions"></dd>
-        </div>
-    </dl>
-}
-
 @if(sectionRequired(declarationData.parties)) {
 
-    <h2 class="govuk-heading-m">Parties</h2>
+    @summaryCard(Some(Card(Some(CardTitle(Text("Parties"))))), id = "declaration-parties-summary", heading = None,
 
-    @declarationData.parties.declarantDetails.map(declarant =>
-        declarantEori(declarant)
-    )
-    @summaryList(id = "declaration-parties-summary", heading = None,
+        summaryListRows = (Seq.empty :+ declarationData.parties.declarantDetails.map(declarant =>
+            SummaryListRow(
+                classes = "declarant-eori-row",
+                key = Key(
+                    content = Text(messages("declaration.summary.parties.declarant.eori"))
+                ),
+                value = Value(
+                    content = Text(declarant.details.eori.map(_.value).getOrElse(""))
+                ),
+            )
+        ))
 
-        summaryListRows = (Seq.empty :+ declarationData.parties.declarantIsExporter.map(isExporter =>
+        ++ (Seq.empty :+ declarationData.parties.declarantIsExporter.map(isExporter =>
             SummaryListRow(
                 classes = "declarantIsExporter-row",
                 key = Key(
@@ -241,16 +234,14 @@
             consignor.details.address,
             routes.ConsignorEoriNumberController.displayPage,
             isEoriDefault = false
-        )).getOrElse(Seq.empty),
+        )).getOrElse(Seq.empty)
+)
 
-        classes = "govuk-!-margin-bottom-0"
-    )
-
-    @declarationData.parties.declarationAdditionalActorsData.map(data =>
-        additionalActorsSection(data.actors, actionsEnabled)
-    )
+   @declarationData.parties.declarationAdditionalActorsData.map(data =>
+        additionalActorsSection(data.actors, actionsEnabled))
+    <br>
 
     @declarationData.parties.declarationHoldersData.map(data =>
-        holdersSection(declarationData, actionsEnabled)
-    )
+        holdersSection(declarationData, actionsEnabled))
+
 }

@@ -17,12 +17,12 @@
 @import controllers.declaration.routes.{NatureOfTransactionController, InvoiceAndExchangeRateController, TotalPackageQuantityController, InvoiceAndExchangeRateChoiceController}
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.helpers.ActionItemBuilder.actionSummaryItem
-@import views.html.components.gds.{linkContent, summary_list}
+@import views.html.components.gds.{linkContent, summary_card}
 @import views.html.declaration.summary.related_documents
 @import models.DeclarationType._
 
 @this(
-    summaryList: summary_list,
+    summaryCard: summary_card,
     linkContent: linkContent,
     related_documents: related_documents
 )
@@ -73,7 +73,7 @@
 @actions(action: Actions) = @{ if (actionsEnabled) Some(action) else None }
 
 @if(hasTransactionData) {
-    @summaryList(id = "declaration-transaction-summary", heading = Some(messages("declaration.summary.transaction")), summaryListRows = List(
+    @summaryCard(Some(Card(Some(CardTitle(Text(messages("declaration.summary.transaction")))))), id = "declaration-transaction-summary", heading = None, summaryListRows = List(
         totalAmountInvoicedRow,
         declaration.totalNumberOfItems.flatMap { _.exchangeRate.map { exchangeRate =>
             SummaryListRow(
@@ -136,7 +136,6 @@
            )
         }
     ),
-        classes = "govuk-!-margin-bottom-3"
     )
 
     @declaration.previousDocuments.map(previousDocuments =>

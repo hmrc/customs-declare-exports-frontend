@@ -1942,6 +1942,7 @@ declaration.summary.draft = Review the information you entered so far.
 declaration.summary.unknown = Unknown
 
 declaration.summary.references = This declaration
+declaration.summary.references.details = Declaration details
 declaration.summary.references.createdDate = Date created
 declaration.summary.references.expireDate = Expiry date
 declaration.summary.references.type = Declaration type

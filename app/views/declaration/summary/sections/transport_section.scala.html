@@ -19,11 +19,11 @@
 @import models.declaration.{Transport,Locations}
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.helpers.ActionItemBuilder.actionSummaryItem
-@import views.html.components.gds.{linkContent, summary_list}
+@import views.html.components.gds.{linkContent, summary_card}
 @import views.html.declaration.summary._
 
 @this(
-    summaryList: summary_list,
+    summaryCard: summary_card,
     linkContent: linkContent,
     containers: containers
 )
@@ -63,7 +63,7 @@
 }
 
 @if(sectionRequired(declaration.transport, declaration.locations)) {
-    @summaryList(id = "declaration-transport-summary", heading = Some(messages("declaration.summary.transport")), summaryListRows = Seq(
+    @summaryCard(Some(Card(Some(CardTitle(Text(messages("declaration.summary.transport")))))), id = "declaration-transport-summary", heading = None, summaryListRows = Seq(
         declaration.transport.borderModeOfTransportCode.map(borderModeOfTransportCode =>
             SummaryListRow(
                 classes = "border-transport-row",
@@ -272,7 +272,6 @@
                 ))
             )
         ),
-        classes = "govuk-!-margin-bottom-6"
     )
 
     @declaration.transport.containers.map(containerSeq => containers(containerSeq, actionsEnabled))

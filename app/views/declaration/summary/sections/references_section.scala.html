@@ -22,9 +22,9 @@
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 @import views.helpers.ViewDates
 @import views.helpers.ActionItemBuilder.actionSummaryItem
-@import views.html.components.gds.{exportsInsetText, link, linkContent, paragraphBody, summary_list}
+@import views.html.components.gds.{exportsInsetText, link, linkContent, paragraphBody, summary_card}
 
-@this(summaryList: summary_list, insetText: exportsInsetText, link: link, linkContent: linkContent, body: paragraphBody, appConfig: AppConfig)
+@this(summaryCard: summary_card, insetText: exportsInsetText, link: link, linkContent: linkContent, body: paragraphBody, appConfig: AppConfig)
 
 @(declaration: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages)
 
@@ -58,7 +58,7 @@
     @body(messages("declaration.summary.amend.body"), classes = "govuk-body govuk-!-display-none-print")
 }
 
-@summaryList(id = "declaration-references-summary", heading = None, summaryListRows = Seq(
+@summaryCard(Some(Card(Some(CardTitle(Text(messages("declaration.summary.references.details")))))), id = "declaration-references-summary", heading = None, summaryListRows = Seq(
         Some(SummaryListRow(
             classes = "createdDate-row",
             key = Key(

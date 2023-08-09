@@ -21,9 +21,9 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.helpers.ActionItemBuilder.actionSummaryItem
 @import views.helpers.CountryHelper
-@import views.html.components.gds.{linkContent, summary_list}
+@import views.html.components.gds.{linkContent, summary_card}
 
-@this(summaryList: summary_list, linkContent: linkContent, countryHelper: CountryHelper)(implicit codeListConnector: CodeListConnector)
+@this(summaryCard: summary_card, linkContent: linkContent, countryHelper: CountryHelper)(implicit codeListConnector: CodeListConnector)
 
 @(declarationData: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages)
 
@@ -35,7 +35,7 @@
 
 @if(sectionRequired(declarationData.locations)) {
 
-    @summaryList(id = "declaration-countries-summary", heading = Some(messages("declaration.summary.countries")), summaryListRows = Seq(
+    @summaryCard(Some(Card(Some(CardTitle(Text(messages("declaration.summary.countries")))))), id = "declaration-countries-summary", heading = None, summaryListRows = Seq(
 
         declarationData.locations.hasRoutingCountries.map(_ =>
             SummaryListRow(
