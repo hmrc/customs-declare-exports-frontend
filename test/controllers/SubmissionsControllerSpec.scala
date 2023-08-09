@@ -20,6 +20,7 @@ import akka.util.Timeout
 import base.ControllerWithoutFormSpec
 import config.PaginationConfig
 import controllers.declaration.routes._
+import mock.ErrorHandlerMocks
 import models._
 import models.declaration.submissions.EnhancedStatus.GOODS_ARRIVED
 import models.declaration.submissions.RequestType.SubmissionRequest
@@ -33,14 +34,13 @@ import org.scalatest.{Assertion, BeforeAndAfterEach}
 import play.api.mvc.Result
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import views.dashboard.DashboardHelper.toDashboard
 import views.html.declaration.summary.submitted_declaration_page
 
 import java.time.{Instant, ZoneOffset, ZonedDateTime}
 import java.util.UUID
 import scala.concurrent.Future
 
-class SubmissionsControllerSpec extends ControllerWithoutFormSpec with BeforeAndAfterEach {
+class SubmissionsControllerSpec extends ControllerWithoutFormSpec with BeforeAndAfterEach with ErrorHandlerMocks {
 
   val dateTime = ZonedDateTime.now(ZoneOffset.UTC)
 
@@ -75,6 +75,7 @@ class SubmissionsControllerSpec extends ControllerWithoutFormSpec with BeforeAnd
     mockAuthAction,
     mockVerifiedEmailAction,
     mockCustomsDeclareExportsConnector,
+    mockErrorHandler,
     stubMessagesControllerComponents(),
     submittedDeclarationPage
   )(ec)
@@ -82,13 +83,18 @@ class SubmissionsControllerSpec extends ControllerWithoutFormSpec with BeforeAnd
   override protected def beforeEach(): Unit = {
     super.beforeEach()
 
+    setupErrorHandler()
     authorizedUser()
     when(submittedDeclarationPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
     when(paginationConfig.itemsPerPage).thenReturn(Page.DEFAULT_MAX_DOCUMENT_PER_PAGE)
   }
 
-  override protected def afterEach(): Unit =
-    reset(submittedDeclarationPage, mockCustomsDeclareExportsConnector, paginationConfig)
+  override protected def afterEach(): Unit = {
+    reset(submittedDeclarationPage, mockCustomsDeclareExportsConnector, paginationConfig, mockErrorHandler)
+    super.afterEach()
+  }
+
+  super.afterEach()
 
   "SubmissionsController on viewDeclaration" should {
 
@@ -99,7 +105,7 @@ class SubmissionsControllerSpec extends ControllerWithoutFormSpec with BeforeAnd
           when(mockCustomsDeclareExportsConnector.findDeclaration(any())(any(), any()))
             .thenReturn(Future.successful(Some(aDeclaration(withId("some-id")))))
 
-          when(mockCustomsDeclareExportsConnector.findSubmission(any())(any(), any()))
+          when(mockCustomsDeclareExportsConnector.findSubmissionByLatestDecId(any())(any(), any()))
             .thenReturn(Future.successful(Some(submission)))
 
           val result = controller.viewDeclaration("some-id")(getRequest())
@@ -111,12 +117,12 @@ class SubmissionsControllerSpec extends ControllerWithoutFormSpec with BeforeAnd
           when(mockCustomsDeclareExportsConnector.findDeclaration(any())(any(), any()))
             .thenReturn(Future.successful(Some(aDeclaration(withId("some-id")))))
 
-          when(mockCustomsDeclareExportsConnector.findSubmission(any())(any(), any()))
+          when(mockCustomsDeclareExportsConnector.findSubmissionByLatestDecId(any())(any(), any()))
             .thenReturn(Future.successful(None))
 
           val result = controller.viewDeclaration("some-id")(getRequest())
+          status(result) mustBe INTERNAL_SERVER_ERROR
 
-          status(result) mustBe OK
         }
       }
     }
@@ -127,9 +133,7 @@ class SubmissionsControllerSpec extends ControllerWithoutFormSpec with BeforeAnd
         when(mockCustomsDeclareExportsConnector.findNotifications(any())(any(), any())).thenReturn(Future.successful(Seq.empty))
 
         val result = controller.viewDeclaration("some-id")(getRequest())
-
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result).get mustBe toDashboard.url
+        status(result) mustBe INTERNAL_SERVER_ERROR
       }
     }
   }

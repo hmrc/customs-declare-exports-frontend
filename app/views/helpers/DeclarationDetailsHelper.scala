@@ -36,7 +36,7 @@ object DeclarationDetailsHelper {
     if (submission.hasExternalAmendments) DeclarationDetailsController.unavailableActions(submission.uuid)
     else SubmissionsController.viewDeclaration(submission.latestDecId.getOrElse(submission.uuid))
 
-  def displayViewDeclarationLink(submission: Submission): Boolean = submission.latestEnhancedStatus != Some(ERRORS)
+  def displayViewDeclarationLink(submission: Submission): Boolean = !(submission.latestEnhancedStatus contains ERRORS)
 
   def isDeclarationRejected(submission: Submission): Boolean =
     submission.latestEnhancedStatus.fold(false)(rejectedStatuses.contains)

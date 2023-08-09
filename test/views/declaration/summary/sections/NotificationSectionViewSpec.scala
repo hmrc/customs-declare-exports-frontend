@@ -34,7 +34,7 @@ class NotificationSectionViewSpec extends UnitViewSpec with ExportsTestHelper wi
 
   val section = instanceOf[notifications_section]
 
-  val view = section(Some(submission))(messages)
+  val view = section(submission)(messages)
 
   "Notification Section view" should {
 
@@ -62,7 +62,7 @@ class NotificationSectionViewSpec extends UnitViewSpec with ExportsTestHelper wi
     }
 
     "NOT contain any notification row" in {
-      val view = section(Some(submissionWithoutNotificationSummaries))(messages)
+      val view = section(submissionWithoutNotificationSummaries)(messages)
       view.getElementsByClass("govuk-summary-list__row").size mustBe 1
 
       val row0 = view.getElementsByClass("mrn-row")

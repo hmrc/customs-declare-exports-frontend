@@ -35,7 +35,7 @@ class SubmittedDeclarationPageViewSpec extends UnitViewSpec with Stubs with Expo
 
   val declarationPage = instanceOf[submitted_declaration_page]
   def createView(declaration: ExportsDeclaration = aDeclaration()): Document =
-    declarationPage(Some(submission), declaration)(journeyRequest(declaration, (SessionHelper.declarationUuid, "decId")), messages)
+    declarationPage(submission, declaration)(journeyRequest(declaration, (SessionHelper.declarationUuid, "decId")), messages)
 
   def links(view: Document): Elements = {
     val allLinks = view.getElementsByClass("govuk-link")
@@ -60,7 +60,7 @@ class SubmittedDeclarationPageViewSpec extends UnitViewSpec with Stubs with Expo
       val backButton = createView(aDeclaration(withId("declaration-id"))).getElementById("back-link")
 
       backButton.text mustBe messages("site.back")
-      backButton must haveHref(controllers.routes.DeclarationDetailsController.displayPage("declaration-id"))
+      backButton must haveHref(controllers.routes.DeclarationDetailsController.displayPage(submission.uuid))
     }
 
     "not have View declaration summary link" in {

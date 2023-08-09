@@ -21,16 +21,16 @@
 
 @this(govukSummaryList: GovukSummaryList)
 
-@(maybeSubmission: Option[Submission])(implicit messages: Messages)
+@(submission: Submission)(implicit messages: Messages)
 
 @govukSummaryList(SummaryList(
     rows = Seq(
         SummaryListRow(
             classes = "mrn-row",
             key = Key(content = Text(messages("declaration.summary.accepted.mrn"))),
-            value = Value(content = Text(maybeSubmission.flatMap(_.mrn).getOrElse("")))
+            value = Value(content = Text(submission.mrn.getOrElse("")))
         )
-    ) ++ extractNotificationRows(maybeSubmission),
+    ) ++ extractNotificationRows(submission),
 
     classes = "govuk-!-margin-bottom-9",
     attributes = Map("id" -> "declaration-notifications-summary")

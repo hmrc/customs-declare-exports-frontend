@@ -35,9 +35,9 @@
     transport_section: transport_section
 )
 
-@(maybeSubmission: Option[Submission], declaration: ExportsDeclaration)(implicit request: Request[_], messages: Messages)
+@(submission: Submission, declaration: ExportsDeclaration)(implicit request: Request[_], messages: Messages)
 
-@backLink = @{routes.DeclarationDetailsController.displayPage(declaration.id)}
+@backLink = @{routes.DeclarationDetailsController.displayPage(submission.uuid)}
 
 @govukLayout(
     title = Title("declaration.summary.submitted-header"),
@@ -52,7 +52,7 @@
 
     @print_page_button(marginBottom = 2)
 
-    @notificationsSection(maybeSubmission)
+    @notificationsSection(submission)
 
     <div class="govuk-section-break">@references_section(declaration, false)</div>
 
