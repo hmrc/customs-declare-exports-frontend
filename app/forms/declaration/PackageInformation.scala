@@ -17,11 +17,21 @@
 package forms.declaration
 
 import forms.DeclarationPage
+import forms.declaration.PackageInformation.{
+  keyForNumberOfPackages,
+  keyForShippingMarksPointer,
+  keyForTypesOfPackages,
+  numberOfPackagesPointer,
+  shippingMarksPointer,
+  typesOfPackagesPointer
+}
+import models.AmendmentRow.{forAddedValue, forRemovedValue, pointerToSelector}
 import models.DeclarationMeta.sequenceIdPlaceholder
 import models.DeclarationType.{CLEARANCE, DeclarationType}
 import models.ExportsFieldPointer.ExportsFieldPointer
-import models.FieldMapping
+import models.{AmendmentOp, FieldMapping}
 import models.declaration.ExplicitlySequencedObject
+import models.declaration.ExportItem.itemsPrefix
 import models.viewmodels.TariffContentKey
 import play.api.data.Forms.{number, optional, text}
 import play.api.data.{Form, Forms, Mapping}
@@ -37,26 +47,14 @@ case class PackageInformation(
   typesOfPackages: Option[String],
   numberOfPackages: Option[Int],
   shippingMarks: Option[String]
-) extends DiffTools[PackageInformation] with ExplicitlySequencedObject[PackageInformation] {
+) extends DiffTools[PackageInformation] with ExplicitlySequencedObject[PackageInformation] with AmendmentOp {
 
   def createDiff(original: PackageInformation, pointerString: ExportsFieldPointer, sequenceId: Option[Int] = None): ExportsDeclarationDiff =
     Seq(
       compareStringDifference(original.id, id, combinePointers(pointerString, PackageInformation.idPointer, sequenceId)),
-      compareStringDifference(
-        original.typesOfPackages,
-        typesOfPackages,
-        combinePointers(pointerString, PackageInformation.typesOfPackagesPointer, sequenceId)
-      ),
-      compareIntDifference(
-        original.numberOfPackages,
-        numberOfPackages,
-        combinePointers(pointerString, PackageInformation.numberOfPackagesPointer, sequenceId)
-      ),
-      compareStringDifference(
-        original.shippingMarks,
-        shippingMarks,
-        combinePointers(pointerString, PackageInformation.shippingMarksPointer, sequenceId)
-      )
+      compareStringDifference(original.typesOfPackages, typesOfPackages, combinePointers(pointerString, typesOfPackagesPointer, sequenceId)),
+      compareIntDifference(original.numberOfPackages, numberOfPackages, combinePointers(pointerString, numberOfPackagesPointer, sequenceId)),
+      compareStringDifference(original.shippingMarks, shippingMarks, combinePointers(pointerString, shippingMarksPointer, sequenceId))
     ).flatten
 
   // overriding equals and hashcode so that we can test for duplicate entries while ignoring the id
@@ -71,6 +69,20 @@ case class PackageInformation(
   def nonEmpty: Boolean = !isEmpty
 
   override def updateSequenceId(sequenceId: Int): PackageInformation = copy(sequenceId = sequenceId)
+
+  def valueAdded(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
+    typesOfPackages.fold("")(forAddedValue(pointerToSelector(pointer, typesOfPackagesPointer), messages(keyForTypesOfPackages), _)) +
+      numberOfPackages.fold("")(np =>
+        forAddedValue(pointerToSelector(pointer, numberOfPackagesPointer), messages(keyForNumberOfPackages), String.valueOf(np))
+      ) +
+      shippingMarks.fold("")(forAddedValue(pointerToSelector(pointer, shippingMarksPointer), messages(keyForShippingMarksPointer), _))
+
+  def valueRemoved(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
+    typesOfPackages.fold("")(forRemovedValue(pointerToSelector(pointer, typesOfPackagesPointer), messages(keyForTypesOfPackages), _)) +
+      numberOfPackages.fold("")(np =>
+        forRemovedValue(pointerToSelector(pointer, numberOfPackagesPointer), messages(keyForNumberOfPackages), String.valueOf(np))
+      ) +
+      shippingMarks.fold("")(forRemovedValue(pointerToSelector(pointer, shippingMarksPointer), messages(keyForShippingMarksPointer), _))
 }
 
 object PackageInformation extends DeclarationPage with FieldMapping {
@@ -83,6 +95,10 @@ object PackageInformation extends DeclarationPage with FieldMapping {
   val shippingMarksPointer: ExportsFieldPointer = "shippingMarks"
   val numberOfPackagesPointer: ExportsFieldPointer = "numberOfPackages"
   val typesOfPackagesPointer: ExportsFieldPointer = "typesOfPackages"
+
+  lazy val keyForNumberOfPackages = s"$itemsPrefix.packageInformation.number"
+  lazy val keyForShippingMarksPointer = s"$itemsPrefix.packageInformation.markings"
+  lazy val keyForTypesOfPackages = s"$itemsPrefix.packageInformation.type"
 
   val formId = "PackageInformation"
   val limit = 99

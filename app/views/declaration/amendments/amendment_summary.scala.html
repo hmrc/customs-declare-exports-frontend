@@ -42,7 +42,7 @@
 @()(implicit request: JourneyRequest[_], messages: Messages, appConfig: AppConfig)
 
 @draftBodyText = @{
-    if(request.cacheModel.declarationMeta.readyForSubmission != Some(true))
+    if (request.cacheModel.declarationMeta.readyForSubmission != Some(true))
         paragraphBody(messages("declaration.summary.amendment-draft.body"))
 }
 

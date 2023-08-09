@@ -102,6 +102,8 @@ site.pagination.of = o
 
 general.inquiries.help.link = Help gydag ymholiadau cyffredinol
 
+mrn.heading = MRN: {0}
+
 unauthorised.heading = Nid oes gennych fynediad at y Gwasanaeth Datganiadau Tollau gan ddefnyddio’r manylion mewngofnodi hyn
 
 unauthorised.heading.1 = Ymgais gyntaf i gael mynediad at CDS
@@ -210,13 +212,9 @@ cancellation.ducr = Datganiad o Gyfeirnod Unigryw y Llwyth (DUCR): {0}
 
 cancellation.lrn = Eich cyfeirnod (LRN): {0}
 
-cancellation.mrn = MRN: {0}
-
 cancellation.holding.title = Canslo’ch datganiad
 
 cancellation.holding.paragraph = Rydym yn prosesu’ch cais i ganslo, arhoswch.
-
-cancellation.mrn.header = MRN: {0}
 
 cancellation.result.cancelled.title = Mae’ch datganiad wedi’i ganslo.
 
@@ -3498,19 +3496,19 @@ declaration.summary.parties.carrier.address = Manylion y cludwr
 
 declaration.summary.parties.carrier.address.change = Newidiwch fanylion y cludwr
 
-declaration.summary.parties.additional = Partïon eraill sydd ynghlwm
+declaration.summary.parties.actors = Partïon eraill sydd ynghlwm
 
-declaration.summary.parties.additional.empty.change = Newidiwch y partïon ychwanegol
+declaration.summary.parties.actors.empty.change = Newidiwch y partïon ychwanegol
 
-declaration.summary.parties.additional.change = Newidiwch {0} {1}
+declaration.summary.parties.actors.change = Newidiwch {0} {1}
 
-declaration.summary.parties.additional.CS = Cydgrynhowr
+declaration.summary.parties.actors.CS = Cydgrynhowr
 
-declaration.summary.parties.additional.MF = Gweithgynhyrchwr
+declaration.summary.parties.actors.MF = Gweithgynhyrchwr
 
-declaration.summary.parties.additional.FW = Trefnydd anfon nwyddau ychwanegol
+declaration.summary.parties.actors.FW = Trefnydd anfon nwyddau ychwanegol
 
-declaration.summary.parties.additional.WH = Ceidwad warws
+declaration.summary.parties.actors.WH = Ceidwad warws
 
 declaration.summary.parties.holders = Awdurdodiadau ar gyfer y datganiad hwn
 
@@ -4063,8 +4061,6 @@ legal.declaration.email.error= Nodwch gyfeiriad e-bost dilys
 legal.declaration.confirmation= Rwy’n cadarnhau bod yr wybodaeth a roddwyd gennyf yn gywir hyd eithaf fy ngwybodaeth.
 
 legal.declaration.confirmation.missing= Mae’n rhaid i chi gadarnhau bod yr wybodaeth a roddwyd gennych yn gywir hyd eithaf eich gwybodaeth.
-
-rejected.notification.mrn = MRN: {0}
 
 rejected.notification.mrn.missing = Dim MRN
 

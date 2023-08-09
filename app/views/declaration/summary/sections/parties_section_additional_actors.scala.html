@@ -39,14 +39,14 @@
             actionSummaryItem(
                 href = routes.AdditionalActorsAddController.displayPage.url,
                 content = HtmlContent(linkContent(messages("site.change"))),
-                visuallyHiddenText = Some(messages("declaration.summary.parties.additional.empty.change"))
+                visuallyHiddenText = Some(messages("declaration.summary.parties.actors.empty.change"))
             )
         )
     ))
 }
 
 @actorPartyType(actor: DeclarationAdditionalActors) = @{
-    actor.partyType.map(partyType => messages(s"declaration.summary.parties.additional.$partyType")).getOrElse("")
+    actor.partyType.map(partyType => messages(s"declaration.summary.parties.actors.$partyType")).getOrElse("")
 }
 
 @actorEori(actor: DeclarationAdditionalActors) = @{
@@ -59,7 +59,7 @@
             messages("site.change"),
             callForSummaryChangeLink(routes.AdditionalActorsSummaryController.displayPage),
             textHidden = Some(messages(
-                "declaration.summary.parties.additional.change",
+                "declaration.summary.parties.actors.change",
                 actorPartyType(actor),
                 actorEori(actor)
             ))
@@ -73,7 +73,7 @@
         Some(SummaryListRow(
             classes = "additionalActors-row",
             key = Key(
-                content = Text(messages("declaration.summary.parties.additional"))
+                content = Text(messages("declaration.summary.parties.actors"))
             ),
             value = Value(
                 content = Text(messages("site.no"))
@@ -109,7 +109,7 @@
                 content = HtmlContent(spanVisuallyHidden(messages("site.change.header")))
             )
         )),
-        caption = Some(messages("declaration.summary.parties.additional")),
+        caption = Some(messages("declaration.summary.parties.actors")),
         classes = "govuk-table govuk-!-margin-bottom-3",
         attributes = Map("id" -> "additionalActors-table")
     ))

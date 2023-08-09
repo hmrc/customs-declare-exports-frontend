@@ -18,22 +18,38 @@ package forms.declaration
 
 import forms.DeclarationPage
 import forms.common.Eori
-import models.viewmodels.TariffContentKey
+import forms.declaration.PersonPresentingGoodsDetails.keyForAmend
+import models.AmendmentRow.{forAddedValue, forAmendedValue, forRemovedValue}
 import models.DeclarationType.DeclarationType
 import models.ExportsFieldPointer.ExportsFieldPointer
-import models.FieldMapping
+import models.declaration.Parties.partiesPrefix
+import models.viewmodels.TariffContentKey
+import models.{Amendment, FieldMapping}
 import play.api.data.{Form, Forms}
+import play.api.i18n.Messages
 import play.api.libs.json.Json
 import services.DiffTools
 import services.DiffTools.{combinePointers, compareDifference, ExportsDeclarationDiff}
 
-case class PersonPresentingGoodsDetails(eori: Eori) extends DiffTools[PersonPresentingGoodsDetails] {
+case class PersonPresentingGoodsDetails(eori: Eori) extends DiffTools[PersonPresentingGoodsDetails] with Amendment {
+
   override def createDiff(
     original: PersonPresentingGoodsDetails,
     pointerString: ExportsFieldPointer,
     sequenceId: Option[Int] = None
   ): ExportsDeclarationDiff =
     Seq(compareDifference(original.eori, eori, combinePointers(pointerString, Eori.pointer, sequenceId))).flatten
+
+  def value: String = eori.value
+
+  def valueAdded(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
+    forAddedValue(pointer, messages(keyForAmend), value)
+
+  def valueAmended(newValue: Amendment, pointer: ExportsFieldPointer)(implicit messages: Messages): String =
+    forAmendedValue(pointer, messages(keyForAmend), value, newValue.value)
+
+  def valueRemoved(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
+    forRemovedValue(pointer, messages(keyForAmend), value)
 }
 
 object PersonPresentingGoodsDetails extends DeclarationPage with FieldMapping {
@@ -41,11 +57,13 @@ object PersonPresentingGoodsDetails extends DeclarationPage with FieldMapping {
 
   val pointer: ExportsFieldPointer = "personPresentingGoodsDetails"
 
+  lazy val keyForAmend = s"${partiesPrefix}.personPresentingGoods"
+
   val fieldName = "eori"
 
   private val mapping = Forms.mapping(fieldName -> Eori.mapping())(PersonPresentingGoodsDetails.apply)(PersonPresentingGoodsDetails.unapply)
 
-  def form = Form(mapping)
+  def form: Form[PersonPresentingGoodsDetails] = Form(mapping)
 
   override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
     Seq(TariffContentKey("tariff.declaration.personPresentingGoods.clearance"))

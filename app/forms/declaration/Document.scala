@@ -17,10 +17,19 @@
 package forms.declaration
 
 import forms.DeclarationPage
+import forms.declaration.Document.{
+  documentReferencePointer,
+  documentTypePointer,
+  goodsItemIdentifierPointer,
+  keyForItemNumber,
+  keyForReference,
+  keyForType
+}
+import models.AmendmentRow.{forAddedValue, forRemovedValue}
 import models.DeclarationType.DeclarationType
 import models.viewmodels.TariffContentKey
 import models.ExportsFieldPointer.ExportsFieldPointer
-import models.FieldMapping
+import models.{AmendmentOp, FieldMapping}
 import models.declaration.{ImplicitlySequencedObject, IsoData}
 import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, Forms, Mapping}
@@ -31,19 +40,41 @@ import services.DiffTools.{combinePointers, compareStringDifference, ExportsDecl
 import utils.validators.forms.FieldValidator._
 
 case class Document(documentType: String, documentReference: String, goodsItemIdentifier: Option[String])
-    extends DiffTools[Document] with ImplicitlySequencedObject {
+    extends DiffTools[Document] with ImplicitlySequencedObject with AmendmentOp {
+
   def createDiff(original: Document, pointerString: ExportsFieldPointer, sequenceId: Option[Int] = None): ExportsDeclarationDiff =
     Seq(
-      compareStringDifference(original.documentType, documentType, combinePointers(pointerString, sequenceId)),
-      compareStringDifference(original.documentReference, documentReference, combinePointers(pointerString, sequenceId)),
-      compareStringDifference(original.goodsItemIdentifier, goodsItemIdentifier, combinePointers(pointerString, sequenceId))
+      compareStringDifference(original.documentType, documentType, combinePointers(pointerString, documentTypePointer, sequenceId)),
+      compareStringDifference(original.documentReference, documentReference, combinePointers(pointerString, documentReferencePointer, sequenceId)),
+      compareStringDifference(
+        original.goodsItemIdentifier,
+        goodsItemIdentifier,
+        combinePointers(pointerString, goodsItemIdentifierPointer, sequenceId)
+      )
     ).flatten
+
+  def valueAdded(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
+    forAddedValue(pointer, messages(keyForType), documentType) +
+      forAddedValue(pointer, messages(keyForReference), documentReference) +
+      goodsItemIdentifier.fold("")(forAddedValue(pointer, messages(keyForItemNumber), _))
+
+  def valueRemoved(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
+    forRemovedValue(pointer, messages(keyForType), documentType) +
+      forRemovedValue(pointer, messages(keyForReference), documentReference) +
+      goodsItemIdentifier.fold("")(forRemovedValue(pointer, messages(keyForItemNumber), _))
 }
 
 object Document extends DeclarationPage with FieldMapping {
   implicit val format = Json.format[Document]
 
   val pointer: ExportsFieldPointer = "documents"
+  val documentTypePointer: ExportsFieldPointer = "documentType"
+  val documentReferencePointer: ExportsFieldPointer = "documentReference"
+  val goodsItemIdentifierPointer: ExportsFieldPointer = "goodsItemIdentifier"
+
+  lazy val keyForItemNumber = "declaration.summary.transaction.previousDocuments.goodsItemIdentifier"
+  lazy val keyForReference = "declaration.summary.transaction.previousDocuments.reference"
+  lazy val keyForType = "declaration.summary.transaction.previousDocuments.type"
 
   val formId = "PreviousDocuments"
 
@@ -75,6 +106,7 @@ object Document extends DeclarationPage with FieldMapping {
 }
 
 case class PreviousDocumentsData(documents: Seq[Document]) extends DiffTools[PreviousDocumentsData] with IsoData[Document] {
+
   override val subPointer: ExportsFieldPointer = Document.pointer
   override val elements: Seq[Document] = documents
 
@@ -88,8 +120,6 @@ object PreviousDocumentsData extends FieldMapping {
   val pointer: ExportsFieldPointer = "previousDocuments"
 
   val maxAmountOfItems = 99
-
-  val isScreenMandatory = false
 }
 
 object DocumentChangeOrRemove extends DeclarationPage {

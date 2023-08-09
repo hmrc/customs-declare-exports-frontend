@@ -31,7 +31,7 @@ class PreviousDocumentsSpec extends DeclarationPageBaseSpec with OptionValues {
       }
 
       "the original version's documentType field has a different value to this one" in {
-        val fieldPointer = s"${baseFieldPointer}"
+        val fieldPointer = s"${baseFieldPointer}.${Document.documentTypePointer}"
         val prevDocs = Document("latestType", "latestReference", None)
         val originalValue = "originalType"
         prevDocs.createDiff(prevDocs.copy(documentType = originalValue), baseFieldPointer) mustBe Seq(
@@ -40,7 +40,7 @@ class PreviousDocumentsSpec extends DeclarationPageBaseSpec with OptionValues {
       }
 
       "the original version's documentReference field has a different value to this one" in {
-        val fieldPointer = s"${baseFieldPointer}"
+        val fieldPointer = s"${baseFieldPointer}.${Document.documentReferencePointer}"
         val prevDocs = Document("latestType", "latestReference", None)
         val originalValue = "originalReference"
         prevDocs.createDiff(prevDocs.copy(documentReference = originalValue), baseFieldPointer) mustBe Seq(
@@ -49,7 +49,7 @@ class PreviousDocumentsSpec extends DeclarationPageBaseSpec with OptionValues {
       }
 
       "the original version's goodsItemIdentifier field has a different value to this one" in {
-        val fieldPointer = s"${baseFieldPointer}"
+        val fieldPointer = s"${baseFieldPointer}.${Document.goodsItemIdentifierPointer}"
         withClue("both versions have Some values but values are different") {
           val prevDocs = Document("latestType", "latestReference", Some("latestGoodsIdent"))
           val originalValue = "originalGoodsIdent"

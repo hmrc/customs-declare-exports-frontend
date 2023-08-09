@@ -19,17 +19,19 @@ package services
 import connectors.CodeListConnector
 import play.api.i18n.Messages
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 
+@Singleton
 class DocumentTypeService @Inject() (codeListConnector: CodeListConnector) {
-  def documentCodesMap()(implicit messages: Messages): Map[String, DocumentType] = codeListConnector.getDocumentTypes(messages.lang.toLocale)
 
-  def allDocuments()(implicit messages: Messages): List[DocumentType] = documentCodesMap().map(_._2).toList
+  def documentCodesMap()(implicit messages: Messages): Map[String, DocumentType] =
+    codeListConnector.getDocumentTypes(messages.lang.toLocale)
 
-  def documentsForDropdown()(implicit messages: Messages): List[DocumentType] =
-    allDocuments().filterNot(docType => allDocuments().contains(docType.code))
+  def allDocuments()(implicit messages: Messages): List[DocumentType] =
+    documentCodesMap().map(_._2).toList
 
-  def findByCode(code: String)(implicit messages: Messages): DocumentType = documentCodesMap()(messages)(code)
+  def findByCode(code: String)(implicit messages: Messages): DocumentType =
+    documentCodesMap()(messages)(code)
 }
 
 object DocumentTypeService {

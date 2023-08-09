@@ -74,7 +74,7 @@ class SummaryMessagesSpec extends UnitViewSpec {
       messages must haveTranslationFor("declaration.summary.parties.representative.type.3")
       messages must haveTranslationFor("declaration.summary.parties.carrier.eori")
       messages must haveTranslationFor("declaration.summary.parties.carrier.address")
-      messages must haveTranslationFor("declaration.summary.parties.additional")
+      messages must haveTranslationFor("declaration.summary.parties.actors")
       messages must haveTranslationFor("declaration.summary.parties.holders")
       messages must haveTranslationFor("declaration.summary.parties.holders.type")
       messages must haveTranslationFor("declaration.summary.parties.holders.eori")

@@ -548,6 +548,8 @@ GET         /cancel-amendment                    controllers.declaration.Submiss
 
 GET         /amend-declaration/:parentId/:enhancedStatus  controllers.declaration.amendments.AmendDeclarationController.initAmendment(parentId: String, enhancedStatus: String)
 
+GET         /amendment-details/:actionId         controllers.declaration.amendments.AmendmentDetailsController.displayPage(actionId: String)
+
 # Confirmation
 
 GET         /holding                             controllers.declaration.ConfirmationController.displayHoldingPage

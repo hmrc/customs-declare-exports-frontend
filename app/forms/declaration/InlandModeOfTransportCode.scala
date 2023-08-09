@@ -17,24 +17,49 @@
 package forms.declaration
 
 import forms.DeclarationPage
+import forms.declaration.InlandModeOfTransportCode.keyForAmend
+import models.AmendmentRow.{forAddedValue, forAmendedValue, forRemovedValue, safeMessage}
 import models.DeclarationType.DeclarationType
-import models.viewmodels.TariffContentKey
 import models.ExportsFieldPointer.ExportsFieldPointer
-import models.FieldMapping
+import models.viewmodels.TariffContentKey
+import models.{Amendment, FieldMapping}
 import play.api.data.{Form, Forms}
+import play.api.i18n.Messages
 import play.api.libs.json.Json
-import services.DiffTools
-import services.DiffTools.{compareDifference, ExportsDeclarationDiff}
 
-case class InlandModeOfTransportCode(inlandModeOfTransportCode: Option[ModeOfTransportCode] = None) extends DiffTools[InlandModeOfTransportCode] {
-  def createDiff(original: InlandModeOfTransportCode, pointerString: ExportsFieldPointer, sequenceId: Option[Int] = None): ExportsDeclarationDiff =
-    Seq(compareDifference(original.inlandModeOfTransportCode, inlandModeOfTransportCode, pointerString)).flatten
+case class InlandModeOfTransportCode(inlandModeOfTransportCode: Option[ModeOfTransportCode] = None)
+    extends Ordered[InlandModeOfTransportCode] with Amendment {
+
+  override def compare(that: InlandModeOfTransportCode): Int =
+    (inlandModeOfTransportCode, that.inlandModeOfTransportCode) match {
+      case (None, None)                    => 0
+      case (_, None)                       => 1
+      case (None, _)                       => -1
+      case (Some(current), Some(original)) => current.compare(original)
+    }
+
+  def value: String = inlandModeOfTransportCode.fold("")(_.toString)
+
+  private def toUserValue(value: String)(implicit messages: Messages): String =
+    safeMessage(s"declaration.summary.transport.inlandModeOfTransport.$value", value)
+
+  def valueAdded(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
+    inlandModeOfTransportCode.fold("")(code => forAddedValue(pointer, messages(keyForAmend), toUserValue(code.toString)))
+
+  def valueAmended(newValue: Amendment, pointer: ExportsFieldPointer)(implicit messages: Messages): String =
+    forAmendedValue(pointer, messages(keyForAmend), toUserValue(value), toUserValue(newValue.value))
+
+  def valueRemoved(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
+    inlandModeOfTransportCode.fold("")(code => forRemovedValue(pointer, messages(keyForAmend), toUserValue(code.toString)))
 }
 
 object InlandModeOfTransportCode extends DeclarationPage with FieldMapping {
-  implicit val format = Json.format[InlandModeOfTransportCode]
 
   val pointer: ExportsFieldPointer = "inlandModeOfTransportCode.inlandModeOfTransportCode"
+
+  private val keyForAmend = "declaration.summary.transport.inlandModeOfTransport"
+
+  implicit val format = Json.format[InlandModeOfTransportCode]
 
   val formId = "InlandModeOfTransportCode"
 

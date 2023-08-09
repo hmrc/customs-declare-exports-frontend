@@ -17,25 +17,43 @@
 package forms.declaration
 
 import forms.DeclarationPage
+import forms.declaration.SupervisingCustomsOffice.keyForAmend
+import models.AmendmentRow.{forAddedValue, forAmendedValue, forRemovedValue}
 import models.DeclarationType.DeclarationType
-import models.viewmodels.TariffContentKey
 import models.ExportsFieldPointer.ExportsFieldPointer
-import models.FieldMapping
-import play.api.data.{Form, Forms}
+import models.viewmodels.TariffContentKey
+import models.{Amendment, FieldMapping}
 import play.api.data.Forms.{optional, text}
+import play.api.data.{Form, Forms}
+import play.api.i18n.Messages
 import play.api.libs.json.Json
 import services.DiffTools.compareOptionalString
 import utils.validators.forms.FieldValidator._
 
-case class SupervisingCustomsOffice(supervisingCustomsOffice: Option[String] = None) extends Ordered[SupervisingCustomsOffice] {
+case class SupervisingCustomsOffice(supervisingCustomsOffice: Option[String] = None) extends Ordered[SupervisingCustomsOffice] with Amendment {
+
   override def compare(that: SupervisingCustomsOffice): Int =
     compareOptionalString(supervisingCustomsOffice, that.supervisingCustomsOffice)
+
+  def value: String = supervisingCustomsOffice.getOrElse("")
+
+  def valueAdded(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
+    supervisingCustomsOffice.fold("")(forAddedValue(pointer, messages(keyForAmend), _))
+
+  def valueAmended(newValue: Amendment, pointer: ExportsFieldPointer)(implicit messages: Messages): String =
+    forAmendedValue(pointer, messages(keyForAmend), value, newValue.value)
+
+  def valueRemoved(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
+    supervisingCustomsOffice.fold("")(forRemovedValue(pointer, messages(keyForAmend), _))
 }
 
 object SupervisingCustomsOffice extends DeclarationPage with FieldMapping {
-  implicit val format = Json.format[SupervisingCustomsOffice]
 
   val pointer: ExportsFieldPointer = "supervisingCustomsOffice"
+
+  val keyForAmend = "declaration.summary.transport.supervisingOffice"
+
+  implicit val format = Json.format[SupervisingCustomsOffice]
 
   val formId = "SupervisingCustomsOffice"
 

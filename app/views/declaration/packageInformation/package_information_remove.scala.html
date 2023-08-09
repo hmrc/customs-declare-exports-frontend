@@ -49,7 +49,7 @@
         rows = Seq(
           SummaryListRow(
               Key(Text(messages("declaration.packageInformation.remove.typesOfPackages"))),
-              Value(Text(info.typesOfPackages.map(packageTypesService.findByCode).map(_.asText()).getOrElse("")))
+              Value(Text(info.typesOfPackages.map(packageTypesService.findByCode).map(_.asText).getOrElse("")))
           ),
           SummaryListRow(
               Key(Text(messages("declaration.packageInformation.remove.numberOfPackages"))),

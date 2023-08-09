@@ -35,7 +35,7 @@ class PartiesSectionAdditionalActorsViewSpec extends UnitViewSpec with ExportsTe
   val eori3 = "eori3"
   val partyType3 = "WH"
 
-  val prefix = "declaration.summary.parties.additional"
+  val prefix = "declaration.summary.parties.actors"
 
   val additionalActors = List(
     DeclarationAdditionalActors(Some(Eori(eori1)), Some(partyType1)),
@@ -51,10 +51,10 @@ class PartiesSectionAdditionalActorsViewSpec extends UnitViewSpec with ExportsTe
       val view = section(Seq.empty)(messages)
       val row = view.getElementsByClass("additionalActors-row")
 
-      row must haveSummaryKey(messages("declaration.summary.parties.additional"))
+      row must haveSummaryKey(messages(s"${prefix}"))
       row must haveSummaryValue(messages("site.no"))
 
-      row must haveSummaryActionsTexts("site.change", "declaration.summary.parties.additional.empty.change")
+      row must haveSummaryActionsTexts("site.change", s"${prefix}.empty.change")
       row must haveSummaryActionWithPlaceholder(AdditionalActorsAddController.displayPage)
     }
 
@@ -62,7 +62,7 @@ class PartiesSectionAdditionalActorsViewSpec extends UnitViewSpec with ExportsTe
       val view = section(additionalActors)(messages)
       val table = view.getElementById("additionalActors-table")
 
-      table.getElementsByTag("caption").text mustBe messages("declaration.summary.parties.additional")
+      table.getElementsByTag("caption").text mustBe messages(s"${prefix}")
 
       table.getElementsByClass("govuk-table__header").get(0).text mustBe messages("declaration.additionalActors.partyType")
       table.getElementsByClass("govuk-table__header").get(1).text mustBe messages("declaration.additionalActors.eori")
@@ -74,7 +74,7 @@ class PartiesSectionAdditionalActorsViewSpec extends UnitViewSpec with ExportsTe
       val row1ChangeLink = row1.getElementsByClass("govuk-table__cell").get(2).getElementsByTag("a").first
       row1ChangeLink must haveHrefWithPlaceholder(AdditionalActorsSummaryController.displayPage)
       row1ChangeLink must containMessage("site.change")
-      row1ChangeLink must containMessage("declaration.summary.parties.additional.change", messages(s"$prefix.CS"), eori1)
+      row1ChangeLink must containMessage(s"${prefix}.change", messages(s"$prefix.CS"), eori1)
 
       val row2 = table.getElementsByClass("govuk-table__body").first.getElementsByClass("govuk-table__row").get(1)
       row2.getElementsByClass("govuk-table__cell").get(0).text mustBe messages(s"$prefix.MF")
@@ -82,7 +82,7 @@ class PartiesSectionAdditionalActorsViewSpec extends UnitViewSpec with ExportsTe
       val row2ChangeLink = row2.getElementsByClass("govuk-table__cell").get(2).getElementsByTag("a").first
       row2ChangeLink must haveHrefWithPlaceholder(AdditionalActorsSummaryController.displayPage)
       row2ChangeLink must containMessage("site.change")
-      row2ChangeLink must containMessage("declaration.summary.parties.additional.change", messages(s"$prefix.MF"), eori2)
+      row2ChangeLink must containMessage(s"${prefix}.change", messages(s"$prefix.MF"), eori2)
 
       val row3 = table.getElementsByClass("govuk-table__body").first.getElementsByClass("govuk-table__row").get(2)
       row3.getElementsByClass("govuk-table__cell").get(0).text mustBe messages(s"$prefix.WH")
@@ -90,7 +90,7 @@ class PartiesSectionAdditionalActorsViewSpec extends UnitViewSpec with ExportsTe
       val row3ChangeLink = row3.getElementsByClass("govuk-table__cell").get(2).getElementsByTag("a").first
       row3ChangeLink must haveHrefWithPlaceholder(AdditionalActorsSummaryController.displayPage)
       row3ChangeLink must containMessage("site.change")
-      row3ChangeLink must containMessage("declaration.summary.parties.additional.change", messages(s"$prefix.WH"), eori3)
+      row3ChangeLink must containMessage(s"${prefix}.change", messages(s"$prefix.WH"), eori3)
     }
   }
 }

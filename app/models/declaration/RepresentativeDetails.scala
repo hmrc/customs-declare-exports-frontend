@@ -17,14 +17,20 @@
 package models.declaration
 
 import forms.declaration.EntityDetails
+import models.AmendmentRow.{forAddedValue, forRemovedValue}
 import models.ExportsFieldPointer.ExportsFieldPointer
-import models.FieldMapping
+import models.AmendmentRow.safeMessage
+import models.declaration.Parties.partiesPrefix
+import models.declaration.RepresentativeDetails.keyForAmend
+import models.{AmendmentOp, FieldMapping}
+import play.api.i18n.Messages
 import play.api.libs.json.Json
 import services.DiffTools
 import services.DiffTools.{combinePointers, compareStringDifference, ExportsDeclarationDiff}
 
 case class RepresentativeDetails(details: Option[EntityDetails], statusCode: Option[String], representingOtherAgent: Option[String])
-    extends DiffTools[RepresentativeDetails] {
+    extends DiffTools[RepresentativeDetails] with AmendmentOp {
+
   def isRepresentingOtherAgent = representingOtherAgent.contains("Yes")
 
   // representingOtherAgent field is not used to generate WCO XML
@@ -34,17 +40,29 @@ case class RepresentativeDetails(details: Option[EntityDetails], statusCode: Opt
     sequenceId: Option[Int] = None
   ): ExportsDeclarationDiff =
     Seq(
-      createDiffOfOptions(original.details, details, combinePointers(pointerString, RepresentativeDetails.detailsPointer, sequenceId)),
+      createDiffOfOptions(original.details, details, combinePointers(pointerString, sequenceId)),
       compareStringDifference(original.statusCode, statusCode, combinePointers(pointerString, RepresentativeDetails.statusCodePointer, sequenceId))
     ).flatten
+
+  private def toUserValue(value: String)(implicit messages: Messages): String =
+    safeMessage(s"${partiesPrefix}.representative.type.$value", value)
+
+  def valueAdded(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
+    details.fold("")(_.valueAdded(pointer)) +
+      statusCode.fold("")(code => forAddedValue(pointer, messages(keyForAmend), toUserValue(code)))
+
+  def valueRemoved(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
+    details.fold("")(_.valueRemoved(pointer)) +
+      statusCode.fold("")(code => forRemovedValue(pointer, messages(keyForAmend), toUserValue(code)))
 }
 
 object RepresentativeDetails extends FieldMapping {
   implicit val format = Json.format[RepresentativeDetails]
 
   val pointer: ExportsFieldPointer = "representativeDetails"
-  val detailsPointer: ExportsFieldPointer = "details"
   val statusCodePointer: ExportsFieldPointer = "statusCode"
+
+  private lazy val keyForAmend = s"${partiesPrefix}.representative.type"
 
   def apply(): RepresentativeDetails = new RepresentativeDetails(None, None, None)
 }

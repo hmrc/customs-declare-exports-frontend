@@ -18,18 +18,18 @@ package services.model
 
 import base.UnitSpec
 import forms.declaration.{PackageInformation, Seal}
-import forms.declaration.countries.Country
 import models.ExportsDeclaration
+import forms.declaration.countries.Country
 import models.declaration.{Container, ExportItem, Locations, ProcedureCodesData, RoutingCountry, Transport}
 import org.scalatest.GivenWhenThen
 import services.{AlteredField, OriginalAndNewValues}
 import services.cache.{ExportsDeclarationBuilder, ExportsItemBuilder}
 
-class DiffToolsISpec extends UnitSpec with ExportsDeclarationBuilder with ExportsItemBuilder with GivenWhenThen {
+class DiffToolsSpec extends UnitSpec with ExportsDeclarationBuilder with ExportsItemBuilder with GivenWhenThen {
 
   private val baseFieldPointer = ExportsDeclaration.pointer
   private val goodsItemQuantityFieldPointer = s"$baseFieldPointer.${ExportsDeclaration.goodsItemQuantityPointer}"
-  private val destinationCountryPointer = s"$baseFieldPointer.${Locations.pointer}.${Locations.destinationCountryPointer}.${Country.pointer}"
+  private val destinationCountryPointer = s"$baseFieldPointer.${Locations.pointer}.${Locations.destinationCountryPointer}"
   private def itemFieldPointer(itemSeqId: Int) = s"$baseFieldPointer.${ExportItem.pointer}.#$itemSeqId"
   private def procedureCodePointer(itemSeqId: Int) =
     s"$baseFieldPointer.${ExportItem.pointer}.#$itemSeqId.${ProcedureCodesData.pointer}.${ProcedureCodesData.procedureCodesPointer}"
@@ -52,10 +52,10 @@ class DiffToolsISpec extends UnitSpec with ExportsDeclarationBuilder with Export
         val amendedDeclaration = aDeclaration(withItems(currentItem1), withDestinationCountry(Country(Some("DE"))))
 
         amendedDeclaration.createDiff(originalDeclaration) must contain theSameElementsAs Seq(
+          AlteredField(procedureCodePointer(1), OriginalAndNewValues(Some("1042"), Some("1044"))),
           AlteredField(itemFieldPointer(2), OriginalAndNewValues(Some(originalItem2), None)),
           AlteredField(goodsItemQuantityFieldPointer, OriginalAndNewValues(Some(2), Some(1))),
-          AlteredField(destinationCountryPointer, OriginalAndNewValues(Some("FR"), Some("DE"))),
-          AlteredField(procedureCodePointer(1), OriginalAndNewValues(Some("1042"), Some("1044")))
+          AlteredField(destinationCountryPointer, OriginalAndNewValues(Some(Country(Some("FR"))), Some(Country(Some("DE")))))
         )
       }
 
@@ -70,10 +70,10 @@ class DiffToolsISpec extends UnitSpec with ExportsDeclarationBuilder with Export
         val amendedDeclaration = aDeclaration(withItems(currentItem1, currentItem2), withDestinationCountry(Country(Some("DE"))))
 
         amendedDeclaration.createDiff(originalDeclaration) must contain theSameElementsAs Seq(
+          AlteredField(procedureCodePointer(1), OriginalAndNewValues(Some("1042"), Some("1044"))),
           AlteredField(itemFieldPointer(2), OriginalAndNewValues(None, Some(currentItem2))),
           AlteredField(goodsItemQuantityFieldPointer, OriginalAndNewValues(Some(1), Some(2))),
-          AlteredField(destinationCountryPointer, OriginalAndNewValues(Some("FR"), Some("DE"))),
-          AlteredField(procedureCodePointer(1), OriginalAndNewValues(Some("1042"), Some("1044")))
+          AlteredField(destinationCountryPointer, OriginalAndNewValues(Some(Country(Some("FR"))), Some(Country(Some("DE")))))
         )
       }
 
@@ -89,10 +89,10 @@ class DiffToolsISpec extends UnitSpec with ExportsDeclarationBuilder with Export
         val amendedDeclaration = aDeclaration(withItems(currentItem1, currentItem3), withDestinationCountry(Country(Some("DE"))))
 
         amendedDeclaration.createDiff(originalDeclaration) must contain theSameElementsAs Seq(
+          AlteredField(procedureCodePointer(1), OriginalAndNewValues(Some("1042"), Some("1044"))),
           AlteredField(itemFieldPointer(2), OriginalAndNewValues(Some(originalItem2), None)),
           AlteredField(itemFieldPointer(3), OriginalAndNewValues(None, Some(currentItem3))),
-          AlteredField(destinationCountryPointer, OriginalAndNewValues(Some("FR"), Some("DE"))),
-          AlteredField(procedureCodePointer(1), OriginalAndNewValues(Some("1042"), Some("1044")))
+          AlteredField(destinationCountryPointer, OriginalAndNewValues(Some(Country(Some("FR"))), Some(Country(Some("DE")))))
         )
       }
     }
@@ -116,7 +116,7 @@ class DiffToolsISpec extends UnitSpec with ExportsDeclarationBuilder with Export
         amendedDeclaration.createDiff(originalDeclaration) must contain theSameElementsAs Seq(
           AlteredField(packageInfoPointer(2), OriginalAndNewValues(Some(originalPackageInfo2), None)),
           AlteredField(s"${packageInfoPointer(1)}.${PackageInformation.typesOfPackagesPointer}", OriginalAndNewValues(None, Some("box"))),
-          AlteredField(destinationCountryPointer, OriginalAndNewValues(Some("FR"), Some("DE")))
+          AlteredField(destinationCountryPointer, OriginalAndNewValues(Some(Country(Some("FR"))), Some(Country(Some("DE")))))
         )
       }
 
@@ -139,7 +139,7 @@ class DiffToolsISpec extends UnitSpec with ExportsDeclarationBuilder with Export
         amendedDeclaration.createDiff(originalDeclaration) must contain theSameElementsAs Seq(
           AlteredField(packageInfoPointer(2), OriginalAndNewValues(None, Some(currentPackageInfo2))),
           AlteredField(s"${packageInfoPointer(1)}.${PackageInformation.typesOfPackagesPointer}", OriginalAndNewValues(None, Some("box"))),
-          AlteredField(destinationCountryPointer, OriginalAndNewValues(Some("FR"), Some("DE")))
+          AlteredField(destinationCountryPointer, OriginalAndNewValues(Some(Country(Some("FR"))), Some(Country(Some("DE")))))
         )
       }
 
@@ -164,7 +164,7 @@ class DiffToolsISpec extends UnitSpec with ExportsDeclarationBuilder with Export
           AlteredField(packageInfoPointer(2), OriginalAndNewValues(Some(originalPackageInfo2), None)),
           AlteredField(packageInfoPointer(3), OriginalAndNewValues(None, Some(currentPackageInfo3))),
           AlteredField(s"${packageInfoPointer(1)}.${PackageInformation.typesOfPackagesPointer}", OriginalAndNewValues(None, Some("box"))),
-          AlteredField(destinationCountryPointer, OriginalAndNewValues(Some("FR"), Some("DE")))
+          AlteredField(destinationCountryPointer, OriginalAndNewValues(Some(Country(Some("FR"))), Some(Country(Some("DE")))))
         )
       }
     }
@@ -190,7 +190,7 @@ class DiffToolsISpec extends UnitSpec with ExportsDeclarationBuilder with Export
         amendedDeclaration.createDiff(originalDeclaration) must contain theSameElementsAs Seq(
           AlteredField(sealPointer(1), OriginalAndNewValues(None, Some(currentSeal1))),
           AlteredField(containerPointer(2), OriginalAndNewValues(Some(originalContainer2), None)),
-          AlteredField(destinationCountryPointer, OriginalAndNewValues(Some("FR"), Some("DE")))
+          AlteredField(destinationCountryPointer, OriginalAndNewValues(Some(Country(Some("FR"))), Some(Country(Some("DE")))))
         )
       }
 
@@ -213,7 +213,7 @@ class DiffToolsISpec extends UnitSpec with ExportsDeclarationBuilder with Export
         amendedDeclaration.createDiff(originalDeclaration) must contain theSameElementsAs Seq(
           AlteredField(sealPointer(1), OriginalAndNewValues(None, Some(currentSeal1))),
           AlteredField(containerPointer(2), OriginalAndNewValues(None, Some(currentContainer2))),
-          AlteredField(destinationCountryPointer, OriginalAndNewValues(Some("FR"), Some("DE")))
+          AlteredField(destinationCountryPointer, OriginalAndNewValues(Some(Country(Some("FR"))), Some(Country(Some("DE")))))
         )
       }
 
@@ -241,7 +241,7 @@ class DiffToolsISpec extends UnitSpec with ExportsDeclarationBuilder with Export
           AlteredField(sealPointer(1), OriginalAndNewValues(None, Some(currentSeal1))),
           AlteredField(containerPointer(2), OriginalAndNewValues(Some(originalContainer2), None)),
           AlteredField(containerPointer(3), OriginalAndNewValues(None, Some(currentContainer3))),
-          AlteredField(destinationCountryPointer, OriginalAndNewValues(Some("FR"), Some("DE")))
+          AlteredField(destinationCountryPointer, OriginalAndNewValues(Some(Country(Some("FR"))), Some(Country(Some("DE")))))
         )
       }
     }
@@ -261,7 +261,7 @@ class DiffToolsISpec extends UnitSpec with ExportsDeclarationBuilder with Export
 
         amendedDeclaration.createDiff(originalDeclaration) must contain theSameElementsAs Seq(
           AlteredField(sealPointer(2), OriginalAndNewValues(Some(originalSeal2), None)),
-          AlteredField(destinationCountryPointer, OriginalAndNewValues(Some("FR"), Some("DE")))
+          AlteredField(destinationCountryPointer, OriginalAndNewValues(Some(Country(Some("FR"))), Some(Country(Some("DE")))))
         )
       }
 
@@ -279,7 +279,7 @@ class DiffToolsISpec extends UnitSpec with ExportsDeclarationBuilder with Export
 
         amendedDeclaration.createDiff(originalDeclaration) must contain theSameElementsAs Seq(
           AlteredField(sealPointer(2), OriginalAndNewValues(None, Some(currentSeal2))),
-          AlteredField(destinationCountryPointer, OriginalAndNewValues(Some("FR"), Some("DE")))
+          AlteredField(destinationCountryPointer, OriginalAndNewValues(Some(Country(Some("FR"))), Some(Country(Some("DE")))))
         )
       }
 
@@ -298,7 +298,7 @@ class DiffToolsISpec extends UnitSpec with ExportsDeclarationBuilder with Export
         amendedDeclaration.createDiff(originalDeclaration) must contain theSameElementsAs Seq(
           AlteredField(sealPointer(2), OriginalAndNewValues(None, Some(currentSeal2))),
           AlteredField(sealPointer(1), OriginalAndNewValues(Some(originalSeal1), None)),
-          AlteredField(destinationCountryPointer, OriginalAndNewValues(Some("FR"), Some("DE")))
+          AlteredField(destinationCountryPointer, OriginalAndNewValues(Some(Country(Some("FR"))), Some(Country(Some("DE")))))
         )
       }
     }
@@ -322,7 +322,7 @@ class DiffToolsISpec extends UnitSpec with ExportsDeclarationBuilder with Export
 
         amendedDeclaration.createDiff(originalDeclaration) must contain theSameElementsAs Seq(
           AlteredField(routingCountryPointer(2), OriginalAndNewValues(Some(originalRoutingCountry2), None)),
-          AlteredField(destinationCountryPointer, OriginalAndNewValues(Some("FR"), Some("DE")))
+          AlteredField(destinationCountryPointer, OriginalAndNewValues(Some(Country(Some("FR"))), Some(Country(Some("DE")))))
         )
       }
 
@@ -344,7 +344,7 @@ class DiffToolsISpec extends UnitSpec with ExportsDeclarationBuilder with Export
 
         amendedDeclaration.createDiff(originalDeclaration) must contain theSameElementsAs Seq(
           AlteredField(routingCountryPointer(2), OriginalAndNewValues(None, Some(currentRoutingCountry2))),
-          AlteredField(destinationCountryPointer, OriginalAndNewValues(Some("FR"), Some("DE")))
+          AlteredField(destinationCountryPointer, OriginalAndNewValues(Some(Country(Some("FR"))), Some(Country(Some("DE")))))
         )
       }
 
@@ -367,7 +367,7 @@ class DiffToolsISpec extends UnitSpec with ExportsDeclarationBuilder with Export
         amendedDeclaration.createDiff(originalDeclaration) must contain theSameElementsAs Seq(
           AlteredField(routingCountryPointer(2), OriginalAndNewValues(None, Some(currentRoutingCountry2))),
           AlteredField(routingCountryPointer(1), OriginalAndNewValues(Some(originalRoutingCountry1), None)),
-          AlteredField(destinationCountryPointer, OriginalAndNewValues(Some("FR"), Some("DE")))
+          AlteredField(destinationCountryPointer, OriginalAndNewValues(Some(Country(Some("FR"))), Some(Country(Some("DE")))))
         )
       }
     }

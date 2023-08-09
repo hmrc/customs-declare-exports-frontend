@@ -48,7 +48,7 @@ class CancellationHoldingViewSpec extends UnitViewSpec with Injector with GivenW
     }
 
     "display section header with MRN" in {
-      view.getElementById("section-header").text() mustBe messages("cancellation.mrn.header", mrn)
+      view.getElementById("section-header").text() mustBe messages("mrn.heading", mrn)
     }
 
     "display paragraph" in {

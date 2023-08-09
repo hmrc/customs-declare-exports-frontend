@@ -17,6 +17,7 @@
 package views.helpers
 
 import config.featureFlags.{DeclarationAmendmentsConfig, SecureMessagingInboxConfig, SfusConfig}
+import controllers.declaration.amendments.routes.AmendmentDetailsController
 import controllers.declaration.routes.SubmissionController
 import controllers.routes.RejectedNotificationsController
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.{AdditionalDeclarationType, SUPPLEMENTARY_SIMPLIFIED}
@@ -46,6 +47,7 @@ object NotificationEvent {
     }
 }
 
+// scalastyle:off
 @Singleton
 class TimelineEvents @Inject() (
   link: link,
@@ -59,24 +61,27 @@ class TimelineEvents @Inject() (
   def apply(submission: Submission, declarationType: AdditionalDeclarationType)(implicit messages: Messages): Seq[TimelineEvent] = {
     val notificationEvents = createNotificationEvents(submission)
 
-    val amendmentEventIfLatest = getAmendmentEventIfLatest(submission)
+    val amendmentFailedIfLatest = getAmendmentFailedIfLatest(submission)
 
     val IndexToMatchForUploadFilesContent = notificationEvents.indexWhere(_.notificationSummary.enhancedStatus in uploadFilesStatuses)
     val IndexToMatchForViewQueriesContent = notificationEvents.indexWhere(_.notificationSummary.enhancedStatus == QUERY_NOTIFICATION_MESSAGE)
 
-    val IndexToMatchForExternAmendContent = notificationEvents.indexWhere { event =>
+    val IndexToMatchForExternalAmendmentContent = notificationEvents.indexWhere { event =>
       event.requestType == ExternalAmendmentRequest && event.notificationSummary.enhancedStatus == AMENDED
     }
     val IndexToMatchForFixResubmitContent =
-      amendmentEventIfLatest.fold(notificationEvents.indexWhere(_.notificationSummary.enhancedStatus == ERRORS))(_ => 0)
+      amendmentFailedIfLatest.fold(notificationEvents.indexWhere(_.notificationSummary.enhancedStatus == ERRORS))(_ => 0)
 
     notificationEvents.zipWithIndex.map { case (notificationEvent, index) =>
       val actionContent = index match {
-        case IndexToMatchForFixResubmitContent if notificationEvent.requestType != AmendmentRequest || amendmentEventIfLatest.isDefined =>
-          fixAndResubmitContent(submission, amendmentEventIfLatest)
+        case IndexToMatchForFixResubmitContent if notificationEvent.requestType != AmendmentRequest || amendmentFailedIfLatest.isDefined =>
+          fixAndResubmitContent(submission, amendmentFailedIfLatest)
 
-        case IndexToMatchForExternAmendContent =>
-          paragraphBody(messages("submission.enhancedStatus.timeline.content.external.amendment"))
+        case IndexToMatchForExternalAmendmentContent =>
+          Html(
+            paragraphBody(messages("submission.enhancedStatus.timeline.content.external.amendment")).toString +
+              viewAmendmentDetails(notificationEvent.actionId).toString
+          )
 
         case IndexToMatchForUploadFilesContent if sfusConfig.isSfusUploadEnabled && IndexToMatchForFixResubmitContent < 0 =>
           uploadFilesContent(submission.mrn, isIndex1Primary(IndexToMatchForUploadFilesContent, IndexToMatchForViewQueriesContent))
@@ -86,7 +91,10 @@ class TimelineEvents @Inject() (
           val dmsqryMoreRecentThanDmsdoc = isIndex1Primary(IndexToMatchForViewQueriesContent, IndexToMatchForUploadFilesContent)
           viewQueriesContent(noDmsrejNotification && dmsqryMoreRecentThanDmsdoc)
 
-        case _ => HtmlFormat.empty
+        case _ =>
+          val showAmendDetails = notificationEvent.requestType == AmendmentRequest && notificationEvent.notificationSummary.enhancedStatus == AMENDED
+          if (showAmendDetails) viewAmendmentDetails(notificationEvent.actionId)
+          else HtmlFormat.empty
       }
 
       val content = new Html(List(bodyContent(notificationEvent, declarationType), actionContent))
@@ -98,6 +106,7 @@ class TimelineEvents @Inject() (
       )
     }
   }
+// scalastyle:on
 
   private def bodyContent(notificationEvent: NotificationEvent, declarationType: AdditionalDeclarationType)(implicit messages: Messages): Html =
     if (declarationType == SUPPLEMENTARY_SIMPLIFIED && notificationEvent.notificationSummary.enhancedStatus == CLEARED) HtmlFormat.empty
@@ -146,7 +155,7 @@ class TimelineEvents @Inject() (
   private case class AmendmentFailed(action: Action) extends AmendmentEventIfLatest
   private case class AmendmentRejected(action: Action) extends AmendmentEventIfLatest
 
-  private def getAmendmentEventIfLatest(submission: Submission): Option[AmendmentEventIfLatest] =
+  private def getAmendmentFailedIfLatest(submission: Submission): Option[AmendmentEventIfLatest] =
     if (submission.blockAmendments) None
     else
       submission.latestAction.flatMap { latestAction =>
@@ -184,6 +193,9 @@ class TimelineEvents @Inject() (
 
   private def uploadFilesContent(mrn: Option[String], isPrimary: Boolean)(implicit messages: Messages): Html =
     uploadFilesPartialForTimeline(mrn, isPrimary)
+
+  private def viewAmendmentDetails(actionId: String)(implicit messages: Messages): Html =
+    link(messages("declaration.details.view.amendments.button"), Call("GET", AmendmentDetailsController.displayPage(actionId).url))
 
   private def viewQueriesContent(isPrimary: Boolean)(implicit messages: Messages): Html =
     linkButton(

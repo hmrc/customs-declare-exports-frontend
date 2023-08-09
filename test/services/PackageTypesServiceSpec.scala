@@ -29,10 +29,8 @@ class PackageTypesServiceSpec extends UnitWithMocksSpec with Injector {
   private implicit val messages: Messages = stubMessagesApi().preferred(Seq(Lang(Locale.ENGLISH)))
 
   "Package type" should {
-
     "have correct method asText" in {
-
-      PackageType("code", "description").asText() mustBe "description (code)"
+      PackageType("code", "description").asText mustBe "description (code)"
     }
   }
 
@@ -40,13 +38,11 @@ class PackageTypesServiceSpec extends UnitWithMocksSpec with Injector {
 
     "return package types containing commas and quotes" in {
       val somePackageTypes = packageTypesService.all.filter(_.code == "43")
-
       somePackageTypes mustBe List(PackageType("43", "Bag, super bulk"))
     }
 
     "return package types' with codes in alphabetical order of name" in {
       val expectedCodes = Set("43", "AD", "ZZ")
-
       val somePackageTypes = packageTypesService.all.filter(packageType => expectedCodes.contains(packageType.code))
 
       somePackageTypes mustBe List(

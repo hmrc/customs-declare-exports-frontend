@@ -16,23 +16,41 @@
 
 package forms.declaration
 import forms.DeclarationPage
+import forms.declaration.TaricCode.keyForAmend
+import models.AmendmentRow.{forAddedValue, forAmendedValue, forRemovedValue}
 import models.viewmodels.TariffContentKey
 import models.DeclarationType.DeclarationType
 import models.ExportsFieldPointer.ExportsFieldPointer
-import models.FieldMapping
+import models.declaration.ExportItem.itemsPrefix
+import models.{Amendment, FieldMapping}
 import play.api.data.Forms.text
 import play.api.data.{Form, Forms}
+import play.api.i18n.Messages
 import play.api.libs.json.Json
 import utils.validators.forms.FieldValidator._
 
-case class TaricCode(taricCode: String) extends Ordered[TaricCode] {
+case class TaricCode(taricCode: String) extends Ordered[TaricCode] with Amendment {
+
   override def compare(y: TaricCode): Int = taricCode.compareTo(y.taricCode)
+
+  def value: String = taricCode
+
+  def valueAdded(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
+    forAddedValue(pointer, messages(keyForAmend), taricCode)
+
+  def valueAmended(newValue: Amendment, pointer: ExportsFieldPointer)(implicit messages: Messages): String =
+    forAmendedValue(pointer, messages(keyForAmend), taricCode, newValue.value)
+
+  def valueRemoved(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
+    forRemovedValue(pointer, messages(keyForAmend), taricCode)
 }
 
 object TaricCode extends DeclarationPage with FieldMapping {
   implicit val format = Json.format[TaricCode]
 
   val pointer: ExportsFieldPointer = "taricCode"
+
+  private lazy val keyForAmend = s"$itemsPrefix.taricAdditionalCode"
 
   val taricCodeKey = "taricCode"
   val taricCodeLength = 4

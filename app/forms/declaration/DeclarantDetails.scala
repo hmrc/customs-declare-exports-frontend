@@ -18,18 +18,27 @@ package forms.declaration
 
 import forms.DeclarationPage
 import models.ExportsFieldPointer.ExportsFieldPointer
-import models.FieldMapping
+import models.{AmendmentOp, FieldMapping}
+import play.api.i18n.Messages
 import play.api.libs.json.{Json, OFormat}
 import services.DiffTools
 import services.DiffTools.{combinePointers, ExportsDeclarationDiff}
 
-case class DeclarantDetails(details: EntityDetails) extends DiffTools[DeclarantDetails] {
+case class DeclarantDetails(details: EntityDetails) extends DiffTools[DeclarantDetails] with AmendmentOp {
+
   override def createDiff(original: DeclarantDetails, pointerString: ExportsFieldPointer, sequenceId: Option[Int] = None): ExportsDeclarationDiff =
-    Seq(details.createDiff(original.details, combinePointers(pointerString, DeclarantDetails.pointer, sequenceId))).flatten
+    Seq(details.createDiff(original.details, combinePointers(pointerString, sequenceId))).flatten
+
+  def valueAdded(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
+    details.valueAdded(pointer)
+
+  def valueRemoved(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
+    details.valueRemoved(pointer)
 }
 
 object DeclarantDetails extends DeclarationPage with FieldMapping {
-  implicit val format: OFormat[DeclarantDetails] = Json.format[DeclarantDetails]
 
   val pointer: ExportsFieldPointer = "declarantDetails"
+
+  implicit val format: OFormat[DeclarantDetails] = Json.format[DeclarantDetails]
 }

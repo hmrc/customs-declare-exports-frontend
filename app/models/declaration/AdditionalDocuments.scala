@@ -17,7 +17,7 @@
 package models.declaration
 
 import forms.common.YesNoAnswer
-import forms.declaration.additionaldocuments.AdditionalDocument
+import forms.declaration.additionaldocuments.{AdditionalDocument, DocumentWriteOff}
 import models.ExportsFieldPointer.ExportsFieldPointer
 import models.FieldMapping
 import play.api.libs.json.Json
@@ -26,6 +26,7 @@ import services.DiffTools.{combinePointers, ExportsDeclarationDiff}
 
 case class AdditionalDocuments(isRequired: Option[YesNoAnswer], documents: Seq[AdditionalDocument])
     extends DiffTools[AdditionalDocuments] with IsoData[AdditionalDocument] {
+
   // isRequired field is not used to produce the WCO XML payload
   override val subPointer: ExportsFieldPointer = AdditionalDocument.pointer
   override val elements: Seq[AdditionalDocument] = documents
@@ -35,9 +36,22 @@ case class AdditionalDocuments(isRequired: Option[YesNoAnswer], documents: Seq[A
 }
 
 object AdditionalDocuments extends FieldMapping {
+
+  val pointer: ExportsFieldPointer = "additionalDocuments"
+
+  val dateOfValidityPointerForAmend = s"item.$pointer.${AdditionalDocument.pointer}.${AdditionalDocument.dateOfValidityPointer}"
+  val identifierPointerForAmend = s"item.$pointer.${AdditionalDocument.pointer}.${AdditionalDocument.documentIdentifierPointer}"
+  val issuingAuthorityNamePointerForAmend = s"item.$pointer.${AdditionalDocument.pointer}.${AdditionalDocument.issuingAuthorityNamePointer}"
+  val statusPointerForAmend = s"item.$pointer.${AdditionalDocument.pointer}.${AdditionalDocument.documentStatusPointer}"
+  val statusReasonPointerForAmend = s"item.$pointer.${AdditionalDocument.pointer}.${AdditionalDocument.documentStatusReasonPointer}"
+  val typeCodePointerForAmend = s"item.$pointer.${AdditionalDocument.pointer}.${AdditionalDocument.documentTypeCodePointer}"
+
+  val documentQuantityPointerForAmend =
+    s"item.$pointer.${AdditionalDocument.pointer}.${DocumentWriteOff.pointer}.${DocumentWriteOff.documentQuantityPointer}"
+  val measurementUnitPointerForAmend =
+    s"item.$pointer.${AdditionalDocument.pointer}.${DocumentWriteOff.pointer}.${DocumentWriteOff.measurementUnitPointer}"
+
   implicit val format = Json.format[AdditionalDocuments]
 
   val maxNumberOfItems = 99
-
-  val pointer: ExportsFieldPointer = "additionalDocuments"
 }

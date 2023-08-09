@@ -21,13 +21,34 @@ import forms.declaration.officeOfExit.OfficeOfExit
 import forms.declaration.{InlandModeOfTransportCode, InlandOrBorder, SupervisingCustomsOffice, WarehouseIdentification}
 import models.DeclarationMeta.sequenceIdPlaceholder
 import models.ExportsFieldPointer.ExportsFieldPointer
-import models.{ExportsDeclaration, FieldMapping}
+import models.{AmendmentOp, ExportsDeclaration, FieldMapping}
+import play.api.i18n.Messages
 import play.api.libs.json.Json
-import services.DiffTools
 import services.DiffTools.{combinePointers, compareDifference, ExportsDeclarationDiff}
+import services.{AlteredField, DiffTools, OriginalAndNewValues}
 
-case class RoutingCountry(sequenceId: Int = sequenceIdPlaceholder, country: Country) extends ExplicitlySequencedObject[RoutingCountry] {
+case class RoutingCountry(sequenceId: Int = sequenceIdPlaceholder, country: Country)
+    extends DiffTools[RoutingCountry] with ExplicitlySequencedObject[RoutingCountry] with AmendmentOp {
+
   override def updateSequenceId(sequenceId: Int): RoutingCountry = copy(sequenceId = sequenceId)
+
+  def createDiff(
+    original: RoutingCountry,
+    pointerString: ExportsFieldPointer = ExportsDeclaration.pointer,
+    sequenceId: Option[Int] = None
+  ): ExportsDeclarationDiff =
+    // special implementation to ensure Country entity returned as value diff instead of Country value string
+    Seq(
+      Option.when(!country.compare(original.country).equals(0))(
+        AlteredField(combinePointers(pointerString, sequenceId), OriginalAndNewValues(Some(original.country), Some(this.country)))
+      )
+    ).flatten
+
+  def valueAdded(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
+    country.valueAdded(pointer)
+
+  def valueRemoved(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
+    country.valueRemoved(pointer)
 }
 
 object RoutingCountry {
@@ -64,25 +85,25 @@ case class Locations(
         original.warehouseIdentification,
         warehouseIdentification,
         combinePointers(pointerString, WarehouseIdentification.pointer, sequenceId)
-      )
-    ).flatten ++
-      createDiffOfOptions(
-        original.originationCountry,
-        originationCountry,
-        combinePointers(pointerString, Locations.originationCountryPointer, sequenceId)
-      ) ++
-      createDiffOfOptions(
-        original.destinationCountry,
-        destinationCountry,
-        combinePointers(pointerString, Locations.destinationCountryPointer, sequenceId)
-      ) ++
-      createDiff(original.routingCountries, routingCountries, combinePointers(pointerString, Locations.routingCountriesPointer)) ++
-      createDiffOfOptions(original.goodsLocation, goodsLocation, combinePointers(pointerString, GoodsLocation.pointer, sequenceId)) ++
-      createDiffOfOptions(
+      ),
+      compareDifference(
         original.inlandModeOfTransportCode,
         inlandModeOfTransportCode,
         combinePointers(pointerString, InlandModeOfTransportCode.pointer, sequenceId)
+      ),
+      compareDifference(
+        original.originationCountry,
+        originationCountry,
+        combinePointers(pointerString, Locations.originationCountryPointer, sequenceId)
+      ),
+      compareDifference(
+        original.destinationCountry,
+        destinationCountry,
+        combinePointers(pointerString, Locations.destinationCountryPointer, sequenceId)
       )
+    ).flatten ++
+      createDiff(original.routingCountries, routingCountries, combinePointers(pointerString, Locations.routingCountriesPointer)) ++
+      createDiffOfOptions(original.goodsLocation, goodsLocation, combinePointers(pointerString, GoodsLocation.pointer, sequenceId))
 }
 
 object Locations extends FieldMapping {

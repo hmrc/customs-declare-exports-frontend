@@ -138,7 +138,7 @@ class PartiesSectionViewSpec extends UnitViewSpec with ExportsTestHelper with In
       "contains additional actors section" in {
         val row = view.getElementsByClass("additionalActors-row")
 
-        row must haveSummaryKey(messages("declaration.summary.parties.additional"))
+        row must haveSummaryKey(messages("declaration.summary.parties.actors"))
         row must haveSummaryValue(messages("site.no"))
       }
 

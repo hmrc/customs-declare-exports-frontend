@@ -43,7 +43,7 @@ class CancellationResultViewSpec extends UnitViewSpec with Injector with MockAut
       }
 
       "display section header with MRN" in {
-        view.getElementById("section-header").text() mustBe messages("cancellation.mrn.header", mrn)
+        view.getElementById("section-header").text() mustBe messages("mrn.heading", mrn)
       }
 
       "display correct paragraph" in {
@@ -64,7 +64,7 @@ class CancellationResultViewSpec extends UnitViewSpec with Injector with MockAut
       }
 
       "display section header with MRN" in {
-        view.getElementById("section-header").text() mustBe messages("cancellation.mrn.header", mrn)
+        view.getElementById("section-header").text() mustBe messages("mrn.heading", mrn)
       }
 
       "display correct paragraph" in {
@@ -85,7 +85,7 @@ class CancellationResultViewSpec extends UnitViewSpec with Injector with MockAut
       }
 
       "display section header with MRN" in {
-        view.getElementById("section-header").text() mustBe messages("cancellation.mrn.header", mrn)
+        view.getElementById("section-header").text() mustBe messages("mrn.heading", mrn)
       }
 
       "display correct paragraph" in {
@@ -112,7 +112,7 @@ class CancellationResultViewSpec extends UnitViewSpec with Injector with MockAut
         children.get(0).text mustBe messages("cancellation.result.cancelled.title")
 
         And("should include content with MRN")
-        children.get(1).text mustBe messages("cancellation.mrn.header", mrn)
+        children.get(1).text mustBe messages("mrn.heading", mrn)
       }
 
       "display correct paragraph" in {

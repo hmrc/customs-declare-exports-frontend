@@ -15,25 +15,50 @@
  */
 
 package forms.declaration
+
 import forms.DeclarationPage
 import forms.MappingHelper.requiredRadio
+import forms.declaration.NactCode.{exemptionPointer, keyForAmend}
+import models.AmendmentRow.{forAddedValue, forAmendedValue, forRemovedValue, safeMessage}
 import models.DeclarationType.DeclarationType
 import models.viewmodels.TariffContentKey
 import models.ExportsFieldPointer.ExportsFieldPointer
-import models.FieldMapping
+import models.{Amendment, FieldMapping}
 import play.api.data.Forms.text
 import play.api.data.{Form, Forms, Mapping}
+import play.api.i18n.Messages
 import play.api.libs.json.Json
 import utils.validators.forms.FieldValidator._
 
-case class NactCode(nactCode: String) extends Ordered[NactCode] {
+case class NactCode(nactCode: String) extends Ordered[NactCode] with Amendment {
+
   override def compare(y: NactCode): Int = nactCode.compareTo(y.nactCode)
+
+  def value: String = nactCode
+
+  private def toUserValue(pointer: ExportsFieldPointer, value: String)(implicit messages: Messages): String =
+    if (!pointer.endsWith(exemptionPointer)) value
+    else safeMessage(s"declaration.summary.items.item.zeroRatedForVat.$value", value)
+
+  def valueAdded(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
+    forAddedValue(pointer, messages(keyForAmend(pointer)), toUserValue(pointer, value))
+
+  def valueAmended(newValue: Amendment, pointer: ExportsFieldPointer)(implicit messages: Messages): String =
+    forAmendedValue(pointer, messages(keyForAmend(pointer)), toUserValue(pointer, value), toUserValue(pointer, newValue.value))
+
+  def valueRemoved(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
+    forRemovedValue(pointer, messages(keyForAmend(pointer)), toUserValue(pointer, value))
 }
 
 object NactCode extends DeclarationPage with FieldMapping {
   implicit val format = Json.format[NactCode]
 
   val pointer: ExportsFieldPointer = "nactCode"
+  val exemptionPointer: ExportsFieldPointer = "nactExemptionCode"
+
+  def keyForAmend(pointer: ExportsFieldPointer): String =
+    if (pointer.endsWith(exemptionPointer)) "declaration.summary.items.item.zeroRatedForVat"
+    else "declaration.summary.items.item.nationalAdditionalCode"
 
   val nactCodeKey = "nactCode"
 

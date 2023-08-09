@@ -15,17 +15,33 @@
  */
 
 package forms.declaration.officeOfExit
+
 import forms.DeclarationPage
-import models.viewmodels.TariffContentKey
+import forms.declaration.officeOfExit.OfficeOfExit.keyForAmend
+import models.AmendmentRow.{forAddedValue, forAmendedValue, forRemovedValue}
 import models.DeclarationType.DeclarationType
 import models.ExportsFieldPointer.ExportsFieldPointer
-import models.FieldMapping
-import play.api.data.{Form, Forms, Mapping}
+import models.viewmodels.TariffContentKey
+import models.{Amendment, FieldMapping}
 import play.api.data.Forms.text
+import play.api.data.{Form, Forms, Mapping}
+import play.api.i18n.Messages
 import play.api.libs.json.Json
 import utils.validators.forms.FieldValidator.{hasSpecificLength, isEmpty, nonEmpty, _}
 
-case class OfficeOfExit(officeId: String) extends Ordered[OfficeOfExit] {
+case class OfficeOfExit(officeId: String) extends Ordered[OfficeOfExit] with Amendment {
+
+  def value: String = officeId
+
+  def valueAdded(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
+    forAddedValue(pointer, messages(keyForAmend), officeId)
+
+  def valueAmended(newValue: Amendment, pointer: ExportsFieldPointer)(implicit messages: Messages): String =
+    forAmendedValue(pointer, messages(keyForAmend), officeId, newValue.value)
+
+  def valueRemoved(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
+    forRemovedValue(pointer, messages(keyForAmend), officeId)
+
   override def compare(that: OfficeOfExit): Int =
     officeId.compareTo(that.officeId)
 }
@@ -33,7 +49,10 @@ case class OfficeOfExit(officeId: String) extends Ordered[OfficeOfExit] {
 object OfficeOfExit extends DeclarationPage with FieldMapping {
   implicit val format = Json.format[OfficeOfExit]
 
-  val pointer: ExportsFieldPointer = "officeOfExit.officeId"
+  val pointerBase: String = "officeOfExit"
+  val pointer: ExportsFieldPointer = s"$pointerBase.officeId"
+
+  private val keyForAmend = "declaration.summary.locations.officeOfExit"
 
   private val officeId = "officeId"
 

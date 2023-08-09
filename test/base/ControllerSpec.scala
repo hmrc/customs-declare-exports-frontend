@@ -34,6 +34,7 @@ import utils.FakeRequestCSRFSupport._
 import scala.concurrent.{ExecutionContext, Future}
 
 trait ControllerWithoutFormSpec extends ControllerSpec {
+
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] =
     mockFormForDisplayRequest
 }

@@ -20,10 +20,9 @@ import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.declaration.RepresentativeEntity
 import forms.declaration.RepresentativeEntity.form
-import models.DeclarationType.DeclarationType
+import models.ExportsDeclaration
 import models.declaration.RepresentativeDetails
 import models.requests.JourneyRequest
-import models.ExportsDeclaration
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
@@ -53,17 +52,16 @@ class RepresentativeEntityController @Inject() (
     }
   }
 
+  private def nextPage: Call = routes.RepresentativeStatusController.displayPage
+
   def submitForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     form
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[RepresentativeEntity]) => Future.successful(BadRequest(representativeEntityPage(formWithErrors))),
-        validRepresentativeDetails => updateCache(validRepresentativeDetails).map(_ => navigator.continueTo(nextPage(request.declarationType)))
+        validRepresentativeDetails => updateCache(validRepresentativeDetails).map(_ => navigator.continueTo(nextPage))
       )
   }
-
-  private def nextPage(declarationType: DeclarationType): Call =
-    controllers.declaration.routes.RepresentativeStatusController.displayPage
 
   private def updateCache(formData: RepresentativeEntity)(implicit request: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
     updateDeclarationFromRequest { model =>

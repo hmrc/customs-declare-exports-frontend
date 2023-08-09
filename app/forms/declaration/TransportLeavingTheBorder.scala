@@ -19,18 +19,23 @@ package forms.declaration
 import forms.DeclarationPage
 import forms.declaration.LocationOfGoods.suffixForGVMS
 import forms.declaration.ModeOfTransportCode.RoRo
+import forms.declaration.TransportLeavingTheBorder.keyForAmend
+import models.AmendmentRow.{forAddedValue, forAmendedValue, forRemovedValue, safeMessage}
 import models.DeclarationType.{CLEARANCE, DeclarationType}
+import models.ExportsFieldPointer.ExportsFieldPointer
 import models.requests.JourneyRequest
 import models.viewmodels.TariffContentKey
-import models.FieldMapping
+import models.{Amendment, FieldMapping}
 import play.api.data.{Form, Forms, Mapping}
 import play.api.data.Forms.{of, optional}
 import play.api.data.format.Formatter
 import play.api.data.validation.{Constraint, Invalid, Valid, ValidationError, ValidationResult}
+import play.api.i18n.Messages
 import play.api.libs.json._
 import utils.validators.forms.FieldValidator._
 
-case class TransportLeavingTheBorder(code: Option[ModeOfTransportCode] = None) extends Ordered[TransportLeavingTheBorder] {
+case class TransportLeavingTheBorder(code: Option[ModeOfTransportCode] = None) extends Ordered[TransportLeavingTheBorder] with Amendment {
+
   override def compare(that: TransportLeavingTheBorder): Int =
     (code, that.code) match {
       case (None, None)                    => 0
@@ -40,12 +45,29 @@ case class TransportLeavingTheBorder(code: Option[ModeOfTransportCode] = None) e
     }
 
   def getCodeValue: String = code.getOrElse(ModeOfTransportCode.Empty).value
+
+  def value: String = getCodeValue
+
+  private def toUserValue(value: String)(implicit messages: Messages): String =
+    safeMessage(s"declaration.summary.transport.departure.transportCode.$value", value)
+
+  def valueAdded(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
+    forAddedValue(pointer, messages(keyForAmend), toUserValue(value))
+
+  def valueAmended(newValue: Amendment, pointer: ExportsFieldPointer)(implicit messages: Messages): String =
+    forAmendedValue(pointer, messages(keyForAmend), toUserValue(value), toUserValue(newValue.value))
+
+  def valueRemoved(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
+    forRemovedValue(pointer, messages(keyForAmend), toUserValue(value))
 }
 
 object TransportLeavingTheBorder extends DeclarationPage with FieldMapping {
+
   implicit val format = Json.format[TransportLeavingTheBorder]
 
   val pointer: String = "borderModeOfTransportCode.code"
+
+  private val keyForAmend = "declaration.summary.transport.departure.transportCode.header"
 
   def form(implicit request: JourneyRequest[_]): Form[TransportLeavingTheBorder] =
     Form(mapping(request.isType(CLEARANCE), request.cacheModel.locations.goodsLocation.map(_.toForm)))

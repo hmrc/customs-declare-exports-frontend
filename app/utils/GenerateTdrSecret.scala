@@ -21,12 +21,12 @@ import utils.HashingUtils.generateHashOfValue
 object GenerateTdrSecret {
   def main(args: Array[String]): Unit =
     if (args.length != 2) {
-      Console.err.println("Usage: GenerateTdrSecret <tdrHashSalt> <eori>")
+      Console.err.print("Usage: GenerateTdrSecret <tdrHashSalt> <eori>\n")
       sys.exit(1)
     } else {
       val tdrHashSalt = args(0)
       val eoris = args(1).split(",")
 
-      eoris.foreach(eori => println(s"${eori},${generateHashOfValue(eori, tdrHashSalt)}"))
+      eoris.foreach(eori => print(s"${eori},${generateHashOfValue(eori, tdrHashSalt)}\n"))
     }
 }

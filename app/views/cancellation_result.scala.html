@@ -44,10 +44,10 @@
     @if(status == Some(CUSTOMS_POSITION_GRANTED)) {
         @govukPanel(Panel(
             title = Text(messages(titleKey)),
-            content = Text(messages("cancellation.mrn.header", mrn))
+            content = Text(messages("mrn.heading", mrn))
         ))
     } else {
-        @sectionHeader(messages("cancellation.mrn.header", mrn))
+        @sectionHeader(messages("mrn.heading", mrn))
         @pageTitle(messages(titleKey))
     }
 }

@@ -19,26 +19,44 @@ package forms.declaration
 import forms.DeclarationPage
 import forms.MappingHelper.requiredRadio
 import forms.common.YesNoAnswer.YesNoAnswers
-import models.viewmodels.TariffContentKey
+import forms.declaration.WarehouseIdentification.keyForAmend
+import models.AmendmentRow.{forAddedValue, forAmendedValue, forRemovedValue}
 import models.DeclarationType.DeclarationType
 import models.ExportsFieldPointer.ExportsFieldPointer
-import models.FieldMapping
-import play.api.data.{Form, Forms}
+import models.viewmodels.TariffContentKey
+import models.{Amendment, FieldMapping}
 import play.api.data.Forms.text
+import play.api.data.{Form, Forms}
+import play.api.i18n.Messages
 import play.api.libs.json.Json
 import services.DiffTools.compareOptionalString
 import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfEqual
 import utils.validators.forms.FieldValidator._
 
-case class WarehouseIdentification(identificationNumber: Option[String] = None) extends Ordered[WarehouseIdentification] {
+case class WarehouseIdentification(identificationNumber: Option[String] = None) extends Ordered[WarehouseIdentification] with Amendment {
+
   override def compare(that: WarehouseIdentification): Int =
     compareOptionalString(identificationNumber, that.identificationNumber)
+
+  def value: String = identificationNumber.getOrElse("")
+
+  def valueAdded(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
+    identificationNumber.fold("")(forAddedValue(pointer, messages(keyForAmend), _))
+
+  def valueAmended(newValue: Amendment, pointer: ExportsFieldPointer)(implicit messages: Messages): String =
+    forAmendedValue(pointer, messages(keyForAmend), value, newValue.value)
+
+  def valueRemoved(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
+    identificationNumber.fold("")(forRemovedValue(pointer, messages(keyForAmend), _))
 }
 
 object WarehouseIdentification extends DeclarationPage with FieldMapping {
-  implicit val format = Json.format[WarehouseIdentification]
 
   val pointer: ExportsFieldPointer = "warehouseIdentification.identificationNumber"
+
+  val keyForAmend = "declaration.summary.transport.warehouse.id"
+
+  implicit val format = Json.format[WarehouseIdentification]
 
   val formId = "WarehouseIdentification"
 

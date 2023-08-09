@@ -19,18 +19,21 @@ package models.declaration
 import forms.common.YesNoAnswer
 import forms.declaration.declarationHolder.DeclarationHolder
 import models.ExportsFieldPointer.ExportsFieldPointer
-import models.FieldMapping
+import models.{ExportsDeclaration, FieldMapping}
 import play.api.libs.json.Json
 import services.DiffTools
 import services.DiffTools.{combinePointers, ExportsDeclarationDiff}
 
 case class DeclarationHoldersData(holders: Seq[DeclarationHolder], isRequired: Option[YesNoAnswer])
     extends DiffTools[DeclarationHoldersData] with IsoData[DeclarationHolder] {
+
   // isRequired field is not used to generate the WCO XML
   override val subPointer: ExportsFieldPointer = DeclarationHolder.pointer
   override val elements: Seq[DeclarationHolder] = holders
+
   def createDiff(original: DeclarationHoldersData, pointerString: ExportsFieldPointer, sequenceId: Option[Int] = None): ExportsDeclarationDiff =
     createDiff(original.holders, holders, combinePointers(pointerString, subPointer, None))
+
   def containsHolder(holder: DeclarationHolder): Boolean = holders.contains(holder)
 }
 
@@ -38,6 +41,11 @@ object DeclarationHoldersData extends FieldMapping {
   implicit val format = Json.format[DeclarationHoldersData]
 
   val pointer: ExportsFieldPointer = "declarationHoldersData"
+
+  private lazy val parties = s"${ExportsDeclaration.pointer}.${Parties.pointer}"
+
+  lazy val eoriPointerForAmend = s"$parties.$pointer.${DeclarationHolder.pointer}.${DeclarationHolder.eoriPointer}"
+  lazy val typeCodePointerForAmend = s"$parties.$pointer.${DeclarationHolder.pointer}.${DeclarationHolder.authorisationTypeCodePointer}"
 
   def apply(holders: Seq[DeclarationHolder]): DeclarationHoldersData =
     new DeclarationHoldersData(holders, None)

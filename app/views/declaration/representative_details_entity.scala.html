@@ -25,17 +25,17 @@
 @import config.AppConfig
 
 @this(
-        govukLayout: gdsMainTemplate,
-        errorSummary: errorSummary,
-        sectionHeader: sectionHeader,
-        exportsInputText: exportsInputText,
-        pageTitle: pageTitle,
-        label: label,
-        tariffExpander: tariffExpander,
-        saveButtons: saveButtons,
-        formHelper: FormWithCSRF,
-        navigator: Navigator,
-        appConfig: AppConfig
+    govukLayout: gdsMainTemplate,
+    errorSummary: errorSummary,
+    sectionHeader: sectionHeader,
+    exportsInputText: exportsInputText,
+    pageTitle: pageTitle,
+    label: label,
+    tariffExpander: tariffExpander,
+    saveButtons: saveButtons,
+    formHelper: FormWithCSRF,
+    navigator: Navigator,
+    appConfig: AppConfig
 )
 
 @(form: Form[RepresentativeEntity])(implicit request: JourneyRequest[_], messages: Messages)
@@ -53,9 +53,7 @@
 
         @pageTitle(content = Some(HtmlContent(label("declaration.representative.entity.title", "details_eori", labelClasses = ""))))
 
-        @exportsInputText(
-            field = form("details.eori")
-        )
+        @exportsInputText(field = form("details.eori"))
 
         @tariffExpander(RepresentativeEntity, request.declarationType)(messages, appConfig)
 

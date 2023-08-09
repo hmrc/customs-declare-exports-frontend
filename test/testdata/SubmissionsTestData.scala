@@ -54,7 +54,6 @@ object SubmissionsTestData {
     specifiedDucr: Option[String] = Some(ducr),
     statuses: Seq[EnhancedStatus]
   ) = {
-
     val now = ZonedDateTime.now(defaultDateTimeZone)
     val summaries = statuses.map { status =>
       NotificationSummary(UUID.randomUUID(), now, enhancedStatus = status)

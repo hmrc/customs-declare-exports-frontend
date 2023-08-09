@@ -116,7 +116,7 @@ class ConfirmationController @Inject() (
           declaration.additionalDeclarationType.fold[Either[String, Confirmation]] {
             Left(s"Declaration(${declaration.id}) without 'additionalDeclarationType' after having been submitted??")
           } { additionalDeclarationType =>
-            val maybeLocationCode = declaration.locations.goodsLocation.map(_.code)
+            val maybeLocationCode = declaration.locations.goodsLocation.map(_.value)
             Right(Confirmation(request.email, additionalDeclarationType.toString, submission, maybeLocationCode))
           }
 

@@ -18,13 +18,14 @@ package models.declaration
 
 import forms.declaration.DeclarationAdditionalActors
 import models.ExportsFieldPointer.ExportsFieldPointer
-import models.FieldMapping
+import models.{ExportsDeclaration, FieldMapping}
 import play.api.libs.json.Json
 import services.DiffTools
 import services.DiffTools.{combinePointers, ExportsDeclarationDiff}
 
 case class DeclarationAdditionalActorsData(actors: Seq[DeclarationAdditionalActors])
     extends DiffTools[DeclarationAdditionalActorsData] with IsoData[DeclarationAdditionalActors] {
+
   override val subPointer: ExportsFieldPointer = DeclarationAdditionalActors.pointer
   override val elements: Seq[DeclarationAdditionalActors] = actors
 
@@ -34,25 +35,20 @@ case class DeclarationAdditionalActorsData(actors: Seq[DeclarationAdditionalActo
     sequenceId: Option[Int] = None
   ): ExportsDeclarationDiff =
     createDiff(original.actors, actors, combinePointers(pointerString, subPointer, sequenceId))
-
-  def addActor(actor: DeclarationAdditionalActors): DeclarationAdditionalActorsData =
-    if (actor.isAllowed) DeclarationAdditionalActorsData(actor +: actors) else this
 }
 
 object DeclarationAdditionalActorsData extends FieldMapping {
-  implicit val format = Json.format[DeclarationAdditionalActorsData]
 
   val pointer: ExportsFieldPointer = "declarationAdditionalActorsData"
+
+  private lazy val parties = s"${ExportsDeclaration.pointer}.${Parties.pointer}"
+
+  lazy val eoriPointerForAmend = s"$parties.$pointer.${DeclarationAdditionalActors.pointer}.${DeclarationAdditionalActors.eoriPointer}"
+  lazy val partyTypePointerForAmend = s"$parties.$pointer.${DeclarationAdditionalActors.pointer}.${DeclarationAdditionalActors.partyTypePointer}"
+
+  implicit val format = Json.format[DeclarationAdditionalActorsData]
 
   val maxNumberOfActors = 99
 
   val formId = "DeclarationAdditionalActorsData"
-
-  def actorsValidator(actor: DeclarationAdditionalActors, actors: Seq[DeclarationAdditionalActors]): Option[Seq[(String, String)]] =
-    (actor, actors) match {
-      case (_, actors) if actors.length >= maxNumberOfActors => Some(Seq(("", "declaration.additionalActors.maximumAmount.error")))
-      case (actor, actors) if actors.contains(actor)         => Some(Seq(("", "declaration.additionalActors.duplicated.error")))
-      case _                                                 => None
-    }
-
 }

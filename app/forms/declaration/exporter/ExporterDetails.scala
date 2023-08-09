@@ -20,18 +20,25 @@ import connectors.CodeListConnector
 import forms.DeclarationPage
 import forms.declaration.EntityDetails
 import models.DeclarationType.{CLEARANCE, DeclarationType}
-import models.{ExportsDeclaration, FieldMapping}
+import models.{AmendmentOp, ExportsDeclaration, FieldMapping}
 import models.viewmodels.TariffContentKey
 import models.ExportsFieldPointer.ExportsFieldPointer
-import play.api.data.{Form, Forms}
+import play.api.data.{Form, Forms, Mapping}
 import play.api.i18n.Messages
 import play.api.libs.json.Json
 import services.DiffTools
 import services.DiffTools.{combinePointers, ExportsDeclarationDiff}
 
-case class ExporterDetails(details: EntityDetails) extends DiffTools[ExporterDetails] {
+case class ExporterDetails(details: EntityDetails) extends DiffTools[ExporterDetails] with AmendmentOp {
+
   override def createDiff(original: ExporterDetails, pointerString: ExportsFieldPointer, sequenceId: Option[Int] = None): ExportsDeclarationDiff =
-    Seq(details.createDiff(original.details, combinePointers(pointerString, EntityDetails.pointer, sequenceId))).flatten
+    Seq(details.createDiff(original.details, combinePointers(pointerString, sequenceId))).flatten
+
+  def valueAdded(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
+    details.valueAdded(pointer)
+
+  def valueRemoved(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
+    details.valueRemoved(pointer)
 }
 
 object ExporterDetails extends DeclarationPage with FieldMapping {
@@ -39,10 +46,10 @@ object ExporterDetails extends DeclarationPage with FieldMapping {
 
   val pointer: ExportsFieldPointer = "exporterDetails"
 
-  def defaultMapping(implicit messages: Messages, codeListConnector: CodeListConnector) =
+  def defaultMapping(implicit messages: Messages, codeListConnector: CodeListConnector): Mapping[ExporterDetails] =
     Forms.mapping("details" -> EntityDetails.addressMapping)(ExporterDetails.apply)(ExporterDetails.unapply)
 
-  def optionalMapping(implicit messages: Messages, codeListConnector: CodeListConnector) =
+  def optionalMapping(implicit messages: Messages, codeListConnector: CodeListConnector): Mapping[ExporterDetails] =
     Forms.mapping("details" -> EntityDetails.optionalAddressMapping)(ExporterDetails.apply)(ExporterDetails.unapply)
 
   def form(

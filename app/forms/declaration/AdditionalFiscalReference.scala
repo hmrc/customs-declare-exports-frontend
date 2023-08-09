@@ -18,42 +18,60 @@ package forms.declaration
 
 import connectors.CodeListConnector
 import forms.DeclarationPage
+import forms.declaration.AdditionalFiscalReference.keyForAmend
+import models.AmendmentRow.{forAddedValue, forAmendedValue, forRemovedValue}
 import models.DeclarationType.DeclarationType
 import models.ExportsFieldPointer.ExportsFieldPointer
-import models.FieldMapping
+import models.declaration.ExportItem.itemsPrefix
 import models.declaration.{ImplicitlySequencedObject, IsoData}
 import models.viewmodels.TariffContentKey
+import models.{Amendment, FieldMapping}
+import play.api.data.{Form, Forms, Mapping}
 import play.api.data.Forms.text
-import play.api.data.{Form, Forms}
 import play.api.i18n.Messages
 import play.api.libs.json.Json
+import services.{AlteredField, DiffTools, OriginalAndNewValues}
 import services.Countries._
-import services.DiffTools
-import services.DiffTools.{combinePointers, compareStringDifference, ExportsDeclarationDiff}
+import services.DiffTools.{combinePointers, ExportsDeclarationDiff}
 import utils.validators.forms.FieldValidator._
 
-case class AdditionalFiscalReference(country: String, reference: String) extends DiffTools[AdditionalFiscalReference] with ImplicitlySequencedObject {
+case class AdditionalFiscalReference(country: String, reference: String)
+    extends DiffTools[AdditionalFiscalReference] with ImplicitlySequencedObject with Amendment {
+
   override def createDiff(
     original: AdditionalFiscalReference,
     pointerString: ExportsFieldPointer,
     sequenceId: Option[Int] = None
   ): ExportsDeclarationDiff =
+    // special implementation to ensure AdditionalFiscalReference entity returned as value diff instead of Country and/or reference values
     Seq(
-      compareStringDifference(original.country, country, combinePointers(pointerString, sequenceId)),
-      compareStringDifference(original.reference, reference, combinePointers(pointerString, sequenceId))
+      Option.when(!country.compare(original.country).equals(0) || !reference.compare(original.reference).equals(0))(
+        AlteredField(combinePointers(pointerString, sequenceId), OriginalAndNewValues(Some(original), Some(this)))
+      )
     ).flatten
 
-  val asString: String = country + reference
+  def value: String = country + reference
+
+  def valueAdded(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
+    forAddedValue(pointer, messages(keyForAmend), value)
+
+  override def valueAmended(newValue: Amendment, pointer: ExportsFieldPointer)(implicit messages: Messages): ExportsFieldPointer =
+    forAmendedValue(pointer, messages(keyForAmend), value, newValue.value)
+
+  def valueRemoved(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
+    forRemovedValue(pointer, messages(keyForAmend), value)
 }
 
 object AdditionalFiscalReference extends DeclarationPage with FieldMapping {
 
   val pointer: ExportsFieldPointer = "references"
 
+  lazy val keyForAmend = s"$itemsPrefix.VATdetails"
+
   def build(country: String, reference: String): AdditionalFiscalReference = new AdditionalFiscalReference(country, reference.toUpperCase)
   implicit val format = Json.format[AdditionalFiscalReference]
 
-  def mapping(implicit messages: Messages, codeListConnector: CodeListConnector) =
+  def mapping(implicit messages: Messages, codeListConnector: CodeListConnector): Mapping[AdditionalFiscalReference] =
     Forms.mapping(
       "country" -> text()
         .verifying("declaration.additionalFiscalReferences.country.empty", _.trim.nonEmpty)
@@ -71,8 +89,10 @@ object AdditionalFiscalReference extends DeclarationPage with FieldMapping {
 
 case class AdditionalFiscalReferencesData(references: Seq[AdditionalFiscalReference])
     extends DiffTools[AdditionalFiscalReferencesData] with IsoData[AdditionalFiscalReference] {
+
   override val subPointer: ExportsFieldPointer = AdditionalFiscalReference.pointer
   override val elements: Seq[AdditionalFiscalReference] = references
+
   override def createDiff(
     original: AdditionalFiscalReferencesData,
     pointerString: ExportsFieldPointer,
@@ -82,7 +102,7 @@ case class AdditionalFiscalReferencesData(references: Seq[AdditionalFiscalRefere
 
   def removeReferences(values: Seq[String]): AdditionalFiscalReferencesData = {
     val patterns = values.toSet
-    copy(references = references.filterNot(reference => patterns.contains(reference.asString)))
+    copy(references = references.filterNot(reference => patterns.contains(reference.value)))
   }
 
   def removeReference(value: String): AdditionalFiscalReferencesData =
@@ -90,6 +110,7 @@ case class AdditionalFiscalReferencesData(references: Seq[AdditionalFiscalRefere
 }
 
 object AdditionalFiscalReferencesData extends FieldMapping {
+
   val pointer: ExportsFieldPointer = "additionalFiscalReferencesData"
 
   implicit val format = Json.format[AdditionalFiscalReferencesData]

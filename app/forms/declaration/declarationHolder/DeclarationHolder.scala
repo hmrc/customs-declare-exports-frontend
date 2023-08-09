@@ -21,28 +21,44 @@ import forms.MappingHelper.requiredRadio
 import forms.common.Eori
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
 import forms.declaration.declarationHolder.AuthorizationTypeCodes._
+import forms.declaration.declarationHolder.DeclarationHolder.{keyForEori, keyForTypeCode}
+import models.AmendmentRow.{forAddedValue, forRemovedValue}
 import models.DeclarationType.{CLEARANCE, DeclarationType}
 import models.ExportsFieldPointer.ExportsFieldPointer
-import models.FieldMapping
 import models.declaration.EoriSource.UserEori
+import models.declaration.Parties.partiesPrefix
 import models.declaration.{EoriSource, ImplicitlySequencedObject}
 import models.viewmodels.TariffContentKey
+import models.{AmendmentOp, FieldMapping}
 import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, Forms, Mapping}
+import play.api.i18n.Messages
 import play.api.libs.json.Json
 import services.DiffTools
 import services.DiffTools.{combinePointers, compareDifference, compareStringDifference, ExportsDeclarationDiff}
 import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfEqual
 
 case class DeclarationHolder(authorisationTypeCode: Option[String], eori: Option[Eori], eoriSource: Option[EoriSource])
-    extends DiffTools[DeclarationHolder] with ImplicitlySequencedObject {
+    extends DiffTools[DeclarationHolder] with ImplicitlySequencedObject with AmendmentOp {
 
   // eoriSource is not used to generate the WCO XML
   def createDiff(original: DeclarationHolder, pointerString: ExportsFieldPointer, sequenceId: Option[Int] = None): ExportsDeclarationDiff =
     Seq(
-      compareStringDifference(original.authorisationTypeCode, authorisationTypeCode, combinePointers(pointerString, sequenceId)),
-      compareDifference(original.eori, eori, combinePointers(pointerString, sequenceId))
+      compareStringDifference(
+        original.authorisationTypeCode,
+        authorisationTypeCode,
+        combinePointers(pointerString, DeclarationHolder.authorisationTypeCodePointer, sequenceId)
+      ),
+      compareDifference(original.eori, eori, combinePointers(pointerString, DeclarationHolder.eoriPointer, sequenceId))
     ).flatten
+
+  def valueAdded(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
+    authorisationTypeCode.fold("")(forAddedValue(pointer, messages(keyForTypeCode), _)) +
+      eori.fold("")(eori => forAddedValue(pointer, messages(keyForEori), eori.value))
+
+  def valueRemoved(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
+    authorisationTypeCode.fold("")(forRemovedValue(pointer, messages(keyForTypeCode), _)) +
+      eori.fold("")(eori => forRemovedValue(pointer, messages(keyForEori), eori.value))
 
   def id: String = s"${authorisationTypeCode.getOrElse("")}-${eori.getOrElse("")}"
   def isEmpty: Boolean = authorisationTypeCode.isEmpty && eori.isEmpty
@@ -54,6 +70,9 @@ object DeclarationHolder extends DeclarationPage with FieldMapping {
   val pointer: ExportsFieldPointer = "holders"
   val authorisationTypeCodePointer: ExportsFieldPointer = "authorisationTypeCode"
   val eoriPointer: ExportsFieldPointer = "eori"
+
+  lazy val keyForEori = s"${partiesPrefix}.holders.holder.eori"
+  lazy val keyForTypeCode = s"${partiesPrefix}.holders.holder.type"
 
   implicit val format = Json.format[DeclarationHolder]
 

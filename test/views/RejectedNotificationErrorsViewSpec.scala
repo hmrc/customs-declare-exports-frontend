@@ -52,7 +52,6 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with ExportsTestHe
   "Rejected notification errors page" should {
 
     "have proper messages for labels" in {
-      messages must haveTranslationFor("rejected.notification.mrn")
       messages must haveTranslationFor("rejected.notification.mrn.missing")
       messages must haveTranslationFor("rejected.notification.title")
       messages must haveTranslationFor("rejected.amendment.title")
@@ -87,7 +86,7 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with ExportsTestHe
     }
 
     "have correct section header" in {
-      defaultView.getElementById("section-header").text mustBe messages("rejected.notification.mrn", MRN.value)
+      defaultView.getElementById("section-header").text mustBe messages("mrn.heading", MRN.value)
     }
 
     "have correct back link" in {
