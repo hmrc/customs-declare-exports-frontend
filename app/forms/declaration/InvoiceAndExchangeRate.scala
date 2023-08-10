@@ -31,7 +31,7 @@ import utils.validators.forms.FieldValidator._
 import scala.util.Try
 
 case class InvoiceAndExchangeRate(
-  totalAmountInvoiced: String,
+  totalAmountInvoiced: Option[String],
   totalAmountInvoicedCurrency: Option[String],
   agreedExchangeRate: String,
   exchangeRate: Option[String]
@@ -41,7 +41,7 @@ object InvoiceAndExchangeRate extends DeclarationPage {
 
   def apply(totals: InvoiceAndPackageTotals): InvoiceAndExchangeRate =
     InvoiceAndExchangeRate(
-      totals.totalAmountInvoiced.fold("")(x => x),
+      totals.totalAmountInvoiced,
       totals.totalAmountInvoicedCurrency,
       totals.agreedExchangeRate.fold("")(x => x),
       totals.exchangeRate
@@ -129,12 +129,6 @@ object InvoiceAndExchangeRate extends DeclarationPage {
     optional(text()).transform(_.map(_.toUpperCase), (o: Option[String]) => o),
     Seq(
       ConditionalConstraint(
-        isFieldIgnoreCaseString(agreedExchangeRateYesNo, YesNoAnswers.yes) and
-          isFieldIgnoreCaseString(totalAmountInvoicedCurrency, "GBP") and isAmountLessThan(totalAmountInvoiced),
-        exchangeRateNoFixedRateErrorKey,
-        isEmptyOptionString
-      ),
-      ConditionalConstraint(
         isFieldIgnoreCaseString(agreedExchangeRateYesNo, YesNoAnswers.yes) and isFieldNotEmpty(exchangeRate),
         rateFieldErrorKey,
         isNotOnlyCommasOption and validateOptionWithoutCommas(ofPattern(exchangeRatePattern))
@@ -147,10 +141,22 @@ object InvoiceAndExchangeRate extends DeclarationPage {
     )
   )
 
-  private def validateTotalAmountInvoiced =
-    text()
-      .verifying(invoiceFieldErrorEmptyKey, nonEmpty)
-      .verifying(invoiceFieldErrorKey, isEmpty or (isNotOnlyCommas and validateWithoutCommas(ofPattern(totalAmountInvoicedPattern))))
+  private def validateTotalAmountInvoiced = AdditionalConstraintsMapping(
+    optional(text()).transform(_.map(_.toUpperCase), (o: Option[String]) => o),
+    Seq(
+      ConditionalConstraint(
+        isFieldIgnoreCaseString(totalAmountInvoicedCurrency, "GBP") and isAmountLessThan(totalAmountInvoiced),
+        invoiceFieldErrorKey,
+        isEmptyOptionString
+      ),
+      ConditionalConstraint(
+        isFieldNotEmpty(totalAmountInvoiced),
+        invoiceFieldErrorKey,
+        isEmptyOptionString or (isNotOnlyCommasOption and validateOptionWithoutCommas(ofPattern(totalAmountInvoicedPattern)))
+      ),
+      ConditionalConstraint(isFieldEmpty(totalAmountInvoiced), invoiceFieldErrorEmptyKey, nonEmptyOptionString)
+    )
+  )
 
   private def validateTotalAmountInvoicedCurrency = AdditionalConstraintsMapping(
     optional(text()).transform(_.map(_.toUpperCase), (o: Option[String]) => o),

@@ -129,7 +129,7 @@ class InvoiceAndExchangeRateViewSpec extends PageWithButtonsSpec with Injector {
       }
 
       "display error when Total Amount Invoiced is incorrect" in {
-        val invoiceAndExchangeRate = InvoiceAndExchangeRate("abcd", Some(validCurrencyCode), YesNoAnswers.yes, Some("123.12345"))
+        val invoiceAndExchangeRate = InvoiceAndExchangeRate(Some("abcd"), Some(validCurrencyCode), YesNoAnswers.yes, Some("123.12345"))
         val view = createView(form.fillAndValidate(invoiceAndExchangeRate))
 
         view must haveGovukGlobalErrorSummary
@@ -140,18 +140,23 @@ class InvoiceAndExchangeRateViewSpec extends PageWithButtonsSpec with Injector {
 
       "display error when Exchange Rate is incorrect" in {
         val invoiceAndExchangeRate =
-          Map("exchangeRate" -> "abcd", "totalAmountInvoiced" -> "123.12", "totalAmountInvoicedCurrency" -> "GBP", "agreedExchangeRate" -> "Yes")
+          Map("exchangeRate" -> "abcd", "totalAmountInvoiced" -> "123000.12", "totalAmountInvoicedCurrency" -> "GBP", "agreedExchangeRate" -> "Yes")
         val view = createView(form.bind(invoiceAndExchangeRate))
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#exchangeRate")
 
-        view must containErrorElementWithMessageKey("declaration.exchangeRate.noFixedRate.error")
+        view must containErrorElementWithMessageKey("declaration.exchangeRate.error")
       }
 
       "display error when Currency Code is incorrect" in {
         val invoiceAndExchangeRate =
-          Map("exchangeRate" -> "123.12345", "totalAmountInvoiced" -> "123.12", "totalAmountInvoicedCurrency" -> "US", "agreedExchangeRate" -> "Yes")
+          Map(
+            "exchangeRate" -> "123.12345",
+            "totalAmountInvoiced" -> "123000.12",
+            "totalAmountInvoicedCurrency" -> "US",
+            "agreedExchangeRate" -> "Yes"
+          )
         val view = createView(form.bind(invoiceAndExchangeRate))
 
         view must haveGovukGlobalErrorSummary
@@ -165,7 +170,7 @@ class InvoiceAndExchangeRateViewSpec extends PageWithButtonsSpec with Injector {
   "Total Number Of Items View when filled" should {
     onEveryDeclarationJourney() { implicit request =>
       "display data in Total Amount Invoiced input" in {
-        val invoiceAndExchangeRate = InvoiceAndExchangeRate("123.123", None, YesNoAnswers.no, None)
+        val invoiceAndExchangeRate = InvoiceAndExchangeRate(Some("123.123"), None, YesNoAnswers.no, None)
         val view = createView(form.fill(invoiceAndExchangeRate))
 
         view.getElementById("totalAmountInvoiced").attr("value") must be("123.123")
@@ -174,7 +179,7 @@ class InvoiceAndExchangeRateViewSpec extends PageWithButtonsSpec with Injector {
       }
 
       "display data in Exchange Rate input" in {
-        val invoiceAndExchangeRate = InvoiceAndExchangeRate("", None, YesNoAnswers.yes, Some("123.12345"))
+        val invoiceAndExchangeRate = InvoiceAndExchangeRate(Some(""), None, YesNoAnswers.yes, Some("123.12345"))
         val view = createView(form.fill(invoiceAndExchangeRate))
 
         view.getElementById("totalAmountInvoiced").attr("value") mustBe empty
@@ -183,7 +188,7 @@ class InvoiceAndExchangeRateViewSpec extends PageWithButtonsSpec with Injector {
       }
 
       "display data in Currency code input" in {
-        val invoiceAndExchangeRate = InvoiceAndExchangeRate("", Some(validCurrencyCode), YesNoAnswers.yes, None)
+        val invoiceAndExchangeRate = InvoiceAndExchangeRate(Some(""), Some(validCurrencyCode), YesNoAnswers.yes, None)
         val view = createView(form.fill(invoiceAndExchangeRate))
 
         view.getElementById("totalAmountInvoiced").attr("value") mustBe empty
@@ -192,7 +197,7 @@ class InvoiceAndExchangeRateViewSpec extends PageWithButtonsSpec with Injector {
       }
 
       "display data in all inputs" in {
-        val invoiceAndExchangeRate = InvoiceAndExchangeRate("123.123", Some(validCurrencyCode), YesNoAnswers.yes, Some("123.12345"))
+        val invoiceAndExchangeRate = InvoiceAndExchangeRate(Some("123.123"), Some(validCurrencyCode), YesNoAnswers.yes, Some("123.12345"))
         val view = createView(form.fill(invoiceAndExchangeRate))
 
         view.getElementById("totalAmountInvoiced").attr("value") must be("123.123")
