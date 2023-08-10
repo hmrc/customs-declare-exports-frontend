@@ -54,6 +54,7 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
     mockAuthAction,
     mockJourneyAction,
     mockExportsCacheService,
+    mockCustomsDeclareExportsConnector,
     navigator,
     mockExportIdGeneratorService,
     stubMessagesControllerComponents(),
@@ -96,7 +97,7 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
 
   private def itemPassedToRemoveItemView: ExportItem = {
     val captor = ArgumentCaptor.forClass(classOf[ExportItem])
-    verify(removeItemPage).apply(any(), captor.capture(), any(), any())(any(), any())
+    verify(removeItemPage).apply(any(), captor.capture(), any(), any(), any())(any(), any())
     captor.getValue
   }
 
@@ -105,7 +106,7 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
     authorizedUser()
     when(addItemPage.apply()(any(), any())).thenReturn(HtmlFormat.empty)
     when(itemsSummaryPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
-    when(removeItemPage.apply(any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(removeItemPage.apply(any(), any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
     when(mockExportIdGeneratorService.generateItemId()).thenReturn(itemId)
     when(sequenceIdHandler.handleSequencing[ExportItem](any(), any())(any())).thenAnswer(new Answer[(Seq[ExportItem], DeclarationMeta)] {
       def answer(invocation: InvocationOnMock): (Seq[ExportItem], DeclarationMeta) = {
@@ -332,7 +333,7 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
         val result = controller.displayRemoveItemConfirmationPage(itemId)(getRequest())
 
         status(result) mustBe OK
-        verify(removeItemPage).apply(any(), any(), any(), any())(any(), any())
+        verify(removeItemPage).apply(any(), any(), any(), any(), any())(any(), any())
         itemPassedToRemoveItemView mustBe exportItem
       }
 
@@ -440,7 +441,7 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
           val result = controller.removeItem(itemId)(postRequest(incorrectRemoveItemForm))
 
           status(result) mustBe BAD_REQUEST
-          verify(removeItemPage).apply(any(), any(), any(), any())(any(), any())
+          verify(removeItemPage).apply(any(), any(), any(), any(), any())(any(), any())
         }
 
         "throw IllegalStateException if the Item has already been removed" in {

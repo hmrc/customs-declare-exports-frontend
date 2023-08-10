@@ -16,6 +16,7 @@
 
 package controllers.declaration
 
+import connectors.CustomsDeclareExportsConnector
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.routes.{ItemsSummaryController, ProcedureCodesController, TransportLeavingTheBorderController}
 import controllers.helpers.SequenceIdHelper
@@ -41,6 +42,7 @@ class ItemsSummaryController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   exportsCacheService: ExportsCacheService,
+  customsDeclareExportsConnector: CustomsDeclareExportsConnector,
   navigator: Navigator,
   exportItemIdGeneratorService: ExportItemIdGeneratorService,
   mcc: MessagesControllerComponents,
@@ -113,11 +115,15 @@ class ItemsSummaryController @Inject() (
     exportsCacheService.update(request.cacheModel.copy(items = itemsSequenced, declarationMeta = updatedMeta))
   }
 
-  def displayRemoveItemConfirmationPage(itemId: String, fromSummary: Boolean = false): Action[AnyContent] = (authenticate andThen journeyType) {
+  def displayRemoveItemConfirmationPage(itemId: String, fromSummary: Boolean = false): Action[AnyContent] = (authenticate andThen journeyType).async {
     implicit request =>
       request.cacheModel.itemWithIndexBy(itemId) match {
-        case Some((item, idx)) => Ok(removeItemPage(removeItemForm, item, idx, fromSummary))
-        case None              => navigator.continueTo(ItemsSummaryController.displayItemsSummaryPage)
+        case Some((item, idx)) =>
+          canItemBeRemoved(item) map { removable =>
+            Ok(removeItemPage(removeItemForm, item, idx, fromSummary, removable))
+          }
+        case None =>
+          Future.successful(navigator.continueTo(ItemsSummaryController.displayItemsSummaryPage))
       }
   }
 
@@ -126,10 +132,13 @@ class ItemsSummaryController @Inject() (
       .bindFromRequest()
       .fold(
         formWithErrors =>
-          Future.successful(request.cacheModel.itemWithIndexBy(itemId) match {
-            case Some((item, idx)) => BadRequest(removeItemPage(formWithErrors, item, idx, fromSummary))
-            case None              => throw new IllegalStateException(s"Could not find ExportItem with id = [$itemId] to remove")
-          }),
+          request.cacheModel.itemWithIndexBy(itemId) match {
+            case Some((item, idx)) =>
+              canItemBeRemoved(item) map { removable =>
+                BadRequest(removeItemPage(formWithErrors, item, idx, fromSummary, removable))
+              }
+            case None => throw new IllegalStateException(s"Could not find ExportItem with id = [$itemId] to remove")
+          },
         _.answer match {
           case YesNoAnswers.yes =>
             removeItemFromCache(itemId).map(_ => navigator.continueTo(ItemsSummaryController.displayItemsSummaryPage))
@@ -139,6 +148,18 @@ class ItemsSummaryController @Inject() (
         }
       )
   }
+
+  private def canItemBeRemoved(item: ExportItem)(implicit request: JourneyRequest[AnyContent]): Future[Boolean] =
+    request.cacheModel.declarationMeta.parentDeclarationId match {
+      case Some(parentDecId) =>
+        customsDeclareExportsConnector.findDeclaration(parentDecId) map {
+          case Some(parentDeclaration) =>
+            !parentDeclaration.items.map(_.sequenceId).contains(item.sequenceId)
+          case _ =>
+            true
+        }
+      case _ => Future.successful(true)
+    }
 
   private def removeItemFromCache(itemId: String)(implicit request: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
     request.cacheModel.itemBy(itemId) match {

@@ -43,7 +43,7 @@
   linkButton: linkButton
 )
 
-@(form: Form[YesNoAnswer], item: ExportItem, itemIdx: Int, fromSummary: Boolean)(implicit request: JourneyRequest[_], messages: Messages)
+@(form: Form[YesNoAnswer], item: ExportItem, itemIdx: Int, fromSummary: Boolean, canItemBeRemoved: Boolean)(implicit request: JourneyRequest[_], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
