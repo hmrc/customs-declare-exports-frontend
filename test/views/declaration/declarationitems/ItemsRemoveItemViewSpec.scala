@@ -41,10 +41,10 @@ class ItemsRemoveItemViewSpec extends UnitViewSpec with ExportsTestHelper with S
   private val itemIdx = 0
   private val itemDisplayNum = itemIdx + 1
   override val typeAndViewInstance: (DeclarationType, (JourneyRequest[_], Messages) => HtmlFormat.Appendable) =
-    (STANDARD, page(form, exportItem, itemIdx, fromSummary = false, canItemBeRemoved = true)(_, _))
+    (STANDARD, page(form, exportItem, itemIdx, fromSummary = false)(_, _))
 
   private def createView(form: Form[YesNoAnswer] = form, item: ExportItem, fromSummary: Boolean = false): Document =
-    page(form, item, itemIdx, fromSummary, canItemBeRemoved = true)(journeyRequest(), messages)
+    page(form, item, itemIdx, fromSummary)(journeyRequest(), messages)
 
   private val exportItem = anItem()
 

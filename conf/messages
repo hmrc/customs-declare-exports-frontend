@@ -53,6 +53,7 @@ site.add.anotherItem = Add another item
 site.radio.divider = or
 site.accessibility.error = Error:
 site.warning = Warning
+site.cancel = Cancel
 
 site.print = Print this page
 site.printable = Printable version
@@ -2300,6 +2301,9 @@ declaration.itemsSummary.addAnotherItem.error.empty = Select yes if you need to 
 declaration.itemsSummary.item.incorrect = Item {0} does not contain all mandatory data
 declaration.itemsRemove.title = Are you sure you want to remove declaration item {0}?
 declaration.itemsRemove.error.empty = Select yes if you want to remove this item
+declaration.itemsCannotRemove.title = Remove item
+declaration.itemsCannotRemove.warning = This item cannot be removed because it forms part of a submitted declaration. To submit a declaration that does not include this item, you will need to cancel this declaration and make a new one. {0}.
+declaration.itemsCannotRemove.warning.linkText = You can do this on the declaration details page
 
 declaration.seal.title = What is the security seal for container {0}?
 declaration.seal.section = Transport details

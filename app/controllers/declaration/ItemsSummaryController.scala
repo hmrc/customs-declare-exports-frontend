@@ -23,17 +23,18 @@ import controllers.helpers.SequenceIdHelper
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
+import handlers.ErrorHandler
 import models.DeclarationType.CLEARANCE
 import models.ExportsDeclaration
 import models.declaration.ExportItem
 import models.requests.JourneyRequest
 import play.api.data.{Form, FormError}
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.cache.{ExportItemIdGeneratorService, ExportsCacheService}
 import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import views.html.declaration.declarationitems.{items_add_item, items_remove_item, items_summary}
+import views.html.declaration.declarationitems.{items_add_item, items_cannot_remove, items_remove_item, items_summary}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -44,10 +45,12 @@ class ItemsSummaryController @Inject() (
   exportsCacheService: ExportsCacheService,
   customsDeclareExportsConnector: CustomsDeclareExportsConnector,
   navigator: Navigator,
+  errorHandler: ErrorHandler,
   exportItemIdGeneratorService: ExportItemIdGeneratorService,
   mcc: MessagesControllerComponents,
   addItemPage: items_add_item,
   itemsSummaryPage: items_summary,
+  itemsCannotRemovePage: items_cannot_remove,
   removeItemPage: items_remove_item,
   sequenceIdHandler: SequenceIdHelper
 )(implicit ec: ExecutionContext)
@@ -119,8 +122,17 @@ class ItemsSummaryController @Inject() (
     implicit request =>
       request.cacheModel.itemWithIndexBy(itemId) match {
         case Some((item, idx)) =>
-          canItemBeRemoved(item) map { removable =>
-            Ok(removeItemPage(removeItemForm, item, idx, fromSummary, removable))
+          findParentDeclaration flatMap {
+            case Some(parentDeclaration) =>
+              Future.successful(
+                canItemBeRemoved(
+                  item,
+                  parentDeclaration,
+                  Ok(removeItemPage(removeItemForm, item, idx, fromSummary)),
+                  Ok(itemsCannotRemovePage(item, idx, parentDeclaration.id))
+                )
+              )
+            case None => errorHandler.internalError(s"Could not find parentDecId from declaration [${request.cacheModel.id}]")
           }
         case None =>
           Future.successful(navigator.continueTo(ItemsSummaryController.displayItemsSummaryPage))
@@ -134,10 +146,19 @@ class ItemsSummaryController @Inject() (
         formWithErrors =>
           request.cacheModel.itemWithIndexBy(itemId) match {
             case Some((item, idx)) =>
-              canItemBeRemoved(item) map { removable =>
-                BadRequest(removeItemPage(formWithErrors, item, idx, fromSummary, removable))
+              findParentDeclaration flatMap {
+                case Some(parentDeclaration) =>
+                  Future.successful(
+                    canItemBeRemoved(
+                      item,
+                      parentDeclaration,
+                      BadRequest(removeItemPage(formWithErrors, item, idx, fromSummary)),
+                      BadRequest(itemsCannotRemovePage(item, idx, parentDeclaration.id))
+                    )
+                  )
+                case None => errorHandler.internalError(s"Could not find parentDecId from declaration [${request.cacheModel.id}]")
               }
-            case None => throw new IllegalStateException(s"Could not find ExportItem with id = [$itemId] to remove")
+            case None => errorHandler.internalError(s"Could not find ExportItem with id = [$itemId] to remove")
           },
         _.answer match {
           case YesNoAnswers.yes =>
@@ -149,17 +170,16 @@ class ItemsSummaryController @Inject() (
       )
   }
 
-  private def canItemBeRemoved(item: ExportItem)(implicit request: JourneyRequest[AnyContent]): Future[Boolean] =
+  private def findParentDeclaration(implicit request: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
     request.cacheModel.declarationMeta.parentDeclarationId match {
       case Some(parentDecId) =>
-        customsDeclareExportsConnector.findDeclaration(parentDecId) map {
-          case Some(parentDeclaration) =>
-            !parentDeclaration.items.map(_.sequenceId).contains(item.sequenceId)
-          case _ =>
-            true
-        }
-      case _ => Future.successful(true)
+        customsDeclareExportsConnector.findDeclaration(parentDecId)
+      case _ => Future.successful(None)
     }
+
+  private def canItemBeRemoved(item: ExportItem, parentDec: ExportsDeclaration, remove: Result, cannotRemove: Result): Result =
+    if (!parentDec.items.map(_.sequenceId).contains(item.sequenceId)) remove
+    else cannotRemove
 
   private def removeItemFromCache(itemId: String)(implicit request: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
     request.cacheModel.itemBy(itemId) match {

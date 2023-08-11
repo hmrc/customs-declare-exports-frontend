@@ -22,6 +22,7 @@ import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.FiscalInformation.AllowedFiscalInformationAnswers
 import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData, FiscalInformation, WarehouseIdentification}
+import mock.ErrorHandlerMocks
 import models.DeclarationType._
 import models.declaration.{CommodityMeasure, ExportItem}
 import models.{DeclarationMeta, ExportsDeclaration}
@@ -37,16 +38,16 @@ import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import services.cache.ExportItemIdGeneratorService
-import views.html.declaration.declarationitems.{items_add_item, items_remove_item, items_summary}
+import views.html.declaration.declarationitems.{items_add_item, items_cannot_remove, items_remove_item, items_summary}
 
-import scala.concurrent.Await
-import scala.concurrent.duration._
+import scala.concurrent.Future
 
-class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionValues with ScalaFutures with GivenWhenThen {
+class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionValues with ScalaFutures with GivenWhenThen with ErrorHandlerMocks {
 
   private val addItemPage = mock[items_add_item]
   private val itemsSummaryPage = mock[items_summary]
   private val removeItemPage = mock[items_remove_item]
+  private val cannotRemoveItemPage = mock[items_cannot_remove]
   private val mockExportIdGeneratorService = mock[ExportItemIdGeneratorService]
   private val sequenceIdHandler: SequenceIdHelper = mock[SequenceIdHelper]
 
@@ -56,13 +57,18 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
     mockExportsCacheService,
     mockCustomsDeclareExportsConnector,
     navigator,
+    mockErrorHandler,
     mockExportIdGeneratorService,
     stubMessagesControllerComponents(),
     addItemPage,
     itemsSummaryPage,
+    cannotRemoveItemPage,
     removeItemPage,
     sequenceIdHandler
   )(ec)
+
+  private val parentDeclarationId = "parentDecId"
+  private val parentDeclaration = aDeclaration(withId(parentDeclarationId))
 
   private val itemId = "ItemId12345"
   private val exportItem: ExportItem = anItem(
@@ -97,17 +103,23 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
 
   private def itemPassedToRemoveItemView: ExportItem = {
     val captor = ArgumentCaptor.forClass(classOf[ExportItem])
-    verify(removeItemPage).apply(any(), captor.capture(), any(), any(), any())(any(), any())
+    verify(removeItemPage).apply(any(), captor.capture(), any(), any())(any(), any())
     captor.getValue
   }
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
+
+    setupErrorHandler()
     authorizedUser()
+
     when(addItemPage.apply()(any(), any())).thenReturn(HtmlFormat.empty)
     when(itemsSummaryPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
-    when(removeItemPage.apply(any(), any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(removeItemPage.apply(any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(cannotRemoveItemPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
     when(mockExportIdGeneratorService.generateItemId()).thenReturn(itemId)
+    when(mockCustomsDeclareExportsConnector.findDeclaration(any())(any(), any())).thenReturn(Future.successful(Some(parentDeclaration)))
+
     when(sequenceIdHandler.handleSequencing[ExportItem](any(), any())(any())).thenAnswer(new Answer[(Seq[ExportItem], DeclarationMeta)] {
       def answer(invocation: InvocationOnMock): (Seq[ExportItem], DeclarationMeta) = {
         val args = invocation.getArguments
@@ -327,13 +339,17 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
   "displayRemoveItemConfirmationPage" should {
     onEveryDeclarationJourney() { request =>
       "return 200 (OK)" in {
-        val cachedData = aDeclaration(withType(request.declarationType), withItem(exportItem))
+
+        when(mockCustomsDeclareExportsConnector.findDeclaration(any())(any(), any()))
+          .thenReturn(Future.successful(Some(parentDeclaration)))
+
+        val cachedData = aDeclaration(withType(request.declarationType), withItem(exportItem), withParentDeclarationId(parentDeclarationId))
         withNewCaching(cachedData)
 
         val result = controller.displayRemoveItemConfirmationPage(itemId)(getRequest())
 
         status(result) mustBe OK
-        verify(removeItemPage).apply(any(), any(), any(), any(), any())(any(), any())
+        verify(removeItemPage).apply(any(), any(), any(), any())(any(), any())
         itemPassedToRemoveItemView mustBe exportItem
       }
 
@@ -435,22 +451,25 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
       "provided with empty form" should {
 
         "return 400 (BAD_REQUEST)" in {
-          withNewCaching(aDeclaration(withType(request.declarationType), withItem(cachedItem), withItem(secondItem)))
+          withNewCaching(
+            aDeclaration(withType(request.declarationType), withItem(cachedItem), withItem(secondItem), withParentDeclarationId(parentDeclarationId))
+          )
+
           val incorrectRemoveItemForm = Json.obj("yesNo" -> "")
 
           val result = controller.removeItem(itemId)(postRequest(incorrectRemoveItemForm))
 
           status(result) mustBe BAD_REQUEST
-          verify(removeItemPage).apply(any(), any(), any(), any(), any())(any(), any())
+          verify(removeItemPage).apply(any(), any(), any(), any())(any(), any())
         }
 
         "throw IllegalStateException if the Item has already been removed" in {
           withNewCaching(aDeclaration(withType(request.declarationType)))
           val incorrectRemoveItemForm = Json.obj("yesNo" -> "")
 
-          intercept[IllegalStateException] {
-            Await.result(controller.removeItem(itemId)(postRequest(incorrectRemoveItemForm)), 5.seconds)
-          }
+          val result = controller.removeItem(itemId)(postRequest(incorrectRemoveItemForm))
+
+          status(result) mustBe INTERNAL_SERVER_ERROR
         }
       }
     }
