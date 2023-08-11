@@ -129,7 +129,16 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
   }
 
   override protected def afterEach(): Unit = {
-    reset(addItemPage, itemsSummaryPage, removeItemPage, mockExportIdGeneratorService, mockExportsCacheService, sequenceIdHandler)
+    reset(
+      addItemPage,
+      itemsSummaryPage,
+      removeItemPage,
+      cannotRemoveItemPage,
+      mockExportIdGeneratorService,
+      mockExportsCacheService,
+      sequenceIdHandler,
+      mockCustomsDeclareExportsConnector
+    )
     super.afterEach()
   }
 
@@ -338,19 +347,35 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
 
   "displayRemoveItemConfirmationPage" should {
     onEveryDeclarationJourney() { request =>
-      "return 200 (OK)" in {
+      "return 200 (OK)" when {
+        "item can be removed" in {
 
-        when(mockCustomsDeclareExportsConnector.findDeclaration(any())(any(), any()))
-          .thenReturn(Future.successful(Some(parentDeclaration)))
+          when(mockCustomsDeclareExportsConnector.findDeclaration(any())(any(), any()))
+            .thenReturn(Future.successful(Some(parentDeclaration)))
 
-        val cachedData = aDeclaration(withType(request.declarationType), withItem(exportItem), withParentDeclarationId(parentDeclarationId))
-        withNewCaching(cachedData)
+          val cachedData = aDeclaration(withType(request.declarationType), withItem(exportItem), withParentDeclarationId(parentDeclarationId))
+          withNewCaching(cachedData)
 
-        val result = controller.displayRemoveItemConfirmationPage(itemId)(getRequest())
+          val result = controller.displayRemoveItemConfirmationPage(itemId)(getRequest())
 
-        status(result) mustBe OK
-        verify(removeItemPage).apply(any(), any(), any(), any())(any(), any())
-        itemPassedToRemoveItemView mustBe exportItem
+          status(result) mustBe OK
+          verify(removeItemPage).apply(any(), any(), any(), any())(any(), any())
+          itemPassedToRemoveItemView mustBe exportItem
+        }
+        "item cannot be removed" in {
+
+          when(mockCustomsDeclareExportsConnector.findDeclaration(any())(any(), any()))
+            .thenReturn(Future.successful(Some(parentDeclaration)))
+
+          val cachedData = aDeclaration(withType(request.declarationType), withItem(exportItem), withParentDeclarationId(parentDeclarationId))
+          withNewCaching(cachedData)
+
+          val result = controller.displayRemoveItemConfirmationPage(itemId)(getRequest())
+
+          status(result) mustBe OK
+          verify(cannotRemoveItemPage)(any(), any(), any())(any(), any())
+          itemPassedToRemoveItemView mustBe exportItem
+        }
       }
 
       "return 303 (SEE_OTHER) and redirect to Items Summary page" when {
@@ -362,6 +387,30 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
 
           status(result) mustBe SEE_OTHER
           thePageNavigatedTo mustBe routes.ItemsSummaryController.displayItemsSummaryPage
+        }
+      }
+
+      "return INTERNAL_SERVER_ERROR" when {
+        "parentDecId does not exist" in {
+
+          val cachedData = aDeclaration(withType(request.declarationType), withItem(exportItem))
+          withNewCaching(cachedData)
+
+          val result = controller.displayRemoveItemConfirmationPage(itemId)(getRequest())
+
+          status(result) mustBe INTERNAL_SERVER_ERROR
+        }
+        "parentDec cannot be found" in {
+
+          when(mockCustomsDeclareExportsConnector.findDeclaration(any())(any(), any()))
+            .thenReturn(Future.successful(None))
+
+          val cachedData = aDeclaration(withType(request.declarationType), withItem(exportItem), withParentDeclarationId(parentDeclarationId))
+          withNewCaching(cachedData)
+
+          val result = controller.displayRemoveItemConfirmationPage(itemId)(getRequest())
+
+          status(result) mustBe INTERNAL_SERVER_ERROR
         }
       }
     }
