@@ -34,8 +34,7 @@
     item_section: item_section,
     link: link,
     cancelButton: cancel,
-    navigator: Navigator,
-    linkButton: linkButton
+    navigator: Navigator
 )
 
 @(item: ExportItem, itemIdx: Int, parentDeclarationId: String)(implicit request: JourneyRequest[_], messages: Messages)
@@ -64,6 +63,6 @@
         @item_section(item, itemIdx, request.declarationType, actionsEnabled = false)
 
         <div>
-            @cancelButton()
+            @cancelButton(controllers.routes.DeclarationDetailsController.displayPage(parentDeclarationId))
         </div>
 }

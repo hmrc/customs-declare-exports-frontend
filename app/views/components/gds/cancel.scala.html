@@ -14,10 +14,10 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.components.gds._
 
-@this(govukButton: GovukButton)
+@this(linkButton: linkButton)
 
-@(messageKey: String = "site.cancel")(implicit messages: Messages)
+@(call: Call)(implicit messages: Messages)
 
-@govukButton(Button(content = Text(messages(messageKey)), attributes = Map("id" -> "cancel", "name" -> "Cancel")))
+@linkButton("site.cancel", call)

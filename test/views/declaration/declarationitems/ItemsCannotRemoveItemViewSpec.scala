@@ -70,7 +70,7 @@ class ItemsCannotRemoveItemViewSpec extends UnitViewSpec with ExportsTestHelper 
     }
 
     "display cancel button" in {
-      val button = createView(item = exportItem).getElementById("cancel")
+      val button = createView(item = exportItem).getElementsByClass("govuk-button").first()
       button must containMessage("site.cancel")
     }
 
