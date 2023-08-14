@@ -21,11 +21,10 @@ import controllers.helpers.SequenceIdHelper
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.FiscalInformation.AllowedFiscalInformationAnswers
-import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData, FiscalInformation, WarehouseIdentification}
+import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData, FiscalInformation}
 import mock.ErrorHandlerMocks
-import models.DeclarationType._
 import models.declaration.{CommodityMeasure, ExportItem}
-import models.{DeclarationMeta, ExportsDeclaration}
+import models.DeclarationMeta
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.{any, anyString}
 import org.mockito.Mockito.{reset, verify, when}
@@ -38,7 +37,7 @@ import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import services.cache.ExportItemIdGeneratorService
-import views.html.declaration.declarationitems.{items_add_item, items_cannot_remove, items_remove_item, items_summary}
+import views.html.declaration.declarationitems.{items_add_item, items_summary}
 
 import scala.concurrent.Future
 
@@ -46,8 +45,6 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
 
   private val addItemPage = mock[items_add_item]
   private val itemsSummaryPage = mock[items_summary]
-  private val removeItemPage = mock[items_remove_item]
-  private val cannotRemoveItemPage = mock[items_cannot_remove]
   private val mockExportIdGeneratorService = mock[ExportItemIdGeneratorService]
   private val sequenceIdHandler: SequenceIdHelper = mock[SequenceIdHelper]
 
@@ -55,15 +52,11 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
     mockAuthAction,
     mockJourneyAction,
     mockExportsCacheService,
-    mockCustomsDeclareExportsConnector,
     navigator,
-    mockErrorHandler,
     mockExportIdGeneratorService,
     stubMessagesControllerComponents(),
     addItemPage,
     itemsSummaryPage,
-    cannotRemoveItemPage,
-    removeItemPage,
     sequenceIdHandler
   )(ec)
 
@@ -101,12 +94,6 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
     captor.getValue
   }
 
-  private def itemPassedToRemoveItemView: ExportItem = {
-    val captor = ArgumentCaptor.forClass(classOf[ExportItem])
-    verify(removeItemPage).apply(any(), captor.capture(), any(), any())(any(), any())
-    captor.getValue
-  }
-
   override protected def beforeEach(): Unit = {
     super.beforeEach()
 
@@ -115,8 +102,6 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
 
     when(addItemPage.apply()(any(), any())).thenReturn(HtmlFormat.empty)
     when(itemsSummaryPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
-    when(removeItemPage.apply(any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
-    when(cannotRemoveItemPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
     when(mockExportIdGeneratorService.generateItemId()).thenReturn(itemId)
     when(mockCustomsDeclareExportsConnector.findDeclaration(any())(any(), any())).thenReturn(Future.successful(Some(parentDeclaration)))
 
@@ -129,16 +114,7 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
   }
 
   override protected def afterEach(): Unit = {
-    reset(
-      addItemPage,
-      itemsSummaryPage,
-      removeItemPage,
-      cannotRemoveItemPage,
-      mockExportIdGeneratorService,
-      mockExportsCacheService,
-      sequenceIdHandler,
-      mockCustomsDeclareExportsConnector
-    )
+    reset(addItemPage, itemsSummaryPage, mockExportIdGeneratorService, mockExportsCacheService, sequenceIdHandler, mockCustomsDeclareExportsConnector)
     super.afterEach()
   }
 
@@ -345,238 +321,4 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
     }
   }
 
-  "displayRemoveItemConfirmationPage" should {
-    onEveryDeclarationJourney() { request =>
-      "return 200 (OK)" when {
-        "item can be removed" in {
-
-          when(mockCustomsDeclareExportsConnector.findDeclaration(any())(any(), any()))
-            .thenReturn(Future.successful(Some(parentDeclaration)))
-
-          val cachedData = aDeclaration(withType(request.declarationType), withItem(exportItem), withParentDeclarationId(parentDeclarationId))
-          withNewCaching(cachedData)
-
-          val result = controller.displayRemoveItemConfirmationPage(itemId)(getRequest())
-
-          status(result) mustBe OK
-          verify(removeItemPage).apply(any(), any(), any(), any())(any(), any())
-          itemPassedToRemoveItemView mustBe exportItem
-        }
-        "item cannot be removed" in {
-
-          when(mockCustomsDeclareExportsConnector.findDeclaration(any())(any(), any()))
-            .thenReturn(Future.successful(Some(parentDeclaration)))
-
-          val cachedData = aDeclaration(withType(request.declarationType), withItem(exportItem), withParentDeclarationId(parentDeclarationId))
-          withNewCaching(cachedData)
-
-          val result = controller.displayRemoveItemConfirmationPage(itemId)(getRequest())
-
-          status(result) mustBe OK
-          verify(cannotRemoveItemPage)(any(), any(), any())(any(), any())
-          itemPassedToRemoveItemView mustBe exportItem
-        }
-      }
-
-      "return 303 (SEE_OTHER) and redirect to Items Summary page" when {
-        "provided with itemId not matching any Item in cache" in {
-          val cachedData = aDeclaration(withType(request.declarationType), withItem(exportItem))
-          withNewCaching(cachedData)
-
-          val result = controller.displayRemoveItemConfirmationPage("someItemId")(getRequest())
-
-          status(result) mustBe SEE_OTHER
-          thePageNavigatedTo mustBe routes.ItemsSummaryController.displayItemsSummaryPage
-        }
-      }
-
-      "return INTERNAL_SERVER_ERROR" when {
-        "parentDecId does not exist" in {
-
-          val cachedData = aDeclaration(withType(request.declarationType), withItem(exportItem))
-          withNewCaching(cachedData)
-
-          val result = controller.displayRemoveItemConfirmationPage(itemId)(getRequest())
-
-          status(result) mustBe INTERNAL_SERVER_ERROR
-        }
-        "parentDec cannot be found" in {
-
-          when(mockCustomsDeclareExportsConnector.findDeclaration(any())(any(), any()))
-            .thenReturn(Future.successful(None))
-
-          val cachedData = aDeclaration(withType(request.declarationType), withItem(exportItem), withParentDeclarationId(parentDeclarationId))
-          withNewCaching(cachedData)
-
-          val result = controller.displayRemoveItemConfirmationPage(itemId)(getRequest())
-
-          status(result) mustBe INTERNAL_SERVER_ERROR
-        }
-      }
-    }
-  }
-
-  "removeItem" when {
-    val cachedItem = ExportItem(sequenceId = 1, id = itemId)
-    val secondItem = ExportItem(sequenceId = 2, id = "123654")
-
-    def declarationPassedToUpdateCache: ExportsDeclaration = {
-      val captor = ArgumentCaptor.forClass(classOf[ExportsDeclaration])
-      verify(mockExportsCacheService).update(captor.capture())(any())
-      captor.getValue
-    }
-
-    onEveryDeclarationJourney() { request =>
-      "user wants to remove an Item" when {
-        val removeItemForm = Json.obj("yesNo" -> YesNoAnswers.yes)
-
-        "there is no Item in declaration with requested Id" should {
-
-          "not call ExportsCacheService update method" in {
-            withNewCaching(aDeclaration(withType(request.declarationType), withItem(cachedItem), withItem(secondItem)))
-
-            val result = controller.removeItem("someId123")(postRequest(removeItemForm))
-            status(result) mustBe SEE_OTHER
-
-            verifyTheCacheIsUnchanged()
-          }
-
-          "return 303 (SEE_OTHER) and redirect to Items Summary page" in {
-            withNewCaching(aDeclaration(withType(request.declarationType), withItem(cachedItem), withItem(secondItem)))
-
-            val result = controller.removeItem("someId123")(postRequest(removeItemForm))
-
-            status(result) mustBe SEE_OTHER
-            thePageNavigatedTo mustBe routes.ItemsSummaryController.displayItemsSummaryPage
-          }
-        }
-
-        "there is Item in declaration with requested Id" should {
-
-          "remove the Item from cache" in {
-            withNewCaching(aDeclaration(withType(request.declarationType), withItem(cachedItem), withItem(secondItem)))
-
-            val result = controller.removeItem(itemId)(postRequest(removeItemForm))
-            status(result) mustBe SEE_OTHER
-
-            val items = declarationPassedToUpdateCache.items
-            items.size mustBe 1
-            items must contain(secondItem)
-
-            And("max sequence id value is unchanged")
-            verify(sequenceIdHandler).handleSequencing[ExportItem](any(), any())(any())
-          }
-
-          "return 303 (SEE_OTHER) and redirect to Items Summary page" in {
-            withNewCaching(aDeclaration(withType(request.declarationType), withItem(cachedItem), withItem(secondItem)))
-
-            val result = controller.removeItem(itemId)(postRequest(removeItemForm))
-
-            status(result) mustBe SEE_OTHER
-            thePageNavigatedTo mustBe routes.ItemsSummaryController.displayItemsSummaryPage
-
-            val items = declarationPassedToUpdateCache.items
-            items.size mustBe 1
-            items must contain(secondItem)
-          }
-        }
-      }
-
-      "user does not want to remove an Item" should {
-        val removeItemForm = Json.obj("yesNo" -> YesNoAnswers.no)
-
-        "redirect to Items Summary page" in {
-          withNewCaching(aDeclaration(withType(request.declarationType), withItem(cachedItem), withItem(secondItem)))
-
-          val result = controller.removeItem(itemId)(postRequest(removeItemForm))
-
-          status(result) mustBe SEE_OTHER
-          thePageNavigatedTo mustBe routes.ItemsSummaryController.displayItemsSummaryPage
-
-          verifyTheCacheIsUnchanged()
-        }
-      }
-
-      "provided with empty form" should {
-
-        "return 400 (BAD_REQUEST)" in {
-          withNewCaching(
-            aDeclaration(withType(request.declarationType), withItem(cachedItem), withItem(secondItem), withParentDeclarationId(parentDeclarationId))
-          )
-
-          val incorrectRemoveItemForm = Json.obj("yesNo" -> "")
-
-          val result = controller.removeItem(itemId)(postRequest(incorrectRemoveItemForm))
-
-          status(result) mustBe BAD_REQUEST
-          verify(removeItemPage).apply(any(), any(), any(), any())(any(), any())
-        }
-
-        "throw IllegalStateException if the Item has already been removed" in {
-          withNewCaching(aDeclaration(withType(request.declarationType)))
-          val incorrectRemoveItemForm = Json.obj("yesNo" -> "")
-
-          val result = controller.removeItem(itemId)(postRequest(incorrectRemoveItemForm))
-
-          status(result) mustBe INTERNAL_SERVER_ERROR
-        }
-      }
-    }
-
-    onJourney(STANDARD, OCCASIONAL, SUPPLEMENTARY, SIMPLIFIED) { request =>
-      "warehouse identification answer is updated" when {
-        val removeItemForm = Json.obj("yesNo" -> YesNoAnswers.yes)
-
-        val warehouseItem = anItem(withItemId("warehouseItem"), withProcedureCodes(Some("0007"), Seq("000")))
-        val declaration = aDeclaration(
-          withType(request.declarationType),
-          withItem(cachedItem),
-          withItem(warehouseItem),
-          withWarehouseIdentification(Some(WarehouseIdentification(Some("id"))))
-        )
-
-        "user removes item contain 'warehouse procedure code'" should {
-          "remove the Item from cache" in {
-            withNewCaching(declaration)
-
-            val result = controller.removeItem("warehouseItem")(postRequest(removeItemForm))
-            status(result) mustBe SEE_OTHER
-
-            val items = declarationPassedToUpdateCache.items
-            items.size mustBe 1
-
-            declarationPassedToUpdateCache.locations.warehouseIdentification mustBe None
-          }
-        }
-      }
-    }
-
-    onJourney(CLEARANCE) { request =>
-      "warehouse identification answer is retained" when {
-        val removeItemForm = Json.obj("yesNo" -> YesNoAnswers.yes)
-
-        val warehouseItem = anItem(withItemId("warehouseItem"), withProcedureCodes(Some("0007"), Seq("000")))
-        val declaration = aDeclaration(
-          withType(request.declarationType),
-          withItem(cachedItem),
-          withItem(warehouseItem),
-          withWarehouseIdentification(Some(WarehouseIdentification(Some("id"))))
-        )
-
-        "user removes item contain 'warehouse procedure code'" should {
-          "remove the Item from cache" in {
-            withNewCaching(declaration)
-
-            val result = controller.removeItem("warehouseItem")(postRequest(removeItemForm))
-            status(result) mustBe SEE_OTHER
-
-            val items = declarationPassedToUpdateCache.items
-            items.size mustBe 1
-
-            declarationPassedToUpdateCache.locations.warehouseIdentification mustBe Some(WarehouseIdentification(Some("id")))
-          }
-        }
-      }
-    }
-  }
 }

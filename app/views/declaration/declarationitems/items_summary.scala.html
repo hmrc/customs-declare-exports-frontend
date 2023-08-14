@@ -121,7 +121,7 @@
                     TableRow(
                         content = HtmlContent(link(
                             messages("site.remove"),
-                            routes.ItemsSummaryController.displayRemoveItemConfirmationPage(item.id),
+                            routes.RemoveItemsSummaryController.displayRemoveItemConfirmationPage(item.id),
                             textHidden = Some(messages("declaration.itemsAdd.remove.hint", index + 1))
                         )),
                         classes = "govuk-table__cell--numeric",

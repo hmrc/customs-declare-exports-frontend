@@ -37,7 +37,7 @@
 @actions(action: => Actions) = @{ if(actionsEnabled) Some(action) else None }
 
 @headerAction = @{
-    if(actionsEnabled) Some(Link(messages("declaration.summary.items.item.headerAction"), routes.ItemsSummaryController.displayRemoveItemConfirmationPage(item.id, true)))
+    if(actionsEnabled) Some(Link(messages("declaration.summary.items.item.headerAction"), routes.RemoveItemsSummaryController.displayRemoveItemConfirmationPage(item.id, true)))
     else None
 }
 

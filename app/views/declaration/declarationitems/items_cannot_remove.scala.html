@@ -37,7 +37,7 @@
     navigator: Navigator
 )
 
-@(item: ExportItem, itemIdx: Int, parentDeclarationId: String)(implicit request: JourneyRequest[_], messages: Messages)
+@(item: ExportItem, itemIdx: Int, submissionId: String)(implicit request: JourneyRequest[_], messages: Messages)
 
 
 @itemDisplayNum = @{ itemIdx + 1 }
@@ -56,13 +56,13 @@
                 messages("declaration.itemsCannotRemove.warning",
                     link(
                         messages("declaration.itemsCannotRemove.warning.linkText"),
-                        controllers.routes.DeclarationDetailsController.displayPage(parentDeclarationId)
+                        controllers.routes.DeclarationDetailsController.displayPage(submissionId)
                     )))
         ))
 
         @item_section(item, itemIdx, request.declarationType, actionsEnabled = false)
 
         <div>
-            @cancelButton(controllers.routes.DeclarationDetailsController.displayPage(parentDeclarationId))
+            @cancelButton(controllers.routes.DeclarationDetailsController.displayPage(submissionId))
         </div>
 }

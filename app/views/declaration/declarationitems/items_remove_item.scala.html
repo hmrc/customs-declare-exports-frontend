@@ -59,7 +59,7 @@
     title = Title("declaration.itemsRemove.title", "declaration.section.5", itemDisplayNum.toString, hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(RemoveItem)))) {
 
-    @formHelper(action = routes.ItemsSummaryController.removeItem(item.id, fromSummary), 'autoComplete -> "off") {
+    @formHelper(action = routes.RemoveItemsSummaryController.removeItem(item.id, fromSummary), 'autoComplete -> "off") {
 
       @errorSummary(yesNoErrors(form.errors))
 

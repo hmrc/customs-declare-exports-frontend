@@ -275,9 +275,9 @@ GET         /declaration-items-list              controllers.declaration.ItemsSu
 
 POST        /declaration-items-list              controllers.declaration.ItemsSummaryController.submit
 
-GET         /remove-declaration-item/:itemId    controllers.declaration.ItemsSummaryController.displayRemoveItemConfirmationPage(itemId, fromSummary: Boolean ?= false)
+GET         /remove-declaration-item/:itemId    controllers.declaration.RemoveItemsSummaryController.displayRemoveItemConfirmationPage(itemId, fromSummary: Boolean ?= false)
 
-POST        /remove-declaration-item/:itemId    controllers.declaration.ItemsSummaryController.removeItem(itemId, fromSummary: Boolean ?= false)
+POST        /remove-declaration-item/:itemId    controllers.declaration.RemoveItemsSummaryController.removeItem(itemId, fromSummary: Boolean ?= false)
 
 # Procedure Codes
 

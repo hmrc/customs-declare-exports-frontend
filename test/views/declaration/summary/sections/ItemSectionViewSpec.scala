@@ -68,7 +68,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
         "have header action" in {
           val action = view.getElementById("item-header-action")
           action.text mustBe messages("declaration.summary.items.item.headerAction")
-          action must haveHref(controllers.declaration.routes.ItemsSummaryController.displayRemoveItemConfirmationPage(itemId, true))
+          action must haveHref(controllers.declaration.routes.RemoveItemsSummaryController.displayRemoveItemConfirmationPage(itemId, true))
         }
 
         "have procedure code with change button" in {

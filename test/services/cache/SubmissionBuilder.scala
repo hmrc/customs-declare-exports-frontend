@@ -25,7 +25,7 @@ trait SubmissionBuilder {
     Submission(
       uuid = declaration.id,
       eori = eori,
-      lrn = declaration.lrn.get,
+      lrn = declaration.lrn.getOrElse("LRN"),
       mrn = None,
       ducr = None,
       actions = Seq.empty,
