@@ -184,7 +184,7 @@ class TimelineEvents @Inject() (
         case _: AmendmentRejected | _ => linkButton("declaration.details.fix.resubmit.button", fixAndResubmit)
       }
 
-      val cancelUrl = SubmissionController.cancelAmendment()
+      val cancelUrl = SubmissionController.cancelAmendment
       val cancelLink = link(messages("declaration.details.cancel.amendment"), cancelUrl, id = Some("cancel-amendment"))
       Html(s"""<div class="govuk-button-group">${button.toString()}${cancelLink.toString()}</div>""")
     }

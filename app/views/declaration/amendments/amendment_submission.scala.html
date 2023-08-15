@@ -15,10 +15,11 @@
  *@
 
 @import controllers.declaration.routes.{SubmissionController, SummaryController}
-@import forms.declaration.LegalDeclaration._
-@import forms.declaration.LegalDeclaration
-@import models.declaration.submissions.EnhancedStatus.ERRORS
+@import controllers.routes.DeclarationDetailsController
+@import forms.declaration.AmendmentSubmission._
+@import forms.declaration.AmendmentSubmission
 @import models.requests.JourneyRequest
+@import models.requests.SessionHelper.{getOrElse, submissionUuid}
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.helpers.{BackButton, Title}
 @import views.html.components.gds._
@@ -36,16 +37,11 @@
     exportsInputCharacterCount: exportsInputCharacterCount
 )
 
-@(form: Form[LegalDeclaration])(implicit request: JourneyRequest[_], messages: Messages)
+@(form: Form[AmendmentSubmission], isCancellation: Boolean)(implicit request: JourneyRequest[_], messages: Messages)
 
-@headerMsgKey = @{
-    request.cacheModel.declarationMeta.parentDeclarationEnhancedStatus match {
-        case Some(ERRORS) => "declaration.summary.amend.legal-header"
-        case _ => "declaration.summary.legal-header"
-    }
-}
+@key = @{ if (isCancellation) "cancellation" else "submission" }
 
-@html = {
+@content = {
     @govukWarningText(WarningText(
         iconFallbackText = Some(messages("site.warning")),
         content = Text(messages("legal.declaration.warning"))
@@ -53,41 +49,55 @@
 
     @exportsInputText(
         field = form(nameKey),
-        labelKey = "legal.declaration.fullName",
+        labelKey = "amendment.submission.fullName",
         inputClasses = Some("govuk-input govuk-!-width-one-half")
     )
 
     @exportsInputText(
         field = form(jobRoleKey),
-        labelKey = "legal.declaration.jobRole",
+        labelKey = "amendment.submission.jobRole",
         inputClasses = Some("govuk-input govuk-!-width-one-half")
     )
 
     @exportsInputText(
         field = form(emailKey),
-        labelKey = "legal.declaration.email",
+        labelKey = "amendment.submission.email",
         inputClasses = Some("govuk-input govuk-!-width-one-half")
     )
 
-    @exportsInputCheckbox(
-        field = form(confirmationKey),
-        labelKey = "legal.declaration.confirmation"
-    )
+    @exportsInputCharacterCount(
+      field = form(reasonKey),
+      labelKey = Some(s"amendment.${key}.reason"),
+      labelClasses = "govuk-!-font-weight-bold govuk-!-font-size-24",
+      maxLength = Some(reasonMaxLength),
+      inputClasses = "govuk-!-width-one-half"
+   )
+
+   @exportsInputCheckbox(
+       field = form(confirmationKey),
+       labelKey = "amendment.submission.confirmation"
+   )
 }
 
+@backButton = @{
+  if (isCancellation) DeclarationDetailsController.displayPage(getOrElse(submissionUuid))
+  else SummaryController.displayPage
+}
+@submitButton = @{ if (isCancellation) "site.submit" else "amendment.submission.button" }
+
 @govukLayout(
-    title = Title(headerMsgKey),
-    backButton = Some(BackButton(messages("site.back"), SummaryController.displayPage)),
+    title = Title(s"amendment.${key}.heading"),
+    backButton = Some(BackButton(messages("site.back"), backButton)),
     useCustomContentWidth = true,
     showDeclarationSummaryLink = false
 ) {
-    @formHelper(action = SubmissionController.submitDeclaration, 'autoComplete -> "off") {
+    @formHelper(action = SubmissionController.submitAmendment(isCancellation), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
-        @pageTitle(messages(headerMsgKey))
+        @pageTitle(messages(s"amendment.${key}.heading"))
 
-        @govukFieldset(Fieldset(html = html))
+        @govukFieldset(Fieldset(html = content))
 
-        @govukButton(Button(id = Some("submit"), content = Text(messages("site.acceptAndSubmitDeclaration"))))
+        @govukButton(Button(id = Some("submit"), content = Text(messages(submitButton))))
     }
 }

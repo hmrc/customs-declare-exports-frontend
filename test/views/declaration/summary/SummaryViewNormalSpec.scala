@@ -24,7 +24,7 @@ import org.jsoup.nodes.Document
 import play.api.mvc.Call
 import views.html.declaration.summary.normal_summary_page
 
-class SummaryPageViewNormalSpec extends SummaryPageViewSpec {
+class SummaryViewNormalSpec extends SummaryViewSpec {
 
   private val backLink = Call("GET", "/backLink")
   private val normal_summaryPage = instanceOf[normal_summary_page]

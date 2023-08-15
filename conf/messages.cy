@@ -200,8 +200,6 @@ cancellation.changeReason = Rheswm dros ganslo
 
 cancellation.changeReason.error.wrongValue = Dewiswch pam eich bod yn canslo’r datganiad hwn
 
-cancellation.submitButton = Cyflwyno
-
 cancellation.reason.duplication = Dyblygiad
 
 cancellation.reason.otherReason = Rheswm arall
@@ -4027,71 +4025,41 @@ declaration.draft.nextStartFreshLink = dechreuwch un newydd
 declaration.draft.viewSummary = Bwrw golwg dros grynodeb o’r datganiad
 
 legal.declaration.heading= Nawr, cyflwynwch eich datganiad
-
 legal.declaration.info= Cyn i chi fynd yn eich blaen, gwnewch yn siŵr eich bod wedi adolygu’r holl wybodaeth rydych wedi’i rhoi uchod a gwnewch yn siŵr ei bod yn gywir.
-
 legal.declaration.warning= Gallech gael eich erlyn os byddwch yn rhoi gwybodaeth anwir neu gamarweiniol yn fwriadol.
-
 legal.declaration.fullName= Enw llawn
-
 legal.declaration.fullName.empty= Nodwch eich enw llawn
-
 legal.declaration.fullName.short= Mae’n rhaid i’r enw gynnwys mwy na 4 o gymeriadau
-
 legal.declaration.fullName.long= Mae’n rhaid i’r enw gynnwys 64 o gymeriadau neu lai
-
 legal.declaration.fullName.error= Mae’n rhaid i’r enw gynnwys llythrennau, collnodau a chysylltnodau’n unig
-
 legal.declaration.jobRole= Swydd
-
 legal.declaration.jobRole.empty= Nodwch eich swydd
-
 legal.declaration.jobRole.short= Mae’n rhaid i’r swydd gynnwys mwy na 4 o gymeriadau
-
 legal.declaration.jobRole.long= Mae’n rhaid i’r swydd gynnwys 64 o gymeriadau neu lai
-
 legal.declaration.jobRole.error= Mae’n rhaid i’r swydd gynnwys llythrennau, collnodau a chysylltnodau’n unig
-
 legal.declaration.email= Cyfeiriad e-bost
-
 legal.declaration.email.empty= Nodwch gyfeiriad e-bost
-
 legal.declaration.email.long= Mae’n rhaid i’ch cyfeiriad e-bost beidio â bod yn fwy na 64 o gymeriadau
-
 legal.declaration.email.error= Nodwch gyfeiriad e-bost dilys
-
 legal.declaration.confirmation= Rwy’n cadarnhau bod yr wybodaeth a roddwyd gennyf yn gywir hyd eithaf fy ngwybodaeth.
-
 legal.declaration.confirmation.missing= Mae’n rhaid i chi gadarnhau bod yr wybodaeth a roddwyd gennych yn gywir hyd eithaf eich gwybodaeth.
 
 rejected.notification.mrn.missing = Dim MRN
-
 rejected.notification.title = Diwygio gwallau’r datganiad
-
 rejected.notification.table.title = Gwallau’r datganiad
-
 rejected.notification.warning = Mae’n rhaid i chi ddiwygio’r gwallau hyn ac ailgyflwyno’ch datganiad pan fyddwch wedi gorffen.
-
 rejected.notification.description.format = Cod gwall {0}.
-
 rejected.notification.check.answers.paragraph = Pan fyddwch wedi diwygio pob gwall drwy ddefnyddio’r cysylltiadau newid, gwiriwch eich atebion ac yna ailgyflwynwch eich datganiad.
-
 rejected.notification.check.answers.button = Gwiriwch eich atebion
 
 rejected.notification.guidance.section.1.header = Delio â gwallau
-
 rejected.notification.guidance.section.1.paragraph.1 = Gall un wall fod yn gysylltiedig â mwy nag un maes ar y datganiad, felly efallai y gwelwch chi rai codau gwall yn cael eu hailadrodd.
-
 rejected.notification.guidance.section.1.paragraph.2 = Os byddwch yn dechrau ond ni fyddwch yn gorffen diwygio’r gwallau, bydd eich datganiad sydd wedi’i ddiweddaru yn {0}.
-
 rejected.notification.guidance.section.1.paragraph.2.link = Datganiadau sydd wedi’u cadw
 
 rejected.notification.guidance.section.2.header = Cael help pellach gyda gwallau
-
 rejected.notification.guidance.section.2.paragraph.1 = Os oes angen help arnoch gyda gwallau sy’n gysylltiedig â gofynion Tariff penodol (megis dogfennau coll), ffoniwch y ddesg gymorth.
-
 rejected.notification.guidance.section.2.paragraph.2 = Ffôn: 0300 200 3705
-
 rejected.notification.guidance.section.2.paragraph.3 = Dydd Llun i Ddydd Gwener, 08:30 i 17.00 (heblaw am benwythnosau a gwyliau’r banc)
 
 field.declaration.functionCode = Math o Ddatganiad

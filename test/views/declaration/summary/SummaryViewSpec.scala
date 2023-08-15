@@ -27,7 +27,7 @@ import play.api.mvc.Call
 import tools.Stubs
 import views.declaration.spec.UnitViewSpec
 
-trait SummaryPageViewSpec extends UnitViewSpec with Injector with Stubs {
+trait SummaryViewSpec extends UnitViewSpec with Injector with Stubs {
 
   val dummyFormError = Seq(FormError("dummy", "error.unknown"))
   private val backLink = Call("GET", "/backLink")

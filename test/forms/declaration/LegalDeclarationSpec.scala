@@ -24,6 +24,7 @@ class LegalDeclarationSpec extends UnitWithMocksSpec {
   import LegalDeclaration._
 
   "Legal Declaration Form" should {
+
     "not return errors" when {
       "all form data is provided and valid" in {
         form.bind(validFormData, JsonBindMaxChars).errors mustBe empty
@@ -31,51 +32,62 @@ class LegalDeclarationSpec extends UnitWithMocksSpec {
     }
 
     "return errors for full name" when {
+
       "name missing" in {
         form.bind(formDataWith(name = ""), JsonBindMaxChars).errors.map(_.message) must contain("legal.declaration.fullName.empty")
       }
+
       "name too short" in {
         form.bind(formDataWith(name = "Al"), JsonBindMaxChars).errors.map(_.message) must contain("legal.declaration.fullName.short")
       }
+
       "name too long" in {
         form
           .bind(formDataWith(name = TestHelper.createRandomAlphanumericString(65)), JsonBindMaxChars)
           .errors
           .map(_.message) must contain("legal.declaration.fullName.long")
       }
+
       "name invalid" in {
         form.bind(formDataWith(name = "Prince!"), JsonBindMaxChars).errors.map(_.message) must contain("legal.declaration.fullName.error")
       }
     }
 
     "return errors for job role" when {
+
       "job role missing" in {
         form.bind(formDataWith(role = ""), JsonBindMaxChars).errors.map(_.message) must contain("legal.declaration.jobRole.empty")
       }
+
       "job role too short" in {
         form.bind(formDataWith(role = "CEO"), JsonBindMaxChars).errors.map(_.message) must contain("legal.declaration.jobRole.short")
       }
+
       "job role too long" in {
         form
           .bind(formDataWith(role = TestHelper.createRandomAlphanumericString(65)), JsonBindMaxChars)
           .errors
           .map(_.message) must contain("legal.declaration.jobRole.long")
       }
+
       "job role invalid" in {
         form.bind(formDataWith(role = "Prince!"), JsonBindMaxChars).errors.map(_.message) must contain("legal.declaration.jobRole.error")
       }
     }
 
     "return errors for email" when {
+
       "email missing" in {
         form.bind(formDataWith(email = ""), JsonBindMaxChars).errors.map(_.message) must contain("legal.declaration.email.empty")
       }
+
       "email too long" in {
         form
           .bind(formDataWith(email = TestHelper.createRandomAlphanumericString(65)), JsonBindMaxChars)
           .errors
           .map(_.message) must contain("legal.declaration.email.long")
       }
+
       "email invalid" in {
         form.bind(formDataWith(email = "not.an.email.address"), JsonBindMaxChars).errors.map(_.message) must contain("legal.declaration.email.error")
       }
@@ -86,41 +98,21 @@ class LegalDeclarationSpec extends UnitWithMocksSpec {
         form.bind(formDataWith(checked = false), JsonBindMaxChars).errors.map(_.message) must contain("legal.declaration.confirmation.missing")
       }
     }
-
-    "return errors for 'Reason for Amend'" when {
-      "amendReason field is empty" in {
-        form.bind(formDataWith(amendReason = ""), JsonBindMaxChars).errors.map(_.message) must contain("legal.declaration.amendReason.empty")
-      }
-      "input contains certain special characters" in {
-        form.bind(formDataWith(amendReason = "[^<>\"&]*$"), JsonBindMaxChars).errors.map(_.message) must contain(
-          "legal.declaration.amendReason.error"
-        )
-      }
-      "input is too long" in {
-        form.bind(formDataWith(amendReason = "a" * 513), JsonBindMaxChars).errors.map(_.message) must contain("legal.declaration.amendReason.long")
-      }
-    }
-
   }
 
-  private def validFormData = formDataWith()
+  private val validFormData = formDataWith()
 
   private def formDataWith(
     name: String = "O'Neil Some-Name, Jr.",
     role: String = "Traveling-Secretary for the N.Y. Yankees' Chairman",
     email: String = "some@email.com",
-    amendReason: String = "amendReason",
     checked: Boolean = true
-  ) = {
-    def isChecked = if (checked) JsTrue else JsFalse
-    JsObject(
-      Map(
-        nameKey -> JsString(name),
-        jobRoleKey -> JsString(role),
-        emailKey -> JsString(email),
-        amendReasonKey -> JsString(amendReason),
-        confirmationKey -> isChecked
-      )
+  ): JsObject =
+    Json.obj(
+      nameKey -> JsString(name),
+      jobRoleKey -> JsString(role),
+      emailKey -> JsString(email),
+      confirmationKey -> (if (checked) JsTrue else JsFalse)
     )
-  }
+
 }

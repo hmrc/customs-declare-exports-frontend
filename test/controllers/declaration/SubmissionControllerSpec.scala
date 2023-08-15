@@ -20,6 +20,7 @@ import base.ControllerWithoutFormSpec
 import controllers.declaration.amendments.routes.AmendmentOutcomeController
 import controllers.declaration.routes.ConfirmationController
 import controllers.routes.RootController
+import forms.declaration.AmendmentSubmission.reasonKey
 import forms.declaration.LegalDeclaration
 import forms.declaration.LegalDeclaration._
 import mock.ErrorHandlerMocks
@@ -29,7 +30,7 @@ import models.requests.SessionHelper
 import models.requests.SessionHelper._
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, verify, when}
+import org.mockito.Mockito.{reset, verify, verifyNoInteractions, when}
 import org.scalatest.concurrent.ScalaFutures
 import play.api.http.Status.{BAD_REQUEST, INTERNAL_SERVER_ERROR, OK, SEE_OTHER}
 import play.api.libs.json.Json
@@ -38,6 +39,7 @@ import play.twirl.api.HtmlFormat
 import services.SubmissionService
 import uk.gov.hmrc.http.HeaderCarrier
 import views.declaration.spec.UnitViewSpec
+import views.html.declaration.amendments.amendment_submission
 import views.html.declaration.summary.legal_declaration
 
 import java.util.UUID
@@ -45,6 +47,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class SubmissionControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerMocks with ScalaFutures with UnitViewSpec {
 
+  private val amendmentSubmissionPage = mock[amendment_submission]
   private val legalDeclarationPage = mock[legal_declaration]
   private val mockSubmissionService = mock[SubmissionService]
 
@@ -57,6 +60,7 @@ class SubmissionControllerSpec extends ControllerWithoutFormSpec with ErrorHandl
     mockCustomsDeclareExportsConnector,
     mockExportsCacheService,
     mockSubmissionService,
+    amendmentSubmissionPage,
     legalDeclarationPage,
     mockDeclarationAmendmentsConfig
   )(ec)
@@ -65,103 +69,183 @@ class SubmissionControllerSpec extends ControllerWithoutFormSpec with ErrorHandl
     super.beforeEach()
     authorizedUser()
     setupErrorHandler()
-    when(legalDeclarationPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(amendmentSubmissionPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(legalDeclarationPage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
     when(mockSubmissionService.submitAmendment(any(), any(), any(), any(), any())(any(), any())).thenReturn(Future.successful(None))
-    when(mockDeclarationAmendmentsConfig.isEnabled).thenReturn(true)
+    when(mockDeclarationAmendmentsConfig.isDisabled).thenReturn(false)
   }
 
   override protected def afterEach(): Unit = {
-    reset(legalDeclarationPage, mockSubmissionService)
+    reset(amendmentSubmissionPage, legalDeclarationPage, mockDeclarationAmendmentsConfig, mockSubmissionService)
     super.afterEach()
   }
 
   val uuid = UUID.randomUUID().toString
-  val expectedSubmission =
-    Submission(uuid, eori = "GB123456", lrn = "123LRN", ducr = Some("ducr"), actions = List.empty, latestDecId = Some(uuid))
 
-  "SubmissionController.displayLegalDeclarationPage" when {
+  val expectedSubmission = Submission(uuid, eori = "GB123456", lrn = "123LRN", ducr = Some("ducr"), actions = List.empty, latestDecId = Some(uuid))
 
-    "for an amendment" should {
+  "SubmissionController.displaySubmitDeclarationPage" when {
 
-      "return 200 and invoke page with the amend parameter to 'true'" in {
-        withNewCaching(aDeclaration())
-        val result = controller.displayLegalDeclarationPage(true, false).apply(getJourneyRequest())
-        status(result) mustBe OK
-        verify(legalDeclarationPage).apply(any(), ArgumentMatchers.eq(true), any())(any(), any())
-      }
+    "return 200 and invoke the expected page" in {
+      withNewCaching(aDeclaration())
 
-      "return 303 when amend feature flag is off" in {
-        when(mockDeclarationAmendmentsConfig.isEnabled).thenReturn(false)
-        withNewCaching(aDeclaration())
-        val result = controller.displayLegalDeclarationPage(true, false).apply(getJourneyRequest())
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(RootController.displayPage.url)
-      }
+      val result = controller.displaySubmitDeclarationPage.apply(getJourneyRequest())
+      status(result) mustBe OK
+
+      verify(legalDeclarationPage).apply(any())(any(), any())
+      verifyNoInteractions(amendmentSubmissionPage)
     }
 
-    "for a submission" should {
+    "return 500 (INTERNAL_SERVER_ERROR)" when {
+      "in error-fix mode" in {
+        val declaration = aDeclaration()
+        when(mockExportsCacheService.get(any())(any())).thenReturn(Future.successful(Some(declaration)))
 
-      "return 200 and invoke page with with the amend parameter to 'false'" in {
-        withNewCaching(aDeclaration())
-        val result = controller.displayLegalDeclarationPage(false, false).apply(getJourneyRequest())
-        status(result) mustBe OK
-        verify(legalDeclarationPage).apply(any(), ArgumentMatchers.eq(false), any())(any(), any())
+        val request = getJourneyRequest(declaration, errorFixModeSessionKey -> "true")
+        val result = controller.displaySubmitDeclarationPage.apply(request)
+        status(result) mustBe INTERNAL_SERVER_ERROR
       }
     }
   }
 
-  "SubmissionController.submitAmendment" should {
+  "SubmissionController.displaySubmitAmendmentPage" should {
+
+    "return 200 and invoke the expected page" in {
+      withNewCaching(aDeclaration())
+
+      val result = controller.displaySubmitAmendmentPage.apply(getJourneyRequest())
+      status(result) mustBe OK
+
+      verify(amendmentSubmissionPage).apply(any(), ArgumentMatchers.eq(false))(any(), any())
+      verifyNoInteractions(legalDeclarationPage)
+    }
+
+    "Redirect to root controller" when {
+      "feature flag is off" in {
+        when(mockDeclarationAmendmentsConfig.isDisabled).thenReturn(true)
+        withNewCaching(aDeclaration())
+
+        val result = controller.displaySubmitAmendmentPage.apply(getJourneyRequest())
+        status(result) mustBe SEE_OTHER
+
+        redirectLocation(result) mustBe Some(RootController.displayPage.url)
+        verifyNoInteractions(amendmentSubmissionPage)
+      }
+    }
+  }
+
+  "SubmissionController.cancelAmendment" when {
+
+    "feature flag is off" should {
+      "Redirect to root controller" in {
+        when(mockDeclarationAmendmentsConfig.isDisabled).thenReturn(true)
+        withNewCaching(aDeclaration())
+
+        val result = controller.displaySubmitAmendmentPage.apply(getJourneyRequest())
+        status(result) mustBe SEE_OTHER
+
+        redirectLocation(result) mustBe Some(RootController.displayPage.url)
+        verifyNoInteractions(amendmentSubmissionPage)
+      }
+    }
+
+    "feature flag is on" should {
+
+      "Redirect to the Amendment Submission page" when {
+        "Backend returns a Submission with a defined latestDecId and findOrCreateDraftForAmendment is successful" in {
+          when(mockCustomsDeclareExportsConnector.findSubmission(any())(any(), any()))
+            .thenReturn(Future.successful(Some(expectedSubmission)))
+
+          when(mockCustomsDeclareExportsConnector.findOrCreateDraftForAmendment(any(), any())(any(), any()))
+            .thenReturn(Future.successful("String"))
+
+          val result = controller.cancelAmendment(getRequestWithSession((submissionUuid, "Id")))
+          status(result) must be(SEE_OTHER)
+
+          val url = routes.SubmissionController.displayCancelAmendmentPage.url
+          redirectLocation(result) must be(Some(url))
+        }
+      }
+
+      "return 500 (INTERNAL_SERVER_ERROR)" when {
+
+        "no submissionUuid is found in session" in {
+          val result = controller.cancelAmendment(getJourneyRequest())
+          status(result) mustBe INTERNAL_SERVER_ERROR
+        }
+
+        "Backend fails to find/return a matching submission" in {
+          when(mockCustomsDeclareExportsConnector.findSubmission(any())(any(), any()))
+            .thenReturn(Future.successful(None))
+
+          val result = controller.cancelAmendment(getRequestWithSession((submissionUuid, "Id")))
+          status(result) mustBe INTERNAL_SERVER_ERROR
+        }
+
+        "latestDecId does not belong to the appropriate submission" in {
+          val uuid = UUID.randomUUID().toString
+          val expectedSubmission = Submission(uuid, eori = "GB123456", lrn = "123LRN", ducr = Some("ducr"), actions = List.empty, latestDecId = None)
+
+          when(mockCustomsDeclareExportsConnector.findSubmission(any())(any(), any()))
+            .thenReturn(Future.successful(Some(expectedSubmission)))
+
+          val result = controller.cancelAmendment(getRequestWithSession((submissionUuid, "Id")))
+          status(result) mustBe INTERNAL_SERVER_ERROR
+        }
+      }
+    }
+  }
+
+  "SubmissionController.submitAmendment" when {
     val declaration = aDeclaration()
     val body =
-      Json.obj(
-        nameKey -> "Test Tester",
-        jobRoleKey -> "Tester",
-        emailKey -> "test@tester.com",
-        amendReasonKey -> "amendReason",
-        confirmationKey -> "true"
-      )
+      Json.obj(nameKey -> "Test Tester", jobRoleKey -> "Tester", emailKey -> "test@tester.com", reasonKey -> "amendReason", confirmationKey -> "true")
 
-    "when feature flag is on" when {
+    "feature flag is off" should {
+      "Redirect to root controller" in {
+        when(mockDeclarationAmendmentsConfig.isDisabled).thenReturn(true)
+        withNewCaching(declaration)
+
+        val result = controller.submitAmendment(false)(postRequest(body))
+        status(result) mustBe SEE_OTHER
+
+        redirectLocation(result) mustBe Some(RootController.displayPage.url)
+      }
+    }
+
+    "feature flag is on" should {
 
       "update the statementDescription field in the cache model" in {
+        withNewCaching(declaration)
         when(mockSubmissionService.submitAmendment(any(), any(), any(), any(), any())(any(), any()))
           .thenReturn(Future.successful(Some("actionId")))
 
-        withNewCaching(declaration)
         val sessionData = List(declarationUuid -> declaration.id, submissionUuid -> "submissionUuid")
         await(controller.submitAmendment(false)(postRequestWithSession(body, sessionData)))
+
         theCacheModelUpdated mustBe declaration.copy(statementDescription = Some("amendReason"))
       }
 
       "redirect the user if submission is successful" in {
         val actionId = Some("actionId")
+        withNewCaching(declaration)
         when(mockSubmissionService.submitAmendment(any(), any(), any(), any(), any())(any(), any()))
           .thenReturn(Future.successful(actionId))
 
-        withNewCaching(declaration)
         val sessionData = List(declarationUuid -> declaration.id, submissionUuid -> "submissionUuid")
         val result = controller.submitAmendment(false)(postRequestWithSession(body, sessionData))
         status(result) must be(SEE_OTHER)
+
         redirectLocation(result) mustBe Some(AmendmentOutcomeController.displayHoldingPage.url)
         result.futureValue.session.get(SessionHelper.submissionActionId) mustBe actionId
       }
 
       "display an error if the submission fails due to incorrect form" in {
+        withNewCaching(declaration)
         val bodyWithoutField = Json.obj(nameKey -> "Test Tester", jobRoleKey -> "Tester", emailKey -> "test@tester.com", confirmationKey -> "true")
 
-        withNewCaching(declaration)
         val result = controller.submitAmendment(false)(postRequest(bodyWithoutField))
         status(result) must be(BAD_REQUEST)
-      }
-    }
-
-    "when feature flag is off" when {
-      "Redirect to root controller" in {
-        when(mockDeclarationAmendmentsConfig.isEnabled).thenReturn(false)
-        withNewCaching(declaration)
-        val result = controller.submitAmendment(false)(postRequest(body))
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(RootController.displayPage.url)
       }
     }
   }
@@ -173,9 +257,7 @@ class SubmissionControllerSpec extends ControllerWithoutFormSpec with ErrorHandl
         val declaration = aDeclaration()
         withNewCaching(declaration)
 
-        when(
-          mockSubmissionService.submitDeclaration(any(), any[ExportsDeclaration], any[LegalDeclaration])(any[HeaderCarrier], any[ExecutionContext])
-        )
+        when(mockSubmissionService.submitDeclaration(any(), any[ExportsDeclaration], any[LegalDeclaration])(any(), any()))
           .thenReturn(Future.successful(Some(expectedSubmission)))
 
         val body = Json.obj("fullName" -> "Test Tester", "jobRole" -> "Tester", "email" -> "test@tester.com", "confirmation" -> "true")
@@ -224,58 +306,6 @@ class SubmissionControllerSpec extends ControllerWithoutFormSpec with ErrorHandl
         val result = controller.submitDeclaration()(postRequest(body))
 
         status(result) mustBe INTERNAL_SERVER_ERROR
-      }
-    }
-  }
-
-  "SubmissionController.cancelAmendment" should {
-
-    "Redirect to Legal Declaration page" when {
-      "Backend returns a Submission to send a latestDecId to findOrCreateDraftForAmendment" in {
-
-        when(mockCustomsDeclareExportsConnector.findSubmission(any())(any(), any()))
-          .thenReturn(Future.successful(Some(expectedSubmission)))
-
-        when(mockCustomsDeclareExportsConnector.findOrCreateDraftForAmendment(any(), any())(any(), any()))
-          .thenReturn(Future.successful("String"))
-
-        val result = controller.cancelAmendment()(getRequestWithSession((submissionUuid, "Id")))
-        status(result) must be(SEE_OTHER)
-        redirectLocation(result) must be(Some(routes.SubmissionController.displayLegalDeclarationPage(true, true).url))
-
-      }
-    }
-
-    "return 500 (INTERNAL_SERVER_ERROR)" when {
-      "no submissionUuid is found in session" in {
-
-        val result = controller.cancelAmendment()(getJourneyRequest())
-
-        status(result) mustBe INTERNAL_SERVER_ERROR
-      }
-
-      "Backend fails to find/return a matching submission" in {
-
-        when(mockCustomsDeclareExportsConnector.findSubmission(any())(any(), any()))
-          .thenReturn(Future.successful(None))
-
-        val result = controller.cancelAmendment()(getRequestWithSession((submissionUuid, "Id")))
-        status(result) mustBe INTERNAL_SERVER_ERROR
-
-      }
-
-      "latestDecId does not belong to the appropriate submission" in {
-
-        val uuid = UUID.randomUUID().toString
-        val expectedSubmission =
-          Submission(uuid, eori = "GB123456", lrn = "123LRN", ducr = Some("ducr"), actions = List.empty, latestDecId = None)
-
-        when(mockCustomsDeclareExportsConnector.findSubmission(any())(any(), any()))
-          .thenReturn(Future.successful(Some(expectedSubmission)))
-
-        val result = controller.cancelAmendment()(getRequestWithSession((submissionUuid, "Id")))
-        status(result) mustBe INTERNAL_SERVER_ERROR
-
       }
     }
   }
