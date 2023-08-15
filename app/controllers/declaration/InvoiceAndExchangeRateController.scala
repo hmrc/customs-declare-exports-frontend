@@ -67,7 +67,7 @@ class InvoiceAndExchangeRateController @Inject() (
       declaration.copy(totalNumberOfItems =
         Some(
           InvoiceAndPackageTotals(
-            totalAmountInvoiced = Some(invoiceAndExchangeRate.totalAmountInvoiced),
+            totalAmountInvoiced = invoiceAndExchangeRate.totalAmountInvoiced,
             totalAmountInvoicedCurrency = invoiceAndExchangeRate.totalAmountInvoicedCurrency,
             agreedExchangeRate = Some(invoiceAndExchangeRate.agreedExchangeRate),
             totalPackage = declaration.totalNumberOfItems.flatMap(_.totalPackage),

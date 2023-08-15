@@ -70,14 +70,14 @@ class InvoiceAndExchangeRateControllerSpec extends ControllerSpec with OptionVal
   )(ec)
 
   val withoutExchange = InvoiceAndExchangeRate(
-    totalAmountInvoiced = "100",
+    totalAmountInvoiced = Some("100000"),
     totalAmountInvoicedCurrency = Some("GBP"),
     agreedExchangeRate = YesNoAnswers.no,
     exchangeRate = None
   )
 
   val withExchange = InvoiceAndExchangeRate(
-    totalAmountInvoiced = "100",
+    totalAmountInvoiced = Some("100"),
     totalAmountInvoicedCurrency = Some("GBP"),
     agreedExchangeRate = YesNoAnswers.yes,
     exchangeRate = Some("1")
@@ -112,7 +112,7 @@ class InvoiceAndExchangeRateControllerSpec extends ControllerSpec with OptionVal
 
       "return 400 (BAD_REQUEST) when form is incorrect" in {
         withNewCaching(request.cacheModel)
-        val incorrectForm = Json.toJson(InvoiceAndExchangeRate("", None, "", Some("abc")))
+        val incorrectForm = Json.toJson(InvoiceAndExchangeRate(Some(""), None, "", Some("abc")))
         val result = controller.saveNoOfItems()(postRequest(incorrectForm))
 
         status(result) mustBe BAD_REQUEST
