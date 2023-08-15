@@ -371,26 +371,26 @@ class InvoiceAndExchangeRateSpec extends DeclarationPageBaseSpec {
             "all numeric" in {
               val form = InvoiceAndExchangeRate.form
                 .bind(formData(amount = Some("100"), currency = Some("GBP"), rate = Some("12"), rateYesNo = Some(YesNoAnswers.yes)))
-              form.errors mustBe Seq(FormError(totalAmountInvoiced, invoiceFieldErrorKey))
+              form.errors mustBe Seq(FormError(totalAmountInvoiced, invoiceFieldErrorLessThan100000Key))
             }
 
             "commas" in {
               val form = InvoiceAndExchangeRate.form
                 .bind(formData(amount = Some("10,000"), currency = Some("GBP"), rate = Some("10"), rateYesNo = Some(YesNoAnswers.yes)))
-              form.errors mustBe Seq(FormError(totalAmountInvoiced, invoiceFieldErrorKey))
+              form.errors mustBe Seq(FormError(totalAmountInvoiced, invoiceFieldErrorLessThan100000Key))
             }
 
             "decimals" when {
               "decimal in number" in {
                 val form = InvoiceAndExchangeRate.form
                   .bind(formData(amount = Some("10.00"), currency = Some("GBP"), rate = Some("10"), rateYesNo = Some(YesNoAnswers.yes)))
-                form.errors mustBe Seq(FormError(totalAmountInvoiced, invoiceFieldErrorKey))
+                form.errors mustBe Seq(FormError(totalAmountInvoiced, invoiceFieldErrorLessThan100000Key))
               }
 
               "starts with decimal" in {
                 val form = InvoiceAndExchangeRate.form
                   .bind(formData(amount = Some(".10"), currency = Some("GBP"), rate = Some("10"), rateYesNo = Some(YesNoAnswers.yes)))
-                form.errors mustBe Seq(FormError(totalAmountInvoiced, invoiceFieldErrorKey))
+                form.errors mustBe Seq(FormError(totalAmountInvoiced, invoiceFieldErrorLessThan100000Key))
               }
             }
           }

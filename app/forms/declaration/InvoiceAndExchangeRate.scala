@@ -56,10 +56,10 @@ object InvoiceAndExchangeRate extends DeclarationPage {
   val rateFieldErrorKey = "declaration.exchangeRate.error"
   val invoiceFieldErrorKey = "declaration.totalAmountInvoiced.error"
   val invoiceFieldErrorEmptyKey = "declaration.totalAmountInvoiced.error.empty"
+  val invoiceFieldErrorLessThan100000Key = "declaration.totalAmountInvoiced.error.lessThan100000"
   val invoiceCurrencyFieldErrorKey = "declaration.totalAmountInvoicedCurrency.error.empty"
   val invoiceCurrencyFieldWithExchangeRateErrorKey = "declaration.totalAmountInvoicedCurrency.exchangeRatePresent.error.invalid"
   val invoiceCurrencyFieldWithoutExchangeRateErrorKey = "declaration.totalAmountInvoicedCurrency.exchangeRateMissing.error.invalid"
-  val exchangeRateNoFixedRateErrorKey = "declaration.exchangeRate.noFixedRate.error"
   val exchangeRateNoAnswerErrorKey = "declaration.exchangeRate.required.error"
   val exchangeRateYesRadioSelectedErrorKey = "declaration.exchangeRate.yesRadioSelected.error"
 
@@ -107,7 +107,6 @@ object InvoiceAndExchangeRate extends DeclarationPage {
         validateWithoutCommas(x => Try(x.toInt).isSuccess && isNumeric(x) && (x.nonEmpty && x.toInt < invoiceLimitForExchangeRate))
       )
     }
-  def isNumber(field: String): Condition = _.get(field).exists(isNumeric)
 
   // We allow the user to enter commas when specifying these optional numerical values but we strip out the commas
   // with `validateWithoutCommas` before validating the number of digits.
@@ -146,7 +145,7 @@ object InvoiceAndExchangeRate extends DeclarationPage {
     Seq(
       ConditionalConstraint(
         isFieldIgnoreCaseString(totalAmountInvoicedCurrency, "GBP") and isAmountLessThan(totalAmountInvoiced),
-        invoiceFieldErrorKey,
+        invoiceFieldErrorLessThan100000Key,
         isEmptyOptionString
       ),
       ConditionalConstraint(
