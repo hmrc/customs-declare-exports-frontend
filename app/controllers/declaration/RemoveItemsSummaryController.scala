@@ -102,21 +102,16 @@ class RemoveItemsSummaryController @Inject() (
     findParentDeclaration flatMap {
       case Some(parentDeclaration) =>
         customsDeclareExportsConnector.findSubmissionByLatestDecId(parentDeclaration.id) flatMap {
-          case Some(submission) =>
-            Future.successful(canItemBeRemoved(item, parentDeclaration, remove, cannotRemove(submission)))
-          case _ =>
-            errorHandler.internalError(noSubmissionErrorMsg(parentDeclaration.id))
+          case Some(submission) => Future.successful(canItemBeRemoved(item, parentDeclaration, remove, cannotRemove(submission)))
+          case _                => errorHandler.internalError(noSubmissionErrorMsg(parentDeclaration.id))
         }
-      case _ =>
-        errorHandler.internalError(noParentDecIdMsg)
+      case _ => errorHandler.internalError(noParentDecIdMsg)
     }
 
   private def findParentDeclaration(implicit request: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
     request.cacheModel.declarationMeta.parentDeclarationId match {
-      case Some(parentDecId) =>
-        customsDeclareExportsConnector.findDeclaration(parentDecId)
-      case _ =>
-        Future.successful(None)
+      case Some(parentDecId) => customsDeclareExportsConnector.findDeclaration(parentDecId)
+      case _                 => Future.successful(None)
     }
 
   private def canItemBeRemoved(item: ExportItem, parentDec: ExportsDeclaration, remove: Result, cannotRemove: Result): Result =
