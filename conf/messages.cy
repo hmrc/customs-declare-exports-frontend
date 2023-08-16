@@ -2706,6 +2706,8 @@ declaration.totalAmountInvoiced.error = Mae’n rhaid i gyfanswm yr anfoneb gynn
 
 declaration.totalAmountInvoiced.error.empty = Nodwch gyfanswm yr anfondebau
 
+declaration.totalAmountInvoiced.error.lessThan100000 = Mae’n rhaid i gyfanswm yr anfoneb fod yn fwy na 100,000 GBP
+
 declaration.totalAmountInvoiced.value.lessThan100000 = Llai na £100,000
 
 declaration.totalAmountInvoicedCurrency.error.empty = Nodwch god arian cyfred

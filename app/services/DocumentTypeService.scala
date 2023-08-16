@@ -24,7 +24,7 @@ import javax.inject.{Inject, Singleton}
 @Singleton
 class DocumentTypeService @Inject() (codeListConnector: CodeListConnector) {
 
-  def documentCodesMap()(implicit messages: Messages): Map[String, DocumentType] =
+  private def documentCodesMap()(implicit messages: Messages): Map[String, DocumentType] =
     codeListConnector.getDocumentTypes(messages.lang.toLocale)
 
   def allDocuments()(implicit messages: Messages): List[DocumentType] =

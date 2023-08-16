@@ -1603,6 +1603,7 @@ declaration.invoice.details.body.2.link.text = HMRC’s monthly exchange rate (o
 declaration.invoice.details.body.3 = If you have a contractually agreed rate of exchange, you need to convert the amount to GBP using that exchange rate.
 declaration.totalAmountInvoiced.error = Total amount invoiced must contain only numbers, commas and a single full stop
 declaration.totalAmountInvoiced.error.empty = Enter the total amount invoiced
+declaration.totalAmountInvoiced.error.lessThan100000 = Total amount invoiced must be more than 100,000 GBP
 declaration.totalAmountInvoiced.value.lessThan100000 = Less than £100,000
 declaration.totalAmountInvoicedCurrency.error.empty = Enter a currency code
 declaration.totalAmountInvoicedCurrency.exchangeRateMissing.error.invalid = Currency code must be 3 letters

@@ -110,7 +110,7 @@ trait ExportsDeclarationBuilder {
     declaration.copy(totalNumberOfItems =
       Some(
         InvoiceAndPackageTotals(
-          totalAmountInvoiced = Some(invoiceAndExchangeRate.totalAmountInvoiced),
+          totalAmountInvoiced = invoiceAndExchangeRate.totalAmountInvoiced,
           totalAmountInvoicedCurrency = invoiceAndExchangeRate.totalAmountInvoicedCurrency,
           exchangeRate = invoiceAndExchangeRate.exchangeRate,
           agreedExchangeRate = Some(invoiceAndExchangeRate.agreedExchangeRate),

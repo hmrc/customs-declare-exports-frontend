@@ -186,11 +186,6 @@
        "code": "MCR"
     },
     {
-       "en": "Declaration Unique Consignment Reference (DUCR)",
-       "cy": "Declaration Unique Consignment Reference (DUCR)",
-       "code": "DCR"
-    },
-    {
        "en": "Declaration Unique Consignment Reference Part Number (DUCR Part)",
        "cy": "Declaration Unique Consignment Reference Part Number (DUCR Part)",
        "code": "DCS"
