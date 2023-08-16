@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,23 +12,12 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package services.cache
+@import views.components.gds._
 
-import models.ExportsDeclaration
-import models.declaration.submissions.Submission
+@this(linkButton: linkButton)
 
-trait SubmissionBuilder {
+@(call: Call)(implicit messages: Messages)
 
-  def emptySubmission(declaration: ExportsDeclaration, eori: String): Submission =
-    Submission(
-      uuid = declaration.id,
-      eori = eori,
-      lrn = declaration.lrn.getOrElse("LRN"),
-      mrn = None,
-      ducr = None,
-      actions = Seq.empty,
-      latestDecId = Some(declaration.id)
-    )
-}
+@linkButton("site.cancel", call)
