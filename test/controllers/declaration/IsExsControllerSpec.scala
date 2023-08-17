@@ -17,7 +17,7 @@
 package controllers.declaration
 
 import base.ControllerSpec
-import controllers.declaration.routes.{ConsigneeDetailsController, ConsignorEoriNumberController, RepresentativeAgentController}
+import controllers.declaration.routes._
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.common.{Address, Eori}
 import forms.declaration.consignor.ConsignorDetails
@@ -196,7 +196,7 @@ class IsExsControllerSpec extends ControllerSpec with ScalaFutures {
         val result = controller.submit()(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe ConsigneeDetailsController.displayPage
+        thePageNavigatedTo mustBe AuthorisationProcedureCodeChoiceController.displayPage
       }
     }
   }

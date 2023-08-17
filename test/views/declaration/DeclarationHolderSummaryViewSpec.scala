@@ -17,7 +17,7 @@
 package views.declaration
 
 import base.Injector
-import controllers.declaration.routes.{AdditionalActorsSummaryController, AuthorisationProcedureCodeChoiceController, ConsigneeDetailsController}
+import controllers.declaration.routes._
 import forms.common.Eori
 import forms.common.YesNoAnswer.{form, No, Yes}
 import forms.declaration.AuthorisationProcedureCodeChoice.{Choice1040, ChoiceOthers}
@@ -91,7 +91,7 @@ class DeclarationHolderSummaryViewSpec extends PageWithButtonsSpec with Injector
           val request = journeyRequest(req.cacheModel.copy(parties = Parties(isEntryIntoDeclarantsRecords = No)))
 
           val view = createView()(request)
-          view.getElementById("back-link") must haveHref(ConsigneeDetailsController.displayPage)
+          view.getElementById("back-link") must haveHref(RepresentativeStatusController.displayPage)
         }
       }
     }

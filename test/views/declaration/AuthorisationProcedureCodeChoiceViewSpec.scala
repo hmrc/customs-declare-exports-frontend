@@ -17,7 +17,7 @@
 package views.declaration
 
 import base.Injector
-import controllers.declaration.routes.{AdditionalActorsSummaryController, ConsigneeDetailsController}
+import controllers.declaration.routes._
 import forms.common.YesNoAnswer._
 import forms.declaration.AuthorisationProcedureCodeChoice.form
 import models.DeclarationType._
@@ -127,7 +127,7 @@ class AuthorisationProcedureCodeChoiceViewSpec extends PageWithButtonsSpec with 
         "display 'Back' button that links to 'Consignee Details' page" in {
           val backButton = createView().getElementById("back-link")
           backButton must containMessage("site.backToPreviousQuestion")
-          backButton must haveHref(ConsigneeDetailsController.displayPage)
+          backButton must haveHref(RepresentativeStatusController.displayPage)
         }
       }
     }

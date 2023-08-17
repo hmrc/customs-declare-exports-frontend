@@ -17,7 +17,7 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.declaration.routes.{CarrierEoriNumberController, ConsigneeDetailsController}
+import controllers.declaration.routes._
 import controllers.navigation.Navigator
 import forms.DeclarationPage
 import forms.declaration.RepresentativeStatus.form
@@ -68,12 +68,10 @@ class RepresentativeStatusController @Inject() (
 
   private def nextPage(declarationType: DeclarationType, declaration: ExportsDeclaration): Call =
     declarationType match {
-      case SUPPLEMENTARY => ConsigneeDetailsController.displayPage
-
+      case SUPPLEMENTARY                      => ConsigneeDetailsController.displayPage
       case STANDARD | SIMPLIFIED | OCCASIONAL => CarrierEoriNumberController.displayPage
-
       case CLEARANCE =>
-        if (declaration.isNotExs) ConsigneeDetailsController.displayPage
+        if (declaration.isNotExs) AuthorisationProcedureCodeChoiceController.displayPage
         else CarrierEoriNumberController.displayPage
     }
 
