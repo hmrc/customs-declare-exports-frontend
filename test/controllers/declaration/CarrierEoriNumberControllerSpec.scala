@@ -218,36 +218,36 @@ class CarrierEoriNumberControllerSpec extends ControllerSpec with OptionValues {
       }
     }
 
-      onJourney(CLEARANCE) { request =>
-        "'No' is selected" in {
+    onJourney(CLEARANCE) { request =>
+      "'No' is selected" in {
 
-          withNewCaching(request.cacheModel)
+        withNewCaching(request.cacheModel)
 
-          val correctForm = Json.toJson(CarrierEoriNumber(eori = None, YesNoAnswers.no))
+        val correctForm = Json.toJson(CarrierEoriNumber(eori = None, YesNoAnswers.no))
 
-          val result = controller.submit()(postRequest(correctForm))
+        val result = controller.submit()(postRequest(correctForm))
 
-          await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.CarrierDetailsController.displayPage
-          checkViewInteractions(0)
-          theCacheModelUpdated.parties.carrierDetails must be(Some(CarrierDetails(EntityDetails(None, None))))
-        }
-
-        "'Yes' is selected" in {
-
-          withNewCaching(request.cacheModel)
-
-          val eoriInput = Some(Eori("GB123456789000"))
-          val correctForm = Json.toJson(CarrierEoriNumber(eori = eoriInput, YesNoAnswers.yes))
-
-          val result = controller.submit()(postRequest(correctForm))
-
-          await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.AuthorisationProcedureCodeChoiceController.displayPage
-          checkViewInteractions(0)
-          theCacheModelUpdated.parties.carrierDetails must be(Some(CarrierDetails(EntityDetails(eoriInput, None))))
-        }
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.CarrierDetailsController.displayPage
+        checkViewInteractions(0)
+        theCacheModelUpdated.parties.carrierDetails must be(Some(CarrierDetails(EntityDetails(None, None))))
       }
+
+      "'Yes' is selected" in {
+
+        withNewCaching(request.cacheModel)
+
+        val eoriInput = Some(Eori("GB123456789000"))
+        val correctForm = Json.toJson(CarrierEoriNumber(eori = eoriInput, YesNoAnswers.yes))
+
+        val result = controller.submit()(postRequest(correctForm))
+
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.AuthorisationProcedureCodeChoiceController.displayPage
+        checkViewInteractions(0)
+        theCacheModelUpdated.parties.carrierDetails must be(Some(CarrierDetails(EntityDetails(eoriInput, None))))
+      }
+    }
 
     onJourney(SUPPLEMENTARY) { request =>
       "redirect to start" in {
