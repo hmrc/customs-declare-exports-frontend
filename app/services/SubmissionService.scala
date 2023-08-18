@@ -108,13 +108,6 @@ class SubmissionService @Inject() (connector: CustomsDeclareExportsConnector, au
       Future.successful(None)
     }
 
-  def fetchSubmissionFromAmendmentDraft(
-    declaration: ExportsDeclaration
-  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[Submission]] =
-    declaration.declarationMeta.parentDeclarationId map { parentDeclarationId =>
-      connector.findSubmissionByLatestDecId(parentDeclarationId)
-    } getOrElse Future.successful(None)
-
   private def auditSubmission(eori: String, declaration: ExportsDeclaration, legalDeclaration: LegalDeclaration, opResult: String, auditType: Audit)(
     implicit hc: HeaderCarrier
   ): Unit =

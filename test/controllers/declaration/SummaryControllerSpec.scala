@@ -32,7 +32,6 @@ import org.scalatest.OptionValues
 import play.api.data.FormError
 import play.api.test.Helpers._
 import play.twirl.api.{Html, HtmlFormat}
-import services.SubmissionService
 import uk.gov.hmrc.http.HeaderCarrier
 import views.helpers.ActionItemBuilder.lastUrlPlaceholder
 import views.html.declaration.amendments.amendment_summary
@@ -47,7 +46,6 @@ class SummaryControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerM
   private val normalSummaryPage = mock[normal_summary_page]
   private val mockSummaryPageNoData = mock[summary_page_no_data]
   private val mockLrnValidator = mock[LrnValidator]
-  private val mockSubmissionsService = mock[SubmissionService]
 
   private val normalModeBackLink = SavedDeclarationsController.displayDeclarations()
 
@@ -58,7 +56,7 @@ class SummaryControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerM
     mockVerifiedEmailAction,
     mockJourneyAction,
     new ErrorHandler(mcc.messagesApi, instanceOf[error_template])(instanceOf[AppConfig]),
-    mockSubmissionsService,
+    mockCustomsDeclareExportsConnector,
     mockExportsCacheService,
     mcc,
     amendmentSummaryPage,
@@ -82,7 +80,7 @@ class SummaryControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerM
     super.afterEach()
   }
 
-  "SummaryController.displayOutcomePage" should {
+  "SummaryController.displayPage" should {
 
     "return 200 (OK)" when {
 
