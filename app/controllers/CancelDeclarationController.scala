@@ -53,8 +53,9 @@ class CancelDeclarationController @Inject() (
 
   def displayPage: Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
     getSessionData() match {
-      case Some((_, mrn, lrn, ducr)) => Future.successful(Ok(cancelDeclarationPage(CancelDeclarationDescription.form, lrn, ducr, mrn)))
-      case _                         => errorHandler.redirectToErrorPage
+      case Some((submissionsId, mrn, lrn, ducr)) =>
+        Future.successful(Ok(cancelDeclarationPage(CancelDeclarationDescription.form, submissionsId, lrn, ducr, mrn)))
+      case _ => errorHandler.redirectToErrorPage
     }
   }
 
@@ -65,12 +66,12 @@ class CancelDeclarationController @Inject() (
           .bindFromRequest()
           .fold(
             (formWithErrors: Form[CancelDeclarationDescription]) =>
-              Future.successful(BadRequest(cancelDeclarationPage(formWithErrors, lrn, ducr, mrn))),
+              Future.successful(BadRequest(cancelDeclarationPage(formWithErrors, submissionId, lrn, ducr, mrn))),
             userInput =>
               sendAuditedCancellationRequest(userInput, submissionId, lrn, mrn).map {
                 case models.CancellationRequestSent => Redirect(routes.CancellationResultController.displayHoldingPage)
                 case models.CancellationAlreadyRequested =>
-                  Ok(cancelDeclarationPage(createFormWithErrors(userInput, "cancellation.duplicateRequest.error"), lrn, ducr, mrn))
+                  Ok(cancelDeclarationPage(createFormWithErrors(userInput, "cancellation.duplicateRequest.error"), submissionId, lrn, ducr, mrn))
               } recoverWith { case _ =>
                 errorHandler.redirectToErrorPage
               }

@@ -37,13 +37,13 @@
     formHelper: FormWithCSRF
 )
 
-@(form: Form[CancelDeclarationDescription], lrn: Lrn, ducr: String, mrn: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[CancelDeclarationDescription], submissionId: String, lrn: Lrn, ducr: String, mrn: String)(implicit request: Request[_], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
 @govukLayout(
     title = Title("cancellation.title", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.backToSelectionPage"), controllers.routes.ChoiceController.displayPage(Some(Choice(CancelDec))))),
+    backButton = Some(BackButton(messages("site.back"), DeclarationDetailsController.displayPage(submissionId))),
     showDeclarationSummaryLink = false
 ) {
 
