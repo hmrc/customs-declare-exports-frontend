@@ -31,7 +31,7 @@ import views.html.declaration.summary.submitted_declaration_page
 
 import java.util.function.Predicate
 
-class SubmittedDeclarationPageViewSpec extends UnitViewSpec with Stubs with ExportsTestHelper with Injector {
+class SubmittedDeclarationViewSpec extends UnitViewSpec with Stubs with ExportsTestHelper with Injector {
 
   val declarationPage = instanceOf[submitted_declaration_page]
   def createView(declaration: ExportsDeclaration = aDeclaration()): Document =

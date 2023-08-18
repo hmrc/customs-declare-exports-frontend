@@ -19,8 +19,8 @@ package services
 import base.{Injector, MockConnectors, MockExportCacheService, UnitWithMocksSpec}
 import com.kenshoo.play.metrics.Metrics
 import connectors.CustomsDeclareExportsConnector
-import forms.declaration.LegalDeclaration
 import forms.declaration.countries.Country
+import forms.declaration.{AmendmentSubmission, LegalDeclaration}
 import metrics.{ExportsMetrics, MetricIdentifiers}
 import models.DeclarationType
 import models.declaration.DeclarationStatus
@@ -44,17 +44,19 @@ class SubmissionServiceSpec
   private val connector = mock[CustomsDeclareExportsConnector]
   private val exportMetrics = instanceOf[ExportsMetrics]
   private val hc: HeaderCarrier = mock[HeaderCarrier]
-  private val legal = LegalDeclaration("Name", "Role", "email@test.com", None, confirmation = true)
+
+  private val legalDeclaration = LegalDeclaration("Name", "Role", "email@test.com", confirmation = true)
+  private val amendmentSubmission = AmendmentSubmission("Name", "Role", "email@test.com", "Some reason", confirmation = true)
 
   private val auditData = Map(
     EventData.eori.toString -> "eori",
     EventData.lrn.toString -> "123LRN",
     EventData.ducr.toString -> "ducr",
     EventData.decType.toString -> "STANDARD",
-    EventData.fullName.toString -> legal.fullName,
-    EventData.jobRole.toString -> legal.jobRole,
-    EventData.email.toString -> legal.email,
-    EventData.confirmed.toString -> legal.confirmation.toString,
+    EventData.fullName.toString -> legalDeclaration.fullName,
+    EventData.jobRole.toString -> legalDeclaration.jobRole,
+    EventData.email.toString -> legalDeclaration.email,
+    EventData.confirmed.toString -> legalDeclaration.confirmation.toString,
     EventData.submissionResult.toString -> "Success"
   )
 
@@ -89,7 +91,7 @@ class SubmissionServiceSpec
       when(connector.submitDeclaration(any[String])(any(), any())).thenReturn(Future.successful(expectedSubmission))
 
       // When
-      val actualSubmission = submissionService.submitDeclaration("eori", declaration, legal)(hc, global).futureValue.value
+      val actualSubmission = submissionService.submitDeclaration("eori", declaration, legalDeclaration)(hc, global).futureValue.value
       actualSubmission.eori mustBe eori
       actualSubmission.lrn mustBe lrn
 
@@ -109,7 +111,7 @@ class SubmissionServiceSpec
 
       "the declaration's parentDeclarationId is not defined" in {
         submissionService
-          .submitAmendment(eori, aDeclaration(), legal, submissionId, false)(hc, global)
+          .submitAmendment(eori, aDeclaration(), amendmentSubmission, submissionId, false)(hc, global)
           .futureValue mustBe None
       }
 
@@ -126,7 +128,7 @@ class SubmissionServiceSpec
         )
 
         submissionService
-          .submitAmendment(eori, amendedDecl, legal, submissionId, false)(hc, global)
+          .submitAmendment(eori, amendedDecl, amendmentSubmission, submissionId, false)(hc, global)
           .futureValue mustBe None
       }
     }
@@ -160,7 +162,8 @@ class SubmissionServiceSpec
       when(connector.submitAmendment(any())(any(), any())).thenReturn(Future.successful(expectedActionId))
 
       // When
-      submissionService.submitAmendment(eori, amendedDecl, legal, submissionId, false)(hc, global).futureValue mustBe Some(expectedActionId)
+      val result = submissionService.submitAmendment(eori, amendedDecl, amendmentSubmission, submissionId, false)(hc, global)
+      result.futureValue mustBe Some(expectedActionId)
 
       // Then
       val expectedFieldPointers = List(

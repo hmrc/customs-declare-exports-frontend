@@ -24,4 +24,6 @@ import javax.inject.{Inject, Singleton}
 class DeclarationAmendmentsConfig @Inject() (featureSwitchConfig: FeatureSwitchConfig) {
 
   val isEnabled: Boolean = featureSwitchConfig.isFeatureOn(Feature.declarationAmendments)
+
+  val isDisabled: Boolean = !isEnabled
 }

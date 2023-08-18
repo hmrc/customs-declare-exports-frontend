@@ -21,7 +21,7 @@ import models.declaration.DeclarationStatus.AMENDMENT_DRAFT
 import org.jsoup.nodes.Document
 import views.html.declaration.amendments.amendment_summary
 
-class AmendmentSummaryPageViewSpec extends SummaryPageViewSpec {
+class AmendmentSummaryViewSpec extends SummaryViewSpec {
 
   private val amendmentSummaryPage = instanceOf[amendment_summary]
 

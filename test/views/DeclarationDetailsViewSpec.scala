@@ -772,6 +772,6 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
     link.tagName() mustBe "a"
     link.hasClass("govuk-link")
     link.text() mustBe messages("declaration.details.cancel.amendment")
-    link must haveHref(SubmissionController.cancelAmendment())
+    link must haveHref(SubmissionController.cancelAmendment)
   }
 }

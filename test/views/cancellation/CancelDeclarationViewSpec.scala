@@ -90,11 +90,8 @@ class CancelDeclarationViewSpec extends UnitViewSpec with CommonMessages with St
     }
 
     "display 'Submit' button on page" in {
-
       val view = createView()
-
-      val saveButton = view.select("#submit")
-      saveButton.text() mustBe messages("cancellation.submitButton")
+      view.select("#submit").text() mustBe messages("site.submit")
     }
 
     "display 'Back' button that links to 'Choice' page with Cancel declaration selected" in {
