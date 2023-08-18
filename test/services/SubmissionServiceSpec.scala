@@ -22,14 +22,13 @@ import connectors.CustomsDeclareExportsConnector
 import forms.declaration.LegalDeclaration
 import forms.declaration.countries.Country
 import metrics.{ExportsMetrics, MetricIdentifiers}
-import models.declaration.submissions.{Action, Submission, SubmissionAmendment}
 import models.DeclarationType
 import models.declaration.DeclarationStatus
+import models.declaration.submissions.{Action, Submission, SubmissionAmendment}
 import org.mockito.ArgumentMatchers.{any, eq => equalTo, notNull}
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.OptionValues
 import org.scalatest.concurrent.ScalaFutures
-import services.DiffTools.ExportsDeclarationDiff
 import services.audit.{AuditService, AuditTypes, EventData}
 import services.cache.SubmissionBuilder
 import uk.gov.hmrc.http.HeaderCarrier
@@ -47,18 +46,18 @@ class SubmissionServiceSpec
   private val hc: HeaderCarrier = mock[HeaderCarrier]
   private val legal = LegalDeclaration("Name", "Role", "email@test.com", None, confirmation = true)
 
-  private def auditData(diff: Option[ExportsDeclarationDiff]): Map[String, String] =
-    Map(
-      EventData.eori.toString -> "eori",
-      EventData.lrn.toString -> "123LRN",
-      EventData.ducr.toString -> "ducr",
-      EventData.decType.toString -> "STANDARD",
-      EventData.fullName.toString -> legal.fullName,
-      EventData.jobRole.toString -> legal.jobRole,
-      EventData.email.toString -> legal.email,
-      EventData.confirmed.toString -> legal.confirmation.toString,
-      EventData.submissionResult.toString -> "Success"
-    )
+  private val auditData = Map(
+    EventData.eori.toString -> "eori",
+    EventData.lrn.toString -> "123LRN",
+    EventData.ducr.toString -> "ducr",
+    EventData.decType.toString -> "STANDARD",
+    EventData.fullName.toString -> legal.fullName,
+    EventData.jobRole.toString -> legal.jobRole,
+    EventData.email.toString -> legal.email,
+    EventData.confirmed.toString -> legal.confirmation.toString,
+    EventData.submissionResult.toString -> "Success"
+  )
+
   private val submissionService = new SubmissionService(connector, auditService, exportMetrics)
 
   override def beforeEach(): Unit = {
@@ -97,7 +96,7 @@ class SubmissionServiceSpec
       // Then
       verify(connector).submitDeclaration(equalTo("id"))(equalTo(hc), any())
       verify(auditService).auditAllPagesUserInput(equalTo(AuditTypes.SubmissionPayload), equalTo(declaration))(equalTo(hc))
-      verify(auditService).audit(equalTo(AuditTypes.Submission), equalTo[Map[String, String]](auditData(None)))(equalTo(hc))
+      verify(auditService).audit(equalTo(AuditTypes.Submission), equalTo[Map[String, String]](auditData))(equalTo(hc))
       registry.getTimers.get(exportMetrics.timerName(metric)).getCount mustBe >(timerBefore)
       registry.getCounters.get(exportMetrics.counterName(metric)).getCount mustBe >(counterBefore)
     }
