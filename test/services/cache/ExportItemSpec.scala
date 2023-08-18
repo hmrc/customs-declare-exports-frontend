@@ -1299,4 +1299,25 @@ class ExportItemSpec extends UnitWithMocksSpec with ExportsItemBuilder {
       }
     }
   }
+
+  "ExportItem.totalPackages" should {
+    "calculate sum of packages" when {
+      "no packages exist" in {
+        anItem().totalPackages mustBe 0
+      }
+      "no number of package exists" in {
+        anItem(withPackageInformation(List(PackageInformation(0, id = "id", None, None, None)))).totalPackages mustBe 0
+      }
+      "not all number of packages is complete" in {
+        anItem(
+          withPackageInformation(List(PackageInformation(0, id = "id", None, Some(3), None), PackageInformation(1, id = "id", None, None, None)))
+        ).totalPackages mustBe 3
+      }
+      "all package information is complete" in {
+        anItem(
+          withPackageInformation(List(PackageInformation(0, id = "id", None, Some(3), None), PackageInformation(1, id = "id", None, Some(3), None)))
+        ).totalPackages mustBe 6
+      }
+    }
+  }
 }

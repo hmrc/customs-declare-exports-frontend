@@ -66,13 +66,7 @@
                 @packageInfo.numberOfPackages.getOrElse("")
             }
         } else {
-            <ol>
-                @packageInformationList.map { packageInfo =>
-                    @packageInfo.numberOfPackages.map( packages =>
-                        <li>{packages}</li>
-                    )
-                }
-            </ol>
+            @item.totalPackages
         }
     }
 }
