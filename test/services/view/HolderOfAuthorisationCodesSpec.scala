@@ -63,32 +63,32 @@ class HolderOfAuthorisationCodesSpec extends UnitWithMocksSpec with BeforeAndAft
         when(mockMerchandiseInBagConfig.isMerchandiseInBagEnabled).thenReturn(true)
 
         val autoCompleteItems = holderOfAuthorisationCodes.asListOfAutoCompleteItems(ENGLISH)
-        autoCompleteItems.size mustBe 53
+        autoCompleteItems.size mustBe 57
 
         val item0 = "EXRR - Submission of an arrived export declaration for RoRo movements (where CSE Authorisation is not used)"
-        autoCompleteItems.head mustBe AutoCompleteItem(item0, EXRR)
+        autoCompleteItems(28) mustBe AutoCompleteItem(item0, EXRR)
 
-        autoCompleteItems(4) mustBe AutoCompleteItem("MIB - Merchandise in Baggage", MIB)
+        autoCompleteItems(38) mustBe AutoCompleteItem("MIB - Merchandise in Baggage", MIB)
 
         val item24 = "TEAH - Temporary Admission authorisation – Auction Houses (no guarantee for VAT required)"
-        autoCompleteItems(25) mustBe AutoCompleteItem(item24, "TEAH")
+        autoCompleteItems(51) mustBe AutoCompleteItem(item24, "TEAH")
 
         val item25 = "TST - Authorisation to operate storage facilities for the temporary storage of goods"
-        autoCompleteItems(26) mustBe AutoCompleteItem(item25, "TST")
+        autoCompleteItems(53) mustBe AutoCompleteItem(item25, "TST")
 
-        autoCompleteItems(40) mustBe AutoCompleteItem("EPSS - Excise Payment Security System", "EPSS")
+        autoCompleteItems(23) mustBe AutoCompleteItem("EPSS - Excise Payment Security System", "EPSS")
 
         val item40 = "ETD - Electronic Transport Document (authorised for use as a customs declaration)"
-        autoCompleteItems(41) mustBe AutoCompleteItem(item40, "ETD")
+        autoCompleteItems(24) mustBe AutoCompleteItem(item40, "ETD")
 
-        autoCompleteItems(45) mustBe AutoCompleteItem("REM - Remission of the amounts of import or export duty", "REM")
+        autoCompleteItems(41) mustBe AutoCompleteItem("REM - Remission of the amounts of import or export duty", "REM")
       }
       "merchandiseInBag feature is disabled" in {
 
         when(mockMerchandiseInBagConfig.isMerchandiseInBagEnabled).thenReturn(false)
 
         val autoCompleteItems = holderOfAuthorisationCodes.asListOfAutoCompleteItems(ENGLISH)
-        autoCompleteItems.size mustBe 52
+        autoCompleteItems.size mustBe 55
 
         autoCompleteItems must not contain AutoCompleteItem("MIB - Merchandise in Baggage", MIB)
       }
