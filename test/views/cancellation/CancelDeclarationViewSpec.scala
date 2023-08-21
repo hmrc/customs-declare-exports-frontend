@@ -19,9 +19,8 @@ package views.cancellation
 import base.Injector
 import base.TestHelper.createRandomAlphanumericString
 import controllers.routes
-import forms.Choice.AllowedChoiceValues.CancelDec
 import forms.cancellation.CancellationChangeReason.NoLongerRequired
-import forms.{CancelDeclarationDescription, Choice, Lrn}
+import forms.{CancelDeclarationDescription, Lrn}
 import models.requests.SessionHelper
 import org.jsoup.nodes.Document
 import play.api.data.{Form, FormError}
@@ -37,6 +36,7 @@ class CancelDeclarationViewSpec extends UnitViewSpec with CommonMessages with St
   private val form: Form[CancelDeclarationDescription] = CancelDeclarationDescription.form
   private val cancelDeclarationPage = instanceOf[cancel_declaration]
 
+  private val submissionId = "d84bedc0"
   private val mrn = "456789"
   private val lrn = Lrn("098765432")
   private val ducr = "34567890"
@@ -98,7 +98,7 @@ class CancelDeclarationViewSpec extends UnitViewSpec with CommonMessages with St
       val backButton = createView().getElementById("back-link")
 
       backButton must containMessage("site.back")
-      backButton must haveHref(routes.ChoiceController.displayPage(Some(Choice(CancelDec))))
+      backButton must haveHref(routes.DeclarationDetailsController.displayPage(submissionId))
     }
   }
 
@@ -176,5 +176,5 @@ class CancelDeclarationViewSpec extends UnitViewSpec with CommonMessages with St
   }
 
   private def createView(form: Form[CancelDeclarationDescription] = form): Document =
-    cancelDeclarationPage(form, lrn, ducr, mrn)(journeyRequest(aDeclaration(), (SessionHelper.declarationUuid, "decId")), messages)
+    cancelDeclarationPage(form, submissionId, lrn, ducr, mrn)(journeyRequest(aDeclaration(), (SessionHelper.declarationUuid, "decId")), messages)
 }
