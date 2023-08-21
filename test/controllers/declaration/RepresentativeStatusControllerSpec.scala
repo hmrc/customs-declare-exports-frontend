@@ -17,7 +17,7 @@
 package controllers.declaration
 
 import base.ControllerSpec
-import controllers.declaration.routes.{CarrierEoriNumberController, ConsigneeDetailsController}
+import controllers.declaration.routes._
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.{IsExs, RepresentativeStatus}
 import models.DeclarationType._
@@ -172,7 +172,7 @@ class RepresentativeStatusControllerSpec extends ControllerSpec with OptionValue
           val result = controller.submitForm()(postRequest(correctForm))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe ConsigneeDetailsController.displayPage
+          thePageNavigatedTo mustBe AuthorisationProcedureCodeChoiceController.displayPage
 
           verifyPage(0)
         }

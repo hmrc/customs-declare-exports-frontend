@@ -534,15 +534,19 @@ GET         /saved-summary                       controllers.declaration.Summary
 
 # Submission
 
-GET         /submit-your-declaration             controllers.declaration.SubmissionController.displayLegalDeclarationPage(isAmendment: Boolean = false, isCancellation: Boolean)
+GET         /submit-your-declaration             controllers.declaration.SubmissionController.displaySubmitDeclarationPage
 
 POST        /submit-your-declaration             controllers.declaration.SubmissionController.submitDeclaration
 
-GET         /submit-your-amendment               controllers.declaration.SubmissionController.displayLegalDeclarationPage(isAmendment: Boolean = true, isCancellation: Boolean)
+GET         /submit-your-amendment               controllers.declaration.SubmissionController.displaySubmitAmendmentPage
 
-POST        /submit-your-amendment               controllers.declaration.SubmissionController.submitAmendment(isCancellation: Boolean)
+POST        /submit-your-amendment               controllers.declaration.SubmissionController.submitAmendment(isCancellation: Boolean = false)
 
-GET         /cancel-amendment                    controllers.declaration.SubmissionController.cancelAmendment()
+GET         /cancel-amendment                    controllers.declaration.SubmissionController.cancelAmendment
+
+GET         /cancel-your-amendment               controllers.declaration.SubmissionController.displayCancelAmendmentPage
+
+POST        /cancel-your-amendment               controllers.declaration.SubmissionController.submitAmendment(isCancellation: Boolean = true)
 
 # Amendment declaration
 

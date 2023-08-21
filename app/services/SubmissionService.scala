@@ -18,7 +18,7 @@ package services
 
 import com.google.inject.Inject
 import connectors.CustomsDeclareExportsConnector
-import forms.declaration.LegalDeclaration
+import forms.declaration.{AmendmentSubmission, LegalDeclaration}
 import metrics.ExportsMetrics
 import metrics.MetricIdentifiers.{submissionAmendmentMetric, submissionMetric}
 import models.DeclarationType.DeclarationType
@@ -26,8 +26,8 @@ import models.ExportsDeclaration
 import models.declaration.submissions.{Submission, SubmissionAmendment}
 import play.api.Logging
 import play.api.libs.json.{JsObject, Json}
-import services.audit.{AuditService, AuditTypes, EventData}
 import services.audit.AuditTypes.{AmendmentCancellation, AmendmentPayload, Audit, SubmissionPayload}
+import services.audit.{AuditService, AuditTypes, EventData}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Singleton
@@ -65,7 +65,7 @@ class SubmissionService @Inject() (connector: CustomsDeclareExportsConnector, au
   def submitAmendment(
     eori: String,
     declaration: ExportsDeclaration,
-    legalDeclaration: LegalDeclaration,
+    amendmentSubmission: AmendmentSubmission,
     submissionId: String,
     isCancellation: Boolean
   )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[String]] =
@@ -88,14 +88,14 @@ class SubmissionService @Inject() (connector: CustomsDeclareExportsConnector, au
             .submitAmendment(submissionAmendment)
             .andThen {
               case Success(_) =>
-                auditAmendmentSubmission(eori, declaration, parentDeclaration, legalDeclaration, Success.toString, auditType)
+                auditAmendmentSubmission(eori, declaration, parentDeclaration, amendmentSubmission, Success.toString, auditType)
                 metrics.incrementCounter(submissionAmendmentMetric)
                 timerContext.stop()
 
               case Failure(exception) =>
                 logProgress(declaration, "Amendment Submission Failed")
                 logger.error(s"Error response from backend $exception")
-                auditAmendmentSubmission(eori, declaration, parentDeclaration, legalDeclaration, Failure.toString, auditType)
+                auditAmendmentSubmission(eori, declaration, parentDeclaration, amendmentSubmission, Failure.toString, auditType)
             }
             .map(Some(_))
 
@@ -108,29 +108,25 @@ class SubmissionService @Inject() (connector: CustomsDeclareExportsConnector, au
       Future.successful(None)
     }
 
-  def fetchSubmissionFromAmendmentDraft(
-    declaration: ExportsDeclaration
-  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[Submission]] =
-    declaration.declarationMeta.parentDeclarationId map { parentDeclarationId =>
-      connector.findSubmissionByLatestDecId(parentDeclarationId)
-    } getOrElse Future.successful(None)
-
   private def auditSubmission(eori: String, declaration: ExportsDeclaration, legalDeclaration: LegalDeclaration, opResult: String, auditType: Audit)(
     implicit hc: HeaderCarrier
   ): Unit =
-    auditService.audit(auditType, auditData(eori, declaration.`type`, declaration.lrn, declaration.ducr.map(_.ducr), legalDeclaration, opResult))
+    auditService.audit(
+      auditType,
+      auditSubmission(eori, declaration.`type`, declaration.lrn, declaration.ducr.map(_.ducr), legalDeclaration, opResult)
+    )
 
   private def auditAmendmentSubmission(
     eori: String,
     newDeclaration: ExportsDeclaration,
     oldDeclaration: ExportsDeclaration,
-    legalDeclaration: LegalDeclaration,
+    amendmentSubmission: AmendmentSubmission,
     opResult: String,
     auditType: Audit
   )(implicit hc: HeaderCarrier): Unit = {
 
     val auditPayload = Json
-      .toJson(auditData(eori, newDeclaration.`type`, newDeclaration.lrn, newDeclaration.ducr.map(_.ducr), legalDeclaration, opResult))
+      .toJson(auditAmendment(eori, newDeclaration.`type`, newDeclaration.lrn, newDeclaration.ducr.map(_.ducr), amendmentSubmission, opResult))
       .as[JsObject]
 
     val declarationVersions =
@@ -139,7 +135,27 @@ class SubmissionService @Inject() (connector: CustomsDeclareExportsConnector, au
     auditService.auditAmendmentSent(auditType, auditPayload ++ declarationVersions)
   }
 
-  private def auditData(
+  private def auditAmendment(
+    eori: String,
+    `type`: DeclarationType,
+    lrn: Option[String],
+    ducr: Option[String],
+    amendmentSubmission: AmendmentSubmission,
+    result: String
+  ): Map[String, String] =
+    Map(
+      EventData.eori.toString -> eori,
+      EventData.decType.toString -> `type`.toString,
+      EventData.lrn.toString -> lrn.getOrElse(""),
+      EventData.ducr.toString -> ducr.getOrElse(""),
+      EventData.fullName.toString -> amendmentSubmission.fullName,
+      EventData.jobRole.toString -> amendmentSubmission.jobRole,
+      EventData.email.toString -> amendmentSubmission.email,
+      EventData.confirmed.toString -> amendmentSubmission.confirmation.toString,
+      EventData.submissionResult.toString -> result
+    )
+
+  private def auditSubmission(
     eori: String,
     `type`: DeclarationType,
     lrn: Option[String],

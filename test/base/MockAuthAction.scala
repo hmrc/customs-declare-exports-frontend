@@ -271,11 +271,20 @@ trait MockAuthAction extends MockitoSugar with Stubs with MetricsMocks with Inje
   def getAuthenticatedRequest(declarationId: String = "declarationUuid"): VerifiedEmailRequest[AnyContentAsEmpty.type] =
     buildVerifiedEmailRequest(FakeRequest("GET", "").withSession(declarationUuid -> declarationId).withCSRFToken, exampleUser)
 
+  def getAuthenticatedRequest(declarationId: String, session: (String, String)*): VerifiedEmailRequest[AnyContentAsEmpty.type] =
+    buildVerifiedEmailRequest(
+      FakeRequest("GET", "").withSession(declarationUuid -> declarationId).withSession(session: _*).withCSRFToken,
+      exampleUser
+    )
+
   def getRequest(): Request[AnyContentAsEmpty.type] =
     FakeRequest("GET", "").withSession(declarationUuid -> "declarationUuid").withCSRFToken
 
   def getJourneyRequest(declaration: ExportsDeclaration = aDeclaration()): JourneyRequest[AnyContentAsEmpty.type] =
     new JourneyRequest[AnyContentAsEmpty.type](getAuthenticatedRequest(), declaration)
+
+  def getJourneyRequest(declaration: ExportsDeclaration, session: (String, String)*): JourneyRequest[AnyContentAsEmpty.type] =
+    new JourneyRequest[AnyContentAsEmpty.type](getAuthenticatedRequest(declaration.id, session: _*), declaration)
 
   def getRequestWithSession(session: (String, String)*): Request[AnyContentAsEmpty.type] =
     FakeRequest("GET", "")

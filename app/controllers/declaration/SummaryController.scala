@@ -17,6 +17,7 @@
 package controllers.declaration
 
 import config.AppConfig
+import connectors.CustomsDeclareExportsConnector
 import controllers.actions.{AuthAction, JourneyAction, VerifiedEmailAction}
 import controllers.declaration.SummaryController.{continuePlaceholder, lrnDuplicateError}
 import controllers.routes.SavedDeclarationsController
@@ -30,7 +31,6 @@ import play.api.data.FormError
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import play.twirl.api.Html
-import services.SubmissionService
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
@@ -47,7 +47,7 @@ class SummaryController @Inject() (
   verifyEmail: VerifiedEmailAction,
   journeyType: JourneyAction,
   errorHandler: ErrorHandler,
-  submissionService: SubmissionService,
+  connector: CustomsDeclareExportsConnector,
   override val exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents,
   amendment_summary: amendment_summary,
@@ -58,7 +58,7 @@ class SummaryController @Inject() (
     extends FrontendController(mcc) with I18nSupport with Logging with ModelCacheable {
 
   val displayPage: Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType).async { implicit request =>
-    if (request.cacheModel.isAmendmentDraft) amendmentSummaryPage()
+    if (request.cacheModel.isAmendmentDraft) displayAmendmentSummaryPage
     else if (request.cacheModel.declarationMeta.summaryWasVisited.contains(true)) continueToDisplayPage
     else
       updateDeclarationFromRequest(declaration =>
@@ -66,22 +66,24 @@ class SummaryController @Inject() (
       ).flatMap(_ => continueToDisplayPage)
   }
 
-  private def amendmentSummaryPage()(implicit request: JourneyRequest[_]): Future[Result] =
-    submissionService.fetchSubmissionFromAmendmentDraft(request.cacheModel) flatMap { submissionIdOpt =>
-      submissionIdOpt map { submission =>
-        Future.successful(
-          Ok(
-            Html(
-              amendment_summary()
-                .toString()
-                .replace(s"?$lastUrlPlaceholder", "")
-            )
-          ).addingToSession(submissionUuid -> submission.uuid)
-        )
-      } getOrElse errorHandler.internalError(
-        s"Cannot associate submission to parentDecId: ${request.cacheModel.declarationMeta.parentDeclarationId} from declaration ${request.cacheModel.id}"
-      )
+  private def displayAmendmentSummaryPage(implicit request: JourneyRequest[_]): Future[Result] = {
+    val result = Ok(Html(amendment_summary().toString().replace(s"?$lastUrlPlaceholder", "")))
+    getValue(submissionUuid) match {
+      case None =>
+        request.cacheModel.declarationMeta.parentDeclarationId.fold {
+          val msg = s"Missing parentDeclarationId for 'AMENDMENT_DRAFT' declaration(${request.cacheModel.id})"
+          errorHandler.internalError(msg)
+        } { parentDecId =>
+          connector.findSubmissionByLatestDecId(parentDecId) flatMap {
+            case Some(submission) => Future.successful(result.addingToSession(submissionUuid -> submission.uuid))
+            case _ =>
+              errorHandler.internalError(s"Cannot associate submission to parentDecId: $parentDecId from declaration ${request.cacheModel.id}")
+          }
+        }
+
+      case _ => Future.successful(result)
     }
+  }
 
   private def continueToDisplayPage(implicit request: JourneyRequest[_]): Future[Result] = {
     val hasMandatoryData = request.cacheModel.consignmentReferences.exists(refs => refs.ducr.nonEmpty && refs.lrn.nonEmpty)
