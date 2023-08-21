@@ -61,7 +61,6 @@ trait ClearanceNavigator extends CacheDependentNavigators {
     case DeclarantIsExporter        => declarantIsExporterPreviousPage
     case CarrierEoriNumber          => carrierEoriNumberClearancePreviousPage
     case ExporterEoriNumber         => exporterEoriNumberClearancePreviousPage
-    case ConsigneeDetails           => consigneeDetailsClearancePreviousPage
     case DestinationCountryPage     => destinationCountryPreviousPage
     case RepresentativeAgent        => representativeAgentClearancePreviousPage
     case IsExs                      => isExsClearancePreviousPage

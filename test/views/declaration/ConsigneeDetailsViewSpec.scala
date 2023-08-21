@@ -18,11 +18,11 @@ package views.declaration
 
 import base.Injector
 import connectors.CodeListConnector
-import controllers.declaration.routes.{CarrierDetailsController, DeclarantExporterController, IsExsController, RepresentativeStatusController}
+import controllers.declaration.routes._
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.common.{Address, AddressSpec}
 import forms.declaration.ConsigneeDetails.form
-import forms.declaration.{ConsigneeDetails, DeclarantIsExporter, EntityDetails, IsExs}
+import forms.declaration.{ConsigneeDetails, DeclarantIsExporter, EntityDetails}
 import models.DeclarationType._
 import models.codes.Country
 import models.declaration.Parties
@@ -84,7 +84,7 @@ class ConsigneeDetailsViewSpec extends AddressViewSpec with PageWithButtonsSpec 
       messages must haveTranslationFor("tariff.declaration.consigneeDetails.clearance.text")
     }
 
-    onEveryDeclarationJourney() { implicit request =>
+    onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, SUPPLEMENTARY) { implicit request =>
       val view = createView()
 
       "display page title" in {
@@ -128,7 +128,7 @@ class ConsigneeDetailsViewSpec extends AddressViewSpec with PageWithButtonsSpec 
 
     import AddressSpec._
 
-    onEveryDeclarationJourney() { implicit request =>
+    onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, SUPPLEMENTARY) { implicit request =>
       "display error for empty fullName" in {
         assertIncorrectView(validAddress.copy(fullName = ""), "fullName", "empty")
       }
@@ -204,7 +204,7 @@ class ConsigneeDetailsViewSpec extends AddressViewSpec with PageWithButtonsSpec 
   }
 
   "Consignee Details View when filled" should {
-    onEveryDeclarationJourney() { implicit request =>
+    onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, SUPPLEMENTARY) { implicit request =>
       "display data in Business address inputs" in {
         val view = createView(form.fill(ConsigneeDetails(EntityDetails(None, Some(Address("test", "test1", "test2", "test3", "Ukraine"))))))
 
@@ -224,38 +224,6 @@ class ConsigneeDetailsViewSpec extends AddressViewSpec with PageWithButtonsSpec 
 
         backButton.text() mustBe messages(backToPreviousQuestionCaption)
         backButton.attr("href") mustBe CarrierDetailsController.displayPage.url
-      }
-    }
-
-    onClearance { implicit request =>
-      "display 'Back' button that links to 'Carrier Details' page" in {
-        val cachedParties = Parties(isExs = Some(IsExs(YesNoAnswers.yes)))
-        val requestWithCachedParties = journeyRequest(request.cacheModel.copy(parties = cachedParties))
-
-        val backButton = createView()(requestWithCachedParties).getElementById("back-link")
-
-        backButton.text() mustBe messages(backToPreviousQuestionCaption)
-        backButton.attr("href") mustBe CarrierDetailsController.displayPage.url
-      }
-
-      "display 'Back' button that links to 'Is Exs?' page" in {
-        val cachedParties = Parties(isExs = Some(IsExs(YesNoAnswers.no)), declarantIsExporter = Some(DeclarantIsExporter(YesNoAnswers.yes)))
-        val requestWithCachedParties = journeyRequest(request.cacheModel.copy(parties = cachedParties))
-
-        val backButton = createView()(requestWithCachedParties).getElementById("back-link")
-
-        backButton.text() mustBe messages(backToPreviousQuestionCaption)
-        backButton.attr("href") mustBe IsExsController.displayPage.url
-      }
-
-      "display 'Back' button that links to 'Representative Status' page" in {
-        val cachedParties = Parties(isExs = Some(IsExs(YesNoAnswers.no)), declarantIsExporter = Some(DeclarantIsExporter(YesNoAnswers.no)))
-        val requestWithCachedParties = journeyRequest(request.cacheModel.copy(parties = cachedParties))
-
-        val backButton = createView()(requestWithCachedParties).getElementById("back-link")
-
-        backButton.text() mustBe messages(backToPreviousQuestionCaption)
-        backButton.attr("href") mustBe RepresentativeStatusController.displayPage.url
       }
     }
 

@@ -20,7 +20,7 @@ import connectors.CodeListConnector
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.declaration.ConsigneeDetails
-import models.DeclarationType.CLEARANCE
+import models.DeclarationType._
 import models.requests.JourneyRequest
 import models.ExportsDeclaration
 import play.api.data.Form
@@ -44,7 +44,9 @@ class ConsigneeDetailsController @Inject() (
 )(implicit ec: ExecutionContext, codeListConnector: CodeListConnector)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
 
-  def displayPage: Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  private val validTypes = Seq(STANDARD, SIMPLIFIED, OCCASIONAL, SUPPLEMENTARY)
+
+  def displayPage: Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
     val frm = ConsigneeDetails.form.withSubmissionErrors
     request.cacheModel.parties.consigneeDetails match {
       case Some(data) => Ok(consigneeDetailsPage(frm.fill(data)))

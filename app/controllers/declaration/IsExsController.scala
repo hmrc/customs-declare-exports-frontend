@@ -18,6 +18,7 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
+import controllers.declaration.routes._
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.{IsExs, UNDangerousGoodsCode}
 import models.DeclarationType.{CLEARANCE, DeclarationType}
@@ -82,9 +83,9 @@ class IsExsController @Inject() (
 
   private def nextPage(isExs: IsExs)(implicit request: JourneyRequest[_]): Call =
     isExs.isExs match {
-      case YesNoAnswers.yes => controllers.declaration.routes.ConsignorEoriNumberController.displayPage
+      case YesNoAnswers.yes => ConsignorEoriNumberController.displayPage
       case YesNoAnswers.no =>
-        if (request.cacheModel.isDeclarantExporter) controllers.declaration.routes.ConsigneeDetailsController.displayPage
-        else controllers.declaration.routes.RepresentativeAgentController.displayPage
+        if (request.cacheModel.isDeclarantExporter) AuthorisationProcedureCodeChoiceController.displayPage
+        else RepresentativeAgentController.displayPage
     }
 }

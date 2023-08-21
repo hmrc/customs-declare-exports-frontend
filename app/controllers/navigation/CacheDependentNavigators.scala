@@ -163,16 +163,6 @@ trait CacheDependentNavigators {
     else
       routes.CarrierEoriNumberController.displayPage
 
-  protected def consigneeDetailsClearancePreviousPage(cacheModel: ExportsDeclaration): Call =
-    if (cacheModel.isExs)
-      consigneeDetailsPreviousPage(cacheModel)
-    else {
-      if (cacheModel.isDeclarantExporter)
-        routes.IsExsController.displayPage
-      else
-        routes.RepresentativeStatusController.displayPage
-    }
-
   protected def representativeAgentClearancePreviousPage(cacheModel: ExportsDeclaration): Call =
     if (cacheModel.isExs) {
       if (cacheModel.parties.consignorDetails.flatMap(_.details.address).isDefined)
@@ -192,9 +182,17 @@ trait CacheDependentNavigators {
 
   protected def declarationHolderRequiredPreviousPage(cacheModel: ExportsDeclaration): Call =
     cacheModel.`type` match {
-      case CLEARANCE if !cacheModel.isEntryIntoDeclarantsRecords => routes.ConsigneeDetailsController.displayPage
-      case OCCASIONAL                                            => routes.AdditionalActorsSummaryController.displayPage
-      case _                                                     => routes.AuthorisationProcedureCodeChoiceController.displayPage
+      case CLEARANCE if !cacheModel.isEntryIntoDeclarantsRecords =>
+        if (cacheModel.isExs)
+          consigneeDetailsPreviousPage(cacheModel)
+        else {
+          if (cacheModel.isDeclarantExporter)
+            routes.IsExsController.displayPage
+          else
+            routes.RepresentativeStatusController.displayPage
+        }
+      case OCCASIONAL => routes.AdditionalActorsSummaryController.displayPage
+      case _          => routes.AuthorisationProcedureCodeChoiceController.displayPage
     }
 
   protected def declarationHolderAddPreviousPage(cacheModel: ExportsDeclaration): Call =
@@ -273,7 +271,14 @@ trait CacheDependentNavigators {
 
   protected def authorisationProcedureCodeChoicePreviousPage(cacheModel: ExportsDeclaration): Call =
     if (cacheModel.isType(CLEARANCE) && cacheModel.isEntryIntoDeclarantsRecords)
-      routes.ConsigneeDetailsController.displayPage
+      if (cacheModel.isExs)
+        consigneeDetailsPreviousPage(cacheModel)
+      else {
+        if (cacheModel.isDeclarantExporter)
+          routes.IsExsController.displayPage
+        else
+          routes.RepresentativeStatusController.displayPage
+      }
     else
       routes.AdditionalActorsSummaryController.displayPage
 

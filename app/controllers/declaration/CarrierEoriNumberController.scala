@@ -17,7 +17,7 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.declaration.routes.{CarrierDetailsController, ConsigneeDetailsController}
+import controllers.declaration.routes._
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.carrier.{CarrierDetails, CarrierEoriNumber}
@@ -69,8 +69,13 @@ class CarrierEoriNumberController @Inject() (
   private def form(implicit request: JourneyRequest[_]): Form[CarrierEoriNumber] =
     CarrierEoriNumber.form.withSubmissionErrors
 
-  private def nextPage(hasEori: String): Call =
-    if (hasEori == YesNoAnswers.yes) ConsigneeDetailsController.displayPage else CarrierDetailsController.displayPage
+  private def nextPage(hasEori: String)(implicit request: JourneyRequest[_]): Call =
+    if (hasEori == YesNoAnswers.yes)
+      request.declarationType match {
+        case CLEARANCE => AuthorisationProcedureCodeChoiceController.displayPage
+        case _         => ConsigneeDetailsController.displayPage
+      }
+    else CarrierDetailsController.displayPage
 
   private def updateCache(formData: CarrierEoriNumber, savedCarrierDetails: Option[CarrierDetails])(
     implicit r: JourneyRequest[AnyContent]
