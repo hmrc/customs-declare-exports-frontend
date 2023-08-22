@@ -7,12 +7,12 @@
   {
     "code": "ACP",
     "en": "Authorised issuer to establish the proof of the customs status of Union goods",
-    "cy": "Y cyhoeddwr awdurdodedig i weld y dystiolaeth o statws tollau nwyddau\u2019r Undeb"
+    "cy": "Y cyhoeddwr awdurdodedig i weld y dystiolaeth o statws tollau nwyddau\u00e2\u0080\u0099r Undeb"
   },
   {
     "code": "ACR",
     "en": "Transit authorisation: Authorised consignor for Union transit",
-    "cy": "Awdurdodiad cludo: Anfonydd awdurdodedig ar gyfer cludo\u2019r Undeb"
+    "cy": "Awdurdodiad cludo: Anfonydd awdurdodedig ar gyfer cludo\u00e2\u0080\u0099r Undeb"
   },
   {
     "code": "ACT",
@@ -37,22 +37,22 @@
   {
     "code": "APEX",
     "en": "Approved Exporter",
-    "cy": "Allforiwr sydd wedi\u2019i gymeradwyo"
+    "cy": "Allforiwr sydd wedi\u00e2\u0080\u0099i gymeradwyo"
   },
   {
     "code": "AWB",
     "en": "Authorised Weigher of Bananas",
-    "cy": "Y person sydd wedi\u2019i awdurdodi i bwyso bananas"
+    "cy": "Y person sydd wedi\u00e2\u0080\u0099i awdurdodi i bwyso bananas"
   },
   {
     "code": "BOI",
     "en": "Binding Origin Information",
-    "cy": "Gwybodaeth am Darddiad sy\u2019n Rhwymo"
+    "cy": "Gwybodaeth am Darddiad sy\u00e2\u0080\u0099n Rhwymo"
   },
   {
     "code": "BTI",
     "en": "Binding Tariff Information",
-    "cy": "Gwybodaeth am Dariff sy\u2019n Rhwymo"
+    "cy": "Gwybodaeth am Dariff sy\u00e2\u0080\u0099n Rhwymo"
   },
   {
     "code": "CCL",
@@ -77,22 +77,22 @@
   {
     "code": "CVA",
     "en": "Simplification of the determination of amounts being part of the customs value of goods",
-    "cy": "Symleiddio\u2019r penderfyniad ar y symiau sy\u2019n rhan o werth tollau nwyddau"
+    "cy": "Symleiddio\u00e2\u0080\u0099r penderfyniad ar y symiau sy\u00e2\u0080\u0099n rhan o werth tollau nwyddau"
   },
   {
     "code": "CW1",
     "en": "Operation of storage facilities for the customs warehousing of goods in a public customs warehouse type I",
-    "cy": "Gweithrediad cyfleusterau storio ar gyfer tollau\u2019n cadw nwyddau mewn warws tollau cyhoeddus math I"
+    "cy": "Gweithrediad cyfleusterau storio ar gyfer tollau\u00e2\u0080\u0099n cadw nwyddau mewn warws tollau cyhoeddus math I"
   },
   {
     "code": "CW2",
     "en": "Operation of storage facilities for the customs warehousing of goods in a public customs warehouse type II",
-    "cy": "Gweithrediad cyfleusterau storio ar gyfer tollau\u2019n cadw nwyddau mewn warws tollau cyhoeddus math II"
+    "cy": "Gweithrediad cyfleusterau storio ar gyfer tollau\u00e2\u0080\u0099n cadw nwyddau mewn warws tollau cyhoeddus math II"
   },
   {
     "code": "CWP",
     "en": "Operation of storage facilities for the customs warehousing of goods in a private customs warehouse",
-    "cy": "Gweithrediad cyfleusterau storio ar gyfer tollau\u2019n cadw nwyddau mewn warws tollau cyhoeddus"
+    "cy": "Gweithrediad cyfleusterau storio ar gyfer tollau\u00e2\u0080\u0099n cadw nwyddau mewn warws tollau cyhoeddus"
   },
   {
     "code": "DEP",
@@ -117,12 +117,12 @@
   {
     "code": "EPSS",
     "en": "Excise Payment Security System",
-    "cy": "System Ddiogelwch Talu Ecs\u00e9is"
+    "cy": "System Ddiogelwch Talu Ecs\u00c3\u00a9is"
   },
   {
     "code": "ETD",
     "en": "Electronic Transport Document (authorised for use as a customs declaration)",
-    "cy": "Dogfen Gludiant Electronig (awdurdodwyd i\u2019w defnyddio fel datganiad tollau)"
+    "cy": "Dogfen Gludiant Electronig (awdurdodwyd i\u00e2\u0080\u0099w defnyddio fel datganiad tollau)"
   },
   {
     "code": "EUS",
@@ -132,12 +132,12 @@
   {
     "code": "EXEE",
     "en": "Registered Consignee (Excise)",
-    "cy": "Derbynnydd cofrestredig (Ecs\u00e9is)"
+    "cy": "Derbynnydd cofrestredig (Ecs\u00c3\u00a9is)"
   },
   {
     "code": "EXOR",
     "en": "Registered Consignor (Excise)",
-    "cy": "Anfonwr Cofrestredig (Ecs\u00e9is)"
+    "cy": "Anfonwr Cofrestredig (Ecs\u00c3\u00a9is)"
   },
   {
     "code": "EXRR",
@@ -207,12 +207,12 @@
   {
     "code": "REM",
     "en": "Remission of the amounts of import or export duty",
-    "cy": "Dileu\u2019r symiau o dollau mewnforio neu allforio"
+    "cy": "Dileu\u00e2\u0080\u0099r symiau o dollau mewnforio neu allforio"
   },
   {
     "code": "REP",
     "en": "Repayment of the amounts of import or export duty",
-    "cy": "Ad-dalu\u2019r symiau o dollau mewnforio neu allforio"
+    "cy": "Ad-dalu\u00e2\u0080\u0099r symiau o dollau mewnforio neu allforio"
   },
   {
     "code": "REX",
