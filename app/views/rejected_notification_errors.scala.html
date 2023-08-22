@@ -75,7 +75,8 @@
 @govukLayout(
     title = Title(title),
     backButton = Some(BackButton(messages("site.back"), backUrl)),
-    useCustomContentWidth = true
+    useCustomContentWidth = true,
+    showDeclarationSummaryLink = false
 ) {
 
     <div class="govuk-grid-row">
@@ -129,8 +130,6 @@
             @paragraphBody(messages("rejected.notification.guidance.section.2.paragraph.3"))
 
             @paragraphBody(messages("rejected.notification.guidance.section.2.paragraph.4"))
-
         </div>
     </div>
-
 }

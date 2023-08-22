@@ -30,7 +30,7 @@ object AuthorizationTypeCodes {
   val MOU = "MOU"
 
   def codesFilteredFromView(merchandiseInBagConfig: MerchandiseInBagConfig): List[String] =
-    if (merchandiseInBagConfig.isMerchandiseInBagEnabled) List("EORI")
+    if (merchandiseInBagConfig.isMerchandiseInBagEnabled) List.empty
     else List("EORI", MIB)
 
   def isAuthCode(code: String)(implicit request: JourneyRequest[_]): Boolean =

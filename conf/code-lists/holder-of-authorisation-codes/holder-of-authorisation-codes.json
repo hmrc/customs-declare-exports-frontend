@@ -1,8 +1,23 @@
 [
   {
-    "code": "EXRR",
-    "en": "Submission of an arrived export declaration for RoRo movements (where CSE Authorisation is not used)",
-    "cy": "Cyflwyno datganiad allforion sydd wedi cyrraedd ar gyfer symudiadau RoRo (lle nad yw Awdurdodiad CSE yn cael ei ddefnyddio)"
+    "code": "ACE",
+    "en": "Transit authorisation: Authorised consignee for Union transit",
+    "cy": "Awdurdodiad cludo: Derbynnydd awdurdodedig ar gyfer cludiant yr Undeb"
+  },
+  {
+    "code": "ACP",
+    "en": "Authorised issuer to establish the proof of the customs status of Union goods",
+    "cy": "Y cyhoeddwr awdurdodedig i weld y dystiolaeth o statws tollau nwyddau\u00e2\u0080\u0099r Undeb"
+  },
+  {
+    "code": "ACR",
+    "en": "Transit authorisation: Authorised consignor for Union transit",
+    "cy": "Awdurdodiad cludo: Anfonydd awdurdodedig ar gyfer cludo\u00e2\u0080\u0099r Undeb"
+  },
+  {
+    "code": "ACT",
+    "en": "Transit authorisation: Authorised consignee for TIR procedure",
+    "cy": "Awdurdodiad cludo: Derbynnydd awdurdodedig ar gyfer gweithdrefn TIR"
   },
   {
     "code": "AEOC",
@@ -20,144 +35,9 @@
     "cy": "Gweithredwr Economaidd Awdurdodedig - Diogelwch"
   },
   {
-    "code": "MIB",
-    "en": "Merchandise in Baggage",
-    "cy": "Nwyddau mewn Bagiau"
-  },
-  {
     "code": "APEX",
     "en": "Approved Exporter",
     "cy": "Allforiwr sydd wedi\u00e2\u0080\u0099i gymeradwyo"
-  },
-  {
-    "code": "CGU",
-    "en": "Customs comprehensive guarantee",
-    "cy": "Gwarant gynhwysfawr y tollau"
-  },
-  {
-    "code": "CSE",
-    "en": "Customs Supervised Exports",
-    "cy": "Allforion Dan Oruchwyliaeth Tollau"
-  },
-  {
-    "code": "FP",
-    "en": "Freeports Special Procedure",
-    "cy": "Gweithdrefn Arbennig Porthladdoedd Rhydd"
-  },
-  {
-    "code": "CW1",
-    "en": "Operation of storage facilities for the customs warehousing of goods in a public customs warehouse type I",
-    "cy": "Gweithrediad cyfleusterau storio ar gyfer tollau\u00e2\u0080\u0099n cadw nwyddau mewn warws tollau cyhoeddus math I"
-  },
-  {
-    "code": "CW2",
-    "en": "Operation of storage facilities for the customs warehousing of goods in a public customs warehouse type II",
-    "cy": "Gweithrediad cyfleusterau storio ar gyfer tollau\u00e2\u0080\u0099n cadw nwyddau mewn warws tollau cyhoeddus math II"
-  },
-  {
-    "code": "CWP",
-    "en": "Operation of storage facilities for the customs warehousing of goods in a private customs warehouse",
-    "cy": "Gweithrediad cyfleusterau storio ar gyfer tollau\u00e2\u0080\u0099n cadw nwyddau mewn warws tollau cyhoeddus"
-  },
-  {
-    "code": "SDE",
-    "en": "Simplified Declaration Procedure authorisation (SDP)",
-    "cy": "Awdurdodiad ar gyfer defnyddio datganiad tollau drwy nodi data yng nghofnodion y datganydd (EIDR)"
-  },
-  {
-    "code": "EIR",
-    "en": "Authorisation for the use of customs declaration through an entry of data in the declarant\u2019s records (EIDR)",
-    "cy": "Authorisation for the use of customs declaration through an entry of data in the declarant\u2019s records (EIDR)"
-  },
-  {
-    "code": "EXEE",
-    "en": "Registered Consignee (Excise)",
-    "cy": "Derbynnydd cofrestredig (Ecs\u00c3\u00a9is)"
-  },
-  {
-    "code": "EXOR",
-    "en": "Registered Consignor (Excise)",
-    "cy": "Anfonwr Cofrestredig (Ecs\u00c3\u00a9is)"
-  },
-  {
-    "code": "EXW",
-    "en": "Excise Warehouse",
-    "cy": "Warws Ecs\u00e9is \u2013 Olew Hydrocarbon"
-  },
-  {
-    "code": "EXWH",
-    "en": "Excise Warehouse \u2013 Hydrocarbon Oils",
-    "cy": "Excise Warehouse \u2013 Hydrocarbon Oils"
-  },
-  {
-    "code": "FZ",
-    "en": "Free Zone (only for the use of the Isle of Man)",
-    "cy": "Parth Rhydd (dim ond at ddefnydd Ynys Manaw)"
-  },
-  {
-    "code": "MOU",
-    "en": "Memorandum of Understanding (approved exporters only)",
-    "cy": "Memorandwm Cyd-ddealltwriaeth (allforwyr cymeradwy yn unig)"
-  },
-  {
-    "code": "REX",
-    "en": "Registered Exporter",
-    "cy": "Allforiwr cofrestredig"
-  },
-  {
-    "code": "EUS",
-    "en": "End Use authorisation",
-    "cy": "Awdurdodiad Defnydd Terfynol"
-  },
-  {
-    "code": "IPO",
-    "en": "Inward Processing authorisation",
-    "cy": "Awdurdodiad Prosesu Mewnol"
-  },
-  {
-    "code": "OPO",
-    "en": "Outward Processing authorisation",
-    "cy": "Awdurdodiad Prosesu Allanol"
-  },
-  {
-    "code": "TEA",
-    "en": "Temporary Admission authorisation",
-    "cy": "Awdurdodiad Mynediad Dros Dro"
-  },
-  {
-    "code": "TEAH",
-    "en": "Temporary Admission authorisation \u2013 Auction Houses (no guarantee for VAT required)",
-    "cy": "Temporary Admission authorisation \u2013 Auction Houses (no guarantee for VAT required)"
-  },
-  {
-    "code": "TST",
-    "en": "Authorisation to operate storage facilities for the temporary storage of goods",
-    "cy": "Awdurdod i weithredu cyfleusterau storio ar gyfer storio nwyddau dros dro"
-  },
-  {
-    "code": "ACE",
-    "en": "Transit authorisation: Authorised consignee for Union transit",
-    "cy": "Awdurdodiad cludo: Derbynnydd awdurdodedig ar gyfer cludiant yr Undeb"
-  },
-  {
-    "code": "ACR",
-    "en": "Transit authorisation: Authorised consignor for Union transit",
-    "cy": "Awdurdodiad cludo: Anfonydd awdurdodedig ar gyfer cludo\u00e2\u0080\u0099r Undeb"
-  },
-  {
-    "code": "ACT",
-    "en": "Transit authorisation: Authorised consignee for TIR procedure",
-    "cy": "Awdurdodiad cludo: Derbynnydd awdurdodedig ar gyfer gweithdrefn TIR"
-  },
-  {
-    "code": "TRD",
-    "en": "Transit authorisation: Authorisation to use transit declaration with a reduced dataset",
-    "cy": "Awdurdodiad cludo: Awdurdodiad i ddefnyddio datganiad cludo gyda set ddata lai"
-  },
-  {
-    "code": "ACP",
-    "en": "Authorised issuer to establish the proof of the customs status of Union goods",
-    "cy": "Y cyhoeddwr awdurdodedig i weld y dystiolaeth o statws tollau nwyddau\u00e2\u0080\u0099r Undeb"
   },
   {
     "code": "AWB",
@@ -180,14 +60,39 @@
     "cy": "Awdurdodiad ar gyfer clirio canoledig"
   },
   {
+    "code": "CGU",
+    "en": "Customs comprehensive guarantee",
+    "cy": "Gwarant gynhwysfawr y tollau"
+  },
+  {
     "code": "CSDR",
     "en": "Community System of Duty Reliefs",
     "cy": "System Gymunedol o Ryddhad Tollau"
   },
   {
+    "code": "CSE",
+    "en": "Customs Supervised Exports",
+    "cy": "Allforion Dan Oruchwyliaeth Tollau"
+  },
+  {
     "code": "CVA",
     "en": "Simplification of the determination of amounts being part of the customs value of goods",
     "cy": "Symleiddio\u00e2\u0080\u0099r penderfyniad ar y symiau sy\u00e2\u0080\u0099n rhan o werth tollau nwyddau"
+  },
+  {
+    "code": "CW1",
+    "en": "Operation of storage facilities for the customs warehousing of goods in a public customs warehouse type I",
+    "cy": "Gweithrediad cyfleusterau storio ar gyfer tollau\u00e2\u0080\u0099n cadw nwyddau mewn warws tollau cyhoeddus math I"
+  },
+  {
+    "code": "CW2",
+    "en": "Operation of storage facilities for the customs warehousing of goods in a public customs warehouse type II",
+    "cy": "Gweithrediad cyfleusterau storio ar gyfer tollau\u00e2\u0080\u0099n cadw nwyddau mewn warws tollau cyhoeddus math II"
+  },
+  {
+    "code": "CWP",
+    "en": "Operation of storage facilities for the customs warehousing of goods in a private customs warehouse",
+    "cy": "Gweithrediad cyfleusterau storio ar gyfer tollau\u00e2\u0080\u0099n cadw nwyddau mewn warws tollau cyhoeddus"
   },
   {
     "code": "DEP",
@@ -200,6 +105,16 @@
     "cy": "Awdurdodiad gohirio talu"
   },
   {
+    "code": "EIR",
+    "en": "Authorisation for the use of customs declaration through an entry of data in the declarant\u2019s records (EIDR)",
+    "cy": "Awdurdodiad i ddefnyddio datganiad tollau trwy fewnbynnu data yng nghofnodion y datganydd (EIDR)"
+  },
+  {
+    "code": "EORI",
+    "en": "Economic Operator Registration and Identification",
+    "cy": "Cofrestru ac Adnabod Gweithredwyr Economaidd"
+  },
+  {
     "code": "EPSS",
     "en": "Excise Payment Security System",
     "cy": "System Ddiogelwch Talu Ecs\u00c3\u00a9is"
@@ -210,9 +125,54 @@
     "cy": "Dogfen Gludiant Electronig (awdurdodwyd i\u00e2\u0080\u0099w defnyddio fel datganiad tollau)"
   },
   {
+    "code": "EUS",
+    "en": "End Use authorisation",
+    "cy": "Awdurdodiad Defnydd Terfynol"
+  },
+  {
+    "code": "EXEE",
+    "en": "Registered Consignee (Excise)",
+    "cy": "Derbynnydd cofrestredig (Ecs\u00c3\u00a9is)"
+  },
+  {
+    "code": "EXOR",
+    "en": "Registered Consignor (Excise)",
+    "cy": "Anfonwr Cofrestredig (Ecs\u00c3\u00a9is)"
+  },
+  {
+    "code": "EXRR",
+    "en": "Submission of an arrived export declaration for RoRo movements (where CSE Authorisation is not used)",
+    "cy": "Cyflwyno datganiad allforion sydd wedi cyrraedd ar gyfer symudiadau RoRo (lle nad yw Awdurdodiad CSE yn cael ei ddefnyddio)"
+  },
+  {
+    "code": "EXW",
+    "en": "Excise Warehouse",
+    "cy": "Warws Ecs\u00e9is"
+  },
+  {
+    "code": "EXWH",
+    "en": "Excise Warehouse \u2013 Hydrocarbon Oils",
+    "cy": "Warws Ecs\u00e9is \u2013 Olewau Hydrocarbon"
+  },
+  {
     "code": "FAS",
     "en": "Flexible Accounting System",
     "cy": "System Gyfrifyddu Hyblyg"
+  },
+  {
+    "code": "FP",
+    "en": "Freeports Special Procedure",
+    "cy": "Gweithdrefn Arbennig Porthladdoedd Rhydd"
+  },
+  {
+    "code": "FTI",
+    "en": "Fixed Transport Installation",
+    "cy": "Gosodiad Cludiant Sefydlog"
+  },
+  {
+    "code": "FZ",
+    "en": "Free Zone (only for the use of the Isle of Man)",
+    "cy": "Parth Rhydd (dim ond at ddefnydd Ynys Manaw)"
   },
   {
     "code": "GGA",
@@ -225,6 +185,26 @@
     "cy": "Datganiad Prisio Cyffredinol"
   },
   {
+    "code": "IPO",
+    "en": "Inward Processing authorisation",
+    "cy": "Awdurdodiad Prosesu Mewnol"
+  },
+  {
+    "code": "MIB",
+    "en": "Merchandise in Baggage",
+    "cy": "Nwyddau mewn Bagiau"
+  },
+  {
+    "code": "MOU",
+    "en": "Memorandum of Understanding (approved exporters only)",
+    "cy": "Memorandwm Cyd-ddealltwriaeth (allforwyr cymeradwy yn unig)"
+  },
+  {
+    "code": "OPO",
+    "en": "Outward Processing authorisation",
+    "cy": "Awdurdodiad Prosesu Allanol"
+  },
+  {
     "code": "REM",
     "en": "Remission of the amounts of import or export duty",
     "cy": "Dileu\u00e2\u0080\u0099r symiau o dollau mewnforio neu allforio"
@@ -233,6 +213,11 @@
     "code": "REP",
     "en": "Repayment of the amounts of import or export duty",
     "cy": "Ad-dalu\u00e2\u0080\u0099r symiau o dollau mewnforio neu allforio"
+  },
+  {
+    "code": "REX",
+    "en": "Registered Exporter",
+    "cy": "Allforiwr cofrestredig"
   },
   {
     "code": "RSS",
@@ -250,6 +235,11 @@
     "cy": "Awdurdodiad Unigol ar gyfer Gweithdrefnau Symlach"
   },
   {
+    "code": "SDE",
+    "en": "Simplified Declaration Procedure authorisation (SDP)",
+    "cy": "Awdurdodiad ar gyfer defnyddio datganiad tollau drwy nodi data yng nghofnodion y datganydd (EIDR)"
+  },
+  {
     "code": "SIVA",
     "en": "Simplified Import VAT Accounting",
     "cy": "Ffordd Symlach o Gyfrifyddu TAW ar Fewnforion"
@@ -260,8 +250,38 @@
     "cy": "Awdurdodiad ar gyfer defnyddio seliau o fath arbennig"
   },
   {
+    "code": "TEA",
+    "en": "Temporary Admission authorisation",
+    "cy": "Awdurdodiad Mynediad Dros Dro"
+  },
+  {
+    "code": "TEAH",
+    "en": "Temporary Admission authorisation \u2013 Auction Houses (no guarantee for VAT required)",
+    "cy": "Awdurdodiad i gael Mynediad Dros Dro \u2013 Tai Arwerthiant (nid oes angen gwarant ar gyfer TAW)"
+  },
+  {
+    "code": "TRD",
+    "en": "Transit authorisation: Authorisation to use transit declaration with a reduced dataset",
+    "cy": "Awdurdodiad cludo: Awdurdodiad i ddefnyddio datganiad cludo gyda set ddata lai"
+  },
+  {
+    "code": "TST",
+    "en": "Authorisation to operate storage facilities for the temporary storage of goods",
+    "cy": "Awdurdod i weithredu cyfleusterau storio ar gyfer storio nwyddau dros dro"
+  },
+  {
     "code": "UKCS",
     "en": "UK Continental Shelf",
     "cy": "Sgafell Gyfandirol y DU"
+  },
+  {
+    "code": "UKD",
+    "en": "UK Destination Authorisation",
+    "cy": "Awdurdodiad Cyrchfan yn y DU"
+  },
+  {
+    "code": "UKTS",
+    "en": "UK Trader Scheme Authorisation",
+    "cy": "Awdurdodiad Cynllun Masnachwr yn y DU"
   }
 ]
