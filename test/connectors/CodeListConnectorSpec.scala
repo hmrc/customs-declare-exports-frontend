@@ -18,7 +18,7 @@ package connectors
 
 import base.UnitWithMocksSpec
 import config.AppConfig
-import forms.declaration.declarationHolder.AuthorizationTypeCodes.{EXRR, MIB}
+import forms.declaration.declarationHolder.AuthorizationTypeCodes.MIB
 import models.codes._
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
@@ -156,21 +156,21 @@ class CodeListConnectorSpec extends UnitWithMocksSpec with BeforeAndAfterEach {
         val codeListConnector = new FileBasedCodeListConnector(appConfig, glc, jsonFile)
         (codeListConnector.supportedLanguages :+ JAPANESE).foreach { locale =>
           val codes = codeListConnector.getHolderOfAuthorisationCodes(locale).keys.toList
-          codes.size mustBe 53
+          codes.size mustBe 57
 
-          codes.head mustBe EXRR
+          codes.head mustBe "ACE"
 
-          codes(4) mustBe MIB
+          codes(38) mustBe MIB
 
-          codes(26) mustBe "TST"
+          codes(53) mustBe "TST"
 
-          codes(27) mustBe "ACE"
-          codes(41) mustBe "ETD"
+          codes(41) mustBe "REM"
+          codes(24) mustBe "ETD"
 
-          codes(42) mustBe "FAS"
-          codes(46) mustBe "REP"
+          codes(31) mustBe "FAS"
+          codes(42) mustBe "REP"
 
-          codes(52) mustBe "UKCS"
+          codes(54) mustBe "UKCS"
         }
       }
     }
