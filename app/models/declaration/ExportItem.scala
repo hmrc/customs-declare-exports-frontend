@@ -52,6 +52,8 @@ case class ExportItem(
   isLicenceRequired: Option[Boolean] = None
 ) extends DiffTools[ExportItem] with ExplicitlySequencedObject[ExportItem] with AmendmentOp {
 
+  val totalPackages: Int = packageInformation.map(_.flatMap(_.numberOfPackages).sum).getOrElse(0)
+
   // id and fiscalInformation fields are not used to create WCO XML
   override def createDiff(original: ExportItem, pointerString: ExportsFieldPointer, maybeSequenceId: Option[Int] = None): ExportsDeclarationDiff =
     Seq(
