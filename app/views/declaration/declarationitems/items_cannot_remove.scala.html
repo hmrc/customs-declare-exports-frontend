@@ -14,17 +14,13 @@
  * limitations under the License.
  *@
 
-@import controllers.declaration.routes
-@import controllers.navigation.Navigator
-@import forms.declaration.removals.RemoveItem
+@import controllers.declaration.routes.ItemsSummaryController
 @import models.declaration.ExportItem
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.helpers.{BackButton, Title}
 @import views.html.components.gds._
 @import views.html.declaration.summary.sections.item_section
-@import views.components.gds.Styles._
-@import scala.collection.immutable
 
 @this(
     govukLayout: gdsMainTemplate,
@@ -33,36 +29,35 @@
     heading: heading,
     item_section: item_section,
     link: link,
-    cancelButton: cancel,
-    navigator: Navigator
+    cancelButton: cancel
 )
 
 @(item: ExportItem, itemIdx: Int, submissionId: String)(implicit request: JourneyRequest[_], messages: Messages)
-
 
 @itemDisplayNum = @{ itemIdx + 1 }
 
 @govukLayout(
     title = Title("declaration.itemsCannotRemove.title", "declaration.section.5", itemDisplayNum.toString),
-    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(RemoveItem)))) {
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), ItemsSummaryController.displayItemsSummaryPage)),
+    showDeclarationSummaryLink = false
+) {
+    @sectionHeader(messages("declaration.section.5"))
 
-        @sectionHeader(messages("declaration.section.5"))
+    @heading(messages("declaration.itemsCannotRemove.title"))
 
-        @heading(messages("declaration.itemsCannotRemove.title"))
+    @govukWarningText(WarningText(
+        iconFallbackText = Some(messages("site.warning")),
+        content = HtmlContent(
+            messages("declaration.itemsCannotRemove.warning",
+                link(
+                    messages("declaration.itemsCannotRemove.warning.linkText"),
+                    controllers.routes.DeclarationDetailsController.displayPage(submissionId)
+                )))
+    ))
 
-        @govukWarningText(WarningText(
-            iconFallbackText = Some(messages("site.warning")),
-            content = HtmlContent(
-                messages("declaration.itemsCannotRemove.warning",
-                    link(
-                        messages("declaration.itemsCannotRemove.warning.linkText"),
-                        controllers.routes.DeclarationDetailsController.displayPage(submissionId)
-                    )))
-        ))
+    @item_section(item, itemIdx, request.declarationType, actionsEnabled = false)
 
-        @item_section(item, itemIdx, request.declarationType, actionsEnabled = false)
-
-        <div>
-            @cancelButton(controllers.declaration.routes.SummaryController.displayPage)
-        </div>
+    <div>
+        @cancelButton(controllers.declaration.routes.SummaryController.displayPage)
+    </div>
 }
