@@ -14,10 +14,10 @@
  * limitations under the License.
  *@
 
+@import controllers.routes.{ChoiceController, SavedDeclarationsController}
 @import java.time.{Instant, ZoneOffset}
 @import models.responses.FlashKeys
 @import play.twirl.api.HtmlFormat
-@import routes.SavedDeclarationsController
 @import uk.gov.hmrc.govukfrontend.views.html.components.{GovukPanel, HtmlContent, Panel, Text}
 @import views.helpers.{Title, ViewDates}
 @import views.html.components.gds.{gdsMainTemplate, govUkLink, heading, link, paragraph}
@@ -51,12 +51,12 @@
         link(
             id = Some("draft_confirmation-continue_dec_link"),
             text = messages("declaration.draft.nextContinueLink"),
-            call = routes.SavedDeclarationsController.displayDeclarations()
+            call = SavedDeclarationsController.displayDeclarations()
         ),
         link(
             id = Some("draft_confirmation-create_dec_link"),
             text = messages("declaration.draft.nextStartFreshLink"),
-            call = routes.ChoiceController.displayPage()
+            call = ChoiceController.displayPage
         )
     )))
 }
@@ -68,9 +68,7 @@
     @expiresMessage
 
     @declarationId.map { id =>
-        @paragraph(
-            viewDeclarationSummaryLink(id)
-        )
+        @paragraph(viewDeclarationSummaryLink(id))
     }
 
     @whatNext

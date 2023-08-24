@@ -16,8 +16,6 @@
 
 @import config.featureFlags.SecureMessagingConfig
 @import controllers.routes.ChoiceController
-@import forms.Choice
-@import forms.Choice.AllowedChoiceValues.Dashboard
 @import models.PageOfSubmissions
 @import views.dashboard.DashboardHelper.{Groups, Page, panels, tabs}
 @import views.helpers.{BackButton, Title}
@@ -43,7 +41,7 @@
 
 @govukLayout(
     title = Title("dashboard.title"),
-    backButton = Some(BackButton(messages("site.backToSelectionPage"), ChoiceController.displayPage(Some(Choice(Dashboard))))),
+    backButton = Some(BackButton(messages("site.backToSelectionPage"), ChoiceController.displayPage)),
     useCustomContentWidth = true,
     navigationBanner = navBanner,
     showDeclarationSummaryLink = false
@@ -61,7 +59,7 @@
                 @panels(pageOfSubmissions, table)
             </div>
 
-            @linkButton("dashboard.start.new.declaration", ChoiceController.displayPage())
+            @linkButton("dashboard.start.new.declaration", ChoiceController.displayPage)
         </div>
     </div>
 }

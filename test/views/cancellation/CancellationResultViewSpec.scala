@@ -18,12 +18,13 @@ package views.cancellation
 
 import base.ExportsTestData.mrn
 import base.{Injector, MockAuthAction}
-import models.declaration.submissions.EnhancedStatus.{CUSTOMS_POSITION_DENIED, CUSTOMS_POSITION_GRANTED, EnhancedStatus, QUERY_NOTIFICATION_MESSAGE}
+import controllers.routes.ChoiceController
+import models.declaration.submissions.EnhancedStatus._
+import org.scalatest.GivenWhenThen
+import play.twirl.api.HtmlFormat.Appendable
 import views.declaration.spec.UnitViewSpec
 import views.html.cancellation_result
 import views.tags.ViewTest
-import controllers.routes.ChoiceController
-import org.scalatest.GivenWhenThen
 
 @ViewTest
 class CancellationResultViewSpec extends UnitViewSpec with Injector with MockAuthAction with GivenWhenThen {
@@ -31,7 +32,7 @@ class CancellationResultViewSpec extends UnitViewSpec with Injector with MockAut
   private val page = instanceOf[cancellation_result]
   private val req = buildVerifiedEmailRequest(request, exampleUser)
 
-  private def createView(status: Option[EnhancedStatus]) = page(status, mrn)(req, messages(req))
+  private def createView(status: Option[EnhancedStatus]): Appendable = page(status, mrn)(req, messages(req))
 
   "Result page returns expected content" when {
 
@@ -52,7 +53,7 @@ class CancellationResultViewSpec extends UnitViewSpec with Injector with MockAut
 
       "display 'Back to Choice Page' link" in {
         view.getElementById("back-to-choice").text mustBe messages("site.backToChoice")
-        view.getElementById("back-to-choice") must haveHref(ChoiceController.displayPage())
+        view.getElementById("back-to-choice") must haveHref(ChoiceController.displayPage)
       }
     }
 
@@ -73,7 +74,7 @@ class CancellationResultViewSpec extends UnitViewSpec with Injector with MockAut
 
       "display 'Back to Choice Page' link" in {
         view.getElementById("back-to-choice").text mustBe messages("site.backToChoice")
-        view.getElementById("back-to-choice") must haveHref(ChoiceController.displayPage())
+        view.getElementById("back-to-choice") must haveHref(ChoiceController.displayPage)
       }
     }
 
@@ -94,7 +95,7 @@ class CancellationResultViewSpec extends UnitViewSpec with Injector with MockAut
 
       "display 'Back to Choice Page' link" in {
         view.getElementById("back-to-choice").text mustBe messages("site.backToChoice")
-        view.getElementById("back-to-choice") must haveHref(ChoiceController.displayPage())
+        view.getElementById("back-to-choice") must haveHref(ChoiceController.displayPage)
       }
     }
 
@@ -122,7 +123,7 @@ class CancellationResultViewSpec extends UnitViewSpec with Injector with MockAut
 
       "display 'Back to Choice Page' link" in {
         view.getElementById("back-to-choice").text mustBe messages("site.backToChoice")
-        view.getElementById("back-to-choice") must haveHref(ChoiceController.displayPage())
+        view.getElementById("back-to-choice") must haveHref(ChoiceController.displayPage)
       }
     }
   }

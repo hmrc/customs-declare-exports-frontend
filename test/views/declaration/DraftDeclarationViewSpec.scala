@@ -17,6 +17,7 @@
 package views.declaration
 
 import base.Injector
+import controllers.routes.{ChoiceController, SavedDeclarationsController}
 import play.twirl.api.Html
 import tools.Stubs
 import views.declaration.spec.UnitViewSpec
@@ -29,9 +30,11 @@ import java.time.{LocalDateTime, ZoneOffset}
 @ViewTest
 class DraftDeclarationViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector {
 
-  private val page = instanceOf[draft_declaration_page]
   val declarationId = Some("declarationUuid")
   val date: String = LocalDateTime.of(2019, 1, 1, 1, 1).toInstant(ZoneOffset.UTC).toEpochMilli.toString
+
+  private val page = instanceOf[draft_declaration_page]
+
   private def createView(): Html = page(declarationId, date)(request, messages)
 
   "View" should {
@@ -47,17 +50,17 @@ class DraftDeclarationViewSpec extends UnitViewSpec with CommonMessages with Stu
 
     "render view declaration summary link" in {
       val link = createView().getElementById("view_declaration_summary")
-      link must haveHref(controllers.routes.SavedDeclarationsController.continueDeclaration(declarationId.get).url)
+      link must haveHref(SavedDeclarationsController.continueDeclaration(declarationId.get).url)
     }
 
     "render continue link" in {
       val link = createView().getElementById("draft_confirmation-continue_dec_link")
-      link must haveHref(controllers.routes.SavedDeclarationsController.displayDeclarations().url)
+      link must haveHref(SavedDeclarationsController.displayDeclarations().url)
     }
 
     "render start new link" in {
       val link = createView().getElementById("draft_confirmation-create_dec_link")
-      link must haveHref(controllers.routes.ChoiceController.displayPage().url)
+      link must haveHref(ChoiceController.displayPage.url)
     }
 
     "render back to GOV.UK" in {

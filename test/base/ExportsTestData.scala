@@ -16,9 +16,6 @@
 
 package base
 
-import forms.Choice
-import forms.Choice.AllowedChoiceValues._
-import forms.Choice._
 import forms.declaration.LocationOfGoods
 import forms.declaration.ModeOfTransportCode.RoRo
 import forms.declaration.declarationHolder.AuthorizationTypeCodes.{CSE, EXRR}
@@ -233,8 +230,4 @@ object ExportsTestData extends ExportsDeclarationBuilder with ExportsItemBuilder
   val correctTransport: JsValue = JsObject(
     Map("transportId" -> JsString("Transport Id"), "transportMode" -> JsString("M"), "transportNationality" -> JsString("PL"))
   )
-
-  val choiceForm = Json.toJson(Choice("EAL"))
-
-  val allJourneys = Seq(CreateDec, ContinueDec, Dashboard, Inbox, Movements)
 }

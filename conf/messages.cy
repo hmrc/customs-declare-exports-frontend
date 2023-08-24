@@ -228,30 +228,6 @@ cancellation.result.unprocessed.title = Nid yw’ch cais i ganslo wedi’i brose
 
 cancellation.result.unprocessed.p1 = Roedd prosesu’ch cais yn cymryd mwy o amser na’r disgwyl. Gwiriwch statws eich datganiadau a gyflwynwyd i weld cynnydd eich cais.
 
-declaration.choice.description = Beth hoffech ei wneud?
-
-declaration.choice.link.sfus.description = Os byddwch yn cael hysbysiad i uwchlwytho dogfennau neu ymateb i ymholiad, gallwch ddefnyddio’r gwasanaethau uwchlwytho dogfennau CDS a negeseuon diogel.
-
-declaration.choice.link.exports.description = Os oes angen i chi uwchlwytho dogfennau
-
-declaration.choice.link.exports.description.p = Nid oes rhaid i chi uwchlwytho dogfennau, oni bai’ch bod yn cael hysbysiad ‘Angen dogfennau’ ar y {0}. Os hoffech uwchlwytho dogfennau o hyd, gallwch wneud hynny.
-
-declaration.choice.link.exports.description.p.linkText = tudalen ddatganiadau
-
-declaration.choice.link.sfusInbox.txt = Bwrw golwg dros negeseuon (yn agor tab newydd)
-
-declaration.choice.link.sfusUpload.txt = Uwchlwytho dogfennau (yn agor tab newydd)
-
-declaration.choice.CRT = Creu datganiad
-
-declaration.choice.MVT = Nodwch ddatganiad fel ‘wedi cyrraedd’, ‘wedi ymadael’ neu ‘wedi’i atgyfnerthu’
-
-declaration.choice.CON = Parhau â datganiad gwnaethoch gadw
-
-declaration.choice.SUB = Bwrw golwg dros a rheoli’ch datganiadau a gyflwynwyd
-
-declaration.choice.MSG = Bwrw golwg dros negeseuon gan CThEF
-
 declaration.type.description = Pa fath o ddatganiad rydych am ei greu?
 
 declaration.type.standard = Datganiad safonol

@@ -18,8 +18,6 @@ package controllers.navigation
 
 import controllers.declaration.routes
 import controllers.routes.ChoiceController
-import forms.Choice.AllowedChoiceValues
-import forms.{Choice, DeclarationPage, Lrn}
 import forms.declaration._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypePage
 import forms.declaration.carrier.CarrierDetails
@@ -28,6 +26,7 @@ import forms.declaration.countries.Countries.RoutingCountryPage
 import forms.declaration.declarationHolder.{DeclarationHolder, DeclarationHolderRequired, DeclarationHolderSummary}
 import forms.declaration.officeOfExit.OfficeOfExit
 import forms.declaration.procedurecodes.{AdditionalProcedureCode, ProcedureCode}
+import forms.{DeclarationPage, Lrn}
 import models.ExportsDeclaration
 import models.declaration.ExportItem
 import play.api.mvc.Call
@@ -35,7 +34,7 @@ import play.api.mvc.Call
 trait CommonNavigator extends CacheDependentNavigators {
 
   val common: PartialFunction[DeclarationPage, Call] = {
-    case DeclarationChoice             => ChoiceController.displayPage(Some(Choice(AllowedChoiceValues.CreateDec)))
+    case DeclarationChoice             => ChoiceController.displayPage
     case Lrn                           => routes.DucrEntryController.displayPage
     case Mucr                          => routes.LinkDucrToMucrController.displayPage
     case RepresentativeEntity          => routes.RepresentativeAgentController.displayPage

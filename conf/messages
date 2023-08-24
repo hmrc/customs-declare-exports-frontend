@@ -137,19 +137,17 @@ cancellation.result.denied.p1 = This may be because your declaration is still be
 cancellation.result.unprocessed.title = Your cancellation request has not been processed
 cancellation.result.unprocessed.p1 = Processing your request took longer than expected. Please check the status of your submitted declarations to view the progress of your request.
 
-
-declaration.choice.description = What do you want to do?
-declaration.choice.link.sfus.description = If you receive a notification to upload documents or respond to a query, you can use the CDS document uploads and secure messages service.
-declaration.choice.link.exports.description = If you need to upload documents
-declaration.choice.link.exports.description.p = You do not have to upload documents unless you receive a ‘Documents required’ notification on the {0}. If you would still like to upload documents you can do so.
-declaration.choice.link.exports.description.p.linkText = declarations page
-declaration.choice.link.sfusInbox.txt = View messages (opens in new tab)
-declaration.choice.link.sfusUpload.txt = Upload documents (opens in new tab)
-declaration.choice.CRT = Create a declaration
-declaration.choice.MVT = Arrive, depart or consolidate a declaration
-declaration.choice.CON = Continue a declaration you saved
-declaration.choice.SUB = View and manage your submitted declarations
-declaration.choice.MSG = View messages from HMRC
+declaration.choice.heading = Make and manage export declarations
+declaration.choice.hint = Choose one of the following options.
+declaration.choice.link.create.new = Make a new export declaration
+declaration.choice.link.manage.drafts = View, continue or manage your draft export declarations
+declaration.choice.link.manage.submitted = Copy, print or manage your submitted export declarations
+declaration.choice.heading.movements = Other ways to manage export declarations
+declaration.choice.link.movements = Arrive, depart or consolidate export declarations
+declaration.choice.paragraph.1.movements = You can arrive or depart your goods using the Declaration Consignment Reference (DUCR) or Master Consignment Reference (MUCR).
+declaration.choice.paragraph.2.movements = You can consolidate your exported goods by associating them with other consignments into one master consignment. You can also split one consignment into multiple consignments.
+declaration.choice.heading.sfus = If you receive a notification to upload documents, you can use the CDS secure upload service
+declaration.choice.link.sfus = Upload documents (opens in new tab)
 
 declaration.section.1 = Section 1 of 6: Declaration details
 declaration.section.2 = Section 2 of 6: Parties involved

@@ -18,12 +18,9 @@ package views.components.gds
 
 import base.{MockAuthAction, OverridableInjector}
 import com.typesafe.config.ConfigFactory
-import config.TimeoutDialogConfig
-import config.featureFlags.SecureMessagingInboxConfig
-import forms.Choice
-import org.mockito.Mockito.when
+import config.{ExternalServicesConfig, TimeoutDialogConfig}
+import controllers.routes.SignOutController
 import play.api.Configuration
-import play.api.data.Form
 import play.api.inject.bind
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import views.declaration.spec.UnitViewSpec
@@ -37,28 +34,26 @@ class TimeoutDialogSpec extends UnitViewSpec with CommonMessages with MockAuthAc
   "Timeout Dialog" should {
 
     "display the timeout dialog when user is signed in" in {
-      val form: Form[Choice] = Choice.form
-
       val serviceConfig = new ServicesConfig(Configuration(ConfigFactory.parseString(s"""
           timeoutDialog.timeout="100 millis"
           timeoutDialog.countdown="200 millis"
           """)))
       val timeoutDialogConfig = new TimeoutDialogConfig(serviceConfig)
 
+      val externalServicesConfig = mock[ExternalServicesConfig]
+
       val injector = new OverridableInjector(
         bind[TimeoutDialogConfig].toInstance(timeoutDialogConfig),
-        bind[SecureMessagingInboxConfig].toInstance(mockSecureMessagingInboxConfig)
+        bind[ExternalServicesConfig].toInstance(externalServicesConfig)
       )
       val choicePage = injector.instanceOf[choice_page]
 
-      when(mockSecureMessagingInboxConfig.isSfusSecureMessagingEnabled).thenReturn(false)
-      val view = choicePage(form, Seq.empty[String])(getAuthenticatedRequest(), messages)
+      val view = choicePage()(getAuthenticatedRequest(), messages)
 
       val metas = view.getElementsByTag("meta").iterator.asScala.toList.filter(_.attr("name") == "hmrc-timeout-dialog")
 
       assert(metas.nonEmpty)
-      metas.head.dataset.get("sign-out-url") mustBe controllers.routes.SignOutController.signOut(models.SignOutReason.SessionTimeout).url
+      metas.head.dataset.get("sign-out-url") mustBe SignOutController.signOut(models.SignOutReason.SessionTimeout).url
     }
   }
-
 }

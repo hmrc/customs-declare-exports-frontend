@@ -19,7 +19,6 @@ package config
 import base.UnitWithMocksSpec
 import com.typesafe.config.{Config, ConfigFactory}
 import config.AppConfigSpec.configBareMinimum
-import forms.Choice
 import models.DeclarationType
 import play.api.{Configuration, Environment}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
@@ -237,15 +236,6 @@ class AppConfigSpec extends UnitWithMocksSpec {
       validAppConfig.goodsLocationCodeToLocationTypeFile must be("goodsLocationCodeToLocationTypeLink")
     }
 
-    "load the Choice options when list-of-available-journeys is defined" in {
-      val choices = validAppConfig.availableJourneys()
-      choices.size must be(3)
-
-      choices must contain(Choice.AllowedChoiceValues.CreateDec)
-      choices must contain(Choice.AllowedChoiceValues.CancelDec)
-      choices must contain(Choice.AllowedChoiceValues.Dashboard)
-    }
-
     "load the Declaration options when list-of-available-declarations is defined" in {
       val choices = validAppConfig.availableDeclarations()
       choices.size must be(2)
@@ -341,11 +331,6 @@ class AppConfigSpec extends UnitWithMocksSpec {
 
     "have draft lifetime" in {
       validAppConfig.draftTimeToLive must be(FiniteDuration(30, TimeUnit.DAYS))
-    }
-
-    "have single Choice options when list-of-available-journeys is not defined" in {
-      missingAppConfig.availableJourneys().size must be(1)
-      missingAppConfig.availableJourneys() must contain(Choice.AllowedChoiceValues.Dashboard)
     }
 
     "have single Declaration type options when list-of-available-declarations is not defined" in {
