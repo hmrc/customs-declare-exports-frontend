@@ -28,7 +28,6 @@ import forms.declaration.countries.Countries.RoutingCountryPage
 import forms.declaration.declarationHolder.{DeclarationHolder, DeclarationHolderRequired, DeclarationHolderSummary}
 import forms.declaration.officeOfExit.OfficeOfExit
 import forms.declaration.procedurecodes.{AdditionalProcedureCode, ProcedureCode}
-import forms.declaration.removals.RemoveItem
 import models.ExportsDeclaration
 import models.declaration.ExportItem
 import play.api.mvc.Call
@@ -45,7 +44,6 @@ trait CommonNavigator extends CacheDependentNavigators {
     case NatureOfTransaction           => routes.TotalPackageQuantityController.displayPage
     case ProcedureCode                 => routes.ItemsSummaryController.displayItemsSummaryPage
     case ExportItem                    => routes.PreviousDocumentsSummaryController.displayPage
-    case RemoveItem                    => routes.ItemsSummaryController.displayItemsSummaryPage
     case DocumentChangeOrRemove        => routes.PreviousDocumentsSummaryController.displayPage
     case TransportLeavingTheBorder     => routes.ItemsSummaryController.displayItemsSummaryPage
     case WarehouseIdentification       => routes.TransportLeavingTheBorderController.displayPage

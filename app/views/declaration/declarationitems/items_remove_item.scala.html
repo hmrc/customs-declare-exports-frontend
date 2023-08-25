@@ -14,10 +14,8 @@
  * limitations under the License.
  *@
 
-@import controllers.declaration.routes
-@import controllers.navigation.Navigator
+@import controllers.declaration.routes.{ItemsSummaryController, RemoveItemsSummaryController}
 @import forms.common.YesNoAnswer
-@import forms.declaration.removals.RemoveItem
 @import models.declaration.ExportItem
 @import models.requests.JourneyRequest
 @import play.twirl.api.HtmlFormat
@@ -26,7 +24,6 @@
 @import views.html.components.gds._
 @import views.html.declaration.summary.sections.item_section
 @import views.components.gds.Styles._
-@import scala.collection.immutable
 @import views.helpers.ErrorMapper.yesNoErrors
 
 @this(
@@ -38,7 +35,6 @@
   yesNoRadios: yesNoRadios,
   saveButtons: saveButtons,
   saveAndReturnToSummary: saveAndReturnToSummary,
-  navigator: Navigator,
   formHelper: FormWithCSRF,
   linkButton: linkButton
 )
@@ -48,8 +44,7 @@
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
 @buttons = @{
-    if (fromSummary)
-        saveAndReturnToSummary("site.confirm_and_continue", "govuk-button--primary")
+    if (fromSummary) saveAndReturnToSummary("site.confirm_and_continue", "govuk-button--primary")
     else saveButtons()
 }
 
@@ -57,10 +52,10 @@
 
 @govukLayout(
     title = Title("declaration.itemsRemove.title", "declaration.section.5", itemDisplayNum.toString, hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(RemoveItem)))) {
-
-    @formHelper(action = routes.RemoveItemsSummaryController.removeItem(item.id, fromSummary), 'autoComplete -> "off") {
-
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), ItemsSummaryController.displayItemsSummaryPage)),
+    showDeclarationSummaryLink = false
+) {
+    @formHelper(action = RemoveItemsSummaryController.removeItem(item.id, fromSummary), 'autoComplete -> "off") {
       @errorSummary(yesNoErrors(form.errors))
 
       @sectionHeader(messages("declaration.section.5"))
@@ -71,7 +66,7 @@
           classes = gdsPageLegend,
           isPageHeading = true
         )),
-        html = HtmlFormat.fill(immutable.Seq(
+        html = HtmlFormat.fill(Seq(
           item_section(item, itemIdx, request.declarationType, actionsEnabled = false),
           yesNoRadios(form, inline = true),
           buttons
