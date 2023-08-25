@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import controllers.declaration.routes.{ItemsSummaryController, RemoveItemsSummaryController}
+@import controllers.declaration.routes.{ItemsSummaryController, RemoveItemsSummaryController, SummaryController}
 @import forms.common.YesNoAnswer
 @import models.declaration.ExportItem
 @import models.requests.JourneyRequest
@@ -43,16 +43,21 @@
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
+@backCall = @{
+  if (fromSummary) SummaryController.displayPage
+  else ItemsSummaryController.displayItemsSummaryPage
+}
+
 @buttons = @{
-    if (fromSummary) saveAndReturnToSummary("site.confirm_and_continue", "govuk-button--primary")
-    else saveButtons()
+  if (fromSummary) saveAndReturnToSummary("site.confirm_and_continue", "govuk-button--primary")
+  else saveButtons()
 }
 
 @itemDisplayNum = @{ itemIdx + 1 }
 
 @govukLayout(
     title = Title("declaration.itemsRemove.title", "declaration.section.5", itemDisplayNum.toString, hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), ItemsSummaryController.displayItemsSummaryPage)),
+    backButton = Some(BackButton(messages("site.back"), backCall)),
     showDeclarationSummaryLink = false
 ) {
     @formHelper(action = RemoveItemsSummaryController.removeItem(item.id, fromSummary), 'autoComplete -> "off") {

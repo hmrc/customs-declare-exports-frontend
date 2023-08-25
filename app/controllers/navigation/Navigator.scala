@@ -17,6 +17,7 @@
 package controllers.navigation
 
 import controllers.declaration.routes
+import controllers.declaration.routes.SummaryController
 import controllers.helpers.ErrorFixModeHelper.{inErrorFixMode, setErrorFixMode}
 import controllers.helpers._
 import controllers.routes.RejectedNotificationsController
@@ -48,7 +49,7 @@ class Navigator @Inject() (
   def continueTo(factory: Call)(implicit request: JourneyRequest[AnyContent]): Result = {
     val formAction = FormAction.bindFromRequest()
     if (inErrorFixMode) handleErrorFixMode(factory, formAction)
-    else if (formAction == SaveAndReturnToSummary) Results.Redirect(routes.SummaryController.displayPage)
+    else if (formAction == SaveAndReturnToSummary) Results.Redirect(SummaryController.displayPage)
     else Results.Redirect(factory)
   }
 
