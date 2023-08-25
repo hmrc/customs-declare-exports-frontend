@@ -17,7 +17,7 @@
 package views.declaration.declarationitems
 
 import base.Injector
-import controllers.declaration.routes
+import controllers.declaration.routes.{ItemsSummaryController, SummaryController}
 import models.declaration.ExportItem
 import org.jsoup.nodes.Document
 import services.cache.ExportsTestHelper
@@ -35,37 +35,36 @@ class ItemsCannotRemoveItemViewSpec extends UnitViewSpec with ExportsTestHelper 
   private val itemDisplayNum = itemIdx + 1
   private val parentDecId = "id"
 
-  private def createView(item: ExportItem): Document =
-    page(item, itemIdx, parentDecId)(journeyRequest(), messages)
+  private def createView(item: ExportItem, fromSummary: Boolean = false): Document =
+    page(item, itemIdx, parentDecId, fromSummary)(journeyRequest(), messages)
 
   private val exportItem = anItem()
 
   "ItemsRemoveItem View" should {
 
     "have proper messages for labels" in {
-
       messages must haveTranslationFor("declaration.itemsCannotRemove.title")
     }
 
-    val view = createView(item = exportItem)
+    val view = createView(exportItem)
 
-    "display 'Back' button" in {
+    "display 'Back' button pointing to /declaration-items-list" in {
+      view.getElementById("back-link") must haveHref(ItemsSummaryController.displayItemsSummaryPage)
+    }
 
-      view.getElementById("back-link") must haveHref(routes.ItemsSummaryController.displayItemsSummaryPage)
+    "display 'Back' button pointing to /saved-summary" in {
+      createView(exportItem, true).getElementById("back-link") must haveHref(SummaryController.displayPage)
     }
 
     "display section header" in {
-
       view.getElementById("section-header") must containMessage("declaration.section.5")
     }
 
     "display title" in {
-
       view.getElementsByClass(Styles.gdsPageHeading).first() must containMessage("declaration.itemsCannotRemove.title", itemDisplayNum)
     }
 
     "display Item Section table" in {
-
       view must containElementWithID(s"declaration-items-summary-$itemDisplayNum")
     }
 
@@ -76,7 +75,6 @@ class ItemsCannotRemoveItemViewSpec extends UnitViewSpec with ExportsTestHelper 
 
     "display warning text" in {
       val view = createView(item = exportItem)
-
       view.getElementsByClass("govuk-warning-text").first() must containText(
         messages("declaration.itemsCannotRemove.warning", messages("declaration.itemsCannotRemove.warning.linkText"))
       )

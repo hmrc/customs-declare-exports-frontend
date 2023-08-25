@@ -18,6 +18,7 @@ package controllers
 
 import connectors.CustomsDeclareExportsConnector
 import controllers.actions.{AuthAction, VerifiedEmailAction}
+import controllers.routes.SavedDeclarationsController
 import forms.RemoveDraftDeclaration.form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -40,7 +41,7 @@ class RemoveSavedDeclarationsController @Inject() (
   def displayPage(id: String): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
     customsDeclareExportsConnector.findDeclaration(id) flatMap {
       case Some(declaration) => Future.successful(Ok(removeDeclarationPage(declaration, form)))
-      case _                 => Future.successful(Redirect(controllers.routes.SavedDeclarationsController.displayDeclarations()))
+      case _                 => Future.successful(Redirect(SavedDeclarationsController.displayDeclarations()))
     }
   }
 
@@ -52,14 +53,14 @@ class RemoveSavedDeclarationsController @Inject() (
         formWithErrors =>
           customsDeclareExportsConnector.findDeclaration(id) flatMap {
             case Some(declaration) => Future.successful(BadRequest(removeDeclarationPage(declaration, formWithErrors)))
-            case _                 => Future.successful(Redirect(controllers.routes.SavedDeclarationsController.displayDeclarations()))
+            case _                 => Future.successful(Redirect(SavedDeclarationsController.displayDeclarations()))
           },
         validAction =>
           if (validAction.remove)
             customsDeclareExportsConnector
               .deleteDraftDeclaration(id)
-              .map(_ => Redirect(controllers.routes.SavedDeclarationsController.displayDeclarations()))
-          else Future.successful(Redirect(controllers.routes.SavedDeclarationsController.displayDeclarations()))
+              .map(_ => Redirect(SavedDeclarationsController.displayDeclarations()))
+          else Future.successful(Redirect(SavedDeclarationsController.displayDeclarations()))
       )
   }
 }

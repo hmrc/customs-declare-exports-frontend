@@ -17,7 +17,7 @@
 package views.declaration.declarationitems
 
 import base.Injector
-import controllers.declaration.routes
+import controllers.declaration.routes.{ItemsSummaryController, SummaryController}
 import forms.common.YesNoAnswer
 import models.DeclarationType.{DeclarationType, STANDARD}
 import models.declaration.ExportItem
@@ -51,19 +51,20 @@ class ItemsRemoveItemViewSpec extends UnitViewSpec with ExportsTestHelper with S
   "ItemsRemoveItem View" should {
 
     "have proper messages for labels" in {
-
       messages must haveTranslationFor("declaration.itemsRemove.title")
     }
 
     val view = createView(item = exportItem)
 
-    "display 'Back' button" in {
+    "display 'Back' button pointing to /declaration-items-list" in {
+      view.getElementById("back-link") must haveHref(ItemsSummaryController.displayItemsSummaryPage)
+    }
 
-      view.getElementById("back-link") must haveHref(routes.ItemsSummaryController.displayItemsSummaryPage)
+    "display 'Back' button pointing to /saved-summary" in {
+      createView(item = exportItem, fromSummary = true).getElementById("back-link") must haveHref(SummaryController.displayPage)
     }
 
     "display error section" in {
-
       val formWithErrors = form.copy(errors = Seq(FormError("errorKey", "declaration.cusCode.error.empty")))
       val view = createView(form = formWithErrors, item = exportItem)
 
@@ -72,24 +73,20 @@ class ItemsRemoveItemViewSpec extends UnitViewSpec with ExportsTestHelper with S
     }
 
     "display section header" in {
-
       view.getElementById("section-header") must containMessage("declaration.section.5")
     }
 
     "display title" in {
-
       view.getElementsByClass(Styles.gdsPageLegend).first() must containMessage("declaration.itemsRemove.title", itemDisplayNum)
     }
 
     "display Item Section table" in {
-
       view must containElementWithID(s"declaration-items-summary-$itemDisplayNum")
     }
 
     "not display Item Section header" in {}
 
     "display Yes - No form" in {
-
       view must containElementWithClass("govuk-radios")
       view must containElementWithID("code_yes")
       view must containElementWithID("code_no")

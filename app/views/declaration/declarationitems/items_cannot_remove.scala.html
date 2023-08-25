@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import controllers.declaration.routes.ItemsSummaryController
+@import controllers.declaration.routes.{ItemsSummaryController, SummaryController}
 @import models.declaration.ExportItem
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components._
@@ -32,13 +32,18 @@
     cancelButton: cancel
 )
 
-@(item: ExportItem, itemIdx: Int, submissionId: String)(implicit request: JourneyRequest[_], messages: Messages)
+@(item: ExportItem, itemIdx: Int, submissionId: String, fromSummary: Boolean)(implicit request: JourneyRequest[_], messages: Messages)
 
 @itemDisplayNum = @{ itemIdx + 1 }
 
+@backCall = @{
+  if (fromSummary) SummaryController.displayPage
+  else ItemsSummaryController.displayItemsSummaryPage
+}
+
 @govukLayout(
     title = Title("declaration.itemsCannotRemove.title", "declaration.section.5", itemDisplayNum.toString),
-    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), ItemsSummaryController.displayItemsSummaryPage)),
+    backButton = Some(BackButton(messages("site.back"), backCall)),
     showDeclarationSummaryLink = false
 ) {
     @sectionHeader(messages("declaration.section.5"))

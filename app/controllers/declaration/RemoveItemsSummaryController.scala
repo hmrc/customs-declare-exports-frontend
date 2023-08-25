@@ -18,7 +18,7 @@ package controllers.declaration
 
 import connectors.CustomsDeclareExportsConnector
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.declaration.routes.ItemsSummaryController
+import controllers.declaration.routes.{ItemsSummaryController, SummaryController}
 import controllers.helpers.SequenceIdHelper
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
@@ -63,12 +63,12 @@ class RemoveItemsSummaryController @Inject() (
           viewToRemoveItem(
             item = item,
             remove = Ok(removeItemPage(removeItemForm, item, idx, fromSummary)),
-            cannotRemove = submission => Ok(itemsCannotRemovePage(item, idx, submission.uuid))
+            cannotRemove = submission => Ok(itemsCannotRemovePage(item, idx, submission.uuid, fromSummary))
           )
-        case Some((item, idx)) =>
-          Future.successful(Ok(removeItemPage(removeItemForm, item, idx, fromSummary)))
-        case _ =>
-          Future.successful(navigator.continueTo(ItemsSummaryController.displayItemsSummaryPage))
+
+        case Some((item, idx)) => Future.successful(Ok(removeItemPage(removeItemForm, item, idx, fromSummary)))
+
+        case _ => Future.successful(continueTo(fromSummary))
       }
   }
 
@@ -82,19 +82,22 @@ class RemoveItemsSummaryController @Inject() (
               viewToRemoveItem(
                 item = item,
                 remove = BadRequest(removeItemPage(formWithErrors, item, idx, fromSummary)),
-                cannotRemove = submission => BadRequest(itemsCannotRemovePage(item, idx, submission.uuid))
+                cannotRemove = submission => BadRequest(itemsCannotRemovePage(item, idx, submission.uuid, fromSummary))
               )
-            case Some((item, idx)) =>
-              Future.successful(BadRequest(removeItemPage(formWithErrors, item, idx, fromSummary)))
-            case _ =>
-              errorHandler.internalError(s"Could not find ExportItem with id = [$itemId] to remove")
+
+            case Some((item, idx)) => Future.successful(BadRequest(removeItemPage(formWithErrors, item, idx, fromSummary)))
+
+            case _ => errorHandler.internalError(s"Could not find ExportItem with id = [$itemId] to remove")
           },
         _.answer match {
-          case YesNoAnswers.yes => removeItemFromCache(itemId).map(_ => navigator.continueTo(ItemsSummaryController.displayItemsSummaryPage))
-          case YesNoAnswers.no  => Future.successful(navigator.continueTo(ItemsSummaryController.displayItemsSummaryPage))
+          case YesNoAnswers.yes => removeItemFromCache(itemId).map(_ => continueTo(fromSummary))
+          case YesNoAnswers.no  => Future.successful(continueTo(fromSummary))
         }
       )
   }
+
+  private def continueTo(fromSummary: Boolean)(implicit request: JourneyRequest[AnyContent]): Result =
+    navigator.continueTo(if (fromSummary) SummaryController.displayPage else ItemsSummaryController.displayItemsSummaryPage)
 
   private def viewToRemoveItem(item: ExportItem, remove: Result, cannotRemove: Submission => Result)(
     implicit request: JourneyRequest[AnyContent]

@@ -89,7 +89,7 @@ class RemoveItemsSummaryControllerSpec
     authorizedUser()
 
     when(removeItemPage.apply(any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
-    when(cannotRemoveItemPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(cannotRemoveItemPage.apply(any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
     when(mockCustomsDeclareExportsConnector.findDeclaration(any())(any(), any())).thenReturn(Future.successful(Some(parentDeclaration)))
 
     when(sequenceIdHandler.handleSequencing[ExportItem](any(), any())(any())).thenAnswer(new Answer[(Seq[ExportItem], DeclarationMeta)] {
@@ -108,8 +108,8 @@ class RemoveItemsSummaryControllerSpec
   "displayRemoveItemConfirmationPage" should {
     onEveryDeclarationJourney() { request =>
       "return 200 (OK)" when {
-        "item can be removed" in {
 
+        "item can be removed" in {
           when(mockCustomsDeclareExportsConnector.findDeclaration(any())(any(), any()))
             .thenReturn(Future.successful(Some(parentDeclaration)))
 
@@ -122,8 +122,8 @@ class RemoveItemsSummaryControllerSpec
           verify(removeItemPage).apply(any(), any(), any(), any())(any(), any())
           itemPassedToRemoveItemView mustBe exportItem
         }
-        "item cannot be removed" in {
 
+        "item cannot be removed" in {
           when(mockCustomsDeclareExportsConnector.findDeclaration(any())(any(), any()))
             .thenReturn(Future.successful(Some(parentDeclaration)))
 
@@ -141,7 +141,7 @@ class RemoveItemsSummaryControllerSpec
           val result = controller.displayRemoveItemConfirmationPage(itemId)(getRequest())
 
           status(result) mustBe OK
-          verify(cannotRemoveItemPage)(any(), any(), any())(any(), any())
+          verify(cannotRemoveItemPage)(any(), any(), any(), any())(any(), any())
           itemPassedToRemoveItemView mustBe exportItem
         }
       }
@@ -159,8 +159,8 @@ class RemoveItemsSummaryControllerSpec
       }
 
       "return INTERNAL_SERVER_ERROR" when {
-        "parentDecId does not exist" in {
 
+        "parentDecId does not exist" in {
           val cachedData = aDeclaration(withType(request.declarationType), withItem(exportItem), withStatus(DeclarationStatus.AMENDMENT_DRAFT))
           withNewCaching(cachedData)
 
@@ -168,8 +168,8 @@ class RemoveItemsSummaryControllerSpec
 
           status(result) mustBe INTERNAL_SERVER_ERROR
         }
-        "parentDec cannot be found" in {
 
+        "parentDec cannot be found" in {
           when(mockCustomsDeclareExportsConnector.findDeclaration(any())(any(), any()))
             .thenReturn(Future.successful(None))
 
