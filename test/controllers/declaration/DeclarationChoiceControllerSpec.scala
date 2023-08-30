@@ -18,9 +18,8 @@ package controllers.declaration
 
 import base.ControllerWithoutFormSpec
 import controllers.declaration.routes.AdditionalDeclarationTypeController
-import forms.Choice
 import forms.declaration.AuthorisationProcedureCodeChoice.Choice1040
-import forms.declaration.DeclarationChoiceSpec
+import forms.declaration.{DeclarationChoice, DeclarationChoiceSpec}
 import models.DeclarationType._
 import models.ExportsDeclaration
 import models.declaration.DeclarationStatus
@@ -41,21 +40,19 @@ class DeclarationChoiceControllerSpec extends ControllerWithoutFormSpec with Opt
 
   private val newDeclarationId = "newDeclarationId"
 
-  val choicePage = mock[declaration_choice]
+  val declarationChoice = mock[declaration_choice]
+  val mcc = stubMessagesControllerComponents()
 
-  val controller =
-    new DeclarationChoiceController(mockAuthAction, mockVerifiedEmailAction, mockExportsCacheService, stubMessagesControllerComponents(), choicePage)(
-      ec
-    )
+  val controller = new DeclarationChoiceController(mockAuthAction, mockVerifiedEmailAction, mockExportsCacheService, mcc, declarationChoice)(ec)
 
   override def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    when(choicePage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(declarationChoice.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
-    reset(choicePage)
+    reset(declarationChoice)
     super.afterEach()
   }
 
@@ -105,9 +102,8 @@ class DeclarationChoiceControllerSpec extends ControllerWithoutFormSpec with Opt
 
         val request = getRequest()
         val result = controller.displayPage(request)
-        val form = Choice.form
 
-        viewOf(result) must be(choicePage(form)(request, controller.messagesApi.preferred(request)))
+        viewOf(result) must be(declarationChoice(DeclarationChoice.form)(request, controller.messagesApi.preferred(request)))
       }
     }
   }

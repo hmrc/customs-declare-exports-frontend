@@ -42,7 +42,7 @@ class DeclarationChoiceController @Inject() (
   verifyEmail: VerifiedEmailAction,
   override val exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents,
-  choicePage: declaration_choice
+  declarationChoice: declaration_choice
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with Logging with ModelCacheable with WithUnsafeDefaultFormBinding {
 
@@ -51,11 +51,11 @@ class DeclarationChoiceController @Inject() (
       case Some(declarationId) =>
         exportsCacheService.get(declarationId).map {
           case Some(declaration) if declaration.isAmendmentDraft => nextPage(declarationId)
-          case Some(declaration)                                 => Ok(choicePage(form.fill(DeclarationChoice(declaration.`type`))))
-          case _                                                 => Ok(choicePage(form))
+          case Some(declaration)                                 => Ok(declarationChoice(form.fill(DeclarationChoice(declaration.`type`))))
+          case _                                                 => Ok(declarationChoice(form))
         }
 
-      case _ => Future.successful(Ok(choicePage(form)))
+      case _ => Future.successful(Ok(declarationChoice(form)))
     }
   }
 
@@ -77,7 +77,7 @@ class DeclarationChoiceController @Inject() (
         form
           .bindFromRequest()
           .fold(
-            formWithErrors => Future.successful(BadRequest(choicePage(formWithErrors))),
+            formWithErrors => Future.successful(BadRequest(declarationChoice(formWithErrors))),
             declarationType =>
               maybeDeclaration
                 .map(_.updateType(declarationType.value))

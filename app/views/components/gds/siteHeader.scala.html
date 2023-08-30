@@ -14,10 +14,10 @@
  * limitations under the License.
  *@
 
+@import controllers.routes.{ChoiceController, SignOutController}
 @import models.requests.AuthenticatedRequest
 @import models.requests.JourneyRequest
-@import uk.gov.hmrc.hmrcfrontend.views.html.components.HmrcHeader
-@import uk.gov.hmrc.hmrcfrontend.views.html.components.Header
+@import uk.gov.hmrc.hmrcfrontend.views.html.components.{Header, HmrcHeader}
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.language
 
 @this(hmrcHeader: HmrcHeader)
@@ -26,7 +26,7 @@
 
 @signOutHref = @{
     if (request.isInstanceOf[AuthenticatedRequest[_]] || request.isInstanceOf[JourneyRequest[_]] || displaySignOut)
-        Some(controllers.routes.SignOutController.signOut(models.SignOutReason.UserAction).url)
+        Some(SignOutController.signOut(models.SignOutReason.UserAction).url)
     else
         None
 }
@@ -34,7 +34,7 @@
 @hmrcHeader(Header(
     homepageUrl = "https://www.gov.uk",
     serviceName = Some(messages("service.name")),
-    serviceUrl = controllers.routes.ChoiceController.displayPage().url,
+    serviceUrl = ChoiceController.displayPage.url,
     language = language.En,
     containerClasses = "govuk-width-container",
     signOutHref = signOutHref

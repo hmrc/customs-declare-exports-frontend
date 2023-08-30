@@ -21,8 +21,6 @@ import config.PaginationConfig
 import config.featureFlags.{DeclarationAmendmentsConfig, SecureMessagingConfig}
 import controllers.routes
 import controllers.routes.{ChoiceController, DashboardController, DeclarationDetailsController}
-import forms.Choice
-import forms.Choice.AllowedChoiceValues.Dashboard
 import models.PageOfSubmissions
 import models.declaration.submissions.EnhancedStatus._
 import models.declaration.submissions.RequestType.SubmissionRequest
@@ -141,7 +139,7 @@ class DashboardViewSpec extends UnitViewSpec with ExportsTestHelper {
       val backButton = view.getElementById("back-link")
 
       backButton must containMessage("site.back")
-      backButton must haveHref(ChoiceController.displayPage(Some(Choice(Dashboard))))
+      backButton must haveHref(ChoiceController.displayPage)
     }
 
     "display same page title as header" in {
@@ -162,7 +160,7 @@ class DashboardViewSpec extends UnitViewSpec with ExportsTestHelper {
     "contain a 'Start a new declaration' link" in {
       val startButton = view.getElementsByClass("govuk-button").first()
       startButton must containMessage("dashboard.start.new.declaration")
-      startButton.attr("href") mustBe ChoiceController.displayPage().url
+      startButton.attr("href") mustBe ChoiceController.displayPage.url
     }
 
     "have NO table for a tab when not the current one" in {

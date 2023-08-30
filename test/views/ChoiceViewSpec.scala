@@ -16,291 +16,86 @@
 
 package views
 
-import base.ExportsTestData._
 import base.OverridableInjector
-import config.featureFlags.{SecureMessagingInboxConfig, SfusConfig}
-import controllers.routes.FileUploadController
-import features.SecureMessagingFeatureStatus
-import features.SecureMessagingFeatureStatus.SecureMessagingFeatureStatus
-import forms.Choice
-import org.jsoup.nodes.Document
-import org.mockito.Mockito.{reset, when}
-import org.scalatest.BeforeAndAfterEach
-import play.api.data.Form
+import config.ExternalServicesConfig
+import controllers.declaration.routes.DeclarationChoiceController
+import controllers.routes.{FileUploadController, SavedDeclarationsController}
+import org.mockito.Mockito.when
 import play.api.inject.bind
-import tools.Stubs
+import views.dashboard.DashboardHelper.toDashboard
 import views.declaration.spec.UnitViewSpec
 import views.helpers.CommonMessages
 import views.html.choice_page
 import views.tags.ViewTest
 
 @ViewTest
-class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Stubs with BeforeAndAfterEach {
+class ChoiceViewSpec extends UnitViewSpec with CommonMessages {
 
-  private val form: Form[Choice] = Choice.form
+  val movementsUrl = "customsMovementsFrontendUrl"
+  val externalServicesConfig = mock[ExternalServicesConfig]
+  when(externalServicesConfig.customsMovementsFrontendUrl).thenReturn(movementsUrl)
 
-  private val injector =
-    new OverridableInjector(bind[SfusConfig].toInstance(mockSfusConfig), bind[SecureMessagingInboxConfig].toInstance(mockSecureMessagingInboxConfig))
+  private val injector = new OverridableInjector(bind[ExternalServicesConfig].toInstance(externalServicesConfig))
 
   private val choicePage = injector.instanceOf[choice_page]
 
-  private def createView(form: Form[Choice] = form, journeys: Seq[String] = allJourneys): Document =
-    choicePage(form, journeys)(request, messages)
+  private val view = choicePage()(request, messages)
 
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    reset(mockSfusConfig, mockSecureMessagingInboxConfig)
-  }
-
-  override protected def afterEach(): Unit = {
-    reset(mockSfusConfig, mockSecureMessagingInboxConfig)
-    super.afterEach()
-  }
-
-  private val dummyCdsUploadLink = "https://www.gov.uk/guidance/send-documents-to-support-declarations-for-the-customs-declaration-service"
-  private val dummyUploadLink = FileUploadController.startFileUpload("").url
-  private val dummyInboxLink = "dummyInboxLink"
-
-  private val SFUS = SecureMessagingFeatureStatus.sfus
-  private val EXPORTS = SecureMessagingFeatureStatus.exports
-  private val DISABLED = SecureMessagingFeatureStatus.disabled
-
-  private def withSecureMessagingFeatureStatus(flag: SecureMessagingFeatureStatus): Unit = {
-    flag match {
-      case SFUS =>
-        when(mockSecureMessagingInboxConfig.isSfusSecureMessagingEnabled).thenReturn(true)
-        when(mockSecureMessagingInboxConfig.isExportsSecureMessagingEnabled).thenReturn(false)
-
-      case EXPORTS =>
-        when(mockSecureMessagingInboxConfig.isSfusSecureMessagingEnabled).thenReturn(false)
-        when(mockSecureMessagingInboxConfig.isExportsSecureMessagingEnabled).thenReturn(true)
-
-      case _ =>
-        when(mockSecureMessagingInboxConfig.isSfusSecureMessagingEnabled).thenReturn(false)
-        when(mockSecureMessagingInboxConfig.isExportsSecureMessagingEnabled).thenReturn(false)
-    }
-
-    when(mockSfusConfig.sfusUploadLink).thenReturn(dummyUploadLink)
-    when(mockSecureMessagingInboxConfig.sfusInboxLink).thenReturn(dummyInboxLink)
-  }
-
-  "Choice View on empty page" should {
+  "Choice page" should {
 
     "display on banner the expected 'service name' (common to all pages)" in {
-      withSecureMessagingFeatureStatus(EXPORTS)
-      val view = createView()
       val element = view.getElementsByClass("hmrc-header__service-name").first
       element.tagName mustBe "a"
       element.text mustBe messages("service.name")
     }
 
     "display same page title as header" in {
-      withSecureMessagingFeatureStatus(EXPORTS)
-      val view = createView()
-      view.title() must include(view.getElementsByTag("h1").text())
+      view.title must include(view.getElementsByTag("h1").text)
     }
 
-    "display radio buttons with description (not selected)" in {
-      withSecureMessagingFeatureStatus(EXPORTS)
-      val view = createView(Choice.form.fill(Choice("")))
-      ensureAllLabelTextIsCorrect(view)
-
-      ensureRadioIsUnChecked(view, "CRT")
-      ensureRadioIsUnChecked(view, "CON")
-      ensureRadioIsUnChecked(view, "SUB")
-      ensureRadioIsUnChecked(view, "MSG")
-      ensureRadioIsUnChecked(view, "MVT")
+    "display the expected heading" in {
+      view.getElementById("title").text mustBe messages("declaration.choice.heading")
     }
 
-    "not display 'Back' button" in {
-      withSecureMessagingFeatureStatus(EXPORTS)
-      val backButton = createView().getElementById("back-link")
-
-      Option(backButton) mustBe None
+    "display the expected hint text" in {
+      view.getElementsByClass("govuk-hint").first.text mustBe messages("declaration.choice.hint")
     }
 
-    "display 'Continue' button on page" in {
-      withSecureMessagingFeatureStatus(EXPORTS)
-      val view = createView()
+    "display the expected option links" in {
+      val options = view.getElementsByClass("govuk-link--no-visited-state")
+      options.size mustBe 5
 
-      val saveButton = view.getElementsByClass("govuk-button")
-      saveButton.text() mustBe messages(continueCaption)
-    }
-  }
+      val createDeclaration = options.get(0)
+      createDeclaration.className().contains("focus")
+      createDeclaration.text mustBe messages("declaration.choice.link.create.new")
+      createDeclaration.attr("href") mustBe DeclarationChoiceController.displayPage.url
 
-  "Choice View" when {
+      val continueDraftDeclaration = options.get(1)
+      continueDraftDeclaration.text mustBe messages("declaration.choice.link.manage.drafts")
+      continueDraftDeclaration.attr("href") mustBe SavedDeclarationsController.displayDeclarations().url
 
-    "available journey types are restricted" should {
-      "display only the appropriate radio buttons" in {
-        allJourneys.foreach { excludedJourneyKey =>
-          val filteredJourneyKeys = allJourneys.filterNot(_.equals(excludedJourneyKey))
-          val view = createView(journeys = filteredJourneyKeys)
+      val dashboard = options.get(2)
+      dashboard.text mustBe messages("declaration.choice.link.manage.submitted")
+      dashboard.attr("href") mustBe toDashboard.url
 
-          filteredJourneyKeys.foreach { journeyKey =>
-            assert(Option(view.getElementById(journeyKey)).isDefined)
-          }
+      val movements = options.get(3)
+      movements.text mustBe messages("declaration.choice.link.movements")
+      movements.attr("href") mustBe movementsUrl
 
-          Option(view.getElementById(excludedJourneyKey)) mustBe None
-        }
-      }
-    }
-
-    "secureMessagingInbox flag is set to 'sfus'" should {
-      "display SFUS link description text" in {
-        withSecureMessagingFeatureStatus(SFUS)
-        val h2s = createView().getElementsByTag("h2")
-
-        h2s.size mustBe 2
-        h2s.first().text() mustBe messages("declaration.choice.link.sfus.description")
-      }
-
-      "display SFUS upload documents link" in {
-        withSecureMessagingFeatureStatus(SFUS)
-        val link = createView().getElementById("sfusUploadLink")
-
-        link.text() mustBe messages("declaration.choice.link.sfusUpload.txt")
-        link.attr("href") mustBe dummyUploadLink
-      }
-
-      "display SFUS message inbox link" in {
-        withSecureMessagingFeatureStatus(SFUS)
-        val link = createView().getElementById("sfusInboxLink")
-
-        link.text() mustBe messages("declaration.choice.link.sfusInbox.txt")
-        link.attr("href") mustBe dummyInboxLink
-      }
+      val uploadDocuments = options.get(4)
+      uploadDocuments.text mustBe messages("declaration.choice.link.sfus")
+      uploadDocuments.attr("href") mustBe FileUploadController.startFileUpload("").url
     }
 
-    "secureMessagingInbox flag is set to 'exports'" should {
-      "display Exports link description text" in {
-        withSecureMessagingFeatureStatus(EXPORTS)
-        val h2s = createView().getElementsByTag("h2")
-
-        h2s.size mustBe 2
-        h2s.first().text() mustBe messages("declaration.choice.link.exports.description")
-      }
-
-      "display SFUS upload documents link" in {
-        withSecureMessagingFeatureStatus(EXPORTS)
-        val link = createView().getElementById("cdsUploadLink")
-
-        link.text() mustBe messages("declaration.choice.link.sfusUpload.txt")
-        link.attr("href") mustBe dummyCdsUploadLink
-      }
+    "display the expected h2 headings" in {
+      val headings = view.getElementsByTag("h2")
+      headings.get(0).text mustBe messages("declaration.choice.heading.movements")
+      headings.get(1).text mustBe messages("declaration.choice.heading.sfus")
     }
 
-    "secureMessagingInbox flag is set to 'disabled'" should {
-      "not display SFUS or Exports link description text" in {
-        withSecureMessagingFeatureStatus(DISABLED)
-        val h2s = createView().getElementsByTag("h2")
-        h2s.size mustBe 1
-      }
-
-      "not display SFUS upload documents link" in {
-        withSecureMessagingFeatureStatus(DISABLED)
-        Option(createView().getElementById("sfusUploadLink")) mustBe None
-      }
-
-      "not display SFUS inbox link" in {
-        withSecureMessagingFeatureStatus(DISABLED)
-        Option(createView().getElementById("sfusInboxLink")) mustBe None
-      }
+    "display the expected paragraphs" in {
+      view.getElementById("arrive-or-depart").text mustBe messages("declaration.choice.paragraph.1.movements")
+      view.getElementById("consolidate").text mustBe messages("declaration.choice.paragraph.2.movements")
     }
-  }
-
-  "Choice View for invalid input" should {
-
-    "display error when no choice is made" in {
-      withSecureMessagingFeatureStatus(EXPORTS)
-      val view = createView(Choice.form.bind(Map[String, String]()))
-
-      view must haveGovukGlobalErrorSummary
-      view must containErrorElementWithTagAndHref("a", "#CRT")
-
-      view must containErrorElementWithMessageKey("choicePage.input.error.empty")
-    }
-
-    "display error when choice is incorrect" in {
-      withSecureMessagingFeatureStatus(EXPORTS)
-      val view = createView(Choice.form.bind(Map("value" -> "incorrect")))
-
-      view must haveGovukGlobalErrorSummary
-      view must containErrorElementWithTagAndHref("a", "#CRT")
-
-      view must containErrorElementWithMessageKey("choicePage.input.error.incorrectValue")
-    }
-  }
-
-  "Choice View when filled" should {
-
-    "display selected radio button - Create (CRT)" in {
-      withSecureMessagingFeatureStatus(EXPORTS)
-      val view = createView(Choice.form.fill(Choice("CRT")))
-      ensureAllLabelTextIsCorrect(view)
-
-      ensureRadioIsChecked(view, "CRT")
-      ensureRadioIsUnChecked(view, "SUB")
-      ensureRadioIsUnChecked(view, "CON")
-      ensureRadioIsUnChecked(view, "MSG")
-      ensureRadioIsUnChecked(view, "MVT")
-    }
-
-    "display selected radio button - View recent declarations (SUB)" in {
-      withSecureMessagingFeatureStatus(EXPORTS)
-      val view = createView(Choice.form.fill(Choice("SUB")))
-
-      ensureAllLabelTextIsCorrect(view)
-
-      ensureRadioIsUnChecked(view, "CRT")
-      ensureRadioIsChecked(view, "SUB")
-      ensureRadioIsUnChecked(view, "CON")
-      ensureRadioIsUnChecked(view, "MSG")
-      ensureRadioIsUnChecked(view, "MVT")
-    }
-
-    "display selected radio button - Continue saved declaration (Con)" in {
-      withSecureMessagingFeatureStatus(EXPORTS)
-      val view = createView(Choice.form.fill(Choice("CON")))
-
-      ensureAllLabelTextIsCorrect(view)
-
-      ensureRadioIsUnChecked(view, "CRT")
-      ensureRadioIsUnChecked(view, "SUB")
-      ensureRadioIsChecked(view, "CON")
-      ensureRadioIsUnChecked(view, "MSG")
-      ensureRadioIsUnChecked(view, "MVT")
-    }
-
-    "display selected radio button - View Messages (Msg)" in {
-      withSecureMessagingFeatureStatus(EXPORTS)
-      val view = createView(Choice.form.fill(Choice("MSG")))
-
-      ensureAllLabelTextIsCorrect(view)
-
-      ensureRadioIsUnChecked(view, "CRT")
-      ensureRadioIsUnChecked(view, "SUB")
-      ensureRadioIsUnChecked(view, "CON")
-      ensureRadioIsChecked(view, "MSG")
-      ensureRadioIsUnChecked(view, "MVT")
-    }
-  }
-
-  private def ensureAllLabelTextIsCorrect(view: Document): Unit = {
-    view.getElementsByTag("label").size mustBe 5
-    view.getElementsByAttributeValue("for", "CRT") must containMessageForElements("declaration.choice.CRT")
-    view.getElementsByAttributeValue("for", "SUB") must containMessageForElements("declaration.choice.SUB")
-    view.getElementsByAttributeValue("for", "CON") must containMessageForElements("declaration.choice.CON")
-    view.getElementsByAttributeValue("for", "MSG") must containMessageForElements("declaration.choice.MSG")
-    view.getElementsByAttributeValue("for", "MVT") must containMessageForElements("declaration.choice.MVT")
-  }
-
-  private def ensureRadioIsChecked(view: Document, elementId: String): Unit = {
-    val option = view.getElementById(elementId).getElementsByAttribute("checked")
-    option.size() mustBe 1
-  }
-
-  private def ensureRadioIsUnChecked(view: Document, elementId: String): Unit = {
-    val option = view.getElementById(elementId)
-    option.attr("checked") mustBe empty
   }
 }

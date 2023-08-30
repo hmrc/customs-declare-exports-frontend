@@ -14,11 +14,9 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.govukfrontend.views.html.components._
-@import views.helpers.Title
-@import views.html.components.gds._
 @import models.declaration.submissions.EnhancedStatus._
-@import views.helpers.CancellationResultHelper
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.helpers.{CancellationResultHelper, Title}
 @import views.html.components.gds._
 
 @this(
@@ -58,5 +56,5 @@
 
     @paragraphs
 
-    @paragraph(link(text = messages("site.backToChoice"), call = routes.ChoiceController.displayPage(), id = Some("back-to-choice")))
+    @paragraph(link(text = messages("site.backToChoice"), call = routes.ChoiceController.displayPage, id = Some("back-to-choice")))
 }

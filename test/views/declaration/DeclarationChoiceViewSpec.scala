@@ -19,27 +19,26 @@ package views.declaration
 import base.Injector
 import com.typesafe.config.{Config, ConfigFactory}
 import config.{AppConfig, AppConfigSpec}
-import forms.Choice
-import forms.Choice.AllowedChoiceValues.CreateDec
+import controllers.routes.ChoiceController
 import forms.declaration.DeclarationChoice
-import models.DeclarationType
+import models.DeclarationType.{STANDARD, SUPPLEMENTARY}
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import play.api.{Configuration, Environment}
-import tools.Stubs
 import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF, GovukButton, GovukDetails, GovukRadios}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import views.declaration.spec.UnitViewSpec
 import views.helpers.CommonMessages
-import views.html.components.gds.{errorSummary, exportsInsetText, externalLink, paragraphBody, saveAndContinue}
+import views.html.components.gds._
 import views.html.declaration.declaration_choice
 import views.tags.ViewTest
 
 @ViewTest
-class DeclarationChoiceViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector {
+class DeclarationChoiceViewSpec extends UnitViewSpec with CommonMessages with Injector {
 
   private val form: Form[DeclarationChoice] = DeclarationChoice.form
   private val choicePage = instanceOf[declaration_choice]
+
   private def createView(form: Form[DeclarationChoice] = form): Document =
     choicePage(form)(request, messages)
 
@@ -65,7 +64,7 @@ class DeclarationChoiceViewSpec extends UnitViewSpec with CommonMessages with St
       val backButton = createView().getElementById("back-link")
 
       backButton.text() mustBe messages(backToPreviousQuestionCaption)
-      backButton.getElementById("back-link") must haveHref(controllers.routes.ChoiceController.displayPage(Some(Choice(CreateDec))))
+      backButton.getElementById("back-link") must haveHref(ChoiceController.displayPage)
     }
 
     "display 'Continue' button on page" in {
@@ -82,7 +81,7 @@ class DeclarationChoiceViewSpec extends UnitViewSpec with CommonMessages with St
       val view = createView(DeclarationChoice.form.bind(Map[String, String]()))
 
       view must haveGovukGlobalErrorSummary
-      view must containErrorElementWithTagAndHref("a", s"#${DeclarationType.STANDARD.toString}")
+      view must containErrorElementWithTagAndHref("a", s"#${STANDARD.toString}")
 
       view must containErrorElementWithMessageKey("declaration.type.error")
     }
@@ -91,7 +90,7 @@ class DeclarationChoiceViewSpec extends UnitViewSpec with CommonMessages with St
       val view = createView(DeclarationChoice.form.bind(Map("type" -> "incorrect")))
 
       view must haveGovukGlobalErrorSummary
-      view must containErrorElementWithTagAndHref("a", s"#${DeclarationType.STANDARD.toString}")
+      view must containErrorElementWithTagAndHref("a", s"#${STANDARD.toString}")
 
       view must containErrorElementWithMessageKey("declaration.type.error")
     }
@@ -99,7 +98,7 @@ class DeclarationChoiceViewSpec extends UnitViewSpec with CommonMessages with St
 
   "Choice View when filled" should {
     "display selected radio button - Create (SUPPLEMENTARY)" in {
-      val view = createView(DeclarationChoice.form.fill(DeclarationChoice(DeclarationType.SUPPLEMENTARY)))
+      val view = createView(DeclarationChoice.form.fill(DeclarationChoice(SUPPLEMENTARY)))
       ensureAllLabelTextIsCorrect(view)
 
       ensureRadioIsChecked(view, "SUPPLEMENTARY")

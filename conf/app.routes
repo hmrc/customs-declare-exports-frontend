@@ -78,8 +78,7 @@ GET         /                                              controllers.RootContr
 
 # Choice Page
 
-GET         /choice                                        controllers.ChoiceController.displayPage(previousChoice: Option[forms.Choice] ?= None)
-POST        /choice                                        controllers.ChoiceController.submitChoice
+GET         /choice                                        controllers.ChoiceController.displayPage
 
 # Sign out
 

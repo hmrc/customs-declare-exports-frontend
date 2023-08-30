@@ -14,14 +14,13 @@
  * limitations under the License.
  *@
 
-@import forms.Choice
-@import forms.Choice.AllowedChoiceValues.ContinueDec
+@import config.featureFlags.DeclarationAmendmentsConfig
+@import controllers.routes.ChoiceController
+@import models.declaration.DeclarationStatus.{DeclarationStatus, AMENDMENT_DRAFT}
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.helpers.{BackButton, Title}
 @import views.helpers.ViewDates.formatDateAtTime
 @import views.html.components.gds.{gdsMainTemplate, link, pageTitle, spanVisuallyHidden}
-@import models.declaration.DeclarationStatus.{DeclarationStatus, AMENDMENT_DRAFT}
-@import config.featureFlags.DeclarationAmendmentsConfig
 
 @import java.time.ZoneId
 
@@ -80,7 +79,7 @@
 
 @govukLayout(
     title = Title(titleCheck(declarations)),
-    backButton = Some(BackButton(messages("site.backToSelectionPage"), routes.ChoiceController.displayPage(Some(Choice(ContinueDec))))),
+    backButton = Some(BackButton(messages("site.backToSelectionPage"), ChoiceController.displayPage)),
     useCustomContentWidth = true,
     showDeclarationSummaryLink = false
 ) {

@@ -18,9 +18,7 @@ package views.declarations
 
 import base.{ExportsTestData, Injector}
 import config.featureFlags.DeclarationAmendmentsConfig
-import controllers.routes
-import forms.Choice
-import forms.Choice.AllowedChoiceValues.ContinueDec
+import controllers.routes.ChoiceController
 import models.declaration.DeclarationStatus
 import models.{ExportsDeclaration, Page, Paginated}
 import org.jsoup.nodes.Element
@@ -141,9 +139,8 @@ class SavedDeclarationsViewSpec extends UnitViewSpec with Injector {
 
     "display 'Back' button that links to 'Choice' page with 'Continue saved declarations' selected" in {
       val backButton = createView().getElementById("back-link")
-
       backButton must containMessage("site.back")
-      backButton must haveHref(routes.ChoiceController.displayPage(Some(Choice(ContinueDec))))
+      backButton must haveHref(ChoiceController.displayPage)
     }
   }
 

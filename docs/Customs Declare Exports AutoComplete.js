@@ -18,7 +18,6 @@
 
 // helper methods
 function setDeclaration(choice) {
-
     GM_setValue("declaration", choice)
     setAdditionalDocuments()
     setHoldersOfAuthorisation()
@@ -82,7 +81,6 @@ function dropDown() {
 }
 
 function createQuickButton() {
-
     let button = document.createElement('button')
     button.id="quickSubmit"
 
@@ -101,17 +99,16 @@ function createQuickButton() {
 }
 
 function selectFromAutoPredict(element, selected) {
-
     let index = typeof selected == "number" ? selected : 0
     let selects = element.getElementsByTagName('select')
     let inputs = element.getElementsByTagName('input')
 
-    for(let j = 0; j < selects.length; j++){
+    for (let j = 0; j < selects.length; j++) {
         let options = selects[j].getElementsByTagName('option')
         let option = options[index]
-        if(typeof selected == "string"){
-            for(let o = 0; o < options.length; o++) {
-                if(options[o].value === selected) {
+        if (typeof selected == "string") {
+            for (let o = 0; o < options.length; o++) {
+                if (options[o].value === selected) {
                     option = options[o]
                 }
             }
@@ -127,27 +124,25 @@ function selectDecType(type) {
         type["value"] == getDeclaration()).shift()[type]).checked = true
 }
 
-function selectRadioOption(element, index){
-
+function selectRadioOption(element, index) {
     let inputs = element.getElementsByTagName('input')
     if (inputs && index < inputs.length) {
         inputs[index].checked = true
     }
 }
 
-function selectRadioOptionFromInputs(inputs, index){
+function selectRadioOptionFromInputs(inputs, index) {
     if (inputs && index < inputs.length) {
         inputs[index].checked = true
     }
 }
 
 function findRadioOption(fieldname) {
-
     let inputs = document.getElementById(fieldname).getElementsByTagName('input')
     let choice
 
-    for(var i = 0; i < inputs.length; i++){
-        if(inputs[i].checked){
+    for (var i = 0; i < inputs.length; i++) {
+        if (inputs[i].checked) {
             choice = inputs[i].value
         }
     }
@@ -156,7 +151,7 @@ function findRadioOption(fieldname) {
 }
 
 function currentPageIs(path) {
-    if(path.includes("*")) {
+    if (path.includes("*")) {
         let matches = window.location.pathname.match(path)
         return (matches && window.location.pathname.endsWith(path.slice(-5)))
     } else {
@@ -171,52 +166,45 @@ function getRandomInt(min, max) {
 }
 
 // actual pages
-function startPage(){
+function startPage() {
     if (currentPageIs('/customs-declare-exports/start')) {
         document.getElementsByClassName('govuk-button')[0].click()
     }
 }
 
-function choicePage(){
-    if(currentPageIs('/customs-declare-exports/choice')){
-
-        if(getDeclaration() == 0){
+function choicePage() {
+    if (currentPageIs('/customs-declare-exports/choice')) {
+        if (getDeclaration() == 0) {
             alert("Select journey type")
             return
         }
 
-        document.getElementById('CRT').checked = true
-        submit()
+        document.getElementById('create-declaration').click()
     }
 }
 
-function declarationChoice(){
-    if(currentPageIs('/customs-declare-exports/declaration/declaration-choice')){
-
-        if(getDeclaration() == 0){
+function declarationChoice() {
+    if (currentPageIs('/customs-declare-exports/declaration/declaration-choice')){
+        if (getDeclaration() == 0) {
             alert("Select journey type")
             return
         }
 
         selectDecType("id")
-
         submit()
     }
 }
 
-function dispatchLocation(){
-    if(currentPageIs('/customs-declare-exports/declaration/dispatch-location')){
-
+function dispatchLocation() {
+    if (currentPageIs('/customs-declare-exports/declaration/dispatch-location')){
         selectRadioOptionFromInputs(document.getElementsByName('dispatchLocation'), 0)
         submit()
     }
 }
 
-function additionalDeclarationType(){
-    if(currentPageIs('/customs-declare-exports/declaration/type')){
-
+function additionalDeclarationType() {
+    if (currentPageIs('/customs-declare-exports/declaration/type')){
         selectDecType("addId")
-
         submit()
     }
 }
@@ -289,7 +277,7 @@ function enterMucr() {
 }
 
 // clearance
-function isEntryIntoDeclarantsRecords(){
+function isEntryIntoDeclarantsRecords() {
     if (currentPageIs('/customs-declare-exports/declaration/entry-into-declarants-records')) {
         document.getElementById('answer_no').checked = 'checked'
         submit()
@@ -297,28 +285,28 @@ function isEntryIntoDeclarantsRecords(){
 }
 
 // clearance
-function personPresentingGoodsDetails(){
+function personPresentingGoodsDetails() {
     if (currentPageIs('/customs-declare-exports/declaration/person-presenting-goods')) {
         document.getElementById('eori').value = 'GB614299894872549'
         submit()
     }
 }
 
-function declarantDetails(){
+function declarantDetails() {
     if (currentPageIs('/customs-declare-exports/declaration/declarant-details')) {
         document.getElementById('code_yes').checked = 'checked'
         submit()
     }
 }
 
-function isDeclarantExporter(){
+function isDeclarantExporter() {
     if (currentPageIs('/customs-declare-exports/declaration/are-you-the-exporter')) {
         document.getElementById('code_yes').checked = 'checked'
         submit()
     }
 }
 
-function exporterDetails(){
+function exporterDetails() {
     if (currentPageIs('/customs-declare-exports/declaration/exporter-address')) {
         document.getElementById('details_address_fullName').value = 'Exporters R Us'
         document.getElementById('details_address_addressLine').value = '1 Uxbridge Road'
@@ -327,11 +315,10 @@ function exporterDetails(){
 
         selectFromAutoPredict(document.getElementById('details_address_country-container'), "United Kingdom, Great Britain, Northern Ireland")
         submit()
-
     }
 }
 
-function exporterEoriNumber(){
+function exporterEoriNumber() {
     if (currentPageIs('/customs-declare-exports/declaration/exporter-eori-number')) {
         document.getElementById('Yes').checked = 'checked'
         document.getElementById('eori').value = 'GB123456789000'
@@ -340,14 +327,14 @@ function exporterEoriNumber(){
 }
 
 // clearance
-function isExs(){
+function isExs() {
     if (currentPageIs('/customs-declare-exports/declaration/is-this-exs')) {
         document.getElementById('code_yes').checked = 'checked'
         submit()
     }
 }
 
-function consignorAddress(){
+function consignorAddress() {
     if (currentPageIs('/customs-declare-exports/declaration/consignor-address')) {
         document.getElementById('details_address_fullName').value = 'Bags Export'
         document.getElementById('details_address_addressLine').value = '1 Bags Avenue'
@@ -359,7 +346,7 @@ function consignorAddress(){
     }
 }
 
-function consignorEoriNumber(){
+function consignorEoriNumber() {
     if (currentPageIs('/customs-declare-exports/declaration/consignor-eori-number')) {
         document.getElementById('Yes').checked = 'checked'
         document.getElementById('eori').value = 'GB123456789000'
@@ -367,7 +354,7 @@ function consignorEoriNumber(){
     }
 }
 
-function representingAnotherAgent(){
+function representingAnotherAgent() {
     if (currentPageIs('/customs-declare-exports/declaration/are-you-completing-this-declaration-on-behalf-of-another-agent')) {
 
         switch(getDeclaration()) {
@@ -382,9 +369,8 @@ function representingAnotherAgent(){
     }
 }
 
-function representativeEori(){
+function representativeEori() {
     if (currentPageIs('/customs-declare-exports/declaration/representatives-eori-number')) {
-
         switch(getDeclaration()) {
             case 'A':
             case 'D':
@@ -406,9 +392,8 @@ function representativeEori(){
     }
 }
 
-function representativeType(){
+function representativeType() {
     if (currentPageIs('/customs-declare-exports/declaration/representation-type-agreed')) {
-
         switch(getDeclaration()) {
             case 'A':
             case 'D':
@@ -429,7 +414,7 @@ function representativeType(){
     }
 }
 
-function carrierDetails(){
+function carrierDetails() {
     if (currentPageIs('/customs-declare-exports/declaration/carrier-address')) {
         document.getElementById('details_address_fullName').value = 'XYZ Carrier'
         document.getElementById('details_address_addressLine').value = 'School Road'
@@ -440,14 +425,14 @@ function carrierDetails(){
     }
 }
 
-function carrierEoriNumber(){
+function carrierEoriNumber() {
     if (currentPageIs('/customs-declare-exports/declaration/carrier-eori-number')) {
         document.getElementById('No').checked = 'checked'
         submit()
     }
 }
 
-function consigneeDetails(){
+function consigneeDetails() {
     if (currentPageIs('/customs-declare-exports/declaration/consignee-details')) {
         document.getElementById('details_address_fullName').value = 'Bags Export'
         document.getElementById('details_address_addressLine').value = '1 Bags Avenue'
@@ -462,28 +447,28 @@ function consigneeDetails(){
     }
 }
 
-function otherPartiesInvolved(){
+function otherPartiesInvolved() {
     if (currentPageIs('/customs-declare-exports/declaration/other-parties-involved')) {
         selectRadioOptionFromInputs(document.getElementsByName('partyType'), 4)
         submit()
     }
 }
 
-function otherPartiesList(){
+function otherPartiesList() {
     if (currentPageIs('/customs-declare-exports/declaration/other-parties-list')) {
         document.getElementById('code_no').checked = 'checked'
         submit()
     }
 }
 
-function authorisationProcedureCodeChoice(){
+function authorisationProcedureCodeChoice() {
     if (currentPageIs('/customs-declare-exports/declaration/authorisation-choice')) {
         selectRadioOptionFromInputs(document.getElementsByName('authorisationProcedureCodeChoice'), 0)
         submit()
     }
 }
 
-function isAuthorisationRequired(){
+function isAuthorisationRequired() {
     if (currentPageIs('/customs-declare-exports/declaration/is-authorisation-required')) {
         document.getElementById('code_yes').checked = 'checked'
         submit()
@@ -492,7 +477,6 @@ function isAuthorisationRequired(){
 
 // holder of authorisation
 function getHoACode(dec) {
-
     var decType = "hoa-code" + dec
 
     var codes = GM_getValue(decType)
@@ -503,7 +487,6 @@ function getHoACode(dec) {
 }
 
 function getHoAEori(dec) {
-
     var decType = "hoa-eori" + dec
 
     var eoris = GM_getValue(decType)
@@ -514,13 +497,12 @@ function getHoAEori(dec) {
 }
 
 function setHoldersOfAuthorisation() {
-
     GM_setValue("hoa-codeC", ['CSE', 'SDE'])
     GM_setValue("hoa-eoriC", ['GB717572504502801', 'GB717572504502801'])
     GM_setValue("hoa-lengthC", 2)
 }
 
-function holderOfAuthorisation(){
+function holderOfAuthorisation() {
     if (currentPageIs('/customs-declare-exports/declaration/add-authorisation-required')) {
         selectRadioOptionFromInputs(document.getElementsByName('eoriSource'), 1)
         switch(getDeclaration())
@@ -567,11 +549,11 @@ function holderOfAuthorisation(){
     }
 }
 
-function authorisationsSummary(){
+function authorisationsSummary() {
     if (currentPageIs('/customs-declare-exports/declaration/authorisations-required')) {
         switch(getDeclaration()) {
             case 'C':
-                if(document.getElementsByClassName("govuk-table")[0].querySelectorAll("tbody tr").length < GM_getValue("hoa-lengthC")) {
+                if (document.getElementsByClassName("govuk-table")[0].querySelectorAll("tbody tr").length < GM_getValue("hoa-lengthC")) {
                     document.getElementById('code_yes').checked = 'checked'
                     submit()
                 } else {
@@ -587,21 +569,21 @@ function authorisationsSummary(){
     }
 }
 
-function originationCountry(){
+function originationCountry() {
     if (currentPageIs('/customs-declare-exports/declaration/origination-country')) {
         selectFromAutoPredict(document.getElementById('countryCode-container'), "GB")
         submit()
     }
 }
 
-function destinationCountry(){
+function destinationCountry() {
     if (currentPageIs('/customs-declare-exports/declaration/destination-country')) {
         selectFromAutoPredict(document.getElementById('countryCode-container'), "US")
         submit()
     }
 }
 
-function countryOfRouting(){
+function countryOfRouting() {
     if (currentPageIs('/customs-declare-exports/declaration/country-of-routing')) {
         switch(getDeclaration()){
             case 'F':
@@ -616,21 +598,21 @@ function countryOfRouting(){
     }
 }
 
-function countriesOfRouting(){
+function countriesOfRouting() {
     if (currentPageIs('/customs-declare-exports/declaration/countries-of-routing')) {
         selectFromAutoPredict(document.getElementById('countryCode-container'), "CN")
         submit()
     }
 }
 
-function countriesOfRoutingSummary(){
+function countriesOfRoutingSummary() {
     if (currentPageIs('/customs-declare-exports/declaration/countries-summary')) {
         document.getElementById('No').click()
         submit()
     }
 }
 
-function locationOfGoods(){
+function locationOfGoods() {
     if (currentPageIs('/customs-declare-exports/declaration/location-of-goods')) {
         document.getElementById('code_yes').checked = 'checked'
         selectFromAutoPredict(document.getElementById('glc-container'), "GBAUABDABDABDGVM")
@@ -638,10 +620,9 @@ function locationOfGoods(){
     }
 }
 
-function officeOfExit(){
+function officeOfExit() {
     if (currentPageIs('/customs-declare-exports/declaration/office-of-exit')) {
-
-        if(document.getElementById('Yes')) {
+        if (document.getElementById('Yes')) {
             document.getElementById('Yes').click()
         }
 
@@ -672,7 +653,7 @@ function invoiceAndExchangeRateChoice() {
     }
 }
 
-function invoiceAndExchangeRate(){
+function invoiceAndExchangeRate() {
     if (currentPageIs('/customs-declare-exports/declaration/invoices-and-exchange-rate')) {
         selectRadioOptionFromInputs(document.getElementsByName('agreedExchangeRate'), 0)
         document.getElementById('code_yes').checked = 'checked'
@@ -683,14 +664,14 @@ function invoiceAndExchangeRate(){
     }
 }
 
-function totalPackageQuantity(){
+function totalPackageQuantity() {
     if (currentPageIs('/customs-declare-exports/declaration/total-package-quantity')) {
         document.getElementById('totalPackage').value ='1'
         submit()
     }
 }
 
-function natureOfTransaction(){
+function natureOfTransaction() {
     if (currentPageIs('/customs-declare-exports/declaration/nature-of-transaction')) {
         selectRadioOptionFromInputs(document.getElementsByName('natureType'), 0)
         submit()
@@ -711,7 +692,7 @@ function previousDocuments() {
     }
 }
 
-function previousDocumentsSummary(){
+function previousDocumentsSummary() {
     if (currentPageIs('/customs-declare-exports/declaration/previous-documents-list')) {
         document.getElementById('code_no').checked = 'checked'
         submit()
@@ -719,13 +700,13 @@ function previousDocumentsSummary(){
 }
 
 // items
-function addFirstItem(){
+function addFirstItem() {
     if (currentPageIs('/customs-declare-exports/declaration/add-declaration-item')) {
         document.getElementById('add').click()
     }
 }
 
-function procedureCodes(){
+function procedureCodes() {
     if (currentPageIs('/customs-declare-exports/declaration/items/.*/procedure-codes')) {
         switch(getDeclaration()){
             case 'D':
@@ -750,21 +731,21 @@ function procedureCodes(){
     }
 }
 
-function additionalProcedureCodes(){
+function additionalProcedureCodes() {
     if (currentPageIs('/customs-declare-exports/declaration/items/.*/additional-procedure-codes')) {
         selectFromAutoPredict(document.getElementById('additionalProcedureCode-container'), '000')
         submit()
     }
 }
 
-function fiscalInformation(){
+function fiscalInformation() {
     if (currentPageIs('/customs-declare-exports/declaration/items/.*/fiscal-information')) {
         document.getElementById('No').checked = 'checked'
         submit()
     }
 }
 
-function fiscalReferences(){
+function fiscalReferences() {
     if (currentPageIs('/customs-declare-exports/declaration/items/.*/additional-fiscal-references')) {
         selectFromAutoPredict(document.getElementById('country-container'), 'GB')
         document.getElementById('reference').value = '1234'
@@ -772,14 +753,14 @@ function fiscalReferences(){
     }
 }
 
-function fiscalReferencesSummary(){
+function fiscalReferencesSummary() {
     if (currentPageIs('/customs-declare-exports/declaration/items/.*/additional-fiscal-references-list')) {
         document.getElementById('code_no').checked = 'checked'
         submit()
     }
 }
 
-function commodityDetails(){
+function commodityDetails() {
     if (currentPageIs('/customs-declare-exports/declaration/items/.*/commodity-details')) {
         switch(getDeclaration()){
             case 'A':
@@ -806,14 +787,14 @@ function commodityDetails(){
     }
 }
 
-function unDangerousGoodsCode(){
+function unDangerousGoodsCode() {
     if (currentPageIs('/customs-declare-exports/declaration/items/.*/un-dangerous-goods-code')) {
         document.getElementById('code_no').checked = 'checked'
         submit()
     }
 }
 
-function cusCode(){
+function cusCode() {
     if (currentPageIs('/customs-declare-exports/declaration/items/.*/cus-code')) {
         switch(getDeclaration()){
             case 'A':
@@ -836,35 +817,35 @@ function cusCode(){
     }
 }
 
-function additionalTaricCodes(){
+function additionalTaricCodes() {
     if (currentPageIs('/customs-declare-exports/declaration/items/.*/additional-taric-code')) {
         document.getElementById('code_no').checked = 'checked'
         submit()
     }
 }
 
-function vatRating(){
+function vatRating() {
     if (currentPageIs('/customs-declare-exports/declaration/items/.*/vat-rating')) {
         selectRadioOptionFromInputs(document.getElementsByName('nactCode'), 0)
         submit()
     }
 }
 
-function nactCodes(){
+function nactCodes() {
     if (currentPageIs('/customs-declare-exports/declaration/items/.*/national-additional-code')) {
         document.getElementById('code_no').checked = 'checked'
         submit()
     }
 }
 
-function statisticalValue(){
+function statisticalValue() {
     if (currentPageIs('/customs-declare-exports/declaration/items/.*/statistical-value')) {
         document.getElementById('statisticalValue').value ='1000'
         submit()
     }
 }
 
-function addPackageInformation(){
+function addPackageInformation() {
     if (currentPageIs('/customs-declare-exports/declaration/items/.*/package-information')) {
         selectFromAutoPredict(document.getElementById('typesOfPackages-container'), "XD")
         document.getElementById('numberOfPackages').value ='10'
@@ -873,14 +854,14 @@ function addPackageInformation(){
     }
 }
 
-function packageInformationSummary(){
+function packageInformationSummary() {
     if (currentPageIs('/customs-declare-exports/declaration/items/.*/packages-list')) {
         document.getElementById('code_no').checked = 'checked'
         submit()
     }
 }
 
-function commodityMeasurements(){
+function commodityMeasurements() {
     if (currentPageIs('/customs-declare-exports/declaration/items/.*/commodity-measure')) {
         document.getElementById('grossMass').value ='700'
         document.getElementById('netMass').value ='500'
@@ -888,7 +869,7 @@ function commodityMeasurements(){
     }
 }
 
-function supplementaryUnits(){
+function supplementaryUnits() {
     if (currentPageIs('/customs-declare-exports/declaration/items/.*/supplementary-units')) {
         document.getElementById('Yes').checked = 'checked'
         document.getElementById('supplementaryUnits').value ='10'
@@ -896,15 +877,14 @@ function supplementaryUnits(){
     }
 }
 
-function isAdditionalInformationRequired(){
+function isAdditionalInformationRequired() {
     if (currentPageIs('/customs-declare-exports/declaration/items/.*/is-additional-information-required')) {
         document.getElementById('code_yes').checked = 'checked'
         submit()
     }
 }
 
-function addAdditionalInformation(){
-
+function addAdditionalInformation() {
     if (currentPageIs('/customs-declare-exports/declaration/items/.*/additional-information')) {
         switch(getDeclaration()){
             case 'K':
@@ -921,14 +901,14 @@ function addAdditionalInformation(){
     }
 }
 
-function additionalInformationSummary(){
+function additionalInformationSummary() {
     if (currentPageIs('/customs-declare-exports/declaration/items/.*/additional-information-list')) {
         document.getElementById('code_no').checked = 'checked'
         submit()
     }
 }
 
-function isLicenceRequired(){
+function isLicenceRequired() {
     if (currentPageIs('/customs-declare-exports/declaration/items/.*/is-licence-required')) {
         document.getElementById('code_yes').checked = 'checked'
         submit()
@@ -937,7 +917,6 @@ function isLicenceRequired(){
 
 // additional documents
 function getAdCode(dec) {
-
     var decType = "ad-code" + dec
 
     var codes = GM_getValue(decType)
@@ -948,7 +927,6 @@ function getAdCode(dec) {
 }
 
 function getAdIdent(dec) {
-
     var decType = "ad-idents" + dec
 
     var idents = GM_getValue(decType)
@@ -966,7 +944,6 @@ function areAdditionalDocumentsRequired() {
 }
 
 function setAdditionalDocuments() {
-
     GM_setValue("ad-codeA", ['Y923', 'Y957', 'C676'])
     GM_setValue("ad-identsA", ['005345678', '005345678', 'GBCSE717572504502801'])
     GM_setValue("ad-lengthA", 3)
@@ -976,7 +953,7 @@ function setAdditionalDocuments() {
     GM_setValue("ad-lengthC", 2)
 }
 
-function addDocuments(){
+function addDocuments() {
     if (currentPageIs('/customs-declare-exports/declaration/items/.*/additional-documentation')) {
         switch(getDeclaration())
         {
@@ -1052,11 +1029,11 @@ function addDocuments(){
     }
 }
 
-function addDocumentsSummary(){
+function addDocumentsSummary() {
     if (currentPageIs('/customs-declare-exports/declaration/items/.*/additional-documentation-list')) {
         switch(getDeclaration()) {
             case 'A':
-                if(document.getElementById("additional_documents").querySelectorAll("tbody tr").length < GM_getValue("ad-lengthA")) {
+                if (document.getElementById("additional_documents").querySelectorAll("tbody tr").length < GM_getValue("ad-lengthA")) {
                     document.getElementById('code_yes').checked = 'checked'
                     submit()
                 } else {
@@ -1065,7 +1042,7 @@ function addDocumentsSummary(){
                 }
                 break
             case 'C':
-                if(document.getElementById("additional_documents").querySelectorAll("tbody tr").length < GM_getValue("ad-lengthC")) {
+                if (document.getElementById("additional_documents").querySelectorAll("tbody tr").length < GM_getValue("ad-lengthC")) {
                     document.getElementById('code_yes').checked = 'checked'
                     submit()
                 } else {
@@ -1082,24 +1059,24 @@ function addDocumentsSummary(){
 }
 
 // items end
-function exportItems(){
+function exportItems() {
     if (currentPageIs('/customs-declare-exports/declaration/declaration-items-list')) {
         document.getElementById('code_no').checked = 'checked'
         submit()
     }
 }
 
-function transportLeavingBorder(){
+function transportLeavingBorder() {
     if (currentPageIs('/customs-declare-exports/declaration/transport-leaving-the-border')) {
         selectRadioOptionFromInputs(document.getElementsByName('transportLeavingTheBorder'), 1)
         submit()
     }
 }
 
-function warehouseIdentification(){
+function warehouseIdentification() {
     if (currentPageIs('/customs-declare-exports/declaration/warehouse-details')) {
         // K
-        if(document.getElementById('code_no')) {
+        if (document.getElementById('code_no')) {
             document.getElementById('code_no').click()
         } else {
             document.getElementById('identificationNumber').value = 'R1234567GB'
@@ -1109,7 +1086,7 @@ function warehouseIdentification(){
     }
 }
 
-function supervisingCustomsOffice(){
+function supervisingCustomsOffice() {
     if (currentPageIs('/customs-declare-exports/declaration/supervising-customs-office')) {
         switch(getDeclaration()){
             case 'A':
@@ -1130,21 +1107,21 @@ function supervisingCustomsOffice(){
     }
 }
 
-function inlandOrBorder(){
+function inlandOrBorder() {
     if (currentPageIs('/customs-declare-exports/declaration/inland-or-border')) {
         selectRadioOptionFromInputs(document.getElementsByName('location'), 0)
         submit()
     }
 }
 
-function inlandTransportDetails(){
+function inlandTransportDetails() {
     if (currentPageIs('/customs-declare-exports/declaration/inland-transport-details')) {
         selectRadioOptionFromInputs(document.getElementsByName('inlandModeOfTransportCode'), 0)
         submit()
     }
 }
 
-function departureTransport(){
+function departureTransport() {
     if (currentPageIs('/customs-declare-exports/declaration/departure-transport')) {
         document.getElementById('radio_ShipOrRoroImoNumber').checked = 'checked'
         document.getElementById('ShipOrRoroImoNumber').value = '8888'
@@ -1152,7 +1129,7 @@ function departureTransport(){
     }
 }
 
-function borderTransport(){
+function borderTransport() {
     if (currentPageIs('/customs-declare-exports/declaration/border-transport')) {
         if (document.getElementById('NameOfVessel') !== null) {
             selectRadioOptionFromInputs(document.getElementsByName('borderTransportType'), 1)
@@ -1163,7 +1140,7 @@ function borderTransport(){
     }
 }
 
-function transportCountry(){
+function transportCountry() {
     if (currentPageIs('/customs-declare-exports/declaration/transport-country')) {
         document.getElementById('code_yes').checked = 'checked'
         selectFromAutoPredict(document.getElementById('transportCountry-container'), 'South Africa')
@@ -1178,14 +1155,14 @@ function expressConsignment() {
     }
 }
 
-function transportPayment(){
+function transportPayment() {
     if (currentPageIs('/customs-declare-exports/declaration/transport-payment')) {
         selectRadioOptionFromInputs(document.getElementsByName('paymentMethod'), 4)
         submit()
     }
 }
 
-function addContainer(){
+function addContainer() {
     if (currentPageIs('/customs-declare-exports/declaration/container')) {
         document.getElementById('code_yes').checked = 'checked'
         document.getElementById('id').value = '123456'
@@ -1193,7 +1170,7 @@ function addContainer(){
     }
 }
 
-function addSeals(){
+function addSeals() {
     if (currentPageIs('/customs-declare-exports/declaration/containers/123456/seals')) {
         selectRadioOptionFromInputs(document.getElementsByName('yesNo'), 1)
         submit()
@@ -1207,13 +1184,13 @@ function containersSummary() {
     }
 }
 
-function summary(){
+function summary() {
     if (currentPageIs('/customs-declare-exports/declaration/saved-summary')) {
         document.getElementsByClassName('govuk-button')[0].click()
     }
 }
 
-function submission(){
+function submission() {
     if (currentPageIs('/customs-declare-exports/declaration/submit-your-declaration')) {
         document.getElementById('fullName').value = 'Tim Tester'
         document.getElementById('jobRole').value = 'Tester'
@@ -1224,7 +1201,7 @@ function submission(){
     }
 }
 
-function submitAmendment(){
+function submitAmendment() {
     if (currentPageIs('/customs-declare-exports/declaration/submit-your-amendment')) {
         document.getElementById('fullName').value = 'Tim Tester'
         document.getElementById('jobRole').value = 'Tester'
@@ -1236,7 +1213,7 @@ function submitAmendment(){
     }
 }
 
-function copyDeclaration(){
+function copyDeclaration() {
     if (currentPageIs('/customs-declare-exports/copy-declaration')) {
         document.getElementById('lrn').value = 'DSLRN' + Math.floor(Math.random() * 8999) + 100
         document.getElementById('ducr_ducr').value = '8GB654321' + Math.floor(Math.random() * 899999 + 100000) + '-101SHIP1'
@@ -1246,7 +1223,6 @@ function copyDeclaration(){
 
 // grand journey
 function completeJourney() {
-
     // main
     startPage()
     choicePage()

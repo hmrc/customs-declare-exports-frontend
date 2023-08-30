@@ -14,116 +14,70 @@
  * limitations under the License.
  *@
 
-@import config.featureFlags.{SecureMessagingInboxConfig, SfusConfig}
-@import config.AppConfig
-@import forms.Choice.AllowedChoiceValues._
+@import config.ExternalServicesConfig
+@import controllers.declaration.routes.DeclarationChoiceController
+@import controllers.routes.{FileUploadController, SavedDeclarationsController}
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.dashboard.DashboardHelper.toDashboard
 @import views.helpers.Title
-@import views.helpers.ErrorMapper.radioGroupErrors
 @import views.html.components.gds._
 
 @this(
     govukLayout: gdsMainTemplate,
-    govukButton: GovukButton,
-    govukRadios: GovukRadios,
-    errorSummary: errorSummary,
     heading: heading,
+    externalLink: externalLink,
+    link: link,
+    pageTitle: pageTitle,
     paragraph: paragraph,
     paragraphBody: paragraphBody,
-    saveAndContinue: saveAndContinue,
-    link: link,
-    externalLink: externalLink,
-    sfusConfig: SfusConfig,
-    secureMessagingInboxConfig: SecureMessagingInboxConfig,
-    appConfig: AppConfig,
-    formHelper: FormWithCSRF
+    externalServicesConfig: ExternalServicesConfig
 )
 
-@(form: Form[_], availableJourneys: Seq[String])(implicit request: Request[_], messages: Messages)
+@()(implicit request: Request[_], messages: Messages)
 
-@hasErrors = @{form.hasErrors || form.hasGlobalErrors}
+@govukLayout(title = Title("declaration.choice.heading"), showDeclarationSummaryLink = false) {
 
-@govukLayout(
-    title = Title("declaration.choice.description", hasErrors = hasErrors),
-    backButton = None,
-    showDeclarationSummaryLink = false
-) {
+    @pageTitle(messages("declaration.choice.heading"))
 
-    @formHelper(action = routes.ChoiceController.submitChoice, 'autoComplete -> "off") {
-        @errorSummary(radioGroupErrors("value", CreateDec, form.errors))
+    @paragraphBody(messages("declaration.choice.hint"), "govuk-hint")
 
-        @govukRadios(Radios(
-            name = "value",
-            fieldset = Some(Fieldset(
-                legend = Some(Legend(
-                    content = Text(messages("declaration.choice.description")),
-                    isPageHeading = true,
-                    classes = "govuk-fieldset__legend--xl"
-                ))
-            )),
-            items = Seq(
-                RadioItem(
-                    id = Some(CreateDec),
-                    value = Some(CreateDec),
-                    content = Text(messages(s"declaration.choice.$CreateDec")),
-                    checked = form("value").value.contains(CreateDec)
-                ),
-                RadioItem(
-                    id = Some(ContinueDec),
-                    value = Some(ContinueDec),
-                    content = Text(messages(s"declaration.choice.$ContinueDec")),
-                    checked = form("value").value.contains(ContinueDec)
-                ),
-                RadioItem(
-                    id = Some(Dashboard),
-                    value = Some(Dashboard),
-                    content = Text(messages(s"declaration.choice.$Dashboard")),
-                    checked = form("value").value.contains(Dashboard)
-                ),
-                RadioItem(
-                    id = Some(Movements),
-                    value = Some(Movements),
-                    content = Text(messages(s"declaration.choice.$Movements")),
-                    checked = form("value").value.contains(Movements)
-                ),
-                RadioItem(
-                    id = Some(Inbox),
-                    value = Some(Inbox),
-                    content = Text(messages(s"declaration.choice.$Inbox")),
-                    checked = form("value").value.contains(Inbox)
-                )
-            ).filter(radioOption => availableJourneys.contains(radioOption.value.get)),
-            errorMessage = form("value").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
-        ))
+    @paragraph(link(
+        id = Some("create-declaration"),
+        text = messages("declaration.choice.link.create.new"),
+        call = DeclarationChoiceController.displayPage,
+        classes = Some("govuk-link govuk-link--no-visited-state focus")
+    ))
 
-        @saveAndContinue("site.continue")
+    @paragraph(link(
+        id = Some("manage-draft-declarations"),
+        text = messages("declaration.choice.link.manage.drafts"),
+        call = SavedDeclarationsController.displayDeclarations()
+    ))
 
-        @if(secureMessagingInboxConfig.isSfusSecureMessagingEnabled) {
-            <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible govuk-!-margin-bottom-6 govuk-!-margin-top-2" />
+    @paragraph(link(
+        id = Some("manage-submitted-declarations"),
+        text = messages("declaration.choice.link.manage.submitted"),
+        call = toDashboard
+    ))
 
-            @heading(messages("declaration.choice.link.sfus.description"), "govuk-heading-s", "h2")
+    @heading(messages("declaration.choice.heading.movements"), "govuk-heading-m", "h2")
 
-            @paragraph(externalLink(id = Some("sfusUploadLink"), text = messages("declaration.choice.link.sfusUpload.txt"), url = routes.FileUploadController.startFileUpload("").url))
-            @paragraph(externalLink(id = Some("sfusInboxLink"), text = messages("declaration.choice.link.sfusInbox.txt"), url = secureMessagingInboxConfig.sfusInboxLink))
+    @paragraph(link(
+        id = Some("movements"),
+        text = messages("declaration.choice.link.movements"),
+        call = Call("GET", externalServicesConfig.customsMovementsFrontendUrl)
+    ))
 
-            <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible govuk-!-margin-bottom-6 govuk-!-margin-top-2" />
-        }
-        @if(secureMessagingInboxConfig.isExportsSecureMessagingEnabled) {
-            <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible govuk-!-margin-bottom-6 govuk-!-margin-top-2" />
+    @paragraphBody(messages("declaration.choice.paragraph.1.movements"), id = Some("arrive-or-depart"))
+    @paragraphBody(messages("declaration.choice.paragraph.2.movements"), id = Some("consolidate"))
 
-            @heading(messages("declaration.choice.link.exports.description"), "govuk-heading-s", "h2")
+    <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible govuk-!-margin-bottom-6 govuk-!-margin-top-2" />
 
-            @paragraphBody(
-                messages(
-                    "declaration.choice.link.exports.description.p",
-                    link(id = None, text = messages("declaration.choice.link.exports.description.p.linkText"), call = toDashboard)
-                )
-            )
+    @heading(messages("declaration.choice.heading.sfus"), "govuk-heading-m", "h2")
 
-            @paragraph(externalLink(id = Some("cdsUploadLink"), text = messages("declaration.choice.link.sfusUpload.txt"), url = appConfig.cdsUploadDocs))
-
-            <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible govuk-!-margin-bottom-6 govuk-!-margin-top-2" />
-        }
-    }
+    @paragraph(externalLink(
+      id = Some("upload-documents"),
+      text = messages("declaration.choice.link.sfus"),
+      url = FileUploadController.startFileUpload("").url
+    ))
 }

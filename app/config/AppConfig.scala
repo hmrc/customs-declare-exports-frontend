@@ -17,7 +17,6 @@
 package config
 
 import com.google.inject.{Inject, Singleton}
-import forms.Choice
 import javax.inject.Named
 import models.DeclarationType
 import play.api.i18n.Lang
@@ -227,13 +226,6 @@ class AppConfig @Inject() (
 
   lazy val draftTimeToLive: FiniteDuration =
     servicesConfig.getDuration("draft.timeToLive").asInstanceOf[FiniteDuration]
-
-  def availableJourneys(): Seq[String] =
-    runModeConfiguration
-      .getOptional[String]("list-of-available-journeys")
-      .map(_.split(","))
-      .getOrElse(Array(Choice.AllowedChoiceValues.Dashboard))
-      .toSeq
 
   def availableDeclarations(): Seq[String] =
     runModeConfiguration

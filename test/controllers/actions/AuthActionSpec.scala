@@ -16,7 +16,7 @@
 
 package controllers.actions
 
-import base.{ControllerWithoutFormSpec, Injector}
+import base.ControllerWithoutFormSpec
 import base.ExportsTestData.newUser
 import config.{AppConfig, ExternalServicesConfig}
 import controllers.{routes, ChoiceController}
@@ -31,16 +31,18 @@ import views.html.{choice_page, declaration_details}
 import java.net.URLEncoder
 import scala.concurrent.Future
 
-class AuthActionSpec extends ControllerWithoutFormSpec with Injector {
+class AuthActionSpec extends ControllerWithoutFormSpec {
 
+  val mcc = stubMessagesControllerComponents()
   val page = instanceOf[declaration_details]
 
   val choicePage = mock[choice_page]
   override val appConfig = mock[AppConfig]
   val externalServicesConfig = mock[ExternalServicesConfig]
 
-  override val mockAuthAction =
-    new AuthActionImpl(mockAuthConnector, new EoriAllowList(Seq(authEori)), stubMessagesControllerComponents(), metricsMock, appConfig)
+  override val mockAuthAction = new AuthActionImpl(mockAuthConnector, new EoriAllowList(Seq(authEori)), mcc, metricsMock, appConfig)
+
+  val controller = new ChoiceController(mockAuthAction, mockVerifiedEmailAction, mcc, choicePage)
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -48,20 +50,9 @@ class AuthActionSpec extends ControllerWithoutFormSpec with Injector {
     reset(appConfig)
     when(appConfig.loginUrl).thenReturn("/unauthorised")
     when(appConfig.loginContinueUrl).thenReturn("/loginContinueUrl")
-    when(choicePage(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
-    when(mockSecureMessagingInboxConfig.isExportsSecureMessagingEnabled).thenReturn(true)
+    when(choicePage()(any(), any())).thenReturn(HtmlFormat.empty)
     when(appConfig.maybeTdrHashSalt).thenReturn(None)
   }
-
-  val controller = new ChoiceController(
-    mockAuthAction,
-    mockVerifiedEmailAction,
-    stubMessagesControllerComponents(),
-    mockSecureMessagingInboxConfig,
-    choicePage,
-    appConfig,
-    externalServicesConfig
-  )
 
   val tdrHashSalt = Some("SomeSuperSecret")
 
@@ -70,8 +61,7 @@ class AuthActionSpec extends ControllerWithoutFormSpec with Injector {
     "allow user into choice page" when {
       "No allow list is active or user's EORI is on the allow list" in {
         authorizedUser()
-
-        val result = controller.displayPage(None)(getRequest())
+        val result = controller.displayPage(getRequest())
         status(result) mustBe OK
       }
 
@@ -79,7 +69,7 @@ class AuthActionSpec extends ControllerWithoutFormSpec with Injector {
         authorizedUser()
         when(appConfig.maybeTdrHashSalt).thenReturn(tdrHashSalt)
 
-        val result = controller.displayPage(None)(getRequest())
+        val result = controller.displayPage(getRequest())
         status(result) mustBe OK
       }
     }
@@ -88,7 +78,7 @@ class AuthActionSpec extends ControllerWithoutFormSpec with Injector {
       val loginPageUrl = Some(s"${appConfig.loginUrl}?continue=${URLEncoder.encode(appConfig.loginContinueUrl, "UTF-8")}")
       unauthorizedUser(new BearerTokenExpired())
 
-      val result = controller.displayPage(None)(getRequest())
+      val result = controller.displayPage(getRequest())
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe loginPageUrl
@@ -98,7 +88,7 @@ class AuthActionSpec extends ControllerWithoutFormSpec with Injector {
       "EORI number is missing" in {
         userWithoutEori()
 
-        val result = controller.displayPage(None)(getRequest())
+        val result = controller.displayPage(getRequest())
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(routes.UnauthorisedController.onPageLoad(UserIsNotEnrolled).url)
@@ -107,7 +97,7 @@ class AuthActionSpec extends ControllerWithoutFormSpec with Injector {
       "EORI is not on allow list" in {
         authorizedUser(newUser("11111", "external1"))
 
-        val result = controller.displayPage(None)(getRequest())
+        val result = controller.displayPage(getRequest())
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(routes.UnauthorisedController.onPageLoad(UserEoriNotAllowed).url)
@@ -119,7 +109,7 @@ class AuthActionSpec extends ControllerWithoutFormSpec with Injector {
           when(appConfig.maybeTdrHashSalt).thenReturn(tdrHashSalt)
           authorizedUser(newUser(authEori, "external1", None))
 
-          val result = controller.displayPage(None)(getRequest())
+          val result = controller.displayPage(getRequest())
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(routes.UnauthorisedController.onPageLoad(UserEoriNotAllowed).url)
@@ -129,7 +119,7 @@ class AuthActionSpec extends ControllerWithoutFormSpec with Injector {
           when(appConfig.maybeTdrHashSalt).thenReturn(tdrHashSalt)
           authorizedUser(newUser(authEori, "external1", Some("IncorrectValue")))
 
-          val result = controller.displayPage(None)(getRequest())
+          val result = controller.displayPage(getRequest())
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(routes.UnauthorisedController.onPageLoad(UserEoriNotAllowed).url)
@@ -139,7 +129,7 @@ class AuthActionSpec extends ControllerWithoutFormSpec with Injector {
       "on other 'AuthorisationException' errors" in {
         unauthorizedUser(InternalError("MissingResponseHeader"))
 
-        val result = controller.displayPage(None)(getRequest())
+        val result = controller.displayPage(getRequest())
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(routes.UnauthorisedController.onPageLoad(UrlDirect).url)
@@ -149,7 +139,7 @@ class AuthActionSpec extends ControllerWithoutFormSpec with Injector {
     "redirect to /you-cannot-use-this-service when user is an Agent" in {
       unauthorizedUser(UnsupportedAffinityGroup())
 
-      val result = controller.displayPage(None)(getRequest())
+      val result = controller.displayPage(getRequest())
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(routes.UnauthorisedController.onAgentKickOut(UserIsAgent).url)
@@ -159,7 +149,7 @@ class AuthActionSpec extends ControllerWithoutFormSpec with Injector {
       val loginPageUrl = Some(s"${appConfig.loginUrl}?continue=${URLEncoder.encode(appConfig.loginContinueUrl, "UTF-8")}")
       userWithoutExternalId()
 
-      val result = controller.displayPage(None)(getRequest())
+      val result = controller.displayPage(getRequest())
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe loginPageUrl
@@ -168,7 +158,7 @@ class AuthActionSpec extends ControllerWithoutFormSpec with Injector {
     "propagate the error if exception thrown is not an 'AuthorisationException' instance" in {
       when(mockAuthConnector.authorise(any(), any())(any(), any())).thenReturn(Future.failed(new RuntimeException("error")))
 
-      val result = controller.displayPage(None)(getRequest())
+      val result = controller.displayPage(getRequest())
 
       intercept[RuntimeException](status(result))
     }
