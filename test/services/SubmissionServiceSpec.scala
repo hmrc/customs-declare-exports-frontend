@@ -138,46 +138,54 @@ class SubmissionServiceSpec
     val timerBefore = registry.getTimers.get(exportMetrics.timerName(metric)).getCount
     val counterBefore = registry.getCounters.get(exportMetrics.counterName(metric)).getCount
 
+    val expectedActionId = "actionId"
+
+    val parentDeclaration = aDeclaration(
+      withId("id1"),
+      withStatus(DeclarationStatus.COMPLETE),
+      withConsignmentReferences(ducr = "ducr", lrn = lrn),
+      withDestinationCountry(),
+      withTotalNumberOfItems(Some("123456"), Some("1.49"), Some("GBP"), Some("yes"))
+    )
+    val amendedDecl = aDeclaration(
+      withId("id2"),
+      withStatus(DeclarationStatus.AMENDMENT_DRAFT),
+      withParentDeclarationId("id1"),
+      withConsignmentReferences(ducr = "ducr", lrn = lrn),
+      withDestinationCountry(Country(Some("IT"))),
+      withTotalNumberOfItems(Some("654321"), Some("94.1"), Some("GBP"), Some("no"))
+    )
+
     "successfully submit to the back end a valid amendment" in {
-      // Given
-      val parentDeclaration = aDeclaration(
-        withId("id1"),
-        withStatus(DeclarationStatus.COMPLETE),
-        withConsignmentReferences(ducr = "ducr", lrn = lrn),
-        withDestinationCountry(),
-        withTotalNumberOfItems(Some("123456"), Some("1.49"), Some("GBP"), Some("yes"))
-      )
       when(connector.findDeclaration(any())(any(), any())).thenReturn(Future.successful(Some(parentDeclaration)))
-
-      val amendedDecl = aDeclaration(
-        withId("id2"),
-        withStatus(DeclarationStatus.AMENDMENT_DRAFT),
-        withParentDeclarationId("id1"),
-        withConsignmentReferences(ducr = "ducr", lrn = lrn),
-        withDestinationCountry(Country(Some("IT"))),
-        withTotalNumberOfItems(Some("654321"), Some("94.1"), Some("GBP"), Some("no"))
-      )
-
-      val expectedActionId = "actionId"
       when(connector.submitAmendment(any())(any(), any())).thenReturn(Future.successful(expectedActionId))
 
-      // When
       val result = submissionService.submitAmendment(eori, amendedDecl, amendmentSubmission, submissionId, false)(hc, global)
       result.futureValue mustBe Some(expectedActionId)
 
-      // Then
       val expectedFieldPointers = List(
         "declaration.locations.destinationCountry",
         "declaration.totalNumberOfItems.totalAmountInvoiced",
         "declaration.totalNumberOfItems.exchangeRate"
       )
-      val expectedSubmissionAmendment = SubmissionAmendment(submissionId, "id2", expectedFieldPointers)
+      val expectedSubmissionAmendment = SubmissionAmendment(submissionId, "id2", false, expectedFieldPointers)
       verify(connector).submitAmendment(equalTo(expectedSubmissionAmendment))(any(), any())
       verify(auditService).auditAllPagesUserInput(equalTo(AuditTypes.AmendmentPayload), equalTo(amendedDecl))(any())
       verify(auditService).auditAmendmentSent(equalTo(AuditTypes.Amendment), notNull())(any)
 
       registry.getTimers.get(exportMetrics.timerName(metric)).getCount mustBe >(timerBefore)
       registry.getCounters.get(exportMetrics.counterName(metric)).getCount mustBe >(counterBefore)
+    }
+
+    "successfully submit to the back end a valid amendment cancellation" in {
+      when(connector.findDeclaration(any())(any(), any())).thenReturn(Future.successful(Some(parentDeclaration)))
+      when(connector.submitAmendment(any())(any(), any())).thenReturn(Future.successful(expectedActionId))
+
+      val result = submissionService.submitAmendment(eori, amendedDecl, amendmentSubmission, submissionId, true)(hc, global)
+      result.futureValue mustBe Some(expectedActionId)
+
+      val expectedSubmissionAmendment = SubmissionAmendment(submissionId, "id2", true, List(""))
+      verify(connector).submitAmendment(equalTo(expectedSubmissionAmendment))(any(), any())
     }
   }
 }

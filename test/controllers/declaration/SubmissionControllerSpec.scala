@@ -25,6 +25,7 @@ import forms.declaration.LegalDeclaration
 import forms.declaration.LegalDeclaration._
 import mock.ErrorHandlerMocks
 import models.ExportsDeclaration
+import models.declaration.submissions.EnhancedStatus.RECEIVED
 import models.declaration.submissions.Submission
 import models.requests.SessionHelper
 import models.requests.SessionHelper._
@@ -82,7 +83,15 @@ class SubmissionControllerSpec extends ControllerWithoutFormSpec with ErrorHandl
 
   val uuid = UUID.randomUUID().toString
 
-  val expectedSubmission = Submission(uuid, eori = "GB123456", lrn = "123LRN", ducr = Some("ducr"), actions = List.empty, latestDecId = Some(uuid))
+  val expectedSubmission = Submission(
+    uuid,
+    eori = "GB123456",
+    lrn = "123LRN",
+    ducr = Some("ducr"),
+    actions = List.empty,
+    latestDecId = Some(uuid),
+    latestEnhancedStatus = Some(RECEIVED)
+  )
 
   "SubmissionController.displaySubmitDeclarationPage" when {
 
@@ -151,7 +160,7 @@ class SubmissionControllerSpec extends ControllerWithoutFormSpec with ErrorHandl
 
     "feature flag is on" should {
 
-      "Redirect to the Amendment Submission page" when {
+      "Redirect to the Cancel Amendment page" when {
         "Backend returns a Submission with a defined latestDecId and findOrCreateDraftForAmendment is successful" in {
           when(mockCustomsDeclareExportsConnector.findSubmission(any())(any(), any()))
             .thenReturn(Future.successful(Some(expectedSubmission)))

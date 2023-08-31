@@ -19,7 +19,7 @@ package models.declaration.submissions
 import models.ExportsFieldPointer.ExportsFieldPointer
 import play.api.libs.json.Json
 
-case class SubmissionAmendment(submissionId: String, declarationId: String, fieldPointers: Seq[ExportsFieldPointer])
+case class SubmissionAmendment(submissionId: String, declarationId: String, isCancellation: Boolean, fieldPointers: Seq[ExportsFieldPointer])
 
 object SubmissionAmendment {
   implicit val format = Json.format[SubmissionAmendment]
