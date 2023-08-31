@@ -56,12 +56,16 @@ class ItemsRemoveItemViewSpec extends UnitViewSpec with ExportsTestHelper with S
 
     val view = createView(item = exportItem)
 
-    "display 'Back' button pointing to /declaration-items-list" in {
-      view.getElementById("back-link") must haveHref(ItemsSummaryController.displayItemsSummaryPage)
+    "display 'Back to previous question' button pointing to /declaration-items-list" in {
+      val backButton = view.getElementById("back-link")
+      backButton.text mustBe messages("site.backToPreviousQuestion")
+      backButton must haveHref(ItemsSummaryController.displayItemsSummaryPage)
     }
 
     "display 'Back' button pointing to /saved-summary" in {
-      createView(item = exportItem, fromSummary = true).getElementById("back-link") must haveHref(SummaryController.displayPage)
+      val backButton = createView(item = exportItem, fromSummary = true).getElementById("back-link")
+      backButton.text mustBe messages("site.back")
+      backButton must haveHref(SummaryController.displayPage)
     }
 
     "display error section" in {
