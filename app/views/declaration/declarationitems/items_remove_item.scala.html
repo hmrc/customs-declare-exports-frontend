@@ -57,7 +57,7 @@
 
 @govukLayout(
     title = Title("declaration.itemsRemove.title", "declaration.section.5", itemDisplayNum.toString, hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.back"), backCall)),
+    backButton = Some(BackButton(messages(if (fromSummary) "site.back" else "site.backToPreviousQuestion"), backCall)),
     showDeclarationSummaryLink = false
 ) {
     @formHelper(action = RemoveItemsSummaryController.removeItem(item.id, fromSummary), 'autoComplete -> "off") {
