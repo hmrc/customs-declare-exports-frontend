@@ -136,7 +136,7 @@ class ExpressConsignmentViewSpec extends UnitViewSpec with CommonMessages with I
 
       "display the expected tariff details" in {
         val view: Document = createView()
-        verifyTariffDetails(view, "clearance")
+        verifyTariffDetails(view, "common")
       }
     }
   }

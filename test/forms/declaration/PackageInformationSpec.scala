@@ -141,8 +141,7 @@ class PackageInformationSpec extends UnitWithMocksSpec with JourneyTypeTestRunne
     Seq(
       TariffContentKey(s"${messageKey}.1.clearance"),
       TariffContentKey(s"${messageKey}.2.clearance"),
-      TariffContentKey(s"${messageKey}.3.clearance"),
-      TariffContentKey(s"${messageKey}.4.clearance")
+      TariffContentKey(s"${messageKey}.3.clearance")
     )
 
   "PackageInformation" when {

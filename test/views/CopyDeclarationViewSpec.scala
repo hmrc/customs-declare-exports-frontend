@@ -22,7 +22,7 @@ import controllers.routes.DeclarationDetailsController
 import forms.CopyDeclaration.form
 import forms.declaration.ConsignmentReferences.ducrId
 import forms.{CopyDeclaration, Ducr, Lrn}
-import models.DeclarationType.{CLEARANCE, SUPPLEMENTARY}
+import models.DeclarationType.SUPPLEMENTARY
 import models.requests.{JourneyRequest, SessionHelper}
 import org.jsoup.nodes.Document
 import tools.Stubs
@@ -91,18 +91,10 @@ class CopyDeclarationViewSpec extends UnitViewSpec with CommonMessages with Stub
         val actualText = removeBlanksIfAnyBeforeDot(tariffDetails.text)
 
         val prefix = "tariff.declaration.consignmentReferences"
-        val expectedText = request.declarationType match {
-          case CLEARANCE => s"""
-            ${messages(s"$prefix.1.clearance.text", messages(s"$prefix.1.clearance.linkText.0"))}
-            ${messages(s"$prefix.2.clearance.text")}
-            ${messages(s"$prefix.3.clearance.text")}
-          """
-          case _ => s"""${if (request.declarationType == SUPPLEMENTARY) messages(s"$prefix.1.supplementary.text") else ""}
+        val expectedText = s"""${if (request.declarationType == SUPPLEMENTARY) messages(s"$prefix.1.supplementary.text") else ""}
             ${messages(s"$prefix.1.common.text", messages(s"$prefix.1.common.linkText.0"))}
             ${messages(s"$prefix.2.common.text", messages(s"$prefix.2.common.linkText.0"))}
-            ${messages(s"$prefix.3.common.text")}
           """
-        }
 
         val expectedTextWithNoMargin = removeLineBreakIfAny(removeNewLinesIfAny(expectedText).trim)
         actualText mustBe expectedTextWithNoMargin

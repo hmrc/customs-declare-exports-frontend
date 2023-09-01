@@ -21,6 +21,6 @@ import forms.common.DeclarationPageBaseSpec
 class ConsignorDetailsSpec extends DeclarationPageBaseSpec {
 
   "ConsignorDetails" when {
-    testTariffContentKeysNoSpecialisation(ConsignorDetails, "tariff.declaration.consignorEoriNumber", getClearanceTariffKeys)
+    testTariffContentKeysNoSpecialisation(ConsignorDetails, "tariff.declaration.consignorAddress", getClearanceTariffKeys)
   }
 }

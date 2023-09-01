@@ -139,8 +139,7 @@ object PackageInformation extends DeclarationPage with FieldMapping {
         Seq(
           TariffContentKey("tariff.declaration.item.packageInformation.1.clearance"),
           TariffContentKey("tariff.declaration.item.packageInformation.2.clearance"),
-          TariffContentKey("tariff.declaration.item.packageInformation.3.clearance"),
-          TariffContentKey("tariff.declaration.item.packageInformation.4.clearance")
+          TariffContentKey("tariff.declaration.item.packageInformation.3.clearance")
         )
       case _ =>
         Seq(

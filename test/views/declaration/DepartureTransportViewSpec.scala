@@ -30,7 +30,7 @@ import forms.declaration.InlandOrBorder.Border
 import forms.declaration.ModeOfTransportCode.{RoRo, Road}
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
 import forms.declaration.{ModeOfTransportCode, TransportCodes}
-import models.DeclarationType.{CLEARANCE, STANDARD}
+import models.DeclarationType.STANDARD
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.mvc.Call
@@ -65,7 +65,7 @@ class DepartureTransportViewSpec extends PageWithButtonsSpec with Injector {
       }
 
       "display the expected tariff details" in {
-        val expectedKey = if (request.isType(CLEARANCE)) "clearance" else "common"
+        val expectedKey = "common"
 
         val tariffTitle = view.getElementsByClass("govuk-details__summary-text")
         tariffTitle.text mustBe messages(s"tariff.expander.title.$expectedKey")

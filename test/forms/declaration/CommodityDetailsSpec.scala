@@ -159,11 +159,7 @@ class CommodityDetailsSpec extends DeclarationPageBaseSpec {
     Seq(TariffContentKey(s"${messageKey}.1.common"), TariffContentKey(s"${messageKey}.2.common"))
 
   override def getClearanceTariffKeys(messageKey: String): Seq[TariffContentKey] =
-    Seq(
-      TariffContentKey(s"${messageKey}.1.clearance"),
-      TariffContentKey(s"${messageKey}.2.clearance"),
-      TariffContentKey(s"${messageKey}.3.clearance")
-    )
+    Seq(TariffContentKey(s"${messageKey}.1.clearance"), TariffContentKey(s"${messageKey}.2.clearance"))
 
   "CommodityDetails" when {
     testTariffContentKeys(CommodityDetails, "tariff.declaration.item.commodityDetails")

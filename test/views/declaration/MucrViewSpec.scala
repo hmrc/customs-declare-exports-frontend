@@ -119,8 +119,8 @@ class MucrViewSpec extends UnitViewSpec with CommonMessages with Injector {
 
         val tariffDetails = view.getElementsByClass("govuk-details__text").first
         removeBlanksIfAnyBeforeDot(tariffDetails.text) mustBe messages(
-          "tariff.declaration.mucr.clearance.text",
-          messages("tariff.declaration.mucr.clearance.linkText.0")
+          "tariff.declaration.mucr.common.text",
+          messages("tariff.declaration.mucr.common.linkText.0")
         )
       }
     }

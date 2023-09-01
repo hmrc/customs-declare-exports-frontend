@@ -97,7 +97,7 @@ class LocationOfGoodsViewSpec extends PageWithButtonsSpec with Injector {
         }
 
         "display the expected tariff details" in {
-          val key = if (request.isType(CLEARANCE)) "clearance" else "common"
+          val key = "common"
 
           val tariffTitle = view.getElementsByClass("govuk-details__summary-text").last
           tariffTitle.text mustBe messages(s"tariff.expander.title.$key")
@@ -152,7 +152,7 @@ class LocationOfGoodsViewSpec extends PageWithButtonsSpec with Injector {
         }
 
         "display the expected tariff details" in {
-          val key = if (request.isType(CLEARANCE)) "clearance" else "common"
+          val key = "common"
 
           val tariffTitle = view.getElementsByClass("govuk-details__summary-text").last
           tariffTitle.text mustBe messages(s"tariff.expander.title.$key")

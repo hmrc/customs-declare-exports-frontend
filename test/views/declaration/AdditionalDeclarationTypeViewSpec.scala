@@ -60,7 +60,7 @@ class AdditionalDeclarationTypeViewSpec extends UnitViewSpec with CommonMessages
         }
 
         "display the expected tariff details" in {
-          val expectedKey = if (declarationType == CLEARANCE) "clearance" else "common"
+          val expectedKey = "common"
 
           val tariffTitle = view.getElementsByClass("govuk-details__summary-text").last
           tariffTitle.text mustBe messages(s"tariff.expander.title.$expectedKey")
