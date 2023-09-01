@@ -18,15 +18,14 @@ package controllers.declaration
 
 import com.google.inject.Inject
 import config.featureFlags.DeclarationAmendmentsConfig
+import connectors.CustomsDeclareExportsConnector
 import controllers.actions.{AuthAction, JourneyAction, VerifiedEmailAction}
 import controllers.declaration.amendments.routes.AmendmentOutcomeController
 import controllers.declaration.routes.ConfirmationController
 import controllers.helpers.ErrorFixModeHelper.inErrorFixMode
 import controllers.routes.RootController
-import connectors.CustomsDeclareExportsConnector
 import forms.declaration.{AmendmentSubmission, LegalDeclaration}
 import handlers.ErrorHandler
-import models.declaration.submissions.EnhancedStatus.ERRORS
 import models.declaration.submissions.Submission
 import models.requests.JourneyRequest
 import models.requests.SessionHelper._
@@ -36,6 +35,7 @@ import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.SubmissionService
 import services.cache.ExportsCacheService
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.amendments.amendment_submission
@@ -63,20 +63,27 @@ class SubmissionController @Inject() (
     else
       getValue(submissionUuid) match {
         case Some(submissionId) =>
-          customsDeclareExportsConnector.findSubmission(submissionId) flatMap { maybeSubmission =>
-            (for {
-              submission <- maybeSubmission
-              latestDecId <- submission.latestDecId
-            } yield customsDeclareExportsConnector.findOrCreateDraftForAmendment(latestDecId, ERRORS) map { id =>
-              Redirect(routes.SubmissionController.displayCancelAmendmentPage).addingToSession((declarationUuid, id))
-            }) getOrElse {
-              Future.successful(errorHandler.internalServerError("latestDecId does not exist in submission for amendment cancellation"))
-            }
+          customsDeclareExportsConnector.findSubmission(submissionId) flatMap {
+            case Some(submission) => cancelAmendment(submission)
+            case _                => errorHandler.internalError(s"No Submission with id($submissionId) on amendment cancellation")
           }
-        case _ =>
-          Future.successful(errorHandler.internalServerError("No 'submissionUuid' from in session data for an amendment cancellation"))
+
+        case _ => errorHandler.internalError("No 'submissionUuid' in Session for an amendment cancellation")
       }
   }
+
+  private def cancelAmendment(submission: Submission)(implicit hc: HeaderCarrier, request: Request[_]): Future[Result] =
+    (submission.latestDecId, submission.latestEnhancedStatus) match {
+      case (Some(latestDecId), Some(latestEnhancedStatus)) =>
+        customsDeclareExportsConnector.findOrCreateDraftForAmendment(latestDecId, latestEnhancedStatus) flatMap { declarationId =>
+          val call = routes.SubmissionController.displayCancelAmendmentPage
+          Future.successful(Redirect(call).addingToSession((declarationUuid, declarationId)))
+        }
+
+      case _ =>
+        val id = if (submission.latestDecId.isEmpty) "latestDecId" else "latestEnhancedStatus"
+        errorHandler.internalError(s"Undefined $id for Submission(${submission.uuid}) on amendment cancellation")
+    }
 
   private val actions = authenticate andThen verifyEmail andThen journeyType
 

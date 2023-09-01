@@ -80,10 +80,14 @@ class SubmissionService @Inject() (connector: CustomsDeclareExportsConnector, au
               AuditTypes.Amendment
             }
 
-          val declarationDiff = declaration.createDiff(parentDeclaration)
-          val fieldPointers = declarationDiff.map(_.fieldPointer)
+          val fieldPointers =
+            if (isCancellation) List("")
+            else {
+              val declarationDiff = declaration.createDiff(parentDeclaration)
+              declarationDiff.map(_.fieldPointer)
+            }
 
-          val submissionAmendment = SubmissionAmendment(submissionId, declaration.id, fieldPointers)
+          val submissionAmendment = SubmissionAmendment(submissionId, declaration.id, isCancellation, fieldPointers)
           connector
             .submitAmendment(submissionAmendment)
             .andThen {

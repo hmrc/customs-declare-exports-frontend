@@ -17,7 +17,7 @@
 package views.helpers
 
 import models.declaration.submissions.EnhancedStatus._
-import models.declaration.submissions.RequestType.{AmendmentRequest, SubmissionRequest}
+import models.declaration.submissions.RequestType.{AmendmentCancellationRequest, AmendmentRequest, SubmissionRequest}
 import models.declaration.submissions.{NotificationSummary, RequestType, Submission}
 import play.api.libs.json.Json
 import views.declaration.spec.UnitViewSpec
@@ -62,6 +62,7 @@ class EnhancedStatusHelperSpec extends UnitViewSpec {
       asTimelineEvent(event(AmendmentRequest, CUSTOMS_POSITION_GRANTED)) mustBe "Amendment accepted"
       asTimelineEvent(event(AmendmentRequest, CUSTOMS_POSITION_DENIED)) mustBe "Amendment failed"
       asTimelineEvent(event(AmendmentRequest, ERRORS)) mustBe "Amendment rejected"
+      asTimelineEvent(event(AmendmentCancellationRequest, CUSTOMS_POSITION_GRANTED)) mustBe "Amendment cancelled"
       asTimelineEvent(event(SubmissionRequest, CUSTOMS_POSITION_DENIED)) mustBe "Cancellation request denied"
       asTimelineEvent(event(SubmissionRequest, CUSTOMS_POSITION_GRANTED)) mustBe "Customs position granted"
     }

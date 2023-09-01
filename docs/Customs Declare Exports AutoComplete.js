@@ -1206,7 +1206,19 @@ function submitAmendment() {
         document.getElementById('fullName').value = 'Tim Tester'
         document.getElementById('jobRole').value = 'Tester'
         document.getElementById('email').value = 'tim@testing.com'
-        document.getElementById('amendReason').value = 'Some reason'
+        document.getElementById('reason').value = 'Some reason'
+        document.getElementById('confirmation').click()
+
+        setDeclaration(0)
+    }
+}
+
+function cancelAmendment() {
+    if (currentPageIs('/customs-declare-exports/declaration/cancel-your-amendment')) {
+        document.getElementById('fullName').value = 'Tim Tester'
+        document.getElementById('jobRole').value = 'Tester'
+        document.getElementById('email').value = 'tim@testing.com'
+        document.getElementById('reason').value = 'Some reason'
         document.getElementById('confirmation').click()
 
         setDeclaration(0)
@@ -1325,5 +1337,6 @@ function completeJourney() {
     // summary and confirmation
     summary()
     submission()
+    cancelAmendment()
     submitAmendment()
 }
