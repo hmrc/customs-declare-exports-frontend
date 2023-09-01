@@ -258,7 +258,7 @@ declaration.type.insetText.p2 = Mae’n berthnasol os ydych yn defnyddio bagiau 
 
 declaration.type.details.p1 = Bydd yr ateb hwn yn cwblhau’r math o ddatganiad yn {0}.
 
-declaration.type.details.p1.linkText = elfen ddata 1/2 - Math o Ddatganiad Ychwanegol (yn agor tab newydd)
+declaration.type.details.p1.linkText = Elfen Ddata 1/2 - Math o Ddatganiad Ychwanegol (yn agor tab newydd)
 
 declaration.type.details.p2 = I gael ragor o fanylion ynglŷn â phryd y gallwch ddefnyddio datganiad symlach (defnydd achlysurol), gweler {0}.
 
@@ -272,501 +272,287 @@ tariff.expander.title.clearance = Rhagor o fanylion am yr hyn sydd ei angen ar y
 
 tariff.declaration.dispatchLocation.common.text = Bydd yr ateb hwn yn cwblhau<br>{0}.
 
-tariff.declaration.dispatchLocation.common.linkText.0 = elfen ddata 1/1 - Math o Ddatganiad (yn agor tab newydd)
-
-tariff.declaration.dispatchLocation.clearance.text = Ewch i elfen ddata 1/1, Math o Ddatganiad, yn y<br>{0}.
-
-tariff.declaration.dispatchLocation.clearance.linkText.0 = Canllaw Cwblhau Cais am Glirio’r Tollau C21 - Allforion Stocrestrau (yn agor tab newydd)
+tariff.declaration.dispatchLocation.common.linkText.0 = Elfen Ddata 1/1 - Math o Ddatganiad (yn agor tab newydd)
 
 tariff.declaration.type.common.text = Bydd yr ateb hwn yn cwblhau<br>{0}.
 
-tariff.declaration.type.common.linkText.0 = elfen ddata 1/2 - Math o Ddatganiad Ychwanegol (yn agor tab newydd)
-
-tariff.declaration.type.clearance.text = Ewch i elfen ddata 1/2, Math o Ddatganiad Ychwanegol, yn y<br>{0}.
-
-tariff.declaration.type.clearance.linkText.0 = Canllaw Cwblhau Cais am Glirio’r Tollau C21 - Allforion Stocrestrau (yn agor tab newydd)
-
-tariff.declaration.ducrChoice.1.clearance.linkText.0 = Canllaw Cwblhau Cais am Glirio’r Tollau C21 - Allforion Stocrestrau (yn agor tab newydd)
-
-tariff.declaration.ducrChoice.2.clearance.text = UCR, ewch i elfen ddata 2/1, Datganiad Symlach/Dogfennau Blaenorol
-
-tariff.declaration.ducrChoice.3.clearance.text = LRN, ewch i elfen ddata 2/5, LRN (dim cyfeirnod blaenorol)
+tariff.declaration.type.common.linkText.0 = Elfen Ddata 1/2 - Math o Ddatganiad Ychwanegol (yn agor tab newydd)
 
 tariff.declaration.lrn.1.common.text = Am fanylion am yr LRN, ewch i<br>{0}.
 
+tariff.declaration.lrn.1.common.linkText.0 = Elfen Ddata 2/5 - LRN (dim cyfeirnod blaenorol)
+
 tariff.declaration.consignmentReferences.1.common.text = Am fanylion am y DUCR, ewch i<br>{0}.
 
-tariff.declaration.consignmentReferences.1.common.linkText.0 = elfen ddata 2/4 - Cyfeirnod / UCR
+tariff.declaration.consignmentReferences.1.common.linkText.0 = Elfen Ddata 2/4 - Cyfeirnod / UCR (yn agor tab newydd)
 
 tariff.declaration.consignmentReferences.2.common.text = Am fanylion am yr LRN, ewch i<br>{0}.
 
-tariff.declaration.consignmentReferences.2.common.linkText.0 = elfen ddata 2/5 - LRN (dim cyfeirnod blaenorol)
+tariff.declaration.consignmentReferences.2.common.linkText.0 = Elfen Ddata 2/5 - LRN (dim cyfeirnod blaenorol) (yn agor tab newydd)
 
-tariff.declaration.consignmentReferences.3.common.text = Bydd y cysylltiadau’n agor tab newydd.
-
-tariff.declaration.consignmentReferences.1.clearance.text = Ewch i’r<br>{0}. I gael manylion am y canlynol:
-
-tariff.declaration.consignmentReferences.1.clearance.linkText.0 = Canllaw Cwblhau Cais am Glirio’r Tollau C21 - Allforion Stocrestrau (yn agor tab newydd)
-
-tariff.declaration.consignmentReferences.2.clearance.text = UCR, ewch i elfen ddata 2/1, Datganiad Symlach/Dogfennau Blaenorol
-
-tariff.declaration.consignmentReferences.3.clearance.text = LRN, ewch i elfen ddata 2/5, LRN (dim cyfeirnod blaenorol)
-
-tariff.declaration.consignmentReferences.1.supplementary.text = Mae’r cofnodion ar y dudalen hon yn cwblhau’r holl ofynion penodol ar gyfer elfen ddata 2/1 ar gyfer datganiadau atodol - mae’r ddau gyfeirnod ‘Y’ sydd eu hangen bellach wedi’u nodi.
+tariff.declaration.consignmentReferences.1.supplementary.text = Mae’r cofnodion ar y dudalen hon yn cwblhau’r holl ofynion penodol ar gyfer Elfen Ddata 2/1 ar gyfer datganiadau atodol - mae’r ddau gyfeirnod ‘Y’ sydd eu hangen bellach wedi’u nodi.
 
 tariff.declaration.mucr.common.text = Mae’r cofnod ar y dudalen hon yn nodi categori datganiad ‘Z’ a chod dogfen ‘MCR’ yn awtomatig ac yn cwblhau’r elfennau gofynnol ar gyfer {0}.
 
-tariff.declaration.mucr.common.linkText.0 = elfen ddata 2/1 Datganiad Symlach / Dogfennau Blaenorol (yn agor tab newydd)
-
-tariff.declaration.mucr.clearance.text = Mae’r cofnod ar y dudalen hon yn nodi categori ‘Z’ a chod dogfen ‘MCR’ yn awtomatig ac yn cwblhau’r elfennau gofynnol ar gyfer {0}.
-
-tariff.declaration.mucr.clearance.linkText.0 = elfen ddata 2/1 Datganiad Symlach / Dogfennau Blaenorol (yn agor tab newydd)
+tariff.declaration.mucr.common.linkText.0 = Elfen Ddata 2/1 Datganiad Symlach / Dogfennau Blaenorol (yn agor tab newydd)
 
 tariff.declaration.declarantDetails.common.text = I gael manylion am y rhif EORI, ewch i<br>{0}.
 
-tariff.declaration.declarantDetails.common.linkText.0 = elfen ddata 3/18 - Rhif Adnabod y Datganydd (yn agor tab newydd)
-
-tariff.declaration.declarantDetails.clearance.text = Ewch i elfen ddata 3/18 Rhif Adnabod y Datganydd yn<br>{0}.
-
-tariff.declaration.declarantDetails.clearance.linkText.0 = Canllaw Cwblhau Cais am Glirio’r Tollau C21 - Allforion Stocrestrau (yn agor tab newydd)
+tariff.declaration.declarantDetails.common.linkText.0 = Elfen Ddata 3/18 - Rhif Adnabod y Datganydd (yn agor tab newydd)
 
 tariff.declaration.areYouTheExporter.common.text = I gael manylion, ewch i<br>{0}.
 
-tariff.declaration.areYouTheExporter.common.linkText.0 = elfen ddata 3/2 - Rhif Adnabod yr Allforiwr (yn agor tab newydd)
+tariff.declaration.areYouTheExporter.common.linkText.0 = Elfen Ddata 3/2 - Rhif Adnabod yr Allforiwr (yn agor tab newydd)
 
-tariff.declaration.areYouTheExporter.common.1.text = Bydd ateb ‘Iawn’ yn anfon 00400 EXPORTER ar gyfer elfen ddata 2/2, sydd ei angen os mai chi yw’r allforiwr.
-
-tariff.declaration.areYouTheExporter.clearance.1.text = Bydd ateb ‘Iawn’ yn anfon 00400 EXPORTER ar gyfer elfen ddata 2/2, sydd ei angen os mai chi yw’r allforiwr.
-
-tariff.declaration.areYouTheExporter.clearance.text = Ewch i elfen ddata 3/2 Rhif Adnabod yr Allforiwr yn<br>{0}.
-
-tariff.declaration.areYouTheExporter.clearance.linkText.0 = Canllaw Cwblhau Cais am Glirio’r Tollau C21 - Allforion Stocrestrau (yn agor tab newydd)
+tariff.declaration.areYouTheExporter.common.1.text = Bydd ateb ‘Iawn’ yn anfon 00400 EXPORTER ar gyfer Elfen Ddata 2/2, sydd ei angen os mai chi yw’r allforiwr.
 
 tariff.declaration.exporterEoriNumber.common.text = I gael manylion, ewch i<br>{0}.
 
-tariff.declaration.exporterEoriNumber.common.linkText.0 = elfen ddata 3/2 - Rhif Adnabod yr Allforiwr (yn agor tab newydd)
-
-tariff.declaration.exporterEoriNumber.clearance.text = Ewch i elfen ddata 3/2 Rhif Adnabod yr Allforiwr yn<br>{0}.
-
-tariff.declaration.exporterEoriNumber.clearance.linkText.0 = Canllaw Cwblhau Cais am Glirio’r Tollau C21 - Allforion Stocrestrau (yn agor tab newydd)
+tariff.declaration.exporterEoriNumber.common.linkText.0 = Elfen Ddata 3/2 - Rhif Adnabod yr Allforiwr (yn agor tab newydd)
 
 tariff.declaration.exporterAddress.common.text = I gael manylion, ewch i<br>{0}.
 
-tariff.declaration.exporterAddress.common.linkText.0 = elfen ddata 3/1 - allforiwr (yn agor tab newydd)
+tariff.declaration.exporterAddress.common.linkText.0 = Elfen Ddata 3/1 - allforiwr (yn agor tab newydd)
 
-tariff.declaration.exporterAddress.clearance.text = Ewch i elfen ddata 3/1 Enw a chyfeiriad busnes yr Allforiwr yn<br>{0}.
+tariff.declaration.consignorEoriNumber.clearance.text = I gael manylion, ewch i<br>{0}.
 
-tariff.declaration.exporterAddress.clearance.linkText.0 = Canllaw Cwblhau Cais am Glirio’r Tollau C21 - Allforion Stocrestrau (yn agor tab newydd)
+tariff.declaration.consignorEoriNumber.clearance.linkText.0 = Elfen Ddata 3/8 - Rhif Adnabod yr Anfonydd (yn agor tab newydd)
 
-tariff.declaration.consignorEoriNumber.clearance.text = Ewch i elfen ddata 3/8 Rhif Adnabod yr Anfonydd yn<br>{0}.
+tariff.declaration.consignorAddress.clearance.text = I gael manylion, ewch i<br>{0}.
 
-tariff.declaration.consignorEoriNumber.clearance.linkText.0 = Canllaw Cwblhau Cais am Glirio’r Tollau C21 - Allforion Stocrestrau (yn agor tab newydd)
-
-tariff.declaration.consignorAddress.clearance.text = Ewch i elfen ddata 3/7 Anfonydd yn<br>{0}.
-
-tariff.declaration.consignorAddress.clearance.linkText.0 = Canllaw Cwblhau Cais am Glirio’r Tollau C21 - Allforion Stocrestrau (yn agor tab newydd)
+tariff.declaration.consignorAddress.clearance.linkText.0 = Elfen Ddata 3/7 - Anfonydd (yn agor tab newydd)
 
 tariff.declaration.areYouCompletingThisDeclarationOnBehalfOfAnotherAgent.common.text = I gael manylion, ewch i<br>{0}.
 
-tariff.declaration.areYouCompletingThisDeclarationOnBehalfOfAnotherAgent.common.linkText.0 = elfen ddata 3/20 - Rhif Adnabod y Cynrychiolydd (yn agor tab newydd)
-
-tariff.declaration.areYouCompletingThisDeclarationOnBehalfOfAnotherAgent.clearance.text = Ewch i elfen ddata 3/20 Rhif Adnabod y Cynrychiolydd yn<br>{0}.
-
-tariff.declaration.areYouCompletingThisDeclarationOnBehalfOfAnotherAgent.clearance.linkText.0 = Canllaw Cwblhau Cais am Glirio’r Tollau C21 - Allforion Stocrestrau (yn agor tab newydd)
+tariff.declaration.areYouCompletingThisDeclarationOnBehalfOfAnotherAgent.common.linkText.0 = Elfen Ddata 3/20 - Rhif Adnabod y Cynrychiolydd (yn agor tab newydd)
 
 tariff.declaration.representativesEoriNumber.common.text = I gael manylion, ewch i<br>{0}.
 
-tariff.declaration.representativesEoriNumber.common.linkText.0 = elfen ddata 3/20 - Rhif Adnabod y Cynrychiolydd (yn agor tab newydd)
+tariff.declaration.representativesEoriNumber.common.linkText.0 = Elfen Ddata 3/20 - Rhif Adnabod y Cynrychiolydd (yn agor tab newydd)
 
 tariff.declaration.representationTypeAgreed.common.text = Bydd yr ateb hwn yn cwblhau<br>{0}.
 
-tariff.declaration.representationTypeAgreed.common.linkText.0 = elfen ddata 3/21 - Cod Statws y Cynrychiolydd (yn agor tab newydd)
-
-tariff.declaration.representationTypeAgreed.clearance.text = Ewch i elfen ddata 3/21 Cod Statws y Cynrychiolydd yn<br>{0}.
-
-tariff.declaration.representationTypeAgreed.clearance.linkText.0 = Canllaw Cwblhau Cais am Glirio’r Tollau C21 - Allforion Stocrestrau (yn agor tab newydd)
-
-tariff.declaration.representativesEoriNumber.clearance.text = Ewch i elfen ddata 3/20 Rhif Adnabod y Cynrychiolydd yn<br>{0}.
-
-tariff.declaration.representativesEoriNumber.clearance.linkText.0 = Canllaw Cwblhau Cais am Glirio’r Tollau C21 - Allforion Stocrestrau (yn agor tab newydd)
+tariff.declaration.representationTypeAgreed.common.linkText.0 = Elfen Ddata 3/21 - Cod Statws y Cynrychiolydd (yn agor tab newydd)
 
 tariff.declaration.carrierEoriNumber.common.text = I gael manylion, ewch i<br>{0}.
 
-tariff.declaration.carrierEoriNumber.common.linkText.0 = elfen ddata 3/32 - Rhif Adnabod y Cludwr (yn agor tab newydd)
-
-tariff.declaration.carrierEoriNumber.clearance.text = Ewch i elfen ddata 3/32 Rhif Adnabod y Cludwr yn<br>{0}.
-
-tariff.declaration.carrierEoriNumber.clearance.linkText.0 = Canllaw Cwblhau Cais am Glirio’r Tollau C21 - Allforion Stocrestrau (yn agor tab newydd)
+tariff.declaration.carrierEoriNumber.common.linkText.0 = Elfen Ddata 3/32 - Rhif Adnabod y Cludwr (yn agor tab newydd)
 
 tariff.declaration.carrierAddress.common.text = I gael manylion, ewch i<br>{0}.
 
-tariff.declaration.carrierAddress.common.linkText.0 = elfen ddata 3/31 - Enw a chyfeiriad y Cludwr (yn agor tab newydd)
-
-tariff.declaration.carrierAddress.clearance.text = Ewch i elfen ddata 3/31 Enw a chyfeiriad y Cludwr yn<br>{0}.
-
-tariff.declaration.carrierAddress.clearance.linkText.0 = Canllaw Cwblhau Cais am Glirio’r Tollau C21 - Allforion Stocrestrau (yn agor tab newydd)
+tariff.declaration.carrierAddress.common.linkText.0 = Elfen Ddata 3/31 - Enw a chyfeiriad y Cludwr (yn agor tab newydd)
 
 tariff.declaration.consigneeDetails.common.text = I gael manylion, ewch i<br>{0}.
 
-tariff.declaration.consigneeDetails.common.linkText.0 = elfen ddata 3/9 - Enw a chyfeiriad y Derbynnydd (yn agor tab newydd)
-
-tariff.declaration.consigneeDetails.clearance.text = Ewch i elfen ddata 3/9 Enw a chyfeiriad y Derbynnydd yn<br>{0}.
-
-tariff.declaration.consigneeDetails.clearance.linkText.0 = Canllaw Cwblhau Cais am Glirio’r Tollau C21 - Allforion Stocrestrau (yn agor tab newydd)
+tariff.declaration.consigneeDetails.common.linkText.0 = Elfen Ddata 3/9 - Enw a chyfeiriad y Derbynnydd (yn agor tab newydd)
 
 tariff.declaration.otherPartiesInvolved.common.text = I gael manylion, ewch i<br>{0}.
 
-tariff.declaration.otherPartiesInvolved.common.linkText.0 = elfen ddata 3/37 - Rhif Adnabod Actor(ion) y Gadwyn Gyflenwi Ychwanegol (yn agor tab newydd)
+tariff.declaration.otherPartiesInvolved.common.linkText.0 = Elfen Ddata 3/37 - Rhif Adnabod Actor(ion) y Gadwyn Gyflenwi Ychwanegol (yn agor tab newydd)
 
 tariff.declaration.isAuthorisationRequired.common.text = I wirio pa awdurdodiadau sydd eu hangen, ewch i<br>{0} sy’n cynnwys y rheolau penodol ar gyfer cwblhau.
 
 tariff.declaration.isAuthorisationRequired.common.linkText.0 = Atodiad 1: DE 1/10: Codau Gweithdrefnau y gofynnwyd amdanynt a Chodau Gweithdrefnau Blaenorol (yn agor tab newydd)
 
-tariff.declaration.isAuthorisationRequired.clearance.text = Ewch i elfen ddata 3/39 Deiliad y Rhif Adnabod Awdurdodi yn<br>{0}.
-
-tariff.declaration.isAuthorisationRequired.clearance.linkText.0 = Tariff Masnach y DU (yn agor tab newydd)
-
 tariff.declaration.addAuthorisationRequired.common.text = Bydd y cofnodion hyn yn cwblhau<br>{0}.
 
-tariff.declaration.addAuthorisationRequired.common.linkText.0 = elfen ddata 3/39 - Deiliad y Rhif Adnabod Awdurdodi (yn agor tab newydd)
-
-tariff.declaration.addAuthorisationRequired.clearance.text = Ewch i elfen ddata 3/39 Deiliad y Rhif Adnabod Awdurdodi yn<br>{0}.
-
-tariff.declaration.addAuthorisationRequired.clearance.linkText.0 = Canllaw Cwblhau Cais am Glirio’r Tollau C21 - Allforion Stocrestrau (yn agor tab newydd)
+tariff.declaration.addAuthorisationRequired.common.linkText.0 = Elfen Ddata 3/39 - Deiliad y Rhif Adnabod Awdurdodi (yn agor tab newydd)
 
 tariff.declaration.originationCountry.common.text = Bydd y cofnod hwn yn cwblhau<br>{0}.
 
-tariff.declaration.originationCountry.common.linkText.0 = elfen ddata 5/14 - Gwlad Anfon / Allforio (yn agor tab newydd)
+tariff.declaration.originationCountry.common.linkText.0 = Elfen Ddata 5/14 - Gwlad Anfon / Allforio (yn agor tab newydd)
 
 tariff.declaration.destinationCountry.1.common.text = Bydd y cofnod hwn yn cwblhau<br>{0}.
 
-tariff.declaration.destinationCountry.1.common.linkText.0 = elfen ddata 5/8 - Gwlad Pen y Daith (yn agor tab newydd)
+tariff.declaration.destinationCountry.1.common.linkText.0 = Elfen Ddata 5/8 - Gwlad Pen y Daith (yn agor tab newydd)
 
 tariff.declaration.destinationCountry.2.common.text = Os byddwch yn dewis ‘Jersey’ neu ‘Guernsey’, bydd eich datganiad yn cael ei ddiweddaru i {0}.
 
-tariff.declaration.destinationCountry.2.common.linkText.0 = teipiwch CO yn elfen ddata CDS 1/1 (yn agor tab newydd)
-
-tariff.declaration.destinationCountry.1.clearance.text = Ewch i elfen ddata 5/8 Cod Gwlad Pen y Daith yn<br>{0}.
-
-tariff.declaration.destinationCountry.1.clearance.linkText.0 = Canllaw Cwblhau Cais am Glirio’r Tollau C21 - Allforion Stocrestrau (yn agor tab newydd)
-
-tariff.declaration.destinationCountry.2.clearance.text = Os byddwch yn dewis ‘Jersey’ neu ‘Guernsey’, bydd eich datganiad yn cael ei ddiweddaru i {0}.
-
-tariff.declaration.destinationCountry.2.clearance.linkText.0 = teipiwch CO yn elfen ddata CDS 1/1 (yn agor tab newydd)
+tariff.declaration.destinationCountry.2.common.linkText.0 = teipiwch CO yn Elfen Ddata CDS 1/1 (yn agor tab newydd)
 
 tariff.declaration.countryOfRouting.common.text = Bydd y cofnod hwn yn cwblhau<br>{0}.
 
-tariff.declaration.countryOfRouting.common.linkText.0 = elfen ddata 5/18 - Gwlad y Codau Cyfeirio (yn agor tab newydd)
+tariff.declaration.countryOfRouting.common.linkText.0 = Elfen Ddata 5/18 - Gwlad y Codau Cyfeirio (yn agor tab newydd)
 
 tariff.declaration.locationOfGoods.common.text = Bydd y cofnod hwn yn cwblhau<br>{0}.
 
-tariff.declaration.locationOfGoods.common.linkText.0 = elfen ddata 5/23 - Lleoliad y Nwyddau (yn agor tab newydd)
-
-tariff.declaration.locationOfGoods.clearance.text = Ewch i elfen data 5/23 Lleoliad Nwyddau yn<br>{0}.
-
-tariff.declaration.locationOfGoods.clearance.linkText.0 = Canllaw Cwblhau Cais am Glirio’r Tollau C21 - Allforion Stocrestrau (yn agor tab newydd)
+tariff.declaration.locationOfGoods.common.linkText.0 = Elfen Ddata 5/23 - Lleoliad y Nwyddau (yn agor tab newydd)
 
 tariff.declaration.officeOfExit.common.text = Bydd y cofnod hwn yn cwblhau<br>{0}.
 
-tariff.declaration.officeOfExit.common.linkText.0 = elfen ddata 5/12 - Swyddfa Dollau lle mae’r Nwyddau’n gadael (yn agor tab newydd)
-
-tariff.declaration.officeOfExit.clearance.text = Ewch i elfen ddata 5/12 Swyddfa Dollau lle mae’r Nwyddau’n gadael yn<br>{0}.
-
-tariff.declaration.officeOfExit.clearance.linkText.0 = Canllaw Cwblhau Cais am Glirio’r Tollau C21 - Allforion Stocrestrau (yn agor tab newydd)
-
-tariff.declaration.officeOfExitOutsideUk.common.text = I gael manylion a chysylltiad i’r rhestr o godau, ewch i<br>{0}.
-
-tariff.declaration.officeOfExitOutsideUk.common.linkText.0 = elfen ddata 5/12 - Swyddfa Dollau lle mae’r Nwyddau’n gadael (yn agor tab newydd)
-
-tariff.declaration.officeOfExitOutsideUk.clearance.text = Ewch i elfen ddata 5/12 Swyddfa Dollau lle mae’r Nwyddau’n gadael yn<br>{0}.
-
-tariff.declaration.officeOfExitOutsideUk.clearance.linkText.0 = Canllaw Cwblhau Cais am Glirio’r Tollau C21 - Allforion Stocrestrau (yn agor tab newydd)
+tariff.declaration.officeOfExit.common.linkText.0 = Elfen Ddata 5/12 - Swyddfa Dollau lle mae’r Nwyddau’n gadael (yn agor tab newydd)
 
 tariff.declaration.totalNumbersOfItems.1.common.text = I gael manylion am y cyfanswm a anfonebwyd, ewch i<br>{0}.
 
-tariff.declaration.totalNumbersOfItems.1.common.linkText.0 = elfen ddata 4/11 - Cyfanswm a Anfonebwyd
+tariff.declaration.totalNumbersOfItems.1.common.linkText.0 = Elfen Ddata 4/11 - Cyfanswm a Anfonebwyd
 
 tariff.declaration.totalNumbersOfItems.2.common.text = I gael manylion am Gyfradd gyfnewid yr anfoneb, ewch i<br>{0}.<br> <br> Cysylltiadau’n agor tab newydd.
 
-tariff.declaration.totalNumbersOfItems.2.common.linkText.0 = elfen ddata 4/15 - Cyfradd Gyfnewid yr Anfoneb
+tariff.declaration.totalNumbersOfItems.2.common.linkText.0 = Elfen Ddata 4/15 - Cyfradd Gyfnewid yr Anfoneb
 
 tariff.declaration.totalPackageQuantity.common.text = I gael manylion, ewch i<br>{0}.
 
-tariff.declaration.totalPackageQuantity.common.linkText.0 = elfen ddata 6/18 - Cyfanswm y Pecynnau (yn agor tab newydd)
+tariff.declaration.totalPackageQuantity.common.linkText.0 = Elfen Ddata 6/18 - Cyfanswm y Pecynnau (yn agor tab newydd)
 
 tariff.declaration.natureOfTransaction.common.text = Bydd yr ateb hwn yn cwblhau<br>{0}.
 
-tariff.declaration.natureOfTransaction.common.linkText.0 = elfen ddata 8/5 - Natur y Trafodyn (yn agor tab newydd)
+tariff.declaration.natureOfTransaction.common.linkText.0 = Elfen Ddata 8/5 - Natur y Trafodyn (yn agor tab newydd)
 
 tariff.declaration.addPreviousDocument.common.text = Mae’r cofnodion ar y dudalen hon yn cwblhau pob un o’r 4 elfen sydd eu hangen ar gyfer<br>{0}.
 
-tariff.declaration.addPreviousDocument.common.linkText.0 = elfen ddata 2/1 (yn agor tab newydd)
-
-tariff.declaration.addPreviousDocument.clearance.text = Ewch i ddata elfen 2/1 yn<br>{0}.
-
-tariff.declaration.addPreviousDocument.clearance.linkText.0 = Canllaw Cwblhau Cais am Glirio’r Tollau C21 - Allforion Stocrestrau (yn agor tab newydd)
+tariff.declaration.addPreviousDocument.common.linkText.0 = Elfen Ddata 2/1 (yn agor tab newydd)
 
 tariff.declaration.item.procedureCodes.common.text = I gael manylion ac i ddod o hyd i godau gweithdrefnau, ewch i<br>{0}.
 
-tariff.declaration.item.procedureCodes.common.linkText.0 = elfen ddata 1/10 - Cod Gweithdrefn (yn agor tab newydd)
-
-tariff.declaration.item.procedureCodes.1.clearance.text = Ewch i’r<br>{0}. I gael manylion am y canlynol:
-
-tariff.declaration.item.procedureCodes.1.clearance.linkText.0 = Canllaw Cwblhau Cais am Glirio’r Tollau C21 - Allforion Stocrestrau (yn agor tab newydd)
-
-tariff.declaration.item.procedureCodes.2.clearance.text = Cod gweithdrefn, ewch i elfen ddata 1/10 Cod Gweithdrefn.
+tariff.declaration.item.procedureCodes.common.linkText.0 = Elfen Ddata 1/10 - Cod Gweithdrefn (yn agor tab newydd)
 
 tariff.declaration.item.additionalProcedureCodes.common.text = I gael manylion ac i ddod o hyd i godau gweithdrefnau ychwanegol, ewch i<br>{0}.
 
-tariff.declaration.item.additionalProcedureCodes.common.linkText.0 = elfen ddata 1/11 - Codau Gweithdrefnau Ychwanegol (yn agor tab newydd)
-
-tariff.declaration.item.additionalProcedureCodes.1.clearance.text = Ewch i’r<br>{0}. I gael manylion am y canlynol:
-
-tariff.declaration.item.additionalProcedureCodes.1.clearance.linkText.0 = Canllaw Cwblhau Cais am Glirio’r Tollau C21 - Allforion Stocrestrau (yn agor tab newydd)
-
-tariff.declaration.item.additionalProcedureCodes.2.clearance.text = Cod gweithdrefn ychwanegol, ewch i elfen ddata 1/11 Cod Gweithdrefn Ychwanegol.
+tariff.declaration.item.additionalProcedureCodes.common.linkText.0 = Elfen Ddata 1/11 - Codau Gweithdrefnau Ychwanegol (yn agor tab newydd)
 
 tariff.declaration.item.fiscalInformation.common.text = Bydd y cofnod hwn yn cwblhau<br>{0}.
 
-tariff.declaration.item.fiscalInformation.common.linkText.0 = elfen ddata 3/40 - Rhif Adnabod Cyfeirnodau Cyllidol Ychwanegol (yn agor tab newydd)
-
-tariff.declaration.item.fiscalInformation.clearance.text = Ewch i elfen ddata 3/40 Rhif Adnabod Cyfeirnodau Cyllidol Ychwanegol yn<br>{0}.
-
-tariff.declaration.item.fiscalInformation.clearance.linkText.0 = Canllaw Cwblhau Cais am Glirio’r Tollau C21 - Allforion Stocrestrau (yn agor tab newydd)
+tariff.declaration.item.fiscalInformation.common.linkText.0 = Elfen Ddata 3/40 - Rhif Adnabod Cyfeirnodau Cyllidol Ychwanegol (yn agor tab newydd)
 
 tariff.declaration.item.additionalFiscalReferences.common.text = Bydd y cofnod hwn yn cwblhau<br>{0}.
 
-tariff.declaration.item.additionalFiscalReferences.common.linkText.0 = elfen ddata 3/40 - Rhif Adnabod Cyfeirnodau Cyllidol Ychwanegol (yn agor tab newydd)
-
-tariff.declaration.item.additionalFiscalReferences.clearance.text = Ewch i elfen ddata 3/40 Rhif Adnabod Cyfeirnodau Cyllidol Ychwanegol yn<br>{0}.
-
-tariff.declaration.item.additionalFiscalReferences.clearance.linkText.0 = Canllaw Cwblhau Cais am Glirio’r Tollau C21 - Allforion Stocrestrau (yn agor tab newydd)
+tariff.declaration.item.additionalFiscalReferences.common.linkText.0 = Elfen Ddata 3/40 - Rhif Adnabod Cyfeirnodau Cyllidol Ychwanegol (yn agor tab newydd)
 
 tariff.declaration.item.commodityDetails.1.common.text = I gael manylion am y cod nwyddau, ewch i<br>{0}.
 
-tariff.declaration.item.commodityDetails.1.common.linkText.0 = elfen ddata 6/14 - Cod Nwyddau: Cod Cyfundrefn Enwi Cyfunol
+tariff.declaration.item.commodityDetails.1.common.linkText.0 = Elfen Ddata 6/14 - Cod Nwyddau: Cod Cyfundrefn Enwi Cyfunol (yn agor tab newydd)
 
-tariff.declaration.item.commodityDetails.2.common.text = I gael manylion am ddisgrifiad o’r nwyddau, ewch i<br>{0}.<br> <br> Cysylltiadau’n agor tab newydd.
+tariff.declaration.item.commodityDetails.2.common.text = I gael manylion am ddisgrifiad o’r nwyddau, ewch i<br>{0}.
 
-tariff.declaration.item.commodityDetails.2.common.linkText.0 = elfen ddata 6/14 Disgrifiad o’r nwyddau
-
-tariff.declaration.item.commodityDetails.1.clearance.text = Ewch i’r<br>{0}. I gael manylion am y canlynol:
-
-tariff.declaration.item.commodityDetails.1.clearance.linkText.0 = Canllaw Cwblhau Cais am Glirio’r Tollau C21 - Allforion Stocrestrau (yn agor tab newydd)
-
-tariff.declaration.item.commodityDetails.2.clearance.text = Cod nwyddau, ewch i elfen ddata 6/14 Cod nwyddau - Cod Cyfundrefn Enwi Cyfunol.
-
-tariff.declaration.item.commodityDetails.3.clearance.text = Disgrifiad o’r nwyddau, ewch i elfen ddata 6/8 Disgrifiad o’r Nwyddau.
+tariff.declaration.item.commodityDetails.2.common.linkText.0 = Elfen Ddata 6/8 Disgrifiad o’r nwyddau (yn agor tab newydd)
 
 tariff.declaration.item.unDangerousGoodsCode.common.text = Bydd y cofnod hwn yn cwblhau<br>{0}.
 
-tariff.declaration.item.unDangerousGoodsCode.common.linkText.0 = elfen ddata 6/12 - Cod Nwyddau Peryglus y Cenhedloedd Unedig (yn agor tab newydd)
-
-tariff.declaration.item.unDangerousGoodsCode.clearance.text = Ewch i elfen ddata 6/12 Cod Nwyddau Peryglus y Cenhedloedd Unedig yn<br>{0}.
-
-tariff.declaration.item.unDangerousGoodsCode.clearance.linkText.0 = Canllaw Cwblhau Cais am Glirio’r Tollau C21 - Allforion Stocrestrau (yn agor tab newydd)
+tariff.declaration.item.unDangerousGoodsCode.common.linkText.0 = Elfen Ddata 6/12 - Cod Nwyddau Peryglus y Cenhedloedd Unedig (yn agor tab newydd)
 
 tariff.declaration.item.cusCode.common.text = Bydd y cofnod hwn yn cwblhau<br>{0}.
 
-tariff.declaration.item.cusCode.common.linkText.0 = elfen ddata 6/13 - Cod CUS ar gyfer Cemegau (yn agor tab newydd)
+tariff.declaration.item.cusCode.common.linkText.0 = Elfen Ddata 6/13 - Cod CUS ar gyfer Cemegau (yn agor tab newydd)
 
 tariff.declaration.item.additionalTaricCode.common.text = Bydd y cofnod hwn yn cwblhau<br>{0}.
 
-tariff.declaration.item.additionalTaricCode.common.linkText.0 = elfen ddata 6/16 - Cod Nwyddau: Cod TARIC Ychwanegol (yn agor tab newydd)
+tariff.declaration.item.additionalTaricCode.common.linkText.0 = Elfen Ddata 6/16 - Cod Nwyddau: Cod TARIC Ychwanegol (yn agor tab newydd)
 
 tariff.declaration.item.nationalAdditionalCode.common.text = Bydd y cofnod hwn yn cwblhau<br>{0}.
 
-tariff.declaration.item.nationalAdditionalCode.common.linkText.0 = elfen ddata 6/17 - Cod Ychwanegol Cenedlaethol (yn agor tab newydd)
+tariff.declaration.item.nationalAdditionalCode.common.linkText.0 = Elfen Ddata 6/17 - Cod Ychwanegol Cenedlaethol (yn agor tab newydd)
 
 tariff.declaration.item.zeroRatedForVat.common.text = Bydd y cofnod hwn yn anfon cod VATZ ar gyfer ‘Iawn’, VATR ar gyfer ‘Wedi’i ostwng’, neu VATE ar gyfer ‘Esempt’ i’w gwblhau {0}
 
-tariff.declaration.item.zeroRatedForVat.common.linkText.0 = elfen ddata 6/17 - Cod Ychwanegol Cenedlaethol (yn agor tab newydd)
+tariff.declaration.item.zeroRatedForVat.common.linkText.0 = Elfen Ddata 6/17 - Cod Ychwanegol Cenedlaethol (yn agor tab newydd)
 
 tariff.declaration.item.statisticalValue.1.common.text = I gael manylion llawn ynghylch penderfynu a oes angen gwerth, ewch i <br> {0} ac <br>{1}.
 
-tariff.declaration.item.statisticalValue.1.common.linkText.0 = elfen ddata 1/10 – Cod Gweithdrefn (yn agor tab newydd)
+tariff.declaration.item.statisticalValue.1.common.linkText.0 = Elfen Ddata 1/10 – Cod Gweithdrefn (yn agor tab newydd)
 
-tariff.declaration.item.statisticalValue.1.common.linkText.1 = elfen ddata 1/11 – Codau Gweithdrefn Ychwanegol (yn agor tab newydd)
+tariff.declaration.item.statisticalValue.1.common.linkText.1 = Elfen Ddata 1/11 – Codau Gweithdrefn Ychwanegol (yn agor tab newydd)
 
 tariff.declaration.item.statisticalValue.2.common.text = I gael manylion llawn am sut i gyfrifo’r gwerth hwn, ewch i <br>{0}.
 
-tariff.declaration.item.statisticalValue.2.common.linkText.0 = elfen ddata 8/6 – Gwerth Ystadegol (yn agor tab newydd)
+tariff.declaration.item.statisticalValue.2.common.linkText.0 = Elfen Ddata 8/6 – Gwerth Ystadegol (yn agor tab newydd)
 
 tariff.declaration.item.packageInformation.1.common.text = I gael manylion am y math o becyn, ewch i<br>{0}.
 
-tariff.declaration.item.packageInformation.1.common.linkText.0 = elfen ddata 6/9 - Math o Becynnau
+tariff.declaration.item.packageInformation.1.common.linkText.0 = Elfen Ddata 6/9 - Math o Becynnau
 
 tariff.declaration.item.packageInformation.2.common.text = I gael manylion am nifer y pecyn hwn, ewch i<br>{0}.
 
-tariff.declaration.item.packageInformation.2.common.linkText.0 = elfen ddata 6/10 - Nifer y Pecynnau
+tariff.declaration.item.packageInformation.2.common.linkText.0 = Elfen Ddata 6/10 - Nifer y Pecynnau
 
 tariff.declaration.item.packageInformation.3.common.text = I gael manylion am farciau cludo, ewch i<br>{0}.<br> <br> Cysylltiadau’n agor tab newydd.
 
-tariff.declaration.item.packageInformation.3.common.linkText.0 = elfen ddata 6/11 - Marciau Cludo
-
-tariff.declaration.item.packageInformation.1.clearance.text = Ewch i’r<br>{0}. I gael manylion am y canlynol:
-
-tariff.declaration.item.packageInformation.1.clearance.linkText.0 = Canllaw Cwblhau Cais am Glirio’r Tollau C21 - Allforion Stocrestrau (yn agor tab newydd)
-
-tariff.declaration.item.packageInformation.2.clearance.text = Math o becynnau, ewch i elfen ddata 6/9 Math o Becynnau.
-
-tariff.declaration.item.packageInformation.3.clearance.text = Nifer y pecyn hwn, ewch i elfen ddata 6/10 Nifer y Pecynnau.
-
-tariff.declaration.item.packageInformation.4.clearance.text = Marciau cludo, ewch i elfen ddata 6/9 Marciau cludo.
+tariff.declaration.item.packageInformation.3.common.linkText.0 = Elfen Ddata 6/11 - Marciau Cludo
 
 tariff.declaration.item.commodityMeasure.1.common.text = I gael manylion am bwysau gros, ewch i<br>{0}.
 
-tariff.declaration.item.commodityMeasure.1.common.linkText.0 = elfen ddata 6/5 - Màs Gros
+tariff.declaration.item.commodityMeasure.1.common.linkText.0 = Elfen Ddata 6/5 - Màs Gros
 
 tariff.declaration.item.commodityMeasure.2.common.text = I gael manylion am bwysau net, ewch i<br>{0}.
 
-tariff.declaration.item.commodityMeasure.2.common.linkText.0 = elfen ddata 6/5 - Màs Net
-
-tariff.declaration.item.commodityMeasure.1.clearance.text = Pwysau gros, ewch i elfen ddata 6/5 Màs Gros.
-
-tariff.declaration.item.commodityMeasure.2.clearance.text = Pwysau net, ewch i elfen ddata 6/5 Màs Net.
+tariff.declaration.item.commodityMeasure.2.common.linkText.0 = Elfen Ddata 6/5 - Màs Net
 
 tariff.declaration.item.supplementaryUnits.common.text = Mae’r cofnod hwn yn cwblhau {0}.
 
-tariff.declaration.item.supplementaryUnits.common.linkText.0 = elfen ddata 6/2 - Unedau Atodol (yn agor tab newydd)
+tariff.declaration.item.supplementaryUnits.common.linkText.0 = Elfen Ddata 6/2 - Unedau Atodol (yn agor tab newydd)
 
 tariff.declaration.item.isAdditionalInformationRequired.common.text = Bydd y cofnod hwn yn cwblhau<br>{0}.
 
-tariff.declaration.item.isAdditionalInformationRequired.common.linkText.0 = elfen ddata 2/2 - Gwybodaeth Ychwanegol (yn agor tab newydd)
-
-tariff.declaration.item.isAdditionalInformationRequired.clearance.text = Ewch i elfen ddata 2/2 Gwybodaeth Ychwanegol yn<br>{0}.
-
-tariff.declaration.item.isAdditionalInformationRequired.clearance.linkText.0 = Canllaw Cwblhau Cais am Glirio’r Tollau C21 - Allforion Stocrestrau (yn agor tab newydd)
+tariff.declaration.item.isAdditionalInformationRequired.common.linkText.0 = Elfen Ddata 2/2 - Gwybodaeth Ychwanegol (yn agor tab newydd)
 
 tariff.declaration.item.additionalInformation.common.text = I gael manylion, ewch i<br>{0}.
 
-tariff.declaration.item.additionalInformation.common.linkText.0 = elfen ddata 2/2 - Gwybodaeth Ychwanegol (yn agor tab newydd)
-
-tariff.declaration.item.additionalInformation.clearance.text = Ewch i elfen ddata 3/37 Rhif Adnabod Actor(ion) Cadwyn Gyflenwi Ychwanegol yn<br>{0}.
-
-tariff.declaration.item.additionalInformation.clearance.linkText.0 = Canllaw Cwblhau Cais am Glirio’r Tollau C21 - Allforion Stocrestrau (yn agor tab newydd)
+tariff.declaration.item.additionalInformation.common.linkText.0 = Elfen Ddata 2/2 - Gwybodaeth Ychwanegol (yn agor tab newydd)
 
 tariff.declaration.item.additionalDocuments.common.text = I gael manylion, ewch i<br>{0}.
 
-tariff.declaration.item.additionalDocuments.common.linkText.0 = elfen ddata 2/3 - Dogfennau a ddangoswyd, tystysgrifau ac awdurdodiadau, cyfeirnodau ychwanegol a dileu (yn agor tab newydd)
-
-tariff.declaration.item.additionalDocuments.1.clearance.text = Ewch i’r<br>{0}. I gael manylion am y canlynol:
-
-tariff.declaration.item.additionalDocuments.1.clearance.linkText.0 = Canllaw Cwblhau Cais am Glirio’r Tollau C21 - Allforion Stocrestrau (yn agor tab newydd)
-
-tariff.declaration.item.additionalDocuments.2.clearance.text = Dogfennau ychwanegol, ewch i elfen ddata 2/3 Dogfennau a ddangoswyd, tystysgrifau ac awdurdodiadau, cyfeirnodau ychwanegol.
-
-tariff.declaration.item.additionalDocuments.3.clearance.text = Dileu, ewch i elfen ddata 8/7 Dileu.
+tariff.declaration.item.additionalDocuments.common.linkText.0 = Elfen Ddata 2/3 - Dogfennau a ddangoswyd, tystysgrifau ac awdurdodiadau, cyfeirnodau ychwanegol a dileu (yn agor tab newydd)
 
 tariff.declaration.declarationItemsList.common.text = I gael manylion, ewch i<br>{0}.
 
 tariff.declaration.item.isLicenceRequired.common.text = Bydd dewis ‘Na’ yn anfon ildiad CDS 999L a chod ildiad trwydded allforio Y999 fel codau dogfen ac ‘ILDIAD CDS’ ac ‘ILDIAD ALLFORIO’ fel rhesymau yn {0}.
 
-tariff.declaration.item.isLicenceRequired.common.linkText.0 = elfen ddata 2/3 - Dogfennau a ddangoswyd, tystysgrifau ac awdurdodiadau, cyfeirnodau ychwanegol a dileu (yn agor tab newydd)
+tariff.declaration.item.isLicenceRequired.common.linkText.0 = Elfen Ddata 2/3 - Dogfennau a ddangoswyd, tystysgrifau ac awdurdodiadau, cyfeirnodau ychwanegol a dileu (yn agor tab newydd)
 
 tariff.declaration.declarationItemsList.common.text = I gael manylion, ewch i </br>{0}.
 
-tariff.declaration.declarationItemsList.common.linkText.0 = elfen ddata 1/9 - Cyfanswm Nifer yr Eitemau (yn agor tab newydd)
-
-tariff.declaration.declarationItemsList.clearance.text = Ewch i elfen ddata 1/9 Cyfanswm Nifer yr Eitemau yn<br>{0}.
-
-tariff.declaration.declarationItemsList.clearance.linkText.0 = Canllaw Cwblhau Cais am Glirio’r Tollau C21 - Allforion Stocrestrau (yn agor tab newydd)
+tariff.declaration.declarationItemsList.common.linkText.0 = Elfen Ddata 1/9 - Cyfanswm Nifer yr Eitemau (yn agor tab newydd)
 
 tariff.declaration.transportLeavingTheBorder.common.text = Bydd yr ateb hwn yn cwblhau<br>{0}.
 
-tariff.declaration.transportLeavingTheBorder.common.linkText.0 = elfen ddata 7/4 - Dull Cludo wrth y Ffin (yn agor tab newydd)
-
-tariff.declaration.transportLeavingTheBorder.clearance.text = Ewch i elfen ddata 7/4 Dull Cludo wrth y Ffin yn<br>{0}.
-
-tariff.declaration.transportLeavingTheBorder.clearance.linkText.0 = Canllaw Cwblhau Cais am Glirio’r Tollau C21 - Allforion Stocrestrau (yn agor tab newydd)
+tariff.declaration.transportLeavingTheBorder.common.linkText.0 = Elfen Ddata 7/4 - Dull Cludo wrth y Ffin (yn agor tab newydd)
 
 tariff.declaration.warehouseIdentification.common.text = Bydd y cofnod hwn yn cwblhau<br>{0}.
 
-tariff.declaration.warehouseIdentification.common.linkText.0 = elfen ddata 2/7 - Adnabod y Warws (yn agor tab newydd)
-
-tariff.declaration.warehouseIdentification.clearance.text = Ewch i elfen ddata 2/7 Adnabod y Warws yn<br>{0}.
-
-tariff.declaration.warehouseIdentification.clearance.linkText.0 = Canllaw Cwblhau Cais am Glirio’r Tollau C21 - Allforion Stocrestrau (yn agor tab newydd)
+tariff.declaration.warehouseIdentification.common.linkText.0 = Elfen Ddata 2/7 - Adnabod y Warws (yn agor tab newydd)
 
 tariff.declaration.supervisingCustomsOffice.common.text = Bydd y cofnod hwn yn cwblhau<br>{0}.
 
-tariff.declaration.supervisingCustomsOffice.common.linkText.0 = elfen ddata 5/27 - Goruchwylio Swyddfa’r Tollau (yn agor tab newydd)
-
-tariff.declaration.supervisingCustomsOffice.clearance.text = Ewch i elfen ddata 5/27 Goruchwylio Swyddfa’r Tollau yn<br>{0}.
-
-tariff.declaration.supervisingCustomsOffice.clearance.linkText.0 = Canllaw Cwblhau Cais am Glirio’r Tollau C21 - Allforion Stocrestrau (yn agor tab newydd)
+tariff.declaration.supervisingCustomsOffice.common.linkText.0 = Elfen Ddata 5/27 - Goruchwylio Swyddfa’r Tollau (yn agor tab newydd)
 
 tariff.declaration.inlandTransportDetails.common.text = Bydd y cofnod hwn yn cwblhau<br>{0}.
 
-tariff.declaration.inlandTransportDetails.common.linkText.0 = elfen ddata 7/5 - Dull Cludo Mewndirol yn y DU (yn agor tab newydd)
+tariff.declaration.inlandTransportDetails.common.linkText.0 = Elfen Ddata 7/5 - Dull Cludo Mewndirol yn y DU (yn agor tab newydd)
 
 tariff.declaration.departureTransport.common.text = Bydd y cofnod hwn yn cwblhau<br>{0}.
 
-tariff.declaration.departureTransport.common.linkText.0 = elfen ddata 7/7 - Hunaniaeth y Dull Cludo wrth Ymadael yn Nhariff Masnach y DU (yn agor tab newydd)
-
-tariff.declaration.departureTransport.clearance.text = Ewch i elfen ddata 7/7 Hunaniaeth y Dull Cludo wrth Ymadael yn Tariff Masnach y DU yn<br>{0}.
-
-tariff.declaration.departureTransport.clearance.linkText.0 = Canllaw Cwblhau Cais am Glirio’r Tollau C21 - Allforion Stocrestrau (yn agor tab newydd)
+tariff.declaration.departureTransport.common.linkText.0 = Elfen Ddata 7/7 - Hunaniaeth y Dull Cludo wrth Ymadael yn Nhariff Masnach y DU (yn agor tab newydd)
 
 tariff.declaration.borderTransport.common.text = Bydd y cofnodion hyn yn cwblhau:<br>{0}
 
-tariff.declaration.borderTransport.common.linkText.0 = elfen ddata 7/14 - Hunaniaeth y Dull Cludo Gweithredol wrth Groesi’r Ffin
+tariff.declaration.borderTransport.common.linkText.0 = Elfen Ddata 7/14 - Hunaniaeth y Dull Cludo Gweithredol wrth Groesi’r Ffin
 
 tariff.declaration.transportCountry.common.text = {0}.<br><br> Cysylltiadau’n agor tab newydd.
 
-tariff.declaration.transportCountry.common.linkText.0 = elfen ddata 7/14 - Cenedligrwydd y dull cludo gweithredol wrth groesi’r ffin
+tariff.declaration.transportCountry.common.linkText.0 = Elfen Ddata 7/14 - Cenedligrwydd y dull cludo gweithredol wrth groesi’r ffin
 
 tariff.declaration.expressConsignment.common.text = Bydd y cofnod hwn yn cwblhau<br>{0}.
 
-tariff.declaration.expressConsignment.common.linkText.0 = elfen ddata 1/7 - Dangosydd Amgylchiadau Penodol (yn agor tab newydd)
-
-tariff.declaration.expressConsignment.clearance.text = Bydd y cofnod hwn yn cwblhau<br>{0}.
-
-tariff.declaration.expressConsignment.clearance.linkText.0 = elfen ddata 1/7 - Dangosydd Amgylchiadau Penodol (yn agor tab newydd)
+tariff.declaration.expressConsignment.common.linkText.0 = Elfen Ddata 1/7 - Dangosydd Amgylchiadau Penodol (yn agor tab newydd)
 
 tariff.declaration.transportPayment.common.text = Bydd yr ateb hwn yn cwblhau<br>{0}.
 
-tariff.declaration.transportPayment.common.linkText.0 = elfen ddata 4/2 - Dull talu cludiant yn Nhariff Masnach y DU (yn agor tab newydd)
-
-tariff.declaration.transportPayment.clearance.text = Ewch i elfen ddata 4/2 Dull talu cludiant yn<br>{0}.
-
-tariff.declaration.transportPayment.clearance.linkText.0 = Canllaw Cwblhau Cais am Glirio’r Tollau C21 - Allforion Stocrestrau (yn agor tab newydd)
+tariff.declaration.transportPayment.common.linkText.0 = Elfen Ddata 4/2 - Dull talu cludiant yn Nhariff Masnach y DU (yn agor tab newydd)
 
 tariff.declaration.container.common.text = Bydd yr ateb hwn yn cwblhau<br>{0}.
 
-tariff.declaration.container.common.linkText.0 = elfen ddata 7/2 - Cynhwysydd (yn agor tab newydd)
-
-tariff.declaration.container.1.clearance.text = Ewch i’r<br>{0}. I gael manylion am y canlynol:
-
-tariff.declaration.container.1.clearance.linkText.0 = Canllaw Cwblhau Cais am Glirio’r Tollau C21 - Allforion Stocrestrau (yn agor tab newydd)
-
-tariff.declaration.container.2.clearance.text = Cynhwysydd, ewch i elfen ddata 7/2 Cynhwysydd.
-
-tariff.declaration.container.3.clearance.text = Rhif Adnabod y Cynhwysydd, ewch i elfen ddata 7/10 Rhif Adnabod y Cynhwysydd.
+tariff.declaration.container.common.linkText.0 = Elfen Ddata 7/2 - Cynhwysydd (yn agor tab newydd)
 
 tariff.declaration.container.change.common.text = Bydd y cofnod hwn yn cwblhau<br>{0}.
 
-tariff.declaration.container.change.common.linkText.0 = elfen ddata 7/10 - Rhif Adnabod y Cynhwysydd (yn agor tab newydd)
-
-tariff.declaration.container.change.clearance.text = Ewch i elfen ddata 7/10 Rhif Adnabod y Cynhwysydd yn<br>{0}.
-
-tariff.declaration.container.change.clearance.linkText.0 = Canllaw Cwblhau Cais am Glirio’r Tollau C21 - Allforion Stocrestrau (yn agor tab newydd)
+tariff.declaration.container.change.common.linkText.0 = Elfen Ddata 7/10 - Rhif Adnabod y Cynhwysydd (yn agor tab newydd)
 
 tariff.declaration.containers.seals.common.text = Bydd y cofnod hwn yn cwblhau<br>{0}.
 
-tariff.declaration.containers.seals.common.linkText.0 = elfen ddata 7/18 - Rhif y Sêl (yn agor tab newydd)
+tariff.declaration.containers.seals.common.linkText.0 = Elfen Ddata 7/18 - Rhif y Sêl (yn agor tab newydd)
 
-tariff.declaration.containers.seals.clearance.text = Ewch i elfen ddata 7/18 Rhif y Sêl yn<br>{0}.
+tariff.declaration.personPresentingGoods.clearance.text = I gael manylion, ewch i<br>{0}.
 
-tariff.declaration.containers.seals.clearance.linkText.0 = Canllaw Cwblhau Cais am Glirio’r Tollau C21 - Allforion Stocrestrau (yn agor tab newydd)
-
-tariff.declaration.personPresentingGoods.clearance.text = Ewch i elfen ddata 7/18 Rhif Adnabod y Cyflwynydd yn<br>{0}.
-
-tariff.declaration.personPresentingGoods.clearance.linkText.0 = Canllaw Cwblhau Cais am Glirio’r Tollau C21 - Allforion Stocrestrau (yn agor tab newydd)
-
-tariff.declaration.previousDocuments.remove.clearance.text = Ewch i elfen ddata 2/1 Datganiad symlach/Dogfennau Blaenorol yn<br>{0}.
-
-tariff.declaration.previousDocuments.remove.clearance.linkText.0 = Canllaw Cwblhau Cais am Glirio’r Tollau C21 - Allforion Stocrestrau (yn agor tab newydd)
+tariff.declaration.personPresentingGoods.clearance.linkText.0 = Elfen Ddata 7/18 - Rhif Adnabod y Cyflwynydd (yn agor tab newydd)
 
 sessionTimout.title = Er eich diogelwch, gwnaethom eich allgofnodi
 
@@ -845,26 +631,6 @@ greyBox.uploadFiles = Ewch i’m datganiadau
 navigation.link.declarations = Eich datganiadau
 
 navigation.link.messages = Negeseuon
-
-declaration.dispatchLocation.header = Ydy’r nwyddau yn cael eu hanfon y tu allan i’r UE?
-
-declaration.dispatchLocation.inputText.outsideEU = Iawn
-
-declaration.dispatchLocation.inputText.outsideEU.hint = Gelwir hyn hefyd yn fath o ddatganiad EX.
-
-declaration.dispatchLocation.inputText.specialFiscalTerritory = Na
-
-declaration.dispatchLocation.inputText.specialFiscalTerritory.hint = Mae hyn hefyd yn cael ei alw’n fath o ddatganiad CO, ac mae’n golygu bod y nwyddau’n cael eu hanfon i Diriogaeth Gyllidol Arbennig neu Diriogaeth arall mae’r UE wedi ffurfio Undeb Tollau gyda hi.
-
-declaration.dispatchLocation.inputText.error.empty = Dewiswch ‘Iawn’ os yw’r nwyddau’n cael eu hanfon y tu allan i’r UE
-
-declaration.dispatchLocation.inputText.error.incorrect = Dewiswch ‘Iawn’ os yw’r nwyddau’n cael eu hanfon y tu allan i’r UE
-
-declaration.dispatchLocation.summary.heading= Gwledydd yr UE a thiriogaethau cyllidol arbennig
-
-declaration.dispatchLocation.summary.euCountries= Gwledydd yr UE:
-
-declaration.dispatchLocation.summary.euSpecialFiscalTerritories= Tiriogaethau Cyllidol Arbennig yr UE:
 
 declaration.declarationType.title = Math o Ddatganiad
 
@@ -1012,7 +778,7 @@ declaration.consignmentReferences.supplementary.eidr.error.empty = Nodwch ddyddi
 
 declaration.consignmentReferences.supplementary.eidr.error.invalid = Nodwch y cod bbbbmmdd yn y fformat cywir
 
-declaration.traderReference.expander.content.link = elfen ddata 2/4 - Cyfeirnod / UCR
+declaration.traderReference.expander.content.link = Elfen Ddata 2/4 - Cyfeirnod / UCR
 
 declaration.confirmDucr.row.ducr = DUCR
 
@@ -1082,7 +848,7 @@ declaration.mucr.title = Nodwch yr MUCR
 
 declaration.mucr.paragraph = I wirio’r fformat cywir, gweler yr adran ‘Nodiadau’ ar {0}.
 
-declaration.mucr.paragraph.link = elfen ddata 2/1 Dogfennau Blaenorol (yn agor tab newydd)
+declaration.mucr.paragraph.link = Elfen Ddata 2/1 Dogfennau Blaenorol (yn agor tab newydd)
 
 declaration.mucr.error.empty = Nodwch MUCR
 
@@ -1856,7 +1622,7 @@ declaration.locationOfGoods.expander.paragraph9.link2 = DE 1/10: Codau gweithdre
 
 declaration.locationOfGoods.expander.paragraph10.text = Os nad yw lleoliad eich nwyddau’n dod o dan yr arweiniad uchod, cyfeiriwch at y codau ar gyfer {0}, neu ewch ati i wirio’r ychwanegiadau diweddaraf at y codau lleoliad CDS yn y {1}.
 
-declaration.locationOfGoods.expander.paragraph10.link1 = elfen ddata 5/23 o’r Gwasanaeth Datganiadau Tollau (CDS) (Atodiad 16)
+declaration.locationOfGoods.expander.paragraph10.link1 = Elfen Ddata 5/23 o’r Gwasanaeth Datganiadau Tollau (CDS) (Atodiad 16)
 
 declaration.locationOfGoods.expander.paragraph10.link2 = Canllaw Tariffau CDS a CHIEF Atodol ar gyfer Prydain Fawr, Cyfrol 3
 
@@ -1961,18 +1727,6 @@ declaration.officeOfExit.length = Dewis swyddfa lle mae’r nwyddau’n gadael
 declaration.officeOfExit.specialCharacters = Dewis swyddfa lle mae’r nwyddau’n gadael
 
 declaration.officeOfExit.isUkOfficeOfExit.empty = Dewiswch ‘Iawn’ os yw’r swyddfa lle mae’r nwyddau’n gadael yn y DU
-
-declaration.officeOfExitOutsideUk.title = Ble mae’r swyddfa lle mae’r nwyddau’n gadael?
-
-declaration.officeOfExitOutsideUk.hint = Nodwch gyfeirnod y swyddfa lle mae’r nwyddau’n gadael, sy’n god gwlad dau gymeriad, ac yna, chwe digid. Er enghraifft, NL000703.
-
-declaration.officeOfExitOutsideUk.empty = Nodwch god swyddfa dollau
-
-declaration.officeOfExitOutsideUk.length = Mae’n rhaid i god y swyddfa dollau fod yn y fformat cywir
-
-declaration.officeOfExitOutsideUk.specialCharacters = Mae’n rhaid i god y swyddfa dollau fod yn y fformat cywir
-
-declaration.officeOfExitOutsideUk.format = Mae’n rhaid i god y swyddfa dollau fod yn y fformat cywir
 
 declaration.fiscalInformation.title = A ydych am hawlio Rhyddhad Anfon Cyflenwad Ymlaen (OSR)?
 
@@ -2846,7 +2600,7 @@ declaration.zeroRatedForVat.body.text = I gadarnhau gallwch godi cyfradd sero, g
 
 declaration.zeroRatedForVat.body.linkText = Hysbysiad TAW 703 (yn agor tab newydd)
 
-declaration.zeroRatedForVat.body.restricted.text = Sylwer bod codi’r gyfradd sero ar gyfer TAW (cod ‘VATZ’ yn elfen ddata 6/17) naill ai wedi’i gyfyngu neu nad yw wedi’i ganiatáu ar gyfer y cod gweithdrefn hon. Bwrw golwg dros {0} i gael rhagor o fanylion.
+declaration.zeroRatedForVat.body.restricted.text = Sylwer bod codi’r gyfradd sero ar gyfer TAW (cod ‘VATZ’ yn Elfen Ddata 6/17) naill ai wedi’i gyfyngu neu nad yw wedi’i ganiatáu ar gyfer y cod gweithdrefn hon. Bwrw golwg dros {0} i gael rhagor o fanylion.
 
 declaration.zeroRatedForVat.body.restricted.linkText = atodiad 1, canllaw ar gyfer eich cod gweithdrefn (yn agor tab newydd)
 
@@ -2864,7 +2618,7 @@ declaration.zeroRatedForVat.radio.VatZeroRatedPaid = Na, mae TAW o 20% yn cael e
 
 declaration.zeroRatedForVat.expander = Bydd y cofnod hwn yn anfon cod VATZ ar gyfer ‘Iawn’, VATR ar gyfer ‘Wedi’i ostwng’, neu VATE ar gyfer ‘Esempt’ i’w gwblhau
 
-declaration.zeroRatedForVat.expander.linkText = elfen ddata 6/17 - Cod Ychwanegol Cenedlaethol (yn agor tab newydd)
+declaration.zeroRatedForVat.expander.linkText = Elfen Ddata 6/17 - Cod Ychwanegol Cenedlaethol (yn agor tab newydd)
 
 declaration.zeroRatedForVat.error = Datgan os yw’r nwyddau hyn ar gyfradd sero ar gyfer TAW
 
@@ -2962,7 +2716,7 @@ declaration.previousDocuments.inset.text.2 = Gallwch ddatgan anfoneb brofforma o
 
 declaration.previousDocuments.inset.text.3 = Mae’n rhaid datgan manylion gwarantu ecséis yn yr adran hon oni bai eich bod yn rhoi rhif ARC yn yr adran nesaf (adran 5). Gweler {0} i gael rhagor o fanylion.
 
-declaration.previousDocuments.inset.text.3.link = Atodiad 1 elfen ddata 2/1 (yn agor tab newydd)
+declaration.previousDocuments.inset.text.3.link = Atodiad 1 Elfen Ddata 2/1 (yn agor tab newydd)
 
 declaration.previousDocuments.documentCode = Cod y ddogfen
 
@@ -4228,7 +3982,7 @@ dmsError.CDS10001.title = Manylion angenrheidiol ar goll
 
 dmsError.CDS10002.title = Cofnod annilys ar y datganiad
 
-dmsError.CDS10003.title = Gormod o achosion o elfen ddata
+dmsError.CDS10003.title = Gormod o achosion o Elfen Ddata
 
 dmsError.CDS10004.title = Gwall cod nwyddau
 
@@ -4442,9 +4196,9 @@ dmsError.CDS20003.title = Heb ddod o hyd i symudiad cysylltiedig
 
 dmsError.CDS40007.title = Gwall dyblygu
 
-dmsError.CDS40010.title = Nid yw’r gwerth a roddwyd am elfen ddata’n berthnasol
+dmsError.CDS40010.title = Nid yw’r gwerth a roddwyd am Elfen Ddata’n berthnasol
 
-dmsError.CDS40011.title = Gwerth elfen ddata ar goll
+dmsError.CDS40011.title = Gwerth Elfen Ddata ar goll
 
 dmsError.CDS40013.title = Gwerth annilys wedi’i nodi
 

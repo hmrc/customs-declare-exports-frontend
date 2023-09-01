@@ -316,22 +316,13 @@ class ConsignmentReferencesSpec extends DeclarationPageBaseSpec with JourneyType
   }
 
   override def getCommonTariffKeys(messageKey: String): Seq[TariffContentKey] =
-    Seq(TariffContentKey(s"${messageKey}.1.common"), TariffContentKey(s"${messageKey}.2.common"), TariffContentKey(s"${messageKey}.3.common"))
+    Seq(TariffContentKey(s"${messageKey}.1.common"), TariffContentKey(s"${messageKey}.2.common"))
 
   override def getClearanceTariffKeys(messageKey: String): Seq[TariffContentKey] =
-    Seq(
-      TariffContentKey(s"${messageKey}.1.clearance"),
-      TariffContentKey(s"${messageKey}.2.clearance"),
-      TariffContentKey(s"${messageKey}.3.clearance")
-    )
+    Seq(TariffContentKey(s"${messageKey}.1.clearance"), TariffContentKey(s"${messageKey}.2.clearance"))
 
   override def getSupplementaryTariffKeys(messageKey: String): Seq[TariffContentKey] =
-    Seq(
-      TariffContentKey(s"${messageKey}.1.supplementary"),
-      TariffContentKey(s"${messageKey}.1.common"),
-      TariffContentKey(s"${messageKey}.2.common"),
-      TariffContentKey(s"${messageKey}.3.common")
-    )
+    Seq(TariffContentKey(s"${messageKey}.1.supplementary"), TariffContentKey(s"${messageKey}.1.common"), TariffContentKey(s"${messageKey}.2.common"))
 }
 
 object ConsignmentReferencesSpec {

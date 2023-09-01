@@ -129,7 +129,7 @@ class DucrEntryViewSpec extends PageWithButtonsSpec with Injector {
 
     onJourney(STANDARD, CLEARANCE, OCCASIONAL, SIMPLIFIED) { implicit request =>
       "display the expected tariff details" in {
-        val key = if (request.isType(CLEARANCE)) "clearance" else "common"
+        val key = "common"
 
         val view = createView()
         val tariffTitle = view.getElementsByClass("govuk-details__summary-text")

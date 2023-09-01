@@ -73,11 +73,7 @@ class ContainerFirstSpec extends DeclarationPageBaseSpec {
   }
 
   override def getClearanceTariffKeys(messageKey: String): Seq[TariffContentKey] =
-    Seq(
-      TariffContentKey(s"${messageKey}.1.clearance"),
-      TariffContentKey(s"${messageKey}.2.clearance"),
-      TariffContentKey(s"${messageKey}.3.clearance")
-    )
+    Seq(TariffContentKey(s"${messageKey}.clearance"))
 
   "ContainerFirst" when {
     testTariffContentKeys(ContainerFirst, "tariff.declaration.container")

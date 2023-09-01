@@ -71,13 +71,8 @@ object ContainerFirst extends DeclarationPage {
 
   override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
     decType match {
-      case CLEARANCE =>
-        Seq(
-          TariffContentKey("tariff.declaration.container.1.clearance"),
-          TariffContentKey("tariff.declaration.container.2.clearance"),
-          TariffContentKey("tariff.declaration.container.3.clearance")
-        )
-      case _ => Seq(TariffContentKey("tariff.declaration.container.common"))
+      case CLEARANCE => Seq(TariffContentKey("tariff.declaration.container.clearance"))
+      case _         => Seq(TariffContentKey("tariff.declaration.container.common"))
     }
 
 }

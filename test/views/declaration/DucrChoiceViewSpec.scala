@@ -109,14 +109,7 @@ class DucrChoiceViewSpec extends PageWithButtonsSpec with Injector {
 
         val prefix = "tariff.declaration"
 
-        val expectedText =
-          if (request.isType(CLEARANCE))
-            List(
-              messages(s"$prefix.ducrChoice.1.clearance.text", messages(s"$prefix.ducrChoice.1.clearance.linkText.0")),
-              messages(s"$prefix.ducrChoice.2.clearance.text"),
-              messages(s"$prefix.ducrChoice.3.clearance.text")
-            ).mkString(" ")
-          else messages(s"$prefix.ducr.common.text", messages(s"$prefix.ducr.common.linkText.0"))
+        val expectedText = messages(s"$prefix.ducr.common.text", messages(s"$prefix.ducr.common.linkText.0"))
 
         val actualText = removeBlanksIfAnyBeforeDot(tariffDetails.text)
         actualText mustBe removeLineBreakIfAny(expectedText)

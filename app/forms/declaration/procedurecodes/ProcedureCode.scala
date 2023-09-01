@@ -45,10 +45,7 @@ object ProcedureCode extends DeclarationPage {
   override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
     decType match {
       case CLEARANCE =>
-        Seq(
-          TariffContentKey("tariff.declaration.item.procedureCodes.1.clearance"),
-          TariffContentKey("tariff.declaration.item.procedureCodes.2.clearance")
-        )
+        Seq(TariffContentKey("tariff.declaration.item.procedureCodes.clearance"))
       case _ =>
         Seq(TariffContentKey("tariff.declaration.item.procedureCodes.common"))
     }

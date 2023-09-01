@@ -90,6 +90,7 @@ class PreviousDocumentsHelper @Inject() (
       exportsInputText(
         field = form("goodsItemIdentifier"),
         labelKey = "declaration.previousDocuments.goodsItemIdentifier",
+        labelClasses = "govuk-label govuk-label--m",
         bodyHtml = Some(paragraph(s"v$version.goodsItemIdentifier.body")),
         inputClasses = Some("govuk-input--width-2")
       )

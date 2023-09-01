@@ -64,5 +64,5 @@ object ConsignorDetails extends DeclarationPage with FieldMapping {
     }
 
   override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
-    Seq(TariffContentKey(s"tariff.declaration.consignorEoriNumber.clearance"))
+    Seq(TariffContentKey(s"tariff.declaration.consignorAddress.clearance"))
 }

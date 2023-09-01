@@ -97,21 +97,18 @@ object ConsignmentReferences extends DeclarationPage {
       case CLEARANCE =>
         Seq(
           TariffContentKey("tariff.declaration.consignmentReferences.1.clearance"),
-          TariffContentKey("tariff.declaration.consignmentReferences.2.clearance"),
-          TariffContentKey("tariff.declaration.consignmentReferences.3.clearance")
+          TariffContentKey("tariff.declaration.consignmentReferences.2.clearance")
         )
       case SUPPLEMENTARY =>
         Seq(
           TariffContentKey("tariff.declaration.consignmentReferences.1.supplementary"),
           TariffContentKey("tariff.declaration.consignmentReferences.1.common"),
-          TariffContentKey("tariff.declaration.consignmentReferences.2.common"),
-          TariffContentKey("tariff.declaration.consignmentReferences.3.common")
+          TariffContentKey("tariff.declaration.consignmentReferences.2.common")
         )
       case _ =>
         Seq(
           TariffContentKey("tariff.declaration.consignmentReferences.1.common"),
-          TariffContentKey("tariff.declaration.consignmentReferences.2.common"),
-          TariffContentKey("tariff.declaration.consignmentReferences.3.common")
+          TariffContentKey("tariff.declaration.consignmentReferences.2.common")
         )
     }
 }

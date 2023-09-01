@@ -153,7 +153,7 @@ class CarrierDetailsViewSpec extends AddressViewSpec with PageWithButtonsSpec wi
       }
 
       "display the expected tariff details" in {
-        val declType = if (request.isType(CLEARANCE)) "clearance" else "common"
+        val declType = "common"
 
         val tariffTitle = view.getElementsByClass("govuk-details__summary-text")
         tariffTitle.text mustBe messages(s"tariff.expander.title.$declType")
