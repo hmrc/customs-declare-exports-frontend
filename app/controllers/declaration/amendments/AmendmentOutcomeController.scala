@@ -19,11 +19,12 @@ package controllers.declaration.amendments
 import config.featureFlags.DeclarationAmendmentsConfig
 import connectors.CustomsDeclareExportsConnector
 import controllers.actions.{AuthAction, VerifiedEmailAction}
-import controllers.declaration.amendments
+import controllers.declaration.amendments.routes
 import controllers.routes.RootController
 import handlers.ErrorHandler
 import models.declaration.submissions.EnhancedStatus.{CUSTOMS_POSITION_DENIED, CUSTOMS_POSITION_GRANTED, ERRORS}
-import models.declaration.submissions.{Action => A, Submission}
+import models.declaration.submissions.RequestType.AmendmentCancellationRequest
+import models.declaration.submissions.{Action => Actn, Submission}
 import models.requests.SessionHelper._
 import models.requests.{AuthenticatedRequest, VerifiedEmailRequest}
 import play.api.Logging
@@ -46,6 +47,7 @@ class AmendmentOutcomeController @Inject() (
   errorHandler: ErrorHandler,
   holdingPage: holding_page,
   amendment_accepted: amendment_accepted,
+  amendment_cancelled: amendment_cancelled,
   amendment_rejection: amendment_rejection,
   amendment_failed: amendment_failed,
   amendment_pending: amendment_pending,
@@ -53,20 +55,20 @@ class AmendmentOutcomeController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with Logging {
 
-  private val title = "declaration.amendment.holding.title"
+  def displayHoldingPage(isCancellation: Boolean): Action[AnyContent] = authenticate.async { implicit request =>
+    val title = if (isCancellation) "declaration.cancel.amendment.holding.title" else "declaration.amendment.holding.title"
 
-  val displayHoldingPage: Action[AnyContent] = authenticate.async { implicit request =>
     request.getQueryString(js) match {
 
       // Show page at /holding and wait a few secs.
       case None =>
-        val holdingUrl = amendments.routes.AmendmentOutcomeController.displayHoldingPage.url
-        val redirectToUrl = amendments.routes.AmendmentOutcomeController.displayOutcomePage.url
+        val holdingUrl = routes.AmendmentOutcomeController.displayHoldingPage(isCancellation).url
+        val redirectToUrl = routes.AmendmentOutcomeController.displayOutcomePage.url
         Future.successful(Ok(holdingPage(redirectToUrl, s"$holdingUrl?$js=$Disabled", s"$holdingUrl?$js=$Enabled", title)))
 
       // Javascript disabled. 1st check if at least 1 notification was sent in response of the submission.
       case Some(Disabled) =>
-        val redirectToUrl = amendments.routes.AmendmentOutcomeController.displayOutcomePage
+        val redirectToUrl = routes.AmendmentOutcomeController.displayOutcomePage
         hasNotification.map {
           case true  => Redirect(redirectToUrl)
           case false => Ok(holdingPage(redirectToUrl.url, redirectToUrl.url, "", title))
@@ -118,14 +120,18 @@ class AmendmentOutcomeController @Inject() (
         errorHandler.internalError(msg)
     }
 
-  private def displayOutcomePage(submission: Submission, action: A)(implicit request: VerifiedEmailRequest[_]): Future[Result] =
+  private def displayOutcomePage(submission: Submission, action: Actn)(implicit request: VerifiedEmailRequest[_]): Future[Result] =
     retrieveLocationCode(submission).flatMap {
       case Right(confirmation) =>
         val page = action.latestNotificationSummary match {
-          case Some(notification) if notification.enhancedStatus == CUSTOMS_POSITION_DENIED  => amendment_failed(confirmation)
-          case Some(notification) if notification.enhancedStatus == CUSTOMS_POSITION_GRANTED => amendment_accepted(confirmation)
-          case Some(notification) if notification.enhancedStatus == ERRORS                   => amendment_rejection(confirmation)
-          case _                                                                             => amendment_pending(confirmation)
+          case Some(notification) if notification.enhancedStatus == ERRORS                  => amendment_rejection(confirmation)
+          case Some(notification) if notification.enhancedStatus == CUSTOMS_POSITION_DENIED => amendment_failed(confirmation)
+
+          case Some(notification) if notification.enhancedStatus == CUSTOMS_POSITION_GRANTED =>
+            if (action.requestType == AmendmentCancellationRequest) amendment_cancelled(confirmation)
+            else amendment_accepted(confirmation)
+
+          case _ => amendment_pending(confirmation)
         }
         Future.successful(Ok(page))
 

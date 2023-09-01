@@ -560,7 +560,7 @@ GET         /holding                             controllers.declaration.Confirm
 
 GET         /confirmation                        controllers.declaration.ConfirmationController.displayConfirmationPage
 
-GET         /amendment-holding                   controllers.declaration.amendments.AmendmentOutcomeController.displayHoldingPage
+GET         /amendment-holding                   controllers.declaration.amendments.AmendmentOutcomeController.displayHoldingPage(isCancellation: Boolean)
 
 GET         /amendment-outcome                   controllers.declaration.amendments.AmendmentOutcomeController.displayOutcomePage
 

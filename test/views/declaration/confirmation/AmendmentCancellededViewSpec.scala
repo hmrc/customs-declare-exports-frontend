@@ -26,24 +26,25 @@ import org.scalatest.GivenWhenThen
 import testdata.SubmissionsTestData._
 import views.declaration.spec.UnitViewSpec
 import views.helpers.Confirmation
-import views.html.declaration.amendments.amendment_accepted
+import views.html.declaration.amendments.amendment_cancelled
 import views.tags.ViewTest
 
 @ViewTest
-class AmendmentAcceptedViewSpec extends UnitViewSpec with GivenWhenThen with Injector with MockAuthAction {
+class AmendmentCancellededViewSpec extends UnitViewSpec with GivenWhenThen with Injector with MockAuthAction {
 
-  private val page = instanceOf[amendment_accepted]
+  private val page = instanceOf[amendment_cancelled]
+
   private val submissionId = uuid
-
   private val declarationDetailsRoute = DeclarationDetailsController.displayPage(submissionId).url
 
+  val emailRequest = buildVerifiedEmailRequest(request, exampleUser)
+
   private def createView(submission: Submission, declarationType: AdditionalDeclarationType = STANDARD_FRONTIER): Document = {
-    val req = buildVerifiedEmailRequest(request, exampleUser)
-    val confirmation = Confirmation(req.email, declarationType.toString, submission, None)
-    page(confirmation)(req, messages)
+    val confirmation = Confirmation(emailRequest.email, declarationType.toString, submission, None)
+    page(confirmation)(emailRequest, messages)
   }
 
-  "Amendment Accepted View" when {
+  "Amendment Cancelled View" when {
     val submission = createSubmission(statuses = Seq(RECEIVED))
     val view = createView(submission)
 
@@ -55,7 +56,7 @@ class AmendmentAcceptedViewSpec extends UnitViewSpec with GivenWhenThen with Inj
 
       And("which should include the expected title")
       children.get(0).tagName mustBe "h1"
-      children.get(0).text mustBe messages("declaration.confirmation.accepted.amendment.title")
+      children.get(0).text mustBe messages("declaration.confirmation.amendment.cancelled.title")
     }
 
     displayExpectedTableWithDucrLrnAndMrn(view)
@@ -64,15 +65,23 @@ class AmendmentAcceptedViewSpec extends UnitViewSpec with GivenWhenThen with Inj
       view.getElementsByTag("h2").get(0).text mustBe messages("declaration.confirmation.what.happens.next")
 
       val paragraph1 = view.getElementsByClass("govuk-body").get(0)
-      paragraph1.text mustBe messages("declaration.confirmation.accepted.amendment.next.1")
+      paragraph1.text mustBe messages("declaration.confirmation.amendment.cancelled.next.1")
 
       val paragraph2 = view.getElementsByClass("govuk-body").get(1)
-      paragraph2.text must include("example@example.com")
-      paragraph2.text must include(messages("declaration.confirmation.declaration.details.link"))
-      paragraph2.child(1) must haveHref(declarationDetailsRoute)
+      paragraph2.text mustBe messages("declaration.confirmation.amendment.cancelled.next.2", emailRequest.email)
     }
 
-    displayPrintButton(view)
+    "display the 'View declaration details' button" in {
+      val button = view.getElementsByClass("govuk-button").get(0)
+      button.tag.getName mustBe "a"
+      button must haveHref(declarationDetailsRoute)
+      button.text mustBe messages("declaration.confirmation.amendment.cancelled.button")
+    }
+
+    "display the print button" in {
+      val button = view.getElementsByClass("gem-c-print-link")
+      button.size mustBe 1
+    }
 
     "display the expected 'Tell us what you think' section" in {
       view.getElementsByTag("h2").get(1).text mustBe messages("declaration.exitSurvey.header")
@@ -97,11 +106,5 @@ class AmendmentAcceptedViewSpec extends UnitViewSpec with GivenWhenThen with Inj
 
       rows.get(3).children().get(0) must containMessage("declaration.confirmation.mrn")
       rows.get(3).children().get(1) must containText(mrn)
-    }
-
-  private def displayPrintButton(view: Document): Unit =
-    "display print button" in {
-      val button = view.getElementsByClass("gem-c-print-link")
-      button.size mustBe 1
     }
 }
