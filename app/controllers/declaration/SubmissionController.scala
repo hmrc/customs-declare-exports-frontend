@@ -131,7 +131,7 @@ class SubmissionController @Inject() (
               maybeActionId <- submissionService.submitAmendment(request.eori, declaration, amendmentSubmission, submissionId, isCancellation)
             } yield maybeActionId match {
               case Some(actionId) =>
-                Redirect(AmendmentOutcomeController.displayHoldingPage).addingToSession(submissionActionId -> actionId)
+                Redirect(AmendmentOutcomeController.displayHoldingPage(isCancellation)).addingToSession(submissionActionId -> actionId)
 
               case _ => errorHandler.badRequest
             }

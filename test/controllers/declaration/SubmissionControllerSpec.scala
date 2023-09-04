@@ -30,7 +30,7 @@ import models.declaration.submissions.Submission
 import models.requests.SessionHelper
 import models.requests.SessionHelper._
 import org.mockito.ArgumentMatchers
-import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{reset, verify, verifyNoInteractions, when}
 import org.scalatest.concurrent.ScalaFutures
 import play.api.http.Status.{BAD_REQUEST, INTERNAL_SERVER_ERROR, OK, SEE_OTHER}
@@ -237,16 +237,19 @@ class SubmissionControllerSpec extends ControllerWithoutFormSpec with ErrorHandl
 
       "redirect the user if submission is successful" in {
         val actionId = Some("actionId")
-        withNewCaching(declaration)
-        when(mockSubmissionService.submitAmendment(any(), any(), any(), any(), any())(any(), any()))
-          .thenReturn(Future.successful(actionId))
-
         val sessionData = List(declarationUuid -> declaration.id, submissionUuid -> "submissionUuid")
-        val result = controller.submitAmendment(false)(postRequestWithSession(body, sessionData))
-        status(result) must be(SEE_OTHER)
+        withNewCaching(declaration)
 
-        redirectLocation(result) mustBe Some(AmendmentOutcomeController.displayHoldingPage.url)
-        result.futureValue.session.get(SessionHelper.submissionActionId) mustBe actionId
+        List(false, true).foreach { isCancellation =>
+          when(mockSubmissionService.submitAmendment(any(), any(), any(), any(), eqTo(isCancellation))(any(), any()))
+            .thenReturn(Future.successful(actionId))
+
+          val result = controller.submitAmendment(isCancellation)(postRequestWithSession(body, sessionData))
+          status(result) must be(SEE_OTHER)
+
+          redirectLocation(result) mustBe Some(AmendmentOutcomeController.displayHoldingPage(isCancellation).url)
+          result.futureValue.session.get(SessionHelper.submissionActionId) mustBe actionId
+        }
       }
 
       "display an error if the submission fails due to incorrect form" in {

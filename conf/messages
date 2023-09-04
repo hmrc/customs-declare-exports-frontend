@@ -2322,8 +2322,14 @@ declaration.transport.sealId.empty.error = Enter a seal ID
 declaration.transport.sealId.error.invalid = Seal ID must contain only letters and numbers
 
 declaration.amendment.holding.title = Submit your amendment
+declaration.cancel.amendment.holding.title = Submit your amendment cancellation
 declaration.confirmation.holding.title = Submit your declaration
 declaration.confirmation.holding.paragraph = We are checking your declaration, please wait
+
+declaration.confirmation.amendment.cancelled.title = Your amendment cancellation has been accepted
+declaration.confirmation.amendment.cancelled.next.1 = Your amendment cancellation request has been accepted.
+declaration.confirmation.amendment.cancelled.next.2 = You will be notified about your declaration on the declaration details page. We will notify you on {0} if we need you to upload any documents.
+declaration.confirmation.amendment.cancelled.button = View declaration details
 
 declaration.confirmation.failed.amendment.title = Amendment request failed
 declaration.confirmation.failed.amendment.next.1 = The amendment information you provided is correct, but it could not be accepted at this time.
