@@ -68,7 +68,7 @@ class SubmittedDeclarationViewSpec extends UnitViewSpec with Stubs with ExportsT
     }
 
     "have the expected 'Print page' buttons" in {
-      val buttons = createView().getElementsByClass("gem-c-print-link__button")
+      val buttons = createView().getElementsByClass("ceds-print-link")
       buttons.size mustBe 2
       buttons.get(0).text mustBe messages("site.print")
       buttons.get(1).text mustBe messages("site.print")

@@ -145,7 +145,7 @@ class EadViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injec
       }
     }
     "display a 'Print' button" in {
-      view.getElementsByClass("gem-c-print-link__button").size() mustBe 2
+      view.getElementsByClass("ceds-print-link").size() mustBe 2
     }
 
   }

@@ -101,7 +101,7 @@ class AmendmentAcceptedViewSpec extends UnitViewSpec with GivenWhenThen with Inj
 
   private def displayPrintButton(view: Document): Unit =
     "display print button" in {
-      val button = view.getElementsByClass("gem-c-print-link")
+      val button = view.getElementsByClass("ceds-print-link")
       button.size mustBe 1
     }
 }
