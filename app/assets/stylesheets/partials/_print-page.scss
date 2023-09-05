@@ -1,45 +1,12 @@
-.gem-c-print-link {
+.ceds-print-link {
+  background: transparent no-repeat 0 50%;
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAASAgMAAAAvVbb5AAAACVBMVEX///////8KDAwmYEUdAAAAAXRSTlMAQObYZgAAADBJREFUCFtjYOBa1cDAoBkKJFYCCSYwEYpCrAICZCI0FEhkrURmQRRnrYRpW7WqAQAlGR86Ip1rwwAAAABJRU5ErkJggg==");
+  padding: 0.5em 0 0.5em 28px;
+  cursor: pointer;
+  color: #1d70b8;
   display: none;
 }
 
-.gem-c-print-link.gem-c-print-link--show-without-js,
-.js-enabled .gem-c-print-link {
+.js-enabled .ceds-print-link {
   display: block;
-}
-
-.gem-c-print-link__button,
-.gem-c-print-link__link {
-  background: url("../images/icon-print.png") no-repeat 10px 50%;
-  background-size: 16px 18px;
-  padding: 10px 10px 10px 36px;
-  text-decoration: none;
-}
-
-.gem-c-print-link__button:hover,
-.gem-c-print-link__link:hover {
-  background-color: #f3f2f1;
-}
-
-.gem-c-print-link__link {
-  box-shadow: inset 0 0 0 1px #b1b4b6;
-}
-
-.gem-c-print-link__link:focus {
-  border: 0;
-  box-shadow: 0 3px #0b0c0c;
-}
-
-.gem-c-print-link__button {
-  border: 1px solid #b1b4b6;
-  color: #1d70b8;
-  cursor: pointer;
-}
-
-.gem-c-print-link__button:focus {
-  outline: 3px solid transparent;
-  color: #0b0c0c;
-  box-shadow: 0 -2px #fd0, 0 4px #0b0c0c;
-  text-decoration: none;
-  background-color: #fd0;
-  border-color: transparent;
 }

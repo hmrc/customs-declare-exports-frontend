@@ -16,8 +16,8 @@
 
 @(marginTop: Int = 0, marginBottom: Int = 0)(implicit messages: Messages)
 
-<div class="gem-c-print-link govuk-!-display-none-print govuk-!-margin-top-@{marginTop} govuk-!-margin-bottom-@{marginBottom}">
-    <button class="govuk-link govuk-body-s gem-c-print-link__button" onclick="window.print()">
+<p class="govuk-body govuk-!-margin-top-@{marginTop} govuk-!-margin-bottom-@{marginBottom}">
+    <a class="govuk-link govuk-link--no-visited-state ceds-print-link" onclick="window.print()">
         @messages("site.print")
-    </button>
-</div>
+    </a>
+</p>
