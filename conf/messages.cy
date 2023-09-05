@@ -92,6 +92,8 @@ site.accessibility.error = Gwall:
 
 site.warning = Rhybudd
 
+site.cancel = Canslo
+
 site.print = Argraffu’r dudalen hon
 
 site.pagination.showing = Yn dangos
@@ -3052,13 +3054,13 @@ declaration.previousDocuments.add.another.empty = Dewiswch ‘Iawn’ er mwyn yc
 
 declaration.previousDocuments.error.duplicate = Rydych eisoes wedi nodi cyfeirnod y ddogfen hwn
 
-declaration.additionalInformationRequired.title = A oes angen i chi wneud unrhyw ddatganiadau Gwybodaeth Ychwanegol (AI)?
+declaration.additionalInformationRequired.title = A oes angen i chi wneud unrhyw ddatganiadau Gwybodaeth Ychwanegol?
 
 declaration.additionalInformationRequired.clearanceOr1040.para1.link = paledi a chynwysyddion (yn agor tab newydd)
 
 declaration.additionalInformationRequired.clearanceOr1040.para2 = Gallwch fwrw golwg dros godau datganiadau eraill a’r hyn maen nhw ar ei gyfer yn {0}.
 
-declaration.additionalInformationRequired.clearanceOr1040.para2.link = Rhestr codau datganiad AI (yn agor tab newydd)
+declaration.additionalInformationRequired.clearanceOr1040.para2.link = Rhestr codau datganiad Gwybodaeth Ychwanegol (yn agor tab newydd)
 
 declaration.additionalInformationRequired.not1040.para1 = Mae datganiadau a cheisiadau i’r tollau yn cwmpasu sawl agwedd ar ddatganiadau megis paledi a chynwysyddion, nwyddau mewn bagiau, safle warws, cludiant a gweithdrefnau arbennig.
 
@@ -3066,25 +3068,25 @@ declaration.additionalInformationRequired.not1040.inset.para1 = I wirio’r datg
 
 declaration.additionalInformationRequired.not1040.inset.para1.link = Atodiad 1 (yn agor tab newydd)
 
-declaration.additionalInformationRequired.not1040.inset.para2 = Mae {0} yn rhestru’r holl ddatganiadau AI y gellir eu defnyddio ar gyfer mewnforion ac allforion.
+declaration.additionalInformationRequired.not1040.inset.para2 = Mae {0} yn rhestru’r holl ddatganiadau Gwybodaeth Ychwanegol y gellir eu defnyddio ar gyfer mewnforion ac allforion.
 
 declaration.additionalInformationRequired.not1040.inset.para2.link = Atodiad 4 (yn agor tab newydd)
 
 declaration.additionalInformationRequired.hint = Mae’r rhain yn {0} ac yn cael eu pennu gan y cod nwyddau neu’r cod gweithdrefn a ddefnyddiwyd.
 
-declaration.additionalInformationRequired.hint.link = codau AI cenedlaethol a chodau AI yr Undeb (yn agor tab newydd)
+declaration.additionalInformationRequired.hint.link = codau Gwybodaeth Ychwanegol cenedlaethol a chodau Gwybodaeth Ychwanegol yr Undeb (yn agor tab newydd)
 
-declaration.additionalInformationRequired.error = Dewiswch ‘Iawn’ os oes unrhyw godau AI
+declaration.additionalInformationRequired.error = Dewiswch ‘Iawn’ os oes unrhyw godau Gwybodaeth Ychwanegol
 
-declaration.additionalInformation.title = Gwybodaeth Ychwanegol (AI)
+declaration.additionalInformation.title = Gwybodaeth Ychwanegol
 
-declaration.additionalInformation.code = Cod AI cenedlaethol neu god AI yr Undeb
+declaration.additionalInformation.code = Cod Gwybodaeth Ychwanegol cenedlaethol neu god Gwybodaeth Ychwanegol yr Undeb
 
 declaration.additionalInformation.code.paragraph = Ychwanegwch bob cod a’r datganiad gofynnol sy’n cyd-fynd ag ef, sydd wedi’i restru yn {0}.
 
 declaration.additionalInformation.code.paragraph.link = atodiad 4 (yn agor tab newydd)
 
-declaration.additionalInformation.code.hint = Mae’n rhaid i bob cod AI fod yn 5 o gymeriadau. Er enghraifft, REJIM ar gyfer mewnforion sydd wedi’u gwrthod, neu MIB01 i ddatgan nwyddau masnachol a gariwyd gan deithwyr.
+declaration.additionalInformation.code.hint = Mae’n rhaid i bob cod Gwybodaeth Ychwanegol fod yn 5 o gymeriadau. Er enghraifft, REJIM ar gyfer mewnforion sydd wedi’u gwrthod, neu MIB01 i ddatgan nwyddau masnachol a gariwyd gan deithwyr.
 
 declaration.additionalInformation.code.hint.header.2 = Er enghraifft, ar gyfer cod REJIM, byddwch yn nodi’r rheswm y gwrthodwyd y mewnforyn.
 
@@ -3092,13 +3094,13 @@ declaration.additionalInformation.code.hint.para.2 = Er enghraifft, ar gyfer cod
 
 declaration.additionalInformation.item.code = 2/2 cod cenedlaethol neu god yr Undeb
 
-declaration.additionalInformation.code.error = Nodwch god AIcenedlaethol dilys neu god AI yr Undeb dilys
+declaration.additionalInformation.code.error = Nodwch god Gwybodaeth Ychwanegol cenedlaethol dilys neu god Gwybodaeth Ychwanegol yr Undeb dilys
 
 declaration.additionalInformation.code.error.rrs01 = Ni allwch nodi’r cod RRS01 ar y dudalen hon. Mae RRS01 yn cael ei anfon yn awtomatig i chi pan fyddwch yn nodi cod lleoliad y nwyddau sy’n dangos y bydd eich nwyddau’n cael eu hanfon drwy ddefnyddio’r Gwasanaeth Symud Cerbydau Nwyddau (GVMS).
 
 declaration.additionalInformation.code.error.lic99 = Ni allwch ddefnyddio LIC99 ar y Gwasanaeth Datganiadau Tollau (CDS). Byddwch yn gallu nodi’r ildiad CDS ar y dudalen nesaf, os nad yw’r nwyddau yn yr eitem ddatgan hon yn destun mesurau trwyddedu penodol.
 
-declaration.additionalInformation.code.empty = Nodwch y cod AI cenedlaethol neu god AI yr Undeb
+declaration.additionalInformation.code.empty = Nodwch y cod Gwybodaeth Ychwanegol cenedlaethol neu god Gwybodaeth Ychwanegol yr Undeb
 
 declaration.additionalInformation.description = Datganiad neu gais
 
@@ -3112,15 +3114,15 @@ declaration.additionalInformation.description.empty = Nodwch ddatganiad hyd at 7
 
 declaration.additionalInformation.table.caption = Codau gwybodaeth ychwanegol wedi’u hychwanegu
 
-declaration.additionalInformation.add.another = A oes angen i chi ychwanegu cod AI arall?
+declaration.additionalInformation.add.another = A oes angen i chi ychwanegu cod Gwybodaeth Ychwanegol arall?
 
-declaration.additionalInformation.add.another.empty = Dewiswch ‘Iawn’ os oes angen i chi ychwanegu cod AI arall
+declaration.additionalInformation.add.another.empty = Dewiswch ‘Iawn’ os oes angen i chi ychwanegu cod Gwybodaeth Ychwanegol arall
 
-declaration.additionalInformation.remove.empty = Dewiswch ‘Iawn’ os ydych am dynnu’r cod AI hwn
+declaration.additionalInformation.remove.empty = Dewiswch ‘Iawn’ os ydych am dynnu’r cod Gwybodaeth Ychwanegol hwn
 
-declaration.additionalInformation.table.heading = Rydych wedi ychwanegu 1 cod AI
+declaration.additionalInformation.table.heading = Rydych wedi ychwanegu 1 cod Gwybodaeth Ychwanegol
 
-declaration.additionalInformation.table.multiple.heading = Rydych wedi ychwanegu {0} o godau AI
+declaration.additionalInformation.table.multiple.heading = Rydych wedi ychwanegu {0} o godau Gwybodaeth Ychwanegol
 
 declaration.additionalInformation.table.change.hint = Newidiwch god {0}.
 
@@ -3130,13 +3132,13 @@ declaration.additionalInformation.table.headers.code = Cod
 
 declaration.additionalInformation.table.headers.description = Gwybodaeth sydd ei hangen
 
-declaration.additionalInformation.remove.title = A ydych yn siŵr eich bod am dynnu’r cod AI hwn?
+declaration.additionalInformation.remove.title = A ydych yn siŵr eich bod am dynnu’r cod Gwybodaeth Ychwanegol hwn?
 
 declaration.additionalInformation.remove.code = Cod
 
 declaration.additionalInformation.remove.description = Gwybodaeth sydd ei hangen
 
-declaration.additionalInformation.error.duplicate = Mae’r cod AI cenedlaethol neu god AI yr Undeb eisoes wedi’i ychwanegu
+declaration.additionalInformation.error.duplicate = Mae’r cod Gwybodaeth Ychwanegol cenedlaethol neu god Gwybodaeth Ychwanegol yr Undeb eisoes wedi’i ychwanegu
 
 declaration.natureOfTransaction.heading = Pa fath o allforyn yw e?
 
@@ -3656,13 +3658,13 @@ declaration.summary.items.item.packageInformation.change = Newidiwch y math o be
 
 declaration.summary.items.item.packageInformation.changeAll = Newidiwch yr wybodaeth am y pecyn ar gyfer eitem {0}
 
-declaration.summary.items.item.additionalInformation = Codau datganiad gwybodaeth ychwanegol (AI)
+declaration.summary.items.item.additionalInformation = Codau datganiad Gwybodaeth Ychwanegol
 
 declaration.summary.items.item.additionalInformation.change = Newidiwch y cod cenedlaethol neu god yr Undeb {0} ar gyfer eitem {1}
 
 declaration.summary.items.item.additionalInformation.changeAll = Newidiwch y cod cenedlaethol neu god yr Undeb ar gyfer eitem {0}
 
-declaration.summary.items.item.additionalInformation.code = Cod datganiad AI
+declaration.summary.items.item.additionalInformation.code = Cod datganiad Gwybodaeth Ychwanegol
 
 declaration.summary.items.item.additionalInformation.information = Gwybodaeth sydd ei hangen
 
@@ -3885,6 +3887,12 @@ declaration.itemsSummary.item.incorrect = Nid yw eitem {0} yn cynnwys yr holl dd
 declaration.itemsRemove.title = A ydych yn siŵr eich bod am dynnu’r eitem ddatganiad hon?
 
 declaration.itemsRemove.error.empty = Dewiswch ‘Iawn’ os ydych am ddileu’r eitem hon
+
+declaration.itemsCannotRemove.title = Tynnu eitem
+
+declaration.itemsCannotRemove.warning = Ni all yr eitem hon gael ei thynnu am ei bod yn ffurfio rhan o ddatganiad sydd wedi cael ei gyflwyno. I gyflwyno datganiad nad yw’n gynnwys yr eitem hon, bydd angen i chi ganslo’r datganiad hwn a chreu un newydd. {0}.
+
+declaration.itemsCannotRemove.warning.linkText = Gallwch wneud hyn ar y dudalen ‘manylion y datganiad’
 
 declaration.seal.title = Beth yw’r sêl ddiogelwch ar gyfer cynhwysydd {0}?
 
@@ -4410,7 +4418,7 @@ dmsError.CDS12145.title = Gwall perthynas
 
 dmsError.CDS12146.title = Gwall perthynas
 
-dmsError.CDS12147.title = Ni chaniateir y cod Gwybodaeth Ychwanegol (AI)
+dmsError.CDS12147.title = Ni chaniateir y cod Gwybodaeth Ychwanegol
 
 dmsError.CDS12148.title = Gwall perthynas
 
@@ -4742,4 +4750,4 @@ guidance.completeDeclaration.section.3.sub.4 = Cod ychwanegol cenedlaethol
 
 guidance.completeDeclaration.section.3.sub.5 = Unedau atodol
 
-guidance.completeDeclaration.section.3.sub.6 = Codau datganiad gwybodaeth ychwanegol (AI)
+guidance.completeDeclaration.section.3.sub.6 = Codau datganiad Gwybodaeth Ychwanegol
