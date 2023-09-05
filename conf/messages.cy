@@ -3890,9 +3890,9 @@ declaration.itemsRemove.error.empty = Dewiswch ‘Iawn’ os ydych am ddileu’r
 
 declaration.itemsCannotRemove.title = Tynnu eitem
 
-declaration.itemsCannotRemove.warning = Ni all yr eitem hon gael ei thynnu am ei bod yn ffurfio rhan o ddatganiad sydd wedi cael ei gyflwyno. I gyflwyno datganiad nad yw’n gynnwys yr eitem hon, bydd angen i chi ganslo’r datganiad hwn a chreu un newydd. {0}.
+declaration.itemsCannotRemove.warning = Ni all yr eitem hon gael ei thynnu am ei bod yn ffurfio rhan o ddatganiad sydd wedi cael ei gyflwyno. I gyflwyno datganiad nad yw’n gynnwys yr eitem hon, bydd angen i chi ganslo’r datganiad hwn a chreu un newydd. Gallwch wneud hyn ar y {0}.
 
-declaration.itemsCannotRemove.warning.linkText = Gallwch wneud hyn ar y dudalen ‘manylion y datganiad’
+declaration.itemsCannotRemove.warning.linkText = dudalen manylion y datganiad
 
 declaration.seal.title = Beth yw’r sêl ddiogelwch ar gyfer cynhwysydd {0}?
 
