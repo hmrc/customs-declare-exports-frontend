@@ -70,7 +70,10 @@ class TimelineEvents @Inject() (
       event.requestType == ExternalAmendmentRequest && event.notificationSummary.enhancedStatus == AMENDED
     }
     val IndexToMatchForFixResubmitContent =
-      amendmentFailedIfLatest.fold(notificationEvents.indexWhere(_.notificationSummary.enhancedStatus == ERRORS))(_ => 0)
+      amendmentFailedIfLatest match {
+        case Some(AmendmentFailed(_)) => notificationEvents.indexWhere(_.notificationSummary.enhancedStatus == CUSTOMS_POSITION_DENIED)
+        case _                        => notificationEvents.indexWhere(_.notificationSummary.enhancedStatus == ERRORS)
+      }
 
     notificationEvents.zipWithIndex.map { case (notificationEvent, index) =>
       val actionContent = index match {
