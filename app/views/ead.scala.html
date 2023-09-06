@@ -40,11 +40,13 @@
 
     <div>
      <p class="govuk-body-l govuk-!-margin-bottom-6 ead-label">@messages("ead.template.printable")</p>
+     <p class="govuk-body">
+      <a class="govuk-link govuk-link--no-visited-state ceds-print-link" onclick="window.print()">
+       @messages("site.print")
+      </a>
+     </p>
     </div>
-    <div class="gem-c-print-link govuk-!-display-none-print govuk-!-margin-top-3 govuk-!-margin-bottom-3">
-     <button onclick="window.print()" class="govuk-link govuk-body-s gem-c-print-link__button">@messages("site.print")</button>
-    </div>
-   </div>
+  </div>
 
   <div class="govuk-grid-column-one-half">
    <!-- Declarant details -->
@@ -148,9 +150,11 @@
  <div class="govuk-grid-row ead-row">
   <div class="govuk-grid-column-full">
    <!-- Print repeater: -->
-   <div class="gem-c-print-link govuk-!-display-none-print govuk-!-margin-top-3 govuk-!-margin-bottom-9">
-    <button onclick="window.print()" class="govuk-link govuk-body-s gem-c-print-link__button">@messages("site.print")</button>
-   </div>
+   <p class="govuk-body">
+    <a class="govuk-link govuk-link--no-visited-state ceds-print-link" onclick="window.print()">
+      @messages("site.print")
+    </a>
+   </p>
   </div>
  </div>
 
