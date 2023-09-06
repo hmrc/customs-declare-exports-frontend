@@ -605,6 +605,7 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
           val notifications = List(dmsrejNotification, awaitExitResultsNotification)
           val events = eventsOnTimeline(notifications)
           verifyRejectedContent(content(events.get(1)))
+          content(events.get(0)).size mustBe 0
         }
       }
 
