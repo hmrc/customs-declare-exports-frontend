@@ -68,9 +68,9 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
   private val dmsdocNotification = NotificationSummary(UUID.randomUUID, now.plusMinutes(2), ADDITIONAL_DOCUMENTS_REQUIRED)
   private val dmsctlNotification = NotificationSummary(UUID.randomUUID, now.plusMinutes(3), UNDERGOING_PHYSICAL_CHECK)
   private val acceptedNotification = NotificationSummary(UUID.randomUUID, now.plusMinutes(4), RECEIVED)
-
   private val dmsrecNotification = NotificationSummary(UUID.randomUUID, now.plusMinutes(5), CUSTOMS_POSITION_DENIED)
   private val dmsrejNotification = NotificationSummary(UUID.randomUUID, now.plusMinutes(5), ERRORS)
+  private val awaitExitResultsNotification = NotificationSummary(UUID.randomUUID, now.plusMinutes(6), AWAITING_EXIT_RESULTS)
 
   // Since the notification list is reverse-ordered (most to least recent) in TimelineEvents...
 
@@ -597,6 +597,15 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
           val view = createView(submissionWithNotifications(notifications), SUPPLEMENTARY_SIMPLIFIED)
           val events = view.getElementsByClass("hmrc-timeline__event")
           events.get(0).getElementsByClass("hmrc-timeline__event-content").size() mustBe 0
+        }
+      }
+
+      "must display buttons under the appropriate notification" when {
+        "'Fix' button and 'Cancel' link when an amendment rejected notification is not latest" in {
+          val notifications = List(dmsrejNotification, awaitExitResultsNotification)
+          val events = eventsOnTimeline(notifications)
+          verifyRejectedContent(content(events.get(1)))
+          content(events.get(0)).size mustBe 0
         }
       }
 
