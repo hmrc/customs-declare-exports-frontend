@@ -1384,7 +1384,7 @@ declaration.transportInformation.meansOfTransport.crossingTheBorder.error.empty 
 declaration.transportInformation.meansOfTransport.crossingTheBorder.error.incorrect = Dewiswch y dull cludo
 
 # Keys used on /departure-transport and /border-transport
-# Keys ending with ‘.vBT’ = > specific keys only used on /border-transport
+# Keys ending with ‘.vBT’ => specific keys only used on /border-transport
 declaration.transportInformation.meansOfTransport.AircraftRegistrationNumber = Rhif cofrestru’r awyren a dyddiad yr hediad
 declaration.transportInformation.meansOfTransport.AircraftRegistrationNumber.v2 = Rhif cofrestru’r awyren a dyddiad yr hediad (domestig)
 declaration.transportInformation.meansOfTransport.AircraftRegistrationNumber.label = Rhif cofrestru a dyddiad yr hediad mewn 6 ffigur

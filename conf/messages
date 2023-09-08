@@ -1383,7 +1383,7 @@ declaration.transportInformation.meansOfTransport.crossingTheBorder.error.empty 
 declaration.transportInformation.meansOfTransport.crossingTheBorder.error.incorrect = Select a means of transport
 
 # Keys used on /departure-transport and /border-transport
-# Keys ending with ‘.vBT’ = > specific keys only used on /border-transport
+# Keys ending with ‘.vBT’ => specific keys only used on /border-transport
 declaration.transportInformation.meansOfTransport.AircraftRegistrationNumber = Aircraft registration number and date of flight
 declaration.transportInformation.meansOfTransport.AircraftRegistrationNumber.v2 = Aircraft registration number and date of flight (domestic)
 declaration.transportInformation.meansOfTransport.AircraftRegistrationNumber.label = Registration number and flight date in 6 figures
