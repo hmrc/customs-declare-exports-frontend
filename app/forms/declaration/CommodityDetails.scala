@@ -130,8 +130,7 @@ object CommodityDetails extends DeclarationPage with FieldMapping {
       case CLEARANCE =>
         Seq(
           TariffContentKey("tariff.declaration.item.commodityDetails.1.clearance"),
-          TariffContentKey("tariff.declaration.item.commodityDetails.2.clearance"),
-          TariffContentKey("tariff.declaration.item.commodityDetails.3.clearance")
+          TariffContentKey("tariff.declaration.item.commodityDetails.2.clearance")
         )
       case _ =>
         Seq(

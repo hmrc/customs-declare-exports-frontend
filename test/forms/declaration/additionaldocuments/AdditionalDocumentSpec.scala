@@ -17,16 +17,8 @@
 package forms.declaration.additionaldocuments
 
 import forms.common.DeclarationPageBaseSpec
-import models.viewmodels.TariffContentKey
 
 class AdditionalDocumentSpec extends DeclarationPageBaseSpec {
-
-  override def getClearanceTariffKeys(messageKey: String): Seq[TariffContentKey] =
-    Seq(
-      TariffContentKey(s"${messageKey}.1.clearance"),
-      TariffContentKey(s"${messageKey}.2.clearance"),
-      TariffContentKey(s"${messageKey}.3.clearance")
-    )
 
   "AdditionalDocument" when {
     testTariffContentKeys(AdditionalDocument, "tariff.declaration.item.additionalDocuments")

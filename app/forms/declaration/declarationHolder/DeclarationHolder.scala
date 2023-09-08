@@ -127,7 +127,12 @@ object DeclarationHolderRequired extends DeclarationPage {
 
   override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
     decType match {
-      case CLEARANCE => List(TariffContentKey("tariff.declaration.isAuthorisationRequired.clearance"))
+      case CLEARANCE =>
+        List(
+          TariffContentKey("tariff.declaration.isAuthorisationRequired.1.clearance"),
+          TariffContentKey("tariff.declaration.isAuthorisationRequired.2.clearance"),
+          TariffContentKey("tariff.declaration.isAuthorisationRequired.3.clearance")
+        )
       case _ =>
         List(
           TariffContentKey("tariff.declaration.isAuthorisationRequired.1.common"),

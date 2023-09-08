@@ -223,4 +223,14 @@ class DeclarationHolderSpec extends DeclarationPageBaseSpec with JourneyTypeTest
   "DeclarationHolderRequired" when {
     testTariffContentKeys(DeclarationHolderRequired, "tariff.declaration.isAuthorisationRequired")
   }
+  override def getClearanceTariffKeys(messageKey: String): Seq[TariffContentKey] =
+    messageKey match {
+      case "tariff.declaration.isAuthorisationRequired" =>
+        Seq(
+          TariffContentKey(s"${messageKey}.1.clearance"),
+          TariffContentKey(s"${messageKey}.2.clearance"),
+          TariffContentKey(s"${messageKey}.3.clearance")
+        )
+      case _ => Seq(TariffContentKey(s"${messageKey}.clearance"))
+    }
 }

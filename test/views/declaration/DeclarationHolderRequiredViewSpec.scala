@@ -49,7 +49,7 @@ class DeclarationHolderRequiredViewSpec extends UnitViewSpec with ExportsTestHel
 
     "have correct message keys" in {
       messages must haveTranslationFor(s"$prefix.tradeTariff.link")
-      messages must haveTranslationFor("tariff.declaration.addAuthorisationRequired.clearance.text")
+      messages must haveTranslationFor("tariff.declaration.addAuthorisationRequired.common.text")
       messages must haveTranslationFor(s"$prefix.empty")
     }
 
@@ -102,16 +102,13 @@ class DeclarationHolderRequiredViewSpec extends UnitViewSpec with ExportsTestHel
           val actualText = removeBlanksIfAnyBeforeDot(tariffDetails.text)
 
           val prefix = "tariff.declaration.isAuthorisationRequired"
-          val expectedText = request.declarationType match {
-            case CLEARANCE => messages(s"$prefix.clearance.text", messages(s"$prefix.clearance.linkText.0"))
-            case _ =>
-              s"""
+          val expectedText =
+            s"""
                 ${messages(s"$prefix.1.common.text", messages(s"$prefix.1.common.linkText.0"))}
                 ${messages(s"$prefix.2.common.text", messages(s"$prefix.2.common.linkText.0"))}
                 ${messages(s"$prefix.3.common.text", messages(s"$prefix.3.common.linkText.0"))}
 
               """
-          }
 
           val expectedTextWithNoMargin = removeLineBreakIfAny(removeNewLinesIfAny(expectedText).trim)
           actualText mustBe expectedTextWithNoMargin

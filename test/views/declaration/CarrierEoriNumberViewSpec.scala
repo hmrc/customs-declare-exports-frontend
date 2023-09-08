@@ -48,7 +48,7 @@ class CarrierEoriNumberViewSpec extends UnitViewSpec with CommonMessages with Ex
 
       "have proper messages for labels" in {
         messages must haveTranslationFor("declaration.carrierEori.hasEori.empty")
-        messages must haveTranslationFor("tariff.declaration.locationOfGoods.clearance.text")
+        messages must haveTranslationFor("tariff.declaration.locationOfGoods.common.text")
       }
 
       "display 'Back' button that links to 'Exporter Details' page" in {
@@ -104,7 +104,7 @@ class CarrierEoriNumberViewSpec extends UnitViewSpec with CommonMessages with Ex
       }
 
       "display the expected tariff details" in {
-        val declType = if (request.isType(CLEARANCE)) "clearance" else "common"
+        val declType = "common"
 
         val tariffTitle = view.getElementsByClass("govuk-details__summary-text")
         tariffTitle.text mustBe messages(s"tariff.expander.title.$declType")

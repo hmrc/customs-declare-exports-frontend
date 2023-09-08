@@ -20,7 +20,22 @@ import config.AppConfig
 import play.api.i18n.Messages
 
 case class TariffContentKey(key: String) {
-  def getTextKey(): String = s"$key.text"
-  def getLinkText(idx: Int)(implicit messages: Messages): String = messages(s"$key.linkText.${idx}")
+
+  // default to 'common' if a 'clearance' message key is not found
+  // 'clearance' message keys added only when different to 'common'
+  val noSpecialisation = key.replace(".clearance", ".common")
+
+  def getTextKey()(implicit messages: Messages): String =
+    messages.isDefinedAt(s"$key.text") match {
+      case false => s"$noSpecialisation.text"
+      case _     => s"$key.text"
+    }
+
+  def getLinkText(idx: Int)(implicit messages: Messages): String =
+    messages.isDefinedAt(s"$key.linkText.${idx}") match {
+      case false => messages(s"$noSpecialisation.linkText.${idx}")
+      case _     => messages(s"$key.linkText.${idx}")
+    }
+
   def getUrl(idx: Int)(implicit appConfig: AppConfig): String = appConfig.tariffGuideUrl(s"urls.$key.${idx}")
 }

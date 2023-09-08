@@ -57,7 +57,7 @@ class ProcedureCodeSpec extends DeclarationPageBaseSpec {
     Seq(TariffContentKey(s"${messageKey}.common"))
 
   override def getClearanceTariffKeys(messageKey: String): Seq[TariffContentKey] =
-    Seq(TariffContentKey(s"${messageKey}.1.clearance"), TariffContentKey(s"${messageKey}.2.clearance"))
+    Seq(TariffContentKey(s"${messageKey}.clearance"))
 
   "ProcedureCodes" when {
     testTariffContentKeys(ProcedureCode, "tariff.declaration.item.procedureCodes")
