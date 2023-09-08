@@ -724,7 +724,7 @@ submission.enhancedStatus.timeline.title.amendment.external = Datganiad wedi’i
 submission.enhancedStatus.timeline.title.amendment.failed = Diwygiad wedi methu
 submission.enhancedStatus.timeline.title.amendment.rejected = Diwygiad wedi’i wrthod
 submission.enhancedStatus.timeline.title.amendment.requested = Cais am ddiwygiad wedi’i wneud
-submission.enhancedStatus.timeline.title.cancel.amendment.accepted = #N/A
+submission.enhancedStatus.timeline.title.cancel.amendment.accepted = Amendment cancelled
 submission.enhancedStatus.timeline.title.CUSTOMS_POSITION_DENIED = Cais i ganslo wedi’i wrthod
 
 submission.enhancedStatus.timeline.content.external.amendment = Mae hyn wedi’i ddiweddaru gan CThEF
@@ -2185,14 +2185,14 @@ declaration.transport.sealId.empty.error = Nodwch Ddynodydd (ID) sêl
 declaration.transport.sealId.error.invalid = Mae’n rhaid i Ddynodydd (ID) y sêl gynnwys llythrennau a rhifau’n unig
 
 declaration.amendment.holding.title = Cyflwyno’ch diwygiad
-declaration.cancel.amendment.holding.title = #N/A
+declaration.cancel.amendment.holding.title = Submit your amendment cancellation
 declaration.confirmation.holding.title = Cyflwynwch eich datganiad
 declaration.confirmation.holding.paragraph = Rydym yn gwirio’ch datganiad, arhoswch
 
-declaration.confirmation.amendment.cancelled.title = #N/A
-declaration.confirmation.amendment.cancelled.next.1 = #N/A
-declaration.confirmation.amendment.cancelled.next.2 = #N/A
-declaration.confirmation.amendment.cancelled.button = #N/A
+declaration.confirmation.amendment.cancelled.button = View declaration details
+declaration.confirmation.amendment.cancelled.next.1 = Your amendment cancellation request has been accepted.
+declaration.confirmation.amendment.cancelled.next.2 = You will be notified about your declaration on the declaration details page. We will notify you on {0} if we need you to upload any documents.
+declaration.confirmation.amendment.cancelled.title = Your amendment cancellation has been accepted
 
 declaration.confirmation.failed.amendment.title = Cais am ddiwygiad wedi methu
 declaration.confirmation.failed.amendment.next.1 = Mae’r wybodaeth a roesoch ynghylch y diwygiad yn gywir, ond nid oedd modd ei derbyn ar hyn o bryd.
