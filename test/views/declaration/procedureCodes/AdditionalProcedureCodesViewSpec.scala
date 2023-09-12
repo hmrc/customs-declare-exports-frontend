@@ -92,6 +92,20 @@ class AdditionalProcedureCodesViewSpec extends PageWithButtonsSpec with ExportsT
         }
 
         checkAllSaveButtonsAreDisplayed(createView())
+
+        "display the expected tariff details" in {
+          val tariffTitle = view.getElementsByClass("govuk-details__summary-text")
+          tariffTitle.text mustBe messages("tariff.expander.title.common")
+
+          val tariffDetails = view.getElementsByClass("govuk-details__text").first
+
+          val prefix = "tariff.declaration.item.additionalProcedureCodes"
+
+          tariffDetails must containText(removeLineBreakIfAny(messages(s"$prefix.1.common.text", messages(s"$prefix.1.common.linkText.0"))))
+          tariffDetails must containText(messages(s"$prefix.2.common.text"))
+          tariffDetails must containText(removeLineBreakIfAny(messages(s"$prefix.3.common.text", messages(s"$prefix.3.common.linkText.0"))))
+          tariffDetails must containText(removeLineBreakIfAny(messages(s"$prefix.4.common.text", messages(s"$prefix.4.common.linkText.0"))))
+        }
       }
 
       "provided with filled form" should {
