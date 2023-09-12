@@ -52,13 +52,22 @@ class AdditionalProcedureCodeSpec extends DeclarationPageBaseSpec {
   }
 
   override def getCommonTariffKeys(messageKey: String): Seq[TariffContentKey] =
-    Seq(TariffContentKey(s"${messageKey}.common"))
+    List(
+      TariffContentKey(s"${messageKey}.1.common"),
+      TariffContentKey(s"${messageKey}.2.common"),
+      TariffContentKey(s"${messageKey}.3.common"),
+      TariffContentKey(s"${messageKey}.4.common")
+    )
 
   override def getClearanceTariffKeys(messageKey: String): Seq[TariffContentKey] =
-    Seq(TariffContentKey(s"${messageKey}.clearance"))
+    List(
+      TariffContentKey(s"${messageKey}.1.clearance"),
+      TariffContentKey(s"${messageKey}.2.common"),
+      TariffContentKey(s"${messageKey}.3.common"),
+      TariffContentKey(s"${messageKey}.4.common")
+    )
 
   "AdditionalProcedureCodes" when {
     testTariffContentKeys(AdditionalProcedureCode, "tariff.declaration.item.additionalProcedureCodes")
   }
-
 }
