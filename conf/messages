@@ -2189,10 +2189,10 @@ declaration.seal.error.duplicate = Seal number already added
 declaration.transport.sealId.empty.error = Enter a seal ID
 declaration.transport.sealId.error.invalid = Seal ID must contain only letters and numbers
 
-declaration.amendment.holding.title = Submit your amendment
-declaration.cancel.amendment.holding.title = Submit your amendment cancellation
-declaration.confirmation.holding.title = Submit your declaration
-declaration.confirmation.holding.paragraph = We are checking your declaration, please wait
+declaration.amendment.holding.title = Submitting amendment request
+declaration.cancel.amendment.holding.title = Submitting amendment cancellation request
+declaration.confirmation.holding.title = Submitting your declaration
+declaration.confirmation.holding.paragraph = We are checking your declaration, please wait.
 
 declaration.confirmation.amendment.cancelled.title = Your amendment cancellation has been accepted
 declaration.confirmation.amendment.cancelled.next.1 = Your amendment cancellation request has been accepted.
