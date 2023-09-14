@@ -2316,7 +2316,7 @@ rejected.notification.guidance.section.2.paragraph.1.link = dudalen datganiadau 
 
 rejected.notification.guidance.section.3.header = Help i drwsio gwallau
 rejected.notification.guidance.section.3.paragraph.1 = Os oes angen help arnoch gyda dogfennau sydd ar goll neu wallau’n ymwneud â gofynion tariff penodol, gallwch gysylltu â CThEF drwy e-bost.
-rejected.notification.guidance.section.3.paragraph.2 = E-bost: {0}
+rejected.notification.guidance.section.3.paragraph.2 = E-bostiwch: {0}
 rejected.notification.guidance.section.3.paragraph.2.email = tdrcommunications@hmrc.gov.uk
 
 amendment.cancellation.heading = Canslo’r cais am ddiwygiad
