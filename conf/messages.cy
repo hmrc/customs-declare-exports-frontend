@@ -2291,8 +2291,8 @@ legal.declaration.email = Cyfeiriad e-bost
 legal.declaration.email.empty = Nodwch gyfeiriad e-bost
 legal.declaration.email.long = Mae’n rhaid i’ch cyfeiriad e-bost beidio â bod yn fwy na 64 o gymeriadau
 legal.declaration.email.error = Nodwch gyfeiriad e-bost dilys
-legal.declaration.confirmation = Rwy’n cadarnhau bod yr wybodaeth a roddwyd gennyf yn gywir hyd eithaf fy ngwybodaeth.
-legal.declaration.confirmation.missing = Mae’n rhaid i chi gadarnhau bod yr wybodaeth a roddwyd gennych yn gywir hyd eithaf eich gwybodaeth.
+legal.declaration.confirmation = Rwy’n cadarnhau bod yr wybodaeth a roddwyd gennyf yn gywir hyd eithaf fy ngwybodaeth
+legal.declaration.confirmation.missing = Mae’n rhaid i chi gadarnhau bod yr wybodaeth a roddwyd gennych yn gywir hyd eithaf eich gwybodaeth
 
 rejected.amendment.title = Datganiad wedi’i wrthod
 rejected.amendment.warning = Mae angen i chi drwsio’r gwallau hyn ac yna cyflwyno cais am ddiwygiad
@@ -2344,8 +2344,8 @@ amendment.cancellation.reason.long = Ni all eich rheswm dros ganslo fod yn fwy n
 amendment.submission.reason.long = Ni all eich rheswm dros ddiwygio fod yn fwy na 512 o gymeriadau
 amendment.cancellation.reason.error = Dim ond llythrennau, rhifau, a chymeriadau arbennig penodol y gellir eu defnyddio wrth nodi rheswm dros ganslo
 amendment.submission.reason.error = Dim ond llythrennau, rhifau, a chymeriadau arbennig penodol y gellir eu defnyddio wrth nodi rheswm dros ddiwygio
-amendment.submission.confirmation = Rwy’n cadarnhau bod yr wybodaeth a roddwyd gennyf yn gywir hyd eithaf fy ngwybodaeth.
-amendment.submission.confirmation.missing = Mae’n rhaid i chi gadarnhau bod yr wybodaeth a roddwyd gennych yn gywir hyd eithaf eich gwybodaeth.
+amendment.submission.confirmation = Rwy’n cadarnhau bod yr wybodaeth a roddwyd gennyf yn gywir hyd eithaf fy ngwybodaeth
+amendment.submission.confirmation.missing = Mae’n rhaid i chi gadarnhau bod yr wybodaeth a roddwyd gennych yn gywir hyd eithaf eich gwybodaeth
 amendment.submission.button = Cyflwyno diwygiad
 
 field.declaration.functionCode = Math o Ddatganiad
