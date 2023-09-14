@@ -65,14 +65,15 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with ExportsTestHe
 
       messages must haveTranslationFor("rejected.notification.guidance.section.1.header")
       messages must haveTranslationFor("rejected.notification.guidance.section.1.paragraph.1")
-      messages must haveTranslationFor("rejected.notification.guidance.section.1.paragraph.2")
-      messages must haveTranslationFor("rejected.amendment.guidance.section.1.paragraph.2")
-      messages must haveTranslationFor("rejected.notification.guidance.section.1.paragraph.2.link")
 
       messages must haveTranslationFor("rejected.notification.guidance.section.2.header")
       messages must haveTranslationFor("rejected.notification.guidance.section.2.paragraph.1")
-      messages must haveTranslationFor("rejected.notification.guidance.section.2.paragraph.2")
-      messages must haveTranslationFor("rejected.notification.guidance.section.2.paragraph.3")
+      messages must haveTranslationFor("rejected.notification.guidance.section.2.paragraph.1.link")
+      messages must haveTranslationFor("rejected.amendment.guidance.section.2.paragraph.1")
+
+      messages must haveTranslationFor("rejected.notification.guidance.section.3.header")
+      messages must haveTranslationFor("rejected.notification.guidance.section.3.paragraph.1")
+      messages must haveTranslationFor("rejected.notification.guidance.section.3.paragraph.2")
     }
 
     "have correct title" in {
@@ -110,28 +111,25 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with ExportsTestHe
       val headings = defaultView.getElementsByClass("govuk-heading-s")
       headings.get(0).text() mustBe messages("rejected.notification.guidance.section.1.header")
       headings.get(1).text() mustBe messages("rejected.notification.guidance.section.2.header")
+      headings.get(2).text() mustBe messages("rejected.notification.guidance.section.3.header")
     }
 
     "have the expected body content" in {
       val body = defaultView.getElementsByClass("govuk-body")
       body.get(0).text() mustBe messages("rejected.notification.check.answers.paragraph")
-
       body.get(1).text() mustBe messages("rejected.notification.guidance.section.1.paragraph.1")
       body.get(2).text() mustBe messages(
-        "rejected.notification.guidance.section.1.paragraph.2",
-        messages("rejected.notification.guidance.section.1.paragraph.2.link")
+        "rejected.notification.guidance.section.2.paragraph.1",
+        messages("rejected.notification.guidance.section.2.paragraph.1.link")
       )
 
-      body.get(3).text() mustBe messages("rejected.notification.guidance.section.2.paragraph.1")
+      body.get(3).text() mustBe messages("rejected.notification.guidance.section.3.paragraph.1")
 
-      val email = messages("rejected.notification.guidance.section.2.paragraph.2.email")
-      body.get(4).text() mustBe messages("rejected.notification.guidance.section.2.paragraph.2", email)
-
+      val email = messages("rejected.notification.guidance.section.3.paragraph.2.email")
+      body.get(4).text() mustBe messages("rejected.notification.guidance.section.3.paragraph.2", email)
       val emailElement = body.get(4).getElementsByClass("govuk-link").get(0)
       emailElement.getElementsByAttributeValue("href", s"mailto:$email")
 
-      body.get(5).text() mustBe messages("rejected.notification.guidance.section.2.paragraph.3")
-      body.get(6).text() mustBe messages("rejected.notification.guidance.section.2.paragraph.4")
     }
 
     "contain notifications" when {
