@@ -19,6 +19,7 @@ package controllers.helpers
 import forms.declaration.ModeOfTransportCode
 import forms.declaration.ModeOfTransportCode.{meaningfulModeOfTransportCodes, FixedTransportInstallations, PostalConsignment}
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
+import models.DeclarationType.{STANDARD, SUPPLEMENTARY}
 import models.ExportsDeclaration
 
 object TransportSectionHelper {
@@ -43,4 +44,15 @@ object TransportSectionHelper {
 
   def isPostalOrFTIModeOfTransport(modeOfTransportCode: Option[ModeOfTransportCode]): Boolean =
     postalOrFTIModeOfTransportCodes.contains(modeOfTransportCode)
+
+  val Guernsey = "GG"
+  val Jersey = "JE"
+
+  private val skipBorderTransportOnJourneys = List(STANDARD, SUPPLEMENTARY)
+
+  def skipBorderTransport(declaration: ExportsDeclaration): Boolean =
+    declaration.locations.destinationCountry.map(_.code.getOrElse("")) match {
+      case Some(Guernsey) | Some(Jersey) => skipBorderTransportOnJourneys.contains(declaration.`type`)
+      case _                             => false
+    }
 }

@@ -23,8 +23,8 @@ import forms.common.YesNoAnswer.{No, Yes, YesNoAnswers}
 import forms.common.{Eori, YesNoAnswer}
 import forms.declaration.AuthorisationProcedureCodeChoice.Choice1040
 import forms.declaration.{EntryIntoDeclarantsRecords, PersonPresentingGoodsDetails}
+import models.DeclarationType
 import models.DeclarationType._
-import models.{DeclarationType, ExportsDeclaration}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.{reset, verify, when}
@@ -70,12 +70,6 @@ class EntryIntoDeclarantsRecordsControllerSpec extends ControllerSpec with Scala
     val formCaptor = ArgumentCaptor.forClass(classOf[Form[YesNoAnswer]])
     verify(page).apply(formCaptor.capture())(any(), any())
     formCaptor.getValue
-  }
-
-  private def theModelPassedToCacheUpdate: ExportsDeclaration = {
-    val modelCaptor = ArgumentCaptor.forClass(classOf[ExportsDeclaration])
-    verify(mockExportsCacheService).update(modelCaptor.capture())(any())
-    modelCaptor.getValue
   }
 
   "EntryIntoDeclarantsRecordsController on displayOutcomePage" when {
@@ -149,7 +143,7 @@ class EntryIntoDeclarantsRecordsControllerSpec extends ControllerSpec with Scala
 
           controller.submitForm()(postRequest(correctForm)).futureValue
 
-          theModelPassedToCacheUpdate.parties.isEntryIntoDeclarantsRecords mustBe Yes
+          theCacheModelUpdated.parties.isEntryIntoDeclarantsRecords mustBe Yes
         }
 
         "call Navigator" in {
@@ -171,7 +165,7 @@ class EntryIntoDeclarantsRecordsControllerSpec extends ControllerSpec with Scala
 
           controller.submitForm()(postRequest(correctForm)).futureValue
 
-          val modelPassedToCache = theModelPassedToCacheUpdate
+          val modelPassedToCache = theCacheModelUpdated
           modelPassedToCache.parties.isEntryIntoDeclarantsRecords mustBe Yes
           modelPassedToCache.parties.personPresentingGoodsDetails mustBe Some(PersonPresentingGoodsDetails(Eori("GB1234567890")))
         }
@@ -182,7 +176,7 @@ class EntryIntoDeclarantsRecordsControllerSpec extends ControllerSpec with Scala
 
           controller.submitForm()(postRequest(correctForm)).futureValue
 
-          val modelPassedToCache = theModelPassedToCacheUpdate
+          val modelPassedToCache = theCacheModelUpdated
           modelPassedToCache.parties.isEntryIntoDeclarantsRecords mustBe Yes
           modelPassedToCache.parties.authorisationProcedureCodeChoice mustBe Choice1040
         }
@@ -206,7 +200,7 @@ class EntryIntoDeclarantsRecordsControllerSpec extends ControllerSpec with Scala
 
           controller.submitForm()(postRequest(correctForm)).futureValue
 
-          val modelPassedToCache = theModelPassedToCacheUpdate
+          val modelPassedToCache = theCacheModelUpdated
           modelPassedToCache.parties.isEntryIntoDeclarantsRecords mustBe No
           modelPassedToCache.parties.personPresentingGoodsDetails mustBe None
         }
@@ -217,7 +211,7 @@ class EntryIntoDeclarantsRecordsControllerSpec extends ControllerSpec with Scala
 
           controller.submitForm()(postRequest(correctForm)).futureValue
 
-          val modelPassedToCache = theModelPassedToCacheUpdate
+          val modelPassedToCache = theCacheModelUpdated
           modelPassedToCache.parties.isEntryIntoDeclarantsRecords mustBe No
           modelPassedToCache.parties.authorisationProcedureCodeChoice mustBe None
         }

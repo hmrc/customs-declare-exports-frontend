@@ -32,7 +32,7 @@ trait ExportsTestHelper extends ExportsDeclarationBuilder with ExportsItemBuilde
   private def declaration(`type`: DeclarationType): ExportsDeclaration = aDeclaration(
     withType(`type`),
     withConsignmentReferences(),
-    withDestinationCountries(),
+    withDestinationCountry(),
     withGoodsLocation(LocationOfGoods("GBAUEMAEMAEMA")),
     withWarehouseIdentification(Some(WarehouseIdentification(Some("a")))),
     withSupervisingCustomsOffice(Some(SupervisingCustomsOffice(Some("b")))),
