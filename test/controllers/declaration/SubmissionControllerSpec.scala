@@ -29,7 +29,6 @@ import models.declaration.submissions.EnhancedStatus.RECEIVED
 import models.declaration.submissions.Submission
 import models.requests.SessionHelper
 import models.requests.SessionHelper._
-import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{reset, verify, verifyNoInteractions, when}
 import org.scalatest.concurrent.ScalaFutures
@@ -38,6 +37,7 @@ import play.api.libs.json.Json
 import play.api.test.Helpers.{await, redirectLocation, session, status}
 import play.twirl.api.HtmlFormat
 import services.SubmissionService
+import services.view.AmendmentAction.{Cancellation, Resubmission, Submission => SubmissionAmendment}
 import uk.gov.hmrc.http.HeaderCarrier
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.amendments.amendment_submission
@@ -125,7 +125,7 @@ class SubmissionControllerSpec extends ControllerWithoutFormSpec with ErrorHandl
       val result = controller.displaySubmitAmendmentPage.apply(getJourneyRequest())
       status(result) mustBe OK
 
-      verify(amendmentSubmissionPage).apply(any(), ArgumentMatchers.eq(false))(any(), any())
+      verify(amendmentSubmissionPage).apply(any(), eqTo(SubmissionAmendment))(any(), any())
       verifyNoInteractions(legalDeclarationPage)
     }
 
@@ -135,6 +135,32 @@ class SubmissionControllerSpec extends ControllerWithoutFormSpec with ErrorHandl
         withNewCaching(aDeclaration())
 
         val result = controller.displaySubmitAmendmentPage.apply(getJourneyRequest())
+        status(result) mustBe SEE_OTHER
+
+        redirectLocation(result) mustBe Some(RootController.displayPage.url)
+        verifyNoInteractions(amendmentSubmissionPage)
+      }
+    }
+  }
+
+  "SubmissionController.displayResubmitAmendmentPage" should {
+
+    "return 200 and invoke the expected page" in {
+      withNewCaching(aDeclaration())
+
+      val result = controller.displayResubmitAmendmentPage.apply(getJourneyRequest())
+      status(result) mustBe OK
+
+      verify(amendmentSubmissionPage).apply(any(), eqTo(Resubmission))(any(), any())
+      verifyNoInteractions(legalDeclarationPage)
+    }
+
+    "Redirect to root controller" when {
+      "feature flag is off" in {
+        when(mockDeclarationAmendmentsConfig.isDisabled).thenReturn(true)
+        withNewCaching(aDeclaration())
+
+        val result = controller.displayResubmitAmendmentPage.apply(getJourneyRequest())
         status(result) mustBe SEE_OTHER
 
         redirectLocation(result) mustBe Some(RootController.displayPage.url)
@@ -215,7 +241,7 @@ class SubmissionControllerSpec extends ControllerWithoutFormSpec with ErrorHandl
         when(mockDeclarationAmendmentsConfig.isDisabled).thenReturn(true)
         withNewCaching(declaration)
 
-        val result = controller.submitAmendment(false)(postRequest(body))
+        val result = controller.submitAmendment("Submission")(postRequest(body))
         status(result) mustBe SEE_OTHER
 
         redirectLocation(result) mustBe Some(RootController.displayPage.url)
@@ -230,7 +256,7 @@ class SubmissionControllerSpec extends ControllerWithoutFormSpec with ErrorHandl
           .thenReturn(Future.successful(Some("actionId")))
 
         val sessionData = List(declarationUuid -> declaration.id, submissionUuid -> "submissionUuid")
-        await(controller.submitAmendment(false)(postRequestWithSession(body, sessionData)))
+        await(controller.submitAmendment("Submission")(postRequestWithSession(body, sessionData)))
 
         theCacheModelUpdated mustBe declaration.copy(statementDescription = Some("amendReason"))
       }
@@ -240,14 +266,14 @@ class SubmissionControllerSpec extends ControllerWithoutFormSpec with ErrorHandl
         val sessionData = List(declarationUuid -> declaration.id, submissionUuid -> "submissionUuid")
         withNewCaching(declaration)
 
-        List(false, true).foreach { isCancellation =>
-          when(mockSubmissionService.submitAmendment(any(), any(), any(), any(), eqTo(isCancellation))(any(), any()))
+        List(Cancellation, Resubmission, SubmissionAmendment).foreach { amendmentAction =>
+          when(mockSubmissionService.submitAmendment(any(), any(), any(), any(), eqTo(amendmentAction))(any(), any()))
             .thenReturn(Future.successful(actionId))
 
-          val result = controller.submitAmendment(isCancellation)(postRequestWithSession(body, sessionData))
+          val result = controller.submitAmendment(amendmentAction.toString)(postRequestWithSession(body, sessionData))
           status(result) must be(SEE_OTHER)
 
-          redirectLocation(result) mustBe Some(AmendmentOutcomeController.displayHoldingPage(isCancellation).url)
+          redirectLocation(result) mustBe Some(AmendmentOutcomeController.displayHoldingPage(amendmentAction == Cancellation).url)
           result.futureValue.session.get(SessionHelper.submissionActionId) mustBe actionId
         }
       }
@@ -256,7 +282,7 @@ class SubmissionControllerSpec extends ControllerWithoutFormSpec with ErrorHandl
         withNewCaching(declaration)
         val bodyWithoutField = Json.obj(nameKey -> "Test Tester", jobRoleKey -> "Tester", emailKey -> "test@tester.com", confirmationKey -> "true")
 
-        val result = controller.submitAmendment(false)(postRequest(bodyWithoutField))
+        val result = controller.submitAmendment(SubmissionAmendment.toString)(postRequest(bodyWithoutField))
         status(result) must be(BAD_REQUEST)
       }
     }

@@ -28,6 +28,7 @@ import play.api.Logging
 import play.api.libs.json.{JsObject, Json}
 import services.audit.AuditTypes.{AmendmentCancellation, AmendmentPayload, Audit, SubmissionPayload}
 import services.audit.{AuditService, AuditTypes, EventData}
+import services.view.AmendmentAction.{AmendmentAction, Cancellation, Resubmission}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Singleton
@@ -67,12 +68,13 @@ class SubmissionService @Inject() (connector: CustomsDeclareExportsConnector, au
     declaration: ExportsDeclaration,
     amendmentSubmission: AmendmentSubmission,
     submissionId: String,
-    isCancellation: Boolean
+    amendmentAction: AmendmentAction
   )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[String]] =
     declaration.declarationMeta.parentDeclarationId.map { parentDeclarationId =>
       connector.findDeclaration(parentDeclarationId).flatMap {
         case Some(parentDeclaration) =>
           val timerContext = metrics.startTimer(submissionAmendmentMetric)
+          val isCancellation = amendmentAction == Cancellation
           val auditType =
             if (isCancellation) AmendmentCancellation
             else {
@@ -88,19 +90,21 @@ class SubmissionService @Inject() (connector: CustomsDeclareExportsConnector, au
             }
 
           val submissionAmendment = SubmissionAmendment(submissionId, declaration.id, isCancellation, fieldPointers)
-          connector
-            .submitAmendment(submissionAmendment)
-            .andThen {
-              case Success(_) =>
-                auditAmendmentSubmission(eori, declaration, parentDeclaration, amendmentSubmission, Success.toString, auditType)
-                metrics.incrementCounter(submissionAmendmentMetric)
-                timerContext.stop()
+          val result =
+            if (amendmentAction == Resubmission) connector.resubmitAmendment(submissionAmendment)
+            else connector.submitAmendment(submissionAmendment)
 
-              case Failure(exception) =>
-                logProgress(declaration, "Amendment Submission Failed")
-                logger.error(s"Error response from backend $exception")
-                auditAmendmentSubmission(eori, declaration, parentDeclaration, amendmentSubmission, Failure.toString, auditType)
-            }
+          result.andThen {
+            case Success(_) =>
+              auditAmendmentSubmission(eori, declaration, parentDeclaration, amendmentSubmission, Success.toString, auditType)
+              metrics.incrementCounter(submissionAmendmentMetric)
+              timerContext.stop()
+
+            case Failure(exception) =>
+              logProgress(declaration, "Amendment Submission Failed")
+              logger.error(s"Error response from backend $exception")
+              auditAmendmentSubmission(eori, declaration, parentDeclaration, amendmentSubmission, Failure.toString, auditType)
+          }
             .map(Some(_))
 
         case None =>

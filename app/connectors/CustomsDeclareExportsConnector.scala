@@ -123,6 +123,9 @@ class CustomsDeclareExportsConnector @Inject() (
   def submitAmendment(amendment: SubmissionAmendment)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[String] =
     httpClient.POST[SubmissionAmendment, String](url(s"${appConfig.amendmentsPath}"), amendment)
 
+  def resubmitAmendment(amendment: SubmissionAmendment)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[String] =
+    httpClient.POST[SubmissionAmendment, String](url(s"${appConfig.resubmitAmendmentPath}"), amendment)
+
   private val updateTimer: Timer = metrics.defaultRegistry.timer("declaration.update.timer")
 
   def updateDeclaration(declaration: ExportsDeclaration)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[ExportsDeclaration] = {

@@ -20,6 +20,7 @@
 @import forms.declaration.AmendmentSubmission
 @import models.requests.JourneyRequest
 @import models.requests.SessionHelper.{getOrElse, submissionUuid}
+@import services.view.AmendmentAction._
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.helpers.{BackButton, Title}
 @import views.html.components.gds._
@@ -37,9 +38,9 @@
     exportsInputCharacterCount: exportsInputCharacterCount
 )
 
-@(form: Form[AmendmentSubmission], isCancellation: Boolean)(implicit request: JourneyRequest[_], messages: Messages)
+@(form: Form[AmendmentSubmission], amendmentAction: AmendmentAction)(implicit request: JourneyRequest[_], messages: Messages)
 
-@key = @{ if (isCancellation) "cancellation" else "submission" }
+@key = @{ amendmentAction.toString.toLowerCase }
 
 @content = {
     @govukWarningText(WarningText(
@@ -80,10 +81,17 @@
 }
 
 @backButton = @{
-  if (isCancellation) DeclarationDetailsController.displayPage(getOrElse(submissionUuid))
-  else SummaryController.displayPage
+  if (amendmentAction == Submission) SummaryController.displayPage
+  else DeclarationDetailsController.displayPage(getOrElse(submissionUuid))
 }
-@submitButton = @{ if (isCancellation) "site.submit" else "amendment.submission.button" }
+
+@submitButton = @{
+  amendmentAction match {
+    case Cancellation => "site.submit"
+    case Resubmission => "amendment.resubmission.button"
+    case _            => "amendment.submission.button"
+  }
+}
 
 @govukLayout(
     title = Title(s"amendment.${key}.heading"),
@@ -91,7 +99,7 @@
     useCustomContentWidth = true,
     showDeclarationSummaryLink = false
 ) {
-    @formHelper(action = SubmissionController.submitAmendment(isCancellation), 'autoComplete -> "off") {
+    @formHelper(action = SubmissionController.submitAmendment(amendmentAction.toString), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
         @pageTitle(messages(s"amendment.${key}.heading"))

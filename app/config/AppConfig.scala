@@ -186,7 +186,12 @@ class AppConfig @Inject() (
 
   lazy val amendmentsPath = servicesConfig.getConfString(
     "customs-declare-exports.amendments",
-    throw new IllegalStateException("Missing configuration for CDS Exports amendment Submission URI")
+    throw new IllegalStateException("Missing configuration for CDS Exports amendment submission URI")
+  )
+
+  lazy val resubmitAmendmentPath = servicesConfig.getConfString(
+    "customs-declare-exports.resubmit-amendment",
+    throw new IllegalStateException("Missing configuration for CDS Exports amendment resubmission URI")
   )
 
   lazy val pageOfSubmissionsPath = servicesConfig.getConfString(

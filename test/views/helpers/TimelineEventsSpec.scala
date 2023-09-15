@@ -300,13 +300,13 @@ class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injec
       timelineEvents(0).dateTime mustBe latestAction.notifications.get(0).dateTimeIssued
 
       val content = timelineEvents(0).content.get.body
-      val expectedButtonUrl = RejectedNotificationsController.displayPageOnUnacceptedAmendment(latestAction.id).url
+      val expectedButtonUrl = SubmissionController.displayResubmitAmendmentPage.url
       val expectedLinkUrl = SubmissionController.cancelAmendment.url
       content must include(expectedButtonUrl)
       content must include(expectedLinkUrl)
     }
 
-    "generate the expected sequence of TimelineEvent instances when the amendment is failed" in {
+    "generate the expected sequence of TimelineEvent instances when an amendment is failed" in {
       val submission = amendmentUnsuccessful(CUSTOMS_POSITION_DENIED)
       val timelineEvents = createTimelineFromSubmission(submission)
 
