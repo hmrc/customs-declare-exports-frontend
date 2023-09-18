@@ -151,6 +151,21 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
       }
     }
 
+    onJourney(STANDARD, SUPPLEMENTARY) { request =>
+      destinationCountriesSkipDeparture.foreach { destinationCountry =>
+        s"DestinationCountry is $destinationCountry" should {
+          "redirect to the starting page on displayOutcomePage" in {
+            withNewCaching(aDeclarationAfter(request.cacheModel, withDestinationCountries(destinationCountry)))
+
+            val result = controller.displayPage(getRequest())
+
+            status(result) must be(SEE_OTHER)
+            thePageNavigatedTo mustBe BorderTransportController.displayPage
+          }
+        }
+      }
+    }
+
     onJourney(STANDARD, OCCASIONAL, SUPPLEMENTARY, SIMPLIFIED) { request =>
       "redirect to the /border-transport page" when {
         "information provided by user are correct" in {
@@ -175,19 +190,6 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
 
           status(result) must be(SEE_OTHER)
           thePageNavigatedTo mustBe TransportCountryController.displayPage
-        }
-      }
-
-      destinationCountriesSkipDeparture.foreach { destinationCountry =>
-        s"DestinationCountry is $destinationCountry" should {
-          "redirect to the starting page on displayOutcomePage" in {
-            withNewCaching(aDeclarationAfter(request.cacheModel, withDestinationCountries(destinationCountry)))
-
-            val result = controller.displayPage(getRequest())
-
-            status(result) must be(SEE_OTHER)
-            thePageNavigatedTo mustBe BorderTransportController.displayPage
-          }
         }
       }
 
@@ -217,19 +219,6 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
             val result = controller.submitForm()(postRequest(correctForm))
 
             await(result) mustBe aRedirectToTheNextPage
-            thePageNavigatedTo mustBe ExpressConsignmentController.displayPage
-          }
-        }
-      }
-
-      destinationCountriesSkipDeparture.foreach { destinationCountry =>
-        s"DestinationCountry is $destinationCountry" should {
-          "redirect to the starting page on displayOutcomePage" in {
-            withNewCaching(aDeclarationAfter(request.cacheModel, withDestinationCountries(destinationCountry)))
-
-            val result = controller.displayPage(getRequest())
-
-            status(result) must be(SEE_OTHER)
             thePageNavigatedTo mustBe ExpressConsignmentController.displayPage
           }
         }
