@@ -18,7 +18,7 @@ package controllers.declaration
 
 import base.{ControllerSpec, MockTransportCodeService}
 import controllers.declaration.routes.{BorderTransportController, ExpressConsignmentController, TransportCountryController}
-import controllers.helpers.TransportSectionHelper.postalOrFTIModeOfTransportCodes
+import controllers.helpers.TransportSectionHelper.{destinationCountriesSkipDeparture, postalOrFTIModeOfTransportCodes}
 import controllers.routes.RootController
 import forms.declaration.DepartureTransport
 import forms.declaration.DepartureTransport.radioButtonGroupId
@@ -177,6 +177,20 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
           thePageNavigatedTo mustBe TransportCountryController.displayPage
         }
       }
+
+      destinationCountriesSkipDeparture.foreach { destinationCountry =>
+        s"DestinationCountry is $destinationCountry" should {
+          "redirect to the starting page on displayOutcomePage" in {
+            withNewCaching(aDeclarationAfter(request.cacheModel, withDestinationCountries(destinationCountry)))
+
+            val result = controller.displayPage(getRequest())
+
+            status(result) must be(SEE_OTHER)
+            thePageNavigatedTo mustBe BorderTransportController.displayPage
+          }
+        }
+      }
+
     }
 
     onJourney(CLEARANCE) { request =>
@@ -207,6 +221,21 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
           }
         }
       }
+
+      destinationCountriesSkipDeparture.foreach { destinationCountry =>
+        s"DestinationCountry is $destinationCountry" should {
+          "redirect to the starting page on displayOutcomePage" in {
+            withNewCaching(aDeclarationAfter(request.cacheModel, withDestinationCountries(destinationCountry)))
+
+            val result = controller.displayPage(getRequest())
+
+            status(result) must be(SEE_OTHER)
+            thePageNavigatedTo mustBe ExpressConsignmentController.displayPage
+          }
+        }
+      }
+
     }
+
   }
 }
