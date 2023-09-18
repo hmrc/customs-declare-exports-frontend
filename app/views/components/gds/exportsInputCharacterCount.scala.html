@@ -14,11 +14,12 @@
  * limitations under the License.
  *@
 
-@import forms.declaration.CommodityDetails
+@import uk.gov.hmrc.hmrcfrontend.views.html.components._
 @import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.charactercount.CharacterCount
 @import views.components.gds.Styles
 
-@this(govukCharacterCount: GovukCharacterCount)
+@this(hmrcCharacterCount: HmrcCharacterCount)
 
 @(
   field: Field,
@@ -41,7 +42,7 @@
   }
 }
 
-@govukCharacterCount(CharacterCount(
+@hmrcCharacterCount(CharacterCount(
   id = field.id,
   name = field.name,
   value = field.value,
