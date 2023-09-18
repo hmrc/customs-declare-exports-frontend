@@ -20,6 +20,7 @@ import forms.declaration.ModeOfTransportCode
 import forms.declaration.ModeOfTransportCode.{meaningfulModeOfTransportCodes, FixedTransportInstallations, PostalConsignment}
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
 import forms.declaration.countries.Country
+import models.DeclarationType.{STANDARD, SUPPLEMENTARY}
 import models.ExportsDeclaration
 
 object TransportSectionHelper {
@@ -43,6 +44,11 @@ object TransportSectionHelper {
     meaningfulModeOfTransportCodes.filterNot(code => postalOrFTIModeOfTransportCodes.contains(Some(code)))
 
   val destinationCountriesSkipDeparture = List(Country(Some("GG")), Country(Some("JE")))
+
+  def skipPageBasedOnDestinationCountries(declaration: ExportsDeclaration): Boolean =
+    (declaration.locations.destinationCountry exists { country =>
+      TransportSectionHelper.destinationCountriesSkipDeparture contains country
+    }) && List(STANDARD, SUPPLEMENTARY).contains(declaration.`type`)
 
   def isPostalOrFTIModeOfTransport(modeOfTransportCode: Option[ModeOfTransportCode]): Boolean =
     postalOrFTIModeOfTransportCodes.contains(modeOfTransportCode)

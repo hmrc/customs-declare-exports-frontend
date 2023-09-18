@@ -45,7 +45,6 @@ trait StandardNavigator extends CacheDependentNavigators {
     case LocationOfGoods             => routes.RoutingCountriesController.displayRoutingCountry
     case AdditionalActorsSummary     => routes.ConsigneeDetailsController.displayPage
     case DocumentSummary             => routes.NatureOfTransactionController.displayPage
-    case BorderTransport             => routes.DepartureTransportController.displayPage
     case ContainerAdd                => routes.TransportContainerController.displayContainerSummary
     case page                        => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on standard")
   }
@@ -74,6 +73,7 @@ trait StandardNavigator extends CacheDependentNavigators {
     case TransportCountry          => transportCountryPreviousPage
     case ExpressConsignment        => expressConsignmentPreviousPageOnStandard
     case ContainerFirst            => containerFirstPreviousPage
+    case BorderTransport           => borderTransportPreviousPage
   }
 
   val standardCacheItemDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, String) => Call] = {

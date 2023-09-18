@@ -25,7 +25,7 @@ import controllers.routes.RootController
 import forms.declaration.DepartureTransport
 import forms.declaration.DepartureTransport.form
 import forms.declaration.InlandOrBorder.Border
-import models.DeclarationType.{CLEARANCE, STANDARD, SUPPLEMENTARY}
+import models.DeclarationType.CLEARANCE
 import models.ExportsDeclaration
 import models.requests.JourneyRequest
 import play.api.i18n.I18nSupport
@@ -54,7 +54,7 @@ class DepartureTransportController @Inject() (
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
 
   def displayPage: Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    if (!skipPageBasedOnDestinationCountries) {
+    if (!TransportSectionHelper.skipPageBasedOnDestinationCountries(request.cacheModel)) {
       if (isPostalOrFTIModeOfTransport(request.cacheModel.transportLeavingBorderCode)) Results.Redirect(RootController.displayPage)
       else {
         val frm = form(departureTransportHelper.transportCodes).withSubmissionErrors
@@ -67,7 +67,7 @@ class DepartureTransportController @Inject() (
   }
 
   def submitForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    if (!skipPageBasedOnDestinationCountries) {
+    if (!TransportSectionHelper.skipPageBasedOnDestinationCountries(request.cacheModel)) {
       val code = request.cacheModel.transportLeavingBorderCode
 
       if (isPostalOrFTIModeOfTransport(code)) Future.successful(Results.Redirect(RootController.displayPage))
@@ -88,10 +88,5 @@ class DepartureTransportController @Inject() (
 
   private def updateCache(formData: DepartureTransport)(implicit r: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
     updateDeclarationFromRequest(_.updateDepartureTransport(formData))
-
-  private def skipPageBasedOnDestinationCountries(implicit request: JourneyRequest[AnyContent]): Boolean =
-    (request.cacheModel.locations.destinationCountry exists { country =>
-      TransportSectionHelper.destinationCountriesSkipDeparture contains country
-    }) && request.isType(STANDARD, SUPPLEMENTARY)
 
 }
