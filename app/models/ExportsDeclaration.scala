@@ -16,6 +16,7 @@
 
 package models
 
+import controllers.helpers.TransportSectionHelper.skipPageBasedOnDestinationCountry
 import forms.Ducr
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
@@ -213,8 +214,11 @@ case class ExportsDeclaration(
   def updateCountriesOfRouting(routingCountries: Seq[RoutingCountry]): ExportsDeclaration =
     copy(locations = locations.copy(routingCountries = routingCountries))
 
-  def updateDestinationCountry(destinationCountry: Country): ExportsDeclaration =
-    copy(locations = locations.copy(destinationCountry = Some(destinationCountry)))
+  def updateDestinationCountry(destinationCountry: Country): ExportsDeclaration = {
+    val declaration = copy(locations = locations.copy(destinationCountry = Some(destinationCountry)))
+    if (skipPageBasedOnDestinationCountry(declaration)) declaration.updateBorderTransport(BorderTransport("", ""))
+    else declaration
+  }
 
   def updateRoutingQuestion(answer: Boolean): ExportsDeclaration =
     copy(locations = locations.copy(hasRoutingCountries = Some(answer)))

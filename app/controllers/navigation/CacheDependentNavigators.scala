@@ -18,8 +18,8 @@ package controllers.navigation
 
 import controllers.declaration.routes
 import controllers.helpers.DeclarationHolderHelper.userCanLandOnIsAuthRequiredPage
-import controllers.helpers.TransportSectionHelper.{isPostalOrFTIModeOfTransport, isTypeForInlandOrBorder}
-import controllers.helpers.{InlandOrBorderHelper, SupervisingCustomsOfficeHelper, TransportSectionHelper}
+import controllers.helpers.TransportSectionHelper._
+import controllers.helpers.{InlandOrBorderHelper, SupervisingCustomsOfficeHelper}
 import forms.declaration.InlandOrBorder.Border
 import forms.declaration.NatureOfTransaction.{BusinessPurchase, Sale}
 import forms.declaration._
@@ -237,9 +237,11 @@ trait CacheDependentNavigators {
     if (condition) routes.InlandOrBorderController.displayPage else routes.InlandTransportDetailsController.displayPage
   }
 
-  protected def transportCountryPreviousPage(cacheModel: ExportsDeclaration): Call =
-    if (cacheModel.isInlandOrBorder(InlandOrBorder.Border)) routes.DepartureTransportController.displayPage
+  protected def transportCountryPreviousPage(cacheModel: ExportsDeclaration): Call = {
+    val continueToDepartureTransport = cacheModel.isInlandOrBorder(InlandOrBorder.Border) || skipPageBasedOnDestinationCountry(cacheModel)
+    if (continueToDepartureTransport) routes.DepartureTransportController.displayPage
     else routes.BorderTransportController.displayPage
+  }
 
   protected def expressConsignmentPreviousPageOnStandard(cacheModel: ExportsDeclaration): Call =
     if (isPostalOrFTIModeOfTransport(cacheModel.inlandModeOfTransportCode)) routes.InlandTransportDetailsController.displayPage
@@ -285,9 +287,5 @@ trait CacheDependentNavigators {
   protected def totalPackageQuantityPreviousPage(cacheModel: ExportsDeclaration): Call =
     if (cacheModel.isInvoiceAmountGreaterThan100000) routes.InvoiceAndExchangeRateController.displayPage
     else routes.InvoiceAndExchangeRateChoiceController.displayPage
-
-  protected def borderTransportPreviousPage(cacheModel: ExportsDeclaration): Call =
-    if (!TransportSectionHelper.skipPageBasedOnDestinationCountries(cacheModel)) routes.DepartureTransportController.displayPage
-    else departureTransportPreviousPageOnStandardOrSuppl(cacheModel)
 
 }

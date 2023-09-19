@@ -54,7 +54,7 @@ class DepartureTransportController @Inject() (
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
 
   def displayPage: Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    if (!TransportSectionHelper.skipPageBasedOnDestinationCountries(request.cacheModel)) {
+    if (!TransportSectionHelper.skipPageBasedOnDestinationCountry(request.cacheModel)) {
       if (isPostalOrFTIModeOfTransport(request.cacheModel.transportLeavingBorderCode)) Results.Redirect(RootController.displayPage)
       else {
         val frm = form(departureTransportHelper.transportCodes).withSubmissionErrors
@@ -67,7 +67,7 @@ class DepartureTransportController @Inject() (
   }
 
   def submitForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    if (!TransportSectionHelper.skipPageBasedOnDestinationCountries(request.cacheModel)) {
+    if (!TransportSectionHelper.skipPageBasedOnDestinationCountry(request.cacheModel)) {
       val code = request.cacheModel.transportLeavingBorderCode
 
       if (isPostalOrFTIModeOfTransport(code)) Future.successful(Results.Redirect(RootController.displayPage))

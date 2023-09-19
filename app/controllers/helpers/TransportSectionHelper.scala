@@ -43,13 +43,22 @@ object TransportSectionHelper {
   val nonPostalOrFTIModeOfTransportCodes =
     meaningfulModeOfTransportCodes.filterNot(code => postalOrFTIModeOfTransportCodes.contains(Some(code)))
 
-  val destinationCountriesSkipDeparture = List(Country(Some("GG")), Country(Some("JE")))
-
-  def skipPageBasedOnDestinationCountries(declaration: ExportsDeclaration): Boolean =
-    (declaration.locations.destinationCountry exists { country =>
-      TransportSectionHelper.destinationCountriesSkipDeparture contains country
-    }) && List(STANDARD, SUPPLEMENTARY).contains(declaration.`type`)
-
   def isPostalOrFTIModeOfTransport(modeOfTransportCode: Option[ModeOfTransportCode]): Boolean =
     postalOrFTIModeOfTransportCodes.contains(modeOfTransportCode)
+
+  val Guernsey = "GG"
+  val Jersey = "JE"
+
+  val destinationCountriesToSkipPages = List(Guernsey, Jersey)
+  private val decTypesToSkipPages = List(STANDARD, SUPPLEMENTARY)
+
+  def skipPageBasedOnDestinationCountry(declaration: ExportsDeclaration): Boolean = {
+    val isDestinationCountryTrue = declaration.locations.destinationCountry exists { country =>
+      TransportSectionHelper.destinationCountriesToSkipPages map (code => Country(Some(code))) contains country
+    }
+    val isDecTypeTrue = decTypesToSkipPages contains declaration.`type`
+
+    isDestinationCountryTrue && isDecTypeTrue
+  }
+
 }

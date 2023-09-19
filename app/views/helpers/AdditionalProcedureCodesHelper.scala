@@ -16,6 +16,7 @@
 
 package views.helpers
 
+import controllers.helpers.TransportSectionHelper.{Guernsey, Jersey}
 import models.DeclarationType.CLEARANCE
 import models.requests.JourneyRequest
 
@@ -26,9 +27,9 @@ class AdditionalProcedureCodesHelper {
 
   def hintText()(implicit request: JourneyRequest[_]): Option[String] =
     request.cacheModel.locations.destinationCountry.map(_.code.getOrElse("")) match {
-      case Some("JE") | Some("GG") if request.declarationType.equals(CLEARANCE) && request.cacheModel.isNotEntryIntoDeclarantsRecords =>
+      case Some(Jersey) | Some(Guernsey) if request.declarationType.equals(CLEARANCE) && request.cacheModel.isNotEntryIntoDeclarantsRecords =>
         Some("declaration.additionalProcedureCodes.jersey.clearanceNonEidr.hint")
-      case Some("JE") | Some("GG") => Some("declaration.additionalProcedureCodes.jersey.hint")
-      case _                       => None
+      case Some(Jersey) | Some(Guernsey) => Some("declaration.additionalProcedureCodes.jersey.hint")
+      case _                             => None
     }
 }
