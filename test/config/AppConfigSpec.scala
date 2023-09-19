@@ -416,7 +416,6 @@ object AppConfigSpec {
       |urls.sfusInbox = "http://localhost:6793/cds-file-upload-service/exports-message-choice"
       |urls.eoriService = "https://www.gov.uk/eori"
       |urls.cdsRegister = "https://www.gov.uk/guidance/get-access-to-the-customs-declaration-service"
-      |urls.cdsCheckStatus = "https://www.tax.service.gov.uk/customs/register-for-cds/are-you-based-in-uk"
       |urls.organisationsLink = "https://www.gov.uk/government/organisations/hm-revenue-customs"
       |urls.importExports = "https://www.gov.uk/topic/business-tax/import-export"
       |urls.exitSurveyUrl = "http://localhost:9514/feedback/customs-declare-exports-frontend"
