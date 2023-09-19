@@ -53,20 +53,21 @@ class DepartureTransportController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
 
-  def displayPage: Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  val displayPage: Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     if (!TransportSectionHelper.skipPageBasedOnDestinationCountry(request.cacheModel)) {
-      if (isPostalOrFTIModeOfTransport(request.cacheModel.transportLeavingBorderCode)) Results.Redirect(RootController.displayPage)
+      if (isPostalOrFTIModeOfTransport(request.cacheModel.transportLeavingBorderCode)) Future.successful(Results.Redirect(RootController.displayPage))
       else {
         val frm = form(departureTransportHelper.transportCodes).withSubmissionErrors
         val transport = request.cacheModel.transport
         val formData = DepartureTransport(transport.meansOfTransportOnDepartureType, transport.meansOfTransportOnDepartureIDNumber)
 
-        Ok(departureTransportPage(frm.fill(formData)))
+        Future.successful(Ok(departureTransportPage(frm.fill(formData))))
       }
-    } else navigator.continueTo(nextPage)
+    } else resetCacheAndContinue
+
   }
 
-  def submitForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  val submitForm: Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     if (!TransportSectionHelper.skipPageBasedOnDestinationCountry(request.cacheModel)) {
       val code = request.cacheModel.transportLeavingBorderCode
 
@@ -78,7 +79,7 @@ class DepartureTransportController @Inject() (
             formWithErrors => Future.successful(BadRequest(departureTransportPage(formWithErrors))),
             updateCache(_).map(_ => navigator.continueTo(nextPage))
           )
-    } else Future.successful(navigator.continueTo(nextPage))
+    } else resetCacheAndContinue
   }
 
   private def nextPage(implicit request: JourneyRequest[AnyContent]): Call =
@@ -88,5 +89,8 @@ class DepartureTransportController @Inject() (
 
   private def updateCache(formData: DepartureTransport)(implicit r: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
     updateDeclarationFromRequest(_.updateDepartureTransport(formData))
+
+  private def resetCacheAndContinue(implicit r: JourneyRequest[AnyContent]): Future[Result] =
+    updateDeclarationFromRequest(_.updateDepartureTransport(DepartureTransport(None, None))) map (_ => navigator.continueTo(nextPage))
 
 }

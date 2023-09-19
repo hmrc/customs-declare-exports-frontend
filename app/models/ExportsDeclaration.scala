@@ -216,8 +216,12 @@ case class ExportsDeclaration(
 
   def updateDestinationCountry(destinationCountry: Country): ExportsDeclaration = {
     val declaration = copy(locations = locations.copy(destinationCountry = Some(destinationCountry)))
-    if (skipPageBasedOnDestinationCountry(declaration)) declaration.updateBorderTransport(BorderTransport("", ""))
-    else declaration
+    if (skipPageBasedOnDestinationCountry(declaration))
+      declaration
+        .updateBorderTransport(BorderTransport("", ""))
+        .updateDepartureTransport(DepartureTransport(None, None))
+    else
+      declaration
   }
 
   def updateRoutingQuestion(answer: Boolean): ExportsDeclaration =
