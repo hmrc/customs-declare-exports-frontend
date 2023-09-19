@@ -19,7 +19,6 @@ package controllers.helpers
 import forms.declaration.ModeOfTransportCode
 import forms.declaration.ModeOfTransportCode.{meaningfulModeOfTransportCodes, FixedTransportInstallations, PostalConsignment}
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
-import forms.declaration.countries.Country
 import models.DeclarationType.{STANDARD, SUPPLEMENTARY}
 import models.ExportsDeclaration
 
@@ -49,16 +48,11 @@ object TransportSectionHelper {
   val Guernsey = "GG"
   val Jersey = "JE"
 
-  val destinationCountriesToSkipPages = List(Guernsey, Jersey)
-  private val decTypesToSkipPages = List(STANDARD, SUPPLEMENTARY)
+  private val journeysToTestOnGuernseyOrJersey = List(STANDARD, SUPPLEMENTARY)
 
-  def skipPageBasedOnDestinationCountry(declaration: ExportsDeclaration): Boolean = {
-    val isDestinationCountryTrue = declaration.locations.destinationCountry exists { country =>
-      TransportSectionHelper.destinationCountriesToSkipPages map (code => Country(Some(code))) contains country
+  def isGuernseyOrJerseyDestination(declaration: ExportsDeclaration): Boolean =
+    declaration.locations.destinationCountry.map(_.code.getOrElse("")) match {
+      case Some(Guernsey) | Some(Jersey) => journeysToTestOnGuernseyOrJersey.contains(declaration.`type`)
+      case _                             => false
     }
-    val isDecTypeTrue = decTypesToSkipPages contains declaration.`type`
-
-    isDestinationCountryTrue && isDecTypeTrue
-  }
-
 }

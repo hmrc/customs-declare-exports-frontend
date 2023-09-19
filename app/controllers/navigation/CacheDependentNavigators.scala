@@ -237,19 +237,19 @@ trait CacheDependentNavigators {
     if (condition) routes.InlandOrBorderController.displayPage else routes.InlandTransportDetailsController.displayPage
   }
 
-  protected def transportCountryPreviousPage(cacheModel: ExportsDeclaration): Call = {
-    val continueToDepartureTransport = cacheModel.isInlandOrBorder(InlandOrBorder.Border) || skipPageBasedOnDestinationCountry(cacheModel)
-    if (continueToDepartureTransport) routes.DepartureTransportController.displayPage
+  protected def transportCountryPreviousPage(cacheModel: ExportsDeclaration): Call =
+    if (cacheModel.isInlandOrBorder(InlandOrBorder.Border)) routes.DepartureTransportController.displayPage
     else routes.BorderTransportController.displayPage
-  }
 
-  protected def expressConsignmentPreviousPageOnStandard(cacheModel: ExportsDeclaration): Call =
-    if (isPostalOrFTIModeOfTransport(cacheModel.inlandModeOfTransportCode)) routes.InlandTransportDetailsController.displayPage
+  protected def expressConsignmentPreviousPageOnStandard(cacheModel: ExportsDeclaration): Call = {
+    val backToInlandTransport = isPostalOrFTIModeOfTransport(cacheModel.inlandModeOfTransportCode) || isGuernseyOrJerseyDestination(cacheModel)
+    if (backToInlandTransport) routes.InlandTransportDetailsController.displayPage
     else {
       val postalOrFTI = isPostalOrFTIModeOfTransport(cacheModel.transportLeavingBorderCode)
       if (postalOrFTI && cacheModel.isInlandOrBorder(Border)) routes.InlandOrBorderController.displayPage
       else routes.TransportCountryController.displayPage
     }
+  }
 
   protected def expressConsignmentPreviousPageOnClearance(cacheModel: ExportsDeclaration): Call = {
     val postalOrFTI = isPostalOrFTIModeOfTransport(cacheModel.transportLeavingBorderCode)
@@ -263,7 +263,8 @@ trait CacheDependentNavigators {
     else routes.ExpressConsignmentController.displayPage
 
   protected def containerFirstPreviousPageOnSupplementary(cacheModel: ExportsDeclaration): Call =
-    expressConsignmentPreviousPageOnStandard(cacheModel)
+    if (isGuernseyOrJerseyDestination(cacheModel)) routes.InlandTransportDetailsController.displayPage
+    else expressConsignmentPreviousPageOnStandard(cacheModel)
 
   protected def additionalTaricCodesPreviousPage(cacheModel: ExportsDeclaration, itemId: String): Call =
     if (cacheModel.isCommodityCodeOfItemPrefixedWith(itemId, CommodityDetails.commodityCodeChemicalPrefixes))

@@ -19,13 +19,14 @@ package controllers.declaration
 import connectors.CodeListConnector
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.routes.{ExpressConsignmentController, TransportContainerController}
+import controllers.helpers.TransportSectionHelper.isGuernseyOrJerseyDestination
 import controllers.navigation.Navigator
 import forms.declaration.TransportCountry
 import models.DeclarationType._
-import models.requests.JourneyRequest
 import models.ExportsDeclaration
+import models.requests.JourneyRequest
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
@@ -47,36 +48,38 @@ class TransportCountryController @Inject() (
 
   private val validTypes = Seq(STANDARD, OCCASIONAL, SUPPLEMENTARY, SIMPLIFIED)
 
-  def displayPage: Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
-    val transportMode = ModeOfTransportCodeHelper.transportMode(request.cacheModel.transportLeavingBorderCode)
-    val form = TransportCountry.form(transportMode).withSubmissionErrors
-    request.cacheModel.transport.transportCrossingTheBorderNationality match {
-      case Some(data) =>
-        Ok(transportCountry(transportMode, form.fill(data)))
-
-      case _ => Ok(transportCountry(transportMode, form))
+  val displayPage: Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async { implicit request =>
+    if (isGuernseyOrJerseyDestination(request.cacheModel)) updateCache(TransportCountry(None)).map(_ => nextPage)
+    else {
+      val transportMode = ModeOfTransportCodeHelper.transportMode(request.cacheModel.transportLeavingBorderCode)
+      val form = TransportCountry.form(transportMode).withSubmissionErrors
+      val page = request.cacheModel.transport.transportCrossingTheBorderNationality match {
+        case Some(data) => transportCountry(transportMode, form.fill(data))
+        case _          => transportCountry(transportMode, form)
+      }
+      Future.successful(Ok(page))
     }
   }
 
-  def submitForm(): Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async { implicit request =>
-    val transportMode = ModeOfTransportCodeHelper.transportMode(request.cacheModel.transportLeavingBorderCode)
-    TransportCountry
-      .form(transportMode)
-      .bindFromRequest()
-      .fold(
-        formWithErrors => Future.successful(BadRequest(transportCountry(transportMode, formWithErrors))),
-        updateCache(_).map(_ => navigator.continueTo(nextPage))
-      )
+  val submitForm: Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async { implicit request =>
+    if (isGuernseyOrJerseyDestination(request.cacheModel)) updateCache(TransportCountry(None)).map(_ => nextPage)
+    else {
+      val transportMode = ModeOfTransportCodeHelper.transportMode(request.cacheModel.transportLeavingBorderCode)
+      TransportCountry
+        .form(transportMode)
+        .bindFromRequest()
+        .fold(formWithErrors => Future.successful(BadRequest(transportCountry(transportMode, formWithErrors))), updateCache(_).map(_ => nextPage))
+    }
   }
 
-  private def nextPage(implicit request: JourneyRequest[AnyContent]): Call =
-    request.declarationType match {
+  private def nextPage(implicit request: JourneyRequest[AnyContent]): Result = {
+    val page = request.declarationType match {
       case STANDARD | OCCASIONAL | SIMPLIFIED => ExpressConsignmentController.displayPage
       case SUPPLEMENTARY                      => TransportContainerController.displayContainerSummary
     }
+    navigator.continueTo(page)
+  }
 
   private def updateCache(transportCountry: TransportCountry)(implicit r: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
-    updateDeclarationFromRequest { declaration =>
-      declaration.copy(transport = declaration.transport.copy(transportCrossingTheBorderNationality = Some(transportCountry)))
-    }
+    updateDeclarationFromRequest(_.updateTransportCountry(transportCountry))
 }

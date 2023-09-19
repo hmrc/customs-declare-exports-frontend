@@ -19,10 +19,10 @@ package services.cache
 import base.ExportsTestData.newUser
 import base.RequestBuilder
 import forms.declaration._
-import models.DeclarationType.DeclarationType
+import models.DeclarationType.{DeclarationType, STANDARD}
+import models.ExportsDeclaration
 import models.declaration.Container
 import models.requests.JourneyRequest
-import models.{DeclarationType, ExportsDeclaration}
 import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
 import utils.FakeRequestCSRFSupport._
@@ -44,7 +44,7 @@ trait ExportsTestHelper extends ExportsDeclarationBuilder with ExportsItemBuilde
     withItem(anItem())
   )
 
-  protected def journeyRequest(`type`: DeclarationType = DeclarationType.STANDARD): JourneyRequest[AnyContent] =
+  protected def journeyRequest(`type`: DeclarationType = STANDARD): JourneyRequest[AnyContent] =
     new JourneyRequest(buildVerifiedEmailRequest(FakeRequest("", "").withCSRFToken, newUser("12345", "12345")), declaration(`type`))
 
   protected def journeyRequest(declaration: ExportsDeclaration): JourneyRequest[AnyContent] =

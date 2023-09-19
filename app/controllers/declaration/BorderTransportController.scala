@@ -18,7 +18,7 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.routes.TransportCountryController
-import controllers.helpers.TransportSectionHelper.skipPageBasedOnDestinationCountry
+import controllers.helpers.TransportSectionHelper.isGuernseyOrJerseyDestination
 import controllers.navigation.Navigator
 import forms.declaration.BorderTransport
 import models.DeclarationType._
@@ -49,25 +49,21 @@ class BorderTransportController @Inject() (
   private val validTypes = Seq(STANDARD, OCCASIONAL, SUPPLEMENTARY, SIMPLIFIED)
 
   val displayPage: Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async { implicit request =>
-    if (skipPageBasedOnDestinationCountry(request.cacheModel)) updateCache(BorderTransport("", "")).map(_ => nextPage)
+    if (isGuernseyOrJerseyDestination(request.cacheModel)) updateCache(BorderTransport("", "")).map(_ => nextPage)
     else {
       val transport = request.cacheModel.transport
-      val form = (transport.meansOfTransportCrossingTheBorderType, transport.meansOfTransportCrossingTheBorderIDNumber) match {
-        case (Some(meansType), Some(meansId)) =>
-          BorderTransport.form.withSubmissionErrors.fill(BorderTransport(meansType, meansId))
-
-        case (None, None) =>
-          BorderTransport.form.withSubmissionErrors.fill(BorderTransport("", ""))
-
-        case _ => BorderTransport.form.withSubmissionErrors
+      val form = BorderTransport.form.withSubmissionErrors
+      val page = (transport.meansOfTransportCrossingTheBorderType, transport.meansOfTransportCrossingTheBorderIDNumber) match {
+        case (Some(meansType), Some(meansId)) => borderTransport(form.fill(BorderTransport(meansType, meansId)))
+        case (None, None)                     => borderTransport(form.fill(BorderTransport("", "")))
+        case _                                => borderTransport(form)
       }
-
-      Future.successful(Ok(borderTransport(form)))
+      Future.successful(Ok(page))
     }
   }
 
   val submitForm: Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async { implicit request =>
-    if (skipPageBasedOnDestinationCountry(request.cacheModel)) updateCache(BorderTransport("", "")).map(_ => nextPage)
+    if (isGuernseyOrJerseyDestination(request.cacheModel)) updateCache(BorderTransport("", "")).map(_ => nextPage)
     else
       BorderTransport.form
         .bindFromRequest()
