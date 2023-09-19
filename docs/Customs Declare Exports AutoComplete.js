@@ -658,7 +658,7 @@ function invoiceAndExchangeRate() {
         selectRadioOptionFromInputs(document.getElementsByName('agreedExchangeRate'), 0)
         document.getElementById('code_yes').checked = 'checked'
         document.getElementById('exchangeRate').value ='1.49'
-        document.getElementById('totalAmountInvoicedCurrency').value ='GBP'
+        document.getElementById('totalAmountInvoicedCurrency').value ='Pounds Sterling - GBP'
         document.getElementById('totalAmountInvoiced').value ='567640'
         submit()
     }

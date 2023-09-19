@@ -19,8 +19,9 @@ package views.declaration
 import base.Injector
 import connectors.CodeListConnector
 import controllers.declaration.routes.{BorderTransportController, DepartureTransportController}
-import controllers.helpers.TransportSectionHelper.nonPostalOrFTIModeOfTransportCodes
+import controllers.helpers.TransportSectionHelper.{nonPostalOrFTIModeOfTransportCodes, Guernsey, Jersey}
 import forms.common.YesNoAnswer.YesNoAnswers
+import forms.declaration.countries
 import forms.declaration.InlandOrBorder.Border
 import forms.declaration.ModeOfTransportCode.{Maritime, RoRo}
 import forms.declaration.TransportCountry
@@ -93,6 +94,18 @@ class TransportCountryViewSpec extends PageWithButtonsSpec with Injector {
                   val backButton = view.getElementById("back-link")
                   backButton must containMessage("site.backToPreviousQuestion")
                   backButton.getElementById("back-link") must haveHref(DepartureTransportController.displayPage)
+                }
+              }
+
+              "display 'Back' button that links to the 'Departure Transport' page" when {
+                List(Guernsey, Jersey).foreach { country =>
+                  s"the destination country is '$country'" in {
+                    implicit val request = withRequestOfType(declarationType, withDestinationCountry(countries.Country(Some(country))))
+                    val view = createView(form(transportMode), transportMode)
+                    val backButton = view.getElementById("back-link")
+                    backButton must containMessage("site.backToPreviousQuestion")
+                    backButton.getElementById("back-link") must haveHref(DepartureTransportController.displayPage)
+                  }
                 }
               }
 

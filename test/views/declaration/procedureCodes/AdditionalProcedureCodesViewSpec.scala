@@ -17,6 +17,7 @@
 package views.declaration.procedureCodes
 
 import base.Injector
+import controllers.helpers.TransportSectionHelper.{Guernsey, Jersey}
 import forms.common.YesNoAnswer.allYesNoAnswers
 import forms.declaration.countries.Country
 import forms.declaration.procedurecodes.AdditionalProcedureCode
@@ -139,7 +140,7 @@ class AdditionalProcedureCodesViewSpec extends PageWithButtonsSpec with ExportsT
     "display the correct hint" when {
       for {
         answer <- allYesNoAnswers
-        country <- List(Country(Some("JE")), Country(Some("GG")))
+        country <- List(Country(Some(Jersey)), Country(Some(Guernsey)))
       } onEveryDeclarationJourney(withDestinationCountry(country), withEntryIntoDeclarantsRecords(answer)) { implicit request =>
         s"$country entered in destination country and EIDR answer is $answer" in {
           val view = createView()

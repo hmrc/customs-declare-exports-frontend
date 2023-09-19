@@ -18,13 +18,14 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.routes.TransportCountryController
+import controllers.helpers.TransportSectionHelper.skipBorderTransport
 import controllers.navigation.Navigator
 import forms.declaration.BorderTransport
 import models.DeclarationType._
 import models.ExportsDeclaration
 import models.requests.JourneyRequest
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.TransportCodeService
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
@@ -47,29 +48,34 @@ class BorderTransportController @Inject() (
 
   private val validTypes = Seq(STANDARD, OCCASIONAL, SUPPLEMENTARY, SIMPLIFIED)
 
-  def displayPage: Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
-    val transport = request.cacheModel.transport
-    val form = (transport.meansOfTransportCrossingTheBorderType, transport.meansOfTransportCrossingTheBorderIDNumber) match {
-      case (Some(meansType), Some(meansId)) =>
-        BorderTransport.form.withSubmissionErrors.fill(BorderTransport(meansType, meansId))
+  val displayPage: Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async { implicit request =>
+    if (skipBorderTransport(request.cacheModel)) updateCache(BorderTransport("", "")).map(_ => nextPage)
+    else {
+      val transport = request.cacheModel.transport
+      val form = (transport.meansOfTransportCrossingTheBorderType, transport.meansOfTransportCrossingTheBorderIDNumber) match {
+        case (Some(meansType), Some(meansId)) =>
+          BorderTransport.form.withSubmissionErrors.fill(BorderTransport(meansType, meansId))
 
-      case (None, None) =>
-        BorderTransport.form.withSubmissionErrors.fill(BorderTransport("", ""))
+        case (None, None) =>
+          BorderTransport.form.withSubmissionErrors.fill(BorderTransport("", ""))
 
-      case _ => BorderTransport.form.withSubmissionErrors
+        case _ => BorderTransport.form.withSubmissionErrors
+      }
+
+      Future.successful(Ok(borderTransport(form)))
     }
-
-    Ok(borderTransport(form))
   }
 
-  def submitForm: Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async { implicit request =>
-    BorderTransport.form
-      .bindFromRequest()
-      .fold(
-        formWithErrors => Future.successful(BadRequest(borderTransport(formWithErrors))),
-        updateCache(_).map(_ => navigator.continueTo(TransportCountryController.displayPage))
-      )
+  val submitForm: Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async { implicit request =>
+    if (skipBorderTransport(request.cacheModel)) updateCache(BorderTransport("", "")).map(_ => nextPage)
+    else
+      BorderTransport.form
+        .bindFromRequest()
+        .fold(formWithErrors => Future.successful(BadRequest(borderTransport(formWithErrors))), updateCache(_).map(_ => nextPage))
   }
+
+  private def nextPage(implicit r: JourneyRequest[AnyContent]): Result =
+    navigator.continueTo(TransportCountryController.displayPage)
 
   private def updateCache(borderTransport: BorderTransport)(implicit r: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
     updateDeclarationFromRequest(_.updateBorderTransport(borderTransport))

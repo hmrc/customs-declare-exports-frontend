@@ -21,8 +21,8 @@ import controllers.declaration.routes.ExporterEoriNumberController
 import controllers.routes.RootController
 import forms.common.Eori
 import forms.declaration.PersonPresentingGoodsDetails
+import models.DeclarationType
 import models.DeclarationType.{OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
-import models.{DeclarationType, ExportsDeclaration}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.{reset, verify, when}
@@ -70,12 +70,6 @@ class PersonPresentingGoodsDetailsControllerSpec extends ControllerSpec with Sca
     val formCaptor = ArgumentCaptor.forClass(classOf[Form[PersonPresentingGoodsDetails]])
     verify(page).apply(formCaptor.capture())(any(), any())
     formCaptor.getValue
-  }
-
-  def theModelPassedToCacheUpdate: ExportsDeclaration = {
-    val modelCaptor = ArgumentCaptor.forClass(classOf[ExportsDeclaration])
-    verify(mockExportsCacheService).update(modelCaptor.capture())(any())
-    modelCaptor.getValue
   }
 
   "PersonPresentingGoodsDetailsController on displayOutcomePage" when {
@@ -158,7 +152,7 @@ class PersonPresentingGoodsDetailsControllerSpec extends ControllerSpec with Sca
 
           controller.submitForm()(postRequest(correctForm)).futureValue
 
-          theModelPassedToCacheUpdate.parties.personPresentingGoodsDetails mustBe Some(PersonPresentingGoodsDetails(Eori(testEori)))
+          theCacheModelUpdated.parties.personPresentingGoodsDetails mustBe Some(PersonPresentingGoodsDetails(Eori(testEori)))
         }
 
         "call Navigator" in {

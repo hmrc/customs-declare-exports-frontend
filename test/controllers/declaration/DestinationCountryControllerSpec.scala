@@ -19,6 +19,8 @@ package controllers.declaration
 import base.{ControllerSpec, MockTaggedCodes}
 import connectors.CodeListConnector
 import controllers.declaration.routes.{LocationOfGoodsController, OfficeOfExitController, RoutingCountriesController}
+import controllers.helpers.TransportSectionHelper.{Guernsey, Jersey}
+import forms.declaration.BorderTransport
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.SUPPLEMENTARY_EIDR
 import forms.declaration.countries.Country
 import models.DeclarationType._
@@ -27,7 +29,7 @@ import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
 import play.api.data.Form
-import play.api.libs.json.{JsObject, JsString}
+import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsEmpty, Call, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
@@ -61,7 +63,6 @@ class DestinationCountryControllerSpec extends ControllerSpec with MockTaggedCod
 
   override protected def afterEach(): Unit = {
     reset(destinationCountryPage, mockCodeListConnector)
-
     super.afterEach()
   }
 
@@ -78,6 +79,7 @@ class DestinationCountryControllerSpec extends ControllerSpec with MockTaggedCod
   }
 
   "Destination Country Controller" should {
+
     "return 200 (OK)" when {
 
       "display page method is invoked and cache is empty" in {
@@ -90,7 +92,7 @@ class DestinationCountryControllerSpec extends ControllerSpec with MockTaggedCod
       }
 
       "display page method is invoked and cache contains data" in {
-        withNewCaching(aDeclaration(withDestinationCountries()))
+        withNewCaching(aDeclaration(withDestinationCountry()))
 
         val result = controller.displayPage(getRequest())
 
@@ -103,9 +105,9 @@ class DestinationCountryControllerSpec extends ControllerSpec with MockTaggedCod
       "form contains incorrect country" in {
         withNewCaching(aDeclaration())
 
-        val incorrectForm = JsObject(Map("countryCode" -> JsString("incorrect")))
+        val incorrectForm = Json.obj("countryCode" -> "incorrect")
 
-        val result = controller.submit()(postRequest(incorrectForm))
+        val result = controller.submit(postRequest(incorrectForm))
 
         status(result) mustBe BAD_REQUEST
       }
@@ -115,27 +117,26 @@ class DestinationCountryControllerSpec extends ControllerSpec with MockTaggedCod
 
       def redirectForDeclarationType(declarationType: DeclarationType, redirect: Call): Unit =
         "redirect" in {
-          val holders = withDeclarationHolders(Some(taggedAuthCodes.codesSkippingLocationOfGoods.head))
-          withNewCaching(aDeclaration(withType(declarationType), holders, withDestinationCountries()))
+          withNewCaching(aDeclaration(withType(declarationType)))
 
-          val correctForm = JsObject(Map("countryCode" -> JsString("PL")))
+          val formData = Json.obj("countryCode" -> "PL")
 
-          val result = controller.submit()(postRequest(correctForm))
+          val result = controller.submit(postRequest(formData))
 
-          await(result) mustBe aRedirectToTheNextPage
+          status(result) mustBe SEE_OTHER
           thePageNavigatedTo mustBe redirect
         }
 
       val redirectToOfficeOfExit: Unit =
         "redirect" in {
           val holders = withDeclarationHolders(Some(taggedAuthCodes.codesSkippingLocationOfGoods.head))
-          withNewCaching(aDeclaration(withAdditionalDeclarationType(SUPPLEMENTARY_EIDR), holders, withDestinationCountries()))
+          withNewCaching(aDeclaration(withAdditionalDeclarationType(SUPPLEMENTARY_EIDR), holders))
 
-          val correctForm = JsObject(Map("countryCode" -> JsString("PL")))
+          val formData = Json.obj("countryCode" -> "PL")
 
-          val result = controller.submit()(postRequest(correctForm))
+          val result = controller.submit(postRequest(formData))
 
-          await(result) mustBe aRedirectToTheNextPage
+          status(result) mustBe SEE_OTHER
           thePageNavigatedTo mustBe OfficeOfExitController.displayPage
         }
 
@@ -161,6 +162,28 @@ class DestinationCountryControllerSpec extends ControllerSpec with MockTaggedCod
 
       "conditions for skipping location of goods pass" should {
         behave like redirectToOfficeOfExit
+      }
+    }
+
+    "reset 'Border transport' data" when {
+      List(STANDARD, SUPPLEMENTARY).zip(List(ModelCountry("Guernsey", Guernsey), ModelCountry("Jersey", Jersey))).foreach {
+        case (journey, modelCountry) =>
+          s"the 'submitForm' method is invoked and destination country selected is '${modelCountry.countryName}'" in {
+            when(mockCodeListConnector.getCountryCodes(any())).thenReturn(ListMap(modelCountry.countryCode -> modelCountry))
+
+            val borderTransport = withBorderTransport(BorderTransport("type", "number"))
+            withNewCaching(aDeclaration(withType(journey), borderTransport))
+
+            val formData = Json.obj("countryCode" -> modelCountry.countryCode)
+
+            val result = controller.submit(postRequest(formData))
+
+            status(result) mustBe SEE_OTHER
+
+            val transport = theCacheModelUpdated.transport
+            transport.meansOfTransportCrossingTheBorderType mustBe None
+            transport.meansOfTransportCrossingTheBorderIDNumber mustBe None
+          }
       }
     }
   }

@@ -22,9 +22,9 @@ import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.FiscalInformation.AllowedFiscalInformationAnswers
 import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData, FiscalInformation, WarehouseIdentification}
 import mock.ErrorHandlerMocks
+import models.DeclarationMeta
 import models.DeclarationType._
 import models.declaration.{CommodityMeasure, DeclarationStatus, ExportItem}
-import models.{DeclarationMeta, ExportsDeclaration}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
@@ -193,12 +193,6 @@ class RemoveItemsSummaryControllerSpec
     val cachedItem = ExportItem(sequenceId = 1, id = itemId)
     val secondItem = ExportItem(sequenceId = 2, id = "123654")
 
-    def declarationPassedToUpdateCache: ExportsDeclaration = {
-      val captor = ArgumentCaptor.forClass(classOf[ExportsDeclaration])
-      verify(mockExportsCacheService).update(captor.capture())(any())
-      captor.getValue
-    }
-
     onEveryDeclarationJourney() { request =>
       "user wants to remove an Item" when {
         val removeItemForm = Json.obj("yesNo" -> YesNoAnswers.yes)
@@ -232,7 +226,7 @@ class RemoveItemsSummaryControllerSpec
             val result = controller.removeItem(itemId)(postRequest(removeItemForm))
             status(result) mustBe SEE_OTHER
 
-            val items = declarationPassedToUpdateCache.items
+            val items = theCacheModelUpdated.items
             items.size mustBe 1
             items must contain(secondItem)
 
@@ -248,7 +242,7 @@ class RemoveItemsSummaryControllerSpec
             status(result) mustBe SEE_OTHER
             thePageNavigatedTo mustBe routes.ItemsSummaryController.displayItemsSummaryPage
 
-            val items = declarationPassedToUpdateCache.items
+            val items = theCacheModelUpdated.items
             items.size mustBe 1
             items must contain(secondItem)
           }
@@ -315,10 +309,9 @@ class RemoveItemsSummaryControllerSpec
             val result = controller.removeItem("warehouseItem")(postRequest(removeItemForm))
             status(result) mustBe SEE_OTHER
 
-            val items = declarationPassedToUpdateCache.items
-            items.size mustBe 1
-
-            declarationPassedToUpdateCache.locations.warehouseIdentification mustBe None
+            val model = theCacheModelUpdated
+            model.items.size mustBe 1
+            model.locations.warehouseIdentification mustBe None
           }
         }
       }
@@ -343,10 +336,9 @@ class RemoveItemsSummaryControllerSpec
             val result = controller.removeItem("warehouseItem")(postRequest(removeItemForm))
             status(result) mustBe SEE_OTHER
 
-            val items = declarationPassedToUpdateCache.items
-            items.size mustBe 1
-
-            declarationPassedToUpdateCache.locations.warehouseIdentification mustBe Some(WarehouseIdentification(Some("id")))
+            val model = theCacheModelUpdated
+            model.items.size mustBe 1
+            model.locations.warehouseIdentification mustBe Some(WarehouseIdentification(Some("id")))
           }
         }
       }

@@ -47,17 +47,16 @@ class DestinationCountryController @Inject() (
 )(implicit ec: ExecutionContext, codeListConnector: CodeListConnector)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
 
-  def displayPage: Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  val displayPage: Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     val form = (request.cacheModel.locations.destinationCountry match {
-      case Some(destinationCountry) =>
-        Countries.form(DestinationCountryPage).fill(destinationCountry)
-      case None => Countries.form(DestinationCountryPage)
+      case Some(destinationCountry) => Countries.form(DestinationCountryPage).fill(destinationCountry)
+      case _                        => Countries.form(DestinationCountryPage)
     }).withSubmissionErrors
 
     Ok(destinationCountryPage(form))
   }
 
-  def submit(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  val submit: Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     Countries
       .form(DestinationCountryPage)
       .bindFromRequest()
