@@ -18,12 +18,13 @@ package controllers.declaration
 
 import base.{ControllerSpec, MockTransportCodeService}
 import controllers.declaration.routes.{BorderTransportController, ExpressConsignmentController, TransportCountryController}
-import controllers.helpers.TransportSectionHelper.postalOrFTIModeOfTransportCodes
+import controllers.helpers.TransportSectionHelper.{destinationCountriesToSkipPages, postalOrFTIModeOfTransportCodes}
 import controllers.routes.RootController
 import forms.declaration.DepartureTransport
 import forms.declaration.DepartureTransport.radioButtonGroupId
 import forms.declaration.InlandOrBorder.Border
 import forms.declaration.ModeOfTransportCode.Maritime
+import forms.declaration.countries.Country
 import mock.ErrorHandlerMocks
 import models.DeclarationType._
 import org.mockito.ArgumentCaptor
@@ -151,6 +152,21 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
       }
     }
 
+    onJourney(STANDARD, SUPPLEMENTARY) { request =>
+      destinationCountriesToSkipPages.foreach { destinationCountry =>
+        s"DestinationCountry is $destinationCountry" should {
+          "redirect to the starting page on displayOutcomePage" in {
+            withNewCaching(aDeclarationAfter(request.cacheModel, withDestinationCountry(Country(Some(destinationCountry)))))
+
+            val result = controller.displayPage(getRequest())
+
+            status(result) must be(SEE_OTHER)
+            thePageNavigatedTo mustBe BorderTransportController.displayPage
+          }
+        }
+      }
+    }
+
     onJourney(STANDARD, OCCASIONAL, SUPPLEMENTARY, SIMPLIFIED) { request =>
       "redirect to the /border-transport page" when {
         "information provided by user are correct" in {
@@ -177,6 +193,7 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
           thePageNavigatedTo mustBe TransportCountryController.displayPage
         }
       }
+
     }
 
     onJourney(CLEARANCE) { request =>
@@ -207,6 +224,8 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
           }
         }
       }
+
     }
+
   }
 }

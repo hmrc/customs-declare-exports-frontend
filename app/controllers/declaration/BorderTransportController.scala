@@ -18,7 +18,7 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.routes.TransportCountryController
-import controllers.helpers.TransportSectionHelper.skipBorderTransport
+import controllers.helpers.TransportSectionHelper.skipPageBasedOnDestinationCountry
 import controllers.navigation.Navigator
 import forms.declaration.BorderTransport
 import models.DeclarationType._
@@ -49,7 +49,7 @@ class BorderTransportController @Inject() (
   private val validTypes = Seq(STANDARD, OCCASIONAL, SUPPLEMENTARY, SIMPLIFIED)
 
   val displayPage: Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async { implicit request =>
-    if (skipBorderTransport(request.cacheModel)) updateCache(BorderTransport("", "")).map(_ => nextPage)
+    if (skipPageBasedOnDestinationCountry(request.cacheModel)) updateCache(BorderTransport("", "")).map(_ => nextPage)
     else {
       val transport = request.cacheModel.transport
       val form = (transport.meansOfTransportCrossingTheBorderType, transport.meansOfTransportCrossingTheBorderIDNumber) match {
@@ -67,7 +67,7 @@ class BorderTransportController @Inject() (
   }
 
   val submitForm: Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async { implicit request =>
-    if (skipBorderTransport(request.cacheModel)) updateCache(BorderTransport("", "")).map(_ => nextPage)
+    if (skipPageBasedOnDestinationCountry(request.cacheModel)) updateCache(BorderTransport("", "")).map(_ => nextPage)
     else
       BorderTransport.form
         .bindFromRequest()

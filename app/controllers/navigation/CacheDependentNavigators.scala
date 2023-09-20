@@ -238,7 +238,7 @@ trait CacheDependentNavigators {
   }
 
   protected def transportCountryPreviousPage(cacheModel: ExportsDeclaration): Call = {
-    val continueToDepartureTransport = cacheModel.isInlandOrBorder(InlandOrBorder.Border) || skipBorderTransport(cacheModel)
+    val continueToDepartureTransport = cacheModel.isInlandOrBorder(InlandOrBorder.Border) || skipPageBasedOnDestinationCountry(cacheModel)
     if (continueToDepartureTransport) routes.DepartureTransportController.displayPage
     else routes.BorderTransportController.displayPage
   }

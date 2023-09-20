@@ -18,6 +18,7 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.routes.{BorderTransportController, ExpressConsignmentController, TransportCountryController}
+import controllers.helpers.TransportSectionHelper
 import controllers.helpers.TransportSectionHelper.isPostalOrFTIModeOfTransport
 import controllers.navigation.Navigator
 import controllers.routes.RootController
@@ -52,28 +53,33 @@ class DepartureTransportController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
 
-  def displayPage: Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    if (isPostalOrFTIModeOfTransport(request.cacheModel.transportLeavingBorderCode)) Results.Redirect(RootController.displayPage)
-    else {
-      val frm = form(departureTransportHelper.transportCodes).withSubmissionErrors
-      val transport = request.cacheModel.transport
-      val formData = DepartureTransport(transport.meansOfTransportOnDepartureType, transport.meansOfTransportOnDepartureIDNumber)
+  val displayPage: Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+    if (!TransportSectionHelper.skipPageBasedOnDestinationCountry(request.cacheModel)) {
+      if (isPostalOrFTIModeOfTransport(request.cacheModel.transportLeavingBorderCode)) Future.successful(Results.Redirect(RootController.displayPage))
+      else {
+        val frm = form(departureTransportHelper.transportCodes).withSubmissionErrors
+        val transport = request.cacheModel.transport
+        val formData = DepartureTransport(transport.meansOfTransportOnDepartureType, transport.meansOfTransportOnDepartureIDNumber)
 
-      Ok(departureTransportPage(frm.fill(formData)))
-    }
+        Future.successful(Ok(departureTransportPage(frm.fill(formData))))
+      }
+    } else resetCacheAndContinue
+
   }
 
-  def submitForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    val code = request.cacheModel.transportLeavingBorderCode
+  val submitForm: Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+    if (!TransportSectionHelper.skipPageBasedOnDestinationCountry(request.cacheModel)) {
+      val code = request.cacheModel.transportLeavingBorderCode
 
-    if (isPostalOrFTIModeOfTransport(code)) Future.successful(Results.Redirect(RootController.displayPage))
-    else
-      form(departureTransportHelper.transportCodes)
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(departureTransportPage(formWithErrors))),
-          updateCache(_).map(_ => navigator.continueTo(nextPage))
-        )
+      if (isPostalOrFTIModeOfTransport(code)) Future.successful(Results.Redirect(RootController.displayPage))
+      else
+        form(departureTransportHelper.transportCodes)
+          .bindFromRequest()
+          .fold(
+            formWithErrors => Future.successful(BadRequest(departureTransportPage(formWithErrors))),
+            updateCache(_).map(_ => navigator.continueTo(nextPage))
+          )
+    } else resetCacheAndContinue
   }
 
   private def nextPage(implicit request: JourneyRequest[AnyContent]): Call =
@@ -83,4 +89,8 @@ class DepartureTransportController @Inject() (
 
   private def updateCache(formData: DepartureTransport)(implicit r: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
     updateDeclarationFromRequest(_.updateDepartureTransport(formData))
+
+  private def resetCacheAndContinue(implicit r: JourneyRequest[AnyContent]): Future[Result] =
+    updateDeclarationFromRequest(_.updateDepartureTransport(DepartureTransport(None, None))) map (_ => navigator.continueTo(nextPage))
+
 }
