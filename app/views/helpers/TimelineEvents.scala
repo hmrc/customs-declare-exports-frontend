@@ -181,10 +181,15 @@ class TimelineEvents @Inject() (
     amendmentEventIfLatest.fold {
       linkButton("declaration.details.fix.resubmit.button", RejectedNotificationsController.displayPage(submission.uuid))
     } { amendmentEventAsLatest =>
-      val fixAndResubmit = RejectedNotificationsController.displayPageOnUnacceptedAmendment(amendmentEventAsLatest.action.id)
       val button = amendmentEventAsLatest match {
-        case _: AmendmentFailed       => linkButton("declaration.details.resubmit.button", fixAndResubmit)
-        case _: AmendmentRejected | _ => linkButton("declaration.details.fix.resubmit.button", fixAndResubmit)
+        case _: AmendmentFailed =>
+          linkButton("declaration.details.resubmit.button", SubmissionController.displayResubmitAmendmentPage)
+
+        case _: AmendmentRejected | _ =>
+          linkButton(
+            "declaration.details.fix.resubmit.button",
+            RejectedNotificationsController.displayPageOnUnacceptedAmendment(amendmentEventAsLatest.action.id)
+          )
       }
 
       val cancelUrl = SubmissionController.cancelAmendment

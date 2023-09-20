@@ -2320,6 +2320,7 @@ rejected.notification.guidance.section.3.paragraph.2 = Email: {0}
 rejected.notification.guidance.section.3.paragraph.2.email = tdrcommunications@hmrc.gov.uk
 
 amendment.cancellation.heading = Cancel amendment request
+amendment.resubmission.heading = Resubmit amendment request
 amendment.submission.heading = Submit amendment request
 amendment.submission.warning = You could be prosecuted if you deliberately give untrue or misleading information.
 amendment.submission.fullName = Full name
@@ -2337,6 +2338,7 @@ amendment.submission.email.empty = Enter an email address
 amendment.submission.email.long = Your email address must not be more than 64 characters
 amendment.submission.email.error = Enter a valid email address
 amendment.cancellation.reason = Reason for your cancellation
+amendment.resubmission.reason = Reason for your amendment
 amendment.submission.reason = Reason for your amendment
 amendment.cancellation.reason.empty = Enter a reason for this cancellation
 amendment.submission.reason.empty = Enter a reason for this amendment
@@ -2346,6 +2348,7 @@ amendment.cancellation.reason.error = Only letters, numbers, and certain special
 amendment.submission.reason.error = Only letters, numbers, and certain special characters can be used in a amendment reason
 amendment.submission.confirmation = I confirm the information given is correct to the best of my knowledge
 amendment.submission.confirmation.missing = You must confirm the information is correct to the best of your knowledge
+amendment.resubmission.button = Resubmit Amendment
 amendment.submission.button = Submit Amendment
 
 field.declaration.functionCode = Declaration type

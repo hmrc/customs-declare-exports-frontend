@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Customs Declare Exports AutoComplete
 // @namespace    http://tampermonkey.net/
-// @version      1.69
+// @version      1.70
 // @description  decs supported: (Std-Arrived A), (Occ-Arrived B), (Smp-Arrived C), (Std-PreLodged D), (Occ-PreLodged E), (Smp-PreLodged F), (Clr-Arrived J), (Clr-PreLodged K), (Sup-SDP Y), (Sup-EIDR Z)
 // @author       You
 // @match        http*://*/customs-declare-exports*
@@ -1202,19 +1202,9 @@ function submission() {
 }
 
 function submitAmendment() {
-    if (currentPageIs('/customs-declare-exports/declaration/submit-your-amendment')) {
-        document.getElementById('fullName').value = 'Tim Tester'
-        document.getElementById('jobRole').value = 'Tester'
-        document.getElementById('email').value = 'tim@testing.com'
-        document.getElementById('reason').value = 'Some reason'
-        document.getElementById('confirmation').click()
-
-        setDeclaration(0)
-    }
-}
-
-function cancelAmendment() {
-    if (currentPageIs('/customs-declare-exports/declaration/cancel-your-amendment')) {
+    if (currentPageIs('/customs-declare-exports/declaration/submit-your-amendment')
+    ||  currentPageIs('/customs-declare-exports/declaration/resubmit-your-amendment')
+    ||  currentPageIs('/customs-declare-exports/declaration/cancel-your-amendment')) {
         document.getElementById('fullName').value = 'Tim Tester'
         document.getElementById('jobRole').value = 'Tester'
         document.getElementById('email').value = 'tim@testing.com'
@@ -1337,6 +1327,5 @@ function completeJourney() {
     // summary and confirmation
     summary()
     submission()
-    cancelAmendment()
     submitAmendment()
 }

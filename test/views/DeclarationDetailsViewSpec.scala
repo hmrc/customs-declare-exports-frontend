@@ -680,14 +680,14 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
       val notificationsWithAmendmentRejected = List(dmsrejNotification, dmsdocNotification, dmsctlNotification, acceptedNotification)
       val submission = submissionWithNotifications(notificationsWithAmendmentRejected, AmendmentRequest)
       val view = createView(submission)
-      checkLatestAmendment(submission, view, "declaration.details.fix.resubmit.button")
+      checkLatestAmendment(Some(submission), view, "declaration.details.fix.resubmit.button")
     }
 
     "display 'Resubmit' button and 'Cancel' link when latest notification is a failed Amendment" in {
       val notificationsWithAmendmentFailed = List(dmsrecNotification, dmsdocNotification, dmsctlNotification, acceptedNotification)
       val submission = submissionWithNotifications(notificationsWithAmendmentFailed, AmendmentRequest)
       val view = createView(submission)
-      checkLatestAmendment(submission, view, "declaration.details.resubmit.button")
+      checkLatestAmendment(None, view, "declaration.details.resubmit.button")
     }
 
     "display the expected section headers" in {
@@ -769,14 +769,18 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
     }
   }
 
-  private def checkLatestAmendment(submission: Submission, view: Appendable, messageKeyOfButton: String): Unit = {
+  private def checkLatestAmendment(maybeSubmission: Option[Submission], view: Appendable, messageKeyOfButton: String): Unit = {
     val buttonGroup = view.getElementsByClass("govuk-button-group")
     val button = buttonGroup.get(0).child(0)
     val link = buttonGroup.get(0).child(1)
 
     button.text() mustBe messages(messageKeyOfButton)
     button.hasClass("govuk-button")
-    button must haveHref(RejectedNotificationsController.displayPageOnUnacceptedAmendment(submission.actions.head.id))
+
+    val href = maybeSubmission.fold(SubmissionController.displayResubmitAmendmentPage) { submission =>
+      RejectedNotificationsController.displayPageOnUnacceptedAmendment(submission.actions.head.id)
+    }
+    button must haveHref(href)
 
     link.tagName() mustBe "a"
     link.hasClass("govuk-link")

@@ -35,6 +35,8 @@ import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.SubmissionService
 import services.cache.ExportsCacheService
+import services.view.AmendmentAction
+import services.view.AmendmentAction.{AmendmentAction, Cancellation, Resubmission, Submission => SubmissionAmendment}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
@@ -94,12 +96,17 @@ class SubmissionController @Inject() (
 
   val displayCancelAmendmentPage: Action[AnyContent] = actions { implicit request =>
     if (declarationAmendmentsConfig.isDisabled) Redirect(RootController.displayPage)
-    else Ok(amendment_submission(AmendmentSubmission.form(true), true))
+    else Ok(amendment_submission(AmendmentSubmission.form(true), Cancellation))
   }
 
   val displaySubmitAmendmentPage: Action[AnyContent] = actions { implicit request =>
     if (declarationAmendmentsConfig.isDisabled) Redirect(RootController.displayPage)
-    else Ok(amendment_submission(AmendmentSubmission.form(false), false))
+    else Ok(amendment_submission(AmendmentSubmission.form(false), SubmissionAmendment))
+  }
+
+  val displayResubmitAmendmentPage: Action[AnyContent] = actions { implicit request =>
+    if (declarationAmendmentsConfig.isDisabled) Redirect(RootController.displayPage)
+    else Ok(amendment_submission(AmendmentSubmission.form(false), Resubmission))
   }
 
   val submitDeclaration: Action[AnyContent] = actions.async { implicit request =>
@@ -114,21 +121,19 @@ class SubmissionController @Inject() (
       )
   }
 
-  def submitAmendment(isCancellation: Boolean): Action[AnyContent] = actions.async { implicit request =>
+  def submitAmendment(amendmentActionAsString: String): Action[AnyContent] = actions.async { implicit request =>
     if (declarationAmendmentsConfig.isDisabled) Future.successful(Redirect(RootController.displayPage))
     else {
+      val amendmentAction = AmendmentAction.from(amendmentActionAsString)
+      val isCancellation = amendmentAction == Cancellation
       val binding = AmendmentSubmission.form(isCancellation).bindFromRequest()
       binding.fold(
-        formWithErrors => Future.successful(BadRequest(amendment_submission(formWithErrors, isCancellation))),
+        formWithErrors => Future.successful(BadRequest(amendment_submission(formWithErrors, amendmentAction))),
         amendmentSubmission =>
-          getValue(submissionUuid).fold {
-            val declarationId = request.cacheModel.id
-            val msg = s"Cannot retrieve 'submissionUuid' from session on Amendment submission for declaration(${declarationId})"
-            errorHandler.internalError(msg)
-          } { submissionId =>
+          getValue(submissionUuid).fold(errorHandler.internalError(submissionError(amendmentAction))) { submissionId =>
             for {
               declaration <- exportsCacheService.update(request.cacheModel.copy(statementDescription = Some(amendmentSubmission.reason)))
-              maybeActionId <- submissionService.submitAmendment(request.eori, declaration, amendmentSubmission, submissionId, isCancellation)
+              maybeActionId <- submissionService.submitAmendment(request.eori, declaration, amendmentSubmission, submissionId, amendmentAction)
             } yield maybeActionId match {
               case Some(actionId) =>
                 Redirect(AmendmentOutcomeController.displayHoldingPage(isCancellation)).addingToSession(submissionActionId -> actionId)
@@ -138,6 +143,15 @@ class SubmissionController @Inject() (
           }
       )
     }
+  }
+
+  private def submissionError(amendmentAction: AmendmentAction)(implicit request: JourneyRequest[_]): String = {
+    val action = amendmentAction match {
+      case Cancellation => "cancellation"
+      case Resubmission => "resubmission"
+      case _            => "submission"
+    }
+    s"Cannot retrieve 'submissionUuid' from session on Amendment $action for declaration(${request.cacheModel.id})"
   }
 
   private def session(submission: Submission)(implicit request: JourneyRequest[_]): Session =

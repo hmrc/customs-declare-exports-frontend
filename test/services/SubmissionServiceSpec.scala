@@ -31,6 +31,7 @@ import org.scalatest.OptionValues
 import org.scalatest.concurrent.ScalaFutures
 import services.audit.{AuditService, AuditTypes, EventData}
 import services.cache.SubmissionBuilder
+import services.view.AmendmentAction.{Cancellation, Resubmission, Submission => SubmitAmendment}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.global
@@ -111,7 +112,7 @@ class SubmissionServiceSpec
 
       "the declaration's parentDeclarationId is not defined" in {
         submissionService
-          .submitAmendment(eori, aDeclaration(), amendmentSubmission, submissionId, false)(hc, global)
+          .submitAmendment(eori, aDeclaration(), amendmentSubmission, submissionId, SubmitAmendment)(hc, global)
           .futureValue mustBe None
       }
 
@@ -128,7 +129,7 @@ class SubmissionServiceSpec
         )
 
         submissionService
-          .submitAmendment(eori, amendedDecl, amendmentSubmission, submissionId, false)(hc, global)
+          .submitAmendment(eori, amendedDecl, amendmentSubmission, submissionId, SubmitAmendment)(hc, global)
           .futureValue mustBe None
       }
     }
@@ -160,7 +161,7 @@ class SubmissionServiceSpec
       when(connector.findDeclaration(any())(any(), any())).thenReturn(Future.successful(Some(parentDeclaration)))
       when(connector.submitAmendment(any())(any(), any())).thenReturn(Future.successful(expectedActionId))
 
-      val result = submissionService.submitAmendment(eori, amendedDecl, amendmentSubmission, submissionId, false)(hc, global)
+      val result = submissionService.submitAmendment(eori, amendedDecl, amendmentSubmission, submissionId, SubmitAmendment)(hc, global)
       result.futureValue mustBe Some(expectedActionId)
 
       val expectedFieldPointers = List(
@@ -177,11 +178,32 @@ class SubmissionServiceSpec
       registry.getCounters.get(exportMetrics.counterName(metric)).getCount mustBe >(counterBefore)
     }
 
+    "successfully resubmit to the back end a failed amendment" in {
+      when(connector.findDeclaration(any())(any(), any())).thenReturn(Future.successful(Some(parentDeclaration)))
+      when(connector.resubmitAmendment(any())(any(), any())).thenReturn(Future.successful(expectedActionId))
+
+      val result = submissionService.submitAmendment(eori, amendedDecl, amendmentSubmission, submissionId, Resubmission)(hc, global)
+      result.futureValue mustBe Some(expectedActionId)
+
+      val expectedFieldPointers = List(
+        "declaration.locations.destinationCountry",
+        "declaration.totalNumberOfItems.totalAmountInvoiced",
+        "declaration.totalNumberOfItems.exchangeRate"
+      )
+      val expectedSubmissionAmendment = SubmissionAmendment(submissionId, "id2", false, expectedFieldPointers)
+      verify(connector).resubmitAmendment(equalTo(expectedSubmissionAmendment))(any(), any())
+      verify(auditService).auditAllPagesUserInput(equalTo(AuditTypes.AmendmentPayload), equalTo(amendedDecl))(any())
+      verify(auditService).auditAmendmentSent(equalTo(AuditTypes.Amendment), notNull())(any)
+
+      registry.getTimers.get(exportMetrics.timerName(metric)).getCount mustBe >(timerBefore)
+      registry.getCounters.get(exportMetrics.counterName(metric)).getCount mustBe >(counterBefore)
+    }
+
     "successfully submit to the back end a valid amendment cancellation" in {
       when(connector.findDeclaration(any())(any(), any())).thenReturn(Future.successful(Some(parentDeclaration)))
       when(connector.submitAmendment(any())(any(), any())).thenReturn(Future.successful(expectedActionId))
 
-      val result = submissionService.submitAmendment(eori, amendedDecl, amendmentSubmission, submissionId, true)(hc, global)
+      val result = submissionService.submitAmendment(eori, amendedDecl, amendmentSubmission, submissionId, Cancellation)(hc, global)
       result.futureValue mustBe Some(expectedActionId)
 
       val expectedSubmissionAmendment = SubmissionAmendment(submissionId, "id2", true, List(""))

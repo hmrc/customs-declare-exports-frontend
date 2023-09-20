@@ -21,6 +21,7 @@ import controllers.declaration.routes.{SubmissionController, SummaryController}
 import controllers.routes.DeclarationDetailsController
 import forms.declaration.AmendmentSubmission.{confirmationKey, emailKey, form, jobRoleKey, nameKey, reasonKey}
 import play.twirl.api.HtmlFormat.Appendable
+import services.view.AmendmentAction.{AmendmentAction, Cancellation, Resubmission, Submission}
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.amendments.amendment_submission
 
@@ -28,13 +29,17 @@ class AmendmentSubmissionViewSpec extends UnitViewSpec with Injector {
 
   private val amendmentSubmissionPage = instanceOf[amendment_submission]
 
-  private def view(isCancellation: Boolean = false): Appendable =
-    amendmentSubmissionPage(form(isCancellation), isCancellation)
+  private def view(amendmentAction: AmendmentAction = Submission): Appendable =
+    amendmentSubmissionPage(form(amendmentAction == Cancellation), amendmentAction)
 
   "Amendment Submission View" should {
 
     "go back to declaration details page for an amendment cancellation" in {
-      view(true).getElementById("back-link") must haveHref(DeclarationDetailsController.displayPage("").url)
+      view(Cancellation).getElementById("back-link") must haveHref(DeclarationDetailsController.displayPage("").url)
+    }
+
+    "go back to declaration details page for an amendment resubmission" in {
+      view(Resubmission).getElementById("back-link") must haveHref(DeclarationDetailsController.displayPage("").url)
     }
 
     "go back to normal summary page for an amendment submission" in {
@@ -42,7 +47,11 @@ class AmendmentSubmissionViewSpec extends UnitViewSpec with Injector {
     }
 
     "have the expected title for an amendment cancellation" in {
-      view(true).getElementsByTag("h1").text mustBe messages("amendment.cancellation.heading")
+      view(Cancellation).getElementsByTag("h1").text mustBe messages("amendment.cancellation.heading")
+    }
+
+    "have the expected title for an amendment resubmission" in {
+      view(Resubmission).getElementsByTag("h1").text mustBe messages("amendment.resubmission.heading")
     }
 
     "have the expected title for an amendment submission" in {
@@ -78,7 +87,7 @@ class AmendmentSubmissionViewSpec extends UnitViewSpec with Injector {
     }
 
     "have reason text-box field for an amendment cancellation" in {
-      view(true).getElementsByAttributeValue("for", reasonKey) must containMessageForElements("amendment.cancellation.reason")
+      view(Cancellation).getElementsByAttributeValue("for", reasonKey) must containMessageForElements("amendment.cancellation.reason")
     }
 
     "have reason text-box field for an amendment submission" in {
@@ -91,7 +100,11 @@ class AmendmentSubmissionViewSpec extends UnitViewSpec with Injector {
     }
 
     "have the expected 'Submit' button for an amendment cancellation" in {
-      view(true).getElementById("submit") must containMessage("site.submit")
+      view(Cancellation).getElementById("submit") must containMessage("site.submit")
+    }
+
+    "have the expected 'Submit' button for an amendment resubmission" in {
+      view(Resubmission).getElementById("submit") must containMessage("amendment.resubmission.button")
     }
 
     "have the expected 'Submit' button for an amendment submission" in {
@@ -99,13 +112,18 @@ class AmendmentSubmissionViewSpec extends UnitViewSpec with Injector {
     }
 
     "have a form with the expected action for an amendment cancellation" in {
-      val action = view(true).getElementsByTag("form").get(0).attr("action")
-      action mustBe SubmissionController.submitAmendment(true).url
+      val action = view(Cancellation).getElementsByTag("form").get(0).attr("action")
+      action mustBe SubmissionController.submitAmendment("Cancellation").url
+    }
+
+    "have a form with the expected action for an amendment resubmission" in {
+      val action = view(Resubmission).getElementsByTag("form").get(0).attr("action")
+      action mustBe SubmissionController.submitAmendment("Resubmission").url
     }
 
     "have a form with the expected action for an amendment submission" in {
-      val action = view(false).getElementsByTag("form").get(0).attr("action")
-      action mustBe SubmissionController.submitAmendment(false).url
+      val action = view().getElementsByTag("form").get(0).attr("action")
+      action mustBe SubmissionController.submitAmendment("Submission").url
     }
   }
 }
