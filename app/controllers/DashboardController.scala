@@ -51,7 +51,6 @@ class DashboardController @Inject() (
     val queryString = request.getQueryString(Groups).fold(s"${request.target.queryString}&$Groups=$groups") { _ =>
       request.target.queryString
     }
-
     if (request.getQueryString(Limit).isEmpty) s"${queryString}&$Limit=${paginationConfig.itemsPerPage}" else queryString
   }
 }
