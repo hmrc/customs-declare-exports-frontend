@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import controllers.declaration.routes._
+@import controllers.declaration.routes.TransportContainerController
 @import forms.common.YesNoAnswer
 @import models.declaration.Container
 @import play.twirl.api.HtmlFormat
@@ -58,7 +58,7 @@
 
 @govukLayout(
     title = Title("declaration.transportInformation.container.remove.title", "declaration.section.6", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), controllers.declaration.routes.TransportContainerController.displayContainerSummary))) {
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), TransportContainerController.displayContainerSummary))) {
 
     @formHelper(action = TransportContainerController.submitContainerRemove(container.id), 'autoComplete -> "off") {
         @errorSummary(yesNoErrors(form.errors))

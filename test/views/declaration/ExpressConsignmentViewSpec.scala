@@ -19,9 +19,11 @@ package views.declaration
 import base.{Injector, MockAuthAction}
 import controllers.declaration.routes
 import controllers.helpers.SupervisingCustomsOfficeHelperSpec.skipDepartureTransportPageCodes
+import controllers.helpers.TransportSectionHelper.{Guernsey, Jersey}
 import forms.common.YesNoAnswer
 import forms.declaration.ModeOfTransportCode.meaningfulModeOfTransportCodes
 import forms.declaration.TransportLeavingTheBorder
+import forms.declaration.countries.Country
 import models.DeclarationType._
 import models.declaration.Transport
 import models.requests.JourneyRequest
@@ -88,6 +90,17 @@ class ExpressConsignmentViewSpec extends UnitViewSpec with CommonMessages with I
 
       "display the expected tariff details" in {
         verifyTariffDetails(view, "common")
+      }
+    }
+
+    "display a back button linking to the /inland-transport-details page" when {
+      "DeclarationType is 'STANDARD' and" when {
+        List(Guernsey, Jersey).foreach { country =>
+          s"the destination country selected is '$country'" in {
+            implicit val request = withRequestOfType(STANDARD, withDestinationCountry(Country(Some(country))))
+            verifyBackButton(createView(), routes.InlandTransportDetailsController.displayPage)
+          }
+        }
       }
     }
 

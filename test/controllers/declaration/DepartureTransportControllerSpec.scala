@@ -18,7 +18,7 @@ package controllers.declaration
 
 import base.{ControllerSpec, MockTransportCodeService}
 import controllers.declaration.routes.{BorderTransportController, ExpressConsignmentController, TransportCountryController}
-import controllers.helpers.TransportSectionHelper.{destinationCountriesToSkipPages, postalOrFTIModeOfTransportCodes}
+import controllers.helpers.TransportSectionHelper.{postalOrFTIModeOfTransportCodes, Guernsey, Jersey}
 import controllers.routes.RootController
 import forms.declaration.DepartureTransport
 import forms.declaration.DepartureTransport.radioButtonGroupId
@@ -84,7 +84,10 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
   private def formData(transportCodeValue: String, inputFieldId: String, reference: String): JsObject =
     Json.obj(radioButtonGroupId -> transportCodeValue, inputFieldId -> reference)
 
+  private val departureTransport = withDepartureTransport(Maritime, transportCodeService.WagonNumber.value, "FAA")
+
   "Departure transport controller" when {
+
     onEveryDeclarationJourney() { request =>
       "return 200 (OK)" when {
 
@@ -96,7 +99,6 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
         }
 
         "display page method is invoked and cache contains data" in {
-          val departureTransport = withDepartureTransport(Maritime, transportCodeService.WagonNumber.value, "FAA")
           withNewCaching(aDeclarationAfter(request.cacheModel, departureTransport))
 
           val result = controller.displayPage(getRequest())
@@ -153,15 +155,35 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
     }
 
     onJourney(STANDARD, SUPPLEMENTARY) { request =>
-      destinationCountriesToSkipPages.foreach { destinationCountry =>
-        s"DestinationCountry is $destinationCountry" should {
-          "redirect to the starting page on displayOutcomePage" in {
-            withNewCaching(aDeclarationAfter(request.cacheModel, withDestinationCountry(Country(Some(destinationCountry)))))
+      "return 303 (SEE_OTHER) and redirect to the 'next page'" when {
+        List(Guernsey, Jersey).foreach { country =>
+          s"the 'displayPage' method is invoked and Destination country is '$country'" in {
+            val destinationCountry = withDestinationCountry(Country(Some(country)))
+            withNewCaching(aDeclarationAfter(request.cacheModel, destinationCountry, departureTransport))
 
             val result = controller.displayPage(getRequest())
 
-            status(result) must be(SEE_OTHER)
+            status(result) mustBe SEE_OTHER
             thePageNavigatedTo mustBe BorderTransportController.displayPage
+
+            val transport = theCacheModelUpdated.transport
+            transport.meansOfTransportOnDepartureType mustBe None
+            transport.meansOfTransportOnDepartureIDNumber mustBe None
+          }
+
+          s"the 'submitForm' method is invoked and Destination country is '$country'" in {
+            val destinationCountry = withDestinationCountry(Country(Some(country)))
+            withNewCaching(aDeclarationAfter(request.cacheModel, destinationCountry, departureTransport))
+
+            val correctForm = formData(transportCodeService.WagonNumber.value, transportCodeService.WagonNumber.id, "FAA")
+            val result = controller.submitForm(postRequest(correctForm))
+
+            status(result) mustBe SEE_OTHER
+            thePageNavigatedTo mustBe BorderTransportController.displayPage
+
+            val transport = theCacheModelUpdated.transport
+            transport.meansOfTransportOnDepartureType mustBe None
+            transport.meansOfTransportOnDepartureIDNumber mustBe None
           }
         }
       }
@@ -173,7 +195,6 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
           withNewCaching(request.cacheModel)
 
           val correctForm = formData(transportCodeService.WagonNumber.value, transportCodeService.WagonNumber.id, "FAA")
-
           val result = controller.submitForm()(postRequest(correctForm))
 
           status(result) must be(SEE_OTHER)
@@ -193,7 +214,6 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
           thePageNavigatedTo mustBe TransportCountryController.displayPage
         }
       }
-
     }
 
     onJourney(CLEARANCE) { request =>
@@ -224,8 +244,6 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
           }
         }
       }
-
     }
-
   }
 }

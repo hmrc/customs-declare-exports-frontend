@@ -18,11 +18,16 @@ package views.declaration
 
 import base.Injector
 import controllers.declaration.routes
+import controllers.helpers.TransportSectionHelper.{Guernsey, Jersey}
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.ContainerFirst
+import forms.declaration.countries.Country
 import models.DeclarationType.SUPPLEMENTARY
+import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
+import org.scalatest.Assertion
 import play.api.data.Form
+import play.api.mvc.Call
 import services.cache.ExportsTestHelper
 import tools.Stubs
 import views.declaration.spec.UnitViewSpec
@@ -36,8 +41,8 @@ class TransportContainerAddFirstViewSpec extends UnitViewSpec with ExportsTestHe
   private val form: Form[ContainerFirst] = ContainerFirst.form
   private val page = instanceOf[transport_container_add_first]
 
-  private def createView(form: Form[ContainerFirst] = form): Document =
-    page(form)(journeyRequest(), messages)
+  private def createView(form: Form[ContainerFirst] = form)(implicit request: JourneyRequest[_]): Document =
+    page(form)(request, messages)
 
   "Transport Containers Add First View" should {
     val view = createView()
@@ -78,19 +83,32 @@ class TransportContainerAddFirstViewSpec extends UnitViewSpec with ExportsTestHe
 
     "display 'Back' button that links to the 'Express Consignment' page" when {
       "declaration's type is STANDARD" in {
-        val backLinkContainer = view.getElementById("back-link")
-        backLinkContainer must containMessage(backToPreviousQuestionCaption)
-        backLinkContainer must haveHref(routes.ExpressConsignmentController.displayPage)
+        verifyBackButton(view, routes.ExpressConsignmentController.displayPage)
       }
     }
 
     "display 'Back' button that links to the 'Transport Country' page" when {
       "declaration's type is SUPPLEMENTARY" in {
-        val view = page(form)(journeyRequest(SUPPLEMENTARY), messages)
-        val backLinkContainer = view.getElementById("back-link")
-        backLinkContainer must containMessage(backToPreviousQuestionCaption)
-        backLinkContainer must haveHref(routes.TransportCountryController.displayPage)
+        implicit val request = withRequestOfType(SUPPLEMENTARY)
+        verifyBackButton(createView(), routes.TransportCountryController.displayPage)
       }
+    }
+
+    "display a back button linking to the /inland-transport-details page" when {
+      "DeclarationType is 'SUPPLEMENTARY' and" when {
+        List(Guernsey, Jersey).foreach { country =>
+          s"the destination country selected is '$country'" in {
+            implicit val request = withRequestOfType(SUPPLEMENTARY, withDestinationCountry(Country(Some(country))))
+            verifyBackButton(createView(), routes.InlandTransportDetailsController.displayPage)
+          }
+        }
+      }
+    }
+
+    def verifyBackButton(view: Document, call: Call): Assertion = {
+      val backButton = view.getElementById("back-link")
+      backButton must containMessage(backToPreviousQuestionCaption)
+      backButton must haveHref(call)
     }
 
     checkAllSaveButtonsAreDisplayed(createView())

@@ -165,14 +165,15 @@ class DestinationCountryControllerSpec extends ControllerSpec with MockTaggedCod
       }
     }
 
-    "reset 'Border transport' data" when {
+    "reset 'Border transport' and 'Transport Country' data" when {
       List(STANDARD, SUPPLEMENTARY).zip(List(ModelCountry("Guernsey", Guernsey), ModelCountry("Jersey", Jersey))).foreach {
         case (journey, modelCountry) =>
           s"the 'submitForm' method is invoked and destination country selected is '${modelCountry.countryName}'" in {
             when(mockCodeListConnector.getCountryCodes(any())).thenReturn(ListMap(modelCountry.countryCode -> modelCountry))
 
             val borderTransport = withBorderTransport(BorderTransport("type", "number"))
-            withNewCaching(aDeclaration(withType(journey), borderTransport))
+            val transportCountry = withTransportCountry(Some("IT"))
+            withNewCaching(aDeclaration(withType(journey), borderTransport, transportCountry))
 
             val formData = Json.obj("countryCode" -> modelCountry.countryCode)
 
@@ -183,6 +184,7 @@ class DestinationCountryControllerSpec extends ControllerSpec with MockTaggedCod
             val transport = theCacheModelUpdated.transport
             transport.meansOfTransportCrossingTheBorderType mustBe None
             transport.meansOfTransportCrossingTheBorderIDNumber mustBe None
+            transport.transportCrossingTheBorderNationality mustBe None
           }
       }
     }
