@@ -42,10 +42,7 @@
 }
 
 @timestamp(submission: Submission) = @{
-  submission.actions
-    .find(_.requestType == SubmissionRequest)
-    .map(action => ViewDates.formatDateAtTime(action.requestTimestamp))
-    .getOrElse("")
+  submission.enhancedStatusLastUpdated.map(ViewDates.formatDateAtTime).getOrElse("")
 }
 
 @headCells = @{
