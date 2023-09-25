@@ -34,9 +34,6 @@ object TransportSectionHelper {
     SUPPLEMENTARY_SIMPLIFIED
   )
 
-  def isTypeForInlandOrBorder(declaration: ExportsDeclaration): Boolean =
-    declaration.additionalDeclarationType.exists(additionalDeclTypesAllowedOnInlandOrBorder.contains)
-
   val postalOrFTIModeOfTransportCodes = List(Some(FixedTransportInstallations), Some(PostalConsignment))
 
   val nonPostalOrFTIModeOfTransportCodes =

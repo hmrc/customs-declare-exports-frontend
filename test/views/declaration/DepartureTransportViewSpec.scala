@@ -18,15 +18,10 @@ package views.declaration
 
 import base.ExportsTestData.itemWithPC
 import base.{Injector, MockTransportCodeService}
-import controllers.declaration.routes.{
-  InlandOrBorderController,
-  InlandTransportDetailsController,
-  SupervisingCustomsOfficeController,
-  WarehouseIdentificationController
-}
+import controllers.declaration.routes.{InlandOrBorderController, InlandTransportDetailsController, SupervisingCustomsOfficeController}
 import controllers.helpers.TransportSectionHelper._
 import forms.declaration.DepartureTransport.form
-import forms.declaration.InlandOrBorder.Border
+import forms.declaration.InlandOrBorder.{Border, Inland}
 import forms.declaration.ModeOfTransportCode.{RoRo, Road}
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
 import forms.declaration.{ModeOfTransportCode, TransportCodes}
@@ -193,53 +188,46 @@ class DepartureTransportViewSpec extends PageWithButtonsSpec with Injector {
         }
       }
     }
+  }
 
+  "Departure Transport View" when {
     additionalDeclTypesAllowedOnInlandOrBorder.foreach { additionalType =>
-      "'Border' was selected on /inland-or border and" when {
+      "'Border' was selected on /inland-or-border and" when {
         implicit val request = withRequest(additionalType, withInlandOrBorder(Some(Border)))
         verifyBackButton(InlandOrBorderController.displayPage)
       }
 
-      "'Border' was NOT selected on /inland-or border and" when {
+      "'Inland' was selected on /inland-or-border and" when {
+        implicit val request = withRequest(additionalType, withInlandOrBorder(Some(Inland)))
+        verifyBackButton(InlandTransportDetailsController.displayPage)
+      }
+
+      "/inland-or-border was skipped and" when {
         verifyBackButton(InlandTransportDetailsController.displayPage)(withRequest(additionalType))
       }
     }
 
     "the declarationType is SUPPLEMENTARY and" when {
-      verifyBackButton(InlandTransportDetailsController.displayPage)(withRequest(SUPPLEMENTARY_EIDR))
+      // On this condition, InlandOrBorder's value, if any, is NOT taken into account
+      implicit val request = withRequest(SUPPLEMENTARY_EIDR, withInlandOrBorder(Some(Border)))
+      verifyBackButton(InlandTransportDetailsController.displayPage)
     }
 
-    List(CLEARANCE_FRONTIER, CLEARANCE_PRE_LODGED).foreach { additionalType =>
-      "the declaration is CLEARANCE and" when {
+    "the declaration is CLEARANCE and" when {
+      List(CLEARANCE_FRONTIER, CLEARANCE_PRE_LODGED).foreach { additionalType =>
         verifyBackButton(SupervisingCustomsOfficeController.displayPage)(withRequest(additionalType))
       }
+    }
 
-      "the declaration is EIDR and" when {
-        implicit val request = withRequest(additionalType, withEntryIntoDeclarantsRecords())
-        verifyBackButton(SupervisingCustomsOfficeController.displayPage)
-      }
-
-      "the declaration is EIDR and" when {
-        "all declaration's items have '1040' as PC and '000' as APC and" when {
-          implicit val request = withRequest(additionalType, withEntryIntoDeclarantsRecords(), withItem(itemWithPC("1040")))
-          verifyBackButton(WarehouseIdentificationController.displayPage)
+    def verifyBackButton(call: Call)(implicit request: JourneyRequest[_]): Unit =
+      s"AdditionalDeclarationType is ${request.cacheModel.additionalDeclarationType}" should {
+        s"display 'Back' button that links to the '${call.url}' page" in {
+          val backButton = createView().getElementById("back-link")
+          backButton must containMessage(backToPreviousQuestionCaption)
+          backButton must haveHref(call)
         }
       }
-    }
-
-    List(OCCASIONAL_FRONTIER, OCCASIONAL_PRE_LODGED, SIMPLIFIED_FRONTIER, SIMPLIFIED_PRE_LODGED).foreach { additionalType =>
-      verifyBackButton(InlandTransportDetailsController.displayPage)(withRequest(additionalType))
-    }
   }
-
-  def verifyBackButton(call: Call)(implicit request: JourneyRequest[_]): Unit =
-    s"AdditionalDeclarationType is ${request.cacheModel.additionalDeclarationType}" should {
-      s"display 'Back' button that links to the '${call.url}' page" in {
-        val backButton = createView().getElementById("back-link")
-        backButton must containMessage(backToPreviousQuestionCaption)
-        backButton must haveHref(call)
-      }
-    }
 
   case class DataOnTest(transportCodes: TransportCodes, transportCode: ModeOfTransportCode, request: JourneyRequest[_])
 

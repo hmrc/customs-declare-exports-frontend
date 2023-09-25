@@ -18,7 +18,7 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.routes.TransportCountryController
-import controllers.helpers.TransportSectionHelper.isGuernseyOrJerseyDestination
+import controllers.helpers.TransportSectionHelper.{isGuernseyOrJerseyDestination, isPostalOrFTIModeOfTransport}
 import controllers.navigation.Navigator
 import forms.declaration.BorderTransport
 import models.DeclarationType._
@@ -49,8 +49,7 @@ class BorderTransportController @Inject() (
   private val validTypes = Seq(STANDARD, OCCASIONAL, SUPPLEMENTARY, SIMPLIFIED)
 
   val displayPage: Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async { implicit request =>
-    if (isGuernseyOrJerseyDestination(request.cacheModel)) updateCache(BorderTransport("", "")).map(_ => nextPage)
-    else {
+    val pageToDisplay = () => {
       val transport = request.cacheModel.transport
       val form = BorderTransport.form.withSubmissionErrors
       val page = (transport.meansOfTransportCrossingTheBorderType, transport.meansOfTransportCrossingTheBorderIDNumber) match {
@@ -60,14 +59,25 @@ class BorderTransportController @Inject() (
       }
       Future.successful(Ok(page))
     }
+    submit(pageToDisplay)
   }
 
   val submitForm: Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async { implicit request =>
-    if (isGuernseyOrJerseyDestination(request.cacheModel)) updateCache(BorderTransport("", "")).map(_ => nextPage)
-    else
+    val verifyFormAndUpdateCache = () =>
       BorderTransport.form
         .bindFromRequest()
         .fold(formWithErrors => Future.successful(BadRequest(borderTransport(formWithErrors))), updateCache(_).map(_ => nextPage))
+
+    submit(verifyFormAndUpdateCache)
+  }
+
+  private def submit(fun: () => Future[Result])(implicit request: JourneyRequest[AnyContent]): Future[Result] = {
+    val declaration = request.cacheModel
+    val isPostalOrFTI =
+      isPostalOrFTIModeOfTransport(declaration.transportLeavingBorderCode) ||
+        isPostalOrFTIModeOfTransport(declaration.inlandModeOfTransportCode)
+    val resetValueAndGotoNextPage = isPostalOrFTI || isGuernseyOrJerseyDestination(declaration)
+    if (resetValueAndGotoNextPage) updateCache(BorderTransport("", "")).map(_ => nextPage) else fun()
   }
 
   private def nextPage(implicit r: JourneyRequest[AnyContent]): Result =

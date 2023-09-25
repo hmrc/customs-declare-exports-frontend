@@ -18,12 +18,13 @@ package views.declaration
 
 import base.Injector
 import controllers.declaration.routes
-import controllers.helpers.TransportSectionHelper.{Guernsey, Jersey}
+import controllers.helpers.TransportSectionHelper.{postalOrFTIModeOfTransportCodes, Guernsey, Jersey}
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.form
+import forms.declaration.InlandOrBorder.Border
 import forms.declaration.Seal
 import forms.declaration.countries.Country
-import models.DeclarationType.{STANDARD, SUPPLEMENTARY}
+import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
 import models.declaration.Container
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
@@ -92,37 +93,69 @@ class TransportContainerSummaryViewSpec extends PageWithButtonsSpec with Injecto
       view.getElementById("containers-row0-seals") must containMessage("declaration.seal.summary.noSeals")
     }
 
-    "display 'Back' button that links to the 'Express Consignment' page" when {
-      "declaration's type is STANDARD" in {
-        verifyBackButton(view, routes.ExpressConsignmentController.displayPage)
-      }
-    }
-
-    "display 'Back' button that links to the 'Transport Country' page" when {
-      "declaration's type is SUPPLEMENTARY" in {
-        implicit val request = withRequestOfType(SUPPLEMENTARY)
-        verifyBackButton(createView(), routes.TransportCountryController.displayPage)
-      }
-    }
-
-    "display a back button linking to the 'Inland Transport Details' page" when {
-      "DeclarationType is 'SUPPLEMENTARY' and" when {
-        List(Guernsey, Jersey).foreach { country =>
-          s"the destination country selected is '$country'" in {
-            implicit val request = withRequestOfType(SUPPLEMENTARY, withDestinationCountry(Country(Some(country))))
-            verifyBackButton(createView(), routes.InlandTransportDetailsController.displayPage)
-          }
+    "display 'Back' button that links to the 'ExpressConsignment' page" when {
+      List(STANDARD, OCCASIONAL, SIMPLIFIED, CLEARANCE).foreach { declarationType =>
+        s"declaration's type is $declarationType" in {
+          implicit val request = withRequestOfType(declarationType)
+          verifyBackButton(createView(), routes.ExpressConsignmentController.displayPage)
         }
       }
     }
 
-    def verifyBackButton(view: Document, call: Call): Assertion = {
-      val backButton = view.getElementById("back-link")
-      backButton must containMessage(backToPreviousQuestionCaption)
-      backButton must haveHref(call)
-    }
-
     checkAllSaveButtonsAreDisplayed(createView())
+  }
+
+  "Transport Containers Add First View" when {
+    "declaration's type is SUPPLEMENTARY" should {
+
+      "display 'Back' button that links to the 'Transport Country' page" in {
+        implicit val request = withRequestOfType(SUPPLEMENTARY)
+        verifyBackButton(createView(), routes.TransportCountryController.displayPage)
+      }
+
+      List(Guernsey, Jersey).foreach { country =>
+        val destinationCountry = withDestinationCountry(Country(Some(country)))
+
+        "display a back button linking to the /inland-transport-details page" when {
+          s"the destination country selected is '$country' and" when {
+            "InlandOrBorder is NOT 'Border'" in {
+              implicit val request = withRequestOfType(SUPPLEMENTARY, destinationCountry)
+              verifyBackButton(createView(), routes.InlandTransportDetailsController.displayPage)
+            }
+          }
+        }
+
+        "display a back button linking to the /inland-or-border page" when {
+          s"the destination country selected is '$country' and" when {
+            "InlandOrBorder is 'Border'" in {
+              implicit val request = withRequestOfType(SUPPLEMENTARY, destinationCountry, withInlandOrBorder(Some(Border)))
+              verifyBackButton(createView(), routes.InlandOrBorderController.displayPage)
+            }
+          }
+        }
+      }
+
+      postalOrFTIModeOfTransportCodes.foreach { transportCode =>
+        "display a back button linking to the /inland-or-border page" when {
+          s"TransportLeavingTheBorder is '${transportCode.value}' and" when {
+            "InlandOrBorder is 'Border'" in {
+              val modeOfTransportCode = withBorderModeOfTransportCode(transportCode)
+              implicit val request = withRequestOfType(SUPPLEMENTARY, modeOfTransportCode, withInlandOrBorder(Some(Border)))
+              verifyBackButton(createView(), routes.InlandOrBorderController.displayPage)
+            }
+          }
+        }
+
+        "display a back button linking to the /inland-transport-details page" when {
+          s"InlandTransportDetails is '${transportCode.value}' and" when {
+            "InlandOrBorder is NOT 'Border'" in {
+              implicit val request = withRequestOfType(SUPPLEMENTARY, withInlandModeOfTransportCode(transportCode.value))
+              verifyBackButton(createView(), routes.InlandTransportDetailsController.displayPage)
+            }
+          }
+        }
+      }
+    }
   }
 
   "Transport Containers Summary View for invalid input" should {
@@ -134,5 +167,11 @@ class TransportContainerSummaryViewSpec extends PageWithButtonsSpec with Injecto
 
       view must containErrorElementWithMessageKey("error.yesNo.required")
     }
+  }
+
+  private def verifyBackButton(view: Document, call: Call): Assertion = {
+    val backButton = view.getElementById("back-link")
+    backButton must containMessage(backToPreviousQuestionCaption)
+    backButton must haveHref(call)
   }
 }

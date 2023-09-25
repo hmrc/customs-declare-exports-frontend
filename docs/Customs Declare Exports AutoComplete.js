@@ -254,7 +254,7 @@ function consignmentReferences() {
                 document.getElementById('mrn').value = '20GB46J8TMJ4RF' + Math.floor(Math.random() * 8999)
                 break
             case 'Z':
-                document.getElementById('eidrDateStamp').value = '2021' + getRandomInt(10,12) + getRandomInt(1,30)
+                document.getElementById('eidrDateStamp').value = '2021' + getRandomInt(10,12) + getRandomInt(10,30)
                 break
         }
 
@@ -656,8 +656,9 @@ function invoiceAndExchangeRateChoice() {
 function invoiceAndExchangeRate() {
     if (currentPageIs('/customs-declare-exports/declaration/invoices-and-exchange-rate')) {
         selectRadioOptionFromInputs(document.getElementsByName('agreedExchangeRate'), 0)
-        document.getElementById('code_no').checked = 'checked'
-        document.getElementById('totalAmountInvoicedCurrency').value ='SEK'
+        document.getElementById('code_yes').checked = 'checked'
+        document.getElementById('exchangeRate').value ='1.49'
+        document.getElementById('totalAmountInvoicedCurrency').value ='Pounds Sterling - GBP'
         document.getElementById('totalAmountInvoiced').value ='567640'
         submit()
     }

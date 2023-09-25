@@ -70,9 +70,9 @@ trait SimplifiedNavigator extends CacheDependentNavigators {
     case RepresentativeAgent       => representativeAgentPreviousPage
     case InlandModeOfTransportCode => inlandTransportDetailsPreviousPage
     case InlandOrBorder            => inlandOrBorderPreviousPage
-    case DepartureTransport        => departureTransportPreviousPageOnStandardOrSuppl
+    case DepartureTransport        => departureTransportPreviousPage
     case TransportCountry          => transportCountryPreviousPage
-    case ExpressConsignment        => expressConsignmentPreviousPageOnStandard
+    case ExpressConsignment        => expressConsignmentPreviousPage
     case ContainerFirst            => containerFirstPreviousPage
   }
 
