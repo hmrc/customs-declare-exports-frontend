@@ -18,7 +18,7 @@ package controllers.declaration
 
 import connectors.CodeListConnector
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.declaration.routes._
+import controllers.declaration.routes.ConsigneeDetailsController
 import controllers.navigation.Navigator
 import forms.declaration.carrier.CarrierDetails
 import models.DeclarationType._
@@ -62,13 +62,7 @@ class CarrierDetailsController @Inject() (
       .bindFromRequest()
       .fold(
         formWithErrors => Future.successful(BadRequest(carrierDetailsPage(formWithErrors))),
-        updateCache(_).map { _ =>
-          val nextPage = request.declarationType match {
-            case CLEARANCE => AuthorisationProcedureCodeChoiceController.displayPage
-            case _         => ConsigneeDetailsController.displayPage
-          }
-          navigator.continueTo(nextPage)
-        }
+        updateCache(_).map(_ => navigator.continueTo(ConsigneeDetailsController.displayPage))
       )
   }
 

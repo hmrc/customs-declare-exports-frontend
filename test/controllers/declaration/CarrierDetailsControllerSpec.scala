@@ -183,7 +183,7 @@ class CarrierDetailsControllerSpec extends ControllerSpec {
 
     "return 303 (SEE_OTHER)" when {
 
-      onJourney(STANDARD, SIMPLIFIED, OCCASIONAL) { request =>
+      onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, CLEARANCE) { request =>
         "with valid journey type" in {
 
           withNewCaching(request.cacheModel)
@@ -201,27 +201,6 @@ class CarrierDetailsControllerSpec extends ControllerSpec {
 
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe controllers.declaration.routes.ConsigneeDetailsController.displayPage
-        }
-      }
-
-      onJourney(CLEARANCE) { request =>
-        "with valid journey type" in {
-
-          withNewCaching(request.cacheModel)
-          val correctForm =
-            Json.toJson(
-              CarrierDetails(
-                EntityDetails(
-                  None,
-                  Some(Address("John Smith", "1 Export Street", "Leeds", "LS1 2PW", "United Kingdom, Great Britain, Northern Ireland"))
-                )
-              )
-            )
-
-          val result = controller.saveAddress()(postRequest(correctForm))
-
-          await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.AuthorisationProcedureCodeChoiceController.displayPage
         }
       }
 

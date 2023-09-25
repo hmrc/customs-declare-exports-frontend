@@ -243,7 +243,7 @@ class CarrierEoriNumberControllerSpec extends ControllerSpec with OptionValues {
         val result = controller.submit()(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.AuthorisationProcedureCodeChoiceController.displayPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.ConsigneeDetailsController.displayPage
         checkViewInteractions(0)
         theCacheModelUpdated.parties.carrierDetails must be(Some(CarrierDetails(EntityDetails(eoriInput, None))))
       }

@@ -211,7 +211,7 @@ class DeclarationHolderRequiredViewSpec extends UnitViewSpec with ExportsTestHel
           "display 'Back' button that links to the 'Consignee Details' page" in {
             val backButton = view.getElementById("back-link")
             backButton must containMessage(backToPreviousQuestionCaption)
-            backButton must haveHref(routes.RepresentativeStatusController.displayPage)
+            backButton must haveHref(routes.ConsigneeDetailsController.displayPage)
           }
         }
       }
