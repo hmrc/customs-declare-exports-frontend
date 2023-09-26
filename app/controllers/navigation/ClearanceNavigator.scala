@@ -47,6 +47,7 @@ trait ClearanceNavigator extends CacheDependentNavigators {
     case ConsignorEoriNumber          => routes.IsExsController.displayPage
     case ConsignorDetails             => routes.ConsignorEoriNumberController.displayPage
     case DocumentSummary              => routes.OfficeOfExitController.displayPage
+    case NatureOfTransaction          => routes.TotalPackageQuantityController.displayPage
     case page                         => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on clearance")
   }
 
