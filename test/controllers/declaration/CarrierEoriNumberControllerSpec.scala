@@ -187,38 +187,7 @@ class CarrierEoriNumberControllerSpec extends ControllerSpec with OptionValues {
   }
 
   "should return a 303 (SEE_OTHER)" when {
-    onJourney(STANDARD, SIMPLIFIED, OCCASIONAL) { request =>
-      "'No' is selected" in {
-
-        withNewCaching(request.cacheModel)
-
-        val correctForm = Json.toJson(CarrierEoriNumber(eori = None, YesNoAnswers.no))
-
-        val result = controller.submit()(postRequest(correctForm))
-
-        await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.CarrierDetailsController.displayPage
-        checkViewInteractions(0)
-        theCacheModelUpdated.parties.carrierDetails must be(Some(CarrierDetails(EntityDetails(None, None))))
-      }
-
-      "'Yes' is selected" in {
-
-        withNewCaching(request.cacheModel)
-
-        val eoriInput = Some(Eori("GB123456789000"))
-        val correctForm = Json.toJson(CarrierEoriNumber(eori = eoriInput, YesNoAnswers.yes))
-
-        val result = controller.submit()(postRequest(correctForm))
-
-        await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.ConsigneeDetailsController.displayPage
-        checkViewInteractions(0)
-        theCacheModelUpdated.parties.carrierDetails must be(Some(CarrierDetails(EntityDetails(eoriInput, None))))
-      }
-    }
-
-    onJourney(CLEARANCE) { request =>
+    onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, CLEARANCE) { request =>
       "'No' is selected" in {
 
         withNewCaching(request.cacheModel)
