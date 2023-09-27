@@ -18,8 +18,10 @@ package controllers.declaration
 
 import base.ControllerSpec
 import controllers.declaration.routes.NatureOfTransactionController
+import controllers.helpers.TransportSectionHelper.{Guernsey, Jersey}
 import controllers.routes.RootController
 import forms.declaration.TotalPackageQuantity
+import forms.declaration.countries.Country
 import models.DeclarationType._
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{verify, when}
@@ -97,14 +99,31 @@ class TotalPackageQuantityControllerSpec extends ControllerSpec {
         }
       }
 
-      "return 303 (See Other) redirect to next question" in {
-        withNewCaching(request.cacheModel)
+      "return 303 (See Other) redirect to next question" when {
 
-        val correctForm = Json.toJson(TotalPackageQuantity(Some("1")))
-        val result = controller.saveTotalPackageQuantity()(postRequest(correctForm, request.cacheModel))
+        List(Guernsey, Jersey).foreach { country =>
+          s"the 'displayPage' method is invoked and Destination country is '$country'" in {
+            val destinationCountry = withDestinationCountry(Country(Some(country)))
+            withNewCaching(aDeclarationAfter(request.cacheModel, destinationCountry, withTotalPackageQuantity("1")))
 
-        await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe NatureOfTransactionController.displayPage
+            val result = controller.displayPage(getRequest())
+
+            status(result) mustBe SEE_OTHER
+            thePageNavigatedTo mustBe NatureOfTransactionController.displayPage
+
+            theCacheModelUpdated
+          }
+        }
+
+        "valid TotalPackageQuantity is submitted" in {
+          withNewCaching(request.cacheModel)
+
+          val correctForm = Json.toJson(TotalPackageQuantity(Some("1")))
+          val result = controller.saveTotalPackageQuantity()(postRequest(correctForm, request.cacheModel))
+
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe NatureOfTransactionController.displayPage
+        }
       }
     }
 

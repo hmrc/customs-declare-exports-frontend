@@ -17,13 +17,17 @@
 package views.declaration
 
 import base.Injector
-import controllers.declaration.routes.TotalPackageQuantityController
+import controllers.declaration.routes
+import controllers.helpers.TransportSectionHelper.{Guernsey, Jersey}
 import forms.declaration.NatureOfTransaction
 import forms.declaration.NatureOfTransaction._
+import forms.declaration.countries.Country
 import models.DeclarationType._
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
+import org.scalatest.Assertion
 import play.api.data.Form
+import play.api.mvc.{AnyContent, Call}
 import views.components.gds.Styles
 import views.declaration.spec.PageWithButtonsSpec
 import views.html.declaration.nature_of_transaction
@@ -114,10 +118,16 @@ class NatureOfTransactionViewSpec extends PageWithButtonsSpec with Injector {
       }
 
       "display 'Back' button that links to 'Total Number Of Items' page" in {
-        val backButton = view.getElementById("back-link")
+        verifyBackButton(createView(), routes.TotalPackageQuantityController.displayPage)
+      }
 
-        backButton must containMessage("site.backToPreviousQuestion")
-        backButton.getElementById("back-link") must haveHref(TotalPackageQuantityController.displayPage)
+      "display 'Back' button that links to 'Total Amount Invoiced' page" when {
+        List(Guernsey, Jersey).foreach { country =>
+          s"the destination country selected is '$country'" in {
+            implicit val request: JourneyRequest[AnyContent] = withRequestOfType(SUPPLEMENTARY, withDestinationCountry(Country(Some(country))))
+            verifyBackButton(createView(), routes.InvoiceAndExchangeRateChoiceController.displayPage)
+          }
+        }
       }
 
       checkAllSaveButtonsAreDisplayed(createView())
@@ -144,5 +154,11 @@ class NatureOfTransactionViewSpec extends PageWithButtonsSpec with Injector {
         view must containErrorElementWithMessageKey("declaration.natureOfTransaction.error")
       }
     }
+  }
+
+  def verifyBackButton(view: Document, call: Call): Assertion = {
+    val backButton = view.getElementById("back-link")
+    backButton must containMessage(backToPreviousQuestionCaption)
+    backButton must haveHref(call)
   }
 }
