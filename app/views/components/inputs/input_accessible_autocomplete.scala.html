@@ -17,12 +17,13 @@
 @import services.view.AutoCompleteItem
 @import views.html.helper._
 @import controllers.routes.Assets
+@import views.html.helper.CSPNonce
 
 @(  field: Field,
     emptySelectValue: String,
     items: List[AutoCompleteItem],
     rightElement: Option[Html] = None
-)(implicit messages: Messages)
+)(implicit request: Request[_], messages: Messages)
 
 @*
 Some fields contains Sequence as type of the field, e.g. countries of routing on destination countries page.
@@ -64,10 +65,10 @@ To avoid problems, we need to remove [] from field.
     }
 </div>
 
-<script src='@Assets.versioned("lib/accessible-autocomplete/dist/accessible-autocomplete.min.js")'></script>
-<script src='@Assets.versioned("javascripts/jquery-3.6.0.slim.min.js")'></script>
-<script src='@Assets.versioned("javascripts/auto-complete-fix.js")'></script>
-<script>
+<script @CSPNonce.attr src='@Assets.versioned("lib/accessible-autocomplete/dist/accessible-autocomplete.min.js")'></script>
+<script @CSPNonce.attr src='@Assets.versioned("javascripts/jquery-3.6.0.slim.min.js")'></script>
+<script @CSPNonce.attr src='@Assets.versioned("javascripts/auto-complete-fix.js")'></script>
+<script @CSPNonce.attr>
     var selectedElement = document.querySelector("#@(fieldNameWithoutBrackets)")
     accessibleAutocomplete.enhanceSelectElement({
         confirmOnBlur: true,

@@ -18,6 +18,7 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF
 @import views.helpers.Title
 @import views.html.components.gds.{gdsMainTemplate, pageTitle, paragraphBody}
+@import views.html.components.polling_redirect_script
 
 @this(
     govukLayout: gdsMainTemplate,
@@ -51,18 +52,4 @@
     <div class="ccms-loader"></div>
 }
 
-<script src='@Assets.versioned("javascripts/jquery-3.6.0.min.js")'></script>
-
-<script type="text/javascript">
-  function redirect() { window.location.href = "@{redirectToUrl}"; }
-
-  function hasNotifications() {
-    $.ajax({ cache: false, timeout: @pollingEveryMillisecs, url: "@urlOnJavaScriptEnabled" })
-      .done(function() { redirect(); })
-      .fail(function() { setTimeout(redirect(), @pollingEveryMillisecs); });
-  }
-
-  document.addEventListener('DOMContentLoaded', function() {
-    setTimeout(hasNotifications, @pollingEveryMillisecs);
-  }, false);
-</script>
+@polling_redirect_script(redirectToUrl, urlOnJavaScriptDisabled, urlOnJavaScriptEnabled, pollingEveryMillisecs)
