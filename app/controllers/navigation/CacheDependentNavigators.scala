@@ -290,7 +290,7 @@ trait CacheDependentNavigators {
     else routes.InvoiceAndExchangeRateChoiceController.displayPage
 
   protected def natureOfTransactionPreviousPage(cacheModel: ExportsDeclaration): Call =
-    if(TransportSectionHelper.isGuernseyOrJerseyDestination(cacheModel))
+    if (TransportSectionHelper.isGuernseyOrJerseyDestination(cacheModel))
       totalPackageQuantityPreviousPage(cacheModel)
     else
       routes.TotalPackageQuantityController.displayPage
