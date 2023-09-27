@@ -18,9 +18,9 @@ package controllers.declaration
 
 import base.ControllerSpec
 import connectors.CodeListConnector
-import controllers.declaration.routes.AdditionalActorsSummaryController
-import controllers.routes.RootController
+import controllers.declaration.routes.{AdditionalActorsSummaryController, AuthorisationProcedureCodeChoiceController}
 import forms.common.Address
+import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.{ConsigneeDetails, EntityDetails}
 import models.DeclarationType._
 import models.codes.Country
@@ -123,12 +123,16 @@ class ConsigneeDetailsControllerSpec extends ControllerSpec {
     }
 
     onJourney(CLEARANCE) { request =>
-      "return 303 (SEE_OTHER) and redirect to start page" when {
-        "the controller's displayPage method is invoked" in {
-          withNewCaching(request.cacheModel)
-          val result = controller.displayPage(getRequest())
-          status(result) must be(SEE_OTHER)
-          redirectLocation(result) mustBe Some(RootController.displayPage.url)
+      "return 303 (SEE_OTHER) and redirect to appropriate page" when {
+
+        "form is correct and EIDR is false" in {
+          withNewCaching(aDeclarationAfter(request.cacheModel, withEntryIntoDeclarantsRecords(YesNoAnswers.no)))
+          testFormSubmitRedirectsTo(AuthorisationProcedureCodeChoiceController.displayPage)
+        }
+
+        "form is correct and EIDR is true" in {
+          withNewCaching(aDeclarationAfter(request.cacheModel, withEntryIntoDeclarantsRecords(YesNoAnswers.yes)))
+          testFormSubmitRedirectsTo(AuthorisationProcedureCodeChoiceController.displayPage)
         }
       }
     }
