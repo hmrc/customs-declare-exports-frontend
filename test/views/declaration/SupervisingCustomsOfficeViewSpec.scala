@@ -16,6 +16,7 @@
 
 package views.declaration
 
+import base.ExportsTestData.modifiersForWarehouseRequired
 import base.Injector
 import controllers.declaration.routes.{TransportLeavingTheBorderController, WarehouseIdentificationController}
 import forms.declaration.SupervisingCustomsOffice
@@ -71,29 +72,34 @@ class SupervisingCustomsOfficeViewSpec extends UnitViewSpec with ExportsTestHelp
     onJourney(DeclarationType.CLEARANCE) { implicit request =>
       "display 'Back' button that links to 'Warehouse Identification Number' page" in {
         val backButton = createView().getElementById("back-link")
-
         backButton must containMessage("site.backToPreviousQuestion")
         backButton.getElementById("back-link") must haveHref(WarehouseIdentificationController.displayPage)
       }
     }
+  }
 
-    onJourney(STANDARD, OCCASIONAL, SUPPLEMENTARY, SIMPLIFIED) { implicit request =>
-      "display 'Back' button that links to 'Warehouse Identification Number' page when procedure code ends with '78'" in {
-        val declaration = aDeclarationAfter(request.cacheModel, withItem(anItem(withProcedureCodes(Some("1078"), Seq("000")))))
-        val backButton = createView()(journeyRequest(declaration)).getElementById("back-link")
+  "Supervising Customs Office View" when {
 
-        backButton must containMessage("site.backToPreviousQuestion")
-        backButton.getElementById("back-link") must haveHref(WarehouseIdentificationController.displayPage)
-      }
-    }
+    List(STANDARD, OCCASIONAL, SUPPLEMENTARY, SIMPLIFIED).foreach { declarationType =>
+      s"declaration type is $declarationType" should {
 
-    onJourney(STANDARD, OCCASIONAL, SUPPLEMENTARY, SIMPLIFIED) { implicit request =>
-      "display 'Back' button that links to 'Transport Leaving the Border' page when procedure code ends with '00'" in {
-        val declaration = aDeclarationAfter(request.cacheModel, withItem(anItem(withProcedureCodes(Some("0000"), Seq("000")))))
-        val backButton = createView()(journeyRequest(declaration)).getElementById("back-link")
+        "display 'Back' button that links to 'Transport Leaving the Border' page" in {
+          implicit val request = withRequestOfType(declarationType)
+          val backButton = createView().getElementById("back-link")
+          backButton must containMessage("site.backToPreviousQuestion")
+          backButton.getElementById("back-link") must haveHref(TransportLeavingTheBorderController.displayPage)
+        }
 
-        backButton must containMessage("site.backToPreviousQuestion")
-        backButton.getElementById("back-link") must haveHref(TransportLeavingTheBorderController.displayPage)
+        "display 'Back' button that links to 'Warehouse Identification Number' page" when {
+          "the given PC ends with '07' or '71' or '78'" in {
+            modifiersForWarehouseRequired.foreach { modifier =>
+              implicit val request = withRequestOfType(declarationType, modifier)
+              val backButton = createView().getElementById("back-link")
+              backButton must containMessage("site.backToPreviousQuestion")
+              backButton.getElementById("back-link") must haveHref(WarehouseIdentificationController.displayPage)
+            }
+          }
+        }
       }
     }
   }

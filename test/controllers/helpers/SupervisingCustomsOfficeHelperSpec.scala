@@ -16,7 +16,7 @@
 
 package controllers.helpers
 
-import base.ExportsTestData.itemWithPC
+import base.ExportsTestData.modifierForPC1040
 import base.{JourneyTypeTestRunner, MockAuthAction, MockExportCacheService, UnitSpec}
 import controllers.declaration.routes.{
   DepartureTransportController,
@@ -24,8 +24,7 @@ import controllers.declaration.routes.{
   InlandOrBorderController,
   InlandTransportDetailsController
 }
-import controllers.helpers.TransportSectionHelper.additionalDeclTypesAllowedOnInlandOrBorder
-import forms.declaration.ModeOfTransportCode.{meaningfulModeOfTransportCodes, FixedTransportInstallations, PostalConsignment}
+import controllers.helpers.TransportSectionHelper._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.SUPPLEMENTARY_EIDR
 import models.DeclarationType.CLEARANCE
 import services.cache.{ExportsDeclarationBuilder, ExportsItemBuilder}
@@ -34,8 +33,6 @@ class SupervisingCustomsOfficeHelperSpec
     extends UnitSpec with ExportsDeclarationBuilder with ExportsItemBuilder with JourneyTypeTestRunner with MockExportCacheService
     with MockAuthAction {
 
-  import SupervisingCustomsOfficeHelperSpec._
-
   private val supervisingCustomsOfficeHelper = instanceOf[SupervisingCustomsOfficeHelper]
 
   "SupervisingCustomsOfficeHelper on isConditionForAllProcedureCodesVerified" should {
@@ -43,12 +40,12 @@ class SupervisingCustomsOfficeHelperSpec
     "return true" when {
 
       "a declaration contains a single item with ProcedureCodesData(1040-000)" in {
-        val declaration = aDeclaration(withItem(itemWithPC("1040")))
+        val declaration = aDeclaration(modifierForPC1040)
         assert(supervisingCustomsOfficeHelper.isConditionForAllProcedureCodesVerified(declaration))
       }
 
       "a declaration contains all items with ProcedureCodesData(1040-000)" in {
-        val declaration = aDeclaration(withItem(itemWithPC("1040")), withItem(itemWithPC("1040")), withItem(itemWithPC("1040")))
+        val declaration = aDeclaration(modifierForPC1040, modifierForPC1040, modifierForPC1040)
         assert(supervisingCustomsOfficeHelper.isConditionForAllProcedureCodesVerified(declaration))
       }
     }
@@ -62,18 +59,18 @@ class SupervisingCustomsOfficeHelperSpec
       }
 
       "a declaration contains at least one items without ProcedureCodesData(1040-000)" in {
-        val declaration = aDeclaration(withItem(itemWithPC("1040")), withItem(condNotVerified), withItem(itemWithPC("1040")))
+        val declaration = aDeclaration(modifierForPC1040, withItem(condNotVerified), modifierForPC1040)
         supervisingCustomsOfficeHelper.isConditionForAllProcedureCodesVerified(declaration) mustBe false
       }
 
       "a declaration contains a single item with ProcedureCodesData(1040-000) and auth code FP" in {
-        val declaration = aDeclaration(withDeclarationHolders(Some("FP")), withItem(itemWithPC("1040")))
+        val declaration = aDeclaration(withDeclarationHolders(Some("FP")), modifierForPC1040)
         supervisingCustomsOfficeHelper.isConditionForAllProcedureCodesVerified(declaration) mustBe false
       }
 
       "a declaration contains all items with ProcedureCodesData(1040-000) and auth code FP" in {
         val declaration =
-          aDeclaration(withDeclarationHolders(Some("FP")), withItem(itemWithPC("1040")), withItem(itemWithPC("1040")), withItem(itemWithPC("1040")))
+          aDeclaration(withDeclarationHolders(Some("FP")), modifierForPC1040, modifierForPC1040, modifierForPC1040)
         supervisingCustomsOfficeHelper.isConditionForAllProcedureCodesVerified(declaration) mustBe false
       }
 
@@ -105,29 +102,23 @@ class SupervisingCustomsOfficeHelperSpec
     }
 
     onJourney(CLEARANCE) { request =>
-      skipDepartureTransportPageCodes.foreach { modeOfTransportCode =>
-        s"transportLeavingBoarderCode is ${modeOfTransportCode}" should {
+      postalOrFTIModeOfTransportCodes.foreach { modeOfTransportCode =>
+        s"transportLeavingBoarderCode is ${modeOfTransportCode.value}" should {
           "goto ExpressConsignmentController" in {
-            val declaration = aDeclaration(withType(request.declarationType), withBorderModeOfTransportCode(Some(modeOfTransportCode)))
+            val declaration = aDeclaration(withType(request.declarationType), withBorderModeOfTransportCode(modeOfTransportCode))
             supervisingCustomsOfficeHelper.nextPage(declaration) mustBe ExpressConsignmentController.displayPage
           }
         }
       }
 
-      meaningfulModeOfTransportCodes
-        .filter(!skipDepartureTransportPageCodes.contains(_))
-        .foreach { modeOfTransportCode =>
-          s"transportLeavingBoarderCode is ${modeOfTransportCode}" should {
-            "goto DepartureTransportController" in {
-              val declaration = aDeclaration(withType(request.declarationType), withBorderModeOfTransportCode(Some(modeOfTransportCode)))
-              supervisingCustomsOfficeHelper.nextPage(declaration) mustBe DepartureTransportController.displayPage
-            }
+      nonPostalOrFTIModeOfTransportCodes.foreach { modeOfTransportCode =>
+        s"transportLeavingBoarderCode is ${modeOfTransportCode}" should {
+          "goto DepartureTransportController" in {
+            val declaration = aDeclaration(withType(request.declarationType), withBorderModeOfTransportCode(Some(modeOfTransportCode)))
+            supervisingCustomsOfficeHelper.nextPage(declaration) mustBe DepartureTransportController.displayPage
           }
         }
+      }
     }
   }
-}
-
-object SupervisingCustomsOfficeHelperSpec {
-  val skipDepartureTransportPageCodes = Seq(FixedTransportInstallations, PostalConsignment)
 }

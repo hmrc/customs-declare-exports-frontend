@@ -19,8 +19,7 @@ package views.declaration
 import base.{Injector, MockTransportCodeService}
 import controllers.declaration.routes.DepartureTransportController
 import forms.declaration.BorderTransport.form
-import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
-import models.DeclarationType.STANDARD
+import models.DeclarationType._
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import views.declaration.spec.PageWithButtonsSpec
@@ -42,10 +41,10 @@ class BorderTransportViewSpec extends PageWithButtonsSpec with Injector {
 
   "Border Transport view" when {
 
-    List(STANDARD_FRONTIER, STANDARD_PRE_LODGED, SUPPLEMENTARY_SIMPLIFIED, SUPPLEMENTARY_EIDR).foreach { additionalType =>
-      s"AdditionalDeclarationType is $additionalType and" when {
+    List(STANDARD, OCCASIONAL, SUPPLEMENTARY, SIMPLIFIED).foreach { declarationType =>
+      s"DeclarationType is $declarationType and" when {
 
-        implicit val request = withRequest(additionalType)
+        implicit val request = withRequestOfType(declarationType)
         val view = createView()
 
         "display a 'Back' button that links to the /departure-transport page" in {

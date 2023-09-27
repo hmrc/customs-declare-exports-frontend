@@ -65,7 +65,7 @@ trait SupplementaryNavigator extends CacheDependentNavigators {
     case Document                  => previousDocumentsPreviousPageDefault
     case InlandOrBorder            => inlandOrBorderPreviousPage
     case InlandModeOfTransportCode => inlandTransportDetailsPreviousPage
-    case DepartureTransport        => departureTransportPreviousPageOnStandardOrSuppl
+    case DepartureTransport        => departureTransportPreviousPage
     case TransportCountry          => transportCountryPreviousPage
     case ContainerFirst            => containerFirstPreviousPageOnSupplementary
     case RepresentativeAgent       => representativeAgentPreviousPage

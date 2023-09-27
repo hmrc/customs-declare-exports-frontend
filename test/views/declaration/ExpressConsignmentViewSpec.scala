@@ -18,14 +18,11 @@ package views.declaration
 
 import base.{Injector, MockAuthAction}
 import controllers.declaration.routes
-import controllers.helpers.SupervisingCustomsOfficeHelperSpec.skipDepartureTransportPageCodes
-import controllers.helpers.TransportSectionHelper.{Guernsey, Jersey}
+import controllers.helpers.TransportSectionHelper._
 import forms.common.YesNoAnswer
-import forms.declaration.ModeOfTransportCode.meaningfulModeOfTransportCodes
-import forms.declaration.TransportLeavingTheBorder
+import forms.declaration.InlandOrBorder.Border
 import forms.declaration.countries.Country
 import models.DeclarationType._
-import models.declaration.Transport
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import org.scalatest.Assertion
@@ -78,78 +75,110 @@ class ExpressConsignmentViewSpec extends UnitViewSpec with CommonMessages with I
         val view = createView(form = form)
         view.getElementById("code_no") must beSelected
       }
-
     }
+  }
 
-    onJourney(STANDARD, OCCASIONAL, SIMPLIFIED) { implicit request =>
-      val view: Document = createView()
+  "'Express Consignment' view" when {
 
-      "display 'Back' button to the 'Border Transport' page" in {
-        verifyBackButton(view, routes.TransportCountryController.displayPage)
-      }
+    List(STANDARD, OCCASIONAL, SIMPLIFIED).foreach { declarationType =>
+      s"DeclarationType is '$declarationType'" should {
 
-      "display the expected tariff details" in {
-        verifyTariffDetails(view, "common")
-      }
-    }
-
-    "display a back button linking to the /inland-transport-details page" when {
-      "DeclarationType is 'STANDARD' and" when {
-        List(Guernsey, Jersey).foreach { country =>
-          s"the destination country selected is '$country'" in {
-            implicit val request = withRequestOfType(STANDARD, withDestinationCountry(Country(Some(country))))
-            verifyBackButton(createView(), routes.InlandTransportDetailsController.displayPage)
-          }
+        "display the expected tariff details" in {
+          implicit val request = withRequestOfType(declarationType)
+          verifyTariffDetails(createView(), "common")
         }
-      }
-    }
 
-    onClearance(aDeclaration(withType(CLEARANCE), withItem(anItem(withProcedureCodes(Some("1040"), Seq("000")))))) { implicit request =>
-      "display 'Back' button to the 'Warehouse Details' page" when {
-        skipDepartureTransportPageCodes.foreach { modeOfTransportCode =>
-          val cachedDec =
-            request.cacheModel.copy(transport = Transport(borderModeOfTransportCode = Some(TransportLeavingTheBorder(Some(modeOfTransportCode)))))
-          val requestWithUpdatedDec = new JourneyRequest(getAuthenticatedRequest(), cachedDec)
-          val view: Document = createView()(requestWithUpdatedDec)
-
-          s"transportLeavingBoarderCode is ${modeOfTransportCode}" in {
-            verifyBackButton(view, routes.WarehouseIdentificationController.displayPage)
-          }
+        "display a 'Back' button linking the 'TransportCountry' page" in {
+          implicit val request = withRequestOfType(declarationType)
+          verifyBackButton(createView(), routes.TransportCountryController.displayPage)
         }
-      }
 
-    }
-
-    onClearance { implicit request =>
-      "display 'Back' button to the 'Supervising Customs Office' page" when {
-        skipDepartureTransportPageCodes.foreach { modeOfTransportCode =>
-          val cachedDec = aDeclaration(withType(request.declarationType), withBorderModeOfTransportCode(Some(modeOfTransportCode)))
-          val requestWithUpdatedDec = new JourneyRequest(getAuthenticatedRequest(), cachedDec)
-          val view: Document = createView()(requestWithUpdatedDec)
-
-          s"transportLeavingBoarderCode is ${modeOfTransportCode}" in {
-            verifyBackButton(view, routes.SupervisingCustomsOfficeController.displayPage)
-          }
-        }
-      }
-
-      "display 'Back' button to the 'Departure Transport' page" when {
-        meaningfulModeOfTransportCodes
-          .filter(!skipDepartureTransportPageCodes.contains(_))
-          .foreach { modeOfTransportCode =>
-            val cachedDec = aDeclaration(withType(request.declarationType), withBorderModeOfTransportCode(Some(modeOfTransportCode)))
-            val requestWithUpdatedDec = new JourneyRequest(getAuthenticatedRequest(), cachedDec)
-            val view: Document = createView()(requestWithUpdatedDec)
-
-            s"transportLeavingBoarderCode is ${modeOfTransportCode}" in {
-              verifyBackButton(view, routes.DepartureTransportController.displayPage)
+        postalOrFTIModeOfTransportCodes.foreach { transportCode =>
+          "display a back button linking to the /inland-or-border page" when {
+            s"TransportLeavingTheBorder is '${transportCode.value}' and" when {
+              "InlandOrBorder is 'Border'" in {
+                val modeOfTransportCode = withBorderModeOfTransportCode(transportCode)
+                implicit val request = withRequestOfType(declarationType, modeOfTransportCode, withInlandOrBorder(Some(Border)))
+                verifyBackButton(createView(), routes.InlandOrBorderController.displayPage)
+              }
             }
           }
+
+          "display a back button linking to the /inland-transport-details page" when {
+            s"InlandTransportDetails is '${transportCode.value}' and" when {
+              "InlandOrBorder is NOT 'Border'" in {
+                implicit val request = withRequestOfType(declarationType, withInlandModeOfTransportCode(transportCode.value))
+                verifyBackButton(createView(), routes.InlandTransportDetailsController.displayPage)
+              }
+            }
+          }
+        }
       }
+    }
+
+    "DeclarationType is 'STANDARD'" should {
+
+      List(Guernsey, Jersey).foreach { country =>
+        val destinationCountry = withDestinationCountry(Country(Some(country)))
+
+        "display a back button linking to the /inland-transport-details page" when {
+          s"the destination country selected is '$country' and" when {
+            "InlandOrBorder is NOT 'Border'" in {
+              implicit val request = withRequestOfType(STANDARD, destinationCountry)
+              verifyBackButton(createView(), routes.InlandTransportDetailsController.displayPage)
+            }
+          }
+        }
+
+        "display a back button linking to the /inland-or-border page" when {
+          s"the destination country selected is '$country' and" when {
+            "InlandOrBorder is 'Border'" in {
+              implicit val request = withRequestOfType(STANDARD, destinationCountry, withInlandOrBorder(Some(Border)))
+              verifyBackButton(createView(), routes.InlandOrBorderController.displayPage)
+            }
+          }
+        }
+      }
+    }
+
+    "DeclarationType is 'CLEARANCE'" should {
 
       "display the expected tariff details" in {
-        val view: Document = createView()
-        verifyTariffDetails(view, "common")
+        implicit val request = withRequestOfType(CLEARANCE)
+        verifyTariffDetails(createView(), "common")
+      }
+
+      "display a 'Back' button linking to the 'Departure Transport' page" when {
+        nonPostalOrFTIModeOfTransportCodes.foreach { transportCode =>
+          s"TransportLeavingTheBorder is '$transportCode'" in {
+            val modeOfTransportCode = withBorderModeOfTransportCode(Some(transportCode))
+            implicit val request = withRequestOfType(CLEARANCE, modeOfTransportCode)
+            verifyBackButton(createView(), routes.DepartureTransportController.displayPage)
+          }
+        }
+      }
+
+      "display a 'Back' button linking to the 'Supervising Customs Office' page" when {
+        postalOrFTIModeOfTransportCodes.foreach { transportCode =>
+          s"TransportLeavingTheBorder is '${transportCode.value}'" in {
+            val modeOfTransportCode = withBorderModeOfTransportCode(transportCode)
+            implicit val request = withRequestOfType(CLEARANCE, modeOfTransportCode)
+            verifyBackButton(createView(), routes.SupervisingCustomsOfficeController.displayPage)
+          }
+        }
+      }
+
+      // For Clearance the previous page should always be SupervisingCustomsOffice by any means, as
+      // "1040" as PC is not applicable to this journey type. This test is sort of superfluous then.
+      "display a 'Back' button linking to the 'Warehouse Details' page" when {
+        postalOrFTIModeOfTransportCodes.foreach { transportCode =>
+          s"TransportLeavingTheBorder is '${transportCode.value}'" in {
+            val modeOfTransportCode = withBorderModeOfTransportCode(transportCode)
+            val item = withItem(anItem(withProcedureCodes(Some("1040"), Seq("000"))))
+            implicit val request = withRequestOfType(CLEARANCE, item, modeOfTransportCode)
+            verifyBackButton(createView(), routes.WarehouseIdentificationController.displayPage)
+          }
+        }
       }
     }
   }

@@ -16,7 +16,7 @@
 
 package views.declaration
 
-import base.ExportsTestData.itemWithPC
+import base.ExportsTestData.modifierForPC1040
 import base.Injector
 import controllers.declaration.routes.{SupervisingCustomsOfficeController, TransportLeavingTheBorderController}
 import controllers.helpers.TransportSectionHelper.additionalDeclTypesAllowedOnInlandOrBorder
@@ -80,6 +80,15 @@ class InlandOrBorderViewSpec extends PageWithButtonsSpec with Injector {
           backButton must haveHref(SupervisingCustomsOfficeController.displayPage)
         }
 
+        "display 'Back' button that links to the 'Transport Leaving the Border' page" when {
+          "all declaration's items have '1040' as PC and '000' as APC" in {
+            implicit val request = withRequest(additionalType, modifierForPC1040)
+            val backButton = createView().getElementById("back-link")
+            backButton must containMessage("site.backToPreviousQuestion")
+            backButton must haveHref(TransportLeavingTheBorderController.displayPage)
+          }
+        }
+
         "display the expected tariff details" in {
           val tariffTitle = view.getElementsByClass("govuk-details__summary-text")
           tariffTitle.text mustBe messages(s"tariff.expander.title.common")
@@ -90,20 +99,6 @@ class InlandOrBorderViewSpec extends PageWithButtonsSpec with Injector {
           val expectedText = messages(s"$prefix.common.text", messages(s"$prefix.common.linkText.0"))
           val actualText = removeBlanksIfAnyBeforeDot(tariffDetails.text)
           actualText mustBe removeLineBreakIfAny(expectedText)
-        }
-      }
-    }
-
-    additionalDeclTypesAllowedOnInlandOrBorder.foreach { additionalType =>
-      s"AdditionalDeclarationType is ${additionalType} and" when {
-        "all declaration's items have '1040' as Procedure code and '000' as unique Additional Procedure code" should {
-          implicit val request = withRequest(additionalType, withItem(itemWithPC("1040")))
-
-          "display 'Back' button that links to the 'Transport Leaving the Border' page" in {
-            val backButton = createView().getElementById("back-link")
-            backButton must containMessage("site.backToPreviousQuestion")
-            backButton must haveHref(TransportLeavingTheBorderController.displayPage)
-          }
         }
       }
     }

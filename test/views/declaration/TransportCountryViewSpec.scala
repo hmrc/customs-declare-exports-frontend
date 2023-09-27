@@ -25,7 +25,7 @@ import forms.declaration.InlandOrBorder.Border
 import forms.declaration.ModeOfTransportCode.{Maritime, RoRo}
 import forms.declaration.TransportCountry
 import forms.declaration.TransportCountry._
-import models.DeclarationType.{STANDARD, SUPPLEMENTARY}
+import models.DeclarationType._
 import models.codes.Country
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
@@ -45,6 +45,8 @@ class TransportCountryViewSpec extends PageWithButtonsSpec with Injector {
 
   implicit val codeListConnector = mock[CodeListConnector]
 
+  val page = instanceOf[transport_country]
+
   override def beforeEach(): Unit = {
     super.beforeEach()
     when(codeListConnector.getCountryCodes(any())).thenReturn(ListMap("GB" -> Country("United Kingdom", "GB")))
@@ -57,8 +59,6 @@ class TransportCountryViewSpec extends PageWithButtonsSpec with Injector {
 
   def form(transportMode: String): Form[TransportCountry] = TransportCountry.form(transportMode)
 
-  val page = instanceOf[transport_country]
-
   override val typeAndViewInstance = {
     val maritime = ModeOfTransportCodeHelper.transportMode(Some(Maritime))
     (STANDARD, page(maritime, form(maritime))(_, _))
@@ -69,7 +69,7 @@ class TransportCountryViewSpec extends PageWithButtonsSpec with Injector {
 
   "TransportCountry View" when {
 
-    List(STANDARD, SUPPLEMENTARY).foreach { declarationType =>
+    List(STANDARD, OCCASIONAL, SUPPLEMENTARY, SIMPLIFIED).foreach { declarationType =>
       s"the declaration's type is $declarationType and" when {
 
         // When TransportLeavingTheBorder is 'Postal' or 'FTI' the user does not land on the /transport-country page

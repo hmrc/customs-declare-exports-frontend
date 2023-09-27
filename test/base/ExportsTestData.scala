@@ -65,6 +65,8 @@ object ExportsTestData extends ExportsDeclarationBuilder with ExportsItemBuilder
   ) =
     ExportItem(itemId, procedureCodes = Some(ProcedureCodesData(Some(procedureCode), additionalProcedureCodes)))
 
+  val modifierForPC1040 = withItem(itemWithPC("1040"))
+
   val zoneUTC = ZoneId.of("UTC")
 
   val currentLoginTime: Instant = Instant.ofEpochSecond(1530442800000L)
@@ -80,9 +82,9 @@ object ExportsTestData extends ExportsDeclarationBuilder with ExportsItemBuilder
     withGoodsLocation(LocationOfGoods("GBAUCBRLHRXXD")) // GBAUCBRLHRXXD => DEP location code
   )
 
-  val allValuesRequiringToSkipInlandOrBorder =
-    valuesRequiringToSkipInlandOrBorder ++
-      warehouseRequiredProcedureCodes.map(pc => withItem(anItem(withProcedureCodes(Some(s"12$pc")))))
+  val modifiersForWarehouseRequired = warehouseRequiredProcedureCodes.map(pc => withItem(anItem(withProcedureCodes(Some(s"12$pc")))))
+
+  val allValuesRequiringToSkipInlandOrBorder = valuesRequiringToSkipInlandOrBorder ++ modifiersForWarehouseRequired
 
   def newUser(eori: String, externalId: String, tdrSecret: Option[String] = None): SignedInUser = {
 
