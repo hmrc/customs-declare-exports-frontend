@@ -211,60 +211,60 @@ trait CacheDependentNavigators {
       routes.ExporterEoriNumberController.displayPage
     else routes.ExporterDetailsController.displayPage
 
-  protected def departureTransportClearancePreviousPage(cacheModel: ExportsDeclaration): Call =
-    if (cacheModel.isEntryIntoDeclarantsRecords) supervisingCustomsOfficePageOnCondition(cacheModel)
-    else routes.SupervisingCustomsOfficeController.displayPage
-
   protected def supervisingCustomsOfficePreviousPage(cacheModel: ExportsDeclaration): Call =
     if (cacheModel.requiresWarehouseId || cacheModel.isType(CLEARANCE)) routes.WarehouseIdentificationController.displayPage
     else routes.TransportLeavingTheBorderController.displayPage
 
   protected def inlandOrBorderPreviousPage(cacheModel: ExportsDeclaration): Call = {
-    val condition = isTypeForInlandOrBorder(cacheModel) && supervisingCustomsOfficeHelper.isConditionForAllProcedureCodesVerified(cacheModel)
-    if (condition) routes.TransportLeavingTheBorderController.displayPage else routes.SupervisingCustomsOfficeController.displayPage
+    val gotoTransportLeavingTheBorder = supervisingCustomsOfficeHelper.isConditionForAllProcedureCodesVerified(cacheModel)
+    if (gotoTransportLeavingTheBorder) routes.TransportLeavingTheBorderController.displayPage
+    else routes.SupervisingCustomsOfficeController.displayPage
   }
 
   protected def inlandTransportDetailsPreviousPage(cacheModel: ExportsDeclaration): Call =
-    if (inlandOrBorderHelper.skipInlandOrBorder(cacheModel)) supervisingCustomsOfficePageOnCondition(cacheModel)
+    if (inlandOrBorderHelper.skipInlandOrBorder(cacheModel)) inlandOrBorderPreviousPage(cacheModel)
     else routes.InlandOrBorderController.displayPage
 
-  private def supervisingCustomsOfficePageOnCondition(cacheModel: ExportsDeclaration): Call =
-    if (supervisingCustomsOfficeHelper.isConditionForAllProcedureCodesVerified(cacheModel)) supervisingCustomsOfficePreviousPage(cacheModel)
-    else routes.SupervisingCustomsOfficeController.displayPage
-
-  protected def departureTransportPreviousPageOnStandardOrSuppl(cacheModel: ExportsDeclaration): Call = {
-    val condition = isTypeForInlandOrBorder(cacheModel) && cacheModel.isInlandOrBorder(Border)
-    if (condition) routes.InlandOrBorderController.displayPage else routes.InlandTransportDetailsController.displayPage
+  protected def departureTransportPreviousPage(cacheModel: ExportsDeclaration): Call = {
+    val gotoInlandTransport = inlandOrBorderHelper.skipInlandOrBorder(cacheModel) || !cacheModel.isInlandOrBorder(Border)
+    if (gotoInlandTransport) routes.InlandTransportDetailsController.displayPage else routes.InlandOrBorderController.displayPage
   }
+
+  protected def departureTransportPreviousPageOnClearance(cacheModel: ExportsDeclaration): Call =
+    // For Clearance the previous page should always be SupervisingCustomsOffice by any means, as
+    // "1040" as PC is not applicable to this journey type.
+    routes.SupervisingCustomsOfficeController.displayPage
 
   protected def transportCountryPreviousPage(cacheModel: ExportsDeclaration): Call =
     if (cacheModel.isInlandOrBorder(InlandOrBorder.Border)) routes.DepartureTransportController.displayPage
     else routes.BorderTransportController.displayPage
 
-  protected def expressConsignmentPreviousPageOnStandard(cacheModel: ExportsDeclaration): Call = {
-    val backToInlandTransport = isPostalOrFTIModeOfTransport(cacheModel.inlandModeOfTransportCode) || isGuernseyOrJerseyDestination(cacheModel)
-    if (backToInlandTransport) routes.InlandTransportDetailsController.displayPage
-    else {
+  protected def expressConsignmentPreviousPage(cacheModel: ExportsDeclaration): Call = {
+    val guernseyOrJersey = isGuernseyOrJerseyDestination(cacheModel)
+    if (cacheModel.isInlandOrBorder(Border)) {
       val postalOrFTI = isPostalOrFTIModeOfTransport(cacheModel.transportLeavingBorderCode)
-      if (postalOrFTI && cacheModel.isInlandOrBorder(Border)) routes.InlandOrBorderController.displayPage
+      if (postalOrFTI || guernseyOrJersey) routes.InlandOrBorderController.displayPage
+      else routes.TransportCountryController.displayPage
+    } else {
+      val postalOrFTI = isPostalOrFTIModeOfTransport(cacheModel.inlandModeOfTransportCode)
+      if (postalOrFTI || guernseyOrJersey) routes.InlandTransportDetailsController.displayPage
       else routes.TransportCountryController.displayPage
     }
   }
 
-  protected def expressConsignmentPreviousPageOnClearance(cacheModel: ExportsDeclaration): Call = {
-    val postalOrFTI = isPostalOrFTIModeOfTransport(cacheModel.transportLeavingBorderCode)
-    if (postalOrFTI && supervisingCustomsOfficeHelper.checkProcedureCodes(cacheModel)) routes.WarehouseIdentificationController.displayPage
-    else if (postalOrFTI) routes.SupervisingCustomsOfficeController.displayPage
-    else routes.DepartureTransportController.displayPage
-  }
+  protected def expressConsignmentPreviousPageOnClearance(cacheModel: ExportsDeclaration): Call =
+    if (!isPostalOrFTIModeOfTransport(cacheModel.transportLeavingBorderCode)) routes.DepartureTransportController.displayPage
+    // For Clearance the previous page should always be SupervisingCustomsOffice by any means, as
+    // "1040" as PC is not applicable to this journey type. This test is sort of superfluous then.
+    else if (supervisingCustomsOfficeHelper.checkProcedureCodes(cacheModel)) routes.WarehouseIdentificationController.displayPage
+    else routes.SupervisingCustomsOfficeController.displayPage
 
   protected def containerFirstPreviousPage(cacheModel: ExportsDeclaration): Call =
     if (cacheModel.transport.transportPayment.nonEmpty) routes.TransportPaymentController.displayPage
     else routes.ExpressConsignmentController.displayPage
 
   protected def containerFirstPreviousPageOnSupplementary(cacheModel: ExportsDeclaration): Call =
-    if (isGuernseyOrJerseyDestination(cacheModel)) routes.InlandTransportDetailsController.displayPage
-    else expressConsignmentPreviousPageOnStandard(cacheModel)
+    expressConsignmentPreviousPage(cacheModel)
 
   protected def additionalTaricCodesPreviousPage(cacheModel: ExportsDeclaration, itemId: String): Call =
     if (cacheModel.isCommodityCodeOfItemPrefixedWith(itemId, CommodityDetails.commodityCodeChemicalPrefixes))

@@ -56,7 +56,7 @@ class InlandOrBorderController @Inject() (
   private val actionBuilder = authenticate andThen journeyAction.onAdditionalTypes(additionalDeclTypesAllowedOnInlandOrBorder)
 
   def displayPage: Action[AnyContent] = actionBuilder { implicit request =>
-    if (inlandOrBorderHelper.skipInlandOrBorder(request.cacheModel)) Results.Redirect(RootController.displayPage)
+    if (inlandOrBorderHelper.skipInlandOrBorder(request.cacheModel)) Redirect(RootController.displayPage)
     else {
       val frm = form.withSubmissionErrors
       request.cacheModel.locations.inlandOrBorder match {
@@ -67,7 +67,7 @@ class InlandOrBorderController @Inject() (
   }
 
   def submitPage(): Action[AnyContent] = actionBuilder.async { implicit request =>
-    if (inlandOrBorderHelper.skipInlandOrBorder(request.cacheModel)) Future.successful(Results.Redirect(RootController.displayPage))
+    if (inlandOrBorderHelper.skipInlandOrBorder(request.cacheModel)) Future.successful(Redirect(RootController.displayPage))
     else
       form
         .bindFromRequest()

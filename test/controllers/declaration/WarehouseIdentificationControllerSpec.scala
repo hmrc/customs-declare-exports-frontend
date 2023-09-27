@@ -17,7 +17,7 @@
 package controllers.declaration
 
 import base.ControllerSpec
-import base.ExportsTestData.itemWithPC
+import base.ExportsTestData.modifierForPC1040
 import controllers.declaration.routes._
 import controllers.helpers.SupervisingCustomsOfficeHelper
 import controllers.helpers.TransportSectionHelper.additionalDeclTypesAllowedOnInlandOrBorder
@@ -133,7 +133,7 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec {
     "redirect to the 'Inland Transport Details' page" when {
       "AdditionalDeclarationType is SUPPLEMENTARY_EIDR and" when {
         "all declaration's items have '1040' as Procedure code and '000' as unique Additional Procedure code and" in {
-          withNewCaching(withRequest(SUPPLEMENTARY_EIDR, withItem(itemWithPC("1040"))).cacheModel)
+          withNewCaching(withRequest(SUPPLEMENTARY_EIDR, modifierForPC1040).cacheModel)
           val correctForm = Json.obj(WarehouseIdentification.warehouseIdKey -> "R12341234")
 
           val result = controller.saveIdentificationNumber()(postRequest(correctForm))
@@ -149,7 +149,7 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec {
       "all declaration's items have '1040' as Procedure code and '000' as unique Additional Procedure code and" when {
         additionalDeclTypesAllowedOnInlandOrBorder.foreach { additionalType =>
           s"AdditionalDeclarationType is $additionalType" in {
-            withNewCaching(withRequest(additionalType, withItem(itemWithPC("1040"))).cacheModel)
+            withNewCaching(withRequest(additionalType, modifierForPC1040).cacheModel)
             val correctForm = Json.obj(WarehouseIdentification.warehouseIdKey -> "R12341234")
 
             val result = controller.saveIdentificationNumber()(postRequest(correctForm))
@@ -206,7 +206,7 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec {
 
       "skip SupervisingCustomsOffice page on submit" when {
         "declaration is EIDR and all declaration's items have '1040' as PC and '000' as unique APC" in {
-          withNewCaching(aDeclarationAfter(request.cacheModel, withEntryIntoDeclarantsRecords(), withItem(itemWithPC("1040"))))
+          withNewCaching(aDeclarationAfter(request.cacheModel, withEntryIntoDeclarantsRecords(), modifierForPC1040))
 
           val correctForm = Json.obj(WarehouseIdentification.inWarehouseKey -> "Yes", WarehouseIdentification.warehouseIdKey -> "R12341234")
 

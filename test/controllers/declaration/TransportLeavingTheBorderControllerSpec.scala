@@ -17,7 +17,7 @@
 package controllers.declaration
 
 import base.ControllerSpec
-import base.ExportsTestData.{itemWithPC, valuesRequiringToSkipInlandOrBorder}
+import base.ExportsTestData.{modifierForPC1040, valuesRequiringToSkipInlandOrBorder}
 import controllers.declaration.routes.{
   InlandOrBorderController,
   InlandTransportDetailsController,
@@ -208,11 +208,9 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec with Option
 
         "redirect to /inland-or-border after a successful bind" when {
           "cache contains '1040' as procedure code, '000' as APC and" when {
-            val item = withItem(itemWithPC("1040"))
-
             additionalDeclTypesAllowedOnInlandOrBorder.foreach { additionalType =>
               s"AdditionalDeclarationType is $additionalType and" in {
-                withNewCaching(withRequest(additionalType, item).cacheModel)
+                withNewCaching(withRequest(additionalType, modifierForPC1040).cacheModel)
 
                 val result = controller.submitForm()(postRequest(body))
 
@@ -230,11 +228,9 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec with Option
 
         "redirect to to /inland-transport-details after a successful bind" when {
           "cache contains '1040' as procedure code, '000' as APC and" when {
-            val item = withItem(itemWithPC("1040"))
-
             List(SUPPLEMENTARY_EIDR).foreach { additionalType =>
               "AdditionalDeclarationType is SUPPLEMENTARY_EIDR" in {
-                withNewCaching(withRequest(additionalType, item).cacheModel)
+                withNewCaching(withRequest(additionalType, modifierForPC1040).cacheModel)
 
                 val result = controller.submitForm()(postRequest(body))
 
@@ -248,7 +244,7 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec with Option
                 "the user has previously entered a value which requires to skip the /inland-or-border page" in {
                   valuesRequiringToSkipInlandOrBorder.foreach { modifier =>
                     initMockNavigatorForMultipleCallsInTheSameTest()
-                    val declaration = withRequest(additionalType, modifier, item).cacheModel
+                    val declaration = withRequest(additionalType, modifier, modifierForPC1040).cacheModel
 
                     // This is a special case for this test that as specified would
                     // instead expect to land on /inland-transport-details

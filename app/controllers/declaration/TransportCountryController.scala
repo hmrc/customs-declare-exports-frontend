@@ -19,7 +19,7 @@ package controllers.declaration
 import connectors.CodeListConnector
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.routes.{ExpressConsignmentController, TransportContainerController}
-import controllers.helpers.TransportSectionHelper.isGuernseyOrJerseyDestination
+import controllers.helpers.TransportSectionHelper.{isGuernseyOrJerseyDestination, isPostalOrFTIModeOfTransport}
 import controllers.navigation.Navigator
 import forms.declaration.TransportCountry
 import models.DeclarationType._
@@ -46,11 +46,10 @@ class TransportCountryController @Inject() (
 )(implicit ec: ExecutionContext, codeListConnector: CodeListConnector)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
 
-  private val validTypes = Seq(STANDARD, OCCASIONAL, SUPPLEMENTARY, SIMPLIFIED)
+  private val validTypes = List(STANDARD, OCCASIONAL, SUPPLEMENTARY, SIMPLIFIED)
 
   val displayPage: Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async { implicit request =>
-    if (isGuernseyOrJerseyDestination(request.cacheModel)) updateCache(TransportCountry(None)).map(_ => nextPage)
-    else {
+    val pageToDisplay = () => {
       val transportMode = ModeOfTransportCodeHelper.transportMode(request.cacheModel.transportLeavingBorderCode)
       val form = TransportCountry.form(transportMode).withSubmissionErrors
       val page = request.cacheModel.transport.transportCrossingTheBorderNationality match {
@@ -59,17 +58,27 @@ class TransportCountryController @Inject() (
       }
       Future.successful(Ok(page))
     }
+    submit(pageToDisplay)
   }
 
   val submitForm: Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async { implicit request =>
-    if (isGuernseyOrJerseyDestination(request.cacheModel)) updateCache(TransportCountry(None)).map(_ => nextPage)
-    else {
+    val verifyFormAndUpdateCache = () => {
       val transportMode = ModeOfTransportCodeHelper.transportMode(request.cacheModel.transportLeavingBorderCode)
       TransportCountry
         .form(transportMode)
         .bindFromRequest()
         .fold(formWithErrors => Future.successful(BadRequest(transportCountry(transportMode, formWithErrors))), updateCache(_).map(_ => nextPage))
     }
+    submit(verifyFormAndUpdateCache)
+  }
+
+  private def submit(fun: () => Future[Result])(implicit request: JourneyRequest[AnyContent]): Future[Result] = {
+    val declaration = request.cacheModel
+    val isPostalOrFTI =
+      isPostalOrFTIModeOfTransport(declaration.transportLeavingBorderCode) ||
+        isPostalOrFTIModeOfTransport(declaration.inlandModeOfTransportCode)
+    val resetValueAndGotoNextPage = isPostalOrFTI || isGuernseyOrJerseyDestination(declaration)
+    if (resetValueAndGotoNextPage) updateCache(TransportCountry(None)).map(_ => nextPage) else fun()
   }
 
   private def nextPage(implicit request: JourneyRequest[AnyContent]): Result = {

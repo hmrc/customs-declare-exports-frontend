@@ -16,7 +16,7 @@
 
 package views.declaration
 
-import base.ExportsTestData.{allValuesRequiringToSkipInlandOrBorder, itemWithPC, valuesRequiringToSkipInlandOrBorder}
+import base.ExportsTestData.{modifierForPC1040, valuesRequiringToSkipInlandOrBorder}
 import base.Injector
 import controllers.declaration.routes.{InlandOrBorderController, SupervisingCustomsOfficeController, TransportLeavingTheBorderController}
 import controllers.helpers.TransportSectionHelper.additionalDeclTypesAllowedOnInlandOrBorder
@@ -27,6 +27,7 @@ import models.DeclarationType._
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
+import play.api.mvc.Call
 import services.cache.ExportsTestHelper
 import views.declaration.spec.PageWithButtonsSpec
 import views.html.declaration.inland_transport_details
@@ -117,68 +118,47 @@ class InlandTransportDetailsViewSpec extends PageWithButtonsSpec with ExportsTes
 
       checkAllSaveButtonsAreDisplayed(createView())
     }
+  }
 
-    "display 'Back' button that links to /inland-or-border" when {
-      additionalDeclTypesAllowedOnInlandOrBorder.foreach { additionalType =>
-        s"AdditionalDeclarationType is $additionalType" in {
-          val view = createView()(withRequest(additionalType))
-          val backButton = view.getElementById("back-link")
-          backButton must containMessage("site.backToPreviousQuestion")
-          backButton.getElementById("back-link") must haveHref(InlandOrBorderController.displayPage)
+  "Inland Transport Details View" when {
+
+    additionalDeclTypesAllowedOnInlandOrBorder.foreach { additionalType =>
+      s"AdditionalDeclarationType is $additionalType" should {
+
+        "display a 'Back' button linking to /inland-or-border" in {
+          verifyBackButton(InlandOrBorderController.displayPage)(withRequest(additionalType))
         }
-      }
-    }
 
-    "display 'Back' button that links to /supervising-customs-office" when {
-
-      additionalDeclTypesAllowedOnInlandOrBorder.foreach { additionalType =>
-        s"AdditionalDeclarationType is $additionalType and" when {
-          "the user has previously entered a value which requires to skip the /inland-or-border page" in {
-            allValuesRequiringToSkipInlandOrBorder.foreach { modifier =>
-              val view = createView()(withRequest(additionalType, modifier))
-              val backButton = view.getElementById("back-link")
-              backButton must containMessage("site.backToPreviousQuestion")
-              backButton.getElementById("back-link") must haveHref(SupervisingCustomsOfficeController.displayPage)
-            }
-          }
-        }
-      }
-
-      List(SUPPLEMENTARY_EIDR).foreach { additionalType =>
-        s"AdditionalDeclarationType is ${additionalType}" in {
-          val view = createView()(withRequest(additionalType))
-          val backButton = view.getElementById("back-link")
-          backButton must containMessage("site.backToPreviousQuestion")
-          backButton.getElementById("back-link") must haveHref(SupervisingCustomsOfficeController.displayPage)
-        }
-      }
-    }
-
-    "display 'Back' button that links to /transport-leaving-the-border" when {
-      "all declaration's items have '1040' as Procedure code and '000' as unique Additional Procedure code and" when {
-
-        additionalDeclTypesAllowedOnInlandOrBorder.foreach { additionalType =>
-          s"AdditionalDeclarationType is $additionalType and" when {
-            "the user has previously entered a value which requires to skip the /inland-or-border page" in {
-              valuesRequiringToSkipInlandOrBorder.foreach { modifier =>
-                val view = createView()(withRequest(additionalType, modifier, withItem(itemWithPC("1040"))))
-                val backButton = view.getElementById("back-link")
-                backButton must containMessage("site.backToPreviousQuestion")
-                backButton.getElementById("back-link") must haveHref(TransportLeavingTheBorderController.displayPage)
-              }
+        "display a 'Back' button linking to /supervising-customs-office" when {
+          "the 'InlandOrBorder' page is skipped" in {
+            valuesRequiringToSkipInlandOrBorder.foreach { modifier =>
+              implicit val request = withRequest(additionalType, modifier)
+              verifyBackButton(SupervisingCustomsOfficeController.displayPage)
             }
           }
         }
 
-        List(SUPPLEMENTARY_EIDR).foreach { additionalType =>
-          s"AdditionalDeclarationType is ${additionalType}" in {
-            val view = createView()(withRequest(additionalType, withItem(itemWithPC("1040"))))
-            val backButton = view.getElementById("back-link")
-            backButton must containMessage("site.backToPreviousQuestion")
-            backButton.getElementById("back-link") must haveHref(TransportLeavingTheBorderController.displayPage)
+        "display a 'Back' button linking to /transport-leaving-the-border" when {
+          "all declaration's items have '1040' as PC and '000' as APC" in {
+            valuesRequiringToSkipInlandOrBorder.foreach { modifier =>
+              implicit val request = withRequest(additionalType, modifier, modifierForPC1040)
+              verifyBackButton(TransportLeavingTheBorderController.displayPage)
+            }
           }
         }
       }
+    }
+
+    "AdditionalDeclarationType is SUPPLEMENTARY_EIDR" should {
+      "display a 'Back' button linking to /supervising-customs-office" in {
+        verifyBackButton(SupervisingCustomsOfficeController.displayPage)(withRequest(SUPPLEMENTARY_EIDR))
+      }
+    }
+
+    def verifyBackButton(call: Call)(implicit request: JourneyRequest[_]): Unit = {
+      val backButton = createView().getElementById("back-link")
+      backButton must containMessage(backToPreviousQuestionCaption)
+      backButton must haveHref(call)
     }
   }
 }

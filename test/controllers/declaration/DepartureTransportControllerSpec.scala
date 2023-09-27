@@ -19,7 +19,6 @@ package controllers.declaration
 import base.{ControllerSpec, MockTransportCodeService}
 import controllers.declaration.routes.{BorderTransportController, ExpressConsignmentController, TransportCountryController}
 import controllers.helpers.TransportSectionHelper.{postalOrFTIModeOfTransportCodes, Guernsey, Jersey}
-import controllers.routes.RootController
 import forms.declaration.DepartureTransport
 import forms.declaration.DepartureTransport.radioButtonGroupId
 import forms.declaration.InlandOrBorder.Border
@@ -84,9 +83,11 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
   private def formData(transportCodeValue: String, inputFieldId: String, reference: String): JsObject =
     Json.obj(radioButtonGroupId -> transportCodeValue, inputFieldId -> reference)
 
-  private val departureTransport = withDepartureTransport(Maritime, transportCodeService.WagonNumber.value, "FAA")
+  private val departureNumber = "FAA"
+  private val departureType = transportCodeService.WagonNumber.value
+  private val departureTransport = withDepartureTransport(Maritime, departureType, departureNumber)
 
-  "Departure transport controller" when {
+  "Departure transport controller" should {
 
     onEveryDeclarationJourney() { request =>
       "return 200 (OK)" when {
@@ -106,15 +107,42 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
         }
       }
 
-      postalOrFTIModeOfTransportCodes.foreach { modeOfTransportCode =>
-        s"TransportLeavingTheBorder is $modeOfTransportCode" should {
-          "redirect to the starting page on displayOutcomePage" in {
-            withNewCaching(aDeclarationAfter(request.cacheModel, withBorderModeOfTransportCode(modeOfTransportCode)))
+      "reset the value, if any, and redirect to the 'next' page" when {
+        postalOrFTIModeOfTransportCodes.foreach { modeOfTransportCode =>
+          s"TransportLeavingTheBorder is $modeOfTransportCode" should {
 
-            val result = controller.displayPage(getRequest())
+            "the 'displayPage' is invoked" in {
+              val departureTransport = withDepartureTransport(modeOfTransportCode.value, departureType, departureNumber)
+              withNewCaching(aDeclarationAfter(request.cacheModel, departureTransport))
 
-            status(result) must be(SEE_OTHER)
-            redirectLocation(result) mustBe Some(RootController.displayPage.url)
+              val result = controller.displayPage(getRequest())
+
+              status(result) must be(SEE_OTHER)
+
+              if (request.declarationType == CLEARANCE) thePageNavigatedTo mustBe ExpressConsignmentController.displayPage
+              else thePageNavigatedTo mustBe BorderTransportController.displayPage
+
+              val transport = theCacheModelUpdated.transport
+              transport.meansOfTransportOnDepartureType mustBe None
+              transport.meansOfTransportOnDepartureIDNumber mustBe None
+            }
+
+            "the 'submitForm' is invoked" in {
+              val departureTransport = withDepartureTransport(modeOfTransportCode.value, departureType, departureNumber)
+              withNewCaching(aDeclarationAfter(request.cacheModel, departureTransport))
+
+              val correctForm = formData(transportCodeService.WagonNumber.value, transportCodeService.WagonNumber.id, departureNumber)
+
+              val result = controller.submitForm()(postRequest(correctForm))
+
+              status(result) mustBe SEE_OTHER
+              if (request.declarationType == CLEARANCE) thePageNavigatedTo mustBe ExpressConsignmentController.displayPage
+              else thePageNavigatedTo mustBe BorderTransportController.displayPage
+
+              val transport = theCacheModelUpdated.transport
+              transport.meansOfTransportOnDepartureType mustBe None
+              transport.meansOfTransportOnDepartureIDNumber mustBe None
+            }
           }
         }
       }
@@ -133,23 +161,10 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
         "form is incorrect" in {
           withNewCaching(request.cacheModel)
 
-          val incorrectForm = formData("wrongValue", transportCodeService.WagonNumber.id, "FAA")
+          val incorrectForm = formData("wrongValue", transportCodeService.WagonNumber.id, departureNumber)
 
           val result = controller.submitForm()(postRequest(incorrectForm))
           status(result) must be(BAD_REQUEST)
-        }
-      }
-
-      postalOrFTIModeOfTransportCodes.foreach { modeOfTransportCode =>
-        s"TransportLeavingTheBorder is $modeOfTransportCode" should {
-          "redirect to the starting page on submitForm" in {
-            withNewCaching(aDeclarationAfter(request.cacheModel, withBorderModeOfTransportCode(modeOfTransportCode)))
-
-            val correctForm = formData(transportCodeService.WagonNumber.value, transportCodeService.WagonNumber.id, "FAA")
-
-            val result = controller.submitForm()(postRequest(correctForm))
-            redirectLocation(result) mustBe Some(RootController.displayPage.url)
-          }
         }
       }
     }
@@ -175,7 +190,7 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
             val destinationCountry = withDestinationCountry(Country(Some(country)))
             withNewCaching(aDeclarationAfter(request.cacheModel, destinationCountry, departureTransport))
 
-            val correctForm = formData(transportCodeService.WagonNumber.value, transportCodeService.WagonNumber.id, "FAA")
+            val correctForm = formData(transportCodeService.WagonNumber.value, transportCodeService.WagonNumber.id, departureNumber)
             val result = controller.submitForm(postRequest(correctForm))
 
             status(result) mustBe SEE_OTHER
@@ -194,7 +209,7 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
         "information provided by user are correct" in {
           withNewCaching(request.cacheModel)
 
-          val correctForm = formData(transportCodeService.WagonNumber.value, transportCodeService.WagonNumber.id, "FAA")
+          val correctForm = formData(transportCodeService.WagonNumber.value, transportCodeService.WagonNumber.id, departureNumber)
           val result = controller.submitForm()(postRequest(correctForm))
 
           status(result) must be(SEE_OTHER)
@@ -206,7 +221,7 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
         "the user select 'Border' on /inland-or-border" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withInlandOrBorder(Some(Border))))
 
-          val correctForm = formData(transportCodeService.WagonNumber.value, transportCodeService.WagonNumber.id, "FAA")
+          val correctForm = formData(transportCodeService.WagonNumber.value, transportCodeService.WagonNumber.id, departureNumber)
 
           val result = controller.submitForm()(postRequest(correctForm))
 
@@ -222,7 +237,7 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
         "information provided by user are correct" in {
           withNewCaching(request.cacheModel)
 
-          val correctForm = formData(transportCodeService.WagonNumber.value, transportCodeService.WagonNumber.id, "FAA")
+          val correctForm = formData(transportCodeService.WagonNumber.value, transportCodeService.WagonNumber.id, departureNumber)
 
           val result = controller.submitForm()(postRequest(correctForm))
 

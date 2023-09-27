@@ -66,7 +66,7 @@ trait ClearanceNavigator extends CacheDependentNavigators {
     case RepresentativeAgent        => representativeAgentClearancePreviousPage
     case IsExs                      => isExsClearancePreviousPage
     case Document                   => previousDocumentsPreviousPage
-    case DepartureTransport         => departureTransportClearancePreviousPage
+    case DepartureTransport         => departureTransportPreviousPageOnClearance
     case ContainerFirst             => containerFirstPreviousPage
     case ExpressConsignment         => expressConsignmentPreviousPageOnClearance
   }

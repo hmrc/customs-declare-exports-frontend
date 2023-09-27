@@ -71,9 +71,9 @@ trait OccasionalNavigator extends CacheDependentNavigators {
     case Document                  => previousDocumentsPreviousPage
     case InlandOrBorder            => inlandOrBorderPreviousPage
     case InlandModeOfTransportCode => inlandTransportDetailsPreviousPage
-    case DepartureTransport        => departureTransportPreviousPageOnStandardOrSuppl
+    case DepartureTransport        => departureTransportPreviousPage
     case TransportCountry          => transportCountryPreviousPage
-    case ExpressConsignment        => expressConsignmentPreviousPageOnStandard
+    case ExpressConsignment        => expressConsignmentPreviousPage
     case ContainerFirst            => containerFirstPreviousPage
   }
 
