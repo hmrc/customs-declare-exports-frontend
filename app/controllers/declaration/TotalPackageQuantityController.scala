@@ -18,13 +18,14 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.routes.NatureOfTransactionController
+import controllers.helpers.TransportSectionHelper.isGuernseyOrJerseyDestination
 import controllers.navigation.Navigator
 import forms.declaration.TotalPackageQuantity
 import models.declaration.InvoiceAndPackageTotals
 import models.requests.JourneyRequest
 import models.{DeclarationType, ExportsDeclaration}
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
@@ -45,20 +46,23 @@ class TotalPackageQuantityController @Inject() (
 
   private val validTypes = Seq(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY)
 
-  def displayPage: Action[AnyContent] = (authorize andThen journey(validTypes)) { implicit request =>
-    val totalPackage = request.cacheModel.totalNumberOfItems.flatMap(_.totalPackage)
-    val form = TotalPackageQuantity.form(request.declarationType).withSubmissionErrors
-    Ok(totalPackageQuantity(totalPackage.fold(form)(value => form.fill(TotalPackageQuantity(Some(value))))))
+  val displayPage: Action[AnyContent] = (authorize andThen journey(validTypes)) async { implicit request =>
+    if (isGuernseyOrJerseyDestination(request.cacheModel)) updateCache(TotalPackageQuantity(None)) map (_ => nextPage)
+    else {
+      val totalPackage = request.cacheModel.totalNumberOfItems.flatMap(_.totalPackage)
+      val form = TotalPackageQuantity.form(request.declarationType).withSubmissionErrors
+      Future.successful(Ok(totalPackageQuantity(totalPackage.fold(form)(value => form.fill(TotalPackageQuantity(Some(value)))))))
+    }
   }
 
-  def saveTotalPackageQuantity(): Action[AnyContent] = (authorize andThen journey(validTypes)).async { implicit request =>
-    TotalPackageQuantity
-      .form(request.declarationType)
-      .bindFromRequest()
-      .fold(
-        formWithErrors => Future.successful(BadRequest(totalPackageQuantity(formWithErrors))),
-        updateCache(_).map(_ => navigator.continueTo(NatureOfTransactionController.displayPage))
-      )
+  val saveTotalPackageQuantity: Action[AnyContent] = (authorize andThen journey(validTypes)) async { implicit request =>
+    if (isGuernseyOrJerseyDestination(request.cacheModel)) updateCache(TotalPackageQuantity(None)) map (_ => nextPage)
+    else {
+      TotalPackageQuantity
+        .form(request.declarationType)
+        .bindFromRequest()
+        .fold(formWithErrors => Future.successful(BadRequest(totalPackageQuantity(formWithErrors))), updateCache(_) map (_ => nextPage))
+    }
   }
 
   private def updateCache(totalPackage: TotalPackageQuantity)(implicit request: JourneyRequest[_]): Future[ExportsDeclaration] =
@@ -72,4 +76,6 @@ class TotalPackageQuantityController @Inject() (
         }
         declaration.copy(totalNumberOfItems = Some(invoiceAndPackageTotals))
       }
+
+  private def nextPage(implicit request: JourneyRequest[AnyContent]): Result = navigator.continueTo(NatureOfTransactionController.displayPage)
 }

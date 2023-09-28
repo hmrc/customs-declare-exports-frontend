@@ -19,7 +19,7 @@ package controllers.navigation
 import controllers.declaration.routes
 import controllers.helpers.DeclarationHolderHelper.userCanLandOnIsAuthRequiredPage
 import controllers.helpers.TransportSectionHelper._
-import controllers.helpers.{InlandOrBorderHelper, SupervisingCustomsOfficeHelper}
+import controllers.helpers.{InlandOrBorderHelper, SupervisingCustomsOfficeHelper, TransportSectionHelper}
 import forms.declaration.InlandOrBorder.Border
 import forms.declaration.NatureOfTransaction.{BusinessPurchase, Sale}
 import forms.declaration._
@@ -283,5 +283,11 @@ trait CacheDependentNavigators {
   protected def totalPackageQuantityPreviousPage(cacheModel: ExportsDeclaration): Call =
     if (cacheModel.isInvoiceAmountGreaterThan100000) routes.InvoiceAndExchangeRateController.displayPage
     else routes.InvoiceAndExchangeRateChoiceController.displayPage
+
+  protected def natureOfTransactionPreviousPage(cacheModel: ExportsDeclaration): Call =
+    if (TransportSectionHelper.isGuernseyOrJerseyDestination(cacheModel))
+      totalPackageQuantityPreviousPage(cacheModel)
+    else
+      routes.TotalPackageQuantityController.displayPage
 
 }

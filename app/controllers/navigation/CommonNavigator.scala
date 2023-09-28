@@ -40,7 +40,6 @@ trait CommonNavigator extends CacheDependentNavigators {
     case RepresentativeEntity          => routes.RepresentativeAgentController.displayPage
     case RepresentativeStatus          => routes.RepresentativeEntityController.displayPage
     case AdditionalDeclarationTypePage => routes.DeclarationChoiceController.displayPage
-    case NatureOfTransaction           => routes.TotalPackageQuantityController.displayPage
     case ProcedureCode                 => routes.ItemsSummaryController.displayItemsSummaryPage
     case ExportItem                    => routes.PreviousDocumentsSummaryController.displayPage
     case DocumentChangeOrRemove        => routes.PreviousDocumentsSummaryController.displayPage
@@ -52,6 +51,7 @@ trait CommonNavigator extends CacheDependentNavigators {
     case InvoiceAndExchangeRate        => routes.InvoiceAndExchangeRateChoiceController.displayPage
     case TraderReference               => routes.DucrChoiceController.displayPage
     case ConfirmDucr                   => routes.TraderReferenceController.displayPage
+    case RoutingCountryPage            => routes.RoutingCountriesController.displayRoutingQuestion
   }
 
   val commonItem: PartialFunction[DeclarationPage, String => Call] = {
@@ -73,7 +73,7 @@ trait CommonNavigator extends CacheDependentNavigators {
     case SupervisingCustomsOffice         => supervisingCustomsOfficePreviousPage
     case AuthorisationProcedureCodeChoice => authorisationProcedureCodeChoicePreviousPage
     case OfficeOfExit                     => officeOfExitPreviousPage
-    case RoutingCountryPage               => _ => routes.RoutingCountriesController.displayRoutingQuestion
+    case NatureOfTransaction              => natureOfTransactionPreviousPage
   }
 
   val commonCacheItemDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, String) => Call] = {
