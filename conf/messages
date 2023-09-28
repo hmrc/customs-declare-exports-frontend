@@ -2130,7 +2130,7 @@ declaration.summary.transport.payment._ = Payment information is not available
 
 declaration.summary.transport.containers = Goods in a container
 declaration.summary.transport.containers.change = Change goods in a container
-declaration.summary.container = Container information
+declaration.summary.container = Container Information
 declaration.summary.container.id = Container ID
 declaration.summary.container.securitySeals = Security seals
 declaration.summary.container.securitySeals.none = No seals
