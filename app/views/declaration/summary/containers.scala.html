@@ -44,7 +44,11 @@
 
 @if(containers.nonEmpty){
 
-@heading(messages("declaration.summary.container"), "govuk-heading-s govuk-!-margin-bottom-0", "h3")
+<div class="govuk-summary-list__heading">
+    <h3 class="govuk-heading-s govuk-!-margin-bottom-2" id="container-information">
+        @messages("declaration.summary.container")
+    </h3>
+</div>
 
     @for(container <- containers) {
         @summaryList(
