@@ -28,6 +28,7 @@
 @import views.helpers.{BackButton, Title}
 @import views.html.components.gds.{phaseBanner, siteHeader}
 @import views.html.components._
+@import views.html.helper.CSPNonce
 
 @this(
     govukHeader: GovukHeader,
@@ -85,15 +86,15 @@
 }
 
 @scripts = {
-    <script src='@Assets.versioned("javascripts/show-hide-content.js")'></script>
+    <script @CSPNonce.attr src='@Assets.versioned("javascripts/show-hide-content.js")'></script>
 
-    <script src='@Assets.versioned("lib/govuk-frontend/govuk/all.js")'></script>
-    <script src='@Assets.versioned("lib/hmrc-frontend/hmrc/all.js")'></script>
+    <script @CSPNonce.attr src='@Assets.versioned("lib/govuk-frontend/govuk/all.js")'></script>
+    <script @CSPNonce.attr src='@Assets.versioned("lib/hmrc-frontend/hmrc/all.js")'></script>
 
-    <script>window.HMRCFrontend.initAll();</script>
-    <script>window.GOVUKFrontend.initAll();</script>
+    <script @CSPNonce.attr >window.HMRCFrontend.initAll();</script>
+    <script @CSPNonce.attr >window.GOVUKFrontend.initAll();</script>
 
-    <script src='@Assets.versioned("javascripts/preventMultipleFormSubmissions.js")'></script>
+    <script @CSPNonce.attr src='@Assets.versioned("javascripts/preventMultipleFormSubmissions.js")'></script>
 }
 
 @beforeContentBlock = {

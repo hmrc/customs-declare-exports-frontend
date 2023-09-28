@@ -29,7 +29,7 @@
   isPageHeading: Boolean,
   args: List[(Symbol, Any)] = List.empty,
   rightElement: Option[Html] = None
-)(implicit messages: Messages)
+)(implicit request: Request[_], messages: Messages)
 @*
 Some fields contains Sequence as type of the field, e.g. countries of routing on destination countries page.
 JQuery treats [] as element's attribute and tried evaluated this.

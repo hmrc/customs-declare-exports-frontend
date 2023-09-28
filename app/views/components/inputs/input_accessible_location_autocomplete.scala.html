@@ -17,12 +17,13 @@
 @import services.view.AutoCompleteItem
 @import views.helpers.CountryHelper
 @import controllers.routes.Assets
+@import views.html.helper.CSPNonce
 
 @import models.codes.Country
 @(  field: Field,
     countryKey: Country => String,
     rightElement: Option[Html] = None
-)(implicit messages: Messages, countryAutoCompleteHelper: CountryHelper)
+)(implicit request: Request[_], messages: Messages, countryAutoCompleteHelper: CountryHelper)
 
 @*
 Some fields contains Sequence as type of the field, e.g. countries of routing on destination countries page.
@@ -67,10 +68,10 @@ To avoid problems, we need to remove [] from field.
     }
 </div>
 
-<script src='@Assets.versioned("lib/accessible-autocomplete/dist/accessible-autocomplete.min.js")'></script>
-<script src='@Assets.versioned("javascripts/jquery-3.6.0.slim.min.js")'></script>
-<script src='@Assets.versioned("javascripts/auto-complete-fix.js")'></script>
-<script  type="text/javascript">
+<script @CSPNonce.attr src='@Assets.versioned("lib/accessible-autocomplete/dist/accessible-autocomplete.min.js")'></script>
+<script @CSPNonce.attr src='@Assets.versioned("javascripts/jquery-3.6.0.slim.min.js")'></script>
+<script @CSPNonce.attr src='@Assets.versioned("javascripts/auto-complete-fix.js")'></script>
+<script @CSPNonce.attr type="text/javascript">
         var selectElementId = '@(fieldNameWithoutBrackets)'
         var submitOnConfirm = false
         var dataSource = @Html(countryAutoCompleteHelper.generateAutocompleteEnhancementJson(countryKey).toString)
