@@ -74,7 +74,6 @@ trait StandardNavigator extends CacheDependentNavigators {
     case TransportCountry          => transportCountryPreviousPage
     case ExpressConsignment        => expressConsignmentPreviousPage
     case ContainerFirst            => containerFirstPreviousPage
-    case NatureOfTransaction       => natureOfTransactionPreviousPage
   }
 
   val standardCacheItemDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, String) => Call] = {

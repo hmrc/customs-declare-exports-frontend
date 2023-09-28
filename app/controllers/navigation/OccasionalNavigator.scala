@@ -47,7 +47,6 @@ trait OccasionalNavigator extends CacheDependentNavigators {
     case DocumentSummary             => routes.OfficeOfExitController.displayPage
     case BorderTransport             => routes.DepartureTransportController.displayPage
     case ContainerAdd                => routes.TransportContainerController.displayContainerSummary
-    case NatureOfTransaction         => routes.TotalPackageQuantityController.displayPage
     case page                        => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on occasional")
   }
 

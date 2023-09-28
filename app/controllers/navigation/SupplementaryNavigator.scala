@@ -69,7 +69,6 @@ trait SupplementaryNavigator extends CacheDependentNavigators {
     case TransportCountry          => transportCountryPreviousPage
     case ContainerFirst            => containerFirstPreviousPageOnSupplementary
     case RepresentativeAgent       => representativeAgentPreviousPage
-    case NatureOfTransaction       => natureOfTransactionPreviousPage
   }
 
   val supplementaryCacheItemDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, String) => Call] = { case AdditionalDocument =>
