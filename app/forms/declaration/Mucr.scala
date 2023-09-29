@@ -42,8 +42,7 @@ object Mucr extends DeclarationPage with FieldMapping {
   val mapping = Forms.mapping(
     MUCR -> text()
       .verifying("declaration.mucr.error.empty", nonEmpty)
-      .verifying("declaration.mucr.error.invalid", isEmpty or isValidMucr)
-      .verifying("declaration.mucr.error.length", isEmpty or noLongerThan(35))
+      .verifying("declaration.mucr.error.invalid", isEmpty or validMucrIgnoreCase)
   )(form2Data)(Mucr.unapply)
 
   def form: Form[Mucr] = Form(mapping)

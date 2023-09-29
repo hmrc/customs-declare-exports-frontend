@@ -116,6 +116,11 @@ object FieldValidator {
 
   val startsWithCapitalLetter: String => Boolean = (input: String) => input.headOption.exists(_.isUpper)
 
+  val validMucr: String => Boolean = (input: String) =>
+    input.trim.matches("""GB/[0-9A-Z]{3,4}-[0-9A-Z]{5,28}|GB/[0-9A-Z]{9,12}-[0-9A-Z]{1,23}|A:[0-9A-Z]{3}[0-9]{8}|C:[A-Z]{3}[0-9A-Z]{3,30}""")
+
+  val validMucrIgnoreCase: String => Boolean = (input: String) => validMucr(input.trim.toUpperCase) && noLongerThan(35)(input)
+
   def isContainedIn[T](iterable: Iterable[T]): T => Boolean =
     (input: T) => iterable.exists(_ == input)
 
