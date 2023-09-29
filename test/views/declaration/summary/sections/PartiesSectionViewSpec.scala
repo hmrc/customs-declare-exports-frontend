@@ -20,6 +20,7 @@ import base.Injector
 import controllers.declaration.routes._
 import forms.common.{Address, Eori}
 import forms.declaration.IsExs
+import forms.declaration.declarationHolder.DeclarationHolder
 import models.declaration.{DeclarationAdditionalActorsData, RepresentativeDetails}
 import services.cache.ExportsTestHelper
 import views.declaration.spec.UnitViewSpec
@@ -142,13 +143,6 @@ class PartiesSectionViewSpec extends UnitViewSpec with ExportsTestHelper with In
         row must haveSummaryValue(messages("site.no"))
       }
 
-      "contains holders section" in {
-        val row = view.getElementsByClass("holders-row")
-
-        row must haveSummaryKey(messages("declaration.summary.parties.holders"))
-        row must haveSummaryValue(messages("site.no"))
-      }
-
       "contains carrier details with change button" in {
         val eoriRow = view.getElementsByClass("carrier-eori-row")
 
@@ -204,6 +198,62 @@ class PartiesSectionViewSpec extends UnitViewSpec with ExportsTestHelper with In
         val view = section(aDeclaration())(messages)
 
         view.getAllElements.text() must be(empty)
+      }
+
+      "contains an empty authorisation holders section" when {
+        "no authorisation holders have been entered" in {
+          val row = view.getElementsByClass("authorisation-holders-summary")
+
+          row must haveSummaryKey(messages("declaration.summary.parties.holders"))
+          row must haveSummaryValue(messages("site.none"))
+          row must haveSummaryActionsTexts("site.change", "declaration.summary.parties.holders.empty.change")
+          row must haveSummaryActionWithPlaceholder(AuthorisationProcedureCodeChoiceController.displayPage)
+        }
+      }
+
+      "contains an authorisation holders section" in {
+        val type1 = "OPO"
+        val type2 = "AEOC"
+        val eori1 = "GB123456789012"
+        val eori2 = "GB123456789012"
+
+        val holder1 = DeclarationHolder(Some(type1), Some(Eori(eori1)), None)
+        val holder2WithoutCode = DeclarationHolder(None, Some(Eori(eori2)), None)
+        val holder3WithoutEori = DeclarationHolder(Some(type2), None, None)
+        val declaration = aDeclarationAfter(data, withDeclarationHolders(holder1, holder2WithoutCode, holder3WithoutEori))
+
+        val view = section(declaration)(messages)
+
+        val summaryList = view.getElementsByClass("authorisation-holders-summary").get(0)
+        val summaryListRows = summaryList.getElementsByClass("govuk-summary-list__row")
+        summaryListRows.size mustBe 5
+
+        val heading = summaryListRows.get(0).getElementsByClass("authorisation-holder-heading")
+        heading must haveSummaryKey(messages("declaration.summary.parties.holders"))
+        heading must haveSummaryValue("")
+
+        val holder1Type = summaryListRows.get(1).getElementsByClass("authorisation-holder-type-1")
+        holder1Type must haveSummaryKey(messages("declaration.summary.parties.holders.type"))
+        holder1Type must haveSummaryValue("OPO - Outward Processing authorisation")
+        holder1Type must haveSummaryActionsTexts("site.change", "declaration.summary.parties.holders.change", type1, eori1)
+        holder1Type must haveSummaryActionWithPlaceholder(AuthorisationProcedureCodeChoiceController.displayPage)
+
+        val holder1Eori = summaryListRows.get(2).getElementsByClass("authorisation-holder-eori-1")
+        holder1Eori must haveSummaryKey(messages("declaration.summary.parties.holders.eori"))
+        holder1Eori must haveSummaryValue(eori1)
+        holder1Eori.get(0).getElementsByClass("govuk-summary-list__actions").size mustBe 0
+
+        val holder2Eori = summaryListRows.get(3).getElementsByClass("authorisation-holder-eori-2")
+        holder2Eori must haveSummaryKey(messages("declaration.summary.parties.holders.eori"))
+        holder2Eori must haveSummaryValue(eori2)
+        holder2Eori must haveSummaryActionsTexts("site.change", "declaration.summary.parties.holders.change", "", eori2)
+        holder2Eori must haveSummaryActionWithPlaceholder(AuthorisationProcedureCodeChoiceController.displayPage)
+
+        val holder3Type = summaryListRows.get(4).getElementsByClass("authorisation-holder-type-3")
+        holder3Type must haveSummaryKey(messages("declaration.summary.parties.holders.type"))
+        holder3Type must haveSummaryValue("AEOC - Authorised Economic Operator - Customs simplifications")
+        holder3Type must haveSummaryActionsTexts("site.change", "declaration.summary.parties.holders.change", type2, "")
+        holder3Type must haveSummaryActionWithPlaceholder(AuthorisationProcedureCodeChoiceController.displayPage)
       }
     }
 

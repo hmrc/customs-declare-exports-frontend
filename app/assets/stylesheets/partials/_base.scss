@@ -1,3 +1,4 @@
+
 /*
 ====================================
 Fixes native-enforcing of date field for date-of-birth fields
@@ -7,8 +8,6 @@ as service does not implement native date inputs
 .touchevents .date-of-birth {
   display:block;
 }
-
-
 
 /*
 ====================================
@@ -142,15 +141,15 @@ Alignment for table cells with numeric values
 
 .currency-dropdown>div:nth-child(1) input {
       height: 38px;
-   }
-   @media only screen and (max-width: 799px) {
-      .currency-dropdown>div:nth-child(1) {
-         margin-bottom: 25px;
-      }
-   }
-   @media only screen and (min-width: 800px) {
-      .currency-dropdown>div:nth-child(1) {
-         position: relative;
-         top: -36px;
-      }
-   }
+}
+@media only screen and (max-width: 799px) {
+  .currency-dropdown>div:nth-child(1) {
+     margin-bottom: 25px;
+  }
+}
+@media only screen and (min-width: 800px) {
+  .currency-dropdown>div:nth-child(1) {
+     position: relative;
+     top: -36px;
+  }
+}
