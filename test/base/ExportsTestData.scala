@@ -53,7 +53,7 @@ object ExportsTestData extends ExportsDeclarationBuilder with ExportsItemBuilder
   val lrnWithSpaces = "123 LRN"
   val ducr = "5GB123456789000-123ABC456DEFIIIII"
   val mrn = "20GB46J8TMJ4RFGVA0"
-  val mucr = "CZYX123A"
+  val mucr = "GB/1UZYBD3XE-1J8MEBF9N6X65B"
   val eidrDateStamp = "20001231"
 
   val pc1040 = Some(ProcedureCodesData(Some("1040"), List(NO_APC_APPLIES_CODE)))

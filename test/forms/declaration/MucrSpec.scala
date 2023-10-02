@@ -16,6 +16,7 @@
 
 package forms.declaration
 
+import base.ExportsTestData
 import base.TestHelper.createRandomAlphanumericString
 import forms.common.DeclarationPageBaseSpec
 import org.scalatest.Assertion
@@ -37,7 +38,7 @@ class MucrSpec extends DeclarationPageBaseSpec {
   "Mucr mapping" should {
 
     "report no errors for valid MUCRs" in {
-      val validMucr = Mucr("C:XYZ-123D/")
+      val validMucr = Mucr(ExportsTestData.mucr)
       val filledForm = Form(Mucr.mapping).fillAndValidate(validMucr)
 
       filledForm.errors mustBe empty
@@ -48,7 +49,7 @@ class MucrSpec extends DeclarationPageBaseSpec {
     }
 
     "return error for too long MUCR" in {
-      invalidMucr(createRandomAlphanumericString(36), "declaration.mucr.error.length")
+      invalidMucr(createRandomAlphanumericString(36), "declaration.mucr.error.invalid")
     }
 
     "return error for MUCR with non-allowed characters" in {
