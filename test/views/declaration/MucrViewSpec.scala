@@ -80,7 +80,7 @@ class MucrViewSpec extends UnitViewSpec with CommonMessages with Injector {
       }
 
       "display error for MUCR too long" in {
-        verifyError(tooLongMucr, "length")
+        verifyError(tooLongMucr, "invalid")
       }
 
       "display error for MUCR containing non-allowed characters" in {
