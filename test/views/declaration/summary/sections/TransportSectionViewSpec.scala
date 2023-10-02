@@ -185,7 +185,7 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestHelper with 
 
     "display containers section (but not yes/no answer) if containers are not empty" in {
       val view = section(aDeclaration(withContainerData(Container(1, "123", Seq.empty))))(messages)
-      view.getElementById("containers-table").text() mustNot be(empty)
+      view.getElementById("container-1").text() mustNot be(empty)
     }
 
     "display warehouse id with change button" in {

@@ -19,28 +19,18 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.declaration.summary.TableCell
 @import views.helpers.ActionItemBuilder._
-@import views.html.components.gds.{link, linkContent, spanVisuallyHidden, summary_list}
+@import views.html.components.gds.{link, linkContent, spanVisuallyHidden, summary_list, heading}
 
 @this(
     govukTable: GovukTable,
     link: link,
     linkContent: linkContent,
     summaryList: summary_list,
-    spanVisuallyHidden: spanVisuallyHidden
+    spanVisuallyHidden: spanVisuallyHidden,
+    heading: heading
 )
 
 @(containers: Seq[Container], actionsEnabled: Boolean = true)(implicit messages: Messages)
-
-@change(container: Container) = { @{
-    if (actionsEnabled)
-        link(
-            messages("site.change"),
-            callForSummaryChangeLink(routes.TransportContainerController.displayContainerSummary),
-            textHidden = Some(messages("declaration.summary.container.change", container.id))
-        )
-    else
-        ""
-}}
 
 @actions(action: Actions) = @{
     if(actionsEnabled) Some(action)
@@ -53,33 +43,48 @@
 }
 
 @if(containers.nonEmpty){
-    @govukTable(Table(
-        rows = containers.map(container =>
-            Seq(
-                TableRow(
-                    content = Text(container.id)
-                ),
-                TableRow(
-                    content = Text(sealsText(container))
-                ),
-                TableCell.changeLink(change(container))
-            )
-        ),
-        head = Some(List(
-            HeadCell(
-                content = Text(messages("declaration.summary.container.id"))
-            ),
-            HeadCell(
-                content = Text(messages("declaration.summary.container.securitySeals"))
-            ),
-            HeadCell(
-                content = HtmlContent(spanVisuallyHidden(messages("site.change.header")))
-            )
-        )),
-        caption = Some(messages("declaration.summary.container")),
-        classes = "govuk-table govuk-!-margin-bottom-6",
-        attributes = Map("id" -> "containers-table")
-    ))
+
+<div class="govuk-summary-list__heading">
+    <h3 class="govuk-heading-s govuk-!-margin-bottom-2" id="container-information">
+        @messages("declaration.summary.container")
+    </h3>
+</div>
+
+    @for(container <- containers) {
+        @summaryList(
+            id = s"container-${container.sequenceId}",
+            heading = None,
+            classes = "govuk-summary-list govuk-!-margin-bottom-0",
+            summaryListRows = Seq(
+                Some(SummaryListRow(
+                    classes = "govuk-summary-list__row--no-border",
+                    key = Key(
+                        content = Text(messages("declaration.summary.container.id"))
+                    ),
+                    value = Value(
+                        content = Text(container.id)
+                    ),
+                    actions = actions(Actions(
+                        items = Seq(
+                            actionSummaryItem(
+                                href = routes.TransportContainerController.displayContainerSummary.url,
+                                content = HtmlContent(linkContent(messages("site.change"))),
+                                visuallyHiddenText = Some(messages("declaration.summary.container.change", container.id))
+                            )
+                        )
+                    ))
+                )),
+                Some(SummaryListRow(
+                    key = Key(
+                        content = Text(messages("declaration.summary.container.securitySeals"))
+                    ),
+                    value = Value(
+                        content = Text(sealsText(container))
+                    )
+                ))
+        ))
+    }
+
 } else {
     @summaryList(id = "containers", heading = None, summaryListRows = Seq(
         Some(SummaryListRow(

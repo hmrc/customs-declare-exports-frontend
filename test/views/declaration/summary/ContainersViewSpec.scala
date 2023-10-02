@@ -55,29 +55,30 @@ class ContainersViewSpec extends UnitViewSpec with ExportsTestHelper with Inject
     "display all containers and seals" in {
       val view = section(containers)(messages)
 
-      val table = view.getElementById("containers-table")
-      table.getElementsByTag("caption").text() mustBe messages("declaration.summary.container")
-      table.getElementsByClass("govuk-table__header").get(0).text() mustBe messages("declaration.summary.container.id")
-      table.getElementsByClass("govuk-table__header").get(1).text() mustBe messages("declaration.summary.container.securitySeals")
-      table.getElementsByClass("govuk-table__header").get(2).text() mustBe messages("site.change.header")
+      val id1 = view.getElementById("container-1").getElementsByClass("govuk-summary-list__key")
+      val seal1 = view.getElementById("container-1").getElementsByClass("govuk-summary-list__value")
+      val link1 = view.getElementById("container-1").getElementsByClass("govuk-summary-list__actions").first()
 
-      val row1 = table.getElementsByClass("govuk-table__body").first().getElementsByClass("govuk-table__row").get(0)
-      row1.getElementsByClass("govuk-table__cell").get(0).text() mustBe firstContainerID
-      row1.getElementsByClass("govuk-table__cell").get(1).text() mustBe messages("declaration.summary.container.securitySeals.none")
+      id1.get(0).text() mustBe messages("declaration.summary.container.id")
+      id1.get(1).text() mustBe messages("declaration.summary.container.securitySeals")
+      seal1.get(0).text() mustBe firstContainerID
+      seal1.get(1).text() mustBe messages("declaration.summary.container.securitySeals.none")
+      link1 must containMessage("site.change")
+      link1.getElementsByTag("a").first() must haveHrefWithPlaceholder(TransportContainerController.displayContainerSummary)
+      link1 must containMessage("declaration.summary.container.change", firstContainerID)
 
-      val row1ChangeLink = row1.getElementsByClass("govuk-table__cell").get(2).getElementsByTag("a").first()
-      row1ChangeLink must haveHrefWithPlaceholder(TransportContainerController.displayContainerSummary)
-      row1ChangeLink must containMessage("site.change")
-      row1ChangeLink must containMessage("declaration.summary.container.change", firstContainerID)
+      val id2 = view.getElementById("container-2").getElementsByClass("govuk-summary-list__key")
+      val seal2 = view.getElementById("container-2").getElementsByClass("govuk-summary-list__value")
+      val link2 = view.getElementById("container-2").getElementsByClass("govuk-summary-list__actions").first()
 
-      val row2 = table.getElementsByClass("govuk-table__body").first().getElementsByClass("govuk-table__row").get(1)
-      row2.getElementsByClass("govuk-table__cell").get(0).text() mustBe secondContainerID
-      row2.getElementsByClass("govuk-table__cell").get(1).text() mustBe s"$firstSeal, $secondSeal"
+      id2.get(0).text() mustBe messages("declaration.summary.container.id")
+      id2.get(1).text() mustBe messages("declaration.summary.container.securitySeals")
+      seal2.get(0).text() mustBe secondContainerID
+      seal2.get(1).text() mustBe s"$firstSeal, $secondSeal"
+      link2 must containMessage("site.change")
+      link2.getElementsByTag("a").first() must haveHrefWithPlaceholder(TransportContainerController.displayContainerSummary)
+      link2 must containMessage("declaration.summary.container.change", secondContainerID)
 
-      val row2ChangeLink = row2.getElementsByClass("govuk-table__cell").get(2).getElementsByTag("a").first()
-      row2ChangeLink must haveHrefWithPlaceholder(TransportContainerController.displayContainerSummary)
-      row2ChangeLink must containMessage("site.change")
-      row2ChangeLink must containMessage("declaration.summary.container.change", secondContainerID)
     }
   }
 }
