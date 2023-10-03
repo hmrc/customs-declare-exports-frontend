@@ -28,7 +28,8 @@ import scala.jdk.CollectionConverters.CollectionHasAsScala
 class TransactionSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injector {
 
   private val doc1 = Document("355", "ref1", None)
-  private val documents = withPreviousDocuments(Document("355", "ref2", None))
+  private val doc2 = Document("355", "ref2", None)
+  private val documents = withPreviousDocuments(doc1, doc2)
 
   val data = aDeclaration(
     withTotalNumberOfItems(Some("123"), Some("1.23"), Some("GBP")),
@@ -90,26 +91,34 @@ class TransactionSectionViewSpec extends UnitViewSpec with ExportsTestHelper wit
       row must haveSummaryActionWithPlaceholder(NatureOfTransactionController.displayPage)
     }
 
-    "have related documents section" in {
-      view.getElementById("previous-documents").text() mustNot be(empty)
+    "have related documents section" which {
 
-      val summaryList = view.getElementsByClass("previous-documents-summary").get(0)
+      val summaryList = view.getElementsByClass("previous-documents-summary").first
       val summaryListRows = summaryList.getElementsByClass("govuk-summary-list__row")
-      summaryListRows.size mustBe 2
 
-      val heading = summaryListRows.get(0).getElementsByClass("previous-documents-heading")
-      heading must haveSummaryKey(messages("declaration.summary.previous-documents"))
+      "has all rows present" in {
+        summaryListRows.size mustBe 5
+      }
 
-      val holder1Type = summaryListRows.get(1).getElementsByClass("previous-documents-type")
-      holder1Type must haveSummaryKey(messages("declaration.summary.previous-documents.type"))
-      holder1Type must haveSummaryValue("OPO - Outward Processing authorisation")
-      holder1Type must haveSummaryActionsTexts(
-        "site.change",
-        "declaration.summary.previous-documents.change",
-        doc1.documentType,
-        doc1.documentReference
-      )
-      holder1Type must haveSummaryActionWithPlaceholder(PreviousDocumentsController.displayPage)
+      "has heading present" in {
+        val heading = summaryListRows.first.getElementsByClass("previous-documents-heading")
+        heading must haveSummaryKey(messages("declaration.summary.transaction.previousDocuments"))
+      }
+
+      "answers and actions present" in {
+
+        val holder1Type = summaryListRows.get(1).getElementsByClass("previous-documents-type")
+        holder1Type must haveSummaryKey(messages("declaration.summary.previous-documents.type"))
+        holder1Type must haveSummaryValue("OPO - Outward Processing authorisation")
+        holder1Type must haveSummaryActionsTexts(
+          "site.change",
+          "declaration.summary.previous-documents.change",
+          doc1.documentType,
+          doc1.documentReference
+        )
+        holder1Type must haveSummaryActionWithPlaceholder(PreviousDocumentsController.displayPage)
+
+      }
     }
 
     "not display exchange rate when question not asked" in {

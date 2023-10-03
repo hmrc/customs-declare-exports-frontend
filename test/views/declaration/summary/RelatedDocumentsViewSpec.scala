@@ -18,20 +18,19 @@ package views.declaration.summary
 
 import base.Injector
 import controllers.declaration.routes.{PreviousDocumentsController, PreviousDocumentsSummaryController}
-import forms.declaration.Document
 import services.cache.ExportsTestHelper
 import views.declaration.spec.UnitViewSpec
-import views.html.declaration.summary.related_documents
+import views.helpers.DocumentsSummaryHelper
 
 class RelatedDocumentsViewSpec extends UnitViewSpec with ExportsTestHelper with Injector {
 
-  private val section = instanceOf[related_documents]
+  private val helper = instanceOf[DocumentsSummaryHelper]
 
   "Related documents" should {
 
     "display row with No value with change button" when {
       "documents are empty" in {
-        val view = section(Seq.empty)(messages)
+        val view = helper.section(aDeclaration(), true)
         val row = view.getElementsByClass("previous-documents-row")
 
         row must haveSummaryKey(messages("declaration.summary.transaction.previousDocuments"))
@@ -45,9 +44,8 @@ class RelatedDocumentsViewSpec extends UnitViewSpec with ExportsTestHelper with 
 
     "display documents with change button" when {
       "documents exists" in {
-        val data = Seq(Document("325", "123456", None), Document("271", "654321", None))
 
-        val view = section(data)(messages)
+        val view = helper.section(aDeclaration(), true)
         val table = view.getElementById("previous-documents")
 
         table.getElementsByTag("caption").text() mustBe messages("declaration.summary.transaction.previousDocuments")

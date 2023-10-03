@@ -47,7 +47,7 @@ class DocumentsSummaryHelper @Inject() (govukSummaryList: GovukSummaryList, link
     govukSummaryList(
       SummaryList(
         rows = if (noHolders) headingOnNoHolders(actionsEnabled) else heading +: summaryListRows,
-        classes = s"""${if (noHolders) "" else "govuk-!-margin-top-4 "}govuk-!-margin-bottom-9 authorisation-holders-summary"""
+        classes = s"""${if (noHolders) "" else "govuk-!-margin-top-4 "}govuk-!-margin-bottom-9 previous-documents-summary"""
       )
     )
   }
@@ -55,7 +55,7 @@ class DocumentsSummaryHelper @Inject() (govukSummaryList: GovukSummaryList, link
   private def heading(implicit messages: Messages): SummaryListRow =
     SummaryListRow(
       Key(Text(messages("declaration.summary.transaction.previousDocuments")), classes = "govuk-heading-s"),
-      classes = "authorisation-holder-heading",
+      classes = "previous-documents-heading",
       actions = Some(Actions(items = List(ActionItem())))
     )
 

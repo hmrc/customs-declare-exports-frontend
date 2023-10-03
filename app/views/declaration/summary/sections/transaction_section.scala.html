@@ -18,14 +18,12 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.helpers.ActionItemBuilder.actionSummaryItem
 @import views.html.components.gds.{linkContent, summary_list}
-@import views.html.declaration.summary.related_documents
 @import models.DeclarationType._
 @import views.helpers.DocumentsSummaryHelper
 
 @this(
     summaryList: summary_list,
     linkContent: linkContent,
-    related_documents: related_documents,
     documentsSummaryHelper: DocumentsSummaryHelper
 )
 
@@ -141,18 +139,7 @@
         classes = "govuk-!-margin-bottom-3"
     )
 
-
->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
     @documentsSummaryHelper.section(declaration, actionsEnabled)
-
->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
-    @declaration.previousDocuments.map(previousDocuments =>
-        related_documents(previousDocuments.documents, actionsEnabled)
-    )
-
->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 }
 
