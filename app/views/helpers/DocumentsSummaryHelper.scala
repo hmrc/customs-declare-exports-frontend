@@ -62,9 +62,9 @@ class DocumentsSummaryHelper @Inject() (govukSummaryList: GovukSummaryList, link
   private def headingOnNoHolders(actionsEnabled: Boolean)(implicit messages: Messages): Seq[SummaryListRow] =
     List(
       SummaryListRow(
-        Key(Text(messages("declaration.summary.parties.holders")), classes = "govuk-heading-s"),
+        Key(Text(messages("declaration.summary.transaction.previousDocuments")), classes = "govuk-heading-s"),
         Value(Text(messages("site.none"))),
-        classes = "authorisation-holder-heading",
+        classes = "previous-documents-heading",
         actions = changeHolder(None, actionsEnabled)
       )
     )
@@ -72,8 +72,8 @@ class DocumentsSummaryHelper @Inject() (govukSummaryList: GovukSummaryList, link
   private def changeHolder(maybeDocument: Option[Document], actionsEnabled: Boolean)(implicit messages: Messages): Option[Actions] =
     if (!actionsEnabled) None
     else {
-      val hiddenText = maybeDocument.fold(messages("declaration.summary.parties.holders.empty.change")) { document =>
-        messages("declaration.summary.parties.holders.change", document.documentType, document.documentReference)
+      val hiddenText = maybeDocument.fold(messages("declaration.summary.transaction.previousDocuments.change")) { document =>
+        messages("declaration.summary.transaction.previousDocuments.change", document.documentType, document.documentReference)
       }
       val content = HtmlContent(linkContent(messages("site.change")))
       val actionItem = actionSummaryItem(PreviousDocumentsController.displayPage.url, content, Some(hiddenText))
@@ -85,7 +85,7 @@ class DocumentsSummaryHelper @Inject() (govukSummaryList: GovukSummaryList, link
     SummaryListRow(
       Key(Text(messages("declaration.summary.transaction.previousDocuments.type"))),
       Value(Text(documentTypeService.findByCode(document.documentType).asText)),
-      classes = s"govuk-summary-list__row--no-border authorisation-holder-type-$index",
+      classes = s"govuk-summary-list__row--no-border previous-documents-type-$index",
       actions = changeHolder(Some(document), actionsEnabled)
     )
 
@@ -93,7 +93,7 @@ class DocumentsSummaryHelper @Inject() (govukSummaryList: GovukSummaryList, link
     SummaryListRow(
       Key(Text(messages("declaration.summary.transaction.previousDocuments.reference"))),
       Value(Text(document.documentReference)),
-      classes = s"authorisation-holder-eori-$index",
+      classes = s"previous-documents-ref-$index",
       actions = changeHolder(Some(document), actionsEnabled)
     )
 }

@@ -107,16 +107,16 @@ class TransactionSectionViewSpec extends UnitViewSpec with ExportsTestHelper wit
 
       "answers and actions present" in {
 
-        val holder1Type = summaryListRows.get(1).getElementsByClass("previous-documents-type")
-        holder1Type must haveSummaryKey(messages("declaration.summary.previous-documents.type"))
-        holder1Type must haveSummaryValue("OPO - Outward Processing authorisation")
-        holder1Type must haveSummaryActionsTexts(
+        val doc1Type = summaryListRows.get(1).getElementsByClass("previous-documents-type")
+        doc1Type must haveSummaryKey(messages("declaration.summary.transaction.previousDocuments.type"))
+        doc1Type must haveSummaryValue(doc2.documentType)
+        doc1Type must haveSummaryActionsTexts(
           "site.change",
           "declaration.summary.previous-documents.change",
           doc1.documentType,
           doc1.documentReference
         )
-        holder1Type must haveSummaryActionWithPlaceholder(PreviousDocumentsController.displayPage)
+        doc1Type must haveSummaryActionWithPlaceholder(PreviousDocumentsController.displayPage)
 
       }
     }
