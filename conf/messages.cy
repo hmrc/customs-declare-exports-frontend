@@ -558,8 +558,7 @@ declaration.mucr.title = Nodwch yr MUCR
 declaration.mucr.paragraph = I wirio’r fformat cywir, gweler yr adran ‘Nodiadau’ ar {0}.
 declaration.mucr.paragraph.link = Elfen Ddata 2/1 Dogfennau Blaenorol (yn agor tab newydd)
 declaration.mucr.error.empty = Nodwch MUCR
-declaration.mucr.error.invalid = Mae’n rhaid i MUCR gynnwys llythrennau, rhifau, cysylltnodau, colon a slaes yn unig
-declaration.mucr.error.length = Mae’n rhaid i’r MUCR fod yn 35 o gymeriadau neu lai
+declaration.mucr.error.invalid = Mae’n rhaid i Brif Gyfeirnod Unigryw y Llwyth (MUCR) gynnwys llythrennau, rhifau, comas, cysylltnodau a blaenslaesys yn unig
 
 declaration.declarant.exporter.title = Ai chi yw’r allforiwr?
 declaration.declarant.exporter.answer.yes = Iawn
