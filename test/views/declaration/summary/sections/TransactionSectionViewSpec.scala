@@ -27,8 +27,8 @@ import scala.jdk.CollectionConverters.CollectionHasAsScala
 
 class TransactionSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injector {
 
-  private val doc1 = Document("345", "ref1", None)
-  private val documents = withPreviousDocuments(doc1, Document("355", "ref2", None))
+  private val doc1 = Document("355", "ref1", None)
+  private val documents = withPreviousDocuments(Document("355", "ref2", None))
 
   val data = aDeclaration(
     withTotalNumberOfItems(Some("123"), Some("1.23"), Some("GBP")),
