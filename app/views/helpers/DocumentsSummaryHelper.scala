@@ -21,7 +21,7 @@ import forms.declaration.Document
 import models.ExportsDeclaration
 import play.api.i18n.Messages
 import play.twirl.api.Html
-import services.view.HolderOfAuthorisationCodes
+import services.DocumentTypeService
 import uk.gov.hmrc.govukfrontend.views.html.components.{GovukSummaryList, SummaryList}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{ActionItem, Actions, Key, SummaryListRow, Value}
@@ -31,11 +31,7 @@ import views.html.components.gds.linkContent
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class DocumentsSummaryHelper @Inject() (
-  govukSummaryList: GovukSummaryList,
-  linkContent: linkContent,
-  holderOfAuthorisationCodes: HolderOfAuthorisationCodes
-) {
+class DocumentsSummaryHelper @Inject() (govukSummaryList: GovukSummaryList, linkContent: linkContent, documentTypeService: DocumentTypeService) {
   def section(declaration: ExportsDeclaration, actionsEnabled: Boolean)(implicit messages: Messages): Html = {
 
     val summaryListRows: Seq[SummaryListRow] = declaration.previousDocuments
@@ -58,7 +54,7 @@ class DocumentsSummaryHelper @Inject() (
 
   private def heading(implicit messages: Messages): SummaryListRow =
     SummaryListRow(
-      Key(Text(messages("declaration.summary.parties.holders")), classes = "govuk-heading-s"),
+      Key(Text(messages("declaration.summary.transaction.previousDocuments")), classes = "govuk-heading-s"),
       classes = "authorisation-holder-heading",
       actions = Some(Actions(items = List(ActionItem())))
     )
@@ -87,15 +83,15 @@ class DocumentsSummaryHelper @Inject() (
 
   private def documentTypeCode(document: Document, actionsEnabled: Boolean, index: Int)(implicit messages: Messages): SummaryListRow =
     SummaryListRow(
-      Key(Text(messages("declaration.summary.parties.holders.type"))),
-      Value(Text(holderOfAuthorisationCodes.codeDescription(messages.lang.toLocale, document.documentType))),
+      Key(Text(messages("declaration.summary.transaction.previousDocuments.type"))),
+      Value(Text(documentTypeService.findByCode(document.documentType).asText)),
       classes = s"govuk-summary-list__row--no-border authorisation-holder-type-$index",
       actions = changeHolder(Some(document), actionsEnabled)
     )
 
   private def documentRef(document: Document, actionsEnabled: Boolean, index: Int)(implicit messages: Messages): SummaryListRow =
     SummaryListRow(
-      Key(Text(messages("declaration.summary.parties.holders.eori"))),
+      Key(Text(messages("declaration.summary.transaction.previousDocuments.reference"))),
       Value(Text(document.documentReference)),
       classes = s"authorisation-holder-eori-$index",
       actions = changeHolder(Some(document), actionsEnabled)

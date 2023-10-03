@@ -53,7 +53,7 @@ site.radio.divider = or
 site.accessibility.error = Error:
 site.warning = Warning
 site.cancel = Cancel
-
+site.none = None
 site.print = Print this page
 site.printable = Printable version
 
