@@ -38,7 +38,7 @@ class CountriesSectionViewSpec extends UnitViewSpec with ExportsTestHelper with 
 
       val row = view(data).getElementsByClass("countriesOfRouting-row")
       row must haveSummaryKey(messages("declaration.summary.countries.routingCountries"))
-      row must haveSummaryValue(messages("declaration.summary.countries.routingCountries.none"))
+      row must haveSummaryValue(messages("site.none"))
 
       row must haveSummaryActionsTexts("site.change", "declaration.summary.countries.routingCountries.change")
 

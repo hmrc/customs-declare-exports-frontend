@@ -19,13 +19,14 @@
 @import models.declaration.{Transport,Locations}
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.helpers.ActionItemBuilder.actionSummaryItem
+@import views.helpers.ContainersSummaryHelper
 @import views.html.components.gds.{linkContent, summary_list}
 @import views.html.declaration.summary._
 
 @this(
     summaryList: summary_list,
     linkContent: linkContent,
-    containers: containers
+    containersSummaryHelper: ContainersSummaryHelper
 )
 
 @(declaration: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages)
@@ -273,9 +274,8 @@
                 ))
             )
         ),
-        classes = "govuk-!-margin-bottom-6"
+        classes = "govuk-!-margin-bottom-0"
     )
 
-    @declaration.transport.containers.map(containerSeq => containers(containerSeq, actionsEnabled))
-    <div style="margin-bottom: 30px;"></div>
+    @containersSummaryHelper.section(declaration, actionsEnabled)
 }
