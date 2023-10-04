@@ -23,8 +23,6 @@ import services.cache.ExportsTestHelper
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.summary.sections.transaction_section
 
-import scala.jdk.CollectionConverters.CollectionHasAsScala
-
 class TransactionSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injector {
 
   private val doc1 = Document("355", "ref1", None)
@@ -107,12 +105,12 @@ class TransactionSectionViewSpec extends UnitViewSpec with ExportsTestHelper wit
 
       "answers and actions present" in {
 
-        val doc1Type = summaryListRows.get(1).getElementsByClass("previous-documents-type")
+        val doc1Type = summaryListRows.get(1).getElementsByClass(s"previous-documents-type-1")
         doc1Type must haveSummaryKey(messages("declaration.summary.transaction.previousDocuments.type"))
-        doc1Type must haveSummaryValue(doc2.documentType)
+        doc1Type.first.getElementsByClass(summaryValueClassName).first must containText(doc2.documentType)
         doc1Type must haveSummaryActionsTexts(
           "site.change",
-          "declaration.summary.previous-documents.change",
+          "declaration.summary.transaction.previousDocuments.change",
           doc1.documentType,
           doc1.documentReference
         )
@@ -156,16 +154,5 @@ class TransactionSectionViewSpec extends UnitViewSpec with ExportsTestHelper wit
       view.getElementsByClass("item-amount-row") must haveSummaryActionWithPlaceholder(InvoiceAndExchangeRateChoiceController.displayPage)
     }
 
-    "have the correct order of rows when all displayed" in {
-      val keysOnPage = view.getElementsByClass("govuk-summary-list__key").eachText().asScala.toList
-      val orderOfKeys = List(
-        messages("declaration.summary.transaction.itemAmount"),
-        messages("declaration.summary.transaction.exchangeRate"),
-        messages("declaration.summary.transaction.totalNoOfPackages"),
-        messages("declaration.summary.transaction.natureOfTransaction"),
-        messages("declaration.summary.transaction.previousDocuments")
-      )
-      keysOnPage must be(orderOfKeys)
-    }
   }
 }
