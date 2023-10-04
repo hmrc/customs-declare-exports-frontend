@@ -219,7 +219,7 @@ class SummaryMessagesSpec extends UnitViewSpec {
 
     "have defined container messages" in {
 
-      messages must haveTranslationFor("declaration.summary.container")
+      messages must haveTranslationFor("declaration.summary.containers")
       messages must haveTranslationFor("declaration.summary.container.id")
       messages must haveTranslationFor("declaration.summary.container.securitySeals")
     }

@@ -45,8 +45,8 @@
                 ),
                 value = Value(
                     content = Text(
-                        if(declarationData.locations.routingCountries.isEmpty){
-                            messages("declaration.summary.countries.routingCountries.none")
+                        if (declarationData.locations.routingCountries.isEmpty) {
+                            messages("site.none")
                         } else {
                             Countries
                                 .findByCodes(declarationData.locations.routingCountries.flatMap(_.country.code))

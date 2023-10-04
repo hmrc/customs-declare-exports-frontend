@@ -143,17 +143,6 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestHelper with 
       row must haveSummaryActionWithPlaceholder(routes.TransportPaymentController.displayPage)
     }
 
-    "display information about containers when user said 'No' with change button" in {
-      val row = view.getElementsByClass("containers-row")
-
-      row must haveSummaryKey(messages("declaration.summary.transport.containers"))
-      row must haveSummaryValue(messages("site.no"))
-
-      row must haveSummaryActionsTexts("site.change", "declaration.summary.transport.containers.change")
-
-      row must haveSummaryActionWithPlaceholder(routes.TransportContainerController.displayContainerSummary)
-    }
-
     "not display border transport if question not answered" in {
       val view = section(aDeclarationAfter(data, withoutBorderModeOfTransportCode))(messages)
       view.getElementsByClass("border-transport-row") mustBe empty
@@ -178,14 +167,58 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestHelper with 
       view.getElementsByClass("transport-payment-row") mustBe empty
     }
 
-    "skip containers part if empty" in {
-      val view = section(aDeclaration(withoutContainerData()))(messages)
-      view.getElementsByClass("containers-row") mustBe empty
+    "display an empty containers section" when {
+      "no containers have been entered" in {
+        val row = view.getElementsByClass("containers-heading")
+
+        row must haveSummaryKey(messages("declaration.summary.transport.containers"))
+        row must haveSummaryValue(messages("site.no"))
+        row must haveSummaryActionsTexts("site.change", "declaration.summary.transport.containers.change")
+        row must haveSummaryActionWithPlaceholder(routes.TransportContainerController.displayContainerSummary)
+      }
     }
 
-    "display containers section (but not yes/no answer) if containers are not empty" in {
-      val view = section(aDeclaration(withContainerData(Container(1, "123", Seq.empty))))(messages)
-      view.getElementById("container-1").text() mustNot be(empty)
+    "display a containers section" when {
+      "one or more containers have been entered" in {
+        val id1 = "container1"
+        val id2 = "container2"
+
+        val container1 = Container(1, id1, List(Seal(1, "seal1"), Seal(2, "seal2")))
+        val container2 = Container(2, id2, List.empty)
+        val declaration = aDeclarationAfter(data, withContainerData(container1, container2))
+
+        val view = section(declaration)(messages)
+
+        val summaryList = view.getElementsByClass("containers-summary").get(0)
+        val summaryListRows = summaryList.getElementsByClass("govuk-summary-list__row")
+        summaryListRows.size mustBe 5
+
+        val heading = summaryListRows.get(0).getElementsByClass("containers-heading")
+        heading must haveSummaryKey(messages("declaration.summary.containers"))
+        heading must haveSummaryValue("")
+
+        val container1Id = summaryListRows.get(1).getElementsByClass("container-1")
+        container1Id must haveSummaryKey(messages("declaration.summary.container.id"))
+        container1Id must haveSummaryValue(id1)
+        container1Id must haveSummaryActionsTexts("site.change", "declaration.summary.container.change", id1)
+        container1Id must haveSummaryActionWithPlaceholder(routes.TransportContainerController.displayContainerSummary)
+
+        val container1Seals = summaryListRows.get(2).getElementsByClass("container-seals-1")
+        container1Seals must haveSummaryKey(messages("declaration.summary.container.securitySeals"))
+        container1Seals must haveSummaryValue("seal1, seal2")
+        container1Seals.get(0).getElementsByClass("govuk-summary-list__actions").size mustBe 0
+
+        val container2Id = summaryListRows.get(3).getElementsByClass("container-2")
+        container2Id must haveSummaryKey(messages("declaration.summary.container.id"))
+        container2Id must haveSummaryValue(id2)
+        container2Id must haveSummaryActionsTexts("site.change", "declaration.summary.container.change", id2)
+        container2Id must haveSummaryActionWithPlaceholder(routes.TransportContainerController.displayContainerSummary)
+
+        val container2Seals = summaryListRows.get(4).getElementsByClass("container-seals-2")
+        container2Seals must haveSummaryKey(messages("declaration.summary.container.securitySeals"))
+        container2Seals must haveSummaryValue(messages("declaration.summary.container.securitySeals.none"))
+        container2Seals.get(0).getElementsByClass("govuk-summary-list__actions").size mustBe 0
+      }
     }
 
     "display warehouse id with change button" in {

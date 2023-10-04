@@ -11,12 +11,6 @@ CSS Classes to support GDS Design System SummaryLists as implemented by the Expo
   border-right: 0px;
 }
 
-.govuk-summary-list__heading {
-border-bottom: 1px solid #b1b4b6
-}
-
-.govuk-summary-list__row--no-border .govuk-summary-list__key,
-.govuk-summary-list__row--no-border .govuk-summary-list__actions,
-.govuk-summary-list__row--no-border .govuk-summary-list__value {
-padding-bottom: 0px;
+.govuk-summary-list__key {
+  width: auto;
 }

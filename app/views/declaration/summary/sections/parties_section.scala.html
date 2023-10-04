@@ -21,6 +21,7 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.declaration.summary.EoriOrAddress
 @import views.helpers.ActionItemBuilder.actionSummaryItem
+@import views.helpers.HoldersSummaryHelper
 @import views.html.components.gds.{linkContent, summary_list}
 @import views.html.declaration.summary._
 
@@ -28,7 +29,7 @@
     summaryList: summary_list,
     linkContent: linkContent,
     additionalActorsSection: parties_section_additional_actors,
-    holdersSection: parties_section_holders
+    holdersSummaryHelper: HoldersSummaryHelper
 )
 
 @(declaration: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages)
@@ -250,7 +251,5 @@
         additionalActorsSection(data.actors, actionsEnabled)
     )
 
-    @declaration.parties.declarationHoldersData.map(data =>
-        holdersSection(declaration, actionsEnabled)
-    )
+    @holdersSummaryHelper.section(declaration, actionsEnabled)
 }
