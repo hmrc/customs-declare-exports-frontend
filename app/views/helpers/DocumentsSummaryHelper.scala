@@ -16,7 +16,7 @@
 
 package views.helpers
 
-import controllers.declaration.routes.PreviousDocumentsController
+import controllers.declaration.routes.PreviousDocumentsSummaryController
 import forms.declaration.Document
 import models.ExportsDeclaration
 import play.api.i18n.Messages
@@ -39,7 +39,7 @@ class DocumentsSummaryHelper @Inject() (govukSummaryList: GovukSummaryList, link
       .getOrElse(Seq.empty)
       .zipWithIndex
       .flatMap { case (document, index) =>
-        List(documentTypeCode(document, actionsEnabled, index + 1), documentRef(document, actionsEnabled, index + 1))
+        List(documentTypeCode(document, actionsEnabled, index + 1), documentRef(document, index + 1))
       }
 
     val noHolders = summaryListRows.isEmpty
@@ -76,7 +76,7 @@ class DocumentsSummaryHelper @Inject() (govukSummaryList: GovukSummaryList, link
         messages("declaration.summary.transaction.previousDocuments.change", document.documentType, document.documentReference)
       }
       val content = HtmlContent(linkContent(messages("site.change")))
-      val actionItem = actionSummaryItem(PreviousDocumentsController.displayPage.url, content, Some(hiddenText))
+      val actionItem = actionSummaryItem(PreviousDocumentsSummaryController.displayPage.url, content, Some(hiddenText))
 
       Some(Actions(items = List(actionItem)))
     }
@@ -89,11 +89,10 @@ class DocumentsSummaryHelper @Inject() (govukSummaryList: GovukSummaryList, link
       actions = changeHolder(Some(document), actionsEnabled)
     )
 
-  private def documentRef(document: Document, actionsEnabled: Boolean, index: Int)(implicit messages: Messages): SummaryListRow =
+  private def documentRef(document: Document, index: Int)(implicit messages: Messages): SummaryListRow =
     SummaryListRow(
       Key(Text(messages("declaration.summary.transaction.previousDocuments.reference"))),
       Value(Text(document.documentReference)),
-      classes = s"previous-documents-ref-$index",
-      actions = changeHolder(Some(document), actionsEnabled)
+      classes = s"previous-documents-ref-$index"
     )
 }

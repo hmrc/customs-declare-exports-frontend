@@ -103,19 +103,25 @@ class TransactionSectionViewSpec extends UnitViewSpec with ExportsTestHelper wit
         heading must haveSummaryKey(messages("declaration.summary.transaction.previousDocuments"))
       }
 
-      "answers and actions present" in {
-
-        val doc1Type = summaryListRows.get(1).getElementsByClass(s"previous-documents-type-1")
-        doc1Type must haveSummaryKey(messages("declaration.summary.transaction.previousDocuments.type"))
-        doc1Type.first.getElementsByClass(summaryValueClassName).first must containText(doc2.documentType)
-        doc1Type must haveSummaryActionsTexts(
-          "site.change",
-          "declaration.summary.transaction.previousDocuments.change",
-          doc1.documentType,
-          doc1.documentReference
-        )
-        doc1Type must haveSummaryActionWithPlaceholder(PreviousDocumentsController.displayPage)
-
+      "answers and actions present" when {
+        "doc type" in {
+          val doc1Type = summaryListRows.get(1).getElementsByClass(s"previous-documents-type-1")
+          doc1Type must haveSummaryKey(messages("declaration.summary.transaction.previousDocuments.type"))
+          doc1Type.first.getElementsByClass(summaryValueClassName).first must containText(doc1.documentType)
+          doc1Type must haveSummaryActionsTexts(
+            "site.change",
+            "declaration.summary.transaction.previousDocuments.change",
+            doc1.documentType,
+            doc1.documentReference
+          )
+          doc1Type must haveSummaryActionWithPlaceholder(PreviousDocumentsSummaryController.displayPage)
+        }
+        "doc ref" in {
+          val doc1Ref = summaryListRows.get(2).getElementsByClass(s"previous-documents-ref-1")
+          doc1Ref must haveSummaryKey(messages("declaration.summary.transaction.previousDocuments.reference"))
+          doc1Ref.first.getElementsByClass(summaryValueClassName).first must containText(doc1.documentReference)
+          doc1Ref.first.getElementsByClass(summaryActionsClassName) mustBe empty
+        }
       }
     }
 
