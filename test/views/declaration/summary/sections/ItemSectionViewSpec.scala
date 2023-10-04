@@ -18,9 +18,8 @@ package views.declaration.summary.sections
 
 import base.Injector
 import controllers.declaration.routes._
-import forms.common.YesNoAnswer
+import forms.common.YesNoAnswer.Yes
 import forms.declaration._
-import forms.declaration.additionaldocuments.AdditionalDocument
 import models.DeclarationType.STANDARD
 import models.declaration.CommodityMeasure
 import services.cache.ExportsTestHelper
@@ -47,7 +46,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
     withPackageInformation("PB", 10, "marks"),
     withCommodityMeasure(commodityMeasure),
     withAdditionalInformation("1234", "additionalDescription"),
-    withAdditionalDocuments(YesNoAnswer.Yes, AdditionalDocument(Some("C501"), Some("GBAEOC1342"), None, None, None, None, None))
+    withAdditionalDocuments(Yes, withAdditionalDocument("C501", "GBAEOC1342"))
   )
 
   private val itemWithoutAnswers = anItem(withItemId(itemId), withSequenceId(1))
@@ -248,10 +247,6 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
             "declaration.summary.items.item.additionalInformation"
           )
         }
-
-        "have additional documents section" in {
-          view.getElementById("additional-docs-section-item-1").child(0).text mustBe messages("declaration.summary.items.item.additionalDocuments")
-        }
       }
 
       "actions are disabled using actionsEnabled = false" should {
@@ -412,10 +407,102 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
             "declaration.summary.items.item.additionalInformation"
           )
         }
+      }
 
-        "have additional documents section" in {
-          view.getElementById("additional-docs-section-item-1").child(0).text mustBe messages("declaration.summary.items.item.additionalDocuments")
+      "does NOT contain additional documents and" when {
+
+        "the 'isLicenceRequired' value is undefined (None)" in {
+          val item = anItemAfter(itemWithAnswers, withNoLicense, withoutAdditionalDocuments())
+          val view = itemSection(item, 0, STANDARD)(messages)
+
+          view.getElementsByClass(s"item-${item.sequenceId}-additional-documents-summary") mustBe empty
         }
+
+        "the 'isLicenceRequired' value is 'yes' (or 'no', but not None)" in {
+          val item = anItemAfter(itemWithAnswers, withIsLicenseRequired(), withoutAdditionalDocuments())
+          val view = itemSection(item, 0, STANDARD)(messages)
+
+          val sequenceId = item.sequenceId.toString
+          val summaryList = view.getElementsByClass(s"item-$sequenceId-additional-documents-summary").get(0)
+          val summaryListRows = summaryList.getElementsByClass("govuk-summary-list__row")
+          summaryListRows.size mustBe 1
+
+          val licensesRow = summaryListRows.get(0).getElementsByClass(s"item-$sequenceId-licenses")
+          licensesRow must haveSummaryKey(messages("declaration.summary.items.item.licences"))
+          licensesRow must haveSummaryValue(messages("site.yes"))
+          licensesRow must haveSummaryActionsTexts("site.change", "declaration.summary.items.item.licences.change", sequenceId)
+          licensesRow must haveSummaryActionWithPlaceholder(IsLicenceRequiredController.displayPage(item.id))
+        }
+
+        "the 'isLicenceRequired' value is 'yes' (or 'no', but not None) and" when {
+          "additionalDocuments is defined (but has no documents)" in {
+            val item = anItemAfter(itemWithAnswers, withIsLicenseRequired(), withoutAdditionalDocuments(true))
+            val view = itemSection(item, 0, STANDARD)(messages)
+
+            val sequenceId = item.sequenceId.toString
+            val summaryList = view.getElementsByClass(s"item-$sequenceId-additional-documents-summary").get(0)
+            val summaryListRows = summaryList.getElementsByClass("govuk-summary-list__row")
+            summaryListRows.size mustBe 2
+
+            val licensesRow = summaryListRows.get(0).getElementsByClass(s"item-$sequenceId-licenses")
+            licensesRow must haveSummaryKey(messages("declaration.summary.items.item.licences"))
+            licensesRow must haveSummaryValue(messages("site.yes"))
+            licensesRow must haveSummaryActionsTexts("site.change", "declaration.summary.items.item.licences.change", sequenceId)
+            licensesRow must haveSummaryActionWithPlaceholder(IsLicenceRequiredController.displayPage(item.id))
+
+            val noDocumentsRow = summaryListRows.get(1).getElementsByClass(s"item-$sequenceId-additional-documents-heading")
+            noDocumentsRow must haveSummaryKey(messages("declaration.summary.items.item.additionalDocuments"))
+            noDocumentsRow must haveSummaryValue(messages("site.none"))
+            noDocumentsRow must haveSummaryActionsTexts("site.change", "declaration.summary.items.item.additionalDocuments.change", sequenceId)
+            noDocumentsRow must haveSummaryActionWithPlaceholder(AdditionalDocumentsController.displayPage(item.id))
+          }
+        }
+      }
+
+      "does contain additional documents and" in {
+        val document1 = withAdditionalDocument("C501", "GBAEOC1342")
+        val document2 = withAdditionalDocument(Some("A123"), None)
+        val document3 = withAdditionalDocument(None, Some("GBAEOS9876"))
+        val item = anItemAfter(itemWithoutAnswers, withIsLicenseRequired(), withAdditionalDocuments(Yes, document1, document2, document3))
+        val view = itemSection(item, 0, STANDARD)(messages)
+
+        val sequenceId = item.sequenceId.toString
+        val summaryList = view.getElementsByClass(s"item-$sequenceId-additional-documents-summary").get(0)
+        val summaryListRows = summaryList.getElementsByClass("govuk-summary-list__row")
+        summaryListRows.size mustBe 6
+
+        val headingRow = summaryListRows.get(0).getElementsByClass(s"item-$sequenceId-additional-documents-heading")
+        headingRow must haveSummaryKey(messages("declaration.summary.items.item.additionalDocuments"))
+        headingRow must haveSummaryValue("")
+
+        val licensesRow = summaryListRows.get(1).getElementsByClass(s"item-$sequenceId-licenses")
+        licensesRow must haveSummaryKey(messages("declaration.summary.items.item.licences"))
+        licensesRow must haveSummaryValue(messages("site.yes"))
+        licensesRow must haveSummaryActionsTexts("site.change", "declaration.summary.items.item.licences.change", sequenceId)
+        licensesRow must haveSummaryActionWithPlaceholder(IsLicenceRequiredController.displayPage(item.id))
+
+        val document1Row1 = summaryListRows.get(2).getElementsByClass(s"item-$sequenceId-document-1-code")
+        document1Row1 must haveSummaryKey(messages("declaration.summary.items.item.additionalDocuments.code"))
+        document1Row1 must haveSummaryValue("C501")
+        document1Row1 must haveSummaryActionsTexts("site.change", "declaration.summary.items.item.additionalDocuments.change", sequenceId)
+        document1Row1 must haveSummaryActionWithPlaceholder(AdditionalDocumentsController.displayPage(item.id))
+
+        val document1Row2 = summaryListRows.get(3).getElementsByClass(s"item-$sequenceId-document-1-identifier")
+        document1Row2 must haveSummaryKey(messages("declaration.summary.items.item.additionalDocuments.identifier"))
+        document1Row2 must haveSummaryValue("GBAEOC1342")
+        document1Row2.get(0).getElementsByClass("govuk-summary-list__actions").size mustBe 0
+
+        val document2Row = summaryListRows.get(4).getElementsByClass(s"item-$sequenceId-document-2-code")
+        document2Row must haveSummaryKey(messages("declaration.summary.items.item.additionalDocuments.code"))
+        document2Row must haveSummaryValue("A123")
+        document2Row must haveSummaryActionsTexts("site.change", "declaration.summary.items.item.additionalDocuments.change", sequenceId)
+        document2Row must haveSummaryActionWithPlaceholder(AdditionalDocumentsController.displayPage(item.id))
+
+        val document3Row = summaryListRows.get(5).getElementsByClass(s"item-$sequenceId-document-3-identifier")
+        document3Row must haveSummaryKey(messages("declaration.summary.items.item.additionalDocuments.identifier"))
+        document3Row must haveSummaryValue("GBAEOS9876")
+        document3Row must haveSummaryActionsTexts("site.change", "declaration.summary.items.item.additionalDocuments.change", sequenceId)
+        document3Row must haveSummaryActionWithPlaceholder(AdditionalDocumentsController.displayPage(item.id))
       }
     }
 
@@ -475,10 +562,6 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
 
       "not display union and national codes section" in {
         Option(view.getElementById("additional-information-1")) mustBe None
-      }
-
-      "not display additional documents section" in {
-        Option(view.getElementById("additional-documents-1")) mustBe None
       }
     }
   }

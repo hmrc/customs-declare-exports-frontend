@@ -277,5 +277,5 @@
         classes = "govuk-!-margin-bottom-0"
     )
 
-    @containersSummaryHelper.section(declaration, actionsEnabled)
+    @declaration.transport.containers.map(_ => containersSummaryHelper.section(declaration))
 }

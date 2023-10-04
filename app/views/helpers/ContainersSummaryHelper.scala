@@ -32,15 +32,13 @@ import javax.inject.{Inject, Singleton}
 @Singleton
 class ContainersSummaryHelper @Inject() (govukSummaryList: GovukSummaryList, linkContent: linkContent) {
 
-  def section(declaration: ExportsDeclaration, actionsEnabled: Boolean)(implicit messages: Messages): Html = {
-    val summaryListRows = declaration.transport.containers.fold(Seq.empty[SummaryListRow]) {
-      _.flatMap(containerRows(_, actionsEnabled))
-    }
+  def section(declaration: ExportsDeclaration)(implicit messages: Messages): Html = {
+    val summaryListRows = declaration.transport.containers.fold(Seq.empty[SummaryListRow])(_.flatMap(containerRows))
     val noContainers = summaryListRows.length == 0
 
     govukSummaryList(
       SummaryList(
-        rows = if (noContainers) headingOnNoContainers(actionsEnabled) else heading +: summaryListRows,
+        rows = if (noContainers) headingOnNoContainers else heading +: summaryListRows,
         classes = s"""${if (noContainers) "" else "govuk-!-margin-top-4 "}govuk-!-margin-bottom-9 containers-summary"""
       )
     )
@@ -53,23 +51,23 @@ class ContainersSummaryHelper @Inject() (govukSummaryList: GovukSummaryList, lin
       actions = Some(Actions(items = List(ActionItem())))
     )
 
-  private def headingOnNoContainers(actionsEnabled: Boolean)(implicit messages: Messages): Seq[SummaryListRow] =
+  private def headingOnNoContainers(implicit messages: Messages): Seq[SummaryListRow] =
     List(
       SummaryListRow(
         Key(Text(messages("declaration.summary.transport.containers")), classes = "govuk-heading-s"),
         Value(Text(messages("site.no"))),
         classes = "containers-heading",
-        actions = changeContainer(None, actionsEnabled)
+        actions = changeContainer(None)
       )
     )
 
-  private def containerRows(container: Container, actionsEnabled: Boolean)(implicit messages: Messages): List[SummaryListRow] =
+  private def containerRows(container: Container)(implicit messages: Messages): List[SummaryListRow] =
     List(
       SummaryListRow(
         Key(Text(messages("declaration.summary.container.id")), classes = "govuk-heading-s"),
         Value(Text(container.id)),
         classes = s"govuk-summary-list__row--no-border container-${container.sequenceId}",
-        actions = changeContainer(Some(container), actionsEnabled)
+        actions = changeContainer(Some(container))
       ),
       SummaryListRow(
         Key(Text(messages("declaration.summary.container.securitySeals"))),
@@ -82,15 +80,13 @@ class ContainersSummaryHelper @Inject() (govukSummaryList: GovukSummaryList, lin
     if (container.seals.isEmpty) messages("declaration.summary.container.securitySeals.none")
     else container.seals.map(_.id).mkString(", ")
 
-  private def changeContainer(maybeContainer: Option[Container], actionsEnabled: Boolean)(implicit messages: Messages): Option[Actions] =
-    if (!actionsEnabled) None
-    else {
-      val hiddenText = maybeContainer.fold(messages("declaration.summary.transport.containers.change")) { container =>
-        messages("declaration.summary.container.change", container.id)
-      }
-      val content = HtmlContent(linkContent(messages("site.change")))
-      val actionItem = actionSummaryItem(TransportContainerController.displayContainerSummary.url, content, Some(hiddenText))
-
-      Some(Actions(items = List(actionItem)))
+  private def changeContainer(maybeContainer: Option[Container])(implicit messages: Messages): Option[Actions] = {
+    val hiddenText = maybeContainer.fold(messages("declaration.summary.transport.containers.change")) { container =>
+      messages("declaration.summary.container.change", container.id)
     }
+    val content = HtmlContent(linkContent(messages("site.change")))
+    val actionItem = actionSummaryItem(TransportContainerController.displayContainerSummary.url, content, Some(hiddenText))
+
+    Some(Actions(items = List(actionItem)))
+  }
 }

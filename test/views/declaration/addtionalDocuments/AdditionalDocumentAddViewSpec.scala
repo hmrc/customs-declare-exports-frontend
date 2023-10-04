@@ -52,7 +52,7 @@ class AdditionalDocumentAddViewSpec extends UnitViewSpec with Injector with Mock
     private val withAdditionalDocs =
       withAdditionalDocuments(YesNoAnswer.Yes, AdditionalDocument(Some("C501"), Some("GBAEOC1342"), None, None, None, None, None))
 
-    val licenseRequired: ExportsDeclaration = aDeclaration(withItem(anItem(withItemId(itemId), withLicenseRequired(), withAdditionalInfo)))
+    val licenseRequired: ExportsDeclaration = aDeclaration(withItem(anItem(withItemId(itemId), withIsLicenseRequired(), withAdditionalInfo)))
     val licenseNotRequired: ExportsDeclaration = aDeclaration(withItem(anItem(withItemId(itemId), withAdditionalInfo)))
     val withDocs: ExportsDeclaration = aDeclaration(withItem(anItem(withItemId(itemId), withAdditionalDocs)))
     val authCodeRequiresDocs: ExportsDeclaration = aDeclaration(

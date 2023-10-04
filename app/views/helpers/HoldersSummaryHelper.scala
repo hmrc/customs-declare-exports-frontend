@@ -36,15 +36,15 @@ class HoldersSummaryHelper @Inject() (
   linkContent: linkContent,
   holderOfAuthorisationCodes: HolderOfAuthorisationCodes
 ) {
-  def section(declaration: ExportsDeclaration, actionsEnabled: Boolean)(implicit messages: Messages): Html = {
+  def section(declaration: ExportsDeclaration)(implicit messages: Messages): Html = {
     val summaryListRows = declaration.declarationHolders.zipWithIndex.flatMap { case (holder, index) =>
-      List(holderTypeCode(holder, actionsEnabled, index + 1), holderEori(holder, actionsEnabled, index + 1)).flatten
+      List(holderTypeCode(holder, index + 1), holderEori(holder, index + 1)).flatten
     }
     val noHolders = summaryListRows.length == 0
 
     govukSummaryList(
       SummaryList(
-        rows = if (noHolders) headingOnNoHolders(actionsEnabled) else heading +: summaryListRows,
+        rows = if (noHolders) headingOnNoHolders else heading +: summaryListRows,
         classes = s"""${if (noHolders) "" else "govuk-!-margin-top-4 "}govuk-!-margin-bottom-9 authorisation-holders-summary"""
       )
     )
@@ -57,45 +57,43 @@ class HoldersSummaryHelper @Inject() (
       actions = Some(Actions(items = List(ActionItem())))
     )
 
-  private def headingOnNoHolders(actionsEnabled: Boolean)(implicit messages: Messages): Seq[SummaryListRow] =
+  private def headingOnNoHolders(implicit messages: Messages): Seq[SummaryListRow] =
     List(
       SummaryListRow(
         Key(Text(messages("declaration.summary.parties.holders")), classes = "govuk-heading-s"),
         Value(Text(messages("site.none"))),
         classes = "authorisation-holder-heading",
-        actions = changeHolder(None, actionsEnabled)
+        actions = changeHolder(None)
       )
     )
 
-  private def holderTypeCode(holder: DeclarationHolder, actionsEnabled: Boolean, index: Int)(implicit messages: Messages): Option[SummaryListRow] =
+  private def holderTypeCode(holder: DeclarationHolder, index: Int)(implicit messages: Messages): Option[SummaryListRow] =
     holder.authorisationTypeCode.map { typeCode =>
       SummaryListRow(
         Key(Text(messages("declaration.summary.parties.holders.type"))),
         Value(Text(holderOfAuthorisationCodes.codeDescription(messages.lang.toLocale, typeCode))),
         classes = s"govuk-summary-list__row--no-border authorisation-holder-type-$index",
-        actions = changeHolder(Some(holder), actionsEnabled)
+        actions = changeHolder(Some(holder))
       )
     }
 
-  private def holderEori(holder: DeclarationHolder, actionsEnabled: Boolean, index: Int)(implicit messages: Messages): Option[SummaryListRow] =
+  private def holderEori(holder: DeclarationHolder, index: Int)(implicit messages: Messages): Option[SummaryListRow] =
     holder.eori.map { eori =>
       SummaryListRow(
         Key(Text(messages("declaration.summary.parties.holders.eori"))),
         Value(Text(eori.value)),
         classes = s"authorisation-holder-eori-$index",
-        actions = if (holder.authorisationTypeCode.isEmpty) changeHolder(Some(holder), actionsEnabled) else None
+        actions = if (holder.authorisationTypeCode.isEmpty) changeHolder(Some(holder)) else None
       )
     }
 
-  private def changeHolder(maybeHolder: Option[DeclarationHolder], actionsEnabled: Boolean)(implicit messages: Messages): Option[Actions] =
-    if (!actionsEnabled) None
-    else {
-      val hiddenText = maybeHolder.fold(messages("declaration.summary.parties.holders.empty.change")) { holder =>
-        messages("declaration.summary.parties.holders.change", holder.authorisationTypeCode.getOrElse(""), holder.eori.getOrElse(""))
-      }
-      val content = HtmlContent(linkContent(messages("site.change")))
-      val actionItem = actionSummaryItem(AuthorisationProcedureCodeChoiceController.displayPage.url, content, Some(hiddenText))
-
-      Some(Actions(items = List(actionItem)))
+  private def changeHolder(maybeHolder: Option[DeclarationHolder])(implicit messages: Messages): Option[Actions] = {
+    val hiddenText = maybeHolder.fold(messages("declaration.summary.parties.holders.empty.change")) { holder =>
+      messages("declaration.summary.parties.holders.change", holder.authorisationTypeCode.getOrElse(""), holder.eori.getOrElse(""))
     }
+    val content = HtmlContent(linkContent(messages("site.change")))
+    val actionItem = actionSummaryItem(AuthorisationProcedureCodeChoiceController.displayPage.url, content, Some(hiddenText))
+
+    Some(Actions(items = List(actionItem)))
+  }
 }
