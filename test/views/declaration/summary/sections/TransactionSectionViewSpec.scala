@@ -110,8 +110,7 @@ class TransactionSectionViewSpec extends UnitViewSpec with ExportsTestHelper wit
           doc1Type.first.getElementsByClass(summaryValueClassName).first must containText(doc1.documentType)
           doc1Type must haveSummaryActionsTexts(
             "site.change",
-            "declaration.summary.transaction.previousDocuments.change",
-            doc1.documentType,
+            "declaration.summary.transaction.previousDocuments.document.change",
             doc1.documentReference
           )
           doc1Type must haveSummaryActionWithPlaceholder(PreviousDocumentsSummaryController.displayPage)

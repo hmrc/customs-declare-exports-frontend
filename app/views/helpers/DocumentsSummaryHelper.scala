@@ -65,14 +65,16 @@ class DocumentsSummaryHelper @Inject() (govukSummaryList: GovukSummaryList, link
         Key(Text(messages("declaration.summary.transaction.previousDocuments")), classes = "govuk-heading-s"),
         Value(Text(messages("site.none"))),
         classes = "previous-documents-heading",
-        actions = changeHolder(actionsEnabled)
+        actions = changeHolder(None, actionsEnabled)
       )
     )
 
-  private def changeHolder(actionsEnabled: Boolean)(implicit messages: Messages): Option[Actions] =
+  private def changeHolder(maybeDocument: Option[Document], actionsEnabled: Boolean)(implicit messages: Messages): Option[Actions] =
     if (!actionsEnabled) None
     else {
-      val hiddenText = messages("declaration.summary.transaction.previousDocuments.change")
+      val hiddenText = maybeDocument.fold(messages("declaration.summary.transaction.previousDocuments.change")) { document =>
+        messages("declaration.summary.transaction.previousDocuments.document.change", document.documentReference)
+      }
       val content = HtmlContent(linkContent(messages("site.change")))
       val actionItem = actionSummaryItem(PreviousDocumentsSummaryController.displayPage.url, content, Some(hiddenText))
 
@@ -84,7 +86,7 @@ class DocumentsSummaryHelper @Inject() (govukSummaryList: GovukSummaryList, link
       Key(Text(messages("declaration.summary.transaction.previousDocuments.type"))),
       Value(Text(documentTypeService.findByCode(document.documentType).asText)),
       classes = s"govuk-summary-list__row--no-border previous-documents-type-$index",
-      actions = changeHolder(actionsEnabled)
+      actions = changeHolder(Some(document), actionsEnabled)
     )
 
   private def documentRef(document: Document, index: Int)(implicit messages: Messages): SummaryListRow =
