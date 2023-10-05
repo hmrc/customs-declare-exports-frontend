@@ -73,7 +73,7 @@ class AdditionalDocumentsSummaryHelper @Inject() (govukSummaryList: GovukSummary
   ): Option[Actions] =
     if (!actionsEnabled) None
     else {
-        val hiddenText = maybeDocument.fold(messages("declaration.summary.transaction.previousDocuments.change")) { document =>
+      val hiddenText = maybeDocument.fold(messages("declaration.summary.items.item.additionalDocuments.changeAll", item.sequenceId)) { document =>
         messages(
           "declaration.summary.items.item.additionalDocuments.change",
           document.documentTypeCode.getOrElse(""),
