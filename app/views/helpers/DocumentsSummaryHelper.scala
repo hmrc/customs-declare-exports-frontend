@@ -42,12 +42,12 @@ class DocumentsSummaryHelper @Inject() (govukSummaryList: GovukSummaryList, link
         List(documentTypeCode(document, actionsEnabled, index + 1), documentRef(document, index + 1))
       }
 
-    val noHolders = summaryListRows.isEmpty
+    val noRows = summaryListRows.isEmpty
 
     govukSummaryList(
       SummaryList(
-        rows = if (noHolders) headingOnNoHolders(actionsEnabled) else heading +: summaryListRows,
-        classes = s"""${if (noHolders) "" else "govuk-!-margin-top-4 "}govuk-!-margin-bottom-9 previous-documents-summary"""
+        rows = if (noRows) headingOnNoRows(actionsEnabled) else heading +: summaryListRows,
+        classes = s"""${if (noRows) "" else "govuk-!-margin-top-4 "}govuk-!-margin-bottom-9 previous-documents-summary"""
       )
     )
   }
@@ -59,7 +59,7 @@ class DocumentsSummaryHelper @Inject() (govukSummaryList: GovukSummaryList, link
       actions = Some(Actions(items = List(ActionItem())))
     )
 
-  private def headingOnNoHolders(actionsEnabled: Boolean)(implicit messages: Messages): Seq[SummaryListRow] =
+  private def headingOnNoRows(actionsEnabled: Boolean)(implicit messages: Messages): Seq[SummaryListRow] =
     List(
       SummaryListRow(
         Key(Text(messages("declaration.summary.transaction.previousDocuments")), classes = "govuk-heading-s"),
