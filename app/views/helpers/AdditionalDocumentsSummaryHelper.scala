@@ -46,7 +46,7 @@ class AdditionalDocumentsSummaryHelper @Inject() (govukSummaryList: GovukSummary
     govukSummaryList(
       SummaryList(
         rows = if (noRows) headingOnNoRows(item, actionsEnabled) else heading +: summaryListRows,
-        classes = s"""${if (noRows) "" else "govuk-!-margin-top-4 "}govuk-!-margin-bottom-9 additional-documents-summary"""
+        classes = s"""${if (noRows) "" else "govuk-!-margin-top-4 "}govuk-!-margin-bottom-9 additional-documents-summary-${item.sequenceId}"""
       )
     )
   }
@@ -77,7 +77,8 @@ class AdditionalDocumentsSummaryHelper @Inject() (govukSummaryList: GovukSummary
         messages(
           "declaration.summary.items.item.additionalDocuments.change",
           document.documentTypeCode.getOrElse(""),
-          document.documentIdentifier.getOrElse("")
+          document.documentIdentifier.getOrElse(""),
+          item.sequenceId
         )
       }
       val content = HtmlContent(linkContent(messages("site.change")))

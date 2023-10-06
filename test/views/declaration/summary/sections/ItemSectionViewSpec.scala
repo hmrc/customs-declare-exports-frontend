@@ -31,6 +31,9 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
 
   val commodityMeasure = CommodityMeasure(Some("12"), Some(false), Some("666"), Some("555"))
 
+  val doc1 = AdditionalDocument(Some("C501"), Some("GBAEOC1341"), None, None, None, None, None)
+  val doc2 = AdditionalDocument(Some("C502"), Some("GBAEOC1342"), None, None, None, None, None)
+
   private val itemWithAnswers = anItem(
     withItemId(itemId),
     withSequenceId(1),
@@ -47,7 +50,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
     withPackageInformation("PB", 10, "marks"),
     withCommodityMeasure(commodityMeasure),
     withAdditionalInformation("1234", "additionalDescription"),
-    withAdditionalDocuments(YesNoAnswer.Yes, AdditionalDocument(Some("C501"), Some("GBAEOC1342"), None, None, None, None, None))
+    withAdditionalDocuments(YesNoAnswer.Yes, doc1, doc2)
   )
 
   private val itemWithoutAnswers = anItem(withItemId(itemId), withSequenceId(1))
@@ -249,9 +252,54 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
           )
         }
 
-        "have additional documents section" in {
-          view.getElementById("additional-docs-section-item-1").child(0).text mustBe messages("declaration.summary.items.item.additionalDocuments")
+        "have additional documents section" which {
+
+          val summaryList = view.getElementsByClass("additional-documents-summary-1").first
+          val summaryListRows = summaryList.getElementsByClass("govuk-summary-list__row")
+
+          "has all rows present" in {
+            summaryListRows.size mustBe 5
+          }
+
+          "has heading present" in {
+            val heading = summaryListRows.first.getElementsByClass("additional-documents-heading")
+            heading must haveSummaryKey(messages("declaration.summary.items.item.additionalDocuments"))
+          }
+
+          "has answers and actions present" when {
+            "doc code" in {
+              val doc1Code = summaryListRows.get(1).getElementsByClass("additional-documents-code-1")
+              doc1Code must haveSummaryKey(messages("declaration.summary.items.item.additionalDocuments.code"))
+              doc1Code.first.getElementsByClass(summaryValueClassName).first must containText(doc1.documentTypeCode.value)
+              doc1Code must haveSummaryActionsTexts(
+                "site.change",
+                "declaration.summary.items.item.additionalDocuments.change",
+                doc1.documentTypeCode.value,
+                doc1.documentIdentifier.value,
+                itemWithAnswers.sequenceId.toString
+              )
+              doc1Code must haveSummaryActionWithPlaceholder(AdditionalDocumentsController.displayPage(itemWithAnswers.id))
+            }
+            "doc id" which {
+              "does not have change link present" in {
+                val doc1Id = summaryListRows.get(2).getElementsByClass("additional-documents-id-1")
+                doc1Id must haveSummaryKey(messages("declaration.summary.items.item.additionalDocuments.identifier"))
+                doc1Id.first.getElementsByClass(summaryValueClassName).first must containText(doc1.documentIdentifier.value)
+                doc1Id.first.getElementsByClass(summaryActionsClassName) mustBe empty
+              }
+            }
+          }
+
+          "has answers only present" when {
+            "doc id" in {
+              val doc1Id = summaryListRows.get(2).getElementsByClass("additional-documents-id-1")
+              doc1Id must haveSummaryKey(messages("declaration.summary.items.item.additionalDocuments.identifier"))
+              doc1Id.first.getElementsByClass(summaryValueClassName).first must containText(doc1.documentIdentifier.value)
+              doc1Id.first.getElementsByClass(summaryActionsClassName) mustBe empty
+            }
+          }
         }
+
       }
 
       "actions are disabled using actionsEnabled = false" should {
@@ -413,9 +461,6 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
           )
         }
 
-        "have additional documents section" in {
-          view.getElementById("additional-docs-section-item-1").child(0).text mustBe messages("declaration.summary.items.item.additionalDocuments")
-        }
       }
     }
 

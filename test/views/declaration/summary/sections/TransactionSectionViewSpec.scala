@@ -105,7 +105,7 @@ class TransactionSectionViewSpec extends UnitViewSpec with ExportsTestHelper wit
 
       "answers and actions present" when {
         "doc type" in {
-          val doc1Type = summaryListRows.get(1).getElementsByClass(s"previous-documents-type-1")
+          val doc1Type = summaryListRows.get(1).getElementsByClass("previous-documents-type-1")
           doc1Type must haveSummaryKey(messages("declaration.summary.transaction.previousDocuments.type"))
           doc1Type.first.getElementsByClass(summaryValueClassName).first must containText(doc1.documentType)
           doc1Type must haveSummaryActionsTexts(
@@ -115,6 +115,8 @@ class TransactionSectionViewSpec extends UnitViewSpec with ExportsTestHelper wit
           )
           doc1Type must haveSummaryActionWithPlaceholder(PreviousDocumentsSummaryController.displayPage)
         }
+      }
+      "answers only present" when {
         "doc ref" in {
           val doc1Ref = summaryListRows.get(2).getElementsByClass(s"previous-documents-ref-1")
           doc1Ref must haveSummaryKey(messages("declaration.summary.transaction.previousDocuments.reference"))
