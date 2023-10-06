@@ -103,7 +103,21 @@ class TransactionSectionViewSpec extends UnitViewSpec with ExportsTestHelper wit
         heading must haveSummaryKey(messages("declaration.summary.transaction.previousDocuments"))
       }
 
-      "answers and actions present" when {
+      "contains an empty section" when {
+        "no docs have been entered" in {
+
+          val view = section(aDeclarationAfter(data, withoutPreviousDocuments()))(messages)
+
+          val row = view.getElementsByClass("previous-documents-summary")
+
+          row must haveSummaryKey(messages("declaration.summary.transaction.previousDocuments"))
+          row must haveSummaryValue(messages("site.none"))
+          row must haveSummaryActionsTexts("site.change", "declaration.summary.transaction.previousDocuments.change")
+          row must haveSummaryActionWithPlaceholder(PreviousDocumentsSummaryController.displayPage)
+        }
+      }
+
+      "has answers and actions present" when {
         "doc type" in {
           val doc1Type = summaryListRows.get(1).getElementsByClass(s"previous-documents-type-1")
           doc1Type must haveSummaryKey(messages("declaration.summary.transaction.previousDocuments.type"))
