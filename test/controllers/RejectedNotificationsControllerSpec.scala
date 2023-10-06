@@ -19,6 +19,7 @@ package controllers
 import base.ControllerWithoutFormSpec
 import config.AppConfig
 import handlers.ErrorHandler
+import mock.FeatureFlagMocks
 import models.declaration.notifications.Notification
 import models.declaration.submissions.Action
 import models.requests.SessionHelper.submissionUuid
@@ -27,18 +28,20 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.{Assertion, OptionValues}
 import play.api.libs.json.Json
-import play.api.mvc.Result
+import play.api.mvc.{Action => PlayAction, AnyContent, BodyParser, Request, Result}
+import play.api.mvc.Results.Ok
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.{error_template, rejected_notification_errors}
 
 import scala.concurrent.ExecutionContext.global
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
-class RejectedNotificationsControllerSpec extends ControllerWithoutFormSpec with OptionValues {
+class RejectedNotificationsControllerSpec extends ControllerWithoutFormSpec with OptionValues with FeatureFlagMocks {
 
   private val mockRejectedNotificationPage = mock[rejected_notification_errors]
+  private val mockErrorsReportedController = mock[ErrorsReportedController]
 
   private val mcc = stubMessagesControllerComponents()
 
@@ -48,6 +51,8 @@ class RejectedNotificationsControllerSpec extends ControllerWithoutFormSpec with
     new ErrorHandler(mcc.messagesApi, instanceOf[error_template])(instanceOf[AppConfig]),
     mockCustomsDeclareExportsConnector,
     mcc,
+    mockNewErrorReportConfig,
+    mockErrorsReportedController,
     mockRejectedNotificationPage
   )(global)
 
@@ -58,10 +63,18 @@ class RejectedNotificationsControllerSpec extends ControllerWithoutFormSpec with
 
     authorizedUser()
     when(mockRejectedNotificationPage.apply(any(), any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockNewErrorReportConfig.isNewErrorReportEnabled).thenReturn(false)
+    val fakeAction = new PlayAction[AnyContent] {
+      override def parser: BodyParser[AnyContent] = ???
+      override def apply(request: Request[AnyContent]): Future[Result] = Future.successful(Ok(""))
+      override def executionContext: ExecutionContext = ???
+    }
+    when(mockErrorsReportedController.displayPage(any())).thenReturn(fakeAction)
+    when(mockErrorsReportedController.displayPageOnUnacceptedAmendment(any(), any())).thenReturn(fakeAction)
   }
 
   override protected def afterEach(): Unit = {
-    reset(mockRejectedNotificationPage)
+    reset(mockRejectedNotificationPage, mockNewErrorReportConfig)
     super.afterEach()
   }
 
@@ -84,6 +97,14 @@ class RejectedNotificationsControllerSpec extends ControllerWithoutFormSpec with
 
         verifyResult(controller.displayPage(declarationId)(getRequest()), None, None)
       }
+
+      "newExportsReport flag is enabled" in {
+        when(mockNewErrorReportConfig.isNewErrorReportEnabled).thenReturn(true)
+        val result = controller.displayPage(declarationId)(getRequest())
+
+        status(result) mustBe OK
+        verify(mockErrorsReportedController).displayPage(any())
+      }
     }
 
     "return 500 (INTERNAL_SERVER_ERROR)" when {
@@ -102,6 +123,7 @@ class RejectedNotificationsControllerSpec extends ControllerWithoutFormSpec with
     "return 200 (OK)" when {
       val submissionId = "submissionId"
       val request = FakeRequest("GET", "").withSession(submissionUuid -> submissionId)
+      val draftDeclarationId = "1234"
 
       "Action, declaration and notification are found" in {
         fetchAction(failedAction)
@@ -113,13 +135,20 @@ class RejectedNotificationsControllerSpec extends ControllerWithoutFormSpec with
       }
 
       "for a draft declaration of an unaccepted amendment" in {
-        val draftDeclarationId = "1234"
         fetchAction(failedAction)
         fetchDeclaration(draftDeclarationId)
         fetchLatestNotification(failedNotification)
 
         val result = controller.displayPageOnUnacceptedAmendment(failedAction.id, Some(draftDeclarationId))(request)
         verifyResult(result, Some(draftDeclarationId), Some(submissionId))
+      }
+
+      "newExportsReport flag is enabled" in {
+        when(mockNewErrorReportConfig.isNewErrorReportEnabled).thenReturn(true)
+        val result = controller.displayPageOnUnacceptedAmendment(failedAction.id, Some(draftDeclarationId))(getRequest())
+
+        status(result) mustBe OK
+        verify(mockErrorsReportedController).displayPageOnUnacceptedAmendment(any(), any())
       }
     }
 
