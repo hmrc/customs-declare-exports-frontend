@@ -14,19 +14,13 @@
  * limitations under the License.
  */
 
-package features
+package config.featureFlags
 
-import play.api.mvc.PathBindable
+import features.Feature
 
-object Feature extends Enumeration {
-  type Feature = Value
-  val betaBanner, commodities, declarationAmendments, default, ead, googleFormFeedbackLink, merchandiseInBag, secureMessagingInbox, sfus,
-    tdrUnauthorisedMessage, newErrorReport = Value
+import javax.inject.{Inject, Singleton}
 
-  implicit object FeaturePathStringBinder
-      extends PathBindable.Parsing[Feature.Feature](
-        withName,
-        _.toString,
-        (k: String, e: Exception) => "Cannot parse %s as Feature: %s".format(k, e.getMessage)
-      )
+@Singleton
+class NewErrorReportConfig @Inject() (featureSwitchConfig: FeatureSwitchConfig) {
+  val isNewErrorReportEnabled: Boolean = featureSwitchConfig.isFeatureOn(Feature.newErrorReport)
 }
