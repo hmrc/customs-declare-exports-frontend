@@ -21,12 +21,14 @@ import tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.html.guidance.send_by_roro
 import views.tags.ViewTest
+import config.AppConfig
 
 import scala.jdk.CollectionConverters.CollectionHasAsScala
 
 @ViewTest
 class SendByRoroViewSpec extends UnitViewSpec with Stubs with Injector {
 
+  private val appConfig = instanceOf[AppConfig]
   private val sendByRoroPage = instanceOf[send_by_roro]
   private val view = sendByRoroPage()(request, messages)
 
@@ -71,6 +73,9 @@ class SendByRoroViewSpec extends UnitViewSpec with Stubs with Injector {
       numberedList.size mustBe 1
 
       numberedList.get(0).children.size mustBe 8
+
+      val link = numberedList.get(0).getElementsByClass("govuk-link").first
+      link must haveHref(appConfig.guidance.gvms)
     }
   }
 }
