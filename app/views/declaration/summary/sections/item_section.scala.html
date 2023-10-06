@@ -22,14 +22,15 @@
 @import views.html.components.elements_in_separate_lines
 @import views.html.components.gds.{linkContent, summary_list}
 @import views.html.declaration.summary._
-@import views.helpers.Link
+@import views.helpers.{Link, AdditionalDocumentsSummaryHelper}
+
 
 @this(
     summaryList: summary_list,
     linkContent: linkContent,
     package_information: package_information,
     union_and_national_codes: union_and_national_codes,
-    additional_documents: additional_documents
+    additionalDocumentsSummaryHelper: AdditionalDocumentsSummaryHelper
 )
 
 @(item: ExportItem, itemIdx: Int, declarationType: DeclarationType, actionsEnabled: Boolean = true)(implicit messages: Messages)
@@ -367,4 +368,5 @@
     union_and_national_codes(item.id, itemDisplayNum, additionalInformation.items, actionsEnabled)
 )
 
-@additional_documents(item, actionsEnabled)
+@additionalDocumentsSummaryHelper.section(item, actionsEnabled)
+
