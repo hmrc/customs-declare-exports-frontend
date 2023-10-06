@@ -21,7 +21,6 @@ import javax.inject.Singleton
 @Singleton
 class Guidance(
   val addATeamMember: String,
-  val gvms: String,
   val additionalDocumentsReferenceCodes: String,
   val additionalDocumentsUnionCodes: String,
   val aiCodes: String,
@@ -49,7 +48,6 @@ class Guidance(
 object Guidance {
   def apply(loadConfig: String => String): Guidance =
     new Guidance(
-      gvms = loadConfig("guidance.gvms"),
       addATeamMember = loadConfig("guidance.addATeamMember"),
       additionalDocumentsReferenceCodes = loadConfig("guidance.additionalDocumentsReferenceCodes"),
       additionalDocumentsUnionCodes = loadConfig("guidance.additionalDocumentsUnionCodes"),
