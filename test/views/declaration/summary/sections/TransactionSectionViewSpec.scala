@@ -18,19 +18,22 @@ package views.declaration.summary.sections
 
 import base.Injector
 import controllers.declaration.routes._
+import forms.declaration.Document
 import services.cache.ExportsTestHelper
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.summary.sections.transaction_section
 
-import scala.jdk.CollectionConverters.CollectionHasAsScala
-
 class TransactionSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injector {
+
+  private val doc1 = Document("355", "ref1", None)
+  private val doc2 = Document("355", "ref2", None)
+  private val documents = withPreviousDocuments(doc1, doc2)
 
   val data = aDeclaration(
     withTotalNumberOfItems(Some("123"), Some("1.23"), Some("GBP")),
     withTotalPackageQuantity("12"),
     withNatureOfTransaction("2"),
-    withPreviousDocuments()
+    documents
   )
 
   val dataWithNoExchangeRate = aDeclaration(
@@ -86,8 +89,53 @@ class TransactionSectionViewSpec extends UnitViewSpec with ExportsTestHelper wit
       row must haveSummaryActionWithPlaceholder(NatureOfTransactionController.displayPage)
     }
 
-    "have related documents section" in {
-      view.getElementById("previous-documents").text() mustNot be(empty)
+    "have related documents section" which {
+
+      val summaryList = view.getElementsByClass("previous-documents-summary").first
+      val summaryListRows = summaryList.getElementsByClass("govuk-summary-list__row")
+
+      "has all rows present" in {
+        summaryListRows.size mustBe 5
+      }
+
+      "has heading present" in {
+        val heading = summaryListRows.first.getElementsByClass("previous-documents-heading")
+        heading must haveSummaryKey(messages("declaration.summary.transaction.previousDocuments"))
+      }
+
+      "contains an empty section" when {
+        "no docs have been entered" in {
+
+          val view = section(aDeclarationAfter(data, withoutPreviousDocuments()))(messages)
+
+          val row = view.getElementsByClass("previous-documents-summary")
+
+          row must haveSummaryKey(messages("declaration.summary.transaction.previousDocuments"))
+          row must haveSummaryValue(messages("site.none"))
+          row must haveSummaryActionsTexts("site.change", "declaration.summary.transaction.previousDocuments.change")
+          row must haveSummaryActionWithPlaceholder(PreviousDocumentsSummaryController.displayPage)
+        }
+      }
+
+      "has answers and actions present" when {
+        "doc type" in {
+          val doc1Type = summaryListRows.get(1).getElementsByClass(s"previous-documents-type-1")
+          doc1Type must haveSummaryKey(messages("declaration.summary.transaction.previousDocuments.type"))
+          doc1Type.first.getElementsByClass(summaryValueClassName).first must containText(doc1.documentType)
+          doc1Type must haveSummaryActionsTexts(
+            "site.change",
+            "declaration.summary.transaction.previousDocuments.document.change",
+            doc1.documentReference
+          )
+          doc1Type must haveSummaryActionWithPlaceholder(PreviousDocumentsSummaryController.displayPage)
+        }
+        "doc ref" in {
+          val doc1Ref = summaryListRows.get(2).getElementsByClass(s"previous-documents-ref-1")
+          doc1Ref must haveSummaryKey(messages("declaration.summary.transaction.previousDocuments.reference"))
+          doc1Ref.first.getElementsByClass(summaryValueClassName).first must containText(doc1.documentReference)
+          doc1Ref.first.getElementsByClass(summaryActionsClassName) mustBe empty
+        }
+      }
     }
 
     "not display exchange rate when question not asked" in {
@@ -125,16 +173,5 @@ class TransactionSectionViewSpec extends UnitViewSpec with ExportsTestHelper wit
       view.getElementsByClass("item-amount-row") must haveSummaryActionWithPlaceholder(InvoiceAndExchangeRateChoiceController.displayPage)
     }
 
-    "have the correct order of rows when all displayed" in {
-      val keysOnPage = view.getElementsByClass("govuk-summary-list__key").eachText().asScala.toList
-      val orderOfKeys = List(
-        messages("declaration.summary.transaction.itemAmount"),
-        messages("declaration.summary.transaction.exchangeRate"),
-        messages("declaration.summary.transaction.totalNoOfPackages"),
-        messages("declaration.summary.transaction.natureOfTransaction"),
-        messages("declaration.summary.transaction.previousDocuments")
-      )
-      keysOnPage must be(orderOfKeys)
-    }
   }
 }

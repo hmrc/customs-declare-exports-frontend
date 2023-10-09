@@ -98,9 +98,13 @@ trait ViewMatchers {
 
   def haveTag(tag: String): Matcher[Element] = new ElementTagMatcher(tag)
 
-  def haveSummaryKey(value: String) = new ElementsHasElementsContainingTextMatcher("govuk-summary-list__key", value)
-  def haveSummaryValue(value: String) = new ElementsHasElementsContainingTextMatcher("govuk-summary-list__value", value)
-  def haveSummaryActionsText(value: String) = new ElementsHasElementsContainingTextMatcher("govuk-summary-list__actions", value)
+  val summaryKeyClassName = "govuk-summary-list__key"
+  val summaryValueClassName = "govuk-summary-list__value"
+  val summaryActionsClassName = "govuk-summary-list__actions"
+
+  def haveSummaryKey(value: String) = new ElementsHasElementsContainingTextMatcher(summaryKeyClassName, value)
+  def haveSummaryValue(value: String) = new ElementsHasElementsContainingTextMatcher(summaryValueClassName, value)
+  def haveSummaryActionsText(value: String) = new ElementsHasElementsContainingTextMatcher(summaryActionsClassName, value)
 
   def haveSummaryActionsTexts(label: String, hint: String, hintArgs: String*)(implicit messages: Messages) =
     haveSummaryActionsText(s"${messages(label)} ${messages(hint, hintArgs: _*)}")
