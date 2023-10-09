@@ -241,7 +241,7 @@ class AdditionalDocumentEditViewSpec extends UnitViewSpec with Injector with Moc
     allAdditionalDeclarationTypes.filterNot(clearanceJourneys.contains).foreach { declarationType =>
       s"the declaration is of type $declarationType and" when {
 
-        val itemWithLicenseRequired = anItem(withItemId(itemId), withLicenseRequired())
+        val itemWithLicenseRequired = anItem(withItemId(itemId), withIsLicenseRequired())
 
         "has auth Codes requiring additional docs, and a license is required ('V1' content)" should {
           implicit val request = withRequest(declarationType, withDeclarationHolders(holders: _*), withItem(itemWithLicenseRequired))

@@ -251,5 +251,5 @@
         additionalActorsSection(data.actors, actionsEnabled)
     )
 
-    @holdersSummaryHelper.section(declaration, actionsEnabled)
+    @declaration.parties.declarationHoldersData.map(_ => holdersSummaryHelper.section(declaration))
 }
