@@ -19,7 +19,7 @@ package views.declaration
 import base.{Injector, MockAuthAction}
 import forms.declaration.TraderReference
 import forms.declaration.TraderReference.form
-import models.DeclarationType.STANDARD
+import models.DeclarationType.{CLEARANCE, STANDARD}
 import views.declaration.spec.PageWithButtonsSpec
 import views.html.declaration.trader_reference
 import views.tags.ViewTest
@@ -61,14 +61,29 @@ class TraderReferenceViewSpec extends PageWithButtonsSpec with Injector with Moc
       view.getElementById(TraderReference.traderReferenceKey).attr("value") mustBe empty
     }
 
-    "display Tariff section text" in {
-      val tariffText = view.getElementsByClass("govuk-details__text").first
+    "display the correct tariff expander" should {
+      "in non-Clearance journeys" in {
 
-      removeBlanksIfAnyBeforeDot(tariffText.text) mustBe messages(
-        "tariff.declaration.traderReference.common.text",
-        messages("tariff.declaration.traderReference.common.linkText.0")
-      )
-      tariffText.child(0) must haveHref(appConfig.tariffGuideUrl("urls.tariff.declaration.traderReference.common.0"))
+        val tariffText = view.getElementsByClass("govuk-details__text").first
+
+        removeBlanksIfAnyBeforeDot(tariffText.text) mustBe messages(
+          "tariff.declaration.traderReference.common.text",
+          messages("tariff.declaration.traderReference.common.linkText.0")
+        )
+        tariffText.child(0) must haveHref(appConfig.tariffGuideUrl("urls.tariff.declaration.traderReference.common.0"))
+      }
+
+      "in a Clearance journey" in {
+        implicit val request = withRequestOfType(CLEARANCE)
+        val view = page(form)(request, messages)
+        val tariffText = view.getElementsByClass("govuk-details__text").get(0)
+
+        removeBlanksIfAnyBeforeDot(tariffText.text) mustBe messages(
+          "tariff.declaration.confirmDucr.common.text",
+          messages("tariff.declaration.traderReference.clearance.linkText.0")
+        )
+        tariffText.child(0) must haveHref(appConfig.tariffGuideUrl("urls.tariff.declaration.traderReference.clearance.0"))
+      }
     }
 
     "display back button linking to Do You Have A DUCR? page" in {

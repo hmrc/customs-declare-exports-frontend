@@ -16,7 +16,7 @@
 
 package views.declaration
 
-import base.Injector
+import base.{Injector, MockAuthAction}
 import controllers.declaration.routes
 import controllers.helpers.TransportSectionHelper.{postalOrFTIModeOfTransportCodes, Guernsey, Jersey}
 import forms.common.YesNoAnswer.YesNoAnswers
@@ -37,7 +37,8 @@ import views.html.declaration.transport_container_add_first
 import views.tags.ViewTest
 
 @ViewTest
-class TransportContainerAddFirstViewSpec extends UnitViewSpec with ExportsTestHelper with Stubs with CommonMessages with Injector {
+class TransportContainerAddFirstViewSpec
+    extends UnitViewSpec with ExportsTestHelper with Stubs with CommonMessages with Injector with MockAuthAction {
 
   private val form: Form[ContainerFirst] = ContainerFirst.form
   private val page = instanceOf[transport_container_add_first]
@@ -89,6 +90,16 @@ class TransportContainerAddFirstViewSpec extends UnitViewSpec with ExportsTestHe
           verifyBackButton(createView(), routes.ExpressConsignmentController.displayPage)
         }
       }
+    }
+
+    "display the correct tariff expander in non-Clearance journeys" in {
+
+      val tariffText = view.getElementsByClass("govuk-details__text").get(0)
+
+      removeBlanksIfAnyBeforeDot(tariffText.text) mustBe removeLineBreakIfAny(
+        messages("tariff.declaration.container.common.text", messages("tariff.declaration.container.common.linkText.0"))
+      )
+      tariffText.child(1) must haveHref(appConfig.tariffGuideUrl("urls.tariff.declaration.container.common.0"))
     }
 
     checkAllSaveButtonsAreDisplayed(view)
@@ -144,6 +155,23 @@ class TransportContainerAddFirstViewSpec extends UnitViewSpec with ExportsTestHe
           }
         }
       }
+    }
+
+    "declaration's type is CLEARANCE" in {
+
+      implicit val request = withRequestOfType(CLEARANCE)
+      val viewClearance = createView()
+      val tariffText = viewClearance.getElementsByClass("govuk-details__text").get(0)
+
+      removeBlanksIfAnyBeforeDot(tariffText.text) mustBe removeLineBreakIfAny(
+        messages(
+          "tariff.declaration.container.clearance.text",
+          messages("tariff.declaration.container.clearance.linkText.0"),
+          messages("tariff.declaration.container.clearance.linkText.1")
+        )
+      )
+      tariffText.child(1) must haveHref(appConfig.tariffGuideUrl("urls.tariff.declaration.container.clearance.0"))
+      tariffText.child(3) must haveHref(appConfig.tariffGuideUrl("urls.tariff.declaration.container.clearance.1"))
     }
   }
 

@@ -184,9 +184,11 @@ tariff.declaration.type.common.linkText.0 = Elfen Ddata 1/2 - Math o Ddatganiad 
 
 tariff.declaration.traderReference.common.text = I gael manylion am y DUCR, ewch i {0}.
 tariff.declaration.traderReference.common.linkText.0 =  Elfen Ddata 2/4 – Cyfeirnod / UCR (yn agor tab newydd)
+tariff.declaration.traderReference.clearance.linkText.0 = Elfen Ddata 2/1 – Datganiad Symlach/Dogfennau Blaenorol (yn agor tab newydd)
 
 tariff.declaration.confirmDucr.common.text = I gael manylion am y DUCR, ewch i {0}.
 tariff.declaration.confirmDucr.common.linkText.0 =  Elfen Ddata 2/4 – Cyfeirnod / UCR (yn agor tab newydd)
+tariff.declaration.confirmDucr.clearance.linkText.0 = Elfen Ddata 2/1 – Datganiad Symlach/Dogfennau Blaenorol (yn agor tab newydd)
 
 tariff.declaration.ducr.common.text = I gael manylion am y DUCR, ewch i {0}.
 tariff.declaration.ducr.common.linkText.0 =  Elfen Ddata 2/1 – Datganiad Symlach/Dogfennau Blaenorol (yn agor tab newydd)
@@ -335,6 +337,9 @@ tariff.declaration.transportPayment.common.text = Bydd yr ateb hwn yn cwblhau<br
 tariff.declaration.transportPayment.common.linkText.0 = Elfen Ddata 4/2 - Dull talu cludiant yn Nhariff Masnach y DU (yn agor tab newydd)
 tariff.declaration.container.common.text = Bydd yr ateb hwn yn cwblhau<br>{0}.
 tariff.declaration.container.common.linkText.0 = Elfen Ddata 7/2 - Cynhwysydd (yn agor tab newydd)
+tariff.declaration.container.clearance.text = Bydd yr ateb hwn yn cwblhau<br>{0} a<br>{1}.
+tariff.declaration.container.clearance.linkText.0 = Elfen Ddata 7/2 - Cynhwysydd (yn agor tab newydd)
+tariff.declaration.container.clearance.linkText.1 = Elfen Ddata 7/10 - Rhif Adnabod y Cynhwysydd (yn agor tab newydd)
 tariff.declaration.container.change.common.text = Bydd y cofnod hwn yn cwblhau<br>{0}.
 tariff.declaration.container.change.common.linkText.0 = Elfen Ddata 7/10 - Rhif Adnabod y Cynhwysydd (yn agor tab newydd)
 tariff.declaration.containers.seals.common.text = Bydd y cofnod hwn yn cwblhau<br>{0}.

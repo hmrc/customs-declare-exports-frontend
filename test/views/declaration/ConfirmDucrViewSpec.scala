@@ -21,7 +21,7 @@ import controllers.declaration.routes
 import forms.Ducr
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
-import models.DeclarationType.STANDARD
+import models.DeclarationType.{CLEARANCE, STANDARD}
 import views.declaration.spec.PageWithButtonsSpec
 import views.html.declaration.confirm_ducr
 import views.tags.ViewTest
@@ -30,7 +30,6 @@ import views.tags.ViewTest
 class ConfirmDucrViewSpec extends PageWithButtonsSpec with Injector with MockAuthAction {
 
   private val page = instanceOf[confirm_ducr]
-
   private val dummyGeneratedDucr = Ducr("dummyGeneratedDucr")
   private val view = page(YesNoAnswer.form(), dummyGeneratedDucr)(request, messages)
   override val typeAndViewInstance = (STANDARD, page(YesNoAnswer.form(), dummyGeneratedDucr)(_, _))
@@ -79,22 +78,37 @@ class ConfirmDucrViewSpec extends PageWithButtonsSpec with Injector with MockAut
       content must containMessage("declaration.confirmDucr.expander.content.list.5")
     }
 
-    "display tariff expander" in {
-      val tariffText = view.getElementsByClass("govuk-details__text").get(1)
-
-      removeBlanksIfAnyBeforeDot(tariffText.text) mustBe messages(
-        "tariff.declaration.confirmDucr.common.text",
-        messages("tariff.declaration.confirmDucr.common.linkText.0")
-      )
-      tariffText.child(0) must haveHref(appConfig.tariffGuideUrl("urls.tariff.declaration.confirmDucr.common.0"))
-    }
-
     "display back button to Trader Referemce page" in {
       val backLink = view.getElementById("back-link")
       backLink must containMessage(backToPreviousQuestionCaption)
       backLink must haveHref(routes.TraderReferenceController.displayPage)
     }
 
+    "display the correct tariff expander" should {
+      "in non-Clearance journeys" in {
+
+        val tariffText = view.getElementsByClass("govuk-details__text").get(1)
+
+        removeBlanksIfAnyBeforeDot(tariffText.text) mustBe messages(
+          "tariff.declaration.confirmDucr.common.text",
+          messages("tariff.declaration.confirmDucr.common.linkText.0")
+        )
+        tariffText.child(0) must haveHref(appConfig.tariffGuideUrl("urls.tariff.declaration.confirmDucr.common.0"))
+      }
+
+      "in a Clearance journey" in {
+        implicit val request = withRequestOfType(CLEARANCE)
+        val view = page(YesNoAnswer.form(), dummyGeneratedDucr)(request, messages)
+
+        val tariffText = view.getElementsByClass("govuk-details__text").get(1)
+
+        removeBlanksIfAnyBeforeDot(tariffText.text) mustBe messages(
+          "tariff.declaration.confirmDucr.common.text",
+          messages("tariff.declaration.confirmDucr.clearance.linkText.0")
+        )
+        tariffText.child(0) must haveHref(appConfig.tariffGuideUrl("urls.tariff.declaration.confirmDucr.clearance.0"))
+      }
+    }
     checkAllSaveButtonsAreDisplayed(view)
   }
 }
