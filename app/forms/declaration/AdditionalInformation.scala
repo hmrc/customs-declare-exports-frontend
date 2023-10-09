@@ -58,7 +58,7 @@ object AdditionalInformation extends DeclarationPage with FieldMapping {
   val descriptionPointer: ExportsFieldPointer = "description"
 
   lazy val keyForCode = s"$itemsPrefix.additionalInformation.code"
-  lazy val keyForDescription = s"$itemsPrefix.additionalInformation.information"
+  lazy val keyForDescription = s"$itemsPrefix.additionalInformation.description"
 
   implicit val format = Json.format[AdditionalInformation]
 

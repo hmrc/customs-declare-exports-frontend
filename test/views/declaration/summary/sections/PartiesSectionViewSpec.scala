@@ -45,12 +45,12 @@ class PartiesSectionViewSpec extends UnitViewSpec with ExportsTestHelper with In
     withDeclarationHolders()
   )
 
-  private val section = instanceOf[parties_section]
+  private val partiesSection = instanceOf[parties_section]
 
   "Parties section" must {
 
     onEveryDeclarationJourney() { implicit request =>
-      val view = section(data)(messages)
+      val view = partiesSection(data)(messages)
 
       "contains 'are you exporter' with change button" in {
         val isExporterRow = view.getElementsByClass("declarantIsExporter-row")
@@ -120,7 +120,9 @@ class PartiesSectionViewSpec extends UnitViewSpec with ExportsTestHelper with In
 
       "does not contains representative eori when not representing another agent" in {
         val nonAgentView =
-          section(data.copy(parties = data.parties.copy(representativeDetails = Some(RepresentativeDetails(None, Some("2"), Some("No"))))))(messages)
+          partiesSection(data.copy(parties = data.parties.copy(representativeDetails = Some(RepresentativeDetails(None, Some("2"), Some("No"))))))(
+            messages
+          )
         val eoriRow = nonAgentView.getElementsByClass("representative-eori-row")
 
         eoriRow.text() must be(empty)
@@ -160,42 +162,42 @@ class PartiesSectionViewSpec extends UnitViewSpec with ExportsTestHelper with In
       }
 
       "does not contain exporter when section not answered" in {
-        val view = section(aDeclarationAfter(data, withoutExporterDetails()))(messages)
+        val view = partiesSection(aDeclarationAfter(data, withoutExporterDetails()))(messages)
 
         view.getElementsByClass("exporter-eori-row") mustBe empty
         view.getElementsByClass("exporter-address-row") mustBe empty
       }
 
       "does not contain consignee when section not answered" in {
-        val view = section(aDeclarationAfter(data, withoutConsigneeDetails()))(messages)
+        val view = partiesSection(aDeclarationAfter(data, withoutConsigneeDetails()))(messages)
 
         view.getElementsByClass("consignee-eori-row") mustBe empty
         view.getElementsByClass("consignee-address-row") mustBe empty
       }
 
       "does not contain declarant when section not answered" in {
-        val view = section(aDeclarationAfter(data, withoutDeclarantDetails()))(messages)
+        val view = partiesSection(aDeclarationAfter(data, withoutDeclarantDetails()))(messages)
 
         view.getElementsByClass("declarant-eori-row") mustBe empty
         view.getElementsByClass("declarant-address-row") mustBe empty
       }
 
       "does not contain representative when section not answered" in {
-        val view = section(aDeclarationAfter(data, withoutRepresentativeDetails()))(messages)
+        val view = partiesSection(aDeclarationAfter(data, withoutRepresentativeDetails()))(messages)
 
         view.getElementsByClass("representative-eori-row") mustBe empty
         view.getElementsByClass("representative-address-row") mustBe empty
       }
 
       "does not contain carrier details when section not answered" in {
-        val view = section(aDeclarationAfter(data, withoutCarrierDetails()))(messages)
+        val view = partiesSection(aDeclarationAfter(data, withoutCarrierDetails()))(messages)
 
         view.getElementsByClass("carrier-eori-row") mustBe empty
         view.getElementsByClass("carrier-address-row") mustBe empty
       }
 
       "does not contain anything when there are no parties" in {
-        val view = section(aDeclaration())(messages)
+        val view = partiesSection(aDeclaration())(messages)
 
         view.getAllElements.text() must be(empty)
       }
@@ -222,7 +224,7 @@ class PartiesSectionViewSpec extends UnitViewSpec with ExportsTestHelper with In
         val holder3WithoutEori = DeclarationHolder(Some(type2), None, None)
         val declaration = aDeclarationAfter(data, withDeclarationHolders(holder1, holder2WithoutCode, holder3WithoutEori))
 
-        val view = section(declaration)(messages)
+        val view = partiesSection(declaration)(messages)
 
         val summaryList = view.getElementsByClass("authorisation-holders-summary").get(0)
         val summaryListRows = summaryList.getElementsByClass("govuk-summary-list__row")
@@ -258,7 +260,7 @@ class PartiesSectionViewSpec extends UnitViewSpec with ExportsTestHelper with In
     }
 
     onClearance { implicit request =>
-      val view = section(data)(messages)
+      val view = partiesSection(data)(messages)
       "contains 'Is Exs' section with change button" in {
 
         val isExsRow = view.getElementsByClass("isExs-row")
@@ -285,6 +287,15 @@ class PartiesSectionViewSpec extends UnitViewSpec with ExportsTestHelper with In
         personPresentingGoodsRow must haveSummaryValue(exampleEori)
         personPresentingGoodsRow must haveSummaryActionsTexts("site.change", "declaration.summary.parties.personPresentingGoods.change")
         personPresentingGoodsRow must haveSummaryActionWithPlaceholder(PersonPresentingGoodsDetailsController.displayPage)
+      }
+    }
+
+    onEveryDeclarationJourney() { implicit request =>
+      "NOT have change links" when {
+        "'actionsEnabled' is false" in {
+          val view = partiesSection(data, false)(messages)
+          view.getElementsByClass("govuk-summary-list__actions") mustBe empty
+        }
       }
     }
   }
