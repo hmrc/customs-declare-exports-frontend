@@ -2622,6 +2622,7 @@ ead.template.declarationType.EXZ = Supplementary Exports Declaration following E
 ead.template.ucr = DUCR
 ead.template.roe = Route
 ead.template.ics = ICS
+ead.template.barcodeAltText = An example of a scan-able barcode which contains the movement reference number or MRN.
 ead.template.totalPackageQuantity = Total Package Quantity
 ead.template.goodsItemQuantity = Good Items Quantity
 ead.template.releasedDateTime = Date and time goods released
