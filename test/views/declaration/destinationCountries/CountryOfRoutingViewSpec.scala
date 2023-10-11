@@ -70,6 +70,7 @@ class CountryOfRoutingViewSpec extends PageWithButtonsSpec with ExportsTestHelpe
       messages must haveTranslationFor("declaration.routingCountries.body.p2")
       messages must haveTranslationFor("tariff.expander.title.clearance")
       messages must haveTranslationFor("tariff.declaration.countryOfRouting.common.text")
+      messages must haveTranslationFor("site.add.country")
     }
   }
 
