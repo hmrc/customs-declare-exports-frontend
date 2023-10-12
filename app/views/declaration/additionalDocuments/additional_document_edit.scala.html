@@ -118,7 +118,7 @@
         @exportsInputText(
             field = form(documentTypeCodeKey),
             labelKey = "declaration.additionalDocument.code",
-            labelClasses = "govuk-label govuk-label--m",
+            isSubHeading = true,
             hintKey = Some(additionalDocumentHelper.documentCodeHint(itemId)),
             inputClasses = Some("govuk-input--width-4"),
             bodyHtml = Some(paragraphBody(
@@ -132,7 +132,7 @@
         @exportsInputText(
             field = form(documentIdentifierKey),
             labelKey = "declaration.additionalDocument.identifier",
-            labelClasses = "govuk-label govuk-label--m",
+            isSubHeading = true,
             inputClasses = Some("govuk-input--width-30"),
             bodyHtml = Some(additionalDocumentHelper.documentIdentifierBody(itemId)),
             hintHtml = additionalDocumentHelper.documentIdentifierHint.map( paragraphBody(_, "govuk-hint"))
@@ -143,7 +143,7 @@
         @exportsInputText(
             field = form(documentStatusKey),
             labelKey = "declaration.additionalDocument.status",
-            labelClasses = "govuk-label govuk-label--m",
+            isSubHeading = true,
             inputClasses = Some("govuk-input--width-2"),
             bodyHtml = Some(paragraphBody(
                 message = messages("declaration.additionalDocument.status.text"),
@@ -154,7 +154,7 @@
         @exportsInputText(
             field = form(documentStatusReasonKey),
             labelKey = "declaration.additionalDocument.statusReason",
-            labelClasses = "govuk-label govuk-label--m",
+            isSubHeading = true,
             hintKey = Some("declaration.additionalDocument.statusReason.hint"),
             inputClasses = Some("govuk-input--width-30"),
             bodyHtml = Some(paragraphBody(
@@ -166,6 +166,7 @@
         @exportsInputTextArea(
             field = form(issuingAuthorityNameKey),
             labelKey = "declaration.additionalDocument.issuingAuthorityName",
+            isSubHeading = true,
             inputClasses = Some("govuk-input--width-20"),
             bodyHtml = Some(paragraphBody(
                 message = messages("declaration.additionalDocument.issuingAuthorityName.text"),
