@@ -22,6 +22,7 @@ import controllers.helpers.SequenceIdHelper
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
+import models.DeclarationType.CLEARANCE
 import models.ExportsDeclaration
 import models.declaration.ExportItem
 import models.requests.JourneyRequest
@@ -69,24 +70,30 @@ class ItemsSummaryController @Inject() (
 
   // TODO Should we add validation for POST without items?
   def submit(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    val incorrectItems: Seq[FormError] = buildIncorrectItemsErrors(request)
+    request.declarationType match {
+      case CLEARANCE =>
+        itemSummaryForm.fill(YesNoAnswer(YesNoAnswers.no))
+        Future.successful(navigator.continueTo(TransportLeavingTheBorderController.displayPage))
+      case _ =>
+        val incorrectItems: Seq[FormError] = buildIncorrectItemsErrors(request)
 
-    itemSummaryForm
-      .bindFromRequest()
-      .fold(
-        formWithErrors => Future.successful(BadRequest(itemsSummaryPage(formWithErrors, request.cacheModel.items.toList, incorrectItems))),
-        validYesNo =>
-          validYesNo.answer match {
-            case YesNoAnswers.yes =>
-              createNewItemInCache.map(itemId => navigator.continueTo(ProcedureCodesController.displayPage(itemId)))
+        itemSummaryForm
+          .bindFromRequest()
+          .fold(
+            formWithErrors => Future.successful(BadRequest(itemsSummaryPage(formWithErrors, request.cacheModel.items.toList, incorrectItems))),
+            validYesNo =>
+              validYesNo.answer match {
+                case YesNoAnswers.yes =>
+                  createNewItemInCache.map(itemId => navigator.continueTo(ProcedureCodesController.displayPage(itemId)))
 
-            case YesNoAnswers.no if incorrectItems.nonEmpty =>
-              Future.successful(BadRequest(itemsSummaryPage(itemSummaryForm.fill(validYesNo), request.cacheModel.items.toList, incorrectItems)))
+                case YesNoAnswers.no if incorrectItems.nonEmpty =>
+                  Future.successful(BadRequest(itemsSummaryPage(itemSummaryForm.fill(validYesNo), request.cacheModel.items.toList, incorrectItems)))
 
-            case YesNoAnswers.no =>
-              Future.successful(navigator.continueTo(TransportLeavingTheBorderController.displayPage))
-          }
-      )
+                case YesNoAnswers.no =>
+                  Future.successful(navigator.continueTo(TransportLeavingTheBorderController.displayPage))
+              }
+          )
+    }
   }
 
   private def buildIncorrectItemsErrors(request: JourneyRequest[AnyContent]): Seq[FormError] =
