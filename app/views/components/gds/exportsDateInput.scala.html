@@ -19,10 +19,9 @@
 @import forms.common.Date.{dayKey, monthKey, yearKey}
 @import views.helpers.InputTextHelper
 @import views.html.components.gds.label
-@import views.html.components.gds.legend
 @import play.twirl.api.HtmlFormat
 
-@this(dateInput: GovukDateInput, label: label, legend: legend, helper: InputTextHelper)
+@this(dateInput: GovukDateInput, label: label, helper: InputTextHelper)
 
 @(
   fieldName: String,
@@ -30,9 +29,7 @@
   labelKey: String,
   labelArg: String = "",
   hintKey: Option[String] = None,
-  bodyHtml: Option[Html] = None,
-  isSubHeading: Boolean = false,
-  subHeadingClasses: String = "govuk-heading govuk-heading-m"
+  bodyHtml: Option[Html] = None
 )(implicit messages: Messages)
 
 @dateField = @{form(fieldName)}
@@ -48,7 +45,7 @@
 @maybeLabelAndBody = @{bodyHtml
     .map{ body =>
         HtmlContent(HtmlFormat.fill(immutable.Seq(
-            label(labelKey = labelKey, forFieldName = fieldName + "-input", labelArg = labelArg, isSubHeading = isSubHeading, subHeadingClasses = subHeadingClasses),
+            label(labelKey = labelKey, forFieldName = fieldName + "-input", labelArg = labelArg),
             body
         ))).asHtml
     }}
