@@ -271,7 +271,7 @@ function linkDucrToMucr() {
 
 function enterMucr() {
     if (currentPageIs('/customs-declare-exports/declaration/enter-a-mucr')) {
-        document.getElementById('MUCR').value = 'CZYX123A'
+        document.getElementById('MUCR').value = 'GB/AZ09-B12345'
         submit()
     }
 }

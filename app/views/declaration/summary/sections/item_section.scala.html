@@ -22,13 +22,13 @@
 @import views.html.components.elements_in_separate_lines
 @import views.html.components.gds.{linkContent, summary_list}
 @import views.html.declaration.summary._
-@import views.helpers.{AdditionalDocumentSummaryHelper, Link}
+@import views.helpers.{AdditionalDocumentSummaryHelper, AdditionalInformationSummaryHelper, Link}
 
 @this(
     summaryList: summary_list,
     linkContent: linkContent,
     package_information: package_information,
-    union_and_national_codes: union_and_national_codes,
+    additionalInformationSummaryHelper: AdditionalInformationSummaryHelper,
     additionalDocumentSummaryHelper: AdditionalDocumentSummaryHelper
 )
 
@@ -360,11 +360,9 @@
         )
     else None
 ),
-    classes = "govuk-!-margin-bottom-3"
+    classes = "govuk-!-margin-bottom-0"
 )
 
-@item.additionalInformation.map(additionalInformation =>
-    union_and_national_codes(item.id, itemDisplayNum, additionalInformation.items, actionsEnabled)
-)
+@additionalInformationSummaryHelper.section(item, actionsEnabled)
 
-@additionalDocumentSummaryHelper.section(item)
+@additionalDocumentSummaryHelper.section(item, actionsEnabled)

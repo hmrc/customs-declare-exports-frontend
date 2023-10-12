@@ -74,7 +74,9 @@
             <dd class="govuk-summary-list__value">
             @declarant.details.eori.map(_.value).getOrElse("")
             </dd>
-            <dd class="govuk-summary-list__actions"></dd>
+            @if(actionsEnabled) {
+              <dd class="govuk-summary-list__actions"></dd>
+            }
         </div>
     </dl>
 }
@@ -251,5 +253,5 @@
         additionalActorsSection(data.actors, actionsEnabled)
     )
 
-    @declaration.parties.declarationHoldersData.map(_ => holdersSummaryHelper.section(declaration))
+    @declaration.parties.declarationHoldersData.map(_ => holdersSummaryHelper.section(declaration, actionsEnabled))
 }
