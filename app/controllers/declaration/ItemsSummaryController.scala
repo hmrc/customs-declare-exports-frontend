@@ -72,7 +72,6 @@ class ItemsSummaryController @Inject() (
   def submit(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     request.declarationType match {
       case CLEARANCE =>
-        itemSummaryForm.fill(YesNoAnswer(YesNoAnswers.no))
         Future.successful(navigator.continueTo(TransportLeavingTheBorderController.displayPage))
       case _ =>
         val incorrectItems: Seq[FormError] = buildIncorrectItemsErrors(request)
