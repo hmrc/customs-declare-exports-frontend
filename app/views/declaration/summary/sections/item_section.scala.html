@@ -45,7 +45,7 @@
 
 @summaryList(
     id = s"declaration-items-summary-$itemDisplayNum",
-    heading = Some(messages("declaration.summary.items.item.presentationId", itemDisplayNum)),
+    subHeading = Some(messages("declaration.summary.items.item.presentationId", itemDisplayNum)),
     headerAction = headerAction,
     summaryListRows = Seq(
         item.procedureCodes.flatMap(_.procedureCode).map(data =>
@@ -294,7 +294,7 @@
     package_information(item.id, itemDisplayNum, packageInformation, actionsEnabled)
 )
 
-@summaryList("", None, None, Seq(
+@summaryList("", None, None, None, Seq(
     item.commodityMeasure.map(commodityMeasure =>
         SummaryListRow(
             classes = s"item-${itemDisplayNum}-grossWeight-row",
