@@ -24,17 +24,19 @@
 
 @(id: String, heading: Option[String] = None, subHeading: Option[String] = None, headerAction: Option[Link] = None, summaryListRows: Seq[Option[SummaryListRow]], classes: String = "govuk-!-margin-bottom-9")
 
-@if(heading.isDefined || headerAction.isDefined) {
+@if(heading.isDefined || subHeading.isDefined || headerAction.isDefined) {
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-three-quarters">
         @if(heading) {
-        @heading.map { header =>
-            <h2 class="govuk-heading-m">@header</h2>
-        }}
+            @heading.map { header =>
+                <h2 class="govuk-heading-m">@header</h2>
+            }
+        }
         @if(subHeading) {
-        @subHeading.map { subHeader =>
-            <h3 class="govuk-heading-s">@subHeader</h3>
-        }}
+            @subHeading.map { subHeader =>
+                <h3 class="govuk-heading-s">@subHeader</h3>
+            }
+        }
     </div>
     <div class="govuk-grid-column-one-quarter govuk-!-text-align-right govuk-!-font-size-19">
         @headerAction.map { action =>

@@ -62,7 +62,8 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
         val view = itemSection(itemWithAnswers, 0, STANDARD)(messages)
 
         "have a 'Item' header" in {
-          view.getElementsByClass("govuk-heading-m").text mustBe messages("declaration.summary.items.item.presentationId", "1")
+          val subHeader = view.getElementsByClass("govuk-heading-s").get(0)
+          subHeader.text mustBe messages("declaration.summary.items.item.presentationId", "1")
         }
 
         "have a 'change' link at header level" in {
@@ -402,7 +403,8 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
         }
 
         "still have an 'Item' header" in {
-          view.getElementsByClass("govuk-heading-m").text mustBe messages("declaration.summary.items.item.presentationId", "1")
+          val subHeader = view.getElementsByClass("govuk-heading-s").get(0)
+          subHeader.text mustBe messages("declaration.summary.items.item.presentationId", "1")
         }
 
         "still have a 'procedure code' row" in {
