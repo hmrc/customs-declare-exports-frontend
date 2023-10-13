@@ -33,7 +33,6 @@ import javax.inject.{Inject, Singleton}
 @Singleton
 class DocumentsSummaryHelper @Inject() (govukSummaryList: GovukSummaryList, linkContent: linkContent, documentTypeService: DocumentTypeService) {
   def section(declaration: ExportsDeclaration, actionsEnabled: Boolean)(implicit messages: Messages): Html = {
-
     val summaryListRows: Seq[SummaryListRow] = declaration.previousDocuments
       .map(_.documents)
       .getOrElse(Seq.empty)
