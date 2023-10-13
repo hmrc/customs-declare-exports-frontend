@@ -149,7 +149,7 @@
                 itemsTable,
                 if (!request.isType(CLEARANCE))
                 addAnotherQuestion("declaration.itemsSummary.addAnotherItem.question", form)
-                else Html(""),
+                else HtmlFormat.empty,
                 tariffExpander(ExportItem, request.declarationType)(messages, appConfig),
                 saveButtons()
             ))

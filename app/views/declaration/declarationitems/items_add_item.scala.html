@@ -54,23 +54,15 @@
                     else messages("declaration.itemsAdd.title")
     )
 
-    @paragraphBody(
-        if (request.isType(CLEARANCE))
-            messages("declaration.clearance.itemsAdd.paragraph.1")
-        else
-            messages("declaration.itemsAdd.paragraph.1")
-    )
-    @paragraphBody(
-        if (request.isType(CLEARANCE))
-            messages("declaration.clearance.itemsAdd.paragraph.2")
-        else
-            messages("declaration.itemsAdd.paragraph.2")
-    )
-    @paragraphBody(
-        if (!request.isType(CLEARANCE))
-            messages("declaration.itemsAdd.paragraph.3")
-        else ""
-    )
+    @if(request.isType(CLEARANCE)) {
+        @paragraphBody(messages("declaration.clearance.itemsAdd.paragraph.1"))
+        @paragraphBody(messages("declaration.clearance.itemsAdd.paragraph.2"))
+
+    } else {
+        @paragraphBody(messages("declaration.itemsAdd.paragraph.1"))
+        @paragraphBody(messages("declaration.itemsAdd.paragraph.2"))
+        @paragraphBody(messages("declaration.itemsAdd.paragraph.3"))
+    }
 
     @addButton(
         label = "site.add.item",
