@@ -70,7 +70,9 @@
 
     @paragraphBody(messages("guidance.roro.section.2.paragraph.2", link(
         text = messages("guidance.roro.section.2.paragraph.2.link"),
-        call = Call("GET", appConfig.guidance.january2022locations)
+        call = Call("GET", appConfig.guidance.january2022locations),
+        target = Some("_blank")
+
     )))
 
     @paragraphBody(messages("guidance.roro.section.2.paragraph.3"))
@@ -78,7 +80,11 @@
     @numberedList(List(
         Html(messages("guidance.roro.section.2.list.1.bullet.1")),
         Html(messages("guidance.roro.section.2.list.1.bullet.2")),
-        Html(messages("guidance.roro.section.2.list.1.bullet.3")),
+        Html(messages("guidance.roro.section.2.list.1.bullet.3", link(
+            text = messages("guidance.roro.section.2.list.1.bullet.3.link"),
+            call = Call("GET", appConfig.guidance.gvms),
+            target = Some("_blank")
+        ))),
         Html(messages("guidance.roro.section.2.list.1.bullet.4")),
         Html(messages("guidance.roro.section.2.list.1.bullet.5")),
         Html(messages("guidance.roro.section.2.list.1.bullet.6")),

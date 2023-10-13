@@ -123,6 +123,9 @@ trait ExportsItemBuilder {
 
   def withoutAdditionalInformation: ItemModifier = _.copy(additionalInformation = None)
 
+  def withoutAdditionalInformation(withIsRequired: Boolean = false): ItemModifier =
+    _.copy(additionalInformation = if (withIsRequired) Some(AdditionalInformationData(No, Seq.empty)) else None)
+
   def withIsLicenseRequired(isRequired: Boolean = true): ItemModifier = cache => cache.copy(isLicenceRequired = Some(isRequired))
 
   def withNoLicense: ItemModifier = cache => cache.copy(isLicenceRequired = None)

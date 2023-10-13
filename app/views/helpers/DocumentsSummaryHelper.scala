@@ -46,17 +46,17 @@ class DocumentsSummaryHelper @Inject() (govukSummaryList: GovukSummaryList, link
 
     govukSummaryList(
       SummaryList(
-        rows = if (noRows) headingOnNoRows(actionsEnabled) else heading +: summaryListRows,
+        rows = if (noRows) headingOnNoRows(actionsEnabled) else heading(actionsEnabled) +: summaryListRows,
         classes = s"""${if (noRows) "" else "govuk-!-margin-top-4 "}govuk-!-margin-bottom-9 previous-documents-summary"""
       )
     )
   }
 
-  private def heading(implicit messages: Messages): SummaryListRow =
+  private def heading(actionsEnabled: Boolean)(implicit messages: Messages): SummaryListRow =
     SummaryListRow(
       Key(Text(messages("declaration.summary.transaction.previousDocuments")), classes = "govuk-heading-s"),
       classes = "previous-documents-heading",
-      actions = Some(Actions(items = List(ActionItem())))
+      actions = if (actionsEnabled) Some(Actions(items = List(ActionItem()))) else None
     )
 
   private def headingOnNoRows(actionsEnabled: Boolean)(implicit messages: Messages): Seq[SummaryListRow] =

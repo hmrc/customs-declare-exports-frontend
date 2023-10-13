@@ -918,7 +918,7 @@ object AmendmentDetailsViewSpec {
         items,
         "EXPORTER1",
         "EXPORTER2",
-        s"$item.additionalInformation.information"
+        s"$item.additionalInformation.description"
       ) ++
       amendment(
         s"$items.additionalDocuments.documents.#1.documentTypeCode",
@@ -1059,7 +1059,7 @@ object AmendmentDetailsViewSpec {
         s"$items.additionalInformation.items.#1",
         AdditionalInformation("LIC99", "EXPORTER"),
         items,
-        List(s"$item.additionalInformation.code" -> "LIC99", s"$item.additionalInformation.information" -> "EXPORTER")
+        List(s"$item.additionalInformation.code" -> "LIC99", s"$item.additionalInformation.description" -> "EXPORTER")
       ) ++
       addOrRemove(
         s"$items.additionalDocuments.documents.#1",
@@ -1146,7 +1146,7 @@ object AmendmentDetailsViewSpec {
           s"$item.netWeight" -> "500",
           s"$item.supplementaryUnits" -> "10",
           s"$item.additionalInformation.code" -> "LIC99",
-          s"$item.additionalInformation.information" -> "EXPORTER",
+          s"$item.additionalInformation.description" -> "EXPORTER",
           s"$item.additionalDocuments.code" -> "X002",
           s"$item.additionalDocuments.identifier" -> "Some identifier",
           s"$item.additionalDocuments.status" -> "AF",

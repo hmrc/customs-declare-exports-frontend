@@ -139,7 +139,7 @@ class SummaryMessagesSpec extends UnitViewSpec {
       messages must haveTranslationFor("declaration.summary.items.item.packageInformation.markings")
       messages must haveTranslationFor("declaration.summary.items.item.additionalInformation")
       messages must haveTranslationFor("declaration.summary.items.item.additionalInformation.code")
-      messages must haveTranslationFor("declaration.summary.items.item.additionalInformation.information")
+      messages must haveTranslationFor("declaration.summary.items.item.additionalInformation.description")
       messages must haveTranslationFor("declaration.summary.items.item.additionalDocuments")
       messages must haveTranslationFor("declaration.summary.items.item.additionalDocuments.code")
       messages must haveTranslationFor("declaration.summary.items.item.additionalDocuments.identifier")
