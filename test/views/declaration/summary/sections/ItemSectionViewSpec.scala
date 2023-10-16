@@ -22,6 +22,9 @@ import forms.common.YesNoAnswer.Yes
 import forms.declaration._
 import models.DeclarationType.STANDARD
 import models.declaration.CommodityMeasure
+import org.jsoup.select.Elements
+import org.scalatest.Assertion
+import play.api.mvc.Call
 import services.cache.ExportsTestHelper
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.summary.sections.item_section
@@ -32,9 +35,12 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
 
   val commodityMeasure = CommodityMeasure(Some("12"), Some(false), Some("666"), Some("555"))
 
+  private val seqId = "1"
+  private val tx = "declaration.summary.items.item"
+
   private val itemWithAnswers = anItem(
     withItemId(itemId),
-    withSequenceId(1),
+    withSequenceId(seqId.toInt),
     withProcedureCodes(Some("1234"), Seq("000", "111")),
     withFiscalInformation(FiscalInformation("Yes")),
     withAdditionalFiscalReferenceData(AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("GB", "1234")))),
@@ -68,151 +74,159 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
 
         "have a 'change' link at header level" in {
           val action = view.getElementById("item-header-action")
-          action.text mustBe messages("declaration.summary.items.item.headerAction")
-          action must haveHref(controllers.declaration.routes.RemoveItemsSummaryController.displayRemoveItemConfirmationPage(itemId, true))
+          action.text mustBe messages(s"$tx.headerAction")
+          action must haveHref(RemoveItemsSummaryController.displayRemoveItemConfirmationPage(itemId, true))
         }
 
         "have a 'procedure code' row" in {
           val row = view.getElementsByClass("item-1-procedureCode-row")
-          row must haveSummaryKey(messages("declaration.summary.items.item.procedureCode"))
-          row must haveSummaryValue("1234")
-
-          row must haveSummaryActionsTexts("site.change", "declaration.summary.items.item.procedureCode.change", "1")
-
-          row must haveSummaryActionWithPlaceholder(ProcedureCodesController.displayPage(itemWithAnswers.id))
+          val call = Some(ProcedureCodesController.displayPage(itemId))
+          checkRow(row, s"$tx.procedureCode", "1234", call, s"$tx.procedureCode.change")
         }
 
         "have an 'additional procedure codes' row" in {
           val row = view.getElementsByClass("item-1-additionalProcedureCodes-row")
-          row must haveSummaryKey(messages("declaration.summary.items.item.additionalProcedureCodes"))
-          row must haveSummaryValue("000 111")
-
-          row must haveSummaryActionsTexts("site.change", "declaration.summary.items.item.additionalProcedureCodes.change", "1")
-
-          row must haveSummaryActionWithPlaceholder(AdditionalProcedureCodesController.displayPage(itemWithAnswers.id))
+          val call = Some(AdditionalProcedureCodesController.displayPage(itemId))
+          checkRow(row, s"$tx.additionalProcedureCodes", "000 111", call, s"$tx.additionalProcedureCodes.change")
         }
 
         "have an 'onward supply answer' row" in {
           val row = view.getElementsByClass("item-1-onwardSupplyRelief-row")
-          row must haveSummaryKey(messages("declaration.summary.items.item.onwardSupplyRelief"))
-          row must haveSummaryValue("Yes")
-
-          row must haveSummaryActionsTexts("site.change", "declaration.summary.items.item.onwardSupplyRelief.change", "1")
-
-          row must haveSummaryActionWithPlaceholder(FiscalInformationController.displayPage(itemWithAnswers.id))
+          val call = Some(FiscalInformationController.displayPage(itemId))
+          checkRow(row, s"$tx.onwardSupplyRelief", "Yes", call, s"$tx.onwardSupplyRelief.change")
         }
 
         "have a 'VAT answer' row" in {
           val row = view.getElementsByClass("item-1-VATdetails-row")
-          row must haveSummaryKey(messages("declaration.summary.items.item.VATdetails"))
-          row must haveSummaryValue("GB1234")
-
-          row must haveSummaryActionsTexts("site.change", "declaration.summary.items.item.VATdetails.change", "1")
-
-          row must haveSummaryActionWithPlaceholder(AdditionalFiscalReferencesController.displayPage(itemWithAnswers.id))
+          val call = Some(AdditionalFiscalReferencesController.displayPage(itemId))
+          checkRow(row, s"$tx.VATdetails", "GB1234", call, s"$tx.VATdetails.change")
         }
 
         "have a 'commodity code' row" in {
           val row = view.getElementsByClass("item-1-commodityCode-row")
-          row must haveSummaryKey(messages("declaration.summary.items.item.commodityCode"))
-          row must haveSummaryValue("1234567890")
-
-          row must haveSummaryActionsTexts("site.change", "declaration.summary.items.item.commodityCode.change", "1")
-
-          row must haveSummaryActionWithPlaceholder(CommodityDetailsController.displayPage(itemWithAnswers.id))
+          val call = Some(CommodityDetailsController.displayPage(itemId))
+          checkRow(row, s"$tx.commodityCode", "1234567890", call, s"$tx.commodityCode.change")
         }
 
         "have a 'goods description' row" in {
           val row = view.getElementsByClass("item-1-goodsDescription-row")
-          row must haveSummaryKey(messages("declaration.summary.items.item.goodsDescription"))
-          row must haveSummaryValue("description")
-
-          row must haveSummaryActionsTexts("site.change", "declaration.summary.items.item.goodsDescription.change", "1")
-
-          row must haveSummaryActionWithPlaceholder(CommodityDetailsController.displayPage(itemWithAnswers.id))
+          val call = Some(CommodityDetailsController.displayPage(itemId))
+          checkRow(row, s"$tx.goodsDescription", "description", call, s"$tx.goodsDescription.change")
         }
 
         "have a 'undangerous goods code' row" in {
           val row = view.getElementsByClass("item-1-unDangerousGoodsCode-row")
-          row must haveSummaryKey(messages("declaration.summary.items.item.unDangerousGoodsCode"))
-          row must haveSummaryValue("345")
-
-          row must haveSummaryActionsTexts("site.change", "declaration.summary.items.item.unDangerousGoodsCode.change", "1")
-
-          row must haveSummaryActionWithPlaceholder(UNDangerousGoodsCodeController.displayPage(itemWithAnswers.id))
+          val call = Some(UNDangerousGoodsCodeController.displayPage(itemId))
+          checkRow(row, s"$tx.unDangerousGoodsCode", "345", call, s"$tx.unDangerousGoodsCode.change")
         }
 
         "have a 'cus code' row" in {
           val row = view.getElementsByClass("item-1-cusCode-row")
-          row must haveSummaryKey(messages("declaration.summary.items.item.cusCode"))
-          row must haveSummaryValue("321")
-
-          row must haveSummaryActionsTexts("site.change", "declaration.summary.items.item.cusCode.change", "1")
-
-          row must haveSummaryActionWithPlaceholder(CusCodeController.displayPage(itemWithAnswers.id))
+          val call = Some(CusCodeController.displayPage(itemId))
+          checkRow(row, s"$tx.cusCode", "321", call, s"$tx.cusCode.change")
         }
 
         "have a 'taric codes' row" in {
           val row = view.getElementsByClass("item-1-taricAdditionalCodes-row")
-          row must haveSummaryKey(messages("declaration.summary.items.item.taricAdditionalCodes"))
-          row must haveSummaryValue("999, 888")
-
-          row must haveSummaryActionsTexts("site.change", "declaration.summary.items.item.taricAdditionalCodes.change", "1")
-
-          row must haveSummaryActionWithPlaceholder(TaricCodeSummaryController.displayPage(itemWithAnswers.id))
+          val call = Some(TaricCodeSummaryController.displayPage(itemId))
+          checkRow(row, s"$tx.taricAdditionalCodes", "999, 888", call, s"$tx.taricAdditionalCodes.change")
         }
 
         "have a 'nact codes' row" in {
           val row = view.getElementsByClass("item-1-nationalAdditionalCodes-row")
-          row must haveSummaryKey(messages("declaration.summary.items.item.nationalAdditionalCodes"))
-          row must haveSummaryValue("111, 222")
-
-          row must haveSummaryActionsTexts("site.change", "declaration.summary.items.item.nationalAdditionalCodes.change", "1")
-
-          row must haveSummaryActionWithPlaceholder(NactCodeSummaryController.displayPage(itemWithAnswers.id))
+          val call = Some(NactCodeSummaryController.displayPage(itemId))
+          checkRow(row, s"$tx.nationalAdditionalCodes", "111, 222", call, s"$tx.nationalAdditionalCodes.change")
         }
 
         "have a 'zero rated for vat' row" in {
           val row = view.getElementsByClass("item-1-zeroRatedForVat-row")
-          row must haveSummaryKey(messages("declaration.summary.items.item.zeroRatedForVat"))
-          row must haveSummaryValue(messages("declaration.summary.items.item.zeroRatedForVat.VATE"))
-
-          row must haveSummaryActionsTexts("site.change", "declaration.summary.items.item.zeroRatedForVat.change", "1")
-
-          row must haveSummaryActionWithPlaceholder(ZeroRatedForVatController.displayPage(itemWithAnswers.id))
+          val call = Some(ZeroRatedForVatController.displayPage(itemId))
+          checkRow(row, s"$tx.zeroRatedForVat", messages(s"$tx.zeroRatedForVat.VATE"), call, s"$tx.zeroRatedForVat.change")
         }
 
         "have a 'statistical item value' row" in {
           val row = view.getElementsByClass("item-1-itemValue-row")
-          row must haveSummaryKey(messages("declaration.summary.items.item.itemValue"))
-          row must haveSummaryValue("123")
-
-          row must haveSummaryActionsTexts("site.change", "declaration.summary.items.item.itemValue.change", "1")
-
-          row must haveSummaryActionWithPlaceholder(StatisticalValueController.displayPage(itemWithAnswers.id))
+          val call = Some(StatisticalValueController.displayPage(itemId))
+          checkRow(row, s"$tx.itemValue", "123", call, s"$tx.itemValue.change")
         }
 
-        "have a 'package information' section" in {
-          view.getElementById("package-information-1-table").getElementsByClass("govuk-table__caption").text mustBe messages(
-            "declaration.summary.items.item.packageInformation"
-          )
+        "have a 'Package Information' row" when {
+          "packageInformation is defined but has no data" in {
+            val item = anItemAfter(itemWithAnswers, withPackageInformation(List.empty))
+            val view = itemSection(item, 0, STANDARD)(messages)
+
+            val summaryList = view.getElementsByClass("item-1-package-information-summary").get(0)
+            val summaryListRows = summaryList.getElementsByClass("govuk-summary-list__row")
+            summaryListRows.size mustBe 1
+
+            val noDataRow = summaryListRows.get(0).getElementsByClass("item-1-package-information-heading")
+            val call = Some(PackageInformationSummaryController.displayPage(itemId))
+            checkRow(noDataRow, s"$tx.packageInformation", messages("site.none"), call, s"$tx.packageInformation.change")
+          }
         }
 
-        "have a 'package information displayed on the page before 'Commodity Measures'" in {
-          val body = view.child(0).children.get(1)
-          val elements = body.children
-          assert(elements.get(2).text.startsWith("Packing details"))
-          assert(elements.get(3).text.startsWith("Gross weight"))
+        "have a 'Package Information' section" in {
+          val pi1 = PackageInformation(1, "pi1", Some("PB"), Some(1), Some("markings1"))
+          val pi2 = PackageInformation(2, "pi2", Some("type2"), Some(2), None)
+          val pi3 = PackageInformation(3, "pi3", Some("type3"), None, Some("markings3"))
+          val pi4 = PackageInformation(4, "pi4", None, Some(4), Some("markings4"))
+          val pi5 = PackageInformation(5, "pi5", Some("type5"), None, None)
+          val pi6 = PackageInformation(6, "pi6", None, Some(6), None)
+          val pi7 = PackageInformation(7, "pi7", None, None, Some("markings7"))
+          val item = anItemAfter(itemWithoutAnswers, withPackageInformation(pi1, pi2, pi3, pi4, pi5, pi6, pi7))
+          val view = itemSection(item, 0, STANDARD)(messages)
+
+          val hint = s"$tx.packageInformation.change"
+          val call = Some(PackageInformationSummaryController.displayPage(itemId))
+
+          val summaryList = view.getElementsByClass("item-1-package-information-summary").get(0)
+          val summaryListRows = summaryList.getElementsByClass("govuk-summary-list__row")
+          summaryListRows.size mustBe 13
+
+          val headingRow = summaryListRows.get(0).getElementsByClass("item-1-package-information-heading")
+          checkRow(headingRow, s"$tx.packageInformation", "", None, "ign")
+
+          val pi1Row1 = summaryListRows.get(1).getElementsByClass("item-1-package-information-1-type")
+          checkRow(pi1Row1, s"$tx.packageInformation.type", "Pallet, box Combined open-ended box and pallet (PB)", call, hint)
+
+          val pi1Row2 = summaryListRows.get(2).getElementsByClass("item-1-package-information-1-number")
+          checkRow(pi1Row2, s"$tx.packageInformation.number", "1")
+
+          val pi1Row3 = summaryListRows.get(3).getElementsByClass("item-1-package-information-1-markings")
+          checkRow(pi1Row3, s"$tx.packageInformation.markings", "markings1")
+
+          val pi2Row4 = summaryListRows.get(4).getElementsByClass("item-1-package-information-2-type")
+          checkRow(pi2Row4, s"$tx.packageInformation.type", "Unknown package type (type2)", call, hint)
+
+          val pi2Row5 = summaryListRows.get(5).getElementsByClass("item-1-package-information-2-number")
+          checkRow(pi2Row5, s"$tx.packageInformation.number", "2")
+
+          val pi3Row6 = summaryListRows.get(6).getElementsByClass("item-1-package-information-3-type")
+          checkRow(pi3Row6, s"$tx.packageInformation.type", "Unknown package type (type3)", call, hint)
+
+          val pi3Row7 = summaryListRows.get(7).getElementsByClass("item-1-package-information-3-markings")
+          checkRow(pi3Row7, s"$tx.packageInformation.markings", "markings3")
+
+          val pi4Row8 = summaryListRows.get(8).getElementsByClass("item-1-package-information-4-number")
+          checkRow(pi4Row8, s"$tx.packageInformation.number", "4", call, hint)
+
+          val pi4Row9 = summaryListRows.get(9).getElementsByClass("item-1-package-information-4-markings")
+          checkRow(pi4Row9, s"$tx.packageInformation.markings", "markings4")
+
+          val pi5Row10 = summaryListRows.get(10).getElementsByClass("item-1-package-information-5-type")
+          checkRow(pi5Row10, s"$tx.packageInformation.type", "Unknown package type (type5)", call, hint)
+
+          val pi6Row11 = summaryListRows.get(11).getElementsByClass("item-1-package-information-6-number")
+          checkRow(pi6Row11, s"$tx.packageInformation.number", "6", call, hint)
+
+          val pi7Row12 = summaryListRows.get(12).getElementsByClass("item-1-package-information-7-markings")
+          checkRow(pi7Row12, s"$tx.packageInformation.markings", "markings7", call, hint)
         }
 
         "have a 'supplementary units' row" in {
           val row = view.getElementsByClass("item-1-supplementaryUnits-row")
-          row must haveSummaryKey(messages("declaration.summary.items.item.supplementaryUnits"))
-          row must haveSummaryValue("12")
-
-          row must haveSummaryActionsTexts("site.change", "declaration.summary.items.item.supplementaryUnits.change", "1")
-
-          row must haveSummaryActionWithPlaceholder(SupplementaryUnitsController.displayPage(itemWithAnswers.id))
+          val call = Some(SupplementaryUnitsController.displayPage(itemId))
+          checkRow(row, s"$tx.supplementaryUnits", "12", call, s"$tx.supplementaryUnits.change")
         }
 
         // CEDS-3668
@@ -226,22 +240,14 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
 
         "have a 'gross weight' row" in {
           val row = view.getElementsByClass("item-1-grossWeight-row")
-          row must haveSummaryKey(messages("declaration.summary.items.item.grossWeight"))
-          row must haveSummaryValue("666")
-
-          row must haveSummaryActionsTexts("site.change", "declaration.summary.items.item.grossWeight.change", "1")
-
-          row must haveSummaryActionWithPlaceholder(CommodityMeasureController.displayPage(itemWithAnswers.id))
+          val call = Some(CommodityMeasureController.displayPage(itemId))
+          checkRow(row, s"$tx.grossWeight", "666", call, s"$tx.grossWeight.change")
         }
 
         "have a 'net weight' row" in {
           val row = view.getElementsByClass("item-1-netWeight-row")
-          row must haveSummaryKey(messages("declaration.summary.items.item.netWeight"))
-          row must haveSummaryValue("555")
-
-          row must haveSummaryActionsTexts("site.change", "declaration.summary.items.item.netWeight.change", "1")
-
-          row must haveSummaryActionWithPlaceholder(CommodityMeasureController.displayPage(itemWithAnswers.id))
+          val call = Some(CommodityMeasureController.displayPage(itemId))
+          checkRow(row, s"$tx.netWeight", "555", call, s"$tx.netWeight.change")
         }
 
         "have an 'Additional Information' row" when {
@@ -249,16 +255,13 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
             val item = anItemAfter(itemWithAnswers, withoutAdditionalInformation(true))
             val view = itemSection(item, 0, STANDARD)(messages)
 
-            val sequenceId = item.sequenceId.toString
-            val summaryList = view.getElementsByClass(s"item-$sequenceId-additional-information-summary").get(0)
+            val summaryList = view.getElementsByClass("item-1-additional-information-summary").get(0)
             val summaryListRows = summaryList.getElementsByClass("govuk-summary-list__row")
             summaryListRows.size mustBe 1
 
-            val noDataRow = summaryListRows.get(0).getElementsByClass(s"item-$sequenceId-additional-information-heading")
-            noDataRow must haveSummaryKey(messages("declaration.summary.items.item.additionalInformation"))
-            noDataRow must haveSummaryValue(messages("site.none"))
-            noDataRow must haveSummaryActionsTexts("site.change", "declaration.summary.items.item.additionalInformation.change", sequenceId)
-            noDataRow must haveSummaryActionWithPlaceholder(AdditionalInformationRequiredController.displayPage(item.id))
+            val noDataRow = summaryListRows.get(0).getElementsByClass("item-1-additional-information-heading")
+            val call = Some(AdditionalInformationRequiredController.displayPage(itemId))
+            checkRow(noDataRow, s"$tx.additionalInformation", messages("site.none"), call, s"$tx.additionalInformation.change")
           }
         }
 
@@ -268,55 +271,43 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
           val item = anItemAfter(itemWithoutAnswers, withAdditionalInformation(ai1, ai2))
           val view = itemSection(item, 0, STANDARD)(messages)
 
-          val sequenceId = item.sequenceId.toString
-          val summaryList = view.getElementsByClass(s"item-$sequenceId-additional-information-summary").get(0)
+          val hint = s"$tx.additionalInformation.change"
+          val call = Some(AdditionalInformationController.displayPage(itemId))
+
+          val summaryList = view.getElementsByClass("item-1-additional-information-summary").get(0)
           val summaryListRows = summaryList.getElementsByClass("govuk-summary-list__row")
           summaryListRows.size mustBe 5
 
-          val headingRow = summaryListRows.get(0).getElementsByClass(s"item-$sequenceId-additional-information-heading")
-          headingRow must haveSummaryKey(messages("declaration.summary.items.item.additionalInformation"))
-          headingRow must haveSummaryValue("")
+          val headingRow = summaryListRows.get(0).getElementsByClass("item-1-additional-information-heading")
+          checkRow(headingRow, s"$tx.additionalInformation", "", None, "ign")
 
-          val document1Row1 = summaryListRows.get(1).getElementsByClass(s"item-$sequenceId-additional-information-1-code")
-          document1Row1 must haveSummaryKey(messages("declaration.summary.items.item.additionalInformation.code"))
-          document1Row1 must haveSummaryValue("Code1")
-          document1Row1 must haveSummaryActionsTexts("site.change", "declaration.summary.items.item.additionalInformation.change", sequenceId)
-          document1Row1 must haveSummaryActionWithPlaceholder(AdditionalInformationController.displayPage(item.id))
+          val info1Row1 = summaryListRows.get(1).getElementsByClass("item-1-additional-information-1-code")
+          checkRow(info1Row1, s"$tx.additionalInformation.code", "Code1", call, hint)
 
-          val document1Row2 = summaryListRows.get(2).getElementsByClass(s"item-$sequenceId-additional-information-1-description")
-          document1Row2 must haveSummaryKey(messages("declaration.summary.items.item.additionalInformation.description"))
-          document1Row2 must haveSummaryValue("Exporter1")
-          document1Row2.get(0).getElementsByClass("govuk-summary-list__actions").size mustBe 0
+          val info1Row2 = summaryListRows.get(2).getElementsByClass("item-1-additional-information-1-description")
+          checkRow(info1Row2, s"$tx.additionalInformation.description", "Exporter1")
 
-          val document2Row3 = summaryListRows.get(3).getElementsByClass(s"item-$sequenceId-additional-information-2-code")
-          document2Row3 must haveSummaryKey(messages("declaration.summary.items.item.additionalInformation.code"))
-          document2Row3 must haveSummaryValue("Code2")
-          document2Row3 must haveSummaryActionsTexts("site.change", "declaration.summary.items.item.additionalInformation.change", sequenceId)
-          document2Row3 must haveSummaryActionWithPlaceholder(AdditionalInformationController.displayPage(item.id))
+          val info2Row3 = summaryListRows.get(3).getElementsByClass("item-1-additional-information-2-code")
+          checkRow(info2Row3, s"$tx.additionalInformation.code", "Code2", call, hint)
 
-          val document2Row4 = summaryListRows.get(4).getElementsByClass(s"item-$sequenceId-additional-information-2-description")
-          document2Row4 must haveSummaryKey(messages("declaration.summary.items.item.additionalInformation.description"))
-          document2Row4 must haveSummaryValue("Exporter2")
-          document2Row4.get(0).getElementsByClass("govuk-summary-list__actions").size mustBe 0
+          val info2Row4 = summaryListRows.get(4).getElementsByClass("item-1-additional-information-2-description")
+          checkRow(info2Row4, s"$tx.additionalInformation.description", "Exporter2")
         }
 
         "have a 'Licenses' row" when {
           "isLicenceRequired is 'yes' (or 'no', but not None) and" when {
+            val call = Some(IsLicenceRequiredController.displayPage(itemId))
 
             "additionalDocuments is undefined" in {
               val item = anItemAfter(itemWithAnswers, withoutAdditionalDocuments())
               val view = itemSection(item, 0, STANDARD)(messages)
 
-              val sequenceId = item.sequenceId.toString
-              val summaryList = view.getElementsByClass(s"item-$sequenceId-additional-documents-summary").get(0)
+              val summaryList = view.getElementsByClass("item-1-additional-documents-summary").get(0)
               val summaryListRows = summaryList.getElementsByClass("govuk-summary-list__row")
               summaryListRows.size mustBe 1
 
-              val licensesRow = summaryListRows.get(0).getElementsByClass(s"item-$sequenceId-licenses")
-              licensesRow must haveSummaryKey(messages("declaration.summary.items.item.licences"))
-              licensesRow must haveSummaryValue(messages("site.yes"))
-              licensesRow must haveSummaryActionsTexts("site.change", "declaration.summary.items.item.licences.change", sequenceId)
-              licensesRow must haveSummaryActionWithPlaceholder(IsLicenceRequiredController.displayPage(item.id))
+              val licensesRow = summaryListRows.get(0).getElementsByClass("item-1-licenses")
+              checkRow(licensesRow, s"$tx.licences", messages("site.yes"), call, s"$tx.licences.change")
             }
 
             "additionalDocuments is defined (but has no documents)" should {
@@ -324,22 +315,16 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
                 val item = anItemAfter(itemWithAnswers, withoutAdditionalDocuments(true))
                 val view = itemSection(item, 0, STANDARD)(messages)
 
-                val sequenceId = item.sequenceId.toString
-                val summaryList = view.getElementsByClass(s"item-$sequenceId-additional-documents-summary").get(0)
+                val summaryList = view.getElementsByClass("item-1-additional-documents-summary").get(0)
                 val summaryListRows = summaryList.getElementsByClass("govuk-summary-list__row")
                 summaryListRows.size mustBe 2
 
-                val licensesRow = summaryListRows.get(0).getElementsByClass(s"item-$sequenceId-licenses")
-                licensesRow must haveSummaryKey(messages("declaration.summary.items.item.licences"))
-                licensesRow must haveSummaryValue(messages("site.yes"))
-                licensesRow must haveSummaryActionsTexts("site.change", "declaration.summary.items.item.licences.change", sequenceId)
-                licensesRow must haveSummaryActionWithPlaceholder(IsLicenceRequiredController.displayPage(item.id))
+                val licensesRow = summaryListRows.get(0).getElementsByClass("item-1-licenses")
+                checkRow(licensesRow, s"$tx.licences", messages("site.yes"), call, s"$tx.licences.change")
 
-                val noDocumentsRow = summaryListRows.get(1).getElementsByClass(s"item-$sequenceId-additional-documents-heading")
-                noDocumentsRow must haveSummaryKey(messages("declaration.summary.items.item.additionalDocuments"))
-                noDocumentsRow must haveSummaryValue(messages("site.none"))
-                noDocumentsRow must haveSummaryActionsTexts("site.change", "declaration.summary.items.item.additionalDocuments.change", sequenceId)
-                noDocumentsRow must haveSummaryActionWithPlaceholder(AdditionalDocumentsController.displayPage(item.id))
+                val noDocumentsRow = summaryListRows.get(1).getElementsByClass("item-1-additional-documents-heading")
+                val call1 = Some(AdditionalDocumentsController.displayPage(itemId))
+                checkRow(noDocumentsRow, s"$tx.additionalDocuments", messages("site.none"), call1, s"$tx.additionalDocuments.change")
               }
             }
           }
@@ -353,49 +338,39 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
             val item = anItemAfter(itemWithoutAnswers, withIsLicenseRequired(), withAdditionalDocuments(Yes, document1, document2, document3))
             val view = itemSection(item, 0, STANDARD)(messages)
 
-            val sequenceId = item.sequenceId.toString
-            val summaryList = view.getElementsByClass(s"item-$sequenceId-additional-documents-summary").get(0)
+            val hint = s"$tx.additionalDocuments.change"
+            val call = Some(AdditionalDocumentsController.displayPage(itemId))
+
+            val summaryList = view.getElementsByClass("item-1-additional-documents-summary").get(0)
             val summaryListRows = summaryList.getElementsByClass("govuk-summary-list__row")
             summaryListRows.size mustBe 6
 
-            val headingRow = summaryListRows.get(0).getElementsByClass(s"item-$sequenceId-additional-documents-heading")
-            headingRow must haveSummaryKey(messages("declaration.summary.items.item.additionalDocuments"))
-            headingRow must haveSummaryValue("")
+            val headingRow = summaryListRows.get(0).getElementsByClass("item-1-additional-documents-heading")
+            checkRow(headingRow, s"$tx.additionalDocuments", "", None, "ign")
 
-            val licensesRow = summaryListRows.get(1).getElementsByClass(s"item-$sequenceId-licenses")
-            licensesRow must haveSummaryKey(messages("declaration.summary.items.item.licences"))
-            licensesRow must haveSummaryValue(messages("site.yes"))
-            licensesRow must haveSummaryActionsTexts("site.change", "declaration.summary.items.item.licences.change", sequenceId)
-            licensesRow must haveSummaryActionWithPlaceholder(IsLicenceRequiredController.displayPage(item.id))
+            val licensesRow = summaryListRows.get(1).getElementsByClass("item-1-licenses")
+            val call1 = Some(IsLicenceRequiredController.displayPage(itemId))
+            checkRow(licensesRow, s"$tx.licences", messages("site.yes"), call1, s"$tx.licences.change")
 
-            val document1Row1 = summaryListRows.get(2).getElementsByClass(s"item-$sequenceId-document-1-code")
-            document1Row1 must haveSummaryKey(messages("declaration.summary.items.item.additionalDocuments.code"))
-            document1Row1 must haveSummaryValue("C501")
-            document1Row1 must haveSummaryActionsTexts("site.change", "declaration.summary.items.item.additionalDocuments.change", sequenceId)
-            document1Row1 must haveSummaryActionWithPlaceholder(AdditionalDocumentsController.displayPage(item.id))
+            val document1Row1 = summaryListRows.get(2).getElementsByClass("item-1-document-1-code")
+            checkRow(document1Row1, s"$tx.additionalDocuments.code", "C501", call, hint)
 
-            val document1Row2 = summaryListRows.get(3).getElementsByClass(s"item-$sequenceId-document-1-identifier")
-            document1Row2 must haveSummaryKey(messages("declaration.summary.items.item.additionalDocuments.identifier"))
+            val document1Row2 = summaryListRows.get(3).getElementsByClass("item-1-document-1-identifier")
+
+            document1Row2 must haveSummaryKey(messages(s"$tx.additionalDocuments.identifier"))
             document1Row2 must haveSummaryValue("GBAEOC1342")
             document1Row2.get(0).getElementsByClass("govuk-summary-list__actions").size mustBe 0
 
-            val document2Row = summaryListRows.get(4).getElementsByClass(s"item-$sequenceId-document-2-code")
-            document2Row must haveSummaryKey(messages("declaration.summary.items.item.additionalDocuments.code"))
-            document2Row must haveSummaryValue("A123")
-            document2Row must haveSummaryActionsTexts("site.change", "declaration.summary.items.item.additionalDocuments.change", sequenceId)
-            document2Row must haveSummaryActionWithPlaceholder(AdditionalDocumentsController.displayPage(item.id))
+            val document2Row = summaryListRows.get(4).getElementsByClass("item-1-document-2-code")
+            checkRow(document2Row, s"$tx.additionalDocuments.code", "A123", call, hint)
 
-            val document3Row = summaryListRows.get(5).getElementsByClass(s"item-$sequenceId-document-3-identifier")
-            document3Row must haveSummaryKey(messages("declaration.summary.items.item.additionalDocuments.identifier"))
-            document3Row must haveSummaryValue("GBAEOS9876")
-            document3Row must haveSummaryActionsTexts("site.change", "declaration.summary.items.item.additionalDocuments.change", sequenceId)
-            document3Row must haveSummaryActionWithPlaceholder(AdditionalDocumentsController.displayPage(item.id))
+            val document3Row = summaryListRows.get(5).getElementsByClass("item-1-document-3-identifier")
+            checkRow(document3Row, s"$tx.additionalDocuments.identifier", "GBAEOS9876", call, hint)
           }
         }
       }
 
       "actions are disabled using actionsEnabled = false" should {
-
         val view = itemSection(itemWithAnswers, 0, STANDARD, actionsEnabled = false)(messages)
 
         "NOT have change links (which are instead added when 'actionsEnabled' is true" in {
@@ -403,104 +378,100 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
         }
 
         "still have an 'Item' header" in {
-          val subHeader = view.getElementsByClass("govuk-heading-s").get(0)
-          subHeader.text mustBe messages("declaration.summary.items.item.presentationId", "1")
+          view.getElementsByClass("govuk-heading-s").get(0).text mustBe messages("declaration.summary.items.item.presentationId", "1")
         }
 
         "still have a 'procedure code' row" in {
           val row = view.getElementsByClass("item-1-procedureCode-row")
-          row must haveSummaryKey(messages("declaration.summary.items.item.procedureCode"))
-          row must haveSummaryValue("1234")
+          checkRow(row, s"$tx.procedureCode", "1234")
         }
 
         "still have an 'additional procedure codes' row" in {
           val row = view.getElementsByClass("item-1-additionalProcedureCodes-row")
-          row must haveSummaryKey(messages("declaration.summary.items.item.additionalProcedureCodes"))
-          row must haveSummaryValue("000 111")
+          checkRow(row, s"$tx.additionalProcedureCodes", "000 111")
         }
 
         "still have an 'onward supply answer' row" in {
           val row = view.getElementsByClass("item-1-onwardSupplyRelief-row")
-          row must haveSummaryKey(messages("declaration.summary.items.item.onwardSupplyRelief"))
-          row must haveSummaryValue("Yes")
+          checkRow(row, s"$tx.onwardSupplyRelief", "Yes")
         }
 
         "still have a 'VAT answer' row" in {
           val row = view.getElementsByClass("item-1-VATdetails-row")
-          row must haveSummaryKey(messages("declaration.summary.items.item.VATdetails"))
-          row must haveSummaryValue("GB1234")
+          checkRow(row, s"$tx.VATdetails", "GB1234")
         }
 
         "still have a 'commodity code' row" in {
           val row = view.getElementsByClass("item-1-commodityCode-row")
-          row must haveSummaryKey(messages("declaration.summary.items.item.commodityCode"))
-          row must haveSummaryValue("1234567890")
+          checkRow(row, s"$tx.commodityCode", "1234567890")
         }
 
         "still have a 'goods description' row" in {
           val row = view.getElementsByClass("item-1-goodsDescription-row")
-          row must haveSummaryKey(messages("declaration.summary.items.item.goodsDescription"))
-          row must haveSummaryValue("description")
+          checkRow(row, s"$tx.goodsDescription", "description")
         }
 
         "still have an 'undangerous goods code' row" in {
           val row = view.getElementsByClass("item-1-unDangerousGoodsCode-row")
-          row must haveSummaryKey(messages("declaration.summary.items.item.unDangerousGoodsCode"))
-          row must haveSummaryValue("345")
+          checkRow(row, s"$tx.unDangerousGoodsCode", "345")
         }
 
         "still have a 'cus code' row" in {
           val row = view.getElementsByClass("item-1-cusCode-row")
-          row must haveSummaryKey(messages("declaration.summary.items.item.cusCode"))
-          row must haveSummaryValue("321")
+          checkRow(row, s"$tx.cusCode", "321")
         }
 
         "still have a 'taric codes' row" in {
           val row = view.getElementsByClass("item-1-taricAdditionalCodes-row")
-          row must haveSummaryKey(messages("declaration.summary.items.item.taricAdditionalCodes"))
-          row must haveSummaryValue("999, 888")
+          checkRow(row, s"$tx.taricAdditionalCodes", "999, 888")
         }
 
         "still have a 'nact codes' row" in {
           val row = view.getElementsByClass("item-1-nationalAdditionalCodes-row")
-          row must haveSummaryKey(messages("declaration.summary.items.item.nationalAdditionalCodes"))
-          row must haveSummaryValue("111, 222")
+          checkRow(row, s"$tx.nationalAdditionalCodes", "111, 222")
         }
 
         "still have a 'zero rated for vat' row" in {
           val row = view.getElementsByClass("item-1-zeroRatedForVat-row")
-          row must haveSummaryKey(messages("declaration.summary.items.item.zeroRatedForVat"))
-          row must haveSummaryValue(messages("declaration.summary.items.item.zeroRatedForVat.VATE"))
+          checkRow(row, s"$tx.zeroRatedForVat", messages(s"$tx.zeroRatedForVat.VATE"))
         }
 
         "still have a 'statistical item value' row" in {
           val row = view.getElementsByClass("item-1-itemValue-row")
-          row must haveSummaryKey(messages("declaration.summary.items.item.itemValue"))
-          row must haveSummaryValue("123")
+          checkRow(row, s"$tx.itemValue", "123")
         }
 
         "still have a 'package information' section" in {
-          view.getElementById("package-information-1-table").getElementsByClass("govuk-table__caption").text mustBe messages(
-            "declaration.summary.items.item.packageInformation"
-          )
+          val summaryList = view.getElementsByClass("item-1-package-information-summary").get(0)
+          val summaryListRows = summaryList.getElementsByClass("govuk-summary-list__row")
+          summaryListRows.size mustBe 4
+
+          val headingRow = summaryListRows.get(0).getElementsByClass("item-1-package-information-heading")
+          checkRow(headingRow, s"$tx.packageInformation", "", None, "ign")
+
+          val pi1Row1 = summaryListRows.get(1).getElementsByClass("item-1-package-information-1-type")
+          checkRow(pi1Row1, s"$tx.packageInformation.type", "Pallet, box Combined open-ended box and pallet (PB)")
+
+          val pi1Row2 = summaryListRows.get(2).getElementsByClass("item-1-package-information-1-number")
+          checkRow(pi1Row2, s"$tx.packageInformation.number", "10")
+
+          val pi1Row3 = summaryListRows.get(3).getElementsByClass("item-1-package-information-1-markings")
+          checkRow(pi1Row3, s"$tx.packageInformation.markings", "marks")
         }
 
         "still have a 'supplementary units' row" in {
           val row = view.getElementsByClass("item-1-supplementaryUnits-row")
-          row must haveSummaryKey(messages("declaration.summary.items.item.supplementaryUnits"))
-          row must haveSummaryValue("12")
+          checkRow(row, s"$tx.supplementaryUnits", "12")
         }
 
         "still have a 'gross weight' row" in {
           val row = view.getElementsByClass("item-1-grossWeight-row")
-          row must haveSummaryKey(messages("declaration.summary.items.item.grossWeight"))
-          row must haveSummaryValue("666")
+          checkRow(row, s"$tx.grossWeight", "666")
         }
 
         "still have a 'net weight' row" in {
           val row = view.getElementsByClass("item-1-netWeight-row")
-          row must haveSummaryKey(messages("declaration.summary.items.item.netWeight"))
-          row must haveSummaryValue("555")
+          checkRow(row, s"$tx.netWeight", "555")
         }
 
         "still have an 'Additional information' section" in {
@@ -509,16 +480,13 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
           summaryListRows.size mustBe 3
 
           val headingRow = summaryListRows.get(0).getElementsByClass("item-1-additional-information-heading")
-          headingRow must haveSummaryKey(messages("declaration.summary.items.item.additionalInformation"))
-          headingRow must haveSummaryValue("")
+          checkRow(headingRow, s"$tx.additionalInformation", "", None, "ign")
 
-          val document1Row1 = summaryListRows.get(1).getElementsByClass("item-1-additional-information-1-code")
-          document1Row1 must haveSummaryKey(messages("declaration.summary.items.item.additionalInformation.code"))
-          document1Row1 must haveSummaryValue("1234")
+          val info1Row1 = summaryListRows.get(1).getElementsByClass("item-1-additional-information-1-code")
+          checkRow(info1Row1, s"$tx.additionalInformation.code", "1234")
 
-          val document1Row2 = summaryListRows.get(2).getElementsByClass("item-1-additional-information-1-description")
-          document1Row2 must haveSummaryKey(messages("declaration.summary.items.item.additionalInformation.description"))
-          document1Row2 must haveSummaryValue("additionalDescription")
+          val info1Row2 = summaryListRows.get(2).getElementsByClass("item-1-additional-information-1-description")
+          checkRow(info1Row2, s"$tx.additionalInformation.description", "additionalDescription")
         }
 
         "still have an 'Additional documents' section" in {
@@ -527,20 +495,16 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
           summaryListRows.size mustBe 4
 
           val headingRow = summaryListRows.get(0).getElementsByClass("item-1-additional-documents-heading")
-          headingRow must haveSummaryKey(messages("declaration.summary.items.item.additionalDocuments"))
-          headingRow must haveSummaryValue("")
+          checkRow(headingRow, s"$tx.additionalDocuments", "", None, "ign")
 
           val licensesRow = summaryListRows.get(1).getElementsByClass("item-1-licenses")
-          licensesRow must haveSummaryKey(messages("declaration.summary.items.item.licences"))
-          licensesRow must haveSummaryValue(messages("site.yes"))
+          checkRow(licensesRow, s"$tx.licences", messages("site.yes"))
 
           val document1Row1 = summaryListRows.get(2).getElementsByClass("item-1-document-1-code")
-          document1Row1 must haveSummaryKey(messages("declaration.summary.items.item.additionalDocuments.code"))
-          document1Row1 must haveSummaryValue("C501")
+          checkRow(document1Row1, s"$tx.additionalDocuments.code", "C501")
 
           val document1Row2 = summaryListRows.get(3).getElementsByClass("item-1-document-1-identifier")
-          document1Row2 must haveSummaryKey(messages("declaration.summary.items.item.additionalDocuments.identifier"))
-          document1Row2 must haveSummaryValue("GBAEOC1342")
+          checkRow(document1Row2, s"$tx.additionalDocuments.identifier", "GBAEOC1342")
         }
       }
     }
@@ -580,6 +544,10 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
         view.getElementsByClass("item-1-itemValue-row") mustBe empty
       }
 
+      "not display a 'package information section' row" in {
+        view.getElementsByClass("item-1-additional-package-information-summary") mustBe empty
+      }
+
       "not display a 'Supplementary Units' row" in {
         view.getElementsByClass("item-1-supplementaryUnits-row") mustBe empty
       }
@@ -592,11 +560,6 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
         view.getElementsByClass("item-1-netWeight-row") mustBe empty
       }
 
-      "not display a 'package information section' row" in {
-        view.getElementsByClass("item-1-commodityCode-row") mustBe empty
-        Option(view.getElementById("package-information-1")) mustBe None
-      }
-
       "not display an 'Additional information' row" in {
         view.getElementsByClass("item-1-additional-information-summary") mustBe empty
       }
@@ -604,6 +567,18 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
       "not display an 'Additional documents'' row" in {
         view.getElementsByClass("item-1-additional-documents-summary") mustBe empty
       }
+    }
+  }
+
+  private def checkRow(row: Elements, labelKey: String, value: String, maybeUrl: Option[Call] = None, hint: String = ""): Assertion = {
+    row must haveSummaryKey(messages(labelKey))
+    row must haveSummaryValue(value)
+    maybeUrl.fold {
+      val action = row.get(0).getElementsByClass("govuk-summary-list__actions")
+      if (hint.isEmpty) action.size mustBe 0 else action.text mustBe ""
+    } { url =>
+      row must haveSummaryActionsTexts("site.change", hint, seqId)
+      row must haveSummaryActionWithPlaceholder(url)
     }
   }
 }
