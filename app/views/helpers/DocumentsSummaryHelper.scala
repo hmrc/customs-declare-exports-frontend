@@ -20,7 +20,7 @@ import controllers.declaration.routes.PreviousDocumentsSummaryController
 import forms.declaration.Document
 import models.ExportsDeclaration
 import play.api.i18n.Messages
-import play.twirl.api.Html
+import play.twirl.api.{Html, HtmlFormat}
 import services.DocumentTypeService
 import uk.gov.hmrc.govukfrontend.views.html.components.{GovukSummaryList, SummaryList}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
@@ -32,24 +32,21 @@ import javax.inject.{Inject, Singleton}
 
 @Singleton
 class DocumentsSummaryHelper @Inject() (govukSummaryList: GovukSummaryList, linkContent: linkContent, documentTypeService: DocumentTypeService) {
-  def section(declaration: ExportsDeclaration, actionsEnabled: Boolean)(implicit messages: Messages): Html = {
-    val summaryListRows: Seq[SummaryListRow] = declaration.previousDocuments
-      .map(_.documents)
-      .getOrElse(Seq.empty)
-      .zipWithIndex
-      .flatMap { case (document, index) =>
+
+  def section(declaration: ExportsDeclaration, actionsEnabled: Boolean)(implicit messages: Messages): Html =
+    declaration.previousDocuments.fold(HtmlFormat.empty) { previousDocuments =>
+      val summaryListRows = previousDocuments.documents.zipWithIndex.flatMap { case (document, index) =>
         List(documentTypeCode(document, actionsEnabled, index + 1), documentRef(document, index + 1))
       }
+      val noRows = summaryListRows.isEmpty
 
-    val noRows = summaryListRows.isEmpty
-
-    govukSummaryList(
-      SummaryList(
-        rows = if (noRows) headingOnNoRows(actionsEnabled) else heading(actionsEnabled) +: summaryListRows,
-        classes = s"""${if (noRows) "" else "govuk-!-margin-top-4 "}govuk-!-margin-bottom-9 previous-documents-summary"""
+      govukSummaryList(
+        SummaryList(
+          rows = if (noRows) headingOnNoRows(actionsEnabled) else heading(actionsEnabled) +: summaryListRows,
+          classes = s"""${if (noRows) "" else "govuk-!-margin-top-4 "}govuk-!-margin-bottom-9 previous-documents-summary"""
+        )
       )
-    )
-  }
+    }
 
   private def heading(actionsEnabled: Boolean)(implicit messages: Messages): SummaryListRow =
     SummaryListRow(

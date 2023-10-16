@@ -34,7 +34,7 @@ class ContainersSummaryHelper @Inject() (govukSummaryList: GovukSummaryList, lin
 
   def section(declaration: ExportsDeclaration, actionsEnabled: Boolean)(implicit messages: Messages): Html =
     declaration.transport.containers.fold(HtmlFormat.empty) { containers =>
-      val summaryListRows = containers.map(containerRows(_, actionsEnabled)).flatten
+      val summaryListRows = containers.flatMap(containerRows(_, actionsEnabled))
       val noContainers = summaryListRows.length == 0
 
       govukSummaryList(
