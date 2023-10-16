@@ -70,7 +70,7 @@
             errorMessage = form(radioButtonGroupId).error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
         ))
 
-        @tariffExpander(BorderTransport, request.declarationType)(messages, appConfig),
+        @tariffExpander(BorderTransport, request.declarationType)(messages, appConfig)
 
         @saveButtons()
     }

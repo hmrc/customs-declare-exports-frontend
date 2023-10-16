@@ -34,6 +34,7 @@
     errorSummary: errorSummary,
     sectionHeader: sectionHeader,
     pageTitle: pageTitle,
+    heading: heading,
     formGroupWrapper: formGroupWrapper,
     exportsInputText: exportsInputText,
     exportsInputTextArea: exportsInputTextArea,
@@ -104,7 +105,7 @@
       <div class="govuk-form-group @if(measurementErrors.nonEmpty){govuk-form-group--error}">
           @govukFieldset(Fieldset(
               legend = Some(Legend(
-                  content = Text(messages("declaration.additionalDocument.measurementUnit.header")),
+                  content = HtmlContent(heading(messages("declaration.additionalDocument.measurementUnit.header"), classes = "govuk-heading govuk-heading-m govuk-!-margin-bottom-0", tier = "h2")),
                   classes = "govuk-fieldset__legend--m"
               )),
               attributes = Map("id" -> "measurementUnitAndQualifier"),
