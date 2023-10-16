@@ -378,7 +378,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
         }
 
         "still have an 'Item' header" in {
-          view.getElementsByClass("govuk-heading-s").get(0).text mustBe messages("declaration.summary.items.item.presentationId", "1")
+          view.getElementsByClass("govuk-heading-s").get(0).text mustBe messages(s"$tx.presentationId", seqId)
         }
 
         "still have a 'procedure code' row" in {
