@@ -38,9 +38,9 @@ class PackageInformationSummaryHelper @Inject() (
 ) {
   def section(item: ExportItem, actionsEnabled: Boolean)(implicit messages: Messages): Html =
     item.packageInformation.fold(HtmlFormat.empty) { listOfPackageInformation =>
-      val summaryListRows = listOfPackageInformation.zipWithIndex.map { case (packageInfo, index) =>
+      val summaryListRows = listOfPackageInformation.zipWithIndex.flatMap { case (packageInfo, index) =>
         packageInfoRows(item, packageInfo, index + 1, actionsEnabled)
-      }.flatten
+      }
 
       if (summaryListRows.length == 0) govukSummaryList(SummaryList(headingOnNoPackageInfo(item, actionsEnabled), classes = cssClasses(item, 0)))
       else govukSummaryList(SummaryList(heading(item, actionsEnabled) +: summaryListRows, classes = cssClasses(item, 4)))

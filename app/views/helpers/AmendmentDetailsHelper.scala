@@ -76,7 +76,7 @@ class AmendmentDetailsHelper @Inject() (
         sectionLocations(differences) ++
         sectionTransaction(differences) ++
         sectionItems(differences) ++
-        sectionTransport(differences)).map(handleSection).flatten
+        sectionTransport(differences)).flatMap(handleSection)
     )
 
   private def section(sectionId: String, differences: ExportsDeclarationDiff): Seq[Section] =

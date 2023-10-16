@@ -18,7 +18,7 @@ package views.declaration.summary.sections
 
 import base.Injector
 import controllers.declaration.routes._
-import forms.declaration.Document
+import forms.declaration.{Document, PreviousDocumentsData}
 import services.cache.ExportsTestHelper
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.summary.sections.transaction_section
@@ -95,7 +95,8 @@ class TransactionSectionViewSpec extends UnitViewSpec with ExportsTestHelper wit
 
       "contains an empty section" when {
         "no docs have been entered" in {
-          val view = transactionSection(aDeclarationAfter(data, withoutPreviousDocuments()))(messages)
+          val previousDocumentsData = withPreviousDocumentsData(Some(PreviousDocumentsData(Seq.empty)))
+          val view = transactionSection(aDeclarationAfter(data, previousDocumentsData))(messages)
 
           val row = view.getElementsByClass("previous-documents-summary")
           row must haveSummaryKey(messages("declaration.summary.transaction.previousDocuments"))
