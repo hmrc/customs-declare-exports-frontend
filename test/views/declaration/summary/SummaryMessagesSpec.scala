@@ -167,7 +167,6 @@ class SummaryMessagesSpec extends UnitViewSpec {
       messages must haveTranslationFor("declaration.summary.transport.departure.meansOfTransport.header")
       messages must haveTranslationFor("declaration.summary.transport.border.meansOfTransport.header")
       messages must haveTranslationFor("declaration.summary.transport.payment")
-      messages must haveTranslationFor("declaration.summary.transport.containers")
     }
 
     "have defined transport codes messages" in {
@@ -219,7 +218,7 @@ class SummaryMessagesSpec extends UnitViewSpec {
 
     "have defined container messages" in {
 
-      messages must haveTranslationFor("declaration.summary.containers")
+      messages must haveTranslationFor("declaration.summary.container")
       messages must haveTranslationFor("declaration.summary.container.id")
       messages must haveTranslationFor("declaration.summary.container.securitySeals")
     }

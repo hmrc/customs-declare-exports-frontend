@@ -2034,8 +2034,7 @@ declaration.summary.items.item.packageInformation = Packing details
 declaration.summary.items.item.packageInformation.type = Package type
 declaration.summary.items.item.packageInformation.number = Number of package type
 declaration.summary.items.item.packageInformation.markings = Shipping marks
-declaration.summary.items.item.packageInformation.change = Change package type {0} shipping reference {1} for item {2}
-declaration.summary.items.item.packageInformation.changeAll = Change package information for item {0}
+declaration.summary.items.item.packageInformation.change = Change package information for item {0}
 declaration.summary.items.item.additionalInformation = Additional information statement codes
 declaration.summary.items.item.additionalInformation.change = Change additional information codes for item {0}
 declaration.summary.items.item.additionalInformation.code = Statement code
@@ -2130,13 +2129,12 @@ declaration.summary.transport.payment.Y = Account holder with carrier
 declaration.summary.transport.payment.Z = Not pre-paid
 declaration.summary.transport.payment._ = Payment information is not available
 
-declaration.summary.transport.containers = Goods in a container
-declaration.summary.transport.containers.change = Change goods in a container
-declaration.summary.containers = Container information
+declaration.summary.containers = Goods in a container
+declaration.summary.container = Container information
 declaration.summary.container.id = Container ID
 declaration.summary.container.securitySeals = Security seals
 declaration.summary.container.securitySeals.none = No seals
-declaration.summary.container.change = Change container {0}
+declaration.summary.container.change = Change goods in a container
 declaration.summary.container.information = Container
 declaration.summary.container.securitySeal = Security seal
 
