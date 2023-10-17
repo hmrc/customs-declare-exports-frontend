@@ -18,13 +18,17 @@
 
 @this()
 
-@(content: Content, classes: String = "", isPageHeading: Boolean = true)
+@(content: Content, classes: String = "", isPageHeading: Boolean = true, isSubHeading: Boolean = false, subHeadingClasses: String = "")
 
 <legend class='@toClasses("govuk-fieldset__legend", classes)'>
     @if(isPageHeading) {
         <h1 class="govuk-fieldset__heading">
             @content.asHtml
         </h1>
+    } else if(isSubHeading) {
+        <h2 class="@subHeadingClasses">
+            @content.asHtml
+        </h2>
     } else {
         @content.asHtml
     }

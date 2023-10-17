@@ -45,7 +45,7 @@
 
 @summaryList(
     id = s"declaration-items-summary-$itemDisplayNum",
-    heading = Some(messages("declaration.summary.items.item.presentationId", itemDisplayNum)),
+    subHeading = Some(messages("declaration.summary.items.item.presentationId", itemDisplayNum)),
     headerAction = headerAction,
     classes = "govuk-!-margin-bottom-0",
     summaryListRows = Seq(
@@ -293,7 +293,7 @@
 @packageInformationSummaryHelper.section(item, actionsEnabled)
 
 @summaryList(
-    "", None, None,
+    "", None, None, None,
     classes = "govuk-!-margin-bottom-0",
     summaryListRows = Seq(
         item.commodityMeasure.map(commodityMeasure =>
