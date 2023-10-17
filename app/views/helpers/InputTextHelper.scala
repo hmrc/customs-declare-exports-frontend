@@ -25,16 +25,18 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.label.Label
 import views.html.components.gds.heading
 
 @Singleton
-class InputTextHelper @Inject() (
-  heading: heading
-) {
+class InputTextHelper @Inject() (heading: heading) {
 
   def getLabelForField(labelKey: String, labelArg: String, labelClasses: String, isSubHeading: Boolean = false)(implicit messages: Messages): Label =
     if (labelKey.trim.isEmpty) {
       Label()
     } else {
       if (isSubHeading) {
-        Label(content = HtmlContent(heading(messages(labelKey, labelArg), classes = "govuk-heading govuk-heading-m govuk-!-margin-bottom-0", tier = "h2")), classes = labelClasses)
+        Label(
+          content =
+            HtmlContent(heading(messages(labelKey, labelArg), classes = "govuk-heading govuk-heading-m govuk-!-margin-bottom-0", tier = "h2")),
+          classes = labelClasses
+        )
       } else {
         Label(content = Text(messages(labelKey, labelArg)), classes = labelClasses)
       }
