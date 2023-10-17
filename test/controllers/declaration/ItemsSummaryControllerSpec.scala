@@ -25,6 +25,7 @@ import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesD
 import mock.ErrorHandlerMocks
 import models.declaration.{CommodityMeasure, ExportItem}
 import models.DeclarationMeta
+import models.DeclarationType.CLEARANCE
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.{any, anyString}
 import org.mockito.Mockito.{reset, verify, when}
@@ -256,12 +257,15 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
           val result = controller.submit()(postRequest(answerForm))
           status(result) mustBe SEE_OTHER
 
-          thePageNavigatedTo mustBe routes.ProcedureCodesController.displayPage(itemId)
+          if (request.isType(CLEARANCE))
+            thePageNavigatedTo mustBe routes.TransportLeavingTheBorderController.displayPage
+          else {
+            thePageNavigatedTo mustBe routes.ProcedureCodesController.displayPage(itemId)
+            And("max sequence id is updated")
+            verify(sequenceIdHandler).handleSequencing[ExportItem](any(), any())(any())
+          }
 
           verify(navigator).continueTo(any())(any())
-
-          And("max sequence id is updated")
-          verify(sequenceIdHandler).handleSequencing[ExportItem](any(), any())(any())
         }
       }
 
@@ -288,8 +292,12 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
 
           val result = controller.submit()(postRequest(Json.obj()))
 
-          status(result) mustBe BAD_REQUEST
-          formPassedToItemsSummaryView.errors mustNot be(empty)
+          if (request.isType(CLEARANCE)) {
+            status(result) mustBe SEE_OTHER
+          } else {
+            status(result) mustBe BAD_REQUEST
+            formPassedToItemsSummaryView.errors mustNot be(empty)
+          }
         }
 
         "there is incomplete item in the cache" in {
@@ -299,13 +307,14 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
 
           val result = controller.submit()(postRequest(answerForm))
 
-          status(result) mustBe BAD_REQUEST
-          itemsErrorsPassedToItemsSummaryView mustNot be(empty)
+          if (request.isType(CLEARANCE)) {
+            status(result) mustBe SEE_OTHER
+          } else {
+            status(result) mustBe BAD_REQUEST
+            itemsErrorsPassedToItemsSummaryView mustNot be(empty)
+          }
         }
       }
-    }
-
-    onEveryDeclarationJourney() { request =>
       "user does not want to add another item" should {
         "return 303 (SEE_OTHER) and redirect to Transport Leaving the Border page" in {
           val cachedData = aDeclaration(withType(request.declarationType), withItem(exportItem))
@@ -320,5 +329,4 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
       }
     }
   }
-
 }

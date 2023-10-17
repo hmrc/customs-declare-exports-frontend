@@ -215,9 +215,9 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestHelper with 
     "display an empty 'Containers' section" when {
       "no containers have been entered" in {
         val row = view.getElementsByClass("containers-heading")
-        row must haveSummaryKey(messages("declaration.summary.transport.containers"))
+        row must haveSummaryKey(messages("declaration.summary.containers"))
         row must haveSummaryValue(messages("site.no"))
-        row must haveSummaryActionsTexts("site.change", "declaration.summary.transport.containers.change")
+        row must haveSummaryActionsTexts("site.change", "declaration.summary.container.change")
         row must haveSummaryActionWithPlaceholder(routes.TransportContainerController.displayContainerSummary)
       }
     }
@@ -238,13 +238,13 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestHelper with 
         summaryListRows.size mustBe 5
 
         val heading = summaryListRows.get(0).getElementsByClass("containers-heading")
-        heading must haveSummaryKey(messages("declaration.summary.containers"))
+        heading must haveSummaryKey(messages("declaration.summary.container"))
         heading must haveSummaryValue("")
 
         val container1Id = summaryListRows.get(1).getElementsByClass("container-1")
         container1Id must haveSummaryKey(messages("declaration.summary.container.id"))
         container1Id must haveSummaryValue(id1)
-        container1Id must haveSummaryActionsTexts("site.change", "declaration.summary.container.change", id1)
+        container1Id must haveSummaryActionsTexts("site.change", "declaration.summary.container.change")
         container1Id must haveSummaryActionWithPlaceholder(routes.TransportContainerController.displayContainerSummary)
 
         val container1Seals = summaryListRows.get(2).getElementsByClass("container-seals-1")
@@ -255,7 +255,7 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestHelper with 
         val container2Id = summaryListRows.get(3).getElementsByClass("container-2")
         container2Id must haveSummaryKey(messages("declaration.summary.container.id"))
         container2Id must haveSummaryValue(id2)
-        container2Id must haveSummaryActionsTexts("site.change", "declaration.summary.container.change", id2)
+        container2Id must haveSummaryActionsTexts("site.change", "declaration.summary.container.change")
         container2Id must haveSummaryActionWithPlaceholder(routes.TransportContainerController.displayContainerSummary)
 
         val container2Seals = summaryListRows.get(4).getElementsByClass("container-seals-2")

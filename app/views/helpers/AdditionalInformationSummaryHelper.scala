@@ -34,9 +34,9 @@ class AdditionalInformationSummaryHelper @Inject() (govukSummaryList: GovukSumma
 
   def section(item: ExportItem, actionsEnabled: Boolean)(implicit messages: Messages): Html =
     item.additionalInformation.fold(HtmlFormat.empty) { additionalInformation =>
-      val informationItemsRows = additionalInformation.items.zipWithIndex.map { case (informationItem, index) =>
+      val informationItemsRows = additionalInformation.items.zipWithIndex.flatMap { case (informationItem, index) =>
         informationItemRows(item, informationItem, index + 1, actionsEnabled)
-      }.flatten
+      }
 
       if (informationItemsRows.isEmpty) govukSummaryList(SummaryList(noDataRow(item, actionsEnabled), classes = cssClasses(item, 0)))
       else govukSummaryList(SummaryList(heading(item, actionsEnabled) +: informationItemsRows, classes = cssClasses(item, 4)))
