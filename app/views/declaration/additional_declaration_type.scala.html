@@ -75,7 +75,10 @@
         }
 
         @sectionHeader(messages("declaration.section.1"))
-        @heading(messages(s"declaration.declarationType.header.${request.declarationType}"))
+        <fieldset class="govuk-fieldset">
+            <legend class="govuk-fieldset__legend govuk-!-margin-bottom-0">
+                @heading(messages(s"declaration.declarationType.header.${request.declarationType}"))
+            </legend>
 
         @govukRadios(Radios(
             name = "additionalDeclarationType",
@@ -85,8 +88,9 @@
                 err => ErrorMessage(content = Text(messages(err.message, err.args:_*)))
             }
         ))
+        </fieldset>
 
-        @if(!request.isType(SUPPLEMENTARY)) {
+@if(!request.isType(SUPPLEMENTARY)) {
             @govukDetails(Details(
                 id = Some("submission-time-info"),
                 summary = Text(messages("declaration.declarationType.expander.title")),

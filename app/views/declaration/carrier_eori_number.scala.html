@@ -69,7 +69,10 @@
             content = body(messages("declaration.carrierEori.notification.body"))
         )
 
-        @heading(messages("declaration.carrierEori.title"))
+        <fieldset class="govuk-fieldset">
+            <legend class="govuk-fieldset__legend govuk-!-margin-bottom-0">
+                @heading(messages("declaration.carrierEori.title"))
+            </legend>
 
         @body(messages("declaration.carrierEori.body.1"))
         @body(messages("declaration.carrierEori.body.2"))
@@ -97,6 +100,7 @@
             attributes = Map("id" -> "hasEori"),
             errorMessage = form("hasEori").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
         ))
+        </fieldset>
 
         @tariffExpander(CarrierEoriNumber, request.declarationType)(messages, appConfig)
 

@@ -60,7 +60,10 @@
 
         @sectionHeader(messages("declaration.section.5"))
 
-        @pageTitle(messages("declaration.nationalAdditionalCode.addfirst.header"))
+        <fieldset class="govuk-fieldset">
+            <legend class="govuk-fieldset__legend govuk-!-margin-bottom-0">
+                @pageTitle(messages("declaration.nationalAdditionalCode.addfirst.header"))
+            </legend>
 
         @paragraphBody(messages(
             "declaration.nationalAdditionalCode.addfirst.body",
@@ -94,6 +97,7 @@
             ),
             errorMessage = form(hasNactCodeKey).error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
         ))
+        </fieldset>
 
         @tariffExpander(NactCodeFirst, request.declarationType)(messages, appConfig)
 

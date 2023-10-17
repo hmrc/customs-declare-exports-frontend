@@ -79,7 +79,10 @@
 
         @sectionHeader(messages("declaration.section.5"))
 
-        @heading(messages("declaration.item.isLicenceRequired.title"), Styles.gdsPageLegend)
+        <fieldset class="govuk-fieldset">
+            <legend class="govuk-fieldset__legend govuk-!-margin-bottom-0">
+                @heading(messages("declaration.item.isLicenceRequired.title"), Styles.gdsPageLegend)
+            </legend>
 
        @paragraphBody(messages("declaration.item.isLicenceRequired.body"))
 
@@ -87,6 +90,7 @@
             form,
             noHint = Some("declaration.item.isLicenceRequired.no.hint")
         )
+        </fieldset>
 
         @insetText(
             content = HtmlContent(Seq(

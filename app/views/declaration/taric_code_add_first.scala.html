@@ -76,7 +76,10 @@
 
         @sectionHeader(messages("declaration.section.5"))
 
-        @pageTitle(messages("declaration.taricAdditionalCodes.addfirst.header"))
+        <fieldset class="govuk-fieldset">
+            <legend class="govuk-fieldset__legend govuk-!-margin-bottom-0">
+                @pageTitle(messages("declaration.taricAdditionalCodes.addfirst.header"))
+            </legend>
 
         @paragraphBody(messages("declaration.taricAdditionalCodes.addfirst.body", linkForCommodityCode))
 
@@ -111,6 +114,7 @@
             ),
             errorMessage = form(hasTaricCodeKey).error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
         ))
+        </fieldset>
 
         @tariffExpander(TaricCodeFirst, request.declarationType)(messages, appConfig)
 
