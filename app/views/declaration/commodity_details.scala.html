@@ -73,7 +73,7 @@
             inputClasses = Some("govuk-input--width-10")
         )
 
-        @label("declaration.commodityDetails.description.label", form(CommodityDetails.descriptionOfGoodsKey).id)
+        @label("declaration.commodityDetails.description.label", form(CommodityDetails.descriptionOfGoodsKey).id, isSubHeading = true, subHeadingClasses = "govuk-heading govuk-heading-m")
 
         @paragraphBody(messages("declaration.commodityDetails.description.body"))
 

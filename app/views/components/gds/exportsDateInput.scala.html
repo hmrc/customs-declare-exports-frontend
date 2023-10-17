@@ -19,9 +19,10 @@
 @import forms.common.Date.{dayKey, monthKey, yearKey}
 @import views.helpers.InputTextHelper
 @import views.html.components.gds.label
+@import views.html.components.gds.heading
 @import play.twirl.api.HtmlFormat
 
-@this(dateInput: GovukDateInput, label: label, helper: InputTextHelper)
+@this(dateInput: GovukDateInput, label: label, heading: heading, helper: InputTextHelper)
 
 @(
   fieldName: String,
@@ -54,7 +55,7 @@
     .fold[Option[Fieldset]](
         Some(Fieldset(
             legend = Some(Legend(
-                content = Text(messages(labelKey)),
+                content = HtmlContent(heading(messages(labelKey), classes = "govuk-heading govuk-heading-m govuk-!-margin-bottom-0", tier = "h2")),
                 classes = "govuk-fieldset__legend--m"
             )),
             attributes = Map("id" -> fieldName))
