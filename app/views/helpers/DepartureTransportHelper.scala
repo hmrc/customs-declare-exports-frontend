@@ -104,7 +104,7 @@ class DepartureTransportHelper @Inject() (
     implicit messages: Messages
   ): RadioItem =
     RadioItem(
-      id = Some(s"radio_${transportCode.id}"),
+      id = Some(transportCode.id),
       value = Some(transportCode.value),
       content = Text(messages(s"$prefix.${transportCode.id}${if (useAltRadioTextForV2) ".v2" else ""}")),
       conditionalHtml = if (transportCode != tcs.NotApplicable) inputField(transportCode, form) else None,

@@ -51,7 +51,7 @@
 
         @sectionHeader(messages("declaration.section.5"))
 
-        <fieldset class="govuk-fieldset">
+        <fieldset class="govuk-fieldset" @if(form.hasErrors) { aria-describedby="yesNo-error" }>
             <legend class="govuk-fieldset__legend govuk-!-margin-bottom-0">
                 @heading(messages("declaration.additionalInformationRequired.title"), Styles.gdsPageLegend)
             </legend>

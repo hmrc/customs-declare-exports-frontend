@@ -75,7 +75,7 @@
         }
 
         @sectionHeader(messages("declaration.section.1"))
-        <fieldset class="govuk-fieldset">
+        <fieldset class="govuk-fieldset" @if(form.hasErrors) { aria-describedby="additionalDeclarationType-error" }>
             <legend class="govuk-fieldset__legend govuk-!-margin-bottom-0">
                 @heading(messages(s"declaration.declarationType.header.${request.declarationType}"))
             </legend>

@@ -48,7 +48,7 @@
         @errorSummary(radioGroupErrors(radioButtonGroupId, departureTransportHelper.transportCodes.code1.id, form.errors))
 
         @sectionHeader(messages("declaration.section.6"))
-        <fieldset class="govuk-fieldset">
+        <fieldset class="govuk-fieldset" @if(form.hasErrors) { aria-describedby="departureTransportType-error" }>
         @departureTransportHelper.dynamicContent(form)
         </fieldset>
 

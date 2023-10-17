@@ -69,7 +69,7 @@
             content = body(messages("declaration.carrierEori.notification.body"))
         )
 
-        <fieldset class="govuk-fieldset">
+        <fieldset class="govuk-fieldset" @if(form.hasErrors) { aria-describedby="hasEori-error" }>
             <legend class="govuk-fieldset__legend govuk-!-margin-bottom-0">
                 @heading(messages("declaration.carrierEori.title"))
             </legend>

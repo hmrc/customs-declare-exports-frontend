@@ -70,7 +70,7 @@
 
         @sectionHeader(messages("declaration.section.6"))
 
-        <fieldset class="govuk-fieldset">
+        <fieldset class="govuk-fieldset" @if(form.hasErrors) { aria-describedby="transportLeavingTheBorder-error" }>
             <legend class="govuk-fieldset__legend govuk-!-margin-bottom-0">
                 @pageTitle(messages("declaration.transport.leavingTheBorder.title"))
             </legend>
