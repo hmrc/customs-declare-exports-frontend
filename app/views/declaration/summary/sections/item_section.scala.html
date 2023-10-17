@@ -293,7 +293,8 @@
 @packageInformationSummaryHelper.section(item, actionsEnabled)
 
 @summaryList(
-    "", None, None, None,
+    id = s"item-$itemDisplayNum-commodity-summary",
+    None, None, None,
     classes = "govuk-!-margin-bottom-0",
     summaryListRows = Seq(
         item.commodityMeasure.map(commodityMeasure =>

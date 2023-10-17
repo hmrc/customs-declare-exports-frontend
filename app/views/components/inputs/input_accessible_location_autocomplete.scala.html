@@ -54,7 +54,7 @@ To avoid problems, we need to remove [] from field.
     <div class="@rightElement.map(_ => "govuk-grid-column-two-thirds").getOrElse("govuk-grid-column-full")">
         <div id="@(fieldNameWithoutBrackets)-container" class="autocomplete__wrapper @widthClass">
             <select class="govuk-form-group" id="@(fieldNameWithoutBrackets)" @if(field.name.nonEmpty) {name="@field.name"} @if(field.value.nonEmpty) {value="@field.value"}>
-                <option value="" disabled="" selected="">Pick an option</option>
+                <option value="" disabled="" selected=""></option>
                 @items.map { i =>
                     <option value="@i.value" @if(selectedValue == i.value) {selected="selected"}>@i.label</option>
                 }
