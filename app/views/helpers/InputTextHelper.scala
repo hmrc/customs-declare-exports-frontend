@@ -16,23 +16,36 @@
 
 package views.helpers
 
-import javax.inject.Singleton
+import javax.inject.{Inject, Singleton}
 import play.api.data.Field
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.ErrorMessage
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.label.Label
+import views.html.components.gds.heading
 
 @Singleton
-class InputTextHelper {
+class InputTextHelper @Inject() (heading: heading) {
 
-  def getLabelForField(labelKey: String, labelArg: String, labelClasses: String)(implicit messages: Messages): Label =
-    if (labelKey.trim.isEmpty) Label()
-    else Label(content = Text(messages(labelKey, labelArg)), classes = labelClasses)
+  def getLabelForField(labelKey: String, labelArg: String, labelClasses: String, isSubHeading: Boolean = false)(implicit messages: Messages): Label =
+    if (labelKey.trim.isEmpty) {
+      Label()
+    } else {
+      if (isSubHeading) {
+        Label(
+          content =
+            HtmlContent(heading(messages(labelKey, labelArg), classes = "govuk-heading govuk-heading-m govuk-!-margin-bottom-0", tier = "h2")),
+          classes = labelClasses
+        )
+      } else {
+        Label(content = Text(messages(labelKey, labelArg)), classes = labelClasses)
+      }
+    }
 
   def getAnyErrorMessages(field: Field)(implicit messages: Messages): Option[ErrorMessage] =
     field.error.map(err => ErrorMessage(content = HtmlContent(messages(err.message))))
 
   def defineInputClasses(defaultInputClasses: String, inputClasses: Option[String]): String =
     inputClasses.map(clazz => s" $clazz").getOrElse(defaultInputClasses)
+
 }
