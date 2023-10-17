@@ -27,6 +27,7 @@ import models.responses.FlashKeys
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.model.FieldNamePointer
+import uk.gov.hmrc.play.bootstrap.binders.RedirectUrl
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.summary.submitted_declaration_page
 
@@ -51,7 +52,7 @@ class SubmissionsController @Inject() (
     else findOrCreateDraftForRejection(rejectedParentId, redirect)
   }
 
-  def amendErrors(rejectedParentId: String, redirectUrl: String, pattern: String, message: String, isAmendment: Boolean): Action[AnyContent] =
+  def amendErrors(rejectedParentId: String, redirectUrl: RedirectUrl, pattern: String, message: String, isAmendment: Boolean): Action[AnyContent] =
     authAndEmailActions.async { implicit request =>
       val flashData = FieldNamePointer.getFieldName(pattern) match {
         case Some(name) if message.nonEmpty => Map(FlashKeys.fieldName -> name, FlashKeys.errorMessage -> message)
@@ -60,7 +61,7 @@ class SubmissionsController @Inject() (
         case _                              => Map.empty[String, String]
       }
 
-      val redirect = setErrorFixMode(Redirect(redirectUrl).flashing(Flash(flashData)))
+      val redirect = setErrorFixMode(Redirect(redirectUrl.unsafeValue).flashing(Flash(flashData)))
       if (isAmendment) findOrCreateDraftForAmendment(rejectedParentId, redirect)
       else findOrCreateDraftForRejection(rejectedParentId, redirect)
     }
