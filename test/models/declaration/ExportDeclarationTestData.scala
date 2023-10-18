@@ -20,18 +20,17 @@ import forms.Lrn
 import forms.common.YesNoAnswer.Yes
 import forms.common.{Date, Eori}
 import forms.declaration.ConsignmentReferencesSpec._
-import forms.declaration.DeclarationAdditionalActorsSpec.correctAdditionalActors1
 import forms.declaration.NatureOfTransactionSpec._
 import forms.declaration.TransportPayment.cash
 import forms.declaration._
+import forms.declaration.AdditionalActorsSpec._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.SUPPLEMENTARY_SIMPLIFIED
 import forms.declaration.additionaldocuments.{AdditionalDocument, DocumentWriteOff}
 import forms.declaration.carrier.CarrierDetails
 import forms.declaration.countries.Country
-import forms.declaration.declarationHolder.DeclarationHolder
+import forms.declaration.authorisationHolder.AuthorisationHolder
 import forms.declaration.exporter.ExporterDetails
 import forms.declaration.officeOfExit.OfficeOfExit
-import models.declaration.DeclarationAdditionalActorsDataSpec._
 import models.declaration.governmentagencygoodsitem.Formats._
 import models.declaration.governmentagencygoodsitem.{Amount, GovernmentAgencyGoodsItem}
 import models.{CancelDeclaration, DeclarationMeta, DeclarationType, ExportsDeclaration}
@@ -53,9 +52,11 @@ object ExportDeclarationTestData {
   val emptyTransportInformationContainerJSON: JsValue = JsObject(Map(containerId -> JsString("")))
   val correctTransportInformationContainerDataJSON: JsValue = Json.toJson(correctTransportInformationContainerData)
 
-  val correctDeclarationHolder =
-    DeclarationHolder(authorisationTypeCode = Some("ACE"), eori = Some(Eori("PL213472539481923")), Some(EoriSource.OtherEori))
-  val correctDeclarationHoldersData = DeclarationHoldersData(Seq(correctDeclarationHolder))
+  val correctAdditionalActorsData = AdditionalActors(Seq(correctAdditionalActors1, correctAdditionalActors2))
+
+  val correctAuthorisationHolder =
+    AuthorisationHolder(authorisationTypeCode = Some("ACE"), eori = Some(Eori("PL213472539481923")), Some(EoriSource.OtherEori))
+  val correctAuthorisationHolders = AuthorisationHolders(Seq(correctAuthorisationHolder))
 
   val correctExporterDetails = ExporterDetails(details = EntityDetailsSpec.correctEntityDetails)
 
@@ -83,7 +84,7 @@ object ExportDeclarationTestData {
       consigneeDetails = Some(ConsigneeDetails(EntityDetailsSpec.correctEntityDetails)),
       representativeDetails = None, // Some(correctRepresentativeDetails),
       declarationAdditionalActorsData = Some(correctAdditionalActorsData),
-      declarationHoldersData = Some(correctDeclarationHoldersData),
+      declarationHoldersData = Some(correctAuthorisationHolders),
       carrierDetails = Some(CarrierDetails(EntityDetailsSpec.correctEntityDetails))
     ),
     locations = Locations(
@@ -138,12 +139,12 @@ object ExportDeclarationTestData {
       declarantDetails = Some(correctDeclarantDetailsEORIOnly),
       consigneeDetails = Some(ConsigneeDetails(EntityDetailsSpec.correctEntityDetails)),
       representativeDetails = None, // Some(correctRepresentativeDetails),
-      declarationAdditionalActorsData = Some(DeclarationAdditionalActorsData(Seq(correctAdditionalActors1))),
+      declarationAdditionalActorsData = Some(AdditionalActors(Seq(correctAdditionalActors1))),
       declarationHoldersData = Some(
-        DeclarationHoldersData(
+        AuthorisationHolders(
           Seq(
-            DeclarationHolder(authorisationTypeCode = Some("1234"), eori = Some(Eori("PL213472539481923")), Some(EoriSource.UserEori)),
-            DeclarationHolder(authorisationTypeCode = Some("4321"), eori = Some(Eori("PT213472539481923")), Some(EoriSource.OtherEori))
+            AuthorisationHolder(authorisationTypeCode = Some("1234"), eori = Some(Eori("PL213472539481923")), Some(EoriSource.UserEori)),
+            AuthorisationHolder(authorisationTypeCode = Some("4321"), eori = Some(Eori("PT213472539481923")), Some(EoriSource.OtherEori))
           )
         )
       ),

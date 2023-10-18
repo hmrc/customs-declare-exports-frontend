@@ -26,7 +26,7 @@ import forms.declaration.additionaldocuments.{AdditionalDocument, DocumentWriteO
 import forms.declaration.carrier.CarrierDetails
 import forms.declaration.consignor.ConsignorDetails
 import forms.declaration.countries.Country
-import forms.declaration.declarationHolder.DeclarationHolder
+import forms.declaration.authorisationHolder.AuthorisationHolder
 import forms.declaration.exporter.ExporterDetails
 import forms.declaration.officeOfExit.OfficeOfExit
 import models.AmendmentRow._
@@ -363,10 +363,10 @@ object AmendmentDetailsHelper {
     s"${address(RepresentativeDetails.pointer)}.${Address.townOrCityPointer}" -> s"${addressMsg("representative")}.townOrCity",
     s"${address(RepresentativeDetails.pointer)}.${Address.postCodePointer}" -> s"${addressMsg("representative")}.postCode",
     s"${address(RepresentativeDetails.pointer)}.${Address.countryPointer}" -> s"${addressMsg("representative")}.country",
-    DeclarationAdditionalActorsData.eoriPointerForAmend -> DeclarationAdditionalActors.keyForEori,
-    DeclarationAdditionalActorsData.partyTypePointerForAmend -> DeclarationAdditionalActors.keyForPartyType,
-    DeclarationHoldersData.eoriPointerForAmend -> DeclarationHolder.keyForEori,
-    DeclarationHoldersData.typeCodePointerForAmend -> DeclarationHolder.keyForTypeCode,
+    AdditionalActors.eoriPointerForAmend -> AdditionalActor.keyForEori,
+    AdditionalActors.partyTypePointerForAmend -> AdditionalActor.keyForPartyType,
+    AuthorisationHolders.eoriPointerForAmend -> AuthorisationHolder.keyForEori,
+    AuthorisationHolders.typeCodePointerForAmend -> AuthorisationHolder.keyForTypeCode,
     s"$parties.${PersonPresentingGoodsDetails.pointer}.${Eori.pointer}" -> s"$summary.parties.personPresentingGoods",
     s"$totals.${totalAmountInvoicedPointer}" -> s"$summary.transaction.itemAmount",
     s"$totals.${totalAmountInvoicedCurrencyPointer}" -> s"$summary.transaction.currencyCode",
@@ -404,9 +404,7 @@ object AmendmentDetailsHelper {
   )
 
   private val valueMappings: Map[String, (Any, Messages) => String] = Map(
-    DeclarationAdditionalActorsData.partyTypePointerForAmend -> ((v: Any, messages: Messages) =>
-      safeMessage(s"$summary.parties.actors.$v", v)(messages)
-    ),
+    AdditionalActors.partyTypePointerForAmend -> ((v: Any, messages: Messages) => safeMessage(s"$summary.parties.actors.$v", v)(messages)),
     s"$representative.${RepresentativeDetails.statusCodePointer}" -> ((v: Any, messages: Messages) =>
       safeMessage(s"$summary.parties.representative.type.$v", v)(messages)
     ),

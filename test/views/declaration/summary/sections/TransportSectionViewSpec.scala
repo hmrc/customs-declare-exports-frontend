@@ -72,7 +72,7 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestHelper with 
     }
 
     "not display a 'warehouse id' row when question not answered" in {
-      val view = transportSection(aDeclarationAfter(data, withoutWarehouseIdentification()))(messages)
+      val view = transportSection(aDeclarationAfter(data, withoutWarehouseIdentification))(messages)
       view.getElementsByClass("warehouse-id-row") mustBe empty
     }
 
@@ -85,7 +85,7 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestHelper with 
     }
 
     "not display a 'supervising office' row when question not answered" in {
-      val view = transportSection(aDeclarationAfter(data, withoutSupervisingCustomsOffice()))(messages)
+      val view = transportSection(aDeclarationAfter(data, withoutSupervisingCustomsOffice))(messages)
       view.getElementsByClass("supervising-office-row") mustBe empty
     }
 
@@ -111,7 +111,7 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestHelper with 
     }
 
     "not display a 'mode of transport' row when question not answered" in {
-      val view = transportSection(aDeclarationAfter(data, withoutInlandModeOfTransportCode()))(messages)
+      val view = transportSection(aDeclarationAfter(data, withoutInlandModeOfTransportCode))(messages)
       view.getElementsByClass("mode-of-transport-row") mustBe empty
     }
 
@@ -234,7 +234,7 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestHelper with 
         val view = transportSection(declaration)(messages)
 
         val summaryList = view.getElementsByClass("containers-summary").get(0)
-        val summaryListRows = summaryList.getElementsByClass("govuk-summary-list__row")
+        val summaryListRows = summaryList.getElementsByClass(summaryRowClassName)
         summaryListRows.size mustBe 5
 
         val heading = summaryListRows.get(0).getElementsByClass("containers-heading")
@@ -250,7 +250,7 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestHelper with 
         val container1Seals = summaryListRows.get(2).getElementsByClass("container-seals-1")
         container1Seals must haveSummaryKey(messages("declaration.summary.container.securitySeals"))
         container1Seals must haveSummaryValue("seal1, seal2")
-        container1Seals.get(0).getElementsByClass("govuk-summary-list__actions").size mustBe 0
+        container1Seals.get(0).getElementsByClass(summaryActionsClassName).size mustBe 0
 
         val container2Id = summaryListRows.get(3).getElementsByClass("container-2")
         container2Id must haveSummaryKey(messages("declaration.summary.container.id"))
@@ -261,14 +261,14 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestHelper with 
         val container2Seals = summaryListRows.get(4).getElementsByClass("container-seals-2")
         container2Seals must haveSummaryKey(messages("declaration.summary.container.securitySeals"))
         container2Seals must haveSummaryValue(messages("declaration.summary.container.securitySeals.none"))
-        container2Seals.get(0).getElementsByClass("govuk-summary-list__actions").size mustBe 0
+        container2Seals.get(0).getElementsByClass(summaryActionsClassName).size mustBe 0
       }
     }
 
     "NOT have change links" when {
       "'actionsEnabled' is false" in {
         val view = transportSection(data, false)(messages)
-        view.getElementsByClass("govuk-summary-list__actions") mustBe empty
+        view.getElementsByClass(summaryActionsClassName) mustBe empty
       }
     }
   }

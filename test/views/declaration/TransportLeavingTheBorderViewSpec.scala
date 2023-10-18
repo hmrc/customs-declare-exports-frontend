@@ -20,7 +20,7 @@ import base.Injector
 import controllers.declaration.routes
 import controllers.routes.GuidanceController
 import forms.declaration.TransportLeavingTheBorder.form
-import forms.declaration.declarationHolder.AuthorizationTypeCodes.EXRR
+import forms.declaration.authorisationHolder.AuthorizationTypeCodes.EXRR
 import models.DeclarationType._
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
@@ -152,7 +152,7 @@ class TransportLeavingTheBorderViewSpec extends PageWithButtonsSpec with Injecto
       }
     }
 
-    onEveryAdditionalType(withDeclarationHolders(Some("APE"))) { implicit request =>
+    onEveryAdditionalType(withAuthorisationHolders(Some("APE"))) { implicit request =>
       val view = createView()
 
       "not display any inset text when no 'EXRR' authorisation code has been entered" in {
@@ -160,7 +160,7 @@ class TransportLeavingTheBorderViewSpec extends PageWithButtonsSpec with Injecto
       }
     }
 
-    onEveryAdditionalType(withDeclarationHolders(Some(EXRR))) { implicit request =>
+    onEveryAdditionalType(withAuthorisationHolders(Some(EXRR))) { implicit request =>
       val view = createView()
 
       "display the expected inset text when an 'EXRR' authorisation code has been entered" in {

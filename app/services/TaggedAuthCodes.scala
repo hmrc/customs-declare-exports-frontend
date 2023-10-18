@@ -19,8 +19,8 @@ package services
 import connectors.CodeLinkConnector
 import connectors.Tag._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.SUPPLEMENTARY_EIDR
-import forms.declaration.declarationHolder.AuthorizationTypeCodes.isAuthCode
-import forms.declaration.declarationHolder.DeclarationHolder
+import forms.declaration.authorisationHolder.AuthorizationTypeCodes.isAuthCode
+import forms.declaration.authorisationHolder.AuthorisationHolder
 import models.ExportsDeclaration
 
 import javax.inject.{Inject, Singleton}
@@ -40,7 +40,7 @@ class TaggedAuthCodes @Inject() (codeLinkConnector: CodeLinkConnector) {
 
   lazy val codesSkippingLocationOfGoods = codeLinkConnector.getHolderOfAuthorisationCodesForTag(CodesSkippingLocationOfGoods)
 
-  def authCodesRequiringAdditionalDocs(declaration: ExportsDeclaration): Seq[DeclarationHolder] =
+  def authCodesRequiringAdditionalDocs(declaration: ExportsDeclaration): Seq[AuthorisationHolder] =
     declaration.parties.declarationHoldersData
       .map(_.holders.filter(isAdditionalDocumentationRequired))
       .getOrElse(List.empty)
@@ -51,11 +51,11 @@ class TaggedAuthCodes @Inject() (codeLinkConnector: CodeLinkConnector) {
   def hasAuthCodeRequiringAdditionalDocs(declaration: ExportsDeclaration): Boolean =
     declaration.parties.declarationHoldersData.exists(_.holders.exists(isAdditionalDocumentationRequired))
 
-  def isAdditionalDocumentationRequired(declarationHolder: DeclarationHolder): Boolean =
-    declarationHolder.authorisationTypeCode.exists(codesRequiringDocumentation.contains)
+  def isAdditionalDocumentationRequired(authorisationHolder: AuthorisationHolder): Boolean =
+    authorisationHolder.authorisationTypeCode.exists(codesRequiringDocumentation.contains)
 
-  def skipInlandOrBorder(declarationHolder: DeclarationHolder): Boolean =
-    declarationHolder.authorisationTypeCode.exists(codesSkippingInlandOrBorder.contains)
+  def skipInlandOrBorder(authorisationHolder: AuthorisationHolder): Boolean =
+    authorisationHolder.authorisationTypeCode.exists(codesSkippingInlandOrBorder.contains)
 
   def skipLocationOfGoods(declaration: ExportsDeclaration): Boolean =
     declaration.isAdditionalDeclarationType(SUPPLEMENTARY_EIDR) && isAuthCode(declaration, codesSkippingLocationOfGoods)

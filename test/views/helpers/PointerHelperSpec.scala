@@ -84,7 +84,7 @@ class PointerHelperSpec extends UnitSpec with ExportsTestHelper with Injector {
         "also has a declaration that is of type CLEARANCE, EXS=true and personPresentingGoodsDetails is populated" in {
           val result = PointerHelper.getChangeLinkCall(
             Some(Pointer("declaration.declarantDetails.details.eori")),
-            aDeclaration(withType(CLEARANCE), withIsExs(), withPersonPresentingGoodsDetails(Some(Eori(eori))))
+            aDeclaration(withType(CLEARANCE), withIsExs(), withPersonPresentingGoods(Some(Eori(eori))))
           )
 
           result.isDefined mustBe true

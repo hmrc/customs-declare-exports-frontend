@@ -17,9 +17,9 @@
 @import config.AppConfig
 @import controllers.declaration.routes._
 @import controllers.navigation.Navigator
-@import forms.declaration.DeclarationAdditionalActors
-@import forms.declaration.DeclarationAdditionalActors.additionalActorsFormGroupId
-@import forms.declaration.DeclarationAdditionalActors.PartyType._
+@import forms.declaration.AdditionalActor
+@import forms.declaration.AdditionalActor.additionalActorsFormGroupId
+@import forms.declaration.AdditionalActor.PartyType._
 @import models.requests.JourneyRequest
 @import play.twirl.api.HtmlFormat
 @import uk.gov.hmrc.govukfrontend.views.html.components._
@@ -44,7 +44,7 @@
 )
 
 
-@(form: Form[DeclarationAdditionalActors])(implicit request: JourneyRequest[_], messages: Messages)
+@(form: Form[AdditionalActor])(implicit request: JourneyRequest[_], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
@@ -116,7 +116,7 @@
 
 @govukLayout(
     title = Title("declaration.additionalActors.title",  "declaration.section.2", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(DeclarationAdditionalActors)))) {
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(AdditionalActor)))) {
 
     @formHelper(action = AdditionalActorsAddController.saveForm, 'autoComplete -> "off") {
 
@@ -132,7 +132,7 @@
             html = HtmlFormat.fill(List(
               paragraphBody(messages("declaration.additionalActors.body.text")),
               radios,
-              tariffExpander(DeclarationAdditionalActors, request.declarationType)(messages, appConfig),
+              tariffExpander(AdditionalActor, request.declarationType)(messages, appConfig),
               saveButtons()
             ))
         ))

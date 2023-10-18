@@ -17,7 +17,7 @@
 package controllers.navigation
 
 import controllers.declaration.routes
-import controllers.helpers.DeclarationHolderHelper.userCanLandOnIsAuthRequiredPage
+import controllers.helpers.AuthorisationHolderHelper.userCanLandOnIsAuthRequiredPage
 import controllers.helpers.TransportSectionHelper._
 import controllers.helpers.{InlandOrBorderHelper, SupervisingCustomsOfficeHelper, TransportSectionHelper}
 import forms.declaration.InlandOrBorder.Border
@@ -142,13 +142,13 @@ trait CacheDependentNavigators {
       routes.DeclarantExporterController.displayPage
 
   protected def carrierEoriNumberPreviousPage(cacheModel: ExportsDeclaration): Call =
-    if (cacheModel.parties.declarantIsExporter.exists(_.isExporter))
+    if (cacheModel.parties.declarantIsExporter.exists(_.isYes))
       routes.DeclarantExporterController.displayPage
     else
       routes.RepresentativeStatusController.displayPage
 
   protected def carrierEoriNumberClearancePreviousPage(cacheModel: ExportsDeclaration): Call =
-    if (!cacheModel.parties.declarantIsExporter.exists(_.isExporter))
+    if (!cacheModel.parties.declarantIsExporter.exists(_.isYes))
       routes.RepresentativeStatusController.displayPage
     else {
       if (cacheModel.parties.consignorDetails.flatMap(_.details.address).isDefined)
@@ -190,23 +190,23 @@ trait CacheDependentNavigators {
       routes.ExporterEoriNumberController.displayPage
     else routes.ExporterDetailsController.displayPage
 
-  protected def declarationHolderRequiredPreviousPage(cacheModel: ExportsDeclaration): Call =
+  protected def authorisationHolderRequiredPreviousPage(cacheModel: ExportsDeclaration): Call =
     cacheModel.`type` match {
       case CLEARANCE if !cacheModel.isEntryIntoDeclarantsRecords => routes.ConsigneeDetailsController.displayPage
       case OCCASIONAL                                            => routes.AdditionalActorsSummaryController.displayPage
       case _                                                     => routes.AuthorisationProcedureCodeChoiceController.displayPage
     }
 
-  protected def declarationHolderAddPreviousPage(cacheModel: ExportsDeclaration): Call =
-    if (cacheModel.declarationHolders.nonEmpty) routes.DeclarationHolderSummaryController.displayPage
-    else if (userCanLandOnIsAuthRequiredPage(cacheModel)) routes.DeclarationHolderRequiredController.displayPage
-    else declarationHolderRequiredPreviousPage(cacheModel)
+  protected def authorisationHolderAddPreviousPage(cacheModel: ExportsDeclaration): Call =
+    if (cacheModel.authorisationHolders.nonEmpty) routes.AuthorisationHolderSummaryController.displayPage
+    else if (userCanLandOnIsAuthRequiredPage(cacheModel)) routes.AuthorisationHolderRequiredController.displayPage
+    else authorisationHolderRequiredPreviousPage(cacheModel)
 
-  protected def declarationHolderSummaryPreviousPage(cacheModel: ExportsDeclaration): Call =
-    declarationHolderRequiredPreviousPage(cacheModel)
+  protected def authorisationHolderSummaryPreviousPage(cacheModel: ExportsDeclaration): Call =
+    authorisationHolderRequiredPreviousPage(cacheModel)
 
   protected def destinationCountryPreviousPage(cacheModel: ExportsDeclaration): Call =
-    declarationHolderAddPreviousPage(cacheModel)
+    authorisationHolderAddPreviousPage(cacheModel)
 
   protected def representativeAgentPreviousPage(cacheModel: ExportsDeclaration): Call =
     if (cacheModel.parties.exporterDetails.flatMap(_.details.eori).isDefined)

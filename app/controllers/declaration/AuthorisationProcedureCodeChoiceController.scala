@@ -17,12 +17,12 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.declaration.routes.DeclarationHolderRequiredController
-import controllers.helpers.DeclarationHolderHelper.userCanLandOnIsAuthRequiredPage
+import controllers.declaration.routes.AuthorisationHolderRequiredController
+import controllers.helpers.AuthorisationHolderHelper.userCanLandOnIsAuthRequiredPage
 import controllers.navigation.Navigator
 import forms.declaration.AuthorisationProcedureCodeChoice
 import models.DeclarationType._
-import models.declaration.DeclarationHoldersData
+import models.declaration.AuthorisationHolders
 import models.requests.JourneyRequest
 import models.ExportsDeclaration
 import play.api.i18n.I18nSupport
@@ -48,10 +48,10 @@ class AuthorisationProcedureCodeChoiceController @Inject() (
   def displayPage: Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.declarationType match {
       case CLEARANCE if request.cacheModel.isNotEntryIntoDeclarantsRecords =>
-        navigator.continueTo(DeclarationHolderRequiredController.displayPage)
+        navigator.continueTo(AuthorisationHolderRequiredController.displayPage)
 
       case OCCASIONAL =>
-        navigator.continueTo(DeclarationHolderRequiredController.displayPage)
+        navigator.continueTo(AuthorisationHolderRequiredController.displayPage)
 
       case _ =>
         val form = AuthorisationProcedureCodeChoice.form.withSubmissionErrors
@@ -69,13 +69,13 @@ class AuthorisationProcedureCodeChoiceController @Inject() (
       .bindFromRequest()
       .fold(
         formWithErrors => Future.successful(BadRequest(authorisationProcedureCodeChoice(formWithErrors))),
-        updateCache(_).map(_ => navigator.continueTo(DeclarationHolderRequiredController.displayPage))
+        updateCache(_).map(_ => navigator.continueTo(AuthorisationHolderRequiredController.displayPage))
       )
   }
 
   private def updateCache(choice: AuthorisationProcedureCodeChoice)(implicit request: JourneyRequest[_]): Future[ExportsDeclaration] =
     updateDeclarationFromRequest { declaration =>
-      def holdersData(maybeHoldersData: Option[DeclarationHoldersData]): Option[DeclarationHoldersData] =
+      def holdersData(maybeHoldersData: Option[AuthorisationHolders]): Option[AuthorisationHolders] =
         if (userCanLandOnIsAuthRequiredPage(declaration)) maybeHoldersData else maybeHoldersData.map(_.copy(isRequired = None))
 
       declaration.copy(parties =

@@ -82,7 +82,7 @@ class TransactionSectionViewSpec extends UnitViewSpec with ExportsTestHelper wit
 
     "have related documents section" which {
       val summaryList = view.getElementsByClass("previous-documents-summary").first
-      val summaryListRows = summaryList.getElementsByClass("govuk-summary-list__row")
+      val summaryListRows = summaryList.getElementsByClass(summaryRowClassName)
 
       "has all rows present" in {
         summaryListRows.size mustBe 5
@@ -129,7 +129,7 @@ class TransactionSectionViewSpec extends UnitViewSpec with ExportsTestHelper wit
     }
 
     "not display exchange rate when question not asked" in {
-      val view = transactionSection(aDeclarationAfter(data, withoutTotalNumberOfItems()))(messages)
+      val view = transactionSection(aDeclarationAfter(data, withoutTotalNumberOfItems))(messages)
       view.getElementsByClass("exchange-rate-row") mustBe empty
     }
 
@@ -144,7 +144,7 @@ class TransactionSectionViewSpec extends UnitViewSpec with ExportsTestHelper wit
     }
 
     "not display related documents section when question not asked" in {
-      val view = transactionSection(aDeclarationAfter(data, withoutPreviousDocuments()))(messages)
+      val view = transactionSection(aDeclarationAfter(data, withoutPreviousDocuments))(messages)
       view.getElementsByClass("previous-documents-row") mustBe empty
     }
 
@@ -166,7 +166,7 @@ class TransactionSectionViewSpec extends UnitViewSpec with ExportsTestHelper wit
     "NOT have change links" when {
       "'actionsEnabled' is false" in {
         val view = transactionSection(data, false)(messages)
-        view.getElementsByClass("govuk-summary-list__actions") mustBe empty
+        view.getElementsByClass(summaryActionsClassName) mustBe empty
       }
     }
   }

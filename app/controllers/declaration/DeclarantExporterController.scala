@@ -61,8 +61,8 @@ class DeclarantExporterController @Inject() (
       )
   }
 
-  def nextPage(answer: DeclarantIsExporter)(implicit request: JourneyRequest[AnyContent]): Call =
-    if (!answer.isExporter) routes.ExporterEoriNumberController.displayPage
+  def nextPage(declarantIsExporter: DeclarantIsExporter)(implicit request: JourneyRequest[AnyContent]): Call =
+    if (!declarantIsExporter.isYes) routes.ExporterEoriNumberController.displayPage
     else
       request.declarationType match {
         case DeclarationType.SUPPLEMENTARY => routes.ConsigneeDetailsController.displayPage
@@ -70,12 +70,13 @@ class DeclarantExporterController @Inject() (
         case _                             => routes.CarrierEoriNumberController.displayPage
       }
 
-  private def updateCache(answer: DeclarantIsExporter)(implicit r: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
+  private def updateCache(declarantIsExporter: DeclarantIsExporter)(implicit r: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
     updateDeclarationFromRequest { model =>
-      if (answer.isExporter) {
+      if (!declarantIsExporter.isYes) model.copy(parties = model.parties.copy(declarantIsExporter = Some(declarantIsExporter)))
+      else
         // clear possible previous answers to irrelevant questions
-        model.copy(parties = model.parties.copy(declarantIsExporter = Some(answer), exporterDetails = None, representativeDetails = None))
-      } else
-        model.copy(parties = model.parties.copy(declarantIsExporter = Some(answer)))
+        model.copy(parties =
+          model.parties.copy(declarantIsExporter = Some(declarantIsExporter), exporterDetails = None, representativeDetails = None)
+        )
     }
 }

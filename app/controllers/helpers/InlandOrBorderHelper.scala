@@ -37,7 +37,7 @@ class InlandOrBorderHelper @Inject() (depCodes: DepCodesHelper, taggedAuthCodes:
 
   def skipInlandOrBorder(declaration: ExportsDeclaration): Boolean =
     declaration.isAdditionalDeclarationType(SUPPLEMENTARY_EIDR) ||
-      declaration.declarationHolders.exists(taggedAuthCodes.skipInlandOrBorder) ||
+      declaration.authorisationHolders.exists(taggedAuthCodes.skipInlandOrBorder) ||
       declaration.requiresWarehouseId ||
       declaration.transportLeavingBorderCode == Some(RoRo) ||
       depCodes.isDesignatedExportPlaceCode(declaration)
