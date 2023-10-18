@@ -143,7 +143,7 @@ class DepartureTransportViewSpec extends PageWithButtonsSpec with Injector {
           radios.iterator.asScala.zipWithIndex.foreach { elementAndIndex =>
             val (element, index) = elementAndIndex
             val transportCode = transportCodes.asList(index)
-            element.id mustBe s"radio_${transportCode.id}"
+            element.id mustBe transportCode.id
             element.attr("value") mustBe transportCode.value
           }
 
@@ -154,7 +154,7 @@ class DepartureTransportViewSpec extends PageWithButtonsSpec with Injector {
             val transportCode = transportCodes.asList(index)
             val suffix = if (isV2 && transportCode.useAltRadioTextForV2) ".v2" else ""
             element.text mustBe messages(s"$prefix.${transportCode.id}$suffix")
-            element.attr("for") mustBe s"radio_${transportCode.id}"
+            element.attr("for") mustBe transportCode.id
           }
 
           if (notAvailableRadioIsNotIncluded) {

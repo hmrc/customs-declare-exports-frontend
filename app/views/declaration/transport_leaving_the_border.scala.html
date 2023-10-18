@@ -70,7 +70,10 @@
 
         @sectionHeader(messages("declaration.section.6"))
 
-        @pageTitle(messages("declaration.transport.leavingTheBorder.title"))
+        <fieldset class="govuk-fieldset" @if(form.hasErrors) { aria-describedby="transportLeavingTheBorder-error" }>
+            <legend class="govuk-fieldset__legend govuk-!-margin-bottom-0">
+                @pageTitle(messages("declaration.transport.leavingTheBorder.title"))
+            </legend>
 
         @paragraphBody(messages("declaration.transport.leavingTheBorder.hint"))
 
@@ -146,6 +149,7 @@
             ).filterNot(_.value.contains(ModeOfTransportCode.Empty.value) && request.declarationType != CLEARANCE),
             errorMessage = form("transportLeavingTheBorder").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
         ))
+        </fieldset>
 
         @tariffExpander(TransportLeavingTheBorder, request.declarationType)(messages, appConfig)
 
