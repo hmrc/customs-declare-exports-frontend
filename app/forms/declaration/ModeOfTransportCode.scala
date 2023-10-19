@@ -62,7 +62,7 @@ object ModeOfTransportCode extends FieldMapping {
         Map(key -> code.value)
     }
 
-  private val valueToCodeAll: Map[String, ModeOfTransportCode] =
+  val valueToCodeAll: Map[String, ModeOfTransportCode] =
     (meaningfulModeOfTransportCodes + Empty).map(entry => entry.value -> entry).toMap
 
   implicit val reads: Reads[ModeOfTransportCode] = Reads.StringReads.collect(JsonValidationError("error.unknown"))(valueToCodeAll)
