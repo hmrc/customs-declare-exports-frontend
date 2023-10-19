@@ -89,8 +89,7 @@ object DashboardHelper {
           s"""
              |<li class="cds-exports-tabs__list-item$current">
              |  <a id="tab_$statusGroup-submissions" class="cds-exports-tabs__tab"
-             |     href="/customs-declare-exports/dashboard?groups=$statusGroup&amp;page=1"
-             |     tabindex="$tabIndex">
+             |     href="/customs-declare-exports/dashboard?groups=$statusGroup&amp;page=1">
              |    ${messages(s"dashboard.$statusGroup.tab.title")}
              |  </a>
              |</li>
