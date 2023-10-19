@@ -318,5 +318,10 @@
     "code": "D51",
     "en": "Temporary Admission with partial relief from duties",
     "cy": "Mynediad Dros Dro gyda rhyddhad rhannol o dollau"
+  },
+  {
+    "code": "1FT",
+    "en": "Exportation of goods via a Fixed Transport Installation",
+    "cy": "Allforio nwyddau drwy Osodiad Cludiant Sefydlog"
   }
 ]
