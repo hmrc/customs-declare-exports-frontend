@@ -56,6 +56,7 @@ case class Pointer(sections: Seq[PointerSection]) {
   lazy val pattern: String = sections.map(_.pattern).mkString(".")
 
   lazy val sequenceArgs: Seq[String] = sections.filter(_.`type` == PointerSectionType.SEQUENCE).map(_.value)
+  lazy val sequenceIndexes: Seq[Int] = sequenceArgs.flatMap(_.toIntOption).map(_ - 1)
 
   lazy val messageKey: String = "field." + pattern
 

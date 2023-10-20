@@ -154,6 +154,11 @@ class AppConfig @Inject() (
     throw new IllegalStateException("Missing configuration for CDS Exports draft rejection URI")
   )
 
+  lazy val draftByParentPath = servicesConfig.getConfString(
+    "customs-declare-exports.draft-by-parent",
+    throw new IllegalStateException("Missing configuration for CDS Exports draft rejection URI")
+  )
+
   lazy val submissionPath = servicesConfig.getConfString(
     "customs-declare-exports.submission",
     throw new IllegalStateException("Missing configuration for CDS Exports single Submission URI")
