@@ -26,10 +26,11 @@ import forms.declaration.TransportPayment.{cash, cheque}
 import forms.declaration.carrier.CarrierDetails
 import forms.declaration.consignor.ConsignorDetails
 import forms.declaration.countries.Country
-import forms.declaration.declarationHolder.DeclarationHolder
+import forms.declaration.authorisationHolder.AuthorisationHolder
 import forms.declaration.exporter.ExporterDetails
 import forms.declaration.officeOfExit.OfficeOfExit
 import forms.declaration.{
+  AdditionalActor,
   AdditionalFiscalReference,
   AdditionalFiscalReferencesData,
   AdditionalInformation,
@@ -37,7 +38,6 @@ import forms.declaration.{
   ConsigneeDetails,
   CusCode,
   DeclarantDetails,
-  DeclarationAdditionalActors,
   Document,
   EntityDetails,
   InlandModeOfTransportCode,
@@ -996,13 +996,13 @@ object AmendmentDetailsViewSpec {
     ) ++
       addOrRemove(
         s"$parties.declarationAdditionalActorsData.actors",
-        DeclarationAdditionalActors(Some(eori), Some("MF")),
+        AdditionalActor(Some(eori), Some("MF")),
         parties,
         List(s"${h2(parties)}.actors.eori" -> eori1, s"${h2(parties)}.actors.type" -> "Manufacturer")
       ) ++
       addOrRemove(
         s"$parties.declarationHoldersData.holders",
-        DeclarationHolder(Some("AEOC"), Some(eori), None),
+        AuthorisationHolder(Some("AEOC"), Some(eori), None),
         parties,
         List(s"${h2(parties)}.holders.holder.type" -> "AEOC", s"${h2(parties)}.holders.holder.eori" -> eori1)
       ) ++

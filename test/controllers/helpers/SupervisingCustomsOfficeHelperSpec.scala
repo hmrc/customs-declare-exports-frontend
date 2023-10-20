@@ -64,13 +64,13 @@ class SupervisingCustomsOfficeHelperSpec
       }
 
       "a declaration contains a single item with ProcedureCodesData(1040-000) and auth code FP" in {
-        val declaration = aDeclaration(withDeclarationHolders(Some("FP")), modifierForPC1040)
+        val declaration = aDeclaration(withAuthorisationHolders(Some("FP")), modifierForPC1040)
         supervisingCustomsOfficeHelper.isConditionForAllProcedureCodesVerified(declaration) mustBe false
       }
 
       "a declaration contains all items with ProcedureCodesData(1040-000) and auth code FP" in {
         val declaration =
-          aDeclaration(withDeclarationHolders(Some("FP")), modifierForPC1040, modifierForPC1040, modifierForPC1040)
+          aDeclaration(withAuthorisationHolders(Some("FP")), modifierForPC1040, modifierForPC1040, modifierForPC1040)
         supervisingCustomsOfficeHelper.isConditionForAllProcedureCodesVerified(declaration) mustBe false
       }
 

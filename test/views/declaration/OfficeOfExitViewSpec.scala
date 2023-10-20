@@ -106,7 +106,7 @@ class OfficeOfExitViewSpec extends UnitViewSpec with ExportsTestHelper with Inje
     }
 
     "display 'Back' button that links to 'Destination Country' page" in {
-      val modifier = withDeclarationHolders(Some(taggedAuthCodes.codesSkippingLocationOfGoods.head))
+      val modifier = withAuthorisationHolders(Some(taggedAuthCodes.codesSkippingLocationOfGoods.head))
       implicit val request: JourneyRequest[AnyContent] = withRequest(SUPPLEMENTARY_EIDR, modifier)
       val skipLocationOfGoodsView = page(OfficeOfExit.form)
 

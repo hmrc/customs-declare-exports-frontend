@@ -18,8 +18,8 @@ package controllers.declaration
 
 import base.ControllerSpec
 import forms.common.{Eori, YesNoAnswer}
-import forms.declaration.DeclarationAdditionalActors
-import models.declaration.DeclarationAdditionalActorsData
+import forms.declaration.AdditionalActor
+import models.declaration.AdditionalActors
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -57,7 +57,7 @@ class AdditionalActorsRemoveControllerSpec extends ControllerSpec with OptionVal
   }
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
-    withNewCaching(aDeclaration(withDeclarationAdditionalActors(DeclarationAdditionalActorsData(Seq(additionalActor)))))
+    withNewCaching(aDeclaration(withAdditionalActors(AdditionalActors(Seq(additionalActor)))))
     await(controller.displayPage(id)(request))
     theResponseForm
   }
@@ -68,8 +68,8 @@ class AdditionalActorsRemoveControllerSpec extends ControllerSpec with OptionVal
     captor.getValue
   }
 
-  def additionalActorCaptor: DeclarationAdditionalActors = {
-    val captor = ArgumentCaptor.forClass(classOf[DeclarationAdditionalActors])
+  def additionalActorCaptor: AdditionalActor = {
+    val captor = ArgumentCaptor.forClass(classOf[AdditionalActor])
     verify(mockPage).apply(any(), captor.capture(), any())(any(), any())
     captor.getValue
   }
@@ -77,7 +77,7 @@ class AdditionalActorsRemoveControllerSpec extends ControllerSpec with OptionVal
   private def verifyRemovePageInvoked(numberOfTimes: Int = 1): HtmlFormat.Appendable =
     verify(mockPage, times(numberOfTimes)).apply(any(), any(), any())(any(), any())
 
-  val additionalActor: DeclarationAdditionalActors = DeclarationAdditionalActors(Some(Eori("GB123456789000")), Some("MF"))
+  val additionalActor: AdditionalActor = AdditionalActor(Some(Eori("GB123456789000")), Some("MF"))
   val id = ListItem.createId(0, additionalActor)
 
   "AdditionalActors Remove Controller" must {
@@ -86,7 +86,7 @@ class AdditionalActorsRemoveControllerSpec extends ControllerSpec with OptionVal
       "return 200 (OK)" that {
         "display page method is invoked and cache is empty" in {
 
-          withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationAdditionalActors(additionalActor)))
+          withNewCaching(aDeclarationAfter(request.cacheModel, withAdditionalActors(additionalActor)))
 
           val result = controller.displayPage(id)(getRequest())
 
@@ -100,7 +100,7 @@ class AdditionalActorsRemoveControllerSpec extends ControllerSpec with OptionVal
 
       "return 400 (BAD_REQUEST)" when {
         "user submits an invalid answer" in {
-          withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationAdditionalActors(additionalActor)))
+          withNewCaching(aDeclarationAfter(request.cacheModel, withAdditionalActors(additionalActor)))
 
           val requestBody = Seq("yesNo" -> "invalid")
           val result = controller.submitForm(id)(postRequestAsFormUrlEncoded(requestBody: _*))
@@ -112,7 +112,7 @@ class AdditionalActorsRemoveControllerSpec extends ControllerSpec with OptionVal
       }
       "return 303 (SEE_OTHER)" when {
         "user submits 'Yes' answer" in {
-          withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationAdditionalActors(additionalActor)))
+          withNewCaching(aDeclarationAfter(request.cacheModel, withAdditionalActors(additionalActor)))
 
           val requestBody = Seq("yesNo" -> "Yes")
           val result = controller.submitForm(id)(postRequestAsFormUrlEncoded(requestBody: _*))
@@ -124,7 +124,7 @@ class AdditionalActorsRemoveControllerSpec extends ControllerSpec with OptionVal
         }
 
         "user submits 'No' answer" in {
-          withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationAdditionalActors(additionalActor)))
+          withNewCaching(aDeclarationAfter(request.cacheModel, withAdditionalActors(additionalActor)))
 
           val requestBody = Seq("yesNo" -> "No")
           val result = controller.submitForm(id)(postRequestAsFormUrlEncoded(requestBody: _*))

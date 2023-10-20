@@ -84,7 +84,7 @@ class PreviousDocumentsRemoveControllerSpec extends ControllerWithoutFormSpec {
     "return 303 (SEE_OTHER) and redirect to previous documents summary" when {
 
       "the display page methid is invoked with non existing document" in {
-        withNewCaching(aDeclaration(withoutPreviousDocuments()))
+        withNewCaching(aDeclaration(withoutPreviousDocuments))
 
         val result = controller.displayPage(documentId)(getRequest())
 

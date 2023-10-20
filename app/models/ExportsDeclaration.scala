@@ -25,7 +25,7 @@ import forms.declaration._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
 import forms.declaration.additionaldocuments.AdditionalDocument
 import forms.declaration.countries.Country
-import forms.declaration.declarationHolder.DeclarationHolder
+import forms.declaration.authorisationHolder.AuthorisationHolder
 import models.DeclarationType.DeclarationType
 import models.ExportsDeclaration.isCodePrefixedWith
 import models.ExportsFieldPointer.ExportsFieldPointer
@@ -111,7 +111,7 @@ case class ExportsDeclaration(
 
   def containRoutingCountries: Boolean = locations.routingCountries.nonEmpty
 
-  def declarationHolders: Seq[DeclarationHolder] = parties.declarationHoldersData.map(_.holders).getOrElse(Seq.empty)
+  def authorisationHolders: Seq[AuthorisationHolder] = parties.declarationHoldersData.map(_.holders).getOrElse(Seq.empty)
 
   def hasContainers: Boolean = containers.nonEmpty
 
@@ -142,7 +142,7 @@ case class ExportsDeclaration(
 
   def isAmendmentDraft: Boolean = declarationMeta.status == DeclarationStatus.AMENDMENT_DRAFT
 
-  def isDeclarantExporter: Boolean = parties.declarantIsExporter.exists(_.isExporter)
+  def isDeclarantExporter: Boolean = parties.declarantIsExporter.exists(_.isYes)
 
   def isExs: Boolean = parties.isExs.exists(_.isExs == YesNoAnswers.yes)
   def isNotExs: Boolean = !isExs

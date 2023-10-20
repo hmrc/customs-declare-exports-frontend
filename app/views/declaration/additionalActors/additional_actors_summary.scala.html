@@ -16,7 +16,7 @@
 
 @import controllers.declaration.routes._
 @import controllers.navigation.Navigator
-@import forms.declaration.DeclarationAdditionalActors
+@import forms.declaration.AdditionalActor
 @import forms.declaration.AdditionalActorsSummary
 @import models.requests.JourneyRequest
 @import play.twirl.api.HtmlFormat
@@ -42,7 +42,7 @@
     formHelper: FormWithCSRF
 )
 
-@(form: Form[_], actors: Seq[DeclarationAdditionalActors])(implicit request: JourneyRequest[_], messages: Messages)
+@(form: Form[_], actors: Seq[AdditionalActor])(implicit request: JourneyRequest[_], messages: Messages)
 
 @title = @{
     if(actors.size == 1)

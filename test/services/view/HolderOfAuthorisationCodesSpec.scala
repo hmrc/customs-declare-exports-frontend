@@ -19,8 +19,8 @@ package services.view
 import base.UnitWithMocksSpec
 import config.AppConfig
 import connectors.{FileBasedCodeListConnector, GoodsLocationCodesConnector}
-import forms.declaration.declarationHolder.AuthorizationTypeCodes.{EXRR, MIB}
-import forms.declaration.declarationHolder.DeclarationHolder
+import forms.declaration.authorisationHolder.AuthorizationTypeCodes.{EXRR, MIB}
+import forms.declaration.authorisationHolder.AuthorisationHolder
 import mock.FeatureFlagMocks
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
@@ -110,14 +110,14 @@ class HolderOfAuthorisationCodesSpec extends UnitWithMocksSpec with BeforeAndAft
     }
 
     "return an empty sequence when 'holders' param does not contain auth codes" in {
-      val holders = List(DeclarationHolder(None, None, None))
+      val holders = List(AuthorisationHolder(None, None, None))
       val descriptions = holderOfAuthorisationCodes.codeDescriptions(ENGLISH, holders)
       descriptions mustBe Seq.empty
     }
 
     "return descriptions of 'Holder of Authorisation' codes in the expected format" in {
       val holders =
-        List(DeclarationHolder(Some("APEX"), None, None), DeclarationHolder(None, None, None), DeclarationHolder(Some("UKCS"), None, None))
+        List(AuthorisationHolder(Some("APEX"), None, None), AuthorisationHolder(None, None, None), AuthorisationHolder(Some("UKCS"), None, None))
       val descriptions = holderOfAuthorisationCodes.codeDescriptions(ENGLISH, holders)
       descriptions.head mustBe "APEX - Approved Exporter"
       descriptions.last mustBe "UKCS - UK Continental Shelf"

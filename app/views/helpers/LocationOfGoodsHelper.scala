@@ -18,7 +18,7 @@ package views.helpers
 
 import config.AppConfig
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
-import forms.declaration.declarationHolder.AuthorizationTypeCodes.{isAuthCode, CSE, EXRR, MIB}
+import forms.declaration.authorisationHolder.AuthorizationTypeCodes.{isAuthCode, CSE, EXRR, MIB}
 import models.requests.JourneyRequest
 import play.api.i18n.Messages
 import play.api.mvc.Call

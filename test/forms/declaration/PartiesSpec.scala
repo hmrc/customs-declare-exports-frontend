@@ -20,9 +20,9 @@ import base.UnitSpec
 import forms.common.{Address, Eori, YesNoAnswer}
 import forms.declaration.carrier.CarrierDetails
 import forms.declaration.consignor.ConsignorDetails
-import forms.declaration.declarationHolder.DeclarationHolder
+import forms.declaration.authorisationHolder.AuthorisationHolder
 import forms.declaration.exporter.ExporterDetails
-import models.declaration.{Container, DeclarationAdditionalActorsData, DeclarationHoldersData, EoriSource, Parties, RepresentativeDetails}
+import models.declaration.{AdditionalActors, AuthorisationHolders, Container, EoriSource, Parties, RepresentativeDetails}
 import models.declaration.EoriSource.UserEori
 import services.AlteredField
 import services.AlteredField.constructAlteredField
@@ -235,8 +235,8 @@ class PartiesSpec extends UnitSpec {
       }
 
       "the original version's declarationAdditionalActorsData field has a different value to this one" in {
-        val fieldPointer = s"${baseFieldPointer}.${DeclarationAdditionalActorsData.pointer}.${DeclarationAdditionalActors.pointer}.#1"
-        val originalValue = Some(DeclarationAdditionalActorsData(Seq(DeclarationAdditionalActors(Some(Eori("1234")), None))))
+        val fieldPointer = s"${baseFieldPointer}.${AdditionalActors.pointer}.${AdditionalActor.pointer}.#1"
+        val originalValue = Some(AdditionalActors(Seq(AdditionalActor(Some(Eori("1234")), None))))
         parties.createDiff(parties.copy(declarationAdditionalActorsData = originalValue), baseFieldPointer) mustBe Seq(
           constructAlteredField(fieldPointer, Some(originalValue.value.actors.head), None)
         )
@@ -251,8 +251,8 @@ class PartiesSpec extends UnitSpec {
       }
 
       "the original version's declarationHoldersData field has a different value to this one" in {
-        val fieldPointer = s"${baseFieldPointer}.${DeclarationHoldersData.pointer}.${DeclarationHolder.pointer}.#1"
-        val originalValue = Some(DeclarationHoldersData(Seq(DeclarationHolder(Some("TypeCode"), Some(Eori("1234")), Some(UserEori))), None))
+        val fieldPointer = s"${baseFieldPointer}.${AuthorisationHolders.pointer}.${AuthorisationHolder.pointer}.#1"
+        val originalValue = Some(AuthorisationHolders(Seq(AuthorisationHolder(Some("TypeCode"), Some(Eori("1234")), Some(UserEori))), None))
         parties.createDiff(parties.copy(declarationHoldersData = originalValue), baseFieldPointer) mustBe Seq(
           constructAlteredField(fieldPointer, Some(originalValue.value.holders.head), None)
         )
@@ -343,17 +343,17 @@ class PartiesSpec extends UnitSpec {
   }
 
   "DeclarationAdditionalActor.createDiff" should {
-    val baseFieldPointer = DeclarationAdditionalActors.pointer
+    val baseFieldPointer = AdditionalActor.pointer
 
     "produce the expected ExportsDeclarationDiff instance" when {
       "no differences exist between the two versions" in {
-        val declarationAdditionalActor = DeclarationAdditionalActors(None, None)
+        val declarationAdditionalActor = AdditionalActor(None, None)
         declarationAdditionalActor.createDiff(declarationAdditionalActor, baseFieldPointer) mustBe Seq.empty[AlteredField]
       }
 
       "the original version's eori field has a different value to this one" in {
-        val fieldPointer = s"${baseFieldPointer}.${DeclarationAdditionalActors.eoriPointer}"
-        val declarationAdditionalActor = DeclarationAdditionalActors(Some(Eori("latestEori")), Some("latestPartyType"))
+        val fieldPointer = s"${baseFieldPointer}.${AdditionalActor.eoriPointer}"
+        val declarationAdditionalActor = AdditionalActor(Some(Eori("latestEori")), Some("latestPartyType"))
         val originalValue = Some(Eori("original"))
         declarationAdditionalActor.createDiff(declarationAdditionalActor.copy(eori = originalValue), baseFieldPointer) mustBe Seq(
           constructAlteredField(fieldPointer, originalValue, declarationAdditionalActor.eori)
@@ -361,8 +361,8 @@ class PartiesSpec extends UnitSpec {
       }
 
       "the original version's partyType field has a different value to this one" in {
-        val fieldPointer = s"${baseFieldPointer}.${DeclarationAdditionalActors.partyTypePointer}"
-        val declarationAdditionalActor = DeclarationAdditionalActors(Some(Eori("latestEori")), Some("latestPartyType"))
+        val fieldPointer = s"${baseFieldPointer}.${AdditionalActor.partyTypePointer}"
+        val declarationAdditionalActor = AdditionalActor(Some(Eori("latestEori")), Some("latestPartyType"))
         val originalValue = Some("original")
         declarationAdditionalActor.createDiff(declarationAdditionalActor.copy(partyType = originalValue), baseFieldPointer) mustBe Seq(
           constructAlteredField(fieldPointer, originalValue, declarationAdditionalActor.partyType)
@@ -372,30 +372,30 @@ class PartiesSpec extends UnitSpec {
   }
 
   "DeclarationAdditionalActorsData.createDiff" should {
-    val baseFieldPointer = DeclarationAdditionalActorsData.pointer
+    val baseFieldPointer = AdditionalActors.pointer
     val actors = Seq(
-      DeclarationAdditionalActors(Some(Eori("latestEoriOne")), Some("latestPartyTypeOne")),
-      DeclarationAdditionalActors(Some(Eori("latestEoriTwo")), Some("latestPartyTypeTwo")),
-      DeclarationAdditionalActors(Some(Eori("latestEoriThree")), Some("latestPartyTypeThree"))
+      AdditionalActor(Some(Eori("latestEoriOne")), Some("latestPartyTypeOne")),
+      AdditionalActor(Some(Eori("latestEoriTwo")), Some("latestPartyTypeTwo")),
+      AdditionalActor(Some(Eori("latestEoriThree")), Some("latestPartyTypeThree"))
     )
 
     "produce the expected ExportsDeclarationDiff instance" when {
       "no differences exist between the two versions" in {
         withClue("when no actors are present") {
-          val decActors = DeclarationAdditionalActorsData(Seq.empty)
+          val decActors = AdditionalActors(Seq.empty)
           decActors.createDiff(decActors, baseFieldPointer, Some(1)) mustBe Seq.empty[AlteredField]
         }
 
         withClue("when actors are present") {
-          val decActors = DeclarationAdditionalActorsData(actors)
+          val decActors = AdditionalActors(actors)
           decActors.createDiff(decActors, baseFieldPointer, Some(1)) mustBe Seq.empty[AlteredField]
         }
       }
 
       "when actors are present but not equal" in {
-        val fieldPointer = s"$baseFieldPointer.${DeclarationAdditionalActors.pointer}"
+        val fieldPointer = s"$baseFieldPointer.${AdditionalActor.pointer}"
         withClue("original container's actors are not present") {
-          val decActors = DeclarationAdditionalActorsData(actors)
+          val decActors = AdditionalActors(actors)
           decActors.createDiff(decActors.copy(actors = Seq.empty), baseFieldPointer) mustBe Seq(
             constructAlteredField(s"${fieldPointer}.#1", None, Some(actors(0))),
             constructAlteredField(s"${fieldPointer}.#2", None, Some(actors(1))),
@@ -404,7 +404,7 @@ class PartiesSpec extends UnitSpec {
         }
 
         withClue("this container's seals are not present") {
-          val decActors = DeclarationAdditionalActorsData(Seq.empty)
+          val decActors = AdditionalActors(Seq.empty)
           decActors.createDiff(decActors.copy(actors = actors), baseFieldPointer) mustBe Seq(
             constructAlteredField(s"${fieldPointer}.#1", Some(actors(0)), None),
             constructAlteredField(s"${fieldPointer}.#2", Some(actors(1)), None),
@@ -413,155 +413,155 @@ class PartiesSpec extends UnitSpec {
         }
 
         withClue("both container seals contain different number of elements") {
-          val decActors = DeclarationAdditionalActorsData(actors.drop(1))
+          val decActors = AdditionalActors(actors.drop(1))
           decActors.createDiff(decActors.copy(actors = actors), baseFieldPointer) mustBe Seq(
-            constructAlteredField(s"${fieldPointer}.#1.${DeclarationAdditionalActors.eoriPointer}", actors(0).eori, actors(1).eori),
-            constructAlteredField(s"${fieldPointer}.#1.${DeclarationAdditionalActors.partyTypePointer}", actors(0).partyType, actors(1).partyType),
-            constructAlteredField(s"${fieldPointer}.#2.${DeclarationAdditionalActors.eoriPointer}", actors(1).eori, actors(2).eori),
-            constructAlteredField(s"${fieldPointer}.#2.${DeclarationAdditionalActors.partyTypePointer}", actors(1).partyType, actors(2).partyType),
+            constructAlteredField(s"${fieldPointer}.#1.${AdditionalActor.eoriPointer}", actors(0).eori, actors(1).eori),
+            constructAlteredField(s"${fieldPointer}.#1.${AdditionalActor.partyTypePointer}", actors(0).partyType, actors(1).partyType),
+            constructAlteredField(s"${fieldPointer}.#2.${AdditionalActor.eoriPointer}", actors(1).eori, actors(2).eori),
+            constructAlteredField(s"${fieldPointer}.#2.${AdditionalActor.partyTypePointer}", actors(1).partyType, actors(2).partyType),
             constructAlteredField(s"${fieldPointer}.#3", Some(actors(2)), None)
           )
         }
 
         withClue("both container seals contain same elements but in different order") {
-          val decActors = DeclarationAdditionalActorsData(actors.reverse)
+          val decActors = AdditionalActors(actors.reverse)
           decActors.createDiff(decActors.copy(actors = actors), baseFieldPointer) mustBe Seq(
-            constructAlteredField(s"${fieldPointer}.#1.${DeclarationAdditionalActors.eoriPointer}", actors(0).eori, actors(2).eori),
-            constructAlteredField(s"${fieldPointer}.#1.${DeclarationAdditionalActors.partyTypePointer}", actors(0).partyType, actors(2).partyType),
-            constructAlteredField(s"${fieldPointer}.#3.${DeclarationAdditionalActors.eoriPointer}", actors(2).eori, actors(0).eori),
-            constructAlteredField(s"${fieldPointer}.#3.${DeclarationAdditionalActors.partyTypePointer}", actors(2).partyType, actors(0).partyType)
+            constructAlteredField(s"${fieldPointer}.#1.${AdditionalActor.eoriPointer}", actors(0).eori, actors(2).eori),
+            constructAlteredField(s"${fieldPointer}.#1.${AdditionalActor.partyTypePointer}", actors(0).partyType, actors(2).partyType),
+            constructAlteredField(s"${fieldPointer}.#3.${AdditionalActor.eoriPointer}", actors(2).eori, actors(0).eori),
+            constructAlteredField(s"${fieldPointer}.#3.${AdditionalActor.partyTypePointer}", actors(2).partyType, actors(0).partyType)
           )
         }
 
         withClue("container seals contain elements with different values") {
           val otherVal = "other"
-          val decActors = DeclarationAdditionalActorsData(Seq(DeclarationAdditionalActors(Some(Eori(otherVal)), Some(otherVal))) ++ actors.drop(1))
+          val decActors = AdditionalActors(Seq(AdditionalActor(Some(Eori(otherVal)), Some(otherVal))) ++ actors.drop(1))
           decActors.createDiff(decActors.copy(actors = actors), baseFieldPointer) mustBe Seq(
-            constructAlteredField(s"${fieldPointer}.#1.${DeclarationAdditionalActors.eoriPointer}", actors(0).eori, Some(Eori(otherVal))),
-            constructAlteredField(s"${fieldPointer}.#1.${DeclarationAdditionalActors.partyTypePointer}", actors(0).partyType, Some(otherVal))
+            constructAlteredField(s"${fieldPointer}.#1.${AdditionalActor.eoriPointer}", actors(0).eori, Some(Eori(otherVal))),
+            constructAlteredField(s"${fieldPointer}.#1.${AdditionalActor.partyTypePointer}", actors(0).partyType, Some(otherVal))
           )
         }
       }
     }
   }
 
-  "DeclarationHolder.createDiff" should {
-    val baseFieldPointer = DeclarationHolder.pointer
+  "AuthorisationHolder.createDiff" should {
+    val baseFieldPointer = AuthorisationHolder.pointer
     val originalValue = Some("original")
 
     "produce the expected ExportsDeclarationDiff instance" when {
       "no differences exist between the two versions" in {
-        val declarationHolder = DeclarationHolder(None, None, None)
-        declarationHolder.createDiff(declarationHolder, baseFieldPointer) mustBe Seq.empty[AlteredField]
+        val authorisationHolder = AuthorisationHolder(None, None, None)
+        authorisationHolder.createDiff(authorisationHolder, baseFieldPointer) mustBe Seq.empty[AlteredField]
       }
 
       "the original version's authorisationTypeCode field has a different value to this one" in {
-        val fieldPointer = s"${baseFieldPointer}.${DeclarationHolder.authorisationTypeCodePointer}"
-        val declarationHolder = DeclarationHolder(Some("latestAuthorisationTypeCode"), Some(Eori("latestEori")), Some(EoriSource.UserEori))
-        declarationHolder.createDiff(declarationHolder.copy(authorisationTypeCode = originalValue), baseFieldPointer) mustBe Seq(
-          constructAlteredField(fieldPointer, originalValue, declarationHolder.authorisationTypeCode)
+        val fieldPointer = s"${baseFieldPointer}.${AuthorisationHolder.authorisationTypeCodePointer}"
+        val authorisationHolder = AuthorisationHolder(Some("latestAuthorisationTypeCode"), Some(Eori("latestEori")), Some(EoriSource.UserEori))
+        authorisationHolder.createDiff(authorisationHolder.copy(authorisationTypeCode = originalValue), baseFieldPointer) mustBe Seq(
+          constructAlteredField(fieldPointer, originalValue, authorisationHolder.authorisationTypeCode)
         )
       }
 
       "the original version's eori field has a different value to this one" in {
-        val fieldPointer = s"${baseFieldPointer}.${DeclarationHolder.eoriPointer}"
-        val declarationHolder = DeclarationHolder(Some("latestAuthorisationTypeCode"), Some(Eori("latestEori")), Some(EoriSource.UserEori))
-        declarationHolder.createDiff(declarationHolder.copy(eori = originalValue.map(Eori(_))), baseFieldPointer) mustBe Seq(
-          constructAlteredField(fieldPointer, originalValue.map(Eori(_)), declarationHolder.eori)
+        val fieldPointer = s"${baseFieldPointer}.${AuthorisationHolder.eoriPointer}"
+        val authorisationHolder = AuthorisationHolder(Some("latestAuthorisationTypeCode"), Some(Eori("latestEori")), Some(EoriSource.UserEori))
+        authorisationHolder.createDiff(authorisationHolder.copy(eori = originalValue.map(Eori(_))), baseFieldPointer) mustBe Seq(
+          constructAlteredField(fieldPointer, originalValue.map(Eori(_)), authorisationHolder.eori)
         )
       }
     }
   }
 
-  "DeclarationHolders.createDiff" should {
-    val baseFieldPointer = s"${DeclarationHoldersData.pointer}"
+  "AuthorisationHolders.createDiff" should {
+    val baseFieldPointer = s"${AuthorisationHolders.pointer}"
 
     val holders = Seq(
-      DeclarationHolder(Some("authorisationTypeCodeOne"), Some(Eori("eoriOne")), Some(EoriSource.UserEori)),
-      DeclarationHolder(Some("authorisationTypeCodeTwo"), Some(Eori("eoriTwo")), Some(EoriSource.OtherEori)),
-      DeclarationHolder(Some("authorisationTypeCodeThree"), Some(Eori("eoriThree")), Some(EoriSource.UserEori))
+      AuthorisationHolder(Some("authorisationTypeCodeOne"), Some(Eori("eoriOne")), Some(EoriSource.UserEori)),
+      AuthorisationHolder(Some("authorisationTypeCodeTwo"), Some(Eori("eoriTwo")), Some(EoriSource.OtherEori)),
+      AuthorisationHolder(Some("authorisationTypeCodeThree"), Some(Eori("eoriThree")), Some(EoriSource.UserEori))
     )
 
     "produce the expected ExportsDeclarationDiff instance" when {
       "no differences exist between the two versions" in {
         withClue("when no holders are present") {
-          val declarationHolders = DeclarationHoldersData(Seq.empty, None)
-          declarationHolders.createDiff(declarationHolders, Container.pointer, Some(1)) mustBe Seq.empty[AlteredField]
+          val authorisationHolders = AuthorisationHolders(Seq.empty, None)
+          authorisationHolders.createDiff(authorisationHolders, Container.pointer, Some(1)) mustBe Seq.empty[AlteredField]
         }
 
         withClue("when holders are present") {
-          val declarationHolders = DeclarationHoldersData(holders, YesNoAnswer.Yes)
-          declarationHolders.createDiff(declarationHolders, Container.pointer, Some(1)) mustBe Seq.empty[AlteredField]
+          val authorisationHolders = AuthorisationHolders(holders, YesNoAnswer.Yes)
+          authorisationHolders.createDiff(authorisationHolders, Container.pointer, Some(1)) mustBe Seq.empty[AlteredField]
         }
       }
 
       "when holders are present but not equal" in {
-        val fieldPointer = s"$baseFieldPointer.${DeclarationHolder.pointer}"
-        withClue("original DeclarationHolder's holders are not present") {
-          val declarationHolders = DeclarationHoldersData(holders, YesNoAnswer.Yes)
-          declarationHolders.createDiff(declarationHolders.copy(holders = Seq.empty), baseFieldPointer, Some(1)) mustBe Seq(
+        val fieldPointer = s"$baseFieldPointer.${AuthorisationHolder.pointer}"
+        withClue("original AuthorisationHolder's holders are not present") {
+          val authorisationHolders = AuthorisationHolders(holders, YesNoAnswer.Yes)
+          authorisationHolders.createDiff(authorisationHolders.copy(holders = Seq.empty), baseFieldPointer, Some(1)) mustBe Seq(
             constructAlteredField(s"${fieldPointer}.#1", None, Some(holders(0))),
             constructAlteredField(s"${fieldPointer}.#2", None, Some(holders(1))),
             constructAlteredField(s"${fieldPointer}.#3", None, Some(holders(2)))
           )
         }
 
-        withClue("this DeclarationHolder's holders are not present") {
-          val declarationHolders = DeclarationHoldersData(Seq.empty, YesNoAnswer.Yes)
-          declarationHolders.createDiff(declarationHolders.copy(holders = holders), baseFieldPointer, Some(1)) mustBe Seq(
+        withClue("this AuthorisationHolder's holders are not present") {
+          val authorisationHolders = AuthorisationHolders(Seq.empty, YesNoAnswer.Yes)
+          authorisationHolders.createDiff(authorisationHolders.copy(holders = holders), baseFieldPointer, Some(1)) mustBe Seq(
             constructAlteredField(s"${fieldPointer}.#1", Some(holders(0)), None),
             constructAlteredField(s"${fieldPointer}.#2", Some(holders(1)), None),
             constructAlteredField(s"${fieldPointer}.#3", Some(holders(2)), None)
           )
         }
 
-        withClue("both DeclarationHolder's holders contain different number of elements") {
-          val declarationHolders = DeclarationHoldersData(holders.drop(1), YesNoAnswer.Yes)
-          declarationHolders.createDiff(declarationHolders.copy(holders = holders), baseFieldPointer, Some(1)) mustBe Seq(
+        withClue("both AuthorisationHolder's holders contain different number of elements") {
+          val authorisationHolders = AuthorisationHolders(holders.drop(1), YesNoAnswer.Yes)
+          authorisationHolders.createDiff(authorisationHolders.copy(holders = holders), baseFieldPointer, Some(1)) mustBe Seq(
             constructAlteredField(
-              s"${fieldPointer}.#1.${DeclarationHolder.authorisationTypeCodePointer}",
+              s"${fieldPointer}.#1.${AuthorisationHolder.authorisationTypeCodePointer}",
               holders(0).authorisationTypeCode,
               holders(1).authorisationTypeCode
             ),
-            constructAlteredField(s"${fieldPointer}.#1.${DeclarationHolder.eoriPointer}", holders(0).eori, holders(1).eori),
+            constructAlteredField(s"${fieldPointer}.#1.${AuthorisationHolder.eoriPointer}", holders(0).eori, holders(1).eori),
             constructAlteredField(
-              s"${fieldPointer}.#2.${DeclarationHolder.authorisationTypeCodePointer}",
+              s"${fieldPointer}.#2.${AuthorisationHolder.authorisationTypeCodePointer}",
               holders(1).authorisationTypeCode,
               holders(2).authorisationTypeCode
             ),
-            constructAlteredField(s"${fieldPointer}.#2.${DeclarationHolder.eoriPointer}", holders(1).eori, holders(2).eori),
+            constructAlteredField(s"${fieldPointer}.#2.${AuthorisationHolder.eoriPointer}", holders(1).eori, holders(2).eori),
             constructAlteredField(s"${fieldPointer}.#3", Some(holders(2)), None)
           )
         }
 
-        withClue("both DeclarationHolder's holders contain same elements but in different order") {
-          val declarationHolders = DeclarationHoldersData(holders, YesNoAnswer.Yes)
-          declarationHolders.createDiff(declarationHolders.copy(holders = holders.reverse), baseFieldPointer, Some(1)) mustBe Seq(
+        withClue("both AuthorisationHolder's holders contain same elements but in different order") {
+          val authorisationHolders = AuthorisationHolders(holders, YesNoAnswer.Yes)
+          authorisationHolders.createDiff(authorisationHolders.copy(holders = holders.reverse), baseFieldPointer, Some(1)) mustBe Seq(
             constructAlteredField(
-              s"${fieldPointer}.#1.${DeclarationHolder.authorisationTypeCodePointer}",
+              s"${fieldPointer}.#1.${AuthorisationHolder.authorisationTypeCodePointer}",
               holders(2).authorisationTypeCode,
               holders(0).authorisationTypeCode
             ),
-            constructAlteredField(s"${fieldPointer}.#1.${DeclarationHolder.eoriPointer}", holders(2).eori, holders(0).eori),
+            constructAlteredField(s"${fieldPointer}.#1.${AuthorisationHolder.eoriPointer}", holders(2).eori, holders(0).eori),
             constructAlteredField(
-              s"${fieldPointer}.#3.${DeclarationHolder.authorisationTypeCodePointer}",
+              s"${fieldPointer}.#3.${AuthorisationHolder.authorisationTypeCodePointer}",
               holders(0).authorisationTypeCode,
               holders(2).authorisationTypeCode
             ),
-            constructAlteredField(s"${fieldPointer}.#3.${DeclarationHolder.eoriPointer}", holders(0).eori, holders(2).eori)
+            constructAlteredField(s"${fieldPointer}.#3.${AuthorisationHolder.eoriPointer}", holders(0).eori, holders(2).eori)
           )
         }
 
-        withClue("DeclarationHolder's holders contain elements with different values") {
-          val otherHolder = DeclarationHolder(Some("authorisationTypeCodeOther"), Some(Eori("eoriOther")), Some(EoriSource.UserEori))
-          val declarationHolders = DeclarationHoldersData(Seq(otherHolder) ++ holders.drop(1), YesNoAnswer.Yes)
-          declarationHolders.createDiff(declarationHolders.copy(holders = holders), baseFieldPointer, Some(1)) mustBe Seq(
+        withClue("AuthorisationHolder's holders contain elements with different values") {
+          val otherHolder = AuthorisationHolder(Some("authorisationTypeCodeOther"), Some(Eori("eoriOther")), Some(EoriSource.UserEori))
+          val authorisationHolders = AuthorisationHolders(Seq(otherHolder) ++ holders.drop(1), YesNoAnswer.Yes)
+          authorisationHolders.createDiff(authorisationHolders.copy(holders = holders), baseFieldPointer, Some(1)) mustBe Seq(
             constructAlteredField(
-              s"${fieldPointer}.#1.${DeclarationHolder.authorisationTypeCodePointer}",
+              s"${fieldPointer}.#1.${AuthorisationHolder.authorisationTypeCodePointer}",
               holders(0).authorisationTypeCode,
               otherHolder.authorisationTypeCode
             ),
-            constructAlteredField(s"${fieldPointer}.#1.${DeclarationHolder.eoriPointer}", holders(0).eori, otherHolder.eori)
+            constructAlteredField(s"${fieldPointer}.#1.${AuthorisationHolder.eoriPointer}", holders(0).eori, otherHolder.eori)
           )
         }
       }

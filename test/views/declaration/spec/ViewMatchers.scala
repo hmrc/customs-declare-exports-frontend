@@ -98,6 +98,7 @@ trait ViewMatchers {
 
   def haveTag(tag: String): Matcher[Element] = new ElementTagMatcher(tag)
 
+  val summaryRowClassName = "govuk-summary-list__row"
   val summaryKeyClassName = "govuk-summary-list__key"
   val summaryValueClassName = "govuk-summary-list__value"
   val summaryActionsClassName = "govuk-summary-list__actions"

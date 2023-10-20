@@ -16,11 +16,11 @@
 
 @import config.AppConfig
 @import controllers.declaration.routes.TransportLeavingTheBorderController
-@import controllers.helpers.DeclarationHolderHelper.declarationHolders
+@import controllers.helpers.AuthorisationHolderHelper.authorisationHolders
 @import controllers.navigation.Navigator
 @import controllers.routes.GuidanceController
 @import forms.declaration.{ModeOfTransportCode, TransportLeavingTheBorder}
-@import forms.declaration.declarationHolder.AuthorizationTypeCodes.{EXRR, isAuthCode}
+@import forms.declaration.authorisationHolder.AuthorizationTypeCodes.{EXRR, isAuthCode}
 @import forms.declaration.ModeOfTransportCode._
 @import models.DeclarationType.CLEARANCE
 @import models.requests.JourneyRequest

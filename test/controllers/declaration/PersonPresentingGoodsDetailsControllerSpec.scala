@@ -94,7 +94,7 @@ class PersonPresentingGoodsDetailsControllerSpec extends ControllerSpec with Sca
         }
 
         "call page view, passing form with data from cache" in {
-          withNewCaching(aDeclarationAfter(request.cacheModel, withPersonPresentingGoodsDetails(Some(Eori(testEori)))))
+          withNewCaching(aDeclarationAfter(request.cacheModel, withPersonPresentingGoods(Some(Eori(testEori)))))
 
           controller.displayPage(getRequest()).futureValue
 

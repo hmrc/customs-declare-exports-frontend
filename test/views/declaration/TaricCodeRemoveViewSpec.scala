@@ -46,11 +46,11 @@ class TaricCodeRemoveViewSpec extends PageWithButtonsSpec with Injector with Moc
     }
 
     "display Additional Code label" in {
-      view.getElementsByClass("govuk-summary-list__key") must containMessageForElements("declaration.taricAdditionalCodes.table.header")
+      view.getElementsByClass(summaryKeyClassName) must containMessageForElements("declaration.taricAdditionalCodes.table.header")
     }
 
     "display Taric code to remove" in {
-      view.getElementsByClass("govuk-summary-list__value").text() mustBe taricCode
+      view.getElementsByClass(summaryValueClassName).text() mustBe taricCode
     }
 
     "display 'Back' button that links to 'taric codes summary' page" in {

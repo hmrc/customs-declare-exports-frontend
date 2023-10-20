@@ -31,8 +31,6 @@ import services.DiffTools.{combinePointers, compareStringDifference, ExportsDecl
 case class RepresentativeDetails(details: Option[EntityDetails], statusCode: Option[String], representingOtherAgent: Option[String])
     extends DiffTools[RepresentativeDetails] with AmendmentOp {
 
-  def isRepresentingOtherAgent = representingOtherAgent.contains("Yes")
-
   // representingOtherAgent field is not used to generate WCO XML
   override def createDiff(
     original: RepresentativeDetails,

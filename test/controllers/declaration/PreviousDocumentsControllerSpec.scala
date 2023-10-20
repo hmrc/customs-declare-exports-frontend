@@ -85,7 +85,7 @@ class PreviousDocumentsControllerSpec extends ControllerWithoutFormSpec {
     "return 400 (BAD_REQUEST)" when {
 
       "user doesn't provide the Document type" in {
-        withNewCaching(aDeclaration(withoutPreviousDocuments()))
+        withNewCaching(aDeclaration(withoutPreviousDocuments))
 
         val emptyForm = Json.toJson(Document("", "reference", Some("123")))
         val result = controller.submit()(postRequest(emptyForm))
@@ -95,7 +95,7 @@ class PreviousDocumentsControllerSpec extends ControllerWithoutFormSpec {
       }
 
       "user doesn't provide the Document reference" in {
-        withNewCaching(aDeclaration(withoutPreviousDocuments()))
+        withNewCaching(aDeclaration(withoutPreviousDocuments))
 
         val emptyForm = Json.toJson(Document("355", "", Some("123")))
         val result = controller.submit()(postRequest(emptyForm))
@@ -105,7 +105,7 @@ class PreviousDocumentsControllerSpec extends ControllerWithoutFormSpec {
       }
 
       "user doesn't provide Document type and Document reference" in {
-        withNewCaching(aDeclaration(withoutPreviousDocuments()))
+        withNewCaching(aDeclaration(withoutPreviousDocuments))
 
         val emptyForm = Json.toJson(Document("", "", Some("123")))
         val result = controller.submit()(postRequest(emptyForm))

@@ -122,7 +122,7 @@ class AuthorisationProcedureCodeChoiceControllerSpec extends ControllerSpec {
       }
     }
 
-    "redirect to DeclarationHolderRequiredController" when {
+    "redirect to AuthorisationHolderRequiredController" when {
 
       "on Occasional journey" in {
         withNewCaching(withRequestOfType(OCCASIONAL).cacheModel)
@@ -130,7 +130,7 @@ class AuthorisationProcedureCodeChoiceControllerSpec extends ControllerSpec {
         val result = controller.displayPage(getRequest())
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe routes.DeclarationHolderRequiredController.displayPage
+        thePageNavigatedTo mustBe routes.AuthorisationHolderRequiredController.displayPage
       }
 
       "on Clearance journey and" when {
@@ -140,7 +140,7 @@ class AuthorisationProcedureCodeChoiceControllerSpec extends ControllerSpec {
           val result = controller.displayPage(getRequest())
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe routes.DeclarationHolderRequiredController.displayPage
+          thePageNavigatedTo mustBe routes.AuthorisationHolderRequiredController.displayPage
         }
       }
     }
@@ -174,7 +174,7 @@ class AuthorisationProcedureCodeChoiceControllerSpec extends ControllerSpec {
               val result = controller.submitForm()(postRequest(Json.obj(formFieldName -> choice.value.code.toString)))
 
               await(result) mustBe aRedirectToTheNextPage
-              thePageNavigatedTo mustBe routes.DeclarationHolderRequiredController.displayPage
+              thePageNavigatedTo mustBe routes.AuthorisationHolderRequiredController.displayPage
 
               verifyPageInvoked(0)
               theCacheModelUpdated.parties.authorisationProcedureCodeChoice mustBe choice

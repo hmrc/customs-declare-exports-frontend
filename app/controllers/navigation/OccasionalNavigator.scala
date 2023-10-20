@@ -31,23 +31,23 @@ import play.api.mvc.Call
 trait OccasionalNavigator extends CacheDependentNavigators {
 
   val occasional: PartialFunction[DeclarationPage, Call] = {
-    case DeclarantDetails            => routes.AdditionalDeclarationTypeController.displayPage
-    case LinkDucrToMucr              => routes.LocalReferenceNumberController.displayPage
-    case DucrChoice                  => routes.DeclarantDetailsController.displayPage
-    case Ducr                        => routes.DucrChoiceController.displayPage
-    case ConsignmentReferences       => routes.DeclarantDetailsController.displayPage
-    case ExporterEoriNumber          => routes.DeclarantExporterController.displayPage
-    case ExporterDetails             => routes.ExporterEoriNumberController.displayPage
-    case DeclarationAdditionalActors => routes.ConsigneeDetailsController.displayPage
-    case RoutingCountryQuestionPage  => routes.DestinationCountryController.displayPage
-    case RemoveCountryPage           => routes.RoutingCountriesController.displayRoutingCountry
-    case ChangeCountryPage           => routes.RoutingCountriesController.displayRoutingCountry
-    case LocationOfGoods             => routes.RoutingCountriesController.displayRoutingCountry
-    case AdditionalActorsSummary     => routes.ConsigneeDetailsController.displayPage
-    case DocumentSummary             => routes.OfficeOfExitController.displayPage
-    case BorderTransport             => routes.DepartureTransportController.displayPage
-    case ContainerAdd                => routes.TransportContainerController.displayContainerSummary
-    case page                        => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on occasional")
+    case DeclarantDetails           => routes.AdditionalDeclarationTypeController.displayPage
+    case LinkDucrToMucr             => routes.LocalReferenceNumberController.displayPage
+    case DucrChoice                 => routes.DeclarantDetailsController.displayPage
+    case Ducr                       => routes.DucrChoiceController.displayPage
+    case ConsignmentReferences      => routes.DeclarantDetailsController.displayPage
+    case ExporterEoriNumber         => routes.DeclarantExporterController.displayPage
+    case ExporterDetails            => routes.ExporterEoriNumberController.displayPage
+    case AdditionalActor            => routes.ConsigneeDetailsController.displayPage
+    case RoutingCountryQuestionPage => routes.DestinationCountryController.displayPage
+    case RemoveCountryPage          => routes.RoutingCountriesController.displayRoutingCountry
+    case ChangeCountryPage          => routes.RoutingCountriesController.displayRoutingCountry
+    case LocationOfGoods            => routes.RoutingCountriesController.displayRoutingCountry
+    case AdditionalActorsSummary    => routes.ConsigneeDetailsController.displayPage
+    case DocumentSummary            => routes.OfficeOfExitController.displayPage
+    case BorderTransport            => routes.DepartureTransportController.displayPage
+    case ContainerAdd               => routes.TransportContainerController.displayContainerSummary
+    case page                       => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on occasional")
   }
 
   val occasionalItemPage: PartialFunction[DeclarationPage, String => Call] = {

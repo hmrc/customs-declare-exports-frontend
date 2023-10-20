@@ -31,12 +31,9 @@ object RepresentativeEntity extends DeclarationPage {
   val formId = "RepresentativeEntityDetails"
 
   private val eoriOnlyMapping =
-    Forms.mapping("eori" -> Eori.mapping("declaration.representative.entity.eori.empty"))(eori => EntityDetails(Some(eori), None))(model =>
-      model.eori
-    )
+    Forms.mapping("eori" -> Eori.mapping("declaration.representative.entity.eori.empty"))(eori => EntityDetails(Some(eori), None))(_.eori)
 
-  val mapping = Forms
-    .mapping("details" -> eoriOnlyMapping)(RepresentativeEntity.apply)(RepresentativeEntity.unapply)
+  val mapping = Forms.mapping("details" -> eoriOnlyMapping)(RepresentativeEntity.apply)(RepresentativeEntity.unapply)
 
   def form: Form[RepresentativeEntity] = Form(mapping)
 

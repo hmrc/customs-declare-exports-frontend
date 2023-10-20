@@ -97,7 +97,7 @@ class PreviousDocumentsSummaryControllerSpec extends ControllerSpec {
     "return 303 (SEE_OTHER) and redirect to Previous Documents page" when {
 
       "display page method is invoked without documents in cache" in {
-        withNewCaching(aDeclaration(withoutPreviousDocuments()))
+        withNewCaching(aDeclaration(withoutPreviousDocuments))
 
         val result = controller.displayPage(getRequest())
 

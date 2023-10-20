@@ -30,19 +30,19 @@ import play.api.mvc.Call
 trait SupplementaryNavigator extends CacheDependentNavigators {
 
   val supplementary: PartialFunction[DeclarationPage, Call] = {
-    case DeclarantDetails            => routes.AdditionalDeclarationTypeController.displayPage
-    case LinkDucrToMucr              => routes.ConsignmentReferencesController.displayPage
-    case ConsignmentReferences       => routes.DeclarantDetailsController.displayPage
-    case ExporterEoriNumber          => routes.DeclarantExporterController.displayPage
-    case ExporterDetails             => routes.ExporterEoriNumberController.displayPage
-    case BorderTransport             => routes.DepartureTransportController.displayPage
-    case ContainerAdd                => routes.TransportContainerController.displayContainerSummary
-    case LocationOfGoods             => routes.DestinationCountryController.displayPage
-    case DocumentSummary             => routes.NatureOfTransactionController.displayPage
-    case OfficeOfExit                => routes.LocationOfGoodsController.displayPage
-    case AdditionalActorsSummary     => routes.ConsigneeDetailsController.displayPage
-    case DeclarationAdditionalActors => routes.ConsigneeDetailsController.displayPage
-    case page                        => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on supplementary")
+    case DeclarantDetails        => routes.AdditionalDeclarationTypeController.displayPage
+    case LinkDucrToMucr          => routes.ConsignmentReferencesController.displayPage
+    case ConsignmentReferences   => routes.DeclarantDetailsController.displayPage
+    case ExporterEoriNumber      => routes.DeclarantExporterController.displayPage
+    case ExporterDetails         => routes.ExporterEoriNumberController.displayPage
+    case BorderTransport         => routes.DepartureTransportController.displayPage
+    case ContainerAdd            => routes.TransportContainerController.displayContainerSummary
+    case LocationOfGoods         => routes.DestinationCountryController.displayPage
+    case DocumentSummary         => routes.NatureOfTransactionController.displayPage
+    case OfficeOfExit            => routes.LocationOfGoodsController.displayPage
+    case AdditionalActorsSummary => routes.ConsigneeDetailsController.displayPage
+    case AdditionalActor         => routes.ConsigneeDetailsController.displayPage
+    case page                    => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on supplementary")
   }
 
   val supplementaryItemPage: PartialFunction[DeclarationPage, String => Call] = {

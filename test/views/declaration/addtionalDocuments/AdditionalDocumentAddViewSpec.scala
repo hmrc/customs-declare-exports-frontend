@@ -26,7 +26,7 @@ import controllers.declaration.routes.{
 import forms.common.{Eori, YesNoAnswer}
 import forms.declaration.additionaldocuments.AdditionalDocument
 import forms.declaration.additionaldocuments.AdditionalDocument.form
-import forms.declaration.declarationHolder.DeclarationHolder
+import forms.declaration.authorisationHolder.AuthorisationHolder
 import models.DeclarationType._
 import models.ExportsDeclaration
 import models.declaration.EoriSource
@@ -56,7 +56,7 @@ class AdditionalDocumentAddViewSpec extends UnitViewSpec with Injector with Mock
     val licenseNotRequired: ExportsDeclaration = aDeclaration(withItem(anItem(withItemId(itemId), withAdditionalInfo)))
     val withDocs: ExportsDeclaration = aDeclaration(withItem(anItem(withItemId(itemId), withAdditionalDocs)))
     val authCodeRequiresDocs: ExportsDeclaration = aDeclaration(
-      withDeclarationHolders(DeclarationHolder(Some("OPO"), Some(Eori("GB123456789012")), Some(EoriSource.OtherEori))),
+      withAuthorisationHolders(AuthorisationHolder(Some("OPO"), Some(Eori("GB123456789012")), Some(EoriSource.OtherEori))),
       withItem(anItem(withItemId(itemId), withAdditionalInfo))
     )
   }

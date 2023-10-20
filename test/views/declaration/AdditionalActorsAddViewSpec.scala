@@ -19,8 +19,8 @@ package views.declaration
 import base.{Injector, TestHelper}
 import controllers.declaration.routes
 import forms.common.Eori
-import forms.declaration.DeclarationAdditionalActors
-import forms.declaration.DeclarationAdditionalActors.form
+import forms.declaration.AdditionalActor
+import forms.declaration.AdditionalActor.form
 import models.DeclarationType._
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
@@ -37,7 +37,7 @@ class AdditionalActorsAddViewSpec extends PageWithButtonsSpec with Injector {
 
   override val typeAndViewInstance = (STANDARD, page(form)(_, _))
 
-  def createView(frm: Form[DeclarationAdditionalActors] = form)(implicit request: JourneyRequest[_]): Document =
+  def createView(frm: Form[AdditionalActor] = form)(implicit request: JourneyRequest[_]): Document =
     page(frm)
 
   "Declaration Additional Actors" should {
@@ -67,7 +67,7 @@ class AdditionalActorsAddViewSpec extends PageWithButtonsSpec with Injector {
       }
 
       "display five radio buttons with description (not selected)" in {
-        val view = createView(DeclarationAdditionalActors.form.fill(DeclarationAdditionalActors(Some(Eori("")), Some(""))))
+        val view = createView(AdditionalActor.form.fill(AdditionalActor(Some(Eori("")), Some(""))))
 
         def checkOption(key: String, messagePrefix: String = "declaration.partyType."): Assertion = {
           val option = view.getElementById(key)
@@ -105,8 +105,8 @@ class AdditionalActorsAddViewSpec extends PageWithButtonsSpec with Injector {
     onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, SUPPLEMENTARY) { implicit request =>
       def incorrectEori(partyType: String) = {
         val view = createView(
-          DeclarationAdditionalActors.form
-            .fillAndValidate(DeclarationAdditionalActors(Some(Eori(TestHelper.createRandomAlphanumericString(18))), Some(partyType)))
+          AdditionalActor.form
+            .fillAndValidate(AdditionalActor(Some(Eori(TestHelper.createRandomAlphanumericString(18))), Some(partyType)))
         )
 
         view must haveGovukGlobalErrorSummary
@@ -127,7 +127,7 @@ class AdditionalActorsAddViewSpec extends PageWithButtonsSpec with Injector {
   "Declaration Additional Actors View when filled" must {
 
     def createViewAndFill(request: JourneyRequest[_], partyType: String) =
-      createView(DeclarationAdditionalActors.form.fill(DeclarationAdditionalActors(Some(Eori("GB1234")), Some(partyType))))(request)
+      createView(AdditionalActor.form.fill(AdditionalActor(Some(Eori("GB1234")), Some(partyType))))(request)
 
     def ensureRadioIsChecked(view: Document, partyType: String): Unit =
       view.getElementById(partyType).getElementsByAttribute("checked").size() mustBe 1

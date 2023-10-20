@@ -106,8 +106,8 @@ object PointerHelper extends Logging {
     "declaration.totalPackageQuantity" -> TotalPackageQuantityController.displayPage,
     "declaration.parties.representativeDetails.details.eori" -> RepresentativeEntityController.displayPage,
     "declaration.parties.representativeDetails.statusCode" -> RepresentativeStatusController.displayPage,
-    "declaration.parties.declarationHolders.$.eori" -> DeclarationHolderSummaryController.displayPage, // ?? DeclarationHolderChangeController with seq No
-    "declaration.parties.declarationHolders.$.authorisationTypeCode" -> DeclarationHolderSummaryController.displayPage, // ?? DeclarationHolderChangeController with seq No
+    "declaration.parties.declarationHolders.$.eori" -> AuthorisationHolderSummaryController.displayPage, // ?? AuthorisationHolderChangeController with seq No
+    "declaration.parties.declarationHolders.$.authorisationTypeCode" -> AuthorisationHolderSummaryController.displayPage, // ?? AuthorisationHolderChangeController with seq No
     "declaration.transport.meansOfTransportCrossingTheBorderIDNumber" -> BorderTransportController.displayPage,
     "declaration.transport.meansOfTransportCrossingTheBorderType" -> BorderTransportController.displayPage,
     "declaration.transport.transportCrossingTheBorderNationality.countryName" -> TransportCountryController.displayPage,

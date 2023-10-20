@@ -18,10 +18,10 @@ package controllers.declaration
 
 import base.{ControllerSpec, Injector, TestHelper}
 import forms.common.Eori
-import forms.declaration.DeclarationAdditionalActors
+import forms.declaration.AdditionalActor
 import mock.ErrorHandlerMocks
 import models.DeclarationType
-import models.declaration.DeclarationAdditionalActorsData
+import models.declaration.AdditionalActors
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
@@ -58,8 +58,8 @@ class AdditionalActorsAddControllerSpec extends ControllerSpec with ErrorHandler
     super.afterEach()
   }
 
-  def theResponseForm: Form[DeclarationAdditionalActors] = {
-    val formCaptor = ArgumentCaptor.forClass(classOf[Form[DeclarationAdditionalActors]])
+  def theResponseForm: Form[AdditionalActor] = {
+    val formCaptor = ArgumentCaptor.forClass(classOf[Form[AdditionalActor]])
     verify(declarationAdditionalActorsPage).apply(formCaptor.capture())(any(), any())
     formCaptor.getValue
   }
@@ -71,13 +71,11 @@ class AdditionalActorsAddControllerSpec extends ControllerSpec with ErrorHandler
   }
 
   val eori = "GB12345678912345"
-  val additionalActor = DeclarationAdditionalActors(Some(Eori(eori)), Some("CS"))
+  val additionalActor = AdditionalActor(Some(Eori(eori)), Some("CS"))
   val declarationWithActor =
-    aDeclaration(withDeclarationAdditionalActors(additionalActor))
+    aDeclaration(withAdditionalActors(additionalActor))
 
-  val maxAmountOfItems = aDeclaration(
-    withDeclarationAdditionalActors(DeclarationAdditionalActorsData(Seq.fill(DeclarationAdditionalActorsData.maxNumberOfActors)(additionalActor)))
-  )
+  val maxAmountOfItems = aDeclaration(withAdditionalActors(AdditionalActors(Seq.fill(AdditionalActors.maxNumberOfActors)(additionalActor))))
 
   "Declaration Additional Actors controller" should {
 
