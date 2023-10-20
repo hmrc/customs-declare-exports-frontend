@@ -68,37 +68,37 @@ class EadViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injec
       "the date/time fields" in {
         view
           .getElementsByClass("ead-body")
-          .get(4)
+          .get(6)
           .text mustBe s"${messages("ead.template.releasedDateTime")}:"
         view
           .getElementsByClass("ead-body")
-          .get(5)
+          .get(7)
           .text mustBe MrnStatusSpec.completeMrnStatus.releasedDateTime.map(ViewDates.formatDateAtTime).get
         view
           .getElementsByClass("ead-body")
-          .get(6)
+          .get(8)
           .text mustBe s"${messages("ead.template.acceptanceDateTime")}:"
         view
           .getElementsByClass("ead-body")
-          .get(7)
+          .get(9)
           .text mustBe MrnStatusSpec.completeMrnStatus.acceptanceDateTime.map(ViewDates.formatDateAtTime).get
         view
           .getElementsByClass("ead-body")
-          .get(8)
+          .get(10)
           .text mustBe s"${messages("ead.template.receivedDateTime")}:"
         view
           .getElementsByClass("ead-body")
-          .get(9)
+          .get(11)
           .text mustBe ViewDates.formatDateAtTime(MrnStatusSpec.completeMrnStatus.receivedDateTime)
       }
       "previous docs" in {
         view
           .getElementsByClass("ead-body")
-          .get(10)
+          .get(12)
           .text mustBe s"${messages("ead.template.previousDocuments")}:"
         view
           .getElementsByClass("ead-body")
-          .get(11)
+          .get(13)
           .text mustBe s"${MrnStatusSpec.completeMrnStatus.previousDocuments.head.typeCode} - ${MrnStatusSpec.completeMrnStatus.previousDocuments.head.id}"
       }
       "the quantities field" in {
