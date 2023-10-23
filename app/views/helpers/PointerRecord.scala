@@ -28,6 +28,7 @@ trait PointerRecord {
   val pageLink2Param: Option[String => Call] = None
 }
 
+// scalastyle:off
 object PointerRecord {
 
   val getItem = (dec: ExportsDeclaration, idx: Int) => dec.items.lift(idx)
@@ -35,7 +36,7 @@ object PointerRecord {
   val getAdditionalInformation = (item: ExportItem, idx: Int) => item.additionalInformation.flatMap(_.items.lift(idx))
   val getAdditionalFiscalRefs = (item: ExportItem, idx: Int) => item.additionalFiscalReferencesData.flatMap(_.references.lift(idx))
   val getPackageInformation = (item: ExportItem, idx: Int) => item.packageInformation.flatMap(_.lift(idx))
-  val getDeclarationHolder = (dec: ExportsDeclaration, idx: Int) => dec.declarationHolders.lift(idx)
+  val getDeclarationHolder = (dec: ExportsDeclaration, idx: Int) => dec.authorisationHolders.lift(idx)
   val getRoutingCountry = (dec: ExportsDeclaration, idx: Int) => dec.locations.routingCountries.lift(idx)
   val getContainer = (dec: ExportsDeclaration, idx: Int) => dec.containers.lift(idx)
   val getSeal = (container: Container, idx: Int) => container.seals.lift(idx)
@@ -223,11 +224,11 @@ object PointerRecord {
     },
     "declaration.parties.declarationHolders.$.eori" -> new PointerRecord() {
       def fetchValue(dec: ExportsDeclaration, args: Int*) = getDeclarationHolder(dec, args(0)).flatMap(_.eori.map(_.value))
-      override val pageLink1Param = Some(DeclarationHolderSummaryController.displayPage)
+      override val pageLink1Param = Some(AuthorisationHolderSummaryController.displayPage)
     },
     "declaration.parties.declarationHolders.$.authorisationTypeCode" -> new PointerRecord() {
       def fetchValue(dec: ExportsDeclaration, args: Int*) = getDeclarationHolder(dec, args(0)).flatMap(_.authorisationTypeCode)
-      override val pageLink1Param = Some(DeclarationHolderSummaryController.displayPage)
+      override val pageLink1Param = Some(AuthorisationHolderSummaryController.displayPage)
     },
     "declaration.transport.meansOfTransportCrossingTheBorderIDNumber" -> new PointerRecord() {
       def fetchValue(dec: ExportsDeclaration, args: Int*) = dec.transport.meansOfTransportOnDepartureIDNumber
@@ -413,3 +414,4 @@ object PointerRecord {
     }
   )
 }
+// scalastyle:on
