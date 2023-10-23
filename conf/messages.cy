@@ -1980,6 +1980,7 @@ declaration.summary.transaction.previousDocuments.reference = Cyfeirnod y ddogfe
 declaration.summary.transaction.previousDocuments.goodsItemIdentifier = Rhif yr eitem
 declaration.summary.transaction.previousDocuments.document.change = Newidiwch ddogfen {0}
 declaration.summary.items = Ynglŷn â’r eitemau
+declaration.summary.items.add = Ychwanegwch eitem ddatganiad
 declaration.summary.items.empty = Nid ydych wedi ychwanegu unrhyw eitemau eto
 declaration.summary.items.item.presentationId = Eitem ddatganiad {0}
 declaration.summary.items.item.headerAction = Tynnu eitem

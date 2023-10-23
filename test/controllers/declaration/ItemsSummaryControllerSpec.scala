@@ -23,21 +23,19 @@ import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.FiscalInformation.AllowedFiscalInformationAnswers
 import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData, FiscalInformation}
 import mock.ErrorHandlerMocks
-import models.declaration.{CommodityMeasure, ExportItem}
 import models.DeclarationMeta
 import models.DeclarationType.CLEARANCE
+import models.declaration.{CommodityMeasure, ExportItem}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.{any, anyString}
 import org.mockito.Mockito.{reset, verify, when}
 import org.mockito.invocation.InvocationOnMock
-import org.mockito.stubbing.Answer
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.{GivenWhenThen, OptionValues}
 import play.api.data.{Form, FormError}
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import services.cache.ExportItemIdGeneratorService
 import views.html.declaration.declarationitems.{items_add_item, items_summary}
 
 import scala.concurrent.Future
@@ -46,7 +44,6 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
 
   private val addItemPage = mock[items_add_item]
   private val itemsSummaryPage = mock[items_summary]
-  private val mockExportIdGeneratorService = mock[ExportItemIdGeneratorService]
   private val sequenceIdHandler: SequenceIdHelper = mock[SequenceIdHelper]
 
   private val controller = new ItemsSummaryController(
@@ -54,7 +51,6 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
     mockJourneyAction,
     mockExportsCacheService,
     navigator,
-    mockExportIdGeneratorService,
     stubMessagesControllerComponents(),
     addItemPage,
     itemsSummaryPage,
@@ -64,10 +60,9 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
   private val parentDeclarationId = "parentDecId"
   private val parentDeclaration = aDeclaration(withId(parentDeclarationId))
 
-  private val itemId = "ItemId12345"
   private val exportItem: ExportItem = anItem(
     withSequenceId(1),
-    withItemId(itemId),
+    withItemId("Some Id"),
     withProcedureCodes(),
     withFiscalInformation(FiscalInformation(AllowedFiscalInformationAnswers.yes)),
     withAdditionalFiscalReferenceData(AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("GB", "12")))),
@@ -103,19 +98,16 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
 
     when(addItemPage.apply()(any(), any())).thenReturn(HtmlFormat.empty)
     when(itemsSummaryPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
-    when(mockExportIdGeneratorService.generateItemId()).thenReturn(itemId)
     when(mockCustomsDeclareExportsConnector.findDeclaration(any())(any(), any())).thenReturn(Future.successful(Some(parentDeclaration)))
 
-    when(sequenceIdHandler.handleSequencing[ExportItem](any(), any())(any())).thenAnswer(new Answer[(Seq[ExportItem], DeclarationMeta)] {
-      def answer(invocation: InvocationOnMock): (Seq[ExportItem], DeclarationMeta) = {
-        val args = invocation.getArguments
-        (args(0).asInstanceOf[Seq[ExportItem]], args(1).asInstanceOf[DeclarationMeta])
-      }
-    })
+    when(sequenceIdHandler.handleSequencing[ExportItem](any(), any())(any())).thenAnswer { (invocation: InvocationOnMock) =>
+      val args = invocation.getArguments
+      (args(0).asInstanceOf[Seq[ExportItem]], args(1).asInstanceOf[DeclarationMeta])
+    }
   }
 
   override protected def afterEach(): Unit = {
-    reset(addItemPage, itemsSummaryPage, mockExportIdGeneratorService, mockExportsCacheService, sequenceIdHandler, mockCustomsDeclareExportsConnector)
+    reset(addItemPage, itemsSummaryPage, mockExportsCacheService, sequenceIdHandler, mockCustomsDeclareExportsConnector)
     super.afterEach()
   }
 
@@ -171,6 +163,7 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
 
         val result = controller.addFirstItem()(postRequest(Json.obj()))
         status(result) mustBe SEE_OTHER
+        val itemId = theCacheModelUpdated.items.last.id
         thePageNavigatedTo mustBe routes.ProcedureCodesController.displayPage(itemId)
 
         theCacheModelUpdated.items.size mustBe 1
@@ -249,8 +242,7 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
         }
 
         "return 303 (SEE_OTHER) and redirect to Procedure Codes page" in {
-          val cachedData =
-            aDeclaration(withType(request.declarationType), withItem(anItem()))
+          val cachedData = aDeclaration(withType(request.declarationType), withItem(anItem()))
           withNewCaching(cachedData)
           val answerForm = Json.obj("yesNo" -> YesNoAnswers.yes)
 
@@ -260,6 +252,7 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
           if (request.isType(CLEARANCE))
             thePageNavigatedTo mustBe routes.TransportLeavingTheBorderController.displayPage
           else {
+            val itemId = theCacheModelUpdated.items.last.id
             thePageNavigatedTo mustBe routes.ProcedureCodesController.displayPage(itemId)
             And("max sequence id is updated")
             verify(sequenceIdHandler).handleSequencing[ExportItem](any(), any())(any())

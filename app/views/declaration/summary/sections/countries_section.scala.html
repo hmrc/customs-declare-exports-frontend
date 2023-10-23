@@ -34,58 +34,60 @@
 @actions(action: Actions) = @{ if(actionsEnabled) Some(action) else None }
 
 @if(sectionRequired(declarationData.locations)) {
-
-    @summaryList(id = "declaration-countries-summary", heading = Some(messages("declaration.summary.countries")), summaryListRows = Seq(
-
-        declarationData.locations.hasRoutingCountries.map(_ =>
-            SummaryListRow(
-                classes = "countriesOfRouting-row",
-                key = Key(
-                    content = Text(messages("declaration.summary.countries.routingCountries"))
-                ),
-                value = Value(
-                    content = Text(
-                        if (declarationData.locations.routingCountries.isEmpty) {
-                            messages("site.none")
-                        } else {
-                            Countries
-                                .findByCodes(declarationData.locations.routingCountries.flatMap(_.country.code))
-                                .map(countryHelper.getShortNameForCountry(_))
-                                .mkString(", ")
-                        }
-                    )
-                ),
-                actions = actions(Actions(
-                    items = Seq(
-                        actionSummaryItem(
-                            href = routes.RoutingCountriesController.submitRoutingCountry.url,
-                            content = HtmlContent(linkContent(messages("site.change"))),
-                            visuallyHiddenText = Some(messages("declaration.summary.countries.routingCountries.change"))
+    @summaryList(
+        id = "declaration-countries-summary",
+        heading = Some(messages("declaration.summary.countries")),
+        topMargin = 9,
+        summaryListRows = Seq(
+            declarationData.locations.hasRoutingCountries.map(_ =>
+                SummaryListRow(
+                    classes = "countriesOfRouting-row",
+                    key = Key(
+                        content = Text(messages("declaration.summary.countries.routingCountries"))
+                    ),
+                    value = Value(
+                        content = Text(
+                            if (declarationData.locations.routingCountries.isEmpty) {
+                                messages("site.none")
+                            } else {
+                                Countries
+                                    .findByCodes(declarationData.locations.routingCountries.flatMap(_.country.code))
+                                    .map(countryHelper.getShortNameForCountry(_))
+                                    .mkString(", ")
+                            }
                         )
-                    )
-                ))
-            )
-        ),
-        declarationData.locations.destinationCountry.map(destinationCountry =>
-            SummaryListRow(
-                classes = "countryOfDestination-row",
-                key = Key(
-                    content = Text(messages("declaration.summary.countries.countryOfDestination"))
-                ),
-                value = Value(
-                    content = Text(destinationCountry.code.map(code => countryHelper.getShortNameForCountry(Countries.findByCode(code))).getOrElse(""))
-                ),
-                actions = actions(Actions(
-                    items = Seq(
-                        actionSummaryItem(
-                            href = routes.DestinationCountryController.displayPage.url,
-                            content = HtmlContent(linkContent(messages("site.change"))),
-                            visuallyHiddenText = Some(messages("declaration.summary.countries.countryOfDestination.change"))
+                    ),
+                    actions = actions(Actions(
+                        items = Seq(
+                            actionSummaryItem(
+                                href = routes.RoutingCountriesController.submitRoutingCountry.url,
+                                content = HtmlContent(linkContent(messages("site.change"))),
+                                visuallyHiddenText = Some(messages("declaration.summary.countries.routingCountries.change"))
+                            )
                         )
-                    )
-                ))
+                    ))
+                )
+            ),
+            declarationData.locations.destinationCountry.map(destinationCountry =>
+                SummaryListRow(
+                    classes = "countryOfDestination-row",
+                    key = Key(
+                        content = Text(messages("declaration.summary.countries.countryOfDestination"))
+                    ),
+                    value = Value(
+                        content = Text(destinationCountry.code.map(code => countryHelper.getShortNameForCountry(Countries.findByCode(code))).getOrElse(""))
+                    ),
+                    actions = actions(Actions(
+                        items = Seq(
+                            actionSummaryItem(
+                                href = routes.DestinationCountryController.displayPage.url,
+                                content = HtmlContent(linkContent(messages("site.change"))),
+                                visuallyHiddenText = Some(messages("declaration.summary.countries.countryOfDestination.change"))
+                            )
+                        )
+                    ))
+                )
             )
         )
-    )
     )
 }

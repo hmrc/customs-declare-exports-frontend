@@ -43,7 +43,7 @@ class DocumentsHelper @Inject() (govukSummaryList: GovukSummaryList, linkContent
       govukSummaryList(
         SummaryList(
           rows = if (noRows) headingOnNoRows(actionsEnabled) else heading(actionsEnabled) +: summaryListRows,
-          classes = s"""${if (noRows) "" else "govuk-!-margin-top-4 "}govuk-!-margin-bottom-9 previous-documents-summary"""
+          classes = s"""${if (noRows) "" else "govuk-!-margin-top-4 "} previous-documents-summary"""
         )
       )
     }

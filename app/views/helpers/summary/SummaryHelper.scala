@@ -16,6 +16,7 @@
 
 package views.helpers.summary
 
+import models.ExportsDeclaration
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
@@ -55,4 +56,55 @@ trait SummaryHelper {
     val key = s"declaration.summary.$rowKey"
     Key(HtmlContent(s"""<$tag class="govuk-heading-s govuk-!-margin-top-6 govuk-!-margin-bottom-0">${messages(key)}</$tag>"""))
   }
+}
+
+object SummaryHelper {
+
+  def hasItemsData(declaration: ExportsDeclaration): Boolean =
+    declaration.items.nonEmpty && declaration.items.forall { item =>
+      item.procedureCodes.isDefined ||
+      item.fiscalInformation.isDefined ||
+      item.additionalFiscalReferencesData.isDefined ||
+      item.statisticalValue.isDefined ||
+      item.commodityDetails.isDefined ||
+      item.dangerousGoodsCode.isDefined ||
+      item.cusCode.isDefined ||
+      item.taricCodes.isDefined ||
+      item.nactCodes.isDefined ||
+      item.nactExemptionCode.isDefined ||
+      item.packageInformation.isDefined ||
+      item.commodityMeasure.isDefined ||
+      item.additionalInformation.isDefined ||
+      item.additionalDocuments.isDefined ||
+      item.isLicenceRequired.isDefined
+    }
+
+  def hasTransactionData(declaration: ExportsDeclaration): Boolean =
+    declaration.totalNumberOfItems.isDefined ||
+      declaration.natureOfTransaction.isDefined ||
+      hasRequiredTransactionDataOnNonEmptyItems(declaration)
+
+  def hasTransportData(declaration: ExportsDeclaration): Boolean = {
+    val transport = declaration.transport
+    val locations = declaration.locations
+    transport.expressConsignment.isDefined ||
+    transport.transportPayment.isDefined ||
+    transport.containers.isDefined ||
+    transport.borderModeOfTransportCode.isDefined ||
+    transport.meansOfTransportOnDepartureType.isDefined ||
+    transport.meansOfTransportCrossingTheBorderIDNumber.isDefined ||
+    transport.meansOfTransportCrossingTheBorderType.isDefined ||
+    transport.transportCrossingTheBorderNationality.isDefined ||
+    locations.warehouseIdentification.isDefined ||
+    locations.supervisingCustomsOffice.isDefined ||
+    locations.inlandModeOfTransportCode.isDefined
+  }
+
+  def showItemsSection(declaration: ExportsDeclaration, actionsEnabled: Boolean): Boolean =
+    hasItemsData(declaration) || (
+      actionsEnabled && (hasTransportData(declaration) || hasRequiredTransactionDataOnNonEmptyItems(declaration))
+    )
+
+  private def hasRequiredTransactionDataOnNonEmptyItems(declaration: ExportsDeclaration): Boolean =
+    declaration.previousDocuments.isDefined
 }
