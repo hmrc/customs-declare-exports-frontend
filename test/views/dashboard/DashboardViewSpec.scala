@@ -30,9 +30,11 @@ import org.jsoup.nodes.{Document, Element}
 import org.jsoup.select.Elements
 import org.mockito.Mockito.when
 import org.scalatest.Assertion
+import play.api.i18n.Lang
 import play.api.inject.bind
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
+import play.api.test.Helpers.{stubLangs, stubMessagesApi}
 import play.twirl.api.Html
 import services.cache.ExportsTestHelper
 import views.dashboard.DashboardHelper._
@@ -107,6 +109,16 @@ class DashboardViewSpec extends UnitViewSpec with ExportsTestHelper {
 
   "Dashboard View" should {
     val view = createView()
+
+    List(Lang("en"), Lang("cy")).foreach { lang =>
+      s"have the 'lang' attribute of the '<html' tag set to ${lang.code}" in {
+        val statusGroup = toStatusGroup(RECEIVED)
+        val pageOfSubmissions = PageOfSubmissions(statusGroup, 0, listOfSubmissions())
+        val messages = stubMessagesApi(langs = stubLangs(List(lang))).preferred(List(lang))
+        val view = page(pageOfSubmissions)(request(statusGroup, 1), messages)
+        view.getElementsByTag("html").get(0).attr("lang").take(2) mustBe lang.code
+      }
+    }
 
     "contain the navigation banner" when {
       "the Secure Messaging flag is set to 'true'" in {

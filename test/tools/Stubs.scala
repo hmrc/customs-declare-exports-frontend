@@ -22,7 +22,7 @@ import com.typesafe.config.{Config, ConfigFactory}
 import config.featureFlags.{BetaBannerConfig, FeatureSwitchConfig}
 import config.{AppConfig, AppConfigSpec}
 import play.api.http.{DefaultFileMimeTypes, FileMimeTypes, FileMimeTypesConfiguration}
-import play.api.i18n.{Langs, MessagesApi}
+import play.api.i18n.{Lang, Langs, MessagesApi}
 import play.api.mvc._
 import play.api.test.Helpers._
 import play.api.{Configuration, Environment}
@@ -41,7 +41,7 @@ trait Stubs {
     bodyParser: BodyParser[AnyContent] = stubBodyParser(AnyContentAsEmpty),
     playBodyParsers: PlayBodyParsers = stubPlayBodyParsers(NoMaterializer),
     messagesApi: MessagesApi = stubMessagesApi(),
-    langs: Langs = stubLangs(),
+    langs: Langs = stubLangs(List(Lang("en"), Lang("cy"))),
     fileMimeTypes: FileMimeTypes = new DefaultFileMimeTypes(FileMimeTypesConfiguration()),
     executionContext: ExecutionContext = ExecutionContext.global
   ): MessagesControllerComponents =
