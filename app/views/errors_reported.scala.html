@@ -14,26 +14,128 @@
  * limitations under the License.
  *@
 
-@import views.helpers.Title
+@import config.AppConfig
+@import models.declaration.notifications.NotificationError
+@import views.helpers.{BackButton, PointerHelper, Title}
 @import views.html.components.gds._
-@import views.helpers.NotificationErrorHelper
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.helpers.ErrorsReportedHelper
+@import models.declaration.errors.ErrorInstance
+@import connectors.CodeListConnector
+@import models.viewmodels.errors.DefaultInterpreter
 
 @this(
-    govukLayout: gdsMainTemplate,
-    pageTitle: pageTitle,
-    notificationErrorHelper: NotificationErrorHelper
+        govukLayout: gdsMainTemplate,
+        govukButton: GovukButton,
+        govukSummaryList : GovukSummaryList,
+        govukTable: GovukTable,
+        govukWarningText: GovukWarningText,
+        sectionHeader: sectionHeader,
+        pageTitle: pageTitle,
+        heading: heading,
+        paragraphBody: paragraphBody,
+        externalLink: externalLink,
+        link: link,
+        appConfig: AppConfig,
+        notificationErrorHelper: ErrorsReportedHelper
 )
 
-@()(implicit request: Request[_], messages: Messages)
+@(submissionId: Option[String],
+        declaration: ExportsDeclaration,
+        mrn: String,
+        maybeDeclarationId: Option[String],
+        errors: Seq[ErrorInstance]
+)(implicit request: Request[_], messages: Messages, codeListConnector: CodeListConnector)
+
+@backUrl = @{
+    routes.DeclarationDetailsController.displayPage(submissionId.fold(declaration.id)(identity))
+}
+
+@title = @{
+    if(maybeDeclarationId.isDefined) "rejected.amendment.title"
+    else "rejected.notification.title"
+}
+
+@warningText = @{
+    if(maybeDeclarationId.isDefined) "rejected.amendment.warning"
+    else "rejected.notification.warning"
+}
+
+@checkAnswersText = @{
+    if(maybeDeclarationId.isDefined) "rejected.amendment.check.answers.paragraph"
+    else "rejected.notification.check.answers.paragraph"
+}
+
+@checkAnswersUrl = @{
+    routes.SubmissionsController.amend(declaration.id, maybeDeclarationId.isDefined).url
+}
+
+@guidancePara2Text = @{
+    if(maybeDeclarationId.isDefined) "rejected.amendment.guidance.section.2.paragraph.1"
+    else "rejected.notification.guidance.section.2.paragraph.1"
+}
 
 @govukLayout(
-    title = Title("rejected.amendment.title"),
-    useCustomContentWidth = true,
-    showDeclarationSummaryLink = false
+    title = Title(title),
+    backButton = Some(BackButton(messages("site.back"), backUrl)),
+    useCustomContentWidth = true
 ) {
+
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-full">
-            @pageTitle(text = messages("rejected.amendment.title"), classes = "govuk-heading-l")
+
+            @pageTitle(text = messages(title), classes = "govuk-heading-l")
+            @sectionHeader(messages("mrn.heading", mrn))
+
+            @govukWarningText(WarningText(
+                iconFallbackText = Some(messages("site.warning")),
+                content = Text(messages(warningText))
+            ))
+
+            @heading(messages("rejected.notification.table.title"), "govuk-heading-m", "h2")
+
+            @for(error <- errors) {
+                @DefaultInterpreter.generateHtmlFor(error)(messages, codeListConnector, link)
+            }
+
+            @paragraphBody(messages(checkAnswersText))
+
+            @govukButton(Button(
+                content = Text(messages("rejected.notification.check.answers.button")),
+                href = Some(checkAnswersUrl),
+                attributes = Map("id" -> "check-your-answers")
+            ))
+
+            @* Section 1 *@
+
+            @heading(messages("rejected.notification.guidance.section.1.header"), "govuk-heading-s", "h2")
+
+            @paragraphBody(messages("rejected.notification.guidance.section.1.paragraph.1"))
+
+            @* Section 2 *@
+
+            @heading(messages("rejected.notification.guidance.section.2.header"), "govuk-heading-s", "h2")
+
+            @paragraphBody(messages(guidancePara2Text,
+                link(
+                    text = messages("rejected.notification.guidance.section.2.paragraph.1.link"),
+                    call = routes.SavedDeclarationsController.displayDeclarations()
+                )))
+
+            @* Section 3 *@
+
+            @heading(messages("rejected.notification.guidance.section.3.header"), "govuk-heading-s", "h2")
+
+            @paragraphBody(messages("rejected.notification.guidance.section.3.paragraph.1"))
+
+            @paragraphBody(messages("rejected.notification.guidance.section.3.paragraph.2",
+                externalLink(
+                    text = messages("rejected.notification.guidance.section.3.paragraph.2.email"),
+                    url = s"mailto:${messages("rejected.notification.guidance.section.3.paragraph.2.email")}"
+                )
+            ))
+
         </div>
     </div>
+
 }

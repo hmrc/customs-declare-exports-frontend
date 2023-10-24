@@ -20,6 +20,7 @@
 @import models.declaration.submissions.EnhancedStatus.ERRORS
 @import models.requests.JourneyRequest
 @import views.helpers.{BackButton, Title}
+@import views.helpers.summary._
 @import views.html.components.gds._
 @import views.html.declaration.summary.sections._
 @import uk.gov.hmrc.govukfrontend.views.html.components._
@@ -31,7 +32,7 @@
     pageTitle: pageTitle,
     references_section: references_section,
     countries_section: countries_section,
-    parties_section: parties_section,
+    cardForParties: CardForParties,
     locations_section: locations_section,
     transaction_section: transaction_section,
     items_section: items_section,
@@ -115,7 +116,7 @@
 
     @references_section(request.cacheModel)
 
-    @parties_section(request.cacheModel)
+    @cardForParties.eval(request.cacheModel, true)
 
     @countries_section(request.cacheModel)
 

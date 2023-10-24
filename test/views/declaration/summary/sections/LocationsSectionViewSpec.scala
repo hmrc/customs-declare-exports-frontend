@@ -50,7 +50,7 @@ class LocationsSectionViewSpec extends UnitViewSpec with ExportsTestHelper with 
       row must haveSummaryKey(messages("declaration.summary.locations.rrs01AdditionalInformation"))
       row must haveSummaryValue(messages("declaration.summary.locations.rrs01AdditionalInformation.text"))
 
-      row.first().getElementsByClass("govuk-summary-list__actions") mustBe empty
+      row.first().getElementsByClass(summaryActionsClassName) mustBe empty
     }
 
     "not have a row showing the RRS01 Additional Information code when location code is non-GVMS" in {
@@ -70,12 +70,12 @@ class LocationsSectionViewSpec extends UnitViewSpec with ExportsTestHelper with 
     }
 
     "not have answers when goods location not asked" in {
-      val view = section(aDeclarationAfter(data, withoutGoodsLocation()))(messages)
+      val view = section(aDeclarationAfter(data, withoutGoodsLocation))(messages)
       view.getElementsByClass("goodsLocationCode-row") mustBe empty
     }
 
     "not have answers when office of exit not asked" in {
-      val view = section(aDeclarationAfter(data, withoutOfficeOfExit()))(messages)
+      val view = section(aDeclarationAfter(data, withoutOfficeOfExit))(messages)
       view.getElementsByClass("location-officeOfExit-row") mustBe empty
     }
   }

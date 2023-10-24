@@ -16,7 +16,7 @@
 
 @import controllers.declaration.routes._
 @import forms.common.YesNoAnswer
-@import forms.declaration.DeclarationAdditionalActors
+@import forms.declaration.AdditionalActor
 @import play.twirl.api.HtmlFormat
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import utils.ListItem._
@@ -39,7 +39,7 @@
     formHelper: FormWithCSRF
 )
 
-@(id: String, actor: DeclarationAdditionalActors, form: Form[YesNoAnswer])(implicit request: JourneyRequest[_], messages: Messages)
+@(id: String, actor: AdditionalActor, form: Form[YesNoAnswer])(implicit request: JourneyRequest[_], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 

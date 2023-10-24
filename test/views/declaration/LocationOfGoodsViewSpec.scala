@@ -24,7 +24,7 @@ import forms.declaration.AuthorisationProcedureCodeChoice.{Choice1007, ChoiceOth
 import forms.declaration.LocationOfGoods
 import forms.declaration.LocationOfGoods.form
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
-import forms.declaration.declarationHolder.AuthorizationTypeCodes.{CSE, EXRR, MIB}
+import forms.declaration.authorisationHolder.AuthorizationTypeCodes.{CSE, EXRR, MIB}
 import models.DeclarationType._
 import models.codes.{Country, GoodsLocationCode}
 import models.requests.JourneyRequest
@@ -70,7 +70,7 @@ class LocationOfGoodsViewSpec extends PageWithButtonsSpec with Injector {
     arrivedTypes.foreach { additionalType =>
       s"AdditionalDeclarationType is $additionalType with CSE" should {
 
-        implicit val request = withRequest(additionalType, withDeclarationHolders(Some(CSE)))
+        implicit val request = withRequest(additionalType, withAuthorisationHolders(Some(CSE)))
 
         val view = createView()
 
@@ -116,7 +116,7 @@ class LocationOfGoodsViewSpec extends PageWithButtonsSpec with Injector {
     arrivedTypes.foreach { additionalType =>
       s"AdditionalDeclarationType is $additionalType" should {
 
-        implicit val request = withRequest(additionalType, withDeclarationHolders(Some(MIB)))
+        implicit val request = withRequest(additionalType, withAuthorisationHolders(Some(MIB)))
 
         val view = createView()
 
@@ -172,7 +172,7 @@ class LocationOfGoodsViewSpec extends PageWithButtonsSpec with Injector {
       List("AEOC", EXRR).foreach { authCode =>
         s"AdditionalDeclarationType is $additionalType and the authorisation code is '$authCode'" should {
           val version = if (authCode == "AEOC") 5 else 3
-          implicit val request = withRequest(additionalType, withDeclarationHolders(Some(authCode)))
+          implicit val request = withRequest(additionalType, withAuthorisationHolders(Some(authCode)))
           val view = createView()
 
           "display the expected page title" in {

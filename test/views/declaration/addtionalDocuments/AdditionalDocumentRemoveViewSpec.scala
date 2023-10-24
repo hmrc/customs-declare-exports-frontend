@@ -61,8 +61,8 @@ class AdditionalDocumentRemoveViewSpec extends UnitViewSpec with Injector {
       }
 
       "display data in table" in {
-        val descriptions = view.getElementsByClass("govuk-summary-list__key")
-        val values = view.getElementsByClass("govuk-summary-list__value")
+        val descriptions = view.getElementsByClass(summaryKeyClassName)
+        val values = view.getElementsByClass(summaryValueClassName)
 
         descriptions.get(0).text mustBe messages("declaration.additionalDocument.remove.code")
         values.get(0).text mustBe correctAdditionalDocument.documentTypeCode.get

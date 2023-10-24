@@ -145,7 +145,7 @@ class IsLicenceRequiredControllerSpec extends ControllerSpec with MockTaggedCode
             "authorisation from List" in {
               val declaration = aDeclaration(
                 withItem(anItem(withItemId(itemId), withCommodityDetails(commodityDetails))),
-                withDeclarationHolders(authorisationTypeCode = Some(taggedAuthCodes.codesRequiringDocumentation.head))
+                withAuthorisationHolders(authorisationTypeCode = Some(taggedAuthCodes.codesRequiringDocumentation.head))
               )
 
               withNewCaching(declaration)

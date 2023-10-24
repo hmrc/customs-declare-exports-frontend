@@ -31,7 +31,6 @@ class AmendmentSummaryViewSpec extends SummaryViewSpec {
     amendmentSummaryPage()(journeyRequest(declaration), messages, minimalAppConfig)
 
   "Summary page" should {
-
     val document = view()
 
     "have references section" in {
@@ -59,14 +58,14 @@ class AmendmentSummaryViewSpec extends SummaryViewSpec {
         document
           .getElementsByClass("lrn-row")
           .first()
-          .getElementsByClass("govuk-summary-list__actions")
+          .getElementsByClass(summaryActionsClassName)
           .text() mustBe empty
       }
       "ducr" in {
         document
           .getElementsByClass("ducr-row")
           .first()
-          .getElementsByClass("govuk-summary-list__actions")
+          .getElementsByClass(summaryActionsClassName)
           .text() mustBe empty
       }
     }

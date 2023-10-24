@@ -19,7 +19,7 @@ package views.declaration
 import base.Injector
 import controllers.declaration.routes.AdditionalActorsSummaryController
 import forms.common.{Eori, YesNoAnswer}
-import forms.declaration.DeclarationAdditionalActors
+import forms.declaration.AdditionalActor
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
@@ -33,10 +33,10 @@ import views.tags.ViewTest
 @ViewTest
 class AdditionalActorsRemoveViewSpec extends UnitViewSpec with ExportsTestHelper with Stubs with Injector {
 
-  val additionalActor = DeclarationAdditionalActors(Some(Eori("GB123456789000")), Some("MF"))
+  val additionalActor = AdditionalActor(Some(Eori("GB123456789000")), Some("MF"))
   private val page = instanceOf[additional_actors_remove]
 
-  private def createView(form: Form[YesNoAnswer] = YesNoAnswer.form(), actor: DeclarationAdditionalActors = additionalActor)(
+  private def createView(form: Form[YesNoAnswer] = YesNoAnswer.form(), actor: AdditionalActor = additionalActor)(
     implicit request: JourneyRequest[_]
   ): Document = page(ListItem.createId(0, additionalActor), actor, form)
 

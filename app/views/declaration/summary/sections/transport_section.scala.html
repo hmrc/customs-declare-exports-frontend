@@ -19,14 +19,14 @@
 @import models.declaration.{Transport,Locations}
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.helpers.ActionItemBuilder.actionSummaryItem
-@import views.helpers.ContainersSummaryHelper
+@import views.helpers.summary.ContainersHelper
 @import views.html.components.gds.{linkContent, summary_list}
 @import views.html.declaration.summary._
 
 @this(
     summaryList: summary_list,
     linkContent: linkContent,
-    containersSummaryHelper: ContainersSummaryHelper
+    containersHelper: ContainersHelper
 )
 
 @(declaration: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages)
@@ -279,5 +279,5 @@
         )
     )
 
-    @containersSummaryHelper.section(declaration, actionsEnabled)
+    @containersHelper.section(declaration, actionsEnabled)
 }

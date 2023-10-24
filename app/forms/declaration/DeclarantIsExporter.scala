@@ -27,7 +27,7 @@ import play.api.libs.json.{Json, OFormat}
 import utils.validators.forms.FieldValidator.isContainedIn
 
 case class DeclarantIsExporter(answer: String) {
-  def isExporter: Boolean = answer == yes
+  def isYes: Boolean = answer == yes
 }
 
 object DeclarantIsExporter extends DeclarationPage {

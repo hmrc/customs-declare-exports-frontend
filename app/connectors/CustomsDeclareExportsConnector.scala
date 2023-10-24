@@ -117,6 +117,14 @@ class CustomsDeclareExportsConnector @Inject() (
     }
   }
 
+  def findDraftByParent(parentId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[ExportsDeclaration]] = {
+    val fetchStopwatch = fetchTimer.time
+
+    httpClient.GET[Option[ExportsDeclaration]](url(s"${appConfig.draftByParentPath}/$parentId")).andThen { case _ =>
+      fetchStopwatch.stop
+    }
+  }
+
   def submitDeclaration(id: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Submission] =
     httpClient.POSTEmpty[Submission](url(s"${appConfig.submissionPath}/$id"))
 

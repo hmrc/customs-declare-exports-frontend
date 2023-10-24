@@ -15,16 +15,16 @@
  *@
 
 @import controllers.declaration.routes._
+@import models.DeclarationType._
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.helpers.ActionItemBuilder.actionSummaryItem
+@import views.helpers.summary.DocumentsHelper
 @import views.html.components.gds.{linkContent, summary_list}
-@import models.DeclarationType._
-@import views.helpers.DocumentsSummaryHelper
 
 @this(
     summaryList: summary_list,
     linkContent: linkContent,
-    documentsSummaryHelper: DocumentsSummaryHelper
+    documentsHelper: DocumentsHelper
 )
 
 @(declaration: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages)
@@ -142,6 +142,6 @@
         )
     )
 
-    @documentsSummaryHelper.section(declaration, actionsEnabled)
+    @documentsHelper.section(declaration, actionsEnabled)
 }
 

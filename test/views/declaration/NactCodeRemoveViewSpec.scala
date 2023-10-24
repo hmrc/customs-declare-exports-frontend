@@ -47,12 +47,12 @@ class NactCodeRemoveViewSpec extends PageWithButtonsSpec with Injector {
     }
 
     "display National Additional Code label" in {
-      val elements = view.getElementsByClass("govuk-summary-list__key")
+      val elements = view.getElementsByClass(summaryKeyClassName)
       elements must containMessageForElements("declaration.nationalAdditionalCode.table.header")
     }
 
     "display Nact code to remove" in {
-      view.getElementsByClass("govuk-summary-list__value").text() mustBe nactCode
+      view.getElementsByClass(summaryValueClassName).text() mustBe nactCode
     }
 
     "display 'Back' button that links to 'nact codes summary' page" in {

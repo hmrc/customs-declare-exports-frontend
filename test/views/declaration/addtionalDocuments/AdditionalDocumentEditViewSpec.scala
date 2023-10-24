@@ -28,7 +28,7 @@ import forms.declaration.additionaldocuments.AdditionalDocument
 import forms.declaration.additionaldocuments.AdditionalDocument._
 import forms.declaration.additionaldocuments.DocumentWriteOff.{documentQuantityKey, documentWriteOffKey, measurementUnitKey, qualifierKey}
 import forms.declaration.additionaldocuments.DocumentWriteOffSpec.incorrectDocumentWriteOff
-import forms.declaration.declarationHolder.DeclarationHolder
+import forms.declaration.authorisationHolder.AuthorisationHolder
 import models.ExportsDeclaration
 import models.declaration.ExportDeclarationTestData.{allRecords, declaration}
 import models.declaration.{EoriSource, ExportItem}
@@ -154,7 +154,7 @@ class AdditionalDocumentEditViewSpec extends UnitViewSpec with Injector with Moc
   "additional_document_edit view" when {
 
     val clearanceJourneys = List(CLEARANCE_FRONTIER, CLEARANCE_PRE_LODGED)
-    val holders = List(DeclarationHolder(Some("OPO"), None, None), DeclarationHolder(Some("FZ"), None, None))
+    val holders = List(AuthorisationHolder(Some("OPO"), None, None), AuthorisationHolder(Some("FZ"), None, None))
 
     val authCodeHelper = new HolderOfAuthorisationCodes(new FileBasedCodeListConnector(appConfig, glc, jsonFile), mockMerchandiseInBagConfig)
 
@@ -174,8 +174,8 @@ class AdditionalDocumentEditViewSpec extends UnitViewSpec with Injector with Moc
 
           "user has selected no auth codes that requiring hint text" in {
             val authCode1 = "OTHER"
-            val holders = List(DeclarationHolder(Some(authCode1), Some(Eori("GB123456789012")), Some(EoriSource.OtherEori)))
-            implicit val request = withRequest(declarationType, withDeclarationHolders(holders: _*), withItem(item))
+            val holders = List(AuthorisationHolder(Some(authCode1), Some(Eori("GB123456789012")), Some(EoriSource.OtherEori)))
+            implicit val request = withRequest(declarationType, withAuthorisationHolders(holders: _*), withItem(item))
 
             val text = Option(createView.getElementById("documentIdentifier-hint"))
             text mustBe None
@@ -185,8 +185,8 @@ class AdditionalDocumentEditViewSpec extends UnitViewSpec with Injector with Moc
         "display hint text on the Document Identifier field for that auth code" when {
           "user has selected one auth codes that requiring hint text" in {
             val authCode1 = "AEOF"
-            val holders = List(DeclarationHolder(Some(authCode1), Some(Eori("GB123456789012")), Some(EoriSource.OtherEori)))
-            implicit val request = withRequest(declarationType, withDeclarationHolders(holders: _*), withItem(item))
+            val holders = List(AuthorisationHolder(Some(authCode1), Some(Eori("GB123456789012")), Some(EoriSource.OtherEori)))
+            implicit val request = withRequest(declarationType, withAuthorisationHolders(holders: _*), withItem(item))
 
             val text = createView.getElementById("documentIdentifier-hint").getElementsByClass("govuk-hint").get(0).text()
             val expectedAuthCodeHintText = s"${hintPrefix}${hintSeparator}" + messages(s"${prefix}.${authCode1}.hint")
@@ -197,8 +197,8 @@ class AdditionalDocumentEditViewSpec extends UnitViewSpec with Injector with Moc
         "display 2 hint texts on the Document Identifier field for those auth codes" when {
           "user has selected two auth codes that requiring hint text" in {
             val authCodes = List("AEOF", "TEA")
-            val holders = authCodes.map(authCode => DeclarationHolder(Some(authCode), Some(Eori("GB123456789012")), Some(EoriSource.OtherEori)))
-            implicit val request = withRequest(declarationType, withDeclarationHolders(holders: _*), withItem(item))
+            val holders = authCodes.map(authCode => AuthorisationHolder(Some(authCode), Some(Eori("GB123456789012")), Some(EoriSource.OtherEori)))
+            implicit val request = withRequest(declarationType, withAuthorisationHolders(holders: _*), withItem(item))
 
             val text = createView.getElementById("documentIdentifier-hint").getElementsByClass("govuk-hint").get(0).text()
 
@@ -210,8 +210,8 @@ class AdditionalDocumentEditViewSpec extends UnitViewSpec with Injector with Moc
         "display 3 hint texts on the Document Identifier field for those auth codes" when {
           "user has selected three auth codes that requiring hint text" in {
             val authCodes = List("AEOF", "TEA", "SIVA")
-            val holders = authCodes.map(authCode => DeclarationHolder(Some(authCode), Some(Eori("GB123456789012")), Some(EoriSource.OtherEori)))
-            implicit val request = withRequest(declarationType, withDeclarationHolders(holders: _*), withItem(item))
+            val holders = authCodes.map(authCode => AuthorisationHolder(Some(authCode), Some(Eori("GB123456789012")), Some(EoriSource.OtherEori)))
+            implicit val request = withRequest(declarationType, withAuthorisationHolders(holders: _*), withItem(item))
 
             val text = createView.getElementById("documentIdentifier-hint").getElementsByClass("govuk-hint").get(0).text()
 
@@ -223,8 +223,8 @@ class AdditionalDocumentEditViewSpec extends UnitViewSpec with Injector with Moc
         "display 3 hint texts on the Document Identifier field for the first 3 auth codes" when {
           "user has selected more than three auth codes that requiring hint text" in {
             val authCodes = List("AEOF", "TEA", "SIVA", "DPO")
-            val holders = authCodes.map(authCode => DeclarationHolder(Some(authCode), Some(Eori("GB123456789012")), Some(EoriSource.OtherEori)))
-            implicit val request = withRequest(declarationType, withDeclarationHolders(holders: _*), withItem(item))
+            val holders = authCodes.map(authCode => AuthorisationHolder(Some(authCode), Some(Eori("GB123456789012")), Some(EoriSource.OtherEori)))
+            implicit val request = withRequest(declarationType, withAuthorisationHolders(holders: _*), withItem(item))
 
             val text = createView.getElementById("documentIdentifier-hint").getElementsByClass("govuk-hint").get(0).text()
 
@@ -244,7 +244,7 @@ class AdditionalDocumentEditViewSpec extends UnitViewSpec with Injector with Moc
         val itemWithLicenseRequired = anItem(withItemId(itemId), withIsLicenseRequired())
 
         "has auth Codes requiring additional docs, and a license is required ('V1' content)" should {
-          implicit val request = withRequest(declarationType, withDeclarationHolders(holders: _*), withItem(itemWithLicenseRequired))
+          implicit val request = withRequest(declarationType, withAuthorisationHolders(holders: _*), withItem(itemWithLicenseRequired))
 
           "display the expected page title" in {
             createView.getElementsByTag("h1").text mustBe messages(s"$prefix.v1.title")
@@ -295,7 +295,7 @@ class AdditionalDocumentEditViewSpec extends UnitViewSpec with Injector with Moc
         }
 
         "has auth Codes requiring additional docs, but a license is NOT required ('V3' content)" should {
-          implicit val request = withRequest(declarationType, withDeclarationHolders(holders: _*))
+          implicit val request = withRequest(declarationType, withAuthorisationHolders(holders: _*))
 
           "display the expected page title" in {
             createView.getElementsByTag("h1").text mustBe messages(s"$prefix.v3.title")
@@ -350,7 +350,7 @@ class AdditionalDocumentEditViewSpec extends UnitViewSpec with Injector with Moc
       s"the declaration is of type $declarationType and" when {
 
         "has auth Codes requiring additional docs ('V5' content)" should {
-          implicit val request = withRequest(declarationType, withDeclarationHolders(holders: _*))
+          implicit val request = withRequest(declarationType, withAuthorisationHolders(holders: _*))
 
           "display the expected page title" in {
             createView.getElementsByTag("h1").text mustBe messages(s"$prefix.v5.title")

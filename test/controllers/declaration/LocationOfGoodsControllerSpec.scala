@@ -153,7 +153,7 @@ class LocationOfGoodsControllerSpec extends ControllerSpec with MockTaggedCodes 
       }
 
       "Additional dec type is Supplementary_EIDR with MOU" in {
-        val holders = withDeclarationHolders(Some(taggedAuthCodes.codesSkippingLocationOfGoods.head))
+        val holders = withAuthorisationHolders(Some(taggedAuthCodes.codesSkippingLocationOfGoods.head))
         withNewCaching(aDeclaration(withAdditionalDeclarationType(SUPPLEMENTARY_EIDR), holders))
         val result = controller.displayPage(getRequest())
 
