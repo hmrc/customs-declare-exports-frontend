@@ -19,6 +19,7 @@
 @import views.ead.DeclarationType
 @import views.helpers.{ViewDates, Title, BackButton}
 @import views.html.components.gds._
+@import views.html.components.buttons.print_page_button
 
 @this(govukLayout: gdsMainTemplate)
 
@@ -40,11 +41,7 @@
 
     <div>
      <p class="govuk-body-l govuk-!-margin-bottom-6 ead-label">@messages("ead.template.printable")</p>
-     <p class="govuk-body">
-      <a class="govuk-link govuk-link--no-visited-state ceds-print-link" onclick="window.print()">
-       @messages("site.print")
-      </a>
-     </p>
+     @print_page_button()
     </div>
   </div>
 
