@@ -90,23 +90,6 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
   "Departure transport controller" should {
 
     onEveryDeclarationJourney() { request =>
-      "return 200 (OK)" when {
-
-        "display page method is invoked and cache is empty" in {
-          withNewCaching(request.cacheModel)
-
-          val result = controller.displayPage(getRequest())
-          status(result) must be(OK)
-        }
-
-        "display page method is invoked and cache contains data" in {
-          withNewCaching(aDeclarationAfter(request.cacheModel, departureTransport))
-
-          val result = controller.displayPage(getRequest())
-          status(result) must be(OK)
-        }
-      }
-
       "reset the value, if any, and redirect to the 'next' page" when {
         postalOrFTIModeOfTransportCodes.foreach { modeOfTransportCode =>
           s"TransportLeavingTheBorder is $modeOfTransportCode" should {
@@ -144,6 +127,25 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
               transport.meansOfTransportOnDepartureIDNumber mustBe None
             }
           }
+        }
+      }
+    }
+
+    onJourney(STANDARD, SUPPLEMENTARY, CLEARANCE) { request =>
+      "return 200 (OK)" when {
+
+        "display page method is invoked and cache is empty" in {
+          withNewCaching(request.cacheModel)
+
+          val result = controller.displayPage(getRequest())
+          status(result) must be(OK)
+        }
+
+        "display page method is invoked and cache contains data" in {
+          withNewCaching(aDeclarationAfter(request.cacheModel, departureTransport))
+
+          val result = controller.displayPage(getRequest())
+          status(result) must be(OK)
         }
       }
 
@@ -202,9 +204,7 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
           }
         }
       }
-    }
 
-    onJourney(STANDARD, OCCASIONAL, SUPPLEMENTARY, SIMPLIFIED) { request =>
       "redirect to the /border-transport page" when {
         "information provided by user are correct" in {
           withNewCaching(request.cacheModel)
@@ -227,6 +227,42 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
 
           status(result) must be(SEE_OTHER)
           thePageNavigatedTo mustBe TransportCountryController.displayPage
+        }
+      }
+    }
+
+    onJourney(OCCASIONAL, SIMPLIFIED) { request =>
+      "redirect to the /transport-country page" when {
+        "no Postal or FTI" when {
+          "the 'displayPage' is invoked" in {
+            withNewCaching(request.cacheModel)
+
+            val result = controller.displayPage(getRequest())
+
+            status(result) must be(SEE_OTHER)
+
+            thePageNavigatedTo mustBe TransportCountryController.displayPage
+
+            val transport = theCacheModelUpdated.transport
+            transport.meansOfTransportOnDepartureType mustBe None
+            transport.meansOfTransportOnDepartureIDNumber mustBe None
+          }
+
+          "the 'submitForm' is invoked" in {
+            withNewCaching(request.cacheModel)
+
+            val correctForm = formData(transportCodeService.WagonNumber.value, transportCodeService.WagonNumber.id, departureNumber)
+
+            val result = controller.submitForm()(postRequest(correctForm))
+
+            status(result) mustBe SEE_OTHER
+
+            thePageNavigatedTo mustBe TransportCountryController.displayPage
+
+            val transport = theCacheModelUpdated.transport
+            transport.meansOfTransportOnDepartureType mustBe None
+            transport.meansOfTransportOnDepartureIDNumber mustBe None
+          }
         }
       }
     }
@@ -260,5 +296,6 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
         }
       }
     }
+
   }
 }
