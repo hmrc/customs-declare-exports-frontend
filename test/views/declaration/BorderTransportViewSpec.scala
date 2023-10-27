@@ -17,11 +17,12 @@
 package views.declaration
 
 import base.{Injector, MockTransportCodeService}
-import controllers.declaration.routes.DepartureTransportController
+import controllers.declaration.routes.{DepartureTransportController, InlandTransportDetailsController}
 import forms.declaration.BorderTransport.form
 import models.DeclarationType._
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
+import play.api.mvc.AnyContent
 import views.declaration.spec.PageWithButtonsSpec
 import views.html.declaration.border_transport
 import views.tags.ViewTest
@@ -46,12 +47,6 @@ class BorderTransportViewSpec extends PageWithButtonsSpec with Injector {
 
         implicit val request = withRequestOfType(declarationType)
         val view = createView()
-
-        "display a 'Back' button that links to the /departure-transport page" in {
-          val backButton = view.getElementById("back-link")
-          backButton must containMessage(backToPreviousQuestionCaption)
-          backButton must haveHref(DepartureTransportController.displayPage)
-        }
 
         "display the expected section header" in {
           view.getElementById("section-header") must containMessage("declaration.section.6")
@@ -101,6 +96,28 @@ class BorderTransportViewSpec extends PageWithButtonsSpec with Injector {
         }
 
         checkAllSaveButtonsAreDisplayed(createView())
+      }
+    }
+
+    List(STANDARD, SUPPLEMENTARY).foreach { declarationType =>
+      implicit val request: JourneyRequest[AnyContent] = withRequestOfType(declarationType)
+      val view = createView()
+
+      s"display a 'Back' button that links to the /departure-transport page for ${declarationType}" in {
+        val backButton = view.getElementById("back-link")
+        backButton must containMessage(backToPreviousQuestionCaption)
+        backButton must haveHref(DepartureTransportController.displayPage)
+      }
+    }
+
+    List(OCCASIONAL, SIMPLIFIED).foreach { declarationType =>
+      implicit val request: JourneyRequest[AnyContent] = withRequestOfType(declarationType)
+      val view = createView()
+
+      s"display a 'Back' button that links to the /inland-transport-details page for ${declarationType}" in {
+        val backButton = view.getElementById("back-link")
+        backButton must containMessage(backToPreviousQuestionCaption)
+        backButton must haveHref(InlandTransportDetailsController.displayPage)
       }
     }
   }

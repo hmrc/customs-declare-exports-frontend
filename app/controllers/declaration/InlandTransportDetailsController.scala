@@ -17,7 +17,7 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.declaration.routes.{DepartureTransportController, ExpressConsignmentController, TransportContainerController}
+import controllers.declaration.routes._
 import controllers.helpers.TransportSectionHelper.isPostalOrFTIModeOfTransport
 import controllers.navigation.Navigator
 import forms.declaration.InlandModeOfTransportCode._
@@ -63,10 +63,17 @@ class InlandTransportDetailsController @Inject() (
       .fold(formWithErrors => Future.successful(BadRequest(inlandTransportDetailsPage(formWithErrors))), validateAndUpdateCache(_))
   }
 
-  private def nextPage(declarationType: DeclarationType, code: InlandModeOfTransportCode): Call =
-    if (!isPostalOrFTIModeOfTransport(code.inlandModeOfTransportCode)) DepartureTransportController.displayPage
-    else if (declarationType == SUPPLEMENTARY) TransportContainerController.displayContainerSummary
-    else ExpressConsignmentController.displayPage
+  private def nextPage(code: InlandModeOfTransportCode)(implicit request: JourneyRequest[AnyContent]): Call =
+    if (!isPostalOrFTIModeOfTransport(code.inlandModeOfTransportCode) && isSimplifiedOrOccasional)
+      TransportCountryController.displayPage
+    else if (isPostalOrFTIModeOfTransport(code.inlandModeOfTransportCode) && isSimplifiedOrOccasional)
+      BorderTransportController.displayPage
+    else if (!isPostalOrFTIModeOfTransport(code.inlandModeOfTransportCode))
+      DepartureTransportController.displayPage
+    else if (request.isType(SUPPLEMENTARY))
+      TransportContainerController.displayContainerSummary
+    else
+      ExpressConsignmentController.displayPage
 
   private def returnFormWithErrors(code: InlandModeOfTransportCode, error: String)(implicit request: JourneyRequest[_]): Future[Result] = {
     val messages = messagesApi.preferred(request).messages
@@ -84,7 +91,7 @@ class InlandTransportDetailsController @Inject() (
         locations = declaration.locations.copy(inlandModeOfTransportCode = Some(code))
       )
     } map { _ =>
-      navigator.continueTo(nextPage(request.declarationType, code))
+      navigator.continueTo(nextPage(code))
     }
 
   private def validateAndUpdateCache(code: InlandModeOfTransportCode)(implicit request: JourneyRequest[AnyContent]): Future[Result] =
@@ -108,4 +115,7 @@ class InlandTransportDetailsController @Inject() (
 
       case _ => None
     }
+
+  private def isSimplifiedOrOccasional(implicit request: JourneyRequest[AnyContent]): Boolean =
+    request.isType(SIMPLIFIED) || request.isType(OCCASIONAL)
 }

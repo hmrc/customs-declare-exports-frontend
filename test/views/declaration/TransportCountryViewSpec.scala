@@ -18,7 +18,7 @@ package views.declaration
 
 import base.Injector
 import connectors.CodeListConnector
-import controllers.declaration.routes.{BorderTransportController, DepartureTransportController}
+import controllers.declaration.routes.{BorderTransportController, DepartureTransportController, InlandTransportDetailsController}
 import controllers.helpers.TransportSectionHelper.nonPostalOrFTIModeOfTransportCodes
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.InlandOrBorder.Border
@@ -84,16 +84,6 @@ class TransportCountryViewSpec extends PageWithButtonsSpec with Injector {
                 val backButton = view.getElementById("back-link")
                 backButton must containMessage("site.backToPreviousQuestion")
                 backButton.getElementById("back-link") must haveHref(BorderTransportController.displayPage)
-              }
-
-              "display 'Back' button that links to the 'Departure Transport' page" when {
-                "the user selects 'Border' on the /inland-or-border page" in {
-                  implicit val request = withRequestOfType(declarationType, withInlandOrBorder(Some(Border)))
-                  val view = createView(form(transportMode), transportMode)
-                  val backButton = view.getElementById("back-link")
-                  backButton must containMessage("site.backToPreviousQuestion")
-                  backButton.getElementById("back-link") must haveHref(DepartureTransportController.displayPage)
-                }
               }
 
               "display section header" in {
@@ -167,6 +157,60 @@ class TransportCountryViewSpec extends PageWithButtonsSpec with Injector {
                 view must containErrorElementWithMessageKey(s"$prefix.country.error.invalid")
               }
             }
+          }
+        }
+      }
+    }
+
+    List(STANDARD, SUPPLEMENTARY).foreach { declarationType =>
+      s"the declaration's type is $declarationType and" when {
+
+        // When TransportLeavingTheBorder is 'Postal' or 'FTI' the user does not land on the /transport-country page
+        nonPostalOrFTIModeOfTransportCodes.foreach { code =>
+          val transportMode = ModeOfTransportCodeHelper.transportMode(Some(code))
+          s"the transport mode is $transportMode" should {
+
+            "contain the expected content" which {
+
+              "display 'Back' button that links to the 'Departure Transport' page" when {
+                "the user selects 'Border' on the /inland-or-border page" in {
+                  implicit val request = withRequestOfType(declarationType, withInlandOrBorder(Some(Border)))
+                  val view = createView(form(transportMode), transportMode)
+                  val backButton = view.getElementById("back-link")
+                  backButton must containMessage("site.backToPreviousQuestion")
+                  backButton.getElementById("back-link") must haveHref(DepartureTransportController.displayPage)
+                }
+              }
+
+            }
+
+          }
+        }
+      }
+    }
+
+    List(OCCASIONAL, SIMPLIFIED).foreach { declarationType =>
+      s"the declaration's type is $declarationType and" when {
+
+        // When TransportLeavingTheBorder is 'Postal' or 'FTI' the user does not land on the /transport-country page
+        nonPostalOrFTIModeOfTransportCodes.foreach { code =>
+          val transportMode = ModeOfTransportCodeHelper.transportMode(Some(code))
+          s"the transport mode is $transportMode" should {
+
+            "contain the expected content" which {
+
+              "display 'Back' button that links to the 'Departure Transport' page" when {
+                "the user selects 'Border' on the /inland-or-border page" in {
+                  implicit val request = withRequestOfType(declarationType, withInlandOrBorder(Some(Border)))
+                  val view = createView(form(transportMode), transportMode)
+                  val backButton = view.getElementById("back-link")
+                  backButton must containMessage("site.backToPreviousQuestion")
+                  backButton.getElementById("back-link") must haveHref(InlandTransportDetailsController.displayPage)
+                }
+              }
+
+            }
+
           }
         }
       }

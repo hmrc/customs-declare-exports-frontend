@@ -19,7 +19,7 @@ package controllers.declaration
 import connectors.CodeListConnector
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.routes.{ExpressConsignmentController, TransportContainerController}
-import controllers.helpers.TransportSectionHelper.{isGuernseyOrJerseyDestination, isPostalOrFTIModeOfTransport}
+import controllers.helpers.TransportSectionHelper.isGuernseyOrJerseyDestination
 import controllers.navigation.Navigator
 import forms.declaration.TransportCountry
 import models.DeclarationType._
@@ -74,10 +74,7 @@ class TransportCountryController @Inject() (
 
   private def submit(fun: () => Future[Result])(implicit request: JourneyRequest[AnyContent]): Future[Result] = {
     val declaration = request.cacheModel
-    val isPostalOrFTI =
-      isPostalOrFTIModeOfTransport(declaration.transportLeavingBorderCode) ||
-        isPostalOrFTIModeOfTransport(declaration.inlandModeOfTransportCode)
-    val resetValueAndGotoNextPage = isPostalOrFTI || isGuernseyOrJerseyDestination(declaration)
+    val resetValueAndGotoNextPage = isGuernseyOrJerseyDestination(declaration)
     if (resetValueAndGotoNextPage) updateCache(TransportCountry(None)).map(_ => nextPage) else fun()
   }
 
