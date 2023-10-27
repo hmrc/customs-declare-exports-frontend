@@ -182,9 +182,9 @@ trait ExportsDeclarationBuilder {
     model => {
       val meta = model.declarationMeta
       val routingCountries = countries.zipWithIndex.map { case (country, ix) => RoutingCountry(ix + 1, country) }
+      val seqIdKey = implicitly[EsoKeyProvider[RoutingCountry]].seqIdKey
       model.copy(
-        declarationMeta =
-          meta.copy(maxSequenceIds = meta.maxSequenceIds + (implicitly[EsoKeyProvider[RoutingCountry]].seqIdKey -> routingCountries.last.sequenceId)),
+        declarationMeta = meta.copy(maxSequenceIds = meta.maxSequenceIds + (seqIdKey -> routingCountries.last.sequenceId)),
         locations = model.locations.copy(routingCountries = routingCountries, hasRoutingCountries = Some(true))
       )
     }
@@ -199,13 +199,24 @@ trait ExportsDeclarationBuilder {
   val withoutItems: ExportsDeclarationModifier = _.copy(items = Seq.empty)
 
   def withItem(item: ExportItem = ExportItem(uuid)): ExportsDeclarationModifier =
-    model => model.copy(items = model.items :+ item)
+    updateItems(item)
 
   def withItems(item1: ExportItem, others: ExportItem*): ExportsDeclarationModifier =
-    _.copy(items = Seq(item1) ++ others)
+    updateItems(item1 +: others:_*)
 
   def withItems(count: Int): ExportsDeclarationModifier =
-    cache => cache.copy(items = cache.items ++ (1 to count).map(index => ExportItem(id = uuid, sequenceId = index)).toSet)
+    updateItems((1 to count).map(index => ExportItem(id = uuid, sequenceId = index)):_*)
+
+  private def updateItems(itemsToAdd: ExportItem*): ExportsDeclarationModifier =
+    declaration => {
+      val meta = declaration.declarationMeta
+      val items = declaration.items ++ itemsToAdd
+      val seqIdKey = implicitly[EsoKeyProvider[ExportItem]].seqIdKey
+      declaration.copy(
+        declarationMeta = meta.copy(maxSequenceIds = meta.maxSequenceIds + (seqIdKey -> items.last.sequenceId)),
+        items = items
+      )
+    }
 
   def withEntryIntoDeclarantsRecords(isEidr: String = YesNoAnswers.yes): ExportsDeclarationModifier =
     cache => cache.copy(parties = cache.parties.copy(isEntryIntoDeclarantsRecords = Some(YesNoAnswer(isEidr))))
@@ -445,9 +456,24 @@ trait ExportsDeclarationBuilder {
         )
       )
 
-  def withContainerData(containers: Container*): ExportsDeclarationModifier = { cache =>
-    cache.copy(transport = cache.transport.copy(containers = Some(containers)))
-  }
+  def withContainerData(containersToAdd: Container*): ExportsDeclarationModifier =
+    declaration => {
+      val meta = declaration.declarationMeta
+      val transport = declaration.transport
+
+      val containers = transport.containers.fold(containersToAdd)(_ ++ containersToAdd)
+
+      val containerSeqId = containers.lastOption.fold(-1)(_.sequenceId)
+      val sealSeqId = containers.foldLeft(-1)((seqId: Int, c: Container) => c.seals.lastOption.fold(seqId)(_.sequenceId))
+
+      declaration.copy(
+        declarationMeta = meta.copy(maxSequenceIds = meta.maxSequenceIds +
+          (implicitly[EsoKeyProvider[Container]].seqIdKey -> containerSeqId) +
+          (implicitly[EsoKeyProvider[Seal]].seqIdKey -> sealSeqId)
+        ),
+        transport = transport.copy(containers = Option(containers))
+      )
+    }
 
   val withoutContainerData: ExportsDeclarationModifier =
     model => model.copy(transport = model.transport.copy(containers = None))

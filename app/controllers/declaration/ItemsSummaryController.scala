@@ -19,7 +19,7 @@ package controllers.declaration
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.routes.{ItemsSummaryController, ProcedureCodesController, TransportLeavingTheBorderController}
 import controllers.helpers.MultipleItemsHelper.generateItemId
-import controllers.helpers.SequenceIdHelper
+import controllers.helpers.SequenceIdHelper.handleSequencing
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
@@ -45,8 +45,7 @@ class ItemsSummaryController @Inject() (
   navigator: Navigator,
   mcc: MessagesControllerComponents,
   addItemPage: items_add_item,
-  itemsSummaryPage: items_summary,
-  sequenceIdHandler: SequenceIdHelper
+  itemsSummaryPage: items_summary
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with WithUnsafeDefaultFormBinding {
 
@@ -110,14 +109,14 @@ class ItemsSummaryController @Inject() (
   private def createNewItemInCache(implicit request: JourneyRequest[AnyContent]): Future[String] = {
     val newItemId = generateItemId()
     val itemsToSequence = request.cacheModel.items :+ ExportItem(id = newItemId)
-    val (itemsSequenced, updatedMeta) = sequenceIdHandler.handleSequencing(itemsToSequence, request.cacheModel.declarationMeta)
+    val (itemsSequenced, updatedMeta) = handleSequencing(itemsToSequence, request.cacheModel.declarationMeta)
 
     exportsCacheService.update(request.cacheModel.copy(items = itemsSequenced, declarationMeta = updatedMeta)).map(_ => newItemId)
   }
 
   private def removeEmptyItems(implicit request: JourneyRequest[AnyContent]): Future[ExportsDeclaration] = {
     val itemsWithAnswers = request.cacheModel.items.filter(ExportItem.containsAnswers)
-    val (itemsSequenced, updatedMeta) = sequenceIdHandler.handleSequencing(itemsWithAnswers, request.cacheModel.declarationMeta)
+    val (itemsSequenced, updatedMeta) = handleSequencing(itemsWithAnswers, request.cacheModel.declarationMeta)
     exportsCacheService.update(request.cacheModel.copy(items = itemsSequenced, declarationMeta = updatedMeta))
   }
 }

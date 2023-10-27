@@ -17,19 +17,17 @@
 package controllers.declaration
 
 import base.ControllerWithoutFormSpec
-import controllers.helpers.SequenceIdHelper
+import controllers.helpers.SequenceIdHelper.valueOfEso
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.FiscalInformation.AllowedFiscalInformationAnswers
 import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData, FiscalInformation}
 import mock.ErrorHandlerMocks
-import models.DeclarationMeta
 import models.DeclarationType.CLEARANCE
 import models.declaration.{CommodityMeasure, ExportItem}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.{any, anyString}
 import org.mockito.Mockito.{reset, verify, when}
-import org.mockito.invocation.InvocationOnMock
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.{GivenWhenThen, OptionValues}
 import play.api.data.{Form, FormError}
@@ -44,7 +42,6 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
 
   private val addItemPage = mock[items_add_item]
   private val itemsSummaryPage = mock[items_summary]
-  private val sequenceIdHandler: SequenceIdHelper = mock[SequenceIdHelper]
 
   private val controller = new ItemsSummaryController(
     mockAuthAction,
@@ -53,8 +50,7 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
     navigator,
     stubMessagesControllerComponents(),
     addItemPage,
-    itemsSummaryPage,
-    sequenceIdHandler
+    itemsSummaryPage
   )(ec)
 
   private val parentDeclarationId = "parentDecId"
@@ -99,15 +95,10 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
     when(addItemPage.apply()(any(), any())).thenReturn(HtmlFormat.empty)
     when(itemsSummaryPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
     when(mockCustomsDeclareExportsConnector.findDeclaration(any())(any(), any())).thenReturn(Future.successful(Some(parentDeclaration)))
-
-    when(sequenceIdHandler.handleSequencing[ExportItem](any(), any())(any())).thenAnswer { (invocation: InvocationOnMock) =>
-      val args = invocation.getArguments
-      (args(0).asInstanceOf[Seq[ExportItem]], args(1).asInstanceOf[DeclarationMeta])
-    }
   }
 
   override protected def afterEach(): Unit = {
-    reset(addItemPage, itemsSummaryPage, mockExportsCacheService, sequenceIdHandler, mockCustomsDeclareExportsConnector)
+    reset(addItemPage, itemsSummaryPage, mockExportsCacheService, mockCustomsDeclareExportsConnector)
     super.afterEach()
   }
 
@@ -166,10 +157,11 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
         val itemId = theCacheModelUpdated.items.last.id
         thePageNavigatedTo mustBe routes.ProcedureCodesController.displayPage(itemId)
 
-        theCacheModelUpdated.items.size mustBe 1
+        val declaration = theCacheModelUpdated
+        declaration.items.size mustBe 1
 
         And("the max sequence id for export items is updated")
-        verify(sequenceIdHandler).handleSequencing[ExportItem](any(), any())(any())
+        valueOfEso[ExportItem](declaration).value mustBe 1
       }
     }
   }
@@ -252,10 +244,11 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
           if (request.isType(CLEARANCE))
             thePageNavigatedTo mustBe routes.TransportLeavingTheBorderController.displayPage
           else {
-            val itemId = theCacheModelUpdated.items.last.id
-            thePageNavigatedTo mustBe routes.ProcedureCodesController.displayPage(itemId)
+            val declaration = theCacheModelUpdated
+            thePageNavigatedTo mustBe routes.ProcedureCodesController.displayPage(declaration.items.last.id)
+
             And("max sequence id is updated")
-            verify(sequenceIdHandler).handleSequencing[ExportItem](any(), any())(any())
+            valueOfEso[ExportItem](declaration).value mustBe 0
           }
 
           verify(navigator).continueTo(any())(any())

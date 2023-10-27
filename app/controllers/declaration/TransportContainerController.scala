@@ -18,7 +18,8 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.routes.{SealController, TransportContainerController}
-import controllers.helpers.{FormAction, Remove, SequenceIdHelper}
+import controllers.helpers.{FormAction, Remove}
+import controllers.helpers.SequenceIdHelper.handleSequencing
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
@@ -50,8 +51,7 @@ class TransportContainerController @Inject() (
   addFirstPage: transport_container_add_first,
   addPage: transport_container_add,
   summaryPage: transport_container_summary,
-  removePage: transport_container_remove,
-  sequenceIdHandler: SequenceIdHelper
+  removePage: transport_container_remove
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
 
@@ -183,7 +183,7 @@ class TransportContainerController @Inject() (
 
   private def updateCache(containers: Seq[Container])(implicit request: JourneyRequest[AnyContent]): Future[ExportsDeclaration] = {
     val declarationMeta = request.cacheModel.declarationMeta
-    val (updatedContainers, updatedMeta) = sequenceIdHandler.handleSequencing(containers, declarationMeta)
+    val (updatedContainers, updatedMeta) = handleSequencing(containers, declarationMeta)
 
     updateDeclarationFromRequest(
       _.updateContainers(updatedContainers)

@@ -18,7 +18,7 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.helpers.PackageInformationHelper.singleCachedPackageInformation
-import controllers.helpers.SequenceIdHelper
+import controllers.helpers.SequenceIdHelper.handleSequencing
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
@@ -44,8 +44,7 @@ class PackageInformationRemoveController @Inject() (
   errorHandler: ErrorHandler,
   navigator: Navigator,
   mcc: MessagesControllerComponents,
-  packageTypeRemove: package_information_remove,
-  sequenceIdHandler: SequenceIdHelper
+  packageTypeRemove: package_information_remove
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
 
@@ -82,11 +81,15 @@ class PackageInformationRemoveController @Inject() (
   private def updateExportsCache(itemId: String, itemToRemove: PackageInformation)(
     implicit request: JourneyRequest[AnyContent]
   ): Future[ExportsDeclaration] = {
-    val filteredPackageInformation =
-      request.cacheModel.itemBy(itemId).flatMap(_.packageInformation).getOrElse(Seq.empty).filterNot(_ == itemToRemove)
-    val (updatedPackageInformation, updatedMeta) = sequenceIdHandler.handleSequencing(filteredPackageInformation, request.cacheModel.declarationMeta)
-    updateDeclarationFromRequest(model =>
-      model.updatedItem(itemId, _.copy(packageInformation = Some(updatedPackageInformation.toList))).copy(declarationMeta = updatedMeta)
+    val filteredPackageInformation = request.cacheModel
+      .itemBy(itemId)
+      .flatMap(_.packageInformation)
+      .getOrElse(Seq.empty)
+      .filterNot(_ == itemToRemove)
+
+    val (updatedPackageInformation, updatedMeta) = handleSequencing(filteredPackageInformation, request.cacheModel.declarationMeta)
+    updateDeclarationFromRequest(
+      _.updatedItem(itemId, _.copy(packageInformation = Some(updatedPackageInformation.toList))).copy(declarationMeta = updatedMeta)
     )
   }
 }

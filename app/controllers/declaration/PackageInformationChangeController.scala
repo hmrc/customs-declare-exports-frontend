@@ -18,8 +18,9 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.PackageInformationAddController.PackageInformationFormGroupId
-import controllers.helpers.{MultipleItemsHelper, SequenceIdHelper}
+import controllers.helpers.MultipleItemsHelper
 import controllers.helpers.PackageInformationHelper.{allCachedPackageInformation, singleCachedPackageInformation}
+import controllers.helpers.SequenceIdHelper.handleSequencing
 import controllers.navigation.Navigator
 import forms.declaration.PackageInformation
 import forms.declaration.PackageInformation.form
@@ -45,8 +46,7 @@ class PackageInformationChangeController @Inject() (
   val exportsCacheService: ExportsCacheService,
   errorHandler: ErrorHandler,
   mcc: MessagesControllerComponents,
-  packageChangePage: package_information_change,
-  sequenceIdHandler: SequenceIdHelper
+  packageChangePage: package_information_change
 )(implicit ec: ExecutionContext, packageTypesService: PackageTypesService)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
 
@@ -87,7 +87,7 @@ class PackageInformationChangeController @Inject() (
   private def updateExportsCache(itemId: String, packageInfos: Seq[PackageInformation])(
     implicit request: JourneyRequest[AnyContent]
   ): Future[ExportsDeclaration] = {
-    val (updatedPackageInfo, updatedMeta) = sequenceIdHandler.handleSequencing(packageInfos, request.cacheModel.declarationMeta)
+    val (updatedPackageInfo, updatedMeta) = handleSequencing(packageInfos, request.cacheModel.declarationMeta)
     updateDeclarationFromRequest(
       _.updatedItem(itemId, _.copy(packageInformation = Some(updatedPackageInfo.toList))).copy(declarationMeta = updatedMeta)
     )

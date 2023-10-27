@@ -19,7 +19,8 @@ package controllers.declaration
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.routes.{SealController, TransportContainerController}
 import controllers.helpers.MultipleItemsHelper.saveAndContinue
-import controllers.helpers.{FormAction, Remove, SequenceIdHelper}
+import controllers.helpers.{FormAction, Remove}
+import controllers.helpers.SequenceIdHelper.handleSequencing
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
@@ -48,8 +49,7 @@ class SealController @Inject() (
   mcc: MessagesControllerComponents,
   addPage: seal_add,
   removePage: seal_remove,
-  summaryPage: seal_summary,
-  sequenceIdHandler: SequenceIdHelper
+  summaryPage: seal_summary
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
 
@@ -152,7 +152,7 @@ class SealController @Inject() (
 
   private def updateCache(container: Container, seals: Seq[Seal])(implicit request: JourneyRequest[AnyContent]): Future[ExportsDeclaration] = {
     val declarationMeta = request.cacheModel.declarationMeta
-    val (updatedSeals, updatedMeta) = sequenceIdHandler.handleSequencing(seals, declarationMeta)
+    val (updatedSeals, updatedMeta) = handleSequencing(seals, declarationMeta)
 
     updateDeclarationFromRequest(
       _.addOrUpdateContainer(container.copy(seals = updatedSeals))

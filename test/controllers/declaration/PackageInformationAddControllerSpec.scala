@@ -17,14 +17,11 @@
 package controllers.declaration
 
 import base.{ControllerSpec, Injector}
-import controllers.helpers.SequenceIdHelper
+import controllers.helpers.SequenceIdHelper.valueOfEso
 import forms.declaration.PackageInformation
-import models.DeclarationMeta
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
-import org.mockito.invocation.InvocationOnMock
-import org.mockito.stubbing.Answer
 import org.scalatest.{GivenWhenThen, OptionValues}
 import play.api.data.Form
 import play.api.mvc.{AnyContentAsEmpty, Request}
@@ -38,7 +35,6 @@ class PackageInformationAddControllerSpec extends ControllerSpec with OptionValu
 
   val mockAddPage = mock[package_information_add]
   val mockPackageTypesService = instanceOf[PackageTypesService]
-  private val mockSeqIdHandler = mock[SequenceIdHelper]
 
   val controller =
     new PackageInformationAddController(
@@ -47,25 +43,17 @@ class PackageInformationAddControllerSpec extends ControllerSpec with OptionValu
       mockExportsCacheService,
       navigator,
       stubMessagesControllerComponents(),
-      mockAddPage,
-      mockSeqIdHandler
+      mockAddPage
     )(ec, mockPackageTypesService)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
     when(mockAddPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
-    when(mockSeqIdHandler.handleSequencing[PackageInformation](any(), any())(any()))
-      .thenAnswer(new Answer[(Seq[PackageInformation], DeclarationMeta)] {
-        def answer(invocation: InvocationOnMock): (Seq[PackageInformation], DeclarationMeta) = {
-          val args = invocation.getArguments
-          (args(0).asInstanceOf[Seq[PackageInformation]], args(1).asInstanceOf[DeclarationMeta])
-        }
-      })
   }
 
   override protected def afterEach(): Unit = {
-    reset(mockAddPage, mockSeqIdHandler)
+    reset(mockAddPage)
     super.afterEach()
   }
 
@@ -89,6 +77,7 @@ class PackageInformationAddControllerSpec extends ControllerSpec with OptionValu
   "PackageInformation Add Controller" must {
 
     onEveryDeclarationJourney() { request =>
+
       "return 200 (OK)" that {
         "display page method is invoked" in {
           withNewCaching(request.cacheModel)
@@ -100,7 +89,6 @@ class PackageInformationAddControllerSpec extends ControllerSpec with OptionValu
 
           thePackageInformation.value mustBe empty
         }
-
       }
 
       "return 400 (BAD_REQUEST)" when {
@@ -154,14 +142,14 @@ class PackageInformationAddControllerSpec extends ControllerSpec with OptionValu
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe routes.PackageInformationSummaryController.displayPage(item.id)
 
-          And("max seq id is updated in dec meta")
-          verify(mockSeqIdHandler).handleSequencing[PackageInformation](any(), any())(any())
-
           val declaration = theCacheModelUpdated
           val savedPackage = declaration.itemBy(item.id).flatMap(_.packageInformation).map(_.last)
           savedPackage.flatMap(_.typesOfPackages) mustBe Some("AE")
           savedPackage.flatMap(_.numberOfPackages) mustBe Some(1)
           savedPackage.flatMap(_.shippingMarks) mustBe Some("1234")
+
+          And("max seq id is updated in dec meta")
+          valueOfEso[PackageInformation](declaration).value mustBe 1
         }
       }
     }

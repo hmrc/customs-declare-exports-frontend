@@ -19,7 +19,7 @@ package controllers.declaration
 import connectors.CustomsDeclareExportsConnector
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.routes.{ItemsSummaryController, SummaryController}
-import controllers.helpers.SequenceIdHelper
+import controllers.helpers.SequenceIdHelper.handleSequencing
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
@@ -49,8 +49,7 @@ class RemoveItemsSummaryController @Inject() (
   errorHandler: ErrorHandler,
   mcc: MessagesControllerComponents,
   itemsCannotRemovePage: items_cannot_remove,
-  removeItemPage: items_remove_item,
-  sequenceIdHandler: SequenceIdHelper
+  removeItemPage: items_remove_item
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with WithUnsafeDefaultFormBinding {
 
@@ -125,7 +124,7 @@ class RemoveItemsSummaryController @Inject() (
     request.cacheModel.itemBy(itemId) match {
       case Some(itemToDelete) =>
         val filteredItems = request.cacheModel.items.filterNot(_.id == itemToDelete.id)
-        val (updatedItems, updatedMeta) = sequenceIdHandler.handleSequencing(filteredItems, request.cacheModel.declarationMeta)
+        val (updatedItems, updatedMeta) = handleSequencing(filteredItems, request.cacheModel.declarationMeta)
         val updatedModel = removeWarehouseIdentification(request.cacheModel.copy(items = updatedItems, declarationMeta = updatedMeta))
         exportsCacheService.update(updatedModel)
       case None => Future.successful(request.cacheModel)

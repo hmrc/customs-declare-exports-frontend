@@ -18,19 +18,18 @@ package controllers.declaration
 
 import base.{ControllerSpec, Injector}
 import controllers.declaration.routes.{SealController, TransportContainerController}
-import controllers.helpers.{Remove, SequenceIdHelper}
+import controllers.helpers.Remove
+import controllers.helpers.SequenceIdHelper.valueOfEso
 import forms.common.YesNoAnswer
 import forms.declaration.{ContainerAdd, ContainerFirst, Seal}
 import mock.ErrorHandlerMocks
-import models.declaration.Container.maxNumberOfItems
+import models.DeclarationType
 import models.declaration.Container
-import models.{DeclarationMeta, DeclarationType}
+import models.declaration.Container.maxNumberOfItems
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
-import org.mockito.invocation.InvocationOnMock
-import org.mockito.stubbing.Answer
-import org.scalatest.Assertion
+import org.scalatest.{Assertion, OptionValues}
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsEmpty, Request}
@@ -38,14 +37,12 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.declaration._
 
-class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerMocks with Injector {
+class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerMocks with Injector with OptionValues {
 
   val transportContainersAddFirstPage = instanceOf[transport_container_add_first]
   val transportContainersAddPage = instanceOf[transport_container_add]
   val transportContainersRemovePage = instanceOf[transport_container_remove]
   val transportContainersSummaryPage = mock[transport_container_summary]
-
-  private val mockSeqIdHandler = mock[SequenceIdHelper]
 
   val controller = new TransportContainerController(
     mockAuthAction,
@@ -56,14 +53,13 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
     transportContainersAddFirstPage,
     transportContainersAddPage,
     transportContainersSummaryPage,
-    transportContainersRemovePage,
-    mockSeqIdHandler
+    transportContainersRemovePage
   )(ec)
 
   val containerId = "434335468"
   val sealId = "287345"
 
-  val containerData = Container(1, containerId, Seq(Seal(1, sealId)))
+  val containerData = Container(1, containerId, List(Seal(1, sealId)))
   val maxContainerData = (1 to maxNumberOfItems).map(Container(_, "id", Seq.empty))
 
   override protected def beforeEach(): Unit = {
@@ -74,16 +70,10 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
     withNewCaching(aDeclaration(withType(DeclarationType.STANDARD)))
 
     when(transportContainersSummaryPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
-    when(mockSeqIdHandler.handleSequencing[Container](any(), any())(any())).thenAnswer(new Answer[(Seq[Container], DeclarationMeta)] {
-      def answer(invocation: InvocationOnMock): (Seq[Container], DeclarationMeta) = {
-        val args = invocation.getArguments
-        (args(0).asInstanceOf[Seq[Container]], args(1).asInstanceOf[DeclarationMeta])
-      }
-    })
   }
 
   override protected def afterEach(): Unit = {
-    reset(transportContainersSummaryPage, mockSeqIdHandler)
+    reset(transportContainersSummaryPage)
     super.afterEach()
   }
 
@@ -161,7 +151,7 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
   "Transport Container submit add page" should {
 
     "add first container and redirect to add seal page" when {
-      val requestBody = Seq(ContainerFirst.hasContainerKey -> "Yes", ContainerFirst.containerIdKey -> "value")
+      val requestBody = List(ContainerFirst.hasContainerKey -> "Yes", ContainerFirst.containerIdKey -> "value")
 
       "working on standard declaration with cache empty" in {
         withNewCaching(aDeclaration(withType(DeclarationType.STANDARD)))
@@ -171,7 +161,7 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe SealController.displaySealSummary("value")
 
-        verifyCachedContainers(Seq(Container(id = "value", seals = Seq.empty)))
+        verifyCachedContainers(1, List(Container(sequenceId = 1, id = "value", seals = Seq.empty)))
       }
 
       "working on supplementary declaration with cache empty" in {
@@ -182,7 +172,7 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe SealController.displaySealSummary("value")
 
-        verifyCachedContainers(Seq(Container(id = "value", seals = Seq.empty)))
+        verifyCachedContainers(1, List(Container(sequenceId = 1, id = "value", seals = Seq.empty)))
       }
 
       "working on simplified declaration with cache empty" in {
@@ -193,12 +183,12 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe SealController.displaySealSummary("value")
 
-        verifyCachedContainers(Seq(Container(id = "value", seals = Seq.empty)))
+        verifyCachedContainers(1, List(Container(sequenceId = 1, id = "value", seals = Seq.empty)))
       }
     }
 
     "add another container and redirect to add seal page" when {
-      val requestBody = Seq(ContainerAdd.containerIdKey -> "C2")
+      val requestBody = List(ContainerAdd.containerIdKey -> "C2")
 
       "working on standard declaration with existing container" in {
         withNewCaching(aDeclaration(withType(DeclarationType.STANDARD), withContainerData(Container(id = "C1", seals = Seq.empty))))
@@ -208,7 +198,10 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe SealController.displaySealSummary("C2")
 
-        verifyCachedContainers(Seq(Container(id = "C1", seals = Seq.empty), Container(id = "C2", seals = Seq.empty)))
+        verifyCachedContainers(0, List(
+          Container(sequenceId = 0, id = "C1", seals = Seq.empty),
+          Container(sequenceId = 0, id = "C2", seals = Seq.empty)
+        ))
       }
 
       "working on supplementary declaration with existing container" in {
@@ -219,7 +212,10 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe SealController.displaySealSummary("C2")
 
-        verifyCachedContainers(Seq(Container(id = "C1", seals = Seq.empty), Container(id = "C2", seals = Seq.empty)))
+        verifyCachedContainers(0, List(
+          Container(sequenceId = 0, id = "C1", seals = Seq.empty),
+          Container(sequenceId = 0, id = "C2", seals = Seq.empty)
+        ))
       }
 
       "working on simplified declaration with existing container" in {
@@ -230,7 +226,10 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe SealController.displaySealSummary("C2")
 
-        verifyCachedContainers(Seq(Container(id = "C1", seals = Seq.empty), Container(id = "C2", seals = Seq.empty)))
+        verifyCachedContainers(0, List(
+          Container(sequenceId = 0, id = "C1", seals = Seq.empty),
+          Container(sequenceId = 0, id = "C2", seals = Seq.empty)
+        ))
       }
     }
   }
@@ -268,7 +267,7 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
     "redirect to summary page" when {
 
       "user indicates they do not want to add the first container" in {
-        val requestBody = Seq(ContainerFirst.hasContainerKey -> "No", ContainerFirst.containerIdKey -> "")
+        val requestBody = List(ContainerFirst.hasContainerKey -> "No", ContainerFirst.containerIdKey -> "")
         val result = controller.submitAddContainer()(postRequestAsFormUrlEncoded(requestBody: _*))
 
         await(result) mustBe aRedirectToTheNextPage
@@ -306,7 +305,7 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe TransportContainerController.displayContainerSummary
 
-        verifyCachedContainers(Seq.empty)
+        verifyCachedContainers(1, Seq.empty)
       }
     }
 
@@ -353,8 +352,9 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
     }
   }
 
-  def verifyCachedContainers(expectedContainers: Seq[Container]): Assertion = {
+  def verifyCachedContainers(expectedSequenceId: Int, expectedContainers: Seq[Container]): Assertion = {
     val declaration = theCacheModelUpdated
     declaration.containers mustBe expectedContainers
+    valueOfEso[Container](declaration).value mustBe expectedSequenceId
   }
 }

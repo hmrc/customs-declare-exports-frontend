@@ -18,7 +18,8 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.PackageInformationAddController.PackageInformationFormGroupId
-import controllers.helpers.{MultipleItemsHelper, SequenceIdHelper}
+import controllers.helpers.MultipleItemsHelper
+import controllers.helpers.SequenceIdHelper.handleSequencing
 import controllers.helpers.PackageInformationHelper.allCachedPackageInformation
 import controllers.navigation.Navigator
 import forms.declaration.PackageInformation
@@ -43,8 +44,7 @@ class PackageInformationAddController @Inject() (
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
   mcc: MessagesControllerComponents,
-  packageInformationPage: package_information_add,
-  sequenceIdHandler: SequenceIdHelper
+  packageInformationPage: package_information_add
 )(implicit ec: ExecutionContext, packageTypesService: PackageTypesService)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
 
@@ -73,7 +73,7 @@ class PackageInformationAddController @Inject() (
     implicit request: JourneyRequest[AnyContent]
   ): Future[ExportsDeclaration] = {
     val declarationMeta = request.cacheModel.declarationMeta
-    val (updatedPackageInformation, updatedMeta) = sequenceIdHandler.handleSequencing(packageInformation, declarationMeta)
+    val (updatedPackageInformation, updatedMeta) = handleSequencing(packageInformation, declarationMeta)
 
     updateDeclarationFromRequest(
       _.updatedItem(itemId, _.copy(packageInformation = Some(updatedPackageInformation.toList)))
