@@ -20,7 +20,7 @@ import controllers.declaration.routes.{AdditionalDocumentsController, IsLicenceR
 import forms.declaration.additionaldocuments.AdditionalDocument
 import models.declaration.ExportItem
 import play.api.i18n.Messages
-import play.twirl.api.Html
+import play.twirl.api.{Html, HtmlFormat}
 import uk.gov.hmrc.govukfrontend.views.html.components.{GovukSummaryList, SummaryList}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
@@ -36,7 +36,7 @@ class AdditionalDocumentsHelper @Inject() (govukSummaryList: GovukSummaryList, l
     val hasDocuments = item.additionalDocuments.exists(_.documents.nonEmpty)
 
     if (hasDocuments || item.isLicenceRequired.isDefined) showSection(item, hasDocuments, actionsEnabled)
-    else Html(s"""<div class="govuk-!-margin-bottom-9"></div>""")
+    else HtmlFormat.empty
   }
 
   private def showSection(item: ExportItem, hasDocuments: Boolean, actionsEnabled: Boolean)(implicit messages: Messages): Html = {
@@ -50,10 +50,7 @@ class AdditionalDocumentsHelper @Inject() (govukSummaryList: GovukSummaryList, l
       else List(licenseRow(item, actionsEnabled), noDocumentsRow(item, actionsEnabled))
 
     govukSummaryList(
-      SummaryList(
-        rows = summaryListRows.flatten,
-        classes = s"govuk-!-margin-top-4 govuk-!-margin-bottom-9 item-${item.sequenceId}-additional-documents-summary"
-      )
+      SummaryList(rows = summaryListRows.flatten, classes = s"govuk-!-margin-top-4 item-${item.sequenceId}-additional-documents-summary")
     )
   }
 

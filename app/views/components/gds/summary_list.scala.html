@@ -22,10 +22,17 @@
 
 @this(govukSummaryList: GovukSummaryList, link: link)
 
-@(id: String, heading: Option[String] = None, subHeading: Option[String] = None, headerAction: Option[Link] = None, summaryListRows: Seq[Option[SummaryListRow]], classes: String = "govuk-!-margin-bottom-9")
+@(id: String,
+  heading: Option[String] = None,
+  subHeading: Option[String] = None,
+  headerAction: Option[Link] = None,
+  summaryListRows: Seq[Option[SummaryListRow]],
+  topMargin: Int = 0,
+  topSubHeadingMargin: Int = 0
+)
 
 @if(heading.isDefined || subHeading.isDefined || headerAction.isDefined) {
-<div class="govuk-grid-row">
+<div class="govuk-grid-row govuk-!-margin-top-@topMargin">
     <div class="govuk-grid-column-three-quarters">
         @if(heading) {
             @heading.map { header =>
@@ -34,7 +41,7 @@
         }
         @if(subHeading) {
             @subHeading.map { subHeader =>
-                <h3 class="govuk-heading-s">@subHeader</h3>
+                <h3 class="govuk-heading-s govuk-!-margin-top-@topSubHeadingMargin">@subHeader</h3>
             }
         }
     </div>
@@ -48,6 +55,5 @@
 
 @govukSummaryList(SummaryList(
     rows = summaryListRows.flatten,
-    classes = classes,
     attributes = Map("id" -> id)
 ))

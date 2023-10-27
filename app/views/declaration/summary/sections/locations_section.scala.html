@@ -32,59 +32,64 @@
 @actions(action: Actions) = @{ if (actionsEnabled) Some(action) else None }
 
 @if(hasLocations(declarationData.locations)) {
-    @summaryList(id = "declaration-locations-summary", heading = Some(messages("declaration.summary.locations")), summaryListRows = Seq(
-        declarationData.locations.goodsLocation.map(goodsLocation =>
-            Some(SummaryListRow(
-                classes = "goodsLocationCode-row",
-                key = Key(
-                    content = Text(messages("declaration.summary.locations.goodsLocationCode"))
-                ),
-                value = Value(
-                    content = Text(goodsLocation.value)
-                ),
-                actions = actions(Actions(
-                    items = Seq(
-                        actionSummaryItem(
-                            href = controllers.declaration.routes.LocationOfGoodsController.displayPage.url,
-                            content = HtmlContent(linkContent(messages("site.change"))),
-                            visuallyHiddenText = Some(messages("declaration.summary.locations.goodsLocationCode.change"))
-                        )
-                    )
-                ))
-            ))
-        ),
-        declarationData.locations.goodsLocation.map {
-            case goodsLocation if goodsLocation.value.endsWith(LocationOfGoods.suffixForGVMS) =>
+    @summaryList(
+        id = "declaration-locations-summary",
+        heading = Some(messages("declaration.summary.locations")),
+        topMargin = 9,
+        summaryListRows = Seq(
+            declarationData.locations.goodsLocation.map(goodsLocation =>
                 Some(SummaryListRow(
-                    classes = "rrs01AdditionalInformation-row",
+                    classes = "goodsLocationCode-row",
                     key = Key(
-                        content = Text(messages("declaration.summary.locations.rrs01AdditionalInformation"))
+                        content = Text(messages("declaration.summary.locations.goodsLocationCode"))
                     ),
                     value = Value(
-                        content = Text(messages("declaration.summary.locations.rrs01AdditionalInformation.text"))
-                    )
-                ))
-            case _ => None
-        },
-        declarationData.locations.officeOfExit.map(officeOfExit =>
-            Some(SummaryListRow(
-                classes = "location-officeOfExit-row",
-                key = Key(
-                    content = Text(messages("declaration.summary.locations.officeOfExit"))
-                ),
-                value = Value(
-                    content = Text(officeOfExit.officeId)
-                ),
-                actions = actions(Actions(
-                    items = Seq(
-                        actionSummaryItem(
-                            href = controllers.declaration.routes.OfficeOfExitController.displayPage.url,
-                            content = HtmlContent(linkContent(messages("site.change"))),
-                            visuallyHiddenText = Some(messages("declaration.summary.locations.officeOfExit.change"))
+                        content = Text(goodsLocation.value)
+                    ),
+                    actions = actions(Actions(
+                        items = Seq(
+                            actionSummaryItem(
+                                href = controllers.declaration.routes.LocationOfGoodsController.displayPage.url,
+                                content = HtmlContent(linkContent(messages("site.change"))),
+                                visuallyHiddenText = Some(messages("declaration.summary.locations.goodsLocationCode.change"))
+                            )
                         )
-                    )
+                    ))
                 ))
-            ))
-        )
-    ).flatten)
+            ),
+            declarationData.locations.goodsLocation.map {
+                case goodsLocation if goodsLocation.value.endsWith(LocationOfGoods.suffixForGVMS) =>
+                    Some(SummaryListRow(
+                        classes = "rrs01AdditionalInformation-row",
+                        key = Key(
+                            content = Text(messages("declaration.summary.locations.rrs01AdditionalInformation"))
+                        ),
+                        value = Value(
+                            content = Text(messages("declaration.summary.locations.rrs01AdditionalInformation.text"))
+                        )
+                    ))
+                case _ => None
+            },
+            declarationData.locations.officeOfExit.map(officeOfExit =>
+                Some(SummaryListRow(
+                    classes = "location-officeOfExit-row",
+                    key = Key(
+                        content = Text(messages("declaration.summary.locations.officeOfExit"))
+                    ),
+                    value = Value(
+                        content = Text(officeOfExit.officeId)
+                    ),
+                    actions = actions(Actions(
+                        items = Seq(
+                            actionSummaryItem(
+                                href = controllers.declaration.routes.OfficeOfExitController.displayPage.url,
+                                content = HtmlContent(linkContent(messages("site.change"))),
+                                visuallyHiddenText = Some(messages("declaration.summary.locations.officeOfExit.change"))
+                            )
+                        )
+                    ))
+                ))
+            )
+        ).flatten
+    )
 }

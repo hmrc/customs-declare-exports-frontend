@@ -33,13 +33,18 @@
     additionalDocumentsHelper: AdditionalDocumentsHelper
 )
 
-@(item: ExportItem, itemIdx: Int, declarationType: DeclarationType, actionsEnabled: Boolean = true)(implicit messages: Messages)
+@(item: ExportItem,
+  itemIdx: Int,
+  declarationType: DeclarationType,
+  actionsEnabled: Boolean = true,
+  hasPreviousItem: Boolean = false
+)(implicit messages: Messages)
 
 @actions(action: => Actions) = @{ if(actionsEnabled) Some(action) else None }
 
 @headerAction = @{
-    if(actionsEnabled) Some(Link(messages("declaration.summary.items.item.headerAction"), routes.RemoveItemsSummaryController.displayRemoveItemConfirmationPage(item.id, true)))
-    else None
+    if (!actionsEnabled) None
+    else Some(Link(messages("declaration.summary.items.item.headerAction"), routes.RemoveItemsSummaryController.displayRemoveItemConfirmationPage(item.id, true)))
 }
 
 @itemDisplayNum = @{ itemIdx + 1 }
@@ -48,7 +53,7 @@
     id = s"declaration-items-summary-$itemDisplayNum",
     subHeading = Some(messages("declaration.summary.items.item.presentationId", itemDisplayNum)),
     headerAction = headerAction,
-    classes = "govuk-!-margin-bottom-0",
+    topMargin = if (hasPreviousItem) 9 else 0,
     summaryListRows = Seq(
         item.procedureCodes.flatMap(_.procedureCode).map(data =>
             SummaryListRow(
@@ -296,7 +301,6 @@
 @summaryList(
     id = s"item-$itemDisplayNum-commodity-summary",
     None, None, None,
-    classes = "govuk-!-margin-bottom-0",
     summaryListRows = Seq(
         item.commodityMeasure.map(commodityMeasure =>
             SummaryListRow(
