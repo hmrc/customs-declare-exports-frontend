@@ -65,11 +65,11 @@ class InlandTransportDetailsController @Inject() (
 
   private def nextPage(code: InlandModeOfTransportCode)(implicit request: JourneyRequest[AnyContent]): Call =
     if (!isPostalOrFTIModeOfTransport(code.inlandModeOfTransportCode) && isSimplifiedOrOccasional)
-      TransportCountryController.displayPage
-    else if (isPostalOrFTIModeOfTransport(code.inlandModeOfTransportCode) && isSimplifiedOrOccasional)
       BorderTransportController.displayPage
     else if (!isPostalOrFTIModeOfTransport(code.inlandModeOfTransportCode))
       DepartureTransportController.displayPage
+    else if (isPostalOrFTIModeOfTransport(code.inlandModeOfTransportCode) && isSimplifiedOrOccasional)
+      TransportCountryController.displayPage
     else if (request.isType(SUPPLEMENTARY))
       TransportContainerController.displayContainerSummary
     else

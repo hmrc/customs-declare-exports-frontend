@@ -79,8 +79,8 @@ class DepartureTransportController @Inject() (
   private def nextPage(implicit request: JourneyRequest[AnyContent]): Result =
     navigator.continueTo {
       if (request.declarationType == CLEARANCE) ExpressConsignmentController.displayPage
-      else if (request.cacheModel.isInlandOrBorder(Border) || (isSimplifiedOrOccasional && !isPostalOrFTI)) TransportCountryController.displayPage
-      else BorderTransportController.displayPage
+      else if (request.cacheModel.isInlandOrBorder(Border) || (isSimplifiedOrOccasional && !isPostalOrFTI)) BorderTransportController.displayPage
+      else TransportCountryController.displayPage
     }
 
   private def updateCache(formData: DepartureTransport)(implicit request: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
