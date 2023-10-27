@@ -40,7 +40,7 @@ class ContainersHelper @Inject() (govukSummaryList: GovukSummaryList, linkConten
       govukSummaryList(
         SummaryList(
           rows = if (noContainers) headingOnNoContainers(actionsEnabled) else heading(actionsEnabled) +: summaryListRows,
-          classes = s"""${if (noContainers) "" else "govuk-!-margin-top-4 "}govuk-!-margin-bottom-9 containers-summary"""
+          classes = s"""${if (noContainers) "" else "govuk-!-margin-top-4 "} containers-summary"""
         )
       )
     }

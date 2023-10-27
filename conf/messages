@@ -1982,6 +1982,7 @@ declaration.summary.transaction.previousDocuments.reference = Document reference
 declaration.summary.transaction.previousDocuments.goodsItemIdentifier = Item number
 declaration.summary.transaction.previousDocuments.document.change = Change document {0}
 declaration.summary.items = About the items
+declaration.summary.items.add = Add item
 declaration.summary.items.empty = You have not added any items yet
 declaration.summary.items.item.presentationId = Declaration item {0}
 declaration.summary.items.item.headerAction = Remove item

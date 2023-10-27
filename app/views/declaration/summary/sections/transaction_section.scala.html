@@ -19,6 +19,7 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.helpers.ActionItemBuilder.actionSummaryItem
 @import views.helpers.summary.DocumentsHelper
+@import views.helpers.summary.SummaryHelper.hasTransactionData
 @import views.html.components.gds.{linkContent, summary_list}
 
 @this(
@@ -29,9 +30,6 @@
 
 @(declaration: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages)
 
-@hasTransactionData = @{
-   declaration.totalNumberOfItems.isDefined || declaration.natureOfTransaction.isDefined || declaration.previousDocuments.isDefined
-}
 
 @totalAmountInvoicedRowContent = @{
     val currencyCode = declaration.totalNumberOfItems.flatMap(_.totalAmountInvoicedCurrency).getOrElse("")
@@ -72,11 +70,11 @@
 
 @actions(action: Actions) = @{ if (actionsEnabled) Some(action) else None }
 
-@if(hasTransactionData) {
+@if(hasTransactionData(declaration)) {
     @summaryList(
         id = "declaration-transaction-summary",
         heading = Some(messages("declaration.summary.transaction")),
-        classes = "govuk-!-margin-bottom-0",
+        topMargin = 9,
         summaryListRows = List(
             totalAmountInvoicedRow,
             declaration.totalNumberOfItems.flatMap { _.exchangeRate.map { exchangeRate =>

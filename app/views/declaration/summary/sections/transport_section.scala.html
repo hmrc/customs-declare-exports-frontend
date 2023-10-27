@@ -20,6 +20,7 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.helpers.ActionItemBuilder.actionSummaryItem
 @import views.helpers.summary.ContainersHelper
+@import views.helpers.summary.SummaryHelper.hasTransportData
 @import views.html.components.gds.{linkContent, summary_list}
 @import views.html.declaration.summary._
 
@@ -30,20 +31,6 @@
 )
 
 @(declaration: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages)
-
-@sectionRequired(transport: Transport, locations: Locations) = @{
-    transport.expressConsignment.isDefined ||
-    transport.transportPayment.isDefined ||
-    transport.containers.isDefined ||
-    transport.borderModeOfTransportCode.isDefined ||
-    transport.meansOfTransportOnDepartureType.isDefined ||
-    transport.meansOfTransportCrossingTheBorderIDNumber.isDefined ||
-    transport.meansOfTransportCrossingTheBorderType.isDefined ||
-    transport.transportCrossingTheBorderNationality.isDefined ||
-    locations.warehouseIdentification.isDefined ||
-    locations.supervisingCustomsOffice.isDefined ||
-    locations.inlandModeOfTransportCode
-}
 
 @actions(action: Actions) = @{
     if (actionsEnabled) Some(action) else None
@@ -64,11 +51,11 @@
     }
 }
 
-@if(sectionRequired(declaration.transport, declaration.locations)) {
+@if(hasTransportData(declaration)) {
     @summaryList(
         id = "declaration-transport-summary",
         heading = Some(messages("declaration.summary.transport")),
-        classes = "govuk-!-margin-bottom-0",
+        topMargin = 9,
         summaryListRows = Seq(
             declaration.transport.borderModeOfTransportCode.map(borderModeOfTransportCode =>
                 SummaryListRow(
