@@ -50,6 +50,7 @@ site.change = Newid
 site.change.header = Cysylltiadau newid
 site.add.item = Ychwanegu eitem
 site.add.anotherItem = Ychwanegu eitem arall
+site.add.country = Ychwanegwch wlad
 site.radio.divider = neu
 site.accessibility.error = Gwall:
 site.warning = Rhybudd
