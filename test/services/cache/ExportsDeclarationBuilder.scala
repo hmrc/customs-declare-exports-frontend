@@ -202,20 +202,17 @@ trait ExportsDeclarationBuilder {
     updateItems(item)
 
   def withItems(item1: ExportItem, others: ExportItem*): ExportsDeclarationModifier =
-    updateItems(item1 +: others:_*)
+    updateItems(item1 +: others: _*)
 
   def withItems(count: Int): ExportsDeclarationModifier =
-    updateItems((1 to count).map(index => ExportItem(id = uuid, sequenceId = index)):_*)
+    updateItems((1 to count).map(index => ExportItem(id = uuid, sequenceId = index)): _*)
 
   private def updateItems(itemsToAdd: ExportItem*): ExportsDeclarationModifier =
     declaration => {
       val meta = declaration.declarationMeta
       val items = declaration.items ++ itemsToAdd
       val seqIdKey = implicitly[EsoKeyProvider[ExportItem]].seqIdKey
-      declaration.copy(
-        declarationMeta = meta.copy(maxSequenceIds = meta.maxSequenceIds + (seqIdKey -> items.last.sequenceId)),
-        items = items
-      )
+      declaration.copy(declarationMeta = meta.copy(maxSequenceIds = meta.maxSequenceIds + (seqIdKey -> items.last.sequenceId)), items = items)
     }
 
   def withEntryIntoDeclarantsRecords(isEidr: String = YesNoAnswers.yes): ExportsDeclarationModifier =
@@ -467,9 +464,10 @@ trait ExportsDeclarationBuilder {
       val sealSeqId = containers.foldLeft(-1)((seqId: Int, c: Container) => c.seals.lastOption.fold(seqId)(_.sequenceId))
 
       declaration.copy(
-        declarationMeta = meta.copy(maxSequenceIds = meta.maxSequenceIds +
-          (implicitly[EsoKeyProvider[Container]].seqIdKey -> containerSeqId) +
-          (implicitly[EsoKeyProvider[Seal]].seqIdKey -> sealSeqId)
+        declarationMeta = meta.copy(maxSequenceIds =
+          meta.maxSequenceIds +
+            (implicitly[EsoKeyProvider[Container]].seqIdKey -> containerSeqId) +
+            (implicitly[EsoKeyProvider[Seal]].seqIdKey -> sealSeqId)
         ),
         transport = transport.copy(containers = Option(containers))
       )

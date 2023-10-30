@@ -31,7 +31,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{ActionItem, Actio
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class CardForParties @Inject() (
+class Card2ForParties @Inject() (
   govukSummaryList: GovukSummaryList,
   additionalActorsHelper: AdditionalActorsHelper,
   authorisationHoldersHelper: AuthorisationHoldersHelper

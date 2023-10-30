@@ -77,7 +77,6 @@ class PackageInformationAddControllerSpec extends ControllerSpec with OptionValu
   "PackageInformation Add Controller" must {
 
     onEveryDeclarationJourney() { request =>
-
       "return 200 (OK)" that {
         "display page method is invoked" in {
           withNewCaching(request.cacheModel)

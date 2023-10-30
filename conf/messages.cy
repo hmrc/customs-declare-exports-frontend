@@ -1825,10 +1825,10 @@ declaration.summary.draft = Adolygwch yr wybodaeth a nodwyd gennych hyd yn hyn.
 declaration.summary.unknown = Anhysbys
 
 declaration.summary.references = Y datganiad hwn
-declaration.summary.references.createdDate = Dyddiad a grëwyd
-declaration.summary.references.expireDate = Dyddiad dod i ben
+declaration.summary.references.insets = Dechreuwch yma i fynd drwy’r cwestiynau o’r dechrau
+declaration.summary.references.creation.date = Dyddiad a grëwyd
+declaration.summary.references.expiration.ate = Dyddiad dod i ben
 declaration.summary.references.type = Math o Ddatganiad
-declaration.summary.references.type.change = Newidiwch y math o ddatganiad
 declaration.summary.references.location = Nwyddau’n cael eu hanfon allan o’r UE
 declaration.summary.references.location.change = Newid os yw’r nwyddau’n cael eu hanfon allan o’r UE
 declaration.summary.references.additionalType = Math o ddatganiad
@@ -2134,7 +2134,6 @@ declaration.summary.container.change = Newidiwch gynhwysydd {0}
 declaration.summary.container.information = Cynhwysydd
 declaration.summary.container.securitySeal = Sêl diogelwch
 
-declaration.summary.goto.additional.type = Dechreuwch yma i fynd drwy’r cwestiynau o’r dechrau
 declaration.summary.warning = Os byddwch yn newid yr awdurdodiadau, codau nwyddau, codau gweithdrefnau, dull cludo neu’r codau lleoliad, ewch drwy’r cwestiynau o’r dechrau i sicrhau nad ydych yn ceisio cyflwyno datganiad anghyflawn neu annilys.
 declaration.summary.saved.label = I ailgydio yn eich datganiad
 declaration.summary.saved.body = I ailgydio ynddi o ble’r oeddech y tro diwethaf, cliciwch ar y cysylltiad ‘Newid’ diweddaraf. Pan fyddwch wedi cwblhau’r holl gwestiynau, gallwch gyflwyno’ch datganiad.

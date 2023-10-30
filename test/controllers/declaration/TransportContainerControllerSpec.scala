@@ -198,10 +198,10 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe SealController.displaySealSummary("C2")
 
-        verifyCachedContainers(0, List(
-          Container(sequenceId = 0, id = "C1", seals = Seq.empty),
-          Container(sequenceId = 0, id = "C2", seals = Seq.empty)
-        ))
+        verifyCachedContainers(
+          0,
+          List(Container(sequenceId = 0, id = "C1", seals = Seq.empty), Container(sequenceId = 0, id = "C2", seals = Seq.empty))
+        )
       }
 
       "working on supplementary declaration with existing container" in {
@@ -212,10 +212,10 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe SealController.displaySealSummary("C2")
 
-        verifyCachedContainers(0, List(
-          Container(sequenceId = 0, id = "C1", seals = Seq.empty),
-          Container(sequenceId = 0, id = "C2", seals = Seq.empty)
-        ))
+        verifyCachedContainers(
+          0,
+          List(Container(sequenceId = 0, id = "C1", seals = Seq.empty), Container(sequenceId = 0, id = "C2", seals = Seq.empty))
+        )
       }
 
       "working on simplified declaration with existing container" in {
@@ -226,10 +226,10 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe SealController.displaySealSummary("C2")
 
-        verifyCachedContainers(0, List(
-          Container(sequenceId = 0, id = "C1", seals = Seq.empty),
-          Container(sequenceId = 0, id = "C2", seals = Seq.empty)
-        ))
+        verifyCachedContainers(
+          0,
+          List(Container(sequenceId = 0, id = "C1", seals = Seq.empty), Container(sequenceId = 0, id = "C2", seals = Seq.empty))
+        )
       }
     }
   }
