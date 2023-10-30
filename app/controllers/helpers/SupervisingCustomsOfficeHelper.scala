@@ -18,7 +18,7 @@ package controllers.helpers
 
 import controllers.declaration.routes._
 import controllers.helpers.TransportSectionHelper.isPostalOrFTIModeOfTransport
-import forms.declaration.declarationHolder.AuthorizationTypeCodes.isAuthCode
+import forms.declaration.authorisationHolder.AuthorizationTypeCodes.isAuthCode
 import models.DeclarationType._
 import models.codes.AdditionalProcedureCode.NO_APC_APPLIES_CODE
 import models.declaration.ProcedureCodesData

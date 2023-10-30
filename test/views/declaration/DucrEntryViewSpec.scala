@@ -101,7 +101,7 @@ class DucrEntryViewSpec extends PageWithButtonsSpec with Injector {
         "declaration.ducrEntry.ducr.paragraph.bullet5"
       )
 
-      createView().getElementsByClass("govuk-label").get(0).text mustBe messages("declaration.ducrEntry.ducr.paragraph")
+      createView().getElementsByClass("govuk-label").get(0).text mustBe messages("declaration.ducrEntry.header")
 
       expectedBodyTextListMessageKeys.foreach { messageKey =>
         createView().getElementsByClass("govuk-list").get(0) must containMessage(messageKey)

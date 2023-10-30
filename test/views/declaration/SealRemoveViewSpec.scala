@@ -51,11 +51,11 @@ class SealRemoveViewSpec extends PageWithButtonsSpec with Injector {
     }
 
     "display Seal label" in {
-      view.getElementsByClass("govuk-summary-list__key") must containMessageForElements("declaration.seal.summary.heading")
+      view.getElementsByClass(summaryKeyClassName) must containMessageForElements("declaration.seal.summary.heading")
     }
 
     "display seal to remove" in {
-      view.getElementsByClass("govuk-summary-list__value").text() must include(sealId)
+      view.getElementsByClass(summaryValueClassName).text() must include(sealId)
     }
 
     "display 'Back' button that links to 'seal summary' page" in {

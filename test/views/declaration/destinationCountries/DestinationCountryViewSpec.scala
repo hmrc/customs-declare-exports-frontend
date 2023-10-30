@@ -19,17 +19,17 @@ package views.declaration.destinationCountries
 import base.{ExportsTestData, Injector}
 import connectors.CodeListConnector
 import controllers.declaration.routes.{
-  AuthorisationProcedureCodeChoiceController,
-  DeclarationHolderRequiredController,
-  DeclarationHolderSummaryController
+  AuthorisationHolderRequiredController,
+  AuthorisationHolderSummaryController,
+  AuthorisationProcedureCodeChoiceController
 }
 import forms.common.Eori
 import forms.declaration.AuthorisationProcedureCodeChoice.{Choice1040, ChoiceOthers}
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.{STANDARD_FRONTIER, STANDARD_PRE_LODGED}
 import forms.declaration.countries.Countries.DestinationCountryPage
 import forms.declaration.countries.{Countries, Country}
-import forms.declaration.declarationHolder.AuthorizationTypeCodes.CSE
-import forms.declaration.declarationHolder.DeclarationHolder
+import forms.declaration.authorisationHolder.AuthorizationTypeCodes.CSE
+import forms.declaration.authorisationHolder.AuthorisationHolder
 import models.DeclarationType._
 import models.codes.{Country => ModelCountry}
 import models.declaration.EoriSource
@@ -86,7 +86,7 @@ class DestinationCountryViewSpec extends PageWithButtonsSpec with Injector {
         List(Choice1040, ChoiceOthers).foreach { choice =>
           s"AuthorisationProcedureCodeChoice is '${choice.value}'" in {
             implicit val request = withRequest(STANDARD_PRE_LODGED, withAuthorisationProcedureCodeChoice(choice))
-            verifyBackLink(DeclarationHolderRequiredController.displayPage)
+            verifyBackLink(AuthorisationHolderRequiredController.displayPage)
           }
         }
       }
@@ -96,7 +96,7 @@ class DestinationCountryViewSpec extends PageWithButtonsSpec with Injector {
       "AdditionalDeclarationType is 'STANDARD_FRONTIER' and" when {
         s"AuthorisationProcedureCodeChoice is 'Code1040'" in {
           implicit val request = withRequest(STANDARD_FRONTIER, withAuthorisationProcedureCodeChoice(Choice1040))
-          verifyBackLink(DeclarationHolderRequiredController.displayPage)
+          verifyBackLink(AuthorisationHolderRequiredController.displayPage)
         }
       }
     }
@@ -113,18 +113,18 @@ class DestinationCountryViewSpec extends PageWithButtonsSpec with Injector {
 
     onJourney(CLEARANCE, OCCASIONAL) { implicit request =>
       "display a back button linking to the /is-authorisation-required  page" in {
-        verifyBackLink(DeclarationHolderRequiredController.displayPage)
+        verifyBackLink(AuthorisationHolderRequiredController.displayPage)
       }
     }
 
     "display a back button linking to the /authorisations-required page" when {
-      val holder = DeclarationHolder(Some(CSE), Some(Eori(ExportsTestData.eori)), Some(EoriSource.OtherEori))
+      val holder = AuthorisationHolder(Some(CSE), Some(Eori(ExportsTestData.eori)), Some(EoriSource.OtherEori))
 
       allDeclarationTypes.foreach { declarationType =>
         s"on $declarationType journey and" when {
           "the declaration contains at least one authorisation" in {
-            implicit val request = withRequestOfType(declarationType, withDeclarationHolders(holder))
-            verifyBackLink(DeclarationHolderSummaryController.displayPage)
+            implicit val request = withRequestOfType(declarationType, withAuthorisationHolders(holder))
+            verifyBackLink(AuthorisationHolderSummaryController.displayPage)
           }
         }
       }

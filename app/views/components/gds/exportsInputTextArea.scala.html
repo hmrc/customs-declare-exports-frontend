@@ -31,6 +31,8 @@
     bodyHtml: Option[Html] = None,
     isPageHeading: Boolean = false,
     headingClasses: String = gdsPageLabel,
+    isSubHeading: Boolean = false,
+    subHeadingClasses: String = "govuk-heading govuk-heading-m",
     labelClasses: String = "govuk-label--m",
     inputClasses: Option[String] = None
 )(implicit messages: Messages)
@@ -46,7 +48,7 @@
 @{bodyHtml
     .map{ body =>
         HtmlContent(HtmlFormat.fill(immutable.Seq(
-            label(labelKey = labelKey, forFieldName = field.id, labelArg = labelArg),
+            label(labelKey = labelKey, forFieldName = field.id, labelArg = labelArg, isSubHeading = isSubHeading, subHeadingClasses = subHeadingClasses),
             body,
             govukTextarea(Textarea(
                 id = field.id,

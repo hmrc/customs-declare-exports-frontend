@@ -87,7 +87,7 @@ class SubmittedDeclarationViewSpec extends UnitViewSpec with Stubs with ExportsT
 
     "have parties section" in {
       val view = createView(declaration = aDeclaration(withExporterDetails()))
-      view.getElementById("declaration-parties-summary").text mustNot be(empty)
+      view.getElementsByClass("parties-card").text mustNot be(empty)
       links(view) mustBe empty
     }
 

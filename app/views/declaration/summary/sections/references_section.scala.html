@@ -58,7 +58,10 @@
     @body(messages("declaration.summary.amend.body"), classes = "govuk-body govuk-!-display-none-print")
 }
 
-@summaryList(id = "declaration-references-summary", heading = None, summaryListRows = Seq(
+@summaryList(
+    id = "declaration-references-summary",
+    heading = None,
+    summaryListRows = Seq(
         Some(SummaryListRow(
             classes = "createdDate-row",
             key = Key(
@@ -68,7 +71,6 @@
                 content = Text(ViewDates.formatDateAtTime(declaration.declarationMeta.createdDateTime))
             )
         )),
-
         Some(SummaryListRow(
             classes = "expiryDate-row",
             key = Key(

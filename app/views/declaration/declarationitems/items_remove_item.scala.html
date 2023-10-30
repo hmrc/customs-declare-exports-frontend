@@ -73,6 +73,7 @@
         )),
         html = HtmlFormat.fill(Seq(
           item_section(item, itemIdx, request.declarationType, actionsEnabled = false),
+          Html("""<div class="govuk-!-margin-top-9"/>"""),
           yesNoRadios(form, inline = true),
           buttons
         ))

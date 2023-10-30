@@ -139,7 +139,7 @@ class SummaryMessagesSpec extends UnitViewSpec {
       messages must haveTranslationFor("declaration.summary.items.item.packageInformation.markings")
       messages must haveTranslationFor("declaration.summary.items.item.additionalInformation")
       messages must haveTranslationFor("declaration.summary.items.item.additionalInformation.code")
-      messages must haveTranslationFor("declaration.summary.items.item.additionalInformation.information")
+      messages must haveTranslationFor("declaration.summary.items.item.additionalInformation.description")
       messages must haveTranslationFor("declaration.summary.items.item.additionalDocuments")
       messages must haveTranslationFor("declaration.summary.items.item.additionalDocuments.code")
       messages must haveTranslationFor("declaration.summary.items.item.additionalDocuments.identifier")
@@ -167,7 +167,6 @@ class SummaryMessagesSpec extends UnitViewSpec {
       messages must haveTranslationFor("declaration.summary.transport.departure.meansOfTransport.header")
       messages must haveTranslationFor("declaration.summary.transport.border.meansOfTransport.header")
       messages must haveTranslationFor("declaration.summary.transport.payment")
-      messages must haveTranslationFor("declaration.summary.transport.containers")
     }
 
     "have defined transport codes messages" in {
@@ -219,7 +218,7 @@ class SummaryMessagesSpec extends UnitViewSpec {
 
     "have defined container messages" in {
 
-      messages must haveTranslationFor("declaration.summary.containers")
+      messages must haveTranslationFor("declaration.summary.container")
       messages must haveTranslationFor("declaration.summary.container.id")
       messages must haveTranslationFor("declaration.summary.container.securitySeals")
     }

@@ -23,7 +23,7 @@ import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypePage
 import forms.declaration.carrier.CarrierDetails
 import forms.declaration.commodityMeasure.SupplementaryUnits
 import forms.declaration.countries.Countries.RoutingCountryPage
-import forms.declaration.declarationHolder.{DeclarationHolder, DeclarationHolderRequired, DeclarationHolderSummary}
+import forms.declaration.authorisationHolder.{AuthorisationHolder, AuthorisationHolderRequired, AuthorisationHolderSummary}
 import forms.declaration.officeOfExit.OfficeOfExit
 import forms.declaration.procedurecodes.{AdditionalProcedureCode, ProcedureCode}
 import forms.{DeclarationPage, Lrn}
@@ -67,9 +67,9 @@ trait CommonNavigator extends CacheDependentNavigators {
   }
 
   val commonCacheDependent: PartialFunction[DeclarationPage, ExportsDeclaration => Call] = {
-    case DeclarationHolderRequired        => declarationHolderRequiredPreviousPage
-    case DeclarationHolder                => declarationHolderAddPreviousPage
-    case DeclarationHolderSummary         => declarationHolderSummaryPreviousPage
+    case AuthorisationHolderRequired      => authorisationHolderRequiredPreviousPage
+    case AuthorisationHolder              => authorisationHolderAddPreviousPage
+    case AuthorisationHolderSummary       => authorisationHolderSummaryPreviousPage
     case SupervisingCustomsOffice         => supervisingCustomsOfficePreviousPage
     case AuthorisationProcedureCodeChoice => authorisationProcedureCodeChoicePreviousPage
     case OfficeOfExit                     => officeOfExitPreviousPage

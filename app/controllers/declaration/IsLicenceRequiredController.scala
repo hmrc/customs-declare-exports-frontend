@@ -22,11 +22,10 @@ import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.common.YesNoAnswer.YesNoAnswers.{no, yes}
-import forms.declaration.IsLicenceRequired
+import forms.declaration.IsLicenceRequired.form
 import models.DeclarationType._
 import models.ExportsDeclaration
 import models.requests.JourneyRequest
-import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.TaggedAuthCodes
@@ -51,53 +50,41 @@ class IsLicenceRequiredController @Inject() (
 
   private val validTypes = Seq(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL)
 
-  def displayPage(itemId: String): Action[AnyContent] =
-    (authenticate andThen journeyType(validTypes)) { implicit request =>
-      val formWithErrors = form.withSubmissionErrors.fill(_)
-
-      val frm = request.cacheModel.itemBy(itemId).flatMap(_.isLicenceRequired).fold(form.withSubmissionErrors) {
-        case true  => formWithErrors(YesNoAnswer(yes))
-        case false => formWithErrors(YesNoAnswer(no))
-      }
-
-      Ok(is_licence_required(itemId, frm))
-
+  def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
+    val formWithErrors = form.withSubmissionErrors.fill(_)
+    val frm = request.cacheModel.itemBy(itemId).flatMap(_.isLicenceRequired).fold(form.withSubmissionErrors) {
+      case true  => formWithErrors(YesNoAnswer(yes))
+      case false => formWithErrors(YesNoAnswer(no))
     }
 
-  def submitForm(itemId: String): Action[AnyContent] =
-    (authenticate andThen journeyType).async { implicit request =>
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(is_licence_required(itemId, formWithErrors))),
-          yesNo => {
+    Ok(is_licence_required(itemId, frm))
+  }
 
-            val isLicenceRequired = yesNo.answer == YesNoAnswers.yes
-
-            updateCache(isLicenceRequired, itemId) map { _ =>
-              navigator.continueTo(nextPage(yesNo, itemId))
-            }
-          }
-        )
-    }
+  def submitForm(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+    form
+      .bindFromRequest()
+      .fold(
+        formWithErrors => Future.successful(BadRequest(is_licence_required(itemId, formWithErrors))),
+        yesNo => {
+          val isLicenceRequired = yesNo.answer == YesNoAnswers.yes
+          updateCache(isLicenceRequired, itemId) map (_ => navigator.continueTo(nextPage(yesNo, itemId)))
+        }
+      )
+  }
 
   private def nextPage(yesNoAnswer: YesNoAnswer, itemId: String)(implicit request: JourneyRequest[AnyContent]): Call =
     yesNoAnswer.answer match {
       case _ if request.cacheModel.listOfAdditionalDocuments(itemId).nonEmpty =>
         AdditionalDocumentsController.displayPage(itemId)
 
-      case YesNoAnswers.yes =>
-        AdditionalDocumentAddController.displayPage(itemId)
+      case YesNoAnswers.yes => AdditionalDocumentAddController.displayPage(itemId)
 
       case YesNoAnswers.no if taggedAuthCodes.hasAuthCodeRequiringAdditionalDocs(request.cacheModel) =>
         AdditionalDocumentAddController.displayPage(itemId)
 
-      case YesNoAnswers.no =>
-        AdditionalDocumentsRequiredController.displayPage(itemId)
+      case YesNoAnswers.no => AdditionalDocumentsRequiredController.displayPage(itemId)
     }
 
   private def updateCache(isLicenceRequired: Boolean, itemId: String)(implicit request: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
     updateDeclarationFromRequest(_.updatedItem(itemId, _.copy(isLicenceRequired = Some(isLicenceRequired))))
-
-  private def form: Form[YesNoAnswer] = IsLicenceRequired.form
 }

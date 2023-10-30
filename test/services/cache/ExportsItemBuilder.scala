@@ -17,6 +17,7 @@
 package services.cache
 
 import forms.common.YesNoAnswer
+import forms.common.YesNoAnswer.No
 import forms.declaration._
 import forms.declaration.additionaldocuments.AdditionalDocument
 import models.declaration.{CommodityMeasure => CommodityMeasureModel, _}
@@ -35,6 +36,9 @@ trait ExportsItemBuilder {
   def anItem(modifiers: ItemModifier*): ExportItem =
     modifiers.foldLeft(modelWithDefaults)((current, modifier) => modifier(current))
 
+  def anItemAfter(item: ExportItem, modifiers: ItemModifier*): ExportItem =
+    modifiers.foldLeft(item)((current, modifier) => modifier(current))
+
   // ************************************************* Builders ********************************************************
 
   def withItemId(id: String): ItemModifier = _.copy(id = id)
@@ -46,8 +50,6 @@ trait ExportsItemBuilder {
   def withProcedureCodes(procedureCode: Option[String] = Some("1042"), additionalProcedureCodes: Seq[String] = Seq.empty): ItemModifier =
     _.copy(procedureCodes = Some(ProcedureCodesData(procedureCode, additionalProcedureCodes)))
 
-  def withoutAdditionalInformation: ItemModifier = _.copy(additionalInformation = None)
-
   def withCommodityMeasure(commodityMeasure: CommodityMeasureModel): ItemModifier =
     _.copy(commodityMeasure = Some(commodityMeasure))
 
@@ -56,18 +58,6 @@ trait ExportsItemBuilder {
 
   def withAdditionalFiscalReferenceData(data: AdditionalFiscalReferencesData): ItemModifier =
     _.copy(additionalFiscalReferencesData = Some(data))
-
-  def withAdditionalInformation(code: String, description: String): ItemModifier =
-    withAdditionalInformation(AdditionalInformation(code, description))
-
-  def withAdditionalInformation(info1: AdditionalInformation, other: AdditionalInformation*): ItemModifier =
-    cache => {
-      val existing: Seq[AdditionalInformation] = cache.additionalInformation.map(_.items).getOrElse(Seq.empty)
-      cache.copy(additionalInformation = Some(AdditionalInformationData(existing ++ Seq(info1) ++ other)))
-    }
-
-  def withAdditionalInformationData(informationData: AdditionalInformationData): ItemModifier =
-    cache => cache.copy(additionalInformation = Some(informationData))
 
   def withCommodityDetails(data: CommodityDetails): ItemModifier =
     _.copy(commodityDetails = Some(data))
@@ -119,6 +109,27 @@ trait ExportsItemBuilder {
       exportItem.copy(packageInformation = Some(packageInfos :+ packageInformation))
     }
 
+  def withAdditionalInformation(code: String, description: String): ItemModifier =
+    withAdditionalInformation(AdditionalInformation(code, description))
+
+  def withAdditionalInformation(info1: AdditionalInformation, other: AdditionalInformation*): ItemModifier =
+    cache => {
+      val existing: Seq[AdditionalInformation] = cache.additionalInformation.map(_.items).getOrElse(Seq.empty)
+      cache.copy(additionalInformation = Some(AdditionalInformationData(existing ++ Seq(info1) ++ other)))
+    }
+
+  def withAdditionalInformationData(informationData: AdditionalInformationData): ItemModifier =
+    cache => cache.copy(additionalInformation = Some(informationData))
+
+  def withoutAdditionalInformation: ItemModifier = _.copy(additionalInformation = None)
+
+  def withoutAdditionalInformation(withIsRequired: Boolean = false): ItemModifier =
+    _.copy(additionalInformation = if (withIsRequired) Some(AdditionalInformationData(No, Seq.empty)) else None)
+
+  def withIsLicenseRequired(isRequired: Boolean = true): ItemModifier = cache => cache.copy(isLicenceRequired = Some(isRequired))
+
+  def withNoLicense: ItemModifier = cache => cache.copy(isLicenceRequired = None)
+
   def withAdditionalDocuments(isRequired: Option[YesNoAnswer], first: AdditionalDocument, documents: AdditionalDocument*): ItemModifier =
     cache => {
       val existing = cache.additionalDocuments.map(_.documents).getOrElse(Seq.empty)
@@ -128,9 +139,12 @@ trait ExportsItemBuilder {
   def withAdditionalDocuments(additionalDocuments: AdditionalDocuments): ItemModifier =
     cache => cache.copy(additionalDocuments = Some(additionalDocuments))
 
-  def withLicenseRequired(): ItemModifier =
-    cache => cache.copy(isLicenceRequired = Some(true))
+  def withoutAdditionalDocuments(withIsRequired: Boolean = false): ItemModifier =
+    _.copy(additionalDocuments = if (withIsRequired) Some(AdditionalDocuments(No, Seq.empty)) else None)
 
-  def withLicenseNotRequired(): ItemModifier =
-    cache => cache.copy(isLicenceRequired = Some(false))
+  def withAdditionalDocument(typeCode: String, identifier: String): AdditionalDocument =
+    AdditionalDocument(Some(typeCode), Some(identifier), None, None, None, None, None)
+
+  def withAdditionalDocument(maybeTypeCode: Option[String], maybeIdentifier: Option[String]): AdditionalDocument =
+    AdditionalDocument(maybeTypeCode, maybeIdentifier, None, None, None, None, None)
 }

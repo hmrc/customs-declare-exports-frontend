@@ -24,7 +24,7 @@ import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.fro
 import models.declaration.submissions.EnhancedStatus._
 import models.declaration.submissions.Submission
 import play.api.i18n.Messages
-import play.api.mvc.Call
+import play.api.mvc.{Call, Request}
 import play.twirl.api.Html
 import uk.gov.hmrc.govukfrontend.views.Aliases.TableRow
 import uk.gov.hmrc.govukfrontend.views.html.components.{GovukPanel, GovukTable, GovukWarningText}
@@ -57,11 +57,11 @@ class ConfirmationHelper @Inject() (
   paragraph: paragraphBody
 ) {
 
-  def content(confirmation: Confirmation)(implicit messages: Messages): Html =
+  def content(confirmation: Confirmation)(implicit request: Request[_], messages: Messages): Html =
     confirmation.submission.latestEnhancedStatus match {
-      case Some(RECEIVED)                                                        => received(confirmation, messages)
-      case Some(GOODS_ARRIVED) | Some(GOODS_ARRIVED_MESSAGE)                     => accepted(confirmation, messages)
-      case Some(CLEARED) if isArrived(confirmation)                              => cleared(confirmation, messages)
+      case Some(RECEIVED)                                                        => received(request, confirmation, messages)
+      case Some(GOODS_ARRIVED) | Some(GOODS_ARRIVED_MESSAGE)                     => accepted(request, confirmation, messages)
+      case Some(CLEARED) if isArrived(confirmation)                              => cleared(request, confirmation, messages)
       case Some(ADDITIONAL_DOCUMENTS_REQUIRED) | Some(UNDERGOING_PHYSICAL_CHECK) => needsDocuments(confirmation, messages)
       case _                                                                     => other(confirmation, messages)
     }
@@ -75,13 +75,13 @@ class ConfirmationHelper @Inject() (
       case _                                                                     => "declaration.confirmation.other.title"
     }
 
-  private def received(implicit confirmation: Confirmation, messages: Messages): Html =
+  private def received(implicit request: Request[_], confirmation: Confirmation, messages: Messages): Html =
     new Html(List(topSection, whatHappensNext, whatYouCanDoNow, bottomSection).flatten)
 
-  private def accepted(implicit confirmation: Confirmation, messages: Messages): Html =
+  private def accepted(implicit request: Request[_], confirmation: Confirmation, messages: Messages): Html =
     new Html(List(topSection, List(body2), whatHappensNext, whatYouCanDoNow, bottomSection).flatten)
 
-  private def cleared(implicit confirmation: Confirmation, messages: Messages): Html =
+  private def cleared(implicit request: Request[_], confirmation: Confirmation, messages: Messages): Html =
     new Html(List(topSection, whatYouCanDoNow, bottomSection).flatten)
 
   private def isArrived(confirmation: Confirmation): Boolean =
@@ -112,7 +112,7 @@ class ConfirmationHelper @Inject() (
   }
 
   private def topSection(implicit confirmation: Confirmation, messages: Messages): List[Html] = List(panel, table)
-  private def bottomSection(implicit messages: Messages): Seq[Html] = List(print_page_button(8, 4), sectionBreak, exitSurvey())
+  private def bottomSection(implicit request: Request[_], messages: Messages): Seq[Html] = List(print_page_button(8, 4), sectionBreak, exitSurvey())
 
   private def table(implicit confirmation: Confirmation, messages: Messages): Html =
     govukTable(

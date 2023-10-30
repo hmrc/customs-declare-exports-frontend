@@ -49,7 +49,7 @@ class AdditionalFiscalReferencesRemoveViewSpec extends PageWithButtonsSpec with 
     }
 
     "display reference to remove" in {
-      view.getElementsByClass("govuk-summary-list__value").get(1).text() mustBe additionalReference.reference
+      view.getElementsByClass(summaryValueClassName).get(1).text() mustBe additionalReference.reference
     }
 
     "display 'Back' button that links to 'AdditionalFiscalReferences summary' page" in {

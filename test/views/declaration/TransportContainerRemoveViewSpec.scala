@@ -54,13 +54,13 @@ class TransportContainerRemoveViewSpec extends PageWithButtonsSpec with Injector
     }
 
     "display container and seal labels" in {
-      view.getElementsByClass("govuk-summary-list__key").get(0) must containMessage("declaration.transportInformation.containerId.title")
-      view.getElementsByClass("govuk-summary-list__key").get(1) must containMessage("declaration.seal.summary.heading")
+      view.getElementsByClass(summaryKeyClassName).get(0) must containMessage("declaration.transportInformation.containerId.title")
+      view.getElementsByClass(summaryKeyClassName).get(1) must containMessage("declaration.seal.summary.heading")
     }
 
     "display container and seal to remove" in {
-      view.getElementsByClass("govuk-summary-list__value").get(0).text() must include(containerId)
-      view.getElementsByClass("govuk-summary-list__value").get(1).text() must include(sealId)
+      view.getElementsByClass(summaryValueClassName).get(0).text() must include(containerId)
+      view.getElementsByClass(summaryValueClassName).get(1).text() must include(sealId)
     }
 
     "display 'Back' button that links to 'container summary' page" in {

@@ -35,8 +35,8 @@ case class Parties(
   declarantDetails: Option[DeclarantDetails] = None,
   declarantIsExporter: Option[DeclarantIsExporter] = None,
   representativeDetails: Option[RepresentativeDetails] = None,
-  declarationAdditionalActorsData: Option[DeclarationAdditionalActorsData] = None,
-  declarationHoldersData: Option[DeclarationHoldersData] = None,
+  declarationAdditionalActorsData: Option[AdditionalActors] = None,
+  declarationHoldersData: Option[AuthorisationHolders] = None,
   authorisationProcedureCodeChoice: Option[AuthorisationProcedureCodeChoice] = None,
   carrierDetails: Option[CarrierDetails] = None,
   isEntryIntoDeclarantsRecords: Option[YesNoAnswer] = None,
@@ -64,12 +64,12 @@ case class Parties(
       createDiffOfOptionIsos(
         original.declarationHoldersData,
         declarationHoldersData,
-        combinePointers(pointerString, DeclarationHoldersData.pointer, sequenceId)
+        combinePointers(pointerString, AuthorisationHolders.pointer, sequenceId)
       ) ++
       createDiffOfOptionIsos(
         original.declarationAdditionalActorsData,
         declarationAdditionalActorsData,
-        combinePointers(pointerString, DeclarationAdditionalActorsData.pointer, sequenceId)
+        combinePointers(pointerString, AdditionalActors.pointer, sequenceId)
       ) ++
       createDiffOfOptions(original.carrierDetails, carrierDetails, combinePointers(pointerString, CarrierDetails.pointer, sequenceId)) ++
       createDiffOfOptions(

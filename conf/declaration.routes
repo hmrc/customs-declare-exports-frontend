@@ -173,25 +173,25 @@ GET         /authorisation-choice                controllers.declaration.Authori
 
 POST        /authorisation-choice                controllers.declaration.AuthorisationProcedureCodeChoiceController.submitForm
 
-GET         /is-authorisation-required           controllers.declaration.DeclarationHolderRequiredController.displayPage
+GET         /is-authorisation-required           controllers.declaration.AuthorisationHolderRequiredController.displayPage
 
-POST        /is-authorisation-required           controllers.declaration.DeclarationHolderRequiredController.submitForm
+POST        /is-authorisation-required           controllers.declaration.AuthorisationHolderRequiredController.submitForm
 
-GET         /add-authorisation-required          controllers.declaration.DeclarationHolderAddController.displayPage
+GET         /add-authorisation-required          controllers.declaration.AuthorisationHolderAddController.displayPage
 
-POST        /add-authorisation-required          controllers.declaration.DeclarationHolderAddController.submitForm
+POST        /add-authorisation-required          controllers.declaration.AuthorisationHolderAddController.submitForm
 
-GET         /authorisations-required             controllers.declaration.DeclarationHolderSummaryController.displayPage
+GET         /authorisations-required             controllers.declaration.AuthorisationHolderSummaryController.displayPage
 
-POST        /authorisations-required             controllers.declaration.DeclarationHolderSummaryController.submitForm
+POST        /authorisations-required             controllers.declaration.AuthorisationHolderSummaryController.submitForm
 
-GET         /authorisations-required/:id/change  controllers.declaration.DeclarationHolderChangeController.displayPage(id: String)
+GET         /authorisations-required/:id/change  controllers.declaration.AuthorisationHolderChangeController.displayPage(id: String)
 
-POST        /authorisations-required/:id/change  controllers.declaration.DeclarationHolderChangeController.submitForm(id: String)
+POST        /authorisations-required/:id/change  controllers.declaration.AuthorisationHolderChangeController.submitForm(id: String)
 
-GET         /authorisations-required/:id/remove  controllers.declaration.DeclarationHolderRemoveController.displayPage(id: String)
+GET         /authorisations-required/:id/remove  controllers.declaration.AuthorisationHolderRemoveController.displayPage(id: String)
 
-POST        /authorisations-required/:id/remove  controllers.declaration.DeclarationHolderRemoveController.submitForm(id: String)
+POST        /authorisations-required/:id/remove  controllers.declaration.AuthorisationHolderRemoveController.submitForm(id: String)
 
 # Destination country
 

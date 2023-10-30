@@ -23,12 +23,13 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF
 @import views.helpers.{BackButton, DepartureTransportHelper}
 @import views.helpers.ErrorMapper.radioGroupErrors
-@import views.html.components.gds.{errorSummary, gdsMainTemplate, sectionHeader, saveButtons, tariffExpander}
+@import views.html.components.gds._
 
 @this(
     departureTransportHelper: DepartureTransportHelper,
     govukLayout: gdsMainTemplate,
     errorSummary: errorSummary,
+    heading: heading,
     sectionHeader: sectionHeader,
     saveButtons: saveButtons,
     tariffExpander: tariffExpander,
@@ -47,8 +48,9 @@
         @errorSummary(radioGroupErrors(radioButtonGroupId, departureTransportHelper.transportCodes.code1.id, form.errors))
 
         @sectionHeader(messages("declaration.section.6"))
-
+        <fieldset class="govuk-fieldset" @if(form.hasErrors) { aria-describedby="departureTransportType-error" }>
         @departureTransportHelper.dynamicContent(form)
+        </fieldset>
 
         @tariffExpander(DepartureTransport, request.declarationType)(messages, appConfig)
 

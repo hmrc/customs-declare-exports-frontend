@@ -20,8 +20,8 @@ import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
-import forms.declaration.DeclarationAdditionalActors
-import models.declaration.DeclarationAdditionalActorsData
+import forms.declaration.AdditionalActor
+import models.declaration.AdditionalActors
 import models.requests.JourneyRequest
 import models.ExportsDeclaration
 import play.api.data.Form
@@ -75,14 +75,12 @@ class AdditionalActorsRemoveController @Inject() (
 
   private def removeYesNoForm: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.additionalActors.remove.empty")
 
-  private def findActor(id: String)(implicit request: JourneyRequest[AnyContent]): Option[DeclarationAdditionalActors] =
+  private def findActor(id: String)(implicit request: JourneyRequest[AnyContent]): Option[AdditionalActor] =
     ListItem.findById(id, request.cacheModel.parties.declarationAdditionalActorsData.map(_.actors).getOrElse(Seq.empty))
 
-  private def updateExportsCache(
-    itemToRemove: DeclarationAdditionalActors
-  )(implicit request: JourneyRequest[AnyContent]): Future[ExportsDeclaration] = {
+  private def updateExportsCache(itemToRemove: AdditionalActor)(implicit request: JourneyRequest[AnyContent]): Future[ExportsDeclaration] = {
     val updatedActors = request.cacheModel.parties.declarationAdditionalActorsData.map(_.actors).getOrElse(Seq.empty).filterNot(_ == itemToRemove)
-    val updatedParties = request.cacheModel.parties.copy(declarationAdditionalActorsData = Some(DeclarationAdditionalActorsData(updatedActors)))
+    val updatedParties = request.cacheModel.parties.copy(declarationAdditionalActorsData = Some(AdditionalActors(updatedActors)))
     updateDeclarationFromRequest(model => model.copy(parties = updatedParties))
   }
 }

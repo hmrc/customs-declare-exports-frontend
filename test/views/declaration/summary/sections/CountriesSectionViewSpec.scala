@@ -34,7 +34,7 @@ class CountriesSectionViewSpec extends UnitViewSpec with ExportsTestHelper with 
   "Countries section" should {
 
     "display 'None' when empty routing countries" in {
-      val data = aDeclaration(withRoutingQuestion(false), withoutRoutingCountries())
+      val data = aDeclaration(withRoutingQuestion(false), withoutRoutingCountries)
 
       val row = view(data).getElementsByClass("countriesOfRouting-row")
       row must haveSummaryKey(messages("declaration.summary.countries.routingCountries"))
@@ -78,11 +78,11 @@ class CountriesSectionViewSpec extends UnitViewSpec with ExportsTestHelper with 
     }
 
     "not have routing country section when question not answered" in {
-      view(aDeclaration(withoutRoutingQuestion())).getElementsByClass("countriesOfRouting-row") mustBe empty
+      view(aDeclaration(withoutRoutingQuestion)).getElementsByClass("countriesOfRouting-row") mustBe empty
     }
 
     "not display empty country of destination when question not asked" in {
-      view(aDeclaration(withoutDestinationCountry())).getElementsByClass("countryOfDestination-row") mustBe empty
+      view(aDeclaration(withoutDestinationCountry)).getElementsByClass("countryOfDestination-row") mustBe empty
     }
 
     "display country of destination" in {

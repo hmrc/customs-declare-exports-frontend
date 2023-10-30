@@ -19,10 +19,11 @@ package views.declaration.spec
 import base.{Injector, JourneyTypeTestRunner, UnitWithMocksSpec}
 import mock.FeatureFlagMocks
 import org.jsoup.nodes.Document
+import org.jsoup.select.Elements
 import org.scalatest.matchers.{BeMatcher, MatchResult}
 import org.scalatest.{Assertion, OptionValues}
 import play.api.i18n.{Lang, Messages, MessagesApi}
-import play.api.mvc.Request
+import play.api.mvc.{Call, Request}
 import services.cache.ExportsTestHelper
 import tools.Stubs
 import views.helpers.CommonMessages
@@ -31,6 +32,7 @@ trait UnitViewSpec
     extends UnitWithMocksSpec with CommonMessages with FeatureFlagMocks with JourneyTypeTestRunner with OptionValues with Stubs with ViewMatchers {
 
   val itemId = "item1"
+  val sequenceId = "1"
 
   implicit val request = journeyRequest()
 
@@ -61,6 +63,18 @@ trait UnitViewSpec
   def checkAllSaveButtonsAreDisplayed(view: Document): Unit = {
     checkSaveAndContinueButtonIsDisplayed(view)
     checkExitAndReturnLinkIsDisplayed(view)
+  }
+
+  def checkSummaryRow(row: Elements, labelKey: String, value: String, maybeUrl: Option[Call] = None, hint: String = ""): Assertion = {
+    row must haveSummaryKey(messages(s"declaration.summary.$labelKey"))
+    row must haveSummaryValue(value)
+    maybeUrl.fold {
+      val action = row.get(0).getElementsByClass(summaryActionsClassName)
+      if (hint.isEmpty) action.size mustBe 0 else action.text mustBe ""
+    } { url =>
+      row must haveSummaryActionsTexts("site.change", s"declaration.summary.$hint.change", sequenceId)
+      row must haveSummaryActionWithPlaceholder(url)
+    }
   }
 }
 

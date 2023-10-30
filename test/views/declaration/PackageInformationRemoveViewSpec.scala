@@ -50,9 +50,9 @@ class PackageInformationRemoveViewSpec extends PageWithButtonsSpec with Injector
     "display PackageInformation to remove" in {
       val packageTypesService = instanceOf[PackageTypesService]
       val expectedText = packageTypesService.typesOfPackagesText(packageInformation.typesOfPackages).get
-      view.getElementsByClass("govuk-summary-list__value").get(0).text() mustBe expectedText
-      view.getElementsByClass("govuk-summary-list__value").get(1).text() mustBe packageInformation.numberOfPackages.get.toString
-      view.getElementsByClass("govuk-summary-list__value").get(2).text() mustBe packageInformation.shippingMarks.get
+      view.getElementsByClass(summaryValueClassName).get(0).text() mustBe expectedText
+      view.getElementsByClass(summaryValueClassName).get(1).text() mustBe packageInformation.numberOfPackages.get.toString
+      view.getElementsByClass(summaryValueClassName).get(2).text() mustBe packageInformation.shippingMarks.get
     }
 
     "display 'Back' button that links to 'PackageInformation summary' page" in {
