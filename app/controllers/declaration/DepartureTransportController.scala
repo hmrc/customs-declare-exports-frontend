@@ -17,13 +17,13 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.declaration.routes.{BorderTransportController, ExpressConsignmentController, TransportCountryController}
+import controllers.declaration.routes._
 import controllers.helpers.TransportSectionHelper.{isGuernseyOrJerseyDestination, isPostalOrFTIModeOfTransport}
 import controllers.navigation.Navigator
 import forms.declaration.DepartureTransport
 import forms.declaration.DepartureTransport.form
 import forms.declaration.InlandOrBorder.Border
-import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED}
+import models.DeclarationType._
 import models.ExportsDeclaration
 import models.requests.JourneyRequest
 import play.api.i18n.I18nSupport
@@ -79,8 +79,8 @@ class DepartureTransportController @Inject() (
   private def nextPage(implicit request: JourneyRequest[AnyContent]): Result =
     navigator.continueTo {
       if (request.declarationType == CLEARANCE) ExpressConsignmentController.displayPage
-      else if (request.cacheModel.isInlandOrBorder(Border) || (isSimplifiedOrOccasional && !isPostalOrFTI)) BorderTransportController.displayPage
-      else TransportCountryController.displayPage
+      else if (request.cacheModel.isInlandOrBorder(Border) || (isSimplifiedOrOccasional && !isPostalOrFTI)) TransportCountryController.displayPage
+      else BorderTransportController.displayPage
     }
 
   private def updateCache(formData: DepartureTransport)(implicit request: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =

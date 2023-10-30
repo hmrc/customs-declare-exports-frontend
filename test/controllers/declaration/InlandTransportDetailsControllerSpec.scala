@@ -207,7 +207,7 @@ class InlandTransportDetailsControllerSpec extends ControllerSpec with GivenWhen
     "Inland Transport Details Controller on POST" should {
 
       nonPostalOrFTIModeOfTransportCodes.foreach { transportMode =>
-        val expectedRedirect = TransportCountryController.displayPage
+        val expectedRedirect = BorderTransportController.displayPage
 
         s"redirect to ${expectedRedirect.url}" when {
           s"transportMode '$transportMode' is selected" in {
@@ -223,7 +223,7 @@ class InlandTransportDetailsControllerSpec extends ControllerSpec with GivenWhen
       }
 
       postalOrFTIModeOfTransportCodes.foreach { transportMode =>
-        val expectedRedirect = BorderTransportController.displayPage
+        val expectedRedirect = TransportCountryController.displayPage
 
         s"redirect to ${expectedRedirect.url}" when {
           s"transportMode '$transportMode' is selected" in {
