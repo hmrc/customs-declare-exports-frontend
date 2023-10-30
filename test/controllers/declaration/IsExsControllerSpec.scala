@@ -71,7 +71,7 @@ class IsExsControllerSpec extends ControllerSpec with ScalaFutures {
     "return 200 (OK)" when {
 
       "display page method is invoked without data in cache" in {
-        withNewCaching(aDeclaration(withType(DeclarationType.CLEARANCE), withoutIsExs()))
+        withNewCaching(aDeclaration(withType(DeclarationType.CLEARANCE), withoutIsExs))
 
         val result = controller.displayPage(getRequest())
 

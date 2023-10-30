@@ -366,12 +366,12 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
       view.getElementsByClass("declaration-details-refs").get(0).text mustBe messages(s"$msgKey.references")
 
       val ducr = view.getElementsByClass("submission-ducr").get(0)
-      ducr.getElementsByClass("govuk-summary-list__key").text mustBe messages(s"$msgKey.ducr")
-      ducr.getElementsByClass("govuk-summary-list__value").text mustBe submission.ducr.get
+      ducr.getElementsByClass(summaryKeyClassName).text mustBe messages(s"$msgKey.ducr")
+      ducr.getElementsByClass(summaryValueClassName).text mustBe submission.ducr.get
 
       val lrn = view.getElementsByClass("submission-lrn").get(0)
-      lrn.getElementsByClass("govuk-summary-list__key").text mustBe messages(s"$msgKey.lrn")
-      lrn.getElementsByClass("govuk-summary-list__value").text mustBe submission.lrn
+      lrn.getElementsByClass(summaryKeyClassName).text mustBe messages(s"$msgKey.lrn")
+      lrn.getElementsByClass(summaryValueClassName).text mustBe submission.lrn
     }
 
     "contain the uploading-documents link" when {

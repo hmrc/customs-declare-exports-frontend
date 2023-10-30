@@ -27,6 +27,8 @@
   emptySelectValue: String,
   items: List[AutoCompleteItem],
   isPageHeading: Boolean,
+  isSubHeading: Boolean = false,
+  subHeadingClasses: String = "govuk-heading-m", 
   args: List[(Symbol, Any)] = List.empty,
   rightElement: Option[Html] = None
 )(implicit request: Request[_], messages: Messages)
@@ -58,7 +60,9 @@ To avoid problems, we need to remove [] from field.
 
     @if(isPageHeading) {<h1 class="govuk-label-wrapper">}
     <label id="@(fieldNameWithoutBrackets)-label" for="@fieldNameWithoutBrackets" class="govuk-label@if(labelClass.nonEmpty){ @labelClass}" >
-        @label
+        @if(isSubHeading) {<h2 class="@{s"govuk-heading $subHeadingClasses"}">}
+            @label
+        @if(isSubHeading) {</h2>}
     </label>
     @if(isPageHeading) {</h1>}
 

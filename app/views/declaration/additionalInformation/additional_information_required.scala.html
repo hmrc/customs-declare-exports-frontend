@@ -51,7 +51,10 @@
 
         @sectionHeader(messages("declaration.section.5"))
 
-        @heading(messages("declaration.additionalInformationRequired.title"), Styles.gdsPageLegend)
+        <fieldset class="govuk-fieldset" @if(form.hasErrors) { aria-describedby="yesNo-error" }>
+            <legend class="govuk-fieldset__legend govuk-!-margin-bottom-0">
+                @heading(messages("declaration.additionalInformationRequired.title"), Styles.gdsPageLegend)
+            </legend>
 
         @additionalInformationRequiredHelper.getBodyContent(request.declarationType, maybeProcedureCode)
 
@@ -59,6 +62,7 @@
               form,
               inline = true
         )
+        </fieldset>
 
         @tariffExpander(AdditionalInformationRequired, request.declarationType)(messages, appConfig)
 

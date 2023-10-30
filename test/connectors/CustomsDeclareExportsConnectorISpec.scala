@@ -47,7 +47,7 @@ import java.util.UUID
 class CustomsDeclareExportsConnectorISpec extends ConnectorISpec with ExportsDeclarationBuilder with ScalaFutures with FeatureFlagMocks {
 
   private val id = "id"
-  private val existingDeclaration = aDeclaration(withId(id))
+  private val existingDeclaration = aDeclaration(withId(id), withParentDeclarationId("123456789"))
 
   private val action = Action(id = UUID.randomUUID().toString, requestType = SubmissionRequest, notifications = None, decId = Some(id), versionNo = 1)
   private val submission = Submission(id, "eori", "lrn", Some("mrn"), None, None, None, Seq(action), latestDecId = Some(id))
@@ -218,6 +218,26 @@ class CustomsDeclareExportsConnectorISpec extends ConnectorISpec with ExportsDec
 
       response mustBe Paginated(Seq(existingDeclaration), pagination, 1)
       WireMock.verify(getRequestedFor(urlEqualTo("/declarations?page-index=1&page-size=10")))
+    }
+  }
+
+  "FindDraftByParent method" should {
+    val parentId = existingDeclaration.declarationMeta.parentDeclarationId.getOrElse("")
+
+    "return Ok" in {
+      stubForExports(
+        get(s"/draft-declarations-by-parent/${parentId}")
+          .willReturn(
+            aResponse()
+              .withStatus(Status.OK)
+              .withBody(json(existingDeclaration))
+          )
+      )
+
+      val response = await(connector.findDraftByParent(parentId))
+
+      response mustBe Some(existingDeclaration)
+      WireMock.verify(getRequestedFor(urlEqualTo(s"/draft-declarations-by-parent/${parentId}")))
     }
   }
 

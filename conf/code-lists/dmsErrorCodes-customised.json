@@ -808,5 +808,15 @@
     "code": "CDS77005",
     "en": "The Y series document code used requires a document reason. Check appendix 5A for the information required",
     "cy": "Mae cod dogfen cyfres Y a ddefnyddiwyd yn gofyn am reswm dros y ddogfen. Gwiriwch atodiad 5A am yr wybodaeth sydd ei hangen"
+  },
+  {
+    "code": "CDS12062",
+    "en": "DUCR previously used within the last 12 months",
+    "cy": "DUCR a ddefnyddiwyd yn flaenorol yn y 12 mis diwethaf"
+  },
+  {
+    "code": "CDS13000",
+    "en": "Credibility check: incredible value found",
+    "cy": "Gwiriad hygrededd: wedi dod o hyd i werth sy\u2019n anodd i\u2019w gredu"
   }
 ]

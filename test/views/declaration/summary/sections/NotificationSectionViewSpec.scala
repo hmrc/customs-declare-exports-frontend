@@ -39,7 +39,7 @@ class NotificationSectionViewSpec extends UnitViewSpec with ExportsTestHelper wi
   "Notification Section view" should {
 
     "contain the expected MRN and notification rows" in {
-      view.getElementsByClass("govuk-summary-list__row").size mustBe 4
+      view.getElementsByClass(summaryRowClassName).size mustBe 4
 
       val row0 = view.getElementsByClass("mrn-row")
       row0 must haveSummaryKey(messages("declaration.summary.accepted.mrn"))
@@ -63,7 +63,7 @@ class NotificationSectionViewSpec extends UnitViewSpec with ExportsTestHelper wi
 
     "NOT contain any notification row" in {
       val view = section(submissionWithoutNotificationSummaries)(messages)
-      view.getElementsByClass("govuk-summary-list__row").size mustBe 1
+      view.getElementsByClass(summaryRowClassName).size mustBe 1
 
       val row0 = view.getElementsByClass("mrn-row")
       row0 must haveSummaryKey(messages("declaration.summary.accepted.mrn"))

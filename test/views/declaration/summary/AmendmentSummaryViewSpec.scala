@@ -16,6 +16,7 @@
 
 package views.declaration.summary
 
+import controllers.routes.DeclarationDetailsController
 import models.ExportsDeclaration
 import models.declaration.DeclarationStatus.AMENDMENT_DRAFT
 import org.jsoup.nodes.Document
@@ -25,13 +26,13 @@ class AmendmentSummaryViewSpec extends SummaryViewSpec {
 
   private val amendmentSummaryPage = instanceOf[amendment_summary]
 
-  private val dec = aDeclaration(withStatus(AMENDMENT_DRAFT), withConsignmentReferences("ducr", "lrn"))
+  private val submissionId = "submissionId"
+  private val declaration = aDeclaration(withStatus(AMENDMENT_DRAFT), withConsignmentReferences("ducr", "lrn"))
 
-  def view(declaration: ExportsDeclaration = dec): Document =
-    amendmentSummaryPage()(journeyRequest(declaration), messages, minimalAppConfig)
+  def view(declaration: ExportsDeclaration = declaration): Document =
+    amendmentSummaryPage(submissionId)(journeyRequest(declaration), messages, minimalAppConfig)
 
   "Summary page" should {
-
     val document = view()
 
     "have references section" in {
@@ -46,7 +47,7 @@ class AmendmentSummaryViewSpec extends SummaryViewSpec {
       val backButton = document.getElementById("back-link")
 
       backButton.text() mustBe messages("site.backToDeclarations")
-      backButton must haveHref(controllers.routes.SavedDeclarationsController.displayDeclarations().url)
+      backButton must haveHref(DeclarationDetailsController.displayPage(submissionId).url)
     }
 
     "warning text should be displayed" in {
@@ -59,14 +60,14 @@ class AmendmentSummaryViewSpec extends SummaryViewSpec {
         document
           .getElementsByClass("lrn-row")
           .first()
-          .getElementsByClass("govuk-summary-list__actions")
+          .getElementsByClass(summaryActionsClassName)
           .text() mustBe empty
       }
       "ducr" in {
         document
           .getElementsByClass("ducr-row")
           .first()
-          .getElementsByClass("govuk-summary-list__actions")
+          .getElementsByClass(summaryActionsClassName)
           .text() mustBe empty
       }
     }

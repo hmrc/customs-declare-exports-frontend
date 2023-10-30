@@ -17,6 +17,7 @@
 package forms.common
 
 import forms.MappingHelper.requiredRadio
+import forms.common.YesNoAnswer.YesNoAnswers.yes
 import forms.common.YesNoAnswer.{mappingsForAmendment, valueForYesNo}
 import models.{Amendment, ExportsDeclaration}
 import models.AmendmentRow.{forAddedValue, forAmendedValue, forRemovedValue}
@@ -28,6 +29,8 @@ import play.api.libs.json.Json
 import utils.validators.forms.FieldValidator.isContainedIn
 
 case class YesNoAnswer(answer: String) extends Ordered[YesNoAnswer] with Amendment {
+
+  def isYes: Boolean = answer == yes
 
   override def compare(that: YesNoAnswer): Int = answer.compare(that.answer)
 

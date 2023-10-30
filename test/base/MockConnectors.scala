@@ -60,6 +60,9 @@ trait MockConnectors {
   def fetchDeclaration(id: String): OngoingStubbing[Future[Option[ExportsDeclaration]]] =
     when(mockCustomsDeclareExportsConnector.findDeclaration(refEq(id))(any(), any())).thenReturn(Future.successful(Some(aDeclaration())))
 
+  def fetchDraftByParent(id: String): OngoingStubbing[Future[Option[ExportsDeclaration]]] =
+    when(mockCustomsDeclareExportsConnector.findDraftByParent(any())(any(), any())).thenReturn(Future.successful(Some(aDeclaration())))
+
   def fetchLatestNotification(notification: Notification): OngoingStubbing[Future[Option[Notification]]] =
     when(mockCustomsDeclareExportsConnector.findLatestNotification(refEq(notification.actionId))(any(), any()))
       .thenReturn(Future.successful(Some(notification)))

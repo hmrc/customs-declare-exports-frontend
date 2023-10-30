@@ -81,7 +81,7 @@ trait SummaryViewSpec extends UnitViewSpec with Injector with Stubs {
     }
 
     "have parties section" in {
-      view(aDeclaration(withExporterDetails())).getElementById("declaration-parties-summary").text mustNot be(empty)
+      view(aDeclaration(withExporterDetails())).getElementsByClass("parties-card").text mustNot be(empty)
     }
 
     "not have countries section" in {

@@ -62,7 +62,7 @@
     @components.fields.field_accessible_autocomplete(
         field = form("typesOfPackages"),
         label = messages("declaration.packageInformation.typesOfPackages.label"),
-        labelClass = Some("govuk-label--m"),
+        isSubHeading = true,
         bodyHtml = Some(paragraphBody(messages("declaration.packageInformation.typesOfPackages.paragraph"))),
         hintParagraphs = List(
             messages("declaration.packageInformation.typesOfPackages.hint.1")
@@ -75,7 +75,7 @@
     @exportsInputText(
         field = form("numberOfPackages"),
         labelKey = "declaration.packageInformation.numberOfPackages",
-        labelClasses = "govuk-label--m",
+        isSubHeading = true,
         hintKey = Some("declaration.packageInformation.numberOfPackages.hint"),
         inputClasses = Some("govuk-input--width-10")
     )
@@ -88,7 +88,7 @@
     @exportsInputText(
         field = form("shippingMarks"),
         labelKey = "declaration.packageInformation.shippingMark",
-        labelClasses = "govuk-label--m",
+        isSubHeading = true,
         bodyHtml = Some(paragraphBody(messages("declaration.packageInformation.shippingMark.paragraph"))),
         inputClasses = Some("govuk-input--width-20")
     )

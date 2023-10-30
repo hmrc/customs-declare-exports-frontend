@@ -18,6 +18,7 @@
 @import controllers.navigation.Navigator
 @import models.declaration.ExportItem
 @import models.requests.JourneyRequest
+@import models.DeclarationType.CLEARANCE
 @import play.twirl.api.HtmlFormat
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.helpers.{BackButton, Title}
@@ -38,29 +39,53 @@
 
 @()(implicit request: JourneyRequest[_], messages: Messages)
 
+@if(request.isType(CLEARANCE)) {
+  @govukLayout(
+    title = Title("declaration.clearance.itemsAdd.title", "declaration.section.5"),
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(ExportItem)))) {
 
-@govukLayout(
-  title = Title("declaration.itemsAdd.title", "declaration.section.5"),
-  backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(ExportItem)))) {
+    @formHelper(action = routes.ItemsSummaryController.addFirstItem, 'autoComplete -> "off") {
 
-  @formHelper(action = routes.ItemsSummaryController.addFirstItem, 'autoComplete -> "off") {
+      @sectionHeader(messages("declaration.section.5"))
+      @pageTitle(messages("declaration.clearance.itemsAdd.title"))
 
-    @sectionHeader(messages("declaration.section.5"))
-    @pageTitle(messages("declaration.itemsAdd.title"))
+      @paragraphBody(messages("declaration.clearance.itemsAdd.paragraph.1"))
+      @paragraphBody(messages("declaration.clearance.itemsAdd.paragraph.2"))
 
-    @paragraphBody(messages("declaration.itemsAdd.paragraph.1"))
-    @paragraphBody(messages("declaration.itemsAdd.paragraph.2"))
-    @paragraphBody(messages("declaration.itemsAdd.paragraph.3"))
-
-    @addButton(
+      @addButton(
         label = "site.add.item",
         hiddenLabel = Some(messages("site.add.item")),
         classes = "govuk-button--primary"
-    )
+      )
 
-    <p class="govuk-body">
+      <p class="govuk-body">
         @exitAndCompleteLater()
-    </p>
+      </p>
+    }
+  }
+} else {
+  @govukLayout(
+    title = Title("declaration.itemsAdd.title", "declaration.section.5"),
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(ExportItem)))) {
 
+    @formHelper(action = routes.ItemsSummaryController.addFirstItem, 'autoComplete -> "off") {
+
+      @sectionHeader(messages("declaration.section.5"))
+      @pageTitle(messages("declaration.itemsAdd.title"))
+
+      @paragraphBody(messages("declaration.itemsAdd.paragraph.1"))
+      @paragraphBody(messages("declaration.itemsAdd.paragraph.2"))
+      @paragraphBody(messages("declaration.itemsAdd.paragraph.3"))
+
+      @addButton(
+        label = "site.add.item",
+        hiddenLabel = Some(messages("site.add.item")),
+        classes = "govuk-button--primary"
+      )
+
+      <p class="govuk-body">
+        @exitAndCompleteLater()
+      </p>
+    }
   }
 }

@@ -20,7 +20,7 @@ import base.Injector
 import controllers.declaration.routes.ConsigneeDetailsController
 import forms.common.Eori
 import forms.common.YesNoAnswer.form
-import forms.declaration.DeclarationAdditionalActors
+import forms.declaration.AdditionalActor
 import models.DeclarationType.{OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
@@ -31,14 +31,14 @@ import views.tags.ViewTest
 @ViewTest
 class AdditionalActorsSummaryViewSpec extends PageWithButtonsSpec with Injector {
 
-  val additionalActor1 = DeclarationAdditionalActors(Some(Eori("GB56523343784324")), Some("CS"))
-  val additionalActor2 = DeclarationAdditionalActors(Some(Eori("GB56523399999999")), Some("MF"))
+  val additionalActor1 = AdditionalActor(Some(Eori("GB56523343784324")), Some("CS"))
+  val additionalActor2 = AdditionalActor(Some(Eori("GB56523399999999")), Some("MF"))
 
   val page = instanceOf[additional_actors_summary]
 
   override val typeAndViewInstance = (STANDARD, page(form(), Seq.empty)(_, _))
 
-  def createView(actors: Seq[DeclarationAdditionalActors] = Seq.empty)(implicit request: JourneyRequest[_]): Document =
+  def createView(actors: Seq[AdditionalActor] = Seq.empty)(implicit request: JourneyRequest[_]): Document =
     page(form(), actors)
 
   "AdditionalActors Summary View on empty page" should {
@@ -76,7 +76,7 @@ class AdditionalActorsSummaryViewSpec extends PageWithButtonsSpec with Injector 
     }
   }
 
-  "DeclarationHolder Summary View when filled" should {
+  "AdditionalActors Summary View when filled" should {
     onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { implicit request =>
       "display one row with data in table" in {
         val view = createView(Seq(additionalActor1))

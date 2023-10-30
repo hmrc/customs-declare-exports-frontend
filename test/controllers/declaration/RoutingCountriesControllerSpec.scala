@@ -99,7 +99,7 @@ class RoutingCountriesControllerSpec extends ControllerSpec with GivenWhenThen {
     "return 200 (OK) and display page" when {
 
       "user doesn't have any countries in cache" in {
-        withNewCaching(aDeclaration(withRoutingQuestion(false), withoutRoutingCountries()))
+        withNewCaching(aDeclaration(withRoutingQuestion(false), withoutRoutingCountries))
 
         val result = controller.displayRoutingQuestion()(getRequest())
 
@@ -108,7 +108,7 @@ class RoutingCountriesControllerSpec extends ControllerSpec with GivenWhenThen {
       }
 
       "user answer Yes on the Routing Question and try to get routing country page" in {
-        withNewCaching(aDeclaration(withRoutingQuestion(), withoutRoutingCountries()))
+        withNewCaching(aDeclaration(withRoutingQuestion(), withoutRoutingCountries))
 
         val result = controller.displayRoutingCountry()(getRequest())
 
@@ -202,7 +202,7 @@ class RoutingCountriesControllerSpec extends ControllerSpec with GivenWhenThen {
       "unauthorised for Routing Countries" when {
 
         "without Routing Question" in {
-          withNewCaching(aDeclaration(withoutRoutingQuestion()))
+          withNewCaching(aDeclaration(withoutRoutingQuestion))
 
           val result = controller.displayRoutingCountry()(getRequest())
 
@@ -303,7 +303,7 @@ class RoutingCountriesControllerSpec extends ControllerSpec with GivenWhenThen {
           }
 
           "there are no countries in list" in {
-            withNewCaching(aDeclaration(withoutRoutingQuestion()))
+            withNewCaching(aDeclaration(withoutRoutingQuestion))
 
             val correctForm = Seq("countryCode" -> "IE", saveAndContinueActionUrlEncoded)
 

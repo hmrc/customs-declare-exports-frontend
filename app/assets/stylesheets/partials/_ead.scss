@@ -45,6 +45,10 @@
   margin: 0px;
 }
 
+h3.ead-body {
+  display: inline;
+}
+
 .ead-heading {
   font-size: 21px;
   font-weight: bold;
@@ -54,6 +58,10 @@
 .ead-quantity-font {
   font-family: Arial, Helvetica, sans-serif;
   font-size: 17.3px;
+  margin-block-start: 1em;
+  margin-block-end: 1em;
+  margin-inline-start: 0px;
+  margin-inline-end: 0px;
 }
 
 .eadborder-row {
@@ -141,6 +149,10 @@
   }
   .ead-quantity-font {
     font-size: 16.3px;
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
   }
   .govuk-grid-column-one-half {
     width: 50%;

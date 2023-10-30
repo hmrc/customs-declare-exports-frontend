@@ -18,8 +18,8 @@ package services.view
 
 import config.featureFlags.MerchandiseInBagConfig
 import connectors.CodeListConnector
-import forms.declaration.declarationHolder.AuthorizationTypeCodes.codesFilteredFromView
-import forms.declaration.declarationHolder.DeclarationHolder
+import forms.declaration.authorisationHolder.AuthorizationTypeCodes.codesFilteredFromView
+import forms.declaration.authorisationHolder.AuthorisationHolder
 import models.codes.HolderOfAuthorisationCode
 
 import java.util.Locale
@@ -39,7 +39,7 @@ class HolderOfAuthorisationCodes @Inject() (codeListConnector: CodeListConnector
   def codeDescription(locale: Locale, code: String): String =
     codeListConnector.getHolderOfAuthorisationCodes(locale).get(code).fold("")(description)
 
-  def codeDescriptions(locale: Locale, holders: Seq[DeclarationHolder]): Seq[String] =
+  def codeDescriptions(locale: Locale, holders: Seq[AuthorisationHolder]): Seq[String] =
     holders.flatMap {
       _.authorisationTypeCode.map { code =>
         codeListConnector.getHolderOfAuthorisationCodes(locale).get(code).fold("")(description)

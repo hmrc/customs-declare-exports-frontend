@@ -29,6 +29,7 @@
     errorSummary: errorSummary,
     sectionHeader: sectionHeader,
     pageTitle: pageTitle,
+    heading: heading,
     paragraphBody: paragraphBody,
     exportsInputText: exportsInputText,
     characterCount: exportsInputCharacterCount,
@@ -60,7 +61,7 @@
             name = CancelDeclarationDescription.changeReasonKey,
             fieldset = Some(Fieldset(
                 legend = Some(Legend(
-                    content = Text(messages("cancellation.changeReason")),
+                    content = HtmlContent(heading(messages("cancellation.changeReason"), classes = "govuk-heading govuk-heading-m govuk-!-margin-bottom-0", tier = "h2")),
                     classes = "govuk-fieldset__legend govuk-fieldset__legend--m"
                 ))
             )),

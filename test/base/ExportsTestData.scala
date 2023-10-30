@@ -18,7 +18,7 @@ package base
 
 import forms.declaration.LocationOfGoods
 import forms.declaration.ModeOfTransportCode.RoRo
-import forms.declaration.declarationHolder.AuthorizationTypeCodes.{CSE, EXRR}
+import forms.declaration.authorisationHolder.AuthorizationTypeCodes.{CSE, EXRR}
 import models.AuthKey.{enrolment, hashIdentifierKey, identifierKey}
 import models.codes.AdditionalProcedureCode.NO_APC_APPLIES_CODE
 import models.declaration.ProcedureCodesData.warehouseRequiredProcedureCodes
@@ -76,8 +76,8 @@ object ExportsTestData extends ExportsDeclarationBuilder with ExportsItemBuilder
   val nrsLoginTimes = LoginTimes(currentLoginTime, Some(previousLoginTime))
 
   val valuesRequiringToSkipInlandOrBorder = List(
-    withDeclarationHolders(Some(CSE)),
-    withDeclarationHolders(Some(EXRR)),
+    withAuthorisationHolders(Some(CSE)),
+    withAuthorisationHolders(Some(EXRR)),
     withBorderModeOfTransportCode(Some(RoRo)),
     withGoodsLocation(LocationOfGoods("GBAUCBRLHRXXD")) // GBAUCBRLHRXXD => DEP location code
   )

@@ -45,8 +45,14 @@ class DepartureTransportHelper @Inject() (
   paragraphBody: paragraphBody,
   exportsInputText: exportsInputText
 ) {
-  def dynamicContent(form: Form[_])(implicit messages: Messages, request: JourneyRequest[_]): Html =
-    HtmlFormat.fill(List(heading, bodyUnderHeading, insetText, radioButtons(form)))
+  def dynamicContent(form: Form[_])(implicit messages: Messages, request: JourneyRequest[_]): Html = {
+    val wrappedHeading: Html = Html(s"""
+         |<legend class="govuk-fieldset__legend govuk-!-margin-bottom-0">
+         |  $heading
+         |</legend>
+         |""".stripMargin)
+    HtmlFormat.fill(List(wrappedHeading, bodyUnderHeading, insetText, radioButtons(form)))
+  }
 
   def titleInHeadTag(hasErrors: Boolean)(implicit messages: Messages, request: JourneyRequest[_]): Title = {
     val (key, transportMode) = keyAndTransportModeForTitle
@@ -98,7 +104,7 @@ class DepartureTransportHelper @Inject() (
     implicit messages: Messages
   ): RadioItem =
     RadioItem(
-      id = Some(s"radio_${transportCode.id}"),
+      id = Some(transportCode.id),
       value = Some(transportCode.value),
       content = Text(messages(s"$prefix.${transportCode.id}${if (useAltRadioTextForV2) ".v2" else ""}")),
       conditionalHtml = if (transportCode != tcs.NotApplicable) inputField(transportCode, form) else None,

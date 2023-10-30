@@ -20,8 +20,8 @@ import base.{ControllerSpec, MockTaggedCodes}
 import forms.common.YesNoAnswer.Yes
 import forms.common.{Eori, YesNoAnswer}
 import forms.declaration.additionaldocuments.AdditionalDocument
-import forms.declaration.declarationHolder.AuthorizationTypeCodes.EXRR
-import forms.declaration.declarationHolder.DeclarationHolder
+import forms.declaration.authorisationHolder.AuthorizationTypeCodes.EXRR
+import forms.declaration.authorisationHolder.AuthorisationHolder
 import mock.ErrorHandlerMocks
 import models.declaration.EoriSource
 import models.requests.SessionHelper.errorFixModeSessionKey
@@ -117,8 +117,8 @@ class AdditionalDocumentsControllerSpec extends ControllerSpec with ErrorHandler
         }
 
         "the authorisation code requires additional documents" in {
-          val declarationHolder = DeclarationHolder(Some("OPO"), Some(Eori("GB123456789012")), Some(EoriSource.OtherEori))
-          withNewCaching(aDeclaration(withDeclarationHolders(declarationHolder)))
+          val authorisationHolder = AuthorisationHolder(Some("OPO"), Some(Eori("GB123456789012")), Some(EoriSource.OtherEori))
+          withNewCaching(aDeclaration(withAuthorisationHolders(authorisationHolder)))
 
           val result = controller.displayPage(itemId)(getRequest())
 
@@ -127,8 +127,8 @@ class AdditionalDocumentsControllerSpec extends ControllerSpec with ErrorHandler
         }
 
         "the authorisation code does not require additional documents and in error-fix mode" in {
-          val declarationHolder = DeclarationHolder(Some(EXRR), Some(Eori("GB123456789012")), Some(EoriSource.OtherEori))
-          withNewCaching(aDeclaration(withDeclarationHolders(declarationHolder)))
+          val authorisationHolder = AuthorisationHolder(Some(EXRR), Some(Eori("GB123456789012")), Some(EoriSource.OtherEori))
+          withNewCaching(aDeclaration(withAuthorisationHolders(authorisationHolder)))
 
           val request = getRequestWithSession(errorFixModeSessionKey -> "true")
           val result = controller.displayPage(itemId)(request)

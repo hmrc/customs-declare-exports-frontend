@@ -32,7 +32,9 @@
     bodyHtml: Option[Html] = None,
     labelClasses: String = "",
     defaultInputClasses: String = "govuk-!-width-two-thirds",
-    inputClasses: Option[String] = None
+    inputClasses: Option[String] = None,
+    isSubHeading: Boolean = false,
+    subHeadingClasses: String = "govuk-heading govuk-heading-m"
 )(implicit messages: Messages)
 
 @hintContent = @{
@@ -44,7 +46,7 @@
 @{ bodyHtml
     .map { body =>
         HtmlContent(HtmlFormat.fill(List(
-            label(labelKey = labelKey, forFieldName = field.id, labelArg = labelArg, labelClasses = labelClasses),
+            label(labelKey = labelKey, forFieldName = field.id, labelArg = labelArg, labelClasses = labelClasses, isSubHeading = isSubHeading, subHeadingClasses = subHeadingClasses),
             body,
             govukInput(Input(
                 id = field.id,
@@ -61,7 +63,7 @@
             id = field.id,
             name = field.name,
             value = field.value,
-            label = helper.getLabelForField(labelKey, labelArg, labelClasses),
+            label = helper.getLabelForField(labelKey, labelArg, labelClasses, isSubHeading),
             hint = hintContent,
             errorMessage = helper.getAnyErrorMessages(field),
             classes = helper.defineInputClasses(defaultInputClasses, inputClasses)

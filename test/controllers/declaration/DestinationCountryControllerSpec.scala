@@ -129,7 +129,7 @@ class DestinationCountryControllerSpec extends ControllerSpec with MockTaggedCod
 
       val redirectToOfficeOfExit: Unit =
         "redirect" in {
-          val holders = withDeclarationHolders(Some(taggedAuthCodes.codesSkippingLocationOfGoods.head))
+          val holders = withAuthorisationHolders(Some(taggedAuthCodes.codesSkippingLocationOfGoods.head))
           withNewCaching(aDeclaration(withAdditionalDeclarationType(SUPPLEMENTARY_EIDR), holders))
 
           val formData = Json.obj("countryCode" -> "PL")

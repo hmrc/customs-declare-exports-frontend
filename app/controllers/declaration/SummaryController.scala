@@ -67,21 +67,23 @@ class SummaryController @Inject() (
   }
 
   private def displayAmendmentSummaryPage(implicit request: JourneyRequest[_]): Future[Result] = {
-    val result = Ok(Html(amendment_summary().toString().replace(s"?$lastUrlPlaceholder", "")))
+    def result(submissionId: String): Result =
+      Ok(Html(amendment_summary(submissionId).toString().replace(s"?$lastUrlPlaceholder", "")))
+
     getValue(submissionUuid) match {
-      case None =>
+      case Some(submissionId) => Future.successful(result(submissionId))
+
+      case _ =>
         request.cacheModel.declarationMeta.parentDeclarationId.fold {
           val msg = s"Missing parentDeclarationId for 'AMENDMENT_DRAFT' declaration(${request.cacheModel.id})"
           errorHandler.internalError(msg)
         } { parentDecId =>
           connector.findSubmissionByLatestDecId(parentDecId) flatMap {
-            case Some(submission) => Future.successful(result.addingToSession(submissionUuid -> submission.uuid))
+            case Some(submission) => Future.successful(result(submission.uuid).addingToSession(submissionUuid -> submission.uuid))
             case _ =>
               errorHandler.internalError(s"Cannot associate submission to parentDecId: $parentDecId from declaration ${request.cacheModel.id}")
           }
         }
-
-      case _ => Future.successful(result)
     }
   }
 

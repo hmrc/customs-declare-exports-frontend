@@ -16,13 +16,14 @@
 
 @import config.AppConfig
 @import controllers.declaration.routes.SubmissionController
-@import controllers.routes.SavedDeclarationsController
+@import controllers.routes.DeclarationDetailsController
 @import models.declaration.submissions.EnhancedStatus.ERRORS
 @import models.requests.JourneyRequest
 @import views.helpers.{BackButton, Title}
-@import views.html.components.gds._
+@import views.helpers.summary._
+@import views.html.components.gds.{gdsMainTemplate, linkButton, pageTitle, paragraphBody}
 @import views.html.declaration.summary.sections._
-@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.govukfrontend.views.html.components.{GovukWarningText, Text, WarningText}
 
 @this(
     govukLayout: gdsMainTemplate,
@@ -30,7 +31,7 @@
     pageTitle: pageTitle,
     references_section: references_section,
     countries_section: countries_section,
-    parties_section: parties_section,
+    cardForParties: CardForParties,
     locations_section: locations_section,
     transaction_section: transaction_section,
     items_section: items_section,
@@ -39,7 +40,7 @@
     paragraphBody: paragraphBody
 )
 
-@()(implicit request: JourneyRequest[_], messages: Messages, appConfig: AppConfig)
+@(submissionId: String)(implicit request: JourneyRequest[_], messages: Messages, appConfig: AppConfig)
 
 @draftBodyText = @{
     if (request.cacheModel.declarationMeta.readyForSubmission != Some(true))
@@ -48,11 +49,10 @@
 
 @govukLayout(
     title = Title("declaration.summary.amendment-draft-header"),
-    backButton = Some(BackButton(messages("site.backToDeclarations"), SavedDeclarationsController.displayDeclarations())),
+    backButton = Some(BackButton(messages("site.backToDeclarations"), DeclarationDetailsController.displayPage(submissionId))),
     useCustomContentWidth = true,
     showDeclarationSummaryLink = false
 ) {
-
     @pageTitle(messages("declaration.summary.amendment-draft-header"))
 
     @govukWarningText(WarningText(
@@ -62,7 +62,7 @@
 
     @references_section(request.cacheModel)
 
-    @parties_section(request.cacheModel)
+    @cardForParties.eval(request.cacheModel, true)
 
     @countries_section(request.cacheModel)
 
@@ -74,7 +74,7 @@
 
     @transport_section(request.cacheModel)
 
-    <div class="govuk-button-group">
+    <div class="govuk-button-group govuk-!-margin-top-9">
         @linkButton("site.confirm_and_continue", SubmissionController.displaySubmitAmendmentPage)
     </div>
 

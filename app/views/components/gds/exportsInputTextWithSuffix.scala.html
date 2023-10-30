@@ -27,7 +27,9 @@
     suffixKey: String,
     hintKey: Option[String] = None,
     tooltipKey: Option[String] = None,
-    sectionHeaderKey: Option[String] = None
+    sectionHeaderKey: Option[String] = None,
+    isSubHeading: Boolean = false,
+    subHeadingClasses: String = "govuk-heading-m", 
 )(implicit messages: Messages)
 
 @groupClasses = @{
@@ -42,7 +44,12 @@
 
 <div class="@groupClasses" >
     <label class="@{s"govuk-label $labelClass"}" for=@field.id>
-        @messages(labelKey)
+        @if(isSubHeading) {
+            <h2 class="@{s"govuk-heading $subHeadingClasses"}">@messages(labelKey)</h2>
+        } else {
+            @messages(labelKey)
+        }
+        
     </label>
 
     @govukInput(Input(

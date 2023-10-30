@@ -18,7 +18,7 @@ package views.declaration.summary.sections
 
 import base.Injector
 import controllers.declaration.routes._
-import forms.declaration.Document
+import forms.declaration.{Document, PreviousDocumentsData}
 import services.cache.ExportsTestHelper
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.summary.sections.transaction_section
@@ -43,56 +43,46 @@ class TransactionSectionViewSpec extends UnitViewSpec with ExportsTestHelper wit
     withPreviousDocuments()
   )
 
-  val section = instanceOf[transaction_section]
+  val transactionSection = instanceOf[transaction_section]
 
   "Transaction section" should {
-
-    val view = section(data)(messages)
+    val view = transactionSection(data)(messages)
 
     "have total amount invoiced with change button" in {
       val row = view.getElementsByClass("item-amount-row")
-
       row must haveSummaryKey(messages("declaration.summary.transaction.itemAmount"))
       row must haveSummaryValue("GBP 123")
-
       row must haveSummaryActionsTexts("site.change", "declaration.summary.transaction.itemAmount.change")
       row must haveSummaryActionWithPlaceholder(InvoiceAndExchangeRateController.displayPage)
     }
 
     "have exchange rate with change button" in {
       val row = view.getElementsByClass("exchange-rate-row")
-
       row must haveSummaryKey(messages("declaration.summary.transaction.exchangeRate"))
       row must haveSummaryValue("1.23")
-
       row must haveSummaryActionsTexts("site.change", "declaration.summary.transaction.exchangeRate.change")
       row must haveSummaryActionWithPlaceholder(InvoiceAndExchangeRateController.displayPage)
     }
 
     "have total package with change button" in {
       val row = view.getElementsByClass("total-no-of-packages-row")
-
       row must haveSummaryKey(messages("declaration.summary.transaction.totalNoOfPackages"))
       row must haveSummaryValue("12")
-
       row must haveSummaryActionsTexts("site.change", "declaration.summary.transaction.totalNoOfPackages.change")
       row must haveSummaryActionWithPlaceholder(TotalPackageQuantityController.displayPage)
     }
 
     "have nature of transaction with change button" in {
       val row = view.getElementsByClass("nature-of-transaction-row")
-
       row must haveSummaryKey(messages("declaration.summary.transaction.natureOfTransaction"))
       row must haveSummaryValue(messages("declaration.summary.transaction.natureOfTransaction.2"))
-
       row must haveSummaryActionsTexts("site.change", "declaration.summary.transaction.natureOfTransaction.change")
       row must haveSummaryActionWithPlaceholder(NatureOfTransactionController.displayPage)
     }
 
     "have related documents section" which {
-
       val summaryList = view.getElementsByClass("previous-documents-summary").first
-      val summaryListRows = summaryList.getElementsByClass("govuk-summary-list__row")
+      val summaryListRows = summaryList.getElementsByClass(summaryRowClassName)
 
       "has all rows present" in {
         summaryListRows.size mustBe 5
@@ -105,11 +95,10 @@ class TransactionSectionViewSpec extends UnitViewSpec with ExportsTestHelper wit
 
       "contains an empty section" when {
         "no docs have been entered" in {
-
-          val view = section(aDeclarationAfter(data, withoutPreviousDocuments()))(messages)
+          val previousDocumentsData = withPreviousDocumentsData(Some(PreviousDocumentsData(Seq.empty)))
+          val view = transactionSection(aDeclarationAfter(data, previousDocumentsData))(messages)
 
           val row = view.getElementsByClass("previous-documents-summary")
-
           row must haveSummaryKey(messages("declaration.summary.transaction.previousDocuments"))
           row must haveSummaryValue(messages("site.none"))
           row must haveSummaryActionsTexts("site.change", "declaration.summary.transaction.previousDocuments.change")
@@ -129,6 +118,7 @@ class TransactionSectionViewSpec extends UnitViewSpec with ExportsTestHelper wit
           )
           doc1Type must haveSummaryActionWithPlaceholder(PreviousDocumentsSummaryController.displayPage)
         }
+
         "doc ref" in {
           val doc1Ref = summaryListRows.get(2).getElementsByClass(s"previous-documents-ref-1")
           doc1Ref must haveSummaryKey(messages("declaration.summary.transaction.previousDocuments.reference"))
@@ -139,39 +129,45 @@ class TransactionSectionViewSpec extends UnitViewSpec with ExportsTestHelper wit
     }
 
     "not display exchange rate when question not asked" in {
-      val view = section(aDeclarationAfter(data, withoutTotalNumberOfItems()))(messages)
+      val view = transactionSection(aDeclarationAfter(data, withoutTotalNumberOfItems))(messages)
       view.getElementsByClass("exchange-rate-row") mustBe empty
     }
 
     "not display total package when question not asked" in {
-      val view = section(aDeclarationAfter(data, withoutTotalPackageQuantity))(messages)
+      val view = transactionSection(aDeclarationAfter(data, withoutTotalPackageQuantity))(messages)
       view.getElementsByClass("total-no-of-packages-row") mustBe empty
     }
 
     "not display nature of transaction when question not asked" in {
-      val view = section(aDeclarationAfter(data, withoutNatureOfTransaction))(messages)
+      val view = transactionSection(aDeclarationAfter(data, withoutNatureOfTransaction))(messages)
       view.getElementsByClass("nature-of-transaction-row") mustBe empty
     }
 
     "not display related documents section when question not asked" in {
-      val view = section(aDeclarationAfter(data, withoutPreviousDocuments()))(messages)
+      val view = transactionSection(aDeclarationAfter(data, withoutPreviousDocuments))(messages)
       view.getElementsByClass("previous-documents-row") mustBe empty
     }
 
     "not display exchange rate row when no exchange rate given" in {
-      val view = section(aDeclarationAfter(dataWithNoExchangeRate))(messages)
+      val view = transactionSection(aDeclarationAfter(dataWithNoExchangeRate))(messages)
       view.getElementsByClass("exchange-rate-row") must be(empty)
     }
 
     "display 'Less than £100,000' when Yes answered on exchange rate choice page" in {
-      val view = section(aDeclaration(withTotalNumberOfItems()))(messages)
+      val view = transactionSection(aDeclaration(withTotalNumberOfItems()))(messages)
       view.getElementsByClass("item-amount-row") must haveSummaryValue(messages("declaration.totalAmountInvoiced.value.lessThan100000"))
     }
 
     "have link to exchange rate choice page when Yes answered on exchange rate choice page" in {
-      val view = section(aDeclaration(withTotalNumberOfItems()))(messages)
+      val view = transactionSection(aDeclaration(withTotalNumberOfItems()))(messages)
       view.getElementsByClass("item-amount-row") must haveSummaryActionWithPlaceholder(InvoiceAndExchangeRateChoiceController.displayPage)
     }
 
+    "NOT have change links" when {
+      "'actionsEnabled' is false" in {
+        val view = transactionSection(data, false)(messages)
+        view.getElementsByClass(summaryActionsClassName) mustBe empty
+      }
+    }
   }
 }

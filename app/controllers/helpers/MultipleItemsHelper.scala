@@ -17,6 +17,7 @@
 package controllers.helpers
 
 import forms.declaration.Seal
+import org.apache.commons.lang3.RandomStringUtils
 import play.api.data.{Form, FormError}
 
 /**
@@ -116,6 +117,8 @@ object MultipleItemsHelper {
     def append(sequence: Seq[A], maybeItem: Option[A]): Seq[A] = maybeItem.foldLeft(sequence)((seq, item) => seq :+ item)
     maybeA.foldLeft(sequence)((sequence, maybeItem) => append(sequence, maybeItem))
   }
+
+  def generateItemId(): String = RandomStringUtils.random(8, "0123456789abcdefg")
 }
 
 trait MultipleItemsDuplicateHandler[A] {
@@ -123,15 +126,14 @@ trait MultipleItemsDuplicateHandler[A] {
 }
 
 object MultipleItemsDuplicateHandler {
-  implicit val sealHandler: MultipleItemsDuplicateHandler[Seal] = new MultipleItemsDuplicateHandler[Seal] {
-    def duplication(document: Seal, cachedData: Seq[Seal], fieldId: String, messageKey: String): Seq[FormError] =
+
+  implicit val sealHandler: MultipleItemsDuplicateHandler[Seal] =
+    (document: Seal, cachedData: Seq[Seal], fieldId: String, messageKey: String) =>
       if (cachedData.map(_.id).contains(document.id)) Seq(FormError(fieldId, s"${messageKey}.error.duplicate"))
       else Seq.empty
-  }
 
-  implicit def defaultHandler[A]: MultipleItemsDuplicateHandler[A] = new MultipleItemsDuplicateHandler[A] {
-    def duplication(document: A, cachedData: Seq[A], fieldId: String, messageKey: String): Seq[FormError] =
+  implicit def defaultHandler[A]: MultipleItemsDuplicateHandler[A] =
+    (document: A, cachedData: Seq[A], fieldId: String, messageKey: String) =>
       if (cachedData.contains(document)) Seq(FormError(fieldId, s"${messageKey}.error.duplicate"))
       else Seq.empty
-  }
 }

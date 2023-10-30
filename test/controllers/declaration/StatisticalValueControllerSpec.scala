@@ -18,6 +18,7 @@ package controllers.declaration
 
 import base.ControllerSpec
 import controllers.declaration.routes.PackageInformationSummaryController
+import controllers.helpers.MultipleItemsHelper
 import controllers.routes.RootController
 import forms.declaration.StatisticalValue
 import mock.ErrorHandlerMocks
@@ -32,7 +33,6 @@ import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import services.cache.ExportItemIdGeneratorService
 import views.html.declaration.statistical_value
 
 class StatisticalValueControllerSpec extends ControllerSpec with ErrorHandlerMocks with OptionValues {
@@ -55,7 +55,7 @@ class StatisticalValueControllerSpec extends ControllerSpec with ErrorHandlerMoc
     when(mockItemTypePage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
-  val itemId = new ExportItemIdGeneratorService().generateItemId()
+  val itemId = MultipleItemsHelper.generateItemId()
 
   override protected def afterEach(): Unit = {
     reset(mockItemTypePage)

@@ -23,6 +23,7 @@
   bodyHtml: Option[Html] = None,
   hintParagraphs: List[String] = List.empty,
   emptySelectValue: String,
+  isSubHeading: Boolean = false,
   items: List[AutoCompleteItem],
   args: List[(Symbol, Any)] = List.empty
 )(implicit request: Request[_], messages: Messages)
@@ -36,5 +37,6 @@
     emptySelectValue = emptySelectValue,
     items = items,
     isPageHeading = false,
+    isSubHeading = isSubHeading,
     args = args
 )

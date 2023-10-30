@@ -18,7 +18,7 @@ package base
 
 import connectors.CodeLinkConnector
 import connectors.Tag._
-import forms.declaration.declarationHolder.AuthorizationTypeCodes.{CSE, EXRR, FP, MIB, MOU}
+import forms.declaration.authorisationHolder.AuthorizationTypeCodes.{CSE, EXRR, FP, MIB, MOU}
 import org.mockito.ArgumentMatchers.refEq
 import org.mockito.Mockito
 import org.mockito.Mockito.when

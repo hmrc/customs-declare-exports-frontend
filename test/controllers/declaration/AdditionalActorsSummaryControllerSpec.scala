@@ -18,9 +18,9 @@ package controllers.declaration
 
 import base.ControllerSpec
 import forms.common.{Eori, YesNoAnswer}
-import forms.declaration.DeclarationAdditionalActors
+import forms.declaration.AdditionalActor
 import models.DeclarationType._
-import models.declaration.DeclarationAdditionalActorsData
+import models.declaration.AdditionalActors
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -44,11 +44,11 @@ class AdditionalActorsSummaryControllerSpec extends ControllerSpec with OptionVa
     stubMessagesControllerComponents(),
     mockPage
   )
-  val additionalActorsData = DeclarationAdditionalActorsData(Seq(DeclarationAdditionalActors(Some(Eori("GB56523343784324")), Some("CS"))))
+  val additionalActorsData = AdditionalActors(Seq(AdditionalActor(Some(Eori("GB56523343784324")), Some("CS"))))
   val id = "ACE-GB56523343784324"
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
-    withNewCaching(aDeclaration(withDeclarationAdditionalActors(additionalActorsData)))
+    withNewCaching(aDeclaration(withAdditionalActors(additionalActorsData)))
     await(controller.displayPage(request))
     theResponseForm
   }
@@ -59,8 +59,8 @@ class AdditionalActorsSummaryControllerSpec extends ControllerSpec with OptionVa
     captor.getValue
   }
 
-  def additionalActorsList: Seq[DeclarationAdditionalActors] = {
-    val captor = ArgumentCaptor.forClass(classOf[Seq[DeclarationAdditionalActors]])
+  def additionalActorsList: Seq[AdditionalActor] = {
+    val captor = ArgumentCaptor.forClass(classOf[Seq[AdditionalActor]])
     verify(mockPage).apply(any(), captor.capture())(any(), any())
     captor.getValue
   }
@@ -84,7 +84,7 @@ class AdditionalActorsSummaryControllerSpec extends ControllerSpec with OptionVa
     onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { request =>
       "return 200 (OK)" that {
         "display page method is invoked and cache contains data" in {
-          withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationAdditionalActors(additionalActorsData)))
+          withNewCaching(aDeclarationAfter(request.cacheModel, withAdditionalActors(additionalActorsData)))
 
           val result = controller.displayPage(getRequest())
 
@@ -97,7 +97,7 @@ class AdditionalActorsSummaryControllerSpec extends ControllerSpec with OptionVa
 
       "return 400 (BAD_REQUEST)" when {
         "user submits invalid answer" in {
-          withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationAdditionalActors(additionalActorsData)))
+          withNewCaching(aDeclarationAfter(request.cacheModel, withAdditionalActors(additionalActorsData)))
 
           val requestBody = Json.obj("yesNo" -> "invalid")
           val result = controller.submitForm()(postRequest(requestBody))
@@ -119,7 +119,7 @@ class AdditionalActorsSummaryControllerSpec extends ControllerSpec with OptionVa
         }
 
         "user submits valid Yes answer" in {
-          withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationAdditionalActors(additionalActorsData)))
+          withNewCaching(aDeclarationAfter(request.cacheModel, withAdditionalActors(additionalActorsData)))
 
           val requestBody = Json.obj("yesNo" -> "Yes")
           val result = controller.submitForm()(postRequest(requestBody))
@@ -129,7 +129,7 @@ class AdditionalActorsSummaryControllerSpec extends ControllerSpec with OptionVa
         }
 
         "user submits valid Yes answer with error-fix flag" in {
-          withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationAdditionalActors(additionalActorsData)))
+          withNewCaching(aDeclarationAfter(request.cacheModel, withAdditionalActors(additionalActorsData)))
 
           val requestBody = Json.obj("yesNo" -> "Yes")
           val result = controller.submitForm()(postRequest(requestBody))
@@ -143,7 +143,7 @@ class AdditionalActorsSummaryControllerSpec extends ControllerSpec with OptionVa
     "re-direct to next question" when {
       onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { request =>
         "user submits valid No answer" in {
-          withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationAdditionalActors(additionalActorsData)))
+          withNewCaching(aDeclarationAfter(request.cacheModel, withAdditionalActors(additionalActorsData)))
 
           val requestBody = Json.obj("yesNo" -> "No")
           val result = controller.submitForm()(postRequest(requestBody))

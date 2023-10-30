@@ -67,13 +67,13 @@
         @inputText(
             field = form(CommodityDetails.combinedNomenclatureCodeKey),
             labelKey = "declaration.commodityDetails.combinedNomenclatureCode.label",
-            labelClasses = "govuk-label govuk-label--m",
+            isSubHeading = true,
             bodyHtml = Some(commodityCodeBody),
             hintKey = Some("declaration.commodityDetails.combinedNomenclatureCode.hint"),
             inputClasses = Some("govuk-input--width-10")
         )
 
-        @label("declaration.commodityDetails.description.label", form(CommodityDetails.descriptionOfGoodsKey).id)
+        @label("declaration.commodityDetails.description.label", form(CommodityDetails.descriptionOfGoodsKey).id, isSubHeading = true, subHeadingClasses = "govuk-heading govuk-heading-m")
 
         @paragraphBody(messages("declaration.commodityDetails.description.body"))
 

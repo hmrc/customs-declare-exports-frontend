@@ -19,6 +19,7 @@
 @import forms.common.YesNoAnswer
 @import models.declaration.ExportItem
 @import models.requests.JourneyRequest
+@import models.DeclarationType.CLEARANCE
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.helpers.{BackButton, Title}
 @import views.html.components.gds._
@@ -145,7 +146,9 @@
             )),
             html = HtmlFormat.fill(immutable.Seq(
                 itemsTable,
-                addAnotherQuestion("declaration.itemsSummary.addAnotherItem.question", form),
+                if (!request.isType(CLEARANCE))
+                addAnotherQuestion("declaration.itemsSummary.addAnotherItem.question", form)
+                else HtmlFormat.empty,
                 tariffExpander(ExportItem, request.declarationType)(messages, appConfig),
                 saveButtons()
             ))

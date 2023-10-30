@@ -69,13 +69,13 @@ class PreviousDocumentsRemoveViewSpec extends PageWithButtonsSpec with Injector 
       "display summary list when document contains Relates to" in {
         val view = createView()
 
-        val keyClasses = view.getElementsByClass("govuk-summary-list__key")
+        val keyClasses = view.getElementsByClass(summaryKeyClassName)
         keyClasses.size mustBe 3
         keyClasses.get(0) must containMessage("declaration.previousDocuments.summary.documentCode.label")
         keyClasses.get(1) must containMessage("declaration.previousDocuments.summary.documentReference.label")
         keyClasses.get(2) must containMessage("declaration.previousDocuments.summary.goodsItemIdentifier.label")
 
-        val valueClasses = view.getElementsByClass("govuk-summary-list__value")
+        val valueClasses = view.getElementsByClass(summaryValueClassName)
         valueClasses.size mustBe 3
         valueClasses.get(0).text() mustBe "Entry Summary Declaration (ENS) (355)"
         valueClasses.get(1).text() mustBe "reference"
@@ -85,12 +85,12 @@ class PreviousDocumentsRemoveViewSpec extends PageWithButtonsSpec with Injector 
       "display summary list when document doesn't contain Relates to" in {
         val view = createView(document = documentWithoutRelatesTo)
 
-        val keyClasses = view.getElementsByClass("govuk-summary-list__key")
+        val keyClasses = view.getElementsByClass(summaryKeyClassName)
         keyClasses.size mustBe 2
         keyClasses.get(0) must containMessage("declaration.previousDocuments.summary.documentCode.label")
         keyClasses.get(1) must containMessage("declaration.previousDocuments.summary.documentReference.label")
 
-        val valueClasses = view.getElementsByClass("govuk-summary-list__value")
+        val valueClasses = view.getElementsByClass(summaryValueClassName)
         valueClasses.size mustBe 2
         valueClasses.get(0).text() mustBe "Entry Summary Declaration (ENS) (355)"
         valueClasses.get(1).text() mustBe "reference"
