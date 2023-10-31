@@ -2617,6 +2617,7 @@ ead.template.declarationType.EXZ = Datganiad Allforion Atodol yn dilyn EIDR
 ead.template.ucr = DUCR
 ead.template.roe = Llwybr
 ead.template.ics = ICS
+ead.template.barcodeAltText = Enghraifft o god bar y mae modd ei sganio sy’n cynnwys y cyfeirnod symud a elwir hefyd yn MRN.
 ead.template.totalPackageQuantity = Cyfanswm nifer y pecynnau
 ead.template.goodsItemQuantity = Nifer yr eitemau o nwyddau
 ead.template.releasedDateTime = Dyddiad ac amser y rhyddhawyd y nwyddau
