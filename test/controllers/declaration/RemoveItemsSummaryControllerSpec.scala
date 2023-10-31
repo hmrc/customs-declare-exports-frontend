@@ -17,19 +17,16 @@
 package controllers.declaration
 
 import base.ControllerWithoutFormSpec
-import controllers.helpers.SequenceIdHelper
+import controllers.helpers.SequenceIdHelper.valueOfEso
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.FiscalInformation.AllowedFiscalInformationAnswers
 import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData, FiscalInformation, WarehouseIdentification}
 import mock.ErrorHandlerMocks
-import models.DeclarationMeta
 import models.DeclarationType._
 import models.declaration.{CommodityMeasure, DeclarationStatus, ExportItem}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
-import org.mockito.invocation.InvocationOnMock
-import org.mockito.stubbing.Answer
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.{GivenWhenThen, OptionValues}
 import play.api.libs.json.Json
@@ -45,7 +42,6 @@ class RemoveItemsSummaryControllerSpec
 
   private val removeItemPage = mock[items_remove_item]
   private val cannotRemoveItemPage = mock[items_cannot_remove]
-  private val sequenceIdHandler: SequenceIdHelper = mock[SequenceIdHelper]
 
   private val controller = new RemoveItemsSummaryController(
     mockAuthAction,
@@ -56,8 +52,7 @@ class RemoveItemsSummaryControllerSpec
     mockErrorHandler,
     stubMessagesControllerComponents(),
     cannotRemoveItemPage,
-    removeItemPage,
-    sequenceIdHandler
+    removeItemPage
   )(ec)
 
   private val parentDeclarationId = "parentDecId"
@@ -91,17 +86,10 @@ class RemoveItemsSummaryControllerSpec
     when(removeItemPage.apply(any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
     when(cannotRemoveItemPage.apply(any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
     when(mockCustomsDeclareExportsConnector.findDeclaration(any())(any(), any())).thenReturn(Future.successful(Some(parentDeclaration)))
-
-    when(sequenceIdHandler.handleSequencing[ExportItem](any(), any())(any())).thenAnswer(new Answer[(Seq[ExportItem], DeclarationMeta)] {
-      def answer(invocation: InvocationOnMock): (Seq[ExportItem], DeclarationMeta) = {
-        val args = invocation.getArguments
-        (args(0).asInstanceOf[Seq[ExportItem]], args(1).asInstanceOf[DeclarationMeta])
-      }
-    })
   }
 
   override protected def afterEach(): Unit = {
-    reset(removeItemPage, cannotRemoveItemPage, mockExportsCacheService, sequenceIdHandler, mockCustomsDeclareExportsConnector)
+    reset(removeItemPage, cannotRemoveItemPage, mockExportsCacheService, mockCustomsDeclareExportsConnector)
     super.afterEach()
   }
 
@@ -221,17 +209,19 @@ class RemoveItemsSummaryControllerSpec
         "there is Item in declaration with requested Id" should {
 
           "remove the Item from cache" in {
-            withNewCaching(aDeclaration(withType(request.declarationType), withItem(cachedItem), withItem(secondItem)))
+            val cachedDeclaration = aDeclaration(withType(request.declarationType), withItem(cachedItem), withItem(secondItem))
+            valueOfEso[ExportItem](cachedDeclaration).value mustBe 2
+            withNewCaching(cachedDeclaration)
 
             val result = controller.removeItem(itemId)(postRequest(removeItemForm))
             status(result) mustBe SEE_OTHER
 
-            val items = theCacheModelUpdated.items
-            items.size mustBe 1
-            items must contain(secondItem)
+            val declaration = theCacheModelUpdated
+            declaration.items.size mustBe 1
+            declaration.items must contain(secondItem)
 
             And("max sequence id value is unchanged")
-            verify(sequenceIdHandler).handleSequencing[ExportItem](any(), any())(any())
+            valueOfEso[ExportItem](declaration).value mustBe 2
           }
 
           "return 303 (SEE_OTHER) and redirect to Items Summary page" in {

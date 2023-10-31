@@ -20,6 +20,7 @@ import connectors.CodeListConnector
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.routes.{LocationOfGoodsController, RoutingCountriesController}
 import controllers.helpers._
+import controllers.helpers.SequenceIdHelper.handleSequencing
 import controllers.navigation.Navigator
 import forms.declaration.RoutingCountryQuestionYesNo._
 import forms.declaration.countries.Countries.RoutingCountryPage
@@ -44,8 +45,7 @@ class RoutingCountriesController @Inject() (
   navigator: Navigator,
   mcc: MessagesControllerComponents,
   routingQuestionPage: routing_country_question,
-  countryOfRoutingPage: country_of_routing,
-  sequenceIdHandler: SequenceIdHelper
+  countryOfRoutingPage: country_of_routing
 )(implicit ec: ExecutionContext, codeListConnector: CodeListConnector)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
 
@@ -132,7 +132,7 @@ class RoutingCountriesController @Inject() (
 
   private def updateCache(routingCountries: Seq[RoutingCountry])(implicit request: JourneyRequest[AnyContent]): Future[ExportsDeclaration] = {
     val declarationMeta = request.cacheModel.declarationMeta
-    val (updatedRoutingCountries, updatedMeta) = sequenceIdHandler.handleSequencing(routingCountries, declarationMeta)
+    val (updatedRoutingCountries, updatedMeta) = handleSequencing(routingCountries, declarationMeta)
 
     updateDeclarationFromRequest(
       _.updateCountriesOfRouting(updatedRoutingCountries)

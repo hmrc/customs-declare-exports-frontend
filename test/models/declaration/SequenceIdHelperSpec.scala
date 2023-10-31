@@ -17,7 +17,7 @@
 package models.declaration
 
 import base.UnitSpec
-import controllers.helpers.SequenceIdHelper
+import controllers.helpers.SequenceIdHelper.handleSequencing
 import models.DeclarationMeta
 import models.DeclarationMeta.sequenceIdPlaceholder
 import models.declaration.DeclarationStatus._
@@ -34,22 +34,18 @@ class SequenceIdHelperSpec extends UnitSpec {
     override val seqIdKey: String = "test"
   }
 
-  object TestController extends SequenceIdHelper
-
-  val preSubmitDecMeta =
-    DeclarationMeta(
-      status = DRAFT,
-      maxSequenceIds = Map(implicitly[EsoKeyProvider[TestEso]].seqIdKey -> 2),
-      createdDateTime = Instant.now(),
-      updatedDateTime = Instant.now()
-    )
-  val postSubmitDecMeta =
-    DeclarationMeta(
-      status = AMENDMENT_DRAFT,
-      maxSequenceIds = Map(implicitly[EsoKeyProvider[TestEso]].seqIdKey -> 2),
-      createdDateTime = Instant.now(),
-      updatedDateTime = Instant.now()
-    )
+  val preSubmitDecMeta = DeclarationMeta(
+    status = DRAFT,
+    maxSequenceIds = Map(implicitly[EsoKeyProvider[TestEso]].seqIdKey -> 2),
+    createdDateTime = Instant.now(),
+    updatedDateTime = Instant.now()
+  )
+  val postSubmitDecMeta = DeclarationMeta(
+    status = AMENDMENT_DRAFT,
+    maxSequenceIds = Map(implicitly[EsoKeyProvider[TestEso]].seqIdKey -> 2),
+    createdDateTime = Instant.now(),
+    updatedDateTime = Instant.now()
+  )
   val elements = Seq(TestEso(1), TestEso(2))
 
   "SequenceIdHelper.handleSequencing" should {
@@ -57,7 +53,7 @@ class SequenceIdHelperSpec extends UnitSpec {
     "update elements and meta for pre-submission status" when {
 
       "an element is added" in {
-        val (updatedElements, updatedMeta) = TestController.handleSequencing(elements :+ TestEso(sequenceIdPlaceholder), preSubmitDecMeta)
+        val (updatedElements, updatedMeta) = handleSequencing(elements :+ TestEso(sequenceIdPlaceholder), preSubmitDecMeta)
 
         updatedElements.size mustBe 3
         updatedElements.zipWithIndex.foreach(elemWithIdx => elemWithIdx._1.sequenceId mustBe elemWithIdx._2 + 1)
@@ -65,7 +61,7 @@ class SequenceIdHelperSpec extends UnitSpec {
       }
 
       "the last element is removed" in {
-        val (updatedElements, updatedMeta) = TestController.handleSequencing(elements.filter(_.sequenceId == 1), preSubmitDecMeta)
+        val (updatedElements, updatedMeta) = handleSequencing(elements.filter(_.sequenceId == 1), preSubmitDecMeta)
 
         updatedElements.size mustBe 1
         updatedElements.zipWithIndex.foreach(elemWithIdx => elemWithIdx._1.sequenceId mustBe elemWithIdx._2 + 1)
@@ -74,7 +70,7 @@ class SequenceIdHelperSpec extends UnitSpec {
 
       "an element is added and the first removed" in {
         val (updatedElements, updatedMeta) =
-          TestController.handleSequencing(elements.filter(_.sequenceId == 2) :+ TestEso(sequenceIdPlaceholder), preSubmitDecMeta)
+          handleSequencing(elements.filter(_.sequenceId == 2) :+ TestEso(sequenceIdPlaceholder), preSubmitDecMeta)
 
         updatedElements.size mustBe 2
         updatedElements.zipWithIndex.foreach(elemWithIdx => elemWithIdx._1.sequenceId mustBe elemWithIdx._2 + 1)
@@ -85,7 +81,7 @@ class SequenceIdHelperSpec extends UnitSpec {
     "update elements and meta for post-submission status" when {
 
       "an element is added" in {
-        val (updatedElements, updatedMeta) = TestController.handleSequencing(elements :+ TestEso(sequenceIdPlaceholder), postSubmitDecMeta)
+        val (updatedElements, updatedMeta) = handleSequencing(elements :+ TestEso(sequenceIdPlaceholder), postSubmitDecMeta)
 
         updatedElements.size mustBe 3
         updatedElements.zipWithIndex.foreach(elemWithIdx => elemWithIdx._1.sequenceId mustBe elemWithIdx._2 + 1)
@@ -93,7 +89,7 @@ class SequenceIdHelperSpec extends UnitSpec {
       }
 
       "the last element is removed" in {
-        val (updatedElements, updatedMeta) = TestController.handleSequencing(elements.filter(_.sequenceId == 1), postSubmitDecMeta)
+        val (updatedElements, updatedMeta) = handleSequencing(elements.filter(_.sequenceId == 1), postSubmitDecMeta)
 
         updatedElements.size mustBe 1
         updatedElements(0).sequenceId mustBe 1
@@ -102,7 +98,7 @@ class SequenceIdHelperSpec extends UnitSpec {
 
       "an element is added and the first removed" in {
         val (updatedElements, updatedMeta) =
-          TestController.handleSequencing(elements.filter(_.sequenceId == 2) :+ TestEso(sequenceIdPlaceholder), postSubmitDecMeta)
+          handleSequencing(elements.filter(_.sequenceId == 2) :+ TestEso(sequenceIdPlaceholder), postSubmitDecMeta)
 
         updatedElements.size mustBe 2
         updatedElements(0).sequenceId mustBe 2

@@ -16,15 +16,17 @@
 
 package controllers.helpers
 
-import models.DeclarationMeta
+import models.{DeclarationMeta, ExportsDeclaration}
 import models.DeclarationMeta.sequenceIdPlaceholder
 import models.declaration.DeclarationStatus.preSubmissionStatuses
 import models.declaration.{EsoKeyProvider, ExplicitlySequencedObject}
 
-class SequenceIdHelper {
+object SequenceIdHelper {
+
   def handleSequencing[T <: ExplicitlySequencedObject[T]](elements: Seq[T], declarationMeta: DeclarationMeta)(
     implicit keyProvider: EsoKeyProvider[T]
   ): (Seq[T], DeclarationMeta) = {
+
     val (updatedElements, updatedMeta) = elements.zipWithIndex.foldLeft((Seq.empty[T], declarationMeta)) {
       (sequenceAndMeta: (Seq[T], DeclarationMeta), elementAndIdx: (T, Int)) =>
         val sequenceOfElems = sequenceAndMeta._1
@@ -40,6 +42,7 @@ class SequenceIdHelper {
           // Prior to submission we will sequence elems using their index, ensuring no unnecessary gaps on eventual submission.
           case (element, idx) if preSubmissionStatuses.contains(declarationMeta.status) =>
             getUpdatedElementsAndMeta(idx + 1, element)
+
           // After submission we will sequence using sequenceIds to correspond with DMS.
           case (element, _) =>
             // Presence of the placeholder means we have a new element.
@@ -52,4 +55,7 @@ class SequenceIdHelper {
 
     (updatedElements, updatedMeta)
   }
+
+  def valueOfEso[T <: ExplicitlySequencedObject[T]](declaration: ExportsDeclaration)(implicit provider: EsoKeyProvider[T]): Option[Int] =
+    declaration.declarationMeta.maxSequenceIds.get(provider.seqIdKey)
 }

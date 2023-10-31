@@ -19,7 +19,7 @@ package views.declaration.summary
 import controllers.routes.DeclarationDetailsController
 import models.ExportsDeclaration
 import models.declaration.DeclarationStatus.AMENDMENT_DRAFT
-import org.jsoup.nodes.Document
+import play.twirl.api.HtmlFormat.Appendable
 import views.html.declaration.amendments.amendment_summary
 
 class AmendmentSummaryViewSpec extends SummaryViewSpec {
@@ -29,22 +29,22 @@ class AmendmentSummaryViewSpec extends SummaryViewSpec {
   private val submissionId = "submissionId"
   private val declaration = aDeclaration(withStatus(AMENDMENT_DRAFT), withConsignmentReferences("ducr", "lrn"))
 
-  def view(declaration: ExportsDeclaration = declaration): Document =
+  def createView(declaration: ExportsDeclaration = declaration): Appendable =
     amendmentSummaryPage(submissionId)(journeyRequest(declaration), messages, minimalAppConfig)
 
   "Summary page" should {
-    val document = view()
+    val view = createView()
 
     "have references section" in {
-      document.getElementById("declaration-references-summary").text mustNot be(empty)
+      view.getElementsByTag("h2").first.text mustBe messages(s"declaration.summary.references")
     }
 
     "should display correct title" in {
-      document.getElementById("title").text() mustBe messages("declaration.summary.amendment-draft-header")
+      view.getElementById("title").text() mustBe messages("declaration.summary.amendment-draft-header")
     }
 
     "should display correct back link" in {
-      val backButton = document.getElementById("back-link")
+      val backButton = view.getElementById("back-link")
 
       backButton.text() mustBe messages("site.backToDeclarations")
       backButton must haveHref(DeclarationDetailsController.displayPage(submissionId).url)
@@ -52,26 +52,26 @@ class AmendmentSummaryViewSpec extends SummaryViewSpec {
 
     "warning text should be displayed" in {
       val warningText = s"! ${messages("site.warning")} ${messages("declaration.summary.warning")}"
-      document.getElementsByClass("govuk-warning-text").text mustBe warningText
+      view.getElementsByClass("govuk-warning-text").text mustBe warningText
     }
 
     "not allow fields to be changed" when {
       "lrn" in {
-        document
-          .getElementsByClass("lrn-row")
+        view
+          .getElementsByClass("lrn")
           .first()
           .getElementsByClass(summaryActionsClassName)
           .text() mustBe empty
       }
       "ducr" in {
-        document
-          .getElementsByClass("ducr-row")
+        view
+          .getElementsByClass("ducr")
           .first()
           .getElementsByClass(summaryActionsClassName)
           .text() mustBe empty
       }
     }
 
-    behave like sectionsVisibility(view)
+    behave like sectionsVisibility(createView)
   }
 }

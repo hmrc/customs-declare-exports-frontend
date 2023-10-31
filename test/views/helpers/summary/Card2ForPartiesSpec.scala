@@ -27,13 +27,13 @@ import play.api.mvc.Call
 import services.cache.ExportsTestHelper
 import views.declaration.spec.UnitViewSpec
 
-class CardForPartiesSpec extends UnitViewSpec with ExportsTestHelper with Injector {
+class Card2ForPartiesSpec extends UnitViewSpec with ExportsTestHelper with Injector {
 
   private val eori = "GB123456"
   private val address = Address("fullName", "addressLine", "townOrCity", "postCode", "GB")
   private val expectedAddress = "fullName addressLine townOrCity postCode GB"
 
-  private val data = aDeclaration(
+  private val declaration = aDeclaration(
     withDeclarantDetails(Some(Eori(eori))),
     withDeclarantIsExporter("No"),
     withEntryIntoDeclarantsRecords("Yes"),
@@ -48,10 +48,14 @@ class CardForPartiesSpec extends UnitViewSpec with ExportsTestHelper with Inject
     withAuthorisationHolders()
   )
 
-  private val cardForParties = instanceOf[CardForParties]
+  private val card2ForParties = instanceOf[Card2ForParties]
 
   "Parties section" must {
-    val view = cardForParties.eval(data)(messages)
+    val view = card2ForParties.eval(declaration)(messages)
+
+    "contains the expected heading" in {
+      view.getElementsByTag("h2").first.text mustBe messages(s"declaration.summary.parties")
+    }
 
     "contains declarant eori" in {
       val row = view.getElementsByClass("declarant-eori")
@@ -137,9 +141,9 @@ class CardForPartiesSpec extends UnitViewSpec with ExportsTestHelper with Inject
       val actor1 = AdditionalActor(Some(Eori(eori1)), Some(type1))
       val actor2WithoutType = AdditionalActor(Some(Eori(eori2)), None)
       val actor3WithoutEori = AdditionalActor(None, Some(type2))
-      val declaration = aDeclarationAfter(data, withAdditionalActors(actor1, actor2WithoutType, actor3WithoutEori))
+      val declaration1 = aDeclarationAfter(declaration, withAdditionalActors(actor1, actor2WithoutType, actor3WithoutEori))
 
-      val view = cardForParties.eval(declaration)(messages)
+      val view = card2ForParties.eval(declaration1)(messages)
 
       val call = Some(AdditionalActorsSummaryController.displayPage)
 
@@ -183,9 +187,9 @@ class CardForPartiesSpec extends UnitViewSpec with ExportsTestHelper with Inject
       val holder1 = AuthorisationHolder(Some(type1), Some(Eori(eori1)), None)
       val holder2WithoutCode = AuthorisationHolder(None, Some(Eori(eori2)), None)
       val holder3WithoutEori = AuthorisationHolder(Some(type2), None, None)
-      val declaration = aDeclarationAfter(data, withAuthorisationHolders(holder1, holder2WithoutCode, holder3WithoutEori))
+      val declaration1 = aDeclarationAfter(declaration, withAuthorisationHolders(holder1, holder2WithoutCode, holder3WithoutEori))
 
-      val view = cardForParties.eval(declaration)(messages)
+      val view = card2ForParties.eval(declaration1)(messages)
 
       val call = Some(AuthorisationProcedureCodeChoiceController.displayPage)
 
@@ -210,48 +214,48 @@ class CardForPartiesSpec extends UnitViewSpec with ExportsTestHelper with Inject
     }
 
     "does not contain declarant when the section is undefined" in {
-      val view = cardForParties.eval(aDeclarationAfter(data, withoutDeclarantDetails))(messages)
+      val view = card2ForParties.eval(aDeclarationAfter(declaration, withoutDeclarantDetails))(messages)
       view.getElementsByClass("declarant-eori") mustBe empty
       view.getElementsByClass("declarant-address") mustBe empty
     }
 
     "does not contain is-declarant-exporter when the section is undefined" in {
-      val view = cardForParties.eval(aDeclarationAfter(data, withoutDeclarantIsExporter))(messages)
+      val view = card2ForParties.eval(aDeclarationAfter(declaration, withoutDeclarantIsExporter))(messages)
       view.getElementsByClass("declarant-is-exporter") mustBe empty
     }
 
     "does not contain is-eidr when the section is undefined" in {
-      val view = cardForParties.eval(aDeclarationAfter(data, withoutEntryIntoDeclarantsRecords))(messages)
+      val view = card2ForParties.eval(aDeclarationAfter(declaration, withoutEntryIntoDeclarantsRecords))(messages)
       view.getElementsByClass("is-entry-into-declarants-records") mustBe empty
     }
 
     "does not contain person presenting goods when the section is undefined" in {
-      val view = cardForParties.eval(aDeclarationAfter(data, withoutPersonPresentingGoods))(messages)
+      val view = card2ForParties.eval(aDeclarationAfter(declaration, withoutPersonPresentingGoods))(messages)
       view.getElementsByClass("person-presenting-goods") mustBe empty
     }
 
     "does not contain exporter when the section is undefined" in {
-      val view = cardForParties.eval(aDeclarationAfter(data, withoutExporterDetails))(messages)
+      val view = card2ForParties.eval(aDeclarationAfter(declaration, withoutExporterDetails))(messages)
       view.getElementsByClass("exporter-eori") mustBe empty
       view.getElementsByClass("exporter-address") mustBe empty
     }
 
     "does not contain is-exs when the section is undefined" in {
-      val view = cardForParties.eval(aDeclarationAfter(data, withoutIsExs))(messages)
+      val view = card2ForParties.eval(aDeclarationAfter(declaration, withoutIsExs))(messages)
       view.getElementsByClass("isExs") mustBe empty
       view.getElementsByClass("isExs") mustBe empty
     }
 
     "does not contains representative eori when not representing another agent" in {
       val details = Some(RepresentativeDetails(None, Some("2"), Some("No")))
-      val parties = data.parties.copy(representativeDetails = details)
-      val view = cardForParties.eval(data.copy(parties = parties), true)(messages)
+      val parties = declaration.parties.copy(representativeDetails = details)
+      val view = card2ForParties.eval(declaration.copy(parties = parties), true)(messages)
 
       view.getElementsByClass("representative-eori").text() mustBe empty
     }
 
     "does not contain representative when the section is undefined" in {
-      val view = cardForParties.eval(aDeclarationAfter(data, withoutRepresentativeDetails))(messages)
+      val view = card2ForParties.eval(aDeclarationAfter(declaration, withoutRepresentativeDetails))(messages)
       view.getElementsByClass("representative-other-agent") mustBe empty
       view.getElementsByClass("representative-eori") mustBe empty
       view.getElementsByClass("representative-address") mustBe empty
@@ -259,41 +263,41 @@ class CardForPartiesSpec extends UnitViewSpec with ExportsTestHelper with Inject
     }
 
     "does not contain carrier details when the section is undefined" in {
-      val view = cardForParties.eval(aDeclarationAfter(data, withoutCarrierDetails))(messages)
+      val view = card2ForParties.eval(aDeclarationAfter(declaration, withoutCarrierDetails))(messages)
       view.getElementsByClass("carrier-eori") mustBe empty
       view.getElementsByClass("carrier-address") mustBe empty
     }
 
     "does not contain consignee when the section is undefined" in {
-      val view = cardForParties.eval(aDeclarationAfter(data, withoutConsigneeDetails))(messages)
+      val view = card2ForParties.eval(aDeclarationAfter(declaration, withoutConsigneeDetails))(messages)
       view.getElementsByClass("consignee-eori") mustBe empty
       view.getElementsByClass("consignee-address") mustBe empty
     }
 
     "does not contain consignor when the section is undefined" in {
-      val view = cardForParties.eval(aDeclarationAfter(data, withoutConsignorDetails))(messages)
+      val view = card2ForParties.eval(aDeclarationAfter(declaration, withoutConsignorDetails))(messages)
       view.getElementsByClass("consignor-eori") mustBe empty
       view.getElementsByClass("consignor-address") mustBe empty
     }
 
     "does not contain additional actors when the section is undefined" in {
-      val view = cardForParties.eval(aDeclarationAfter(data, withoutAdditionalActors))(messages)
+      val view = card2ForParties.eval(aDeclarationAfter(declaration, withoutAdditionalActors))(messages)
       view.getElementsByClass("additional-actors-heading") mustBe empty
     }
 
     "does not contain authorisation holders when the section is undefined" in {
-      val view = cardForParties.eval(aDeclarationAfter(data, withoutAuthorisationHolders))(messages)
+      val view = card2ForParties.eval(aDeclarationAfter(declaration, withoutAuthorisationHolders))(messages)
       view.getElementsByClass("authorisation-holders-heading") mustBe empty
     }
 
     "does not contain anything when parties only has undefined attributes" in {
-      val view = cardForParties.eval(aDeclaration())(messages)
+      val view = card2ForParties.eval(aDeclaration())(messages)
       view.getAllElements.text() mustBe empty
     }
 
     "NOT have change links" when {
       "'actionsEnabled' is false" in {
-        val view = cardForParties.eval(data, false)(messages)
+        val view = card2ForParties.eval(declaration, false)(messages)
         view.getElementsByClass(summaryActionsClassName) mustBe empty
       }
     }

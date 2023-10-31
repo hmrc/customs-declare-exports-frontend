@@ -20,10 +20,10 @@ import base.Injector
 import forms.declaration.CommodityDetails
 import models.DeclarationType._
 import models.ExportsDeclaration
-import org.jsoup.nodes.Document
 import org.junit.Assert.assertNull
 import play.api.data.FormError
 import play.api.mvc.Call
+import play.twirl.api.HtmlFormat.Appendable
 import tools.Stubs
 import views.declaration.spec.UnitViewSpec
 
@@ -32,16 +32,16 @@ trait SummaryViewSpec extends UnitViewSpec with Injector with Stubs {
   val dummyFormError = Seq(FormError("dummy", "error.unknown"))
   private val backLink = Call("GET", "/backLink")
 
-  def commonBehaviour(state: String, document: Document): Unit =
+  def commonBehaviour(state: String, view: Appendable): Unit =
     s"declaration in $state state" should {
 
       "have common behaviours such as" when {
         "have references section" in {
-          document.getElementById("declaration-references-summary").text mustNot be(empty)
+          view.getElementsByTag("h2").first.text mustBe messages(s"declaration.summary.references")
         }
 
         "display Exit and come back later button" in {
-          document.getElementById("exit-and-complete-later").text mustBe messages(exitAndReturnCaption)
+          view.getElementById("exit-and-complete-later").text mustBe messages(exitAndReturnCaption)
         }
 
         "should display correct title" in {
@@ -50,11 +50,11 @@ trait SummaryViewSpec extends UnitViewSpec with Injector with Stubs {
             case "ready"  => "declaration.summary.normal-header"
             case "draft"  => "declaration.summary.saved-header"
           }
-          document.getElementById("title").text() mustBe messages(correctTitle)
+          view.getElementById("title").text() mustBe messages(correctTitle)
         }
 
         "should display correct back link" in {
-          val backButton = document.getElementById("back-link")
+          val backButton = view.getElementById("back-link")
 
           backButton.text() mustBe messages("site.backToDeclarations")
           backButton must haveHref(backLink.url)
@@ -62,20 +62,20 @@ trait SummaryViewSpec extends UnitViewSpec with Injector with Stubs {
 
         "warning text should be displayed" in {
           val warningText = s"! ${messages("site.warning")} ${messages("declaration.summary.warning")}"
-          document.getElementsByClass("govuk-warning-text").text mustBe warningText
+          view.getElementsByClass("govuk-warning-text").text mustBe warningText
         }
       }
     }
 
-  def displayErrorSummary(document: Document): Unit =
+  def displayErrorSummary(view: Appendable): Unit =
     "error summary should be displayed" in {
-      val errorSummary = document.getElementsByClass("govuk-error-summary")
+      val errorSummary = view.getElementsByClass("govuk-error-summary")
       errorSummary.text contains messages("error.unknown")
       errorSummary.size mustBe dummyFormError.length
     }
 
   // scalastyle:off
-  def sectionsVisibility(view: ExportsDeclaration => Document): Unit = {
+  def sectionsVisibility(view: ExportsDeclaration => Appendable): Unit = {
     "not have parties section" in {
       assertNull(view(aDeclaration()).getElementById("declaration-parties-summary"))
     }

@@ -45,7 +45,7 @@ trait UnitViewSpec
 
   def checkErrorsSummary(view: Document): Assertion = {
     view.getElementById("error-summary-heading").text() must be("error.summary.title")
-    view.getElementsByClass("error-summary error-summary--show").get(0).getElementsByTag("p").text() must be("error.summary.text")
+    view.getElementsByClass("error-summary error-summary--show").first.getElementsByTag("p").text() must be("error.summary.text")
   }
 
   def checkExitAndReturnLinkIsDisplayed(view: Document): Unit =
@@ -69,7 +69,7 @@ trait UnitViewSpec
     row must haveSummaryKey(messages(s"declaration.summary.$labelKey"))
     row must haveSummaryValue(value)
     maybeUrl.fold {
-      val action = row.get(0).getElementsByClass(summaryActionsClassName)
+      val action = row.first.getElementsByClass(summaryActionsClassName)
       if (hint.isEmpty) action.size mustBe 0 else action.text mustBe ""
     } { url =>
       row must haveSummaryActionsTexts("site.change", s"declaration.summary.$hint.change", sequenceId)

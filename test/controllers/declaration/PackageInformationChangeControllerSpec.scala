@@ -17,15 +17,12 @@
 package controllers.declaration
 
 import base.{ControllerSpec, Injector}
-import controllers.helpers.SequenceIdHelper
+import controllers.helpers.SequenceIdHelper.valueOfEso
 import forms.declaration.PackageInformation
 import mock.ErrorHandlerMocks
-import models.DeclarationMeta
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, times, verify, verifyNoInteractions, when}
-import org.mockito.invocation.InvocationOnMock
-import org.mockito.stubbing.Answer
+import org.mockito.Mockito._
 import org.scalatest.OptionValues
 import play.api.data.Form
 import play.api.mvc.{AnyContentAsEmpty, Request}
@@ -38,7 +35,6 @@ class PackageInformationChangeControllerSpec extends ControllerSpec with OptionV
 
   val mockChangePage = mock[package_information_change]
   val mockPackageTypesService = instanceOf[PackageTypesService]
-  private val mockSeqIdHandler = mock[SequenceIdHelper]
 
   val controller =
     new PackageInformationChangeController(
@@ -48,8 +44,7 @@ class PackageInformationChangeControllerSpec extends ControllerSpec with OptionV
       mockExportsCacheService,
       mockErrorHandler,
       stubMessagesControllerComponents(),
-      mockChangePage,
-      mockSeqIdHandler
+      mockChangePage
     )(ec, mockPackageTypesService)
 
   override protected def beforeEach(): Unit = {
@@ -57,17 +52,10 @@ class PackageInformationChangeControllerSpec extends ControllerSpec with OptionV
     authorizedUser()
     setupErrorHandler()
     when(mockChangePage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
-    when(mockSeqIdHandler.handleSequencing[PackageInformation](any(), any())(any()))
-      .thenAnswer(new Answer[(Seq[PackageInformation], DeclarationMeta)] {
-        def answer(invocation: InvocationOnMock): (Seq[PackageInformation], DeclarationMeta) = {
-          val args = invocation.getArguments
-          (args(0).asInstanceOf[Seq[PackageInformation]], args(1).asInstanceOf[DeclarationMeta])
-        }
-      })
   }
 
   override protected def afterEach(): Unit = {
-    reset(mockChangePage, mockSeqIdHandler)
+    reset(mockChangePage)
     super.afterEach()
   }
 
@@ -164,12 +152,14 @@ class PackageInformationChangeControllerSpec extends ControllerSpec with OptionV
 
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe routes.PackageInformationSummaryController.displayPage(item.id)
-          verify(mockSeqIdHandler).handleSequencing[PackageInformation](any(), any())(any())
 
-          val savedPackage = theCacheModelUpdated.itemBy(item.id).flatMap(_.packageInformation).value.head
+          val declaration = theCacheModelUpdated
+          val savedPackage = declaration.itemBy(item.id).flatMap(_.packageInformation).value.head
           savedPackage.typesOfPackages mustBe Some("AE")
           savedPackage.numberOfPackages mustBe Some(1)
           savedPackage.shippingMarks mustBe Some("1234")
+
+          valueOfEso[PackageInformation](declaration).value mustBe 1
         }
       }
     }

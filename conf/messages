@@ -1825,10 +1825,10 @@ declaration.summary.draft = Review the information you entered so far.
 declaration.summary.unknown = Unknown
 
 declaration.summary.references = This declaration
-declaration.summary.references.createdDate = Date created
-declaration.summary.references.expireDate = Expiry date
+declaration.summary.references.insets = Start here to go through the questions from the beginning
+declaration.summary.references.creation.date = Date created
+declaration.summary.references.expiration.date = Expiry date
 declaration.summary.references.type = Declaration type
-declaration.summary.references.type.change = Change declaration type
 declaration.summary.references.location = Goods are being sent out of EU
 declaration.summary.references.location.change = Change if the goods are being sent out of EU
 declaration.summary.references.additionalType = Type of declaration
@@ -2133,7 +2133,6 @@ declaration.summary.container.change = Change goods in a container
 declaration.summary.container.information = Container
 declaration.summary.container.securitySeal = Security seal
 
-declaration.summary.goto.additional.type = Start here to go through the questions from the beginning
 declaration.summary.warning = If you change the authorisations, commodity codes, procedure codes, mode of transport or location codes, go through the questions from the beginning to ensure you do not try to submit an incomplete or invalid declaration.
 declaration.summary.saved.label = To continue with your declaration
 declaration.summary.saved.body = To continue where you left off, click the most recent ‘Change’ link. When you have completed all the questions you will be able to submit your declaration.

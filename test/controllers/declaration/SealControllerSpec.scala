@@ -18,18 +18,17 @@ package controllers.declaration
 
 import base.ControllerSpec
 import controllers.declaration.routes.{SealController, TransportContainerController}
-import controllers.helpers.{Remove, SaveAndContinue, SequenceIdHelper}
+import controllers.helpers.SequenceIdHelper.valueOfEso
+import controllers.helpers.{Remove, SaveAndContinue}
 import forms.common.YesNoAnswer
 import forms.declaration.Seal
 import mock.ErrorHandlerMocks
-import models.declaration.{Container, ExportItem}
-import models.{DeclarationMeta, DeclarationType}
+import models.DeclarationType
+import models.declaration.Container
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
-import org.mockito.invocation.InvocationOnMock
-import org.mockito.stubbing.Answer
-import org.scalatest.{Assertion, GivenWhenThen}
+import org.scalatest.{GivenWhenThen, OptionValues}
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsEmpty, Request}
@@ -37,7 +36,7 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.declaration.{seal_add, seal_remove, seal_summary}
 
-class SealControllerSpec extends ControllerSpec with ErrorHandlerMocks with GivenWhenThen {
+class SealControllerSpec extends ControllerSpec with ErrorHandlerMocks with GivenWhenThen with OptionValues {
 
   val sealAddPage = mock[seal_add]
   val sealRemovePage = mock[seal_remove]
@@ -45,8 +44,6 @@ class SealControllerSpec extends ControllerSpec with ErrorHandlerMocks with Give
 
   val containerId = "3436532313"
   val sealId = "623847987324"
-
-  private val mockSeqIdHandler = mock[SequenceIdHelper]
 
   val controller = new SealController(
     mockAuthAction,
@@ -57,8 +54,7 @@ class SealControllerSpec extends ControllerSpec with ErrorHandlerMocks with Give
     stubMessagesControllerComponents(),
     sealAddPage,
     sealRemovePage,
-    sealSummaryPage,
-    mockSeqIdHandler
+    sealSummaryPage
   )
 
   override protected def beforeEach(): Unit = {
@@ -70,16 +66,10 @@ class SealControllerSpec extends ControllerSpec with ErrorHandlerMocks with Give
     when(sealAddPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
     when(sealRemovePage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
     when(sealSummaryPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
-    when(mockSeqIdHandler.handleSequencing[ExportItem](any(), any())(any())).thenAnswer(new Answer[(Seq[ExportItem], DeclarationMeta)] {
-      def answer(invocation: InvocationOnMock): (Seq[ExportItem], DeclarationMeta) = {
-        val args = invocation.getArguments
-        (args(0).asInstanceOf[Seq[ExportItem]], args(1).asInstanceOf[DeclarationMeta])
-      }
-    })
   }
 
   override protected def afterEach(): Unit = {
-    reset(sealAddPage, sealRemovePage, sealSummaryPage, mockSeqIdHandler)
+    reset(sealAddPage, sealRemovePage, sealSummaryPage)
 
     super.afterEach()
   }
@@ -182,71 +172,72 @@ class SealControllerSpec extends ControllerSpec with ErrorHandlerMocks with Give
     "return 303 (SEE_OTHER)" when {
 
       "add the first seal" in {
-        withNewCaching(aDeclaration(withContainerData(Container(id = containerId, seals = Seq.empty))))
+        val container = Container(sequenceId = 0, id = containerId, seals = Seq.empty)
+        withNewCaching(aDeclaration(withContainerData(container)))
         val body = Seq("id" -> "value", (SaveAndContinue.toString, ""))
 
         val result = controller.submitAddSeal(containerId)(postRequestAsFormUrlEncoded(body: _*))
 
         await(result) mustBe aRedirectToTheNextPage
 
-        verifyCachedSeals(Seq(Container(id = containerId, seals = Seq(Seal(id = "value")))))
+        val declaration = theCacheModelUpdated
+        declaration.containers.toList mustBe Seq(container.copy(seals = Seq(Seal(sequenceId = 0, id = "value"))))
+        valueOfEso[Container](declaration).value mustBe 0
+        valueOfEso[Seal](declaration).value mustBe 0
 
         thePageNavigatedTo mustBe SealController.displaySealSummary(containerId)
-
-        And("max seq Id is updated")
-        verify(mockSeqIdHandler).handleSequencing[Container](any(), any())(any())
       }
 
       "add an additional seal" in {
-        val seal1 = Seal(id = "seal1")
-        withNewCaching(aDeclaration(withContainerData(Container(id = containerId, seals = Seq(seal1)))))
+        val seal1 = Seal(sequenceId = 0, id = "seal1")
+        val container = Container(sequenceId = 0, id = containerId, seals = Seq(seal1))
+        withNewCaching(aDeclaration(withContainerData(container)))
 
         val body = Seq("id" -> "seal2", (SaveAndContinue.toString, ""))
         val result = controller.submitAddSeal(containerId)(postRequestAsFormUrlEncoded(body: _*))
 
         await(result) mustBe aRedirectToTheNextPage
 
-        verifyCachedSeals(Seq(Container(id = containerId, seals = Seq(seal1, Seal(id = "seal2")))))
+        val declaration = theCacheModelUpdated
+        declaration.containers.toList mustBe Seq(container.copy(seals = Seq(seal1, Seal(sequenceId = 1, id = "seal2"))))
+        valueOfEso[Container](declaration).value mustBe 0
+        valueOfEso[Seal](declaration).value mustBe 1
 
         thePageNavigatedTo mustBe SealController.displaySealSummary(containerId)
-
-        And("max seq Id is updated")
-        verify(mockSeqIdHandler).handleSequencing[Seal](any(), any())(any())
       }
 
       "add the first seal to an additional container" in {
-        withNewCaching(
-          aDeclaration(
-            withContainerData(Container(id = containerId, seals = Seq(Seal(id = "seal1"))), Container(id = "container2", seals = Seq.empty))
-          )
-        )
+        val container1 = Container(sequenceId = 0, id = containerId, seals = Seq(Seal(sequenceId = 0, id = "seal1")))
+        val container2 = Container(sequenceId = 1, id = "container2", seals = Seq.empty)
+        withNewCaching(aDeclaration(withContainerData(container1, container2)))
 
         val body = Seq("id" -> "seal2", (SaveAndContinue.toString, ""))
         val result = controller.submitAddSeal("container2")(postRequestAsFormUrlEncoded(body: _*))
 
         await(result) mustBe aRedirectToTheNextPage
 
-        verifyCachedSeals(
-          Seq(Container(id = containerId, seals = Seq(Seal(id = "seal1"))), Container(id = "container2", seals = Seq(Seal(id = "seal2"))))
-        )
+        val declaration = theCacheModelUpdated
+        declaration.containers.toList mustBe Seq(container1, container2.copy(seals = Seq(Seal(sequenceId = 1, id = "seal2"))))
+        valueOfEso[Container](declaration).value mustBe 1
+        valueOfEso[Seal](declaration).value mustBe 1
 
         thePageNavigatedTo mustBe SealController.displaySealSummary("container2")
-
-        And("max seq Id is updated")
-        verify(mockSeqIdHandler).handleSequencing[Seal](any(), any())(any())
       }
 
       "add a seal and" when {
         "user clicks 'save and return" in {
-          withNewCaching(aDeclaration(withContainerData(Container(id = containerId, seals = Seq.empty))))
+          val container = Container(sequenceId = 3, id = containerId, seals = Seq.empty)
+          withNewCaching(aDeclaration(withContainerData(container)))
           val body = Seq("id" -> "value", ("SaveAndReturn", ""))
 
           val result = controller.submitAddSeal(containerId)(postRequestAsFormUrlEncoded(body: _*))
 
           await(result) mustBe aRedirectToTheNextPage
 
-          verify(mockSeqIdHandler).handleSequencing[Seal](any(), any())(any())
-          verifyCachedSeals(Seq(Container(id = containerId, seals = Seq(Seal(id = "value")))))
+          val declaration = theCacheModelUpdated
+          declaration.containers.toList mustBe Seq(container.copy(seals = Seq(Seal(sequenceId = 0, id = "value"))))
+          valueOfEso[Container](declaration).value mustBe 3
+          valueOfEso[Seal](declaration).value mustBe 0
 
           thePageNavigatedTo mustBe SealController.displaySealSummary(containerId)
         }
@@ -308,19 +299,21 @@ class SealControllerSpec extends ControllerSpec with ErrorHandlerMocks with Give
       "remove seal confirmation" when {
 
         "user confirms that they want to remove" in {
-          val container1 = Container(id = containerId, seals = Seq(Seal(id = sealId)))
-          val container2 = Container(id = "containerB", seals = Seq(Seal(id = "sealB")))
+          val container1 = Container(sequenceId = 0, id = containerId, seals = Seq(Seal(sequenceId = 0, id = sealId)))
+          val container2 = Container(sequenceId = 1, id = "containerB", seals = Seq(Seal(sequenceId = 1, id = "sealB")))
           withNewCaching(aDeclaration(withContainerData(container1, container2)))
 
           val body = Json.obj("yesNo" -> "Yes")
-          val result = controller.submitSealRemove(containerId, sealId)(postRequest(body))
+          val result = controller.submitSealRemove("containerB", "sealB")(postRequest(body))
 
           await(result) mustBe aRedirectToTheNextPage
 
-          verify(mockSeqIdHandler).handleSequencing[Seal](any(), any())(any())
-          verifyCachedSeals(Seq(Container(id = containerId, seals = Seq.empty), container2))
+          val declaration = theCacheModelUpdated
+          declaration.containers.toList mustBe Seq(container1, container2.copy(seals = Seq.empty))
+          valueOfEso[Container](declaration).value mustBe 1
+          valueOfEso[Seal](declaration).value mustBe 1
 
-          thePageNavigatedTo mustBe SealController.displaySealSummary(containerId)
+          thePageNavigatedTo mustBe SealController.displaySealSummary("containerB")
         }
 
         "user confirms that they do not want to remove" in {
@@ -334,11 +327,6 @@ class SealControllerSpec extends ControllerSpec with ErrorHandlerMocks with Give
 
           verifyTheCacheIsUnchanged()
         }
-      }
-
-      def verifyCachedSeals(expectedContainers: Seq[Container]): Assertion = {
-        val declaration = theCacheModelUpdated
-        declaration.containers.toList mustBe expectedContainers
       }
     }
   }

@@ -36,13 +36,13 @@ case class DeclarationMeta(
 
 object DeclarationMeta {
 
-  val readsForMaxSequenceIds: Reads[Map[String, Int]] =
+  private val readsForMaxSequenceIds: Reads[Map[String, Int]] =
     (value: JsValue) =>
       JsSuccess(value.as[Map[String, JsValue]].map { case (key, value) =>
         key -> Integer.parseInt(value.toString())
       })
 
-  val writesForMaxSequenceIds: Writes[Map[String, Int]] =
+  private val writesForMaxSequenceIds: Writes[Map[String, Int]] =
     (map: Map[String, Int]) => JsObject(map.map { case (key, value) => key -> Json.toJson(value) })
 
   implicit val formatMap: Format[Map[String, Int]] = Format(readsForMaxSequenceIds, writesForMaxSequenceIds)

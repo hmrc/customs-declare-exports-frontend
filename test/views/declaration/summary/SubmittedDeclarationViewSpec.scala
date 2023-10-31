@@ -21,8 +21,9 @@ import forms.declaration.CommodityDetails
 import models.DeclarationType._
 import models.ExportsDeclaration
 import models.requests.SessionHelper
-import org.jsoup.nodes.{Document, Element}
+import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
+import play.twirl.api.HtmlFormat.Appendable
 import services.cache.ExportsTestHelper
 import testdata.SubmissionsTestData.submission
 import tools.Stubs
@@ -34,10 +35,10 @@ import java.util.function.Predicate
 class SubmittedDeclarationViewSpec extends UnitViewSpec with Stubs with ExportsTestHelper with Injector {
 
   val declarationPage = instanceOf[submitted_declaration_page]
-  def createView(declaration: ExportsDeclaration = aDeclaration()): Document =
+  def createView(declaration: ExportsDeclaration = aDeclaration()): Appendable =
     declarationPage(submission, declaration)(journeyRequest(declaration, (SessionHelper.declarationUuid, "decId")), messages)
 
-  def links(view: Document): Elements = {
+  def links(view: Appendable): Elements = {
     val allLinks = view.getElementsByClass("govuk-link")
 
     val filter = new Predicate[Element] {
@@ -76,7 +77,7 @@ class SubmittedDeclarationViewSpec extends UnitViewSpec with Stubs with ExportsT
 
     "have references section" in {
       val view = createView()
-      view.getElementById("declaration-references-summary").text mustNot be(empty)
+      view.getElementsByTag("h2").first.text mustBe messages(s"declaration.summary.references")
 
       links(view) mustBe empty
     }

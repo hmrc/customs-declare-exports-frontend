@@ -19,17 +19,15 @@ package controllers.declaration
 import base.ControllerSpec
 import connectors.CodeListConnector
 import controllers.declaration.routes.{LocationOfGoodsController, RoutingCountriesController}
-import controllers.helpers.{Remove, SequenceIdHelper}
+import controllers.helpers.Remove
+import controllers.helpers.SequenceIdHelper.valueOfEso
 import forms.declaration.countries.{Country => FormCountry}
-import models.DeclarationMeta
 import models.codes.Country
 import models.declaration.RoutingCountry
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
-import org.mockito.invocation.InvocationOnMock
-import org.mockito.stubbing.Answer
-import org.scalatest.{Assertion, GivenWhenThen}
+import org.scalatest.{Assertion, GivenWhenThen, OptionValues}
 import play.api.data.Form
 import play.api.libs.json.{JsObject, JsString}
 import play.api.mvc.{AnyContentAsEmpty, Request}
@@ -40,14 +38,12 @@ import views.html.declaration.destinationCountries.{country_of_routing, routing_
 
 import scala.collection.immutable.ListMap
 
-class RoutingCountriesControllerSpec extends ControllerSpec with GivenWhenThen {
+class RoutingCountriesControllerSpec extends ControllerSpec with GivenWhenThen with OptionValues {
 
   val mockRoutingQuestionPage = mock[routing_country_question]
   val mockCountryOfRoutingPage = mock[country_of_routing]
   val mockCodeListConnector = mock[CodeListConnector]
   val countryHelper = instanceOf[CountryHelper]
-
-  private val mockSeqIdHandler = mock[SequenceIdHelper]
 
   val controller = new RoutingCountriesController(
     mockAuthAction,
@@ -56,8 +52,7 @@ class RoutingCountriesControllerSpec extends ControllerSpec with GivenWhenThen {
     navigator,
     stubMessagesControllerComponents(),
     mockRoutingQuestionPage,
-    mockCountryOfRoutingPage,
-    mockSeqIdHandler
+    mockCountryOfRoutingPage
   )(ec, mockCodeListConnector)
 
   override protected def beforeEach(): Unit = {
@@ -68,16 +63,10 @@ class RoutingCountriesControllerSpec extends ControllerSpec with GivenWhenThen {
     when(mockCountryOfRoutingPage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
     when(mockCodeListConnector.getCountryCodes(any()))
       .thenReturn(ListMap("GB" -> Country("United Kingdom", "GB"), "FR" -> Country("France", "FR"), "IR" -> Country("Ireland", "IE")))
-    when(mockSeqIdHandler.handleSequencing[RoutingCountry](any(), any())(any())).thenAnswer(new Answer[(Seq[RoutingCountry], DeclarationMeta)] {
-      def answer(invocation: InvocationOnMock): (Seq[RoutingCountry], DeclarationMeta) = {
-        val args = invocation.getArguments
-        (args(0).asInstanceOf[Seq[RoutingCountry]], args(1).asInstanceOf[DeclarationMeta])
-      }
-    })
   }
 
   override protected def afterEach(): Unit = {
-    reset(mockRoutingQuestionPage, mockCountryOfRoutingPage, mockCodeListConnector, mockSeqIdHandler)
+    reset(mockRoutingQuestionPage, mockCountryOfRoutingPage, mockCodeListConnector)
 
     super.afterEach()
   }
@@ -233,10 +222,7 @@ class RoutingCountriesControllerSpec extends ControllerSpec with GivenWhenThen {
             await(result) mustBe aRedirectToTheNextPage
             thePageNavigatedTo mustBe RoutingCountriesController.displayRoutingCountry
 
-            verifyCachedRoutingCountries("GB")
-
-            And("max seq id is updated")
-            verify(mockSeqIdHandler).handleSequencing[RoutingCountry](any(), any())(any())
+            verifyCachedRoutingCountries(1, "GB")
           }
 
           "there are existing countries" in {
@@ -249,9 +235,7 @@ class RoutingCountriesControllerSpec extends ControllerSpec with GivenWhenThen {
             await(result) mustBe aRedirectToTheNextPage
             thePageNavigatedTo mustBe RoutingCountriesController.displayRoutingCountry
 
-            verifyCachedRoutingCountries("FR", "GB", "IE")
-            And("max seq id is updated")
-            verify(mockSeqIdHandler).handleSequencing[RoutingCountry](any(), any())(any())
+            verifyCachedRoutingCountries(3, "FR", "GB", "IE")
           }
         }
       }
@@ -267,22 +251,18 @@ class RoutingCountriesControllerSpec extends ControllerSpec with GivenWhenThen {
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe RoutingCountriesController.displayRoutingCountry
 
-          verifyCachedRoutingCountries("PL", "GB")
-          And("max seq id remains the same")
-          verify(mockSeqIdHandler).handleSequencing[RoutingCountry](any(), any())(any())
+          verifyCachedRoutingCountries(2, "PL", "GB")
         }
 
         "removing country that exists in cache" in {
-          withNewCaching(aDeclaration(withRoutingQuestion(), withRoutingCountries(Seq(FormCountry(Some("FR")), FormCountry(Some("GB"))))))
+          withNewCaching(aDeclaration(withRoutingQuestion(), withRoutingCountries(Seq(FormCountry(Some("FR")), FormCountry(Some("IE"))))))
 
           val result = controller.submitRoutingCountry()(postRequestAsFormUrlEncoded(removeAction))
 
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe RoutingCountriesController.displayRoutingCountry
 
-          verifyCachedRoutingCountries("GB")
-          And("max seq id remains the same")
-          verify(mockSeqIdHandler).handleSequencing[RoutingCountry](any(), any())(any())
+          verifyCachedRoutingCountries(2, "IE")
         }
       }
 
@@ -299,7 +279,7 @@ class RoutingCountriesControllerSpec extends ControllerSpec with GivenWhenThen {
             await(result) mustBe aRedirectToTheNextPage
             thePageNavigatedTo mustBe LocationOfGoodsController.displayPage
 
-            verifyCachedRoutingCountries("FR", "GB", "IE")
+            verifyCachedRoutingCountries(3, "FR", "GB", "IE")
           }
 
           "there are no countries in list" in {
@@ -312,7 +292,7 @@ class RoutingCountriesControllerSpec extends ControllerSpec with GivenWhenThen {
             await(result) mustBe aRedirectToTheNextPage
             thePageNavigatedTo mustBe LocationOfGoodsController.displayPage
 
-            verifyCachedRoutingCountries("IE")
+            verifyCachedRoutingCountries(1, "IE")
           }
         }
 
@@ -330,16 +310,17 @@ class RoutingCountriesControllerSpec extends ControllerSpec with GivenWhenThen {
         }
       }
 
-      def verifyCachedRoutingCountries(expected: String*): Assertion = {
+      def verifyCachedRoutingCountries(expectedSize: Int, expectedCountries: String*): Assertion = {
         val declaration = theCacheModelUpdated
         declaration.containRoutingCountries mustBe true
 
         val routingCountries = declaration.locations.routingCountries
 
-        routingCountries.zip(expected).foreach { case (routingCountry, expectedCountry) =>
+        routingCountries.zip(expectedCountries).foreach { case (routingCountry, expectedCountry) =>
           routingCountry.country == FormCountry(Some(expectedCountry)) mustBe true
         }
-        routingCountries.size mustBe expected.size
+        routingCountries.size mustBe expectedCountries.size
+        valueOfEso[RoutingCountry](declaration).value mustBe expectedSize
       }
     }
   }

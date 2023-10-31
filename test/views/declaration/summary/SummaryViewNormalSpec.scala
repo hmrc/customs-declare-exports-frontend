@@ -20,7 +20,7 @@ import controllers.routes.RejectedNotificationsController
 import models.declaration.DeclarationStatus.{COMPLETE, DRAFT, INITIAL}
 import models.ExportsDeclaration
 import models.declaration.submissions.EnhancedStatus.ERRORS
-import org.jsoup.nodes.Document
+import play.twirl.api.HtmlFormat.Appendable
 import play.api.mvc.Call
 import views.html.declaration.summary.normal_summary_page
 
@@ -29,10 +29,10 @@ class SummaryViewNormalSpec extends SummaryViewSpec {
   private val backLink = Call("GET", "/backLink")
   private val normal_summaryPage = instanceOf[normal_summary_page]
 
-  def view(declaration: ExportsDeclaration = aDeclaration()): Document =
+  def createView(declaration: ExportsDeclaration = aDeclaration()): Appendable =
     normal_summaryPage(backLink)(journeyRequest(declaration), messages, minimalAppConfig)
 
-  def viewWithError(declaration: ExportsDeclaration = aDeclaration()): Document =
+  def viewWithError(declaration: ExportsDeclaration = aDeclaration()): Appendable =
     normal_summaryPage(backLink, dummyFormError)(journeyRequest(declaration), messages, minimalAppConfig)
 
   private val declarationInDraft = aDeclarationAfter(aDeclaration().updateReadyForSubmission(false))
@@ -44,16 +44,16 @@ class SummaryViewNormalSpec extends SummaryViewSpec {
 
   "Summary page" when {
 
-    behave like sectionsVisibility(view)
+    behave like sectionsVisibility(createView)
     behave like displayErrorSummary(documentWithFormError)
 
     allDeclarationStates.foreach { declaration =>
-      val document = view(declaration)
+      val view = createView(declaration)
 
       (declaration.declarationMeta.readyForSubmission, declaration.declarationMeta.parentDeclarationEnhancedStatus) match {
-        case (_, Some(ERRORS)) => behave like commonBehaviour("errors", document)
-        case (Some(true), _)   => behave like commonBehaviour("ready", document)
-        case _                 => behave like commonBehaviour("draft", document)
+        case (_, Some(ERRORS)) => behave like commonBehaviour("errors", view)
+        case (Some(true), _)   => behave like commonBehaviour("ready", view)
+        case _                 => behave like commonBehaviour("draft", view)
       }
     }
 
@@ -62,8 +62,8 @@ class SummaryViewNormalSpec extends SummaryViewSpec {
       List(DRAFT, INITIAL, COMPLETE).foreach { status =>
         s"the declaration is in '$status' status and" when {
           "declaration's 'parenDeclarationId' is NOT defined" in {
-            val document = view(aDeclaration(withStatus(status)))
-            val buttons = document.getElementsByClass("govuk-button--secondary")
+            val view = createView(aDeclaration(withStatus(status)))
+            val buttons = view.getElementsByClass("govuk-button--secondary")
             buttons.size mustBe 0
           }
         }
@@ -73,8 +73,8 @@ class SummaryViewNormalSpec extends SummaryViewSpec {
         s"the declaration is in '$status' status and" when {
           "declaration's 'parenDeclarationId' is defined" in {
             val parentId = "parentId"
-            val document = view(aDeclaration(withStatus(status), withParentDeclarationId(parentId)))
-            val buttons = document.getElementsByClass("govuk-button--secondary")
+            val view = createView(aDeclaration(withStatus(status), withParentDeclarationId(parentId)))
+            val buttons = view.getElementsByClass("govuk-button--secondary")
             buttons.size mustBe 0
           }
         }
@@ -85,8 +85,8 @@ class SummaryViewNormalSpec extends SummaryViewSpec {
       "the declaration has errors and" when {
         "declaration's 'parentDeclarationId' is defined" in {
           val parentId = "parentId"
-          val document = view(aDeclaration(withParentDeclarationEnhancedStatus(ERRORS), withParentDeclarationId(parentId)))
-          val buttons = document.getElementsByClass("govuk-button--secondary")
+          val view = createView(aDeclaration(withParentDeclarationEnhancedStatus(ERRORS), withParentDeclarationId(parentId)))
+          val buttons = view.getElementsByClass("govuk-button--secondary")
           buttons.size mustBe 1
 
           val button = buttons.get(0)
