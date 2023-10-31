@@ -17,7 +17,13 @@
 package controllers.declaration
 
 import base.ControllerSpec
-import controllers.declaration.routes.{DepartureTransportController, ExpressConsignmentController, TransportContainerController}
+import controllers.declaration.routes.{
+  BorderTransportController,
+  DepartureTransportController,
+  ExpressConsignmentController,
+  TransportContainerController,
+  TransportCountryController
+}
 import controllers.helpers.TransportSectionHelper.{nonPostalOrFTIModeOfTransportCodes, postalOrFTIModeOfTransportCodes}
 import controllers.routes.RootController
 import forms.declaration.InlandModeOfTransportCode
@@ -127,6 +133,38 @@ class InlandTransportDetailsControllerSpec extends ControllerSpec with GivenWhen
         status(result) mustBe BAD_REQUEST
       }
 
+      "return an error" when {
+
+        postalOrFTIModeOfTransportCodes.foreach { modeOfTransportCode =>
+          s"transportMode '$modeOfTransportCode' is selected on the page at /transport-leaving-the-border" in {
+
+            And("the same option has not been selected on the page at /inland-transport-details page")
+            withNewCaching(aDeclaration(withType(request.declarationType), withBorderModeOfTransportCode(modeOfTransportCode)))
+
+            val result = controller.submit()(postRequest(body))
+            status(result) mustBe BAD_REQUEST
+          }
+        }
+      }
+
+      postalOrFTIModeOfTransportCodes.foreach { transportMode =>
+        s"modeOfTransportCode is $transportMode" should {
+          "reset the cache for transport.transportCrossingTheBorderNationality" in {
+            withNewCaching(aDeclarationAfter(request.cacheModel, withTransportCountry(Some("South Africa"))))
+
+            val body = Json.obj("inlandModeOfTransportCode" -> transportMode.value.value)
+            await(controller.submit()(postRequest(body)))
+
+            theCacheModelUpdated.transport.transportCrossingTheBorderNationality mustBe None
+          }
+        }
+      }
+    }
+  }
+
+  onJourney(STANDARD, SUPPLEMENTARY) { request =>
+    "Inland Transport Details Controller on POST" should {
+
       nonPostalOrFTIModeOfTransportCodes.foreach { transportMode =>
         val expectedRedirect = DepartureTransportController.displayPage
 
@@ -160,31 +198,47 @@ class InlandTransportDetailsControllerSpec extends ControllerSpec with GivenWhen
           }
         }
 
-        s"modeOfTransportCode is $transportMode" should {
-          "reset the cache for transport.transportCrossingTheBorderNationality" in {
-            withNewCaching(aDeclarationAfter(request.cacheModel, withTransportCountry(Some("South Africa"))))
+      }
+
+    }
+  }
+
+  onJourney(OCCASIONAL, SIMPLIFIED) { request =>
+    "Inland Transport Details Controller on POST" should {
+
+      nonPostalOrFTIModeOfTransportCodes.foreach { transportMode =>
+        val expectedRedirect = BorderTransportController.displayPage
+
+        s"redirect to ${expectedRedirect.url}" when {
+          s"transportMode '$transportMode' is selected" in {
+            withNewCaching(request.cacheModel)
+
+            val body = Json.obj("inlandModeOfTransportCode" -> transportMode.value)
+            val result = await(controller.submit()(postRequest(body)))
+
+            result mustBe aRedirectToTheNextPage
+            thePageNavigatedTo mustBe expectedRedirect
+          }
+        }
+      }
+
+      postalOrFTIModeOfTransportCodes.foreach { transportMode =>
+        val expectedRedirect = TransportCountryController.displayPage
+
+        s"redirect to ${expectedRedirect.url}" when {
+          s"transportMode '$transportMode' is selected" in {
+            withNewCaching(request.cacheModel)
 
             val body = Json.obj("inlandModeOfTransportCode" -> transportMode.value.value)
-            await(controller.submit()(postRequest(body)))
+            val result = await(controller.submit()(postRequest(body)))
 
-            theCacheModelUpdated.transport.transportCrossingTheBorderNationality mustBe None
+            result mustBe aRedirectToTheNextPage
+            thePageNavigatedTo mustBe expectedRedirect
           }
         }
+
       }
 
-      "return an error" when {
-
-        postalOrFTIModeOfTransportCodes.foreach { modeOfTransportCode =>
-          s"transportMode '$modeOfTransportCode' is selected on the page at /transport-leaving-the-border" in {
-
-            And("the same option has not been selected on the page at /inland-transport-details page")
-            withNewCaching(aDeclaration(withType(request.declarationType), withBorderModeOfTransportCode(modeOfTransportCode)))
-
-            val result = controller.submit()(postRequest(body))
-            status(result) mustBe BAD_REQUEST
-          }
-        }
-      }
     }
   }
 

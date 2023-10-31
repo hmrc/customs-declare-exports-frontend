@@ -17,13 +17,13 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.declaration.routes.{BorderTransportController, ExpressConsignmentController, TransportCountryController}
+import controllers.declaration.routes._
 import controllers.helpers.TransportSectionHelper.{isGuernseyOrJerseyDestination, isPostalOrFTIModeOfTransport}
 import controllers.navigation.Navigator
 import forms.declaration.DepartureTransport
 import forms.declaration.DepartureTransport.form
 import forms.declaration.InlandOrBorder.Border
-import models.DeclarationType.CLEARANCE
+import models.DeclarationType._
 import models.ExportsDeclaration
 import models.requests.JourneyRequest
 import play.api.i18n.I18nSupport
@@ -71,12 +71,9 @@ class DepartureTransportController @Inject() (
   }
 
   private def submit(fun: () => Future[Result])(implicit request: JourneyRequest[AnyContent]): Future[Result] = {
-    val declaration = request.cacheModel
-    val isPostalOrFTI =
-      isPostalOrFTIModeOfTransport(declaration.transportLeavingBorderCode) ||
-        declaration.`type` != CLEARANCE && isPostalOrFTIModeOfTransport(declaration.inlandModeOfTransportCode)
-    val resetValueAndGotoNextPage = isPostalOrFTI || isGuernseyOrJerseyDestination(declaration)
-    if (resetValueAndGotoNextPage) updateCache(DepartureTransport(None, None)).map(_ => nextPage) else fun()
+    val resetValueAndGotoNextPage = isPostalOrFTI || isGuernseyOrJerseyDestination(request.cacheModel)
+    if (resetValueAndGotoNextPage || isSimplifiedOrOccasional) updateCache(DepartureTransport(None, None)).map(_ => nextPage)
+    else fun()
   }
 
   private def nextPage(implicit request: JourneyRequest[AnyContent]): Result = {
@@ -89,5 +86,12 @@ class DepartureTransportController @Inject() (
 
   private def updateCache(formData: DepartureTransport)(implicit request: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
     updateDeclarationFromRequest(_.updateDepartureTransport(formData))
+
+  private def isSimplifiedOrOccasional(implicit request: JourneyRequest[AnyContent]): Boolean =
+    request.isType(SIMPLIFIED) || request.isType(OCCASIONAL)
+
+  private def isPostalOrFTI(implicit request: JourneyRequest[AnyContent]): Boolean =
+    isPostalOrFTIModeOfTransport(request.cacheModel.transportLeavingBorderCode) ||
+      request.cacheModel.`type` != CLEARANCE && isPostalOrFTIModeOfTransport(request.cacheModel.inlandModeOfTransportCode)
 
 }

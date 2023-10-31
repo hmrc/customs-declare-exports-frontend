@@ -238,8 +238,12 @@ trait CacheDependentNavigators {
     routes.SupervisingCustomsOfficeController.displayPage
 
   protected def transportCountryPreviousPage(cacheModel: ExportsDeclaration): Call =
-    if (cacheModel.isInlandOrBorder(InlandOrBorder.Border)) routes.DepartureTransportController.displayPage
-    else routes.BorderTransportController.displayPage
+    if (cacheModel.isInlandOrBorder(InlandOrBorder.Border) && (cacheModel.isType(SIMPLIFIED) || cacheModel.isType(OCCASIONAL)))
+      routes.InlandOrBorderController.displayPage
+    else if (cacheModel.isInlandOrBorder(InlandOrBorder.Border))
+      routes.DepartureTransportController.displayPage
+    else
+      routes.BorderTransportController.displayPage
 
   protected def expressConsignmentPreviousPage(cacheModel: ExportsDeclaration): Call = {
     val guernseyOrJersey = isGuernseyOrJerseyDestination(cacheModel)
