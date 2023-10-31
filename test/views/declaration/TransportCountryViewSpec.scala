@@ -18,7 +18,7 @@ package views.declaration
 
 import base.Injector
 import connectors.CodeListConnector
-import controllers.declaration.routes.{BorderTransportController, DepartureTransportController, InlandTransportDetailsController}
+import controllers.declaration.routes.{BorderTransportController, DepartureTransportController, InlandOrBorderController}
 import controllers.helpers.TransportSectionHelper.nonPostalOrFTIModeOfTransportCodes
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.InlandOrBorder.Border
@@ -205,7 +205,7 @@ class TransportCountryViewSpec extends PageWithButtonsSpec with Injector {
                   val view = createView(form(transportMode), transportMode)
                   val backButton = view.getElementById("back-link")
                   backButton must containMessage("site.backToPreviousQuestion")
-                  backButton.getElementById("back-link") must haveHref(InlandTransportDetailsController.displayPage)
+                  backButton.getElementById("back-link") must haveHref(InlandOrBorderController.displayPage)
                 }
               }
 

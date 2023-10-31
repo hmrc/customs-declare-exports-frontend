@@ -239,7 +239,7 @@ trait CacheDependentNavigators {
 
   protected def transportCountryPreviousPage(cacheModel: ExportsDeclaration): Call =
     if (cacheModel.isInlandOrBorder(InlandOrBorder.Border) && (cacheModel.isType(SIMPLIFIED) || cacheModel.isType(OCCASIONAL)))
-      routes.InlandTransportDetailsController.displayPage
+      routes.InlandOrBorderController.displayPage
     else if (cacheModel.isInlandOrBorder(InlandOrBorder.Border))
       routes.DepartureTransportController.displayPage
     else
