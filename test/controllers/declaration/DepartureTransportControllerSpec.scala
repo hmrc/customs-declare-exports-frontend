@@ -18,7 +18,7 @@ package controllers.declaration
 
 import base.{ControllerSpec, MockTransportCodeService}
 import controllers.declaration.routes.{BorderTransportController, ExpressConsignmentController, TransportCountryController}
-import controllers.helpers.TransportSectionHelper.{nonPostalOrFTIModeOfTransportCodes, postalOrFTIModeOfTransportCodes, Guernsey, Jersey}
+import controllers.helpers.TransportSectionHelper.{postalOrFTIModeOfTransportCodes, Guernsey, Jersey}
 import forms.declaration.DepartureTransport
 import forms.declaration.DepartureTransport.radioButtonGroupId
 import forms.declaration.InlandOrBorder.Border
@@ -232,80 +232,37 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
     }
 
     onJourney(OCCASIONAL, SIMPLIFIED) { request =>
-      postalOrFTIModeOfTransportCodes.foreach { transportMode =>
-        "redirect to /border-country" when {
+      "redirect to /border-country" when {
+        "the 'displayPage' is invoked" in {
+          withNewCaching(request.cacheModel)
 
-          s"$transportMode" when {
-            "the 'displayPage' is invoked" in {
-              withNewCaching(aDeclarationAfter(request.cacheModel, withBorderModeOfTransportCode(transportMode)))
+          val result = controller.displayPage(getRequest())
 
-              val result = controller.displayPage(getRequest())
+          status(result) must be(SEE_OTHER)
 
-              status(result) must be(SEE_OTHER)
+          thePageNavigatedTo mustBe BorderTransportController.displayPage
 
-              thePageNavigatedTo mustBe BorderTransportController.displayPage
+          val transport = theCacheModelUpdated.transport
+          transport.meansOfTransportOnDepartureType mustBe None
+          transport.meansOfTransportOnDepartureIDNumber mustBe None
+        }
 
-              val transport = theCacheModelUpdated.transport
-              transport.meansOfTransportOnDepartureType mustBe None
-              transport.meansOfTransportOnDepartureIDNumber mustBe None
-            }
+        "the 'submitForm' is invoked" in {
+          withNewCaching(request.cacheModel)
 
-            "the 'submitForm' is invoked" in {
-              withNewCaching(aDeclarationAfter(request.cacheModel, withBorderModeOfTransportCode(transportMode)))
+          val correctForm = formData(transportCodeService.WagonNumber.value, transportCodeService.WagonNumber.id, departureNumber)
 
-              val correctForm = formData(transportCodeService.WagonNumber.value, transportCodeService.WagonNumber.id, departureNumber)
+          val result = controller.submitForm()(postRequest(correctForm))
 
-              val result = controller.submitForm()(postRequest(correctForm))
+          status(result) mustBe SEE_OTHER
 
-              status(result) mustBe SEE_OTHER
+          thePageNavigatedTo mustBe BorderTransportController.displayPage
 
-              thePageNavigatedTo mustBe BorderTransportController.displayPage
-
-              val transport = theCacheModelUpdated.transport
-              transport.meansOfTransportOnDepartureType mustBe None
-              transport.meansOfTransportOnDepartureIDNumber mustBe None
-            }
-          }
-
+          val transport = theCacheModelUpdated.transport
+          transport.meansOfTransportOnDepartureType mustBe None
+          transport.meansOfTransportOnDepartureIDNumber mustBe None
         }
       }
-
-      nonPostalOrFTIModeOfTransportCodes.foreach { transportMode =>
-        "redirect to transport-country" when {
-          s"$transportMode" when {
-            "the 'displayPage' is invoked" in {
-              withNewCaching(aDeclarationAfter(request.cacheModel, withBorderModeOfTransportCode(Some(transportMode))))
-
-              val result = controller.displayPage(getRequest())
-
-              status(result) must be(SEE_OTHER)
-
-              thePageNavigatedTo mustBe TransportCountryController.displayPage
-
-              val transport = theCacheModelUpdated.transport
-              transport.meansOfTransportOnDepartureType mustBe None
-              transport.meansOfTransportOnDepartureIDNumber mustBe None
-            }
-
-            "the 'submitForm' is invoked" in {
-              withNewCaching(aDeclarationAfter(request.cacheModel, withBorderModeOfTransportCode(Some(transportMode))))
-
-              val correctForm = formData(transportCodeService.WagonNumber.value, transportCodeService.WagonNumber.id, departureNumber)
-
-              val result = controller.submitForm()(postRequest(correctForm))
-
-              status(result) mustBe SEE_OTHER
-
-              thePageNavigatedTo mustBe TransportCountryController.displayPage
-
-              val transport = theCacheModelUpdated.transport
-              transport.meansOfTransportOnDepartureType mustBe None
-              transport.meansOfTransportOnDepartureIDNumber mustBe None
-            }
-          }
-        }
-      }
-
     }
 
     onJourney(CLEARANCE) { request =>
