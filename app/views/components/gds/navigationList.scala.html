@@ -14,16 +14,12 @@
  * limitations under the License.
  *@
 
-@this()
+ @import views.html.components.gds.bulletList
+
+@this(bulletList : bulletList)
 
 @(items: Seq[Html], additionalListClasses: Option[String] = None, itemClasses: Option[String] = None)
 
-<ul class='govuk-list govuk-list--bullet@additionalListClasses.fold("")(cls => s" ${cls}")'>
-    @items.map { item =>
-        @itemClasses.fold {
-            <li>@item</li>
-        } { cls =>
-            <li class="@cls">@item</li>
-        }
-    }
-</ul>
+<nav>
+    @bulletList(items, additionalListClasses, itemClasses)
+</nav>
