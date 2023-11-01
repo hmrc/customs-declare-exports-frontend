@@ -89,7 +89,7 @@ trait SummaryViewSpec extends UnitViewSpec with Injector with Stubs {
     }
 
     "have countries section" in {
-      view(aDeclaration(withDestinationCountry())).getElementById("declaration-countries-summary").text mustNot be(empty)
+      view(aDeclaration(withDestinationCountry())).getElementsByClass("countries-card").text mustNot be(empty)
     }
 
     "not have locations section" in {

@@ -98,7 +98,7 @@ class SubmittedDeclarationViewSpec extends UnitViewSpec with Stubs with ExportsT
 
     "have countries section" in {
       val view = createView(declaration = aDeclaration(withDestinationCountry()))
-      view.getElementById("declaration-countries-summary").text mustNot be(empty)
+      view.getElementsByClass("countries-card").text mustNot be(empty)
       links(view) mustBe empty
     }
 
