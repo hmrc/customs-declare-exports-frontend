@@ -36,6 +36,7 @@ class Card6ForTransport @Inject() (govukSummaryList: GovukSummaryList) extends S
 
     val hasData = transport.expressConsignment.isDefined ||
       inlandModeOfTransportCode(declaration).isDefined ||
+      declaration.locations.warehouseIdentification.isDefined ||
       transport.borderModeOfTransportCode.isDefined
 
     if (hasData) displayCard(declaration, actionsEnabled) else HtmlFormat.empty
@@ -48,6 +49,7 @@ class Card6ForTransport @Inject() (govukSummaryList: GovukSummaryList) extends S
     List(
       borderTransport(declaration.transport, actionsEnabled),
       inlandModeOfTransport(declaration, actionsEnabled),
+      warehouseIdentification(declaration, actionsEnabled),
       expressConsignment(declaration.transport, actionsEnabled)
     ).flatten
 
@@ -64,20 +66,30 @@ class Card6ForTransport @Inject() (govukSummaryList: GovukSummaryList) extends S
       )
     }
 
+  private def warehouseIdentification(declaration: ExportsDeclaration, actionsEnabled: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
+    declaration.locations.warehouseIdentification.map { warehouseIdentification =>
+      SummaryListRow(
+        key(
+          if (warehouseIdentification.identificationNumber.isDefined) "transport.warehouse.id"
+          else "transport.warehouse.no.label"
+        ),
+        value(warehouseIdentification.identificationNumber.getOrElse(messages("site.no"))),
+        classes = "warehouseId",
+        changeLink(WarehouseIdentificationController.displayPage, "transport.warehouse.id", actionsEnabled)
+      )
+    }
+
   private def inlandModeOfTransport(declaration: ExportsDeclaration, actionsEnabled: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
-    inlandModeOfTransportCode(declaration)
-      .map(inlandModeOfTransportCode =>
+    inlandModeOfTransportCode(declaration).flatMap {
+      _.inlandModeOfTransportCode.map { inlandModeOfTransportCode =>
         SummaryListRow(
           key("transport.inlandModeOfTransport"),
-          valueKey(
-            inlandModeOfTransportCode.inlandModeOfTransportCode
-              .map(code => s"declaration.summary.transport.inlandModeOfTransport.$code")
-              .getOrElse("")
-          ),
+          valueKey(s"declaration.summary.transport.inlandModeOfTransport.$inlandModeOfTransportCode"),
           classes = "modeOfTransport",
           changeLink(InlandTransportDetailsController.displayPage, "transport.inlandModeOfTransport", actionsEnabled)
         )
-      )
+      }
+    }
 
   private def expressConsignment(transport: Transport, actionsEnabled: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
     transport.expressConsignment.map { expressConsignment =>

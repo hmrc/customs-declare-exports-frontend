@@ -79,6 +79,13 @@ class Card6ForTransportSpec extends UnitViewSpec with ExportsTestHelper with Inj
       checkSummaryRow(row, "transport.expressConsignment", YesNoAnswers.yes, call, "transport.expressConsignment")
     }
 
+    "show the warehouse-id" in {
+      val row = view.getElementsByClass("warehouseId")
+
+      val call = Some(WarehouseIdentificationController.displayPage)
+      checkSummaryRow(row, "transport.warehouse.id", "12345", call, "transport.warehouse.id")
+    }
+
     "NOT have change links" when {
       "'actionsEnabled' is false" in {
         val view = card6ForTransport.eval(declaration, false)(messages)
