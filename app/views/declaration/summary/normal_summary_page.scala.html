@@ -33,6 +33,7 @@
     card1ForReferences: Card1ForReferences,
     card2ForParties: Card2ForParties,
     card3ForRouteOfGoods: Card3ForRouteOfGoods,
+    card6ForTransport: Card6ForTransport,
     locations_section: locations_section,
     transaction_section: transaction_section,
     items_section: items_section,
@@ -119,6 +120,8 @@
     @card2ForParties.eval(request.cacheModel, true)
 
     @card3ForRouteOfGoods.eval(request.cacheModel)
+
+    @card6ForTransport.eval(request.cacheModel)
 
     @locations_section(request.cacheModel)
 

@@ -51,7 +51,7 @@ class Card3ForRouteOfGoods @Inject() (govukSummaryList: GovukSummaryList, countr
     locations.hasRoutingCountries.map { _ =>
       lazy val countries = Countries
         .findByCodes(locations.routingCountries.flatMap(_.country.code))
-        .map(countryHelper.getShortNameForCountry(_))
+        .map(countryHelper.getShortNameForCountry)
         .mkString(", ")
 
       SummaryListRow(
