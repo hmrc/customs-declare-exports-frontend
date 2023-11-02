@@ -17,6 +17,8 @@
 package views.helpers.summary
 
 import controllers.declaration.routes._
+import forms.declaration.InlandModeOfTransportCode
+import forms.declaration.ModeOfTransportCode.Empty
 import models.ExportsDeclaration
 import models.declaration.Transport
 import play.api.i18n.Messages
@@ -32,16 +34,50 @@ class Card6ForTransport @Inject() (govukSummaryList: GovukSummaryList) extends S
   def eval(declaration: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages): Html = {
     val transport = declaration.transport
 
-    val hasData = transport.expressConsignment.isDefined
+    val hasData = transport.expressConsignment.isDefined ||
+      inlandModeOfTransportCode(declaration).isDefined ||
+      transport.borderModeOfTransportCode.isDefined
 
-    if (hasData) displayCard(transport, actionsEnabled) else HtmlFormat.empty
+    if (hasData) displayCard(declaration, actionsEnabled) else HtmlFormat.empty
   }
 
-  private def displayCard(transport: Transport, actionsEnabled: Boolean)(implicit messages: Messages): Html =
-    govukSummaryList(SummaryList(rows(transport, actionsEnabled), card("transport")))
+  private def displayCard(declaration: ExportsDeclaration, actionsEnabled: Boolean)(implicit messages: Messages): Html =
+    govukSummaryList(SummaryList(rows(declaration, actionsEnabled), card("transport")))
 
-  private def rows(transport: Transport, actionsEnabled: Boolean)(implicit messages: Messages): Seq[SummaryListRow] =
-    List(expressConsignment(transport, actionsEnabled)).flatten
+  private def rows(declaration: ExportsDeclaration, actionsEnabled: Boolean)(implicit messages: Messages): Seq[SummaryListRow] =
+    List(
+      borderTransport(declaration.transport, actionsEnabled),
+      inlandModeOfTransport(declaration, actionsEnabled),
+      expressConsignment(declaration.transport, actionsEnabled)
+    ).flatten
+
+  private def inlandModeOfTransportCode(declaration: ExportsDeclaration): Option[InlandModeOfTransportCode] =
+    declaration.locations.inlandModeOfTransportCode.filterNot(_.inlandModeOfTransportCode contains Empty)
+
+  private def borderTransport(transport: Transport, actionsEnabled: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
+    transport.borderModeOfTransportCode.map { borderModeOfTransportCode =>
+      SummaryListRow(
+        key("transport.departure.transportCode.header"),
+        valueKey(s"declaration.summary.transport.departure.transportCode.${borderModeOfTransportCode.getCodeValue}"),
+        classes = "borderTransport",
+        changeLink(TransportLeavingTheBorderController.displayPage, "transport.departure.transportCode.header", actionsEnabled)
+      )
+    }
+
+  private def inlandModeOfTransport(declaration: ExportsDeclaration, actionsEnabled: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
+    inlandModeOfTransportCode(declaration)
+      .map(inlandModeOfTransportCode =>
+        SummaryListRow(
+          key("transport.inlandModeOfTransport"),
+          valueKey(
+            inlandModeOfTransportCode.inlandModeOfTransportCode
+              .map(code => s"declaration.summary.transport.inlandModeOfTransport.$code")
+              .getOrElse("")
+          ),
+          classes = "modeOfTransport",
+          changeLink(InlandTransportDetailsController.displayPage, "transport.inlandModeOfTransport", actionsEnabled)
+        )
+      )
 
   private def expressConsignment(transport: Transport, actionsEnabled: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
     transport.expressConsignment.map { expressConsignment =>
