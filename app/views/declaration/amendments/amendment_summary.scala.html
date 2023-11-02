@@ -32,7 +32,7 @@
     card1ForReferences: Card1ForReferences,
     card2ForParties: Card2ForParties,
     card3ForRouteOfGoods: Card3ForRouteOfGoods,
-    locations_section: locations_section,
+    card4ForLocations: Card4ForLocations,
     transaction_section: transaction_section,
     items_section: items_section,
     transport_section: transport_section,
@@ -60,13 +60,13 @@
         content = Text(messages("declaration.summary.warning"))
     ))
 
-    @card1ForReferences.eval(request.cacheModel, true)
+    @card1ForReferences.eval(request.cacheModel)
 
-    @card2ForParties.eval(request.cacheModel, true)
+    @card2ForParties.eval(request.cacheModel)
 
     @card3ForRouteOfGoods.eval(request.cacheModel)
 
-    @locations_section(request.cacheModel)
+    @card4ForLocations.eval(request.cacheModel)
 
     @transaction_section(request.cacheModel)
 

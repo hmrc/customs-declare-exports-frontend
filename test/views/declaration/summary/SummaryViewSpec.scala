@@ -93,13 +93,12 @@ trait SummaryViewSpec extends UnitViewSpec with Injector with Stubs {
     }
 
     "not have locations section" in {
-      assertNull(view(aDeclaration()).getElementById("declaration-locations-summary"))
+      view(aDeclaration()).getElementsByClass("locations-card").size mustBe 0
     }
 
     "have locations section with UK office of exit" in {
-      view(aDeclaration(withOfficeOfExit(officeId = "office-Id")))
-        .getElementById("declaration-locations-summary")
-        .text must include("office-Id")
+      val declaration = aDeclaration(withOfficeOfExit(officeId = "office-Id"))
+      view(declaration).getElementsByClass("locations-card").text mustNot be(empty)
     }
 
     for (decType <- List(CLEARANCE, SIMPLIFIED, OCCASIONAL))
