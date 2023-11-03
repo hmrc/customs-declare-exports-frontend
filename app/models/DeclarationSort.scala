@@ -57,8 +57,8 @@ object DeclarationSort {
 object SortBy extends Enumeration {
   type SortBy = Value
   implicit val format: Format[SortBy.Value] = EnumJson.format(SortBy)
-  val CREATED = Value("createdDateTime")
-  val UPDATED = Value("updatedDateTime")
+  val CREATED = Value("declarationMeta.createdDateTime")
+  val UPDATED = Value("declarationMeta.updatedDateTime")
 }
 
 object SortDirection extends Enumeration {
