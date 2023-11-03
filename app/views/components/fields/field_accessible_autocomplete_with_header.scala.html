@@ -59,11 +59,11 @@ To avoid problems, we need to remove [] from field.
     }
 
     @if(isPageHeading) {<h1 class="govuk-label-wrapper">}
-    <label id="@(fieldNameWithoutBrackets)-label" for="@fieldNameWithoutBrackets" class="govuk-label@if(labelClass.nonEmpty){ @labelClass}" >
         @if(isSubHeading) {<h2 class="@{s"govuk-heading $subHeadingClasses"}">}
-            @label
+            <label id="@(fieldNameWithoutBrackets)-label" for="@fieldNameWithoutBrackets" class="govuk-label@if(labelClass.nonEmpty){ @labelClass}" >
+                @label
+            </label>
         @if(isSubHeading) {</h2>}
-    </label>
     @if(isPageHeading) {</h1>}
 
     @allErrors.map { error => <p id="error-message-@{field.name}-input" class="govuk-error-message">@error</p> }
