@@ -37,6 +37,7 @@ class Card6ForTransport @Inject() (govukSummaryList: GovukSummaryList) extends S
     val hasData = transport.expressConsignment.isDefined ||
       inlandModeOfTransportCode(declaration).isDefined ||
       declaration.locations.warehouseIdentification.isDefined ||
+      declaration.locations.supervisingCustomsOffice.isDefined ||
       transport.borderModeOfTransportCode.isDefined
 
     if (hasData) displayCard(declaration, actionsEnabled) else HtmlFormat.empty
@@ -50,6 +51,7 @@ class Card6ForTransport @Inject() (govukSummaryList: GovukSummaryList) extends S
       borderTransport(declaration.transport, actionsEnabled),
       inlandModeOfTransport(declaration, actionsEnabled),
       warehouseIdentification(declaration, actionsEnabled),
+      supervisingCustomsOffice(declaration, actionsEnabled),
       expressConsignment(declaration.transport, actionsEnabled)
     ).flatten
 
@@ -78,6 +80,18 @@ class Card6ForTransport @Inject() (govukSummaryList: GovukSummaryList) extends S
         changeLink(WarehouseIdentificationController.displayPage, "transport.warehouse.id", actionsEnabled)
       )
     }
+
+  private def supervisingCustomsOffice(declaration: ExportsDeclaration, actionsEnabled: Boolean)(
+    implicit messages: Messages
+  ): Option[SummaryListRow] =
+    declaration.locations.supervisingCustomsOffice.flatMap(_.supervisingCustomsOffice.map { supervisingCustomsOffice =>
+      SummaryListRow(
+        key("transport.supervisingOffice"),
+        value(supervisingCustomsOffice),
+        classes = "supervisingOffice",
+        changeLink(SupervisingCustomsOfficeController.displayPage, "transport.supervisingOffice", actionsEnabled)
+      )
+    })
 
   private def inlandModeOfTransport(declaration: ExportsDeclaration, actionsEnabled: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
     inlandModeOfTransportCode(declaration).flatMap {
