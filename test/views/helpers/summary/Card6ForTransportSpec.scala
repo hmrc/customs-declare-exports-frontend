@@ -59,6 +59,19 @@ class Card6ForTransportSpec extends UnitViewSpec with ExportsTestHelper with Inj
       )
     }
 
+    "show the inland-or-border" in {
+      val row = view.getElementsByClass("inlandOrBorder")
+
+      val call = Some(InlandOrBorderController.displayPage)
+      checkSummaryRow(
+        row,
+        "transport.inlandOrBorder",
+        messages(s"declaration.summary.transport.inlandOrBorder.Border"),
+        call,
+        "transport.inlandOrBorder"
+      )
+    }
+
     "show the inland-mode-transport" in {
       val row = view.getElementsByClass("modeOfTransport")
 

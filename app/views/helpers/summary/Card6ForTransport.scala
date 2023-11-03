@@ -38,6 +38,8 @@ class Card6ForTransport @Inject() (govukSummaryList: GovukSummaryList) extends S
       inlandModeOfTransportCode(declaration).isDefined ||
       declaration.locations.warehouseIdentification.isDefined ||
       declaration.locations.supervisingCustomsOffice.isDefined ||
+      declaration.locations.inlandOrBorder.isDefined ||
+      declaration.locations.inlandModeOfTransportCode.isDefined ||
       transport.borderModeOfTransportCode.isDefined
 
     if (hasData) displayCard(declaration, actionsEnabled) else HtmlFormat.empty
@@ -49,9 +51,10 @@ class Card6ForTransport @Inject() (govukSummaryList: GovukSummaryList) extends S
   private def rows(declaration: ExportsDeclaration, actionsEnabled: Boolean)(implicit messages: Messages): Seq[SummaryListRow] =
     List(
       borderTransport(declaration.transport, actionsEnabled),
-      inlandModeOfTransport(declaration, actionsEnabled),
       warehouseIdentification(declaration, actionsEnabled),
       supervisingCustomsOffice(declaration, actionsEnabled),
+      inlandOrBorder(declaration, actionsEnabled),
+      inlandModeOfTransport(declaration, actionsEnabled),
       expressConsignment(declaration.transport, actionsEnabled)
     ).flatten
 
@@ -92,6 +95,16 @@ class Card6ForTransport @Inject() (govukSummaryList: GovukSummaryList) extends S
         changeLink(SupervisingCustomsOfficeController.displayPage, "transport.supervisingOffice", actionsEnabled)
       )
     })
+
+  private def inlandOrBorder(declaration: ExportsDeclaration, actionsEnabled: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
+    declaration.locations.inlandOrBorder.map { inlandOrBorder =>
+      SummaryListRow(
+        key("transport.inlandOrBorder"),
+        value(messages(s"declaration.summary.transport.inlandOrBorder.${inlandOrBorder.location}")),
+        classes = "inlandOrBorder",
+        changeLink(InlandOrBorderController.displayPage, "transport.inlandOrBorder", actionsEnabled)
+      )
+    }
 
   private def inlandModeOfTransport(declaration: ExportsDeclaration, actionsEnabled: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
     inlandModeOfTransportCode(declaration).flatMap {
