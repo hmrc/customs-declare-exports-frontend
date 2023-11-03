@@ -29,7 +29,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class Card6ForTransport @Inject() (govukSummaryList: GovukSummaryList) extends SummaryHelper {
+class Card7ForTransport @Inject()(govukSummaryList: GovukSummaryList) extends SummaryHelper {
 
   def eval(declaration: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages): Html = {
     val transport = declaration.transport

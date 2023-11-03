@@ -24,7 +24,7 @@ import forms.declaration._
 import services.cache.ExportsTestHelper
 import views.declaration.spec.UnitViewSpec
 
-class Card6ForTransportSpec extends UnitViewSpec with ExportsTestHelper with Injector {
+class Card7ForTransportSpec extends UnitViewSpec with ExportsTestHelper with Injector {
 
   private val declaration = aDeclaration(
     withDepartureTransport(ModeOfTransportCode.Maritime, "10", "identifier"),
@@ -37,7 +37,7 @@ class Card6ForTransportSpec extends UnitViewSpec with ExportsTestHelper with Inj
     withInlandModeOfTransportCode(ModeOfTransportCode.Maritime)
   )
 
-  private val card6ForTransport = instanceOf[Card6ForTransport]
+  private val card6ForTransport = instanceOf[Card7ForTransport]
 
   "Transport section" should {
     val view = card6ForTransport.eval(declaration)(messages)
