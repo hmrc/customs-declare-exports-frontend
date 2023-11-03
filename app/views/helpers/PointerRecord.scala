@@ -324,12 +324,8 @@ object PointerRecord {
       def fetchValue(dec: ExportsDeclaration, args: Int*) = dec.natureOfTransaction.map(_.natureType)
       override val pageLink1Param = Some(NatureOfTransactionController.displayPage)
     },
-    "declaration.parties.additionalActors.actor.eori" -> new PointerRecord() {
-      def fetchValue(dec: ExportsDeclaration, args: Int*) = Option.empty[String]
-      override val pageLink1Param = Some(AdditionalActorsSummaryController.displayPage)
-    },
-    "declaration.parties.additionalActors.actor" -> new PointerRecord() {
-      def fetchValue(dec: ExportsDeclaration, args: Int*) = Option.empty[String]
+    "declaration.parties.additionalActors" -> new PointerRecord() {
+      def fetchValue(dec: ExportsDeclaration, args: Int*) = dec.parties.declarationAdditionalActorsData.map(_.actors.size.toString )
       override val pageLink1Param = Some(AdditionalActorsSummaryController.displayPage)
     },
     "declaration.parties.consigneeDetails.details.address.fullName" -> new PointerRecord() {
