@@ -32,8 +32,8 @@
     pageTitle: pageTitle,
     card1ForReferences: Card1ForReferences,
     card2ForParties: Card2ForParties,
-    countries_section: countries_section,
-    locations_section: locations_section,
+    card3ForRouteOfGoods: Card3ForRouteOfGoods,
+    card4ForLocations: Card4ForLocations,
     transaction_section: transaction_section,
     items_section: items_section,
     transport_section: transport_section,
@@ -114,13 +114,13 @@
 
     @draftBodyText
 
-    @card1ForReferences.eval(request.cacheModel, true)
+    @card1ForReferences.eval(request.cacheModel)
 
-    @card2ForParties.eval(request.cacheModel, true)
+    @card2ForParties.eval(request.cacheModel)
 
-    @countries_section(request.cacheModel)
+    @card3ForRouteOfGoods.eval(request.cacheModel)
 
-    @locations_section(request.cacheModel)
+    @card4ForLocations.eval(request.cacheModel)
 
     @transaction_section(request.cacheModel)
 

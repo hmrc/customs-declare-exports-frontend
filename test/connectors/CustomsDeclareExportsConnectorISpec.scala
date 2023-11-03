@@ -247,7 +247,7 @@ class CustomsDeclareExportsConnectorISpec extends ConnectorISpec with ExportsDec
     "return Ok" in {
       when(mockDeclarationAmendmentsConfig.isEnabled).thenReturn(true)
       stubForExports(
-        get("/declarations?status=DRAFT&status=AMENDMENT_DRAFT&page-index=1&page-size=10&sort-by=updatedDateTime&sort-direction=des")
+        get("/declarations?status=DRAFT&status=AMENDMENT_DRAFT&page-index=1&page-size=10&sort-by=declarationMeta.updatedDateTime&sort-direction=des")
           .willReturn(
             aResponse()
               .withStatus(Status.OK)
@@ -260,7 +260,9 @@ class CustomsDeclareExportsConnectorISpec extends ConnectorISpec with ExportsDec
       response mustBe Paginated(Seq(existingDeclaration), pagination, 1)
       WireMock.verify(
         getRequestedFor(
-          urlEqualTo("/declarations?status=DRAFT&status=AMENDMENT_DRAFT&page-index=1&page-size=10&sort-by=updatedDateTime&sort-direction=des")
+          urlEqualTo(
+            "/declarations?status=DRAFT&status=AMENDMENT_DRAFT&page-index=1&page-size=10&sort-by=declarationMeta.updatedDateTime&sort-direction=des"
+          )
         )
       )
     }
@@ -272,7 +274,7 @@ class CustomsDeclareExportsConnectorISpec extends ConnectorISpec with ExportsDec
     "return Ok" in {
       when(mockDeclarationAmendmentsConfig.isEnabled).thenReturn(false)
       stubForExports(
-        get("/declarations?status=DRAFT&page-index=1&page-size=10&sort-by=updatedDateTime&sort-direction=des")
+        get("/declarations?status=DRAFT&page-index=1&page-size=10&sort-by=declarationMeta.updatedDateTime&sort-direction=des")
           .willReturn(
             aResponse()
               .withStatus(Status.OK)
@@ -283,7 +285,9 @@ class CustomsDeclareExportsConnectorISpec extends ConnectorISpec with ExportsDec
       val response = await(connector.findSavedDeclarations(pagination))
 
       response mustBe Paginated(Seq(existingDeclaration), pagination, 1)
-      WireMock.verify(getRequestedFor(urlEqualTo("/declarations?status=DRAFT&page-index=1&page-size=10&sort-by=updatedDateTime&sort-direction=des")))
+      WireMock.verify(
+        getRequestedFor(urlEqualTo("/declarations?status=DRAFT&page-index=1&page-size=10&sort-by=declarationMeta.updatedDateTime&sort-direction=des"))
+      )
     }
   }
 
