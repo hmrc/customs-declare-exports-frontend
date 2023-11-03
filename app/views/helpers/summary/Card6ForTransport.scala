@@ -40,6 +40,8 @@ class Card6ForTransport @Inject() (govukSummaryList: GovukSummaryList) extends S
       declaration.locations.supervisingCustomsOffice.isDefined ||
       declaration.locations.inlandOrBorder.isDefined ||
       declaration.locations.inlandModeOfTransportCode.isDefined ||
+      transport.meansOfTransportOnDepartureType.isDefined ||
+      transport.meansOfTransportOnDepartureIDNumber.isDefined ||
       transport.borderModeOfTransportCode.isDefined
 
     if (hasData) displayCard(declaration, actionsEnabled) else HtmlFormat.empty
@@ -55,6 +57,7 @@ class Card6ForTransport @Inject() (govukSummaryList: GovukSummaryList) extends S
       supervisingCustomsOffice(declaration, actionsEnabled),
       inlandOrBorder(declaration, actionsEnabled),
       inlandModeOfTransport(declaration, actionsEnabled),
+      transportReference(declaration.transport, actionsEnabled),
       expressConsignment(declaration.transport, actionsEnabled)
     ).flatten
 
@@ -117,6 +120,29 @@ class Card6ForTransport @Inject() (govukSummaryList: GovukSummaryList) extends S
         )
       }
     }
+
+  private def transportReference(transport: Transport, actionsEnabled: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
+    if (transport.meansOfTransportOnDepartureType.isDefined || transport.meansOfTransportOnDepartureIDNumber.isDefined) {
+
+      def messagesForDepartureMeansOfTransport(transport: Transport): Seq[String] =
+        (transport.meansOfTransportOnDepartureType, transport.meansOfTransportOnDepartureIDNumber) match {
+          case (Some(meansType), Some(meansId)) if meansId.nonEmpty =>
+            Seq(messages(s"declaration.summary.transport.departure.meansOfTransport.$meansType"), meansId)
+          case (Some(meansType), _) =>
+            Seq(messages(s"declaration.summary.transport.departure.meansOfTransport.$meansType"))
+          case _ =>
+            Seq.empty
+        }
+
+      Some(
+        SummaryListRow(
+          key("transport.departure.meansOfTransport.header"),
+          valueHtml(messagesForDepartureMeansOfTransport(transport).mkString("<br>")),
+          classes = "transportReference",
+          changeLink(DepartureTransportController.displayPage, "transport.departure.meansOfTransport.header", actionsEnabled)
+        )
+      )
+    } else None
 
   private def expressConsignment(transport: Transport, actionsEnabled: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
     transport.expressConsignment.map { expressConsignment =>

@@ -85,6 +85,19 @@ class Card6ForTransportSpec extends UnitViewSpec with ExportsTestHelper with Inj
       )
     }
 
+    "show the transport-reference" in {
+      val row = view.getElementsByClass("transportReference")
+
+      val call = Some(DepartureTransportController.displayPage)
+      checkSummaryRow(
+        row,
+        "transport.departure.meansOfTransport.header",
+        s"${messages("declaration.summary.transport.departure.meansOfTransport.10")} identifier",
+        call,
+        "transport.departure.meansOfTransport.header"
+      )
+    }
+
     "show the express-consignment" in {
       val row = view.getElementsByClass("expressConsignment")
 
