@@ -98,6 +98,26 @@ class Card6ForTransportSpec extends UnitViewSpec with ExportsTestHelper with Inj
       )
     }
 
+    "show the active-transport-type" in {
+      val row = view.getElementsByClass("activeTransportType")
+
+      val call = Some(BorderTransportController.displayPage)
+      checkSummaryRow(
+        row,
+        "transport.border.meansOfTransport.header",
+        s"${messages("declaration.summary.transport.border.meansOfTransport.11")} borderId",
+        call,
+        "transport.border.meansOfTransport.header"
+      )
+    }
+
+    "show the transport-payment" in {
+      val row = view.getElementsByClass("transportPayment")
+
+      val call = Some(TransportPaymentController.displayPage)
+      checkSummaryRow(row, "transport.payment", messages("declaration.summary.transport.payment.A"), call, "transport.payment")
+    }
+
     "show the express-consignment" in {
       val row = view.getElementsByClass("expressConsignment")
 

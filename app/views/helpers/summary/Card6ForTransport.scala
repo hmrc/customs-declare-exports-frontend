@@ -42,6 +42,9 @@ class Card6ForTransport @Inject() (govukSummaryList: GovukSummaryList) extends S
       declaration.locations.inlandModeOfTransportCode.isDefined ||
       transport.meansOfTransportOnDepartureType.isDefined ||
       transport.meansOfTransportOnDepartureIDNumber.isDefined ||
+      transport.meansOfTransportCrossingTheBorderType.isDefined ||
+      transport.meansOfTransportCrossingTheBorderIDNumber.isDefined ||
+      transport.transportPayment.isDefined ||
       transport.borderModeOfTransportCode.isDefined
 
     if (hasData) displayCard(declaration, actionsEnabled) else HtmlFormat.empty
@@ -58,6 +61,8 @@ class Card6ForTransport @Inject() (govukSummaryList: GovukSummaryList) extends S
       inlandOrBorder(declaration, actionsEnabled),
       inlandModeOfTransport(declaration, actionsEnabled),
       transportReference(declaration.transport, actionsEnabled),
+      activeTransportType(declaration.transport, actionsEnabled),
+      transportPayment(declaration.transport, actionsEnabled),
       expressConsignment(declaration.transport, actionsEnabled)
     ).flatten
 
@@ -103,7 +108,7 @@ class Card6ForTransport @Inject() (govukSummaryList: GovukSummaryList) extends S
     declaration.locations.inlandOrBorder.map { inlandOrBorder =>
       SummaryListRow(
         key("transport.inlandOrBorder"),
-        value(messages(s"declaration.summary.transport.inlandOrBorder.${inlandOrBorder.location}")),
+        valueKey(s"declaration.summary.transport.inlandOrBorder.${inlandOrBorder.location}"),
         classes = "inlandOrBorder",
         changeLink(InlandOrBorderController.displayPage, "transport.inlandOrBorder", actionsEnabled)
       )
@@ -124,7 +129,7 @@ class Card6ForTransport @Inject() (govukSummaryList: GovukSummaryList) extends S
   private def transportReference(transport: Transport, actionsEnabled: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
     if (transport.meansOfTransportOnDepartureType.isDefined || transport.meansOfTransportOnDepartureIDNumber.isDefined) {
 
-      def messagesForDepartureMeansOfTransport(transport: Transport): Seq[String] =
+      val messagesForDepartureMeansOfTransport: Seq[String] =
         (transport.meansOfTransportOnDepartureType, transport.meansOfTransportOnDepartureIDNumber) match {
           case (Some(meansType), Some(meansId)) if meansId.nonEmpty =>
             Seq(messages(s"declaration.summary.transport.departure.meansOfTransport.$meansType"), meansId)
@@ -137,12 +142,42 @@ class Card6ForTransport @Inject() (govukSummaryList: GovukSummaryList) extends S
       Some(
         SummaryListRow(
           key("transport.departure.meansOfTransport.header"),
-          valueHtml(messagesForDepartureMeansOfTransport(transport).mkString("<br>")),
+          valueHtml(messagesForDepartureMeansOfTransport.mkString("<br>")),
           classes = "transportReference",
           changeLink(DepartureTransportController.displayPage, "transport.departure.meansOfTransport.header", actionsEnabled)
         )
       )
     } else None
+
+  private def activeTransportType(transport: Transport, actionsEnabled: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
+    if (transport.meansOfTransportCrossingTheBorderType.isDefined && transport.meansOfTransportCrossingTheBorderIDNumber.isDefined) {
+
+      val messagesForBorderMeansOfTransport = {
+        (transport.meansOfTransportCrossingTheBorderType, transport.meansOfTransportCrossingTheBorderIDNumber) match {
+          case (Some(meansType), Some(meansId)) => Seq(messages(s"declaration.summary.transport.border.meansOfTransport.$meansType"), meansId)
+          case _                                => Seq.empty
+        }
+      }
+
+      Some(
+        SummaryListRow(
+          key("transport.border.meansOfTransport.header"),
+          valueHtml(messagesForBorderMeansOfTransport.mkString("<br>")),
+          classes = "activeTransportType",
+          changeLink(BorderTransportController.displayPage, "transport.border.meansOfTransport.header", actionsEnabled)
+        )
+      )
+    } else None
+
+  private def transportPayment(transport: Transport, actionsEnabled: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
+    transport.transportPayment.map { transportPayment =>
+      SummaryListRow(
+        key("transport.payment"),
+        valueKey(s"declaration.summary.transport.payment.${transportPayment.paymentMethod}"),
+        classes = "transportPayment",
+        changeLink(TransportPaymentController.displayPage, "transport.payment", actionsEnabled)
+      )
+    }
 
   private def expressConsignment(transport: Transport, actionsEnabled: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
     transport.expressConsignment.map { expressConsignment =>
