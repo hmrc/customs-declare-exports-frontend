@@ -194,12 +194,7 @@ class SubmissionService @Inject() (connector: CustomsDeclareExportsConnector, au
   ): Map[String, String] =
     Map(
       EventData.eori.toString -> eori,
-      EventData.decType.toString -> {
-        additionalDeclarationType match {
-          case Some(decType) => decType.toString
-          case _             => None.toString
-        }
-      },
+      EventData.decType.toString -> additionalDeclarationType.map(_.toString).getOrElse(""),
       EventData.lrn.toString -> lrn.getOrElse(""),
       EventData.ducr.toString -> ducr.getOrElse(""),
       EventData.fullName.toString -> legalDeclaration.fullName,
