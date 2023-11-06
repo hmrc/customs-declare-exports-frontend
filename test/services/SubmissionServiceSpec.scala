@@ -19,10 +19,10 @@ package services
 import base.{Injector, MockConnectors, MockExportCacheService, UnitWithMocksSpec}
 import com.kenshoo.play.metrics.Metrics
 import connectors.CustomsDeclareExportsConnector
+import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
 import forms.declaration.countries.Country
 import forms.declaration.{AmendmentSubmission, LegalDeclaration}
 import metrics.{ExportsMetrics, MetricIdentifiers}
-import models.DeclarationType
 import models.declaration.DeclarationStatus
 import models.declaration.submissions.{Action, Submission, SubmissionAmendment}
 import org.mockito.ArgumentMatchers.{any, eq => equalTo, notNull}
@@ -53,12 +53,15 @@ class SubmissionServiceSpec
     EventData.eori.toString -> "eori",
     EventData.lrn.toString -> "123LRN",
     EventData.ducr.toString -> "ducr",
-    EventData.decType.toString -> "STANDARD",
+    EventData.decType.toString -> "D",
     EventData.fullName.toString -> legalDeclaration.fullName,
     EventData.jobRole.toString -> legalDeclaration.jobRole,
     EventData.email.toString -> legalDeclaration.email,
     EventData.confirmed.toString -> legalDeclaration.confirmation.toString,
-    EventData.submissionResult.toString -> "Success"
+    EventData.submissionResult.toString -> "Success",
+    EventData.declarationId.toString -> "id",
+    EventData.declarationStatus.toString -> "DRAFT",
+    EventData.conversationId.toString -> ""
   )
 
   private val submissionService = new SubmissionService(connector, auditService, exportMetrics)
@@ -82,7 +85,7 @@ class SubmissionServiceSpec
       val declaration = aDeclaration(
         withId("id"),
         withStatus(DeclarationStatus.DRAFT),
-        withType(DeclarationType.STANDARD),
+        withAdditionalDeclarationType(AdditionalDeclarationType.STANDARD_PRE_LODGED),
         withConsignmentReferences(ducr = "ducr", lrn = lrn)
       )
 
