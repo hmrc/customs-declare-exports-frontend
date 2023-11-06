@@ -34,7 +34,7 @@
     card2ForParties: Card2ForParties,
     card3ForRouteOfGoods: Card3ForRouteOfGoods,
     card4ForLocations: Card4ForLocations,
-    transaction_section: transaction_section,
+    card5ForTransactions: Card5ForTransactions,
     items_section: items_section,
     transport_section: transport_section,
     errorSummary: errorSummary,
@@ -122,7 +122,7 @@
 
     @card4ForLocations.eval(request.cacheModel)
 
-    @transaction_section(request.cacheModel)
+    @card5ForTransactions.eval(request.cacheModel)
 
     @items_section(request.cacheModel)
 

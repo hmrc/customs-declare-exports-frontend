@@ -26,7 +26,7 @@ import play.api.i18n.Messages
 import play.api.mvc.Call
 import play.twirl.api.{Html, HtmlFormat}
 import uk.gov.hmrc.govukfrontend.views.html.components.{GovukSummaryList, SummaryList}
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{ActionItem, Actions, SummaryListRow}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 import javax.inject.{Inject, Singleton}
 
@@ -63,7 +63,7 @@ class Card2ForParties @Inject() (
 
     (
       List(
-        declarantEori(parties, actionsEnabled),
+        declarantEori(parties),
         declarantIsExporter(parties, actionsEnabled),
         isEidr(parties, actionsEnabled),
         personPresentingGoods(parties, actionsEnabled)
@@ -80,14 +80,9 @@ class Card2ForParties @Inject() (
     ).flatten
   }
 
-  private def declarantEori(parties: Parties, actionsEnabled: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
+  private def declarantEori(parties: Parties)(implicit messages: Messages): Option[SummaryListRow] =
     parties.declarantDetails.map { declarantDetails =>
-      SummaryListRow(
-        key("parties.declarant.eori"),
-        value(declarantDetails.details.eori.fold("")(_.value)),
-        classes = "declarant-eori",
-        if (actionsEnabled) Some(Actions(items = List(ActionItem()))) else None
-      )
+      SummaryListRow(key("parties.declarant.eori"), value(declarantDetails.details.eori.fold("")(_.value)), classes = "declarant-eori")
     }
 
   private def declarantIsExporter(parties: Parties, actionsEnabled: Boolean)(implicit messages: Messages): Option[SummaryListRow] =

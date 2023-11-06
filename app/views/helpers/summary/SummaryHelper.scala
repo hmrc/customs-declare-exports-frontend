@@ -80,9 +80,15 @@ object SummaryHelper {
     }
 
   def hasTransactionData(declaration: ExportsDeclaration): Boolean =
-    declaration.totalNumberOfItems.isDefined ||
-      declaration.natureOfTransaction.isDefined ||
-      hasRequiredTransactionDataOnNonEmptyItems(declaration)
+    declaration.natureOfTransaction.isDefined ||
+      hasRequiredTransactionDataOnNonEmptyItems(declaration) ||
+      declaration.totalNumberOfItems.exists(totals =>
+        totals.totalAmountInvoiced.isDefined ||
+          totals.totalAmountInvoicedCurrency.isDefined ||
+          totals.agreedExchangeRate.isDefined ||
+          totals.exchangeRate.isDefined ||
+          totals.totalPackage.isDefined
+      )
 
   def hasTransportData(declaration: ExportsDeclaration): Boolean = {
     val transport = declaration.transport
