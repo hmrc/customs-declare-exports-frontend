@@ -79,7 +79,7 @@ object CDS12119Interpreter extends ErrorInterpreter {
        |  </thead>
        |  <tbody class="govuk-table__body">
        |  <tr class="govuk-table__row declaration-transport-meansOfTransportOnDepartureIDNumber">
-       |      <td class="govuk-table__cell govuk-table__cell_break-word bold">${messages("declaration.summary.items.item.procedureCode")}</td>
+       |      <td class="govuk-table__cell govuk-table__cell_break-word bold">${messages("declaration.summary.item.procedureCode")}</td>
        |      <td class="govuk-table__cell govuk-table__cell_break-word"></td>
        |      <td class="govuk-table__cell govuk-table__cell_break-word">${changeLink}</td>
        |    </tr>

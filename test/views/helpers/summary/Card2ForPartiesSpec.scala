@@ -50,78 +50,78 @@ class Card2ForPartiesSpec extends UnitViewSpec with ExportsTestHelper with Injec
 
   private val card2ForParties = instanceOf[Card2ForParties]
 
-  "Parties section" must {
+  "Parties section" should {
     val view = card2ForParties.eval(declaration)(messages)
 
-    "contains the expected heading" in {
+    "have the expected heading" in {
       view.getElementsByTag("h2").first.text mustBe messages(s"declaration.summary.parties")
     }
 
-    "contains declarant eori" in {
+    "show the declarant eori" in {
       val row = view.getElementsByClass("declarant-eori")
       checkSummaryRow(row, "parties.declarant.eori", eori, None, "ign")
     }
 
-    "contains 'are you the exporter'" in {
+    "show 'are you the exporter'" in {
       val row = view.getElementsByClass("declarant-is-exporter")
       val call = Some(DeclarantExporterController.displayPage)
       checkSummaryRow(row, "parties.declarantIsExporter", messages("site.no"), call, "parties.declarantIsExporter")
     }
 
-    "contains 'Is this EIDR' section" in {
+    "show the 'Is this EIDR' section" in {
       val row = view.getElementsByClass("is-entry-into-declarants-records")
       val call = Some(EntryIntoDeclarantsRecordsController.displayPage)
       checkSummaryRow(row, "parties.eidr", messages("site.yes"), call, "parties.eidr")
     }
 
-    "contains 'Person Presenting the Goods' section" in {
+    "show the 'Person Presenting the Goods' section" in {
       val row = view.getElementsByClass("person-presenting-goods")
       val call = Some(PersonPresentingGoodsDetailsController.displayPage)
       checkSummaryRow(row, "parties.personPresentingGoods", eori, call, "parties.personPresentingGoods")
     }
 
-    "contains exporter details" in {
+    "show the exporter details" in {
       checkDetails("exporter", ExporterEoriNumberController.displayPage)
     }
 
-    "contains 'Is Exs' section" in {
+    "show the 'Is Exs' section" in {
       val row = view.getElementsByClass("isExs")
       val call = Some(IsExsController.displayPage)
       checkSummaryRow(row, "parties.exs", messages("site.no"), call, "parties.exs")
     }
 
-    "contains representative another agent" in {
+    "show the representative agent" in {
       val row = view.getElementsByClass("representative-other-agent")
       val call = Some(RepresentativeAgentController.displayPage)
       checkSummaryRow(row, "parties.representative.agent", messages("site.yes"), call, "parties.representative.agent")
     }
 
-    "contains representative eori" in {
+    "show the representative eori" in {
       val row = view.getElementsByClass("representative-eori")
       val call = Some(RepresentativeEntityController.displayPage)
       checkSummaryRow(row, "parties.representative.eori", eori, call, "parties.representative.eori")
     }
 
-    "contains representative status code" in {
+    "show the representative status code" in {
       val row = view.getElementsByClass("representative-type")
       val call = Some(RepresentativeStatusController.displayPage)
       val value = messages("declaration.summary.parties.representative.type.1")
       checkSummaryRow(row, "parties.representative.type", value, call, "parties.representative.type")
     }
 
-    "contains carrier details" in {
+    "show the carrier details" in {
       checkDetails("carrier", CarrierEoriNumberController.displayPage)
     }
 
-    "contains consignee details" in {
+    "show the consignee details" in {
       checkDetails("consignee", ConsigneeDetailsController.displayPage)
     }
 
-    "contains consignor details" in {
+    "show the consignor details" in {
       checkDetails("consignor", ConsignorEoriNumberController.displayPage)
     }
 
-    "contains an empty additional actors section" when {
+    "have an empty additional actors section" when {
       "no additional actors have been entered" in {
         val row = view.getElementsByClass("additional-actors-heading")
         val call = Some(AdditionalActorsAddController.displayPage)
@@ -129,7 +129,7 @@ class Card2ForPartiesSpec extends UnitViewSpec with ExportsTestHelper with Injec
       }
     }
 
-    "contains an additional actors section" in {
+    "show the an additional actors section" in {
       val type1 = "CS"
       val type2 = "MF"
       val expectedType1 = "Consolidator"
@@ -167,7 +167,7 @@ class Card2ForPartiesSpec extends UnitViewSpec with ExportsTestHelper with Injec
       view.getElementsByClass("additional-actor-3-eori") mustBe empty
     }
 
-    "contains an empty authorisation holders section" when {
+    "have an empty authorisation holders section" when {
       "no authorisation holders have been entered" in {
         val row = view.getElementsByClass("authorisation-holders-heading")
         val call = Some(AuthorisationProcedureCodeChoiceController.displayPage)
@@ -175,7 +175,7 @@ class Card2ForPartiesSpec extends UnitViewSpec with ExportsTestHelper with Injec
       }
     }
 
-    "contains an authorisation holders section" in {
+    "show the an authorisation holders section" in {
       val type1 = "OPO"
       val type2 = "AEOC"
       val expectedType1 = "OPO - Outward Processing authorisation"
@@ -213,40 +213,40 @@ class Card2ForPartiesSpec extends UnitViewSpec with ExportsTestHelper with Injec
       view.getElementsByClass("authorisation-holder-3-eori") mustBe empty
     }
 
-    "does not contain declarant when the section is undefined" in {
+    "not show the declarant when the section is undefined" in {
       val view = card2ForParties.eval(aDeclarationAfter(declaration, withoutDeclarantDetails))(messages)
       view.getElementsByClass("declarant-eori") mustBe empty
       view.getElementsByClass("declarant-address") mustBe empty
     }
 
-    "does not contain is-declarant-exporter when the section is undefined" in {
+    "not show is-declarant-exporter when the section is undefined" in {
       val view = card2ForParties.eval(aDeclarationAfter(declaration, withoutDeclarantIsExporter))(messages)
       view.getElementsByClass("declarant-is-exporter") mustBe empty
     }
 
-    "does not contain is-eidr when the section is undefined" in {
+    "not show is-eidr when the section is undefined" in {
       val view = card2ForParties.eval(aDeclarationAfter(declaration, withoutEntryIntoDeclarantsRecords))(messages)
       view.getElementsByClass("is-entry-into-declarants-records") mustBe empty
     }
 
-    "does not contain person presenting goods when the section is undefined" in {
+    "not show the person presenting goods when the section is undefined" in {
       val view = card2ForParties.eval(aDeclarationAfter(declaration, withoutPersonPresentingGoods))(messages)
       view.getElementsByClass("person-presenting-goods") mustBe empty
     }
 
-    "does not contain exporter when the section is undefined" in {
+    "not show the exporter when the section is undefined" in {
       val view = card2ForParties.eval(aDeclarationAfter(declaration, withoutExporterDetails))(messages)
       view.getElementsByClass("exporter-eori") mustBe empty
       view.getElementsByClass("exporter-address") mustBe empty
     }
 
-    "does not contain is-exs when the section is undefined" in {
+    "not show is-exs when the section is undefined" in {
       val view = card2ForParties.eval(aDeclarationAfter(declaration, withoutIsExs))(messages)
       view.getElementsByClass("isExs") mustBe empty
       view.getElementsByClass("isExs") mustBe empty
     }
 
-    "does not contains representative eori when not representing another agent" in {
+    "not show the representative eori when not representing another agent" in {
       val details = Some(RepresentativeDetails(None, Some("2"), Some("No")))
       val parties = declaration.parties.copy(representativeDetails = details)
       val view = card2ForParties.eval(declaration.copy(parties = parties), true)(messages)
@@ -254,7 +254,7 @@ class Card2ForPartiesSpec extends UnitViewSpec with ExportsTestHelper with Injec
       view.getElementsByClass("representative-eori").text() mustBe empty
     }
 
-    "does not contain representative when the section is undefined" in {
+    "not show the representative when the section is undefined" in {
       val view = card2ForParties.eval(aDeclarationAfter(declaration, withoutRepresentativeDetails))(messages)
       view.getElementsByClass("representative-other-agent") mustBe empty
       view.getElementsByClass("representative-eori") mustBe empty
@@ -262,35 +262,35 @@ class Card2ForPartiesSpec extends UnitViewSpec with ExportsTestHelper with Injec
       view.getElementsByClass("representative-type") mustBe empty
     }
 
-    "does not contain carrier details when the section is undefined" in {
+    "not show the carrier details when the section is undefined" in {
       val view = card2ForParties.eval(aDeclarationAfter(declaration, withoutCarrierDetails))(messages)
       view.getElementsByClass("carrier-eori") mustBe empty
       view.getElementsByClass("carrier-address") mustBe empty
     }
 
-    "does not contain consignee when the section is undefined" in {
+    "not show the consignee when the section is undefined" in {
       val view = card2ForParties.eval(aDeclarationAfter(declaration, withoutConsigneeDetails))(messages)
       view.getElementsByClass("consignee-eori") mustBe empty
       view.getElementsByClass("consignee-address") mustBe empty
     }
 
-    "does not contain consignor when the section is undefined" in {
+    "not show the consignor when the section is undefined" in {
       val view = card2ForParties.eval(aDeclarationAfter(declaration, withoutConsignorDetails))(messages)
       view.getElementsByClass("consignor-eori") mustBe empty
       view.getElementsByClass("consignor-address") mustBe empty
     }
 
-    "does not contain additional actors when the section is undefined" in {
+    "not show the additional actors when the section is undefined" in {
       val view = card2ForParties.eval(aDeclarationAfter(declaration, withoutAdditionalActors))(messages)
       view.getElementsByClass("additional-actors-heading") mustBe empty
     }
 
-    "does not contain authorisation holders when the section is undefined" in {
+    "not show the authorisation holders when the section is undefined" in {
       val view = card2ForParties.eval(aDeclarationAfter(declaration, withoutAuthorisationHolders))(messages)
       view.getElementsByClass("authorisation-holders-heading") mustBe empty
     }
 
-    "does not contain anything when parties only has undefined attributes" in {
+    "not show anything when parties only has undefined attributes" in {
       val view = card2ForParties.eval(aDeclaration())(messages)
       view.getAllElements.text() mustBe empty
     }

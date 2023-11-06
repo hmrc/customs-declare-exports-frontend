@@ -9,7 +9,7 @@ object AppDependencies {
     "uk.gov.hmrc"                  %% "bootstrap-frontend-play-28"    % bootstrapPlayVersion,
     "uk.gov.hmrc"                  %% "play-allowlist-filter"         % "1.2.0",
     "uk.gov.hmrc"                  %% "play-conditional-form-mapping" % "1.13.0-play-28",
-    "uk.gov.hmrc"                  %% "play-frontend-hmrc"            % "7.16.0-play-28",
+    "uk.gov.hmrc"                  %% "play-frontend-hmrc"            % "7.26.0-play-28",
     "uk.gov.hmrc"                  %% "play-partials"                 % "8.4.0-play-28",
     "ai.x"                         %% "play-json-extensions"          % "0.42.0",
     "com.fasterxml.jackson.module" %% "jackson-module-scala"          % "2.14.2",

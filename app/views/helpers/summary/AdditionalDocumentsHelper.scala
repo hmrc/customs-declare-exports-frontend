@@ -20,92 +20,80 @@ import controllers.declaration.routes.{AdditionalDocumentsController, IsLicenceR
 import forms.declaration.additionaldocuments.AdditionalDocument
 import models.declaration.ExportItem
 import play.api.i18n.Messages
-import play.twirl.api.{Html, HtmlFormat}
-import uk.gov.hmrc.govukfrontend.views.html.components.{GovukSummaryList, SummaryList}
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
-import views.helpers.ActionItemBuilder.actionSummaryItem
-import views.html.components.gds.linkContent
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Actions, SummaryListRow}
 
-import javax.inject.{Inject, Singleton}
+object AdditionalDocumentsHelper extends SummaryHelper {
 
-@Singleton
-class AdditionalDocumentsHelper @Inject() (govukSummaryList: GovukSummaryList, linkContent: linkContent) {
-
-  def section(item: ExportItem, actionsEnabled: Boolean)(implicit messages: Messages): Html = {
+  def section(item: ExportItem, hasAdditionalInformation: Boolean, actionsEnabled: Boolean, itemIndex: Int)(
+    implicit messages: Messages
+  ): Seq[Option[SummaryListRow]] = {
     val hasDocuments = item.additionalDocuments.exists(_.documents.nonEmpty)
-
-    if (hasDocuments || item.isLicenceRequired.isDefined) showSection(item, hasDocuments, actionsEnabled)
-    else HtmlFormat.empty
+    if (hasDocuments || item.isLicenceRequired.isDefined) showSection(item, hasAdditionalInformation, hasDocuments, actionsEnabled, itemIndex)
+    else List.empty
   }
 
-  private def showSection(item: ExportItem, hasDocuments: Boolean, actionsEnabled: Boolean)(implicit messages: Messages): Html = {
+  private def showSection(item: ExportItem, hasAdditionalInformation: Boolean, hasDocuments: Boolean, actionsEnabled: Boolean, itemIndex: Int)(
+    implicit messages: Messages
+  ): Seq[Option[SummaryListRow]] = {
     lazy val documentRows = item.additionalDocuments.fold(Seq.empty[Option[SummaryListRow]]) { additionalDocuments =>
       additionalDocuments.documents.zipWithIndex.flatMap { case (document, index) =>
-        documentCodeAndIdRows(item, document, index + 1, actionsEnabled)
+        documentCodeAndIdRows(item, document, index + 1, actionsEnabled, itemIndex)
       }
     }
-    val summaryListRows =
-      if (hasDocuments) List(heading(item, actionsEnabled), licenseRow(item, actionsEnabled)) ++ documentRows
-      else List(licenseRow(item, actionsEnabled), noDocumentsRow(item, actionsEnabled))
+    lazy val headingAndRows = List(
+      heading(s"item-$itemIndex-additional-documents", "item.additionalDocuments"),
+      licenseRow(item, false, actionsEnabled, itemIndex)
+    ) ++ documentRows
 
-    govukSummaryList(
-      SummaryList(rows = summaryListRows.flatten, classes = s"govuk-!-margin-top-4 item-${item.sequenceId}-additional-documents-summary")
-    )
+    lazy val licenseAndNoDocuments =
+      List(licenseRow(item, hasAdditionalInformation, actionsEnabled, itemIndex), headingOnNoDocuments(item, actionsEnabled, itemIndex))
+
+    if (hasDocuments) headingAndRows else licenseAndNoDocuments
   }
 
-  private def heading(item: ExportItem, actionsEnabled: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
-    Some(
-      SummaryListRow(
-        Key(Text(messages("declaration.summary.items.item.additionalDocuments")), classes = "govuk-heading-s"),
-        classes = s"item-${item.sequenceId}-additional-documents-heading",
-        actions = if (actionsEnabled) Some(Actions(items = List(ActionItem()))) else None
-      )
-    )
-
-  private def licenseRow(item: ExportItem, actionsEnabled: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
-    item.isLicenceRequired.map { isLicenceRequired =>
-      SummaryListRow(
-        Key(Text(messages("declaration.summary.items.item.licences"))),
-        Value(Text(messages(if (isLicenceRequired) "site.yes" else "site.no"))),
-        classes = s"item-${item.sequenceId}-licenses",
-        actions = changeLink(item.sequenceId, IsLicenceRequiredController.displayPage(item.id).url, actionsEnabled, "licences")
-      )
-    }
-
-  private def noDocumentsRow(item: ExportItem, actionsEnabled: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
-    // When 'noDocumentsRow' is called we know that 'item.additionalDocuments.documents' is NOT defined.
+  private def headingOnNoDocuments(item: ExportItem, actionsEnabled: Boolean, itemIndex: Int)(implicit messages: Messages): Option[SummaryListRow] =
+    // When 'headingOnNoDocuments' is called we know that 'item.additionalDocuments.documents' is NOT defined.
     // However, to verify if the user has already landed, or not, on the section's pages we also have to check
     // 'item.additionalDocuments'. If defined, and only if defined, we need then to show the 'No documents' row.
     item.additionalDocuments.map { _ =>
       SummaryListRow(
-        Key(Text(messages("declaration.summary.items.item.additionalDocuments")), classes = "govuk-heading-s"),
-        Value(Text(messages("site.none"))),
-        classes = s"item-${item.sequenceId}-additional-documents-heading",
-        actions = changeLink(item.sequenceId, AdditionalDocumentsController.displayPage(item.id).url, actionsEnabled)
+        key("item.additionalDocuments"),
+        valueKey("site.none"),
+        classes = s"item-$itemIndex-additional-documents-heading",
+        changeDocuments(item, actionsEnabled, itemIndex)
       )
     }
 
-  private def documentCodeAndIdRows(item: ExportItem, document: AdditionalDocument, index: Int, actionsEnabled: Boolean)(
+  private def licenseRow(item: ExportItem, hasAdditionalInformation: Boolean, actionsEnabled: Boolean, itemIndex: Int)(
+    implicit messages: Messages
+  ): Option[SummaryListRow] =
+    item.isLicenceRequired.map { isLicenceRequired =>
+      SummaryListRow(
+        key("item.licences"),
+        valueKey(if (isLicenceRequired) "site.yes" else "site.no"),
+        classes = s"item-$itemIndex-licences${if (hasAdditionalInformation) " govuk-!-margin-top-4" else ""}",
+        changeLink(IsLicenceRequiredController.displayPage(item.id), "item.licences", actionsEnabled, Some(itemIndex))
+      )
+    }
+
+  private def documentCodeAndIdRows(item: ExportItem, document: AdditionalDocument, index: Int, actionsEnabled: Boolean, itemIndex: Int)(
     implicit messages: Messages
   ): Seq[Option[SummaryListRow]] =
     List(
       document.documentTypeCode.map { typeCode =>
         SummaryListRow(
-          Key(Text(messages("declaration.summary.items.item.additionalDocuments.code"))),
-          Value(Text(typeCode)),
-          classes = s"""${noBorderForDocumentCode(document)}item-${item.sequenceId}-document-$index-code""",
-          actions = changeLink(item.sequenceId, AdditionalDocumentsController.displayPage(item.id).url, actionsEnabled)
+          key("item.additionalDocuments.code"),
+          value(typeCode),
+          classes = s"""${noBorderForDocumentCode(document)}item-$itemIndex-additional-document-$index-code""",
+          changeDocuments(item, actionsEnabled, itemIndex)
         )
       },
       document.documentIdentifier.map { identifier =>
         SummaryListRow(
-          Key(Text(messages("declaration.summary.items.item.additionalDocuments.identifier"))),
-          Value(Text(identifier)),
-          classes = s"item-${item.sequenceId}-document-$index-identifier",
-          actions =
-            if (document.documentTypeCode.isDefined) None
-            else changeLink(item.sequenceId, AdditionalDocumentsController.displayPage(item.id).url, actionsEnabled)
+          key("item.additionalDocuments.identifier"),
+          value(identifier),
+          classes = s"item-$itemIndex-additional-document-$index-identifier",
+          document.documentTypeCode.fold(changeDocuments(item, actionsEnabled, itemIndex))(_ => None)
         )
       }
     )
@@ -113,15 +101,6 @@ class AdditionalDocumentsHelper @Inject() (govukSummaryList: GovukSummaryList, l
   private def noBorderForDocumentCode(document: AdditionalDocument): String =
     document.documentIdentifier.fold("")(_ => "govuk-summary-list__row--no-border ")
 
-  private def changeLink(sequenceId: Int, url: String, actionsEnabled: Boolean, key: String = "additionalDocuments")(
-    implicit messages: Messages
-  ): Option[Actions] =
-    if (!actionsEnabled) None
-    else {
-      val hiddenText = messages(s"declaration.summary.items.item.$key.change", sequenceId)
-      val content = HtmlContent(linkContent(messages("site.change")))
-      val actionItem = actionSummaryItem(url, content, Some(hiddenText))
-
-      Some(Actions(items = List(actionItem)))
-    }
+  private def changeDocuments(item: ExportItem, actionsEnabled: Boolean, itemIndex: Int)(implicit messages: Messages): Option[Actions] =
+    changeLink(AdditionalDocumentsController.displayPage(item.id), "item.additionalDocuments", actionsEnabled, Some(itemIndex))
 }

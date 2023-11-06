@@ -17,10 +17,11 @@
 package views.helpers.summary
 
 import models.ExportsDeclaration
+import models.declaration.ExportItem
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Actions, Card, CardTitle, Key, SummaryListRow, Value}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
 import views.helpers.ActionItemBuilder.actionSummaryItem
 
 trait SummaryHelper {
@@ -28,10 +29,10 @@ trait SummaryHelper {
   def card(cardId: String)(implicit messages: Messages): Option[Card] =
     Some(Card(Some(CardTitle(Text(messages(s"declaration.summary.$cardId")), classes = s"$cardId-card"))))
 
-  def changeLink(call: Call, key: String, actionsEnabled: Boolean)(implicit messages: Messages): Option[Actions] =
+  def changeLink(call: Call, key: String, actionsEnabled: Boolean, maybeIndex: Option[Int] = None)(implicit messages: Messages): Option[Actions] =
     if (!actionsEnabled) None
     else {
-      val hiddenText = messages(s"declaration.summary.$key.change")
+      val hiddenText = messages(s"declaration.summary.$key.change", maybeIndex.getOrElse(""))
       val content = HtmlContent(s"""<span aria-hidden="true">${messages("site.change")}</span>""")
       val actionItem = actionSummaryItem(call.url, content, Some(hiddenText))
       Some(Actions(items = List(actionItem)))
@@ -54,15 +55,14 @@ trait SummaryHelper {
 
   private def keyForAttrWithMultipleRows(rowKey: String, tag: String = "h3")(implicit messages: Messages): Key = {
     val key = s"declaration.summary.$rowKey"
-    Key(HtmlContent(s"""<$tag class="govuk-heading-s govuk-!-margin-top-6 govuk-!-margin-bottom-0">${messages(key)}</$tag>"""))
+    Key(HtmlContent(s"""<$tag class="govuk-heading-s govuk-!-margin-top-4 govuk-!-margin-bottom-0">${messages(key)}</$tag>"""))
   }
 }
 
 object SummaryHelper {
 
-  def hasItemsData(declaration: ExportsDeclaration): Boolean =
-    declaration.items.nonEmpty && declaration.items.forall { item =>
-      item.procedureCodes.isDefined ||
+  def hasItemData(item: ExportItem): Boolean =
+    item.procedureCodes.isDefined ||
       item.fiscalInformation.isDefined ||
       item.additionalFiscalReferencesData.isDefined ||
       item.statisticalValue.isDefined ||
@@ -77,7 +77,9 @@ object SummaryHelper {
       item.additionalInformation.isDefined ||
       item.additionalDocuments.isDefined ||
       item.isLicenceRequired.isDefined
-    }
+
+  def hasItemsData(declaration: ExportsDeclaration): Boolean =
+    declaration.items.nonEmpty && declaration.items.exists(hasItemData)
 
   def hasTransactionData(declaration: ExportsDeclaration): Boolean =
     declaration.natureOfTransaction.isDefined ||
@@ -106,7 +108,7 @@ object SummaryHelper {
     locations.inlandModeOfTransportCode.isDefined
   }
 
-  def showItemsSection(declaration: ExportsDeclaration, actionsEnabled: Boolean): Boolean =
+  def showItemsCard(declaration: ExportsDeclaration, actionsEnabled: Boolean): Boolean =
     hasItemsData(declaration) || (
       actionsEnabled && (hasTransportData(declaration) || hasRequiredTransactionDataOnNonEmptyItems(declaration))
     )
