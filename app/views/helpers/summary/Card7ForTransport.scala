@@ -20,7 +20,7 @@ import controllers.declaration.routes._
 import forms.declaration.InlandModeOfTransportCode
 import forms.declaration.ModeOfTransportCode.Empty
 import models.ExportsDeclaration
-import models.declaration.Transport
+import models.declaration.{Container, Transport}
 import play.api.i18n.Messages
 import play.twirl.api.{Html, HtmlFormat}
 import uk.gov.hmrc.govukfrontend.views.html.components.{GovukSummaryList, SummaryList}
@@ -45,7 +45,8 @@ class Card7ForTransport @Inject() (govukSummaryList: GovukSummaryList) extends S
       transport.meansOfTransportCrossingTheBorderType.isDefined ||
       transport.meansOfTransportCrossingTheBorderIDNumber.isDefined ||
       transport.transportPayment.isDefined ||
-      transport.borderModeOfTransportCode.isDefined
+      transport.borderModeOfTransportCode.isDefined ||
+      transport.containers.isDefined
 
     if (hasData) displayCard(declaration, actionsEnabled) else HtmlFormat.empty
   }
@@ -54,7 +55,7 @@ class Card7ForTransport @Inject() (govukSummaryList: GovukSummaryList) extends S
     govukSummaryList(SummaryList(rows(declaration, actionsEnabled), card("transport")))
 
   private def rows(declaration: ExportsDeclaration, actionsEnabled: Boolean)(implicit messages: Messages): Seq[SummaryListRow] =
-    List(
+    (List(
       borderTransport(declaration.transport, actionsEnabled),
       warehouseIdentification(declaration, actionsEnabled),
       supervisingCustomsOffice(declaration, actionsEnabled),
@@ -64,7 +65,7 @@ class Card7ForTransport @Inject() (govukSummaryList: GovukSummaryList) extends S
       activeTransportType(declaration.transport, actionsEnabled),
       transportPayment(declaration.transport, actionsEnabled),
       expressConsignment(declaration.transport, actionsEnabled)
-    ).flatten
+    ) ++ containers(declaration.transport, actionsEnabled)).flatten
 
   private def inlandModeOfTransportCode(declaration: ExportsDeclaration): Option[InlandModeOfTransportCode] =
     declaration.locations.inlandModeOfTransportCode.filterNot(_.inlandModeOfTransportCode contains Empty)
@@ -188,5 +189,27 @@ class Card7ForTransport @Inject() (govukSummaryList: GovukSummaryList) extends S
         changeLink(ExpressConsignmentController.displayPage, "transport.expressConsignment", actionsEnabled)
       )
     }
+
+  private def containers(transport: Transport, actionsEnabled: Boolean)(implicit messages: Messages): Option[Seq[SummaryListRow]] =
+    transport.containers.flatMap { containers =>
+      heading("container", "container") map { header =>
+        Seq(header) ++ containers.flatMap(containerRows(_, actionsEnabled))
+      }
+    }
+
+  private def containerRows(container: Container, actionsEnabled: Boolean)(implicit messages: Messages): List[SummaryListRow] =
+    List(
+      SummaryListRow(
+        key("container.id"),
+        value(container.id),
+        classes = s"govuk-summary-list__row--no-border container-${container.sequenceId}",
+        changeLink(TransportContainerController.displayContainerSummary, "container", actionsEnabled)
+      ),
+      SummaryListRow(key("container.securitySeals"), value(valueOfSeals(container)), classes = s"container-seals-${container.sequenceId}")
+    )
+
+  private def valueOfSeals(container: Container)(implicit messages: Messages): String =
+    if (container.seals.isEmpty) messages("declaration.summary.container.securitySeals.none")
+    else container.seals.map(_.id).mkString(", ")
 
 }
