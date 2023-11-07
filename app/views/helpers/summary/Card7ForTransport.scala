@@ -190,10 +190,14 @@ class Card7ForTransport @Inject() (govukSummaryList: GovukSummaryList) extends S
       )
     }
 
-  private def containers(transport: Transport, actionsEnabled: Boolean)(implicit messages: Messages): Option[Seq[SummaryListRow]] =
-    transport.containers.flatMap { containers =>
-      heading("containers", "container") map { header =>
-        Seq(header) ++ containers.flatMap(containerRows(_, actionsEnabled))
+  private def containers(transport: Transport, actionsEnabled: Boolean)(implicit messages: Messages): Option[List[SummaryListRow]] =
+    if (transport.containers.isEmpty) {
+      Some(List(headingNoContainers(actionsEnabled)))
+    } else {
+      transport.containers.flatMap { containers =>
+        heading("containers", "container") map { header =>
+          List(header) ++ containers.flatMap(containerRows(_, actionsEnabled))
+        }
       }
     }
 
@@ -206,6 +210,14 @@ class Card7ForTransport @Inject() (govukSummaryList: GovukSummaryList) extends S
         changeLink(TransportContainerController.displayContainerSummary, "container", actionsEnabled)
       ),
       SummaryListRow(key("container.securitySeals"), value(valueOfSeals(container)), classes = s"seal container-seals-${container.sequenceId}")
+    )
+
+  private def headingNoContainers(actionsEnabled: Boolean)(implicit messages: Messages): SummaryListRow =
+    SummaryListRow(
+      key("containers"),
+      valueKey("site.no"),
+      classes = "containers-heading",
+      changeLink(TransportContainerController.displayContainerSummary, "container", actionsEnabled)
     )
 
   private def valueOfSeals(container: Container)(implicit messages: Messages): String =

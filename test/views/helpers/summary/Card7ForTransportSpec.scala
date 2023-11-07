@@ -269,6 +269,16 @@ class Card7ForTransportSpec extends UnitViewSpec with ExportsTestHelper with Inj
       }
     }
 
+    "display an empty 'Containers' section" when {
+      "no containers have been entered" in {
+        val row = card6ForTransport.eval(aDeclarationAfter(declaration, withoutContainerData)).getElementsByClass("containers-heading")
+        row must haveSummaryKey(messages("declaration.summary.containers"))
+        row must haveSummaryValue(messages("site.no"))
+        row must haveSummaryActionsTexts("site.change", "declaration.summary.container.change")
+        row must haveSummaryActionWithPlaceholder(TransportContainerController.displayContainerSummary)
+      }
+    }
+
     "NOT have change links" when {
       "'actionsEnabled' is false" in {
         val view = card6ForTransport.eval(declaration, false)(messages)
