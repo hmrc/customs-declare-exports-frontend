@@ -192,7 +192,7 @@ class Card7ForTransport @Inject() (govukSummaryList: GovukSummaryList) extends S
 
   private def containers(transport: Transport, actionsEnabled: Boolean)(implicit messages: Messages): Option[Seq[SummaryListRow]] =
     transport.containers.flatMap { containers =>
-      heading("container", "container") map { header =>
+      heading("containers", "container") map { header =>
         Seq(header) ++ containers.flatMap(containerRows(_, actionsEnabled))
       }
     }
@@ -202,10 +202,10 @@ class Card7ForTransport @Inject() (govukSummaryList: GovukSummaryList) extends S
       SummaryListRow(
         key("container.id"),
         value(container.id),
-        classes = s"govuk-summary-list__row--no-border container-${container.sequenceId}",
+        classes = s"govuk-summary-list__row--no-border container container-${container.sequenceId}",
         changeLink(TransportContainerController.displayContainerSummary, "container", actionsEnabled)
       ),
-      SummaryListRow(key("container.securitySeals"), value(valueOfSeals(container)), classes = s"container-seals-${container.sequenceId}")
+      SummaryListRow(key("container.securitySeals"), value(valueOfSeals(container)), classes = s"seal container-seals-${container.sequenceId}")
     )
 
   private def valueOfSeals(container: Container)(implicit messages: Messages): String =

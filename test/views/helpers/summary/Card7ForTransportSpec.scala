@@ -21,6 +21,7 @@ import controllers.declaration.routes._
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.ModeOfTransportCode.Maritime
 import forms.declaration._
+import models.declaration.Container
 import services.cache.ExportsTestHelper
 import views.declaration.spec.UnitViewSpec
 
@@ -222,6 +223,50 @@ class Card7ForTransportSpec extends UnitViewSpec with ExportsTestHelper with Inj
     "not display a 'supervising office' row when question not answered" in {
       val view = card6ForTransport.eval(aDeclarationAfter(declaration, withoutSupervisingCustomsOffice))(messages)
       view.getElementsByClass(supervisingOffice) mustBe empty
+    }
+
+    "display a 'Containers' section" when {
+      "one or more containers have been entered" in {
+        val id1 = "container1"
+        val id2 = "container2"
+
+        val container1 = Container(1, id1, List(Seal(1, "seal1"), Seal(2, "seal2")))
+        val container2 = Container(2, id2, List.empty)
+
+        val view = card6ForTransport.eval(aDeclarationAfter(declaration, withContainerData(container1, container2)))(messages)
+
+        val containersSummaryListRows = view.getElementsByClass("container")
+        containersSummaryListRows.size mustBe 2
+
+        val sealsSummaryListRows = view.getElementsByClass("seal")
+        sealsSummaryListRows.size mustBe 2
+
+        val heading = view.getElementsByClass("containers-heading")
+        heading must haveSummaryKey(messages("declaration.summary.container"))
+        heading must haveSummaryValue("")
+
+        val container1Id = containersSummaryListRows.first.getElementsByClass("container-1")
+        container1Id must haveSummaryKey(messages("declaration.summary.container.id"))
+        container1Id must haveSummaryValue(id1)
+        container1Id must haveSummaryActionsTexts("site.change", "declaration.summary.container.change")
+        container1Id must haveSummaryActionWithPlaceholder(TransportContainerController.displayContainerSummary)
+
+        val container1Seals = sealsSummaryListRows.first.getElementsByClass("container-seals-1")
+        container1Seals must haveSummaryKey(messages("declaration.summary.container.securitySeals"))
+        container1Seals must haveSummaryValue("seal1, seal2")
+        container1Seals.first.getElementsByClass(summaryActionsClassName).size mustBe 0
+
+        val container2Id = containersSummaryListRows.get(1).getElementsByClass("container-2")
+        container2Id must haveSummaryKey(messages("declaration.summary.container.id"))
+        container2Id must haveSummaryValue(id2)
+        container2Id must haveSummaryActionsTexts("site.change", "declaration.summary.container.change")
+        container2Id must haveSummaryActionWithPlaceholder(TransportContainerController.displayContainerSummary)
+
+        val container2Seals = sealsSummaryListRows.get(1).getElementsByClass("container-seals-2")
+        container2Seals must haveSummaryKey(messages("declaration.summary.container.securitySeals"))
+        container2Seals must haveSummaryValue(messages("declaration.summary.container.securitySeals.none"))
+        container2Seals.get(0).getElementsByClass(summaryActionsClassName).size mustBe 0
+      }
     }
 
     "NOT have change links" when {
