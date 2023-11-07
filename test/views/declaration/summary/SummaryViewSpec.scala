@@ -77,7 +77,7 @@ trait SummaryViewSpec extends UnitViewSpec with Injector with Stubs {
   // scalastyle:off
   def sectionsVisibility(view: ExportsDeclaration => Appendable): Unit = {
     "not have parties section" in {
-      assertNull(view(aDeclaration()).getElementById("declaration-parties-summary"))
+      view(aDeclaration()).getElementsByClass("parties-card").size mustBe 0
     }
 
     "have parties section" in {
@@ -85,7 +85,7 @@ trait SummaryViewSpec extends UnitViewSpec with Injector with Stubs {
     }
 
     "not have countries section" in {
-      assertNull(view(aDeclaration()).getElementById("declaration-countries-summary"))
+      view(aDeclaration()).getElementsByClass("countries-card").size mustBe 0
     }
 
     "have countries section" in {
@@ -101,13 +101,13 @@ trait SummaryViewSpec extends UnitViewSpec with Injector with Stubs {
       view(declaration).getElementsByClass("locations-card").text mustNot be(empty)
     }
 
-    for (decType <- List(CLEARANCE, SIMPLIFIED, OCCASIONAL))
-      yield s"not have transaction section in $decType declaration" in {
-        assertNull(view(aDeclaration(withType(decType))).getElementById("declaration-transaction-summary"))
+    for (declarationType <- List(CLEARANCE, SIMPLIFIED, OCCASIONAL))
+      yield s"not have transaction section in $declarationType declaration" in {
+        view(aDeclaration(withType(declarationType))).getElementsByClass("transaction-card").size mustBe 0
       }
 
     "have transaction section" in {
-      view(aDeclaration(withNatureOfTransaction("1"))).getElementById("declaration-transaction-summary").text mustNot be(empty)
+      view(aDeclaration(withNatureOfTransaction("1"))).getElementsByClass("transaction-card").text mustNot be(empty)
     }
 
     "not have items section" in {
