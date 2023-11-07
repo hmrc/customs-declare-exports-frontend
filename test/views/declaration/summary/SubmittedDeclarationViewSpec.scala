@@ -141,7 +141,7 @@ class SubmittedDeclarationViewSpec extends UnitViewSpec with Stubs with ExportsT
 
     "have transport section" in {
       val view = createView(declaration = aDeclaration(withBorderTransport()))
-      view.getElementById("declaration-transport-summary").text mustNot be(empty)
+      view.getElementsByClass("transport-card").text mustNot be(empty)
       links(view) mustBe empty
     }
   }

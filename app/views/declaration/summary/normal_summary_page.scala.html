@@ -37,7 +37,6 @@
     card7ForTransport: Card7ForTransport,
     transaction_section: transaction_section,
     items_section: items_section,
-    transport_section: transport_section,
     errorSummary: errorSummary,
     linkButton: linkButton,
     exitAndCompleteLater: exitAndCompleteLater,
@@ -123,13 +122,11 @@
 
     @card4ForLocations.eval(request.cacheModel)
 
-    @card7ForTransport.eval(request.cacheModel)
-
     @transaction_section(request.cacheModel)
 
     @items_section(request.cacheModel)
 
-    @transport_section(request.cacheModel)
+    @card7ForTransport.eval(request.cacheModel)
 
     <div class="govuk-button-group govuk-!-margin-top-9">
         @draftContinueLink

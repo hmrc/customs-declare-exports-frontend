@@ -16,7 +16,7 @@
 
 package views.helpers.summary
 
-import base.Injector
+import base.{Injector, MockTransportCodeService}
 import controllers.declaration.routes._
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.ModeOfTransportCode.Maritime
@@ -39,6 +39,16 @@ class Card7ForTransportSpec extends UnitViewSpec with ExportsTestHelper with Inj
 
   private val card6ForTransport = instanceOf[Card7ForTransport]
 
+  private val borderTransport = "borderTransport"
+  private val inlandOrBorder = "inlandOrBorder"
+  private val modeOfTransport = "modeOfTransport"
+  private val transportReference = "transportReference"
+  private val activeTransportType = "activeTransportType"
+  private val transportPayment = "transportPayment"
+  private val warehouseId = "warehouseId"
+  private val supervisingOffice = "supervisingOffice"
+  private val expressConsignment = "expressConsignment"
+
   "Transport section" should {
     val view = card6ForTransport.eval(declaration)(messages)
 
@@ -47,7 +57,7 @@ class Card7ForTransportSpec extends UnitViewSpec with ExportsTestHelper with Inj
     }
 
     "show the border-transport" in {
-      val row = view.getElementsByClass("borderTransport")
+      val row = view.getElementsByClass(borderTransport)
 
       val call = Some(TransportLeavingTheBorderController.displayPage)
       checkSummaryRow(
@@ -59,8 +69,13 @@ class Card7ForTransportSpec extends UnitViewSpec with ExportsTestHelper with Inj
       )
     }
 
+    "not display a border-transport row if question not answered" in {
+      val view = card6ForTransport.eval(aDeclarationAfter(declaration, withoutBorderModeOfTransportCode))(messages)
+      view.getElementsByClass(borderTransport) mustBe empty
+    }
+
     "show the inland-or-border" in {
-      val row = view.getElementsByClass("inlandOrBorder")
+      val row = view.getElementsByClass(inlandOrBorder)
 
       val call = Some(InlandOrBorderController.displayPage)
       checkSummaryRow(
@@ -72,8 +87,13 @@ class Card7ForTransportSpec extends UnitViewSpec with ExportsTestHelper with Inj
       )
     }
 
+    "not display a 'inland or border' row when question not answered" in {
+      val view = card6ForTransport.eval(aDeclarationAfter(declaration, withoutInlandOrBorder))(messages)
+      view.getElementsByClass(inlandOrBorder) mustBe empty
+    }
+
     "show the inland-mode-transport" in {
-      val row = view.getElementsByClass("modeOfTransport")
+      val row = view.getElementsByClass(modeOfTransport)
 
       val call = Some(InlandTransportDetailsController.displayPage)
       checkSummaryRow(
@@ -85,8 +105,13 @@ class Card7ForTransportSpec extends UnitViewSpec with ExportsTestHelper with Inj
       )
     }
 
+    "not display a 'mode of transport' row when question not answered" in {
+      val view = card6ForTransport.eval(aDeclarationAfter(declaration, withoutInlandModeOfTransportCode))(messages)
+      view.getElementsByClass(modeOfTransport) mustBe empty
+    }
+
     "show the transport-reference" in {
-      val row = view.getElementsByClass("transportReference")
+      val row = view.getElementsByClass(transportReference)
 
       val call = Some(DepartureTransportController.displayPage)
       checkSummaryRow(
@@ -98,8 +123,36 @@ class Card7ForTransportSpec extends UnitViewSpec with ExportsTestHelper with Inj
       )
     }
 
+    "not display a 'transport reference' row if question not answered" in {
+      val view = card6ForTransport.eval(aDeclarationAfter(declaration, withoutMeansOfTransportOnDepartureType))(messages)
+      view.getElementsByClass(transportReference) mustBe empty
+    }
+
+    "display a 'transport reference' row if question skipped" in {
+      val transport = declaration.transport.copy(meansOfTransportOnDepartureType = None, meansOfTransportOnDepartureIDNumber = Some(""))
+      val view = card6ForTransport.eval(declaration.copy(transport = transport))(messages)
+
+      val row = view.getElementsByClass(transportReference)
+      row must haveSummaryKey(messages("declaration.summary.transport.departure.meansOfTransport.header"))
+      row must haveSummaryValue("")
+      row must haveSummaryActionWithPlaceholder(DepartureTransportController.displayPage)
+    }
+
+    "display a 'transport reference' row if option none selected" in {
+      val transport = declaration.transport.copy(
+        meansOfTransportOnDepartureType = Some(MockTransportCodeService.transportCodeService.NotApplicable.value),
+        meansOfTransportOnDepartureIDNumber = Some("")
+      )
+      val view = card6ForTransport.eval(declaration.copy(transport = transport))(messages)
+
+      val row = view.getElementsByClass(transportReference)
+      row must haveSummaryKey(messages("declaration.summary.transport.departure.meansOfTransport.header"))
+      row must haveSummaryValue(messages("declaration.summary.transport.departure.meansOfTransport.option_none"))
+      row must haveSummaryActionWithPlaceholder(DepartureTransportController.displayPage)
+    }
+
     "show the active-transport-type" in {
-      val row = view.getElementsByClass("activeTransportType")
+      val row = view.getElementsByClass(activeTransportType)
 
       val call = Some(BorderTransportController.displayPage)
       checkSummaryRow(
@@ -111,32 +164,64 @@ class Card7ForTransportSpec extends UnitViewSpec with ExportsTestHelper with Inj
       )
     }
 
+    "not display a 'active transport type' row if question not answered" in {
+      val view = card6ForTransport.eval(aDeclarationAfter(declaration, withoutBorderTransport))(messages)
+      view.getElementsByClass(activeTransportType) mustBe empty
+    }
+
     "show the transport-payment" in {
-      val row = view.getElementsByClass("transportPayment")
+      val row = view.getElementsByClass(transportPayment)
 
       val call = Some(TransportPaymentController.displayPage)
       checkSummaryRow(row, "transport.payment", messages("declaration.summary.transport.payment.A"), call, "transport.payment")
     }
 
+    "not display a 'transport payment' row if question not answered" in {
+      val view = card6ForTransport.eval(aDeclarationAfter(declaration, withoutTransportPayment))(messages)
+      view.getElementsByClass(transportPayment) mustBe empty
+    }
+
     "show the express-consignment" in {
-      val row = view.getElementsByClass("expressConsignment")
+      val row = view.getElementsByClass(expressConsignment)
 
       val call = Some(ExpressConsignmentController.displayPage)
       checkSummaryRow(row, "transport.expressConsignment", YesNoAnswers.yes, call, "transport.expressConsignment")
     }
 
+    "not display an 'express consignment' row if question not answered" in {
+      val view =
+        card6ForTransport.eval(aDeclarationAfter(declaration.copy(transport = declaration.transport.copy(expressConsignment = None))))(messages)
+      view.getElementsByClass(expressConsignment) mustBe empty
+    }
+
     "show the warehouse-id" in {
-      val row = view.getElementsByClass("warehouseId")
+      val row = view.getElementsByClass(warehouseId)
 
       val call = Some(WarehouseIdentificationController.displayPage)
       checkSummaryRow(row, "transport.warehouse.id", "12345", call, "transport.warehouse.id")
     }
 
-    "show the supervising-office" in {
-      val row = view.getElementsByClass("supervisingOffice")
+    "display a 'warehouse' label when user said 'no'" in {
+      val view = card6ForTransport.eval(aDeclarationAfter(declaration, withWarehouseIdentification(Some(WarehouseIdentification(None)))))(messages)
+      val row = view.getElementsByClass(warehouseId)
+      row must haveSummaryKey(messages("declaration.summary.transport.warehouse.no.label"))
+      row must haveSummaryValue(messages("site.no"))
+    }
 
+    "not display a 'warehouse id' row when question not answered" in {
+      val view = card6ForTransport.eval(aDeclarationAfter(declaration, withoutWarehouseIdentification))(messages)
+      view.getElementsByClass(warehouseId) mustBe empty
+    }
+
+    "show the supervising-office" in {
+      val row = view.getElementsByClass(supervisingOffice)
       val call = Some(SupervisingCustomsOfficeController.displayPage)
       checkSummaryRow(row, "transport.supervisingOffice", "23456", call, "transport.supervisingOffice")
+    }
+
+    "not display a 'supervising office' row when question not answered" in {
+      val view = card6ForTransport.eval(aDeclarationAfter(declaration, withoutSupervisingCustomsOffice))(messages)
+      view.getElementsByClass(supervisingOffice) mustBe empty
     }
 
     "NOT have change links" when {
