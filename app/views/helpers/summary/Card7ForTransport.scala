@@ -191,14 +191,15 @@ class Card7ForTransport @Inject() (govukSummaryList: GovukSummaryList) extends S
     }
 
   private def containers(transport: Transport, actionsEnabled: Boolean)(implicit messages: Messages): Option[List[SummaryListRow]] =
-    if (transport.containers.isEmpty) {
-      Some(List(headingNoContainers(actionsEnabled)))
-    } else {
-      transport.containers.flatMap { containers =>
+    transport.containers flatMap { containers =>
+      val rows = containers.flatMap(containerRows(_, actionsEnabled))
+
+      if (rows.isEmpty)
+        Some(List(headingNoContainers(actionsEnabled)))
+      else
         heading("containers", "container") map { header =>
-          List(header) ++ containers.flatMap(containerRows(_, actionsEnabled))
+          List(header) ++ rows
         }
-      }
     }
 
   private def containerRows(container: Container, actionsEnabled: Boolean)(implicit messages: Messages): List[SummaryListRow] =
