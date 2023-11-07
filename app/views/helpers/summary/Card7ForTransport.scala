@@ -194,15 +194,27 @@ class Card7ForTransport @Inject() (govukSummaryList: GovukSummaryList) extends S
     transport.containers flatMap { containers =>
       val rows = containers.flatMap(containerRows(_, actionsEnabled))
 
-      if (rows.isEmpty)
-        Some(List(headingNoContainers(actionsEnabled)))
-      else
+      if (rows.isEmpty) {
+        val header =
+          SummaryListRow(
+            key("containers"),
+            valueKey("site.no"),
+            classes = "containers-heading",
+            changeLink(TransportContainerController.displayContainerSummary, "container", actionsEnabled)
+          )
+        Some(List(header))
+      } else
         heading("containers", "container") map { header =>
           List(header) ++ rows
         }
     }
 
-  private def containerRows(container: Container, actionsEnabled: Boolean)(implicit messages: Messages): List[SummaryListRow] =
+  private def containerRows(container: Container, actionsEnabled: Boolean)(implicit messages: Messages): List[SummaryListRow] = {
+
+    val valueOfSeals =
+      if (container.seals.isEmpty) messages("declaration.summary.container.securitySeals.none")
+      else container.seals.map(_.id).mkString(", ")
+
     List(
       SummaryListRow(
         key("container.id"),
@@ -210,19 +222,8 @@ class Card7ForTransport @Inject() (govukSummaryList: GovukSummaryList) extends S
         classes = s"govuk-summary-list__row--no-border container container-${container.sequenceId}",
         changeLink(TransportContainerController.displayContainerSummary, "container", actionsEnabled)
       ),
-      SummaryListRow(key("container.securitySeals"), value(valueOfSeals(container)), classes = s"seal container-seals-${container.sequenceId}")
+      SummaryListRow(key("container.securitySeals"), value(valueOfSeals), classes = s"seal container-seals-${container.sequenceId}")
     )
-
-  private def headingNoContainers(actionsEnabled: Boolean)(implicit messages: Messages): SummaryListRow =
-    SummaryListRow(
-      key("containers"),
-      valueKey("site.no"),
-      classes = "containers-heading",
-      changeLink(TransportContainerController.displayContainerSummary, "container", actionsEnabled)
-    )
-
-  private def valueOfSeals(container: Container)(implicit messages: Messages): String =
-    if (container.seals.isEmpty) messages("declaration.summary.container.securitySeals.none")
-    else container.seals.map(_.id).mkString(", ")
+  }
 
 }
