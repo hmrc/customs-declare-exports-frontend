@@ -58,7 +58,7 @@ class Card1ForReferences @Inject() (govukSummaryList: GovukSummaryList, govukIns
     HtmlFormat.fill(List(insets, heading, paragraph, govukSummaryList(SummaryList(rows(declaration, actionsEnabled), card("references")))))
   }
 
-  private def rows(declaration: ExportsDeclaration, actionsEnabled: Boolean)(implicit messages: Messages): Seq[SummaryListRow] =
+  def rows(declaration: ExportsDeclaration, actionsEnabled: Boolean)(implicit messages: Messages): Seq[SummaryListRow] =
     List(
       creationDate(declaration),
       expiryDate(declaration),

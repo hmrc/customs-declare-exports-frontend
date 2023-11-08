@@ -1823,6 +1823,7 @@ declaration.summary.accepted.mrn = MRN
 declaration.summary.draft.ducr = DUCR
 declaration.summary.draft = Review the information you entered so far.
 declaration.summary.unknown = Unknown
+declaration.summary.section = Summary of your answers for section {0}
 
 declaration.summary.references = This declaration
 declaration.summary.references.insets = Start here to go through the questions from the beginning
