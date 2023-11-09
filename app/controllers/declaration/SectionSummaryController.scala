@@ -36,7 +36,7 @@ class SectionSummaryController @Inject() (
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents,
-  references_section: references_section_summary,
+  references_section: section_summary,
   card1ForReferencesSection: Card1ForReferencesSection
 )(implicit appConfig: AppConfig)
     extends FrontendController(mcc) with I18nSupport with Logging with ModelCacheable {

@@ -34,7 +34,7 @@ import javax.inject.{Inject, Singleton}
 
 @Singleton
 class Card1ForReferencesSection @Inject() (card1ForReferences: Card1ForReferences, govukSummaryList: GovukSummaryList, heading: heading)
-    extends ReferencesSectionCard {
+    extends SectionCard {
 
   def eval(declaration: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages): Html = {
     val card = Some(Card(Some(CardTitle(Text(messages(s"declaration.section.1")), classes = s"section-1-card"))))

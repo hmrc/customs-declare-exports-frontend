@@ -30,18 +30,18 @@
     linkButton: linkButton
 )
 
-@(referencesSectionCard: ReferencesSectionCard)(implicit request: JourneyRequest[AnyContent], messages: Messages, appConfig: AppConfig)
+@(sectionCard: SectionCard)(implicit request: JourneyRequest[AnyContent], messages: Messages, appConfig: AppConfig)
 
 @govukLayout(
     title = Title(messages("declaration.summary.normal-header")),
-    backButton = Some(BackButton(messages("site.back"), referencesSectionCard.backLink)),
+    backButton = Some(BackButton(messages("site.back"), sectionCard.backLink)),
     useCustomContentWidth = true,
     showDeclarationSummaryLink = false
 ) {
 
-    @referencesSectionCard.eval(request.cacheModel, true)
+    @sectionCard.eval(request.cacheModel, true)
 
     <div class="govuk-button-group govuk-!-margin-top-9">
-        @linkButton("site.save_and_continue", referencesSectionCard.continueTo)
+        @linkButton("site.save_and_continue", sectionCard.continueTo)
     </div>
 }

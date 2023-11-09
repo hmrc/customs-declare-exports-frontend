@@ -25,7 +25,7 @@ import play.twirl.api.Html
 import javax.inject.Singleton
 
 @Singleton
-abstract class ReferencesSectionCard {
+abstract class SectionCard {
 
   def eval(declaration: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages): Html
 
