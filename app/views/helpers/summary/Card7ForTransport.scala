@@ -129,26 +129,25 @@ class Card7ForTransport @Inject() (govukSummaryList: GovukSummaryList) extends S
       }
     }
 
-  private def transportReference(transport: Transport, actionsEnabled: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
-    if (transport.meansOfTransportOnDepartureType.isDefined || transport.meansOfTransportOnDepartureIDNumber.isDefined) {
+  private def transportReference(transport: Transport, actionsEnabled: Boolean)(implicit messages: Messages): Option[SummaryListRow] = {
 
-      val messagesForDepartureMeansOfTransport: Seq[String] =
-        transport.meansOfTransportOnDepartureType.fold[Seq[String]](Seq.empty) { meansType =>
-          transport.meansOfTransportOnDepartureIDNumber map { meansId =>
-            Seq(messages(s"declaration.summary.transport.departure.meansOfTransport.$meansType"), meansId)
-          } getOrElse Seq(messages(s"declaration.summary.transport.departure.meansOfTransport.$meansType"))
+    val meansOfTransportOnDeparture: Seq[String] = List(
+      transport.meansOfTransportOnDepartureType.map(meansType => messages(s"declaration.summary.transport.departure.meansOfTransport.$meansType")),
+      transport.meansOfTransportOnDepartureIDNumber.map(identity)
+    ).flatten
 
-        }
-
+    if (meansOfTransportOnDeparture.nonEmpty)
       Some(
         SummaryListRow(
           key("transport.departure.meansOfTransport.header"),
-          valueHtml(messagesForDepartureMeansOfTransport.mkString("<br>")),
+          valueHtml(meansOfTransportOnDeparture.mkString("<br>")),
           classes = "transport-reference",
           changeLink(DepartureTransportController.displayPage, "transport.departure.meansOfTransport.header", actionsEnabled)
         )
       )
-    } else None
+    else None
+
+  }
 
   private def activeTransportType(transport: Transport, actionsEnabled: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
     if (transport.meansOfTransportCrossingTheBorderType.isDefined && transport.meansOfTransportCrossingTheBorderIDNumber.isDefined) {
