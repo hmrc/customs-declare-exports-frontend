@@ -46,6 +46,7 @@ class Card7ForTransport @Inject() (govukSummaryList: GovukSummaryList) extends S
       transport.meansOfTransportCrossingTheBorderIDNumber.isDefined ||
       transport.transportPayment.isDefined ||
       transport.borderModeOfTransportCode.isDefined ||
+      transport.transportCrossingTheBorderNationality.isDefined ||
       transport.containers.isDefined
 
     if (hasData) displayCard(declaration, actionsEnabled) else HtmlFormat.empty
@@ -64,6 +65,7 @@ class Card7ForTransport @Inject() (govukSummaryList: GovukSummaryList) extends S
       transportReference(declaration.transport, actionsEnabled),
       activeTransportType(declaration.transport, actionsEnabled),
       transportPayment(declaration.transport, actionsEnabled),
+      transportCrossingTheBorder(declaration.transport, actionsEnabled),
       expressConsignment(declaration.transport, actionsEnabled)
     ) ++ containers(declaration.transport, actionsEnabled)).flatten
 
@@ -177,6 +179,16 @@ class Card7ForTransport @Inject() (govukSummaryList: GovukSummaryList) extends S
         valueKey(s"declaration.summary.transport.payment.${transportPayment.paymentMethod}"),
         classes = "transportPayment",
         changeLink(TransportPaymentController.displayPage, "transport.payment", actionsEnabled)
+      )
+    }
+
+  private def transportCrossingTheBorder(transport: Transport, actionsEnabled: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
+    transport.transportCrossingTheBorderNationality.map { transportCrossingTheBorderNationality =>
+      SummaryListRow(
+        key("declaration.summary.transport.registrationCountry"),
+        value(transportCrossingTheBorderNationality.countryName.getOrElse(messages("declaration.summary.unknown"))),
+        classes = "activeTransportCountry",
+        changeLink(TransportCountryController.displayPage, "transport.payment", actionsEnabled)
       )
     }
 
