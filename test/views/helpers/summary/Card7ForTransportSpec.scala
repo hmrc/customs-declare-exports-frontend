@@ -41,16 +41,16 @@ class Card7ForTransportSpec extends UnitViewSpec with ExportsTestHelper with Inj
 
   private val card7ForTransport = instanceOf[Card7ForTransport]
 
-  private val borderTransport = "borderTransport"
-  private val inlandOrBorder = "inlandOrBorder"
-  private val modeOfTransport = "modeOfTransport"
-  private val transportReference = "transportReference"
-  private val activeTransportType = "activeTransportType"
-  private val transportPayment = "transportPayment"
-  private val warehouseId = "warehouseId"
-  private val supervisingOffice = "supervisingOffice"
-  private val activeTransportCountry = "activeTransportCountry"
-  private val expressConsignment = "expressConsignment"
+  private val borderTransport = "border-transport"
+  private val inlandOrBorder = "inland-or-border"
+  private val modeOfTransport = "mode-of-transport"
+  private val transportReference = "transport-reference"
+  private val activeTransportType = "active-transport-type"
+  private val transportPayment = "transport-payment"
+  private val warehouseId = "warehouse-id"
+  private val supervisingOffice = "supervising-office"
+  private val activeTransportCountry = "active-transport-country"
+  private val expressConsignment = "express-consignment"
 
   "Transport section" should {
     val view = card7ForTransport.eval(declaration)(messages)
@@ -290,7 +290,7 @@ class Card7ForTransportSpec extends UnitViewSpec with ExportsTestHelper with Inj
       "no containers have been entered" in {
         val row = view.getElementsByClass("containers-heading")
         row must haveSummaryKey(messages("declaration.summary.containers"))
-        row must haveSummaryValue(messages("site.no"))
+        row must haveSummaryValue(messages("site.none"))
         row must haveSummaryActionsTexts("site.change", "declaration.summary.container.change")
         row must haveSummaryActionWithPlaceholder(TransportContainerController.displayContainerSummary)
       }

@@ -77,7 +77,7 @@ class Card7ForTransport @Inject() (govukSummaryList: GovukSummaryList) extends S
       SummaryListRow(
         key("transport.departure.transportCode.header"),
         valueKey(s"declaration.summary.transport.departure.transportCode.${borderModeOfTransportCode.getCodeValue}"),
-        classes = "borderTransport",
+        classes = "border-transport",
         changeLink(TransportLeavingTheBorderController.displayPage, "transport.departure.transportCode.header", actionsEnabled)
       )
     }
@@ -90,7 +90,7 @@ class Card7ForTransport @Inject() (govukSummaryList: GovukSummaryList) extends S
           else "transport.warehouse.no.label"
         ),
         value(warehouseIdentification.identificationNumber.getOrElse(messages("site.no"))),
-        classes = "warehouseId",
+        classes = "warehouse-id",
         changeLink(WarehouseIdentificationController.displayPage, "transport.warehouse.id", actionsEnabled)
       )
     }
@@ -102,7 +102,7 @@ class Card7ForTransport @Inject() (govukSummaryList: GovukSummaryList) extends S
       SummaryListRow(
         key("transport.supervisingOffice"),
         value(supervisingCustomsOffice),
-        classes = "supervisingOffice",
+        classes = "supervising-office",
         changeLink(SupervisingCustomsOfficeController.displayPage, "transport.supervisingOffice", actionsEnabled)
       )
     })
@@ -112,7 +112,7 @@ class Card7ForTransport @Inject() (govukSummaryList: GovukSummaryList) extends S
       SummaryListRow(
         key("transport.inlandOrBorder"),
         valueKey(s"declaration.summary.transport.inlandOrBorder.${inlandOrBorder.location}"),
-        classes = "inlandOrBorder",
+        classes = "inland-or-border",
         changeLink(InlandOrBorderController.displayPage, "transport.inlandOrBorder", actionsEnabled)
       )
     }
@@ -123,7 +123,7 @@ class Card7ForTransport @Inject() (govukSummaryList: GovukSummaryList) extends S
         SummaryListRow(
           key("transport.inlandModeOfTransport"),
           valueKey(s"declaration.summary.transport.inlandModeOfTransport.$inlandModeOfTransportCode"),
-          classes = "modeOfTransport",
+          classes = "mode-of-transport",
           changeLink(InlandTransportDetailsController.displayPage, "transport.inlandModeOfTransport", actionsEnabled)
         )
       }
@@ -146,7 +146,7 @@ class Card7ForTransport @Inject() (govukSummaryList: GovukSummaryList) extends S
         SummaryListRow(
           key("transport.departure.meansOfTransport.header"),
           valueHtml(messagesForDepartureMeansOfTransport.mkString("<br>")),
-          classes = "transportReference",
+          classes = "transport-reference",
           changeLink(DepartureTransportController.displayPage, "transport.departure.meansOfTransport.header", actionsEnabled)
         )
       )
@@ -166,7 +166,7 @@ class Card7ForTransport @Inject() (govukSummaryList: GovukSummaryList) extends S
         SummaryListRow(
           key("transport.border.meansOfTransport.header"),
           valueHtml(messagesForBorderMeansOfTransport.mkString("<br>")),
-          classes = "activeTransportType",
+          classes = "active-transport-type",
           changeLink(BorderTransportController.displayPage, "transport.border.meansOfTransport.header", actionsEnabled)
         )
       )
@@ -177,7 +177,7 @@ class Card7ForTransport @Inject() (govukSummaryList: GovukSummaryList) extends S
       SummaryListRow(
         key("transport.payment"),
         valueKey(s"declaration.summary.transport.payment.${transportPayment.paymentMethod}"),
-        classes = "transportPayment",
+        classes = "transport-payment",
         changeLink(TransportPaymentController.displayPage, "transport.payment", actionsEnabled)
       )
     }
@@ -187,7 +187,7 @@ class Card7ForTransport @Inject() (govukSummaryList: GovukSummaryList) extends S
       SummaryListRow(
         key("transport.registrationCountry"),
         value(transportCrossingTheBorderNationality.countryName.getOrElse(messages("declaration.summary.unknown"))),
-        classes = "activeTransportCountry",
+        classes = "active-transport-country",
         changeLink(TransportCountryController.displayPage, "transport.registrationCountry", actionsEnabled)
       )
     }
@@ -197,7 +197,7 @@ class Card7ForTransport @Inject() (govukSummaryList: GovukSummaryList) extends S
       SummaryListRow(
         key("transport.expressConsignment"),
         valueKey(if (expressConsignment.isYes) "site.yes" else "site.no"),
-        classes = "expressConsignment",
+        classes = "express-consignment",
         changeLink(ExpressConsignmentController.displayPage, "transport.expressConsignment", actionsEnabled)
       )
     }
@@ -210,7 +210,7 @@ class Card7ForTransport @Inject() (govukSummaryList: GovukSummaryList) extends S
         val header =
           SummaryListRow(
             key("containers"),
-            valueKey("site.no"),
+            valueKey("site.none"),
             classes = "containers-heading",
             changeLink(TransportContainerController.displayContainerSummary, "container", actionsEnabled)
           )
