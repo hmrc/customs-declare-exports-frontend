@@ -113,17 +113,67 @@ class Card7ForTransportSpec extends UnitViewSpec with ExportsTestHelper with Inj
       view.getElementsByClass(modeOfTransport) mustBe empty
     }
 
-    "show the transport-reference" in {
-      val row = view.getElementsByClass(transportReference)
+    "show the transport-reference" when {
+      "meansOfTransportOnDepartureIDNumber is not empty" in {
 
-      val call = Some(DepartureTransportController.displayPage)
-      checkSummaryRow(
-        row,
-        "transport.departure.meansOfTransport.header",
-        s"${messages("declaration.summary.transport.departure.meansOfTransport.10")} identifier",
-        call,
-        "transport.departure.meansOfTransport.header"
-      )
+        val view = card7ForTransport.eval(
+          declaration.copy(transport =
+            declaration.transport.copy(
+              borderModeOfTransportCode = Some(TransportLeavingTheBorder(Some(Maritime))),
+              meansOfTransportOnDepartureType = Some("10"),
+              meansOfTransportOnDepartureIDNumber = Some("identifier")
+            )
+          )
+        )
+
+        val row = view.getElementsByClass(transportReference)
+
+        val call = Some(DepartureTransportController.displayPage)
+        checkSummaryRow(
+          row,
+          "transport.departure.meansOfTransport.header",
+          s"${messages("declaration.summary.transport.departure.meansOfTransport.10")} identifier",
+          call,
+          "transport.departure.meansOfTransport.header"
+        )
+      }
+      "meansOfTransportOnDepartureIDNumber is empty" in {
+
+        val view = card7ForTransport.eval(
+          declaration.copy(transport =
+            declaration.transport.copy(
+              borderModeOfTransportCode = Some(TransportLeavingTheBorder(Some(Maritime))),
+              meansOfTransportOnDepartureType = Some("10"),
+              meansOfTransportOnDepartureIDNumber = None
+            )
+          )
+        )
+
+        val row = view.getElementsByClass(transportReference)
+
+        val call = Some(DepartureTransportController.displayPage)
+        checkSummaryRow(
+          row,
+          "transport.departure.meansOfTransport.header",
+          messages("declaration.summary.transport.departure.meansOfTransport.10"),
+          call,
+          "transport.departure.meansOfTransport.header"
+        )
+      }
+      "meansOfTransportOnDepartureType is empty" in {
+
+        val view = card7ForTransport.eval(
+          declaration.copy(transport =
+            declaration.transport.copy(
+              borderModeOfTransportCode = Some(TransportLeavingTheBorder(Some(Maritime))),
+              meansOfTransportOnDepartureType = None,
+              meansOfTransportOnDepartureIDNumber = None
+            )
+          )
+        )
+
+        view.getElementsByClass(transportReference) mustBe empty
+      }
     }
 
     "not display a 'transport reference' row if question not answered" in {

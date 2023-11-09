@@ -133,13 +133,11 @@ class Card7ForTransport @Inject() (govukSummaryList: GovukSummaryList) extends S
     if (transport.meansOfTransportOnDepartureType.isDefined || transport.meansOfTransportOnDepartureIDNumber.isDefined) {
 
       val messagesForDepartureMeansOfTransport: Seq[String] =
-        (transport.meansOfTransportOnDepartureType, transport.meansOfTransportOnDepartureIDNumber) match {
-          case (Some(meansType), Some(meansId)) if meansId.nonEmpty =>
+        transport.meansOfTransportOnDepartureType.fold[Seq[String]](Seq.empty) { meansType =>
+          transport.meansOfTransportOnDepartureIDNumber map { meansId =>
             Seq(messages(s"declaration.summary.transport.departure.meansOfTransport.$meansType"), meansId)
-          case (Some(meansType), _) =>
-            Seq(messages(s"declaration.summary.transport.departure.meansOfTransport.$meansType"))
-          case _ =>
-            Seq.empty
+          } getOrElse Seq(messages(s"declaration.summary.transport.departure.meansOfTransport.$meansType"))
+
         }
 
       Some(
