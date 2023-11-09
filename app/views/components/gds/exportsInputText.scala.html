@@ -43,30 +43,21 @@
         .orElse( hintHtml.map(hint => Hint(content = HtmlContent(hint))))
 }
 
-@{ bodyHtml
-    .map { body =>
-        HtmlContent(HtmlFormat.fill(List(
-            label(labelKey = labelKey, forFieldName = field.id, labelArg = labelArg, labelClasses = labelClasses, isSubHeading = isSubHeading, subHeadingClasses = subHeadingClasses),
-            body,
-            govukInput(Input(
-                id = field.id,
-                name = field.name,
-                value = field.value,
-                hint = hintContent,
-                errorMessage = helper.getAnyErrorMessages(field),
-                classes = helper.defineInputClasses(defaultInputClasses, inputClasses)
-            ))
-        ))).asHtml
-    }
-    .getOrElse {
-        govukInput(Input(
-            id = field.id,
-            name = field.name,
-            value = field.value,
-            label = helper.getLabelForField(labelKey, labelArg, labelClasses, isSubHeading),
-            hint = hintContent,
-            errorMessage = helper.getAnyErrorMessages(field),
-            classes = helper.defineInputClasses(defaultInputClasses, inputClasses)
-        ))
+@body = @{
+    bodyHtml
+        .map { body => HtmlFormat.fill(List( body ))
     }
 }
+
+@label(labelKey = labelKey, forFieldName = field.id, labelArg = labelArg, labelClasses = labelClasses, isSubHeading = isSubHeading, subHeadingClasses = subHeadingClasses)
+
+@body
+
+@govukInput(Input(
+    id = field.id,
+    name = field.name,
+    value = field.value,
+    hint = hintContent,
+    errorMessage = helper.getAnyErrorMessages(field),
+    classes = helper.defineInputClasses(defaultInputClasses, inputClasses)
+))
