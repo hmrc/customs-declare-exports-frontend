@@ -21,8 +21,10 @@ import controllers.actions.{AuthAction, JourneyAction, VerifiedEmailAction}
 import play.api.Logging
 import play.api.i18n.I18nSupport
 import play.api.mvc._
+import play.twirl.api.Html
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
+import views.helpers.ActionItemBuilder.lastUrlPlaceholder
 import views.helpers.summary.sections.Card1ForReferencesSection
 import views.html.declaration.summary.sections._
 
@@ -39,10 +41,11 @@ class SectionSummaryController @Inject() (
 )(implicit appConfig: AppConfig)
     extends FrontendController(mcc) with I18nSupport with Logging with ModelCacheable {
 
-  def displayPage(section: Int): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType) { implicit request =>
-    section match {
-      case 1 => Ok(references_section(card1ForReferencesSection))
+  def displayPage(sectionNumber: Int): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType) { implicit request =>
+    val section = sectionNumber match {
+      case 1 => card1ForReferencesSection
     }
+    Ok(Html(references_section(section).toString.replace(s"?$lastUrlPlaceholder", "")))
   }
 
 }
