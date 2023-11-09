@@ -25,27 +25,15 @@ import play.api.i18n.Messages
 import play.api.mvc.{AnyContent, Call}
 import play.twirl.api.{Html, HtmlFormat}
 import uk.gov.hmrc.govukfrontend.views.html.components.{GovukSummaryList, SummaryList}
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Card, CardTitle}
 import views.helpers.summary.Card1ForReferences
-import views.html.components.gds.heading
 
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class Card1ForReferencesSection @Inject() (card1ForReferences: Card1ForReferences, govukSummaryList: GovukSummaryList, heading: heading)
-    extends SectionCard {
+class Card1ForReferencesSection @Inject() (card1ForReferences: Card1ForReferences, govukSummaryList: GovukSummaryList) extends SectionCard {
 
-  def eval(declaration: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages): Html = {
-    val card = Some(Card(Some(CardTitle(Text(messages(s"declaration.section.1")), classes = s"section-1-card"))))
-
-    HtmlFormat.fill(
-      List(
-        heading(messages("declaration.summary.section", "1")),
-        govukSummaryList(SummaryList(card1ForReferences.rows(declaration, actionsEnabled), card))
-      )
-    )
-  }
+  def eval(declaration: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages): Html =
+    HtmlFormat.fill(List(govukSummaryList(SummaryList(card1ForReferences.rows(declaration, actionsEnabled), card1ForReferences.card))))
 
   def backLink(implicit request: JourneyRequest[AnyContent]): Call =
     if (request.cacheModel.mucr.isEmpty) routes.LinkDucrToMucrController.displayPage

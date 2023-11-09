@@ -36,7 +36,7 @@ class SectionSummaryController @Inject() (
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents,
-  references_section: section_summary,
+  section_summary: section_summary,
   card1ForReferencesSection: Card1ForReferencesSection
 )(implicit appConfig: AppConfig)
     extends FrontendController(mcc) with I18nSupport with Logging with ModelCacheable {
@@ -45,7 +45,7 @@ class SectionSummaryController @Inject() (
     val section = sectionNumber match {
       case 1 => card1ForReferencesSection
     }
-    Ok(Html(references_section(section).toString.replace(s"?$lastUrlPlaceholder", "")))
+    Ok(Html(section_summary(section).toString.replace(s"?$lastUrlPlaceholder", "")))
   }
 
 }
