@@ -185,7 +185,7 @@ class Card7ForTransport @Inject() (govukSummaryList: GovukSummaryList) extends S
   private def transportCrossingTheBorder(transport: Transport, actionsEnabled: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
     transport.transportCrossingTheBorderNationality.map { transportCrossingTheBorderNationality =>
       SummaryListRow(
-        key("declaration.summary.transport.registrationCountry"),
+        key("transport.registrationCountry"),
         value(transportCrossingTheBorderNationality.countryName.getOrElse(messages("declaration.summary.unknown"))),
         classes = "activeTransportCountry",
         changeLink(TransportCountryController.displayPage, "transport.payment", actionsEnabled)
