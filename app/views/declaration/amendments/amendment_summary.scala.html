@@ -34,8 +34,8 @@
     card3ForRouteOfGoods: Card3ForRouteOfGoods,
     card4ForLocations: Card4ForLocations,
     card5ForTransactions: Card5ForTransactions,
+    card7ForTransport: Card7ForTransport,
     items_section: items_section,
-    transport_section: transport_section,
     linkButton: linkButton,
     paragraphBody: paragraphBody
 )
@@ -72,7 +72,7 @@
 
     @items_section(request.cacheModel)
 
-    @transport_section(request.cacheModel)
+    @card7ForTransport.eval(request.cacheModel)
 
     <div class="govuk-button-group govuk-!-margin-top-9">
         @linkButton("site.confirm_and_continue", SubmissionController.displaySubmitAmendmentPage)

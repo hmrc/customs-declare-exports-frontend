@@ -122,11 +122,11 @@ trait SummaryViewSpec extends UnitViewSpec with Injector with Stubs {
     }
 
     "not have transport section" in {
-      assertNull(view(aDeclaration()).getElementById("declaration-transport-summary"))
+      view(aDeclaration()).getElementsByClass("transport-card") mustBe empty
     }
 
     "have transport section" in {
-      view(aDeclaration(withBorderTransport())).getElementById("declaration-transport-summary").text mustNot be(empty)
+      view(aDeclaration(withBorderTransport())).getElementsByClass("transport-card").text mustNot be(empty)
     }
   }
   // scalastyle:on
