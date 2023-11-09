@@ -31,11 +31,11 @@
     pageTitle: pageTitle,
     card1ForReferences: Card1ForReferences,
     card2ForParties: Card2ForParties,
-    countries_section: countries_section,
-    locations_section: locations_section,
-    transaction_section: transaction_section,
+    card3ForRouteOfGoods: Card3ForRouteOfGoods,
+    card4ForLocations: Card4ForLocations,
+    card5ForTransactions: Card5ForTransactions,
+    card7ForTransport: Card7ForTransport,
     items_section: items_section,
-    transport_section: transport_section,
     linkButton: linkButton,
     paragraphBody: paragraphBody
 )
@@ -60,19 +60,19 @@
         content = Text(messages("declaration.summary.warning"))
     ))
 
-    @card1ForReferences.eval(request.cacheModel, true)
+    @card1ForReferences.eval(request.cacheModel)
 
-    @card2ForParties.eval(request.cacheModel, true)
+    @card2ForParties.eval(request.cacheModel)
 
-    @countries_section(request.cacheModel)
+    @card3ForRouteOfGoods.eval(request.cacheModel)
 
-    @locations_section(request.cacheModel)
+    @card4ForLocations.eval(request.cacheModel)
 
-    @transaction_section(request.cacheModel)
+    @card5ForTransactions.eval(request.cacheModel)
 
     @items_section(request.cacheModel)
 
-    @transport_section(request.cacheModel)
+    @card7ForTransport.eval(request.cacheModel)
 
     <div class="govuk-button-group govuk-!-margin-top-9">
         @linkButton("site.confirm_and_continue", SubmissionController.displaySubmitAmendmentPage)

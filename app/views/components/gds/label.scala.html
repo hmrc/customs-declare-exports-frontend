@@ -20,11 +20,8 @@
 
 
 
-
-<label class="@labelClasses" for="@forFieldName">
-  @if(isSubHeading) {
-      <h2 class="@subHeadingClasses">@messages(labelKey, labelArg)</h2>
-  } else {
-      @messages(labelKey, labelArg)
-  }
-</label>
+@if(isSubHeading) { <h2 class="@subHeadingClasses"> }
+  <label class="@labelClasses" for="@forFieldName">
+    @messages(labelKey, labelArg)
+  </label>
+@if(isSubHeading) { </h2> }

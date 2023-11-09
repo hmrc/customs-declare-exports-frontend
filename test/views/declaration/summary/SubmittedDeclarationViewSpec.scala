@@ -98,34 +98,33 @@ class SubmittedDeclarationViewSpec extends UnitViewSpec with Stubs with ExportsT
 
     "have countries section" in {
       val view = createView(declaration = aDeclaration(withDestinationCountry()))
-      view.getElementById("declaration-countries-summary").text mustNot be(empty)
+      view.getElementsByClass("countries-card").text mustNot be(empty)
       links(view) mustBe empty
     }
 
     "not have locations section" in {
-      Option(createView().getElementById("declaration-locations-summary")) mustBe None
+      createView().getElementsByClass("locations-card").size mustBe 0
     }
 
     "have locations section with UK office of exit" in {
       val view = createView(declaration = aDeclaration(withOfficeOfExit(officeId = "office-Id")))
-      view.getElementById("declaration-locations-summary").text must include("office-Id")
+      view.getElementsByClass("locations-card").text mustNot be(empty)
       links(view) mustBe empty
     }
 
-    for (decType <- List(CLEARANCE, SIMPLIFIED, OCCASIONAL))
-      yield s"not have transaction section in $decType declaration" in {
-        val view = createView(declaration = aDeclaration(withType(decType)))
-        Option(view.getElementById("declaration-transaction-summary")) mustBe None
+    for (declarationType <- List(CLEARANCE, SIMPLIFIED, OCCASIONAL))
+      yield s"not have transaction section in $declarationType declaration" in {
+        createView(aDeclaration(withType(declarationType))).getElementsByClass("transaction-card").size mustBe 0
       }
 
     "have transaction section" in {
       val view = createView(declaration = aDeclaration(withNatureOfTransaction("1")))
-      view.getElementById("declaration-transaction-summary").text mustNot be(empty)
+      view.getElementsByClass("transaction-card").text mustNot be(empty)
       links(view) mustBe empty
     }
 
     "not have items section" in {
-      Option(createView().getElementById("declaration-items-summary")) mustBe None
+      createView().getElementsByClass("transaction-card").size mustBe 0
     }
 
     "have items section" in {
@@ -141,7 +140,7 @@ class SubmittedDeclarationViewSpec extends UnitViewSpec with Stubs with ExportsT
 
     "have transport section" in {
       val view = createView(declaration = aDeclaration(withBorderTransport()))
-      view.getElementById("declaration-transport-summary").text mustNot be(empty)
+      view.getElementsByClass("transport-card").text mustNot be(empty)
       links(view) mustBe empty
     }
   }

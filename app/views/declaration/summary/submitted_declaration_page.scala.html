@@ -29,11 +29,11 @@
     notificationsSection: notifications_section,
     card1ForReferences: Card1ForReferences,
     card2ForParties: Card2ForParties,
-    countries_section: countries_section,
-    locations_section: locations_section,
-    transaction_section: transaction_section,
-    items_section: items_section,
-    transport_section: transport_section
+    card3ForRouteOfGoods: Card3ForRouteOfGoods,
+    card4ForLocations: Card4ForLocations,
+    card5ForTransactions: Card5ForTransactions,
+    card7ForTransport: Card7ForTransport,
+    items_section: items_section
 )
 
 @(submission: Submission, declaration: ExportsDeclaration)(implicit request: Request[_], messages: Messages)
@@ -59,15 +59,15 @@
 
     @card2ForParties.eval(declaration, false)
 
-    @countries_section(declaration, false)
+    @card3ForRouteOfGoods.eval(declaration, false)
 
-    @locations_section(declaration, false)
+    @card4ForLocations.eval(declaration, false)
 
-    @transaction_section(declaration, false)
+    @card5ForTransactions.eval(declaration, false)
 
     @items_section(declaration, false)
 
-    @transport_section(declaration, false)
+    @card7ForTransport.eval(declaration, false)
 
     @print_page_button(marginTop = 9, marginBottom = 1, buttonId = 2)
 }

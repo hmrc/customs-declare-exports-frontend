@@ -43,14 +43,11 @@
 }
 
 <div class="@groupClasses" >
-    <label class="@{s"govuk-label $labelClass"}" for=@field.id>
-        @if(isSubHeading) {
-            <h2 class="@{s"govuk-heading $subHeadingClasses"}">@messages(labelKey)</h2>
-        } else {
+    @if(isSubHeading) { <h2 class="@{s"govuk-heading $subHeadingClasses"}"> }
+        <label class="@{s"govuk-label $labelClass"}" for=@field.id>
             @messages(labelKey)
-        }
-        
-    </label>
+        </label>
+    @if(isSubHeading) { </h2> }
 
     @govukInput(Input(
         id = field.id,

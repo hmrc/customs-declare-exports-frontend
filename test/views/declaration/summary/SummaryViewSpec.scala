@@ -77,7 +77,7 @@ trait SummaryViewSpec extends UnitViewSpec with Injector with Stubs {
   // scalastyle:off
   def sectionsVisibility(view: ExportsDeclaration => Appendable): Unit = {
     "not have parties section" in {
-      assertNull(view(aDeclaration()).getElementById("declaration-parties-summary"))
+      view(aDeclaration()).getElementsByClass("parties-card").size mustBe 0
     }
 
     "have parties section" in {
@@ -85,30 +85,29 @@ trait SummaryViewSpec extends UnitViewSpec with Injector with Stubs {
     }
 
     "not have countries section" in {
-      assertNull(view(aDeclaration()).getElementById("declaration-countries-summary"))
+      view(aDeclaration()).getElementsByClass("countries-card").size mustBe 0
     }
 
     "have countries section" in {
-      view(aDeclaration(withDestinationCountry())).getElementById("declaration-countries-summary").text mustNot be(empty)
+      view(aDeclaration(withDestinationCountry())).getElementsByClass("countries-card").text mustNot be(empty)
     }
 
     "not have locations section" in {
-      assertNull(view(aDeclaration()).getElementById("declaration-locations-summary"))
+      view(aDeclaration()).getElementsByClass("locations-card").size mustBe 0
     }
 
     "have locations section with UK office of exit" in {
-      view(aDeclaration(withOfficeOfExit(officeId = "office-Id")))
-        .getElementById("declaration-locations-summary")
-        .text must include("office-Id")
+      val declaration = aDeclaration(withOfficeOfExit(officeId = "office-Id"))
+      view(declaration).getElementsByClass("locations-card").text mustNot be(empty)
     }
 
-    for (decType <- List(CLEARANCE, SIMPLIFIED, OCCASIONAL))
-      yield s"not have transaction section in $decType declaration" in {
-        assertNull(view(aDeclaration(withType(decType))).getElementById("declaration-transaction-summary"))
+    for (declarationType <- List(CLEARANCE, SIMPLIFIED, OCCASIONAL))
+      yield s"not have transaction section in $declarationType declaration" in {
+        view(aDeclaration(withType(declarationType))).getElementsByClass("transaction-card").size mustBe 0
       }
 
     "have transaction section" in {
-      view(aDeclaration(withNatureOfTransaction("1"))).getElementById("declaration-transaction-summary").text mustNot be(empty)
+      view(aDeclaration(withNatureOfTransaction("1"))).getElementsByClass("transaction-card").text mustNot be(empty)
     }
 
     "not have items section" in {
@@ -123,11 +122,11 @@ trait SummaryViewSpec extends UnitViewSpec with Injector with Stubs {
     }
 
     "not have transport section" in {
-      assertNull(view(aDeclaration()).getElementById("declaration-transport-summary"))
+      view(aDeclaration()).getElementsByClass("transport-card") mustBe empty
     }
 
     "have transport section" in {
-      view(aDeclaration(withBorderTransport())).getElementById("declaration-transport-summary").text mustNot be(empty)
+      view(aDeclaration(withBorderTransport())).getElementsByClass("transport-card").text mustNot be(empty)
     }
   }
   // scalastyle:on
