@@ -35,10 +35,11 @@ class Card7ForTransportSpec extends UnitViewSpec with ExportsTestHelper with Inj
     withWarehouseIdentification(Some(WarehouseIdentification(Some("12345")))),
     withSupervisingCustomsOffice(Some(SupervisingCustomsOffice(Some("23456")))),
     withInlandOrBorder(Some(InlandOrBorder.Border)),
-    withInlandModeOfTransportCode(ModeOfTransportCode.Maritime)
+    withInlandModeOfTransportCode(ModeOfTransportCode.Maritime),
+    withTransportCountry(Some("Some country"))
   )
 
-  private val card6ForTransport = instanceOf[Card7ForTransport]
+  private val card7ForTransport = instanceOf[Card7ForTransport]
 
   private val borderTransport = "borderTransport"
   private val inlandOrBorder = "inlandOrBorder"
@@ -48,10 +49,11 @@ class Card7ForTransportSpec extends UnitViewSpec with ExportsTestHelper with Inj
   private val transportPayment = "transportPayment"
   private val warehouseId = "warehouseId"
   private val supervisingOffice = "supervisingOffice"
+  private val activeTransportCountry = "activeTransportCountry"
   private val expressConsignment = "expressConsignment"
 
   "Transport section" should {
-    val view = card6ForTransport.eval(declaration)(messages)
+    val view = card7ForTransport.eval(declaration)(messages)
 
     "have the expected heading" in {
       view.getElementsByTag("h2").first.text mustBe messages(s"declaration.summary.transport")
@@ -71,7 +73,7 @@ class Card7ForTransportSpec extends UnitViewSpec with ExportsTestHelper with Inj
     }
 
     "not display a border-transport row if question not answered" in {
-      val view = card6ForTransport.eval(aDeclarationAfter(declaration, withoutBorderModeOfTransportCode))(messages)
+      val view = card7ForTransport.eval(aDeclarationAfter(declaration, withoutBorderModeOfTransportCode))(messages)
       view.getElementsByClass(borderTransport) mustBe empty
     }
 
@@ -89,7 +91,7 @@ class Card7ForTransportSpec extends UnitViewSpec with ExportsTestHelper with Inj
     }
 
     "not display a 'inland or border' row when question not answered" in {
-      val view = card6ForTransport.eval(aDeclarationAfter(declaration, withoutInlandOrBorder))(messages)
+      val view = card7ForTransport.eval(aDeclarationAfter(declaration, withoutInlandOrBorder))(messages)
       view.getElementsByClass(inlandOrBorder) mustBe empty
     }
 
@@ -107,7 +109,7 @@ class Card7ForTransportSpec extends UnitViewSpec with ExportsTestHelper with Inj
     }
 
     "not display a 'mode of transport' row when question not answered" in {
-      val view = card6ForTransport.eval(aDeclarationAfter(declaration, withoutInlandModeOfTransportCode))(messages)
+      val view = card7ForTransport.eval(aDeclarationAfter(declaration, withoutInlandModeOfTransportCode))(messages)
       view.getElementsByClass(modeOfTransport) mustBe empty
     }
 
@@ -125,13 +127,13 @@ class Card7ForTransportSpec extends UnitViewSpec with ExportsTestHelper with Inj
     }
 
     "not display a 'transport reference' row if question not answered" in {
-      val view = card6ForTransport.eval(aDeclarationAfter(declaration, withoutMeansOfTransportOnDepartureType))(messages)
+      val view = card7ForTransport.eval(aDeclarationAfter(declaration, withoutMeansOfTransportOnDepartureType))(messages)
       view.getElementsByClass(transportReference) mustBe empty
     }
 
     "display a 'transport reference' row if question skipped" in {
       val transport = declaration.transport.copy(meansOfTransportOnDepartureType = None, meansOfTransportOnDepartureIDNumber = Some(""))
-      val view = card6ForTransport.eval(declaration.copy(transport = transport))(messages)
+      val view = card7ForTransport.eval(declaration.copy(transport = transport))(messages)
 
       val row = view.getElementsByClass(transportReference)
       row must haveSummaryKey(messages("declaration.summary.transport.departure.meansOfTransport.header"))
@@ -144,7 +146,7 @@ class Card7ForTransportSpec extends UnitViewSpec with ExportsTestHelper with Inj
         meansOfTransportOnDepartureType = Some(MockTransportCodeService.transportCodeService.NotApplicable.value),
         meansOfTransportOnDepartureIDNumber = Some("")
       )
-      val view = card6ForTransport.eval(declaration.copy(transport = transport))(messages)
+      val view = card7ForTransport.eval(declaration.copy(transport = transport))(messages)
 
       val row = view.getElementsByClass(transportReference)
       row must haveSummaryKey(messages("declaration.summary.transport.departure.meansOfTransport.header"))
@@ -166,7 +168,7 @@ class Card7ForTransportSpec extends UnitViewSpec with ExportsTestHelper with Inj
     }
 
     "not display a 'active transport type' row if question not answered" in {
-      val view = card6ForTransport.eval(aDeclarationAfter(declaration, withoutBorderTransport))(messages)
+      val view = card7ForTransport.eval(aDeclarationAfter(declaration, withoutBorderTransport))(messages)
       view.getElementsByClass(activeTransportType) mustBe empty
     }
 
@@ -178,7 +180,7 @@ class Card7ForTransportSpec extends UnitViewSpec with ExportsTestHelper with Inj
     }
 
     "not display a 'transport payment' row if question not answered" in {
-      val view = card6ForTransport.eval(aDeclarationAfter(declaration, withoutTransportPayment))(messages)
+      val view = card7ForTransport.eval(aDeclarationAfter(declaration, withoutTransportPayment))(messages)
       view.getElementsByClass(transportPayment) mustBe empty
     }
 
@@ -191,8 +193,23 @@ class Card7ForTransportSpec extends UnitViewSpec with ExportsTestHelper with Inj
 
     "not display an 'express consignment' row if question not answered" in {
       val view =
-        card6ForTransport.eval(aDeclarationAfter(declaration.copy(transport = declaration.transport.copy(expressConsignment = None))))(messages)
+        card7ForTransport.eval(aDeclarationAfter(declaration.copy(transport = declaration.transport.copy(expressConsignment = None))))(messages)
       view.getElementsByClass(expressConsignment) mustBe empty
+    }
+
+    "show the transport-country" in {
+      val row = view.getElementsByClass(activeTransportCountry)
+
+      val call = Some(TransportCountryController.displayPage)
+      checkSummaryRow(row, "transport.registrationCountry", "Some country", call, "transport.registrationCountry")
+    }
+
+    "not display an 'transport-country' row if question not answered" in {
+      val view =
+        card7ForTransport.eval(
+          aDeclarationAfter(declaration.copy(transport = declaration.transport.copy(transportCrossingTheBorderNationality = None)))
+        )(messages)
+      view.getElementsByClass(activeTransportCountry) mustBe empty
     }
 
     "show the warehouse-id" in {
@@ -203,14 +220,14 @@ class Card7ForTransportSpec extends UnitViewSpec with ExportsTestHelper with Inj
     }
 
     "display a 'warehouse' label when user said 'no'" in {
-      val view = card6ForTransport.eval(aDeclarationAfter(declaration, withWarehouseIdentification(Some(WarehouseIdentification(None)))))(messages)
+      val view = card7ForTransport.eval(aDeclarationAfter(declaration, withWarehouseIdentification(Some(WarehouseIdentification(None)))))(messages)
       val row = view.getElementsByClass(warehouseId)
       row must haveSummaryKey(messages("declaration.summary.transport.warehouse.no.label"))
       row must haveSummaryValue(messages("site.no"))
     }
 
     "not display a 'warehouse id' row when question not answered" in {
-      val view = card6ForTransport.eval(aDeclarationAfter(declaration, withoutWarehouseIdentification))(messages)
+      val view = card7ForTransport.eval(aDeclarationAfter(declaration, withoutWarehouseIdentification))(messages)
       view.getElementsByClass(warehouseId) mustBe empty
     }
 
@@ -221,7 +238,7 @@ class Card7ForTransportSpec extends UnitViewSpec with ExportsTestHelper with Inj
     }
 
     "not display a 'supervising office' row when question not answered" in {
-      val view = card6ForTransport.eval(aDeclarationAfter(declaration, withoutSupervisingCustomsOffice))(messages)
+      val view = card7ForTransport.eval(aDeclarationAfter(declaration, withoutSupervisingCustomsOffice))(messages)
       view.getElementsByClass(supervisingOffice) mustBe empty
     }
 
@@ -233,7 +250,7 @@ class Card7ForTransportSpec extends UnitViewSpec with ExportsTestHelper with Inj
         val container1 = Container(1, id1, List(Seal(1, "seal1"), Seal(2, "seal2")))
         val container2 = Container(2, id2, List.empty)
 
-        val view = card6ForTransport.eval(aDeclarationAfter(declaration, withContainerData(container1, container2)))(messages)
+        val view = card7ForTransport.eval(aDeclarationAfter(declaration, withContainerData(container1, container2)))(messages)
 
         val containersSummaryListRows = view.getElementsByClass("container")
         containersSummaryListRows.size mustBe 2
@@ -281,7 +298,7 @@ class Card7ForTransportSpec extends UnitViewSpec with ExportsTestHelper with Inj
 
     "NOT have change links" when {
       "'actionsEnabled' is false" in {
-        val view = card6ForTransport.eval(declaration, false)(messages)
+        val view = card7ForTransport.eval(declaration, false)(messages)
         view.getElementsByClass(summaryActionsClassName) mustBe empty
       }
     }

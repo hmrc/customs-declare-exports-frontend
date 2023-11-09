@@ -188,7 +188,7 @@ class Card7ForTransport @Inject() (govukSummaryList: GovukSummaryList) extends S
         key("transport.registrationCountry"),
         value(transportCrossingTheBorderNationality.countryName.getOrElse(messages("declaration.summary.unknown"))),
         classes = "activeTransportCountry",
-        changeLink(TransportCountryController.displayPage, "transport.payment", actionsEnabled)
+        changeLink(TransportCountryController.displayPage, "transport.registrationCountry", actionsEnabled)
       )
     }
 
