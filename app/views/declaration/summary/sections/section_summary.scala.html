@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import config.AppConfig
 @import models.declaration.submissions.EnhancedStatus.ERRORS
 @import models.requests.JourneyRequest
 @import views.helpers.{BackButton, Title}
@@ -30,7 +29,7 @@
     linkButton: linkButton
 )
 
-@(sectionCard: SectionCard)(implicit request: JourneyRequest[AnyContent], messages: Messages, appConfig: AppConfig)
+@(sectionCard: SectionCard)(implicit request: JourneyRequest[AnyContent], messages: Messages)
 
 @govukLayout(
     title = Title(messages("declaration.summary.normal-header")),
@@ -38,7 +37,7 @@
     useCustomContentWidth = true
 ) {
 
-    @sectionCard.eval(request.cacheModel, true)
+    @sectionCard.eval(request.cacheModel)
 
     <div class="govuk-button-group govuk-!-margin-top-9">
         @linkButton("site.continue", sectionCard.continueTo)

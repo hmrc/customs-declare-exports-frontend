@@ -16,8 +16,7 @@
 
 package controllers.declaration
 
-import config.AppConfig
-import controllers.actions.{AuthAction, JourneyAction, VerifiedEmailAction}
+import controllers.actions.{AuthAction, JourneyAction}
 import play.api.Logging
 import play.api.i18n.I18nSupport
 import play.api.mvc._
@@ -25,27 +24,27 @@ import play.twirl.api.Html
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.helpers.ActionItemBuilder.lastUrlPlaceholder
-import views.helpers.summary.sections.Card1ForReferencesSection
+import views.helpers.summary.sections.{Card1ForReferencesSection, SectionCard}
 import views.html.declaration.summary.sections._
 
 import javax.inject.Inject
 
 class SectionSummaryController @Inject() (
   authenticate: AuthAction,
-  verifyEmail: VerifiedEmailAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents,
   section_summary: section_summary,
   card1ForReferencesSection: Card1ForReferencesSection
-)(implicit appConfig: AppConfig)
-    extends FrontendController(mcc) with I18nSupport with Logging with ModelCacheable {
+) extends FrontendController(mcc) with I18nSupport with Logging with ModelCacheable {
 
-  def displayPage(sectionNumber: Int): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType) { implicit request =>
-    val section = sectionNumber match {
-      case 1 => card1ForReferencesSection
+  def displayPage(sectionNumber: Int): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    def summary(card: SectionCard): Result = Ok(Html(section_summary(card).toString.replace(s"?$lastUrlPlaceholder", "")))
+
+    sectionNumber match {
+      case 1 => summary(card1ForReferencesSection)
+      case _ => Redirect(routes.SummaryController.displayPage)
     }
-    Ok(Html(section_summary(section).toString.replace(s"?$lastUrlPlaceholder", "")))
   }
 
 }
