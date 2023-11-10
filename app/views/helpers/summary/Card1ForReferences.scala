@@ -36,7 +36,7 @@ import javax.inject.{Inject, Singleton}
 class Card1ForReferences @Inject() (govukSummaryList: GovukSummaryList, govukInsetText: GovukInsetText, link: link, appConfig: AppConfig)
     extends SummaryHelper {
 
-  def card(implicit messages: Messages): Option[Card] = card("references")
+  private def card(implicit messages: Messages): Option[Card] = card("references")
 
   def eval(declaration: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages): Html = {
     val meta = declaration.declarationMeta
@@ -57,10 +57,13 @@ class Card1ForReferences @Inject() (govukSummaryList: GovukSummaryList, govukIns
       if (meta.status == COMPLETE) HtmlFormat.empty
       else Html(s"""<p classes="govuk-body govuk-!-display-none-print change-links-paragraph">${messages("declaration.summary.amend.body")}</p>""")
 
-    HtmlFormat.fill(List(insets, heading, paragraph, govukSummaryList(SummaryList(rows(declaration, actionsEnabled), card))))
+    HtmlFormat.fill(List(insets, heading, paragraph, summaryList(declaration, actionsEnabled)))
   }
 
-  def rows(declaration: ExportsDeclaration, actionsEnabled: Boolean)(implicit messages: Messages): Seq[SummaryListRow] =
+  def summaryList(declaration: ExportsDeclaration, actionsEnabled: Boolean)(implicit messages: Messages): HtmlFormat.Appendable =
+    govukSummaryList(SummaryList(rows(declaration, actionsEnabled), card))
+
+  private def rows(declaration: ExportsDeclaration, actionsEnabled: Boolean)(implicit messages: Messages): Seq[SummaryListRow] =
     List(
       creationDate(declaration),
       expiryDate(declaration),

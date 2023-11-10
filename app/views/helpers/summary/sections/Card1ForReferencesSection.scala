@@ -24,16 +24,15 @@ import models.requests.JourneyRequest
 import play.api.i18n.Messages
 import play.api.mvc.{AnyContent, Call}
 import play.twirl.api.{Html, HtmlFormat}
-import uk.gov.hmrc.govukfrontend.views.html.components.{GovukSummaryList, SummaryList}
 import views.helpers.summary.Card1ForReferences
 
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class Card1ForReferencesSection @Inject() (card1ForReferences: Card1ForReferences, govukSummaryList: GovukSummaryList) extends SectionCard {
+class Card1ForReferencesSection @Inject() (card1ForReferences: Card1ForReferences) extends SectionCard {
 
   def eval(declaration: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages): Html =
-    HtmlFormat.fill(List(govukSummaryList(SummaryList(card1ForReferences.rows(declaration, actionsEnabled), card1ForReferences.card))))
+    HtmlFormat.fill(List(card1ForReferences.summaryList(declaration, actionsEnabled)))
 
   def backLink(implicit request: JourneyRequest[AnyContent]): Call =
     if (request.cacheModel.mucr.isEmpty) routes.LinkDucrToMucrController.displayPage
