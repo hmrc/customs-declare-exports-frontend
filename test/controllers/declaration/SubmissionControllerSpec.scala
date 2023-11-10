@@ -188,10 +188,12 @@ class SubmissionControllerSpec extends ControllerWithoutFormSpec with ErrorHandl
 
       "Redirect to the Cancel Amendment page" when {
         "Backend returns a Submission with a defined latestDecId and findOrCreateDraftForAmendment is successful" in {
+          withNewCaching(aDeclaration())
+
           when(mockCustomsDeclareExportsConnector.findSubmission(any())(any(), any()))
             .thenReturn(Future.successful(Some(expectedSubmission)))
 
-          when(mockCustomsDeclareExportsConnector.findOrCreateDraftForAmendment(any(), any())(any(), any()))
+          when(mockCustomsDeclareExportsConnector.findOrCreateDraftForAmendment(any(), any(), any(), any())(any(), any()))
             .thenReturn(Future.successful("String"))
 
           val result = controller.cancelAmendment(getRequestWithSession((submissionUuid, "Id")))
@@ -205,11 +207,13 @@ class SubmissionControllerSpec extends ControllerWithoutFormSpec with ErrorHandl
       "return 500 (INTERNAL_SERVER_ERROR)" when {
 
         "no submissionUuid is found in session" in {
+          withNewCaching(aDeclaration())
           val result = controller.cancelAmendment(getJourneyRequest())
           status(result) mustBe INTERNAL_SERVER_ERROR
         }
 
         "Backend fails to find/return a matching submission" in {
+          withNewCaching(aDeclaration())
           when(mockCustomsDeclareExportsConnector.findSubmission(any())(any(), any()))
             .thenReturn(Future.successful(None))
 
@@ -220,6 +224,8 @@ class SubmissionControllerSpec extends ControllerWithoutFormSpec with ErrorHandl
         "latestDecId does not belong to the appropriate submission" in {
           val uuid = UUID.randomUUID().toString
           val expectedSubmission = Submission(uuid, eori = "GB123456", lrn = "123LRN", ducr = Some("ducr"), actions = List.empty, latestDecId = None)
+
+          withNewCaching(aDeclaration())
 
           when(mockCustomsDeclareExportsConnector.findSubmission(any())(any(), any()))
             .thenReturn(Future.successful(Some(expectedSubmission)))

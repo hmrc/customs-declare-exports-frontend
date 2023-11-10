@@ -60,7 +60,7 @@ class SubmissionController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with Logging with ModelCacheable with WithUnsafeDefaultFormBinding {
 
-  val cancelAmendment: Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
+  val cancelAmendment: Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType).async { implicit request =>
     if (declarationAmendmentsConfig.isDisabled) Future.successful(Redirect(RootController.displayPage))
     else
       getValue(submissionUuid) match {
@@ -74,12 +74,13 @@ class SubmissionController @Inject() (
       }
   }
 
-  private def cancelAmendment(submission: Submission)(implicit hc: HeaderCarrier, request: Request[_]): Future[Result] =
+  private def cancelAmendment(submission: Submission)(implicit hc: HeaderCarrier, request: JourneyRequest[_]): Future[Result] =
     (submission.latestDecId, submission.latestEnhancedStatus) match {
       case (Some(latestDecId), Some(latestEnhancedStatus)) =>
-        customsDeclareExportsConnector.findOrCreateDraftForAmendment(latestDecId, latestEnhancedStatus) flatMap { declarationId =>
-          val call = routes.SubmissionController.displayCancelAmendmentPage
-          Future.successful(Redirect(call).addingToSession((declarationUuid, declarationId)))
+        customsDeclareExportsConnector.findOrCreateDraftForAmendment(latestDecId, latestEnhancedStatus, request.eori, request.cacheModel) flatMap {
+          declarationId =>
+            val call = routes.SubmissionController.displayCancelAmendmentPage
+            Future.successful(Redirect(call).addingToSession((declarationUuid, declarationId)))
         }
 
       case _ =>
@@ -132,7 +133,10 @@ class SubmissionController @Inject() (
         amendmentSubmission =>
           getValue(submissionUuid).fold(errorHandler.internalError(submissionError(amendmentAction))) { submissionId =>
             for {
-              declaration <- exportsCacheService.update(request.cacheModel.copy(statementDescription = Some(amendmentSubmission.reason)))
+              declaration <- exportsCacheService.update(
+                request.cacheModel.copy(statementDescription = Some(amendmentSubmission.reason)),
+                request.eori
+              )
               maybeActionId <- submissionService.submitAmendment(request.eori, declaration, amendmentSubmission, submissionId, amendmentAction)
             } yield maybeActionId match {
               case Some(actionId) =>

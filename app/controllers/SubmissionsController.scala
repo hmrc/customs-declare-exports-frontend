@@ -22,10 +22,14 @@ import controllers.declaration.routes._
 import controllers.helpers.ErrorFixModeHelper.setErrorFixMode
 import handlers.ErrorHandler
 import models.declaration.submissions.EnhancedStatus.ERRORS
+import models.requests.AuthenticatedRequest
 import models.requests.SessionHelper.declarationUuid
 import models.responses.FlashKeys
+import controllers.routes.RootController
 import play.api.i18n.I18nSupport
 import play.api.mvc._
+import play.api.Logging
+import services.cache.ExportsCacheService
 import services.model.FieldNamePointer
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.summary.submitted_declaration_page
@@ -36,12 +40,13 @@ import scala.concurrent.{ExecutionContext, Future}
 class SubmissionsController @Inject() (
   authenticate: AuthAction,
   verifyEmail: VerifiedEmailAction,
+  cacheService: ExportsCacheService,
   customsDeclareExportsConnector: CustomsDeclareExportsConnector,
   errorHandler: ErrorHandler,
   mcc: MessagesControllerComponents,
   submittedDeclarationPage: submitted_declaration_page
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport {
+    extends FrontendController(mcc) with I18nSupport with Logging {
 
   private val authAndEmailActions = authenticate andThen verifyEmail
 
@@ -78,13 +83,27 @@ class SubmissionsController @Inject() (
     }
   }
 
-  private def findOrCreateDraftForAmendment(rejectedParentId: String, redirect: Result)(implicit request: WrappedRequest[_]): Future[Result] =
-    customsDeclareExportsConnector.findOrCreateDraftForAmendment(rejectedParentId, ERRORS).map { id =>
-      redirect.addingToSession(declarationUuid -> id)
+  private def findOrCreateDraftForAmendment(rejectedParentId: String, redirect: Result)(implicit request: AuthenticatedRequest[_]): Future[Result] =
+    cacheService.get(rejectedParentId).flatMap {
+      case Some(srcDec) =>
+        customsDeclareExportsConnector.findOrCreateDraftForAmendment(rejectedParentId, ERRORS, request.user.eori, srcDec).map { id =>
+          redirect.addingToSession(declarationUuid -> id)
+        }
+
+      case None =>
+        logger.warn(s"Could not retrieve from cache, for eori ${request.user.eori}, the declaration with id $rejectedParentId")
+        Future.successful(Results.Redirect(RootController.displayPage))
     }
 
-  private def findOrCreateDraftForRejection(rejectedParentId: String, redirect: Result)(implicit request: WrappedRequest[_]): Future[Result] =
-    customsDeclareExportsConnector.findOrCreateDraftForRejection(rejectedParentId).map { id =>
-      redirect.addingToSession(declarationUuid -> id)
+  private def findOrCreateDraftForRejection(rejectedParentId: String, redirect: Result)(implicit request: AuthenticatedRequest[_]): Future[Result] =
+    cacheService.get(rejectedParentId).flatMap {
+      case Some(srcDec) =>
+        customsDeclareExportsConnector.findOrCreateDraftForRejection(rejectedParentId, request.user.eori, srcDec).map { id =>
+          redirect.addingToSession(declarationUuid -> id)
+        }
+
+      case None =>
+        logger.warn(s"Could not retrieve source declaration from cache, for eori ${request.user.eori}, the declaration with id $rejectedParentId")
+        Future.successful(Results.Redirect(RootController.displayPage))
     }
 }
