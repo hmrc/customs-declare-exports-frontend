@@ -233,10 +233,10 @@ object AmendmentDetailsViewSpec {
   private val summary = "declaration.summary"
   private val container = "declaration.summary.container"
 
-  private val item = s"$summary.items.item"
+  private val item = s"$summary.item"
 
   private val h2 = Map(
-    items -> s"$summary.items.item.presentationId",
+    items -> s"$summary.item",
     locations -> s"$summary.locations",
     parties -> s"$summary.parties",
     routeOfGoods -> s"$summary.countries",

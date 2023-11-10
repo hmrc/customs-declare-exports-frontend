@@ -42,9 +42,7 @@ class AuthorisationHoldersHelper @Inject() (holderOfAuthorisationCodes: HolderOf
     List(
       Some(
         SummaryListRow(
-          key =
-            if (hasAdditionalActors) keyForEmptyAttrAfterAttrWithMultipleRows("parties.holders")
-            else key("parties.holders"),
+          key = if (hasAdditionalActors) keyForEmptyAttrAfterAttrWithMultipleRows("parties.holders") else key("parties.holders"),
           valueKey("site.none"),
           classes = "authorisation-holders-heading",
           changeHolders(actionsEnabled)

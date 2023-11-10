@@ -32,8 +32,8 @@
     card3ForRouteOfGoods: Card3ForRouteOfGoods,
     card4ForLocations: Card4ForLocations,
     card5ForTransactions: Card5ForTransactions,
-    card7ForTransport: Card7ForTransport,
-    items_section: items_section
+    card6ForItems: Card6ForItems,
+    card7ForTransport: Card7ForTransport
 )
 
 @(submission: Submission, declaration: ExportsDeclaration)(implicit request: Request[_], messages: Messages)
@@ -65,7 +65,7 @@
 
     @card5ForTransactions.eval(declaration, false)
 
-    @items_section(declaration, false)
+    @card6ForItems.eval(declaration, false)
 
     @card7ForTransport.eval(declaration, false)
 
