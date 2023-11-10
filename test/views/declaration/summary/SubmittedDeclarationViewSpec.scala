@@ -124,13 +124,13 @@ class SubmittedDeclarationViewSpec extends UnitViewSpec with Stubs with ExportsT
     }
 
     "not have items section" in {
-      createView().getElementsByClass("transaction-card").size mustBe 0
+      createView().getElementsByClass("items-card").size mustBe 0
     }
 
     "have items section" in {
       val details = CommodityDetails(Some("1234567890"), Some("Description"))
       val view = createView(declaration = aDeclaration(withItem(anItem(withCommodityDetails(details)))))
-      view.getElementById("declaration-items-summary-1").text mustNot be(empty)
+      view.getElementsByClass("items-card").text mustNot be(empty)
       links(view) mustBe empty
     }
 

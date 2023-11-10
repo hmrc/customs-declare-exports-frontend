@@ -24,10 +24,10 @@ object ActionItemBuilder {
 
   val lastUrlPlaceholder = "LAST_URL_PLACEHOLDER"
 
-  def actionItem(href: String, content: Content, visuallyHiddenText: Option[String]) =
+  def actionItem(href: String, content: Content, visuallyHiddenText: Option[String]): ActionItem =
     ActionItem(href, content, visuallyHiddenText, "govuk-link--no-visited-state")
 
-  def actionSummaryItem(href: String, content: Content, visuallyHiddenText: Option[String]) =
+  def actionSummaryItem(href: String, content: Content, visuallyHiddenText: Option[String]): ActionItem =
     ActionItem(s"$href?$lastUrlPlaceholder", content, visuallyHiddenText, "govuk-link--no-visited-state")
 
   def callForSummaryChangeLink(call: Call): Call = Call("GET", s"$call?$lastUrlPlaceholder")

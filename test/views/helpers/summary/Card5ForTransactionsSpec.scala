@@ -47,7 +47,7 @@ class Card5ForTransactionsSpec extends UnitViewSpec with ExportsTestHelper with 
   "Transactions section" should {
     val view = card5ForTransactions.eval(declaration)(messages)
 
-    "contains the expected heading" in {
+    "have the expected heading" in {
       view.getElementsByTag("h2").first.text mustBe messages(s"declaration.summary.transaction")
     }
 
@@ -108,7 +108,7 @@ class Card5ForTransactionsSpec extends UnitViewSpec with ExportsTestHelper with 
       checkSummaryRow(row, "transaction.natureOfTransaction", expectedValue, expectedCall, "transaction.natureOfTransaction")
     }
 
-    "contains an empty previous documents section" when {
+    "have an empty previous documents section" when {
       "no previous documents have been entered" in {
         val previousDocumentsData = withPreviousDocumentsData(Some(PreviousDocumentsData(List.empty)))
         val view = card5ForTransactions.eval(aDeclarationAfter(declaration, previousDocumentsData))(messages)
@@ -120,7 +120,7 @@ class Card5ForTransactionsSpec extends UnitViewSpec with ExportsTestHelper with 
       }
     }
 
-    "contains a previous documents section" in {
+    "show a previous documents section" in {
       val heading = view.getElementsByClass("previous-documents-heading")
       checkSummaryRow(heading, "transaction.previousDocuments", "", None, "")
 

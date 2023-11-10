@@ -192,7 +192,7 @@ object ExportItem extends DeclarationPage with FieldMapping {
   val sequenceIdPointer: ExportsFieldPointer = "sequenceId"
 
   // prefix of the message keys used for the 'Amendment details' page
-  val itemsPrefix = "declaration.summary.items.item"
+  val itemsPrefix = "declaration.summary.item"
 
   private lazy val keyForIsLicenceRequired = s"${itemsPrefix}.licences"
 
