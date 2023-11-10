@@ -38,7 +38,7 @@ case class NactCode(nactCode: String) extends Ordered[NactCode] with Amendment {
 
   private def toUserValue(pointer: ExportsFieldPointer, value: String)(implicit messages: Messages): String =
     if (!pointer.endsWith(exemptionPointer)) value
-    else safeMessage(s"declaration.summary.items.item.zeroRatedForVat.$value", value)
+    else safeMessage(s"declaration.summary.item.zeroRatedForVat.$value", value)
 
   def valueAdded(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
     forAddedValue(pointer, messages(keyForAmend(pointer)), toUserValue(pointer, value))
@@ -57,8 +57,8 @@ object NactCode extends DeclarationPage with FieldMapping {
   val exemptionPointer: ExportsFieldPointer = "nactExemptionCode"
 
   def keyForAmend(pointer: ExportsFieldPointer): String =
-    if (pointer.endsWith(exemptionPointer)) "declaration.summary.items.item.zeroRatedForVat"
-    else "declaration.summary.items.item.nationalAdditionalCode"
+    if (pointer.endsWith(exemptionPointer)) "declaration.summary.item.zeroRatedForVat"
+    else "declaration.summary.item.nationalAdditionalCode"
 
   val nactCodeKey = "nactCode"
 

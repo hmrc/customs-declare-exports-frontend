@@ -20,7 +20,6 @@ import base.Injector
 import forms.declaration.CommodityDetails
 import models.DeclarationType._
 import models.ExportsDeclaration
-import org.junit.Assert.assertNull
 import play.api.data.FormError
 import play.api.mvc.Call
 import play.twirl.api.HtmlFormat.Appendable
@@ -111,13 +110,13 @@ trait SummaryViewSpec extends UnitViewSpec with Injector with Stubs {
     }
 
     "not have items section" in {
-      assertNull(view(aDeclaration()).getElementById("declaration-items-summary"))
+      view(aDeclaration()).getElementsByClass("items-card").size mustBe 0
     }
 
     "have items section" in {
       val details = CommodityDetails(Some("1234567890"), Some("Description"))
       view(aDeclaration(withItem(anItem(withCommodityDetails(details)))))
-        .getElementById("declaration-items-summary-1")
+        .getElementsByClass("items-card")
         .text mustNot be(empty)
     }
 

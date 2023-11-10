@@ -18,14 +18,12 @@
 
 @(items: Seq[Html], additionalListClasses: Option[String] = None, itemClasses: Option[String] = None)
 
-<nav>
-    <ul class='govuk-list govuk-list--bullet@additionalListClasses.fold("")(cls => s" ${cls}")'>
-        @items.map { item =>
-            @itemClasses.fold {
-                <li>@item</li>
-            } { cls =>
-                <li class="@cls">@item</li>
-            }
+<ul class='govuk-list govuk-list--bullet@additionalListClasses.fold("")(cls => s" ${cls}")'>
+    @items.map { item =>
+        @itemClasses.fold {
+            <li>@item</li>
+        } { cls =>
+            <li class="@cls">@item</li>
         }
-    </ul>
-</nav>
+    }
+</ul>

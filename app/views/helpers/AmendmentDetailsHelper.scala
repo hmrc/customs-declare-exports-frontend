@@ -289,7 +289,7 @@ class AmendmentDetailsHelper @Inject() (
 object AmendmentDetailsHelper {
 
   private val summary = "declaration.summary"
-  private val item = "declaration.summary.items.item"
+  private val item = "declaration.summary.item"
 
   private val declaration = ExportsDeclaration.pointer
   private val items = s"${declaration}.${ExportItem.pointer}"
@@ -317,7 +317,7 @@ object AmendmentDetailsHelper {
   private val totals = s"${declaration}.${InvoiceAndPackageTotals.pointer}"
 
   private val h2Mappings = Map(
-    items -> s"$item.presentationId",
+    items -> s"$item",
     locations -> s"$summary.locations",
     parties -> s"${partiesPrefix}",
     routeOfGoods -> s"$summary.countries",
