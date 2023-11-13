@@ -60,7 +60,7 @@ class EntryIntoDeclarantsRecordsViewSpec extends UnitViewSpec with Injector with
       "display the 'Back' button" in {
         val backButton = createView().getElementById("back-link")
 
-        backButton must containMessage(backToPreviousQuestionCaption)
+        backButton must containMessage(backCaption)
         backButton must haveHref(routes.LinkDucrToMucrController.displayPage.url)
       }
 
