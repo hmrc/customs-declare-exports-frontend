@@ -62,6 +62,7 @@
     @components.fields.field_accessible_autocomplete(
         field = form("typesOfPackages"),
         label = messages("declaration.packageInformation.typesOfPackages.label"),
+        labelClass = Some("govuk-label--m"),
         isSubHeading = true,
         bodyHtml = Some(paragraphBody(messages("declaration.packageInformation.typesOfPackages.paragraph"))),
         hintParagraphs = List(

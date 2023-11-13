@@ -49,9 +49,13 @@
     }
 }
 
-@label(labelKey = labelKey, forFieldName = field.id, labelArg = labelArg, labelClasses = labelClasses, isSubHeading = isSubHeading, subHeadingClasses = subHeadingClasses)
+@if(labelKey) @{
+    label(labelKey = labelKey, forFieldName = field.id, labelArg = labelArg, labelClasses = labelClasses, isSubHeading = isSubHeading, subHeadingClasses = subHeadingClasses)
+}
 
-@body
+@if(body) @{
+    body
+}
 
 @govukInput(Input(
     id = field.id,

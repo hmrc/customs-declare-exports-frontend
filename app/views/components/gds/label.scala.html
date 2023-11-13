@@ -16,7 +16,9 @@
 
 @this()
 
-@(labelKey: String, forFieldName: String, labelClasses: String = "govuk-label govuk-label--m", labelArg: String = "", isSubHeading: Boolean = false, subHeadingClasses: String = "")(implicit messages: Messages)
+@(labelKey: String, forFieldName: String, labelClasses: String = "", labelArg: String = "", isSubHeading: Boolean = false, subHeadingClasses: String = "govuk-heading govuk-heading--m")(implicit messages: Messages)
+
+@labelClasses = @{if(isSubHeading) { "govuk-label govuk-label--m" } else { "govuk-label" }}
 
 
 
