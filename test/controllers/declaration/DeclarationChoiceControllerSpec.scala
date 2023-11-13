@@ -132,7 +132,7 @@ class DeclarationChoiceControllerSpec extends ControllerWithoutFormSpec with Opt
 
           status(result) must be(SEE_OTHER)
           redirectLocation(result) must be(Some(AdditionalDeclarationTypeController.displayPage.url))
-          verify(mockExportsCacheService).create(any[ExportsDeclaration])(any())
+          verify(mockExportsCacheService).create(any[ExportsDeclaration], any[String])(any())
         }
 
         s"user updates an existing $journeyType declaration" in {
@@ -142,7 +142,7 @@ class DeclarationChoiceControllerSpec extends ControllerWithoutFormSpec with Opt
 
           status(result) must be(SEE_OTHER)
           redirectLocation(result) must be(Some(AdditionalDeclarationTypeController.displayPage.url))
-          verify(mockExportsCacheService).update(any[ExportsDeclaration])(any())
+          verify(mockExportsCacheService).update(any[ExportsDeclaration], any[String])(any())
         }
 
         s"a $journeyType declaration is existing and has 'AMENDMENT_DRAFT' status (and not allow the user to change it)" in {

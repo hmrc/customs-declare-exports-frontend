@@ -36,13 +36,13 @@ trait MockConnectors {
   lazy val mockCustomsDeclareExportsConnector: CustomsDeclareExportsConnector = mock[CustomsDeclareExportsConnector]
 
   def successfulCustomsDeclareExportsResponse(): Unit =
-    when(mockCustomsDeclareExportsConnector.createDeclaration(any[ExportsDeclaration])(any(), any()))
+    when(mockCustomsDeclareExportsConnector.createDeclaration(any[ExportsDeclaration], any[String])(any(), any()))
       .thenAnswer(withTheFirstArgument)
 
   private def withTheFirstArgument[T]: Answer[Future[T]] = (invocation: InvocationOnMock) => Future.successful(invocation.getArgument(0))
 
   def customsDeclaration400Response(): Unit =
-    when(mockCustomsDeclareExportsConnector.createDeclaration(any())(any[HeaderCarrier], any[ExecutionContext]))
+    when(mockCustomsDeclareExportsConnector.createDeclaration(any(), any[String])(any[HeaderCarrier], any[ExecutionContext]))
       .thenReturn(Future.failed(new IllegalArgumentException("Bad Request")))
 
   def listOfDraftDeclarations(): OngoingStubbing[Future[Paginated[ExportsDeclaration]]] =

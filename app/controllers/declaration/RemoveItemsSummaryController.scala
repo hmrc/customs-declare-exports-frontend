@@ -126,7 +126,7 @@ class RemoveItemsSummaryController @Inject() (
         val filteredItems = request.cacheModel.items.filterNot(_.id == itemToDelete.id)
         val (updatedItems, updatedMeta) = handleSequencing(filteredItems, request.cacheModel.declarationMeta)
         val updatedModel = removeWarehouseIdentification(request.cacheModel.copy(items = updatedItems, declarationMeta = updatedMeta))
-        exportsCacheService.update(updatedModel)
+        exportsCacheService.update(updatedModel, request.eori)
       case None => Future.successful(request.cacheModel)
     }
 

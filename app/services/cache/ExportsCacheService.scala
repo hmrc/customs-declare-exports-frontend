@@ -27,11 +27,11 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class ExportsCacheService @Inject() (connector: CustomsDeclareExportsConnector)(implicit ec: ExecutionContext) {
 
-  def create(declaration: ExportsDeclaration)(implicit hc: HeaderCarrier): Future[ExportsDeclaration] =
-    connector.createDeclaration(declaration)
+  def create(declaration: ExportsDeclaration, eori: String)(implicit hc: HeaderCarrier): Future[ExportsDeclaration] =
+    connector.createDeclaration(declaration, eori)
 
   def get(id: String)(implicit hc: HeaderCarrier): Future[Option[ExportsDeclaration]] = connector.findDeclaration(id)
 
-  def update(declaration: ExportsDeclaration)(implicit hc: HeaderCarrier): Future[ExportsDeclaration] =
-    connector.updateDeclaration(declaration.copy(declarationMeta = declaration.declarationMeta.copy(updatedDateTime = Instant.now)))
+  def update(declaration: ExportsDeclaration, eori: String)(implicit hc: HeaderCarrier): Future[ExportsDeclaration] =
+    connector.updateDeclaration(declaration.copy(declarationMeta = declaration.declarationMeta.copy(updatedDateTime = Instant.now)), eori)
 }
