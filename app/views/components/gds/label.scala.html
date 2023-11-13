@@ -16,12 +16,16 @@
 
 @this()
 
-@(labelKey: String, forFieldName: String, labelClasses: String = "govuk-label govuk-label--m", labelArg: String = "", isSubHeading: Boolean = false, subHeadingClasses: String = "")(implicit messages: Messages)
+@(labelKey: String, forFieldName: String, labelClasses: String = "", labelArg: String = "", isSubHeading: Boolean = false, subHeadingClasses: String = "govuk-heading govuk-heading--m")(implicit messages: Messages)
 
-
+@labelClassValue = @{if(labelClasses == "") {
+  if(isSubHeading) { "govuk-label govuk-label--m" } else { "govuk-label" }
+} else {
+  labelClasses
+}}
 
 @if(isSubHeading) { <h2 class="@subHeadingClasses"> }
-  <label class="@labelClasses" for="@forFieldName">
+  <label class="@labelClassValue" for="@forFieldName">
     @messages(labelKey, labelArg)
   </label>
 @if(isSubHeading) { </h2> }
