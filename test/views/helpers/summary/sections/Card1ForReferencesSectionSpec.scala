@@ -19,14 +19,28 @@ package views.helpers.summary.sections
 import base.Injector
 import controllers.declaration.routes
 import models.DeclarationType._
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
+import play.twirl.api.Html
 import services.cache.ExportsTestHelper
 import views.declaration.spec.UnitViewSpec
+import views.helpers.summary.Card1ForReferences
 
 class Card1ForReferencesSectionSpec extends UnitViewSpec with ExportsTestHelper with Injector {
 
   val declaration = aDeclaration()
 
-  val card1ForReferencesSection = instanceOf[Card1ForReferencesSection]
+  val card1ForReferences = mock[Card1ForReferences]
+  val card1ForReferencesSection = new Card1ForReferencesSection(card1ForReferences)
+
+  when(card1ForReferences.summaryList(any(), any())(any()))
+    .thenReturn(Html("content"))
+
+  "Card1ForReferencesSection.eval" must {
+    "return the html of the cya card" in {
+      card1ForReferencesSection.eval(declaration) mustBe Html("content")
+    }
+  }
 
   "Card1ForReferencesSection.continueTo" must {
     onClearance { implicit request =>
