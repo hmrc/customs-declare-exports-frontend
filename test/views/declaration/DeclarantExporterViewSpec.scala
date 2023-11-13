@@ -17,12 +17,7 @@
 package views.declaration
 
 import base.Injector
-import controllers.declaration.routes.{
-  ConsignmentReferencesController,
-  DeclarantDetailsController,
-  EntryIntoDeclarantsRecordsController,
-  LinkDucrToMucrController
-}
+import controllers.declaration.routes._
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.DeclarantIsExporter
 import forms.declaration.DeclarantIsExporter.form
@@ -95,7 +90,7 @@ class DeclarantExporterViewSpec extends PageWithButtonsSpec with Injector {
         val backButton = createView().getElementById("back-link")
 
         backButton must containMessage(backCaption)
-        backButton must haveHref(LinkDucrToMucrController.displayPage.url)
+        backButton must haveHref(SectionSummaryController.displayPage(1).url)
       }
     }
 
@@ -104,7 +99,7 @@ class DeclarantExporterViewSpec extends PageWithButtonsSpec with Injector {
         val backButton = createView().getElementById("back-link")
 
         backButton must containMessage(backCaption)
-        backButton must haveHref(ConsignmentReferencesController.displayPage.url)
+        backButton must haveHref(SectionSummaryController.displayPage(1).url)
       }
     }
 

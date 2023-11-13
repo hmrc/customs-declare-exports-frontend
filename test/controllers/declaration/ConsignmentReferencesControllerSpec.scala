@@ -19,7 +19,7 @@ package controllers.declaration
 import base.ControllerSpec
 import base.ExportsTestData.eidrDateStamp
 import controllers.actions.AmendmentDraftFilterSpec
-import controllers.declaration.routes.{DeclarantExporterController, LinkDucrToMucrController}
+import controllers.declaration.routes.{LinkDucrToMucrController, SectionSummaryController}
 import forms.declaration.ConsignmentReferences
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.{SUPPLEMENTARY_EIDR, SUPPLEMENTARY_SIMPLIFIED}
 import forms.{Ducr, Lrn, LrnValidator}
@@ -68,7 +68,7 @@ class ConsignmentReferencesControllerSpec extends ControllerSpec with AmendmentD
 
   def nextPageOnTypes: Seq[NextPageOnType] =
     allDeclarationTypesExcluding(SUPPLEMENTARY).map(NextPageOnType(_, LinkDucrToMucrController.displayPage)) :+
-      NextPageOnType(SUPPLEMENTARY, DeclarantExporterController.displayPage)
+      NextPageOnType(SUPPLEMENTARY, SectionSummaryController.displayPage(1))
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration())
@@ -156,7 +156,7 @@ class ConsignmentReferencesControllerSpec extends ControllerSpec with AmendmentD
     }
 
     onJourney(SUPPLEMENTARY) { req =>
-      "return 303 (SEE_OTHER) and redirect to 'Link DUCR to MUCR' page" when {
+      "return 303 (SEE_OTHER) and redirect to 'Section Summary' page" when {
 
         "for SUPPLEMENTARY_SIMPLIFIED" in {
           val request = journeyRequest(aDeclaration(withType(req.declarationType), withAdditionalDeclarationType(SUPPLEMENTARY_SIMPLIFIED)))
@@ -166,10 +166,10 @@ class ConsignmentReferencesControllerSpec extends ControllerSpec with AmendmentD
           val result = controller.submitForm()(postRequest(correctForm))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe routes.DeclarantExporterController.displayPage
+          thePageNavigatedTo mustBe routes.SectionSummaryController.displayPage(1)
         }
 
-        "return 303 (SEE_OTHER) and redirect to 'Link DUCR to MUCR' page for SUPPLEMENTARY_EIDR" in {
+        "for SUPPLEMENTARY_EIDR" in {
           val request = journeyRequest(aDeclaration(withType(req.declarationType), withAdditionalDeclarationType(SUPPLEMENTARY_EIDR)))
           withNewCaching(request.cacheModel)
           val correctForm = Json.toJson(ConsignmentReferences(Some(Ducr(DUCR)), Some(LRN), None, Some(eidrDateStamp)))
@@ -177,8 +177,9 @@ class ConsignmentReferencesControllerSpec extends ControllerSpec with AmendmentD
           val result = controller.submitForm()(postRequest(correctForm))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe routes.DeclarantExporterController.displayPage
+          thePageNavigatedTo mustBe routes.SectionSummaryController.displayPage(1)
         }
+
       }
     }
   }

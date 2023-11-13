@@ -17,7 +17,7 @@
 package controllers.declaration
 
 import controllers.actions.{AmendmentDraftFilter, AuthAction, JourneyAction}
-import controllers.declaration.routes.{DeclarantExporterController, LinkDucrToMucrController}
+import controllers.declaration.routes.{LinkDucrToMucrController, SectionSummaryController}
 import controllers.navigation.Navigator
 import forms.declaration.ConsignmentReferences
 import forms.declaration.ConsignmentReferences.form
@@ -48,7 +48,7 @@ class ConsignmentReferencesController @Inject() (
 
   val nextPage: JourneyRequest[_] => Call =
     request =>
-      if (request.declarationType == SUPPLEMENTARY) DeclarantExporterController.displayPage
+      if (request.declarationType == SUPPLEMENTARY) SectionSummaryController.displayPage(1)
       else LinkDucrToMucrController.displayPage
 
   private val actionFilters = authenticate andThen journeyAction andThen nextPageIfAmendmentDraft

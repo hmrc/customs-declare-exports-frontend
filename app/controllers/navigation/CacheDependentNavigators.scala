@@ -55,11 +55,8 @@ trait CacheDependentNavigators {
         if (cacheModel.isAmendmentDraft) routes.EntryIntoDeclarantsRecordsController.displayPage
         else routes.DeclarantDetailsController.displayPage
 
-      case SUPPLEMENTARY => routes.ConsignmentReferencesController.displayPage
-
       case _ =>
-        if (cacheModel.mucr.isEmpty) routes.LinkDucrToMucrController.displayPage
-        else routes.MucrController.displayPage
+        routes.SectionSummaryController.displayPage(1)
     }
 
   protected def officeOfExitPreviousPage(declaration: ExportsDeclaration): Call =
