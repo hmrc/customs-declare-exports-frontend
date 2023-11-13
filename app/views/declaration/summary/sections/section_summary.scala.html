@@ -19,23 +19,26 @@
 @import views.helpers.{BackButton, Title}
 @import views.helpers.summary.sections._
 @import views.html.components.gds._
+@import views.html.components._
 @import views.html.declaration.summary.sections._
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import forms.DeclarationPage
 
 @this(
-    govukLayout: gdsMainTemplate,
+    gdsMainTemplate: gdsMainTemplate,
     exitAndCompleteLater: exitAndCompleteLater,
     linkButton: linkButton
 )
 
 @(sectionCard: SectionCard)(implicit request: JourneyRequest[AnyContent], messages: Messages)
 
-@govukLayout(
-    title = Title(messages("declaration.summary.normal-header")),
+@gdsMainTemplate(
+    title = Title("declaration.summary.normal-header"),
     backButton = Some(BackButton(messages("site.back"), sectionCard.backLink)),
     useCustomContentWidth = true
 ) {
+
+    @heading(messages("declaration.summary.normal-header"))
 
     @sectionCard.eval(request.cacheModel)
 
