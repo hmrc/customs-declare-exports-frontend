@@ -49,13 +49,13 @@ class Card1ForReferences @Inject() (govukSummaryList: GovukSummaryList, govukIns
           )
         )
 
-    val heading = Html(s"""<h2 class="govuk-heading-m">${messages("declaration.summary.references")}</h2>""")
+    val heading = Html(s"""<h2 class="govuk-heading-m">${messages("declaration.summary.heading")}</h2>""")
 
     val paragraph =
       if (meta.status == COMPLETE) HtmlFormat.empty
       else Html(s"""<p classes="govuk-body govuk-!-display-none-print change-links-paragraph">${messages("declaration.summary.amend.body")}</p>""")
 
-    HtmlFormat.fill(List(insets, heading, paragraph, govukSummaryList(SummaryList(rows(declaration, actionsEnabled), card("references")))))
+    HtmlFormat.fill(List(insets, heading, paragraph, govukSummaryList(SummaryList(rows(declaration, actionsEnabled), card(1)))))
   }
 
   private def rows(declaration: ExportsDeclaration, actionsEnabled: Boolean)(implicit messages: Messages): Seq[SummaryListRow] =

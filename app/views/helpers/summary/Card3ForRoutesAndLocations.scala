@@ -16,32 +16,77 @@
 
 package views.helpers.summary
 
-import controllers.declaration.routes.{LocationOfGoodsController, OfficeOfExitController}
+import connectors.CodeListConnector
+import controllers.declaration.routes.{DestinationCountryController, LocationOfGoodsController, OfficeOfExitController, RoutingCountriesController}
 import forms.declaration.LocationOfGoods.suffixForGVMS
 import models.ExportsDeclaration
 import models.declaration.Locations
 import play.api.i18n.Messages
 import play.twirl.api.{Html, HtmlFormat}
+import services.Countries
 import uk.gov.hmrc.govukfrontend.views.html.components.{GovukSummaryList, SummaryList}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import views.helpers.CountryHelper
 
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class Card4ForLocations @Inject() (govukSummaryList: GovukSummaryList) extends SummaryHelper {
+class Card3ForRoutesAndLocations @Inject() (govukSummaryList: GovukSummaryList, countryHelper: CountryHelper)(
+  implicit codeListConnector: CodeListConnector
+) extends SummaryHelper {
 
   def eval(declaration: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages): Html = {
     val locations = declaration.locations
-    val hasData = locations.goodsLocation.isDefined || locations.officeOfExit.isDefined
+    val hasData =
+      locations.hasRoutingCountries.isDefined ||
+        locations.routingCountries.nonEmpty ||
+        locations.destinationCountry.isDefined ||
+        locations.goodsLocation.isDefined |
+        locations.officeOfExit.isDefined
 
     if (hasData) displayCard(locations, actionsEnabled) else HtmlFormat.empty
   }
 
   private def displayCard(locations: Locations, actionsEnabled: Boolean)(implicit messages: Messages): Html =
-    govukSummaryList(SummaryList(rows(locations, actionsEnabled), card("locations")))
+    govukSummaryList(SummaryList(rows(locations, actionsEnabled), card(3)))
 
   private def rows(locations: Locations, actionsEnabled: Boolean)(implicit messages: Messages): Seq[SummaryListRow] =
-    List(goodsLocation(locations, actionsEnabled), additionalInformation(locations, actionsEnabled), officeOfExit(locations, actionsEnabled)).flatten
+    List(
+      routingCountries(locations, actionsEnabled),
+      destinationCountry(locations, actionsEnabled),
+      goodsLocation(locations, actionsEnabled),
+      additionalInformation(locations),
+      officeOfExit(locations, actionsEnabled)
+    ).flatten
+
+  private def routingCountries(locations: Locations, actionsEnabled: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
+    locations.hasRoutingCountries.map { _ =>
+      lazy val countries = Countries
+        .findByCodes(locations.routingCountries.flatMap(_.country.code))
+        .map(countryHelper.getShortNameForCountry)
+        .mkString(", ")
+
+      SummaryListRow(
+        key("countries.routingCountries"),
+        if (locations.routingCountries.isEmpty) valueKey("site.none") else value(countries),
+        classes = "routing-countries",
+        changeLink(RoutingCountriesController.submitRoutingCountry, "countries.routingCountries", actionsEnabled)
+      )
+    }
+
+  private def destinationCountry(locations: Locations, actionsEnabled: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
+    locations.destinationCountry.map { destinationCountry =>
+      lazy val country = destinationCountry.code.map { code =>
+        countryHelper.getShortNameForCountry(Countries.findByCode(code))
+      }.getOrElse("")
+
+      SummaryListRow(
+        key("countries.countryOfDestination"),
+        value(country),
+        classes = "destination-country",
+        changeLink(DestinationCountryController.displayPage, "countries.countryOfDestination", actionsEnabled)
+      )
+    }
 
   private def goodsLocation(locations: Locations, actionsEnabled: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
     locations.goodsLocation.map { goodsLocation =>
@@ -53,7 +98,7 @@ class Card4ForLocations @Inject() (govukSummaryList: GovukSummaryList) extends S
       )
     }
 
-  private def additionalInformation(locations: Locations, actionsEnabled: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
+  private def additionalInformation(locations: Locations)(implicit messages: Messages): Option[SummaryListRow] =
     locations.goodsLocation.find(_.value.endsWith(suffixForGVMS)).map { _ =>
       SummaryListRow(
         key("locations.rrs01AdditionalInformation"),

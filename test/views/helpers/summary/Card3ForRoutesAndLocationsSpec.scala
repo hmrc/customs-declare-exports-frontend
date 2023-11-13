@@ -17,22 +17,52 @@
 package views.helpers.summary
 
 import base.Injector
-import controllers.declaration.routes.{LocationOfGoodsController, OfficeOfExitController}
+import controllers.declaration.routes.{DestinationCountryController, LocationOfGoodsController, OfficeOfExitController, RoutingCountriesController}
 import forms.declaration.LocationOfGoods
+import forms.declaration.countries.Country
 import services.cache.ExportsTestHelper
 import views.declaration.spec.UnitViewSpec
 
-class Card4ForLocationsSpec extends UnitViewSpec with ExportsTestHelper with Injector {
+class Card3ForRoutesAndLocationsSpec extends UnitViewSpec with ExportsTestHelper with Injector {
 
-  private val declaration = aDeclaration(withGoodsLocation(LocationOfGoods("GBAUEMAEMAEMA")), withOfficeOfExit("123"))
+  private val declaration =
+    aDeclaration(
+      withRoutingCountries(List(Country(Some("FR")), Country(Some("IT")))),
+      withDestinationCountry(Country(Some("ES"))),
+      withGoodsLocation(LocationOfGoods("GBAUEMAEMAEMA")),
+      withOfficeOfExit("123")
+    )
 
-  private val card4ForLocations = instanceOf[Card4ForLocations]
+  private val card3ForRoutesAndLocations = instanceOf[Card3ForRoutesAndLocations]
 
-  "Locations section" should {
-    val view = card4ForLocations.eval(declaration)(messages)
+  "'Routes and locations' section" should {
+    val view = card3ForRoutesAndLocations.eval(declaration)(messages)
 
     "have the expected heading" in {
-      view.getElementsByTag("h2").first.text mustBe messages(s"declaration.summary.locations")
+      view.getElementsByTag("h2").first.text mustBe messages(s"declaration.summary.section.3")
+    }
+
+    "notify the user when there are no routing countries" in {
+      val declaration1 = declaration.copy(locations = declaration.locations.copy(routingCountries = List.empty))
+      val row = card3ForRoutesAndLocations.eval(declaration1)(messages).getElementsByClass("routing-countries")
+
+      val expectedValue = messages("site.none")
+      val call = Some(RoutingCountriesController.submitRoutingCountry)
+      checkSummaryRow(row, "countries.routingCountries", expectedValue, call, "countries.routingCountries")
+    }
+
+    "show the routing countries" in {
+      val row = view.getElementsByClass("routing-countries")
+
+      val call = Some(RoutingCountriesController.submitRoutingCountry)
+      checkSummaryRow(row, "countries.routingCountries", "France, Italy", call, "countries.routingCountries")
+    }
+
+    "show the destination country" in {
+      val row = view.getElementsByClass("destination-country")
+
+      val call = Some(DestinationCountryController.displayPage)
+      checkSummaryRow(row, "countries.countryOfDestination", "Spain", call, "countries.countryOfDestination")
     }
 
     "show the goods location code" in {
@@ -45,7 +75,7 @@ class Card4ForLocationsSpec extends UnitViewSpec with ExportsTestHelper with Inj
     "show the 'RRS01' additional information" when {
       "the goods location code ends with 'GVM'" in {
         val declaration = aDeclaration(withGoodsLocation(LocationOfGoods("GBAUABDABDABDGVM")), withOfficeOfExit("123"))
-        val view = card4ForLocations.eval(declaration)(messages)
+        val view = card3ForRoutesAndLocations.eval(declaration)(messages)
         val row = view.getElementsByClass("rrs01-additional-information")
 
         val expectedValue = messages("declaration.summary.locations.rrs01AdditionalInformation.text")
@@ -68,7 +98,7 @@ class Card4ForLocationsSpec extends UnitViewSpec with ExportsTestHelper with Inj
 
     "NOT have change links" when {
       "'actionsEnabled' is false" in {
-        val view = card4ForLocations.eval(declaration, false)(messages)
+        val view = card3ForRoutesAndLocations.eval(declaration, false)(messages)
         view.getElementsByClass(summaryActionsClassName) mustBe empty
       }
     }

@@ -36,7 +36,7 @@ class AmendmentSummaryViewSpec extends SummaryViewSpec {
     val view = createView()
 
     "have references section" in {
-      view.getElementsByTag("h2").first.text mustBe messages(s"declaration.summary.references")
+      view.getElementsByTag("h2").first.text mustBe messages(s"declaration.summary.heading")
     }
 
     "should display correct title" in {
