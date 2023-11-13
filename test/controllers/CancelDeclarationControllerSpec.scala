@@ -40,6 +40,7 @@ class CancelDeclarationControllerSpec extends ControllerWithoutFormSpec with Err
     val mockAuditService = mock[AuditService]
     val cancelDeclarationPage = instanceOf[cancel_declaration]
 
+    val additionalDeclarationType = "D"
     val sessionData = Map(submissionUuid -> "submissionUuid", submissionLrn -> "lrn", submissionMrn -> "mrn", submissionDucr -> "ducr")
 
     val controller = new CancelDeclarationController(
@@ -64,13 +65,13 @@ class CancelDeclarationControllerSpec extends ControllerWithoutFormSpec with Err
     "return 200 (OK)" when {
 
       "display page method is invoked" in new SetUp {
-        val result = controller.displayPage(getRequestWithSession(sessionData.toSeq: _*))
+        val result = controller.displayPage(additionalDeclarationType)(getRequestWithSession(sessionData.toSeq: _*))
         status(result) must be(OK)
       }
 
       "cancellation is requested with duplicate request error" in new SetUp {
         cancelDeclarationResponse(CancellationAlreadyRequested)
-        val result = controller.onSubmit()(postRequestWithSession(correctCancelDeclarationJSON, sessionData.toSeq))
+        val result = controller.onSubmit(additionalDeclarationType)(postRequestWithSession(correctCancelDeclarationJSON, sessionData.toSeq))
         status(result) must be(OK)
       }
     }
@@ -78,7 +79,7 @@ class CancelDeclarationControllerSpec extends ControllerWithoutFormSpec with Err
     "return a 303 redirect to holding page" when {
       "cancellation is requested with success" in new SetUp {
         cancelDeclarationResponse()
-        val result = controller.onSubmit()(postRequestWithSession(correctCancelDeclarationJSON, sessionData.toSeq))
+        val result = controller.onSubmit(additionalDeclarationType)(postRequestWithSession(correctCancelDeclarationJSON, sessionData.toSeq))
         status(result) must be(SEE_OTHER)
         redirectLocation(result) mustBe Some(routes.CancellationResultController.displayHoldingPage.url)
       }
@@ -90,8 +91,8 @@ class CancelDeclarationControllerSpec extends ControllerWithoutFormSpec with Err
         "submissionUuid" in new SetUp {
           val session = (sessionData - submissionUuid).toSeq
 
-          val getResult = controller.displayPage(getRequestWithSession(session: _*))
-          val postResult = controller.onSubmit()(postRequestWithSession(correctCancelDeclarationJSON, session))
+          val getResult = controller.displayPage(additionalDeclarationType)(getRequestWithSession(sessionData.toSeq: _*))
+          val postResult = controller.onSubmit(additionalDeclarationType)(postRequestWithSession(correctCancelDeclarationJSON, session))
 
           status(getResult) must be(BAD_REQUEST)
           contentAsString(postResult) mustBe empty
@@ -103,8 +104,8 @@ class CancelDeclarationControllerSpec extends ControllerWithoutFormSpec with Err
         "lrn" in new SetUp {
           val session = (sessionData - submissionLrn).toSeq
 
-          val getResult = controller.displayPage(getRequestWithSession(session: _*))
-          val postResult = controller.onSubmit()(postRequestWithSession(correctCancelDeclarationJSON, session))
+          val getResult = controller.displayPage(additionalDeclarationType)(getRequestWithSession(sessionData.toSeq: _*))
+          val postResult = controller.onSubmit(additionalDeclarationType)(postRequestWithSession(correctCancelDeclarationJSON, session))
 
           status(postResult) must be(BAD_REQUEST)
           contentAsString(postResult) mustBe empty
@@ -116,8 +117,8 @@ class CancelDeclarationControllerSpec extends ControllerWithoutFormSpec with Err
         "mrn" in new SetUp {
           val session = (sessionData - submissionMrn).toSeq
 
-          val getResult = controller.displayPage(getRequestWithSession(session: _*))
-          val postResult = controller.onSubmit()(postRequestWithSession(correctCancelDeclarationJSON, session))
+          val getResult = controller.displayPage(additionalDeclarationType)(getRequestWithSession(sessionData.toSeq: _*))
+          val postResult = controller.onSubmit(additionalDeclarationType)(postRequestWithSession(correctCancelDeclarationJSON, session))
 
           status(postResult) must be(BAD_REQUEST)
           contentAsString(postResult) mustBe empty
@@ -129,8 +130,8 @@ class CancelDeclarationControllerSpec extends ControllerWithoutFormSpec with Err
         "ducr" in new SetUp {
           val session = (sessionData - submissionDucr).toSeq
 
-          val getResult = controller.displayPage(getRequestWithSession(session: _*))
-          val postResult = controller.onSubmit()(postRequestWithSession(correctCancelDeclarationJSON, session))
+          val getResult = controller.displayPage(additionalDeclarationType)(getRequestWithSession(sessionData.toSeq: _*))
+          val postResult = controller.onSubmit(additionalDeclarationType)(postRequestWithSession(correctCancelDeclarationJSON, session))
 
           status(postResult) must be(BAD_REQUEST)
           contentAsString(postResult) mustBe empty
@@ -161,7 +162,7 @@ class CancelDeclarationControllerSpec extends ControllerWithoutFormSpec with Err
       successfulCustomsDeclareExportsResponse()
       cancelDeclarationResponse()
 
-      val result = controller.onSubmit()(postRequestWithSession(correctCancelDeclarationJSON, sessionData.toSeq))
+      val result = controller.onSubmit(additionalDeclarationType)(postRequestWithSession(correctCancelDeclarationJSON, sessionData.toSeq))
 
       status(result) must be(SEE_OTHER)
 
@@ -175,7 +176,7 @@ class CancelDeclarationControllerSpec extends ControllerWithoutFormSpec with Err
       val error = new RuntimeException("some error")
       when(mockCustomsDeclareExportsConnector.createCancellation(any[CancelDeclaration])(any(), any())).thenThrow(error)
 
-      val result = controller.onSubmit()(postRequestWithSession(correctCancelDeclarationJSON, sessionData.toSeq))
+      val result = controller.onSubmit(additionalDeclarationType)(postRequestWithSession(correctCancelDeclarationJSON, sessionData.toSeq))
 
       intercept[Exception](status(result)) mustBe error
     }

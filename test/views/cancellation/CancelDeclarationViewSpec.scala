@@ -176,5 +176,5 @@ class CancelDeclarationViewSpec extends UnitViewSpec with CommonMessages with St
   }
 
   private def createView(form: Form[CancelDeclarationDescription] = form): Document =
-    cancelDeclarationPage(form, submissionId, lrn, ducr, mrn)(journeyRequest(aDeclaration(), (SessionHelper.declarationUuid, "decId")), messages)
+    cancelDeclarationPage(form, "D", submissionId, lrn, ducr, mrn)(journeyRequest(aDeclaration(), (SessionHelper.declarationUuid, "decId")), messages)
 }
