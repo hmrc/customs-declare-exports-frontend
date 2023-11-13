@@ -19,7 +19,7 @@ package views.helpers.summary.sections
 import models.ExportsDeclaration
 import models.requests.JourneyRequest
 import play.api.i18n.Messages
-import play.api.mvc.{AnyContent, Call}
+import play.api.mvc.Call
 import play.twirl.api.Html
 
 import javax.inject.Singleton
@@ -29,8 +29,8 @@ abstract class SectionCard {
 
   def eval(declaration: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages): Html
 
-  def backLink(implicit request: JourneyRequest[AnyContent]): Call
+  def backLink(implicit request: JourneyRequest[_]): Call
 
-  def continueTo(implicit request: JourneyRequest[AnyContent]): Call
+  def continueTo(implicit request: JourneyRequest[_]): Call
 
 }

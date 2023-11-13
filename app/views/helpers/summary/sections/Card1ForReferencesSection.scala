@@ -22,7 +22,7 @@ import models.DeclarationType._
 import models.ExportsDeclaration
 import models.requests.JourneyRequest
 import play.api.i18n.Messages
-import play.api.mvc.{AnyContent, Call}
+import play.api.mvc.Call
 import play.twirl.api.{Html, HtmlFormat}
 import views.helpers.summary.Card1ForReferences
 
@@ -34,11 +34,11 @@ class Card1ForReferencesSection @Inject() (card1ForReferences: Card1ForReference
   def eval(declaration: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages): Html =
     HtmlFormat.fill(List(card1ForReferences.summaryList(declaration, actionsEnabled)))
 
-  def backLink(implicit request: JourneyRequest[AnyContent]): Call =
+  def backLink(implicit request: JourneyRequest[_]): Call =
     if (request.cacheModel.mucr.isEmpty) routes.LinkDucrToMucrController.displayPage
     else routes.MucrController.displayPage
 
-  def continueTo(implicit request: JourneyRequest[AnyContent]): Call =
+  def continueTo(implicit request: JourneyRequest[_]): Call =
     if (request.declarationType == CLEARANCE) EntryIntoDeclarantsRecordsController.displayPage
     else DeclarantExporterController.displayPage
 

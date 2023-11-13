@@ -17,9 +17,11 @@
 package controllers.declaration
 
 import base.ControllerWithoutFormSpec
+import models.requests.JourneyRequest
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.OptionValues
+import play.api.mvc.AnyContent
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.helpers.summary.sections.{Card1ForReferencesSection, SectionCard}
@@ -55,37 +57,30 @@ class SectionSummaryControllerSpec extends ControllerWithoutFormSpec with Option
     super.afterEach()
   }
 
+  implicit val request: JourneyRequest[AnyContent] = getJourneyRequest()
+
   "Section Summary controller" must {
 
-    onEveryDeclarationJourney() { request =>
-      "return 200 (OK)" when {
+    "return 200 (OK)" when {
+      "display page method is invoked with section 1" in {
+        withNewCaching(request.cacheModel)
 
-        "display page method is invoked with section 1" in {
-          withNewCaching(request.cacheModel)
+        val result = controller.displayPage(1)(request)
 
-          val result = controller.displayPage(1)(getRequest())
-
-          status(result) mustBe OK
-          verifyPage(mockSection1Card)
-
-        }
-
+        status(result) mustBe OK
+        verifyPage(mockSection1Card)
       }
+    }
 
-      "redirect to summary" when {
+    "redirect to summary" when {
+      "unknown section request" in {
+        withNewCaching(request.cacheModel)
 
-        "unknown section request" in {
-          withNewCaching(request.cacheModel)
+        val result = controller.displayPage(0)(request)
 
-          val result = controller.displayPage(0)(getRequest())
-
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result).value mustBe routes.SummaryController.displayPage.url
-
-        }
-
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result).value mustBe routes.SummaryController.displayPage.url
       }
-
     }
 
   }
