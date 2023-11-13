@@ -16,11 +16,12 @@
 
 package controllers.declaration.amendments
 
-import base.ControllerWithoutFormSpec
+import base.{ControllerWithoutFormSpec, MockExportCacheService}
 import controllers.declaration.routes.SummaryController
 import controllers.routes.RootController
 import models.declaration.submissions.EnhancedStatus.{EnhancedStatus, PENDING}
 import models.requests.SessionHelper
+import models.ExportsDeclaration
 import org.mockito.ArgumentMatchers.{any, anyString}
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.OptionValues
@@ -30,13 +31,14 @@ import testdata.SubmissionsTestData
 
 import scala.concurrent.Future
 
-class AmendDeclarationControllerSpec extends ControllerWithoutFormSpec with OptionValues {
+class AmendDeclarationControllerSpec extends ControllerWithoutFormSpec with MockExportCacheService with OptionValues {
 
   val controller = new AmendDeclarationController(
     mockAuthAction,
     mockVerifiedEmailAction,
     stubMessagesControllerComponents(),
     mockCustomsDeclareExportsConnector,
+    mockExportsCacheService,
     mockDeclarationAmendmentsConfig
   )(ec)
 
@@ -70,8 +72,13 @@ class AmendDeclarationControllerSpec extends ControllerWithoutFormSpec with Opti
     "redirect to /saved-summary" when {
       "a declaration-id is returned by the connector" in {
         val expectedDeclarationId = "newDeclarationId"
-        when(mockCustomsDeclareExportsConnector.findOrCreateDraftForAmendment(anyString(), any[EnhancedStatus])(any(), any()))
+        when(
+          mockCustomsDeclareExportsConnector
+            .findOrCreateDraftForAmendment(anyString(), any[EnhancedStatus], any[String], any[ExportsDeclaration])(any(), any())
+        )
           .thenReturn(Future.successful(expectedDeclarationId))
+
+        withNewCaching(aDeclaration())
 
         val result = controller.initAmendment("parentId", "PENDING")(request)
 

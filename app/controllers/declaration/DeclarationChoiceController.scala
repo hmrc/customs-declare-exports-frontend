@@ -82,8 +82,8 @@ class DeclarationChoiceController @Inject() (
               maybeDeclaration
                 .map(_.updateType(declarationType.value))
                 .map(clearAuthorisationProcedureCodeChoiceIfRequired)
-                .map(exportsCacheService.update(_))
-                .getOrElse(create(declarationType.value))
+                .map(exportsCacheService.update(_, request.user.eori))
+                .getOrElse(create(declarationType.value, request.user.eori))
                 .map(declaration => nextPage(declaration.id))
           )
     }
@@ -95,13 +95,14 @@ class DeclarationChoiceController @Inject() (
       case _                      => declaration
     }
 
-  private def create(declarationType: DeclarationType)(implicit hc: HeaderCarrier): Future[ExportsDeclaration] =
+  private def create(declarationType: DeclarationType, eori: String)(implicit hc: HeaderCarrier): Future[ExportsDeclaration] =
     exportsCacheService.create(
       ExportsDeclaration(
         id = "",
         declarationMeta = DeclarationMeta(status = DeclarationStatus.INITIAL, createdDateTime = Instant.now, updatedDateTime = Instant.now),
         `type` = declarationType
-      )
+      ),
+      eori
     )
 
   private def nextPage(declarationId: String)(implicit request: RequestHeader): Result =

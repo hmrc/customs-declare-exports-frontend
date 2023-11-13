@@ -27,11 +27,11 @@ trait ModelCacheable {
 
   def exportsCacheService: ExportsCacheService
 
-  def updateDeclaration(declaration: ExportsDeclaration)(implicit hc: HeaderCarrier): Future[ExportsDeclaration] =
-    exportsCacheService.update(declaration)
+  def updateDeclaration(declaration: ExportsDeclaration, eori: String)(implicit hc: HeaderCarrier): Future[ExportsDeclaration] =
+    exportsCacheService.update(declaration, eori)
 
   def updateDeclarationFromRequest(
     updateDeclaration: ExportsDeclaration => ExportsDeclaration
   )(implicit hc: HeaderCarrier, request: JourneyRequest[_]): Future[ExportsDeclaration] =
-    exportsCacheService.update(updateDeclaration(request.cacheModel))
+    exportsCacheService.update(updateDeclaration(request.cacheModel), request.eori)
 }

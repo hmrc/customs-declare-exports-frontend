@@ -100,7 +100,7 @@ class CopyDeclarationController @Inject() (
                 linkDucrToMucr = None,
                 mucr = None
               )
-              exportsCacheService.create(declaration).map { declaration =>
+              exportsCacheService.create(declaration, request.eori).map { declaration =>
                 Redirect(SummaryController.displayPage).addingToSession(declarationUuid -> declaration.id)
               }
 
