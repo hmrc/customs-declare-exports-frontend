@@ -46,6 +46,20 @@ class AuditService @Inject() (connector: AuditConnector, appConfig: AppConfig)(i
       detail = AuditExtensions.auditHeaderCarrier(hc).toAuditDetails() ++ auditData
     )
 
+  def auditDraftDecCreated(audit: Audit, auditData: JsObject)(implicit hc: HeaderCarrier) = {
+    val hcAuditDetails = Json.toJson(AuditExtensions.auditHeaderCarrier(hc).toAuditDetails()).as[JsObject]
+    val collatedDetails = hcAuditDetails.deepMerge(auditData)
+
+    val extendedEvent = ExtendedDataEvent(
+      auditSource = appConfig.appName,
+      auditType = audit.toString,
+      tags = getAuditTags(s"${audit.toString}-request", path = s"${audit.toString}"),
+      detail = collatedDetails
+    )
+
+    connector.sendExtendedEvent(extendedEvent).map(handleResponse(_, audit.toString))
+  }
+
   def auditAmendmentSent(audit: Audit, auditData: JsObject)(implicit hc: HeaderCarrier) = {
     val hcAuditDetails = Json.toJson(AuditExtensions.auditHeaderCarrier(hc).toAuditDetails()).as[JsObject]
     val collatedDetails = hcAuditDetails.deepMerge(auditData)
@@ -126,12 +140,14 @@ class AuditService @Inject() (connector: AuditConnector, appConfig: AppConfig)(i
 
 object AuditTypes extends Enumeration {
   type Audit = Value
-  val Submission, SubmissionPayload, Cancellation, NavigateToMessages, Amendment, AmendmentPayload, AmendmentCancellation, UploadDocumentLink = Value
+  val Submission, SubmissionPayload, Cancellation, NavigateToMessages, Amendment, AmendmentPayload, AmendmentCancellation, UploadDocumentLink,
+    CreateDraftDeclatation = Value
 }
 
 object EventData extends Enumeration {
   type Data = Value
+
   val eori, lrn, mrn, ducr, decType, changeReason, changeDescription, fullName, jobRole, email, confirmed, submissionResult, Success, Failure, url,
-    preAmendmentDeclaration, postAmendmentDeclaration =
+    preAmendmentDeclaration, postAmendmentDeclaration, declarationStatus, declarationId, parentDeclarationId, conversationId =
     Value
 }

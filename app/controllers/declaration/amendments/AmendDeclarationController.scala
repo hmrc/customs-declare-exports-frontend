@@ -22,9 +22,12 @@ import connectors.CustomsDeclareExportsConnector
 import controllers.actions.{AuthAction, VerifiedEmailAction}
 import controllers.declaration.routes.SummaryController
 import controllers.routes.RootController
-import models.declaration.submissions.{EnhancedStatus, Submission}
+import models.declaration.submissions.Submission
+import models.declaration.submissions.EnhancedStatus.ERRORS
 import models.requests.SessionHelper.declarationUuid
-import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents, Results}
+import play.api.Logging
+import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -34,16 +37,25 @@ class AmendDeclarationController @Inject() (
   verifyEmail: VerifiedEmailAction,
   mcc: MessagesControllerComponents,
   connector: CustomsDeclareExportsConnector,
+  cacheService: ExportsCacheService,
   declarationAmendmentsConfig: DeclarationAmendmentsConfig
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) {
+    extends FrontendController(mcc) with Logging {
 
   def initAmendment(parentId: String, enhancedStatus: String): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
     if (!declarationAmendmentsConfig.isEnabled) Future.successful(Redirect(RootController.displayPage))
-    else
-      connector.findOrCreateDraftForAmendment(parentId, EnhancedStatus.withName(enhancedStatus)).map { declarationId =>
-        Redirect(SummaryController.displayPage).addingToSession(declarationUuid -> declarationId)
+    else {
+      cacheService.get(parentId).flatMap {
+        case Some(srcDec) =>
+          connector.findOrCreateDraftForAmendment(parentId, ERRORS, request.user.eori, srcDec).map { id =>
+            Redirect(SummaryController.displayPage).addingToSession(declarationUuid -> id)
+          }
+
+        case None =>
+          logger.warn(s"Could not retrieve from cache, for eori ${request.user.eori}, the declaration with id $parentId")
+          Future.successful(Results.Redirect(RootController.displayPage))
       }
+    }
   }
 }
 

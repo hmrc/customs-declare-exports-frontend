@@ -111,12 +111,12 @@ class ItemsSummaryController @Inject() (
     val itemsToSequence = request.cacheModel.items :+ ExportItem(id = newItemId)
     val (itemsSequenced, updatedMeta) = handleSequencing(itemsToSequence, request.cacheModel.declarationMeta)
 
-    exportsCacheService.update(request.cacheModel.copy(items = itemsSequenced, declarationMeta = updatedMeta)).map(_ => newItemId)
+    exportsCacheService.update(request.cacheModel.copy(items = itemsSequenced, declarationMeta = updatedMeta), request.eori).map(_ => newItemId)
   }
 
   private def removeEmptyItems(implicit request: JourneyRequest[AnyContent]): Future[ExportsDeclaration] = {
     val itemsWithAnswers = request.cacheModel.items.filter(ExportItem.containsAnswers)
     val (itemsSequenced, updatedMeta) = handleSequencing(itemsWithAnswers, request.cacheModel.declarationMeta)
-    exportsCacheService.update(request.cacheModel.copy(items = itemsSequenced, declarationMeta = updatedMeta))
+    exportsCacheService.update(request.cacheModel.copy(items = itemsSequenced, declarationMeta = updatedMeta), request.eori)
   }
 }

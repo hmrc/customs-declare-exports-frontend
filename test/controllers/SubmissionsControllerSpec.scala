@@ -17,7 +17,7 @@
 package controllers
 
 import akka.util.Timeout
-import base.ControllerWithoutFormSpec
+import base.{ControllerWithoutFormSpec, MockExportCacheService}
 import config.PaginationConfig
 import controllers.declaration.routes._
 import mock.ErrorHandlerMocks
@@ -40,7 +40,7 @@ import java.time.{Instant, ZoneOffset, ZonedDateTime}
 import java.util.UUID
 import scala.concurrent.Future
 
-class SubmissionsControllerSpec extends ControllerWithoutFormSpec with BeforeAndAfterEach with ErrorHandlerMocks {
+class SubmissionsControllerSpec extends ControllerWithoutFormSpec with MockExportCacheService with BeforeAndAfterEach with ErrorHandlerMocks {
 
   val dateTime = ZonedDateTime.now(ZoneOffset.UTC)
 
@@ -74,6 +74,7 @@ class SubmissionsControllerSpec extends ControllerWithoutFormSpec with BeforeAnd
   val controller = new SubmissionsController(
     mockAuthAction,
     mockVerifiedEmailAction,
+    mockExportsCacheService,
     mockCustomsDeclareExportsConnector,
     mockErrorHandler,
     stubMessagesControllerComponents(),
@@ -151,7 +152,7 @@ class SubmissionsControllerSpec extends ControllerWithoutFormSpec with BeforeAnd
 
   def theDeclarationCreated: ExportsDeclaration = {
     val captor: ArgumentCaptor[ExportsDeclaration] = ArgumentCaptor.forClass(classOf[ExportsDeclaration])
-    verify(mockCustomsDeclareExportsConnector).createDeclaration(captor.capture())(any(), any())
+    verify(mockCustomsDeclareExportsConnector).createDeclaration(captor.capture(), any[String])(any(), any())
     captor.getValue
   }
 
@@ -200,13 +201,16 @@ class SubmissionsControllerSpec extends ControllerWithoutFormSpec with BeforeAnd
     }
   }
 
-  private def initMock(isAmendment: Boolean): Unit =
+  private def initMock(isAmendment: Boolean): Unit = {
+    withNewCaching(aDeclaration())
+
     if (isAmendment)
-      when(mockCustomsDeclareExportsConnector.findOrCreateDraftForAmendment(refEq(rejectedId), any())(any(), any()))
+      when(mockCustomsDeclareExportsConnector.findOrCreateDraftForAmendment(refEq(rejectedId), any(), any(), any())(any(), any()))
         .thenReturn(Future.successful(declarationId))
     else
-      when(mockCustomsDeclareExportsConnector.findOrCreateDraftForRejection(refEq(rejectedId))(any(), any()))
+      when(mockCustomsDeclareExportsConnector.findOrCreateDraftForRejection(refEq(rejectedId), any(), any())(any(), any()))
         .thenReturn(Future.successful(declarationId))
+  }
 
   private def verifyResult(result: Future[Result], expectedRedirect: String): Assertion = {
     status(result) mustBe SEE_OTHER

@@ -29,8 +29,10 @@ import models.declaration.submissions.RequestType.SubmissionRequest
 import models.declaration.submissions.StatusGroup.ActionRequiredStatuses
 import models.declaration.submissions.{Action, Submission, SubmissionStatus}
 import models.{CancelDeclaration, CancellationRequestSent, PageOfSubmissions, Paginated}
+import models.declaration.submissions.EnhancedStatus.GOODS_ARRIVED
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{verify, verifyNoInteractions, when}
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.time.{Millis, Seconds, Span}
 import play.api.http.Status
@@ -38,6 +40,7 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{Json, Writes}
 import play.api.test.Helpers._
+import services.audit.AuditService
 import services.cache.ExportsDeclarationBuilder
 import views.dashboard.DashboardHelper.{Groups, Page}
 
@@ -47,15 +50,20 @@ import java.util.UUID
 class CustomsDeclareExportsConnectorISpec extends ConnectorISpec with ExportsDeclarationBuilder with ScalaFutures with FeatureFlagMocks {
 
   private val id = "id"
+  private val eori = "eori"
   private val existingDeclaration = aDeclaration(withId(id), withParentDeclarationId("123456789"))
 
   private val action = Action(id = UUID.randomUUID().toString, requestType = SubmissionRequest, notifications = None, decId = Some(id), versionNo = 1)
-  private val submission = Submission(id, "eori", "lrn", Some("mrn"), None, None, None, Seq(action), latestDecId = Some(id))
+  private val submission = Submission(id, eori, "lrn", Some("mrn"), None, None, None, Seq(action), latestDecId = Some(id))
   private val notification = Notification("action-id", "mrn", ZonedDateTime.now(ZoneOffset.UTC), SubmissionStatus.UNKNOWN, Seq.empty)
+
+  private val mockAuditService = mock[AuditService]
+
   private val injector = {
     SharedMetricRegistries.clear()
     new GuiceApplicationBuilder()
       .overrides(bind[DeclarationAmendmentsConfig].toInstance(mockDeclarationAmendmentsConfig))
+      .overrides(bind[AuditService].toInstance(mockAuditService))
       .configure(overrideConfig)
       .injector()
   }
@@ -77,7 +85,7 @@ class CustomsDeclareExportsConnectorISpec extends ConnectorISpec with ExportsDec
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
-    Mockito.reset(mockDeclarationAmendmentsConfig)
+    Mockito.reset(mockDeclarationAmendmentsConfig, mockAuditService)
   }
 
   "Create Declaration" should {
@@ -91,14 +99,50 @@ class CustomsDeclareExportsConnectorISpec extends ConnectorISpec with ExportsDec
           )
       )
 
-      val newDeclaration = aDeclaration().copy(id = "")
-      val response = await(connector.createDeclaration(newDeclaration))
+      val newDeclaration = aDeclaration(withConsignmentReferences("DUCR", "LRN")).copy(id = "")
+      val response = await(connector.createDeclaration(newDeclaration, eori))
 
       response mustBe existingDeclaration
       WireMock.verify(
         postRequestedFor(urlEqualTo("/declarations"))
           .withRequestBody(containing(json(newDeclaration)))
       )
+    }
+
+    "send audit event if DUCR set" in {
+      stubForExports(
+        post("/declarations")
+          .willReturn(
+            aResponse()
+              .withStatus(Status.ACCEPTED)
+              .withBody(json(existingDeclaration))
+          )
+      )
+
+      val newDeclaration = aDeclaration(withConsignmentReferences("DUCR", "LRN")).copy(id = "")
+      val response = await(connector.createDeclaration(newDeclaration, eori))
+
+      response mustBe existingDeclaration
+
+      verify(mockAuditService).auditDraftDecCreated(any(), any())(any())
+    }
+
+    "don NOT send audit event if DUCR is not set" in {
+      stubForExports(
+        post("/declarations")
+          .willReturn(
+            aResponse()
+              .withStatus(Status.ACCEPTED)
+              .withBody(json(existingDeclaration))
+          )
+      )
+
+      val newDeclaration = aDeclaration().copy(id = "")
+      val response = await(connector.createDeclaration(newDeclaration, eori))
+
+      response mustBe existingDeclaration
+
+      verifyNoInteractions(mockAuditService)
     }
   }
 
@@ -113,7 +157,7 @@ class CustomsDeclareExportsConnectorISpec extends ConnectorISpec with ExportsDec
           )
       )
 
-      val response = await(connector.updateDeclaration(existingDeclaration))
+      val response = await(connector.updateDeclaration(existingDeclaration, eori))
 
       response mustBe existingDeclaration
       WireMock.verify(
@@ -288,6 +332,86 @@ class CustomsDeclareExportsConnectorISpec extends ConnectorISpec with ExportsDec
       WireMock.verify(
         getRequestedFor(urlEqualTo("/declarations?status=DRAFT&page-index=1&page-size=10&sort-by=declarationMeta.updatedDateTime&sort-direction=des"))
       )
+    }
+  }
+
+  "Find or Create Draft for Amendment" should {
+    val draftId = "sd8f7sdf76s87f6s8d7f6s7"
+    val parentId = "345232fer23423"
+    val enhancedStatus = GOODS_ARRIVED
+
+    "not audit draft dec creation if an existing draft has been returned" in {
+      stubForExports(
+        get(s"/amendment-draft/$parentId/${enhancedStatus.toString}")
+          .willReturn(
+            aResponse()
+              .withStatus(Status.OK)
+              .withBody(s""""$draftId"""")
+          )
+      )
+
+      val response = await(connector.findOrCreateDraftForAmendment(parentId, enhancedStatus, "eori", existingDeclaration))
+
+      response mustBe draftId
+      WireMock.verify(getRequestedFor(urlEqualTo(s"/amendment-draft/$parentId/${enhancedStatus.toString}")))
+      verifyNoInteractions(mockAuditService)
+    }
+
+    "audit draft dec creation if a new draft has been returned" in {
+      stubForExports(
+        get(s"/amendment-draft/$parentId/${enhancedStatus.toString}")
+          .willReturn(
+            aResponse()
+              .withStatus(Status.CREATED)
+              .withBody(s""""$draftId"""")
+          )
+      )
+
+      val response =
+        await(connector.findOrCreateDraftForAmendment(parentId, enhancedStatus, "eori", aDeclaration(withConsignmentReferences("DUCR", "LRN"))))
+
+      response mustBe draftId
+
+      verify(mockAuditService).auditDraftDecCreated(any(), any())(any())
+    }
+  }
+
+  "Find or Create Draft for Rejection" should {
+    val draftId = "sd8f7sdf76s87f6s8d7f6s7"
+    val parentId = "345232fer23423"
+
+    "not audit draft dec creation if an existing draft has been returned" in {
+      stubForExports(
+        get(s"/rejected-submission-draft/$parentId")
+          .willReturn(
+            aResponse()
+              .withStatus(Status.OK)
+              .withBody(s""""$draftId"""")
+          )
+      )
+
+      val response = await(connector.findOrCreateDraftForRejection(parentId, "eori", existingDeclaration))
+
+      response mustBe draftId
+      WireMock.verify(getRequestedFor(urlEqualTo(s"/rejected-submission-draft/$parentId")))
+      verifyNoInteractions(mockAuditService)
+    }
+
+    "audit draft dec creation if a new draft has been returned" in {
+      stubForExports(
+        get(s"/rejected-submission-draft/$parentId")
+          .willReturn(
+            aResponse()
+              .withStatus(Status.CREATED)
+              .withBody(s""""$draftId"""")
+          )
+      )
+
+      val response = await(connector.findOrCreateDraftForRejection(parentId, "eori", aDeclaration(withConsignmentReferences("DUCR", "LRN"))))
+
+      response mustBe draftId
+
+      verify(mockAuditService).auditDraftDecCreated(any(), any())(any())
     }
   }
 
