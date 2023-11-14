@@ -38,7 +38,7 @@ import views.html.cancel_declaration
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
-import scala.util.Failure
+import scala.util.Success
 
 class CancelDeclarationController @Inject() (
   authenticate: AuthAction,
@@ -52,25 +52,25 @@ class CancelDeclarationController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with Logging with WithUnsafeDefaultFormBinding {
 
-  def displayPage(adt: String): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
+  def displayPage(additionalDecType: String): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
     getSessionData() match {
       case Some((submissionsId, mrn, lrn, ducr)) =>
-        Future.successful(Ok(cancelDeclarationPage(CancelDeclarationDescription.form, adt, submissionsId, lrn, ducr, mrn)))
+        Future.successful(Ok(cancelDeclarationPage(CancelDeclarationDescription.form, additionalDecType, submissionsId, lrn, ducr, mrn)))
       case _ => errorHandler.redirectToErrorPage
     }
   }
 
-  def onSubmit(adt: String): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
+  def onSubmit(additionalDecType: String): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
     getSessionData() match {
       case Some((submissionId, mrn, lrn, ducr)) =>
         form
           .bindFromRequest()
           .fold(
             (formWithErrors: Form[CancelDeclarationDescription]) =>
-              Future.successful(BadRequest(cancelDeclarationPage(formWithErrors, adt, submissionId, lrn, ducr, mrn))),
+              Future.successful(BadRequest(cancelDeclarationPage(formWithErrors, additionalDecType, submissionId, lrn, ducr, mrn))),
             userInput => {
               val context = exportsMetrics.startTimer(cancellationMetric)
-              sendAuditedCancellationRequest(userInput, adt, submissionId, lrn, ducr, mrn).map { either =>
+              sendAuditedCancellationRequest(userInput, additionalDecType, submissionId, lrn, ducr, mrn).map { either =>
                 exportsMetrics.incrementCounter(cancellationMetric)
                 context.stop()
 
@@ -78,7 +78,7 @@ class CancelDeclarationController @Inject() (
                   case Right(models.CancellationRequestSent) => Redirect(routes.CancellationResultController.displayHoldingPage)
                   case Right(models.CancellationAlreadyRequested) =>
                     Ok(
-                      cancelDeclarationPage(createFormWithErrors(userInput, "cancellation.duplicateRequest.error"), adt, submissionId, lrn, ducr, mrn)
+                      cancelDeclarationPage(createFormWithErrors(userInput, "cancellation.duplicateRequest.error"), additionalDecType, submissionId, lrn, ducr, mrn)
                     )
                   case Left(error) => errorHandler.internalServerError(error)
                 }
@@ -91,7 +91,7 @@ class CancelDeclarationController @Inject() (
 
   private def sendAuditedCancellationRequest(
     userInput: CancelDeclarationDescription,
-    adt: String,
+    additionalDecType: String,
     submissionId: String,
     lrn: Lrn,
     ducr: String,
@@ -107,7 +107,7 @@ class CancelDeclarationController @Inject() (
     } yield maybeSubmission match {
 
       case Some(sub) =>
-        auditData(sub, adt, userInput, Failure.toString, lrn, ducr, mrn).map { eventData =>
+        auditData(sub, additionalDecType, userInput, Success.toString, lrn, ducr, mrn).map { eventData =>
           auditService.audit(AuditTypes.Cancellation, eventData)
           Right(status)
         }.getOrElse(Left("Unable to retrieve submission for cancellation"))
@@ -126,7 +126,7 @@ class CancelDeclarationController @Inject() (
       .copy(errors = List(FormError(CancelDeclarationDescription.statementDescriptionKey, messages(errorMessageKey))))
   }
 
-  private def auditData(sub: Submission, adt: String, form: CancelDeclarationDescription, result: String, lrn: Lrn, ducr: String, mrn: String)(
+  private def auditData(sub: Submission, additionalDecType: String, form: CancelDeclarationDescription, result: String, lrn: Lrn, ducr: String, mrn: String)(
     implicit request: AuthenticatedRequest[_]
   ): Option[Map[String, String]] =
     (sub.latestDecId, sub.actions.headOption) match {
@@ -143,7 +143,7 @@ class CancelDeclarationController @Inject() (
             EventData.ducr.toString -> ducr,
             EventData.declarationId.toString -> latestDecId,
             EventData.conversationId.toString -> action.id,
-            EventData.decType.toString -> adt
+            EventData.decType.toString -> additionalDecType
           )
         )
       case _ => None
