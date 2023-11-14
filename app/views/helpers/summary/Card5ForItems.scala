@@ -141,7 +141,7 @@ class Card5ForItems @Inject() (
 
     Some(
       SummaryListRow(
-        Key(HtmlContent(s"""<h3 class="govuk-heading-s govuk-!-margin-top-$topMargin govuk-!-margin-bottom-3">$text</hr>""")),
+        Key(HtmlContent(s"""<strong class="govuk-heading-s govuk-!-margin-top-$topMargin govuk-!-margin-bottom-3">$text</strong>""")),
         classes = s"govuk-summary-list__row--no-border item-$index-heading",
         actions = if (actionsEnabled) Some(Actions(items = List(removeItem))) else None
       )
