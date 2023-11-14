@@ -32,7 +32,7 @@ import play.twirl.api.HtmlFormat.Appendable
 import services.cache.ExportsTestHelper
 import views.declaration.spec.UnitViewSpec
 
-class Card6ForItemsSpec extends UnitViewSpec with ExportsTestHelper with Injector {
+class Card5ForItemsSpec extends UnitViewSpec with ExportsTestHelper with Injector {
 
   val commodityMeasure = CommodityMeasure(Some("12"), Some(false), Some("666"), Some("555"))
 
@@ -60,10 +60,10 @@ class Card6ForItemsSpec extends UnitViewSpec with ExportsTestHelper with Injecto
 
   private val declaration = aDeclaration(withItems(itemWithAnswers, itemWithoutAnswers))
 
-  private val card6ForItems = instanceOf[Card6ForItems]
+  private val card5ForItems = instanceOf[Card5ForItems]
 
   private def createView(decl: ExportsDeclaration = declaration, actionEnabled: Boolean = true): Html =
-    card6ForItems.eval(decl, actionEnabled)(request, messages)
+    card5ForItems.eval(decl, actionEnabled)(request, messages)
 
   "Items card" when {
 
@@ -71,7 +71,7 @@ class Card6ForItemsSpec extends UnitViewSpec with ExportsTestHelper with Injecto
       val view = createView()
 
       "have the expected items heading" in {
-        view.getElementsByTag("h2").first.text mustBe messages(s"declaration.summary.items")
+        view.getElementsByTag("h2").first.text mustBe messages("declaration.summary.section.5")
       }
 
       "have the 'Add item' link" when {
@@ -182,7 +182,7 @@ class Card6ForItemsSpec extends UnitViewSpec with ExportsTestHelper with Injecto
   }
 
   def checkCard(view: Appendable, withItems: Boolean = false): Assertion = {
-    view.getElementsByTag("h2").text mustBe messages("declaration.summary.items")
+    view.getElementsByTag("h2").text mustBe messages("declaration.summary.section.5")
 
     if (withItems) {
       val form = view.getElementsByTag("form").first

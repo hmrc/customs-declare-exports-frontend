@@ -71,8 +71,10 @@ class Card1ForReferencesSpec extends UnitViewSpec with ExportsTestHelper with In
       }
     }
 
-    "have the expected heading" in {
-      view.getElementsByTag("h2").first.text mustBe messages(s"declaration.summary.references")
+    "have the expected headings" in {
+      val headings = view.getElementsByTag("h2")
+      headings.first.text mustBe messages("declaration.summary.heading")
+      headings.last.text mustBe messages("declaration.summary.section.1")
     }
 
     "have a 'change links' paragraph" when {

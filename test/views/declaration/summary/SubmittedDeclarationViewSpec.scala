@@ -77,7 +77,7 @@ class SubmittedDeclarationViewSpec extends UnitViewSpec with Stubs with ExportsT
 
     "have references section" in {
       val view = createView()
-      view.getElementsByTag("h2").first.text mustBe messages(s"declaration.summary.references")
+      view.getElementsByTag("h2").first.text mustBe messages(s"declaration.summary.heading")
 
       links(view) mustBe empty
     }
@@ -92,23 +92,14 @@ class SubmittedDeclarationViewSpec extends UnitViewSpec with Stubs with ExportsT
       links(view) mustBe empty
     }
 
-    "not have countries section" in {
-      Option(createView().getElementById("declaration-countries-summary")) mustBe None
+    "not have 'Routes and Locations' section" in {
+      createView().getElementsByClass("routes-and-locations-card").size mustBe 0
     }
 
-    "have countries section" in {
-      val view = createView(declaration = aDeclaration(withDestinationCountry()))
-      view.getElementsByClass("countries-card").text mustNot be(empty)
-      links(view) mustBe empty
-    }
-
-    "not have locations section" in {
-      createView().getElementsByClass("locations-card").size mustBe 0
-    }
-
-    "have locations section with UK office of exit" in {
-      val view = createView(declaration = aDeclaration(withOfficeOfExit(officeId = "office-Id")))
-      view.getElementsByClass("locations-card").text mustNot be(empty)
+    "have 'Routes and Locations' section" in {
+      val declaration = aDeclaration(withDestinationCountry(), withOfficeOfExit(officeId = "office-Id"))
+      val view = createView(declaration)
+      view.getElementsByClass("routes-and-locations-card").text mustNot be(empty)
       links(view) mustBe empty
     }
 

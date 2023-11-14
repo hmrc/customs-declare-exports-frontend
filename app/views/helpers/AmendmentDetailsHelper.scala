@@ -72,8 +72,7 @@ class AmendmentDetailsHelper @Inject() (
   def amendments(differences: ExportsDeclarationDiff)(implicit messages: Messages): Html =
     new Html(
       (section(parties, differences) ++
-        sectionRouteOfGoods(differences) ++
-        sectionLocations(differences) ++
+        sectionRoutesAndLocations(differences) ++
         sectionTransaction(differences) ++
         sectionItems(differences) ++
         sectionTransport(differences)).flatMap(handleSection)
@@ -97,33 +96,19 @@ class AmendmentDetailsHelper @Inject() (
     itemSections
   }
 
-  private lazy val locationsIds = List(GoodsLocation.pointer, OfficeOfExit.pointerBase)
+  private lazy val routesAndLocationsIds = List(destinationCountryPointer, routingCountriesPointer, GoodsLocation.pointer, OfficeOfExit.pointerBase)
 
-  private def sectionLocations(differences: ExportsDeclarationDiff): Seq[Section] = {
+  private def sectionRoutesAndLocations(differences: ExportsDeclarationDiff)(implicit messages: Messages): Seq[Section] = {
     val alteredFields =
       differences
         .filter(_.fieldPointer.startsWith(locations))
         .filter { difference =>
           val parts = difference.fieldPointer.split('.')
-          parts.size > 2 && locationsIds.contains(parts(2))
-        }
-
-    List(Section(locations, alteredFields))
-  }
-
-  private lazy val routeOfGoodsIds = List(destinationCountryPointer, routingCountriesPointer)
-
-  private def sectionRouteOfGoods(differences: ExportsDeclarationDiff)(implicit messages: Messages): Seq[Section] = {
-    val alteredFields =
-      differences
-        .filter(_.fieldPointer.startsWith(locations))
-        .filter { difference =>
-          val parts = difference.fieldPointer.split('.')
-          parts.size > 2 && routeOfGoodsIds.contains(parts(2))
+          parts.size > 2 && routesAndLocationsIds.contains(parts(2))
         }
         .map(countryToUserValue)
 
-    List(Section(routeOfGoods, alteredFields))
+    List(Section(locations, alteredFields))
   }
 
   private lazy val transactionIds = List(InvoiceAndPackageTotals.pointer, NatureOfTransaction.pointerBase, PreviousDocumentsData.pointer)
@@ -289,13 +274,11 @@ class AmendmentDetailsHelper @Inject() (
 object AmendmentDetailsHelper {
 
   private val summary = "declaration.summary"
-  private val item = "declaration.summary.item"
 
   private val declaration = ExportsDeclaration.pointer
   private val items = s"${declaration}.${ExportItem.pointer}"
   private val locations = s"${declaration}.${Locations.pointer}"
   private val parties = s"${declaration}.${Parties.pointer}"
-  private val routeOfGoods = "routeOfGoods"
   private val transaction = "transaction"
   private val transport = s"${declaration}.${Transport.pointer}"
 
@@ -317,12 +300,11 @@ object AmendmentDetailsHelper {
   private val totals = s"${declaration}.${InvoiceAndPackageTotals.pointer}"
 
   private val h2Mappings = Map(
-    items -> s"$item",
-    locations -> s"$summary.locations",
-    parties -> s"${partiesPrefix}",
-    routeOfGoods -> s"$summary.countries",
-    transaction -> s"$summary.transaction",
-    transport -> s"$summary.transport"
+    parties -> s"$summary.section.2",
+    locations -> s"$summary.section.3",
+    transaction -> s"$summary.section.4",
+    items -> s"$summary.section.5.item",
+    transport -> s"$summary.section.6"
   )
 
   private val fieldIdMappings: Map[String, String] = Map(

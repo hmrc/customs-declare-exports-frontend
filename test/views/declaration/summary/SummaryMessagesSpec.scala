@@ -37,7 +37,6 @@ class SummaryMessagesSpec extends UnitViewSpec {
     }
 
     "have defined references messages" in {
-      messages must haveTranslationFor("declaration.summary.references")
       messages must haveTranslationFor("declaration.summary.references.creation.date")
       messages must haveTranslationFor("declaration.summary.references.expiration.date")
       messages must haveTranslationFor("declaration.summary.references.type")
@@ -56,7 +55,6 @@ class SummaryMessagesSpec extends UnitViewSpec {
     }
 
     "have defined parties messages" in {
-      messages must haveTranslationFor("declaration.summary.parties")
       messages must haveTranslationFor("declaration.summary.parties.exporter.eori")
       messages must haveTranslationFor("declaration.summary.parties.exporter.address")
       messages must haveTranslationFor("declaration.summary.parties.consignee.eori")
@@ -77,19 +75,16 @@ class SummaryMessagesSpec extends UnitViewSpec {
     }
 
     "have defined countries messages" in {
-      messages must haveTranslationFor("declaration.summary.countries")
       messages must haveTranslationFor("declaration.summary.countries.routingCountries")
       messages must haveTranslationFor("declaration.summary.countries.countryOfDestination")
     }
 
     "have defined locations messages" in {
-      messages must haveTranslationFor("declaration.summary.locations")
       messages must haveTranslationFor("declaration.summary.locations.goodsLocationCode")
       messages must haveTranslationFor("declaration.summary.locations.officeOfExit")
     }
 
     "have defined transaction messages" in {
-      messages must haveTranslationFor("declaration.summary.transaction")
       messages must haveTranslationFor("declaration.summary.transaction.itemAmount")
       messages must haveTranslationFor("declaration.summary.transaction.exchangeRate")
       messages must haveTranslationFor("declaration.summary.transaction.totalNoOfPackages")
@@ -109,7 +104,6 @@ class SummaryMessagesSpec extends UnitViewSpec {
     }
 
     "have defined items messages" in {
-      messages must haveTranslationFor("declaration.summary.items")
       messages must haveTranslationFor("declaration.summary.items.empty")
       messages must haveTranslationFor("declaration.summary.item")
       messages must haveTranslationFor("declaration.summary.item.procedureCode")
@@ -152,7 +146,6 @@ class SummaryMessagesSpec extends UnitViewSpec {
     }
 
     "have defined transport messages" in {
-      messages must haveTranslationFor("declaration.summary.transport")
       messages must haveTranslationFor("declaration.summary.transport.departure.transportCode.header")
       messages must haveTranslationFor("declaration.summary.transport.departure.meansOfTransport.header")
       messages must haveTranslationFor("declaration.summary.transport.border.meansOfTransport.header")

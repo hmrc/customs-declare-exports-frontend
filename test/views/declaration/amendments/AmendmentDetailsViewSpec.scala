@@ -236,6 +236,14 @@ object AmendmentDetailsViewSpec {
   private val item = s"$summary.item"
 
   private val h2 = Map(
+    parties -> s"$summary.section.2",
+    locations -> s"$summary.section.3",
+    transaction -> s"$summary.section.4",
+    items -> s"$summary.section.5.item",
+    transport -> s"$summary.section.6"
+  )
+
+  private val keys = Map(
     items -> s"$summary.item",
     locations -> s"$summary.locations",
     parties -> s"$summary.parties",
@@ -265,7 +273,15 @@ object AmendmentDetailsViewSpec {
   // scalastyle:off
   lazy val singleRowDifferences =
     // =========================== Transport's fields
-    amendment(s"$transport.expressConsignment", YesNoAnswer(no), YesNoAnswer(yes), transport, "No", "Yes", s"${h2(transport)}.expressConsignment") ++
+    amendment(
+      s"$transport.expressConsignment",
+      YesNoAnswer(no),
+      YesNoAnswer(yes),
+      transport,
+      "No",
+      "Yes",
+      s"${keys(transport)}.expressConsignment"
+    ) ++
       amendment(
         s"$transport.transportPayment.paymentMethod",
         TransportPayment(cash),
@@ -273,7 +289,7 @@ object AmendmentDetailsViewSpec {
         transport,
         "Payment in cash",
         "Payment by cheque",
-        s"${h2(transport)}.payment"
+        s"${keys(transport)}.payment"
       ) ++
       addOrRemove(
         s"$transport.containers.#1",
@@ -291,7 +307,7 @@ object AmendmentDetailsViewSpec {
         transport,
         "Roll on Roll off (RoRo)",
         "Inland waterway transport",
-        s"${h2(transport)}.departure.transportCode.header"
+        s"${keys(transport)}.departure.transportCode.header"
       ) ++
       amendment(
         s"$transport.meansOfTransportOnDepartureType",
@@ -300,7 +316,7 @@ object AmendmentDetailsViewSpec {
         transport,
         "Flight number",
         "Vehicle registration",
-        s"${h2(transport)}.departure.meansOfTransport.type"
+        s"${keys(transport)}.departure.meansOfTransport.type"
       ) ++
       amendment(
         s"$transport.meansOfTransportOnDepartureIDNumber",
@@ -309,7 +325,7 @@ object AmendmentDetailsViewSpec {
         transport,
         "1234",
         "4321",
-        s"${h2(transport)}.departure.meansOfTransport.id"
+        s"${keys(transport)}.departure.meansOfTransport.id"
       ) ++
       amendment(
         s"$transport.meansOfTransportCrossingTheBorderNationality",
@@ -318,7 +334,7 @@ object AmendmentDetailsViewSpec {
         transport,
         "France",
         "Italy",
-        s"${h2(transport)}.registrationCountry"
+        s"${keys(transport)}.registrationCountry"
       ) ++
       amendment(
         s"$transport.meansOfTransportCrossingTheBorderType",
@@ -327,7 +343,7 @@ object AmendmentDetailsViewSpec {
         transport,
         "Train",
         "Ship name",
-        s"${h2(transport)}.border.meansOfTransport.type"
+        s"${keys(transport)}.border.meansOfTransport.type"
       ) ++
       amendment(
         s"$transport.meansOfTransportCrossingTheBorderIDNumber",
@@ -336,19 +352,19 @@ object AmendmentDetailsViewSpec {
         transport,
         "An old ship",
         "A new ship",
-        s"${h2(transport)}.border.meansOfTransport.id"
+        s"${keys(transport)}.border.meansOfTransport.id"
       ) ++
       // =========================== Parties' fields
-      addOrRemove(s"$parties.exporterDetails", ExporterDetails(EntityDetails(Some(eori), None)), parties, eori1, s"${h2(parties)}.exporter.eori") ++
+      addOrRemove(s"$parties.exporterDetails", ExporterDetails(EntityDetails(Some(eori), None)), parties, eori1, s"${keys(parties)}.exporter.eori") ++
       addOrRemove(
         s"$parties.exporterDetails",
         ExporterDetails(EntityDetails(None, Some(address))),
         parties,
         expectedAddress,
-        s"${h2(parties)}.exporter.address"
+        s"${keys(parties)}.exporter.address"
       ) ++
-      amendment(s"$parties.exporterDetails.eori", eori1, eori2, parties, eori1, eori2, s"${h2(parties)}.exporter.eori") ++
-      addOrRemove(s"$parties.exporterDetails.address", address, parties, expectedAddress, s"${h2(parties)}.exporter.address") ++
+      amendment(s"$parties.exporterDetails.eori", eori1, eori2, parties, eori1, eori2, s"${keys(parties)}.exporter.eori") ++
+      addOrRemove(s"$parties.exporterDetails.address", address, parties, expectedAddress, s"${keys(parties)}.exporter.address") ++
       amendment(
         s"$parties.exporterDetails.address.fullName",
         fullNameOld,
@@ -356,7 +372,7 @@ object AmendmentDetailsViewSpec {
         parties,
         fullNameOld,
         fullNameNew,
-        s"${h2(parties)}.exporter.address.fullName"
+        s"${keys(parties)}.exporter.address.fullName"
       ) ++
       amendment(
         s"$parties.exporterDetails.address.addressLine",
@@ -365,7 +381,7 @@ object AmendmentDetailsViewSpec {
         parties,
         addressLineOld,
         addressLineNew,
-        s"${h2(parties)}.exporter.address.addressLine"
+        s"${keys(parties)}.exporter.address.addressLine"
       ) ++
       amendment(
         s"$parties.exporterDetails.address.townOrCity",
@@ -374,7 +390,7 @@ object AmendmentDetailsViewSpec {
         parties,
         townOrCityOld,
         townOrCityNew,
-        s"${h2(parties)}.exporter.address.townOrCity"
+        s"${keys(parties)}.exporter.address.townOrCity"
       ) ++
       amendment(
         s"$parties.exporterDetails.address.postCode",
@@ -383,7 +399,7 @@ object AmendmentDetailsViewSpec {
         parties,
         postCodeOld,
         postCodeNew,
-        s"${h2(parties)}.exporter.address.postCode"
+        s"${keys(parties)}.exporter.address.postCode"
       ) ++
       amendment(
         s"$parties.exporterDetails.address.country",
@@ -392,24 +408,24 @@ object AmendmentDetailsViewSpec {
         parties,
         countryOld,
         countryNew,
-        s"${h2(parties)}.exporter.address.country"
+        s"${keys(parties)}.exporter.address.country"
       ) ++
       addOrRemove(
         s"$parties.consigneeDetails",
         ConsigneeDetails(EntityDetails(Some(eori), None)),
         parties,
         eori1,
-        s"${h2(parties)}.consignee.eori"
+        s"${keys(parties)}.consignee.eori"
       ) ++
       addOrRemove(
         s"$parties.consigneeDetails",
         ConsigneeDetails(EntityDetails(None, Some(address))),
         parties,
         expectedAddress,
-        s"${h2(parties)}.consignee.address"
+        s"${keys(parties)}.consignee.address"
       ) ++
-      amendment(s"$parties.consigneeDetails.eori", eori1, eori2, parties, eori1, eori2, s"${h2(parties)}.consignee.eori") ++
-      addOrRemove(s"$parties.consigneeDetails.address", address, parties, expectedAddress, s"${h2(parties)}.consignee.address") ++
+      amendment(s"$parties.consigneeDetails.eori", eori1, eori2, parties, eori1, eori2, s"${keys(parties)}.consignee.eori") ++
+      addOrRemove(s"$parties.consigneeDetails.address", address, parties, expectedAddress, s"${keys(parties)}.consignee.address") ++
       amendment(
         s"$parties.consigneeDetails.address.fullName",
         fullNameOld,
@@ -417,7 +433,7 @@ object AmendmentDetailsViewSpec {
         parties,
         fullNameOld,
         fullNameNew,
-        s"${h2(parties)}.consignee.address.fullName"
+        s"${keys(parties)}.consignee.address.fullName"
       ) ++
       amendment(
         s"$parties.consigneeDetails.address.addressLine",
@@ -426,7 +442,7 @@ object AmendmentDetailsViewSpec {
         parties,
         addressLineOld,
         addressLineNew,
-        s"${h2(parties)}.consignee.address.addressLine"
+        s"${keys(parties)}.consignee.address.addressLine"
       ) ++
       amendment(
         s"$parties.consigneeDetails.address.townOrCity",
@@ -435,7 +451,7 @@ object AmendmentDetailsViewSpec {
         parties,
         townOrCityOld,
         townOrCityNew,
-        s"${h2(parties)}.consignee.address.townOrCity"
+        s"${keys(parties)}.consignee.address.townOrCity"
       ) ++
       amendment(
         s"$parties.consigneeDetails.address.postCode",
@@ -444,7 +460,7 @@ object AmendmentDetailsViewSpec {
         parties,
         postCodeOld,
         postCodeNew,
-        s"${h2(parties)}.consignee.address.postCode"
+        s"${keys(parties)}.consignee.address.postCode"
       ) ++
       amendment(
         s"$parties.consigneeDetails.address.country",
@@ -453,24 +469,24 @@ object AmendmentDetailsViewSpec {
         parties,
         countryOld,
         countryNew,
-        s"${h2(parties)}.consignee.address.country"
+        s"${keys(parties)}.consignee.address.country"
       ) ++
       addOrRemove(
         s"$parties.consignorDetails",
         ConsignorDetails(EntityDetails(Some(eori), None)),
         parties,
         eori1,
-        s"${h2(parties)}.consignor.eori"
+        s"${keys(parties)}.consignor.eori"
       ) ++
       addOrRemove(
         s"$parties.consignorDetails",
         ConsignorDetails(EntityDetails(None, Some(address))),
         parties,
         expectedAddress,
-        s"${h2(parties)}.consignor.address"
+        s"${keys(parties)}.consignor.address"
       ) ++
-      amendment(s"$parties.consignorDetails.eori", eori1, eori2, parties, eori1, eori2, s"${h2(parties)}.consignor.eori") ++
-      addOrRemove(s"$parties.consignorDetails.address", address, parties, expectedAddress, s"${h2(parties)}.consignor.address") ++
+      amendment(s"$parties.consignorDetails.eori", eori1, eori2, parties, eori1, eori2, s"${keys(parties)}.consignor.eori") ++
+      addOrRemove(s"$parties.consignorDetails.address", address, parties, expectedAddress, s"${keys(parties)}.consignor.address") ++
       amendment(
         s"$parties.consignorDetails.address.fullName",
         fullNameOld,
@@ -478,7 +494,7 @@ object AmendmentDetailsViewSpec {
         parties,
         fullNameOld,
         fullNameNew,
-        s"${h2(parties)}.consignor.address.fullName"
+        s"${keys(parties)}.consignor.address.fullName"
       ) ++
       amendment(
         s"$parties.consignorDetails.address.addressLine",
@@ -487,7 +503,7 @@ object AmendmentDetailsViewSpec {
         parties,
         addressLineOld,
         addressLineNew,
-        s"${h2(parties)}.consignor.address.addressLine"
+        s"${keys(parties)}.consignor.address.addressLine"
       ) ++
       amendment(
         s"$parties.consignorDetails.address.townOrCity",
@@ -496,7 +512,7 @@ object AmendmentDetailsViewSpec {
         parties,
         townOrCityOld,
         townOrCityNew,
-        s"${h2(parties)}.consignor.address.townOrCity"
+        s"${keys(parties)}.consignor.address.townOrCity"
       ) ++
       amendment(
         s"$parties.consignorDetails.address.postCode",
@@ -505,7 +521,7 @@ object AmendmentDetailsViewSpec {
         parties,
         postCodeOld,
         postCodeNew,
-        s"${h2(parties)}.consignor.address.postCode"
+        s"${keys(parties)}.consignor.address.postCode"
       ) ++
       amendment(
         s"$parties.consignorDetails.address.country",
@@ -514,24 +530,24 @@ object AmendmentDetailsViewSpec {
         parties,
         countryOld,
         countryNew,
-        s"${h2(parties)}.consignor.address.country"
+        s"${keys(parties)}.consignor.address.country"
       ) ++
       addOrRemove(
         s"$parties.declarantDetails",
         DeclarantDetails(EntityDetails(Some(eori), None)),
         parties,
         eori1,
-        s"${h2(parties)}.declarant.eori"
+        s"${keys(parties)}.declarant.eori"
       ) ++
       addOrRemove(
         s"$parties.declarantDetails",
         DeclarantDetails(EntityDetails(None, Some(address))),
         parties,
         expectedAddress,
-        s"${h2(parties)}.declarant.address"
+        s"${keys(parties)}.declarant.address"
       ) ++
-      amendment(s"$parties.declarantDetails.eori", eori1, eori2, parties, eori1, eori2, s"${h2(parties)}.declarant.eori") ++
-      addOrRemove(s"$parties.declarantDetails.address", address, parties, expectedAddress, s"${h2(parties)}.declarant.address") ++
+      amendment(s"$parties.declarantDetails.eori", eori1, eori2, parties, eori1, eori2, s"${keys(parties)}.declarant.eori") ++
+      addOrRemove(s"$parties.declarantDetails.address", address, parties, expectedAddress, s"${keys(parties)}.declarant.address") ++
       amendment(
         s"$parties.declarantDetails.address.fullName",
         fullNameOld,
@@ -539,7 +555,7 @@ object AmendmentDetailsViewSpec {
         parties,
         fullNameOld,
         fullNameNew,
-        s"${h2(parties)}.declarant.address.fullName"
+        s"${keys(parties)}.declarant.address.fullName"
       ) ++
       amendment(
         s"$parties.declarantDetails.address.addressLine",
@@ -548,7 +564,7 @@ object AmendmentDetailsViewSpec {
         parties,
         addressLineOld,
         addressLineNew,
-        s"${h2(parties)}.declarant.address.addressLine"
+        s"${keys(parties)}.declarant.address.addressLine"
       ) ++
       amendment(
         s"$parties.declarantDetails.address.townOrCity",
@@ -557,7 +573,7 @@ object AmendmentDetailsViewSpec {
         parties,
         townOrCityOld,
         townOrCityNew,
-        s"${h2(parties)}.declarant.address.townOrCity"
+        s"${keys(parties)}.declarant.address.townOrCity"
       ) ++
       amendment(
         s"$parties.declarantDetails.address.postCode",
@@ -566,7 +582,7 @@ object AmendmentDetailsViewSpec {
         parties,
         postCodeOld,
         postCodeNew,
-        s"${h2(parties)}.declarant.address.postCode"
+        s"${keys(parties)}.declarant.address.postCode"
       ) ++
       amendment(
         s"$parties.declarantDetails.address.country",
@@ -575,25 +591,25 @@ object AmendmentDetailsViewSpec {
         parties,
         countryOld,
         countryNew,
-        s"${h2(parties)}.declarant.address.country"
+        s"${keys(parties)}.declarant.address.country"
       ) ++
       addOrRemove(
         s"$parties.representativeDetails",
         RepresentativeDetails(Some(EntityDetails(Some(eori), None)), None, None),
         parties,
         eori1,
-        s"${h2(parties)}.representative.eori"
+        s"${keys(parties)}.representative.eori"
       ) ++
       addOrRemove(
         s"$parties.representativeDetails",
         RepresentativeDetails(Some(EntityDetails(None, Some(address))), None, None),
         parties,
         expectedAddress,
-        s"${h2(parties)}.representative.address"
+        s"${keys(parties)}.representative.address"
       ) ++
-      amendment(s"$parties.representativeDetails.statusCode", "1", "2", parties, "Declarant", "Direct", s"${h2(parties)}.representative.type") ++
-      amendment(s"$parties.representativeDetails.eori", eori1, eori2, parties, eori1, eori2, s"${h2(parties)}.representative.eori") ++
-      addOrRemove(s"$parties.representativeDetails.address", address, parties, expectedAddress, s"${h2(parties)}.representative.address") ++
+      amendment(s"$parties.representativeDetails.statusCode", "1", "2", parties, "Declarant", "Direct", s"${keys(parties)}.representative.type") ++
+      amendment(s"$parties.representativeDetails.eori", eori1, eori2, parties, eori1, eori2, s"${keys(parties)}.representative.eori") ++
+      addOrRemove(s"$parties.representativeDetails.address", address, parties, expectedAddress, s"${keys(parties)}.representative.address") ++
       amendment(
         s"$parties.representativeDetails.address.fullName",
         fullNameOld,
@@ -601,7 +617,7 @@ object AmendmentDetailsViewSpec {
         parties,
         fullNameOld,
         fullNameNew,
-        s"${h2(parties)}.representative.address.fullName"
+        s"${keys(parties)}.representative.address.fullName"
       ) ++
       amendment(
         s"$parties.representativeDetails.address.addressLine",
@@ -610,7 +626,7 @@ object AmendmentDetailsViewSpec {
         parties,
         addressLineOld,
         addressLineNew,
-        s"${h2(parties)}.representative.address.addressLine"
+        s"${keys(parties)}.representative.address.addressLine"
       ) ++
       amendment(
         s"$parties.representativeDetails.address.townOrCity",
@@ -619,7 +635,7 @@ object AmendmentDetailsViewSpec {
         parties,
         townOrCityOld,
         townOrCityNew,
-        s"${h2(parties)}.representative.address.townOrCity"
+        s"${keys(parties)}.representative.address.townOrCity"
       ) ++
       amendment(
         s"$parties.representativeDetails.address.postCode",
@@ -628,7 +644,7 @@ object AmendmentDetailsViewSpec {
         parties,
         postCodeOld,
         postCodeNew,
-        s"${h2(parties)}.representative.address.postCode"
+        s"${keys(parties)}.representative.address.postCode"
       ) ++
       amendment(
         s"$parties.representativeDetails.address.country",
@@ -637,9 +653,9 @@ object AmendmentDetailsViewSpec {
         parties,
         countryOld,
         countryNew,
-        s"${h2(parties)}.representative.address.country"
+        s"${keys(parties)}.representative.address.country"
       ) ++
-      amendment(s"$parties.declarationAdditionalActorsData.actors.eori", eori1, eori2, parties, eori1, eori2, s"${h2(parties)}.actors.eori") ++
+      amendment(s"$parties.declarationAdditionalActorsData.actors.eori", eori1, eori2, parties, eori1, eori2, s"${keys(parties)}.actors.eori") ++
       amendment(
         s"$parties.declarationAdditionalActorsData.actors.partyType",
         "CS",
@@ -647,7 +663,7 @@ object AmendmentDetailsViewSpec {
         parties,
         "Consolidator",
         "Manufacturer",
-        s"${h2(parties)}.actors.type"
+        s"${keys(parties)}.actors.type"
       ) ++
       amendment(
         s"$parties.declarationHoldersData.holders.authorisationTypeCode",
@@ -656,19 +672,19 @@ object AmendmentDetailsViewSpec {
         parties,
         "AEOC",
         "AEOS",
-        s"${h2(parties)}.holders.holder.type"
+        s"${keys(parties)}.holders.holder.type"
       ) ++
-      amendment(s"$parties.declarationHoldersData.holders.eori", eori1, eori2, parties, eori1, eori2, s"${h2(parties)}.holders.holder.eori") ++
-      addOrRemove(s"$parties.carrierDetails", CarrierDetails(EntityDetails(Some(eori), None)), parties, eori1, s"${h2(parties)}.carrier.eori") ++
+      amendment(s"$parties.declarationHoldersData.holders.eori", eori1, eori2, parties, eori1, eori2, s"${keys(parties)}.holders.holder.eori") ++
+      addOrRemove(s"$parties.carrierDetails", CarrierDetails(EntityDetails(Some(eori), None)), parties, eori1, s"${keys(parties)}.carrier.eori") ++
       addOrRemove(
         s"$parties.carrierDetails",
         CarrierDetails(EntityDetails(None, Some(address))),
         parties,
         expectedAddress,
-        s"${h2(parties)}.carrier.address"
+        s"${keys(parties)}.carrier.address"
       ) ++
-      amendment(s"$parties.carrierDetails.eori", eori1, eori2, parties, eori1, eori2, s"${h2(parties)}.carrier.eori") ++
-      addOrRemove(s"$parties.carrierDetails.address", address, parties, expectedAddress, s"${h2(parties)}.carrier.address") ++
+      amendment(s"$parties.carrierDetails.eori", eori1, eori2, parties, eori1, eori2, s"${keys(parties)}.carrier.eori") ++
+      addOrRemove(s"$parties.carrierDetails.address", address, parties, expectedAddress, s"${keys(parties)}.carrier.address") ++
       amendment(
         s"$parties.carrierDetails.address.fullName",
         fullNameOld,
@@ -676,7 +692,7 @@ object AmendmentDetailsViewSpec {
         parties,
         fullNameOld,
         fullNameNew,
-        s"${h2(parties)}.carrier.address.fullName"
+        s"${keys(parties)}.carrier.address.fullName"
       ) ++
       amendment(
         s"$parties.carrierDetails.address.addressLine",
@@ -685,7 +701,7 @@ object AmendmentDetailsViewSpec {
         parties,
         addressLineOld,
         addressLineNew,
-        s"${h2(parties)}.carrier.address.addressLine"
+        s"${keys(parties)}.carrier.address.addressLine"
       ) ++
       amendment(
         s"$parties.carrierDetails.address.townOrCity",
@@ -694,7 +710,7 @@ object AmendmentDetailsViewSpec {
         parties,
         townOrCityOld,
         townOrCityNew,
-        s"${h2(parties)}.carrier.address.townOrCity"
+        s"${keys(parties)}.carrier.address.townOrCity"
       ) ++
       amendment(
         s"$parties.carrierDetails.address.postCode",
@@ -703,7 +719,7 @@ object AmendmentDetailsViewSpec {
         parties,
         postCodeOld,
         postCodeNew,
-        s"${h2(parties)}.carrier.address.postCode"
+        s"${keys(parties)}.carrier.address.postCode"
       ) ++
       amendment(
         s"$parties.carrierDetails.address.country",
@@ -712,41 +728,41 @@ object AmendmentDetailsViewSpec {
         parties,
         countryOld,
         countryNew,
-        s"${h2(parties)}.carrier.address.country"
+        s"${keys(parties)}.carrier.address.country"
       ) ++
       addOrRemove(
         s"$parties.personPresentingGoodsDetails",
         PersonPresentingGoodsDetails(eori),
         parties,
         eori1,
-        s"${h2(parties)}.personPresentingGoods"
+        s"${keys(parties)}.personPresentingGoods"
       ) ++
-      amendment(s"$parties.personPresentingGoodsDetails.eori", YesNoAnswer(no), YesNoAnswer(yes), parties, "No", "Yes", s"${h2(parties)}.eidr") ++
+      amendment(s"$parties.personPresentingGoodsDetails.eori", YesNoAnswer(no), YesNoAnswer(yes), parties, "No", "Yes", s"${keys(parties)}.eidr") ++
       // =========================== Locations' fields
       amendment(
         s"$locations.destinationCountry",
         Country(Some("FR")),
         Country(Some("IT")),
-        routeOfGoods,
+        locations,
         "France",
         "Italy",
-        s"${h2(routeOfGoods)}.countryOfDestination"
+        s"${keys(routeOfGoods)}.countryOfDestination"
       ) ++
       addOrRemove(
         s"$locations.routingCountries.#1",
         RoutingCountry(1, Country(Some("IT"))),
-        routeOfGoods,
+        locations,
         "Italy",
-        s"${h2(routeOfGoods)}.routingCountry"
+        s"${keys(routeOfGoods)}.routingCountry"
       ) ++
       amendment(
         s"$locations.routingCountries.#1",
         Country(Some("FR")),
         Country(Some("IT")),
-        routeOfGoods,
+        locations,
         "France",
         "Italy",
-        s"${h2(routeOfGoods)}.routingCountry"
+        s"${keys(routeOfGoods)}.routingCountry"
       ) ++
       amendment(
         s"$locations.goodsLocation",
@@ -755,7 +771,7 @@ object AmendmentDetailsViewSpec {
         locations,
         "GBCUASDDOVAPF",
         "GBAUABDABDABDGVM",
-        s"${h2(locations)}.goodsLocationCode"
+        s"${keys(locations)}.goodsLocationCode"
       ) ++
       amendment(
         s"$locations.officeOfExit.officeId",
@@ -764,7 +780,7 @@ object AmendmentDetailsViewSpec {
         locations,
         "GB000434",
         "GB000435",
-        s"${h2(locations)}.officeOfExit"
+        s"${keys(locations)}.officeOfExit"
       ) ++
       amendment(
         s"$locations.supervisingCustomsOffice",
@@ -773,7 +789,7 @@ object AmendmentDetailsViewSpec {
         transport,
         "GBBEL001",
         "GBBEL002",
-        s"${h2(transport)}.supervisingOffice"
+        s"${keys(transport)}.supervisingOffice"
       ) ++
       amendment(
         s"$locations.warehouseIdentification.identificationNumber",
@@ -782,7 +798,7 @@ object AmendmentDetailsViewSpec {
         transport,
         "R1234567GA",
         "R1234567GB",
-        s"${h2(transport)}.warehouse.id"
+        s"${keys(transport)}.warehouse.id"
       ) ++
       amendment(
         s"$locations.inlandModeOfTransportCode.inlandModeOfTransportCode",
@@ -791,7 +807,7 @@ object AmendmentDetailsViewSpec {
         transport,
         "Sea transport",
         "Road transport",
-        s"${h2(transport)}.inlandModeOfTransport"
+        s"${keys(transport)}.inlandModeOfTransport"
       ) ++
       // =========================== totalNumberOfItems' fields
       amendment(
@@ -801,7 +817,7 @@ object AmendmentDetailsViewSpec {
         transaction,
         "123456",
         "654321",
-        s"${h2(transaction)}.itemAmount"
+        s"${keys(transaction)}.itemAmount"
       ) ++
       amendment(
         "declaration.totalNumberOfItems.totalAmountInvoicedCurrency",
@@ -810,10 +826,10 @@ object AmendmentDetailsViewSpec {
         transaction,
         "GBP",
         "EUR",
-        s"${h2(transaction)}.currencyCode"
+        s"${keys(transaction)}.currencyCode"
       ) ++
-      amendment("declaration.totalNumberOfItems.exchangeRate", "1.49", "94.1", transaction, "1.49", "94.1", s"${h2(transaction)}.exchangeRate") ++
-      amendment("declaration.totalNumberOfItems.totalPackage", "10", "20", transaction, "10", "20", s"${h2(transaction)}.totalNoOfPackages") ++
+      amendment("declaration.totalNumberOfItems.exchangeRate", "1.49", "94.1", transaction, "1.49", "94.1", s"${keys(transaction)}.exchangeRate") ++
+      amendment("declaration.totalNumberOfItems.totalPackage", "10", "20", transaction, "10", "20", s"${keys(transaction)}.totalNoOfPackages") ++
       // =========================== natureOfTransaction
       amendment(
         "declaration.natureOfTransaction.natureType",
@@ -822,7 +838,7 @@ object AmendmentDetailsViewSpec {
         transaction,
         "Goods being sold",
         "National purposes",
-        s"${h2(transaction)}.natureOfTransaction"
+        s"${keys(transaction)}.natureOfTransaction"
       ) ++
       // =========================== previousDocuments' fields
       amendment(
@@ -832,7 +848,7 @@ object AmendmentDetailsViewSpec {
         transaction,
         "T2M Proof - T2M",
         "TIR Carnet - 952",
-        s"${h2(transaction)}.previousDocuments.type"
+        s"${keys(transaction)}.previousDocuments.type"
       ) ++
       amendment(
         "declaration.previousDocuments.documents.#1.documentReference",
@@ -841,7 +857,7 @@ object AmendmentDetailsViewSpec {
         transaction,
         "OldRef",
         "NewRef",
-        s"${h2(transaction)}.previousDocuments.reference"
+        s"${keys(transaction)}.previousDocuments.reference"
       ) ++
       amendment(
         "declaration.previousDocuments.documents.#1.goodsItemIdentifier",
@@ -850,7 +866,7 @@ object AmendmentDetailsViewSpec {
         transaction,
         "OldId",
         "NewId",
-        s"${h2(transaction)}.previousDocuments.goodsItemIdentifier"
+        s"${keys(transaction)}.previousDocuments.goodsItemIdentifier"
       ) ++
       // =========================== items' fields
       amendment(s"$items.procedureCodes.procedure.code", "1040", "1042", items, "1040", "1042", s"$item.procedureCode") ++
@@ -992,29 +1008,29 @@ object AmendmentDetailsViewSpec {
       s"$parties.representativeDetails",
       RepresentativeDetails(Some(EntityDetails(Some(eori), None)), Some("2"), None),
       parties,
-      List(s"${h2(parties)}.representative.eori" -> eori1, s"${h2(parties)}.representative.type" -> "Direct")
+      List(s"${keys(parties)}.representative.eori" -> eori1, s"${keys(parties)}.representative.type" -> "Direct")
     ) ++
       addOrRemove(
         s"$parties.declarationAdditionalActorsData.actors",
         AdditionalActor(Some(eori), Some("MF")),
         parties,
-        List(s"${h2(parties)}.actors.eori" -> eori1, s"${h2(parties)}.actors.type" -> "Manufacturer")
+        List(s"${keys(parties)}.actors.eori" -> eori1, s"${keys(parties)}.actors.type" -> "Manufacturer")
       ) ++
       addOrRemove(
         s"$parties.declarationHoldersData.holders",
         AuthorisationHolder(Some("AEOC"), Some(eori), None),
         parties,
-        List(s"${h2(parties)}.holders.holder.type" -> "AEOC", s"${h2(parties)}.holders.holder.eori" -> eori1)
+        List(s"${keys(parties)}.holders.holder.type" -> "AEOC", s"${keys(parties)}.holders.holder.eori" -> eori1)
       ) ++
       addOrRemove(
         "declaration.totalNumberOfItems",
         InvoiceAndPackageTotals(Some("567640"), Some("GBP"), None, Some("1.49"), Some("10")),
         transaction,
         List(
-          s"${h2(transaction)}.itemAmount" -> "567640",
-          s"${h2(transaction)}.currencyCode" -> "GBP",
-          s"${h2(transaction)}.exchangeRate" -> "1.49",
-          s"${h2(transaction)}.totalNoOfPackages" -> "10"
+          s"${keys(transaction)}.itemAmount" -> "567640",
+          s"${keys(transaction)}.currencyCode" -> "GBP",
+          s"${keys(transaction)}.exchangeRate" -> "1.49",
+          s"${keys(transaction)}.totalNoOfPackages" -> "10"
         )
       ) ++
       addOrRemove(
@@ -1022,9 +1038,9 @@ object AmendmentDetailsViewSpec {
         Document("952", "Some reference", Some("Some id")),
         transaction,
         List(
-          s"${h2(transaction)}.previousDocuments.type" -> "TIR Carnet - 952",
-          s"${h2(transaction)}.previousDocuments.reference" -> "Some reference",
-          s"${h2(transaction)}.previousDocuments.goodsItemIdentifier" -> "Some id"
+          s"${keys(transaction)}.previousDocuments.type" -> "TIR Carnet - 952",
+          s"${keys(transaction)}.previousDocuments.reference" -> "Some reference",
+          s"${keys(transaction)}.previousDocuments.goodsItemIdentifier" -> "Some id"
         )
       ) ++
       addOrRemove(

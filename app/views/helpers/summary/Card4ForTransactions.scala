@@ -28,13 +28,13 @@ import views.helpers.summary.SummaryHelper.hasTransactionData
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class Card5ForTransactions @Inject() (govukSummaryList: GovukSummaryList, documentsHelper: DocumentsHelper) extends SummaryHelper {
+class Card4ForTransactions @Inject() (govukSummaryList: GovukSummaryList, documentsHelper: DocumentsHelper) extends SummaryHelper {
 
   def eval(declaration: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages): Html =
     if (hasTransactionData(declaration)) displayCard(declaration, actionsEnabled) else HtmlFormat.empty
 
   private def displayCard(declaration: ExportsDeclaration, actionsEnabled: Boolean)(implicit messages: Messages): Html =
-    govukSummaryList(SummaryList(rows(declaration, actionsEnabled), card("transaction")))
+    govukSummaryList(SummaryList(rows(declaration, actionsEnabled), card(4)))
 
   private def rows(declaration: ExportsDeclaration, actionsEnabled: Boolean)(implicit messages: Messages): Seq[SummaryListRow] =
     (

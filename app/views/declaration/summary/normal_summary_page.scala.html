@@ -32,11 +32,10 @@
     pageTitle: pageTitle,
     card1ForReferences: Card1ForReferences,
     card2ForParties: Card2ForParties,
-    card3ForRouteOfGoods: Card3ForRouteOfGoods,
-    card4ForLocations: Card4ForLocations,
-    card5ForTransactions: Card5ForTransactions,
-    card6ForItems: Card6ForItems,
-    card7ForTransport: Card7ForTransport,
+    card3ForRoutesAndLocations: Card3ForRoutesAndLocations,
+    card4ForTransactions: Card4ForTransactions,
+    card5ForItems: Card5ForItems,
+    card6ForTransport: Card6ForTransport,
     errorSummary: errorSummary,
     linkButton: linkButton,
     exitAndCompleteLater: exitAndCompleteLater,
@@ -118,15 +117,13 @@
 
     @card2ForParties.eval(request.cacheModel)
 
-    @card3ForRouteOfGoods.eval(request.cacheModel)
+    @card3ForRoutesAndLocations.eval(request.cacheModel)
 
-    @card4ForLocations.eval(request.cacheModel)
+    @card4ForTransactions.eval(request.cacheModel)
 
-    @card5ForTransactions.eval(request.cacheModel)
+    @card5ForItems.eval(request.cacheModel)
 
-    @card6ForItems.eval(request.cacheModel)
-
-    @card7ForTransport.eval(request.cacheModel)
+    @card6ForTransport.eval(request.cacheModel)
 
     <div class="govuk-button-group govuk-!-margin-top-9">
         @draftContinueLink
