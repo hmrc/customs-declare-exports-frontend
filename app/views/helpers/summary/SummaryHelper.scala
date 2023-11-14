@@ -58,7 +58,7 @@ trait SummaryHelper {
 
   def valueKey(rowValue: String)(implicit messages: Messages): Value = Value(Text(messages(rowValue)))
 
-  private def keyForAttrWithMultipleRows(rowKey: String, tag: String = "h3")(implicit messages: Messages): Key = {
+  private def keyForAttrWithMultipleRows(rowKey: String, tag: String = "strong")(implicit messages: Messages): Key = {
     val key = s"declaration.summary.$rowKey"
     Key(HtmlContent(s"""<$tag class="govuk-heading-s govuk-!-margin-top-4 govuk-!-margin-bottom-0">${messages(key)}</$tag>"""))
   }
