@@ -52,7 +52,7 @@ class Card2ForParties @Inject() (
   }
 
   private def displayCard(parties: Parties, actionsEnabled: Boolean)(implicit messages: Messages): Html =
-    govukSummaryList(SummaryList(rows(parties, actionsEnabled), card("parties")))
+    govukSummaryList(SummaryList(rows(parties, actionsEnabled), card(2)))
 
   private def rows(parties: Parties, actionsEnabled: Boolean)(implicit messages: Messages): Seq[SummaryListRow] = {
     // Early evaluation of this attribute in order to verify if it will be displayed as a multi-rows section.

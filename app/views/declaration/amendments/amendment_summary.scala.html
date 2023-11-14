@@ -31,11 +31,10 @@
     pageTitle: pageTitle,
     card1ForReferences: Card1ForReferences,
     card2ForParties: Card2ForParties,
-    card3ForRouteOfGoods: Card3ForRouteOfGoods,
-    card4ForLocations: Card4ForLocations,
-    card5ForTransactions: Card5ForTransactions,
-    card7ForTransport: Card7ForTransport,
-    items_section: items_section,
+    card3ForRoutesAndLocations: Card3ForRoutesAndLocations,
+    card4ForTransactions: Card4ForTransactions,
+    card5ForItems: Card5ForItems,
+    card6ForTransport: Card6ForTransport,
     linkButton: linkButton,
     paragraphBody: paragraphBody
 )
@@ -64,15 +63,13 @@
 
     @card2ForParties.eval(request.cacheModel)
 
-    @card3ForRouteOfGoods.eval(request.cacheModel)
+    @card3ForRoutesAndLocations.eval(request.cacheModel)
 
-    @card4ForLocations.eval(request.cacheModel)
+    @card4ForTransactions.eval(request.cacheModel)
 
-    @card5ForTransactions.eval(request.cacheModel)
+    @card5ForItems.eval(request.cacheModel)
 
-    @items_section(request.cacheModel)
-
-    @card7ForTransport.eval(request.cacheModel)
+    @card6ForTransport.eval(request.cacheModel)
 
     <div class="govuk-button-group govuk-!-margin-top-9">
         @linkButton("site.confirm_and_continue", SubmissionController.displaySubmitAmendmentPage)

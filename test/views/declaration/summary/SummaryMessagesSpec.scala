@@ -37,7 +37,6 @@ class SummaryMessagesSpec extends UnitViewSpec {
     }
 
     "have defined references messages" in {
-      messages must haveTranslationFor("declaration.summary.references")
       messages must haveTranslationFor("declaration.summary.references.creation.date")
       messages must haveTranslationFor("declaration.summary.references.expiration.date")
       messages must haveTranslationFor("declaration.summary.references.type")
@@ -56,7 +55,6 @@ class SummaryMessagesSpec extends UnitViewSpec {
     }
 
     "have defined parties messages" in {
-      messages must haveTranslationFor("declaration.summary.parties")
       messages must haveTranslationFor("declaration.summary.parties.exporter.eori")
       messages must haveTranslationFor("declaration.summary.parties.exporter.address")
       messages must haveTranslationFor("declaration.summary.parties.consignee.eori")
@@ -77,19 +75,16 @@ class SummaryMessagesSpec extends UnitViewSpec {
     }
 
     "have defined countries messages" in {
-      messages must haveTranslationFor("declaration.summary.countries")
       messages must haveTranslationFor("declaration.summary.countries.routingCountries")
       messages must haveTranslationFor("declaration.summary.countries.countryOfDestination")
     }
 
     "have defined locations messages" in {
-      messages must haveTranslationFor("declaration.summary.locations")
       messages must haveTranslationFor("declaration.summary.locations.goodsLocationCode")
       messages must haveTranslationFor("declaration.summary.locations.officeOfExit")
     }
 
     "have defined transaction messages" in {
-      messages must haveTranslationFor("declaration.summary.transaction")
       messages must haveTranslationFor("declaration.summary.transaction.itemAmount")
       messages must haveTranslationFor("declaration.summary.transaction.exchangeRate")
       messages must haveTranslationFor("declaration.summary.transaction.totalNoOfPackages")
@@ -109,32 +104,31 @@ class SummaryMessagesSpec extends UnitViewSpec {
     }
 
     "have defined items messages" in {
-      messages must haveTranslationFor("declaration.summary.items")
       messages must haveTranslationFor("declaration.summary.items.empty")
-      messages must haveTranslationFor("declaration.summary.items.item.presentationId")
-      messages must haveTranslationFor("declaration.summary.items.item.procedureCode")
-      messages must haveTranslationFor("declaration.summary.items.item.onwardSupplyRelief")
-      messages must haveTranslationFor("declaration.summary.items.item.VATdetails")
-      messages must haveTranslationFor("declaration.summary.items.item.commodityCode")
-      messages must haveTranslationFor("declaration.summary.items.item.goodsDescription")
-      messages must haveTranslationFor("declaration.summary.items.item.unDangerousGoodsCode")
-      messages must haveTranslationFor("declaration.summary.items.item.cusCode")
-      messages must haveTranslationFor("declaration.summary.items.item.taricAdditionalCodes")
-      messages must haveTranslationFor("declaration.summary.items.item.nationalAdditionalCodes")
-      messages must haveTranslationFor("declaration.summary.items.item.itemValue")
-      messages must haveTranslationFor("declaration.summary.items.item.supplementaryUnits")
-      messages must haveTranslationFor("declaration.summary.items.item.grossWeight")
-      messages must haveTranslationFor("declaration.summary.items.item.netWeight")
-      messages must haveTranslationFor("declaration.summary.items.item.packageInformation")
-      messages must haveTranslationFor("declaration.summary.items.item.packageInformation.type")
-      messages must haveTranslationFor("declaration.summary.items.item.packageInformation.number")
-      messages must haveTranslationFor("declaration.summary.items.item.packageInformation.markings")
-      messages must haveTranslationFor("declaration.summary.items.item.additionalInformation")
-      messages must haveTranslationFor("declaration.summary.items.item.additionalInformation.code")
-      messages must haveTranslationFor("declaration.summary.items.item.additionalInformation.description")
-      messages must haveTranslationFor("declaration.summary.items.item.additionalDocuments")
-      messages must haveTranslationFor("declaration.summary.items.item.additionalDocuments.code")
-      messages must haveTranslationFor("declaration.summary.items.item.additionalDocuments.identifier")
+      messages must haveTranslationFor("declaration.summary.item")
+      messages must haveTranslationFor("declaration.summary.item.procedureCode")
+      messages must haveTranslationFor("declaration.summary.item.onwardSupplyRelief")
+      messages must haveTranslationFor("declaration.summary.item.VATdetails")
+      messages must haveTranslationFor("declaration.summary.item.commodityCode")
+      messages must haveTranslationFor("declaration.summary.item.goodsDescription")
+      messages must haveTranslationFor("declaration.summary.item.unDangerousGoodsCode")
+      messages must haveTranslationFor("declaration.summary.item.cusCode")
+      messages must haveTranslationFor("declaration.summary.item.taricAdditionalCodes")
+      messages must haveTranslationFor("declaration.summary.item.nationalAdditionalCodes")
+      messages must haveTranslationFor("declaration.summary.item.itemValue")
+      messages must haveTranslationFor("declaration.summary.item.supplementaryUnits")
+      messages must haveTranslationFor("declaration.summary.item.grossWeight")
+      messages must haveTranslationFor("declaration.summary.item.netWeight")
+      messages must haveTranslationFor("declaration.summary.item.packageInformation")
+      messages must haveTranslationFor("declaration.summary.item.packageInformation.type")
+      messages must haveTranslationFor("declaration.summary.item.packageInformation.number")
+      messages must haveTranslationFor("declaration.summary.item.packageInformation.markings")
+      messages must haveTranslationFor("declaration.summary.item.additionalInformation")
+      messages must haveTranslationFor("declaration.summary.item.additionalInformation.code")
+      messages must haveTranslationFor("declaration.summary.item.additionalInformation.description")
+      messages must haveTranslationFor("declaration.summary.item.additionalDocuments")
+      messages must haveTranslationFor("declaration.summary.item.additionalDocuments.code")
+      messages must haveTranslationFor("declaration.summary.item.additionalDocuments.identifier")
     }
 
     "have defined warehouse messages" in {
@@ -152,7 +146,6 @@ class SummaryMessagesSpec extends UnitViewSpec {
     }
 
     "have defined transport messages" in {
-      messages must haveTranslationFor("declaration.summary.transport")
       messages must haveTranslationFor("declaration.summary.transport.departure.transportCode.header")
       messages must haveTranslationFor("declaration.summary.transport.departure.meansOfTransport.header")
       messages must haveTranslationFor("declaration.summary.transport.border.meansOfTransport.header")

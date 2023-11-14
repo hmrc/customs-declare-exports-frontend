@@ -29,7 +29,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class Card7ForTransport @Inject() (govukSummaryList: GovukSummaryList) extends SummaryHelper {
+class Card6ForTransport @Inject() (govukSummaryList: GovukSummaryList) extends SummaryHelper {
 
   def eval(declaration: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages): Html = {
     val transport = declaration.transport
@@ -53,7 +53,7 @@ class Card7ForTransport @Inject() (govukSummaryList: GovukSummaryList) extends S
   }
 
   private def displayCard(declaration: ExportsDeclaration, actionsEnabled: Boolean)(implicit messages: Messages): Html =
-    govukSummaryList(SummaryList(rows(declaration, actionsEnabled), card("transport")))
+    govukSummaryList(SummaryList(rows(declaration, actionsEnabled), card(6)))
 
   private def rows(declaration: ExportsDeclaration, actionsEnabled: Boolean)(implicit messages: Messages): Seq[SummaryListRow] =
     (List(

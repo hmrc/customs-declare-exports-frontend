@@ -203,11 +203,13 @@ class AdditionalProcedureCodesController @Inject() (
         val continueToCommodityDetails = navigator.continueTo(routes.CommodityDetailsController.displayPage(itemId))
 
         if (!supervisingCustomsOfficeHelper.isConditionForAllProcedureCodesVerified(declaration)) Future.successful(continueToCommodityDetails)
-        else resetSupervisingCustomsOfficeInCache(declaration).map(_ => continueToCommodityDetails)
+        else resetSupervisingCustomsOfficeInCache(declaration, request.eori).map(_ => continueToCommodityDetails)
     }
 
-  private def resetSupervisingCustomsOfficeInCache(declaration: ExportsDeclaration)(implicit hc: HeaderCarrier): Future[ExportsDeclaration] =
-    updateDeclaration(declaration.removeSupervisingCustomsOffice)
+  private def resetSupervisingCustomsOfficeInCache(declaration: ExportsDeclaration, eori: String)(
+    implicit hc: HeaderCarrier
+  ): Future[ExportsDeclaration] =
+    updateDeclaration(declaration.removeSupervisingCustomsOffice, eori)
 
   private def returnErrorPage(
     itemId: String,

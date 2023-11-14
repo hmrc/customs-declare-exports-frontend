@@ -20,7 +20,6 @@ import base.Injector
 import forms.declaration.CommodityDetails
 import models.DeclarationType._
 import models.ExportsDeclaration
-import org.junit.Assert.assertNull
 import play.api.data.FormError
 import play.api.mvc.Call
 import play.twirl.api.HtmlFormat.Appendable
@@ -37,7 +36,7 @@ trait SummaryViewSpec extends UnitViewSpec with Injector with Stubs {
 
       "have common behaviours such as" when {
         "have references section" in {
-          view.getElementsByTag("h2").first.text mustBe messages(s"declaration.summary.references")
+          view.getElementsByTag("h2").first.text mustBe messages(s"declaration.summary.heading")
         }
 
         "display Exit and come back later button" in {
@@ -84,21 +83,13 @@ trait SummaryViewSpec extends UnitViewSpec with Injector with Stubs {
       view(aDeclaration(withExporterDetails())).getElementsByClass("parties-card").text mustNot be(empty)
     }
 
-    "not have countries section" in {
-      view(aDeclaration()).getElementsByClass("countries-card").size mustBe 0
+    "not have 'Routes and Locations' section" in {
+      view(aDeclaration()).getElementsByClass("routes-and-locations-card").size mustBe 0
     }
 
-    "have countries section" in {
-      view(aDeclaration(withDestinationCountry())).getElementsByClass("countries-card").text mustNot be(empty)
-    }
-
-    "not have locations section" in {
-      view(aDeclaration()).getElementsByClass("locations-card").size mustBe 0
-    }
-
-    "have locations section with UK office of exit" in {
-      val declaration = aDeclaration(withOfficeOfExit(officeId = "office-Id"))
-      view(declaration).getElementsByClass("locations-card").text mustNot be(empty)
+    "have 'Routes and Locations' section" in {
+      val declaration = aDeclaration(withDestinationCountry(), withOfficeOfExit(officeId = "office-Id"))
+      view(declaration).getElementsByClass("routes-and-locations-card").text mustNot be(empty)
     }
 
     for (declarationType <- List(CLEARANCE, SIMPLIFIED, OCCASIONAL))
@@ -111,13 +102,13 @@ trait SummaryViewSpec extends UnitViewSpec with Injector with Stubs {
     }
 
     "not have items section" in {
-      assertNull(view(aDeclaration()).getElementById("declaration-items-summary"))
+      view(aDeclaration()).getElementsByClass("items-card").size mustBe 0
     }
 
     "have items section" in {
       val details = CommodityDetails(Some("1234567890"), Some("Description"))
       view(aDeclaration(withItem(anItem(withCommodityDetails(details)))))
-        .getElementById("declaration-items-summary-1")
+        .getElementsByClass("items-card")
         .text mustNot be(empty)
     }
 

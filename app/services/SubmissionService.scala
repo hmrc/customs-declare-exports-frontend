@@ -22,6 +22,8 @@ import forms.declaration.{AmendmentSubmission, LegalDeclaration}
 import metrics.ExportsMetrics
 import metrics.MetricIdentifiers.{submissionAmendmentMetric, submissionMetric}
 import models.DeclarationType.DeclarationType
+import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
+import models.declaration.DeclarationStatus.DeclarationStatus
 import models.ExportsDeclaration
 import models.declaration.submissions.{Submission, SubmissionAmendment}
 import play.api.Logging
@@ -49,16 +51,17 @@ class SubmissionService @Inject() (connector: CustomsDeclareExportsConnector, au
     connector
       .submitDeclaration(declaration.id)
       .andThen {
-        case Success(_) =>
+        case Success(successfulSubmission) =>
+          val conversationId = successfulSubmission.actions.headOption.map(_.id).getOrElse("")
           logProgress(declaration, "Submitted Successfully")
-          auditSubmission(eori, declaration, legalDeclaration, Success.toString, AuditTypes.Submission)
+          auditSubmission(eori, declaration, legalDeclaration, conversationId, Success.toString, AuditTypes.Submission)
           metrics.incrementCounter(submissionMetric)
           timerContext.stop()
 
         case Failure(exception) =>
           logProgress(declaration, "Submission Failed")
           logger.error(s"Error response from backend $exception")
-          auditSubmission(eori, declaration, legalDeclaration, Failure.toString, AuditTypes.Submission)
+          auditSubmission(eori, declaration, legalDeclaration, "N/A", Failure.toString, AuditTypes.Submission)
       }
       .map(Some(_))
   }
@@ -116,12 +119,27 @@ class SubmissionService @Inject() (connector: CustomsDeclareExportsConnector, au
       Future.successful(None)
     }
 
-  private def auditSubmission(eori: String, declaration: ExportsDeclaration, legalDeclaration: LegalDeclaration, opResult: String, auditType: Audit)(
-    implicit hc: HeaderCarrier
-  ): Unit =
+  private def auditSubmission(
+    eori: String,
+    declaration: ExportsDeclaration,
+    legalDeclaration: LegalDeclaration,
+    conversationId: String,
+    opResult: String,
+    auditType: Audit
+  )(implicit hc: HeaderCarrier): Unit =
     auditService.audit(
       auditType,
-      auditSubmission(eori, declaration.`type`, declaration.lrn, declaration.ducr.map(_.ducr), legalDeclaration, opResult)
+      auditSubmission(
+        eori,
+        declaration.additionalDeclarationType,
+        declaration.lrn,
+        declaration.ducr.map(_.ducr),
+        legalDeclaration,
+        declaration.id,
+        declaration.declarationMeta.status,
+        conversationId,
+        opResult
+      )
     )
 
   private def auditAmendmentSubmission(
@@ -165,22 +183,28 @@ class SubmissionService @Inject() (connector: CustomsDeclareExportsConnector, au
 
   private def auditSubmission(
     eori: String,
-    `type`: DeclarationType,
+    additionalDeclarationType: Option[AdditionalDeclarationType],
     lrn: Option[String],
     ducr: Option[String],
     legalDeclaration: LegalDeclaration,
+    id: String,
+    status: DeclarationStatus,
+    conversationId: String,
     result: String
   ): Map[String, String] =
     Map(
       EventData.eori.toString -> eori,
-      EventData.decType.toString -> `type`.toString,
+      EventData.decType.toString -> additionalDeclarationType.map(_.toString).getOrElse(""),
       EventData.lrn.toString -> lrn.getOrElse(""),
       EventData.ducr.toString -> ducr.getOrElse(""),
       EventData.fullName.toString -> legalDeclaration.fullName,
       EventData.jobRole.toString -> legalDeclaration.jobRole,
       EventData.email.toString -> legalDeclaration.email,
       EventData.confirmed.toString -> legalDeclaration.confirmation.toString,
-      EventData.submissionResult.toString -> result
+      EventData.submissionResult.toString -> result,
+      EventData.declarationId.toString -> id,
+      EventData.declarationStatus.toString -> status.toString,
+      EventData.conversationId.toString -> conversationId
     )
 
   private def logProgress(declaration: ExportsDeclaration, message: String): Unit =

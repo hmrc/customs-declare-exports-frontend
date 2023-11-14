@@ -24,7 +24,7 @@ import models.declaration.InvoiceAndPackageTotals
 import services.cache.ExportsTestHelper
 import views.declaration.spec.UnitViewSpec
 
-class Card5ForTransactionsSpec extends UnitViewSpec with ExportsTestHelper with Injector {
+class Card4ForTransactionsSpec extends UnitViewSpec with ExportsTestHelper with Injector {
 
   private val totalAmountInvoiced = "123"
   private val exchangeRate = "1.23"
@@ -42,13 +42,13 @@ class Card5ForTransactionsSpec extends UnitViewSpec with ExportsTestHelper with 
     withPreviousDocuments(document1, document2)
   )
 
-  private val card5ForTransactions = instanceOf[Card5ForTransactions]
+  private val card4ForTransactions = instanceOf[Card4ForTransactions]
 
   "Transactions section" should {
-    val view = card5ForTransactions.eval(declaration)(messages)
+    val view = card4ForTransactions.eval(declaration)(messages)
 
-    "contains the expected heading" in {
-      view.getElementsByTag("h2").first.text mustBe messages(s"declaration.summary.transaction")
+    "have the expected heading" in {
+      view.getElementsByTag("h2").first.text mustBe messages(s"declaration.summary.section.4")
     }
 
     "show the total amount invoiced" when {
@@ -57,7 +57,7 @@ class Card5ForTransactionsSpec extends UnitViewSpec with ExportsTestHelper with 
 
           "totalAmountInvoiced is NON-empty" in {
             val declaration1 = declaration.copy(`type` = declarationType)
-            val row = card5ForTransactions.eval(declaration1)(messages).getElementsByClass("item-amount")
+            val row = card4ForTransactions.eval(declaration1)(messages).getElementsByClass("item-amount")
 
             val expectedValue = s"$currency $totalAmountInvoiced"
             val expectedCall = Some(InvoiceAndExchangeRateController.displayPage)
@@ -67,7 +67,7 @@ class Card5ForTransactionsSpec extends UnitViewSpec with ExportsTestHelper with 
           "totalAmountInvoiced is empty" in {
             val invoiceAndPackageTotals = Some(InvoiceAndPackageTotals(Some(""), Some(currency)))
             val declaration1 = declaration.copy(`type` = declarationType, totalNumberOfItems = invoiceAndPackageTotals)
-            val row = card5ForTransactions.eval(declaration1)(messages).getElementsByClass("item-amount")
+            val row = card4ForTransactions.eval(declaration1)(messages).getElementsByClass("item-amount")
 
             val expectedValue = messages("declaration.totalAmountInvoiced.value.lessThan100000")
             val expectedCall = Some(InvoiceAndExchangeRateChoiceController.displayPage)
@@ -81,7 +81,7 @@ class Card5ForTransactionsSpec extends UnitViewSpec with ExportsTestHelper with 
       List(CLEARANCE, OCCASIONAL, SIMPLIFIED).foreach { declarationType =>
         s"the declaration type is $declarationType" in {
           val declaration1 = declaration.copy(`type` = declarationType)
-          card5ForTransactions.eval(declaration1)(messages).getElementsByClass("item-amount").size mustBe 0
+          card4ForTransactions.eval(declaration1)(messages).getElementsByClass("item-amount").size mustBe 0
         }
       }
     }
@@ -108,10 +108,10 @@ class Card5ForTransactionsSpec extends UnitViewSpec with ExportsTestHelper with 
       checkSummaryRow(row, "transaction.natureOfTransaction", expectedValue, expectedCall, "transaction.natureOfTransaction")
     }
 
-    "contains an empty previous documents section" when {
+    "have an empty previous documents section" when {
       "no previous documents have been entered" in {
         val previousDocumentsData = withPreviousDocumentsData(Some(PreviousDocumentsData(List.empty)))
-        val view = card5ForTransactions.eval(aDeclarationAfter(declaration, previousDocumentsData))(messages)
+        val view = card4ForTransactions.eval(aDeclarationAfter(declaration, previousDocumentsData))(messages)
 
         val row = view.getElementsByClass("previous-documents-heading")
 
@@ -120,7 +120,7 @@ class Card5ForTransactionsSpec extends UnitViewSpec with ExportsTestHelper with 
       }
     }
 
-    "contains a previous documents section" in {
+    "show a previous documents section" in {
       val heading = view.getElementsByClass("previous-documents-heading")
       checkSummaryRow(heading, "transaction.previousDocuments", "", None, "")
 
@@ -147,7 +147,7 @@ class Card5ForTransactionsSpec extends UnitViewSpec with ExportsTestHelper with 
 
     "NOT have change links" when {
       "'actionsEnabled' is false" in {
-        val view = card5ForTransactions.eval(declaration, false)(messages)
+        val view = card4ForTransactions.eval(declaration, false)(messages)
         view.getElementsByClass(summaryActionsClassName) mustBe empty
       }
     }

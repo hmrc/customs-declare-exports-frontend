@@ -105,7 +105,7 @@ class TransportContainerController @Inject() (
     containerId match {
       case Some(id) => updateCache(Seq(Container(id = id, seals = Seq.empty))).map(_ => redirectAfterAdd(id))
       case None =>
-        updateCache(Seq.empty).flatMap(dec => updateDeclaration(dec.updateReadyForSubmission(true))) map { _ =>
+        updateCache(Seq.empty).flatMap(dec => updateDeclaration(dec.updateReadyForSubmission(true), request.eori)) map { _ =>
           navigator.continueTo(routes.SummaryController.displayPage)
         }
     }

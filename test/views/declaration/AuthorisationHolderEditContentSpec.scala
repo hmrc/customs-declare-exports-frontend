@@ -248,7 +248,7 @@ class AuthorisationHolderEditContentSpec extends UnitViewSpec with GivenWhenThen
         val insetText = createPartial.getElementById(insetTextId).children
         insetText.get(0).text mustBe messages(s"$prefix.authCode.inset.excise.title")
 
-        val list = insetText.get(1).child(0)
+        val list = insetText.get(1)
         list.tag.getName mustBe "ul"
         assert(list.classNames.contains("govuk-list--bullet"))
 

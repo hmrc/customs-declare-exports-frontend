@@ -14,8 +14,12 @@
  * limitations under the License.
  *@
 
-@(list: Seq[String])
+ @import views.html.components.gds.bulletList
 
-@for(elem <- list) {
-@elem<br/>
-}
+@this(bulletList : bulletList)
+
+@(items: Seq[Html], additionalListClasses: Option[String] = None, itemClasses: Option[String] = None)
+
+<nav>
+    @bulletList(items, additionalListClasses, itemClasses)
+</nav>
