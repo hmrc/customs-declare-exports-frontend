@@ -63,10 +63,6 @@ trait CacheDependentNavigators {
     if (taggedAuthCodes.skipLocationOfGoods(declaration)) routes.DestinationCountryController.displayPage
     else routes.LocationOfGoodsController.displayPage
 
-  protected def entryIntoDeclarantsPreviousPage(cacheModel: ExportsDeclaration): Call =
-    if (cacheModel.mucr.isEmpty) routes.LinkDucrToMucrController.displayPage
-    else routes.MucrController.displayPage
-
   protected def previousDocumentsPreviousPageDefault(cacheModel: ExportsDeclaration): Call =
     if (cacheModel.hasPreviousDocuments) routes.PreviousDocumentsSummaryController.displayPage
     else routes.NatureOfTransactionController.displayPage
