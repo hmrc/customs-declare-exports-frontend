@@ -64,9 +64,9 @@ class Card7ForTransport @Inject() (govukSummaryList: GovukSummaryList) extends S
       inlandModeOfTransport(declaration, actionsEnabled),
       transportReference(declaration.transport, actionsEnabled),
       activeTransportType(declaration.transport, actionsEnabled),
-      transportPayment(declaration.transport, actionsEnabled),
       transportCrossingTheBorder(declaration.transport, actionsEnabled),
-      expressConsignment(declaration.transport, actionsEnabled)
+      expressConsignment(declaration.transport, actionsEnabled),
+      transportPayment(declaration.transport, actionsEnabled)
     ) ++ containers(declaration.transport, actionsEnabled)).flatten
 
   private def inlandModeOfTransportCode(declaration: ExportsDeclaration): Option[InlandModeOfTransportCode] =
