@@ -34,7 +34,7 @@ import views.html.components.gds.link
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class Card6ForItems @Inject() (
+class Card5ForItems @Inject() (
   govukSummaryList: GovukSummaryList,
   govukWarningText: GovukWarningText,
   formHelper: FormWithCSRF,
@@ -46,24 +46,17 @@ class Card6ForItems @Inject() (
     if (showItemsCard(declaration, actionsEnabled)) displayCard(declaration, actionsEnabled) else HtmlFormat.empty
 
   private def displayCard(declaration: ExportsDeclaration, actionsEnabled: Boolean)(implicit request: Request[_], messages: Messages): Html =
-    govukSummaryList(SummaryList(rows(declaration, actionsEnabled), card(addItemAction(declaration, actionsEnabled))))
-
-  private def card(maybeContent: Option[Content])(implicit messages: Messages): Option[Card] =
-    Some(
-      Card(
-        Some(CardTitle(Text(messages(s"declaration.summary.items")), classes = "items-card")),
-        actions = maybeContent.map { content =>
-          Actions(items = List(ActionItem("", content, Some(messages("declaration.summary.items.add")))))
-        }
-      )
-    )
+    govukSummaryList(SummaryList(rows(declaration, actionsEnabled), card(5).map(_.copy(actions = addItemAction(declaration, actionsEnabled)))))
 
   private def addItemAction(
     declaration: ExportsDeclaration,
     actionsEnabled: Boolean
-  )(implicit request: Request[_], messages: Messages): Option[Content] =
+  )(implicit request: Request[_], messages: Messages): Option[Actions] =
     if (!(actionsEnabled && (!declaration.isType(CLEARANCE) || declaration.items.isEmpty))) None
-    else Some(if (hasItemsData(declaration)) addItemForm else addItemLink)
+    else {
+      val content = if (hasItemsData(declaration)) addItemForm else addItemLink
+      Some(Actions(items = List(ActionItem("", content, Some(messages("declaration.summary.items.add"))))))
+    }
 
   private def addItemForm(implicit request: Request[_], messages: Messages): Content = {
     val text = messages("declaration.summary.items.add")

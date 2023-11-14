@@ -36,7 +36,7 @@ import javax.inject.{Inject, Singleton}
 class Card1ForReferences @Inject() (govukSummaryList: GovukSummaryList, govukInsetText: GovukInsetText, link: link, appConfig: AppConfig)
     extends SummaryHelper {
 
-  private def card(implicit messages: Messages): Option[Card] = card("references")
+  private def card(implicit messages: Messages): Option[Card] = card(1)
 
   def eval(declaration: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages): Html = {
     val meta = declaration.declarationMeta
@@ -51,7 +51,7 @@ class Card1ForReferences @Inject() (govukSummaryList: GovukSummaryList, govukIns
           )
         )
 
-    val heading = Html(s"""<h2 class="govuk-heading-m">${messages("declaration.summary.references")}</h2>""")
+    val heading = Html(s"""<h2 class="govuk-heading-m">${messages("declaration.summary.heading")}</h2>""")
 
     val paragraph =
       if (meta.status == COMPLETE) HtmlFormat.empty

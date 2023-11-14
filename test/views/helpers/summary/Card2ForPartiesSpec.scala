@@ -54,7 +54,7 @@ class Card2ForPartiesSpec extends UnitViewSpec with ExportsTestHelper with Injec
     val view = card2ForParties.eval(declaration)(messages)
 
     "have the expected heading" in {
-      view.getElementsByTag("h2").first.text mustBe messages(s"declaration.summary.parties")
+      view.getElementsByTag("h2").first.text mustBe messages(s"declaration.summary.section.2")
     }
 
     "show the declarant eori" in {

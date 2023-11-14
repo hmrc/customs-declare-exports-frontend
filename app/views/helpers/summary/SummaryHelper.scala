@@ -26,8 +26,13 @@ import views.helpers.ActionItemBuilder.actionSummaryItem
 
 trait SummaryHelper {
 
-  def card(cardId: String)(implicit messages: Messages): Option[Card] =
-    Some(Card(Some(CardTitle(Text(messages(s"declaration.summary.$cardId")), classes = s"$cardId-card"))))
+  val classes = Array("references", "parties", "routes-and-locations", "transaction", "items", "transport")
+
+  def card(sectionId: Int)(implicit messages: Messages): Option[Card] = {
+    assert(sectionId >= 1 && sectionId <= classes.length)
+    val cardTitle = messages(s"declaration.summary.section.$sectionId")
+    Some(Card(Some(CardTitle(Text(cardTitle), classes = s"${classes(sectionId - 1)}-card"))))
+  }
 
   def changeLink(call: Call, key: String, actionsEnabled: Boolean, maybeIndex: Option[Int] = None)(implicit messages: Messages): Option[Actions] =
     if (!actionsEnabled) None
