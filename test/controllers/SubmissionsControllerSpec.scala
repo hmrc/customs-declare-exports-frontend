@@ -34,6 +34,7 @@ import org.scalatest.{Assertion, BeforeAndAfterEach}
 import play.api.mvc.Result
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
+import uk.gov.hmrc.play.bootstrap.binders.RedirectUrl
 import views.html.declaration.summary.submitted_declaration_page
 
 import java.time.{Instant, ZoneOffset, ZonedDateTime}
@@ -185,7 +186,7 @@ class SubmissionsControllerSpec extends ControllerWithoutFormSpec with MockExpor
       initMock(isAmendment)
 
       val redirectUrl = "/specific-page-url"
-      val result = controller.amendErrors(rejectedId, redirectUrl, "pattern", "message", isAmendment)(getRequest(None))
+      val result = controller.amendErrors(rejectedId, "pattern", "message", isAmendment, RedirectUrl(redirectUrl))(getRequest(None))
 
       verifyResult(result, redirectUrl)
     }
@@ -195,7 +196,7 @@ class SubmissionsControllerSpec extends ControllerWithoutFormSpec with MockExpor
       initMock(isAmendment)
 
       val redirectUrl = "/specific-page-url"
-      val result = controller.amendErrors(rejectedId, redirectUrl, "pattern", "message", isAmendment)(getRequest(None))
+      val result = controller.amendErrors(rejectedId, "pattern", "message", isAmendment, RedirectUrl(redirectUrl))(getRequest(None))
 
       verifyResult(result, redirectUrl)
     }
