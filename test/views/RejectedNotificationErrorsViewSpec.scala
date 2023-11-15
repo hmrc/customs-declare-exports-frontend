@@ -26,6 +26,7 @@ import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 import services.cache.ExportsTestHelper
 import tools.Stubs
+import uk.gov.hmrc.play.bootstrap.binders.RedirectUrl
 import views.declaration.spec.UnitViewSpec
 import views.html.rejected_notification_errors
 
@@ -210,7 +211,7 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with ExportsTestHe
 
         val changeLink = view.getElementsByClass("govuk-link").get(3)
         changeLink must haveHref(
-          SubmissionsController.amendErrors(declaration.id, expectedUrl.url, urlPattern, messages("dmsError.CDS12062.title"), false).url
+          SubmissionsController.amendErrors(declaration.id, urlPattern, messages("dmsError.CDS12062.title"), false, RedirectUrl(expectedUrl.url)).url
         )
       }
 
@@ -219,7 +220,7 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with ExportsTestHe
 
         val changeLink = view.getElementsByClass("govuk-link").get(3)
         changeLink must haveHref(
-          SubmissionsController.amendErrors(declaration.id, expectedUrl.url, urlPattern, messages("dmsError.CDS12062.title"), true).url
+          SubmissionsController.amendErrors(declaration.id, urlPattern, messages("dmsError.CDS12062.title"), true, RedirectUrl(expectedUrl.url)).url
         )
       }
     }

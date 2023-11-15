@@ -27,6 +27,7 @@ import uk.gov.hmrc.govukfrontend.views.Aliases.{Actions, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import ActionItemBuilder.actionItem
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Key, SummaryList, SummaryListRow, Value}
+import uk.gov.hmrc.play.bootstrap.binders.RedirectUrl
 import views.html.components.gds.paragraphBody
 
 import javax.inject.{Inject, Singleton}
@@ -110,7 +111,7 @@ class NotificationErrorHelper @Inject() (codeListConnector: CodeListConnector, p
     def constructChangeLinkAction(call: Call): Actions = {
       val errorPattern = notificationError.pointer.map(_.pattern).getOrElse("")
       val errorMessage = messages(s"dmsError.${notificationError.validationCode}.title")
-      val url = SubmissionsController.amendErrors(declaration.id, call.url, errorPattern, errorMessage, isAmendment).url
+      val url = SubmissionsController.amendErrors(declaration.id, errorPattern, errorMessage, isAmendment, RedirectUrl(call.url)).url
       val action = actionItem(
         href = url,
         content = Text(messages("site.change")),

@@ -1,10 +1,11 @@
-import com.typesafe.sbt.digest.Import._
-import com.typesafe.sbt.uglify.Import._
-import com.typesafe.sbt.web.Import._
-import net.ground5hark.sbt.concat.Import._
-import sbt.Keys.{scalacOptions, _}
-import sbt._
-import uk.gov.hmrc.DefaultBuildSettings._
+import com.typesafe.sbt.digest.Import.*
+import com.typesafe.sbt.uglify.Import.*
+import com.typesafe.sbt.web.Import.*
+import net.ground5hark.sbt.concat.Import.*
+import play.sbt.routes.RoutesKeys.routesImport
+import sbt.Keys.{scalacOptions, *}
+import sbt.*
+import uk.gov.hmrc.DefaultBuildSettings.*
 import uk.gov.hmrc.SbtAutoBuildPlugin
 
 val appName = "customs-declare-exports-frontend"
@@ -23,7 +24,6 @@ lazy val microservice = Project(appName, file("."))
   )
   .configs(IntegrationTest)
   .settings(inConfig(IntegrationTest)(Defaults.itSettings): _*)
-  .settings(integrationTestSettings())
   .settings(
     // prevent removal of unused code which generates warning errors due to use of third-party libs
     uglifyCompressOptions := Seq("unused=false", "dead_code=false"),
@@ -34,6 +34,7 @@ lazy val microservice = Project(appName, file("."))
     uglify / includeFilter := GlobFilter("customsdecexfrontend-*.js")
   )
   .settings(scoverageSettings)
+  .settings(routesImport += "uk.gov.hmrc.play.bootstrap.binders.RedirectUrl")
   .disablePlugins(JUnitXmlReportPlugin) // Required to prevent https://github.com/scalatest/scalatest/issues/1427
 
 lazy val scoverageSettings: Seq[Setting[_]] = Seq(

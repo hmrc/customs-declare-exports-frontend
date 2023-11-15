@@ -29,7 +29,7 @@ trait SummaryHelper {
   val classes = Array("references", "parties", "routes-and-locations", "transaction", "items", "transport")
 
   def card(sectionId: Int)(implicit messages: Messages): Option[Card] = {
-    assert(sectionId >= 1 && sectionId <= classes.length)
+    require(sectionId >= 1 && sectionId <= classes.length)
     val cardTitle = messages(s"declaration.summary.section.$sectionId")
     Some(Card(Some(CardTitle(Text(cardTitle), classes = s"${classes(sectionId - 1)}-card"))))
   }
