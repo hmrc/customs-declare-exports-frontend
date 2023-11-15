@@ -17,9 +17,8 @@
 package views.helpers.summary.sections
 
 import controllers.declaration.routes
-import controllers.declaration.routes.{DeclarantExporterController, EntryIntoDeclarantsRecordsController}
 import models.DeclarationType._
-import models.ExportsDeclaration
+import models.{DeclarationType, ExportsDeclaration}
 import models.requests.JourneyRequest
 import play.api.i18n.Messages
 import play.api.mvc.Call
@@ -35,11 +34,12 @@ class Card1ForReferencesSection @Inject() (card1ForReferences: Card1ForReference
     HtmlFormat.fill(List(card1ForReferences.summaryList(declaration, actionsEnabled)))
 
   def backLink(implicit request: JourneyRequest[_]): Call =
-    if (request.cacheModel.mucr.isEmpty) routes.LinkDucrToMucrController.displayPage
+    if (request.declarationType == DeclarationType.SUPPLEMENTARY) routes.ConsignmentReferencesController.displayPage
+    else if (request.cacheModel.mucr.isEmpty) routes.LinkDucrToMucrController.displayPage
     else routes.MucrController.displayPage
 
   def continueTo(implicit request: JourneyRequest[_]): Call =
-    if (request.declarationType == CLEARANCE) EntryIntoDeclarantsRecordsController.displayPage
-    else DeclarantExporterController.displayPage
+    if (request.declarationType == CLEARANCE) routes.EntryIntoDeclarantsRecordsController.displayPage
+    else routes.DeclarantExporterController.displayPage
 
 }

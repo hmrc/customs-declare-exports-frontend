@@ -56,14 +56,34 @@ class Card1ForReferencesSectionSpec extends UnitViewSpec with ExportsTestHelper 
   }
 
   "Card1ForReferencesSection.backLink" must {
-    "go to LinkDucrToMucrController" when {
-      "mucr isEmpty" in {
-        card1ForReferencesSection.backLink(journeyRequest(declaration)) mustBe routes.LinkDucrToMucrController.displayPage
+
+    "go to ConsignmentReferencesController" when {
+      onSupplementary { implicit request =>
+        s"journey is ${request.declarationType}" in {
+          card1ForReferencesSection.backLink(
+            journeyRequest(aDeclarationAfter(declaration, withType(request.declarationType)))
+          ) mustBe routes.ConsignmentReferencesController.displayPage
+        }
       }
     }
-    "go to MucrController" when {
-      "mucr has been answered" in {
-        card1ForReferencesSection.backLink(journeyRequest(aDeclaration(withMucr()))) mustBe routes.MucrController.displayPage
+
+    "go to LinkDucrToMucrController" when {
+      onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, CLEARANCE) { implicit request =>
+        s"journey is ${request.declarationType}" when {
+          "mucr isEmpty" in {
+            card1ForReferencesSection.backLink(
+              journeyRequest(aDeclarationAfter(declaration, withType(request.declarationType)))
+            ) mustBe routes.LinkDucrToMucrController.displayPage
+          }
+
+          "go to MucrController" when {
+            "mucr has been answered" in {
+              card1ForReferencesSection.backLink(
+                journeyRequest(aDeclarationAfter(declaration, withType(request.declarationType), withMucr()))
+              ) mustBe routes.MucrController.displayPage
+            }
+          }
+        }
       }
     }
   }
