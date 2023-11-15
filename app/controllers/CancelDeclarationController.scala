@@ -32,13 +32,14 @@ import play.api.data.{Form, FormError}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.audit.{AuditService, AuditTypes, EventData}
+import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.cancel_declaration
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
-import scala.util.Success
+import scala.util.{Failure, Success}
 
 class CancelDeclarationController @Inject() (
   authenticate: AuthAction,
@@ -78,7 +79,14 @@ class CancelDeclarationController @Inject() (
                   case Right(models.CancellationRequestSent) => Redirect(routes.CancellationResultController.displayHoldingPage)
                   case Right(models.CancellationAlreadyRequested) =>
                     Ok(
-                      cancelDeclarationPage(createFormWithErrors(userInput, "cancellation.duplicateRequest.error"), additionalDecType, submissionId, lrn, ducr, mrn)
+                      cancelDeclarationPage(
+                        createFormWithErrors(userInput, "cancellation.duplicateRequest.error"),
+                        additionalDecType,
+                        submissionId,
+                        lrn,
+                        ducr,
+                        mrn
+                      )
                     )
                   case Left(error) => errorHandler.internalServerError(error)
                 }
@@ -100,19 +108,24 @@ class CancelDeclarationController @Inject() (
 
     val cancelDeclaration = CancelDeclaration(submissionId, lrn, mrn, userInput.statementDescription, userInput.changeReason)
 
-    for {
-      _ <- auditService.auditAllPagesDeclarationCancellation(cancelDeclaration)
-      maybeSubmission <- customsDeclareExportsConnector.findSubmission(submissionId)
-      status <- customsDeclareExportsConnector.createCancellation(cancelDeclaration)
-    } yield maybeSubmission match {
+    customsDeclareExportsConnector.findSubmission(submissionId).flatMap {
+      case Some(submission) =>
+        val maybeStatus = for {
+          _ <- auditService.auditAllPagesDeclarationCancellation(cancelDeclaration)
+          status <- customsDeclareExportsConnector.createCancellation(cancelDeclaration)
+        } yield status
 
-      case Some(sub) =>
-        auditData(sub, additionalDecType, userInput, Success.toString, lrn, ducr, mrn).map { eventData =>
-          auditService.audit(AuditTypes.Cancellation, eventData)
+        maybeStatus.map { status =>
+          val result = if (status == CancellationAlreadyRequested) Failure.toString else Success.toString
+          auditEventGenerator(submission, additionalDecType, userInput, result, ducr, mrn, lrn)
           Right(status)
-        }.getOrElse(Left("Unable to retrieve submission for cancellation"))
+        }.recoverWith { case exception =>
+          logger.error(s"Error response from backend $exception")
+          auditEventGenerator(submission, additionalDecType, userInput, Failure.toString, ducr, mrn, lrn)
+          Future.successful(Left("Problem sending cancellation request"))
+        }
 
-      case _ => Left("Unexpected case when processing submission for cancellation")
+      case None => Future.successful(Left("Unable to find submission"))
     }
   }
 
@@ -126,19 +139,24 @@ class CancelDeclarationController @Inject() (
       .copy(errors = List(FormError(CancelDeclarationDescription.statementDescriptionKey, messages(errorMessageKey))))
   }
 
-  private def auditData(sub: Submission, additionalDecType: String, form: CancelDeclarationDescription, result: String, lrn: Lrn, ducr: String, mrn: String)(
-    implicit request: AuthenticatedRequest[_]
-  ): Option[Map[String, String]] =
-    (sub.latestDecId, sub.actions.headOption) match {
-
+  private def auditEventGenerator(
+    submission: Submission,
+    additionalDecType: String,
+    userInput: CancelDeclarationDescription,
+    result: String,
+    ducr: String,
+    mrn: String,
+    lrn: Lrn
+  )(implicit request: AuthenticatedRequest[_]): Option[Future[AuditResult]] = {
+    (submission.latestDecId, submission.actions.headOption) match {
       case (Some(latestDecId), Some(action)) =>
         Some(
           Map(
             EventData.eori.toString -> request.user.eori,
             EventData.lrn.toString -> lrn.lrn,
             EventData.mrn.toString -> mrn,
-            EventData.changeReason.toString -> form.changeReason,
-            EventData.changeDescription.toString -> form.statementDescription,
+            EventData.changeReason.toString -> userInput.changeReason,
+            EventData.changeDescription.toString -> userInput.statementDescription,
             EventData.submissionResult.toString -> result,
             EventData.ducr.toString -> ducr,
             EventData.declarationId.toString -> latestDecId,
@@ -148,6 +166,7 @@ class CancelDeclarationController @Inject() (
         )
       case _ => None
     }
+  }.map(eventData => auditService.audit(AuditTypes.Cancellation, eventData))
 
   private def getSessionData()(implicit request: AuthenticatedRequest[_]): Option[(String, String, Lrn, String)] =
     for {

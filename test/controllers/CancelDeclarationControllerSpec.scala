@@ -188,6 +188,7 @@ class CancelDeclarationControllerSpec extends ControllerWithoutFormSpec with Err
 
     "propagate errors from exports connector" in new SetUp {
       val error = new RuntimeException("some error")
+      when(mockCustomsDeclareExportsConnector.findSubmission(any())(any(),any())).thenReturn(Future.successful(Some(submission)))
       when(mockAuditService.auditAllPagesDeclarationCancellation(any())(any())).thenReturn(Future.successful(Success))
       when(mockCustomsDeclareExportsConnector.createCancellation(any[CancelDeclaration])(any(), any())).thenThrow(error)
 
