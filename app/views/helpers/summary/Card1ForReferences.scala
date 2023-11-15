@@ -55,7 +55,7 @@ class Card1ForReferences @Inject() (govukSummaryList: GovukSummaryList, govukIns
 
     val paragraph =
       if (meta.status == COMPLETE) HtmlFormat.empty
-      else Html(s"""<p classes="govuk-body govuk-!-display-none-print change-links-paragraph">${messages("declaration.summary.amend.body")}</p>""")
+      else Html(s"""<p class="govuk-body govuk-!-display-none-print change-links-paragraph">${messages("declaration.summary.amend.body")}</p>""")
 
     HtmlFormat.fill(List(insets, heading, paragraph, summaryList(declaration, actionsEnabled)))
   }

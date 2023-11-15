@@ -26,6 +26,7 @@ import play.api.Logging
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import play.twirl.api.Html
+import uk.gov.hmrc.play.bootstrap.binders.RedirectUrl
 import views.helpers.PointerHelper.clearanceDecDetailsCall
 import views.html.components.gds.{link, paragraphBody}
 
@@ -73,7 +74,7 @@ class ErrorsReportedHelper @Inject() (link: link, codeListConnector: CodeListCon
   )(implicit messages: Messages): Option[Html] = {
     def constructChangeLinkAction(call: Call): Html = {
       val errorMessage = messages(s"dmsError.${validationCode}.title")
-      val url = SubmissionsController.amendErrors(declaration.id, call.url, pointer.pattern, errorMessage, isAmendment).url
+      val url = SubmissionsController.amendErrors(declaration.id, pointer.pattern, errorMessage, isAmendment, RedirectUrl(call.url)).url
 
       link(text = messages("site.change"), call = Call("GET", url), id = Some("item-header-action"))
     }

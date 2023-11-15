@@ -78,7 +78,7 @@ class Card5ForItemsSpec extends UnitViewSpec with ExportsTestHelper with Injecto
         "the declaration type is NOT CLEARANCE" in {
           checkCard(view, true)
 
-          view.getElementsByTag("h3").first.text mustBe messages("declaration.summary.item", 1)
+          view.getElementsByTag("strong").first.text mustBe messages("declaration.summary.item", 1)
         }
       }
 
@@ -88,7 +88,7 @@ class Card5ForItemsSpec extends UnitViewSpec with ExportsTestHelper with Injecto
           view.getElementsByTag("form").size() mustBe 0
           view.getElementsByClass("input-submit").size() mustBe 0
 
-          view.getElementsByTag("h3").first.text mustBe messages("declaration.summary.item", 1)
+          view.getElementsByTag("strong").first.text mustBe messages("declaration.summary.item", 1)
         }
       }
 

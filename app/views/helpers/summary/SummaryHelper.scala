@@ -29,7 +29,7 @@ trait SummaryHelper {
   val classes = Array("references", "parties", "routes-and-locations", "transaction", "items", "transport")
 
   def card(sectionId: Int)(implicit messages: Messages): Option[Card] = {
-    assert(sectionId >= 1 && sectionId <= classes.length)
+    require(sectionId >= 1 && sectionId <= classes.length)
     val cardTitle = messages(s"declaration.summary.section.$sectionId")
     Some(Card(Some(CardTitle(Text(cardTitle), classes = s"${classes(sectionId - 1)}-card"))))
   }
@@ -58,7 +58,7 @@ trait SummaryHelper {
 
   def valueKey(rowValue: String)(implicit messages: Messages): Value = Value(Text(messages(rowValue)))
 
-  private def keyForAttrWithMultipleRows(rowKey: String, tag: String = "h3")(implicit messages: Messages): Key = {
+  private def keyForAttrWithMultipleRows(rowKey: String, tag: String = "strong")(implicit messages: Messages): Key = {
     val key = s"declaration.summary.$rowKey"
     Key(HtmlContent(s"""<$tag class="govuk-heading-s govuk-!-margin-top-4 govuk-!-margin-bottom-0">${messages(key)}</$tag>"""))
   }

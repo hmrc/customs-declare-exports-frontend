@@ -25,6 +25,7 @@ import play.api.mvc.Call
 import play.twirl.api.{Html, HtmlFormat}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
+import uk.gov.hmrc.play.bootstrap.binders.RedirectUrl
 import views.html.components.gds.link
 
 import scala.collection.immutable
@@ -89,10 +90,11 @@ trait ErrorInterpreter {
   val contentHeader = Html("""<div class="govuk-summary-card__content"> <dl class="govuk-summary-list govuk-!-margin-bottom-3">""")
   val errorFooter = Html("</dl></div></div>")
 
-  def generateFieldTable(error: ErrorInstance)(implicit messages: Messages) = error.fieldsInvolved.map { field =>
-    val fieldName = messages(field.pointer.messageKey, field.pointer.sequenceArgs: _*)
-    Html(generateFieldTableRow(fieldName, field.originalValue, field.draftValue, field.changeLink))
-  }
+  def generateFieldTable(error: ErrorInstance)(implicit messages: Messages): Seq[Html] =
+    error.fieldsInvolved.map { field =>
+      val fieldName = messages(field.pointer.messageKey, field.pointer.sequenceArgs: _*)
+      Html(generateFieldTableRow(fieldName, field.originalValue, field.draftValue, field.changeLink))
+    }
 
   def errorTitle(error: ErrorInstance)(implicit messages: Messages) = Html(s"""<div class="govuk-summary-card__title-wrapper">
        |<h3 class="govuk-summary-card__title">Error ${error.seqNbr} - ${messages(
@@ -103,10 +105,9 @@ trait ErrorInterpreter {
     implicit messages: Messages,
     link: link
   ): Html = {
-
     val errorPattern = pointer.map(_.pattern).getOrElse("none")
     val errorMessage = messages(s"dmsError.${validationCode}.title")
-    val url = SubmissionsController.amendErrors(decId, call.url, errorPattern, errorMessage, isAmendment).url
+    val url = SubmissionsController.amendErrors(decId, errorPattern, errorMessage, isAmendment, RedirectUrl(call.url)).url
 
     link(text = messages("site.change"), call = Call("GET", url), id = Some("item-header-action"))
   }
