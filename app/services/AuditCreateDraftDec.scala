@@ -37,8 +37,6 @@ trait AuditCreateDraftDec {
   )(implicit hc: HeaderCarrier): Unit = {
     val auditData: Map[String, String] = Map(
       EventData.eori.toString -> eori,
-      EventData.decType.toString -> additionalDecType.map(_.toString).getOrElse(""),
-      EventData.ducr.toString -> ducr.map(_.ducr).getOrElse(""),
       EventData.declarationStatus.toString -> newDecStatus.toString,
       EventData.declarationId.toString -> newDecId
     )

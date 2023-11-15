@@ -180,7 +180,8 @@ class CustomsDeclareExportsConnector @Inject() (
         case Success(request) =>
           logPayload("Update Declaration Response", request)
           updateStopwatch.stop()
-          if (dec.declarationMeta.status == INITIAL) audit(eori, dec.id, dec.additionalDeclarationType, dec.ducr, DRAFT, None, auditService)
+          if (dec.declarationMeta.status == INITIAL && dec.ducr.isDefined)
+            audit(eori, dec.id, dec.additionalDeclarationType, dec.ducr, DRAFT, None, auditService)
 
         case Failure(_) =>
           updateStopwatch.stop()
