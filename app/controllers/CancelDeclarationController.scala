@@ -112,8 +112,8 @@ class CancelDeclarationController @Inject() (
       case Some(submission) =>
         val maybeStatus = for {
           _ <- auditService.auditAllPagesDeclarationCancellation(cancelDeclaration)
-          status <- customsDeclareExportsConnector.createCancellation(cancelDeclaration)
-        } yield status
+          cancelStatus <- customsDeclareExportsConnector.createCancellation(cancelDeclaration)
+        } yield cancelStatus
 
         maybeStatus.map { status =>
           val result = if (status == CancellationAlreadyRequested) Failure.toString else Success.toString
