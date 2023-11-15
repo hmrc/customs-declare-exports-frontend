@@ -52,6 +52,7 @@ site.add.item = Add item
 site.add.anotherItem = Add another item
 site.add.country = Add country
 site.search.for.country = Search for country
+site.search.for.location = Search for location
 site.radio.divider = or
 site.accessibility.error = Error:
 site.warning = Warning
