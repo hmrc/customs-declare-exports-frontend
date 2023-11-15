@@ -55,20 +55,13 @@ trait CacheDependentNavigators {
         if (cacheModel.isAmendmentDraft) routes.EntryIntoDeclarantsRecordsController.displayPage
         else routes.DeclarantDetailsController.displayPage
 
-      case SUPPLEMENTARY => routes.ConsignmentReferencesController.displayPage
-
       case _ =>
-        if (cacheModel.mucr.isEmpty) routes.LinkDucrToMucrController.displayPage
-        else routes.MucrController.displayPage
+        routes.SectionSummaryController.displayPage(1)
     }
 
   protected def officeOfExitPreviousPage(declaration: ExportsDeclaration): Call =
     if (taggedAuthCodes.skipLocationOfGoods(declaration)) routes.DestinationCountryController.displayPage
     else routes.LocationOfGoodsController.displayPage
-
-  protected def entryIntoDeclarantsPreviousPage(cacheModel: ExportsDeclaration): Call =
-    if (cacheModel.mucr.isEmpty) routes.LinkDucrToMucrController.displayPage
-    else routes.MucrController.displayPage
 
   protected def previousDocumentsPreviousPageDefault(cacheModel: ExportsDeclaration): Call =
     if (cacheModel.hasPreviousDocuments) routes.PreviousDocumentsSummaryController.displayPage

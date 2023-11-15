@@ -17,11 +17,10 @@
 package controllers.declaration
 
 import controllers.actions.{AmendmentDraftFilter, AuthAction, JourneyAction}
-import controllers.declaration.routes.{DeclarantExporterController, EntryIntoDeclarantsRecordsController, MucrController}
+import controllers.declaration.routes.MucrController
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.{form, YesNoAnswers}
-import models.DeclarationType.CLEARANCE
 import models.ExportsDeclaration
 import models.requests.JourneyRequest
 import play.api.i18n.I18nSupport
@@ -47,9 +46,7 @@ class LinkDucrToMucrController @Inject() (
     with WithUnsafeDefaultFormBinding {
 
   val nextPage: JourneyRequest[_] => Call =
-    request =>
-      if (request.declarationType == CLEARANCE) EntryIntoDeclarantsRecordsController.displayPage
-      else DeclarantExporterController.displayPage
+    _ => routes.SectionSummaryController.displayPage(1)
 
   private val actionFilters = authenticate andThen journeyAction andThen nextPageIfAmendmentDraft
 

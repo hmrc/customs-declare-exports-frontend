@@ -44,7 +44,7 @@
     title = Title("declaration.entryIntoDeclarantRecords.title", "declaration.section.2", hasErrors = hasErrors),
     backButton =
       if (request.cacheModel.isAmendmentDraft) None
-      else Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(EntryIntoDeclarantsRecords)))
+      else Some(BackButton(messages("site.back"), navigator.backLink(EntryIntoDeclarantsRecords)))
 ) {
     @formHelper(action = controllers.declaration.routes.EntryIntoDeclarantsRecordsController.submitForm, 'autocomplete -> "off") {
       @errorSummary(radioGroupErrors(fieldName, "answer_yes", form.errors))
