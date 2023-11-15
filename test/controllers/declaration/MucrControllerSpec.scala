@@ -19,7 +19,7 @@ package controllers.declaration
 import base.ControllerSpec
 import base.TestHelper._
 import controllers.actions.AmendmentDraftFilterSpec
-import controllers.declaration.routes.{DeclarantExporterController, EntryIntoDeclarantsRecordsController}
+import controllers.declaration.routes.SectionSummaryController
 import forms.declaration.Mucr
 import models.DeclarationType._
 import models.requests.JourneyRequest
@@ -54,8 +54,7 @@ class MucrControllerSpec extends ControllerSpec with AmendmentDraftFilterSpec {
   }
 
   def nextPageOnTypes: Seq[NextPageOnType] =
-    allDeclarationTypesExcluding(CLEARANCE).map(NextPageOnType(_, DeclarantExporterController.displayPage)) :+
-      NextPageOnType(CLEARANCE, EntryIntoDeclarantsRecordsController.displayPage)
+    allDeclarationTypesExcluding(CLEARANCE).map(NextPageOnType(_, SectionSummaryController.displayPage(1)))
 
   def theResponseForm: Form[Mucr] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[Mucr]])
@@ -90,18 +89,10 @@ class MucrControllerSpec extends ControllerSpec with AmendmentDraftFilterSpec {
 
   "MucrController on submitForm" should {
 
-    "return 303 (SEE_OTHER) and redirect to 'Are you the exporter?' page" when {
-      onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { implicit request =>
+    "return 303 (SEE_OTHER) and redirect to 'Section Summary' page" when {
+      onEveryDeclarationJourney() { implicit request =>
         "a valid MUCR is entered" in {
-          verifyRedirect(routes.DeclarantExporterController.displayPage)
-        }
-      }
-    }
-
-    "return 303 (SEE_OTHER) and redirect to 'Is this an entry into declarant's records?' page" when {
-      onClearance { implicit request =>
-        "a valid MUCR is entered" in {
-          verifyRedirect(routes.EntryIntoDeclarantsRecordsController.displayPage)
+          verifyRedirect(routes.SectionSummaryController.displayPage(1))
         }
       }
     }

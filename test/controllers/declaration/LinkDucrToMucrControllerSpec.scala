@@ -18,7 +18,6 @@ package controllers.declaration
 
 import base.ControllerSpec
 import controllers.actions.AmendmentDraftFilterSpec
-import controllers.declaration.routes.{DeclarantExporterController, EntryIntoDeclarantsRecordsController}
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import models.DeclarationType._
@@ -47,6 +46,20 @@ class LinkDucrToMucrControllerSpec extends ControllerSpec with AmendmentDraftFil
     linkDucrToMucrPage
   )(ec)
 
+  def nextPageOnTypes: Seq[NextPageOnType] =
+    allDeclarationTypes.map(NextPageOnType(_, routes.SectionSummaryController.displayPage(1)))
+
+  override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
+    await(controller.displayPage(request))
+    theResponseForm
+  }
+
+  def theResponseForm: Form[YesNoAnswer] = {
+    val captor = ArgumentCaptor.forClass(classOf[Form[YesNoAnswer]])
+    verify(linkDucrToMucrPage).apply(captor.capture())(any(), any())
+    captor.getValue
+  }
+
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
@@ -57,21 +70,6 @@ class LinkDucrToMucrControllerSpec extends ControllerSpec with AmendmentDraftFil
   override protected def afterEach(): Unit = {
     reset(linkDucrToMucrPage)
     super.afterEach()
-  }
-
-  def nextPageOnTypes: Seq[NextPageOnType] =
-    allDeclarationTypesExcluding(CLEARANCE).map(NextPageOnType(_, DeclarantExporterController.displayPage)) :+
-      NextPageOnType(CLEARANCE, EntryIntoDeclarantsRecordsController.displayPage)
-
-  def theResponseForm: Form[YesNoAnswer] = {
-    val captor = ArgumentCaptor.forClass(classOf[Form[YesNoAnswer]])
-    verify(linkDucrToMucrPage).apply(captor.capture())(any(), any())
-    captor.getValue
-  }
-
-  override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
-    await(controller.displayPage(request))
-    theResponseForm
   }
 
   "LinkDucrToMucrController on displayOutcomePage" should {
@@ -104,18 +102,10 @@ class LinkDucrToMucrControllerSpec extends ControllerSpec with AmendmentDraftFil
       }
     }
 
-    "return 303 (SEE_OTHER) and redirect to 'Are you the exporter?' page" when {
-      onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { implicit request =>
+    "return 303 (SEE_OTHER) and redirect to 'Section Summary' page" when {
+      onEveryDeclarationJourney() { implicit request =>
         "answer is 'no'" in {
-          verifyRedirect(YesNoAnswers.no, routes.DeclarantExporterController.displayPage)
-        }
-      }
-    }
-
-    "return 303 (SEE_OTHER) and redirect to 'Is this an entry into declarant's records?' page" when {
-      onClearance { implicit request =>
-        "answer is 'no'" in {
-          verifyRedirect(YesNoAnswers.no, routes.EntryIntoDeclarantsRecordsController.displayPage)
+          verifyRedirect(YesNoAnswers.no, routes.SectionSummaryController.displayPage(1))
         }
       }
     }

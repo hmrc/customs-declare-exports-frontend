@@ -26,7 +26,7 @@ import play.twirl.api.{Html, HtmlFormat}
 import uk.gov.hmrc.govukfrontend.views.html.components.{GovukInsetText, GovukSummaryList, SummaryList}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.insettext.InsetText
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Actions, SummaryListRow}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Actions, Card, SummaryListRow}
 import views.helpers.ViewDates.formatDateAtTime
 import views.html.components.gds.link
 
@@ -35,6 +35,8 @@ import javax.inject.{Inject, Singleton}
 @Singleton
 class Card1ForReferences @Inject() (govukSummaryList: GovukSummaryList, govukInsetText: GovukInsetText, link: link, appConfig: AppConfig)
     extends SummaryHelper {
+
+  private def card(implicit messages: Messages): Option[Card] = card(1)
 
   def eval(declaration: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages): Html = {
     val meta = declaration.declarationMeta
@@ -55,8 +57,11 @@ class Card1ForReferences @Inject() (govukSummaryList: GovukSummaryList, govukIns
       if (meta.status == COMPLETE) HtmlFormat.empty
       else Html(s"""<p class="govuk-body govuk-!-display-none-print change-links-paragraph">${messages("declaration.summary.amend.body")}</p>""")
 
-    HtmlFormat.fill(List(insets, heading, paragraph, govukSummaryList(SummaryList(rows(declaration, actionsEnabled), card(1)))))
+    HtmlFormat.fill(List(insets, heading, paragraph, summaryList(declaration, actionsEnabled)))
   }
+
+  def summaryList(declaration: ExportsDeclaration, actionsEnabled: Boolean)(implicit messages: Messages): HtmlFormat.Appendable =
+    govukSummaryList(SummaryList(rows(declaration, actionsEnabled), card))
 
   private def rows(declaration: ExportsDeclaration, actionsEnabled: Boolean)(implicit messages: Messages): Seq[SummaryListRow] =
     List(
