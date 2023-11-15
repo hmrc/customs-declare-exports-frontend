@@ -18,7 +18,6 @@ package controllers.declaration
 
 import base.ControllerSpec
 import forms.declaration.officeOfExit.OfficeOfExit
-import models.DeclarationType._
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -113,7 +112,7 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
 
   "should return a 303 (SEE_OTHER)" when {
 
-    onJourney(STANDARD, SUPPLEMENTARY) { request =>
+    onEveryDeclarationJourney() { request =>
       "a UK Office of Exit is being used" in {
         withNewCaching(request.cacheModel)
 
@@ -124,27 +123,11 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
         val result = controller.saveOffice()(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe routes.InvoiceAndExchangeRateChoiceController.displayPage
+        thePageNavigatedTo mustBe routes.SectionSummaryController.displayPage(3)
         checkViewInteractions(0)
         theCacheModelUpdated.locations.officeOfExit must be(Some(OfficeOfExit(officeOfExitInput)))
       }
-    }
 
-    onJourney(CLEARANCE, OCCASIONAL, SIMPLIFIED) { request =>
-      "a UK Office of Exit is being used" in {
-        withNewCaching(request.cacheModel)
-
-        val officeOfExitInput = "GB123456"
-
-        val correctForm = Json.toJson(OfficeOfExit(officeOfExitInput))
-
-        val result = controller.saveOffice()(postRequest(correctForm))
-
-        await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe routes.PreviousDocumentsSummaryController.displayPage
-        checkViewInteractions(0)
-        theCacheModelUpdated.locations.officeOfExit must be(Some(OfficeOfExit(officeOfExitInput)))
-      }
     }
   }
 }

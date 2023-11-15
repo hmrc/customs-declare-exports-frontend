@@ -18,28 +18,27 @@ package views.helpers.summary.sections
 
 import controllers.declaration.routes
 import models.DeclarationType._
-import models.{DeclarationType, ExportsDeclaration}
 import models.requests.JourneyRequest
+import models.ExportsDeclaration
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import play.twirl.api.Html
-import views.helpers.summary.Card1ForReferences
+import views.helpers.summary.Card3ForRoutesAndLocations
 
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class Card1ForReferencesSection @Inject() (card1ForReferences: Card1ForReferences) extends SectionCard {
+class Card3ForRoutesAndLocationsSection @Inject() (card3ForRoutesAndLocations: Card3ForRoutesAndLocations) extends SectionCard {
 
   def eval(declaration: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages): Html =
-    card1ForReferences.summaryList(declaration, actionsEnabled)
+    card3ForRoutesAndLocations.eval(declaration)
 
   def backLink(implicit request: JourneyRequest[_]): Call =
-    if (request.declarationType == DeclarationType.SUPPLEMENTARY) routes.ConsignmentReferencesController.displayPage
-    else if (request.cacheModel.mucr.isEmpty) routes.LinkDucrToMucrController.displayPage
-    else routes.MucrController.displayPage
+    routes.OfficeOfExitController.displayPage
 
   def continueTo(implicit request: JourneyRequest[_]): Call =
-    if (request.declarationType == CLEARANCE) routes.EntryIntoDeclarantsRecordsController.displayPage
-    else routes.DeclarantExporterController.displayPage
-
+    request.declarationType match {
+      case SUPPLEMENTARY | STANDARD            => routes.InvoiceAndExchangeRateChoiceController.displayPage
+      case OCCASIONAL | SIMPLIFIED | CLEARANCE => routes.PreviousDocumentsSummaryController.displayPage
+    }
 }

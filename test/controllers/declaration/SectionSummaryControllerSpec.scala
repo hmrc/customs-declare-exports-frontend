@@ -24,13 +24,14 @@ import org.scalatest.OptionValues
 import play.api.mvc.AnyContent
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import views.helpers.summary.sections.{Card1ForReferencesSection, SectionCard}
+import views.helpers.summary.sections._
 import views.html.declaration.summary.sections.section_summary
 
 class SectionSummaryControllerSpec extends ControllerWithoutFormSpec with OptionValues {
 
   val mockPage = mock[section_summary]
   val mockSection1Card = mock[Card1ForReferencesSection]
+  val mockSection3Card = mock[Card3ForRoutesAndLocationsSection]
 
   val controller = new SectionSummaryController(
     mockAuthAction,
@@ -38,7 +39,8 @@ class SectionSummaryControllerSpec extends ControllerWithoutFormSpec with Option
     mockExportsCacheService,
     stubMessagesControllerComponents(),
     mockPage,
-    mockSection1Card
+    mockSection1Card,
+    mockSection3Card
   )
 
   val statusCode = "2"
@@ -62,13 +64,23 @@ class SectionSummaryControllerSpec extends ControllerWithoutFormSpec with Option
   "Section Summary controller" must {
 
     "return 200 (OK)" when {
-      "display page method is invoked with section 1" in {
-        withNewCaching(request.cacheModel)
+      "display page method is invoked" when {
+        "section 1" in {
+          withNewCaching(request.cacheModel)
 
-        val result = controller.displayPage(1)(request)
+          val result = controller.displayPage(1)(request)
 
-        status(result) mustBe OK
-        verifyPage(mockSection1Card)
+          status(result) mustBe OK
+          verifyPage(mockSection1Card)
+        }
+        "section 3" in {
+          withNewCaching(request.cacheModel)
+
+          val result = controller.displayPage(3)(request)
+
+          status(result) mustBe OK
+          verifyPage(mockSection3Card)
+        }
       }
     }
 

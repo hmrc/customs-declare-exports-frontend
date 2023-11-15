@@ -17,11 +17,10 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.declaration.routes.{InvoiceAndExchangeRateChoiceController, PreviousDocumentsSummaryController}
+import controllers.declaration.routes.SectionSummaryController
 import controllers.navigation.Navigator
 import forms.declaration.officeOfExit.OfficeOfExit
 import forms.declaration.officeOfExit.OfficeOfExit.form
-import models.DeclarationType._
 import models.requests.JourneyRequest
 import models.ExportsDeclaration
 import play.api.i18n.I18nSupport
@@ -56,15 +55,9 @@ class OfficeOfExitController @Inject() (
       .bindFromRequest()
       .fold(
         formWithErrors => Future.successful(BadRequest(officeOfExitPage(formWithErrors))),
-        updateCache(_).map(_ => navigator.continueTo(nextPage(request.declarationType)))
+        updateCache(_).map(_ => navigator.continueTo(SectionSummaryController.displayPage(3)))
       )
   }
-
-  private def nextPage(declarationType: DeclarationType): Call =
-    declarationType match {
-      case SUPPLEMENTARY | STANDARD            => InvoiceAndExchangeRateChoiceController.displayPage
-      case SIMPLIFIED | OCCASIONAL | CLEARANCE => PreviousDocumentsSummaryController.displayPage
-    }
 
   private def updateCache(officeOfExit: OfficeOfExit)(implicit r: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
     updateDeclarationFromRequest(model => model.copy(locations = model.locations.copy(officeOfExit = Some(officeOfExit))))

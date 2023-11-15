@@ -24,7 +24,7 @@ import play.twirl.api.Html
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.helpers.ActionItemBuilder.lastUrlPlaceholder
-import views.helpers.summary.sections.{Card1ForReferencesSection, SectionCard}
+import views.helpers.summary.sections.{Card1ForReferencesSection, Card3ForRoutesAndLocationsSection, SectionCard}
 import views.html.declaration.summary.sections._
 
 import javax.inject.Inject
@@ -35,7 +35,8 @@ class SectionSummaryController @Inject() (
   override val exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents,
   section_summary: section_summary,
-  card1ForReferencesSection: Card1ForReferencesSection
+  card1ForReferencesSection: Card1ForReferencesSection,
+  card3ForRoutesAndLocationsSection: Card3ForRoutesAndLocationsSection
 ) extends FrontendController(mcc) with I18nSupport with Logging with ModelCacheable {
 
   def displayPage(sectionNumber: Int): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
@@ -43,6 +44,7 @@ class SectionSummaryController @Inject() (
 
     sectionNumber match {
       case 1 => summary(card1ForReferencesSection)
+      case 3 => summary(card3ForRoutesAndLocationsSection)
       case _ => Redirect(routes.SummaryController.displayPage)
     }
   }
