@@ -52,6 +52,12 @@
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
+@backLink = @{navigator.backLink(Document)}
+@backButtonText = @{
+    if(backLink == routes.SectionSummaryController.displayPage(3)) { "site.back" }
+    else "site.backToPreviousQuestion"
+}
+
 @header = @{
   val documentsSize = documents.size
   if(documentsSize == 1) Text(messages("declaration.previousDocuments.summary.header.singular"))
@@ -114,7 +120,7 @@
 
 @govukLayout(
     title = Title("declaration.previousDocuments.summary.title", "declaration.section.4", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(DocumentSummary)))
+    backButton = Some(BackButton(messages(backButtonText), backLink))
 ) {
     @formHelper(action = routes.PreviousDocumentsSummaryController.submit, 'autoComplete -> "off") {
 

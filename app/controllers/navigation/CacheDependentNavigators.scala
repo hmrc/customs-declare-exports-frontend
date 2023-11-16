@@ -126,7 +126,7 @@ trait CacheDependentNavigators {
 
   protected def previousDocumentsPreviousPage(cacheModel: ExportsDeclaration): Call =
     if (cacheModel.hasPreviousDocuments) routes.PreviousDocumentsSummaryController.displayPage
-    else routes.OfficeOfExitController.displayPage
+    else routes.SectionSummaryController.displayPage(3)
 
   protected def exporterEoriNumberClearancePreviousPage(cacheModel: ExportsDeclaration): Call =
     if (cacheModel.isEntryIntoDeclarantsRecords)

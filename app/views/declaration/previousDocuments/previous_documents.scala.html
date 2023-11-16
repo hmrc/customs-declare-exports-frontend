@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import controllers.declaration.routes.PreviousDocumentsController
+@import controllers.declaration.routes.{PreviousDocumentsController, SectionSummaryController}
 @import controllers.navigation.Navigator
 @import forms.declaration.Document
 @import models.requests.JourneyRequest
@@ -34,9 +34,15 @@
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
+@backLink = @{navigator.backLink(Document)}
+@backButtonText = @{
+    if(backLink == SectionSummaryController.displayPage(3)) { "site.back" }
+    else "site.backToPreviousQuestion"
+}
+
 @govukLayout(
     title = Title(templateHelper.title, "declaration.section.4", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(Document)))
+    backButton = Some(BackButton(messages(backButtonText), backLink))
 ) {
     @formHelper(action = PreviousDocumentsController.submit, 'autoComplete -> "off") {
 

@@ -47,7 +47,7 @@ trait CommonNavigator extends CacheDependentNavigators {
     case WarehouseIdentification       => routes.TransportLeavingTheBorderController.displayPage
     case TransportPayment              => routes.ExpressConsignmentController.displayPage
     case CarrierDetails                => routes.CarrierEoriNumberController.displayPage
-    case InvoiceAndExchangeRateChoice  => routes.OfficeOfExitController.displayPage
+    case InvoiceAndExchangeRateChoice  => routes.SectionSummaryController.displayPage(3)
     case InvoiceAndExchangeRate        => routes.InvoiceAndExchangeRateChoiceController.displayPage
     case TraderReference               => routes.DucrChoiceController.displayPage
     case ConfirmDucr                   => routes.TraderReferenceController.displayPage
