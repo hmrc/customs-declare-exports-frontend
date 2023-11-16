@@ -18,15 +18,17 @@ package views.helpers.summary
 
 import config.AppConfig
 import controllers.declaration.routes._
-import models.DeclarationType.SUPPLEMENTARY
+import models.DeclarationType.{CLEARANCE, SUPPLEMENTARY}
 import models.ExportsDeclaration
 import models.declaration.DeclarationStatus.{COMPLETE, DRAFT}
+import models.requests.JourneyRequest
 import play.api.i18n.Messages
+import play.api.mvc.Call
 import play.twirl.api.{Html, HtmlFormat}
 import uk.gov.hmrc.govukfrontend.views.html.components.{GovukInsetText, GovukSummaryList, SummaryList}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.insettext.InsetText
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Actions, Card, SummaryListRow}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Actions, SummaryListRow}
 import views.helpers.ViewDates.formatDateAtTime
 import views.html.components.gds.link
 
@@ -34,9 +36,7 @@ import javax.inject.{Inject, Singleton}
 
 @Singleton
 class Card1ForReferences @Inject() (govukSummaryList: GovukSummaryList, govukInsetText: GovukInsetText, link: link, appConfig: AppConfig)
-    extends SummaryHelper {
-
-  private def card(implicit messages: Messages): Option[Card] = card(1)
+    extends SummaryCard {
 
   def eval(declaration: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages): Html = {
     val meta = declaration.declarationMeta
@@ -57,11 +57,20 @@ class Card1ForReferences @Inject() (govukSummaryList: GovukSummaryList, govukIns
       if (meta.status == COMPLETE) HtmlFormat.empty
       else Html(s"""<p class="govuk-body govuk-!-display-none-print change-links-paragraph">${messages("declaration.summary.amend.body")}</p>""")
 
-    HtmlFormat.fill(List(insets, heading, paragraph, summaryList(declaration, actionsEnabled)))
+    HtmlFormat.fill(List(insets, heading, paragraph, content(declaration, actionsEnabled)))
   }
 
-  def summaryList(declaration: ExportsDeclaration, actionsEnabled: Boolean)(implicit messages: Messages): HtmlFormat.Appendable =
-    govukSummaryList(SummaryList(rows(declaration, actionsEnabled), card))
+  def content(declaration: ExportsDeclaration, actionsEnabled: Boolean)(implicit messages: Messages): HtmlFormat.Appendable =
+    govukSummaryList(SummaryList(rows(declaration, actionsEnabled), card(1)))
+
+  def backLink(implicit request: JourneyRequest[_]): Call =
+    if (request.declarationType == SUPPLEMENTARY) ConsignmentReferencesController.displayPage
+    else if (request.cacheModel.mucr.isEmpty) LinkDucrToMucrController.displayPage
+    else MucrController.displayPage
+
+  def continueTo(implicit request: JourneyRequest[_]): Call =
+    if (request.declarationType == CLEARANCE) EntryIntoDeclarantsRecordsController.displayPage
+    else DeclarantExporterController.displayPage
 
   private def rows(declaration: ExportsDeclaration, actionsEnabled: Boolean)(implicit messages: Messages): Seq[SummaryListRow] =
     List(

@@ -44,10 +44,10 @@ class Card3ForRoutesAndLocations @Inject() (govukSummaryList: GovukSummaryList, 
         locations.goodsLocation.isDefined |
         locations.officeOfExit.isDefined
 
-    if (hasData) displayCard(locations, actionsEnabled) else HtmlFormat.empty
+    if (hasData) content(locations, actionsEnabled) else HtmlFormat.empty
   }
 
-  private def displayCard(locations: Locations, actionsEnabled: Boolean)(implicit messages: Messages): Html =
+  def content(locations: Locations, actionsEnabled: Boolean)(implicit messages: Messages): Html =
     govukSummaryList(SummaryList(rows(locations, actionsEnabled), card(3)))
 
   private def rows(locations: Locations, actionsEnabled: Boolean)(implicit messages: Messages): Seq[SummaryListRow] =

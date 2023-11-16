@@ -89,7 +89,7 @@ class MucrControllerSpec extends ControllerSpec with AmendmentDraftFilterSpec {
 
   "MucrController on submitForm" should {
 
-    "return 303 (SEE_OTHER) and redirect to 'Section Summary' page" when {
+    "return 303 (SEE_OTHER) and redirect to the 'Section Summary' page" when {
       onEveryDeclarationJourney() { implicit request =>
         "a valid MUCR is entered" in {
           verifyRedirect(routes.SectionSummaryController.displayPage(1))

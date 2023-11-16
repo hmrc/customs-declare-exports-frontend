@@ -21,7 +21,6 @@ import forms.DeclarationPage
 import forms.declaration._
 import forms.declaration.additionaldocuments.{AdditionalDocument, AdditionalDocumentsRequired, AdditionalDocumentsSummary}
 import forms.declaration.commodityMeasure.CommodityMeasure
-import forms.declaration.countries.Countries.DestinationCountryPage
 import forms.declaration.exporter.{ExporterDetails, ExporterEoriNumber}
 import forms.declaration.officeOfExit.OfficeOfExit
 import models.ExportsDeclaration
@@ -59,7 +58,6 @@ trait SupplementaryNavigator extends CacheDependentNavigators {
   val supplementaryCacheDependent: PartialFunction[DeclarationPage, ExportsDeclaration => Call] = {
     case ConsigneeDetails          => consigneeDetailsSupplementaryPreviousPage
     case DeclarantIsExporter       => declarantIsExporterPreviousPage
-    case DestinationCountryPage    => destinationCountryPreviousPage
     case OfficeOfExit              => officeOfExitPreviousPage
     case TotalPackageQuantity      => totalPackageQuantityPreviousPage
     case Document                  => previousDocumentsPreviousPageDefault

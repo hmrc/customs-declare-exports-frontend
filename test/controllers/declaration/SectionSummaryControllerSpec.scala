@@ -24,27 +24,27 @@ import org.scalatest.OptionValues
 import play.api.mvc.AnyContent
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import views.helpers.summary.sections.{Card1ForReferencesSection, SectionCard}
+import views.helpers.summary._
 import views.html.declaration.summary.sections.section_summary
 
 class SectionSummaryControllerSpec extends ControllerWithoutFormSpec with OptionValues {
 
   val mockPage = mock[section_summary]
-  val mockSection1Card = mock[Card1ForReferencesSection]
+
+  val mockCard1ForReferences = mock[Card1ForReferences]
+  val mockCard2ForParties = mock[Card2ForParties]
 
   val controller = new SectionSummaryController(
     mockAuthAction,
     mockJourneyAction,
-    mockExportsCacheService,
     stubMessagesControllerComponents(),
     mockPage,
-    mockSection1Card
+    mockCard1ForReferences,
+    mockCard2ForParties
   )
 
-  val statusCode = "2"
-
-  def verifyPage(sectionCard: SectionCard): HtmlFormat.Appendable =
-    verify(mockPage, times(1))(eqTo(sectionCard))(any(), any())
+  def verifyPage(summaryCard: SummaryCard): HtmlFormat.Appendable =
+    verify(mockPage, times(1))(eqTo(summaryCard))(any(), any())
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -62,14 +62,17 @@ class SectionSummaryControllerSpec extends ControllerWithoutFormSpec with Option
   "Section Summary controller" must {
 
     "return 200 (OK)" when {
-      "display page method is invoked with section 1" in {
-        withNewCaching(request.cacheModel)
+      val mocks = Array(mockCard1ForReferences, mockCard2ForParties)
 
-        val result = controller.displayPage(1)(request)
+      for (section <- 1 to 2)
+        s"display page method is invoked with section $section" in {
+          withNewCaching(request.cacheModel)
 
-        status(result) mustBe OK
-        verifyPage(mockSection1Card)
-      }
+          val result = controller.displayPage(section)(request)
+
+          status(result) mustBe OK
+          verifyPage(mocks(section - 1))
+        }
     }
 
     "redirect to summary" when {
@@ -82,6 +85,5 @@ class SectionSummaryControllerSpec extends ControllerWithoutFormSpec with Option
         redirectLocation(result).value mustBe routes.SummaryController.displayPage.url
       }
     }
-
   }
 }

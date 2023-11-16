@@ -156,7 +156,7 @@ class ConsignmentReferencesControllerSpec extends ControllerSpec with AmendmentD
     }
 
     onJourney(SUPPLEMENTARY) { req =>
-      "return 303 (SEE_OTHER) and redirect to 'Section Summary' page" when {
+      "return 303 (SEE_OTHER) and redirect to the 'Section Summary' page" when {
 
         "for SUPPLEMENTARY_SIMPLIFIED" in {
           val request = journeyRequest(aDeclaration(withType(req.declarationType), withAdditionalDeclarationType(SUPPLEMENTARY_SIMPLIFIED)))

@@ -17,34 +17,33 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
-import play.api.Logging
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import play.twirl.api.Html
-import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.helpers.ActionItemBuilder.lastUrlPlaceholder
-import views.helpers.summary.sections.{Card1ForReferencesSection, SectionCard}
-import views.html.declaration.summary.sections._
+import views.helpers.summary._
+import views.html.declaration.summary.sections.section_summary
 
 import javax.inject.Inject
 
 class SectionSummaryController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
-  override val exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents,
   section_summary: section_summary,
-  card1ForReferencesSection: Card1ForReferencesSection
-) extends FrontendController(mcc) with I18nSupport with Logging with ModelCacheable {
+  card1ForReferences: Card1ForReferences,
+  card2ForParties: Card2ForParties
+) extends FrontendController(mcc) with I18nSupport {
 
   def displayPage(sectionNumber: Int): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    def summary(card: SectionCard): Result = Ok(Html(section_summary(card).toString.replace(s"?$lastUrlPlaceholder", "")))
+    def sectionSummary(summaryCard: SummaryCard): Result =
+      Ok(Html(section_summary(summaryCard).toString.replace(s"?$lastUrlPlaceholder", "")))
 
     sectionNumber match {
-      case 1 => summary(card1ForReferencesSection)
+      case 1 => sectionSummary(card1ForReferences)
+      case 2 => sectionSummary(card2ForParties)
       case _ => Redirect(routes.SummaryController.displayPage)
     }
   }
-
 }
