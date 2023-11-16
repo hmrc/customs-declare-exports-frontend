@@ -497,7 +497,11 @@ class CustomsDeclareExportsConnectorISpec extends ConnectorISpec with ExportsDec
           .willReturn(
             aResponse()
               .withStatus(Status.OK)
-              .withBody(Json.toJson(CancellationResult(CancellationRequestSent, Some("conversationId")))(CancellationResult.cancellationResultFormat.writes _).toString())
+              .withBody(
+                Json
+                  .toJson(CancellationResult(CancellationRequestSent, Some("conversationId")))(CancellationResult.cancellationResultFormat.writes _)
+                  .toString()
+              )
           )
       )
 
