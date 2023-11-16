@@ -69,6 +69,7 @@ class Card1ForReferences @Inject() (govukSummaryList: GovukSummaryList, govukIns
       expiryDate(declaration),
       declarationType(declaration),
       additionalDeclarationType(declaration),
+      declarantEori(declaration),
       ducr(declaration, actionsEnabled),
       mrn(declaration, actionsEnabled),
       eidrDate(declaration, actionsEnabled),
@@ -107,6 +108,11 @@ class Card1ForReferences @Inject() (govukSummaryList: GovukSummaryList, govukIns
         value(messages(s"declaration.summary.references.additionalType.${adt.toString}")),
         classes = "additional-declaration-type"
       )
+    }
+
+  private def declarantEori(declaration: ExportsDeclaration)(implicit messages: Messages): Option[SummaryListRow] =
+    declaration.parties.declarantDetails.map { declarantDetails =>
+      SummaryListRow(key("parties.declarant.eori"), value(declarantDetails.details.eori.fold("")(_.value)), classes = "declarant-eori")
     }
 
   private def ducr(declaration: ExportsDeclaration, actionsEnabled: Boolean)(implicit messages: Messages): Option[SummaryListRow] = {
