@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package models.declaration.submissions
+package models
 
-import models.declaration.submissions.CancellationStatus.CancellationStatusReads.reads
-import models.declaration.submissions.CancellationStatus.CancellationStatusWrites.writes
 import base.UnitSpec
+import models.CancellationStatus.CancellationStatusReads.reads
+import models.CancellationStatus.CancellationStatusWrites.writes
 import play.api.libs.json._
 
 class CancellationStatusSpec extends UnitSpec {
@@ -27,9 +27,8 @@ class CancellationStatusSpec extends UnitSpec {
 
     "read value correctly" in {
 
-      reads(JsString("CancellationRequestExists")) must be(JsSuccess(CancellationRequestExists))
-      reads(JsString("CancellationRequested")) must be(JsSuccess(CancellationRequested))
-      reads(JsString("MissingDeclaration")) must be(JsSuccess(MissingDeclaration))
+      reads(JsString("CancellationAlreadyRequested")) must be(JsSuccess(CancellationAlreadyRequested))
+      reads(JsString("CancellationRequestSent")) must be(JsSuccess(CancellationRequestSent))
       reads(JsString("IncorrectStatus")) must be(JsError("Incorrect cancellation status"))
     }
   }
@@ -38,9 +37,8 @@ class CancellationStatusSpec extends UnitSpec {
 
     "write value correctly" in {
 
-      writes(CancellationRequestExists) must be(JsString("CancellationRequestExists"))
-      writes(CancellationRequested) must be(JsString("CancellationRequested"))
-      writes(MissingDeclaration) must be(JsString("MissingDeclaration"))
+      writes(CancellationAlreadyRequested) must be(JsString("CancellationAlreadyRequested"))
+      writes(CancellationRequestSent) must be(JsString("CancellationRequestSent"))
     }
   }
 
@@ -49,9 +47,9 @@ class CancellationStatusSpec extends UnitSpec {
     "correctly unapply CancellationStatus object" in {
 
       val expectedResult =
-        Some(CancellationRequestExists.productPrefix -> Json.toJson(CancellationRequestExists.toString))
+        Some(CancellationAlreadyRequested.productPrefix -> Json.toJson(CancellationAlreadyRequested.toString))
 
-      CancellationStatus.unapply(CancellationRequestExists) must be(expectedResult)
+      CancellationStatus.unapply(CancellationAlreadyRequested) must be(expectedResult)
     }
   }
 }

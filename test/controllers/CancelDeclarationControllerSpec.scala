@@ -23,6 +23,7 @@ import forms.CancelDeclarationDescription
 import forms.cancellation.CancellationChangeReason.NoLongerRequired
 import metrics.{ExportsMetrics, MetricIdentifiers}
 import mock.{ErrorHandlerMocks, ExportsMetricsMocks}
+import models.CancellationStatus.CancellationResult
 import models.requests.SessionHelper._
 import models.{CancelDeclaration, CancellationAlreadyRequested}
 import org.mockito.ArgumentMatchers
@@ -74,7 +75,7 @@ class CancelDeclarationControllerSpec extends ControllerWithoutFormSpec with Err
       }
 
       "cancellation is requested with duplicate request error" in new SetUp {
-        cancelDeclarationResponse(CancellationAlreadyRequested)
+        cancelDeclarationResponse(CancellationResult(CancellationAlreadyRequested, Some("conversationId")))
 
         when(mockAuditService.auditAllPagesDeclarationCancellation(any())(any())).thenReturn(Future.successful(Success))
         when(mockCustomsDeclareExportsConnector.findSubmission(any())(any(), any())).thenReturn(Future.successful(Some(submission)))

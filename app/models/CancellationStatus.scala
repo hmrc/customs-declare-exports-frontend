@@ -53,4 +53,20 @@ object CancellationStatus {
   implicit object CancellationStatusWrites extends Writes[CancellationStatus] {
     def writes(status: CancellationStatus): JsValue = JsString(status.toString)
   }
+
+  case class CancellationResult(status: CancellationStatus, conversationId: Option[String])
+  object CancellationResult {
+    implicit val cancellationResultFormat: Format[CancellationResult] = new Format[CancellationResult] {
+      def reads(json: JsValue): JsResult[CancellationResult] =
+        for {
+          status <- (json \ "status").validate[CancellationStatus]
+          conversationId <- (json \ "conversationId").validateOpt[String]
+        } yield CancellationResult(status, conversationId)
+
+      def writes(result: CancellationResult): JsValue = {
+        val baseJson = Json.obj("status" -> Json.toJson(result.status))
+        result.conversationId.map(msg => baseJson ++ Json.obj("conversationId" -> Json.toJson(msg))).getOrElse(baseJson)
+      }
+    }
+  }
 }

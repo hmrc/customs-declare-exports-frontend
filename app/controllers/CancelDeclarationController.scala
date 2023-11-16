@@ -110,18 +110,17 @@ class CancelDeclarationController @Inject() (
 
     customsDeclareExportsConnector.findSubmission(submissionId).flatMap {
       case Some(submission) =>
-        val maybeStatus = for {
+        val maybeResult = for {
           _ <- auditService.auditAllPagesDeclarationCancellation(cancelDeclaration)
-          cancelStatus <- customsDeclareExportsConnector.createCancellation(cancelDeclaration)
-        } yield cancelStatus
+          cancelResult <- customsDeclareExportsConnector.createCancellation(cancelDeclaration)
+        } yield cancelResult
 
-        maybeStatus.map { status =>
-          val result = if (status == CancellationAlreadyRequested) Failure.toString else Success.toString
-          auditEventGenerator(submission, additionalDecType, userInput, result, ducr, mrn, lrn)
-          Right(status)
+        maybeResult.map { result =>
+          auditEventGenerator(submission, additionalDecType, userInput, Success.toString, ducr, mrn, lrn, result.conversationId)
+          Right(result.status)
         }.recoverWith { case exception =>
           logger.error(s"Error response from backend $exception")
-          auditEventGenerator(submission, additionalDecType, userInput, Failure.toString, ducr, mrn, lrn)
+          auditEventGenerator(submission, additionalDecType, userInput, Failure.toString, ducr, mrn, lrn, None)
           Future.successful(Left("Problem sending cancellation request"))
         }
 
@@ -146,10 +145,11 @@ class CancelDeclarationController @Inject() (
     result: String,
     ducr: String,
     mrn: String,
-    lrn: Lrn
+    lrn: Lrn,
+    conversationId: Option[String]
   )(implicit request: AuthenticatedRequest[_]): Option[Future[AuditResult]] = {
-    (submission.latestDecId, submission.actions.headOption) match {
-      case (Some(latestDecId), Some(action)) =>
+    submission.latestDecId match {
+      case Some(latestDecId) =>
         Some(
           Map(
             EventData.eori.toString -> request.user.eori,
@@ -160,7 +160,7 @@ class CancelDeclarationController @Inject() (
             EventData.submissionResult.toString -> result,
             EventData.ducr.toString -> ducr,
             EventData.declarationId.toString -> latestDecId,
-            EventData.conversationId.toString -> action.id,
+            EventData.conversationId.toString -> conversationId.getOrElse(""),
             EventData.decType.toString -> additionalDecType
           )
         )
