@@ -40,7 +40,7 @@ class Card2ForParties @Inject() (
   def eval(declaration: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages): Html = {
     val parties = declaration.parties
     val hasData =
-      parties.declarantDetails.isDefined ||
+      parties.declarantIsExporter.isDefined ||
         parties.exporterDetails.isDefined ||
         parties.representativeDetails.isDefined ||
         parties.carrierDetails.isDefined ||
@@ -62,12 +62,7 @@ class Card2ForParties @Inject() (
     val hasAdditionalActors = additionalActorRows.flatten.length > 1
 
     (
-      List(
-        declarantEori(parties),
-        declarantIsExporter(parties, actionsEnabled),
-        isEidr(parties, actionsEnabled),
-        personPresentingGoods(parties, actionsEnabled)
-      )
+      List(declarantIsExporter(parties, actionsEnabled), isEidr(parties, actionsEnabled), personPresentingGoods(parties, actionsEnabled))
         ++ exporterDetails(parties, actionsEnabled)
         ++ List(isExs(parties, actionsEnabled), representativeOtherAgent(parties, actionsEnabled))
         ++ representativeDetails(parties, actionsEnabled)
@@ -79,11 +74,6 @@ class Card2ForParties @Inject() (
         ++ authorisationHoldersHelper.section(parties, hasAdditionalActors, actionsEnabled)
     ).flatten
   }
-
-  private def declarantEori(parties: Parties)(implicit messages: Messages): Option[SummaryListRow] =
-    parties.declarantDetails.map { declarantDetails =>
-      SummaryListRow(key("parties.declarant.eori"), value(declarantDetails.details.eori.fold("")(_.value)), classes = "declarant-eori")
-    }
 
   private def declarantIsExporter(parties: Parties, actionsEnabled: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
     parties.declarantIsExporter.map { declarantIsExporter =>

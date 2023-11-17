@@ -34,7 +34,6 @@ class Card2ForPartiesSpec extends UnitViewSpec with ExportsTestHelper with Injec
   private val expectedAddress = "fullName addressLine townOrCity postCode GB"
 
   private val declaration = aDeclaration(
-    withDeclarantDetails(Some(Eori(eori))),
     withDeclarantIsExporter("No"),
     withEntryIntoDeclarantsRecords("Yes"),
     withPersonPresentingGoods(Some(Eori(eori))),
@@ -55,11 +54,6 @@ class Card2ForPartiesSpec extends UnitViewSpec with ExportsTestHelper with Injec
 
     "have the expected heading" in {
       view.getElementsByTag("h2").first.text mustBe messages(s"declaration.summary.section.2")
-    }
-
-    "show the declarant eori" in {
-      val row = view.getElementsByClass("declarant-eori")
-      checkSummaryRow(row, "parties.declarant.eori", eori, None, "ign")
     }
 
     "show 'are you the exporter'" in {
@@ -215,7 +209,6 @@ class Card2ForPartiesSpec extends UnitViewSpec with ExportsTestHelper with Injec
 
     "not show the declarant when the section is undefined" in {
       val view = card2ForParties.eval(aDeclarationAfter(declaration, withoutDeclarantDetails))(messages)
-      view.getElementsByClass("declarant-eori") mustBe empty
       view.getElementsByClass("declarant-address") mustBe empty
     }
 
