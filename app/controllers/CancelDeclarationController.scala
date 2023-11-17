@@ -19,6 +19,7 @@ package controllers
 import connectors.CustomsDeclareExportsConnector
 import controllers.actions.{AuthAction, VerifiedEmailAction}
 import forms.CancelDeclarationDescription._
+import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
 import forms.{CancelDeclarationDescription, Lrn}
 import handlers.ErrorHandler
 import metrics.ExportsMetrics
@@ -53,41 +54,32 @@ class CancelDeclarationController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with Logging with WithUnsafeDefaultFormBinding {
 
-  def displayPage(additionalDecType: String): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
+  def displayPage: Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
     getSessionData() match {
       case Some((submissionsId, mrn, lrn, ducr)) =>
-        Future.successful(Ok(cancelDeclarationPage(CancelDeclarationDescription.form, additionalDecType, submissionsId, lrn, ducr, mrn)))
+        Future.successful(Ok(cancelDeclarationPage(CancelDeclarationDescription.form, submissionsId, lrn, ducr, mrn)))
       case _ => errorHandler.redirectToErrorPage
     }
   }
 
-  def onSubmit(additionalDecType: String): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
+  def onSubmit: Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
     getSessionData() match {
       case Some((submissionId, mrn, lrn, ducr)) =>
         form
           .bindFromRequest()
           .fold(
             (formWithErrors: Form[CancelDeclarationDescription]) =>
-              Future.successful(BadRequest(cancelDeclarationPage(formWithErrors, additionalDecType, submissionId, lrn, ducr, mrn))),
+              Future.successful(BadRequest(cancelDeclarationPage(formWithErrors, submissionId, lrn, ducr, mrn))),
             userInput => {
               val context = exportsMetrics.startTimer(cancellationMetric)
-              sendAuditedCancellationRequest(userInput, additionalDecType, submissionId, lrn, ducr, mrn).map { either =>
+              sendAuditedCancellationRequest(userInput, submissionId, lrn, ducr, mrn).map { either =>
                 exportsMetrics.incrementCounter(cancellationMetric)
                 context.stop()
 
                 either match {
                   case Right(models.CancellationRequestSent) => Redirect(routes.CancellationResultController.displayHoldingPage)
                   case Right(models.CancellationAlreadyRequested) =>
-                    Ok(
-                      cancelDeclarationPage(
-                        createFormWithErrors(userInput, "cancellation.duplicateRequest.error"),
-                        additionalDecType,
-                        submissionId,
-                        lrn,
-                        ducr,
-                        mrn
-                      )
-                    )
+                    Ok(cancelDeclarationPage(createFormWithErrors(userInput, "cancellation.duplicateRequest.error"), submissionId, lrn, ducr, mrn))
                   case Left(error) => errorHandler.internalServerError(error)
                 }
               }
@@ -97,31 +89,34 @@ class CancelDeclarationController @Inject() (
     }
   }
 
-  private def sendAuditedCancellationRequest(
-    userInput: CancelDeclarationDescription,
-    additionalDecType: String,
-    submissionId: String,
-    lrn: Lrn,
-    ducr: String,
-    mrn: String
-  )(implicit request: AuthenticatedRequest[_]): Future[Either[String, CancellationStatus]] = {
+  private def sendAuditedCancellationRequest(userInput: CancelDeclarationDescription, submissionId: String, lrn: Lrn, ducr: String, mrn: String)(
+    implicit request: AuthenticatedRequest[_]
+  ): Future[Either[String, CancellationStatus]] = {
 
     val cancelDeclaration = CancelDeclaration(submissionId, lrn, mrn, userInput.statementDescription, userInput.changeReason)
 
+    def sendCancellationAndAudit(submission: Submission, declaration: ExportsDeclaration): Future[Either[String, CancellationStatus]] = {
+      val maybeResult = for {
+        _ <- auditService.auditAllPagesDeclarationCancellation(cancelDeclaration)
+        cancelResult <- customsDeclareExportsConnector.createCancellation(cancelDeclaration)
+      } yield cancelResult
+
+      maybeResult.map { result =>
+        auditEventGenerator(submission, declaration.additionalDeclarationType, userInput, Success.toString, ducr, mrn, lrn, result.conversationId)
+        Right(result.status)
+      }.recoverWith { case exception =>
+        logger.error(s"Error response from backend $exception")
+        auditEventGenerator(submission, declaration.additionalDeclarationType, userInput, Failure.toString, ducr, mrn, lrn, None)
+        Future.successful(Left("Problem sending cancellation request"))
+      }
+    }
+
     customsDeclareExportsConnector.findSubmission(submissionId).flatMap {
       case Some(submission) =>
-        val maybeResult = for {
-          _ <- auditService.auditAllPagesDeclarationCancellation(cancelDeclaration)
-          cancelResult <- customsDeclareExportsConnector.createCancellation(cancelDeclaration)
-        } yield cancelResult
-
-        maybeResult.map { result =>
-          auditEventGenerator(submission, additionalDecType, userInput, Success.toString, ducr, mrn, lrn, result.conversationId)
-          Right(result.status)
-        }.recoverWith { case exception =>
-          logger.error(s"Error response from backend $exception")
-          auditEventGenerator(submission, additionalDecType, userInput, Failure.toString, ducr, mrn, lrn, None)
-          Future.successful(Left("Problem sending cancellation request"))
+        val latestDecId = submission.latestDecId.getOrElse(submission.uuid)
+        customsDeclareExportsConnector.findDeclaration(latestDecId).flatMap {
+          case Some(exportsDeclaration) => sendCancellationAndAudit(submission, exportsDeclaration)
+          case _                        => Future.successful(Left("Problem retrieving declaration"))
         }
 
       case None => Future.successful(Left("Unable to find submission"))
@@ -140,7 +135,7 @@ class CancelDeclarationController @Inject() (
 
   private def auditEventGenerator(
     submission: Submission,
-    additionalDecType: String,
+    additionalDecType: Option[AdditionalDeclarationType],
     userInput: CancelDeclarationDescription,
     result: String,
     ducr: String,
@@ -161,7 +156,7 @@ class CancelDeclarationController @Inject() (
             EventData.ducr.toString -> ducr,
             EventData.declarationId.toString -> latestDecId,
             EventData.conversationId.toString -> conversationId.getOrElse(""),
-            EventData.decType.toString -> additionalDecType
+            EventData.decType.toString -> additionalDecType.getOrElse("").toString
           )
         )
       case _ => None

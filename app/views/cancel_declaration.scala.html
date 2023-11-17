@@ -36,7 +36,7 @@
     formHelper: FormWithCSRF
 )
 
-@(form: Form[CancelDeclarationDescription], additionalDeclarationType: String, submissionId: String, lrn: Lrn, ducr: String, mrn: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[CancelDeclarationDescription], submissionId: String, lrn: Lrn, ducr: String, mrn: String)(implicit request: Request[_], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
@@ -46,7 +46,7 @@
     showDeclarationSummaryLink = false
 ) {
 
-    @formHelper(action = CancelDeclarationController.onSubmit(additionalDeclarationType), 'autoComplete -> "off") {
+    @formHelper(action = CancelDeclarationController.onSubmit, 'autoComplete -> "off") {
         @errorSummary(radioGroupErrors("changeReason", "noLongerRequired", form.errors))
 
         @sectionHeader(messages("mrn.heading", {mrn}))

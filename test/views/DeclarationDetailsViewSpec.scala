@@ -466,7 +466,7 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
 
       val cancelDeclarationLink = view.getElementById("cancel-declaration")
       cancelDeclarationLink must containMessage("declaration.details.cancel.declaration")
-      cancelDeclarationLink must haveHref(CancelDeclarationController.displayPage(additionalDecType = "D"))
+      cancelDeclarationLink must haveHref(CancelDeclarationController.displayPage)
     }
 
     "NOT contain the cancel-declaration link" when {
