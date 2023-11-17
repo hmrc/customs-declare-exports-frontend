@@ -40,7 +40,8 @@ class Card2ForParties @Inject() (
   def eval(declaration: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages): Html = {
     val parties = declaration.parties
     val hasData =
-      parties.exporterDetails.isDefined ||
+      parties.declarantIsExporter.isDefined ||
+        parties.exporterDetails.isDefined ||
         parties.representativeDetails.isDefined ||
         parties.carrierDetails.isDefined ||
         parties.consigneeDetails.isDefined ||
