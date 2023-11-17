@@ -31,9 +31,9 @@ import javax.inject.{Inject, Singleton}
 class Card4ForTransactions @Inject() (govukSummaryList: GovukSummaryList, documentsHelper: DocumentsHelper) extends SummaryHelper {
 
   def eval(declaration: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages): Html =
-    if (hasTransactionData(declaration)) displayCard(declaration, actionsEnabled) else HtmlFormat.empty
+    if (hasTransactionData(declaration)) content(declaration, actionsEnabled) else HtmlFormat.empty
 
-  private def displayCard(declaration: ExportsDeclaration, actionsEnabled: Boolean)(implicit messages: Messages): Html =
+  def content(declaration: ExportsDeclaration, actionsEnabled: Boolean)(implicit messages: Messages): Html =
     govukSummaryList(SummaryList(rows(declaration, actionsEnabled), card(4)))
 
   private def rows(declaration: ExportsDeclaration, actionsEnabled: Boolean)(implicit messages: Messages): Seq[SummaryListRow] =

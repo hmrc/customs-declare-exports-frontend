@@ -102,7 +102,7 @@ class LinkDucrToMucrControllerSpec extends ControllerSpec with AmendmentDraftFil
       }
     }
 
-    "return 303 (SEE_OTHER) and redirect to 'Section Summary' page" when {
+    "return 303 (SEE_OTHER) and redirect to the 'Section Summary' page" when {
       onEveryDeclarationJourney() { implicit request =>
         "answer is 'no'" in {
           verifyRedirect(YesNoAnswers.no, routes.SectionSummaryController.displayPage(1))

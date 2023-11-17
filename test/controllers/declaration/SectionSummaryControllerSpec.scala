@@ -24,29 +24,29 @@ import org.scalatest.OptionValues
 import play.api.mvc.AnyContent
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import views.helpers.summary.sections._
+import views.helpers.summary._
 import views.html.declaration.summary.sections.section_summary
 
 class SectionSummaryControllerSpec extends ControllerWithoutFormSpec with OptionValues {
 
   val mockPage = mock[section_summary]
-  val mockSection1Card = mock[Card1ForReferencesSection]
-  val mockSection3Card = mock[Card3ForRoutesAndLocationsSection]
+
+  val mockCard1ForReferences = mock[Card1ForReferences]
+  val mockCard2ForParties = mock[Card2ForParties]
+  val mockSection3Card = mock[Card3ForRoutesAndLocations]
 
   val controller = new SectionSummaryController(
     mockAuthAction,
     mockJourneyAction,
-    mockExportsCacheService,
     stubMessagesControllerComponents(),
     mockPage,
-    mockSection1Card,
+    mockCard1ForReferences,
+    mockCard2ForParties,
     mockSection3Card
   )
 
-  val statusCode = "2"
-
-  def verifyPage(sectionCard: SectionCard): HtmlFormat.Appendable =
-    verify(mockPage, times(1))(eqTo(sectionCard))(any(), any())
+  def verifyPage(summaryCard: SummaryCard): HtmlFormat.Appendable =
+    verify(mockPage, times(1))(eqTo(summaryCard))(any(), any())
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -64,24 +64,17 @@ class SectionSummaryControllerSpec extends ControllerWithoutFormSpec with Option
   "Section Summary controller" must {
 
     "return 200 (OK)" when {
-      "display page method is invoked" when {
-        "section 1" in {
+      val mocks = Array(mockCard1ForReferences, mockCard2ForParties, mockSection3Card)
+
+      for (section <- 1 to 2)
+        s"display page method is invoked with section $section" in {
           withNewCaching(request.cacheModel)
 
-          val result = controller.displayPage(1)(request)
+          val result = controller.displayPage(section)(request)
 
           status(result) mustBe OK
-          verifyPage(mockSection1Card)
+          verifyPage(mocks(section - 1))
         }
-        "section 3" in {
-          withNewCaching(request.cacheModel)
-
-          val result = controller.displayPage(3)(request)
-
-          status(result) mustBe OK
-          verifyPage(mockSection3Card)
-        }
-      }
     }
 
     "redirect to summary" when {
@@ -94,6 +87,5 @@ class SectionSummaryControllerSpec extends ControllerWithoutFormSpec with Option
         redirectLocation(result).value mustBe routes.SummaryController.displayPage.url
       }
     }
-
   }
 }

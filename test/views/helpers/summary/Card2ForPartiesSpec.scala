@@ -19,9 +19,12 @@ package views.helpers.summary
 import base.Injector
 import controllers.declaration.routes._
 import forms.common.{Address, Eori}
+import forms.declaration.AuthorisationProcedureCodeChoice.{Choice1040, ChoiceOthers}
+import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.{STANDARD_FRONTIER, STANDARD_PRE_LODGED}
 import forms.declaration.{AdditionalActor, IsExs}
 import forms.declaration.authorisationHolder.AuthorisationHolder
 import models.declaration.RepresentativeDetails
+import models.DeclarationType._
 import org.scalatest.Assertion
 import play.api.mvc.Call
 import services.cache.ExportsTestHelper
@@ -301,6 +304,72 @@ class Card2ForPartiesSpec extends UnitViewSpec with ExportsTestHelper with Injec
 
       val row2 = view.getElementsByClass(s"$key-address")
       checkSummaryRow(row2, s"parties.$key.address", expectedAddress, Some(call), s"parties.$key.address")
+    }
+  }
+
+  "Card2ForParties.content" should {
+    "return the expected CYA card" in {
+      val cardContent = card2ForParties.content(declaration)
+      cardContent.getElementsByClass("parties-card").text mustBe messages("declaration.summary.section.2")
+    }
+  }
+
+  "Card2ForParties.backLink" when {
+
+    "the declaration has Authorisation Holders" should {
+
+      "go to AuthorisationHolderSummaryController" in {
+        val request = journeyRequest(aDeclaration(withAuthorisationHolders(AuthorisationHolder(None, None, None))))
+        card2ForParties.backLink(request) mustBe AuthorisationHolderSummaryController.displayPage
+      }
+    }
+
+    "the declaration has no Authorisation Holders" should {
+
+      "go to AuthorisationProcedureCodeChoiceController" when {
+
+        List(STANDARD, SIMPLIFIED, SUPPLEMENTARY).foreach { declarationType =>
+          s"on $declarationType journeys" in {
+            val request = journeyRequest(aDeclaration(withType(declarationType)))
+            card2ForParties.backLink(request) mustBe AuthorisationProcedureCodeChoiceController.displayPage
+          }
+        }
+      }
+
+      "go to AuthorisationHolderSummaryController" when {
+
+        List(OCCASIONAL, CLEARANCE).foreach { declarationType =>
+          s"on $declarationType journeys" in {
+            val request = journeyRequest(aDeclaration(withType(declarationType)))
+            card2ForParties.backLink(request) mustBe AuthorisationHolderRequiredController.displayPage
+          }
+        }
+
+        List(STANDARD_PRE_LODGED, STANDARD_FRONTIER).foreach { adt =>
+          s"on $adt journeys and" when {
+            "AuthorisationProcedureCode is 1040" in {
+              val withAPC = withAuthorisationProcedureCodeChoice(Choice1040)
+              val request = journeyRequest(aDeclaration(withType(STANDARD), withAdditionalDeclarationType(adt), withAPC))
+              card2ForParties.backLink(request) mustBe AuthorisationHolderRequiredController.displayPage
+            }
+          }
+        }
+
+        "on STANDARD_PRE_LODGED journeys and" when {
+          "AuthorisationProcedureCode is 'Others'" in {
+            val withADT = withAdditionalDeclarationType(STANDARD_PRE_LODGED)
+            val withAPC = withAuthorisationProcedureCodeChoice(ChoiceOthers)
+            val request = journeyRequest(aDeclaration(withType(STANDARD), withADT, withAPC))
+            card2ForParties.backLink(request) mustBe AuthorisationHolderRequiredController.displayPage
+          }
+        }
+      }
+    }
+  }
+
+  "Card2ForParties.continueTo" should {
+    "go to DestinationCountryController" in {
+      card2ForParties.continueTo(journeyRequest()) mustBe DestinationCountryController.displayPage
     }
   }
 }

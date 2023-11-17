@@ -60,6 +60,9 @@ class ItemsSummaryController @Inject() (
     createNewItemInCache.map(itemId => navigator.continueTo(ProcedureCodesController.displayPage(itemId)))
   }
 
+  // Only reached from the CYA page
+  val addAdditionalItem: Action[AnyContent] = addFirstItem
+
   val displayItemsSummaryPage: Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     removeEmptyItems.map { declaration =>
       if (declaration.items.isEmpty) navigator.continueTo(ItemsSummaryController.displayAddItemPage)

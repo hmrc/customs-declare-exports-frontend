@@ -16,37 +16,38 @@
 
 package views.declaration.summary.sections
 
-import models.requests.SessionHelper
+import controllers.routes.SavedDeclarationsController
+import models.requests.{JourneyRequest, SessionHelper}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import play.api.mvc.Call
 import play.twirl.api.Html
+import play.twirl.api.HtmlFormat.Appendable
 import views.declaration.summary.SummaryViewSpec
-import views.helpers.summary.sections.SectionCard
+import views.helpers.summary.SummaryCard
 import views.html.declaration.summary.sections.section_summary
 
 class SectionSummaryViewSpec extends SummaryViewSpec {
 
   private val sectionSummaryPage = instanceOf[section_summary]
-  private val sectionCard = mock[SectionCard]
+  private val summaryCard = mock[SummaryCard]
 
-  when(sectionCard.continueTo(any()))
-    .thenReturn(Call("GET", "/go"))
+  when(summaryCard.continueTo(any())).thenReturn(Call("GET", "/go"))
 
-  when(sectionCard.backLink(any()))
-    .thenReturn(Call("GET", "/back"))
+  when(summaryCard.backLink(any())).thenReturn(Call("GET", "/back"))
 
-  when(sectionCard.eval(any(), any())(any()))
-    .thenReturn(Html("content"))
+  when(summaryCard.content(any(), any())(any())).thenReturn(Html("content"))
 
-  private val declaration = aDeclaration()
-  private val view = sectionSummaryPage(sectionCard)(journeyRequest(declaration, (SessionHelper.declarationUuid, declaration.id)), messages)
+  private def createView(implicit request: JourneyRequest[_]): Appendable = sectionSummaryPage(summaryCard)
 
   "Summary page" should {
+    val declaration = aDeclaration()
+    implicit val request = journeyRequest(declaration, (SessionHelper.declarationUuid, declaration.id))
+    val view = createView
 
     "render view declaration summary link" in {
       val link = view.getElementById("view_declaration_summary")
-      link must haveHref(controllers.routes.SavedDeclarationsController.continueDeclaration(declaration.id).url)
+      link must haveHref(SavedDeclarationsController.continueDeclaration(declaration.id).url)
     }
 
     "display page title" in {
@@ -70,6 +71,5 @@ class SectionSummaryViewSpec extends SummaryViewSpec {
     }
 
     checkExitAndReturnLinkIsDisplayed(view)
-
   }
 }

@@ -57,7 +57,7 @@ class EntryIntoDeclarantsRecordsViewSpec extends UnitViewSpec with Injector with
         view.getElementsByAttributeValue("for", "answer_no").first() must containMessage("declaration.entryIntoDeclarantRecords.answer.no")
       }
 
-      "display the 'Back' button" in {
+      "display the 'Back' button linking to the /summary-section/1 page" in {
         val backButton = createView().getElementById("back-link")
 
         backButton must containMessage(backCaption)

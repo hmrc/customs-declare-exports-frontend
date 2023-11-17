@@ -195,10 +195,7 @@ trait CacheDependentNavigators {
     else if (userCanLandOnIsAuthRequiredPage(cacheModel)) routes.AuthorisationHolderRequiredController.displayPage
     else authorisationHolderRequiredPreviousPage(cacheModel)
 
-  protected def authorisationHolderSummaryPreviousPage(cacheModel: ExportsDeclaration): Call =
-    authorisationHolderRequiredPreviousPage(cacheModel)
-
-  protected def destinationCountryPreviousPage(cacheModel: ExportsDeclaration): Call =
+  protected def card2ForPartiesPreviousPage(cacheModel: ExportsDeclaration): Call =
     authorisationHolderAddPreviousPage(cacheModel)
 
   protected def representativeAgentPreviousPage(cacheModel: ExportsDeclaration): Call =
@@ -286,5 +283,4 @@ trait CacheDependentNavigators {
       totalPackageQuantityPreviousPage(cacheModel)
     else
       routes.TotalPackageQuantityController.displayPage
-
 }

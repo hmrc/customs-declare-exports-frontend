@@ -17,7 +17,8 @@
 package views.helpers.summary
 
 import base.Injector
-import controllers.declaration.routes.{DestinationCountryController, LocationOfGoodsController, OfficeOfExitController, RoutingCountriesController}
+import controllers.declaration.routes._
+import models.DeclarationType._
 import forms.declaration.LocationOfGoods
 import forms.declaration.countries.Country
 import services.cache.ExportsTestHelper
@@ -100,6 +101,36 @@ class Card3ForRoutesAndLocationsSpec extends UnitViewSpec with ExportsTestHelper
       "'actionsEnabled' is false" in {
         val view = card3ForRoutesAndLocations.eval(declaration, false)(messages)
         view.getElementsByClass(summaryActionsClassName) mustBe empty
+      }
+    }
+
+    "Card3ForRoutesAndLocationsSection.content" must {
+      "return the html of the cya card" in {
+        val cardContent = card3ForRoutesAndLocations.content(declaration)
+        cardContent.getElementsByClass("routes-and-locations-card").text mustBe messages("declaration.summary.section.3")
+      }
+    }
+
+    "Card3ForRoutesAndLocationsSection.continueTo" when {
+      onJourney(OCCASIONAL, SIMPLIFIED, CLEARANCE) { implicit request =>
+        s"${request.declarationType}" must {
+          "go to DeclarantExporterController" in {
+            card3ForRoutesAndLocations.continueTo mustBe PreviousDocumentsSummaryController.displayPage
+          }
+        }
+      }
+      onJourney(STANDARD, SUPPLEMENTARY) { implicit request =>
+        s"${request.declarationType}" must {
+          "go to DeclarantExporterController" in {
+            card3ForRoutesAndLocations.continueTo mustBe InvoiceAndExchangeRateChoiceController.displayPage
+          }
+        }
+      }
+    }
+
+    "Card3ForRoutesAndLocationsSection.backLink" must {
+      "go to OfficeOfExitController" in {
+        card3ForRoutesAndLocations.backLink(journeyRequest(aDeclarationAfter(declaration))) mustBe OfficeOfExitController.displayPage
       }
     }
   }

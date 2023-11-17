@@ -271,6 +271,9 @@ GET         /add-declaration-item                controllers.declaration.ItemsSu
 
 POST        /add-declaration-item                controllers.declaration.ItemsSummaryController.addFirstItem
 
+# Only reached by the CYA page
+GET         /add-additional-item                 controllers.declaration.ItemsSummaryController.addAdditionalItem
+
 GET         /declaration-items-list              controllers.declaration.ItemsSummaryController.displayItemsSummaryPage
 
 POST        /declaration-items-list              controllers.declaration.ItemsSummaryController.submit

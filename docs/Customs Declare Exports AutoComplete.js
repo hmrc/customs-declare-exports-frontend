@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Customs Declare Exports AutoComplete
 // @namespace    http://tampermonkey.net/
-// @version      1.70
+// @version      1.71
 // @description  decs supported: (Std-Arrived A), (Occ-Arrived B), (Smp-Arrived C), (Std-PreLodged D), (Occ-PreLodged E), (Smp-PreLodged F), (Clr-Arrived J), (Clr-PreLodged K), (Sup-SDP Y), (Sup-EIDR Z)
 // @author       You
 // @match        http*://*/customs-declare-exports*
@@ -273,6 +273,14 @@ function enterMucr() {
     if (currentPageIs('/customs-declare-exports/declaration/enter-a-mucr')) {
         document.getElementById('MUCR').value = 'GB/AZ09-B12345'
         submit()
+    }
+}
+
+// items
+function miniCya() {
+    const regex = /\/customs-declare-exports\/declaration\/summary-section\/[1-6]/g
+    if (window.location.pathname.match(regex)) {
+        document.getElementsByClassName("govuk-button").item(0).click()
     }
 }
 
@@ -1239,6 +1247,7 @@ function completeJourney() {
     consignmentReferences()
     linkDucrToMucr()
     enterMucr()
+    miniCya()
 
     // parties
     isEntryIntoDeclarantsRecords()

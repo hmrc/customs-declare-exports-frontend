@@ -21,15 +21,13 @@ import models.DeclarationType._
 import models.ExportsDeclaration
 import models.declaration.ExportItem
 import play.api.i18n.Messages
-import play.api.mvc.Request
 import play.twirl.api.{Html, HtmlFormat}
-import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF, GovukSummaryList, GovukWarningText, SummaryList}
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{Content, HtmlContent, Text}
+import uk.gov.hmrc.govukfrontend.views.html.components.{GovukSummaryList, GovukWarningText, SummaryList}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.warningtext.WarningText
 import views.helpers.ActionItemBuilder.actionItem
 import views.helpers.summary.SummaryHelper.{hasItemData, hasItemsData, showItemsCard}
-import views.html.components.gds.link
 
 import javax.inject.{Inject, Singleton}
 
@@ -37,44 +35,25 @@ import javax.inject.{Inject, Singleton}
 class Card5ForItems @Inject() (
   govukSummaryList: GovukSummaryList,
   govukWarningText: GovukWarningText,
-  formHelper: FormWithCSRF,
-  link: link,
   packageInformationHelper: PackageInformationHelper
 ) extends SummaryHelper {
 
-  def eval(declaration: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit request: Request[_], messages: Messages): Html =
-    if (showItemsCard(declaration, actionsEnabled)) displayCard(declaration, actionsEnabled) else HtmlFormat.empty
+  def eval(declaration: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages): Html =
+    if (showItemsCard(declaration, actionsEnabled)) content(declaration, actionsEnabled) else HtmlFormat.empty
 
-  private def displayCard(declaration: ExportsDeclaration, actionsEnabled: Boolean)(implicit request: Request[_], messages: Messages): Html =
-    govukSummaryList(SummaryList(rows(declaration, actionsEnabled), card(5).map(_.copy(actions = addItemAction(declaration, actionsEnabled)))))
-
-  private def addItemAction(
-    declaration: ExportsDeclaration,
-    actionsEnabled: Boolean
-  )(implicit request: Request[_], messages: Messages): Option[Actions] =
-    if (!(actionsEnabled && (!declaration.isType(CLEARANCE) || declaration.items.isEmpty))) None
-    else {
-      val content = if (hasItemsData(declaration)) addItemForm else addItemLink
-      Some(Actions(items = List(ActionItem("", content, Some(messages("declaration.summary.items.add"))))))
-    }
-
-  private def addItemForm(implicit request: Request[_], messages: Messages): Content = {
-    val text = messages("declaration.summary.items.add")
-    HtmlContent(
-      formHelper(ItemsSummaryController.addFirstItem, Symbol("autoComplete") -> "off")(
-        Html(s"""<input type="submit" class="input-submit govuk-!-font-size-19 govuk-!-font-weight-bold" value="$text"/>""")
-      )
-    )
+  def content(declaration: ExportsDeclaration, actionsEnabled: Boolean)(implicit messages: Messages): Html = {
+    val cardContent = card(5).map(_.copy(actions = addItemAction(declaration, actionsEnabled)))
+    govukSummaryList(SummaryList(rows(declaration, actionsEnabled), cardContent))
   }
 
-  private def addItemLink(implicit messages: Messages): Content =
-    HtmlContent(
-      link(
-        messages("declaration.summary.items.add"),
-        ItemsSummaryController.displayAddItemPage,
-        classes = Some("govuk-link govuk-link--no-visited-state govuk-!-font-size-19 govuk-!-font-weight-bold")
-      )
-    )
+  private def addItemAction(declaration: ExportsDeclaration, actionsEnabled: Boolean)(implicit messages: Messages): Option[Actions] =
+    if (actionsEnabled && (!declaration.isType(CLEARANCE) || declaration.items.isEmpty)) addItemLink(declaration) else None
+
+  private def addItemLink(declaration: ExportsDeclaration)(implicit messages: Messages): Option[Actions] = {
+    val content = HtmlContent(s"""<span aria-hidden="true">${messages("declaration.summary.items.add")}</span>""")
+    val call = if (hasItemsData(declaration)) ItemsSummaryController.addAdditionalItem else ItemsSummaryController.displayAddItemPage
+    Some(Actions(items = List(ActionItem(call.url, content, None))))
+  }
 
   private def rows(declaration: ExportsDeclaration, actionsEnabled: Boolean)(implicit messages: Messages): Seq[SummaryListRow] =
     if (!hasItemsData(declaration)) noItemRow(actionsEnabled)

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package views.helpers.summary.sections
+package views.helpers.summary
 
 import models.ExportsDeclaration
 import models.requests.JourneyRequest
@@ -22,15 +22,11 @@ import play.api.i18n.Messages
 import play.api.mvc.Call
 import play.twirl.api.Html
 
-import javax.inject.Singleton
+trait SummaryCard extends SummaryHelper {
 
-@Singleton
-abstract class SectionCard {
-
-  def eval(declaration: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages): Html
+  def content(declaration: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages): Html
 
   def backLink(implicit request: JourneyRequest[_]): Call
 
   def continueTo(implicit request: JourneyRequest[_]): Call
-
 }

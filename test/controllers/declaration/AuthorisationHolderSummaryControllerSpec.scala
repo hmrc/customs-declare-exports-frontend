@@ -17,6 +17,7 @@
 package controllers.declaration
 
 import base.ControllerSpec
+import controllers.declaration.routes.{AuthorisationHolderAddController, SectionSummaryController}
 import forms.common.YesNoAnswer.formId
 import forms.common.{Eori, YesNoAnswer}
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.arrivedTypes
@@ -105,7 +106,7 @@ class AuthorisationHolderSummaryControllerSpec extends ControllerSpec with Optio
           val result = controller.displayPage(getRequest())
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe routes.AuthorisationHolderAddController.displayPage
+          thePageNavigatedTo mustBe AuthorisationHolderAddController.displayPage
         }
       }
     }
@@ -135,7 +136,7 @@ class AuthorisationHolderSummaryControllerSpec extends ControllerSpec with Optio
           val result = controller.submitForm()(postRequest(requestBody))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe routes.AuthorisationHolderAddController.displayPage
+          thePageNavigatedTo mustBe AuthorisationHolderAddController.displayPage
         }
 
         "the user submits the page answering Yes in error-fix mode" in {
@@ -145,12 +146,12 @@ class AuthorisationHolderSummaryControllerSpec extends ControllerSpec with Optio
           val result = controller.submitForm()(postRequest(requestBody))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe routes.AuthorisationHolderAddController.displayPage
+          thePageNavigatedTo mustBe AuthorisationHolderAddController.displayPage
         }
       }
     }
 
-    "re-direct to next page" when {
+    "re-direct to the next page" when {
       onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL, CLEARANCE) { request =>
         "the user submits the page answering No" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withAuthorisationHolders(authorisationHolder)))
@@ -159,7 +160,7 @@ class AuthorisationHolderSummaryControllerSpec extends ControllerSpec with Optio
           val result = controller.submitForm()(postRequest(requestBody))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe routes.DestinationCountryController.displayPage
+          thePageNavigatedTo mustBe SectionSummaryController.displayPage(2)
         }
       }
 
@@ -172,7 +173,7 @@ class AuthorisationHolderSummaryControllerSpec extends ControllerSpec with Optio
           val result = controller.submitForm()(postRequest(requestBody))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe routes.DestinationCountryController.displayPage
+          thePageNavigatedTo mustBe SectionSummaryController.displayPage(2)
         }
       }
     }

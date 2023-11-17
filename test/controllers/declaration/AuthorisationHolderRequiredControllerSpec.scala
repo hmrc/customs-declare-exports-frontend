@@ -17,7 +17,7 @@
 package controllers.declaration
 
 import base.ControllerSpec
-import controllers.declaration.routes.{AuthorisationHolderAddController, AuthorisationHolderSummaryController, DestinationCountryController}
+import controllers.declaration.routes.{AuthorisationHolderAddController, AuthorisationHolderSummaryController, SectionSummaryController}
 import forms.common.{Eori, YesNoAnswer}
 import forms.declaration.AuthorisationProcedureCodeChoice.{Choice1007, Choice1040, ChoiceOthers}
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
@@ -195,14 +195,14 @@ class AuthorisationHolderRequiredControllerSpec extends ControllerSpec with Opti
 
     def verify303ReturnedOnNo(declaration: ExportsDeclaration): Unit =
       "the user submits the page answering No" should {
-        "redirect to the /destination-country page" in {
+        "redirect to the /summary-section/2 page" in {
           withNewCaching(declaration)
 
           val body = Json.obj("yesNo" -> "No")
           val result = controller.submitForm()(postRequest(body))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe DestinationCountryController.displayPage
+          thePageNavigatedTo mustBe SectionSummaryController.displayPage(2)
         }
       }
 

@@ -17,11 +17,14 @@
 package views.helpers.summary
 
 import controllers.declaration.routes._
+import controllers.navigation.Navigator
+import forms.DeclarationPage
 import forms.common.Address
 import forms.common.YesNoAnswer.YesNoAnswers.yes
 import forms.declaration.EntityDetails
 import models.ExportsDeclaration
 import models.declaration.Parties
+import models.requests.JourneyRequest
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import play.twirl.api.{Html, HtmlFormat}
@@ -33,9 +36,10 @@ import javax.inject.{Inject, Singleton}
 @Singleton
 class Card2ForParties @Inject() (
   govukSummaryList: GovukSummaryList,
+  navigator: Navigator,
   additionalActorsHelper: AdditionalActorsHelper,
   authorisationHoldersHelper: AuthorisationHoldersHelper
-) extends SummaryHelper {
+) extends SummaryCard {
 
   def eval(declaration: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages): Html = {
     val parties = declaration.parties
@@ -48,11 +52,15 @@ class Card2ForParties @Inject() (
         parties.declarationAdditionalActorsData.isDefined ||
         parties.declarationHoldersData.isDefined
 
-    if (hasData) displayCard(parties, actionsEnabled) else HtmlFormat.empty
+    if (hasData) content(declaration, actionsEnabled) else HtmlFormat.empty
   }
 
-  private def displayCard(parties: Parties, actionsEnabled: Boolean)(implicit messages: Messages): Html =
-    govukSummaryList(SummaryList(rows(parties, actionsEnabled), card(2)))
+  def content(declaration: ExportsDeclaration, actionsEnabled: Boolean)(implicit messages: Messages): Html =
+    govukSummaryList(SummaryList(rows(declaration.parties, actionsEnabled), card(2)))
+
+  def backLink(implicit request: JourneyRequest[_]): Call = navigator.backLink(Card2ForParties)
+
+  def continueTo(implicit request: JourneyRequest[_]): Call = DestinationCountryController.displayPage
 
   private def rows(parties: Parties, actionsEnabled: Boolean)(implicit messages: Messages): Seq[SummaryListRow] = {
     // Early evaluation of this attribute in order to verify if it will be displayed as a multi-rows section.
@@ -182,3 +190,5 @@ class Card2ForParties @Inject() (
     else List(Some(row("", defaultOnMissingDetails)))
   }
 }
+
+object Card2ForParties extends DeclarationPage

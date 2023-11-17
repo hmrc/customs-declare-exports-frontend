@@ -23,7 +23,6 @@ import forms.declaration._
 import forms.declaration.additionaldocuments._
 import forms.declaration.carrier.CarrierEoriNumber
 import forms.declaration.commodityMeasure.CommodityMeasure
-import forms.declaration.countries.Countries.DestinationCountryPage
 import forms.declaration.exporter._
 import models.ExportsDeclaration
 import play.api.mvc.Call
@@ -65,7 +64,6 @@ trait OccasionalNavigator extends CacheDependentNavigators {
     case CarrierEoriNumber         => carrierEoriNumberPreviousPage
     case ConsigneeDetails          => consigneeDetailsPreviousPage
     case DeclarantIsExporter       => declarantIsExporterPreviousPage
-    case DestinationCountryPage    => destinationCountryPreviousPage
     case RepresentativeAgent       => representativeAgentPreviousPage
     case Document                  => previousDocumentsPreviousPage
     case InlandOrBorder            => inlandOrBorderPreviousPage
