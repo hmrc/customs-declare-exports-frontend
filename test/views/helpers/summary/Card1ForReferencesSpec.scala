@@ -19,6 +19,7 @@ package views.helpers.summary
 import base.ExportsTestData.mucr
 import base.Injector
 import controllers.declaration.routes._
+import forms.common.Eori
 import forms.common.YesNoAnswer.YesNoAnswers.yes
 import forms.declaration.ConsignmentReferences
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.STANDARD_PRE_LODGED
@@ -37,9 +38,11 @@ class Card1ForReferencesSpec extends UnitViewSpec with ExportsTestHelper with In
   private val lrn = "LRN"
   private val mrn = "MRN"
   private val eidrDate = "Some datestamp"
+  private val eori = "GB123456"
 
   private val declaration = aDeclaration(
     withAdditionalDeclarationType(STANDARD_PRE_LODGED),
+    withDeclarantDetails(Some(Eori(eori))),
     withConsignmentReferences(ConsignmentReferences(Some(Ducr(ducr)), Some(Lrn(lrn)), Some(Mrn(mrn)), Some(eidrDate))),
     withLinkDucrToMucr(),
     withMucr()
@@ -120,6 +123,11 @@ class Card1ForReferencesSpec extends UnitViewSpec with ExportsTestHelper with In
       val adt = declaration.additionalDeclarationType.value
       val expectedValue = messages(s"declaration.summary.references.additionalType.${adt.toString}")
       checkSummaryRow(row, "references.additionalType", expectedValue, None, "ign")
+    }
+
+    "show the declarant eori" in {
+      val row = view.getElementsByClass("declarant-eori")
+      checkSummaryRow(row, "parties.declarant.eori", eori, None, "ign")
     }
 
     "show the 'consignment references' rows of the declaration" in {
