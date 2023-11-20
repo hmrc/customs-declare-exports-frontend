@@ -52,7 +52,7 @@
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
-@backLink = @{navigator.backLink(Document)}
+@backLink = @{navigator.backLink(DocumentSummary)}
 @backButtonText = @{
     if(backLink == routes.SectionSummaryController.displayPage(3)) { "site.back" }
     else "site.backToPreviousQuestion"
