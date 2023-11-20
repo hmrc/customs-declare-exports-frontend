@@ -46,7 +46,7 @@
   externalServicesConfig: ExternalServicesConfig
 )
 
-@(submission: Submission, declarationType: AdditionalDeclarationType)(implicit request: VerifiedEmailRequest[_], messages: Messages)
+@(submission: Submission, additionalDecType: AdditionalDeclarationType)(implicit request: VerifiedEmailRequest[_], messages: Messages)
 
 @navBanner = {
     @if(secureMessagingConfig.isSecureMessagingEnabled) {
@@ -248,7 +248,7 @@
             <span class="submission-mrn govuk-caption-l">@messages("declaration.details.mrn") @mrn</span>
         }
 
-        @timeline(timelineEvents(submission, declarationType), ViewDates.formatDateAtTime)
+        @timeline(timelineEvents(submission, additionalDecType), ViewDates.formatDateAtTime)
     </div>
 
     <div class="govuk-grid-column-one-third">

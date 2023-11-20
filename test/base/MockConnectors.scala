@@ -18,6 +18,7 @@ package base
 
 import base.ExportsTestData.{aDeclaration, withStatus}
 import connectors.CustomsDeclareExportsConnector
+import models.CancellationStatus.CancellationResult
 import models._
 import models.declaration.DeclarationStatus
 import models.declaration.notifications.Notification
@@ -73,7 +74,9 @@ trait MockConnectors {
   def declarationNotFound: OngoingStubbing[Future[Option[ExportsDeclaration]]] =
     when(mockCustomsDeclareExportsConnector.findDeclaration(anyString())(any(), any())).thenReturn(Future.successful(None))
 
-  def cancelDeclarationResponse(response: CancellationStatus = CancellationRequestSent): OngoingStubbing[Future[CancellationStatus]] =
+  def cancelDeclarationResponse(
+    response: CancellationResult = CancellationResult(CancellationRequestSent, Some("conversationId"))
+  ): OngoingStubbing[Future[CancellationResult]] =
     when(mockCustomsDeclareExportsConnector.createCancellation(any())(any(), any())).thenReturn(Future.successful(response))
 
   def fetchSubmission(id: String, submission: Submission): OngoingStubbing[Future[Option[Submission]]] =

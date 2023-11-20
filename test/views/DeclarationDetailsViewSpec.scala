@@ -116,11 +116,11 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
     )
   }
 
-  private def createView(submission: Submission, declarationType: AdditionalDeclarationType = STANDARD_PRE_LODGED)(
+  private def createView(submission: Submission, additionalDecType: AdditionalDeclarationType = STANDARD_PRE_LODGED)(
     implicit injector: OverridableInjector
   ): Appendable = {
     val page = injector.instanceOf[declaration_details]
-    page(submission, declarationType)(verifiedEmailRequest(), messages)
+    page(submission, additionalDecType)(verifiedEmailRequest(), messages)
   }
 
   "Declaration details page" should {
