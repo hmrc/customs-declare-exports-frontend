@@ -493,7 +493,7 @@ class CustomsDeclareExportsConnectorISpec extends ConnectorISpec with ExportsDec
 
     "return payload" in {
       stubForExports(
-        post("/cancellations")
+        post("/cancellation-request")
           .willReturn(
             aResponse()
               .withStatus(Status.OK)
@@ -508,7 +508,7 @@ class CustomsDeclareExportsConnectorISpec extends ConnectorISpec with ExportsDec
       await(connector.createCancellation(cancellation))
 
       WireMock.verify(
-        postRequestedFor(urlEqualTo("/cancellations"))
+        postRequestedFor(urlEqualTo("/cancellation-request"))
           .withRequestBody(containing(json(cancellation)))
       )
     }
