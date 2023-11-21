@@ -98,19 +98,22 @@ object SummaryHelper {
       )
 
   def hasTransportData(declaration: ExportsDeclaration): Boolean = {
-    val transport = declaration.transport
     val locations = declaration.locations
+    val transport = declaration.transport
+
+    locations.supervisingCustomsOffice.isDefined ||
+    locations.warehouseIdentification.isDefined ||
+    locations.inlandOrBorder.isDefined ||
+    locations.inlandModeOfTransportCode.isDefined ||
     transport.expressConsignment.isDefined ||
     transport.transportPayment.isDefined ||
     transport.containers.isDefined ||
     transport.borderModeOfTransportCode.isDefined ||
+    transport.meansOfTransportOnDepartureIDNumber.isDefined ||
     transport.meansOfTransportOnDepartureType.isDefined ||
     transport.meansOfTransportCrossingTheBorderIDNumber.isDefined ||
     transport.meansOfTransportCrossingTheBorderType.isDefined ||
-    transport.transportCrossingTheBorderNationality.isDefined ||
-    locations.warehouseIdentification.isDefined ||
-    locations.supervisingCustomsOffice.isDefined ||
-    locations.inlandModeOfTransportCode.isDefined
+    transport.transportCrossingTheBorderNationality.isDefined
   }
 
   def showItemsCard(declaration: ExportsDeclaration, actionsEnabled: Boolean): Boolean =

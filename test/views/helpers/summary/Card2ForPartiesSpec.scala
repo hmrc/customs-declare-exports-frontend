@@ -317,7 +317,6 @@ class Card2ForPartiesSpec extends UnitViewSpec with ExportsTestHelper with Injec
   "Card2ForParties.backLink" when {
 
     "the declaration has Authorisation Holders" should {
-
       "go to AuthorisationHolderSummaryController" in {
         val request = journeyRequest(aDeclaration(withAuthorisationHolders(AuthorisationHolder(None, None, None))))
         card2ForParties.backLink(request) mustBe AuthorisationHolderSummaryController.displayPage
@@ -327,7 +326,6 @@ class Card2ForPartiesSpec extends UnitViewSpec with ExportsTestHelper with Injec
     "the declaration has no Authorisation Holders" should {
 
       "go to AuthorisationProcedureCodeChoiceController" when {
-
         List(STANDARD, SIMPLIFIED, SUPPLEMENTARY).foreach { declarationType =>
           s"on $declarationType journeys" in {
             val request = journeyRequest(aDeclaration(withType(declarationType)))
@@ -337,7 +335,6 @@ class Card2ForPartiesSpec extends UnitViewSpec with ExportsTestHelper with Injec
       }
 
       "go to AuthorisationHolderSummaryController" when {
-
         List(OCCASIONAL, CLEARANCE).foreach { declarationType =>
           s"on $declarationType journeys" in {
             val request = journeyRequest(aDeclaration(withType(declarationType)))

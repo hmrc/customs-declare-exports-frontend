@@ -19,7 +19,9 @@ package views.helpers.summary
 import controllers.declaration.routes._
 import models.DeclarationType.{STANDARD, SUPPLEMENTARY}
 import models.ExportsDeclaration
+import models.requests.JourneyRequest
 import play.api.i18n.Messages
+import play.api.mvc.Call
 import play.twirl.api.{Html, HtmlFormat}
 import uk.gov.hmrc.govukfrontend.views.html.components.{GovukSummaryList, SummaryList}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
@@ -28,13 +30,17 @@ import views.helpers.summary.SummaryHelper.hasTransactionData
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class Card4ForTransactions @Inject() (govukSummaryList: GovukSummaryList, documentsHelper: DocumentsHelper) extends SummaryHelper {
+class Card4ForTransactions @Inject() (govukSummaryList: GovukSummaryList, documentsHelper: DocumentsHelper) extends SummaryCard {
 
   def eval(declaration: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages): Html =
     if (hasTransactionData(declaration)) content(declaration, actionsEnabled) else HtmlFormat.empty
 
   def content(declaration: ExportsDeclaration, actionsEnabled: Boolean)(implicit messages: Messages): Html =
     govukSummaryList(SummaryList(rows(declaration, actionsEnabled), card(4)))
+
+  def backLink(implicit request: JourneyRequest[_]): Call = PreviousDocumentsSummaryController.displayPage
+
+  def continueTo(implicit request: JourneyRequest[_]): Call = ItemsSummaryController.displayItemsSummaryPage
 
   private def rows(declaration: ExportsDeclaration, actionsEnabled: Boolean)(implicit messages: Messages): Seq[SummaryListRow] =
     (
