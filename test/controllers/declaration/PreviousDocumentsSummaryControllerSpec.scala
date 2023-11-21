@@ -17,7 +17,7 @@
 package controllers.declaration
 
 import base.ControllerSpec
-import controllers.declaration.routes.ItemsSummaryController
+import controllers.declaration.routes.{PreviousDocumentsController, SectionSummaryController}
 import forms.common.YesNoAnswer
 import forms.declaration.Document
 import org.mockito.ArgumentCaptor
@@ -102,7 +102,7 @@ class PreviousDocumentsSummaryControllerSpec extends ControllerSpec {
         val result = controller.displayPage(getRequest())
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe routes.PreviousDocumentsController.displayPage
+        thePageNavigatedTo mustBe PreviousDocumentsController.displayPage
       }
 
       "user answer Yes to add additional document" in {
@@ -113,7 +113,7 @@ class PreviousDocumentsSummaryControllerSpec extends ControllerSpec {
         val result = controller.submit()(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe routes.PreviousDocumentsController.displayPage
+        thePageNavigatedTo mustBe PreviousDocumentsController.displayPage
       }
 
       "user answer Yes to add additional document in error-fix ode" in {
@@ -124,12 +124,11 @@ class PreviousDocumentsSummaryControllerSpec extends ControllerSpec {
         val result = controller.submit()(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe routes.PreviousDocumentsController.displayPage
+        thePageNavigatedTo mustBe PreviousDocumentsController.displayPage
       }
     }
 
     "return 303 (SEE_OTHER) and redirect to Items summary page" when {
-
       "user answr No" in {
         withNewCaching(aDeclaration(withPreviousDocuments(document)))
 
@@ -138,7 +137,7 @@ class PreviousDocumentsSummaryControllerSpec extends ControllerSpec {
         val result = controller.submit()(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe ItemsSummaryController.displayAddItemPage
+        thePageNavigatedTo mustBe SectionSummaryController.displayPage(4)
       }
     }
   }

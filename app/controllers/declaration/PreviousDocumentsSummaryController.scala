@@ -17,7 +17,7 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.declaration.routes.ItemsSummaryController
+import controllers.declaration.routes.{PreviousDocumentsController, SectionSummaryController}
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
@@ -45,7 +45,7 @@ class PreviousDocumentsSummaryController @Inject() (
     request.cacheModel.previousDocuments.map(_.documents) match {
       case Some(documents) if documents.nonEmpty => Ok(previousDocumentsSummary(form, documents))
 
-      case _ => navigator.continueTo(routes.PreviousDocumentsController.displayPage)
+      case _ => navigator.continueTo(PreviousDocumentsController.displayPage)
     }
   }
 
@@ -58,8 +58,8 @@ class PreviousDocumentsSummaryController @Inject() (
           BadRequest(previousDocumentsSummary(formWithErrors, previousDocuments))
         },
         _.answer match {
-          case YesNoAnswers.yes => navigator.continueTo(routes.PreviousDocumentsController.displayPage)
-          case YesNoAnswers.no  => navigator.continueTo(ItemsSummaryController.displayAddItemPage)
+          case YesNoAnswers.yes => navigator.continueTo(PreviousDocumentsController.displayPage)
+          case YesNoAnswers.no  => navigator.continueTo(SectionSummaryController.displayPage(4))
         }
       )
   }
