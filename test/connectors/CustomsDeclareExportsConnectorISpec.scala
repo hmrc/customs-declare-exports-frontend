@@ -23,7 +23,7 @@ import com.github.tomakehurst.wiremock.client.WireMock._
 import config.featureFlags.DeclarationAmendmentsConfig
 import forms.Lrn
 import mock.FeatureFlagMocks
-import models.CancellationStatus.CancellationStatusWrites
+import models.CancellationStatus.CancellationResult
 import models.declaration.notifications.Notification
 import models.declaration.submissions.RequestType.SubmissionRequest
 import models.declaration.submissions.StatusGroup.ActionRequiredStatuses
@@ -493,18 +493,22 @@ class CustomsDeclareExportsConnectorISpec extends ConnectorISpec with ExportsDec
 
     "return payload" in {
       stubForExports(
-        post("/cancellations")
+        post("/cancellation-request")
           .willReturn(
             aResponse()
               .withStatus(Status.OK)
-              .withBody(Json.toJson(CancellationRequestSent)(CancellationStatusWrites.writes _).toString())
+              .withBody(
+                Json
+                  .toJson(CancellationResult(CancellationRequestSent, Some("conversationId")))(CancellationResult.cancellationResultFormat.writes _)
+                  .toString()
+              )
           )
       )
 
       await(connector.createCancellation(cancellation))
 
       WireMock.verify(
-        postRequestedFor(urlEqualTo("/cancellations"))
+        postRequestedFor(urlEqualTo("/cancellation-request"))
           .withRequestBody(containing(json(cancellation)))
       )
     }

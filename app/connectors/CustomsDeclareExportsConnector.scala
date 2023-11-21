@@ -29,6 +29,7 @@ import play.api.libs.json.{Json, Writes}
 import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http.{HeaderCarrier, HeaderNames, HttpClient}
 import config.featureFlags.DeclarationAmendmentsConfig
+import models.CancellationStatus.CancellationResult
 import models.declaration.submissions.EnhancedStatus.EnhancedStatus
 import models.declaration.DeclarationStatus.{AMENDMENT_DRAFT, DRAFT, INITIAL}
 import play.api.http.Status.CREATED
@@ -224,9 +225,9 @@ class CustomsDeclareExportsConnector @Inject() (
       }
   }
 
-  def createCancellation(cancellation: CancelDeclaration)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[CancellationStatus] = {
+  def createCancellation(cancellation: CancelDeclaration)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[CancellationResult] = {
     logPayload("Create Cancellation Request", cancellation)
-    httpClient.POST[CancelDeclaration, CancellationStatus](getUrl(s"${appConfig.cancelDeclarationPath}"), cancellation)
+    httpClient.POST[CancelDeclaration, CancellationResult](getUrl(s"${appConfig.cancelDeclarationPath}"), cancellation)
   }
 
   def getVerifiedEmailAddress(eori: EORI)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[Email]] =
