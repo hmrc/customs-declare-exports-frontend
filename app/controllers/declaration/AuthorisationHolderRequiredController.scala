@@ -17,7 +17,7 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.declaration.routes._
+import controllers.declaration.routes.{AuthorisationHolderAddController, AuthorisationHolderSummaryController, SectionSummaryController}
 import controllers.helpers.AuthorisationHolderHelper.{authorisationHolders, userCanLandOnIsAuthRequiredPage}
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
@@ -72,7 +72,7 @@ class AuthorisationHolderRequiredController @Inject() (
   private def nextPage(yesNoAnswer: YesNoAnswer): Call =
     yesNoAnswer.answer match {
       case YesNoAnswers.yes => AuthorisationHolderAddController.displayPage
-      case YesNoAnswers.no  => DestinationCountryController.displayPage
+      case YesNoAnswers.no  => SectionSummaryController.displayPage(2)
     }
 
   private def updateCache(yesNoAnswer: Option[YesNoAnswer])(implicit r: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =

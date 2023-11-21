@@ -49,10 +49,10 @@ class Card6ForTransport @Inject() (govukSummaryList: GovukSummaryList) extends S
       transport.transportCrossingTheBorderNationality.isDefined ||
       transport.containers.isDefined
 
-    if (hasData) displayCard(declaration, actionsEnabled) else HtmlFormat.empty
+    if (hasData) content(declaration, actionsEnabled) else HtmlFormat.empty
   }
 
-  private def displayCard(declaration: ExportsDeclaration, actionsEnabled: Boolean)(implicit messages: Messages): Html =
+  def content(declaration: ExportsDeclaration, actionsEnabled: Boolean)(implicit messages: Messages): Html =
     govukSummaryList(SummaryList(rows(declaration, actionsEnabled), card(6)))
 
   private def rows(declaration: ExportsDeclaration, actionsEnabled: Boolean)(implicit messages: Messages): Seq[SummaryListRow] =

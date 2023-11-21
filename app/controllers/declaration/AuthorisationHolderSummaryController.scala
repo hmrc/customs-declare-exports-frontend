@@ -17,7 +17,7 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.declaration.routes.{AuthorisationHolderAddController, DestinationCountryController}
+import controllers.declaration.routes.{AuthorisationHolderAddController, SectionSummaryController}
 import controllers.helpers.AuthorisationHolderHelper.authorisationHolders
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
@@ -53,7 +53,7 @@ class AuthorisationHolderSummaryController @Inject() (
         formWithErrors => BadRequest(authorisationHolderPage(formWithErrors, authorisationHolders)),
         _.answer match {
           case YesNoAnswers.yes => navigator.continueTo(AuthorisationHolderAddController.displayPage)
-          case YesNoAnswers.no  => navigator.continueTo(DestinationCountryController.displayPage)
+          case YesNoAnswers.no  => navigator.continueTo(SectionSummaryController.displayPage(2))
         }
       )
   }

@@ -20,16 +20,17 @@ import controllers.declaration.routes
 import controllers.routes.ChoiceController
 import forms.declaration._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypePage
+import forms.declaration.authorisationHolder.{AuthorisationHolder, AuthorisationHolderRequired, AuthorisationHolderSummary}
 import forms.declaration.carrier.CarrierDetails
 import forms.declaration.commodityMeasure.SupplementaryUnits
-import forms.declaration.countries.Countries.RoutingCountryPage
-import forms.declaration.authorisationHolder.{AuthorisationHolder, AuthorisationHolderRequired, AuthorisationHolderSummary}
+import forms.declaration.countries.Countries.{DestinationCountryPage, RoutingCountryPage}
 import forms.declaration.officeOfExit.OfficeOfExit
 import forms.declaration.procedurecodes.{AdditionalProcedureCode, ProcedureCode}
 import forms.{DeclarationPage, Lrn}
 import models.ExportsDeclaration
 import models.declaration.ExportItem
 import play.api.mvc.Call
+import views.helpers.summary.Card2ForParties
 
 trait CommonNavigator extends CacheDependentNavigators {
 
@@ -52,6 +53,7 @@ trait CommonNavigator extends CacheDependentNavigators {
     case TraderReference               => routes.DucrChoiceController.displayPage
     case ConfirmDucr                   => routes.TraderReferenceController.displayPage
     case RoutingCountryPage            => routes.RoutingCountriesController.displayRoutingQuestion
+    case DestinationCountryPage        => routes.SectionSummaryController.displayPage(2)
   }
 
   val commonItem: PartialFunction[DeclarationPage, String => Call] = {
@@ -69,7 +71,8 @@ trait CommonNavigator extends CacheDependentNavigators {
   val commonCacheDependent: PartialFunction[DeclarationPage, ExportsDeclaration => Call] = {
     case AuthorisationHolderRequired      => authorisationHolderRequiredPreviousPage
     case AuthorisationHolder              => authorisationHolderAddPreviousPage
-    case AuthorisationHolderSummary       => authorisationHolderSummaryPreviousPage
+    case AuthorisationHolderSummary       => authorisationHolderRequiredPreviousPage
+    case Card2ForParties                  => card2ForPartiesPreviousPage
     case SupervisingCustomsOffice         => supervisingCustomsOfficePreviousPage
     case AuthorisationProcedureCodeChoice => authorisationProcedureCodeChoicePreviousPage
     case OfficeOfExit                     => officeOfExitPreviousPage

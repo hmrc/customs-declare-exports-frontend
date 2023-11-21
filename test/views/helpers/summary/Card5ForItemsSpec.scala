@@ -63,7 +63,7 @@ class Card5ForItemsSpec extends UnitViewSpec with ExportsTestHelper with Injecto
   private val card5ForItems = instanceOf[Card5ForItems]
 
   private def createView(decl: ExportsDeclaration = declaration, actionEnabled: Boolean = true): Html =
-    card5ForItems.eval(decl, actionEnabled)(request, messages)
+    card5ForItems.eval(decl, actionEnabled)(messages)
 
   "Items card" when {
 
@@ -184,17 +184,11 @@ class Card5ForItemsSpec extends UnitViewSpec with ExportsTestHelper with Injecto
   def checkCard(view: Appendable, withItems: Boolean = false): Assertion = {
     view.getElementsByTag("h2").text mustBe messages("declaration.summary.section.5")
 
-    if (withItems) {
-      val form = view.getElementsByTag("form").first
-      form.attr("action").text() mustBe ItemsSummaryController.addFirstItem.url
+    val link = view.getElementsByTag("a").first
+    link.text mustBe messages("declaration.summary.items.add")
 
-      val input = form.getElementsByClass("input-submit").first
-      input.attr("value") mustBe messages("declaration.summary.items.add")
-    } else {
-      val link = view.getElementsByTag("a").last
-      link.attr("href") mustBe ItemsSummaryController.displayAddItemPage.url
-      link.text mustBe messages("declaration.summary.items.add")
-    }
+    val expectedCall = if (withItems) ItemsSummaryController.addAdditionalItem else ItemsSummaryController.displayAddItemPage
+    link.attr("href") mustBe expectedCall.url
   }
 
   def checkNoItemsCard(declaration: ExportsDeclaration): Assertion = {

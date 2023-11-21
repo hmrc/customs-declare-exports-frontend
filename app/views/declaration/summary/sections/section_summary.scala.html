@@ -14,15 +14,11 @@
  * limitations under the License.
  *@
 
-@import models.declaration.submissions.EnhancedStatus.ERRORS
 @import models.requests.JourneyRequest
 @import views.helpers.{BackButton, Title}
-@import views.helpers.summary.sections._
-@import views.html.components.gds._
-@import views.html.components._
-@import views.html.declaration.summary.sections._
-@import uk.gov.hmrc.govukfrontend.views.html.components._
-@import forms.DeclarationPage
+@import views.helpers.summary.SummaryCard
+@import views.html.components.gds.{exitAndCompleteLater, gdsMainTemplate, linkButton}
+@import views.html.components.heading
 
 @this(
     gdsMainTemplate: gdsMainTemplate,
@@ -30,20 +26,19 @@
     linkButton: linkButton
 )
 
-@(sectionCard: SectionCard)(implicit request: JourneyRequest[AnyContent], messages: Messages)
+@(summaryCard: SummaryCard)(implicit request: JourneyRequest[_], messages: Messages)
 
 @gdsMainTemplate(
     title = Title("declaration.summary.normal-header"),
-    backButton = Some(BackButton(messages("site.back"), sectionCard.backLink)),
+    backButton = Some(BackButton(messages("site.back"), summaryCard.backLink)),
     useCustomContentWidth = true
 ) {
-
     @heading(messages("declaration.summary.normal-header"))
 
-    @sectionCard.eval(request.cacheModel)
+    @summaryCard.content(request.cacheModel)
 
     <div class="govuk-button-group govuk-!-margin-top-9">
-        @linkButton("site.continue", sectionCard.continueTo)
+        @linkButton("site.continue", summaryCard.continueTo)
     </div>
 
     <div class="govuk-body">

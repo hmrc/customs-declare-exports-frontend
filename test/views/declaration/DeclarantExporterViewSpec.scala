@@ -86,7 +86,7 @@ class DeclarantExporterViewSpec extends PageWithButtonsSpec with Injector {
     }
 
     onJourney(STANDARD, SIMPLIFIED, OCCASIONAL) { implicit request =>
-      "display 'Back' button that links to 'Link DUCR to a MUCR' page" in {
+      "display 'Back' button that links to the /summary-section/1 page" in {
         val backButton = createView().getElementById("back-link")
 
         backButton must containMessage(backCaption)
@@ -95,7 +95,7 @@ class DeclarantExporterViewSpec extends PageWithButtonsSpec with Injector {
     }
 
     onSupplementary { implicit request =>
-      "display 'Back' button that links to 'Are you the exporter' page" in {
+      "display 'Back' button that links to the /summary-section/1 page" in {
         val backButton = createView().getElementById("back-link")
 
         backButton must containMessage(backCaption)

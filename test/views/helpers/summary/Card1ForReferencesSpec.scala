@@ -24,7 +24,7 @@ import forms.common.YesNoAnswer.YesNoAnswers.yes
 import forms.declaration.ConsignmentReferences
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.STANDARD_PRE_LODGED
 import forms.{Ducr, Lrn, Mrn}
-import models.DeclarationType.SUPPLEMENTARY
+import models.DeclarationType._
 import models.declaration.DeclarationStatus._
 import services.cache.ExportsTestHelper
 import views.declaration.spec.UnitViewSpec
@@ -183,6 +183,61 @@ class Card1ForReferencesSpec extends UnitViewSpec with ExportsTestHelper with In
         checkSummaryRow(view.getElementsByClass("lrn"), "references.lrn", lrn, None, "ign")
         checkSummaryRow(view.getElementsByClass("link-ducr-to-mucr"), "references.linkDucrToMucr", yes, None, "ign")
         checkSummaryRow(view.getElementsByClass("mucr"), "references.mucr", mucr, None, "ign")
+      }
+    }
+  }
+
+  "Card1ForReferences.content" should {
+    "return the expected CYA card" in {
+      val cardContent = card1ForReferences.content(declaration)
+      cardContent.getElementsByClass("references-card").text mustBe messages("declaration.summary.section.1")
+    }
+  }
+
+  "Card1ForReferences.backLink" when {
+
+    "on SUPPLEMENTARY journeys" should {
+      "go to ConsignmentReferencesController" in {
+        val request = journeyRequest(aDeclaration(withType(SUPPLEMENTARY)))
+        card1ForReferences.backLink(request) mustBe ConsignmentReferencesController.displayPage
+      }
+    }
+
+    List(STANDARD, SIMPLIFIED, OCCASIONAL, CLEARANCE).foreach { declarationType =>
+      s"on $declarationType journeys and" should {
+
+        "go to LinkDucrToMucrController" when {
+          "mucr isEmpty" in {
+            val request = journeyRequest(aDeclaration(withType(declarationType)))
+            card1ForReferences.backLink(request) mustBe LinkDucrToMucrController.displayPage
+          }
+        }
+
+        "go to MucrController" when {
+          "mucr has been answered" in {
+            val request = journeyRequest(aDeclaration(withType(declarationType), withMucr()))
+            card1ForReferences.backLink(request) mustBe MucrController.displayPage
+          }
+        }
+      }
+    }
+  }
+
+  "Card1ForReferences.continueTo" when {
+
+    "on CLEARANCE journeys" should {
+      "go to EntryIntoDeclarantsRecordsController" in {
+        val request = journeyRequest(aDeclaration(withType(CLEARANCE)))
+        card1ForReferences.continueTo(request) mustBe EntryIntoDeclarantsRecordsController.displayPage
+      }
+    }
+
+    List(STANDARD, SIMPLIFIED, OCCASIONAL, SUPPLEMENTARY).foreach { declarationType =>
+      s"on $declarationType journeys and" should {
+        "go to DeclarantExporterController" in {
+          val request = journeyRequest(aDeclaration(withType(declarationType)))
+          card1ForReferences.continueTo(request) mustBe DeclarantExporterController.displayPage
+        }
       }
     }
   }
