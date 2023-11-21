@@ -18,7 +18,7 @@ package views.declaration.previousDocuments
 
 import base.Injector
 import config.AppConfig
-import controllers.declaration.routes.{NatureOfTransactionController, OfficeOfExitController, PreviousDocumentsSummaryController}
+import controllers.declaration.routes._
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.AuthorisationProcedureCodeChoice.{Choice1007, Choice1040, ChoiceOthers}
 import forms.declaration.Document.form
@@ -264,8 +264,8 @@ class PreviousDocumentsViewSpec extends PageWithButtonsSpec with Injector with U
     onJourney(CLEARANCE, OCCASIONAL, SIMPLIFIED) { implicit request =>
       "display 'Back' button that links to 'Office of Exit' page" in {
         val backButton = createView().getElementById("back-link")
-        backButton must containMessage("site.backToPreviousQuestion")
-        backButton must haveHref(OfficeOfExitController.displayPage)
+        backButton must containMessage("site.back")
+        backButton must haveHref(SectionSummaryController.displayPage(3))
       }
     }
 

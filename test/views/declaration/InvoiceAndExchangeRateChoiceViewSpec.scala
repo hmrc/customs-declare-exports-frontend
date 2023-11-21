@@ -17,7 +17,7 @@
 package views.declaration
 
 import base.Injector
-import controllers.declaration.routes.OfficeOfExitController
+import controllers.declaration.routes.SectionSummaryController
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.form
 import models.DeclarationType.{STANDARD, SUPPLEMENTARY}
@@ -45,8 +45,8 @@ class InvoiceAndExchangeRateChoiceViewSpec extends PageWithButtonsSpec with Inje
 
       "display 'Back' button to the /office-of-exit page" in {
         val backButton = view.getElementById("back-link")
-        backButton must containMessage(backToPreviousQuestionCaption)
-        backButton must haveHref(OfficeOfExitController.displayPage)
+        backButton must containMessage(backCaption)
+        backButton must haveHref(SectionSummaryController.displayPage(3))
       }
 
       "display header" in {

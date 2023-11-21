@@ -17,7 +17,7 @@
 package views.declaration.previousDocuments
 
 import base.Injector
-import controllers.declaration.routes.{NatureOfTransactionController, OfficeOfExitController}
+import controllers.declaration.routes.{NatureOfTransactionController, SectionSummaryController}
 import forms.common.YesNoAnswer.form
 import forms.declaration.Document
 import models.DeclarationType
@@ -129,8 +129,8 @@ class PreviousDocumentsSummaryViewSpec extends PageWithButtonsSpec with Injector
         val specificRequest = journeyRequest(aDeclaration(withType(request.declarationType), withOfficeOfExit("officeId")))
 
         val backButton = createView()(specificRequest).getElementById("back-link")
-        backButton must containMessage("site.backToPreviousQuestion")
-        backButton must haveHref(OfficeOfExitController.displayPage)
+        backButton must containMessage("site.back")
+        backButton must haveHref(SectionSummaryController.displayPage(3))
       }
     }
   }

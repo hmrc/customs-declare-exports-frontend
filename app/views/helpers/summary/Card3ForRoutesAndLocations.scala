@@ -17,11 +17,14 @@
 package views.helpers.summary
 
 import connectors.CodeListConnector
-import controllers.declaration.routes.{DestinationCountryController, LocationOfGoodsController, OfficeOfExitController, RoutingCountriesController}
+import controllers.declaration.routes._
 import forms.declaration.LocationOfGoods.suffixForGVMS
 import models.ExportsDeclaration
+import models.DeclarationType._
 import models.declaration.Locations
+import models.requests.JourneyRequest
 import play.api.i18n.Messages
+import play.api.mvc.Call
 import play.twirl.api.{Html, HtmlFormat}
 import services.Countries
 import uk.gov.hmrc.govukfrontend.views.html.components.{GovukSummaryList, SummaryList}
@@ -33,7 +36,7 @@ import javax.inject.{Inject, Singleton}
 @Singleton
 class Card3ForRoutesAndLocations @Inject() (govukSummaryList: GovukSummaryList, countryHelper: CountryHelper)(
   implicit codeListConnector: CodeListConnector
-) extends SummaryHelper {
+) extends SummaryCard {
 
   def eval(declaration: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages): Html = {
     val locations = declaration.locations
@@ -44,11 +47,11 @@ class Card3ForRoutesAndLocations @Inject() (govukSummaryList: GovukSummaryList, 
         locations.goodsLocation.isDefined |
         locations.officeOfExit.isDefined
 
-    if (hasData) content(locations, actionsEnabled) else HtmlFormat.empty
+    if (hasData) content(declaration, actionsEnabled) else HtmlFormat.empty
   }
 
-  def content(locations: Locations, actionsEnabled: Boolean)(implicit messages: Messages): Html =
-    govukSummaryList(SummaryList(rows(locations, actionsEnabled), card(3)))
+  def content(declaration: ExportsDeclaration, actionsEnabled: Boolean)(implicit messages: Messages): Html =
+    govukSummaryList(SummaryList(rows(declaration.locations, actionsEnabled), card(3)))
 
   private def rows(locations: Locations, actionsEnabled: Boolean)(implicit messages: Messages): Seq[SummaryListRow] =
     List(
@@ -116,4 +119,13 @@ class Card3ForRoutesAndLocations @Inject() (govukSummaryList: GovukSummaryList, 
         changeLink(OfficeOfExitController.displayPage, "locations.officeOfExit", actionsEnabled)
       )
     }
+
+  def backLink(implicit request: JourneyRequest[_]): Call = OfficeOfExitController.displayPage
+
+  def continueTo(implicit request: JourneyRequest[_]): Call =
+    request.declarationType match {
+      case SUPPLEMENTARY | STANDARD            => InvoiceAndExchangeRateChoiceController.displayPage
+      case OCCASIONAL | SIMPLIFIED | CLEARANCE => PreviousDocumentsSummaryController.displayPage
+    }
+
 }
