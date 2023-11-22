@@ -34,6 +34,7 @@ class SectionSummaryControllerSpec extends ControllerWithoutFormSpec with Option
   val mockCard1ForReferences = mock[Card1ForReferences]
   val mockCard2ForParties = mock[Card2ForParties]
   val mockSection3Card = mock[Card3ForRoutesAndLocations]
+  val mockSection6CardForTransport = mock[Card6ForTransport]
 
   val controller = new SectionSummaryController(
     mockAuthAction,
@@ -42,7 +43,8 @@ class SectionSummaryControllerSpec extends ControllerWithoutFormSpec with Option
     mockPage,
     mockCard1ForReferences,
     mockCard2ForParties,
-    mockSection3Card
+    mockSection3Card,
+    mockSection6CardForTransport
   )
 
   def verifyPage(summaryCard: SummaryCard): HtmlFormat.Appendable =

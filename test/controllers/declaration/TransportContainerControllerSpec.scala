@@ -264,7 +264,7 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
       }
     }
 
-    "redirect to summary page" when {
+    "redirect to Section Summary page" when {
 
       "user indicates they do not want to add the first container" in {
         val requestBody = List(ContainerFirst.hasContainerKey -> "No", ContainerFirst.containerIdKey -> "")
@@ -272,7 +272,7 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
 
         await(result) mustBe aRedirectToTheNextPage
         theCacheModelUpdated(2).last.transport.containers mustBe Some(Nil)
-        thePageNavigatedTo mustBe routes.SummaryController.displayPage
+        thePageNavigatedTo mustBe routes.SectionSummaryController.displayPage(6)
       }
 
       "user indicates they do not want to add another container" in {
@@ -280,7 +280,7 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
         val result = controller.submitSummaryAction()(postRequest(body))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe routes.SummaryController.displayPage
+        thePageNavigatedTo mustBe routes.SectionSummaryController.displayPage(6)
       }
 
       "user indicates they do not want to add another container and they are in draft mode" in {
@@ -288,7 +288,7 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
         val result = controller.submitSummaryAction()(postRequest(body))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe routes.SummaryController.displayPage
+        thePageNavigatedTo mustBe routes.SectionSummaryController.displayPage(6)
       }
     }
   }

@@ -318,7 +318,7 @@ class Card6ForTransportSpec extends UnitViewSpec with ExportsTestHelper with Inj
         container1Id must haveSummaryActionsTexts("site.change", "declaration.summary.container.change")
         container1Id must haveSummaryActionWithPlaceholder(TransportContainerController.displayContainerSummary)
 
-        val container1Seals = sealsSummaryListRows.first.getElementsByClass("container-seals-1")
+        val container1Seals = sealsSummaryListRows.first.getElementsByClass("container-1-seals")
         container1Seals must haveSummaryKey(messages("declaration.summary.container.securitySeals"))
         container1Seals must haveSummaryValue("seal1, seal2")
         container1Seals.first.getElementsByClass(summaryActionsClassName).size mustBe 0
@@ -329,7 +329,7 @@ class Card6ForTransportSpec extends UnitViewSpec with ExportsTestHelper with Inj
         container2Id must haveSummaryActionsTexts("site.change", "declaration.summary.container.change")
         container2Id must haveSummaryActionWithPlaceholder(TransportContainerController.displayContainerSummary)
 
-        val container2Seals = sealsSummaryListRows.get(1).getElementsByClass("container-seals-2")
+        val container2Seals = sealsSummaryListRows.get(1).getElementsByClass("container-2-seals")
         container2Seals must haveSummaryKey(messages("declaration.summary.container.securitySeals"))
         container2Seals must haveSummaryValue(messages("declaration.summary.container.securitySeals.none"))
         container2Seals.get(0).getElementsByClass(summaryActionsClassName).size mustBe 0
@@ -350,6 +350,25 @@ class Card6ForTransportSpec extends UnitViewSpec with ExportsTestHelper with Inj
       "'actionsEnabled' is false" in {
         val view = card6ForTransport.eval(declaration, false)(messages)
         view.getElementsByClass(summaryActionsClassName) mustBe empty
+      }
+    }
+
+    "Card6ForTransport.content" should {
+      "return the expected CYA card" in {
+        val cardContent = card6ForTransport.content(declaration)
+        cardContent.getElementsByClass("transport-card").text mustBe messages("declaration.summary.section.6")
+      }
+    }
+
+    "Card6ForTransport.backLink" when {
+      "go to PreviousDocumentsSummaryController" in {
+        card6ForTransport.backLink(journeyRequest()) mustBe TransportContainerController.displayContainerSummary
+      }
+    }
+
+    "Card6ForTransport.continueTo" should {
+      "go to ItemsSummaryController" in {
+        card6ForTransport.continueTo(journeyRequest()) mustBe SummaryController.displayPage
       }
     }
   }

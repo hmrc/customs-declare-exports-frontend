@@ -17,60 +17,44 @@
 package views.helpers.summary
 
 import controllers.declaration.routes._
-import forms.declaration.InlandModeOfTransportCode
 import forms.declaration.ModeOfTransportCode.Empty
 import models.ExportsDeclaration
-import models.declaration.{Container, Transport}
+import models.declaration.{Container, Locations, Transport}
+import models.requests.JourneyRequest
 import play.api.i18n.Messages
+import play.api.mvc.Call
 import play.twirl.api.{Html, HtmlFormat}
 import uk.gov.hmrc.govukfrontend.views.html.components.{GovukSummaryList, SummaryList}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import views.helpers.summary.SummaryHelper.hasTransportData
 
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class Card6ForTransport @Inject() (govukSummaryList: GovukSummaryList) extends SummaryHelper {
+class Card6ForTransport @Inject() (govukSummaryList: GovukSummaryList) extends SummaryCard {
 
-  def eval(declaration: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages): Html = {
-    val transport = declaration.transport
-
-    val hasData = transport.expressConsignment.isDefined ||
-      inlandModeOfTransportCode(declaration).isDefined ||
-      declaration.locations.warehouseIdentification.isDefined ||
-      declaration.locations.supervisingCustomsOffice.isDefined ||
-      declaration.locations.inlandOrBorder.isDefined ||
-      declaration.locations.inlandModeOfTransportCode.isDefined ||
-      transport.meansOfTransportOnDepartureType.isDefined ||
-      transport.meansOfTransportOnDepartureIDNumber.isDefined ||
-      transport.meansOfTransportCrossingTheBorderType.isDefined ||
-      transport.meansOfTransportCrossingTheBorderIDNumber.isDefined ||
-      transport.transportPayment.isDefined ||
-      transport.borderModeOfTransportCode.isDefined ||
-      transport.transportCrossingTheBorderNationality.isDefined ||
-      transport.containers.isDefined
-
-    if (hasData) content(declaration, actionsEnabled) else HtmlFormat.empty
-  }
+  def eval(declaration: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages): Html =
+    if (hasTransportData(declaration)) content(declaration, actionsEnabled) else HtmlFormat.empty
 
   def content(declaration: ExportsDeclaration, actionsEnabled: Boolean)(implicit messages: Messages): Html =
     govukSummaryList(SummaryList(rows(declaration, actionsEnabled), card(6)))
 
   private def rows(declaration: ExportsDeclaration, actionsEnabled: Boolean)(implicit messages: Messages): Seq[SummaryListRow] =
-    (List(
-      borderTransport(declaration.transport, actionsEnabled),
-      warehouseIdentification(declaration, actionsEnabled),
-      supervisingCustomsOffice(declaration, actionsEnabled),
-      inlandOrBorder(declaration, actionsEnabled),
-      inlandModeOfTransport(declaration, actionsEnabled),
-      transportReference(declaration.transport, actionsEnabled),
-      activeTransportType(declaration.transport, actionsEnabled),
-      transportCrossingTheBorder(declaration.transport, actionsEnabled),
-      expressConsignment(declaration.transport, actionsEnabled),
-      transportPayment(declaration.transport, actionsEnabled)
-    ) ++ containers(declaration.transport, actionsEnabled)).flatten
-
-  private def inlandModeOfTransportCode(declaration: ExportsDeclaration): Option[InlandModeOfTransportCode] =
-    declaration.locations.inlandModeOfTransportCode.filterNot(_.inlandModeOfTransportCode contains Empty)
+    (
+      List(
+        borderTransport(declaration.transport, actionsEnabled),
+        warehouseIdentification(declaration.locations, actionsEnabled),
+        supervisingCustomsOffice(declaration.locations, actionsEnabled),
+        inlandOrBorder(declaration.locations, actionsEnabled),
+        inlandModeOfTransport(declaration.locations, actionsEnabled),
+        transportReference(declaration.transport, actionsEnabled),
+        activeTransportType(declaration.transport, actionsEnabled),
+        transportCrossingTheBorder(declaration.transport, actionsEnabled),
+        expressConsignment(declaration.transport, actionsEnabled),
+        transportPayment(declaration.transport, actionsEnabled)
+      )
+        ++ containers(declaration.transport, actionsEnabled)
+    ).flatten
 
   private def borderTransport(transport: Transport, actionsEnabled: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
     transport.borderModeOfTransportCode.map { borderModeOfTransportCode =>
@@ -82,8 +66,8 @@ class Card6ForTransport @Inject() (govukSummaryList: GovukSummaryList) extends S
       )
     }
 
-  private def warehouseIdentification(declaration: ExportsDeclaration, actionsEnabled: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
-    declaration.locations.warehouseIdentification.map { warehouseIdentification =>
+  private def warehouseIdentification(locations: Locations, actionsEnabled: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
+    locations.warehouseIdentification.map { warehouseIdentification =>
       SummaryListRow(
         key(
           if (warehouseIdentification.identificationNumber.isDefined) "transport.warehouse.id"
@@ -95,10 +79,8 @@ class Card6ForTransport @Inject() (govukSummaryList: GovukSummaryList) extends S
       )
     }
 
-  private def supervisingCustomsOffice(declaration: ExportsDeclaration, actionsEnabled: Boolean)(
-    implicit messages: Messages
-  ): Option[SummaryListRow] =
-    declaration.locations.supervisingCustomsOffice.flatMap(_.supervisingCustomsOffice.map { supervisingCustomsOffice =>
+  private def supervisingCustomsOffice(locations: Locations, actionsEnabled: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
+    locations.supervisingCustomsOffice.flatMap(_.supervisingCustomsOffice.map { supervisingCustomsOffice =>
       SummaryListRow(
         key("transport.supervisingOffice"),
         value(supervisingCustomsOffice),
@@ -107,8 +89,8 @@ class Card6ForTransport @Inject() (govukSummaryList: GovukSummaryList) extends S
       )
     })
 
-  private def inlandOrBorder(declaration: ExportsDeclaration, actionsEnabled: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
-    declaration.locations.inlandOrBorder.map { inlandOrBorder =>
+  private def inlandOrBorder(locations: Locations, actionsEnabled: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
+    locations.inlandOrBorder.map { inlandOrBorder =>
       SummaryListRow(
         key("transport.inlandOrBorder"),
         valueKey(s"declaration.summary.transport.inlandOrBorder.${inlandOrBorder.location}"),
@@ -117,9 +99,9 @@ class Card6ForTransport @Inject() (govukSummaryList: GovukSummaryList) extends S
       )
     }
 
-  private def inlandModeOfTransport(declaration: ExportsDeclaration, actionsEnabled: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
-    inlandModeOfTransportCode(declaration).flatMap {
-      _.inlandModeOfTransportCode.map { inlandModeOfTransportCode =>
+  private def inlandModeOfTransport(locations: Locations, actionsEnabled: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
+    locations.inlandModeOfTransportCode.flatMap {
+      _.inlandModeOfTransportCode.filterNot(_ == Empty).map { inlandModeOfTransportCode =>
         SummaryListRow(
           key("transport.inlandModeOfTransport"),
           valueKey(s"declaration.summary.transport.inlandModeOfTransport.$inlandModeOfTransportCode"),
@@ -130,8 +112,7 @@ class Card6ForTransport @Inject() (govukSummaryList: GovukSummaryList) extends S
     }
 
   private def transportReference(transport: Transport, actionsEnabled: Boolean)(implicit messages: Messages): Option[SummaryListRow] = {
-
-    val meansOfTransportOnDeparture: Seq[String] = List(
+    val meansOfTransportOnDeparture = List(
       transport.meansOfTransportOnDepartureType.map(meansType => messages(s"declaration.summary.transport.departure.meansOfTransport.$meansType")),
       transport.meansOfTransportOnDepartureIDNumber.map(identity)
     ).flatten
@@ -146,28 +127,19 @@ class Card6ForTransport @Inject() (govukSummaryList: GovukSummaryList) extends S
         )
       )
     else None
-
   }
 
   private def activeTransportType(transport: Transport, actionsEnabled: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
-    if (transport.meansOfTransportCrossingTheBorderType.isDefined && transport.meansOfTransportCrossingTheBorderIDNumber.isDefined) {
-
-      val messagesForBorderMeansOfTransport = {
-        (transport.meansOfTransportCrossingTheBorderType, transport.meansOfTransportCrossingTheBorderIDNumber) match {
-          case (Some(meansType), Some(meansId)) => Seq(messages(s"declaration.summary.transport.border.meansOfTransport.$meansType"), meansId)
-          case _                                => Seq.empty
-        }
-      }
-
-      Some(
+    transport.meansOfTransportCrossingTheBorderType.flatMap { meansType =>
+      transport.meansOfTransportCrossingTheBorderIDNumber.map { meansId =>
         SummaryListRow(
           key("transport.border.meansOfTransport.header"),
-          valueHtml(messagesForBorderMeansOfTransport.mkString("<br>")),
+          valueHtml(s"${messages(s"declaration.summary.transport.border.meansOfTransport.$meansType")}<br>$meansId"),
           classes = "active-transport-type",
           changeLink(BorderTransportController.displayPage, "transport.border.meansOfTransport.header", actionsEnabled)
         )
-      )
-    } else None
+      }
+    }
 
   private def transportPayment(transport: Transport, actionsEnabled: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
     transport.transportPayment.map { transportPayment =>
@@ -219,7 +191,6 @@ class Card6ForTransport @Inject() (govukSummaryList: GovukSummaryList) extends S
     }
 
   private def containerRows(container: Container, actionsEnabled: Boolean)(implicit messages: Messages): List[SummaryListRow] = {
-
     val valueOfSeals =
       if (container.seals.isEmpty) messages("declaration.summary.container.securitySeals.none")
       else container.seals.map(_.id).mkString(", ")
@@ -231,8 +202,13 @@ class Card6ForTransport @Inject() (govukSummaryList: GovukSummaryList) extends S
         classes = s"govuk-summary-list__row--no-border container container-${container.sequenceId}",
         changeLink(TransportContainerController.displayContainerSummary, "container", actionsEnabled)
       ),
-      SummaryListRow(key("container.securitySeals"), value(valueOfSeals), classes = s"seal container-seals-${container.sequenceId}")
+      SummaryListRow(key("container.securitySeals"), value(valueOfSeals), classes = s"seal container-${container.sequenceId}-seals")
     )
   }
 
+  override def backLink(implicit request: JourneyRequest[_]): Call =
+    TransportContainerController.displayContainerSummary
+
+  override def continueTo(implicit request: JourneyRequest[_]): Call =
+    SummaryController.displayPage
 }
