@@ -17,7 +17,7 @@
 package views.declaration.declarationitems
 
 import base.Injector
-import controllers.declaration.routes
+import controllers.declaration.routes.SectionSummaryController
 import org.jsoup.nodes.Document
 import services.cache.ExportsTestHelper
 import tools.Stubs
@@ -43,22 +43,18 @@ class ItemsAddItemViewSpec extends UnitViewSpec with ExportsTestHelper with Stub
     val view = createView()
 
     "display 'Back' button" in {
-
-      view.getElementById("back-link") must haveHref(routes.PreviousDocumentsSummaryController.displayPage)
+      view.getElementById("back-link") must haveHref(SectionSummaryController.displayPage(4))
     }
 
     "display section header" in {
-
       view.getElementById("section-header") must containMessage("declaration.section.5")
     }
 
     "display title" in {
-
       view.getElementsByClass("govuk-heading-xl").first() must containMessage("declaration.itemsAdd.title")
     }
 
     "display paragraph" in {
-
       val paragraphs = view.getElementsByClass("govuk-body")
 
       paragraphs.get(0) must containMessage("declaration.itemsAdd.paragraph.1")
@@ -67,11 +63,8 @@ class ItemsAddItemViewSpec extends UnitViewSpec with ExportsTestHelper with Stub
     }
 
     "display 'Add item' button" in {
-
       view must containElementWithID("add")
       view.getElementById("add") must containMessage("site.add.item")
     }
-
   }
-
 }

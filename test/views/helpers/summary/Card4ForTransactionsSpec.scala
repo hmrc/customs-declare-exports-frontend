@@ -152,4 +152,23 @@ class Card4ForTransactionsSpec extends UnitViewSpec with ExportsTestHelper with 
       }
     }
   }
+
+  "Card4ForTransactions.content" should {
+    "return the expected CYA card" in {
+      val cardContent = card4ForTransactions.content(declaration)
+      cardContent.getElementsByClass("transaction-card").text mustBe messages("declaration.summary.section.4")
+    }
+  }
+
+  "Card4ForTransactions.backLink" when {
+    "go to PreviousDocumentsSummaryController" in {
+      card4ForTransactions.backLink(journeyRequest()) mustBe PreviousDocumentsSummaryController.displayPage
+    }
+  }
+
+  "Card4ForTransactions.continueTo" should {
+    "go to ItemsSummaryController" in {
+      card4ForTransactions.continueTo(journeyRequest()) mustBe ItemsSummaryController.displayItemsSummaryPage
+    }
+  }
 }

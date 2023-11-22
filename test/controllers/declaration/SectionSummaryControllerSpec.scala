@@ -34,6 +34,7 @@ class SectionSummaryControllerSpec extends ControllerWithoutFormSpec with Option
   val mockCard1ForReferences = mock[Card1ForReferences]
   val mockCard2ForParties = mock[Card2ForParties]
   val mockSection3Card = mock[Card3ForRoutesAndLocations]
+  val mockCard4ForTransactions = mock[Card4ForTransactions]
 
   val controller = new SectionSummaryController(
     mockAuthAction,
@@ -42,7 +43,8 @@ class SectionSummaryControllerSpec extends ControllerWithoutFormSpec with Option
     mockPage,
     mockCard1ForReferences,
     mockCard2ForParties,
-    mockSection3Card
+    mockSection3Card,
+    mockCard4ForTransactions
   )
 
   def verifyPage(summaryCard: SummaryCard): HtmlFormat.Appendable =
@@ -64,7 +66,7 @@ class SectionSummaryControllerSpec extends ControllerWithoutFormSpec with Option
   "Section Summary controller" must {
 
     "return 200 (OK)" when {
-      val mocks = Array(mockCard1ForReferences, mockCard2ForParties, mockSection3Card)
+      val mocks = Array(mockCard1ForReferences, mockCard2ForParties, mockSection3Card, mockCard4ForTransactions)
 
       for (section <- 1 to 2)
         s"display page method is invoked with section $section" in {
