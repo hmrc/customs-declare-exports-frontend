@@ -14,16 +14,12 @@
  * limitations under the License.
  *@
 
-@import controllers.declaration.routes
 @import models.declaration.ExportItem
 @import models.DeclarationType.{DeclarationType, STANDARD, SUPPLEMENTARY}
 @import play.twirl.api.HtmlFormat
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import views.helpers.Link
-@import views.helpers.ActionItemBuilder.actionSummaryItem
 @import views.helpers.summary.{AdditionalDocumentsHelper, AdditionalInformationHelper, PackageInformationHelper}
 @import views.html.components.gds.{linkContent, summary_list}
-@import views.html.declaration.summary._
 
 @this(
     govukSummaryList: GovukSummaryList,
@@ -32,19 +28,7 @@
     packageInformationHelper: PackageInformationHelper
 )
 
-@(item: ExportItem,
-  itemIdx: Int,
-  declarationType: DeclarationType,
-  actionsEnabled: Boolean = true,
-  hasPreviousItem: Boolean = false
-)(implicit messages: Messages)
-
-@actions(action: => Actions) = @{ if(actionsEnabled) Some(action) else None }
-
-@headerAction = @{
-    if (!actionsEnabled) None
-    else Some(Link(messages("declaration.summary.item.remove"), routes.RemoveItemsSummaryController.displayRemoveItemConfirmationPage(item.id, true)))
-}
+@(item: ExportItem, itemIdx: Int, declarationType: DeclarationType)(implicit messages: Messages)
 
 @itemDisplayNum = @{ itemIdx + 1 }
 
@@ -56,8 +40,6 @@
 @summaryList(
     id = s"declaration-items-summary-$itemDisplayNum",
     subHeading = Some(messages("declaration.summary.item", itemDisplayNum)),
-    headerAction = headerAction,
-    topMargin = if (hasPreviousItem) 9 else 0,
     summaryListRows = Seq(
         item.procedureCodes.flatMap(_.procedureCode).map(data =>
             SummaryListRow(
@@ -67,16 +49,7 @@
                 ),
                 value = Value(
                     content = Text(data)
-                ),
-                actions = actions(Actions(
-                    items = Seq(
-                        actionSummaryItem(
-                            href = routes.ProcedureCodesController.displayPage(item.id).url,
-                            content = HtmlContent(linkContent(messages("site.change"))),
-                            visuallyHiddenText = Some(messages("declaration.summary.item.procedureCode.change", itemDisplayNum))
-                        )
-                    )
-                ))
+                )
             )
         ),
         item.procedureCodes.map(data =>
@@ -87,16 +60,7 @@
                 ),
                 value = Value(
                     content = Text(data.additionalProcedureCodes.mkString(" "))
-                ),
-                actions = actions(Actions(
-                    items = Seq(
-                        actionSummaryItem(
-                            href = routes.AdditionalProcedureCodesController.displayPage(item.id).url,
-                            content = HtmlContent(linkContent(messages("site.change"))),
-                            visuallyHiddenText = Some(messages("declaration.summary.item.additionalProcedureCodes.change", itemDisplayNum))
-                        )
-                    )
-                ))
+                )
             )
         ),
         item.fiscalInformation.map(fiscalInformation =>
@@ -107,16 +71,7 @@
                 ),
                 value = Value(
                     content = Text(fiscalInformation.onwardSupplyRelief)
-                ),
-                actions = actions(Actions(
-                    items = Seq(
-                        actionSummaryItem(
-                            href = routes.FiscalInformationController.displayPage(item.id).url,
-                            content = HtmlContent(linkContent(messages("site.change"))),
-                            visuallyHiddenText = Some(messages("declaration.summary.item.onwardSupplyRelief.change", itemDisplayNum))
-                        )
-                    )
-                ))
+                )
             )
         ),
         item.additionalFiscalReferencesData.map(additionalFiscalReferences =>
@@ -125,16 +80,7 @@
                 key = Key(
                     content = Text(messages("declaration.summary.item.VATdetails"))
                 ),
-                value = Value(HtmlContent(additionalFiscalReferences.references.map(_.value).mkString("<br/>"))),
-                actions = actions(Actions(
-                    items = Seq(
-                        actionSummaryItem(
-                            href = routes.AdditionalFiscalReferencesController.displayPage(item.id).url,
-                            content = HtmlContent(linkContent(messages("site.change"))),
-                            visuallyHiddenText = Some(messages("declaration.summary.item.VATdetails.change", itemDisplayNum))
-                        )
-                    )
-                ))
+                value = Value(HtmlContent(additionalFiscalReferences.references.map(_.value).mkString("<br/>")))
             )
         ),
         item.commodityDetails.map(commodityDetails =>
@@ -145,16 +91,7 @@
                 ),
                 value = Value(
                     content = Text(commodityDetails.combinedNomenclatureCode.getOrElse(""))
-                ),
-                actions = actions(Actions(
-                    items = Seq(
-                        actionSummaryItem(
-                            href = routes.CommodityDetailsController.displayPage(item.id).url,
-                            content = HtmlContent(linkContent(messages("site.change"))),
-                            visuallyHiddenText = Some(messages("declaration.summary.item.commodityCode.change", itemDisplayNum))
-                        )
-                    )
-                ))
+                )
             )
         ),
         item.commodityDetails.map(commodityDetails =>
@@ -165,16 +102,7 @@
                 ),
                 value = Value(
                     content = Text(commodityDetails.descriptionOfGoods.getOrElse(""))
-                ),
-                actions = actions(Actions(
-                    items = Seq(
-                        actionSummaryItem(
-                            href = routes.CommodityDetailsController.displayPage(item.id).url,
-                            content = HtmlContent(linkContent(messages("site.change"))),
-                            visuallyHiddenText = Some(messages("declaration.summary.item.goodsDescription.change", itemDisplayNum))
-                        )
-                    )
-                ))
+                )
             )
         ),
         item.dangerousGoodsCode.map(dangerousGoodsCode =>
@@ -185,16 +113,7 @@
                 ),
                 value = Value(
                     content = Text(dangerousGoodsCode.dangerousGoodsCode.getOrElse(messages("site.no")))
-                ),
-                actions = actions(Actions(
-                    items = Seq(
-                        actionSummaryItem(
-                            href = routes.UNDangerousGoodsCodeController.displayPage(item.id).url,
-                            content = HtmlContent(linkContent(messages("site.change"))),
-                            visuallyHiddenText = Some(messages("declaration.summary.item.unDangerousGoodsCode.change", itemDisplayNum))
-                        )
-                    )
-                ))
+                )
             )
         ),
         item.cusCode.map(cusCode =>
@@ -205,16 +124,7 @@
                 ),
                 value = Value(
                     content = Text(cusCode.cusCode.getOrElse(messages("site.no")))
-                ),
-                actions = actions(Actions(
-                    items = Seq(
-                        actionSummaryItem(
-                            href = routes.CusCodeController.displayPage(item.id).url,
-                            content = HtmlContent(linkContent(messages("site.change"))),
-                            visuallyHiddenText = Some(messages("declaration.summary.item.cusCode.change", itemDisplayNum))
-                        )
-                    )
-                ))
+                )
             )
         ),
         item.taricCodes.map(taricCodes =>
@@ -225,16 +135,7 @@
                 ),
                 value = Value(
                     content = Text(if(taricCodes.isEmpty) messages("site.no") else taricCodes.map(_.taricCode).mkString(", "))
-                ),
-                actions = actions(Actions(
-                    items = Seq(
-                        actionSummaryItem(
-                            href = routes.TaricCodeSummaryController.displayPage(item.id).url,
-                            content = HtmlContent(linkContent(messages("site.change"))),
-                            visuallyHiddenText = Some(messages("declaration.summary.item.taricAdditionalCodes.change", itemDisplayNum))
-                        )
-                    )
-                ))
+                )
             )
         ),
         item.nactCodes.map(nactCodes =>
@@ -245,16 +146,7 @@
                 ),
                 value = Value(
                     content = Text(if(nactCodes.isEmpty) messages("site.no") else nactCodes.map(_.nactCode).mkString(", "))
-                ),
-                actions = actions(Actions(
-                    items = Seq(
-                        actionSummaryItem(
-                            href = routes.NactCodeSummaryController.displayPage(item.id).url,
-                            content = HtmlContent(linkContent(messages("site.change"))),
-                            visuallyHiddenText = Some(messages("declaration.summary.item.nationalAdditionalCodes.change", itemDisplayNum))
-                        )
-                    )
-                ))
+                )
             )
         ),
         item.nactExemptionCode.map( nactCode =>
@@ -265,16 +157,7 @@
                 ),
                 value = Value(
                     content = Text(messages(s"declaration.summary.item.zeroRatedForVat.${nactCode.nactCode}"))
-                ),
-                actions = actions(Actions(
-                    items = Seq(
-                        actionSummaryItem(
-                            href = routes.ZeroRatedForVatController.displayPage(item.id).url,
-                            content = HtmlContent(linkContent(messages("site.change"))),
-                            visuallyHiddenText = Some(messages("declaration.summary.item.zeroRatedForVat.change", itemDisplayNum))
-                        )
-                    )
-                ))
+                )
             )
         ),
         item.statisticalValue.map(statisticalValue =>
@@ -285,22 +168,13 @@
                 ),
                 value = Value(
                     content = Text(statisticalValue.statisticalValue)
-                ),
-                actions = actions(Actions(
-                    items = Seq(
-                        actionSummaryItem(
-                            href = routes.StatisticalValueController.displayPage(item.id).url,
-                            content = HtmlContent(linkContent(messages("site.change"))),
-                            visuallyHiddenText = Some(messages("declaration.summary.item.itemValue.change", itemDisplayNum))
-                        )
-                    )
-                ))
+                )
             )
         )
     )
 )
 
-@multiRowsSection(packageInformationHelper.section(item, actionsEnabled, itemDisplayNum))
+@multiRowsSection(packageInformationHelper.section(item, false, itemDisplayNum))
 
 @summaryList(
     id = s"item-$itemDisplayNum-commodity-summary",
@@ -314,16 +188,7 @@
                 ),
                 value = Value(
                     content = Text(commodityMeasure.grossMass.getOrElse(""))
-                ),
-                actions = actions(Actions(
-                    items = Seq(
-                        actionSummaryItem(
-                            href = routes.CommodityMeasureController.displayPage(item.id).url,
-                            content = HtmlContent(linkContent(messages("site.change"))),
-                            visuallyHiddenText = Some(messages("declaration.summary.item.grossWeight.change", itemDisplayNum))
-                        )
-                    )
-                ))
+                )
             )
         ),
         item.commodityMeasure.map(commodityMeasure =>
@@ -334,16 +199,7 @@
                 ),
                 value = Value(
                     content = Text(commodityMeasure.netMass.getOrElse(""))
-                ),
-                actions = actions(Actions(
-                    items = Seq(
-                        actionSummaryItem(
-                            href = routes.CommodityMeasureController.displayPage(item.id).url,
-                            content = HtmlContent(linkContent(messages("site.change"))),
-                            visuallyHiddenText = Some(messages("declaration.summary.item.netWeight.change", itemDisplayNum))
-                        )
-                    )
-                ))
+                )
             )
         ),
         if (List(STANDARD, SUPPLEMENTARY).contains(declarationType))
@@ -356,16 +212,7 @@
                         ),
                         value = Value(
                             content = Text(supplementaryUnits)
-                        ),
-                        actions = actions(Actions(
-                            items = Seq(
-                                actionSummaryItem(
-                                    href = routes.SupplementaryUnitsController.displayPage(item.id).url,
-                                    content = HtmlContent(linkContent(messages("site.change"))),
-                                    visuallyHiddenText = Some(messages("declaration.summary.item.supplementaryUnits.change", itemDisplayNum))
-                                )
-                            )
-                        ))
+                        )
                     )
                )
             )
@@ -373,6 +220,6 @@
     )
 )
 
-@multiRowsSection(AdditionalInformationHelper.section(item, actionsEnabled, itemDisplayNum))
+@multiRowsSection(AdditionalInformationHelper.section(item, false, itemDisplayNum))
 
-@multiRowsSection(AdditionalDocumentsHelper.section(item, true, actionsEnabled, itemDisplayNum))
+@multiRowsSection(AdditionalDocumentsHelper.section(item, true, false, itemDisplayNum))

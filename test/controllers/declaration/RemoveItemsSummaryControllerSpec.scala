@@ -17,6 +17,7 @@
 package controllers.declaration
 
 import base.ControllerWithoutFormSpec
+import controllers.declaration.routes.{ItemsSummaryController, SectionSummaryController}
 import controllers.helpers.SequenceIdHelper.valueOfEso
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.FiscalInformation.AllowedFiscalInformationAnswers
@@ -48,7 +49,6 @@ class RemoveItemsSummaryControllerSpec
     mockJourneyAction,
     mockExportsCacheService,
     mockCustomsDeclareExportsConnector,
-    navigator,
     mockErrorHandler,
     stubMessagesControllerComponents(),
     cannotRemoveItemPage,
@@ -142,7 +142,7 @@ class RemoveItemsSummaryControllerSpec
           val result = controller.displayRemoveItemConfirmationPage("someItemId")(getRequest())
 
           status(result) mustBe SEE_OTHER
-          thePageNavigatedTo mustBe routes.ItemsSummaryController.displayItemsSummaryPage
+          redirectLocation(result) mustBe Some(ItemsSummaryController.displayItemsSummaryPage.url)
         }
       }
 
@@ -196,13 +196,13 @@ class RemoveItemsSummaryControllerSpec
             verifyTheCacheIsUnchanged()
           }
 
-          "return 303 (SEE_OTHER) and redirect to Items Summary page" in {
+          "return 303 (SEE_OTHER) and redirect to the mini CYA page" in {
             withNewCaching(aDeclaration(withType(request.declarationType), withItem(cachedItem), withItem(secondItem)))
 
             val result = controller.removeItem("someId123")(postRequest(removeItemForm))
 
             status(result) mustBe SEE_OTHER
-            thePageNavigatedTo mustBe routes.ItemsSummaryController.displayItemsSummaryPage
+            redirectLocation(result) mustBe Some(SectionSummaryController.displayPage(5).url)
           }
         }
 
@@ -224,13 +224,13 @@ class RemoveItemsSummaryControllerSpec
             valueOfEso[ExportItem](declaration).value mustBe 2
           }
 
-          "return 303 (SEE_OTHER) and redirect to Items Summary page" in {
+          "return 303 (SEE_OTHER) and redirect to the mini CYA page" in {
             withNewCaching(aDeclaration(withType(request.declarationType), withItem(cachedItem), withItem(secondItem)))
 
             val result = controller.removeItem(itemId)(postRequest(removeItemForm))
 
             status(result) mustBe SEE_OTHER
-            thePageNavigatedTo mustBe routes.ItemsSummaryController.displayItemsSummaryPage
+            redirectLocation(result) mustBe Some(SectionSummaryController.displayPage(5).url)
 
             val items = theCacheModelUpdated.items
             items.size mustBe 1
@@ -248,7 +248,7 @@ class RemoveItemsSummaryControllerSpec
           val result = controller.removeItem(itemId)(postRequest(removeItemForm))
 
           status(result) mustBe SEE_OTHER
-          thePageNavigatedTo mustBe routes.ItemsSummaryController.displayItemsSummaryPage
+          redirectLocation(result) mustBe Some(ItemsSummaryController.displayItemsSummaryPage.url)
 
           verifyTheCacheIsUnchanged()
         }
@@ -260,9 +260,7 @@ class RemoveItemsSummaryControllerSpec
           withNewCaching(
             aDeclaration(withType(request.declarationType), withItem(cachedItem), withItem(secondItem), withParentDeclarationId(parentDeclarationId))
           )
-
           val incorrectRemoveItemForm = Json.obj("yesNo" -> "")
-
           val result = controller.removeItem(itemId)(postRequest(incorrectRemoveItemForm))
 
           status(result) mustBe BAD_REQUEST
@@ -271,8 +269,8 @@ class RemoveItemsSummaryControllerSpec
 
         "throw IllegalStateException if the Item has already been removed" in {
           withNewCaching(aDeclaration(withType(request.declarationType)))
-          val incorrectRemoveItemForm = Json.obj("yesNo" -> "")
 
+          val incorrectRemoveItemForm = Json.obj("yesNo" -> "")
           val result = controller.removeItem(itemId)(postRequest(incorrectRemoveItemForm))
 
           status(result) mustBe INTERNAL_SERVER_ERROR

@@ -103,11 +103,11 @@ class Card5ForItemsSpec extends UnitViewSpec with ExportsTestHelper with Injecto
         rows.size mustBe 4
 
         val item1Heading = view.getElementsByClass("item-1-heading")
-        val call1 = Some(RemoveItemsSummaryController.displayRemoveItemConfirmationPage(item1.id, true))
+        val call1 = Some(RemoveItemsSummaryController.displayRemoveItemConfirmationPage(item1.id, Some(true)))
         checkRow(item1Heading, "1", "", call1)
 
         val item2Heading = view.getElementsByClass("item-2-heading")
-        val call2 = Some(RemoveItemsSummaryController.displayRemoveItemConfirmationPage(item2.id, true))
+        val call2 = Some(RemoveItemsSummaryController.displayRemoveItemConfirmationPage(item2.id, Some(true)))
         checkRow(item2Heading, "2", "", call2)
       }
 
@@ -178,6 +178,25 @@ class Card5ForItemsSpec extends UnitViewSpec with ExportsTestHelper with Injecto
           }
         }
       }
+    }
+  }
+
+  "Card5ForItems.content" should {
+    "return the expected CYA card" in {
+      val cardContent = card5ForItems.content(declaration)
+      cardContent.getElementsByClass("items-card").text mustBe messages("declaration.summary.section.5")
+    }
+  }
+
+  "Card5ForItems.backLink" when {
+    "go to ItemsSummaryController" in {
+      card5ForItems.backLink(journeyRequest()) mustBe ItemsSummaryController.displayItemsSummaryPage
+    }
+  }
+
+  "Card5ForItems.continueTo" should {
+    "go to TransportLeavingTheBorderController" in {
+      card5ForItems.continueTo(journeyRequest()) mustBe TransportLeavingTheBorderController.displayPage
     }
   }
 

@@ -17,34 +17,34 @@
 package views.declaration.declarationitems
 
 import base.Injector
-import controllers.declaration.routes.{ItemsSummaryController, SummaryController}
+import controllers.declaration.routes.{ItemsSummaryController, SectionSummaryController, SummaryController}
 import forms.common.YesNoAnswer
 import models.DeclarationType.{DeclarationType, STANDARD}
-import models.declaration.ExportItem
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
+import org.scalatest.Assertion
 import play.api.data.{Form, FormError}
 import play.api.i18n.Messages
+import play.api.mvc.Call
 import play.twirl.api.HtmlFormat
-import services.cache.ExportsTestHelper
-import tools.Stubs
 import views.components.gds.Styles
-import views.declaration.spec.{PageWithButtonsSpec, UnitViewSpec}
+import views.declaration.spec.PageWithButtonsSpec
 import views.html.declaration.declarationitems.items_remove_item
 import views.tags.ViewTest
 
 @ViewTest
-class ItemsRemoveItemViewSpec extends UnitViewSpec with ExportsTestHelper with Stubs with Injector with PageWithButtonsSpec {
+class ItemsRemoveItemViewSpec extends PageWithButtonsSpec with Injector {
 
   private val page = instanceOf[items_remove_item]
   private val form = YesNoAnswer.form()
   private val itemIdx = 0
   private val itemDisplayNum = itemIdx + 1
-  override val typeAndViewInstance: (DeclarationType, (JourneyRequest[_], Messages) => HtmlFormat.Appendable) =
-    (STANDARD, page(form, exportItem, itemIdx, fromSummary = false)(_, _))
 
-  private def createView(form: Form[YesNoAnswer] = form, item: ExportItem, fromSummary: Boolean = false): Document =
-    page(form, item, itemIdx, fromSummary)(journeyRequest(), messages)
+  override val typeAndViewInstance: (DeclarationType, (JourneyRequest[_], Messages) => HtmlFormat.Appendable) =
+    (STANDARD, page(form, exportItem, itemIdx, None)(_, _))
+
+  private def createView(form: Form[YesNoAnswer] = form, fromSummary: Option[Boolean] = None): Document =
+    page(form, exportItem, itemIdx, fromSummary)(journeyRequest(), messages)
 
   private val exportItem = anItem()
 
@@ -54,23 +54,25 @@ class ItemsRemoveItemViewSpec extends UnitViewSpec with ExportsTestHelper with S
       messages must haveTranslationFor("declaration.itemsRemove.title")
     }
 
-    val view = createView(item = exportItem)
+    val view = createView()
 
     "display 'Back to previous question' button pointing to /declaration-items-list" in {
-      val backButton = view.getElementById("back-link")
-      backButton.text mustBe messages("site.backToPreviousQuestion")
-      backButton must haveHref(ItemsSummaryController.displayItemsSummaryPage)
+      checkBackButton(view, ItemsSummaryController.displayItemsSummaryPage)
+    }
+
+    "display 'Back' button pointing to /summary-section/5" in {
+      val view = createView(fromSummary = Some(false))
+      checkBackButton(view, SectionSummaryController.displayPage(5))
     }
 
     "display 'Back' button pointing to /saved-summary" in {
-      val backButton = createView(item = exportItem, fromSummary = true).getElementById("back-link")
-      backButton.text mustBe messages("site.back")
-      backButton must haveHref(SummaryController.displayPage)
+      val view = createView(fromSummary = Some(true))
+      checkBackButton(view, SummaryController.displayPage)
     }
 
     "display error section" in {
       val formWithErrors = form.copy(errors = Seq(FormError("errorKey", "declaration.cusCode.error.empty")))
-      val view = createView(form = formWithErrors, item = exportItem)
+      val view = createView(form = formWithErrors)
 
       view must haveGovukGlobalErrorSummary
       view must containElementWithClass("govuk-error-summary__list")
@@ -99,8 +101,14 @@ class ItemsRemoveItemViewSpec extends UnitViewSpec with ExportsTestHelper with S
     checkSaveAndContinueButtonIsDisplayed(view)
 
     "display confirm and continue button when editing from summary" in {
-      val button = createView(form, exportItem, true).getElementById("save_and_return_to_summary")
+      val button = createView(fromSummary = Some(true)).getElementById("save_and_return_to_summary")
       button must containMessage("site.confirm_and_continue")
     }
+  }
+
+  private def checkBackButton(view: Document, call: Call): Assertion = {
+    val backButton = view.getElementById("back-link")
+    backButton.text mustBe messages("site.back")
+    backButton must haveHref(call)
   }
 }

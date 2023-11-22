@@ -91,6 +91,23 @@ case class ExportItem(
 
   override def updateSequenceId(sequenceId: Int): ExportItem = copy(sequenceId = sequenceId)
 
+  lazy val isDefined: Boolean =
+    procedureCodes.isDefined ||
+      fiscalInformation.isDefined ||
+      additionalFiscalReferencesData.isDefined ||
+      statisticalValue.isDefined ||
+      commodityDetails.isDefined ||
+      dangerousGoodsCode.isDefined ||
+      cusCode.isDefined ||
+      taricCodes.isDefined ||
+      nactCodes.isDefined ||
+      nactExemptionCode.isDefined ||
+      packageInformation.isDefined ||
+      commodityMeasure.isDefined ||
+      additionalInformation.isDefined ||
+      additionalDocuments.isDefined ||
+      isLicenceRequired.isDefined
+
   def hasFiscalReferences: Boolean =
     fiscalInformation.exists(_.onwardSupplyRelief == yes)
 
