@@ -50,7 +50,7 @@ class Card5ForItems @Inject() (
     if (actionsEnabled && (!declaration.isType(CLEARANCE) || declaration.items.isEmpty)) addItemLink(declaration) else None
 
   private def addItemLink(declaration: ExportsDeclaration)(implicit messages: Messages): Option[Actions] = {
-    val content = HtmlContent(s"""<span aria-hidden="true">${messages("declaration.summary.items.add")}</span>""")
+    val content = HtmlContent(s"""<span>${messages("declaration.summary.items.add")}</span>""")
     val call = if (hasItemsData(declaration)) ItemsSummaryController.addAdditionalItem else ItemsSummaryController.displayAddItemPage
     Some(Actions(items = List(ActionItem(call.url, content, None))))
   }
