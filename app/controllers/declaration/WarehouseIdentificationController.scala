@@ -17,9 +17,11 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
+import controllers.declaration.routes.SupervisingCustomsOfficeController
 import controllers.helpers.SupervisingCustomsOfficeHelper
 import controllers.navigation.Navigator
 import forms.declaration.WarehouseIdentification
+import models.DeclarationType.CLEARANCE
 import models.requests.JourneyRequest
 import models.{DeclarationType, ExportsDeclaration}
 import play.api.data.Form
@@ -60,9 +62,10 @@ class WarehouseIdentificationController @Inject() (
       .fold(
         formWithErrors => Future.successful(BadRequest(page(formWithErrors))),
         updateCache(_).map { declaration =>
-          // Next page should always be '/supervising-customs-office' for CLEARANCE
-          // since Procedure code '1040' is not applicable to this declaration type
-          navigator.continueTo(supervisingCustomsOfficeHelper.landOnOrSkipToNextPage(declaration))
+          navigator.continueTo(
+            if (request.declarationType == CLEARANCE) SupervisingCustomsOfficeController.displayPage
+            else supervisingCustomsOfficeHelper.landOnOrSkipToNextPage(declaration)
+          )
         }
       )
   }

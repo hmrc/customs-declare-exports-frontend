@@ -204,7 +204,7 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec {
         }
       }
 
-      "skip SupervisingCustomsOffice page on submit" when {
+      "display SupervisingCustomsOffice page on submit" when {
         "declaration is EIDR and all declaration's items have '1040' as PC and '000' as unique APC" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withEntryIntoDeclarantsRecords(), modifierForPC1040))
 
@@ -213,7 +213,7 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec {
           val result = controller.saveIdentificationNumber()(postRequest(correctForm))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe DepartureTransportController.displayPage
+          thePageNavigatedTo mustBe SupervisingCustomsOfficeController.displayPage
         }
       }
     }

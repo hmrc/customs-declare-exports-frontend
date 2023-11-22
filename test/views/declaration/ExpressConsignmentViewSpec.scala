@@ -168,8 +168,6 @@ class ExpressConsignmentViewSpec extends UnitViewSpec with CommonMessages with I
         }
       }
 
-      // For Clearance the previous page should always be SupervisingCustomsOffice by any means, as
-      // "1040" as PC is not applicable to this journey type. This test is sort of superfluous then.
       "display a 'Back' button linking to the 'Warehouse Details' page" when {
         postalOrFTIModeOfTransportCodes.foreach { transportCode =>
           s"TransportLeavingTheBorder is '${transportCode.value}'" in {
