@@ -103,11 +103,11 @@ class Card5ForItemsSpec extends UnitViewSpec with ExportsTestHelper with Injecto
         rows.size mustBe 4
 
         val item1Heading = view.getElementsByClass("item-1-heading")
-        val call1 = Some(RemoveItemsSummaryController.displayRemoveItemConfirmationPage(item1.id, Some(true)))
+        val call1 = Some(RemoveItemsSummaryController.displayRemoveItemConfirmationPage(item1.id))
         checkRow(item1Heading, "1", "", call1)
 
         val item2Heading = view.getElementsByClass("item-2-heading")
-        val call2 = Some(RemoveItemsSummaryController.displayRemoveItemConfirmationPage(item2.id, Some(true)))
+        val call2 = Some(RemoveItemsSummaryController.displayRemoveItemConfirmationPage(item2.id))
         checkRow(item2Heading, "2", "", call2)
       }
 

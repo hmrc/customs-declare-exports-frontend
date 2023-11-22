@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import controllers.declaration.RemoveItemsSummaryController.previousPage
 @import controllers.routes.DeclarationDetailsController
 @import models.declaration.ExportItem
 @import models.requests.JourneyRequest
@@ -33,13 +32,13 @@
     cancelButton: cancel
 )
 
-@(item: ExportItem, itemIdx: Int, submissionId: String, maybeFromSummary: Option[Boolean])(implicit request: JourneyRequest[_], messages: Messages)
+@(item: ExportItem, itemIdx: Int, submissionId: String, referrer: Call)(implicit request: JourneyRequest[_], messages: Messages)
 
 @itemDisplayNum = @{ itemIdx + 1 }
 
 @govukLayout(
     title = Title("declaration.itemsCannotRemove.title", "declaration.section.5", itemDisplayNum.toString),
-    backButton = Some(BackButton(messages("site.back"), previousPage(maybeFromSummary))),
+    backButton = Some(BackButton(messages("site.back"), referrer)),
     showDeclarationSummaryLink = false
 ) {
     @sectionHeader(messages("declaration.section.5"))
@@ -59,6 +58,6 @@
     @item_section(item, itemIdx, request.declarationType)
 
     <div class="govuk-!-margin-top-9">
-        @cancelButton(previousPage(maybeFromSummary))
+        @cancelButton(referrer)
     </div>
 }

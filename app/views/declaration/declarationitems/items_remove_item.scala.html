@@ -14,13 +14,13 @@
  * limitations under the License.
  *@
 
-@import controllers.declaration.RemoveItemsSummaryController.previousPage
-@import controllers.declaration.routes.RemoveItemsSummaryController
+@import controllers.declaration.routes.{RemoveItemsSummaryController, SummaryController}
 @import forms.common.YesNoAnswer
 @import models.declaration.ExportItem
 @import models.requests.JourneyRequest
 @import play.twirl.api.HtmlFormat
 @import uk.gov.hmrc.govukfrontend.views.html.components.{Fieldset, FormWithCSRF, GovukFieldset, Legend, Text}
+@import uk.gov.hmrc.play.bootstrap.binders.RedirectUrl
 @import views.helpers.{BackButton, Title}
 @import views.html.components.gds._
 @import views.html.declaration.summary.sections.item_section
@@ -39,22 +39,22 @@
   formHelper: FormWithCSRF
 )
 
-@(form: Form[YesNoAnswer], item: ExportItem, itemIdx: Int, maybeFromSummary: Option[Boolean])(implicit request: JourneyRequest[_], messages: Messages)
+@(form: Form[YesNoAnswer], item: ExportItem, itemIdx: Int, referrer: Call)(implicit request: JourneyRequest[_], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
 @itemDisplayNum = @{ itemIdx + 1 }
 
 @buttons = @{
-  if (maybeFromSummary.contains(true)) saveAndReturnToSummary("site.confirm_and_continue", "govuk-button--primary")
-  else saveButtons()
+  if (referrer.url != SummaryController.displayPage.url) saveButtons()
+  else saveAndReturnToSummary("site.confirm_and_continue", "govuk-button--primary")
 }
 @govukLayout(
     title = Title("declaration.itemsRemove.title", "declaration.section.5", itemDisplayNum.toString, hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.back"), previousPage(maybeFromSummary))),
+    backButton = Some(BackButton(messages("site.back"), referrer)),
     showDeclarationSummaryLink = false
 ) {
-    @formHelper(action = RemoveItemsSummaryController.removeItem(item.id, maybeFromSummary), 'autoComplete -> "off") {
+    @formHelper(action = RemoveItemsSummaryController.removeItem(item.id, RedirectUrl(referrer.url)), 'autoComplete -> "off") {
       @errorSummary(yesNoErrors(form.errors))
 
       @sectionHeader(messages("declaration.section.5"))
