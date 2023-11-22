@@ -35,6 +35,7 @@ class SectionSummaryController @Inject() (
   card1ForReferences: Card1ForReferences,
   card2ForParties: Card2ForParties,
   card3ForRoutesAndLocations: Card3ForRoutesAndLocations,
+  card4ForTransactions: Card4ForTransactions,
   card6ForTransport: Card6ForTransport
 ) extends FrontendController(mcc) with I18nSupport {
 
@@ -46,6 +47,7 @@ class SectionSummaryController @Inject() (
       case 1 => sectionSummary(card1ForReferences)
       case 2 => sectionSummary(card2ForParties)
       case 3 => sectionSummary(card3ForRoutesAndLocations)
+      case 4 => sectionSummary(card4ForTransactions)
       case 6 => sectionSummary(card6ForTransport)
       case _ => Redirect(routes.SummaryController.displayPage)
     }

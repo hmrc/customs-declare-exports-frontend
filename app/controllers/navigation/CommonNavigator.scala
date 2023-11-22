@@ -42,7 +42,7 @@ trait CommonNavigator extends CacheDependentNavigators {
     case RepresentativeStatus          => routes.RepresentativeEntityController.displayPage
     case AdditionalDeclarationTypePage => routes.DeclarationChoiceController.displayPage
     case ProcedureCode                 => routes.ItemsSummaryController.displayItemsSummaryPage
-    case ExportItem                    => routes.PreviousDocumentsSummaryController.displayPage
+    case ExportItem                    => routes.SectionSummaryController.displayPage(4)
     case DocumentChangeOrRemove        => routes.PreviousDocumentsSummaryController.displayPage
     case TransportLeavingTheBorder     => routes.ItemsSummaryController.displayItemsSummaryPage
     case WarehouseIdentification       => routes.TransportLeavingTheBorderController.displayPage

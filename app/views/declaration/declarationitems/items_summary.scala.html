@@ -130,7 +130,7 @@
 
 @govukLayout(
     title = Title(titleMessageKey, "declaration.section.5", items.length.toString, hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(ExportItem))),
+    backButton = Some(BackButton(messages("site.back"), navigator.backLink(ExportItem))),
     useCustomContentWidth = true) {
 
     @formHelper(action = routes.ItemsSummaryController.submit, 'autoComplete -> "off") {
