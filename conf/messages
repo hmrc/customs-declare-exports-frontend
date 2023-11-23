@@ -561,10 +561,10 @@ declaration.declarant.paragraph = By selecting yes you are confirming that this 
 declaration.declarant.error = Select yes if this is your EORI number
 declaration.declarant.change.eori = No, I need to change my EORI
 
-declaration.linkDucrToMucr.title = Do you want to link this declaration’s DUCR to a MUCR?
-declaration.linkDucrToMucr.banner.title = Important: using the Goods Vehicle Movement Service (GVMS)
-declaration.linkDucrToMucr.banner.content = If your haulier is using the Goods Vehicle Movement Service, do not create a MUCR. Your haulier will group all the DUCRs for the goods they are transporting when they create a goods movement reference (GMR) number.
-declaration.linkDucrToMucr.paragraph = Linking your DUCR to a MUCR is optional at this stage. You will also be able to link your DUCR to a MUCR after you have submitted this declaration.
+declaration.linkDucrToMucr.title = Do you want to link this declaration's DUCR to a Master Unique Consignment Reference (MUCR)?
+declaration.linkDucrToMucr.banner.title = Important: Using a Master Unique Consignment Reference (MUCR)
+declaration.linkDucrToMucr.banner.content = A MUCR is a reference number used to link or associate two or more DUCRs. A MUCR is commonly used to link consignments from different exporters which share space in the same container.
+declaration.linkDucrToMucr.paragraph = You can link one or more DUCRs to a MUCR if your loader or carrier has given you a MUCR.<br><br>You cannot link to a MUCR if your haulier is using the Goods Vehicle Movement Service (GVMS). The haulier will link DUCRs for all goods they are transporting using a Goods Movement Reference (GMR).
 declaration.linkDucrToMucr.details = More details about MUCR consolidation
 declaration.linkDucrToMucr.details.hint1 = See the section entitled ‘Master Unique Consignment Reference (MUCR) consolidation’ in the ‘Notes’ section in {0}.
 declaration.linkDucrToMucr.details.hint1.link = element 2/1 Previous Documents (opens in new tab)

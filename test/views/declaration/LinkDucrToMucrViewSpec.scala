@@ -53,7 +53,8 @@ class LinkDucrToMucrViewSpec extends UnitViewSpec with CommonMessages with Injec
       }
 
       "display paragraph" in {
-        view.getElementsByClass("govuk-body").get(1) must containMessage("declaration.linkDucrToMucr.paragraph")
+        view.getElementsByClass("govuk-inset-text").get(0).text mustBe
+          messages("declaration.linkDucrToMucr.paragraph").replace("<br><br>", " ")
       }
 
       "display the notification banner" in {

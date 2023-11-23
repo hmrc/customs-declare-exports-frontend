@@ -35,6 +35,7 @@
     heading: heading,
     paragraph: paragraphBody,
     externalLink: externalLink,
+    insetText: exportsInsetText,
     saveButtons: saveButtons,
     formHelper: FormWithCSRF,
     navigator: Navigator,
@@ -78,7 +79,7 @@
 
         @heading(messages("declaration.linkDucrToMucr.title"))
 
-        @paragraph(messages("declaration.linkDucrToMucr.paragraph"))
+        @insetText(HtmlContent(paragraphBody(messages("declaration.linkDucrToMucr.paragraph"))))
 
         @yesNoRadios(
             form = form,

@@ -562,14 +562,14 @@ declaration.declarant.paragraph = Trwy ddewis ‘Iawn’ rydych yn cadarnhau bod
 declaration.declarant.error = Dewiswch ‘Iawn’ os mai hwn yw’ch rhif EORI
 declaration.declarant.change.eori = Na, mae angen i mi newid fy EORI
 
-declaration.linkDucrToMucr.title = A ydych eisiau cysylltu DUCR y datganiad hwn â MUCR?
-declaration.linkDucrToMucr.banner.title = Pwysig: defnyddio’r Gwasanaeth Symud Cerbydau Nwyddau (GVMS)
-declaration.linkDucrToMucr.banner.content = Os yw’ch cludwr yn defnyddio’r Gwasanaeth Symud Cerbydau Nwyddau, peidiwch â chreu MUCR. Bydd eich cludwr yn grwpio’r holl DUCRau ar gyfer y nwyddau y maent yn eu cludo pan fyddant yn creu cyfeirnod symud nwyddau (GMR).
-declaration.linkDucrToMucr.paragraph = Mae cysylltu’ch DUCR â MUCR yn ddewisol ar hyn o bryd. Byddwch hefyd yn gallu cysylltu’ch DUCR â MUCR ar ôl i chi gyflwyno’r datganiad hwn.
+declaration.linkDucrToMucr.title = A hoffech gysylltu DUCR y datganiad hwn gyda Phrif Gyfeirnod Unigryw y Llwyth (MUCR)?
+declaration.linkDucrToMucr.banner.title = Pwysig: Defnyddio Prif Gyfeirnod Unigryw y Llwyth (MUCR)
+declaration.linkDucrToMucr.banner.content = Defnyddir MUCR i gysylltu mwy nag un DUCR gyda’i gilydd. Fel arfer, defnyddir MUCR i gysylltu llwythi gan wahanol allforwyr sy’n rhannu lle yn yr un cynhwysydd.
+declaration.linkDucrToMucr.paragraph = Gallwch gysylltu mwy nag un DUCR â MUCR os yw’ch llwythwr neu gludwr wedi rhoi MUCR i chi.<br><br>Ni allwch gysylltu â MUCR os yw’ch cludwr yn defnyddio’r Gwasanaeth Symud Cerbydau Nwyddau (GVMS). Bydd y cludwr yn cysylltu’r DUCRau ar gyfer yr holl nwyddau y maent yn eu cludo gan ddefnyddio Cyfeirnod Symud Nwyddau (GMR).
 declaration.linkDucrToMucr.details = Rhagor o fanylion am gyfuno MUCR
-declaration.linkDucrToMucr.details.hint1 = Gweler yr adran o’r enw ‘Cyfuno Prif Gyfeirnod Unigryw y Llwyth (MUCR) ’ yn yr adran ‘Nodiadau’ yn {0}.
+declaration.linkDucrToMucr.details.hint1 = Gweler yr adran o’r enw ‘Cyfuno Prif Gyfeirnod Unigryw y Llwyth (MUCR)’ yn yr adran ‘Nodiadau’ yn {0}.
 declaration.linkDucrToMucr.details.hint1.link = elfen 2/1 Dogfennau Blaenorol (yn agor tab newydd)
-declaration.linkDucrToMucr.details.hint2 = Bydd angen i’ch llwythwr gau’r MUCR cyn i’r nwyddau adael.
+declaration.linkDucrToMucr.details.hint2 = Bydd angen i’ch llwythwr gau’r MUCR cyn i’r nwyddau ymadael.
 
 declaration.mucr.title = Nodwch yr MUCR
 declaration.mucr.paragraph = I wirio’r fformat cywir, gweler yr adran ‘Nodiadau’ ar {0}.
