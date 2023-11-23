@@ -223,8 +223,6 @@ trait CacheDependentNavigators {
   }
 
   protected def departureTransportPreviousPageOnClearance(cacheModel: ExportsDeclaration): Call =
-    // For Clearance the previous page should always be SupervisingCustomsOffice by any means, as
-    // "1040" as PC is not applicable to this journey type.
     routes.SupervisingCustomsOfficeController.displayPage
 
   protected def transportCountryPreviousPage(cacheModel: ExportsDeclaration): Call =
@@ -250,9 +248,6 @@ trait CacheDependentNavigators {
 
   protected def expressConsignmentPreviousPageOnClearance(cacheModel: ExportsDeclaration): Call =
     if (!isPostalOrFTIModeOfTransport(cacheModel.transportLeavingBorderCode)) routes.DepartureTransportController.displayPage
-    // For Clearance the previous page should always be SupervisingCustomsOffice by any means, as
-    // "1040" as PC is not applicable to this journey type. This test is sort of superfluous then.
-    else if (supervisingCustomsOfficeHelper.checkProcedureCodes(cacheModel)) routes.WarehouseIdentificationController.displayPage
     else routes.SupervisingCustomsOfficeController.displayPage
 
   protected def containerFirstPreviousPage(cacheModel: ExportsDeclaration): Call =

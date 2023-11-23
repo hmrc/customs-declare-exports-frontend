@@ -174,7 +174,7 @@ class ExpressConsignmentViewSpec extends UnitViewSpec with CommonMessages with I
             val modeOfTransportCode = withBorderModeOfTransportCode(transportCode)
             val item = withItem(anItem(withProcedureCodes(Some("1040"), Seq("000"))))
             implicit val request = withRequestOfType(CLEARANCE, item, modeOfTransportCode)
-            verifyBackButton(createView(), routes.WarehouseIdentificationController.displayPage)
+            verifyBackButton(createView(), routes.SupervisingCustomsOfficeController.displayPage)
           }
         }
       }
