@@ -42,18 +42,22 @@ class Card4ForTransactions @Inject() (govukSummaryList: GovukSummaryList, docume
 
   def continueTo(implicit request: JourneyRequest[_]): Call = ItemsSummaryController.displayItemsSummaryPage
 
-  private def rows(declaration: ExportsDeclaration, actionsEnabled: Boolean)(implicit messages: Messages): Seq[SummaryListRow] =
+  private def rows(declaration: ExportsDeclaration, actionsEnabled: Boolean)(implicit messages: Messages): Seq[SummaryListRow] = {
+    val maybeExchangeRate: Option[String] = declaration.totalNumberOfItems.flatMap(_.exchangeRate)
     (
       List(
-        totalAmountInvoiced(declaration, actionsEnabled),
-        exchangeRate(declaration, actionsEnabled),
+        totalAmountInvoiced(declaration, maybeExchangeRate, actionsEnabled),
+        exchangeRate(maybeExchangeRate),
         totalPackage(declaration, actionsEnabled),
         natureOfTransaction(declaration, actionsEnabled)
       )
         ++ documentsHelper.section(declaration, actionsEnabled)
     ).flatten
+  }
 
-  private def totalAmountInvoiced(declaration: ExportsDeclaration, actionsEnabled: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
+  private def totalAmountInvoiced(declaration: ExportsDeclaration, maybeExchangeRate: Option[String], actionsEnabled: Boolean)(
+    implicit messages: Messages
+  ): Option[SummaryListRow] =
     if (!(declaration.isType(STANDARD) || declaration.isType(SUPPLEMENTARY))) None
     else {
       val call =
@@ -64,20 +68,15 @@ class Card4ForTransactions @Inject() (govukSummaryList: GovukSummaryList, docume
         SummaryListRow(
           key("transaction.itemAmount"),
           value(totalAmountInvoicedValue(declaration)),
-          classes = "item-amount",
+          classes = s"""${maybeExchangeRate.fold("")(_ => "govuk-summary-list__row--no-border ")}item-amount""",
           changeLink(call, "transaction.itemAmount", actionsEnabled)
         )
       )
     }
 
-  private def exchangeRate(declaration: ExportsDeclaration, actionsEnabled: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
-    declaration.totalNumberOfItems.flatMap(_.exchangeRate).map { exchangeRate =>
-      SummaryListRow(
-        key("transaction.exchangeRate"),
-        value(exchangeRate),
-        classes = "exchange-rate",
-        changeLink(InvoiceAndExchangeRateController.displayPage, "transaction.exchangeRate", actionsEnabled)
-      )
+  private def exchangeRate(maybeExchangeRate: Option[String])(implicit messages: Messages): Option[SummaryListRow] =
+    maybeExchangeRate.map { exchangeRate =>
+      SummaryListRow(key("transaction.exchangeRate"), value(exchangeRate), classes = "exchange-rate")
     }
 
   private def totalPackage(declaration: ExportsDeclaration, actionsEnabled: Boolean)(implicit messages: Messages): Option[SummaryListRow] =

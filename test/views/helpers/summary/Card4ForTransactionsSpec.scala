@@ -58,6 +58,7 @@ class Card4ForTransactionsSpec extends UnitViewSpec with ExportsTestHelper with 
           "totalAmountInvoiced is NON-empty" in {
             val declaration1 = declaration.copy(`type` = declarationType)
             val row = card4ForTransactions.eval(declaration1)(messages).getElementsByClass("item-amount")
+            assert(row.hasClass("govuk-summary-list__row--no-border"))
 
             val expectedValue = s"$currency $totalAmountInvoiced"
             val expectedCall = Some(InvoiceAndExchangeRateController.displayPage)
@@ -88,9 +89,7 @@ class Card4ForTransactionsSpec extends UnitViewSpec with ExportsTestHelper with 
 
     "show the exchange rate" in {
       val row = view.getElementsByClass("exchange-rate")
-
-      val expectedCall = Some(InvoiceAndExchangeRateController.displayPage)
-      checkSummaryRow(row, "transaction.exchangeRate", exchangeRate, expectedCall, "transaction.exchangeRate")
+      checkSummaryRow(row, "transaction.exchangeRate", exchangeRate)
     }
 
     "show the total number of Packages" in {
