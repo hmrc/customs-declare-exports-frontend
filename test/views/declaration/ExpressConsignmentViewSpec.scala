@@ -168,7 +168,7 @@ class ExpressConsignmentViewSpec extends UnitViewSpec with CommonMessages with I
         }
       }
 
-      "display a 'Back' button linking to the 'Warehouse Details' page" when {
+      "display a 'Back' button linking to the 'Supervising Customs Office' page" when {
         postalOrFTIModeOfTransportCodes.foreach { transportCode =>
           s"TransportLeavingTheBorder is '${transportCode.value}'" in {
             val modeOfTransportCode = withBorderModeOfTransportCode(transportCode)
@@ -176,7 +176,7 @@ class ExpressConsignmentViewSpec extends UnitViewSpec with CommonMessages with I
             implicit val request = withRequestOfType(CLEARANCE, item, modeOfTransportCode)
             verifyBackButton(createView(), routes.SupervisingCustomsOfficeController.displayPage)
           }
-        }
+        }§
       }
     }
   }
