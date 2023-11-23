@@ -352,5 +352,24 @@ class Card6ForTransportSpec extends UnitViewSpec with ExportsTestHelper with Inj
         view.getElementsByClass(summaryActionsClassName) mustBe empty
       }
     }
+
+    "Card6ForTransport.content" should {
+      "return the expected CYA card" in {
+        val cardContent = card6ForTransport.content(declaration)
+        cardContent.getElementsByClass("transport-card").text mustBe messages("declaration.summary.section.6")
+      }
+    }
+
+    "Card6ForTransport.backLink" when {
+      "go to PreviousDocumentsSummaryController" in {
+        card6ForTransport.backLink(journeyRequest()) mustBe TransportContainerController.displayContainerSummary
+      }
+    }
+
+    "Card6ForTransport.continueTo" should {
+      "go to ItemsSummaryController" in {
+        card6ForTransport.continueTo(journeyRequest()) mustBe SummaryController.displayPage
+      }
+    }
   }
 }

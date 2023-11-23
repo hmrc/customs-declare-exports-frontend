@@ -20,7 +20,9 @@ import controllers.declaration.routes._
 import forms.declaration.ModeOfTransportCode.Empty
 import models.ExportsDeclaration
 import models.declaration.{Container, Locations, Transport}
+import models.requests.JourneyRequest
 import play.api.i18n.Messages
+import play.api.mvc.Call
 import play.twirl.api.{Html, HtmlFormat}
 import uk.gov.hmrc.govukfrontend.views.html.components.{GovukSummaryList, SummaryList}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
@@ -29,7 +31,7 @@ import views.helpers.summary.SummaryHelper.hasTransportData
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class Card6ForTransport @Inject() (govukSummaryList: GovukSummaryList) extends SummaryHelper {
+class Card6ForTransport @Inject() (govukSummaryList: GovukSummaryList) extends SummaryCard {
 
   def eval(declaration: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages): Html =
     if (hasTransportData(declaration)) content(declaration, actionsEnabled) else HtmlFormat.empty
@@ -203,4 +205,10 @@ class Card6ForTransport @Inject() (govukSummaryList: GovukSummaryList) extends S
       SummaryListRow(key("container.securitySeals"), value(valueOfSeals), classes = s"seal container-${container.sequenceId}-seals")
     )
   }
+
+  override def backLink(implicit request: JourneyRequest[_]): Call =
+    TransportContainerController.displayContainerSummary
+
+  override def continueTo(implicit request: JourneyRequest[_]): Call =
+    SummaryController.displayPage
 }
