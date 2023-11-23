@@ -168,7 +168,7 @@ class ExpressConsignmentViewSpec extends UnitViewSpec with CommonMessages with I
         }
       }
 
-      "display a 'Back' button linking to the 'Supervising Customs Office' page" when {
+      "display a 'Back' button linking to the 'Supervising Customs Office' page with PC 1040 and APC 000" when {
         postalOrFTIModeOfTransportCodes.foreach { transportCode =>
           s"TransportLeavingTheBorder is '${transportCode.value}'" in {
             val modeOfTransportCode = withBorderModeOfTransportCode(transportCode)
