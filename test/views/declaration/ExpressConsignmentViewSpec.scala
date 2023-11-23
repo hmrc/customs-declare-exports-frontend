@@ -176,7 +176,7 @@ class ExpressConsignmentViewSpec extends UnitViewSpec with CommonMessages with I
             implicit val request = withRequestOfType(CLEARANCE, item, modeOfTransportCode)
             verifyBackButton(createView(), routes.SupervisingCustomsOfficeController.displayPage)
           }
-        }§
+        }
       }
     }
   }
