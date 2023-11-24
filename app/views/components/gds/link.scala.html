@@ -25,9 +25,27 @@
   textHidden: Option[String] = None
 )
 
-@hasHint = @{textHidden.exists(_.nonEmpty)}
-@linkClasses = @{classes.getOrElse("govuk-link govuk-link--no-visited-state")}
+@caption = @{
+  if (textHidden.exists(_.trim.nonEmpty)) {
+    Html(s"""<span aria-hidden="true">$text</span><span class="govuk-visually-hidden">${textHidden.getOrElse("")}</span></a>""")
+  } else Html(s"$text</a>")
+}
+
+@idAttr = @{
+  id.map(i => Html(s"""id="$i""""))
+}
+
+@linkClasses = @{
+  classes.getOrElse("govuk-link govuk-link--no-visited-state")
+}
+
+@targetAttrs = @{
+  target.map { t =>
+    val rel = if (t == "_blank") s""" rel="noopener noreferrer"""" else ""
+    Html(s"""target="$t"$rel""")
+  }
+}
 
 @* The <a> tag is split on purpose - to avoid inline-block whitespace problem *@
-<a class="@linkClasses" href="@call" @target.map{t => target="@t"} @id.map{id => id="@id" } @if(target == Some("_blank")){rel="noopener noreferrer"}
-  ><span @if(hasHint){aria-hidden="true"}>@text</span>@if(hasHint){<span class="govuk-visually-hidden">@{textHidden.getOrElse("")}</span>}</a>
+<a @targetAttrs @idAttr class="@linkClasses" href="@call"
+  >@caption

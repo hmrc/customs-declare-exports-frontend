@@ -748,7 +748,7 @@ submission.enhancedStatus.timeline.title.amendment.requested = Cais am ddiwygiad
 submission.enhancedStatus.timeline.title.cancel.amendment.accepted = Amendment cancelled
 submission.enhancedStatus.timeline.title.CUSTOMS_POSITION_DENIED = Cais i ganslo wedi’i wrthod
 
-submission.enhancedStatus.timeline.content.external.amendment = Mae hyn wedi’i ddiweddaru gan CThEF
+submission.enhancedStatus.timeline.content.external.amendment = Mae trydydd parti awdurdodedig, er enghraifft Llwythwr, wedi gwneud diwygiad i’r datganiad hwn. Ni fydd y newid hwn yn ymddangos yn fanylion y datganiad.
 submission.enhancedStatus.timeline.content.CANCELLED = Gwnaethoch ganslo’r datganiad hwn
 submission.enhancedStatus.timeline.content.WITHDRAWN = Gwnaethoch ganslo’r datganiad hwn
 submission.enhancedStatus.timeline.content.EXPIRED_NO_ARRIVAL = Ni ddaeth y neges bod y nwyddau wedi cyrraedd i law cyn pen 30 diwrnod i gyflwyno’r datganiad ymlaen llaw.
