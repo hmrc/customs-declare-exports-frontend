@@ -17,7 +17,7 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.declaration.routes.{ItemsSummaryController, ProcedureCodesController, TransportLeavingTheBorderController}
+import controllers.declaration.routes.{ItemsSummaryController, ProcedureCodesController, SectionSummaryController}
 import controllers.helpers.MultipleItemsHelper.generateItemId
 import controllers.helpers.SequenceIdHelper.handleSequencing
 import controllers.navigation.Navigator
@@ -52,8 +52,8 @@ class ItemsSummaryController @Inject() (
   private val itemSummaryForm = YesNoAnswer.form(errorKey = "declaration.itemsSummary.addAnotherItem.error.empty")
 
   val displayAddItemPage: Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    if (request.cacheModel.items.isEmpty) Ok(addItemPage())
-    else navigator.continueTo(ItemsSummaryController.displayItemsSummaryPage)
+    if (request.cacheModel.hasItems) navigator.continueTo(ItemsSummaryController.displayItemsSummaryPage)
+    else Ok(addItemPage())
   }
 
   val addFirstItem: Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
@@ -65,8 +65,8 @@ class ItemsSummaryController @Inject() (
 
   val displayItemsSummaryPage: Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     removeEmptyItems.map { declaration =>
-      if (declaration.items.isEmpty) navigator.continueTo(ItemsSummaryController.displayAddItemPage)
-      else Ok(itemsSummaryPage(itemSummaryForm, declaration.items.toList))
+      if (declaration.hasItems) Ok(itemsSummaryPage(itemSummaryForm, declaration.items.toList))
+      else navigator.continueTo(ItemsSummaryController.displayAddItemPage)
     }
   }
 
@@ -74,7 +74,7 @@ class ItemsSummaryController @Inject() (
   val submit: Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     request.declarationType match {
       case CLEARANCE =>
-        Future.successful(navigator.continueTo(TransportLeavingTheBorderController.displayPage))
+        Future.successful(navigator.continueTo(SectionSummaryController.displayPage(5)))
 
       case _ =>
         val incorrectItems: Seq[FormError] = buildIncorrectItemsErrors(request)
@@ -96,7 +96,7 @@ class ItemsSummaryController @Inject() (
                   Future.successful(BadRequest(page))
 
                 case YesNoAnswers.no =>
-                  Future.successful(navigator.continueTo(TransportLeavingTheBorderController.displayPage))
+                  Future.successful(navigator.continueTo(SectionSummaryController.displayPage(5)))
               }
           )
     }

@@ -46,7 +46,7 @@ class SupervisingCustomsOfficeHelper @Inject() (inlandOrBorderHelper: InlandOrBo
     checkProcedureCodes(cachedModel) && !isAuthCode(cachedModel, taggedAuthCodes.codesOverridingInlandOrBorderSkip)
 
   def checkProcedureCodes(cachedModel: ExportsDeclaration): Boolean =
-    cachedModel.items.nonEmpty &&
+    cachedModel.hasItems &&
       cachedModel.items.forall(_.procedureCodes.forall(isConditionForProcedureCodesDataVerified))
 
   def landOnOrSkipToNextPage(declaration: ExportsDeclaration): Call =

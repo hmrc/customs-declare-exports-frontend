@@ -20,14 +20,16 @@ import controllers.declaration.routes._
 import models.DeclarationType._
 import models.ExportsDeclaration
 import models.declaration.ExportItem
+import models.requests.JourneyRequest
 import play.api.i18n.Messages
+import play.api.mvc.Call
 import play.twirl.api.{Html, HtmlFormat}
 import uk.gov.hmrc.govukfrontend.views.html.components.{GovukSummaryList, GovukWarningText, SummaryList}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.warningtext.WarningText
 import views.helpers.ActionItemBuilder.actionItem
-import views.helpers.summary.SummaryHelper.{hasItemData, hasItemsData, showItemsCard}
+import views.helpers.summary.SummaryHelper.showItemsCard
 
 import javax.inject.{Inject, Singleton}
 
@@ -36,30 +38,42 @@ class Card5ForItems @Inject() (
   govukSummaryList: GovukSummaryList,
   govukWarningText: GovukWarningText,
   packageInformationHelper: PackageInformationHelper
-) extends SummaryHelper {
+) extends SummaryCard {
 
+  // Called by the Final CYA page
   def eval(declaration: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages): Html =
-    if (showItemsCard(declaration, actionsEnabled)) content(declaration, actionsEnabled) else HtmlFormat.empty
+    if (showItemsCard(declaration, actionsEnabled)) content(declaration, actionsEnabled, true) else HtmlFormat.empty
 
-  def content(declaration: ExportsDeclaration, actionsEnabled: Boolean)(implicit messages: Messages): Html = {
+  // Called by the Mini CYA page
+  def content(declaration: ExportsDeclaration, actionsEnabled: Boolean)(implicit messages: Messages): Html =
+    content(declaration, actionsEnabled, false)
+
+  // The 'fromSummary' flag is used on the 'Remove item' pages when the
+  // user clicks the 'Back' button or does not confirm the item removal.
+
+  private def content(declaration: ExportsDeclaration, actionsEnabled: Boolean, fromSummary: Boolean)(implicit messages: Messages): Html = {
     val cardContent = card(5).map(_.copy(actions = addItemAction(declaration, actionsEnabled)))
-    govukSummaryList(SummaryList(rows(declaration, actionsEnabled), cardContent))
+    govukSummaryList(SummaryList(rows(declaration, actionsEnabled, fromSummary), cardContent))
   }
+
+  def backLink(implicit request: JourneyRequest[_]): Call = ItemsSummaryController.displayItemsSummaryPage
+
+  def continueTo(implicit request: JourneyRequest[_]): Call = TransportLeavingTheBorderController.displayPage
 
   private def addItemAction(declaration: ExportsDeclaration, actionsEnabled: Boolean)(implicit messages: Messages): Option[Actions] =
     if (actionsEnabled && (!declaration.isType(CLEARANCE) || declaration.items.isEmpty)) addItemLink(declaration) else None
 
   private def addItemLink(declaration: ExportsDeclaration)(implicit messages: Messages): Option[Actions] = {
-    val content = HtmlContent(s"""<span>${messages("declaration.summary.items.add")}</span>""")
-    val call = if (hasItemsData(declaration)) ItemsSummaryController.addAdditionalItem else ItemsSummaryController.displayAddItemPage
+    val content = Text(messages("declaration.summary.items.add"))
+    val call = if (declaration.hasItems) ItemsSummaryController.addAdditionalItem else ItemsSummaryController.displayAddItemPage
     Some(Actions(items = List(ActionItem(call.url, content, None))))
   }
 
-  private def rows(declaration: ExportsDeclaration, actionsEnabled: Boolean)(implicit messages: Messages): Seq[SummaryListRow] =
-    if (!hasItemsData(declaration)) noItemRow(actionsEnabled)
+  private def rows(declaration: ExportsDeclaration, actionsEnabled: Boolean, fromSummary: Boolean)(implicit messages: Messages): Seq[SummaryListRow] =
+    if (!declaration.hasItems) noItemRow(actionsEnabled)
     else
       declaration.items.sortBy(_.sequenceId).zipWithIndex.flatMap { case (item, index) =>
-        if (hasItemData(item)) rows(declaration, item, actionsEnabled, index + 1) else List.empty
+        if (item.isDefined) rows(declaration, item, actionsEnabled, fromSummary, index + 1) else List.empty
       }
 
   private def noItemRow(actionsEnabled: Boolean)(implicit messages: Messages): List[SummaryListRow] =
@@ -70,7 +84,7 @@ class Card5ForItems @Inject() (
       List(SummaryListRow(Key(content), Value(Text(""), classes = "hidden")))
     }
 
-  private def rows(declaration: ExportsDeclaration, item: ExportItem, actionsEnabled: Boolean, index: Int)(
+  private def rows(declaration: ExportsDeclaration, item: ExportItem, actionsEnabled: Boolean, fromSummary: Boolean, index: Int)(
     implicit messages: Messages
   ): Seq[SummaryListRow] = {
     // Early evaluation of this attribute in order to verify if it will be displayed as a multi-rows section.
@@ -83,7 +97,7 @@ class Card5ForItems @Inject() (
 
     (
       List(
-        itemHeading(item, actionsEnabled, index),
+        itemHeading(item, actionsEnabled, fromSummary, index),
         procedureCode(item, actionsEnabled, index),
         additionalProcedureCodes(item, actionsEnabled, index),
         fiscalInformation(item, actionsEnabled, index),
@@ -108,11 +122,13 @@ class Card5ForItems @Inject() (
     ).flatten
   }
 
-  private def itemHeading(item: ExportItem, actionsEnabled: Boolean, index: Int)(implicit messages: Messages): Option[SummaryListRow] = {
+  private def itemHeading(item: ExportItem, actionsEnabled: Boolean, fromSummary: Boolean, index: Int)(
+    implicit messages: Messages
+  ): Option[SummaryListRow] = {
     lazy val removeItem = {
       val text = messages("declaration.summary.item.remove")
-      val content = HtmlContent(s"""<span aria-hidden="true">$text</span>""")
-      actionItem(RemoveItemsSummaryController.displayRemoveItemConfirmationPage(item.id, true).url, content, Some(text))
+      val call = RemoveItemsSummaryController.displayRemoveItemConfirmationPage(item.id, Some(fromSummary))
+      actionItem(call.url, Text(text), Some(text))
     }
 
     val text = messages("declaration.summary.item", index)

@@ -14,16 +14,17 @@
  * limitations under the License.
  *@
 
-@import controllers.declaration.routes.{ItemsSummaryController, RemoveItemsSummaryController, SummaryController}
+@import controllers.declaration.RemoveItemsSummaryController.previousPage
+@import controllers.declaration.routes.RemoveItemsSummaryController
 @import forms.common.YesNoAnswer
 @import models.declaration.ExportItem
 @import models.requests.JourneyRequest
 @import play.twirl.api.HtmlFormat
-@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.govukfrontend.views.html.components.{Fieldset, FormWithCSRF, GovukFieldset, Legend, Text}
 @import views.helpers.{BackButton, Title}
 @import views.html.components.gds._
 @import views.html.declaration.summary.sections.item_section
-@import views.components.gds.Styles._
+@import views.components.gds.Styles.gdsPageLegend
 @import views.helpers.ErrorMapper.yesNoErrors
 
 @this(
@@ -35,32 +36,25 @@
   yesNoRadios: yesNoRadios,
   saveButtons: saveButtons,
   saveAndReturnToSummary: saveAndReturnToSummary,
-  formHelper: FormWithCSRF,
-  linkButton: linkButton
+  formHelper: FormWithCSRF
 )
 
-@(form: Form[YesNoAnswer], item: ExportItem, itemIdx: Int, fromSummary: Boolean)(implicit request: JourneyRequest[_], messages: Messages)
+@(form: Form[YesNoAnswer], item: ExportItem, itemIdx: Int, maybeFromSummary: Option[Boolean])(implicit request: JourneyRequest[_], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
-@backCall = @{
-  if (fromSummary) SummaryController.displayPage
-  else ItemsSummaryController.displayItemsSummaryPage
-}
-
-@buttons = @{
-  if (fromSummary) saveAndReturnToSummary("site.confirm_and_continue", "govuk-button--primary")
-  else saveButtons()
-}
-
 @itemDisplayNum = @{ itemIdx + 1 }
 
+@buttons = @{
+  if (maybeFromSummary.contains(true)) saveAndReturnToSummary("site.confirm_and_continue", "govuk-button--primary")
+  else saveButtons()
+}
 @govukLayout(
     title = Title("declaration.itemsRemove.title", "declaration.section.5", itemDisplayNum.toString, hasErrors = hasErrors),
-    backButton = Some(BackButton(messages(if (fromSummary) "site.back" else "site.backToPreviousQuestion"), backCall)),
+    backButton = Some(BackButton(messages("site.back"), previousPage(maybeFromSummary))),
     showDeclarationSummaryLink = false
 ) {
-    @formHelper(action = RemoveItemsSummaryController.removeItem(item.id, fromSummary), 'autoComplete -> "off") {
+    @formHelper(action = RemoveItemsSummaryController.removeItem(item.id, maybeFromSummary), 'autoComplete -> "off") {
       @errorSummary(yesNoErrors(form.errors))
 
       @sectionHeader(messages("declaration.section.5"))
@@ -72,7 +66,7 @@
           isPageHeading = true
         )),
         html = HtmlFormat.fill(Seq(
-          item_section(item, itemIdx, request.declarationType, actionsEnabled = false),
+          item_section(item, itemIdx, request.declarationType),
           Html("""<div class="govuk-!-margin-top-9"/>"""),
           yesNoRadios(form, inline = true),
           buttons

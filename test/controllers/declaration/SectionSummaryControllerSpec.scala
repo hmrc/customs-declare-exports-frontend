@@ -35,6 +35,7 @@ class SectionSummaryControllerSpec extends ControllerWithoutFormSpec with Option
   val mockCard2ForParties = mock[Card2ForParties]
   val mockSection3Card = mock[Card3ForRoutesAndLocations]
   val mockCard4ForTransactions = mock[Card4ForTransactions]
+  val mockCard5ForItems = mock[Card5ForItems]
   val mockSection6CardForTransport = mock[Card6ForTransport]
 
   val controller = new SectionSummaryController(
@@ -46,6 +47,7 @@ class SectionSummaryControllerSpec extends ControllerWithoutFormSpec with Option
     mockCard2ForParties,
     mockSection3Card,
     mockCard4ForTransactions,
+    mockCard5ForItems,
     mockSection6CardForTransport
   )
 
@@ -68,9 +70,16 @@ class SectionSummaryControllerSpec extends ControllerWithoutFormSpec with Option
   "Section Summary controller" must {
 
     "return 200 (OK)" when {
-      val mocks = Array(mockCard1ForReferences, mockCard2ForParties, mockSection3Card, mockCard4ForTransactions)
+      val mocks = Array(
+        mockCard1ForReferences,
+        mockCard2ForParties,
+        mockSection3Card,
+        mockCard4ForTransactions,
+        mockCard5ForItems,
+        mockSection6CardForTransport
+      )
 
-      for (section <- 1 to 2)
+      for (section <- 1 to 6)
         s"display page method is invoked with section $section" in {
           withNewCaching(request.cacheModel)
 

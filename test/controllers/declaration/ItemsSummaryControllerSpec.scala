@@ -17,6 +17,7 @@
 package controllers.declaration
 
 import base.ControllerWithoutFormSpec
+import controllers.declaration.routes.{ItemsSummaryController, ProcedureCodesController, SectionSummaryController}
 import controllers.helpers.SequenceIdHelper.valueOfEso
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
@@ -131,7 +132,7 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
           val result = controller.displayAddItemPage()(getRequest())
 
           status(result) mustBe SEE_OTHER
-          thePageNavigatedTo mustBe routes.ItemsSummaryController.displayItemsSummaryPage
+          thePageNavigatedTo mustBe ItemsSummaryController.displayItemsSummaryPage
         }
       }
     }
@@ -155,7 +156,7 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
         val result = controller.addFirstItem()(postRequest(Json.obj()))
         status(result) mustBe SEE_OTHER
         val itemId = theCacheModelUpdated.items.last.id
-        thePageNavigatedTo mustBe routes.ProcedureCodesController.displayPage(itemId)
+        thePageNavigatedTo mustBe ProcedureCodesController.displayPage(itemId)
 
         val declaration = theCacheModelUpdated
         declaration.items.size mustBe 1
@@ -197,7 +198,7 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
           val result = controller.displayItemsSummaryPage()(getRequest())
 
           status(result) mustBe SEE_OTHER
-          thePageNavigatedTo mustBe routes.ItemsSummaryController.displayAddItemPage
+          thePageNavigatedTo mustBe ItemsSummaryController.displayAddItemPage
         }
       }
 
@@ -242,10 +243,10 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
           status(result) mustBe SEE_OTHER
 
           if (request.isType(CLEARANCE))
-            thePageNavigatedTo mustBe routes.TransportLeavingTheBorderController.displayPage
+            thePageNavigatedTo mustBe SectionSummaryController.displayPage(5)
           else {
             val declaration = theCacheModelUpdated
-            thePageNavigatedTo mustBe routes.ProcedureCodesController.displayPage(declaration.items.last.id)
+            thePageNavigatedTo mustBe ProcedureCodesController.displayPage(declaration.items.last.id)
 
             And("max sequence id is updated")
             valueOfEso[ExportItem](declaration).value mustBe 0
@@ -264,7 +265,7 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
           val result = controller.submit()(postRequest(answerForm))
 
           status(result) mustBe SEE_OTHER
-          thePageNavigatedTo mustBe routes.TransportLeavingTheBorderController.displayPage
+          thePageNavigatedTo mustBe SectionSummaryController.displayPage(5)
 
           verify(navigator).continueTo(any())(any())
         }
@@ -302,7 +303,7 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
         }
       }
       "user does not want to add another item" should {
-        "return 303 (SEE_OTHER) and redirect to Transport Leaving the Border page" in {
+        "return 303 (SEE_OTHER) and redirect to mini CYA page for Items" in {
           val cachedData = aDeclaration(withType(request.declarationType), withItem(exportItem))
           withNewCaching(cachedData)
           val answerForm = Json.obj("yesNo" -> YesNoAnswers.no)
@@ -310,7 +311,7 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
           val result = controller.submit()(postRequest(answerForm))
 
           status(result) mustBe SEE_OTHER
-          thePageNavigatedTo mustBe routes.TransportLeavingTheBorderController.displayPage
+          thePageNavigatedTo mustBe SectionSummaryController.displayPage(5)
         }
       }
     }

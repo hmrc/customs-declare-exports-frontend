@@ -56,8 +56,7 @@
 }
 
 @addButtonMessage = @{
-    if(items.isEmpty) { messages("site.add.item") }
-    else { messages("site.add.anotherItem") }
+    if (items.exists(_.isDefined)) messages("site.add.anotherItem") else messages("site.add.item")
 }
 
 @noOfPackagesSection(item: ExportItem) = {
@@ -73,7 +72,7 @@
 }
 
 @itemsTable = {
-    @if(items.nonEmpty) {
+    @if(items.exists(_.isDefined)) {
         @govukTable(Table(
             attributes = Map("id" -> "item_table"),
             head = Some(Seq(

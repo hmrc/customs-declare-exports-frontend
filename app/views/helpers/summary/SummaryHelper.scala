@@ -17,7 +17,6 @@
 package views.helpers.summary
 
 import models.ExportsDeclaration
-import models.declaration.ExportItem
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
@@ -66,26 +65,6 @@ trait SummaryHelper {
 
 object SummaryHelper {
 
-  def hasItemData(item: ExportItem): Boolean =
-    item.procedureCodes.isDefined ||
-      item.fiscalInformation.isDefined ||
-      item.additionalFiscalReferencesData.isDefined ||
-      item.statisticalValue.isDefined ||
-      item.commodityDetails.isDefined ||
-      item.dangerousGoodsCode.isDefined ||
-      item.cusCode.isDefined ||
-      item.taricCodes.isDefined ||
-      item.nactCodes.isDefined ||
-      item.nactExemptionCode.isDefined ||
-      item.packageInformation.isDefined ||
-      item.commodityMeasure.isDefined ||
-      item.additionalInformation.isDefined ||
-      item.additionalDocuments.isDefined ||
-      item.isLicenceRequired.isDefined
-
-  def hasItemsData(declaration: ExportsDeclaration): Boolean =
-    declaration.items.nonEmpty && declaration.items.exists(hasItemData)
-
   def hasTransactionData(declaration: ExportsDeclaration): Boolean =
     declaration.natureOfTransaction.isDefined ||
       hasRequiredTransactionDataOnNonEmptyItems(declaration) ||
@@ -117,7 +96,7 @@ object SummaryHelper {
   }
 
   def showItemsCard(declaration: ExportsDeclaration, actionsEnabled: Boolean): Boolean =
-    hasItemsData(declaration) || (
+    declaration.hasItems || (
       actionsEnabled && (hasTransportData(declaration) || hasRequiredTransactionDataOnNonEmptyItems(declaration))
     )
 

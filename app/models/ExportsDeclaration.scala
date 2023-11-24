@@ -159,6 +159,8 @@ case class ExportsDeclaration(
 
   def isType(declarationType: DeclarationType): Boolean = `type` == declarationType
 
+  lazy val hasItems: Boolean = items.nonEmpty && items.exists(_.isDefined)
+
   def itemBy(itemId: String): Option[ExportItem] = items.find(_.id.equalsIgnoreCase(itemId))
 
   def itemWithIndexBy(itemId: String): Option[(ExportItem, Int)] = items.zipWithIndex.find(_._1.id.equalsIgnoreCase(itemId))

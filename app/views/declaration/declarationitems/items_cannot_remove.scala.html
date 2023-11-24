@@ -14,10 +14,11 @@
  * limitations under the License.
  *@
 
-@import controllers.declaration.routes.{ItemsSummaryController, SummaryController}
+@import controllers.declaration.RemoveItemsSummaryController.previousPage
+@import controllers.routes.DeclarationDetailsController
 @import models.declaration.ExportItem
 @import models.requests.JourneyRequest
-@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.govukfrontend.views.html.components.{GovukWarningText, HtmlContent, WarningText}
 @import views.helpers.{BackButton, Title}
 @import views.html.components.gds._
 @import views.html.declaration.summary.sections.item_section
@@ -32,18 +33,13 @@
     cancelButton: cancel
 )
 
-@(item: ExportItem, itemIdx: Int, submissionId: String, fromSummary: Boolean)(implicit request: JourneyRequest[_], messages: Messages)
+@(item: ExportItem, itemIdx: Int, submissionId: String, maybeFromSummary: Option[Boolean])(implicit request: JourneyRequest[_], messages: Messages)
 
 @itemDisplayNum = @{ itemIdx + 1 }
 
-@backCall = @{
-  if (fromSummary) SummaryController.displayPage
-  else ItemsSummaryController.displayItemsSummaryPage
-}
-
 @govukLayout(
     title = Title("declaration.itemsCannotRemove.title", "declaration.section.5", itemDisplayNum.toString),
-    backButton = Some(BackButton(messages("site.back"), backCall)),
+    backButton = Some(BackButton(messages("site.back"), previousPage(maybeFromSummary))),
     showDeclarationSummaryLink = false
 ) {
     @sectionHeader(messages("declaration.section.5"))
@@ -56,13 +52,13 @@
             messages("declaration.itemsCannotRemove.warning",
                 link(
                     messages("declaration.itemsCannotRemove.warning.linkText"),
-                    controllers.routes.DeclarationDetailsController.displayPage(submissionId)
+                    DeclarationDetailsController.displayPage(submissionId)
                 )))
     ))
 
-    @item_section(item, itemIdx, request.declarationType, actionsEnabled = false)
+    @item_section(item, itemIdx, request.declarationType)
 
     <div class="govuk-!-margin-top-9">
-        @cancelButton(controllers.declaration.routes.SummaryController.displayPage)
+        @cancelButton(previousPage(maybeFromSummary))
     </div>
 }

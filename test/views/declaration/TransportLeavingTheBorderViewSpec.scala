@@ -17,7 +17,7 @@
 package views.declaration
 
 import base.Injector
-import controllers.declaration.routes
+import controllers.declaration.routes.SectionSummaryController
 import controllers.routes.GuidanceController
 import forms.declaration.TransportLeavingTheBorder.form
 import forms.declaration.authorisationHolder.AuthorizationTypeCodes.EXRR
@@ -60,8 +60,8 @@ class TransportLeavingTheBorderViewSpec extends PageWithButtonsSpec with Injecto
 
       "display 'Back' button that links to 'Items Summary' page" in {
         val backButton = view.getElementById("back-link")
-        backButton must containMessage("site.backToPreviousQuestion")
-        backButton must haveHref(routes.ItemsSummaryController.displayItemsSummaryPage)
+        backButton must containMessage("site.back")
+        backButton must haveHref(SectionSummaryController.displayPage(5))
       }
 
       checkAllSaveButtonsAreDisplayed(createView())

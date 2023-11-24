@@ -18,9 +18,9 @@ package controllers.declaration
 
 import connectors.CustomsDeclareExportsConnector
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.declaration.routes.{ItemsSummaryController, SummaryController}
+import controllers.declaration.RemoveItemsSummaryController.previousPage
+import controllers.declaration.routes.{ItemsSummaryController, SectionSummaryController, SummaryController}
 import controllers.helpers.SequenceIdHelper.handleSequencing
-import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import handlers.ErrorHandler
@@ -31,7 +31,7 @@ import models.declaration.submissions.Submission
 import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import play.api.mvc._
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
@@ -45,7 +45,6 @@ class RemoveItemsSummaryController @Inject() (
   journeyType: JourneyAction,
   exportsCacheService: ExportsCacheService,
   customsDeclareExportsConnector: CustomsDeclareExportsConnector,
-  navigator: Navigator,
   errorHandler: ErrorHandler,
   mcc: MessagesControllerComponents,
   itemsCannotRemovePage: items_cannot_remove,
@@ -53,10 +52,14 @@ class RemoveItemsSummaryController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with WithUnsafeDefaultFormBinding {
 
-  private def removeItemForm: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.itemsRemove.error.empty")
+  private val removeItemForm: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.itemsRemove.error.empty")
 
-  def displayRemoveItemConfirmationPage(itemId: String, fromSummary: Boolean = false): Action[AnyContent] = (authenticate andThen journeyType).async {
-    implicit request =>
+  /* fromSummary = None        => from /declaration-items-list
+     fromSummary = Some(false) => from /summary-section/5   (mini CYA page)
+     fromSummary = Some(true)  => from /saved-summary       (final CYA page
+   */
+  def displayRemoveItemConfirmationPage(itemId: String, fromSummary: Option[Boolean] = None): Action[AnyContent] =
+    (authenticate andThen journeyType).async { implicit request =>
       request.cacheModel.itemWithIndexBy(itemId) match {
         case Some((item, idx)) if request.cacheModel.isAmendmentDraft =>
           viewToRemoveItem(
@@ -67,36 +70,38 @@ class RemoveItemsSummaryController @Inject() (
 
         case Some((item, idx)) => Future.successful(Ok(removeItemPage(removeItemForm, item, idx, fromSummary)))
 
-        case _ => Future.successful(continueTo(fromSummary))
+        case _ => Future.successful(Redirect(previousPage(fromSummary)))
       }
-  }
+    }
 
-  def removeItem(itemId: String, fromSummary: Boolean = false): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    removeItemForm
-      .bindFromRequest()
-      .fold(
-        formWithErrors =>
-          request.cacheModel.itemWithIndexBy(itemId) match {
-            case Some((item, idx)) if request.cacheModel.isAmendmentDraft =>
-              viewToRemoveItem(
-                item = item,
-                remove = BadRequest(removeItemPage(formWithErrors, item, idx, fromSummary)),
-                cannotRemove = submission => BadRequest(itemsCannotRemovePage(item, idx, submission.uuid, fromSummary))
-              )
+  def removeItem(itemId: String, fromSummary: Option[Boolean] = None): Action[AnyContent] =
+    (authenticate andThen journeyType).async { implicit request =>
+      removeItemForm
+        .bindFromRequest()
+        .fold(
+          formWithErrors =>
+            request.cacheModel.itemWithIndexBy(itemId) match {
+              case Some((item, idx)) if request.cacheModel.isAmendmentDraft =>
+                viewToRemoveItem(
+                  item = item,
+                  remove = BadRequest(removeItemPage(formWithErrors, item, idx, fromSummary)),
+                  cannotRemove = submission => BadRequest(itemsCannotRemovePage(item, idx, submission.uuid, fromSummary))
+                )
 
-            case Some((item, idx)) => Future.successful(BadRequest(removeItemPage(formWithErrors, item, idx, fromSummary)))
+              case Some((item, idx)) => Future.successful(BadRequest(removeItemPage(formWithErrors, item, idx, fromSummary)))
 
-            case _ => errorHandler.internalError(s"Could not find ExportItem with id = [$itemId] to remove")
-          },
-        _.answer match {
-          case YesNoAnswers.yes => removeItemFromCache(itemId).map(_ => continueTo(fromSummary))
-          case YesNoAnswers.no  => Future.successful(continueTo(fromSummary))
-        }
-      )
-  }
+              case _ => errorHandler.internalError(s"Could not find ExportItem with id = [$itemId] to remove")
+            },
+          _.answer match {
+            case YesNoAnswers.yes =>
+              removeItemFromCache(itemId).map { _ =>
+                Redirect(SectionSummaryController.displayPage(5))
+              }
 
-  private def continueTo(fromSummary: Boolean)(implicit request: JourneyRequest[AnyContent]): Result =
-    navigator.continueTo(if (fromSummary) SummaryController.displayPage else ItemsSummaryController.displayItemsSummaryPage)
+            case YesNoAnswers.no => Future.successful(Redirect(previousPage(fromSummary)))
+          }
+        )
+    }
 
   private def viewToRemoveItem(item: ExportItem, remove: Result, cannotRemove: Submission => Result)(
     implicit request: JourneyRequest[AnyContent]
@@ -127,6 +132,7 @@ class RemoveItemsSummaryController @Inject() (
         val (updatedItems, updatedMeta) = handleSequencing(filteredItems, request.cacheModel.declarationMeta)
         val updatedModel = removeWarehouseIdentification(request.cacheModel.copy(items = updatedItems, declarationMeta = updatedMeta))
         exportsCacheService.update(updatedModel, request.eori)
+
       case None => Future.successful(request.cacheModel)
     }
 
@@ -139,4 +145,12 @@ class RemoveItemsSummaryController @Inject() (
 
   private def noParentDecIdMsg(implicit request: JourneyRequest[AnyContent]) =
     s"Could not find parentDecId from declaration [${request.cacheModel.id}]"
+}
+
+object RemoveItemsSummaryController {
+
+  def previousPage(maybeFromSummary: Option[Boolean]): Call =
+    maybeFromSummary.fold(ItemsSummaryController.displayItemsSummaryPage) { fromSummary =>
+      if (fromSummary) SummaryController.displayPage else SectionSummaryController.displayPage(5)
+    }
 }
