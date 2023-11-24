@@ -17,12 +17,14 @@
 package views.helpers
 
 import base.Injector
+import controllers.declaration.amendments.routes.AmendmentDetailsController
 import controllers.declaration.routes.SubmissionController
 import controllers.routes.RejectedNotificationsController
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
 import models.declaration.submissions.EnhancedStatus._
 import models.declaration.submissions.RequestType.{CancellationRequest, SubmissionRequest}
 import models.declaration.submissions.{Action, EnhancedStatus, NotificationSummary, Submission}
+import org.jsoup.Jsoup
 import org.mockito.Mockito.when
 import org.scalatest.BeforeAndAfterEach
 import play.api.libs.json.Json
@@ -257,7 +259,6 @@ class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injec
 
     "generate the expected sequence of TimelineEvent instances" when {
       "the amendment is external and" when {
-
         "the mockDeclarationAmendmentsConfig flag is enabled" in {
           when(mockDeclarationAmendmentsConfig.isEnabled).thenReturn(true)
           val timelineEvents = createTimelineFromActions(externalAmendment)
@@ -266,8 +267,15 @@ class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injec
 
           timelineEvents(0).title mustBe messages(s"submission.enhancedStatus.timeline.title.amendment.external")
           timelineEvents(0).dateTime mustBe externalAmendment(1).requestTimestamp.truncatedTo(SECONDS)
-          val expectedContent = messages("submission.enhancedStatus.timeline.content.external.amendment")
-          timelineEvents(0).content.value.body must include(expectedContent)
+
+          val body = Jsoup.parse(timelineEvents(0).content.value.body).body
+
+          val paragraph = body.getElementsByTag("p")
+          paragraph.text mustBe messages("submission.enhancedStatus.timeline.content.external.amendment")
+
+          val link = body.getElementsByTag("a")
+          link.text mustBe messages("declaration.details.view.amendments.button")
+          link.first.attr("href") mustBe AmendmentDetailsController.displayPage(externalAmendment.last.id).url
 
           timelineEvents(1).title mustBe messages(s"submission.enhancedStatus.$RECEIVED")
           timelineEvents(1).dateTime mustBe externalAmendment(0).notifications.get(1).dateTimeIssued

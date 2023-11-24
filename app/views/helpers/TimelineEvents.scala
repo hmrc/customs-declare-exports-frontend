@@ -82,8 +82,10 @@ class TimelineEvents @Inject() (
 
         case IndexToMatchForExternalAmendmentContent =>
           Html(
-            paragraphBody(messages("submission.enhancedStatus.timeline.content.external.amendment")).toString +
-              viewAmendmentDetails(notificationEvent.actionId).toString
+            paragraphBody(
+              messages("submission.enhancedStatus.timeline.content.external.amendment"),
+              "govuk-body govuk-!-margin-bottom-2"
+            ).toString + viewAmendmentDetails(notificationEvent.actionId).toString
           )
 
         case IndexToMatchForUploadFilesContent if sfusConfig.isSfusUploadEnabled && IndexToMatchForFixResubmitContent < 0 =>
@@ -203,7 +205,7 @@ class TimelineEvents @Inject() (
     uploadFilesPartialForTimeline(mrn, isPrimary)
 
   private def viewAmendmentDetails(actionId: String)(implicit messages: Messages): Html =
-    link(messages("declaration.details.view.amendments.button"), Call("GET", AmendmentDetailsController.displayPage(actionId).url))
+    link(messages("declaration.details.view.amendments.button"), AmendmentDetailsController.displayPage(actionId))
 
   private def viewQueriesContent(isPrimary: Boolean)(implicit messages: Messages): Html =
     linkButton(

@@ -747,7 +747,7 @@ submission.enhancedStatus.timeline.title.amendment.requested = Amendment request
 submission.enhancedStatus.timeline.title.cancel.amendment.accepted = Amendment cancelled
 submission.enhancedStatus.timeline.title.CUSTOMS_POSITION_DENIED = Cancellation request denied
 
-submission.enhancedStatus.timeline.content.external.amendment = This has been updated by HMRC
+submission.enhancedStatus.timeline.content.external.amendment = An authorised third party, for example a Loader, made an amendment to this declaration. This change will not appear in the declaration details.
 submission.enhancedStatus.timeline.content.CANCELLED = You cancelled this declaration.
 submission.enhancedStatus.timeline.content.WITHDRAWN = You cancelled this declaration.
 submission.enhancedStatus.timeline.content.EXPIRED_NO_ARRIVAL = The goods arrival message was not received within 30 days of the pre-lodged declaration.
