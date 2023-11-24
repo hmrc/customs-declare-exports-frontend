@@ -168,15 +168,13 @@ class ExpressConsignmentViewSpec extends UnitViewSpec with CommonMessages with I
         }
       }
 
-      // For Clearance the previous page should always be SupervisingCustomsOffice by any means, as
-      // "1040" as PC is not applicable to this journey type. This test is sort of superfluous then.
-      "display a 'Back' button linking to the 'Warehouse Details' page" when {
+      "display a 'Back' button linking to the 'Supervising Customs Office' page with PC 1040 and APC 000" when {
         postalOrFTIModeOfTransportCodes.foreach { transportCode =>
           s"TransportLeavingTheBorder is '${transportCode.value}'" in {
             val modeOfTransportCode = withBorderModeOfTransportCode(transportCode)
             val item = withItem(anItem(withProcedureCodes(Some("1040"), Seq("000"))))
             implicit val request = withRequestOfType(CLEARANCE, item, modeOfTransportCode)
-            verifyBackButton(createView(), routes.WarehouseIdentificationController.displayPage)
+            verifyBackButton(createView(), routes.SupervisingCustomsOfficeController.displayPage)
           }
         }
       }
