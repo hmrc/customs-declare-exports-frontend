@@ -17,7 +17,7 @@
 package controllers.declaration
 
 import base.ControllerWithoutFormSpec
-import controllers.declaration.routes.{ItemsSummaryController, SectionSummaryController}
+import controllers.declaration.routes.{ItemsSummaryController, SectionSummaryController, SummaryController}
 import controllers.helpers.SequenceIdHelper.valueOfEso
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.FiscalInformation.AllowedFiscalInformationAnswers
@@ -34,6 +34,7 @@ import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import services.cache.SubmissionBuilder
+import uk.gov.hmrc.play.bootstrap.binders.RedirectUrl
 import views.html.declaration.declarationitems.{items_cannot_remove, items_remove_item}
 
 import scala.concurrent.Future
@@ -54,6 +55,8 @@ class RemoveItemsSummaryControllerSpec
     cannotRemoveItemPage,
     removeItemPage
   )(ec)
+
+  private val redirectUrl = RedirectUrl(SummaryController.displayPage.url)
 
   private val parentDeclarationId = "parentDecId"
   private val parentDeclaration = aDeclaration(withId(parentDeclarationId))
@@ -142,7 +145,7 @@ class RemoveItemsSummaryControllerSpec
           val result = controller.displayRemoveItemConfirmationPage("someItemId")(getRequest())
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(ItemsSummaryController.displayItemsSummaryPage.url)
+          redirectLocation(result) mustBe Some(SummaryController.displayPage.url)
         }
       }
 
@@ -190,7 +193,7 @@ class RemoveItemsSummaryControllerSpec
           "not call ExportsCacheService update method" in {
             withNewCaching(aDeclaration(withType(request.declarationType), withItem(cachedItem), withItem(secondItem)))
 
-            val result = controller.removeItem("someId123")(postRequest(removeItemForm))
+            val result = controller.removeItem("someId123", redirectUrl)(postRequest(removeItemForm))
             status(result) mustBe SEE_OTHER
 
             verifyTheCacheIsUnchanged()
@@ -199,7 +202,7 @@ class RemoveItemsSummaryControllerSpec
           "return 303 (SEE_OTHER) and redirect to the mini CYA page" in {
             withNewCaching(aDeclaration(withType(request.declarationType), withItem(cachedItem), withItem(secondItem)))
 
-            val result = controller.removeItem("someId123")(postRequest(removeItemForm))
+            val result = controller.removeItem("someId123", redirectUrl)(postRequest(removeItemForm))
 
             status(result) mustBe SEE_OTHER
             redirectLocation(result) mustBe Some(SectionSummaryController.displayPage(5).url)
@@ -213,7 +216,7 @@ class RemoveItemsSummaryControllerSpec
             valueOfEso[ExportItem](cachedDeclaration).value mustBe 2
             withNewCaching(cachedDeclaration)
 
-            val result = controller.removeItem(itemId)(postRequest(removeItemForm))
+            val result = controller.removeItem(itemId, redirectUrl)(postRequest(removeItemForm))
             status(result) mustBe SEE_OTHER
 
             val declaration = theCacheModelUpdated
@@ -227,7 +230,7 @@ class RemoveItemsSummaryControllerSpec
           "return 303 (SEE_OTHER) and redirect to the mini CYA page" in {
             withNewCaching(aDeclaration(withType(request.declarationType), withItem(cachedItem), withItem(secondItem)))
 
-            val result = controller.removeItem(itemId)(postRequest(removeItemForm))
+            val result = controller.removeItem(itemId, redirectUrl)(postRequest(removeItemForm))
 
             status(result) mustBe SEE_OTHER
             redirectLocation(result) mustBe Some(SectionSummaryController.displayPage(5).url)
@@ -241,16 +244,21 @@ class RemoveItemsSummaryControllerSpec
 
       "user does not want to remove an Item" should {
         val removeItemForm = Json.obj("yesNo" -> YesNoAnswers.no)
+        List(
+          ItemsSummaryController.displayItemsSummaryPage.url,
+          SectionSummaryController.displayPage(5).url,
+          SummaryController.displayPage.url
+        ).foreach { url =>
+          s"redirect to $url" in {
+            withNewCaching(aDeclaration(withType(request.declarationType), withItem(cachedItem), withItem(secondItem)))
 
-        "redirect to Items Summary page" in {
-          withNewCaching(aDeclaration(withType(request.declarationType), withItem(cachedItem), withItem(secondItem)))
+            val result = controller.removeItem(itemId, RedirectUrl(url))(postRequest(removeItemForm))
 
-          val result = controller.removeItem(itemId)(postRequest(removeItemForm))
+            status(result) mustBe SEE_OTHER
+            redirectLocation(result) mustBe Some(url)
 
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(ItemsSummaryController.displayItemsSummaryPage.url)
-
-          verifyTheCacheIsUnchanged()
+            verifyTheCacheIsUnchanged()
+          }
         }
       }
 
@@ -261,7 +269,7 @@ class RemoveItemsSummaryControllerSpec
             aDeclaration(withType(request.declarationType), withItem(cachedItem), withItem(secondItem), withParentDeclarationId(parentDeclarationId))
           )
           val incorrectRemoveItemForm = Json.obj("yesNo" -> "")
-          val result = controller.removeItem(itemId)(postRequest(incorrectRemoveItemForm))
+          val result = controller.removeItem(itemId, redirectUrl)(postRequest(incorrectRemoveItemForm))
 
           status(result) mustBe BAD_REQUEST
           verify(removeItemPage).apply(any(), any(), any(), any())(any(), any())
@@ -271,7 +279,7 @@ class RemoveItemsSummaryControllerSpec
           withNewCaching(aDeclaration(withType(request.declarationType)))
 
           val incorrectRemoveItemForm = Json.obj("yesNo" -> "")
-          val result = controller.removeItem(itemId)(postRequest(incorrectRemoveItemForm))
+          val result = controller.removeItem(itemId, redirectUrl)(postRequest(incorrectRemoveItemForm))
 
           status(result) mustBe INTERNAL_SERVER_ERROR
         }
@@ -294,7 +302,7 @@ class RemoveItemsSummaryControllerSpec
           "remove the Item from cache" in {
             withNewCaching(declaration)
 
-            val result = controller.removeItem("warehouseItem")(postRequest(removeItemForm))
+            val result = controller.removeItem("warehouseItem", redirectUrl)(postRequest(removeItemForm))
             status(result) mustBe SEE_OTHER
 
             val model = theCacheModelUpdated
@@ -321,7 +329,7 @@ class RemoveItemsSummaryControllerSpec
           "remove the Item from cache" in {
             withNewCaching(declaration)
 
-            val result = controller.removeItem("warehouseItem")(postRequest(removeItemForm))
+            val result = controller.removeItem("warehouseItem", redirectUrl)(postRequest(removeItemForm))
             status(result) mustBe SEE_OTHER
 
             val model = theCacheModelUpdated

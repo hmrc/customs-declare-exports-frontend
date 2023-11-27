@@ -20,6 +20,7 @@ import base.Injector
 import controllers.declaration.routes.{ItemsSummaryController, SectionSummaryController, SummaryController}
 import models.declaration.ExportItem
 import org.jsoup.nodes.Document
+import play.api.mvc.Call
 import services.cache.ExportsTestHelper
 import tools.Stubs
 import views.components.gds.Styles
@@ -35,8 +36,8 @@ class ItemsCannotRemoveItemViewSpec extends UnitViewSpec with ExportsTestHelper 
   private val itemDisplayNum = itemIdx + 1
   private val parentDecId = "id"
 
-  private def createView(item: ExportItem, fromSummary: Option[Boolean] = None): Document =
-    page(item, itemIdx, parentDecId, fromSummary)(journeyRequest(), messages)
+  private def createView(item: ExportItem, referrer: Call = ItemsSummaryController.displayItemsSummaryPage): Document =
+    page(item, itemIdx, parentDecId, referrer)(journeyRequest(), messages)
 
   private val exportItem = anItem()
 
@@ -53,11 +54,13 @@ class ItemsCannotRemoveItemViewSpec extends UnitViewSpec with ExportsTestHelper 
     }
 
     "display 'Back' button pointing to /summary-section/5" in {
-      createView(exportItem, Some(false)).getElementById("back-link") must haveHref(SectionSummaryController.displayPage(5))
+      val view = createView(exportItem, SectionSummaryController.displayPage(5))
+      view.getElementById("back-link") must haveHref(SectionSummaryController.displayPage(5))
     }
 
     "display 'Back' button pointing to /saved-summary" in {
-      createView(exportItem, Some(true)).getElementById("back-link") must haveHref(SummaryController.displayPage)
+      val view = createView(exportItem, SummaryController.displayPage)
+      view.getElementById("back-link") must haveHref(SummaryController.displayPage)
     }
 
     "display section header" in {

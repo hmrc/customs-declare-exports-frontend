@@ -19,32 +19,27 @@ package views.declaration.declarationitems
 import base.Injector
 import controllers.declaration.routes.{ItemsSummaryController, SectionSummaryController, SummaryController}
 import forms.common.YesNoAnswer
-import models.DeclarationType.{DeclarationType, STANDARD}
-import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import org.scalatest.Assertion
 import play.api.data.{Form, FormError}
-import play.api.i18n.Messages
 import play.api.mvc.Call
-import play.twirl.api.HtmlFormat
 import views.components.gds.Styles
-import views.declaration.spec.PageWithButtonsSpec
+import views.declaration.spec.UnitViewSpec
 import views.html.declaration.declarationitems.items_remove_item
 import views.tags.ViewTest
 
 @ViewTest
-class ItemsRemoveItemViewSpec extends PageWithButtonsSpec with Injector {
+class ItemsRemoveItemViewSpec extends UnitViewSpec with Injector {
 
   private val page = instanceOf[items_remove_item]
   private val form = YesNoAnswer.form()
   private val itemIdx = 0
   private val itemDisplayNum = itemIdx + 1
 
-  override val typeAndViewInstance: (DeclarationType, (JourneyRequest[_], Messages) => HtmlFormat.Appendable) =
-    (STANDARD, page(form, exportItem, itemIdx, None)(_, _))
+  private val defaultCall = SummaryController.displayPage
 
-  private def createView(form: Form[YesNoAnswer] = form, fromSummary: Option[Boolean] = None): Document =
-    page(form, exportItem, itemIdx, fromSummary)(journeyRequest(), messages)
+  private def createView(form: Form[YesNoAnswer] = form, referrer: Call = defaultCall): Document =
+    page(form, exportItem, itemIdx, referrer)(journeyRequest(), messages)
 
   private val exportItem = anItem()
 
@@ -56,18 +51,18 @@ class ItemsRemoveItemViewSpec extends PageWithButtonsSpec with Injector {
 
     val view = createView()
 
-    "display 'Back to previous question' button pointing to /declaration-items-list" in {
+    "display 'Back' button pointing to /declaration-items-list" in {
+      val view = createView(referrer = ItemsSummaryController.displayItemsSummaryPage)
       checkBackButton(view, ItemsSummaryController.displayItemsSummaryPage)
     }
 
     "display 'Back' button pointing to /summary-section/5" in {
-      val view = createView(fromSummary = Some(false))
+      val view = createView(referrer = SectionSummaryController.displayPage(5))
       checkBackButton(view, SectionSummaryController.displayPage(5))
     }
 
     "display 'Back' button pointing to /saved-summary" in {
-      val view = createView(fromSummary = Some(true))
-      checkBackButton(view, SummaryController.displayPage)
+      checkBackButton(view, defaultCall)
     }
 
     "display error section" in {
@@ -98,10 +93,8 @@ class ItemsRemoveItemViewSpec extends PageWithButtonsSpec with Injector {
       view must containElementWithID("code_no")
     }
 
-    checkSaveAndContinueButtonIsDisplayed(view)
-
     "display confirm and continue button when editing from summary" in {
-      val button = createView(fromSummary = Some(true)).getElementById("save_and_return_to_summary")
+      val button = view.getElementById("save_and_return_to_summary")
       button must containMessage("site.confirm_and_continue")
     }
   }

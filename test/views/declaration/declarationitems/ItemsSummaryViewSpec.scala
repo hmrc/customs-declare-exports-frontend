@@ -106,15 +106,23 @@ class ItemsSummaryViewSpec extends UnitViewSpec with ExportsTestHelper with Stub
         rows.get(1).getElementById("item_0--procedure_code") must containText("procedure-code1")
         rows.get(1).getElementById("item_0--item_type") must containText("1234567890")
         rows.get(1).getElementById("item_0--package_count").text() must be("1")
-        rows.get(1).getElementById("item_0--change").getElementsByTag("a").get(0) must haveHref(ProcedureCodesController.displayPage("id1"))
-        rows.get(1).getElementById("item_0--remove").getElementsByTag("a").get(0) must haveHref(RemoveItemsSummaryController.removeItem("id1"))
+
+        val changeLink1 = rows.get(1).getElementById("item_0--change").getElementsByTag("a").get(0)
+        changeLink1 must haveHref(ProcedureCodesController.displayPage("id1"))
+
+        val removeLink1 = rows.get(1).getElementById("item_0--remove").getElementsByTag("a").get(0)
+        removeLink1 must haveHref(RemoveItemsSummaryController.displayRemoveItemConfirmationPage("id1"))
 
         rows.get(2).getElementById("item_1--sequence_id") must containText("2")
         rows.get(2).getElementById("item_1--procedure_code") must containText("procedure-code2")
         rows.get(2).getElementById("item_1--item_type") must containText("1234567890")
         rows.get(2).getElementById("item_1--package_count").text() must be("2")
-        rows.get(2).getElementById("item_1--change").getElementsByTag("a").get(0) must haveHref(ProcedureCodesController.displayPage("id2"))
-        rows.get(2).getElementById("item_1--remove").getElementsByTag("a").get(0) must haveHref(RemoveItemsSummaryController.removeItem("id2"))
+
+        val changeLink2 = rows.get(2).getElementById("item_1--change").getElementsByTag("a").get(0)
+        changeLink2 must haveHref(ProcedureCodesController.displayPage("id2"))
+
+        val removeLink2 = rows.get(2).getElementById("item_1--remove").getElementsByTag("a").get(0)
+        removeLink2 must haveHref(RemoveItemsSummaryController.displayRemoveItemConfirmationPage("id2"))
       }
 
       "item has two package information elements with one having empty number of packages" in {
@@ -150,8 +158,12 @@ class ItemsSummaryViewSpec extends UnitViewSpec with ExportsTestHelper with Stub
         rows.get(1).getElementById("item_0--procedure_code") must containText("procedure-code1")
         rows.get(1).getElementById("item_0--item_type") must containText("1234567890")
         rows.get(1).getElementById("item_0--package_count").text() must be("1")
-        rows.get(1).getElementById("item_0--change").getElementsByTag("a").get(0) must haveHref(ProcedureCodesController.displayPage("id1"))
-        rows.get(1).getElementById("item_0--remove").getElementsByTag("a").get(0) must haveHref(RemoveItemsSummaryController.removeItem("id1"))
+
+        val changeLink1 = rows.get(1).getElementById("item_0--change").getElementsByTag("a").get(0)
+        changeLink1 must haveHref(ProcedureCodesController.displayPage("id1"))
+
+        val removeLink1 = rows.get(1).getElementById("item_0--remove").getElementsByTag("a").get(0)
+        removeLink1 must haveHref(RemoveItemsSummaryController.displayRemoveItemConfirmationPage("id1"))
       }
     }
 

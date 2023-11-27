@@ -42,18 +42,12 @@ class Card5ForItems @Inject() (
 
   // Called by the Final CYA page
   def eval(declaration: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages): Html =
-    if (showItemsCard(declaration, actionsEnabled)) content(declaration, actionsEnabled, true) else HtmlFormat.empty
+    if (showItemsCard(declaration, actionsEnabled)) content(declaration, actionsEnabled) else HtmlFormat.empty
 
   // Called by the Mini CYA page
-  def content(declaration: ExportsDeclaration, actionsEnabled: Boolean)(implicit messages: Messages): Html =
-    content(declaration, actionsEnabled, false)
-
-  // The 'fromSummary' flag is used on the 'Remove item' pages when the
-  // user clicks the 'Back' button or does not confirm the item removal.
-
-  private def content(declaration: ExportsDeclaration, actionsEnabled: Boolean, fromSummary: Boolean)(implicit messages: Messages): Html = {
+  def content(declaration: ExportsDeclaration, actionsEnabled: Boolean)(implicit messages: Messages): Html = {
     val cardContent = card(5).map(_.copy(actions = addItemAction(declaration, actionsEnabled)))
-    govukSummaryList(SummaryList(rows(declaration, actionsEnabled, fromSummary), cardContent))
+    govukSummaryList(SummaryList(rows(declaration, actionsEnabled), cardContent))
   }
 
   def backLink(implicit request: JourneyRequest[_]): Call = ItemsSummaryController.displayItemsSummaryPage
@@ -69,11 +63,11 @@ class Card5ForItems @Inject() (
     Some(Actions(items = List(ActionItem(call.url, content, None))))
   }
 
-  private def rows(declaration: ExportsDeclaration, actionsEnabled: Boolean, fromSummary: Boolean)(implicit messages: Messages): Seq[SummaryListRow] =
+  private def rows(declaration: ExportsDeclaration, actionsEnabled: Boolean)(implicit messages: Messages): Seq[SummaryListRow] =
     if (!declaration.hasItems) noItemRow(actionsEnabled)
     else
       declaration.items.sortBy(_.sequenceId).zipWithIndex.flatMap { case (item, index) =>
-        if (item.isDefined) rows(declaration, item, actionsEnabled, fromSummary, index + 1) else List.empty
+        if (item.isDefined) rows(declaration, item, actionsEnabled, index + 1) else List.empty
       }
 
   private def noItemRow(actionsEnabled: Boolean)(implicit messages: Messages): List[SummaryListRow] =
@@ -84,7 +78,7 @@ class Card5ForItems @Inject() (
       List(SummaryListRow(Key(content), Value(Text(""), classes = "hidden")))
     }
 
-  private def rows(declaration: ExportsDeclaration, item: ExportItem, actionsEnabled: Boolean, fromSummary: Boolean, index: Int)(
+  private def rows(declaration: ExportsDeclaration, item: ExportItem, actionsEnabled: Boolean, index: Int)(
     implicit messages: Messages
   ): Seq[SummaryListRow] = {
     // Early evaluation of this attribute in order to verify if it will be displayed as a multi-rows section.
@@ -97,7 +91,7 @@ class Card5ForItems @Inject() (
 
     (
       List(
-        itemHeading(item, actionsEnabled, fromSummary, index),
+        itemHeading(item, actionsEnabled, index),
         procedureCode(item, actionsEnabled, index),
         additionalProcedureCodes(item, actionsEnabled, index),
         fiscalInformation(item, actionsEnabled, index),
@@ -122,12 +116,10 @@ class Card5ForItems @Inject() (
     ).flatten
   }
 
-  private def itemHeading(item: ExportItem, actionsEnabled: Boolean, fromSummary: Boolean, index: Int)(
-    implicit messages: Messages
-  ): Option[SummaryListRow] = {
+  private def itemHeading(item: ExportItem, actionsEnabled: Boolean, index: Int)(implicit messages: Messages): Option[SummaryListRow] = {
     lazy val removeItem = {
       val text = messages("declaration.summary.item.remove")
-      val call = RemoveItemsSummaryController.displayRemoveItemConfirmationPage(item.id, Some(fromSummary))
+      val call = RemoveItemsSummaryController.displayRemoveItemConfirmationPage(item.id)
       actionItem(call.url, Text(text), Some(text))
     }
 
