@@ -1986,6 +1986,7 @@ declaration.summary.transaction.previousDocuments.type = Math o ddogfen
 declaration.summary.transaction.previousDocuments.reference = Cyfeirnod y ddogfen
 declaration.summary.transaction.previousDocuments.goodsItemIdentifier = Rhif yr eitem
 declaration.summary.items.add = Ychwanegwch eitem ddatganiad
+declaration.summary.items.none = Ychwanegu eitem at y datganiad hwn
 declaration.summary.items.empty = Nid ydych wedi ychwanegu unrhyw eitemau eto
 declaration.summary.item = Eitem ddatganiad {0}
 declaration.summary.item.remove = Tynnu eitem

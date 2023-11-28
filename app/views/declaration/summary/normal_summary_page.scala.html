@@ -19,8 +19,10 @@
 @import controllers.routes.RejectedNotificationsController
 @import models.declaration.submissions.EnhancedStatus.ERRORS
 @import models.requests.JourneyRequest
+@import play.twirl.api.HtmlFormat
 @import views.helpers.{BackButton, Title}
 @import views.helpers.summary._
+@import views.helpers.summary.SummaryHelper.noItemsError
 @import views.html.components.gds._
 @import views.html.declaration.summary.sections._
 @import uk.gov.hmrc.govukfrontend.views.html.components._
@@ -47,31 +49,37 @@
   maybeContinuePlaceholder: Option[String] = None
 )(implicit request: JourneyRequest[_], messages: Messages, appConfig: AppConfig)
 
-@draftContinueLink = { @if(request.cacheModel.declarationMeta.readyForSubmission != Some(true)) {
-    @maybeContinuePlaceholder.map { continuePlaceholder =>
-        @govukButton(Button(
+@draftContinueLink = @{
+    if (request.cacheModel.declarationMeta.readyForSubmission != Some(true)) {
+      maybeContinuePlaceholder.map { continuePlaceholder =>
+        govukButton(Button(
             content = Text(messages("site.continue")),
             classes = "govuk-!-margin-top-4",
             href = Some(continuePlaceholder),
             attributes = Map("id" -> continuePlaceholder)
         ))
-    }
+      }
     }
 }
 
 @continueLink = @{
     request.cacheModel.declarationMeta.readyForSubmission match {
-        case Some(true) if errors.isEmpty =>
+
+        case Some(true) if errors.isEmpty && request.cacheModel.hasItems =>
             linkButton("site.confirm_and_continue", SubmissionController.displaySubmitDeclarationPage)
 
+        case Some(true) if !request.cacheModel.hasItems =>
+            linkButton("site.confirm_and_continue", SummaryController.displayPageOnNoItems)
+
         case Some(true) => linkButton("site.confirm_and_continue", SummaryController.displayPage)
-        case _          =>
+
+        case _ => HtmlFormat.empty
     }
 }
 
 @viewDeclarationErrors = @{
     val declaration = request.cacheModel
-    if(declaration.declarationMeta.parentDeclarationEnhancedStatus == Some(ERRORS)) {
+    if (declaration.declarationMeta.parentDeclarationEnhancedStatus == Some(ERRORS)) {
         declaration.declarationMeta.parentDeclarationId.map { parentId =>
           linkButton(
             "site.view.declaration.errors",
@@ -83,15 +91,14 @@
 }
 
 @titleKey = @{
-    if(request.cacheModel.declarationMeta.parentDeclarationEnhancedStatus == Some(ERRORS))
-        "declaration.summary.amend-header"
-    else if(request.cacheModel.declarationMeta.readyForSubmission == Some(true))
-        "declaration.summary.normal-header"
+    val meta = request.cacheModel.declarationMeta
+    if (meta.parentDeclarationEnhancedStatus == Some(ERRORS)) "declaration.summary.amend-header"
+    else if (meta.readyForSubmission == Some(true)) "declaration.summary.normal-header"
     else "declaration.summary.saved-header"
 }
 
 @draftBodyText = @{
-    if(request.cacheModel.declarationMeta.readyForSubmission != Some(true))
+    if (request.cacheModel.declarationMeta.readyForSubmission != Some(true))
         paragraphBody(messages("declaration.summary.draft.body"))
 }
 
@@ -101,7 +108,6 @@
     useCustomContentWidth = true,
     showDeclarationSummaryLink = false
 ) {
-
     @pageTitle(messages(titleKey))
 
     @errorSummary(errors)
@@ -121,7 +127,7 @@
 
     @card4ForTransactions.eval(request.cacheModel)
 
-    @card5ForItems.eval(request.cacheModel)
+    @card5ForItems.eval(request.cacheModel, showNoItemError = errors.contains(noItemsError))
 
     @card6ForTransport.eval(request.cacheModel)
 

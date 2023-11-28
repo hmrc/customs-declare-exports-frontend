@@ -23,7 +23,8 @@ import models.declaration.ExportItem
 import models.requests.JourneyRequest
 import play.api.i18n.Messages
 import play.api.mvc.Call
-import play.twirl.api.{Html, HtmlFormat}
+import play.twirl.api.Html
+import play.twirl.api.HtmlFormat.empty
 import uk.gov.hmrc.govukfrontend.views.html.components.{GovukSummaryList, GovukWarningText, SummaryList}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
@@ -41,13 +42,21 @@ class Card5ForItems @Inject() (
 ) extends SummaryCard {
 
   // Called by the Final CYA page
-  def eval(declaration: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages): Html =
-    if (showItemsCard(declaration, actionsEnabled)) content(declaration, actionsEnabled) else HtmlFormat.empty
+  def eval(declaration: ExportsDeclaration, actionsEnabled: Boolean = true, showNoItemError: Boolean = false)(implicit messages: Messages): Html =
+    if (showItemsCard(declaration, actionsEnabled)) content(declaration, actionsEnabled, showNoItemError) else empty
 
   // Called by the Mini CYA page
-  def content(declaration: ExportsDeclaration, actionsEnabled: Boolean)(implicit messages: Messages): Html = {
+  def content(declaration: ExportsDeclaration, actionsEnabled: Boolean)(implicit messages: Messages): Html =
+    content(declaration, actionsEnabled, false)
+
+  private def content(declaration: ExportsDeclaration, actionsEnabled: Boolean, showNoItemError: Boolean)(implicit messages: Messages): Html = {
     val cardContent = card(5).map(_.copy(actions = addItemAction(declaration, actionsEnabled)))
-    govukSummaryList(SummaryList(rows(declaration, actionsEnabled), cardContent))
+    val html = govukSummaryList(SummaryList(rows(declaration, actionsEnabled, showNoItemError), cardContent))
+    if (!showNoItemError || declaration.hasItems) html
+    else {
+      val str = html.toString
+      Html(str.replace("""class="govuk-summary-card"""", """class="govuk-summary-card govuk-summary-card--error""""))
+    }
   }
 
   def backLink(implicit request: JourneyRequest[_]): Call = ItemsSummaryController.displayItemsSummaryPage
@@ -60,23 +69,29 @@ class Card5ForItems @Inject() (
   private def addItemLink(declaration: ExportsDeclaration)(implicit messages: Messages): Option[Actions] = {
     val content = Text(messages("declaration.summary.items.add"))
     val call = if (declaration.hasItems) ItemsSummaryController.addAdditionalItem else ItemsSummaryController.displayAddItemPage
-    Some(Actions(items = List(ActionItem(call.url, content, None))))
+    Some(Actions(items = List(ActionItem(call.url, content, attributes = Map("id" -> SummaryHelper.addItemLinkId)))))
   }
 
-  private def rows(declaration: ExportsDeclaration, actionsEnabled: Boolean)(implicit messages: Messages): Seq[SummaryListRow] =
-    if (!declaration.hasItems) noItemRow(actionsEnabled)
+  private def rows(declaration: ExportsDeclaration, actionsEnabled: Boolean, showNoItemError: Boolean)(
+    implicit messages: Messages
+  ): Seq[SummaryListRow] =
+    if (!declaration.hasItems) noItemRow(actionsEnabled, showNoItemError)
     else
       declaration.items.sortBy(_.sequenceId).zipWithIndex.flatMap { case (item, index) =>
         if (item.isDefined) rows(declaration, item, actionsEnabled, index + 1) else List.empty
       }
 
-  private def noItemRow(actionsEnabled: Boolean)(implicit messages: Messages): List[SummaryListRow] =
+  private def noItemRow(actionsEnabled: Boolean, showNoItemError: Boolean)(implicit messages: Messages): List[SummaryListRow] =
     if (!actionsEnabled) List.empty
     else {
       val warningText = WarningText(Some(messages("site.warning")), content = Text(messages("declaration.summary.items.empty")))
       val content = HtmlContent(govukWarningText(warningText))
-      List(SummaryListRow(Key(content), Value(Text(""), classes = "hidden")))
+      List(noItemError(showNoItemError), Some(SummaryListRow(Key(content), Value(classes = "hidden")))).flatten
     }
+
+  private def noItemError(showNoItemError: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
+    if (!showNoItemError) None
+    else Some(SummaryListRow(key("items.none", "govuk-error-message"), Value(classes = "hidden"), classes = s"govuk-summary-list__row--no-border"))
 
   private def rows(declaration: ExportsDeclaration, item: ExportItem, actionsEnabled: Boolean, index: Int)(
     implicit messages: Messages

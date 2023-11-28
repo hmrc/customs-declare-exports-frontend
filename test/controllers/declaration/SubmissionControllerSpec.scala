@@ -18,7 +18,7 @@ package controllers.declaration
 
 import base.ControllerWithoutFormSpec
 import controllers.declaration.amendments.routes.AmendmentOutcomeController
-import controllers.declaration.routes.ConfirmationController
+import controllers.declaration.routes.{ConfirmationController, SummaryController}
 import controllers.routes.RootController
 import forms.declaration.AmendmentSubmission.reasonKey
 import forms.declaration.LegalDeclaration
@@ -93,16 +93,27 @@ class SubmissionControllerSpec extends ControllerWithoutFormSpec with ErrorHandl
     latestEnhancedStatus = Some(RECEIVED)
   )
 
-  "SubmissionController.displaySubmitDeclarationPage" when {
+  "SubmissionController.displaySubmitDeclarationPage" should {
 
     "return 200 and invoke the expected page" in {
-      withNewCaching(aDeclaration())
+      withNewCaching(aDeclaration(withItems(anItem(withAdditionalInformation("code", "description")))))
 
       val result = controller.displaySubmitDeclarationPage.apply(getJourneyRequest())
       status(result) mustBe OK
 
       verify(legalDeclarationPage).apply(any())(any(), any())
       verifyNoInteractions(amendmentSubmissionPage)
+    }
+
+    "redirect to /saved-summary-no-items" when {
+      "trying to submit a declaration without items" in {
+        withNewCaching(aDeclaration())
+
+        val result = controller.displaySubmitDeclarationPage.apply(getJourneyRequest())
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(SummaryController.displayPageOnNoItems.url)
+      }
     }
 
     "return 500 (INTERNAL_SERVER_ERROR)" when {

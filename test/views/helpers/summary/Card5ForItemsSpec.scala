@@ -62,13 +62,16 @@ class Card5ForItemsSpec extends UnitViewSpec with ExportsTestHelper with Injecto
 
   private val card5ForItems = instanceOf[Card5ForItems]
 
-  private def createView(decl: ExportsDeclaration = declaration, actionEnabled: Boolean = true): Html =
-    card5ForItems.eval(decl, actionEnabled)(messages)
+  private def finalCyaView(decl: ExportsDeclaration, actionEnabled: Boolean = true, showNoItemError: Boolean = false): Html =
+    card5ForItems.eval(decl, actionEnabled, showNoItemError)(messages)
+
+  private def miniCyaView(decl: ExportsDeclaration = declaration, actionEnabled: Boolean = true): Html =
+    card5ForItems.content(decl, actionEnabled)(messages)
 
   "Items card" when {
 
     "the declaration has items" should {
-      val view = createView()
+      val view = miniCyaView()
 
       "have the expected items heading" in {
         view.getElementsByTag("h2").first.text mustBe messages("declaration.summary.section.5")
@@ -84,7 +87,7 @@ class Card5ForItemsSpec extends UnitViewSpec with ExportsTestHelper with Injecto
 
       "NOT have the 'Add item' link" when {
         "the declaration type is CLEARANCE" in {
-          val view = createView(aDeclaration(withType(CLEARANCE), withItems(itemWithAnswers)))
+          val view = miniCyaView(aDeclaration(withType(CLEARANCE), withItems(itemWithAnswers)))
           view.getElementsByTag("form").size() mustBe 0
           view.getElementsByClass("input-submit").size() mustBe 0
 
@@ -95,7 +98,7 @@ class Card5ForItemsSpec extends UnitViewSpec with ExportsTestHelper with Injecto
       "show all entered items" in {
         val item1 = anItem().copy(sequenceId = 3, cusCode = Some(CusCode(Some("code1"))))
         val item2 = anItem().copy(sequenceId = 9, cusCode = Some(CusCode(Some("code2"))))
-        val view = createView(aDeclaration(withItems(item1, item2)))
+        val view = miniCyaView(aDeclaration(withItems(item1, item2)))
 
         checkCard(view, true)
 
@@ -113,7 +116,7 @@ class Card5ForItemsSpec extends UnitViewSpec with ExportsTestHelper with Injecto
 
       "NOT have change links" when {
         "'actionsEnabled' is false" in {
-          createView(actionEnabled = false).getElementsByClass(summaryActionsClassName) mustBe empty
+          miniCyaView(actionEnabled = false).getElementsByClass(summaryActionsClassName) mustBe empty
         }
       }
     }
@@ -123,13 +126,13 @@ class Card5ForItemsSpec extends UnitViewSpec with ExportsTestHelper with Injecto
       "NOT display the 'Items' card" when {
 
         "actionEnabled is false" in {
-          createView(aDeclaration(), false).toString mustBe ""
+          finalCyaView(aDeclaration(), false).toString mustBe ""
         }
 
         "actionEnabled is true and" when {
           "declaration.previousDocuments is undefined and" when {
             "the transport section is empty" in {
-              createView(aDeclaration(withNatureOfTransaction(BusinessPurchase))).toString mustBe ""
+              finalCyaView(aDeclaration(withNatureOfTransaction(BusinessPurchase))).toString mustBe ""
             }
           }
         }
@@ -147,6 +150,25 @@ class Card5ForItemsSpec extends UnitViewSpec with ExportsTestHelper with Injecto
           }
         }
       }
+
+      "display the 'Items' card and, inside the card, the expected paragraphs" when {
+        "trying to submit the declaration" in {
+          val view = finalCyaView(aDeclaration(withBorderTransport()), true, true)
+          checkCard(view)
+
+          val summaryCard = view.getElementsByClass("govuk-summary-card").get(0)
+          assert(summaryCard.hasClass("govuk-summary-card--error"))
+
+          val rows = view.getElementsByClass(summaryRowClassName)
+          rows.size mustBe 2
+
+          val message = rows.first.getElementsByClass("govuk-error-message").first
+          message.text mustBe messages("declaration.summary.items.none")
+
+          val warning = rows.last.getElementsByClass("govuk-warning-text").first
+          warning.text must endWith(messages("declaration.summary.items.empty"))
+        }
+      }
     }
 
     "the declaration has only empty items" should {
@@ -154,13 +176,13 @@ class Card5ForItemsSpec extends UnitViewSpec with ExportsTestHelper with Injecto
       "NOT display the 'Items' card" when {
 
         "actionEnabled is false" in {
-          createView(aDeclaration(withItems(2)), false).toString mustBe ""
+          finalCyaView(aDeclaration(withItems(2)), false).toString mustBe ""
         }
 
         "actionEnabled is true and" when {
           "declaration.previousDocuments is undefined and" when {
             "the transport section is empty" in {
-              createView(aDeclaration(withItems(2), withNatureOfTransaction(BusinessPurchase))).toString mustBe ""
+              finalCyaView(aDeclaration(withItems(2), withNatureOfTransaction(BusinessPurchase))).toString mustBe ""
             }
           }
         }
@@ -211,7 +233,7 @@ class Card5ForItemsSpec extends UnitViewSpec with ExportsTestHelper with Injecto
   }
 
   def checkNoItemsCard(declaration: ExportsDeclaration): Assertion = {
-    val view = createView(declaration)
+    val view = miniCyaView(declaration)
     checkCard(view)
 
     val rows = view.getElementsByClass(summaryRowClassName)

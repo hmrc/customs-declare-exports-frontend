@@ -32,7 +32,7 @@ class AmendmentSummaryViewSpec extends SummaryViewSpec {
   def createView(declaration: ExportsDeclaration = declaration): Appendable =
     amendmentSummaryPage(submissionId)(journeyRequest(declaration), messages, minimalAppConfig)
 
-  "Summary page" should {
+  "AmendmentSummary page" should {
     val view = createView()
 
     "have references section" in {

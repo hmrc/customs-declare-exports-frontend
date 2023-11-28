@@ -29,7 +29,7 @@ import views.declaration.spec.UnitViewSpec
 trait SummaryViewSpec extends UnitViewSpec with Injector with Stubs {
 
   val dummyFormError = Seq(FormError("dummy", "error.unknown"))
-  private val backLink = Call("GET", "/backLink")
+  val backLink = Call("GET", "/backLink")
 
   def commonBehaviour(state: String, view: Appendable): Unit =
     s"declaration in $state state" should {

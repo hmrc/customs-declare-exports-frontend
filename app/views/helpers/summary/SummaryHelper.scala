@@ -17,6 +17,7 @@
 package views.helpers.summary
 
 import models.ExportsDeclaration
+import play.api.data.FormError
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
@@ -64,6 +65,12 @@ trait SummaryHelper {
 }
 
 object SummaryHelper {
+
+  val addItemLinkId = "add-item"
+
+  val continuePlaceholder = "continue-saved-declaration"
+
+  val noItemsError = FormError(addItemLinkId, "declaration.summary.items.none")
 
   def hasTransactionData(declaration: ExportsDeclaration): Boolean =
     declaration.natureOfTransaction.isDefined ||
