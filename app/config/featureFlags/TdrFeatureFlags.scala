@@ -21,7 +21,9 @@ import features.Feature
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class TdrUnauthorisedMsgConfig @Inject() (featureSwitchConfig: FeatureSwitchConfig) {
+class TdrFeatureFlags @Inject() (featureSwitchConfig: FeatureSwitchConfig) {
 
   val isTdrUnauthorisedMessageEnabled: Boolean = featureSwitchConfig.isFeatureOn(Feature.tdrUnauthorisedMessage)
+
+  val showErrorPageVersionForTdr: Boolean = featureSwitchConfig.isFeatureOn(Feature.showErrorPageVersionForTdr)
 }

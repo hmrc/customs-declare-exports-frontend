@@ -21,34 +21,53 @@ import com.typesafe.config.ConfigFactory
 import features.Feature
 import play.api.Configuration
 
-class TdrUnauthorisedMsgConfigSpec extends UnitWithMocksSpec {
+class TdrFeatureFlagsSpec extends UnitWithMocksSpec {
 
-  private def buildTdrConfig(enabled: Boolean = false, key: Feature.Value = Feature.tdrUnauthorisedMessage) = {
+  private def buildTdrConfig(enabled: Boolean = false, key: Feature.Value = Feature.tdrUnauthorisedMessage): TdrFeatureFlags = {
     val config = Configuration(ConfigFactory.parseString(s"""
         |microservice.services.features.default=disabled
         |microservice.services.features.${key}=${asConfigVal(enabled)}
       """.stripMargin))
 
-    new TdrUnauthorisedMsgConfig(new FeatureSwitchConfig(config))
+    new TdrFeatureFlags(new FeatureSwitchConfig(config))
   }
 
   private def asConfigVal(bool: Boolean): String = if (bool) "enabled" else "disabled"
 
-  "TdrUnauthorisedMsgConfig on isTdrUnauthorisedMessageEnabled" should {
+  "TdrFeatureFlags.isTdrUnauthorisedMessageEnabled" should {
 
     "return true" when {
-      "tdrUnauthorisedMsg feature is enabled" in {
+      "the related feature flag is enabled" in {
         buildTdrConfig(true).isTdrUnauthorisedMessageEnabled mustBe true
       }
     }
 
     "return false" when {
-      "tdrUnauthorisedMsg feature is disabled" in {
+      "the related feature flag is disabled" in {
         buildTdrConfig().isTdrUnauthorisedMessageEnabled mustBe false
       }
 
-      "tdrUnauthorisedMsg feature config key doesn't exist" in {
+      "the related feature config key doesn't exist" in {
         buildTdrConfig(true, Feature.betaBanner).isTdrUnauthorisedMessageEnabled mustBe false
+      }
+    }
+  }
+
+  "TdrFeatureFlags.showErrorPageVersionForTdr" should {
+
+    "return true" when {
+      "the related feature flag is enabled" in {
+        buildTdrConfig(true, Feature.showErrorPageVersionForTdr).showErrorPageVersionForTdr mustBe true
+      }
+    }
+
+    "return false" when {
+      "the related feature flag is disabled" in {
+        buildTdrConfig(false, Feature.showErrorPageVersionForTdr).showErrorPageVersionForTdr mustBe false
+      }
+
+      "the related feature config key doesn't exist" in {
+        buildTdrConfig(true, Feature.betaBanner).showErrorPageVersionForTdr mustBe false
       }
     }
   }
