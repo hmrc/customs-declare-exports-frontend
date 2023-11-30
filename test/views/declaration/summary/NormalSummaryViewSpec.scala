@@ -16,36 +16,34 @@
 
 package views.declaration.summary
 
+import controllers.declaration.routes.{SubmissionController, SummaryController}
 import controllers.routes.RejectedNotificationsController
 import models.declaration.DeclarationStatus.{COMPLETE, DRAFT, INITIAL}
 import models.ExportsDeclaration
 import models.declaration.submissions.EnhancedStatus.ERRORS
 import play.twirl.api.HtmlFormat.Appendable
-import play.api.mvc.Call
 import views.html.declaration.summary.normal_summary_page
 
-class SummaryViewNormalSpec extends SummaryViewSpec {
+class NormalSummaryViewSpec extends SummaryViewSpec {
 
-  private val backLink = Call("GET", "/backLink")
   private val normal_summaryPage = instanceOf[normal_summary_page]
 
   def createView(declaration: ExportsDeclaration = aDeclaration()): Appendable =
     normal_summaryPage(backLink)(journeyRequest(declaration), messages, minimalAppConfig)
 
-  def viewWithError(declaration: ExportsDeclaration = aDeclaration()): Appendable =
+  def createViewWithError(declaration: ExportsDeclaration = aDeclaration()): Appendable =
     normal_summaryPage(backLink, dummyFormError)(journeyRequest(declaration), messages, minimalAppConfig)
 
   private val declarationInDraft = aDeclarationAfter(aDeclaration().updateReadyForSubmission(false))
   private val declarationReadyForSubmission = aDeclarationAfter(aDeclaration().updateReadyForSubmission(true))
   private val declarationWithErrors = aDeclaration(withParentDeclarationEnhancedStatus(ERRORS))
-  private val documentWithFormError = viewWithError(aDeclaration())
 
   private val allDeclarationStates = List(declarationInDraft, declarationReadyForSubmission, declarationWithErrors)
 
   "Summary page" when {
 
     behave like sectionsVisibility(createView)
-    behave like displayErrorSummary(documentWithFormError)
+    behave like displayErrorSummary(createViewWithError())
 
     allDeclarationStates.foreach { declaration =>
       val view = createView(declaration)
@@ -56,6 +54,9 @@ class SummaryViewNormalSpec extends SummaryViewSpec {
         case _                 => behave like commonBehaviour("draft", view)
       }
     }
+  }
+
+  "Summary page" should {
 
     "not display a 'View Declaration Errors' button" when {
 
@@ -94,6 +95,45 @@ class SummaryViewNormalSpec extends SummaryViewSpec {
           button.text mustBe messages("site.view.declaration.errors")
           button must haveHref(RejectedNotificationsController.displayPage(parentId))
         }
+      }
+    }
+
+    "display a 'Confirm and continue' button pointing to /submit-your-declaration" when {
+      "the declaration has at least one item and no errors" in {
+        val item = anItem(withAdditionalInformation("code", "description"))
+        val declaration = aDeclaration(withStatus(DRAFT), withReadyForSubmission(), withConsignmentReferences(), withItems(item))
+        val view = createView(declaration)
+
+        val button = view.getElementsByClass("govuk-button").get(0)
+        button.tagName mustBe "a"
+        button.text mustBe messages("site.confirm_and_continue")
+        button must haveHref(SubmissionController.displaySubmitDeclarationPage)
+      }
+    }
+
+    "display a 'Confirm and continue' button pointing to /saved-summary-no-items" when {
+      "the declaration has at least one item and no errors" in {
+        val view = createView(aDeclaration(withStatus(DRAFT), withReadyForSubmission(), withConsignmentReferences()))
+
+        val button = view.getElementsByClass("govuk-button").get(0)
+        button.tagName mustBe "a"
+        button.text mustBe messages("site.confirm_and_continue")
+        button must haveHref(SummaryController.displayPageOnNoItems)
+      }
+    }
+
+    "display a 'Confirm and continue' button pointing to /saved-summary" when {
+      "the declaration has errors" in {
+        val item = anItem(withAdditionalInformation("code", "description"))
+        val declaration = aDeclaration(withStatus(DRAFT), withReadyForSubmission(), withConsignmentReferences(), withItems(item))
+        val view = createViewWithError(declaration)
+
+        view.getElementsByClass("govuk-error-summary").size must not be 0
+
+        val button = view.getElementsByClass("govuk-button").get(0)
+        button.tagName mustBe "a"
+        button.text mustBe messages("site.confirm_and_continue")
+        button must haveHref(SummaryController.displayPage)
       }
     }
   }

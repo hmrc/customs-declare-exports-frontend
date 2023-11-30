@@ -92,7 +92,8 @@ class SubmissionController @Inject() (
 
   val displaySubmitDeclarationPage: Action[AnyContent] = actions { implicit request =>
     if (inErrorFixMode) errorHandler.internalServerError("Invalid mode while redirected to the 'Legal declaration' page")
-    else Ok(legal_declaration(LegalDeclaration.form))
+    else if (request.cacheModel.hasItems) Ok(legal_declaration(LegalDeclaration.form))
+    else Redirect(routes.SummaryController.displayPageOnNoItems)
   }
 
   val displayCancelAmendmentPage: Action[AnyContent] = actions { implicit request =>

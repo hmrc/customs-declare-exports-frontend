@@ -234,7 +234,7 @@ class CopyDeclarationControllerSpec extends ControllerSpec with ErrorHandlerMock
       declaration.mucr mustBe None
     }
 
-    "redirect to /saved-summary" in {
+    "redirect to /summary" in {
       withNewCaching(withRequestOfType(STANDARD, withId(submission.uuid)).cacheModel)
       fetchSubmission(submission.uuid, submission)
       fetchDeclaration(submission.latestDecId.value)

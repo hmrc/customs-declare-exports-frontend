@@ -19,7 +19,6 @@ package controllers.declaration
 import config.AppConfig
 import connectors.CustomsDeclareExportsConnector
 import controllers.actions.{AuthAction, JourneyAction, VerifiedEmailAction}
-import controllers.declaration.SummaryController.{continuePlaceholder, lrnDuplicateError}
 import controllers.routes.SavedDeclarationsController
 import forms.{Lrn, LrnValidator}
 import handlers.ErrorHandler
@@ -36,6 +35,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.dashboard.DashboardHelper.toDashboard
 import views.helpers.ActionItemBuilder.lastUrlPlaceholder
+import views.helpers.summary.SummaryHelper.{continuePlaceholder, noItemsError}
 import views.html.declaration.amendments.amendment_summary
 import views.html.declaration.summary._
 
@@ -66,6 +66,11 @@ class SummaryController @Inject() (
       ).flatMap(_ => continueToDisplayPage)
   }
 
+  val displayPageOnNoItems: Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType) { implicit request =>
+    if (request.cacheModel.hasItems) Redirect(routes.SummaryController.displayPage)
+    else Ok(normalSummaryPage(SavedDeclarationsController.displayDeclarations(), Seq(noItemsError)))
+  }
+
   private def displayAmendmentSummaryPage(implicit request: JourneyRequest[_]): Future[Result] = {
     def result(submissionId: String): Result =
       Ok(Html(amendment_summary(submissionId).toString().replace(s"?$lastUrlPlaceholder", "")))
@@ -92,6 +97,8 @@ class SummaryController @Inject() (
     if (hasMandatoryData) displaySummaryPage()
     else Future.successful(Ok(summaryPageNoData()).removingFromSession(errorFixModeSessionKey))
   }
+
+  val lrnDuplicateError = FormError("lrn", "declaration.consignmentReferences.lrn.error.notExpiredYet")
 
   private def displaySummaryPage()(implicit request: JourneyRequest[_]): Future[Result] = {
     val maybeLrn = request.cacheModel.lrn.map(Lrn(_))
@@ -120,10 +127,4 @@ class SummaryController @Inject() (
     }
     Html(finalPage)
   }
-}
-
-object SummaryController {
-
-  val lrnDuplicateError: FormError = FormError("lrn", "declaration.consignmentReferences.lrn.error.notExpiredYet")
-  val continuePlaceholder = "continue-saved-declaration"
 }

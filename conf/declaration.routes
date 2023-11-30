@@ -535,6 +535,8 @@ POST        /containers/:containerId/seals/:sealId/remove    controllers.declara
 
 GET         /saved-summary                       controllers.declaration.SummaryController.displayPage
 
+GET         /saved-summary-no-items              controllers.declaration.SummaryController.displayPageOnNoItems
+
 GET         /summary-section/:section            controllers.declaration.SectionSummaryController.displayPage(section: Int)
 
 # Submission

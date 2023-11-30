@@ -18,8 +18,8 @@ package controllers.declaration
 
 import base.ControllerWithoutFormSpec
 import config.AppConfig
-import controllers.declaration.SummaryController.{continuePlaceholder, lrnDuplicateError}
 import controllers.declaration.SummaryControllerSpec.{expectedHref, fakeSummaryPage}
+import controllers.declaration.routes.SummaryController
 import controllers.routes.SavedDeclarationsController
 import forms.{Lrn, LrnValidator}
 import handlers.ErrorHandler
@@ -34,6 +34,7 @@ import play.api.test.Helpers._
 import play.twirl.api.{Html, HtmlFormat}
 import uk.gov.hmrc.http.HeaderCarrier
 import views.helpers.ActionItemBuilder.lastUrlPlaceholder
+import views.helpers.summary.SummaryHelper.{continuePlaceholder, noItemsError}
 import views.html.declaration.amendments.amendment_summary
 import views.html.declaration.summary._
 import views.html.error_template
@@ -146,7 +147,7 @@ class SummaryControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerM
       await(controller.displayPage(getRequest()))
 
       verify(normalSummaryPage, times(1)).apply(any(), captor.capture(), any())(any(), any(), any())
-      captor.getValue mustBe List(lrnDuplicateError)
+      captor.getValue mustBe List(controller.lrnDuplicateError)
     }
 
     "return a draft summary page with a 'Continue' button linking to the same page referenced by the last 'Change' link" when {
@@ -163,11 +164,41 @@ class SummaryControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerM
       }
     }
   }
+
+  "SummaryController.displayPageOnNoItems" should {
+
+    "return 200 and invoke the expected page" when {
+      "the declaration has no items" in {
+        val declaration = aDeclaration(withConsignmentReferences())
+        withNewCaching(declaration.copy(declarationMeta = declaration.declarationMeta.copy(readyForSubmission = Some(true))))
+
+        val result = controller.displayPageOnNoItems(getRequest())
+
+        status(result) mustBe OK
+
+        val backLink = SavedDeclarationsController.displayDeclarations()
+        val errors = Seq(noItemsError)
+
+        verify(normalSummaryPage, times(1)).apply(eqTo(backLink), eqTo(errors), any())(any(), any(), any())
+      }
+    }
+
+    "redirect to /saved-summary" when {
+      "the declaration has at least one item" in {
+        val item = anItem(withAdditionalInformation("code", "description"))
+        val declaration = aDeclaration(withConsignmentReferences(), withItems(item))
+        withNewCaching(declaration.copy(declarationMeta = declaration.declarationMeta.copy(readyForSubmission = Some(true))))
+
+        val result = controller.displayPageOnNoItems(getRequest())
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(SummaryController.displayPage.url)
+      }
+    }
+  }
 }
 
 object SummaryControllerSpec {
-
-  import controllers.declaration.SummaryController.continuePlaceholder
 
   val expectedHref = "/customs-declare-exports/declaration/consignment-references"
 

@@ -1988,6 +1988,7 @@ declaration.summary.transaction.previousDocuments.type = Document type
 declaration.summary.transaction.previousDocuments.reference = Document reference
 declaration.summary.transaction.previousDocuments.goodsItemIdentifier = Item number
 declaration.summary.items.add = Add item
+declaration.summary.items.none = Add item to this declaration
 declaration.summary.items.empty = You need to add at least one item before submitting your declaration. To add an item use the ‘Add item’ link above.
 declaration.summary.item = Declaration item {0}
 declaration.summary.item.remove = Remove item
