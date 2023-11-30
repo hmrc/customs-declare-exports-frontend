@@ -31,13 +31,7 @@ class UnauthorisedControllerSpec extends ControllerWithoutFormSpec {
   val unauthorisedAgentPage = mock[unauthorisedAgent]
 
   val controller =
-    new UnauthorisedController(
-      mockTdrUnauthorisedMsgConfig,
-      stubMessagesControllerComponents(),
-      unauthorisedPage,
-      unauthorisedEoriPage,
-      unauthorisedAgentPage
-    )
+    new UnauthorisedController(mockTdrFeatureFlags, stubMessagesControllerComponents(), unauthorisedPage, unauthorisedEoriPage, unauthorisedAgentPage)
 
   "Unauthorised controller" should {
 
@@ -58,7 +52,7 @@ class UnauthorisedControllerSpec extends ControllerWithoutFormSpec {
         }
 
         "tdr is enabled" in {
-          when(mockTdrUnauthorisedMsgConfig.isTdrUnauthorisedMessageEnabled).thenReturn(true)
+          when(mockTdrFeatureFlags.isTdrUnauthorisedMessageEnabled).thenReturn(true)
           when(unauthorisedEoriPage()(any(), any())).thenReturn(HtmlFormat.empty)
           val result = controller.onPageLoad(UrlDirect)(getRequest())
           status(result) must be(OK)

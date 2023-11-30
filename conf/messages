@@ -2307,15 +2307,24 @@ rejected.notification.title = Fix declaration errors
 rejected.notification.table.title = Declaration errors
 rejected.notification.warning = You need to fix these errors and resubmit your declaration when you have finished.
 rejected.notification.description.format = Error code {0}.
-rejected.notification.check.answers.paragraph = Use the change links on the check your answers page and fix each error. Then resubmit your declaration.
+rejected.notification.check.answers.paragraph = When you have fixed each error using the change links, check your answers and then resubmit your declaration.
+rejected.notification.check.answers.paragraph.tdr = Use the change links on the check your answers page and fix each error. Then resubmit your declaration.
 rejected.notification.check.answers.button = Check your answers
 
-rejected.notification.guidance.section.1.header = About fixing errors
-rejected.notification.guidance.section.1.paragraph.1 = A single error in your declaration may cause related errors to appear in other parts of the declaration. if this happens you may see repeated error codes.
+rejected.notification.guidance.section.1.header = Fixing errors
+rejected.notification.guidance.section.1.header.tdr = About fixing errors
+rejected.notification.guidance.section.1.paragraph.1 = One error can have an effect on more than one part of the declaration. That’s why you may see some error codes repeated.
+rejected.notification.guidance.section.1.paragraph.1.tdr = A single error in your declaration may cause related errors to appear in other parts of the declaration. if this happens you may see repeated error codes.
+rejected.notification.guidance.section.1.paragraph.2 = If you start fixing the errors but do not finish, your updated declaration will be in {0}.
+rejected.notification.guidance.section.1.paragraph.2.link = saved declarations
 
-rejected.notification.guidance.section.2.header = Save your progress
-rejected.notification.guidance.section.2.paragraph.1 = If you start but don’t finish fixing errors, your progress will be saved. You can return to the {0} and continue fixing errors.
+rejected.notification.guidance.section.2.header = Get more help with errors
+rejected.notification.guidance.section.2.header.tdr = Save your progress
+rejected.notification.guidance.section.2.paragraph.1 = If you need help with missing documents or errors related to specific Tariff requirements, contact the help desk.
+rejected.notification.guidance.section.2.paragraph.1.tdr = If you start but don’t finish fixing errors, your progress will be saved. You can return to the {0} and continue fixing errors.
 rejected.notification.guidance.section.2.paragraph.1.link = saved declarations page
+rejected.notification.guidance.section.2.paragraph.2 = Telephone: 0300 322 9434
+rejected.notification.guidance.section.2.paragraph.3 = Monday to Friday, 9am to 5pm (except public holidays)
 
 rejected.notification.guidance.section.3.header = Get help fixing errors
 rejected.notification.guidance.section.3.paragraph.1 = If you need help with missing documents or errors related to specific tariff requirements, you can contact HMRC by email.

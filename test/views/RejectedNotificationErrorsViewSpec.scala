@@ -54,27 +54,9 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with ExportsTestHe
 
     "have proper messages for labels" in {
       messages must haveTranslationFor("rejected.notification.mrn.missing")
-      messages must haveTranslationFor("rejected.notification.title")
-      messages must haveTranslationFor("rejected.amendment.title")
-      messages must haveTranslationFor("rejected.notification.table.title")
-      messages must haveTranslationFor("rejected.notification.warning")
-      messages must haveTranslationFor("rejected.amendment.warning")
       messages must haveTranslationFor("rejected.notification.description.format")
-      messages must haveTranslationFor("rejected.notification.check.answers.paragraph")
-      messages must haveTranslationFor("rejected.amendment.check.answers.paragraph")
-      messages must haveTranslationFor("rejected.notification.check.answers.button")
 
-      messages must haveTranslationFor("rejected.notification.guidance.section.1.header")
-      messages must haveTranslationFor("rejected.notification.guidance.section.1.paragraph.1")
-
-      messages must haveTranslationFor("rejected.notification.guidance.section.2.header")
-      messages must haveTranslationFor("rejected.notification.guidance.section.2.paragraph.1")
-      messages must haveTranslationFor("rejected.notification.guidance.section.2.paragraph.1.link")
       messages must haveTranslationFor("rejected.amendment.guidance.section.2.paragraph.1")
-
-      messages must haveTranslationFor("rejected.notification.guidance.section.3.header")
-      messages must haveTranslationFor("rejected.notification.guidance.section.3.paragraph.1")
-      messages must haveTranslationFor("rejected.notification.guidance.section.3.paragraph.2")
     }
 
     "have correct title" in {
@@ -83,8 +65,8 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with ExportsTestHe
     }
 
     "have correct warning" in {
-      defaultView.getElementsByClass("govuk-warning-text").first() must containText(messages("rejected.notification.warning"))
-      amendmentView.getElementsByClass("govuk-warning-text").first() must containText(messages("rejected.amendment.warning"))
+      defaultView.getElementsByClass("govuk-warning-text").first must containText(messages("rejected.notification.warning"))
+      amendmentView.getElementsByClass("govuk-warning-text").first must containText(messages("rejected.amendment.warning"))
     }
 
     "have correct section header" in {
@@ -112,25 +94,22 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with ExportsTestHe
       val headings = defaultView.getElementsByClass("govuk-heading-s")
       headings.get(0).text() mustBe messages("rejected.notification.guidance.section.1.header")
       headings.get(1).text() mustBe messages("rejected.notification.guidance.section.2.header")
-      headings.get(2).text() mustBe messages("rejected.notification.guidance.section.3.header")
     }
 
     "have the expected body content" in {
       val body = defaultView.getElementsByClass("govuk-body")
       body.get(0).text() mustBe messages("rejected.notification.check.answers.paragraph")
+
       body.get(1).text() mustBe messages("rejected.notification.guidance.section.1.paragraph.1")
       body.get(2).text() mustBe messages(
-        "rejected.notification.guidance.section.2.paragraph.1",
-        messages("rejected.notification.guidance.section.2.paragraph.1.link")
+        "rejected.notification.guidance.section.1.paragraph.2",
+        messages("rejected.notification.guidance.section.1.paragraph.2.link")
       )
 
-      body.get(3).text() mustBe messages("rejected.notification.guidance.section.3.paragraph.1")
+      body.get(3).text() mustBe messages("rejected.notification.guidance.section.2.paragraph.1")
 
-      val email = messages("rejected.notification.guidance.section.3.paragraph.2.email")
-      body.get(4).text() mustBe messages("rejected.notification.guidance.section.3.paragraph.2", email)
-      val emailElement = body.get(4).getElementsByClass("govuk-link").get(0)
-      emailElement.getElementsByAttributeValue("href", s"mailto:$email")
-
+      body.get(4).text() mustBe messages("rejected.notification.guidance.section.2.paragraph.2")
+      body.get(5).text() mustBe messages("rejected.notification.guidance.section.2.paragraph.3")
     }
 
     "contain notifications" when {
@@ -190,7 +169,7 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with ExportsTestHe
       val document = view(Seq(reason))
 
       val links = document.getElementsByClass("govuk-link--no-visited-state")
-      links.size mustBe 3
+      links.size mustBe 2
       links.get(1) must haveHref(SavedDeclarationsController.displayDeclarations())
     }
 

@@ -166,5 +166,5 @@ object NotificationErrorHelper {
     def removeFieldNameAndDescription(): ErrorRow = this.copy(fieldName = None, description = List.empty)
   }
 
-  type ErrorRows = List[ErrorRow]
+  private type ErrorRows = List[ErrorRow]
 }

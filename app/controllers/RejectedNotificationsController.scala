@@ -16,17 +16,18 @@
 
 package controllers
 
-import config.featureFlags.NewErrorReportConfig
+import config.featureFlags.{NewErrorReportConfig, TdrFeatureFlags}
 import connectors.CustomsDeclareExportsConnector
 import controllers.actions.{AuthAction, VerifiedEmailAction}
 import handlers.ErrorHandler
+import models.ExportsDeclaration
 import models.declaration.notifications.{Notification, NotificationError}
 import models.requests.SessionHelper.{getValue, submissionActionId, submissionUuid}
 import play.api.Logging
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import views.html.rejected_notification_errors
+import views.html.{rejected_notification_errors, rejected_notification_errors_tdr}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
@@ -40,7 +41,9 @@ class RejectedNotificationsController @Inject() (
   mcc: MessagesControllerComponents,
   newErrorReportConfig: NewErrorReportConfig,
   errorsReportedController: ErrorsReportedController,
-  rejectedNotificationPage: rejected_notification_errors
+  errorsPage: rejected_notification_errors,
+  errorsPageForTDR: rejected_notification_errors_tdr,
+  tdrFeatureFlags: TdrFeatureFlags
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with Logging {
 
@@ -53,7 +56,10 @@ class RejectedNotificationsController @Inject() (
           customsDeclareExportsConnector.findNotifications(id).map { notifications =>
             val messages = messagesApi.preferred(request).messages
             val mrn = notifications.headOption.map(_.mrn).getOrElse(messages("rejected.notification.mrn.missing"))
-            Ok(rejectedNotificationPage(None, declaration, mrn, None, getRejectedNotificationErrors(notifications)))
+            val errors = getRejectedNotificationErrors(notifications)
+
+            if (tdrFeatureFlags.showErrorPageVersionForTdr) Ok(errorsPageForTDR(None, declaration, mrn, None, errors))
+            else Ok(errorsPage(None, declaration, mrn, None, errors))
           }
 
         case _ => errorHandler.internalError(s"Declaration($id) not found for a rejected submission??")
@@ -74,18 +80,14 @@ class RejectedNotificationsController @Inject() (
                 customsDeclareExportsConnector.findDeclaration(declarationId).flatMap {
                   case Some(declaration) =>
                     customsDeclareExportsConnector.findLatestNotification(actionId).map {
-                      case Some(notification) =>
-                        Ok(
-                          rejectedNotificationPage(getValue(submissionUuid), declaration, notification.mrn, Some(declarationId), notification.errors)
-                        )
-                          .addingToSession(submissionActionId -> actionId)
-
+                      case Some(notification) => page(declaration, notification, declarationId).addingToSession(submissionActionId -> actionId)
                       case _ => errorHandler.internalServerError(s"Failed|rejected amended Notification not found for Action($actionId)??")
                     }
 
                   case _ =>
                     val draft = draftDeclarationId.fold("")(_ => "(draft) ")
-                    errorHandler.internalError(s"Failed|rejected amended ${draft}declaration($declarationId) not found for Action($actionId)??")
+                    val message = s"Failed|rejected amended ${draft}declaration($declarationId) not found for Action($actionId)??"
+                    errorHandler.internalError(message)
                 }
 
               case _ => errorHandler.internalError(s"The Action($actionId) does not have decId for a failed|rejected amendment??")
@@ -95,6 +97,14 @@ class RejectedNotificationsController @Inject() (
         }
       }
     }
+
+  private def page(declaration: ExportsDeclaration, notification: Notification, decId: String)(implicit request: Request[_]): Result = {
+    val subId = getValue(submissionUuid)
+    val errors = notification.errors
+
+    if (tdrFeatureFlags.showErrorPageVersionForTdr) Ok(errorsPageForTDR(subId, declaration, notification.mrn, Some(decId), errors))
+    else Ok(errorsPage(subId, declaration, notification.mrn, Some(decId), errors))
+  }
 
   private def getRejectedNotificationErrors(notifications: Seq[Notification]): Seq[NotificationError] =
     notifications.find(_.isStatusDMSRej).map(_.errors).getOrElse(Seq.empty)
