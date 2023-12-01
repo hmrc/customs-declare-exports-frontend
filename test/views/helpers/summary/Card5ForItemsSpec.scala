@@ -68,14 +68,18 @@ class Card5ForItemsSpec extends UnitViewSpec with ExportsTestHelper with Injecto
   private def miniCyaView(decl: ExportsDeclaration = declaration, actionEnabled: Boolean = true): Html =
     card5ForItems.content(decl, actionEnabled)(messages)
 
-  "Items card" when {
+  "Card5ForItems.content" should {
+    "return the expected CYA card" in {
+      val card = miniCyaView().getElementsByTag("h2").first
+      card.text mustBe messages("declaration.summary.section.5")
+      assert(card.hasClass("items-card"))
+    }
+  }
+
+  "Card5ForItems" when {
 
     "the declaration has items" should {
       val view = miniCyaView()
-
-      "have the expected items heading" in {
-        view.getElementsByTag("h2").first.text mustBe messages("declaration.summary.section.5")
-      }
 
       "have the 'Add item' link" when {
         "the declaration type is NOT CLEARANCE" in {
@@ -151,7 +155,7 @@ class Card5ForItemsSpec extends UnitViewSpec with ExportsTestHelper with Injecto
         }
       }
 
-      "display the 'Items' card and, inside the card, the expected paragraphs" when {
+      "display the 'Items' card and, inside the card, the expected error messages" when {
         "trying to submit the declaration" in {
           val view = finalCyaView(aDeclaration(withBorderTransport()), true, true)
           checkCard(view)
@@ -203,14 +207,7 @@ class Card5ForItemsSpec extends UnitViewSpec with ExportsTestHelper with Injecto
     }
   }
 
-  "Card5ForItems.content" should {
-    "return the expected CYA card" in {
-      val cardContent = card5ForItems.content(declaration)
-      cardContent.getElementsByClass("items-card").text mustBe messages("declaration.summary.section.5")
-    }
-  }
-
-  "Card5ForItems.backLink" when {
+  "Card5ForItems.backLink" should {
     "go to ItemsSummaryController" in {
       card5ForItems.backLink(journeyRequest()) mustBe ItemsSummaryController.displayItemsSummaryPage
     }

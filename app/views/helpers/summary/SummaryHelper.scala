@@ -20,6 +20,7 @@ import models.ExportsDeclaration
 import play.api.data.FormError
 import play.api.i18n.Messages
 import play.api.mvc.Call
+import play.twirl.api.Html
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
 import views.helpers.ActionItemBuilder.actionSummaryItem
@@ -52,6 +53,12 @@ trait SummaryHelper {
   def keyForEmptyAttrAfterAttrWithMultipleRows(rowKey: String)(implicit messages: Messages): Key =
     keyForAttrWithMultipleRows(rowKey, "div")
 
+  private val target = """class="govuk-summary-card""""
+  private val replacement = """class="govuk-summary-card govuk-summary-card--error""""
+
+  def markCardOnErrors(html: Html, hasErrors: Boolean): Html =
+    if (hasErrors) Html(html.toString.replace(target, replacement)) else html
+
   def value(rowValue: String): Value = Value(Text(rowValue))
 
   def valueHtml(rowValue: String): Value = Value(HtmlContent(rowValue))
@@ -70,6 +77,7 @@ object SummaryHelper {
 
   val continuePlaceholder = "continue-saved-declaration"
 
+  val lrnDuplicateError = FormError("lrn", "declaration.consignmentReferences.lrn.error.notExpiredYet")
   val noItemsError = FormError(addItemLinkId, "declaration.summary.items.none")
 
   def hasTransactionData(declaration: ExportsDeclaration): Boolean =

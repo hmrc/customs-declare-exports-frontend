@@ -25,7 +25,9 @@ import forms.declaration.ConsignmentReferences
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.STANDARD_PRE_LODGED
 import forms.{Ducr, Lrn, Mrn}
 import models.DeclarationType._
+import models.ExportsDeclaration
 import models.declaration.DeclarationStatus._
+import play.twirl.api.Html
 import services.cache.ExportsTestHelper
 import views.declaration.spec.UnitViewSpec
 import views.helpers.ViewDates.formatDateAtTime
@@ -52,50 +54,19 @@ class Card1ForReferencesSpec extends UnitViewSpec with ExportsTestHelper with In
 
   private val card1ForReferences = instanceOf[Card1ForReferences]
 
-  "'Declaration References' section" should {
-    val view = card1ForReferences.eval(declaration)(messages)
+  private def finalCyaView(decl: ExportsDeclaration, actionEnabled: Boolean = true, hasErrors: Boolean = false): Html =
+    card1ForReferences.eval(decl, actionEnabled, hasErrors)(messages)
 
-    "have, inside an Inset Text, a link to /type" when {
-      "a declaration has DRAFT status and 'parentDeclarationId' is defined" in {
-        val declaration1 = declaration.copy(declarationMeta = declaration.declarationMeta.copy(status = DRAFT, parentDeclarationId = Some("some id")))
-        val insetText = card1ForReferences.eval(declaration1)(messages).getElementsByClass("govuk-inset-text")
-        insetText.size mustBe 1
+  private def miniCyaView(decl: ExportsDeclaration = declaration, actionEnabled: Boolean = true): Html =
+    card1ForReferences.content(decl, actionEnabled)(messages)
 
-        val link = insetText.first.getElementsByClass("govuk-link").first
-        link.text mustBe messages("declaration.summary.references.insets")
-        link must haveHref(AdditionalDeclarationTypeController.displayPage)
-      }
-    }
+  "Card1ForReferences.content" should {
+    val view = miniCyaView()
 
-    "not have any Inset Text" when {
-      "a draft declaration has 'parentDeclarationId' undefined" in {
-        val declaration1 = declaration.copy(declarationMeta = declaration.declarationMeta.copy(status = DRAFT))
-        card1ForReferences.eval(declaration1)(messages).getElementsByClass("govuk-inset-text").size mustBe 0
-      }
-    }
-
-    "have the expected headings" in {
-      val headings = view.getElementsByTag("h2")
-      headings.first.text mustBe messages("declaration.summary.heading")
-      headings.last.text mustBe messages("declaration.summary.section.1")
-    }
-
-    "have a 'change links' paragraph" when {
-      List(INITIAL, DRAFT, AMENDMENT_DRAFT).foreach { status =>
-        s"declaration's status is $status" in {
-          val declaration1 = declaration.copy(declarationMeta = declaration.declarationMeta.copy(status = status))
-          val view = card1ForReferences.eval(declaration1)(messages)
-          val paragraph = view.getElementsByTag("p").first
-          paragraph.text mustBe messages("declaration.summary.amend.body")
-        }
-      }
-    }
-
-    "NOT have a 'change links' paragraph" when {
-      "declaration's status is COMPLETE" in {
-        val declaration1 = declaration.copy(declarationMeta = declaration.declarationMeta.copy(status = COMPLETE))
-        card1ForReferences.eval(declaration1)(messages).getElementsByTag("p").size mustBe 0
-      }
+    "return the expected CYA card" in {
+      val card = miniCyaView().getElementsByTag("h2").first
+      card.text mustBe messages("declaration.summary.section.1")
+      assert(card.hasClass("references-card"))
     }
 
     "show the declaration's creation date" in {
@@ -143,8 +114,7 @@ class Card1ForReferencesSpec extends UnitViewSpec with ExportsTestHelper with In
 
     "have the DUCR and LRN rows' 'change' link pointing to /consignment-references" when {
       "the declaration's type is SUPPLEMENTARY" in {
-        val declaration1 = declaration.copy(`type` = SUPPLEMENTARY)
-        val view = card1ForReferences.eval(declaration1)(messages)
+        val view = miniCyaView(declaration.copy(`type` = SUPPLEMENTARY))
 
         val call = Some(ConsignmentReferencesController.displayPage)
         checkSummaryRow(view.getElementsByClass("ducr"), "references.ducr", ducr, call, "references.ducr")
@@ -169,13 +139,12 @@ class Card1ForReferencesSpec extends UnitViewSpec with ExportsTestHelper with In
     "NOT have change links" when {
 
       "'actionsEnabled' is false" in {
-        val view = card1ForReferences.eval(declaration, false)(messages)
-        view.getElementsByClass(summaryActionsClassName) mustBe empty
+        miniCyaView(actionEnabled = false).getElementsByClass(summaryActionsClassName) mustBe empty
       }
 
       "the declaration's status is AMENDMENT_DRAFT" in {
         val declaration1 = declaration.copy(declarationMeta = declaration.declarationMeta.copy(status = AMENDMENT_DRAFT))
-        val view = card1ForReferences.eval(declaration1)(messages)
+        val view = miniCyaView(declaration1)
 
         checkSummaryRow(view.getElementsByClass("ducr"), "references.ducr", ducr, None, "ign")
         checkSummaryRow(view.getElementsByClass("mrn"), "references.mrn", mrn, None, "ign")
@@ -187,10 +156,55 @@ class Card1ForReferencesSpec extends UnitViewSpec with ExportsTestHelper with In
     }
   }
 
-  "Card1ForReferences.content" should {
-    "return the expected CYA card" in {
-      val cardContent = card1ForReferences.content(declaration)
-      cardContent.getElementsByClass("references-card").text mustBe messages("declaration.summary.section.1")
+  "Card1ForReferences.eval" should {
+
+    "have, inside an Inset Text, a link to /type" when {
+      "a declaration has DRAFT status and 'parentDeclarationId' is defined" in {
+        val declaration1 = declaration.copy(declarationMeta = declaration.declarationMeta.copy(status = DRAFT, parentDeclarationId = Some("some id")))
+        val insetText = finalCyaView(declaration1).getElementsByClass("govuk-inset-text")
+        insetText.size mustBe 1
+
+        val link = insetText.first.getElementsByClass("govuk-link").first
+        link.text mustBe messages("declaration.summary.references.insets")
+        link must haveHref(AdditionalDeclarationTypeController.displayPage)
+      }
+    }
+
+    "not have any Inset Text" when {
+      "a draft declaration has 'parentDeclarationId' undefined" in {
+        val declaration1 = declaration.copy(declarationMeta = declaration.declarationMeta.copy(status = DRAFT))
+        finalCyaView(declaration1).getElementsByClass("govuk-inset-text").size mustBe 0
+      }
+    }
+
+    "have the expected headings" in {
+      val headings = finalCyaView(declaration).getElementsByTag("h2")
+      headings.first.text mustBe messages("declaration.summary.heading")
+      headings.last.text mustBe messages("declaration.summary.section.1")
+    }
+
+    "have a 'change links' paragraph" when {
+      List(INITIAL, DRAFT, AMENDMENT_DRAFT).foreach { status =>
+        s"declaration's status is $status" in {
+          val declaration1 = declaration.copy(declarationMeta = declaration.declarationMeta.copy(status = status))
+          val paragraph = finalCyaView(declaration1).getElementsByTag("p").first
+          paragraph.text mustBe messages("declaration.summary.amend.body")
+        }
+      }
+    }
+
+    "NOT have a 'change links' paragraph" when {
+      "declaration's status is COMPLETE" in {
+        val declaration1 = declaration.copy(declarationMeta = declaration.declarationMeta.copy(status = COMPLETE))
+        finalCyaView(declaration1).getElementsByTag("p").size mustBe 0
+      }
+    }
+
+    "return a marked (with a red left border) card" when {
+      "the declaration has errors" in {
+        val summaryCard = finalCyaView(declaration, hasErrors = true).getElementsByClass("govuk-summary-card").get(0)
+        assert(summaryCard.hasClass("govuk-summary-card--error"))
+      }
     }
   }
 

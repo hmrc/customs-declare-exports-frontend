@@ -25,20 +25,27 @@ import models.requests.JourneyRequest
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import play.twirl.api.{Html, HtmlFormat}
+import play.twirl.api.HtmlFormat.Appendable
 import uk.gov.hmrc.govukfrontend.views.html.components.{GovukInsetText, GovukSummaryList, SummaryList}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.insettext.InsetText
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Actions, SummaryListRow}
 import views.helpers.ViewDates.formatDateAtTime
-import views.html.components.gds.link
+import views.html.components.gds.{link, paragraphBody}
 
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class Card1ForReferences @Inject() (govukSummaryList: GovukSummaryList, govukInsetText: GovukInsetText, link: link, appConfig: AppConfig)
-    extends SummaryCard {
+class Card1ForReferences @Inject() (
+  govukSummaryList: GovukSummaryList,
+  govukInsetText: GovukInsetText,
+  link: link,
+  paragraph: paragraphBody,
+  appConfig: AppConfig
+) extends SummaryCard {
 
-  def eval(declaration: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages): Html = {
+  // Called by the Final CYA page
+  def eval(declaration: ExportsDeclaration, actionsEnabled: Boolean = true, hasErrors: Boolean = false)(implicit messages: Messages): Html = {
     val meta = declaration.declarationMeta
 
     val insets =
@@ -53,15 +60,19 @@ class Card1ForReferences @Inject() (govukSummaryList: GovukSummaryList, govukIns
 
     val heading = Html(s"""<h2 class="govuk-heading-m">${messages("declaration.summary.heading")}</h2>""")
 
-    val paragraph =
+    val hint =
       if (meta.status == COMPLETE) HtmlFormat.empty
-      else Html(s"""<p class="govuk-body govuk-!-display-none-print change-links-paragraph">${messages("declaration.summary.amend.body")}</p>""")
+      else paragraph(messages("declaration.summary.amend.body"), "govuk-body govuk-!-display-none-print change-links-paragraph")
 
-    HtmlFormat.fill(List(insets, heading, paragraph, content(declaration, actionsEnabled)))
+    HtmlFormat.fill(List(insets, heading, hint, content(declaration, actionsEnabled, hasErrors)))
   }
 
-  def content(declaration: ExportsDeclaration, actionsEnabled: Boolean)(implicit messages: Messages): HtmlFormat.Appendable =
-    govukSummaryList(SummaryList(rows(declaration, actionsEnabled), card(1)))
+  // Called by the Mini CYA page
+  def content(declaration: ExportsDeclaration, actionsEnabled: Boolean)(implicit messages: Messages): Appendable =
+    content(declaration, actionsEnabled, false)
+
+  private def content(declaration: ExportsDeclaration, actionsEnabled: Boolean, hasErrors: Boolean)(implicit messages: Messages): Appendable =
+    markCardOnErrors(govukSummaryList(SummaryList(rows(declaration, actionsEnabled), card(1))), hasErrors)
 
   def backLink(implicit request: JourneyRequest[_]): Call =
     if (request.declarationType == SUPPLEMENTARY) ConsignmentReferencesController.displayPage
@@ -128,10 +139,7 @@ class Card1ForReferences @Inject() (govukSummaryList: GovukSummaryList, govukIns
     def action: Option[Actions] =
       if (declaration.isAmendmentDraft) None
       else {
-        val call =
-          if (declaration.isType(SUPPLEMENTARY)) ConsignmentReferencesController.displayPage
-          else DucrEntryController.displayPage
-
+        val call = if (declaration.isType(SUPPLEMENTARY)) ConsignmentReferencesController.displayPage else DucrEntryController.displayPage
         changeLink(call, "references.ducr", actionsEnabled)
       }
 
@@ -166,10 +174,7 @@ class Card1ForReferences @Inject() (govukSummaryList: GovukSummaryList, govukIns
     def action: Option[Actions] =
       if (declaration.isAmendmentDraft) None
       else {
-        val call =
-          if (declaration.isType(SUPPLEMENTARY)) ConsignmentReferencesController.displayPage
-          else LocalReferenceNumberController.displayPage
-
+        val call = if (declaration.isType(SUPPLEMENTARY)) ConsignmentReferencesController.displayPage else LocalReferenceNumberController.displayPage
         changeLink(call, "references.lrn", actionsEnabled)
       }
 
