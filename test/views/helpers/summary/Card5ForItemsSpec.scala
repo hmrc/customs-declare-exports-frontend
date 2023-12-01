@@ -21,9 +21,9 @@ import controllers.declaration.routes._
 import forms.common.YesNoAnswer.Yes
 import forms.declaration.NatureOfTransaction.BusinessPurchase
 import forms.declaration._
-import models.DeclarationType.CLEARANCE
+import models.DeclarationType._
 import models.ExportsDeclaration
-import models.declaration.CommodityMeasure
+import models.declaration.{AdditionalDocuments, AdditionalInformationData, CommodityMeasure}
 import org.jsoup.select.Elements
 import org.scalatest.Assertion
 import play.api.mvc.Call
@@ -49,7 +49,7 @@ class Card5ForItemsSpec extends UnitViewSpec with ExportsTestHelper with Injecto
     withTaricCodes(TaricCode("999"), TaricCode("888")),
     withNactCodes(NactCode("111"), NactCode("222")),
     withNactExemptionCode(NactCode("VATE")),
-    withPackageInformation("PB", 10, "marks"),
+    withPackageInformation("PC", 10, "marks"),
     withCommodityMeasure(commodityMeasure),
     withAdditionalInformation("1234", "additionalDescription"),
     withIsLicenseRequired(),
@@ -256,5 +256,239 @@ class Card5ForItemsSpec extends UnitViewSpec with ExportsTestHelper with Injecto
 
     row must haveSummaryKey(messages(s"""declaration.summary.item${maybeId.fold("")(id => s".$id")}""", index))
     row must haveSummaryValue(value)
+  }
+
+  "Items card" when {
+    "the declaration has items" should {
+      val view = miniCyaView()
+
+      "show 'Procedure code'" in {
+        val row = view.getElementsByClass("item-1-procedure-code")
+        val call = Some(ProcedureCodesController.displayPage(itemId))
+        checkSummaryRow(row, "item.procedureCode", "1234", call, "item.procedureCode")
+      }
+
+      "show 'Additional procedure codes'" in {
+        val row = view.getElementsByClass("item-1-additional-procedure-codes")
+        val call = Some(AdditionalProcedureCodesController.displayPage(itemId))
+        checkSummaryRow(row, "item.additionalProcedureCodes", "000 111", call, "item.additionalProcedureCodes")
+      }
+
+      "show 'Onward Supply Relief'" in {
+        val row = view.getElementsByClass("item-1-onward-supply-relief")
+        val call = Some(FiscalInformationController.displayPage(itemId))
+        checkSummaryRow(row, "item.onwardSupplyRelief", messages("site.yes"), call, "item.onwardSupplyRelief")
+      }
+
+      "show 'VAT details'" in {
+        val row = view.getElementsByClass("item-1-vat-details")
+        val call = Some(AdditionalFiscalReferencesController.displayPage(itemId))
+        checkSummaryRow(row, "item.VATdetails", "GB1234", call, "item.VATdetails")
+      }
+
+      "show 'Commodity code'" in {
+        val row = view.getElementsByClass("item-1-commodity-code")
+        val call = Some(CommodityDetailsController.displayPage(itemId))
+        checkSummaryRow(row, "item.commodityCode", "1234567890", call, "item.commodityCode")
+      }
+
+      "show 'Goods description'" in {
+        val row = view.getElementsByClass("item-1-goods-description")
+        val call = Some(CommodityDetailsController.displayPage(itemId))
+        checkSummaryRow(row, "item.goodsDescription", "description", call, "item.goodsDescription")
+      }
+
+      "show 'UN dangerous goods code'" in {
+        val row = view.getElementsByClass("item-1-dangerous-goods-code")
+        val call = Some(UNDangerousGoodsCodeController.displayPage(itemId))
+        checkSummaryRow(row, "item.unDangerousGoodsCode", "345", call, "item.unDangerousGoodsCode")
+      }
+
+      "show 'CUS code'" in {
+        val row = view.getElementsByClass("item-1-cus-code")
+        val call = Some(CusCodeController.displayPage(itemId))
+        checkSummaryRow(row, "item.cusCode", "321", call, "item.cusCode")
+      }
+
+      "show 'TARIC additional codes'" in {
+        val row = view.getElementsByClass("item-1-taric-additional-codes")
+        val call = Some(TaricCodeSummaryController.displayPage(itemId))
+        checkSummaryRow(row, "item.taricAdditionalCodes", "999, 888", call, "item.taricAdditionalCodes")
+      }
+
+      "show 'National additional codes'" in {
+        val row = view.getElementsByClass("item-1-national-additional-codes")
+        val call = Some(NactCodeSummaryController.displayPage(itemId))
+        checkSummaryRow(row, "item.nationalAdditionalCodes", "111, 222", call, "item.nationalAdditionalCodes")
+      }
+
+      "show 'VAT zero rating'" in {
+        val row = view.getElementsByClass("item-1-zero-rated-for-vat")
+        val call = Some(ZeroRatedForVatController.displayPage(itemId))
+        checkSummaryRow(row, "item.zeroRatedForVat", "No, exempt", call, "item.zeroRatedForVat")
+      }
+
+      "show 'Item value'" in {
+        val row = view.getElementsByClass("item-1-item-value")
+        val call = Some(StatisticalValueController.displayPage(itemId))
+        checkSummaryRow(row, "item.itemValue", "123", call, "item.itemValue")
+      }
+
+      "show the 'Packing details' section when without data" in {
+        val item = itemWithAnswers.copy(packageInformation = Some(List.empty))
+        val view = miniCyaView(declaration.copy(items = List(item)))
+
+        val row = view.getElementsByClass("item-1-package-information-heading")
+        val call = Some(PackageInformationSummaryController.displayPage(itemId))
+        checkSummaryRow(row, "item.packageInformation", messages("site.none"), call, "item.packageInformation")
+      }
+
+      "show the 'Packing details' section" in {
+        val heading = view.getElementsByClass("item-1-package-information-heading")
+        checkSummaryRow(heading, "item.packageInformation", "", None, "")
+
+        val row1 = view.getElementsByClass("item-1-package-information-1-type")
+        val call = Some(PackageInformationSummaryController.displayPage(itemId))
+        checkSummaryRow(row1, "item.packageInformation.type", "Parcel (PC)", call, "item.packageInformation")
+        assert(row1.first.hasClass("govuk-summary-list__row--no-border"))
+
+        val row2 = view.getElementsByClass("item-1-package-information-1-number")
+        checkSummaryRow(row2, "item.packageInformation.number", "10", None, "")
+        assert(row2.first.hasClass("govuk-summary-list__row--no-border"))
+
+        val row3 = view.getElementsByClass("item-1-package-information-1-markings")
+        checkSummaryRow(row3, "item.packageInformation.markings", "marks", None, "")
+      }
+
+      "show the 'Packing details' section when the 'type' is undefined" in {
+        val packageInformation = itemWithAnswers.packageInformation.value.head.copy(typesOfPackages = None)
+        val item = itemWithAnswers.copy(packageInformation = Some(List(packageInformation)))
+        val view = miniCyaView(declaration.copy(items = List(item)))
+
+        view.getElementsByClass("item-1-package-information-1-type").size mustBe 0
+
+        val row1 = view.getElementsByClass("item-1-package-information-1-number")
+        val call = Some(PackageInformationSummaryController.displayPage(itemId))
+        checkSummaryRow(row1, "item.packageInformation.number", "10", call, "item.packageInformation")
+        assert(row1.first.hasClass("govuk-summary-list__row--no-border"))
+
+        val row2 = view.getElementsByClass("item-1-package-information-1-markings")
+        checkSummaryRow(row2, "item.packageInformation.markings", "marks", None, "")
+      }
+
+      "show the 'Packing details' section when the 'type' and 'number' are undefined" in {
+        val packageInformation = itemWithAnswers.packageInformation.value.head.copy(typesOfPackages = None, numberOfPackages = None)
+        val item = itemWithAnswers.copy(packageInformation = Some(List(packageInformation)))
+        val view = miniCyaView(declaration.copy(items = List(item)))
+
+        view.getElementsByClass("item-1-package-information-1-type").size mustBe 0
+        view.getElementsByClass("item-1-package-information-1-number").size mustBe 0
+
+        val row = view.getElementsByClass("item-1-package-information-1-markings")
+        val call = Some(PackageInformationSummaryController.displayPage(itemId))
+        checkSummaryRow(row, "item.packageInformation.markings", "marks", call, "item.packageInformation")
+      }
+
+      "show 'Gross weight in kilograms'" in {
+        val row = view.getElementsByClass("item-1-gross-weight")
+        val call = Some(CommodityMeasureController.displayPage(itemId))
+        checkSummaryRow(row, "item.grossWeight", "666", call, "item.grossWeight")
+        assert(row.first.hasClass("govuk-summary-list__row--no-border"))
+      }
+
+      "show 'Net weight in kilograms'" in {
+        val row = view.getElementsByClass("item-1-net-weight")
+        checkSummaryRow(row, "item.netWeight", "555", None, "ign")
+      }
+
+      "show 'Supplementary units' only for STANDARD & SUPPLEMENTARY declarations" in {
+        val call = Some(SupplementaryUnitsController.displayPage(itemId))
+
+        allDeclarationTypes.foreach { declarationType =>
+          val view = miniCyaView(declaration.copy(`type` = declarationType))
+          val row = view.getElementsByClass("item-1-supplementary-units")
+          declarationType match {
+            case STANDARD | SUPPLEMENTARY =>
+              checkSummaryRow(row, "item.supplementaryUnits", "12", call, "item.supplementaryUnits")
+
+            case _ => row.size mustBe 0
+          }
+        }
+      }
+
+      "show the 'Additional Information' section when without data" in {
+        val item = itemWithAnswers.copy(additionalInformation = Some(AdditionalInformationData(items = List.empty)))
+        val view = miniCyaView(declaration.copy(items = List(item)))
+
+        val row = view.getElementsByClass("item-1-additional-information-heading")
+        val call = Some(AdditionalInformationRequiredController.displayPage(itemId))
+        checkSummaryRow(row, "item.additionalInformation", messages("site.none"), call, "item.additionalInformation")
+      }
+
+      "show the 'Additional Information' section" in {
+        val heading = view.getElementsByClass("item-1-additional-information-heading")
+        checkSummaryRow(heading, "item.additionalInformation", "", None, "")
+
+        val row1 = view.getElementsByClass("item-1-additional-information-1-code")
+        val call = Some(AdditionalInformationController.displayPage(itemId))
+        checkSummaryRow(row1, "item.additionalInformation.code", "1234", call, "item.additionalInformation")
+        assert(row1.first.hasClass("govuk-summary-list__row--no-border"))
+
+        val row2 = view.getElementsByClass("item-1-additional-information-1-description")
+        checkSummaryRow(row2, "item.additionalInformation.description", "additionalDescription", None, "")
+      }
+
+      "show the 'Additional Documents' section when without data, preceded by the 'License' row" in {
+        val item = itemWithAnswers.copy(additionalDocuments = Some(AdditionalDocuments(None, List.empty)))
+        val view = miniCyaView(declaration.copy(items = List(item)))
+
+        val rows = view.getElementsByClass("govuk-summary-list__row")
+        assert(rows.get(rows.size - 2).hasClass("item-1-licences"))
+        assert(rows.get(rows.size - 1).hasClass("item-1-additional-documents-heading"))
+
+        val licenses = view.getElementsByClass("item-1-licences")
+        val call1 = Some(IsLicenceRequiredController.displayPage(itemId))
+        checkSummaryRow(licenses, "item.licences", messages("site.yes"), call1, "item.licences")
+
+        val heading = view.getElementsByClass("item-1-additional-documents-heading")
+        val call2 = Some(AdditionalDocumentsController.displayPage(itemId))
+        checkSummaryRow(heading, "item.additionalDocuments", messages("site.none"), call2, "item.additionalDocuments")
+      }
+
+      "show the 'Additional Documents' section, with the 'License' row as first" in {
+        val rows = view.getElementsByClass("govuk-summary-list__row")
+        assert(rows.get(rows.size - 4).hasClass("item-1-additional-documents-heading"))
+        assert(rows.get(rows.size - 3).hasClass("item-1-licences"))
+        assert(rows.get(rows.size - 2).hasClass("item-1-additional-document-1-code"))
+        assert(rows.get(rows.size - 1).hasClass("item-1-additional-document-1-identifier"))
+
+        val heading = view.getElementsByClass("item-1-additional-documents-heading")
+        checkSummaryRow(heading, "item.additionalDocuments", "", None, "")
+
+        val licenses = view.getElementsByClass("item-1-licences")
+        val call1 = Some(IsLicenceRequiredController.displayPage(itemId))
+        checkSummaryRow(licenses, "item.licences", messages("site.yes"), call1, "item.licences")
+
+        val row1 = view.getElementsByClass("item-1-additional-document-1-code")
+        val call = Some(AdditionalDocumentsController.displayPage(itemId))
+        checkSummaryRow(row1, "item.additionalDocuments.code", "C501", call, "item.additionalDocuments")
+        assert(row1.first.hasClass("govuk-summary-list__row--no-border"))
+
+        val row2 = view.getElementsByClass("item-1-additional-document-1-identifier")
+        checkSummaryRow(row2, "item.additionalDocuments.identifier", "GBAEOC1342", None, "")
+      }
+
+      "show the 'Additional Documents' section when 'document code' is undefined" in {
+        val item = anItem(withNoLicense, withAdditionalDocuments(None, withAdditionalDocument(None, Some("GBAEOC1342"))))
+        val view = miniCyaView(aDeclaration(withItems(item)))
+
+        view.getElementsByClass("item-1-licences").size mustBe 0
+        view.getElementsByClass("item-1-additional-document-1-code").size mustBe 0
+
+        val row = view.getElementsByClass("item-1-additional-document-1-identifier")
+        val call = Some(AdditionalDocumentsController.displayPage(item.id))
+        checkSummaryRow(row, "item.additionalDocuments.identifier", "GBAEOC1342", call, "item.additionalDocuments")
+      }
+    }
   }
 }

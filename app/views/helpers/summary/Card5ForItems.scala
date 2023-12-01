@@ -123,7 +123,7 @@ class Card5ForItems @Inject() (
         ++ packageInformationRows
         ++ List(
           grossWeight(item, hasPackageInformation, actionsEnabled, index),
-          netWeight(item, actionsEnabled, index),
+          netWeight(item, index),
           supplementaryUnits(declaration, item, actionsEnabled, index)
         )
         ++ additionalInformationRows
@@ -277,19 +277,14 @@ class Card5ForItems @Inject() (
       SummaryListRow(
         if (addTopMargin) keyForEmptyAttrAfterAttrWithMultipleRows("item.grossWeight") else key("item.grossWeight"),
         value(commodityMeasure.grossMass.getOrElse("")),
-        classes = s"item-$index-gross-weight",
+        classes = s"govuk-summary-list__row--no-border item-$index-gross-weight",
         changeLink(CommodityMeasureController.displayPage(item.id), "item.grossWeight", actionsEnabled, Some(index))
       )
     }
 
-  private def netWeight(item: ExportItem, actionsEnabled: Boolean, index: Int)(implicit messages: Messages): Option[SummaryListRow] =
+  private def netWeight(item: ExportItem, index: Int)(implicit messages: Messages): Option[SummaryListRow] =
     item.commodityMeasure.map { commodityMeasure =>
-      SummaryListRow(
-        key("item.netWeight"),
-        value(commodityMeasure.netMass.getOrElse("")),
-        classes = s"item-$index-net-weight",
-        changeLink(CommodityMeasureController.displayPage(item.id), "item.netWeight", actionsEnabled, Some(index))
-      )
+      SummaryListRow(key("item.netWeight"), value(commodityMeasure.netMass.getOrElse("")), classes = s"item-$index-net-weight")
     }
 
   private val journeysForSupplementaryUnits = List(STANDARD, SUPPLEMENTARY)
