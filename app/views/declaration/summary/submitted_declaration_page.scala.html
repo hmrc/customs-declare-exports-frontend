@@ -32,7 +32,8 @@
     card3ForRoutesAndLocations: Card3ForRoutesAndLocations,
     card4ForTransactions: Card4ForTransactions,
     card5ForItems: Card5ForItems,
-    card6ForTransport: Card6ForTransport
+    card6ForTransport: Card6ForTransport,
+    notificationBanner: notificationBanner
 )
 
 @(submission: Submission, declaration: ExportsDeclaration)(implicit request: Request[_], messages: Messages)
@@ -45,6 +46,11 @@
     useCustomContentWidth = true,
     showDeclarationSummaryLink = false
 ) {
+
+    @notificationBanner(
+        title = messages("declaration.summary.banner.title"),
+        content = Html(messages("declaration.summary.banner.body"))
+    )
 
     @pageTitle(messages("declaration.summary.submitted-header"))
 

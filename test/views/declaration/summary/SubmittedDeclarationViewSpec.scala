@@ -53,6 +53,13 @@ class SubmittedDeclarationViewSpec extends UnitViewSpec with Stubs with ExportsT
 
   "SubmittedDeclarationPageView" should {
 
+    "display correct notification banner" in {
+      val headerText = createView().select(".govuk-notification-banner__header").text()
+      val contentText = createView().select(".govuk-notification-banner__content").text()
+      headerText mustBe messages("declaration.summary.banner.title")
+      contentText mustBe messages("declaration.summary.banner.body")
+    }
+
     "display correct title" in {
       createView().getElementById("title").text mustBe messages("declaration.summary.submitted-header")
     }
@@ -77,7 +84,7 @@ class SubmittedDeclarationViewSpec extends UnitViewSpec with Stubs with ExportsT
 
     "have references section" in {
       val view = createView()
-      view.getElementsByTag("h2").first.text mustBe messages(s"declaration.summary.heading")
+      view.getElementsByTag("h2").get(1).text mustBe messages(s"declaration.summary.heading")
 
       links(view) mustBe empty
     }
