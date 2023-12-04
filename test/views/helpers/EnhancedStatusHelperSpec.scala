@@ -21,8 +21,8 @@ import models.declaration.submissions.RequestType.{AmendmentCancellationRequest,
 import models.declaration.submissions.{NotificationSummary, RequestType, Submission}
 import play.api.libs.json.Json
 import views.declaration.spec.UnitViewSpec
-import views.helpers.EnhancedStatusHelper._
-import views.helpers.EnhancedStatusHelperSpec.{submission, submissionWithDMSQRY, submissionWithoutNotificationSummaries}
+import views.helpers.EnhancedStatusHelper.{asText, asTimelineEvent}
+import views.helpers.EnhancedStatusHelperSpec.{submission, submissionWithDMSQRY}
 
 import java.time.ZonedDateTime
 import java.util.UUID
@@ -67,17 +67,6 @@ class EnhancedStatusHelperSpec extends UnitViewSpec {
       asTimelineEvent(event(SubmissionRequest, CUSTOMS_POSITION_GRANTED)) mustBe "Customs position granted"
     }
 
-    "return the expected list of SummaryListRow" when {
-
-      "a Submission does NOT contain any 'Notification Summary' element" in {
-        extractNotificationRows(submissionWithoutNotificationSummaries) mustBe List.empty
-      }
-
-      "a Submission does contain 'Notification Summary' elements" in {
-        extractNotificationRows(submission).size mustBe 3
-      }
-    }
-
     "confirm NO DMSQRY notification has been received for a Submission" in {
       hasQueryNotificationMessageStatus(submission) mustBe false
     }
@@ -85,6 +74,11 @@ class EnhancedStatusHelperSpec extends UnitViewSpec {
     "confirm a DMSQRY notification has been received for a Submission" in {
       hasQueryNotificationMessageStatus(submissionWithDMSQRY) mustBe true
     }
+
+    def hasQueryNotificationMessageStatus(submission: Submission): Boolean =
+      submission.actions.exists { action =>
+        action.requestType == SubmissionRequest && action.notifications.exists(_.exists(_.enhancedStatus == QUERY_NOTIFICATION_MESSAGE))
+      }
   }
 }
 
@@ -125,39 +119,6 @@ object EnhancedStatusHelperSpec {
       |                    "enhancedStatus" : "GOODS_HAVE_EXITED"
       |                }
       |            ],
-      |            "decId" : "id",
-      |            "versionNo" : 1
-      |        }
-      |    ],
-      |    "enhancedStatusLastUpdated" : "2022-07-06T08:15:22Z[UTC]",
-      |    "latestEnhancedStatus" : "GOODS_ARRIVED",
-      |    "mrn" : "18GBJ4L5DKXCVUUNZZ",
-      |    "latestDecId" : "TEST-N3fwz-PAwaKfh4",
-      |    "latestVersionNo" : 1,
-      |    "blockAmendments" : false
-      |}
-      |""".stripMargin)
-    .as[Submission]
-
-  val submissionWithoutNotificationSummaries = Json
-    .parse(s"""{
-      |    "uuid" : "TEST-N3fwz-PAwaKfh4",
-      |    "eori" : "IT165709468566000",
-      |    "lrn" : "MBxIq",
-      |    "ducr" : "7SI755462446188-51Z8126",
-      |    "actions" : [
-      |        {
-      |            "id" : "abdf6423-b7fd-4f40-b325-c34bdcdfb203",
-      |            "requestType" : "CancellationRequest",
-      |            "requestTimestamp" : "2022-07-06T08:05:20.477Z[UTC]",
-      |            "decId" : "id",
-      |            "versionNo" : 1
-      |        },
-      |        {
-      |            "id" : "dddf6423-b7fd-4f40-b325-c34bdcdfb204",
-      |            "requestType" : "SubmissionRequest",
-      |            "requestTimestamp" : "2022-07-06T08:05:20.477Z[UTC]",
-      |            "notifications" : [],
       |            "decId" : "id",
       |            "versionNo" : 1
       |        }
