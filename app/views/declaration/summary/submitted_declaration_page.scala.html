@@ -15,18 +15,16 @@
  *@
 
 @import models.ExportsDeclaration
+@import models.declaration.submissions.Submission
 @import views.helpers.{BackButton, Title}
 @import views.helpers.summary._
 @import views.html.components.buttons.print_page_button
-@import views.html.components.gds._
-@import views.html.declaration.summary.sections._
-@import models.declaration.submissions.Submission
+@import views.html.components.gds.{gdsMainTemplate, notificationBanner, pageTitle, paragraphBody}
 
 @this(
     govukLayout: gdsMainTemplate,
     pageTitle: pageTitle,
     paragraphBody: paragraphBody,
-    notificationsSection: notifications_section,
     card1ForReferences: Card1ForReferences,
     card2ForParties: Card2ForParties,
     card3ForRoutesAndLocations: Card3ForRoutesAndLocations,
@@ -54,13 +52,11 @@
 
     @pageTitle(messages("declaration.summary.submitted-header"))
 
-    @paragraphBody(messages("site.printable"))
+    @paragraphBody(messages("site.printable"), "govuk-body govuk-!-display-none-print")
 
-    @print_page_button(marginBottom = 2)
+    @print_page_button(marginBottom = 4)
 
-    @notificationsSection(submission)
-
-    @card1ForReferences.eval(declaration, false)
+    @card1ForReferences.eval(declaration, false, false, Some(submission))
 
     @card2ForParties.eval(declaration, false)
 

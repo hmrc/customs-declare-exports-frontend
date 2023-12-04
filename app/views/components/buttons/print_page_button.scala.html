@@ -18,14 +18,13 @@
 
 @(marginTop: Int = 0, marginBottom: Int = 0, buttonId: Int = 1)(implicit request: Request[_], messages: Messages)
 
-<p class="govuk-body govuk-!-margin-top-@{marginTop} govuk-!-margin-bottom-@{marginBottom}">
+<p class="govuk-body govuk-!-display-none-print govuk-!-margin-top-@{marginTop} govuk-!-margin-bottom-@{marginBottom}">
     <a class="govuk-link govuk-link--no-visited-state ceds-print-link" id="print-button-@{buttonId}">
         @messages("site.print")
     </a>
 </p>
 
 <script @CSPNonce.attr>
-
     var printButton = document.getElementById('print-button-@{buttonId}');
         printButton.addEventListener('click', function() {
             window.print();

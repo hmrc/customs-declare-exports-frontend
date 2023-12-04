@@ -20,7 +20,6 @@ import models.declaration.submissions.EnhancedStatus._
 import models.declaration.submissions.RequestType._
 import models.declaration.submissions.Submission
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.html.components.{Key, SummaryListRow, Text, Value}
 
 object EnhancedStatusHelper {
 
@@ -54,25 +53,5 @@ object EnhancedStatusHelper {
         val status = event.notificationSummary.enhancedStatus
         if (status != CUSTOMS_POSITION_DENIED) asText(status)
         else messages("submission.enhancedStatus.timeline.title.CUSTOMS_POSITION_DENIED")
-    }
-
-  def extractNotificationRows(submission: Submission)(implicit messages: Messages): Seq[SummaryListRow] = {
-    val actions = submission.actions.filter(_.requestType == SubmissionRequest)
-    actions flatMap {
-      _.notifications.map {
-        _.map { notification =>
-          SummaryListRow(
-            classes = s"${notification.enhancedStatus.toString.toLowerCase}-row",
-            key = Key(content = Text(asText(notification.enhancedStatus))),
-            value = Value(content = Text(ViewDates.formatDateAtTime(notification.dateTimeIssued)))
-          )
-        }
-      }.getOrElse(List.empty)
-    }
-  }
-
-  def hasQueryNotificationMessageStatus(submission: Submission): Boolean =
-    submission.actions.exists { action =>
-      action.requestType == SubmissionRequest && action.notifications.exists(_.exists(_.enhancedStatus == QUERY_NOTIFICATION_MESSAGE))
     }
 }

@@ -27,10 +27,18 @@ import forms.{Ducr, Lrn, Mrn}
 import models.DeclarationType._
 import models.ExportsDeclaration
 import models.declaration.DeclarationStatus._
+import models.declaration.submissions.RequestType.SubmissionRequest
+import models.declaration.submissions.Submission
+import org.jsoup.select.Elements
+import org.scalatest.OptionValues
+import play.api.libs.json.Json
 import play.twirl.api.Html
 import services.cache.ExportsTestHelper
 import views.declaration.spec.UnitViewSpec
+import views.helpers.EnhancedStatusHelper.asText
+import views.helpers.ViewDates
 import views.helpers.ViewDates.formatDateAtTime
+import views.helpers.summary.Card1ForReferencesSpec.{notifications, submission}
 
 import scala.concurrent.duration.Duration
 
@@ -79,6 +87,14 @@ class Card1ForReferencesSpec extends UnitViewSpec with ExportsTestHelper with In
 
       val expirationDate = formatDateAtTime(meta.updatedDateTime.plusSeconds(Duration("30 days").toSeconds))
       checkSummaryRow(row, "references.expiration.date", expirationDate, None, "ign")
+    }
+
+    "not have a 'MRN' row (when the maybeSubmission parameter is None)" in {
+      view.getElementsByClass("submission-mrn").size mustBe 0
+    }
+
+    "not have 'Notification status' rows (when the maybeSubmission parameter is None)" in {
+      view.getElementsByClass("notification-status").size mustBe 0
     }
 
     "show the declaration's type" in {
@@ -206,6 +222,23 @@ class Card1ForReferencesSpec extends UnitViewSpec with ExportsTestHelper with In
         assert(summaryCard.hasClass("govuk-summary-card--error"))
       }
     }
+
+    "show a 'MRN' row (when the maybeSubmission parameter is NOT None)" in {
+      val view = card1ForReferences.eval(declaration, maybeSubmission = Some(submission))
+      val row = view.getElementsByClass("submission-mrn")
+      checkSummaryRow(row, "references.submission.mrn", submission.mrn.value, None, "")
+    }
+
+    "show one or more 'Notification status' rows (when the maybeSubmission parameter is NOT None)" in {
+      val view = card1ForReferences.eval(declaration, maybeSubmission = Some(submission))
+      val rows: Elements = view.getElementsByClass("notification-status")
+      for (ix <- 0 until notifications.size) {
+        val row = new Elements(rows.get(ix))
+        row must haveSummaryKey(asText(notifications(ix).enhancedStatus))
+        row must haveSummaryValue(ViewDates.formatDateAtTime(notifications(ix).dateTimeIssued))
+        row.first.getElementsByClass(summaryActionsClassName).size mustBe 0
+      }
+    }
   }
 
   "Card1ForReferences.backLink" when {
@@ -255,4 +288,58 @@ class Card1ForReferencesSpec extends UnitViewSpec with ExportsTestHelper with In
       }
     }
   }
+}
+
+object Card1ForReferencesSpec extends OptionValues {
+
+  val submission = Json
+    .parse(s"""{
+      |    "uuid" : "TEST-N3fwz-PAwaKfh4",
+      |    "eori" : "IT165709468566000",
+      |    "lrn" : "MBxIq",
+      |    "ducr" : "7SI755462446188-51Z8126",
+      |    "actions" : [
+      |        {
+      |            "id" : "abdf6423-b7fd-4f40-b325-c34bdcdfb203",
+      |            "requestType" : "CancellationRequest",
+      |            "requestTimestamp" : "2022-07-06T08:05:20.477Z[UTC]",
+      |            "versionNo" : 1,
+      |            "decId" : "id"
+      |        },
+      |        {
+      |            "id" : "dddf6423-b7fd-4f40-b325-c34bdcdfb204",
+      |            "requestType" : "SubmissionRequest",
+      |            "requestTimestamp" : "2022-06-04T09:08:20.800Z[UTC]",
+      |            "notifications" : [
+      |                {
+      |                    "notificationId" : "149a4470-f29c-4e33-8a75-b9a119a50c06",
+      |                    "dateTimeIssued" : "2022-06-04T08:15:22Z[UTC]",
+      |                    "enhancedStatus" : "GOODS_ARRIVED"
+      |                },
+      |                {
+      |                    "notificationId" : "149a4470-f29c-4e33-8a75-b9a119a50c06",
+      |                    "dateTimeIssued" : "2022-06-04T08:10:22Z[UTC]",
+      |                    "enhancedStatus" : "CLEARED"
+      |                },
+      |                {
+      |                    "notificationId" : "149a4470-f29c-4e33-8a75-b9a119a50c06",
+      |                    "dateTimeIssued" : "2022-06-04T08:05:22Z[UTC]",
+      |                    "enhancedStatus" : "GOODS_HAVE_EXITED"
+      |                }
+      |            ],
+      |            "versionNo" : 1,
+      |            "decId" : "id"
+      |        }
+      |    ],
+      |    "enhancedStatusLastUpdated" : "2022-07-06T08:15:22Z[UTC]",
+      |    "latestEnhancedStatus" : "GOODS_ARRIVED",
+      |    "mrn" : "18GBJ4L5DKXCVUUNZZ",
+      |    "latestDecId" : "TEST-N3fwz-PAwaKfh4",
+      |    "latestVersionNo" : 1,
+      |    "blockAmendments" : false
+      |}
+      |""".stripMargin)
+    .as[Submission]
+
+  val notifications = submission.actions.find(_.requestType == SubmissionRequest).value.notifications.value
 }
